@@ -151,6 +151,11 @@ if __name__ == "__main__":
     n = CK.run(tgt, g, state)
     k = VF.run(tgt, os.path.join(gendir, "figures.json"))
     print("generator assertions", n, "independent checks", k)
+    if CK.GAPS:
+        print()
+        for line in CK.GAPS:
+            print("DESIGN GATE RED: %s" % line)
+        print()
     print("call    : %s %s, %.1f avoidable complications on %d planned separations"
           % (g["answer"]["unit"], g["answer"]["name"], g["answer"]["avoidable"], g["answer"]["plan"]))
     print("closest : %s %s, %.1f; lead %.2f complications, %.2fx, %.2f standard errors (SE gap %.2f)"
@@ -172,3 +177,5 @@ if __name__ == "__main__":
     if tgt == os.path.join(task, "target"):
         zip_pack(tgt, os.path.join(task, "target.zip"))
         print("zip     : %s" % os.path.join(task, "target.zip"))
+    if CK.GAPS:
+        sys.exit(1)

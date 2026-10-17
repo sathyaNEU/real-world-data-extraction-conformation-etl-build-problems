@@ -366,6 +366,27 @@ def main(target, figpath):
             # was in, whichever way it went, not a move down into it
             if int(a) != int(b):
                 dn.setdefault(b, set()).add(sup)
+    # an approval decision is taken on a trading group and recorded against the parent only; the
+    # master names the parent each supplier belongs to, so a decision reaches every member
+    from openpyxl import load_workbook as _lw
+    wsm = _lw(os.path.join(target, "supplier_master.xlsx"), data_only=True).active
+    hdr = [c.value for c in wsm[4]]
+    im, ip = hdr.index("supplier_no_master"), hdr.index("group_parent_no")
+    members = {}
+    for r in wsm.iter_rows(min_row=5, values_only=True):
+        if r[ip]:
+            members.setdefault(r[ip], []).append(r[im])
+    chk("the master names group members", len(members) > 0, True)
+
+    def expand(names):
+        out = set()
+        for s in names:
+            out.add(s)
+            out |= set(members.get(s, ()))
+        return out
+    up = {k: expand(v) for k, v in up.items()}
+    dn = {k: expand(v) for k, v in dn.items()}
+    off = {k: expand(v) for k, v in off.items()}
     for k, v in fig["asks"]["risk_moves_by_category"].items():
         chk("A2 category %s raised in" % k, len(up.get(k, ())), v[0])
         chk("A2 category %s removed from" % k, len(dn.get(k, ())), v[1])

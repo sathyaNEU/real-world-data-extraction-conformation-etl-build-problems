@@ -258,17 +258,20 @@ PLC_GAPS = [
 # week, one inside the working day and one outside it. None covers a 07:00, a 19:00 or a Monday 00:00
 # stamp, and none touches a spell with no rows at all.
 PLC_HELD = [
-    (dt.datetime(2026, 9, 2, 15, 30), 4),
+    # the daytime ones sit against the week's own dropout, because the link comes back holding the value
+    # it had before it went: the run of quarter hours the record does not cover is longer than the run of
+    # rows it is missing
+    (dt.datetime(2026, 9, 2, 13, 0), 3),
     (dt.datetime(2026, 9, 5, 2, 45), 6),
-    (dt.datetime(2026, 9, 9, 9, 45), 3),
+    (dt.datetime(2026, 9, 10, 16, 15), 4),
     (dt.datetime(2026, 9, 13, 21, 15), 5),
-    (dt.datetime(2026, 9, 17, 13, 30), 5),
+    (dt.datetime(2026, 9, 16, 12, 30), 3),
     (dt.datetime(2026, 9, 19, 4, 0), 4),
-    (dt.datetime(2026, 9, 23, 8, 15), 4),
-    (dt.datetime(2026, 9, 27, 23, 30), 6),
-    (dt.datetime(2026, 10, 1, 15, 45), 3),
+    (dt.datetime(2026, 9, 23, 9, 15), 6),
+    (dt.datetime(2026, 9, 26, 15, 15), 6),
+    (dt.datetime(2026, 9, 29, 11, 45), 4),
     (dt.datetime(2026, 10, 3, 5, 30), 5),
-    (dt.datetime(2026, 10, 8, 10, 30), 4),
+    (dt.datetime(2026, 10, 7, 11, 15), 3),
     (dt.datetime(2026, 10, 11, 20, 45), 5),
 ]
 
@@ -297,7 +300,7 @@ RAIN_TIP_MM = 0.2
 SEED = 182182
 # The blower trim's own draw. Chosen by the scan in scratch so that every week's delivered air sits clear
 # of the whole-unit rounding edge the note reports it at.
-AIR_SEED = 2
+AIR_SEED = 3
 # How much of the surroundings' own evening and night texture the record carries. Set by the scan in
 # scratch: enough that no position's record is the same shape every day, little enough that the night is
 # the plant's own sound and not the road's.

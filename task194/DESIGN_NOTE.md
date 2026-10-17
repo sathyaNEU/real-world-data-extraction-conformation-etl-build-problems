@@ -553,3 +553,34 @@ family A3 and A4 do not use, and until it has one this sheet says so.
   routes a solver takes, and both were measured, but their own first-to-second margins are 1.04x and 1.12x,
   under the 1.15x floor. A rung whose own winner is ambiguous is not a rung. They are recorded under the
   ladder as measured routes, and the ladder claims three rungs whose margins are 2.09x, 1.33x and 1.59x.
+
+- **This pass, the ask layer measured rather than described.** The sheet was written from a script run on
+  the cut pack, as the skill requires, and the first measurement came back at a pair ceiling of 50.0 with
+  the cracker keeping 32 of the 48 ask figures. Building A3's statistical-discharge primary took A3 from
+  20 of 20 to 0 of 20 and the ceiling to 40.4; giving the renal and Carrowdean medical units a case mix
+  the published table's drift reaches took the mirror's construction leakage from 2 of 12 to 0 and the
+  ceiling to **39.5**, with mirror leakage at **0.0**. Both gated figures are the worst honest
+  measurement, as `supplemental-stumping` Part 7 requires.
+- **Rejected, and it is structural: a silent primary for A2 as the ask is worded.** A2 is each hospital's
+  adjusted complication rate over in-scope acute episodes, and those are exactly the episodes the call's
+  comparison frequency is computed over. Four devices were drafted and all four die on the separation
+  line. A cross-source duplication on a candidate's episodes sits in the main population. The same
+  duplication on an embedded unit still shifts the network's own stratum frequencies, so it moves the
+  call, which is the gravest finding in the book. A partial extract for one site makes the site's expected
+  count unrecoverable, which law 6 forbids. A site attribution the summary cannot resolve makes the truth
+  unrecoverable the same way. The conclusion is not that A2 needs a cleverer device but that **an ask
+  computed over the call's own population cannot carry one**, and the fix is a redraw: take A2 to a
+  quantity over all care types, where the same-day, ungroupable and non-acute episodes of the acute units
+  are rows the call never reads and a device can live. Held rather than rushed, with the ask sheet saying
+  A2 keeps 12 of 12 so the defect is visible instead of dressed.
+- **Rejected: softening the cracker assertion so `checks.py` would pass.** The gate that fails is Part
+  1.1's, every cracker row misses, and A2 does not. The assertion stays strict and the build's own checks
+  fail on it, which is the state of the ask layer; the two gated figures carry the measurement rather than
+  the favourable of two numbers.
+- **The chain rule had to be made exact before it could carry A3.** Recovering a stay from the feed by
+  chaining an episode onto one that ended the same day first over-counted by three (another episode of the
+  same patient sorted between the two segments, so the chain broke) and then under-counted by one (a
+  genuine same-day readmission under the same group looked like a split stay). Matching segment ends
+  rather than adjacency fixed the first; regrouping the one episode in the record that was readmitted
+  under its own group fixed the second. The rule now reproduces the activity summary's separations exactly
+  in all ten quarters, which is law 6, and that is what makes the device fair rather than merely hard.

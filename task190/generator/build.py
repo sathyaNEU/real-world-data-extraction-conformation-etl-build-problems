@@ -160,22 +160,32 @@ def cut(target, golden_dir):
                   "amount_recorded", "amount_properly_payable"], ext)
 
     A.cutoff_register(target)
-    events, ncorr = A.risk_history(target, cross)
+    events, ncorr, groups = A.risk_history(target, cross)
     cats = {}
     for e in sorted(events, key=lambda e: (e["eff"], e["eid"])):
         if e["status"] == "accepted":
             cats[e["sup"]] = W.RISK_NEW[e["after"]]
-    PK.write_supplier_master(target, cross, cats)
+    PK.write_supplier_master(target, cross, cats, groups=groups)
     docs.plan(target)
     docs.manual(target)
 
     # distractors: the funder's claim on a different window, and revenue expenditure
     rng2 = sim.Rng(70213)
+    # the funder's claim has a real shape: eligible expenditure is the part of the programme's
+    # spend that falls inside the claim year and inside the eligible categories, the grant is the
+    # funder's fixed intervention rate of that, and the newest programmes have nothing to claim yet
     claim = []
+    RATE = 0.45
     for code, name, value, certs in W.PROGRAMMES:
-        claim.append([code, "2025-04-01 to 2026-03-31",
-                      "%.2f" % round(value * (0.58 + rng2.u() * 0.2), 2),
-                      "%.2f" % round(value * 0.41, 2), "submitted"])
+        start = W.PROG_DATES[code][0]
+        if start >= "2025-01-01":
+            claim.append([code, "2025-04-01 to 2026-03-31", "0.00", "0.00", "not yet claimed"])
+            continue
+        share = 0.63 if start < "2024-03-01" else 0.48 if start < "2024-08-01" else 0.31
+        elig = round(value * share * (0.94 + sim.shash("elig/%s" % code) % 120 / 1000.0), 2)
+        status = "settled" if start < "2024-03-01" else "submitted"
+        claim.append([code, "2025-04-01 to 2026-03-31", "%.2f" % elig,
+                      "%.2f" % round(elig * RATE, 2), status])
     PK.write_csv(target, "grant_claim_2026.csv",
                  ["programme_code", "claim_period", "eligible_expenditure_eur",
                   "grant_claimed_eur", "claim_status"], claim)
@@ -193,7 +203,11 @@ def cut(target, golden_dir):
         key = "2026-%02d" % m
         v = bym_rev.get(key, 0.0)
         rev.append([key, "%.2f" % v,
-                    "%.2f" % round(v * (0.048 + rng2.u() * 0.021), 2), bym_n.get(key, 0)])
+                    # maintenance is seasonal: the heavy programme is the spring and autumn
+                    # shutdowns, not a flat share of the month
+                    "%.2f" % round(v * (0.031 + 0.034 * (1 if m in (3, 4, 9, 10) else 0)
+                                        + (sim.shash("mnt/%d" % m) % 90) / 10000.0), 2),
+                    bym_n.get(key, 0)])
     PK.write_csv(target, "revenue_expenditure_summary_2026.csv",
                  ["month", "revenue_expenditure_eur", "of_which_maintenance_eur",
                   "invoices_paid"], rev)
@@ -207,9 +221,11 @@ def cut(target, golden_dir):
     g = G.compute(lines, hits)
     g["a1"] = A.a1_golden(run_truth)
     g["a1_stops"] = A.a1_stops(run_truth)
-    g["a2"] = A.a2_golden(events)
-    g["a2_all"] = A.a2_golden(events, "all")
-    g["a2_events"] = A.a2_golden(events, "events")
+    g["a2"] = A.a2_golden(events, groups=groups)
+    g["a2_all"] = A.a2_golden(events, "all", groups=groups)
+    g["a2_events"] = A.a2_golden(events, "events", groups=groups)
+    g["a2_no_groups"] = A.a2_golden(events)
+    g["groups"] = groups
     g["a3"] = A.a3_golden(paper, [r for r in shipped if r["delivery"] == 1],
                           invoices={r["inv"]: [x["line"] for x in byinv[r["inv"]]]
                                     for r in rows})

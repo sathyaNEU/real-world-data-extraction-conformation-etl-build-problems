@@ -52,12 +52,12 @@ Security and access systems carries most of it at 250,000. Not the 21,004.93 the
    - 2026Q2: 10 released past it, carrying 7,116,710.85
    - 2026Q3: 10 released past it, carrying 9,115,055.38
    - 2026Q4: 8 released past it, carrying 6,663,248.13
-2. Suppliers raised into the category, removed from it, and raised in then removed, by supplier risk category:
+2. Suppliers raised into the category, removed from it, and raised in then removed, by supplier risk category. An approval decision is taken on a trading group and recorded against the parent only, so each decision reaches every member the master names:
    - Category 1 (R-A): 0 raised into it, 31 removed from it, 0 raised in then removed
-   - Category 2 (R-B): 29 raised into it, 69 removed from it, 16 raised in then removed
-   - Category 3 (R-C): 42 raised into it, 49 removed from it, 11 raised in then removed
-   - Category 4 (R-D): 31 raised into it, 76 removed from it, 16 raised in then removed
-   - Category 5 (R-E): 39 raised into it, 27 removed from it, 0 raised in then removed
+   - Category 2 (R-B): 29 raised into it, 83 removed from it, 16 raised in then removed
+   - Category 3 (R-C): 47 raised into it, 59 removed from it, 17 raised in then removed
+   - Category 4 (R-D): 33 raised into it, 74 removed from it, 10 raised in then removed
+   - Category 5 (R-E): 36 raised into it, 29 removed from it, 0 raised in then removed
 3. Distinct ledger lines the schedule covers, by quarter of payment:
    - 2026Q1: 72
    - 2026Q2: 72

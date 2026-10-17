@@ -292,15 +292,46 @@ def run(target, figures_path):
         ok(round(row.complications / row.expected * ref, 1) == f["adjusted_rate_per_1000"],
            "the hospital year's adjusted rate at %s" % site)
 
-    # ask 3: the units outside the indicator, on distinct separations
+    # ask 3: the units outside the indicator, on distinct separations. Two steps: the overlapping monthly
+    # load is collapsed on the separation key the dictionary states, then the episodes of a stay whose care
+    # type changed inside it are chained, because the patient left the hospital once and the activity
+    # summary counts the separation once
     out = ep[ep.service_type != "Acute inpatient"].copy()
     out = out.drop_duplicates(["unit_code", "patient_uid", "admission_date", "drg_code"])
-    oq = out.groupby("quarter").agg(separations=("episode_id", "size"),
-                                    with_complication=("hac_recorded", "sum"))
+    out = out.sort_values(["unit_code", "patient_uid", "drg_code", "admission_date", "separation_date"])
+    chain = []
+    ends = {}
+    for rec in out.itertuples(index=False):
+        k = (rec.unit_code, rec.patient_uid, rec.drg_code)
+        j = ends.pop((k, rec.admission_date), None)
+        if j is None:
+            chain.append([rec.separation_date, bool(rec.hac_recorded)])
+            j = len(chain) - 1
+        else:
+            chain[j][0] = max(chain[j][0], rec.separation_date)
+            chain[j][1] = chain[j][1] or bool(rec.hac_recorded)
+        ends[(k, rec.separation_date)] = j
+    stay = pd.DataFrame(chain, columns=["separation_date", "hac"])
+    stay["quarter"] = quarter_label(stay["separation_date"])
+    oq = stay.groupby("quarter").agg(separations=("hac", "size"), with_complication=("hac", "sum"))
     for q, f in fig["outside_indicator"].items():
         row = oq.loc[q]
         ok(int(row.separations) == f["separations"], "the separations outside the indicator in %s" % q)
         ok(int(row.with_complication) == f["with_complication"], "those with a complication in %s" % q)
+    # the device is fair: the stays reproduce the activity summary quarter by quarter, and the stated key
+    # alone, which is the careful stop, lands clear above it
+    sm = summary.merge(units[["unit_code", "service_type"]], on="unit_code", how="left")
+    sm = sm[sm.service_type != "Acute inpatient"].copy()
+    sm["quarter"] = quarter_label(sm["month"])
+    sq = sm.groupby("quarter").separations.sum()
+    for q in oq.index:
+        ok(int(oq.loc[q].separations) == int(sq.loc[q]),
+           "the chained stays tie to the activity summary in %s (%d)" % (q, int(sq.loc[q])))
+    key_only = out.groupby("quarter").size()
+    for q in oq.index:
+        ok(int(key_only.loc[q]) > int(oq.loc[q].separations),
+           "the stated key alone runs above the separations reported in %s (%d against %d)"
+           % (q, int(key_only.loc[q]), int(oq.loc[q].separations)))
 
     # ask 4: the complication groups, by fiscal year
     det = pd.read_csv(os.path.join(target, "hac_detail_extract.csv"), parse_dates=["separation_date"],

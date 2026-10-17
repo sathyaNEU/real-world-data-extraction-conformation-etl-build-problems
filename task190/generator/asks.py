@@ -219,9 +219,13 @@ def risk_history(target, cross):
         fixed = min(5, b + 2) if rise else max(1, b - 2)
         if fixed == b:
             continue
-        extra.append(dict(e, eid=eid, after=str(fixed), status="accepted",
-                          load=e["load"] + dt.timedelta(days=1 + sim.shash(sup) % 6,
-                                                        minutes=13 + sim.shash(sup) % 290)))
+        h = sim.shash("sup2/%s" % sup)
+        lag_days = (0 if h % 5 == 0 else 1 + h % 19)
+        eff2 = e["eff"] + dt.timedelta(days=(h % 3 - 1 if h % 7 == 0 else 0))
+        extra.append(dict(e, eid=eid, after=str(fixed), status="accepted", eff=eff2,
+                          relab=eff2.isoformat() >= W.RISK_RELABEL,
+                          load=e["load"] + dt.timedelta(days=lag_days,
+                                                        minutes=7 + h % 701)))
         cat = fixed
         keep = []
         for nxt in es[1:]:
@@ -236,6 +240,29 @@ def risk_history(target, cross):
         picked += 1
     events.extend(extra)
     events = [e for e in events if not e.get("drop")]
+    # An approval decision is taken on a trading group, and the register records the decision
+    # against the parent the submission came in under. The members carry no row of their own; the
+    # supplier master names the parent each belongs to. Nothing says the row covers more than the
+    # number on it: a reader finds it by seeing that a member holds a current risk category with
+    # no approval row to account for it, and then intersecting the register against the master's
+    # group column.
+    with_events = sorted({e["sup"] for e in events})
+    groups, taken = {}, set()
+    rng3 = sim.Rng(441907)
+    no_events = [m for m in masters if m not in set(with_events)]
+    ni = 0
+    for parent in with_events:
+        if len(groups) >= 14 or sim.shash(parent) % 9:
+            continue
+        for k in range(2 if sim.shash(parent) % 2 else 3):
+            if ni >= len(no_events):
+                break
+            cand = no_events[ni]
+            ni += 1
+            if cand in taken or cand == parent:
+                continue
+            groups[cand] = parent
+            taken.add(cand)
     events.sort(key=lambda e: (e["eff"], e["eid"]))
     rows = []
     for e in events:
@@ -250,7 +277,7 @@ def risk_history(target, cross):
                  ["label_to_2026_09_30", "label_from_2026_10_01", "description"],
                  [[b, W.RISK_NEW[b], ["Lowest", "Low", "Medium", "High", "Highest"][i]]
                   for i, b in enumerate(W.RISK_BANDS)])
-    return events, picked
+    return events, picked, groups
 
 
 def a2_unmapped(events):
@@ -286,7 +313,7 @@ def a2_unmapped(events):
             for b in W.RISK_BANDS}
 
 
-def a2_golden(events, mode="answer"):
+def a2_golden(events, mode="answer", groups=None):
     """Per category: suppliers raised into it, removed from it, and raised in then removed."""
     use = events if mode == "all" else [e for e in events if e["status"] == "accepted"]
     byc = {}
@@ -308,7 +335,19 @@ def a2_golden(events, mode="answer"):
                 down[e["before"]].append(sup)
     if mode == "events":
         return {b: (len(up[b]), len(down[b]), len(off[b])) for b in W.RISK_BANDS}
-    return {b: (len(set(up[b])), len(set(down[b])), len(set(off[b]))) for b in W.RISK_BANDS}
+    # a decision taken on a group raised or removed every member of it, not just the parent
+    members = {}
+    for member, parent in (groups or {}).items():
+        members.setdefault(parent, []).append(member)
+
+    def expand(names):
+        out = set()
+        for s in names:
+            out.add(s)
+            out |= set(members.get(s, ()))
+        return out
+    return {b: (len(expand(up[b])), len(expand(down[b])), len(expand(off[b])))
+            for b in W.RISK_BANDS}
 
 
 # ---------------------------------------------------------------- A3, the schedule against the ledger

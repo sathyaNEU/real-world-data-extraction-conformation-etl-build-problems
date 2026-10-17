@@ -65,16 +65,16 @@
    "source": "Constructed: internal audit's manifest of this cut"
   },
   {
-   "bytes": 3052,
+   "bytes": 3223,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
    "path": "field_dictionary.csv",
-   "rows": 21,
+   "rows": 22,
    "source": "Constructed: finance systems' field definitions across the extracts"
   },
   {
-   "bytes": 651,
+   "bytes": 627,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
@@ -83,7 +83,7 @@
    "source": "Constructed: finance's funder grant claim for the claim year to 31 March"
   },
   {
-   "bytes": 22964,
+   "bytes": 23138,
    "date": "2027-01-14",
    "format": "pdf",
    "license": "CC0-1.0 (original work, constructed for this task)",
@@ -119,7 +119,7 @@
    "source": "Constructed: internal audit's extract notes for this cut"
   },
   {
-   "bytes": 457,
+   "bytes": 456,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
@@ -128,7 +128,7 @@
    "source": "Constructed: finance's revenue expenditure summary, year to 31 December 2026"
   },
   {
-   "bytes": 19148,
+   "bytes": 20513,
    "date": "2027-01-14",
    "format": "xlsx",
    "license": "CC0-1.0 (original work, constructed for this task)",
@@ -146,12 +146,12 @@
    "source": "Constructed: finance systems' crosswalk from the ledger's supplier numbers to the master's"
   },
   {
-   "bytes": 18503,
+   "bytes": 18292,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
    "path": "supplier_risk_approval_history.csv",
-   "rows": 263,
+   "rows": 260,
    "source": "Constructed: procurement's supplier risk approval history, year to 31 December 2026"
   },
   {

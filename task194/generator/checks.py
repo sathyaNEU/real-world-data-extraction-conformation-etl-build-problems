@@ -20,6 +20,18 @@ N = 0
 
 FAILS = []
 
+# A design rule the build does not yet meet. It is recorded rather than raised so the remaining gates
+# still run, and `build.py` prints every entry and exits non-zero, so the gate stays red and named.
+GAPS = []
+
+
+def gap(flag, label):
+    global N
+    N += 1
+    if not flag:
+        GAPS.append(label)
+    return flag
+
 
 def ok(flag, label):
     global N
@@ -277,14 +289,44 @@ def run(target, g, state):
     # ---------- mess neutrality, one assertion per Layer 1 item (R2) ----------
     all_acute = sorted({c for c, u in b["units"].items() if u["service_type"] == "Acute inpatient"
                         and not u["closed_date"]})
-    # two grains: the summary ties to the extract on distinct separations
+    # two grains: the summary counts a separation, the extract carries episode records. For an acute unit
+    # the two are the same thing; for the three units outside the indicator a stay whose care type changed
+    # inside it reaches the feed as two episodes, which is A3's primary device, and the tie there is to the
+    # chained stays. Both halves are asserted, so the device is fair rather than merely hard (law 6).
     summ = defaultdict(int)
     for r in b["summary"]:
         summ[(r["unit_code"], r["month"][:7])] += int(r["separations"])
     truth = defaultdict(int)
     for r in state["rows"]:
         truth[(r["unit"], r["sep_date"].isoformat()[:7])] += 1
-    ok(summ == truth, "R2 two grains: the monthly summary ties to the extract's distinct separations")
+    acute_codes = {c for c, u in b["units"].items() if u["service_type"] == "Acute inpatient"}
+    ok({k: v for k, v in summ.items() if k[0] in acute_codes}
+       == {k: v for k, v in truth.items() if k[0] in acute_codes},
+       "R2 two grains: for every acute unit the summary ties to the extract month by month")
+    stay_rows = Counter((r["unit"], r["stay"]) for r in state["rows"])
+    split = sum(1 for (unit, _), n in stay_rows.items() if unit in acute_codes and n > 1)
+    ok(split == 0, "R2 no acute unit carries a statistically discharged stay (%d)" % split)
+    ok(sum(1 for (unit, _), n in stay_rows.items() if unit not in acute_codes and n > 1) > 300,
+       "A3 the units outside the indicator carry the split stays (%d)"
+       % sum(1 for (unit, _), n in stay_rows.items() if unit not in acute_codes and n > 1))
+    nonacute_summ = sum(v for k, v in summ.items() if k[0] not in acute_codes)
+    ok(sum(o["separations"] for o in g["outside"]) == nonacute_summ,
+       "A3 the chained stays reproduce the activity summary exactly (%d)" % nonacute_summ)
+    for o in g["outside"]:
+        qs = sum(int(r["separations"]) for r in b["summary"]
+                 if r["unit_code"] not in acute_codes
+                 and G.fiscal(dt.date.fromisoformat(r["month"]))[1] == o["quarter"])
+        ok(o["separations"] == qs,
+           "A3 %s ties to the summary quarter by quarter (%d)" % (o["quarter"], qs))
+    stated_key = set()
+    for r in read(target, "episode_outcomes_extract.csv"):
+        if r["unit_code"] in acute_codes:
+            continue
+        stated_key.add((r["unit_code"], r["patient_uid"], r["admission_date"], r["drg_code"]))
+    ok(len(stated_key) > nonacute_summ,
+       "A3 the stated separation key leaves %d against the %d separations reported, a lazy delta of "
+       "%.1f per cent" % (len(stated_key), nonacute_summ,
+                          100.0 * (len(stated_key) - nonacute_summ) / nonacute_summ))
     # the list revision touches no graded main figure
     cats = {r["hac_category_code"] for r in []}
     ok("hac_category_code" not in ("unit_code", "hac_recorded"), "R2 the revision sits in a column the call "
@@ -313,9 +355,12 @@ def run(target, g, state):
        "R2 the dashboard says which quarter it is")
     # tables inside the PDFs carry the figures the lookups carry
     ok("0.1683" in spec and "HAC13" in spec, "R2 the specification's appendices are in the PDF")
-    ok("eight closed" in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "deliver.py"),
-                              encoding="utf-8").read(),
-       "the brief names the register's size as the register carries it")
+    dsrc = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "deliver.py"),
+                encoding="utf-8").read()
+    ok("215 " in dsrc, "the brief names the panel's size as the series carries it")
+    ok("ordinarily have" in dsrc,
+       "the brief states the comparison in the charter's own words, not in a method's")
+    ok("avoided" not in dsrc, "no deliverable states a quantity the record does not carry")
     for clause in ("3.3", "3.4", "2.1", "2.2"):
         ok(clause in spec, "the specification carries clause %s" % clause)
     for clause in ("4.1", "4.2", "4.3", "4.4"):
@@ -345,11 +390,46 @@ def run(target, g, state):
         _, q = G.fiscal(r["sep_date"])
         raw[q] += 1
         loose[q].add((r["unit"], r["pid"], r["adm_date"]))
+    # the stated separation key, which is the careful stop, and the over-correction that chains on the
+    # date alone and so swallows a genuine same-day readmission
+    stated = defaultdict(set)
+    chained_loose = defaultdict(int)
+    byp = defaultdict(list)
+    for r in state["rows"] + state["replays"]:
+        if r["unit"] in acute_units:
+            continue
+        stated[G.fiscal(r["sep_date"])[1]].add((r["unit"], r["pid"], r["adm_date"], r["drg"]))
+        byp[(r["unit"], r["pid"])].append(r)
+    for key, eps in byp.items():
+        uniq = {(e["adm_date"], e["drg"]): e for e in eps}
+        rows_ = sorted(uniq.values(), key=lambda e: (e["adm_date"], e["sep_date"]))
+        chains = []
+        ends = {}
+        for e in rows_:
+            j = ends.pop(e["adm_date"], None)        # the date alone, the over-correction
+            if j is None:
+                chains.append([e])
+                j = len(chains) - 1
+            else:
+                chains[j].append(e)
+            ends[e["sep_date"]] = j
+        for ch in chains:
+            chained_loose[G.fiscal(ch[-1]["sep_date"])[1]] += 1
     for o in g["outside"]:
-        ok(raw[o["quarter"]] > o["separations"], "A3 the row count runs high in %s (%d against %d)"
-           % (o["quarter"], raw[o["quarter"]], o["separations"]))
-        ok(len(loose[o["quarter"]]) < o["separations"], "A3 a looser key runs low in %s (%d against %d)"
-           % (o["quarter"], len(loose[o["quarter"]]), o["separations"]))
+        q = o["quarter"]
+        ok(raw[q] > len(stated[q]) > len(loose[q]) > o["separations"],
+           "A3 every stop above the answer in %s: %d rows, %d on the stated key, %d on a looser key, "
+           "%d separations" % (q, raw[q], len(stated[q]), len(loose[q]), o["separations"]))
+        ok(len(stated[q]) - o["separations"] > 0.02 * o["separations"],
+           "A3 the careful stop in %s is %d clear of the answer, %.1f per cent"
+           % (q, len(stated[q]) - o["separations"],
+              100.0 * (len(stated[q]) - o["separations"]) / o["separations"]))
+        ok(chained_loose[q] <= o["separations"],
+           "A3 chaining on the date alone over-corrects in %s (%d against %d)"
+           % (q, chained_loose[q], o["separations"]))
+    ok(sum(chained_loose.values()) < sum(o["separations"] for o in g["outside"]),
+       "A3 the over-corrected read lands below the answer overall (%d against %d)"
+       % (sum(chained_loose.values()), sum(o["separations"] for o in g["outside"])))
     # A2: the register's current alignment moves every hospital
     reg = {c: u["hospital_code"] for c, u in b["units"].items()}
     wrong = defaultdict(lambda: [0, 0, 0.0])
@@ -514,9 +594,14 @@ def run(target, g, state):
         ok("Mirror leakage: %.1f" % cr["leakage"] in note,
            "the ask sheet states the measured mirror leakage (%.1f)" % cr["leakage"])
     ok(cr["ceiling"] <= 40.0, "the pair ceiling is at or under 40 (%.1f)" % cr["ceiling"])
-    ok(not any(hit for _, _, hit in cr["cracker_rows"]),
-       "the cracker misses every ask figure (%d of %d kept)"
-       % (cr["cracker_ask_kept"], cr["n_ask"]))
+    kept = {}
+    for a, _, hit in cr["cracker_rows"]:
+        kept[a] = kept.get(a, 0) + (1 if hit else 0)
+    gap(not any(kept.values()),
+        "supplemental-stumping 1.1: the cracker keeps %d of %d ask figures, on %s. The ask sheet states "
+        "it and the design note's Tried and rejected records why the ask cannot hold a primary as worded."
+        % (cr["cracker_ask_kept"], cr["n_ask"],
+           ", ".join(a for a, n in sorted(kept.items()) if n)))
 
     # ---------- figures.json agrees with the bundle ----------
     fp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")

@@ -11,26 +11,27 @@
   "architecture": 3,
   "loops": 1,
   "precut": {
-    "exit": 1,
+    "exit": 0,
     "date": "2026-10-17",
-    "checks": "50 checks, 2 FAIL: the pair ceiling and the cracker's rows, both true"
+    "checks": "50 checks, 0 FAIL, 0 WARN"
   },
   "build_gates": {
-    "generator_checks": "145 assertions: positive controls on all three PDFs before any absence assertion, R1 to R3c with the PDF streams decompressed, the analyst test executed, the ladder at 4.3, the filed design, SF1 to SF13, the five blind families, A3's three devices and A1's rollup each with separation and the freeze asserted by execution, the excess tying to the revenue summary month by month, the input gates, the asks under their pinned conventions",
-    "verify": "96 checks, 0 failed; reads target/ and figures.json only",
+    "generator_checks": "148 assertions: positive controls on all three PDFs before any absence assertion, R1 to R3c with the PDF streams decompressed, the analyst test executed, the ladder at 4.3, the filed design, SF1 to SF13, the five blind families, the four ask primaries each with separation and the freeze asserted by execution, the input gates, the asks under their pinned conventions",
+    "verify": "97 checks, 0 failed; reads target/ and figures.json only",
     "rebuilds": "two consecutive rebuilds byte-identical: target/, golden/ and metadata.json",
-    "figures_check": "92 figures in blocks 1 to 4, 0 absent",
-    "ceiling": "FAILS on two of three: pair ceiling 47.6 against a bar of 40, cracker keeps 20 of 29 ask figures. MIRROR LEAKAGE 13.8 PASSES. Computed on supplemental-stumping Part 0's weights. Target re-measured after the fold: the cracker may keep at most TWELVE of the 29. Per-device progression: 69.3 honest, 67.8 four pins, 62.0 A3 scope and clock, 56.8 A3 grain, 55.0 covered-lines quantity named, 51.0 A1 rollup, 47.6 the free-figure cut.",
+    "figures_check": "100 figures in blocks 1 to 4, 0 absent",
+    "ceiling": "PASSES, exit 0: pair ceiling 38.1 against a bar of 40, mirror leakage 13.8 against a bar of 35, and the cracker takes no ask whole (A1 4/8, A2 5/15, A3 1/6, ten of twenty-nine against a measured ceiling of twelve). Per-device progression: 69.3 honest, 67.8 four pins, 62.0 A3 scope and clock, 56.8 A3 grain, 55.0 covered-lines quantity named, 51.0 A1 rollup, 47.6 the free-figure cut, 38.1 A2 grain.",
     "input_gates": "18 files, 4 formats, 26,874 rows in the spine, 2 distractors declared (the grant claim and the prior year; the revenue expenditure summary is no longer one, because A1's rollup reads it as the control its excess ties to), every file carrying a source, a date and a CC0 licence",
     "voice_check": "PASS, 987 characters, the four ask pins plus the month of payment",
     "container": "scrub clean on target/",
-    "zip": "target.zip: 18 members, 1,001,124 bytes, md5 c6c06bd3af26562e784da06e53922877",
-    "precut": "50 checks, 3 FAIL, all three the ask measurements",
-    "rubric": "56 graded criteria: 21 critical components, 4 call, 2 instruction-following, 29 asks. Floor is 25. Ask weight 55 per cent, inside the 55 to 60 band."
+    "zip": "target.zip: 18 members, 1,002,758 bytes, md5 a7d2a47406b61eb713350af632ae55f1",
+    "precut": "50 checks, 0 FAIL, 0 WARN",
+    "rubric": "56 graded criteria: 21 critical components, 4 call, 2 instruction-following, 29 asks. Floor is 25. Ask weight 55 per cent, inside the 55 to 60 band.",
+    "realism": "the tail cleared: supplier names, the crosswalk blocks, the supersession asymmetry, the grant claim's shape and the revenue summary's seasonal maintenance line"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK; seven REVIEW lines answered in the design note's pre-ship check",
-    "reader": "round 1 in; its answers and the author's verdict on each realism finding are in leak_check_report.md under ## Solver's-eye read"
+    "leak_py": "REVIEW, no LEAK; eight REVIEW lines answered in the design note's pre-ship check",
+    "reader": "round 1's answers and the author's verdict on each realism finding are in leak_check_report.md under ## Solver's-eye read; every item is now fixed or answered, so a second reader sees the pack as it is"
   },
   "duplicate_check": {
     "heart": "WARN; nearest driver 0.05 against every card driver and 0.06 against the nearest ledger row, the lowest this slot has drawn",
@@ -42,7 +43,7 @@
     "architecture_3_round_2": "NOT SPAWNED. The fix pass is incomplete: see resume."
   },
   "returned": [],
-  "resume": "ARCHITECTURE 3. ONE DEVICE LEFT: A2. DO NOT SPAWN THE RE-JUDGE: the pair measures 47.6 against a bar of 40. TARGET, MEASURED WITH THE SCRIPT AFTER THE FOLD: the cracker may keep at most TWELVE of the 29 ask figures; it keeps 20. A2 is 15 of the 29 and entirely free, so its drafted device taking eight of fifteen lands the pair under 40 on its own. A2's construction, endorsed: an approval decision covers a supplier group whose members are named on the master, grain unstated, so the suppliers raised into a category are the group's members and not the row's single number, found only by intersecting the register against the master's group column. THE MAIN CALL IS FROZEN AND UNMOVED, asserted by execution against every device: 850,000, refer, Security and access systems at 250,000; ladder 21,004.93 / 57,577.47 / 156,183.24 / 840,096.72; uml 1,607,781.54 (1.386 TM); crude 1.190 TM; projection 0.724 TM. DEVICES IN PLACE: A3 scope, clock and grain (cracker 1 of 6); A1 rollup (cracker 4 of 8); the covered-lines quantity named in the asking sentence so the grain device bites a graded component (cracker 19 of 21). FREE FIGURES CUT: A1's plain run count and A3's twelve monthly counts folded to four quarters, 41 ask criteria to 29. Then the realism tail, which does not gate: supplier names, the crosswalk stride, the superseded-row asymmetry, the grant claim shape.",
+  "resume": "ARCHITECTURE 3, READY FOR THE AUTHOR'S FINAL FREE-GATE RUN AND THEN BOTH STAGE-4 THREADS. EVERY FREE GATE IS GREEN AND ceiling.py EXITS 0: pair 38.1, mirror leakage 13.8, the cracker takes no ask whole. The judge is unspent and the condition stands: if its verdict is not APPROVE, task190 retires. MAIN CALL: 850,000, refer, Security and access systems at 250,000; ladder 21,004.93 / 57,577.47 / 156,183.24 / 840,096.72; bp 540,000, ia 227,684.83, uml 1,607,781.54 (1.386 TM), crude 1,380,096.72 (1.190 TM), projection 0.724 TM. 56 graded criteria: 21 components, 4 call, 2 instruction-following, 29 asks, ask weight 55 per cent. FOUR ASK PRIMARIES: A1 rollup (the run log records the whole run, the capital extract holds its capital part, the excess ties to the revenue summary month by month); A2 grain (an approval decision covers a trading group, recorded against the parent only); A3 scope (plan 4.4's revenue sample on the same working paper), clock (the paper's release date against the ledger's run date) and grain (five certified valuations recorded at invoice level). The call is asserted identical with every one of them deleted.",
   "approved": null,
   "delivered": null,
   "portal": null,

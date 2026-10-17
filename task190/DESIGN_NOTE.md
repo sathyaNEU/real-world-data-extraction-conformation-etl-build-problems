@@ -550,12 +550,12 @@ device against the careful solver's path.
 | Ask | Figures | The device |
 |---|---|---|
 | A1, per quarter of release: the runs released past the cut-off then in force and the value those carried. Both conventions are pinned in the asking sentence. The plain count of runs released was cut: it was free to the cracker and no device reached it | 4 x 2 = 8 | three devices, each measured: the cut-off moved from 15:00 to 14:00 on 1 July 2026 and the register carries both effective dates, so one cut-off for the year undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the opening date rather than the release moves the counts; and one run was rejected by the bank and re-released, so the log carries it twice. A run released exactly at the cut-off is within it, which the register states |
-| A2, per supplier risk category: the suppliers raised into it, those removed from it, and those raised in then removed. "Removed from it" is pinned in the asking sentence, against the removed-into reading | 5 x 3 = 15 | the approval register chains per supplier and carries superseded rows the dictionary rules out of the history; a category was relabelled on 1 October and the scale map carries both codings |
+| A2, per supplier risk category: the suppliers raised into it, those removed from it, and those raised in then removed. "Removed from it" is pinned in the asking sentence, against the removed-into reading | 5 x 3 = 15 | the **grain** primary: an approval decision is taken on a trading group and recorded against the parent only, so a decision reaches every member the master names. Nothing says a row covers more than the number on it; a reader finds it by seeing a member hold a current risk category with no approval row to account for it, and then intersecting the register against the master's parent column. Hazards beside it: the superseded rows the dictionary rules out of the history, and the October relabelling the scale map resolves | the approval register chains per supplier and carries superseded rows the dictionary rules out of the history; a category was relabelled on 1 October and the scale map carries both codings |
 | A3, per month of payment: the distinct ledger lines the testing schedule covers, whether any schedule line is missing from the ledger and if so how many, and whether any ledger line is on it twice and if so how many. "Distinct" and the month of payment are pinned in the asking sentence | 12 + 2 = 14 | two primaries. **Scope:** the working paper is internal audit's paper for the year, so plan 4.4's revenue expenditure sample sits on it under its own cost centres and its own ledger prefix; seventeen rows resolve to no capital line, are counted in no month, and nothing flags them. **Clock:** the paper carries the date the run was released, as the payment run log records it, while the ledger carries the date of the run that paid the line, and the two differ for the seven runs whose release ran past midnight, two of which cross a month end | the schedule is a table inside a PDF and its line references carry the ledger's supplier prefix, so the join needs the crosswalk; the re-delivered batch puts one ledger line on the schedule twice |
 
 Every A3 ask is worded so that "none" is a grammatical answer, per H23.
 
-Pair ceiling: 47.6
+Pair ceiling: 38.1
 
 Mirror leakage: 13.8 per cent of ask weight
 
@@ -571,9 +571,9 @@ mirror leakage were one reading counted twice; the two labels were crossed again
 `supplemental-stumping` Part 1.1 as well. Scored properly, with each response on its own readings and the
 third ask actually scored:
 
-| The cracker, and the mirror beside it | call | components | instruction | A1 | A2 | A3 | score |
+| Response | call | components | instruction | A1 | A2 | A3 | score |
 |---|---|---|---|---|---|---|---|
-| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/21 | 2/2 | **4/8** | 15/15 | **1/6** | **81.0** |
+| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/21 | 2/2 | 4/8 | **5/15** | 1/6 | **61.8** |
 | the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/21 | 1/2 | 1/8 | 3/15 | 0/6 | **14.3** |
 
 **Why the cracker keeps everything, which is the diagnosis and not a wording problem.** Every device on
@@ -585,6 +585,19 @@ join at all, which is why even the mirror takes 12 of 14 there. There is not one
 set. `supplemental-stumping` Part 5 names this exactly: a pin says what to compute and never makes
 computing it correctly hard, so every pin has to be paired with a silent primary underneath it. The asks
 need silent primaries, which is design work on the ask data, not a re-worded sheet, and it is open.
+
+**The cracker sheet.** One row per ask, the cracker being the response that lands the call, runs the
+hygiene battery and executes every filed rule and column description. Measured by
+`generator/ceiling.py` on the cut pack.
+
+| Ask | What the cracker does | What it never reaches | Verdict |
+|---|---|---|---|
+| A1 | reconciles the run log to the ledger it was given and rebuilds the value it can tie | the log records the whole run and the capital extract holds only its capital part, so every value figure is short by the revenue part, which ties to the revenue expenditure summary month by month | miss |
+| A2 | reads the approval register as it stands, one decision against one supplier number | a decision is taken on a trading group and recorded against the parent only, so the suppliers raised into or removed from a category are the group's members, which only the master's parent column and a member holding a category with no row of its own reveal | miss |
+| A3 | splits the paper's reference, joins to the ledger and runs the unmatched-join sweep | five rows are certified valuations recorded at invoice level, so each covers every line on its invoice; the sweep reports them as missing from the ledger, which is wrong, and the quarters are short by the lines they carry | miss |
+
+Measured: the cracker gets **no ask whole**, keeping 4 of 8 on A1, 5 of 15 on A2 and 1 of 6 on A3, which
+is 10 of the 29 ask figures against a measured ceiling of 12, and the pair reads 38.1.
 
 ## Pre-ship check
 
@@ -628,27 +641,25 @@ and nothing about projecting, scaling, weighting, extrapolating or monetary unit
 | `guard.py check` / `heart` | no BLOCK; WARN on the two answered gate_g repeats (`repeat.gate_g` against task468, `overuse.gate_g` at 7 of the last 12); nearest driver 0.07 on `check`, 0.05 against card drivers on `heart` |
 | `guard.py surface` | no BLOCK; no persona the card never planned, and only two of the three carded names ship; eight pairs promoted for the author's adjudication, five on corpus-wide surface idiom (shared file names, the `pdf+png` deliverable pair, `quantity_figure`) and three on the same-driver signature, gap `rule` plus pattern G16 plus Gate G `method_or_model_selection`, against task185, task457 and task80, each already answered by a differentiation line on the card |
 
-**The leak report's lines, answered.** REVIEW on seven lines, no LEAK, each read and answered against
-this pass's pack.
+**The leak report's lines, answered.** REVIEW on eight lines, no LEAK, each read against this pass's
+pack.
 
-- **Block 3, "golden figure 4.3 appears" in the plan.** The sweep matched the clause number 4.3, not a
-  figure: the text it quotes is the heading "4.3 Conclusion on a tested population". No golden figure
-  appears in any shipped file, asserted by word sweep with the PDF streams decompressed.
-- **Block 3, the plan carries 14 of 14 of the call's distinctive words.** The call is asked in the
-  manual's own words because 9.1 is the estimand: payment, population, misstatement, programme, tested,
-  year, euro. The question cannot be asked without them, and the plan carries no figure for it.
-- **Block 4, 9 of 25 stump-paragraph terms in the manual and 7 of 25 in the schedule.** This is the
-  override's doing and it is deliberate: the manual now defines selection interval, certain of selection,
-  tainting, basic precision, incremental allowance and upper misstatement limit, and the schedule states
-  the basis of selection, so the pack and the design note necessarily share that vocabulary. Read for
-  whether either document names the move: neither says how to get from the tested lines to the
+- **Block 3, five lines.** One matches the clause number 4.3, not a figure, in the heading "4.3
+  Conclusion on a tested population". The others are the plan and the provenance note carrying the call's
+  distinctive words, because the call is asked in manual 9.1's own vocabulary: payment, population,
+  misstatement, programme, tested, year, euro. The question cannot be asked without them and no shipped
+  file carries the figure, asserted by word sweep with the PDF content streams decompressed and with a
+  positive control proving the sweep can read each PDF before any absence is asserted.
+- **Block 4, the manual and the schedule share the design note's vocabulary.** Deliberate, and the
+  author's override is why: the manual defines selection interval, certain of selection, tainting, basic
+  precision, incremental allowance and upper misstatement limit, and the schedule states the basis of
+  selection. Read for whether either names the move: neither says how to get from the tested lines to the
   population, and `checks.py` sweeps for projecting, extrapolating, scaling up, grossing up and
   multiplying a tainting and finds none.
-- **Block 9, nine ISO dates after the as-of in the capital programme register.** They are the programmes'
-  planned completion dates, now spread from 2027-05-31 to 2029-01-31. A capital programme register carries
-  the dates the works are due to finish, so dates beyond the audit as-of are what the file is for, and the
-  figure never reads the register's values (SF11).
-- **Block 10, container metadata.** INFO; `scrub_producer_metadata.py` reports the pack clean.
+- **Block 9, dates after the as-of in the capital programme register.** The programmes' planned
+  completion dates, now spread from 2027 into 2029. A capital register carries the dates the works are
+  due to finish, and the figure never reads the register's values (SF11).
+- **Block 10, container metadata.** INFO; the pack is clean.
 
 **Golden realism.** The schedule is sorted by the misstatement indicated and then by programme name, the
 order the chart uses; recorded value to the cent as the ledger holds it, the misstatement whole because
@@ -934,3 +945,21 @@ were round too, so both were redrawn.
   quarter counted as the earliest. Minutes now run from the run's own date, so a release that crossed
   midnight is past that date's cut-off by construction, which is both the correct reading and what makes
   the quarter basis worth pinning.
+- **A2's grain device, and the measurement that closed the pass.** An approval decision is taken on a
+  trading group and the register records it against the parent the submission came in under; the master
+  names the parent each supplier belongs to, and the members carry no row of their own. A response that
+  reads one row as one supplier undercounts every category. Measured: A2 fell from 15 of 15 to **5 of 15**
+  and the pair from 47.6 to **38.1**, which is the first measurement in this build to clear its bar. The
+  discovery route is the one the shape promises: a member holds a current risk category with no approval
+  row to account for it, which shows only by intersecting the register against the master's parent column,
+  and no battery sweep performs that intersection.
+- **The realism tail, cleared before the hand-back rather than after.** Supplier names are now a mix of
+  family firms, trade names and place names with varied suffixes rather than a town-plus-trade grid; the
+  crosswalk's numbers were issued in blocks as trades migrated, so they step from the ledger's by no
+  stride; the supersessions are no longer symmetric pairs, with some arriving the same day, some weeks
+  late and a couple whose effective date disagrees with the row they replace; the funder's claim has the
+  shape a claim has, eligible expenditure by how long the programme has been running, the grant at the
+  funder's 45 per cent intervention rate, and the two newest programmes with nothing yet to claim; and the
+  revenue summary's maintenance line is seasonal on the spring and autumn shutdowns. It was cleared first
+  because the next isolated reader sees a pack whose prompt and documents have moved, and a reader
+  rediscovering a known item spends the pass on a list already in hand.

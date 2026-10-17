@@ -149,12 +149,12 @@ running on.
 `%(events)s` is the process operator's equipment log in local time: a row whenever a blower, a centrifuge
 or the gas engine was started or stopped, with the reason the shift wrote. The two centrifuges run their own
 shifts and the log carries each machine separately. `%(scada)s` is the
-fifteen-minute channel log off the plant PLC, also local time. Two channels are counters that run on from
-commissioning, the biogas meter in cubic metres (it wraps at 99,999) and the blower header's flow
-totaliser in thousands of normal cubic metres; the blower flow is logged as a rate as well. The engine's
-hour counter was changed at the inspection on 15 September and starts again from zero, and the radio link to the PLC
-dropped several times over the survey, the longest spell from the afternoon of 24 September to the morning
-of the 25th, so there are no rows at all for those spells.
+fifteen-minute channel log off the plant PLC, also local time. The counters on it run on from
+commissioning: the biogas meter in cubic metres (it wraps at 99,999), the blower header's flow totaliser
+and BL-03's own, both in thousands of normal cubic metres, and the engine's hour counter, which was
+changed at the inspection on 15 September and starts again from zero. Both blower flows are logged as
+rates as well. The radio link to the PLC dropped several times over the survey, the longest spell from the
+evening of 25 September to the afternoon of the 26th.
 
 ## What the surroundings sound like
 

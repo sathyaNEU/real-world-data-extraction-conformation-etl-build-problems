@@ -57,9 +57,18 @@ def rows(path):
 
 
 def run(target, figures_path):
+    """Everything the bundle has to reproduce: the call's own figures and the asks."""
+    return _core(target, json.load(open(figures_path, encoding="utf-8")), True)
+
+
+def call_only(target, fig):
+    """The call's figures alone, for the check that they stand with the plant historian deleted."""
+    return _core(target, fig, False)
+
+
+def _core(target, fig, with_asks):
     global OK
     OK = 0
-    fig = json.load(open(figures_path, encoding="utf-8"))
 
     # ---- the paperwork
     deps = rows(os.path.join(target, "meter_deployments_2026.csv"))
@@ -209,14 +218,9 @@ def run(target, figures_path):
             if v:
                 d["off"].append(laeq)
         elif day:
-            # a run reached into the assessment period if it overlaps any minute of it, valid or not
-            covering = [j for ra, rb, j in by_day.get(local.date(), []) if ra <= local < rb]
-            d["runs"].update(covering)
             if v:
                 d["on"].append(laeq)
                 d["la90"].append(la90)
-                if covering:
-                    d["cf"] += 1          # the minute is counted once, however many machines ran in it
             else:
                 d["excl"] += 1
     ok(len(acc) == 14, "fourteen positions carry minutes: %d" % len(acc))
@@ -238,11 +242,7 @@ def run(target, figures_path):
            "%s excluded minutes %d against %s" % (code, d["excl"], fig["excluded_minutes"][code]))
         ok(len(d["off"]) == fig["stop_minutes"][code],
            "%s stop minutes %d against %s" % (code, len(d["off"]), fig["stop_minutes"][code]))
-        ok(d["cf"] == fig["centrifuge_minutes"][code],
-           "%s dewatering minutes %d against %s" % (code, d["cf"], fig["centrifuge_minutes"][code]))
-        ok(len(d["runs"]) == fig["centrifuge_runs_position"][code],
-           "%s runs behind its level %d against %s" % (code, len(d["runs"]),
-                                                       fig["centrifuge_runs_position"][code]))
+
 
     for code in sorted(spec):
         # every printed level clear of its own rounding edge, measured as the distance to the edge
@@ -309,41 +309,80 @@ def run(target, figures_path):
         ok(want_tone == ("yes" if excess >= 5.0 else "no"),
            "%s tone %s at %.2f dB excess" % (code, want_tone, excess))
 
-    # ---- the plant's week: the counters at the week boundaries (5.1) and the log's runs (5.2)
-    sc = {}
+    # ---- the plant's own records, which the asks run on: the air the blowers delivered off the two
+    # totalisers the three machines are metered on, and the quarter hours the historian holds no record
+    # of the plant for, which are the rows it never wrote and the rows that are the quarter hour before
+    # them written again
+    if not with_asks:
+        return OK
+    hist, held, prev = {}, set(), None
     for r in rows(os.path.join(target, "scada_15min_2026.csv")):
-        sc[dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")] = r
+        t0 = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+        hist[t0] = r
+        if prev is not None and all(v == prev[k] for k, v in r.items() if k != "logged_at"):
+            held.add(t0)
+        prev = r
+    ok(len(hist) > 7000, "the historian carries %d rows" % len(hist))
+    ok(len(held) > 40, "%d of them are the quarter hour before them written again" % len(held))
+
+    def air_at(t0):
+        return float(hist[t0]["blower_air_total_knm3"]) + float(hist[t0]["bl03_air_total_knm3"])
+
+    def gone(lo, hi):
+        n, cur, longest = 0, 0, 0
+        t0 = lo + dt.timedelta(minutes=15)
+        while t0 <= hi:
+            if t0 not in hist or t0 in held:
+                n += 1
+                cur += 1
+                longest = max(longest, cur)
+            else:
+                cur = 0
+            t0 += dt.timedelta(minutes=15)
+        return n, longest
+
+    wins = {}
+    for serial, sp in spans.items():
+        for a, b, c, _ in sp:
+            for k in range((b.date() - a.date()).days + 1):
+                day = a.date() + dt.timedelta(days=k)
+                if day.weekday() > 4:
+                    continue
+                lo = dt.datetime(day.year, day.month, day.day, DAY_START)
+                hi = dt.datetime(day.year, day.month, day.day, DAY_END)
+                if lo >= a and hi <= b:
+                    wins.setdefault(c, []).append((lo, hi))
+    for code in sorted(wins):
+        air, n, longest = 0.0, 0, 0
+        for lo, hi in sorted(wins[code]):
+            air += air_at(hi) - air_at(lo)
+            n2, l2 = gone(lo, hi)
+            n += n2
+            longest = max(longest, l2)
+        ok(round(air, 1) == fig["blower_air_knm3"][code],
+           "%s blower air %.1f against %s" % (code, air, fig["blower_air_knm3"][code]))
+        ok(n == fig["unrecorded_quarter_hours"][code],
+           "%s unrecorded quarter hours %d against %s" % (code, n,
+                                                          fig["unrecorded_quarter_hours"][code]))
+        ok(longest == fig["longest_unrecorded_run"][code],
+           "%s longest unrecorded run %d against %s" % (code, longest,
+                                                        fig["longest_unrecorded_run"][code]))
     starts = [dt.date(2026, 8, 31) + dt.timedelta(days=7 * i) for i in range(6)]
-    log_starts = [a for a, _ in cf_runs]          # plan 5.2: the runs that start in the week
     for i, d0 in enumerate(starts):
         a = dt.datetime(d0.year, d0.month, d0.day)
         b = a + dt.timedelta(days=7)
-        ok(a in sc and b in sc, "week %d has a reading at both boundaries" % i)
-        gas = float(sc[b]["biogas_meter_m3"]) - float(sc[a]["biogas_meter_m3"])
-        while gas < 0:
-            gas += 100000.0
-        air = float(sc[b]["blower_air_total_knm3"]) - float(sc[a]["blower_air_total_knm3"])
-        runs = sum(1 for t in log_starts if a <= t < b)
-        inside = sorted((t, float(r["engine_hours_run"])) for t, r in sc.items() if a <= t <= b)
-        eng = 0.0
-        for j in range(1, len(inside)):
-            step = inside[j][1] - inside[j - 1][1]
-            eng += inside[j][1] if step < 0 else step     # the counter was changed inside this week
+        ok(a in hist and b in hist, "week %d has a reading at both boundaries" % i)
+        air = air_at(b) - air_at(a)
+        n, longest = gone(a, b)
         w = fig["weekly_plant"][str(i)]
-        ok(round(eng, 1) == w["engine_hours"],
-           "week %d engine hours %.1f against %.1f" % (i, eng, w["engine_hours"]))
-        ok(int(round(gas)) == w["biogas_m3"],
-           "week %d biogas %d against %d" % (i, round(gas), w["biogas_m3"]))
         ok(int(round(air)) == w["blower_air_knm3"],
            "week %d blower air %d against %d" % (i, round(air), w["blower_air_knm3"]))
         ok(0.5 - abs(air - round(air)) >= 0.15,
            "week %d's air (%.1f) sits %.2f from the whole-unit edge" % (i, air, 0.5 - abs(air - round(air))))
-        ok(runs == w["centrifuge_runs"],
-           "week %d runs %d against %d" % (i, runs, w["centrifuge_runs"]))
-
-    # ---- the runs column again, on a second code path: interval arithmetic against the assessment
-    # windows the deployment record gives, with no minute loop at all
-    plant_state(target, fig, spans)
+        ok(n == w["unrecorded_quarter_hours"],
+           "week %d unrecorded quarter hours %d against %d" % (i, n, w["unrecorded_quarter_hours"]))
+        ok(longest == w["longest_unrecorded_run"],
+           "week %d longest unrecorded run %d against %d" % (i, longest, w["longest_unrecorded_run"]))
 
     # ---- the goldens carry the same figures
     gold = os.path.join(os.path.dirname(target), "golden", "specific_sound_levels.csv")
@@ -352,55 +391,10 @@ def run(target, figures_path):
             c = r["position_code"]
             ok(float(r["specific_sound_level_db_laeq"]) == fig["specific_level_db"][c],
                "the golden table's level for %s" % c)
-            ok(int(r["centrifuge_minutes_in_assessment_period"]) == fig["centrifuge_minutes"][c],
-               "the golden table's centrifuge minutes for %s" % c)
-            ok(int(r["centrifuge_runs_in_assessment_period"]) == fig["centrifuge_runs_position"][c],
-               "the golden table's centrifuge runs for %s" % c)
+            ok(float(r["blower_air_knm3_in_assessment_period"]) == fig["blower_air_knm3"][c],
+               "the golden table's blower air for %s" % c)
+            ok(int(r["unrecorded_quarter_hours"]) == fig["unrecorded_quarter_hours"][c],
+               "the golden table's unrecorded quarter hours for %s" % c)
+            ok(int(r["longest_unrecorded_run_quarter_hours"]) == fig["longest_unrecorded_run"][c],
+               "the golden table's longest unrecorded run for %s" % c)
     return OK
-
-
-def plant_state(target, fig, spans):
-    """Plan 5.2 executed from the equipment log: what ran over each position's assessment period."""
-    opens, runs = {}, []
-    for r in sorted(rows(os.path.join(target, "plant_equipment_events_2026.csv")),
-                    key=lambda x: x["logged_at"]):
-        if not r["equipment"].startswith("CF-"):
-            continue
-        t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
-        if r["event"] == "START":
-            opens[r["equipment"]] = t
-        elif r["equipment"] in opens:
-            runs.append((opens.pop(r["equipment"]), t))
-    for code in sorted(fig["centrifuge_minutes"]):
-        wins = []
-        for serial, sp in spans.items():
-            for a, b, c, _ in sp:
-                if c != code:
-                    continue
-                for k in range((b.date() - a.date()).days + 1):
-                    day = a.date() + dt.timedelta(days=k)
-                    if day.weekday() > 4:
-                        continue
-                    lo = dt.datetime(day.year, day.month, day.day, DAY_START)
-                    hi = dt.datetime(day.year, day.month, day.day, DAY_END)
-                    if lo >= a and hi <= b:
-                        wins.append((lo, hi))
-        mins = 0
-        for lo, hi in wins:
-            iv = sorted((max(a, lo), min(b, hi)) for a, b in runs if a < hi and b > lo)
-            cur = None
-            for a, b in iv:
-                if cur and a <= cur[1]:
-                    cur = (cur[0], max(cur[1], b))
-                else:
-                    if cur:
-                        mins += int((cur[1] - cur[0]).total_seconds() // 60)
-                    cur = (a, b)
-            if cur:
-                mins += int((cur[1] - cur[0]).total_seconds() // 60)
-        ok(mins >= fig["centrifuge_minutes"][code],
-           "%s has %d dewatering minutes in its assessment period, %d of them valid"
-           % (code, mins, fig["centrifuge_minutes"][code]))
-        n = sum(1 for a, b in runs if any(a < hi and b > lo for lo, hi in wins))
-        ok(n == fig["centrifuge_runs_position"][code],
-           "%s centrifuge runs %d against %d" % (code, n, fig["centrifuge_runs_position"][code]))

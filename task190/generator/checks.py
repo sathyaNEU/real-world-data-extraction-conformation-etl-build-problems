@@ -327,7 +327,17 @@ def run(g, target):
     a2 = g["a2"]
     ok("A2 five categories", len(a2) == 5)
     ok("A2 counting every row moves the answer", g["a2_all"] != a2)
-    ok("A2 counting events matches counting suppliers", g["a2_events"] == a2)
+    # A2's grain device: a decision taken on a trading group raised or removed every member of it,
+    # and the register records the decision against the parent only
+    ok("A2 reading one row as one supplier moves the answer", g["a2_no_groups"] != a2)
+    ok("A2 the group decisions cover members with no row of their own",
+       len(g["groups"]) >= 8 and
+       not ({m for m in g["groups"]} & {e["sup"] for e in g["events"]}),
+       "%d members" % len(g["groups"]))
+    ok("A2 every group member holds a current category with no approval row to account for it",
+       all(p in {e["sup"] for e in g["events"]} for p in g["groups"].values()))
+    ok("A2 no column says a row covers a group: only the master's parent column does",
+       not _sweep(target, r"group decision|covers the group|on behalf of the group"))
     byc = {}
     for e in g["events"]:
         if e["status"] == "accepted":

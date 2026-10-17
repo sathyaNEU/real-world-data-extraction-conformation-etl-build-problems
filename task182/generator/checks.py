@@ -65,8 +65,19 @@ def has(hay, needle):
 
 
 def GD_runs(target):
-    import golden as GD
-    return GD.log_runs(target)
+    """Every dewatering run the equipment log closes, as plan 5.2 defines one. No graded figure reads
+    them; the log's own cardinality is asserted on them, because the mess it carries has to stay real."""
+    opens, runs = {}, []
+    rows = sorted(_csv.DictReader(io_open(target, PK.FILES["events"])), key=lambda r: r["logged_at"])
+    for r in rows:
+        if r["equipment"] not in W.CENTRIFUGES:
+            continue
+        t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+        if r["event"] == "START":
+            opens[r["equipment"]] = t
+        elif r["equipment"] in opens:
+            runs.append((opens.pop(r["equipment"]), t))
+    return sorted(runs)
 
 
 def run(target, g):
@@ -298,9 +309,8 @@ def run(target, g):
         A(rows[c]["valid_minutes"] > 2500, "%s has %d valid minutes" % (c, rows[c]["valid_minutes"]))
         A(rows[c]["excluded_minutes"] > 0, "%s has excluded minutes" % c)
         A(rows[c]["stop_minutes"] >= 180, "%s has %d stop minutes" % (c, rows[c]["stop_minutes"]))
-        A(rows[c]["air_knm3_first"] > 100.0 and rows[c]["air_knm3_second"] > 100.0,
-          "%s carries the air delivered through each of its deployments (%.1f, %.1f)"
-          % (c, rows[c]["air_knm3_first"], rows[c]["air_knm3_second"]))
+        A(rows[c]["air_knm3"] > 300.0,
+          "%s carries the air delivered through its assessment period (%.1f)" % (c, rows[c]["air_knm3"]))
         A(28.0 < r[c]["resid"] < 46.0, "%s residual %.1f dB is a rural daytime residual" % (c, r[c]["resid"]))
         A(35.0 < rows[c]["specific_raw"] < 56.0, "%s specific level %.1f dB" % (c, rows[c]["specific_raw"]))
         A(r[c]["total"] - r[c]["resid"] > 3.0,
@@ -334,10 +344,11 @@ def run(target, g):
           and 0 < rows[c]["unrecorded_quarter_hours"] < 200,
           "%s has %d quarter hours the historian did not record"
           % (c, rows[c]["unrecorded_quarter_hours"]))
-        for key in ("air_knm3_first", "air_knm3_second"):
-            v2 = rows[c][key]
-            A(abs(v2 * 10 - round(v2 * 10)) < 1e-6,
-              "%s's %s is read off counters printed to a tenth, so it is one (%.3f)" % (c, key, v2))
+        v2 = rows[c]["air_knm3"]
+        A(abs(v2 * 10 - round(v2 * 10)) < 1e-6,
+          "%s's air is read off counters printed to a tenth, so it is one (%.3f)" % (c, v2))
+        A(0 < rows[c]["longest_unrecorded_run"] <= rows[c]["unrecorded_quarter_hours"],
+          "%s's longest unrecorded run sits inside its count" % c)
     withband = [c for c in W.CODES if rows[c]["band_hz"]]
     A(len(withband) == 10, "ten positions carry band rows: %d" % len(withband))
     A(len([c for c in W.CODES if rows[c]["band_hz"] is None]) == 4, "four positions have no band rows")
@@ -386,10 +397,12 @@ def run(target, g):
         A(r[c]["minutes_stop"] >= 200, "%s measures its residual on %d minutes" % (c, r[c]["minutes_stop"]))
     A(len({r[c]["minutes_stop"] for c in W.CODES}) >= 1,
       "every position's residual window is its two inspections, 240 minutes")
-    A(len({rows[c]["air_knm3_first"] for c in W.CODES}) >= 10,
-      "the air behind each level differs position to position")
-    A(len({rows[c]["unrecorded_quarter_hours"] for c in W.CODES}) >= 6,
-      "so does the part of the record the historian does not hold")
+    A(len({rows[c]["air_knm3"] for c in W.CODES}) >= 6,
+      "the air behind each level differs over the weeks a position was measured in (%d values)"
+      % len({rows[c]["air_knm3"] for c in W.CODES}))
+    A(len({rows[c]["unrecorded_quarter_hours"] for c in W.CODES}) >= 4,
+      "so does the part of the record the historian does not hold (%d values)"
+      % len({rows[c]["unrecorded_quarter_hours"] for c in W.CODES}))
 
     # -------------------------------------------------------- the field checks, deployment by deployment
     corrected = [d for d in deps if d["correction"] != 0.0]
@@ -438,8 +451,8 @@ def run(target, g):
     for i, wk in enumerate(W.WEEKS):
         a = dt.datetime(wk.year, wk.month, wk.day)
         A(a in hrows and a not in hheld, "week %d opens on a row the historian wrote itself" % i)
-    for code, deps in GD.position_windows(target).items():
-        for wins in deps:
+    for code, depwins in GD.position_windows(target).items():
+        for wins in depwins:
             for lo, hi in wins:
                 for edge in (lo, hi):
                     A(edge in hrows and edge not in hheld,
@@ -464,22 +477,35 @@ def run(target, g):
     step = np.array([(stamps_s[i + 1] - stamps_s[i]).total_seconds() / 3600.0
                      for i in range(len(stamps_s) - 1)])
     ok1 = step == 0.25
+    # each counter closes the quarter hour it is stamped at, so its step is that quarter hour's own rate
     for nm, tot, rate in (("header", hdr_tot, hdr_rate), ("BL-03", bl3_tot, bl3_rate)):
         d1 = np.diff(tot)[ok1] * 1000.0
-        e1 = (rate[:-1][ok1]) * 0.25
-        A(float(np.abs(d1 - e1).max()) < 60.0,
-          "the %s totaliser carries its own rate channel and nothing else (worst %.1f Nm3)"
-          % (nm, float(np.abs(d1 - e1).max())))
+        e1 = (rate[1:][ok1]) * 0.25
+        A(float(np.abs(d1 - e1).max()) < 120.0,
+          "the %s totaliser carries its own rate channel and nothing else, to the tenth it prints "
+          "(worst %.1f Nm3)" % (nm, float(np.abs(d1 - e1).max())))
     run = (hdr_rate > 100) & (bl3_rate > 100)
     sh = bl3_rate[run] / (hdr_rate[run] + bl3_rate[run])
     A(sh.min() < 0.27 and sh.max() > 0.36,
       "the duty rotates: BL-03 carried %.2f to %.2f of the air" % (sh.min(), sh.max()))
-    tot_air = hdr_rate + bl3_rate
-    rt_total = float(np.corrcoef(tot_air[run], infl[run])[0, 1])
-    rt_hdr = float(np.corrcoef(hdr_rate[run], infl[run])[0, 1])
-    A(rt_total > 0.3 and rt_total - rt_hdr > 0.15,
-      "the two meters together follow the works' inlet load (%.2f) and the header alone does not (%.2f)"
-      % (rt_total, rt_hdr))
+    # and the air the works takes per cubic metre it treats holds steady week to week on the two meters
+    # together while the header alone swings with the duty, which is the reading the records settle
+    wk_h, wk_b, wk_i = {}, {}, {}
+    for x in scada_rows:
+        ts = dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M")
+        wk = next((i for i, w in enumerate(W.WEEKS) if w <= ts.date() < w + dt.timedelta(days=7)), None)
+        if wk is None:
+            continue
+        wk_h[wk] = wk_h.get(wk, 0.0) + float(x["blower_air_nm3_h"]) * 0.25
+        wk_b[wk] = wk_b.get(wk, 0.0) + float(x["bl03_air_nm3_h"]) * 0.25
+        wk_i[wk] = wk_i.get(wk, 0.0) + float(x["inlet_flow_m3_h"]) * 0.25
+    both = np.array([(wk_h[i] + wk_b[i]) / wk_i[i] for i in range(6)])
+    only = np.array([wk_h[i] / wk_i[i] for i in range(6)])
+    sp_both = 100.0 * (both.max() - both.min()) / both.mean()
+    sp_only = 100.0 * (only.max() - only.min()) / only.mean()
+    A(sp_both < 9.0 and sp_only > 18.0 and sp_only > 2.5 * sp_both,
+      "the air per cubic metre treated holds to %.1f per cent on the two meters together and swings "
+      "%.1f per cent on the header alone" % (sp_both, sp_only))
     # D3, the record: a held row's counters stand still while its rates read above zero
     prev = None
     bad_held = 0
@@ -678,14 +704,6 @@ def run(target, g):
       "that start is CF-02's on 10 September at 14:06: %s" % (unstopped[0],))
     A(len(orphan) == 1 and orphan[0][0] == "CF-02" and orphan[0][1].date() == dt.date(2026, 9, 10),
       "the log also carries one stop for a machine already stopped: %s" % (orphan,))
-    # the naive count, which keeps that start, is measured rather than described: 13 against the 12 the
-    # plan's definition gives, in the week beginning 7 September
-    a1 = W.WEEKS[1]
-    b1 = a1 + dt.timedelta(days=7)
-    naive_wk1 = sum(1 for _, tt in naive if a1 <= tt.date() < b1)
-    A(naive_wk1 == 13, "the naive count of starts in the week beginning 7 September is %d" % naive_wk1)
-    A(g["weekly"][1]["centrifuge_runs"] == 12,
-      "plan 5.2 gives that week %d runs" % g["weekly"][1]["centrifuge_runs"])
     runs_log2 = GD_runs(target)
     A(all(b > a for a, b in runs_log2), "every run the log closes ends after it starts")
     A(not any(a == dt.datetime(2026, 9, 10, 14, 6) for a, _ in runs_log2),
@@ -693,7 +711,7 @@ def run(target, g):
     A(len(runs_log2) == len(naive) - 1,
       "the log's runs are its starts less the one it never stopped (%d, %d)" % (len(runs_log2), len(naive)))
 
-    # ------------------------------------------- the runs column, by interval arithmetic and by its term
+    # ------------------------------------------- the ask figures, by their own route and by the easy one
     depwin = {}
     for d in deps:
         for kday in range((d["end_dt"].date() - d["start_dt"].date()).days + 1):
@@ -705,32 +723,126 @@ def run(target, g):
             if lo >= d["start_dt"] and hi <= d["end_dt"]:
                 depwin.setdefault(d["code"], []).append((lo, hi))
     for c in W.CODES:
-        wins = depwin[c]
-        A(len(wins) == 10, "%s has ten weekday assessment windows in its two deployments" % c)
-        n_overlap = sum(1 for a, b in runs_log2 if any(a < hi and b > lo for lo, hi in wins))
-        A(n_overlap == rows[c]["centrifuge_runs"],
-          "SF22 %s: the runs reaching into the period are %d, the table says %d"
-          % (c, n_overlap, rows[c]["centrifuge_runs"]))
-    starts_in = {c: sum(1 for a, _ in runs_log2 if any(lo <= a < hi for lo, hi in depwin[c]))
-                 for c in W.CODES}
-    A(sum(1 for c in W.CODES if starts_in[c] != rows[c]["centrifuge_runs"]) >= 10,
-      "SF22 counting the starts inside the period instead of the runs over it differs at %d positions"
-      % sum(1 for c in W.CODES if starts_in[c] != rows[c]["centrifuge_runs"]))
+        A(len(depwin[c]) == 10, "%s has ten weekday assessment windows in its two deployments" % c)
+    # D1, position by position and week by week: the header counter alone is the easy figure and it is
+    # short of the air the blowers delivered by what the third machine put in, every time
+    for c in W.CODES:
+        easy = sum(float(hrows[hi]["blower_air_total_knm3"]) - float(hrows[lo]["blower_air_total_knm3"])
+                   for lo, hi in depwin[c])
+        A(rows[c]["air_knm3"] - easy > 100.0,
+          "%s: the header counter alone gives %.1f against %.1f, short by %.1f thousand Nm3"
+          % (c, easy, rows[c]["air_knm3"], rows[c]["air_knm3"] - easy))
+        rate_route = 0.0
+        for lo, hi in depwin[c]:
+            tt = lo + dt.timedelta(minutes=15)
+            while tt <= hi:
+                if tt in hrows:
+                    rate_route += (float(hrows[tt]["blower_air_nm3_h"])
+                                   + float(hrows[tt]["bl03_air_nm3_h"])) * 0.25 / 1000.0
+                tt += dt.timedelta(minutes=15)
+        A(abs(rate_route - rows[c]["air_knm3"]) > 0.5,
+          "%s: summing the rate channels instead gives %.1f against %.1f"
+          % (c, rate_route, rows[c]["air_knm3"]))
+    for i, wk in enumerate(W.WEEKS):
+        a2 = dt.datetime(wk.year, wk.month, wk.day)
+        b2 = a2 + dt.timedelta(days=7)
+        easy = (float(hrows[b2]["blower_air_total_knm3"])
+                - float(hrows[a2]["blower_air_total_knm3"]))
+        A(g["weekly"][i]["blower_air_knm3"] - easy > 100.0,
+          "week %d: the header counter alone gives %.0f against %d"
+          % (i, easy, g["weekly"][i]["blower_air_knm3"]))
+    # D3, position by position and week by week: counting the rows the historian is missing and stopping
+    # there is the easy figure, and the record it holds nothing of is longer than that every time
+    for c in W.CODES:
+        miss_only, run_only = 0, 0
+        for lo, hi in depwin[c]:
+            tt, cur = lo + dt.timedelta(minutes=15), 0
+            while tt <= hi:
+                if tt not in hrows:
+                    miss_only += 1
+                    cur += 1
+                    run_only = max(run_only, cur)
+                else:
+                    cur = 0
+                tt += dt.timedelta(minutes=15)
+        A(miss_only < rows[c]["unrecorded_quarter_hours"],
+          "%s: the missing rows are %d of the %d quarter hours the record does not cover"
+          % (c, miss_only, rows[c]["unrecorded_quarter_hours"]))
+        A(run_only < rows[c]["longest_unrecorded_run"],
+          "%s: the longest run of missing rows is %d against the %d the record does not cover"
+          % (c, run_only, rows[c]["longest_unrecorded_run"]))
+    for i, wk in enumerate(W.WEEKS):
+        a2 = dt.datetime(wk.year, wk.month, wk.day)
+        b2 = a2 + dt.timedelta(days=7)
+        tt, miss_only, cur, run_only = a2 + dt.timedelta(minutes=15), 0, 0, 0
+        while tt <= b2:
+            if tt not in hrows:
+                miss_only += 1
+                cur += 1
+                run_only = max(run_only, cur)
+            else:
+                cur = 0
+            tt += dt.timedelta(minutes=15)
+        A(miss_only < g["weekly"][i]["unrecorded_quarter_hours"],
+          "week %d: the missing rows are %d of %d" % (i, miss_only,
+                                                      g["weekly"][i]["unrecorded_quarter_hours"]))
+        A(run_only < g["weekly"][i]["longest_unrecorded_run"],
+          "week %d: the longest run of missing rows is %d against %d"
+          % (i, run_only, g["weekly"][i]["longest_unrecorded_run"]))
+    # the two readings of which quarter hours a window holds give the same count, because no window edge
+    # is a quarter hour the record does not cover
+    for c in W.CODES:
+        opening = 0
+        for lo, hi in depwin[c]:
+            tt = lo
+            while tt < hi:
+                if tt not in hrows or tt in hheld:
+                    opening += 1
+                tt += dt.timedelta(minutes=15)
+        A(opening == rows[c]["unrecorded_quarter_hours"],
+          "%s: the count is the same whether a quarter hour is stamped at its start or its close "
+          "(%d, %d)" % (c, opening, rows[c]["unrecorded_quarter_hours"]))
     prompt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
-    A("valid minutes of its assessment period" in prompt,
-      "the ask states the minutes basis the table carries")
-    A("overlapped any minute of that period" in prompt,
-      "the ask states when a run reached into the period")
+    A("blower air delivered through its assessment period" in prompt,
+      "the ask names the air it asks for and the period it is read over")
+    A("did not record the plant's state in and the longest unbroken run of them" in prompt,
+      "the ask names the record figures and their unit")
+    # the devices live where the call reads nothing: the call's own figures stand with the historian gone
+    import shutil as _sh
+    tmpd = os.path.join(os.path.dirname(target), "generator", "_nohist")
+    if os.path.isdir(tmpd):
+        _sh.rmtree(tmpd)
+    os.makedirs(tmpd)
+    for f2 in os.listdir(target):
+        if f2 != PK.FILES["scada"]:
+            _sh.copy2(os.path.join(target, f2), os.path.join(tmpd, f2))
+    import verify as VF
+    figs = json.load(open(os.path.join(os.path.dirname(target), "generator", "figures.json"),
+                          encoding="utf-8"))
+    kept = VF.call_only(tmpd, figs)
+    _sh.rmtree(tmpd)
+    A(kept > 200000,
+      "every call figure recomputes with the historian deleted: %d checks from the rest of the bundle"
+      % kept)
+
+    # ------------------------------------------- the ask layer, measured on the cut pack by the cracker
+    import cracker as CR
+    sheet = CR.score()
+    A(sheet["criteria"] == 84, "the ask layer carries %d criteria" % sheet["criteria"])
+    for name, crit, hit in sheet["device_rows"]:
+        A(hit == 0, "the cracker misses every figure of %r (%d of %d hit)" % (name, hit, crit))
+    A(sheet["pair"] <= 40.0, "the pair ceiling is %.1f" % sheet["pair"])
+    A(sheet["leakage"] < 35.0, "the mirror keeps %.1f per cent of the ask weight" % sheet["leakage"])
 
     # ------------------------------------------- the week's delivered air, clear of its rounding edge
     air_raw = {}
     for i, wk in enumerate(W.WEEKS):
         a = dt.datetime(wk.year, wk.month, wk.day)
         b = a + dt.timedelta(days=7)
-        v = float(by_t[b]["blower_air_total_knm3"]) - float(by_t[a]["blower_air_total_knm3"])
+        v = GD.air_total(by_t[b]) - GD.air_total(by_t[a])
         air_raw[i] = v
         A(int(round(v)) == g["weekly"][i]["blower_air_knm3"],
-          "week %d's air figure is the counter difference" % i)
+          "week %d's air figure is the difference of the two counters at its boundaries" % i)
         A(0.5 - abs(v - round(v)) >= 0.15,
           "week %d's air sits %.2f from the whole-unit edge (%.1f)" % (i, 0.5 - abs(v - round(v)), v))
 

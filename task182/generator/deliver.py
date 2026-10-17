@@ -20,12 +20,12 @@ def table(path, g):
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = _c.writer(fh, lineterminator="\n")
         w.writerow(["position_code", "dwelling_ref", "specific_sound_level_db_laeq",
-                    "blower_air_knm3_first_deployment", "blower_air_knm3_second_deployment",
-                    "unrecorded_quarter_hours_in_assessment_period"])
+                    "blower_air_knm3_in_assessment_period", "unrecorded_quarter_hours",
+                    "longest_unrecorded_run_quarter_hours"])
         for row in g["rows"]:
             w.writerow([row["position"], row["dwelling"], "%.1f" % row["specific_db"],
-                        "%.1f" % row["air_knm3_first"], "%.1f" % row["air_knm3_second"],
-                        row["unrecorded_quarter_hours"]])
+                        "%.1f" % row["air_knm3"], row["unrecorded_quarter_hours"],
+                        row["longest_unrecorded_run"]])
     return path
 
 
@@ -135,11 +135,12 @@ def note(path, g, chart_png):
                    "position table beside the levels. The last column is the part of the plant's record "
                    "the historian does not hold, which is where the radio link to the PLC dropped.", BODY),
          Table(wrap([["Week beginning", "Blower air delivered, thousand Nm3",
-                      "Quarter hours not recorded"]]
+                      "Quarter hours not recorded", "Longest run"]]
                     + [["%d %s" % (W.WEEKS[k].day, W.WEEKS[k].strftime("%B")),
-                        "{:,}".format(v["blower_air_knm3"]), "%d" % v["unrecorded_quarter_hours"]]
+                        "{:,}".format(v["blower_air_knm3"]), "%d" % v["unrecorded_quarter_hours"],
+                        "%d" % v["longest_unrecorded_run"]]
                        for k, v in sorted(g["weekly"].items())]),
-               colWidths=[34 * mm, 62 * mm, 42 * mm], style=TBL),
+               colWidths=[32 * mm, 58 * mm, 40 * mm, 24 * mm], style=TBL),
          Paragraph("Levels are to one decimal place. Minutes the mast counted rain in, minutes it showed "
                    "above the plan's wind limit and minutes a meter recorded nothing for are out of every "
                    "level, as the plan requires, and the %d deployments whose field checks sat away from "

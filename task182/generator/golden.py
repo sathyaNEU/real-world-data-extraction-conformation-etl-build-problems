@@ -112,14 +112,19 @@ def position_windows(target):
 
 
 def unrecorded(rows, held, lo, hi):
-    """Quarter hours in (lo, hi] the historian did not record the plant's state in: the ones it wrote no
-    row for, and the ones whose row is the quarter hour before it written again."""
-    n, t = 0, lo + dt.timedelta(minutes=15)
+    """Quarter hours in (lo, hi] the historian did not record the plant's state in, and the longest
+    unbroken run of them: the ones it wrote no row for, and the ones whose row is the quarter hour before
+    it written again, which is what the interface does while the link to the PLC is down."""
+    n, run, longest, t = 0, 0, 0, lo + dt.timedelta(minutes=15)
     while t <= hi:
         if t not in rows or t in held:
             n += 1
+            run += 1
+            longest = max(longest, run)
+        else:
+            run = 0
         t += dt.timedelta(minutes=15)
-    return n
+    return n, longest
 
 
 def plant_behind_level(target):
@@ -128,14 +133,15 @@ def plant_behind_level(target):
     rows, held = hist_rows(target)
     out = {}
     for code, deps in position_windows(target).items():
-        air, miss = [], 0
+        air, miss, longest = 0.0, 0, 0
         for wins in deps:
-            a = 0.0
             for lo, hi in wins:
-                a += air_total(rows[hi]) - air_total(rows[lo])
-                miss += unrecorded(rows, held, lo, hi)
-            air.append(round(a, 1))
-        out[code] = {"air_knm3": air, "unrecorded_quarter_hours": miss}
+                air += air_total(rows[hi]) - air_total(rows[lo])
+                n, lg = unrecorded(rows, held, lo, hi)
+                miss += n
+                longest = max(longest, lg)
+        out[code] = {"air_knm3": round(air, 1), "unrecorded_quarter_hours": miss,
+                     "longest_unrecorded_run": longest}
     return out
 
 
@@ -147,9 +153,10 @@ def weekly_plant(target):
     for i, wk in enumerate(W.WEEKS):
         a = dt.datetime(wk.year, wk.month, wk.day)
         b = a + dt.timedelta(days=7)
+        n, lg = unrecorded(rows, held, a, b)
         out[i] = {"blower_air_knm3": int(round(air_total(rows[b]) - air_total(rows[a]))),
                   "blower_air_knm3_raw": round(air_total(rows[b]) - air_total(rows[a]), 1),
-                  "unrecorded_quarter_hours": unrecorded(rows, held, a, b)}
+                  "unrecorded_quarter_hours": n, "longest_unrecorded_run": lg}
     return out
 
 
@@ -175,9 +182,9 @@ def compute(target, series, dup):
             "specific_db": round(spec[c], 1), "specific_raw": spec[c],
             "valid_minutes": r[c]["minutes_valid"], "excluded_minutes": r[c]["minutes_excluded"],
             "band_hz": tones[c]["band_hz"], "tone": tones[c]["tone"],
-            "air_knm3_first": plant[c]["air_knm3"][0],
-            "air_knm3_second": plant[c]["air_knm3"][1],
+            "air_knm3": plant[c]["air_knm3"],
             "unrecorded_quarter_hours": plant[c]["unrecorded_quarter_hours"],
+            "longest_unrecorded_run": plant[c]["longest_unrecorded_run"],
             "total_db": round(r[c]["total"], 1), "residual_db": round(r[c]["resid"], 1),
             "stop_minutes": r[c]["minutes_stop"], "distance_m": W.BY_CODE[c][3],
         })

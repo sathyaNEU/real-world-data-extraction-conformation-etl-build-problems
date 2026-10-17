@@ -174,8 +174,12 @@ def write_crosswalk(target, rows):
     sups = sorted({r["sup"] for r in rows})
     out = []
     rng = sim.Rng(81127)
+    # the master's numbers were issued by a different system over years, in blocks as trades were
+    # migrated, so they do not step from the ledger's by any stride
+    blocks = [410000, 412000, 415000, 418000, 421000, 426000, 431000]
     for s in sups:
-        out.append([s, "SUP%06d" % (400000 + int(s[1:]) * 11 + rng.below(7))])
+        b = blocks[sim.shash("blk/%s" % s) % len(blocks)]
+        out.append([s, "SUP%06d" % (b + sim.shash("sup/%s" % s) % 1900)])
     seen = set()
     for r in out:
         while r[1] in seen:
@@ -185,7 +189,41 @@ def write_crosswalk(target, rows):
                      ["supplier_no_ledger", "supplier_no_master"], out), dict(out)
 
 
-def write_supplier_master(target, cross, cats):
+SURNAMES = ["Breen", "Corrigan", "Delahunty", "Fitzmaurice", "Gallagher", "Hanafin", "Kiely",
+            "Lenihan", "Mescall", "Nolan", "O'Donovan", "Prendergast", "Quigley", "Ruane",
+            "Scannell", "Tierney", "Whelan", "Hourihane", "Coughlan", "Mulcahy"]
+TRADES = ["Plant Hire", "Civil Engineering", "Marine Services", "Electrical Contracting",
+          "Steel Fabrication", "Surfacing", "Dredging", "Scaffolding", "Joinery",
+          "Security Systems", "Groundworks", "Mechanical Services", "Quarry Products",
+          "Crane Hire", "Formwork", "Piling", "Drainage", "Roofing"]
+PLACES = ["Ardfinnan", "Ballyhaunis", "Clonakilty", "Drumshanbo", "Eyeries", "Farranfore",
+          "Glenbeigh", "Headford", "Inchigeela", "Kilmacthomas", "Leenane", "Moyvore",
+          "Newmarket", "Oranmore", "Portumna", "Rathdowney", "Skibbereen", "Tullamore"]
+SUFFIX = ["Limited", "Limited", "Limited", "Ltd", "& Sons Limited", "Group Limited",
+          "(Ireland) Limited", "Contractors Limited"]
+
+
+def _supplier_name(rng, used):
+    """A supplier register is a mix of family firms, trade names and place names, not a grid."""
+    for _ in range(40):
+        u = rng.u()
+        if u < 0.42:
+            nm = "%s %s" % (SURNAMES[rng.below(len(SURNAMES))], SUFFIX[rng.below(len(SUFFIX))])
+        elif u < 0.74:
+            nm = "%s %s %s" % (PLACES[rng.below(len(PLACES))], TRADES[rng.below(len(TRADES))],
+                               SUFFIX[rng.below(len(SUFFIX))])
+        elif u < 0.90:
+            nm = "%s %s" % (TRADES[rng.below(len(TRADES))], SUFFIX[rng.below(len(SUFFIX))])
+        else:
+            nm = "%s %s %s" % (SURNAMES[rng.below(len(SURNAMES))],
+                               TRADES[rng.below(len(TRADES))], SUFFIX[rng.below(len(SUFFIX))])
+        if nm not in used:
+            used.add(nm)
+            return nm
+    return nm
+
+
+def write_supplier_master(target, cross, cats, groups=None):
     from openpyxl import Workbook
     from openpyxl.styles import Font
     wb = Workbook()
@@ -196,8 +234,8 @@ def write_supplier_master(target, cross, cats):
     ws["A2"] = "Extracted %s. Risk categories were relabelled on %s; the map is in " \
                "supplier_risk_category_map.csv." % (PULL, W.RISK_RELABEL)
     ws["A2"].font = Font(size=9, italic=True)
-    head = ["supplier_no_master", "supplier_name", "risk_category_current", "approved_from",
-            "trading_status"]
+    head = ["supplier_no_master", "supplier_name", "group_parent_no", "risk_category_current",
+            "approved_from", "trading_status"]
     for j, h in enumerate(head):
         c = ws.cell(row=4, column=1 + j, value=h)
         c.font = Font(bold=True)
@@ -208,15 +246,19 @@ def write_supplier_master(target, cross, cats):
     last = ["Plant Hire", "Civil Works", "Marine Services", "Electrical", "Steel Fabrication",
             "Surfacing", "Dredging", "Scaffolding", "Joinery", "Security Systems",
             "Groundworks", "Mechanical"]
+    used = set()
     for i, (led, mas) in enumerate(sorted(cross.items())):
-        nm = "%s %s Limited" % (first[rng.below(len(first))], last[rng.below(len(last))])
+        nm = _supplier_name(rng, used)
+        parent = (groups or {}).get(mas) or None
         ws.cell(row=5 + i, column=1, value=mas)
         ws.cell(row=5 + i, column=2, value=nm)
-        ws.cell(row=5 + i, column=3, value=cats.get(mas, "R-C"))
+        ws.cell(row=5 + i, column=3, value=parent)
         ws.cell(row=5 + i, column=4,
+                value=cats.get(parent or mas, cats.get(mas, "R-C")))
+        ws.cell(row=5 + i, column=5,
                 value=(dt.date(2019, 1, 7) + dt.timedelta(days=rng.below(2500))).isoformat())
-        ws.cell(row=5 + i, column=5, value="active" if rng.u() < 0.93 else "dormant")
-    for col, wd in (("A", 20), ("B", 38), ("C", 20), ("D", 16), ("E", 16)):
+        ws.cell(row=5 + i, column=6, value="active" if rng.u() < 0.93 else "dormant")
+    for col, wd in (("A", 20), ("B", 40), ("C", 18), ("D", 20), ("E", 16), ("F", 16)):
         ws.column_dimensions[col].width = wd
     path = os.path.join(target, "supplier_master.xlsx")
     wb.save(path)
@@ -244,6 +286,7 @@ def write_dictionary(target):
         ("payment_release_cutoff_register.xlsx", "cutoff_time", "The latest release time for a run on the day. A run released at the cut-off is within it."),
         ("supplier_risk_approval_history.csv", "event_status", "accepted where the row is the approval register's record of the event, superseded where a later correction replaced it."),
         ("supplier_risk_approval_history.csv", "category_after", "The category the event moved the supplier to. Per supplier, the category moves one way across the year and never returns to a category that supplier has left."),
+        ("supplier_master.xlsx", "group_parent_no", "Where the supplier is part of a trading group, the master number of the group's parent. Blank where the supplier is its own entity."),
         ("supplier_master.xlsx", "risk_category_current", "The category in force at the extract date, under the labelling from 1 October 2026."),
         ("grant_claim_2026.csv", "claim_period", "The funder's claim year, which runs to 31 March and is not the authority's financial year."),
     ]

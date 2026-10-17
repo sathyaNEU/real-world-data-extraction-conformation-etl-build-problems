@@ -17,22 +17,23 @@ def write(task, gendir):
     exc = fig["excluded_minutes"]
     stp = fig["stop_minutes"]
     wk = fig["weekly_plant"]
-    a1 = fig["air_knm3_first_deployment"]
-    a2 = fig["air_knm3_second_deployment"]
+    air = fig["blower_air_knm3"]
     unrec = fig["unrecorded_quarter_hours"]
+    runlen = fig["longest_unrecorded_run"]
     first = sl[0]
     rows = []
     for c in ORDER:
-        rows.append("   - %s (%s): %.1f dB LAeq, %.1f and %.1f thousand Nm3 of blower air, "
-                    "%d quarter hours not recorded"
-                    % (c, W.BY_CODE[c][1], lv[c], a1[c], a2[c], unrec[c]))
+        rows.append("   - %s (%s): %.1f dB LAeq, %s thousand Nm3 of blower air, %d quarter hours not "
+                    "recorded, longest run %d"
+                    % (c, W.BY_CODE[c][1], lv[c], "{:,.1f}".format(air[c]), unrec[c], runlen[c]))
     weekly = []
     for k in sorted(wk, key=int):
         w = wk[k]
         weekly.append("   - Week beginning %d %s: blower air %s thousand Nm3, %d quarter hours not "
-                      "recorded"
+                      "recorded, longest run %d"
                       % (W.WEEKS[int(k)].day, W.WEEKS[int(k)].strftime("%B"),
-                         "{:,}".format(w["blower_air_knm3"]), w["unrecorded_quarter_hours"]))
+                         "{:,}".format(w["blower_air_knm3"]), w["unrecorded_quarter_hours"],
+                         w["longest_unrecorded_run"]))
     txt = """**Domain:** Physical and environmental sciences (environmental monitoring and exceedance).
 **Analytical objective:** Anomaly detection and diagnostics.
 
