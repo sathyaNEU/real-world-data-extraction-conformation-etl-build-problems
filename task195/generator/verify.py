@@ -152,7 +152,7 @@ def run(target, figures_path):
     with open(os.path.join(target, "qc_screen_history_2026-02-15_2027-02-28.csv"), encoding="utf-8") as fh:
         head = fh.readline().rstrip("\n").split(",")
         ix = {k: head.index(k) for k in ("released_date", "release_status", "hetx_call",
-                                         "review_outcome")}
+                                         "review_outcome", "call_source")}
         for line in fh:
             f = line.rstrip("\n").split(",")
             if f[ix["release_status"]] != "RELEASED":
@@ -160,7 +160,9 @@ def run(target, figures_path):
             m = f[ix["released_date"]][:7]
             d = months.setdefault(m, [0, 0])
             d[0] += 1
-            if f[ix["hetx_call"]] == "FLAG" or f[ix["review_outcome"]] == "FLAGGED":
+            call = (f[ix["review_outcome"]] if f[ix["call_source"]] == "REVIEWED"
+                    else f[ix["hetx_call"]])
+            if call in ("FLAG", "FLAGGED"):
                 d[1] += 1
     for m, row in sorted(fig["baseline"].items()):
         same("%s released" % m, months[m][0], row["released"])

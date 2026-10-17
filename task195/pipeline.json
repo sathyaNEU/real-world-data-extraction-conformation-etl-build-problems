@@ -15,20 +15,20 @@
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17, five lines answered in the design note",
-  "reader": "staged, not spawned: no agent tool in the build session; brief and isolated inputs at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader (reader_brief.md, prompt.txt, bundle/); answers go to reader_answers.md"
+  "leak_py": "REVIEW 2026-10-17 after the fix pass, four lines answered in the design note",
+  "reader": "pass 1 answers at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader_answers_pass1.md; re-staged for a second read at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader (reader_brief.md, prompt.txt, bundle/), needed because the prompt's ask wordings were pinned"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-17, no BLOCK, nearest 0.08 (task185 ledger row)",
   "nearest": "task185 0.08"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": "staged, not spawned: no agent tool in the build session; brief and isolated inputs at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/judge (judge_brief.md with the judge's system prompt inlined verbatim, prompt.txt, submission_blocks.md, target/); verdict goes to verdict.md"
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/verdict_pass1.md; Gate G statistical_rigor / analytical_non_defect, no surface-read dependency, no sole data defect; Gate H domain pass, layers pass, decisive_step analytical. figures.json is byte-identical after the fix pass, so no re-judge is owed on the figures; the judge directory is re-staged at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/judge"
  },
  "returned": [],
- "resume": "stage 4: the orchestrating session spawns the leak reader from /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader/reader_brief.md and the determinism judge from /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/judge/judge_brief.md, both general-purpose sonnet agents at medium effort in the background, and relays their findings; this session then fixes every finding in the generator in one pass, rebuilds and re-runs the free gates, re-judges once on FIX_NOW and re-reads only if a document or the prompt changed",
+ "resume": "stage 4 fix pass done: realism, date coherence and the three ask pins are in, every graded figure is byte-identical to the approved figures.json, and every free gate is green except precut's three ask-layer lines, which now carry the measured cracker sheet (the stage-4 reader reached all 42 ask figures). The author decides whether to rebuild the ask layer with silent primaries, which moves ask figures only and needs one re-judge, or to ship on the call.",
  "approved": null,
  "delivered": null,
  "portal": null,

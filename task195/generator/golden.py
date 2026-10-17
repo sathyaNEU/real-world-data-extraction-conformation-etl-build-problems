@@ -159,7 +159,8 @@ def ask_baseline(target):
                 continue
             month = r["released_date"][:7]
             released[month] = released.get(month, 0) + 1
-            if r["hetx_call"] == "FLAG" or r["review_outcome"] == "FLAGGED":
+            flagged_call = (r["review_outcome"] if r["call_source"] == "REVIEWED" else r["hetx_call"])
+            if flagged_call in ("FLAG", "FLAGGED"):
                 flagged[month] = flagged.get(month, 0) + 1
     months = [r["reporting_month"] for r in _rows(os.path.join(target, W.FILES["volumes"]))]
     return [{"month": m, "released": released.get(m, 0), "flagged": flagged.get(m, 0),

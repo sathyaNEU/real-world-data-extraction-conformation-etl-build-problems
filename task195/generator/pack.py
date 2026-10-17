@@ -239,8 +239,8 @@ def write_dictionary(target):
         (W.FILES["panel"], "result_seq", "number", "The sequence number of the result for the specimen and aliquot within the report."),
         (W.FILES["panel"], "second_contributor_share", "number", "The share the panel typed for the second contributor on a MIXED verdict, as a fraction."),
         (W.FILES["history"], "received_utc", "timestamp", "The receipt timestamp as the warehouse stores it, in UTC."),
-        (W.FILES["history"], "hetx_call", "text", "The automatic HETX call the nightly load carries; empty where the specimen was reviewed."),
-        (W.FILES["history"], "review_outcome", "text", "The duty bioinformatician's outcome where the specimen was reviewed: FLAGGED or CLEARED."),
+        (W.FILES["history"], "hetx_call", "text", "The automatic HETX call for the specimen, as the nightly load carries it."),
+        (W.FILES["history"], "review_outcome", "text", "The duty bioinformatician's outcome where call_source is REVIEWED: FLAGGED or CLEARED. Empty where the specimen was not reviewed."),
         (W.FILES["history"], "release_status", "text", "RELEASED, WITHHELD or SUPERSEDED, as the release desk left the specimen."),
         (W.FILES["history"], "released_date", "date", "The date the specimen's result was released, local date; empty where nothing was released."),
     ]

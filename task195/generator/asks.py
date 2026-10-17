@@ -23,9 +23,10 @@ def _months():
 def history(target):
     """The quality-control warehouse extract: the twelve reporting months before the parallel run.
 
-    The nightly load carries the automatic call in hetx_call and leaves it empty where the duty
-    bioinformatician reviewed the specimen, whose outcome sits in review_outcome. The month a
-    specimen belongs to in the laboratory's reporting pack is the month its result was released.
+    The nightly load carries the screen's automatic call in hetx_call and the duty bioinformatician's
+    outcome, where a specimen was reviewed, in review_outcome. The review stands: a reviewed specimen
+    counts as the reviewer left it. The month a specimen belongs to in the laboratory's reporting pack
+    is the month its result was released.
     """
     rng = random.Random(W.SEED + 21)
     trng = random.Random(W.SEED + 81)        # accessions, intake hours and heterozygosity texture
@@ -98,6 +99,15 @@ def history(target):
     for r in rows:
         r["reviewed"] = rng.random() < (0.183 if r["flag"] else 0.028)
 
+    # the duty bioinformatician's review stands over the automatic call, and the warehouse keeps both
+    for r in rows:
+        r["auto"] = r["flag"]
+        if r["reviewed"]:
+            if r["flag"] and trng.random() < 0.58:
+                r["auto"] = False      # the rule missed it and the reviewer flagged it
+            elif not r["flag"] and trng.random() < 0.085:
+                r["auto"] = True       # the rule flagged it and the reviewer cleared it
+
     out = []
     for r in rows:
         # heterozygosity carries a plate effect and a right tail, and the flagged specimens sit in it
@@ -113,7 +123,7 @@ def history(target):
                     r["received"].isoformat(), r["utc"].strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "%.1f" % r["depth"], "%.2f" % het,
                     "REVIEWED" if r["reviewed"] else "AUTO",
-                    "" if r["reviewed"] else ("FLAG" if r["flag"] else "CLEAR"),
+                    "FLAG" if r["auto"] else "CLEAR",
                     ("FLAGGED" if r["flag"] else "CLEARED") if r["reviewed"] else "",
                     r["status"], r["released"].isoformat() if r["released"] else ""])
     out.sort(key=lambda r: (r[5], r[0]))
