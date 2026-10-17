@@ -496,7 +496,7 @@ asked which was meant, neither having been pointed at a section 5 that did not t
 - Final run: `checks.py` **786 assertions passed**; `verify.py` **282,493 independent checks passed** (the
   per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
   consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
-  8e0f539aa193031f); about 70 seconds.
+  8cbff07f533865d0); about 70 seconds.
 - `verify.py` reads only the bundle (standard library, numpy-free, pyarrow for the parquet), encodes the
   plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
   residuals, valid, excluded and stop minutes, the slate, its order, the sixth and the margin, the default

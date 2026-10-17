@@ -90,6 +90,7 @@
   "tolerable_misstatement": 1160000.0
  },
  "critical_components": {
+  "authority_certain_share_pct": 26.6,
   "certainty_lines": 31,
   "certainty_value": 15826525.0,
   "payment_lines": 26648,

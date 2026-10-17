@@ -33,6 +33,9 @@ def write(g, path):
                                             for c in W.PROG_CODES},
             "programme_certain_share_pct": {W.PROG_NAME[c]: g["certain_share"][c]
                                             for c in W.PROG_CODES},
+            "authority_certain_share_pct": round(
+                100.0 * sum(g["recorded"][c] * g["certain_share"][c] / 100.0
+                            for c in W.PROG_CODES) / g["recorded_total"], 1),
             "payments_recorded_total": round(g["recorded_total"], 2),
             "payment_lines": len(g["lines"]),
             "tested_lines": g["tested_lines"],

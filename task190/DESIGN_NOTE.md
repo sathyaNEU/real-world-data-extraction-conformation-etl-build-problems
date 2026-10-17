@@ -500,32 +500,47 @@ device against the careful solver's path.
 
 | Ask | Figures | The device |
 |---|---|---|
-| A1, per quarter of the year: the payment runs released, those released after the cut-off in force, and the net value of the payments reversed | 4 x 3 = 12 | the release cut-off moved from 15:00 to 14:00 on 1 July 2026 and the tolerance register carries both effective dates, so a solver using one cut-off for the year misses two quarters; one run lands exactly on the cut-off in force and the register says a run at the cut-off is within it |
+| A1, per quarter of the year: the payment runs released, those released past the cut-off in force, and the value those carried | 4 x 3 = 12 | three devices, each measured: the cut-off moved from 15:00 to 14:00 on 1 July 2026 and the register carries both effective dates, so one cut-off for the year undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the opening date rather than the release moves the counts; and one run was rejected by the bank and re-released, so the log carries it twice. A run released exactly at the cut-off is within it, which the register states |
 | A2, per supplier risk category: the suppliers approved into it during the year, those removed from it, and those approved in then removed again | 5 x 3 = 15 | the approval register chains per supplier and carries superseded rows the dictionary rules out of the history; a category was relabelled on 1 October and the scale map carries both codings |
 | A3, per month: the payment lines the testing schedule covers, whether any schedule line is absent from the ledger and if so how many, and whether any ledger line appears twice on the schedule and if so how many | 12 + 2 + 2 = 16 | the schedule is a table inside a PDF and its line references carry the ledger's supplier prefix, so the join needs the crosswalk; the re-delivered batch puts one ledger line on the schedule twice |
 
 Every A3 ask is worded so that "none" is a grammatical answer, per H23.
 
-Pair ceiling: 44.0
+Pair ceiling: 37.1
 
-Mirror leakage: 26.8 per cent of ask weight
+Mirror leakage: 22.0 per cent of ask weight
 
 Measured by: `generator/ceiling.py`, which builds both responses as code, scores them against the graded
 figures in `figures.json` on the cut pack and prints the pair ceiling and the mirror leakage; it exits
 non-zero if the ceiling reaches 50. `generator/checks.py` measures the five blind families on the same
 pack and runs each cracker reading in the table above against the golden.
 
-**What the script changed, and it is the reason the line exists.** The paper figures were a pair ceiling of
-38 and a mirror leakage of 21.0. Written as code and run on the cut pack they are **44.0 and 26.8**: both
-still pass their gates, but the paper was optimistic by six points and six points, and the first run of the
-script measured a mirror leakage of **46.3** because the A1 and A2 devices each moved only two or three
-cells out of twelve and fifteen. That is what the script was for. The devices were rebuilt until the
-cracker took 11 of the 41 ask figures rather than 19: A1 now turns on three things rather than one (the
-cut-off moved on 1 July, so one cut-off for the year undercounts both later quarters; a run released past
-midnight ends each quarter, so grouping on the opening date moves the quarters; and one run was rejected
-by the bank and re-released, so the log carries it twice), and A2's cracker reading is now the one that
-ignores the scale map, which the October relabelling makes wrong in almost every cell rather than the
-superseded rows, which moved three.
+**What the script changed, and it is the reason the line exists.** The paper figures were a pair ceiling
+of 38 and a mirror leakage of 21.0, and neither was measured. Written as code and run on the cut pack, the
+first run gave a pair ceiling of 45.1 and **a mirror leakage of 46.3**, which fails its gate outright: the
+A1 and A2 devices each moved two or three cells out of twelve and fifteen, so a response that reached the
+call banked nearly half the ask weight. Four things were rebuilt until the script read 37.1 and 22.0.
+
+- **A1 turns on three devices rather than one.** The cut-off moved on 1 July, so one cut-off for the year
+  undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the
+  opening date rather than the release moves the quarter counts; and one run was rejected by the bank and
+  re-released, so the log carries it twice and the count needs de-duplicating.
+- **A1's third figure was nil in three quarters of four**, so anyone took it. The net value reversed is
+  replaced by the value the runs past the cut-off carried, which is non-nil in every quarter and inherits
+  both the cut-off and the quarter device, asserted.
+- **A2's cracker reading is now the scale map rather than the superseded rows.** Ignoring the October
+  relabelling is wrong in almost every cell; the superseded rows moved three.
+- **Nine of the nineteen cells in the widest graded component were free to every response**, because the
+  payments recorded per programme is a plain sum of the pack. That column is out of the graded table and
+  out of the prompt: both figures per programme, the misstatement and the share of recorded value certain
+  of selection, now need the recovered interval, so neither is free. The cracker's take in that band fell
+  from 12 of 19 to 3 of 19, which is the three nil programmes it reaches by filing a figure nineteen times
+  too small.
+
+Measured after all four: the cracker takes 9 of the 41 ask figures and 3 of the 19 component cells and
+scores 21.0; a response that answers the call correctly and still takes each ask's obvious reading scores
+53.2; the pair is **37.1**, under the 40 the house builds to.
+
 
 | Ask | The cracker, a response that answers the call correctly and takes each ask's obvious reading | What it never reaches | Verdict |
 |---|---|---|---|

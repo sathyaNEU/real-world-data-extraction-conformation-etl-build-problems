@@ -127,8 +127,10 @@ def note(path, g, chart_png):
                        else str(sum(1 for c, _, _, _ in sel if reasons[c]["tone"]))),
                       ", ".join(c for c, _, _, _ in sel if not reasons[c]["tone"])), SMALL),
          Paragraph("The plant through the survey", H2),
-         Paragraph("The plant ran to its ordinary pattern in every one of the six weeks, so the positions "
-                   "measured in different weeks are comparable.", BODY),
+         Paragraph("The blowers ran through every assessment minute of the survey, so no position was "
+                   "measured with the plant off load. What moved week to week was the dewatering shift and "
+                   "the engine's own stops, and the minutes behind each level with a centrifuge running "
+                   "are in the position table beside the levels.", BODY),
          Table(wrap([["Week beginning", "Blower air delivered, thousand Nm3", "Centrifuge runs",
                       "Engine hours run"]]
                     + [["%d %s" % (W.WEEKS[k].day, W.WEEKS[k].strftime("%B")),
