@@ -22,7 +22,7 @@
 4. In each group, the ratio of pickups to drop-offs was 10.6 per cent lower in 2025 than in the twelve months before the move in the station zones and 11.0 per cent lower in the other zones.
 5. Restated 2025 under FP-07 4.3 as each group's 2025 drop-offs at the group's ratio of pickups to drop-offs in the twelve months before the move, summed: 84,000 pickups, of which the rank cost 11 per cent.
 6. Applied By-law GT-3 s.4 to the $535,027 on line 12 of vaa_2027_ground_transportation_budget.xlsx: $6.50 is the lowest step that recovers it (a surplus of about $10,000; $6.25 about $10,000 short).
-7. For the ledger, gave each 2025 pickup the brokerage its licence held on the trip's start date in vfh_vehicle_affiliations.csv (the annual file's brokerage_id is the licence's brokerage when the file was built), and took 2026 from the eight monthly files with meter times converted from UTC, each voided trip and its reversal out, and each re-sent copy (same licence, minute, zones and amounts as an earlier record) out.
+7. For the ledger, billed each pickup once, to the brokerage its taxi belonged to when the trip began, at Schedule A's fee for the trip's year (By-law GT-3 s.3): 2025 from the annual file with the licence's brokerage on the trip date in vfh_vehicle_affiliations.csv (the file's brokerage_id is the licence's brokerage when the file was built), 2026 from the eight monthly files in Velmont local time, each voided trip and its reversal out and each re-sent copy (same licence, minute, zones and amounts as an earlier record) out.
 8. Recommended the 2027 fee of $6.50 a pickup.
 
 ## 4. Deliverable Answers

@@ -52,9 +52,10 @@ def write(fig_path, out_path):
         "6. Applied By-law GT-3 s.4 to the $%s on line %s of %s: $%s is the lowest step that recovers it (a surplus of "
         "about $%s; $6.25 about $%s short)." % (k["amount_2027"], f["stated"]["budget_line"], W.FILES["budget"],
                                                 c["fee_2027"], f["surplus_at_fee"], f["shortfall_one_step_below"]),
-        "7. For the ledger, gave each 2025 pickup the brokerage its licence held on the trip's start date in %s (the "
-        "annual file's brokerage_id is the licence's brokerage when the file was built), and took 2026 from the eight "
-        "monthly files with meter times converted from UTC, each voided trip and its reversal out, and each re-sent copy "
+        "7. For the ledger, billed each pickup once, to the brokerage its taxi belonged to when the trip began, at "
+        "Schedule A's fee for the trip's year (By-law GT-3 s.3): 2025 from the annual file with the licence's brokerage "
+        "on the trip date in %s (the file's brokerage_id is the licence's brokerage when the file was built), 2026 from "
+        "the eight monthly files in Velmont local time, each voided trip and its reversal out and each re-sent copy "
         "(same licence, minute, zones and amounts as an earlier record) out." % W.FILES["affiliations"],
         "8. Recommended the 2027 fee of $%s a pickup." % c["fee_2027"],
         "",
