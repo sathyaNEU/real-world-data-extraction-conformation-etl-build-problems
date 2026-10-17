@@ -468,8 +468,8 @@ asked which was meant, neither having been pointed at a section 5 that did not t
 | `monitoring_positions.xlsx` | xlsx | context artifact: the register of positions, dwellings, distances, bearings, screening |
 | `noise_management_plan.pdf` | pdf | governing document: the quantity, the period, the validity criteria, the tonality test, the slot |
 | `survey_notes.md` | md | the technician's notes: meters, identities, time base, met channels, file conventions |
-| `plant_equipment_events_2026.csv` | csv | the process operator's equipment log: starts, stops and reasons |
-| `scada_15min_2026.csv` | csv | plant process channels at fifteen minutes: the blower header as a rate and as a totaliser, the biogas counter, the centrifuge feed, the engine, the inlet |
+| `plant_equipment_events_2026.csv` | csv | the process operator's equipment log: every start and stop of a blower, a centrifuge or the gas engine, per machine, with the shift's reason |
+| `scada_15min_2026.csv` | csv | plant process channels at fifteen minutes: the blower header as a rate and as a totaliser, the biogas counter, the centrifuge feed, the engine's export and hour counter, the inlet; six spells missing where the link dropped |
 | `weather_10min_2026.csv` | csv | the met mast at ten minutes: wind, rain, temperature |
 | `third_octave_15min_2026.csv` | csv | one-third-octave band levels per position and quarter hour |
 | `calibration_records_2026.csv` | csv | the laboratory certificates for the five meters and the field calibrator, as found and as left |
@@ -482,10 +482,10 @@ asked which was meant, neither having been pointed at a section 5 that did not t
 - `generator/build.py` runs everything: the survey (`world.py`, `sim.py`), the pack (`pack.py`, `docs.py`,
   `postprocess.py`), the golden (`golden.py` over `analysis.py`, `deliver.py`), `metadata.py`,
   `figures.py`, `submission.py`, then `checks.py` and `verify.py`.
-- Final run: `checks.py` **622 assertions passed**; `verify.py` **282,493 independent checks passed** (the
+- Final run: `checks.py` **786 assertions passed**; `verify.py` **282,493 independent checks passed** (the
   per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
   consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
-  e649511bd624c542); about 70 seconds.
+  8e0f539aa193031f); about 70 seconds.
 - `verify.py` reads only the bundle (standard library, numpy-free, pyarrow for the parquet), encodes the
   plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
   residuals, valid, excluded and stop minutes, the slate, its order, the sixth and the margin, the default
@@ -493,7 +493,7 @@ asked which was meant, neither having been pointed at a section 5 that did not t
   figures, against `generator/figures.json` and against the golden table. It also checks, on every shipped
   minute, that the four level columns order as an instrument reports them and that a minute with no
   measurement carries no statistics.
-- `figures_check.py` exit 0: 90 figures in blocks 1 to 4, none absent from `figures.json`.
+- `figures_check.py` exit 0: 68 figures in blocks 1 to 4, none absent from `figures.json`.
 - Parameters chosen by search in scratch and never shipped: the designed specific levels and residuals
   (`world.POSITIONS`), the residual texture (`EVENT_DB`, `JITTER`, `SLOW`), the plant's own load curve and
   minute-to-minute swing (`sim.plant_load`), the two tones' survival to each position (`BARRIER`,
@@ -507,7 +507,7 @@ asked which was meant, neither having been pointed at a section 5 that did not t
 
 ## Leak check (mechanical half)
 
-`leak.py task182 --asof 2026-10-16`: **REVIEW, no LEAK**, five lines, each answered here.
+`leak.py task182 --asof 2026-10-16`: **REVIEW, no LEAK**, four lines, each answered here.
 
 - Sweep 3, `noise_management_plan.pdf` carries three of five distinctive words of the committed call: the
   words are October, treatment and slot, which clause 7.1 needs to say what the mitigation programme is. No
@@ -518,8 +518,6 @@ asked which was meant, neither having been pointed at a section 5 that did not t
   because the estimand has to be filed. The sweep's own test is whether the document names the move; it
   does not, and `checks.py` asserts the plan names no background, percentile, L90, stop or non-operating
   state, and the notes name no residual, background, percentile or stop window.
-- Sweep 4, the prompt carries two stump terms: the prompt has to name the quantity (the specific sound
-  level) and the window (the assessment minutes), which is the WHAT every build files. It names no method.
 - Sweep 9, `calibration_records_2026.csv` carries six dates after the as-of: they are the five meters' and
   the calibrator's verification due dates, a forward validity window, which `reduce-house-fixes` H16 puts
   on the allow-list.

@@ -506,11 +506,26 @@ device against the careful solver's path.
 
 Every A3 ask is worded so that "none" is a grammatical answer, per H23.
 
-Pair ceiling: 38
+Pair ceiling: 44.0
 
-Mirror leakage: 21.0 per cent of ask weight
+Mirror leakage: 26.8 per cent of ask weight
 
-Measured by: `generator/checks.py`, whose `_blind` function runs the five blind families on the cut pack and whose A1, A2 and A3 blocks run each cracker reading against the golden
+Measured by: `generator/ceiling.py`, which builds both responses as code, scores them against the graded
+figures in `figures.json` on the cut pack and prints the pair ceiling and the mirror leakage; it exits
+non-zero if the ceiling reaches 50. `generator/checks.py` measures the five blind families on the same
+pack and runs each cracker reading in the table above against the golden.
+
+**What the script changed, and it is the reason the line exists.** The paper figures were a pair ceiling of
+38 and a mirror leakage of 21.0. Written as code and run on the cut pack they are **44.0 and 26.8**: both
+still pass their gates, but the paper was optimistic by six points and six points, and the first run of the
+script measured a mirror leakage of **46.3** because the A1 and A2 devices each moved only two or three
+cells out of twelve and fifteen. That is what the script was for. The devices were rebuilt until the
+cracker took 11 of the 41 ask figures rather than 19: A1 now turns on three things rather than one (the
+cut-off moved on 1 July, so one cut-off for the year undercounts both later quarters; a run released past
+midnight ends each quarter, so grouping on the opening date moves the quarters; and one run was rejected
+by the bank and re-released, so the log carries it twice), and A2's cracker reading is now the one that
+ignores the scale map, which the October relabelling makes wrong in almost every cell rather than the
+superseded rows, which moved three.
 
 | Ask | The cracker, a response that answers the call correctly and takes each ask's obvious reading | What it never reaches | Verdict |
 |---|---|---|---|
