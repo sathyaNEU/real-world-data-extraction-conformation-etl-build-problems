@@ -1,26 +1,26 @@
 {
  "task": "task190",
  "owner": "oviya13ya",
- "status": "DRAWING",
+ "status": "PAUSED",
  "domain": "banking-credit-financial-risk/fraud-aml-detection",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-16",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-17",
  "stump": "A competent solver conforms the alert and adjudication extracts, computes each line's confirmed cases per 1,000 customers over the last two quarters, and assigns the team to the lines that confirm the most, which is the lines where cases are found fastest rather than where they are sitting unfound.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW",
+  "reader": "pass 1: nothing quoted for question 1, question 6 analytical, every figure independently reproduced; it landed the call, recorded as the Gate F signal; two realism findings open"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN",
+  "nearest": "0.08 task181 v2 (lineage)"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "Stage 4. Every free gate is green (precut 49/0/0, voice-check 938 chars, 120 generator assertions, 112 independent checks, byte-identical rebuilds, figures_check 64/64, leak.py REVIEW, guard surface clean, heart WARN) and target.zip is cut. The leak reader's pass 1 is recorded in leak_check_report.md with two realism findings still to apply: drop framework clause 9.2 (it reads as reassurance placed on purpose) and give the case register the withdrawn cases and non-sequential identifiers it would really carry, neither of which may move a graded figure. The determinism judge was spawned on /tmp/determinism-check-task190-r1/judge_brief.md and had not written its verdict.md when the session paused. Resume: read that verdict (or re-spawn the thread from the brief), apply it together with the two realism fixes in one generator pass, rebuild, re-run the free gates, re-read and re-judge if a document changed, then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,

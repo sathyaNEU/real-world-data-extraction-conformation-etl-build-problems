@@ -10,8 +10,8 @@
   "shape": "09",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "the review covers Business lending, FX and remittance and Trade finance",
+  "answer_source": "golden/review_placement_2027.xlsx",
   "gap": [
     "population",
     "time"
@@ -36,7 +36,7 @@
   "scoring_unit": "per resolved case",
   "spine": {
     "file": "alert_adjudication_extract.csv",
-    "rows": 0,
+    "rows": 25825,
     "entity": "one alert on one customer, as raised and as later adjudicated",
     "grain": "alert x adjudication stage",
     "source": "synthetic"
@@ -54,7 +54,10 @@
       "Kayla Burr"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "review_placement_2027.xlsx",
+    "placement_overview.png"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is the stock of undetected cases a scarce reviewer would meet, which is each unit's arrival rate multiplied by how long a case goes unseen there, so ranking units by the cases they confirm ranks them by arrivals alone and passes over the unit whose cases sit longest before anyone sees them.",

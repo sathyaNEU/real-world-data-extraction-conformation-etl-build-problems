@@ -1,0 +1,207 @@
+{
+ "a1_contract": {
+  "2026-Q1": {
+   "hours_allowed": 420.0,
+   "hours_billed": 254.7,
+   "tickets_outside_rate_card": 4
+  },
+  "2026-Q2": {
+   "hours_allowed": 420.0,
+   "hours_billed": 228.4,
+   "tickets_outside_rate_card": 4
+  },
+  "2026-Q3": {
+   "hours_allowed": 480.0,
+   "hours_billed": 226.2,
+   "tickets_outside_rate_card": 3
+  },
+  "2026-Q4": {
+   "hours_allowed": 480.0,
+   "hours_billed": 202.2,
+   "tickets_outside_rate_card": 3
+  }
+ },
+ "a2_screening": {
+  "v1": {
+   "matched_an_entry_later_removed": 10,
+   "of_those_cleared": 6
+  },
+  "v2": {
+   "matched_an_entry_later_removed": 14,
+   "of_those_cleared": 11
+  },
+  "v3": {
+   "matched_an_entry_later_removed": 14,
+   "of_those_cleared": 12
+  },
+  "v4": {
+   "matched_an_entry_later_removed": 7,
+   "of_those_cleared": 3
+  },
+  "v5": {
+   "matched_an_entry_later_removed": 0,
+   "of_those_cleared": 0
+  }
+ },
+ "a3_queue": {
+  "2026-01": {
+   "alerts_raised": 133,
+   "closed_inside_standard": 86,
+   "escalated": 7
+  },
+  "2026-02": {
+   "alerts_raised": 166,
+   "closed_inside_standard": 129,
+   "escalated": 8
+  },
+  "2026-03": {
+   "alerts_raised": 148,
+   "closed_inside_standard": 110,
+   "escalated": 4
+  },
+  "2026-04": {
+   "alerts_raised": 175,
+   "closed_inside_standard": 133,
+   "escalated": 10
+  },
+  "2026-05": {
+   "alerts_raised": 123,
+   "closed_inside_standard": 85,
+   "escalated": 9
+  },
+  "2026-06": {
+   "alerts_raised": 170,
+   "closed_inside_standard": 124,
+   "escalated": 8
+  },
+  "2026-07": {
+   "alerts_raised": 140,
+   "closed_inside_standard": 90,
+   "escalated": 5
+  },
+  "2026-08": {
+   "alerts_raised": 159,
+   "closed_inside_standard": 114,
+   "escalated": 13
+  },
+  "2026-09": {
+   "alerts_raised": 140,
+   "closed_inside_standard": 95,
+   "escalated": 9
+  },
+  "2026-10": {
+   "alerts_raised": 139,
+   "closed_inside_standard": 102,
+   "escalated": 7
+  },
+  "2026-11": {
+   "alerts_raised": 151,
+   "closed_inside_standard": 106,
+   "escalated": 8
+  },
+  "2026-12": {
+   "alerts_raised": 130,
+   "closed_inside_standard": 105,
+   "escalated": 6
+  }
+ },
+ "capacity": 3,
+ "closed_cases": {
+  "Business lending": 318,
+  "Cards": 676,
+  "Correspondent banking": 37,
+  "Deposits": 470,
+  "FX and remittance": 259,
+  "Private wealth": 84,
+  "Retail payments": 888,
+  "Trade finance": 158
+ },
+ "closed_record_cases": 2890,
+ "cohort_estimate": {
+  "Business lending": 43.0,
+  "Cards": 18.2,
+  "Correspondent banking": 12.5,
+  "Deposits": 20.3,
+  "FX and remittance": 46.2,
+  "Private wealth": 26.1,
+  "Retail payments": 19.2,
+  "Trade finance": 38.4
+ },
+ "confirmed_two_quarters": {
+  "Business lending": 47,
+  "Cards": 108,
+  "Correspondent banking": 8,
+  "Deposits": 68,
+  "FX and remittance": 48,
+  "Private wealth": 12,
+  "Retail payments": 146,
+  "Trade finance": 24
+ },
+ "covered": [
+  "Business lending",
+  "FX and remittance",
+  "Trade finance"
+ ],
+ "cut_margin_pct": 47,
+ "expected_carrying": {
+  "Business lending": 43.0,
+  "Cards": 18.2,
+  "Correspondent banking": 12.5,
+  "Deposits": 20.3,
+  "FX and remittance": 46.2,
+  "Private wealth": 26.1,
+  "Retail payments": 19.2,
+  "Trade finance": 38.4
+ },
+ "framework_clauses": [
+  "2.3",
+  "6.2",
+  "6.3",
+  "6.4",
+  "6.5"
+ ],
+ "just_misses": "Private wealth",
+ "lines_assessed": 8,
+ "months_unseen": {
+  "Business lending": 5.0,
+  "Cards": 1.0,
+  "Correspondent banking": 12.5,
+  "Deposits": 1.6,
+  "FX and remittance": 6.6,
+  "Private wealth": 11.5,
+  "Retail payments": 0.8,
+  "Trade finance": 9.0
+ },
+ "rungs": {
+  "answer_cohort_estimate": [
+   "Business lending",
+   "FX and remittance",
+   "Trade finance"
+  ],
+  "answer_expected_carrying": [
+   "Business lending",
+   "FX and remittance",
+   "Trade finance"
+  ],
+  "rung0_confirmed_two_quarters": [
+   "Cards",
+   "Deposits",
+   "Retail payments"
+  ],
+  "rung1_confirmed_per_thousand": [
+   "Correspondent banking",
+   "Private wealth",
+   "Trade finance"
+  ],
+  "rung2_alert_backlog": [
+   "Deposits",
+   "FX and remittance",
+   "Retail payments"
+  ],
+  "rung3_months_unseen": [
+   "Correspondent banking",
+   "Private wealth",
+   "Trade finance"
+  ]
+ }
+}
