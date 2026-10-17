@@ -1,34 +1,37 @@
 {
  "task": "task192",
  "owner": "oviya13ya",
- "status": "PAUSED",
+ "status": "BUILD",
  "domain": "political-science-public-policy/conflict-protest-event-data-analysis",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-17",
- "stump": "A competent solver takes the flagged location-days, groups the ones that touch in time and place, counts the groups and files that number, which counts the overlaps of the operations rather than the operations.",
- "architecture": 1,
- "loops": 1,
+ "stump": "A competent solver cleans the three routes, applies the protocol's episode rule to the letter, counts the 89 episodes in the period's cohort that have recorded a confrontational action and files 14 per cent, 89 episodes, which is the confrontation the record has already seen rather than the confrontation the cohort will have recorded by the time its episodes close.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17"
+  "date": "2026-10-17",
+  "checks": 49,
+  "fail": 0,
+  "warn": 0
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-17, every line answered in the design note",
+  "reader": "staged, not run"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN, no BLOCK, nearest driver 0.06 (task142)",
+  "nearest": "task191 0.102 surface, same context-artifact type only"
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "staged, not run"
  },
  "returned": [],
- "resume": "ARCHITECTURE 1 IS SPENT, measured at stage 3 before any file was cut. Two findings, both in the design note under '## Architecture 1, spent at stage 3 on measurement'. (a) The default path, grouping flagged location-days that touch in time and place, is a single-linkage clustering whose one free parameter takes the count from 673 through 65, 22 and 9 to 1, so no parameter-free reading gives a plausible count and the parameter range covers the golden: a solver can land 9 by tuning. The note's 23 was never reproducible. (b) The decisive quantity, the number of arithmetic progressions in a union of them, is not one conflict event analysis estimates, and the swap reads unchanged with machines on fixed maintenance cycles, so rule 1 fails on measurement. Re-root at stage 1: new draw, architecture 2, loops reset, the old identity into the card's lineage. Keep the world (a Portuguese conflict monitoring institute, three access routes, the settlement gazetteer, the partner data agreements) and the ask layer's shape; replace the decisive step. The note lists the six mechanisms ruled out for the re-root with their reasons, task448's capture-from-overlap and task191's record-of-extremes among them. Do not resume architecture 1.",
+ "resume": "Architecture 2 built and gated. Free gates green: 108 generator assertions, 99 independent checks in verify.py, two byte-identical rebuilds, target.zip 17 members matching the tree, figures_check.py exit 0, precut.py 49 checks 0 FAIL 0 WARN, leak.py REVIEW with every line answered, guard.py heart and surface WARN with no BLOCK. Stage 4 is staged, not run: this session has no agent tool, so the two threads are prepared for the orchestrating session to spawn as general-purpose sonnet agents at medium effort, in the background. Judge: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/judge/judge_brief.md (verdict to verdict.md beside it). Reader: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/reader/reader_brief.md (answers to reader_answers.md beside it). Relay both sets of findings back for one generator pass, then rebuild, re-run the free gates, re-cut target.zip and ship.",
  "approved": null,
  "delivered": null,
  "portal": null,

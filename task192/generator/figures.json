@@ -1,0 +1,174 @@
+{
+ "actions_in_period": 4138,
+ "call_episodes": 108,
+ "call_rate_pct": 17,
+ "closed_without": 312,
+ "cohort_episodes": 635,
+ "episode_by_episode_episodes": 108.12,
+ "fortnight_rows": 13,
+ "fortnightly_variant_episodes": 107.89,
+ "fortnights": {
+  "Q1": {
+   "actions": 100,
+   "confrontational_actions": 2,
+   "municipalities": 32,
+   "partner_share_pct": 44.0
+  },
+  "Q10": {
+   "actions": 441,
+   "confrontational_actions": 18,
+   "municipalities": 99,
+   "partner_share_pct": 46.7
+  },
+  "Q11": {
+   "actions": 500,
+   "confrontational_actions": 16,
+   "municipalities": 100,
+   "partner_share_pct": 46.4
+  },
+  "Q12": {
+   "actions": 582,
+   "confrontational_actions": 8,
+   "municipalities": 109,
+   "partner_share_pct": 45.5
+  },
+  "Q13": {
+   "actions": 678,
+   "confrontational_actions": 27,
+   "municipalities": 115,
+   "partner_share_pct": 46.5
+  },
+  "Q2": {
+   "actions": 149,
+   "confrontational_actions": 3,
+   "municipalities": 46,
+   "partner_share_pct": 47.7
+  },
+  "Q3": {
+   "actions": 167,
+   "confrontational_actions": 4,
+   "municipalities": 53,
+   "partner_share_pct": 39.5
+  },
+  "Q4": {
+   "actions": 184,
+   "confrontational_actions": 6,
+   "municipalities": 64,
+   "partner_share_pct": 50.0
+  },
+  "Q5": {
+   "actions": 211,
+   "confrontational_actions": 11,
+   "municipalities": 69,
+   "partner_share_pct": 43.6
+  },
+  "Q6": {
+   "actions": 219,
+   "confrontational_actions": 2,
+   "municipalities": 63,
+   "partner_share_pct": 42.0
+  },
+  "Q7": {
+   "actions": 300,
+   "confrontational_actions": 9,
+   "municipalities": 84,
+   "partner_share_pct": 46.3
+  },
+  "Q8": {
+   "actions": 305,
+   "confrontational_actions": 6,
+   "municipalities": 88,
+   "partner_share_pct": 43.0
+  },
+  "Q9": {
+   "actions": 302,
+   "confrontational_actions": 9,
+   "municipalities": 84,
+   "partner_share_pct": 49.0
+  }
+ },
+ "partner_rows": 7,
+ "partners": {
+  "P01": {
+   "after_close": 1,
+   "euros": 1421,
+   "filed": 223
+  },
+  "P02": {
+   "after_close": 2,
+   "euros": 3915,
+   "filed": 677
+  },
+  "P03": {
+   "after_close": 0,
+   "euros": 2471,
+   "filed": 348
+  },
+  "P04": {
+   "after_close": 1,
+   "euros": 1154,
+   "filed": 196
+  },
+  "P05": {
+   "after_close": 1,
+   "euros": 729,
+   "filed": 109
+  },
+  "P06": {
+   "after_close": 0,
+   "euros": 640,
+   "filed": 78
+  },
+  "P07": {
+   "after_close": 1,
+   "euros": 1670,
+   "filed": 262
+  }
+ },
+ "protocol_paragraphs": [
+  "2.1",
+  "2.2",
+  "2.3",
+  "2.4",
+  "2.5",
+  "3.1",
+  "3.2",
+  "3.3",
+  "3.4",
+  "4.1",
+  "4.2",
+  "4.3",
+  "4.4",
+  "6.1",
+  "6.2"
+ ],
+ "raw_episodes": 108.12,
+ "raw_rate_pct": 17.03,
+ "recorded_confrontational": 89,
+ "route_rows": 3,
+ "routes": {
+  "IMP": {
+   "median_minutes": 109.0,
+   "received": 4779,
+   "unplaceable": 149
+  },
+  "LIN": {
+   "median_minutes": 98.0,
+   "received": 1295,
+   "unplaceable": 92
+  },
+  "PAR": {
+   "median_minutes": 622.0,
+   "received": 1947,
+   "unplaceable": 60
+  }
+ },
+ "rung0_episodes": 89,
+ "rung0_pct": 14,
+ "rung1_episodes": 141,
+ "rung1_pct": 22,
+ "rung2_episodes": 178,
+ "rung2_pct": 28,
+ "still_open": 234,
+ "weekly_variant_episodes": 108.27
+}
