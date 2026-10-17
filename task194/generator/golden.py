@@ -6,7 +6,7 @@ would build it, so the goldens, the write-up and the verifier all stand on the b
 import csv
 import datetime as dt
 import os
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 
 REF_RATE = 96.4                      # specification 3.2, read back from the bundle below
 SPEC_START = dt.date(2024, 7, 1)
@@ -137,6 +137,72 @@ def record_share(b):
     carried = sum(r["carried"] for r in rows)
     removed = sum(r["carried"] - r["realised"] for r in rows)
     return removed / carried, rows, carried, removed
+
+
+def share_readings(b):
+    """The share of a unit's standing excess a placement removes, under every reading of the register.
+
+    Ten readings a careful analyst could take of the same seven closed placements: the mean, the median and
+    the expected-weighted mean of the placements' own shares, the two pooled sums, least squares through
+    the origin and with an intercept, the same pooled share measured from the quarter that was closed when
+    the placement was decided and from the quarter before the placement, and the fall net of what the other
+    units did over the same two quarters, as a mean across those units and pooled over them.
+    """
+    panel = b["panel"]
+    allq = sorted({q for (_, q) in panel})
+    acute = sorted({u for (u, _) in panel})
+    rows = []
+    for p in b["placements"]:
+        if p["status"] != "closed":
+            continue
+        unit, q = p["unit_code"], p["assessment_quarter"]
+        qs = quarters(panel, unit)
+        if q not in qs:
+            continue
+        i = allq.index(q)
+        pre = [x for x in qs if x < q]
+        e = panel[(unit, q)]["expected"]
+        o = panel[(unit, q)]["observed"]
+        prev, dec = allq[i - 1], allq[i - 2]
+        others = [c for c in acute if c != unit and (c, prev) in panel and (c, q) in panel]
+        moved = [panel[(c, prev)]["observed"] / panel[(c, prev)]["expected"]
+                 - panel[(c, q)]["observed"] / panel[(c, q)]["expected"] for c in others]
+        pooled_move = (sum(panel[(c, prev)]["observed"] for c in others)
+                       / sum(panel[(c, prev)]["expected"] for c in others)
+                       - sum(panel[(c, q)]["observed"] for c in others)
+                       / sum(panel[(c, q)]["expected"] for c in others))
+        rows.append(dict(
+            unit=unit, expected=e, realised=o - e,
+            carried=(pooled(panel, unit, pre)[0] - 1) * e,
+            from_decision=(panel[(unit, dec)]["observed"] / panel[(unit, dec)]["expected"] - 1) * e,
+            from_previous=(panel[(unit, prev)]["observed"] / panel[(unit, prev)]["expected"] - 1) * e,
+            concurrent=sum(moved) / len(moved) * e, concurrent_pooled=pooled_move * e))
+    n = len(rows)
+    P = [r["carried"] for r in rows]
+    fall = [r["carried"] - r["realised"] for r in rows]
+    sh = [f / p for f, p in zip(fall, P)]
+    E = [r["expected"] for r in rows]
+    pm, fm = sum(P) / n, sum(fall) / n
+    pv = sum((p - pm) ** 2 for p in P) / n
+    return rows, OrderedDict([
+        ("mean of the placements' shares", sum(sh) / n),
+        ("median of the shares", sorted(sh)[n // 2]),
+        ("expected-weighted mean of the shares",
+         sum(e * s for e, s in zip(E, sh)) / sum(E)),
+        ("pooled sums", sum(fall) / sum(P)),
+        ("least squares through the origin",
+         sum(p * f for p, f in zip(P, fall)) / sum(p * p for p in P)),
+        ("least squares with an intercept",
+         sum((p - pm) * (f - fm) for p, f in zip(P, fall)) / (pv * n)),
+        ("measured from the quarter closed at the decision",
+         sum(r["from_decision"] - r["realised"] for r in rows) / sum(r["from_decision"] for r in rows)),
+        ("measured from the quarter before the placement",
+         sum(r["from_previous"] - r["realised"] for r in rows) / sum(r["from_previous"] for r in rows)),
+        ("against what the other units did over the same quarters",
+         sum(r["from_previous"] - r["realised"] - r["concurrent"] for r in rows) / sum(P)),
+        ("against the other units pooled over the same quarters",
+         sum(r["from_previous"] - r["realised"] - r["concurrent_pooled"] for r in rows) / sum(P)),
+    ])
 
 
 def compute(target):

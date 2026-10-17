@@ -39,7 +39,7 @@ def cut(target):
             continue                                  # a unit outside the indicator carries no excess
         o = sum(int(round(expected[(x[0], q)] * design[x[0]][q])) for q in qs)
         per_sep[x[0]] = (o / e - 1) * e / n          # excess complications per planned separation
-        expected_per_sep[x[0]] = (o / e) * e / n     # complications the standing carries per separation
+        expected_per_sep[x[0]] = e / n              # clause 3.4 expected complications per separation
     sim.EXPECTED_PER_SEP = {c: expected_per_sep[c] for c in expected_per_sep}
     chosen, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=False)
     elig = [c for c in per_sep if c in {x[0] for x in W.UNITS if x[10] == "eligible"}]
