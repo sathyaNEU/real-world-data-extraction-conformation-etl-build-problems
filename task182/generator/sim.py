@@ -157,11 +157,11 @@ def plant_propagation(code, stamps_local, seed):
     hours = np.array([s.hour + s.minute / 60.0 for s in stamps_local])
     # the wind blows towards bearing wd + 180: a position on that bearing is downwind of the plant
     toward = np.cos(np.radians(bear - (wd + 180.0)))
-    k = 0.40 + 0.00135 * dist                      # the farther the position, the more the wind decides
-    db = k * np.clip(v, 0.0, 9.0) * toward
+    k = 0.90 + 0.0028 * dist                       # the farther the position, the more the wind decides
+    db = k * np.clip(v, 0.0, 9.0) / 5.0 * toward
     # the night-time inversion, strongest when the wind is light and the ground has had hours to cool
     night = np.clip(np.cos(2 * math.pi * (hours - 3.0) / 24.0), 0.0, 1.0)
-    db = db + (0.25 + 0.0012 * dist) * night * np.clip(3.4 - v, 0.0, 3.4)
+    db = db + (0.14 + 0.00052 * dist) * night * np.clip(3.4 - v, 0.0, 3.4)
     # turbulent scattering: the minute-to-minute swing of what arrives, which grows with the wind
     rng = np.random.default_rng(seed)
     a, n = 0.62, len(stamps_local)
