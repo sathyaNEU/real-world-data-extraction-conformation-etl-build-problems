@@ -1,0 +1,281 @@
+{
+ "ask_a": {
+  "2025Q3": 0.5,
+  "2025Q4": 0.6,
+  "2026Q1": 1.2,
+  "mar": 0.58,
+  "mean": 0.34
+ },
+ "ask_a_record": {
+  "2023Q2": [
+   -1.35,
+   0.13,
+   1.48
+  ],
+  "2023Q3": [
+   3.76,
+   3.19,
+   -0.57
+  ],
+  "2023Q4": [
+   2.24,
+   2.16,
+   -0.08
+  ],
+  "2024Q1": [
+   4.42,
+   4.57,
+   0.15
+  ],
+  "2024Q2": [
+   1.59,
+   1.69,
+   0.1
+  ],
+  "2024Q3": [
+   3.51,
+   2.96,
+   -0.55
+  ],
+  "2024Q4": [
+   1.5,
+   1.24,
+   -0.26
+  ],
+  "2025Q1": [
+   3.17,
+   4.6,
+   1.43
+  ],
+  "2025Q2": [
+   -0.82,
+   -0.77,
+   0.05
+  ],
+  "2025Q3": [
+   4.77,
+   5.28,
+   0.5
+  ],
+  "2025Q4": [
+   1.96,
+   2.54,
+   0.58
+  ],
+  "2026Q1": [
+   0.47,
+   1.69,
+   1.22
+  ]
+ },
+ "ask_b": {
+  "CN_32": 116.9,
+  "CN_34": 262.8,
+  "IN_32": 72.9,
+  "IN_34": 166.8,
+  "JP_32": 174.5,
+  "JP_34": 680.7,
+  "KR_32": -23.5,
+  "KR_34": 91.2,
+  "TW_32": -15.3,
+  "TW_34": 265.3,
+  "total_32": 325.5,
+  "total_34": 1466.8
+ },
+ "ask_b_levels": {
+  "CN_32": [
+   708.2,
+   825.1
+  ],
+  "CN_34": [
+   1057.1,
+   1319.9
+  ],
+  "IN_32": [
+   1212.3,
+   1285.3
+  ],
+  "IN_34": [
+   355.3,
+   522.1
+  ],
+  "JP_32": [
+   1533.9,
+   1708.4
+  ],
+  "JP_34": [
+   1533.1,
+   2213.8
+  ],
+  "KR_32": [
+   936.8,
+   913.4
+  ],
+  "KR_34": [
+   934.3,
+   1025.5
+  ],
+  "TW_32": [
+   427.7,
+   412.4
+  ],
+  "TW_34": [
+   645.0,
+   910.3
+  ]
+ },
+ "backtest_last_m": {
+  "June end only": 39.5,
+  "March end only": -155.7,
+  "all industries together": -6.7,
+  "average stock over the quarter": -175.5,
+  "book values undeflated": 675.7,
+  "first in, first out from the flows": -6.0,
+  "holding gains at month-end prices": -115.1,
+  "holding gains at the period's prices": -2.5,
+  "mid-month interpolation": 21.4,
+  "month-end": -115.0,
+  "output price indexes": 70.5,
+  "previous month's ratio": -1.4,
+  "quarter average": 102.5,
+  "quarter-average ratio": -0.1,
+  "ratios plus a month": 107.8,
+  "ratios rounded down": -50.9,
+  "ratios rounded up": 58.7,
+  "the change in book value over the quarter's average index": 649.4,
+  "the index at the period's midpoint": -5.2,
+  "the industries' average ratio for every industry": -4.0,
+  "the period ending the month before": 249.3,
+  "the previous month's index": 231.1,
+  "turnover": -1.2,
+  "two months for every industry": 57.3,
+  "weighted-average cost": 137.5,
+  "whole months": -5.1
+ },
+ "backtest_rmse_m": {
+  "June end only": 62.8,
+  "March end only": 68.9,
+  "all industries together": 85.3,
+  "average stock over the quarter": 119.6,
+  "book values undeflated": 504.6,
+  "first in, first out from the flows": 9.6,
+  "holding gains at month-end prices": 62.8,
+  "holding gains at the period's prices": 10.0,
+  "mid-month interpolation": 23.9,
+  "month-end": 62.5,
+  "output price indexes": 64.9,
+  "previous month's ratio": 9.5,
+  "quarter average": 125.9,
+  "quarter-average ratio": 9.7,
+  "ratios plus a month": 82.0,
+  "ratios rounded down": 33.6,
+  "ratios rounded up": 37.9,
+  "the change in book value over the quarter's average index": 567.2,
+  "the index at the period's midpoint": 8.7,
+  "the industries' average ratio for every industry": 34.2,
+  "the period ending the month before": 192.3,
+  "the previous month's index": 168.0,
+  "turnover": 9.9,
+  "two months for every industry": 61.4,
+  "weighted-average cost": 106.0,
+  "whole months": 9.4
+ },
+ "business_inventories_m": {
+  "change": -552.9,
+  "june_quarter_2026": -18.9,
+  "march_quarter_2026_published": 534
+ },
+ "call": {
+  "annualised_pct": 2.8,
+  "quarterly_pct": 0.69,
+  "unrounded": 2.7929964597573242
+ },
+ "contributions_pp": {
+  "CIPI_FO": -0.01,
+  "CIPI_NF": -0.43,
+  "GFCE": 0.08,
+  "GFCF_DW": -0.08,
+  "GFCF_IPP": 0.02,
+  "GFCF_ME": -0.13,
+  "GFCF_NDC": 0.01,
+  "GFCF_PUB": 0.02,
+  "HFCE": 0.12,
+  "M_G": 0.39,
+  "M_S": 0.02,
+  "X_G": 0.67,
+  "X_S": 0.03
+ },
+ "gdp_q1_m": 129210,
+ "goods_m": {
+  "exports_q1": 30021,
+  "exports_q2": 30881.1,
+  "imports_q1": 27618,
+  "imports_q2": 27116.3
+ },
+ "inventories_drag_pp": 0.43,
+ "routes": {
+  "June end only": 3.3,
+  "March end only": 1.7,
+  "all industries together": 2.8,
+  "average stock over the quarter": 3.1,
+  "book values undeflated": 6.3,
+  "first in, first out from the flows": 2.8,
+  "holding gains at month-end prices": 2.2,
+  "holding gains at the period's prices": 2.8,
+  "mid-month interpolation": 2.8,
+  "month-end": 2.2,
+  "month-end, the March quarter rebuilt the same way": 2.5,
+  "output price indexes": 3.0,
+  "previous month's ratio": 2.8,
+  "quarter average": 3.3,
+  "quarter-average ratio": 2.8,
+  "ratios 2 per cent longer": 2.8,
+  "ratios 2 per cent shorter": 2.8,
+  "ratios plus a month": 3.2,
+  "ratios rounded down": 2.5,
+  "ratios rounded up": 3.1,
+  "the March quarter rebuilt the same way": 2.8,
+  "the change in book value over the quarter's average index": 6.2,
+  "the index at the period's midpoint": 2.8,
+  "the industries' average ratio for every industry": 2.8,
+  "the period ending the month before": 4.0,
+  "the previous month's index": 4.0,
+  "turnover": 2.8,
+  "two months for every industry": 3.1,
+  "weighted-average cost": 3.4,
+  "whole months": 2.8
+ },
+ "routes_unrounded": {
+  "June end only": 3.282,
+  "March end only": 1.693,
+  "all industries together": 2.788,
+  "average stock over the quarter": 3.109,
+  "book values undeflated": 6.316,
+  "first in, first out from the flows": 2.782,
+  "holding gains at month-end prices": 2.178,
+  "holding gains at the period's prices": 2.8,
+  "mid-month interpolation": 2.836,
+  "month-end": 2.179,
+  "month-end, the March quarter rebuilt the same way": 2.541,
+  "output price indexes": 2.969,
+  "previous month's ratio": 2.793,
+  "quarter average": 3.3,
+  "quarter-average ratio": 2.789,
+  "ratios 2 per cent longer": 2.811,
+  "ratios 2 per cent shorter": 2.774,
+  "ratios plus a month": 3.231,
+  "ratios rounded down": 2.473,
+  "ratios rounded up": 3.051,
+  "the March quarter rebuilt the same way": 2.797,
+  "the change in book value over the quarter's average index": 6.175,
+  "the index at the period's midpoint": 2.774,
+  "the industries' average ratio for every industry": 2.786,
+  "the period ending the month before": 3.953,
+  "the previous month's index": 4.029,
+  "turnover": 2.793,
+  "two months for every industry": 3.083,
+  "weighted-average cost": 3.441,
+  "whole months": 2.76
+ },
+ "tracker_sum_pp": 0.07
+}

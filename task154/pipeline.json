@@ -1,26 +1,28 @@
 {
   "task": "task154",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "economics-econometrics/forecasting-forecast-evaluation",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-17",
-  "stump": "Taking the desk's track for every line the late bulletin does not feed, building goods trade from the bulletin and deflating each industry's end-March and end-June book-value stocks by that month's price index, the textbook removal of holding gains, files a call about half a point under the golden, because the June leg of the import price rise reads as a fall in the volume of stocks bought before it; only revaluing each stock at its industry's prices over the months its stock-to-sales ratio covers, at both quarter ends, files the golden.",
+  "stump": "Taking the desk's track for every line the late bulletin does not feed, building goods trade from the bulletin section by section and deflating each industry's end-March and end-June book-value stocks by that month's price index, the textbook removal of holding gains, files 2.2 per cent against the golden 2.8, because each industry's stock was bought over its own stockholding period, partly before the March and June legs of the import price rise; only revaluing each stock at its industry's prices over the months its stock-to-sales ratio covers, at both quarter ends, files the golden.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-17",
+    "checks": 49
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (no LEAK): the user guide carries the call's vocabulary but no figure; design-note terms in the guide, notice and bulletin name no move",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "guard check WARN repeat.decision (task153) after the DRAWN pull's redraw of calibration (pilot_log -> realised_outcome_roster) and forum (customer_or_counterparty -> operations_desk); nearest drivers 0.08 (task463), 0.07 (task45 lineage, task100 lineage)"
+    "heart": "WARN three_rules.strategy_risk (time_semantics), answered on the card; the stage 3 BLOCK ban.strategy (decomposition_attribution against task234 v2 and task152) cleared by relabelling the strategy time_semantics and Gate G method_or_model_selection to the built mechanism",
+    "surface": "promoted task152 vs task154 (two apart, gap time and quantity_figure), answered on the card's differentiation",
+    "nearest": "nearest drivers 0.08 (task463), 0.07 (task45 lineage, task100 lineage)"
   },
   "judge": {
     "verdict": "",
@@ -28,12 +30,22 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: ladder, fork table, closure table and ask sheet on paper, prompt.txt, then precut.py",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 5 (new), seed FC25 (world, decision and quantity kept; the seed's tracking memo and frozen-input premise not used)"
+  "wave": "wave 5 (new), seed FC25 (world, decision and quantity kept; the seed's tracking memo and frozen-input premise not used)",
+  "build": {
+    "checks_py": "85 run, 0 failed",
+    "verify_py": "green: the call, rungs, back-test and both asks recomputed from the shipped files on an independent path",
+    "rebuilds": "two builds byte-identical (15 target files, 2 goldens, metadata.json, figures.json, submission.md, target.zip)",
+    "target_zip_sha256": "d6dee6b3a9b767fb8f25782f7c57a72ef286ef5c8eccf467fafd4a87212f4854",
+    "figures_check": "exit 0, 36 figures",
+    "golden_realism": "pass done: findings as titles, source lines, rounding note, pack-true texture only",
+    "house_fixes": "H1, H9, H11, H16, H21, H24 asserted in checks.py; scrub audit clean on target and golden",
+    "call": "2.8 per cent (2.793), default path 2.2 (2.179)"
+  }
 }
