@@ -174,7 +174,13 @@ def compute(target):
     kept, every = shortfalls(rollup, register, maint)
     a["evenings_left_out"] = int((len(every) - len(kept)) / len(W.WINDOWS))
     a["evenings_in_quarter"] = (W.Q_TO - W.Q_FROM).days + 1
-    a["windows_assessed"] = len(W.PATHS) * a["evenings_in_quarter"] * len(W.WINDOWS)
+    this_all = every[every["reporting_quarter"] == "2027Q1"]
+    this_kept = kept[kept["reporting_quarter"] == "2027Q1"]
+    a["windows_in_quarter"] = int(len(this_all))
+    a["windows_assessed"] = int(len(this_kept))
+    prior = kept[kept["reporting_quarter"] != "2027Q1"]
+    a["record_windows"] = int(len(prior))
+    a["record_windows_at_or_above"] = int((prior["shortfall"] >= a["decided_shortfall"]).sum())
     own = a["own_99th"][a["closest_port"]]
     a["closest_over_own_99th_pct"] = int(round(100 * (a["closest_shortfall"] / own - 1)))
     a["closest_below_record_pct"] = int(round(

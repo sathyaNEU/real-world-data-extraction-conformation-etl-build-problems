@@ -77,8 +77,9 @@ def framework(target):
                    "which is the 1,296th highest sample of the quarter, taken over the peer's "
                    "traffic and not over one port of it.", BODY),
          Paragraph("7.2 The commitment a peer is billed on is the commitment the platform and the "
-                   "peer have both accepted, and an amendment the peer has not accepted is not "
-                   "billed on. Where the quarter's percentile is above the commitment, the overage "
+                   "peer have both accepted and that is in force on the last day of the quarter, "
+                   "and an amendment the peer has not accepted is not billed on. Where the "
+                   "quarter's percentile is above the commitment, the overage "
                    "is the excess in whole megabits a second, after the percentile is taken to the "
                    "nearest whole megabit, at the agreement's own rate. A peer the "
                    "platform exchanges traffic with settlement free is billed nothing and carries "

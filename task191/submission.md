@@ -3,7 +3,7 @@
 ## Tags
 
 **Domain:** General Statistics & Data Science, multiple testing and selective inference (judging one monitored extreme when the extreme was picked out of every interconnect, evening and window the platform watches).
-**Analytical objective:** Anomaly Detection & Diagnostics (whether an evening shortfall is a real degradation or what monitoring 1,890 windows produces on its own).
+**Analytical objective:** Anomaly Detection & Diagnostics (whether an evening shortfall is a real degradation or what monitoring 1,851 windows a quarter produces on its own).
 
 ## 1. Final Recommendation
 
@@ -13,7 +13,7 @@ The quarter's worst evening shortfall is **318 kbps**, on **HVT-01** on 2027-02-
 
 ## 2. Critical Components
 
-1. The figure the decision is taken on is a maximum over seven interconnects, 90 evenings and three windows, so the record it is measured against is each earlier quarter's own maximum at that same reach: 489, 471, 458, 447, 436, 424, 411, 398 kbps.
+1. The figure the decision is taken on is the largest of the 1,809 interconnect evening windows the quarter leaves standing, so the record it is measured against is each earlier quarter's own largest at that same reach: 489, 471, 458, 447, 436, 424, 411, 398 kbps.
 2. **HVT-01** comes closest at **318** kbps, which stands **28** per cent above its own 99th percentile for the quarter and **20** per cent below the smallest worst window any earlier quarter produced.
 3. **14** evenings are left out, the ones on which work was booked inside an evening window. Keeping them would put the worst shortfall at **569** kbps on **STR-01**, above every quarter in the record, and fund an augment there.
 4. **DLF-01** carries the largest shortfall across the quarter as a whole, a mean of **129.1** kbps against **112.0** on the next interconnect, and the record shows that level is ordinary for it.
@@ -24,9 +24,9 @@ The quarter's worst evening shortfall is **318 kbps**, on **HVT-01** on 2027-02-
 1. Read the minute panel, resolved the UTC stamps to local time across the 28 March change, and took each interconnect's reference band and evening window medians as the delivered quality standard defines them, cross-checking against the pipeline's own daily rollup.
 2. Resolved every port code to the interconnect in service at the quarter end through interconnect_register.csv, which carries the port renamed on 12 February.
 3. Left out the 14 evenings on which clause 4.4's booked work fell inside an evening window.
-4. Computed the shortfall of every interconnect, evening and window, 1,890 of them, and took the largest: 318 kbps on HVT-01.
-5. Clause 4.2 asks whether that is larger than the shortfall the record shows the measurement produces without congestion, and the figure was selected as the largest of 1,890, so the comparison has to be with what the record produces at the same reach, not with one interconnect's own spread.
-6. Took the same maximum from each of the eight earlier quarters in evening_quality_daily.csv: every one is larger than this quarter's, the smallest at 398 kbps and the largest at 489, so nothing is funded. Every other figure of the record a planner might take, its mean, its median, its upper percentiles and the same figures per interconnect, is larger too.
+4. Computed the shortfall of every interconnect, evening and window the quarter's record holds, 1,851 of them, and took the largest of the 1,809 that survive step 3: 318 kbps on HVT-01.
+5. Clause 4.2 asks whether that is larger than the shortfall the record shows the measurement produces without congestion, and the figure was selected as the largest of 1,809, so the comparison has to be with what the record produces at that same reach, not with one interconnect's own spread.
+6. Took the same maximum from each of the eight earlier quarters in evening_quality_daily.csv: every one is larger than this quarter's, the smallest at 398 kbps and the largest at 489, so nothing is funded. The record holds 282 of its 15,330 windows at or above this quarter's worst, so the measurement plainly produces that level without congestion.
 7. For the peers, summed each peer's ports at every five-minute instant and took the 1,296th highest sample of the quarter against the commitment both sides had accepted; for the client builds, split the sessions by the release log's own rollout windows; for the incidents, counted to the restoration time the duty engineer recorded.
 
 ## 4. Deliverable Answers

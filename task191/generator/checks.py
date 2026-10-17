@@ -71,6 +71,12 @@ def run(target):
         A(v / dec >= 1.06,
           "the call is not forced: %s is %.0f kbps, only %.1f per cent above the quarter's %.0f"
           % (lbl, v, 100 * (v / dec - 1), dec))
+    # and the record plainly produces this quarter's worst window, many times over
+    A(g["record_windows_at_or_above"] > 200,
+      "the record holds only %d windows at or above the quarter's worst"
+      % g["record_windows_at_or_above"])
+    A(g["windows_assessed"] < g["windows_in_quarter"],
+      "the booked evenings take nothing out of the quarter's windows")
     A(g["rank_of_nine"] == 9,
       "the quarter's worst window ranks %d of nine, not the quietest" % g["rank_of_nine"])
     # and no grid cell ties, so no tie-break convention can be needed
@@ -210,6 +216,11 @@ def run(target):
     A("the 1,296th highest sample of the quarter" in fw, "A1 clause 7.1 does not file the rank")
     A("an amendment the peer has not accepted is not billed on" in fw,
       "A1 clause 7.2 does not file which commitment is billed")
+    A("that is in force on the last day of the quarter" in fw,
+      "A1 clause 7.2 does not pin which date an amendment inside the quarter is read at")
+    A(any(a.effective_from > W.Q_FROM.isoformat() and a.effective_from <= W.Q_TO.isoformat()
+          and a.status.startswith("accepted") for a in amend.itertuples()),
+      "A1 no accepted amendment falls inside the quarter, so the pin is idle")
     A("taken over the peer's traffic and not over one port of it" in fw,
       "A1 clause 7.1 does not file the grain")
     A(len(g["a1_peers"]) == 7, "A1 covers %d peers" % len(g["a1_peers"]))

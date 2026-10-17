@@ -214,10 +214,13 @@
   "2026Q4": 471
  },
  "rank_of_nine": 9,
+ "record_windows": 15330,
+ "record_windows_at_or_above": 282,
  "rung0_port": "STR-01",
  "rung0_shortfall_kbps": 569,
  "rung2_mean_kbps": 129.1,
  "rung2_next_kbps": 112.0,
  "rung2_port": "DLF-01",
- "windows_assessed": 1890
+ "windows_assessed": 1809,
+ "windows_in_quarter": 1851
 }

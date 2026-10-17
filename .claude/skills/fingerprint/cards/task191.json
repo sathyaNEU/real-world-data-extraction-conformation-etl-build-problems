@@ -10,8 +10,8 @@
  "shape": "13",
  "decision_type": "go_hold_or_stop",
  "answer_unit": "named_option",
- "answer": "",
- "answer_source": "",
+ "answer": "Fund no interconnect augment this cycle.",
+ "answer_source": "submission.md block 1; generator/figures.json call. The quarter's worst evening shortfall is 318 kbps on HVT-01 on 2027-02-17 in the 19:00 window, and every one of the eight earlier quarters of the same measurement on the same seven interconnects produced a larger worst window, 398 to 489 kbps.",
  "gap": [
   "objective"
  ],
@@ -34,7 +34,7 @@
  "scoring_unit": "per active unit per period",
  "spine": {
   "file": "panel_throughput_minutes.csv",
-  "rows": 0,
+  "rows": 224460,
   "entity": "one measurement of one path in one minute",
   "grain": "path x minute",
   "source": "synthetic"
@@ -52,7 +52,10 @@
    "Rick Claassen"
   ]
  },
- "deliverables": [],
+ "deliverables": [
+  "augment_decision_2027Q1.xlsx",
+  "shortfall_overview.png"
+ ],
  "opening_move": "question-first",
  "question_form": "whether",
  "driver": "The decisive quantity is whether the largest shortfall among many candidate series is larger than the largest a quiet set of the same size and length produces, because the candidate was chosen for standing out, so judging it against the spread of one series calls a routine extreme a real degradation.",

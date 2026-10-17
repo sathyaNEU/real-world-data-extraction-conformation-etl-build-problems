@@ -310,3 +310,34 @@ and matched every control.
 - A filed alarm rule with a nightly threshold, so that the statistic becomes a count of alarm nights:
   the alarm rule is a stated score and the selection collapses to seven paths, which a strong model
   corrects by reflex. Dropped: the selection has to be over cells for the step to be worth a rung.
+
+## Pre-ship check
+
+The pack as built, read against the gates one last time.
+
+- **Free gates.** 153 generator assertions, 168 independent checks in `verify.py` (it reads only
+  `target/` and `figures.json`), `precut.py` 49 checks 0 FAIL 0 WARN, `figures_check.py` 103 of 103,
+  `voice-check.py` exit 0 at 979 characters, `leak.py` REVIEW with four answered lines, `guard.py heart`
+  PASS at nearest 0.05 (task130 v3), `guard.py surface` clean with no persona in the pack. Two rebuilds
+  byte-identical (pack md5 b584b3b0c7f86c594b8ab3532861bbe9), `target.zip` cut from the final rebuild,
+  22 entries, md5 3314fa1c8e8d9edaa14011ff8cdad913, every entry matching disk.
+- **Input gates.** 22 files, 4 formats (csv, pdf, xlsx, json), three files over 25,000 rows
+  (`edge_traffic_5min.csv` 311,040, `panel_throughput_minutes.csv` 224,460, `evening_quality_daily.csv`
+  17,178), five distractors named in `metadata.json`, none named in a file name.
+- **The three rules against the built pack.** The decisive step is still the analytical one: clause 4.2
+  names the record and never which figure of it, and the eleven figures of the record that `checks.py`
+  sweeps (every quarter's maximum, the per-interconnect maxima, their mean, the pooled 99th and 99.5th
+  percentiles, the same-quarter-a-year-ago maximum, the most recent quarter's) are each asserted at
+  least 6 per cent above the quarter's 318 kbps, so no reasonable reading of the record funds anything
+  and the solver's own choice of comparison is what decides. The mess stays in Layer 1: UTC minute
+  stamps against local evening windows, a port renamed mid-quarter, whole bands the collector missed,
+  a stale commitment row beside an accepted amendment and an unaccepted one, ticket-closed against
+  restored time. Nothing is planted to be caught: the booked maintenance evenings are filed in clause
+  4.4 and excluded by rule, a lower rung, and the figure they would otherwise produce (569 on STR-01)
+  is above every quarter of the record, so skipping that rule files a wrong answer without being the
+  stump.
+- **Gate G.** No shipped artifact ranks the seven interconnects on the decision question.
+  `peering_capacity_plan.xlsx` ranks them on headroom, declared in `metadata.json` as the wrong-basis
+  distractor and ruled out by its own footnote saying headroom carries no quality measure; the ranking
+  it implies (STR-01, OPL-01, HVT-01 tightest) is not the shortfall ranking. Delete every wrong number
+  in the pack and the call still turns on which figure of the record the 318 is measured against.

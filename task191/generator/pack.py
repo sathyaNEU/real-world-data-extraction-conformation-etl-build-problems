@@ -60,7 +60,7 @@ def write_panel(target, minutes):
         key = (code, local.date(), band)
         if key not in lost:
             lost.add(key)
-            if rng.random() < 0.0118:
+            if rng.random() < 0.0083:
                 dropped[key] = True
         if dropped.get(key):
             continue
