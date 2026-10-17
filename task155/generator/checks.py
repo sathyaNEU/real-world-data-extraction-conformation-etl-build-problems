@@ -219,6 +219,11 @@ def main(task, F):
     n18 = sum(C.paid_min(ln["e"] - ln["s"]) / 60.0 for ln in B.xmas if ln["open"] and ln["e"] == 1440)
     check("R2.7 shifts ending 24:00 only at Werribee; the crew hours do not touch them", n18 > 0 and all(
         ln["loc"] == WERR for ln in B.xmas if ln["e"] == 1440), "%.0f open hours end at midnight" % n18)
+    rows_n = [dict(r, cl=C.home_loc_newest(B, r["pc"], C.D0 + dt.timedelta(days=r["day"])) != r["loc"]) for r in rows]
+    o, m = static_call(rows_n)
+    check("R2.8 re-engagements' cost centres read on the rows' own dates: the call holds", o[0] == CAMB, "x%.2f" % m)
+    o, m = static_call(C.history(B, once=False))
+    check("R2.9 a duplicate call-in's FILLED close kept in the casual's day: the call holds", o[0] == CAMB, "x%.2f" % m)
 
     # the ladder
     o1, m1 = C.rank(R["R1 last Christmas register fill"])
@@ -364,14 +369,29 @@ def main(task, F):
     # by the shift's own re-raise agree
     check("ASK the day's absence voids the same fills as the shift's re-raise", off_a("A_S7_dayvoid") == 0 and
           off_b("B_S7_dayvoid") == 0)
-    # the cracker folds re-raises into their shift by store, date, times, reason and absent payroll number, voids
-    # give-backs as the notes file them and reads home stores from payroll on the shift date
-    crack = sum(abs(x - y) < 0.05 for x, y in zip(figs_a(S["A_crack"]), ga)) + \
-        sum(abs(x - y) < 0.05 for x, y in zip(figs_b(S["B_crack"]), gb))
-    chain = sum(abs(x - y) < 0.05 for x, y in zip(figs_a(S["A_S3b_raise"]), ga)) + \
-        sum(abs(x - y) < 0.05 for x, y in zip(figs_b(S["B_S3b_raise"]), gb))
-    check("ASK the cracker keeps a fifth of the figures or fewer", crack <= 8,
-          "%d of 40 (a re-raise chained to its own line: %d of 40)" % (crack, chain))
+    # Ask B's own device: the new-year store moves payroll keyed as re-engagements, the new cost centre dated from
+    # the keying, read from the number KWS holds; Ask A's covered column under the 07:00 path: a duplicate call-in
+    # closed FILLED with the casual booked
+    check("ASK B device: re-engagements read on the cost-centre rows' own dates miss (golden shifts)",
+          off_b("B_S8_newest") >= 9, "%d of 16 figures off" % off_b("B_S8_newest"))
+    check("ASK B device: the shift-identity fold misses Table 2 with it", off_b("B_crack") >= 9,
+          "%d of 16 off (%d with the golden's home read)" % (off_b("B_crack"), off_b("B_crack_payroll")))
+    check("ASK B device: the 07:00 re-raise chain misses Table 2 through it", off_b("B_chain") >= 9 and
+          off_b("B_chain") >= off_b("B_S3b_raise") + 4, "%d of 16 off (%d with the golden's home read)" % (
+              off_b("B_chain"), off_b("B_S3b_raise")))
+    cov_off = sum(abs(round(S["A_S3b_raise"][l]["covered"], 1) - round(S["A_golden"][l]["covered"], 1)) >= 0.05
+                  for l in B.locs)
+    check("ASK A device: the 07:00 re-raise chain counts a duplicate's FILLED close as more cover", cov_off >= 6,
+          "%d of 8 covered figures off" % cov_off)
+    # the cracker sheet, measured on the cut pack (generator/cracker.py)
+    import cracker as CR
+    sheet, blind = CR.measure(task)
+    check("ASK each cracker path keeps few enough figures for a pair at or under 40", all(
+        r["pair"] <= 40.0 for r in sheet.values()), "; ".join("%s %d of 40, pair %.1f" % (k, r["kept"], r["pair"])
+                                                             for k, r in sheet.items()))
+    check("ASK the blind responses recover no more than a quarter of either table", max(
+        blind["rate_A"], blind["nil_A"], blind["const_A"]) <= 6 and max(blind["nil_B"], blind["const_B"]) <= 4,
+          str(blind))
     exact = all(abs(x * 2 - round(x * 2)) < 1e-6 for x in ga + gb)
     check("ASK every figure is exact at one decimal (paid hours come in half hours)", exact)
     pub = collections.Counter()
@@ -452,7 +472,7 @@ def main(task, F):
           "%d of %d" % (late, len(camb)))
     wcc = [r["cost_centre"] for r in B.stores if r["kws_location"] == WERR][0]
     feb = {int(r["employee_no"]) for r in B.payroll if r["engagement_start"].startswith("2026-02")
-           and r["cost_centre"] == wcc}
+           and r["cost_centre"] == wcc and not r["previous_employee_no"]}
     lines = [ln for ln in B.xmas if ln["loc"] == WERR and ln["pn"] in feb]
     on = sum(ln["code"] in ("W08", "A14") for ln in lines)
     check("RZ9 Werribee's February intake is rostered mostly on the 8-to-2 and 2-to-6 shifts", on > len(lines) / 2,

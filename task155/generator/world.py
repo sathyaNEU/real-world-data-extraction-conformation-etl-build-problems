@@ -188,7 +188,7 @@ P_ABSENT = 0.045            # a rostered shift lost to a sickness or carer's abs
 P_ABSENT_PEAK = 0.05
 P_DROP = 0.035              # an accepted call-in later dropped by the casual
 TRAVEL_MIN = 60             # minutes KWS leaves a casual to get between stores
-P_DUP_REPORT = 0.06         # an absence reported twice (the app and a call to the store), each raising a call-in
+P_DUP_REPORT = 0.12         # an absence reported twice (the app and a call to the store), each raising a call-in
 P_LATE_LEAVE = 0.15         # a permanent's leave approved after the roster for those days was published
 
 
@@ -703,10 +703,10 @@ class Cascade:
                     for j in pairs.get(nd.get("pair"), ()):
                         tw = needs[j]
                         if j != k and not tw["done"]:
-                            # the store closes the second call-in for the line once the first is filled
+                            # booking the shift closes the other call-in out for it, FILLED with the casual booked
                             tw["done"] = True
                             if tw["cur"] is not None and self.postings[tw["cur"]]["outcome"] is None:
-                                self.postings[tw["cur"]].update(closed=t, outcome="UNFILLED")
+                                self.postings[tw["cur"]].update(closed=t, outcome="FILLED", filled_by=idx)
                     if nd["s"] - t > 300 and self.drng.random() < P_DROP:
                         td = t + 120 + self.drng.random() * max(0.0, (nd["s"] - 120) - (t + 120))
                         heapq.heappush(heap, (int(td), seq, k, "drop"))

@@ -37,7 +37,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "callin_offers_20250829_20261112.csv",
-    "rows": 138219,
+    "rows": 141999,
     "entity": "one offer of one call-in shift to one casual, with the casual's response",
     "grain": "offer",
     "source": "synthetic"
@@ -82,7 +82,8 @@
     "effective_dated_records",
     "unpaid_break_rules",
     "records_raised_again_under_new_ids",
-    "one_event_reported_twice"
+    "one_event_reported_twice",
+    "moves_recorded_as_rehires_under_new_numbers"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

@@ -21,9 +21,9 @@ one that needs a separate trip in.
 | Decision | `pick_one_of_n`, answer unit `named_option` (the store), with the crew hours it will work there to the nearest 10 |
 | Mechanism | gap time (decisive: the history's offers seldom sat against the offeree's own rostered shift, and the Christmas roster's Werribee uplift does) with population (the register's fill rate is struck over the call-ins raised, mostly absences at short notice, not over the Christmas open shifts); pattern E (conditioned yield: the split by whether an offer carries on from the casual's own shift is absolute, rebuilt by joining each offer to the roster, and no column names it); generators G14, G6 (the Christmas pool's offers move against the history's mix on that property), G7 (offers go out 07:00 to 21:00 local and a casual on shift answers when the shift ends); Gate G `forecasting`; strategy `composition_mix` |
 | Layer 2 family / pattern | `field_method` (a discrete-choice model of labour supply with a fixed cost of a trip to work); `own:fixed-cost-of-a-trip-in-extra-shift-take-up` |
-| Layer 1 | timestamps in UTC in the workforce system against store-time rosters across the daylight-saving changes of October 2025, April 2026 and October 2026; two staff keys (the workforce system's person code and the payroll employee number, a rehire getting a new number); the roster export's layout changed when rostering moved into the workforce system in February 2026; store names, location ids and cost centres; shifts ending at midnight written 24:00; the effective-dated home store; the unpaid 30-minute meal break on shifts over five hours; re-offers written as new call-ins, given-back fills raised again and an absence reported twice (the asks' records); the full inventory is in `## Layer 1 inventory` |
+| Layer 1 | timestamps in UTC in the workforce system against store-time rosters across the daylight-saving changes of October 2025, April 2026 and October 2026; two staff keys (the workforce system's person code and the payroll employee number, a rehire getting a new number); the roster export's layout changed when rostering moved into the workforce system in February 2026; store names, location ids and cost centres; shifts ending at midnight written 24:00; the effective-dated home store; the unpaid 30-minute meal break on shifts over five hours; re-offers written as new call-ins, given-back fills raised again, an absence reported twice, and store moves payroll recorded as re-engagements keyed before they began (the asks' records); the full inventory is in `## Layer 1 inventory` |
 | Furniture | forum `operations_desk` (the workforce planning desk places the crew), forcing event `season_or_peak` (the four trading weeks to Christmas Eve), organisation family `retailer_or_ecommerce`, role family `capacity_planner` (the workforce planning manager), context artifact `capacity_report`, calibration `none`, opening `question-first`, question form `which` |
-| Spine | `callin_offers_20250829_20261112.csv`, the workforce system's offer history report, shifts 29 August 2025 to 12 November 2026 (one row per offer of one call-in shift to one casual, with the response), 139,549 rows; constructed |
+| Spine | `callin_offers_20250829_20261112.csv`, the workforce system's offer history report, shifts 29 August 2025 to 12 November 2026 (one row per offer of one call-in shift to one casual, with the response), 141,999 rows; constructed |
 | Deliverables | `relief_crew_placement_xmas2026.pdf` (a one-page placement brief with the chart of each store's expected unworked hours) and `relief_crew_xmas2026.xlsx` (the working and the ask tables); the format set is in none of the last three builds |
 | People | drawn with `guard.py names --geo "Australia, Victoria" --seed 155` and checked clean of first-name repeats: Beth Hill (workforce planning manager, owner of the placement standard), Meredith Stevens (workforce systems lead, the call-in module notes and the extract file list), Kristina Patel (payroll and HR systems analyst, the casual register notes), Belinda Friedman (general manager, retail operations, signatory on the standard); the requester is in no file and not in the prompt |
 | World | Kellaway's (checked: no Australian grocer, supermarket or retailer trades under the name), a family-owned chain of eight Victorian stores: Altona, Werribee, Sunshine and Williamstown (west cluster), Box Hill, Camberwell and Ringwood (east cluster), Ballarat (no cluster) |
@@ -103,12 +103,12 @@ Figures from the built pack (`generator/routes.txt`, written by `checks.py`; the
 2. Sum each store's open paid hours in the Christmas roster: Werribee 3,254, Box Hill 2,602, Altona 1,770, Sunshine
    1,378, Ringwood 1,140, Camberwell 1,092.5, Ballarat 876 and Williamstown 641.5.
 3. Take each store's share of call-in hours filled over the register's rows in the ordinary weeks (29 August to
-   27 November 2025 and 25 December 2025 to 12 November 2026, last Christmas's weeks set aside): Werribee 0.33, the
-   other stores 0.37 to 0.61.
+   27 November 2025 and 25 December 2025 to 12 November 2026, last Christmas's weeks set aside): Werribee 0.29, the
+   other stores 0.36 to 0.63.
 4. Multiply each store's open hours by the share left unfilled and place the crew at the largest.
 
-Ends on: Werribee, 3,250 crew hours (about 2,190 of them otherwise unworked, Box Hill next at about 1,100, Camberwell
-fifth at about 590).
+Ends on: Werribee, 3,250 crew hours (about 2,310 of them otherwise unworked, Box Hill next at about 960, Camberwell
+fifth at about 600).
 
 Golden: Camberwell, 1,090 crew hours (about 670 of them otherwise unworked, Ringwood next at about 400, Werribee about
 320): each open shift's chance of going unfilled is the chance every casual the module would offer it to says no, each
@@ -130,8 +130,8 @@ shifts, so Camberwell, whose weekday daytime uplift almost no casual's shift abu
 - Task type: discrete-choice-limited-dependent-variable-modeling (Economics & Econometrics), which serves Forecasting: each open Christmas shift's chance of going unfilled is the product, over the casuals the call-in module would offer it to, of each casual's chance of saying no, a binary choice estimated on the offer log and aggregated over the published roster.
 - Domain test: the deciding quantity is each store's expected unfilled open hours, built from a labour-supply choice at the extensive margin: taking an extra shift carries a fixed cost of getting to work that an offer carrying straight on from the casual's own rostered shift at the same store does not, so the field's estimator is a choice model whose specification carries that participation cost, fitted on every offer and its answer and applied to the open shifts' position against each casual's rostered shifts.
 - Swap: "which of eight power stations gets the one maintenance crew for the four weeks to Christmas, on the megawatt-hours its standby units would leave unserved" keeps the arithmetic of open hours times a shortfall rate, but no standby unit chooses whether to make a trip, so there is no fixed cost a schedule can remove and the construction that decides the call has nothing to act on.
-- Layer 1: the workforce system (KWS) writes offer and call-in times in UTC while rosters are in store time, across the daylight-saving changes of October 2025, April 2026 and October 2026; offers carry the KWS person code and rosters the payroll number, and payroll issues a new number on rehire; the roster export changed layout when rostering moved into KWS on 27 February 2026 (the legacy export dated dd/mm/yyyy with store names and span hours, the KWS export ISO dates, location numbers and paid hours); the Christmas roster writes shifts ending at midnight as 24:00; payroll keeps the home store effective-dated while KWS holds only the current one; the unpaid 30-minute meal break on shifts over five hours; a call-in that runs out of casuals closes UNFILLED and the shift is raised again as a new call-in at 07:00 the next day; a casual who gives back an accepted call-in reports an absence and the shift is raised again naming them; an absence reported both in the app and by phone raises two call-ins for one line; KWS offers no shift within an hour of the casual's shift at another store. Each comes from how the system records its own work, and none carries the call.
-- Layer 2: field_method, the labour-supply choice model: the methodological choice that flips the call is specifying the participation cost, separating offers that carry on from the casual's own rostered shift at that store from offers that need a separate trip, estimated on the history where such offers are about one in sixty-five (2,159 of 139,549) and applied to a Christmas roster where every one of Werribee's open shifts could be taken that way.
+- Layer 1: the workforce system (KWS) writes offer and call-in times in UTC while rosters are in store time, across the daylight-saving changes of October 2025, April 2026 and October 2026; offers carry the KWS person code and rosters the payroll number, and payroll issues a new number on rehire; the roster export changed layout when rostering moved into KWS on 27 February 2026 (the legacy export dated dd/mm/yyyy with store names and span hours, the KWS export ISO dates, location numbers and paid hours); the Christmas roster writes shifts ending at midnight as 24:00; payroll keeps the home store effective-dated while KWS holds only the current one; the unpaid 30-minute meal break on shifts over five hours; a call-in that runs out of casuals closes UNFILLED and the shift is raised again as a new call-in at 07:00 the next day; a casual who gives back an accepted call-in reports an absence and the shift is raised again naming them; an absence reported both in the app and by phone raises two call-ins for one line, and booking the shift closes the second FILLED with the casual booked; KWS offers no shift within an hour of the casual's shift at another store; payroll recorded store moves before April 2026 as a resignation and a re-engagement, the new cost centre dated from the day it was keyed. Each comes from how the system records its own work, and none carries the call.
+- Layer 2: field_method, the labour-supply choice model: the methodological choice that flips the call is specifying the participation cost, separating offers that carry on from the casual's own rostered shift at that store from offers that need a separate trip, estimated on the history where such offers are about one in sixty-six (2,152 of 141,999) and applied to a Christmas roster where every one of Werribee's open shifts could be taken that way.
 - Decisive step: estimating the take-up of an extra shift with the fixed cost of the trip to work in the model, so that an offer starting as the casual's own rostered shift at that store ends, or ending as it starts, is priced as staying on rather than as a separate trip, and applying that to which casuals' published Christmas shifts each open shift abuts.
 - Not semantics: no field, code, column or definition marks an offer as an extension; the property exists only when each offer's shift is joined, through the person code and payroll number, to the casual's own roster that day, and an analyst who reads every field and definition correctly is left with a fill rate or an acceptance model on the offer log's own columns, both of which send the crew to Werribee.
 - Not rule application: no filed rule or procedure says how a casual answers; the call-in module notes say who is offered a shift, in what order and when, and executing them literally needs each casual's chance of accepting, which the analyst must estimate; executed with any estimate that prices every offer as a separate trip, the notes and the standard file Werribee, so the step that reaches Camberwell is the model's specification, not a rule.
@@ -158,8 +158,9 @@ Each item is how the chain's own systems record their work; each is asserted neu
 | the unpaid 30-minute meal break on shifts over five hours | the enterprise agreement | EA summary; the legacy export's span `Hrs` | span hours as paid | R2.3 (the call holds); SF3; HA2 |
 | a call-in whose list runs out closes UNFILLED and the shift is raised again as a new call-in at 07:00 the next day (filed in the module notes) | KWS register | call-in register | every row a shift; the identical open lines a roster lists merged with the re-raises | Ask A filed readings S1 and S1b asserted off; device A1's over-cleaning half (S2); the golden reads no posting outcome (SEP1) |
 | a given-back fill keeps its FILLED outcome and the shift is raised again as an ABS call-in naming the casual (filed in the module notes) | KWS register | call-in register | the first fill kept as cover, or its re-raise counted as another shift | Ask A filed readings S3 and S3c asserted off; Ask B S3c; R2.5 for the call |
-| an absence reported both in the app and by phone, two ABS call-ins for one vacated line, the second closed UNFILLED when the first fills (6 per cent of absences) | KWS register | call-in register | each call-in raised other than at 07:00 counted as a shift | Ask A device A3 (S3b); the golden's vacated lines are a set (SEP1) |
-| no offer within an hour of the casual's shift at another store (filed in the module notes' skip rule) | KWS | offer log against both roster exports and the register's fills | none: the rule holds on every offer | RZ11 (0 of 139,549 offers); the golden's forward cascade applies it |
+| an absence reported both in the app and by phone, two ABS call-ins for one vacated line (12 per cent of absences); booking the shift closes the second FILLED with the casual booked | KWS register | call-in register | each call-in raised other than at 07:00 counted as a shift, each FILLED call-in as cover | Ask A device A3 (S3b); the golden's vacated lines are a set and a casual is booked on a shift once (SEP1, R2.9) |
+| store moves before payroll's April 2026 transfer screen recorded as a resignation and a re-engagement under a new number, the re-engagement form dating the new cost centre from the day it was keyed (the November roster review's moves on 20 November 2025, the Ballarat leavers' on 15 December), so the new number's cost-centre row starts before its engagement | payroll | payroll register; KWS people (the new number) | the home store read from the number KWS holds, on the cost-centre rows' own dates | Ask B device B2 (S8); R2.8 (the call holds) |
+| no offer to a casual with a shift at another store within an hour (filed in the module notes' skip rule: a shift at another store counts from an hour before its start to an hour after its finish) | KWS | offer log against both roster exports and the register's fills | none: the rule holds on every offer | RZ11 (0 of 141,999 offers); the golden's forward cascade applies it |
 
 ## Readability screen
 
@@ -194,34 +195,34 @@ Figures from the built pack (`generator/routes.txt`, every route recomputed from
 
 | Rung | Construction | Winner | Margin | Camberwell's place |
 |---|---|---|---|---|
-| R0 | the register's fill share over the ordinary weeks, by posting or by shift, times each store's Christmas open hours | Werribee | 1.64 to 1.99 | 5th or 6th |
-| R1 | the same share over last Christmas's weeks | Werribee | 1.22 to 2.11 | 6th or 8th |
-| R2 | an offer-level logit on the log's own columns (shift length, finish, start, Sunday, notice, a repeat offer, sister store, weekly hours, the Christmas weeks, age band, home store), with or without a rostered-that-day term, static or run through the module's cascade | Werribee | 1.21 to 2.21 over Camberwell | 2nd or 3rd |
-| R3 (decisive) | the same model with the trip-cost term: an offer that starts as the casual's own rostered or booked shift at that store ends, or ends as it starts, priced apart from a second, separate shift that day | Camberwell | 1.74 to 2.22 | 1st |
+| R0 | the register's fill share over the ordinary weeks, by posting or by shift, times each store's Christmas open hours | Werribee | 1.69 to 2.41 | 5th or 7th |
+| R1 | the same share over last Christmas's weeks | Werribee | 1.18 to 1.86 | 6th or 7th |
+| R2 | an offer-level logit on the log's own columns (shift length, finish, start, Sunday, notice, a repeat offer, sister store, weekly hours, the Christmas weeks, age band, home store), with or without a rostered-that-day term, static or run through the module's cascade | Werribee | 1.20 to 2.27 over Camberwell | 2nd or 3rd |
+| R3 (decisive) | the same model with the trip-cost term: an offer that starts as the casual's own rostered or booked shift at that store ends, or ends as it starts, priced apart from a second, separate shift that day | Camberwell | 1.71 to 2.20 | 1st |
 
 - Position and dominance: every construction without the trip-cost term files Werribee (12 of 12 in `routes.txt`: the
   open-hours sum, four register routes and seven offer models); every construction with it files Camberwell (6 of 6,
   static or run through the cascade, with or without age, store or December terms), as do the golden (24 runs, 1.69
-  over Ringwood) and the world's own Christmas (32 runs, 1.53 over Sunshine).
+  over Ringwood) and the world's own Christmas (32 runs, 1.51 over Sunshine).
 - Hardening before the cut (`stumping` Part 8, the winner's default-path rank worse): Box Hill and Altona list
   Christmas uplift against their own casuals' afternoon shifts as Werribee does (96 and 79 per cent of their open
   shifts reachable by staying on), so Camberwell is sixth on open hours, fifth or lower on every register route and
-  second or third on every offer model, at least 1.21 behind the leader; asserted (R3a, L1 to L3).
-- The weakest wrong route is the static model with one rostered-that-day term (Werribee 849 against Camberwell 703,
-  1.21; 1.25 before this world's last re-draw, 1.36 and 1.21 on seeds 156 and 160). The term pools the 2,159 offers that
-  carry on from the casual's own shift (33 per cent taken) with the 16,224 offers of a second, separate shift on a
-  rostered day (0.26 per cent taken), so it reads a casual already rostered that day as a little less willing than one
-  on a day off (4.2 against 4.9 per cent); the second-shift cell's take-up is what moves this route (`## Tried and
+  second or third on every offer model, at least 1.20 behind the leader; asserted (R3a, L1 to L3).
+- The weakest wrong route is the static model with one rostered-that-day term (Werribee 837 against Camberwell 696,
+  1.20; 1.25 two re-draws ago, 1.33 and 1.14 on seeds 156 and 160). The term pools the 2,152 offers that carry on from
+  the casual's own shift (34 per cent taken) with the 17,201 offers of a second, separate shift on a rostered day
+  (0.32 per cent taken), so it reads a casual already rostered that day as a little less willing than one on a day off
+  (4.0 against 4.8 per cent); the second-shift cell's take-up is what moves this route (`## Tried and
   rejected`).
 - Worth on the graded figures: the store and the crew hours both change when the decisive rung is undone (Werribee
-  3,250 against Camberwell 1,090); every critical component (the 33 against 4 per cent split, the share of each store's
+  3,250 against Camberwell 1,090); every critical component (the 34 against 4 per cent split, the share of each store's
   open shifts its casuals could take by staying on, Camberwell's 1,090 open hours) is upstream of the call.
 - Strength against the opponent (lesson 2): P(one strong solver builds the trip-cost term and applies it to the
   published roster) is put at 0.15 (about half take a register route, a third an offer model on the log's columns, a
   sixth join the rosters and test adjacency); P(both top responses) about 0.04 with correlation; the free gates assert
   every natural route's verdict.
-- Stability: the deciding split rests on 2,159 offers and 721 acceptances; a one-sigma move in the trip-cost
-  coefficient either way keeps Camberwell first (2.05 and 2.11, L4).
+- Stability: the deciding split rests on 2,152 offers and 724 acceptances; a one-sigma move in the trip-cost
+  coefficient either way keeps Camberwell first (2.14 and 2.21, L4).
 
 ## Closure table
 
@@ -263,7 +264,7 @@ literal estimand, never from another reading.
 None. No control, published figure or reconciliation column ranks the stores or ties under one method; the call-in
 register's fill rates are history, not a control, and they agree with every method on the past because the past
 seldom put an extension offer to anyone. The history refutes the separate-trip model only on the extension offers
-themselves (2,159 offers, 33 per cent taken against 4 per cent of the rest), a cut the default path never makes.
+themselves (2,152 offers, 34 per cent taken against 4 per cent of the rest), a cut the default path never makes.
 
 ## Ask sheet
 
@@ -271,18 +272,22 @@ themselves (2,159 offers, 33 per cent taken against 4 per cent of the rest), a c
 response), the roster lines' start and end times and payroll numbers on the days of offers, the KWS people extract's
 person code, payroll number, home store, opt-in and service date, the payroll register's previous numbers and
 cost-centre history, the availability profiles, and every line of the published Christmas roster. Device rows in it:
-none. The golden reads the call-in register only for fills and vacated lines (SEP1; an absence reported twice vacates
-the one line), the call holds with call-in fills left out of each casual's day (R2.5) and with home stores read current
-(R2.2), and the asks read neither the Christmas roster nor the offer log (SEP2).
+the re-engagement rows of the 23 store moves dated before April 2026 (Ask B's device B2 sits in the payroll register
+the call also reads); read on the rows' own dates they mis-home those casuals' offers from the keying date to the
+move, and the call holds (R2.8, x2.19). No other device or hazard row touches it. The golden reads the call-in
+register only for fills and vacated lines (SEP1; an absence reported twice vacates the one line, a casual is booked on
+a shift once, R2.9), the call holds with call-in fills left out of each casual's day (R2.5) and with home stores read
+current (R2.2), and the asks read neither the Christmas roster nor the offer log (SEP2).
 
-**What the filing settled (judge round 1).** The module notes and the transmittal now say, as how KWS and payroll keep
+**What the filing settled (judge round 1).** The module notes and the transmittal say, as how KWS and payroll keep
 their records: an open line is put out when the roster is published (OPN) and a vacated line when its absence or leave
 is raised (ABS, LVE), except the open lines of the store where the crew is placed (the standard says the same); a
 call-in whose list runs out closes UNFILLED and the shift is raised again as a new call-in at 07:00 the next day, so a
 shift offered over several days has a call-in for each day; a casual who gives back a call-in reports an absence, the
 shift is raised again as an ABS call-in naming them, their own call-in keeps its FILLED outcome and KWS offers them
-nothing more that day; KWS keeps times in UTC; a casual's home store on a date is the store whose cost centre payroll
-applied that day. Each is a work order the cracker executes, and each other reading is asserted off the golden.
+nothing more that day; KWS keeps times in UTC; a casual's home store on a date is the store whose cost centre applied
+to them that day. Each is a work order the cracker executes, and each other reading is asserted off the golden. Under
+the pins sit three silent primaries (A1, A3, B2), measured below on both cracker paths.
 
 **Ask A. Last Christmas's call-ins by store** (24 figures, paid hours to one decimal place): for each store, the hours of
 the shifts it put out to call-in for the four trading weeks to Christmas Eve 2025 (Friday 28 November to Wednesday
@@ -296,20 +301,21 @@ the shifts it put out to call-in for the four trading weeks to Christmas Eve 202
   (10:00 on 13 November 2025), a re-raise at 07:00, and the 2025 legacy roster export lists the vacant lines (the
   referee: open postings at publication match the vacant lines at every store).
 - Primary A3 (D1, a resubmission that opens no second case; silent): an absence reported both in the app and by phone
-  raises two ABS call-ins for the one vacated line, naming the same payroll number, the second closed UNFILLED when the
-  first fills (6 per cent of absences, at seven stores in the window); telling re-raises by their 07:00 raise counts
-  both. Fair: one person holds one line at a time, so two call-ins for the same shift naming the same absent number are
-  one vacated line.
+  raises two ABS call-ins for the one vacated line, naming the same payroll number (12 per cent of absences), and
+  booking the shift closes the second FILLED with the casual booked. Telling re-raises by their 07:00 raise counts
+  both as shifts and the second FILLED close as more cover. Fair: one person holds one line at a time and the notes'
+  skip rule keeps a casual off overlapping shifts, so two call-ins for the same shift naming the same absent number
+  are one vacated line, and two FILLED closes with the same casual are one booking.
 - Hazards: HA1 UTC against store dates (shifts starting before 11:00 on Friday 28 November 2025 sit on 27 November in
   UTC); HA2 the meal break (span against paid hours); HA3 Werribee's open Christmas shifts went to the 2025 crew and
   were never put out.
-- Stops (each a complete pipeline in `asks.py`, asserted in `checks.py`): S1 every register row a shift, 23 of 24
-  figures off; S1b every row but those closed the minute they were raised, 23; S2 the fold on store, date, times, reason
-  and absent number (A1), 24; S3 a give-back's re-raise counted as another shift with the first fill kept, 14; S3b
-  re-raises told by their 07:00 raise (A3), 14 (put-out and uncovered hours; covered untouched); S3c a give-back counted
-  once with its first fill kept as the cover, 14; S4 UTC dates, 16; S5 span hours, 24; S6 open lines left out, 24; S7
-  fills voided by any absence their casual reported that day: the golden, 0 of 24 (KWS offers such a casual nothing
-  more that day, asserted). Every golden figure is exact at one decimal (paid hours come in half hours).
+- Stops (each a complete pipeline in `asks.py`, asserted in `checks.py`): S1 every register row a shift, 24 of 24
+  figures off; S1b every row but those closed the minute they were raised, 24; S2 the fold on store, date, times, reason
+  and absent number (A1), 24; S3 a give-back's re-raise counted as another shift with the first fill kept, 16; S3b
+  re-raises told by their 07:00 raise (A3), 22; S3c a give-back counted once with its first fill kept as the cover, 16;
+  S4 UTC dates, 19; S5 span hours, 24; S6 open lines left out, 24; S7 fills voided by any absence their casual reported
+  that day: the golden, 0 of 24 (KWS offers such a casual nothing more that day, asserted). Every golden figure is exact
+  at one decimal (paid hours come in half hours).
 - Span: the call-in register, the legacy roster export, the KWS people extract, the payroll register, the EA summary,
   the module notes (6 files); store, shift start and end, reason, absent payroll number, raised, closed, outcome,
   filled by.
@@ -317,16 +323,23 @@ the shifts it put out to call-in for the four trading weeks to Christmas Eve 202
 **Ask B. Cover across stores last Christmas** (16 figures, paid hours to one decimal place): for each store, the hours of
 its call-ins in those weeks covered by casuals from other stores, and the hours its own casuals covered at other stores.
 - H18 home: how far stores leant on each other last Christmas, beside the crew's case; a measure every store carries.
-- Filed (round 1): the home store is the payroll cost centre on the shift date. 47 casuals have another home store now
-  than on 10 December 2025 (Ballarat students moving to Melbourne for university, moves between sister stores); read
-  current, 15 of the 16 figures move and Ballarat, which offers to no other store's casuals, shows 127.5 hours of imports
-  it never had. A given-back sister-store fill is not cover (credited to its first filler, 3 of 16 move).
-- Primary: none of its own since the filing. Ask B moves with A1's over-cleaning (the merged identical lines lose their
-  fills, 14 of 16 off) and with the hazards.
-- Hazards: HA1, HA2; every register row a shift (5 of 16); a give-back's re-raise counted as another shift (5 of 16).
-- Stops: S1 current home store, 15 of 16 off; S3c, 3; the fold (A1), 14; re-raises told by their 07:00 raise: the
-  golden, 0 of 16.
-- Span: the call-in register, the KWS people extract, the payroll register, the store list (4 files).
+- Filed (round 1): the home store is the payroll cost centre on the shift date. Read current, 15 of the 16 figures move
+  (Ballarat, in no cluster, shows 189.0 hours of imports). A given-back sister-store fill is not cover (credited to its
+  first filler, 6 of 16 move).
+- Primary B2 (D2, an attribute at the wrong vintage; D7, the true key elsewhere; silent): before its April 2026 transfer
+  screen payroll recorded a casual's move between stores as a resignation and a re-engagement under a new employee
+  number, the re-engagement form dating the new cost centre from the day it was keyed: the November roster review keyed
+  its new-year moves on 20 November 2025, and the Ballarat school leavers' moves to Melbourne were keyed on
+  15 December, the Monday after the VCE results. KWS keeps the person code and holds the new number. Read from that
+  number on the cost-centre rows' own dates, 23 movers' December shifts take the store they moved to weeks later, and
+  10 of the 16 figures move; no join fails and no row fans out. Fair: the same row carries an engagement start weeks
+  after the cost centre's effective date, the transmittal says a row is a period a cost centre applied to an
+  engagement, and the earlier number (previous_employee_no) runs until the day before the move; the offer log's order
+  (a store's own casuals asked before sister-store ones) agrees with the golden's homes on every posting (SF11).
+- Hazards: HA1, HA2; every register row a shift (8 of 16); a give-back's re-raise counted as another shift (4 of 16).
+- Stops: S1 current home store, 15 of 16 off; S3c, 6; S8 the re-engagements read on the rows' own dates (B2), 10; the
+  fold (A1 with B2), 14; the 07:00 chain (A3 with B2), 10 (4 with the golden's home read).
+- Span: the call-in register, the KWS people extract, the payroll register, the store list, the transmittal (5 files).
 
 **Hazard table**
 
@@ -339,29 +352,29 @@ its call-ins in those weeks covered by casuals from other stores, and the hours 
 **Referee.** Ask A: the 2025 legacy roster export's vacant lines count the open shifts put out at publication; Ask B:
 the offer order shows who the module treated as a store's own casual on the day. Neither hands over an ask figure.
 
-**Cracker sheet**
+**Cracker sheet** (both paths run on the cut pack by `generator/cracker.py`, every figure scored at its stated rounding)
 
 | Ask row | Figures | Cracker's path | Cracker's figures kept | Verdict |
 |---|---|---|---|---|
-| Ask A, last Christmas's call-ins | 24 | each shift's call-ins folded on store, date, times, reason and absent payroll number (the notes' "a call-in for each day" executed on the shift's identity), give-backs voided, store dates, paid hours | 0 | miss |
-| Ask B, cover across stores | 16 | the same shifts, each filler's home store the payroll cost centre on the shift date | 2 (Ballarat's two zeros) | miss |
+| Ask A, the shift-identity fold | 24 | each shift's call-ins folded on store, date, times, reason and absent payroll number, give-backs voided, store dates, paid hours | 0 | miss |
+| Ask B, the shift-identity fold | 16 | the same shifts, each filler's home store the payroll cost centre on the shift date, read from the number KWS holds | 2 (Ballarat's exports and Werribee's imports, both zero) | miss |
+| Ask A, the 07:00 re-raise chain | 24 | each re-raise told by its 07:00 raise and chained to its shift, give-backs voided, store dates, paid hours | 2 (Sunshine's covered and Ringwood's uncovered hours) | miss |
+| Ask B, the 07:00 re-raise chain | 16 | the same shifts and home-store read | 6 (Ballarat's exports, Camberwell's two figures, Box Hill's exports, Werribee's and Ringwood's imports) | miss |
 
-**The other path, and the open risk.** A cracker who tells each re-raise by its 07:00 raise instead of folding on the
-shift's identity handles A1 and falls only into A3: it keeps Ask A's covered column and Ringwood's two other figures
-(10 of 24) and all of Ask B (16 of 16), 26 of 40, and on that path the pair would sit near 64. The judge's round-1 path
-was of that kind. Once the cost-centre and give-back conventions are filed, Ask B carries no silent device of its own,
-so this build's ask layer rests on which of the two folds the top responses use; it is flagged for the author as the
-case for a `/fix-rubric` pass on Ask B (a device on the fills themselves) if the portal scores the asks high.
+Blind responses (`cracker.py`): one register fill rate on each store's register row hours recovers 0 of Table 1's 24
+cells; every cell nil 0 of 24 and 4 of 16 (the four true zeros); the best constant 1 of 24 and 4 of 16.
 
-Mirror leakage: 5.0 per cent of ask weight on the fold (2 of 40 figures; the mirror is R2, Werribee, and runs the
-cracker's ask paths), 65 per cent on the 07:00 path.
+Measured by: `generator/cracker.py` (run by `checks.py` on every build).
 
-Pair ceiling: 31.3 on the fold (the cracker C = 38 + 7 + 55 x 2/40 = 47.8; the best miss S = 5 + 7 + 55 x 2/40 = 14.8),
-64.3 on the 07:00 path (C = 80.8, S = 47.8), rerun from the generated rubric.
+Mirror leakage: 20.0 per cent of ask weight on the 07:00 chain (8 of 40 figures), 5.0 per cent on the fold (2 of 40);
+the mirror is R2, Werribee, and runs the cracker's ask paths.
+
+Pair ceiling: 39.5 on the 07:00 chain (the cracker C = 38 + 7 + 55 x 8/40 = 56.0; the best miss S = 5 + 7 + 55 x 8/40 =
+23.0), 31.2 on the fold (C = 47.8, S = 14.8), measured on the cut pack.
 
 ## Surface screen
 
-`guard.py surface task155` promotes six pairs for adjudication; none carries a hard tell (no shared file name, column
+`guard.py surface task155` promotes seven pairs for adjudication; none carries a hard tell (no shared file name, column
 set, same-seed table, invented name or masked prompt wording: Track A rests on the shared folder layout and format mix
 alone), and `guard.py heart` passes (nearest text 0.05, task149's stump; nearest driver 0.04, task98 v2). The pack names
 Beth Hill, Meredith Stevens, Kristina Patel and Belinda Friedman, the four drawn personas, and no one else. For the
@@ -377,6 +390,9 @@ author, who alone runs the adjudicated `/clone-check`:
 - task37, task44, task137, task117 and task97 (surface 0.082 to 0.094): the card-level same-driver signature (gap time,
   pattern E, Gate G forecasting), each differentiated on the card at the draw; none conditions a take-up on the taker's
   own scheduled work at the same place, and none shares a file, column set or sentence with this pack.
+- task151 (surface 0.101, promoted on surface similarity alone once it shipped into the batch): the folder layout and
+  format mix only; task151 accrues a stepped bonus on a unit's season total from its position's rate per appearance,
+  and shares no driver, file, column set or sentence with this pack.
 
 ## Leak sweep
 
@@ -388,10 +404,10 @@ author, who alone runs the adjudicated `/clone-check`:
 - Sweep 4 (the design note's vocabulary): the transmittal, the EA summary, the module notes and the standard are the
   chain's own documents about rosters, call-ins and pay and share their workaday words (roster, casual, offers,
   payroll); none names staying on, a trip to work, an extension or an offer's position against the casual's own shift.
-  The module notes' sentences on a casual's own shifts are skip rules (an overlapping shift; a shift at another store
-  ending or starting within an hour) and the give-back rule; they say who is offered a shift, never how a casual
-  answers. The notes and the transmittal gained the filed conventions after the round-1 reading, so the reader re-reads
-  them at round 2.
+  The module notes' sentences on a casual's own shifts are the skip rule (an overlapping shift, a shift at another
+  store counting from an hour before its start to an hour after its finish) and the give-back rule; they say who is
+  offered a shift, never how a casual answers, and no sentence on acceptance mentions a casual's own shifts. The notes
+  and the transmittal gained the filed conventions after the round-1 reading, so the reader re-reads them at round 2.
 - Sweep 9 (dates after the as-of): the Christmas roster lists the shifts of 27 November to 24 December 2026 as
   published on 12 November, the forward window the call is about; the school-terms calendar is the state calendar with
   the term's end and the Christmas public holidays (a distractor). No extract column runs past 12 November (RZ3).
@@ -405,28 +421,38 @@ author, who alone runs the adjudicated `/clone-check`:
   answers an offer; executed with any separate-trip estimate, the notes and the standard file Werribee (R3a, 12
   routes); only the trip-cost term, built by joining each offer to the casual's own roster that day through the payroll
   key, files Camberwell (R3b, 6 of 6). Layer 1 (UTC, two keys and rehires, the layout change, 24:00 ends, the
-  effective-dated home store, the meal break, re-raises, give-backs and absences reported twice) is neutral for the
-  call: each mishandled reading leaves Camberwell first (R2.1 to R2.7), and the register's records move only the asks.
-- **Free gates on the final rebuild.** `checks.py` 76 assertions, 0 failed; `verify.py` 0 failed on its own path;
+  effective-dated home store, the meal break, re-raises, give-backs, absences reported twice and the re-engagement
+  records) is neutral for the call: each mishandled reading leaves Camberwell first (R2.1 to R2.9), and the register's
+  records move only the asks.
+- **Free gates on the final rebuild.** `checks.py` 83 assertions, 0 failed; `verify.py` 0 failed on its own path;
   two builds byte-identical (15 files) and `target.zip` cut from the final build; `figures_check.py` 64 figures,
-  0 absent; `precut.py` exit 0 (49 checks); `voice-check.py` PASS (889 characters); the container audit clean on the
-  pack and the goldens; `guard.py heart` PASS (nearest text 0.05); `guard.py surface` six promotions, no hard tell
-  (## Surface screen); `leak.py` REVIEW, no LEAK (## Leak sweep).
+  0 absent; `cracker.py` both paths at or under 40 (39.5 and 31.2); `precut.py` exit 0 (50 checks); `voice-check.py`
+  PASS (889 characters); the container audit clean on the pack and the goldens; `guard.py heart` PASS (nearest text
+  0.05); `guard.py surface` seven promotions, no hard tell (## Surface screen); `leak.py` REVIEW, no LEAK
+  (## Leak sweep).
+- **Residual, accepted and recorded.** The second-shift cell stays at 0.32 per cent (55 of 17,201), well under the
+  day-off rate, because any realistic rate lends the pooled rostered-that-day model the carry-on effect (`## Tried and
+  rejected`); that route leads Camberwell by only 1.20 on this draw (R3a's floor is 1.15; 1.14 on seed 160). The 07:00
+  chain sits at a pair of 39.5, on the ceiling: it keeps Sunshine's covered and Ringwood's uncovered hours, Camberwell's
+  two Table 2 figures, Box Hill's exports, Werribee's and Ringwood's imports and Ballarat's exports. Under the natural
+  read of the re-engagement rows Ballarat shows 56.5 hours of imports though it is in no cluster, a tell a careful
+  reader can follow to device B2. Table 2 holds four true zeros (Ballarat's two, Altona's exports, Werribee's imports),
+  which an all-nil response recovers (4 of 16, a quarter).
 - **House-fix pass (H1 to H24).** H1 the containers clean. H2 every figure in the write-up and the goldens recomputes
   (`figures_check.py`, `verify.py`), and the note's figures come from `routes.txt` and the checks. H3 the brief read
   figure by figure; its statements about Werribee's February intake and Camberwell's weekday availability are asserted
   (RZ9, RZ8). H4 the zip holds the 15 declared files at its root; the brief's chart opened and read. H5 each ask's
   reading is closed: the asking sentences count shifts and their hours, the module notes file how re-raises and
   give-backs are recorded and the transmittal the home store on the shift date (round 1), each other reading asserted
-  off. H6 the memo's rules run over the record (RZ8, RZ9, the 33 against 4 per cent split). H7
+  off. H6 the memo's rules run over the record (RZ8, RZ9, the 34 against 4 per cent split). H7
   the zip cut from the final rebuild, two builds byte-identical. H8 the brief cites WP-04 section 4 and the EA summary,
   both shipped. H9 the transmittal lists every shipped file but itself (RZ7). H11 one `submission.md` and one
   `prompt.txt`. H12 and H13 `voice-check.py` PASS. H16 only the Christmas roster and the calendar carry dates past the
   extract, both forward by nature (RZ3 for the extract). H18 both asks are context for the placement (last
   Christmas's cover at each store and between stores), neither a second decision. H20 the prompt carries the call-in
   system's own nouns (our eight stores, the relief crew, the placement standard, call-ins, casuals). H21 Kellaway's
-  checked against Australian grocers and retailers at the draw. H23 no ask presupposes a non-empty subset (Ballarat's
-  zero cover reads 0.0). H24 no file under `target/` says the pack was built. H10, H14, H15, H17, H19 and
+  checked against Australian grocers and retailers at the draw. H23 no ask presupposes a non-empty subset (the four
+  zero cells read 0.0). H24 no file under `target/` says the pack was built. H10, H14, H15, H17, H19 and
   H22 are covered or do not apply: no calibration corpus; every grain the offer log allows (static or cascade, with
   age, store or December terms, ordinary weeks alone) keeps the call (R3b, C8); the referees are computed on the raw
   register; the batch voice check shows no repeated phrase; one archive, this build's; no real download.
@@ -441,11 +467,11 @@ author, who alone runs the adjudicated `/clone-check`:
   roster workbook, the trading plan), `postprocess.py` (container normalisation), `common.py`, `calc.py` (the bundle
   reader, the offer features, the logit, the forward cascade, the register routes), `asks.py` (both asks and their
   stops), `deliver.py` (the brief, the workbook, `figures.json`), `submission.py`, `metadata.py`, `checks.py`
-  (76 assertions: the three-rules block, the ladder and routes, SF1 to SF11, the closure axes, both asks with
-  their filed readings, devices, stops and the cracker, the separation line, the realism sweep, the input gates and the
-  distractors),
+  (83 assertions: the three-rules block, the ladder and routes, SF1 to SF11, the closure axes, both asks with
+  their filed readings, devices, stops and both measured cracker paths, the separation line, the realism sweep, the
+  input gates and the distractors), `cracker.py` (both cracker paths and the blind responses run on the cut pack),
   `verify.py` (its own path), `build.py` (two byte-identical builds, the zip).
-- Pack: 15 files in five formats (csv, json, pdf, txt, xlsx); the largest the offer history at 139,549 rows;
+- Pack: 15 files in five formats (csv, json, pdf, txt, xlsx); the largest the offer history at 141,999 rows;
   distractors the Christmas trading plan and the school terms and public holidays calendar, named in `metadata.json`.
 
 ## World seed
@@ -456,12 +482,12 @@ roster period, call-ins, the history cascade, each Christmas run), so a change t
 The Christmas forecast's ground truth is the mean over 32 runs, run r on stream 1000 + r. Robustness is read on world
 seeds 156 to 160, which never ship; a design that holds only on 155 is redesigned, not shipped.
 
-Read again on the final world (the travel rule, the duplicate absence reports and the give-back day rule in place) on
-seeds 156 and 160, with the shipped generator and checks: the world's own Christmas puts Camberwell first (1.48 and
-1.54 over the next store, 8 runs); every trip-cost construction and the golden file Camberwell (the golden 1.18 ahead
-on seed 156, where Werribee lists 3,377 open hours, more than its staying-on casuals absorb, and 1.48 ahead on seed
-160); and every no-trip-cost route files Werribee, at least 1.21 ahead of Camberwell (the static rostered-that-day
-model on seed 160; 1.36 on seed 156). On seed 156 Werribee's uplift is more than 25 crew can work under
+Read again on the final world (the travel rule, duplicate absence reports at 12 per cent with the second call-in
+closed FILLED, the give-back day rule and the re-engagement records in place) on seeds 156 and 160, with the shipped
+generator and checks: the world's own Christmas puts Camberwell first (1.57 and 1.52 over the next store, 8 runs);
+every trip-cost construction and the golden file Camberwell (the golden 1.36 ahead on seed 156, where Werribee lists
+3,377 open hours, more than its staying-on casuals absorb, and 1.53 ahead on seed 160); and every no-trip-cost route
+files Werribee, at least 1.14 ahead of Camberwell (the static rostered-that-day model on seed 160; 1.33 on seed 156). On seed 156 Werribee's uplift is more than 25 crew can work under
 the EA's limits, so the capacity closure (SF10) is a property of the shipped world, asserted there.
 
 ## Tried and rejected
@@ -543,3 +569,21 @@ the EA's limits, so the capacity closure (SF10) is a property of the shipped wor
   with the filed "a call-in for each day" the fold is the literal execution, and it falls into A1. The chaining path,
   which the round-1 judge took, keeps Ask B whole once its conventions are filed (26 of 40 figures); both are written
   in `## Ask sheet` and the pair ceiling is struck on the fold.
+- Round 2 (the 07:00 chain kept Table 2 whole, 26 of 40, a pair near 64): Table 2's own device is payroll's
+  record of a store move before its April 2026 transfer screen, a resignation and a re-engagement under a new number
+  whose cost centre the form dates from the day it was keyed (B2). Coded first with the Ballarat leavers keyed three
+  weeks before their February moves, once their university places were known, it moved 8 of 16 figures and the chain
+  kept 10 of 40 (pair 42.2); the leavers are keyed in results week instead, so their December shifts read as
+  Melbourne casuals' too, 10 of 16 move and the chain keeps 8 (39.5). The cost is a tell: under the natural read
+  Ballarat shows 56.5 hours of imports though it is in no cluster.
+- Round 2, Table 1's covered column under the 07:00 chain: at 6 per cent duplicate reports, with the second call-in
+  closed UNFILLED, the chain kept all eight covered figures. Booking the shift now closes the second call-in FILLED
+  with the casual booked (KWS closes the other call-in out for a booked shift), and duplicate reports rose to 12 per
+  cent of absences; the chain keeps one covered and one uncovered figure. The higher rate re-drew the history: every
+  ask figure moved and the call held (Camberwell, 1,090; the golden 1.69, the world 1.51, the narrowest easy route
+  1.20).
+- Round 2, the travel rule's first wording ("a shift that ends less than an hour before this one starts or starts less
+  than an hour after it ends") spoke of shifts meeting end to start, next to the decisive feature; it is now the
+  overlap filter it is: a shift at another store counts from an hour before its start to an hour after its finish.
+- The cracker sheet is measured by `generator/cracker.py` on the cut pack, both folds, every figure at its rounding,
+  with the blind responses; the prose sheet of round 1 had the 07:00 chain at 26 of 40 only once it was coded.

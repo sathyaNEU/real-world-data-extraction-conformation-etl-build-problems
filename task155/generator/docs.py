@@ -132,11 +132,10 @@ NOTES = [
         "call-ins, in order of service date. The West cluster is Altona, Sunshine, Werribee and Williamstown; the "
         "East cluster is Box Hill, Camberwell and Ringwood. Ballarat is in no cluster.",
         "A casual is skipped if their availability profile does not cover the whole shift on that date, if they are "
-        "rostered or booked at an overlapping time, or at another store for a shift that ends less than an hour "
-        "before this one starts or starts less than an hour after it ends, if the shift would take their paid hours "
-        "over 11 for the day or 38 for the roster week, or if they would have less than 10 hours between finishing "
-        "one day and starting the next. A casual who has reported an absence for a day is not offered call-ins on "
-        "that day."]),
+        "rostered or booked at an overlapping time (a shift at another store counts from an hour before its start to "
+        "an hour after its finish), if the shift would take their paid hours over 11 for the day or 38 for the roster "
+        "week, or if they would have less than 10 hours between finishing one day and starting the next. A casual "
+        "who has reported an absence for a day is not offered call-ins on that day."]),
     ("When offers go out", [
         "Offers go out by SMS and the KWS app between 07:00 and 21:00 store time. Outside those hours an offer waits "
         "until 07:00, unless the shift starts within 12 hours.",

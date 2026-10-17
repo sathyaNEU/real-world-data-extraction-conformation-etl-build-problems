@@ -130,14 +130,21 @@ def read_christmas(B):
 
 def identities(B, follow_rehires=True):
     """person code <-> payroll numbers through rehires; home location on a date from payroll's cost-centre history"""
-    B.eng = collections.defaultdict(list)          # employee_no -> [(from, to, loc)]
+    B.eng = collections.defaultdict(list)          # employee_no -> [(from, to, loc)], inside the engagement
+    B.cc_raw = collections.defaultdict(list)       # employee_no -> [(from, to, loc)] as the rows give them
     B.prev = {}
     B.dob = {}
     for r in B.payroll:
         no = int(r["employee_no"])
         f = dt.date.fromisoformat(r["cc_effective_from"])
         t = dt.date.fromisoformat(r["cc_effective_to"]) if r["cc_effective_to"] else dt.date(2099, 1, 1)
-        B.eng[no].append((f, t, B.cc_loc[r["cost_centre"]]))
+        a = dt.date.fromisoformat(r["engagement_start"])
+        b = dt.date.fromisoformat(r["engagement_end"]) if r["engagement_end"] else dt.date(2099, 1, 1)
+        loc = B.cc_loc[r["cost_centre"]]
+        B.cc_raw[no].append((f, t, loc))
+        # a cost centre applies to the engagement it belongs to, never before the engagement starts
+        if max(f, a) <= min(t, b):
+            B.eng[no].append((max(f, a), min(t, b), loc))
         B.dob[no] = dt.date.fromisoformat(r["date_of_birth"])
         if r["previous_employee_no"]:
             B.prev[no] = int(r["previous_employee_no"])
@@ -160,6 +167,17 @@ def home_loc(B, pc, d):
     return B.people[pc]["home_location"]
 
 
+def home_loc_newest(B, pc, d):
+    """the home store read from the number KWS holds first, on the cost-centre rows' own dates, earlier numbers only
+    when it has no row for the date (the natural read, which takes a re-engagement's cost centre from the day it was
+    keyed)"""
+    for no in reversed(B.nos[pc]):
+        for f, t, loc in B.cc_raw[no]:
+            if f <= d <= t:
+                return loc
+    return B.people[pc]["home_location"]
+
+
 def payroll_on(B, pc, d):
     for no in B.nos[pc]:
         for f, t, loc in B.eng[no]:
@@ -174,7 +192,7 @@ def age_on(B, pc, d):
 
 
 # ------------------------------------------------------------------------------------------------ history features
-def history(B, convert=True):
+def history(B, convert=True, once=True):
     """the offer log with each offer's terms, built from the rosters and the call-in register"""
     vac = set()
     filled = collections.defaultdict(list)      # (person, day) -> [(loc, s, e, t_acc, t_drop)]
@@ -200,7 +218,10 @@ def history(B, convert=True):
             loc, day, s, e = regs[r["callin_id"]]
             t = utc_to_local_min(r["closed_at"])
             td = drops.get((r["filled_by"], loc, day, s, e))
-            filled[(r["filled_by"], day)].append((loc, s, e, t, td if td is not None and td > t else None))
+            item = (loc, s, e, t, td if td is not None and td > t else None)
+            # a casual is booked on a shift once, however many call-ins for it closed FILLED with them
+            if not once or item not in filled[(r["filled_by"], day)]:
+                filled[(r["filled_by"], day)].append(item)
     book = collections.defaultdict(list)        # (payroll, day) -> [(loc, s, e)]
     for loc, day, s, e, pn, st in B.roster:
         if pn is not None and st == "ROSTERED" and (loc, day, s, e, pn) not in vac:
