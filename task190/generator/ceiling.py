@@ -94,11 +94,12 @@ def responses(fig):
 
     def covered_hits(resolved_the_invoice_rows):
         """The ledger lines the testing covered and their recorded value, both named in the asking
-        sentence. A response that counts the paper's rows instead gets both wrong, because five of
-        those rows cover every payment line on their invoice."""
-        n = 0
-        n += 1 if resolved_the_invoice_rows else 0
-        n += 1 if resolved_the_invoice_rows else 0
+        sentence: %d lines at %.2f. A response that counts the paper's rows instead files 275 and
+        the selection's value, because five of those rows cover every payment line on their
+        invoice. The build's own golden sat on the row count until it was resolved by hand.
+        """ % (fig["critical_components"]["ledger_lines_tested"],
+               fig["critical_components"]["ledger_lines_tested_recorded_value"])
+        n = 2 if resolved_the_invoice_rows else 0
         return n, 2
 
     tmp = tempfile.mkdtemp()

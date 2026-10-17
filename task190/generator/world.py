@@ -63,6 +63,9 @@ HOLIDAYS = {"2026-01-01", "2026-03-17", "2026-04-03", "2026-05-01", "2026-12-25"
 # finance system upgrade took the first Friday in November
 MISSED_RUNS = {"2026-08-07", "2026-11-06", "2025-08-08"}
 
+# the funder caps its contribution to any one programme; only the largest reaches it
+GRANT_CAP = {"CP-11": 3_900_000}
+
 PROG_CODES = [p[0] for p in PROGRAMMES]
 PROG_NAME = {p[0]: p[1] for p in PROGRAMMES}
 

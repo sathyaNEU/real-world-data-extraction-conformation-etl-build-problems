@@ -83,6 +83,9 @@
   "authority_misstatement_pct": 1.43,
   "certainty_lines": 31,
   "certainty_value": 15826540.07,
+  "ledger_lines_tested": 285,
+  "ledger_lines_tested_recorded_value": 21709610.89,
+  "lines_the_selection_chose": 275,
   "payment_lines": 26651,
   "payments_recorded_total": 59473299.73,
   "programme_certain_share_pct": {

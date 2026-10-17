@@ -405,9 +405,46 @@ def run(g, target):
        not (set(r["line"] for r in g["revenue"]) & inv_cov))
     # the freeze, executed: the call is identical with the grain device deleted
     clean = G.compute(lines, hits)
-    ok("A3 separation: the tested set is identical with the device deleted",
-       len({x["line"] for x in g["tested"]}) == clean["tested_lines"] == 275,
-       "%d / %d" % (len({x["line"] for x in g["tested"]}), clean["tested_lines"]))
+    # the SELECTION is what has to be identical with the device deleted; the graded figure is the
+    # ledger lines the testing covered, which is a different and larger quantity
+    ok("A3 separation: the selection is identical with the device deleted",
+       g["selected_lines"] == clean["tested_lines"],
+       "%d / %d" % (g["selected_lines"], clean["tested_lines"]))
+    # the graded covered-lines pair, resolved from the SHIPPED files rather than the generator's
+    # internals, which is the check that would have caught the golden sitting on the paper's rows
+    import collections as _c
+    byinv = _c.defaultdict(list)
+    byline = {}
+    for r in _rows(target, "capital_payment_lines_%s.csv" % W.YEAR):
+        if r["delivery_sequence"] != "1":
+            continue
+        byline[r["line_ref"]] = r
+        byinv[r["invoice_ref"]].append(r)
+    cov = set()
+    for r in _rows(target, "testing_schedule_extract_2025_2026.csv"):
+        if r["testing_year"] != W.YEAR:
+            continue
+        k = r["schedule_ref"].split("/")[-1]
+        if k in byline:
+            cov.add(k)
+        elif k in byinv:
+            cov |= {x["line_ref"] for x in byinv[k]}
+    ok("A3 the graded covered-lines count resolves from the shipped files",
+       len(cov) == g["covered_lines"], "%d shipped / %d golden" % (len(cov), g["covered_lines"]))
+    ok("A3 the graded covered-lines value resolves from the shipped files",
+       abs(sum(float(byline[l]["amount_eur"]) for l in cov) - g["covered_value"]) < 0.005,
+       "%.2f shipped / %.2f golden"
+       % (sum(float(byline[l]["amount_eur"]) for l in cov), g["covered_value"]))
+    ok("A3 the covered lines exceed the lines the selection chose, by the invoice rows",
+       g["covered_lines"] > g["selected_lines"],
+       "%d covered / %d selected" % (g["covered_lines"], g["selected_lines"]))
+    pv = open(os.path.join(target, "provenance.md"), encoding="utf-8").read()
+    ndist = len({r["line"] for r in g["shipped"] if r["delivery"] == 1})
+    ok("the provenance note's line count is the extract's own",
+       format(ndist, ",") in pv, "%s not in the note" % format(ndist, ","))
+    ok("A3 the covered lines are what the quarters sum to",
+       sum(month.values()) == g["covered_lines"],
+       "%d quarters / %d covered" % (sum(month.values()), g["covered_lines"]))
     ok("A3 separation: the certainty set is identical with the device deleted",
        clean["cert_lines"] == g["cert_lines"] and
        abs(clean["cert_value"] - g["cert_value"]) < 0.005)

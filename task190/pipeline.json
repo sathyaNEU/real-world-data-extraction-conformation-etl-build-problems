@@ -1,53 +1,53 @@
 {
-  "task": "task190",
-  "owner": "oviya13ya",
-  "status": "BUILD",
-  "domain": "accounting-audit-forensic/audit-testing-sampling",
-  "objective": "anomaly-detection",
-  "stage": 3,
-  "stage_name": "build",
-  "updated": "2026-10-17",
-  "stump": "The working paper files how the sample was drawn: probability proportional to recorded value, one interval of 180,000 euro common to every work programme, lines at or above it certain of selection. Nothing filed says how to get from the tested lines to the population. The default path scales the errors found on the ratio of the population's recorded value to the tested recorded value and files 57,577.47 euro, which accepts the population; the projection the design entitles is 840,096.72, stated 850,000, whose upper limit of 1,607,781.54 exceeds tolerable misstatement and refers it for extended testing.",
-  "architecture": 3,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-17",
-    "checks": "50 checks, 0 FAIL, 0 WARN"
-  },
-  "build_gates": {
-    "generator_checks": "148 assertions: positive controls on all three PDFs before any absence assertion, R1 to R3c with the PDF streams decompressed, the analyst test executed, the ladder at 4.3, the filed design, SF1 to SF13, the five blind families, the four ask primaries each with separation and the freeze asserted by execution, the input gates, the asks under their pinned conventions",
-    "verify": "93 checks, 0 failed; reads target/ and figures.json only",
-    "rebuilds": "two consecutive rebuilds byte-identical: target/, golden/ and metadata.json",
-    "figures_check": "100 figures in blocks 1 to 4, 0 absent",
-    "ceiling": "PASSES, exit 0. Pair ceiling 38.1 (bar 40), mirror leakage 12.0 (bar 35), the mirror takes no ask whole. The cracker keeps 6 of 25 ask figures, 24.0 per cent of ask weight, printed beside the gates because every figure it keeps costs pair points. The mirror is scored from the rubric rather than modelled: its recommendation side is 6.5 of the 38 points against Part 0's r of about 5, and 13.5 before the asks against Part 0's 12, so the model is slightly more generous to the mirror than Part 0 assumes. Honest progression: 69.3, 67.8 pins, 62.0 A3 scope and clock, 56.8 A3 grain, 55.0 covered-lines named, 51.0 A1 rollup, 47.6 free-figure cut, 38.1 A2 grain, then 44.7 once the mirror's two modelling assumptions were replaced, then 41.4 with the certain-share column swapped for one the estimator moves, then 38.1 with A1's cut-off count cut.",
-    "input_gates": "18 files, 4 formats, 26,874 rows in the spine, 2 distractors declared (the grant claim and the prior year; the revenue expenditure summary is no longer one, because A1's rollup reads it as the control its excess ties to), every file carrying a source, a date and a CC0 licence",
-    "voice_check": "PASS, 987 characters, the four ask pins plus the month of payment",
-    "container": "scrub clean on target/",
-    "zip": "target.zip: 18 members, 1,002,758 bytes, md5 a7d2a47406b61eb713350af632ae55f1",
-    "precut": "50 checks, 0 FAIL, 0 WARN",
-    "rubric": "52 graded criteria: 21 critical components, 4 call, 2 instruction-following, 25 asks. Floor is 25. Ask weight 55 per cent.",
-    "realism": "the tail cleared: supplier names, the crosswalk blocks, the supersession asymmetry, the grant claim's shape and the revenue summary's seasonal maintenance line"
-  },
-  "leak": {
-    "leak_py": "REVIEW, no LEAK; eight REVIEW lines answered in the design note's pre-ship check",
-    "reader": "round 1's answers and the author's verdict on each realism finding are in leak_check_report.md under ## Solver's-eye read; every item is now fixed or answered, so a second reader sees the pack as it is"
-  },
-  "duplicate_check": {
-    "heart": "WARN; nearest driver 0.05 against every card driver and 0.06 against the nearest ledger row, the lowest this slot has drawn",
-    "check": "WARN repeat.gate_g against task468 and overuse.gate_g at 7 of the last 12, both answered in the card's notes; nearest driver 0.07",
-    "surface": "no BLOCK; eight pairs promoted for the author's adjudication, five on corpus-wide surface idiom and three on the same-driver signature (gap rule, pattern G16, Gate G method_or_model_selection) against task185, task457 and task80, each already answered by a differentiation line on the card"
-  },
-  "judge": {
-    "architecture_3_round_1": "NOT_DETERMINISTIC, SEND_BACK. The author overrode the disposition to FIX_NOW; the reasoning and the condition are in the design note's ## Author override section verbatim. If the re-judge is not APPROVE, task190 retires, and there is no second override.",
-    "architecture_3_round_2": "NOT SPAWNED. The fix pass is incomplete: see resume."
-  },
-  "returned": [],
-  "resume": "ARCHITECTURE 3, READY FOR THE AUTHOR'S FINAL FREE-GATE RUN AND BOTH STAGE-4 THREADS. Every free gate is green and ceiling.py exits 0: pair 38.1, mirror leakage 12.0. The mirror question is settled from the rubric: its recommendation side is 6.5 of 38 against Part 0's r of 5, earned on the three nil programmes across both deliverable columns, and 13.5 before the asks against Part 0's 12. The judge is unspent and the condition stands: if its verdict is not APPROVE, task190 retires. MAIN CALL: 850,000, refer, Security and access systems at 250,000; ladder 21,004.93 / 57,577.47 / 156,183.24 / 840,096.72; bp 540,000, ia 227,684.83, uml 1,607,781.54 (1.386 TM), crude 1,380,096.72 (1.190 TM), projection 0.724 TM, asserted identical with each of the four ask primaries deleted individually. IF ANOTHER PASS IS WANTED: the cracker's remaining 6 figures are A2's 5 and A3's 1, and the two levers are sized, extend A2's groups so every category has a member move, and spread the invoice-level rows across all four quarters.",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": ""
+ "task": "task190",
+ "owner": "oviya13ya",
+ "status": "RETIRED",
+ "domain": "accounting-audit-forensic/audit-testing-sampling",
+ "objective": "anomaly-detection",
+ "stage": 3,
+ "stage_name": "retired",
+ "updated": "2026-10-17",
+ "stump": "The working paper files how the sample was drawn: probability proportional to recorded value, one interval of 180,000 euro common to every work programme, lines at or above it certain of selection. Nothing filed says how to get from the tested lines to the population. The default path scales the errors found on the ratio of the population's recorded value to the tested recorded value and files 57,577.47 euro, which accepts the population; the projection the design entitles is 840,096.72, stated 850,000, whose upper limit of 1,607,781.54 exceeds tolerable misstatement and refers it for extended testing.",
+ "architecture": 3,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17",
+  "checks": "50 checks, 0 FAIL, 0 WARN"
+ },
+ "build_gates": {
+  "generator_checks": "148 assertions: positive controls on all three PDFs before any absence assertion, R1 to R3c with the PDF streams decompressed, the analyst test executed, the ladder at 4.3, the filed design, SF1 to SF13, the five blind families, the four ask primaries each with separation and the freeze asserted by execution, the input gates, the asks under their pinned conventions",
+  "verify": "93 checks, 0 failed; reads target/ and figures.json only",
+  "rebuilds": "two consecutive rebuilds byte-identical: target/, golden/ and metadata.json",
+  "figures_check": "100 figures in blocks 1 to 4, 0 absent",
+  "ceiling": "PASSES, exit 0. Pair ceiling 38.1 (bar 40), mirror leakage 12.0 (bar 35), the mirror takes no ask whole. The cracker keeps 6 of 25 ask figures, 24.0 per cent of ask weight, printed beside the gates because every figure it keeps costs pair points. The mirror is scored from the rubric rather than modelled: its recommendation side is 6.5 of the 38 points against Part 0's r of about 5, and 13.5 before the asks against Part 0's 12, so the model is slightly more generous to the mirror than Part 0 assumes. Honest progression: 69.3, 67.8 pins, 62.0 A3 scope and clock, 56.8 A3 grain, 55.0 covered-lines named, 51.0 A1 rollup, 47.6 free-figure cut, 38.1 A2 grain, then 44.7 once the mirror's two modelling assumptions were replaced, then 41.4 with the certain-share column swapped for one the estimator moves, then 38.1 with A1's cut-off count cut.",
+  "input_gates": "18 files, 4 formats, 26,874 rows in the spine, 2 distractors declared (the grant claim and the prior year; the revenue expenditure summary is no longer one, because A1's rollup reads it as the control its excess ties to), every file carrying a source, a date and a CC0 licence",
+  "voice_check": "PASS, 987 characters, the four ask pins plus the month of payment",
+  "container": "scrub clean on target/",
+  "zip": "target.zip: 18 members, 1,002,758 bytes, md5 a7d2a47406b61eb713350af632ae55f1",
+  "precut": "50 checks, 0 FAIL, 0 WARN",
+  "rubric": "52 graded criteria: 21 critical components, 4 call, 2 instruction-following, 25 asks. Floor is 25. Ask weight 55 per cent.",
+  "realism": "the tail cleared: supplier names, the crosswalk blocks, the supersession asymmetry, the grant claim's shape and the revenue summary's seasonal maintenance line"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK; eight REVIEW lines answered in the design note's pre-ship check",
+  "reader": "round 1's answers and the author's verdict on each realism finding are in leak_check_report.md under ## Solver's-eye read; every item is now fixed or answered, so a second reader sees the pack as it is"
+ },
+ "duplicate_check": {
+  "heart": "WARN; nearest driver 0.05 against every card driver and 0.06 against the nearest ledger row, the lowest this slot has drawn",
+  "check": "WARN repeat.gate_g against task468 and overuse.gate_g at 7 of the last 12, both answered in the card's notes; nearest driver 0.07",
+  "surface": "no BLOCK; eight pairs promoted for the author's adjudication, five on corpus-wide surface idiom and three on the same-driver signature (gap rule, pattern G16, Gate G method_or_model_selection) against task185, task457 and task80, each already answered by a differentiation line on the card"
+ },
+ "judge": {
+  "architecture_3_round_1": "NOT_DETERMINISTIC, SEND_BACK. The author overrode the disposition to FIX_NOW; the reasoning and the condition are in the design note's ## Author override section verbatim. If the re-judge is not APPROVE, task190 retires, and there is no second override.",
+  "architecture_3_round_2": "NOT SPAWNED. The fix pass is incomplete: see resume."
+ },
+ "returned": [],
+ "resume": "RETIRED at architecture 3. Gate B and Gate F are in a bind that the draw creates: the refer rests on basic precision, whose reliability factor must ship or Gate B fails, and shipping it makes the route recoverable so Gate F fails. Two cold threads landed the call. A landed call banks about 45, so the pair cannot reach 40 whatever the asks do. See the design note's ## Retired section. Nothing is resumed.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
 }

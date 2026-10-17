@@ -74,7 +74,7 @@
    "source": "Constructed: finance systems' field definitions across the extracts"
   },
   {
-   "bytes": 627,
+   "bytes": 749,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
@@ -110,7 +110,7 @@
    "source": "Constructed: finance operations' payment run log, year to 31 December 2026"
   },
   {
-   "bytes": 1446,
+   "bytes": 1485,
    "date": "2027-01-14",
    "format": "md",
    "license": "CC0-1.0 (original work, constructed for this task)",

@@ -337,7 +337,7 @@ internal audit manual.
 | supplier risk approval history and category map | procurement | %(pull)s |
 | grant claim and revenue expenditure summary | finance | %(pull)s |
 
-The payment ledger carries %(lines)s lines for the reporting year. It is joined to the supplier master on
+The payment ledger carries %(lines)s payment lines for the reporting year, two of which are credit notes. It is joined to the supplier master on
 `supplier_no_ledger` through `supplier_number_crosswalk.csv`; the programme sits on every payment line.
 Field definitions are in `field_dictionary.csv`.
 

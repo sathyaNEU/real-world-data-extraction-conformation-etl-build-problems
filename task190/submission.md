@@ -4,11 +4,11 @@
 ## 1. Final Recommendation
 
 **The misstatement in the capital programme payments population for the year to 31 December 2026 is 850,000 euro, and the population is referred for extended testing before the statements are certified.**
-Security and access systems carries most of it at 250,000. Not the 21,004.93 the testing found in the lines it tested, which projects nothing. Not the 57,577.47 those findings give when scaled on recorded value, the obvious projection, which understates by a factor of fifteen because the 31 lines certain of selection hold 15,826,540.07 of the 21,696,549.77 tested and were all found sound. Not the 156,183.24 from taking those 31 at their own error and scaling the rest on their own stratum. Each of those three accepts the population at plan 4.3; only the projection the selection design entitles refers it.
+Security and access systems carries most of it at 250,000. Not the 21,004.93 the testing found in the lines it tested, which projects nothing. Not the 57,577.47 those findings give when scaled on recorded value, the obvious projection, which understates by a factor of fifteen because the 31 lines certain of selection hold 15,826,540.07 of the value tested and were all found sound. Not the 156,183.24 from taking those 31 at their own error and scaling the rest on their own stratum. Each of those three accepts the population at plan 4.3; only the projection the selection design entitles refers it.
 
 ## 2. Critical Components
 
-1. Capital programme payment lines in the population: **26,651**, recorded at **59,473,299.73** euro. Ledger lines the testing covered: **275**, recorded at **21,696,549.77**. Of those, **31** were certain of selection and hold **15,826,540.07**.
+1. Capital programme payment lines in the population: **26,651**, recorded at **59,473,299.73** euro. Ledger lines the testing covered: **285**, recorded at **21,709,610.89**; the selection chose 275 of them and five items were tested at invoice level, so the paper covers every line on those invoices. Of the lines covered, **31** were certain of selection and hold **15,826,540.07**.
 2. Misstatement by work programme, to the nearest 50,000: Security and access systems **250,000**, Rail siding and yard **200,000**, Pavement and surfacing **150,000**, Shore power installation **150,000**, Terminal roof and cladding **50,000**, Welfare and offices fit-out **50,000**, Deepwater berth renewal **0**, Dredging programme **0**, Quay 3 reconstruction **0**
 3. The projection before rounding: **840,096.72**. Basic precision **540,000.00**, the incremental allowance **227,684.83** over **26** taintings, and the upper limit **1,607,781.54**, which exceeds the tolerable misstatement plan 4.2 sets.
 

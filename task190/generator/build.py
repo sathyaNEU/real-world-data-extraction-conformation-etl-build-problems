@@ -179,16 +179,32 @@ def cut(target, golden_dir):
     for code, name, value, certs in W.PROGRAMMES:
         start = W.PROG_DATES[code][0]
         if start >= "2025-01-01":
-            claim.append([code, "2025-04-01 to 2026-03-31", "0.00", "0.00", "not yet claimed"])
+            claim.append([code, "2025-04-01 to 2026-03-31", "0.00", "0.00", "0.00",
+                          "not yet claimed"])
             continue
         share = 0.63 if start < "2024-03-01" else 0.48 if start < "2024-08-01" else 0.31
         elig = round(value * share * (0.94 + sim.shash("elig/%s" % code) % 120 / 1000.0), 2)
-        status = "settled" if start < "2024-03-01" else "submitted"
-        claim.append([code, "2025-04-01 to 2026-03-31", "%.2f" % elig,
-                      "%.2f" % round(elig * RATE, 2), status])
+        h = sim.shash("clm/%s" % code)
+        # a real claim is ragged: the grant is the intervention rate of eligible expenditure less
+        # the ineligible items the funder disallowed, less the retention it holds until the
+        # programme completes, and one programme is at its funding cap
+        disallowed = round(elig * (0.004 + (h % 170) / 10000.0), 2) if h % 4 else 0.00
+        net = round(elig - disallowed, 2)
+        grant = round(net * RATE, 2)
+        cap = W.GRANT_CAP.get(code)
+        if cap and grant > cap:
+            grant, status = cap, "capped at the programme's funding limit"
+        else:
+            status = "settled" if start < "2024-03-01" else "submitted"
+        if h % 5 == 0:
+            retention = round(grant * 0.05, 2)
+            grant = round(grant - retention, 2)
+            status = "submitted, retention held to completion"
+        claim.append([code, "2025-04-01 to 2026-03-31", "%.2f" % elig, "%.2f" % disallowed,
+                      "%.2f" % grant, status])
     PK.write_csv(target, "grant_claim_2026.csv",
                  ["programme_code", "claim_period", "eligible_expenditure_eur",
-                  "grant_claimed_eur", "claim_status"], claim)
+                  "ineligible_deducted_eur", "grant_claimed_eur", "claim_status"], claim)
     # The revenue expenditure summary is the control the run log's excess ties to: a run pays the
     # whole authority, the capital extract holds only its capital part, and the rest of each run is
     # revenue expenditure. The summary states it by month, which is where the excess goes.
@@ -213,7 +229,9 @@ def cut(target, golden_dir):
                   "invoices_paid"], rev)
 
     PK.write_dictionary(target)
-    stats = dict(lines=sum(1 for r in shipped if r["delivery"] == 1 and r["status"] != "credit_note"))
+    # every distinct payment line in the extract, which is what the file holds: a note that
+    # disagrees with its own extract by two lines is a defect, so it counts the same thing
+    stats = dict(lines=len({r["line"] for r in shipped if r["delivery"] == 1}))
     PK.write_manifest(target, stats)
     PK.write_provenance(target, stats)
 
@@ -231,6 +249,21 @@ def cut(target, golden_dir):
                                     for r in rows})
     g["at_invoice"] = at_invoice
     g["invrows"] = invrows
+    # The ledger lines the testing covered, which is what the asking sentence names: a row recorded
+    # at invoice level covered every payment line on that invoice, so the count is the resolved
+    # lines and not the paper's rows. Counting the rows is the cracker's answer, and the golden sat
+    # on it until the author resolved the shipped files by hand.
+    byref = {r["line"]: r for r in rows}
+    covered = set()
+    for row in paper:
+        if row.get("invoice_level"):
+            covered |= set(row["covers"])
+        elif row["line"] in byref:
+            covered.add(row["line"])
+    g["covered_lines"] = len(covered)
+    g["covered_value"] = round(sum(byref[l]["amount"] for l in covered), 2)
+    g["selected_lines"] = len({x["line"] for x in tested})
+    g["selected_value"] = round(sum(x["amount"] for x in tested), 2)
     g["paper"] = paper
     g["revenue"] = revenue
     g["lines"] = lines
