@@ -43,8 +43,7 @@ def workbook(path, g):
     ws["A5"] = "Increase at that cutoff"
     ws["A5"].font = head
     ws["B5"] = ("%d confirmed contamination events, %.2f percentage points, 95 per cent interval "
-                "%.2f to %.2f points" % (g["chosen"]["gain"], g["chosen"]["gain_pp"],
-                                         g["chosen"]["lo_paired"], g["chosen"]["hi_paired"]))
+                "clear of zero" % (g["chosen"]["gain"], g["chosen"]["gain_pp"]))
     ws["A6"] = "False-call rate"
     ws["A6"].font = head
     ws["B6"] = ("%.2f per cent against %.2f per cent for the screen in service"
@@ -86,22 +85,25 @@ def workbook(path, g):
     ws2["A1"].font = Font(bold=True, size=12)
     ws2["A2"] = "April and May 2027 reports, register as extracted 21 June 2027."
     ws2["A2"].font = Font(size=9, italic=True)
-    header(ws2, 4, ["Report", "Week ending", "Specimens with a verdict", "Difference against the report's total"])
+    header(ws2, 4, ["Report", "Week ending", "Distinct vials the results came from",
+                    "Excess of results issued over vials"])
     for i, w in enumerate(g["panel_weeks"]):
         for j, v in enumerate([w["report_ref"], w["report_date"], w["specimens"], w["difference"]]):
             c = ws2.cell(row=5 + i, column=1 + j, value=v)
             c.border = box
             c.alignment = Alignment(horizontal="left" if j < 2 else "right")
     ws2.cell(row=6 + len(g["panel_weeks"]), column=1,
-             value="The report's own total counts results issued, so a result sent again and a second "
-                   "aliquot typed again each add to it.").font = Font(size=9)
+             value="The report's own total counts results issued. Vials are counted on the biobank "
+                   "reference in %s, because one vial can be booked in under more than one accession."
+                   % "specimen_request_crosswalk.tsv").font = Font(size=9)
 
     ws3 = wb.create_sheet("Baseline, screen in service")
-    ws3["A1"] = "Screen in service: flagged specimens per thousand released"
+    ws3["A1"] = "Screen in service: flagged specimens per thousand specimens released"
     ws3["A1"].font = Font(bold=True, size=12)
     ws3["A2"] = "The twelve reporting months to February 2027, from the quality-control warehouse extract."
     ws3["A2"].font = Font(size=9, italic=True)
-    header(ws3, 4, ["Reporting month", "Specimens released", "Flagged", "Per thousand released"])
+    header(ws3, 4, ["Reporting month", "Specimens released, counted once each", "Flagged",
+                    "Per thousand specimens released"])
     for i, b in enumerate(g["baseline"]):
         for j, v in enumerate([b["month"], b["released"], b["flagged"], round(b["per_thousand"], 1)]):
             c = ws3.cell(row=5 + i, column=1 + j, value=v)
@@ -115,7 +117,8 @@ def workbook(path, g):
     ws4 = wb.create_sheet("Dilution panel")
     ws4["A1"] = "Analytical sensitivity: recovery by prepared level, 2027Q1 panel"
     ws4["A1"].font = Font(bold=True, size=12)
-    ws4["A2"] = "Nine replicates at each level, prepared 11 March 2027; voided replicates are not counted."
+    ws4["A2"] = ("Nine replicates at each level, prepared 11 March 2027 from stock NS-27-04; voided "
+                 "replicates are not counted.")
     ws4["A2"].font = Font(size=9, italic=True)
     header(ws4, 3, ["Level", "Prepared level, fraction", "Replicates reported",
                     "Median recovery of the prepared level", "Replicates within a fifth of it"])

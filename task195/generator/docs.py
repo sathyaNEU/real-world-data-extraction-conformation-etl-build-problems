@@ -119,7 +119,7 @@ def model_card(target, estimates):
             ["99th percentile", "%.4f" % q(0.99)],
             ["Share below the limit of detection", "%.1f per cent" % (100.0 * sum(1 for v in vals if v < 0.008) / n)]]
     f = [Paragraph("Mixture fraction estimator, %s" % W.PIPELINE, H1),
-         Paragraph("Bioinformatics group, %s. Version 3.4.1, refreshed 2027-06-11, owner: the "
+         Paragraph("Bioinformatics group, %s. Version 3.4.1, issued 2027-05-14, owner: the "
                    "bioinformatics group lead. Scope: what the estimator is and what it returns on the "
                    "production archive. Screening cutoffs are set in KVAL-07." % W.LAB, SMALL),
          Paragraph("What the estimator returns", H2),
@@ -135,18 +135,29 @@ def model_card(target, estimates):
                    "background above a share of about 0.008. Below that the estimate is dominated by "
                    "allele-balance noise and the vendor reports no reliable recovery. The laboratory "
                    "repeats an analytical sensitivity panel each quarter.", BODY),
-         Paragraph("What the estimator returned on the 2027 archive", H2),
+         Paragraph("Addendum, 19 June 2027: what the estimator returned on the 2027 archive", H2),
          Table(wrap(rows), colWidths=[76 * mm, 40 * mm]),
          Spacer(1, 4 * mm),
-         Paragraph("Computed on the accepted read sets of the March to May 2027 re-run, the file %s. "
-                   "The run's scope, reference build, marker panel and depth floor are in %s, filed with "
-                   "the re-run. The table describes the estimator's output and states no verdict."
+         Paragraph("Computed by the bioinformatics group on the accepted read sets of the March to May "
+                   "2027 re-run, the file %s, after the last batch completed. The run's scope, reference "
+                   "build, marker panel and depth floor are in %s, filed with the re-run. The group "
+                   "reports this distribution as the estimator's behaviour on production material; "
+                   "where a share falls relative to any screening cutoff is KVAL-07's matter."
                    % (W.FILES["mf"], W.FILES["config"]), SMALL),
          Paragraph("Known behaviour", H2),
          Paragraph("Specimens from the same donor sequenced twice return estimates within about 0.002 "
                    "of each other at low shares. A depth top-up library typed from the same extraction "
                    "returns a slightly higher estimate than the first library at shares above 0.05, "
-                   "because the top-up reads are drawn from the same contaminated extraction.", BODY)]
+                   "because the top-up reads are drawn from the same contaminated extraction.", BODY),
+         Paragraph("Revision history", H2),
+         Table(wrap([["Version", "Date", "Change", "Approved by"],
+                     ["3.2", "2026-04-20", "First card for the v3.2 estimator", "Group lead"],
+                     ["3.4", "2027-01-26", "Two-component fit over the core panel; depth floor raised",
+                      "Group lead"],
+                     ["3.4.1", "2027-05-14", "Marker count floor stated; limit of detection restated "
+                      "from the vendor series", "Group lead"],
+                     ["3.4.1 add.", "2027-06-19", "Addendum: output distribution on the 2027 re-run",
+                      "Group lead"]]), colWidths=[18 * mm, 22 * mm, 60 * mm, 22 * mm])]
     d.build(f)
 
 

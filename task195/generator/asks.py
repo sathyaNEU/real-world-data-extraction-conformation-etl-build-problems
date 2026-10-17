@@ -30,6 +30,7 @@ def history(target):
     """
     rng = random.Random(W.SEED + 21)
     trng = random.Random(W.SEED + 81)        # accessions, intake hours and heterozygosity texture
+    mrng = random.Random(W.SEED + 919)       # the booking clock's minutes and seconds
     days = [(W.HIST_FROM + dt.timedelta(days=i)) for i in range((W.HIST_TO - W.HIST_FROM).days + 1)]
     days = [d for d in days if d.weekday() < 5]
     serial = [10007]
@@ -50,7 +51,13 @@ def history(target):
             r = rng.random()
             status = "WITHHELD" if r < 0.023 else ("SUPERSEDED" if r < 0.044 else "RELEASED")
             rng.randint(7, 22)                   # the warehouse's own intake draw
-            minute = rng.randint(0, 59)
+            rng.randint(0, 59)                   # the warehouse's own minute draw, kept in place
+            # receipts are booked as the courier's boxes are opened, so the minutes bunch after a
+            # drop rather than spreading evenly across the hour, and the clock records the second
+            mr = mrng.random()
+            minute = (mrng.randint(0, 19) if mr < 0.54
+                      else mrng.randint(24, 41) if mr < 0.80 else mrng.randint(0, 59))
+            second = mrng.randint(0, 59)
             hour = min(21, max(6, int(trng.gauss(10.8, 2.9)) if trng.random() < 0.74
                                else int(trng.gauss(15.2, 1.9))))
             # the laboratory is closed on a holiday, so the receipt is logged on a nearby open day
@@ -60,7 +67,7 @@ def history(target):
                 near = [c for c in near if c.weekday() < 5 and c not in W.HOLIDAYS
                         and W.HIST_FROM <= c <= rel]
                 rec = near[k % len(near)] if near else rel - dt.timedelta(days=1)
-            local = dt.datetime(rec.year, rec.month, rec.day, hour, minute)
+            local = dt.datetime(rec.year, rec.month, rec.day, hour, minute, second)
             offset = 2 if dt.date(rec.year, 3, 29) <= rec < dt.date(rec.year, 10, 25) else 1
             rows.append({"sid": "NFG%s-%06d" % (str(d.year)[2:], serial[0]),
                          "project": rng.choice([p[0] for p in W.PROJECTS]),
@@ -226,6 +233,10 @@ def volumes(target, events_by_month):
         rows.append([m, "{:,}".format(events_by_month.get(m, 0)).replace(",", " ")])
     PK._write(os.path.join(target, W.FILES["volumes"]),
               ["reporting_month", "results_released"], rows)
+    with open(os.path.join(target, W.FILES["volumes"]), "a", encoding="utf-8") as fh:
+        fh.write("# Laboratory reporting pack, released results by reporting month.\n")
+        fh.write("# Counts are the results booked as released at the close of each month.\n")
+        fh.write("# Compiled by the quality team, 2027-03-06. Owner: the laboratory manager.\n")
     return len(rows)
 
 
@@ -259,7 +270,11 @@ def dilution(target):
             vals = [round(max(0.0002, level * rec * (1.0 + lrng.gauss(0.0, spread))), 4)
                     for _ in range(W.DILUTION_REPLICATES)]
             median = sorted(vals)[W.DILUTION_REPLICATES // 2]
-            if _slack3(median / level) >= 0.00042:
+            # every replicate has to sit clear of the one-fifth line as well, so the count the ask
+            # grades cannot turn on a hair: the nearest replicate is at least 2 points of the level
+            # away from 20 per cent of it
+            edge = min(abs(abs(v - level) / level - 0.20) for v in vals)
+            if _slack3(median / level) >= 0.00042 and edge >= 0.020:
                 break
         for i, v in enumerate(vals):
             results.append([lv.lower() if rng.random() < 0.21 else lv, stock_of[lv], i + 1,

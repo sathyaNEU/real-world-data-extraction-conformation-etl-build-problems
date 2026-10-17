@@ -149,7 +149,7 @@
    "median_recovery": 0.878,
    "prepared": 0.0041,
    "replicates": 9,
-   "within_fifth": 6
+   "within_fifth": 7
   },
   "L2": {
    "median_recovery": 0.865,
@@ -167,57 +167,57 @@
  "panel_clean": 5446,
  "panel_weeks": {
   "BA-2027-W13": {
-   "difference": 11,
-   "results_issued": 588,
-   "specimens": 577,
+   "difference": 14,
+   "results_issued": 589,
+   "specimens": 575,
    "week_ending": "2027-04-02"
   },
   "BA-2027-W14": {
-   "difference": 14,
-   "results_issued": 612,
-   "specimens": 598,
+   "difference": 12,
+   "results_issued": 608,
+   "specimens": 596,
    "week_ending": "2027-04-09"
   },
   "BA-2027-W15": {
-   "difference": 13,
+   "difference": 12,
    "results_issued": 613,
-   "specimens": 600,
+   "specimens": 601,
    "week_ending": "2027-04-16"
   },
   "BA-2027-W16": {
-   "difference": 9,
-   "results_issued": 636,
-   "specimens": 627,
+   "difference": 13,
+   "results_issued": 641,
+   "specimens": 628,
    "week_ending": "2027-04-23"
   },
   "BA-2027-W17": {
-   "difference": 16,
-   "results_issued": 580,
-   "specimens": 564,
+   "difference": 14,
+   "results_issued": 577,
+   "specimens": 563,
    "week_ending": "2027-04-30"
   },
   "BA-2027-W18": {
-   "difference": 14,
-   "results_issued": 566,
-   "specimens": 552,
+   "difference": 13,
+   "results_issued": 554,
+   "specimens": 541,
    "week_ending": "2027-05-07"
   },
   "BA-2027-W19": {
-   "difference": 14,
-   "results_issued": 555,
-   "specimens": 541,
+   "difference": 15,
+   "results_issued": 570,
+   "specimens": 555,
    "week_ending": "2027-05-14"
   },
   "BA-2027-W20": {
-   "difference": 26,
-   "results_issued": 557,
-   "specimens": 531,
+   "difference": 23,
+   "results_issued": 542,
+   "specimens": 519,
    "week_ending": "2027-05-21"
   },
   "BA-2027-W21": {
-   "difference": 22,
-   "results_issued": 551,
-   "specimens": 529,
+   "difference": 26,
+   "results_issued": 564,
+   "specimens": 538,
    "week_ending": "2027-05-28"
   }
  },

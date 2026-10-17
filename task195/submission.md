@@ -4,7 +4,7 @@
 ## 1. Final Recommendation
 
 **Replace the contamination screen in service with the re-run mixture-fraction screen at the 0.030 cutoff for the quarter from 1 July 2027.**
-At 0.030 the candidate screen detects 16 more of the parallel run's 393 confirmed contamination events, an increase of 4.07 percentage points whose 95 per cent interval, taken from the specimens the two screens call differently, runs from 1.37 to 6.77 points, and its false-call rate is 1.36 per cent against 1.67 per cent.
+At 0.030 the candidate screen detects 16 more of the parallel run's 393 confirmed contamination events, an increase of 4.07 percentage points whose 95 per cent interval, taken from the specimens the two screens call differently, is clear of zero on every paired estimator, and its false-call rate is 1.36 per cent against 1.67 per cent.
 Not 0.050, whose increase of 2 specimens (0.51 points) is established by no reading of the parallel run.
 Not 0.020 or 0.015, which clear both tests but are not the highest listed cutoff that does.
 Not 0.010, whose false-call rate of 1.91 per cent is above the screen in service's.
@@ -23,7 +23,7 @@ Not holding the change, which follows only if each screen's detection rate is ju
 2. Applied KVAL-07 3.1 and 3.2 to that join: the comparison is 5,839 specimens, 393 of them with a MIXED verdict.
 3. Counted detections per 3.4: the screen in service flags 292 of the events, the candidate screen 294, 308, 310, 319 and 326 at the five listed cutoffs.
 4. Counted false calls on the 5,446 panel-clean specimens per 3.5: 91 for the screen in service against 61, 74, 80, 85 and 104, so 4.1(b) removes only the 0.010 cutoff.
-5. Took the 95 per cent interval on each increase from the specimens the two screens call differently, both calls coming from one specimen's own read sets: at 0.030 the increase of 4.07 points runs 1.37 to 6.77.
+5. Took the 95 per cent interval on each increase from the specimens the two screens call differently, both calls coming from one specimen's own read sets: every paired estimator puts the 0.030 increase of 4.07 points clear of zero and leaves the 0.050 increase short of it.
 6. Read 4.1(a) at each cutoff: not established at 0.050, established at 0.030, 0.020, 0.015 and 0.010.
 7. Applied 4.1: the highest listed cutoff meeting both conditions is 0.030.
 8. Replace the screen in service at the 0.030 cutoff from 1 July 2027.
@@ -39,17 +39,17 @@ Not holding the change, which follows only if each screen's detection rate is ju
    - 0.015: 319, 27, 6.87, 1.56, yes, yes
    - 0.010: 326, 34, 8.65, 1.91, yes, no
 2. The cutoff recommended: 0.030, replacing the screen in service from 1 July 2027.
-3. The specimens with any verdict in each weekly report issued in April and May, and the difference against that report's own total, nine reports in order:
-   - BA-2027-W13: 577, 11
-   - BA-2027-W14: 598, 14
-   - BA-2027-W15: 600, 13
-   - BA-2027-W16: 627, 9
-   - BA-2027-W17: 564, 16
-   - BA-2027-W18: 552, 14
-   - BA-2027-W19: 541, 14
-   - BA-2027-W20: 531, 26
-   - BA-2027-W21: 529, 22
-4. The screen in service's flagged specimens, reviewed ones by their review outcome, per thousand released by release month, twelve months in order:
+3. Per weekly report issued in April or May, the distinct vials its results came from and the excess of results issued over vials, nine reports in order:
+   - BA-2027-W13: 575, 14
+   - BA-2027-W14: 596, 12
+   - BA-2027-W15: 601, 12
+   - BA-2027-W16: 628, 13
+   - BA-2027-W17: 563, 14
+   - BA-2027-W18: 541, 13
+   - BA-2027-W19: 555, 15
+   - BA-2027-W20: 519, 23
+   - BA-2027-W21: 538, 26
+4. The screen in service's flagged specimens, reviewed ones by their review outcome, per thousand specimens released in the month, each counted once, twelve months in order:
    - 2026-03: 15.6
    - 2026-04: 15.3
    - 2026-05: 13.9
@@ -63,7 +63,7 @@ Not holding the change, which follows only if each screen's detection rate is ju
    - 2027-01: 20.7
    - 2027-02: 16.1
 5. The dilution panel's median recovery as a share of the prepared level and how many results reported fall within a fifth of it, by level:
-   - L1: 0.878, 6
+   - L1: 0.878, 7
    - L2: 0.865, 7
    - L3: 1.027, 6
 

@@ -10,9 +10,10 @@ import sim
 import world as W
 
 # the press monitor stamps every item with its collection server's UTC clock; the partner portal
-# stamps deliveries in UTC; the public line stamps in local time.
+# stamps deliveries in UTC; the public line stamps in the association's own local clock.
 REJECT = [("fora_do_ambito", 44), ("sem_acao_coletiva", 27), ("duplicado_de_item", 9),
           ("desporto_ou_espetaculo", 11), ("texto_insuficiente", 9)]
+RELOAD_ARRIVED = dt.date(2026, 9, 14)
 
 
 def write_csv(path, head, rows):
@@ -23,17 +24,38 @@ def write_csv(path, head, rows):
     return len(rows)
 
 
-def local_offset(day):
-    """Lisbon's offset from UTC on a calendar day: summer time ends on 25 October 2026."""
-    return 1 if day < W.DST_BACK else 0
+def local_offset(district, day):
+    """Hours the local clock of a district is ahead of UTC on a local calendar day. Summer time ends
+    on 25 October 2026; the Azores run an hour behind the mainland and Madeira all year."""
+    summer = day < W.DST_BACK
+    pair = W.OFFSET_AZORES if district == W.AZORES_DISTRICT else W.OFFSET_MAINLAND
+    return pair[0] if summer else pair[1]
 
 
-def stamp(day_off, start_h, start_m, lag_min):
-    """The action's local start, the local reception moment, and that moment in UTC."""
+def snap_working(local_moment, rng):
+    """A partner organisation delivers through the portal in its own working hours."""
+    for _ in range(4):
+        if local_moment.weekday() >= 5 and rng.random() < 0.74:
+            local_moment = dt.datetime.combine(local_moment.date() + dt.timedelta(days=1),
+                                               dt.time(8, 30)) \
+                + dt.timedelta(minutes=rng.randrange(0, 660))
+            continue
+        if local_moment.hour < 8:
+            return local_moment.replace(hour=8, minute=rng.randrange(18, 59))
+        if local_moment.hour >= 20:
+            local_moment = dt.datetime.combine(local_moment.date() + dt.timedelta(days=1),
+                                               dt.time(8, rng.randrange(18, 59)))
+            continue
+        return local_moment
+    return local_moment
+
+
+def stamp(district, day_off, start_h, start_m, lag_min):
+    """The action's start in the local clock of its place, and the report's moment in UTC."""
     start = dt.datetime.combine(sim.d(day_off), dt.time(start_h, start_m))
-    recv_local = start + dt.timedelta(minutes=lag_min)
-    recv_utc = recv_local - dt.timedelta(hours=local_offset(recv_local.date()))
-    return start, recv_local, recv_utc
+    start_utc = start - dt.timedelta(hours=local_offset(district, start.date()))
+    recv_utc = start_utc + dt.timedelta(minutes=lag_min)
+    return start, recv_utc
 
 
 def place_text(loc, rng):
@@ -44,16 +66,24 @@ def place_text(loc, rng):
 
 def build_reports(reps, locs, rng):
     """Add the dates, stamps and place text every report file needs."""
-    cap = dt.datetime.combine(W.EXTRACT, dt.time(21, 30))   # the record was pulled that evening
+    cap = dt.datetime.combine(W.EXTRACT, dt.time(20, 30))   # the record was pulled that evening
     for r in reps:
         a = r["action"]
-        start, recv_local, recv_utc = stamp(a["day"], r["start_h"], r["start_m"], r["lag_min"])
-        if recv_local > cap:                                 # a report that had not arrived is not in it
-            recv_local = max(start + dt.timedelta(minutes=12),
-                             cap - dt.timedelta(minutes=r["lag_min"] % 97))
-            recv_utc = recv_local - dt.timedelta(hours=local_offset(recv_local.date()))
+        dist = a["district"]
+        start, recv_utc = stamp(dist, a["day"], r["start_h"], r["start_m"], r["lag_min"])
+        if r["route"] == "PAR":
+            own = recv_utc + dt.timedelta(hours=local_offset(dist, recv_utc.date()))
+            own = snap_working(own, rng)
+            recv_utc = own - dt.timedelta(hours=local_offset(dist, own.date()))
+        recv_lisbon = recv_utc + dt.timedelta(hours=local_offset("Lisboa", recv_utc.date()))
+        if recv_utc > cap:                                 # a report that had not arrived is not in it
+            recv_utc = max(start - dt.timedelta(hours=local_offset(dist, start.date()))
+                           + dt.timedelta(minutes=12),
+                           cap - dt.timedelta(minutes=r["lag_min"] % 97))
+            recv_lisbon = recv_utc + dt.timedelta(hours=local_offset("Lisboa", recv_utc.date()))
         r["start"] = start
-        r["recv_local"] = recv_local
+        r["recv_lisbon"] = recv_lisbon
+        r["recv_local"] = recv_lisbon
         r["recv_utc"] = recv_utc
         r["place"] = place_text(a["loc"], rng)
     return reps
@@ -73,7 +103,7 @@ def exceptions(rng, n_imp=151, n_par=63, n_lin=94):
             recv = dt.datetime.combine(sim.d(off), dt.time(rng.randrange(7, 22),
                                                                rng.choice([5, 15, 25, 40, 55])))
             out.append(dict(route=route, ident="%s-2026-%06d" % (route, base + i + 1),
-                            recv=recv, place=rng.choice(bogus), theme=rng.choice([t for t, _, _ in W.THEMES]),
+                            recv=recv, place=rng.choice(bogus), theme=rng.choice([t for t, _, _, _, o in W.THEMES if o is None]),
                             reason=rng.choices(reasons, weights=[62, 23, 15])[0]))
     out.sort(key=lambda e: (e["recv"], e["ident"]))
     return out
@@ -118,16 +148,16 @@ def write_item_log(target, reps, rng):
 
 
 def write_double_coding(target, dc):
-    """The coding desk's hand-coding rounds, one row per press report drawn."""
+    """The coding desk's hand-coding worksheet, one row per press report drawn."""
     rows = []
     for x in dc:
         r = x["report"]
         a = r["action"]
         rows.append([r["ident"], sim.d(a["day"]).isoformat(), a["theme"], x["machine"], x["hand"],
-                     x["coder"], x["coded_day"].isoformat(),
-                     "R%d" % (1 if x["round_day"].month == 7 else 2)])
+                     x["coder"], x["coded_day"].isoformat(), x["round_name"], x["second"],
+                     x["decision"], x["note"]])
     head = ["id_relato", "data_ocorrencia", "tema", "codigo_monitor", "codigo_manual",
-            "codificador", "data_codificacao", "ronda"]
+            "codificador", "data_codificacao", "ronda", "revisto_por", "decisao_da_mesa", "nota"]
     return write_csv(os.path.join(target, "amostra_dupla_codificacao.csv"), head, rows)
 
 
@@ -216,6 +246,13 @@ def write_route_totals(target, reps, exc):
         counts[(r["recv_local"].date(), r["route"])] = counts.get((r["recv_local"].date(), r["route"]), 0) + 1
     for e in exc:
         counts[(e["recv"].date(), e["route"])] = counts.get((e["recv"].date(), e["route"]), 0) + 1
+    # the counter is written by the ingest process as each delivery arrives, so the second load of
+    # the reposted August month is counted again on the day it arrived
+    again = sum(1 for r in reps if r["route"] == "PAR"
+                and r["action"]["day"] is not None
+                and sim.d(r["action"]["day"]).year == W.REIMPORT_MONTH[0]
+                and sim.d(r["action"]["day"]).month == W.REIMPORT_MONTH[1])
+    counts[(RELOAD_ARRIVED, "PAR")] = counts.get((RELOAD_ARRIVED, "PAR"), 0) + again
     rows = [[day.isoformat(), route, n] for (day, route), n in sorted(counts.items())]
     head = ["data", "via", "relatos_recebidos"]
     return write_csv(os.path.join(target, "totais_por_via.csv"), head, rows)
@@ -239,8 +276,19 @@ def write_config(target):
                                "com local e data; os restantes ficam no registo com o motivo da rejeicao"),
         "palavras_chave": ["manifestacao", "concentracao", "bloqueio", "greve", "paralisacao",
                            "ocupacao", "vigilia", "marcha", "protesto", "corte de via"],
+        "classificador": {"modelo": "vn-codificador-1.3", "treinado_em": W.CLS_TRAINED.isoformat(),
+                          "alteracoes_no_periodo": "nenhuma",
+                          "saida": "um codigo de acao do protocolo 2.2 por relato aceite"},
         "nota_de_relogio": ("o carimbo_recepcao de cada item vem no relogio UTC do servidor de "
-                            "recolha; o inicio_acao vem na hora local do local da acao"),
+                            "recolha; o inicio_acao vem no relogio local do local da acao, pelo "
+                            "distrito do gazeteiro"),
+        "fusos_horarios": {
+            "continente_e_madeira": ("UTC+01:00 ate 25 de outubro de 2026 as 01:00 UTC e "
+                                     "UTC+00:00 a partir desse momento"),
+            "acores": ("UTC+00:00 ate 25 de outubro de 2026 as 01:00 UTC e UTC-01:00 a partir "
+                       "desse momento"),
+            "distritos_dos_acores": W.DISTRICTS["Acores"],
+        },
     }
     path = os.path.join(target, "config_monitor.json")
     with open(path, "w", encoding="utf-8") as fh:

@@ -1,9 +1,10 @@
 """Everything the bulletin owes, computed from the shipped bundle and nothing else.
 
 The actions are rebuilt from the three access routes the way the protocol says, the code the register
-keeps for each action is taken on 2.6, and the period's confrontational actions are counted four ways:
-the codes as they stand, the codes with the classifier's false marks taken out, the codes scaled by the
-classifier's recall, and the count rebuilt from both of the classifier's measured error rates.
+keeps for each action is taken on 2.6, and the period's confrontational actions are counted every way
+the record leaves open: the codes as they stand, the codes with the classifier's false marks taken
+out, the codes scaled by its recall, the audited reports' own confrontational shares carried onto the
+record, and the count rebuilt from the classifier's two measured error rates.
 """
 import csv
 import datetime as dt
@@ -14,6 +15,7 @@ import world as W
 
 CONF = set(W.CONFRONTATIONAL)
 PERIOD = (W.PERIOD_FROM, W.PERIOD_TO)
+GRAIN = 50                                  # the bulletin states the indicator to the nearest 50
 
 
 def read(target, name):
@@ -30,9 +32,18 @@ def pts(s):
     return dt.datetime.strptime(s[:16], "%Y-%m-%d %H:%M")
 
 
-def lisbon(utc_moment):
-    off = 1 if (utc_moment + dt.timedelta(hours=1)).date() < W.DST_BACK else 0
-    return utc_moment + dt.timedelta(hours=off)
+def offset(district, local_day):
+    summer = local_day < W.DST_BACK
+    pair = W.OFFSET_AZORES if district == W.AZORES_DISTRICT else W.OFFSET_MAINLAND
+    return pair[0] if summer else pair[1]
+
+
+def to_lisbon(utc_moment):
+    return utc_moment + dt.timedelta(hours=offset("Lisboa", utc_moment.date()))
+
+
+def grain(x):
+    return int(round(x / float(GRAIN))) * GRAIN
 
 
 def load(target):
@@ -41,28 +52,42 @@ def load(target):
         gaz[r["nome"]] = r["codigo_localidade"]
         muni_of[r["codigo_localidade"]] = (r["codigo_municipio"], r["municipio"], r["distrito"],
                                            r["regiao"])
-    reports, seen = [], set()
+    reports, first_item = [], {}
     for r in read(target, "registo_itens_imprensa.csv"):
-        if r["estado"] != "aceite" or r["id_relato"] in seen:
+        if r["estado"] != "aceite":
             continue
-        seen.add(r["id_relato"])
+        m = pts(r["carimbo_recepcao"])
+        if r["id_relato"] in first_item:
+            first_item[r["id_relato"]] = min(first_item[r["id_relato"]], m)
+            continue
+        first_item[r["id_relato"]] = m
         reports.append(dict(route="IMP", ident=r["id_relato"], src=r["orgao"], theme=r["tema"],
                             code=r["codigo_acao"], place=r["local_texto"],
                             day=pdate(r["data_ocorrencia"]), start=pts(r["inicio_acao"]),
-                            recv=lisbon(pts(r["carimbo_recepcao"]))))
+                            recv_utc=None))
+    for r in reports:
+        r["recv_utc"] = first_item[r["ident"]]
     for r in read(target, "relatos_rede_parceiros.csv"):
         reports.append(dict(route="PAR", ident=r["id_relato"], src=r["codigo_parceiro"],
                             theme=r["tema"], code=r["codigo_acao"], place=r["local_texto"],
                             day=pdate(r["data_ocorrencia"]), start=pts(r["inicio_acao"]),
-                            recv=lisbon(pts(r["carimbo_entrega_utc"])), load=r["id_carga"]))
+                            recv_utc=pts(r["carimbo_entrega_utc"]), load=r["id_carga"]))
     for r in read(target, "relatos_linha_publica.csv"):
+        local = pts(r["carimbo_recepcao"])
         reports.append(dict(route="LIN", ident=r["id_relato"], src="LIN", theme=r["tema"],
                             code=r["codigo_acao"], place=r["local_texto"],
                             day=pdate(r["data_ocorrencia"]), start=pts(r["inicio_acao"]),
-                            recv=pts(r["carimbo_recepcao"])))
+                            recv_utc=local - dt.timedelta(hours=offset("Lisboa", local.date()))))
     for r in reports:
         r["loc"] = gaz.get(r["place"], "")
-        r["muni"] = muni_of.get(r["loc"], ("", "", "", ""))[0]
+        info = muni_of.get(r["loc"], ("", "", "", ""))
+        r["muni"], r["district"] = info[0], info[2]
+        r["recv"] = to_lisbon(r["recv_utc"])
+        if r["loc"]:
+            start_utc = r["start"] - dt.timedelta(hours=offset(r["district"], r["start"].date()))
+            r["lag"] = (r["recv_utc"] - start_utc).total_seconds() / 60.0
+        else:
+            r["lag"] = None
     exc = [dict(route=r["via"], ident=r["id_relato"], recv=pts(r["carimbo_recepcao"]),
                 reason=r["motivo"]) for r in read(target, "excecoes_geocodificacao.csv")]
     sample = read(target, "amostra_dupla_codificacao.csv")
@@ -79,11 +104,13 @@ def actions(reports):
             continue
         k = (r["theme"], r["loc"], r["day"])
         a = acts.setdefault(k, dict(theme=r["theme"], loc=r["loc"], day=r["day"], muni=r["muni"],
-                                    routes=set(), press_code="", filer_code="", reports=[]))
+                                    district=r["district"], routes=set(), press_code="",
+                                    filer_code="", idents=set(), reports=[]))
         a["routes"].add(r["route"])
         a["reports"].append(r)
         if r["route"] == "IMP":
             a["press_code"] = r["code"]
+            a["idents"].add(r["ident"])
         elif not a["filer_code"]:
             a["filer_code"] = r["code"]
     out = []
@@ -95,16 +122,16 @@ def actions(reports):
     return sorted(out, key=lambda a: (a["day"], a["loc"], a["theme"]))
 
 
-def matrix(sample, restrict=None):
-    """The classifier's two error rates, from the desk's hand coding."""
+def matrix(sample, keep=None):
+    """The classifier's four cells, from the desk's hand coding."""
     tp = fn = fp = tn = 0
     for r in sample:
-        if restrict and r["id_relato"] not in restrict:
+        if keep is not None and not keep(r):
             continue
         m, h = r["codigo_monitor"] in CONF, r["codigo_manual"] in CONF
         if h and m:
             tp += 1
-        elif h and not m:
+        elif h:
             fn += 1
         elif m:
             fp += 1
@@ -113,12 +140,54 @@ def matrix(sample, restrict=None):
     return tp, fn, fp, tn
 
 
-def corrected(n, observed, tp, fn, fp, tn, continuity=0.0):
-    """The count rebuilt from both error rates: the observed share less what the classifier marks
+def rogan_gladen(n, marked, cells, continuity=0.0):
+    """The count rebuilt from both error rates: the marked count less what the classifier marks
     wrongly, over the width its two rates leave."""
+    tp, fn, fp, tn = cells
+    if (tp + fn) == 0 or (fp + tn) == 0:
+        return None, None, None
     se = (tp + continuity) / (tp + fn + 2 * continuity)
-    sp = (tn + continuity) / (tn + fp + 2 * continuity)
-    return n * (observed / n + sp - 1) / (se + sp - 1), se, sp
+    fmr = (fp + continuity) / (fp + tn + 2 * continuity)
+    if se - fmr <= 0:
+        return None, se, fmr
+    return (marked - fmr * n) / (se - fmr), se, fmr
+
+
+def predictive(n, marked, cells):
+    """The audited reports' own confrontational shares, by what the classifier said, carried onto
+    the record."""
+    tp, fn, fp, tn = cells
+    if (tp + fp) == 0 or (fn + tn) == 0:
+        return None
+    return marked * tp / float(tp + fp) + (n - marked) * fn / float(fn + tn)
+
+
+def strata(press, sample, key_action, key_row, fun, fallback=None):
+    """A stratified estimate. Returns None when any stratum of the population the correction applies
+    to has no rate the sample can give it."""
+    groups = {}
+    for a in press:
+        k = key_action(a)
+        groups.setdefault(k, [0, 0])
+        groups[k][0] += 1
+        groups[k][1] += 1 if a["coded_conf"] else 0
+    total, broken = 0.0, []
+    for k, (n, marked) in sorted(groups.items(), key=lambda kv: str(kv[0])):
+        cells = matrix(sample, lambda r: key_row(r) == k)
+        v = fun(n, marked, cells)
+        if isinstance(v, tuple):
+            v = v[0]
+        if v is None or v < 0 or v > n:
+            broken.append(str(k))
+            if fallback is None:
+                continue
+            v = fallback(n, marked)
+            if isinstance(v, tuple):
+                v = v[0]
+        total += v
+    if broken and fallback is None:
+        return None, broken
+    return total, broken
 
 
 def compute(target):
@@ -130,57 +199,89 @@ def compute(target):
     H = sum(1 for a in human if a["coded_conf"])
     N = len(press)
     O = sum(1 for a in press if a["coded_conf"])
-    tp, fn, fp, tn = matrix(b["sample"])
-    raw, se, sp = corrected(N, O, tp, fn, fp, tn)
+    sample = b["sample"]
+    cells = matrix(sample)
+    tp, fn, fp, tn = cells
+    raw, se, fmr = rogan_gladen(N, O, cells)
     g = dict(actions_in_period=len(inper), press_only=N, filed_by_hand=len(human),
              hand_confrontational=H, press_marked=O,
-             sample_rows=len(b["sample"]), tp=tp, fn=fn, fp=fp, tn=tn,
-             recall=round(se, 4), false_mark=round(1 - sp, 4),
-             raw_total=H + raw, total=round(H + raw),
-             rung0=H + O, rung1=round(H + O * tp / (tp + fp)), raw_rung1=H + O * tp / (tp + fp),
-             rung2=round(H + O / se), raw_rung2=H + O / se)
-    # the variants a careful analyst tries on a correction of this kind
-    cont, _, _ = corrected(N, O, tp, fn, fp, tn, continuity=0.5)
+             sample_rows=len(sample), tp=tp, fn=fn, fp=fp, tn=tn,
+             recall=round(se, 4), false_mark=round(fmr, 4),
+             raw_total=H + raw, total=grain(H + raw), grain=GRAIN)
+
+    # ---- the routes the record leaves standing, each one a complete pipeline on the same rows
+    pv = predictive(N, O, cells)
+    sid = {r["id_relato"] for r in sample}
+    hand_true = sum(1 for r in sample if r["codigo_manual"] in CONF)
+    unsampled_marked = sum(1 for a in press if a["coded_conf"] and not (a["idents"] & sid))
+    cont, _, _ = rogan_gladen(N, O, cells, continuity=0.5)
+    uns = [a for a in press if not (a["idents"] & sid)]
+    hyb, _, _ = rogan_gladen(len(uns), sum(1 for a in uns if a["coded_conf"]), cells)
+    g["raw_rung0"] = float(H + O)
+    g["raw_rung1"] = H + O * tp / float(tp + fp)
+    g["raw_rung1b"] = H + O - fmr * N
+    g["raw_rung2"] = H + O / se
+    g["raw_rung3"] = H + pv
+    g["raw_rung4"] = H + (tp + fn) / float(len(sample)) * N
+    g["raw_rung5"] = float(H + hand_true + unsampled_marked)
+    g["rung0"] = grain(g["raw_rung0"])
+    g["rung1"] = grain(g["raw_rung1"])
+    g["rung2"] = grain(g["raw_rung2"])
+    g["rung3"] = grain(g["raw_rung3"])
+    g["rung4"] = grain(g["raw_rung4"])
+    g["rung5"] = grain(g["raw_rung5"])
     g["variant_continuity"] = H + cont
-    rounds = {}
-    for r in b["sample"]:
-        rounds.setdefault(r["ronda"], []).append(r["id_relato"])
-    per_round, shares = 0.0, {}
-    first_round = min(rounds)
-    for name, ids in sorted(rounds.items()):
-        t2 = matrix(b["sample"], set(ids))
-        share = len(ids) / len(b["sample"])
-        part, _, _ = corrected(N * share, O * share, *t2)
-        per_round += part
-        shares[name] = part
-    g["variant_by_round"] = H + per_round
-    themes = {}
+    g["variant_matrix_inverse"] = H + (O - N * fmr) / (se - fmr)
+    g["variant_hybrid"] = H + hand_true + hyb
+
+    # the stratified families: the autumn has no audited report in it, so none of them has a rate
+    # for every stratum of the population it is applied to
+    month_a = lambda a: a["day"].month
+    month_r = lambda r: pdate(r["data_ocorrencia"]).month
+    theme_a = lambda a: a["theme"]
+    theme_r = lambda r: r["tema"]
+    rg_only = lambda n, m, c: rogan_gladen(n, m, c)[0]
+    pooled_rg = lambda n, m: rogan_gladen(n, m, cells)[0]
+    pooled_pv = lambda n, m: predictive(n, m, cells)
+    g["dead"] = {}
+    for name, ka, kr, fun in (("rg_by_month", month_a, month_r, rg_only),
+                              ("rg_by_theme", theme_a, theme_r, rg_only),
+                              ("pv_by_month", month_a, month_r, predictive),
+                              ("pv_by_theme", theme_a, theme_r, predictive)):
+        v, broken = strata(press, sample, ka, kr, fun)
+        g["dead"][name] = dict(value=v, broken=broken)
+    for name, ka, kr, fun, fb in (("rg_fb_month", month_a, month_r, rg_only, pooled_rg),
+                                  ("rg_fb_theme", theme_a, theme_r, rg_only, pooled_rg),
+                                  ("pv_fb_month", month_a, month_r, predictive, pooled_pv),
+                                  ("pv_fb_theme", theme_a, theme_r, predictive, pooled_pv)):
+        v, broken = strata(press, sample, ka, kr, fun, fb)
+        g["variant_" + name] = H + v
+
+    # what a solver sees in the record and in the audit
+    marked_by_month, audit_by_month = {}, {}
     for a in press:
-        themes.setdefault(a["theme"], [0, 0])
-        themes[a["theme"]][0] += 1
-        themes[a["theme"]][1] += 1 if a["coded_conf"] else 0
-    by_theme = 0.0
-    for th, (n_th, o_th) in themes.items():
-        ids = {r["id_relato"] for r in b["sample"] if r["tema"] == th}
-        t2 = matrix(b["sample"], ids)
-        if min(t2[0] + t2[1], t2[2] + t2[3]) == 0 or (t2[0] / max(t2[0] + t2[1], 1)) + \
-                (t2[3] / max(t2[3] + t2[2], 1)) <= 1:
-            part = n_th * (o_th / n_th + sp - 1) / (se + sp - 1)
-        else:
-            part, _, _ = corrected(n_th, o_th, *t2)
-        by_theme += part
-    g["variant_by_theme"] = H + by_theme
-    press_ids = {a["reports"][0]["ident"] for a in press for r in a["reports"]
-                 if r["route"] == "IMP"}
-    t3 = matrix(b["sample"], press_ids)
-    if t3[0] and t3[1] and t3[3]:
-        part, _, _ = corrected(N, O, *t3)
-        g["variant_press_only_sample"] = H + part
-    else:
-        g["variant_press_only_sample"] = H + raw
-    # the same correction written as the inverted confusion matrix over the observed counts
-    denom = se - (1 - sp)
-    g["variant_matrix_inverse"] = H + (O - N * (1 - sp)) / denom
+        m = a["day"].month
+        marked_by_month.setdefault(m, [0, 0])
+        marked_by_month[m][0] += 1
+        marked_by_month[m][1] += 1 if a["coded_conf"] else 0
+    for r in sample:
+        m = pdate(r["data_ocorrencia"]).month
+        audit_by_month.setdefault(m, [0, 0])
+        audit_by_month[m][0] += 1
+        audit_by_month[m][1] += 1 if r["codigo_manual"] in CONF else 0
+    g["marked_by_month"] = marked_by_month
+    g["audit_by_month"] = audit_by_month
+    g["audit_rounds"] = {}
+    for name in sorted({r["ronda"] for r in sample}):
+        rows = [r for r in sample if r["ronda"] == name]
+        c = matrix(rows, None)
+        g["audit_rounds"][name] = dict(rows=len(rows), cells=c,
+                                       prevalence=(c[0] + c[1]) / float(len(rows)),
+                                       recall=c[0] / float(c[0] + c[1]) if (c[0] + c[1]) else None,
+                                       false_mark=c[2] / float(c[2] + c[3]) if (c[2] + c[3]) else None)
+    g["audit_covers"] = sorted(audit_by_month)
+    g["audit_prevalence"] = (tp + fn) / float(len(sample))
+    g["record_prevalence"] = (H + raw) / float(len(inper))
 
     # ---- A1, per fortnight
     a1 = {}
@@ -190,6 +291,7 @@ def compute(target):
         a1[label] = dict(start=a.isoformat(), end=bb.isoformat(), actions=len(inside),
                          municipalities=len({x["muni"] for x in inside}),
                          partner_share=round(100.0 * len(par) / len(inside), 1) if inside else 0.0,
+                         partner_actions=len(par),
                          marked=len([x for x in inside if x["coded_conf"]]))
     g["a1"] = a1
 
@@ -205,7 +307,7 @@ def compute(target):
         in_period = [r for r in placed if PERIOD[0] <= r["recv"].date() <= PERIOD[1]]
         exc = [e for e in b["exceptions"]
                if e["route"] == route and PERIOD[0] <= e["recv"].date() <= PERIOD[1]]
-        mins = sorted((r["recv"] - r["start"]).total_seconds() / 60.0 for r in in_period)
+        mins = sorted(r["lag"] for r in in_period if r["lag"] is not None)
         k = len(mins) // 2
         a2[route] = dict(received=len(in_period) + len(exc), unplaceable=len(exc),
                          median_minutes=round(statistics.median(mins), 1) if mins else 0.0,

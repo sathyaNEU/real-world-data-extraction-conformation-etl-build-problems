@@ -124,6 +124,13 @@ def build():
 
     specimens = []
     arrivals = receipt_days(W.RUN_FROM, W.RUN_TO, n, W.SEED + 61)
+    # the accession counter is shared with every other project the laboratory books in, so the
+    # cohort service's accessions step irregularly. Drawn on its own stream: no other draw moves.
+    srng = random.Random(W.SEED + 907)
+    serials, serial = [], 104000
+    for _ in range(n):
+        serials.append(serial)
+        serial += srng.choice([1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 8, 11, 17])
     mi = ci = 0
     projects = [p[0] for p in W.PROJECTS]
     weights = [p[2] for p in W.PROJECTS]
@@ -131,14 +138,14 @@ def build():
         received = arrivals[i]
         # the day the panel's turnaround is counted from, as the register recorded it
         panel_from = weekdays[int(i * len(weekdays) / n)]
-        sid = "NFG27-%06d" % (104000 + i * 3 + (i % 7))
+        sid = "NFG27-%06d" % serials[i]
         if role == "scope":
             project, agreement = W.CONTRACT[i % len(W.CONTRACT)]
         else:
             project, agreement = rng.choices(projects, weights)[0], ""
         rec = {"specimen_id": sid, "role": role, "project": project, "agreement": agreement,
                "received": received, "panel_from": panel_from, "extraction": rng.choices(W.EXTRACTION, [0.62, 0.27, 0.11])[0],
-               "instrument": W.INSTRUMENTS[0] if rng.random() < 0.54 else W.INSTRUMENTS[1],
+               "instrument": None if rng.random() < 0.54 else None,
                "depth": round(rng.uniform(26.0, 71.0), 1)}
         if role == "mixed":
             side, band = mixed_plan[mi]
@@ -170,6 +177,14 @@ def build():
             rec["het"] = round(min(36.38, rng.gauss(34.05 + (0.9 if rec["verdict"] == "MIXED" else 0.0), 1.05)), 2)
         rec["conc"] = round(rng.uniform(11.5, 184.0), 1)
         specimens.append(rec)
+
+    # which sequencer a specimen ran on. GSQ-A is the older instrument and carries a higher
+    # het-excess background, so the screen in service flags more of its reads; the draw sits on its
+    # own stream and moves no call, no estimate and no verdict.
+    irng = random.Random(W.SEED + 911)
+    for rec in specimens:
+        p_a = 0.62 if rec["service_flag"] else 0.515
+        rec["instrument"] = W.INSTRUMENTS[0] if irng.random() < p_a else W.INSTRUMENTS[1]
 
     # the duty bioinformatician's reviews. The recorded call does not move: what moves is the
     # het-excess value behind it, so the threshold rule no longer reproduces the recorded call on the
