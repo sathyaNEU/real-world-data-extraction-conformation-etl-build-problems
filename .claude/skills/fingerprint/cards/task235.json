@@ -1,17 +1,17 @@
 {
   "task": "task235",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-17",
   "slot_note": "seed DQ08 (which reporting areas get a completeness alert while recent weeks are still filling in): the decision (which reporting units get a completeness alert in this run) and the quantity (what has arrived against what should have by now) kept; the world moves from disease surveillance to a mobile game studio's purchase tracking, because Epidemiology x Data Quality is banned against task234 and because a build's tracking loss is a measurement quantity of product analytics that no other field has",
   "domain": "product-analytics",
   "subdomain": "metric-definition-measurement-science",
-  "niche": "a mobile game studio's weekly tracking-quality run deciding which iOS and Android builds of its puzzle game get a purchase-tracking-loss alert, judged on the share of each build's store-verified purchases whose client purchase event never reaches the warehouse, in a week when the newest build is mid-rollout on a new analytics SDK and casual players on old builds come back only weekly",
+  "niche": "a mobile game studio's weekly tracking-quality run deciding which iOS and Android builds of its puzzle game get a purchase-tracking-loss alert, judged on the share of each build's store-verified purchases whose client purchase event never reaches the warehouse, in a week when the newest build is three days into a staged rollout on a new analytics SDK that sends at once on iOS and holds batches on Android, and weekly players on old builds come back a week or two apart",
   "objective": "data-quality-monitoring",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Alert Android 7.41.0 and iOS 7.42.0 in the run of Monday 9 November, and no other build.",
+  "answer_source": "submission.md block 1; golden tracking_loss_alerts_2026-11-09.csv (alert column)",
   "gap": [
     "time",
     "population"
@@ -35,9 +35,9 @@
   "role_family": "compliance_or_audit",
   "scoring_unit": "per settled transaction",
   "spine": {
-    "file": "server_sessions_2026-10-12_to_2026-11-09.csv",
-    "rows": 0,
-    "entity": "one session start the game's backend recorded for a device that bought in the window",
+    "file": "session_service_starts_2026-10-05_to_2026-11-09.csv",
+    "rows": 325515,
+    "entity": "one session start the game's session service recorded, every phone and tablet",
     "grain": "device session",
     "source": "synthetic"
   },
@@ -49,7 +49,7 @@
     "currency": "EUR",
     "org_type": "mobile game studio, analytics team",
     "invented_names": [
-      "Ardnagh Games",
+      "Fogbell Games",
       "Kittiwake Cove"
     ],
     "people": [
@@ -64,31 +64,50 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "An item missing from a source's feed is lost only once its sending device has had its next chance to send it, a chance a separate real-time log records device by device; the loss rate has to be read among items whose device has made contact since, while a settle window counts a slow sender's waiting items as lost and cannot judge a source too new to settle, and reading the chance at the account instead of the device grants chances that never came.",
-  "driver_concrete": "A purchase event the game's analytics SDK could not send before the player left the game waits on that phone until the phone next opens the game, which the backend's session log records the moment it happens; a build's tracking loss is the share of its purchases without an event among purchases whose phone has opened the game since, so iOS 7.42.0 on the new SDK and Android 7.41.0 lose 4 and 6 per cent, while a seven-day settle window charges the weekly players' waiting events on the 7.38 and 7.39 builds as losses and leaves 7.42.0 unjudged.",
-  "stump": "A competent solver counts a purchase as lost when its event has not arrived seven days after it, alerts Android 7.41.0 and three old builds whose weekly players have not opened the game again (iOS 7.38.2, Android 7.38.1 and 7.39.0) and leaves iOS 7.42.0 unjudged for want of settled purchases; the step that lands it there is treating a missing event as lost before the phone that made the purchase has opened the game again.",
+  "driver": "An item missing from a source's feed is lost only once its sending device has had its next chance to send it, a chance a separate real-time log records device by device; the loss is read over the items whose device has made contact since, the few still open completed at the source's own share of resolved gaps, while a settle window counts slow senders' waiting items as lost, cannot judge a source too new to settle and swaps two new sources whose delivery changed in opposite directions, and reading the chance at the account instead of the device grants chances that never came.",
+  "driver_concrete": "A purchase event the game's analytics SDK could not send before the player left the game waits on that phone until the phone next opens the game, which the session service records the moment it happens; a missing event whose phone has opened the game since is lost, and the few still open resolve at the build's own share of resolved gaps, so Android 7.41.0 loses 6.34 per cent with none open and iOS 7.42.0 on the new SDK at least 3.10 per cent, while a seven-day settle window charges the weekly players' waiting events on the 7.38, 7.39 and 7.40 builds as losses and leaves the 7.42.0 builds unjudged, and any reading by age puts Android 7.42.0, whose WorkManager uploads hold a third of its events, above iOS 7.42.0, whose 5.0.1 SDK sends at once.",
+  "stump": "A competent solver counts a purchase as lost when its event is still missing seven days later, alerts Android 7.41.0 and four old builds whose weekly players have not opened the game again (Android 7.38.1, iOS 7.38.2, 7.39.1 and 7.40.0) and leaves the 7.42.0 builds unjudged for want of a week-old purchase, so iOS 7.42.0 is missed and 5 of the 12 builds are wrong; the step that lands it there is judging a missing event by its age instead of by whether the phone that made the purchase has opened the game since.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who collapses the SDK's duplicate events, drops renewals and sandbox purchases, crosswalks the version strings and reads the window in Irish time, then measures loss over purchases seven days old, files 4 of the 12 builds wrong (three false alerts on old builds, iOS 7.42.0 missed); joining the session log by account instead of by device still files a false alert on iOS 7.41.1.",
+  "analyst_test": "A strong analyst who collapses the SDK's duplicate uploads and restored events, drops pass renewals and sandbox and licence-tester purchases, maps build numbers through the register and reads the window in Irish dates, then counts a purchase as lost when its event is still missing seven days later, files 5 of the 12 builds wrong (four old builds alerted, iOS 7.42.0 missed); a fourteen-day window still misses iOS 7.42.0, a pooled arrival curve files 6 wrong, a short window for the 7.42.0 pair alerts Android 7.42.0, and the next session read by account instead of by phone files false alerts on iOS 7.38.2, 7.39.1 and 7.40.0.",
   "domain_test": "The deciding quantity is a build's purchase-tracking loss, the client-side instrumentation reconciled against the store's server-side purchases with each missing event judged against its phone's next session, the measurement work product analysts do on SDK telemetry; with wards, meters or tills for builds there is no on-device event queue, no session handshake and no store receipt, and the task stops making sense.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task234": "task234 predicts each source's eventual output from a share in its own current output that a loss cannot move; this build predicts nothing: it identifies purchase by purchase whether the missing event is due yet, from a separate real-time log of the sending phone's next session, and measures loss only over the purchases that are due",
     "task231": "task231 takes the closed share of silent units from settled rounds the register has caught up with; this build has no settled rounds to borrow from (the newest build is four days old) and judges each missing item by its own sender's next contact, not by a share carried from earlier periods",
     "task445": "task445 completes a still-open period by imputing each missing reporter's amount from its class's drift; this build imputes no amount: each missing item is classified late or lost by whether its own sending device has made contact since, read from a separate session log, and the loss rate is measured over the items whose device has",
-    "task459": "task459 reads each unit's rate at a committed operating level from interval records instead of its period average; this build has no operating level or rate curve: it decides, item by item, whether a missing record is due yet from its sender's next contact and measures loss only over the items that are"
+    "task459": "task459 reads each unit's rate at a committed operating level from interval records instead of its period average; this build has no operating level or rate curve: it decides, item by item, whether a missing record is due yet from its sender's next contact and measures loss only over the items that are",
+    "task235": "v1 graded each build's tracking loss at two decimals, a figure that moved with the rate given to the purchases still open at the run; v2 grades only what the records force (each build's alert, the losses known outright, iOS 7.42.0's floor) and files the outcome (an event that has not arrived by the run is lost only if it never will), and the account links now say they are not a full register of a player's accounts: the decisive step (each missing event judged against the next session of the phone that made the purchase) is unchanged and still unfiled."
   },
-  "lineage": [],
-  "notes": "Decisive G12 (a missing purchase event is a non-answer until the phone that made the purchase has opened the game again), G14 supporting (the loss rate conditioned on that delivery chance, pattern E's form), G2 (the chance belongs to the device, not the account). The metrics catalogue files the WHAT (a build's tracking loss: the share of its purchases in the four weeks whose purchase_completed event never reaches the warehouse, purchases whose event can still arrive included; the 2 per cent line) and no method; the SDK notes say the on-device queue survives restarts and name no trigger, which the data show (every late event arrives within a minute of a later session start of its phone). Re-domained from the seed's disease surveillance: Epidemiology x Data Quality is banned against task234. Forum redrawn at the draw from operations_desk to line_manager_or_team after the pull brought task154's redrawn forum.",
+  "lineage": [
+    {
+      "driver": "An item missing from a source's feed is lost only once its sending device has had its next chance to send it, a chance a separate real-time log records device by device; the loss is read over the items whose device has made contact since, the few still open completed at the source's own share of resolved gaps, while a settle window counts slow senders' waiting items as lost, cannot judge a source too new to settle and swaps two new sources whose delivery changed in opposite directions, and reading the chance at the account instead of the device grants chances that never came.",
+      "driver_concrete": "A purchase event the game's analytics SDK could not send before the player left the game waits on that phone until the phone next opens the game, which the session service records the moment it happens; a build's tracking loss is its purchases whose event is missing though their phone has opened the game since, plus the few still open at the build's own share of resolved gaps, over all its purchases, so iOS 7.42.0 on the new SDK and Android 7.41.0 lose 4.75 and 6.34 per cent, while a seven-day settle window charges the weekly players' waiting events on the 7.38, 7.39 and 7.40 builds as losses and leaves the 7.42.0 builds unjudged, and any reading by age puts Android 7.42.0, whose WorkManager uploads hold a third of its events, above iOS 7.42.0, whose 5.0.1 SDK sends at once.",
+      "stump": "A competent solver counts a purchase as lost when its event is still missing seven days later, alerts Android 7.41.0 and four old builds whose weekly players have not opened the game again (Android 7.38.1, iOS 7.38.2, 7.39.1 and 7.40.0) and leaves the 7.42.0 builds unjudged for want of a week-old purchase, so iOS 7.42.0 is missed and 5 of the 12 builds are wrong; the step that lands it there is judging a missing event by its age instead of by whether the phone that made the purchase has opened the game since.",
+      "stump_strategy": "maturity_censoring",
+      "gate_g": "method_or_model_selection",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "decision_type": "designation_set",
+      "calibration_form": "none",
+      "architecture": "v1",
+      "fate": "spent 2026-10-17: determinism judge SEND_BACK, underspecified_objective (the alert list graded each build's tracking loss at two decimals though nothing shipped said how the purchases still open at the run are valued, and paying players were read off the account links, which no file said were incomplete); the alert set was forced and Gate H passed"
+    }
+  ],
+  "notes": "v2 Decisive G12 (a missing purchase event is a non-answer until the phone that made the purchase has opened the game again), G14 supporting (the loss read over the purchases whose chance has come, the few still open at the build's own share of resolved gaps, pattern E's form), G2 (the chance belongs to the device, not the account). The metrics catalogue files the WHAT (a build's tracking loss: the share of its purchases in the four weeks whose purchase_completed event never reaches the warehouse; purchases made shortly before the run count like any other, and an event not arrived by the run is lost only if it never will; the 2 per cent line) and no method; the SDK notes say the queue is kept when the game closes and uploaded when it starts and while it is in the foreground, and that 5.0.1 sends at once on iOS and through WorkManager on Android; no sentence links a missing event to the phone's next session. The graded list carries the alert, paying players and gross bookings per paying player; no figure that moves with the rate given to the open purchases is graded (the alert set is the same under the build's own, the platform's or the pooled rate, or a silence cut-off). Re-domained from the seed's disease surveillance: Epidemiology x Data Quality is banned against task234. Forum redrawn at the v1 draw from operations_desk to line_manager_or_team after the pull brought task154's redrawn forum.",
   "client_domain": "product-analytics",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:loss-conditioned-on-the-delivery-chance",
   "layer1": [
     "season-pass renewals the store makes without the app, and sandbox and licence-tester purchases, among the verified purchases",
-    "duplicate SDK events from upload retries and restored transactions",
+    "duplicate SDK uploads and restored transactions logged again",
     "device clocks skewed against the warehouse's receipt time",
-    "build numbers in the store backend against version names in the SDK",
-    "Irish dates against UTC timestamps, with the end of Irish Summer Time inside the window",
-    "accounts that play on more than one device"
+    "build numbers in the purchase service against version names in the SDK",
+    "Irish dates against UTC timestamps, with the end of Irish Summer Time inside the window"
   ],
-  "registered": "2026-10-17T03:45:47Z"
+  "registered": "2026-10-17T06:11:02Z"
 }
