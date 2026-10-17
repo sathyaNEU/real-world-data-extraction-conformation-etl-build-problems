@@ -48,12 +48,22 @@ def standard(tgt):
                        "monitoring", H2))
     f.append(Paragraph("Issued by the pharmacovigilance division. Version 7-2024.3, in force from "
                        "1 July 2025. Supersedes 7-2024.2.", SMALL))
+    f.append(Paragraph("1. Purpose and scope", H2))
+    f.append(Paragraph("1.1 This standard governs the quarterly screen the division runs on the "
+                       "Register of Medicinal Product Statistics for medicines under additional "
+                       "monitoring. The screen looks for pairs of a monitored product and a marker "
+                       "treatment where the marker treatment is started after the product more "
+                       "often than the register's own dispensing pattern would give, and refers "
+                       "such pairs for formal signal assessment.", BODY))
+    f.append(Paragraph("1.2 The run's extract, its screen window and the products and marker "
+                       "treatments screened are fixed for each run and recorded with it.", BODY))
 
     f.append(Paragraph("2. The run", H2))
     f.append(Paragraph("2.1 The screen window. Each quarterly run covers the twelve months ending "
-                       "on the last day of the quarter before the run. The run of October 2026 "
-                       "covers 1 October 2025 to 30 September 2026, both days included. A "
-                       "dispensing falls in the screen window according to its date of dispensing.", BODY))
+                       "on the last day of the quarter before the run, both days included. A "
+                       "dispensing falls in the screen window, and in a quarter of it, according "
+                       "to its date of dispensing and not according to the date it was submitted "
+                       "to the register.", BODY))
     f.append(Paragraph("2.2 The clearance period. The twenty-four months before the screen window, "
                        "that is 1 October 2023 to 30 September 2025, are the clearance period. The "
                        "register extract for a run covers the clearance period and the screen "
@@ -89,13 +99,15 @@ def standard(tgt):
                        "tracker at the date the extract was pulled.", BODY))
     f.append(Paragraph("3.3 Figures. Patient counts are whole. The expected number is carried to "
                        "one decimal and the multiple in 3.2(b) to two decimals.", BODY))
+    f.append(Paragraph("3.5 The construction of the expected number in 3.2(b) is the division's "
+                       "own epidemiological work and is recorded with each run.", BODY))
     f.append(Paragraph("3.4 A pair that meets 3.2(a) but not 3.2(b) is carried forward to the next "
                        "run unchanged and is not reported as a referral.", BODY))
 
     f.append(Paragraph("4. After the run", H2))
-    f.append(Paragraph("4.1 The referral quarter. Pairs referred by the October run are assessed "
-                       "in the quarter beginning 1 January 2027. The division publishes the run's "
-                       "figures for every screened pair, referred or not.", BODY))
+    f.append(Paragraph("4.1 The referral quarter. Pairs a run refers are assessed in the quarter "
+                       "that begins after the quarter the run is made in. The division publishes "
+                       "the run's figures for every screened pair, referred or not.", BODY))
     f.append(Paragraph("4.2 The standing utilisation table. The division's quarterly table counts "
                        "every patient for whom at least one product in Annex A has its first "
                        "receipt inside the screen window, and gives the share of those patients "
@@ -107,8 +119,7 @@ def standard(tgt):
                        "region is recorded is counted under \"not stated\".", BODY))
 
     f.append(Spacer(1, 5))
-    f.append(Paragraph("Annex A. Products under additional monitoring at the start of the screen "
-                       "window", H2))
+    f.append(Paragraph("Annex A. Products under additional monitoring during the screen window", H2))
     rows = []
     for code, brand, atc, prof, pi, mf, mt, holder in W.PRODUCTS:
         rows.append([code, brand, atc, ", ".join(W.ANNEX[code])])
@@ -119,9 +130,11 @@ def standard(tgt):
     rows = [[m[0], m[1], m[2]] for m in W.MARKERS]
     f.append(_table(["Marker code", "Marker treatment", "ATC group"], rows, [24, 54, 30]))
     f.append(Spacer(1, 4))
-    f.append(Paragraph("A marker treatment stands for the event it is given for. A package belongs "
-                       "to a marker treatment where its anatomical therapeutic chemical code is "
-                       "the group code in this annex.", SMALL))
+    f.append(Paragraph("A marker treatment is the treatment a clinician gives for the event the "
+                       "division is watching for, and the division screens for the treatment "
+                       "because the register records it while it does not record the event. A "
+                       "package belongs to a marker treatment where its anatomical therapeutic "
+                       "chemical code is the group code in this annex.", SMALL))
     doc.build(f)
 
 
@@ -141,9 +154,11 @@ def fee_schedule(tgt, pulled):
                 "whatever month the line was submitted in; a line submitted after the quarter "
                 "closed is charged in the quarter of its dispensing.")
     ws["A4"] = "Doses are stated in thousands of DDD on this sheet."
-    ws["A5"] = ("A payer's band is settled on its total doses for the whole screen window, and the "
-                "band's rate is charged on every one of that payer's doses. The bands are not "
-                "applied in tiers.")
+    ws["A5"] = ("A payer's band is settled once, on its total doses for the whole screen window. "
+                "The band's rate is charged on every one of that payer's doses; the bands are not "
+                "applied in tiers. Doses dispensed before 1 April 2026 are charged at this "
+                "sheet's rate for the band and doses dispensed on or after that date at the "
+                "Amendment sheet's rate for the same band.")
     rows = [("Band", "From (thousand DDD)", "To (thousand DDD)", "Rate (DKK per 1.000 DDD)")]
     for i, (lo, hi, rt) in enumerate(W.FEE_BANDS):
         rows.append(("%d" % (i + 1), "%.0f" % lo, "-" if hi > 10 ** 8 else "%.0f" % hi, "%d" % rt))
@@ -179,8 +194,9 @@ def fee_schedule(tgt, pulled):
                  "payer for its dispensings before that date.")
     ws3["A3"] = ("Band membership is settled on the payer's total doses for the whole screen "
                  "window, in thousands of DDD, and the band's rate is charged on all of those "
-                 "doses. A dispensing line re-sent after a transmission failure is one dispensing "
-                 "and its doses are charged once.")
+                 "doses. A dispensing re-transmitted after a failed transfer is charged once. "
+                 "Every dispensing inside the screen window is charged, including a dispensing of "
+                 "a product whose marketing authorisation has since lapsed.")
     ws3["A4"] = "Prepared by the finance office, " + W.iso(pulled) + "."
     for w in (ws, ws2, ws3):
         for col in range(1, 6):

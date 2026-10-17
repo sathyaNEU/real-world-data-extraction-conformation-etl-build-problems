@@ -27,7 +27,23 @@ def cut(target):
     allsep = {}
     for r in rows:
         allsep[(r["unit"], r["q"])] = allsep.get((r["unit"], r["q"]), 0) + 1
-    targets = sim.record_targets(expected, allsep, design, W.UNITS)
+    plans = {x[0]: x[7] for x in W.UNITS if x[7] is not None}
+    per_sep = {}
+    for x in W.UNITS:
+        if x[0] not in plans:
+            continue
+        qs = [q for q in sim.quarters_for(x) if (x[0], q) in expected]
+        e = sum(expected[(x[0], q)] for q in qs)
+        n = sum(allsep[(x[0], q)] for q in qs)
+        if not e or not n:
+            continue                                  # a unit outside the indicator carries no excess
+        o = sum(int(round(expected[(x[0], q)] * design[x[0]][q])) for q in qs)
+        per_sep[x[0]] = (o / e - 1) * e / n          # excess complications per planned separation
+    _, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=False)
+    graded = sorted((c for c in per_sep if c in {x[0] for x in W.UNITS if x[10] == "eligible"}),
+                    key=lambda c: -per_sep[c] * plans[c])[:2]
+    plans = sim.centre_plans(plans, per_sep, thetas, graded)
+    targets, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=True)
     observed = sim.assign_complications(rows, expected, design, W.UNITS, targets)
     detail = sim.complications(rows, W.UNITS)
     replays = sim.add_replays(rows, W.UNITS)
@@ -35,7 +51,7 @@ def cut(target):
     PK.write_detail(target, rows, detail)
     PK.write_series(target, expected, observed, inscope)
     PK.write_summary(target, rows)
-    PK.write_plan(target)
+    PK.write_plan(target, plans)
     PK.write_units(target)
     PK.write_sites(target)
     PK.write_bands(target)
@@ -60,7 +76,8 @@ def cut(target):
     for name in sorted(os.listdir(target)):
         os.utime(os.path.join(target, name), (stamp, stamp))
     return dict(rows=rows, allrows=allrows, expected=expected, observed=observed, inscope=inscope,
-                allsep=allsep, detail=detail, replays=replays, design=design, targets=targets)
+                allsep=allsep, detail=detail, replays=replays, design=design, targets=targets,
+                plans=plans, thetas=thetas)
 
 
 def zip_pack(target, path):

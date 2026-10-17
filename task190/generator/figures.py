@@ -32,6 +32,7 @@ def write(g, path):
             "one_profile_for_the_book": g["pooled_total"],
             "counter_rows": g["stats"]["counter"],
             "machine_rows": g["stats"]["machine"],
+            "estimators_swept": g["sweep_n"],
         },
         "deliverables": {
             "structured_cash_deposits_2027.xlsx": {

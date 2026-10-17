@@ -33,6 +33,12 @@ def _referred(tgt, rp, route, firsts=None, **kw):
     return G.screen(tgt, rp, route, firsts, **kw)[0]
 
 
+def _pdf_text(tgt):
+    import pypdf
+    r = pypdf.PdfReader(os.path.join(tgt, "screen_standard_7_2024.pdf"))
+    return " ".join(p.extract_text() for p in r.pages).replace("\n", " ")
+
+
 def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day):
     global N, FAILED
     N, FAILED = 0, []
@@ -83,9 +89,11 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
         if k not in firsts_truth or r["day"] < firsts_truth[k]:
             firsts_truth[k] = r["day"]
     ok("R2.rejected_never_first", all(not r["is_first"] for r in rejected))
+    orig = set((r["key"], r["vnr"], r["day"], r["pharmacy"]) for r in kept if not r.get("resend"))
     ok("R2.resend_changes_no_date",
-       all(r["day"] == firsts_truth[(r["pid"], r["code"])] or not r["is_first"]
-           for r in kept if r.get("resend")))
+       all((r["key"], r["vnr"], r["day"], r["pharmacy"]) in orig
+           for r in kept if r.get("resend")),
+       "every re-sent copy repeats an original line's key, package, date and pharmacy")
 
     # ---------------------------------------------------------------- R3: the analyst test
     crude = _referred(tgt, rp, "half", firsts)
@@ -245,6 +253,37 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
             if parse(r[subc]) < parse(r[datec]):
                 late += 1
     ok("defect2.submission_never_before_dispensing", late == 0, "%d" % late)
+    mkt = {r["product_code"]: (G.iso(r["first_marketed"]),
+                               G.iso(r["authorisation_valid_to"]) if r["authorisation_valid_to"]
+                               else None) for r in rd(tgt, "product_register.csv")}
+    bad_t = []
+    for r in rd(tgt, "signal_tracker_export.csv"):
+        mf, mt = mkt[r["product_code"]]
+        if G.iso(r["opened_on"]) < mf:
+            bad_t.append(("tracker", r["tracker_ref"]))
+    QS = {"2025 Q4": (dt.date(2025, 10, 1), dt.date(2025, 12, 31)),
+          "2026 Q1": (dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
+          "2026 Q2": (dt.date(2026, 4, 1), dt.date(2026, 6, 30)),
+          "2026 Q3": (dt.date(2026, 7, 1), dt.date(2026, 9, 30))}
+    for r in rd(tgt, "spontaneous_reports_summary.csv"):
+        mf, mt = mkt[r["product_code"]]
+        if QS[r["quarter"]][1] < mf:
+            bad_t.append(("reports", r["product_code"], r["quarter"]))
+    for name, datec, parse in (("dispensings_2023_2025.csv", "disp_date", G.iso),
+                               ("dispensings_2025_2026.csv", "date_of_dispensing", G.dk)):
+        for r in rd(tgt, name):
+            code = W.PKG_OF[r["vnr"] if "vnr" in r else r["package_code"]][0]
+            if code not in mkt:
+                continue
+            d = parse(r[datec])
+            mf, mt = mkt[code]
+            if d < mf or (mt and d > mt):
+                bad_t.append(("dispensing", code, str(d)))
+                break
+    ok("defect4.no_row_outside_its_product_lifecycle", not bad_t, str(bad_t[:6]))
+    ok("defect4.standard_stamp_is_consistent",
+       "2026" not in _pdf_text(tgt).split("Annex A")[0].replace("7-2024", "").replace(
+           "1 April 2026", ""), "the standing standard names no run-specific year")
     lastday = {}
     for r in kept:
         key = r["key"]
@@ -271,12 +310,52 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
        reg["P09"]["holder_code"] == "H6" and reg["P09"]["previous_holder_code"] == "H5"
        and reg["P09"]["holder_code_from"] == "2026-02-27", str(reg["P09"]))
     notes = json.load(open(os.path.join(tgt, "register_release_notes.json")))
-    kh = " ".join(notes["known_handling"])
-    ok("pin.resend_counts_once_for_lines", "counts once in any count of lines" in kh)
-    ok("pin.quarter_of_dispensing", "in the quarter of its date of dispensing" in kh)
-    ok("pin.extract_scope_is_adults", "aged 18 and over" in kh)
-    ok("pin.no_inert_clause", "left the country" not in open(
-        os.path.join(tgt, "screen_standard_7_2024.pdf"), "rb").read().decode("latin-1"))
+    ok("voice.release_notes_have_no_handling_list", "known_handling" not in notes,
+       str(sorted(notes)))
+    doc = {(r["file_name"], r["variable"]): r["documentation"]
+           for r in rd(tgt, "register_variable_documentation.csv")}
+    ok("pin.resend_counts_once_for_lines",
+       "counts it once, in its lines and in its doses"
+       in doc[("dispensings_2025_2026.csv", "record_id")])
+    ok("pin.crosswalk_is_one_patient",
+       "one patient behind them" in doc[("dispensings_2025_2026.csv", "person_key")])
+    ok("pin.package_validity_is_documented",
+       "at the date of the dispensing" in doc[("dispensings_2025_2026.csv", "package_code")])
+    ok("pin.region_vintage_documented",
+       "previous_region is the region recorded before" in doc[("person_register.csv", "region")])
+    man = {r["file_name"]: r["note"] for r in rd(tgt, "extract_manifest.csv")}
+    ok("pin.extract_scope_is_adults", "aged 18 and over" in man["(extract scope)"])
+    ok("pin.extract_scope_names_the_window",
+       "1 October 2025 to 30 September 2026" in man["(extract scope)"]
+       and "1 October 2023 to 30 September 2025" in man["(extract scope)"])
+    std = _pdf_text(tgt)
+    ok("pin.quarter_of_dispensing_in_the_standard",
+       "in a quarter of it, according to its date of dispensing" in std)
+    ok("pin.no_inert_clause", "left the country" not in std)
+    ok("pin.standard_owns_the_expected_number",
+       "own epidemiological work and is recorded with each run" in std)
+    ok("pin.standard_names_no_estimator",
+       not any(x in std.lower() for x in ("sequence ratio", "null-effect", "hallas", "permutation",
+                                          "equally likely", "symmetry", "half of")))
+    # the six sentences the judge's determinism rests on, each with a shipped home
+    reg9 = reg["P09"]
+    ok("home.sovraxil_history",
+       reg9["holder_code"] == "H6" and reg9["previous_holder_code"] == "H5"
+       and reg9["holder_code_from"] == "2026-02-27")
+    hold = {r["holder_code"]: r for r in rd(tgt, "holder_register.csv")}
+    ok("home.kirunelle_merger",
+       hold["H7"]["merged_into"] == "H2" and hold["H7"]["merger_date"] == "2026-04-01")
+    ok("home.payer_rule", "the surviving company is the fee payer" in sheet_text)
+    ok("home.resend_counts_once",
+       "charged once" in sheet_text
+       and "counts it once" in doc[("dispensings_2025_2026.csv", "record_id")])
+    ok("home.flat_bands", sheet_text.count("not applied in tiers") >= 1
+       and "rate is charged on all of those" in sheet_text)
+    ok("home.quarter_of_dispensing",
+       "in a quarter of it, according to its date of dispensing" in std
+       and "charged in the quarter of its dispensing" in sheet_text)
+    ok("home.lapsed_authorisation_charged",
+       "marketing authorisation has since lapsed" in sheet_text)
     dist = asks_distinct(kept)
     ok("ask.a1_counts_distinct_lines",
        [r for r in g["a1"] if r["chain"] == "APK" and r["quarter"] == "2025 Q4"][0]["accepted"]

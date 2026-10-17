@@ -92,6 +92,10 @@ def dictionary_sheets():
           ("periodo_coberto", "texto", "periodo que a carga cobre"),
           ("concluida_em", "data", "dia em que a carga terminou"),
           ("estado", "texto", "estado da carga"), ("nota", "texto", "nota de operacao")]),
+        ("convencoes", "Convencoes de leitura dos quadros do boletim.",
+         [("mediana", "regra", "num conjunto com um numero par de valores a mediana e a media dos dois valores centrais"),
+          ("quinzena", "regra", "as quinzenas contam-se a partir de 1 de maio e a ultima termina com o periodo (protocolo 3.4)"),
+          ("acao", "regra", "uma acao e um tema numa localidade num dia (protocolo 2.1), qualquer que seja o numero de relatos")]),
         ("outros ficheiros", "Os restantes ficheiros da extracao.",
          [("config_monitor.json", "json", "configuracao do monitor de imprensa: orgaos, palavras-chave, regra de aceitacao e nota de relogio"),
           ("notificacoes_reuniao_publica.csv", "csv", "notificacoes de reuniao e manifestacao entregues nas camaras municipais"),
@@ -223,11 +227,15 @@ if __name__ == "__main__":
     import figures as FG
     import metadata as MD
     DL.workbook(os.path.join(gold, "boletim_vigilancia_2026S2.xlsx"), g)
-    DL.chart(os.path.join(gold, "acoes_por_quinzena.png"), g)
+    chart_png = os.path.join(HERE, "_acoes_por_quinzena.png")
+    DL.chart(chart_png, g)
+    DL.bulletin(os.path.join(gold, "boletim_confrontos_2026S2.pdf"), g, chart_png)
     PP.normalize_ooxml(os.path.join(gold, "boletim_vigilancia_2026S2.xlsx"), W.PEOPLE["officer"],
                        W.PEOPLE["officer"], "2026-11-09T09:30:00Z", "2026-11-13T16:45:00Z",
-                       title="Boletim da Vigilancia Nacional, periodo de maio a outubro de 2026",
-                       excel=True)
+                       title="Boletim da Vigilancia Nacional, maio a outubro de 2026", excel=True)
+    PP.normalize_pdf(os.path.join(gold, "boletim_confrontos_2026S2.pdf"),
+                     b"D:20261113164500+00'00'", b"D:20261113164500+00'00'")
+    os.remove(chart_png)
     MD.write(TASK, g)
     FG.write(HERE, g)
     import checks as CK
@@ -235,13 +243,13 @@ if __name__ == "__main__":
     n = CK.run(target, g)
     k = VF.run(target, os.path.join(HERE, "figures.json"))
     print("generator assertions", n, "independent checks", k)
-    print("cohort %d episodes | recorded %d | closed quiet %d | still open %d"
-          % (g["cohort"], g["recorded"], g["closed_quiet"], g["still_open"]))
-    print("call    : %d per cent, %d episodes (raw %.3f episodes, %.3f per cent)"
-          % (g["rate_pct"], g["episodes"], g["raw_episodes"], g["raw_rate"]))
-    print("rung 0  : %d per cent, %d episodes" % (g["rung0_pct"], g["rung0_episodes"]))
-    print("rung 1  : %d per cent, %d episodes" % (g["rung1_pct"], g["rung1_episodes"]))
-    print("rung 2  : %d per cent, %d episodes" % (g["rung2_pct"], g["rung2_episodes"]))
-    print("variants: weekly %.3f fortnightly %.3f projected %.3f"
-          % (g["weekly_episodes"], g["fortnightly_episodes"], g["projected_episodes"]))
+    print("actions %d | press reported %d | other %d" % (g["actions_in_period"], g["press_only"],
+                                                         g["filed_by_hand"]))
+    print("call    : %d confrontational actions (raw %.3f)" % (g["total"], g["raw_total"]))
+    print("rung 0  : %d, rung 1 %d, rung 2 %d" % (g["rung0"], g["rung1"], g["rung2"]))
+    print("sample  : %d rows, %d/%d/%d/%d, recall %.4f, false mark %.4f"
+          % (g["sample_rows"], g["tp"], g["fn"], g["fp"], g["tn"], g["recall"], g["false_mark"]))
+    print("variants: continuity %.3f by round %.3f by theme %.3f matrix %.3f sample-pop %.3f"
+          % (g["variant_continuity"], g["variant_by_round"], g["variant_by_theme"],
+             g["variant_matrix_inverse"], g["variant_press_only_sample"]))
     print("pack    :", counts)

@@ -56,10 +56,11 @@ def position_frames(series, adjust=True, drop_invalid=True, keep_dup=False, dup_
         if drop_invalid:
             keep &= s["vm"]
         d = out.setdefault(code, {"laeq": [], "la90": [], "keep": [], "stop": [], "planned": [],
-                                  "am": [], "vm": [], "stamps": []})
+                                  "am": [], "vm": [], "valid": [], "stamps": []})
         d["laeq"].append(laeq)
         d["la90"].append(la90)
         d["keep"].append(keep)
+        d["valid"].append(s["vm"] if drop_invalid else np.ones(len(keep), dtype=bool))
         d["stop"].append(st)
         d["planned"].append(pl)
         d["am"].append(s["am"])
@@ -69,13 +70,14 @@ def position_frames(series, adjust=True, drop_invalid=True, keep_dup=False, dup_
         for k in list(d):
             d[k] = np.concatenate(d[k])
     if keep_dup and dup_rows is not None:
-        code, laeq, la90, keep, stop, planned = dup_rows
+        code, laeq, la90, keep, stop, planned, valid = dup_rows
         d = out[code]
         d["laeq"] = np.concatenate([d["laeq"], laeq])
         d["la90"] = np.concatenate([d["la90"], la90])
         d["keep"] = np.concatenate([d["keep"], keep])
         d["stop"] = np.concatenate([d["stop"], stop])
         d["planned"] = np.concatenate([d["planned"], planned])
+        d["valid"] = np.concatenate([d["valid"], valid])
     return out
 
 
@@ -84,10 +86,10 @@ def routes(frames):
     r = {}
     for code, d in frames.items():
         on = d["keep"] & ~d["stop"]
-        off = d["keep"] & d["stop"]
-        off_planned = d["keep"] & d["planned"]
-        total = eavg(d["laeq"][on])
-        total_with_stops = eavg(d["laeq"][d["keep"]])
+        off = d["valid"] & d["stop"]
+        off_planned = d["valid"] & d["planned"]
+        total = eavg(d["laeq"][d["keep"]])            # plan 3.1: every valid assessment minute
+        total_running = total
         resid = eavg(d["laeq"][off])
         resid_planned = eavg(d["laeq"][off_planned])
         p10 = float(np.percentile(d["laeq"][on], 10.0))
@@ -103,13 +105,13 @@ def routes(frames):
         arith = float(np.mean(x))
         arith90 = float(np.mean(d["la90"][on]))
         r[code] = {
-            "total": total, "total_with_stops": total_with_stops, "resid": resid,
+            "total": total, "total_running": total_running, "resid": resid,
             "resid_planned": resid_planned, "minutes_valid": int(on.sum()),
             "minutes_excluded": int((d["am"] & ~d["vm"]).sum()) if "am" in d else 0,
             "minutes_stop": int(off.sum()),
             "specific": esub(total, resid),
             "specific_planned": esub(total, resid_planned),
-            "specific_with_stops": esub(total_with_stops, resid),
+            "specific_running_total": esub(total_running, resid),
             "rung1_total": total,
             "rung2_p10": esub(total, p10),
             "rung2_la90": esub(total, la90mean),

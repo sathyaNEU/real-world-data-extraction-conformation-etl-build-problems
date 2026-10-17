@@ -24,26 +24,25 @@ def workbook(path, g):
     ws.title = "Resumo"
     ws["A1"] = "Vigilancia Nacional: boletim do periodo de 1 de maio a 30 de outubro de 2026"
     ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = ("Indicador 3 do protocolo. Registo extraido em 6 de novembro de 2026; os episodios "
-                "ainda abertos pertencem a coorte do periodo.")
+    ws["A2"] = ("Indicador 2 do protocolo. Registo extraido em 6 de novembro de 2026; o numero de "
+                "acoes de confronto e o das acoes que o foram.")
     ws["A2"].font = Font(size=9, italic=True)
-    rows = [("Taxa de confronto do periodo", "%d por cento" % g["rate_pct"]),
-            ("Episodios a que corresponde", "%d episodios" % g["episodes"]),
-            ("Episodios abertos no periodo", "%d episodios" % g["cohort"]),
-            ("Com acao de confronto ja registada", "%d episodios" % g["recorded"]),
-            ("Encerrados sem acao de confronto", "%d episodios" % g["closed_quiet"]),
-            ("Ainda abertos na extracao", "%d episodios" % g["still_open"]),
-            ("Acoes registadas no periodo",
-             "%d acoes" % sum(v["actions"] for v in g["a1"].values()))]
+    rows = [("Acoes de confronto do periodo", "%d acoes" % g["total"]),
+            ("Acoes registadas no periodo", "%d acoes" % g["actions_in_period"]),
+            ("Acoes com relato do monitor de imprensa", "%d acoes" % g["press_only"]),
+            ("Acoes so com relato de parceiro ou da linha", "%d acoes" % g["filed_by_hand"]),
+            ("Codigo de confronto do classificador", "%d acoes" % g["press_marked"]),
+            ("Codigo de confronto de quem entregou", "%d acoes" % g["hand_confrontational"]),
+            ("Relatos na amostra de dupla codificacao", "%d relatos" % g["sample_rows"])]
     for i, (k, v) in enumerate(rows, 4):
         a = ws.cell(row=i, column=1, value=k)
         a.font = Font(bold=(i == 4))
         b = ws.cell(row=i, column=2, value=v)
         b.font = Font(bold=(i == 4))
         b.alignment = Alignment(horizontal="right")
-    ws.cell(row=12, column=1, value=("A taxa cobre toda a vida de cada episodio da coorte, pelo que "
-                                     "os episodios abertos na extracao entram com o que o registo "
-                                     "mostra sobre o fim dos episodios."))
+    ws.cell(row=12, column=1, value=("As acoes com relato do monitor de imprensa levam o codigo do "
+                                     "classificador (protocolo 2.6), medido pela mesa de codificacao "
+                                     "na amostra de dupla codificacao do periodo."))
     ws.cell(row=12, column=1).font = Font(size=9, italic=True)
     ws.cell(row=13, column=1, value="Preparado para o conselho de curadores de 19 de novembro de 2026.")
     ws.cell(row=13, column=1).font = Font(size=9, italic=True)
@@ -133,17 +132,19 @@ def workbook(path, g):
     nt["A1"].font = Font(bold=True, size=12)
     notes = [
         ("Registo", "Vigilancia Nacional, aberta em 1 de maio de 2026; extracao de 6 de novembro de 2026."),
-        ("Indicador 3", "Taxa de confronto do protocolo 3.3, em percentagem inteira, com o numero de "
-                        "episodios a que corresponde."),
+        ("Indicador 2", "Acoes de confronto do protocolo 3.3, em numero inteiro de acoes."),
         ("Acao", "Um tema de disputa numa localidade num dia (protocolo 2.1). Os relatos das tres "
                  "vias e das duas edicoes do grupo Atlantico contam uma vez."),
-        ("Episodio", "Um municipio e um tema, encerrado por vinte e um dias sem acao (protocolo 3.1)."),
+        ("Codigo da acao", "O do relato do monitor de imprensa quando existe, o de quem entregou nas "
+                           "restantes acoes (protocolo 2.6)."),
         ("Quinzenas", "Contadas a partir de 1 de maio; a ultima tem quinze dias e termina com o "
                       "periodo (protocolo 3.4)."),
         ("Carga de agosto", "O mes de agosto da rede de parceiros foi reposto numa segunda carga; "
                             "cada relato conta uma vez (registo_importacoes)."),
         ("Relogios", "O carimbo de recepcao do monitor de imprensa vem em UTC; as horas de inicio "
                      "das acoes sao locais."),
+        ("Dupla codificacao", "Duas rondas, julho e novembro, sobre relatos aceites do monitor "
+                              "(protocolo 4.5)."),
     ]
     for i, (k, vtxt) in enumerate(notes, 3):
         a = nt.cell(row=i, column=1, value=k)
@@ -162,13 +163,13 @@ def chart(path, g):
     import matplotlib.pyplot as plt
     labels = sorted(g["a1"], key=lambda k: int(k[1:]))
     total = [g["a1"][k]["actions"] for k in labels]
-    conf = [g["a1"][k]["confrontational"] for k in labels]
+    conf = [g["a1"][k]["marked"] for k in labels]
     rest = [t - c for t, c in zip(total, conf)]
     fig, ax = plt.subplots(figsize=(8.6, 4.3), dpi=150)
     ax.bar(labels, rest, color="#9fb0c4", edgecolor="#ffffff", linewidth=1.1,
-           label="acoes sem acao de confronto")
+           label="acoes com outro codigo")
     ax.bar(labels, conf, bottom=rest, color="#8c2f2f", edgecolor="#ffffff", linewidth=1.1,
-           label="acoes de confronto")
+           label="acoes com codigo de confronto")
     for i, t in enumerate(total):
         ax.annotate("%d" % t, xy=(i, t), xytext=(0, 3), textcoords="offset points",
                     ha="center", fontsize=8.5)
@@ -187,4 +188,66 @@ def chart(path, g):
     fig.tight_layout(rect=(0, 0.035, 1, 1))
     fig.savefig(path, metadata={"Software": None, "Creation Time": None})
     plt.close(fig)
+    return path
+
+
+def bulletin(path, g, chart_png):
+    """The bulletin page the association publishes for the period."""
+    import os
+    from reportlab import rl_config
+    rl_config.invariant = 1
+    from reportlab.lib import colors
+    from reportlab.lib.enums import TA_JUSTIFY
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+    from reportlab.lib.units import mm
+    from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    ss = getSampleStyleSheet()
+    body = ParagraphStyle("b", parent=ss["BodyText"], fontName="Times-Roman", fontSize=9.5,
+                          leading=13, alignment=TA_JUSTIFY, spaceAfter=5)
+    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Times-Bold", fontSize=14, spaceAfter=6)
+    big = ParagraphStyle("big", parent=ss["BodyText"], fontName="Times-Bold", fontSize=26,
+                         leading=30, spaceAfter=2)
+    small = ParagraphStyle("s", parent=body, fontSize=8, leading=10.5)
+    cell = ParagraphStyle("c", fontName="Times-Roman", fontSize=8, leading=10)
+    cellb = ParagraphStyle("cb", fontName="Times-Bold", fontSize=8, leading=10)
+    tbl = TableStyle([("GRID", (0, 0), (-1, -1), 0.3, colors.Color(0.45, 0.45, 0.45)),
+                      ("BACKGROUND", (0, 0), (-1, 0), colors.Color(0.90, 0.90, 0.88)),
+                      ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                      ("LEFTPADDING", (0, 0), (-1, -1), 3), ("RIGHTPADDING", (0, 0), (-1, -1), 3),
+                      ("TOPPADDING", (0, 0), (-1, -1), 1.6), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.6)])
+    rows = [["Quinzena", "Acoes registadas", "Municipios tocados", "Quota da rede, %"]]
+    for label in sorted(g["a1"], key=lambda k: int(k[1:])):
+        v = g["a1"][label]
+        rows.append([label, "%d" % v["actions"], "%d" % v["municipalities"],
+                     "%.1f" % v["partner_share"]])
+    d = SimpleDocTemplate(path, pagesize=A4, title="Boletim de acoes de confronto, 2026",
+                          author="", subject="", creator="", leftMargin=18 * mm, rightMargin=18 * mm,
+                          topMargin=16 * mm, bottomMargin=16 * mm)
+    flow = [Paragraph("Vigilancia Nacional: acoes de confronto, 1 de maio a 30 de outubro de 2026", h1),
+            Paragraph("Boletim do periodo, para o conselho de curadores de 19 de novembro de 2026. "
+                      "Registo extraido em 6 de novembro de 2026.", small),
+            Spacer(1, 6),
+            Paragraph("%d" % g["total"], big),
+            Paragraph("acoes de confronto no periodo, de %d acoes registadas (indicador 2 do "
+                      "protocolo)." % g["actions_in_period"], body),
+            Spacer(1, 4),
+            Paragraph("Das acoes do periodo, %d tem relato do monitor de imprensa e levam o codigo "
+                      "do classificador, e %d chegam so pela rede de parceiros ou pela linha de "
+                      "participacao publica. O registo carrega codigo de confronto em %d acoes do "
+                      "primeiro grupo e em %d do segundo. A mesa de codificacao codificou a mao %d "
+                      "relatos do monitor nas duas rondas do periodo."
+                      % (g["press_only"], g["filed_by_hand"], g["press_marked"],
+                         g["hand_confrontational"], g["sample_rows"]), body),
+            Spacer(1, 6),
+            Image(chart_png, width=168 * mm, height=84 * mm),
+            Spacer(1, 6),
+            Table([[Paragraph(str(c), cellb if i == 0 else cell) for c in r]
+                   for i, r in enumerate(rows)],
+                  colWidths=[26 * mm, 40 * mm, 42 * mm, 40 * mm], style=tbl, hAlign="LEFT"),
+            Spacer(1, 4),
+            Paragraph("Uma acao e um tema de disputa numa localidade num dia (protocolo 2.1), "
+                      "qualquer que seja o numero de relatos. A ultima quinzena do periodo tem "
+                      "quinze dias.", small)]
+    d.build(flow)
     return path

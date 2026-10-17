@@ -234,7 +234,7 @@ def write_register(target, custs, acct):
     ws.freeze_panes = "A6"
     path = os.path.join(target, "business_customer_register.xlsx")
     wb.save(path)
-    return path, len(rows)
+    return path, rows
 
 
 def write_crosswalk(target, custs, acct):

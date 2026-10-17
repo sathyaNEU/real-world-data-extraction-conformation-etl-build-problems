@@ -20,7 +20,7 @@ Architecture 2. Architecture 1 is spent and nothing of it is carried (`## Tried 
 | Layer 2 | `estimation_fit`, own pattern `own:excess-over-the-size-profile-a-cash-book-ordinarily-shows` |
 | World | New Zealand, a retail and business bank, NZD |
 | Window, as-of | the reporting year 1 July 2026 to 30 June 2027; every extract pulled 19 July 2027 |
-| Spine | `cash_deposit_detail_2027.csv`, 45,304 rows, one physical cash deposit |
+| Spine | `cash_deposit_counter_2026_2027.csv`, 56,080 rows, one deposit paid in at a counter |
 | Guard | WARN: `overuse.objective` and `repeat.deliverables`, both answered below |
 
 **Data-native sentence.** In this bank's record a cash deposit's size is a day's or two days' takings, so
@@ -62,13 +62,13 @@ against task445 v1 and 0.07 against the next two, the lowest of any build on the
    the threshold together reach it, the deposits in the band on that day were split below it.
 5. Count those deposits by segment and total them into the committee paper.
 
-**Ends on:** 1,223 deposits split, with grocery and convenience the largest segment at 356.
+**Ends on:** 1,287 deposits split, with grocery and convenience the largest segment at 396.
 **Golden:** 400 deposits split, with transport and courier the largest segment at 90.
 
 ## Stump sentence
 
 The default path builds the split out of the customer's own day, counting every band deposit on a day the
-customer's cash reached the threshold over more than one deposit, and files **1,223**, which is the number
+customer's cash reached the threshold over more than one deposit, and files **1,287**, which is the number
 of band deposits belonging to businesses that pay their takings in more than once a day, because a grocery
 or a service station reaches ten thousand dollars of cash on an ordinary Saturday without anyone choosing
 an amount; the number placed below the threshold on purpose is the amount by which the band exceeds what
@@ -106,7 +106,7 @@ each segment's own deposit-size profile away from the band produces, 400.
   dictionary gives every field, so nothing turns on a reading. A solver who reads every field and every
   clause correctly still has to decide what evidence tells it which deposits in the band would have been
   made there anyway, and the same-day screen, the customer's own habit, the customer's own prior year and
-  the segment's own profile each give a different number: 1,223, 1,077, 2,054 and 400.
+  the segment's own profile each give a different number: 1,287, 1,088, 1,406 and 400.
 - **Not rule application:** clause 7.4 files what is counted and nothing else. No shipped sentence names a
   profile, a background, an excess, a distribution, a histogram, a bin, a fit, a trend or a comparison;
   nothing describes a same-day aggregation screen either, so the default path is the solver's own
@@ -115,9 +115,9 @@ each segment's own deposit-size profile away from the band produces, 400.
   made of.
 - **Analyst test:** a strong analyst who carries every customer number through the crosswalk, applies the
   branch merger and the April code reissue, converts the machine feed's stamps and reads clause 7.4 exactly
-  builds the same-day screen and files 1,223 (the `Ends on:` figure), where the number of deposits placed
+  builds the same-day screen and files 1,287 (the `Ends on:` figure), where the number of deposits placed
   below the threshold on purpose is 400. `checks.py` runs that route on the generator's clean truth and
-  asserts it files 1,223, then changes the decisive step alone and asserts 400.
+  asserts it files 1,287, then changes the decisive step alone and asserts 400.
 - **Estimand:** clause 7.4 of `aml_programme_handbook.pdf`: "The annual report states, for each business
   segment, the number of physical cash deposits of 9,000 dollars or more and below 10,000 dollars that the
   segment's customers paid in during the reporting year and that were paid in below the prescribed
@@ -154,25 +154,32 @@ from the segment's own deposit-size profile away from the band, and take the exc
 | Comparison | none: the figure is a level, per segment and in total, against nothing | clause 7.4 states a number per segment and no difference, ratio or benchmark | No. |
 
 So the step settles none of the five, and the estimand is beyond argument without it. What is left open is
-how the number clause 7.4 describes is arrived at, and on that two or more methods stand: the same-day
-screen (1,223), the same screen with each customer's habit netted out (1,077), each customer against its
-own prior year (2,054), and the excess over the segment's own profile (400). The data's own structure
-rules out the first three and selects the fourth: each segment's deposit-size profile is log-linear across
-the stretch either side of the band, with residuals 0.0005 to 0.0029 of the mean, so the number the band
-would hold without the splitting is fixed by the record; the book's pooled profile is not log-linear
-(residuals 0.0088), which is why one fit for the whole book is rejected by its own residuals; and every
-window and bin width inside the stretch gives the same eight figures. Filing none of that in the pack is
-what keeps the step analysis rather than rule application: no shipped sentence names a profile, a
-background, an excess, a bin or a fit.
+how the number clause 7.4 describes is arrived at, and on that several methods stand: the same-day screen
+(1,287), the same screen with each customer's habit netted out (1,088), each customer against its own prior
+year (1,406), and the excess of the band over what the segment's own deposit-size profile produces (400).
+The first three are rejected by the record, not by argument: the screen flags 886 ordinary band deposits,
+twice the number actually split, and flags deposits at every size, so it measures how often a
+business pays in twice rather than what was moved; the habit filter removes 199 of them and leaves the
+rest; the prior-year control counts a year's ordinary movement in the band as if it were new.
+
+The fourth is one figure, not a family of them. The deposit-size record is one shape from end to end, so
+every way of reading the background lands in the same place: 199 estimators (fit windows from 3,000 to
+16,000 down to 8,000 to 11,000, step widths of 100, 200, 250 and 500 dollars, the Poisson log link,
+ordinary least squares on log counts, ordinary least squares on the counts themselves, a Poisson quadratic,
+one-sided fits on either side alone, one profile fitted to the whole book, and the two neighbouring
+thousands averaged) give **the same eight segment figures**, every one of them, with each segment's
+unrounded value 2.29 to 3.75 away from its rounding edge. The unrounded bank sum across those estimators runs
+396.9 to 411.0, which is why the prompt states the bank's figure as the sum of the segment rows rather than
+leaving the rounding path open.
 
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| 0 same-day screen, 1,223 | clause 7.4 states the outcome, so a solver builds a same-day construction | no column marks a split | yes, the first construction | none ships | the battery finds the duplicate envelope rows, not this | no | readable |
-| 1 habit netted out, 1,077 | nothing states a habit | no column counts a customer's multi-deposit days | yes, the obvious correction | none | no | one filter | readable |
-| 2 customer against its own prior year, 2,054 | nothing states a comparison | the prior year is a second file, not a column | yes, a within-unit control | none | no | one subtraction | readable |
+| 0 same-day screen, 1,287 | clause 7.4 states the outcome, so a solver builds a same-day construction | no column marks a split | yes, the first construction | none ships | the battery finds the duplicate envelope rows, not this | no | readable |
+| 1 habit netted out, 1,088 | nothing states a habit | no column counts a customer's multi-deposit days | yes, the obvious correction | none | no | one filter | readable |
+| 2 customer against its own prior year, 1,406 | nothing states a comparison | the prior year is a second file, not a column | yes, a within-unit control | none | no | one subtraction | readable |
 | 3 excess over the segment's own size profile, 400 **(decisive)** | no shipped sentence names a profile, a background, a bin or a fit, asserted by word sweep | the record carries amounts and nothing that groups them by size | no: the battery, the screen, the habit filter and the year-on-year control all land elsewhere | none ships | the battery never bins an amount | no: the background has to be built before anything can be subtracted | silent |
 
 ## Semantic fork table
@@ -190,7 +197,9 @@ background, an excess, a bin or a fit.
 | SF9 | the machine feed's timestamps | UTC, converted to the branch's local date | read as local | the dictionary states the machine feed stamps in UTC; `same call`: conversion moves 46 deposits across a date and none across the year boundary or into or out of the band, asserted |
 | SF10 | the preliminary and revised prescribed-transaction extracts | the revised file for the overlap | both, or the preliminary | the extract header states the revision supersedes; the call never reads either file, asserted |
 | SF11 | reversed deposits | excluded, both the deposit and its reversal | the deposit kept | the dictionary gives `reversal_of`; `same call`: the two reversed deposits are not in the band, asserted |
-| SF12 | rounding of the counts | to the nearest 10 deposits, once, at the end | per segment then summed, or unrounded | the prompt states the rounding once; `same call`: the sum of the rounded segment figures and the rounding of the unrounded sum are both 400, asserted over all eleven estimators |
+| SF12 | rounding of the counts | each segment's figure to the nearest 10, the bank's figure their sum | the unrounded bank sum rounded once | the prompt states which path governs, in its own sentence; the unrounded sum across the 199 estimators runs 396.9 to 411.0, so the path is pinned rather than left to converge |
+| SF15 | "the hours the service log puts the estate out of service" | the bank's own service log | the vendor's service report, whose site totals run higher | the prompt names the service log; the vendor's report is what the third ask compares against |
+| SF16 | "raised into it then moved out of it" | a customer raised into the band with a later accepted event taking it out | any later event, or the rating at year end | every rating history chains, so a later event's starting band is the band it was in; the two readings coincide, asserted |
 | SF13 | "paid in below the threshold when the amount would otherwise have been at or above it" | a count of deposits in the band in excess of the background the segment's profile produces | a count of every band deposit, a count the same-day screen selects | neither alternative is a reading of the clause: the clause's words are the same under all three, and the three differ by what evidence is used, which is the analysis and not the text. The fork table carries no reading of this clause, and the ladder carries the three figures |
 | SF14 | the total | the bank's figure, the sum of its eight segment figures | a figure built on the book without segmenting | clause 7.4 states the report is by segment; `same call`: the eight segment figures sum to 400 and the rounding of the unrounded sum of the segment excesses is 400 under every accepted estimator, asserted |
 
@@ -198,31 +207,31 @@ background, an excess, a bin or a fit.
 
 | Rung | The analysis | Figure | Largest segment it names | Worth |
 |---|---|---|---|---|
-| below 0 | count the band | 3,520 | grocery and convenience, 897 | the clause's second half is ignored; no competent solver stops here |
-| 0 | the same-day screen: band deposits on a day the customer's cash reached the threshold over two or more deposits | **1,223** | grocery and convenience, 356 | the default path; 3.06x the golden |
-| 1 | the same screen with each customer's own habit netted out (drop customers whose screened days are more than half their deposit days) | 1,077 | grocery and convenience, 346 | one filter; 2.69x |
-| 2 | each customer against its own prior year, the rise in its band deposits | 2,054 | hospitality, 485 | a within-unit control; 5.14x, and it walks the wrong way |
+| below 0 | count the band | 2,196 | grocery and convenience, 626 | the clause's second half is ignored; no competent solver stops here |
+| 0 | the same-day screen: band deposits on a day the customer's cash reached the threshold over two or more deposits | **1,287** | grocery and convenience, 396 | the default path; 3.22x the golden |
+| 1 | the same screen with each customer's own habit netted out (drop customers whose screened days are more than half their deposit days) | 1,088 | grocery and convenience, 369 | one filter; 2.72x |
+| 2 | each customer against its own prior year, the rise in its band deposits | 1,406 | hospitality, 354 | a within-unit control; 3.52x, and it walks the wrong way |
 | 3 | **the excess over each segment's own deposit-size profile away from the band** | **400** | transport and courier, 90 | the golden; the answer is the extreme of the ladder |
 
 **Position and margins.** On rung 0 the golden's largest segment, transport and courier, sits fourth of
-eight (356, 268, 170, 133, 117, 64, 60, 55 against the golden's 90, 70, 60, 60, 30, 30, 30, 30), so the
+eight (396, 304, 194, 119, 110, 64, 53, 47 against the golden's 90, 70, 60, 60, 30, 30, 30, 30), so the
 default path does not merely mis-size the figure, it names a different segment as the largest. The decisive
 move is 2,054 to 400, the largest move on the ladder and never the smallest. Every rung reproduces from the
 raw files, names its own largest segment, and dies to one construction.
 
-**The grid.** Single-error cells, each a named wrong figure: one profile fitted to the whole book rather
-than to each segment, 370 (7.5 per cent from the golden, and the book's own residuals away from the band
-are 0.0088 of the mean against 0.0005 to 0.0029 for each segment, so the record rejects it); the band read
-over the prior year, 289; the profile fitted over a window reaching outside the stretch the record is
-log-linear over, residuals 0.23 to 1.01 of the mean, rejected by the record; a two-bin local average in
-place of a fit, whose placebo scatter at twenty positions where the excess is nought is more than five
-times the fitted estimator's. No cell files 400 by a single error.
+**The grid.** The wrong answers on this build are the rungs, not fit variants: the band count (2,196), the
+same-day screen (1,287), the habit filter (1,088) and the prior-year control (1,406). One profile fitted to
+the whole book is not a wrong cell here, because it converges with the rest (400); it is reported as one of
+the 199 estimators. No single error files 400.
 
-**Convergence.** Eleven estimators of the background (fit windows from 5,000 to 16,000, 5,500 to 15,000,
-6,000 to 14,000, 5,000 to 15,000, 5,000 to 14,000 and 6,000 to 16,000; bin widths 200, 250 and 500; and
-three local-average forms) give the same eight segment figures and the same total of 400, with every
-segment's unrounded excess 3.0 to 4.0 away from its rounding edge. Asserted in `checks.py` and in
-`verify.py`.
+**Convergence, measured rather than claimed.** `checks.py` runs all 199 estimators on the shipped amounts
+and asserts that the set of eight rounded segment figures they give has exactly one member, and that it
+sums to 400; `verify.py` repeats 120 of them on its own code path from the bundle alone. The measured
+per-segment ranges are grocery 58.8 to 60.6, hospitality 58.2 to 62.1, transport 89.3 to 92.7, trades 68.0
+to 71.0, rural 28.9 to 32.7, fuel 30.3 to 32.5, personal services 29.1 to 32.1, clubs 29.1 to 32.1. Both
+the log and the count families fit the record equally well (chi-square per degree of freedom about 0.001
+each), which is the point: the figure does not depend on which of them a reader picks. A placebo run of the
+same estimator at twelve positions where no deposits were split reads nought, scatter 0.39, bias -0.04.
 
 ## Closure table
 
@@ -315,46 +324,55 @@ Mirror leakage: 22.0
 | Gate | Result |
 |---|---|
 | `precut.py task190` | 49 checks, 0 FAIL, 0 WARN |
-| `voice-check.py task190` | PASS, 998 characters |
-| generator `checks.py` | 205 assertions, including the three-rules block R1 to R3c on the clean truth |
-| `verify.py` (reads `target/` and `figures.json` only, own code path) | 112 checks, 0 failed |
+| `voice-check.py task190` | PASS, 997 characters |
+| generator `checks.py` | 114 assertions, including the three-rules block R1 to R3c on the clean truth and the 199-estimator convergence sweep |
+| `verify.py` (reads `target/` and `figures.json` only, own code path) | 185 checks, 0 failed, including 120 of the estimators on its own implementation |
 | two consecutive rebuilds | `target/` and `golden/` byte-identical |
 | `figures_check.py task190` | 86 figures in blocks 1 to 4, 0 absent from `figures.json` |
-| input gates | 20 files, 4 formats (csv, xlsx, pdf, md), 56,325 rows in `cash_deposit_counter_2026_2027.csv`, 3 distractors declared in `metadata.json` |
+| input gates | 21 files, 4 formats (csv, xlsx, pdf, md), 56,080 rows in `cash_deposit_counter_2026_2027.csv`, 3 distractors declared in `metadata.json` |
 | `leak.py task190 --asof 2027-07-19` | REVIEW, every line answered below |
 | `guard.py surface task190` | no promoted pair; no persona appears in the cut pack's content |
 | `guard.py heart task190` | WARN, nearest driver 0.11 (task445 v1) |
 | container scrub audit | clean: no writer signature, no out-of-band timestamp |
 
-**The leak report's REVIEW lines, answered.**
+**Guard WARNs answered.** `repeat.deliverables` (png and xlsx, shared with task238): the chart earns its
+place because the decision is one total split across eight buckets, which reads at a glance as bars and not
+as a table. `repeat.question_form` (how-many, shared with task266): the call is a count of deposits, so any
+other opening would be a worse question for it; the decision type, shape and strategy are all varied
+against the neighbours.
 
-- Sweep 3, `aml_programme_handbook.pdf`, 10 of 12 words of the committed call: the call is quoted in the
-  handbook's own vocabulary because clause 7.4 is the estimand, and the prompt asks the question in the
-  handbook's words. No golden figure appears: the documents carry no 400, no 3,520 and no segment figure,
-  asserted by extraction over every shipped PDF.
-- Sweep 3, `annual_report_extract_2026.pdf`, 8 of 12: the prior year's report names the same quantity it
-  does not state, and says so ("was first stated for the year ended 30 June 2027 and is not given here").
-  It carries last year's prescribed transaction count and cash paid in, neither of which any rung
-  reproduces.
-- Sweep 3, `provenance.md`, 8 of 12: the extract notes name the deposits and the reporting year, which is
-  what they are notes about. No figure in them is on any rung.
-- Sweep 4, the same three documents, 4 to 8 of 25 stump terms: the terms are deposit, register, reporting,
-  extract, customer, closed and states, which are the ordinary nouns of a bank's deposit records. None of
-  profile, background, excess, screen, same-day, construction or decisive appears in any shipped file,
-  asserted by word sweep in `checks.py`.
-- Sweep 4, the prompt sentence carrying two stump terms: the two are "deposit" and "customer". The
-  question cannot be asked without them.
-- Sweep 10, INFO: the container audit ran and found nothing, which is the result wanted.
+**The leak report's REVIEW lines, answered.** Sweeps 3 and 4 flag the handbook, last year's filed report
+and the extract notes for sharing the call's vocabulary and between 5 and 9 of the stump paragraph's 25
+terms. The shared terms are deposit, register, reporting, extract, customer, states and counter, which are
+the ordinary nouns of a bank's deposit records; the call's vocabulary is shared because clause 7.4 is the
+estimand and the question is asked in the handbook's words. No golden figure appears in any document:
+asserted over every shipped PDF, which carry no 400 and no 2,196. None of profile, background, excess,
+screen, same-day, construction or decisive appears in any shipped file, asserted by word sweep in
+`checks.py`. The prompt's own flagged sentence carries two stump terms, deposit and customer, which the
+question cannot be asked without. Sweep 10 is the container audit reporting that it ran and found nothing.
 
-**Realism sweep.** No identical deposit count across segments; no round segment total; round amounts under
-4 per cent of deposits; the drawn personas only; no placeholder identity; the monthly counts per segment
-carry no repeated block. The provenance file reads as the data team's own compile note (`reduce-house-fixes`
-H24), the manifest names every shipped file (H9), no record or report date runs past the pull date (H16),
-and every handbook paragraph the goldens cite resolves (H8).
+**Realism sweep.** No identical deposit count across segments; no round segment total; no round customer
+count; tellers vary by branch; deposits run across a trading day with seconds on every stamp; the acquirer
+extract has gaps; ANZSIC codes are the segment's own and vary within it; round figures are as common in
+the band as at every other size (asserted, so the pile at 9,900 and 9,950 does not single the split
+deposits out); every rating history chains with no event leaving a rating where it was; the machine estate
+is a register and the service log covers it. The provenance file reads as the data team's own compile note
+(`reduce-house-fixes` H24), the manifest names every shipped file (H9), no record or report date runs past
+the pull date (H16), and every handbook paragraph the goldens cite resolves (H8).
 
-**What stage 4 still owes.** The isolated leak reader and the determinism judge have not run: this session
-has no `Agent` tool. Both briefs are staged with their own isolated inputs, and the verdicts come back
-through the orchestrator.
+**What the stage 4 threads found, and what was done.** The determinism judge returned NOT_DETERMINISTIC,
+`competing_defensible_answer`, SEND_BACK, with Gate G and Gate H passing and the decisive step graded
+analytical. The finding was calibration, not architecture: the counterfactual's method was not forced and
+the data did not separate the candidates, with the judge measuring 310 to 512 across windows and families
+against the filed 400. Three side answers did not reproduce, the ladder's rung 0 could not be reproduced,
+and the reader found the rating history contradicting itself and the structuring signal too faint. Every
+one of those is closed in the generator in one pass: the deposit-size record is now one shape from end to
+end so all 199 estimators agree; the rounding path, the hours source and the band wording are pinned in the
+prompt; the machine estate ships as a register so the machines with no service record are forced; the
+rating events chain; the split deposits pile on round figures just under the threshold as real structuring
+does; every rung is re-measured on the shipped bundle; and the note reports the measured spread instead of
+claiming convergence. The claim the judge showed to be false, that every window and step width gives the
+same figures, is gone.
 
 ## Tried and rejected
 
@@ -418,3 +436,21 @@ through the orchestrator.
   gets two members right, and the ladder cannot keep the top two off a set the way it keeps them off a
   figure. The step that survived settles none of the estimand's five parts, which `## Three rules`
   answers line by line.
+- **The first cut of architecture 2's deposit-size record, spent at stage 4.** The law had one shape over
+  5,000 to 16,000 and a different one below 5,000, so a fit window starting at 4,000 or 3,000 crossed the
+  kink and gave 440 and 512 against the filed 400, and the per-bin integer rounding left enough scatter for
+  an unweighted log fit at 100-dollar steps to read 421 and a one-sided fit to read 311. The design note
+  asserted convergence it had not measured. Replaced by one shape end to end, a gentle decay of the same
+  rate in every segment, with each 500-dollar block's count exact and the pile on round figures spread
+  evenly inside it, so every family, window and step width lands on the same eight figures. The sweep is
+  now run and asserted rather than claimed.
+- **The pooled book profile as a wrong cell.** It gave 370 against 400 on the old record, and the note
+  carried it as a single-error cell. On a record with one shape it converges with the rest, and it is now
+  reported as one of the 199 estimators rather than as a rival.
+- **Rating events drawn independently.** 205 of 805 follow-on events started from a band the customer was
+  not in and 318 moved a rating to itself, which the solver's-eye reader read as generated and which gave
+  "moved out of the band" more than one reading. The events now chain, so the ask has one answer.
+- **A machine estate defined only by the service log.** The deposit feed invented machine ids the log never
+  held, so "any machine with no service record" had no forced answer. The estate now ships as
+  `deposit_machine_register.csv` with install and withdrawal dates, the feed takes deposits only at a
+  machine in service that day, and the answer is the register's own.

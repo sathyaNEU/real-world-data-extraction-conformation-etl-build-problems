@@ -36,15 +36,15 @@ def met_series():
     n10 = int(((dt.datetime(2026, 10, 17) - t0).total_seconds()) // 600)
     hours = np.arange(n10) / 6.0
     # wind: a slow synoptic swing plus a diurnal lift, never negative
-    wind = (4.2 + 2.6 * np.sin(2 * math.pi * hours / 86.0 + 0.7)
-            + 1.5 * np.sin(2 * math.pi * hours / 23.0 - 1.1)
-            + rng.normal(0, 0.55, n10))
-    wind = np.clip(wind, 0.2, 14.5)
+    wind = (3.05 + 1.35 * np.sin(2 * math.pi * hours / 86.0 + 0.7)
+            + 0.95 * np.sin(2 * math.pi * hours / 23.0 - 1.1)
+            + rng.normal(0, 0.45, n10))
+    wind = np.clip(wind, 0.2, 12.0)
     # rain: wet spells, a few per survey
     rain = np.zeros(n10)
-    for c in rng.choice(n10 - 60, size=18, replace=False):
-        dur = int(rng.integers(3, 20))
-        rain[c:c + dur] += np.abs(rng.normal(0.22, 0.14, dur))
+    for c in rng.choice(n10 - 60, size=11, replace=False):
+        dur = int(rng.integers(3, 16))
+        rain[c:c + dur] += np.abs(rng.normal(0.20, 0.13, dur))
     rain = np.round(rain, 2)
     temp = (11.6 + 4.1 * np.sin(2 * math.pi * hours / 24.0 - 2.2)
             + 2.2 * np.sin(2 * math.pi * hours / 150.0) + rng.normal(0, 0.4, n10))
@@ -106,10 +106,10 @@ def residual_shape(code, stamps_local, seed):
         jit[i] = a * jit[i - 1] + wn[i] if i else wn[i]
     steady = _e(slow + jit)
     # road traffic diurnal shape on the event rate
-    shape = (0.35 + 0.65 * np.exp(-((hours - 8.3) ** 2) / 2.2)
-             + 0.85 * np.exp(-((hours - 17.6) ** 2) / 3.0)
-             + 0.45 * np.exp(-((hours - 12.5) ** 2) / 8.0))
-    shape = np.where(dows <= 4, shape, shape * 0.55)
+    shape = (0.78 + 0.30 * np.exp(-((hours - 8.3) ** 2) / 2.2)
+             + 0.34 * np.exp(-((hours - 17.6) ** 2) / 3.0)
+             + 0.18 * np.exp(-((hours - 12.5) ** 2) / 8.0))
+    shape = np.where(dows <= 4, shape, shape * 0.82)
     lam = ev * shape / 60.0
     hit = rng.random(n) < lam
     amp = np.where(hit, _e(rng.uniform(W.EVENT_DB[code][0], W.EVENT_DB[code][1], n)), 0.0)
@@ -175,7 +175,7 @@ def build():
         kk = np.concatenate([pp["k"] for pp in parts])
         rr = np.concatenate([pp["res"] for pp in parts])
         # plant: energetic mean over the valid assessment minutes outside stops equals S
-        gp = _e(S_t) / kk[use].mean()
+        gp = _e(S_t + W.SHIFT.get(code, 0.0)) / kk[use].mean()
         # residual: energetic mean over the same minutes equals R
         gr = _e(R_t) / rr[use].mean()
         for pp in parts:

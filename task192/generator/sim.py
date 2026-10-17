@@ -171,9 +171,12 @@ def double_coding(acts, reps, rng):
         for r in pick:
             taken.add(r["ident"])
             a = r["action"]
-            rows.append(dict(report=r, round_day=round_day,
-                             coder=rng.choice(W.CODERS),
-                             coded_day=round_day + dt.timedelta(days=rng.randrange(0, 9)),
+            coder = rng.choice(W.CODERS)
+            shift = rng.randrange(0, 21) - 14
+            day = round_day + dt.timedelta(days=shift)
+            day = max(day, d(a["day"]) + dt.timedelta(days=1))
+            rows.append(dict(report=r, round_day=round_day, coder=coder,
+                             coded_day=min(day, W.EXTRACT),
                              machine=a["cls_code"], hand=a["code"]))
     rows.sort(key=lambda x: (x["round_day"], x["report"]["ident"]))
     return rows

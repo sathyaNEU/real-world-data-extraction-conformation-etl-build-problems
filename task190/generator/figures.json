@@ -175,6 +175,7 @@
  "steps": {
   "counter_rows": 56080,
   "customer_against_prior_year": 1406,
+  "estimators_swept": 199,
   "machine_rows": 38605,
   "one_profile_for_the_book": 400,
   "same_day_screen": 1287,

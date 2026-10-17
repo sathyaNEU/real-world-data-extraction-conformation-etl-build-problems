@@ -96,7 +96,9 @@ def protocol(target):
          Paragraph("4.5 Duas vezes por periodo a mesa de codificacao tira uma amostra aleatoria "
                    "simples dos relatos aceites do monitor de imprensa e codifica-os a mao, sem ver o "
                    "codigo do classificador; a codificacao manual e a referencia da associacao e a "
-                   "amostra fica no ficheiro de dupla codificacao, com o codigo de cada lado.", BODY)]
+                   "amostra fica no ficheiro de dupla codificacao, com o codigo de cada lado. A "
+                   "amostra do periodo e o conjunto das duas rondas e mede o classificador no "
+                   "conjunto dos relatos aceites do periodo.", BODY)]
     d.build(f)
     return path
 

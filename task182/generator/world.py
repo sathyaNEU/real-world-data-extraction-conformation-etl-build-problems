@@ -30,17 +30,20 @@ WEEKS = [dt.date(2026, 8, 31) + dt.timedelta(days=7 * i) for i in range(6)]
 
 # The plant's weekly planned process stop (local), and the unplanned stops, as the event log records them.
 PLANNED_STOPS = [
-    (dt.datetime(2026, 9, 1, 13, 0), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 8, 9, 30), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 15, 14, 0), 120, "weekly MCC inspection, blower strainer clean"),
-    (dt.datetime(2026, 9, 22, 10, 0), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 29, 13, 30), 120, "weekly MCC inspection, centrifuge scroll check"),
-    (dt.datetime(2026, 10, 6, 8, 30), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 1, 5, 0), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 8, 5, 0), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 15, 5, 0), 120, "weekly MCC inspection, blower strainer clean"),
+    (dt.datetime(2026, 9, 22, 5, 0), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 29, 5, 0), 120, "weekly MCC inspection, centrifuge scroll check"),
+    (dt.datetime(2026, 10, 6, 5, 0), 120, "weekly MCC inspection and belt check"),
 ]
 UNPLANNED_STOPS = [
-    (dt.datetime(2026, 9, 10, 11, 20), 25, "balance tank high level alarm"),
-    (dt.datetime(2026, 9, 23, 15, 5), 40, "blower 2 bearing temperature trip"),
-    (dt.datetime(2026, 10, 2, 2, 10), 18, "ESB supply dip, all drives tripped"),
+    (dt.datetime(2026, 9, 1, 5, 0), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 8, 5, 0), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 15, 5, 0), 120, "weekly MCC inspection, blower strainer clean"),
+    (dt.datetime(2026, 9, 22, 5, 0), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 29, 5, 0), 120, "weekly MCC inspection, centrifuge scroll check"),
+    (dt.datetime(2026, 10, 6, 5, 0), 120, "weekly MCC inspection and belt check"),
 ]
 
 # Equipment the three noise sources run on.
@@ -74,7 +77,7 @@ POSITIONS = [
     ("NSL03", "DW-121", "dormer, Clonaraght road",           385,  64, 43.47, 39.54, 6.61, 10.33, 4.2, 0.30),
     ("NSL04", "DW-101", "cottage, plant boundary field",      98, 231, 53.12, 39.59, 7.19, 8.25, 3.6, 0.34),
     ("NSL05", "DW-130", "two storey, Rathlone crossroads",   470,  22, 39.56, 33.45, 6.99, 7.90, 1.4, 0.44),
-    ("NSL06", "DW-107", "bungalow, Clonaraght road junction", 215,  77, 45.22, 42.09, 7.43, 8.30, 5.1, 0.26),
+    ("NSL06", "DW-107", "bungalow, Clonaraght road junction", 215,  77, 45.22, 42.70, 7.43, 8.30, 5.1, 0.26),
     ("NSL07", "DW-110", "farmhouse, Coolnagree",             240, 177, 47.87, 36.86, 2.27, 3.42, 0.6, 0.74),
     ("NSL08", "DW-126", "bungalow, Glasha bridge",           420, 141, 41.74, 36.10, 3.69, 7.79, 1.0, 0.62),
     ("NSL09", "DW-112", "cottage, Drumlorne Lower",          275, 254, 44.62, 33.47, 1.95, 6.69, 0.4, 0.80),
@@ -148,4 +151,23 @@ SLOW = {
     "NSL01": 2.2, "NSL02": 1.6, "NSL03": 1.6, "NSL04": 0.7, "NSL05": 0.6, "NSL06": 0.6,
     "NSL07": 0.8, "NSL08": 2.1, "NSL09": 2.2, "NSL10": 1.5, "NSL11": 2.2, "NSL12": 2.2,
     "NSL13": 1.5, "NSL14": 0.4,
+}
+
+# Micro-adjustments to the designed specific levels, so every printed level sits mid-bin and no two
+# positions share a printed value. Fixed by the search in scratch; they move no slate.
+SHIFT = {
+    "NSL01": -0.0196,
+    "NSL02": -0.1841,
+    "NSL03": -0.3801,
+    "NSL04": -0.0447,
+    "NSL05": +0.0084,
+    "NSL06": -0.8045,
+    "NSL07": -0.0155,
+    "NSL08": -0.7923,
+    "NSL09": -0.1169,
+    "NSL10": -0.8701,
+    "NSL11": -0.0144,
+    "NSL12": -0.3349,
+    "NSL13": +0.0672,
+    "NSL14": -0.1598,
 }

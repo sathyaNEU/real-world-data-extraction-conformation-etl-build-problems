@@ -1,10 +1,10 @@
 # leak check, task190
 
-**Verdict: REVIEW.** 20 files read, 46 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 21 files read, 46 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: clause, deposit, nothing, asserted, excess, register, background, screen, reporting, extract, states, window, customer, closed, profile, decisive, sentence, same-day, carries, construction, architecture, quantity, carried, driver, ordinary
+Stump terms swept: deposit, clause, nothing, asserted, excess, reporting, background, states, window, screen, customer, extract, sentence, profile, decisive, register, same-day, counter, ordinary, carries, closed, counted, shipped, construction, objective
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `aml_programme_handbook.pdf`: carries 10 of 12 distinctive words of the committed call: 'The annual report should state that 400 cash deposits were split below the prescribed transaction threshold in the year '
@@ -12,9 +12,9 @@ Stump terms swept: clause, deposit, nothing, asserted, excess, register, backgro
 - **REVIEW** `provenance.md`: carries 8 of 12 distinctive words of the committed call: 'The annual report should state that 400 cash deposits were split below the prescribed transaction threshold in the year '
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `aml_programme_handbook.pdf`: 7 of 25 stump-paragraph terms appear (deposit, register, reporting, extract, states, customer); read whether the document names the move
-- **REVIEW** `annual_report_extract_2026.pdf`: 4 of 25 stump-paragraph terms appear (deposit, reporting, extract, customer); read whether the document names the move
-- **REVIEW** `provenance.md`: 8 of 25 stump-paragraph terms appear (deposit, nothing, register, reporting, extract, customer); read whether the document names the move
+- **REVIEW** `aml_programme_handbook.pdf`: 9 of 25 stump-paragraph terms appear (deposit, reporting, states, customer, extract, register); read whether the document names the move
+- **REVIEW** `annual_report_extract_2026.pdf`: 5 of 25 stump-paragraph terms appear (deposit, reporting, customer, extract, counter); read whether the document names the move
+- **REVIEW** `provenance.md`: 9 of 25 stump-paragraph terms appear (deposit, nothing, reporting, customer, extract, register); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "How many cash deposits did Arahura Bank's business customers split below the prescribed transaction threshold in the year to 30 June 2027?"
 
 ## 10 container metadata (INFO 1)

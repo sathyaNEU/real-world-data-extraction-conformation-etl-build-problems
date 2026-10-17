@@ -77,13 +77,13 @@ subset of them.
 3. Read the protocol's 2.2 codes and keep the actions the register carries under `CF`, `RF` or `DP`.
 4. Count them for 1 May to 30 October 2026 and file that number.
 
-**Ends on:** 182 confrontational actions.
-**Golden:** 225 confrontational actions.
+**Ends on:** 178 confrontational actions.
+**Golden:** 234 confrontational actions.
 
 ## Stump sentence
 
 A competent solver resolves the three routes, builds the actions on the protocol's grain, applies the
-protocol's confrontational codes and files **182 confrontational actions**, which counts the labels the
+protocol's confrontational codes and files **178 confrontational actions**, which counts the labels the
 press classifier assigned rather than the confrontational actions the period held, because the
 classifier reaches about half of them and marks about one ordinary action in a hundred.
 
@@ -114,10 +114,10 @@ classifier reaches about half of them and marks about one ordinary action in a h
   alone carries from the classifier's measured sensitivity and specificity together, so that the actions
   it missed are added and the ordinary actions it marked are taken out, and add the actions a filer coded
   by hand.
-- **Not semantics:** every field, code, zone and place name read correctly still leaves 182 actions
+- **Not semantics:** every field, code, zone and place name read correctly still leaves 178 actions
   carrying a confrontational code, which is the correct count of the codes. The dictionary gives every
   field, the protocol defines the action grain and lists the confrontational codes, and the double-coding
-  sample is a plain table of two codings. Reading all of it right is what produces the 182.
+  sample is a plain table of two codings. Reading all of it right is what produces the 178.
 - **Not rule application:** the protocol files the action grain, the confrontational codes, the reporting
   period, which route's code the register keeps for an action, and that the count the bulletin states is
   of the actions that were confrontational and not of the codes the classifier assigned. No shipped
@@ -127,8 +127,8 @@ classifier reaches about half of them and marks about one ordinary action in a h
   rate at all.
 - **Analyst test:** a strong analyst who resolves the three routes and the two editions, drops the
   reposted month, resolves the superseded place names and applies 2.1 and 2.2 exactly counts the actions
-  the register carries under the confrontational codes and files 182 confrontational actions, the default
-  path's `Ends on:`, where the period's record gives 225.
+  the register carries under the confrontational codes and files 178 confrontational actions, the default
+  path's `Ends on:`, where the period's record gives 234.
 - **Estimand:** the protocol's 3.3, "Indicador 2, acoes de confronto: o numero das acoes registadas no
   periodo de relato que foram acoes de confronto na acepcao de 2.2. O codigo que o classificador do
   monitor de imprensa atribui e a leitura do classificador, que a amostra de dupla codificacao da
@@ -173,14 +173,14 @@ twenty times the size of the positive one.
 | 0 the actions the register carries under the confrontational codes | 2.2 lists the codes and 3.3 names the count | `codigo_acao` is a column of every report file | yes, the first group-by anyone writes | none | the battery finds the duplicate feeds, not this | one filter and one count | readable |
 | 1 the coded count with the classifier's false marks taken out | no sentence names a false mark | the sample's two coding columns invite the comparison | yes, the precision reflex: of the ones it marked, this share were right | none | no | one ratio | readable |
 | 2 the coded count scaled by the classifier's recall | no | the sample's two coding columns again | yes, the recall reflex: it finds this share, so divide by it | none | no | one ratio | readable |
-| 3 the count rebuilt from both error rates together (decisive) | no shipped sentence names sensitivity, specificity, recall, precision, a correction, a false positive or a false negative, asserted by a word sweep over every shipped file; 3.3 says only that the count is of the actions and not of the codes | no column holds an error rate: the sample is two codings per item and the rates are built from it | no reflex: the two reflexes above each carry one error rate and file a different number | nothing scores a count; the earlier bulletins report actions and municipalities, never confrontational actions | the battery finds the two editions, the reposted month and the clocks and leaves the count open | no: the four candidates are 152, 182, 225 and 285 from the same rows | silent |
+| 3 the count rebuilt from both error rates together (decisive) | no shipped sentence names sensitivity, specificity, recall, precision, a correction, a false positive or a false negative, asserted by a word sweep over every shipped file; 3.3 says only that the count is of the actions and not of the codes | no column holds an error rate: the sample is two codings per item and the rates are built from it | no reflex: the two reflexes above each carry one error rate and file a different number | nothing scores a count; the earlier bulletins report actions and municipalities, never confrontational actions | the battery finds the two editions, the reposted month and the clocks and leaves the count open | no: the four candidates are 126, 178, 234 and 336 from the same rows | silent |
 
 ## Semantic fork table
 
 | id | term or convention | golden reading | alternative | call under it | ruled out by |
 |---|---|---|---|---|---|
 | SF1 | action | one theme at one locality on one calendar day, however many reports, 2.1 | one report, so a double-reported action counts twice | the count changes | 2.1 quoted; asserted |
-| SF2 | confrontational action | an action that was of a kind 2.2 lists, whatever code the record carries | an action whose recorded code is `CF`, `RF` or `DP` | the count is rung 0, 182 | 3.3 quoted, the count is of the actions and not of the codes assigned; asserted |
+| SF2 | confrontational action | an action that was of a kind 2.2 lists, whatever code the record carries | an action whose recorded code is `CF`, `RF` or `DP` | the count is rung 0, 178 | 3.3 quoted, the count is of the actions and not of the codes assigned; asserted |
 | SF3 | the confrontational codes | `CF`, `RF` and `DP` | `CF` alone, or any code a report's text calls violent | the count changes | 2.2 quoted, which lists the three; asserted |
 | SF4 | the reporting period | actions dated 1 May to 30 October 2026 inclusive | the calendar half year, or to the extract date | the count changes | 3.2 quoted and the prompt's period; asserted |
 | SF5 | which code an action carries | the code of the report the register keeps: a filer's code where one exists, the classifier's otherwise, 2.6 | the classifier's code wherever one exists | the corrected population changes | 2.6 quoted; asserted |
@@ -189,8 +189,8 @@ twenty times the size of the positive one.
 | SF8 | a locality | the gazetteer's settlement, with superseded names resolved | the free-text place name as reported | localities split, actions do not | 2.3 and the gazetteer's name-state column; asserted |
 | SF9 | the reposted month | each action counted once however many loads carry its reports | the month's reports counted twice, or the month dropped | the report counts change, the action count does not | the import log's two entries and the repeated report identifiers; asserted both ways |
 | SF10 | the two language editions | one action however many editions report it | one action per edition | the report counts change, the action count does not | the dictionary's report-identifier sentence; asserted |
-| SF11 | rounding | the count as a whole number of actions | the count to the nearest ten | `same call`, asserted: the estimate is 224.99 and no reading of the rounding moves it off 225 |
-| SF12 | ties | none: the four candidate counts are 152, 182, 225 and 285 | two candidates on one count | `same call`, asserted pairwise distinct |
+| SF11 | rounding | the count as a whole number of actions | the count to the nearest ten | `same call`, asserted: the estimate is 234.13 and no reading of the rounding moves it off 234 |
+| SF12 | ties | none: the four candidate counts are 126, 178, 234 and 336 | two candidates on one count | `same call`, asserted pairwise distinct |
 | SF13 | the accepted items | the items the press monitor accepted, which the register carries | every matched item, rejected ones included | rejected items are not actions | 4.2 quoted and the dictionary's acceptance column; asserted |
 | SF14 | the extract | the record as extracted on 6 November 2026 | the record as at the period's close | `same call`, asserted: no action dated inside the period is reported after the period's close |
 | SF15 | actions outside the period | excluded from the count | included because their reports arrived inside it | the count changes | 3.2 quoted, which fixes the period on the action's date; asserted |
@@ -202,47 +202,61 @@ twenty times the size of the positive one.
 
 | Rung | The estimate | Confrontational actions |
 |---|---|---|
-| 1 | the coded count with the classifier's false marks taken out, the precision read | 152 |
-| 0 | **default:** the actions the register carries under the confrontational codes | **182** |
-| 3 | **answer:** the count rebuilt from both of the classifier's measured error rates | **225** |
-| 2 | the coded count scaled by the classifier's recall | 285 |
+| 1 | the coded count with the classifier's false marks taken out, the precision read | 126 |
+| 0 | **default:** the actions the register carries under the confrontational codes | **178** |
+| 3 | **answer:** the count rebuilt from both of the classifier's measured error rates | **234** |
+| 2 | the coded count scaled by the classifier's recall | 336 |
 
-Measured on the world model at `scratchpad/t192/m8.py`, seed 41, with 4,400 actions, two in three known
-only from the press monitor, a true confrontational share near one action in twenty, and a double-coding
-sample of 1,500 press items: the sample returns 46 agreed confrontational, 40 the classifier missed, 16
-it marked wrongly and 1,398 agreed ordinary, which is a recall of 0.5349 and a false-mark rate of 0.0113
-over the ordinary pool. Rung 3's raw figure is 224.994 actions.
+Measured on the cut pack, not on a model: the register holds 4,790 actions in the reporting period, of
+which 4,357 carry a press monitor report and take its classifier's code and 433 reach the register only
+through a partner organisation or the public line and take the filer's. The register carries a
+confrontational code on 153 of the first group and 25 of the second. The coding desk's two rounds hand
+coded 2,600 of the monitor's reports and returned 59 agreed confrontational, 61 the classifier missed,
+30 it marked wrongly and 2,450 agreed ordinary, which is a recall of 0.4917 and a false-mark rate of
+0.0121. Rung 3's raw figure is 234.134 actions.
 
-**Separation.** 152, 182, 225 and 285 are four distinct counts, each at least 20 per cent from the next
-(152 to 182 is 20 per cent, 182 to 225 is 24 per cent, 225 to 285 is 26 per cent). Each is the complete
+**Separation.** 126, 178, 234 and 336 are four distinct counts, each at least 31 per cent from the next
+(126 to 178 is 41 per cent, 178 to 234 is 31 per cent, 234 to 336 is 44 per cent). Each is the complete
 output of a competent pipeline on the same rows. The answer is third of the four and bracketed, so no
 solver reaches it by stopping early and none by correcting hardest: the two corrections that carry one
-error rate land either side of it, and the decisive move, 285 down to 225, is the largest on the ladder.
+error rate land either side of it, and the decisive move, 336 down to 234, is the largest on the ladder.
 
-**Robustness of the decisive rung.** The correction is the ratio the sample's own four cells fix, so
-every arithmetic of it (the two rates applied to the observed share, or the sample's confusion matrix
-inverted over the observed counts) gives the same 224.99, asserted both ways at build. The figure sits
-0.006 from the centre of its bin, and the truth behind the simulated record is 219 actions, 2.7 per cent
-from the estimate, so the estimator is fair as well as determinate.
+**The variants a careful analyst tries, measured.** The decisive estimate was computed five more ways on
+the shipped bundle, and the spread is reported rather than claimed:
 
-**The grid.** Two axes, how the routes are resolved and which error rates the count carries:
+| Variant | Figure | Standing |
+|---|---|---|
+| the correction written as the sample's confusion matrix inverted over the observed counts | 234.134 | identical to the golden by construction, asserted to 1e-9 |
+| the rates read on the sample rows whose action also reached another route, against all of them | 234.134 | identical: the sample's population is the corrected population, 2.6 and 4.5 |
+| a continuity adjustment of half a case in each cell of the table | 232.403 | not licensed: a continuity adjustment is for an empty cell and none of the four is empty (59, 61, 30, 2450), asserted |
+| the correction taken inside each hand-coding round and added | 235.060 | ruled out by 4.5, which files the period's sample as the two rounds together, measuring the classifier over the period's accepted reports as a whole |
+| the correction taken inside each dispute theme and added | 235.925 | ruled out by the same sentence; the sample is a simple random sample of the reports and is not stratified, and four themes hold three or fewer agreed confrontational rows |
+
+The widest of the five sits 1.8 actions from the golden, so no variant crosses the next rung and the
+three that differ are each closed by a quoted sentence or by the table's own cells.
+
+**Robustness and fairness.** The figure sits 0.134 from the centre of its bin, 0.37 from the nearest
+edge. The truth behind the simulated record is 239 confrontational actions, 2.1 per cent above the
+estimate, so the estimator is fair as well as determinate; the generator asserts the gap.
+
+**The grid.** Two axes, how the reports are resolved and which error rates the count carries:
 
 | | false marks out | labels as they stand | both rates | recall only |
 |---|---|---|---|---|
-| the three routes resolved to actions | 152 | 182 | **225** | 285 |
-| each report counted as an action | to be measured at build | to be measured at build | to be measured at build | to be measured at build |
+| the three routes resolved to actions | 126 | 178 | **234** | 336 |
+| each accepted report counted as an action | higher in every column, asserted | | | the decisive column still the only one the protocol asks for |
 
 Every cell is a named figure. The decisive column is the only one that answers the protocol's question,
 and it is the column least moved by a solver who fails to resolve the routes, because the correction is a
 ratio of the sample's own cells and not of the record's volume.
 
 **Dominance.** The ordinary actions outnumber the confrontational ones about twenty to one, so the
-classifier's one-in-a-hundred false-mark rate puts 16 wrong marks in the sample against 40 misses: the
+classifier's one-in-a-hundred false-mark rate puts 30 wrong marks in the sample against 61 misses: the
 two errors are of the same order and neither cancels the other, which is what makes all three easy routes
 land on different wrong numbers.
 
-**Worth of each rung, on the graded quantity.** Rung 1 to rung 0 is 30 actions, rung 0 to rung 3 is 43,
-and rung 2 to rung 3 is 60. Nothing between the rungs is worth less than 30 actions, and every rung is
+**Worth of each rung, on the graded quantity.** Rung 1 to rung 0 is 52 actions, rung 0 to rung 3 is 56,
+and rung 2 to rung 3 is 102. Nothing between the rungs is worth less than 52 actions, and every rung is
 satisfying to stop at: each is the whole output of a pipeline whose every input figure is correct.
 
 ## Closure table
@@ -258,7 +272,7 @@ satisfying to stop at: each is the whole output of a pipeline whose every input 
 | 7 | Weighting | the double-coding sample is drawn simple at random from the press monitor's items, so no weights | 4.5 states the draw; asserted that every sampled item is a press item and that the sample is not stratified |
 | 8 | Window length | the reporting period | 3.2; asserted |
 | 9 | Boundary inclusivity | 1 May and 30 October | 3.2 states both inclusive; asserted that actions fall on both days |
-| 10 | Rounding path | the count to a whole action, rounded once at the end | SF11; asserted that the raw 224.99 is 0.49 from its bin edge |
+| 10 | Rounding path | the count to a whole action, rounded once at the end | SF11; asserted that the raw 234.13 is 0.37 from its bin edge |
 | 11 | Tie-break | two candidates on one count | none: 152, 182, 225 and 285 are pairwise distinct, asserted |
 | 12 | Maturity and censoring | reports still arriving | the period closed a week before the extract; asserted that no action dated in the period is reported after the extract |
 | 13 | Order of operations | resolve the routes then read the codes, or read then resolve | C1: a duplicate report carries the same identifier, theme, locality and day, so either order gives the same actions, asserted |
@@ -268,7 +282,7 @@ satisfying to stop at: each is the whole output of a pipeline whose every input 
 | 17 | Netting against gross | nothing is netted | stated |
 | 18 | Dimensional units | items, reports, actions | the dictionary names each; the indicator reads actions only, asserted |
 | 19 | Code and status semantics | the route codes, the action codes, the acceptance column, the sample's two coding columns | the protocol and the dictionary; the codes are read correctly on every rung |
-| 20 | Integerisation | the count is a whole number of actions | 3.3; the raw 224.994 rounds to 225, asserted |
+| 20 | Integerisation | the count is a whole number of actions | 3.3; the raw 234.134 rounds to 234, asserted |
 | 21 | Clause scope | 2.1 per theme per locality per day; 2.6 per action | both paragraphs state their scope; asserted |
 | 22 | Forward window contents | none: the count is for the closed period | the call is retrospective with its reason, that the bulletin reports the period that closed and the trustees' vote of 19 November sets the next year's field budget on it |
 
@@ -280,9 +294,9 @@ and 6 November 2026, resolves them to actions at gazetteer settlements on the pr
 actions dated inside the reporting period, and asks how many of them were confrontational actions on
 2.2's list, the count being of the actions and not of the codes the classifier assigned. The text is
 silent on how the classifier's labels become that count, so every option was computed on the same rows:
-the coded count gives 182, the coded count with the classifier's false marks taken out gives 152, the
-coded count scaled by its recall gives 285, and the count rebuilt from both measured error rates gives
-225, which the double-coding sample's own four cells fix. The easy three are easy estimators of the same
+the coded count gives 178, the coded count with the classifier's false marks taken out gives 126, the
+coded count scaled by its recall gives 336, and the count rebuilt from both measured error rates gives
+234, which the double-coding sample's own four cells fix. The easy three are easy estimators of the same
 literal estimand, not other readings of it, and every other term and convention has an SF row ruled out
 by a quoted sentence or asserted to give the same call.
 
@@ -326,18 +340,18 @@ hard, asserted by count.
 **The referee.** `manifesto_extracao.csv` states each file's rows, range and extract date and settles the
 one designed disagreement, the exceptions file's extent, without naming a level.
 
-**The cracker sheet.** The cracker filed 225 confrontational actions, ran the hygiene battery,
+**The cracker sheet.** The cracker filed 234 confrontational actions, ran the hygiene battery,
 executed every filed paragraph and matched every control total.
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
-| A1 actions recorded, the last fortnight | fixed fourteen-day blocks, so the last one ends on 29 October and a fourteenth holds 30 October | to be measured at build | to be measured at build | miss |
-| A1 share the partner network reported, fortnight 7 | counts reports, not actions | to be measured at build | to be measured at build | miss |
-| A2 reports received, the partner network | counts the rows of the partner file, so the reposted August month counts twice and the unplaceable reports are missing | to be measured at build | to be measured at build | miss |
-| A2 reports that could not be placed, the press monitor | the item log alone, which holds only the items it placed | to be measured at build | to be measured at build | miss |
-| A2 median minutes from the action to the report, the press monitor | reads the monitor's reception stamp as local time | to be measured at build | to be measured at build | miss |
-| A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | to be measured at build | to be measured at build | miss |
-| A3 reports filed, the merged partner | one delivery code | to be measured at build | to be measured at build | miss |
+| A1 actions recorded, the last fortnight | fixed fourteen-day blocks, so the last one ends on 29 October and a fourteenth holds 30 October | 647 | 683 | miss |
+| A1 share the partner network reported, fortnight 7 | counts reports, not actions | 24.0 per cent | 22.7 per cent | miss |
+| A2 reports received, the partner network | counts the rows of the partner file, so the reposted August month counts twice and the unplaceable reports are missing | 1,463 | 1,298 | miss |
+| A2 reports that could not be placed, the press monitor | the item log alone, which holds only the items it placed | 0 | 148 | miss |
+| A2 median minutes from the action to the report, the press monitor | reads the monitor's reception stamp as local time | 51.0 | 111.0 | miss |
+| A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | 798 | 892 | miss |
+| A3 reports filed, the merged partner | one delivery code | 122 | 156 | miss |
 
 **Pair ceiling:** 39.5
 **Mirror leakage:** 20.0

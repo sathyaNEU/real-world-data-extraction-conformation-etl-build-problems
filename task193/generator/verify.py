@@ -56,7 +56,7 @@ def run(tgt, figures_path):
         pkg[r["vnr"]] = (r["atc_code"],
                          d_iso(r["valid_from"]) if r["valid_from"] else None,
                          d_iso(r["valid_to"]) if r["valid_to"] else None)
-        ddd[r["vnr"]] = float(r["ddd_per_pack"])
+        ddd[r["vnr"]] = float(r["ddd_per_pack"]) if r["ddd_per_pack"] else 0.0
     annex = tab(tgt, "screen_annexes.csv")
     prod = {r["product_atc"]: r["product_code"] for r in annex}
     mark = {r["marker_atc_group"]: r["marker_code"] for r in annex}

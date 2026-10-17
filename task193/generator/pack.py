@@ -18,17 +18,14 @@ def write_csv(path, head, rows):
 
 
 # ---------------------------------------------------------------- dispensing lines
-WEEKDAY_WEIGHT = [1.0, 1.0, 1.0, 1.0, 1.0, 0.42, 0.0]
-
-
 def open_day(d, rng):
-    """Pharmacies do not dispense on a Sunday and dispense little on a Saturday, so a dispensing
-    falling on one is taken on an earlier open day."""
-    for _ in range(7):
-        w = WEEKDAY_WEIGHT[W.day(d).weekday()]
-        if w >= 1.0 or rng.random() < w:
-            return d
-        d = max(0, d - 1)
+    """Pharmacies close on a Sunday and open short hours on a Saturday, so a dispensing falling on
+    one is mostly taken on one of the open days before it."""
+    wd = W.day(d).weekday()
+    if wd == 6:
+        return max(0, d - int(rng.choice([1, 2, 3, 4], p=[0.24, 0.34, 0.24, 0.18])))
+    if wd == 5 and rng.random() < 0.58:
+        return max(0, d - int(rng.choice([1, 2, 3], p=[0.45, 0.33, 0.22])))
     return d
 
 
@@ -60,6 +57,10 @@ def dispensings(first):
                     break
                 days.append(d)
             days = [open_day(int(x), rng) for x in days]
+            mf, mt = W.MARKETED.get(code, (None, None))
+            if mf is not None or mt is not None:
+                days = [x for x in days
+                        if (mf is None or x >= mf) and (mt is None or x <= mt)]
             pk = W.PACKAGES[code]
             pres = "L%05d" % (10000 + int(rng.integers(0, 7400)))
             for j, d in enumerate(days):
@@ -84,12 +85,15 @@ def dispensings(first):
     prev_rng = np.random.default_rng(W.SEED + 53)
     base = max(r["line"] for r in lines) + 1
     for code in W.PCODES + W.MCODES:
+        mf0, mt0 = W.MARKETED.get(code, (None, None))
+        if mf0 is not None and mf0 > 0:
+            continue                      # not on the market when the extract opens
         pi = dict([(x[0], x[4]) for x in W.PRODUCTS] + [(m[0], m[4]) for m in W.MARKERS])[code]
-        n_prev = int(round(1.05 * pi * n))
+        n_prev = int(round(0.235 * pi * n))
         who = prev_rng.choice(n, size=n_prev, replace=False)
         pk = W.PACKAGES[code]
         for pid in who:
-            d = int(prev_rng.integers(-150, 0))
+            d = int(prev_rng.integers(-250, 0))
             reps = 1 + int(prev_rng.poisson(0.72))
             pres = "L%05d" % (10000 + int(prev_rng.integers(0, 7400)))
             for _ in range(reps):
@@ -106,8 +110,10 @@ def dispensings(first):
                 q2 = 0 if d < 823 else (1 if d < 913 else (2 if d < 1004 else 3))
                 mu = [[1.4, 1.9, 2.6, 2.2], [3.3, 2.8, 3.9, 4.5],
                       [4.6, 5.4, 6.3, 5.7], [6.1, 7.2, 6.6, 8.0]][ci][q2]
-                base += 1
                 dd = open_day(d, prev_rng)
+                if (mt0 is not None and dd > mt0) or (mf0 is not None and dd < mf0):
+                    continue
+                base += 1
                 lines.append({"line": base, "pid": int(pid), "code": code, "vnr": vnr, "day": dd,
                               "pharmacy": ph, "chain": ci, "packs": int(prev_rng.choice(
                                   [1, 2, 3], p=[0.615, 0.265, 0.120])),
@@ -148,7 +154,7 @@ def apply_mess(lines, people):
                "package code not valid on the date of dispensing",
                "reimbursement code missing",
                "pharmacy identifier closed before the date of dispensing",
-               "duplicate of a line already accepted in this batch"]
+               "reimbursed price missing for the package on that date"]
     for i, r in enumerate(lines):
         if i in rej_idx:
             r["reason"] = str(rng.choice(reasons, p=[0.407, 0.231, 0.168, 0.117, 0.077]))
@@ -171,6 +177,12 @@ def apply_mess(lines, people):
 
 
 # ---------------------------------------------------------------- the two extracts
+EXTRACT_SCOPE = ("Extract LSR-2026-0441 for the October 2026 prescription-sequence screen. It covers "
+                 "the screen window of 1 October 2025 to 30 September 2026 and the clearance period "
+                 "of 1 October 2023 to 30 September 2025, for patients aged 18 and over on "
+                 "1 October 2025, and holds every dispensing of a product in Annex A of Standard "
+                 "7-2024 or of a package in one of its Annex B groups.")
+
 OLD_HEAD = ["line_id", "pseudonym", "vnr", "disp_date", "pharmacy_id", "packages",
             "prescriber_id", "submitted"]
 NEW_HEAD = ["record_id", "person_key", "package_code", "date_of_dispensing", "pharmacy",
@@ -191,15 +203,23 @@ def write_extracts(tgt, kept):
     return a, b
 
 
+STRENGTH_MG = {
+    "P01": [25, 50, 100], "P02": [60, 90, 120], "P03": [5, 10, 20],
+    "P04": [150, 300, 150], "P05": [25, 50, 75], "P06": [250, 500, 750],
+    "P07": [1, 2, 4], "P08": [10, 15, 20], "P09": [100, 200, 400],
+    "M1": [4, 8, 16, 24], "M2": [10, 20, 30, 40], "M3": [100, 200, 300, 400],
+    "M4": [20, 40, 10, 5], "M5": [25, 50, 100, 150], "M6": [3.75, 5, 7.5, 10],
+    "M7": [0.05, 0.1, 0.05, 0.064], "M8": [5, 10, 15, 25],
+}
 MARKER_NAMES = {
-    "M1": ["Ondasetron", "Metoclopramid", "Domperidon", "Aprepitant"],
-    "M2": ["Pantoprazol", "Esomeprazol", "Lansoprazol", "Omeprazol"],
-    "M3": ["Allopurinol", "Febuxostat", "Allopurinol Orion", "Febuxostat Teva"],
-    "M4": ["Furosemid", "Bumetanid", "Furix", "Burinex"],
-    "M5": ["Sertralin", "Citalopram", "Escitalopram", "Fluoxetin"],
-    "M6": ["Zopiclon", "Zolpidem", "Imozop", "Stilnoct"],
-    "M7": ["Betamethason", "Mometason", "Elocon", "Diprosalic"],
-    "M8": ["Olanzapin", "Quetiapin", "Zyprexa", "Seroquel"],
+    "M1": ["Ondansetron", "Ondansetron", "Metoclopramid", "Metoclopramid"],
+    "M2": ["Pantoprazol", "Pantoprazol", "Esomeprazol", "Esomeprazol"],
+    "M3": ["Allopurinol", "Allopurinol", "Febuxostat", "Febuxostat"],
+    "M4": ["Furosemid", "Furosemid", "Bumetanid", "Bumetanid"],
+    "M5": ["Sertralin", "Sertralin", "Citalopram", "Citalopram"],
+    "M6": ["Zopiclon", "Zopiclon", "Zolpidem", "Zolpidem"],
+    "M7": ["Betamethason", "Betamethason", "Mometason", "Mometason"],
+    "M8": ["Olanzapin", "Olanzapin", "Quetiapin", "Quetiapin"],
 }
 STRENGTH = {"P01": ["25 mg", "50 mg", "100 mg"], "P02": ["60 mg", "90 mg", "120 mg"],
             "P03": ["5 mg", "10 mg", "20 mg"], "P04": ["150 mg/ml", "300 mg/ml", "150 mg/ml"],
@@ -216,16 +236,17 @@ def write_package_index(tgt):
     rows = []
     for code in W.PCODES + W.MCODES:
         sizes = W.PACK_SIZES[code]
-        unit = W.DDD_PER_UNIT[code]
+        ddd_mg = W.DDD_MG[code]
         for i, (vnr, c, kind, vf, vt) in enumerate(W.PACKAGES[code]):
             if kind == "product":
                 name, atc = W.PNAME[code], W.PATC[code]
-                st = STRENGTH[code][i % len(STRENGTH[code])]
             else:
                 name, atc = MARKER_NAMES[code][i % 4], W.MATC[code]
-                st = MARK_STRENGTH[code][i % 4]
+            mg = STRENGTH_MG[code][i % len(STRENGTH_MG[code])]
             size = sizes[i % len(sizes)]
-            rows.append([vnr, atc, name, st, size, round(size * unit, 2),
+            unit = "%g mg" % mg if atc != "D07AC" else "%g %%" % mg
+            ddd = "" if ddd_mg is None else round(size * mg / ddd_mg, 2)
+            rows.append([vnr, atc, name, unit, size, ddd,
                          W.iso(vf) if vf is not None else "", W.iso(vt) if vt is not None else ""])
     rows.sort(key=lambda r: r[0])
     return write_csv(os.path.join(tgt, "package_index.csv"),
@@ -344,15 +365,13 @@ PHARMACY_NAMES = [
 
 
 def write_pharmacy_register(tgt, kept):
-    flat = [(m, "%s %s Apotek" % (m, n) if n not in ("Svanen", "Stjerne", "Budolfi", "Dom")
-             else "%s Apotek" % n) for m, names in PHARMACY_NAMES for n in names]
+    flat = [(m, "%s Apotek" % n if n in ("Svanen", "Stjerne", "Budolfi", "Dom", "Loeveapoteket")
+             else "%s %s Apotek" % (m, n)) for m, names in PHARMACY_NAMES for n in names]
     seen = sorted(set((r["chain"], r["pharmacy"]) for r in kept))
-    rows = []
-    per = collections.defaultdict(int)
+    rows, used = [], 0
     for ci, ph in seen:
-        j = (per[ci] * 4 + ci * 7) % len(flat)
-        per[ci] += 1
-        muni, name = flat[j]
+        muni, name = flat[used % len(flat)]
+        used += 1
         rows.append([ph, name, W.CHAINS[ci][0], W.CHAINS[ci][1], muni])
     return write_csv(os.path.join(tgt, "pharmacy_register.csv"),
                      ["pharmacy_id", "pharmacy_name", "chain_code", "chain_name", "municipality"], rows)
@@ -375,12 +394,14 @@ def write_tracker(tgt, first):
     rows = []
     picks = [("P01", "M2", 520, 645, "closed, no further action"),
              ("P02", "M5", 455, 700, "closed, product information updated"),
-             ("P04", "M7", 612, 0, "under assessment"),
-             ("P05", "M2", 398, 589, "closed, no further action"),
-             ("P08", "M5", 505, 668, "closed, referred to the committee"),
-             ("P03", "M1", 701, 0, "under assessment"),
+             ("P04", "M7", 905, 0, "under assessment"),
+             ("P05", "M2", 505, 661, "closed, no further action"),
+             ("P08", "M5", 548, 712, "closed, referred to the committee"),
+             ("P03", "M1", 1004, 0, "under assessment"),
              ("P09", "M8", 480, 622, "closed, no further action")]
     for pc, mc, opened, closed, status in picks:
+        mf = W.MARKETED[pc][0]
+        assert mf is None or opened >= mf, (pc, opened, mf)
         rows.append(["SM-%s-%s" % (pc, mc), pc, W.PNAME[pc], mc, W.MNAME[mc],
                      W.iso(opened), W.iso(closed) if closed else "", status])
     return write_csv(os.path.join(tgt, "signal_tracker_export.csv"),
@@ -388,21 +409,39 @@ def write_tracker(tgt, first):
                       "opened_on", "closed_on", "status"], rows)
 
 
-def write_distractors(tgt):
+QUARTER_SPAN = [("2025 Q4", 731, 822), ("2026 Q1", 823, 912),
+                ("2026 Q2", 913, 1003), ("2026 Q3", 1004, 1095)]
+
+
+def write_distractors(tgt, kept=None):
     rng = np.random.default_rng(W.SEED + 41)
+    vol = collections.Counter()
+    for r in (kept or []):
+        code, kind = W.PKG_OF[r["vnr"]][0], W.PKG_OF[r["vnr"]][1]
+        if kind != "product":
+            continue
+        for label, a, b in QUARTER_SPAN:
+            if a <= r["day"] <= b:
+                vol[(code, label)] += 1
     rows = []
     for code in W.PCODES:
-        for q, label in enumerate(["2025 Q4", "2026 Q1", "2026 Q2", "2026 Q3"]):
-            base = 4 + int(rng.integers(0, 29))
+        mf = W.MARKETED[code][0]
+        for label, a, b in QUARTER_SPAN:
+            if mf is not None and mf > b:
+                continue                      # not yet on the market in that quarter
+            n = vol.get((code, label), 0)
+            base = int(round(n * float(rng.uniform(0.006, 0.019)))) + int(rng.integers(0, 4))
             ser = int(round(base * float(rng.uniform(0.17, 0.62))))
             rows.append([code, W.PNAME[code], label, base, ser,
                          int(round(ser * float(rng.uniform(0.1, 0.8))))])
     n1 = write_csv(os.path.join(tgt, "spontaneous_reports_summary.csv"),
                    ["product_code", "brand_name", "quarter", "reports_received",
                     "reports_serious", "reports_from_patients"], rows)
-    titles = ["Hepatic safety of %s in routine care", "A case series of %s exposure in pregnancy",
-              "Prescribing trends for %s in primary care", "Adherence to %s over twelve months",
-              "Renal outcomes among new users of %s", "Switching patterns away from %s"]
+    titles = ["Utilisation of %s in Danish primary care", "A case series of %s exposure in pregnancy",
+              "Prescribing trends for %s after reimbursement change", "Adherence to %s over twelve months",
+              "Treatment persistence among new users of %s", "Switching patterns away from %s",
+              "Dispensing of %s to older patients", "Off-label dispensing of %s",
+              "A cohort study of %s initiation", "Co-medication among %s users"]
     rows = []
     for i in range(96):
         code = W.PCODES[i % len(W.PCODES)]
@@ -416,14 +455,15 @@ def write_distractors(tgt):
 
 
 def write_manifest(tgt, counts):
-    rows = []
+    rows = [["(extract scope)", "", EXTRACT_SCOPE, W.iso(W.PULL_DAY)]]
     notes = {
-        "dispensings_2023_2025.csv": "clearance-period extract, register layout R-2023.2, ISO dates",
-        "dispensings_2025_2026.csv": "screen-window extract, register layout R-2025.1, day-month-year dates",
-        "submission_exceptions.csv": "every line the register turned back at validation over the screen window and the clearance period; rejected lines are not in either extract",
-        "pharmacy_submission_log.csv": "the chains' own monthly submission totals, by month of submission",
+        "dispensings_2023_2025.csv": "dispensings to 30 September 2025, register layout R-2023.2",
+        "dispensings_2025_2026.csv": "dispensings from 1 October 2025, register layout R-2025.1",
+        "submission_exceptions.csv": "validation outcomes for the lines the register turned back",
+        "pharmacy_submission_log.csv": "the chains' own monthly totals, counted by month of submission",
         "package_index.csv": "package codes with the dates each was valid for dispensing",
-        "person_register.csv": "one row per person key appearing in either extract, attributes as recorded at the pull",
+        "person_register.csv": "one row per person key in either extract, as recorded at the pull",
+        "register_variable_documentation.csv": "the register's documentation of the variables in this extract",
     }
     for name in sorted(counts):
         rows.append([name, counts[name], notes.get(name, ""), W.iso(W.PULL_DAY)])
@@ -434,24 +474,26 @@ def write_manifest(tgt, counts):
 def write_release_notes(tgt):
     obj = {
         "register": "Laegemiddelstatistikregisteret",
-        "extract_request": "LSR-2026-0441",
-        "pulled_on": W.iso(W.PULL_DAY),
+        "release": "R-2025.1",
+        "released_on": W.iso(731),
+        "supersedes": "R-2023.2",
+        "summary": ("The October 2025 release renames five variables and writes dates as "
+                    "DD-MM-YYYY. Extracts covering periods on both sides of the release are "
+                    "delivered as one file per layout."),
+        "renamed_variables": [
+            {"was": "pseudonym", "is": "person_key"},
+            {"was": "vnr", "is": "package_code"},
+            {"was": "disp_date", "is": "date_of_dispensing"},
+            {"was": "packages", "is": "n_packages"},
+            {"was": "submitted", "is": "submission_date"}],
         "layouts": [
             {"layout": "R-2023.2", "file": "dispensings_2023_2025.csv",
-             "date_format": "YYYY-MM-DD",
-             "columns": OLD_HEAD,
-             "note": "in use for extracts covering dispensings up to 30 September 2025"},
+             "date_format": "YYYY-MM-DD", "columns": OLD_HEAD,
+             "covers": "dispensings up to 30 September 2025"},
             {"layout": "R-2025.1", "file": "dispensings_2025_2026.csv",
-             "date_format": "DD-MM-YYYY",
-             "columns": NEW_HEAD,
-             "note": "in use from the October 2025 release; pseudonym, vnr, disp_date, packages and submitted were renamed person_key, package_code, date_of_dispensing, n_packages and submission_date"}],
-        "known_handling": [
-            "A line turned back at validation is not written to the extract. The validation outcome for every line is in submission_exceptions.csv.",
-            "One chain re-sent its batch for October 2025 after a transmission failure. The resent lines carry fresh record identifiers and repeat the original line's person key, package code, date of dispensing, pharmacy and submission stamp. A line re-sent after a transmission failure is one dispensing: it counts once in any count of lines and once in any count of doses.",
-            "The register reports a dispensing line in the quarter of its date of dispensing, whatever quarter it was submitted in. The chains' own submission log in pharmacy_submission_log.csv counts by month of submission instead, which is why its totals do not line up with the extract quarter by quarter.",
-            "The extract covers patients aged 18 and over at the start of the screen window; the register's paediatric population is extracted separately and is not in this request.",
-            "Person keys replaced after a civil-registration correction are listed in person_key_crosswalk.csv with the date of replacement. Lines dispensed before that date carry the retired key.",
-            "Package codes are valid for dispensing only between the dates package_index.csv gives for them."]
+             "date_format": "DD-MM-YYYY", "columns": NEW_HEAD,
+             "covers": "dispensings from 1 October 2025"}],
+        "variable_documentation": "register_variable_documentation.csv",
     }
     path = os.path.join(tgt, "register_release_notes.json")
     with open(path, "w", encoding="utf-8") as fh:
@@ -470,3 +512,56 @@ def write_annexes(tgt):
     return write_csv(os.path.join(tgt, "screen_annexes.csv"),
                      ["product_code", "brand_name", "product_atc", "marker_code",
                       "marker_treatment", "marker_atc_group", "source"], rows)
+
+
+VARIABLE_DOC = [
+    ("dispensings_2025_2026.csv", "record_id",
+     "Identifies the transmission in which the register received the line. A dispensing "
+     "re-transmitted after a failed transfer is given a new record identifier on each "
+     "transmission; the register holds one dispensing behind them and counts it once, in its "
+     "lines and in its doses."),
+    ("dispensings_2025_2026.csv", "person_key",
+     "The pseudonym the register holds for the patient. Where a pseudonym has been replaced, lines "
+     "dispensed before the replacement carry the retired pseudonym and "
+     "person_key_crosswalk.csv gives the pair; the register holds one patient behind them."),
+    ("dispensings_2025_2026.csv", "package_code",
+     "The Nordic article number of the package handed out. A package code identifies one package "
+     "of one product only between the dates package_index.csv gives for it, and the register "
+     "reads the product from the code at the date of the dispensing."),
+    ("dispensings_2025_2026.csv", "date_of_dispensing",
+     "The date the pharmacy handed the package to the patient. The register places a dispensing "
+     "in the day, month, quarter and year of this date."),
+    ("dispensings_2025_2026.csv", "submission_date",
+     "The date the pharmacy chain transmitted the line to the register. It is on or after the "
+     "date of dispensing and may fall in a later month or quarter."),
+    ("dispensings_2025_2026.csv", "n_packages",
+     "Packages handed out on the line. Defined daily doses are this times the package's "
+     "ddd_per_pack in package_index.csv, where the anatomical therapeutic chemical index assigns "
+     "the package a defined daily dose."),
+    ("dispensings_2025_2026.csv", "pharmacy",
+     "The dispensing pharmacy. pharmacy_register.csv gives its chain."),
+    ("dispensings_2025_2026.csv", "prescriber",
+     "The prescriber's authorisation number as the prescription carried it."),
+    ("package_index.csv", "valid_from, valid_to",
+     "The period in which the package code was valid for dispensing. A code withdrawn on a "
+     "transfer of marketing authorisation keeps its rows, so that lines dispensed before the "
+     "transfer still resolve."),
+    ("package_index.csv", "ddd_per_pack",
+     "Defined daily doses in the package: pack size times strength divided by the defined daily "
+     "dose the anatomical therapeutic chemical index assigns the substance. Blank where the index "
+     "assigns none, as for topical preparations."),
+    ("person_register.csv", "region",
+     "The region recorded for the patient at the extract date. Where region_recorded_from falls "
+     "inside the extract period, previous_region is the region recorded before that date."),
+    ("person_register.csv", "year_of_birth",
+     "Year of birth as the civil registration system holds it."),
+    ("submission_exceptions.csv", "exception_ref",
+     "One row for every line the register turned back at validation. A line turned back is not "
+     "written to the dispensing extracts and has to be re-submitted to be held."),
+]
+
+
+def write_variable_documentation(tgt):
+    rows = [[f, c, t] for f, c, t in VARIABLE_DOC]
+    return write_csv(os.path.join(tgt, "register_variable_documentation.csv"),
+                     ["file_name", "variable", "documentation"], rows)

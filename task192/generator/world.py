@@ -8,7 +8,7 @@ against hand coding twice a year.
 """
 import datetime as dt
 
-SEED = 215                                 # the action layer, measured in the design note
+SEED = 248                                 # the action layer, measured in the design note
 SEED_PACK = 410                             # a separate stream for reports, mess and the asks
 
 ASSOCIATION = "Observatorio de Acao Coletiva"
@@ -67,14 +67,14 @@ ROUTES = [("IMP", "monitor de imprensa"),
           ("LIN", "linha de participacao publica")]
 
 # how an action reaches the register
-P_PRESS = 0.90          # the press monitor files a report on the action
+P_PRESS = 0.76          # the press monitor files a report on the action
 P_PARTNER = 0.26        # a partner organisation files one, inside its own region
 P_LINE = 0.17           # the public line receives one
 
 # the press classifier, measured by the desk's hand coding
-CLS_RECALL = 0.44       # confrontational actions it codes as confrontational
-CLS_FALSE_MARK = 0.0125  # ordinary actions it codes as confrontational
-CONF_RATE = 0.051      # the share of actions that are confrontational
+CLS_RECALL = 0.46       # confrontational actions it codes as confrontational
+CLS_FALSE_MARK = 0.0135  # ordinary actions it codes as confrontational
+CONF_RATE = 0.047      # the share of actions that are confrontational
 SAMPLE_SIZE = 2600      # press reports hand coded over the period's two rounds
 SAMPLE_ROUNDS = [(dt.date(2026, 7, 20), 1100), (dt.date(2026, 11, 3), 1500)]
 
@@ -84,7 +84,7 @@ PARTNERS = [
     ("P03", "Plataforma de Bairros da Margem Sul", "A.M. Lisboa", 7.10),
     ("P04", "Observatorio Rural do Alentejo Central", "Alentejo", 5.25),
     ("P05", "Liga dos Direitos do Barlavento", "Algarve", 6.75),
-    ("P06", "Centro de Estudos Insulares", "Acores e Madeira", 8.20),
+    ("P06", "Centro de Estudos Insulares", "Acores e Madeira", 8.35),
     ("P07", "Nucleo de Acompanhamento do Douro", "Norte", 6.40),
 ]
 AMENDED = ("P04", dt.date(2026, 8, 1), 6.15)

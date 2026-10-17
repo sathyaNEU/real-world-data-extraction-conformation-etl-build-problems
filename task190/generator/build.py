@@ -33,7 +33,7 @@ def cut(target, golden_dir):
     drop = set(stats["reversed_keys"])
     rows = [r for r in rows if (r["cust"], r["date"], round(r["amount"], 2)) not in drop]
     deposits = [d for d in deposits if (d["cust"], d["day"], round(d["amount"], 2)) not in drop]
-    PK.write_register(target, custs, acct)
+    _, register_rows = PK.write_register(target, custs, acct)
     PK.write_crosswalk(target, custs, acct)
     PK.write_branches(target)
     PK.write_machine_register(target)
@@ -76,11 +76,15 @@ def cut(target, golden_dir):
     g["truth"] = {k: truth[("2027", k)] for k in W.SEG_KEYS}
     g["truth_prior"] = {k: truth[("2026", k)] for k in W.SEG_KEYS}
     g["custs"] = custs
+    g["register_rows"] = register_rows
     g["deposits_rows"] = deposits
     g["events"] = events
     g["svc"] = svc
     g["vrows"] = vrows
     g["till"] = till
+    _out, _tots, _labels = G.convergence(g)
+    g["sweep_n"] = len(_labels)
+    g["sweep_lo"], g["sweep_hi"] = min(_tots), max(_tots)
 
     deliver.workbook(os.path.join(golden_dir, "structured_cash_deposits_2027.xlsx"), g)
     deliver.chart(os.path.join(golden_dir, "structured_deposits_by_segment.png"), g)

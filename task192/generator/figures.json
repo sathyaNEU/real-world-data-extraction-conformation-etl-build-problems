@@ -1,0 +1,179 @@
+{
+ "actions_in_period": 4790,
+ "actions_with_a_filer_report": 433,
+ "call_actions": 224,
+ "classifier_false_mark_rate": 0.0133,
+ "classifier_recall": 0.4917,
+ "fortnight_rows": 13,
+ "fortnights": {
+  "Q1": {
+   "actions": 247,
+   "marked_actions": 11,
+   "municipalities": 102,
+   "partner_share_pct": 22.7
+  },
+  "Q10": {
+   "actions": 589,
+   "marked_actions": 22,
+   "municipalities": 117,
+   "partner_share_pct": 24.6
+  },
+  "Q11": {
+   "actions": 648,
+   "marked_actions": 25,
+   "municipalities": 118,
+   "partner_share_pct": 27.3
+  },
+  "Q12": {
+   "actions": 623,
+   "marked_actions": 25,
+   "municipalities": 119,
+   "partner_share_pct": 27.4
+  },
+  "Q13": {
+   "actions": 683,
+   "marked_actions": 32,
+   "municipalities": 118,
+   "partner_share_pct": 25.0
+  },
+  "Q2": {
+   "actions": 261,
+   "marked_actions": 9,
+   "municipalities": 106,
+   "partner_share_pct": 23.8
+  },
+  "Q3": {
+   "actions": 261,
+   "marked_actions": 4,
+   "municipalities": 109,
+   "partner_share_pct": 28.4
+  },
+  "Q4": {
+   "actions": 264,
+   "marked_actions": 10,
+   "municipalities": 102,
+   "partner_share_pct": 25.4
+  },
+  "Q5": {
+   "actions": 237,
+   "marked_actions": 10,
+   "municipalities": 104,
+   "partner_share_pct": 23.6
+  },
+  "Q6": {
+   "actions": 256,
+   "marked_actions": 6,
+   "municipalities": 105,
+   "partner_share_pct": 29.3
+  },
+  "Q7": {
+   "actions": 233,
+   "marked_actions": 9,
+   "municipalities": 108,
+   "partner_share_pct": 22.7
+  },
+  "Q8": {
+   "actions": 243,
+   "marked_actions": 9,
+   "municipalities": 105,
+   "partner_share_pct": 25.1
+  },
+  "Q9": {
+   "actions": 245,
+   "marked_actions": 6,
+   "municipalities": 104,
+   "partner_share_pct": 31.8
+  }
+ },
+ "hand_coded_confrontational": 25,
+ "partner_rows": 7,
+ "partners": {
+  "P01": {
+   "after_close": 1,
+   "euros": 928,
+   "filed": 146
+  },
+  "P02": {
+   "after_close": 2,
+   "euros": 2419,
+   "filed": 419
+  },
+  "P03": {
+   "after_close": 2,
+   "euros": 1534,
+   "filed": 218
+  },
+  "P04": {
+   "after_close": 1,
+   "euros": 892,
+   "filed": 153
+  },
+  "P05": {
+   "after_close": 1,
+   "euros": 621,
+   "filed": 93
+  },
+  "P06": {
+   "after_close": 0,
+   "euros": 509,
+   "filed": 61
+  },
+  "P07": {
+   "after_close": 1,
+   "euros": 992,
+   "filed": 156
+  }
+ },
+ "press_marked_confrontational": 153,
+ "press_only_actions": 4357,
+ "protocol_paragraphs": [
+  "2.1",
+  "2.2",
+  "2.3",
+  "2.4",
+  "2.5",
+  "2.6",
+  "3.2",
+  "3.3",
+  "3.4",
+  "4.1",
+  "4.2",
+  "4.3",
+  "4.4",
+  "4.5",
+  "6.1",
+  "6.2"
+ ],
+ "raw_total": 223.64,
+ "route_rows": 3,
+ "routes": {
+  "IMP": {
+   "median_minutes": 111.0,
+   "received": 4505,
+   "unplaceable": 148
+  },
+  "LIN": {
+   "median_minutes": 96.0,
+   "received": 964,
+   "unplaceable": 89
+  },
+  "PAR": {
+   "median_minutes": 656.0,
+   "received": 1301,
+   "unplaceable": 63
+  }
+ },
+ "rung0_actions": 178,
+ "rung1_actions": 123,
+ "rung2_actions": 336,
+ "sample_fn": 61,
+ "sample_fp": 33,
+ "sample_rows": 2600,
+ "sample_tn": 2447,
+ "sample_tp": 59,
+ "variant_by_round": 225.15,
+ "variant_by_theme": 230.93,
+ "variant_continuity": 221.91,
+ "variant_matrix_inverse": 223.64,
+ "variant_press_only_sample": 223.64
+}

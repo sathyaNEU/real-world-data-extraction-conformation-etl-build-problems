@@ -37,6 +37,7 @@ def main():
     counts["product_register.csv"] = pack.write_product_register(TGT)
     counts["screen_annexes.csv"] = pack.write_annexes(TGT)
     counts["atc_text.csv"] = pack.write_atc_text(TGT)
+    counts["register_variable_documentation.csv"] = pack.write_variable_documentation(TGT)
     counts["person_key_crosswalk.csv"] = pack.write_crosswalk(TGT, switch_day, keys, new_keys)
     counts["person_register.csv"] = pack.write_person_register(TGT, people, keys, new_keys,
                                                                switch_day, kept)
@@ -45,7 +46,7 @@ def main():
     counts["signal_tracker_export.csv"] = pack.write_tracker(TGT, first)
     counts["submission_exceptions.csv"] = asks.write_exceptions(TGT, rejected)
     counts["pharmacy_submission_log.csv"] = asks.write_submission_log(TGT, kept, rejected)
-    n1, n2 = pack.write_distractors(TGT)
+    n1, n2 = pack.write_distractors(TGT, kept)
     counts["spontaneous_reports_summary.csv"] = n1
     counts["literature_screening_log.csv"] = n2
     docs.standard(TGT)
@@ -69,7 +70,7 @@ def main():
     import csv as _csv
     with open(os.path.join(TGT, "package_index.csv"), newline="", encoding="utf-8") as fh:
         for r in _csv.DictReader(fh):
-            ddd_of[r["vnr"]] = float(r["ddd_per_pack"])
+            ddd_of[r["vnr"]] = float(r["ddd_per_pack"]) if r["ddd_per_pack"] else 0.0
     a1 = asks.a1_golden(kept, rejected)
     a2 = asks.a2_golden(kept, ddd_of)
     a3 = asks.a3_golden(TGT, firsts, rp[1])

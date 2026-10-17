@@ -82,22 +82,51 @@ def load(target):
     return out, seg, cross
 
 
-def excess(amounts, lo=5000, hi=16000, bw=250):
-    n = (hi - lo) // bw
-    bins = [0] * n
+def _bins(amounts, lo, hi, step):
+    n = int((hi - lo) // step)
+    out = [0] * n
     for a in amounts:
         if lo <= a < hi:
-            bins[int((a - lo) // bw)] += 1
-    band = [k for k in range(n) if BAND_LO <= lo + k * bw < BAND_HI]
-    keep = [k for k in range(n) if k not in band and bins[k] > 0]
+            out[int((a - lo) // step)] += 1
+    return out
+
+
+def _line(xs, ys, w=None):
+    w = w or [1.0] * len(xs)
+    sw = sum(w)
+    mx = sum(wi * x for wi, x in zip(w, xs)) / sw
+    my = sum(wi * y for wi, y in zip(w, ys)) / sw
+    sxy = sum(wi * (x - mx) * (y - my) for wi, x, y in zip(w, xs, ys))
+    sxx = sum(wi * (x - mx) ** 2 for wi, x in zip(w, xs))
+    k = sxy / sxx
+    return k, my - k * mx
+
+
+def excess(amounts, lo=5000, hi=16000, step=250, family="poisson_log"):
+    """The band's deposits over the number the profile away from it gives."""
+    b = _bins(amounts, lo, hi, step)
+    band = [k for k in range(len(b)) if BAND_LO <= lo + k * step < BAND_HI]
+    keep = [k for k in range(len(b)) if k not in band and b[k] > 0]
     xs = [float(k) for k in keep]
-    ys = [math.log(bins[k]) for k in keep]
-    mx = sum(xs) / len(xs)
-    my = sum(ys) / len(ys)
-    sl = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sum((x - mx) ** 2 for x in xs)
-    ic = my - sl * mx
-    pred = sum(math.exp(ic + sl * k) for k in band)
-    return sum(bins[k] for k in band) - pred
+    ys = [float(b[k]) for k in keep]
+    obs = sum(b[k] for k in band)
+    if family == "count_ols":
+        k, c = _line(xs, ys)
+        return obs - sum(c + k * float(j) for j in band)
+    if family == "log_ols":
+        k, c = _line(xs, [math.log(y) for y in ys])
+        return obs - sum(math.exp(c + k * float(j)) for j in band)
+    # poisson log link, iteratively reweighted
+    k, c = _line(xs, [math.log(y) for y in ys])
+    for _ in range(30):
+        mu = [math.exp(c + k * x) for x in xs]
+        z = [c + k * x + (y - m) / max(m, 1e-9) for x, y, m in zip(xs, ys, mu)]
+        k2, c2 = _line(xs, z, mu)
+        if abs(k2 - k) < 1e-13 and abs(c2 - c) < 1e-13:
+            k, c = k2, c2
+            break
+        k, c = k2, c2
+    return obs - sum(math.exp(c + k * float(j)) for j in band)
 
 
 def r10(x):
@@ -158,17 +187,23 @@ def main(target, figpath):
         days.setdefault((cross[r["acct_customer_no"]], day), []).append(float(r["amount_nzd"]))
     screen = 0
     for (cust, day), a in days.items():
-        if len(a) >= 2 and all(x < THRESHOLD for x in a) and sum(a) >= THRESHOLD:
+        if len(a) >= 2 and sum(a) >= THRESHOLD and any(x < THRESHOLD for x in a):
             screen += sum(1 for x in a if BAND_LO <= x < BAND_HI)
     chk("the same-day screen", screen, fig["steps"]["same_day_screen"])
     chk("one profile for the book", r10(excess([a for s, a, d in win])),
         fig["steps"]["one_profile_for_the_book"])
 
-    # convergence: every accepted estimator gives the same segment figures
-    for lo, hi, bw in ((5000, 16000, 250), (5000, 16000, 500), (6000, 14000, 250),
-                       (5500, 15000, 250), (5000, 15000, 250), (5000, 14000, 500)):
-        for s, v in by_seg.items():
-            chk("convergence %s %d-%d/%d" % (s, lo, hi, bw), r10(excess(v, lo, hi, bw)), per[s])
+    # convergence: every family, window and step gives the same eight segment figures
+    seen = set()
+    for lo, hi in ((3000, 16000), (4000, 16000), (5000, 16000), (6000, 16000), (7000, 13000),
+                   (8000, 12000), (5000, 15000), (6000, 12000), (6000, 14000), (8000, 11000)):
+        for step in (100, 200, 250, 500):
+            for fam in ("poisson_log", "log_ols", "count_ols"):
+                got = tuple(r10(excess(v, lo, hi, step, fam)) for s, v in sorted(by_seg.items()))
+                seen.add(got)
+                chk("convergence %d-%d/%d/%s" % (lo, hi, step, fam), sum(got),
+                    fig["call"]["deposits_split"])
+    chk("one set of segment figures across every estimator", len(seen), 1)
 
     # the deliverables
     wb = xlsx_rows(os.path.join(TASK, "golden", "structured_cash_deposits_2027.xlsx"))

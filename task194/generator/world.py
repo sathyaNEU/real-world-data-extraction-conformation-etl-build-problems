@@ -150,12 +150,12 @@ UNITS = [
     # units the programme has already been placed with inside the twelve closed quarters
     ("41250", "Colorectal Surgery", "H1", "colorectal", "acute", 1.236, 1150, 1210, None, "embed", "embedded"),
     ("41260", "Aged Care", "H1", "aged", "acute", 1.288, 880, 920, None, "embed", "embedded"),
-    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.194, 760, 800, None, "embed", "embedded"),
+    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.194, 1150, 800, None, "embed", "embedded"),
     ("41340", "Orthopaedics", "H2", "ortho", "acute", 1.252, 900, 950, None, "embed", "embedded"),
-    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.173, 820, 870, None, "embed", "embedded"),
+    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.173, 1000, 870, None, "embed", "embedded"),
     ("41360", "Aged Care", "H2", "aged", "acute", 1.311, 640, 680, None, "embed", "embedded"),
-    ("41440", "General Surgery", "H3", "gen_surg", "acute", 1.068, 1020, 1080, None, "embed", "embedded"),
-    ("41450", "Aged Care", "H3", "aged", "acute", 1.418, 520, 550, None, "embed", "embedded"),
+    ("41440", "General Surgery", "H3", "gen_surg", "acute", 1.112, 2400, 1080, None, "embed", "embedded"),
+    ("41450", "Aged Care", "H3", "aged", "acute", 1.464, 520, 550, None, "embed", "embedded"),
     # the unit the team is with now, for the quarter in progress: no closed data for the placement
     ("41460", "Rehabilitation and Aged Care", "H3", "aged", "acute", 1.221, 470, 500, None, "current", "embedded"),
     # non-acute units: outside the indicator's scope (specification 4.0 clause 2.3)

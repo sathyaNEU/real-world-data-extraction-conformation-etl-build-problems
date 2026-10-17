@@ -139,12 +139,12 @@ PLAN_NOTES = {
 }
 
 
-def write_plan(target):
+def write_plan(target, plans):
     out = []
     for u in W.UNITS:
-        if u[7] is None:
+        if u[0] not in plans:
             continue
-        out.append([u[0], W.EMBED_QUARTER, u[7], PLAN_NOTES.get(u[0], "")])
+        out.append([u[0], W.EMBED_QUARTER, plans[u[0]], PLAN_NOTES.get(u[0], "")])
     out.sort()
     return _csv(os.path.join(target, FILES["plan"]),
                 ["unit_code", "quarter", "planned_separations", "planning_note"], out)
