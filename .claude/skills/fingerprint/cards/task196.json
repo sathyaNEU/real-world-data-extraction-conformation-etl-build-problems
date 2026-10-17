@@ -1,0 +1,100 @@
+{
+  "task": "task196",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 4, first number. Assigned ground actuarial-science-insurance carries no task type serving anomaly-detection (all six serve forecasting, opportunity-sizing or descriptive), so guard.py blocks it as three_rules.task_type on a new draw; the nearest serving task type in the same taxonomy group is banking-credit-financial-risk/fraud-aml-detection, never drawn, and the pairing is never built.",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "fraud-aml-detection",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a mutual indemnity association's loss-experience surveillance of the scam reimbursements its member payment firms have to make",
+  "objective": "anomaly-detection",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "rule"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G17",
+    "G13",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "realised_outcome_roster",
+  "stump_strategy": "uncertainty_hold",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "the mutual's underwriting and pricing lead",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "claims/case_ledger.csv",
+    "rows": 31000,
+    "entity": "one row is one reimbursed scam case at a member firm",
+    "grain": "member x scheme year x case",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "United Kingdom",
+    "currency": "GBP",
+    "org_type": "mutual indemnity association owned by its member payment firms",
+    "invented_names": [
+      "Kelverstone Mutual",
+      "Castlegate Payments",
+      "Brindlemere Remit",
+      "Saltmarch Pay",
+      "Trentmoor Money",
+      "Pelbury Exchange",
+      "Oakhanger Transfer",
+      "Netherby Pay",
+      "Quayfield Remit",
+      "Thrimby Money",
+      "Vellowe Pay",
+      "Garnock Exchange"
+    ],
+    "people": [
+      "Lydia Page",
+      "Caleb Ramsey",
+      "Debra Dawson"
+    ]
+  },
+  "deliverables": [
+    "member_experience_review.xlsx",
+    "booked_rates_2027_28.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is a per-exposure rate that is the product of two factors measured on the same records, and the book's own panel shows only one of the two repeats for a unit from one period to the next, so carrying the latest period's rate forward, averaging it over the unit's history or shrinking it toward the book all miss a unit whose repeating factor stepped up in the very period its non-repeating factor drew low.",
+  "driver_concrete": "Castlegate's loss per 1,000 payments is its case frequency times its net loss per case, and in this mutual's book frequency is a member property that repeats while per-case severity is a draw the whole book shares, so Castlegate's 2026/27 rate sits on the book average while hiding a frequency step, and only rebuilding the rate as its own stepped frequency times the mutual's severity experience books the right figure.",
+  "stump": "The solver books about GBP 33 per 1,000 payments for Castlegate and reports no deterioration, because its 2026/27 loss per 1,000 payments sits on the mutual's own average and every correction it reaches for, its own multi-year average or a credibility weighting toward the book, stays within a pound or two of that figure.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst reconciles every case to the mutual's ledger, builds each member's net reimbursed loss per 1,000 payments for 2026/27 and the four closed years before it, finds Castlegate at GBP 32.92 against a book average near GBP 33, credibility-weights it toward the book and books about GBP 33 per 1,000 payments with no deterioration flagged, which is wrong because the rate's two factors do not carry forward alike.",
+  "domain_test": "The deciding quantity is the member's pure premium for the coming scheme year, built the way a claims experience rating is built, with frequency and severity estimated separately and each given the credibility the book's own panel earns it; swap the nouns to bin collections or school visits and there is no per-case severity drawn from a book-wide distribution, so the component-wise credibility that decides the call has nothing to act on.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:frequency-repeats-severity-does-not",
+  "layer1": [
+    "two reporting templates across the scheme-year change in 2024/25",
+    "payment volumes filed in thousands on one return and in units on another",
+    "scheme year to 31 March against the calendar-year regulatory return",
+    "recoveries posted as later credit rows against the original case",
+    "a member joining part way through a scheme year",
+    "a preliminary and a revised quarterly return overlapping",
+    "case tables inside the trustees' PDF pack"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Strategy uncertainty_hold: the decisive move is which of the rate's two factors carries signal forward, settled on the book's own panel. The governing standard files the estimand and one selection criterion naming the observable (the loss actually borne in each closed scheme year); it never names frequency, severity or a method.",
+  "registered": "2026-10-17T22:37:24Z"
+}

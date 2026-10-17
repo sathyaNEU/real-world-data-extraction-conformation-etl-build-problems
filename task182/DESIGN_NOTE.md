@@ -231,9 +231,10 @@ carrying a device no filed sentence adjudicates and nothing narrates:
   week. The works' three blowers are metered twice, because BL-03 was tied into the aeration main
   downstream of the header's flow meter when the plant was upgraded, so the channel named for the blowers'
   air is two machines of three. The records settle it and no sentence does: the air per cubic metre the
-  works treats holds to 4.9 per cent week to week on the two meters together and swings 24.1 per cent on
-  the header alone, each counter's quarter-hour step is its own rate channel and nothing else, and the duty
-  rotates week to week so BL-03 carried 0.24 to 0.40 of the air.
+  works treats holds to 4.9 per cent week to week on the two meters together and swings 10.1 per cent on
+  the header alone, each counter's quarter-hour step is its own rate channel and nothing else, and BL-03's
+  rate is no fraction of the header's (0.34 to 0.85 over the survey, spread inside every week), so the
+  header cannot be read as the whole and the sum cannot be read as a double count.
 - **The quarter hours the historian did not record the plant's state in, and the longest unbroken run of
   them**, per position and per week. When the radio link to the PLC drops, the interface sometimes writes
   nothing and sometimes holds the last value it had and writes it again, so the row is there and the
@@ -283,6 +284,71 @@ inconsistency makes a device findable, it does not make the figure forced, and a
 
 Measured after the three fixes, with the cracker run as code on the cut pack: 24 of 84 criteria kept, the
 pair **37.3**, mirror leakage **3.6 per cent**, every device row of the sheet missing.
+
+## STAGE 4, ROUND 5 (the forcing measured, and three call-side repairs)
+
+The judge found the call forced again, the five stable under all three residual-window readings it tried,
+Gate G and Gate H passing and the main call at roughly even odds per strong run. The ask layer failed a
+third time, and for one reason twice over: **an internal inconsistency makes a device findable, it does not
+make the figure forced, and a device needs both.** This round measures the forcing for each device on the
+cut pack, the way task193's ask did, and repairs three things on the call side.
+
+**The air device: the data now shows BL-03 outside the header, and the figure says so.** BL-03's rate was a
+fixed fraction of the header's inside each week (0.316, 0.587, 0.389 ...), every one below 1, which reads as
+a sub-meter and made the two-meter sum a double count. The duty rotation that caused that pattern is gone:
+BL-03 is a fixed-speed machine holding the output its drive is set to (reset three times over the survey)
+and the header's two machines take the dissolved oxygen trim, so the ratio of the two runs 0.34 to 0.85 and
+no week has it fixed (asserted week by week). And the records now carry the fact that forces it: three
+times over the survey the shift isolates BL-01 and BL-02 before the day opens and BL-03 carries the lanes
+on its own, which the equipment log records machine by machine and the sound record shows as the blower
+house going a third as loud. **Across the spell of 10 September, 05:00 to 05:45, the aeration header's
+totaliser advances 0.0 thousand Nm3 while BL-03's advances 1.1; on 30 September 0.0 against 1.0; on 8
+October 0.0 against 1.4.** A meter that carried BL-03 could not read nothing while BL-03 delivered it. Each
+spell is outside every assessment period and no part of any residual window (asserted), so no graded level
+moves.
+
+**The record device: the notes now say what the interface does, and the figure says what the rows claim.**
+A solver had no reason to believe held rows exist, so the notes carry the instrument's own behaviour, that
+when the link drops the interface writes nothing for a while and sometimes writes the last value it had
+again. That is a fact about the equipment, not a handling rule, and it makes the rows discoverable without
+saying what to do about them. **The 54 held rows claim 56.7 thousand Nm3 of air was flowing while their own
+counters record none of it**, which is what makes the absent-stamps reading wrong: the record is short by
+179 quarter hours over the survey and the absent stamps are 125 of them. The 42 repeats the weekly
+inspections leave are readings of a stopped works, every flow at zero, confirmed against the log, and they
+are what the flow channels have to separate.
+
+**Three repairs on the call side.**
+
+1. **The sixth dwelling is stable under every window reading, and the window is not pinned.** The equipment
+   log gave NSL06 sixth, the historian's quarter hours gave NSL09 and a trimmed window gave NSL09, because
+   NSL06's residual is 42.2 dB and its level moves 0.34 dB with the window while NSL09's moves 0.002. The
+   separation carries it instead: NSL09's own level is now 44.0 rather than 44.6, and NSL06 is the sixth
+   under all three readings, 0.66 dB clear of the seventh on the log's own intervals, 0.52 clear on the
+   historian's quarter hours and 0.32 clear on the trimmed window, with the five unchanged under all three
+   and the printed margin still 1.3 (asserted, window by window, in `checks.py`).
+2. **The rain fork is gone at the root rather than pinned.** The gauge's column reported its count since
+   midnight, so "counted rain on the gauge" admitted a cumulative reading that moved ten printed levels and
+   flipped NSL08 between 41.43 and 41.51. The mast now ships the tips it counted in the ten minutes the
+   record covers, which is what a tipping-bucket logger writes and which has one reading. No level moved:
+   the validity mask was always the incremental one.
+3. **`survey_notes.md` is a technician's note again.** Three readers and a judge said it pre-disarmed
+   Layer 1. It now carries how the survey went, the mounting departures, the access, the weather and what
+   went wrong, and none of the six tripwires: the meters' stamp convention lives in plan 2.2 where it
+   always belonged, the mast's own conventions (the stamp, the gauge's tips, the anemometer's units either
+   side of the swap) are in the export manifest's description of that file, which is the folder's own
+   record of what each file holds and is dated after the swap, and the dropouts, the repeated download and
+   the three names per position are left to the deployment record and the register, which carry them
+   anyway. `checks.py` asserts the notes name none of them and that the manifest carries each.
+
+**The two realism items held over from round 4, measured rather than argued.** The reader's "diurnal
+profile contradicts the notes" turned on the notes claiming the roadside positions see traffic; the cut
+notes make no claim about any position's sources, so the finding has nothing left to contradict and the
+plant's own load curve and the evening and night texture are what shape the record. The reader's "tone
+reads as an offset added to one band, every other band moving together" does not hold on the shipped file:
+on the common mode of the 29 bands, each band keeps its own residual of 0.4 to 2.3 dB (100 Hz 0.56) and the
+400 Hz band swings 4.93 dB against a correlation of 0.44 with the common mode, while the three meters'
+mean shapes differ by up to 3.5 dB in a band. Measured, not asserted, because neither is a figure any
+deliverable carries.
 
 ## Draw
 
@@ -452,8 +518,8 @@ answer, and SF19 to SF21 are where its two devices live.
 | SF2 | residual sound | the sound at the position with the plant's rotating equipment down | the statistical background of the position's own record | the quantity is the sound without the plant, and the event log shows the plant running through every minute a background would be taken from (asserted); this is the stump, not a reading: both readings execute, and the records decide |
 | SF3 | assessment period | weekday 07:00 to 19:00 inside the position's own deployment | every hour of the deployment | plan 3.2 states the period; weekend and night minutes are outside it |
 | SF4 | the position's level | the energetic mean of its valid assessment minutes | the arithmetic mean of the same minutes | plan 3.1 states the level is an energy-equivalent level; the arithmetic reading files its own wrong slate (ladder rung 2c) |
-| SF5 | valid minute, rain | a minute whose ten-minute met record counted rain on the gauge | the same record read as a rate above a limit | plan 4.2 states the test as a count and states no rate; a rate test on the ten-minute record selects exactly the same records, since one tip is 1.2 mm an hour (asserted equal, record by record) |
-| SF6 | valid minute, the met record | the record whose ten minutes contain the minute, the stamp being its start | the record stamped at the end of those ten minutes | the survey notes file the stamp as the start of the ten minutes each record covers (asserted present) |
+| SF5 | valid minute, rain | a minute whose ten-minute met record counted rain on the gauge | the same record read as a rate above a limit, or the gauge's count read as a running total | plan 4.2 states the test as a count and states no rate, and a rate test on the ten-minute record selects exactly the same records, since one tip is 1.2 mm an hour (asserted equal, record by record). The gauge ships the tips it counted in the ten minutes the record covers, which the manifest's description of that file states, so there is no running total to read: the cumulative reading moved ten printed levels and it is gone from the data rather than pinned |
+| SF6 | valid minute, the met record | the record whose ten minutes contain the minute, the stamp being its start | the record stamped at the end of those ten minutes | the export manifest's description of that file states that the mast's records are stamped at the start of the ten minutes they cover, with the gauge's unit and the anemometer's units either side of the swap beside it; that is the folder's own record of what each file holds and it is dated after the swap, where the plan could not be (asserted present, and the survey notes carry none of it) |
 | SF6b | the meter record's stamp | the record covers the minute it is stamped at, the start of the interval | the stamp read as the end of the minute it covers | plan 2.2 files it in the sentence that already files the UTC stamp ("the meter stamps its records in UTC, each record at the start of the interval it measures"), stated there and nowhere else; unfiled, the end-of-minute reading moved four printed levels by a tenth and the margin from 1.3 to 1.2 |
 | SF7 | valid minute, no measurement | a minute whose levels are the instrument's no-data value is not valid | the no-data value read as a level | plan 4.2's last sentence; the notes file the value, the deployment remarks file each spell, and no no-data minute falls inside a process stop (asserted) |
 | SF8 | calibration correction | the deployment's deviation, the mean of its two field checks less 94.0 dB, taken off its levels, with its sign | the same difference taken as an absolute value | plan 4.1 defines the deviation as the mean less the reference and says it is taken off, so the sign follows the arithmetic; the two meters outside the window sit on opposite sides, so the signed reading is the only one that returns both to the calibrator |
@@ -466,9 +532,9 @@ answer, and SF19 to SF21 are where its two devices live.
 | SF15 | the five dwellings | the five highest specific levels | the five highest measured totals | the prompt asks what the slot is picked on, which plan 7.1 defines as the specific sound level |
 | SF16 | the band file's time base | stamped UTC, like the minute file | stamped local | the notes file it; the tone verdicts are the same under both (asserted) |
 | SF17 | tonality, the adjacent mean | the mean of the two adjacent band levels as the file writes them | the energetic mean of the same two | plan 4.3 says the mean of the levels; both give the same verdict at every position (asserted) |
-| SF18 | the week, for a process figure | the counter reading at 00:00 on the Monday taken from the reading at 00:00 on the Monday after | the sum of the readings the historian holds inside the week | plan 5.1 files the two readings and says a spell it did not record leaves them as they stand; the rate route is 8 to 13 thousand Nm3 short a week (asserted) |
-| SF19 | the air the blowers delivered | the two meters the plant's three machines discharge through, read at the window's own ends | the aeration header's own meter alone, which carries two machines of three | no column is named for what the ask asks for, so there is nothing to grab: the channels are named after what each instrument measures (`aeration_header_*` and `bl03_discharge_*`, asserted), and the records settle which meters carry the blowers' air. The air per cubic metre the works treats holds to 4.9 per cent week to week on the two together and swings 24.1 per cent on the header alone, each counter's step is its own rate channel and nothing else, and the duty rotation moves what each meter sees while the air itself holds. This is an ask's device; it decides no part of the call (asserted by deleting the historian) |
-| SF20 | the quarter hours the historian holds no reading of its own for | the stamps it wrote no row for, and the stamps whose row is the quarter hour before it written again while the plant ran on | the stamps it wrote no row for alone, or every stamp whose row repeats the one before it | the asking sentence: a row that repeats the quarter hour before it is no reading of its own, so the absent-rows reading fails on the words and not on judgement. Which repeats are readings the records settle: a held row's counters stand still while its own flow channels read above zero, which no reading of a running plant can be, while the rows the weekly inspection leaves repeat because the works is stopped, their flows read zero and a flat counter is the plant's state. The two kinds are counted and separated in `checks.py` (55 held, 41 from the stops), and no window edge is such a quarter hour, so the count is the same whether a quarter hour is stamped at its start or its close (asserted) |
+| SF18 | the week, for a process figure | the counter reading at 00:00 on the Monday taken from the reading at 00:00 on the Monday after | the sum of the readings the historian holds inside the week | plan 5.1 files the two readings and says a spell it did not record leaves them as they stand; the rate route is 1 to 80 thousand Nm3 short a week, 80 in the week the long dropout falls in (asserted) |
+| SF19 | the air the blowers delivered | the two meters the plant's three machines discharge through, read at the window's own ends | the aeration header's own meter alone, which carries two machines of three | no column is named for what the ask asks for, so there is nothing to grab: the channels are named after what each instrument measures (`aeration_header_*` and `bl03_discharge_*`, asserted). What forces the sum is a figure, not an argument: in each of the three spells the shift isolates the header's own two machines, the header's totaliser advances 0.0 thousand Nm3 while BL-03's advances 1.0 to 1.4, with the log showing BL-03 running and the other two stopped, so the header cannot be metering BL-03 (asserted spell by spell). BL-03 is no fraction of it either, the ratio running 0.34 to 0.85 with no week fixed, and the air per cubic metre the works treats is steadier on the two together than on the header alone. This is an ask's device; it decides no part of the call (asserted by deleting the historian) |
+| SF20 | the quarter hours the historian holds no reading of its own for | the stamps it wrote no row for, and the stamps whose row is the quarter hour before it written again while the plant ran on | the stamps it wrote no row for alone, or every stamp whose row repeats the one before it | the asking sentence: a row that repeats the quarter hour before it is no reading of its own, so the absent-rows reading fails on the words and not on judgement, and the survey notes carry what the interface does when the link drops, so the rows are discoverable. What makes the absent-rows figure wrong is a figure: the 54 held rows claim 56.7 thousand Nm3 of air was flowing while their own counters record none of it, and the record is short by 179 quarter hours over the survey of which the absent stamps are 125. Which repeats are readings the records settle: the 42 the weekly inspection leaves have every flow at zero and the log shows every source down, so a flat counter is the plant's own state there. Both kinds are counted and separated in `checks.py`, and no window edge is such a quarter hour, so the count is the same whether a quarter hour is stamped at its start or its close (asserted) |
 | SF21 | the longest unbroken run of them | the longest run of those quarter hours inside the window | the longest run of stamps with no row, or of every repeat | the same rows and the same closure as SF20; the held spells sit against the week's own dropout, so the run the record does not cover is longer than the run of rows it is missing at every position and in every week, and the stops' own repeats are a different length again (asserted) |
 | SF23 | a band's level over the assessment period | the energy-equivalent level of its quarter-hour records in the period, both deployments together | the arithmetic mean of the same rows, or each deployment's own energy mean averaged | plan 4.3 files it in the clause that defines the test, once; and the three readings give the same prominent bands at every position anyway, 400 Hz at six of them and nothing else anywhere, with every band at every position 0.45 dB or more clear of the 5 dB test (all asserted in `checks.py` and the first two again in `verify.py`) |
 | SF22 | the window a process figure is read over | the counters at the window's own ends: 07:00 and 19:00 on each weekday of the position's deployments, and 00:00 on the Mondays for a week | the rate channels integrated over the window | the historian's six dropouts, which the counters carry through and a rate sum does not (asserted at every position and in every week); plan 5.1 for the week |
@@ -503,9 +569,12 @@ the slate across it is wrong too, asserted rung by rung rather than assumed.
 residual rises above 40.75 dB; the record puts it at 32.42, 8.3 dB below that. One extra minute of record
 moves a position's level by under 0.003 dB; no printed level sits closer than 0.015 dB to its rounding edge
 and none is closer than 0.018 dB to the printed value itself; the margin sits 0.038 dB from its own edge.
-The sixth and seventh places (NSL06 and NSL09) stand 0.06 dB apart, which is the price of carrying the
-margin on NSL06's own level: it is reported rather than tuned away, since the five levels are frozen and
-NSL13 is the fifth.
+The sixth place is the same dwelling read over every window the residual can be taken in, and it is the
+separation and not a pinned window that holds it: NSL06 stands 0.66 dB clear of the seventh (NSL09) on the
+equipment log's own intervals, 0.52 dB clear on the historian's quarter hours and 0.32 dB clear on the
+log's intervals trimmed by ten minutes, with the five unchanged under all three and the printed margin
+1.3 dB in every one. The window is deliberately not filed: filing it would make the decisive step the
+execution of a stated sentence.
 
 **Worth of each rung, on the graded quantity.** Rung 1 moves one member of the slate (NSL06 for NSL13) and
 every printed level by 0.2 to 1.8 dB. Rung 2 moves three members and every printed level by 4 to 15 dB.
@@ -608,18 +677,34 @@ sentence performs, found by an internal inconsistency only, on rows the call rea
 | Ask | Figures | Home (H18) | Primary device | Shared hazards | Files on the path |
 |---|---|---|---|---|---|
 | A1 the 14 specific levels, the slate, the sixth, its margin and the ranked chart | 21 | the call's own construction | none (construction); the cracker has it by design | the Layer 1 set | plan, register, deployments, parquet, met, event log |
-| A2 the air the blowers delivered, through each position's assessment period and through each survey week | 20 | the plant's load behind each level, which is the qualifier the note's comparability claim rests on | D5/D9, the aeration header's flow meter is upstream of where the third blower was tied in at the upgrade, so it carries two machines of three. No channel is named for what the ask asks for, so there is no column to grab, and working out which machines feed which meter is the task. Nothing says so: the records do. The air per cubic metre the works treats holds to 4.9 per cent week to week on the two meters together and swings 24.1 per cent on the header alone, each counter's quarter-hour step is its own rate channel and nothing else, and the duty rotates so BL-03 carried 0.24 to 0.40 of the air | D4 the historian's six dropouts, which put the rate route out by 8 to 13 thousand Nm3; D2 the biogas counter's roll-over and the hour counter changed mid-survey; D6 the quarter-hour grain against the assessment period's own hours | SCADA, deployments, plan, register, notes |
-| A3 the quarter hours the historian holds no reading of its own for, and the longest unbroken run of them, per position and per week | 40 | the audit trail of that qualifier: how much of the plant's record behind a level is not there | D1/D9, when the link to the PLC drops the interface holds the last value it had and writes it again, so the row is there and the reading is not. The asking sentence puts those rows inside the quantity, so the absent-rows figure fails on the words; finding them is the work. Found by what the rows are and by nothing written down: a counter standing still while its own flow channels read above zero. The separation is the device's own half: the rows the weekly inspection leaves repeat too, and they are readings of a stopped works, so a solver who counts every repeat over-counts by 41 and the flow channels are what tell the two apart. The held spells sit against the week's own dropout, so the run the record does not cover is longer than the run of rows it is missing | D4 the dropouts themselves (half the answer); D6 the stamp convention, which cannot move the count because no window edge is a quarter hour without its own reading | SCADA, deployments, plan, register |
+| A2 the air the blowers delivered, through each position's assessment period and through each survey week | 20 | the plant's load behind each level, which is the qualifier the note's comparability claim rests on | D5/D9, the aeration header's flow meter is upstream of where the third blower was tied in at the upgrade, so it carries two machines of three. No channel is named for what the ask asks for, so there is no column to grab, and working out which machines feed which meter is the task. Nothing says so: the records do. The air per cubic metre the works treats holds to 4.9 per cent week to week on the two meters together and swings 10.1 per cent on the header alone, each counter's quarter-hour step is its own rate channel and nothing else, and BL-03's rate is no fraction of the header's (0.34 to 0.85, spread inside every week), so neither meter reads as the whole. The forcing figure: across each of the three spells in which the shift isolates BL-01 and BL-02, the header's totaliser advances 0.0 thousand Nm3 while BL-03's advances 1.1, 1.0 and 1.4 | D4 the historian's six dropouts, which put the rate route out by 6 to 22 thousand Nm3 a position; D2 the biogas counter's roll-over and the hour counter changed mid-survey; D6 the quarter-hour grain against the assessment period's own hours | SCADA, deployments, plan, register, notes |
+| A3 the quarter hours the historian holds no reading of its own for, and the longest unbroken run of them, per position and per week | 40 | the audit trail of that qualifier: how much of the plant's record behind a level is not there | D1/D9, when the link to the PLC drops the interface holds the last value it had and writes it again, so the row is there and the reading is not. The asking sentence puts those rows inside the quantity, so the absent-rows figure fails on the words; finding them is the work. Found by what the rows are and by nothing written down: a counter standing still while its own flow channels read above zero. The separation is the device's own half: the rows the weekly inspection leaves repeat too, and they are readings of a stopped works, so a solver who counts every repeat over-counts by 42 and the flow channels are what tell the two apart. **The population that 42 counts:** a SCADA row identical to the row immediately before it in every one of its ten channels, whose own flow channels both read zero. A reader who instead flags every row whose air and gas counters stand still takes in eleven rows that repeat nothing (the row that opens each of the seven stops, where the flows fall to zero and the air counters necessarily do not move, and four where only the engine and the gas booster hour counters advance), so the over-count on that looser test is 53, of which 50 fall inside a logged stop. Both figures are asserted, and either reading over-counts. The forcing figure: the 54 held rows claim 56.7 thousand Nm3 of air was flowing while their own counters record none of it, and the record is short by 179 quarter hours of which the absent stamps are 125. The held spells sit against the week's own dropout, so the run the record does not cover is longer than the run of rows it is missing | D4 the dropouts themselves (half the answer); D6 the stamp convention, which cannot move the count because no window edge is a quarter hour without its own reading | SCADA, deployments, plan, register |
 | A4 whether a tone is prominent, where, and in which band | 3 | the mitigation case: a tonal source takes different treatment | none (forced); kept small for that reason | D8 time base, D4 the meters without the band module | third-octave file, plan, deployments |
 
 **The ask ladders, measured on the cut pack and printed by `cracker.py`.** A2 at a position: the aeration
 header's rate summed, the header's counter alone (the cracker), both rates summed, both counters (the
-answer), four distinct figures, the cracker's about a fifth short. Week by week the cracker's air is short
-by 160 to 280 thousand Nm3 in all six. A3 at a position: none noticed 0, the rows the historian is missing
+answer), four distinct figures, the cracker's about a third short. Week by week the cracker's air is short
+by 219 to 232 thousand Nm3 in all six. A3 at a position: none noticed 0, the rows the historian is missing
 (the cracker), every repeated row counted as well (an over-count, which the stops' own repeats cause), and
 the quarter hours with no reading of their own (the answer); the same four stops at the week grain, where
-the stops' repeats are 8 a week. Every stop is a complete, competent pipeline and every one of them lands
+the stops' repeats are 7 a week in five of the six weekly inspections and 6 in the third, where the
+engine hour counter resets inside the stop. Every stop is a complete, competent pipeline and every one of them lands
 outside the bin.
+
+**The forcing, measured on the cut pack.** Each device is asked for the figure that makes the wrong
+reading wrong, and each has one, asserted in `checks.py` on the shipped files and not on the generator's
+intent.
+
+| Device | The wrong reading | The figure that makes it wrong, on the cut pack | Where asserted |
+|---|---|---|---|
+| A2, the aeration header does not carry BL-03 | the header's channel is the blowers' air | across the three spells in which the shift isolates BL-01 and BL-02 (10 Sep 05:00, 30 Sep 05:15, 8 Oct 04:45) the header's totaliser advances 0.0 thousand Nm3 while BL-03's advances 1.1, 1.0 and 1.4, with the equipment log showing BL-03 running and the header's two machines stopped at the mid-point of each. BL-03's rate is also no fixed fraction of the header's: 0.34 to 0.85 over the survey and spread inside every week (sd 0.050 to 0.065). Header alone is short by 163 to 169 of 498 to 521 thousand Nm3 a position and by 219 to 232 a week | SF19 |
+| A3, a held row is not a reading | the quantity is the stamps the historian wrote no row for | the 54 held rows claim 56.7 thousand Nm3 of air was flowing while their own counters record none of it, every one of the 54 impossible on its face; the record is short by 179 quarter hours and the absent stamps are 125 of them, so the two readings differ by the 54. The 42 honest repeats, a row identical to the one before it in all ten channels with both its own flow channels at zero, read a stopped works inside an all-down spell the log corroborates: 7 in each weekly inspection but the third, which gives 6 because the engine hour counter resets inside it, and one more in the short all-source stop of 26 August. That is what the flow channels separate, and the looser test of the same idea (the air and gas counters standing still) over-counts by 53 instead of 42 | SF20 |
+
+Neither figure is a stated rule and neither is a reading of a term: a meter that carried BL-03 could not
+read nothing while BL-03 delivered 1.1 thousand Nm3, and a row whose counters record nothing is not a
+reading of its quarter hour whatever one calls it. That is the test this round added: the inconsistency
+makes the device findable, the asking sentence makes the figure forced, and the forcing is measured before
+the ask is cut.
 
 **Separation.** Zero device rows sit in the main call's declared population: both primaries live in
 `scada_15min_2026.csv`, and the call reads that file for nothing. Asserted by deleting it and recomputing:
@@ -641,8 +726,8 @@ figure on the cut pack by `generator/cracker.py`, and asserted in `generator/che
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
-| A2 the air behind each level | the plant's own aeration header meter, at 07:00 and 19:00 on each weekday of the position's deployments | wrong at all 14, about a fifth short: that meter is upstream of BL-03's tie-in | the two meters the plant's three blowers discharge through, over the same hours | miss |
-| A2 the air, six weeks | the same meter at the week's own boundaries, per plan 5.1 | wrong in all six, short by 160 to 280 thousand Nm3 | the two meters at those boundaries | miss |
+| A2 the air behind each level | the plant's own aeration header meter, at 07:00 and 19:00 on each weekday of the position's deployments | wrong at all 14, short by 163 to 169 of 498 to 521 thousand Nm3, about a third: that meter is upstream of BL-03's tie-in | the two meters the plant's three blowers discharge through, over the same hours | miss |
+| A2 the air, six weeks | the same meter at the week's own boundaries, per plan 5.1 | wrong in all six, short by 219 to 232 thousand Nm3 | the two meters at those boundaries | miss |
 | A3 the quarter hours with no reading of their own, per position | the stamps the historian wrote no row for | wrong at all 14: the rows that repeat the quarter hour before them are not readings of their own, and the asking sentence says so | the stamps with no row, and the repeats the plant ran on through | miss |
 | A3 the same, six weeks | the same count over the week | wrong in all six | the same, over the week | miss |
 | A3 the longest run of them, per position | the longest run of stamps with no row | wrong at all 14: the held spells sit against the dropout and lengthen the run | the longest run of quarter hours with no reading of their own | miss |
@@ -671,10 +756,10 @@ whatever the wording, because an interface that holds a value writes rows that a
 | `meter_deployments_2026.csv` | csv | which meter at which position, the minute it was set running and the minute it was stopped on the next round, the height it stood at, the field check either side, who deployed it, remarks |
 | `monitoring_positions.xlsx` | xlsx | context artifact: the register of positions, dwellings, distances, bearings, screening |
 | `noise_management_plan.pdf` | pdf | governing document: the quantity, the period, the validity criteria, the tonality test, the slot |
-| `survey_notes.md` | md | the technician's notes: meters, identities, time base, met channels, file conventions |
+| `survey_notes.md` | md | the technician's notes: how the survey went, the mounting departures, the access, the weather, what went wrong, and what the historian's interface does when the link drops. No convention and no hazard is named in advance (asserted) |
 | `plant_equipment_events_2026.csv` | csv | the process operator's equipment log: every start and stop of a blower, a centrifuge or the gas engine, per machine, with the shift's reason |
-| `scada_15min_2026.csv` | csv | plant process channels at fifteen minutes: the blower header and BL-03 each as a rate and as a totaliser, the biogas counter, the centrifuge feed, the engine's export and hour counter, the inlet; six spells with no rows where the link dropped and twelve more where the interface held the last value it had. The ask layer's two devices live here and the call reads the file for nothing |
-| `weather_10min_2026.csv` | csv | the met mast at ten minutes: wind, rain, temperature |
+| `scada_15min_2026.csv` | csv | plant process channels at fifteen minutes: the aeration header and BL-03's discharge each as a rate and as a totaliser, the biogas counter, the centrifuge feed, the engine's export and hour counter, the inlet; six spells with no rows where the link dropped and twelve more where the interface held the last value it had. The ask layer's two devices live here and the call reads the file for nothing |
+| `weather_10min_2026.csv` | csv | the met mast at ten minutes: wind speed and direction, the gauge's tips in the record, temperature; its conventions are in the manifest's description of it |
 | `third_octave_15min_2026.csv` | csv | one-third-octave band levels per position and quarter hour |
 | `calibration_records_2026.csv` | csv | the laboratory certificates for the five meters and the field calibrator, as found and as left |
 | `complaints_register_2026.xlsx` | xlsx | distractor, declared in metadata.json: complaints, dates, dwellings |
@@ -686,10 +771,10 @@ whatever the wording, because an interface that holds a value writes rows that a
 - `generator/build.py` runs everything: the survey (`world.py`, `sim.py`), the pack (`pack.py`, `docs.py`,
   `postprocess.py`), the golden (`golden.py` over `analysis.py`, `deliver.py`), `metadata.py`,
   `figures.py`, `submission.py`, then `checks.py` and `verify.py`.
-- Final run: `checks.py` **1,884 assertions passed**; `verify.py` **282,167 independent checks passed**
+- Final run: `checks.py` **1,925 assertions passed**; `verify.py` **282,167 independent checks passed**
   (the per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
   consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
-  f3a88420d82ccb1f); about 25 seconds.
+  ab3198a15c906f7b); about 25 seconds.
 - `verify.py` reads only the bundle (standard library, numpy-free, pyarrow for the parquet), encodes the
   plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
   residuals, valid, excluded and stop minutes, each level's distance to its rounding edge, the slate, its
@@ -702,13 +787,13 @@ whatever the wording, because an interface that holds a value writes rows that a
   call's half alone, which is what the separation assertion uses with the historian deleted. It also checks, on every shipped
   minute, that the four level columns order as an instrument reports them and that a minute with no
   measurement carries no statistics.
-- `figures_check.py` exit 0: 68 figures in blocks 1 to 4, none absent from `figures.json`.
+- `figures_check.py` exit 0: 63 figures in blocks 1 to 4, none absent from `figures.json`.
 - Parameters chosen by search in scratch and never shipped: the designed specific levels and residuals
   (`world.POSITIONS`), the residual texture (`EVENT_DB`, `JITTER`, `SLOW`), the plant's own load curve and
   minute-to-minute swing (`sim.plant_load`), the propagation to each position (`sim.plant_propagation`,
   which the normalisation takes the mean out of, so it moves the spread of a record and not its level),
   the evening and night texture (`world.NIGHT_TEX`, 0.2), the within-minute depth of the plant's own level
-  (`world.F90`), the blower trim's draw (`world.AIR_SEED`, 3, scanned for a week set clear of the
+  (`world.F90`), the blower trim's draw (`world.AIR_SEED`, 21, scanned for a week set clear of the
   whole-unit edges on the two meters together, distinct week by week), the duty rotation
   (`world.BL03_SHARE`), the historian's held spells (`world.PLC_HELD`, placed against each week's own
   dropout and clear of every window edge) and the engine's 100 Hz firing tone, lowered until no band at any
@@ -729,24 +814,23 @@ whatever the wording, because an interface that holds a value writes rows that a
 
 ## Leak check (mechanical half)
 
-`leak.py task182 --asof 2026-10-16`: **REVIEW, no LEAK**, four lines, each answered here.
+`leak.py task182 --asof 2026-10-16`: **REVIEW, no LEAK**, three lines, each answered here.
 
 - Sweep 3, `noise_management_plan.pdf` carries three of five distinctive words of the committed call: the
   words are October, treatment and slot, which clause 7.1 needs to say what the mitigation programme is. No
   figure of the answer appears in any shipped file (asserted: no shipped file holds a specific level, a
   residual level or a corrected level for any position).
-- Sweep 4, the plan and the survey notes each carry five of the stump paragraph's twenty-five terms:
-  they are the field's own nouns (residual, measured, minutes, register, process, change), and the plan
-  defines the residual because the estimand has to be filed. The sweep's own test is whether the document
-  names the move; it does not, and `checks.py` asserts the plan names no background, percentile, L90, stop
-  or non-operating state, and the notes name no residual, background, percentile or stop window. The notes
-  lost their bolding and their sentence about the early morning at the roadside positions in round 2, so
-  nothing in them points at a window at all.
+- Sweep 4, `noise_management_plan.pdf` carries five of the stump paragraph's twenty-five terms: they are
+  the field's own nouns (residual, record, measured, minutes, process), and the plan defines the residual
+  because the estimand has to be filed. The sweep's own test is whether the document names the move; it
+  does not, and `checks.py` asserts the plan names no background, percentile, L90, stop or non-operating
+  state. The survey notes no longer trip this sweep at all: cut back to a technician's note in round 5,
+  they name no residual, background, percentile or stop window, and nothing in them points at a window.
 - Sweep 9, `calibration_records_2026.csv` carries six dates after the as-of: they are the five meters' and
   the calibrator's verification due dates, a forward validity window, which `reduce-house-fixes` H16 puts
   on the allow-list.
 
-`guard.py surface task182`: 221 pairs in scope, **0 promoted**; nearest neighbour task228 at 0.096.
+`guard.py surface task182`: 223 pairs in scope of 224 builds screened, **0 promoted**.
 Personas in the cut pack: Aiden Hawthorn and Orla O'Hurley, with the engineer and the operations manager
 by initials on the deployment records. `guard.py heart task182`: **WARN, not BLOCK**; nearest driver 0.07
 (task263), answered in the card's differentiation.
@@ -776,7 +860,11 @@ by initials on the deployment records. `guard.py heart task182`: **WARN, not BLO
    asserts it.
 5. **One defensible method.** The plan fixes the population, the outcome, the window and the unit; the
    residual is measurable only where the plant is down, and every licensed reading of that measurement
-   gives the same fourteen printed levels and the same slate.
+   gives the same fourteen printed levels, the same slate and the same sixth dwelling: the equipment log's
+   own intervals, the historian's quarter hours and the log's intervals trimmed by ten minutes all file
+   NSL06 sixth, 0.66, 0.52 and 0.32 dB clear of the seventh, with the printed margin 1.3 in all three. The
+   window is not filed, because filing it would make the decisive step the execution of a stated
+   sentence.
 6. **No decoy.** Nothing is planted and no document argues a position: the complaints register holds
    complaints and no levels, the effluent file is unrelated monitoring, and no memo or draft ships.
 7. **Nothing hidden and recovered.** No certified or published figure ships for a method to reproduce. The
@@ -784,6 +872,16 @@ by initials on the deployment records. `guard.py heart task182`: **WARN, not BLO
 8. **A new lesson.** A quantity defined as a difference has to be measured where the difference is
    observable, and the windows that make it observable come from the operating record of the thing being
    measured. The guard's heart check found no near driver (nearest 0.07).
+
+**The one frozen item that moved, and why it is accepted.** `freeze.py check --mode rubric` reports the
+design note's ladder section hash as moved. That is accepted: the author ordered the sixth-to-seventh
+separation widened after the freeze snapshot was taken, and the flip-condition clearances are the numbers
+that widening moved (NSL09's own level 44.6 to 44.0, and the sixth standing 0.66, 0.52 and 0.32 dB clear
+of the seventh under the three window readings). Every frozen main-side figure key is unchanged, all 28 of
+them, as are the Final Recommendation numbers, the Critical Components numbers, the stump sentence, the
+card's stump and driver, the prompt's call sentence and the default-path section. `--allow` takes
+figures.json keys only, so a section hash cannot be allow-listed, and the snapshot is not retaken to make
+the check pass: the move is reported and accepted on that basis.
 
 ## Tried and rejected
 - **An author error to correct, and it is on a graded figure.** When the margin was moved off its
@@ -1011,8 +1109,27 @@ by initials on the deployment records. `guard.py heart task182`: **WARN, not BLO
   hours it holds no reading of its own for, which a repeated row fails by construction.
 - The held rows as the only repeats in the historian: with nothing genuine to be told apart from, the
   separation the device needs did not exist and counting repeats was the whole job. The inlet pumps now
-  stop with the MCC, so the weekly inspection leaves 41 honest repeats and the flow channels are what
-  separate them from the 55 held ones.
+  stop with the MCC, so the stops leave 42 honest repeats, 41 of them in the six weekly
+  inspections and one in the short all-source stop of 26 August, and the flow channels are what
+  separate them from the 54 held ones.
 - The band level's aggregation left to the reader: 4.88 on the energy mean against 5.32 and 5.46, which
   added a second prominent band at NSL11 under two readings. Filed at 4.3 once, and the 100 Hz tone
   lowered until no band at any position sits within 0.45 dB of the test.
+
+- BL-03's air as a share of the lanes' total, with the duty rotating weekly: it made BL-03's rate a fixed
+  fraction of the header's inside each week, every fraction below 1, which reads as a sub-meter and turned
+  the two-meter sum into a double count. BL-03 now holds its own drive setting while the header takes the
+  trim, and three spells where the header's two machines are isolated carry the forcing figure instead.
+- The air-per-cubic-metre-treated argument as the air device's forcing: an argument is not a figure, and a
+  fraction pattern beats it. It stays as corroboration; the isolation spells are what force the sum.
+- The rain gauge's count since midnight: it admitted a cumulative reading of plan 4.2 that moved ten
+  printed levels and flipped NSL08 between 41.43 and 41.51, and the only closure was a sentence in the
+  technician's notes, which had to come out. The gauge ships the tips in its own record instead, so the
+  fork is gone from the data and no level moved.
+- Pinning the residual window to make the sixth stable: it would file the decisive step and take Gate H
+  with it. The separation carries it instead, NSL09 moving from 44.6 to 44.0, with the sixth asserted
+  under all three window readings.
+- Renaming the historian's channels after the instruments and stopping there: necessary and not
+  sufficient. Two readers still followed the technician's notes, which called the header "the blower
+  header", and read the header as the whole. The notes no longer name the header at all and the isolation
+  spells carry the figure.

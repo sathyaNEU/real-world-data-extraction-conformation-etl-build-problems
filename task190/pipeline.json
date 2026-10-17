@@ -1,49 +1,38 @@
 {
  "task": "task190",
  "owner": "oviya13ya",
- "status": "RETIRED",
- "domain": "accounting-audit-forensic/audit-testing-sampling",
+ "status": "DRAWING",
+ "domain": "banking-credit-financial-risk/fraud-aml-detection",
  "objective": "anomaly-detection",
- "stage": 3,
- "stage_name": "retired",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-17",
- "stump": "The working paper files how the sample was drawn: probability proportional to recorded value, one interval of 180,000 euro common to every work programme, lines at or above it certain of selection. Nothing filed says how to get from the tested lines to the population. The default path scales the errors found on the ratio of the population's recorded value to the tested recorded value and files 57,577.47 euro, which accepts the population; the projection the design entitles is 840,096.72, stated 850,000, whose upper limit of 1,607,781.54 exceeds tolerable misstatement and refers it for extended testing.",
- "architecture": 3,
- "loops": 1,
+ "stump": "architecture 4, to be filled when the draw is fixed",
+ "architecture": 4,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17",
-  "checks": "50 checks, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": "",
+  "checks": ""
  },
- "build_gates": {
-  "generator_checks": "148 assertions: positive controls on all three PDFs before any absence assertion, R1 to R3c with the PDF streams decompressed, the analyst test executed, the ladder at 4.3, the filed design, SF1 to SF13, the five blind families, the four ask primaries each with separation and the freeze asserted by execution, the input gates, the asks under their pinned conventions",
-  "verify": "93 checks, 0 failed; reads target/ and figures.json only",
-  "rebuilds": "two consecutive rebuilds byte-identical: target/, golden/ and metadata.json",
-  "figures_check": "100 figures in blocks 1 to 4, 0 absent",
-  "ceiling": "PASSES, exit 0. Pair ceiling 38.1 (bar 40), mirror leakage 12.0 (bar 35), the mirror takes no ask whole. The cracker keeps 6 of 25 ask figures, 24.0 per cent of ask weight, printed beside the gates because every figure it keeps costs pair points. The mirror is scored from the rubric rather than modelled: its recommendation side is 6.5 of the 38 points against Part 0's r of about 5, and 13.5 before the asks against Part 0's 12, so the model is slightly more generous to the mirror than Part 0 assumes. Honest progression: 69.3, 67.8 pins, 62.0 A3 scope and clock, 56.8 A3 grain, 55.0 covered-lines named, 51.0 A1 rollup, 47.6 free-figure cut, 38.1 A2 grain, then 44.7 once the mirror's two modelling assumptions were replaced, then 41.4 with the certain-share column swapped for one the estimator moves, then 38.1 with A1's cut-off count cut.",
-  "input_gates": "18 files, 4 formats, 26,874 rows in the spine, 2 distractors declared (the grant claim and the prior year; the revenue expenditure summary is no longer one, because A1's rollup reads it as the control its excess ties to), every file carrying a source, a date and a CC0 licence",
-  "voice_check": "PASS, 987 characters, the four ask pins plus the month of payment",
-  "container": "scrub clean on target/",
-  "zip": "target.zip: 18 members, 1,002,758 bytes, md5 a7d2a47406b61eb713350af632ae55f1",
-  "precut": "50 checks, 0 FAIL, 0 WARN",
-  "rubric": "52 graded criteria: 21 critical components, 4 call, 2 instruction-following, 25 asks. Floor is 25. Ask weight 55 per cent.",
-  "realism": "the tail cleared: supplier names, the crosswalk blocks, the supersession asymmetry, the grant claim's shape and the revenue summary's seasonal maintenance line"
- },
+ "build_gates": {},
  "leak": {
-  "leak_py": "REVIEW, no LEAK; eight REVIEW lines answered in the design note's pre-ship check",
-  "reader": "round 1's answers and the author's verdict on each realism finding are in leak_check_report.md under ## Solver's-eye read; every item is now fixed or answered, so a second reader sees the pack as it is"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN; nearest driver 0.05 against every card driver and 0.06 against the nearest ledger row, the lowest this slot has drawn",
-  "check": "WARN repeat.gate_g against task468 and overuse.gate_g at 7 of the last 12, both answered in the card's notes; nearest driver 0.07",
-  "surface": "no BLOCK; eight pairs promoted for the author's adjudication, five on corpus-wide surface idiom and three on the same-driver signature (gap rule, pattern G16, Gate G method_or_model_selection) against task185, task457 and task80, each already answered by a differentiation line on the card"
+  "heart": "",
+  "check": "",
+  "surface": ""
  },
  "judge": {
-  "architecture_3_round_1": "NOT_DETERMINISTIC, SEND_BACK. The author overrode the disposition to FIX_NOW; the reasoning and the condition are in the design note's ## Author override section verbatim. If the re-judge is not APPROVE, task190 retires, and there is no second override.",
-  "architecture_3_round_2": "NOT SPAWNED. The fix pass is incomplete: see resume."
+  "architecture_1": "spent: three consecutive determinism SEND_BACK verdicts, Gate F moderate to low",
+  "architecture_2": "spent: three judge passes, the third NOT_DETERMINISTIC on an estimator the pack files nowhere",
+  "architecture_3": "spent: NOT_DETERMINISTIC SEND_BACK, stump power moderate to low; Gate B forced the reliability factor table to ship and shipping it made the projection route recoverable, so Gate F fell",
+  "architecture_4": "not yet spawned"
  },
  "returned": [],
- "resume": "RETIRED at architecture 3. Gate B and Gate F are in a bind that the draw creates: the refer rests on basic precision, whose reliability factor must ship or Gate B fails, and shipping it makes the route recoverable so Gate F fails. Two cold threads landed the call. A landed call banks about 45, so the pair cannot reach 40 whatever the asks do. See the design note's ## Retired section. Nothing is resumed.",
+ "resume": "Architecture 4, re-rooted 2026-10-17. This lane retires nothing (.claude/authors/oviya13ya.md), so the RETIRED status set at architecture 3 was an error and is reversed. Architecture 3's identity is in the card's lineage with its fate and its lesson is the design note's ## Architecture 3, spent: the decisive step may never rest on a constant or factor table Gate B forces the pack to ship. Resume at stage 1: domain banking-credit-financial-risk, subdomain fraud-aml-detection, objective anomaly-detection, shape 04 or 13; draw, register the card, then design. The architecture 3 generator, pack, goldens and target.zip are deleted once the new draw is registered, because the folder holds one architecture.",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -3,7 +3,7 @@
  "answer": "to be filled at stage 3",
  "answer_source": "generator/figures.json",
  "answer_unit": "currency",
- "architecture": 3,
+ "architecture": 4,
  "calibration_form": "none",
  "client_domain": "survey-research-official-statistics",
  "context_artifact": "other",
@@ -77,6 +77,26 @@
    "driver": "The decisive quantity is how many items were placed just under a threshold to stay under it, and the practice that placed them there leaves a matching shortfall just over the threshold, because the item each one replaced is not in the record any more. The surplus below and the shortfall above are the same quantity measured twice off one fitted size profile, so the record's own arithmetic refuses any profile whose two sides disagree, and a profile fitted through the emptied interval reads the surplus too large.",
    "fate": "spent 2026-10-17 after three passes. Judge pass 1 SEND_BACK: the method was not forced and the data did not separate the candidates (310 to 512 across windows and families). Judge pass 2 SEND_BACK: the convergence was bought by an amount draw too smooth to separate them (chi-square per degree of freedom 0.029 bank-wide, tail probability below 1e-26). Judge pass 3 SEND_BACK, NOT_DETERMINISTIC: the realism was fixed and held (chi-square 1.11 to 1.44, p 0.06 to 0.23, amounts sampled not drawn from a curve) but the golden then reproduced under exactly one estimator, the average of the surplus below and the deficit above, which the pack files nowhere; surplus alone gave 71 to 786 and deficit alone 207 to 858, and the average agreed only because it cancels the fitted profile's level algebraically, being the half difference of two observed counts less a half slope correction. The refusal rule the build used, failing to reconcile within a fifth, is in no shipped file, so the 141 standing specifications cannot be reproduced from the bundle. Three further findings each needed redesign rather than repair: a flat rate on the paid-in column matched 7 of 8 segment cells, so book size alone reproduced the table; summing rounded segments and rounding the unrounded sum agreed in only 93 of 186 specifications; and the half difference's own sampling standard error was 31.7 against a cell 1.6 standard errors wide. Every structural gate passed every time, Gate G and Gate H included. The lesson for the slot: a decisive step that is an estimation choice over a fitted counterfactual density cannot be both forced and silent, because the specifications always disagree and nothing filable chooses between them without becoming rule application.",
    "label": "v2 (Arahura Bank, cash deposits split below the NZ prescribed transaction threshold; excess mass below the line reconciled against the deficit above it)"
+  },
+  {
+   "architecture": 3,
+   "decision_type": "quantity_figure",
+   "domain": "accounting-audit-forensic",
+   "driver": "Items were drawn into the tested set with probability proportional to their size, so a tested item stands for a fixed amount of the population rather than for one item, and every item above that amount was certain to be drawn and stands only for itself. The selection amount is stated nowhere and is recovered from the tested set as the only amount for which every tested item contains a step of cumulated value and no untested item does, so scaling the findings on the ratio of total size to tested size understates the population's defect by a multiple, because the large items are all tested and sound while the defects sit in many small items that each stand for a whole step.",
+   "fate": "spent 2026-10-17 at stage 4 after two determinism judge passes, the second NOT_DETERMINISTIC SEND_BACK with stump power moderate to low. The bind is a property of the draw and not a tuning problem: the refer rested on basic precision, whose Poisson reliability factor Gate B forced the bundle to carry (a call resting on an input the pack does not hold fails outright), and carrying the factor table with the terms it uses supplied the vocabulary that made the probability-proportional projection recoverable, so Gate F fell. Fixing Gate B broke Gate F and fixing Gate F broke Gate B. The judge's blind enumeration filed the projection and matched the golden on all nine programme figures, the authority figure, the largest programme and the referral; the cold leak reader of the same pack landed the call at 80 to 90 per cent confidence. A landed call banks about 45 before any ask, so the top two could not average under 40 whatever the ask layer did (the measured 38.1 was (56.0 + 20.1) / 2, the 20.1 being a response that misses the call). The lane retires nothing, so the number re-roots at architecture 4; the rule taken from this death is that the decisive step may never rest on a constant or factor table Gate B forces the pack to ship. Nothing is resumed: not the monetary-unit sampling world, not the what-one-tested-item-stands-for driver, not the ladder, not the pack.",
+   "gap": [
+    "rule"
+   ],
+   "gate_g": "method_or_model_selection",
+   "label": "v3 (Carrowmore Port Authority, capital programme payments tested by monetary-unit selection; the year's misstatement projected from a sample drawn in euro)",
+   "objective": "anomaly-detection",
+   "pattern": [
+    "none"
+   ],
+   "shape": "12",
+   "stump": "The default path scales the errors found on the ratio of the population's book value to the tested book value and files 159,241 euro, certifying the population, because the tested set is read as a sample of items when it was drawn in euro: the 31 lines at or above the recovered interval hold 81 per cent of the tested book value and are sound, while every defect sits in a small day-work invoice that stands for a whole 180,000 euro step of the population.",
+   "stump_strategy": "population_selection",
+   "subdomain": "audit-testing-sampling"
   }
  ],
  "loops": 0,

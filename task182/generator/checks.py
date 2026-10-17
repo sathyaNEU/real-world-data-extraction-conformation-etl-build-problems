@@ -597,10 +597,48 @@ def run(target, g):
     A(reps_flowing == len(heldw),
       "SF20 the repeated rows that claim flow while their counters stand still are the %d held ones (%d)"
       % (len(heldw), reps_flowing))
-    A(reps_stopped >= 36,
+    A(reps_stopped == 42,
       "SF20 and %d more are the same row again because the works is stopped, which is a reading"
       % reps_stopped)
     A(reps == reps_flowing + reps_stopped, "SF20 every repeated row is one kind or the other")
+    # which population that 42 counts, and what a looser test of the same idea takes in. A reader who
+    # flags every row whose air and gas counters stand still, instead of every row identical to the one
+    # before it, picks up eleven rows that repeat nothing: the row that opens each stop and four where
+    # only the hour counters move. Both figures are asserted so the design note can say which it states.
+    per_spell = [0] * len(SM.all_down())
+    loose, loose_inside, opens_stop, hour_only = 0, 0, 0, 0
+    prev = None
+    for x in scada_rows:
+        ts = dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M")
+        flow = (float(x["aeration_header_nm3_h"]) > 0.0
+                or float(x["bl03_discharge_nm3_h"]) > 0.0)
+        if prev is not None and not flow and all(
+                x[k] == prev[k] for k in ("aeration_header_total_knm3",
+                                          "bl03_discharge_total_knm3", "biogas_meter_m3")):
+            loose += 1
+            hit = [i for i, (a4, b4) in enumerate(SM.all_down()) if a4 <= ts < b4]
+            if hit:
+                loose_inside += 1
+            if all(v == prev[k] for k, v in x.items() if k != "logged_at"):
+                per_spell[hit[0]] += 1
+            elif (float(prev["aeration_header_nm3_h"]) > 0.0
+                  or float(prev["bl03_discharge_nm3_h"]) > 0.0):
+                opens_stop += 1
+            else:
+                hour_only += 1
+        prev = x
+    A(sum(per_spell) == reps_stopped,
+      "SF20 all %d of them sit inside a stop the equipment log carries, %s by stop"
+      % (reps_stopped, per_spell))
+    A(sorted(per_spell) == [1, 6, 7, 7, 7, 7, 7],
+      "SF20 and the six weekly inspections leave 7, 7, 6, 7, 7, 7 of them, a 120 minute stop's eight "
+      "stamps less the one that opens it and less the engine hour counter's own reset inside the third, "
+      "with one more from the short all-source stop of 26 August: %s" % per_spell)
+    A((loose, loose_inside, opens_stop, hour_only) == (53, 50, 7, 4),
+      "SF20 the looser test of the same idea gives %d, %d of them inside a logged stop, because it "
+      "admits the %d rows that open a stop (the flows fall to zero while the air counters necessarily "
+      "stand still) and the %d where only the engine and the gas booster hour counters advance, none of "
+      "which repeats the row before it" % (loose, loose_inside, opens_stop, hour_only))
     # the figure that makes the absent-rows reading wrong: what those rows claim and do not record
     claimed = 0.0
     for ts in sorted(hheld):

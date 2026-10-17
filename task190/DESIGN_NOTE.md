@@ -1,17 +1,78 @@
 # task190 design note
 
-Architecture 3. Internal audit of a port authority's capital programme payments: how much misstatement
-the year's payments hold, projected from a tested set that was drawn in euro rather than in items.
+Architecture 4, drawn 2026-10-17 after architecture 3 was called spent. The lane retires nothing
+(`.claude/authors/oviya13ya.md`), so the number re-roots. Everything below the section that follows,
+down to `## Tried and rejected`, is architecture 3's record and is kept as the lesson the new draw has
+to respect; architecture 4's own draw, design and build replace it as they are written.
 
 | | |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task190.json`, architecture v3, registered 2026-10-17, WARN |
+| Card | `.claude/skills/fingerprint/cards/task190.json`, architecture 4 |
 | Owner | oviya13ya |
-| Status | stage 2, design |
+| Status | stage 1, draw |
 
-**This is the number's third architecture. If it is spent the number retires**, so the ground was chosen
-for a decisive quantity that is determinate by construction rather than by a fit, and the ladder's
-separation and the blind-response score are measured on paper below before a single file is cut.
+## Architecture 3, spent
+
+Architecture 3 (internal audit of a port authority's capital programme payments, the misstatement
+projected from a tested set drawn in euro rather than in items) is spent. The reason is structural
+rather than a tuning problem, which is why architecture 4 re-roots on a different decisive quantity
+instead of hardening this one.
+
+**What the second judge of architecture 3 found.** NOT_DETERMINISTIC, SEND_BACK, repairable, with
+Gate G passing and the decisive step analytical. But **stump power moderate to low**, and its blind
+enumeration, written before it opened the graded blocks, filed the probability-proportional
+projection and matched the golden exactly on all nine programme figures, the authority figure, the
+largest programme and the referral. Its words: "A strong analyst who reads the schedule PDF and
+manual 9.3 reaches 850,000 and refers." The cold reader of the same pack landed the same call at 80
+to 90 per cent confidence.
+
+**Why that is fatal rather than a weakness to tune.** A response on the main call banks about 45
+before any ask. If both top responses land it, each scores 45 plus whatever the asks give, so the
+pair average cannot reach 40 however strong the ask layer is: 45 is already above the bar. The
+measured pair of 38.1 is `(56.0 + 20.1) / 2`, and the 20.1 is a response that misses the call. The
+ceiling was never a claim that the call is hard; it assumed a ladder that keeps all but one response
+off it, and two independent cold threads have now shown this ladder does not.
+
+**The bind that cannot be undone.** The referral rests on basic precision, not on the projection: the
+projection alone is 840,096.72 against a tolerable of 1,160,000, which accepts, and the refer comes
+from adding the precision to reach 1,380,096.72. Basic precision needs a reliability factor. A call
+resting on an input the bundle does not carry fails Gate B outright, which is what the first judge
+found. So the factor table and the terms it uses had to ship, and shipping them is exactly what the
+second judge says supplies the vocabulary that makes the route recoverable. Fixing Gate B breaks
+Gate F and fixing Gate F breaks Gate B. That is a property of the draw: a monetary-unit sampling
+call whose decision turns on the precision cannot both document its own arithmetic and withhold the
+method. No amount of ask work or data tuning moves it, and the only remedy is a different decisive
+quantity, which is what architecture 4 draws.
+
+**The rule architecture 4 is drawn under, taken from that bind.** The decisive step may not rest on a
+constant, a factor table or any other filed input that Gate B forces the bundle to carry, because
+shipping the input ships the route. Everything the decisive step needs must already be in the pack,
+and the choice must still not be: the structure of the organisation's own data forces it, and no
+shipped sentence can name it without naming the method.
+
+**The author's part in it, for the record.** Shipping manual 9.3 was my ruling, taken knowingly, with
+the cost named at the time: it nudges a reader toward monetary-unit sampling, and I judged the nudge
+cheaper than the gate. On Gate B that was right and I would rule the same way again. The error was
+upstream, in accepting a draw whose call needed the field's own vocabulary shipped in order to be
+answerable at all.
+
+**What architecture 3 produced that outlives it.** Six rules now in the skills came out of this build
+in one day, each with the measurement that earned it: a ceiling script scoring one reading twice; a
+document sweep that read three PDFs as raw bytes and so never saw inside their compressed streams,
+with the positive-control rule and its same-code-path refinement; the ceiling computed on Part 0's
+weights rather than a legal but favourable point inside the bands; a dictionary-resolvable device
+moving the mirror and never the cracker; cutting a free figure as a correctness check, which exposed
+a Gate A defect in the quarter basis; and a device that is draftable but moves the call being held
+rather than built. The build also carried the covered-lines golden that counted schedule references
+where the ask said ledger lines, 275 against the true 285 at 21,709,610.89, which both the reader and
+the judge found and which is the cleanest example on file of a golden sitting on the cracker's side
+of its own device.
+
+Every card is kept and architecture 3's identity now sits in the card's `lineage` with its fate.
+Nothing of it is resumed: not the monetary-unit sampling world, not the projection driver, not the
+ladder, not the pack.
+
+## Architecture 3's record below this line
 
 ## Author override of the judge's disposition
 
@@ -442,59 +503,7 @@ certificate is overstated: every line certain of selection was found sound**, wh
 recorded-value ratio fail. Six programmes carry a tainting in the sample; the Dredging programme's 31
 defective lines were all missed by the selection, so its projection is nil. A first draft put an error on
 one certificate and it inverted two rungs, because the ratio route scales that error by the
-whole-population factor while the stratum route takes it at face: the line is in
-`## Retired
-
-task190 is retired at architecture 3. Three architectures are spent, which is the cap, and the
-reason the third is spent is structural rather than a tuning problem.
-
-**What the second judge of architecture 3 found.** NOT_DETERMINISTIC, SEND_BACK, repairable, with
-Gate G passing and the decisive step analytical. But **stump power moderate to low**, and its blind
-enumeration, written before it opened the graded blocks, filed the probability-proportional
-projection and matched the golden exactly on all nine programme figures, the authority figure, the
-largest programme and the referral. Its words: "A strong analyst who reads the schedule PDF and
-manual 9.3 reaches 850,000 and refers." The cold reader of the same pack landed the same call at 80
-to 90 per cent confidence.
-
-**Why that is fatal rather than a weakness to tune.** A response on the main call banks about 45
-before any ask. If both top responses land it, each scores 45 plus whatever the asks give, so the
-pair average cannot reach 40 however strong the ask layer is: 45 is already above the bar. The
-measured pair of 38.1 is `(56.0 + 20.1) / 2`, and the 20.1 is a response that misses the call. The
-ceiling was never a claim that the call is hard; it assumed a ladder that keeps all but one response
-off it, and two independent cold threads have now shown this ladder does not.
-
-**The bind that cannot be undone.** The referral rests on basic precision, not on the projection: the
-projection alone is 840,096.72 against a tolerable of 1,160,000, which accepts, and the refer comes
-from adding the precision to reach 1,380,096.72. Basic precision needs a reliability factor. A call
-resting on an input the bundle does not carry fails Gate B outright, which is what the first judge
-found. So the factor table and the terms it uses had to ship, and shipping them is exactly what the
-second judge says supplies the vocabulary that makes the route recoverable. Fixing Gate B breaks
-Gate F and fixing Gate F breaks Gate B. That is a property of the draw: a monetary-unit sampling
-call whose decision turns on the precision cannot both document its own arithmetic and withhold the
-method. No amount of ask work or data tuning moves it, and the only remedy is a different decisive
-quantity, which is a fourth architecture this number does not have.
-
-**The author's part in it, for the record.** Shipping manual 9.3 was my ruling, taken knowingly, with
-the cost named at the time: it nudges a reader toward monetary-unit sampling, and I judged the nudge
-cheaper than the gate. On Gate B that was right and I would rule the same way again. The error was
-upstream, in accepting a draw whose call needed the field's own vocabulary shipped in order to be
-answerable at all.
-
-**What this number produced that outlives it.** Six rules now in the skills came out of this build in
-one day, each with the measurement that earned it: a ceiling script scoring one reading twice; a
-document sweep that read three PDFs as raw bytes and so never saw inside their compressed streams,
-with the positive-control rule and its same-code-path refinement; the ceiling computed on Part 0's
-weights rather than a legal but favourable point inside the bands; a dictionary-resolvable device
-moving the mirror and never the cracker; cutting a free figure as a correctness check, which exposed
-a Gate A defect in the quarter basis; and a device that is draftable but moves the call being held
-rather than built. The build also carried the covered-lines golden that counted schedule references
-where the ask said ledger lines, 275 against the true 285 at 21,709,610.89, which both the reader and
-the judge found and which is the cleanest example on file of a golden sitting on the cracker's side
-of its own device.
-
-Every card is kept. Nothing here is resumed.
-
-## Tried and rejected`.
+whole-population factor while the stratum route takes it at face: the line is in `## Tried and rejected`.
 
 The figures in the table below are the measured ones at the design point the generator carries. Every one
 is asserted in `checks.py` against the clean truth, and `verify.py` recomputes each from the bundle alone
@@ -1036,3 +1045,10 @@ were round too, so both were redrawn.
   a per-figure zero the prose makes the pair ceiling redundant, which cannot be its purpose, so it is a
   design-iteration instruction and the ship gates are Part 7's two numbers. `ceiling.py` gates on those
   two and prints the figure keep beside them, because every figure the cracker takes costs pair points.
+- **Architecture 3, the whole of it, is spent, and the number re-roots rather than retiring.** The refer
+  rested on basic precision, whose reliability factor Gate B forced the bundle to carry, and carrying it
+  made the projection route recoverable so Gate F fell: two independent cold threads landed the call, and
+  a landed call banks about 45, so the pair could not reach 40 whatever the ask layer did. `## Architecture
+  3, spent` holds the measurement. Architecture 4 re-roots on a decisive step that needs no filed constant
+  or factor table; the monetary-unit sampling world, the probability-proportional projection driver and
+  the port authority pack are not reused.
