@@ -291,6 +291,24 @@ patch.
 - [ ] Mess real and neutral; clean-data test and realism sweep pass; every graded figure mid-bin
 - [ ] 40+ assertions, verifier green from the bundle, byte-identical rebuild, `figures.json`, `guard.py surface`
 
+## An assertion that searches a document proves it read the document
+
+A check that greps a shipped file for a string reports the same "not found" whether the string is
+absent or the file was never readable, and three builds in one wave passed gates that had never run.
+task195's `checks.text_of` could not decompress a golden PDF, so a whole assertion block passed by
+never executing. task190's `_sweep` read every shipped file as raw bytes and so never saw inside its
+three PDFs' Flate streams, which is exactly where the authority sentences live: every claim about
+those documents, in every hand-back, rested on a sweep that could not see them. The same shape
+catches a sheet read from the wrong workbook tab, a CSV opened under the wrong encoding, and a zip
+member read without decompression.
+
+**Every absence assertion carries a positive control.** Before asserting that a document does not
+contain something, assert that it does contain a sentence you know is in it, taken from the writer's
+own text, and fail the build when that control is missing. A search that cannot find what is there
+has not shown that anything is absent. Where a format needs decoding, decode through the same helper
+the verifier uses, so the bundle is read one way and only one way; and assert the extracted length is
+non-zero per file, since an empty extraction satisfies every absence check in the build.
+
 ## Document control dates are a consistency surface
 
 Every date a document states about itself (approved, issued, refreshed, reviewed, superseded, a revision
