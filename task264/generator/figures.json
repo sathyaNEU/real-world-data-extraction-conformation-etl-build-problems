@@ -1,0 +1,436 @@
+{
+ "call": {
+  "count": 10,
+  "categories": [
+   "Bread and bakery",
+   "Breakfast cereals",
+   "Cheese",
+   "Yoghurt and desserts",
+   "Eggs",
+   "Deli and cooked meats",
+   "Fresh fruit",
+   "Frozen foods",
+   "Biscuits",
+   "Chips and snacks"
+  ]
+ },
+ "categories": {
+  "Bread and bakery": {
+   "publish": true,
+   "national": 5.0,
+   "gaps": {
+    "supermarket": 0.0,
+    "neighbourhood": 0.1,
+    "convenience": 0.2,
+    "online": -0.1
+   },
+   "largest": 0.2,
+   "changes": {
+    "supermarket": 5.0,
+    "neighbourhood": 5.0,
+    "convenience": 5.2,
+    "online": 4.8
+   },
+   "promotion": 13.4
+  },
+  "Breakfast cereals": {
+   "publish": true,
+   "national": 5.7,
+   "gaps": {
+    "supermarket": 0.2,
+    "neighbourhood": -0.3,
+    "convenience": -0.2,
+    "online": -0.2
+   },
+   "largest": 0.3,
+   "changes": {
+    "supermarket": 5.8,
+    "neighbourhood": 5.3,
+    "convenience": 5.4,
+    "online": 5.5
+   },
+   "promotion": 13.4
+  },
+  "Milk": {
+   "publish": false,
+   "national": 5.1,
+   "gaps": {
+    "supermarket": -0.3,
+    "neighbourhood": -0.3,
+    "convenience": 3.2,
+    "online": -0.1
+   },
+   "largest": 3.2,
+   "changes": {
+    "supermarket": 4.8,
+    "neighbourhood": 4.8,
+    "convenience": 8.3,
+    "online": 5.0
+   },
+   "promotion": 12.9
+  },
+  "Cheese": {
+   "publish": true,
+   "national": 5.8,
+   "gaps": {
+    "supermarket": 0.3,
+    "neighbourhood": -0.4,
+    "convenience": -0.8,
+    "online": -0.2
+   },
+   "largest": 0.8,
+   "changes": {
+    "supermarket": 6.0,
+    "neighbourhood": 5.4,
+    "convenience": 4.9,
+    "online": 5.5
+   },
+   "promotion": 14.2
+  },
+  "Yoghurt and desserts": {
+   "publish": true,
+   "national": 3.4,
+   "gaps": {
+    "supermarket": -0.3,
+    "neighbourhood": -0.1,
+    "convenience": -0.3,
+    "online": 1.1
+   },
+   "largest": 1.1,
+   "changes": {
+    "supermarket": 3.2,
+    "neighbourhood": 3.4,
+    "convenience": 3.1,
+    "online": 4.5
+   },
+   "promotion": 13.9
+  },
+  "Butter and spreads": {
+   "publish": false,
+   "national": 5.5,
+   "gaps": {
+    "supermarket": 0.6,
+    "neighbourhood": 0.4,
+    "convenience": 0.5,
+    "online": -2.7
+   },
+   "largest": 2.7,
+   "changes": {
+    "supermarket": 6.1,
+    "neighbourhood": 5.9,
+    "convenience": 6.0,
+    "online": 2.7
+   },
+   "promotion": 13.0
+  },
+  "Eggs": {
+   "publish": true,
+   "national": 7.7,
+   "gaps": {
+    "supermarket": 0.0,
+    "neighbourhood": -0.1,
+    "convenience": 0.1,
+    "online": 0.0
+   },
+   "largest": 0.1,
+   "changes": {
+    "supermarket": 7.7,
+    "neighbourhood": 7.6,
+    "convenience": 7.8,
+    "online": 7.8
+   },
+   "promotion": 13.7
+  },
+  "Fresh meat and poultry": {
+   "publish": false,
+   "national": 4.6,
+   "gaps": {
+    "supermarket": -0.5,
+    "neighbourhood": 2.3,
+    "convenience": -0.1,
+    "online": -0.5
+   },
+   "largest": 2.3,
+   "changes": {
+    "supermarket": 4.1,
+    "neighbourhood": 6.9,
+    "convenience": 4.4,
+    "online": 4.1
+   },
+   "promotion": 14.4
+  },
+  "Deli and cooked meats": {
+   "publish": true,
+   "national": 6.8,
+   "gaps": {
+    "supermarket": 0.5,
+    "neighbourhood": -0.9,
+    "convenience": -0.6,
+    "online": -0.8
+   },
+   "largest": 0.9,
+   "changes": {
+    "supermarket": 7.3,
+    "neighbourhood": 5.9,
+    "convenience": 6.2,
+    "online": 6.0
+   },
+   "promotion": 14.0
+  },
+  "Seafood": {
+   "publish": false,
+   "national": 4.7,
+   "gaps": {
+    "supermarket": 0.3,
+    "neighbourhood": -0.1,
+    "convenience": -3.1,
+    "online": 0.2
+   },
+   "largest": 3.1,
+   "changes": {
+    "supermarket": 5.0,
+    "neighbourhood": 4.6,
+    "convenience": 1.6,
+    "online": 4.9
+   },
+   "promotion": 13.2
+  },
+  "Fresh fruit": {
+   "publish": true,
+   "national": 3.6,
+   "gaps": {
+    "supermarket": -0.1,
+    "neighbourhood": 0.1,
+    "convenience": 0.8,
+    "online": 0.1
+   },
+   "largest": 0.8,
+   "changes": {
+    "supermarket": 3.5,
+    "neighbourhood": 3.7,
+    "convenience": 4.4,
+    "online": 3.7
+   },
+   "promotion": 13.0
+  },
+  "Fresh vegetables": {
+   "publish": false,
+   "national": 5.2,
+   "gaps": {
+    "supermarket": 1.3,
+    "neighbourhood": -0.7,
+    "convenience": -2.9,
+    "online": -2.9
+   },
+   "largest": 2.9,
+   "changes": {
+    "supermarket": 6.6,
+    "neighbourhood": 4.6,
+    "convenience": 2.3,
+    "online": 2.3
+   },
+   "promotion": 12.4
+  },
+  "Frozen foods": {
+   "publish": true,
+   "national": 3.7,
+   "gaps": {
+    "supermarket": -0.2,
+    "neighbourhood": -0.6,
+    "convenience": 1.0,
+    "online": 0.9
+   },
+   "largest": 1.0,
+   "changes": {
+    "supermarket": 3.5,
+    "neighbourhood": 3.0,
+    "convenience": 4.7,
+    "online": 4.6
+   },
+   "promotion": 13.0
+  },
+  "Biscuits": {
+   "publish": true,
+   "national": 6.3,
+   "gaps": {
+    "supermarket": 0.3,
+    "neighbourhood": -0.5,
+    "convenience": -0.5,
+    "online": -0.4
+   },
+   "largest": 0.5,
+   "changes": {
+    "supermarket": 6.6,
+    "neighbourhood": 5.8,
+    "convenience": 5.8,
+    "online": 5.9
+   },
+   "promotion": 13.7
+  },
+  "Confectionery": {
+   "publish": false,
+   "national": 6.8,
+   "gaps": {
+    "supermarket": -0.6,
+    "neighbourhood": -0.4,
+    "convenience": -0.4,
+    "online": 2.7
+   },
+   "largest": 2.7,
+   "changes": {
+    "supermarket": 6.2,
+    "neighbourhood": 6.4,
+    "convenience": 6.4,
+    "online": 9.4
+   },
+   "promotion": 13.1
+  },
+  "Chips and snacks": {
+   "publish": true,
+   "national": 3.2,
+   "gaps": {
+    "supermarket": 0.1,
+    "neighbourhood": -0.5,
+    "convenience": -0.4,
+    "online": 0.2
+   },
+   "largest": 0.5,
+   "changes": {
+    "supermarket": 3.3,
+    "neighbourhood": 2.7,
+    "convenience": 2.8,
+    "online": 3.4
+   },
+   "promotion": 13.2
+  },
+  "Soft drinks": {
+   "publish": false,
+   "national": 5.1,
+   "gaps": {
+    "supermarket": -0.3,
+    "neighbourhood": -0.2,
+    "convenience": 2.8,
+    "online": 0.0
+   },
+   "largest": 2.8,
+   "changes": {
+    "supermarket": 4.8,
+    "neighbourhood": 4.9,
+    "convenience": 7.9,
+    "online": 5.1
+   },
+   "promotion": 12.8
+  },
+  "Coffee and tea": {
+   "publish": false,
+   "national": 8.0,
+   "gaps": {
+    "supermarket": -0.2,
+    "neighbourhood": -0.2,
+    "convenience": 2.4,
+    "online": -0.2
+   },
+   "largest": 2.4,
+   "changes": {
+    "supermarket": 7.8,
+    "neighbourhood": 7.8,
+    "convenience": 10.4,
+    "online": 7.8
+   },
+   "promotion": 13.9
+  }
+ },
+ "takings": {
+  "supermarket": 804.4,
+  "neighbourhood": 230.7,
+  "convenience": 86.7,
+  "online": 466.6
+ },
+ "takings_total": 1588.4,
+ "continuous": {
+  "S1": 4,
+  "S2": 3,
+  "S3": 3,
+  "S4": 4,
+  "S5": 3,
+  "N1": 3,
+  "N2": 3,
+  "N3": 4,
+  "C1": 12,
+  "C2": 15,
+  "C3": 11,
+  "O1": 2,
+  "O2": 2,
+  "O3": 2
+ },
+ "rungs": {
+  "pooled": {
+   "count": 4,
+   "categories": [
+    "Breakfast cereals",
+    "Cheese",
+    "Deli and cooked meats",
+    "Biscuits"
+   ]
+  },
+  "pooled_without_july_chain": {
+   "count": 8,
+   "categories": [
+    "Bread and bakery",
+    "Breakfast cereals",
+    "Cheese",
+    "Eggs",
+    "Deli and cooked meats",
+    "Fresh fruit",
+    "Biscuits",
+    "Chips and snacks"
+   ]
+  },
+  "store": {
+   "count": 7,
+   "categories": [
+    "Bread and bakery",
+    "Yoghurt and desserts",
+    "Eggs",
+    "Fresh fruit",
+    "Frozen foods",
+    "Chips and snacks",
+    "Coffee and tea"
+   ]
+  }
+ },
+ "store_match": {
+  "categories_dropped": [
+   "Breakfast cereals",
+   "Cheese",
+   "Deli and cooked meats",
+   "Biscuits"
+  ],
+  "shift_low": 1.1,
+  "shift_high": 1.8,
+  "slow_week_share": 0.34,
+  "rise_big": 2.3,
+  "rise_other": 10.9
+ },
+ "closest": {
+  "category": "Yoghurt and desserts",
+  "gap": 1.1
+ },
+ "constants": {
+  "tolerance": 1.5,
+  "weeks": 52,
+  "categories": 18,
+  "chains": 14,
+  "weights": {
+   "supermarket": 59.6,
+   "neighbourhood": 16.3,
+   "convenience": 7.1,
+   "online": 17.0
+  }
+ },
+ "nearest_left": {
+  "category": "Fresh meat and poultry",
+  "gap": 2.3,
+  "miss": 0.8
+ }
+}

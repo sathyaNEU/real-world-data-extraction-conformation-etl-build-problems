@@ -1,26 +1,26 @@
 {
   "task": "task264",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-17",
   "stump": "The default path averages each item's sales over all the format's stores before comparing weeks, so the value chain that joined the panel in July and shoppers' moves toward cheaper chains read as price falls in the supermarket format and the index publishes too few categories; the careful store-by-store match drops a convenience chain's price in every week one small store sold none of a slow line; following each item at the chain that prices it publishes the golden set.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (sweep 3: the filed 1.5 test; sweep 4: methodology and terms vocabulary; sweep 6: banners beside store counts; sweep 9: the retail calendar's forward weeks)",
+    "reader": "Q1 none, Q6 analytical; Q5: the level at which a line's price is formed is not filed (constrained by methodology section 1 and the partner register's one shelf price); realism and ask-wording notes staged in the generator, not yet rebuilt"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (strategy risk, repeat Gate G vs task235, repeat decision vs task465; nearest driver 0.06)",
+    "nearest": "task463 0.06"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "",
+  "resume": "stage 4: the isolated judge thread is running on the brief at /tmp/determinism-check-task264-064639/judge_brief.md (verdict to verdict.md there), then re-invoke determinism-judge with that verdict for the report. Fix every judge finding and the staged reader fixes (manifest compile line, delivery-log notes, dictionary takings and promotion-share terms, golden wording of the PC change) in one generator pass, rebuild (python3 task264/generator/build.py), re-run leak.py --asof 2026-12-07 and the reader (a document changed), re-judge once on FIX_NOW, then ship. If the container was reclaimed, rebuild first and re-run stage 4 from a fresh brief.",
   "approved": null,
   "delivered": null,
   "portal": null,

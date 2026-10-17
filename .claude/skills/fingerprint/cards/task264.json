@@ -10,8 +10,8 @@
   "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Publish 10 of the 18 food categories as stand-alone sub-indices in 2027: Bread and bakery, Breakfast cereals, Cheese, Yoghurt and desserts, Eggs, Deli and cooked meats, Fresh fruit, Frozen foods, Biscuits and Chips and snacks; the other 8 go into Other food.",
+  "answer_source": "task264/submission.md block 1; task264/golden/gpi_2027_structure.xlsx Structure sheet",
   "gap": [
     "population"
   ],
@@ -34,8 +34,8 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "index points",
   "spine": {
-    "file": "scan_movement_2026 (store x item x week sales)",
-    "rows": 0,
+    "file": "gpi_movement_ry2026.csv (store x line x week sales, every load)",
+    "rows": 726756,
     "entity": "one store's sales of one item in one retail week (units and dollars)",
     "grain": "store x item x week",
     "source": "synthetic"
@@ -47,7 +47,24 @@
     "geography": "Australia (a fictional grocery market-data firm and its partner chains; states and cities real; personas on the en_AU index)",
     "currency": "AUD",
     "org_type": "a grocery market-data firm publishing a weekly scanner price index from its partner chains' data",
-    "invented_names": [],
+    "invented_names": [
+      "Delvett Retail Data",
+      "Delvett Grocery Price Index",
+      "Haskard Fresh",
+      "Brevane Supermarkets",
+      "Fremett Foods",
+      "Pravard Discount",
+      "Gorvery Warehouse",
+      "Lumbane Local",
+      "Ruskett Grocers",
+      "Skovard Local",
+      "Quorrix",
+      "Treskola",
+      "Jorvery Stop",
+      "Wiskane Online",
+      "Pembard Direct",
+      "Keskary"
+    ],
     "people": [
       "Christy Chambers",
       "Manuel Zamora"
@@ -68,7 +85,8 @@
   "mechanism_source": "design_note",
   "differentiation": {
     "task48": "48 aggregates transactions to a two-sided pair grain so a population its monitor cannot see shows an absolute gap; here the grain is the chain that sets a shelf price for all its stores, and the move keeps the comparisons a finer store grain throws away, revealing no hidden population.",
-    "task120": "120 v1 builds a percentile unit by a two-hop join of claimed members onto a claiming record; here nothing is joined across units: the move coarsens store rows to the chain that prices them, because a store-level match keeps the chain's price only in the weeks that one store happened to sell the item."
+    "task120": "120 v1 builds a percentile unit by a two-hop join of claimed members onto a claiming record; here nothing is joined across units: the move coarsens store rows to the chain that prices them, because a store-level match keeps the chain's price only in the weeks that one store happened to sell the item.",
+    "task263": "263 solves each well's own concentration from entry-point blends, a finer unit recovered from mixtures by mass balance; here nothing is unmixed: store rows are coarsened to the chain that sets one price for all its stores, because a store-level match discards prices the chain still charged in weeks one store sold none."
   },
   "lineage": [],
   "notes": "Seed DA14 (header and Situation only): kept the world (a grocery scanner price index from partner chains, GEKS-Tornqvist within store formats), the decision (which categories publish as stand-alone 2027 sub-indices, the rest in other food) and the quantity (whether each category's index holds in every store format, filed as its format changes within 1.5 points of its national change). The seed's matched-pair minimum is a filed rule's execution under the 10/10 rules; the decisive step is re-found in the data's structure (central pricing with sparse small-store sales). Housed in General Statistics (missing data): the setting is retail price statistics.",
