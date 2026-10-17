@@ -20,6 +20,10 @@ MIN_PATIENTS = 25
 N_PAT = 17000
 SEED = 193176
 MESS_SEED = 777
+REGION_HISTORY_DAY = 913             # 2026-04-01, when the register began keeping a previous
+                                     # region. A change recorded before it leaves nothing behind,
+                                     # so the current extract cannot reconstruct an earlier state
+                                     # and the absence of a recorded change is not evidence of none
 EDITION_DAY = 639                    # 2025-07-01, when the register's statistics took up the
                                      # edition shipped with this extract: the whole screen window
                                      # and the whole fee period fall after it, so no day of either

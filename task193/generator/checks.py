@@ -716,6 +716,19 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     doc_prior = " ".join(r["documentation"] for r in
                          rd(tgt, "register_variable_documentation.csv")
                          if r["file_name"] == "person_register_2025Q4.csv").lower()
+    # the documented fact is checkable in the data: no recorded change predates the day the
+    # register began keeping a previous region, so a blank is uninformative rather than a no
+    recs = [r["region_recorded_from"] for r in rd(tgt, "person_register.csv")
+            if r["region_recorded_from"]]
+    ok("dev.a3_history_starts_where_the_documentation_says",
+       recs and min(recs) >= W.iso(W.REGION_HISTORY_DAY),
+       "earliest recorded change %s, the register began keeping one on %s"
+       % (min(recs) if recs else "-", W.iso(W.REGION_HISTORY_DAY)))
+    ok("dev.a3_blank_is_not_evidence_of_no_change",
+       len(diff) - len(explained) > 10 * max(len(explained), 1) or
+       len(diff) - len(explained) >= 600,
+       "%d patients differ between the two deliveries with nothing recorded against them, so the "
+       "current extract's silence cannot be read as no change" % (len(diff) - len(explained)))
     ok("dev.a3_no_rule_states_it",
        "person_register_2025q4" not in _pdf_text(tgt).lower()
        and "screen window" not in doc_prior and "window" not in doc_prior,

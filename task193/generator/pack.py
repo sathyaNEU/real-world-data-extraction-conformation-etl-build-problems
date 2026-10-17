@@ -516,8 +516,9 @@ def write_person_register(tgt, people, keys, new_keys, switch_day, kept, rejecte
         was = reg
         if pid in moved and reg:
             prev = W.REGIONS[(int(people["region"][pid]) + 2) % len(W.REGIONS)]
-            # a move is recorded whenever it happened, which for most of them is years back
-            since = W.iso(int(rng.integers(140, W.WIN_B - 20)))
+            # the register has kept a previous region only since 1 April 2026, so every recorded
+            # change is on or after that date; a change made earlier leaves nothing behind it
+            since = W.iso(int(rng.integers(W.REGION_HISTORY_DAY, W.WIN_B - 20)))
             if W.day(140) < W.day(W.WIN_A) and since > W.iso(W.WIN_A):
                 was = prev
         elif pid in silent:

@@ -27,8 +27,8 @@ ever reached the opening of the period. Architecture 3.
 whose classifier reads news text and assigns the action code, and the association's own hand coding
 only ever reached the opening of the period: the coding desk's two rounds closed on 20 June and 10
 September and between them cover the reports of 1 May to 31 August, while the autumn mobilisation
-that trebles the record's volume from 5 September has no hand-coded report in it at all, and the
-classifier's own marked rate falls from 9.7 per cent inside that window to 4.9 per cent outside it,
+that doubles the record's volume from 5 September has no hand-coded report in it at all, and the
+classifier's own marked rate falls from 8.8 per cent inside that window to 4.3 per cent outside it,
 so the only thing the audited reports can carry forward is what the classifier does to a report of a
 given kind, never what share of the reports were of that kind.
 
@@ -81,9 +81,9 @@ given kind, never what share of the reports were of that kind.
 3. Read 3.3 and see that the number is of the actions that were confrontational and not of the codes
    the classifier assigned, so open `amostra_dupla_codificacao.csv`.
 4. Split the hand-coded reports by what the classifier said about them, and take from each side the
-   share that the coding desk found was really confrontational: of the reports it marked, 78 per cent
-   were; of the reports it did not, 8 per cent were.
-5. Carry those two shares onto the register's 4,200 press-reported actions and add the 30 an
+   share that the coding desk found was really confrontational: of the reports it marked, 81 per cent
+   were; of the reports it did not, 9 per cent were.
+5. Carry those two shares onto the register's 4,228 press-reported actions and add the 49 an
    organisation or the public line coded by hand, then round to the nearest fifty.
 
 **Ends on:** 600 confrontational actions.
@@ -94,8 +94,8 @@ given kind, never what share of the reports were of that kind.
 A competent solver resolves the three routes, builds the actions on the protocol's grain, reads 3.3,
 corrects the classifier's labels with the shares the hand coding found on each side of them and files
 **600 confrontational actions**, because those two shares were measured on the opening of the period,
-where about one press-reported action in seven was confrontational, and are carried onto a period in
-which about one in ten was.
+where about one audited report in seven was confrontational, and are carried onto a period in which
+about one action in ten was.
 
 ## Three rules
 
@@ -117,13 +117,16 @@ which about one in ten was.
 - **Layer 1:** the association's own pipeline makes all of it. The press monitor's item log carries
   every item the keyword list caught, accepted or rejected, at item grain, and a report entered the
   monitor with the first of its items; the same action arrives from up to three access routes and from
-  two language editions of one media group; one month of partner reports was loaded twice and the
-  import log carries both loads while the ingest counter counted the second arrival again; the
-  monitor's reception stamps and the partner portal's are UTC while the action times are the local
-  clock of the action's own district, the clocks go back an hour on 25 October and the Azores run an
-  hour behind the mainland; the partner organisations' monthly returns arrive inside a PDF; one
-  partner's deliveries change code after a merger; the gazetteer carries superseded settlement names.
-  None of it is placed to be caught and none of it decides the count.
+  two language editions of one media group; one month of partner reports was loaded twice, the import
+  log carries both loads, the portal stamped the second load's rows on the day it arrived and the
+  ingest counter counted that arrival again; the monitor's collection and the public line run on the
+  association's intake hours and write what lands at night at the next intake; the monitor's reception
+  stamps and the partner portal's are UTC while the action times are the local clock of the action's
+  own district, the clocks go back an hour on 25 October and the Azores run an hour behind the
+  mainland; the partner organisations' monthly returns arrive inside a PDF; one partner's deliveries
+  change code after a merger; the gazetteer carries superseded settlement names; and eight of the
+  desk's own worksheet rows carry no manual code because the desk could not fix one. None of it is
+  placed to be caught and none of it decides the count.
 - **Layer 2:** `field_method`. The methodological choice is which of the quantities the hand coding
   measures can be carried to a period the hand coding never reached.
 - **Decisive step:** rebuild the count of confrontational actions among the actions the press monitor
@@ -145,7 +148,8 @@ which about one in ten was.
 - **Analyst test:** a strong analyst who resolves the three routes and the two editions, drops the
   reposted month, resolves the superseded place names, applies every filed paragraph and corrects the
   classifier's labels with the shares the hand coding found on each side of them files **600
-  confrontational actions**, the default path's `Ends on:`, where the period's record gives 450.
+  confrontational actions** (614.53 raw), the default path's `Ends on:`, where the period's record
+  gives 450 (454.91 raw).
 - **Estimand:** the protocol's 3.3, "Indicador 2, acoes de confronto: o numero das acoes registadas no
   periodo de relato que foram acoes de confronto na acepcao de 2.2, ao mais proximo de cinquenta
   acoes. O codigo que o classificador do monitor de imprensa atribui e a leitura do classificador, que
@@ -182,7 +186,7 @@ audited batch's own shares. It settles no part of the estimand.
 | Rounding | the protocol | 3.3, to the nearest fifty actions |
 
 Two or more estimators of that one filed quantity stand after it is filed, and the record's own
-structure separates them: the audit covers four of the period's six months, two of the fourteen
+structure separates them: the audit covers four of the period's six months, two of the protocol's ten
 dispute themes have no audited report at all, and the classifier's marked rate inside the audited
 window is twice what it is outside it.
 
@@ -216,7 +220,7 @@ window is twice what it is outside it.
 | SF13 | the accepted items | the items the press monitor accepted, which the register carries | every matched item, rejected ones included | rejected items are not actions | 4.2 quoted and the dictionary's acceptance column; asserted |
 | SF14 | the extract | the record as extracted on 6 November 2026 | the record as at the period's close | `same call`, asserted: no action dated inside the period is reported after the extract |
 | SF15 | actions outside the period | excluded from the count | included because their reports arrived inside it | the count changes | 3.2 quoted, which fixes the period on the action's date; asserted |
-| SF16 | the hand coding | the standard the desk measures the classifier against, after the desk's decision on a second coding | one more opinion to be averaged with the classifier's | the measured rates change | 4.5 quoted and the dictionary's `codigo_manual` line; asserted |
+| SF16 | the hand coding | the standard the desk measures the classifier against, after the desk's decision on a second coding, on every row the desk could fix a code for | one more opinion to be averaged with the classifier's | the measured rates change | 4.5 quoted and the dictionary's `codigo_manual` line; asserted |
 | SF17 | a report the gazetteer does not place | not an action, so outside every count | an action at an unknown locality | the count changes | 2.5 quoted; asserted |
 | SF18 | the register's opening | 1 May 2026, with no action carried in | an action before the register opened | nothing to count before it | 3.2 quoted; asserted that no action predates 1 May 2026 |
 | SF19 | a fortnight | fourteen days from 1 May | fifteen-day blocks, or a fourteenth one-day row | the fortnight rows change, the count does not | 3.4 quoted, which gives the length in days; asserted |
@@ -227,6 +231,9 @@ window is twice what it is outside it.
 | SF24 | an Azores action | an action in the Azores district, on the Azores clock | none in the record | the median would not move | asserted that the record holds actions in the Azores district |
 | SF25 | an action a route reported | an action that route delivered a report of, however many other routes also did | an action only that route reported | the fortnight's partner count falls by three quarters | the `convencoes` sheet quoted; asserted that the two readings give different counts |
 | SF26 | the period the route table counts over | the reports each route received between 1 May and 30 October | every report in the file, which runs to the 6 November extract, or the reports of actions dated in the period | the received and unplaced counts and the partner route's median all move | the `convencoes` sheet's `relatos recebidos no periodo` row; asserted that the pinned window gives the golden, that both alternatives give different triples, and that the triple survives every receipt zone in the pack
+
+| SF27 | a report the desk could not code | carries no manual code, so it compares nothing and no cell holds it, the dictionary's `codigo_manual` line and 4.5's "onde a mesa o conseguiu fixar" | the empty code read as an ordinary code, which puts the row in the false-mark cell or the agreed-ordinary cell | `same call`, asserted: the eight rows read as ordinary codings give 447.14 against 454.91, the same cell and 22.1 from its nearest edge |
+| SF28 | the delivery moment of a report the network sent twice | the first load's stamp: the portal stamped the reposted rows on 14 September, the day the import log says that load arrived, and the dictionary's `carimbo_entrega_utc` line makes the delivery the first load's | the second load's stamp, which the portal wrote when the file came back | the partner route's median minutes move from 1,385 to 1,450 and its received count is unchanged | the dictionary's two lines quoted; asserted that the reposted rows carry the arrival day, that the golden reads the first load and that the other reading moves the median |
 
 ## Ladder
 
