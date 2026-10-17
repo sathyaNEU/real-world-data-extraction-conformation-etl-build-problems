@@ -165,6 +165,9 @@ class Records:
                 week_end = dt.datetime.combine(week_start + dt.timedelta(days=7), dt.time()) - dt.timedelta(minutes=1)
                 for t in tests:
                     lost = (wk == 3 and code in P.LOSS and rng.random() < P.LOSS[code]) or rng.random() < P.BG_LOSS
+                    out_w2 = P.OUTAGE_W2.get(code) if wk == 2 else None
+                    t["outage"] = bool(out_w2 and out_w2[0] <= t["released"] < out_w2[1])
+                    lost = lost or t["outage"]
                     held = flush if t["released"] >= hold_from else (flush_first if t["released"] < sunday_end else None)
                     t["lost"] = bool(lost); t["held"] = held is not None and held == flush
                     msgs = self._messages(code, t, lost, held, week_end, rng)

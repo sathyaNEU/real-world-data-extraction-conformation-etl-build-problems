@@ -30,7 +30,11 @@ def answers(X):
     esc = [s for s in streams if s["escalate"]]
     rest = [s for s in streams if not s["escalate"]]
     routes = {n: dict(esc=sorted(r["esc"]), wrong=sorted(r["esc"] ^ g["esc"])) for n, r in X["routes"].items()}
-    return dict(streams=streams, week2=week2, specimens=specimens, esc=esc, rest=rest, routes=routes,
+    c = E.week2_check(X)
+    check = {"golden": round(100 * c[("pos",) + E.GOLDEN_MODEL][0], 1)}
+    for k in ("peers", "received", "persist", "calendar", "poscount", "mean3", "trend"):
+        check[k] = round(100 * c[k][0], 1)
+    return dict(streams=streams, week2=week2, specimens=specimens, esc=esc, rest=rest, routes=routes, check=check,
                 esc_labs=sorted({s["lab"] for s in esc}), min_rest=min(s["comp"] for s in rest),
                 min_rest_stream=min(rest, key=lambda s: s["comp_raw"]),
                 n_tests=sum(s["received"] for s in streams), labname=dict(labs["laboratory"]))
@@ -52,7 +56,7 @@ def figures(A):
                                                           "completeness": w["comp"]} for w in A["week2"]},
            "week2_range": [min(w["comp"] for w in A["week2"]), max(w["comp"] for w in A["week2"])],
            "specimens": {s["lab"]: s["specimens"] for s in A["specimens"]},
-           "line_per_cent": 80, "streams_count": len(A["streams"]),
+           "line_per_cent": 80, "streams_count": len(A["streams"]), "week2_check_largest_miss": A["check"],
            "reports_span": {"first": "2022 week 40", "last": "2027 week 2"}}
     return fig
 
@@ -111,14 +115,17 @@ def submission(A):
     out.append("Against the tests each stream's own positivity says its laboratory ran in the week, Wexmoor's three streams "
                "(influenza, RSV, SARS-CoV-2) are %s per cent complete and Westmarch's %s, while every other stream is at %d "
                "per cent or more (%s's %s, the lowest). A lost result message drops a positive and a negative alike, so the "
-               "week's received positivity is the laboratory's, and the laboratories' tests follow it. Not last week's "
+               "week's received positivity is the laboratory's, and the laboratories' tests follow it; the protocol's "
+               "week-2 check keeps that way, whose estimates for week 2 missed some stream by %.1f per cent at most, "
+               "against %.1f for last week's report. Not last week's "
                "aggregate report as the week's tests, which escalates %d streams, %d of them complete streams whose epidemic "
                "fell in the week (the SARS-CoV-2 streams of %s laboratories and %s). Not the seasonal baseline of the same "
                "weeks in earlier winters, which escalates the same SARS-CoV-2 streams and %s and misses %s, this winter's "
                "influenza running later and higher than any before it. Not the other laboratories' change this week, which "
                "misses %s, the rural clinics' epidemics still rising, and escalates %s. Not the week's positives over last "
                "week's positivity, which misses %s, the lost messages taking their positives with them.\n"
-               % (comps(wx), comps(wm), A["min_rest"], SHORT[ms["lab_id"]], VLOW[ms["virus"]],
+               % (comps(wx), comps(wm), A["min_rest"], SHORT[ms["lab_id"]], VLOW[ms["virus"]], A["check"]["golden"],
+                  A["check"]["persist"],
                   len(rt["persist"]["esc"]), len(dw), WORDS[len(dcov)], _streams_of(dchh), _streams_of(cal_fp),
                   _streams_of(cal_miss), _streams_of(peer_miss), _streams_of(peer_fp), _streams_of(pos_miss)))
     assert cal_miss and peer_fp and peer_miss and pos_miss
@@ -144,17 +151,23 @@ def submission(A):
                "DETECTED): %s %s per cent, %s %s per cent."
                % (SHORT["L03"], ", ".join("%.1f" % s["positivity"] for s in wx), SHORT["L10"],
                   ", ".join("%.1f" % s["positivity"] for s in wm)))
-    out.append("3. For each stream, regressed the log of the weekly tests on the week's positivity and a linear time trend "
-               "over every report of record in lab_weekly_aggregate_reports.csv (the latest version, 2022 week 40 to 2027 "
-               "week 2, the weeks holding Thanksgiving, Christmas Day and New Year's Day left out), and read it at the "
+    ck = A["check"]
+    out.append("3. Set the ways of estimating week 2's tests that could have been made at its cutoff, 08:00 on 18 January, "
+               "beside the week-2 reports of record (FCP-2 section 5): a Poisson regression of each stream's weekly tests on "
+               "the week's positivity and a linear time trend over the reports of record before week 2 "
+               "(lab_weekly_aggregate_reports.csv, the weeks holding Thanksgiving, Christmas Day and New Year's Day left out), "
+               "read at the positivity of the stream's week-2 tests the platform held at the cutoff, missed some stream by "
+               "%.1f per cent at most; those held tests themselves missed by %.1f and last week's report by %.1f."
+               % (ck["golden"], ck["received"], ck["persist"]))
+    out.append("4. Fitted the same regression on every report of record (2022 week 40 to 2027 week 2) and read it at the "
                "week-3 positivity: %s %s tests, %s %s."
                % (SHORT["L03"], ", ".join(format(s["est"], ",") for s in wx), SHORT["L10"],
                   ", ".join(format(s["est"], ",") for s in wm)))
-    out.append("4. Divided each stream's tests on the platform by those tests (FCP-2 section 3) and escalated each stream "
+    out.append("5. Divided each stream's tests on the platform by those tests (FCP-2 section 3) and escalated each stream "
                "below 80 per cent (section 4): %s at %s per cent, %s at %s, every other stream at %d or more."
                % (SHORT["L03"], comps(wx), SHORT["L10"], comps(wm), A["min_rest"]))
     lo, hi = min(A["week2"], key=lambda w: w["comp_raw"]), max(A["week2"], key=lambda w: w["comp_raw"])
-    out.append("5. Week 2 (FCP-2 sections 3 and 5): receipt times before the state hub's broker migration "
+    out.append("6. Week 2 (FCP-2 sections 3 and 5): receipt times before the state hub's broker migration "
                "(surveillance_platform_change_log.csv, 19 January 2027 06:00) are county time (read as UTC, most would come "
                "about six hours before the release of the result they carry) and later ones UTC, so the "
                "results each laboratory's interface held from Saturday evening and sent on Monday morning arrived after the "
@@ -163,11 +176,11 @@ def submission(A):
                "(%s %s) per cent." % (lo["comp"], SHORT[lo["lab_id"]], VLOW[lo["virus"]], hi["comp"],
                                       SHORT[hi["lab_id"]], VLOW[hi["virus"]]))
     sp = sorted(A["specimens"], key=lambda s: s["specimens"])
-    out.append("6. Specimens (FCP-2 section 6): distinct patient number and collection time among each laboratory's week-3 "
+    out.append("7. Specimens (FCP-2 section 6): distinct patient number and collection time among each laboratory's week-3 "
                "tests on the platform, whatever accessions its tests carry: %s (%s) to %s (%s)."
                % (format(sp[0]["specimens"], ","), SHORT[sp[0]["lab_id"]], format(sp[-1]["specimens"], ","),
                   SHORT[sp[-1]["lab_id"]]))
-    out.append("7. Escalated the influenza, RSV and SARS-CoV-2 streams of %s and %s.\n" % (L["L03"], L["L10"]))
+    out[-1] = out[-1] + "\n"
     out.append("## 4. Deliverable Answers\n")
     out.append("### respiratory_feed_escalations_2027-W03.xlsx\n")
     out.append("1. Escalation for week 3, each laboratory's streams:")

@@ -5,7 +5,7 @@ import datetime as dt
 SEED = 234
 WORLD_SEED = 20                      # the epidemic world (sim.World)
 RECORDS_SEED = SEED * 1009 + 7       # reports, cancelled orders, message ids, distractors (records.Records)
-WEEK_SEED = {2: 156, 3: 195}   # each week's tests and messages
+WEEK_SEED = {2: 76, 3: 195}   # each week's tests and messages
 TZ_OFFSET_H = -6                     # America/Chicago in January (CST)
 COUNTY = "Tamsen County"
 POPULATION = 5_100_000
@@ -98,6 +98,9 @@ CUR = {
 LOSS = {"AH2": 0.45, "REF": 0.40}
 # every interface drops the odd message in any week
 BG_LOSS = 0.006
+# week 2: Brandmoor's interface lost every result it released from Tuesday morning to Friday morning; escalated on
+# Monday 18 January, the laboratory fixed it that week and has still to resend what was lost
+OUTAGE_W2 = {"AH4": (dt.datetime(2027, 1, 12, 9, 0), dt.datetime(2027, 1, 15, 9, 0))}
 # each laboratory's interface holds results released from Saturday evening and flushes them on Monday morning
 HOLD_FROM = {"CHH": 20, "AH1": 21, "AH2": 19, "AH3": 21, "AH4": 18, "CM1": 17, "CM2": 20, "CM3": 19, "LTC": 16, "REF": 15}
 # (the hold starts at that hour on Sunday, local time)

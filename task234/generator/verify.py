@@ -7,6 +7,7 @@ import re
 
 import numpy as np
 import pandas as pd
+import statsmodels.api as sm
 from openpyxl import load_workbook
 
 R = "elr_respiratory_results_extract_2027-01-25.csv"
@@ -50,6 +51,10 @@ def tests_of(target):
     return t, labs
 
 
+def poisson(Xm, y):
+    return sm.GLM(y, Xm, family=sm.families.Poisson()).fit(tol=1e-12, maxiter=200).params
+
+
 def main(target, golden, figs_path, sub_path):
     t, labs = tests_of(target)
     agg = pd.read_csv(os.path.join(target, AGG))
@@ -61,22 +66,35 @@ def main(target, golden, figs_path, sub_path):
     tt = np.arange(n + 1) / 52.18
     keep = np.array([not holiday(*w) for w in weeks])
     w3 = t[t.week == 3]
-    got = {}
+    w2 = t[t.week == 2]
+    cut = pd.Timestamp("2027-01-18 08:00")
+    assert weeks[-2:] == [(2027, 1), (2027, 2)]
+    assert pd.to_datetime(rep[(rep.mmwr_year < 2027) | (rep.mmwr_week < 2)].submitted).max() < cut
+    got, miss = {}, {"golden": [], "received": [], "persist": []}
     for (lab, v), g in rep.groupby(["lab_id", "virus"]):
         T = np.zeros(n); Pp = np.zeros(n)
         for r in g.itertuples():
             T[idx[(r.mmwr_year, r.mmwr_week)]] = r.tests; Pp[idx[(r.mmwr_year, r.mmwr_week)]] = r.positives
+        assert T.min() > 0
         x = w3[(w3.lab == lab) & (w3.virus == v)]
         rec, pos = len(x), int(x.pos.sum())
-        X = np.c_[np.ones(keep.sum()), Pp[keep] / T[keep], tt[:n][keep]]
-        b = np.linalg.lstsq(X, np.log(T[keep]), rcond=None)[0]
+        b = poisson(np.c_[np.ones(keep.sum()), Pp[keep] / T[keep], tt[:n][keep]], T[keep])
         est = float(np.exp(b[0] + b[1] * pos / rec + b[2] * tt[n]))
         got[(lab, v)] = dict(rec=rec, pos=pos, est=est, comp=rec / est)
+        # FCP-2 section 5: the same way made at week 2's cutoff, from the reports before week 2
+        h = w2[(w2.lab == lab) & (w2.virus == v) & (w2.rec <= cut)]
+        k1 = keep[:n - 1]
+        b2 = poisson(np.c_[np.ones(k1.sum()), Pp[:n - 1][k1] / T[:n - 1][k1], tt[:n - 1][k1]], T[:n - 1][k1])
+        e2 = float(np.exp(b2[0] + b2[1] * h.pos.sum() / len(h) + b2[2] * tt[n - 1]))
+        miss["golden"].append(abs(e2 / T[n - 1] - 1))
+        miss["received"].append(abs(len(h) / T[n - 1] - 1))
+        miss["persist"].append(abs(T[n - 2] / T[n - 1] - 1))
+    check = {k: round(100 * max(m), 1) for k, m in miss.items()}
+    assert check["golden"] * 5 < min(check["received"], check["persist"]), check
     esc = {k for k, v in got.items() if v["comp"] < 0.80}
     assert esc == {("L03", v) for v in ("Influenza", "RSV", "SARS-CoV-2")} | {("L10", v) for v in ("Influenza", "RSV", "SARS-CoV-2")}, esc
     # week 2
-    w2 = t[t.week == 2]
-    inby = w2[w2.rec <= pd.Timestamp("2027-01-18 08:00")].groupby(["lab", "virus"]).size()
+    inby = w2[w2.rec <= cut].groupby(["lab", "virus"]).size()
     r2 = rep[(rep.mmwr_year == 2027) & (rep.mmwr_week == 2)].set_index(["lab_id", "virus"]).tests
     wk2 = {k: 100.0 * inby[k] / r2[k] for k in r2.index}
     # specimens
@@ -107,6 +125,8 @@ def main(target, golden, figs_path, sub_path):
 
     # figures.json and the write-up
     figs = json.load(open(figs_path))
+    for k, x in check.items():
+        assert figs["week2_check_largest_miss"][k] == x, (k, x, figs["week2_check_largest_miss"])
     names = dict(zip(labs.lab_id, labs.laboratory))
     assert sorted(figs["call"]) == sorted("%s %s" % (names[k[0]], k[1]) for k in esc)
     for k, v in figs["week2"].items():
@@ -115,6 +135,9 @@ def main(target, golden, figs_path, sub_path):
     assert {names[k]: v for k, v in spec.items()} == figs["specimens"]
     sub = open(sub_path).read()
     assert "\u2014" not in sub and "\u2013" not in sub
+    step3 = next(l for l in sub.splitlines() if l.startswith("3. "))
+    assert ("missed some stream by %.1f per cent at most; those held tests themselves missed by %.1f and last week's "
+            "report by %.1f." % (check["golden"], check["received"], check["persist"])) in step3, step3
     block4 = sub.split("## 4. Deliverable Answers")[1]
     for lab, name in names.items():
         line = next(l for l in block4.splitlines() if l.strip().startswith("- %s:" % name) and "influenza" in l and "." in l)
@@ -123,5 +146,5 @@ def main(target, golden, figs_path, sub_path):
                 low = {"Influenza": "influenza"}.get(vir, vir)
                 assert re.search(r"%s %.1f(;|$)" % (re.escape(low), round(wk2[(lab, vir)], 1)), line), (line, vir)
         assert ("- %s: %s" % (name, format(spec[lab], ","))) in block4, name
-    print("verify: escalations, %d week-2 figures, %d specimen counts, goldens and write-up recomputed from the bundle"
-          % (len(wk2), len(spec)))
+    print("verify: escalations, the week-2 check (%s), %d week-2 figures, %d specimen counts, goldens and write-up "
+          "recomputed from the bundle" % (check, len(wk2), len(spec)))

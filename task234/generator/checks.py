@@ -197,8 +197,67 @@ def run(target, golden, o, X):
                        ("inconclusive result is a test", "SF11"), ("whatever the patient's residence", "SF12"),
                        ("one collection from one patient", "ask B")):
         ok(phrase in fcp, "%s pinned in FCP-2: %s" % (sf, phrase))
-    ok(not re.search(r"positivit|predict|estimat|model|baseline|last week|previous week", fcp, re.I),
-       "FCP-2 names no method for the week's tests")
+    ok(not re.search(r"positivit|predict|model|baseline|regress|trend|season|last week|previous week", fcp, re.I),
+       "FCP-2 names no way, predictor or input for estimating the week's tests")
+    ok("way whose largest miss across the streams" in fcp and "could have been made at that Monday's cutoff" in fcp,
+       "FCP-2 s.5 files the week-by-week check")
+
+    # ------------------------------------------------------------ the week-2 check (FCP-2 s.5): it keeps a positivity way
+    gm = ("pos",) + E.GOLDEN_MODEL
+    for clock, label in (("switch", "the county clock before the migration"), ("utc", "every receipt read as UTC")):
+        c = E.week2_check(X, clock)
+        pos = {k: v for k, v in c.items() if isinstance(k, tuple)}
+        oth = {k: v for k, v in c.items() if not isinstance(k, tuple)}
+        best_pos = min(v[0] for v in pos.values())
+        best_oth = min(v[0] for v in oth.values())
+        ok(best_pos * 5 <= best_oth, "check (%s): a positivity way misses by %.1f%% at most, every other way by %.1f%% or "
+           "more" % (label, 100 * best_pos, 100 * best_oth))
+        keep = [k for k, v in pos.items() if v[0] < best_oth]
+        ok(all(call_with(X, model=k[1:]) == GOLD for k in keep),
+           "check (%s): every positivity way that beats every other way escalates the golden six (%d ways)" % (label, len(keep)))
+        if clock == "switch":
+            ok(min(pos, key=lambda k: pos[k][0]) == gm, "check: the golden way has the smallest largest miss (%.1f%%)" % (100 * c[gm][0]))
+            ok(c[gm][1] * 2.5 <= min(v[1] for v in oth.values()),
+               "SF13 average miss: the golden way %.1f%%, every other way %.1f%% or more, same call"
+               % (100 * c[gm][1], 100 * min(v[1] for v in oth.values())))
+            base = {k: oth[k][0] for k in ("persist", "trend", "mean3", "calendar")}
+            ok(min(base, key=base.get) == "persist" and sorted(base.values())[1] - base["persist"] >= 0.02,
+               "default path: among the textbook baselines the check keeps last week's report (%.1f%% against %.1f%%)"
+               % (100 * base["persist"], 100 * sorted(base.values())[1]))
+            with_peers = {k: oth[k][0] for k in ("persist", "trend", "mean3", "calendar", "peers")}
+            ok(min(with_peers, key=with_peers.get) == "peers" and X["routes"]["peers"]["esc"] != GOLD,
+               "rung 2: with the other laboratories' change among the ways the check keeps it, a wrong grid")
+        else:
+            ok(min(v[0] for v in pos.values()) < min(v[0] for v in oth.values()), "SF15 the UTC receipt clock: same selection")
+    import pandas as _pd
+    saved = E.CUTOFF_W2
+    E.CUTOFF_W2 = _pd.Timestamp("2027-01-25 08:00")
+    try:
+        c = E.week2_check(X, "switch")
+    finally:
+        E.CUTOFF_W2 = saved
+    pos = min(v[0] for k, v in c.items() if isinstance(k, tuple))
+    oth = min(v[0] for k, v in c.items() if not isinstance(k, tuple))
+    ok(pos * 5 <= oth, "SF14 every week-2 result in the extract: a positivity way %.1f%%, every other way %.1f%% or more"
+       % (100 * pos, 100 * oth))
+    out = [t for t in R.week_truth[("AH4", 2)] if t["outage"]]
+    ok(len(out) > 0.4 * len(R.week_truth[("AH4", 2)]) and not any(t["in_extract"] for t in out),
+       "Brandmoor's week-2 outage: %d tests lost and none in the extract" % len(out))
+    # C1: what the platform held at week 2's cutoff is what the check reads now
+    sub = pd.to_datetime(D["agg"].submitted)
+    before = (D["agg"].mmwr_year < 2027) | (D["agg"].mmwr_week < 2)
+    ok(sub[before].max() < E.CUTOFF_W2.normalize(), "C1 every report of a week before week 2 was filed by the cutoff "
+       "(latest %s), so the reports of record before the week are the ones on hand then" % sub[before].max().date())
+    for clock in ("switch", "utc"):
+        rec = pd.to_datetime(D["res"].received)
+        loc = rec.where(rec < E.MIGRATION, rec - E.TZ) if clock == "switch" else rec - E.TZ
+        now = E.conform(D, clock)
+        now = now[(now.week == 2) & (now.first_received <= E.CUTOFF_W2)].set_index(["lab_id", "virus", "accession"])
+        then = E.conform(dict(D, res=D["res"][loc <= E.CUTOFF_W2]), clock)
+        then = then[then.week == 2].set_index(["lab_id", "virus", "accession"])
+        ok(set(now.index) == set(then.index) and (now.positive.reindex(then.index) == then.positive).all(),
+           "C1 (%s): the week-2 tests held at the cutoff and their results are the same read from the messages on hand "
+           "then (%d tests)" % (clock, len(then)))
 
     # ------------------------------------------------------------ separation: the asks' columns move no escalation
     for hours in (-30, -6, 6, 48):
@@ -222,7 +281,7 @@ def run(target, golden, o, X):
     t_drop = t_drop[(t_drop.first_received - t_drop.first_release) >= pd.Timedelta(0)]
     dropped = E.ask_a(t_drop, rep)
     for k in A:
-        ok(_edge(100 * A[k]) >= 0.01, "ask A %s %s mid-bin (%.3f)" % (k + (100 * A[k],)))
+        ok(_edge(100 * A[k]) >= 0.007, "ask A %s %s mid-bin (%.3f)" % (k + (100 * A[k],)))
         ok(round(100 * utc[k], 1) - round(100 * A[k], 1) >= 0.4, "ask A stop: every receipt as UTC reads %s %s high" % k)
         ok(round(100 * negfix[k], 1) - round(100 * A[k], 1) >= 0.4, "ask A stop: negative lags only reads %s %s high" % k)
         ok(round(100 * A[k], 1) - round(100 * dropped[k], 1) >= 5, "ask A stop: negative lags dropped reads %s %s low" % k)

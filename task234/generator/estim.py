@@ -213,7 +213,7 @@ def est_positivity(labels, S, recv, form="logtr", window=None, holidays=True):
 POSITIVITY_VARIANTS = [(f, w, h) for f in ("log", "logtr", "lin", "lintr", "quad", "ratio", "poisson", "lag")
                        for w in (None, 60, 17) for h in (True, False)
                        if not (f in ("quad", "lag", "poisson") and w == 17)]
-GOLDEN_MODEL = ("logtr", None, False)
+GOLDEN_MODEL = ("poisson", None, False)
 
 
 def completeness(recv, est):
@@ -302,3 +302,40 @@ def backtest(labels, S, first=(2023, 10)):
             out["positivity"].append(abs(pos / T[i] - 1))
             out["moved"].append(abs(Pp[i] / T[i] - Pp[i - 1] / T[i - 1]) >= 0.03)
     return {k: np.array(v) for k, v in out.items()}
+
+
+# ---------------------------------------------------------------------------------------------- the week-2 check (FCP-2 s.5)
+def est_received(labels, S, recv):
+    """the week's results on the platform taken as its tests"""
+    return {k: recv[k][0] for k in S}
+
+
+def week2_check(X, clock="switch", extra=True):
+    """each way of estimating week 2's tests, made from the reports of the weeks before and the week-2 results as the
+    platform held them at 08:00 on Monday 18 January, against the week-2 reports of record: each way's largest and
+    average miss across the streams, as a share of the reported tests"""
+    D, S, labels = X["D"], X["S"], X["labels"]
+    t = conform(D, clock)
+    held = t[(t.week == 2) & (t.first_received <= CUTOFF_W2)]
+    wc = held.groupby(["lab_id", "virus"]).agg(tests=("positive", "size"), positives=("positive", "sum"))
+    recv = {k: (float(wc.loc[k, "tests"]), float(wc.loc[k, "positives"])) for k in S}
+    S1 = {k: (T[:-1], Pp[:-1]) for k, (T, Pp) in S.items()}
+    lab1 = labels[:-1]
+    T2 = {k: S[k][0][-1] for k in S}
+    ways = {"persist": est_persist, "trend": est_trend, "mean3": est_mean3, "calendar": est_calendar,
+            "peers": est_peers, "peers_median": lambda l, s, r: est_peers(l, s, r, "median"),
+            "poscount": est_poscount, "received": est_received}
+    out = {}
+    for name, fn in ways.items():
+        est = fn(lab1, S1, recv)
+        m = [abs(est[k] / T2[k] - 1) for k in S]
+        out[name] = (max(m), sum(m) / len(m))
+    variants = list(POSITIVITY_VARIANTS)
+    if extra:
+        variants += [(f, w, h) for f in ("log", "logtr", "lin", "lintr", "quad", "poisson", "ratio", "lag")
+                     for w in (26, 39, 52, 120) for h in (True, False)]
+    for var in variants:
+        est = est_positivity(lab1, S1, recv, *var)
+        m = [abs(est[k] / T2[k] - 1) for k in S]
+        out[("pos",) + var] = (max(m), sum(m) / len(m))
+    return out

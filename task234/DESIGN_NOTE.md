@@ -1,7 +1,10 @@
 # task234 design note
 
-Architecture 1 (drawn 2026-10-16), wave 2, seed DQ07 (which laboratory feeds get a volume-drop alert against the seasonal
-baseline): the seed's world, decision and quantity only, the pitfall re-found from the data under the 10/10 rules.
+Architecture 2 (re-rooted 2026-10-17 after the determinism judge's round-2 SEND_BACK of architecture 1, which left the
+estimator of the week's tests to the data), wave 2, seed DQ07 (which laboratory feeds get a volume-drop alert against
+the seasonal baseline): the seed's world, decision and quantity only, the pitfall re-found from the data under the 10/10
+rules. Architecture 2 keeps the world and the decisive step and files the protocol's week-by-week check, which the
+judge found missing.
 Epidemiology & Public Health, disease surveillance and outbreak anomaly detection, Data Quality Monitoring & Alerting. A
 county health department's epidemiology unit receives electronic laboratory results for influenza, RSV and SARS-CoV-2
 from ten laboratories; every Monday its surveillance data manager sets which result streams the laboratory liaison
@@ -10,11 +13,14 @@ results received over the tests the laboratory's weekly aggregate report will co
 
 ## Draw
 
-Card `cards/task234.json` (registered 2026-10-16). Guard verdict WARN, one line each: `repeat.gate_g` against task263
-(decomposition_attribution, which splits emissions among sources measured only in mixtures) is accepted because the
-mechanism, the domain and the object differ; `repeat.decision` against task233 (designation_set) is accepted because the
-domain, the object (result streams, not published statistics) and the mechanism differ; `test.same_puzzle_older`
-(task231, task445 v1 loop 0) is differentiated on the card.
+Card `cards/task234.json` (architecture 2, registered 2026-10-17; architecture 1 in its lineage). Guard verdict WARN,
+one line: `repeat.question_form` against task193 and task194 (which) is the decision's own form, a set of streams.
+`test.own_lineage` is cleared by the card's differentiation line (architecture 1 left the estimator open; architecture 2
+files the check and gives week 2 an interface outage, the decisive step unchanged and unfiled); `test.same_puzzle_older`
+(task231, task445 v1 loop 0) stays differentiated. Furniture redrawn against the builds filed since architecture 1:
+calibration prior_period_close_out (task195 took parallel_run_overlap), forum other (task193 took operations_desk),
+forcing event period_close (task195 took season_or_peak), strategy decomposition_attribution (task464 took
+forecast_method_backtest).
 
 - **Pairing.** Epidemiology & Public Health / disease-surveillance-outbreak-anomaly-detection, serving Data Quality
   Monitoring & Alerting (the domain index lists this task type under AD and DQ).
@@ -30,15 +36,20 @@ domain, the object (result streams, not published statistics) and the mechanism 
   clinics in the county's north.
 - **Shape.** 07, a grid of cells (laboratories by virus), each cell graded. Decision designation_set, answer
   set_of_items, question form which.
-- **Strategy.** forecast_method_backtest with G12 decisive (a stream's missing results told apart from tests its
+- **Strategy.** decomposition_attribution with G12 decisive (a stream's missing results told apart from tests its
   laboratory never ran) and G6 supporting (each laboratory's patient mix sets its own epidemic clock); Gate G
   decomposition_attribution (a correctly reported change in a stream's volume assigned to its driver, the epidemic or a
-  lost message); calibration parallel_run_overlap (the aggregate reports beside the result feed over the same weeks);
-  context artifact filed_standard; layer 2 family forecast_uncertainty, pattern
-  epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection/3.
-- **Forum, event, organisation.** operations_desk (the laboratory liaison acts on the list), season_or_peak (influenza
-  is climbing: a stream losing results now blinds the county's indicators at the peak), local_government (a county
-  health department).
+  lost message); calibration prior_period_close_out (FCP-2 s.5's check: the estimates that could have been made for
+  week 2 at its Monday cutoff set beside the week-2 reports that have since closed it); context artifact filed_standard;
+  layer 2 family forecast_uncertainty, pattern epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection/3.
+- **The check (architecture 2).** FCP-2 s.5 files how the way of estimating a week's tests is chosen, in general terms:
+  set beside the last closed week's reports, the way whose largest miss across the streams was smallest. Week 2 was a
+  week in which Brandmoor's interface lost every result it released from Tuesday morning to Friday morning (about half
+  its week) and resent them on Wednesday 20 January, after its escalation; at the 18 January cutoff the platform held
+  half of Brandmoor's week. No sentence names a way, a predictor or what the week's results contribute.
+- **Forum, event, organisation.** other (the surveillance data manager sets the list for the laboratory liaison; no
+  committee), period_close (the close of MMWR week 3 forces the Monday call), local_government (a county health
+  department).
 - **People** (`guard.py names --geo "United States" --seed 234`): Michaela Mclean, surveillance data manager, who sets
   the escalations; Travis Humphrey, laboratory liaison; Kaitlyn Sanchez, respiratory epidemiologist, who keeps the
   protocol.
@@ -79,8 +90,12 @@ Sources, one line each (what it teaches; how this build differs):
 2. Collapse the week-3 result messages to tests for each stream (one test per accession and virus, influenza A and B
    rows as one influenza test, a corrected result once, cancelled tests out, the week by the county's local result
    date, the merged hospital's two facility identifiers as one laboratory).
-3. Take each stream's tests for week 3 from the latest aggregate report, week 2's.
-4. Completeness is the week's results over those tests; escalate below 80 per cent.
+3. Run FCP-2 s.5's check over the ways a forecaster reaches for first, each from the stream's own reports (last
+   week's count, last week's growth, the mean of the last three weeks, the seasonal baseline of earlier winters): set
+   beside the week-2 reports, last week's count missed some stream by 54.0 per cent at most, the seasonal baseline by
+   56.7, the mean by 80.4 and the growth by 111.7, so keep last week's count.
+4. Take each stream's tests for week 3 from the latest aggregate report, week 2's.
+5. Completeness is the week's results over those tests; escalate below 80 per cent.
 
 Ends on: 15 streams escalated, 9 of the 29 cells wrong: the SARS-CoV-2 streams of Ellery, Corrigan Valley, Brandmoor,
 the three urgent-care networks and Arbor Point and the children's hospital's influenza and RSV streams are escalated
@@ -92,10 +107,11 @@ Reference Laboratory, and no other stream.
 
 ## Stump sentence
 
-A competent solver divides each stream's week-3 results by the tests in last week's aggregate report and files 9 of
-the 29 cells wrong (Ends on: 15 streams escalated, nine of them complete streams whose epidemic fell in the week);
-the step that lands it there is taking the week's tests from the past instead of from the stream's own positivity,
-which moves with its patients' epidemic and not with a lost message.
+A competent solver runs the protocol's week-2 check over the textbook baselines, keeps last week's aggregate report as
+the way that missed least, divides each stream's week-3 results by it and files 9 of the 29 cells wrong (Ends on: 15
+streams escalated, nine of them complete streams whose epidemic fell in the week); the step that lands it there is
+taking the week's tests from the past instead of from the stream's own positivity, which moves with its patients'
+epidemic and not with a lost message.
 
 ## Three rules
 
@@ -125,20 +141,24 @@ which moves with its patients' epidemic and not with a lost message.
 - **Not semantics:** the default path reads every field, code and definition right (tests collapsed per accession and
   virus, the week by local result date, the protocol's ratio and line) and still files the wrong grid; the wrong cells
   come from where the week's tests are taken from, which no field, code or definition names.
-- **Not rule application:** the protocol files the ratio, its denominator (the aggregate report's count), the week and
-  the 80 per cent line; no filed sentence says how the week's tests are estimated before the report arrives, so
-  executing every stated rule with last week's count or the seasonal baseline still files the wrong grid.
-- **Analyst test:** a strong analyst who collapses the messages to tests correctly and reads the protocol takes each
-  stream's tests from last week's aggregate report and files the default path's Ends on (9 of 29 cells wrong); the
-  seasonal baseline of the same weeks in earlier winters files another wrong grid (9 wrong); `checks.py` runs both on the generator's clean truth and
-  asserts them, then changes only where the week's tests come from and asserts the golden.
+- **Not rule application:** the protocol files the ratio, its denominator (the aggregate report's count), the week, the
+  80 per cent line and the check that chooses the way of estimating the week's tests (s.5); it names no way and no
+  predictor, so executing every stated rule over the ways a forecaster reaches for first keeps last week's count (or,
+  with the other laboratories' change among them, that) and still files a wrong grid; only the analyst's own choice
+  of what in the week's results can estimate its tests reaches the golden.
+- **Analyst test:** a strong analyst who collapses the messages to tests correctly, reads the protocol and runs its
+  week-2 check over the textbook baselines keeps last week's aggregate report and files the default path's Ends on (9
+  of 29 cells wrong); with the other laboratories' change among the ways the check keeps that and files 3 cells wrong;
+  `checks.py` runs both on the generator's clean truth and asserts them, then changes only where the week's tests come
+  from and asserts the golden.
 - **Estimand:** the feed completeness protocol (in the pack) fixes the population (every result stream the protocol
   lists), the outcome (results received by Monday 08:00 for tests resulted in the week), the denominator (the tests the
-  laboratory's weekly aggregate report counts for that virus and week, still to arrive), the window (MMWR week 3 of 2027
-  by local result date) and the line (80 per cent).
+  laboratory's weekly aggregate report counts for that virus and week, still to arrive, estimated in the way s.5's
+  check keeps), the window (MMWR week 3 of 2027 by local result date) and the line (80 per cent).
 - **No decoy:** nothing is planted: no memo, draft, alert export or stakeholder figure states a completeness, a
-  baseline or an escalation; the interface outages are the events the protocol exists to catch, recorded only as their
-  effect on the messages; no rule is withheld and no block is copied.
+  baseline, an estimate or an escalation; the interface outages (Brandmoor's in week 2, Wexmoor's and Westmarch's in
+  week 3) are the events the protocol exists to catch, recorded only as their effect on the messages and, for
+  Brandmoor, the resent results; no rule is withheld and no block is copied.
 - **No certified replay:** no certified or published figure exists for the method to reproduce; the aggregate reports
   are the laboratories' own counts of past weeks, and the testing response is read from how those counts move with
   positivity, not recovered by matching a stated number.
@@ -156,12 +176,12 @@ half of a reported figure.
 
 | Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| 0 (default) last week's aggregate tests as the week's: 9 wrong | FCP-2 s.3 names the aggregate report as the denominator, so the latest one is the natural stand-in | the report sits beside the results by laboratory and virus | yes, carry the last observation | the season's own reports show weekly swings of a quarter | no | one division | readable |
-| 1 last week's tests carried forward at last week's growth, or the recent mean: 8 and 10 wrong | none | the weekly series | yes, a trend nowcast | the reports show the growth turning in several streams | no | one ratio | readable |
-| 2 the seasonal baseline (the same weeks of earlier winters, trend-adjusted, Farrington's construction): 9 wrong | none | the reports go back to 2022 | yes, the surveillance textbook | the season's reports show RSV, COVID and influenza off their usual weeks | no | a group-by | readable |
-| 2 the other laboratories' change this week applied to each stream: 3 wrong | none | the other streams' results this week | yes, compare with peers | the reports show the laboratories' patients on different clocks | no | one ratio | readable |
-| 2 the week's tests from its positives and last week's positivity: 4 wrong | none | the result values | yes, scale by positives | none, it fails only where results are lost | no | one division | readable |
-| 3 (decisive) each stream's tests from its own positivity this week, through the laboratory's testing response fitted on its reports, because a lost message drops a positive and a negative alike | no sentence names positivity, a model or a predictor; FCP-2 files only the ratio and its denominator | no column holds an expected count; the reports hold tests and positives only | no: the reflexes carry the past, scale by peers or use positives | only the reports' own weeks, which show tests following positivity to a solver who asks what drives a laboratory's testing | no | not linear: the response is fitted per stream and read at the week's positivity | silent |
+| 0 (default) last week's aggregate tests as the week's, the way the s.5 check keeps among the textbook baselines (largest week-2 miss 54.0 per cent): 9 wrong | FCP-2 s.3 names the aggregate report as the denominator and s.5's check, run over the baselines, keeps the latest one | the report sits beside the results by laboratory and virus | yes, carry the last observation | the week-2 check: it misses some stream by 54.0 per cent | no | one division | readable |
+| 1 last week's tests at last week's growth, or the recent mean: 8 and 10 wrong | none | the weekly series | yes, a trend nowcast | the week-2 check: 111.7 and 80.4 per cent | no | one ratio | readable |
+| 2 the seasonal baseline (the same weeks of earlier winters, trend-adjusted, Farrington's construction): 9 wrong | none | the reports go back to 2022 | yes, the surveillance textbook | the week-2 check: 56.7 per cent | no | a group-by | readable |
+| 2 the other laboratories' change this week applied to each stream: 3 wrong | none | the other streams' results this week | yes, compare with peers | the week-2 check: 44.6 per cent (Brandmoor's lost half pulls its peers' change) | no | one ratio | readable |
+| 2 the week's results taken as its tests, or its positives over last week's positivity: none escalated; 4 wrong | none | the result values | yes, the feed as its own count; scale by positives | the week-2 check: 52.6 and 62.9 per cent (Brandmoor's lost half) | no | one division | readable |
+| 3 (decisive) each stream's tests from its own positivity this week, through the laboratory's testing response fitted on its reports, because a lost message drops a positive and a negative alike | s.5 asks for the way that missed week 2 least and names none; no sentence names positivity, a model or a predictor | no column holds an expected count; the reports hold tests and positives only | no: the reflexes carry the past, scale by peers, use the feed's own count or its positives | the week-2 check scores it (largest miss 8.6 per cent) only for a solver who brings it; the check names no candidate | no | not linear: the response is fitted per stream and read at the week's positivity | silent |
 
 ## Semantic fork table
 
@@ -179,26 +199,32 @@ half of a reported figure.
 | SF10 | a hospital sending under two facility identifiers | one laboratory (the register maps both) | two, or the second left unmapped | the second identifier carries under 2 per cent of the extract, same call | stream register; same call (asserted) |
 | SF11 | an inconclusive result | a test, neither positive nor negative | dropped | same call | FCP-2 s.2; same call (asserted) |
 | SF12 | population of the week's tests | every test the laboratory resulted in the week, whatever the patient's residence | county residents only | the aggregate reports count every test | FCP-2 s.3 (the report's count); data dictionary |
+| SF13 | the check's "largest miss across the streams" | each way's largest miss over the 29 streams, as a share of the week's reported tests | the average miss | same call: the Poisson fit on positivity misses by 3.2 per cent on average, every other way by 9.0 or more (asserted) | FCP-2 s.5; same call (asserted) |
+| SF14 | estimates "that could have been made at that Monday's cutoff" | from the reports to week 1 and the week-2 results the platform held at 08:00 on 18 January | every week-2 result in the extract | same call: Brandmoor's lost half was never resent, so the week's received results still miss by 49.5 per cent and the positivity fit by 7.6 (asserted) | FCP-2 s.5; same call (asserted) |
+| SF15 | the receipt clock for what the platform held at the cutoff | county time before the broker migration | UTC throughout (the weekend batch counted as held) | same call: the positivity fit misses by 7.6 per cent at most, every other way by 49.5 or more (asserted) | same call (asserted) |
 
 ## Ladder
 
-Four rungs, each a defensible estimate of the week's tests, each dying to one shipped fact (counts in tests; the line at
-80 per cent; figures measured on the shipped pack, asserted in `checks.py`).
+Four rungs, each a defensible way of estimating the week's tests, each dying to one shipped fact, the s.5 check on week
+2 first among them (counts in tests; the line at 80 per cent; figures measured on the shipped pack, asserted in
+`checks.py`; week-2 largest misses at the 18 January cutoff).
 
 | Rung | Construction | Answer | Dies to |
 |---|---|---|---|
-| 0 (default) | last week's aggregate tests | 15 escalated, 9 wrong (nine complete streams escalated); nearest stream 0.042 from the line | the season's reports: where a stream's positivity moved 3 points or more, last week's count misses the week by 15.5 per cent at the median |
-| 1 | last week's tests at last week's growth; the mean of the last three weeks | 14 escalated, 8 wrong (seven healthy influenza streams just past their turn, Arbor Point's SARS-CoV-2); 14 escalated, 10 wrong | the reports: last week's growth reversed in those streams; the holiday weeks pull the mean down |
-| 2 | the seasonal baseline; the peers' change (pooled or median); positives over last week's positivity | 13 escalated, 9 wrong (the SARS-CoV-2 streams of seven laboratories and the children's RSV escalated, Wexmoor's influenza missed); 5 escalated, 3 wrong (the children's influenza escalated, Westmarch's influenza and SARS-CoV-2 missed), median 7 escalated, 3 wrong; 2 escalated, 4 wrong (Wexmoor's three streams and Westmarch's SARS-CoV-2 missed) | the reports: this winter's influenza peaks later and higher than any earlier one; the laboratories' patients are on different clocks; positives are lost with the rest |
-| 3 (golden) | each stream's tests predicted from its own positivity through its testing response | 6 escalated, the golden; nearest stream 0.073 from the line (Bluestem's RSV at 87 per cent) | |
+| 0 (default) | last week's aggregate tests, the way the check keeps among the textbook baselines (largest miss 54.0 per cent, the seasonal baseline 56.7) | 15 escalated, 9 wrong (nine complete streams escalated); nearest stream 0.042 from the line | the check: a way built on the positivity misses week 2 by 7.8 per cent at most |
+| 1 | last week's tests at last week's growth; the mean of the last three weeks | 14 escalated, 8 wrong (seven healthy influenza streams just past their turn, Arbor Point's SARS-CoV-2); 14 escalated, 10 wrong | the check: 111.7 and 80.4 per cent |
+| 2 | the seasonal baseline; the other laboratories' change (pooled or median); the week's received results taken as its tests; positives over last week's positivity | 13 escalated, 9 wrong; 5 escalated, 3 wrong (the children's influenza escalated, Westmarch's influenza and SARS-CoV-2 missed), median 7 escalated, 3 wrong; none escalated, 6 wrong; 2 escalated, 4 wrong | the check: 56.7; 44.5 and 49.1; 52.6; 63.1 per cent (Brandmoor's lost half in week 2 moves every count-based way) |
+| 3 (golden) | each stream's tests predicted from its own positivity through its testing response (a Poisson fit on positivity and a linear trend over every report of record, holiday weeks out) | 6 escalated, the golden; nearest stream 0.074 from the line (Bluestem's RSV at 87.4 per cent) | |
 
 - **Margins.** Every positivity model in the asserted family (log-linear, log-linear with trend, Poisson, quadratic in
   the log, anchored on last week's report, with last week's tests as a covariate, linear and linear with trend; on the
   current season, the last sixty weeks or every report; holiday weeks in or out) escalates exactly the golden six, the
-  nearest stream at least 0.069 from the line under the log models (0.099 log-linear, 0.069 with trend, 0.074 Poisson,
-  0.076 quadratic, 0.077 anchored, 0.099 lagged) and 0.031 under the linear ones; no fit on 13 weeks of reports or more,
-  in any of those forms, changes a stream (asserted). On the truth (the tests the week-3 reports will count) the six are
-  52 to 58 per cent complete and every other stream 93.5 per cent or more.
+  nearest stream at least 0.069 from the line under the log models and 0.031 under the linear ones; no fit on 13 weeks
+  of reports or more, in any of those forms, changes a stream (asserted). On the truth (the tests the week-3 reports
+  will count) the six are 52 to 58 per cent complete and every other stream 93.5 per cent or more.
+- **The check.** Of the ways tried, the golden's Poisson fit has the smallest largest week-2 miss (7.8 per cent); every
+  other positivity fit that clears 30 per cent gives the golden six; every way not built on the positivity misses by
+  44.5 per cent or more, under either receipt clock and with every week-2 result in the extract (asserted).
 - **Position and dominance.** Every reflex lands on its own wrong grid; only the decisive construction reaches the
   golden; the default path's nine wrong cells are all 0.04 or more from the line.
 - **Grid.** The default moves 9 of 29 cells, the rungs 3 to 10.
@@ -219,7 +245,7 @@ Four rungs, each a defensible estimate of the week's tests, each dying to one sh
 | 9 | Boundary inclusivity | escalate below 80 per cent, 80 itself not escalated | FCP-2 s.4 (SF9) |
 | 10 | Rounding path | completeness unrounded against the line; shown to one decimal | FCP-2 s.4 |
 | 11 | Tie-break | none: each stream on its own | FCP-2 s.4 |
-| 12 | Maturity and censoring | week-3 reports not yet filed; the tests are estimated | FCP-2 s.4 (set on the Monday) |
+| 12 | Maturity and censoring | week-3 reports not yet filed; the tests are estimated in the way FCP-2 s.5's check keeps | FCP-2 s.4 and s.5; C2 (the check on week 2 keeps a positivity way: 7.8 per cent against 44.5 or more) |
 | 13 | Order of operations | collapse to tests, count by stream, divide, compare | FCP-2 s.2 to s.4 |
 | 14 | Row order | irrelevant to counts | C1 |
 | 15 | Duplicate resolution | a corrected result once; influenza A and B one test | FCP-2 s.2 (SF2, SF3) |
@@ -229,28 +255,30 @@ Four rungs, each a defensible estimate of the week's tests, each dying to one sh
 | 19 | Code and status semantics | test codes to viruses by the test code list; status F, C, X | test code list; FCP-2 s.2 |
 | 20 | Integerisation | none | counts are integers |
 | 21 | Clause scope | FCP-2 applies to the register's streams from 1 October 2026 | FCP-2 s.1 |
-| 22 | Forward window contents | the week-3 tests the aggregate reports will count on the Wednesday | FCP-2 s.3 and s.4 |
+| 22 | Forward window contents | the week-3 tests the aggregate reports will count on the Wednesday | FCP-2 s.3 to s.5 (SF13 to SF15) |
 
 ## Literal reader
 
 Executed word for word, FCP-2 and the prompt fix the streams (the register's 29), the test (accession and virus, with
 the collapse rules), the week (MMWR week 3 by local release date), the numerator (the extract's results), the
-denominator (the tests the week-3 aggregate report will count), the line and the time of the call (the Monday, before
-the reports). No sentence fixes how the week's tests are estimated before the reports arrive; the reports do. They run
-from October 2022, and in every stream the weekly tests follow the stream's own positivity (the laboratory tests more
-patients as the share testing positive rises). Back-tested one week ahead over the 5,046 closed stream-weeks since
-March 2023, a fit of each stream's log tests on its positivity misses by 15 per cent or more once, last week's count 177
-times and last week's growth 271 times; in the 210 stream-weeks where positivity moved by 3 points or more, the fit misses
-by 2.6 per cent at the median, last week's count by 15.5 and last week's growth by 4.5 (asserted). A lost message drops
-a positive and a negative alike, so the week's received positivity is the laboratory's. Every model of the response
-that fits the reports gives the golden six; the default path reads every term the same way and differs only in where
-the week's tests come from.
+denominator (the tests the week-3 aggregate report will count), the line, the time of the call (the Monday, before
+the reports) and the way of estimating the week's tests: the way whose largest miss across the streams was smallest
+when the estimates that could have been made at week 2's cutoff were set beside week 2's reports (s.5). Executed, the
+check scores every way a reader brings: last week's report misses some stream by 54.0 per cent, the seasonal baseline
+by 56.7, the recent mean by 80.4, last week's growth by 111.7, the other laboratories' change by 44.5, the week's
+received results by 52.6 and positives over last week's positivity by 63.1 (Brandmoor's interface lost half its week
+and the platform held only the rest), while each stream's tests read from its own positivity through the testing
+response fitted on its reports miss by 7.8 per cent at most. No sentence names that way; the check keeps it once a
+reader brings it, and every positivity way the check could keep escalates the golden six. Over the 5,046 closed
+stream-weeks since March 2023 the same fit misses by 15 per cent or more once, last week's count 177 times (asserted).
+A lost message drops a positive and a negative alike, so the week's received positivity is the laboratory's.
 
 ## Oracles
 
-- The aggregate reports from October 2022: the bench the decisive construction is fitted and checked on; they tie
-  every route's past weeks equally (they hold no week-3 count) and show the positivity relation only to a solver who
-  asks what drives a laboratory's testing.
+- FCP-2 s.5's check on week 2 (the week-2 reports beside the week-2 results the platform held at the cutoff): a filed
+  selection criterion (C2), not an oracle; it scores only the ways a reader brings and names none, and it keeps the
+  golden's way only for a reader who brings the stream's own positivity.
+- The aggregate reports from October 2022: the history the testing response is fitted on; they hold no week-3 count.
 - The state's regional positivity table, the county's syndromic ILI series and the county's respiratory admissions
   (distractors, named in `metadata.json`): none counts a laboratory's tests or flags a stream; the state table and the
   admissions end at week 2, and the ILI series covers the county's emergency departments, not the rural clinics or a
@@ -270,7 +298,7 @@ scrambled).
 
 | Ask | Figures | H18 home | Use | Primary device (family) | Hazards | Path (files, columns) | Stops |
 |---|---|---|---|---|---|---|---|
-| A: each stream's completeness for week 2, now that the week-2 aggregate reports are in | 29 | a reconciliation of the feed against the laboratories' own counts for the last closed week | the liaison's note to each laboratory quotes last week's completeness beside this week's call | D8, a clock against a filed cutoff: until the state hub's broker migration on Tuesday 19 January the platform wrote receipt times in local time; the dictionary names the hub's broker as the stamp's writer and states no zone, while the extract's other times are UTC; every laboratory's interface holds the results it releases from Saturday evening and sends them on Monday morning, so the week-2 batch sent on Monday 18 January (after the 08:00 cutoff) reads as arriving before it | the influenza A and B rows; corrected and cancelled results; the merged hospital's two identifiers; UTC release times against the local week | results (facility, accession, test code, target, status, released, received), aggregate reports (tests by laboratory, virus and week), stream register (facility to laboratory), test code list, FCP-2 (s.2, s.3, s.5), platform change log (the migration), dictionary: 7 files, 12 columns | every receipt time read as UTC (every stream high: 99.1 to 99.7 against the answer's 93.8 to 98.0); only rows received before their release shifted (every stream 0.4 points or more high); every pre-migration row shifted and week-3 rows too (the answer for week 2, harmless to week 3); rows with a negative lag dropped (every stream 5 points or more low); the answer, every figure at least 0.012 points from a rounding edge |
+| A: each stream's completeness for week 2, now that the week-2 aggregate reports are in | 29 | a reconciliation of the feed against the laboratories' own counts for the last closed week | the liaison's note to each laboratory quotes last week's completeness beside this week's call | D8, a clock against a filed cutoff: until the state hub's broker migration on Tuesday 19 January the platform wrote receipt times in local time; the dictionary names the hub's broker as the stamp's writer and states no zone, while the extract's other times are UTC; every laboratory's interface holds the results it releases from Saturday evening and sends them on Monday morning, so the week-2 batch sent on Monday 18 January (after the 08:00 cutoff) reads as arriving before it | the influenza A and B rows; corrected and cancelled results; the merged hospital's two identifiers; UTC release times against the local week | results (facility, accession, test code, target, status, released, received), aggregate reports (tests by laboratory, virus and week), stream register (facility to laboratory), test code list, FCP-2 (s.2, s.3, s.5), platform change log (the migration), dictionary: 7 files, 12 columns | every receipt time read as UTC (every stream high: 99.1 to 99.7 against the answer's 93.8 to 98.0); only rows received before their release shifted (every stream 0.4 points or more high); every pre-migration row shifted and week-3 rows too (the answer for week 2, harmless to week 3); rows with a negative lag dropped (every stream 5 points or more low); the answer, every figure at least 0.0099 points from a rounding edge (Brandmoor's three at about 48 per cent, its interface's lost half never resent) |
 | B: the specimens each laboratory tested in week 3 that have results on the platform | 10 | a measure every laboratory carries that the call does not turn on | the liaison opens each call with the laboratory's specimen volume | D7, the true key elsewhere: most laboratories issue an accession per test ordered, so one swab tested for influenza, RSV and SARS-CoV-2 carries up to three accessions, and the panel laboratories add tests to a swab under new accessions; a specimen is one collection from one patient (FCP-2 s.6) | patients swabbed twice in the week; the influenza A and B rows | results (facility, accession, patient number, collected, target), stream register, FCP-2 s.6, dictionary: 4 files, 5 columns | distinct accessions (every laboratory high: 2,976 to 12,863 against the answer's 2,835 to 9,204); distinct patients (every laboratory low: 2,715 to 8,792, repeat swabs); the answer, distinct patient and collection time (patient and collection date counts the same, a patient's collections a day or more apart, asserted) |
 
 - **Span:** nine files and 17 column uses across the asks; no shared primary or path (A reads receipt and release
@@ -363,3 +391,18 @@ entries, the six-hour receipt inversion before the migration, both the week-2 de
 - A patient's two collections on one day (judge round 1, minor): patient and collection date counted two specimens
   as one; a patient's collections in the week now fall a day or more apart, so the date and time keys converge
   (asserted in county time and in UTC).
+- Architecture 1 (drawn 2026-10-16, built and judged 2026-10-17): the week's tests estimated from each stream's own
+  positivity with no filed text directing how the week's tests are estimated; judge round 1 DETERMINISTIC, FIX_NOW (the
+  dictionary's UTC receipt time, fixed), round 2 NOT_DETERMINISTIC, SEND_BACK, underspecified_objective (the data favoured
+  the positivity fit, 2.9 against 5.7 per cent, but nothing directed a solver to compare ways). Spent; re-rooted as
+  architecture 2 with the protocol's week-by-week check filed and week 2 given an interface outage.
+- A filed back-test over the season's closed weeks (architecture 2 draft): with no losses in those weeks the week's own
+  received count would score best and escalate nothing, and with the holiday weeks in, the other laboratories' change
+  scores level with a positivity fit (6.0 against 6.4 per cent on average); the check on the last closed week, when
+  Brandmoor lost half its results, separates the ways under every reading.
+- Brandmoor resending its lost week-2 results on 20 January (architecture 2 draft): read with every week-2 result in
+  the extract, the week's received results then missed by 0.8 per cent at most and would have kept themselves; the
+  lost results are not resent by the extract, so that reading also keeps the positivity fit.
+- The log-linear fit with trend as the golden model under the check: a Poisson fit on the same terms missed week 2 by
+  7.8 per cent at most against its 8.0, so the golden is the Poisson fit, the closest of the ways tried; the call is
+  the same under either.

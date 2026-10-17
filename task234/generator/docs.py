@@ -83,6 +83,10 @@ def protocol(path):
                     "for the week, and the liaison quotes it to the laboratory at the next call. Results that reach the "
                     "platform after the Monday cutoff stay on the platform for case surveillance and do not count toward "
                     "the week's completeness.", b),
+          Paragraph("The data manager then sets the week's reports beside the estimates of each stream's tests for the week "
+                    "that could have been made at that Monday's cutoff. The next Monday's escalations are judged against "
+                    "the week's tests estimated in the way whose largest miss across the streams, as a share of the tests "
+                    "the reports counted, was smallest.", b),
           Paragraph("6. Specimens", h2),
           Paragraph("A specimen is one collection from one patient. The liaison opens each call with the number of the "
                     "laboratory's specimens tested in the week whose results are on the platform.", b),

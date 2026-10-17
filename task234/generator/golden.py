@@ -121,10 +121,13 @@ def workbook(path, A):
         "Tests follow FCP-2 section 2: one per laboratory, accession and virus; RV-FLUA and RV-FLUB on one accession are one "
         "influenza test; a corrected result stands in place of the result it corrects; cancelled orders are not tests; the "
         "week is the county date of the first release.",
-        "Tests predicted from positivity: for each stream, the log of the weekly tests regressed on the week's positivity and a "
-        "linear time trend over every report of record, leaving out the weeks holding Thanksgiving, Christmas Day and New "
-        "Year's Day, read at the stream's week-3 positivity. A lost result message takes a positive and a negative alike, so "
-        "the positivity of the results that arrived is the laboratory's.",
+        "Tests predicted from positivity: for each stream, a Poisson regression of the weekly tests on the week's positivity "
+        "and a linear time trend over every report of record, leaving out the weeks holding Thanksgiving, Christmas Day and "
+        "New Year's Day, read at the stream's week-3 positivity. A lost result message takes a positive and a negative alike, "
+        "so the positivity of the results that arrived is the laboratory's. It is the way FCP-2 section 5's check keeps: set "
+        "beside the week-2 reports, its estimates for week 2 missed some stream by %.1f per cent at most, against %.1f for "
+        "the week-2 tests the platform held at the cutoff and %.1f for last week's report."
+        % (A["check"]["golden"], A["check"]["received"], A["check"]["persist"]),
         "Completeness above 100 means the stream's results ran ahead of the prediction; the escalation line is 80 per cent, "
         "compared unrounded (FCP-2 section 4).",
         "Receipt times: the platform wrote them in county time until the state hub's broker migration at 06:00 on 19 January "

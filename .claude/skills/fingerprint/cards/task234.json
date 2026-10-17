@@ -1,8 +1,8 @@
 {
   "task": "task234",
-  "architecture": "v1",
-  "drawn": "2026-10-16",
-  "slot_note": "seed DQ07 (which laboratory feeds get a volume-drop alert against the seasonal baseline): the world, the decision and the quantity only; the pitfall re-found from the data under the 10/10 rules",
+  "architecture": "v2",
+  "drawn": "2026-10-17",
+  "slot_note": "seed DQ07 (which laboratory feeds get a volume-drop alert against the seasonal baseline): the world, the decision and the quantity only. Architecture 2 keeps architecture 1's world and decisive step and closes the estimator the judge found open: the protocol files the week-by-week check (the way of estimating a week's tests that missed the last closed week's reports least), and last week a laboratory's interface lost half its results",
   "domain": "epidemiology-public-health",
   "subdomain": "disease-surveillance-outbreak-anomaly-detection",
   "niche": "a county health department's respiratory laboratory-feed monitor deciding, for each laboratory's influenza, RSV and SARS-CoV-2 result stream, whether the laboratory liaison escalates it for MMWR week 3 of 2027, judged on the stream's completeness against the tests the laboratory's weekly aggregate report will count, in a week when the children's influenza and RSV epidemics and the holiday COVID-19 wave are falling, adult influenza has just turned and the rural clinics' epidemics are still rising",
@@ -23,8 +23,8 @@
     "G6"
   ],
   "gate_g": "decomposition_attribution",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "forecast_method_backtest",
+  "calibration_form": "prior_period_close_out",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
@@ -39,8 +39,8 @@
     "grain": "result message",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "season_or_peak",
+  "forum": "other",
+  "forcing_event": "period_close",
   "org_family": "local_government",
   "world": {
     "geography": "a fictional county in the United States (its health department, laboratories, hospitals and people are fictional; personas on the en_US index)",
@@ -59,19 +59,38 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is what each source produced in the current period, which moves with a driver whose timing this period departs from every earlier one and differs between sources; a loss in transit removes items without changing the share carrying a property that tracks the driver, so each source's own share predicts its output, while the calendar, the last period and the other sources each misjudge it.",
-  "driver_concrete": "Each laboratory's weekly respiratory test count rises and falls with the epidemics among its own patients, and in MMWR week 3 those run on different clocks (children's influenza and RSV and the holiday COVID-19 wave falling, adult influenza just turned, the rural clinics' epidemics rising); an interface losing results drops positive and negative results alike, so each stream's test positivity, which no lost message moves, predicts through the laboratory's testing response fitted on its aggregate reports the tests it ran, while last week's aggregate count, the seasonal baseline of earlier winters and the other laboratories' change each misjudge some streams.",
-  "stump": "A competent solver divides each stream's week-3 results by the tests in last week's aggregate report and escalates 15 streams, 9 of them complete streams whose epidemic fell in the week (the SARS-CoV-2 streams of seven laboratories and the children's hospital's influenza and RSV); the step that lands it there is taking the week's tests from the past instead of from the stream's own positivity, which moves with its patients' epidemic and not with a lost message.",
+  "driver": "The decisive quantity is what each source produced in the current period, read from a share in its own output that a loss in transit cannot move and that follows the driver of its output; a filed check against the last closed period, when one source lost half its items, keeps that reading over the last period, the calendar, the other sources and the received count, each of which misses some source by more than two fifths.",
+  "driver_concrete": "Each laboratory's weekly respiratory test count rises and falls with the epidemics among its own patients, on different clocks in MMWR week 3; the protocol judges the week's escalations against tests estimated the way that missed week 2's aggregate reports least, a week in which Brandmoor's interface lost half its results and resent them after the cutoff; each stream's test positivity, which no lost message moves, predicts through the laboratory's testing response the tests it ran (largest week-2 miss 8.6 per cent), while last week's count, the seasonal baseline, last week's growth, the other laboratories' change and the received count miss some stream by 44.6 to 111.7 per cent.",
+  "stump": "A competent solver estimates each stream's week-3 tests from its own reports with the textbook baselines, keeps last week's report as the one that missed week 2 least among them (54.0 per cent at worst), and escalates 15 streams, 9 of them complete streams whose epidemic fell in the week; the step that lands it there is taking the week's tests from the past instead of from the stream's own positivity, which moves with its patients' epidemic and not with a lost message.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who collapses the result messages to tests correctly and reads the protocol takes each stream's tests for the week from last week's aggregate report and escalates 15 streams with 9 cells wrong; the seasonal baseline of the same weeks in earlier winters files 9 cells wrong, the other laboratories' change 3 and the week's positives over last week's positivity 4; only the tests predicted from each stream's own positivity file the golden.",
+  "analyst_test": "A strong analyst who collapses the result messages to tests correctly, reads the protocol and runs its week-2 check over the ways a forecaster reaches for first (last week's report, its growth, the recent mean, the seasonal baseline) keeps last week's report and escalates 15 streams with 9 cells wrong; adding the other laboratories' change keeps that instead and files 3 cells wrong; only the tests predicted from each stream's own positivity miss week 2 by under a tenth and file the golden.",
   "domain_test": "The deciding quantity is each stream's tests for the week predicted from its own test positivity, the surveillance field's measure of epidemic activity that is independent of testing volume and untouched by a lost message; with meters or shop tills for laboratories there is no positivity to read, and a seasonal (Farrington-type) baseline, a persistence or a peer estimate in its place changes the escalations.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task231": "task231 takes the closed share of a round's silent firms from earlier rounds the business register has caught up with (exits recorded a year late); this build has no late register and no silent units to classify: every laboratory reports, and a stream's missing results this week are told apart from tests never run through the stream's own test positivity, a ratio no lost message moves, which predicts the tests its laboratory ran.",
-    "task445": "task445's first loop completes a still-open period reporter by reporter from each one's last report, slow reporters concentrated in some units; this build carries no last report forward: last week's count is the wrong route here, because each laboratory's tests move with its own patients' epidemic, read in the current week through positivity, and the aggregate report is the outcome being predicted, not a stale input to carry."
+    "task445": "task445's first loop completes a still-open period reporter by reporter from each one's last report, slow reporters concentrated in some units; this build carries no last report forward: last week's count is the wrong route here, because each laboratory's tests move with its own patients' epidemic, read in the current week through positivity, and the aggregate report is the outcome being predicted, not a stale input to carry.",
+    "task234": "v1 left the estimator of the week's tests to the data, and the judge's second round found it open; v2 files the week-by-week check the protocol runs on the last closed week and gives week 2 an interface outage, so the check itself separates the ways: the decisive step (the stream's own positivity as the estimator) is unchanged and still unfiled."
   },
-  "lineage": [],
-  "notes": "Decisive G12 (a stream's missing results told apart from tests its laboratory never ran, through the stream's own positivity), G6 supporting (each laboratory's patient mix sets its own epidemic clock); Gate G decomposition_attribution: a correctly reported change in a stream's volume assigned to its driver, the epidemic among its patients or a lost message. The protocol files the WHAT (completeness as the stream's results over the tests the weekly aggregate report counts, the 80 per cent line, the MMWR week by result date); no sentence names how the week's tests are estimated.",
+  "lineage": [
+    {
+      "driver": "The decisive quantity is what each source produced in the current period, which moves with a driver whose timing this period departs from every earlier one and differs between sources; a loss in transit removes items without changing the share carrying a property that tracks the driver, so each source's own share predicts its output, while the calendar, the last period and the other sources each misjudge it.",
+      "driver_concrete": "Each laboratory's weekly respiratory test count rises and falls with the epidemics among its own patients, and in MMWR week 3 those run on different clocks (children's influenza and RSV and the holiday COVID-19 wave falling, adult influenza just turned, the rural clinics' epidemics rising); an interface losing results drops positive and negative results alike, so each stream's test positivity, which no lost message moves, predicts through the laboratory's testing response fitted on its aggregate reports the tests it ran, while last week's aggregate count, the seasonal baseline of earlier winters and the other laboratories' change each misjudge some streams.",
+      "stump": "A competent solver divides each stream's week-3 results by the tests in last week's aggregate report and escalates 15 streams, 9 of them complete streams whose epidemic fell in the week (the SARS-CoV-2 streams of seven laboratories and the children's hospital's influenza and RSV); the step that lands it there is taking the week's tests from the past instead of from the stream's own positivity, which moves with its patients' epidemic and not with a lost message.",
+      "stump_strategy": "forecast_method_backtest",
+      "gate_g": "decomposition_attribution",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "decision_type": "designation_set",
+      "calibration_form": "parallel_run_overlap",
+      "architecture": "v1",
+      "fate": "spent 2026-10-17: determinism judge round 2 SEND_BACK, underspecified_objective (no shipped text directed how the week's tests are estimated before the reports arrive; round 1 had found it closed by the data)"
+    }
+  ],
+  "notes": "Decisive G12 (a stream's missing results told apart from tests its laboratory never ran, through the stream's own positivity), G6 supporting (each laboratory's patient mix sets its own epidemic clock); Gate G decomposition_attribution. FCP-2 files the WHAT (completeness against the tests the weekly aggregate report counts, the 80 per cent line, the MMWR week by result date) and the week-by-week check (the way of estimating that missed the last closed week's reports least, judged on its largest miss across the streams); no sentence names how the week's tests are estimated or what the week's results contribute. Furniture redrawn at the re-root against builds filed since architecture 1: calibration prior_period_close_out (the week-2 check against the reports that closed it), forum other (the surveillance data manager sets the escalations; no committee), forcing event period_close (the close of MMWR week 3).",
   "client_domain": "epidemiology-public-health",
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection/3",
@@ -84,5 +103,5 @@
     "receipt times written in county time until the state hub's broker migration and in UTC after it",
     "accessions numbered per test ordered at most laboratories and per specimen with add-on accessions at the panel laboratories"
   ],
-  "registered": "2026-10-16T23:21:42Z"
+  "registered": "2026-10-17T02:26:19Z"
 }
