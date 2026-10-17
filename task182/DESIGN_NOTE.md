@@ -786,6 +786,34 @@ by initials on the deployment records. `guard.py heart task182`: **WARN, not BLO
    measured. The guard's heart check found no near driver (nearest 0.07).
 
 ## Tried and rejected
+- **An author error to correct, and it is on a graded figure.** When the margin was moved off its
+  edge, the builder reported that the sixth-to-seventh gap fell from 0.098 to 0.062 dB and declined to
+  tune it away, and I accepted that with the reason "it is not a graded figure, the prompt asks only
+  how far short the sixth falls, and neither position is in the answer". That was wrong. The prompt
+  asks for a note "naming the five dwellings and the sixth with how far short it falls", so **which
+  dwelling is sixth is graded by name**, and a 0.062 dB gap between the sixth and the seventh makes
+  that name fragile. The cold reader has now shown the consequence: taking the residual per deployment
+  rather than pooled, it computes NSL06 and NSL09 to within 0.01 dB of each other and calls its own
+  sixth a coin flip, 50 against 45. A graded name that flips under a defensible residual reading is a
+  fork, and the fix is to widen the sixth-to-seventh gap rather than to argue the reading away.
+- **The air handhold moved rather than went.** The columns were renamed after what each instrument
+  measures, which was the instruction, but `survey_notes.md` still calls the header "the blower
+  header", and that is what the reader followed: "I picked the header because the prompt says 'the
+  blowers' and the notes call it the blower header." Its header-only weekly air is 520.5 / 428.4 /
+  486.6 / 417.8 / 490.0 / 476.9 against the golden's 685 / 680 / 676 / 696 / 662 / 691. Renaming the
+  columns while leaving the phrase in the notes moves the handhold from the schema to the prose
+  instead of removing it.
+- **Third reader in a row on the survey notes.** They still announce every tripwire in advance, now in
+  the reader's own quotes: the meters stamp in UTC, the anemometer column not renamed, the count resets
+  at midnight, the repeated download, the counter wraps at 99,999, the hour counter starts again from
+  zero. A technician's notes do not list the six things a reader is about to trip on.
+- **And the diurnal profile still contradicts those notes.** The reader measures 47.5 dB at 07:00
+  against 47.9 at 09:00 at one position and calls the profile nearly flat at 47 to 48 with no morning
+  or evening peak, while the notes say the roadside positions see traffic. The propagation work did not
+  reach this. Also still mechanical: all four plant units stopping and restarting together at round
+  times for exactly two hours under one description, centrifuge starts and stops 4 and 7 minutes apart
+  every day, the engine hour counter stepping exactly +0.2 or +0.3 three and a half thousand times
+  each, and the wind stepping from about 2 to about 9 at exactly midnight on the unit change.
 - The cold reader on the re-cut pack put the committed slate at 60 per cent and the top four at 85,
   with the alternative at about 35 per cent being NSL06 for NSL13, which turns on taking the residual
   from the 90th percentile rather than the energy mean. That is the ladder working rather than
