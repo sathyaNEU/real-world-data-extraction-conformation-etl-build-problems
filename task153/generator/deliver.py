@@ -238,8 +238,9 @@ def write_xlsx(path, X):
                         "vehicle burned since its previous visit (Fuel Used in the vehicle-day export, a day split by "
                         "driving time either side of a midday visit), up to its tank on the unit list's model row "
                         "less the reserve drivers come back on."),
-        ("Reserve", "%.1f per cent of the tank: the %d fills over 225 gallons in the 2025 island transactions, every "
-                    "one a T680 coming back off the road, averaged %.1f of 300 gallons." % (
+        ("Reserve", "%.1f per cent of the tank, the cap the T680 sleepers' own 2025 fills show (the %d fills over 225 "
+                    "gallons in the island transactions, every one a T680 back off the road, averaged %.1f of 300 "
+                    "gallons), taken off every vehicle's tank." % (
                         100 * G["reserve"], G["n_reserve"], 300 * (1 - G["reserve"]))),
         ("Base and window", "The eight weeks to 23 August 2026 (29 June to 23 August, 39 working days, Friday 3 July "
                             "off), replayed for the window and scaled to its 40 working days."),
@@ -330,11 +331,6 @@ def submission(X):
     G, R, B, Aa = X["G"], X["R"], X["B"], X["A"]
     L = G["loads"]
     yard_list = ", ".join("%s %d" % (y, L[y]) for y in C.YARDS)
-    r0 = sum(C.floor_loads(v) for v in R["R0 card gallons, trailing eight weeks"].values())
-    r1s = [sum(C.floor_loads(v) for v in R[k].values()) for k in R if k.startswith("R1")]
-    r1, r1_hi = min(r1s), max(r1s)
-    r2 = sum(C.floor_loads(v) for v in R["R2a tankful per run between nights at the yard"].values())
-    X["rivals"] = dict(card_gallons=r0, share_2025_low=r1, share_2025_high=r1_hi, overnight_cut=r2)
     s = []
     s += ["## Tags", "",
           "**Domain:** General Statistics & Data Science (resampling and simulation methods: a trace-driven "
@@ -345,12 +341,11 @@ def submission(X):
           "**Contract %d of Overton's loads for 14 September to 8 November (%s), saving $%s against the same "
           "gallons on the card accounts.**" % (G["total"], yard_list, fmt(X["saving"])),
           "An island fuels a vehicle only at its yard visits, at most the tankful above the reserve its driver keeps, "
-          "so each yard's draw is built from the fuel each vehicle burns between visits. Not the %d loads the "
-          "vehicles' card gallons fill, which count the fuel Blountville's four-night sleepers and Cookeville's "
-          "lot-based vans have to buy on the road; not the %d to %d that the 2025 islands' share of the same "
-          "vehicles' fuel gives, measured on Jackson and Knoxville fleets mostly back every day or between one-night "
-          "loops; and not %d from capping each run between nights at the yard, which misses Nashville's midweek "
-          "reload." % (r0, r1, r1_hi, r2), ""]
+          "so each yard's draw is built from the fuel each vehicle burns between visits. Not the vehicles' card "
+          "gallons, which count the fuel Blountville's four-night sleepers and Cookeville's lot-based vans have to buy "
+          "on the road; not the 2025 islands' share of the same vehicles' fuel, measured on Jackson and Knoxville "
+          "fleets mostly back every day or between one-night loops; and not a tankful per run between nights at the "
+          "yard, which misses Nashville's midweek reload.", ""]
     wk = X["weekly"]
     s += ["## 2. Critical Components", "",
           "1. Nashville's **%d** sleepers are in the yard at midday every Wednesday, so each takes two island fills a "
@@ -370,17 +365,17 @@ def submission(X):
           "geofence_events_2026-03-01_2026-08-27.csv into yard visits, and cut its days in "
           "vehicle_days_2024-09-01_2026-08-27.csv at them, a day's Fuel Used split by its driving time either side of "
           "a midday visit.",
-          "3. In fms_island_transactions_2025.csv (each resent row once), the %d fills over 225 gallons, every one a "
-          "T680 sleeper coming back off the road, averaged %.1f of 300 gallons: each vehicle's fill is capped at its "
-          "tank less %.1f%%." % (G["n_reserve"], 300 * (1 - G["reserve"]), 100 * G["reserve"]),
+          "3. In fms_island_transactions_2025.csv (each resent row once), the T680 sleepers' own fills show their cap: "
+          "the %d over 225 gallons, back off the road, averaged %.1f of 300 gallons, a %.1f%% reserve, which the "
+          "replay takes off every vehicle's tank." % (G["n_reserve"], 300 * (1 - G["reserve"]), 100 * G["reserve"]),
           "4. For every yard visit from 29 June to 23 August, took the smaller of the fuel burned since the unit's "
           "previous yard visit and its capped tankful, summed by yard and scaled from those weeks' 39 working days "
           "to the window's 40: %s gallons." % draws,
           "5. Took each yard's whole 8,000-gallon loads: %s, %d in all." % (yard_list, G["total"]),
-          "6. Both prices sit on the TriState average, so each of a load's 8,000 gallons saves its account's charge "
-          "over that average in card_programmes_pricing_schedules.pdf (Crossroads' network fee is part of its diesel "
-          "price) less Overton's $0.019 in overton_offer_2026-08-26.pdf: %d loads save $%s, so contract %d." % (
-              G["total"], fmt(X["saving"]), G["total"]), ""]
+          "6. Overton's price term in overton_offer_2026-08-26.pdf puts its $0.019 on the same TriState average the "
+          "card programmes bill from, so each of a load's 8,000 gallons saves its account's charge over that average "
+          "in card_programmes_pricing_schedules.pdf (Crossroads' network fee is part of its diesel price) less "
+          "$0.019: %d loads save $%s, so contract %d." % (G["total"], fmt(X["saving"]), G["total"]), ""]
     s += ["## 4. Deliverable Answers", "", "### %s" % XLSX, "",
           "1. Loads to contract for 14 September to 8 November, by yard: %s." % yard_list,
           "2. Total: %d loads." % G["total"],
@@ -419,7 +414,6 @@ def figures(X):
                   "draw_gal": {y: fmt(G["draw"][y]) for y in C.YARDS},
                   "build": {y: {k: (round(v) if isinstance(v, float) else v) for k, v in b.items()}
                             for y, b in X["build"].items()}},
-        "rivals": X["rivals"],
         "answers": {"ask_a": {"%s %d-%02d" % (a, m[0], m[1]): fmt(v) for (a, m), v in Aa.items()},
                     "ask_b": {"%s %d-%02d" % (y, m[0], m[1]): {"net_gal": fmt(g), "usd": fmt(d)}
                               for (y, m), (g, d) in B.items()}},

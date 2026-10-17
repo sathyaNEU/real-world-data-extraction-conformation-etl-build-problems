@@ -237,13 +237,13 @@ Every term in the main ask and every convention the main computation needs. Ids 
 | SF6 | Cookeville's lot-based vans | Cookeville vehicles (the unit list), fueled at the island when they are in the yard | not Cookeville's (they are based at the Sparta and Crossville lots) | 22 | the unit list's Location (Cookeville) and the yard notes ("based at the Sparta and Crossville lots") |
 | SF7 | the window's days | the eight calendar weeks, the yards working Monday to Friday, no holiday inside | 56 days at the base's daily rate including weekends | same call (no vehicle reaches its yard on a weekend; asserted) | same call, asserted |
 | SF8 | the base period the duty is read from | the eight weeks to 23 August (29 June to 23 August), scaled by working days | 13 or 25 weeks; by weeks; the holiday week left out; a 2025 seasonal ratio | same call (C3: twelve constructions, each yard 0.15 of a load or more inside its bin; asserted) | the prompt ("if they run as in the eight weeks to 23 August"); same call besides, asserted |
-| SF9 | what one island fill can put aboard | the tank less the 10.2 per cent reserve the 2025 returns show (48 fills over 225 gallons, all T680s, averaging 269.3 of 300) | the nominal tank; each 2025 sleeper's own largest fill | same call (asserted) | same call, asserted |
+| SF9 | what one island fill can put aboard | every tank less the 10.2 per cent reserve the T680s' own 2025 fills show (48 fills over 225 gallons, all T680s, averaging 269.3 of 300); no other model's fills come back on a reserve | the nominal tank; each 2025 sleeper's own largest fill; the cap each model's own fills show (the Sprinters' largest, 23.9 of 24.5, passes the replay's 22.0; each model's largest fill, or the mean of its fills of three quarters of its tank or more) | same call under each (asserted; the Sprinters at 23.9 put Cookeville at 13,399 gallons, still 1 load) | same call, asserted |
 | SF10 | the saving's basis | each account's charge over the TriState average (the Crossroads network fee included, $0.080 a gallon saved) less Overton's 1.9 cents, on the loads' 8,000 gallons | the Crossroads margin without the network fee ($0.065 a gallon, $16,328 in all) | a different saving | Pricing Addendum 4 clause 2 ("is part of the diesel price under this addendum") and the prompt ("at their agreement terms") |
 | SF11 | the as-of | 28 August 2026, data through 27 August | (none) | same call | the file list's pull date and the offer's date |
 | SF12 | stock already in a tank | each tank at or near its unpumpable bottom (the register's 24 August dips against each tank's own unpumpable, 400 to 750 gallons) | add the usable stock to the draw | same call (at most 201 usable gallons, at Jackson, left from its 2025 programme; asserted) | same call, asserted |
 | SF14 | how the tank's heel and overfill alarm enter the count | neither binds: every tank takes a whole load over its unpumpable bottom with 2,000 gallons or more to spare under its alarm, and the loads are counted on the gallons handed out | the old stock handed out first (less the dips' usable gallons); a tank below its bottom topped up from the first load; the heel kept under the last load | same call under each (asserted) | same call, asserted |
 | SF15 | "the same number of gallons" on the cards | the loads' 8,000 net gallons each, bought on the cards | the gross gallons the island meter would show (0.55 per cent over net) | a different saving ($19,458; asserted) | the prompt ("the same number of gallons") |
-| SF16 | the saving's price basis | Overton's 1.9 cents against each card margin over the same TriState average | a forecast of the terminal and day spreads between where the cards would buy and the supplying terminal | the agreement terms carry no spread | the offer's price term ("the same average your three card programmes bill from"); asserted |
+| SF16 | the saving's price basis | Overton's 1.9 cents against each card margin over the same TriState average: $17,408 | the replaced card gallons priced at each account's own site terminals over the eight weeks to 23 August (6 per cent of the SMPM gallons price off Nashville at its Kentucky sites; some Crossroads and Riverbend sites off Knoxville and Nashville) | $17,449 (asserted) | the offer's price term: "The TriState Rack Report contract average for ULSD No. 2 at the supplying terminal on the day of lifting, the same average your three card programmes bill from, plus $0.019 per net gallon, delivered." (asserted in the pack) |
 | SF13 | Ask A's months | May, June and July 2026 (the prompt says "last year's" only of the 2025 programmes) | the same months of 2025 | an ask reading, not the call | the prompt's "last year's" marks the only 2025 figures |
 
 ## Ladder
@@ -474,6 +474,43 @@ generated rubric at stage 4.
   are no longer uniform; the heel and the alarm are asserted not to bind under any of three readings (SF14); and the
   yard notes no longer close the forward window (the prompt carries the scenario).
 
+## Pre-ship check
+
+- **The 10/10 rules against the built pack.** The decisive step is still analytical: the prompt and the offer file
+  the estimand (the loads each island hands out by 8 November, the vehicles running as in the eight weeks to 23 August,
+  whole loads per yard, the saving on the same TriState average) and no shipped sentence says when an island can fuel
+  a vehicle or how much one fill puts aboard; the six filed sentences executed alone give 29 (HOW); the card gallons
+  file 29 on the clean truth too (R3a); only the stretch between yard visits capped at a tankful lands, in every one of
+  the twelve constructions of the corridor and under every cap the models' own fills show (SF9). Layer 1 (three card
+  layouts and clocks, the duplicate postings and their credits, device serials, UTC geofences, the resent island
+  batch, the split drops, the 6 pm posting, the tanks by model) is neutral: each mishandled reading leaves the call
+  (R2a to R2f), and the card exports are not on the golden's path.
+- **Free gates on the final rebuild.** `checks.py` 107 assertions, 0 failed; `verify.py` agrees on its own path; two
+  builds byte-identical, target.zip sha256 1808f2c1, the stage 4 fix's cut; `figures_check.py` 52 figures, 0 absent;
+  `freeze.py` (determinism) moves only block 1's four rival figures (29, 26, 28, 19) and their figures.json keys,
+  taken out on the round 2 notes, the one move it reports;
+  `precut.py` exit 0; `voice-check.py` PASS (982 characters); container audit clean on the pack and the goldens;
+  `guard.py` check WARN (three_rules.strategy_risk, repeat.gate_g), validate clean, heart WARN, surface three promoted
+  pairs on the differentiated card signature (task94, task69, task105).
+- **Stage 4.** Judge round 1 NOT_DETERMINISTIC, FIX_NOW on asks 4 and 5 (`determinism_check_report_round1.md`), fixed
+  in one generator pass with the reader's findings; judge round 2 DETERMINISTIC, APPROVE (`determinism_check_report.md`),
+  every figure reproduced; its notes answered in the write-up and the checks: step 3 names the cap the T680s' own fills
+  show (SF9), the saving's basis is the offer's price term (SF16, the by-site $17,449 excluded), and the rival figures
+  are out of the graded blocks; the leak reader clean on the fresh read of the round 2 pack.
+- **Personas in the pack.** Theresa Mercado, Gabriel Wyatt and Dennis Stewart (drawn with `guard.py names`), all on the
+  card.
+
+## Build record
+
+- Generator: `world.py` (the fleet, its duty, legs, fills, the 2025 programmes, the tanks), `records.py`, `docs.py`,
+  `calc.py`, `asks.py`, `deliver.py`, `metadata.py`, `postprocess.py`, `checks.py` (107 assertions: the three-rules
+  block, the HOW sentences and the prompt's scenario, the ladder, the corridor, SF1 to SF16, the closure axes, the 2025
+  out-of-sample record, both asks with their filed conventions, stops and fairness, the cracker, the separation line,
+  the realism sweep, the input gates and the distractors' deletion), `verify.py` (its own path), `build.py` (two
+  byte-identical builds, the zip).
+- Pack: 22 files in five formats (csv, xlsx, pdf, txt, md); the largest 79,042 rows; distractors the tank wagon prices
+  and the IFTA returns, named in `metadata.json`.
+
 ## Tried and rejected
 
 - Retail pass-through after the drop as the decisive quantity (the seed's own driver: card prices fall slowly, so early
@@ -534,3 +571,8 @@ generated rubric at stage 4.
   eight weeks to 23 August").
 - "Monte Carlo" in the submission's domain tag: the surface screen read it as a persona (task147); the tag names
   resampling and simulation methods.
+- The rejected routes' load counts in the Final Recommendation (29, 26 to 28, 19): figures no graded block carries
+  and the round 2 judge did not reproduce; the rivals are named without them, as in task151 and task152.
+- Step 3's "each vehicle's fill is capped at its tank less 10.2%": read by the round 2 judge as a claim about every
+  model's fills, when only the T680s' fills show that cap (two Sprinter fills pass it); the step now names the cap the
+  T680s' own fills show and the replay applying it to every tank, and SF9 asserts every model-by-model cap.

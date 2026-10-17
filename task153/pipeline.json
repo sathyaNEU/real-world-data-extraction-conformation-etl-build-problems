@@ -1,11 +1,11 @@
 {
   "task": "task153",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "supply-chain-logistics/sourcing-procurement (client domain general-statistics-data-science, task type resampling-simulation-monte-carlo-methods)",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-17",
   "stump": "Taking each yard island to hand out what its vehicles now buy on the three card accounts contracts 29 loads, and scaling the card gallons by the 2025 islands' share (pooled, by account or by model) still files 26 to 28; the step that lands each there is treating a yard as able to supply a vehicle's whole fuel, when an island fuels a vehicle only while it is in the yard and at most a tankful at a time; capping each run between nights at the yard instead files 19, missing Nashville's Wednesday midday reload; only the stretch between yard visits capped at a tankful contracts 23.",
   "architecture": 1,
@@ -13,11 +13,11 @@
   "precut": {
     "exit": 0,
     "date": "2026-10-17",
-    "checks": "49 checks, 0 FAIL, 0 WARN (rerun after the stage 4 fix)"
+    "checks": "49 checks, 0 FAIL, 0 WARN (rerun on the shipped build)"
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-17, rerun after the stage 4 fix; every REVIEW line answered in the design note ## Leak review",
-    "reader": "stage 4 round 1: six findings, all fixed in the generator: the Crossroads network fee made determinate (Addendum 4 clause 2, $0.080 against $0.065 asserted); the offer's saving sentence replaced by Overton's own price term on the same TriState average; the tank register varied (12,000 to 25,000 gallons); the unit list given spare and sold units and branch-written model names; the yard-notes sentence closing the window removed (the prompt carries the scenario); the heel and alarm asserted not to bind (SF14)"
+    "leak_py": "REVIEW (no LEAK), 2026-10-17, rerun on the shipped build; every REVIEW line answered in the design note ## Leak review",
+    "reader": "stage 4 round 1: six findings, all fixed in the generator: the Crossroads network fee made determinate (Addendum 4 clause 2, $0.080 against $0.065 asserted); the offer's saving sentence replaced by Overton's own price term on the same TriState average; the tank register varied (12,000 to 25,000 gallons); the unit list given spare and sold units and branch-written model names; the yard-notes sentence closing the window removed (the prompt carries the scenario); the heel and alarm asserted not to bind (SF14); round 2: the fresh read of the fixed pack clean"
   },
   "duplicate_check": {
     "heart": "WARN (three_rules.strategy_risk, repeat.gate_g; no BLOCK), 2026-10-17, unchanged after the stage 4 fix",
@@ -25,16 +25,16 @@
     "surface": "task152 promotion cleared by renaming the pack file list; task94, task69, task105 promoted on the card-level gap, pattern and decision collision already differentiated (surface 0.080 to 0.087), unchanged after the stage 4 fix; adjudicated /clone-check left to the author"
   },
   "judge": {
-    "verdict": "round 1: NOT_DETERMINISTIC (asks 4 and 5 only; main call, counts and saving forced)",
-    "disposition": "round 1: FIX_NOW",
-    "report": "determinism_check_report_round1.md",
+    "verdict": "round 1: NOT_DETERMINISTIC (asks 4 and 5 only); round 2: DETERMINISTIC, every figure reproduced",
+    "disposition": "round 1: FIX_NOW; round 2: APPROVE",
+    "report": "determinism_check_report.md (round 2); determinism_check_report_round1.md (round 1)",
     "fix": "Ask 4: Riverbend's UTC stamps (Schedule A, A5), the cards' 10 pm business day (Addendum 4 clause 5 on Central time; the SMPM layout, at 10:00 pm or later) and the duplicate-posting credits (A6; clause 6; the layout's C record) filed in the programmes' own documents, alternatives asserted, silent device a day a site posted twice with its credit dated in a later week; Ask 5: the 6 pm Central posting with the next day's date filed in the 2025 letters, the delivery export's clock in its headers, the prompt defining the dollars as everything billed over the posted rack value of the gallons after credits, taxes aside, alternatives asserted (service lines out, credits unread, rebills dropped, lifting-date and delivery-date postings, by invoice month the same); the prompt pins the scenario and both chart windows (the eight weeks to 23 August); ladder R1 corrected to 26 to 28; client domain kept (answered in the note). No graded figure moved.",
-    "round2": "pending: the coordinator re-judges once"
+    "round2": "DETERMINISTIC, APPROVE; its notes answered before ship in the write-up and the checks: step 3 names the cap the T680s' own fills show (SF9: the Sprinters' 23.9 keeps Cookeville at 1 load), the saving's basis is the offer's price term (SF16: the by-site $17,449 excluded), the rival figures are out of the graded blocks"
   },
   "returned": [],
-  "resume": "stage 4: re-judge round 2 (the coordinator re-judges once), then the pre-ship check and ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-17",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -42,14 +42,15 @@
   "wave": "wave 4 (new, the last of the wave), seed FC24 (world, decision and quantity kept; the procurement standard and the retail-price memo not shipped; pitfall re-found from the fleet's trip, yard-visit and island records)",
   "answer": "Contract 23 loads (Memphis 2, Jackson 5, Nashville 8, Cookeville 1, Knoxville 4, Blountville 3), saving $17,408",
   "gates_stage3": {
-    "checks": "106 assertions, 0 failed (three-rules block R1 to R3c, HOW sentences and the prompt's scenario, ladder with R1 26 to 28, corridor of 12 constructions, SF1 to SF16, closure axes, 2025 out-of-sample, both asks with their filed conventions, stops and fairness, the world's truth for Ask A, cracker, separation, realism sweep, input gates, distractor deletion, goldens against figures.json)",
+    "checks": "107 assertions, 0 failed (three-rules block R1 to R3c, HOW sentences and the prompt's scenario, ladder with R1 26 to 28, corridor of 12 constructions, SF1 to SF16, closure axes, 2025 out-of-sample, both asks with their filed conventions, stops and fairness, the world's truth for Ask A, cracker, separation, realism sweep, input gates, distractor deletion, goldens against figures.json)",
     "verify": "independent verifier reproduces the 23 loads, the six yard draws, the $17,408 saving, Ask A (9) and Ask B (12)",
     "rebuild": "two consecutive builds byte-identical: 22 target files, 2 goldens, metadata.json, figures.json, submission.md, target.zip",
     "target_zip_sha256": "1808f2c142401de729450ec62d2c1d8c26c5b90d6c145c9f1ecef6312831bc83",
-    "figures_check": "PASS, 50 figures in blocks 1 to 4, 0 absent",
+    "figures_check": "PASS, 52 figures in blocks 1 to 4, 0 absent",
     "voice_check": "PASS (982 characters)",
     "container": "scrub_producer_metadata audit clean on target and golden",
     "golden_realism": "done: finding titles, Notes sheet, chart with finding title, annotations and source line",
-    "house_fixes": "H1 clean; H3 wording fixed (reserve fills, 2025 share clause, odometer note); H16 fixed (Crossroads pending post dates, the unsent SMPM week, Riverbend daily posting); H21 real institution and brand names replaced; H24 no constructed-pack sentence under target"
+    "house_fixes": "H1 clean; H3 wording fixed (reserve fills, 2025 share clause, odometer note); H16 fixed (Crossroads pending post dates, the unsent SMPM week, Riverbend daily posting); H21 real institution and brand names replaced; H24 no constructed-pack sentence under target",
+    "freeze": "determinism mode: only block 1's four rival figures (29, 26, 28, 19) and their figures.json keys moved, removed on the round 2 notes"
   }
 }

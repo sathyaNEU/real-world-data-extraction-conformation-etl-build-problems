@@ -6,7 +6,7 @@
 ## 1. Final Recommendation
 
 **Contract 23 of Overton's loads for 14 September to 8 November (Memphis 2, Jackson 5, Nashville 8, Cookeville 1, Knoxville 4, Blountville 3), saving $17,408 against the same gallons on the card accounts.**
-An island fuels a vehicle only at its yard visits, at most the tankful above the reserve its driver keeps, so each yard's draw is built from the fuel each vehicle burns between visits. Not the 29 loads the vehicles' card gallons fill, which count the fuel Blountville's four-night sleepers and Cookeville's lot-based vans have to buy on the road; not the 26 to 28 that the 2025 islands' share of the same vehicles' fuel gives, measured on Jackson and Knoxville fleets mostly back every day or between one-night loops; and not 19 from capping each run between nights at the yard, which misses Nashville's midweek reload.
+An island fuels a vehicle only at its yard visits, at most the tankful above the reserve its driver keeps, so each yard's draw is built from the fuel each vehicle burns between visits. Not the vehicles' card gallons, which count the fuel Blountville's four-night sleepers and Cookeville's lot-based vans have to buy on the road; not the 2025 islands' share of the same vehicles' fuel, measured on Jackson and Knoxville fleets mostly back every day or between one-night loops; and not a tankful per run between nights at the yard, which misses Nashville's midweek reload.
 
 ## 2. Critical Components
 
@@ -18,10 +18,10 @@ An island fuels a vehicle only at its yard visits, at most the tankful above the
 
 1. Took the 157 active units, their yards and their models' fuel tanks from fleet_units_2026-08.xlsx, and named each telematics row by its vehicle, through telematics_device_assignments.csv where a new device reported under its serial.
 2. Paired each unit's Enter and Exit rows at its own yard's geofence in geofence_events_2026-03-01_2026-08-27.csv into yard visits, and cut its days in vehicle_days_2024-09-01_2026-08-27.csv at them, a day's Fuel Used split by its driving time either side of a midday visit.
-3. In fms_island_transactions_2025.csv (each resent row once), the 48 fills over 225 gallons, every one a T680 sleeper coming back off the road, averaged 269.3 of 300 gallons: each vehicle's fill is capped at its tank less 10.2%.
+3. In fms_island_transactions_2025.csv (each resent row once), the T680 sleepers' own fills show their cap: the 48 over 225 gallons, back off the road, averaged 269.3 of 300 gallons, a 10.2% reserve, which the replay takes off every vehicle's tank.
 4. For every yard visit from 29 June to 23 August, took the smaller of the fuel burned since the unit's previous yard visit and its capped tankful, summed by yard and scaled from those weeks' 39 working days to the window's 40: Memphis 21,303, Jackson 44,695, Nashville 69,402, Cookeville 12,898, Knoxville 37,575, Blountville 27,835 gallons.
 5. Took each yard's whole 8,000-gallon loads: Memphis 2, Jackson 5, Nashville 8, Cookeville 1, Knoxville 4, Blountville 3, 23 in all.
-6. Both prices sit on the TriState average, so each of a load's 8,000 gallons saves its account's charge over that average in card_programmes_pricing_schedules.pdf (Crossroads' network fee is part of its diesel price) less Overton's $0.019 in overton_offer_2026-08-26.pdf: 23 loads save $17,408, so contract 23.
+6. Overton's price term in overton_offer_2026-08-26.pdf puts its $0.019 on the same TriState average the card programmes bill from, so each of a load's 8,000 gallons saves its account's charge over that average in card_programmes_pricing_schedules.pdf (Crossroads' network fee is part of its diesel price) less $0.019: 23 loads save $17,408, so contract 23.
 
 ## 4. Deliverable Answers
 

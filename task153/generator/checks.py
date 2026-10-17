@@ -114,6 +114,10 @@ def source_text():
     return "\n".join(parts)
 
 
+def P_tank(P, model):
+    return next(i["tank"] for i in P.units.values() if i["model"] == model)
+
+
 def pdf_text(path):
     with pdfplumber.open(path) as pdf:
         return "\n".join(pg.extract_text() or "" for pg in pdf.pages)
@@ -421,6 +425,26 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ok("SF9 the tankful: the tank less the 2025 reserve, the nominal tank, or each sleeper's largest 2025 fill: same "
        "call", counts(variants["the nominal tank (no reserve)"]) == GOLD and counts(
            variants["each 2025 sleeper's own largest island fill as its tankful"]) == GOLD)
+    own = collections.defaultdict(list)
+    for f in P.fms:
+        own[P.units[f["unit"]]["model"]].append(f["gal"])
+    cap_r = 1 - Gd["reserve"]
+    over = {m: [g for g in v if g > P_tank(P, m) * cap_r] for m, v in own.items()}
+    spr = max(own["SPR25"])
+    d_spr = CA.draw_by_yard(P, caps={u: spr for u, i in P.units.items() if i["model"] == "SPR25"})
+    d_max = CA.draw_by_yard(P, caps={u: max(own[i["model"]]) for u, i in P.units.items() if i["model"] in own})
+    d_big = CA.draw_by_yard(P, caps={u: statistics.mean([g for g in own[i["model"]] if g >= 0.75 * i["tank"]])
+                                     for u, i in P.units.items() if i["model"] in own})
+    ok("SF9 the cap each model's own fills show: the replay's cap (each tank less the T680s' 10.2%%) is passed by %d of "
+       "the 48 T680 fills it averages, by the Sprinters' %s and by no other model's fill; the Sprinters' own largest "
+       "fill (%.1f of 24.5) as their tankful keeps Cookeville at 1 load (%.0f gallons), and each model's own largest "
+       "fill, or the mean of its fills of three quarters of its tank or more, as its tankful: same call" % (
+           len(over["T68SL"]), " and ".join("%.1f" % g for g in sorted(over["SPR25"])), spr, d_spr["Cookeville"]),
+       spr == 23.9 and sorted(over["SPR25"]) == [23.7, 23.9] and all(not over[m] for m in over if m not in
+                                                                      ("T68SL", "SPR25")) and
+       counts(d_spr) == GOLD and CA.floor_loads(d_spr["Cookeville"]) == 1 and counts(d_max) == GOLD and
+       counts(d_big) == GOLD, "Cookeville %.0f, %.0f, %.0f" % (d_spr["Cookeville"], d_max["Cookeville"],
+                                                               d_big["Cookeville"]))
     nofee = X["loads_acct"]["West"] * 8000 * 0.100 + X["loads_acct"]["Central"] * 8000 * (0.084 - 0.019) + \
         X["loads_acct"]["East"] * 8000 * 0.108
     ok("SF10 the Crossroads network fee is part of its diesel price (Addendum 4 clause 2): $0.080 a gallon saved, not "
@@ -454,10 +478,29 @@ def run(target, golden, B=None, G=None, meta_path=None):
     for f in P.cards:
         if f["diesel"] and f["role"] == "sale" and f["unit"] in P.units and CA.BASE[0] <= f["t"].date() <= CA.BASE[1]:
             span_days[(f["acct"], WD.station_terminal(f["site"]) if f["site"] in WD.ST else "?")] += 1
-    ok("SF16 the saving's price basis: the offer prices off the same TriState average the three card programmes bill "
-       "from, so each gallon saves the card margin less $0.019 (the terminal and day spreads are not on the agreement "
-       "terms)", "the same average your three card programmes bill from" in flat and
-       X["per_gal"] == {"West": 0.1, "Central": 0.08, "East": 0.108}, str(dict(span_days)))
+    supply = {"West": "Memphis", "Central": "Nashville", "East": "Knoxville"}
+    base_days = [d_ for d_ in K.days(CA.BASE[0], CA.BASE[1] + dt.timedelta(days=1))]
+    spread = {t_: statistics.mean(rack[(t_, d_)] for d_ in base_days) for t_ in ("Memphis", "Nashville", "Knoxville")}
+    gal_t = collections.defaultdict(float)
+    for f in P.cards:
+        if f["diesel"] and f["role"] == "sale" and f["unit"] in P.units and CA.BASE[0] <= f["t"].date() <= CA.BASE[1]:
+            gal_t[(f["acct"], WD.station_terminal(f["site"]))] += f["gal"]
+    by_site = 0.0
+    for a_ in ("West", "Central", "East"):
+        g_a = sum(v for (aa, t_), v in gal_t.items() if aa == a_)
+        adj = sum(v / g_a * (spread[t_] - spread[supply[a_]]) for (aa, t_), v in gal_t.items() if aa == a_)
+        by_site += X["loads_acct"][a_] * 8000 * (X["per_gal"][a_] + adj)
+    ky = sum(v for (aa, t_), v in gal_t.items() if aa == "East" and t_ == "Nashville") / sum(
+        v for (aa, t_), v in gal_t.items() if aa == "East")
+    offer_price = ("The TriState Rack Report contract average for ULSD No. 2 at the supplying terminal on the day of "
+                   "lifting, the same average your three card programmes bill from, plus $0.019 per net gallon, "
+                   "delivered.")
+    ok("SF16 the saving's price basis: the offer's filed basis (Overton's price on the same TriState average the three "
+       "card programmes bill from) gives $17,408; pricing the replaced card gallons at each account's own site "
+       "terminals (%.0f per cent of the SMPM gallons price off Nashville) gives $%s, which the offer's price term "
+       "excludes" % (100 * ky, format(round(by_site), ",")),
+       round(X["saving"]) == 17408 and round(by_site) != 17408 and offer_price in flat and
+       X["per_gal"] == {"West": 0.1, "Central": 0.08, "East": 0.108}, "by site %.2f" % by_site)
     tanks = openpyxl.load_workbook(os.path.join(target, R.F_TANKS), read_only=True).worksheets[0]
     usable = {row[0]: max(0, row[13] - row[6]) for row in list(tanks.iter_rows(values_only=True))[1:]}
     ok("SF12 the stock already in each tank (the 24 August dips over the unpumpable bottom) added to the draw: same call",

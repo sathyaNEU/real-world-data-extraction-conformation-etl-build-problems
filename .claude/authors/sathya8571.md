@@ -20,3 +20,4 @@ architecture), new. A task from an objective no developer owns says so.
 | 2 | task136 (new) · task137 (new) · task138 (new) · task139 (new) · task140 (new) · task141 (new) |
 | 3 | task142 (new) · task143 (new) · task144 (new) · task145 (new) · task146 (new) · task147 (new) |
 | 4 | task148 (new) · task149 (new) · task150 (new) · task151 (new) · task152 (new) · task153 (new) |
+| 5 | task154 (new) · task155 (new) · task156 (new) · task157 (new) · task158 (new) · task159 (new) |
