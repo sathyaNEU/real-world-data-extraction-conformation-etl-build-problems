@@ -1,13 +1,13 @@
 {
  "task": "task191",
  "owner": "oviya13ya",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "general-statistics-data-science/multiple-testing-selective-inference",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-17",
- "stump": "A competent solver builds each interconnect's evening shortfall against its own daytime baseline, tests the worst one against its own variation, finds it clears comfortably and funds the augment, where the same shortfall is inside what the worst of seven quiet paths produces in a quarter.",
+ "stump": "A competent solver cleans the panel, excludes the maintenance evenings, takes the quarter's worst evening window at 412 kbps, tests it against that interconnect's own variation and against a seven-path multiplicity correction, finds it clears both and files fund the augment on HVT-01, where 412 kbps is the fourth largest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
  "architecture": 1,
  "loops": 0,
  "precut": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 2 complete: precut.py exit 0, voice-check PASS at 989 characters. Resume at stage 3, the generator: the panel at minute grain for the retained evening and daytime bands, the eight earlier quarters' daily rollup, the register, the standard and the framework, then the three asks' files.",
+ "resume": "Stage 3. world.py, sim.py and postprocess.py are written and the signal is calibrated: sim.calibrate solves each quarter's measurement spread so its worst evening window hits world.WORST_WINDOW, and the ladder measures as designed. STR-01 544 kbps on 2027-02-08 in the 20:00 window with the maintenance evenings kept (11.3 per cent above the largest earlier quarter, so a confident wrong fund); HVT-01 412 kbps on 2027-02-17 in the 19:00 window with them excluded (32.1 per cent above its own 99th percentile); DLF-01 highest quarter mean at 132 kbps, 12.7 per cent above the next and 2.7 per cent below its own 2026Q4; and the answer, 412 kbps fourth of the nine quarterly worst windows with the largest earlier at 489. Still to write: pack.py (the minute panel, the eight quarters' daily rollup, the register, maintenance, the edge five-minute file and the three asks' files), docs.py (the framework, the quality standard, the dictionary, the published report), golden.py, figures.py, deliver.py, metadata.py, checks.py, verify.py, build.py, then the stage 3 gates.",
  "approved": null,
  "delivered": null,
  "portal": null,

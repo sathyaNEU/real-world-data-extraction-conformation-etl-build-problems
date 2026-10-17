@@ -62,9 +62,9 @@ at 489 kbps.
 ## Stump sentence
 
 A competent solver cleans the panel, excludes the maintenance evenings, takes the quarter's worst
-path-evening cell at 412 kbps, tests it against that interconnect's own variation and against a
-seven-path multiplicity correction, finds it clears both and files fund the augment on `RHN-01`, where
-412 kbps is the fourth largest of the nine quarterly worst cells the same seven interconnects have
+evening window at 412 kbps, tests it against that interconnect's own variation and against a
+seven-path multiplicity correction, finds it clears both and files fund the augment on `HVT-01`, where
+412 kbps is the fourth largest of the nine quarterly worst windows the same seven interconnects have
 produced and the call is to fund nothing.
 
 ## Three rules
@@ -158,40 +158,44 @@ produced and the call is to fund nothing.
 
 | Rung | Analysis | Names | Figure | Dies to |
 |---|---|---|---|---|
-| 0 | the quarter's worst cell, tested against its own interconnect's spread | `STR-01` | 541 kbps on 2027-02-08 | clause 4.4, which names the nine maintenance evenings that cell sits in |
-| 1 | the same test after the maintenance evenings are excluded and the clock is read in local time | `RHN-01` | 412 kbps on 2027-02-19 | the cell was selected as the maximum over 630 cells, so the interconnect's own spread is not its reference |
-| 2 | each interconnect's quarter mean against its own eight-quarter history, with a seven-path multiplicity correction | `DLF-01` | a quarter mean 2.4 sd above its own prior mean, the highest of its nine quarters | the correction is at the breadth the solver looked at, seven paths, not the breadth the statistic was selected at, 630 cells |
-| 3 (decisive) | the quarterly worst cell against the eight earlier quarterly worst cells of the same seven interconnects | no augment | 412 kbps is the fourth largest of nine; the largest earlier quarterly worst cell is 489 kbps | nothing: it is the answer |
+| 0 | the quarter's worst evening window, tested against its own interconnect's spread | `STR-01` | 544 kbps on 2027-02-08 in the 20:00 window | clause 4.4, which names the nine maintenance evenings that window sits in |
+| 1 | the same test after the maintenance evenings are excluded and the clock is read in local time | `HVT-01` | 412 kbps on 2027-02-17 in the 19:00 window | the window was selected as the maximum over 1,890 windows, so the interconnect's own spread is not its reference |
+| 2 | the interconnect carrying the largest shortfall across the quarter, not on one evening | `DLF-01` | a quarter mean of 132 kbps, 12.7 per cent above the next interconnect | its own 2026 fourth quarter mean was 136 kbps, so the record shows that level is ordinary for this path |
+| 3 (decisive) | the quarterly worst window against the eight earlier quarterly worst windows of the same seven interconnects | no augment | 412 kbps is the fourth largest of nine; the largest earlier quarterly worst window is 489 kbps | nothing: it is the answer |
 
 **Position and margins.** On rung 0 the answer is not a candidate at all, which is what a hold build
-gives in place of a position; the blocking quantity is the quarterly worst cell's rank, and it is
-asserted. `RHN-01`'s 412 kbps sits 15.8 per cent below the largest earlier quarterly worst cell at 489
-kbps and 24.5 per cent above the largest cell `RHN-01` itself produced in any earlier quarter at 331
-kbps, so the two readings are 40 per cent apart on the same number. Rung 0's 541 kbps sits 10.6 per
-cent above 489 kbps, so a solver who keeps the maintenance evenings funds confidently and wrongly.
+gives in place of a position; the blocking quantity is the quarterly worst window's rank, and it is
+asserted. `HVT-01`'s 412 kbps sits 15.8 per cent below the largest earlier quarterly worst window at
+489 kbps and 32.1 per cent above `HVT-01`'s own 99th percentile for the quarter at 312 kbps, so the
+two references are 57 per cent apart on the same number. Rung 0's 544 kbps sits 11.3 per cent above
+489 kbps, so a solver who keeps the maintenance evenings funds confidently and wrongly. Rung 2's
+`DLF-01` stands 12.7 per cent above the next interconnect on the quarter mean and 2.7 per cent below
+its own 2026 fourth quarter, so that rung is a confident pick that the record itself answers.
 
 **The grid.** Two axes, cleaning and reference breadth, every cell a named answer:
 
-| | the path's own spread | the path's own 90 cells | the path's history, seven-path correction | the quarterly worst cell |
+| | the path's own spread | the path's own 270 windows | the quarter mean | the quarterly worst window |
 |---|---|---|---|---|
-| maintenance evenings kept | `STR-01` | `STR-01` | `STR-01` | `STR-01` at 541 against 489 |
-| maintenance evenings excluded | `RHN-01` | `RHN-01` | `DLF-01` | no augment |
+| maintenance evenings kept | `STR-01` | `STR-01` | `DLF-01` | `STR-01` at 544 against 489 |
+| maintenance evenings excluded | `HVT-01` | `HVT-01` | `DLF-01` | no augment |
 
 Seven of the eight cells name an interconnect and one is the golden, so the golden needs the filed
-exclusion and the decisive step together. The corrections walk one way, toward a smaller candidate set,
-and only the breadth of the reference reverses the call.
+exclusion and the decisive step together. The corrections walk one way, toward a smaller candidate
+set, and only the breadth of the reference reverses the call.
 
 **Worth, on the graded quantity.** The decisive step changes the recommendation, the closest
 interconnect's standing and the flip figure. It does not change the 42 grid figures, which are the
-construction layer every top response computes, so the ladder is carried by the call and the asks carry
-the rest.
+construction layer every top response computes, so the ladder is carried by the call and the asks
+carry the rest.
 
 **A hold is determinate here.** The blocking quantity is a computed rank that reproduces from the pack
 (the quarterly worst cell against eight earlier draws of the same statistic); every interconnect fails
 for a named reason (none of the seven worst-evening cells reaches 489 kbps in any window, asserted
 cell by cell); the prompt licenses the non-pick on equal footing with the seven; the default path still
-names an interconnect; and a worst evening cell above 489 kbps, or a quarter mean above what the eight
-earlier quarters' quarter means produce at the same breadth, would have made it a pick.
+(none of the seven interconnects' worst evening windows reaches 489 kbps,
+asserted path by path); the prompt licenses the non-pick on equal footing with the seven; the default
+path still names an interconnect; and a worst evening window above 489 kbps, or a quarter mean above
+what the eight earlier quarters produce for that path, would have made it a pick.
 
 ## Closure table
 
