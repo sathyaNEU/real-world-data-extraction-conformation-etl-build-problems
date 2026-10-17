@@ -101,11 +101,11 @@ needs, and the headroom is exactly the expected misstatement times the expansion
 |---|---|
 | Reliability factors | Poisson, one-sided upper bound, 95 per cent: RF(0) 3.00, then 4.75, 6.30, 7.76 and on, the table every audit text carries. Expansion factor 1.60. |
 | Population | 59,500,000 EUR over 24,700 payment lines, nine work programmes |
-| Tolerable misstatement | 1,300,000 EUR |
-| Expected misstatement allowed in planning | 475,000 EUR |
-| Interval | (1,300,000 less 475,000 x 1.60) / 3.00 = **180,000** |
+| Tolerable misstatement | 1,160,000 EUR, 2.0 per cent of budgeted capital expenditure of 58,000,000. **Shipped.** |
+| Expected misstatement allowed in planning | 387,500 EUR. **Not shipped, and the reason is below: the plan's own sizing formula would otherwise give the interval away exactly.** |
+| Interval | (1,160,000 less 387,500 x 1.60) / 3.00 = **180,000**. Not shipped. |
 | Selections | 331, on 274 distinct tested lines; 31 certainty lines hold 81 per cent of the tested book value |
-| Basic precision | 180,000 x 3.00 = **540,000, which is 0.415 of materiality**, so step one escalates nothing |
+| Basic precision | 180,000 x 3.00 = **540,000, which is 0.466 of materiality**, so step one escalates nothing |
 | Stated granularity | the nearest **50,000** EUR, set from the measured route spread below |
 
 ### The ladder, measured on a real selection
@@ -125,8 +125,16 @@ of them fall in the sample, and one certificate carries a separate 24,000 error.
 The incremental allowance on the golden is 310,228, which is 0.40 of its sample projection, and the
 allowance on each wrong rung is modelled at that same 0.40 of its own sample part, so every rung is tested
 at the golden's own conservatism. **No wrong rung reaches extended testing**: the nearest one's upper limit
-is 759,335, 58 per cent of materiality, a 42 per cent margin, while the golden clears materiality by 27
-per cent. Basic precision alone is 0.415 of materiality. Every rung walks one way, the decisive move is
+is 759,335, **65 per cent of materiality, a 35 per cent margin**, while the golden clears materiality by
+**42 per cent**. Basic precision alone is 0.466 of materiality.
+
+**The decision is robust to how the bound is built, which matters because the bound's construction is not
+filed.** The crudest defensible one-sided bound at the stated confidence is the projection plus basic
+precision, because basic precision is by definition the bound when nothing is found: 799,422 plus 540,000
+is **1,339,422, which clears materiality by 15 per cent**. So a solver who knows only the single most
+standard constant in the field, the factor 3.00 at 95 per cent, reaches the right decision, and every
+richer bound clears it by more. The nearest wrong rung fails under every bound: 163,525 plus 540,000 is
+703,525, 61 per cent of materiality. Every rung walks one way, the decisive move is
 the largest, and the golden is the extreme.
 
 ### Every recovery route, and what the record does with it
@@ -160,7 +168,10 @@ whole table rather than claiming agreement.
 ### What the lattice's feasible set is, stated precisely
 
 It is not an invariance over a feasible set and not a unique value on a chosen grid. **On a one-euro grid
-over the eighty euro either side of the interval, exactly one interval is feasible: 180,000.** At that
+over 179,960 to 180,040, exactly one interval is feasible: 180,000**, and the search was run over that
+whole range rather than at a chosen point, so the neighbouring intervals were excluded rather than assumed
+away. The far routes in the table above sit at 79,325, 130,162, 217,949, 245,812 and 245,868 and are each
+refused by the same test. At that
 interval the starts that reproduce the realised pattern span **10.96 euro**, from 123,445.38 to
 123,456.34, which contains the start the selection actually ran from. The constraint is that every one of
 the 274 tested lines must contain a step of cumulated book value under one common start and none of the
@@ -202,12 +213,69 @@ what a correct estimator usually looks like. **Verdict: silent.** Having written
 
 ### What may be filed at authority, and what may not
 
-The evaluation needs tolerable misstatement and the confidence, so the audit plan states those two and the
-expected misstatement it allowed in planning, and nothing else. **It does not state the interval, the
-number of selections, the reliability factors, or any instruction about how to project**, because the
-interval is the whole of the analysis and a reliability table is half the method. The exact wording of
-every sentence in that plan, in the audit manual, and in anything stating materiality, the confidence or
-the sampling method goes to the author before it ships.
+**The leak the author caught, and the rule it gives.** The first draft of the plan stated tolerable
+misstatement, the confidence and the expected misstatement allowance. The reliability factor at 95 per
+cent with none expected is 3.00 and the expansion factor is 1.60, both in every audit text, so any
+domain-competent reader computes (1,160,000 less 387,500 x 1.60) / 3.00 and has the interval exactly from
+the plan alone. **The sizing formula is the inverse of the recovery problem the task is about**, so stating
+its inputs at authority states the answer. The expected-misstatement sentence is therefore cut from every
+shipped document, and the allowance lives only in this note as the reason the sizing is defensible. Without
+it a reader has (1,160,000 less an unknown times 1.60) / 3.00 and can only bound the interval below
+433,333, which leaves the recovery intact. The general rule, going into the slot's record: **before filing
+any figure at authority, invert every formula the field would apply to it and check what the inverse
+yields.**
+
+**The reliability factors: Gate B, decided.** The decision rests on a bound, and a bound needs a
+reliability factor, which the pack ships nowhere. The decision is that **they are standard domain knowledge
+and the pack ships nothing for them**, for three reasons. First, Gate B asks whether the pack holds the
+data the answer needs; a published constant every text in the field carries is not data, and no pack is
+expected to ship the normal distribution's quantiles either. Second, the alternative fails worse: a manual
+that ships the factors has to say what they are for, and any sentence that does so names the interval or
+says the population was tested by selecting from its monetary units, which is the premise of the decisive
+step and the one thing that must stay unstated. Third, the decision does not depend on the richer parts of
+the evaluation: the projection plus basic precision alone clears materiality by 15 per cent, and basic
+precision needs only the factor 3.00. **No reliability table, no expansion factor and no evaluation
+procedure appears in any shipped file**, asserted by word sweep in `checks.py`.
+
+**The decision rule, and the ambiguity that had to go.** "Where the testing indicates that the population
+may be misstated by more than tolerable misstatement" does not say whether the comparison is against the
+projection or against a bound. On these figures the projection is 799,422 against materiality of
+1,160,000, so a solver who gets the decisive step right and compares the projection itself **certifies**:
+the wording would have thrown the call away after the analysis was done. It is reworded so the comparison
+is a confidence statement, which can only be met by a bound, without naming an estimator, a factor or the
+interval.
+
+**The two documents, held for the author's approval and shipped only after it.**
+
+The audit plan, section 4:
+
+> **4.2 Capital programme payments.** Tolerable misstatement for the capital programme payments
+> population is set at 1,160,000 euro for the year to 31 December 2026, being 2.0 per cent of budgeted
+> capital expenditure, and the population is tested to a confidence of 95 per cent.
+>
+> **4.3 Conclusion on a tested population.** A population is accepted only where the testing shows, to
+> the confidence at 4.2, that the population's misstatement does not exceed tolerable misstatement. Where
+> the testing does not show that, the population is referred for extended testing before the financial
+> statements are certified.
+
+The audit manual, part 9, which files the estimand and nothing else:
+
+> **9.1 What a tested population's misstatement means.** The misstatement of a tested population is the
+> amount by which the population's recorded value exceeds the amount properly payable, taken over every
+> payment line in the population and over the year in which the line was paid. It is an amount of euro and
+> not a count of lines or of invoices. It is stated for each work programme and for the authority, each to
+> the nearest fifty thousand euro, the authority's figure being the sum of the programme figures as stated.
+>
+> **9.2 Records.** No feed, schedule or register the authority keeps records a population's misstatement,
+> and none can: the payment records carry what was paid, not what was properly payable, and the testing
+> establishes the difference only for the lines tested. The head of internal audit satisfies himself each
+> year that the figure reported rests on the year's own payment records and the testing performed on them.
+
+What those two documents between them do **not** say: the interval, the number of selections, how the
+population was ordered or selected from, the expected misstatement allowance, any reliability or expansion
+factor, any evaluation procedure, and anything about projecting, scaling, weighting or extrapolating a
+finding. 4.2's two figures bound the interval below 433,333 and no further. 9.1 files population, outcome,
+window, unit, segmentation and grain, and 9.2 says no column holds the answer.
 
 
 ## Tried and rejected

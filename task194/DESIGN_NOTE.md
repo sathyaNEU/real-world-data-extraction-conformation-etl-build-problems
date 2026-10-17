@@ -146,17 +146,18 @@ excess for an embed to work on.
 - **Task type:** `provider-quality-risk-adjustment`, which the client taxonomy lists under Anomaly Detection
   & Diagnostics: separating a provider's real signal from what measuring it produces is the task type's own
   work, and the pack ships the episode-level raw material the risk model runs on.
-- **Domain test:** the deciding quantity is the reduction in a risk-adjusted provider outcome attributable to
-  an improvement intervention. Provider profiling estimates it by splitting a unit's observed excess over its
-  risk-adjusted expectation into the part that is the unit's own standing and the part that is this quarter's
-  variation, and by pricing the intervention on closed placements net of that variation; indirect
-  standardisation, the unit's own between-quarter variation and the placement record are the field's own
-  instruments and all three ship.
+- **Domain test:** the deciding quantity is the reduction in a risk-adjusted provider outcome attributable
+  to an improvement intervention. Provider profiling estimates it by fitting the intervention's effect to a
+  closed record of past interventions, against the sampling error a count of complications carries, and by
+  asking what that effect is proportional to: a provider's excess over its risk-adjusted expectation, its
+  risk-adjusted rate, or its volume. Indirect standardisation, the dispersion of a count of complications
+  and the closed placement record are the field's own instruments and all three ship.
 - **Swap:** "Which of our twelve machines should the calibration crew spend the quarter with, and how many
-  out-of-tolerance parts would that avoid?" With machines measured without error there is nothing to return
-  to: the worst machine now is the worst machine, ranking on the current period is the answer, and the record
-  of past crews adds nothing. The task only works where the measured quantity is a rate on a few hundred
-  episodes and the unit's own quarters disagree with each other.
+  out-of-tolerance parts would that avoid?" With machines measured without error the record of past crews is
+  a clean table that any of the four shapes fits exactly, and nothing chooses between them: the question
+  becomes arithmetic. The task only works where the outcome is a count of a few hundred risk-adjusted events,
+  because it is the size of that sampling error against the spread of the closed record that decides which
+  shape the evidence supports.
 - **Layer 1:** episode records at two grains (the episode extract against the monthly activity summary and
   the quarterly indicator series, both rollups of the same records); a national complication list revision on
   1 July 2026 that renames and reissues category codes (the coding service's own change); two medical wards
@@ -171,30 +172,34 @@ excess for an embed to work on.
   manifest both declare); patient index numbers issued in blocks as each site came onto the index, so the
   same number is never shared across two sites. Every item is what these systems produce, nothing is placed
   to be caught, and each is asserted neutral in `checks.py` (R2).
-- **Layer 2:** `estimand_identification`. The methodological choice that flips the call is which position the
-  unit is expected to hold over the assessment quarter without the team, and what the placement register
-  prices: the quarter the unit is standing in, or the unit's own standing over the specification period.
-- **Decisive step:** take the unit's own standing as the counterfactual and read the register as a share of
-  standing excess, because the units' quarterly deviations carry no serial correlation (-0.121, the artefact
-  of de-meaning a ten-quarter record) and the register's own falls track standing excess (worst
-  per-placement miss 12 per cent) rather than the unit's level (worst miss 131 per cent) or its expected
-  complications (worst miss 161 per cent).
+- **Layer 2:** `estimand_identification`. The methodological choice that flips the call is what the fall an
+  embed produces is proportional to: the standing excess a unit is carrying, the unit's standardised ratio,
+  what the unit would have recorded, or nothing at all. Each ranks the twelve units differently, and only the
+  closed register's own fit distinguishes them.
+- **Decisive step:** read the register as a share of standing excess, because its eight closed placements
+  spread from a unit at its expected number to one at nearly twice it, and over that spread only a share of
+  standing excess fits within the error a count of complications carries: chi-square 2.68 on seven degrees of
+  freedom against 35.57 for a constant drop in the standardised ratio, 22.50 for a constant percent of the
+  counterfactual and 22.54 for a flat number, likelihood ratios of 1.4e7, 2.0e4 and 2.1e4 to one.
 - **Not semantics:** every field, code, unit and definition read correctly still leaves the easy route on
-  Alderbrook General Medicine. The extract's fields are plain, the specification files the denominator, the
+  Alderbrook General Surgery. The extract's fields are plain, the specification files the denominator, the
   exclusions, the stratum rates, the reporting periods and the forward expectation basis, and the charter
-  files the population, the outcome, the window, the unit and the comparison. A solver who reads every one of
-  them correctly, and whose observed and expected counts tie to the published series row for row, still ranks
-  on the quarter in hand and files 14 complications avoided at 41210.
-- **Not rule application:** no filed rule, formula or procedure says what a unit would have recorded without
-  the team, or how the placement record prices a placement. The charter names the quantity and stops; the
-  specification defines the indicator and its reporting periods and stops. The decisive step is the choice of
-  estimator for a counterfactual the records fix but no sentence computes.
-- **Analyst test:** a strong analyst who risk-adjusts every unit correctly, applies the charter's eligibility
-  and activity clauses and prices the programme off the closed register ranks the units by the complications
-  they are recording above expectation in the latest closed quarter and places the team with Alderbrook
-  General Medicine (41210) for 14 complications avoided; 41210's ten quarters stand at 1.03 against 1.20 in
-  the quarter in hand, so the excess it is carrying now is mostly its own variation and the placement would
-  avoid 2.
+  files the population, the outcome, the window, the unit, the comparison and the baseline that comparison is
+  taken over. A solver who reads every one of them correctly, whose observed and expected counts tie to the
+  published series row for row and who takes the standing exactly as clause 4.3 files it, still prices the
+  programme as the average drop in the standardised ratio a placement produced and files 35 complications
+  avoided at 41220.
+- **Not rule application:** no filed rule, formula or procedure says what the fall an embed produces is
+  proportional to. The charter names the quantity, the baseline and the activity basis and stops; the
+  specification defines the indicator and its reporting periods and stops; the register carries dates, cost
+  centres and staffing and no achieved reduction. Executing every stated rule gives each unit a standing and
+  an expected number and leaves four shapes of the fall standing, which only a fit against the register's own
+  sampling error separates.
+- **Analyst test:** a strong analyst who risk-adjusts every unit correctly, applies the charter's
+  eligibility, baseline and activity clauses and prices the programme off the closed register states the
+  programme's effect the way a quality team states it, as the drop in the standardised ratio a placement
+  produced, and places the team with Alderbrook General Surgery (41220) for 35 complications avoided; the
+  same register read as a share of standing excess gives 41220 15 and names Alderbrook Orthopaedics at 24.
 - **Estimand:** "the complications the unit would have recorded over the assessment quarter without the
   embedded team, less the complications it records over that quarter with the team there", charter clause
   4.3, with the population in clause 4.2, the assessment quarter in clause 4.1, the activity basis in clause
