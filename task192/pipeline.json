@@ -9,7 +9,7 @@
  "updated": "2026-10-17",
  "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, reads 3.3, corrects the classifier's labels with the confrontational shares the hand coding found on each side of them and files 600 confrontational actions, because those shares were measured on the four months the coding desk audited and the record's composition moves after them.",
  "architecture": 3,
- "loops": 2,
+ "loops": 3,
  "precut": {
   "exit": 0,
   "date": "2026-10-17",
@@ -26,12 +26,12 @@
   "nearest": "0.09 task189 and task58 on the driver, down from 0.10; surface 0.102 task191 and 0.100 task193, no BLOCK"
  },
  "judge": {
-  "verdict": "loop 1: DETERMINISTIC, APPROVE, no repair and no rerun. Gate G statistical_rigor / method_or_model_selection; Gate H passing with the decisive step analytical; Gate F moderate to good. Measured: the gap between the two families of correction at 2.8 standard deviations with P(gap at or below zero) 0.4 per cent, daily noise 1.01 per degree of freedom against a weekday mean inside the audit window, and probe 6 clean (no hit for extrapolation, representativeness, sensitivity, recall or false anywhere in the text, the PDFs or the workbook cells, and the committed figure appears nowhere). Loop 0 was NOT_DETERMINISTIC, competing_defensible_answer, SEND_BACK.",
-  "disposition": "loop 1 APPROVE; loop 0 SEND_BACK, repaired",
-  "report": "loop 1 APPROVE on file. Loop 2 re-staged, not run: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/loop2/judge/judge_brief.md -> verdict.md. One re-judge is owed because the prompt, the write-up's thirteen fortnight cells and P07's euro total changed after the APPROVE; probe 4 is rewritten for the eleven rounded graded figures that remain."
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "report": "loop 2: route window open fork (F2) and five unasked graded figures (F4); both repaired, loop 3 judging"
  },
  "returned": [],
- "resume": "Stage 5 SHIP. The judge returned DETERMINISTIC and APPROVE at loop 1 and the author's pre-ship list is applied in full, option (c) on the shares. Every free gate is green on the shipped pack: 246 generator assertions, 123 independent checks, cracker.py 11 rows with 0 kept, figures_check 114/0 absent, three byte-identical rebuilds, leak.py REVIEW with no LEAK and every line answered, guard.py surface 0 BLOCK and heart WARN, precut 50 checks 0 FAIL 0 WARN, voice-check exit 0 at 983 characters, container audit clean on target/ and golden/, target.zip re-cut with 18 members at the archive root matching the tree. Remaining for the author: the ledger row (left to the author, who is editing that file in the same window), the commit, and spawning the two re-staged stage-4 threads, one re-judge and one reader, both owed because the prompt and fourteen graded figures changed after the APPROVE.",
+ "resume": "loop 3 stage 4: the convencoes row pinning the route table's window is in and the unasked figures are out of block 4; judge and reader spawned on the new pack",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -42,13 +42,14 @@
   "generator_assertions": 246,
   "independent_checks": 123,
   "figures_check": "114 figures in blocks 1 to 4, 0 absent",
-  "rebuilds": "three byte-identical over target/ and golden/ (1c98de7a022b9d4da33a642396013921ffa4bade68ce8452c55b1e8b78b98290)",
-  "zip": "target.zip, 18 members at the archive root, fccd5f32f0f2cfba5070587e3a08b74dbd80afca4a0cce4778d5003f010ddd4e",
+  "rebuilds": "three byte-identical over target/ and golden/ (5e05d98e5f08caea19e44dd950ff4d20319384cc4bcca51eda1008558d70a902)",
+  "zip": "target.zip, 18 members at the archive root, 7a62e56db5523fa7832fccf11a5a8422bb5194b1f506e5efd6c4bd1922b2a50c",
   "call": "450 confrontational actions to the nearest fifty (raw 453.013), default path 600, other routes 250, 350, 400 and 650",
   "granularity": "the nearest fifty actions, measured: the call's sampling standard deviation is 57.4 actions and the granularity is 0.87 of it",
   "forcing": "the audit covers months 5 to 8 of 5 to 10 and 12 of the 14 dispute themes; every stratified route has no rate for the rest; the gap between the two families of correction is 139.58 actions against a sampling standard deviation of 50.2, 2.78 sigma",
   "audit": "1,000 hand-coded reports in two rounds, 23.8 per cent of the period's 4,200 press-reported actions, cells 74/76/21/829, recall 0.4933, false-mark rate 0.0247",
-  "pre_ship_pass": "the author's pre-ship list of 2026-10-17 is applied in full, with option (c) on item 1. The fortnight table's partner column is a count of the fortnight's actions the network reported rather than a share of them, which removes the one-decimal-percentage hazard class instead of managing Q11, and the build now grades no percentage at all; no data moved, so the call, the candidate table, the 2.8-sigma family gap and the audit's draw are untouched. The share-edge measurement is corrected and kept as a record (it measured the distance to the printed value, which is the complement of the distance to the edge, so it named Q9 at 0.0129 when the real tightest was Q11 at 0.0013). P07's rate moved from 6.15 to 6.10 so its euro total clears 0.40 like the other six. The euros ask names the observable in the asking sentence rather than resting on 6.2. Protocol 4.5 gives each round a cut and a close, which resolves it against the dictionary. The dictionary admits the desk's catch-up weekend days, files the monthly returns' own basis (the month of the action, not of the delivery, now declared as device D3), files the rounding path of a percentage, and closes what it means for a route to have reported an action (SF25). The judge's caution and the two thin closures are recorded in the note. Exactly fourteen graded figures moved, the thirteen converted cells and P07's euro total, confirmed by diffing figures.json across the rebuild.",
+  "pre_ship_pass": "the author's pre-ship list of 2026-10-17 is applied in full, with option (c) on item 1. The fortnight table's partner column is a count of the fortnight's actions the network reported rather than a share of them, which removes the one-decimal-percentage hazard class instead of managing Q11, and the build now grades no percentage at all; no data moved, so the call, the candidate table, the 2.8-sigma family gap and the audit's draw are untouched. The share-edge measurement is corrected and kept as a record (it measured the distance to the printed value, which is the complement of the distance to the edge, so it named Q9 at 0.0129 when the real tightest was Q11 at 0.0013). P07's rate moved from 6.15 to 6.10 so its euro total clears 0.40 like the other six. The euros ask names the observable in the asking sentence rather than resting on 6.2. Protocol 4.5 gives each round a cut and a close, which resolves it against the dictionary. The dictionary admits the desk's catch-up weekend days, files the monthly returns' own basis (the month of the action, not of the delivery, now declared as device D3), files the rounding path of a percentage, and closes what it means for a route to have reported an action (SF25). The judge's caution and the two thin closures are recorded in the note. Exactly fourteen graded figures moved, the thirteen converted cells and P07's euro total, confirmed by diffing figures.json across the rebuild. The earlier bulletins' note that two dispute themes entered with the autumn mobilisation is also cut, on the author's ruling of 2026-10-17, after two independent cold readers named it among the pointers that let a solver see the autumn is unmeasured by the audit; it was the only optional member of that company, and protocol 3.3, protocol 4.5 with the dictionary's round definition and config_monitor.json's classifier-stability line all stay, with the reason on the record in the design note. No figure moved: figures.json is byte-identical across the rebuild.",
   "cracker": "generator/cracker.py, 11 rows measured on the cut pack, 0 kept by the cracker, exit 0; the sheet in the design note is its printed output"
- }
+ },
+ "held": "four findings of the loop-2 read are held for one pass after the verdict, each recorded in the design note's ## Held for the next pass with its diagnosis and one-line fix: the hand-coding worksheet's remaining tells, the six-week gap in its coding dates between 21 June and 6 August against a round-two lot that starts on 20 June, the repost keeping its original delivery stamps while the counter logged it on 14 September, and the three routes sharing one start-hour profile. Each needs a data change and so moves graded figures, which is why none is in this build."
 }

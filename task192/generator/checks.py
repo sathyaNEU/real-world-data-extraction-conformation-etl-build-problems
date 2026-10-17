@@ -441,6 +441,40 @@ def run(target, g=None):
                                              and "PAR" in a["routes"]),
        "the two readings of a reported action give different counts")
 
+    # SF26, the route table's window. The convention fixes the basis (a report counts in the
+    # period it was received in) and nothing else: with the row deleted two further windows
+    # compute, so the row is load-bearing, and it survives every receipt zone in the pack.
+    def _route_triple(pick):
+        out = []
+        for route, _ in W.ROUTES:
+            seen, kept = set(), 0
+            for r in b["reports"]:
+                if r["route"] != route or r["ident"] in seen:
+                    continue
+                seen.add(r["ident"])
+                if pick(r):
+                    kept += 1
+            kept += sum(1 for e in b["exceptions"] if e["route"] == route and pick(e))
+            out.append(kept)
+        return tuple(out)
+    _gold = _route_triple(lambda r: W.PERIOD_FROM <= r["recv"].date() <= W.PERIOD_TO)
+    _to_extract = _route_triple(lambda r: r["recv"].date() <= W.EXTRACT)
+    # an unplaced report carries no action, so the by-action-date reading keeps it on its receipt
+    _by_action = _route_triple(
+        lambda r: W.PERIOD_FROM <= r.get("day", r["recv"].date()) <= W.PERIOD_TO)
+    ok("SF26.route_window_filed", "recebeu entre 1 de" in conv,
+       "the convention fixing the route table's window is shipped")
+    ok("SF26.route_window_golden",
+       _gold == tuple(g["a2"][route]["received"] for route, _ in W.ROUTES), str(_gold))
+    ok("SF26.route_window_bites", _gold != _to_extract and _gold != _by_action,
+       "golden %s, to the extract %s, by action date %s" % (_gold, _to_extract, _by_action))
+    for _h in (-1, 1):
+        _d = dt.timedelta(hours=_h)
+        ok("SF26.route_window_zone_invariant.%+dh" % _h,
+           _route_triple(lambda r, _d=_d: W.PERIOD_FROM <= (r["recv"] + _d).date() <= W.PERIOD_TO)
+           == _gold,
+           "every receipt stamp moved %+dh still gives %s" % (_h, str(_gold)))
+
     # ---------------------------------------------------------------- realism
     by_fn = [v["actions"] for v in g["a1"].values()]
     ok("real.no_identical_periods", max(by_fn.count(x) for x in by_fn) <= 2, str(by_fn))

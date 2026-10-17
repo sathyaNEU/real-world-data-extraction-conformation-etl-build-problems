@@ -187,10 +187,7 @@ def bulletins(target, series):
                    "a tenham registado. Os municipios e as localidades sao os do gazeteiro nacional "
                    "na versao de 2024.", BODY),
          Paragraph("O boletim de maio cobre o mes em que o registo abriu, pelo que nao ha serie "
-                   "anterior para comparacao.", BODY),
-         Paragraph("O boletim de setembro registou a entrada de dois temas de disputa que o registo "
-                   "ainda nao tinha visto, energia e redes e florestas e fogos, com a mobilizacao "
-                   "do outono.", BODY)]
+                   "anterior para comparacao.", BODY)]
     d.build(f)
     return path
 

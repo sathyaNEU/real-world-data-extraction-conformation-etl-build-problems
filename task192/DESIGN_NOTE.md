@@ -226,6 +226,7 @@ window is twice what it is outside it.
 | SF23 | the reception moment of a press report | the first of its items, the dictionary's sentence | the last item, or every item | one route's median changes | the dictionary's `carimbo_recepcao` line; asserted |
 | SF24 | an Azores action | an action in the Azores district, on the Azores clock | none in the record | the median would not move | asserted that the record holds actions in the Azores district |
 | SF25 | an action a route reported | an action that route delivered a report of, however many other routes also did | an action only that route reported | the fortnight's partner count falls by three quarters | the `convencoes` sheet quoted; asserted that the two readings give different counts |
+| SF26 | the period the route table counts over | the reports each route received between 1 May and 30 October | every report in the file, which runs to the 6 November extract, or the reports of actions dated in the period | the received and unplaced counts and the partner route's median all move | the `convencoes` sheet's `relatos recebidos no periodo` row; asserted that the pinned window gives the golden, that both alternatives give different triples, and that the triple survives every receipt zone in the pack
 
 ## Ladder
 
@@ -580,15 +581,35 @@ the golden.
 
 ## Pre-ship check
 
+**The loop-2 judge's two advisories, answered rather than fixed.**
+
+- **The figure's own sampling error is wider than the grading grain.** The generator measures the
+  committed count's standard deviation over the four audit cells at 57.4 against a 50-action grain,
+  so a fresh audit of the same thousand reports would land in the 450 cell about a third of the
+  time. That is a statement about a counterfactual audit, not about this bundle: the shipped audit
+  is fixed data, 453.01 sits 22.0 below the 475 edge and 28.0 above the 425 edge, and every route
+  the bundle leaves standing but one lands in the same cell. What the decision rests on is the gap
+  between the families, and that is earned rather than drawn: 136.8 wide against a standard
+  deviation of 50.2, so 2.7 standard deviations from zero, with the audit's 9.5 per cent marked rate
+  against the record's 7.19 per cent carrying it. The grain is not coarsened, because coarsening to
+  the nearest hundred would move the committed figure to 500 and merge the 400 and 450 cells the
+  ladder separates.
+- **Constant error rates in September and October are an assumption the bundle cannot test.** No
+  hand coding exists after 31 August. `config_monitor.json` carries `alteracoes_no_periodo:
+  nenhuma` with the training date, which is the shipped fact the correction stands on, and within
+  the audit the classifier's sensitivity is homogeneous by month, round and theme (p 0.78, 0.63,
+  0.62). It is the right assumption for the field to make and the pack says so; it is not a figure
+  anyone recomputes.
+
 **The free gates, run on the shipped pack.**
 
 | Gate | Result |
 |---|---|
-| generator assertions | 246, 0 failures |
-| `verify.py`, own code path, bundle only | 123 independent checks, 0 failures |
+| generator assertions | 251, 0 failures |
+| `verify.py`, own code path, bundle only | 128 independent checks, 0 failures |
 | `cracker.py` | 11 rows, 0 kept by the cracker, exit 0 |
-| rebuilds | three byte-identical over `target/` and `golden/`, `1c98de7a022b9d4da33a642396013921ffa4bade68ce8452c55b1e8b78b98290` |
-| `figures_check.py` | exit 0, 114 figures in blocks 1 to 4, 0 absent |
+| rebuilds | three byte-identical over `target/` and `golden/`, `26ee5961c55ec65d6c590058fc93fe5af389144c777c6abdcd3d3be81f9776c7` |
+| `figures_check.py` | exit 0, 106 figures in blocks 1 to 4, 0 absent |
 | `precut.py` | exit 0, 50 checks, 0 FAIL, 0 WARN |
 | `voice-check.py` | exit 0, 983 characters |
 | `leak.py --asof 2026-11-06` | REVIEW, no LEAK, five lines each answered above |
@@ -596,7 +617,7 @@ the golden.
 | `guard.py heart` | WARN, no BLOCK, nearest driver 0.09 |
 | container audit | `target/` and `golden/` clean, no producer signature, no out-of-band stamp |
 | input gates | 18 files, 4 formats, 26,055-row item log, 4 distractors |
-| `target.zip` | 18 members at the archive root, content byte-identical to the tree, `fccd5f32f0f2cfba5070587e3a08b74dbd80afca4a0cce4778d5003f010ddd4e` |
+| `target.zip` | 18 members at the archive root, content byte-identical to the tree, `8ae7b3fcc1d4147ebd31799c31f4b6488b141b7b95d88555fe6b846f6acff053` |
 
 **The client's three rules, re-read against the built pack and not against the design.**
 
@@ -635,7 +656,41 @@ were measured on the four months the desk audited, where the classifier marked 9
 actions, and are carried onto a period where it marked 4.91 per cent after the cut. Analytical, and the
 generator executes it (`R3a.analyst_test`).
 
+## Held for the next pass
+
+Three findings of the loop-2 read are held rather than fixed, because each needs a data change and the
+author is holding the judge's verdict against this pack. Each is recorded with its diagnosis and the
+one-line fix, so the next pass is a build rather than a rediscovery.
+
+1. **The hand-coding worksheet is still the weakest file, and the list has grown.** Exactly 50.0 per
+   cent of each round's lot, rows sorted by identifier with monotone coding dates, batch-like repeated
+   daily loads, ten rows carrying a change note with no reviewer and no decision beside it, eleven of
+   eighteen changed decisions ending with the manual code equal to the machine's, and agreement flat at
+   74 to 79 per cent across all four coders. The fixes are in `sim.double_coding`: draw the round's lot
+   at an uneven fraction, shuffle the written order away from the identifier, give a note only to a row
+   that has a reviewer, let a changed decision change the code more often than not, and give each coder
+   their own agreement rate.
+2. **One of those is a contradiction rather than a tell.** There is no coding at all between 21 June
+   and 6 August, although round two's lot holds reports dated from 20 June: `desk_calendar` works each
+   lot in the 34 days before its own close, so round two's coding starts on 7 August and the six weeks
+   after round one's close are empty. Either the desk worked that stretch or the round's dates are
+   wrong. The fix is to give each round a span that reaches back to the previous round's close rather
+   than a fixed 34 days.
+3. **The repost's mechanism is incoherent even though the device works.** The reposted August rows keep
+   their original delivery timestamps while the ingest counter logged them on 14 September. A real
+   repost carries fresh stamps on old content, which is exactly what double-counts, so the device gets
+   stronger for the fix: stamp the second load's rows on the day the import log says it arrived.
+4. **The three routes share one clock profile.** The same hour shape, the same mean of 14.0 to 14.2 and
+   the same standard deviation of 3.6, with a hard floor at 07:00 and a cap near 21:55 on all three. A
+   press monitor, a public line and a partner network would not file at the same hours. The fix is in
+   `sim.reports`: give each route its own start-hour weights rather than one shared `START_WEIGHTS`.
+
+Each of 1 to 4 changes the pack's random stream and so moves graded figures, which is why none is in
+this build.
+
 ## Tried and rejected
+- Loop 3, the route table shipped with no window. The loop-2 judge computed three windows off the same sentence (received in the period 4,346 / 1,204 / 945, received to the 6 November extract 4,658 / 1,313 / 988, reports of actions dated in the period 4,348 / 1,215 / 945, with the partner median moving 1,327.0 / 1,312.0 / 1,331.0), so the ask was an open fork. Closed with one `convencoes` row fixing the basis, scoped to the route figures: the partner table's own row beside it stays action-dated, so the two conventions read as the two different things they are. The row is load-bearing, not a giveaway: delete it and the three windows compute again, and it says nothing about the repost, the placement or the medians. Measured zone-robust before it was written, the nearest receipt stamp sitting 1.25 hours from a window edge.
+- Loop 3, five figures graded that the prompt never asked for. The decomposition (4,200 / 427 / 302 / 30 / 1,000) and the per-fortnight shaded series left block 4; the decomposition stays in Critical Components, where it is a component of the call rather than an answer the rubric owes, and the shading stays in the bulletin as the house's own context, described but not graded.
 
 - The seed's own architecture, a filed definition of a campaign plus a verification subsample that
   blesses one reading of it: the definition makes the count rule application and the subsample is a
@@ -725,6 +780,21 @@ generator executes it (`R3a.analyst_test`).
   Replaced by start times from 07:00 to 21:59 with 82 per cent of minutes on a multiple of five, a
   working week in the daily counts, partner deliveries inside each organisation's working day, and
   lognormal lags, all asserted.
+- **(architecture 3) The earlier bulletins' note that two dispute themes entered the register with
+  the autumn mobilisation.** "O boletim de setembro registou a entrada de dois temas de disputa que o
+  registo ainda nao tinha visto, energia e redes e florestas e fogos, com a mobilizacao do outono."
+  Two independent cold readers named it, in the same company as 3.3, 4.5 and the classifier's
+  stability line, as part of what lets a solver see that the autumn is unmeasured by the audit. Cut.
+  It was the only optional member of that company and the pack loses nothing by it: the surge is
+  visible in the monthly action counts, and the two themes are visible as codes that appear in the
+  record only from September. The protocol's thematic table keeps both codes, because a code list is a
+  code list and says nothing about when either theme entered the register. **Why the other three stay,
+  so nobody cuts them later:** 3.3 files the estimand, so it is the WHAT; 4.5 with the dictionary's
+  round definition files the sampling frame, which is also the WHAT and which `determinism-check` §1
+  requires; and `config_monitor.json`'s "alteracoes_no_periodo: nenhuma" is a decisive fact Gate B
+  requires shipped, because without it the classifier's error rates would not transport either and the
+  problem would have no answer at all. Cutting the sentence moved no figure: `figures.json` is
+  byte-identical across the rebuild and only the bulletins PDF's own bytes changed.
 - **(architecture 3) Grading the fortnight's partner column as a share of the fortnight's actions.**
   The share put a one-decimal percentage in thirteen graded cells, and `determinism-check` §3 says
   never grade a percentage near a one-decimal edge, flatly, without an exception for a filed rounding

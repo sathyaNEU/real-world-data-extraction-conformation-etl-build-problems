@@ -52,10 +52,7 @@ recall, and not 250, the coded count with its false marks taken out.
 ### boletim_vigilancia_2026S2.xlsx
 
 1. Confrontational actions in the period, to the nearest fifty: 450.
-2. Actions recorded in the period: 4,627; with a press monitor report: 4,200; only from a filer: 427;
-   carrying a confrontational code under the classifier: 302; under a filer: 30; reports hand coded:
-   1,000.
-3. Per fortnight, actions recorded, municipalities touched and how many of those actions the partner
+2. Per fortnight, actions recorded, municipalities touched and how many of those actions the partner
    network reported, 13 rows in the file's order, all three as whole numbers:
    - Q1, 1 to 14 May: 289 actions, 111 municipalities, 69 reported by the network
    - Q2, 15 to 28 May: 257 actions, 110 municipalities, 68 reported by the network
@@ -70,13 +67,13 @@ recall, and not 250, the coded count with its false marks taken out.
    - Q11, 18 September to 1 October: 565 actions, 118 municipalities, 150 reported by the network
    - Q12, 2 to 15 October: 554 actions, 119 municipalities, 146 reported by the network
    - Q13, 16 to 30 October: 657 actions, 119 municipalities, 167 reported by the network
-4. Per access route, the reports received in the period, those the association could not place and the
+3. Per access route, the reports received in the period, those the association could not place and the
    median minutes from the start of the action to the report, 3 rows, counts as whole numbers and
    minutes to one decimal:
    - Monitor de imprensa (IMP): 4,346 received, 148 not placed, 115.0 minutes
    - Rede de parceiros (PAR): 1,204 received, 61 not placed, 1,327.0 minutes
    - Linha de participacao publica (LIN): 945 received, 94 not placed, 98.0 minutes
-5. Per partner organisation, the reports it filed on actions in the period, those filed after the
+4. Per partner organisation, the reports it filed on actions in the period, those filed after the
    period closed and the euros its data agreement pays for the ones filed by the close, 7 rows,
    counts as whole numbers and euros to the nearest euro:
    - P01: 134 filed, 0 after the close, 851 euros
@@ -89,8 +86,5 @@ recall, and not 250, the coded count with its false marks taken out.
 
 ### boletim_confrontos_2026S2.pdf
 
-6. The page leads with 450 confrontational actions of the 4,627 recorded in the period, over one
-   stacked bar for each fortnight of the actions recorded with the actions carrying a confrontational
-   code shaded, and repeats the fortnightly table of the workbook.
-7. Actions carrying a confrontational code, shaded by fortnight: Q1 38, Q2 30, Q3 24, Q4 22, Q5 26,
-   Q6 23, Q7 16, Q8 26, Q9 22, Q10 37, Q11 20, Q12 24, Q13 24.
+5. The page leads with 450 confrontational actions in the period, over one bar for each fortnight of
+   the actions recorded, 13 bars in the period's order at the heights of answer 2.

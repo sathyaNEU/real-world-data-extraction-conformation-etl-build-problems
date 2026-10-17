@@ -129,6 +129,9 @@ def dictionary_sheets():
                                                  "tambem o tenham feito, e conta uma vez"),
           ("relato recebido", "regra", "um relato conta uma vez na via que o recebeu, qualquer que "
                                        "seja o numero de cargas de importacao que o trouxeram"),
+          ("relatos recebidos no periodo", "regra", "os relatos que cada via recebeu entre 1 de "
+                                                    "maio e 30 de outubro; os recebidos depois do "
+                                                    "fecho do periodo entram no boletim seguinte"),
           ("minutos do inicio ao relato", "regra", "a diferenca entre o momento do relato e o "
                                                    "inicio da acao, com cada momento no fuso que "
                                                    "config_monitor.json da ao distrito da acao"),

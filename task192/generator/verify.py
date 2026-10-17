@@ -205,6 +205,48 @@ def run(target, figures):
                (mins[len(mins) // 2 - 1] + mins[len(mins) // 2]) / 2.0)
         ok("a2.%s.median" % route, abs(mid - got["median_minutes"]) < 0.051, "%.1f" % mid)
 
+    # The route table's window, read off the shipped dictionary and nothing else. The convention
+    # fixes the basis only: two further windows compute without it, and the pinned one survives
+    # every receipt zone the pack carries.
+    from openpyxl import load_workbook as _lwb
+    _d = _lwb(os.path.join(target, "dicionario_dados.xlsx"), read_only=True)
+    _conv = " ".join(str(c.value) for row in _d["convencoes"].iter_rows() for c in row
+                     if c.value is not None)
+    _d.close()
+    ok("a2.window_filed", "recebeu entre 1 de" in _conv,
+       "the dictionary fixes the window the route table counts over")
+
+    def _triple(key):
+        out = []
+        for route in ("IMP", "PAR", "LIN"):
+            seen, kept = set(), 0
+            for r in recs:
+                if r[0] != route or r[1] in seen:
+                    continue
+                seen.add(r[1])
+                if r[5] not in loc_of:
+                    continue
+                if key(recv_of[(route, r[1])], r[6]):
+                    kept += 1
+            kept += sum(1 for e in exc if e["via"] == route
+                        and key(moment(e["carimbo_recepcao"]), None))
+            out.append(kept)
+        return tuple(out)
+
+    _gold = tuple(f["routes"][r]["received"] for r in ("IMP", "PAR", "LIN"))
+    ok("a2.window_golden", _triple(lambda rc, dy: P0 <= rc.date() <= P1) == _gold, str(_gold))
+    ok("a2.window_bites",
+       _triple(lambda rc, dy: rc.date() <= EXTRACT) != _gold
+       and _triple(lambda rc, dy: P0 <= (dy or rc.date()) <= P1) != _gold,
+       "to the extract %s, by action date %s"
+       % (_triple(lambda rc, dy: rc.date() <= EXTRACT),
+          _triple(lambda rc, dy: P0 <= (dy or rc.date()) <= P1)))
+    for _h in (-1, 1):
+        _sh = dt.timedelta(hours=_h)
+        ok("a2.window_zone_invariant.%+dh" % _h,
+           _triple(lambda rc, dy, _sh=_sh: P0 <= (rc + _sh).date() <= P1) == _gold,
+           "every receipt stamp moved %+dh still gives %s" % (_h, str(_gold)))
+
     first_par = {}
     for r in recs:
         if r[0] == "PAR":
