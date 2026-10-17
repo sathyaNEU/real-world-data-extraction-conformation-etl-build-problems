@@ -467,10 +467,10 @@ def run(target, g):
         if ts in hheld:
             continue
         stamps_s.append(ts)
-        hdr_tot.append(float(x["blower_air_total_knm3"]))
-        bl3_tot.append(float(x["bl03_air_total_knm3"]))
-        hdr_rate.append(float(x["blower_air_nm3_h"]))
-        bl3_rate.append(float(x["bl03_air_nm3_h"]))
+        hdr_tot.append(float(x["aeration_header_total_knm3"]))
+        bl3_tot.append(float(x["bl03_discharge_total_knm3"]))
+        hdr_rate.append(float(x["aeration_header_nm3_h"]))
+        bl3_rate.append(float(x["bl03_discharge_nm3_h"]))
         infl.append(float(x["inlet_flow_m3_h"]))
     hdr_tot, bl3_tot = np.array(hdr_tot), np.array(bl3_tot)
     hdr_rate, bl3_rate, infl = np.array(hdr_rate), np.array(bl3_rate), np.array(infl)
@@ -496,8 +496,8 @@ def run(target, g):
         wk = next((i for i, w in enumerate(W.WEEKS) if w <= ts.date() < w + dt.timedelta(days=7)), None)
         if wk is None:
             continue
-        wk_h[wk] = wk_h.get(wk, 0.0) + float(x["blower_air_nm3_h"]) * 0.25
-        wk_b[wk] = wk_b.get(wk, 0.0) + float(x["bl03_air_nm3_h"]) * 0.25
+        wk_h[wk] = wk_h.get(wk, 0.0) + float(x["aeration_header_nm3_h"]) * 0.25
+        wk_b[wk] = wk_b.get(wk, 0.0) + float(x["bl03_discharge_nm3_h"]) * 0.25
         wk_i[wk] = wk_i.get(wk, 0.0) + float(x["inlet_flow_m3_h"]) * 0.25
     both = np.array([(wk_h[i] + wk_b[i]) / wk_i[i] for i in range(6)])
     only = np.array([wk_h[i] / wk_i[i] for i in range(6)])
@@ -512,22 +512,38 @@ def run(target, g):
     for x in scada_rows:
         ts = dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M")
         if ts in hheld and prev is not None:
-            if float(x["blower_air_nm3_h"]) > 0 and float(x["blower_air_total_knm3"]) == float(
-                    prev["blower_air_total_knm3"]):
+            if float(x["aeration_header_nm3_h"]) > 0 and float(x["aeration_header_total_knm3"]) == float(
+                    prev["aeration_header_total_knm3"]):
                 bad_held += 1
         prev = x
     A(bad_held == len(heldw),
       "SF20 every held row is an impossible row on its face: the air counter stands still while the air "
       "flows (%d of %d)" % (bad_held, len(heldw)))
-    # and no row the historian wrote itself repeats the row before it, so the held rows are the only ones
-    reps = 0
+    # the rows that repeat the row before them are of two kinds, and the flow channels are what tell them
+    # apart: the ones the link's held spells make, which claim flow while their counters stand still, and
+    # the ones the weekly inspection leaves, where the works is stopped and a flat counter is the plant's
+    # own state. A solver who counts repeats and stops there takes the second kind for the first.
+    reps, reps_flowing, reps_stopped = 0, 0, 0
     prev = None
     for x in scada_rows:
         ts = dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M")
         if prev is not None and all(v == prev[k] for k, v in x.items() if k != "logged_at"):
             reps += 1
+            if (float(x["aeration_header_nm3_h"]) > 0.0
+                    or float(x["bl03_discharge_nm3_h"]) > 0.0):
+                reps_flowing += 1
+            else:
+                reps_stopped += 1
+                A(any(a3 <= ts < b3 for a3, b3 in SM.all_down()),
+                  "SF20 the repeated row at %s is one the works' own stop leaves" % ts)
         prev = x
-    A(reps == len(heldw), "SF20 the only rows that repeat the row before them are the held ones (%d)" % reps)
+    A(reps_flowing == len(heldw),
+      "SF20 the repeated rows that claim flow while their counters stand still are the %d held ones (%d)"
+      % (len(heldw), reps_flowing))
+    A(reps_stopped >= 36,
+      "SF20 and %d more are the same row again because the works is stopped, which is a reading"
+      % reps_stopped)
+    A(reps == reps_flowing + reps_stopped, "SF20 every repeated row is one kind or the other")
 
     # ------------------------------------------------------- the readings that converge, asserted on data
     # pooling: the position's residual over both deployments against the mean of the two deployments'
@@ -673,10 +689,10 @@ def run(target, g):
     A(len(set(texts2)) == len(texts2), "no two contacts carry the same sentence")
 
     # the process channels wander rather than jumping about, and the totaliser's steps are not all equal
-    tot = [float(x["blower_air_total_knm3"]) for x in scada_rows]
+    tot = [float(x["aeration_header_total_knm3"]) for x in scada_rows]
     steps = [round(tot[i + 1] - tot[i], 1) for i in range(len(tot) - 1) if tot[i + 1] >= tot[i]]
     A(len(set(steps)) >= 5, "the totaliser's quarter-hour steps take %d printed values" % len(set(steps)))
-    rate = np.array([float(x["blower_air_nm3_h"]) for x in scada_rows])
+    rate = np.array([float(x["aeration_header_nm3_h"]) for x in scada_rows])
     run_on = rate > 100
     rr3 = rate[run_on]
     lag1 = float(np.corrcoef(rr3[:-1], rr3[1:])[0, 1])
@@ -727,7 +743,7 @@ def run(target, g):
     # D1, position by position and week by week: the header counter alone is the easy figure and it is
     # short of the air the blowers delivered by what the third machine put in, every time
     for c in W.CODES:
-        easy = sum(float(hrows[hi]["blower_air_total_knm3"]) - float(hrows[lo]["blower_air_total_knm3"])
+        easy = sum(float(hrows[hi]["aeration_header_total_knm3"]) - float(hrows[lo]["aeration_header_total_knm3"])
                    for lo, hi in depwin[c])
         A(rows[c]["air_knm3"] - easy > 100.0,
           "SF19 %s: the header counter alone gives %.1f against %.1f, short by %.1f thousand Nm3"
@@ -737,8 +753,8 @@ def run(target, g):
             tt = lo + dt.timedelta(minutes=15)
             while tt <= hi:
                 if tt in hrows:
-                    rate_route += (float(hrows[tt]["blower_air_nm3_h"])
-                                   + float(hrows[tt]["bl03_air_nm3_h"])) * 0.25 / 1000.0
+                    rate_route += (float(hrows[tt]["aeration_header_nm3_h"])
+                                   + float(hrows[tt]["bl03_discharge_nm3_h"])) * 0.25 / 1000.0
                 tt += dt.timedelta(minutes=15)
         A(abs(rate_route - rows[c]["air_knm3"]) > 0.5,
           "SF22 %s: summing the rate channels instead gives %.1f against %.1f"
@@ -746,8 +762,8 @@ def run(target, g):
     for i, wk in enumerate(W.WEEKS):
         a2 = dt.datetime(wk.year, wk.month, wk.day)
         b2 = a2 + dt.timedelta(days=7)
-        easy = (float(hrows[b2]["blower_air_total_knm3"])
-                - float(hrows[a2]["blower_air_total_knm3"]))
+        easy = (float(hrows[b2]["aeration_header_total_knm3"])
+                - float(hrows[a2]["aeration_header_total_knm3"]))
         A(g["weekly"][i]["blower_air_knm3"] - easy > 100.0,
           "SF19 week %d: the header counter alone gives %.0f against %d"
           % (i, easy, g["weekly"][i]["blower_air_knm3"]))

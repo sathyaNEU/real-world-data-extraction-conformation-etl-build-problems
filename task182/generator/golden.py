@@ -68,10 +68,15 @@ def tone_call(levels):
 
 
 def hist_rows(target):
-    """The historian's rows by stamp, and the stamps whose row carries nothing of its own: when the radio
-    link drops the interface holds the last value it had and writes it again, so the row is there and the
-    plant's state is not. Those rows are found by what they are, every channel the same as the row before
-    while the rates read above zero and the counters stand still, and by nothing that is written down."""
+    """The historian's rows by stamp, and the stamps whose row is no reading of its own.
+
+    When the radio link to the PLC drops the interface holds the last value it had and writes it again, so
+    the row is there and the quarter hour's reading is not. Such a row is found by what it is and by
+    nothing that is written down: every channel the same as the row before, while its own flow channels
+    read above zero and its counters stand still, which no reading of a running plant can be. The rows the
+    weekly inspection leaves are the same row again too, and they are readings: the works is stopped, the
+    flows read zero and a counter that does not advance is the state of the plant. The flow channels are
+    what separate the two."""
     import csv as _c
     rows, held, prev = {}, set(), None
     with open(os.path.join(target, PK.FILES["scada"]), encoding="utf-8") as fh:
@@ -79,14 +84,17 @@ def hist_rows(target):
             t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
             rows[t] = r
             if prev is not None and all(v == prev[k] for k, v in r.items() if k != "logged_at"):
-                held.add(t)
+                flowing = (float(r["aeration_header_nm3_h"]) > 0.0
+                           or float(r["bl03_discharge_nm3_h"]) > 0.0)
+                if flowing:
+                    held.add(t)
             prev = r
     return rows, held
 
 
 def air_total(row):
     """The air the blowers delivered, off the two totalisers the plant's three machines are metered on."""
-    return float(row["blower_air_total_knm3"]) + float(row["bl03_air_total_knm3"])
+    return float(row["aeration_header_total_knm3"]) + float(row["bl03_discharge_total_knm3"])
 
 
 def position_windows(target):
@@ -112,9 +120,9 @@ def position_windows(target):
 
 
 def unrecorded(rows, held, lo, hi):
-    """Quarter hours in (lo, hi] the historian did not record the plant's state in, and the longest
-    unbroken run of them: the ones it wrote no row for, and the ones whose row is the quarter hour before
-    it written again, which is what the interface does while the link to the PLC is down."""
+    """Quarter hours in (lo, hi] the historian holds no reading of its own for, and the longest unbroken
+    run of them: the ones it wrote no row for, and the ones whose row is the quarter hour before it
+    written again while the plant ran on, which is what the interface does with the link down."""
     n, run, longest, t = 0, 0, 0, lo + dt.timedelta(minutes=15)
     while t <= hi:
         if t not in rows or t in held:

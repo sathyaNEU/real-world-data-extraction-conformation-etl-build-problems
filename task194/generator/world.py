@@ -114,6 +114,16 @@ MIX_SHIFT_PROFILE = "ortho_backfill"
 ADDITIVE_UNIT = "41410"       # its rate is the network's rate in each band plus a constant per episode
 ADDITIVE_C = 0.0121
 
+# The day-procedure feed did not deliver for two months at three units while the theatre management system
+# was migrated, one unit at each of the three larger sites. The patient administration system counted those
+# separations, so the activity summary carries them and the episode extract does not. Every unit here is a
+# unit the improvement team has already been placed with, so none is a candidate, and every record the feed
+# missed is a same-day separation, which specification 2.1 puts outside the indicator: the gap can reach
+# neither a candidate's separations nor any in-scope episode.
+FEED_GAP = {"41250": ("2026-04", "2026-05"),
+            "41350": ("2026-07", "2026-08"),
+            "41440": ("2026-02", "2026-03")}
+
 # Baseline stratum rates published with specification 4.0 (complications per episode), risk band x age band.
 # Derived in the fiction from FY2023-24 network activity; the pack ships them as a lookup.
 STRATUM_RATE = {

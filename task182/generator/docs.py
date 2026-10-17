@@ -71,7 +71,9 @@ def plan(target):
                   "level.", BODY),
         Paragraph("4.3 A tone is prominent in a one-third-octave band where that band's level over the "
                   "assessment period exceeds the mean of the levels in the two adjacent bands by 5 dB or "
-                  "more. The test is taken on the unweighted band levels.", BODY),
+                  "more. A band's level over the assessment period is the energy-equivalent level of its "
+                  "quarter-hour records in that period, both deployments together. The test is taken on "
+                  "the unweighted band levels.", BODY),
         Paragraph("5 Process records", H2),
         Paragraph("5.1 The plant's figures for a week are read from the process meters' own counters: the "
                   "counter reading stamped at 00:00 on the Monday the week begins, taken from the reading "

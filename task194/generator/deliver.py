@@ -123,12 +123,14 @@ def workbook(path, g):
     ws.print_area = "A1:G%d" % (n + 10)
 
     hs = wb.create_sheet("Hospital year")
-    _sheet(hs, "Adjusted complication rate by hospital, year ended 31 December 2026",
-           "In-scope episodes under specification 4.0, counted at the site each unit reported under in the "
-           "month of separation.",
-           ["Hospital", "In-scope episodes", "Complications", "Adjusted rate per 1,000 episodes"],
-           [[h["name"], h["episodes"], h["complications"], round(h["rate"], 1)] for h in g["hospitals"]],
-           [24, 14, 13, 16], {2: "#,##0", 3: "#,##0", 4: "0.0"})
+    _sheet(hs, "What the complication indicator excludes, by hospital, year ended 31 December 2026",
+           "The separations the activity summary reports, all care types, less the episodes the "
+           "indicator measured under specification 4.0 clauses 2.1 to 2.3, counted at the site each unit "
+           "reported under in the month. The episode extract is one row per record the warehouse "
+           "received and is not the authority on separations.",
+           ["Hospital", "Separations excluded", "Excluded with a complication"],
+           [[h["name"], h["separations"], h["complications"]] for h in g["hospitals"]],
+           [24, 16, 18], {2: "#,##0", 3: "#,##0"})
 
     os_ = wb.create_sheet("Outside the indicator")
     _sheet(os_, "Sub-acute and mental health activity, outside the complication indicator",

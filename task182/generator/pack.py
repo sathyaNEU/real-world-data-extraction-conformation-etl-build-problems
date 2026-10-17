@@ -229,6 +229,7 @@ def write_scada(target):
     wkf = np.array([SM.week_factor(s.date()) for s in stamps])
     inflow = (96 + 34 * np.exp(-((hours - 10.5) ** 2) / 9.0) + 26 * np.exp(-((hours - 19.0) ** 2) / 7.0)
               + 6.1 * _ar1(n, 0.74, rng))
+    inflow = np.where(stopped, 0.0, inflow)        # the inlet pumps are on the MCC the inspection stops
     # the air the lanes take: the dissolved oxygen trim follows the load on the works, so the total
     # wanders through the day with the inlet and over the weeks with the intake
     total_air = ((4120 + 180 * np.sin(2 * math.pi * hours / 24.0 - 1.2)
@@ -304,8 +305,8 @@ def write_scada(target):
         rows.append([s.strftime("%Y-%m-%d %H:%M")] + vals)
         last = vals
     return _write_csv(os.path.join(target, FILES["scada"]),
-                      ["logged_at", "blower_air_nm3_h", "blower_air_total_knm3",
-                       "bl03_air_nm3_h", "bl03_air_total_knm3",
+                      ["logged_at", "aeration_header_nm3_h", "aeration_header_total_knm3",
+                       "bl03_discharge_nm3_h", "bl03_discharge_total_knm3",
                        "centrifuge_feed_m3_h", "biogas_meter_m3", "engine_export_kw",
                        "engine_hours_run", "gas_booster_hours_run", "inlet_flow_m3_h"], rows)
 
@@ -357,7 +358,7 @@ def _spectra(code, wobble):
         if abs(f - 400.0) < 1.0:
             p += 16.0 * k400
         elif abs(f - 100.0) < 1.0:
-            p += 6.5 * k100
+            p += 5.9 * k100
         elif abs(f - 800.0) < 1.0:
             p += 4.0 * k400 * k400
         r = -7.0 - 8.0 * abs(math.log10(f / 100.0)) ** 1.62 + 0.6 * wobble[i]

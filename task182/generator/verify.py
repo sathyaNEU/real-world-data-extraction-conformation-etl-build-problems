@@ -310,9 +310,9 @@ def _core(target, fig, with_asks):
            "%s tone %s at %.2f dB excess" % (code, want_tone, excess))
 
     # ---- the plant's own records, which the asks run on: the air the blowers delivered off the two
-    # totalisers the three machines are metered on, and the quarter hours the historian holds no record
-    # of the plant for, which are the rows it never wrote and the rows that are the quarter hour before
-    # them written again
+    # meters its three machines discharge through, and the quarter hours the historian holds no reading of
+    # its own for, which are the stamps it wrote no row for and the rows that are the quarter hour before
+    # them written again while the plant ran on
     if not with_asks:
         return OK
     hist, held, prev = {}, set(), None
@@ -320,13 +320,17 @@ def _core(target, fig, with_asks):
         t0 = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
         hist[t0] = r
         if prev is not None and all(v == prev[k] for k, v in r.items() if k != "logged_at"):
-            held.add(t0)
+            # the same row again: no reading of its own where the plant ran on through it, and the
+            # works' own stop where the flows read zero, which is a reading
+            if float(r["aeration_header_nm3_h"]) > 0.0 or float(r["bl03_discharge_nm3_h"]) > 0.0:
+                held.add(t0)
         prev = r
     ok(len(hist) > 7000, "the historian carries %d rows" % len(hist))
-    ok(len(held) > 40, "%d of them are the quarter hour before them written again" % len(held))
+    ok(len(held) > 40,
+       "%d of them are the quarter hour before them written again while the plant ran on" % len(held))
 
     def air_at(t0):
-        return float(hist[t0]["blower_air_total_knm3"]) + float(hist[t0]["bl03_air_total_knm3"])
+        return float(hist[t0]["aeration_header_total_knm3"]) + float(hist[t0]["bl03_discharge_total_knm3"])
 
     def gone(lo, hi):
         n, cur, longest = 0, 0, 0

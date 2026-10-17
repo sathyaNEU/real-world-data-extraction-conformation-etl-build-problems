@@ -80,10 +80,14 @@ def write(gendir, g):
         "reading_margins": {k: round(v["margin"], 2) for k, v in g["convergence"].items()},
         "route_winners": {k.split()[0]: v["first"] for k, v in g["routes"].items()},
         "route_margins": {k.split()[0]: round(v["margin"], 2) for k, v in g["routes"].items()},
-        "hospital_year": {h["hospital"]: {"name": h["name"], "episodes": h["episodes"],
-                                          "complications": h["complications"],
-                                          "adjusted_rate_per_1000": round(h["rate"], 1)}
+        "hospital_year": {h["hospital"]: {"name": h["name"], "separations_reported": h["reported"],
+                                          "episodes_measured": h["measured"],
+                                          "separations_excluded": h["separations"],
+                                          "excluded_with_a_complication": h["complications"]}
                           for h in g["hospitals"]},
+        "excluded_by_hospital": {h["hospital"]: h["separations"] for h in g["hospitals"]},
+        "excluded_with_a_complication_by_hospital": {h["hospital"]: h["complications"]
+                                                     for h in g["hospitals"]},
         "outside_indicator": {o["quarter"]: {"separations": o["separations"],
                                              "with_complication": o["with_complication"]}
                               for o in g["outside"]},

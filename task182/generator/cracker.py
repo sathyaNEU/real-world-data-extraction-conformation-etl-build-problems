@@ -14,6 +14,10 @@ quarter on the header alone, and each counter carries its own rate channel and n
 historian holds rows that are the quarter hour before them written again, which its own counters give away
 by standing still while the air flows.
 
+And it does not separate a row that is the one before it written again from the rows the weekly inspection
+leaves, which are the same row again and are readings of a stopped works; the flow channels are what tell
+them apart.
+
 The mirror stops at the most attractive wrong rung, the statistical background of the position's own
 record, so it loses the construction layer and answers the rest exactly as the cracker does.
 
@@ -68,9 +72,9 @@ def historian():
 
 
 def face_value(hist, lo, hi):
-    """The cracker's three figures over a window: the air off the channel named for the blowers, and the
-    quarter hours the historian wrote no row for, counted and in their longest run."""
-    air = float(hist[hi]["blower_air_total_knm3"]) - float(hist[lo]["blower_air_total_knm3"])
+    """The cracker's three figures over a window: the air off the plant's own aeration header meter, and
+    the quarter hours the historian wrote no row for, counted and in their longest run."""
+    air = float(hist[hi]["aeration_header_total_knm3"]) - float(hist[lo]["aeration_header_total_knm3"])
     n, cur, longest = 0, 0, 0
     t = lo + dt.timedelta(minutes=15)
     while t <= hi:

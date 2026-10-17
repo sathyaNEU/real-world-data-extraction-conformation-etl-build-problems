@@ -45,7 +45,7 @@ def load(target):
     peer = {r["hospital_code"]: r["peer_group"] for r in _read(target, "hospital_sites.csv")}
     panel = defaultdict(lambda: dict(episodes=0, observed=0.0, expected=0.0, separations=0))
     sc = defaultdict(lambda: defaultdict(lambda: [0, 0]))   # (unit, q) -> stratum -> [episodes, with HAC]
-    year2026 = defaultdict(lambda: dict(episodes=0, observed=0, expected=0.0))
+    monthly = defaultdict(lambda: [0, 0])      # (unit, month) -> [in-scope episodes, observed complications]
     nonacute_rows = []
     groups_by_year = defaultdict(lambda: defaultdict(set))
     seen = set()
@@ -81,20 +81,52 @@ def load(target):
                 cell = sc[(unit, q)][(band, row["age_band"])]
                 cell[0] += 1
                 cell[1] += 1 if hac else 0
+                m = monthly[(unit, sep.replace(day=1).isoformat())]
+                m[0] += 1
+                m[1] += 1 if hac else 0
                 inscope_episode[row["episode_id"]] = (unit, sep, fy)
-                if dt.date(2026, 1, 1) <= sep <= dt.date(2026, 12, 31):
-                    site = facility[(unit, sep.replace(day=1).isoformat())]
-                    y = year2026[site]
-                    y["episodes"] += 1
-                    y["expected"] += strata[(band, row["age_band"])]
-                    y["observed"] += 1 if hac else 0
                 if hac and row["hac_category_code"] and fy in ("2025-26", "2026-27"):
                     groups_by_year[fy]["principal:" + row["hac_category_code"]].add(row["episode_id"])
     return dict(units=units, bands=bands, strata=strata, plan=plan, placements=placements, peer=peer,
-                sc={k: dict(v) for k, v in sc.items()},
-                panel=dict(panel), year2026=dict(year2026), nonacute=stays(nonacute_rows),
+                sc={k: dict(v) for k, v in sc.items()}, monthly_inscope=dict(monthly),
+                panel=dict(panel), nonacute=stays(nonacute_rows),
                 principal=dict(groups_by_year), facility=facility, summary=summary,
                 inscope_episode=inscope_episode)
+
+
+def excluded_activity(b, year=2026):
+    """What the complication indicator leaves out at each hospital, in a calendar year.
+
+    Specification 2.1 to 2.3 keep an acute inpatient episode of one night or more whose diagnosis related
+    group the risk band map assigns to a band. A hospital's separations therefore divide into the episodes
+    the indicator measures and the rest: same-day separations, episodes whose care type is not acute, and
+    episodes the grouper could not group.
+
+    The rest is not counted off the episode extract. The extract is one row per episode record the
+    warehouse received, and the warehouse is not the system that counts separations: the activity summary
+    is, and it counts every care type. So the excluded separations of a unit-month are the separations the
+    activity summary reports less the in-scope episodes the indicator measured, and the excluded ones that
+    recorded a complication are the summary's affected separations less the complications the indicator
+    observed. Each unit-month is counted to the site that unit reported under in that month, which is the
+    summary's own column.
+    """
+    inscope = b["monthly_inscope"]
+    out = defaultdict(lambda: dict(reported=0, measured=0, separations=0, with_complication=0))
+    for r in b["summary"]:
+        month = r["month"]
+        if int(month[:4]) != year:
+            continue
+        unit = r["unit_code"]
+        if b["units"][unit]["service_type"] != "Acute inpatient":
+            continue                      # the units outside the indicator are a question of their own
+        n, o = inscope.get((unit, month), [0, 0])
+        site = r["facility"]
+        cell = out[site]
+        cell["reported"] += int(r["separations"])
+        cell["measured"] += n
+        cell["separations"] += int(r["separations"]) - n
+        cell["with_complication"] += int(r["episodes_with_complication"]) - o
+    return dict(out)
 
 
 def stays(rows):
@@ -500,14 +532,15 @@ def compute(target):
     se_gap = math.sqrt(answer["se"] ** 2 + runner["se"] ** 2)
     se_gap3 = math.sqrt(answer["se"] ** 2 + third["se"] ** 2)
 
-    # ask 2: the hospital year ended 31 December 2026
+    # ask 2: what the indicator leaves out at each hospital, in the year ended 31 December 2026
     sites = {r["hospital_code"]: r["hospital_name"] for r in _read(target, "hospital_sites.csv")}
+    exc = excluded_activity(b)
     hosp = []
-    for code in sorted(b["year2026"]):
-        y = b["year2026"][code]
-        hosp.append(dict(hospital=code, name=sites[code], episodes=y["episodes"],
-                         complications=y["observed"],
-                         rate=y["observed"] / y["expected"] * REF_RATE))
+    for code in sorted(exc):
+        y = exc[code]
+        hosp.append(dict(hospital=code, name=sites[code], reported=y["reported"],
+                         measured=y["measured"], separations=y["separations"],
+                         complications=y["with_complication"]))
 
     # ask 3: the units outside the indicator, by quarter
     outside = []

@@ -24,12 +24,13 @@ def write(task, g):
                                            for r in g["referred"])))
     A("The expected after-count comes from the window's own first-receipt dates, so the lowest "
       "referred multiple is %.2f and the nearest pair on the wrong side of the line is %s at %.2f. "
-      "Not the %d pairs an equal-chance expectation refers: it adds %s, which the dates refuse. "
-      "And it misses %s, which are real signals it hides because both products were first marketed "
-      "inside the window."
+      "Not the %d pairs an equal-chance expectation refers: it adds %s, which the dates refuse, "
+      "and those %d miss %s, which are real signals it hides because both products were first "
+      "marketed inside the window."
       % (min(r["multiple"] for r in g["referred"]), g["nearest_miss"]["label"],
          g["nearest_miss"]["multiple"], g["crude_count"],
          "; ".join("%s and %s" % (r["product"], r["marker"]) for r in g["crude_only"]),
+         g["crude_count"],
          "; ".join("%s and %s" % (r["product"], r["marker"]) for r in g["window_only"])))
     A("")
     A("## 2. Critical Components")

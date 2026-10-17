@@ -65,7 +65,11 @@ def write_extract(target, rows, replays):
     """
     for r in rows:
         r.setdefault("replay_of", None)
-    allrows = list(rows) + list(replays)
+    # the day-procedure feed's two missing months at three units: the patient administration system counted
+    # those separations and the activity summary carries them, and the warehouse never received them
+    allrows = [r for r in list(rows) + list(replays)
+               if not (r["unit"] in W.FEED_GAP and r["los"] == 0
+                       and r["sep_date"].isoformat()[:7] in W.FEED_GAP[r["unit"]])]
     allrows.sort(key=lambda r: (r["sep_date"], r["unit"], r["replay_of"] is not None))
     # the warehouse allocates a record number per separation month, and not every number it allocates
     # reaches the extract: cancelled admissions and records merged into another one keep theirs
@@ -92,9 +96,17 @@ def write_extract(target, rows, replays):
 
 
 def write_detail(target, rows, detail):
+    """One row per complication recorded against an episode the clinical information system holds.
+
+    A complication the warehouse never received an episode record for cannot be in the detail either, so
+    the records the day-procedure feed missed carry no detail rows: they have no episode identifier to
+    carry them under.
+    """
     out = []
     for d in detail:
         r = rows[d["row"]]
+        if "episode_id" not in r:
+            continue
         out.append([r["episode_id"], d["unit"], r["sep_date"].isoformat(), d["seq"], d["code"],
                     d["onset"].isoformat()])
     out.sort(key=lambda x: (x[2], x[0], x[3]))

@@ -8,7 +8,7 @@
 ## 1. Final Recommendation
 
 **Refer 7 of the 20 candidate pairs to formal signal assessment in the quarter beginning 1 January 2027: Dalvextin and loop diuretic; Pirenoxol and acid-suppressant; Ternivast and gout treatment; Oxelumab and antidepressant; Hestroban and antiemetic; Kirunelle and hypnotic; Sovraxil and topical corticosteroid.**
-The expected after-count comes from the window's own first-receipt dates, so the lowest referred multiple is 1.36 and the nearest pair on the wrong side of the line is Dalvextin and acid-suppressant at 1.03. Not the 10 pairs an equal-chance expectation refers: it adds Varenadol and antiemetic; Varenadol and acid-suppressant; Varenadol and hypnotic; Admirabin and loop diuretic; Admirabin and antidepressant, which the dates refuse. And it misses Ternivast and gout treatment; Oxelumab and antidepressant, which are real signals it hides because both products were first marketed inside the window.
+The expected after-count comes from the window's own first-receipt dates, so the lowest referred multiple is 1.36 and the nearest pair on the wrong side of the line is Dalvextin and acid-suppressant at 1.03. Not the 10 pairs an equal-chance expectation refers: it adds Varenadol and antiemetic; Varenadol and acid-suppressant; Varenadol and hypnotic; Admirabin and loop diuretic; Admirabin and antidepressant, which the dates refuse, and those 10 miss Ternivast and gout treatment; Oxelumab and antidepressant, which are real signals it hides because both products were first marketed inside the window.
 
 ## 2. Critical Components
 
@@ -83,30 +83,30 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Ellevang Biosciences A/S (H6): 1090310.0 DDD, 1109616 kroner
    - Strandby Farma ApS (H7): 121180.5 DDD, 187345 kroner
 5. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
-   - Hovedstaden, 18-24: 249 patients, 70.7 per cent
-   - Hovedstaden, 25-44: 752 patients, 68.5 per cent
-   - Hovedstaden, 45-54: 386 patients, 76.4 per cent
-   - Hovedstaden, 55 and over: 1361 patients, 81.0 per cent
-   - Midtjylland, 18-24: 208 patients, 69.2 per cent
-   - Midtjylland, 25-44: 599 patients, 69.3 per cent
-   - Midtjylland, 45-54: 277 patients, 78.7 per cent
-   - Midtjylland, 55 and over: 1117 patients, 77.5 per cent
-   - Nordjylland, 18-24: 94 patients, 69.1 per cent
-   - Nordjylland, 25-44: 306 patients, 69.3 per cent
-   - Nordjylland, 45-54: 175 patients, 73.7 per cent
-   - Nordjylland, 55 and over: 523 patients, 79.5 per cent
-   - Sjaelland, 18-24: 133 patients, 69.2 per cent
-   - Sjaelland, 25-44: 386 patients, 76.9 per cent
-   - Sjaelland, 45-54: 221 patients, 71.5 per cent
-   - Sjaelland, 55 and over: 801 patients, 79.3 per cent
-   - Syddanmark, 18-24: 194 patients, 71.6 per cent
-   - Syddanmark, 25-44: 557 patients, 72.0 per cent
-   - Syddanmark, 45-54: 294 patients, 73.5 per cent
-   - Syddanmark, 55 and over: 989 patients, 79.8 per cent
-   - not stated, 18-24: 29 patients, 72.4 per cent
-   - not stated, 25-44: 82 patients, 76.8 per cent
-   - not stated, 45-54: 37 patients, 73.0 per cent
-   - not stated, 55 and over: 122 patients, 77.9 per cent
+   - Hovedstaden, 18-49: 1197 patients, 70.2 per cent
+   - Hovedstaden, 50-64: 531 patients, 79.1 per cent
+   - Hovedstaden, 65-74: 352 patients, 82.7 per cent
+   - Hovedstaden, 75 and over: 668 patients, 80.5 per cent
+   - Midtjylland, 18-49: 949 patients, 70.8 per cent
+   - Midtjylland, 50-64: 452 patients, 76.8 per cent
+   - Midtjylland, 65-74: 286 patients, 79.4 per cent
+   - Midtjylland, 75 and over: 514 patients, 77.2 per cent
+   - Nordjylland, 18-49: 496 patients, 70.8 per cent
+   - Nordjylland, 50-64: 219 patients, 74.0 per cent
+   - Nordjylland, 65-74: 144 patients, 83.3 per cent
+   - Nordjylland, 75 and over: 239 patients, 79.1 per cent
+   - Sjaelland, 18-49: 633 patients, 74.6 per cent
+   - Sjaelland, 50-64: 327 patients, 75.8 per cent
+   - Sjaelland, 65-74: 218 patients, 78.9 per cent
+   - Sjaelland, 75 and over: 363 patients, 79.9 per cent
+   - Syddanmark, 18-49: 894 patients, 72.4 per cent
+   - Syddanmark, 50-64: 435 patients, 76.3 per cent
+   - Syddanmark, 65-74: 281 patients, 79.7 per cent
+   - Syddanmark, 75 and over: 424 patients, 80.7 per cent
+   - not stated, 18-49: 132 patients, 75.0 per cent
+   - not stated, 50-64: 50 patients, 78.0 per cent
+   - not stated, 65-74: 32 patients, 75.0 per cent
+   - not stated, 75 and over: 56 patients, 78.6 per cent
 
 ### order_shares_by_pair.png
 

@@ -199,7 +199,7 @@ window is twice what it is outside it.
 | 2 the hand codes where the desk audited and the classifier's code elsewhere | no | the worksheet's report identifiers join straight to the item log | yes, trust what you measured and leave the rest | none | no | one join and one count | readable |
 | 3 the audited reports' own confrontational shares on each side of the classifier's label, carried onto the record (the default) | no sentence names a share or a correction; 4.5 names only what each round drew its batch from | the worksheet's two coding columns are the whole input | yes, the predictive-value reflex: of the ones it marked this share were, of the ones it did not this share were | none | no | two ratios | readable |
 | 4 the coded count scaled by the classifier's recall | no | the same two columns | yes, the recall reflex | none | no | one ratio | readable |
-| 5 the count rebuilt from the classifier's sensitivity and false-mark rate, which do not move with the audited window's composition (decisive) | no shipped sentence names sensitivity, specificity, recall, precision, a correction, a false positive, a false negative, representativeness or extrapolation, asserted by a word sweep over every shipped file; 3.3 says only that the count is of the actions and not of the codes, and 4.5 says only what each round drew its batch from | no column holds an error rate, a weight or a stratum: the worksheet is two codings, a coder, a coding date, a round and the desk's decision | no reflex: the two reflexes above each carry a quantity measured on the audited weeks and file a different number, and the reflex that trusts the hand codes where they exist files a third | nothing scores a count; the earlier bulletins report actions and territory, never confrontational actions | the battery finds the two editions, the reposted month, the ingest counter and the clocks and leaves the count open | no: the six candidates are 250, 350, 400, 450, 600 and 650 from the same rows, and the step is a two-rate algebra | silent |
+| 5 the count rebuilt from the classifier's sensitivity and false-mark rate, which do not move with the audited window's composition (decisive) | no shipped sentence names sensitivity, specificity, recall, precision, a correction, a false positive, a false negative, representativeness or extrapolation, asserted by a word sweep over every shipped file; 3.3 says only that the count is of the actions and not of the codes, and 4.5 says only what each round drew its batch from | no column holds an error rate, a weight or a stratum: the worksheet is two codings, a coder, a coding date, a round, the desk's decision and a margin note | no reflex: the two reflexes above each carry a quantity measured on the audited weeks and file a different number, and the reflex that trusts the hand codes where they exist files a third | nothing scores a count; the earlier bulletins report actions and territory, never confrontational actions | the battery finds the two editions, the reposted month, the ingest counter and the clocks and leaves the count open | no: the six candidate cells are 250, 300, 400, 450, 600 and 700 from the same rows, and the step is a two-rate algebra | silent |
 
 ## Semantic fork table
 
@@ -215,8 +215,8 @@ window is twice what it is outside it.
 | SF8 | a locality | the gazetteer's settlement, with superseded names resolved | the free-text place name as reported | localities split, actions do not | 2.3 and the gazetteer's name-state column; asserted |
 | SF9 | the reposted month | each action counted once however many loads carry its reports | the month's reports counted twice, or the month dropped | the report counts change, the action count does not | the import log's two entries, the dictionary's load sentence and the repeated report identifiers; asserted both ways |
 | SF10 | the two language editions | one action however many editions report it | one action per edition | the report counts change, the action count does not | the dictionary's report-identifier sentence; asserted |
-| SF11 | rounding | the count to the nearest fifty actions, rounded once at the end | the count as a whole number | `same call`, asserted: the estimate is 453.01 and 450 is the nearest fifty either way |
-| SF12 | ties | none: the six candidate cells are 250, 350, 400, 450, 600 and 650 | two candidates on one cell | `same call`, asserted pairwise distinct from the golden's cell |
+| SF11 | rounding | the count to the nearest fifty actions, rounded once at the end | the count as a whole number | `same call`, asserted: the estimate is 454.91 and 450 is the nearest fifty either way |
+| SF12 | ties | none against the golden: the six candidate cells are 250, 300, 400, 450, 600 and 700, and the two readings of rung 1 share one of them as the default path shares its cell with rung 4a | two candidates on the golden's cell | `same call`, asserted that no wrong route lands in the golden's cell |
 | SF13 | the accepted items | the items the press monitor accepted, which the register carries | every matched item, rejected ones included | rejected items are not actions | 4.2 quoted and the dictionary's acceptance column; asserted |
 | SF14 | the extract | the record as extracted on 6 November 2026 | the record as at the period's close | `same call`, asserted: no action dated inside the period is reported after the extract |
 | SF15 | actions outside the period | excluded from the count | included because their reports arrived inside it | the count changes | 3.2 quoted, which fixes the period on the action's date; asserted |
@@ -239,174 +239,166 @@ window is twice what it is outside it.
 
 | Rung | The estimate | Raw | To the nearest fifty |
 |---|---|---|---|
-| 1 | the coded count with the classifier's false marks taken out | 228 to 265 | 250 |
-| 0 | the actions the register carries under the confrontational codes | 332.00 | 350 |
-| 2 | the hand codes where the desk audited and the classifier's code elsewhere | 387.00 | 400 |
-| 5 | **answer:** the count rebuilt from the classifier's two measured error rates | **453.01** | **450** |
-| 3 | **default:** the audited reports' own confrontational shares carried onto the record | 592.59 | 600 |
-| 4 | the coded count scaled by the classifier's recall, or the audited prevalence over the record | 642 to 660 | 650 |
+| 1 | the coded count with the classifier's false marks taken out | 234.97 to 268.65 | 250 |
+| 0 | the actions the register carries under the confrontational codes | 320.00 | 300 |
+| 2 | the hand codes where the desk audited and the classifier's code elsewhere | 386.00 | 400 |
+| 5 | **answer:** the count rebuilt from the classifier's two measured error rates | **454.91** | **450** |
+| 3 | **default:** the audited reports' own confrontational shares carried onto the record | 614.53 | 600 |
+| 4a | the coded count scaled by the classifier's recall | 615.64 | 600 |
+| 4b | the audited prevalence over the press-reported actions | 693.61 | 700 |
 
-Measured on the cut pack, not on a model: the register holds 4,627 actions in the reporting period,
-of which 4,200 carry a press monitor report and take its classifier's code and 427 reach the register
+Measured on the cut pack, not on a model: the register holds 4,656 actions in the reporting period,
+of which 4,228 carry a press monitor report and take its classifier's code and 428 reach the register
 only through a partner organisation or the public line and take the filer's. The register carries a
-confrontational code on 302 of the first group and 30 of the second. The coding desk's two rounds hand
-coded 1,000 of the monitor's reports, 23.8 per cent of the 4,200 the period holds, and returned 74
-agreed confrontational, 76 the classifier missed, 21 it marked wrongly and 829 agreed ordinary, which
-is a recall of 0.4933 and a false-mark rate of 0.0247. The answer's raw figure is 453.013 actions.
+confrontational code on 271 of the first group and 49 of the second. The coding desk's two rounds drew
+1,064 of the monitor's reports, 25.2 per cent of the 4,228 the period holds, coded 1,056 of them and
+returned 77 agreed confrontational, 84 the classifier missed, 18 it marked wrongly and 877 agreed
+ordinary, which is a recall of 0.4783 and a false-mark rate of 0.0201. The answer's raw figure is
+454.911 actions.
 
-**Separation.** 250, 350, 400, 450, 600 and 650 are six distinct cells of the stated granularity. The
-nearest wrong figure to the answer is 387.00, 14.6 per cent away, and the nearest wrong cell is 400,
-one cell away; the default path's 592.59 is 30.8 per cent away. Every candidate is the complete output
-of a competent pipeline on the same rows, and the answer is fourth of the six and bracketed, so no
-solver reaches it by stopping early and none by correcting hardest.
+**Separation.** 250, 300, 400, 450, 600 and 700 are six distinct cells of the stated granularity, and
+the two readings of rung 4 fall in two of them. The nearest wrong figure to the answer is 386.00, 15.1
+per cent away, and the nearest wrong cell is 400, one cell away; the default path's 614.53 is 35.1 per
+cent away. Every candidate is the complete output of a competent pipeline on the same rows, and the
+answer is fourth of the six cells and bracketed, so no solver reaches it by stopping early and none by
+correcting hardest.
 
 **The candidate set, measured over the judge's own list.** Every route the record leaves standing was
 computed on the shipped bundle and asserted in `checks.py` by name (`cand.*`):
 
 | Route | Figure | Cell | Distance from the answer |
 |---|---|---|---|
-| the false marks taken out on the false-mark rate | 228.24 | 250 | -49.6 per cent |
-| the false marks taken out on precision | 265.24 | 250 | -41.4 per cent |
-| the codes as the register carries them | 332.00 | 350 | -26.7 per cent |
-| the hand codes where audited, the classifier's elsewhere | 387.00 | 400 | -14.6 per cent |
-| a continuity adjustment of half a case in each cell | 448.47 | 450 | -1.0 per cent |
-| **the two error rates (the answer)** | **453.01** | **450** | - |
-| the same correction as the inverted confusion matrix | 453.01 | 450 | identical by construction, asserted to 1e-9 |
-| the audited rows taken as known and the rest corrected | 453.01 | 450 | identical by construction, asserted to 1e-9 |
-| the two error rates by month, pooled where a month has no audited row | 457.84 | 450 | +1.1 per cent |
-| the two error rates by theme, pooled where a theme has no audited row | 470.40 | 450 | +3.8 per cent |
-| the audited shares by month, pooled where a month has none | 591.65 | 600 | +30.6 per cent |
-| the audited shares on each side of the label | 592.59 | 600 | +30.8 per cent |
-| the audited shares by theme, pooled where a theme has none | 598.81 | 600 | +32.2 per cent |
-| the coded count scaled by the recall | 642.16 | 650 | +41.8 per cent |
-| the audited prevalence over the press-reported actions | 660.00 | 650 | +45.7 per cent |
+| the false marks taken out on the false-mark rate | 234.97 | 250 | -48.3 per cent |
+| the false marks taken out on precision | 268.65 | 250 | -40.9 per cent |
+| the codes as the register carries them | 320.00 | 300 | -29.7 per cent |
+| the hand codes where audited, the classifier's elsewhere | 386.00 | 400 | -15.1 per cent |
+| the two error rates by month, leaving the unaudited months coded | 432.70 | 450 | -4.9 per cent |
+| the two error rates by month, pooled where a month has no audited row | 448.70 | 450 | -1.4 per cent |
+| a continuity adjustment of half a case in each cell | 450.32 | 450 | -1.0 per cent |
+| the two error rates from the first round's cells alone | 450.21 | 450 | -1.0 per cent |
+| **the two error rates (the answer)** | **454.91** | **450** | - |
+| the same correction as the inverted confusion matrix | 454.91 | 450 | identical by construction, asserted to 1e-9 |
+| the audited rows taken as known and the rest corrected | 454.91 | 450 | identical by construction, asserted to 1e-9 |
+| the two error rates from the second round's cells alone | 464.98 | 450 | +2.2 per cent |
+| the two error rates by theme, pooled where a theme has no audited row | 466.08 | 450 | +2.5 per cent |
+| the two error rates by theme, leaving the unaudited themes coded | 466.75 | 450 | +2.6 per cent |
+| the audited shares by month, pooled where a month has none | 590.37 | 600 | +29.8 per cent |
+| the audited shares on each side of the label | 614.53 | 600 | +35.1 per cent |
+| the audited shares by theme, pooled where a theme has none | 615.79 | 600 | +35.4 per cent |
+| the coded count scaled by the recall | 615.64 | 600 | +35.3 per cent |
+| the audited prevalence over the press-reported actions | 693.61 | 700 | +52.5 per cent |
 | the two error rates by month, with no pooling | not computable | - | September and October hold no audited report |
 | the two error rates by theme, with no pooling | not computable | - | `ENE` and `FLO` hold no audited report |
 | the audited shares by month or by theme, with no pooling | not computable | - | the same two gaps |
 | the two error rates by round, with population weights | not computable | - | neither round's window covers the autumn |
 
-Every route built on the classifier's two error rates lands in the answer's cell; every route built on
-the audited batch's own confrontational shares lands two cells away; and every stratified route has no
-rate for part of the population it is applied to, because the audit never reached September or October
-and the two dispute themes that opened with the autumn wave have no audited report at all.
+Every route built on the classifier's two error rates lands in the answer's cell, each of them at
+least 7.7 actions from its edge, including either round's cells taken alone and either way of
+patching a stratum the audit never reached; every route built on the audited batch's own
+confrontational shares lands three cells away; and every stratified route that refuses to patch has
+no rate for part of the population it is applied to, because the audit never reached September or
+October and the two dispute themes that opened with the autumn wave have no audited report at all.
 
 **What makes it forced, measured and not narrated.**
 - The audit covers months 5 to 8 of the period's 5 to 10, asserted (`dead.audit_window`,
   `dead.population_wider`).
-- `ENE` and `FLO`, two of the protocol's fourteen dispute themes, first appear on or after 5 September
-  and hold no audited report, asserted (`dead.theme_reason`, `dead.late_themes_after_surge`).
-- The record's own marked rate is 9.70 per cent on the 2,001 press-reported actions inside the audited
-  window and 4.91 per cent on the 2,199 outside it, chi-square p = 2.0e-09, asserted
-  (`force.marked_rate_moves`). Month by month it runs 11.73, 8.30, 9.48, 9.03, 5.49, 4.38.
-- The audit's own hand-coded prevalence is 15.00 per cent against the record's 9.79 per cent, a factor
-  of 1.53, asserted (`force.audit_prevalence_above_record`), and inside the audit it falls month by
-  month, 18.64, 15.22, 13.65, 11.98 (`force.audit_prevalence_trend`).
-- Across the two rounds the classifier's recall (0.514 against 0.474, p = 0.63) and its false-mark
-  rate (0.0260 against 0.0238, p = 0.84) are homogeneous while the hand-coded prevalence moves (0.176
-  against 0.131, p = 0.048), asserted (`force.rates_homogeneous`,
-  `force.prevalence_falls_in_audit`). The monitor's configuration states the model and the date it was
-  trained, before the register opened, with no change inside the period.
+- `ENE` and `FLO`, two of the protocol's ten dispute themes, first appear on 5 September and hold no
+  audited report, with 393 and 403 actions each, asserted (`dead.theme_reason`,
+  `dead.late_themes_after_surge`, `dead.late_themes_present`).
+- The record's own marked rate is 8.79 per cent on the 1,979 press-reported actions inside the audited
+  window and 4.31 per cent on the 2,249 outside it, chi-square p = 3.0e-09, asserted
+  (`force.marked_rate_moves`). Month by month it runs 9.25, 9.24, 9.02, 7.66, 4.86, 3.78.
+- The audit's own hand-coded prevalence is 15.25 per cent against the record's 9.77 per cent, a factor
+  of 1.56, asserted (`force.audit_prevalence_above_record`), and inside the audit it falls across the
+  window, 16.16, 17.70, 14.92 and 6.54 per cent by month (`force.audit_prevalence_trend`).
+- Across the two rounds the classifier's recall (0.511 against 0.438, p = 0.36) and its false-mark
+  rate (0.0172 against 0.0233, p = 0.52) are homogeneous, and so is the hand-coded prevalence (0.159
+  against 0.145, p = 0.53), asserted (`force.rates_homogeneous`, `force.prevalence_falls_in_audit`).
+  The monitor's configuration states the model and the date it was trained, before the register
+  opened, with no change inside the period.
+- **The two rounds agree closely enough that either one alone lands in the call's cell**, 450.21 from
+  the first and 464.98 from the second, 14.8 apart and each at least 10.0 actions from a cell edge
+  (`cand.family_band.rg_r1`, `cand.family_band.rg_r2`, `cand.rounds_agree`). That is a property of
+  this draw rather than of the design: a single round's estimate carries a sampling standard
+  deviation near 80 actions, 1.6 cells, so the shipped record was chosen from the action layer's own
+  stream for a realisation in which the two windows' measured rates sit close together, and the
+  homogeneity the p-values report is what makes such a realisation ordinary rather than lucky.
 
 **The noise, measured, because forcing on data too smooth or too noisy to separate is not forcing.**
-Resampling the four cells of the worksheet 20,000 times: the answer's sampling standard deviation is
-57.4 actions (12.7 per cent), the standard deviation of the gap between the two families is 50.2, and
-the gap's mean is 136.8, so the separation is 2.73 standard deviations of its own sampling error and
-the observed gap of 139.58 is 2.78 (`noise.gap_beats_sd`, `noise.gap_observed`). The stated
-granularity of fifty actions is 0.87 of that standard deviation, so the bulletin states the indicator
-no finer than the audit can carry it (`noise.grain_not_finer_than_sd`); a whole-number count would
-have claimed 0.2 per cent precision on a figure whose own standard error is 12.7 per cent. The record
-itself is not smoothed: daily action counts before the surge have a chi-square per degree of freedom
-of 0.987 against a weekday mean and 2.094 unconditionally, which is the register's own working week,
-and the daily count of marked actions is at 1.191 (`noise.dispersion_plausible`,
-`noise.weekly_cycle_present`, `noise.dispersion_marked`).
+Resampling the audit's four cells 20,000 times: the answer's sampling standard deviation is 53.5
+actions (11.8 per cent), the standard deviation of the gap between the two families is 47.1, and the
+gap's mean is 156.7, so the separation is 3.33 standard deviations of its own sampling error, the
+observed gap of 159.62 is 3.39, and the gap is positive on 99.88 per cent of the draws
+(`noise.gap_beats_sd`, `noise.gap_observed`, `noise.gap_positive`). The stated granularity of fifty
+actions is 0.93 of that standard deviation, so the bulletin states the indicator no finer than the
+audit can carry it (`noise.grain_not_finer_than_sd`); a whole-number count would have claimed 0.2 per
+cent precision on a figure whose own standard error is 11.8 per cent. The record itself is not
+smoothed: daily action counts have a chi-square per degree of freedom of 0.972 against a weekday mean
+before the surge and 1.337 from it, with an unconditional 1.76 that is the register's own working
+week, and the daily count of marked actions is at 1.03 (`noise.dispersion_plausible`,
+`noise.dispersion_plausible_surge`, `noise.weekly_cycle_present`, `noise.dispersion_marked`).
 
-**What the stated figure is, and what it is not, accepted and recorded.** The judge raised one
-caution and still returned APPROVE with no fix location, and the ruling is to ship it and write it
-down so nobody rediscovers the question later. The committed count is a **point estimate**: its
-audit-sampling standard deviation is 57.4 actions, larger than the fifty-action granularity it is
-stated to, so a fresh draw of the same audit design would land in the stated cell about **34 per cent**
-of the time. Three things stand beside that and are why it ships.
-- **Determinism holds on the shipped data, which is what the gates ask.** Every pooled estimator built
-  on the classifier's two error rates agrees on 450 on this record, every stratified one is not
-  computable, and the judge confirmed it by recomputation.
+**What the stated figure is, and what it is not, accepted and recorded.** The committed count is a
+**point estimate**: its audit-sampling standard deviation is 53.5 actions, larger than the
+fifty-action granularity it is stated to, so a fresh draw of the same audit design would land in the
+stated cell about **36 per cent** of the time. Three things stand beside that and are why it ships.
+- **Determinism holds on the shipped data, which is what the gates ask.** Every estimator built on
+  the classifier's two error rates agrees on 450 on this record, whether it pools, stratifies with a
+  fallback, leaves an unaudited stratum coded or uses one round alone; every stratified one that
+  refuses to patch is not computable; and the judge confirmed the pooled reading by recomputation.
 - **The granularity is squeezed from both sides and has exactly one workable value.** Finer splits the
-  right family: at twenty-five the continuity variant at 448.47 and the theme-fallback at 470.40 leave
-  the call's cell. Coarser swallows a wrong route: at one hundred the hand-code-where-audited route at
-  387.00 falls into the call's cell. Fifty is therefore the only grain available rather than a choice
-  declined, and it is 0.87 of the sampling standard deviation, so it over-claims by no margin at all.
+  right family: at twenty-five the by-month route that leaves the autumn coded at 432.70 and the
+  theme routes at 466.08 and 466.75 leave the call's cell. Coarser swallows a wrong route: at one
+  hundred the hand-code-where-audited route at 386.00 falls into the call's cell. Fifty is therefore
+  the only grain available rather than a choice declined, and it is 0.93 of the sampling standard
+  deviation, so it over-claims by no margin at all.
 - **Only the count is an estimate.** The thirteen fortnight rows, the three route rows and the seven
-  partner rows are censuses of the record: every one of those 69 graded cells is a count, a share of
-  two counts, a median of observed minutes or a rate times a count, with no sampling in it.
+  partner rows are censuses of the record: every one of those 69 graded cells is a count, a median of
+  observed minutes or a rate times a count, with no sampling in it.
 
 **Two thin closures the judge named, both accepted and recorded.**
-- **Round two alone gives 479 and a cell of 500,** and no shipped sentence says the two rounds are
-  pooled. 4.5 files each round's cut and the worksheet carries the round on every row, so a solver can
-  build either; nothing forces pooling except that a round is a batch of the same instrument and
-  pooling is what the field does with two batches of it. The build accepts the thinness rather than
-  filing a pooling rule, because filing one would make the decisive step rule application.
+- **Either round alone is now inside the call's cell,** which closes the one the judge raised: round
+  one gives 450.21 and round two 464.98, so a solver who pools and a solver who takes a single batch
+  of the same instrument file the same count. Nothing in the pack forces pooling and nothing needs
+  to: pooling is what the field does with two batches of one instrument, and the record no longer
+  punishes a solver who does not.
 - **The euros column rested on clause 6.2 by one inferential step,** since 6.2 says a report delivered
   after a period's close is paid with the period it was delivered in and the golden read that as
-  excluding it here. That one is now closed in the asking sentence rather than in 6.2, which sits next
-  to the device: the ask names the observable, "the euros its data agreement pays for the ones filed by
+  excluding it here. That one is closed in the asking sentence rather than in 6.2, which sits next to
+  the device: the ask names the observable, "the euros its data agreement pays for the ones filed by
   the close", so the euro column is over the reports delivered on or before 30 October and the
   late-filing count stays its own figure.
 
-**Robustness and fairness.** The truth behind the simulated record is 436 confrontational actions,
-3.9 per cent below the estimate, so the estimator is fair as well as determinate; the generator
-asserts the gap. The answer's raw figure sits 3.01 from the centre of its cell and 21.99 from the
-nearest edge, and one more agreed-confrontational row in the worksheet moves it by about four actions,
-so five such rows would be needed to reach a cell boundary (`bin.total`, `bin.total_mid`).
+**Robustness and fairness.** The truth behind the simulated record is 468 confrontational actions and
+the estimate is 454.91, 0.24 of the answer's own sampling standard deviation below it, so the
+estimator is fair as well as determinate; the generator asserts the gap in those units
+(`noise.fair_to_truth`). The answer's raw figure sits 4.91 from the centre of its cell and 20.09 from
+the nearest edge, and one more agreed-confrontational row in the worksheet moves it by 2.8
+actions, so eight such rows would be needed to reach a cell boundary (`bin.total`, `bin.total_mid`).
 
-**Every graded figure off its rounding edge.** The call sits 21.99 of 25 from its nearest edge. The
+**Every graded figure off its rounding edge.** The call sits 20.09 of 25 from its nearest edge. The
 seven euro totals are a per-report rate in cents times a count, so the generator's rates were moved
-until each total sits at least 0.25 of a euro from its edge (850.90, 2,493.05, 1,548.00, 742.10,
-558.90, 413.10 and 725.90, each at 0.40 of a euro or more): the schedule reads 6.35, 7.20, 6.90, 8.10
-and 6.10 where it read 6.40, 7.25, 6.75, 8.15 and 6.40, and the July adenda raises P04 to 6.30 rather
-than 6.20. P07's rate moved from 6.15 to 6.10 after its total came in at 0.35 of a euro from its edge,
-the tightest of the seven. The three medians
-are whole minutes and each route's two middle values are equal, so neither the rounding nor the
-even-set convention can move them. **The build grades no percentage at all.** The fortnight's partner
-column is a count of the fortnight's actions the network reported, not a share of them, so thirteen
-graded cells have no rounding in them and axis 10 carries no percentage anywhere: the graded set is
-the count to the nearest fifty, 39 fortnight counts, 6 route counts, 3 medians in whole minutes and 7
-euro totals. `bin.no_graded_percentage` asserts the deliverable answers state no percentage and
+until each total sits at least 0.30 of a euro from its edge (926.10, 2,385.95, 2,211.90, 369.85,
+545.10, 354.20 and 701.10 raw): the schedule reads 6.30, 5.95, 7.30, 5.45, 6.90, 8.05 and 6.15, and
+the adenda of 24 July raises P04 to 6.30 from 1 August. The three medians are whole minutes and each route's two middle
+values are equal, so neither the rounding nor the even-set convention can move them, and the
+`convencoes` sheet files the even-set rule anyway. **The build grades no percentage at all.** The fortnight's partner column is a count of
+the fortnight's actions the network reported, not a share of them, so thirteen graded cells have no
+rounding in them and axis 10 carries no percentage anywhere: the graded set is the count to the
+nearest fifty, 39 fortnight counts, 6 route counts, 3 medians in whole minutes and 7 euro
+totals. Measured over all 70 of them, the tightest sits 0.300 of its own rounding unit from the edge
+of the value it prints (`bin.graded_unit_edge`), against the 0.15 the design point asks for.
+`bin.no_graded_percentage` asserts the deliverable answers state no percentage and
 `bin.prompt_rounds_no_share` that the prompt asks for none. The bulletin's own rounding rule for a
 percentage is filed in the dictionary anyway, which closes the axis for anything later:
 `convencoes` carries "uma percentagem e arredondada uma vez, a uma decimal, a partir do valor exato, e
 nao truncada nem arredondada por etapas", asserted by `bin.share_rounding_filed`.
 
-**The measurement that sent the column to a count, kept as a record.** A share is printed to one
-decimal, so its edge is at x.x5 and the distance to that edge is half a tenth **less** the distance to
-the nearest printed value; the first reading of this note measured the distance to the printed value
-instead, which is the complement, and so reported clearance where it had measured proximity and named
-the wrong tightest cell as a necessary consequence. Measured correctly on the shipped pack, had the
-column stayed a share:
-
-| | Q1 | Q2 | Q3 | Q4 | Q5 | Q6 | Q7 | Q8 | Q9 | Q10 | Q11 | Q12 | Q13 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| points to the printed edge | 0.0254 | 0.0091 | 0.0098 | 0.0165 | 0.0330 | **0.0021** | 0.0239 | 0.0089 | 0.0371 | 0.0349 | **0.0013** | 0.0038 | 0.0314 |
-
-The tightest would have been Q11, 18 September to 1 October, 150 of 565, exact 26.548673 per cent,
-printing 26.5 and sitting 0.0013 points from the 26.55 edge, with Q6 at 0.0021 next; and Q11 is the
-only one of the thirteen a two-step rounding path would have moved, 26.548673 to 26.55 to 26.6. Every
-share is an exact ratio of two integers, so no convention, order of operations or floating-point path
-moves its value, and the data cannot move Q11 either, since one more partner-reported action gives
-26.73 and one more other action 26.50. Filing the rounding path closed the one misprinting route, but
-`determinism-check` §3 says never grade a percentage near a one-decimal edge and says it flatly, so
-the column was moved to a count instead: that removes the hazard class rather than managing one
-instance of it, and it costs nothing, because the fortnight's total actions are already graded and the
-count and the share are each derivable from the other given what the write-up states either way. One
-independent quantity, presented the way that has no rounding edge in it. The generator keeps the
-measurement as a record (`g["share_edges"]`, `g["share_two_step"]`) so the arithmetic is on file. All
-of the graded set is asserted (`bin.total`, `bin.cand.*`, `bin.euros.*`, `bin.partner_count.*`,
-`bin.median.*`, `bin.no_graded_percentage`, `bin.prompt_rounds_no_share`,
-`bin.share_rounding_filed`).
-
 **The grid.** Two axes, how the reports are resolved and which measured quantity the count carries:
 
 | | false marks out | labels as they stand | the audited shares | the two error rates | the recall only |
 |---|---|---|---|---|---|
-| the three routes resolved to actions | 250 | 350 | 600 | **450** | 650 |
+| the three routes resolved to actions | 250 | 300 | 600 | **450** | 600 |
 | each accepted report counted as an action | higher in every column, asserted | | | the decisive column still the only one the protocol asks for | |
 
 Every cell is a named figure. The decisive column is the only one that answers the protocol's
@@ -414,15 +406,17 @@ question, and it is the column least moved by a solver who fails to resolve the 
 correction is a ratio of the worksheet's own cells and not of the record's volume.
 
 **Dominance.** The ordinary actions outnumber the confrontational ones about nine to one, so the
-classifier's one-in-forty false-mark rate puts 21 wrong marks in the worksheet against 76 misses: the
+classifier's one-in-fifty false-mark rate puts 18 wrong marks in the worksheet against 84 misses: the
 two errors are of the same order and neither cancels the other, which is what makes each easy route
 land on a different wrong cell.
 
-**Worth of each rung, on the graded quantity.** Rung 1 to rung 0 is two cells, rung 0 to rung 2 one,
-rung 2 to the answer one, the answer to the default path three, and the default path to rung 4 one.
-Nothing between the rungs is worth less than one cell of fifty actions, which is 11 per cent of the
-answer, and every rung is satisfying to stop at: each is the whole output of a pipeline whose every
-input figure is correct.
+**Worth of each rung, on the graded quantity.** Rung 1 to rung 0 is one cell, rung 0 to rung 2 two
+cells, rung 2 to the answer one, the answer to the default path three, and the default path to rung
+4b two. Rung 4a, the coded count scaled by the recall, shares the default path's cell on this record:
+the two are 1.1 actions apart, which is the one place the ladder is worth less than a cell, and both
+of them are three cells from the answer. Nothing else between the rungs is worth less than one cell
+of fifty actions, which is 11 per cent of the answer, and every rung is satisfying to stop at: each
+is the whole output of a pipeline whose every input figure is correct.
 
 ## Closure table
 
@@ -432,13 +426,13 @@ input figure is correct.
 | 2 | Unit of account | the item, the report, the action | 2.1 files the action; asserted |
 | 3 | Attribution window | which day an action falls on | the register's local action date, which no reception stamp overrides; SF7, asserted |
 | 4 | As-of dating | the record at the extract | the manifest files 6 November 2026; SF14, asserted |
-| 5 | Version basis | the reposted month and the superseded place names | the import log and the gazetteer; SF9, SF8, asserted |
+| 5 | Version basis | the reposted month, whose second load carries the stamp of the day it arrived, and the superseded place names | the import log, the dictionary's `carimbo_entrega_utc` line and the gazetteer; SF9, SF28, SF8, asserted |
 | 6 | Denominator | none: the answer is a count | nothing to close, stated |
 | 7 | Weighting | each round draws its batch at random from the reports entered since the previous close, so the batch carries no weights of its own | 4.5 states the draw and its window; asserted that every row is a press item and that two months and two themes have no row |
 | 8 | Window length | the reporting period | 3.2; asserted |
 | 9 | Boundary inclusivity | 1 May and 30 October | 3.2 states both inclusive; asserted that actions fall on both days |
-| 10 | Rounding path | the count to the nearest fifty actions, rounded once at the end | 3.3 and SF11; asserted that the raw 453.01 is 21.99 from its cell edge |
-| 11 | Tie-break | two candidates on one cell | none against the golden: 250, 350, 400, 450, 600 and 650, asserted |
+| 10 | Rounding path | the count to the nearest fifty actions, rounded once at the end | 3.3 and SF11; asserted that the raw 454.91 is 20.09 from its cell edge |
+| 11 | Tie-break | two candidates on one cell | none against the golden: 250, 300, 400, 450, 600 and 700, asserted |
 | 12 | Maturity and censoring | reports still arriving | the period closed a week before the extract; asserted that no action dated in the period is reported after the extract |
 | 13 | Order of operations | resolve the routes then read the codes, or read then resolve | C1: a duplicate report carries the same identifier, theme, locality and day, so either order gives the same actions, asserted |
 | 14 | Row order | the item log's own order | C1, asserted over three permutations |
@@ -446,8 +440,8 @@ input figure is correct.
 | 16 | Identity normalisation | place names, partner delivery codes | the gazetteer's superseded names; the agreements' addendum of 8 September for the delivery codes; SF21, asserted |
 | 17 | Netting against gross | nothing is netted | stated |
 | 18 | Dimensional units | items, reports, actions, minutes, euros | the dictionary names each; the indicator reads actions only, asserted |
-| 19 | Code and status semantics | the route codes, the action codes, the acceptance column, the worksheet's two coding columns and the desk's decision | the protocol and the dictionary; the codes are read correctly on every rung |
-| 20 | Integerisation | the count to the nearest fifty actions | 3.3; the raw 453.013 rounds to 450, asserted |
+| 19 | Code and status semantics | the route codes, the action codes, the acceptance column, the worksheet's two coding columns, the rows the desk could not code and the desk's decision | the protocol and the dictionary; SF27 for the empty manual code, asserted to give the same call; the codes are read correctly on every rung |
+| 20 | Integerisation | the count to the nearest fifty actions | 3.3; the raw 454.911 rounds to 450, asserted |
 | 21 | Clause scope | 2.1 per theme per locality per day; 2.6 per action; 4.5 per round | each paragraph states its scope; asserted |
 | 22 | Forward window contents | none: the count is for the closed period | the call is retrospective with its reason, that the bulletin reports the period that closed and the trustees' vote of 19 November sets the next year's field budget on it |
 
@@ -460,12 +454,14 @@ manifest word for word selects the accepted reports of the three routes between 
 dated inside the reporting period, and asks how many of them were confrontational actions on 2.2's
 list, the count being of the actions and not of the codes the classifier assigned, to the nearest
 fifty. The text is silent on how the classifier's labels become that count, so every option was
-computed on the same rows: the codes as filed give 350, the codes with the false marks out 250, the
+computed on the same rows: the codes as filed give 300, the codes with the false marks out 250, the
 hand codes where the desk audited with the classifier's elsewhere 400, the audited reports' own
-confrontational shares carried onto the record 600, the coded count scaled by the recall 650, and the
-count rebuilt from the classifier's two measured error rates 450, which the worksheet's own four cells
-fix. Every stratified variant of any of them has no rate for September, October, `ENE` or `FLO` and is
-not computable. The easy routes are easy estimators of the same literal estimand, not other readings
+confrontational shares carried onto the record 600, the coded count scaled by the recall 600, the
+audited prevalence over the press-reported actions 700, and the count rebuilt from the classifier's
+two measured error rates 450, which the worksheet's own four cells fix. Every stratified variant of
+any of them that refuses to patch has no rate for September, October, `ENE` or `FLO` and is not
+computable; every one that patches, by pooling or by leaving the unaudited stratum coded, and either
+round's cells taken alone, land in the same 450. The easy routes are easy estimators of the same literal estimand, not other readings
 of it, and every other term and convention has an SF row ruled out by a quoted sentence or asserted to
 give the same call.
 
@@ -475,8 +471,9 @@ give the same call.
   rate, no count and no method; it is the raw material the decisive step reads and it ties under every
   rung, because each rung reads a different pair of its four cells.
 - The earlier monthly bulletins report actions recorded and territory touched and never confrontational
-  actions, so they tie under every rung. Their September note records that two dispute themes opened
-  with the autumn wave, which is a fact about the register and not about any count.
+  actions, so they tie under every rung. Their monthly rows show the register's territory widening
+  with the autumn's volume, 82 municipalities in May against 117 in September, which is a fact about
+  the register and not about any count.
 - `registo_importacoes.csv` confirms which month was loaded twice; it ties under every rung and the
   count is asserted invariant to the resolution.
 - `gazeteiro_localidades.csv` confirms the settlements, their municipalities and their districts; it
@@ -494,24 +491,16 @@ give the same call.
 
 ## Leak sweep answers
 
-`leak.py task192 --asof 2026-11-06` returns REVIEW on five lines and no LEAK: three figure
-collisions, the notifications distractor's planned dates and the manifest cell derived from them, plus
-one INFO on container metadata. Each is answered here.
+`leak.py task192 --asof 2026-11-06` returns REVIEW on three lines and no LEAK: one figure collision,
+the notifications distractor's planned dates and the manifest cell derived from them, plus one INFO
+on container metadata. Each is answered here.
 
-- **`boletins_anteriores_2026.pdf`, the integers 118 and 119.** The earlier bulletins print one row per
-  month from May to September with the actions recorded, the municipalities touched and the localities
-  touched (592 / 118 / 349 for May, and so on). The collision is on a municipality count in a
-  different cut: the graded fortnight rows Q11, Q12 and Q13 touch 118, 119 and 119 municipalities, and
-  a count of municipalities is bounded by the 119 the gazetteer carries, so a monthly figure and a
-  fortnight's figure land on the same number without either being the other. No monthly row is graded,
-  no fortnight row is recoverable from a monthly one, and the file states nothing about confrontational
-  actions: the note under its table says the confrontation indicators belong to the period bulletin
-  and go to the trustees in November. Under every rung the file ties.
-- **`relatorios_mensais_parceiros_2026.pdf`, the integer 103.** That is one partner's own declared
-  deliveries for September, and it collides with the 103 municipalities the graded fortnights Q4 and Q6
-  touch. The two are counts of different things in different files at the same order of magnitude; the
-  partner table carries no municipality and no action, and the monthly returns are read only by the
-  partner ask, where they reconcile to the delivery counts rather than to any territory figure.
+- **`protocolo_vigilancia_v4.pdf`, the number 4.3.** That is the protocol's own paragraph 4.3, on what
+  each partner is paid per accepted report, and it collides with the 4.3 per cent marked rate the
+  write-up states for the part of the period the audit never reached. A paragraph number and a
+  percentage are not the same kind of thing, the protocol states no rate of any kind, and the
+  write-up's own figure is computed from the register rather than read from the protocol. Under every
+  rung the paragraph ties.
 - **`notificacoes_reuniao_publica.csv`, dates after 6 November.** The column is `data_prevista`, the
   day a gathering is *planned* for, on notifications lodged with the councils before the extract. A
   notification for later in November filed in October is exactly what the councils hold on 6 November,
@@ -525,12 +514,16 @@ one INFO on container metadata. Each is answered here.
 - **Container metadata, no writer signature.** The two goldens and the pack's documents are written by
   reportlab and openpyxl through `postprocess`, which strips the producer, the creation trail and the
   OOXML core properties, so the audit finds no signature to report. That is the intended state.
+- **Gone with the realism pass.** The three collisions the earlier pack carried (118 and 119 in the
+  monthly bulletins against a fortnight's municipality count, and 103 in the partner returns) are no
+  longer there: the register's geography now moves with its volume, so the monthly rows read 82, 83,
+  86, 88 and 117 municipalities and no longer sit on a graded fortnight's figure.
 
 ## Ask sheet
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A1 per fortnight, the actions recorded, the municipalities touched and how many of those actions the partner network reported | 3 per fortnight, 13 fortnights | the construction's own output on the segment the trustees want anyway, the actions the count is taken from | the bulletin's standing table | D5 scope: the partner column counts the fortnight's actions by the day of the action, and the network's deliveries lag the action by a median 1,327 minutes, so dating the column by the delivery moves eleven of the thirteen rows | D1 the re-imported month doubles the network's rows and no actions, which moves three rows hard (Q7 88 against 64, Q8 118 against 59, Q9 101 against 58); D6 grain: an action the network reported is one the network delivered a report of, however many routes also did, and the stricter reading drops every row by about three quarters; D5 again: the last fortnight has fifteen days, so a solver who stops the thirteenth at 29 October loses 52 actions | item log, partner reports, public line, gazetteer, protocol, dictionary, manifest, import log; 12 columns | 4 stops, lazy delta 11 of 13 fortnights | the bulletin's own standing table |
+| A1 per fortnight, the actions recorded, the municipalities touched and how many of those actions the partner network reported | 3 per fortnight, 13 fortnights | the construction's own output on the segment the trustees want anyway, the actions the count is taken from | the bulletin's standing table | D5 scope: the partner column counts the fortnight's actions by the day of the action, and the network's deliveries lag the action by a median 1,385 minutes, so dating the column by the delivery moves twelve of the thirteen rows | D1 the re-imported month doubles the network's rows and no actions, which moves three rows hard (Q7 97 against 68, Q8 134 against 67, Q9 102 against 58); D6 grain: an action the network reported is one the network delivered a report of, however many routes also did, and the stricter reading drops every row by about three quarters; D5 again: the last fortnight has fifteen days, so a solver who stops the thirteenth at 29 October loses 54 actions | item log, partner reports, public line, gazetteer, protocol, dictionary, manifest, import log; 12 columns | 4 stops, lazy delta 11 of 13 fortnights | the bulletin's own standing table |
 
 **On the partner column being a count and not a share.** It is not a different quantity and it is not
 fewer graded cells: thirteen cells stay thirteen, and because the fortnight's total actions are graded
@@ -551,10 +544,11 @@ Deleting every device leaves the share exactly as hard, asserted by count.
 | Hazard | Asks moved | Per-ask delta |
 |---|---|---|
 | D8 the clocks: UTC against the district's local time, the 25 October change and the Azores hour | A2, A3 | A2 one route's median by 56 minutes and another by one; A3 the late-filing counts |
+| D1 the reposted load's own stamps: the portal wrote them on the day the file came back | A2, A3 | A2 the partner route's median by 65 minutes under the second load's stamps; A3 nothing, because the agreement pays a report once |
 | D6 grain | A1, A2 | A1 the partner count, every row, under the stricter reading of a reported action; A2 one route's median by 12 minutes |
-| D1 the re-imported month | A1, A2, A3 | A1 three fortnight partner counts (Q7, Q8, Q9); A2 the partner route's received count by 126; A3 the euros of every partner |
-| D5 scope | A1 | eleven partner counts when the column is dated by the delivery, and the thirteenth fortnight's three figures when the last fortnight is cut at fourteen days |
-| D7 the second delivery code | A3 | one partner's filings by 28 and its euros by 165 |
+| D1 the re-imported month | A1, A2, A3 | A1 three fortnight partner counts (Q7 97 against 68, Q8 134 against 67, Q9 102 against 58); A2 the partner route's received count by 140; A3 the euros of every partner |
+| D5 scope | A1 | twelve partner counts when the column is dated by the delivery, and the thirteenth fortnight's three figures when the last fortnight is cut at fourteen days, which loses 54 actions |
+| D7 the second delivery code | A3 | one partner's filings by 29 and its euros by 172 |
 | D3 the returns' own basis | A3 | each organisation's declared month totals against its delivered rows at a month boundary, P01's May reading 18 against 17 delivered |
 
 **The referee.** `manifesto_extracao.csv` states each file's rows, range and extract date and settles
@@ -571,17 +565,17 @@ the golden.
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
-| A1 actions the partner network reported, fortnight 8 | counts the network's rows, so the reposted August load counts twice | 118 | 59 | miss |
-| A1 actions the partner network reported, fortnight 10 | dates the column by the delivery rather than the action | 133 | 144 | miss |
-| A1 actions the partner network reported, fortnight 11 | counts only the actions no other route reported | 31 | 150 | miss |
-| A2 reports received, the partner network | sums the ingest counter, which counts the reposted load again | 1330 | 1204 | miss |
-| A2 reports that could not be placed, the press monitor | the item log alone, which holds only the items it placed | 0 | 148 | miss |
+| A1 actions the partner network reported, fortnight 8 | counts the network's rows, so the reposted August load counts twice | 134 | 67 | miss |
+| A1 actions the partner network reported, fortnight 10 | dates the column by the delivery rather than the action | 289 | 157 | miss |
+| A1 actions the partner network reported, fortnight 11 | counts only the actions no other route reported | 32 | 155 | miss |
+| A2 reports received, the partner network | sums the ingest counter, which counts the reposted load again | 1347 | 1207 | miss |
+| A2 reports that could not be placed, the press monitor | the item log alone, which holds only the items it placed | 0 | 147 | miss |
 | A2 median minutes from the action to the report, the press monitor | reads the monitor's reception stamp as local time | 59.0 | 115.0 | miss |
 | A2 median minutes, the press monitor, every item | takes every item of a report rather than the first | 127.0 | 115.0 | miss |
-| A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | 676 | 742 | miss |
-| A3 reports filed, the merged partner | one delivery code, without the September addendum | 92 | 120 | miss |
-| A3 euros paid, the merged partner | one delivery code, without the September addendum | 561 | 726 | miss |
-| A3 reports filed, all seven partners | every row of the partner file rather than the period's actions | 1250 | 1154 | miss |
+| A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | 332 | 370 | miss |
+| A3 reports filed, the merged partner | one delivery code, without the September addendum | 86 | 115 | miss |
+| A3 euros paid, the merged partner | one delivery code, without the September addendum | 529 | 701 | miss |
+| A3 reports filed, all seven partners | every row of the partner file rather than the period's actions | 1248 | 1165 | miss |
 
 **Pair ceiling:** 39.0
 **Mirror leakage:** 20.0
@@ -591,40 +585,41 @@ the golden.
 **The loop-2 judge's two advisories, answered rather than fixed.**
 
 - **The figure's own sampling error is wider than the grading grain.** The generator measures the
-  committed count's standard deviation over the four audit cells at 57.4 against a 50-action grain,
+  committed count's standard deviation over the four audit cells at 53.5 against a 50-action grain,
   so a fresh audit of the same thousand reports would land in the 450 cell about a third of the
   time. That is a statement about a counterfactual audit, not about this bundle: the shipped audit
-  is fixed data, 453.01 sits 22.0 below the 475 edge and 28.0 above the 425 edge, and every route
-  the bundle leaves standing but one lands in the same cell. What the decision rests on is the gap
-  between the families, and that is earned rather than drawn: 136.8 wide against a standard
-  deviation of 50.2, so 2.7 standard deviations from zero, with the audit's 9.5 per cent marked rate
-  against the record's 7.19 per cent carrying it. The grain is not coarsened, because coarsening to
-  the nearest hundred would move the committed figure to 500 and merge the 400 and 450 cells the
-  ladder separates.
+  is fixed data, 454.91 sits 20.1 below the 475 edge and 29.9 above the 425 edge, and every route
+  the bundle leaves standing on the classifier's two error rates lands in the same cell, each of
+  them at least 7.7 actions from its edge. What the decision rests on is the gap between the
+  families, and that is earned rather than drawn: 156.7 wide against a standard deviation of 47.1,
+  so 3.3 standard deviations from zero and positive on 99.88 per cent of 20,000 resamples, with the
+  audit's 15.25 per cent hand-coded prevalence against the record's 9.77 per cent carrying it. The
+  grain is not coarsened, because coarsening to the nearest hundred would move the committed figure
+  to 500 and merge the 400 and 450 cells the ladder separates.
 - **Constant error rates in September and October are an assumption the bundle cannot test.** No
   hand coding exists after 31 August. `config_monitor.json` carries `alteracoes_no_periodo:
   nenhuma` with the training date, which is the shipped fact the correction stands on, and within
-  the audit the classifier's sensitivity is homogeneous by month, round and theme (p 0.78, 0.63,
-  0.62). It is the right assumption for the field to make and the pack says so; it is not a figure
-  anyone recomputes.
+  the audit the classifier's sensitivity and its false-mark rate are homogeneous by round (p 0.36
+  and 0.52) and by theme. It is the right assumption for the field to make and the pack says so; it
+  is not a figure anyone recomputes.
 
 **The free gates, run on the shipped pack.**
 
 | Gate | Result |
 |---|---|
-| generator assertions | 251, 0 failures |
-| `verify.py`, own code path, bundle only | 128 independent checks, 0 failures |
+| generator assertions | 310, 0 failures |
+| `verify.py`, own code path, bundle only | 138 independent checks, 0 failures |
 | `cracker.py` | 11 rows, 0 kept by the cracker, exit 0 |
-| rebuilds | three byte-identical over `target/` and `golden/`, `26ee5961c55ec65d6c590058fc93fe5af389144c777c6abdcd3d3be81f9776c7` |
-| `figures_check.py` | exit 0, 106 figures in blocks 1 to 4, 0 absent |
+| rebuilds | two byte-identical over `target/` and `golden/`, `6967fdeeed32d8cab624e17eea1e22b07bc22e1afb70417322c61daba4c65d29` |
+| `figures_check.py` | exit 0, 111 figures in blocks 1 to 4, 0 absent |
 | `precut.py` | exit 0, 50 checks, 0 FAIL, 0 WARN |
 | `voice-check.py` | exit 0, 983 characters |
-| `leak.py --asof 2026-11-06` | REVIEW, no LEAK, five lines each answered above |
-| `guard.py surface` | 0 BLOCK lines |
+| `leak.py --asof 2026-11-06` | REVIEW, no LEAK, three lines each answered above |
+| `guard.py surface` | 0 BLOCK lines, one pair promoted for adjudication (task191, surface 0.101) |
 | `guard.py heart` | WARN, no BLOCK, nearest driver 0.09 |
 | container audit | `target/` and `golden/` clean, no producer signature, no out-of-band stamp |
-| input gates | 18 files, 4 formats, 26,055-row item log, 4 distractors |
-| `target.zip` | 18 members at the archive root, content byte-identical to the tree, `8ae7b3fcc1d4147ebd31799c31f4b6488b141b7b95d88555fe6b846f6acff053` |
+| input gates | 18 files, 4 formats, 25,982-row item log, 3 distractors |
+| `target.zip` | 18 members at the archive root, content byte-identical to the tree, `060f895956fa86a025eec2d9aac7c93a988ae685667de4c6f050e301711706d1` |
 
 **The client's three rules, re-read against the built pack and not against the design.**
 
@@ -638,11 +633,13 @@ the golden.
    or filter decides anything.
 2. **Two layers, both in the built pack.** Layer 1 is what the association's own systems produce: an
    item log at item grain with accepted and rejected items and a report entering with its first item,
-   three routes and two language editions on the same actions, a month loaded twice with the ingest
-   counter counting the second arrival, UTC stamps against each district's local clock with a
-   summer-time change and an island district an hour behind, monthly returns inside a PDF counted on
-   the action's month, a delivery code change after a merger, superseded settlement names, and two
-   dispute themes entering with the autumn. None of it decides the count, and `R2.*` asserts the count
+   three routes and two language editions on the same actions, a month loaded twice whose second load
+   carries the stamp of the day it arrived while the ingest counter counts that arrival again, an
+   intake window that writes the night's arrivals at the next collection, UTC stamps against each
+   district's local clock with a summer-time change and an island district an hour behind, monthly
+   returns inside a PDF counted on the action's month, a delivery code change after a merger,
+   superseded settlement names, a coding desk whose lot is as big as the days it had and eight of
+   whose rows carry no manual code at all. None of it decides the count, and `R2.*` asserts the count
    is invariant to the reload, the clocks and the name resolution. Layer 2 is the correction and it
    carries the stump.
 3. **None of the three banned kinds decides the call.** No decoy: nothing is planted, no block copied
@@ -658,85 +655,48 @@ the golden.
 correctly still get the answer wrong by doing the analysis the easy way? **Yes.** They resolve the
 three routes, the two editions and the reposted month, apply the offsets, read 3.3, open the worksheet,
 take the share of the audited reports on each side of the classifier's label that the desk found
-confrontational, carry those two shares onto the 4,200 press-reported actions and file 600. The shares
-were measured on the four months the desk audited, where the classifier marked 9.70 per cent of
-actions, and are carried onto a period where it marked 4.91 per cent after the cut. Analytical, and the
+confrontational, carry those two shares onto the 4,228 press-reported actions and file 600. The shares
+were measured on the four months the desk audited, where the classifier marked 8.8 per cent of
+actions, and are carried onto a period where it marked 4.3 per cent after the cut. Analytical, and the
 generator executes it (`R3a.analyst_test`).
 
 ## Held for the next pass
 
+**Nothing is held.** The six items this section carried were worked in the realism pass of
+2026-10-17 and each one is recorded in `## Tried and rejected` with what it cost. The paragraphs
+below stay because they are the build's Gate F evidence and the record of two readings of it.
+
 **The loop-3 reader, read cold on the pinned pack, is the Gate F evidence this build needed.** It
 committed to **550** at about 45 per cent, with 30 per cent on 600 and 15 per cent on 500, and it
 reached there by the right kind of analysis and the wrong estimator: it found the classifier hiding
-confrontations inside the ordinary label (48 of 211 ordinary-coded sample rows are truly
-confrontational) and corrected label by label on predictive values, which is the 592.6 family, rather
-than on the classifier's sensitivity and false-mark rate, which is 453.0. That is the field's own
-distinction between a predictive value and an error rate, and it is the distinction this build is
-built on. The two figures the reader quotes, about 531 and about 580, are that family with and
-without filer precedence; 2.6 rules filer precedence out, which is why 531 is reachable but not
-defensible. A strong cold reader spread over three cells and confident in none is what the ladder was
-for.
+confrontations inside the ordinary label and corrected label by label on predictive values, which is
+the default path's family, rather than on the classifier's sensitivity and false-mark rate, which is
+the answer. That is the field's own distinction between a predictive value and an error rate, and it
+is the distinction this build is built on. The two figures the reader quotes, about 531 and about 580,
+are that family with and without filer precedence; 2.6 rules filer precedence out, which is why 531
+is reachable but not defensible. A strong cold reader spread over three cells and confident in none
+is what the ladder was for.
 
 **Two corrections to the reader's own reading, for the record.** Its question 5 quoted 3.3 and then
 executed the one thing 3.3 forbids: the sentence says the number the bulletin fixes is of the actions
-that were confrontational and not of the codes assigned, so the 332 is ruled out by the sentence the
-reader quoted to reach it. And `amostra_dupla_codificacao.csv` is not a file that exists to help the
-analyst; it is the evidence the call rests on, and a coding desk that measures its classifier against
-hand coding keeps exactly such a worksheet. The reader's point that it is the only route to the call
-is fair and is the design.
-
-**What the reader added to the realism list, which is now six items rather than four.**
-
-5. **Action start times sit on quarter hours**, with a small second group ending 05, 10, 25 and 55.
-   Fix in `sim.actions`: draw the minute from a distribution with a quarter-hour mode rather than a
-   quarter-hour lattice with a few exceptions.
-6. **The September surge does not broaden the geography.** Monthly actions roughly double from
-   September while the municipalities touched move only between 117 and 119. A doubling that touches
-   no new ground reads as a multiplier on a fixed register. Fix in `sim.actions`: let the surge
-   concentrate in some districts and reach municipalities the earlier months did not, so the
-   geography moves with the volume. This is also the item the cut autumn-themes sentence used to
-   paper over, and the honest version is that the register shows the surge in its own geography
-   rather than a bulletin explaining it.
-
-**The sequencing, so this is not done twice.** Every one of the six needs a data change, so every one
-moves the four audit cells and with them the recall, the false-mark rate and the committed count. The
-design point is re-tuned after the realism pass, not before: the committed figure must come back
-mid-bin in a cell the ladder separates, and the family gap must still clear its own standard
-deviation. The pass waits on the loop-3 judge, because a verdict on a pack the data has moved under
-is worth nothing.
-
-
-Three findings of the loop-2 read are held rather than fixed, because each needs a data change and the
-author is holding the judge's verdict against this pack. Each is recorded with its diagnosis and the
-one-line fix, so the next pass is a build rather than a rediscovery.
-
-1. **The hand-coding worksheet is still the weakest file, and the list has grown.** Exactly 50.0 per
-   cent of each round's lot, rows sorted by identifier with monotone coding dates, batch-like repeated
-   daily loads, ten rows carrying a change note with no reviewer and no decision beside it, eleven of
-   eighteen changed decisions ending with the manual code equal to the machine's, and agreement flat at
-   74 to 79 per cent across all four coders. The fixes are in `sim.double_coding`: draw the round's lot
-   at an uneven fraction, shuffle the written order away from the identifier, give a note only to a row
-   that has a reviewer, let a changed decision change the code more often than not, and give each coder
-   their own agreement rate.
-2. **One of those is a contradiction rather than a tell.** There is no coding at all between 21 June
-   and 6 August, although round two's lot holds reports dated from 20 June: `desk_calendar` works each
-   lot in the 34 days before its own close, so round two's coding starts on 7 August and the six weeks
-   after round one's close are empty. Either the desk worked that stretch or the round's dates are
-   wrong. The fix is to give each round a span that reaches back to the previous round's close rather
-   than a fixed 34 days.
-3. **The repost's mechanism is incoherent even though the device works.** The reposted August rows keep
-   their original delivery timestamps while the ingest counter logged them on 14 September. A real
-   repost carries fresh stamps on old content, which is exactly what double-counts, so the device gets
-   stronger for the fix: stamp the second load's rows on the day the import log says it arrived.
-4. **The three routes share one clock profile.** The same hour shape, the same mean of 14.0 to 14.2 and
-   the same standard deviation of 3.6, with a hard floor at 07:00 and a cap near 21:55 on all three. A
-   press monitor, a public line and a partner network would not file at the same hours. The fix is in
-   `sim.reports`: give each route its own start-hour weights rather than one shared `START_WEIGHTS`.
-
-Each of 1 to 4 changes the pack's random stream and so moves graded figures, which is why none is in
-this build.
+that were confrontational and not of the codes assigned, so the coded count is ruled out by the
+sentence the reader quoted to reach it. And `amostra_dupla_codificacao.csv` is not a file that exists
+to help the analyst; it is the evidence the call rests on, and a coding desk that measures its
+classifier against hand coding keeps exactly such a worksheet. The reader's point that it is the only
+route to the call is fair and is the design. What the reader was right about, and what the realism
+pass fixed, is that the worksheet was built rather than kept: the six items below it named are now
+the desk's own calendar, capacity, rota, notes and failures to code.
 
 ## Tried and rejected
+- **(architecture 3, the realism pass of 2026-10-17) A hand-coding worksheet drawn as a fixed half of each round's window.** Two cold readers read the file as built rather than kept: exactly 1,000 rows split 420 and 580, exactly 50.0 per cent of each round's pool, rows in identifier order with the coding dates running monotonically down the page, daily loads repeating, 47 notes from six stock phrases with ten of them on rows no second coder had seen, eleven of eighteen changed decisions ending on the classifier's own code, agreement flat at 74 to 79 per cent across all four coders, and not one report the desk could not code. The desk now has its own random stream (`SEED_DESK`), its own calendar and its own capacity: the lot is the sum of what its coders got through on the days they sat, which is 1,064 rows, 68.4 per cent of round one's pool and 43.5 per cent of round two's; the file is written as the desk's journal, by round, coding day and coder, so consecutive rows run up the identifier half the time (0.505); the daily load runs 5 to 45 over 58 coding days; a note sits only on a row a second coder read or a row nobody could code, composed from two pools into 35 distinct texts on 63 rows; a second coder reads a row far more often when the report is one the classifier also got wrong, so 15 of the 19 changed decisions end on a code the classifier did not give; each coder reads an ambiguous report as a neighbouring code of the same kind at their own rate, so exact agreement runs 0.614 to 0.737 across the four; and eight rows carry no manual code at all, with the dictionary and protocol 4.5 saying what an empty code means and SF27 asserting that reading those rows as ordinary codings gives the same call. **What it cost:** the audit's four cells, and therefore the committed count and every figure downstream of them, had to be re-tuned (see the entry on the design point below); the protocol's 4.5 now says the file carries the manual code "onde a mesa o conseguiu fixar".
+- **(architecture 3, the realism pass) The six weeks with no coding in them.** `desk_calendar` worked each lot in the fixed 34 days before its own close, so round one coded 17 May to 19 June, round two 7 August to 9 September, and the 48 days between them were empty although round two's lot held reports dated from 20 June: either the desk worked that stretch or the round's dates were wrong. Each round now opens its lot the working day after the previous round closed and works it to its own close, with the association's holiday month thinner rather than empty and the odd catch-up Saturday. Coding now runs 4 May to 8 September with no gap longer than seven days and coding days in every month from May to September, asserted (`real.coding_calendar_has_no_hole`, `real.coding_covers_every_month`, `real.round_opens_on_the_previous_close.R2`). **What it cost:** the desk draws from the reports that had arrived by each coding day, so the lot is weighted towards the early part of each window: May gives 458 of the audit's rows and August 107. That is the stated process working, it strengthens rather than weakens the engine (the audit's prevalence sits 1.56 times the record's), and it moved every audit cell.
+- **(architecture 3, the realism pass) The reposted August load keeping its original delivery stamps.** The second load of the August partner file carried the same `carimbo_entrega_utc` as the first while the import log said it arrived on 14 September and the ingest counter counted it there, so the only thing that marked the reload was the load id. The portal now stamps the second load's rows on the day the log says they arrived, spread across that morning, which is what actually double-counts a month. **What it cost:** the two stamps a reposted report now carries open a reading the pack had not had, so the dictionary's `carimbo_entrega_utc` line makes the delivery moment the first load's, SF28 carries the row, and the alternative is asserted to move the partner route's median from 1,385 to 1,450 minutes. The device is stronger for it: D1 now moves the A2 median as well as the counts.
+- **(architecture 3, the realism pass) One clock profile across the three routes.** All three routes drew the action's start hour from one shared distribution, so the press monitor, the partner network and the public line filed on actions with the same mean hour of 14.0 to 14.2, the same standard deviation of 3.6, the same 07:00 floor and the same 21:55 cap. Each route now has its own hours and its own shape: the monitor's titles cover the set-piece daytime actions (mean 13.55, 07:00 to 21:59), a partner organisation writes up what its own people were at during their working day (11.76, 08:00 to 20:59) and the public line is where the evening and night-time blockades arrive (15.68, 05:00 to 23:59), asserted pairwise (`real.route_clocks_differ.*`, `real.route_clock_ranges_differ`). **What it cost:** the start hours move every receipt stamp, so the three route medians and the two partner columns moved with them.
+- **(architecture 3, the realism pass) Start minutes on a quarter-hour lattice.** 52 per cent of start minutes were exactly a quarter hour, 26 per cent were one of eight other five-minute marks and the rest were uniform, which a reader read off as a lattice with a small second group ending 05, 10, 25 and 55. The minute is now drawn from a distribution with a quarter-hour mode and a shoulder around it: 44 per cent on a quarter hour, 22 per cent on another five-minute mark, 22 per cent within four minutes of a quarter hour and 12 per cent anywhere, which puts 45 per cent on the quarter hours, every one of the 60 minute values in the file and 29 per cent off a multiple of five, asserted (`real.minute_mode_is_the_quarter_hour`, `real.minute_lattice_broken`). **What it cost:** nothing beyond the stream: no graded figure reads a start minute, and the medians move only through the stamps.
+- **(architecture 3, the realism pass) A surge that doubled the volume without touching new ground.** Monthly actions roughly doubled from September while the municipalities touched moved only between 117 and 119, because every action drew its municipality uniformly from the gazetteer's 119. The geography is now the register's own: each municipality carries a share of its district's standing contention (the district capital and the two island capitals most, a long tail of small ones), each dispute theme falls on the territory it belongs to, and the two themes the autumn brings, the transmission network and the fire season, run the municipality size the other way, because the lines and the burnt ground are where the people are not. The spring and summer months now touch 82, 83, 86 and 88 municipalities and the two autumn months 117, thirteen municipalities have no action in the register before 5 September, the interior districts' share rises by 37 per cent while the metro districts' falls, and Beja doubles, all asserted (`real.geography_moves_with_the_volume`, `real.register_does_not_start_saturated`, `real.surge_reaches_new_ground`, `real.surge_concentrates_in_districts`). **What it cost:** the fortnight municipality counts, the graded column of the A1 table, fell from 100 to 119 to 63 to 112, and the protocol's dispute-theme list went from fourteen themes to ten so that a theme-stratified correction has strata big enough to be worth computing (see the design point below). The earlier bulletins' three figure collisions with graded fortnight rows went with it.
+- **(architecture 3, the realism pass) Re-tuning the design point on the coding desk's stream alone.** The first attempt searched `SEED_DESK` for a draw in which either round's cells alone land in the call's cell: 7,200 desk seeds gave one hit and none with both rounds inside the band. Measured, the reason is structural: the desk draws more than half of each round's pool, so a round's estimate is pinned by that window's own realised rates and the desk's draw only jitters it by about 30 actions. The two rounds' anchors are a property of the action layer, so the search moved there: 12,000 action seeds were screened on the pooled call, the two round anchors, the stratified family's anchors at seven reference desk draws, the seven wrong routes' cells, the record's dispersion in both regimes, the three medians and the fortnight ties, which gave twelve candidates, and the desk's own stream was then searched on the best of them. The shipped point is action seed 10461 with desk seed 4. **What it cost:** the two sub-routes of rung 1 now share the 250 cell while rung 0 sits at 300 and the audited prevalence at 700, so the ladder is six cells rather than the five it was, and rung 4a (the coded count scaled by the recall, 615.64) shares the default path's 600 cell, 1.1 actions from it, which is the one place the ladder is worth less than a cell. Against that, every route in the right family is now at least 7.7 actions from its cell edge where two of them used to sit 0.8 and 4.6 from one, and the family gap is 3.3 sigma where it was 2.7.
+- **(architecture 3, the realism pass) The classifier's nominal rates at 0.46 and 0.0295 with a fourfold fall in the confrontational share.** The re-centring measured the candidates' positions as functions of the nominal recall, the nominal false-mark rate, the level of the confrontational share and its fall across the period, and the combination the ladder needs is a recall near one half, a false-mark rate near one in fifty, an audit prevalence near 15 per cent and a record prevalence near 10 per cent. The shipped values are 0.46 and 0.023 nominal, measured at 0.4783 and 0.0201 on the shipped worksheet, with the confrontational share falling by a factor of 2.6 rather than 4.2 so that the audit's prevalence stays inside the cell the audited-prevalence route needs. **What it cost:** nothing in the record's story, which still has a confrontational spring and summer and a peaceful autumn mobilisation; the marked rate still halves across the cut (8.8 against 4.3 per cent, p = 3.0e-09).
+- **(architecture 3, the realism pass) The monitor and the public line stamping receipts at any hour.** With the start hours re-drawn, one press report landed at 23:21 on 30 October, 38 minutes from the period's edge, and the route table's zone-invariance assertion caught it: a solver who read the receipt stamps an hour out would have counted a different triple. The association's own intake hours, 06:00 to 23:00, are now in the monitor's configuration, and whatever lands outside them is written at the next collection, so no receipt stamp sits within an hour of either edge and the triple survives every zone in the pack by construction rather than by luck (`SF26.route_window_zone_invariant`). **What it cost:** the night's arrivals pile into the morning, which is what a real intake does, and the three medians moved with it.
 - Loop 3, the route table shipped with no window. The loop-2 judge computed three windows off the same sentence (received in the period 4,346 / 1,204 / 945, received to the 6 November extract 4,658 / 1,313 / 988, reports of actions dated in the period 4,348 / 1,215 / 945, with the partner median moving 1,327.0 / 1,312.0 / 1,331.0), so the ask was an open fork. Closed with one `convencoes` row fixing the basis, scoped to the route figures: the partner table's own row beside it stays action-dated, so the two conventions read as the two different things they are. The row is load-bearing, not a giveaway: delete it and the three windows compute again, and it says nothing about the repost, the placement or the medians. Measured zone-robust before it was written, the nearest receipt stamp sitting 1.25 hours from a window edge.
 - Loop 3, five figures graded that the prompt never asked for. The decomposition (4,200 / 427 / 302 / 30 / 1,000) and the per-fortnight shaded series left block 4; the decomposition stays in Critical Components, where it is a component of the call rather than an answer the rubric owes, and the shading stays in the bulletin as the house's own context, described but not graded.
 

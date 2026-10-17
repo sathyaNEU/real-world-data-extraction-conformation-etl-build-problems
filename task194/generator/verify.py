@@ -280,17 +280,46 @@ def run(target, figures_path):
     # ask 2: the hospital year, on the site each unit reported under in the month
     summary["month_key"] = summary.month.dt.strftime("%Y-%m-%d")
     fac = dict(zip(zip(summary.unit_code, summary.month_key), summary.facility))
+    # ask 2: what the indicator excludes at each hospital. The separations come from the system that
+    # counts them, the activity summary, and the excluded ones are those separations less the episodes the
+    # indicator measured. The episode extract is one row per record the warehouse received and is not the
+    # authority on separations, which is what the day-procedure feed's missing months demonstrate.
     y = scope[(scope.separation_date >= "2026-01-01") & (scope.separation_date <= "2026-12-31")].copy()
-    y["site"] = [fac[(u, d.replace(day=1).strftime("%Y-%m-%d"))]
-                 for u, d in zip(y.unit_code, y.separation_date)]
-    hy = y.groupby("site").agg(episodes=("episode_id", "size"), complications=("hac_recorded", "sum"),
-                               expected=("expected_rate", "sum"))
+    y["month"] = y.separation_date.values.astype("datetime64[M]")
+    meas = y.groupby(["unit_code", "month"]).agg(
+        episodes=("episode_id", "size"), observed=("hac_recorded", "sum")).reset_index()
+    sa = summary.merge(units[["unit_code", "service_type"]], on="unit_code", how="left")
+    sa = sa[(sa.service_type == "Acute inpatient") & (sa.month.dt.year == 2026)].copy()
+    sa = sa.merge(meas, left_on=["unit_code", "month"], right_on=["unit_code", "month"], how="left")
+    sa[["episodes", "observed"]] = sa[["episodes", "observed"]].fillna(0)
+    hy = sa.groupby("facility").apply(lambda d: pd.Series({
+        "reported": int(d.separations.sum()),
+        "measured": int(d.episodes.sum()),
+        "excluded": int(d.separations.sum() - d.episodes.sum()),
+        "excluded_hac": int(d.episodes_with_complication.sum() - d.observed.sum())}),
+        include_groups=False)
     for site, row in hy.iterrows():
         f = fig["hospital_year"][site]
-        ok(int(row.episodes) == f["episodes"], "the hospital year's episodes at %s" % site)
-        ok(int(row.complications) == f["complications"], "the hospital year's complications at %s" % site)
-        ok(round(row.complications / row.expected * ref, 1) == f["adjusted_rate_per_1000"],
-           "the hospital year's adjusted rate at %s" % site)
+        ok(int(row.reported) == f["separations_reported"],
+           "the separations reported at %s (%d)" % (site, int(row.reported)))
+        ok(int(row.measured) == f["episodes_measured"], "the episodes measured at %s" % site)
+        ok(int(row.excluded) == f["separations_excluded"], "the separations excluded at %s" % site)
+        ok(int(row.excluded_hac) == f["excluded_with_a_complication"],
+           "the excluded separations with a complication at %s" % site)
+        ok(int(row.reported) == int(row.measured) + int(row.excluded),
+           "the three figures reconcile at %s" % site)
+    # the day-procedure feed's missing months: counting the extract's own rows runs short at three sites
+    ex = ep[ep.service_type == "Acute inpatient"].copy()
+    ex = ex[(ex.separation_date >= "2026-01-01") & (ex.separation_date <= "2026-12-31")]
+    ex["month"] = ex.separation_date.values.astype("datetime64[M]")
+    ex["site"] = [fac[(u, d.strftime("%Y-%m-%d"))] for u, d in zip(ex.unit_code, ex.month)]
+    rowcount = ex.groupby("site").size()
+    shortfall = {s: int(hy.loc[s].reported) - int(rowcount.get(s, 0)) for s in hy.index}
+    ok(all(v >= 0 for v in shortfall.values()),
+       "the extract never carries more records than the summary reports")
+    ok(sum(1 for v in shortfall.values() if v > 0) == 3,
+       "counting the extract's rows runs short at three of the four sites (%s)"
+       % ", ".join(s for s, v in shortfall.items() if v > 0))
 
     # ask 3: the units outside the indicator, on distinct separations. Two steps: the overlapping monthly
     # load is collapsed on the separation key the dictionary states, then the episodes of a stay whose care
@@ -385,9 +414,10 @@ def run(target, figures_path):
     ok(ratios[fig["call_unit_code"]] == (fig["pick_published_ratio"], fig["pick_comparison_ratio"]),
        "the workbook carries the call's two standardised ratios")
     hs = wb["Hospital year"]
-    rates = {r[0]: r[3] for r in hs.iter_rows(min_row=5, values_only=True) if r[0]}
-    ok(sorted(rates.values()) == sorted(v["adjusted_rate_per_1000"] for v in fig["hospital_year"].values()),
-       "the workbook carries the hospital rates")
+    hw = {r[0]: (r[1], r[2]) for r in hs.iter_rows(min_row=5, values_only=True) if r[0]}
+    want = {v["name"]: (v["separations_excluded"], v["excluded_with_a_complication"])
+            for v in fig["hospital_year"].values()}
+    ok(hw == want, "the workbook carries what the indicator excludes at each hospital")
     gi = wb["Outside the indicator"]
     outside = {r[0]: (r[1], r[2]) for r in gi.iter_rows(min_row=5, values_only=True) if r[0]}
     ok(outside == {k: (v["separations"], v["with_complication"])

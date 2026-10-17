@@ -116,7 +116,7 @@ def standard(tgt):
                        "receipt inside the screen window. Patients are counted by the region "
                        "recorded for them at the start of the screen window and by their age at "
                        "that date, taken as 2025 less the year of birth the register holds, in the "
-                       "bands 18 to 24, 25 to 44, 45 to 54, and 55 and over. A patient for whom no "
+                       "bands 18 to 49, 50 to 64, 65 to 74, and 75 and over. A patient for whom no "
                        "region is recorded is counted under \"not stated\".", BODY))
 
     f.append(PageBreak())

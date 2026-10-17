@@ -18,20 +18,20 @@
   "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17, no LEAK: 3 figure collisions (118 and 119 in boletins_anteriores_2026.pdf, 103 in relatorios_mensais_parceiros_2026.pdf) and 2 date lines (the planned-gathering dates in notificacoes_reuniao_publica.csv and the manifest cell derived from them), each answered in the design note's ## Leak sweep answers; 1 INFO on container metadata",
-  "reader": "re-staged, not run: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/loop2/reader/reader_brief.md -> reader_answers.md. Owed because the prompt changed again."
+  "leak_py": "REVIEW 2026-10-17, no LEAK: 1 figure collision (the protocol's own paragraph 4.3 against the 4.3 per cent marked rate the write-up states) and 2 date lines (the planned-gathering dates in notificacoes_reuniao_publica.csv and the manifest cell derived from them), each answered in the design note's ## Leak sweep answers; 1 INFO on container metadata. The three figure collisions of the earlier pack are gone with the geography.",
+  "reader": "owed: the worksheet, protocol 4.5, three dictionary field lines and the monitor's intake hours changed in the realism pass, so the isolated read is re-staged on the new pack."
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-17, no BLOCK: repeat.gate_g and overuse.gate_g against task193 (v2), nearest driver 0.09 task189",
-  "nearest": "0.09 task189 and task58 on the driver, down from 0.10; surface 0.102 task191 and 0.100 task193, no BLOCK"
+  "heart": "WARN 2026-10-17, no BLOCK: nearest driver 0.09 task189 and task58",
+  "nearest": "surface 0.101 task191 promoted for adjudication, 0 BLOCK lines"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW",
-  "report": "loop 2: route window open fork (F2) and five unasked graded figures (F4); both repaired, loop 3 judging"
+  "disposition": "APPROVE",
+  "report": "loop 3 on the pre-realism pack: Gates A to E, G and H pass, one Gate E watch item closed by the author. The realism pass moved the audit's cells and every figure downstream, so the author's one licensed re-judge is owed on this pack."
  },
  "returned": [],
- "resume": "loop 3 stage 4: the convencoes row pinning the route table's window is in and the unasked figures are out of block 4; judge and reader spawned on the new pack",
+ "resume": "loop 3 after the realism pass of 2026-10-17: the six held items are built, the design point is re-tuned on action seed 10461 and desk seed 4, every free gate is green and the pack is recut. Owed before ship: the author's one licensed re-judge and the leak reader on the new pack (the worksheet, the protocol's 4.5, the dictionary's three new field lines and the monitor's intake hours all changed).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -39,17 +39,20 @@
  "portal_status": "",
  "portal_status_date": "",
  "build": {
-  "generator_assertions": 246,
-  "independent_checks": 123,
-  "figures_check": "114 figures in blocks 1 to 4, 0 absent",
-  "rebuilds": "three byte-identical over target/ and golden/ (5e05d98e5f08caea19e44dd950ff4d20319384cc4bcca51eda1008558d70a902)",
-  "zip": "target.zip, 18 members at the archive root, 7a62e56db5523fa7832fccf11a5a8422bb5194b1f506e5efd6c4bd1922b2a50c",
-  "call": "450 confrontational actions to the nearest fifty (raw 453.013), default path 600, other routes 250, 350, 400 and 650",
-  "granularity": "the nearest fifty actions, measured: the call's sampling standard deviation is 57.4 actions and the granularity is 0.87 of it",
-  "forcing": "the audit covers months 5 to 8 of 5 to 10 and 12 of the 14 dispute themes; every stratified route has no rate for the rest; the gap between the two families of correction is 139.58 actions against a sampling standard deviation of 50.2, 2.78 sigma",
-  "audit": "1,000 hand-coded reports in two rounds, 23.8 per cent of the period's 4,200 press-reported actions, cells 74/76/21/829, recall 0.4933, false-mark rate 0.0247",
-  "pre_ship_pass": "the author's pre-ship list of 2026-10-17 is applied in full, with option (c) on item 1. The fortnight table's partner column is a count of the fortnight's actions the network reported rather than a share of them, which removes the one-decimal-percentage hazard class instead of managing Q11, and the build now grades no percentage at all; no data moved, so the call, the candidate table, the 2.8-sigma family gap and the audit's draw are untouched. The share-edge measurement is corrected and kept as a record (it measured the distance to the printed value, which is the complement of the distance to the edge, so it named Q9 at 0.0129 when the real tightest was Q11 at 0.0013). P07's rate moved from 6.15 to 6.10 so its euro total clears 0.40 like the other six. The euros ask names the observable in the asking sentence rather than resting on 6.2. Protocol 4.5 gives each round a cut and a close, which resolves it against the dictionary. The dictionary admits the desk's catch-up weekend days, files the monthly returns' own basis (the month of the action, not of the delivery, now declared as device D3), files the rounding path of a percentage, and closes what it means for a route to have reported an action (SF25). The judge's caution and the two thin closures are recorded in the note. Exactly fourteen graded figures moved, the thirteen converted cells and P07's euro total, confirmed by diffing figures.json across the rebuild. The earlier bulletins' note that two dispute themes entered with the autumn mobilisation is also cut, on the author's ruling of 2026-10-17, after two independent cold readers named it among the pointers that let a solver see the autumn is unmeasured by the audit; it was the only optional member of that company, and protocol 3.3, protocol 4.5 with the dictionary's round definition and config_monitor.json's classifier-stability line all stay, with the reason on the record in the design note. No figure moved: figures.json is byte-identical across the rebuild.",
+  "generator_assertions": 310,
+  "independent_checks": 138,
+  "figures_check": "111 figures in blocks 1 to 4, 0 absent",
+  "rebuilds": "two byte-identical over target/ and golden/ (6967fdeeed32d8cab624e17eea1e22b07bc22e1afb70417322c61daba4c65d29)",
+  "zip": "target.zip, 18 members at the archive root, 060f895956fa86a025eec2d9aac7c93a988ae685667de4c6f050e301711706d1",
+  "call": "450 confrontational actions to the nearest fifty (raw 454.911), default path 600, other routes 250, 300, 400, 600 and 700",
+  "granularity": "the nearest fifty actions, measured: the call's sampling standard deviation is 53.5 actions and the granularity is 0.93 of it",
+  "forcing": "the audit covers months 5 to 8 of 5 to 10 and 8 of the 10 dispute themes; every stratified route that refuses to patch has no rate for the rest, and every route that patches, plus either round alone, lands in the call's cell at least 7.7 actions from its edge; the gap between the two families of correction is 159.62 actions against a sampling standard deviation of 47.1, 3.39 sigma, positive on 99.88 per cent of 20,000 resamples",
+  "audit": "1,064 hand-coded reports in two rounds, 25.2 per cent of the period's 4,228 press-reported actions, 1,056 of them coded and 8 the desk could not code, cells 77/84/18/877, recall 0.4783, false-mark rate 0.0201",
+  "design_point": "action seed 10461 and desk seed 4, chosen by a two-stage measured search: 12,000 action seeds screened on the pooled call, the two round anchors, the stratified family's anchors, the seven wrong routes' cells, the dispersion in both regimes, the three medians and the fortnight ties, then the desk's own stream searched on the best candidates",
+  "realism_pass": "the six held items are built: the desk's own stream, calendar, capacity, rota, notes and failures to code; each round opening when the previous closes; the reposted load stamped on the day it arrived; a clock profile per route; a quarter-hour mode instead of a lattice; and a geography that moves with the surge (82 to 117 municipalities a month, 13 of them first touched after 5 September). The protocol's theme list went from fourteen to ten so a theme-stratified correction has strata worth computing, and the monitor's intake hours keep every receipt stamp an hour clear of the period's edges.",
+  "pre_ship_pass": "the four design targets are measured on the cut pack and asserted: the committed count at 454.91 is 20.09 from its cell edge; every route in the sensitivity and false-mark family is in the 450 cell at least 7.7 actions from an edge, the theme-coded variant at 466.75 and the second round alone at 464.98 where they were 474.2 and 479.0; the family gap is 3.39 sigma and positive on 99.88 per cent of 20,000 resamples; daily action counts run at 0.97 and 1.34 chi-square per degree of freedom in the two regimes; and all 70 graded figures sit at least 0.300 of their rounding unit from the edge of the value they print.",
+  "freeze": "freeze.py check --mode determinism with all 121 moved figures.json keys allowed reports five frozen items that an allow list cannot cover and the pass required: the Final Recommendation's and Critical Components' numbers, the design note's ladder and default-path sections, and the workbook's Deliverable Answers. The prompt's call sentence, the stump sentence and the card are unchanged.",
   "cracker": "generator/cracker.py, 11 rows measured on the cut pack, 0 kept by the cracker, exit 0; the sheet in the design note is its printed output"
  },
- "held": "four findings of the loop-2 read are held for one pass after the verdict, each recorded in the design note's ## Held for the next pass with its diagnosis and one-line fix: the hand-coding worksheet's remaining tells, the six-week gap in its coding dates between 21 June and 6 August against a round-two lot that starts on 20 June, the repost keeping its original delivery stamps while the counter logged it on 14 September, and the three routes sharing one start-hour profile. Each needs a data change and so moves graded figures, which is why none is in this build."
+ "held": "nothing: the six items of the loop-2 and loop-3 reads are built and each is recorded in the design note's ## Tried and rejected with what it cost."
 }

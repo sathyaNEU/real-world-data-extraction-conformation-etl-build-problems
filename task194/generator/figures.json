@@ -110,28 +110,32 @@
  "gap_complications": 15,
  "hospital_year": {
   "H1": {
-   "adjusted_rate_per_1000": 102.6,
-   "complications": 4909,
-   "episodes": 48617,
-   "name": "Alderbrook Hospital"
+   "episodes_measured": 48617,
+   "excluded_with_a_complication": 213,
+   "name": "Alderbrook Hospital",
+   "separations_excluded": 4575,
+   "separations_reported": 53192
   },
   "H2": {
-   "adjusted_rate_per_1000": 103.7,
-   "complications": 2738,
-   "episodes": 26848,
-   "name": "Stonecreek Hospital"
+   "episodes_measured": 26848,
+   "excluded_with_a_complication": 124,
+   "name": "Stonecreek Hospital",
+   "separations_excluded": 2535,
+   "separations_reported": 29383
   },
   "H3": {
-   "adjusted_rate_per_1000": 103.9,
-   "complications": 2294,
-   "episodes": 24522,
-   "name": "Marrowfield Hospital"
+   "episodes_measured": 24522,
+   "excluded_with_a_complication": 148,
+   "name": "Marrowfield Hospital",
+   "separations_excluded": 3040,
+   "separations_reported": 27562
   },
   "H4": {
-   "adjusted_rate_per_1000": 111.7,
-   "complications": 199,
-   "episodes": 2306,
-   "name": "Carrowdean District Hospital"
+   "episodes_measured": 2306,
+   "excluded_with_a_complication": 13,
+   "name": "Carrowdean District Hospital",
+   "separations_excluded": 227,
+   "separations_reported": 2533
   }
  },
  "margin": 1.6,

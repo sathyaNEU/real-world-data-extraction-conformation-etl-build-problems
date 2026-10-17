@@ -282,9 +282,12 @@ def run(target, g, state):
            "SF13 %s's expected count sits %.4f from the decimal's edge"
            % (d["unit"], sim.bin_edge(d["expected_plan"], 0.1)))
     for h in g["hospitals"]:
-        ok(sim.bin_edge(h["rate"], 0.1) >= sim.EDGE_BAR * 0.1,
-           "SF13 %s's adjusted rate sits %.4f from the decimal's edge"
-           % (h["hospital"], sim.bin_edge(h["rate"], 0.1)))
+        for key in ("reported", "measured", "separations", "complications"):
+            ok(float(h[key]).is_integer(),
+               "SF13 %s's %s is a whole separation" % (h["hospital"], key))
+        ok(h["reported"] == h["measured"] + h["separations"],
+           "SF13 %s's three figures reconcile: %d reported, %d measured, %d excluded"
+           % (h["hospital"], h["reported"], h["measured"], h["separations"]))
 
     # ---------- mess neutrality, one assertion per Layer 1 item (R2) ----------
     all_acute = sorted({c for c, u in b["units"].items() if u["service_type"] == "Acute inpatient"
@@ -438,10 +441,39 @@ def run(target, g, state):
             continue
         site = reg[unit]
         wrong[site][0] += 1
-    for h in g["hospitals"]:
-        ok(wrong[h["hospital"]][0] != h["episodes"],
-           "A2 the register's alignment moves %s's episode count" % h["hospital"])
     ok(len(W.REALIGNED) == 3, "A2 three cost centres were realigned")
+    # A2's primary: the day-procedure feed's two missing months at three units. The activity summary counts
+    # those separations and the extract never received them, so counting the extract's own rows runs low at
+    # three of the four sites, and the gap is visible only by reconciling the two files across their grains
+    ok(len(W.FEED_GAP) == 3, "A2 the feed gap covers three units (%d)" % len(W.FEED_GAP))
+    gap_rows = [r for r in state["rows"]
+                if r["unit"] in W.FEED_GAP and r["los"] == 0
+                and r["sep_date"].isoformat()[:7] in W.FEED_GAP[r["unit"]]]
+    ok(len(gap_rows) > 150, "A2 the feed missed %d separations" % len(gap_rows))
+    ok(all(not r["in_scope"] for r in gap_rows),
+       "A2 every record the feed missed is outside the indicator, so no in-scope episode moves")
+    cand = {d["unit"] for d in units}
+    ok(not (set(W.FEED_GAP) & cand),
+       "A2 no candidate's separations are touched by the feed gap")
+    ext_codes = {r["unit_code"] for r in read(target, "episode_outcomes_extract.csv")}
+    ok(set(W.FEED_GAP) <= ext_codes, "A2 the units with the gap are otherwise in the extract")
+    ext_by_site = defaultdict(int)
+    for r in read(target, "episode_outcomes_extract.csv"):
+        if r["unit_code"] not in acute_units:
+            continue
+        sep = dt.date.fromisoformat(r["separation_date"])
+        if not (dt.date(2026, 1, 1) <= sep <= dt.date(2026, 12, 31)):
+            continue
+        ext_by_site[b["facility"][(r["unit_code"], sep.replace(day=1).isoformat())]] += 1
+    short = [h["hospital"] for h in g["hospitals"] if ext_by_site[h["hospital"]] < h["reported"]]
+    ok(len(short) == 3,
+       "A2 the extract runs short of the reported separations at three of the four sites (%s)"
+       % ", ".join(short))
+    for h in g["hospitals"]:
+        d_ = h["reported"] - ext_by_site[h["hospital"]]
+        ok(d_ >= 0, "A2 the extract never runs above the summary at %s" % h["hospital"])
+    ok(sum(h["reported"] - ext_by_site[h["hospital"]] for h in g["hospitals"]) == len(gap_rows),
+       "A2 the whole shortfall is the feed's missing records and nothing else")
     detail = read(target, "hac_detail_extract.csv")
     # A4: the detail extract alone runs low in every group, and a raw code join mis-sorts
     detail_units = {r["unit_code"] for r in detail}
