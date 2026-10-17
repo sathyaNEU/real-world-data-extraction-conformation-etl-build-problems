@@ -1,0 +1,97 @@
+{
+  "task": "task267",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "diagnostic-biomarker-accuracy",
+  "niche": "a regional health system's community diabetes screening program choosing its 2027 point-of-care referral rule for the oral glucose tolerance test from a 2026 season in which the test followed the old referral rule and a random fifth of everyone else",
+  "objective": "descriptive-distribution",
+  "shape": "10",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G12",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "the director of the health system's community screening program, who sets the referral rule loaded into the screening tablets for the 2027 season with the program's medical director",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "community_screening_encounters_2026.csv",
+    "rows": 0,
+    "entity": "one adult screened at one community screening event",
+    "grain": "screening encounter",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "a US state (the health system, its counties' screening sites and its reference laboratory are fictional; personas on the en_US index)",
+    "currency": "USD",
+    "org_type": "regional health system",
+    "invented_names": [],
+    "people": [
+      "Aaron Bradley",
+      "Ariel Tucker",
+      "Bryan Gardner"
+    ]
+  },
+  "deliverables": [
+    "referral_rule_review_2027.xlsx",
+    "referral_rule_2027_memo.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a rule's capture rate over a whole screened population when the reference check was given to everyone an older rule flagged and to a random fifth of everyone else; reading the capture rate among the checked members credits any rule that contains the older rule with nearly every case, so each checked member has to stand for the members of its own older-rule group at the inverse of that group's checking rate.",
+  "driver_concrete": "Each referral rule's sensitivity for undiagnosed diabetes among everyone screened in 2026, each participant with an OGTT result weighted by the inverse of the OGTT completion rate in their 2026 group (referred by the 2026 rule, or not referred and drawn into the random fifth), not read among the participants with a result, where the 2026 rule plus an HbA1c of 6.0 or more reads about 93 per cent and is about 77.",
+  "stump": "A competent solver computes each rule's sensitivity among the participants with an OGTT result, finds the 2026 rule plus an HbA1c of 6.0 or more at about 93 per cent, the rule with the fewest referrals above the 85 per cent target, and recommends it; weighted by the two groups' OGTT rates it reads about 77, and an HbA1c of 5.7 or more or a random glucose of 120 mg/dL or more (about 90) is the rule with the fewest referrals that meets the target.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads a missing OGTT as not tested and applies the 85 per cent target computes each rule's sensitivity among the participants with an OGTT result and recommends the 2026 rule plus an HbA1c of 6.0 or more, about 93 per cent there with a quarter of those screened referred.",
+  "domain_test": "The deciding quantity is each referral rule's sensitivity for diabetes among everyone screened, a diagnostic accuracy estimate under partial verification (the OGTT given by the old rule and to a random fifth), estimated by weighting the verified by the inverse of their referral group's verification rate; swapped into a warehouse's pallet scans, nothing ties the checking to a risk questionnaire and a glucose reading, and the mild cases only the random fifth reaches have no counterpart.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task256": "shares the gap, G14 and a pick: task256 carries a volunteer sample back to its population through two recorded measurements to size a fit box from a reference group; task267 carries a reference test given by an older referral rule and a random fifth back to everyone screened to read each rule's sensitivity, with no box, no reference group, and the selection the old rule's own flags",
+    "task262": "shares the gap, G14 and a pick: task262 carries a noise variance, not a reliability ratio, from a subsample selected on its level to a slope; task267 inverts the reference test's sampling by referral group to read sensitivities, with no slope and no measurement error, the subsample being the old rule's referrals and a random fifth",
+    "task233": "shares the gap, G14 and the Gate G mechanism: task233 carries a missing-against-imputed departure from a gold-standard follow-up across base rates as one odds ratio; task267 models no departure, since the reference test reached a known random fifth of the unreferred, so each tested participant stands for its group at the inverse of its test rate",
+    "task465": "shares the gap, G14 and the Gate G mechanism: task465 counts units carrying two traits no large source holds together from a small third source within cells (record linkage); task267 reads a referral rule's sensitivity under partial verification, one population and one reference test with the verification design known",
+    "task54": "shares only the gap, G14 and the Gate G mechanism: task54 sizes custody loss over a re-sequenced plan with a rule recovered from closed investigations; task267 has no plan, no recovered rule and no loss exposure"
+  },
+  "lineage": [
+    {
+      "architecture": "v0",
+      "fate": "set aside at the draw 2026-10-17, never registered",
+      "driver": "The decisive quantity is the gap in survival between members with large and small benefits, measured on a record whose rows are contracts rather than members, so a member with several small contracts lands in the small bands.",
+      "note": "seed DA17, an annuity insurer's size-banded rates in six markets: it serves Descriptive only through sociology-demography's life-table task type (a third sociology-demography Descriptive build after task262 and task266), the seed's contract-against-annuitant grain is identity resolution (a reading, banned as the decisive step), and its natural analytical stump, deaths notified late for small pensions estimated from the notification delays, would file an estimate of the not-yet-observed in the governing document for a second consecutive build"
+    }
+  ],
+  "notes": "WARNs answered in the design note.",
+  "client_domain": "biomedical-clinical-research",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "biomedical-clinical-research/diagnostic-biomarker-accuracy/1",
+  "layer1": [
+    "the screening tablets' event exports, one adult screened at more than one event in the season",
+    "OGTT results from the reference laboratory keyed by its accession number with the program ID typed on the requisition",
+    "point-of-care HbA1c from the analysers' exports, with repeats after a failed control and results beyond the reportable range shown as text",
+    "the 2026 referral flag set by the tablet from the questionnaire score and the fingerstick glucose, the random fifth drawn by the tablet",
+    "OGTT appointments not kept, rescheduled or completed at another site"
+  ],
+  "registered": "2026-10-17T16:13:13Z"
+}
