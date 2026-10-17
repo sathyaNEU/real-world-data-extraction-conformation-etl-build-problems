@@ -1,0 +1,36 @@
+{
+  "task": "task464",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-17",
+  "stump": "The default path scales each building's 2025 benchmarked heating fuels by the ratio of normal to 2025 heating degree days and files a wrong slate (fixed loads scaled with the weather, 2025 straddling changes); a degree-day regression over each building's whole record, or its latest twelve months, files a second wrong slate because buildings near the line changed how they run partway through the record; the golden fits each fuel's degree-day model on the bills since the building's last change.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task182 0.10"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: generator prototype (weather 1991-2026, ~150 covered buildings, bills, steam, oil fills, undated changes), calibrate the ladder (as benchmarked, degree-day ratio, whole-record fit, latest-twelve fit, current-regime fit) with a 1.2x cut margin, then the fork table, closure, asks and prompt.txt to precut exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET21 (analytical_tasks/07_data_extraction_conformation): a city-funded building decarbonization accelerator assigning its advisors to the covered buildings in a community district with the largest estimated first-period penalty under NYC Local Law 97 from LL84 benchmarking data; the seed's own trap (the benchmarking GHG column against statutory coefficients, the largest use type's limit, campus rows) is semantics and rule application and is not used"
+}

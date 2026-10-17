@@ -1,0 +1,91 @@
+{
+  "task": "task464",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 4 (new). Seed ET21: world, decision and quantity kept (a city-funded building decarbonization accelerator assigning its advisors to the covered buildings with the largest expected emissions-limit penalty); the seed's mechanism rows (a withheld GHG basis, the largest use type's limit, campus rows read as a decoy) are not used. Its natural ETL home is Physical & Environmental Sciences, emissions-inventory, clear of the bans after task263 left the last three.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a city building decarbonization accelerator's 2027 advisor slate, set on each covered building's emissions-limit penalty in a year of normal weather as the building now runs, estimated from three and a half years of utility bills and heating oil fill tickets for the district's covered buildings",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G4",
+    "G13",
+    "G16"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "the district lead of a city-funded building decarbonization accelerator, who puts to the city's climate office which covered buildings in the district its advisors take on in the 2027 cycle",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "wegco_whole_building_bills_2023_2026.csv",
+    "rows": 0,
+    "entity": "one utility's aggregated whole-building reading for one covered building, one fuel and one billing period (actual or estimated read)",
+    "grain": "building x fuel x billing period",
+    "source": "synthetic (constructed in the layout of an electric and gas utility's whole-building aggregated data export)"
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "Wendlemere, an invented city in the northeastern United States with its own building emissions limits law",
+    "currency": "USD",
+    "org_type": "nonprofit operating the city's building decarbonization accelerator under contract",
+    "invented_names": [
+      "Wendlemere",
+      "Wendlemere Building Decarbonization Accelerator",
+      "Wendlemere Electric & Gas",
+      "Wendlemere Thermal",
+      "Lindqvist Field"
+    ],
+    "people": [
+      "Kelli Pierce",
+      "Nicholas Clay"
+    ]
+  },
+  "deliverables": [
+    "wendlemere_cd4_advisor_slate_2027.xlsx",
+    "wendlemere_cd4_building_energy_record_2023_2026.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "where",
+  "driver": "The decisive quantity is each unit's output in a standard year of an external driver as the unit now operates, estimated from a response model fitted on the unit's own record; partway through the record many units changed how they respond to the driver or how much they draw regardless of it, on dates no file records, so a model fitted over the whole record or over the latest twelve months, or one recent year scaled by the driver's ratio, misstates the units whose response changed or whose fixed draw does not scale, and each moves a different set of units across the cap.",
+  "driver_concrete": "Each covered building's emissions in a year of the 1991 to 2020 normal weather as it runs at the end of September 2026 comes from degree-day models of each fuel fitted on the bills and oil fills since the building last changed how it runs (a boiler replaced, heat pumps added, a hot water plant converted, a tenant fit-out), found in its own record, and not from the 2025 benchmarking year scaled by the degree-day ratio, a model fitted over the whole record or one fitted over the latest twelve months, which each move a different set of buildings across the twelve advisor places.",
+  "stump": "The default path takes each building's 2025 energy as benchmarked, scales its heating fuels by the ratio of normal to 2025 heating degree days, prices the excess over its limit and files a slate whose differences from the golden come from fixed loads scaled with the weather and from buildings whose 2025 year mixes two ways of running; a strong analyst's degree-day regression over each building's whole record, or over its latest twelve months, files a different wrong slate because the buildings that changed how they run partway through the record are modelled across the change.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the bills, fills and weather correctly, reads the law and the accelerator's selection rule, and normalizes each building the usual way (a degree-day regression of each fuel over its whole record, or over the latest twelve months, evaluated at the 1991 to 2020 normals) files a slate that keeps buildings whose record mixes the plant they had with the one they run now and drops buildings that changed the other way, instead of the golden slate.",
+  "domain_test": "The deciding quantity is a building's weather-normalized emissions on its current operation, estimated the way building energy analysts do it (inverse degree-day models of each fuel on billing periods and fill intervals, a baseline period that represents current operation, normals from the station's record) and priced against the law's limit; with another field's nouns (patients and clinic visits, trucks and miles) neither the degree-day response of a heating plant, its fixed hot water and lighting draw, nor a retrofit changing that response reads.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:weather-normalized emissions on the current operating regime (inverse degree-day models fitted after each building's last non-routine change)",
+  "layer1": [
+    "several sources for one picture: the electric and gas utility's whole-building billing export, the steam utility's account statements, two heating oil dealers' delivery tickets in their own layouts, the city's benchmarking submissions, the covered buildings register and the airport's daily weather record",
+    "billing periods that do not follow the calendar, and estimated reads trued up by the next actual read",
+    "delivered fuel recorded as tank fills, partial deliveries flagged, two grades of heating oil",
+    "units: gas in hundreds of cubic feet with a heat content factor per billing period, steam in thousands of pounds, oil in gallons, electricity in kWh, weather in tenths of degrees Celsius",
+    "imperfect keys: borough-block-lot numbers with and without separators, a campus benchmarked under one parent property, utility accounts mapped to buildings through a crosswalk",
+    "the benchmarking file's own greenhouse gas column computed with federal emission factors, not the law's coefficients",
+    "a weather record with missing days and flagged values"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Gap population first (stumping 1.4: what one row is against one decided unit; a building's bills from before its last change in how it runs describe a building that is no longer the one the 2027 cycle advises), time behind it (the record's weather against the normal year). Pattern none. Generators: G4 (each building's record split at its own change, the bills attributed to the way it ran when they were read), G13 (the record's horizon against the normal year as run now), G16 (the degree-day model over a ratio of degree days). Gate G forecasting: the normal-year emissions as run now are a prediction the correctly read 2025 year does not pin. Strategy forecast_method_backtest: a regime change in each building's own record makes the natural fit (whole record, latest twelve months) wrong out of sample. The changes are undated in every file and found from each building's own series, never a dated cause with an event study (strategies F1, F8). Forum funder_or_donor: the city climate office funds the advisors and signs off the cycle's slate; forcing launch_or_rollout: the 2027 advisory cycle opens in January; org nonprofit_or_charity: the accelerator's operator. Question form where: the call places twelve advisors at buildings.",
+  "registered": "2026-10-17T00:29:00Z"
+}
