@@ -2,12 +2,12 @@
  "task": "task190",
  "owner": "oviya13ya",
  "status": "DRAWING",
- "domain": "banking-credit-financial-risk/fraud-aml-detection",
+ "domain": "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection",
  "objective": "anomaly-detection",
  "stage": 1,
  "stage_name": "draw",
  "updated": "2026-10-17",
- "stump": "architecture 4, to be filled when the draw is fixed",
+ "stump": "The default path multiplies the outbreaks each accumulation window flags by the unit's published preventable share and files the longest allowed window, because that window flags the most outbreaks and the share is a correct published figure that reproduces the realised total exactly at the window in force; the window that leaves the most cases ahead of its own alerts is a short one, because the outbreaks a long window adds are flagged in their closing weeks and every outbreak it does flag it flags weeks later.",
  "architecture": 4,
  "loops": 0,
  "precut": {
@@ -32,7 +32,7 @@
   "architecture_4": "not yet spawned"
  },
  "returned": [],
- "resume": "Architecture 4, re-rooted 2026-10-17. This lane retires nothing (.claude/authors/oviya13ya.md), so the RETIRED status set at architecture 3 was an error and is reversed. Architecture 3's identity is in the card's lineage with its fate and its lesson is the design note's ## Architecture 3, spent: the decisive step may never rest on a constant or factor table Gate B forces the pack to ship. Resume at stage 1: domain banking-credit-financial-risk, subdomain fraud-aml-detection, objective anomaly-detection, shape 04 or 13; draw, register the card, then design. The architecture 3 generator, pack, goldens and target.zip are deleted once the new draw is registered, because the folder holds one architecture.",
+ "resume": "Architecture 4, drawn and registered 2026-10-17T23:01:30Z after architecture 3 was called spent (the lane retires nothing). Ground re-drawn on every axis because banking fraud and AML went to task196: epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection, shape other, decisive generator G1, strategy other, dial_setting, guard WARN with no BLOCK. Architecture 3's pack, generator and goldens are deleted; the folder holds one architecture. Next: design note (## Draw through ## Ask sheet), prompt.txt, precut.py, then the generator.",
  "approved": null,
  "delivered": null,
  "portal": null,
