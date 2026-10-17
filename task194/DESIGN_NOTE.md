@@ -77,13 +77,18 @@ Which part of the estimand does it settle? **None of the five.**
 | Unit | charter clause 4.3 | complications, counted at the unit that hosts the team, over the assessment quarter |
 | Comparison | charter clause 4.3 | the complications the unit would have recorded over the assessment quarter without the embedded team, less the complications it records over that quarter with the team there: a difference between two counts over one quarter, not a movement between periods |
 
-What stays open is how the "without the team" branch is estimated and how the register prices the team.
-Both are estimation, and the data separates every candidate: the units' own quarterly deviations carry no
-serial correlation, so a quarter's deviation is not the unit's position, and the register's seven closed
-placements fit a share of persistent excess (worst per-placement miss 12 per cent) against a share of the
-unit's level (worst miss 131 per cent) and a reduction per expected complication (worst miss 161 per cent).
-Filing the difference in clause 4.3, the standing's window in specification 3.3 and the in-progress
-placement in clause 4.2 closes three readings of WHAT and leaves both HOW questions open.
+What stays open is the shape of the fall, and the design forces it. The eight closed placements spread
+from a unit running at its expected number (standing 1.000) to one running at nearly twice it (1.979), and
+over that spread a share of standing excess and a constant drop in the standardised ratio predict falls
+that differ by many times the error a count of complications carries. Fitted by weighted least squares with
+the counterfactual count as the variance, the shape the register carries leaves chi-square 2.68 on seven
+degrees of freedom while a constant ratio-point drop leaves 35.57, a constant percent of the counterfactual
+22.50 and a flat number of complications 22.54: likelihood ratios of 1.4e7, 2.0e4 and 2.1e4 to one. The
+register is not fitted: its standardised residuals run -1.23 to +0.75 and its per-placement shares run
+-0.65 to 1.33, so the scatter is what a few hundred episodes a quarter produce. Filing the difference and
+the baseline in clause 4.3, the standing's window in specification 3.3, the row set and the in-progress
+placement in clause 4.2 and the separation key in the dictionary closes every reading of WHAT and leaves
+the shape of the fall, which is the method, open.
 
 **The three surface promotions, ruled by the author.** `guard.py surface` promotes task194 against
 task266, task448 and task466, each at 0.102 in the corpus's top 1 per cent, and none is a finding. The

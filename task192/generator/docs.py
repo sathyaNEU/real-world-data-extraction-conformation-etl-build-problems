@@ -107,8 +107,7 @@ def protocol(target):
                    "lote a mao, sem ver o codigo do classificador; a codificacao manual e a "
                    "referencia da associacao. A ronda fica no ficheiro de dupla codificacao, com o "
                    "codigo de cada lado, o dia da codificacao manual e a decisao da mesa nas linhas "
-                   "que foram a segunda codificacao. A ronda deste periodo que o calendario poe no "
-                   "outono e feita no periodo seguinte.", BODY),
+                   "que foram a segunda codificacao.", BODY),
          Paragraph("4.6 O classificador do monitor de imprensa e o modelo que a configuracao do "
                    "monitor declara, com a data em que foi treinado e as alteracoes que teve dentro "
                    "do periodo.", BODY)]
