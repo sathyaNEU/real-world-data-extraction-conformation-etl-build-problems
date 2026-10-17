@@ -1,0 +1,155 @@
+{
+ "call": {
+  "band": 4,
+  "bind": "Heavy drinking",
+  "runner": "Volunteering"
+ },
+ "components": {
+  "effect_lo": "6",
+  "effect_hi": "7.5",
+  "bind_range": "4 to under 5 points",
+  "runner_range": "6 to under 7 points",
+  "others_floor": 8,
+  "tolerance": "0.30",
+  "departures": [
+   4,
+   5
+  ]
+ },
+ "steps": {
+  "completes": "40,821",
+  "rate_lo": "56.3",
+  "rate_hi": "57.3"
+ },
+ "response": {
+  "second quarter 2027 A": "57.3",
+  "second quarter 2027 B": "56.4",
+  "third quarter 2027 A": "56.3",
+  "third quarter 2027 B": "56.8"
+ },
+ "valid": {
+  "LS": [
+   "21,463",
+   "19,144"
+  ],
+  "WW": [
+   "21,434",
+   "19,117"
+  ],
+  "HY": [
+   "21,469",
+   "19,171"
+  ],
+  "AX": [
+   "21,414",
+   "19,120"
+  ],
+  "LN": [
+   "21,375",
+   "19,109"
+  ],
+  "TR": [
+   "21,327",
+   "18,823"
+  ],
+  "SF": [
+   "21,349",
+   "19,126"
+  ],
+  "GH": [
+   "21,445",
+   "19,167"
+  ],
+  "SM": [
+   "21,177",
+   "19,165"
+  ],
+  "BD": [
+   "20,800",
+   "18,980"
+  ],
+  "VL": [
+   "21,381",
+   "19,188"
+  ],
+  "FS": [
+   "20,753",
+   "18,830"
+  ]
+ },
+ "conventions": [
+  "23:59",
+  "UTC+13",
+  "30 September",
+  "9",
+  "12",
+  "August",
+  "4.1",
+  "4.3",
+  "6",
+  "18",
+  "0.30"
+ ],
+ "evidence_not_graded": {
+  "LS": {
+   "effect": -0.232,
+   "widest": 12.947,
+   "tsls": -0.234
+  },
+  "WW": {
+   "effect": -0.143,
+   "widest": 20.953,
+   "tsls": -0.146
+  },
+  "HY": {
+   "effect": -0.173,
+   "widest": 23.07,
+   "tsls": -0.175
+  },
+  "AX": {
+   "effect": 0.374,
+   "widest": 13.354,
+   "tsls": 0.38
+  },
+  "LN": {
+   "effect": 3.248,
+   "widest": 9.236,
+   "tsls": 3.308
+  },
+  "TR": {
+   "effect": -1.387,
+   "widest": 28.847,
+   "tsls": -1.461
+  },
+  "SF": {
+   "effect": -0.799,
+   "widest": 37.553,
+   "tsls": -1.111
+  },
+  "GH": {
+   "effect": -3.083,
+   "widest": 11.353,
+   "tsls": -3.272
+  },
+  "SM": {
+   "effect": 2.331,
+   "widest": 10.723,
+   "tsls": 2.335
+  },
+  "BD": {
+   "effect": 6.623,
+   "widest": 4.53,
+   "tsls": 6.488
+  },
+  "VL": {
+   "effect": -5.123,
+   "widest": 6.832,
+   "tsls": -5.082
+  },
+  "FS": {
+   "effect": 3.293,
+   "widest": 9.111,
+   "tsls": 3.527
+  }
+ }
+}

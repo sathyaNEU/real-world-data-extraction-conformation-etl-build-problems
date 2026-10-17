@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 3 under way: task237 shipped; task238 next, its seed's pairing banned against task237 so its draw takes another domain). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 3 under way: task237 and task238 shipped; task239 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 shipped; task238 to task242 next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 and task238 shipped; task239 to task242 next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,23 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task238: SHIPPED 2026-10-17 (wave 3, second build; architecture 1); waiting on the portal.**
+- The Halvreth Statistics Office and its quarterly Wellbeing Tracker going web-first (Survey Research & Official
+  Statistics, nonresponse-calibration-measurement-error-adjustment x Data Quality Monitoring). Call: run the mode-mix
+  monitor at a band of 4 percentage points of web share from the fourth quarter of 2027, heavy drinking binding (its
+  mode effect, read through the CST-27 contact strategy test's randomly allocated letters, is more than 6 and at most
+  7.5 points against a 0.30-point tolerance). Comparing web with telephone completes, even with every recorded
+  characteristic held fixed, files 3; the raw comparison 2; the letters' raw difference 6. Asks: the test's response
+  rate under each letter in each quarter (the sample system's codes, returns not from the selected adult, the close at
+  UTC+13) and each index's valid answers online and by telephone (the outage interviews keyed through the web platform,
+  the CATI clock on twice-answered addresses).
+- Gates: 113 generator checks, verify green (its own completes and Wald estimate), byte-identical rebuilds,
+  figures_check 58 of 58, precut 49, leak.py REVIEW only; four leak reads (question 1 none in each, question 6
+  analytical; the close-out's processing list rewritten as fieldwork narrative); judge r1 DETERMINISTIC, FIX_NOW (the
+  selected-person rule now filed in the plan's section 5), r2 DETERMINISTIC, APPROVE. Pair ceiling 37.8 on paper. The
+  draw was cut as a monitoring dial after the guard blocked a per-index designation (task465 v1's signature); the forum
+  was redrawn to line_manager_or_team after task157 reached this checkout; the island was renamed Halvreth (H21).
 
 **task237: SHIPPED 2026-10-17 (wave 3, first build; architecture 1); waiting on the portal.**
 - The Survey Research Centre at Marlowe University and its Community Connections Survey (Psychology & Behavioral
