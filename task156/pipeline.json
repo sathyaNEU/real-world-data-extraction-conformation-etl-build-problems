@@ -9,14 +9,14 @@
   "updated": "2026-10-17",
   "stump": "Carrying each site's paid queue hours per question over the last twelve months onto the 2027 question plan files a request of 23 FTE, inside finance's 26-FTE envelope, and trending each site's routed share or its monthly paid hours forward still files 25 to 28; the step that lands each there is treating the items that reach the paid team as a share of what arrives, when they are what arrives beyond what each site's shrinking reviewer pool can review at the pace reviewers keep when the inbox is full, so Data & ML, Databases, Infrastructure & DevOps and Game Development, which have routed almost nothing since January 2024, fall short of their 2027 inbox and the request needed is 35 FTE (31 with the pool trended over the platform's whole record, 53 with the pace read from 2026 throughput).",
   "architecture": 1,
-  "loops": 1,
+  "loops": 2,
   "precut": {
-    "exit": 1,
+    "exit": 0,
     "date": "2026-10-17",
-    "checks": "49 checks, 2 FAIL, 0 WARN: pair ceiling 41.0 over 40, and the cracker sheet keeps Ask C and the chart's three actual totals; both from the round-1 FIX_NOW repairs (Ask C's counting filed, slide 2's totals graded), reported to the coordinator"
+    "checks": "49 checks, 0 FAIL, 0 WARN after round 2 (pair ceiling 31.4, mirror leakage 4.5 per cent, the cracker misses every ask)"
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-17 after round 1; every REVIEW line answered in the design note ## Leak sweep",
+    "leak_py": "REVIEW (no LEAK), 2026-10-17 after round 2; every REVIEW line answered in the design note ## Leak sweep",
     "reader": "stage 4: no leak (coordinator, 2026-10-17)"
   },
   "duplicate_check": {
@@ -26,11 +26,11 @@
   },
   "judge": {
     "verdict": "DETERMINISTIC on the main call and supplementary answers 1 to 5",
-    "disposition": "FIX_NOW (Ask C's 2022 counting semantics; slide 2's series under-specified); fixed in round 1, awaiting the coordinator's one re-judge",
+    "disposition": "FIX_NOW (Ask C's 2022 counting semantics; slide 2's series under-specified); fixed in rounds 1 and 2, awaiting the coordinator's one re-judge",
     "report": "task156/determinism_check_report_round1.md"
   },
   "returned": [],
-  "resume": "stage 4: re-judge round 1 (coordinator); then decide on the precut pair-ceiling and cracker rows (Ask C rebuilt with a new silent device, or the 41 accepted)",
+  "resume": "stage 4: the coordinator's one re-judge covering rounds 1 and 2",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -40,16 +40,16 @@
   "wave": "wave 5 (new), seed FC27 (world, decision and quantity kept; the certified-figure clause not shipped; the revised close standard filed as context, never decisive; pitfall re-found from the review platform's 72-hour hand-off to the paid team)",
   "answer": "Request 35 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 7, Databases 5, Infrastructure & DevOps 5, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 9 above finance's 26-FTE envelope",
   "gates_stage3": {
-    "checks": "101 assertions, 0 failed (round 1 adds: Ask C's two licensed readings asserted out and the filed sentences present, the flag-response denominator and the envelope's sign, the lapse-date reading with the January and February 2024 lapses, routed items priced at the routed mix, per-type routing in slack months, the chart's three actual totals exact and filed)",
-    "verify": "independent verifier reproduces the 35 FTE and nine site needs, the pace, Ask A (27), Ask B (27), Ask C (9) and the chart's three actual totals",
+    "checks": "104 assertions, 0 failed (round 2 adds the Ask C restatement device: the golden's construction exact, the careful-but-literal path missing all nine by 0.27 points or more, the restatement fair, honest and off the call's columns; the chart's 33 actual months exact on the filed definition)",
+    "verify": "independent verifier reproduces the 35 FTE and nine site needs, the pace, Ask A (27), Ask B (27) and Ask C (9, reading the March 2023 restatement)",
     "rebuild": "two consecutive builds byte-identical: 24 target files, 2 goldens, figures.json, submission.md; target.zip cut flat",
-    "target_zip_sha256": "297e5593726f8022a9637e779ed03f0441dc795534c92066dcf2ebc09e1dd460",
-    "figures_check": "PASS, 112 figures in blocks 1 to 4, 0 absent",
-    "voice_check": "PASS (957 characters)",
+    "target_zip_sha256": "4a2dc4633613aeb35a0e72602967e72411a8731a5a0b626c856567f3f85fcda3",
+    "figures_check": "PASS, 109 figures in blocks 1 to 4, 0 absent",
+    "voice_check": "PASS (922 characters)",
     "container": "scrub_producer_metadata audit clean on target and golden",
     "golden_realism": "done: finding titles on every sheet and slide, notes sheet, footers and slide numbers, set table style, chart with validated palette, legend, forecast band, labelled envelope and the 2027 need annotated",
     "house_fixes": "H1 clean; H4 archive cut without the enclosing folder; H14 each site's own pace and floor asserted; H16 flag first actions and reviews held before the export run; H21 the network renamed from Quernstone (a real UK firm) to Millrind; H24 no constructed-pack sentence under target",
-    "round1_moved_figures": "none graded moved: the call (35; 5, 2, 7, 5, 5, 2, 4, 3, 2), Asks A, B and C as before; added graded figures: the chart's actual totals 36,419, 36,233 and 29,626 hours"
+    "round1_moved_figures": "none graded moved across rounds 1 and 2: the call (35; 5, 2, 7, 5, 5, 2, 4, 3, 2) and Asks A, B and C as built; round 1's three chart totals were taken back out of the graded block in round 2"
   },
   "rule3_audit": "PASS (P(both) about 0.03 to 0.06); soft points answered in round 1: the January and February 2024 lapses now on the roster, the domain tag kept (no trust-and-safety task type in vocab.json)"
 }

@@ -138,10 +138,25 @@ def main(target):
             joins[(r["site"],) + month_key(r["access_granted"])] += 1
     # the old system's months
     old = []
+    restated = {}
+    mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     for sheet, rows in sheets(os.path.join(target, "review_queues_monthly_2021-2023.xlsx")).items():
-        head = None
+        head, after_total, rhead = None, False, None
         for row in rows:
-            if row and row[0] == "Site":
+            if not row:
+                continue
+            if after_total:
+                if row[0] == "Site" and len(row) > 1 and str(row[1] or "").endswith(sheet):
+                    rhead = row
+                elif rhead and row[0] in old_code:
+                    for h, v in zip(rhead[1:], row[1:]):
+                        if h and v is not None:
+                            restated[(row[0], int(sheet), str(h)[:3])] = float(v)
+                continue
+            if row[0] == "All sites":
+                after_total = True
+                continue
+            if row[0] == "Site":
                 head = row
                 continue
             if head and row and row[0] in old_code and row[1] and str(row[1])[:3] != "Yea":
@@ -202,18 +217,6 @@ def main(target):
     if int(half_up(pace)) != F["components"]["reviews_a_month"]:
         bad.append("pace %.2f" % pace)
 
-    # the chart's actual years: paid review hours as the operations notes define them (2023 to 2026 standards)
-    for label, yr in (("2024", 2024), ("2025", 2025), ("January to September 2026", 2026)):
-        mins = 0.0
-        for s in codes:
-            for (y, mo) in months:
-                if y != yr:
-                    continue
-                mins += flags[(s, y, mo)] * std_old["flag"]
-                mins += sum(rout_t[(s, y, mo, t)] * std_old[t] for t in std_old if t != "flag")
-        if format(int(half_up(mins / 60.0)), ",") != F["answers"]["chart_actual_hours"][label]:
-            bad.append("chart %s %.2f" % (label, mins / 60.0))
-
     # Ask A: first action within 24 hours, the decision-review log's first action where a decision was reviewed
     first = {r["flag_id"]: r["first_action_at_utc"] for r in read_csv(target, "flag_decision_reviews_2026-07_to_2026-09.csv")}
     seen = {}
@@ -254,8 +257,8 @@ def main(target):
     # Ask C: 2022 rebuilt from the workbook and the migration log (each question on its site today, in its month)
     q22 = defaultdict(float)
     for o in old:
-        if o["year"] == 2022 and ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"].count(o["mon"]):
-            q22[old_code[o["site"]]] += o["q"]
+        if o["year"] == 2022 and mon.index(o["mon"]) < 9:
+            q22[old_code[o["site"]]] += restated.get((o["site"], 2022, o["mon"]), o["q"])
     for r in read_csv(target, "question_moves_2021-2023.csv"):
         a, b = r["asked_at_utc"], r["moved_at_utc"]
         src, dst = old_code[r["from_site"]], old_code[r["to_site"]]

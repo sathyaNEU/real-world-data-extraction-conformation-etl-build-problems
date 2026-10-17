@@ -338,8 +338,7 @@ def write_xlsx(path, X):
         ("Paid review hours", "The deck's chart, as the operations notes define them: each moderator flag a paid "
                               "moderator handled and each community item routed to the team, at the standard in force "
                               "for its year, in the month the flag was raised or the item entered the inbox (UTC); not "
-                              "the hours worked on the WFM lines. Actual hours: %s." % "; ".join(
-                                  "%s %s" % (YEAR_LABEL[y], fmt(X.actual_year[y])) for y in ACTUAL_YEARS)),
+                              "the hours worked on the WFM lines."),
     ]
     _head(w7, 1, ["Item", "Note"])
     for i, (k, v) in enumerate(notes, 2):
@@ -391,12 +390,6 @@ def chart_png(X):
         ax.plot([xx, xx], [yb, yb - ymax * 0.02], color=INK2, lw=1.0, zorder=5)
     ax.text((i27 - 0.4 + n - 0.6) / 2, yb + ymax * 0.012, "2027: %d FTE of need" % X.request, ha="center",
             va="bottom", fontsize=10.5, color=INK, fontweight="bold", zorder=6)
-    for y in ACTUAL_YEARS:
-        idx = [i for i, (yy, m) in enumerate(MONTHS_ALL) if yy == y and (yy, m) <= (2026, 9)]
-        xm = (idx[0] + idx[-1]) / 2.0
-        ax.text(xm, ymax * 0.56, "%s\n%s hours" % ("Jan to Sep 2026" if y == 2026 else str(y),
-                                                   fmt(X.actual_year[y])),
-                ha="center", va="bottom", fontsize=10, color=INK, zorder=6)
     ax.text(k0 - 0.2, ymax * 0.975, "Actual", fontsize=10, color=INK2, ha="right", va="top")
     ax.text(k0 + 0.2, ymax * 0.975, "Forecast", fontsize=10, color=INK2, ha="left", va="top")
     ax.set_xlim(-0.5, n - 0.5)
@@ -606,12 +599,10 @@ def submission(X):
     s += ["", "### %s" % PPTX, "",
           "7. Slide 1 states the request: %d paid moderator FTE for 2027, %d above the %d-FTE envelope, with each "
           "site's need." % (X.request, X.gap, K.ENVELOPE_2027),
-          "8. Slide 2 charts the network's monthly paid review hours from January 2024 to December 2027, one stacked "
-          "band per site, the forecast from October 2026 shaded, finance's envelope drawn across at %s hours a month "
-          "(%d FTE), and each year's actual hours totalled:" % (fmt(ENV_MONTH), K.ENVELOPE_2027)]
-    for y in ACTUAL_YEARS:
-        s.append("   - %s: %s hours" % (YEAR_LABEL[y], fmt(X.actual_year[y])))
-    s.append("")
+          "8. Slide 2 charts the network's monthly paid review hours, as the operations notes define them, from "
+          "January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, with "
+          "finance's envelope drawn across at %s hours a month (%d FTE); the plotted months are on the workbook's "
+          "Monthly hours sheet." % (fmt(ENV_MONTH), K.ENVELOPE_2027), ""]
     return "\n".join(s)
 
 
@@ -633,7 +624,6 @@ def figures(X):
             "ask_b_hours": {"%s Q%d 2026" % (NAME[s], q): fmt(X.ask_b[(s, q)]) for s in K.SITES for q in (1, 2, 3)},
             "ask_c_pct": {NAME[s]: pct(X.ask_c[s]) for s in K.SITES},
             "chart_envelope_hours_a_month": fmt(ENV_MONTH),
-            "chart_actual_hours": {YEAR_LABEL[y]: fmt(X.actual_year[y]) for y in ACTUAL_YEARS},
         },
     }
 

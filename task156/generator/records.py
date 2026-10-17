@@ -294,8 +294,18 @@ def old_workbook_cells(W, moves):
                 q_wb = (live[(old, y, m)] - mi_ask.get((old, y, m), 0) + mo_ask.get((old, y, m), 0)
                         + cp_mov.get((old, y, m), 0))
                 P["questions"] = q_wb
+                P["reported"] = q_wb
                 P["live"] = live[(old, y, m)]
                 cells[(old, y, m)] = P
+    # the tag-sync fault of 9 May to 22 August 2022: questions posted through the API stayed out of the statistics
+    # job's question counts until the job was rerun on 14 March 2023. The 2022 sheet keeps the counts as first
+    # reported; the rerun's restated counts (the job's own basis, complete) follow the sheet's notes.
+    rt = K.rng("tagsync")
+    for old in OLD_ORDER:
+        for m, frac in TAGSYNC_MONTHS.items():
+            P = cells[(old, 2022, m)]
+            missed = int(rt.binomial(P["questions"], TAGSYNC_API[old] * frac))
+            P["reported"] = P["questions"] - missed
     return cells
 
 
@@ -306,6 +316,10 @@ OLD_HEAD_2021 = ["Site", "Month", "Questions", "Close votes in", "Close votes re
 OLD_HEAD = OLD_HEAD_2021[:12] + ["Suggested edits in", "Suggested edits reviewed", "Suggested edits to moderators"] + \
     OLD_HEAD_2021[12:]
 OLD_ORDER = ["web", "mobile", "data", "databases", "devops", "gamedev", "graphics", "security", "embedded", "scicomp"]
+# the tag-sync fault: each old site's share of questions posted through the API, and the share of each month it ran
+TAGSYNC_API = {"web": 0.019, "mobile": 0.024, "data": 0.034, "databases": 0.027, "devops": 0.036, "gamedev": 0.017,
+               "graphics": 0.021, "security": 0.022, "embedded": 0.018, "scicomp": 0.029}
+TAGSYNC_MONTHS = {5: 0.74, 6: 1.0, 7: 1.0, 8: 0.71}
 
 
 def write_old_workbook(path, cells):
@@ -336,7 +350,7 @@ def write_old_workbook(path, cells):
                     continue
                 P = cells[(old, y, m)]
                 row += 1
-                vals = [OLD_SITE[old], "%s %d" % (K.MON3[m], y), P["questions"]]
+                vals = [OLD_SITE[old], "%s %d" % (K.MON3[m], y), P["reported"]]
                 for x in (["close", "first_post", "low_quality"] + ([] if y == 2021 else ["edit"])):
                     vals += [P["ent"][x], P["rev"][x], P["rout"][x]]
                 vals += [P["R"], P["vol"], P["flags"]]
@@ -357,6 +371,25 @@ def write_old_workbook(path, cells):
             ws.cell(row=row + 3, column=1, value=(
                 "Graphics & Shaders was folded into Game Development on 1 July 2023; from July the Game Development rows "
                 "carry both.")).font = Font(name="Calibri", size=9, italic=True, color="5F6670")
+        if y == 2022:
+            r0 = row + 5
+            ws.cell(row=r0, column=1, value="Questions restated, May to August 2022").font = Font(
+                name="Calibri", size=10, bold=True)
+            ws.cell(row=r0 + 1, column=1, value=(
+                "Statistics job rerun on 14 March 2023 for the tag-sync fault of 9 May to 22 August 2022, which left "
+                "questions posted through the API out of the question counts above. The rerun counts on the same basis "
+                "as the table above, and its questions replace those above for these months; review items, reviewers "
+                "and flags were not affected.")).font = Font(name="Calibri", size=9, italic=True, color="5F6670")
+            mh = ["Site"] + ["%s 2022" % K.MON3[m] for m in TAGSYNC_MONTHS]
+            for c, h in enumerate(mh, start=1):
+                cell = ws.cell(row=r0 + 2, column=c, value=h)
+                cell.font = Font(name="Calibri", size=10, bold=True)
+                cell.fill = head_fill
+            for k, old in enumerate(OLD_ORDER):
+                ws.cell(row=r0 + 3 + k, column=1, value=OLD_SITE[old]).font = Font(name="Calibri", size=10)
+                for c, m in enumerate(TAGSYNC_MONTHS, start=2):
+                    ws.cell(row=r0 + 3 + k, column=c, value=cells[(old, 2022, m)]["questions"]).font = Font(
+                        name="Calibri", size=10)
         ws.column_dimensions["A"].width = 24
         ws.column_dimensions["B"].width = 10
         for c in range(3, len(head) + 1):

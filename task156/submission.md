@@ -72,7 +72,4 @@ Items reach the paid team only when the volunteers fall short, so each site's 20
 ### council_pool_request_2027.pptx
 
 7. Slide 1 states the request: 35 paid moderator FTE for 2027, 9 above the 26-FTE envelope, with each site's need.
-8. Slide 2 charts the network's monthly paid review hours from January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, finance's envelope drawn across at 3,467 hours a month (26 FTE), and each year's actual hours totalled:
-   - 2024: 36,419 hours
-   - 2025: 36,233 hours
-   - January to September 2026: 29,626 hours
+8. Slide 2 charts the network's monthly paid review hours, as the operations notes define them, from January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, with finance's envelope drawn across at 3,467 hours a month (26 FTE); the plotted months are on the workbook's Monthly hours sheet.

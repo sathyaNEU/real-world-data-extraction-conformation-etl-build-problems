@@ -414,27 +414,38 @@ cent to one decimal).
   from the posts warehouse, which counts each question once. Fair: the moderators' migration log (2021 to 2023) lists
   every move with both question ids, both sites and both dates. Round 1 (the judge's FIX_NOW): the old job's counting is
   now filed in the warehouse notes in the data team's voice ("The old statistics job counted a question on every site
-  it was posted to ..."), with the comparison basis, so the device is no longer silent: it is seen and repaired from the
-  migration log. The two readings the judge licensed are asserted out: the old job read as counting each question once
-  on its posting site misses all nine (nearest 0.22 points), and no restatement (S2) misses all nine.
+  it was posted to ..."), with the comparison basis, so C1 is seen and repaired from the migration log. The two readings
+  the judge licensed are asserted out: the old job read as counting each question once on its posting site misses all
+  nine (nearest 0.22 points), and no restatement (S2) misses all nine.
+- Primary C2 (round 2; D2, a superseded cut that looks final): the tag-sync fault of 9 May to 22 August 2022 left
+  questions posted through the API out of the statistics job's counts, so the 2022 sheet's May to August questions as
+  first reported understate every old site, by 1.4 to 3.1 per cent of its questions in those months (the API's share
+  differs by site). The job was rerun on 14 March 2023 and its restated questions sit below the sheet's notes, sites
+  down and months across, labelled as replacing the counts above, on the same basis. Fair: the restated counts with the
+  moves undone are the world's questions to the question (asserted). Silent: the block sits below the notes in another
+  layout, so a parse of the sheet's table drops it; the sheet's subtitle still says final for the year, and its totals
+  row ties to the rows as first reported. Honest: a statistics job's rerun appended to the year's report. It touches no
+  review item, reviewer or flag (the call's columns).
 - Hazards: HC1 Graphics & Shaders folded into Game Development in July 2023 (the register); HC2 the 2022 sheet's
   layout (a title block, old site names, a totals row).
 - Stops (built, asserted): S1 the workbook as it stands, Graphics left out of Game Development (9 miss); S2 the merger
-  applied (9 miss, the device, the nearest 0.14 points off); S3 the copies taken off, each question once but on the
-  site it was asked on (7 of 9 miss); S4 the golden. Applying each move in the month it moved instead of the month asked
-  files the same nine (a convergence, asserted).
+  applied, no restatement on the warehouse's basis (9 miss, the nearest 0.14 points off); S3 the copies taken off, each
+  question once but on the site it was asked on (7 of 9 miss); S4 the careful-but-literal path, every filed rule and the
+  migration log applied but the 2022 questions as first reported (9 miss, the nearest 0.27 points off); S5 the golden.
+  Applying each move in the month it moved instead of the month asked files the same nine (a convergence, asserted).
 - Span: the 2022 workbook sheet, the posts warehouse export, the migration log, the register, the warehouse notes (5
   files); site, month, questions, question id, asked, moved, from, to (8 columns).
 - Realism: a Q&A platform migrates a question by creating it on the new site and closing the original, and a monthly
   report counts posts created per site.
 
 **The chart and slide** (`council_pool_request_2027.pptx`): the request slide and the network's monthly paid review
-hours from January 2024 to December 2027, each site stacked, each year's actual hours totalled, the envelope (26 FTE,
-3,467 hours a month) drawn across. Round 1 (the judge's FIX_NOW): the series is filed once in the operations notes
-(each moderator flag a paid moderator handled and each community item routed to the team, at the standard in force for
-its year, by the month raised or entered, UTC; not WFM hours; months to come on the plan and its outlook), and its
-graded figures are the three actual totals (2024 36,419 hours, 2025 36,233, January to September 2026 29,626), exact
-counts asserted and reproduced by the verifier; the 2027 months sum to the call's own need.
+hours from January 2024 to December 2027, each site stacked, the envelope (26 FTE, 3,467 hours a month) drawn across,
+graded on its content. Round 1 (the judge's FIX_NOW): the series is filed once in the operations notes (each moderator
+flag a paid moderator handled and each community item routed to the team, at the standard in force for its year, by
+the month raised or entered, UTC; not WFM hours; months to come on the plan and its outlook), and the 33 actual months
+are exact counts on it (asserted against the workbook's Monthly hours sheet, where the plotted months sit). Round 2: the
+three yearly totals round 1 graded are out of the prompt and the deliverable answers; they were construction figures
+every top response lands.
 
 **Hazard table.**
 
@@ -454,20 +465,18 @@ control):
 |---|---|---|---|
 | A, July to September by site (27) | duplicates and closed flags out, export time as the first action | A1 the reviewed flags' export time is the review's | miss |
 | B, Q1 to Q3 by site (27) | superseded lines out, old name mapped, by start day on Toronto time, by the export's site | B1 the six moves overwrite the site on every 2026 shift | miss |
-| C, nine sites (9) | the merger applied, the old job's double count undone from the migration log on the warehouse's basis, as the warehouse notes now file it | none since round 1: the old job's counting is filed | hit |
-| Chart, three actual totals (3) | paid review hours as the operations notes define them, from the inbox export and the flag summary | none: a construction figure | hit |
+| C, nine sites (9) | the merger applied, the old job's double count undone from the migration log on the warehouse's basis, the 2022 sheet's questions as first reported | C2 the March 2023 rerun's restatement below the 2022 sheet's notes (C1 is filed since round 1) | miss |
 
-**Mirror sheet.** The mirror stops at R2a (31) or R1 (25 to 28) and meets the same devices; it keeps the chart's
-history parts and stacking, the chart's three actual totals and, since round 1, Ask C's nine figures, the site needs R2a
-shares with the golden (web, mobile, gamedev, embedded, scicomp), and nothing in A or B unless it cracks a device.
+**Mirror sheet.** The mirror stops at R2a (31) or R1 (25 to 28) and meets the same devices; it keeps the chart's parts
+and stacking, the site needs R2a shares with the golden (web, mobile, gamedev, embedded, scicomp), and nothing in A, B
+or C unless it cracks a device.
 
-Mirror leakage: 22 per cent of ask weight (the chart's parts and three actual totals and Ask C's nine figures, about 15
-of 69 ask criteria; no A or B figure).
+Mirror leakage: 4.5 per cent of ask weight (the chart's parts, about 3 of 66 ask criteria; no A, B or C figure).
 
-Pair ceiling: 41.0 (round 1: the cracker at 38 + 7 + about 13 of 55 ask points, Ask C, the chart's totals and parts and
-the request slide; the mirror at about 5 + 7 + 12). Before round 1 it was 31.0; the two FIX_NOW repairs (Ask C's
-counting filed, the chart's totals graded) cost about ten points of pair score, all of it on rows both top responses
-now land. Asks A and B still hold both whole. Rerun from the generated rubric at stage 4.
+Pair ceiling: 31.4 (the cracker at 38 + 7 + about 3.3 of 55 ask points, the chart's parts and the request slide; the
+mirror at about 5 + 7 + 2.5). If the cracker finds the March 2023 restatement it keeps Ask C too, and the pair rises to
+about 35.2. Round 1 had moved it to 41.0 (Ask C's counting filed and the chart's totals graded); round 2's restatement
+device and the totals' removal bring it back. Rerun from the generated rubric at stage 4.
 
 ## Tried and rejected
 
@@ -531,3 +540,10 @@ now land. Asks A and B still hold both whole. Rerun from the generated rubric at
   response), and the prompt asks how far above or below the envelope the request sits.
 - Round 1, the question plan's 2026 actuals sheet stamped as pulled 8 October inside a workbook issued 18 September:
   the sheet now carries January to August 2026 as pulled on 14 September (no figure reads it).
+- Round 2, Ask C held only less careful solvers once round 1 filed the old job's counting (the cracker landed it, precut
+  failed): the 2022 sheet now carries the tag-sync undercount of May to August 2022 as first reported, with the
+  statistics job's March 2023 restatement below its notes (sites down, months across); the careful-but-literal path
+  misses all nine (nearest 0.27 points) and the golden's nine figures are unchanged.
+- Round 2, the chart's three actual yearly totals (round 1): construction figures both top responses land; out of the
+  prompt and the deliverable answers. The chart is graded on its content, its series filed in the operations notes and
+  its months on the workbook's Monthly hours sheet. The pair ceiling is back to 31.4.

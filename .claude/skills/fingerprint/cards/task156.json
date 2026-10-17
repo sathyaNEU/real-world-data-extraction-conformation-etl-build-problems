@@ -79,7 +79,8 @@
     "the September 2026 inbox export pulled twice, a preliminary pull with the last days' routing still open and a revised pull a week later",
     "the moderator tool's flag export pulled in two parts that both carry 15 August",
     "a WFM week re-sent after a payroll query, the original lines kept and marked superseded, and Infrastructure & DevOps still under its old WFM name",
-    "a reviewer roster that keeps the reviewers whose access lapsed in January or February 2024 without a review on the platform (first review blank)"
+    "a reviewer roster that keeps the reviewers whose access lapsed in January or February 2024 without a review on the platform (first review blank)",
+    "a monthly report's question counts first reported short (a tag-sync fault, May to August 2022) and restated by the statistics job's rerun in a block below the year's notes"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

@@ -223,8 +223,8 @@
     {
       "path": "review_queues_monthly_2021-2023.xlsx",
       "format": "xlsx",
-      "bytes": 42206,
-      "rows": 373,
+      "bytes": 42749,
+      "rows": 388,
       "source": "Constructed: Millrind community operations, the old review system's monthly queue workbook, 2021 to 2023",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"

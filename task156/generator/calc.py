@@ -106,14 +106,28 @@ def load(target):
             out[row[0]] = np.array([float(x) for x in row[2:5]])
     D.outlook = out
     # old workbook: reviews and active reviewers by site-month, entered and routed
-    old = {}
+    old, restated = {}, {}
     for name, rows in read_xlsx(p(R.F_OLD)).items():
-        head = None
+        head, done, rhead = None, False, None
         for row in rows:
-            if row and row[0] == "Site":
+            if not row:
+                continue
+            if done:
+                # below the sheet's notes: the statistics job's restated question counts, if the sheet carries any
+                if row[0] == "Site" and len(row) > 1 and isinstance(row[1], str) and row[1].endswith(name):
+                    rhead = list(row)
+                elif rhead and row[0] in OLD_TO_CODE:
+                    for h, v in zip(rhead[1:], row[1:]):
+                        if h and v is not None:
+                            restated[(row[0], int(name), K.MON3.index(str(h)[:3]))] = int(v)
+                continue
+            if row[0] == "All sites":
+                done = True
+                continue
+            if row[0] == "Site":
                 head = list(row)
                 continue
-            if head and row and row[0] in OLD_TO_CODE and row[1]:
+            if head and row[0] in OLD_TO_CODE and row[1]:
                 rec = dict(zip(head, row))
                 y = int(name)
                 m = K.MON3.index(str(rec["Month"])[:3])
@@ -122,6 +136,7 @@ def load(target):
                 old[(row[0], y, m)] = dict(ent=ent_, rout=rout_, R=int(rec["Active reviewers"]),
                                            vol=int(rec["Volunteer reviews"]), q=int(rec["Questions"]))
     D.old = old
+    D.old_restated = restated
     return D
 
 
@@ -344,7 +359,7 @@ def ask_c(target, D=None):
     wb = {s: 0 for s in K.SITES}
     for (old, y, m), c in D.old.items():
         if y == 2022 and m <= 9:
-            wb[OLD_TO_CODE[old]] += c["q"]
+            wb[OLD_TO_CODE[old]] += D.old_restated.get((old, y, m), c["q"])   # the rerun's count where it restated
     adj = {s: 0 for s in K.SITES}
     win = lambda t: t.year == 2022 and t.month <= 9
     for r in _rows(p(R.F_MOVES)):

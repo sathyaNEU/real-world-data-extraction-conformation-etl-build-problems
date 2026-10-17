@@ -121,11 +121,6 @@
       "Embedded & Hardware": "76.0",
       "Scientific Computing": "76.8"
     },
-    "chart_envelope_hours_a_month": "3,467",
-    "chart_actual_hours": {
-      "2024": "36,419",
-      "2025": "36,233",
-      "January to September 2026": "29,626"
-    }
+    "chart_envelope_hours_a_month": "3,467"
   }
 }

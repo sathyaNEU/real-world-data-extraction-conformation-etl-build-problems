@@ -86,6 +86,13 @@ def pdf_text(path):
         return "\n".join(pg.extract_text() or "" for pg in pdf.pages)
 
 
+def open_text(target, f):
+    """Every text cell of a shipped workbook, joined."""
+    wb = openpyxl.load_workbook(os.path.join(target, f), read_only=True)
+    return "\n".join(str(c) for ws in wb.worksheets for row in ws.iter_rows(values_only=True) for c in row
+                     if isinstance(c, str))
+
+
 def need_of(D, **kw):
     """Each site's 2027 need in FTE on a loaded bundle, the golden construction with any of its parameters swapped."""
     pace = kw.pop("pace", None)
@@ -169,9 +176,11 @@ def ask_b_variant(target, site_from="hr", keep_superseded=False, by="start", map
     return out
 
 
-def ask_c_variant(target, X, merger=True, mode="golden"):
-    """2026 questions over 2022's: the workbook as it stands, the copies taken off (each question once but on the site
-    it was asked on), or each move applied in the month it moved."""
+def ask_c_variant(target, X, merger=True, mode="golden", restated=True):
+    """2026 questions over 2022's: the golden's restatement on the warehouse's basis, the workbook as it stands, the
+    copies taken off (each question once but on the site it was asked on), each move applied in the month it moved, or
+    the old job read as counting each question once; each with the 2022 sheet's questions as restated in March 2023 or
+    as first reported."""
     D = X.D
     old_map = dict(C.OLD_TO_CODE)
     if not merger:
@@ -179,14 +188,22 @@ def ask_c_variant(target, X, merger=True, mode="golden"):
     wb = {s: 0 for s in K.SITES}
     for (old, y, m), c in D.old.items():
         if y == 2022 and m <= 9 and old_map.get(old):
-            wb[old_map[old]] += c["q"]
+            wb[old_map[old]] += D.old_restated.get((old, y, m), c["q"]) if restated else c["q"]
     adj = {s: 0 for s in K.SITES}
     for r in rows(target, R.F_MOVES):
         a = dt.datetime.fromisoformat(r["asked_at_utc"])
         b = dt.datetime.fromisoformat(r["moved_at_utc"])
         src, dst = old_map.get(r["from_site"]), old_map.get(r["to_site"])
         win = lambda t: t.year == 2022 and t.month <= 9
-        if mode == "copies_off":
+        if mode == "golden":
+            if win(a):
+                if src:
+                    adj[src] -= 1
+                if dst:
+                    adj[dst] += 1
+            if win(b) and dst:
+                adj[dst] -= 1
+        elif mode == "copies_off":
             if win(b) and dst:
                 adj[dst] -= 1
         elif mode == "by_move_month":
@@ -376,21 +393,19 @@ def run(target, golden, B, X, meta_path):
     ok("REALISM item types route differently where the volunteers keep up (the items nobody picks up differ by type): "
        "%s" % ", ".join("%s %.2f%%" % (t, 100 * v) for t, v in slack_share.items()),
        max(slack_share.values()) / min(slack_share.values()) > 1.8)
-    # the chart's actual months: paid review hours as the operations notes define them
+    # the chart's actual months: paid review hours as the operations notes define them, month by month
     defn = ("each moderator flag a paid moderator handled and each community item routed to the team, at the handle-time "
             "standard in force for its year (close votes at 5.0 minutes to the end of 2026, 2.0 from 2027), in the month "
             "the flag was raised or the item entered the inbox, on UTC.")
-    tot_y = {}
-    for y in DL.ACTUAL_YEARS:
-        idx = [i for i, (yy, m) in enumerate(C.HIST_MONTHS) if yy == y]
-        mins = sum(D.flags[s][idx].sum() * K.STD_2026["flag"] + sum(D.rout[s][t][idx].sum() * K.STD_2026[t]
-                                                                       for t in K.ITEMS) for s in K.SITES)
-        tot_y[y] = mins / 60.0
-    ok("CHART the operations notes define paid review hours once, and the chart's actual years total %s hours, each "
-       "an exact count off any half hour" % ", ".join("%s %s" % (DL.YEAR_LABEL[y], DL.fmt(v)) for y, v in tot_y.items()),
-       defn in flat and all(F["answers"]["chart_actual_hours"][DL.YEAR_LABEL[y]] == DL.fmt(v) and
-                            abs((v % 1) - 0.5) > 1e-6 for y, v in tot_y.items()) and
-       "each year's actual hours totalled" in ptxt)
+    wbm = openpyxl.load_workbook(os.path.join(golden, DL.XLSX), data_only=True)["Monthly hours"]
+    month_ok = True
+    for i in range(len(C.HIST_MONTHS)):
+        mins = sum(D.flags[s][i] * K.STD_2026["flag"] + sum(D.rout[s][t][i] * K.STD_2026[t] for t in K.ITEMS)
+                   for s in K.SITES)
+        month_ok &= wbm.cell(row=5 + i, column=12).value == int(K.round_half_up(mins / 60.0))
+    ok("CHART the operations notes define paid review hours once, and the chart's 33 actual months are those hours "
+       "exactly (the workbook's Monthly hours sheet, month by month); the prompt grades the chart on its content",
+       defn in flat and month_ok and "each site stacked and the envelope drawn across" in ptxt)
     i27 = [K.month_index(2027, m) for m in range(1, 13)]
     real = {s: WD.paid_hours_month(W, s, K.STD_2027)[i27].sum() / K.FTE_HOURS for s in K.SITES}
     ok("CALL the forecast is the world's own 2027: the generator's realised 2027 hours give the same nine site needs",
@@ -826,7 +841,8 @@ def run(target, golden, B, X, meta_path):
     c3 = ask_c_variant(target, X, mode="copies_off")
     c4 = ask_c_variant(target, X, mode="by_move_month")
     ok("ASK C S1 the workbook as it stands, Graphics left out, misses all nine", not miss(c1, Cq, K.SITES, 1))
-    ok("ASK C S2 the cracker (the merger applied, the workbook's 2022 against the warehouse's 2026) misses all nine",
+    ok("ASK C S2 the workbook's 2022 used as it stands on the old job's basis (the merger applied, no restatement on "
+       "the warehouse's basis) misses all nine",
        not miss(c2, Cq, K.SITES, 1), "min gap %.2f" % min(abs(c2[s] - Cq[s]) for s in K.SITES))
     h3 = miss(c3, Cq, K.SITES, 1)
     h4 = miss(c4, Cq, K.SITES, 1)
@@ -855,6 +871,26 @@ def run(target, golden, B, X, meta_path):
     ok("ASK C the reading with no restatement (the workbook's 2022 as reported, S2) is ruled out by the warehouse "
        "notes: comparisons with 2021 to 2023 are made on the warehouse's basis",
        "Comparisons with 2021 to 2023 are made on the warehouse's basis." in flat and not miss(c2, Cq, K.SITES, 1))
+    cg = ask_c_variant(target, X, mode="golden")
+    ok("ASK C the golden's construction (restated 2022 sheet, the old job's double count undone on the warehouse's "
+       "basis, the merger) reproduces the nine figures exactly", all(abs(cg[s] - Cq[s]) < 1e-9 for s in K.SITES))
+    cl = ask_c_variant(target, X, mode="golden", restated=False)
+    hl = miss(cl, Cq, K.SITES, 1)
+    ok("ASK C C2 device: the careful-but-literal path (the counting rule, the comparison basis, the merger and the "
+       "migration log all applied, the 2022 sheet's questions as first reported) misses %d of 9 (nearest %.2f points)"
+       % (9 - len(hl), min(abs(cl[s] - Cq[s]) for s in K.SITES)), len(hl) == 0 and
+       min(abs(cl[s] - Cq[s]) for s in K.SITES) >= 0.15, str(hl))
+    shares = {}
+    for (old, y, m), v in X.D.old_restated.items():
+        shares.setdefault(old, [0, 0])
+        shares[old][0] += v - X.D.old[(old, y, m)]["q"]
+        shares[old][1] += v
+    sh = {o: a / b for o, (a, b) in shares.items()}
+    ok("ASK C C2 fair and honest: the March 2023 rerun restates May to August 2022 for every old site, by %.1f to %.1f "
+       "per cent of their questions (the API's share differs by site), on the job's own basis, and touches no review "
+       "item, reviewer or flag" % (100 * min(sh.values()), 100 * max(sh.values())),
+       len(sh) == 10 and max(sh.values()) / min(sh.values()) > 1.6 and all(v > 0 for v in sh.values()) and
+       "its questions replace those above for these months" in open_text(target, R.F_OLD))
 
     # ------------------------------------------------------------------ realism sweep
     by_site = {}
