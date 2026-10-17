@@ -172,11 +172,11 @@ def double_coding(acts, reps, rng):
             taken.add(r["ident"])
             a = r["action"]
             coder = rng.choice(W.CODERS)
-            shift = rng.randrange(0, 21) - 14
-            day = round_day + dt.timedelta(days=shift)
+            # the round's date is the day the desk signed it off; the coders worked the batch in
+            # the days before it, and never before the day after the action
+            day = round_day - dt.timedelta(days=rng.randrange(0, 9))
             day = max(day, d(a["day"]) + dt.timedelta(days=1))
-            rows.append(dict(report=r, round_day=round_day, coder=coder,
-                             coded_day=min(day, W.EXTRACT),
+            rows.append(dict(report=r, round_day=round_day, coder=coder, coded_day=day,
                              machine=a["cls_code"], hand=a["code"]))
     rows.sort(key=lambda x: (x["round_day"], x["report"]["ident"]))
     return rows

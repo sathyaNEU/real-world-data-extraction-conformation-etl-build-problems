@@ -89,6 +89,16 @@ def design_ratios(units):
         design[code] = {qs[i]: psi * (1 + dev[i]) for i in range(len(qs))}
     design = level_network(design, units)
 
+    for _ in range(4):
+        write_placements(design, units)
+        level_comparisons(design, units)
+    return design
+
+
+def write_placements(design, units):
+    """Write each placement on top of the levelled record: the two quarters the placement was taken on sit
+    at the unit's own standing, the assessment quarter at that standing less the programme's effect, and the
+    quarters after it where the unit holds the gain."""
     by_code = {u[0]: u for u in units}
     for k, code in sorted(W.EMBEDS.items()):
         qs = quarters_for(by_code[code])
@@ -96,7 +106,6 @@ def design_ratios(units):
         pre = qs[:pos]
         quiet = [q for q in pre if q not in (k - 1, k - 2)]
         standing = sum(design[code][q] for q in quiet) / len(quiet)
-        # the two quarters the placement was taken on sit at the unit's own standing
         for q in (k - 2, k - 1):
             if q in design[code]:
                 design[code][q] = standing
@@ -105,6 +114,46 @@ def design_ratios(units):
         for j, keep in enumerate(W.EMBED_RETAIN):
             if pos + 1 + j < len(qs):
                 design[code][qs[pos + 1 + j]] = 1 + keep * (standing - 1) + noise[1 + j] * (standing - 1)
+    return design
+
+
+
+def level_comparisons(design, units):
+    """Hold the rest of the network still across each placement's own two quarters.
+
+    A placement's fall has to read the same against the unit's own record and against what every other unit
+    did over the same two quarters, so for each placement quarter the units that are not hosting a team are
+    shifted by one common amount that takes their mean movement between the quarter before and the quarter
+    of the placement to zero. The shift is a few thousandths of a ratio and leaves every unit's own record
+    where it was to three decimals.
+    """
+    by_code = {u[0]: u for u in units}
+    treated = set()
+    for k, code in W.EMBEDS.items():
+        qs = quarters_for(by_code[code])
+        pos = qs.index(k)
+        treated.update((code, qs[i]) for i in range(pos, min(pos + 1 + len(W.EMBED_RETAIN), len(qs))))
+    acute = [u[0] for u in units if u[4] == "acute"]
+    for _ in range(3):
+        for k, placed in sorted(W.EMBEDS.items()):
+            comp = [c for c in acute if c != placed and k in design[c] and (k - 1) in design[c]
+                    and (c, k) not in treated and (c, k - 1) not in treated]
+            if not comp:
+                continue
+            w = {c: by_code[c][6] * unit_rate(by_code[c][3]) for c in comp}
+            d = {c: design[c][k - 1] - design[c][k] for c in comp}
+            n = len(comp)
+            sw = sum(w[c] for c in comp)
+            sww = sum(w[c] * w[c] for c in comp)
+            sd = sum(d[c] for c in comp)
+            swd = sum(w[c] * d[c] for c in comp)
+            det = n * sww - sw * sw
+            if abs(det) < 1e-12:
+                continue
+            a = (sd * sww - sw * swd) / det
+            b = (n * swd - sw * sd) / det
+            for c in comp:
+                design[c][k] += a + b * w[c]
     return design
 
 

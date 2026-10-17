@@ -1,8 +1,8 @@
 {
  "actions_in_period": 4790,
  "actions_with_a_filer_report": 433,
- "call_actions": 224,
- "classifier_false_mark_rate": 0.0133,
+ "call_actions": 234,
+ "classifier_false_mark_rate": 0.0121,
  "classifier_recall": 0.4917,
  "fortnight_rows": 13,
  "fortnights": {
@@ -144,7 +144,7 @@
   "6.1",
   "6.2"
  ],
- "raw_total": 223.64,
+ "raw_total": 234.13,
  "route_rows": 3,
  "routes": {
   "IMP": {
@@ -154,26 +154,26 @@
   },
   "LIN": {
    "median_minutes": 96.0,
-   "received": 964,
-   "unplaceable": 89
+   "received": 967,
+   "unplaceable": 92
   },
   "PAR": {
    "median_minutes": 656.0,
-   "received": 1301,
-   "unplaceable": 63
+   "received": 1298,
+   "unplaceable": 60
   }
  },
  "rung0_actions": 178,
- "rung1_actions": 123,
+ "rung1_actions": 126,
  "rung2_actions": 336,
  "sample_fn": 61,
- "sample_fp": 33,
+ "sample_fp": 30,
  "sample_rows": 2600,
- "sample_tn": 2447,
+ "sample_tn": 2450,
  "sample_tp": 59,
- "variant_by_round": 225.15,
- "variant_by_theme": 230.93,
- "variant_continuity": 221.91,
- "variant_matrix_inverse": 223.64,
- "variant_press_only_sample": 223.64
+ "variant_by_round": 235.06,
+ "variant_by_theme": 235.92,
+ "variant_continuity": 232.4,
+ "variant_matrix_inverse": 234.13,
+ "variant_press_only_sample": 234.13
 }

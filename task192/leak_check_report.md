@@ -12,7 +12,7 @@ Stump terms swept: asserted, sample, classifier, record, carries, quoted, decisi
 
 ## 9 dates after the setting (REVIEW 2)
 - **REVIEW** `manifesto_extracao.csv`: 1 ISO dates after 2026-11-06, e.g. 2026-11-25
-- **REVIEW** `notificacoes_reuniao_publica.csv`: 93 ISO dates after 2026-11-06, e.g. 2026-11-07, 2026-11-08, 2026-11-09, 2026-11-10, 2026-11-11
+- **REVIEW** `notificacoes_reuniao_publica.csv`: 95 ISO dates after 2026-11-06, e.g. 2026-11-07, 2026-11-08, 2026-11-09, 2026-11-10, 2026-11-11
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

@@ -316,6 +316,32 @@ by a quoted sentence or asserted to give the same call.
   disagreement in the ask layer without naming a level.
 - No control, published figure or corpus states a confrontational count, a rate or an error rate.
 
+## Leak sweep answers
+
+`leak.py task192 --asof 2026-11-06` returns REVIEW on four lines and no LEAK. Each is answered here.
+
+- **`boletins_anteriores_2026.pdf`, the integers 117 and 119.** The earlier bulletins print one row per
+  month from May to September with the actions recorded, the municipalities touched and the localities
+  touched (552 / 117 / 333 for May, 560 / 119 / 341 for June, and so on). The collision is on a
+  municipality count in a different cut: the sweep matches the integer, and a two-digit count of
+  municipalities is bounded by the 119 municipalities the gazetteer carries, so the monthly figure and a
+  fortnight's figure land on the same number without either being the other. No monthly row is graded, no
+  fortnight row is recoverable from a monthly one, and the file states nothing about confrontational
+  actions: the note under its table says the episode indicators belong to the period bulletin and go to
+  the trustees in November. Under every rung the file ties.
+- **`notificacoes_reuniao_publica.csv`, 95 dates after 6 November.** The column is `data_prevista`, the
+  day a gathering is *planned* for, on notifications lodged with the councils before the extract. A
+  notification for 7 to 25 November filed in October is exactly what the councils hold on 6 November, and
+  a register of planned gatherings with nothing beyond the extract date would be the unrealistic artifact.
+  The file is a declared distractor: a notification is a declared intention, not an action the register
+  recorded, so it enters no graded figure.
+- **`manifesto_extracao.csv`, the date 2026-11-25.** That is the `ultimo_registo` cell of the
+  notifications row, the latest `data_prevista` in the file it describes. The manifest states each file's
+  rows and date range, so the cell is derived from the distractor above and carries nothing further.
+- **Container metadata, no writer signature.** The two goldens and the pack's documents are written by
+  reportlab and openpyxl through `postprocess`, which strips the producer, the creation trail and the
+  OOXML core properties, so the audit finds no signature to report. That is the intended state.
+
 ## Ask sheet
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
