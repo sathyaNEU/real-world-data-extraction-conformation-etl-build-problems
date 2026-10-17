@@ -20,15 +20,19 @@ ASSURANCE = "Emma Gullery"                              # the bank's assurance l
 #          amount density runs at, customers, structured deposits planted in the reporting
 #          year, planted in the prior year
 SEGMENTS = [
-    ("GRO", "Grocery and convenience", 5900, 9600.0, 1163, 60, 42),
-    ("HOS", "Hospitality", 4700, 8200.0, 2247, 60, 42),
-    ("TRA", "Transport and courier", 2250, 11500.0, 857, 90, 63),
-    ("CON", "Trades and construction", 3100, 10400.0, 1538, 71, 50),
-    ("RUR", "Rural supply and horticulture", 2400, 10900.0, 971, 30, 21),
-    ("FUE", "Fuel and automotive", 4100, 9100.0, 418, 31, 22),
-    ("PER", "Personal services", 2850, 7600.0, 1764, 30, 21),
-    ("CLB", "Clubs and community", 2700, 8800.0, 643, 30, 21),
+    ("GRO", "Grocery and convenience", 15000, 9600.0, 1163, 94, 66),
+    ("HOS", "Hospitality", 4700, 8200.0, 2247, 35, 24),
+    ("TRA", "Transport and courier", 10250, 11500.0, 857, 172, 120),
+    ("CON", "Trades and construction", 3100, 10400.0, 1538, 50, 35),
+    ("RUR", "Rural supply and horticulture", 2400, 10900.0, 971, 0, 0),
+    ("FUE", "Fuel and automotive", 4100, 9100.0, 418, 66, 46),
+    ("PER", "Personal services", 3950, 7600.0, 1764, 50, 35),
+    ("CLB", "Clubs and community", 2700, 8800.0, 643, 6, 4),
 ]
+
+# the figure is stated to the nearest fifty deposits per segment: the granularity the record's own
+# scatter supports, measured over the judge's candidate set
+GRAIN = 50
 
 SEG_NAME = {k: n for k, n, *_ in SEGMENTS}
 SEG_KEYS = [k for k, *_ in SEGMENTS]

@@ -2,20 +2,20 @@
  "call": "the October slot covers NSL04, NSL11, NSL07, NSL02, NSL13",
  "cap": 5,
  "excluded_minutes": {
-  "NSL01": 620,
-  "NSL02": 620,
-  "NSL03": 290,
-  "NSL04": 620,
-  "NSL05": 620,
-  "NSL06": 280,
-  "NSL07": 280,
-  "NSL08": 280,
-  "NSL09": 670,
-  "NSL10": 670,
-  "NSL11": 960,
-  "NSL12": 960,
-  "NSL13": 570,
-  "NSL14": 900
+  "NSL01": 740,
+  "NSL02": 740,
+  "NSL03": 370,
+  "NSL04": 740,
+  "NSL05": 740,
+  "NSL06": 300,
+  "NSL07": 300,
+  "NSL08": 300,
+  "NSL09": 560,
+  "NSL10": 560,
+  "NSL11": 900,
+  "NSL12": 900,
+  "NSL13": 640,
+  "NSL14": 1010
  },
  "highest_band_hz": {
   "NSL01": 100,
@@ -63,20 +63,20 @@
   "6.1"
  ],
  "residual_db": {
-  "NSL01": 31.1,
-  "NSL02": 32.2,
+  "NSL01": 31.0,
+  "NSL02": 32.4,
   "NSL03": 37.6,
   "NSL04": 39.3,
-  "NSL05": 33.3,
+  "NSL05": 33.4,
   "NSL06": 40.9,
   "NSL07": 35.9,
   "NSL08": 32.9,
   "NSL09": 29.3,
-  "NSL10": 31.5,
-  "NSL11": 36.3,
+  "NSL10": 31.6,
+  "NSL11": 36.2,
   "NSL12": 36.4,
-  "NSL13": 32.3,
-  "NSL14": 32.5
+  "NSL13": 32.4,
+  "NSL14": 32.6
  },
  "rungs": {
   "rung0_complaints": {
@@ -91,7 +91,7 @@
    ]
   },
   "rung1_total": {
-   "margin_db": 0.388,
+   "margin_db": 0.377,
    "next": "NSL13",
    "slate": [
     "NSL02",
@@ -102,7 +102,7 @@
    ]
   },
   "rung2_la90": {
-   "margin_db": 1.348,
+   "margin_db": 1.341,
    "next": "NSL07",
    "slate": [
     "NSL03",
@@ -113,18 +113,18 @@
    ]
   },
   "rung2_p10": {
-   "margin_db": 0.117,
-   "next": "NSL02",
+   "margin_db": 0.243,
+   "next": "NSL11",
    "slate": [
+    "NSL02",
     "NSL03",
     "NSL04",
     "NSL06",
-    "NSL07",
-    "NSL11"
+    "NSL07"
    ]
   },
   "rung2b_min15": {
-   "margin_db": 0.128,
+   "margin_db": 0.145,
    "next": "NSL02",
    "slate": [
     "NSL03",
@@ -135,7 +135,7 @@
    ]
   },
   "rung2c_arith": {
-   "margin_db": 1.274,
+   "margin_db": 1.24,
    "next": "NSL07",
    "slate": [
     "NSL03",
@@ -230,50 +230,50 @@
   "NSL14": "none"
  },
  "valid_minutes": {
-  "NSL01": 6580,
-  "NSL02": 6580,
-  "NSL03": 6910,
-  "NSL04": 6580,
-  "NSL05": 6580,
-  "NSL06": 6920,
-  "NSL07": 6920,
-  "NSL08": 6920,
-  "NSL09": 6530,
-  "NSL10": 6530,
-  "NSL11": 6240,
-  "NSL12": 6240,
-  "NSL13": 6630,
-  "NSL14": 6300
+  "NSL01": 6460,
+  "NSL02": 6460,
+  "NSL03": 6830,
+  "NSL04": 6460,
+  "NSL05": 6460,
+  "NSL06": 6900,
+  "NSL07": 6900,
+  "NSL08": 6900,
+  "NSL09": 6640,
+  "NSL10": 6640,
+  "NSL11": 6300,
+  "NSL12": 6300,
+  "NSL13": 6560,
+  "NSL14": 6190
  },
  "weekly_plant": {
   "0": {
-   "biogas_m3": 35155,
-   "blower_air_knm3": 684,
+   "biogas_m3": 35389,
+   "blower_air_knm3": 689,
    "centrifuge_runs": 6
   },
   "1": {
-   "biogas_m3": 35125,
-   "blower_air_knm3": 683,
+   "biogas_m3": 34821,
+   "blower_air_knm3": 678,
    "centrifuge_runs": 6
   },
   "2": {
-   "biogas_m3": 35195,
-   "blower_air_knm3": 684,
+   "biogas_m3": 34934,
+   "blower_air_knm3": 679,
    "centrifuge_runs": 6
   },
   "3": {
-   "biogas_m3": 35186,
-   "blower_air_knm3": 602,
+   "biogas_m3": 36030,
+   "blower_air_knm3": 617,
    "centrifuge_runs": 5
   },
   "4": {
-   "biogas_m3": 35178,
-   "blower_air_knm3": 684,
+   "biogas_m3": 34376,
+   "blower_air_knm3": 669,
    "centrifuge_runs": 6
   },
   "5": {
-   "biogas_m3": 35122,
-   "blower_air_knm3": 684,
+   "biogas_m3": 35229,
+   "blower_air_knm3": 686,
    "centrifuge_runs": 6
   }
  }

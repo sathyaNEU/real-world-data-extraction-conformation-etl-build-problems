@@ -118,13 +118,13 @@ ANNEX = {
 # (product, marker) -> (probability the product brings the patient to the marker, mean onset lag)
 # Solved against the design note's target shares; frozen so the build needs no search.
 EFFECTS = {
-    ("P01", "M4"): (0.379256, 48.0),
-    ("P02", "M2"): (0.330292, 32.0),
-    ("P03", "M3"): (0.274811, 45.0),
-    ("P04", "M5"): (0.289278, 52.0),
-    ("P06", "M1"): (0.426274, 24.0),
-    ("P07", "M6"): (0.287018, 38.0),
-    ("P09", "M7"): (0.475877, 41.0),
+    ("P01", "M4"): (0.447522, 33.63),
+    ("P02", "M2"): (0.389745, 23.04),
+    ("P03", "M3"): (0.274811, 45.00),
+    ("P04", "M5"): (0.289278, 52.00),
+    ("P06", "M1"): (0.503003, 17.28),
+    ("P07", "M6"): (0.389483, 16.96),
+    ("P09", "M7"): (0.640150, 29.52),
 }
 # the defined daily dose in milligrams, as the ATC index assigns it. A package's defined daily
 # doses are its pack size times its strength divided by this. D07AC carries no defined daily dose.

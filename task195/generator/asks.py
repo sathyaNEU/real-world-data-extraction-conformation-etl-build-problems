@@ -144,7 +144,7 @@ def history(target):
         r = pool[i]
         if r.get("stale"):
             continue
-        if trng.random() < 0.55:
+        if trng.random() < 0.72:
             shift = (-1 if trng.random() < 0.5 else 1) * trng.randint(3, 19)
             was = r["released"] - dt.timedelta(days=shift)
             while was.weekday() > 4 or was in W.HOLIDAYS:
@@ -156,11 +156,18 @@ def history(target):
                 r["stale_released"] = was
                 r["stale"] = True
         else:
-            amend.append([r["sid"], "hetx_call", "CLEAR" if r["flag"] else "FLAG",
-                          "FLAG" if r["flag"] else "CLEAR",
-                          (r["released"] + dt.timedelta(days=trng.randint(6, 40))).isoformat(),
-                          "call corrected on review of the plate"])
-            r["stale_call"] = not r["flag"]
+            # the desk amends the column that holds the call of record for that specimen: the review
+            # outcome where a bioinformatician reviewed it, the screen's own call where none did
+            when = (r["released"] + dt.timedelta(days=trng.randint(6, 40))).isoformat()
+            why = "flag raised on plate review" if r["flag"] else "flag cleared on plate review"
+            if r["reviewed"]:
+                amend.append([r["sid"], "review_outcome", "CLEARED" if r["flag"] else "FLAGGED",
+                              "FLAGGED" if r["flag"] else "CLEARED", when, why])
+                r["stale_review"] = not r["flag"]
+            else:
+                amend.append([r["sid"], "hetx_call", "CLEAR" if r["flag"] else "FLAG",
+                              "FLAG" if r["flag"] else "CLEAR", when, why])
+                r["stale_auto"] = not r["flag"]
             r["stale"] = True
     amend.sort(key=lambda x: (x[4], x[0]))
 
@@ -168,10 +175,11 @@ def history(target):
     for r in rows:
         # heterozygosity carries a plate effect and a right tail, and the flagged specimens sit in it
         plate_shift = (int(r["plate"][-2:]) % 11 - 5) * 0.042
-        stored_flag = r["stale_call"] if "stale_call" in r else r["flag"]
-        stored_auto = r["stale_call"] if "stale_call" in r else r["auto"]
+        stored_auto = r["stale_auto"] if "stale_auto" in r else r["auto"]
+        stored_flag = r["stale_review"] if "stale_review" in r else (
+            r["stale_auto"] if "stale_auto" in r else r["flag"])
         stored_rel = r.get("stale_released", r["released"])
-        if stored_flag:
+        if stored_auto:
             het = 36.9 + abs(trng.gauss(0.0, 1.25)) + plate_shift
         else:
             het = trng.gauss(33.86, 0.93) + plate_shift

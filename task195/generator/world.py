@@ -91,7 +91,7 @@ FILES = {
     "config": "rerun_pipeline_config_v34.json",
     "manifest": "export_manifest.csv",
     "runlog": "lims_run_log_2027-03_2027-05.csv",
-    "amendments": "release_amendments_2026-03_2027-04.csv",
+    "amendments": "release_amendments_2026-03_2027-05.csv",
     "costs": "assay_unit_costs_2027.csv",
     "platform": "extraction_platform_validation_2025.pdf",
     "plates": "plate_layout_map_2027q2.csv",

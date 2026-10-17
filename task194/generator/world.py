@@ -144,7 +144,7 @@ UNITS = [
     ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.307, 430, 506, 1.161, "worst_level", "eligible"),
     ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.081, 620, 735, 1.462, "hot1", "eligible"),
     ("41420", "General Medicine", "H3", "gen_med", "acute", 1.245, 980, 1162, 1.112, "mid", "eligible"),
-    ("41430", "Renal Medicine", "H3", "renal", "acute", 1.042, 560, 652, 1.119, "mid", "eligible"),
+    ("41430", "Renal Medicine", "H3", "renal", "acute", 1.050, 560, 652, 1.119, "mid", "eligible"),
     ("41510", "General Medicine", "H4", "gen_med", "acute", 1.162, 390, 466, 1.071, "merged", "eligible"),
     ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.124, 500, 779, 1.121, "rising", "eligible"),
     # units the programme has already been placed with inside the twelve closed quarters
@@ -229,6 +229,14 @@ GROUP_MIX = {
     "surgical": {"G1": 0.21, "G2": 0.07, "G3": 0.05, "G4": 0.12, "G5": 0.08, "G6": 0.14, "G7": 0.11, "G8": 0.22},
     "medical": {"G1": 0.18, "G2": 0.16, "G3": 0.13, "G4": 0.13, "G5": 0.19, "G6": 0.17, "G7": 0.04, "G8": 0.00},
     "ortho": {"G1": 0.17, "G2": 0.11, "G3": 0.16, "G4": 0.10, "G5": 0.12, "G6": 0.09, "G7": 0.13, "G8": 0.12},
+}
+# where each unit type's other quarterly indicators sit: deaths in hospital per 1,000 separations and
+# unplanned readmissions within 28 days per 100, on the dashboard beside the complication indicator
+OTHER_INDICATORS = {
+    "aged": (26.0, 9.0, 13.2, 3.0), "gen_med": (17.5, 6.0, 11.8, 2.6), "resp": (14.0, 5.0, 12.6, 2.4),
+    "renal": (11.0, 4.0, 14.1, 2.8), "neuro": (19.0, 7.5, 9.4, 2.2), "subacute": (6.0, 3.0, 7.2, 1.8),
+    "ortho": (2.1, 1.2, 5.6, 1.5), "gen_surg": (5.4, 2.4, 6.9, 1.7),
+    "colorectal": (6.8, 2.8, 8.3, 2.0), "vasc": (12.5, 4.5, 9.8, 2.5),
 }
 MIX_FAMILY = {"gen_med": "medical", "resp": "medical", "renal": "medical", "aged": "medical",
               "neuro": "medical", "subacute": "medical", "gen_surg": "surgical", "vasc": "surgical",

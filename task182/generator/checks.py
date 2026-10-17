@@ -116,8 +116,8 @@ def run(target, g):
     naive = {c: r[c]["rung2_p10"] for c in W.CODES}
     sl_naive, m_naive, _ = AN.slate(naive)
     A(tuple(sl_naive) != gold, "R3a the easy route files a different slate")
-    A(tuple(sl_naive) == ("NSL03", "NSL04", "NSL06", "NSL07", "NSL11"),
-      "R3a the tenth-percentile background files NSL03, NSL04, NSL06, NSL07, NSL11: got %s" % (sl_naive,))
+    A(len(set(sl_naive) & set(gold)) <= 3,
+      "R3a the tenth-percentile background keeps at most three of the five: %s" % (sl_naive,))
     la90 = tuple(AN.slate({c: r[c]["rung2_la90"] for c in W.CODES})[0])
     A(la90 == ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),
       "R3a the default path (the minute LA90 background) files NSL03, NSL04, NSL06, NSL11, NSL12: %s"
@@ -140,18 +140,22 @@ def run(target, g):
       "R3c nothing in the log points at the stops as a measurement")
 
     # ----------------------------------------------------------------------------- the ladder, by name
+    # the slates the ladder stands on are asserted by name; the thin-margin variants of the same wrong
+    # family are asserted structurally, since either side of their own boundary is a wrong slate
     expect = {
         "specific": gold,
         "rung1_total": ("NSL02", "NSL04", "NSL06", "NSL07", "NSL11"),
-        "rung2_p10": ("NSL03", "NSL04", "NSL06", "NSL07", "NSL11"),
         "rung2_la90": ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),
-        "rung2b_min15": ("NSL03", "NSL04", "NSL06", "NSL07", "NSL11"),
         "rung2c_arith": ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),
         "rung0_complaints": ("NSL01", "NSL03", "NSL06", "NSL09", "NSL12"),
     }
     for key, want in expect.items():
         got = tuple(g["slates"][key][0])
         A(got == want, "ladder %s is %s: got %s" % (key, want, got))
+    for key in ("rung2_p10", "rung2b_min15"):
+        got = tuple(g["slates"][key][0])
+        A(got != gold, "ladder %s differs from the golden slate" % key)
+        A(len(set(got) & set(gold)) <= 3, "ladder %s keeps at most three of the five" % key)
     A(len({tuple(v[0]) for v in g["slates"].values()}) >= 4, "the ladder names four or more slates")
     A(g["slates"]["specific"][1] >= 0.7, "the golden slate's margin is %.2f dB" % g["slates"]["specific"][1])
     A(g["slates"]["specific"][2] == g["sixth"], "the sixth dwelling is %s" % g["sixth"])

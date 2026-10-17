@@ -269,13 +269,13 @@ def run(target, g, state):
        "SF13 clause 3.2 defines the ratio as observed over expected for the period")
     ok(max(abs(alt_ex[d["unit"]] / d["excess"] - 1) for d in units) < 0.10,
        "SF13 the two readings of the standing sit within 10 per cent")
-    for d in (answer, runner):
+    for d in units:
         alt_av = share * (mean_ratio[d["unit"]] - 1) * d["expected_plan"]
         ok(round(alt_av) == round(d["avoided"]),
            "SF13 a mean of quarterly ratios gives %s the same avoided count" % d["unit"])
     # ---------- the register, read ten ways ----------
-    # the two avoided counts are the only graded figures the register's reading touches, and every reading
-    # a careful analyst could take of the seven closed placements lands on the same two integers
+    # the twelve avoided counts are the figures the register's reading touches, and every reading a
+    # careful analyst could take of the seven closed placements lands on the same twelve integers
     rec_rows, readings = G.share_readings(b)
     ok(len(rec_rows) == 7, "the register prices seven closed placements (%d)" % len(rec_rows))
     ok(len(readings) == 10, "ten readings of the register (%d)" % len(readings))
@@ -284,7 +284,7 @@ def run(target, g, state):
        % (readings["pooled sums"], share))
     lo_r, hi_r = min(readings.values()), max(readings.values())
     for label, v in readings.items():
-        for d in (answer, runner):
+        for d in units:
             ok(round(v * d["excess"]) == round(d["avoided"]),
                "%s gives %s %d avoided (%.4f, share %.6f)"
                % (label, d["unit"], round(d["avoided"]), v * d["excess"], v))
@@ -292,19 +292,15 @@ def run(target, g, state):
            "%s keeps the gap at %d" % (label, g["gap"]))
     ok(hi_r / lo_r - 1 < 0.035, "the register's readings sit within 3.5 per cent (%.5f to %.5f, %.2f%%)"
        % (lo_r, hi_r, (hi_r / lo_r - 1) * 100))
-    for d in (answer, runner):
+    for d in units:
         n_av = round(d["avoided"])
         band = max(abs(lo_r * d["excess"] - n_av), abs(hi_r * d["excess"] - n_av))
         ok(0.5 - band >= 0.12, "%s's avoided count is %.3f inside its bin under every reading"
            % (d["unit"], 0.5 - band))
     # every graded figure sits inside its rounding bin
-    worst = 1.0
-    for d in units:
-        worst = min(worst, 0.05 - abs(d["excess"] * 10 - round(d["excess"] * 10)) / 10.0)
-    ok(worst >= 0.016, "every unit's excess is at least 0.016 of a complication inside its one decimal "
-       "bin (%.4f)" % worst)
-    ok(all(abs(d["excess"] * 10 - round(d["excess"] * 10)) / 10.0 >= 0.004 for d in units),
-       "no unit's excess sits on the tenth it is reported at")
+    worst = min(0.5 - abs(d["avoided"] - round(d["avoided"])) for d in units)
+    ok(worst >= 0.12, "every avoided count is at least 0.12 of a complication inside its bin (%.3f)"
+       % worst)
     stated = [("the pick's standardised ratio", answer["ratio"], 2),
               ("the pick's expected complications", answer["expected_plan"], 0),
               ("the pick's excess", answer["excess"], 1),

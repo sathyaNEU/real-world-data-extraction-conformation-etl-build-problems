@@ -151,7 +151,7 @@ def run(target, figures_path):
         same("%s results issued" % ref, w["rows"], fig["panel_weeks"][ref]["results_issued"])
 
     amended = {}
-    for a in table(os.path.join(target, "release_amendments_2026-03_2027-04.csv")):
+    for a in table(os.path.join(target, "release_amendments_2026-03_2027-05.csv")):
         amended[(a["specimen_id"], a["field"])] = a["value_after"]
     months, rel_seen, flag_seen = {}, set(), set()
     with open(os.path.join(target, "qc_screen_history_2026-02-15_2027-02-28.csv"), encoding="utf-8") as fh:
@@ -170,10 +170,8 @@ def run(target, figures_path):
             if key not in rel_seen:
                 rel_seen.add(key)
                 d[0] += 1
-            call = (f[ix["review_outcome"]] if f[ix["call_source"]] == "REVIEWED"
-                    else f[ix["hetx_call"]])
-            if (sid, "hetx_call") in amended:
-                call = amended[(sid, "hetx_call")]
+            field = "review_outcome" if f[ix["call_source"]] == "REVIEWED" else "hetx_call"
+            call = amended.get((sid, field), f[ix[field]])
             if call in ("FLAG", "FLAGGED") and key not in flag_seen:
                 flag_seen.add(key)
                 d[1] += 1

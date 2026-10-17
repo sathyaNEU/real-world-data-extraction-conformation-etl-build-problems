@@ -436,33 +436,29 @@ def record_targets(expected, allsep, design, units, plans, bins=True, fixed=None
     return best[1], best[2]
 
 
-def centre_plans(plans, per_separation, thetas, codes, graded, pick):
-    """The planned separations of the units whose figures are graded, nudged by a few separations.
+def centre_plans(plans, per_separation, thetas, pick, graded):
+    """The planned separations of the eligible units, nudged by a few per cent.
 
-    Each eligible unit's figure is the complications its planned activity carries above the unit's own
-    standing, reported to one decimal, so each unit's planned volume is moved to the nearest value that
-    leaves that figure clear of a rounding edge without sitting on the tenth itself. The two units whose
-    avoided complications are also graded are cleared on the whole complication as well, under every
-    reading of the register, and the recommended unit's expected complications for the quarter on the
-    whole complication it is reported at.
+    Every eligible unit's planned volume is moved to the nearest value inside a few per cent that leaves
+    the complications a placement there would avoid clear of the whole complication's rounding edge under
+    every reading of the closed register, and leaves the unit's expected complications for the quarter
+    clear of the edge at the decimal it is shown to. The recommended unit's expected complications are
+    cleared on the whole complication as well, which is the figure the write-up states.
     """
     lo, hi = min(thetas.values()), max(thetas.values())
+    mid, w = (lo + hi) / 2.0, (hi - lo) * 1.15      # room for the shipped record's own rounding
     for code in graded:
         per = per_separation[code]
         epl = EXPECTED_PER_SEP[code]
         best = None
-        for plan in range(int(plans[code] * 0.955), int(plans[code] * 1.045) + 1):
+        for plan in range(int(plans[code] * 0.90), int(plans[code] * 1.10) + 1):
             x = per * plan
-            off1 = abs(x * 10 - round(x * 10)) / 10.0
-            if not 0.008 <= off1 <= 0.032:            # inside the tenth, and not sitting on it
+            v_lo, v_hi = (mid - w / 2) * x, (mid + w / 2) * x
+            n = round(mid * x)
+            if round(v_lo) != n or round(v_hi) != n:
                 continue
-            if code in codes:
-                mid, w = (lo + hi) / 2.0, (hi - lo) * 1.15     # room for the record's own rounding
-                v_lo, v_hi = (mid - w / 2) * x, (mid + w / 2) * x
-                if round(v_lo) != round(v_hi):
-                    continue
-                if 0.5 - max(abs(v_lo - round(v_lo)), abs(v_hi - round(v_hi))) < 0.145:
-                    continue
+            if 0.5 - max(abs(v_lo - n), abs(v_hi - n)) < 0.132:
+                continue
             e = epl * plan
             if 0.05 - abs(e * 10 - round(e * 10)) / 10.0 < 0.0055:
                 continue
@@ -472,7 +468,7 @@ def centre_plans(plans, per_separation, thetas, codes, graded, pick):
             if best is None or score < best[0]:
                 best = (score, plan)
         if best is None:
-            raise AssertionError("no planned volume centres %s's graded figures" % code)
+            raise AssertionError("no planned volume centres %s's avoided count" % code)
         plans[code] = best[1]
     return plans
 

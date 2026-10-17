@@ -167,10 +167,10 @@ def ask_baseline(target):
             if r["release_status"] != "RELEASED" or not r["released_date"]:
                 continue
             released_date = amend.get((r["specimen_id"], "released_date"), r["released_date"])
-            if (r["specimen_id"], "hetx_call") in amend:
-                r = dict(r, hetx_call=amend[(r["specimen_id"], "hetx_call")],
-                         review_outcome=("FLAGGED" if amend[(r["specimen_id"], "hetx_call")] == "FLAG"
-                                         else "CLEARED") if r["call_source"] == "REVIEWED" else r["review_outcome"])
+            r = dict(r,
+                     hetx_call=amend.get((r["specimen_id"], "hetx_call"), r["hetx_call"]),
+                     review_outcome=amend.get((r["specimen_id"], "review_outcome"),
+                                              r["review_outcome"]))
             month = released_date[:7]
             key = (month, r["specimen_id"])
             if key not in seen_rel:

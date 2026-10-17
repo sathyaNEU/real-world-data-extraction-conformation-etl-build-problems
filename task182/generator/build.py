@@ -98,6 +98,8 @@ def main():
     os.remove(png)
     MD.write(TASK, g)
     FG.write(GEN, g)
+    import submission as SB
+    SB.write(TASK, GEN)
     print("call     : the October slot covers %s" % ", ".join(g["slate_ordered"]))
     print("sixth    : %s at %.1f dB, %.1f dB below the fifth" % (g["sixth"], g["sixth_level"],
                                                                  g["margin_db"]))

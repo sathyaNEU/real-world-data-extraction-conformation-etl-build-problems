@@ -13,7 +13,7 @@
   "41420": 8,
   "41430": 1,
   "41510": 2,
-  "41520": 2
+  "41520": 3
  },
  "call": "place the cycle IP-10 improvement team with Alderbrook Orthopaedics, cost centre 41230",
  "call_unit": "Alderbrook Orthopaedics",
@@ -38,7 +38,7 @@
    "name": "Pressure injuries"
   },
   "G3": {
-   "fy2025_26": 1257,
+   "fy2025_26": 1256,
    "fy2026_27": 653,
    "name": "Falls resulting in fracture or intracranial injury"
   },
@@ -48,7 +48,7 @@
    "name": "Medication and anaesthetic complications"
   },
   "G5": {
-   "fy2025_26": 1621,
+   "fy2025_26": 1623,
    "fy2026_27": 833,
    "name": "Delirium"
   },
@@ -78,8 +78,8 @@
   "41520",
   "41210",
   "41510",
-  "41320",
   "41410",
+  "41320",
   "41430"
  ],
  "eligible_units": 12,
@@ -99,7 +99,7 @@
   },
   "H3": {
    "adjusted_rate_per_1000": 110.3,
-   "complications": 2015,
+   "complications": 2016,
    "episodes": 19733,
    "name": "Marrowfield Hospital"
   },
@@ -154,7 +154,7 @@
  },
  "pick_excess_complications": 46,
  "pick_expected_complications": 204,
- "pick_planned_separations": 2360,
+ "pick_planned_separations": 2358,
  "pick_standardised_ratio": 1.23,
  "rate_denominator": 1000,
  "rung0_avoided": 2,
@@ -171,7 +171,7 @@
  "rung1_unit_code": "41330",
  "rung2_avoided": 12,
  "rung2_excess": 31,
- "rung2_expected_next": 311,
+ "rung2_expected_next": 310,
  "rung2_unit_code": "41220",
  "runner_unit": "Alderbrook General Surgery",
  "runner_unit_code": "41220",

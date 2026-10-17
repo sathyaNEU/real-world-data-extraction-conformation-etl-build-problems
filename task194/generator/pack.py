@@ -260,11 +260,12 @@ def write_dashboard(target, expected, observed, inscope, rows):
         code = u[0]
         e, o, n = expected[(code, q)], observed[(code, q)], inscope[(code, q)]
         rr = sim.rng("dash", code)
+        mort, mort_sd, read, read_sd = W.OTHER_INDICATORS[u[3]]
         body.append([sites[facility(code, W.QUARTERS[q][2])], code, u[1], n, o, round(e, 1),
                      round(o / e, 3), round(o / e * W.REF_RATE, 1),
-                     round(float(6.1 + 2.4 * rr.random()), 1),
+                     round(float(max(1.4, read + read_sd * rr.normal())), 1),
                      round(los[code][0] / los[code][1], 1),
-                     round(float(3.8 + 5.2 * rr.random()), 1)])
+                     round(float(max(0.4, mort + mort_sd * rr.normal())), 1)])
     body.sort(key=lambda r: (r[0], r[2]))
     for r in body:
         ws.append(r)
@@ -310,32 +311,55 @@ def write_dashboard(target, expected, observed, inscope, rows):
 
 
 def write_distractors(target):
-    """Three unit-level files the placement decision never reads."""
+    """Three unit-level files the placement decision never reads.
+
+    Each carries the structure its own system produces: a unit sits where its own practice and caseload put
+    it and moves slowly, so a level per unit and a drift across the periods, not a fresh draw each time.
+    """
     out = []
     for u in W.UNITS:
-        for q in sim.quarters_for(u)[-6:]:
+        qs = sim.quarters_for(u)[-6:]
+        lv = sim.rng("explevel", u[0])
+        base = float(79.5 + 12.5 * lv.random())
+        rec = base + float(1.0 + 4.0 * lv.random())
+        drift = float(-0.45 + 1.15 * lv.random())
+        size = float(0.30 + 0.75 * lv.random())
+        for i, q in enumerate(qs):
             r = sim.rng("exp", u[0], q)
-            out.append([u[0], W.QUARTERS[q][0], round(float(78 + 14 * r.random()), 1),
-                        round(float(82 + 12 * r.random()), 1), int(28 + r.integers(0, 90))])
+            n = int(max(9, round(size * u[6] / 9.0 + 7 * r.normal())))
+            out.append([u[0], W.QUARTERS[q][0], round(min(97.5, base + drift * i + 1.7 * r.normal()), 1),
+                        round(min(99.0, rec + drift * i + 1.5 * r.normal()), 1), n])
     _csv(os.path.join(target, FILES["experience"]),
          ["unit_code", "quarter", "overall_care_rating", "would_recommend_pct", "responses"], out)
     out = []
     for u in W.UNITS:
+        lv = sim.rng("nurselevel", u[0])
+        hours = {"aged": 5.9, "subacute": 4.6, "gen_med": 5.1, "resp": 5.0, "renal": 5.3, "neuro": 5.6,
+                 "ortho": 4.4, "gen_surg": 4.7, "colorectal": 4.9, "vasc": 5.2}[u[3]]
+        hours += 0.42 * lv.normal()
+        agency = float(0.024 + 0.105 * lv.random())
         for q in sim.quarters_for(u)[-4:]:
             for m in W.QUARTERS[q][4]:
                 r = sim.rng("nurse", u[0], m.isoformat())
-                out.append([m.isoformat(), u[0], round(float(4.1 + 1.9 * r.random()), 2),
-                            round(float(0.03 + 0.14 * r.random()), 3),
-                            round(float(0.02 + 0.07 * r.random()), 3)])
+                # agency and overtime run with the winter peak and with each other
+                season = 1.0 + 0.30 * (1 if m.month in (6, 7, 8) else (-0.18 if m.month in (1, 2) else 0))
+                ag = max(0.004, agency * season * float(1 + 0.16 * r.normal()))
+                out.append([m.isoformat(), u[0], round(float(hours - 0.9 * ag + 0.11 * r.normal()), 2),
+                            round(ag, 3), round(max(0.004, 0.42 * ag + 0.012 * r.random()), 3)])
     _csv(os.path.join(target, FILES["nursing"]),
          ["month", "unit_code", "nursing_hours_per_patient_day", "agency_share", "overtime_share"], out)
     out = []
     for u in W.UNITS:
-        for period in ("2026 Audit 1", "2026 Audit 2", "2026 Audit 3"):
+        lv = sim.rng("hhlevel", u[0])
+        rate = float(0.775 + 0.175 * lv.random())
+        gain = float(0.004 + 0.022 * lv.random())          # the audit programme lifts compliance
+        for i, period in enumerate(("2026 Audit 1", "2026 Audit 2", "2026 Audit 3")):
             r = sim.rng("hh", u[0], period)
-            moments = int(120 + r.integers(0, 180))
-            out.append([u[0], period, moments, int(moments * float(0.78 + 0.18 * r.random())),
-                        round(float(0.78 + 0.18 * r.random()) * 100, 1)])
+            moments = int(max(60, round(u[6] * float(0.14 + 0.09 * r.random()))))
+            share = min(0.991, rate + gain * i + 0.013 * r.normal())
+            compliant = int(round(moments * share))
+            out.append([u[0], period, moments, compliant,
+                        round(compliant / moments * 100, 1)])
     _csv(os.path.join(target, FILES["hygiene"]),
          ["unit_code", "audit_period", "moments_observed", "moments_compliant", "compliance_pct"], out)
     return [FILES["experience"], FILES["nursing"], FILES["hygiene"]]

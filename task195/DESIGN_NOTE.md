@@ -271,10 +271,10 @@ plate-clustered variants alike.
 
 | Control or published figure | What it confirms | On the wrong path |
 |---|---|---|
-| The partner laboratory's weekly report totals (PDF) | the panel results issued each week, the ask-1 control total | ties only with the register's re-sent and repeat rows resolved; says nothing about any detection count |
-| `release_volumes_monthly_2026-03_2027-02.csv` | the specimens released each month, the ask-2 control total | ties only on the release month; carries no flag, verdict or cutoff |
+| The partner laboratory's weekly report totals (PDF) | the results each report issued, the ask-1 control total | ties on the register's row count alone, so it arbitrates A1's second column without ever stating a specimen count; says nothing about any detection count |
+| `release_volumes_monthly_2026-03_2027-02.csv` | the release rows the warehouse held when it was pulled | ties to the pre-amendment view, so it confirms A2's wrong read rather than its right one, which is the point of the vintage device; carries no flag, verdict or cutoff |
 | The model card's estimate distribution | the re-run's output distribution over the whole archive | reproduces identically on every route; carries no verdict, so it confirms nothing about detection |
-| The dilution panel's summary row | the panel's own replicate count per level | ties under every unit handling; the recovery figures are the ask's, not the call's |
+| The dilution panel's Notes sheet replicate count | the results the panel reported, 27 of 28 replicate rows | ties under every unit and stock handling; the recovery figures are the ask's, not the call's |
 | Nothing else | no file states a detection count, an increase, an interval or a cutoff recommendation | no oracle ties only under the golden |
 
 ## Ask sheet
@@ -285,9 +285,9 @@ figures, and A2's twelve stand where they were.
 
 | Ask | Figures | H18 home | Use | Silent primary | Path (files, columns) | Stops and lazy delta | Realism |
 |---|---|---|---|---|---|---|---|
-| A1 the panel register against the partner laboratory's weekly reports | 9 reports x (specimens with any verdict, difference against the report's own total) = 18 | the audit trail of an input the call consumes, to another system's control total | KVAL-07 5.1 puts the identity panel's delivery record in the validation file | D7 keys: the register's `specimen_id` is an accession number, not a specimen. The laboratory re-accessions the biobank's second vial when a typing comes back borderline, so 214 specimens in April and May are typed again under a second accession and the register holds both; the one identifier that is the specimen is `biobank_ref` in a separate crosswalk file, and nothing in the register points at it. No filed sentence says which column is the specimen | `identity_panel_register_2027.csv` (7,838 rows; specimen_id, aliquot_id, report_ref, report_date, result_seq, verdict), `specimen_request_crosswalk.tsv` (7,075 rows; specimen_id, biobank_ref), `identity_panel_weekly_reports_2027.pdf` (the report's own total) | the row count per report (every difference reads 0), distinct accessions (every one of the 18 figures wrong, differences 1 to 12 against 9 to 26), distinct accessions after dropping the second sequence rows, the answer; lazy delta 259 rows over the nine reports, of which 214 are the second accessions | a biobank sends a second vial and the laboratory accessions it as new work, because the accession is what the instrument queue consumes |
-| A2 the screen in service's twelve-month record | 12 months x flagged specimens per thousand released = 12 | a measure the screen in service carries that the call does not turn on: KVAL-07 5.1's record over the twelve reporting months before the parallel run | the quality review reads the baseline before it reads the parallel run | D2 vintage: the warehouse extract was pulled before the release desk's corrections were posted, so it holds the value before each of 391 amendments (199 release dates booked on the wrong day, 192 calls corrected on review). The amendment log ships as its own file with no instruction to apply it, and the reporting pack's release counts tie to the stale view, so every control a careful solver reaches for confirms the pre-amendment read | `qc_screen_history_2026-02-15_2027-02-28.csv` (31,200 rows, 14 columns), `release_amendments_2026-03_2027-04.csv` (391 rows; specimen_id, field, value_before, value_after, amended_date, reason), `release_volumes_monthly_2026-03_2027-02.csv`, `validation_extract_dictionary.csv` | the extract as it stands (misses all 12 months), the automatic column alone (misses 9), the two call columns ORed (misses all 12), the receipt month (misses all 12), the answer; lazy delta 0.1 to 0.5 per thousand per month | a warehouse extract has a pull date and a release desk keeps correcting records after the month is reported |
-| A3 the quarter's dilution panel | 3 levels x (median recovery of the prepared level, results reported within a fifth of it) = 6 | a component of the case: KVAL-07 5.1's analytical sensitivity panel for the quarter | the review asks what the estimator recovers at the levels the listed cutoffs sit near | D5 scope: the workbook is the method group's standing panel workbook, so its prepared-levels sheet keeps the series of every stock the group has made up, two of them at the same three level names. The quarter's replicates all ran from NS-27-04; NS-27-07 is listed first and its gravimetric fractions are 3.7 per cent lower. The level name alone is not a key, and no filed sentence says which stock the quarter ran | `dilution_panel_2027q1.xlsx` (sheets "Prepared levels" 6 rows, "Replicate results" 28 rows, "Panel notes"), `mixture_estimator_model_card_v34.pdf`, `rerun_pipeline_config_v34.json` | the per cent label as the level (every recovery reads about 0.010, two orders out), the first prepared-levels row per level (all three medians wrong, 0.845 against 0.878, 0.833 against 0.865, 0.989 against 1.027), the voided replicate counted, the mean rather than the median, the answer; lazy delta the whole stock scale, 0.963 | a method group keeps one workbook per panel and makes the series up again when a stock runs out |
+| A1 the panel register against the partner laboratory's weekly reports | 9 reports x (specimens with any verdict, difference against the report's own total) = 18 | the audit trail of an input the call consumes, to another system's control total | KVAL-07 5.1 puts the identity panel's delivery record in the validation file | D7 keys: the register's `specimen_id` is an accession number, not a specimen. The laboratory re-accessions the biobank's second vial when a typing comes back borderline, so 214 specimens in April and May are typed again under a second accession and the register holds both; the one identifier that is the specimen is `biobank_ref` in a separate crosswalk file, and nothing in the register points at it. No filed sentence says which column is the specimen | `identity_panel_register_2027.csv` (7,838 rows; specimen_id, aliquot_id, report_ref, report_date, result_seq, verdict), `specimen_request_crosswalk.tsv` (7,075 rows; specimen_id, biobank_ref), `identity_panel_weekly_reports_2027.pdf` (the report's own total) | the row count per report (every difference reads 0), distinct accessions (every one of the 18 figures wrong, specimens 584 to 546 against 577 to 529 and differences 3 to 7 against 9 to 26), distinct accessions after dropping the second sequence rows, the answer; lazy delta 259 rows over the nine reports, of which 214 are the second accessions | a biobank sends a second vial and the laboratory accessions it as new work, because the accession is what the instrument queue consumes |
+| A2 the screen in service's twelve-month record | 12 months x flagged specimens per thousand released = 12 | a measure the screen in service carries that the call does not turn on: KVAL-07 5.1's record over the twelve reporting months before the parallel run | the quality review reads the baseline before it reads the parallel run | D2 vintage: the warehouse extract was pulled before the release desk's corrections were posted, so it holds the value before each of 367 amendments (245 release dates booked on the wrong day, 122 calls corrected on plate review, 118 of them a flag the desk cleared). The amendment log ships as its own file with no instruction to apply it, and the reporting pack's release counts tie to the stale view, so every control a careful solver reaches for confirms the pre-amendment read | `qc_screen_history_2026-02-15_2027-02-28.csv` (31,200 rows, 14 columns), `release_amendments_2026-03_2027-05.csv` (367 rows; specimen_id, field, value_before, value_after, amended_date, reason), naming the column of record for each specimen, `review_outcome` where a bioinformatician reviewed it and `hetx_call` where none did, `release_volumes_monthly_2026-03_2027-02.csv`, `validation_extract_dictionary.csv` | the extract as it stands (misses all 12 months), the automatic column alone (misses 9), the two call columns ORed (misses all 12), the receipt month (misses all 12), the answer; lazy delta 2.0 to 5.9 per thousand, every month high | a warehouse extract has a pull date and a release desk keeps correcting records after the month is reported |
+| A3 the quarter's dilution panel | 3 levels x (median recovery of the prepared level, results reported within a fifth of it) = 6 | a component of the case: KVAL-07 5.1's analytical sensitivity panel for the quarter | the review asks what the estimator recovers at the levels the listed cutoffs sit near | D5 scope: the workbook is the method group's standing panel workbook, so its prepared-levels sheet keeps the series of every stock the group has made up, two of them at the same three level names. The quarter's replicates all ran from NS-27-04; NS-27-07 is listed first and its gravimetric fractions are 3.7 per cent lower. The level name alone is not a key, and no filed sentence says which stock the quarter ran | `dilution_panel_2027q1.xlsx` (sheets "Prepared levels" 6 rows, "Replicate results" 28 rows, "Panel notes"), `mixture_estimator_model_card_v34.pdf`, `rerun_pipeline_config_v34.json` | the per cent label as the level (every recovery reads about 0.010, two orders out), the first prepared-levels row per level (all three medians wrong, 0.923 against 0.878, 0.898 against 0.865, 1.066 against 1.027), the voided replicate counted, the mean rather than the median, the answer; lazy delta the whole stock scale, 0.963 | a method group keeps one workbook per panel and makes the series up again when a stock runs out |
 
 **Main population zero counts (asserted).** Device and hazard rows inside the comparison's 5,839 specimens
 and the read sets it reads: A1 0, A2 0, A3 0. No re-accession pair, re-sent result or repeat aliquot touches
@@ -304,7 +304,7 @@ specimen at all. Delete every device and the call is unchanged, asserted.
 | withheld and superseded releases | A2 | the denominator moves by 4.6 per cent in every month |
 | the reviewer cleared an automatic flag | A2 | the ORed read runs 0.9 to 3.1 per thousand high in every month |
 | a dilution replicate voided on a control failure | A3 | L3's median moves one position when the void is counted |
-| the level name is typed in lower case on 21 per cent of the replicate rows | A3 | none on the figures once the name is folded; it punishes a case-sensitive join |
+| the level name is typed in lower case on 7 of the 28 replicate rows | A3 | none on the figures once the name is folded; it punishes a case-sensitive join |
 
 **Referee.** The partner laboratory's weekly report totals are the one byte-clean referee: they state the
 results each report issued and arbitrate A1's second column without stating a specimen count, and they tie
@@ -317,15 +317,15 @@ every figure against the golden within half a unit of the stated rounding. The c
 the hygiene battery, executes every rule the asking sentences point at and matches every control; it is the
 path the stage-4 leak reader actually took, which reached all 42 figures of the previous cut.
 
-| Ask | The cracker's path on the cut pack | Figures | Kept | Verdict |
+| Ask | The cracker's path on the cut pack | Figures | Kept within half a unit | Verdict |
 |---|---|---|---|---|
-| A1 | counts the register's own specimen identifiers per report, because the asking sentence says specimens and the register's column is called `specimen_id`, and reads the report's own total from the PDF | 18 | 0 | miss, 18 of 18 |
-| A2 | applies the pinned reviewed rule to the extract as it stands, groups by release month and ties the denominator to the reporting pack, which agrees | 12 | 0 | miss, 12 of 12 |
-| A3 | takes the prepared level from the workbook's own prepared-levels sheet, level by level, and the gravimetric column the Notes sheet names | 6 | 3 | miss on all three medians; the three within-a-fifth counts coincide, because the stock scale moves the window with the level |
+| A1 | counts the register's own specimen identifiers per report, because the asking sentence says specimens and the register's column is called `specimen_id`, and reads the report's own total from the PDF | 18 | 0 of 18 | miss |
+| A2 | applies the pinned reviewed rule to the extract as it stands, groups by release month and ties the denominator to the reporting pack, which agrees | 12 | 0 of 12 | miss |
+| A3 | takes the prepared level from the workbook's own prepared-levels sheet, level by level, and the gravimetric column the Notes sheet names | 6 | 3 of 6, all three medians missed and the three within-a-fifth counts coincident because the stock scale moves the window with the level | miss |
 
-**Pair ceiling:** 33.1 measured (the cracker banks 38 + 7 + 55 x 0.083 = 49.6 and the best response off the
-call banks 5 + 7 + 55 x 0.083 = 16.6). **Mirror leakage:** 8.3 per cent of ask weight measured, 3 of 36
-figures, all three in one ask.
+**Pair ceiling:** 33.1 measured, against a ceiling of 40. The cracker banks 38 + 7 + 55 x 0.083 = 49.6
+and the best response off the call banks 5 + 7 + 55 x 0.083 = 16.6.
+**Mirror leakage:** 8.3 per cent of ask weight measured, 3 of 36 figures, all three in one ask.
 
 Each primary is a key, a vintage or a scope question that no shipped sentence adjudicates (ban 1), carries
 no marker (ban 2: the amendment log has no instruction, the crosswalk has no note, the prepared-levels
@@ -335,11 +335,17 @@ asks read six others, and the one shared file is the register, whose comparison 
 
 ## Pre-ship check
 
-**Free gates, all green on the final rebuild.** `generator/checks.py` 153 assertions; `generator/verify.py`
-134 independent checks from the bundle and `figures.json` alone; two byte-identical rebuilds of `target/`
-and `golden/`; input gates 18 files, 5 formats (csv, tsv, json, xlsx, pdf), a 31,200-row file, 4 distractors
-declared in `metadata.json` and named in no file name; `figures_check.py` 117 figures, 0 absent;
-`precut.py` 49 checks, 0 FAIL, 0 WARN; `leak.py --asof 2027-06-21` REVIEW with every line answered above;
+**Free gates, all green on the final rebuild.** `generator/checks.py` 213 assertions; `generator/verify.py`
+125 independent checks from the bundle and `figures.json` alone; two fresh rebuilds byte-identical to the
+shipped `target/` (sha256 994be419ea0e1d1f over all 19 files) and to `golden/`; input gates 19 files, 5
+formats (csv, tsv, json, xlsx, pdf), a 31,200-row file, 4 distractors declared in `metadata.json` and named
+in no file name; `figures_check.py` 114 figures, 0 absent; `precut.py` 49 checks, 0 FAIL, 0 WARN;
+`freeze.py check --mode rubric` PASS with the three A1 keys allowed for the reason filed below;
+`leak.py --asof 2027-06-21` REVIEW, four lines, each answered: the protocol carries 8 of the call's 10
+distinctive words because it is the protocol the call executes and it names no cutoff, no detection count
+and no interval method; the protocol, the model card and the platform validation share 3 to 9 of the stump
+paragraph's terms because they are the laboratory's own documents on this assay, and none names the paired
+reading or the move; the container audit reports no writer signature, which is the clean result;
 `guard.py surface` 0 promoted pairs; `guard.py heart` WARN, nearest 0.08 (task185's ledger row), no BLOCK;
 containers audited clean by `scrub_producer_metadata.py` for both `target/` and `golden/`.
 
@@ -439,3 +445,38 @@ they were.
 - The paper cracker sheet (three asks missed, pair ceiling 35.1): contradicted by the stage-4 reader, which
   reached all 42 ask figures. The sheet now carries the measurement, `precut.py` fails on it, and the ask
   layer needs new silent primaries rather than another pin.
+- Merging A1's weekly reports, so the solver had to decide which issue of a report counts: dropped, the
+  asking sentence pins "each weekly report issued in April and May" and the pin may not move, so the
+  primary had to sit in the register's own key instead.
+- A1's silent primary inside the register itself (a second `result_seq` or a second `aliquot_id` carrying
+  the specimen): dropped, both are visible in the register's own columns, which makes them a marker
+  (`supplemental-stumping` ban 2); the specimen's one identifier had to live in another file, so it is the
+  biobank reference in the crosswalk and the register never points at it.
+- Re-cutting A1 on the request register rather than the crosswalk: dropped, the register's request
+  sequence is a frozen draw the call's report dates depend on, so the key had to come from a file the
+  comparison does not read.
+- A2's amendment log naming `hetx_call` for every specimen: dropped, a reviewed specimen's call of record
+  is `review_outcome`, so one amendment row would have moved two columns and a solver applying the log
+  literally would have landed a different figure from one propagating it. The log now names the column of
+  record for each specimen, which closes the fork and is what a release desk would write.
+- A2's amendment log at 430 rows with 45 per cent of them call corrections: cut to 367 rows and 122 call
+  corrections, because a desk correcting two fifths of the extract's flags is not credible and the measured
+  delta of 2.0 to 5.9 per thousand already misses every month at the stated rounding.
+- A six-level dilution panel: cut to three levels, because the pair arithmetic counts figures and six
+  levels put 12 of the 36 ask figures in the ask whose primary the cracker partly survives.
+- `release_amendments_2026-07_2027-03.csv`: renamed twice, to `2026-03_2027-05`, because the name has to
+  bracket the amendment dates the file actually holds; `checks.py` now asserts the bracket, so the name
+  cannot drift away from the data again.
+- A fourth primary on A2, a second pull of the same extract: dropped, one vintage device per ask is the
+  ceiling and a second pull would have given the solver the diff for free.
+- `freeze.py check task195 --mode rubric` without `--allow`: it reports three main-call figures moved,
+  `panel_weeks.BA-2027-W13.difference`, `panel_weeks.BA-2027-W16.difference` and
+  `panel_weeks.BA-2027-W18.difference`. They are A1 ask figures, not main-call figures: freeze classifies a
+  `figures.json` value as main-call when it equals a number scraped from blocks 1 and 2, and those three
+  differences were 4, 3 and 4 before the re-cut, which are the "3." and "4." list markers in Critical
+  Components. The three keys are named in `--allow` for that reason. A key-by-key diff against the
+  judge-approved `figures.json` is the real evidence: 43 keys moved, 26 under `panel_weeks` and 17 under
+  `dilution`, and nothing else; the cutoff table, the interval, the ladder's four rung values and A2's
+  twelve monthly figures are byte-identical. The pack's own proof is stronger still: the four files the
+  call reads are byte-identical to the approved pack by sha256, and the fifth, the panel register, is
+  byte-identical on all 5,839 of the comparison's rows, with 0 of the 214 added rows touching one.

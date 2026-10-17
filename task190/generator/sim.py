@@ -238,7 +238,7 @@ def build(seed=4471):
             rng = Rng(seed + 991 + shash(key + year + "p") % 100000)
             # the customers who split are cash-heavy ones: the quartile that pays in most
             heavy = sorted(byseg[key], key=lambda c: (-c["weight"], c["cust"]))
-            pool = {c["cust"] for c in heavy[:max(40, len(heavy) // 2)]}
+            pool = {c["cust"] for c in heavy[:max(40, (len(heavy) * 4) // 5)]}
             # the takes that would have been reported: one deposit, just over the threshold
             cand = [i for i, r in enumerate(rows)
                     if r["year"] == year and r["cust"] in pool

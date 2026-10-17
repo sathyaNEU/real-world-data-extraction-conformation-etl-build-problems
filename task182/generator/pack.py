@@ -191,7 +191,11 @@ def write_scada(target):
         stopped |= np.array([(s >= start - dt.timedelta(minutes=14)) and (s < e) for s in stamps])
     hours = np.array([s.hour + s.minute / 60.0 for s in stamps])
     dows = np.array([s.weekday() for s in stamps])
-    air = 4120 + 180 * np.sin(2 * math.pi * hours / 24.0 - 1.2) + rng.normal(0, 46, n)
+    # the site's weekly milk intake moves the plant's load from week to week
+    wkf = np.array([1.0 + 0.021 * math.sin(2.1 * ((s.date() - dt.date(2026, 8, 3)).days // 7))
+                    - 0.014 * math.cos(3.3 * ((s.date() - dt.date(2026, 8, 3)).days // 7))
+                    for s in stamps])
+    air = (4120 + 180 * np.sin(2 * math.pi * hours / 24.0 - 1.2) + rng.normal(0, 46, n)) * wkf
     air = np.where(stopped, 0.0, air)
     cf_on = np.zeros(n, dtype=bool)
     wins = {d: SM.centrifuge_window(d) for d in sorted({s.date() for s in stamps})}
@@ -199,8 +203,8 @@ def write_scada(target):
         w = wins[s.date()]
         cf_on[i] = bool(w and w[0] <= s < w[1]) and not stopped[i]
     feed = np.where(cf_on, 31.5 + rng.normal(0, 1.4, n), 0.0)
-    gas_rate = np.where(stopped, 0.0, 212 + 9.5 * np.sin(2 * math.pi * hours / 24.0 + 0.4)
-                        + rng.normal(0, 4.0, n))      # m3 an hour to the engine
+    gas_rate = np.where(stopped, 0.0, (212 + 9.5 * np.sin(2 * math.pi * hours / 24.0 + 0.4)
+                                       + rng.normal(0, 4.0, n)) * wkf)   # m3 an hour to the engine
     counter = (18640.0 + np.cumsum(gas_rate * 0.25)) % 100000.0
     kw = np.where(stopped, 0.0, 268 + 7.0 * np.sin(2 * math.pi * hours / 24.0 + 0.4) + rng.normal(0, 3.1, n))
     inflow = (96 + 34 * np.exp(-((hours - 10.5) ** 2) / 9.0) + 26 * np.exp(-((hours - 19.0) ** 2) / 7.0)

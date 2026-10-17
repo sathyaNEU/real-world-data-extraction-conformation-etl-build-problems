@@ -153,20 +153,20 @@ SLOW = {
 # Micro-adjustments to the designed specific levels, so every printed level sits mid-bin and no two
 # positions share a printed value. Fixed by the search in scratch; they move no slate.
 SHIFT = {
-    "NSL01": -0.0477,
-    "NSL02": -0.1144,
-    "NSL03": -0.4143,
-    "NSL04": -0.0413,
-    "NSL05": -0.0163,
-    "NSL06": -0.7741,
-    "NSL07": -0.0208,
-    "NSL08": -0.7581,
-    "NSL09": -0.1428,
-    "NSL10": -0.8416,
-    "NSL11": -0.0356,
-    "NSL12": -0.3143,
-    "NSL13": +0.0328,
-    "NSL14": -0.0910,
+    "NSL01": -0.04770,
+    "NSL02": -0.11840,
+    "NSL03": -0.41830,
+    "NSL04": -0.03330,
+    "NSL05": -0.01630,
+    "NSL06": -0.78610,
+    "NSL07": -0.02080,
+    "NSL08": -0.75810,
+    "NSL09": -0.15480,
+    "NSL10": -0.82560,
+    "NSL11": -0.03160,
+    "NSL12": -0.31430,
+    "NSL13": +0.03680,
+    "NSL14": -0.08700,
 }
 
 

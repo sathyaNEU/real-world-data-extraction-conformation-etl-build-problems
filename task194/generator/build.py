@@ -44,7 +44,7 @@ def cut(target):
     chosen, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=False)
     elig = [c for c in per_sep if c in {x[0] for x in W.UNITS if x[10] == "eligible"}]
     ranked = sorted(elig, key=lambda c: -per_sep[c] * plans[c])
-    plans = sim.centre_plans(plans, per_sep, thetas, ranked[:2], ranked, ranked[0])
+    plans = sim.centre_plans(plans, per_sep, thetas, ranked[0], ranked)
     assert sorted(elig, key=lambda c: -per_sep[c] * plans[c])[:2] == ranked[:2], \
         "centring the planned volumes moved the two graded units"
     targets, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=True,
