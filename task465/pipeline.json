@@ -1,36 +1,36 @@
 {
   "task": "task465",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "DESIGN",
   "domain": "general-statistics-data-science",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-17",
-  "stump": "The default path prices each cover over the years its county's yield is published and treats the withheld years as missing, so Ardley's, Elster's and Pallard's drought years, withheld because too few farms harvested, drop out of their burns and it buys none of the five covers; recovered from the district totals less the published counties, those years carry the three covers' largest losses and their quotes clear the board's rule, while Tresham's, its two withheld years back in, stays dear.",
-  "architecture": 1,
+  "stump": "The default path aligns the two surveys and multiplies each division-and-band cell's burden rate by its equipment rate, treating the two traits as independent inside the cell, so it counts about half the eligible households and staffs 14 caseworkers where the programme needs 25; carrying the screening pilot's within-band association into each cell, with both surveys' rates kept, counts them.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-17"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-11-02 as-of",
-    "reader": "no decisive-step sentence, ranking, helper or answer file; literal estimand executes to the golden; question 6 analytical, 'partly rule application'"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.decision answered)",
-    "nearest": "task31 0.07 (lineage)"
+    "heart": "",
+    "nearest": ""
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "SEND_BACK",
-    "report": "determinism_check_report.md (architecture 1, round 1): Gate H decisive_step rule_application"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "re-root at stage 1: architecture 1 spent on the judge's SEND_BACK (2026-10-17, Gate H decisive_step rule_application: the withheld-year recovery is the methods note's filed identity and the expected loss the policy's filed formula); draw a decisive step the field estimates (the recovery kept as Layer 1 cleaning), move architecture 1 into the card's lineage, guard check, register, commit DRAWN",
+  "resume": "stage 2: prototype the world (nine divisions, two surveys weighted to the household estimates, the screening pilot), calibrate the ladder (independence, pilot-only, one-survey-times-pilot, crude pooled odds ratio, the fused golden) and the convergence of band, Mantel-Haenszel and ratio fusions at the graded rounding; readability screen, fork table, closure, literal reader, oracles, asks and prompt.txt to precut exit 0",
   "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "seed ET22 (analytical_tasks/07_data_extraction_conformation): a reinsurer pricing a farmers' cooperative's index drought cover by burn analysis; kept as a cooperative buying area-yield covers on its counties' official dryland yields; the seed's rainfall index and its trap (tenths of millimetres, quality flags, weekend totals) are not used"
+  "source_note": "architecture 2 drawn afresh in the ETL objective after architecture 1's SEND_BACK (seed ET22's drought-cover world spent): statistical matching of two state surveys with a utility's screening pilot"
 }
