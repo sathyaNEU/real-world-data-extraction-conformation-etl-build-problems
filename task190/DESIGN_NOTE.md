@@ -353,3 +353,13 @@ Mirror leakage: 20.0 per cent of the ask weight
   multiplied an amount by 1.08: the isolated reader read all four as generated. The mix is now what
   each line actually sees, the monthly count is a Poisson draw on a yearly and a seasonal factor, the
   confirmation lag runs with the line's own detection lag, and an amendment moves an amount either way.
+- **Architecture 1, the whole of it, is spent.** Three consecutive judge SEND_BACK verdicts and a Gate
+  F graded moderate to borderline then moderate to low. The reason is structural rather than a list of
+  fixes. `determinism-check` requires the estimand to say that the population holds cases the bank has
+  no record of yet, and requires the method to be forced, which here means every estimation route
+  converging: it now does, over 36 windows of two years or more and the register entire. Once both
+  hold, the only analytical step left is deciding to nowcast rather than count, and clause 6.2 has to
+  announce that to be literal. Every Gate F repair reopened a determinism fork and every determinism
+  repair closed the stump, twice round. Three isolated readers built the nowcast and landed the call at
+  80 to 90 per cent confidence, so the portal's top two would both land it. The slot re-roots at stage
+  1 with a new driver; the stock-from-arrivals-and-time-unseen driver is not reused.

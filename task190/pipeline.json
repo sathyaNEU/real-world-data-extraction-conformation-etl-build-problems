@@ -1,34 +1,34 @@
 {
  "task": "task190",
  "owner": "oviya13ya",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "banking-credit-financial-risk/fraud-aml-detection",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-17",
  "stump": "A competent solver conforms the alert and adjudication extracts, computes each line's confirmed cases per 1,000 customers over the last two quarters, and assigns the team to the lines that confirm the most, which is the lines where cases are found fastest rather than where they are sitting unfound.",
  "architecture": 1,
- "loops": 1,
+ "loops": 3,
  "precut": {
   "exit": 0,
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "REVIEW",
-  "reader": "r3 running"
+  "leak_py": "REVIEW, every line answered",
+  "reader": "r2, r3 and r4 each landed the call at 80 to 90 per cent confidence"
  },
  "duplicate_check": {
   "heart": "WARN",
   "nearest": "0.08 task181 v2"
  },
  "judge": {
-  "verdict": "r2 NOT_DETERMINISTIC on ask 7; r3 running",
-  "disposition": "fixed in the generator",
-  "report": "task190/determinism_check_report.md"
+  "verdict": "SEND_BACK on r2, r3 and r4",
+  "disposition": "architecture 1 spent; re-root at stage 1",
+  "report": "/tmp/determinism-check-task190-r4/verdict.md"
  },
  "returned": [],
- "resume": "Stage 4 run 3. The r2 judge returned NOT_DETERMINISTIC on supplementary answer 7 (no shipped working-day calendar) and both isolated readers quoted framework clause 6.2 as naming the method, which is the determinism-repair-files-the-HOW failure. Fixed in one generator pass: 6.2's closed-record phrase and 6.3's closed-record definition removed, framework Part 7 and bank_closed_days.csv added, the contract register's and the ledger's narration of the ask device removed, the screening list's repeated removals fixed, the alert extract trimmed to the pull date, the manifest rebuilt over every file, and the register's typology mix, yearly volumes, confirmation lag, amendments and identifiers made to look like a record. Free gates all green at 200 generator assertions and 123 independent checks. Resume: read the r3 reader and judge, fix in one pass, then ship.",
+ "resume": "ARCHITECTURE 1 IS SPENT. Re-root at stage 1 in the same objective and number: new draw, architecture 2, loops 0, the old card's identity moved into lineage with this fate, one line in the note's Tried and rejected, commit DRAWN. Why it is spent: three consecutive SEND_BACK verdicts (r2 the working-day calendar, r3 the counting convention and two ask conventions, r4 three more ask conventions), and Gate F graded moderate to borderline at r3 and moderate to low at r4. The vice is structural, not a list of fixes: determinism-check requires the estimand to state that the population holds cases the bank has no record of, and requires every estimation route to converge, which this data now does over 36 windows and the register entire. Once both hold, the only analytical step left is deciding to nowcast at all, which clause 6.2 has to announce in order to be literal. Each Gate F repair reopened a determinism fork and each determinism repair closed the stump. Three isolated readers nowcasted and landed the call, so the portal's top two would both land it. The architecture-1 bundle is green and byte-reproducible at this commit if any of it is worth reusing: 1,372 generator assertions, 134 independent checks, precut 0 FAIL, figures_check 65 of 65. Do not resume it; re-root. Do not reuse the stock-from-arrivals-and-time-unseen driver.",
  "approved": null,
  "delivered": null,
  "portal": null,
