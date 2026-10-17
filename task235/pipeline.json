@@ -1,0 +1,38 @@
+{
+ "task": "task235",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "product-analytics",
+ "objective": "data-quality-monitoring",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-17",
+ "stump": "A competent solver counts a purchase as lost when its event is still missing seven days later and files 4 of the 12 builds wrong (four builds alerted, three of them old builds whose weekly players have not opened the game again, and iOS 7.42.0 missed); the step that lands it there is treating a missing event as lost before the phone that made the purchase has opened the game again, the only moment the event can leave it.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: prototype the generator (purchases, SDK events, session log) and tune the ladder; then the design note's screen, fork table, ladder, closure, literal reader, oracles, ask sheet and prompt to precut exit 0",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
