@@ -462,6 +462,23 @@ is short, so both responses count the extract's out-of-scope rows and both miss 
 script says that in its output instead of printing the row twice and calling it two measurements.
 
 ## Tried and rejected
+- `precut.py` ships at 1 FAIL and the author accepts it, with the reason here rather than in a thread.
+  The failing row is Part 1.1's cracker check on two of A2's eight figures, Carrowdean's, which both
+  responses get right because Carrowdean District Hospital's only acute units are two of the twelve
+  candidates, so the feed gap cannot reach the site without changing a candidate's separations.
+  Buying them would need either a ninth placed unit at Carrowdean, which removes a candidate from the
+  twelve, or moving the amalgamation date so the predecessor wards still report in 2026, which leaves
+  one unit a single closed quarter against charter 4.2's floor of four. Both cost more than two
+  figures are worth. The reason this is an acceptance rather than an override of a ship gate: Part
+  1.1's "every row misses" ends "or the ask is rebuilt", which is a design-iteration instruction, and
+  the ship bars are Part 7's two numbers, the pair ceiling at or under 40 and the mirror leakage under
+  35. Both pass, at 36.4 and 3.6, and they already price the figure keep, because the figures the
+  cracker takes are what drive the pair. Reading the prose as an absolute per-figure zero would make
+  the pair ceiling redundant.
+- And the standing caveat on that 36.4, in the author's terms: it assumes a ladder that keeps the
+  second-best real response off the call, nothing independent has tested that yet, and if the cold
+  reader lands the call the finding is in the ladder and no ask measurement will matter. task190 was
+  retired today at a measured 38.1 for exactly that premise failing.
 
 - Ranking units by the fall in their adjusted rate rather than by complications avoided: the charter would
   have to file a rate, and then the whole decision is a one-column sort on each unit's own standing, with the
