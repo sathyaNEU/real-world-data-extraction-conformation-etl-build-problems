@@ -1,26 +1,26 @@
 {
  "task": "task194",
  "owner": "oviya13ya",
- "status": "DRAWING",
+ "status": "BUILD",
  "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-16",
- "stump": "A competent solver builds each unit's last-quarter rate of the outcome, confirms it against the dashboard, ranks the units and embeds with the worst, which is the unit with the most room to revert rather than the unit an embed moves most.",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-17",
+ "stump": "A competent solver computes the complications each eligible unit is recording above its risk-adjusted expectation in the latest closed quarter, scales them by the 38 per cent of excess the closed placement register removed, and places the team with Alderbrook General Medicine for 13 complications avoided, which is the unit with the most room to return to its own level rather than the unit a placement moves most.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-17 (no LEAK; sweeps 1, 2, 5, 7, 8, 11 clean; every REVIEW answered in the design note's Leak sweeps answered section)",
+  "reader": "staged, not yet run"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (no BLOCK), nearest driver 0.11 task258 v1, nearest stump 0.06 task191",
+  "nearest": "task258 (v1)"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "Stage 4 is staged, not spawned: this session has no Agent tool, so the two isolated threads are briefs on disk for the orchestrating session to spawn as general-purpose sonnet agents at medium effort. Judge: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_judge/judge_brief.md (verdict to verdict.md in that directory). Reader: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_reader/reader_brief.md (answers to reader_answers.md in that directory). Both directories already hold prompt.txt and a fresh unzip of task194/target.zip; the judge directory also holds the submission's graded blocks and the judge system prompt inlined in the brief. When both come back, fix every finding in generator/ in one pass, rebuild, re-run the free gates (build.py, figures_check.py, leak.py --asof 2027-03-18, guard surface and heart, two byte-identical rebuilds), re-cut target.zip, then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,

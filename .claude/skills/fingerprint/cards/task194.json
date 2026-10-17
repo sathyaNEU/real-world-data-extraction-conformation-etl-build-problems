@@ -10,8 +10,8 @@
  "shape": "11",
  "decision_type": "pick_one_of_n",
  "answer_unit": "named_option",
- "answer": "",
- "answer_source": "",
+ "answer": "Alderbrook Orthopaedics, cost centre 41230: the cycle IP-09 placement avoids 17 hospital-acquired complications over the quarter from 1 April 2027, against 11 at Alderbrook General Surgery",
+ "answer_source": "golden/embed_placement_2027q4.xlsx and golden/embed_placement_brief.pdf, computed from target/ by generator/golden.py and asserted in checks.py and verify.py",
  "gap": [
   "time",
   "objective"
@@ -37,9 +37,9 @@
  "scoring_unit": "per covered member",
  "spine": {
   "file": "episode_outcomes_extract.csv",
-  "rows": 0,
-  "entity": "one episode of care with its outcome and its unit",
-  "grain": "episode x unit x month",
+  "rows": 219348,
+  "entity": "one episode of care with its risk fields and its complication flag",
+  "grain": "episode x unit x separation month",
   "source": "synthetic"
  },
  "forum": "line_manager_or_team",

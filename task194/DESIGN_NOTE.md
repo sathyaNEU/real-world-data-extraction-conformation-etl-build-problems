@@ -24,11 +24,12 @@ the call, the closest unit and the gap = 3; the brief's chart (one bar per unit,
 the axis in complications, the finding as the title, the units in avoided order) = 5; the two deliverables
 present and named = 2; the three critical components = 3. Main side 25. The asks add 12 + 18 + 16 = 46.
 
-**Data-native sentence.** In this panel a unit's quarterly standardised ratio swings by 0.142 about its own
-level while the units' own levels are only 0.085 apart, and the quarterly deviations carry no serial
-correlation (-0.107 over 156 unit-quarter pairs), so the quarter that makes a unit look worst is mostly the
-unit's own variation and the closed placement record is the only thing in the pack that prices what a
-placement itself removes.
+**Data-native sentence.** In this panel a unit's quarterly standardised ratio swings by 0.128 about its own
+level while the twelve units' own levels are only 0.085 apart, and the quarterly deviations carry no serial
+correlation (-0.089 over the candidates' 103 consecutive pairs, -0.091 over the whole panel's 192, which is
+what de-meaning a ten-quarter record implies on its own), so the quarter that makes a unit look worst is
+mostly the unit's own variation, and the closed placement register is the only thing in the pack that prices
+what a placement itself removes.
 
 **Guard.** `guard.py check` and `heart` both WARN, no BLOCK (nearest driver 0.11 task258, nearest stump 0.06
 task191). Four axes were redrawn against siblings that re-registered while this build was in design:
@@ -144,8 +145,9 @@ the unit with the most room to return to its own level rather than the unit a pl
   unit is expected to hold over the assessment quarter without the team, and what the placement register
   prices: the quarter the unit is standing in, or the unit's own standing over the specification period.
 - **Decisive step:** take the unit's own standing as the counterfactual and read the register as a share of
-  persistent excess, because the units' quarterly deviations carry no serial correlation and the register's
-  own falls track persistent excess rather than the level or the volume.
+  standing excess, because the units' quarterly deviations carry no serial correlation (-0.089) and the
+  register's own falls track standing excess (worst miss 21 per cent) rather than the unit's level (worst
+  miss 141 per cent) or its expected complications (worst miss 177 per cent).
 - **Not semantics:** every field, code, unit and definition read correctly still leaves the easy route on
   Alderbrook General Medicine. The extract's fields are plain, the specification files the denominator, the
   exclusions, the stratum rates, the reporting periods and the forward expectation basis, and the charter
@@ -306,6 +308,30 @@ No shipped control, corpus or document scores a method or ranks the units.
 - `improvement_placements.csv`: facts only, no achieved-reduction column, so it cannot be quoted back. The
   comparison that prices the programme is a construction the analyst makes from the extract, not a file.
 - The three distractors answer other questions and are asserted not to move any graded figure.
+
+## Stage 3 gates, measured
+
+| Gate | Result |
+|---|---|
+| `generator/build.py` | 526 generator assertions, 88 independent checks, both green |
+| Three-rules block on the clean truth | R1 raw material, R2 per Layer 1 item, R3a the easy route files 41210 at 13, R3b the decisive step alone files 41230, R3c no plant: all green |
+| Independent verifier | `generator/verify.py` reads only `target/` and `figures.json`, recomputes every stated figure on pandas against the generator's csv path |
+| Two byte-identical rebuilds | pack and both goldens identical across two fresh builds; `target/` equals the rebuild |
+| Input gates | 20 files, 4 formats (csv, pdf, xlsx, txt), `episode_outcomes_extract.csv` at 219,348 rows, 3 distractors declared in `metadata.json` and named in no file name |
+| `figures_check.py task194` | 97 figures in blocks 1 to 4, 0 absent from `generator/figures.json` |
+| Realism sweep | no repeated unit-quarter counts, no round headline figure, personas only the two drawn, one export stamp on every file, containers clean under `scrub_producer_metadata.py` |
+| `leak.py task194 --asof 2027-03-18` | REVIEW, no LEAK; every REVIEW answered above |
+| `guard.py surface task194` | exit 0, three pairs promoted at 0.102 on relative surface similarity, no hard tell |
+| `guard.py heart task194` | WARN, no BLOCK |
+| `precut.py task194` | 49 checks, 0 FAIL, 0 WARN |
+| House fixes | H1 containers scrubbed and audited, H4 the shipped set equals the manifest, H8 every cited clause and file resolves, H9 manifest set equality asserted, H11 one `submission.md` and one `prompt.txt`, H16 the only date past the as-of is the in-progress placement's planned end, H24 the manifest is the organisation's own compile note |
+
+**Stage 4 is staged, not spawned.** This session has no Agent tool, so the leak reader and the determinism
+judge are briefs on disk with their isolated inputs beside them, for the orchestrating session to spawn:
+`task194_judge/judge_brief.md` (prompt, a fresh unzip of `target.zip`, the submission's graded blocks and
+the judge system prompt inlined; verdict to `verdict.md`) and `task194_reader/reader_brief.md` (prompt and a
+fresh unzip; answers to `reader_answers.md`), both under this session's scratch directory.
+
 
 ## Leak sweeps answered
 
