@@ -1,0 +1,39 @@
+{
+  "task": "task156",
+  "owner": "sathya8571",
+  "status": "DESIGN",
+  "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: trust and safety at a developer Q&A network)",
+  "objective": "forecasting",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-17",
+  "stump": "Carrying each site's paid queue hours per question over the last twelve months onto the 2027 question plan files a pool of about 105 FTE, inside finance's 110-FTE envelope, and trending each site's routed share, its monthly paid hours or its reviewer count forward still files 110 to 114; the step that lands each there is treating the items that reach the paid team as a share of what arrives, when they are what arrives beyond what each site's shrinking reviewer pool can review at the pace reviewers keep when the inbox is full, so four sites routed almost nothing since 2023 fall short of their 2027 arrivals and the pool needed is about 130 FTE.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "nearest driver 0.09 (task181 v2) at the draw"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: ladder, readability screen, fork table, closure table, asks, prompt.txt, then precut.py",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "wave": "wave 5 (new), seed FC27 (world, decision and quantity kept; the certified-figure clause not shipped; the revised close standard filed as context, never decisive; pitfall re-found from the review platform's 72-hour hand-off to the paid team)"
+}

@@ -1,0 +1,92 @@
+{
+  "task": "task156",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 5 (new); seed FC27 kept for its world, decision and quantity only (a developer Q&A network's 2027 paid moderation pool across nine topic sites after generative AI cut question volume, sized in FTE against a finance envelope, decided at the council's December sitting); the seed's charter clause that a need method may be used only if it reproduces every certified figure is not shipped (no certified need table ships at all), and its revised close-queue standard (5.0 to 2.0 minutes) ships as a filed standard every response applies, never the decisive step; the pitfall is re-found from how the network's review records come to exist: a community item reaches the paid team only when no volunteer reviews it in 72 hours",
+  "domain": "product-analytics",
+  "subdomain": "retention-cohort-lifetime-value-modeling",
+  "client_domain": "product-analytics",
+  "niche": "a Toronto-run developer Q&A network's 2027 request for its paid moderation team, sized in FTE from the hours its nine topic sites' moderator flags and unreviewed community-inbox items will take at the 2027 handle-time standards, when every community item goes first to volunteer reviewers whose pools have been shrinking since the reputation pipeline dried up in autumn 2024, and the sites generative AI hurt least are the ones running out of volunteers",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G5",
+    "G13",
+    "G16"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "Quernstone's head of moderation operations, who takes the 2027 paid moderation request to the Moderation Council's December sitting and then to finance",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "reviewer_activity_2024-01_2026-09.csv (the review platform's reviewer-month activity export) beside the platform's daily inbox export",
+    "rows": 0,
+    "entity": "one volunteer reviewer's calendar month on one site: reviews completed by item type and days with a review",
+    "grain": "reviewer x site x month",
+    "source": "synthetic (constructed in the layout of a Q&A platform's review-programme activity export)"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "Canada, Ontario (Quernstone's operations and finance in Toronto; the nine sites serve developers worldwide; the network, its sites, people, systems and data are fictional)",
+    "currency": "CAD",
+    "org_type": "developer question-and-answer network of nine topic sites, volunteer review in front of a paid moderation team",
+    "invented_names": [
+      "Quernstone"
+    ],
+    "people": [
+      "Duane Zamora",
+      "Natalie Maxwell",
+      "Claudia Spence"
+    ]
+  },
+  "deliverables": [
+    "moderation_pool_2027.xlsx",
+    "council_pool_request_2027.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "Work reaches a paid tier only when a volunteer tier falls short, and the volunteer tier's capacity shows only in the periods it fell short, since in every other period it handled everything that arrived; with almost no new volunteers arriving, each pool shrinks at a steady exit rate, so units whose records show almost nothing reaching the paid tier cross below their arrivals inside the forward window, while a share of arrivals carried forward, a trend in the paid work, or capacity read from recent throughput each misses the crossing.",
+  "driver_concrete": "Every community review item at Quernstone goes first to the volunteer reviewers and reaches the paid moderators only if no volunteer has reviewed it 72 hours after it entered the inbox; volunteers review at their own pace when the inbox is full and below it when it runs dry, so their pace shows only in months when items were routed (every site in 2021 and 2022, Security, Embedded and Scientific Computing since late 2025), and since almost no members have reached the review privilege after autumn 2024 every site's pool shrinks by about two per cent a month, which takes Data & ML, Databases, DevOps and Game Development, with almost nothing routed since 2023, below their 2027 inbox arrivals.",
+  "stump": "Carrying each site's paid queue hours per question over the last twelve months onto the 2027 question plan files a pool of about 105 FTE (about 110 to 114 with each site's routed share, its monthly paid hours or its reviewer pool trended forward), inside finance's 110-FTE envelope; the step that lands it there is treating routed items as a share of arrivals, when they are the arrivals each site's shrinking reviewer pool cannot review at the pace reviewers keep when the inbox is full, which puts four sites routed almost nothing since 2023 short of their 2027 arrivals and files about 130.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stacks the old monthly queue workbook and the new daily inbox export, maps the old site names to the new codes, and reads the charter's need definition, the 2027 standards and the 2027 question plan correctly carries each site's paid queue hours per question (or each queue's routed share) onto the plan and files about 105 FTE, or 110 to 114 with the routed share, the paid hours or the reviewer count trended; items reach the paid team only when the volunteers fall short, so each site's 2027 routed items are its 2027 arrivals less what its shrinking reviewer pool can review at the pace reviewers keep when the inbox is full, which files about 130.",
+  "domain_test": "The deciding quantity is each site's 2027 volunteer review capacity, forecast the way product analytics forecasts a user segment's retained activity (the reviewer pool projected from its own monthly exits and near-zero arrivals, times the activity each retained reviewer delivers when work is plentiful) and set against the 2027 inbox the plan implies; with another field's nouns (a hospital's agency nurses, a utility's call centre) there is no volunteer user cohort whose engagement decays on its own retention curve and whose output shows only when work outruns it, so the forecast that decides the call has nothing to stand on.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:volunteer-review-capacity-projected-from-reviewer-retention-against-inbox-arrivals",
+  "layer1": [
+    "a review-platform change in January 2024: a monthly per-queue workbook for 2021 to 2023 (one sheet a year, the edit queue added in 2022) beside a daily inbox export by item type from 2024",
+    "site names in the old workbook against site codes in the new export, with Graphics folded into Game Development in 2023, mapped by the site register",
+    "UTC day boundaries in the platform exports against Toronto time in the moderation team's own records",
+    "the September 2026 inbox export pulled twice, a preliminary pull with the last three days' routing still open and a revised pull a week later",
+    "reviewer accounts re-keyed at the platform change, old site-local reviewer numbers mapped to network account ids"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task153": "task153 caps what a yard island hands a vehicle at the smaller of the fuel burned between visits and a known tankful, per segment; here the capacity is hidden wherever it was not binding, shrinks on the volunteers' own retention, and the decisive move is its crossing below arrivals in the year the request funds",
+    "task150": "task150 carries pupils at rates on their own base and arrivals at steady counts; here nothing arrives at a steady count and the decisive split is a capacity limit against arrivals",
+    "task148": "task148 drains a queue by abandonment and prices waits; here no item leaves on its own, the 72-hour hand-off is a routing rule, and the forecast is how many items the volunteers will not reach",
+    "task140": "task140 strikes a residual after higher reservations that include a dependent load; here the volunteers are no reservation and their capacity does not depend on the paid tier"
+  },
+  "lineage": [],
+  "notes": "Kinship cards read at the draw: task150, task153, task152, task149 (the lane's last builds), task140, task147, task148, task111, task128 (capacity and overflow drivers on file). No trust-and-safety card in the corpus carries a moderation-capacity driver.",
+  "registered": "2026-10-17T08:19:38Z"
+}
