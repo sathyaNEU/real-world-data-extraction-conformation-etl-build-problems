@@ -196,8 +196,8 @@ def workbook(path, F):
         "Stores sending every week: store codes with the same trading name, suburb and postcode taken as one store; "
         "a chain's weeks run from its data agreement or the start of the year.",
         "Spending on promotion: sales at each chain's catalogue specials (feed dictionary, Terms). Store markdowns "
-        "and register price checks excluded. Chain C2 coded its specials PC until the week ending 8 August 2026 and "
-        "TPR from then; its earlier PC sales are counted as specials.",
+        "and register price checks excluded. Chain C2's code list puts TPR and the price check override PC in use "
+        "from 2 August 2026; its PC sales before then are its catalogue specials and are counted.",
     ]
     ws4.append(["Notes"])
     ws4["A1"].font = HEAD
@@ -331,8 +331,8 @@ def paper(path, F, png):
     hi, lo = max(ps, key=ps.get), min(ps, key=ps.get)
     para("Between %.1f per cent (%s) and %.1f per cent (%s) of each category's spending was at catalogue specials. "
          "Store markdowns and register price checks are not counted. One convenience chain coded its specials PC "
-         "until the week ending 8 August 2026 and TPR from then, PC since marking price check overrides as its code "
-         "list supplied on 3 August 2026 has it; its earlier PC sales are counted as specials. Each category's share is on the Structure sheet "
+         "until the week ending 1 August 2026 and TPR from 2 August, when its code list puts PC in use for price "
+         "check overrides; its earlier PC sales are counted as specials. Each category's share is on the Structure sheet "
          "of the workbook." % (ps[lo], lo, ps[hi], hi))
     para("Notes", bold=True, size=9.5, after=2)
     para("1. Gaps are each format's change less the national change, taken before rounding; the national change "

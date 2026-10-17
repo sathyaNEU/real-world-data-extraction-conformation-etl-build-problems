@@ -167,6 +167,13 @@ def run(target, T):
     tk = R["takings"]
     crack = G.takings(P, repeated="sum")[0]
     ok("A golden: the four repeated-total chains detected", R["repeated"] == sorted(K.VENDOR_CHAINS), R["repeated"])
+    acc = P["ss"][P["ss"]["load_id"].map(P["log"].set_index("load_id")["status"]) == "accepted"].merge(
+        P["reg"][["store_id", "chain_code"]], on="store_id")
+    sw = acc.groupby(["chain_code", "store_id", "week_ending"])["sales_aud"].agg(["nunique", "size"])
+    rep = sw[(sw["nunique"] == 1) & (sw["size"] > 1)].index.get_level_values(0)
+    ok("A record: repeated rows to the cent in every store-week of exactly four chains and in no other store-week",
+       set(rep) == set(K.VENDOR_CHAINS) and all(((sw.loc[c_]["nunique"] == 1) & (sw.loc[c_]["size"] == 2)).all()
+                                                for c_ in K.VENDOR_CHAINS), str(sorted(set(rep))))
     ok("A cracker (every department row summed) misses all four formats",
        all(r1(crack[f]) != r1(tk[f]) for f in K.FORMATS), str({f[:3]: r1(crack[f] - tk[f]) for f in K.FORMATS}))
     lat = G.takings(P, loads="latest")[0]
@@ -207,6 +214,24 @@ def run(target, T):
     pre = df[(df["chain"] == K.UPGRADE_CHAIN) & (pd.to_datetime(df["week_ending"]) < pd.Timestamp(G.UPGRADE_WEEK))]
     ok("C device: no TPR before the upgrade week, PC rows chain-wide at a cut price before it",
        (pre["promo_code"] == "TPR").sum() == 0 and (pre["promo_code"] == "PC").sum() > 1000)
+    pcw = pre[pre["promo_code"] == "PC"][["item", "t"]].drop_duplicates()
+    same = pre.merge(pcw, on=["item", "t"])
+    reg_price = df[(df["chain"] == K.UPGRADE_CHAIN) & df["promo_code"].isna()].assign(
+        p=lambda x: x["dollars"] / x["units"]).groupby("item")["p"].median()
+    cut = (same.loc[same["promo_code"] == "PC", "dollars"] / same.loc[same["promo_code"] == "PC", "units"]).values < \
+        same.loc[same["promo_code"] == "PC", "item"].map(reg_price).values
+    ok("C record: before 2 August 2026 every C2 sale of a PC line-week is coded PC and sold below the regular price",
+       (same["promo_code"].fillna("") == "PC").all() and cut.mean() > 0.97, "%.3f below" % cut.mean())
+    codes = pd.read_excel(os.path.join(target, K.FILES["partners"]), sheet_name="Price codes", dtype=str)
+    since = {(r.chain_code, r.code): pd.Timestamp(r.in_use_from) for r in codes.itertuples()}
+    wk0 = pd.to_datetime(df["week_ending"]) - pd.Timedelta(days=6)
+    early = [(ch, k) for ch, k, s0 in zip(df["chain"], df["promo_code"].fillna(""), wk0) if k and s0 < since[(ch, k)]]
+    ok("C organ: every code appears only from its listed in-use date, except C2's PC before 2 August 2026",
+       set(early) == {(K.UPGRADE_CHAIN, "PC")}, str(sorted(set(early))))
+    ok("SF15 the methodology files the rounding path (gaps from unrounded changes)",
+       "computed unrounded and rounded to one decimal only for publication" in docs_text.replace("\n", " "))
+    ok("B wording: the prompt counts a chain's stores over the weeks the chain was in the panel",
+       "every week the chain was in the panel" in open(os.path.join(os.path.dirname(HERE), "prompt.txt")).read())
 
     # ------------------------------------------------------------------------------------------ gates and realism
     files = sorted(os.listdir(target))

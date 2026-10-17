@@ -116,7 +116,8 @@ def write_method(path):
          "divided by its average over the year's first four weeks, less one, in per cent."),
         ("7. National figures",
          "A category's national change is the weighted average of its four format changes, with the format weights "
-         "the index committee sets for the year."),
+         "the index committee sets for the year. Changes, and the gap between a format's change and the national "
+         "change, are computed unrounded and rounded to one decimal only for publication."),
         ("8. Data as loaded",
          "The movement table keeps every load a chain sends. For each store and week the index uses the chain's "
          "accepted load, and a resubmission replaces the loads it covers; the feed delivery log records each load's "
@@ -191,21 +192,23 @@ def _sheet(ws, header, rows, widths):
 
 
 PRICE_CODES = {
-    "S1": [("SPECIAL", "Catalogue special (temporary price reduction)")],
-    "S2": [("PROMO", "Catalogue promotion, reduced shelf price for the week")],
-    "S3": [("TPR", "Temporary price reduction")],
-    "S4": [("SALE", "Weekly sale price")],
-    "S5": [("OFFER", "Special offer price for the week")],
-    "N1": [("P", "Promotional price (catalogue)"), ("RC", "Reduced to clear (store markdown, short-dated stock)")],
-    "N2": [("PROMO", "Catalogue promotion"), ("MD", "Store markdown, short-dated or damaged stock")],
-    "N3": [("SPC", "Special (temporary price reduction)"), ("RC", "Reduced to clear")],
-    "C1": [("PR", "Promotional price for the week"), ("RC", "Reduced to clear")],
-    "C2": [("TPR", "Temporary price reduction (catalogue)"), ("PC", "Price check override at the register"),
-           ("RC", "Reduced to clear")],
-    "C3": [("DEAL", "Weekly deal price"), ("CLR", "Clearance markdown by the store")],
-    "O1": [("SALE", "Sale price for the week")],
-    "O2": [("PROMO", "Online promotion price")],
-    "O3": [("SPECIAL", "Weekly special")],
+    "S1": [("SPECIAL", "Catalogue special (temporary price reduction)", "2015-07-05")],
+    "S2": [("PROMO", "Catalogue promotion, reduced shelf price for the week", "2018-03-04")],
+    "S3": [("TPR", "Temporary price reduction", "2016-09-11")],
+    "S4": [("SALE", "Weekly sale price", "2019-02-03")],
+    "S5": [("OFFER", "Special offer price for the week", "2017-05-07")],
+    "N1": [("P", "Promotional price (catalogue)", "2014-08-03"),
+           ("RC", "Reduced to clear (store markdown, short-dated stock)", "2014-08-03")],
+    "N2": [("PROMO", "Catalogue promotion", "2020-06-07"), ("MD", "Store markdown, short-dated or damaged stock",
+                                                             "2020-06-07")],
+    "N3": [("SPC", "Special (temporary price reduction)", "2018-10-07"), ("RC", "Reduced to clear", "2021-04-11")],
+    "C1": [("PR", "Promotional price for the week", "2016-01-31"), ("RC", "Reduced to clear", "2016-01-31")],
+    "C2": [("TPR", "Temporary price reduction (catalogue)", "2026-08-02"),
+           ("PC", "Price check override at the register", "2026-08-02"), ("RC", "Reduced to clear", "2017-11-05")],
+    "C3": [("DEAL", "Weekly deal price", "2019-05-05"), ("CLR", "Clearance markdown by the store", "2019-05-05")],
+    "O1": [("SALE", "Sale price for the week", "2020-03-01")],
+    "O2": [("PROMO", "Online promotion price", "2019-09-01")],
+    "O3": [("SPECIAL", "Weekly special", "2021-02-07")],
 }
 CODE_LIST_DATE = {"S1": "2025-03-11", "S2": "2024-11-20", "S3": "2025-07-02", "S4": "2024-09-16", "S5": "2026-06-30",
                   "N1": "2025-05-21", "N2": "2024-12-09", "N3": "2025-10-14", "C1": "2025-02-26", "C2": "2026-08-03",
@@ -229,8 +232,8 @@ def write_partners(path, agreement):
     for r in ws.iter_rows(min_row=2):
         r[5].alignment = Alignment(wrap_text=True, vertical="top")
     ws2 = wb.create_sheet("Price codes")
-    rows = [[c, code, meaning] for c in K.CHAIN_CODES for code, meaning in PRICE_CODES[c]]
-    _sheet(ws2, ["chain_code", "code", "meaning"], rows, [11, 10, 58])
+    rows = [[c, code, meaning, since] for c in K.CHAIN_CODES for code, meaning, since in PRICE_CODES[c]]
+    _sheet(ws2, ["chain_code", "code", "meaning", "in_use_from"], rows, [11, 10, 58, 13])
     wb.save(path)
 
 
@@ -249,15 +252,16 @@ DICTIONARY = [
      "discount, including GST where it applies."),
     ("gpi_movement_ry2026.csv", "promo_code", "text", "The till's price code on the row's sales, in the chain's own "
      "code list (partner register, Price codes); blank for sales at the shelf price."),
-    ("store_weekly_sales_ry2026.csv", "", "", "Each store's weekly takings by department, for each load received."),
+    ("store_weekly_sales_ry2026.csv", "", "", "Each store's weekly takings as the chain's export lays them out, for each "
+     "load received."),
     ("store_weekly_sales_ry2026.csv", "load_id", "text", "The delivery the row came in (feed delivery log)."),
     ("store_weekly_sales_ry2026.csv", "store_id", "text", "The firm's store code."),
     ("store_weekly_sales_ry2026.csv", "week_ending", "date", "The last day of the chain's trading week, as the chain "
      "sends it."),
     ("store_weekly_sales_ry2026.csv", "dept_code", "text", "The chain's department code."),
     ("store_weekly_sales_ry2026.csv", "dept_name", "text", "The chain's department name."),
-    ("store_weekly_sales_ry2026.csv", "sales_aud", "number", "Sales in dollars, including GST, as the chain reports "
-     "them."),
+    ("store_weekly_sales_ry2026.csv", "sales_aud", "number", "Sales in dollars, including GST, as the chain's export "
+     "reports them on the row."),
     ("panel_store_register.csv", "", "", "One row for each store code the firm has issued to a panel store."),
     ("panel_store_register.csv", "store_id", "text", "The firm's store code."),
     ("panel_store_register.csv", "chain_code", "text", "The partner chain (partner register)."),

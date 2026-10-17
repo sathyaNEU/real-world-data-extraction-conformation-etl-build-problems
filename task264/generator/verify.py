@@ -114,10 +114,13 @@ def promotions(D):
     pairs = set(zip(special["chain_code"], special["code"]))
     code = mv["promo_code"].fillna("")
     on = pd.Series([(c, k) in pairs for c, k in zip(mv["chain_code"], code)], index=mv.index)
-    # the upgrade chain's PC: a chain-wide price cut before its first TPR week, a price check after
-    c2 = mv["chain_code"] == "C2"
-    first_tpr = mv.loc[c2 & (code == "TPR"), "w"].min()
-    on = on | (c2 & (code == "PC") & (mv["w"] < first_tpr))
+    # a code read before its listed in-use date carries no listed meaning: C2's PC rows before 2 August 2026 run at
+    # every store of the chain at a cut price, the dictionary's catalogue special
+    since = {(r.chain_code, r.code): pd.Timestamp(r.in_use_from) for r in codes.itertuples()}
+    start = pd.to_datetime(mv["week_ending"]) - pd.Timedelta(days=6)
+    early = pd.Series([start_ < since.get((c, k), pd.Timestamp("1900-01-01")) for c, k, start_ in
+                       zip(mv["chain_code"], code, start)], index=mv.index)
+    on = (on & ~early) | ((mv["chain_code"] == "C2") & (code == "PC") & early)
     g = mv.assign(d=mv["sales_aud"] * on).groupby("category")[["d", "sales_aud"]].sum()
     return (100 * g["d"] / g["sales_aud"]).to_dict()
 

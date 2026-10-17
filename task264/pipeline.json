@@ -23,12 +23,12 @@
     "nearest": "task463 0.06"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (first pass)",
+    "disposition": "FIX_NOW: four ask-side forks (gap rounding basis, C2's PC before 2 August 2026, the continuity window, the repeated store totals); main call reproduced, Gate G method_or_model_selection analytical_non_defect, Gate H pass",
+    "report": "task264/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: the isolated judge thread is running on the brief at /tmp/determinism-check-task264-064639/judge_brief.md (verdict to verdict.md there), then re-invoke determinism-judge with that verdict for the report. Fix every judge finding and the staged reader fixes (manifest compile line, delivery-log notes, dictionary takings and promotion-share terms, golden wording of the PC change) in one generator pass, rebuild (python3 task264/generator/build.py), re-run leak.py --asof 2026-12-07 and the reader (a document changed), re-judge once on FIX_NOW, then ship. If the container was reclaimed, rebuild first and re-run stage 4 from a fresh brief.",
+  "resume": "stage 4 after the fix pass (methodology section 7 rounding path, code-list in-use dates, prompt 'the chain was in the panel', store-sales layout wording, reader realism fixes; checks 76, verify 0, rebuild byte-identical): the second leak reader and the one re-judge are running (a fresh determinism-judge brief under /tmp/determinism-check-task264-<runid>/, its thread spawned from the main session). On their reports fix any finding in the generator, rebuild, then ship. If the container was reclaimed, rebuild (python3 task264/generator/build.py) and re-run both from fresh copies.",
   "approved": null,
   "delivered": null,
   "portal": null,

@@ -11,7 +11,7 @@ import pandas as pd
 import analysis as A
 import common as K
 
-UPGRADE_WEEK = K.WEEKS[K.UPGRADE_T]
+UPGRADE_WEEK = K.WEEKS[K.UPGRADE_T]          # the retail week holding the PC code's in-use date (2 August 2026)
 
 
 def read_pack(target):
