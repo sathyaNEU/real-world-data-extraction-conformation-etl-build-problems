@@ -28,43 +28,43 @@
  "closed_placements": 7,
  "complication_groups": {
   "G1": {
-   "fy2025_26": 2078,
-   "fy2026_27": 1001,
+   "fy2025_26": 2070,
+   "fy2026_27": 997,
    "name": "Healthcare-associated infections"
   },
   "G2": {
-   "fy2025_26": 1404,
-   "fy2026_27": 695,
+   "fy2025_26": 1410,
+   "fy2026_27": 686,
    "name": "Pressure injuries"
   },
   "G3": {
-   "fy2025_26": 1256,
-   "fy2026_27": 653,
+   "fy2025_26": 1263,
+   "fy2026_27": 658,
    "name": "Falls resulting in fracture or intracranial injury"
   },
   "G4": {
-   "fy2025_26": 1456,
-   "fy2026_27": 720,
+   "fy2025_26": 1447,
+   "fy2026_27": 725,
    "name": "Medication and anaesthetic complications"
   },
   "G5": {
-   "fy2025_26": 1623,
-   "fy2026_27": 833,
+   "fy2025_26": 1633,
+   "fy2026_27": 825,
    "name": "Delirium"
   },
   "G6": {
-   "fy2025_26": 1695,
-   "fy2026_27": 811,
+   "fy2025_26": 1683,
+   "fy2026_27": 808,
    "name": "Respiratory complications"
   },
   "G7": {
-   "fy2025_26": 864,
-   "fy2026_27": 423,
+   "fy2025_26": 866,
+   "fy2026_27": 430,
    "name": "Venous thromboembolism"
   },
   "G8": {
-   "fy2025_26": 1068,
-   "fy2026_27": 490,
+   "fy2025_26": 1058,
+   "fy2026_27": 478,
    "name": "Surgical complications requiring unplanned return to theatre"
   }
  },
@@ -87,14 +87,14 @@
  "hospital_year": {
   "H1": {
    "adjusted_rate_per_1000": 109.0,
-   "complications": 4016,
-   "episodes": 38247,
+   "complications": 4017,
+   "episodes": 38249,
    "name": "Alderbrook Hospital"
   },
   "H2": {
    "adjusted_rate_per_1000": 112.2,
-   "complications": 2526,
-   "episodes": 23182,
+   "complications": 2525,
+   "episodes": 23179,
    "name": "Stonecreek Hospital"
   },
   "H3": {
@@ -121,7 +121,7 @@
   },
   "2024-25 Q3": {
    "separations": 832,
-   "with_complication": 48
+   "with_complication": 44
   },
   "2024-25 Q4": {
    "separations": 918,
@@ -152,25 +152,37 @@
    "with_complication": 47
   }
  },
- "pick_excess_complications": 46,
+ "pick_excess_complications": 46.4,
  "pick_expected_complications": 204,
- "pick_planned_separations": 2358,
+ "pick_planned_separations": 2359,
  "pick_standardised_ratio": 1.23,
  "rate_denominator": 1000,
+ "register_readings": {
+  "against the other units pooled over the same quarters": 0.391804,
+  "against what the other units did over the same quarters": 0.39194,
+  "expected-weighted mean of the shares": 0.382492,
+  "least squares through the origin": 0.381098,
+  "least squares with an intercept": 0.383431,
+  "mean of the placements' shares": 0.381168,
+  "measured from the quarter before the placement": 0.388145,
+  "measured from the quarter closed at the decision": 0.381932,
+  "median of the shares": 0.386637,
+  "pooled sums": 0.380885
+ },
  "rung0_avoided": 2,
- "rung0_excess": 6,
+ "rung0_excess": 5.6,
  "rung0_excess_now": 36,
  "rung0_ratio_quarter": 1.2,
  "rung0_ratio_record": 1.03,
  "rung0_unit_code": "41210",
  "rung1_adjusted_rate": 124.7,
  "rung1_avoided": 6,
- "rung1_excess": 15,
+ "rung1_excess": 14.8,
  "rung1_planned_separations": 508,
  "rung1_ratio": 1.29,
  "rung1_unit_code": "41330",
  "rung2_avoided": 12,
- "rung2_excess": 31,
+ "rung2_excess": 30.6,
  "rung2_expected_next": 310,
  "rung2_unit_code": "41220",
  "runner_unit": "Alderbrook General Surgery",

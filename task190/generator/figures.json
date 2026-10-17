@@ -1,18 +1,18 @@
 {
  "asks": {
   "machine_hours_by_month": {
-   "2026-07": 58.6,
-   "2026-08": 87.1,
-   "2026-09": 74.0,
-   "2026-10": 75.3,
-   "2026-11": 64.7,
-   "2026-12": 116.4,
-   "2027-01": 54.1,
-   "2027-02": 103.0,
-   "2027-03": 64.8,
-   "2027-04": 92.8,
-   "2027-05": 53.2,
-   "2027-06": 66.3
+   "2026-07": 75.9,
+   "2026-08": 91.7,
+   "2026-09": 94.0,
+   "2026-10": 78.9,
+   "2026-11": 56.9,
+   "2026-12": 82.5,
+   "2027-01": 95.4,
+   "2027-02": 134.9,
+   "2027-03": 54.2,
+   "2027-04": 98.2,
+   "2027-05": 72.9,
+   "2027-06": 63.2
   },
   "machines_with_no_service_record": 3,
   "machines_with_no_service_record_names": [
@@ -23,28 +23,28 @@
   "rating_moves_by_band": {
    "1": [
     0,
-    276,
+    240,
     0
    ],
    "2": [
-    470,
-    243,
+    392,
+    241,
     153
    ],
    "3": [
-    338,
-    270,
-    92
+    402,
+    306,
+    115
    ],
    "4": [
-    291,
-    492,
-    89
+    320,
+    391,
+    3
    ],
    "5": [
-    370,
+    230,
     0,
-    96
+    0
    ]
   },
   "sites_differing_from_vendor": [
@@ -65,19 +65,19 @@
    "2027Q1": [
     1081,
     223,
-    -784.53
+    -798.74
    ],
    "2027Q2": [
     1101,
-    240,
-    869.81
+    238,
+    944.81
    ]
   }
  },
  "call": {
-  "deposits_split": 400,
+  "deposits_split": 450,
   "largest_segment": "Transport and courier",
-  "largest_segment_deposits_split": 90
+  "largest_segment_deposits_split": 150
  },
  "constants": {
   "band_lower_bound": 9000,
@@ -86,99 +86,103 @@
   "handbook_segment_clause": 7.5
  },
  "critical_components": {
-  "band_deposits_observed": 2196,
+  "band_deposits_observed": 2583,
   "band_deposits_observed_by_segment": {
-   "Clubs and community": 103,
-   "Fuel and automotive": 298,
-   "Grocery and convenience": 626,
-   "Hospitality": 512,
-   "Personal services": 111,
-   "Rural supply and horticulture": 151,
-   "Trades and construction": 216,
-   "Transport and courier": 179
+   "Clubs and community": 112,
+   "Fuel and automotive": 240,
+   "Grocery and convenience": 808,
+   "Hospitality": 259,
+   "Personal services": 242,
+   "Rural supply and horticulture": 101,
+   "Trades and construction": 189,
+   "Transport and courier": 632
   },
-  "cash_deposits_paid_in_total": 44964,
+  "cash_deposits_paid_in_total": 46772,
+  "deposits_split_stated_to_the_nearest": 50,
   "segment_cash_deposits_paid_in": {
-   "Clubs and community": 1836,
-   "Fuel and automotive": 6658,
-   "Grocery and convenience": 14111,
-   "Hospitality": 11297,
-   "Personal services": 2036,
-   "Rural supply and horticulture": 3042,
-   "Trades and construction": 3684,
-   "Transport and courier": 2300
+   "Clubs and community": 2718,
+   "Fuel and automotive": 4175,
+   "Grocery and convenience": 15131,
+   "Hospitality": 4758,
+   "Personal services": 3993,
+   "Rural supply and horticulture": 2396,
+   "Trades and construction": 3168,
+   "Transport and courier": 10433
   },
   "segment_deposits_split": {
-   "Clubs and community": 30,
-   "Fuel and automotive": 30,
-   "Grocery and convenience": 60,
-   "Hospitality": 60,
-   "Personal services": 30,
-   "Rural supply and horticulture": 30,
-   "Trades and construction": 70,
-   "Transport and courier": 90
+   "Clubs and community": 0,
+   "Fuel and automotive": 50,
+   "Grocery and convenience": 100,
+   "Hospitality": 50,
+   "Personal services": 50,
+   "Rural supply and horticulture": 0,
+   "Trades and construction": 50,
+   "Transport and courier": 150
   }
  },
  "deliverables": {
   "structured_cash_deposits_2027.xlsx": {
-   "deposits_split_total": 400,
+   "deposits_split_total": 450,
    "largest_segment": "Transport and courier",
    "rows": {
     "Clubs and community": [
-     1836,
-     30
+     2718,
+     0
     ],
     "Fuel and automotive": [
-     6658,
-     30
+     4175,
+     50
     ],
     "Grocery and convenience": [
-     14111,
-     60
+     15131,
+     100
     ],
     "Hospitality": [
-     11297,
-     60
+     4758,
+     50
     ],
     "Personal services": [
-     2036,
-     30
+     3993,
+     50
     ],
     "Rural supply and horticulture": [
-     3042,
-     30
+     2396,
+     0
     ],
     "Trades and construction": [
-     3684,
-     70
+     3168,
+     50
     ],
     "Transport and courier": [
-     2300,
-     90
+     10433,
+     150
     ]
    }
   },
   "structured_deposits_by_segment.png": {
    "bars": {
-    "Clubs and community": 30,
-    "Fuel and automotive": 30,
-    "Grocery and convenience": 60,
-    "Hospitality": 60,
-    "Personal services": 30,
-    "Rural supply and horticulture": 30,
-    "Trades and construction": 70,
-    "Transport and courier": 90
+    "Clubs and community": 0,
+    "Fuel and automotive": 50,
+    "Grocery and convenience": 100,
+    "Hospitality": 50,
+    "Personal services": 50,
+    "Rural supply and horticulture": 0,
+    "Trades and construction": 50,
+    "Transport and courier": 150
    },
    "marked": "Transport and courier"
   }
  },
  "steps": {
-  "counter_rows": 56080,
-  "customer_against_prior_year": 1406,
-  "estimators_swept": 199,
-  "machine_rows": 38605,
-  "one_profile_for_the_book": 400,
-  "same_day_screen": 1287,
-  "same_day_screen_habit_netted": 1088
+  "band_read_on_its_own": 500,
+  "counter_rows": 61568,
+  "customer_against_prior_year": 1633,
+  "machine_rows": 37250,
+  "mirror_deposits_observed": 1428,
+  "near_threshold_band_counted": 2583,
+  "prior_year_on_the_same_reading": 350,
+  "same_day_screen": 1438,
+  "specifications_in_the_grid": 225,
+  "specifications_the_record_leaves": 141
  }
 }

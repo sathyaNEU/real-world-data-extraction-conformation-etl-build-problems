@@ -12,6 +12,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
+MIRROR_HI = 11000
+GRAIN = 50
 BAND_LO, BAND_HI = 9000.0, 10000.0
 THRESHOLD = 10000.0
 YEAR_LO, YEAR_HI = dt.date(2026, 7, 1), dt.date(2027, 6, 30)
@@ -102,35 +104,83 @@ def _line(xs, ys, w=None):
     return k, my - k * mx
 
 
-def excess(amounts, lo=5000, hi=16000, step=250, family="poisson_log"):
-    """The band's deposits over the number the profile away from it gives."""
-    b = _bins(amounts, lo, hi, step)
-    band = [k for k in range(len(b)) if BAND_LO <= lo + k * step < BAND_HI]
-    keep = [k for k in range(len(b)) if k not in band and b[k] > 0]
-    xs = [float(k) for k in keep]
-    ys = [float(b[k]) for k in keep]
-    obs = sum(b[k] for k in band)
-    if family == "count_ols":
-        k, c = _line(xs, ys)
-        return obs - sum(c + k * float(j) for j in band)
+def _poly(xs, ys, w, order):
+    m = order + 1
+    A = [[sum(w[i] * xs[i] ** (r + c) for i in range(len(xs))) for c in range(m)]
+         for r in range(m)]
+    bb = [sum(w[i] * ys[i] * xs[i] ** r for i in range(len(xs))) for r in range(m)]
+    for c in range(m):
+        piv = max(range(c, m), key=lambda r: abs(A[r][c]))
+        A[c], A[piv] = A[piv], A[c]
+        bb[c], bb[piv] = bb[piv], bb[c]
+        if abs(A[c][c]) < 1e-14:
+            return None
+        for r in range(c + 1, m):
+            f = A[r][c] / A[c][c]
+            for cc in range(c, m):
+                A[r][cc] -= f * A[c][cc]
+            bb[r] -= f * bb[c]
+    q = [0.0] * m
+    for r in range(m - 1, -1, -1):
+        q[r] = (bb[r] - sum(A[r][c] * q[c] for c in range(r + 1, m))) / A[r][r]
+    return q
+
+
+def _fit(xs, ys, family, order):
+    if family == "ols":
+        p = _poly(xs, ys, [1.0] * len(xs), order)
+        return (lambda x: sum(p[j] * x ** j for j in range(order + 1))) if p else None
     if family == "log_ols":
-        k, c = _line(xs, [math.log(y) for y in ys])
-        return obs - sum(math.exp(c + k * float(j)) for j in band)
-    # poisson log link, iteratively reweighted
-    k, c = _line(xs, [math.log(y) for y in ys])
-    for _ in range(30):
-        mu = [math.exp(c + k * x) for x in xs]
-        z = [c + k * x + (y - m) / max(m, 1e-9) for x, y, m in zip(xs, ys, mu)]
-        k2, c2 = _line(xs, z, mu)
-        if abs(k2 - k) < 1e-13 and abs(c2 - c) < 1e-13:
-            k, c = k2, c2
+        p = _poly(xs, [math.log(max(y, 0.5)) for y in ys], [1.0] * len(xs), order)
+        return (lambda x: math.exp(sum(p[j] * x ** j for j in range(order + 1)))) if p else None
+    p = [0.0] * (order + 1)
+    p[0] = math.log(max(sum(ys) / float(len(ys)), 1e-9))
+    for _ in range(60):
+        mu = [math.exp(min(30.0, sum(p[j] * x ** j for j in range(order + 1)))) for x in xs]
+        z = [sum(p[j] * x ** j for j in range(order + 1)) + (y - m) / max(m, 1e-9)
+             for x, y, m in zip(xs, ys, mu)]
+        q = _poly(xs, z, mu, order)
+        if q is None:
+            return None
+        done = max(abs(q[j] - p[j]) for j in range(order + 1)) < 1e-11
+        p = q
+        if done:
             break
-        k, c = k2, c2
-    return obs - sum(math.exp(c + k * float(j)) for j in band)
+    return lambda x: math.exp(min(30.0, sum(p[j] * x ** j for j in range(order + 1))))
 
 
-def r10(x):
-    return int(math.floor(x / 10.0 + 0.5) * 10)
+def sides(amounts, lo=5000, hi=16000, step=250, family="poisson", order=1):
+    """The band's surplus and the deficit 10,000 to 11,000 carries, from one fit."""
+    b = _bins(amounts, lo, hi, step)
+    n = len(b)
+    out = [k for k in range(n) if BAND_LO <= lo + k * step < MIRROR_HI]
+    rest = [k for k in range(n) if k not in out]
+    if any(b[k] == 0 for k in rest):
+        return None
+    keep = [k for k in rest if b[k] > 0]
+    if len(keep) < order + 3:
+        return None
+    low = [k for k in range(n) if BAND_LO <= lo + k * step < BAND_HI]
+    mir = [k for k in range(n) if BAND_HI <= lo + k * step < MIRROR_HI]
+    if not low or not mir:
+        return None
+    f = _fit([(lo + k * step) / 1000.0 for k in keep], [float(b[k]) for k in keep], family, order)
+    if f is None:
+        return None
+    pl = sum(f((lo + k * step) / 1000.0) for k in low)
+    pm = sum(f((lo + k * step) / 1000.0) for k in mir)
+    if not (0 < pl < 1e7 and 0 < pm < 1e7):
+        return None
+    return (sum(b[k] for k in low) - pl, pm - sum(b[k] for k in mir))
+
+
+def figure(amounts, lo=5000, hi=16000, step=250, family="poisson", order=1):
+    s = sides(amounts, lo, hi, step, family, order)
+    return None if s is None else (s[0] + s[1]) / 2.0
+
+
+def r50(x):
+    return int(math.floor(x / float(GRAIN) + 0.5) * GRAIN)
 
 
 def main(target, figpath):
@@ -143,7 +193,7 @@ def main(target, figpath):
         by_seg.setdefault(s, []).append(a)
 
     # the figure
-    per = {s: r10(excess(v)) for s, v in by_seg.items()}
+    per = {s: r50(figure(v)) for s, v in by_seg.items()}
     want = fig["critical_components"]["segment_deposits_split"]
     for s in sorted(want):
         chk("segment %s" % s, per.get(s), want[s])
@@ -190,20 +240,40 @@ def main(target, figpath):
         if len(a) >= 2 and sum(a) >= THRESHOLD and any(x < THRESHOLD for x in a):
             screen += sum(1 for x in a if BAND_LO <= x < BAND_HI)
     chk("the same-day screen", screen, fig["steps"]["same_day_screen"])
-    chk("one profile for the book", r10(excess([a for s, a, d in win])),
-        fig["steps"]["one_profile_for_the_book"])
+    chk("the near-threshold band counted", sum(band.values()),
+        fig["steps"]["near_threshold_band_counted"])
+    chk("the band read on its own",
+        sum(r50(sides(v)[0]) for s, v in by_seg.items()),
+        fig["steps"]["band_read_on_its_own"])
+    mirror = {s: sum(1 for a in v if BAND_HI <= a < MIRROR_HI) for s, v in by_seg.items()}
+    chk("deposits in 10,000 to 11,000", sum(mirror.values()),
+        fig["steps"]["mirror_deposits_observed"])
 
-    # convergence: every family, window and step gives the same eight segment figures
-    seen = set()
-    for lo, hi in ((3000, 16000), (4000, 16000), (5000, 16000), (6000, 16000), (7000, 13000),
-                   (8000, 12000), (5000, 15000), (6000, 12000), (6000, 14000), (8000, 11000)):
-        for step in (100, 200, 250, 500):
-            for fam in ("poisson_log", "log_ols", "count_ols"):
-                got = tuple(r10(excess(v, lo, hi, step, fam)) for s, v in sorted(by_seg.items()))
-                seen.add(got)
-                chk("convergence %d-%d/%d/%s" % (lo, hi, step, fam), sum(got),
-                    fig["call"]["deposits_split"])
-    chk("one set of segment figures across every estimator", len(seen), 1)
+    # convergence over the determinism judge's own candidate set, with the record's balance
+    # deciding which specifications stand: the dollars moved, so the surplus below and the
+    # deficit above are the same number, and a specification whose two sides disagree is out
+    seen, kept, grid = set(), 0, 0
+    for lo, hi in ((5000, 16000), (6000, 14000), (7000, 13000), (8000, 12000), (5000, 20000)):
+        for step in (50, 100, 200, 250, 500):
+            for fam in ("poisson", "ols", "log_ols"):
+                for order in (1, 2, 3):
+                    grid += 1
+                    ss = [sides(v, lo, hi, step, fam, order) for s, v in sorted(by_seg.items())]
+                    if any(x is None for x in ss):
+                        continue
+                    below = sum(x[0] for x in ss)
+                    above = sum(x[1] for x in ss)
+                    if abs(below - above) > 0.20 * max(abs(below), abs(above), 1.0):
+                        continue
+                    kept += 1
+                    got = tuple(r50((x[0] + x[1]) / 2.0) for x in ss)
+                    seen.add(got)
+                    chk("convergence %d-%d/%d/%s/o%d" % (lo, hi, step, fam, order), sum(got),
+                        fig["call"]["deposits_split"])
+    chk("the judge's grid is the candidate set", grid, fig["steps"]["specifications_in_the_grid"])
+    chk("the specifications the record leaves standing", kept,
+        fig["steps"]["specifications_the_record_leaves"])
+    chk("one set of segment figures across every one of them", len(seen), 1)
 
     # the deliverables
     wb = xlsx_rows(os.path.join(TASK, "golden", "structured_cash_deposits_2027.xlsx"))

@@ -52,10 +52,10 @@ Not the complaints register, which is a record of what neighbours heard and not 
 1. The five dwellings the slot covers: NSL04 (DW-101) at 53.1 dB LAeq, NSL11 (DW-104) at 49.9 dB LAeq, NSL07 (DW-110) at 47.9 dB LAeq, NSL02 (DW-103) at 47.2 dB LAeq, NSL13 (DW-105) at 46.0 dB LAeq
 2. The first dwelling off the list: NSL06 (DW-107) at 45.2 dB LAeq, 0.8 dB below the fifth
 3. The plant through the six survey weeks:
-   - Week beginning 31 August: biogas 35389 m3, blower air 689 thousand Nm3, 6 centrifuge runs
-   - Week beginning 7 September: biogas 34821 m3, blower air 678 thousand Nm3, 6 centrifuge runs
-   - Week beginning 14 September: biogas 34934 m3, blower air 679 thousand Nm3, 6 centrifuge runs
-   - Week beginning 21 September: biogas 36030 m3, blower air 617 thousand Nm3, 5 centrifuge runs
-   - Week beginning 28 September: biogas 34376 m3, blower air 669 thousand Nm3, 6 centrifuge runs
-   - Week beginning 5 October: biogas 35229 m3, blower air 686 thousand Nm3, 6 centrifuge runs
+   - Week beginning 31 August: biogas 35,389 m3, blower air 689 thousand Nm3, 6 centrifuge runs
+   - Week beginning 7 September: biogas 34,821 m3, blower air 678 thousand Nm3, 6 centrifuge runs
+   - Week beginning 14 September: biogas 34,934 m3, blower air 679 thousand Nm3, 6 centrifuge runs
+   - Week beginning 21 September: biogas 36,030 m3, blower air 617 thousand Nm3, 5 centrifuge runs
+   - Week beginning 28 September: biogas 34,376 m3, blower air 669 thousand Nm3, 6 centrifuge runs
+   - Week beginning 5 October: biogas 35,229 m3, blower air 686 thousand Nm3, 6 centrifuge runs
 4. Ranked bar chart of all fourteen specific sound levels with the five selected marked and the slot's reach drawn, on page 1

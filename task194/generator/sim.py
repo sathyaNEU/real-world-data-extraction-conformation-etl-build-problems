@@ -19,6 +19,9 @@ MONTH_SHAPE = {  # seasonal shape by calendar month for medical-weighted and sur
     "surg": [1.02, 0.93, 1.05, 1.04, 1.03, 1.00, 1.01, 1.02, 1.03, 1.02, 1.04, 0.81],
 }
 MED_MIXES = {"gen_med", "resp", "renal", "aged", "neuro", "subacute"}
+# how long a unit's multi-day episodes run, against the network's own shape
+LOS_SCALE = {"aged": 1.92, "subacute": 2.35, "neuro": 1.34, "renal": 1.02, "gen_med": 0.94,
+             "resp": 1.12, "ortho": 1.44, "gen_surg": 0.97, "colorectal": 1.26, "vasc": 1.18}
 SAME_DAY_SHARE = 0.071          # episodes separated the day they were admitted
 UNGROUPABLE_SHARE = 0.0118      # episodes the grouper could not assign a valid DRG
 NONACUTE_CARE_SHARE = 0.0152    # acute units also report a few rehabilitation or maintenance episodes
@@ -287,7 +290,7 @@ def episodes(units):
                         if mix in DIALYSIS_MIXES and r.random() < 0.46:
                             drg = "L61Z"
                     else:
-                        los = int(1 + r.gamma(2.1, 2.3))
+                        los = int(1 + r.gamma(2.1, 2.3 * LOS_SCALE[mix]))
                     if ungroup:
                         drg = "960Z" if r.random() < 0.6 else "961Z"
                     day = 1 + int(np.searchsorted(np.cumsum(dayw), r.random(), side="left"))

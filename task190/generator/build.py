@@ -7,6 +7,7 @@ import sys
 import asks as A
 import deliver
 import docs
+import estimators as E
 import golden as G
 import pack as PK
 import sim
@@ -82,9 +83,15 @@ def cut(target, golden_dir):
     g["svc"] = svc
     g["vrows"] = vrows
     g["till"] = till
-    _out, _tots, _labels = G.convergence(g)
-    g["sweep_n"] = len(_labels)
+    _sw = G.convergence(g)
+    _tots = [sum(v.values()) for _, v in _sw]
+    g["sweep"] = _sw
+    g["grid_n"] = len(E.candidates())
+    g["sweep_n"] = len(_sw)
     g["sweep_lo"], g["sweep_hi"] = min(_tots), max(_tots)
+    g["sweep_sets"] = sorted(set(G.rounded_sets(_sw)))
+    g["edges"] = G.edges(_sw)
+    g["chi2"] = {k: E.chi2_per_dof(g["amt_by_seg"][k]) for k in W.SEG_KEYS}
 
     deliver.workbook(os.path.join(golden_dir, "structured_cash_deposits_2027.xlsx"), g)
     deliver.chart(os.path.join(golden_dir, "structured_deposits_by_segment.png"), g)
@@ -92,7 +99,7 @@ def cut(target, golden_dir):
 
 
 PDF_STAMPS = {
-    "aml_programme_handbook.pdf": b"D:20260514161000+00'00'",
+    "aml_programme_handbook.pdf": b"D:20270611161000+00'00'",
     "annual_report_extract_2026.pdf": b"D:20260928094500+00'00'",
     "vendor_service_report_2027.pdf": b"D:20270709133000+00'00'",
 }

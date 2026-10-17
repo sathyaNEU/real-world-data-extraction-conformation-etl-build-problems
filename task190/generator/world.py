@@ -20,14 +20,14 @@ ASSURANCE = "Emma Gullery"                              # the bank's assurance l
 #          amount density runs at, customers, structured deposits planted in the reporting
 #          year, planted in the prior year
 SEGMENTS = [
-    ("GRO", "Grocery and convenience", 15000, 9600.0, 1163, 94, 66),
-    ("HOS", "Hospitality", 4700, 8200.0, 2247, 35, 24),
-    ("TRA", "Transport and courier", 10250, 11500.0, 857, 172, 120),
-    ("CON", "Trades and construction", 3100, 10400.0, 1538, 50, 35),
-    ("RUR", "Rural supply and horticulture", 2400, 10900.0, 971, 0, 0),
-    ("FUE", "Fuel and automotive", 4100, 9100.0, 418, 66, 46),
-    ("PER", "Personal services", 3950, 7600.0, 1764, 50, 35),
-    ("CLB", "Clubs and community", 2700, 8800.0, 643, 6, 4),
+    ("GRO", "Grocery and convenience", 15037, 9600.0, 1163, 94, 66),
+    ("HOS", "Hospitality", 4723, 8200.0, 2247, 35, 24),
+    ("TRA", "Transport and courier", 10261, 11500.0, 857, 172, 120),
+    ("CON", "Trades and construction", 3118, 10400.0, 1538, 50, 35),
+    ("RUR", "Rural supply and horticulture", 2396, 10900.0, 971, 0, 0),
+    ("FUE", "Fuel and automotive", 4109, 9100.0, 418, 66, 46),
+    ("PER", "Personal services", 3944, 7600.0, 1764, 50, 35),
+    ("CLB", "Clubs and community", 2713, 8800.0, 643, 6, 4),
 ]
 
 # the figure is stated to the nearest fifty deposits per segment: the granularity the record's own

@@ -46,7 +46,9 @@ def till_log(target):
                 if rng.u() > (0.86 if src == "counter" else 0.42):
                     continue
                 sid += 1
-                hhmm = (16 * 60 + 40 + rng.below(70)) if src == "counter" else (7 * 60 + rng.below(50))
+                # a machine collection runs at midday, so its UTC stamp falls on the same
+                # calendar day as the local one and the quarter does not turn on which is read
+                hhmm = (16 * 60 + 40 + rng.below(70)) if src == "counter" else (13 * 60 + rng.below(50))
                 expected = round(2400 + rng.u() ** 1.7 * 48000, 2)
                 v = 0.0
                 u = rng.u()
@@ -56,6 +58,8 @@ def till_log(target):
                     v = round((rng.u() - 0.5) * 38.0, 2)
                 else:
                     v = round((rng.u() - 0.5) * 96.0, 2)
+                if sid % 1301 == 0:          # a count that came out exactly on the tolerance
+                    v = (25.00 if day < dt.date(2027, 1, 1) else 15.00) * (1 if sid % 2 else -1)
                 counted = round(expected + v, 2)
                 if src == "counter":
                     ts = "%sT%02d:%02d:00" % (day.isoformat(), hhmm // 60, hhmm % 60)
@@ -117,22 +121,18 @@ def a1_golden(truth):
 def a1_stops(truth):
     """The ladder: raw stamps, tolerance fixed, double counted, the answer."""
     stops = {}
-    for name in ("raw_stamps", "tolerance_25_only", "tolerance_15_only", "answer"):
+    for name in ("tolerance_25_only", "tolerance_15_only", "on_the_tolerance_counted", "answer"):
         agg = {}
         for q, lo, hi in QUARTERS:
             n, over, net = 0, 0, 0.0
             for sid, (code, src, day, hhmm, v) in truth.items():
-                d = day
-                if name == "raw_stamps" and src == "machine":
-                    # the UTC stamp read as the local date moves early sessions back a day
-                    d = day - dt.timedelta(days=1)
-                if not (lo <= d <= hi):
+                if not (lo <= day <= hi):
                     continue
                 n += 1
-                tol = (25.00 if name in ("raw_stamps", "tolerance_25_only")
+                tol = (25.00 if name == "tolerance_25_only"
                        else 15.00 if name == "tolerance_15_only"
                        else (25.00 if day < dt.date(2027, 1, 1) else 15.00))
-                if abs(v) > tol:
+                if abs(v) > tol or (name == "on_the_tolerance_counted" and abs(v) == tol):
                     over += 1
                 net += v
             agg[q] = (n, over, round(net, 2))
@@ -156,10 +156,24 @@ def rating_history(target, custs):
             continue
         nev = 1 + (1 if rng.u() < 0.34 else 0) + (1 if rng.u() < 0.08 else 0)
         band = int(rng.pick(BANDS))
-        days = sorted(rng.below(364) for _ in range(nev))
+        # a customer's rating drifts one way over the year: it never returns to a band it left,
+        # so a band it was raised into and later moved off is a band it is not in at year end
+        rising = rng.u() < 0.56
+        if band >= 5:
+            rising = False
+        if band <= 1:
+            rising = True
+        nev = min(nev, 4 - band if rising else band - 1) or 1
+        # one event per effective date, so no customer carries two accepted moves on one day
+        days = []
+        while len(days) < nev:
+            d = rng.below(364)
+            if all(abs(d - x) >= 7 for x in days):
+                days.append(d)
+        days.sort()
         for k in range(nev):
             eid += 1
-            up = rng.u() < 0.56
+            up = rising
             if band >= 5:
                 up = False
             if band <= 1:
@@ -190,7 +204,8 @@ def rating_history(target, custs):
         e["status"] = "superseded"
         eid += 1
         b = int(e["before"])
-        fixed = b - 1 if int(e["after"]) > b and b > 1 else min(5, b + 1)
+        # the correction lands two steps where the wrong filing put one, in the same direction
+        fixed = min(5, b + 2) if int(e["after"]) > b else max(1, b - 2)
         if fixed == b:
             fixed = b + 1 if b < 5 else b - 1
         corr = dict(e, eid=eid, after=str(fixed), status="accepted",
@@ -199,17 +214,20 @@ def rating_history(target, custs):
         extra.append(corr)
         # the rest of the customer's chain runs on from the correction
         band = fixed
+        keep = []
+        rise = fixed > b
         for nxt in es[1:]:
+            if (rise and band >= 5) or (not rise and band <= 1):
+                break                      # the chain stops rather than turning back
             nxt["before"] = str(band)
-            up = int(nxt["after"]) > int(nxt["before"])
-            if band >= 5:
-                up = False
-            if band <= 1:
-                up = True
-            band = band + (1 if up else -1)
+            band = band + (1 if rise else -1)
             nxt["after"] = str(band)
+            keep.append(nxt)
+        for dead in es[1 + len(keep):]:
+            dead["drop"] = True            # a gap in the register: the move was never filed
         picked += 1
     events.extend(extra)
+    events = [e for e in events if not e.get("drop")]
     events.sort(key=lambda e: (e["eff"], e["eid"]))
     rows = []
     for e in events:
@@ -272,36 +290,55 @@ def service_log(target):
             if inst > last or (wdr and wdr <= first):
                 continue
             n = 0 if rng.u() < 0.31 else 1 + rng.below(3)
+            hi_day = (min(last, wdr - dt.timedelta(days=1)) if wdr else last)
+            taken = []                     # (start, end) already used on this machine
             for _ in range(n):
+                dayspan = max(1, (hi_day - max(inst, first)).days + 1)
+                placed = None
+                for _try in range(40):
+                    day = max(inst, first) + dt.timedelta(days=rng.below(dayspan))
+                    if day > hi_day:
+                        continue
+                    mins = 25 + rng.below(430)
+                    # a fault is reported at any hour: the estate runs unattended overnight
+                    rep = dt.datetime(day.year, day.month, day.day, rng.below(24), rng.below(60),
+                                      rng.below(60))
+                    end = rep + dt.timedelta(minutes=mins)
+                    # one machine is out once at a time, so the month's hours out of service are
+                    # the sum of its incidents and their union alike
+                    if all(end <= a or rep >= b for a, b in taken):
+                        placed = (rep, end, mins)
+                        break
+                if placed is None:
+                    continue
+                rep, end, mins = placed
+                taken.append((rep, end))
                 inc += 1
-                day = max(inst, first) + dt.timedelta(days=rng.below(
-                    max(1, (min(last, wdr - dt.timedelta(days=1)) if wdr else last).day)))
-                if day > last:
-                    day = last
-                mins = 25 + rng.below(430)
-                rep = dt.datetime(day.year, day.month, day.day, 8 + rng.below(9), rng.below(60),
-                                  rng.below(60))
+                # the restored stamp is when the engineer closed the call; a few logs carry the
+                # minutes the engineer wrote on the docket instead, which is not the difference
+                shown = mins
+                if inc % 83 == 0:
+                    shown = mins - (1 + inc % 4)
                 rows.append(["SI%06d" % (inc * 3 + 11 + rng.below(3)), mid, site,
                              rep.strftime("%Y-%m-%dT%H:%M:%S"),
-                             (rep + dt.timedelta(minutes=mins)).strftime("%Y-%m-%dT%H:%M:%S"),
-                             mins, rng.pick(["NOTE-JAM", "NOTE-JAM", "COMMS", "PRINTER",
-                                             "SAFE-FULL", "CARD-READER", "POWER", "VALIDATOR"]),
+                             end.strftime("%Y-%m-%dT%H:%M:%S"),
+                             shown, rng.pick(["NOTE-JAM", "NOTE-JAM", "COMMS", "PRINTER",
+                                              "SAFE-FULL", "CARD-READER", "POWER", "VALIDATOR"]),
                              "EN%04d" % (120 + rng.below(80))])
-                key = (mid, "%04d-%02d" % (y, mm))
-                truth[key] = truth.get(key, 0) + mins
-    # keep each month's total clear of a rounding boundary: a tenth of an hour is six minutes,
-    # so a month ending on a multiple of six rounds the same way under any convention
+                key = (mid, "%04d-%02d" % (rep.year, rep.month))
+                truth[key] = truth.get(key, 0) + shown
+    # a month's hours are stated to one decimal, so only a total exactly half way between two
+    # tenths of an hour has two readings. Six minutes is a tenth, so that is a total three
+    # minutes past a multiple of six, and only those few are nudged.
     by_month = {}
     for i, r in enumerate(rows):
         by_month.setdefault(r[3][:7], []).append(i)
     for mo, idx in sorted(by_month.items()):
         tot = sum(rows[i][5] for i in idx)
-        if tot % 6:
+        if tot % 6 == 3:
             i = idx[-1]
-            add = 6 - (tot % 6)
+            add = 1
             rows[i][5] += add
-            rep = dt.datetime.strptime(rows[i][3], "%Y-%m-%dT%H:%M:%S")
-            rows[i][4] = (rep + dt.timedelta(minutes=rows[i][5])).strftime("%Y-%m-%dT%H:%M:%S")
             key = (rows[i][1], mo)
             truth[key] = truth.get(key, 0) + add
     rows.sort(key=lambda r: (r[3], r[1]))

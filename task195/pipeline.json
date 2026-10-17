@@ -9,14 +9,15 @@
  "updated": "2026-10-17",
  "stump": "A competent solver computes each screen's detection rate on the parallel run with its own 95 per cent interval, finds every compliant cutoff's interval overlapping the screen in service's, reads the protocol's interval test as unmet and holds the change, where the same specimens establish the increase at the 0.030 cutoff with an interval clear of zero.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17"
+  "date": "2026-10-17",
+  "detail": "49 checks, 0 FAIL, 0 WARN, with the measured cracker sheet"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17 after the fix pass, four lines answered in the design note",
-  "reader": "pass 1 answers at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader_answers_pass1.md; re-staged for a second read at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader (reader_brief.md, prompt.txt, bundle/), needed because the prompt's ask wordings were pinned"
+  "leak_py": "REVIEW 2026-10-17 after the ask re-cut, four lines answered in the design note's pre-ship check",
+  "reader": "pass 1 answers at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader_answers_pass1.md; re-staged for one second read at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader (reader_brief.md, prompt.txt, bundle/ of 19 files), needed because the three ask paths were re-cut on silent primaries"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-17, no BLOCK, nearest 0.08 (task185 ledger row)",
@@ -25,14 +26,24 @@
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/verdict_pass1.md; Gate G statistical_rigor / analytical_non_defect, no surface-read dependency, no sole data defect; Gate H domain pass, layers pass, decisive_step analytical. figures.json is byte-identical after the fix pass, so no re-judge is owed on the figures; the judge directory is re-staged at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/judge"
+  "report": "pass 1 at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/verdict_pass1.md; Gate G statistical_rigor / analytical_non_defect, no surface-read dependency, no sole data defect; Gate H domain pass, layers pass, decisive_step analytical. The call side is unmoved since that verdict (the four files it reads are byte-identical by sha256, the register is byte-identical on all 5,839 comparison rows, every call figure in figures.json is unchanged and freeze.py --mode rubric passes), so the second judge pass is owed on the re-cut ask layer only; re-staged at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/judge"
  },
  "returned": [],
- "resume": "stage 4 fix pass done: realism, date coherence and the three ask pins are in, every graded figure is byte-identical to the approved figures.json, and every free gate is green except precut's three ask-layer lines, which now carry the measured cracker sheet (the stage-4 reader reached all 42 ask figures). The author decides whether to rebuild the ask layer with silent primaries, which moves ask figures only and needs one re-judge, or to ship on the call.",
+ "resume": "stage 4, second pass. The three ask paths are re-cut on silent primaries that sit outside the call's row population (A1 D7 keys, the specimen is the crosswalk's biobank reference and the register's column is an accession; A2 D2 vintage, the extract predates 367 release-desk amendments shipped as their own log; A3 D5 scope, the standing panel workbook keeps two stocks at the same three level names). Every free gate is green: precut 49 checks 0 FAIL 0 WARN, checks.py 215 assertions, verify.py 125 independent checks, two fresh rebuilds byte-identical to target/ at sha256 994be419ea0e1d1f over 19 files, figures_check 114 figures 0 absent, leak.py REVIEW with four answered lines, guard surface 0 promoted and heart WARN no BLOCK, containers clean, freeze.py --mode rubric PASS. Awaiting one re-judge and one re-read from the staged briefs; nothing else is owed before ship.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "freeze": {
+  "snapshot": "2026-10-17 before the re-cut",
+  "check": "PASS, exit 0, mode rubric, --allow panel_weeks.BA-2027-W13.difference,panel_weeks.BA-2027-W16.difference,panel_weeks.BA-2027-W18.difference (three A1 ask figures freeze misclassifies as main-call because their old values 4, 3 and 4 match the list markers in Critical Components; reason filed in the design note)",
+  "ask_side": "screen_change_validation_2027q3.xlsx moved, 40 ask figures moved, 0 main-call figures moved"
+ },
+ "ask_layer": {
+  "cracker": "generator/cracker.py on the cut pack: A1 keeps 0 of 18, A2 keeps 0 of 12, A3 keeps 3 of 6 (all three medians missed), 3 of 36 total",
+  "pair_ceiling": 33.1,
+  "mirror_leakage": 8.3
+ }
 }

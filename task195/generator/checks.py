@@ -411,6 +411,23 @@ def run(target, g=None):
     ok("ask 3 the per cent label is two orders from the prepared level",
        all(abs(d["median_recovery"] - d["median_recovery"] * 100) > 1 for d in g["dilution"]))
 
+    # the ask layer's devices sit outside the call's row population, counted in one place
+    dev_a1 = sum(1 for r in panel_rows
+                 if r["specimen_id"] in comparison_ids
+                 and (int(r["result_seq"]) > 1 or r["aliquot_id"] != "A1"
+                      or r["specimen_id"] in reacc))
+    dev_a2 = len({a["specimen_id"] for a in rows_of(os.path.join(target, W.FILES["amendments"]))}
+                 & comparison_ids)
+    dil_ids = {str(r[3]) for r in _wb["Replicate results"].iter_rows(min_row=2, values_only=True)}
+    dev_a3 = len(dil_ids & comparison_ids)
+    ok("the ask devices hold no row of the comparison's population",
+       (dev_a1, dev_a2, dev_a3) == (0, 0, 0), "A1 %d, A2 %d, A3 %d" % (dev_a1, dev_a2, dev_a3))
+    read_sets = {r["read_set_id"] for r in mf_rows if r["specimen_id"] in comparison_ids}
+    ok("no ask device names a read set the comparison reads",
+       not (read_sets & dil_ids) and not (read_sets & {a["specimen_id"] for a in
+            rows_of(os.path.join(target, W.FILES["amendments"]))}),
+       "%d comparison read sets" % len(read_sets))
+
     # ---------------------------------------------------------------- the pack reads as the laboratory's
     accepted = {r["specimen_id"]: float(r["mixture_fraction"]) for r in mf_rows
                 if r["read_set_accepted"] == "Y"}

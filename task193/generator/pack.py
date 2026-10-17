@@ -658,6 +658,25 @@ VARIABLE_DOC = [
      "The dispensing pharmacy. pharmacy_register.csv gives its chain."),
     ("dispensings_2025_2026.csv", "prescriber",
      "The prescriber's authorisation number as the prescription carried it."),
+    ("dispensings_2023_2025.csv", "pseudonym, vnr, disp_date, packages, submitted",
+     "The names release R-2023.2 gave person_key, package_code, date_of_dispensing, n_packages "
+     "and submission_date. The variables are the same and carry the same meaning; only the names "
+     "and the date format changed at release R-2025.1."),
+    ("dispensings_2023_2025.csv", "line_id",
+     "The line's identifier in release R-2023.2. It is unique in this file and is not comparable "
+     "with the record identifiers release R-2025.1 writes."),
+    ("dispensings_2023_2025.csv", "pharmacy_id, prescriber_id",
+     "The dispensing pharmacy and the prescriber's authorisation number, under the names release "
+     "R-2023.2 gave them."),
+    ("package_index.csv", "vnr",
+     "The Nordic article number. One number is given to one package of one product at a time and "
+     "may be reissued to another package after it has been withdrawn."),
+    ("package_index.csv", "atc_code",
+     "The anatomical therapeutic chemical code of the package's substance, to the level the index "
+     "codes it. atc_text.csv gives the code's text."),
+    ("package_index.csv", "preparation, strength, pack_size",
+     "The preparation's name, the strength of one unit and the number of units in the package, as "
+     "the package register holds them."),
     ("package_index.csv", "valid_from, valid_to",
      "The period in which the package code was valid for dispensing. A code withdrawn on a "
      "transfer of marketing authorisation keeps its rows, so that lines dispensed before the "
@@ -671,6 +690,23 @@ VARIABLE_DOC = [
      "inside the extract period, previous_region is the region recorded before that date."),
     ("person_register.csv", "year_of_birth",
      "Year of birth as the civil registration system holds it."),
+    ("person_register.csv", "person_key",
+     "The pseudonym the register holds for the patient. A patient whose pseudonym was replaced "
+     "appears once under each, and person_key_crosswalk.csv gives the pair."),
+    ("person_register.csv", "sex",
+     "Sex as the civil registration system holds it: K for a woman, M for a man."),
+    ("person_register.csv", "region_recorded_from",
+     "The date the current region was recorded. Blank where the region has not changed inside the "
+     "extract period."),
+    ("person_register.csv", "date_of_death, date_of_emigration",
+     "The date the civil registration system records the patient as having died or as having left "
+     "the country. Blank for a patient it records as neither."),
+    ("submission_exceptions.csv", "person_key, vnr, date_of_dispensing, pharmacy, submitted_on",
+     "The line as the pharmacy transmitted it. The values are the pharmacy's, not the register's, "
+     "because the line was never written to a dispensing extract."),
+    ("submission_exceptions.csv", "rejection_reason",
+     "The validation rule the line failed. One rule is recorded for a line even where it fails "
+     "more than one."),
     ("submission_exceptions.csv", "exception_ref",
      "One row for every line the register turned back at validation. A line turned back is not "
      "written to the dispensing extracts and has to be re-submitted to be held."),

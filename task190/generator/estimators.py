@@ -123,29 +123,40 @@ def candidates():
 
 
 def reconciled(amounts, lo, hi, step, family, order):
-    """The segment's figure under one specification, or None where the record refuses it."""
+    """One segment's figure under one specification: its two sides averaged.
+
+    The two sides are the same quantity measured twice, so averaging them is what the record's
+    balance leaves. Where a segment carries no splitting the two sides are equal and opposite
+    noise, and the average is nil.
+    """
     s = sides(amounts, lo, hi, step, family, order)
-    if s is None:
+    return None if s is None else (s[0] + s[1]) / 2.0
+
+
+def balanced(by_segment, keys, lo, hi, step, family, order):
+    """Whether the specification reconciles the record's own dollars across the book.
+
+    Every split take was moved from at or above the threshold to below it, so the book's surplus
+    below and deficit above are the same number. A specification whose two sides disagree is
+    refuted by the record it was fitted to. The test is on the book, because that is where the
+    dollars balanced; a single segment's two sides are each one noisy half of it.
+    """
+    ss = [sides(by_segment[k], lo, hi, step, family, order) for k in keys]
+    if any(s is None for s in ss):
         return None
-    below, above = s
-    if abs(below - above) > BALANCE * max(abs(below), abs(above), 1.0):
-        return None
-    return (below + above) / 2.0
+    below = sum(s[0] for s in ss)
+    above = sum(s[1] for s in ss)
+    return abs(below - above) <= BALANCE * max(abs(below), abs(above), 1.0)
 
 
 def sweep(by_segment, keys):
     """Every specification the record leaves standing, as (label, {segment: figure})."""
     out = []
     for lo, hi, st, fam, od in candidates():
-        vs = {}
-        for k in keys:
-            v = reconciled(by_segment[k], lo, hi, st, fam, od)
-            if v is None:
-                vs = None
-                break
-            vs[k] = v
-        if vs:
-            out.append(("%d-%d/%d/%s/o%d" % (lo, hi, st, fam, od), vs))
+        if not balanced(by_segment, keys, lo, hi, st, fam, od):
+            continue
+        vs = {k: reconciled(by_segment[k], lo, hi, st, fam, od) for k in keys}
+        out.append(("%d-%d/%d/%s/o%d" % (lo, hi, st, fam, od), vs))
     return out
 
 

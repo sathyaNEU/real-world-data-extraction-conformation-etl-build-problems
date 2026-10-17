@@ -37,6 +37,8 @@ def text_of(target, name):
                 body = zlib.decompress(body.strip(b"\r\n"))
             except Exception:
                 pass
+            if b" Tj" not in body and b" TJ" not in body:
+                continue            # an image or a font, not a content stream
             for t in re.finditer(rb"\((?:\\.|[^\\()])*\)", body):
                 out.append(t.group(0)[1:-1].decode("latin-1", "replace"))
         txt = " ".join(out)
@@ -279,6 +281,16 @@ def run(target, g):
     for c in withband:
         A(abs(g["tones"][c]["excess_db"] - 5.0) > 0.4,
           "%s sits %.2f dB from the prominence test" % (c, g["tones"][c]["excess_db"] - 5.0))
+    note = text_of(os.path.join(os.path.dirname(target), "golden"), "mitigation_shortlist.pdf") \
+        if os.path.exists(os.path.join(os.path.dirname(target), "golden",
+                                       "mitigation_shortlist.pdf")) else ""
+    if note:
+        tones = sum(1 for c in g["slate"] if rows[c]["tone"])
+        A(has(note, "A tone is prominent at %d of the five" % tones),
+          "the note's tone count is the %d the table carries" % tones)
+        for c, dref, name, lvl in g["slate_dwellings"]:
+            A(has(note, "%.1f" % lvl), "the note carries %s's level" % c)
+        A(has(note, "%.1f dB below the fifth" % g["margin_db"]), "the note carries the margin")
     for k, v in g["weekly"].items():
         A(v["biogas_m3"] > 20000 and v["blower_air_knm3"] > 300 and v["centrifuge_runs"] >= 4,
           "week %s plant figures %s" % (k, v))

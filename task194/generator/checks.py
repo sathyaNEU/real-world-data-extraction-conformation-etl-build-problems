@@ -379,13 +379,36 @@ def run(target, g, state):
     ok(round(pooled_av) == round(by[merged]["avoided"]),
        "SF11 pooling the predecessors gives 41510 the same avoided count (%.2f against %.2f)"
        % (pooled_av, by[merged]["avoided"]))
-    # SF12 the period an episode falls in: nothing sits on a quarter boundary
-    boundary = 0
+    # SF12 the period an episode falls in: clause 2.5 pins it on separation, and an episode that spans a
+    # quarter boundary is ordinary, so the alternative is computed and the call holds under it too
+    ok("reported in the period its separation date falls in" in spec,
+       "SF12 clause 2.5 pins the period on the separation date")
+    span = sum(1 for r in state["rows"]
+               if r["in_scope"] and G.fiscal(r["sep_date"])[1] != G.fiscal(r["adm_date"])[1])
+    ok(0.02 < span / sum(1 for r in state["rows"] if r["in_scope"]) < 0.12,
+       "SF12 episodes span a quarter boundary at a hospital's own rate (%.3f)"
+       % (span / sum(1 for r in state["rows"] if r["in_scope"])))
+    adm_e, adm_o, adm_n = defaultdict(float), defaultdict(int), defaultdict(int)
+    qset = {q for (_, q) in panel}
     for r in state["rows"]:
-        if r["adm_date"].month in (6, 9, 12, 3) and r["sep_date"].month != r["adm_date"].month:
-            if r["in_scope"] and (r["sep_date"] - r["adm_date"]).days > 20:
-                boundary += 1
-    ok(boundary < len(state["rows"]) * 0.002, "SF12 almost no in-scope episode spans a quarter boundary")
+        if not r["in_scope"]:
+            continue
+        q = G.fiscal(r["adm_date"])[1]
+        if q not in qset:
+            continue
+        adm_e[(r["unit"], q)] += W.STRATUM_RATE[(W.DRG_BAND[r["drg"]], r["age"])]
+        adm_o[(r["unit"], q)] += 1 if r["hac"] else 0
+        adm_n[(r["unit"], q)] += 1
+    adm_av = {}
+    for d in units:
+        qs = [q for q in G.quarters(panel, d["unit"]) if (d["unit"], q) in adm_e]
+        e = sum(adm_e[(d["unit"], q)] for q in qs)
+        o = sum(adm_o[(d["unit"], q)] for q in qs)
+        n = sum(adm_n[(d["unit"], q)] for q in qs)
+        adm_av[d["unit"]] = share * (o / e - 1) * d["plan"] * e / n
+    ok(max(adm_av, key=adm_av.get) == answer["unit"],
+       "SF12 reading the period off the admission date keeps the call (%s)"
+       % max(adm_av, key=adm_av.get))
     # SF13 the stratum rates are the published ones
     strata = read(target, "hac_stratum_rates.csv")
     ok(all(abs(float(r["expected_rate"]) - W.STRATUM_RATE[(r["risk_band"], r["age_band"])]) < 1e-9

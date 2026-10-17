@@ -209,6 +209,7 @@ def compute(target):
     b = load(target)
     panel = b["panel"]
     share, record, carried, removed = record_share(b)
+    _, readings = share_readings(b)
     elig = eligible_units(b)
     units = []
     for code in elig:
@@ -291,7 +292,7 @@ def compute(target):
 
     return dict(units=units, answer=answer, runner=runner, share=share, record=record,
                 carried=carried, removed=removed, rung0=rung0, rung1=rung1, rung2=rung2,
-                hospitals=hosp, outside=outside, groups=groups, eligible=elig,
+                hospitals=hosp, outside=outside, groups=groups, eligible=elig, readings=readings,
                 gap=round(answer["avoided"]) - round(runner["avoided"]),
                 margin=answer["avoided"] / runner["avoided"], bundle=b)
 

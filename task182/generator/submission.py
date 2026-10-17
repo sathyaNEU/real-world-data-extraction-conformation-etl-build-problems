@@ -29,8 +29,10 @@ def write(task, gendir):
     weekly = []
     for k in sorted(wk, key=int):
         w = wk[k]
-        weekly.append("   - Week beginning %s: biogas %d m3, blower air %d thousand Nm3, %d centrifuge runs"
-                      % (W.WEEKS[int(k)].strftime("%-d %B"), w["biogas_m3"], w["blower_air_knm3"],
+        weekly.append("   - Week beginning %d %s: biogas %s m3, blower air %s thousand Nm3, "
+                      "%d centrifuge runs"
+                      % (W.WEEKS[int(k)].day, W.WEEKS[int(k)].strftime("%B"),
+                         "{:,}".format(w["biogas_m3"]), "{:,}".format(w["blower_air_knm3"]),
                          w["centrifuge_runs"]))
     txt = """**Domain:** Physical and environmental sciences (environmental monitoring and exceedance).
 **Analytical objective:** Anomaly detection and diagnostics.

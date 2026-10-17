@@ -9,7 +9,7 @@
  "updated": "2026-10-17",
  "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window.",
  "architecture": 2,
- "loops": 1,
+ "loops": 2,
  "precut": {
   "exit": 0,
   "checks": 49,
@@ -18,16 +18,19 @@
   "date": "2026-10-17"
  },
  "build": {
-  "generator_assertions": 115,
+  "generator_assertions": 132,
   "verifier_checks": 251,
-  "figures_check": "206 of 206",
-  "voice_check": "exit 0 at 988 characters",
-  "rebuilds": "two byte-identical; target.zip md5 cd6519fc91b14402d4d395038de2b050, 19 entries",
-  "input_gates": "19 files, 4 formats, 73,879 and 47,012 row extracts, three distractors in metadata.json"
+  "figures_check": "199 of 199",
+  "voice_check": "exit 0 at 993 characters",
+  "rebuilds": "two byte-identical over 23 files; target.zip md5 c4dd53ded4e144066819381255226d35, 20 entries",
+  "input_gates": "20 files, 4 formats, 113,824 and 62,788 row extracts, three distractors in metadata.json",
+  "ladder": "rung0 9, crude 10, rung2 11, answer 7; all four window-aware arithmetics refer the same 7",
+  "separation": "tightest margin 8.5 per cent of the 1.25 multiple over 20 candidates x 5 arithmetics; lowest referred 1.36, highest refused 1.03"
  },
  "leak": {
   "leak_py": "REVIEW, three lines answered in the design note, no LEAK",
-  "reader": "pass 1 back: nothing quoted for the decisive step, no ranking file, question 6 an analytical choice, and it reached the golden seven cold at about 90 per cent confidence. It found three ask-layer forks and eight realism tells, all fixed in the generator in this pass."
+  "reader": "pass 1 back: nothing quoted for the decisive step, no ranking file, question 6 an analytical choice, and it reached the golden seven cold at about 90 per cent confidence. It found three ask-layer forks and eight realism tells, all fixed in the generator in this pass.",
+  "reader_pass_2": "question 3 named register_release_notes.json's known_handling block as a solver's checklist, plus four dated contradictions and a realism list. All closed in this pass; leak.py is REVIEW with no release-notes line."
  },
  "duplicate_check": {
   "heart": "WARN (overuse.org_family, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.deliverables, repeat.question_form), all answered in the design note's ## Draw; two differentiated NOTEs against task254 and task50",
@@ -46,14 +49,24 @@
    "the prompt scopes the chain ask to the quarter of dispensing in the window and words the chart as each pair's referral threshold marked",
    "section 2.5's death and emigration sentence, which could never apply, is removed and the convergence asserted instead",
    "eight realism tells fixed in the generator: dose per pack constant per medicine, a skewed package count, a submission lag that drifts by quarter, skewed rejection reasons, per-chain municipalities, an irregular literature log, a varied serious share, and the extract's stated adult scope"
-  ]
+  ],
+  "verdict_pass_2": "DETERMINISTIC, APPROVE, no repair, no rerun. It named six sentences as carrying the determinism; each still has a shipped home, asserted by the home.* block in checks.py."
  },
  "returned": [],
- "resume": "FIX PASS COMPLETE, AWAITING THE RE-JUDGE. Every free gate is green on the repaired pack and target.zip is cut from the final rebuild (md5 cd6519fc91b14402d4d395038de2b050). The main call, the pair table, the ladder and the region ask are byte-for-byte the same analysis as the judged pass: 7 referred of 20 candidates, rungs 9 / 10 / 12 / 7. This session has no Agent tool, so spawn both threads: the judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/judge_brief.md (prompt.txt and a fresh unzip of target/ beside it; it writes verdict.md there) and the leak reader at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_reader/reader_brief.md (prompt.txt and bundle/ beside it; it writes reader_answers.md there), both general-purpose sonnet at medium effort. On APPROVE, ship: ledger row, card current, pipeline.json SHIPPED with delivered set. On a further FIX_NOW, fix in the generator and re-judge once. On SEND_BACK, stop and report.",
+ "resume": "FIX PASS 2 COMPLETE, AWAITING THE RE-READ AND RE-JUDGE. Every free gate is green: 132 generator assertions, 251 independent checks, figures_check 199 of 199, voice-check exit 0, precut 49 checks 0 FAIL 0 WARN, leak.py REVIEW with no LEAK, guard surface clean and heart WARN as drawn, two byte-identical rebuilds, target.zip md5 c4dd53ded4e144066819381255226d35 cut from the final rebuild. figures.json changed: every graded number moved with the redraw, while the call, the 7 referred, the 10 crude, the 5 and 2 split, the 1.25 multiple and the 2027 Q1 quarter are identical and rung 2 moved from 12 to 11. This session has no Agent tool, so spawn both threads: the judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/judge_brief.md (prompt.txt and a fresh unzip of target/ beside it; it writes verdict.md there) and the leak reader at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_reader/reader_brief.md (prompt.txt and bundle/ beside it; it writes reader_answers.md there), both general-purpose sonnet at medium effort. On APPROVE, ship. On a FIX_NOW, fix in the generator and re-judge once. On SEND_BACK, stop and report.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "fix_pass_2": [
+  "the known_handling block is gone from register_release_notes.json; each convention now stands in the organisation's own voice: the re-sent line and the package validity in register_variable_documentation.csv, the quarter of dispensing in standard 2.1 beside the window definition, the extract's adult scope in the manifest's scope statement",
+  "register_variable_documentation.csv now documents every variable of the five files it covers (25 rows), so the dictionary is not a list of the four things a solver must get right",
+  "the standard carries section 3.5 in its own voice: the construction of the expected number in 3.2(b) is the division's own epidemiological work and is recorded with each run. It names no method; sections 3.4 and 3.5 are now in order and the annexes start on their own page",
+  "four dated contradictions closed: the tracker's two open entries open after their products were marketed, the spontaneous-report quarters start at the product's launch, Annex A's caption reads during the screen window, and the standard's body names no run-specific year",
+  "two new assertions: defect4.no_row_outside_its_product_lifecycle over every dated row in the pack, and defect4.no_date_after_the_pull over seven files",
+  "realism: a pharmacy week drawn from its own open-day shape with Sundays closed, a per-chain validation rate lifted by quarter with one chain's month of missing price records, 121 distinct pharmacy names, package strengths that belong to the preparation, person keys that are not an arithmetic run, exception references numbered in submission order, per-product reporting propensities tied to dispensing volume, a literature log of 20 titles drawn irregularly and linked to the tracker, and a region tilt on marker incidence so the region-by-age cells are not flat",
+  "the register sample is redrawn (17,000 patients, seed 193176) and the five referred-pair effects re-tuned, because the age and region tilts and the prevalent-user layer moved every pair count: the tightest separation is now 8.5 per cent of the multiple against the 6 per cent house floor"
+ ]
 }

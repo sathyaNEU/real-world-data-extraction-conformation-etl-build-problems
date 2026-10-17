@@ -103,6 +103,66 @@ def run(target, figures_path):
     share = removed / carried
     ok(n_closed == fig["closed_placements"], "seven closed placements inside the specification period")
 
+    # the register read ten ways: the same seven placements priced as a careful analyst could price them
+    allq = sorted(grp.quarter.unique())
+    rec = []
+    for _, p in closed.iterrows():
+        u, q = p.unit_code, p.assessment_quarter
+        own = grp[grp.unit_code == u]
+        if q not in set(own.quarter):
+            continue
+        i = allq.index(q)
+        prev, dec = allq[i - 1], allq[i - 2]
+        pre = own[own.quarter < q]
+        row = own[own.quarter == q].iloc[0]
+        rp = own[own.quarter == prev].iloc[0]
+        rd = own[own.quarter == dec].iloc[0]
+        oth = grp[(grp.unit_code != u) & (grp.quarter.isin([prev, q]))]
+        wide = oth.pivot_table(index="unit_code", columns="quarter",
+                               values=["observed", "expected"], aggfunc="sum").dropna()
+        mv = (wide[("observed", prev)] / wide[("expected", prev)]
+              - wide[("observed", q)] / wide[("expected", q)])
+        pm = (wide[("observed", prev)].sum() / wide[("expected", prev)].sum()
+              - wide[("observed", q)].sum() / wide[("expected", q)].sum())
+        rec.append(dict(expected=row.expected, realised=row.observed - row.expected,
+                        carried=(pre.observed.sum() / pre.expected.sum() - 1) * row.expected,
+                        from_decision=(rd.observed / rd.expected - 1) * row.expected,
+                        from_previous=(rp.observed / rp.expected - 1) * row.expected,
+                        concurrent=float(mv.mean()) * row.expected,
+                        concurrent_pooled=float(pm) * row.expected))
+    nr = len(rec)
+    P = [r["carried"] for r in rec]
+    fl = [r["carried"] - r["realised"] for r in rec]
+    sh = [f / p for f, p in zip(fl, P)]
+    E = [r["expected"] for r in rec]
+    pbar, fbar = sum(P) / nr, sum(fl) / nr
+    pvar = sum((p - pbar) ** 2 for p in P) / nr
+    readings = {
+        "mean of the placements' shares": sum(sh) / nr,
+        "median of the shares": sorted(sh)[nr // 2],
+        "expected-weighted mean of the shares": sum(e * s for e, s in zip(E, sh)) / sum(E),
+        "pooled sums": sum(fl) / sum(P),
+        "least squares through the origin":
+            sum(p * f for p, f in zip(P, fl)) / sum(p * p for p in P),
+        "least squares with an intercept":
+            sum((p - pbar) * (f - fbar) for p, f in zip(P, fl)) / (pvar * nr),
+        "measured from the quarter closed at the decision":
+            sum(r["from_decision"] - r["realised"] for r in rec) / sum(r["from_decision"] for r in rec),
+        "measured from the quarter before the placement":
+            sum(r["from_previous"] - r["realised"] for r in rec) / sum(r["from_previous"] for r in rec),
+        "against what the other units did over the same quarters":
+            sum(r["from_previous"] - r["realised"] - r["concurrent"] for r in rec) / sum(P),
+        "against the other units pooled over the same quarters":
+            sum(r["from_previous"] - r["realised"] - r["concurrent_pooled"] for r in rec) / sum(P),
+    }
+    ok(abs(readings["pooled sums"] - share) < 1e-9, "the golden share is the register's pooled sums")
+    for label, want in fig["register_readings"].items():
+        ok(abs(readings[label] - want) < 5e-5,
+           "the register read as %s is %.5f (%.5f)" % (label, readings[label], want))
+    ok(max(readings.values()) / min(readings.values()) - 1 < 0.035,
+       "the register's readings sit within 3.5 per cent (%.2f%%)"
+       % ((max(readings.values()) / min(readings.values()) - 1) * 100))
+
     tot = grp.groupby("unit_code").agg(observed=("observed", "sum"), expected=("expected", "sum"),
                                        separations=("separations", "sum"))
     plan_map = dict(zip(plan.unit_code, plan.planned_separations))
@@ -115,7 +175,7 @@ def run(target, figures_path):
         if u == fig["call_unit_code"]:
             ok(round(ratio, 2) == fig["pick_standardised_ratio"], "the pick's standardised ratio")
             ok(round(e_plan) == fig["pick_expected_complications"], "the pick's expected complications")
-            ok(round((ratio - 1) * e_plan) == fig["pick_excess_complications"], "the pick's excess")
+            ok(round((ratio - 1) * e_plan, 1) == fig["pick_excess_complications"], "the pick's excess")
             ok(plan_map[u] == fig["pick_planned_separations"], "the pick's planned separations")
     order = sorted(avoided, key=lambda u: -avoided[u])
     ok(order[0] == fig["call_unit_code"], "the call is %s" % fig["call_unit_code"])
@@ -125,6 +185,13 @@ def run(target, figures_path):
     ok(round(avoided[order[0]]) - round(avoided[order[1]]) == fig["gap_complications"], "the gap")
     for u, v in avoided.items():
         ok(round(v) == fig["avoided_by_unit"][u], "the avoided count at %s" % u)
+    # every reading of the register leaves every unit on the same whole complication
+    for label, th in readings.items():
+        for u in elig:
+            t = tot.loc[u]
+            alt = th * (t.observed / t.expected - 1) * plan_map[u] * t.expected / t.separations
+            ok(round(alt) == fig["avoided_by_unit"][u],
+               "%s leaves %s at %d avoided (%.3f)" % (label, u, fig["avoided_by_unit"][u], alt))
 
     # the rungs the brief names
     last_q = sorted(grp.quarter.unique())[-1]

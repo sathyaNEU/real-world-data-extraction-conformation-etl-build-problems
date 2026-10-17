@@ -144,19 +144,19 @@ nearest driver on the corpus standing at 0.07 (task263, separated in the card's 
 7. Subtract background from total energetically: the plant's specific sound level at each dwelling.
 8. Rank the 14 dwellings on that level and file the five highest.
 
-Ends on: NSL04, NSL11, NSL06, NSL12 and NSL03
+Ends on: NSL03, NSL04, NSL06, NSL11 and NSL12
 Golden: NSL04, NSL11, NSL07, NSL02 and NSL13
 
 ## Stump sentence
 
 A competent solver pairs every deployment with its position, applies the calibration drift, excludes exactly
 the minutes the plan excludes, energetically averages each position's weekday daytime LAeq, energetically
-subtracts the background the position's own record shows and files NSL04, NSL11, NSL06, NSL12 and NSL03. The
-step that lands it there is taking that background from a record the plant was running in: the blowers, the
-centrifuges and the gas engine run through every assessment minute, so the background already contains the
-plant, the subtraction returns the surroundings' own variability instead of the plant's contribution, and
-the slate fills with the dwellings on the Clonaraght road and the stream while NSL07, NSL02 and NSL13, the
-quiet-surroundings dwellings the plant contributes most to, drop out.
+subtracts the background the position's own record shows and files NSL03, NSL04, NSL06, NSL11 and NSL12.
+The step that lands it there is taking that background from a record the plant was running in: the blowers,
+the centrifuges and the gas engine run through every assessment minute, so the background already contains
+the plant, the subtraction returns the surroundings' own variability (29.3 to 40.9 dB against specific
+levels of 37.5 to 53.1) and the slate fills with the dwellings on the Clonaraght road and the Glasha while
+NSL07, NSL02 and NSL13, the quiet-surroundings dwellings the plant contributes most to, drop out.
 
 ## Three rules
 
@@ -193,7 +193,7 @@ quiet-surroundings dwellings the plant contributes most to, drop out.
   residual to the analyst.
 - **Analyst test:** a strong analyst who maps every deployment, applies the drift, excludes exactly the plan's
   minutes and does the energetic arithmetic correctly still takes the background from the running record and
-  files NSL04, NSL11, NSL06, NSL12 and NSL03.
+  files NSL03, NSL04, NSL06, NSL11 and NSL12.
 - **Estimand:** "the specific sound level of the effluent plant at a monitoring position is the position's
   measured sound level over the assessment period less the residual sound, in dB LAeq", filed at clause 3.1
   of `noise_management_plan.pdf`, with the population at 2.1, the assessment period at 3.2 and the slot at
@@ -262,18 +262,20 @@ Each figure is that rung's specific-level estimate in dB for the position, as bu
 
 | Rung | What it computes | Slate | 5th to 6th | Dies to |
 |---|---|---|---|---|
-| 0 complaints | rank by the complaints register's own count per dwelling | NSL06, NSL03, NSL12, NSL09, NSL01 | 2 complaints | plan 6.1: the slot is picked on the specific level, not on complaints |
-| 1 measured total | the energetic mean of each position's valid assessment minutes, uncorrected | NSL04, NSL11, NSL07, NSL02, NSL06 | 0.71 dB | plan 3.1's definition, which subtracts the residual |
-| 2 statistical background (default) | total less the position's own tenth-percentile minute level | NSL04, NSL11, NSL06, NSL12, NSL03 | 3.07 dB | the event log: the plant ran through every minute of that background |
-| 2b quietest interval | total less the quietest quarter-hour of the position's record | NSL04, NSL11, NSL06, NSL12, NSL03 | 2.03 dB | the same event log |
-| 2c arithmetic means | the arithmetic mean of the minute levels less the arithmetic mean of the minute LA90s | measured at build | measured at build | the same event log, and plan 3.1's energy-equivalent level |
+| 0 complaints | rank by the complaints register's own count per dwelling | NSL01, NSL03, NSL06, NSL09, NSL12 | 1 complaint | plan 6.1: the slot is picked on the specific sound level, not on complaints |
+| 1 measured total | the energetic mean of each position's valid assessment minutes, uncorrected | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.38 dB | plan 3.1's definition, which subtracts the residual |
+| 2 statistical background (default) | total less the energetic mean of the position's minute LA90 values | NSL03, NSL04, NSL06, NSL11, NSL12 | 1.34 dB | the event log: the plant ran through every minute of that background |
+| 2' tenth percentile | total less the tenth percentile of the position's LAeq minutes | NSL02, NSL03, NSL04, NSL06, NSL07 | 0.24 dB | the same event log |
+| 2b quietest interval | total less the quietest quarter hour of the position's record | NSL03, NSL04, NSL06, NSL07, NSL11 | 0.14 dB | the same event log |
+| 2c arithmetic means | the arithmetic mean of the minute levels less the arithmetic mean of the minute LA90s | NSL03, NSL04, NSL06, NSL11, NSL12 | 1.24 dB | the same event log, and plan 3.1's energy-equivalent level |
 | **3 residual in the plant's stops (answer)** | total less the energetic mean of the position's minutes inside the plant's recorded stops | **NSL04, NSL11, NSL07, NSL02, NSL13** | **0.80 dB** | nothing in the pack |
 
-**Design figures (the search that fixed the world; the built figures replace them at ship).** Specific
-levels 37.6 to 53.2 dB, residuals 32.5 to 42.1 dB, every position's total at least 4.9 dB above its own
-residual (so the subtraction is defined and the printed level moves less than 0.1 dB for a 0.2 dB move in
-the residual estimate), the statistical-background route returning 29.1 to 41.2 dB, and the five slates
-above distinct with boundary gaps of 0.71 dB or more.
+**As built (`generator/figures.json`).** Specific sound levels 37.5 to 53.1 dB LAeq, residual sounds 29.3
+to 40.9 dB, measured totals 38.5 to 53.3 dB, every position's total at least 5.7 dB above its own residual,
+240 stop minutes behind every position's residual, and 6,190 to 6,900 valid assessment minutes a position.
+The slate is NSL04 (53.1), NSL11 (49.9), NSL07 (47.9), NSL02 (47.2) and NSL13 (46.0); NSL06 is the first
+dwelling off the list at 45.2, 0.8 dB behind. Five distinct wrong slates sit on the ladder above, and the
+thinnest of their own boundaries is 0.14 dB, on a route whose two sides are both wrong slates.
 
 **Worth of each rung, on the graded quantity.** Rung 1 moves one member of the slate (NSL06 for NSL13) and
 every printed level by 0.2 to 1.7 dB. Rung 2 moves three members and every printed level by 5 to 15 dB. Rung
@@ -287,10 +289,14 @@ the measured-total slate (four of five), and not the default path's slate (two o
 own winner, NSL04, is also the golden's first, which is correct and not a rung-0 artifact: it is the nearest
 dwelling and the plant dominates there, and the ladder's work is at the fourth and fifth places.
 
-**The grid (asserted cell by cell at build).** Background source x averaging x validity x duplicate x stop
-set: 2 x 2 x 2 x 2 x 2 = 32 cells. Every cell whose background comes from the plant's stops gives the golden
-slate; every cell whose background comes from the running record gives a wrong slate. The figures move only
-in the first family.
+**The grid (measured on the built pack, asserted in `checks.py`).** The licensed readings of the golden's
+own route all give the golden slate and the same fourteen printed levels: the planned stops alone against
+every interval the log shows with all three sources down (identical to 0.000 dB, since the only other stop
+in the log falls before the first deployment), and the total over the assessment minutes against the total
+over the same minutes outside the stops (identical, since no stop minute falls in the assessment period).
+Two readings that violate a filed rule keep the slate and move figures: the calibration correction skipped
+(plan 4.1) moves ten printed levels by up to 0.31 dB, and the met exclusions skipped (plan 4.2) moves one
+by 0.08 dB. Every background taken from the running record gives a wrong slate, in the five rows above.
 
 ## Closure table
 
@@ -388,6 +394,79 @@ cent = 17.8, and the pair averages 39.2, which the regrade margin rounds to 39.5
 | `complaints_register_2026.xlsx` | xlsx | distractor, declared in metadata.json: complaints, dates, dwellings |
 | `effluent_quality_2026.csv` | csv | distractor, declared in metadata.json: the site's discharge monitoring |
 | `export_manifest.csv` | csv | provenance: what each file is, covers and omits |
+
+## Build record
+
+- `generator/build.py` runs everything: the survey (`world.py`, `sim.py`), the pack (`pack.py`, `docs.py`,
+  `postprocess.py`), the golden (`golden.py` over `analysis.py`, `deliver.py`), `metadata.py`,
+  `figures.py`, `submission.py`, then `checks.py` and `verify.py`.
+- Final run: `checks.py` **377 assertions passed**; `verify.py` **234 independent checks passed**; two
+  consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
+  0373bc0f07eea0f6); about 40 seconds.
+- `verify.py` reads only the bundle (standard library, numpy-free, pyarrow for the parquet), encodes the
+  plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
+  residuals, valid, excluded and stop minutes, the slate, its order, the sixth and the margin, the default
+  path's own slate, the highest band and tone verdict at every position, and the six weeks of plant
+  figures, against `generator/figures.json` and against the golden table.
+- `figures_check.py` exit 0: 90 figures in blocks 1 to 4, none absent from `figures.json`.
+- Parameters chosen by search in scratch and never shipped: the designed specific levels and residuals
+  (`world.POSITIONS`), the residual texture (`EVENT_DB`, `JITTER`, `SLOW`), the tone survival (`BARRIER`,
+  `TONE_K`) and the per-position micro-adjustments (`world.SHIFT`, at most 0.87 dB) that put every printed
+  level mid-bin, all 14 distinct, none within 0.038 dB of a rounding edge.
+- Invented names: Drumlorne, Tulcarra Foods, Clonaraght, and the townland-style dwelling names in the
+  register, checked against the thirty-one Irish local authorities and the sixty largest towns (edit
+  distance above 2, no containment). No offline register of Irish townlands was available, which is
+  recorded here as the limit of that check.
+
+## Leak check (mechanical half)
+
+`leak.py task182 --asof 2026-10-16`: **REVIEW, no LEAK**, four lines, each answered here.
+
+- Sweep 3, `noise_management_plan.pdf` carries three of five distinctive words of the committed call: the
+  words are October, treatment and slot, which clause 6.1 needs to say what the mitigation programme is. No
+  figure of the answer appears in any shipped file (asserted: no shipped file holds a specific level, a
+  residual level or a corrected level for any position).
+- Sweep 4, the plan and the survey notes share eight of the stump paragraph's terms: they are the field's
+  own nouns (position, measured, residual, record, register, period), and the plan defines the residual
+  because the estimand has to be filed. The sweep's own test is whether the document names the move; it
+  does not, and `checks.py` asserts the plan names no background, percentile, L90, stop or non-operating
+  state.
+- Sweep 4, the prompt carries two stump terms: the prompt has to name the quantity (the specific sound
+  level) and the window (the assessment minutes), which is the WHAT every build files. It names no method.
+- Sweep 9, `calibration_records_2026.csv` carries five dates after the as-of: they are the meters'
+  calibration due dates, a forward validity window, which `reduce-house-fixes` H16 puts on the allow-list.
+
+`guard.py surface task182`: 216 pairs in scope, **0 promoted**; nearest neighbour task228 at 0.096.
+Personas in the cut pack: Aiden Hawthorn and Orla O'Hurley, both on the card.
+`guard.py heart task182`: **WARN, not BLOCK**; nearest driver 0.07 (task263), answered in the card's
+differentiation.
+
+## Pre-ship check (client, eight points)
+
+1. **Domain.** The build is a noise survey reduced to one attributable level per dwelling, which is the
+   acoustics practitioner's own determination of a specific sound level. The swap test breaks it: another
+   field's nouns have no energetic summation and no quantity that the source's own presence makes
+   unmeasurable.
+2. **Real work, nothing planted.** The inputs take work to put in order: UTC meters against local
+   paperwork, five meters rotated over fourteen positions, two field-check corrections, a met mast at ten
+   minutes with a mid-survey unit change and a tip counter, a repeated download, three names per position,
+   and band levels on three meters of five. Every one of them comes from the survey's own equipment.
+3. **The flip is a method choice.** What flips the call is where the residual term of the plan's own
+   subtraction is measured: the position's own running record, or the minutes inside the plant's weekly
+   process stops. The plan files the quantity and no method.
+4. **The analyst test holds.** A strong analyst who cleans every reading and executes every filed clause
+   still files NSL03, NSL04, NSL06, NSL11 and NSL12, and `checks.py` runs that route on the clean truth and
+   asserts it.
+5. **One defensible method.** The plan fixes the population, the outcome, the window and the unit; the
+   residual is measurable only where the plant is down, and every licensed reading of that measurement
+   gives the same fourteen printed levels and the same slate.
+6. **No decoy.** Nothing is planted and no document argues a position: the complaints register holds
+   complaints and no levels, the effluent file is unrelated monitoring, and no memo or draft ships.
+7. **Nothing hidden and recovered.** No certified or published figure ships for a method to reproduce. The
+   residual is measured, not recovered.
+8. **A new lesson.** A quantity defined as a difference has to be measured where the difference is
+   observable, and the windows that make it observable come from the operating record of the thing being
+   measured. The guard's heart check found no near driver (nearest 0.07).
 
 ## Tried and rejected
 

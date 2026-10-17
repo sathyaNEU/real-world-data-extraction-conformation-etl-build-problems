@@ -217,12 +217,12 @@ def brief(path, g, chart_path):
         Paragraph("The team should embed with <b>Orthopaedics at Alderbrook Hospital, cost centre %s</b>. "
                   "The unit's planned %s separations for the quarter carry %.0f expected complications, it "
                   "has stood at %.2f times its expected complications across the ten closed quarters of "
-                  "specification 4.0, and the %d complications that standing puts above expectation are the "
+                  "specification 4.0, and the %.1f complications that standing puts above expectation are the "
                   "largest avoidable number in the network. On what the partnership's seven closed "
                   "placements have taken off a unit's standing excess, the placement avoids <b>%d "
                   "complications</b> over the quarter, against %d at %s %s, the closest unit."
                   % (a["unit"], "{:,}".format(a["plan"]), a["expected_plan"], a["ratio"],
-                     round(a["excess"]), round(a["avoided"]), round(r["avoided"]),
+                     a["excess"], round(a["avoided"]), round(r["avoided"]),
                      short(r["hospital"]), r["name"]), LEAD),
         Spacer(1, 2),
         Image(chart_path, width=165 * mm, height=93.3 * mm),
@@ -232,20 +232,20 @@ def brief(path, g, chart_path):
         Paragraph("The three units the committee asked about", H2),
         Paragraph("<b>%s %s</b> is carrying the most complications above expectation right now, %d of them "
                   "in the December quarter, and that is the placement the quarter in hand points to. Its own "
-                  "ten quarters put %d above expectation on the quarter's planned activity, so most of what "
+                  "ten quarters put %.1f above expectation on the quarter's planned activity, so most of what "
                   "it is carrying now is its own quarter-to-quarter movement rather than a position a "
                   "placement can work on: there, a placement avoids %d."
                   % (short(rung0["hospital"]), rung0["name"], round(rung0["last_excess"]),
-                     round(rung0["excess"]), round(rung0["avoided"])), BODY),
+                     rung0["excess"], round(rung0["avoided"])), BODY),
         Paragraph("<b>%s %s</b> stands worst of the twelve on its own record, but it is a small unit: its "
-                  "planned %s separations for the quarter carry %d complications above expectation, so a "
+                  "planned %s separations for the quarter carry %.1f complications above expectation, so a "
                   "placement there avoids %d."
                   % (short(rung1["hospital"]), rung1["name"], "{:,}".format(rung1["plan"]),
-                     round(rung1["excess"]), round(rung1["avoided"])), BODY),
+                     rung1["excess"], round(rung1["avoided"])), BODY),
         Paragraph("<b>%s %s</b> will record more complications than any other unit next quarter on the "
                   "elective catch-up volume in the plan, and most of them are the complications its case "
-                  "mix is expected to produce: %d sit above expectation, and a placement there avoids %d."
-                  % (short(rung2["hospital"]), rung2["name"], round(rung2["excess"]),
+                  "mix is expected to produce: %.1f sit above expectation, and a placement there avoids %d."
+                  % (short(rung2["hospital"]), rung2["name"], rung2["excess"],
                      round(rung2["avoided"])), BODY),
         PageBreak(),
         Paragraph("How the figures were put together", H2),
@@ -263,7 +263,8 @@ def brief(path, g, chart_path):
                   "were amalgamated on 1 October 2025, and its five closed quarters meet clause 4.2. "
                   "Rehabilitation and Aged Care at Marrowfield, where the team is until 31 March, is not "
                   "eligible this cycle. Complications avoided are whole complications over the assessment "
-                  "quarter; expected complications are carried to one decimal.", FOOT),
+                  "quarter; expected complications and complications above a standing are carried to one "
+                  "decimal.", FOOT),
     ]
     d.build(flow, onFirstPage=_page, onLaterPages=_page)
     return path

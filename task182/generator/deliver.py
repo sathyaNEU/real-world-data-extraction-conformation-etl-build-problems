@@ -48,10 +48,11 @@ def chart(path, g):
     ax.tick_params(axis="y", labelsize=7.5)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    for i, (b, v) in enumerate(zip(bars, vals)):
-        ax.text(b.get_x() + b.get_width() / 2.0, v + 0.22, "%.1f" % v, ha="center", fontsize=6.6,
-                color="#13343b")
     cut = (vals[g["cap"] - 1] + vals[g["cap"]]) / 2.0
+    for i, (b, v) in enumerate(zip(bars, vals)):
+        off = 0.46 if abs(v + 0.22 - cut) < 0.3 else 0.22
+        ax.text(b.get_x() + b.get_width() / 2.0, v + off, "%.1f" % v, ha="center", fontsize=6.6,
+                color="#13343b")
     ax.axhline(cut, color="#8a4b08", linewidth=0.9, linestyle=(0, (4, 3)))
     ax.text(len(codes) - 0.4, cut + 0.18, "slot reaches %d dwellings" % g["cap"], ha="right",
             fontsize=6.8, color="#8a4b08")
@@ -112,22 +113,24 @@ def note(path, g, chart_png):
                       g["sixth"], g["margin_db"]), BODY),
          Image(chart_png, width=168 * mm, height=72.3 * mm),
          Paragraph("What the slot covers", H2),
-         Table(wrap([["Position", "Dwelling", "Specific sound level, dB LAeq", "Treatment"]]
+         Table(wrap([["Position", "Dwelling", "Specific sound level, dB LAeq", "Glazing"]]
                     + [[c, "%s, %s" % (dref, name), "%.1f" % lvl,
-                        "secondary glazing, rooms facing the plant" if lvl >= 46.0
-                        else "secondary glazing to the two front rooms"]
+                        "with acoustic trickle vents" if reasons[c]["tone"]
+                        else "standard unit"]
                        for c, dref, name, lvl in sel]),
-               colWidths=[22 * mm, 68 * mm, 36 * mm, 42 * mm], style=TBL),
-         Paragraph("A tone was prominent at %s of the five, which is why the glazing specification carries "
-                   "the acoustic trickle vents rather than the standard unit."
-                   % sum(1 for c, _, _, _ in sel if reasons[c]["tone"]), SMALL),
+               colWidths=[22 * mm, 74 * mm, 34 * mm, 38 * mm], style=TBL),
+         Paragraph("A tone is prominent at %d of the five, and those four take the glazing with acoustic "
+                   "trickle vents; %s takes the standard unit."
+                   % (sum(1 for c, _, _, _ in sel if reasons[c]["tone"]),
+                      ", ".join(c for c, _, _, _ in sel if not reasons[c]["tone"])), SMALL),
          Paragraph("The plant through the survey", H2),
          Paragraph("The plant ran to its ordinary pattern in every one of the six weeks, so the positions "
                    "measured in different weeks are comparable.", BODY),
          Table(wrap([["Week beginning", "Biogas burned, m3", "Blower air delivered, thousand Nm3",
                       "Centrifuge runs"]]
-                    + [[W.WEEKS[k].strftime("%d %B"), "%d" % v["biogas_m3"],
-                        "%d" % v["blower_air_knm3"], "%d" % v["centrifuge_runs"]]
+                    + [["%d %s" % (W.WEEKS[k].day, W.WEEKS[k].strftime("%B")),
+                        "{:,}".format(v["biogas_m3"]), "{:,}".format(v["blower_air_knm3"]),
+                        "%d" % v["centrifuge_runs"]]
                        for k, v in sorted(g["weekly"].items())]),
                colWidths=[32 * mm, 40 * mm, 56 * mm, 32 * mm], style=TBL),
          Paragraph("Levels are to one decimal place. Minutes the met mast showed as wet or windy are out "

@@ -99,8 +99,9 @@ def write_deployments(target, deps):
             rem = "mic moved 3 m west on the Wednesday, stock had reached the tripod"
         if d["code"] == "NSL04" and d["k"] == 1:
             rem = "windshield replaced at mid-week check"
+        mount = 1.2 + 0.1 * ((W.CODES.index(d["code"]) + 3 * d["k"]) % 6)
         rows.append([d["id"], m["serial"], d["code"], d["start"].isoformat(), d["end"].isoformat(),
-                     "%.1f" % d["mount"], "%.1f" % m["pre"], "%.1f" % m["post"],
+                     "%.1f" % mount, "%.1f" % m["pre"], "%.1f" % m["post"],
                      W.PEOPLE["technician"][1], rem])
     return _write_csv(os.path.join(target, FILES["deployments"]),
                       ["deployment_ref", "meter_serial", "position_code", "start_date", "end_date",
@@ -308,7 +309,17 @@ def write_complaints(target):
     texts = ["hum carrying across the yard in the evening", "low drone, worse with the wind from the plant",
              "constant noise at night, cannot open the bedroom window", "whine from the new building",
              "humming through the day, worse since the summer", "noise from the plant at the gable",
-             "drone in the evening, children cannot sleep", "steady hum from the direction of the works"]
+             "drone in the evening, children cannot sleep", "steady hum from the direction of the works",
+             "noise worse since the new building went up", "rumble that carries down the lane",
+             "cannot sit out in the garden with the hum",
+             "a tone off the plant, there all weekend", "hum through the floor at night",
+             "noise from the works, louder in the mornings", "whining noise, getting worse",
+             "the drone starts early and does not stop", "steady noise, worse on still nights",
+             "humming from the plant, heard it all week", "noise carries up to the house on a calm day",
+             "a hum we can hear with the windows shut", "constant drone from the direction of the plant",
+             "noise off the works at the back of the house",
+             "a whine from the new plant, new since the summer",
+             "humming noise, we are not able to sleep with it"]
     rng = random.Random(W.SEED + 31)
     rows, n = [], 0
     ordered = sorted([c for c in W.CODES if W.COMPLAINTS[c] > 0], key=lambda c: -W.COMPLAINTS[c])
@@ -320,7 +331,7 @@ def write_complaints(target):
             d = dt.date(2026, 6, 4) + dt.timedelta(days=int(round(span * n / float(total))) + k)
             sent = min(d + dt.timedelta(days=rng.choice([4, 6, 9])), dt.date(2026, 10, 9))
             rows.append([ref, d.isoformat(), W.BY_CODE[code][1], W.PEOPLE["engineer"][1],
-                         texts[(n + k) % len(texts)], sent.isoformat()])
+                         texts[(7 * n + 5 * k) % len(texts)], sent.isoformat()])
             n += 1
     rows.sort(key=lambda r: (r[1], r[0]))
     for i, r in enumerate(rows):

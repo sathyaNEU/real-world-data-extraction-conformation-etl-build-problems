@@ -199,7 +199,7 @@ leaves the two orders nothing like equal room.
 | 0 the extract as it comes, half of the pair expected | section 3.2 files the multiple and the minimum | the two layouts stack on renamed columns in one line | yes, the first run anyone writes | none | the battery finds the resend, the reissued codes and the replaced pseudonyms | one group-by and a comparison | readable |
 | 1 the hygiene battery done, half of the pair expected | no | no | yes, the hygiene reflex | none | yes, that is the battery | one filter | readable |
 | 2 patients whose first product receipt falls within 60 days of either window edge dropped, half of the pair expected | no | the window's two dates are in the standard, so the guard is a row predicate once the solver has asked the question | yes, the edge-guard reflex for a window-bounded comparison | nothing scores a method; every pair the tracker holds open fails 3.2(b) on every basis, so it ties under every rung | no | one filter on the product date | readable |
-| 3 the expected number taken from the window's own first-receipt dates (decisive) | no sentence names symmetry, equal likelihood, a null ratio, an incidence distribution or a sequence ratio, asserted by a word sweep over every shipped file for nineteen phrasings | no column holds an expected number, and the first-receipt dates are a construction across two layouts, a crosswalk and a dated code register rather than a field | no reflex computes it: the 60-day edge guard refers twelve pairs and the extract as it comes refers nine, both measured on the shipped bundle | nothing scores a method; the tracker's pairs fail 3.2(b) on every basis | the battery repairs the extract and leaves the expectation at half | no: it is a double count over the pair's two date sets, or either drug's window incidence distribution | silent |
+| 3 the expected number taken from the window's own first-receipt dates (decisive) | no sentence names symmetry, equal likelihood, a null ratio, an incidence distribution or a sequence ratio, asserted by a word sweep over every shipped file for nineteen phrasings | no column holds an expected number, and the first-receipt dates are a construction across two layouts, a crosswalk and a dated code register rather than a field | no reflex computes it: the 60-day edge guard refers eleven pairs and the extract as it comes refers nine, both measured on the shipped bundle | nothing scores a method; the tracker's pairs fail 3.2(b) on every basis | the battery repairs the extract and leaves the expectation at half | no: it is a double count over the pair's two date sets, or either drug's window incidence distribution | silent |
 
 ## Semantic fork table
 
@@ -236,31 +236,32 @@ leaves the two orders nothing like equal room.
 answer's seven share only five members: the easy route refers five pairs on the two products whose use is
 ending inside the window (Varenadol with antiemetic, acid-suppressant and hypnotic; Admirabin with loop
 diuretic and antidepressant) and passes over two real signals on the two products first marketed inside it
-(Ternivast with gout treatment, Oxelumab with antidepressant). Rung 2's twelve differ from the answer in
-five members. The five pairs the easy route adds sit at 1.53 to 1.73 times half the pair, clearly past
-1.25, and at 0.99 to 1.02 times the expected number once that is taken from the dates, clearly short of
-it; the two it misses sit at 1.02 and 1.13 against half the pair and at 1.39 and 1.34 against the expected
-number. The lowest of the five shared referrals is 1.37 against the dates and 1.40 against half the pair,
+(Ternivast with gout treatment, Oxelumab with antidepressant). Rung 2's eleven differ from the answer in
+six members. The five pairs the easy route adds sit at 1.51 to 1.63 times half the pair, clearly past
+1.25, and at 0.98 to 1.02 times the expected number once that is taken from the dates, clearly short of
+it; the two it misses sit at 0.98 and 1.10 against half the pair and at 1.37 and 1.36 against the expected
+number. The lowest of the five shared referrals is 1.40 against the dates and 1.44 against half the pair,
 so no shared pair is lost on either basis. The highest multiple among the thirteen pairs this run refuses
-is 1.12, Dalvextin with acid-suppressant, the nearest pair on the wrong side of the line. The nearest
-figure to the 1.25 multiple on any of the five arithmetics, over all 20 candidates, is 6.3 per cent away.
+is 1.03, Dalvextin with acid-suppressant, the nearest pair on the wrong side of the line. The nearest
+figure to the 1.25 multiple on any of the five arithmetics, over all 20 candidates, is 8.5 per cent away.
 
 **The grid.** Two axes, the hygiene battery and the expected number:
 
 | | half of the pair | from the window's own dates |
 |---|---|---|
-| the extract as it comes | 9 referred | 6 referred |
+| the extract as it comes | 9 referred | 7 referred |
 | hygiene battery done | 10 referred | **7 referred** |
 
 Every cell is a named count. The decisive axis moves the same seven memberships in both rows, taking out
 the five pairs on the two products leaving the market and adding the two on the products entering it, so a
-solver who finds the window's arithmetic but not the reissued package codes names six of the seven and
-none of the five: that is the fairness the ladder needs. The hygiene axis moves one pair in either column,
-Sovraxil with topical corticosteroid, and every pair's two counts.
+solver who finds the window's arithmetic but not the reissued package codes still names the seven: the
+hygiene battery is Layer 1 and never carries the call. What it does carry is every pair's two counts and
+its share, each of them graded, and one membership in the crude column, Sovraxil with topical
+corticosteroid, which is why the crude row reads 9 and then 10.
 
-**Dominance.** The pair the ladder turns on hardest is Varenadol with hypnotic, whose share receiving the
-marker after is 86.4 per cent, the highest on the screen, and whose multiple is 1.73 against half the pair
-and 1.02 against the expected number: the loudest pair on the crude basis is the one the arithmetic
+**Dominance.** The pair the ladder turns on hardest is Varenadol with antiemetic, whose share receiving the
+marker after is 81.4 per cent, the highest on the screen, and whose multiple is 1.63 against half the pair
+and 0.99 against the expected number: the loudest pair on the crude basis is the one the arithmetic
 refuses most firmly, and no partial correction reaches it. The seven memberships the decisive step moves
 sit on four different products, so no rule of thumb about a product's lifecycle substitutes for the
 arithmetic: Sovraxil's use is also falling across the window and its pair is referred on both bases, while
@@ -384,7 +385,7 @@ control total.
 **Mirror leakage:** 18.5
 
 The pair arithmetic: the cracker lands the call and keeps about a fifth of the ask weight (Lc 0.21), the
-mirror stops at rung 2's twelve pairs and keeps 0.185 of it, and a wrong call keeps about 5 of the
+mirror stops at rung 2's eleven pairs and keeps 0.185 of it, and a wrong call keeps about 5 of the
 recommendation weight, so C is 38 + 7 + 55 x 0.21 = 56.6 and S is 5 + 7 + 55 x 0.185 = 22.2.
 
 ## Tried and rejected
@@ -436,8 +437,24 @@ recommendation weight, so C is 38 + 7 + 55 x 0.21 = 56.6 and S is 5 + 7 + 55 x 0
 - Carrying the package reissue on a product whose pairs sit near the referral line: measured at the build,
   and joining the package index on its open rows alone then moved the call, which makes the hygiene battery
   worth the call rather than the figures. Moved to Sovraxil, whose pair is referred on both bases by a wide
-  margin, so the join error costs one membership in either column of the grid and the decisive axis still
-  moves the same seven in both rows.
+  margin, so the join error costs one membership in the crude column of the grid, none in the window
+  column, and the decisive axis still moves the same seven in both rows.
+- A flat 3.1 per cent rejection rate drawn over the whole extract, pharmacies open every day of the week
+  including Sunday, and each chain's lag a clean rung of the ladder: the cold reader named all three as
+  synthetic. Replaced by a per-chain validation rate lifted by quarter with one chain's month of missing
+  price records, a pharmacy week drawn from its own open-day shape, and a submission lag that reaches zero
+  days. The rejected lines still fall only on repeat dispensings, so no patient's first receipt moves.
+- Pinning the four handling conventions in a `known_handling` block of the register's release notes: the
+  cold reader read the block as a solver's checklist and named the file under question 3. Each convention
+  now stands where the organisation would state it and in its own voice, the re-sent line and the package
+  validity in the register's data dictionary, the quarter of dispensing beside the window definition in
+  the standard, the extract's adult scope in the manifest's scope statement, and the dictionary covers
+  every variable of the files it documents rather than only the four a solver needs.
+- Pairs under assessment chosen among the two late-launching products, so the tracker's two open entries
+  opened months before their products were marketed: three further dated rows contradicted the same
+  lifecycle. Every dated row in the pack now falls inside its product's marketing dates and no date passes
+  the extract's pull, both asserted; the tracker's entries still fail 3.2(b) on every arithmetic, which is
+  what closes SF12.
 - Reading the third ask's share as the earliest marker receipt across all eight marker groups: measured at
   the build, and the earliest is in the clearance period for almost every patient, so nineteen of the
   twenty-four cells sat between 2 and 7 per cent and three were zero. The standard's section 4.2 now states
@@ -569,7 +586,7 @@ The pack as built, read against the gates one last time.
   data defect), Gate H passed with the decisive step analytical, all 23 pair rows reproduced, and the judge
   built the no-bearing expectation six ways (pair marginals, the same with ties excluded, permutation with
   and without ties, all-window marginals, a marker spread evenly) and every one referred the same seven
-  pairs, with referred multiples 1.33 to 1.47 and the nearest miss at 1.07 to 1.12. It ruled the
+  pairs, with referred multiples 1.36 to 2.16 and the nearest miss at 1.03 to 1.12. It ruled the
   equal-chance reading not a licensed second reading, because it assumes identical date distributions and
   the launches inside the window contradict that. The cold reader reached the same seven at about 90 per
   cent confidence, quoted nothing for the decisive step, found no ranking file and answered question 6 an

@@ -14,12 +14,8 @@ Stump terms swept: position, measured, residual, record, background, quantity, d
 - **REVIEW** `survey_notes.md`: 8 of 25 stump-paragraph terms appear (position, measured, record, register, records, period); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Put the answer in specific_sound_levels.csv, a row for each of the 14 monitoring positions: the plant's specific sound level in dB LAeq, the valid and the excluded assessment minutes, the one-third-octave band with the h"
 
-## 8 column names (REVIEW 1)
-- **REVIEW** `weather_10min_2026.csv`: columns a generator names and an organisation does not: air_temp_c
-
-## 9 dates after the setting (REVIEW 2)
+## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `calibration_records_2026.csv`: 5 ISO dates after 2026-10-16, e.g. 2027-03-11
-- **REVIEW** `complaints_register_2026.xlsx`: 24 ISO dates after 2026-10-16, e.g. 2026-10-23, 2026-10-25, 2026-10-27, 2026-11-03, 2026-11-08
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -33,5 +29,7 @@ Stump terms swept: position, measured, residual, record, background, quantity, d
 ## 6 ranking artifacts (clean)
 
 ## 7 hidden content (clean)
+
+## 8 column names (clean)
 
 ## 11 prompt gate (clean)

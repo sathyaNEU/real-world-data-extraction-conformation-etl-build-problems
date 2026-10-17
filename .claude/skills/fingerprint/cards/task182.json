@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "The October acoustic treatment slot covers NSL04 (DW-101), NSL11 (DW-104), NSL07 (DW-110), NSL02 (DW-103) and NSL13 (DW-105); NSL06 is the first dwelling off the list at 45.2 dB LAeq, 0.8 dB below the fifth.",
+  "answer_source": "task182/submission.md, 1. Final Recommendation",
   "gap": [
     "objective"
   ],
@@ -34,7 +34,7 @@
   "scoring_unit": "per certified output",
   "spine": {
     "file": "sound_levels_1min_2026.parquet",
-    "rows": 0,
+    "rows": 282360,
     "entity": "one minute of logged sound level at one monitoring position (LAeq, LA90, LAmax, LAmin)",
     "grain": "position x minute",
     "source": "synthetic"
@@ -67,9 +67,9 @@
   "question_form": "which",
   "driver": "The decisive quantity is one source's own contribution to a measured total, and the nuisance part of that total cannot be measured while the source runs, because the source's steady presence lifts even the quietest moments of the record; so every background taken from the running record subtracts the source along with the nuisance and leaves the nuisance's own variability, ranking the units by how variable their surroundings are instead of by how much the source contributes.",
   "driver_concrete": "Each dwelling's specific sound level from the works is the energetic difference between its measured weekday daytime total and the residual sound, and because the blowers and the gas engine run without stopping the statistical background in a position's own record sits within a decibel or two of its total, so subtracting it returns a level built out of the residual's variability and ranks the dwellings by how busy their surroundings are; only the residual measured inside the works' own weekly process stops recovers the five dwellings the plant contributes most to.",
-  "stump": "A competent solver maps every meter deployment to its position, applies the calibration checks, excludes exactly the rain- and wind-affected samples the plan excludes, energetically averages each position's weekday daytime one-minute LAeq, energetically subtracts the position's own statistical background and files the five dwellings with the highest corrected level; the step that lands it there is taking that background from a record the works were running in, when the works run continuously, so the subtraction returns the residual's own variability and the slate fills with the dwellings beside the road and the stream while the quiet-surroundings dwellings the plant contributes most to are left out.",
+  "stump": "A competent solver pairs every deployment with its position, applies the calibration drift, excludes exactly the minutes the plan excludes, energetically averages each position's weekday daytime LAeq, energetically subtracts the background the position's own record shows and files NSL03, NSL04, NSL06, NSL11 and NSL12; the step that lands it there is taking that background from a record the plant was running in, when the blowers, the centrifuges and the gas engine run through every assessment minute, so the subtraction returns the surroundings' own variability and the slate fills with the dwellings beside the road and the stream while the quiet-surroundings dwellings the plant contributes most to are left out.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who maps each deployment to its position, applies the drift from the calibration checks, excludes exactly the samples the plan excludes and energetically averages and subtracts still takes the background from the record the works were running in, and files the dwellings with the most variable surroundings; only the residual measured inside the works' own process stops, found by joining the stop times in the plant's equipment log to the meter records, gives the specific levels.",
+  "analyst_test": "A strong analyst who maps each deployment to its position, applies the drift from the calibration checks, excludes exactly the minutes the plan excludes and does the energetic arithmetic correctly still takes the background from the record the works were running in and files NSL03, NSL04, NSL06, NSL11 and NSL12; only the residual measured inside the plant's own weekly process stops, found by joining the stop times in the equipment log to the meter records, gives NSL04, NSL11, NSL07, NSL02 and NSL13.",
   "domain_test": "What decides the slate is separating a steady source's own contribution from the residual sound by energetic subtraction, which is how acoustics practitioners determine a specific sound level, and the residual has to be measured with the source shut down because a statistical background taken while it runs already contains it; with another field's nouns there is no energetic summation of a source with its surroundings and no quantity that cannot be observed while the source is present, so the task does not read the same.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:residual-measured-in-the-source-s-own-absence",
