@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 3 under way: task237 and task238 shipped; task239 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 3 under way: task237, task238 and task239 shipped; task240 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 and task238 shipped; task239 to task242 next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237, task238 and task239 shipped; task240 to task242 next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,23 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task239: SHIPPED 2026-10-17 (wave 3, third build; architecture 1); waiting on the portal.**
+- Lowfirth Parcels, a national parcels carrier, and the Team Climate Index its Staff Voice survey reports per team
+  (Psychology & Behavioral Science, psychometric-measurement-scale-validation x Data Quality Monitoring). Call: keep ten
+  of the twelve items, TC01 to TC10, for the 2028 survey and withdraw TC11 and TC12. On the factor the items share at
+  team level, estimated from the between-team covariance net of the pooled within-team covariance (the standard files a
+  team's level as the score a member is expected to give), TC01 to TC10 load 0.89 to 0.94 and the two workload items
+  -0.02. One factor on the 1,016 team means files eight (the two team-practice items at 0.58 withdrawn with the
+  workload pair), because each mean carries the members' own covariance over about eight returns; dividing the means'
+  correlations by the reliabilities files the wrong ten. Asks: each channel's returns down to those the check used, each
+  item's company-wide answers and favourable answers, each division's teams and returns used (a member on two channels,
+  re-sent tablet sessions, July codes reissued to new teams, the register's current division).
+- Gates: 147 generator checks, verify green (its own returns, teams and between-team fit), byte-identical rebuilds,
+  figures_check 76 of 76, precut 49, leak.py REVIEW only; three leak reads (question 1 none in each, question 6
+  analytical; realism fixes only); judge DETERMINISTIC, APPROVE (four low findings closed in the write-up and the
+  dictionary). The guard's heart check found task267 on the same shape, event and organisation family, so the world
+  moved from a health board to a parcels company with every figure unchanged; heart now WARN, surface clean.
 
 **task238: SHIPPED 2026-10-17 (wave 3, second build; architecture 1); waiting on the portal.**
 - The Halvreth Statistics Office and its quarterly Wellbeing Tracker going web-first (Survey Research & Official
