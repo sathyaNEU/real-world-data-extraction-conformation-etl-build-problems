@@ -1,104 +1,181 @@
-"""The two files the coordinator would put in front of the division."""
+"""task193: the two golden deliverables, the screen workbook and the order-share chart."""
 import os
 
-import world as W
-
-NAME = {}
-
-
-def names():
-    if not NAME:
-        for c, n, _h, _a, _k, _e in W.PRODUCTS:
-            NAME[c] = n
-        NAME[W.DOMINANT] = W.DOM_NAME
-        NAME[W.RENAMED[0]] = W.RENAMED[2]
-    return NAME
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 
 
 def workbook(path, g):
-    from openpyxl import Workbook
+    import openpyxl
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-    nm = names()
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Signals taken forward"
+    from openpyxl.utils import get_column_letter
+    wb = openpyxl.Workbook()
     thin = Side(style="thin", color="BFBFBF")
-    box = Border(left=thin, right=thin, top=thin, bottom=thin)
-    ws["A1"] = "%s: signals of disproportionate reporting, quarter to 30 September 2026" % W.AGENCY
-    ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = ("Pairs meeting the three criteria in paragraph 3.2, with the reporting of the autumn "
-                "booster campaign left out of what each pair is measured against.")
-    ws["A2"].font = Font(size=9, italic=True)
-    ws.append([])
-    head = ["Product", "Reaction", "Reports", "Proportional reporting ratio", "Chi-square",
-            "Held down by the campaign's reporting"]
-    ws.append(head)
-    for c in ws[4]:
-        c.font = Font(bold=True)
-        c.alignment = Alignment(wrap_text=True, vertical="bottom")
-        c.fill = PatternFill("solid", fgColor="EDEDE8")
-        c.border = box
-    masked = {tuple(x) for x in g["masked_pairs"]}
-    for r in g["signals"]:
-        key = (r["code"], r["reaction"])
-        ws.append([nm[r["code"]], r["reaction"], r["reports"], round(r["prr"], 2),
-                   round(r["chi"], 1),
-                   "yes, %.2f against the whole database" % r["prr_crude"]
-                   if key in masked else None])
-        for c in ws[ws.max_row]:
-            c.border = box
-    row = ws.max_row + 2
-    ws.cell(row=row, column=1, value="Pairs taken forward").font = Font(bold=True)
-    ws.cell(row=row, column=3, value=g["taken_forward"]).font = Font(bold=True)
-    ws.cell(row=row + 1, column=1, value="The desk's capacity for the quarter")
-    ws.cell(row=row + 1, column=3, value=W.CAPACITY)
-    ws.cell(row=row + 2, column=1, value="Assessment slots left")
-    ws.cell(row=row + 2, column=3, value=W.CAPACITY - g["taken_forward"])
-    ws.cell(row=row + 3, column=1, value="Pairs the whole-database comparison alone takes forward")
-    ws.cell(row=row + 3, column=3, value=g["crude_count"])
-    for i, wid in enumerate((22, 26, 10, 16, 12, 42), start=1):
-        ws.column_dimensions[chr(64 + i)].width = wid
-    ws.freeze_panes = "A5"
+    head = Font(name="Calibri", size=11, bold=True)
+    fill = PatternFill("solid", fgColor="E8EDF3")
+    note = Font(name="Calibri", size=9, italic=True)
+
+    ws = wb.active
+    ws.title = "Screen 2026 Q4 run"
+    ws["A1"] = "Prescription-sequence screen, run of October 2026"
+    ws["A1"].font = Font(name="Calibri", size=13, bold=True)
+    ws["A2"] = ("Screen window 1 October 2025 to 30 September 2026. Extract pulled 20 October 2026. "
+                "Referrals are assessed in the quarter beginning 1 January 2027.")
+    ws["A2"].font = note
+    ws["A3"] = ("Expected after-count on the window's own first-receipt dates, Standard 7-2024 "
+                "section 3.2(b); referral multiple 1.25; minimum 25 patients.")
+    ws["A3"].font = note
+    cols = ["Product", "Brand", "Marker treatment", "Patients", "Marker after", "Marker before",
+            "Share after", "Expected after", "Multiple", "Referred"]
+    for c, v in enumerate(cols, start=1):
+        cell = ws.cell(row=5, column=c, value=v)
+        cell.font = head
+        cell.fill = fill
+        cell.border = Border(bottom=thin)
+    r = 6
+    for row in g["screen_rows"]:
+        vals = [row["product"], row["brand"], row["marker_treatment"], row["patients"],
+                row["after"], row["before"],
+                None if row["share_pct"] is None else row["share_pct"] / 100.0,
+                row["expected"], row["multiple"], row["referred"]]
+        for c, v in enumerate(vals, start=1):
+            cell = ws.cell(row=r, column=c, value=v)
+            if c == 7 and v is not None:
+                cell.number_format = "0.0%"
+            if c == 8 and v is not None:
+                cell.number_format = "0.0"
+            if c == 9 and v is not None:
+                cell.number_format = "0.00"
+        r += 1
+    ws.cell(row=r + 1, column=1, value="Referred for assessment in 2027 Q1").font = head
+    ws.cell(row=r + 1, column=4, value=g["referred_count"]).font = head
+    ws.cell(row=r + 2, column=1,
+            value=("Pairs below the 25-patient minimum are shown with no figures and are carried "
+                   "forward to the next run under section 3.4.")).font = note
+    ws.cell(row=r + 3, column=1,
+            value=("Nearest pair on the wrong side of the line: %s, multiple %.2f."
+                   % (g["nearest_miss"]["label"], g["nearest_miss"]["multiple"]))).font = note
+
+    ws2 = wb.create_sheet("Chain submissions")
+    ws2["A1"] = "Dispensing lines by chain and quarter of dispensing"
+    ws2["A1"].font = Font(name="Calibri", size=12, bold=True)
+    ws2["A2"] = ("Accepted lines are the rows in the two register extracts; lines turned back at "
+                 "validation are in submission_exceptions.csv and never reach them.")
+    ws2["A2"].font = note
+    for c, v in enumerate(["Chain", "Quarter", "Lines accepted", "Lines rejected",
+                           "Median days to submission"], start=1):
+        cell = ws2.cell(row=4, column=c, value=v)
+        cell.font = head
+        cell.fill = fill
+    for i, row in enumerate(g["a1"], start=5):
+        for c, v in enumerate([row["chain"], row["quarter"], row["accepted"], row["rejected"],
+                               row["median_days"]], start=1):
+            cell = ws2.cell(row=i, column=c, value=v)
+            if c == 5:
+                cell.number_format = "0.0"
+
+    ws3 = wb.create_sheet("Holder fees")
+    ws3["A1"] = "Statutory data fee, screen window 2025-26"
+    ws3["A1"].font = Font(name="Calibri", size=12, bold=True)
+    ws3["A2"] = ("Doses at the rates in schedule 3, with the amendment of 1 April 2026 applied to "
+                 "doses dispensed on or after that date. Strandby Farma's doses are charged to "
+                 "Bregnholt from the merger on 1 April 2026.")
+    ws3["A2"].font = note
+    for c, v in enumerate(["Holder", "Name", "DDD dispensed", "Fee due (DKK)"], start=1):
+        cell = ws3.cell(row=4, column=c, value=v)
+        cell.font = head
+        cell.fill = fill
+    for i, row in enumerate(g["a2"], start=5):
+        for c, v in enumerate([row["holder"], row["name"], row["ddd"], row["fee_dkk"]], start=1):
+            cell = ws3.cell(row=i, column=c, value=v)
+            if c == 3:
+                cell.number_format = "#,##0.0"
+            if c == 4:
+                cell.number_format = "#,##0"
+
+    ws4 = wb.create_sheet("Utilisation table")
+    ws4["A1"] = "Patients with a first receipt of a screened product in the window"
+    ws4["A1"].font = Font(name="Calibri", size=12, bold=True)
+    ws4["A2"] = ("Region and age as recorded at 1 October 2025, Standard 7-2024 section 4.2. "
+                 "Share is of the same patients who also had a first marker-treatment receipt in "
+                 "the window.")
+    ws4["A2"].font = note
+    for c, v in enumerate(["Region", "Age band", "Patients", "Share with a first marker receipt"],
+                          start=1):
+        cell = ws4.cell(row=4, column=c, value=v)
+        cell.font = head
+        cell.fill = fill
+    for i, row in enumerate(g["a3"], start=5):
+        for c, v in enumerate([row["region"], row["band"], row["patients"],
+                               row["share_pct"] / 100.0], start=1):
+            cell = ws4.cell(row=i, column=c, value=v)
+            if c == 4:
+                cell.number_format = "0.0%"
+
+    widths = {"Screen 2026 Q4 run": [10, 13, 23, 10, 13, 14, 11, 15, 10, 10],
+              "Chain submissions": [9, 11, 15, 15, 26],
+              "Holder fees": [9, 29, 16, 16],
+              "Utilisation table": [15, 13, 11, 32]}
+    for name, ws_ in (("Screen 2026 Q4 run", ws), ("Chain submissions", ws2),
+                      ("Holder fees", ws3), ("Utilisation table", ws4)):
+        for c, w in enumerate(widths[name], start=1):
+            ws_.column_dimensions[get_column_letter(c)].width = w
+        ws_.sheet_view.showGridLines = False
+        ws_.freeze_panes = "A6" if name == "Screen 2026 Q4 run" else "A5"
     wb.save(path)
 
 
 def chart(path, g):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    nm = names()
-    masked = {tuple(x) for x in g["masked_pairs"]}
-    rows = sorted(g["signals"], key=lambda r: r["prr"])
-    lab = ["%s, %s" % (nm[r["code"]], r["reaction"].lower()) for r in rows]
-    fig, ax = plt.subplots(figsize=(9.2, 6.4), dpi=150)
-    y = range(len(rows))
+    rows = [r for r in g["screen_rows"] if r["share_pct"] is not None]
+    rows = sorted(rows, key=lambda r: r["share_pct"])
+    labels = ["%s + %s" % (r["brand"], r["marker_treatment"]) for r in rows]
+    vals = [r["share_pct"] for r in rows]
+    REF, NOT = "#1f4e79", "#aebfd2"
+    LINE = "#a4161a"
+    cols = [REF if r["referred"] == "yes" else NOT for r in rows]
+    fig, ax = plt.subplots(figsize=(10.4, 7.4), dpi=150)
+    y = list(range(len(rows)))
+    ax.barh(y, vals, color=cols, height=0.66, edgecolor="white", linewidth=0.9)
+    ax.set_yticks(y)
+    ax.set_yticklabels(labels, fontsize=9)
+    ax.set_xlabel("Share of the pair's patients who received the marker treatment after the product",
+                  fontsize=9.5, labelpad=8)
+    ax.set_xlim(0, 108)
+    ax.set_xticks([0, 20, 40, 60, 80, 100])
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, p: "%d%%" % v))
+    ax.tick_params(axis="x", labelsize=9)
+    ax.tick_params(axis="y", length=0)
     for i, r in enumerate(rows):
-        hid = (r["code"], r["reaction"]) in masked
-        ax.barh(i, r["prr"], height=.62, color="#8c3b3b" if hid else "#4a6b86",
-                edgecolor="#2d2d2d", linewidth=.5, zorder=3)
-        if hid:
-            ax.plot([r["prr_crude"]], [i], marker="D", color="#d9a24a", markersize=6,
-                    markeredgecolor="#4a3a12", zorder=5)
-        ax.text(r["prr"] + .06, i, "%.2f" % r["prr"], va="center", fontsize=8, zorder=4)
-    ax.axvline(W.PRR_MIN, color="#222222", linestyle="--", linewidth=1.1, zorder=2)
-    ax.text(W.PRR_MIN + .02, len(rows) - .35, "paragraph 3.2 takes a pair forward at 2.00",
-            fontsize=8, rotation=90, va="top")
-    ax.set_yticks(list(y))
-    ax.set_yticklabels(lab, fontsize=8.5)
-    ax.set_xlabel("Proportional reporting ratio, the campaign's reporting left out of the comparison",
-                  fontsize=9)
-    ax.set_title("Signals taken forward, quarter to 30 September 2026", fontsize=11.5, loc="left")
-    ax.set_xlim(0, max(r["prr"] for r in rows) * 1.18)
-    ax.grid(axis="x", color="#dddddd", linewidth=.6, zorder=1)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    import matplotlib.patches as mp
-    ax.legend(handles=[mp.Patch(color="#8c3b3b", label="held below 2.00 while the campaign is in the comparison"),
-                       mp.Patch(color="#4a6b86", label="past 2.00 either way"),
-                       plt.Line2D([], [], marker="D", color="#d9a24a", linestyle="none",
-                                  markeredgecolor="#4a3a12",
-                                  label="the same pair measured against the whole database")],
-              fontsize=8, loc="lower right", framealpha=.95)
-    fig.tight_layout()
-    fig.savefig(path, metadata={"Software": None, "Creator": None, "Title": None})
+        ax.text(r["share_pct"] + 1.1, i, "%.1f%%" % r["share_pct"], va="center", fontsize=8,
+                color="#2b2b2b")
+        line = 100.0 * r["expected"] / r["patients"] * 1.25
+        ax.plot([line, line], [i - 0.33, i + 0.33], color=LINE, linewidth=1.8,
+                solid_capstyle="butt", zorder=3)
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    handles = [Patch(facecolor=REF, label="referred to assessment"),
+               Patch(facecolor=NOT, label="not referred"),
+               Line2D([0], [0], color=LINE, linewidth=1.8,
+                      label="referral line: 1.25 times the pair's expected share")]
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.155), ncol=3,
+              fontsize=8.5, frameon=False, handlelength=1.4, columnspacing=1.6)
+    ax.set_title("%d of the %d candidate pairs clear the referral line once the expected share is "
+                 "taken\nfrom the window's own first-receipt dates, against %d on an equal-chance "
+                 "expectation" % (g["referred_count"], g["candidate_count"], g["crude_count"]),
+                 fontsize=11.5, loc="left", pad=34, color="#13344f")
+    ax.text(0.0, 1.018,
+            "Prescription-sequence screen, run of October 2026. Screen window 1 October 2025 to "
+            "30 September 2026.", transform=ax.transAxes, fontsize=8.5, color="#5a5a5a")
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
+    ax.spines["bottom"].set_color("#9a9a9a")
+    ax.grid(axis="x", color="#e4e4e4", linewidth=0.7)
+    ax.set_axisbelow(True)
+    fig.text(0.012, 0.012,
+             "Source: Laegemiddelstatistikregisteret extract LSR-2026-0441, pulled 20 October 2026. "
+             "Standard 7-2024 sections 2.5, 3.1 and 3.2.", fontsize=7.6, color="#6a6a6a")
+    fig.subplots_adjust(left=0.235, right=0.985, top=0.868, bottom=0.145)
+    fig.savefig(path, metadata={"Software": None, "Creation Time": None})
     plt.close(fig)

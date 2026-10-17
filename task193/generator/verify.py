@@ -1,181 +1,275 @@
-"""An independent reader of the shipped bundle: it knows figures.json and target/ and nothing else."""
+"""task193: the independent verifier. Reads only target/ and generator/figures.json, on its own
+code path, and recomputes the screen, every rung and every ask figure.
+"""
+import bisect
 import collections
 import csv
 import datetime as dt
 import json
 import os
+import statistics
 
-K = [0]
-D = dt.date.fromisoformat
-Q_FROM, Q_TO = D("2026-07-01"), D("2026-09-30")
-PRR_MIN, CHI_MIN, N_MIN, CAPACITY = 2.0, 4.0, 15, 16
-CHANNELS = ["clinician", "licence holder", "patient", "pharmacy"]
-MONTHS = ["2026-07", "2026-08", "2026-09"]
+WIN_A, WIN_B = dt.date(2025, 10, 1), dt.date(2026, 9, 30)
+CLEAR_B = dt.date(2025, 9, 30)
+MULTIPLE = 1.25
+MINIMUM = 25
+MERGER = dt.date(2026, 4, 1)
+AMEND = dt.date(2026, 4, 1)
+TRANSFER = dt.date(2026, 2, 27)
+QUARTERS = [("2025 Q4", dt.date(2025, 10, 1), dt.date(2025, 12, 31)),
+            ("2026 Q1", dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
+            ("2026 Q2", dt.date(2026, 4, 1), dt.date(2026, 6, 30)),
+            ("2026 Q3", dt.date(2026, 7, 1), dt.date(2026, 9, 30))]
+BANDS = [(0, 39, "18-39"), (40, 59, "40-59"), (60, 74, "60-74"), (75, 200, "75 and over")]
+N = 0
 
 
-def ok(cond, msg):
-    K[0] += 1
-    if not cond:
-        raise AssertionError("verify: " + msg)
+def tab(tgt, name):
+    with open(os.path.join(tgt, name), newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
 
 
-def rd(tgt, name):
-    with open(os.path.join(tgt, name), newline="") as f:
-        return list(csv.DictReader(f))
+def d_iso(s):
+    return dt.date(int(s[0:4]), int(s[5:7]), int(s[8:10]))
+
+
+def d_dk(s):
+    return dt.date(int(s[6:10]), int(s[3:5]), int(s[0:2]))
 
 
 def run(tgt, figures_path):
-    fig = json.load(open(figures_path))
+    global N
+    N = 0
+    fail = []
 
-    master = {r["submission_id"]: r for r in rd(tgt, "report_master.csv")}
-    code_of, former = {}, None
-    for r in rd(tgt, "product_register.csv"):
-        code_of[r["product_name"]] = r["product_code"]
-        if r["former_name"]:
-            code_of[r["former_name"]] = r["product_code"]
-            former = r["product_code"]
-    dic = rd(tgt, "reaction_dictionary.csv")
-    pref = {(r["reaction_verbatim"], r["dictionary_version"]): r["preferred_term"] for r in dic}
-    ser = {(r["reaction_verbatim"], r["dictionary_version"]): r["serious"] == "yes" for r in dic}
-    listed = collections.defaultdict(set)
-    for r in rd(tgt, "product_information_listed.csv"):
-        listed[r["product_code"]].add(r["preferred_term"])
+    def ck(label, cond, detail=""):
+        global N
+        N += 1
+        if not cond:
+            fail.append("%s %s" % (label, detail))
 
-    cases = {}
-    for row in rd(tgt, "spontaneous_reports_extract.csv"):
-        m = master[row["submission_id"]]
-        d = D(m["receipt_date"])
-        if not (Q_FROM <= d <= Q_TO):
+    fg = json.load(open(figures_path))
+
+    pkg = {}
+    ddd = {}
+    for r in tab(tgt, "package_index.csv"):
+        pkg[r["vnr"]] = (r["atc_code"],
+                         d_iso(r["valid_from"]) if r["valid_from"] else None,
+                         d_iso(r["valid_to"]) if r["valid_to"] else None)
+        ddd[r["vnr"]] = float(r["ddd_per_pack"])
+    annex = tab(tgt, "screen_annexes.csv")
+    prod = {r["product_atc"]: r["product_code"] for r in annex}
+    mark = {r["marker_atc_group"]: r["marker_code"] for r in annex}
+    pairs = sorted(set((r["product_code"], r["marker_code"]) for r in annex))
+    xw = {r["retired_person_key"]: r["current_person_key"]
+          for r in tab(tgt, "person_key_crosswalk.csv")}
+    chain_of = {r["pharmacy_id"]: r["chain_code"] for r in tab(tgt, "pharmacy_register.csv")}
+    holder_of = {r["product_code"]: r["holder_code"] for r in tab(tgt, "product_register.csv")}
+    merged = {r["holder_code"]: r["merged_into"] for r in tab(tgt, "holder_register.csv")
+              if r["merged_into"]}
+
+    seen = set()
+    lines = []
+    for name, kc, vc, dc, sc, phc, pc_, parse in (
+            ("dispensings_2023_2025.csv", "pseudonym", "vnr", "disp_date", "submitted",
+             "pharmacy_id", "packages", d_iso),
+            ("dispensings_2025_2026.csv", "person_key", "package_code", "date_of_dispensing",
+             "submission_date", "pharmacy", "n_packages", d_dk)):
+        for r in tab(tgt, name):
+            d = parse(r[dc])
+            vnr = r[vc]
+            atc, vf, vt = pkg[vnr]
+            if (vf and d < vf) or (vt and d > vt):
+                continue
+            code = prod.get(atc) or mark.get(atc)
+            key = xw.get(r[kc], r[kc])
+            lines.append({"key": key, "code": code, "day": d, "vnr": vnr,
+                          "sub": parse(r[sc]), "ph": r[phc], "packs": int(r[pc_]),
+                          "atc": atc})
+            if code is not None:
+                seen.add((key, code, d, vnr, r[phc]))
+
+    first = {}
+    for k, code, d, vnr, ph in seen:
+        if code is None:
             continue
-        c = cases.setdefault(row["case_id"], {"code": code_of[row["product_reported"]],
-                                              "reactions": set(), "serious": set(),
-                                              "region": m["region"], "age": m["age_band"]})
-        k = (row["reaction_verbatim"], row["dictionary_version"])
-        c["reactions"].add(pref[k])
-        if ser[k]:
-            c["serious"].add(pref[k])
-    cases = list(cases.values())
-    npr, a = collections.Counter(), collections.Counter()
-    for c in cases:
-        npr[c["code"]] += 1
-        for r in c["reactions"]:
-            a[(c["code"], r)] += 1
+        kk = (k, code)
+        if kk not in first or d < first[kk]:
+            first[kk] = d
 
-    def table(code, reaction, drop=()):
-        aa = a.get((code, reaction), 0)
-        np_ = npr[code]
-        bb = np_ - aa
-        cc = dd = 0
-        for q, n in npr.items():
-            if q == code or q in drop:
+    byp = collections.defaultdict(dict)
+    for (k, code), d in first.items():
+        byp[k][code] = d
+
+    def window_days(code):
+        return sorted((d - WIN_A).days for (k, c), d in first.items()
+                      if c == code and WIN_A <= d <= WIN_B)
+
+    results = {}
+    for pcode, mcode in pairs:
+        t, s = [], []
+        for k, got in byp.items():
+            tp, tm = got.get(pcode), got.get(mcode)
+            if tp is None or tm is None:
                 continue
-            x = a.get((q, reaction), 0)
-            cc += x
-            dd += n - x
-        return aa, bb, cc, dd
+            if not (WIN_A <= tp <= WIN_B and WIN_A <= tm <= WIN_B) or tp == tm:
+                continue
+            t.append((tp - WIN_A).days)
+            s.append((tm - WIN_A).days)
+        after = sum(1 for i in range(len(t)) if s[i] > t[i])
+        results[(pcode, mcode)] = (len(t), after, sorted(t), sorted(s))
 
-    def prr_chi(code, reaction, drop=()):
-        aa, bb, cc, dd = table(code, reaction, drop)
-        if aa == 0 or cc == 0:
-            return None, None
-        prr = (aa / (aa + bb)) / (cc / (cc + dd))
-        t = aa + bb + cc + dd
-        e = [(aa + bb) * (aa + cc) / t, (aa + bb) * (bb + dd) / t,
-             (cc + dd) * (aa + cc) / t, (cc + dd) * (bb + dd) / t]
-        return prr, sum((o - x) ** 2 / x for o, x in zip((aa, bb, cc, dd), e))
+    def expected(pcode, mcode, route):
+        n, after, t, s = results[(pcode, mcode)]
+        if n == 0:
+            return 0.0
+        if route == "half":
+            return 0.5 * n
+        if route == "perm":
+            return sum(len(s) - bisect.bisect_right(s, x) for x in t) / float(n)
+        if route == "incidence":
+            tt, ss = window_days(pcode), window_days(mcode)
+            return n * sum(len(ss) - bisect.bisect_right(ss, x) for x in tt) / float(len(tt) * len(ss))
+        if route == "pairprod":
+            ss = window_days(mcode)
+            return n * sum(len(ss) - bisect.bisect_right(ss, x) for x in t) / float(len(t) * len(ss))
+        if route == "even":
+            span = (WIN_B - WIN_A).days + 1
+            return n * sum((span - 1 - x) / float(span) for x in t) / float(len(t))
+        raise ValueError(route)
 
-    def take(drop=()):
+    open_pairs = set((r["product_code"], r["marker_code"]) for r in tab(tgt, "signal_tracker_export.csv")
+                     if r["status"].startswith("under assessment"))
+
+    def referred(route):
         out = []
-        for (code, reaction), aa in sorted(a.items()):
-            if aa < N_MIN or reaction in listed.get(code, ()):
+        for p in pairs:
+            n, after, t, s = results[p]
+            if n < MINIMUM:
                 continue
-            prr, chi = prr_chi(code, reaction, tuple(q for q in drop if q != code))
-            if prr and prr >= PRR_MIN and chi >= CHI_MIN:
-                out.append((code, reaction, prr, chi, aa))
-        return out
+            e = expected(p[0], p[1], route)
+            if e > 0 and after / e >= MULTIPLE and p not in open_pairs:
+                out.append("%s/%s" % p)
+        return sorted(out)
 
-    dom = max(npr, key=lambda c: npr[c])
-    crude = take()
-    corr = take((dom,))
-    ok(len(corr) == fig["taken_forward"], "the pairs taken forward")
-    ok(len(crude) == fig["crude_count"], "the pairs the whole-database comparison takes")
-    ok(CAPACITY - len(corr) == fig["slots_left"], "the assessment slots left")
-    ok(abs(100.0 * npr[dom] / len(cases) - fig["dominant_share"]) < 5e-2, "the dominant share")
-    sc = set(x[:2] for x in crude)
-    su = set(x[:2] for x in corr)
-    ok(set(tuple(x) for x in fig["masked_pairs"]) == su - sc, "the pairs the booster held down")
-    ok(sc <= su, "the crude list is a subset of the answer")
-    byk = {(x["code"], x["reaction"]): x for x in fig["signals"]}
-    ok(len(byk) == len(corr), "figures.json lists every pair taken forward")
-    for code, reaction, prr, chi, aa in corr:
-        f = byk[(code, reaction)]
-        ok(f["reports"] == aa, "reports for %s %s" % (code, reaction))
-        ok(abs(round(f["prr"], 2) - round(prr, 2)) < 5e-3, "ratio for %s %s" % (code, reaction))
-        ok(abs(round(f["chi"], 1) - round(chi, 1)) < 5e-2, "chi-square for %s %s" % (code, reaction))
-        if (code, reaction) in su - sc:
-            p0, _ = prr_chi(code, reaction)
-            ok(abs(round(f["prr_crude"], 2) - round(p0, 2)) < 5e-3,
-               "the whole-database ratio for %s %s" % (code, reaction))
-            ok(p0 < PRR_MIN, "a masked pair is short of the threshold against the whole database")
-    for r, sh in fig["campaign_share"].items():
-        nam = sum(v for (c, rr), v in a.items() if rr == r)
-        ok(abs(100.0 * a[(dom, r)] / nam - sh) < 5e-2, "the booster's share of %s" % r)
+    ans = referred("perm")
+    ck("v.referred_count", len(ans) == fg["referred_count"],
+       "%d against %d" % (len(ans), fg["referred_count"]))
+    ck("v.crude_count", len(referred("half")) == fg["crude_count"])
+    for route in ("incidence", "pairprod", "even"):
+        ck("v.route_" + route, referred(route) == ans, route)
+    cands = [p for p in pairs if results[p][0] >= MINIMUM]
+    ck("v.candidate_count", len(cands) == fg["candidate_count"])
+    ck("v.screened_count", len(pairs) == fg["screened_count"])
+    ck("v.patients", len(set(k for k, c in first)) == fg["patients_in_extract"],
+       "%d" % len(set(k for k, c in first)))
 
-    # the asks
+    want = {}
+    for r in fg["screen_rows"]:
+        want[(r["product"], r["marker"])] = r
+    for p in pairs:
+        n, after, t, s = results[p]
+        r = want[p]
+        ck("v.row_n_%s" % str(p), r["patients"] == n, "%d against %d" % (n, r["patients"]))
+        ck("v.row_after_%s" % str(p), r["after"] == after)
+        ck("v.row_before_%s" % str(p), r["before"] == n - after)
+        if n >= MINIMUM:
+            e = expected(p[0], p[1], "perm")
+            ck("v.row_exp_%s" % str(p), abs(round(e, 1) - r["expected"]) < 0.051,
+               "%.3f against %s" % (e, r["expected"]))
+            ck("v.row_mult_%s" % str(p), abs(round(after / e, 2) - r["multiple"]) < 0.011)
+            ck("v.row_ref_%s" % str(p),
+               (r["referred"] == "yes") == ("%s/%s" % p in ans))
+        else:
+            ck("v.row_below_%s" % str(p), r["referred"] == "below minimum")
+
+    # ---- A1
+    rej = tab(tgt, "submission_exceptions.csv")
+    a1 = {}
+    for label, a, b in QUARTERS:
+        for ch in sorted(set(chain_of.values())):
+            acc = [r for r in lines if chain_of[r["ph"]] == ch and a <= r["day"] <= b]
+            rr = [r for r in rej if chain_of[r["pharmacy"]] == ch
+                  and a <= d_iso(r["date_of_dispensing"]) <= b]
+            days = sorted((r["sub"] - r["day"]).days for r in acc)
+            a1[(ch, label)] = (len(acc), len(rr),
+                               round(float(statistics.median(days)), 1) if days else 0.0)
+    for r in fg["a1"]:
+        got = a1[(r["chain"], r["quarter"])]
+        ck("v.a1_acc_%s_%s" % (r["chain"], r["quarter"]), got[0] == r["accepted"],
+           "%d against %d" % (got[0], r["accepted"]))
+        ck("v.a1_rej_%s_%s" % (r["chain"], r["quarter"]), got[1] == r["rejected"],
+           "%d against %d" % (got[1], r["rejected"]))
+        ck("v.a1_med_%s_%s" % (r["chain"], r["quarter"]), abs(got[2] - r["median_days"]) < 0.051,
+           "%.1f against %.1f" % (got[2], r["median_days"]))
+
+    # ---- A2
+    BANDS_BEFORE = [(0, 250, 1480), (250, 1000, 1240), (1000, 4000, 1015), (4000, 10 ** 9, 860)]
+    BANDS_AFTER = [(0, 250, 1595), (250, 1000, 1335), (1000, 4000, 1095), (4000, 10 ** 9, 930)]
     tot = collections.Counter()
-    for r in rd(tgt, "channel_totals.csv"):
-        d = D(r["received_on"])
-        if Q_FROM <= d <= Q_TO:
-            tot[(r["channel"], d.strftime("%Y-%m"))] += int(r["submissions_received"])
-    nc = collections.Counter()
-    for r in rd(tgt, "coding_exceptions.csv"):
-        d = D(r["received_on"])
-        if Q_FROM <= d <= Q_TO:
-            nc[(r["channel"], d.strftime("%Y-%m"))] += 1
-    days = collections.defaultdict(list)
-    for r in rd(tgt, "report_master.csv"):
-        d = D(r["receipt_date"])
-        if Q_FROM <= d <= Q_TO:
-            days[(r["channel"], d.strftime("%Y-%m"))].append((D(r["coded_date"]) - d).days)
-    for ch in CHANNELS:
-        for mo in MONTHS:
-            want = fig["a1_channels"]["%s|%s" % (ch, mo)]
-            k = (ch, mo)
-            ok(want["received"] == tot[k], "A1 received, %s %s" % (ch, mo))
-            ok(want["not_coded"] == nc[k], "A1 not coded, %s %s" % (ch, mo))
-            ok(abs(want["mean_days"] - round(sum(days[k]) / len(days[k]) + 1e-9, 1)) < 5e-2,
-               "A1 mean days, %s %s" % (ch, mo))
+    before = collections.Counter()
+    after_d = collections.Counter()
+    for r in lines:
+        code = prod.get(r["atc"])
+        if code is None:
+            continue
+        h = holder_of[code]
+        if code == "P09" and r["day"] >= TRANSFER:
+            h = "H6"
+        if h in merged and r["day"] >= MERGER:
+            h = merged[h]
+        if not (WIN_A <= r["day"] <= WIN_B):
+            continue
+        q = ddd[r["vnr"]] * r["packs"]
+        tot[h] += q
+        if r["day"] < AMEND:
+            before[h] += q
+        else:
+            after_d[h] += q
+    for r in fg["a2"]:
+        h = r["holder"]
+        th = tot[h] / 1000.0
+        rb = next(x for lo, hi, x in BANDS_BEFORE if lo <= th < hi)
+        ra = next(x for lo, hi, x in BANDS_AFTER if lo <= th < hi)
+        fee = round(before[h] / 1000.0 * rb + after_d[h] / 1000.0 * ra)
+        ck("v.a2_ddd_" + h, abs(round(tot[h], 1) - r["ddd"]) < 0.11,
+           "%.1f against %.1f" % (tot[h], r["ddd"]))
+        ck("v.a2_fee_" + h, int(fee) == r["fee_dkk"], "%d against %d" % (fee, r["fee_dkk"]))
 
-    import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(tgt, "data_agreement_schedule.xlsx"))
-    base, amend = {}, {}
-    for row in wb["Schedule"].iter_rows(min_row=5, values_only=True):
-        if row and row[0]:
-            base[row[1]] = int(row[2])
-    for row in wb["Amendments"].iter_rows(min_row=4, values_only=True):
-        if row and row[0]:
-            amend[row[1]] = (int(row[3]), D(row[4]))
-    got = {}
-    for r in rd(tgt, "holder_submissions.csv"):
-        h = r["licence_holder"]
-        d = D(r["received_on"])
-        e = got.setdefault(h, [0, 0, 0])
-        e[0] += 1
-        if d > Q_TO:
-            e[1] += 1
-        rate = base[h]
-        if h in amend and d >= amend[h][1]:
-            rate = amend[h][0]
-        e[2] += rate
-    for h, v in fig["a2_holders"].items():
-        ok(got[h][0] == v["filed"], "A2 filed, %s" % h)
-        ok(got[h][1] == v["after_close"], "A2 after the close, %s" % h)
-        ok(got[h][2] == v["fee"], "A2 fee, %s" % h)
+    # ---- A3
+    reg = {}
+    for r in tab(tgt, "person_register.csv"):
+        region = r["region"] or "not stated"
+        if r["previous_region"] and r["region_recorded_from"] and d_iso(r["region_recorded_from"]) > WIN_A:
+            region = r["previous_region"]
+        reg[r["person_key"]] = (region, int(r["year_of_birth"]))
+    pset = set(prod.values())
+    mset = set(mark.values())
+    cells = collections.defaultdict(lambda: [0, 0])
+    for k, got in byp.items():
+        if not any(c in pset and WIN_A <= d <= WIN_B for c, d in got.items()):
+            continue
+        if k not in reg:
+            continue
+        region, yob = reg[k]
+        age = WIN_A.year - yob
+        band = next(lab for lo, hi, lab in BANDS if lo <= age <= hi)
+        cells[(region, band)][0] += 1
+        if any(c in mset and WIN_A <= d <= WIN_B for c, d in got.items()):
+            cells[(region, band)][1] += 1
+    for r in fg["a3"]:
+        n, k = cells[(r["region"], r["band"])]
+        ck("v.a3_n_%s_%s" % (r["region"], r["band"]), n == r["patients"],
+           "%d against %d" % (n, r["patients"]))
+        share = round(100.0 * k / n, 1) if n else 0.0
+        ck("v.a3_share_%s_%s" % (r["region"], r["band"]), abs(share - r["share_pct"]) < 0.051,
+           "%.1f against %.1f" % (share, r["share_pct"]))
 
-    for key, v in fig["a3_cells"].items():
-        reg, band = key.split("|")
-        sel = [c for c in cases if c["region"] == reg and (c["age"] or "not stated") == band]
-        ok(len(sel) == v["cases"], "A3 cases, %s" % key)
-        s = sum(1 for c in sel if c["serious"])
-        ok(abs(round(100.0 * s / len(sel), 1) - v["serious_share"]) < 5e-2, "A3 share, %s" % key)
-    return K[0]
+    if fail:
+        raise AssertionError("verifier failed (%d of %d):\n  %s" % (len(fail), N, "\n  ".join(fail)))
+    return N
+
+
+if __name__ == "__main__":
+    here = os.path.dirname(os.path.abspath(__file__))
+    print(run(os.path.join(os.path.dirname(here), "target"), os.path.join(here, "figures.json")))

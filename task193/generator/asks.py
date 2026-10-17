@@ -1,184 +1,172 @@
-"""The pipeline's own files: the submissions the agency could not code, the channel totals, the
-holders' submissions and their data agreements. None of them carries a coded reaction."""
+"""task193: the ask layer's own files, and the ask goldens computed from them."""
+import collections
 import csv
-import datetime as dt
 import os
-import random
+import statistics
+
+import numpy as np
 
 import world as W
-from pack import wr
+from pack import write_csv
 
-# the holders' data agreements: rate per submission in DKK, and the one amended inside the quarter
-RATES = {"Aurelind Pharma A/S": 148, "Brynholm Laegemidler ApS": 132, "Castellan Nordic A/S": 165,
-         "Dalberg Therapeutics A/S": 121, "Elvershoj Biotek A/S": 154,
-         "Fjeldgaard Pharma A/S": 139, "Granvig Medical A/S": 118,
-         "Hvidsten Laboratorier A/S": 127, "Nordsund Vaccines A/S": 96,
-         "Kvistgaard Onkologi A/S": 154}
-AMENDED = ("Castellan Nordic A/S", 165, 184, dt.date(2026, 8, 1))
-# one holder files under two codes after a merger inside the quarter
-MERGED = ("Hvidsten Laboratorier A/S", "MAH-0471", "MAH-0518", dt.date(2026, 8, 24))
-HOLDER_CODE = {h: "MAH-%04d" % (380 + 17 * i) for i, h in enumerate(sorted(RATES))}
-HOLDER_CODE[MERGED[0]] = MERGED[1]
-
-HOLDER_OF = {}
-for _c, _n, _h, _a, _k, _e in W.PRODUCTS:
-    HOLDER_OF[_c] = _h
-HOLDER_OF[W.DOMINANT] = "Nordsund Vaccines A/S"
-HOLDER_OF[W.RENAMED[0]] = W.RENAMED[4]
-
-FAIL_REASON = ["product not identifiable", "no reaction stated", "duplicate of an open case",
-               "reporter contact missing", "term not in the dictionary"]
+QUARTERS = [("2025 Q4", 731, 822), ("2026 Q1", 823, 912), ("2026 Q2", 913, 1003),
+            ("2026 Q3", 1004, 1095)]
+MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
-def exceptions(cases):
-    """submissions the agency received and could not code, so they never reach the extract"""
-    rng = random.Random(W.SEED * 43 + 17)
-    months = [(dt.date(2026, 7, 1), dt.date(2026, 7, 31)),
-              (dt.date(2026, 8, 1), dt.date(2026, 8, 31)),
-              (dt.date(2026, 9, 1), dt.date(2026, 9, 30)),
-              (dt.date(2026, 10, 1), W.CODED_BY)]
-    per = {"clinician": (14, 23), "licence holder": (11, 19), "patient": (9, 16),
-           "pharmacy": (4, 8)}
+def month_key(d):
+    dd = W.day(d)
+    return "%04d-%02d" % (dd.year, dd.month)
+
+
+def quarter_of(d):
+    for label, a, b in QUARTERS:
+        if a <= d <= b:
+            return label
+    return None
+
+
+# ---------------------------------------------------------------- A1 files
+def write_exceptions(tgt, rejected):
+    rows = []
+    for r in sorted(rejected, key=lambda r: (r["day"], r["line"])):
+        rows.append(["EX%08d" % r["line"], r["key"], r["vnr"], W.iso(r["day"]),
+                     r["pharmacy"], W.iso(r["submitted"]), r["reason"]])
+    return write_csv(os.path.join(tgt, "submission_exceptions.csv"),
+                     ["exception_ref", "person_key", "vnr", "date_of_dispensing", "pharmacy",
+                      "submitted_on", "rejection_reason"], rows)
+
+
+def write_submission_log(tgt, kept, rejected):
+    """The chains' own monthly totals, counted by month of submission, not of dispensing."""
+    sub = collections.Counter()
+    acc = collections.Counter()
+    for r in kept:
+        sub[(r["chain"], month_key(r["submitted"]))] += 1
+        acc[(r["chain"], month_key(r["submitted"]))] += 1
+    for r in rejected:
+        sub[(r["chain"], month_key(r["submitted"]))] += 1
+    rows = []
+    for ci, (code, name) in enumerate(W.CHAINS):
+        months = sorted(set(m for (c, m) in sub if c == ci))
+        for m in months:
+            rows.append([code, m, sub[(ci, m)], acc[(ci, m)], sub[(ci, m)] - acc[(ci, m)]])
+    return write_csv(os.path.join(tgt, "pharmacy_submission_log.csv"),
+                     ["chain_code", "submission_month", "lines_submitted", "lines_accepted",
+                      "lines_turned_back"], rows)
+
+
+def a1_golden(kept, rejected):
+    """Per chain and quarter of dispensing: accepted lines, rejected lines, median days to submission."""
     out = []
-    sid = 1900000
-    for lo, hi in months:
-        span = (hi - lo).days
-        for ch in W.CHANNELS:
-            a, b = per[ch]
-            n = rng.randint(a, b) if lo.month != 10 else rng.randint(2, 5)
-            for _ in range(n):
-                sid += 1
-                d = lo + dt.timedelta(days=rng.randint(0, span))
-                out.append({"sub": "SUB-%07d" % sid, "channel": ch, "receipt": d,
-                            "stamp": dt.datetime.combine(d, dt.time(rng.randrange(7, 19),
-                                                                    rng.randrange(0, 60))),
-                            "holder": rng.choice(sorted(RATES)) if ch == "licence holder" else "",
-                            "reason": rng.choice(FAIL_REASON)})
-    out.sort(key=lambda e: (e["receipt"], e["sub"]))
+    for ci, (code, name) in enumerate(W.CHAINS):
+        for label, a, b in QUARTERS:
+            acc = [r for r in kept if r["chain"] == ci and a <= r["day"] <= b]
+            rej = [r for r in rejected if r["chain"] == ci and a <= r["day"] <= b]
+            days = sorted(r["submitted"] - r["day"] for r in acc)
+            med = statistics.median(days) if days else 0.0
+            out.append({"chain": code, "quarter": label, "accepted": len(acc),
+                        "rejected": len(rej), "median_days": round(float(med), 1)})
     return out
 
 
-def write_exceptions(tgt, exc):
-    rows = [[e["sub"], e["channel"], e["receipt"].isoformat(),
-             e["stamp"].strftime("%Y-%m-%dT%H:%M:00+02:00"), e["holder"], e["reason"]]
-            for e in exc]
-    return wr(os.path.join(tgt, "coding_exceptions.csv"),
-              ["submission_id", "channel", "received_on", "submitted_at_sender_stamp",
-               "licence_holder", "reason_not_coded"], rows)
+# ---------------------------------------------------------------- A2 files
+def holder_of_product(code):
+    """The product's authorisation holder at the end of the screen window."""
+    if code == "P09":
+        return "H6"
+    return W.HOLDER_OF[code]
 
 
-def write_channel_totals(tgt, subs, exc):
-    """the agency's own daily count of what each channel sent, coded or not"""
-    tally = {}
-    for s in subs:
-        tally[(s["receipt"], s["channel"])] = tally.get((s["receipt"], s["channel"]), 0) + 1
-    for e in exc:
-        tally[(e["receipt"], e["channel"])] = tally.get((e["receipt"], e["channel"]), 0) + 1
-    rows = [[d.isoformat(), ch, n] for (d, ch), n in sorted(tally.items())]
-    return wr(os.path.join(tgt, "channel_totals.csv"),
-              ["received_on", "channel", "submissions_received"], rows)
+def fee_payer(holder_code, d):
+    """The company that pays, after the merger."""
+    for code, name, cvr, merged in W.HOLDERS:
+        if code == holder_code and merged and d >= W.MERGER_DAY:
+            return merged
+    return holder_code
 
 
-def write_holder_submissions(tgt, subs, exc):
-    """every submission a licence holder filed, under the holder code in force on the day"""
-    rows = []
-    for s in subs:
-        if s["channel"] != "licence holder":
+def a2_golden(kept, ddd_of):
+    """Per fee payer: DDD of its Annex A products dispensed in the window, and the fee due."""
+    ddd = collections.Counter()
+    for r in kept:
+        if r["day"] < W.WIN_A or r["day"] > W.WIN_B:
             continue
-        h = HOLDER_OF[s["code"]]
-        code = HOLDER_CODE[h]
-        if h == MERGED[0] and s["receipt"] >= MERGED[3]:
-            code = MERGED[2]
-        rows.append([s["sub"], code, h, s["receipt"].isoformat(), "coded"])
-    for e in exc:
-        if e["channel"] != "licence holder" or not e["holder"]:
+        code, kind = W.PKG_OF[r["vnr"]][0], W.PKG_OF[r["vnr"]][1]
+        if kind != "product":
             continue
-        code = HOLDER_CODE[e["holder"]]
-        if e["holder"] == MERGED[0] and e["receipt"] >= MERGED[3]:
-            code = MERGED[2]
-        rows.append([e["sub"], code, e["holder"], e["receipt"].isoformat(), "not coded"])
-    rows.sort(key=lambda r: (r[3], r[0]))
-    return wr(os.path.join(tgt, "holder_submissions.csv"),
-              ["submission_id", "holder_code", "licence_holder", "received_on", "coding_status"],
-              rows)
+        holder = W.HOLDER_OF[code]
+        if code == "P09" and r["day"] >= W.TRANSFER_DAY:
+            holder = "H6"
+        ddd[fee_payer(holder, r["day"])] += ddd_of[r["vnr"]] * r["packs"]
+    out = []
+    for code, name, cvr, merged in W.HOLDERS:
+        if merged:
+            continue
+        total = ddd[code]
+        thousands = total / 1000.0
+        rate_before = next(rt for lo, hi, rt in W.FEE_BANDS if lo <= thousands < hi)
+        rate_after = next(rt for lo, hi, rt in W.FEE_BANDS_AMENDED if lo <= thousands < hi)
+        # the schedule charges on doses dispensed before the amendment at the old rate
+        before = after = 0.0
+        for r in kept:
+            if r["day"] < W.WIN_A or r["day"] > W.WIN_B:
+                continue
+            c, kind = W.PKG_OF[r["vnr"]][0], W.PKG_OF[r["vnr"]][1]
+            if kind != "product":
+                continue
+            h = W.HOLDER_OF[c]
+            if c == "P09" and r["day"] >= W.TRANSFER_DAY:
+                h = "H6"
+            if fee_payer(h, r["day"]) != code:
+                continue
+            q = ddd_of[r["vnr"]] * r["packs"]
+            if r["day"] < W.FEE_AMENDMENT_DAY:
+                before += q
+            else:
+                after += q
+        fee = round(before / 1000.0 * rate_before + after / 1000.0 * rate_after)
+        out.append({"holder": code, "name": name, "ddd": round(total, 1),
+                    "ddd_before": round(before, 1), "ddd_after": round(after, 1),
+                    "rate_before": rate_before, "rate_after": rate_after, "fee_dkk": int(fee)})
+    return out
 
 
-def write_agreements(tgt):
-    from openpyxl import Workbook
-    from openpyxl.styles import Alignment, Font
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Schedule"
-    ws["A1"] = "Data agreement schedule, reporting fees payable to licence holders"
-    ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Rates are per submission received and coded or not coded, as the agreement provides."
-    ws["A2"].font = Font(size=9, italic=True)
-    ws.append([])
-    ws.append(["Holder code", "Licence holder", "Rate per submission (DKK)", "In force from",
-               "In force to"])
-    for c in ws[4]:
-        c.font = Font(bold=True)
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    for h in sorted(RATES):
-        code = HOLDER_CODE[h]
-        if h == AMENDED[0]:
-            ws.append([code, h, AMENDED[1], "2025-01-01", (AMENDED[3] - dt.timedelta(days=1)).isoformat()])
-        else:
-            ws.append([code, h, RATES[h], "2025-01-01", None])
-    ws2 = wb.create_sheet("Amendments")
-    ws2["A1"] = "Amendments to the schedule"
-    ws2["A1"].font = Font(bold=True, size=12)
-    ws2.append([])
-    ws2.append(["Holder code", "Licence holder", "Amendment", "Rate per submission (DKK)",
-                "In force from", "Signed"])
-    for c in ws2[3]:
-        c.font = Font(bold=True)
-    ws2.append([HOLDER_CODE[AMENDED[0]], AMENDED[0], "AGR-2026-041", AMENDED[2],
-                AMENDED[3].isoformat(), "2026-07-21"])
-    ws3 = wb.create_sheet("Holder codes")
-    ws3.append(["Holder code", "Licence holder", "In force from", "Note"])
-    for c in ws3[1]:
-        c.font = Font(bold=True)
-    for h in sorted(RATES):
-        ws3.append([HOLDER_CODE[h], h, "2025-01-01", None])
-    ws3.append([MERGED[2], MERGED[0], MERGED[3].isoformat(),
-                "code reissued on the merger of 24 August 2026"])
-    for w in (ws, ws2, ws3):
-        for i, wid in enumerate((14, 34, 26, 16, 16, 14), start=1):
-            w.column_dimensions[chr(64 + i)].width = wid
-    p = os.path.join(tgt, "data_agreement_schedule.xlsx")
-    wb.save(p)
-    return p
-
-
-def write_distractors(tgt):
-    rng = random.Random(W.SEED * 47 + 19)
-    rows = []
-    d = W.Q_FROM
-    JOURNALS = ["Nordisk Farmakologi", "Acta Clinica Scandinavica", "European Drug Safety Review",
-                "Journal of Pharmacoepidemiology", "Klinisk Praksis"]
-    while d <= W.Q_TO:
-        for _ in range(rng.choices([0, 1, 2, 3], weights=[22, 38, 28, 12])[0]):
-            rows.append([d.isoformat(), rng.choice(JOURNALS),
-                         "REF-%05d" % rng.randrange(10000, 99999),
-                         rng.choice(["screened out", "screened out", "screened out",
-                                     "full text requested", "case series noted"]),
-                         rng.choice(W.REGIONS + ["outside Denmark", "outside Denmark"])])
-        d += dt.timedelta(days=1)
-    n1 = wr(os.path.join(tgt, "literature_screening_log.csv"),
-            ["screened_on", "journal", "reference", "outcome", "origin"], rows)
-    rows = []
-    d = W.Q_FROM
-    while d <= W.Q_TO:
-        for _ in range(rng.choices([2, 3, 4, 5, 6, 7], weights=[8, 16, 24, 22, 18, 12])[0]):
-            rows.append([d.isoformat(),
-                         rng.choice(["telephone", "telephone", "email", "web form"]),
-                         rng.choice(["member of the public", "pharmacist", "physician", "nurse",
-                                     "journalist"]),
-                         rng.choice(["interaction", "dose", "storage", "reporting a reaction",
-                                     "pregnancy", "availability"]),
-                         rng.choices([2, 4, 6, 9, 13, 21], weights=[22, 26, 20, 16, 10, 6])[0]])
-        d += dt.timedelta(days=1)
-    n2 = wr(os.path.join(tgt, "enquiry_log.csv"),
-            ["enquiry_on", "route", "caller", "subject", "minutes_on_call"], rows)
-    return n1, n2
+# ---------------------------------------------------------------- A3
+def a3_golden(tgt, firsts, pairs):
+    """Per region and age band at the start of the screen window: patients with a first receipt of
+    an Annex A product inside the window, and the share of them who also had a first receipt of an
+    Annex B marker treatment inside it. Read from the shipped bundle, per standard section 4.2."""
+    import csv as _csv
+    import golden as G
+    reg = {}
+    with open(os.path.join(tgt, "person_register.csv"), newline="", encoding="utf-8") as fh:
+        for r in _csv.DictReader(fh):
+            region = r["region"] or "not stated"
+            if r["previous_region"] and r["region_recorded_from"] \
+                    and G.iso(r["region_recorded_from"]) > G.WIN_A:
+                region = r["previous_region"]
+            reg[r["person_key"]] = (region, int(r["year_of_birth"]))
+    pset = set(p for p, m in pairs)
+    mset = set(m for p, m in pairs)
+    byp = collections.defaultdict(dict)
+    for (k, code), d in firsts.items():
+        byp[k][code] = d
+    cells = collections.defaultdict(lambda: [0, 0])
+    for k, got in byp.items():
+        tp = [d for c, d in got.items() if c in pset and G.WIN_A <= d <= G.WIN_B]
+        if not tp or k not in reg:
+            continue
+        region, yob = reg[k]
+        age = G.WIN_A.year - yob
+        band = next(lab for lo, hi, lab in W.AGE_BANDS if lo <= age <= hi)
+        cells[(region, band)][0] += 1
+        if any(c in mset and G.WIN_A <= d <= G.WIN_B for c, d in got.items()):
+            cells[(region, band)][1] += 1
+    out = []
+    for region in W.REGIONS + ["not stated"]:
+        for lo, hi, band in W.AGE_BANDS:
+            n, k = cells[(region, band)]
+            out.append({"region": region, "band": band, "patients": n,
+                        "share_pct": round(100.0 * k / n, 1) if n else 0.0, "with_marker": k})
+    return out

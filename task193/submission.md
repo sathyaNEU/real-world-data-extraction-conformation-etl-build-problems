@@ -2,120 +2,113 @@
 
 ## Tags
 
-**Domain:** Pharmacology & Safety, safety signal detection (triaging which disproportionate reporting signals a capped assessment desk takes forward when one product holds two fifths of the quarter's reports).
-**Analytical objective:** Anomaly Detection & Diagnostics (separating a real disproportion in reporting from what the database's own composition produces).
+**Domain:** Pharmacology, pharmacoepidemiology and safety (safety signal detection).
+**Analytical objective:** Anomaly detection and diagnostics.
 
 ## 1. Final Recommendation
 
-**Take 15 signals forward to the assessment desk, and the desk can take all of them: they fill 15 of its 16 slots for the quarter.**
-
-The quarter's reports are dominated by one product. The autumn booster accounts for **40.2** per cent of the 7,483 cases the agency received between 1 July and 30 September, and it holds between **61.6** and **68.6** per cent of every report naming the four reactions its own reactogenicity produces. Measured against a database that includes it, four pairs that meet the standard's criteria sit below the threshold: their ratios run from **1.39** to **1.55** against the whole database and from **2.70** to **3.09** once the booster's reporting is out of what they are compared with. Those four are Keltaprin on headache, Serovane on fatigue, Noralvex on pyrexia, Ravistan on myalgia. The run that leaves the booster in the comparison takes only **11** forward and leaves five of the desk's slots idle.
+**Refer 7 of the 20 candidate pairs to formal signal assessment in the quarter beginning 1 January 2027: Dalvextin and loop diuretic; Pirenoxol and acid-suppressant; Ternivast and gout treatment; Oxelumab and antidepressant; Hestroban and antiemetic; Kirunelle and hypnotic; Sovraxil and topical corticosteroid.**
+The expected after-count comes from the window's own first-receipt dates, so the lowest referred multiple is 1.34 and the nearest pair on the wrong side of the line is Dalvextin and acid-suppressant at 1.12. Not the 10 pairs an equal-chance expectation refers, which adds Varenadol and antiemetic; Varenadol and acid-suppressant; Varenadol and hypnotic; Admirabin and loop diuretic; Admirabin and antidepressant. Not those 10 pairs less Ternivast and gout treatment; Oxelumab and antidepressant, which are the real signals an equal-chance expectation hides.
 
 ## 2. Critical Components
 
-1. **15** pairs meet all three criteria in paragraph 3.2 once the measure is taken against the reporting of the products the quarter is not dominated by, against **11** when it is taken against every report in the database.
-2. The four the booster holds down are **Keltaprin** on headache, **Serovane** on fatigue, **Noralvex** on pyrexia, **Ravistan** on myalgia, at **204**, **166**, **113** and **80** reports.
-3. The booster is **40.2** per cent of the quarter's reports, and on the four reactions in question it holds **61.6**, **64.7**, **68.1** and **68.6** per cent of every report naming them.
-4. Reading the reporter's own words as the reaction, instead of the preferred term the dictionary gives, takes **19** pairs forward, more than the desk's **16** slots; the reporting odds ratio against the whole database takes **13**, which finds two of the four and not the other two.
-5. The nearest pair to the threshold on the basis the answer rests on is **0.36** above it, and the lowest ratio taken forward is **2.36**, so no pair turns on the rounding.
+1. The screen's candidate pairs are **20** of the 23 pairs in Annexes A and B
+2. The pairs referred are **7**
+3. The pairs an equal-chance expectation refers are **10**
+4. The pairs it refers that this run does not are **5**, and the pairs it hides are **2**
 
 ## 3. Step-by-Step Solution
 
-1. Kept the submissions in `report_master.csv` whose receipt date falls between 1 July and 30 September 2026, which is the run's window under paragraph 2.1 of `signal_standard.pdf`. The report date and the coding date do not bear on it.
-2. Collapsed the submissions of one case onto one report on the case number, as paragraph 2.2 requires: 7,483 cases reached the agency through 10,082 submissions, many of them reported by the clinician and by the licence holder both.
-3. Took each reaction as the preferred term `reaction_dictionary.csv` gives for the reporter's verbatim term at the dictionary version the case was coded at, per paragraph 2.3, and carried the product renamed on its licence transfer onto one code through `product_register.csv`, per paragraph 2.4.
-4. Built the two by two table for every product and reaction pair named on 15 or more of those reports and computed the proportional reporting ratio and the chi-square of the same table.
-5. Left out the pairs `product_information_listed.csv` already describes, which paragraph 3.3 keeps out of the run, and the pairs `closed_assessments_register.csv` closed inside the previous twelve months, which paragraph 3.4 keeps out: the register names no pair that meets the criteria on either basis.
-6. Looked at what the comparison was carrying. One product holds **40.2** per cent of the quarter's reports, and on six reactions it holds between **61.6** and **86.8** per cent of every report naming them, so for those reactions the rate the rest of the database is said to report at is mostly that one product's own reactogenicity.
-7. Recomputed every pair with that product's reports out of what the pair is compared with. **15** pairs meet the criteria, the **11** the whole-database comparison already took plus four it held below 2.00. The list is stable: leaving out the two largest products, the three largest, or every product holding more than a tenth or a twentieth of the quarter gives the same 15, and leaving out any single other product moves no pair across.
-8. Checked the two readings a careful run would also take: pooling the ratio over the report's channel, reporter type, age band, region or sex lands on the same **11**, and the reporting odds ratio against the whole database lands on **13**. Neither reaches the four, because neither changes what the comparison is carrying.
+1. Stacked dispensings_2023_2025.csv and dispensings_2025_2026.csv on the layouts register_release_notes.json gives, taking one row per accepted line: 12993 person keys appear across the extract.
+2. Folded the retired person keys in person_key_crosswalk.csv onto their current keys and mapped each package code to its treatment through package_index.csv at the date of the dispensing, per section 2.4.
+3. Took each patient's earliest dispensing in each treatment as the first receipt and dropped first receipts falling in the clearance period, per sections 2.2 and 2.3.
+4. Built each pair in screen_annexes.csv from the patients whose two first receipts both fall in the screen window and not on the same day, per section 2.5: 20 of the 23 pairs have at least 25 patients.
+5. Took the number expected if the product had no bearing on when the marker treatment is first received from the pair's own first-receipt dates, which the window makes unequal because two products were first marketed inside it and two lose their authorisation inside it.
+6. Applied section 3.2: 7 pairs reach 1.25 times that expected number and none of them is under assessment in signal_tracker_export.csv.
+7. Compared with an equal-chance expectation, which refers 10 pairs: 5 of them fall below the line here and 2 pairs below its line clear this one.
+8. Refer the 7 pairs for assessment in the quarter beginning 1 January 2027.
 
 ## 4. Deliverable Answers
 
-### signal_list_2026Q3.xlsx
+### sequence_screen_2027Q1.xlsx
 
-| Product | Reaction | Reports | Ratio | Chi-square | Against the whole database |
-|---|---|---|---|---|---|
-| Keltaprin | Headache | 204 | 2.70 | 220.4 | 1.55, below 2.00 |
-| Serovane | Fatigue | 166 | 2.97 | 211.5 | 1.55, below 2.00 |
-| Noralvex | Pyrexia | 113 | 3.09 | 154.0 | 1.48, below 2.00 |
-| Ravistan | Myalgia | 80 | 2.88 | 95.9 | 1.39, below 2.00 |
-| Culavret | Nausea | 80 | 2.36 | 65.7 |  |
-| Ardelpha | Dizziness | 55 | 2.37 | 44.8 |  |
-| Mestoran | Diarrhoea | 47 | 2.53 | 42.7 |  |
-| Doranzil | Hepatic enzyme increased | 46 | 4.05 | 75.1 |  |
-| Vintorel | Rash | 45 | 2.57 | 44.2 |  |
-| Thelbarin | Urticaria | 29 | 2.77 | 29.4 |  |
-| Pelgorane Nordic | Alopecia | 22 | 7.01 | 89.3 |  |
-| Imbracor | Thrombocytopenia | 21 | 5.28 | 52.7 |  |
-| Quorendal | Arthralgia | 20 | 2.54 | 18.3 |  |
-| Hestramyl | Syncope | 17 | 4.46 | 40.4 |  |
-| Brazivane | Palpitations | 17 | 3.94 | 34.6 |  |
+1. The 23 screened pairs in the order of the screen sheet, with the pair's patients, the patients in whom the marker treatment came after the product, the patients in whom it came before, and the referral:
+   - Dalvextin and acid-suppressant: 152 patients, 81 after, 71 before, referred no
+   - Dalvextin and gout treatment: 135 patients, 74 after, 61 before, referred no
+   - Dalvextin and loop diuretic: 257 patients, 199 after, 58 before, referred yes
+   - Pirenoxol and acid-suppressant: 295 patients, 218 after, 77 before, referred yes
+   - Pirenoxol and antidepressant: 173 patients, 96 after, 77 before, referred no
+   - Pirenoxol and hypnotic: 134 patients, 73 after, 61 before, referred no
+   - Ternivast and antiemetic: 265 patients, 63 after, 202 before, referred no
+   - Ternivast and gout treatment: 399 patients, 204 after, 195 before, referred yes
+   - Ternivast and hypnotic: 284 patients, 58 after, 226 before, referred no
+   - Oxelumab and loop diuretic: 313 patients, 96 after, 217 before, referred no
+   - Oxelumab and antidepressant: 551 patients, 311 after, 240 before, referred yes
+   - Oxelumab and topical corticosteroid: 369 patients, 132 after, 237 before, referred no
+   - Varenadol and antiemetic: 240 patients, 187 after, 53 before, referred no
+   - Varenadol and acid-suppressant: 264 patients, 212 after, 52 before, referred no
+   - Varenadol and hypnotic: 236 patients, 204 after, 32 before, referred no
+   - Hestroban and antiemetic: 354 patients, 248 after, 106 before, referred yes
+   - Hestroban and antipsychotic: 8 patients, 1 after, 7 before, below the 25-patient minimum
+   - Kirunelle and hypnotic: 249 patients, 180 after, 69 before, referred yes
+   - Kirunelle and antipsychotic: 7 patients, 5 after, 2 before, below the 25-patient minimum
+   - Admirabin and loop diuretic: 202 patients, 155 after, 47 before, referred no
+   - Admirabin and antidepressant: 215 patients, 164 after, 51 before, referred no
+   - Sovraxil and topical corticosteroid: 469 patients, 361 after, 108 before, referred yes
+   - Sovraxil and antipsychotic: 9 patients, 5 after, 4 before, below the 25-patient minimum
+2. Pairs referred: 7.
+3. Nearest pair on the wrong side of the referral line: Dalvextin and acid-suppressant.
+4. Lines accepted, lines rejected and median days from dispensing to submission, by chain and quarter of dispensing, whole counts and days to one decimal:
+   - APK, 2025 Q4: 5795 accepted, 157 rejected, 2.0 days
+   - APK, 2026 Q1: 4044 accepted, 162 rejected, 2.0 days
+   - APK, 2026 Q2: 3995 accepted, 125 rejected, 2.0 days
+   - APK, 2026 Q3: 4379 accepted, 128 rejected, 2.0 days
+   - DSA, 2025 Q4: 3455 accepted, 133 rejected, 4.0 days
+   - DSA, 2026 Q1: 3077 accepted, 112 rejected, 4.0 days
+   - DSA, 2026 Q2: 2993 accepted, 107 rejected, 4.0 days
+   - DSA, 2026 Q3: 3213 accepted, 106 rejected, 4.0 days
+   - NOR, 2025 Q4: 2451 accepted, 92 rejected, 5.0 days
+   - NOR, 2026 Q1: 2291 accepted, 85 rejected, 5.0 days
+   - NOR, 2026 Q2: 2288 accepted, 73 rejected, 6.0 days
+   - NOR, 2026 Q3: 2323 accepted, 67 rejected, 6.0 days
+   - VST, 2025 Q4: 1714 accepted, 54 rejected, 7.0 days
+   - VST, 2026 Q1: 1540 accepted, 64 rejected, 7.0 days
+   - VST, 2026 Q2: 1495 accepted, 68 rejected, 7.0 days
+   - VST, 2026 Q3: 1696 accepted, 42 rejected, 7.0 days
+5. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
+   - Nordlys Pharma A/S (H1): 195245.6 DDD, 304488 kroner
+   - Bregnholt Laegemidler A/S (H2): 108844.8 DDD, 168802 kroner
+   - Vindeby Therapeutics ApS (H3): 97738.8 DDD, 155320 kroner
+   - Soegaard Medica A/S (H4): 165851.6 DDD, 247642 kroner
+   - Kastholm Pharma A/S (H5): 133872.2 DDD, 202962 kroner
+   - Ellevang Biosciences A/S (H6): 341279.9 DDD, 441906 kroner
+6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
+   - Hovedstaden, 18-39: 676 patients, 76.2 per cent
+   - Hovedstaden, 40-59: 653 patients, 74.9 per cent
+   - Hovedstaden, 60-74: 489 patients, 76.1 per cent
+   - Hovedstaden, 75 and over: 506 patients, 75.1 per cent
+   - Midtjylland, 18-39: 516 patients, 79.1 per cent
+   - Midtjylland, 40-59: 484 patients, 78.9 per cent
+   - Midtjylland, 60-74: 331 patients, 73.4 per cent
+   - Midtjylland, 75 and over: 388 patients, 79.1 per cent
+   - Nordjylland, 18-39: 245 patients, 77.6 per cent
+   - Nordjylland, 40-59: 176 patients, 76.7 per cent
+   - Nordjylland, 60-74: 164 patients, 81.1 per cent
+   - Nordjylland, 75 and over: 168 patients, 75.6 per cent
+   - Sjaelland, 18-39: 320 patients, 77.5 per cent
+   - Sjaelland, 40-59: 274 patients, 74.5 per cent
+   - Sjaelland, 60-74: 242 patients, 73.1 per cent
+   - Sjaelland, 75 and over: 221 patients, 76.0 per cent
+   - Syddanmark, 18-39: 445 patients, 78.9 per cent
+   - Syddanmark, 40-59: 414 patients, 74.6 per cent
+   - Syddanmark, 60-74: 332 patients, 75.0 per cent
+   - Syddanmark, 75 and over: 363 patients, 77.7 per cent
+   - not stated, 18-39: 48 patients, 72.9 per cent
+   - not stated, 40-59: 63 patients, 87.3 per cent
+   - not stated, 60-74: 35 patients, 68.6 per cent
+   - not stated, 75 and over: 41 patients, 73.2 per cent
 
-Pairs taken forward **15**, the desk's capacity **16**, slots left **1**. The whole-database comparison alone takes **11**.
+### order_shares_by_pair.png
 
-### signal_overview.png
-
-One horizontal bar for each of the 15 pairs taken forward, ordered by its ratio, with the paragraph 3.2 threshold drawn at 2.00. The four the booster held down are shown in a second colour, each with a marker at the ratio it reaches against the whole database (1.55, 1.55, 1.48 and 1.39), so the gap the comparison set makes reads at a glance.
-
-### Submissions by channel and month
-
-| Channel | Month | Submissions received | Could not be coded | Mean days to coding |
-|---|---|---|---|---|
-| clinician | 2026-07 | 1204 | 23 | 5.3 |
-| clinician | 2026-08 | 1237 | 16 | 5.2 |
-| clinician | 2026-09 | 1138 | 15 | 4.9 |
-| licence holder | 2026-07 | 1420 | 17 | 3.9 |
-| licence holder | 2026-08 | 1542 | 17 | 4.0 |
-| licence holder | 2026-09 | 1418 | 15 | 4.0 |
-| patient | 2026-07 | 466 | 9 | 5.6 |
-| patient | 2026-08 | 500 | 16 | 5.3 |
-| patient | 2026-09 | 522 | 14 | 5.1 |
-| pharmacy | 2026-07 | 231 | 4 | 5.3 |
-| pharmacy | 2026-08 | 274 | 7 | 5.0 |
-| pharmacy | 2026-09 | 228 | 6 | 4.9 |
-
-### Licence holders
-
-| Licence holder | Submissions filed | Filed after the quarter closed | Fee due (DKK) |
-|---|---|---|---|
-| Aurelind Pharma A/S | 373 | 3 | 55204 |
-| Brynholm Laegemidler ApS | 338 | 5 | 44616 |
-| Castellan Nordic A/S | 298 | 1 | 52989 |
-| Dalberg Therapeutics A/S | 295 | 2 | 35695 |
-| Elvershoj Biotek A/S | 161 | 4 | 24794 |
-| Fjeldgaard Pharma A/S | 197 | 3 | 27383 |
-| Granvig Medical A/S | 187 | 3 | 22066 |
-| Hvidsten Laboratorier A/S | 95 | 0 | 12065 |
-| Kvistgaard Onkologi A/S | 87 | 3 | 13398 |
-| Nordsund Vaccines A/S | 2414 | 41 | 231744 |
-
-### Cases by region and age group
-
-| Region | Age group | Cases | Share naming a serious reaction |
-|---|---|---|---|
-| Hovedstaden | 0 to 17 | 206 | 11.7 per cent |
-| Hovedstaden | 18 to 39 | 693 | 18.3 per cent |
-| Hovedstaden | 40 to 64 | 775 | 17.3 per cent |
-| Hovedstaden | 65 and over | 605 | 13.7 per cent |
-| Hovedstaden | not stated | 70 | 10.0 per cent |
-| Midtjylland | 0 to 17 | 152 | 18.4 per cent |
-| Midtjylland | 18 to 39 | 484 | 16.7 per cent |
-| Midtjylland | 40 to 64 | 596 | 14.8 per cent |
-| Midtjylland | 65 and over | 426 | 16.2 per cent |
-| Midtjylland | not stated | 44 | 18.2 per cent |
-| Nordjylland | 0 to 17 | 93 | 11.8 per cent |
-| Nordjylland | 18 to 39 | 237 | 16.0 per cent |
-| Nordjylland | 40 to 64 | 274 | 15.7 per cent |
-| Nordjylland | 65 and over | 217 | 15.2 per cent |
-| Nordjylland | not stated | 27 | 14.8 per cent |
-| Sjaelland | 0 to 17 | 110 | 15.5 per cent |
-| Sjaelland | 18 to 39 | 302 | 15.9 per cent |
-| Sjaelland | 40 to 64 | 379 | 14.2 per cent |
-| Sjaelland | 65 and over | 281 | 17.8 per cent |
-| Sjaelland | not stated | 32 | 15.6 per cent |
-| Syddanmark | 0 to 17 | 119 | 10.1 per cent |
-| Syddanmark | 18 to 39 | 438 | 18.5 per cent |
-| Syddanmark | 40 to 64 | 516 | 15.9 per cent |
-| Syddanmark | 65 and over | 361 | 14.4 per cent |
-| Syddanmark | not stated | 46 | 13.0 per cent |
+1. One horizontal bar per screened pair for the share of its patients who received the marker treatment after the product, longest first, with the referral line marked at 1.25 times each pair's expected share and the referred pairs in the darker fill.
+2. Title states that 7 of the 20 candidate pairs clear the referral line.

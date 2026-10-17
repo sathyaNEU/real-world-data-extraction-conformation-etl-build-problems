@@ -1,17 +1,17 @@
 {
  "task": "task193",
- "architecture": "v1",
- "drawn": "2026-10-16",
- "slot_note": "seed AD16 kept its decision shape only: which alarms a scarce paid reviewer is given, under a cap on reviewer hours, judged on the real faults the routing escalates. The seed's own architecture turns on a channel attribute that explains every alarm on it, which is a field read deciding the call, so the build is re-rooted on the field's own disproportionality measure and what one dominant member does to it.",
+ "architecture": "v2",
+ "drawn": "2026-10-17",
+ "slot_note": "Architecture 1 put the decisive step in the measure's comparison population and died at the judge. Architecture 2 keeps the world (a Danish national medicines agency's quarterly signal run) and moves the decisive step into the estimation of a counterfactual the standard files in full: the number of a pair's patients expected to receive the marker treatment after the product if the product had no bearing on when the marker is first received.",
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "subdomain": "safety-signal-detection",
- "niche": "triaging which signals a capped assessment team takes, when one member of the comparison set dominates it",
+ "niche": "the quarterly prescription-sequence screen that sets which product and marker-treatment pairs go to formal signal assessment",
  "objective": "anomaly-detection",
- "shape": "16",
+ "shape": "07",
  "decision_type": "designation_set",
  "answer_unit": "set_of_items",
- "answer": "Take 15 signals forward to the assessment desk, which fills 15 of its 16 slots for the quarter.",
- "answer_source": "submission.md block 1; generator/figures.json taken_forward. The four the autumn booster holds below the threshold are Keltaprin on headache, Serovane on fatigue, Noralvex on pyrexia and Ravistan on myalgia, at crude ratios of 1.39 to 1.55 and corrected ratios of 2.70 to 3.09.",
+ "answer": "Refer seven of the screen's twenty candidate product and marker-treatment pairs for formal signal assessment in the quarter beginning 1 January 2027: Dalvextin and loop diuretic, Pirenoxol and acid-suppressant, Ternivast and gout treatment, Oxelumab and antidepressant, Hestroban and antiemetic, Kirunelle and hypnotic, Sovraxil and topical corticosteroid.",
+ "answer_source": "submission.md block 1; generator/figures.json referred",
  "gap": [
   "objective"
  ],
@@ -19,57 +19,92 @@
   "none"
  ],
  "generators": [
-  "G5",
-  "G8"
+  "G7",
+  "G16"
  ],
- "gate_g": "signal_vs_noise_or_hold",
+ "gate_g": "method_or_model_selection",
  "calibration_form": "none",
- "stump_strategy": "population_selection",
- "decisive_rule_filed": false,
+ "context_artifact": "operations_log",
+ "stump_strategy": "other",
+ "decisive_rule_filed": true,
  "official_decoy": false,
  "validated_decoy": false,
- "context_artifact": "capacity_report",
- "stakeholder_role": "the agency's signal assessment coordinator",
- "role_family": "policy_adviser",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reconciles the replaced patient pseudonyms through the crosswalk, carries the reissued package codes onto one product code, reads both extract layouts, establishes every first-ever receipt against the 24-month clearance period and applies the standard's three referral criteria exactly compares each pair's after-count with half of the pair's patients and refers 10 pairs, where 7 are referred once the expected number is computed from the window's own first-receipt dates: five pairs on two products whose use is ending are referred that should not be, and two real signals on products launched inside the window are passed over.",
+ "domain_test": "The deciding quantity is the number of a pair's patients expected to receive the marker treatment after the product if the product had no bearing on when the marker treatment is first received, which is what prescription sequence symmetry analysis estimates and what pharmacoepidemiology computes from each medicine's own incident-use distribution across the window rather than from an assumption that the two orders are equally likely. Swap the patients for warehouses and the marker treatment for a repair order and there is no within-person ordering of two first-ever exposures and no incident-use distribution to take the expectation from, so nothing is left to estimate.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:null-expectation-of-a-within-person-ordering-set-by-the-windows-own-arithmetic",
+ "layer1": [
+  "two register extracts in different layouts across a release boundary, with renamed columns and ISO against day-month-year dates",
+  "one pharmacy chain's October batch re-sent under fresh record identifiers after a transmission failure",
+  "420 patients whose person key was replaced after a civil-registration correction, linked by a dated crosswalk",
+  "a product's package codes reissued when its marketing authorisation transferred, carried in the index with valid-from and valid-to dates",
+  "lines the register turned back at validation, held only in the exceptions file and never in either extract",
+  "a statutory fee schedule amended inside the window, quoted in thousands of defined daily doses, with a holder merger inside the window too",
+  "the governing standard and its two annexes as tables inside a PDF"
+ ],
+ "stakeholder_role": "the agency's prescription-screen analyst, who sets the signal desk's referrals for the coming quarter",
+ "role_family": "other",
  "scoring_unit": "per resolved case",
  "spine": {
-  "file": "spontaneous_reports_extract.csv",
-  "rows": 25660,
-  "entity": "one reaction as the reporter wrote it on one submission",
-  "grain": "submission x reaction",
+  "file": "dispensings_2023_2025.csv",
+  "rows": 73639,
+  "entity": "one dispensing of one package of one medicine to one patient at one pharmacy",
+  "grain": "patient x package x dispensing date",
   "source": "synthetic"
  },
  "forum": "operations_desk",
- "forcing_event": "shift_or_daily_cycle",
+ "forcing_event": "period_close",
  "org_family": "government_agency",
  "world": {
   "geography": "Denmark",
   "currency": "DKK",
   "org_type": "national medicines agency",
-  "invented_names": [],
+  "invented_names": [
+   "Dalvextin",
+   "Pirenoxol",
+   "Ternivast",
+   "Oxelumab",
+   "Varenadol",
+   "Hestroban",
+   "Kirunelle",
+   "Admirabin",
+   "Sovraxil",
+   "Nordlys Pharma",
+   "Bregnholt Laegemidler",
+   "Vindeby Therapeutics",
+   "Soegaard Medica",
+   "Kastholm Pharma",
+   "Ellevang Biosciences",
+   "Strandby Farma",
+   "Apotekerkaeden",
+   "Danmarks Sundhedsapotek",
+   "Nordapotek",
+   "Vestjysk Apotek"
+  ],
   "people": [
-   "Cirkeline Gregersen",
-   "Malthe Danielsen"
+   "Sine Jakobsen",
+   "Arne Mogensen"
   ]
  },
  "deliverables": [
-  "signal_list_2026Q3.xlsx",
-  "signal_overview.png"
+  "sequence_screen_2027Q1.xlsx",
+  "order_shares_by_pair.png"
  ],
  "opening_move": "question-first",
  "question_form": "which",
- "driver": "The decisive measure of each candidate is its share of an outcome against every other candidate pooled, so one dominant candidate holds every other candidate's measure down, and only re-measuring with the dominant one out of the comparison set recovers which candidates truly stand out.",
- "driver_concrete": "Every candidate's measure is computed against the rest of the database, and one product accounts for most of the reports of the reaction in question, so it sits inside the comparison every other product is judged against and holds their measures below the threshold until it is taken out of it.",
- "stump": "A competent solver cleans the extract, builds every product and reaction pair's table against the whole database, applies the standard's three criteria and files 11 signals, five slots inside the desk's capacity, leaving the autumn booster inside the comparison set every other product is measured against when that one product is 40 per cent of the quarter's reports and its own reactogenicity sets the background rate for the four reactions on which the four signals it hides sit.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who collapses the duplicate cases, maps every verbatim term at the right dictionary version, carries the renamed product onto one code, reads the window on receipt date and applies the three criteria exactly computes every pair against the whole database and files 11 signals, where 15 meet the criteria once the booster is out of the comparison set.",
- "domain_test": "The deciding quantity is a disproportionality measure whose comparison set is the rest of the database, and pharmacovigilance treats masking by one dominant member as part of computing it; swap the products for warehouses and the reactions for delivery delays and nothing is measured against a shared background, so there is nothing to unmask.",
+ "driver": "The decisive quantity is how many units would show one of two orderings if the treatment had no bearing on it, and because each unit's room for each ordering depends on where in the observation window its own first exposure falls, taking the two orderings as equally likely designates the candidates whose exposure is ending and passes over the candidates whose exposure has only just begun.",
+ "driver_concrete": "Each product and marker-treatment pair's referral turns on the number of its patients expected to receive the marker after the product if the product had no bearing on it, and because a patient who first receives a product late in the screen window has almost no window left for the marker to follow, a half-and-half expectation refers five pairs on two products whose use is ending inside the window and passes over two real signals on two products launched inside it.",
+ "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window: five pairs on the two products leaving the market are referred that should not be and two real signals on the two products entering it are passed over.",
  "mechanism_source": "design_note",
  "differentiation": {
-  "task191": "Shares the decisive gap (objective) and the Gate G mechanism, and nothing else. task191's decisive quantity is the largest of many monitored windows judged against the record of the same maximum at the same reach, a question about extreme-value reach; this build's is a ratio each candidate is measured against a shared background, where one member of the comparison set holds every other member's measure down. The first is about how many draws the maximum came from, the second about what the denominator is made of, and neither mechanism reaches the other's answer.",
-  "task190": "Shares the decision type (designation_set) on the cards. task190's architecture 1 is spent and its decisive quantity was a stock read from arrivals and time unseen; this build's is a disproportionality ratio's comparison set. No file name, forum, forcing event or persona is shared after the run inventory was renamed.",
-  "task189": "Shares the surface of a regulator's own standard reducing a quarter's records to a filed criterion. task189's decisive quantity is an average over measurements known only to lie below a limit that differs by laboratory, which is about what to put in place of a censored value; this build's is what the ratio is taken against. One is censoring, the other a comparison set, and neither route reaches the other's answer.",
-  "task195": "Shares the Gate G mechanism key on the cards, which is why the guard WARNs. task195 is drawn and not built, and its mechanism is the uncertainty of a paired difference against two separate intervals; its Gate G key is varied at its own draw rather than here, since this build's mechanism is one dominant member of a comparison set and not an interval at all."
+  "task193": "Architecture 1's decisive step was which rows the disproportionality measure was taken against, which is the comparison population and part of the estimand; the judge sent it back as underspecified. Architecture 2 files population, outcome, window, unit and comparison in full (the pair's patients, the order of their two first receipts, the 12-month window, the patient, the stated counterfactual) and leaves open only the estimation of that counterfactual's value, which every window-aware route agrees on and the half-and-half assumption gets wrong. No row count, no comparison set and no disproportionality measure appears in architecture 2.",
+  "task182": "Shares the decisive gap (objective) and nothing else. task182's decisive quantity is the gap between an observed level and each unit's own lagged response to a shared external driver; this build's is the value of a filed counterfactual expectation for a within-person ordering. One is a driver-response decomposition, the other the arithmetic of opportunity inside an observation window, and neither route reaches the other's answer.",
+  "task194": "Shares the gap tokens and the Gate G mechanism key. task194's decisive quantity is the fall a scarce intervention causes where units were picked for standing worst, so most of the fall is their own return to the long run: a selection-on-an-extreme problem. This build's decisive quantity is the expected count of an ordering under a filed null, set by where in the window each patient's first exposure falls, with no selection on an extreme and no regression to any mean.",
+  "task184": "Shares the prompt shape (07) and carries G7 as a non-decisive generator. task184's decisive move is a change of the unit of analysis to the event-hour an event could have fallen in, because a large share of events carry a window rather than a time. This build never changes the unit (the patient is filed) and never reads an interval-censored time; what it computes is the expectation of an order under a stated counterfactual.",
+  "task189": "Shares the house surface of a regulator's own standard reducing a period's records to a filed criterion. task189's decisive quantity is a per-unit average over measurements known only to lie below an instrument-specific limit, which is left-censored measurement. This build's measurements are exact dates with nothing censored; the open question is the value of a counterfactual expectation.",
+  "task254": "Shares the structural triple (objective gap, G7, method_or_model_selection) and nothing else. task254's live architecture reads each stage of a fixed passage at the period the unit enters it, because the later stages' delay builds while the unit is still travelling; its v2 lineage estimated a percentile of a time-to-event distribution observed only through events completed before a lock date. Both turn on observations that are missing or mis-timed. In this build nothing is missing, censored or mis-timed: every one of a pair's patients has two exact, fully observed first-receipt dates inside the filed window, and what is wrong is the value of the counterfactual expectation the standard compares the observed count against, computed from the two date distributions rather than assumed to be half.",
+  "task50": "Flagged at driver similarity 0.12 for sharing the words window and exposure. task50's decisive quantity is how much of each candidate's exposure falls inside a funded window, projected forward from a corpus-validated issue order, and it demotes the largest-exposure candidate. This build projects nothing, validates nothing against a corpus and ranks nobody by exposure: the window is closed, every date is observed, and the decisive quantity is the expected count of one of two orderings under a counterfactual the standard states."
  },
  "lineage": [
   {
@@ -89,16 +124,6 @@
    "stump": "A competent solver cleans the extract, builds every product and reaction pair's table against the whole database, applies the standard's three criteria and files 11 signals, five slots inside the desk's capacity, leaving the autumn booster inside the comparison set every other product is measured against when that one product is 40 per cent of the quarter's reports and its own reactogenicity sets the background rate for the four reactions on which the four signals it hides sit."
   }
  ],
- "notes": "",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:comparison-set-holding-the-measure-down",
- "layer1": [
-  "verbatim reaction terms mapped to a dictionary at the version the case was coded at",
-  "one case submitted through two channels, linked by case number",
-  "report dates against receipt dates, the window on receipt",
-  "a product renamed when its licence transferred mid-quarter",
-  "a dictionary revision that moved one term's seriousness",
-  "tables inside PDFs and a workbook amendment on its own sheet"
- ],
- "registered": "2026-10-16T23:56:38Z"
+ "notes": "stump_strategy 'other': none of the fourteen keys fits. The decisive move is the value of a counterfactual expectation for a within-person ordering, set by each unit's own position in the observation window; it is not who is in a denominator (population_selection), not a mix shift (composition_mix), not an incomplete period (maturity_censoring) and not a calendar reading (time_semantics). context_artifact 'operations_log': the signal management tracker export, which records which pairs the desk opened and closed and when.",
+ "registered": "2026-10-17T14:57:47Z"
 }

@@ -1,4 +1,4 @@
-"""The agency's own signal detection standard and the assessment desk's capacity report."""
+"""task193: the governing standard as a PDF and the statutory fee schedule as a workbook."""
 import os
 
 from reportlab import rl_config
@@ -28,12 +28,6 @@ TBL = TableStyle([("GRID", (0, 0), (-1, -1), 0.3, colors.Color(0.45, 0.45, 0.45)
                   ("TOPPADDING", (0, 0), (-1, -1), 1.6), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.6)])
 
 
-def _doc(path, title):
-    return SimpleDocTemplate(path, pagesize=A4, title=title, author="", subject="", creator="",
-                             leftMargin=22 * mm, rightMargin=22 * mm,
-                             topMargin=20 * mm, bottomMargin=18 * mm)
-
-
 def _table(head, rows, widths):
     data = [[Paragraph(h, CELLB) for h in head]]
     for r in rows:
@@ -44,91 +38,151 @@ def _table(head, rows, widths):
 
 
 def standard(tgt):
-    p = os.path.join(tgt, "signal_standard.pdf")
-    d = _doc(p, "Standard for signal detection and assessment")
-    s = []
-    s.append(Paragraph("Standard for signal detection and assessment", H1))
-    s.append(Paragraph("Pharmacovigilance division, edition 7, in force from 1 January 2026. "
-                       "Parts 1, 5 and 6 and the annexes are not reproduced in this extract.", SMALL))
+    path = os.path.join(tgt, "screen_standard_7_2024.pdf")
+    doc = SimpleDocTemplate(path, pagesize=A4, title="Standard 7-2024", author="", subject="",
+                            creator="", leftMargin=22 * mm, rightMargin=22 * mm,
+                            topMargin=20 * mm, bottomMargin=18 * mm)
+    f = []
+    f.append(Paragraph("Standard 7-2024", H1))
+    f.append(Paragraph("The quarterly prescription-sequence screen of medicines under additional "
+                       "monitoring", H2))
+    f.append(Paragraph("Issued by the pharmacovigilance division. Version 7-2024.3, in force from "
+                       "1 July 2025. Supersedes 7-2024.2.", SMALL))
 
-    s.append(Paragraph("2. The quarterly run", H2))
-    s.append(Paragraph("2.1 A run covers the reports the agency received in the quarter. A report is "
-                       "in the quarter when the date the agency received it falls on or between the "
-                       "first and the last day of the quarter, both days included. The date the "
-                       "reporter wrote the report, and the date the case was coded, do not bear on "
-                       "which quarter a report belongs to.", BODY))
-    s.append(Paragraph("2.2 A report is one case. Where a case reaches the agency through more than "
-                       "one channel, the submissions are one report and are counted once, and the "
-                       "case number is what joins them. A reaction reported more than once on one "
-                       "case is one reaction on that case.", BODY))
-    s.append(Paragraph("2.3 A reaction is the preferred term the case was coded to, at the version of "
-                       "the reaction dictionary in force when the case was coded. The dictionary "
-                       "records every term it has carried and the version each mapping belongs to.", BODY))
-    s.append(Paragraph("2.4 A product is the product the register holds under one code. Where a "
-                       "product has been renamed, the register carries the former name and the day "
-                       "the name changed, and the reports stand under the one code throughout.", BODY))
+    f.append(Paragraph("2. The run", H2))
+    f.append(Paragraph("2.1 The screen window. Each quarterly run covers the twelve months ending "
+                       "on the last day of the quarter before the run. The run of October 2026 "
+                       "covers 1 October 2025 to 30 September 2026, both days included. A "
+                       "dispensing falls in the screen window according to its date of dispensing.", BODY))
+    f.append(Paragraph("2.2 The clearance period. The twenty-four months before the screen window, "
+                       "that is 1 October 2023 to 30 September 2025, are the clearance period. The "
+                       "register extract for a run covers the clearance period and the screen "
+                       "window together.", BODY))
+    f.append(Paragraph("2.3 A first receipt. A patient's first receipt of a treatment is the "
+                       "earliest dispensing to that patient, anywhere in the extract, of any "
+                       "package whose anatomical therapeutic chemical code falls in that "
+                       "treatment's group. A patient whose first receipt of a treatment falls in "
+                       "the clearance period has no first receipt of that treatment in the screen "
+                       "window.", BODY))
+    f.append(Paragraph("2.4 One patient, one medicine. A person key replaced inside the extract "
+                       "stands for the same patient before and after the replacement. A package "
+                       "code belongs to the product the package register gives for it on the date "
+                       "of the dispensing.", BODY))
+    f.append(Paragraph("2.5 A pair's patients. The run screens each pair of a product in Annex A "
+                       "and a marker treatment in Annex B. A pair's patients are the patients "
+                       "whose first receipt of the product and whose first receipt of the marker "
+                       "treatment both fall inside the screen window. A patient whose two first "
+                       "receipts fall on the same day is not one of the pair's patients. Each "
+                       "patient counts once in each pair. A patient who died or left the country "
+                       "inside the screen window is one of the pair's patients where both first "
+                       "receipts fall on or before the date recorded for that event.", BODY))
 
-    s.append(Paragraph("3. What the run takes forward", H2))
-    s.append(Paragraph("3.1 A signal of disproportionate reporting is a product and reaction pair "
-                       "whose reporting in the quarter is disproportionate, measured by the "
-                       "proportional reporting ratio and the chi-square of the same table.", BODY))
-    s.append(Paragraph("3.2 A pair is taken forward where the ratio is %.1f or more, the chi-square "
-                       "is %.0f or more, and the pair is named on %d or more of the quarter's "
-                       "reports. A pair failing any of the three is not taken forward."
-                       % (W.PRR_MIN, W.CHI_MIN, W.N_MIN), BODY))
-    s.append(Paragraph("3.3 A pair the product information already describes is not a signal and is "
-                       "not taken forward. The register of what each product's information describes "
-                       "is kept by the division and is current at the run.", BODY))
-    s.append(Paragraph("3.4 A pair the desk has assessed and closed is not taken forward again in the "
-                       "twelve months after it closed, unless the reporting has changed in kind.", BODY))
+    f.append(Paragraph("3. The referral test", H2))
+    f.append(Paragraph("3.1 The order. For each of a pair's patients the run records whether the "
+                       "first receipt of the marker treatment fell after the first receipt of the "
+                       "product, or before it.", BODY))
+    f.append(Paragraph("3.2 Referral. A pair is referred for formal signal assessment where", BODY))
+    f.append(Paragraph("(a) the pair has at least 25 patients;", BODY))
+    f.append(Paragraph("(b) the number of the pair's patients in whom the first receipt of the "
+                       "marker treatment fell after the first receipt of the product is at least "
+                       "1.25 times the number that would be expected if receiving the product had "
+                       "no bearing on when the marker treatment is first received; and", BODY))
+    f.append(Paragraph("(c) the pair is not recorded as under assessment in the signal management "
+                       "tracker at the date the extract was pulled.", BODY))
+    f.append(Paragraph("3.3 Figures. Patient counts are whole. The expected number is carried to "
+                       "one decimal and the multiple in 3.2(b) to two decimals.", BODY))
+    f.append(Paragraph("3.4 A pair that meets 3.2(a) but not 3.2(b) is carried forward to the next "
+                       "run unchanged and is not reported as a referral.", BODY))
 
-    s.append(Paragraph("4. The assessment desk", H2))
-    s.append(Paragraph("4.1 The pairs a run takes forward go to the assessment desk at the triage "
-                       "that follows the run. The desk's capacity for a quarter is set out in the "
-                       "capacity report the division publishes before the quarter begins.", BODY))
-    s.append(Paragraph("4.2 Where a run takes forward more pairs than the desk's capacity allows, the "
-                       "desk works them in order of the number of reports naming the pair, the "
-                       "largest first, and the pairs it cannot reach are carried to the next quarter.", BODY))
-    s.append(Paragraph("4.3 The coordinator reports to the division the pairs taken forward, the "
-                       "pairs carried, and the capacity used.", BODY))
+    f.append(Paragraph("4. After the run", H2))
+    f.append(Paragraph("4.1 The referral quarter. Pairs referred by the October run are assessed "
+                       "in the quarter beginning 1 January 2027. The division publishes the run's "
+                       "figures for every screened pair, referred or not.", BODY))
+    f.append(Paragraph("4.2 The standing utilisation table. The division's quarterly table counts "
+                       "every patient for whom at least one product in Annex A has its first "
+                       "receipt inside the screen window, and gives the share of those patients "
+                       "for whom at least one marker treatment in Annex B also has its first "
+                       "receipt inside the screen window. Patients are counted by the region "
+                       "recorded for them at the start of the screen window and by their age at "
+                       "that date, taken as 2025 less the year of birth the register holds, in the "
+                       "bands 18 to 39, 40 to 59, 60 to 74, and 75 and over. A patient for whom no "
+                       "region is recorded is counted under \"not stated\".", BODY))
 
-    s.append(Paragraph("7. What this standard does not define", H2))
-    s.append(Paragraph("The standard reduces the quarter's reports to pairs and sets the criteria a "
-                       "pair meets to be taken forward. It does not set out how the division's "
-                       "epidemiologists are to construct the measure in 3.1, which is their own work "
-                       "and is recorded with each run.", BODY))
-    d.build(s)
-    return p
+    f.append(Spacer(1, 5))
+    f.append(Paragraph("Annex A. Products under additional monitoring at the start of the screen "
+                       "window", H2))
+    rows = []
+    for code, brand, atc, prof, pi, mf, mt, holder in W.PRODUCTS:
+        rows.append([code, brand, atc, ", ".join(W.ANNEX[code])])
+    f.append(_table(["Product code", "Brand name", "ATC code", "Marker groups screened"],
+                    rows, [22, 30, 24, 44]))
+    f.append(Spacer(1, 5))
+    f.append(Paragraph("Annex B. Marker treatments", H2))
+    rows = [[m[0], m[1], m[2]] for m in W.MARKERS]
+    f.append(_table(["Marker code", "Marker treatment", "ATC group"], rows, [24, 54, 30]))
+    f.append(Spacer(1, 4))
+    f.append(Paragraph("A marker treatment stands for the event it is given for. A package belongs "
+                       "to a marker treatment where its anatomical therapeutic chemical code is "
+                       "the group code in this annex.", SMALL))
+    doc.build(f)
 
 
-def capacity(tgt, worked_last):
-    p = os.path.join(tgt, "assessment_capacity_report.pdf")
-    d = _doc(p, "Assessment desk capacity report")
-    s = []
-    s.append(Paragraph("Assessment desk capacity report", H1))
-    s.append(Paragraph("Pharmacovigilance division, published 18 September 2026 for the quarter "
-                       "beginning 1 October 2026.", SMALL))
-    s.append(Paragraph("1. Capacity", H2))
-    s.append(Paragraph("The desk is staffed by four assessors at four fifths of full time and one "
-                       "senior assessor. A signal assessment takes a mean of 7.5 assessor days from "
-                       "triage to a closing note, and the desk holds 124 assessor days in the "
-                       "quarter after leave and the division's other standing work. The desk can "
-                       "therefore take <b>%d</b> assessments in the quarter beginning 1 October." % W.CAPACITY,
-                       BODY))
-    s.append(Paragraph("2. The quarter now closing", H2))
-    s.append(Paragraph("The desk worked %d assessments in the quarter to 30 September and carried "
-                       "none. Assessor days are charged to the division at 4,850 kroner a day."
-                       % worked_last, BODY))
-    s.append(Spacer(1, 4))
-    s.append(_table(["Quarter", "Assessments taken", "Assessor days held", "Assessments carried in"],
-                    [["2026 Q1", "13", "118", "0"], ["2026 Q2", "15", "121", "0"],
-                     ["2026 Q3", str(worked_last), "119", "0"], ["2026 Q4", "capacity %d" % W.CAPACITY,
-                                                                 "124", "0"]],
-                    [28, 34, 34, 36]))
-    s.append(Spacer(1, 6))
-    s.append(Paragraph("3. Note", H2))
-    s.append(Paragraph("Capacity is the number of assessments the desk can close in the quarter. It "
-                       "is not a limit on what a run may take forward, and it carries no measure of "
-                       "how strong a pair's reporting is.", BODY))
-    d.build(s)
-    return p
+def fee_schedule(tgt, pulled):
+    import openpyxl
+    from openpyxl.styles import Alignment, Font, PatternFill
+    from openpyxl.utils import get_column_letter
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Schedule"
+    head_font = Font(name="Calibri", size=11, bold=True)
+    fill = PatternFill("solid", fgColor="DCE6F1")
+    ws["A1"] = "Statutory data fee for the prescription-sequence screen"
+    ws["A1"].font = Font(name="Calibri", size=12, bold=True)
+    ws["A2"] = "Executive order 1184 of 29 August 2024, schedule 3. Rates in DKK per 1.000 DDD."
+    ws["A3"] = ("The fee is charged on defined daily doses dispensed inside the screen window, "
+                "whatever month the line was submitted in; a line submitted after the quarter "
+                "closed is charged in the quarter of its dispensing.")
+    ws["A4"] = "Doses are stated in thousands of DDD on this sheet."
+    rows = [("Band", "From (thousand DDD)", "To (thousand DDD)", "Rate (DKK per 1.000 DDD)")]
+    for i, (lo, hi, rt) in enumerate(W.FEE_BANDS):
+        rows.append(("%d" % (i + 1), "%.0f" % lo, "-" if hi > 10 ** 8 else "%.0f" % hi, "%d" % rt))
+    for r, row in enumerate(rows, start=6):
+        for c, v in enumerate(row, start=1):
+            cell = ws.cell(row=r, column=c, value=v)
+            if r == 6:
+                cell.font = head_font
+                cell.fill = fill
+    ws2 = wb.create_sheet("Amendment 2026-04-01")
+    ws2["A1"] = "Amendment to schedule 3, in force from 1 April 2026"
+    ws2["A1"].font = Font(name="Calibri", size=12, bold=True)
+    ws2["A2"] = ("Executive order 288 of 11 March 2026. The rates below apply to defined daily "
+                 "doses dispensed on or after 1 April 2026. Doses dispensed before that date stay "
+                 "on the rates in the Schedule sheet.")
+    ws2["A3"] = "Doses are stated in thousands of DDD on this sheet."
+    rows = [("Band", "From (thousand DDD)", "To (thousand DDD)", "Rate (DKK per 1.000 DDD)")]
+    for i, (lo, hi, rt) in enumerate(W.FEE_BANDS_AMENDED):
+        rows.append(("%d" % (i + 1), "%.0f" % lo, "-" if hi > 10 ** 8 else "%.0f" % hi, "%d" % rt))
+    for r, row in enumerate(rows, start=5):
+        for c, v in enumerate(row, start=1):
+            cell = ws2.cell(row=r, column=c, value=v)
+            if r == 5:
+                cell.font = head_font
+                cell.fill = fill
+    ws3 = wb.create_sheet("Notes")
+    ws3["A1"] = "Notes"
+    ws3["A1"].font = Font(name="Calibri", size=12, bold=True)
+    ws3["A2"] = ("The fee payer is the marketing authorisation holder of the product on the date of "
+                 "the dispensing. Where a holder has merged into another company, the surviving "
+                 "company is the fee payer for dispensings on and after the merger date.")
+    ws3["A3"] = ("Band membership is settled on the payer's total doses for the whole screen "
+                 "window, in thousands of DDD.")
+    ws3["A4"] = "Prepared by the finance office, " + W.iso(pulled) + "."
+    for w in (ws, ws2, ws3):
+        for col in range(1, 6):
+            w.column_dimensions[get_column_letter(col)].width = [10, 24, 24, 28, 14][col - 1]
+        w.sheet_view.showGridLines = False
+        for row in w.iter_rows():
+            for cell in row:
+                if isinstance(cell.value, str) and len(cell.value) > 60:
+                    cell.alignment = Alignment(wrap_text=False, vertical="top")
+    wb.save(os.path.join(tgt, "data_fee_schedule.xlsx"))

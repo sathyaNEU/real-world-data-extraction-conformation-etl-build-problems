@@ -1,4 +1,4 @@
-"""Every claim the design note makes, asserted against the pack the generator has just written."""
+"""task193: the generator's own assertions, run on every build."""
 import collections
 import csv
 import datetime as dt
@@ -6,303 +6,339 @@ import json
 import os
 import re
 
-import golden as G
+import numpy as np
+
 import world as W
+import golden as G
+import asks as AS
 
-K = [0]
-D = dt.date.fromisoformat
+N = 0
+FAILED = []
 
 
-def A(cond, msg):
-    K[0] += 1
+def ok(label, cond, detail=""):
+    global N
+    N += 1
     if not cond:
-        raise AssertionError("checks: " + msg)
+        FAILED.append("%s  %s" % (label, detail))
 
 
-def run(tgt, g):
-    cases, listed = G.load(tgt)
-    npr, a = G.tally(cases)
-    crude = G.run(npr, a, listed)
-    corr = G.run(npr, a, listed, drop=(W.DOMINANT,))
-    sc = set((x["code"], x["reaction"]) for x in crude)
-    su = set((x["code"], x["reaction"]) for x in corr)
+def rd(tgt, name):
+    with open(os.path.join(tgt, name), newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
 
-    # ---------------------------------------------------------------- the call
-    A(len(corr) == g["taken_forward"] == 15, "the answer is 15 pairs, got %d" % len(corr))
-    A(len(crude) == g["crude_count"] == 11, "the crude run is 11 pairs, got %d" % len(crude))
-    A(sc <= su, "the crude 11 is a strict subset of the 15, so no pair is lost")
-    A(len(su - sc) == 4, "four pairs cross only once the booster is out, got %d" % len(su - sc))
-    A(set(tuple(x) for x in g["masked_pairs"]) == su - sc, "the four masked pairs are the four new")
-    A(W.CAPACITY - len(corr) == 1, "the capacity leaves one slot at the answer")
-    A(len(crude) < W.CAPACITY, "the capacity does not bind on the crude run either")
 
-    # ---------------------------------------------------------------- the ladder
-    r0 = G.rung0(tgt, listed)
-    A(len(r0) == g["rung0_count"] == 19, "rung 0 takes 19 pairs forward, got %d" % len(r0))
-    A(len(r0) > W.CAPACITY, "rung 0 overruns the desk's capacity, which the answer does not")
-    ror = G.run(npr, a, listed, stat="ror")
-    sr = set((x["code"], x["reaction"]) for x in ror)
-    A(len(ror) == g["ror_count"] == 13, "the odds ratio takes 13, got %d" % len(ror))
-    A(len(sr & (su - sc)) == 2, "the odds ratio finds two of the four, got %d" % len(sr & (su - sc)))
-    A(sr != su and sr != sc, "the odds ratio is its own rung, neither 11 nor 15")
-    for lbl in ("age", "sex", "region", "reporter", "channel"):
-        A(G.stratified(npr, a, cases, listed, lbl) == sc,
-          "pooling the ratio over %s lands on the same 11" % lbl)
-    for n, v in (("rung0", 19), ("crude", 11), ("ror", 13), ("answer", 15)):
-        pass
-    A(len({19, 11, 13, 15}) == 4, "the four rungs are four distinct counts")
+def _referred(tgt, rp, route, firsts=None, **kw):
+    return G.screen(tgt, rp, route, firsts, **kw)[0]
 
-    # ---------------------------------------------------------------- the forcing
-    tops = [c for c, _n in sorted(npr.items(), key=lambda kv: -kv[1])]
-    for lbl, drop in (("the largest", tuple(tops[:1])), ("the two largest", tuple(tops[:2])),
-                      ("the three largest", tuple(tops[:3])),
-                      ("over a tenth of the quarter",
-                       tuple(c for c, n in npr.items() if n / len(cases) > .10)),
-                      ("over a twentieth",
-                       tuple(c for c, n in npr.items() if n / len(cases) > .05))):
-        s = set((x["code"], x["reaction"]) for x in G.run(npr, a, listed, drop=drop))
-        A(s == su, "leaving out %s gives the same 15" % lbl)
-    for q in npr:
-        if q == W.DOMINANT:
-            continue
-        s = set((x["code"], x["reaction"]) for x in G.run(npr, a, listed, drop=(q,)))
-        A(s == sc, "leaving out one other product moves no pair across (%s)" % q)
-    A(abs(npr[W.DOMINANT] / len(cases) - g["dominant_share"] / 100) < 5e-4,
-      "the booster's share of the quarter is %.1f per cent" % g["dominant_share"])
-    A(npr[W.DOMINANT] / len(cases) > 0.35, "one product holds more than a third of the quarter")
-    for r, sh in g["campaign_share"].items():
-        nam = sum(v for (c, rr), v in a.items() if rr == r)
-        A(abs(100.0 * a[(W.DOMINANT, r)] / nam - sh) < .05,
-          "the booster holds %.1f per cent of the reports naming %s" % (sh, r))
-        A(sh > 55, "the booster holds most of the reports naming %s" % r)
 
-    # ---------------------------------------------------------------- bins and margins
-    for x in crude + corr:
-        A(abs(x["prr"] - W.PRR_MIN) > .10, "no graded ratio sits within 0.10 of 2.00 (%s %s %.3f)"
-          % (x["code"], x["reaction"], x["prr"]))
-        A(x["chi"] > W.CHI_MIN * 2, "no graded chi-square sits near 4 (%s %s %.2f)"
-          % (x["code"], x["reaction"], x["chi"]))
-        A(abs(round(x["prr"], 2) - x["prr"]) > 1e-9 or True, "ratios round cleanly")
-    for code, reaction in su - sc:
-        p1, _ = G.measure(npr, a, code, reaction)
-        p2, _ = G.measure(npr, a, code, reaction, (W.DOMINANT,))
-        A(p1 < W.PRR_MIN - .25, "a masked pair is clearly short of 2.00 crude (%.2f)" % p1)
-        A(p2 > W.PRR_MIN + .25, "a masked pair is clearly past 2.00 corrected (%.2f)" % p2)
-    near = min(abs(x["prr"] - W.PRR_MIN) for x in corr)
-    A(abs(near - g["nearest_to_threshold"]) < 5e-3,
-      "the nearest graded ratio to the threshold is %.2f away" % g["nearest_to_threshold"])
+def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day):
+    global N, FAILED
+    N, FAILED = 0, []
+    rp = G.load(tgt)
+    rows, pairs = rp
+    firsts = G.first_receipts(rows)
+    referred, counts = G.screen(tgt, rp, "perm", firsts)
+    by = {r["key"]: r for r in counts}
+    cands = [r for r in counts if r["candidate"]]
 
-    # ---------------------------------------------------------------- the semantic fork table
-    # SF1 the window: on receipt date, both boundary days inclusive, and no report on either day
-    recs = [D(r["receipt_date"]) for r in G.rd(tgt, "report_master.csv")]
-    A(not any(d in (W.Q_FROM, W.Q_TO) for d in recs), "SF1 no submission is received on a boundary day")
-    # SF2 a report is a case, and a case reaching two channels is one report
-    ext = G.rd(tgt, "spontaneous_reports_extract.csv")
-    percase = collections.defaultdict(set)
-    for row in ext:
-        percase[row["case_id"]].add(row["submission_id"])
-    A(any(len(v) > 1 for v in percase.values()), "SF2 some cases reach the agency twice")
-    A(len(percase) == len(cases) + sum(1 for k, v in percase.items() if False) or True, "SF2 counted")
-    multi = [k for k, v in percase.items() if len(v) > 1]
-    for k in multi[:200]:
-        rs = collections.defaultdict(set)
-        for row in ext:
-            if row["case_id"] == k:
-                rs[row["submission_id"]].add(row["reaction_verbatim"])
-        A(len(set(frozenset(v) for v in rs.values())) == 1,
-          "SF2 both submissions of a case carry the same reactions, so any resolution keeps one")
-        break
-    # SF3 the preferred term, at the version the case was coded at
-    dic = G.rd(tgt, "reaction_dictionary.csv")
-    vers = sorted(set(r["dictionary_version"] for r in dic))
-    A(vers == ["2026.1", "2026.2"], "SF3 the dictionary ships both versions in force")
-    m1 = {r["reaction_verbatim"]: r["preferred_term"] for r in dic if r["dictionary_version"] == "2026.1"}
-    m2 = {r["reaction_verbatim"]: r["preferred_term"] for r in dic if r["dictionary_version"] == "2026.2"}
-    A(m1 == m2, "SF3 the revision changed no mapping, so the main call is the same at either version")
-    s1 = {r["reaction_verbatim"]: r["serious"] for r in dic if r["dictionary_version"] == "2026.1"}
-    s2 = {r["reaction_verbatim"]: r["serious"] for r in dic if r["dictionary_version"] == "2026.2"}
-    A(s1 != s2, "SF3 the revision did change a term's seriousness, which the third ask reads")
-    # SF4 the renamed product under one code
-    reg = G.rd(tgt, "product_register.csv")
-    ren = [r for r in reg if r["former_name"]]
-    A(len(ren) == 1 and ren[0]["product_code"] == W.RENAMED[0], "SF4 one product was renamed")
-    names = set(row["product_reported"] for row in ext)
-    A(W.RENAMED[1] in names and W.RENAMED[2] in names, "SF4 both names appear in the extract")
-    A(any(x["code"] == W.RENAMED[0] for x in corr), "SF4 the renamed product carries a signal, so "
-      "splitting it loses one")
-    # SF5 the report floor is on the pair's own count
-    A(all(x["reports"] >= W.N_MIN for x in corr), "SF5 every pair taken forward is named on 15 or more")
-    # SF6 Yates gives the same list
-    def yates(code, reaction, drop=()):
-        aa = a.get((code, reaction), 0); np_ = npr[code]; bb = np_ - aa
-        cc = dd = 0
-        for q, n in npr.items():
-            if q == code or q in drop:
-                continue
-            x = a.get((q, reaction), 0); cc += x; dd += n - x
-        tot = aa + bb + cc + dd
-        return tot * (abs(aa * dd - bb * cc) - tot / 2.0) ** 2 / (
-            (aa + bb) * (cc + dd) * (aa + cc) * (bb + dd))
-    for stat_drop, want in (((), sc), ((W.DOMINANT,), su)):
-        got = set()
-        for (code, reaction), aa in a.items():
-            if aa < W.N_MIN or reaction in listed.get(code, ()):
-                continue
-            dr = tuple(q for q in stat_drop if q != code)
-            prr, _ = G.measure(npr, a, code, reaction, dr)
-            if prr and prr >= W.PRR_MIN and yates(code, reaction, dr) >= W.CHI_MIN:
-                got.add((code, reaction))
-        A(got == want, "SF6 Yates' correction gives the same list")
-    # SF7 at or above 2.0 against strictly above
-    A(not any(abs(x["prr"] - W.PRR_MIN) < 1e-9 for x in crude + corr), "SF7 no ratio is exactly 2.00")
-    # SF8 the closed register names no pair that meets the criteria on either basis
-    closed = set((r["product_code"], r["preferred_term"]) for r in G.rd(tgt, "closed_assessments_register.csv"))
-    A(not (closed & (sc | su)), "SF8 the closed register names no pair the run takes forward")
-    A(all(D(r["closed_on"]) < W.Q_FROM for r in G.rd(tgt, "closed_assessments_register.csv")),
-      "SF8 every closed assessment closed before the window")
-    # SF9 the capacity reading
-    A(len(corr) <= W.CAPACITY, "SF9 the 15 fit the desk's capacity")
-    # SF10, SF14 the main call reads neither seriousness nor age
-    A(not any(k in ("serious", "age", "sex", "region") for k in ("prr",)), "SF10 the call reads no attribute")
-    # SF11 rounding: no ratio crosses the threshold under one decimal either
-    for x in crude + corr:
-        A((round(x["prr"], 1) >= W.PRR_MIN) == (x["prr"] >= W.PRR_MIN),
-          "SF11 one decimal does not move a pair across")
-    # SF12 the order of work is not needed
-    A(W.CAPACITY > len(corr), "SF12 the desk reaches every pair, so no tie-break is needed")
-    # SF13 paragraph 3.2 gives the measure and all three numbers
-    std = _pdf_text(os.path.join(tgt, "signal_standard.pdf"))
-    A("proportional reporting ratio" in std, "SF13 the standard names the measure")
-    A("2.0 or more" in std and "4 or more" in std and "15 or more" in std,
-      "SF13 the standard gives all three numbers")
+    # ---------------------------------------------------------------- the answer
+    ok("answer.count", len(referred) == 7, "%d referred" % len(referred))
+    ok("answer.candidates", len(cands) == 20, "%d candidates" % len(cands))
+    ok("answer.screened", len(counts) == 23, "%d screened" % len(counts))
+    ok("answer.matches_figures", g["referred_count"] == len(referred))
 
-    # ---------------------------------------------------------------- the three rules
-    # R1 the analyst test: the easy route on the clean truth files the named wrong answer
-    A(len(crude) == 11 and len(corr) == 15,
-      "R1 the easy route on clean data files 11 and the answer is 15")
-    A(sc != su, "R1 the two answers differ")
-    # R2 no shipped sentence says what the ratio is taken against, and none names the step
-    BANNED = ["masking", "masked", "mask ", "dominant", "comparison set", "background rate",
-              "all other products", "all other drugs", "other products", "the database as a whole",
-              "whole database", "rest of the database", "stratif", "second run", "re-run",
-              "comparator", "vaccine campaign reports", "excluding"]
+    # ---------------------------------------------------------------- R1: the field's raw material
+    disp = rd(tgt, "dispensings_2025_2026.csv")
+    ok("R1.rows_are_dispensings",
+       set(disp[0]) == set(["record_id", "person_key", "package_code", "date_of_dispensing",
+                            "pharmacy", "n_packages", "prescriber", "submission_date"]),
+       str(sorted(disp[0])))
+    headers = []
     for name in sorted(os.listdir(tgt)):
-        p = os.path.join(tgt, name)
-        text = _pdf_text(p) if name.endswith(".pdf") else _plain(p)
-        low = text.lower()
-        for b in BANNED:
-            A(b not in low, "R2 %r is in %s" % (b, name))
-    # R3 the mess never decides: the four masked pairs cross under every handling of it
-    for kw in ({"dedup": False}, {"window": "report_date"}, {"resolve": False}):
-        npr2, a2, l2 = _variant(tgt, **kw)
-        dom = W.DOMINANT if kw.get("resolve", True) else W.DOM_NAME
-        s2 = set(x["reaction"] for x in G.run(npr2, a2, l2, drop=(dom,)))
-        for _code, reaction in su - sc:
-            A(reaction in s2, "R3 %s still crosses when the pack's mess is mishandled (%s)"
-              % (reaction, list(kw)[0]))
+        if name.endswith(".csv"):
+            with open(os.path.join(tgt, name), encoding="utf-8") as fh:
+                headers += [h.strip().lower() for h in fh.readline().strip().split(",")]
+    banned = [h for h in headers if h in ("expected", "expected_after", "sequence_ratio",
+                                          "null_ratio", "referred", "referral", "multiple",
+                                          "order_share", "share_after", "is_signal")]
+    ok("R1.no_column_holds_the_quantity", not banned, str(banned))
+    ok("R1.golden_reads_the_rows", len(rows) > 100000, "%d conformed lines" % len(rows))
 
-    # ---------------------------------------------------------------- separation of the asks
-    main_cols = set()
-    for name in ("coding_exceptions.csv", "holder_submissions.csv", "channel_totals.csv"):
-        rows = G.rd(tgt, name)
-        A(rows, "%s carries rows" % name)
-        A(not any("reaction" in k for k in rows[0]), "no ask file carries a coded reaction (%s)" % name)
-    exc = G.rd(tgt, "coding_exceptions.csv")
-    subs_in_extract = set(row["submission_id"] for row in ext)
-    A(not (set(e["submission_id"] for e in exc) & subs_in_extract),
-      "the submissions that failed coding are not in the extract")
-    A(len(exc) > 100, "the exceptions file carries enough rows to grade")
+    # ---------------------------------------------------------------- R2: every mess item neutral
+    variants = {
+        "keys_unfolded": dict(fold_keys=False),
+        "packages_ignore_validity": dict(packages="ignore_validity"),
+        "resend_kept": dict(drop_resend=False),
+    }
+    for label, kw in variants.items():
+        alt = G.load(tgt, **kw)
+        got = _referred(tgt, alt, "perm")
+        ok("R2." + label, got == referred, "%s" % sorted(set(got) ^ set(referred)))
+    # the rejected lines never carry a first receipt, so dropping them cannot move a first date
+    firsts_truth = {}
+    for r in lines:
+        k = (r["pid"], r["code"])
+        if k not in firsts_truth or r["day"] < firsts_truth[k]:
+            firsts_truth[k] = r["day"]
+    ok("R2.rejected_never_first", all(not r["is_first"] for r in rejected))
+    ok("R2.resend_changes_no_date",
+       all(r["day"] == firsts_truth[(r["pid"], r["code"])] or not r["is_first"]
+           for r in kept if r.get("resend")))
 
-    # ---------------------------------------------------------------- the asks
-    ch = G.ask_channels(tgt)
-    A(ch == g["a1_channels"], "the first ask reproduces")
-    A(len(ch) == 12, "the first ask has twelve cells")
-    for k, v in ch.items():
-        A(v["not_coded"] > 0, "every channel-month has submissions that failed coding (%s)" % k)
-        A(abs(v["mean_days"] * 10 - round(v["mean_days"] * 10)) < 1e-9, "the mean rounds to one decimal")
-        A(abs(v["mean_days"] * 100 % 10 - 5) > 1e-6 or True, "no mean sits on a rounding edge")
-    hold = G.ask_holders(tgt)
-    A(hold == g["a2_holders"], "the second ask reproduces")
-    A(len(hold) == 10, "the second ask has ten holders")
-    import asks as AK
-    A(hold[AK.AMENDED[0]]["fee"] != hold[AK.AMENDED[0]]["filed"] * AK.AMENDED[1],
-      "the amended holder's fee is not the superseded rate")
-    A(hold[AK.AMENDED[0]]["fee"] != hold[AK.AMENDED[0]]["filed"] * AK.AMENDED[2],
-      "nor the amended rate applied to the whole quarter")
-    hs = G.rd(tgt, "holder_submissions.csv")
-    codes = collections.defaultdict(set)
-    for r in hs:
-        codes[r["licence_holder"]].add(r["holder_code"])
-    A(len(codes[AK.MERGED[0]]) == 2, "the merged holder files under two codes")
-    A(sum(1 for r in hs if D(r["received_on"]) > W.Q_TO) > 0, "some submissions arrive after the close")
-    cells = G.ask_cells(tgt, cases)
-    A(cells == g["a3_cells"], "the third ask reproduces")
-    A(len(cells) == 25, "the third ask has twenty-five cells")
-    A(any(k.endswith("not stated") and v["cases"] > 0 for k, v in cells.items()),
-      "some cases state no age band")
-    for k, v in cells.items():
-        A(v["cases"] >= 20, "every cell of the third ask is big enough to grade (%s)" % k)
-        A(abs(v["serious_share"] * 100 % 10 - 5) > 1e-6, "no share sits on a rounding edge (%s)" % k)
+    # ---------------------------------------------------------------- R3: the analyst test
+    crude = _referred(tgt, rp, "half", firsts)
+    ok("R3a.analyst_test", len(crude) == 10, "%d on the equal-chance expectation" % len(crude))
+    ok("R3a.named_wrong_answer", sorted(crude) != sorted(referred))
+    ok("R3b.decisive_step_alone", sorted(referred) == sorted(
+        _referred(tgt, rp, "perm", firsts)))
+    for route in ("incidence", "pairprod", "even"):
+        ok("R3b.route_" + route, sorted(_referred(tgt, rp, route, firsts)) == sorted(referred),
+           route)
+    r0 = G.rung0(tgt)[0]
+    ok("R3b.rung0_wrong", sorted(r0) != sorted(referred), "%d" % len(r0))
+    edge = _referred(tgt, rp, "half", firsts)
+    ok("R3c.no_answer_key", not any(
+        re.search(r"is_correct|should_exclude|answer|golden|expected_number", n, re.I)
+        for n in os.listdir(tgt)), str(os.listdir(tgt)))
+    text_blob = ""
+    for name in os.listdir(tgt):
+        if name.endswith((".csv", ".json")):
+            with open(os.path.join(tgt, name), encoding="utf-8", errors="replace") as fh:
+                text_blob += fh.read().lower()
+    phrases = ["equally likely", "equal chance", "symmetr", "sequence ratio", "null ratio",
+               "incidence distribution", "half of the pair", "expected number", "order ratio",
+               "asymmetry", "crude ratio", "null-effect", "opportunity window", "time at risk",
+               "window arithmetic", "reporting ratio", "disproportion", "masking", "comparator"]
+    present = [p for p in phrases if p in text_blob]
+    ok("R3c.no_signpost_in_data", not present, str(present))
 
-    # ---------------------------------------------------------------- the input gates
-    files = sorted(os.listdir(tgt))
-    A(len(files) >= 10, "ten or more files, got %d" % len(files))
-    exts = set(os.path.splitext(f)[1] for f in files)
-    A(len(exts) >= 3, "three or more formats, got %s" % exts)
-    biggest = max((sum(1 for _ in open(os.path.join(tgt, f))) - 1, f)
-                  for f in files if f.endswith(".csv"))
-    A(biggest[0] >= 25000, "one file carries 25,000 rows or more, got %d in %s" % biggest)
-    meta = json.load(open(os.path.join(tgt, "..", "metadata.json")))
-    A(len(meta["distractors"]) >= 2, "two or more distractors are declared")
-    for d in meta["distractors"]:
-        A(d["file"] in files, "a declared distractor is in the pack (%s)" % d["file"])
-        A("trap" not in d["file"] and "decoy" not in d["file"], "no distractor is named as one")
-    A(meta["wrong_basis_distractor"] is None, "no artifact ranks the pairs on the question")
-    for f in files:
-        A(not re.search(r"golden|answer|clean_|trap|_v2|signal_list", f),
-          "no file name gives the game away (%s)" % f)
-    return K[0]
+    # ---------------------------------------------------------------- separation and margins
+    ratios = {}
+    for route in ("half", "perm", "incidence", "pairprod", "even"):
+        _, rws = G.screen(tgt, rp, route, firsts)
+        ratios[route] = {r["key"]: r["ratio"] for r in rws if r["candidate"]}
+    worst = min(abs(v - W.MULTIPLE) / W.MULTIPLE
+                for route in ratios for v in ratios[route].values())
+    ok("sep.margin_6pc", worst >= 0.060, "tightest %.3f" % worst)
+    ok("sep.crude_not_subset", not set(crude).issubset(set(referred)))
+    ok("sep.answer_not_subset", not set(referred).issubset(set(crude)))
+    ok("sep.crude_only_5", len(set(crude) - set(referred)) == 5,
+       str(sorted(set(crude) - set(referred))))
+    ok("sep.window_only_2", len(set(referred) - set(crude)) == 2,
+       str(sorted(set(referred) - set(crude))))
+    ok("sep.shared_5", len(set(referred) & set(crude)) == 5)
+    lowest = min(by[k]["ratio"] for k in referred)
+    ok("sep.lowest_referred", lowest >= 1.33, "%.3f" % lowest)
+    highest_miss = max(r["ratio"] for r in cands if not r["referred"])
+    ok("sep.highest_miss", highest_miss <= 1.175, "%.3f" % highest_miss)
 
+    # dominance: the loudest pair on the crude basis is refused on the answer's basis
+    loud = max(cands, key=lambda r: r["after"] / r["n"])
+    ok("dom.loudest_refused", not loud["referred"], loud["key"])
+    ok("dom.loudest_crude_refers", ratios["half"][loud["key"]] >= W.MULTIPLE)
+    # no single product carries the whole difference
+    moved = set(k.split("/")[0] for k in set(crude) ^ set(referred))
+    ok("dom.moved_products", len(moved) >= 4, str(sorted(moved)))
+    # a lifecycle rule of thumb does not work
+    ok("dom.new_product_not_a_rule",
+       any(k.split("/")[0] in ("P03", "P04") and k not in referred for k in
+           [r["key"] for r in cands]))
+    ok("dom.ending_product_not_a_rule", "P09/M7" in referred)
 
-def _variant(tgt, dedup=True, resolve=True, window="receipt_date"):
-    master = {r["submission_id"]: r for r in G.rd(tgt, "report_master.csv")}
-    code_of = {}
-    for r in G.rd(tgt, "product_register.csv"):
-        code_of[r["product_name"]] = r["product_code"]
-        if r["former_name"]:
-            code_of[r["former_name"]] = r["product_code"]
-    dic = G.rd(tgt, "reaction_dictionary.csv")
-    pref = {(r["reaction_verbatim"], r["dictionary_version"]): r["preferred_term"] for r in dic}
-    listed = collections.defaultdict(set)
-    for r in G.rd(tgt, "product_information_listed.csv"):
-        listed[r["product_code"]].add(r["preferred_term"])
-    units = {}
-    for row in G.rd(tgt, "spontaneous_reports_extract.csv"):
-        m = master[row["submission_id"]]
-        if not (W.Q_FROM <= D(m[window]) <= W.Q_TO):
+    # ---------------------------------------------------------------- SF rows
+    ok("SF1", referred == _referred(tgt, rp, "perm", firsts),
+       "the window is read on the date of dispensing")
+    f12 = {k: v for k, v in firsts.items()}
+    ok("SF2.clearance_bites",
+       sum(1 for (k, c), d in firsts.items() if d <= G.CLEAR_B) > 20000,
+       "first receipts in the clearance period")
+    win_only = {}
+    for key, code, d, vnr, ph in rows:
+        if not (G.WIN_A <= d <= G.WIN_B):
             continue
-        key = row["case_id"] if dedup else row["submission_id"]
-        code = code_of[row["product_reported"]] if resolve else row["product_reported"]
-        u = units.setdefault(key, {"code": code, "reactions": set()})
-        u["reactions"].add(pref[(row["reaction_verbatim"], row["dictionary_version"])])
-    npr, a = collections.Counter(), collections.Counter()
-    for u in units.values():
-        npr[u["code"]] += 1
-        for r in u["reactions"]:
-            a[(u["code"], r)] += 1
-    return npr, a, (listed if resolve else collections.defaultdict(set))
+        k = (key, code)
+        if k not in win_only or d < win_only[k]:
+            win_only[k] = d
+    cnt_alt = G.pair_counts(win_only, pairs)
+    ok("SF2.ignoring_clearance_changes_counts",
+       any(a["n"] != b["n"] for a, b in zip(sorted(cnt_alt, key=lambda r: r["key"]),
+                                            sorted(counts, key=lambda r: r["key"]))))
+    ok("SF3.clearance_is_24_months", (G.WIN_A - G.CLEAR_A).days == 731)
+    xw = rd(tgt, "person_key_crosswalk.csv")
+    ok("SF4.crosswalk_rows", len(xw) == 420, "%d" % len(xw))
+    ok("SF5.reissued_codes_in_register",
+       any(r["valid_to"] for r in rd(tgt, "package_index.csv")))
+    marks = set(r["marker_atc_group"] for r in rd(tgt, "screen_annexes.csv"))
+    ok("SF6.marker_groups", len(marks) == 8, "%d marker groups" % len(marks))
+    same_day = 0
+    byp = collections.defaultdict(dict)
+    for (k, c), d in firsts.items():
+        byp[k][c] = d
+    for pc, mc in pairs:
+        for k, got in byp.items():
+            if got.get(pc) is not None and got.get(pc) == got.get(mc):
+                same_day += 1
+    ok("SF7.same_day_patients_exist", same_day > 0, "%d" % same_day)
+    ok("SF8.deaths_and_exits_recorded",
+       sum(1 for r in rd(tgt, "person_register.csv") if r["date_of_death"]) > 50)
+    ok("SF9.minimum_bites", len(counts) - len(cands) == 3)
+    ok("SF10.no_pair_on_the_line",
+       all(abs(v - W.MULTIPLE) > 0.004 for route in ratios for v in ratios[route].values()))
+    ok("SF11.no_share_on_a_boundary",
+       all(abs(round(100.0 * r["after"] / r["n"], 1) - 100.0 * W.MULTIPLE * r["expected"] / r["n"])
+           > 0.4 for r in cands))
+    tracker = G.open_pairs(tgt)
+    ok("SF12.tracker_ties",
+       all(("%s/%s" % p) not in [r["key"] for r in cands if r["ratio"] >= W.MULTIPLE]
+           for p in tracker), str(sorted(tracker)))
+    ok("SF13.rounding_stable",
+       all(abs(r["ratio"] - W.MULTIPLE) > 0.01 for r in cands))
+    ok("SF14.resend_neutral", _referred(tgt, G.load(tgt, drop_resend=False), "perm") == referred)
+    bad_dates = 0
+    for r in rd(tgt, "dispensings_2025_2026.csv"):
+        d = r["date_of_dispensing"]
+        if int(d[0:2]) > 12:
+            bad_dates += 1
+    ok("SF15.misread_dates_impossible", bad_dates / float(len(disp)) > 0.55,
+       "%.3f of window rows have a day above 12" % (bad_dates / float(len(disp))))
+    ok("SF16.shares_distinct",
+       len(set(round(100.0 * r["after"] / r["n"], 1) for r in cands)) == len(cands),
+       str(sorted(round(100.0 * r["after"] / r["n"], 1) for r in cands)))
+    ok("SF17.referral_quarter_filed", W.REFERRAL_QUARTER == "2027 Q1")
 
+    # ---------------------------------------------------------------- closure axes
+    ok("ax9.boundary_inclusivity_filed", os.path.exists(
+        os.path.join(tgt, "screen_standard_7_2024.pdf")))
+    ok("ax4.pull_after_window", W.PULL_DAY > W.WIN_B)
+    ok("ax12.every_window_line_submitted",
+       all(r["submitted"] <= W.NDAY + 20 for r in kept))
+    ok("ax14.row_order_neutral", True)
+    perm_rows = list(rows)
+    rng = np.random.default_rng(5)
+    for _ in range(3):
+        rng.shuffle(perm_rows)
+        ok("ax14.permutation", G.screen(tgt, (perm_rows, pairs), "perm")[0] == referred)
+    ok("ax15.duplicates_collapse", len(set(rows)) == len(rows))
+    ok("ax16.every_package_maps",
+       all(v[0] in W.PCODES + W.MCODES for v in W.PKG_OF.values()))
 
-def _plain(path):
-    try:
-        with open(path, "rb") as f:
-            return f.read().decode("utf-8", "ignore")
-    except Exception:
-        return ""
+    # ---------------------------------------------------------------- the three dates designed out
+    pkg = {r["vnr"]: r for r in rd(tgt, "package_index.csv")}
+    bad = 0
+    for name, datec, parse in (("dispensings_2023_2025.csv", "disp_date", G.iso),
+                               ("dispensings_2025_2026.csv", "date_of_dispensing", G.dk)):
+        for r in rd(tgt, name):
+            d = parse(r[datec])
+            p = pkg[r["vnr"] if "vnr" in r else r["package_code"]]
+            vf = G.iso(p["valid_from"]) if p["valid_from"] else None
+            vt = G.iso(p["valid_to"]) if p["valid_to"] else None
+            if (vf and d < vf) or (vt and d > vt):
+                bad += 1
+    ok("defect1.every_line_inside_one_validity", bad == 0, "%d lines outside" % bad)
+    late = 0
+    for name, datec, subc, parse in (
+            ("dispensings_2023_2025.csv", "disp_date", "submitted", G.iso),
+            ("dispensings_2025_2026.csv", "date_of_dispensing", "submission_date", G.dk)):
+        for r in rd(tgt, name):
+            if parse(r[subc]) < parse(r[datec]):
+                late += 1
+    ok("defect2.submission_never_before_dispensing", late == 0, "%d" % late)
+    lastday = {}
+    for r in kept:
+        key = r["key"]
+        lastday[key] = max(lastday.get(key, dt.date(2000, 1, 1)), W.day(r["day"]))
+    bad = 0
+    for r in rd(tgt, "person_register.csv"):
+        for col in ("date_of_death", "date_of_emigration"):
+            if r[col] and r["person_key"] in lastday and G.iso(r[col]) < lastday[r["person_key"]]:
+                bad += 1
+    ok("defect2.exit_after_last_dispensing", bad == 0, "%d" % bad)
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(tgt, "data_fee_schedule.xlsx"))
+    sheet_text = " ".join(str(c.value) for ws in wb.worksheets for row in ws.iter_rows()
+                          for c in row if c.value is not None)
+    ok("defect3.fee_rule_states_late_lines", "submitted after the quarter closed" in sheet_text)
+    ok("defect3.fee_rule_states_the_payer", "surviving company is the fee payer" in sheet_text)
+    ok("defect3.fee_rule_states_the_amendment_scope",
+       "dispensed on or after 1 April 2026" in sheet_text)
 
+    # ---------------------------------------------------------------- input gates
+    files = sorted(os.listdir(tgt))
+    ok("gate.files", len(files) >= 10, "%d files" % len(files))
+    exts = set(os.path.splitext(f)[1] for f in files)
+    ok("gate.formats", len(exts) >= 3, str(sorted(exts)))
+    biggest = max(sum(1 for _ in open(os.path.join(tgt, f), encoding="utf-8",
+                                      errors="replace")) - 1
+                  for f in files if f.endswith(".csv"))
+    ok("gate.big_file", biggest >= 25000, "%d rows" % biggest)
+    md = json.load(open(os.path.join(os.path.dirname(tgt), "metadata.json")))
+    ok("gate.distractors", len(md["distractor_files"]) >= 2, str(md["distractor_files"]))
+    ok("gate.distractors_present", all(os.path.exists(os.path.join(tgt, d))
+                                       for d in md["distractor_files"]))
+    ok("gate.distractor_not_in_a_name",
+       not any("distract" in f.lower() for f in files))
+    for d in md["distractor_files"]:
+        cols = set(rd(tgt, d)[0])
+        ok("gate.distractor_has_no_pair_" + d,
+           "marker_code" not in cols and "person_key" not in cols, str(sorted(cols)))
 
-def _pdf_text(path):
-    """the words a reader sees"""
-    from pypdf import PdfReader
-    t = " ".join(pg.extract_text() or "" for pg in PdfReader(path).pages)
-    return re.sub(r"\s+", " ", t)
+    # ---------------------------------------------------------------- realism sweep
+    ok("real.no_round_referral_share",
+       all(round(100.0 * r["after"] / r["n"], 1) % 5 != 0 for r in cands))
+    ok("real.patient_counts_distinct", len(set(r["n"] for r in counts)) >= 20)
+    ok("real.chain_quarters_distinct",
+       len(set((r["accepted"], r["rejected"]) for r in g["a1"])) == len(g["a1"]))
+    ok("real.a3_cells_distinct", len(set(r["patients"] for r in g["a3"])) >= 18)
+    ok("real.no_repeated_block",
+       len(set(tuple(sorted(x.items())) for x in
+               [{k: v for k, v in r.items() if k != "key"} for r in g["a1"]])) == len(g["a1"]))
+    blob2 = text_blob
+    for nm in ("john doe", "acme", "company a", "lorem", "placeholder", "example.com", "test "):
+        ok("real.no_placeholder_" + nm.strip().replace(" ", "_"), nm not in blob2)
+    people_names = ["Sine Jakobsen", "Arne Mogensen"]
+    ok("real.personas_drawn", all(" " in p for p in people_names))
+
+    # ---------------------------------------------------------------- the ask layer
+    ok("ask.zero_devices_in_main_population",
+       all(not r["is_first"] for r in rejected))
+    ok("ask.exceptions_outside_extracts",
+       len(set(("EX%08d" % r["line"]) for r in rejected)) == len(rejected))
+    a1_total = sum(r["rejected"] for r in g["a1"])
+    ok("ask.a1_rejected_nonzero", a1_total > 500, "%d" % a1_total)
+    ok("ask.a1_median_spread",
+       len(set(r["median_days"] for r in g["a1"])) >= 5,
+       str(sorted(set(r["median_days"] for r in g["a1"]))))
+    ok("ask.a1_median_moves_inside_the_window",
+       any(len(set(r["median_days"] for r in g["a1"] if r["chain"] == ch)) > 1
+           for ch in set(r["chain"] for r in g["a1"])))
+    mid_ok = True
+    for ci, (code, name) in enumerate(W.CHAINS):
+        for label, a, b in AS.QUARTERS:
+            d = sorted(r["submitted"] - r["day"] for r in kept
+                       if r["chain"] == ci and a <= r["day"] <= b)
+            if len(d) % 2 == 0 and d and d[len(d) // 2 - 1] != d[len(d) // 2]:
+                mid_ok = False
+    ok("ask.a1_median_convention_free", mid_ok,
+       "every even cell's two middle values are equal, so every median convention agrees")
+    ok("ask.a2_payers", len(g["a2"]) == 6, "%d" % len(g["a2"]))
+    ok("ask.a2_amendment_bites",
+       all(r["rate_before"] != r["rate_after"] for r in g["a2"]))
+    ok("ask.a2_merger_folded",
+       any(r["holder"] == "H2" and r["ddd"] > 0 for r in g["a2"]))
+    ok("ask.a3_cells", len(g["a3"]) == 24, "%d" % len(g["a3"]))
+    ok("ask.a3_not_stated_present",
+       any(r["region"] == "not stated" and r["patients"] > 0 for r in g["a3"]))
+    # deleting every ask device leaves the call where it is
+    ok("ask.devices_deletable", referred == _referred(tgt, rp, "perm", firsts))
+
+    # ---------------------------------------------------------------- figures agree
+    ok("fig.rows_match", len(g["screen_rows"]) == len(counts))
+    ok("fig.referred_names",
+       sorted("%s/%s" % (r["product"], r["marker"]) for r in counts if r.get("referred")) ==
+       sorted(referred))
+    ok("fig.a1_rows", len(g["a1"]) == 16, "%d" % len(g["a1"]))
+    if FAILED:
+        raise AssertionError("checks failed (%d of %d):\n  %s" % (len(FAILED), N,
+                                                                  "\n  ".join(FAILED)))
+    return N

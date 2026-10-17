@@ -1,113 +1,288 @@
-"""Laegemiddeltilsynet's 2026Q3 signal run: the fixed world behind the assessment desk's list."""
+"""task193: the world behind Laegemiddelstyrelsen's quarterly prescription-sequence screen.
+
+Extract span 2023-10-01 to 2026-09-30, day indices 0 to 1095.
+Clearance period days 0 to 730 (2023-10-01 to 2025-09-30), 24 months.
+Screen window days 731 to 1095 (2025-10-01 to 2026-09-30), 365 days.
+
+Everything here is the clean truth: first-ever receipt dates per patient per medicine, and the
+dispensing lines that carry them. The mess is applied in pack.py and never touches these dates.
+"""
 import datetime as dt
 
-SEED = 193
-AS_OF = dt.date(2026, 10, 8)              # the extract was pulled
-TRIAGE = dt.date(2026, 10, 12)            # the desk's next triage
-Q_FROM = dt.date(2026, 7, 1)              # the run's window, on receipt date
-Q_TO = dt.date(2026, 9, 30)
-DICT_REVISION = dt.date(2026, 7, 20)      # the July revision of the reaction dictionary
-TRANSFER = dt.date(2026, 8, 17)           # the licence transfer that renamed a product
-CAPACITY = 16                             # assessments the desk can run next quarter
-CODED_BY = dt.date(2026, 10, 7)           # the backlog was cleared the day before the pull
+import numpy as np
 
-AGENCY = "Laegemiddeltilsynet"
-PEOPLE = {"coordinator": "Cirkeline Gregersen",   # signal assessment coordinator
-          "ingest": "Malthe Danielsen"}           # case processing lead
+D0 = dt.date(2023, 10, 1)
+NDAY = 1096
+WIN_A, WIN_B = 731, 1095
+CLEAR_A, CLEAR_B = 0, 730
+MULTIPLE = 1.25
+MIN_PATIENTS = 25
+N_PAT = 13000
+SEED = 193002
+MESS_SEED = 777
+PULL_DAY = 1115                      # 2026-10-20, the extract pull
+REFERRAL_QUARTER = "2027 Q1"
 
-# the standard's criteria
-PRR_MIN = 2.0
-CHI_MIN = 4.0
-N_MIN = 15
 
-BG_SCALE = 1.75          # reports name two or three reactions, so the marginal rates scale together
-CHANNELS = ["clinician", "licence holder", "patient", "pharmacy"]
-REGIONS = ["Hovedstaden", "Midtjylland", "Nordjylland", "Sjaelland", "Syddanmark"]
-AGE_BANDS = ["0 to 17", "18 to 39", "40 to 64", "65 and over"]
-REPORTERS = ["physician", "nurse", "pharmacist", "patient", "other health professional"]
+def day(d):
+    return (D0 + dt.timedelta(days=int(d)))
 
-# the 26 preferred terms the run reads, with the share of ordinary reports naming each, and
-# whether the dictionary marks it serious
-REACTIONS = [
-    ("Pyrexia", .072, False), ("Headache", .094, False), ("Fatigue", .086, False),
-    ("Myalgia", .050, False), ("Injection site pain", .016, False),
-    ("Lymphadenopathy", .010, True), ("Nausea", .076, False), ("Dizziness", .059, False),
-    ("Rash", .053, False), ("Pruritus", .036, False), ("Urticaria", .022, False),
-    ("Diarrhoea", .044, False), ("Vomiting", .032, False), ("Abdominal pain", .038, False),
-    ("Arthralgia", .030, False), ("Paraesthesia", .016, False), ("Syncope", .012, True),
-    ("Palpitations", .018, False), ("Hypertension", .014, False), ("Tachycardia", .011, False),
-    ("Dyspnoea", .024, True), ("Alopecia", .010, False), ("Dry mouth", .015, False),
-    ("Insomnia", .021, False), ("Hepatic enzyme increased", .013, True),
-    ("Thrombocytopenia", .006, True),
-]
-# the reactions the booster's own reactogenicity floods
-CAMPAIGN = {"Pyrexia": .460, "Headache": .520, "Fatigue": .500, "Myalgia": .400,
-            "Injection site pain": .330, "Lymphadenopathy": .130}
 
-# the dominant product: an autumn 2026 booster given through the regional campaign
-DOMINANT = "DK-7120"
-DOM_NAME = "Vaxelva"
-DOM_REPORTS = 3010
+def iso(d):
+    return day(d).isoformat()
 
-# (code, name, licence holder, ATC, reports, {reaction: rate})
-# the four pairs the booster hides sit on Headache, Pyrexia, Myalgia and Fatigue
+
+def dk(d):
+    return day(d).strftime("%d-%m-%Y")
+
+
+def flat():
+    return np.ones(NDAY)
+
+
+def seasonal(base, amp, phase=0.0):
+    t = np.arange(NDAY)
+    return base * (1.0 + amp * np.sin(2 * np.pi * (t / 365.25 + phase)))
+
+
+def launch(L):
+    p = np.zeros(NDAY)
+    p[L:] = (np.arange(L, NDAY) - L) + 1.0
+    return p
+
+
+def peak(a, top, b):
+    p = np.zeros(NDAY)
+    up = np.arange(a, min(top, NDAY))
+    p[a:min(top, NDAY)] = (up - a) / float(top - a)
+    dn = np.arange(top, min(b, NDAY))
+    p[top:min(b, NDAY)] = 1.0 - (dn - top) / float(b - top)
+    return np.maximum(p, 0.0)
+
+
+# ---------------------------------------------------------------- Annex A, the screened products
+# code, brand, atc, profile, incidence, first marketed (day or None), authorisation lapses, holder
 PRODUCTS = [
-    ("DK-1043", "Doranzil", "Aurelind Pharma A/S", "L04AB", 452, {"Hepatic enzyme increased": .092}),
-    ("DK-1118", "Keltaprin", "Brynholm Laegemidler ApS", "N06AX", 398, {"Headache": .492}),
-    ("DK-1204", "Serovane", "Castellan Nordic A/S", "C09AA", 352, {"Fatigue": .466}),
-    ("DK-1266", "Imbracor", "Aurelind Pharma A/S", "B01AC", 318, {"Thrombocytopenia": .062}),
-    ("DK-1331", "Noralvex", "Dalberg Therapeutics A/S", "J01MA", 286, {"Pyrexia": .390}),
-    ("DK-1407", "Thelbarin", "Brynholm Laegemidler ApS", "R06AX", 262, {"Urticaria": .105}),
-    ("DK-1462", "Ravistan", "Elvershoj Biotek A/S", "M01AE", 248, {"Myalgia": .320}),
-    ("DK-1519", "Culavret", "Castellan Nordic A/S", "A10BJ", 232, {"Nausea": .330}),
-    ("DK-1588", "Mestoran", "Fjeldgaard Pharma A/S", "A02BC", 214, {"Diarrhoea": .210}),
-    ("DK-1634", "Ardelpha", "Dalberg Therapeutics A/S", "N05AH", 198, {"Dizziness": .270}),
-    ("DK-1702", "Pelgorane", "Elvershoj Biotek A/S", "L01XE", 182, {"Alopecia": .115}),
-    ("DK-1775", "Vintorel", "Granvig Medical A/S", "J05AE", 168, {"Rash": .250}),
-    ("DK-1813", "Hestramyl", "Fjeldgaard Pharma A/S", "C07AB", 154, {"Syncope": .110}),
-    ("DK-1869", "Quorendal", "Granvig Medical A/S", "H03AA", 142, {"Arthralgia": .135}),
-    ("DK-1924", "Brazivane", "Hvidsten Laboratorier A/S", "C01BD", 131, {"Palpitations": .125}),
-    ("DK-1987", "Oskelvin", "Dalberg Therapeutics A/S", "D07AC", 120, {}),
-    ("DK-2041", "Tandrevil", "Elvershoj Biotek A/S", "N03AX", 112, {}),
-    ("DK-2108", "Lirmantol", "Hvidsten Laboratorier A/S", "N06AB", 104, {}),
-    ("DK-2163", "Jervanex", "Aurelind Pharma A/S", "G04CA", 96, {}),
-    ("DK-2217", "Welnoprid", "Brynholm Laegemidler ApS", "A03FA", 88, {}),
-    ("DK-2284", "Carvistol", "Castellan Nordic A/S", "C08CA", 80, {}),
-    ("DK-2339", "Ebrantil", "Fjeldgaard Pharma A/S", "M05BA", 72, {}),
-    ("DK-2401", "Marvelind", "Granvig Medical A/S", "S01EC", 64, {}),
+    ("P01", "Dalvextin", "A10BX09", flat(),                    0.185, None, None, "H1"),
+    ("P02", "Pirenoxol", "M01AH07", seasonal(1.0, 0.18, 0.10), 0.205, None, None, "H2"),
+    ("P03", "Ternivast", "C10AX18", launch(860),               0.120, 860,  None, "H3"),
+    ("P04", "Oxelumab",  "L04AC22", launch(745),               0.150, 745,  None, "H1"),
+    ("P05", "Varenadol", "N02AX09", peak(380, 700, 930),       0.330, 380,  930,  "H4"),
+    ("P06", "Hestroban", "J01DH08", seasonal(1.0, 0.26, 0.55), 0.215, None, None, "H5"),
+    ("P07", "Kirunelle", "G03AA18", flat(),                    0.195, None, None, "H7"),
+    ("P08", "Admirabin", "B01AF05", peak(260, 660, 1010),      0.290, 260,  1010, "H6"),
+    ("P09", "Sovraxil",  "R03DX13", peak(60, 700, 1420),       0.235, None, None, "H5"),
 ]
-# the product renamed when its licence transferred inside the quarter
-RENAMED = ("DK-1702", "Pelgorane", "Pelgorane Nordic", "Elvershoj Biotek A/S", "Kvistgaard Onkologi A/S")
-
-HOLDERS = sorted(set(p[2] for p in PRODUCTS))
-# the two verbatim terms the July revision merged into one preferred term
-MERGED = ("Tiredness", "Lassitude", "Fatigue")
-
-# the reactions each product's own product information already describes, which paragraph 3.3 keeps
-# out of the run. The booster's six are its known reactogenicity.
-LISTED = {
-    "DK-7120": ["Pyrexia", "Headache", "Fatigue", "Myalgia", "Injection site pain", "Lymphadenopathy"],
-    "DK-1043": ["Nausea", "Diarrhoea", "Fatigue"],
-    "DK-1118": ["Insomnia", "Dry mouth", "Nausea"],
-    "DK-1204": ["Dizziness", "Headache", "Hypertension"],
-    "DK-1266": ["Pruritus", "Rash"],
-    "DK-1331": ["Diarrhoea", "Nausea", "Rash"],
-    "DK-1407": ["Fatigue", "Dry mouth"],
-    "DK-1462": ["Abdominal pain", "Nausea", "Dyspnoea"],
-    "DK-1519": ["Diarrhoea", "Vomiting", "Abdominal pain"],
-    "DK-1588": ["Headache", "Nausea"],
-    "DK-1634": ["Insomnia", "Dry mouth", "Fatigue"],
-    "DK-1702": ["Nausea", "Vomiting", "Fatigue", "Myalgia"],
-    "DK-1775": ["Headache", "Nausea", "Fatigue"],
-    "DK-1813": ["Fatigue", "Dizziness", "Palpitations"],
-    "DK-1869": ["Insomnia", "Palpitations", "Pyrexia"],
-    "DK-1924": ["Dizziness", "Headache"],
-    "DK-1987": ["Pruritus", "Rash", "Urticaria"],
-    "DK-2041": ["Dizziness", "Fatigue", "Paraesthesia"],
-    "DK-2108": ["Insomnia", "Dry mouth", "Headache"],
-    "DK-2163": ["Dizziness", "Dry mouth"],
-    "DK-2217": ["Diarrhoea", "Dry mouth"],
-    "DK-2284": ["Headache", "Dizziness", "Pyrexia"],
-    "DK-2339": ["Arthralgia", "Myalgia", "Abdominal pain"],
-    "DK-2401": ["Pruritus", "Dry mouth"],
+# ---------------------------------------------------------------- Annex B, the marker treatments
+# code, name, atc group, profile, incidence
+MARKERS = [
+    ("M1", "antiemetic",             "A04AD", flat(), 0.500),
+    ("M2", "acid-suppressant",       "A02BC", flat(), 0.520),
+    ("M3", "gout treatment",         "M04AA", flat(), 0.500),
+    ("M4", "loop diuretic",          "C03CA", flat(), 0.500),
+    ("M5", "antidepressant",         "N06AB", flat(), 0.500),
+    ("M6", "hypnotic",               "N05CF", flat(), 0.505),
+    ("M7", "topical corticosteroid", "D07AC", flat(), 0.580),
+    ("M8", "antipsychotic",          "N05AH", flat(), 0.030),
+]
+ANNEX = {
+    "P01": ["M4", "M2", "M3"],
+    "P02": ["M2", "M6", "M5"],
+    "P03": ["M3", "M6", "M1"],
+    "P04": ["M5", "M7", "M4"],
+    "P05": ["M6", "M1", "M2"],
+    "P06": ["M1", "M8"],
+    "P07": ["M6", "M8"],
+    "P08": ["M4", "M5"],
+    "P09": ["M7", "M8"],
 }
+# (product, marker) -> (probability the product brings the patient to the marker, mean onset lag)
+# Solved against the design note's target shares; frozen so the build needs no search.
+EFFECTS = {
+    ("P01", "M4"): (0.379256, 48.0),
+    ("P02", "M2"): (0.330292, 32.0),
+    ("P03", "M3"): (0.274811, 45.0),
+    ("P04", "M5"): (0.289278, 52.0),
+    ("P06", "M1"): (0.426274, 24.0),
+    ("P07", "M6"): (0.287018, 38.0),
+    ("P09", "M7"): (0.475877, 41.0),
+}
+PCODES = [p[0] for p in PRODUCTS]
+MCODES = [m[0] for m in MARKERS]
+PNAME = {p[0]: p[1] for p in PRODUCTS}
+MNAME = {m[0]: m[1] for m in MARKERS}
+PATC = {p[0]: p[2] for p in PRODUCTS}
+MATC = {m[0]: m[2] for m in MARKERS}
+MARKETED = {p[0]: (p[5], p[6]) for p in PRODUCTS}
+HOLDER_OF = {p[0]: p[7] for p in PRODUCTS}
+PAIRS = [(p, m) for p in PCODES for m in ANNEX[p]]
+
+# ---------------------------------------------------------------- holders, chains, regions
+HOLDERS = [
+    ("H1", "Nordlys Pharma A/S", "DK19384417", None),
+    ("H2", "Bregnholt Laegemidler A/S", "DK27105538", None),
+    ("H3", "Vindeby Therapeutics ApS", "DK38624901", None),
+    ("H4", "Soegaard Medica A/S", "DK16770284", None),
+    ("H5", "Kastholm Pharma A/S", "DK29441863", None),
+    ("H6", "Ellevang Biosciences A/S", "DK41208577", None),
+    ("H7", "Strandby Farma ApS", "DK33915642", "H2"),   # merged into H2 on 2026-04-01
+]
+MERGER_DAY = 913                      # 2026-04-01
+TRANSFER_DAY = 880                    # 2026-02-27, Sovraxil's authorisation moves H5 -> H6
+CHAINS = [("APK", "Apotekerkaeden"), ("DSA", "Danmarks Sundhedsapotek"),
+          ("NOR", "Nordapotek"), ("VST", "Vestjysk Apotek")]
+REGIONS = ["Hovedstaden", "Midtjylland", "Nordjylland", "Sjaelland", "Syddanmark"]
+REGION_W = [0.316, 0.230, 0.102, 0.147, 0.205]
+AGE_BANDS = [(0, 39, "18-39"), (40, 59, "40-59"), (60, 74, "60-74"), (75, 200, "75 and over")]
+FEE_BANDS = [(0, 250, 1480), (250, 1000, 1240), (1000, 4000, 1015), (4000, 10 ** 9, 860)]
+FEE_BANDS_AMENDED = [(0, 250, 1595), (250, 1000, 1335), (1000, 4000, 1095), (4000, 10 ** 9, 930)]
+FEE_AMENDMENT_DAY = 913               # 2026-04-01
+
+
+def packages():
+    """Package codes per medicine: structured Nordic article numbers, several per medicine."""
+    out = {}
+    n = 0
+    for code in PCODES:
+        lst = []
+        for i in range(3):
+            n += 1
+            lst.append(("%06d" % (104200 + 37 * n), code, "product", None, None))
+        if code == "P09":                       # reissued at the authorisation transfer
+            old = []
+            for i, (vnr, c, kind, vf, vt) in enumerate(lst):
+                old.append((vnr, c, kind, None, TRANSFER_DAY - 1))
+            new = []
+            for i in range(3):
+                n += 1
+                new.append(("%06d" % (104200 + 37 * n), code, "product", TRANSFER_DAY, None))
+            lst = old + new
+        out[code] = lst
+    for code in MCODES:
+        lst = []
+        for i in range(4):
+            n += 1
+            lst.append(("%06d" % (104200 + 37 * n), code, "marker", None, None))
+        out[code] = lst
+    return out
+
+
+PACKAGES = packages()
+PKG_OF = {}
+for _c, _lst in PACKAGES.items():
+    for _vnr, _code, _kind, _vf, _vt in _lst:
+        PKG_OF[_vnr] = (_code, _kind, _vf, _vt)
+
+
+def draw(seed=SEED, n_pat=N_PAT):
+    """First-ever receipt day per medicine per patient; -1 where the patient never receives it."""
+    rng = np.random.default_rng(seed)
+    first = {}
+    for row in PRODUCTS:
+        code, prof, pi = row[0], row[3], row[4]
+        p = prof / prof.sum()
+        hit = rng.random(n_pat) < pi
+        first[code] = np.where(hit, rng.choice(NDAY, size=n_pat, p=p), -1)
+    for code, name, atc, prof, pi in MARKERS:
+        p = prof / prof.sum()
+        hit = rng.random(n_pat) < pi
+        first[code] = np.where(hit, rng.choice(NDAY, size=n_pat, p=p), -1)
+    for (pc, mc), (e, lag_mean) in EFFECTS.items():
+        tp = first[pc]
+        fire = (tp >= 0) & (rng.random(n_pat) < e)
+        lag = rng.exponential(lag_mean, size=n_pat).astype(int) + 1
+        induced = np.where(fire, tp + lag, 10 ** 6)
+        induced = np.where(induced < NDAY, induced, 10 ** 6)
+        cur = np.where(first[mc] >= 0, first[mc], 10 ** 6)
+        new = np.minimum(cur, induced)
+        first[mc] = np.where(new < 10 ** 6, new, -1)
+    return first
+
+
+# ---------------------------------------------------------------- the screen, on the clean truth
+def pair_rows(first, interval=None, edge=None, per_product_window=False):
+    out = []
+    for pc, mc in PAIRS:
+        a0, b0 = WIN_A, WIN_B
+        if per_product_window:
+            mf, mt = MARKETED[pc]
+            if mf is not None:
+                a0 = max(a0, mf)
+            if mt is not None:
+                b0 = min(b0, mt)
+        tp, tm = first[pc], first[mc]
+        ok = (tp >= a0) & (tp <= b0) & (tm >= a0) & (tm <= b0) & (tp != tm)
+        if edge:
+            ok &= (tp >= a0 + edge) & (tp <= b0 - edge)
+        t, s = tp[ok], tm[ok]
+        if interval is not None:
+            keep = np.abs(s - t) <= interval
+            t, s = t[keep], s[keep]
+        out.append({"product": pc, "marker": mc, "key": pc + "/" + mc, "n": int(len(t)),
+                    "after": int((s > t).sum()), "t": t, "s": s, "lo": a0, "hi": b0})
+    return out
+
+
+def expected_perm(t, s):
+    """The exchangeability expectation inside the pair: (1/N) #{(i,j): s_j > t_i}."""
+    n = len(t)
+    if n == 0:
+        return 0.0
+    ss = np.sort(s)
+    return float((n - np.searchsorted(ss, t, side="right")).sum()) / n
+
+
+def expected_incidence(first, pc, mc, n, lo=WIN_A, hi=WIN_B):
+    tp, tm = first[pc], first[mc]
+    t = tp[(tp >= lo) & (tp <= hi)]
+    s = np.sort(tm[(tm >= lo) & (tm <= hi)])
+    if len(t) == 0 or len(s) == 0:
+        return 0.5 * n
+    return n * float((len(s) - np.searchsorted(s, t, side="right")).sum()) / (len(t) * len(s))
+
+
+def expected_pairprod(first, mc, t, n, lo=WIN_A, hi=WIN_B):
+    tm = first[mc]
+    s = np.sort(tm[(tm >= lo) & (tm <= hi)])
+    if len(s) == 0 or len(t) == 0:
+        return 0.5 * n
+    return n * float((len(s) - np.searchsorted(s, t, side="right")).sum()) / (len(t) * len(s))
+
+
+def expected_even(t, n, lo=WIN_A, hi=WIN_B):
+    if len(t) == 0:
+        return 0.5 * n
+    return n * float(((hi - t) / float(hi - lo + 1)).mean())
+
+
+ROUTES = ("half", "perm", "incidence", "pairprod", "even")
+
+
+def expected(first, r, route):
+    n = r["n"]
+    if route == "half":
+        return 0.5 * n
+    if route == "perm":
+        return expected_perm(r["t"], r["s"])
+    if route == "incidence":
+        return expected_incidence(first, r["product"], r["marker"], n, r["lo"], r["hi"])
+    if route == "pairprod":
+        return expected_pairprod(first, r["marker"], r["t"], n, r["lo"], r["hi"])
+    if route == "even":
+        return expected_even(r["t"], n, r["lo"], r["hi"])
+    raise ValueError(route)
+
+
+def referrals(first, rows, route, multiple=MULTIPLE, minimum=MIN_PATIENTS):
+    out, detail = [], {}
+    for r in rows:
+        if r["n"] < minimum:
+            detail[r["key"]] = None
+            continue
+        e = expected(first, r, route)
+        ratio = r["after"] / e if e > 0 else 0.0
+        detail[r["key"]] = {"n": r["n"], "after": r["after"], "before": r["n"] - r["after"],
+                            "expected": e, "ratio": ratio}
+        if ratio >= multiple:
+            out.append(r["key"])
+    return sorted(out), detail
