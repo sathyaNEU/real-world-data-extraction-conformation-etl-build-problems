@@ -27,7 +27,7 @@
       "xlsx"
     ],
     "largest_file": "callin_offers_20250829_20261112.csv",
-    "largest_file_rows": 138219
+    "largest_file_rows": 139549
   },
   "sources": [
     {
@@ -43,8 +43,8 @@
     {
       "path": "WR-26-1187_extract_transmittal.txt",
       "format": "txt",
-      "bytes": 1928,
-      "rows": 25,
+      "bytes": 2366,
+      "rows": 30,
       "source": "Constructed: Kellaway's Workforce Systems, transmittal for data extract WR-26-1187, 12/11/2026",
       "date": "2026-11-13",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -52,8 +52,8 @@
     {
       "path": "callin_offers_20250829_20261112.csv",
       "format": "csv",
-      "bytes": 14128421,
-      "rows": 138219,
+      "bytes": 14262550,
+      "rows": 139549,
       "source": "Constructed: Kellaway's Workforce Systems, KWS offer history report, shifts 29/08/2025 to 12/11/2026",
       "date": "2026-11-13",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -61,8 +61,8 @@
     {
       "path": "callin_register_20250829_20261112.csv",
       "format": "csv",
-      "bytes": 4673433,
-      "rows": 40779,
+      "bytes": 4735783,
+      "rows": 41313,
       "source": "Constructed: Kellaway's Workforce Systems, KWS call-in register, shifts 29/08/2025 to 12/11/2026",
       "date": "2026-11-13",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -106,7 +106,7 @@
     {
       "path": "kws_callin_module_notes.pdf",
       "format": "pdf",
-      "bytes": 42532,
+      "bytes": 42889,
       "rows": null,
       "source": "Constructed: Kellaway's Workforce Systems, KWS Call-in module notes version 2.3, 04/08/2026",
       "date": "2026-11-13",
@@ -133,7 +133,7 @@
     {
       "path": "relief_crew_placement_standard.pdf",
       "format": "pdf",
-      "bytes": 35169,
+      "bytes": 35203,
       "rows": null,
       "source": "Constructed: Kellaway's Workforce Planning, relief crew placement standard WP-04 version 4, 09/10/2026",
       "date": "2026-11-13",

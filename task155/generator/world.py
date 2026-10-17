@@ -187,6 +187,8 @@ N_REHIRES = 16
 P_ABSENT = 0.045            # a rostered shift lost to a sickness or carer's absence
 P_ABSENT_PEAK = 0.05
 P_DROP = 0.035              # an accepted call-in later dropped by the casual
+TRAVEL_MIN = 60             # minutes KWS leaves a casual to get between stores
+P_DUP_REPORT = 0.06         # an absence reported twice (the app and a call to the store), each raising a call-in
 P_LATE_LEAVE = 0.15         # a permanent's leave approved after the roster for those days was published
 
 
@@ -529,10 +531,18 @@ def make_needs(rng, roster, casuals, perms, window, open_post=None, skip_open=No
             if rng.random() < (P_ABSENT_PEAK if is_peak(d) else P_ABSENT):
                 u = rng.random()
                 lead = rng.uniform(60, 300) if u < 0.65 else (rng.uniform(300, 960) if u < 0.9 else rng.uniform(1440, 4320))
-                needs.append(dict(store=store, day=n, s=s, e=e, post=int(s - lead), kind="ABSENCE", absent=who, line=(store, li)))
+                nd = dict(store=store, day=n, s=s, e=e, post=int(s - lead), kind="ABSENCE", absent=who, line=(store, li))
+                needs.append(nd)
                 vacated.add((store, li))
                 if who[0] == "C":
                     absent_day[who[1]].add(n)
+                if rng.random() < P_DUP_REPORT:
+                    # the same absence reaches KWS a second time: a second call-in for the same line
+                    p2 = nd["post"] + int(rng.uniform(8, 150))
+                    if p2 < s - 60:
+                        twin = dict(nd, post=p2)
+                        nd["pair"] = twin["pair"] = len(needs)
+                        needs.append(twin)
     return needs, vacated, absent_day
 
 
@@ -595,8 +605,11 @@ class Cascade:
             return False
         b = self.book.get(idx)
         if b:
-            for bs, be, _ in b.get(n, ()):
+            for bs, be, st in b.get(n, ()):
                 if bs < e and s < be:
+                    return False
+                # no shift that leaves the casual under an hour to get from or to a shift at another store
+                if st != nd["store"] and ((be <= s and s - be < TRAVEL_MIN) or (bs >= e and bs - e < TRAVEL_MIN)):
                     return False
             for bs, be, _ in b.get(n - 1, ()):
                 if s - be < 600:
@@ -640,11 +653,17 @@ class Cascade:
 
     def run(self, needs, log=True):
         heap = []
+        pairs = collections.defaultdict(list)
         for k, nd in enumerate(needs):
             nd["nid"] = k
             nd.update(ptr=0, declined=set(), asked=set(), filled=None, done=False, postings=[], cur=None, drop=None,
                       parent=nd.get("parent"))
+            if nd.get("pair") is not None:
+                pairs[nd["pair"]].append(k)
             heapq.heappush(heap, (nd["post"], 0, k, "post"))
+        for ks in pairs.values():
+            for j in ks[1:]:
+                needs[j]["asked"] = needs[ks[0]]["asked"]          # the same shift: a second ask is a re-offer
         pending = {}
         seq = 1
         while heap:
@@ -653,6 +672,7 @@ class Cascade:
             if what == "drop":
                 who = nd["filled"][0]
                 self.remove(who, nd["day"], nd["s"], nd["e"], nd["store"])
+                self.absent_day[who].add(nd["day"])
                 nd["drop"] = t
                 child = dict(store=nd["store"], day=nd["day"], s=nd["s"], e=nd["e"], post=t, kind="ABSENCE",
                              absent=("C", who), line=nd["line"], parent=k)
@@ -680,6 +700,13 @@ class Cascade:
                     nd["done"] = True
                     p = self.postings[nd["cur"]]
                     p.update(closed=t, outcome="FILLED", filled_by=idx)
+                    for j in pairs.get(nd.get("pair"), ()):
+                        tw = needs[j]
+                        if j != k and not tw["done"]:
+                            # the store closes the second call-in for the line once the first is filled
+                            tw["done"] = True
+                            if tw["cur"] is not None and self.postings[tw["cur"]]["outcome"] is None:
+                                self.postings[tw["cur"]].update(closed=t, outcome="UNFILLED")
                     if nd["s"] - t > 300 and self.drng.random() < P_DROP:
                         td = t + 120 + self.drng.random() * max(0.0, (nd["s"] - 120) - (t + 120))
                         heapq.heappush(heap, (int(td), seq, k, "drop"))

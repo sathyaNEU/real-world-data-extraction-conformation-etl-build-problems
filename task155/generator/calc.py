@@ -222,6 +222,9 @@ def history(B, convert=True):
                 today.append((l2, s2, e2))
         ext = any(l2 == loc and (e2 == s or s2 == e) for l2, s2, e2 in today)
         split = (not ext) and bool(today)
+        # the module notes' travel rule, read back on the record: a shift within an hour of one at another store
+        near = any(l2 != loc and ((e2 <= s and s - e2 < TRAVEL_MIN) or (s2 >= e and s2 - e < TRAVEL_MIN))
+                   for l2, s2, e2 in today)
         wk = day // 7
         hrs = 0.0
         for k in range(wk * 7, wk * 7 + 7):
@@ -234,7 +237,7 @@ def history(B, convert=True):
         re_ = key in asked
         asked.add(key)
         home = home_loc(B, pc, d)
-        rows.append(dict(y=1 if o["response"] == "ACCEPTED" else 0, ext=ext, split=split, cl=home != loc,
+        rows.append(dict(y=1 if o["response"] == "ACCEPTED" else 0, ext=ext, split=split, near=near, cl=home != loc,
                          hours_wk=hrs, len_h=paid_min(e - s) / 60.0, late=e > 1290, early=s < 420,
                          sun=d.weekday() == 6, short_notice=(day * 1440 + s - t) < 240, reoffer=re_, dec=in_x25(d),
                          home=home, loc=loc, age=age_on(B, pc, d), pc=pc, day=day, answer=o["response"]))
@@ -307,6 +310,7 @@ def prob(model, f, locs):
 
 
 # ------------------------------------------------------------------------------------------------ the forward window
+TRAVEL_MIN = 60     # the module notes: no offer leaves a casual under an hour to get between stores
 DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
@@ -384,6 +388,8 @@ class Forward:
             return False
         for l2, s2, e2 in self.book.get((pc, day), ()):
             if s2 < e and s < e2:
+                return False
+            if l2 != ln["loc"] and ((e2 <= s and s - e2 < TRAVEL_MIN) or (s2 >= e and s2 - e < TRAVEL_MIN)):
                 return False
         for l2, s2, e2 in self.book.get((pc, day - 1), ()):
             if (day * 1440 + s) - ((day - 1) * 1440 + e2) < 600:

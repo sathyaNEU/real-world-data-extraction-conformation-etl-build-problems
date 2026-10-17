@@ -80,7 +80,9 @@
     "codes_vs_names",
     "cross_midnight_times",
     "effective_dated_records",
-    "unpaid_break_rules"
+    "unpaid_break_rules",
+    "records_raised_again_under_new_ids",
+    "one_event_reported_twice"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

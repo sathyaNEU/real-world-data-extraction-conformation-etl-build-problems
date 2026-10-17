@@ -319,10 +319,12 @@ def write_xlsx(path, B, G, S, ab, ex, figs, order, names, n_open):
     for j, v in enumerate(tot):
         c = ws3.cell(row=4 + len(srt), column=2 + j, value=round(v, 1))
         c.number_format, c.font = "#,##0.0", bold
-    ws3.cell(row=6 + len(srt), column=1, value="Each shift counts once at its final outcome: a shift posted again after "
-                                               "its list ran out, or raised again after the casual who took it dropped "
-                                               "it, is one shift. Werribee's open Christmas shifts went to last year's "
-                                               "relief crew and were never put out.")
+    ws3.cell(row=6 + len(srt), column=1, value="Each shift counts once at its final outcome: a shift raised again after "
+                                               "its list ran out, raised again after the casual who took it gave it "
+                                               "back, or vacated by an absence reported twice, is one shift; the "
+                                               "identical open lines a roster lists are each a shift. Werribee's open "
+                                               "Christmas shifts went to last year's relief crew and were never put "
+                                               "out.")
     ws3.freeze_panes = "B4"
     ws4 = wb.create_sheet("Cover across stores")
     ws4["A1"] = "Call-in hours covered across stores, 28/11/2025 to 24/12/2025, paid hours"
