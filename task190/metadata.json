@@ -39,12 +39,12 @@
    "source": "Constructed: the payment ledger's capital programme payment lines, year to 31 December 2025"
   },
   {
-   "bytes": 2229563,
+   "bytes": 2223616,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
    "path": "capital_payment_lines_2026.csv",
-   "rows": 26876,
+   "rows": 26804,
    "source": "Constructed: the payment ledger's capital programme payment lines, year to 31 December 2026"
   },
   {
@@ -66,12 +66,12 @@
    "source": "Constructed: internal audit's manifest of this cut"
   },
   {
-   "bytes": 2827,
+   "bytes": 3052,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
    "path": "field_dictionary.csv",
-   "rows": 20,
+   "rows": 21,
    "source": "Constructed: finance systems' field definitions across the extracts"
   },
   {
@@ -84,7 +84,7 @@
    "source": "Constructed: finance's funder grant claim for the claim year to 31 March"
   },
   {
-   "bytes": 21007,
+   "bytes": 22829,
    "date": "2027-01-14",
    "format": "pdf",
    "license": "CC0-1.0 (original work, constructed for this task)",
@@ -102,12 +102,12 @@
    "source": "Constructed: finance operations' payment release cut-off register with its effective dates"
   },
   {
-   "bytes": 7993,
+   "bytes": 7546,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
    "path": "payment_run_log_2026.csv",
-   "rows": 105,
+   "rows": 99,
    "source": "Constructed: finance operations' payment run log, year to 31 December 2026"
   },
   {
@@ -165,12 +165,12 @@
    "source": "Constructed: procurement's risk category labelling map, from 1 October 2026"
   },
   {
-   "bytes": 32469,
+   "bytes": 33565,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
    "path": "testing_schedule_extract_2025_2026.csv",
-   "rows": 516,
+   "rows": 533,
    "source": "Constructed: internal audit's two-year extract of the testing schedules, 2025 and 2026"
   }
  ],

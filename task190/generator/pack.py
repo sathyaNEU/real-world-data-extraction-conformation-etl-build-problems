@@ -26,13 +26,34 @@ def enrich(lines, year=W.YEAR, seed=4471):
     days = sim.dates(lo, hi)
     runs = []
     for i, d in enumerate(days):
-        if d.weekday() in (1, 4):                 # payment runs go out Tuesdays and Fridays
-            runs.append(d)
+        if d.weekday() not in (1, 4):             # payment runs go out Tuesdays and Fridays
+            continue
+        if d.isoformat() in W.HOLIDAYS:           # a public holiday: no run that day
+            continue
+        if d.isoformat() in W.MISSED_RUNS:        # the run did not go out, for its own reason
+            continue
+        runs.append(d)
+    # a run's size is not uniform: the last run of a month clears the month's certified valuations
+    # and the run after a missed one clears both weeks, so lines per run is a wide distribution
+    wt = []
+    for d in runs:
+        nxt = [x for x in runs if x > d]
+        w = 1.0
+        if not nxt or nxt[0].month != d.month:
+            w = 2.3
+        elif (nxt[0] - d).days > 4:
+            w = 1.7
+        wt.append(w * (0.72 + 0.56 * ((sim.shash(d.isoformat()) % 1000) / 1000.0)))
+    cw, acc = [], 0.0
+    for w in wt:
+        acc += w
+        cw.append(acc)
     out = []
     inv = {}
     for n, L in enumerate(lines):
         code, amount, cls, taint = L
-        day = runs[rng.below(len(runs))]
+        import bisect
+        day = runs[min(len(runs) - 1, bisect.bisect_left(cw, rng.u() * acc))]
         # several lines share an invoice: a certificate is one line, the rest group in twos and threes
         if cls == "certificate" or rng.u() < 0.42:
             iv = "INV-%s-%06d" % (year[2:], 1 + n * 3 + rng.below(3))
@@ -101,6 +122,38 @@ def write_lines(target, rows, year=W.YEAR):
                      ["ledger_sequence", "line_ref", "invoice_ref", "supplier_no_ledger",
                       "programme_code", "amount_eur", "paid_date", "run_id", "line_status",
                       "reverses_line_ref", "delivery_sequence"], out)
+
+
+# the revenue expenditure cost centres plan 4.4 tests, which are not on the capital register
+REVENUE_CENTRES = ["RV-204", "RV-211", "RV-230", "RV-242"]
+
+
+def revenue_sample(cross):
+    """Internal audit's revenue expenditure sample, on the same working paper as the capital one.
+
+    These are revenue ledger lines, not capital programme payment lines. They carry the revenue
+    ledger's own reference prefix and a cost centre that is on no capital programme register, and
+    they are in no capital extract. Nothing flags them as a different population: a reader finds
+    them by joining the paper to the capital ledger and seeing which rows do not resolve.
+    """
+    import datetime as dt
+    rng = sim.Rng(513377)
+    out = []
+    for k in range(17):
+        day = dt.date(2026, 1, 1) + dt.timedelta(days=rng.below(360))
+        amount = round(620.0 + rng.u() ** 2.2 * 48_000.0, 2)
+        taint = 0.0 if rng.u() > 0.18 else round(0.09 + rng.u() * 0.14, 4)
+        payable = round(amount * (1.0 - taint), 2)
+        sup = sorted(cross.values())[rng.below(len(cross))]
+        out.append(dict(code=REVENUE_CENTRES[k % len(REVENUE_CENTRES)], amount=amount,
+                        payable=payable, taint=taint, day=day, cls="revenue",
+                        line="REL-26-%06d" % (40_000 + k * 13 + rng.below(9)),
+                        sup=sup, schedule_ref="%s/REL-26-%06d" % (sup, 40_000 + k * 13),
+                        finding=("supporting order not produced" if taint > 0
+                                 else "agreed to the order, no exception")))
+    for i, r in enumerate(out):
+        r["schedule_ref"] = "%s/%s" % (r["sup"], r["line"])
+    return out
 
 
 def write_programme_register(target):
@@ -176,16 +229,17 @@ def write_dictionary(target):
         ("capital_payment_lines_2026.csv", "line_ref", "The payment ledger's reference for one payment line."),
         ("capital_payment_lines_2026.csv", "invoice_ref", "The invoice the line pays. Several lines may pay one invoice."),
         ("capital_payment_lines_2026.csv", "amount_eur", "Euro and cents as recorded in the ledger. Negative on a credit note."),
-        ("capital_payment_lines_2026.csv", "paid_date", "The date the payment run released the line."),
+        ("capital_payment_lines_2026.csv", "paid_date", "The date of the payment run that paid the line."),
         ("capital_payment_lines_2026.csv", "line_status", "paid, reversed where a credit note later reversed the line, or credit_note on the reversing line itself."),
         ("capital_payment_lines_2026.csv", "reverses_line_ref", "The line_ref this credit note reverses, where the ledger recorded one."),
         ("capital_payment_lines_2026.csv", "delivery_sequence", "The bank feed's delivery sequence for the line: 1 on the first delivery, 2 and up where the feed delivered it again."),
         ("capital_payment_lines_2026.csv", "supplier_no_ledger", "The ledger's supplier number. The supplier master uses its own; supplier_number_crosswalk.csv links them."),
         ("capital_programme_register.csv", "approved_budget_eur_thousands", "Thousands of euro, as the capital programme board approves them. Every other file states euro and cents."),
         ("internal_audit_testing_schedule_2026.pdf", "schedule_ref", "Internal audit's own reference for a tested line: the supplier number on the supplier master, then the ledger line reference."),
+        ("internal_audit_testing_schedule_2026.pdf", "date_released", "The date the payment run carrying the line was released, as the payment run log records it."),
         ("internal_audit_testing_schedule_2026.pdf", "amount_properly_payable", "The amount the testing established was properly payable on the line. Equal to the recorded amount where the testing found nothing."),
         ("testing_schedule_extract_2025_2026.csv", "testing_year", "The year of the testing the row belongs to. The extract holds two years and was pulled once."),
-        ("payment_run_log_2026.csv", "released_ts", "The time the run was released, in authority local time."),
+        ("payment_run_log_2026.csv", "released_ts", "The time the run was released, in authority local time. A run whose release ran past midnight carries the following day's date."),
         ("payment_run_log_2026.csv", "reversed_value_eur", "The value of the run's lines later reversed by credit note, as a negative."),
         ("payment_release_cutoff_register.xlsx", "cutoff_time", "The latest release time for a run on the day. A run released at the cut-off is within it."),
         ("supplier_risk_approval_history.csv", "event_status", "accepted where the row is the approval register's record of the event, superseded where a later correction replaced it."),

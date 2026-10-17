@@ -446,8 +446,11 @@ def complications(rows, units):
 def add_replays(rows, units):
     """The sub-acute and mental health feed loads each month on an overlapping window, so the episodes
     separated in the last three days of a month arrive again in the next month's batch under fresh episode
-    identifiers, with the patient, the admission date and the DRG kept. Acute units load on a closed window
-    and carry none of it, asserted."""
+    identifiers. The second load carries the same patient, the same admission and separation dates, the
+    same stay and the same diagnosis related group, so the separation key the dictionary states collapses
+    it exactly and the de-duplicated extract ties to the activity summary; what the second load sometimes
+    loses is the comorbidity score, which the feed does not always carry. Acute units load on a closed
+    window and carry none of it, asserted."""
     by_code = {u[0]: u for u in units}
     extra = []
     for i, row in enumerate(rows):
@@ -460,10 +463,6 @@ def add_replays(rows, units):
             for j in range(2 if rr.random() < 0.085 else 1):
                 copy = dict(row)
                 copy["replay_of"] = i
-                if j == 0 and rr.random() < 0.21:
-                    # the second load carries the stay as the ward later recoded it
-                    copy["los"] = max(1, row["los"] + int(rr.integers(-2, 3)))
-                    copy["adm_date"] = row["sep_date"] - dt.timedelta(days=copy["los"])
                 if rr.random() < 0.14:
                     copy["comorbidity"] = None
                 extra.append(copy)

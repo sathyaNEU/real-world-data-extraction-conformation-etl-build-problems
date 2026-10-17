@@ -107,8 +107,9 @@ def protocol(target):
                    "datados ate ao seu proprio corte; a mesa codifica-os a mao a medida que entram, "
                    "sem ver o codigo do classificador, e a ronda fecha no dia em que a mesa assina "
                    "o lote. A codificacao manual e a referencia da associacao. A ronda fica no "
-                   "ficheiro de dupla codificacao, com o codigo de cada lado, o dia da codificacao "
-                   "manual e a decisao da mesa nas linhas que foram a segunda codificacao.", BODY),
+                   "ficheiro de dupla codificacao, com o codigo do classificador e o da "
+                   "codificacao manual onde a mesa o conseguiu fixar, o dia da codificacao manual "
+                   "e a decisao da mesa nas linhas que foram a segunda codificacao.", BODY),
          Paragraph("4.6 O classificador do monitor de imprensa e o modelo que a configuracao do "
                    "monitor declara, com a data em que foi treinado e as alteracoes que teve dentro "
                    "do periodo.", BODY)]

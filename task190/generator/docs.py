@@ -167,11 +167,12 @@ def _schedule(target, tested):
                    "misstatement of a tested population is at part 9 of the audit manual."
                    % (NSEL, NTESTED, NCERT), BODY),
          Spacer(1, 4)]
-    head = ["schedule_ref", "programme_code", "paid_date", "amount_recorded",
+    head = ["schedule_ref", "programme_code", "date_released", "amount_recorded",
             "amount_properly_payable", "finding"]
     rows = [head]
     for t in tested:
-        rows.append([t["schedule_ref"], t["code"], t["day"].isoformat(),
+        rows.append([t["schedule_ref"], t["code"],
+                     t.get("paper_day", t["day"]).isoformat(),
                      "%0.2f" % t["amount"], "%0.2f" % t["payable"], t["finding"]])
     per = 42
     for i in range(0, len(rows) - 1, per):

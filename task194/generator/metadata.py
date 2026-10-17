@@ -13,9 +13,10 @@ def write(task, g):
         "objective": "Anomaly Detection & Diagnostics",
         "as_of": W.AS_OF.isoformat(),
         "committed_answer": "place the cycle IP-10 improvement team with Alderbrook Orthopaedics (cost "
-                            "centre %s); the placement avoids %d hospital-acquired complications over the "
-                            "quarter from 1 April 2027, against %d at Alderbrook General Surgery"
-                            % (a["unit"], round(a["avoided"]), round(g["runner"]["avoided"])),
+                            "centre %s), which is carrying %d avoidable hospital-acquired complications on "
+                            "the separations planned for the quarter from 1 April 2027, against %d at "
+                            "Marrowfield General Medicine"
+                            % (a["unit"], round(a["avoidable"]), round(g["runner"]["avoidable"])),
         "deliverables": ["embed_placement_2027q4.xlsx", "embed_placement_brief.pdf"],
         "distractor_files": [
             {"file": "patient_experience_unit_quarterly.csv",

@@ -330,7 +330,27 @@ def run(g, target):
     ok("A2 some events were superseded", g["ncorr"] >= 5, str(g["ncorr"]))
     month, nabs, absn, ntw, twn = g["a3"]
     ok("A3 twelve months", len(month) == 12)
-    ok("A3 the schedule's lines are all in the ledger", nabs == 0, str(nabs))
+    rev = g["revenue"]
+    ok("A3 the schedule lines absent from the capital ledger are the revenue sample",
+       nabs == len(rev) == 17, "%d absent, %d revenue" % (nabs, len(rev)))
+    # separation, asserted by count: the device sits entirely outside the main call's population
+    popline = {r["line"] for r in g["shipped"]}
+    ok("A3 separation: no revenue line is in the capital payment population",
+       not [r for r in rev if r["line"] in popline])
+    ok("A3 separation: no revenue line is in the tested set the projection reads",
+       not [x for x in g["tested"] if x.get("cls") == "revenue"])
+    ok("A3 separation: no revenue cost centre is on the capital programme register",
+       not set(r["code"] for r in rev) & set(W.PROG_CODES))
+    ok("A3 separation: deleting the device leaves every call figure identical",
+       G.compute(lines, hits)["per"] == g["per"] and
+       abs(G.compute(lines, hits)["total_raw"] - g["total_raw"]) < 0.005)
+    ok("A3 the revenue rows carry no marker: their findings read like the capital ones",
+       all("revenue" not in r["finding"].lower() and "cost centre" not in r["finding"].lower()
+           for r in rev))
+    ok("A3 the monthly counts exclude the revenue rows",
+       sum(month.values()) == len({x["line"] for x in g["tested"]}),
+       "%d months / %d capital distinct" % (sum(month.values()),
+                                            len({x["line"] for x in g["tested"]})))
     ok("A3 exactly one ledger line is on the schedule twice", ntw == 1, str(ntw))
     dupline = twn[0]
     ok("A3 the line on the schedule twice carries no exception, so no figure turns on it",
@@ -340,10 +360,9 @@ def run(g, target):
        all(t["schedule_ref"].split("/")[0] in set(g["cross"].values()) for t in g["tested"]))
     # the asking sentence pins the monthly figure to DISTINCT ledger lines, so the twelve months
     # sum to the distinct lines tested and not to the schedule's row count, which is one higher
-    ok("A3 the monthly counts sum to the distinct lines tested, one below the schedule's rows",
-       sum(month.values()) == len({t["line"] for t in g["tested"]}) == len(g["tested"]) - 1,
-       "%d months / %d distinct / %d rows"
-       % (sum(month.values()), len({t["line"] for t in g["tested"]}), len(g["tested"])))
+    ok("A3 the working paper is the capital sample, the revenue sample and the re-tested line",
+       len(g["paper"]) == len(g["tested"]) + len(rev),
+       "%d paper / %d capital / %d revenue" % (len(g["paper"]), len(g["tested"]), len(rev)))
 
     # ---------------------------------------------------------------- house fixes and realism
     ok("H9 the manifest names every shipped file",

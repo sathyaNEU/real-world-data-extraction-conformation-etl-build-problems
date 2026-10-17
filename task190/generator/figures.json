@@ -2,7 +2,7 @@
  "asks": {
   "ledger_lines_on_the_schedule_twice": 1,
   "ledger_lines_on_the_schedule_twice_names": [
-   "CPL-26-081376"
+   "CPL-26-172282"
   ],
   "risk_moves_by_category": {
    "1": [
@@ -33,42 +33,43 @@
   },
   "runs_by_quarter": {
    "2026Q1": [
-    25,
+    24,
     9,
-    4103782.83
+    6974178.95
    ],
    "2026Q2": [
-    26,
-    8,
-    5633782.71
+    24,
+    9,
+    4480460.44
    ],
    "2026Q3": [
-    27,
-    5,
-    2342669.74
+    26,
+    7,
+    4397928.34
    ],
    "2026Q4": [
-    26,
-    6,
-    3603482.2
+    24,
+    7,
+    4650297.66
    ]
   },
-  "schedule_lines_absent_from_the_ledger": 0,
+  "schedule_lines_absent_from_the_ledger": 17,
   "schedule_lines_by_month": {
-   "2026-01": 29,
-   "2026-02": 21,
-   "2026-03": 24,
-   "2026-04": 27,
-   "2026-05": 31,
-   "2026-06": 16,
-   "2026-07": 25,
-   "2026-08": 12,
-   "2026-09": 25,
-   "2026-10": 23,
-   "2026-11": 20,
-   "2026-12": 22
+   "2026-01": 28,
+   "2026-02": 20,
+   "2026-03": 22,
+   "2026-04": 24,
+   "2026-05": 19,
+   "2026-06": 27,
+   "2026-07": 33,
+   "2026-08": 17,
+   "2026-09": 23,
+   "2026-10": 25,
+   "2026-11": 16,
+   "2026-12": 21
   },
-  "schedule_rows": 276
+  "schedule_rows": 293,
+  "schedule_rows_resolving_to_the_capital_ledger": 276
  },
  "call": {
   "largest_programme": "Security and access systems",
@@ -86,6 +87,7 @@
   "manual_clause_terms": 9.3,
   "plan_clause_conclusion": 4.3,
   "plan_clause_materiality": 4.2,
+  "plan_clause_revenue_population": 4.4,
   "reliability_factor_nil_overstatements": 3.0,
   "selection_interval_recovered": 180000,
   "stated_to_the_nearest": 50000,

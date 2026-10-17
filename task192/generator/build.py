@@ -267,7 +267,13 @@ def cut(target):
                 "dicionario_dados.xlsx": "dicionario de dados"}.get(name, "")
         rows.append((name, n, first, last, note))
     PK.write_manifest(target, rows)
+    # the clean truth behind the record, which no shipped file carries: it is here so the generator
+    # can assert that the estimator is fair as well as determinate
+    _conf = set(W.CONFRONTATIONAL)
+    truth = sum(1 for a in acts if W.PERIOD_FROM <= sim.d(a["day"]) <= W.PERIOD_TO
+                and a["code"] in _conf)
     return dict(items=n_items, press_reports=n_press, sample=n_dc, par=n_par, dup=n_dup, lin=n_lin,
+                truth=truth,
                 gaz=n_gaz, imports=n_imp, exceptions=n_exc, totals=n_tot, notifications=n_not,
                 coverage=n_cov, tension=n_ten)
 

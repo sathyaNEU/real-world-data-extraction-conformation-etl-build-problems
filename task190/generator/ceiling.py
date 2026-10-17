@@ -103,7 +103,8 @@ def responses(fig):
         sched = [r for r in csv.DictReader(fh) if r["testing_year"] == Wd.YEAR]
     with open(os.path.join(target, "capital_payment_lines_2026.csv"),
               newline="", encoding="utf-8") as fh:
-        ledger = {r["line_ref"] for r in csv.DictReader(fh) if r["delivery_sequence"] == "1"}
+        ledger = {r["line_ref"]: r["paid_date"] for r in csv.DictReader(fh)
+                  if r["delivery_sequence"] == "1"}
 
     def a3_hits(join_on_the_raw_reference):
         """The monthly counts come off the schedule's own paid dates; the two reconciling counts
@@ -115,13 +116,23 @@ def responses(fig):
         # executes the pin; the mirror counts the schedule's rows, which is one too many in the
         # month that holds the re-tested line.
         if join_on_the_raw_reference:
+            # the mirror joins on the paper's own reference, so nothing resolves and it counts
+            # the paper's rows on the paper's own date, revenue sample and re-tested line included
             bym = {m: 0 for m in a3_month}
             for r in sched:
-                bym[r["paid_date"][:7]] += 1
+                bym[r["date_released"][:7]] += 1
         else:
+            # the cracker splits the reference, joins to the ledger and runs the unmatched-join
+            # sweep, so it drops the rows that resolve to no capital line and de-duplicates
             seenm = {m: set() for m in a3_month}
             for r in sched:
-                seenm[r["paid_date"][:7]].add(r["schedule_ref"].split("/")[-1])
+                line = r["schedule_ref"].split("/")[-1]
+                if line not in ledger:
+                    continue
+                # the asking sentence asks for the month of payment, which is the ledger's own
+                # date; the paper carries the date the run was released, and the two differ for
+                # the runs whose release ran past midnight
+                seenm[ledger[line][:7]].add(line)
             bym = {m: len(v) for m, v in seenm.items()}
         n += sum(1 for m in a3_month if bym[m] == a3_month[m])
         if join_on_the_raw_reference:
@@ -131,7 +142,9 @@ def responses(fig):
             absent = 0
             for r in sched:
                 line = r["schedule_ref"].split("/")[-1]
-                absent += 0 if line in ledger else 1
+                if line not in ledger:
+                    absent += 1
+                    continue
                 seen[line] = seen.get(line, 0) + 1
             twice = sum(1 for v in seen.values() if v > 1)
         n += 1 if absent == a3_absent else 0

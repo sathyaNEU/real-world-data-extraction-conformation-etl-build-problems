@@ -313,9 +313,12 @@ def a3_golden(tested_rows, ledger_lines):
     absent, twice = [], []
     seen = {}
     for t in tested_rows:
-        bymonth[t["day"].isoformat()[:7]].add(t["line"])
         if t["line"] not in ledger:
+            # a row on the paper that resolves to no line in this ledger is not a line of this
+            # population, so it is counted as absent and counted in no month
             absent.append(t["schedule_ref"])
+            continue
+        bymonth[t["day"].isoformat()[:7]].add(t["line"])
         seen[t["line"]] = seen.get(t["line"], 0) + 1
     bymonth = {m: len(v) for m, v in bymonth.items()}
     for line, n in sorted(seen.items()):

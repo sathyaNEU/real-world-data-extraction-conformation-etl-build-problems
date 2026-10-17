@@ -82,7 +82,7 @@ def run(target, figures):
                      local - dt.timedelta(hours=off("Lisboa", local.date()))])
 
     press_code, filer_code, routes_of, muni_key, idents = {}, {}, {}, {}, {}
-    lag_of, recv_of = {}, {}
+    lag_of, recv_of, recv_at = {}, {}, {}
     for route, ident, src, theme, code, place, day, start, recv_utc in recs:
         loc = loc_of.get(place)
         if loc is None:
@@ -96,6 +96,9 @@ def run(target, figures):
         else:
             filer_code.setdefault(k, code)
         start_utc = start - dt.timedelta(hours=off(dist_of[loc], start.date()))
+        if (route, ident) in recv_at and recv_at[(route, ident)] <= recv_utc:
+            continue
+        recv_at[(route, ident)] = recv_utc
         lag_of[(route, ident)] = (recv_utc - start_utc).total_seconds() / 60.0
         recv_of[(route, ident)] = recv_utc + dt.timedelta(hours=off("Lisboa", recv_utc.date()))
     keys = sorted(routes_of)
@@ -114,9 +117,16 @@ def run(target, figures):
     sample = table(target, "amostra_dupla_codificacao.csv")
     tp = fn = fp = tn = 0
     for r in sample:
+        if not r["codigo_manual"]:
+            continue
         m, h = r["codigo_monitor"] in CONF, r["codigo_manual"] in CONF
         tp, fn, fp, tn = tp + (m and h), fn + (h and not m), fp + (m and not h), \
             tn + (not m and not h)
+    coded = tp + fn + fp + tn
+    ok("sample.rows", len(sample) == f["sample_rows"], "%d" % len(sample))
+    ok("sample.coded", coded == f["sample_coded"], "%d" % coded)
+    ok("sample.uncoded", len(sample) - coded == f["sample_uncoded"],
+       "%d rows carry no manual code" % (len(sample) - coded))
     ok("sample.cells", (tp, fn, fp, tn) == (f["sample_tp"], f["sample_fn"], f["sample_fp"],
                                             f["sample_tn"]), str((tp, fn, fp, tn)))
     se = tp / float(tp + fn)
@@ -141,7 +151,7 @@ def run(target, figures):
     routes = {"naive": float(H + O), "remove_fp_ppv": H + O * ppv,
               "remove_fp_fpr": H + O - fmr * n, "recall_only": H + O / se,
               "pv_pooled": H + O * ppv + (n - O) * npv,
-              "audit_prevalence": H + (tp + fn) / float(len(sample)) * n,
+              "audit_prevalence": H + (tp + fn) / float(coded) * n,
               "hand_where_audited": float(H + hand_true + unsampled_marked)}
     for name, value in sorted(routes.items()):
         ok("route.%s" % name, abs(value - f["candidates"][name]) < 0.01,
@@ -150,8 +160,23 @@ def run(target, figures):
            "%s lands in the committed cell" % name)
         ok("route.%s.six" % name, abs(value - total) >= 0.06 * total,
            "%s is %.2f per cent away" % (name, 100 * abs(value - total) / total))
+    for name in ("R1", "R2"):
+        c2 = [0, 0, 0, 0]
+        for r in sample:
+            if r["ronda"] != name or not r["codigo_manual"]:
+                continue
+            m, h = r["codigo_monitor"] in CONF, r["codigo_manual"] in CONF
+            c2[0 if (m and h) else 1 if h else 2 if m else 3] += 1
+        se2, fm2 = c2[0] / float(c2[0] + c2[1]), c2[2] / float(c2[2] + c2[3])
+        v = H + (O - n * fm2) / (se2 - fm2)
+        ok("round.%s" % name, abs(v - f["variant_rg_%s" % name.lower()]) < 0.01,
+           "%s alone gives %.2f against %.2f" % (name, v, f["variant_rg_%s" % name.lower()]))
+        ok("round.%s.cell" % name, grain(v) == f["call_actions"]
+           and min(v - (f["call_actions"] - 25), (f["call_actions"] + 25) - v) >= 5.0,
+           "%s alone lands on %.2f" % (name, v))
     # the stratified families have no rate for the autumn, which the audit never reached
-    audit_months = sorted({dt.date.fromisoformat(r["data_ocorrencia"]).month for r in sample})
+    audit_months = sorted({dt.date.fromisoformat(r["data_ocorrencia"]).month for r in sample
+                           if r["codigo_manual"]})
     ok("strata.audit_months", audit_months == f["audit_months"], str(audit_months))
     ok("strata.population_months",
        sorted({k[2].month for k in pressed}) == [5, 6, 7, 8, 9, 10])

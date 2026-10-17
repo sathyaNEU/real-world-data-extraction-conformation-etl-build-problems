@@ -1,23 +1,36 @@
 {
- "avoided_at_pick": 21,
- "avoided_at_runner": 13,
- "avoided_by_unit": {
-  "41210": 3,
-  "41220": 13,
-  "41230": 21,
-  "41240": 5,
-  "41310": 8,
-  "41320": 3,
-  "41330": 10,
-  "41410": 2,
-  "41420": 11,
-  "41430": 1,
-  "41510": 3,
-  "41520": 4
+ "avoidable_at_pick": 40,
+ "avoidable_at_runner": 25,
+ "avoidable_at_third": 8,
+ "avoidable_by_unit": {
+  "41210": -5,
+  "41220": -4,
+  "41230": 40,
+  "41240": -2,
+  "41310": 2,
+  "41320": 2,
+  "41330": 2,
+  "41410": 8,
+  "41420": 25,
+  "41430": -1,
+  "41510": 0,
+  "41520": 0
  },
+ "band_drift": {
+  "MED-COMPLEX": 0.983,
+  "MED-GEN": 1.054,
+  "ORTH-MAJ": 0.886,
+  "ORTH-MIN": 0.906,
+  "SURG-MAJ": 1.216,
+  "SURG-MIN": 1.318
+ },
+ "band_drift_high": 1.318,
+ "band_drift_low": 0.886,
+ "band_drift_spread": 1.49,
  "call": "place the cycle IP-10 improvement team with Alderbrook Orthopaedics, cost centre 41230",
  "call_unit": "Alderbrook Orthopaedics",
  "call_unit_code": "41230",
+ "candidates_with_no_surgical_work": 3,
  "charter_clauses": [
   "4.1",
   "4.2",
@@ -25,189 +38,231 @@
   "4.4",
   "4.5"
  ],
- "closed_placements": 8,
- "closed_placements_in_period": 8,
  "complication_groups": {
   "G1": {
-   "fy2025_26": 2826,
-   "fy2026_27": 1368,
+   "fy2025_26": 2505,
+   "fy2026_27": 1230,
    "name": "Healthcare-associated infections"
   },
   "G2": {
-   "fy2025_26": 1926,
-   "fy2026_27": 884,
+   "fy2025_26": 1582,
+   "fy2026_27": 798,
    "name": "Pressure injuries"
   },
   "G3": {
-   "fy2025_26": 1684,
-   "fy2026_27": 849,
+   "fy2025_26": 1346,
+   "fy2026_27": 671,
    "name": "Falls resulting in fracture or intracranial injury"
   },
   "G4": {
-   "fy2025_26": 1791,
-   "fy2026_27": 966,
+   "fy2025_26": 1693,
+   "fy2026_27": 778,
    "name": "Medication and anaesthetic complications"
   },
   "G5": {
-   "fy2025_26": 2064,
-   "fy2026_27": 1102,
+   "fy2025_26": 1813,
+   "fy2026_27": 903,
    "name": "Delirium"
   },
   "G6": {
-   "fy2025_26": 2272,
-   "fy2026_27": 1159,
+   "fy2025_26": 1930,
+   "fy2026_27": 966,
    "name": "Respiratory complications"
   },
   "G7": {
-   "fy2025_26": 1175,
-   "fy2026_27": 536,
+   "fy2025_26": 1079,
+   "fy2026_27": 492,
    "name": "Venous thromboembolism"
   },
   "G8": {
-   "fy2025_26": 1270,
-   "fy2026_27": 616,
+   "fy2025_26": 1251,
+   "fy2026_27": 639,
    "name": "Surgical complications requiring unplanned return to theatre"
   }
  },
- "effect_models": {
-  "a constant drop in the standardised ratio": {
-   "chi_square": 47.3502,
-   "likelihood_ratio": 5047620000.0,
-   "parameter": 0.19739
-  },
-  "a constant number of complications": {
-   "chi_square": 25.5139,
-   "likelihood_ratio": 91497.5,
-   "parameter": 38.363772
-  },
-  "a constant percent of the counterfactual": {
-   "chi_square": 27.7093,
-   "likelihood_ratio": 274235.0,
-   "parameter": 0.183967
-  },
-  "a share of the unit's standing excess": {
-   "chi_square": 2.6658,
-   "likelihood_ratio": 1.0,
-   "parameter": 0.673123
-  }
- },
+ "demonstration_comparison_high": 7.1,
+ "demonstration_comparison_low": 6.2,
+ "demonstration_comparison_spread": 0.91,
+ "demonstration_mix_swing": 0.543,
+ "demonstration_published_high": 9.4,
+ "demonstration_published_low": 1.1,
+ "demonstration_published_multiple": 8.5,
+ "demonstration_shifted_quarters": [
+  "2025-26 Q2",
+  "2025-26 Q3"
+ ],
+ "demonstration_unit_code": "41410",
  "eligible_unit_codes": [
   "41230",
-  "41220",
   "41420",
+  "41410",
   "41330",
   "41310",
-  "41240",
-  "41520",
-  "41210",
-  "41510",
   "41320",
-  "41410",
-  "41430"
+  "41510",
+  "41520",
+  "41430",
+  "41240",
+  "41220",
+  "41210"
  ],
  "eligible_units": 12,
- "gap_complications": 8,
+ "gap_complications": 15,
  "hospital_year": {
   "H1": {
-   "adjusted_rate_per_1000": 114.7,
-   "complications": 5488,
+   "adjusted_rate_per_1000": 102.6,
+   "complications": 4909,
    "episodes": 48617,
    "name": "Alderbrook Hospital"
   },
   "H2": {
-   "adjusted_rate_per_1000": 118.7,
-   "complications": 3138,
-   "episodes": 26869,
+   "adjusted_rate_per_1000": 103.6,
+   "complications": 2738,
+   "episodes": 26849,
    "name": "Stonecreek Hospital"
   },
   "H3": {
-   "adjusted_rate_per_1000": 120.0,
-   "complications": 2676,
-   "episodes": 24533,
+   "adjusted_rate_per_1000": 103.8,
+   "complications": 2296,
+   "episodes": 24524,
    "name": "Marrowfield Hospital"
   },
   "H4": {
-   "adjusted_rate_per_1000": 109.4,
-   "complications": 229,
+   "adjusted_rate_per_1000": 108.9,
+   "complications": 228,
    "episodes": 2323,
    "name": "Carrowdean District Hospital"
   }
  },
+ "margin": 1.6,
  "outside_indicator": {
   "2024-25 Q1": {
-   "separations": 913,
+   "separations": 901,
    "with_complication": 45
   },
   "2024-25 Q2": {
-   "separations": 800,
+   "separations": 793,
    "with_complication": 45
   },
   "2024-25 Q3": {
-   "separations": 844,
-   "with_complication": 47
+   "separations": 832,
+   "with_complication": 46
   },
   "2024-25 Q4": {
-   "separations": 930,
-   "with_complication": 55
+   "separations": 918,
+   "with_complication": 54
   },
   "2025-26 Q1": {
-   "separations": 930,
+   "separations": 908,
    "with_complication": 41
   },
   "2025-26 Q2": {
-   "separations": 825,
-   "with_complication": 46
+   "separations": 808,
+   "with_complication": 45
   },
   "2025-26 Q3": {
-   "separations": 839,
-   "with_complication": 41
+   "separations": 819,
+   "with_complication": 40
   },
   "2025-26 Q4": {
-   "separations": 915,
-   "with_complication": 54
+   "separations": 900,
+   "with_complication": 53
   },
   "2026-27 Q1": {
-   "separations": 931,
+   "separations": 917,
    "with_complication": 37
   },
   "2026-27 Q2": {
-   "separations": 817,
-   "with_complication": 59
+   "separations": 809,
+   "with_complication": 58
   }
  },
- "pick_excess_complications": 31.1,
- "pick_expected_complications": 189,
- "pick_planned_separations": 2200,
- "pick_standardised_ratio": 1.16,
- "rate_denominator": 1000,
- "register_readings": {
-  "against what the other units did over the same quarters": 0.674821,
-  "least squares through the origin": 0.676115,
-  "least squares with an intercept": 0.67927,
-  "pooled sums": 0.674867,
-  "the expected-weighted mean of the placements' shares": 0.679434,
-  "the mean of the placements' shares": 0.672126,
-  "the median of the placements' shares": 0.672593,
-  "the variance-weighted fit": 0.673123
+ "pick_adjusted_rate": 106.5,
+ "pick_closed_quarters": 10,
+ "pick_comparison_ratio": 1.22,
+ "pick_expected_comparison": 1465.7,
+ "pick_expected_complications": 198.4,
+ "pick_expected_published": 1627.0,
+ "pick_in_scope_episodes": 17617,
+ "pick_observed_complications": 1794,
+ "pick_planned_separations": 2305,
+ "pick_published_excess": 20.4,
+ "pick_published_ratio": 1.1,
+ "pick_record_separations": 18899,
+ "pick_standard_error": 5.17,
+ "published_excess_by_unit": {
+  "41210": -3.2,
+  "41220": 61.1,
+  "41230": 20.4,
+  "41240": -2.6,
+  "41310": 3.5,
+  "41320": 28.0,
+  "41330": 11.0,
+  "41410": 3.8,
+  "41420": 26.0,
+  "41430": -1.3,
+  "41510": 0.7,
+  "41520": 13.3
  },
- "rung0_avoided": 3,
- "rung0_excess": 4.9,
- "rung0_excess_now": 33,
- "rung0_ratio_quarter": 1.18,
- "rung0_ratio_record": 1.03,
- "rung0_unit_code": "41210",
- "rung1_adjusted_rate": 124.5,
- "rung1_avoided": 10,
- "rung1_excess": 14.8,
- "rung1_planned_separations": 506,
- "rung1_ratio": 1.29,
- "rung1_unit_code": "41330",
- "rung2_avoided": 13,
- "rung2_excess": 19.5,
- "rung2_expected_next": 290,
- "rung2_unit_code": "41220",
- "runner_unit": "Alderbrook General Surgery",
- "runner_unit_code": "41220",
+ "published_rank_of_call": 4,
+ "rate_denominator": 1000,
+ "reading_margins": {
+  "the comparison frequency measured over the eight most recent closed quarters": 1.71,
+  "the comparison frequency measured over the four most recent closed quarters": 1.4,
+  "the comparison frequency measured over the latest closed quarter alone": 1.07,
+  "the comparison frequency measured over the ten closed quarters of the specification period": 1.6,
+  "the unit's own patients left out of the comparison, frequency over the four most recent closed quarters": 2.65,
+  "the unit's own patients left out of the comparison, frequency over the ten closed quarters of the specification period": 2.85,
+  "the unit's own record taken over the eight most recent closed quarters": 1.47,
+  "the unit's own record taken over the four most recent closed quarters": 2.18,
+  "the unit's own record taken over the latest closed quarter alone": 1.36,
+  "the unit's own record taken over the ten closed quarters of the specification period": 1.6,
+  "the unit's rate taken per all separations in the record": 1.6,
+  "the unit's rate taken per in-scope episodes in the record": 1.5
+ },
+ "readings_naming_the_call": 12,
+ "readings_of_clause_43": 12,
+ "reference_rate": 96.6,
+ "route_margins": {
+  "R0": 2.18,
+  "R1": 1.85,
+  "R10": 1.32,
+  "R11": 2.18,
+  "R12": 1.6,
+  "R2": 1.05,
+  "R3": 1.05,
+  "R4": 1.31,
+  "R5": 1.17,
+  "R6": 1.11,
+  "R7": 1.36,
+  "R8": 1.45,
+  "R9": 1.05
+ },
+ "route_winners": {
+  "R0": "41220",
+  "R1": "41220",
+  "R10": "41420",
+  "R11": "41230",
+  "R12": "41230",
+  "R2": "41420",
+  "R3": "41420",
+  "R4": "41220",
+  "R5": "41330",
+  "R6": "41210",
+  "R7": "41230",
+  "R8": "41230",
+  "R9": "41420"
+ },
+ "rung0_avoidable": -4,
+ "rung0_published_excess": 61.1,
+ "rung0_published_ratio": 1.22,
+ "rung0_unit_code": "41220",
+ "rung3_avoidable": 25,
+ "rung3_per_1000": 23.0,
+ "rung3_unit_code": "41420",
+ "runner_standard_error": 3.52,
+ "runner_unit": "Marrowfield General Medicine",
+ "runner_unit_code": "41420",
  "specification_clauses": [
   "2.1",
   "2.2",
@@ -219,5 +274,10 @@
   "3.3",
   "3.4"
  ],
+ "standard_error_lead": 2.4,
+ "standard_error_of_gap": 6.25,
+ "surgical_share_high": 0.851,
+ "surgical_share_low": 0.075,
+ "third_unit_code": "41410",
  "year_end_day": 31
 }

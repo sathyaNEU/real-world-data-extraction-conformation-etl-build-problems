@@ -56,6 +56,13 @@ PROG_DATES = {"CP-11": ("2024-02-19", "2028-09-29"), "CP-14": ("2024-04-08", "20
               "CP-41": ("2024-06-17", "2027-08-31"), "CP-44": ("2025-02-24", "2028-02-29"),
               "CP-47": ("2024-11-11", "2027-12-17")}
 
+# Irish public holidays falling on a Tuesday or a Friday in 2026 and 2025: no payment run goes out
+HOLIDAYS = {"2026-01-01", "2026-03-17", "2026-04-03", "2026-05-01", "2026-12-25",
+            "2025-01-01", "2025-03-17", "2025-04-18", "2025-05-02", "2025-12-26"}
+# runs that did not go out: the August bank holiday week was covered by the Tuesday run, and the
+# finance system upgrade took the first Friday in November
+MISSED_RUNS = {"2026-08-07", "2026-11-06", "2025-08-08"}
+
 PROG_CODES = [p[0] for p in PROGRAMMES]
 PROG_NAME = {p[0]: p[1] for p in PROGRAMMES}
 

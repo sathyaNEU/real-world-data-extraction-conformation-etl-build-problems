@@ -93,7 +93,9 @@ def main(target, figpath):
     refs = []
     i = 0
     while i < len(sched) - 4:
-        if re.fullmatch(r"SUP\d{6}/CPL-26-\d{6}", sched[i] or ""):
+        # the paper carries both samples plan 4.1 lists: the capital lines and the revenue ones,
+        # which carry the revenue ledger's own prefix and resolve to no capital line
+        if re.fullmatch(r"SUP\d{6}/(CPL|REL)-26-\d{6}", sched[i] or ""):
             try:
                 rec = float(sched[i + 3].replace(",", ""))
                 pay = float(sched[i + 4].replace(",", ""))
@@ -114,14 +116,18 @@ def main(target, figpath):
     for ref, code, day, rec, pay in sorted(refs):
         line = ref.split("/", 1)[1]
         tested.append((line, code, rec, pay, byline.get(line)))
-    # a line the schedule carries twice was selected once and stands for one interval
+    # a line the schedule carries twice was selected once and stands for one interval; a row that
+    # resolves to no line in this ledger is the revenue sample and is no part of this population
     seenl, uniq = set(), []
     for t in tested:
-        if t[0] in seenl:
+        if t[0] in seenl or t[4] is None:
             continue
         seenl.add(t[0])
         uniq.append(t)
-    chk("every tested line is in the population", sum(1 for t in uniq if t[4] is None), 0)
+    chk("every capital tested line is in the population", sum(1 for t in uniq if t[4] is None), 0)
+    chk("the paper's rows that resolve to no capital line",
+        sum(1 for t in tested if t[4] is None),
+        fig["asks"]["schedule_lines_absent_from_the_ledger"])
     chk("tested value", round(sum(t[2] for t in uniq), 2),
         fig["critical_components"]["tested_value"])
 
@@ -129,9 +135,6 @@ def main(target, figpath):
     cum = [0.0]
     for a in amounts:
         cum.append(cum[-1] + a)
-    sel = set()
-    for t in uniq:
-        sel.add([i for i, r in enumerate(pop) if r["line_ref"] == t[0]][0])
     idx = {r["line_ref"]: i for i, r in enumerate(pop)}
     sel = {idx[t[0]] for t in uniq}
 
@@ -353,6 +356,8 @@ def main(target, figpath):
     # distinct ledger lines per month, as the asking sentence pins it
     bym = {}
     for line, code, rec, pay, r in tested:
+        if r is None:
+            continue
         bym.setdefault(r["paid_date"][:7], set()).add(line)
     bym = {k: len(v) for k, v in bym.items()}
     for k, v in fig["asks"]["schedule_lines_by_month"].items():
@@ -362,6 +367,8 @@ def main(target, figpath):
         fig["asks"]["schedule_lines_absent_from_the_ledger"])
     seen = {}
     for t in tested:
+        if t[4] is None:
+            continue
         seen[t[0]] = seen.get(t[0], 0) + 1
     chk("A3 ledger lines on the schedule twice", sum(1 for v in seen.values() if v > 1),
         fig["asks"]["ledger_lines_on_the_schedule_twice"])

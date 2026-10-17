@@ -19,6 +19,7 @@ def write(g, path):
             "plan_clause_materiality": 4.2,
             "manual_clause_estimand": 9.1,
             "manual_clause_terms": 9.3,
+            "plan_clause_revenue_population": 4.4,
             "manual_clause_reliability_factors": 9.5,
             "manual_clause_records": 9.2,
             "lattice_search_half_width_eur": 40,
@@ -74,7 +75,8 @@ def write(g, path):
         "asks": {
             "runs_by_quarter": {q: list(v) for q, v in g["a1"].items()},
             "risk_moves_by_category": {b: list(v) for b, v in g["a2"].items()},
-            "schedule_rows": len(g["tested"]),
+            "schedule_rows": len(g["paper"]),
+            "schedule_rows_resolving_to_the_capital_ledger": len(g["tested"]),
             "schedule_lines_by_month": month,
             "schedule_lines_absent_from_the_ledger": nabs,
             "ledger_lines_on_the_schedule_twice": ntwice,

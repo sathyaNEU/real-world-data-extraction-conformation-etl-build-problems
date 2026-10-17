@@ -561,6 +561,16 @@ def run(target, g):
     A(len(lens) >= 10, "the 28 records take %d different lengths" % len(lens))
     A(7 * 24 * 60 not in lens, "no record is exactly a week of minutes: %s" % lens[:3])
     A(len({d["start_dt"] for d in deps}) == len(deps), "no two deployments start on the same minute")
+    bymeter = {}
+    for d in deps:
+        bymeter.setdefault(d["meter"], []).append((d["start_dt"], d["end_dt"], d["id"]))
+    for mid, sp in bymeter.items():
+        sp.sort()
+        for i3 in range(1, len(sp)):
+            A(sp[i3][0] > sp[i3 - 1][1],
+              "%s was collected from %s before it was set down for %s" % (mid, sp[i3 - 1][2], sp[i3][2]))
+            A((sp[i3][0] - sp[i3 - 1][1]).total_seconds() / 60.0 >= W.TURNAROUND,
+              "%s had the drive between %s and %s" % (mid, sp[i3 - 1][2], sp[i3][2]))
     for d in deps:
         for x in (d["start_dt"], d["end_dt"]):
             A(x.hour < W.DAY_START, "%s's round at %s is before the assessment period opens"

@@ -186,9 +186,13 @@ executed, and every fix is in the generator.
 7. **The realism pass, item by item.** The plant's sound now reaches each position through the weather: a
    downwind-and-upwind term on the mast's own wind and the position's bearing, a night-time inversion that
    grows with distance and calm, and turbulent scattering minute to minute. Measured on the shipped
-   columns, the minute level now correlates with the wind's direction at -0.35 to +0.50 by position (0.02
-   before), with its speed up to 0.29 and with temperature up to -0.30, and a night minute moves 0.5 to 2.8
-   dB about its hour (0.4 to 0.7 before). The round is now a round: the five meters go in and come out at
+   columns, the minute level now correlates with the wind's direction at -0.35 to +0.67 by position (0.02
+   before), with its speed at -0.25 to +0.32 and with temperature at -0.39 to +0.06, and a night minute
+   moves 0.6 to 2.7 dB about its hour (0.4 to 0.7 before). Two positions measured in the same week no
+   longer carry one shape between them: their hourly means correlate 0.15 to 0.90, median 0.60, over 52
+   pairs, where a shape that was only scaled would sit at 1.00. The plant's own step times are still shared,
+   because one plant is being heard at fourteen places and the dewatering shift starts when it starts;
+   what differs position by position is how much of it arrives. The round is now a round: the five meters go in and come out at
    different minutes of the Monday morning between 04:48 and 06:41, no record is a week of minutes (25
    different lengths from 9,948 to 10,159), and the record carries what the technician did at the
    microphone, the handling minutes as the tripod goes up and comes down and the field check itself, which
@@ -604,7 +608,7 @@ pass executed. It is reported, not papered over.
 - `generator/build.py` runs everything: the survey (`world.py`, `sim.py`), the pack (`pack.py`, `docs.py`,
   `postprocess.py`), the golden (`golden.py` over `analysis.py`, `deliver.py`), `metadata.py`,
   `figures.py`, `submission.py`, then `checks.py` and `verify.py`.
-- Final run: `checks.py` **1,217 assertions passed**; `verify.py` **282,108 independent checks passed**
+- Final run: `checks.py` **1,263 assertions passed**; `verify.py` **282,108 independent checks passed**
   (the per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
   consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
   ab9b5efda9bb4309); about 11 seconds.

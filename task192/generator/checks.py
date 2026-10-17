@@ -21,7 +21,8 @@ N = 0
 
 # the full candidate set: every route to the period's confrontational count that the shipped record
 # leaves standing, with the family each one belongs to
-RIGHT = ["rg_pooled", "matrix_inverse", "hybrid", "continuity", "rg_fb_month", "rg_fb_theme"]
+RIGHT = ["rg_pooled", "matrix_inverse", "hybrid", "continuity", "rg_fb_month", "rg_fb_theme",
+         "rg_coded_month", "rg_coded_theme", "rg_r1", "rg_r2"]
 WRONG = ["naive", "remove_fp_ppv", "remove_fp_fpr", "recall_only", "pv_pooled", "audit_prevalence",
          "hand_where_audited", "pv_fb_month", "pv_fb_theme"]
 
@@ -46,7 +47,10 @@ def candidates(g):
             "matrix_inverse": g["variant_matrix_inverse"], "hybrid": g["variant_hybrid"],
             "continuity": g["variant_continuity"], "rg_fb_month": g["variant_rg_fb_month"],
             "rg_fb_theme": g["variant_rg_fb_theme"], "pv_fb_month": g["variant_pv_fb_month"],
-            "pv_fb_theme": g["variant_pv_fb_theme"]}
+            "pv_fb_theme": g["variant_pv_fb_theme"],
+            "rg_coded_month": g["variant_rg_coded_month"],
+            "rg_coded_theme": g["variant_rg_coded_theme"],
+            "rg_r1": g["variant_rg_r1"], "rg_r2": g["variant_rg_r2"]}
 
 
 def two_by_two_p(a, b, c, d):
@@ -100,7 +104,8 @@ def bootstrap(g, draws=20000, seed=7):
     gap = pv - rg
     return dict(sd_rg=float(rg.std()), sd_pv=float(pv.std()), sd_gap=float(gap.std()),
                 mean_gap=float(gap.mean()), lo=float(np.percentile(rg, 2.5)),
-                hi=float(np.percentile(rg, 97.5)))
+                hi=float(np.percentile(rg, 97.5)), draws=int(len(gap)),
+                positive=float((gap > 0).mean()))
 
 
 def counts(acts, sample):
@@ -129,6 +134,8 @@ def run(target, g=None):
     _wb = load_workbook(os.path.join(target, "dicionario_dados.xlsx"), read_only=True)
     conv = " ".join(str(c.value) for row in _wb["convencoes"].iter_rows() for c in row
                     if c.value is not None)
+    conv_all = " ".join(str(c.value) for sh in _wb.worksheets for row in sh.iter_rows()
+                        for c in row if c.value is not None)
     _wb.close()
     cand = candidates(g)
     cell = {k: G.grain(v) for k, v in cand.items()}
@@ -185,6 +192,15 @@ def run(target, g=None):
            abs(cand[k] - g["raw_total"]) >= 0.06 * g["raw_total"],
            "%s %.3f is %.2f per cent from %.3f"
            % (k, cand[k], 100 * abs(cand[k] - g["raw_total"]) / g["raw_total"], g["raw_total"]))
+    for k in RIGHT:
+        ok("cand.family_band.%s" % k,
+           min(cand[k] - (gold_cell - 25), (gold_cell + 25) - cand[k]) >= 5.0,
+           "%s %.2f sits %.2f from the cell's edge"
+           % (k, cand[k], min(cand[k] - (gold_cell - 25), (gold_cell + 25) - cand[k])))
+    ok("cand.rounds_agree",
+       abs(cand["rg_r1"] - cand["rg_r2"]) <= 40.0,
+       "the two rounds alone give %.2f and %.2f, %.2f apart"
+       % (cand["rg_r1"], cand["rg_r2"], abs(cand["rg_r1"] - cand["rg_r2"])))
     ok("cand.identities", abs(cand["matrix_inverse"] - cand["rg_pooled"]) < 1e-9
        and abs(cand["hybrid"] - cand["rg_pooled"]) < 1e-9,
        "%.6f %.6f" % (cand["matrix_inverse"], cand["hybrid"]))
@@ -254,12 +270,15 @@ def run(target, g=None):
     # ------------------------------------------------- the separation is wider than the noise
     boot = bootstrap(g)
     g["boot"] = boot
-    ok("noise.gap_beats_sd", boot["mean_gap"] >= 2.0 * boot["sd_gap"],
+    ok("noise.gap_beats_sd", boot["mean_gap"] >= 2.5 * boot["sd_gap"],
        "mean gap %.1f, sd of the gap %.1f, ratio %.2f"
        % (boot["mean_gap"], boot["sd_gap"], boot["mean_gap"] / boot["sd_gap"]))
-    ok("noise.gap_observed", (cand["pv_pooled"] - cand["rg_pooled"]) >= 2.0 * boot["sd_gap"],
+    ok("noise.gap_observed", (cand["pv_pooled"] - cand["rg_pooled"]) >= 2.5 * boot["sd_gap"],
        "observed gap %.1f against sd %.1f"
        % (cand["pv_pooled"] - cand["rg_pooled"], boot["sd_gap"]))
+    ok("noise.gap_positive", boot["draws"] >= 20000 and boot["positive"] >= 0.99,
+       "the gap is positive on %.3f of %d resamples of the four cells"
+       % (boot["positive"], boot["draws"]))
     ok("noise.grain_not_finer_than_sd", G.GRAIN <= boot["sd_rg"],
        "grain %d, sampling sd %.1f" % (G.GRAIN, boot["sd_rg"]))
     daily = {}
@@ -270,6 +289,20 @@ def run(target, g=None):
     ok("noise.dispersion_plausible", 0.8 <= disp <= 1.35,
        "chi-square per degree of freedom %.3f on daily action counts before the surge, against a "
        "weekday mean" % disp)
+    surge_daily = {}
+    for a in acts:
+        if W.SURGE_FROM <= a["day"] <= W.PERIOD_TO:
+            surge_daily[a["day"]] = surge_daily.get(a["day"], 0) + 1
+    disp_surge = dispersion_by_week(sorted(surge_daily.items()))
+    ok("noise.dispersion_plausible_surge", 0.85 <= disp_surge <= 1.45,
+       "chi-square per degree of freedom %.3f on daily action counts from the surge, against a "
+       "weekday mean" % disp_surge)
+    ok("noise.fair_to_truth",
+       abs(g["raw_total"] - g["pack"]["truth"]) <= 0.8 * boot["sd_rg"],
+       "the estimate is %.2f against the %d confrontational actions behind the record, %.2f of the "
+       "audit's own sampling standard deviation"
+       % (g["raw_total"], g["pack"]["truth"],
+          abs(g["raw_total"] - g["pack"]["truth"]) / boot["sd_rg"]))
     ok("noise.weekly_cycle_present", dispersion(list(daily.values())) > 1.2,
        "unconditional dispersion %.3f" % dispersion(list(daily.values())))
     conf_daily = {}
@@ -447,11 +480,8 @@ def run(target, g=None):
     def _route_triple(pick):
         out = []
         for route, _ in W.ROUTES:
-            seen, kept = set(), 0
-            for r in b["reports"]:
-                if r["route"] != route or r["ident"] in seen:
-                    continue
-                seen.add(r["ident"])
+            kept = 0
+            for r in G.once_per_report(b["reports"], route):
                 if pick(r):
                     kept += 1
             kept += sum(1 for e in b["exceptions"] if e["route"] == route and pick(e))
@@ -501,6 +531,79 @@ def run(target, g=None):
            == _gold,
            "every receipt stamp moved %+dh still gives %s" % (_h, str(_gold)))
 
+    # SF27, the rows the desk could not code. They carry no manual code, so they are no comparison
+    # and no cell holds them; read instead as ordinary codings the call does not move.
+    _blank = [r for r in b["sample"] if not r["codigo_manual"]]
+    _tp = _fn = _fp = _tn = 0
+    for r in b["sample"]:
+        m, h = r["codigo_monitor"] in G.CONF, r["codigo_manual"] in G.CONF
+        if h and m:
+            _tp += 1
+        elif h:
+            _fn += 1
+        elif m:
+            _fp += 1
+        else:
+            _tn += 1
+    _alt_raw = base["H"] + G.rogan_gladen(base["N"], base["O"], (_tp, _fn, _fp, _tn))[0]
+    ok("SF27.uncodable_present", len(_blank) > 0, "%d rows carry no manual code" % len(_blank))
+    ok("SF27.uncodable_filed", "nao conseguiu codificar" in conv_all,
+       "the dictionary says what an empty codigo_manual means")
+    ok("SF27.uncodable_same_call", G.grain(_alt_raw) == gold_cell
+       and min(abs(_alt_raw - (gold_cell - half)), abs((gold_cell + half) - _alt_raw)) >= 12.0,
+       "reading the %d uncoded rows as ordinary gives %.2f against %.2f, the same cell"
+       % (len(_blank), _alt_raw, g["raw_total"]))
+
+    # SF28, the reposted August load. The portal stamped its rows on the day the load arrived, so a
+    # report delivered twice has two stamps and the dictionary says the delivery moment is the
+    # first load's; the other reading moves the partner route's median.
+    _par_rows = rows_of(target, "relatos_rede_parceiros.csv")
+    _loads = {r["id_carga"]: r for r in rows_of(target, "registo_importacoes.csv")}
+    _second = [r for r in _par_rows if r["id_carga"] == "C20260802"]
+    ok("SF28.repost_rows_present", len(_second) > 100, "%d rows in the second load" % len(_second))
+    ok("SF28.repost_stamped_on_arrival",
+       all(r["carimbo_entrega_utc"][:10] == _loads["C20260802"]["concluida_em"] for r in _second)
+       and all(r["data_ocorrencia"][:7] == "2026-08" for r in _second),
+       "every row of the second load carries the day the import log gives it, %s"
+       % _loads["C20260802"]["concluida_em"])
+    ok("SF28.repost_first_load_filed", "primeira carga que o trouxe" in conv_all,
+       "the dictionary fixes which of a reposted report's two stamps is its delivery")
+    _last = {}
+    for r in b["reports"]:
+        if r["route"] == "PAR" and (r["ident"] not in _last
+                                    or r["recv_utc"] > _last[r["ident"]]["recv_utc"]):
+            _last[r["ident"]] = r
+    _lags = sorted(r["lag"] for r in _last.values()
+                   if r["lag"] is not None and W.PERIOD_FROM <= r["recv"].date() <= W.PERIOD_TO)
+    _k = len(_lags) // 2
+    _last_med = _lags[_k] if len(_lags) % 2 else (_lags[_k - 1] + _lags[_k]) / 2.0
+    ok("SF28.repost_reading_bites", abs(_last_med - g["a2"]["PAR"]["median_minutes"]) > 5,
+       "the last load's stamps give a median of %.1f against the first load's %.1f"
+       % (_last_med, g["a2"]["PAR"]["median_minutes"]))
+
+    # every graded figure's distance to the edge of the value it prints, in units of its own
+    # rounding: the count to the nearest fifty, the counts as whole numbers, the medians in tenths
+    # of a minute and the euro totals to the euro
+    _graded = [("the confrontational count", g["raw_total"], 50.0)]
+    for label, v in sorted(g["a1"].items()):
+        _graded += [("%s actions" % label, float(v["actions"]), 1.0),
+                    ("%s municipalities" % label, float(v["municipalities"]), 1.0),
+                    ("%s partner actions" % label, float(v["partner_actions"]), 1.0)]
+    for route, v in sorted(g["a2"].items()):
+        _graded += [("%s received" % route, float(v["received"]), 1.0),
+                    ("%s unplaced" % route, float(v["unplaceable"]), 1.0),
+                    ("%s median" % route, v["median_minutes"], 0.1)]
+    for code, v in sorted(g["a3"].items()):
+        _graded += [("%s filed" % code, float(v["filed"]), 1.0),
+                    ("%s after the close" % code, float(v["after_close"]), 1.0),
+                    ("%s euros" % code, v["raw_euros"], 1.0)]
+    _edges = [(unit / 2.0 - abs(val - round(val / unit) * unit), name, val, unit)
+              for name, val, unit in _graded]
+    _tight = min(_edges)
+    ok("bin.graded_unit_edge", _tight[0] >= 0.15 * _tight[3],
+       "%d graded figures, the tightest is %s at %.4f, %.3f of its rounding unit from the edge"
+       % (len(_graded), _tight[1], _tight[2], _tight[0] / _tight[3]))
+
     # ---------------------------------------------------------------- realism
     by_fn = [v["actions"] for v in g["a1"].values()]
     ok("real.no_identical_periods", max(by_fn.count(x) for x in by_fn) <= 2, str(by_fn))
@@ -526,6 +629,74 @@ def run(target, g=None):
     ok("real.adjudication_decided",
        {r["decisao_da_mesa"] for r in b["sample"] if r["revisto_por"]} == {"mantido", "alterado"})
     ok("real.notes_present", 10 <= sum(1 for r in b["sample"] if r["nota"]) <= 90)
+    # the desk's lot is as big as the days it had, not a share of the window, and the rounds differ
+    _pool, _lot = {}, {}
+    for _nm, _close, _fa, _fb, _op in W.SAMPLE_ROUNDS:
+        _pool[_nm] = sum(1 for r in b["reports"]
+                         if r["route"] == "IMP" and _fa <= r["day"] <= _fb)
+        _lot[_nm] = sum(1 for r in b["sample"] if r["ronda"] == _nm)
+    _share = dict((k, _lot[k] / float(_pool[k])) for k in _lot)
+    for _nm, _sh in sorted(_share.items()):
+        ok("real.round_share_uneven.%s" % _nm, abs(_sh - 0.50) >= 0.02,
+           "%s took %d of the %d reports its window holds, %.4f" % (_nm, _lot[_nm], _pool[_nm], _sh))
+    ok("real.round_shares_differ",
+       abs(_share["R1"] - _share["R2"]) >= 0.04, str({k: round(v, 4) for k, v in _share.items()}))
+    ok("real.lot_not_a_round_number", len(b["sample"]) % 10 != 0, str(len(b["sample"])))
+    _ids = [r["id_relato"] for r in b["sample"]]
+    _asc = sum(1 for i in range(len(_ids) - 1) if _ids[i] < _ids[i + 1]) / float(len(_ids) - 1)
+    ok("real.written_order_not_the_identifier", 0.30 <= _asc <= 0.70,
+       "%.3f of consecutive rows run up the identifier" % _asc)
+    _load = {}
+    for r in b["sample"]:
+        _load[r["data_codificacao"]] = _load.get(r["data_codificacao"], 0) + 1
+    _vals = sorted(_load.values())
+    ok("real.coding_in_same_day_blocks",
+       _vals[-1] >= 3 * _vals[0] and len(set(_vals)) >= 12
+       and max(_vals.count(v) for v in _vals) <= 6,
+       "%d coding days, loads %d to %d, %d distinct" % (len(_vals), _vals[0], _vals[-1],
+                                                        len(set(_vals))))
+    ok("real.notes_only_where_due",
+       all(r["revisto_por"] or not r["codigo_manual"] for r in b["sample"] if r["nota"]),
+       "every note sits on a row a second coder read or a row nobody could code")
+    _notes = [r["nota"] for r in b["sample"] if r["nota"]]
+    ok("real.notes_are_not_stock",
+       len(set(_notes)) >= 20 and max(_notes.count(x) for x in set(_notes)) <= 5,
+       "%d notes, %d of them distinct" % (len(_notes), len(set(_notes))))
+    _alt = [r for r in b["sample"] if r["decisao_da_mesa"] == "alterado"]
+    ok("real.changed_decision_changes_the_code",
+       len(_alt) >= 8
+       and sum(1 for r in _alt if r["codigo_manual"] != r["codigo_monitor"]) >= 0.6 * len(_alt),
+       "%d of %d changed decisions end on a code the classifier did not give"
+       % (sum(1 for r in _alt if r["codigo_manual"] != r["codigo_monitor"]), len(_alt)))
+    _ag = {}
+    for _c, _, _, _ in W.CODERS:
+        _mine = [r for r in b["sample"] if r["codificador"] == _c and r["codigo_manual"]]
+        _ag[_c] = sum(1 for r in _mine if r["codigo_manual"] == r["codigo_monitor"]) / float(len(_mine))
+    ok("real.coder_agreement_differs", max(_ag.values()) - min(_ag.values()) >= 0.06,
+       str({k: round(v, 3) for k, v in _ag.items()}))
+    _unc = [r for r in b["sample"] if not r["codigo_manual"]]
+    ok("real.uncodable_rows_present", 3 <= len(_unc) <= 25,
+       "%d of %d rows carry no manual code" % (len(_unc), len(b["sample"])))
+    ok("real.uncodable_rows_explained",
+       all(r["nota"] and not r["revisto_por"] and not r["decisao_da_mesa"] for r in _unc),
+       "every row with no manual code says why and went to no second coder")
+    # the desk opened each lot when the previous round closed, so no stretch of the period is unworked
+    _cal = sorted({dt.date.fromisoformat(r["data_codificacao"]) for r in b["sample"]})
+    _gaps = [(_cal[i + 1] - _cal[i]).days for i in range(len(_cal) - 1)]
+    ok("real.coding_calendar_has_no_hole", max(_gaps) <= 12,
+       "the longest stretch with no coding is %d days, from %s"
+       % (max(_gaps), _cal[_gaps.index(max(_gaps))].isoformat()))
+    ok("real.coding_covers_every_month", {d.month for d in _cal} == {5, 6, 7, 8, 9},
+       str(sorted({d.month for d in _cal})))
+    for _i in range(1, len(W.SAMPLE_ROUNDS)):
+        _prev_close = W.SAMPLE_ROUNDS[_i - 1][1]
+        _first = min(dt.date.fromisoformat(r["data_codificacao"]) for r in b["sample"]
+                     if r["ronda"] == W.SAMPLE_ROUNDS[_i][0])
+        ok("real.round_opens_on_the_previous_close.%s" % W.SAMPLE_ROUNDS[_i][0],
+           (_first - _prev_close).days <= 5,
+           "%s starts coding on %s, %d days after %s closed"
+           % (W.SAMPLE_ROUNDS[_i][0], _first.isoformat(), (_first - _prev_close).days,
+              W.SAMPLE_ROUNDS[_i - 1][0]))
     ok("real.coding_after_action",
        all(r["data_codificacao"] > r["data_ocorrencia"] for r in b["sample"]))
     ok("real.coding_before_extract",
@@ -540,6 +711,59 @@ def run(target, g=None):
        "%.3f on multiples of five" % (sum(1 for m in mins if m % 5 == 0) / float(len(mins))))
     hours = {int(r["inicio_acao"][11:13]) for r in items if r["inicio_acao"]}
     ok("real.midday_present", {12, 13} <= hours, str(sorted(hours)))
+    # each route sees its own hours of the day
+    _hrs = {}
+    for route, _ in W.ROUTES:
+        _hrs[route] = [r["start"].hour for r in b["reports"] if r["route"] == route]
+    _mean = dict((k, statistics.mean(v)) for k, v in _hrs.items())
+    for _a, _b2 in (("IMP", "PAR"), ("IMP", "LIN"), ("PAR", "LIN")):
+        ok("real.route_clocks_differ.%s_%s" % (_a, _b2), abs(_mean[_a] - _mean[_b2]) >= 1.0,
+           "%s %.2f against %s %.2f" % (_a, _mean[_a], _b2, _mean[_b2]))
+    ok("real.route_clock_ranges_differ",
+       min(_hrs["LIN"]) < min(_hrs["IMP"]) <= min(_hrs["PAR"])
+       and max(_hrs["LIN"]) > max(_hrs["IMP"]) >= max(_hrs["PAR"]),
+       str({k: (min(v), max(v)) for k, v in sorted(_hrs.items())}))
+    # the minute an action is reported to start: a quarter-hour mode, not a quarter-hour lattice
+    _mc = dict((m, mins.count(m)) for m in set(mins))
+    _quarter = sum(_mc.get(m, 0) for m in (0, 15, 30, 45)) / float(len(mins))
+    _off5 = sum(n for m, n in _mc.items() if m % 5) / float(len(mins))
+    ok("real.minute_mode_is_the_quarter_hour",
+       max(_mc, key=lambda m: _mc[m]) in (0, 15, 30, 45) and 0.30 <= _quarter <= 0.55,
+       "%.3f of start minutes are on a quarter hour" % _quarter)
+    ok("real.minute_lattice_broken", len(_mc) == 60 and _off5 >= 0.12,
+       "%d of the 60 minute values appear and %.3f of starts are off a multiple of five"
+       % (len(_mc), _off5))
+    # the autumn's volume brings its own geography with it
+    _permonth = {}
+    for a in acts:
+        if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO:
+            _permonth.setdefault(a["day"].month, set()).add(a["muni"])
+    _pre = max(len(_permonth[m]) for m in (5, 6, 7, 8))
+    _post = min(len(_permonth[m]) for m in (9, 10))
+    _total_muni = len({r["codigo_municipio"] for r in rows_of(target, "gazeteiro_localidades.csv")})
+    ok("real.geography_moves_with_the_volume", _post - _pre >= 8,
+       "the busiest month before the surge touches %d municipalities and the quieter of the two "
+       "after it touches %d, of %d in the gazetteer" % (_pre, _post, _total_muni))
+    ok("real.register_does_not_start_saturated", _pre <= _total_muni - 7,
+       "%d of %d municipalities in the busiest month before the surge" % (_pre, _total_muni))
+    _first = {}
+    for a in sorted(acts, key=lambda x: x["day"]):
+        _first.setdefault(a["muni"], a["day"])
+    _new = [m for m, d0 in _first.items() if d0 >= W.SURGE_FROM]
+    ok("real.surge_reaches_new_ground", len(_new) >= 8,
+       "%d municipalities have no action in the register before 5 September" % len(_new))
+    _shr = {}
+    for label, lo, hi2 in (("pre", W.PERIOD_FROM, W.SURGE_FROM - dt.timedelta(days=1)),
+                           ("post", W.SURGE_FROM, W.PERIOD_TO)):
+        tot = [a for a in acts if lo <= a["day"] <= hi2]
+        _shr[label] = {}
+        for a in tot:
+            _shr[label][a["district"]] = _shr[label].get(a["district"], 0) + 1.0 / len(tot)
+    _doubled = [d0 for d0 in _shr["post"]
+                if _shr["pre"].get(d0, 0) > 0 and _shr["post"][d0] >= 2.0 * _shr["pre"][d0]]
+    ok("real.surge_concentrates_in_districts", len(_doubled) >= 2,
+       "%d districts at least double their share of the register's actions: %s"
+       % (len(_doubled), str(sorted(_doubled))))
     weekday, weekend = [], []
     for day, n in daily.items():
         (weekend if day.weekday() >= 5 else weekday).append(n)

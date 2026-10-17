@@ -84,7 +84,11 @@ def cut(target, golden_dir):
     PK.write_programme_register(target)
     cwpath, cross = PK.write_crosswalk(target, rows + prows)
 
-    # the tested lines, as the schedule records them
+    # the tested lines, as the schedule records them. The paper records the date of the run that
+    # paid each line, which is the run's own date: a run released after midnight carries the
+    # previous day's run date, and the ledger carries the date the run released the line.
+    # the run log first, because the working paper takes each line's date from the run's release
+    run_truth = A.run_log(target, shipped, runs)
     byidx = {r["idx"]: r for r in rows}
     tested = []
     for i, m in hits:
@@ -92,6 +96,7 @@ def cut(target, golden_dir):
         payable = round(r["amount"] * (1.0 - r["taint"]), 2)
         tested.append(dict(r, payable=payable,
                            schedule_ref="%s/%s" % (cross[r["sup"]], r["line"]),
+                           paper_day=run_truth[r["run"]][0],
                            finding=_finding(r)))
     # one line was queried and re-tested, so the schedule carries it twice. It carries no
     # exception, so counting it twice changes no figure the report states.
@@ -99,9 +104,16 @@ def cut(target, golden_dir):
     clean.sort(key=lambda t: t["schedule_ref"])
     again = dict(clean[len(clean) // 2], finding="re-tested after query, no exception")
     tested.append(again)
-    tested.sort(key=lambda t: (t["day"], t["schedule_ref"], t["finding"]))
+    # The schedule is internal audit's working paper for the year, not for one population: plan
+    # 4.1 tests three populations and 4.4 is revenue expenditure, whose sample sits on the same
+    # paper under its own cost centres and its own ledger. Those rows are not capital programme
+    # payment lines, are in no capital extract, and no figure the capital conclusion states
+    # touches them.
+    revenue = PK.revenue_sample(cross)
+    paper = tested + revenue
+    paper.sort(key=lambda t: (t["day"], t["schedule_ref"], t["finding"]))
     cert_n = len([x for x in lines if x[1] >= W.INTERVAL])
-    docs.schedule(target, tested, nsel=nsel, ntested=len(set(i for i, _ in hits)),
+    docs.schedule(target, paper, nsel=nsel, ntested=len(set(i for i, _ in hits)),
                   ncert=cert_n)
     # the two-year extract the schedule was pulled from
     ptested = []
@@ -111,14 +123,14 @@ def cut(target, golden_dir):
         ptested.append(dict(r, payable=round(r["amount"] * (1.0 - r["taint"]), 2),
                             schedule_ref="%s/%s" % (cross[r["sup"]], r["line"])))
     ext = []
-    for t in sorted(ptested + tested, key=lambda t: (t["day"], t["schedule_ref"])):
-        ext.append([t["day"].isoformat()[:4], t["schedule_ref"], t["code"],
-                    t["day"].isoformat(), "%.2f" % t["amount"], "%.2f" % t["payable"]])
+    for t in sorted(ptested + paper, key=lambda t: (t["day"], t["schedule_ref"])):
+        d = t.get("paper_day", t["day"])
+        ext.append([d.isoformat()[:4], t["schedule_ref"], t["code"],
+                    d.isoformat(), "%.2f" % t["amount"], "%.2f" % t["payable"]])
     PK.write_csv(target, "testing_schedule_extract_2025_2026.csv",
-                 ["testing_year", "schedule_ref", "programme_code", "paid_date",
+                 ["testing_year", "schedule_ref", "programme_code", "date_released",
                   "amount_recorded", "amount_properly_payable"], ext)
 
-    run_truth = A.run_log(target, shipped, runs)
     A.cutoff_register(target)
     events, ncorr = A.risk_history(target, cross)
     cats = {}
@@ -159,7 +171,9 @@ def cut(target, golden_dir):
     g["a2"] = A.a2_golden(events)
     g["a2_all"] = A.a2_golden(events, "all")
     g["a2_events"] = A.a2_golden(events, "events")
-    g["a3"] = A.a3_golden(tested, [r for r in shipped if r["delivery"] == 1])
+    g["a3"] = A.a3_golden(paper, [r for r in shipped if r["delivery"] == 1])
+    g["paper"] = paper
+    g["revenue"] = revenue
     g["lines"] = lines
     g["hits"] = hits
     g["shipped"] = shipped

@@ -7,10 +7,12 @@ design failure, never something to patch in the data.
 import csv
 import datetime as dt
 import json
+import math
 import os
 from collections import Counter, defaultdict
 
 import golden as G
+import sim
 import world as W
 
 N = 0
@@ -51,7 +53,6 @@ def run(target, g, state):
     panel = b["panel"]
     units = g["units"]
     by = {d["unit"]: d for d in units}
-    share = g["share"]
     answer, runner = g["answer"], g["runner"]
 
     import pypdf
@@ -92,368 +93,190 @@ def run(target, g, state):
            and p["episodes"] == int(r["in_scope_episodes"]),
            "R1 the series is the extract's own rollup (%s %s)" % (r["unit_code"], r["quarter"]))
 
-    # ---------- the ladder ----------
-    ok(answer["unit"] == "41230", "the answer is 41230, %s" % answer["unit"])
-    ok(round(answer["avoided"]) == 21, "the answer avoids 21, got %.3f" % answer["avoided"])
-    ok(runner["unit"] == "41220" and round(runner["avoided"]) == 13, "the closest unit is 41220 at 13")
-    ok(g["margin"] >= 1.2, "final margin %.3fx is at least 1.2x" % g["margin"])
-    ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 22,
-       "rung 0 files 41210 at 22 avoided")
-    ok(g["rung1"]["unit"] == "41330", "rung 1 files 41330")
-    ok(g["rung2"]["unit"] == "41220", "rung 2 files 41220")
-    for label, key in (("rung 0", lambda d: share * d["last_excess"]), ("rung 1", lambda d: d["ratio"]),
-                       ("rung 2", lambda d: d["expected_next"])):
-        order = sorted(units, key=lambda d: -key(d))
-        pos = [d["unit"] for d in order].index(answer["unit"]) + 1
-        ok(pos >= 2, "the answer is not first on %s (position %d)" % (label, pos))
-        if pos == 2:
-            ok(key(order[0]) / key(order[1]) >= 1.20,
-               "%s leads the answer by %.3fx" % (label, key(order[0]) / key(order[1])))
-    pos0 = [d["unit"] for d in sorted(units, key=lambda d: -share * d["last_excess"])].index("41230") + 1
-    ok(pos0 in (4, 5), "the answer is 4th or 5th on rung 0 (%d)" % pos0)
-    for label, key in (("rung 0", lambda d: share * d["last_excess"]), ("rung 1", lambda d: d["ratio"]),
-                       ("rung 2", lambda d: d["expected_next"]), ("rung 3", lambda d: d["avoided"])):
-        order = sorted(units, key=lambda d: -key(d))
-        ok(key(order[0]) / key(order[1]) >= 1.15 or label == "rung 1",
-           "%s margin %.3fx" % (label, key(order[0]) / key(order[1])))
-    # dominance: the decisive axis against the rung-0 unit's carried advantage
-    edge = answer["excess"] / g["rung0"]["excess"]
-    carried = g["rung0"]["last_excess"] / answer["last_excess"]
-    ok(edge >= 1.2 * carried, "dominance %.2fx against 1.2 x %.2fx" % (edge, carried))
-    # every ranking a careful analyst would try, with its own margin, and what the golden quantity is at
-    # the unit it names: only the golden's own family names the answer
-    import statistics as st
+    # ---------- the ladder: three rungs, each named on the record ----------
+    rts = g["routes"]
+    r0 = rts["R0 the published excess, carried onto the planned separations"]
+    r3 = rts["R10 the avoidable count as a rate per 1,000 separations, not as a count"]
+    r4 = rts["R12 the avoidable count over the window, carried onto the planned separations"]
+    ok(r0["first"] != answer["unit"], "rung 0 names another unit (%s)" % r0["first"])
+    ok(r3["first"] != answer["unit"], "rung 3 names another unit (%s)" % r3["first"])
+    ok(r4["first"] == answer["unit"], "rung 4 names the answer (%s)" % r4["first"])
+    ok(len({r0["first"], r3["first"], r4["first"]}) == 3, "the three rungs name three different units")
+    for lab, rung, floor in (("0", r0, 1.15), ("3", r3, 1.15), ("4", r4, 1.5)):
+        ok(rung["margin"] >= floor, "rung %s margin %.3fx at or above %.2fx" % (lab, rung["margin"], floor))
+    ok(r4["margin"] <= 2.0, "the final margin %.3fx is inside the 1.5 to 2x band" % r4["margin"])
+    ok(g["published_rank"] in (4, 5), "the answer sits %d of %d on rung 0's ranking"
+       % (g["published_rank"], len(units)))
+    second_on = [k for k, v in rts.items() if v["second"] == answer["unit"] and v["first"] != answer["unit"]]
+    ok(len(second_on) <= 2, "the answer is second on at most two routes (%d)" % len(second_on))
+    # dominance: the answer's edge on the decisive axis over the easy route's unit beats the runner's
+    base = by[r0["first"]]["avoidable"]
+    ok(answer["avoidable"] - base >= 1.2 * (runner["avoidable"] - base),
+       "the answer's edge over the easy route's unit dominates the runner's (%.1f against %.1f)"
+       % (answer["avoidable"] - base, runner["avoidable"] - base))
 
-    def shrink(values, variances, mu):
-        tau2 = max(1e-9, st.pvariance(values) - sum(variances) / len(variances))
-        return {d["unit"]: mu + (tau2 / (tau2 + v)) * (y - mu)
-                for d, y, v in zip(units, values, variances)}
-
-    last_q = sorted({q for (u, q) in panel})[-1]
-    net_last = (sum(panel[(d["unit"], last_q)]["observed"] for d in units)
-                / sum(panel[(d["unit"], last_q)]["expected"] for d in units))
-    net_all = sum(d["observed"] for d in units) / sum(d["expected"] for d in units)
-    sh_last = shrink([d["last_ratio"] for d in units],
-                     [d["last_ratio"] / panel[(d["unit"], last_q)]["expected"] for d in units], net_last)
-    sh_all = shrink([d["ratio"] for d in units], [d["ratio"] / d["expected"] for d in units], net_all)
-
-    def window_ratio(code, w):
-        qs = G.quarters(panel, code)[-w:]
-        return pooled(panel, code, qs)
-
-    rankings = [
-        ("the latest quarter's risk-adjusted rate", lambda d: d["last_ratio"], "41410"),
-        ("the latest quarter's crude rate",
-         lambda d: panel[(d["unit"], last_q)]["observed"] / panel[(d["unit"], last_q)]["episodes"], "41330"),
-        ("the latest quarter's excess complications", lambda d: d["last_excess"], "41210"),
-        ("the risk-adjusted rate over the specification period", lambda d: d["ratio"], "41330"),
-        ("the crude rate over the specification period",
-         lambda d: d["observed"] / sum(panel[(d["unit"], q)]["episodes"]
-                                       for q in G.quarters(panel, d["unit"])), "41330"),
-        ("the trailing four-quarter rate", lambda d: window_ratio(d["unit"], 4), "41330"),
-        ("the trailing eight-quarter rate", lambda d: window_ratio(d["unit"], 8), "41330"),
-        ("a reliability-adjusted latest quarter", lambda d: sh_last[d["unit"]], "41410"),
-        ("a reliability-adjusted standing", lambda d: sh_all[d["unit"]], "41330"),
-        ("the complications the quarter carries at the standing", lambda d: d["expected_next"], "41220"),
-        ("the register's share on the latest quarter's excess",
-         lambda d: share * d["last_excess"], "41210"),
-        ("the golden's ranking", lambda d: d["excess"], "41230"),
-        ("the golden on a four-quarter standing",
-         lambda d: (window_ratio(d["unit"], 4) - 1) * d["expected_plan"], "41230"),
-        ("the golden on an eight-quarter standing",
-         lambda d: (window_ratio(d["unit"], 8) - 1) * d["expected_plan"], "41230"),
-        ("the golden on recent activity instead of the plan",
-         lambda d: (d["ratio"] - 1) * d["expected"] / d["quarters"], "41230"),
-    ]
-    for label, key, expected_unit in rankings:
-        order = sorted(units, key=lambda d: -key(d))
-        ok(order[0]["unit"] == expected_unit,
-           "the ranking on %s names %s (got %s)" % (label, expected_unit, order[0]["unit"]))
-        if expected_unit != answer["unit"]:
-            ok(order[0]["avoided"] < 0.70 * answer["avoided"],
-               "the unit %s names avoids %.2f against %.2f at the answer"
-               % (label, order[0]["avoided"], answer["avoided"]))
-        else:
-            ok(key(order[0]) / key(order[1]) >= 1.30,
-               "%s holds the answer by %.3fx" % (label, key(order[0]) / key(order[1])))
-
-    # every reflex lands on a unit the golden does not name
-    reflex = {
-        "adjusted rate now": max(units, key=lambda d: d["last_ratio"])["unit"],
-        "most complications last quarter": max(units, key=lambda d: d["last_observed"])["unit"],
-        "biggest planned volume": max(units, key=lambda d: d["plan"])["unit"],
-        "expected complications next quarter": g["rung2"]["unit"],
-        "worst standing": g["rung1"]["unit"],
-    }
-    for name, unit in reflex.items():
-        ok(unit != answer["unit"], "the %s reflex does not name the answer (%s)" % (name, unit))
+    # the lead, in complications, as a ratio, and against the record's own sampling error
+    ok(abs(g["gap"] - (answer["avoidable"] - runner["avoidable"])) < 1e-9,
+       "the gap is the two counts' difference")
+    ok(1.5 <= g["margin"] <= 2.0, "the margin %.3fx is in band" % g["margin"])
+    ok(g["se_lead"] >= 2.0, "the lead is %.2f standard errors of the gap" % g["se_lead"])
+    ok(g["se_lead"] > 1.0, "the top two are not inside a standard error of each other")
+    for d in units:
+        ok(abs(d["se"] - math.sqrt(d["observed"]) * d["plan"] / d["separations"]) < 1e-9,
+           "each unit's standard error is sqrt(observed) carried like its count (%s)" % d["unit"])
+    ok(sum(1 for d in units if d["avoidable"] / d["se"] > 2.5) == 3,
+       "three candidates stand above 2.5 of their own standard error")
+    ok(sum(1 for d in units if d["avoidable"] < 0) >= 3,
+       "the record carries units on both sides of zero (%d negative)"
+       % sum(1 for d in units if d["avoidable"] < 0))
 
     # ---------- R3a the analyst test, on the clean truth ----------
-    # the easy route: take the standing the charter files, then price the programme off the register the
-    # way a quality team states it, as the drop in the standardised ratio a placement produced
-    _, models = G.effect_models(b)
-    drop = models["a constant drop in the standardised ratio"]["parameter"]
-    percent = models["a constant percent of the counterfactual"]["parameter"]
-    easy = max(units, key=lambda d: drop * d["expected_plan"])
-    ok(easy["unit"] == "41220", "R3a pricing the register as a drop in the standardised ratio files "
-       "41220 (%s)" % easy["unit"])
-    ok(round(drop * easy["expected_plan"]) == 53,
-       "R3a the easy route files 53 complications avoided at 41220 (%.2f)"
-       % (drop * easy["expected_plan"]))
-    ok(round(drop * answer["expected_plan"]) < round(drop * easy["expected_plan"]),
-       "R3a the easy route puts the golden below its own answer")
-    easy2 = max(units, key=lambda d: percent * d["ratio"] * d["expected_plan"])
-    ok(easy2["unit"] == "41220", "R3a pricing it as a percent of the counterfactual also files 41220 (%s)"
-       % easy2["unit"])
-    flat = sum(r["carried"] - r["realised"] for r in G.placement_record(b)) / 8.0
-    ok(abs(flat - 38.0) < 7.0, "R3a a flat complications-per-placement reading is %.1f and ranks nothing"
-       % flat)
-    quarter = max(units, key=lambda d: d["last_excess"])
-    ok(quarter["unit"] == "41210" and round(share * quarter["last_excess"]) == 22,
-       "R3a a lower route, the quarter in hand, files 41210 at 22 avoided")
-    ok(round(by["41210"]["avoided"]) == 3, "R3a that unit would avoid 3")
-    # R3b the decisive step alone: the shape of the fall, with everything else held
-    switched = max(units, key=lambda d: share * d["excess"])
-    ok(switched["unit"] == answer["unit"], "R3b changing only the shape of the fall files the golden")
-    # the record separates the shapes the fall could take, on its own sampling error
-    _, models = G.effect_models(b)
-    mine = "a share of the unit's standing excess"
-    ok(abs(models[mine]["parameter"] / share - 1) < 0.01,
-       "the register's variance-weighted fit is the pooled share to within 1 per cent "
-       "(%.5f against %.5f)" % (models[mine]["parameter"], share))
-    ok(2.0 <= models[mine]["chi_square"] <= 13.0,
-       "the shape the register carries leaves an ordinary chi-square (%.2f on %d degrees of freedom)"
-       % (models[mine]["chi_square"], models[mine]["df"]))
-    for label, m in models.items():
-        if label == mine:
-            continue
-        ok(m["chi_square"] - models[mine]["chi_square"] > 12.0,
-           "%s is %.1f chi-square worse than the register's own fit"
-           % (label, m["chi_square"] - models[mine]["chi_square"]))
-        ok(m["likelihood_ratio"] > 200.0,
-           "the register prefers its own shape over %s by %.4g to 1" % (label, m["likelihood_ratio"]))
-    spread = [r["before"] for r in G.placement_record(b)]
-    ok(max(spread) - min(spread) > 0.7,
-       "the closed placements' standing spreads %.2f, which is what separates the shapes"
-       % (max(spread) - min(spread)))
-    ok(min(abs(r["carried"]) for r in G.placement_record(b)) > 12.0,
-       "every closed placement carries a standing excess a share can be formed on (smallest %.1f), so no "
-       "route through the register is refused because it cannot be computed"
-       % min(abs(r["carried"]) for r in G.placement_record(b)))
-    sh_all = [(r["carried"] - r["realised"]) / r["carried"] for r in G.placement_record(b)]
-    ok(max(sh_all) - min(sh_all) > 0.9,
-       "the placements' own shares spread %.2f to %.2f, so averaging them is not the same as fitting them"
-       % (min(sh_all), max(sh_all)))
-    ok(max(sh_all) > 1.0 and min(sh_all) < 0.10,
-       "one placement took off more than the standing excess it was carrying and one took off almost "
-       "none of it (%.3f and %.3f)" % (max(sh_all), min(sh_all)))
-    resid = [(r["carried"] - r["realised"] - share * r["carried"]) / max(1.0, r["counterfactual"]) ** 0.5
-             for r in G.placement_record(b)]
-    ok(max(abs(x) for x in resid) > 0.75,
-       "the register scatters like counts of complications (worst standardised residual %.2f)"
-       % max(abs(x) for x in resid))
-    # R3c no plant
-    pairs = defaultdict(int)
-    for (u, q), p in panel.items():
-        pairs[(p["observed"], round(p["expected"], 1))] += 1
-    ok(max(pairs.values()) <= 2, "R3c no block of unit-quarters repeats (max %d)" % max(pairs.values()))
-    ok(not any(c in head.lower() for c in ("is_correct", "should_exclude", "flag_true", "seed")),
-       "R3c no answer key column")
+    # a strong analyst who reads every rule correctly and reconciles to the published series row for row
+    # still ranks on the published expectation and files another unit
+    easy = max(units, key=lambda d: d["published_excess"])
+    ok(easy["unit"] != answer["unit"], "R3a the easy route files another unit (%s)" % easy["unit"])
+    ok(easy["avoidable"] < 0,
+       "R3a the unit the easy route files carries a negative avoidable count (%.1f)" % easy["avoidable"])
+    ok(answer["published_excess"] > 0,
+       "R3a the answer is not invisible on the published basis, only fourth (%.1f)"
+       % answer["published_excess"])
+    ok(abs(answer["ratio"] - answer["observed"] / answer["expected"]) < 1e-12
+       and abs(easy["ratio"] - easy["observed"] / easy["expected"]) < 1e-12,
+       "R3a both routes read the published rates correctly")
 
-    # ---------- the counterfactual's structure: why the quarter in hand is not the standing ----------
-    devs = []
-    for d in units:
-        qs = G.quarters(panel, d["unit"])
-        r = d["ratio"]
-        devs.append([panel[(d["unit"], q)]["observed"] / panel[(d["unit"], q)]["expected"] - r for q in qs])
-    flat = [x for seq in devs for x in seq]
-    within = (sum(x * x for x in flat) / len(flat)) ** 0.5
-    between = (sum((d["ratio"] - sum(e["ratio"] for e in units) / len(units)) ** 2 for d in units)
-               / len(units)) ** 0.5
-    ok(within > 1.4 * between, "a unit's quarter swings more than the units differ (%.3f against %.3f)"
-       % (within, between))
-    a = [seq[i] for seq in devs for i in range(len(seq) - 1)]
-    c = [seq[i + 1] for seq in devs for i in range(len(seq) - 1)]
-    mean_a, mean_c = sum(a) / len(a), sum(c) / len(c)
-    cov = sum((x - mean_a) * (y - mean_c) for x, y in zip(a, c)) / len(a)
-    sa = (sum((x - mean_a) ** 2 for x in a) / len(a)) ** 0.5
-    sc = (sum((y - mean_c) ** 2 for y in c) / len(c)) ** 0.5
-    rho = cov / (sa * sc)
-    ok(abs(rho) < 0.16, "the deviations carry no serial correlation (%.3f on %d pairs)" % (rho, len(a)))
+    # ---------- R3b the decisive step alone moves the call ----------
+    ok(sorted(units, key=lambda d: -d["published_excess"])[0]["unit"] == easy["unit"]
+       and sorted(units, key=lambda d: -d["avoidable"])[0]["unit"] == answer["unit"],
+       "R3b the comparison frequency alone decides between the two rankings")
 
-    # ---------- window and estimator robustness (SF9, SF7, SF13) ----------
-    for w in (4, 6, 8, 10):
-        vals = {}
-        for d in units:
-            qs = G.quarters(panel, d["unit"])[-w:]
-            vals[d["unit"]] = (pooled(panel, d["unit"], qs) - 1) * d["expected_plan"]
-        winner = max(vals, key=vals.get)
-        ok(winner == answer["unit"], "SF9 the call holds on a %d quarter window (%s)" % (w, winner))
-    # the mean of quarterly ratios instead of the pooled ratio
-    mean_ratio = {}
-    for d in units:
-        qs = G.quarters(panel, d["unit"])
-        rr = [panel[(d["unit"], q)]["observed"] / panel[(d["unit"], q)]["expected"] for q in qs]
-        mean_ratio[d["unit"]] = sum(rr) / len(rr)
-    ok(max(mean_ratio, key=mean_ratio.get) != answer["unit"] or True, "SF13 mean of ratios computed")
-    # SF13 a mean of quarterly ratios is not the standardised ratio clause 3.2 defines over a period, and
-    # the specification reports the period, not an average of quarters; it keeps the call either way
-    alt_ex = {d["unit"]: (mean_ratio[d["unit"]] - 1) * d["expected_plan"] for d in units}
-    ok(max(alt_ex, key=alt_ex.get) == answer["unit"],
-       "SF13 a mean of quarterly ratios keeps the call (%s)" % max(alt_ex, key=alt_ex.get))
-    ok("observed complications divided by its expected complications" in spec,
-       "SF13 clause 3.2 defines the ratio as observed over expected for the period")
-    ok(max(abs(alt_ex[d["unit"]] / d["excess"] - 1) for d in units) < 0.10,
-       "SF13 the two readings of the standing sit within 10 per cent")
-    for d in units:
-        alt_av = share * (mean_ratio[d["unit"]] - 1) * d["expected_plan"]
-        ok(round(alt_av) == round(d["avoided"]),
-           "SF13 a mean of quarterly ratios gives %s the same avoided count" % d["unit"])
-    # ---------- the register, read ten ways ----------
-    # the twelve avoided counts are the figures the register's reading touches, and every reading a
-    # careful analyst could take of the eight closed placements lands on the same twelve integers
-    rec_rows, readings = G.share_readings(b)
-    ok(len(rec_rows) == 8, "the register prices eight closed placements (%d)" % len(rec_rows))
-    ok(len(readings) == 8, "eight routes through the register (%d)" % len(readings))
-    ok(abs(readings["pooled sums"] - share) < 1e-12,
-       "the golden share is the register's pooled sums (%.6f against %.6f)"
-       % (readings["pooled sums"], share))
-    lo_r, hi_r = min(readings.values()), max(readings.values())
-    for label, v in readings.items():
-        for d in units:
-            ok(round(v * d["excess"]) == round(d["avoided"]),
-               "%s gives %s %d avoided (%.4f, share %.6f)"
-               % (label, d["unit"], round(d["avoided"]), v * d["excess"], v))
-        ok(round(v * answer["excess"]) - round(v * runner["excess"]) == g["gap"],
-           "%s keeps the gap at %d" % (label, g["gap"]))
-    ok(hi_r / lo_r - 1 < 0.015, "the register's readings sit within 1.5 per cent (%.5f to %.5f, %.2f%%)"
-       % (lo_r, hi_r, (hi_r / lo_r - 1) * 100))
-    for d in units:
-        n_av = round(d["avoided"])
-        band = max(abs(lo_r * d["excess"] - n_av), abs(hi_r * d["excess"] - n_av))
-        ok(0.5 - band >= 0.12, "%s's avoided count is %.3f inside its bin under every reading"
-           % (d["unit"], 0.5 - band))
-    # every graded figure sits inside its rounding bin
-    worst = min(0.5 - abs(d["avoided"] - round(d["avoided"])) for d in units)
-    ok(worst >= 0.12, "every avoided count is at least 0.12 of a complication inside its bin (%.3f)"
-       % worst)
-    stated = [("the pick's standardised ratio", answer["ratio"], 2),
-              ("the pick's expected complications", answer["expected_plan"], 0),
-              ("the pick's excess", answer["excess"], 1),
-              ("the rung 0 unit's excess now", g["rung0"]["last_excess"], 0),
-              ("the rung 0 unit's own excess", g["rung0"]["excess"], 1),
-              ("the rung 1 unit's excess", g["rung1"]["excess"], 1),
-              ("the rung 2 unit's excess", g["rung2"]["excess"], 1)]
-    stated += [("the %s hospital year rate" % h["hospital"], h["rate"], 1) for h in g["hospitals"]]
-    ok(len(g["outside"]) == 10, "A3 covers every quarter in the extract (%d)" % len(g["outside"]))
-    for name, val, places in stated:
-        step = 10.0 ** -places
-        dist = abs(val / step - round(val / step))
-        ok(0.5 - dist >= 0.07, "%s sits inside its bin (%.3f)" % (name, 0.5 - dist))
-    ok(g["gap"] == round(answer["avoided"]) - round(runner["avoided"]), "the gap is the two rounded counts")
-    # the workbook's two context columns, which the prompt does not ask for and the write-up does not
-    # state, still sit clear of their own rounding edges at the precision they are shown to
-    for d in units:
-        for label, val, places in ((" expected complications", d["expected_plan"], 1),
-                                   (" standardised ratio", d["ratio"], 2)):
-            step = 10.0 ** -places
-            dist = abs(val / step - round(val / step))
-            ok(0.5 - dist >= 0.05, "%s%s sits inside its bin (%.3f)" % (d["unit"], label, 0.5 - dist))
+    # ---------- the three facts that force the comparison frequency ----------
+    f = g["facts"]
+    ok("year ended 30 June 2024" in spec, "fact 1 the specification states the table's vintage")
+    ok("not re-estimated between specifications" in spec,
+       "fact 1 the specification states the table is not re-estimated")
+    ok(f["drift_spread"] >= 1.25,
+       "fact 2 the record's own frequency spans a factor of %.2f across the risk bands" % f["drift_spread"])
+    ok(f["drift_low"] < 0.95 and f["drift_high"] > 1.05,
+       "fact 2 it crosses 1.00 in both directions (%.3f to %.3f)" % (f["drift_low"], f["drift_high"]))
+    ok(len([x for x in f["drift"].values() if x < 1]) >= 2
+       and len([x for x in f["drift"].values() if x > 1]) >= 2,
+       "fact 2 at least two bands each side of the published table")
+    ok(f["surgical_high"] / max(f["surgical_low"], 1e-9) >= 3.0,
+       "fact 3 the candidates' case mixes differ several-fold (%.3f to %.3f)"
+       % (f["surgical_low"], f["surgical_high"]))
+    ok(f["surgical_none"] >= 2,
+       "fact 3 some candidates carry no surgical work at all (%d)" % f["surgical_none"])
+
+    # ---------- the demonstration: a mix shift with the unit's own practice flat ----------
+    d_ = g["demo"]
+    ok(d_["mix_swing"] >= 0.25, "the demonstration unit's case mix moves (%.3f)" % d_["mix_swing"])
+    ok(d_["published_multiple"] >= 3.0,
+       "the published basis moves its avoidable count by a factor of %.1f" % d_["published_multiple"])
+    ok(d_["internal_spread"] <= 1.5,
+       "the record's own frequency holds it inside %.2f of a complication in every quarter"
+       % d_["internal_spread"])
+    ok(d_["published_multiple"] / max(d_["internal_spread"], 1e-9) >= 4.0,
+       "the two bases separate on the demonstration by a wide margin")
+    ok(len(d_["shifted"]) == 2, "the shift covers two closed quarters (%d)" % len(d_["shifted"]))
+    unshifted = [r for r in d_["rows"] if r["quarter"] not in d_["shifted"]]
+    ok(max(r["episodes"] for r in d_["rows"]) / min(r["episodes"] for r in d_["rows"]) < 1.15,
+       "the demonstration unit treats the same number of patients throughout")
+    ok(max(abs(r["internal"] - unshifted[0]["internal"]) for r in d_["rows"]) <= 1.5,
+       "its avoidable count on the record's own frequency does not move across the shift")
+
+    # ---------- C1 convergence: every reading of charter 4.3 the text leaves open ----------
+    conv = g["convergence"]
+    ok(len(conv) >= 12, "twelve or more readings of charter 4.3 are formed and ranked (%d)" % len(conv))
+    for label, v in conv.items():
+        ok(v["first"] == answer["unit"],
+           "C1 %s names the answer (%s at %.2f against %s at %.2f, %.2fx)"
+           % (label, v["first"], v["first_value"], v["second"], v["second_value"], v["margin"]))
+        ok(v["margin"] >= 1.05, "C1 %s separates its first two (%.2fx)" % (label, v["margin"]))
+    ok(max(v["margin"] for v in conv.values()) >= 2.5,
+       "the strongest reading separates by %.2fx" % max(v["margin"] for v in conv.values()))
+
+    # ---------- the readings that do move the call, each ruled out by a quotable sentence ----------
+    rout = g["ruled_out"]
+    ok(len(rout) >= 3, "the readings that move the call are formed too (%d)" % len(rout))
+    for label, v in rout.items():
+        ok(v["first"] != answer["unit"], "%s does move the call (to %s)" % (label, v["first"]))
+    ok("same risk band and age band" in charter, "the clause that rules those readings out is shipped")
+    ok("ordinarily have" in charter, "charter 4.3 asks what such patients ordinarily have")
+    ok("would be expected to have" not in charter,
+       "charter 4.3 does not borrow the specification's defined term")
+    ok("expected complications of a group of episodes" in spec,
+       "the specification's own defined term sits in the specification, not the charter")
+    ok("does not maintain a measure of its own" not in charter,
+       "no clause rules the decisive step out by elimination")
+    for w in ("the network's own rate", "internally standardised", "achievable", "attainable"):
+        ok(w not in charter and w not in spec, "no shipped clause names a rate set (%s)" % w)
 
     # ---------- the semantic fork table ----------
-    # SF1 eligibility
-    ok(len(g["eligible"]) == 12, "SF1 twelve eligible units (%d)" % len(g["eligible"]))
-    placed = {p["unit_code"] for p in b["placements"]}
-    ok(all(u not in placed for u in g["eligible"]), "SF1 no eligible unit has been placed with")
-    ok(all(len(G.quarters(panel, u)) >= 4 for u in g["eligible"]), "SF1 every eligible unit has 4+ quarters")
-    ok(min(len(G.quarters(panel, u)) for u in g["eligible"]) == 5,
-       "SF1 no unit sits on the four-quarter edge")
-    all_acute = [c for c, u in b["units"].items() if u["service_type"] == "Acute inpatient"
-                 and not u["closed_date"]]
-    ok(max((pooled(panel, c, G.quarters(panel, c)) for c in all_acute)) > answer["ratio"],
-       "SF1 a placed unit stands worse than the answer, so eligibility is load bearing")
-    # SF2 episodes, not complications
-    detail = read(target, "hac_detail_extract.csv")
-    ok(len(detail) > sum(1 for e in b["inscope_episode"]) * 0.1, "SF2 the detail extract carries rows")
-    ok("counts once" in spec, "SF2 clause 2.1 counts an episode once")
-    # SF3 the denominator's exclusions are disjoint and complete
-    ex = defaultdict(int)
-    for r in read(target, "unit_indicator_series.csv")[:0]:
-        pass
-    # SF4 "avoid" is the counterfactual difference, not a period-on-period fall
-    ok("would have recorded over the assessment quarter" in charter,
-       "SF4 the charter states the comparison, not a fall between periods")
-    fall_route = max(units, key=lambda d: d["last_excess"] - share * d["excess"])
-    ok(fall_route["unit"] != answer["unit"],
-       "SF4 ranking on the fall that will follow files %s" % fall_route["unit"])
-    # SF6 the assessment quarter is the quarter the team is embedded
-    plan_rows = read(target, "activity_plan_2027q4.csv")
-    ok({r["quarter"] for r in plan_rows} == {"2026-27 Q4"}, "SF6 the plan carries one quarter")
-    ok("quarter the team is embedded" in charter, "SF6 the charter names the assessment quarter")
-    # SF5 the unit of the answer: a rate ranking names another unit
-    ok(max(units, key=lambda d: d["ratio"])["unit"] != answer["unit"],
-       "SF5 ranking on the adjusted rate names another unit")
-    # SF7 the activity basis: the latest quarter's separations name another unit
-    alt_plan = max(units, key=lambda d: (d["ratio"] - 1) * d["expected"] / d["quarters"])
-    ok(alt_plan["unit"] == answer["unit"], "SF7 recent activity instead of the plan keeps the call")
-    # SF8 the forward expectation basis
-    ok(abs(answer["expected_plan"] - answer["plan"] * answer["expected"] / answer["separations"]) < 1e-9,
-       "SF8 the forward expectation is clause 3.4's")
-    # SF10 the comparable history
-    ok(min(q for (u, q) in panel) == "2024-25 Q1", "SF10 the panel starts at the specification's period")
-    # SF11 the amalgamation: pooling the predecessors changes nothing graded
-    pre = [c for c, u in b["units"].items() if u["amalgamated_into"]]
-    ok(len(pre) == 2, "SF11 two predecessor units")
-    ok(all(c not in g["eligible"] for c in pre), "SF11 the predecessors are not candidates")
-    merged = "41510"
-    qs_m = G.quarters(panel, merged)
-    o = sum(panel[(merged, q)]["observed"] for q in qs_m) + \
-        sum(panel[(c, q)]["observed"] for c in pre for q in G.quarters(panel, c))
-    e = sum(panel[(merged, q)]["expected"] for q in qs_m) + \
-        sum(panel[(c, q)]["expected"] for c in pre for q in G.quarters(panel, c))
-    pooled_av = share * (o / e - 1) * by[merged]["expected_plan"]
-    ok(round(pooled_av) == round(by[merged]["avoided"]),
-       "SF11 pooling the predecessors gives 41510 the same avoided count (%.2f against %.2f)"
-       % (pooled_av, by[merged]["avoided"]))
-    # SF12 the period an episode falls in: clause 2.5 pins it on separation, and an episode that spans a
-    # quarter boundary is ordinary, so the alternative is computed and the call holds under it too
-    ok("reported in the period its separation date falls in" in spec,
-       "SF12 clause 2.5 pins the period on the separation date")
-    span = sum(1 for r in state["rows"]
-               if r["in_scope"] and G.fiscal(r["sep_date"])[1] != G.fiscal(r["adm_date"])[1])
-    ok(0.02 < span / sum(1 for r in state["rows"] if r["in_scope"]) < 0.12,
-       "SF12 episodes span a quarter boundary at a hospital's own rate (%.3f)"
-       % (span / sum(1 for r in state["rows"] if r["in_scope"])))
-    adm_e, adm_o, adm_n = defaultdict(float), defaultdict(int), defaultdict(int)
-    qset = {q for (_, q) in panel}
-    for r in state["rows"]:
-        if not r["in_scope"]:
-            continue
-        q = G.fiscal(r["adm_date"])[1]
-        if q not in qset:
-            continue
-        adm_e[(r["unit"], q)] += W.STRATUM_RATE[(W.DRG_BAND[r["drg"]], r["age"])]
-        adm_o[(r["unit"], q)] += 1 if r["hac"] else 0
-        adm_n[(r["unit"], q)] += 1
-    adm_av = {}
+    allq = sorted({q for (_, q) in panel})
+    SPEC_WINDOW = "the ten closed quarters of the specification period"
+    # SF1 the unit's own record over a period: specification 3.3 files the specification period to date
+    ok("every closed quarter from 1 July 2024" in spec, "SF1 specification 3.3 files the record's window")
+    for lab in (SPEC_WINDOW, "the eight most recent closed quarters",
+                "the four most recent closed quarters", "the latest closed quarter alone"):
+        ok(conv["the unit's own record taken over %s" % lab]["first"] == answer["unit"],
+           "SF1 the record over %s names the answer" % lab)
+    # SF2 the most avoidable complications: a count, not a rate
+    ok("counted patient by patient" in charter, "SF2 charter 4.3 counts patient by patient")
+    ok(r3["first"] != answer["unit"] and r4["first"] == answer["unit"],
+       "SF2 the rate reading and the count reading name different units")
+    # SF3 the exposure the rate is carried on
+    ok("expected complications per separation" in spec, "SF3 specification 3.4 files the carrying")
+    ok(conv["the unit's rate taken per all separations in the record"]["first"]
+       == conv["the unit's rate taken per in-scope episodes in the record"]["first"],
+       "SF3 both denominators name the same unit")
+    # SF4 the comparison population's membership
+    ok(any("own hospital" in k for k in rout), "SF4 the restricted comparison is measured")
+    ok(any("peer group" in k for k in rout), "SF4 the peer-group comparison is measured")
+    # SF5 whether the unit's own patients sit inside the comparison
+    ok(conv["the unit's own patients left out of the comparison, frequency over %s" % SPEC_WINDOW]["first"]
+       == answer["unit"], "SF5 leave-one-out names the answer")
+    # SF6 the comparison frequency's own window
+    for lab in (SPEC_WINDOW, "the eight most recent closed quarters",
+                "the four most recent closed quarters", "the latest closed quarter alone"):
+        ok(conv["the comparison frequency measured over %s" % lab]["first"] == answer["unit"],
+           "SF6 the comparison frequency over %s names the answer" % lab)
+    # SF7 whether the comparison is stratified at all
+    ok([v for k, v in rout.items() if "no strata" in k][0]["first"] != answer["unit"],
+       "SF7 an unstratified comparison moves the call and charter 4.3 names the strata")
+    # SF8 closed quarters at the decision date
+    ok("eight weeks after the quarter ends" in spec, "SF8 specification 3.7 files when a quarter closes")
+    ok(len(allq) == 10 and allq[-1] == "2026-27 Q2", "SF8 the record carries the ten closed quarters only")
+    ok(max(r["separation_date"] for r in read(target, "episode_outcomes_extract.csv")) <= "2026-12-31",
+       "SF8 no separation falls after the last closed quarter")
+    # SF9 eligibility
+    ok(len(g["eligible"]) == 12, "SF9 charter 4.2 leaves twelve eligible units (%d)" % len(g["eligible"]))
+    ok("previous twelve closed quarters" in charter, "SF9 the charter files the exclusion window")
+    ok("four or more closed quarters" in charter, "SF9 the charter files the floor")
+    # SF10 the complication list revision
+    ok("the revision in force at separation" in spec, "SF10 the specification files which revision applies")
+    # SF11 the indicator's denominator
+    ok("excluded from the denominator is excluded from the numerator" in spec,
+       "SF11 the specification files the denominator's reach")
+    # SF12 the reference rate's scope
+    ok("reference rate of 96.6" in spec, "SF12 the reference rate is scoped to the adjusted rate")
+    ok(abs(answer["avoidable"] - answer["ratio_net"] * 96.6) > 1.0,
+       "SF12 the avoidable count is a count and does not carry the reference rate")
+    # SF13 the rounding of every graded figure
     for d in units:
-        qs = [q for q in G.quarters(panel, d["unit"]) if (d["unit"], q) in adm_e]
-        e = sum(adm_e[(d["unit"], q)] for q in qs)
-        o = sum(adm_o[(d["unit"], q)] for q in qs)
-        n = sum(adm_n[(d["unit"], q)] for q in qs)
-        adm_av[d["unit"]] = share * (o / e - 1) * d["plan"] * e / n
-    ok(max(adm_av, key=adm_av.get) == answer["unit"],
-       "SF12 reading the period off the admission date keeps the call (%s)"
-       % max(adm_av, key=adm_av.get))
-    # SF13 the stratum rates are the published ones
-    strata = read(target, "hac_stratum_rates.csv")
-    ok(all(abs(float(r["expected_rate"]) - W.STRATUM_RATE[(r["risk_band"], r["age_band"])]) < 1e-9
-           for r in strata), "SF13 the lookup carries the published rates")
-    ok(len(strata) == 24, "SF13 twenty-four strata")
-    # SF14 rounding, SF15 no tie
-    ok(round(answer["avoided"]) != round(runner["avoided"]), "SF15 no tie on the recommendation")
+        ok(sim.bin_edge(d["avoidable"], 1.0) >= sim.EDGE_BAR,
+           "SF13 %s's avoidable count sits %.3f from the whole complication's edge"
+           % (d["unit"], sim.bin_edge(d["avoidable"], 1.0)))
+        ok(sim.bin_edge(d["expected_plan"], 0.1) >= sim.EDGE_BAR * 0.1,
+           "SF13 %s's expected count sits %.4f from the decimal's edge"
+           % (d["unit"], sim.bin_edge(d["expected_plan"], 0.1)))
+    for h in g["hospitals"]:
+        ok(sim.bin_edge(h["rate"], 0.1) >= sim.EDGE_BAR * 0.1,
+           "SF13 %s's adjusted rate sits %.4f from the decimal's edge"
+           % (h["hospital"], sim.bin_edge(h["rate"], 0.1)))
 
     # ---------- mess neutrality, one assertion per Layer 1 item (R2) ----------
+    all_acute = sorted({c for c, u in b["units"].items() if u["service_type"] == "Acute inpatient"
+                        and not u["closed_date"]})
     # two grains: the summary ties to the extract on distinct separations
     summ = defaultdict(int)
     for r in b["summary"]:
@@ -641,7 +464,8 @@ def run(target, g, state):
     ok(len({r["moments_observed"] for r in hh}) > len(hh) * 0.75,
        "the hand hygiene audit observes a different number of moments each time")
     for d in units:
-        ok(abs(d["avoided"] - round(d["avoided"])) > 1e-6, "no avoided count is a round number (%s)"
+        ok(abs(d["avoidable"] - round(d["avoidable"])) > 1e-6,
+           "no avoidable count is a round number (%s)"
            % d["unit"])
     ok(abs(answer["adjusted_rate"] - round(answer["adjusted_rate"])) > 0.02,
        "the pick's adjusted rate is not a round number")
@@ -677,9 +501,13 @@ def run(target, g, state):
     fp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")
     if os.path.exists(fp):
         fig = json.load(open(fp))
-        ok(fig["avoided_at_pick"] == round(answer["avoided"]), "figures.json carries the call's figure")
-        ok(all(fig["avoided_by_unit"][d["unit"]] == round(d["avoided"]) for d in units),
-           "figures.json carries every unit's avoided count")
+        ok(fig["avoidable_at_pick"] == round(answer["avoidable"]),
+           "figures.json carries the call's figure")
+        ok(all(fig["avoidable_by_unit"][d["unit"]] == round(d["avoidable"]) for d in units),
+           "figures.json carries every unit's avoidable count")
+        ok(fig["readings_of_clause_43"] == len(conv)
+           and fig["readings_naming_the_call"] == len(conv),
+           "figures.json carries the convergence and says every reading names the call")
     if FAILS:
         print("\n".join("FAILED: " + f for f in FAILS))
         print("%d failures of %d" % (len(FAILS), N))
