@@ -6,7 +6,7 @@
   "domain": "economics-econometrics",
   "subdomain": "forecasting-forecast-evaluation",
   "client_domain": "economics-econometrics",
-  "niche": "a bank research desk's call, sent to clients at 18:00 the evening before, on a statistics office's advance estimate of June-quarter real GDP growth at an annual rate, built the day after a monthly trade and business stocks bulletin, delayed by a systems outage, gave wholesalers', retailers' and manufacturers' June stocks at book value, with import prices having risen in two legs, in March and in June",
+  "niche": "a bank research desk's call, sent at 18:00 the evening before to its markets floor and its clients, on a statistics office's advance estimate of June-quarter real GDP growth at an annual rate, built the day after a monthly trade and business stocks bulletin, delayed by a systems outage, gave wholesalers', retailers' and manufacturers' June stocks at book value, with import prices having risen in two legs, in March and in June",
   "objective": "forecasting",
   "shape": "single-figure",
   "decision_type": "quantity_figure",
@@ -25,7 +25,7 @@
     "G16"
   ],
   "gate_g": "decomposition_attribution",
-  "calibration_form": "pilot_log",
+  "calibration_form": "realised_outcome_roster",
   "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
@@ -41,7 +41,7 @@
     "grain": "flow x partner country x SITC division x month",
     "source": "synthetic"
   },
-  "forum": "customer_or_counterparty",
+  "forum": "operations_desk",
   "forcing_event": "other",
   "org_family": "financial_institution",
   "world": {
@@ -81,7 +81,7 @@
     "price indexes on a 2019 base against national accounts volumes at 2025 prices",
     "values in thousands of dollars in the bulk download and in millions in the bulletin and the office's tables",
     "seasonally adjusted stocks and sales beside unadjusted price indexes",
-    "the desk tracker's own line labels against the office's component names, and the pilot log's layout change when a line was split in 2024",
+    "the desk tracker's own line labels against the office's component names, and the real-time database's layout change when the Office split business investment in 2024",
     "contributions in percentage points of the previous quarter's GDP beside a headline at a compound annual rate"
   ],
   "mechanism_source": "design_note",
@@ -90,6 +90,6 @@
     "task146": "task146 is a bank desk's preview of an insurance board's weekly claims count, decided by refiling released at a quarter turn; here the desk calls a national accounts aggregate and the decisive step is the revaluation of book-value stocks"
   },
   "lineage": [],
-  "notes": "Stump strategy decomposition_attribution: the bulletin's nominal stock movement is split into volume and price, the price basis (each holder's purchase prices over its turnover period) deciding the split. Gate G decomposition_attribution. G1 first: the book value's unit of value (cost at purchase) is not the period's prices the volume needs.",
+  "notes": "Stump strategy decomposition_attribution: the bulletin's nominal stock movement is split into volume and price, the price basis (each holder's purchase prices over its turnover period) deciding the split. Gate G decomposition_attribution. G1 first: the book value's unit of value (cost at purchase) is not the period's prices the volume needs. Redrawn after the DRAWN pull brought task153 (registered an hour earlier): calibration pilot_log -> realised_outcome_roster (the method is validated against the Office's own advance estimates of past quarters' change in business inventories, the realised outcomes, reconstructed from the bulletin's history; no desk pilot log ships) and forum customer_or_counterparty -> operations_desk (at 18:00 the call goes to Tarbert's markets floor, whose rates and currency desks position for the release on it, as well as to clients in the evening preview).",
   "registered": "2026-10-17T03:13:59Z"
 }

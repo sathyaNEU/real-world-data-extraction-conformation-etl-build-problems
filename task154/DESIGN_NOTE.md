@@ -22,13 +22,13 @@ on hand on any date were bought over the weeks the business takes to turn its st
 | Decision | `quantity_figure`, answer unit `rate_or_share` (per cent at a compound annual rate, one decimal) |
 | Mechanism | gap time (decisive: a book value is priced at the weeks its goods were bought in, the volume the estimate needs is priced at 2025's average prices and measured at the quarter end); pattern none; generators G1 (the stock's unit of value is cost at purchase, not the period's prices), G13, G16; Gate G `decomposition_attribution`; strategy `decomposition_attribution` (the nominal stock movement split into volume and price, the price basis deciding the split) |
 | Layer 2 family / pattern | `field_method` (the turnover method behind the national accounts' inventory valuation adjustment: book values revalued at the prices of the weeks the stock was bought in, over each industry's stockholding period, at both ends of the quarter); `own:book-value-stocks-revalued-over-each-industry-turnover-period-at-both-ends` |
-| Calibration | `pilot_log`: the desk's sixteen-quarter pilot of its tracker (June quarter 2022 to March quarter 2026), each filed line beside the advance estimate's line; it validates the method out of sample and refutes nothing by itself |
-| Furniture | forum `customer_or_counterparty` (the desk's clients receive the call at 18:00), forcing event `other` (the office's scheduled advance release, Thursday 30 July 2026, 10:45), organisation family `financial_institution`, role family `research_desk`, context artifact `monitoring_export` (the desk's GDP tracker as at 08:00 on Tuesday 28 July, before the bulletin), opening `question-first`, question form `what` |
+| Calibration | `realised_outcome_roster`: the Office's real-time database, every release's estimates of the recent quarters by component, so each past quarter's advance estimate of the change in business inventories stands as a realised outcome against which a revaluation method, run on the bulletin's history, is compared out of sample; nothing in it states a volume of stocks or a method |
+| Furniture | forum `operations_desk` (at 18:00 the call goes to Tarbert's markets floor, whose rates and currency desks position for the release on it, and to clients in the evening preview), forcing event `other` (the office's scheduled advance release, Thursday 30 July 2026, 10:45), organisation family `financial_institution`, role family `research_desk`, context artifact `monitoring_export` (the desk's GDP tracker as at 08:00 on Tuesday 28 July, before the bulletin), opening `question-first`, question form `what` |
 | Spine | Trade and Business Statistics' bulk download of merchandise trade by partner country and SITC division, January 2023 to May 2026 (constructed; row counts at stage 3) |
 | Deliverables | `gdp_preview_2026q2.pdf` (the one-page client preview, the call first, with one chart) and `gdp_preview_2026q2_tables.xlsx` (the two ask tables); the format pair is answered under Guard |
-| People | drawn with `guard.py names --locale en_GB --seed 154`, the names the check left clear: Nicola Jones (senior economist, Tarbert Bank Economics, the preview's author; not in the prompt), Garry Greenwood (Tarbert's chief economist), Jodie Ford (Tarbert's economics data analyst, who keeps the tracker and the pilot log), Yvonne Mitchell (the Statistics Office's national accounts release contact), Bryan O'Brien (Trade and Business Statistics, the bulletin's contact), Josh Dean (the economists' poll's compiler). Gavin, Rachel, Anthony, Christopher, Ruth and Sheila from the same draw each sit on one older build and were left out |
+| People | drawn with `guard.py names --locale en_GB --seed 154`, the names the check left clear: Nicola Jones (senior economist, Tarbert Bank Economics, the preview's author; not in the prompt), Garry Greenwood (Tarbert's chief economist), Jodie Ford (Tarbert's economics data analyst, who keeps the tracker), Yvonne Mitchell (the Statistics Office's national accounts release contact), Bryan O'Brien (Trade and Business Statistics, the bulletin's contact), Josh Dean (the economists' poll's compiler). Gavin, Rachel, Anthony, Christopher, Ruth and Sheila from the same draw each sit on one older build and were left out |
 
-**Guard.** At the draw: PASS. The first draw led with G13 (horizon mismatch) and met two older signatures, gap time, G13
+**Guard.** At the draw: PASS on this worktree; the DRAWN push's pull brought task153's card (registered an hour earlier), which blocked two axes: `ban.calibration` (pilot_log) and `ban.forum` (customer_or_counterparty). Both were redrawn before any design work: the method is validated against the Office's own advance estimates of past quarters (a realised-outcome roster, the real-time database) instead of a desk pilot log, which does not ship, and the call's first user is Tarbert's markets floor (operations_desk), the clients reading the same call in the evening preview. Now WARN `repeat.decision` (task153's quantity_figure), answered: a GDP growth rate is a figure by nature, and task153 shares no other axis. The first draw led with G13 (horizon mismatch) and met two older signatures, gap time, G13
 and `quantity_figure` (task102, task130's lineage, task134's lineage) and gap time, G13 and `decomposition_attribution`
 (task122's lineage); G1 leads instead because the decisive fact is the stock's unit of value, cost at purchase, against
 the period's prices the volume needs, and the redrawn signature (time, G1) matches no card. The format pair (pdf and
@@ -80,7 +80,8 @@ end of June, is divided by its own prices over those weeks.
 - `two-layer-task-design.md`: "the field's own method done right" and "handling the data's real structure" are the
   client's frames; the turnover method is national accounting's own.
 - `layer2-rigor-patterns.md`, economics-econometrics / forecasting-forecast-evaluation (real-time vintages against the
-  named target release): the call is struck against the advance estimate itself, and the pilot validates out of sample
+  named target release): the call is struck against the advance estimate itself, and the Office's real-time database
+  validates out of sample
   on the desk's own real-time filings; the decisive step is not a vintage choice (`## Tried and rejected`).
 - task152's design note (the lane's last ship): its corridor discipline (every defensible construction of the golden in
   the bin, every rival a set distance out) is the model for this ladder.
@@ -98,9 +99,11 @@ the portal still down. On Friday 24 July the Office announced that the advance e
 on Thursday 30 July and would incorporate the June results. The dollar fell in two legs, in late February after the
 Reserve Bank's surprise rate cut and the fall in the coal price, and in the first days of June after the sovereign
 rating downgrade; import prices rose in March and again in June. Tarbert Bank (fictional) is a commercial bank whose
-economics desk sends clients a GDP preview at 18:00 the evening before each advance estimate; from the June quarter of
-2022 to the March quarter of 2026 it ran its line-by-line tracker as a pilot and logged each quarter's filed lines beside
-the advance estimate's.
+economics desk sends its call at 18:00 the evening before each advance estimate to the bank's markets floor and, in a
+one-page GDP preview, to clients; this year the desk moved the call from a bridge equation on monthly indicators to a
+line-by-line tracker built on the Office's own sources, and the tracker workbook carries each line's June-quarter
+estimate as at 08:00 on Tuesday 28 July, before the bulletin. The Office publishes a real-time database of its releases,
+every release's estimates of the recent quarters by component.
 
 ## Default path
 
@@ -137,7 +140,7 @@ too high.
 
 - **Task type:** economics-econometrics, forecasting-forecast-evaluation (serves Forecasting): a bottom-up forecast of the
   statistical office's first release of June-quarter GDP growth, built from the release's own source data the evening
-  before and validated against the office's advance estimates over the desk's sixteen-quarter pilot.
+  before and validated out of sample against the office's own advance estimates of past quarters.
 - **Domain test:** the quantity that decides the call is the volume of business inventory investment the advance estimate
   will carry, which national accountants measure by revaluing businesses' book-value stocks at the prices of the weeks
   the goods were bought in, over each industry's stockholding period, before taking the change, and which a GDP desk
@@ -152,8 +155,8 @@ too high.
   price statistics and national accounts bases); values in thousands of dollars in the bulk download and in millions
   in the bulletin and the Office's tables (TBS's portal and publication formats); seasonally adjusted stocks and sales
   beside unadjusted price indexes (the survey's adjustment and the price statistics' practice); the tracker's own line
-  labels against the Office's component names and the pilot log's layout change when the desk split business investment
-  in 2024 (the desk's own workbooks); contributions in points of the previous quarter's GDP beside a headline at a
+  labels against the Office's component names (the desk's own workbook) and the real-time database's layout change when
+  the Office split business investment in 2024 (the Office's publication); contributions in points of the previous quarter's GDP beside a headline at a
   compound annual rate (the Office's presentation). None is placed to be caught, and each is asserted neutral (R2).
 - **Layer 2:** `field_method`: the turnover method behind the inventory valuation adjustment, the national accounts'
   own way of taking a volume change out of book values; the methodological choice that flips the call is the price a
@@ -184,9 +187,10 @@ too high.
   inventory volume or a revaluation; the desk's tracker carries no total and leaves the bulletin's three lines blank
   until the bulletin; the economists' poll (a distractor) states forecasters' views collected before the bulletin and is
   never the stump.
-- **No certified replay:** no published figure the golden reproduces ships for the June quarter; the pilot's advance
-  estimates are realised outcomes with the office's own noise, used to compare methods out of sample, and no method is
-  recovered from them; no table states a volume of stocks, a replacement cost or an inventory valuation adjustment.
+- **No certified replay:** no published figure the golden reproduces ships for the June quarter; the past advance
+  estimates in the real-time database are realised outcomes with the office's own noise, used to compare methods out of
+  sample, and no method is recovered from them; no table states a volume of stocks, a replacement cost or an inventory
+  valuation adjustment.
 - **Lesson:** a stock reported at what its holder paid is priced at the weeks the goods were bought in, so its volume must
   be read at those weeks' prices, industry by industry over each one's own turnover period and at both ends of the
   period; the quarter end's price misreads a price rise inside the turnover period as a fall in volume. No build on file
@@ -227,11 +231,11 @@ Stage 2.
   rule application; not shipped.
 - The seed's premise that the agency froze its inputs on an unpublished cut-off, so the late report's lines carry the
   agency's own projections: withheld, it is a hidden rule; stated, the call is rule application; inferred from past late
-  sources in the pilot, it is a cut-off recovered from published figures on small counts. The Office's notice states the
+  sources in past quarters, it is a cut-off recovered from published figures on small counts. The Office's notice states the
   June bulletin is in the estimate.
 - A real-time-vintage calibration as the decisive step (the desk's bias measured on tracks rebuilt from the sources'
-  latest vintage against the advance estimates): the pilot log carries the desk's real-time inputs, so the natural
-  calibration is already real-time, and any sixteen-quarter calibration in the golden moves the call a bin under one
+  latest vintage against the advance estimates): a desk keeps its real-time inputs, so the natural calibration is already
+  real-time, and any sixteen-quarter calibration in the golden moves the call a bin under one
   standard error; kept out of the golden.
 - A stale consensus updated by the bulletin's news as the golden: the decisive step would be reading the poll's closing
   date, a field reading; the poll ships as a distractor.
@@ -239,3 +243,4 @@ Stage 2.
   recovered from published figures.
 - A pay-timing effect in the government's cash outturn as the decisive step: visible in the monthly series and fixed by
   counting paydays, a rule; kept for the ask layer if needed.
+- The desk's own sixteen-quarter pilot log as the calibration organ (each filed line beside the advance estimate's): task153, registered an hour before this card, carries a pilot log, and the guard bans the form in consecutive builds; the validation runs on the Office's real-time database instead, and no desk pilot log ships.

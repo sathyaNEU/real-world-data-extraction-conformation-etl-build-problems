@@ -10,10 +10,23 @@
   "stump": "Taking the desk's track for every line the late bulletin does not feed, building goods trade from the bulletin and deflating each industry's end-March and end-June book-value stocks by that month's price index, the textbook removal of holding gains, files a call about half a point under the golden, because the June leg of the import price rise reads as a fall in the volume of stocks bought before it; only revaluing each stock at its industry's prices over the months its stock-to-sales ratio covers, at both quarter ends, files the golden.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "guard check PASS at the draw; nearest drivers 0.08 (task463), 0.07 (task45 lineage, task100 lineage)"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "guard check WARN repeat.decision (task153) after the DRAWN pull's redraw of calibration (pilot_log -> realised_outcome_roster) and forum (customer_or_counterparty -> operations_desk); nearest drivers 0.08 (task463), 0.07 (task45 lineage, task100 lineage)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
   "resume": "stage 2: ladder, fork table, closure table and ask sheet on paper, prompt.txt, then precut.py",
   "approved": null,
