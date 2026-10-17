@@ -658,6 +658,47 @@ generator executes it (`R3a.analyst_test`).
 
 ## Held for the next pass
 
+**The loop-3 reader, read cold on the pinned pack, is the Gate F evidence this build needed.** It
+committed to **550** at about 45 per cent, with 30 per cent on 600 and 15 per cent on 500, and it
+reached there by the right kind of analysis and the wrong estimator: it found the classifier hiding
+confrontations inside the ordinary label (48 of 211 ordinary-coded sample rows are truly
+confrontational) and corrected label by label on predictive values, which is the 592.6 family, rather
+than on the classifier's sensitivity and false-mark rate, which is 453.0. That is the field's own
+distinction between a predictive value and an error rate, and it is the distinction this build is
+built on. The two figures the reader quotes, about 531 and about 580, are that family with and
+without filer precedence; 2.6 rules filer precedence out, which is why 531 is reachable but not
+defensible. A strong cold reader spread over three cells and confident in none is what the ladder was
+for.
+
+**Two corrections to the reader's own reading, for the record.** Its question 5 quoted 3.3 and then
+executed the one thing 3.3 forbids: the sentence says the number the bulletin fixes is of the actions
+that were confrontational and not of the codes assigned, so the 332 is ruled out by the sentence the
+reader quoted to reach it. And `amostra_dupla_codificacao.csv` is not a file that exists to help the
+analyst; it is the evidence the call rests on, and a coding desk that measures its classifier against
+hand coding keeps exactly such a worksheet. The reader's point that it is the only route to the call
+is fair and is the design.
+
+**What the reader added to the realism list, which is now six items rather than four.**
+
+5. **Action start times sit on quarter hours**, with a small second group ending 05, 10, 25 and 55.
+   Fix in `sim.actions`: draw the minute from a distribution with a quarter-hour mode rather than a
+   quarter-hour lattice with a few exceptions.
+6. **The September surge does not broaden the geography.** Monthly actions roughly double from
+   September while the municipalities touched move only between 117 and 119. A doubling that touches
+   no new ground reads as a multiplier on a fixed register. Fix in `sim.actions`: let the surge
+   concentrate in some districts and reach municipalities the earlier months did not, so the
+   geography moves with the volume. This is also the item the cut autumn-themes sentence used to
+   paper over, and the honest version is that the register shows the surge in its own geography
+   rather than a bulletin explaining it.
+
+**The sequencing, so this is not done twice.** Every one of the six needs a data change, so every one
+moves the four audit cells and with them the recall, the false-mark rate and the committed count. The
+design point is re-tuned after the realism pass, not before: the committed figure must come back
+mid-bin in a cell the ladder separates, and the family gap must still clear its own standard
+deviation. The pass waits on the loop-3 judge, because a verdict on a pack the data has moved under
+is worth nothing.
+
+
 Three findings of the loop-2 read are held rather than fixed, because each needs a data change and the
 author is holding the judge's verdict against this pack. Each is recorded with its diagnosis and the
 one-line fix, so the next pass is a build rather than a rediscovery.
