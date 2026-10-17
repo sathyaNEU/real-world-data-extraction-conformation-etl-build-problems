@@ -1,0 +1,23 @@
+{
+ "task": "task468",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-17",
+ "stump": "The default path counts each candidate route's AVL departures that the vendor's matcher tied to the route, finds the congested trunk routes short of four departures an hour in the evening peak and nominates only punctual routes; sharing the unmatched departures in proportion to matched ones passes a punctual route that ran short and still fails a trunk route; the trip-matching review's shares give the golden five.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {"exit": "", "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": "task1 0.07 (guard check at the draw, WARN only; differentiated against task116 v3 and task454)"},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "returned": [],
+ "resume": "stage 2: prototype the departures, the matcher and the review sample; calibrate the ladder (schedule, matched only, proportional, reviewed shares); then the design note's sections and prompt.txt to precut exit 0",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET25 (frequent-network eligibility from GTFS: service days, past-midnight departures, frequency-based trips): the world, the decision and the quantity kept; the seed's mechanisms only as Layer 1 and ask devices; the pitfall re-found in how the AVL matcher's misses fall"
+}
