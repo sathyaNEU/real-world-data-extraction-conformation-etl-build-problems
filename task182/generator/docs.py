@@ -109,65 +109,44 @@ NOTES = """# Drumlorne noise survey, autumn 2026: monitoring notes
 %(tech)s, monitoring technician. Written up 12 October 2026, with the folder handed to the environmental
 engineer on 16 October.
 
-## What was measured
+## How it went
 
 Fourteen positions, two deployments of a week each, from Monday 31 August to the collection round on
-Monday 12 October. Five logging meters, lifted and set down again on the Monday mornings, one round for the
-five of them. Every position in the schedule was covered twice. The deployment table says which meter stood
-where, when it was set running and stopped, the height it stood at and the field checks either side.
-Heights are the ones the schedule sets; two deployments stood at another height and the remark says why.
+Monday 12 October. Five logging meters, lifted and set down again on the Monday mornings, one round for
+the five of them, starting between half four and five and finishing before the works woke up. Every
+position in the schedule was covered twice. The deployment table says which meter stood where, when it was
+set running and stopped, the height it stood at and the field checks either side.
 
-## The meter files
+Mounting was free field on a tripod, 3.5 m off the facade where there was room for it. At NSL08 the cattle
+were in the field the first week and the tripod had to go three metres west of the pegged spot; at NSL13
+the garden wall was being rebuilt in the second week and the mic came down to 1.2 m to clear the scaffold.
+Both are on the deployment record.
 
-`%(levels)s` is the five meters' own download, concatenated. One row a minute per meter, with the
-A-weighted equivalent level for the minute and the statistical levels LA90, LAmax and LAmin from the same
-minute. The meters stamp in UTC; the field sheets and everything the plant logs are in local time, which
-was Irish Standard Time for the whole survey. The download of one deployment was repeated after the card
-threw a read error on collection, so part of that day appears twice in the file; the remarks column in the
-deployment table names it. The meters write -120.2 dB in every level column for a minute whose
-measurement channel was down; the deployment remarks give each spell.
+## Access
 
-`%(bands)s` holds the one-third-octave band levels, one row a quarter hour, from the three meters that
-carry the band module (%(band_serials)s), stamped UTC like the minute file. The band levels are unweighted.
-The other two meters log broadband only, so the positions they stood at have no band rows.
+NSL03, NSL05 and NSL12 are through the farm yards and the occupiers hold the gate keys; ring ahead. The
+dog at NSL09 is loose in the yard most days. NSL10 is up the lane past the quarry entrance and the lane is
+not passable in the dark after rain. Nobody minded the tripod once they had seen it.
 
-## Calibration
+## Weather
 
-`%(cal)s` is the laboratory verification of the five meters and of the field calibrator, with the as-found
-and as-left levels from each certificate. The field check each deployment started and finished with is on
-the deployment record, against the 94.0 dB calibrator. The plan says what to do where a deployment's checks
-sit away from the reference.
+A wet first fortnight: showers most afternoons in the first week and a wet Thursday in the second. It
+blew hard from the Tuesday of the third week to the Friday, 20 to 35 km an hour at the mast most of those
+days, and the last fortnight was settled and cool. The mast on the blower house roof logs the wind, the
+rain gauge and the air temperature, and the anemometer was replaced on 20 September after the old one
+started sticking.
 
-## The met mast
+## What went wrong
 
-`%(weather)s` is the mast on the blower house roof, ten-minute means, stamped UTC at the start of the ten
-minutes each record covers. The anemometer was replaced on 20 September; the one fitted since reports in
-kilometres an hour, the one before it in metres a second, and the column was not renamed. The rain gauge
-reports its tip count since midnight, one tip to 0.2 mm, and the count resets at midnight rather than
-running on.
+The card in one meter threw a read error when it was collected and the download was repeated to get it
+off, so part of that day came through twice. One logger reset itself mid-week and wrote nothing until the
+mid-week visit, and two meters dropped their measurement channel for half an hour each. All of it is on
+the deployment record.
 
-## The plant's own records
-
-`%(events)s` is the process operator's equipment log in local time: a row whenever a blower, a centrifuge
-or the gas engine was started or stopped, with the reason the shift wrote. The two centrifuges run their own
-shifts and the log carries each machine separately. `%(scada)s` is the
-fifteen-minute channel log off the plant PLC, also local time. The counters on it run on from
-commissioning: the biogas meter in cubic metres (it wraps at 99,999), the blower header's flow totaliser
-and BL-03's own, both in thousands of normal cubic metres, and the engine's hour counter, which was
-changed at the inspection on 15 September and starts again from zero. Both blower flows are logged as
-rates as well. The radio link to the PLC dropped several times over the survey, the longest spell from the
-evening of 25 September to the afternoon of the 26th.
-
-## What the surroundings sound like
-
-The road through Clonaraght carries milk lorries and farm traffic from first light, and the two busy
-spells are around eight and around half five. Away from the road it is the Glasha and wind in the trees.
-
-## Identities
-
-Positions carry three names: the position code NSL01 to NSL14 in the schedule and in the meter paperwork,
-the dwelling reference DW-1xx the complaints register uses, and whatever the crew wrote on the field sheet
-("the cottage at the gable", "Glasha bridge"). The schedule maps all three.
+On the plant side the radio link from the PLC to the historian dropped several times over the survey, the
+longest spell from the Friday evening of the fourth week to the Saturday afternoon. When that link goes
+the interface writes nothing for a while, and sometimes it writes the last value it had again until the
+link is back.
 
 ## Also in the folder
 

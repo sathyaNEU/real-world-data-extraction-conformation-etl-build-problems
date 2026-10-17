@@ -147,8 +147,22 @@ def run(target, g):
     rate = (SM.MET["rain_mm_shipped"] * 6.0) > 0.5
     A(bool((rate == SM.RAIN_ON).all()),
       "R2 the counted-rain records and a rate reading of the same record are the same minutes")
-    A(has(text_of(target, PK.FILES["notes"]), "stamped UTC at the start of the ten minutes"),
-      "SF6 the notes file which end of its ten minutes a met record is stamped at")
+    man = text_of(target, PK.FILES["manifest"])
+    A(has(man, "stamped at the start of the ten minutes they cover"),
+      "SF6 the folder's own record of the mast's file files which end of its ten minutes a record covers")
+    A(has(man, "the rain gauge's tips in the ten minutes at 0.2 mm a tip"),
+      "SF5 and what the gauge's column holds")
+    A(has(man, "in metres a second to 20/09/2026 and in kilometres an hour after the anemometer was "
+                "replaced that day"),
+      "SF5 and the anemometer's units either side of the swap")
+    notes_txt = text_of(target, PK.FILES["notes"])
+    for pre in ("stamped UTC", "-120.2", "appears twice", "tip count since midnight", "three names",
+                "position code NSL01"):
+        A(not has(notes_txt, pre),
+          "the survey notes do not name the pack's own hazards in advance (%r)" % pre)
+    A(has(notes_txt, "the interface writes nothing for a while, and sometimes it writes the last value it "
+                     "had again"),
+      "the notes carry what the interface does when the link drops, which is a fact about the instrument")
 
     # ------------------------------------------------- R3a: the analyst test, executed on the clean truth
     naive = {c: r[c]["rung2_la90"] for c in W.CODES}
@@ -587,6 +601,18 @@ def run(target, g):
       "SF20 and %d more are the same row again because the works is stopped, which is a reading"
       % reps_stopped)
     A(reps == reps_flowing + reps_stopped, "SF20 every repeated row is one kind or the other")
+    # the figure that makes the absent-rows reading wrong: what those rows claim and do not record
+    claimed = 0.0
+    for ts in sorted(hheld):
+        claimed += (float(by_t[ts]["aeration_header_nm3_h"])
+                    + float(by_t[ts]["bl03_discharge_nm3_h"])) * 0.25
+    A(claimed / 1000.0 > 40.0,
+      "SF20 the %d held rows claim %.1f thousand Nm3 of air was flowing and their counters record none "
+      "of it" % (len(hheld), claimed / 1000.0))
+    gapq = sum(nn for _, nn in W.PLC_GAPS)
+    A(gapq + len(hheld) == 179 and len(hheld) == 54,
+      "SF20 the record is short by %d quarter hours over the survey and the absent stamps are %d of them"
+      % (gapq + len(hheld), gapq))
 
     # ------------------------------------------------------- the readings that converge, asserted on data
     # pooling: the position's residual over both deployments against the mean of the two deployments'
@@ -799,6 +825,49 @@ def run(target, g):
     rr3 = rate[run_on]
     lag1 = float(np.corrcoef(rr3[:-1], rr3[1:])[0, 1])
     A(lag1 > 0.5, "the blower channel is a process channel, not white noise (lag-1 %.2f)" % lag1)
+
+    # ------------------------------------- the sixth dwelling, under every window the residual can be read
+    # over. The window is not pinned, because pinning it would file the decisive step; the separation is
+    # what carries it, measured on the clean truth over the three readings a reader reaches for.
+    def _win_log(stamps):
+        return AN.stop_mask(stamps)
+
+    def _win_hist(stamps):
+        out = np.zeros(len(stamps), dtype=bool)
+        for st7, en7 in SM.all_down():
+            qa = st7 - dt.timedelta(minutes=st7.minute % 15)
+            qb = en7 + dt.timedelta(minutes=(15 - en7.minute % 15) % 15)
+            out |= np.array([(x >= qa) and (x < qb) for x in stamps])
+        return out
+
+    def _win_trim(stamps):
+        out = np.zeros(len(stamps), dtype=bool)
+        for st7, en7 in SM.all_down():
+            out |= np.array([(x >= st7 + dt.timedelta(minutes=10))
+                             and (x < en7 - dt.timedelta(minutes=10)) for x in stamps])
+        return out
+
+    for wname, wfn in (("the equipment log's own intervals", _win_log),
+                       ("the historian's quarter hours", _win_hist),
+                       ("the log's intervals trimmed by ten minutes", _win_trim)):
+        acc7 = {}
+        for sid, ss in g["series"].items():
+            code = ss["dep"]["code"]
+            lg7 = SM.logged(ss)
+            lv7 = np.where(ss["nd"], W.NODATA_VALUE, lg7["laeq"] - SM.dep_correction(ss["dep"]))
+            d7 = acc7.setdefault(code, {"on": [], "off": []})
+            d7["on"].append(lv7[ss["am"] & ss["vm"]])
+            d7["off"].append(lv7[wfn(ss["stamps"]) & ss["vm"] & ~ss["nd"]])
+        spec7 = {c: AN.esub(AN.eavg(np.concatenate(d7["on"])), AN.eavg(np.concatenate(d7["off"])))
+                 for c, d7 in acc7.items()}
+        order7 = sorted(spec7, key=lambda c: -spec7[c])
+        A(tuple(sorted(order7[:5])) == gold,
+          "the five the slot reaches are the same read over %s: %s" % (wname, sorted(order7[:5])))
+        A(order7[5] == g["sixth"],
+          "and the sixth is %s read over %s, not %s" % (g["sixth"], wname, order7[5]))
+        A(spec7[order7[5]] - spec7[order7[6]] > 0.25,
+          "and it stands %.2f dB clear of the seventh (%s) read over %s"
+          % (spec7[order7[5]] - spec7[order7[6]], order7[6], wname))
 
     # ------------------------------------------- the equipment log's own cardinality, and what it carries
     evrows = sorted(_csv.DictReader(io_open(target, PK.FILES["events"])), key=lambda x: x["logged_at"])

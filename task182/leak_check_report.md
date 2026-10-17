@@ -9,9 +9,8 @@ Stump terms swept: residual, record, measured, minutes, decisive, background, qu
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `noise_management_plan.pdf`: carries 3 of 5 distinctive words of the committed call: 'The October acoustic treatment slot should cover NSL04, NSL11, NSL07, NSL02 and NSL13.'
 
-## 4 design-note vocabulary (REVIEW 2)
+## 4 design-note vocabulary (REVIEW 1)
 - **REVIEW** `noise_management_plan.pdf`: 5 of 25 stump-paragraph terms appear (residual, record, measured, minutes, process); read whether the document names the move
-- **REVIEW** `survey_notes.md`: 5 of 25 stump-paragraph terms appear (record, measured, minutes, process, change); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `calibration_records_2026.csv`: 6 ISO dates after 2026-10-16, e.g. 2026-11-26, 2027-01-22, 2027-02-18, 2027-03-11, 2027-04-07
