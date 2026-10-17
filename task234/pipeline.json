@@ -1,34 +1,34 @@
 {
  "task": "task234",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "epidemiology-public-health",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-16",
- "stump": "A competent solver divides each stream's week-3 results by the tests in last week's aggregate report and files wrong escalations, missing the influenza streams of the laboratories losing results and escalating healthy streams whose epidemic is falling; the step that lands it there is taking the week's tests from the past instead of from the stream's own positivity, which moves with its patients' epidemic and not with a lost message.",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-17",
+ "stump": "A competent solver divides each stream's week-3 results by the tests in last week's aggregate report and escalates 15 streams, 9 of them complete streams whose epidemic fell in the week (the SARS-CoV-2 streams of seven laboratories and the children's hospital's influenza and RSV); the step that lands it there is taking the week's tests from the past instead of from the stream's own positivity, which moves with its patients' epidemic and not with a lost message.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK; design-note vocabulary in the dictionary, FCP-2 and README)",
+  "reader": "two reads: question 1 names no method, questions 2 to 4 none, question 6 analytical; REVIEW lines harmless"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (repeat.gate_g task263, repeat.decision task233, same_puzzle_older differentiated)",
+  "nearest": "task263 0.08"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "r1 DETERMINISTIC",
+  "disposition": "r1 FIX_NOW (the dictionary's UTC receipt time; fixed, with the specimen date key converged)",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 2: generator prototype tuned to the designed ladder, then the design note's screen, fork table, ladder, closure, asks and precut",
+ "resume": "stage 4: the round-2 re-judge thread is running on /tmp/determinism-check-task234-r2 (brief and fresh bundle there); when its verdict.md lands, hand it to the determinism-judge agent to write round 2 into determinism_check_report.md; on APPROVE ship (ledger row drafted in the scratchpad, card current, board row, handoff), commit SHIPPED with target.zip and golden/ force-added; a missing r2 verdict means re-spawning one thread from that brief",
  "approved": null,
  "delivered": null,
  "portal": null,
