@@ -1,0 +1,13 @@
+{"task": "task240", "owner": "perssathya", "status": "DESIGN",
+ "domain": "survey-research-official-statistics/nonresponse-calibration-measurement-error-adjustment", "objective": "data-quality-monitoring",
+ "stage": 2, "stage_name": "design", "updated": "2026-10-17",
+ "stump": "A competent analyst takes each published total's standard error by Taylor linearisation over the strata and PSUs with the final weights treated as fixed and warns the pension and full-time-education counts of the smallest regions; the post-stratified estimator's variance, from the residuals within the region, age group and sex cells, clears them.",
+ "architecture": 1, "loops": 0,
+ "precut": {"exit": null, "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": ""},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "returned": [],
+ "resume": "stage 2: simulator tuned to the ladder (fixed-weight Taylor warns the age-driven counts of the small regions, the post-stratified variance clears them, every cell 1.5 points or more off the line), ask layer, fork table, closure, prompt, precut",
+ "approved": null, "delivered": null, "portal": null,
+ "portal_id": "", "portal_status": "", "portal_status_date": ""}
