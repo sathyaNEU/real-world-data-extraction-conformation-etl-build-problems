@@ -208,8 +208,14 @@ def _ar1(n, a, rng):
 
 
 def write_scada(target):
-    """Fifteen-minute process channels. The biogas meter is a counter and rolls over; the engine's hour
-    counter was replaced; one spell is missing where the link to the PLC dropped."""
+    """Fifteen-minute process channels off the plant PLC.
+
+    The aeration air is metered twice: the header meter that was there before the upgrade, and the third
+    blower's own meter, which was fitted when BL-03 was tied into the main downstream of it. The hour
+    counters on the gas skid were tagged from the contractor's own I/O list. The biogas meter is a counter
+    and rolls over, one hour counter was replaced mid-survey, and the radio link to the PLC dropped
+    through the survey, sometimes writing nothing and sometimes writing the last value it had.
+    """
     rng = np.random.default_rng(W.SEED + 23 + W.AIR_SEED)
     t0 = dt.datetime(2026, 8, 1, 0, 0)
     n = int((dt.datetime(2026, 10, 17) - t0).total_seconds() // 900)
@@ -221,13 +227,23 @@ def write_scada(target):
     dows = np.array([s.weekday() for s in stamps])
     # the site's weekly milk intake moves the plant's load from week to week; the sound carries it too
     wkf = np.array([SM.week_factor(s.date()) for s in stamps])
-    # the blower header follows the dissolved oxygen trim, so the flow wanders through the day as well
-    # as over it, and the totaliser's own quarter-hour steps are not all the same size
-    air = (4120 + 180 * np.sin(2 * math.pi * hours / 24.0 - 1.2)
-           + 232 * _ar1(n, 0.88, rng) + 78 * _ar1(n, 0.42, rng)) * wkf
-    air = np.where(stopped, 0.0, np.clip(air, 0.0, None))
-    # the blower header's flow totaliser, thousands of normal cubic metres, running since commissioning
+    inflow = (96 + 34 * np.exp(-((hours - 10.5) ** 2) / 9.0) + 26 * np.exp(-((hours - 19.0) ** 2) / 7.0)
+              + 6.1 * _ar1(n, 0.74, rng))
+    # the air the lanes take: the dissolved oxygen trim follows the load on the works, so the total
+    # wanders through the day with the inlet and over the weeks with the intake
+    total_air = ((4120 + 180 * np.sin(2 * math.pi * hours / 24.0 - 1.2)
+                  + 232 * _ar1(n, 0.88, rng) + 78 * _ar1(n, 0.42, rng)) * wkf
+                 + 7.4 * (inflow - float(inflow.mean())))
+    total_air = np.where(stopped, 0.0, np.clip(total_air, 0.0, None))
+    # the duty rotates week to week, so what each meter sees moves while the air itself does not
+    share = np.array([W.BL03_SHARE[min(max((s.date() - W.WEEKS[0]).days // 7 + 1, 0),
+                                       len(W.BL03_SHARE) - 1)] for s in stamps])
+    bl03 = total_air * share
+    air = total_air - bl03
+    # the two flow totalisers, thousands of normal cubic metres: the header's has run since the works was
+    # built, BL-03's since it was commissioned at the upgrade
     air_total = 128450.0 + np.cumsum(air * 0.25) / 1000.0
+    bl03_total = 2184.0 + np.cumsum(bl03 * 0.25) / 1000.0
     cf_on = np.zeros(n, dtype=bool)
     runs = {d: SM.centrifuge_runs(d) for d in sorted({s.date() for s in stamps})}
     for i, st in enumerate(stamps):
@@ -246,28 +262,67 @@ def write_scada(target):
         eng_off |= np.array([(s >= start - dt.timedelta(minutes=14)) and (s < end) for s in stamps])
     kw = np.where(eng_off, 0.0,
                   268 + 7.0 * np.sin(2 * math.pi * hours / 24.0 + 0.4) + 4.2 * _ar1(n, 0.8, rng))
-    inflow = (96 + 34 * np.exp(-((hours - 10.5) ** 2) / 9.0) + 26 * np.exp(-((hours - 19.0) ** 2) / 7.0)
-              + 6.1 * _ar1(n, 0.74, rng))
-    eng_hours = np.cumsum(np.where(eng_off, 0.0, 0.25))
+    # the two hour counters, each counting the minutes its own machine turned in the quarter hour it
+    # closes: the engine, which is down for the weekly inspection and for its own trips, and the gas
+    # booster, which is down for the inspection and for its daily drain and purge and runs on through
+    # every stop the engine takes on its own
+    eng_min = _run_minutes(stamps, SM.all_down()
+                           + [(s, s + dt.timedelta(minutes=m)) for s, m, _ in W.ENGINE_STOPS])
+    purges = []
+    day = t0.date()
+    while day <= dt.date(2026, 10, 17):
+        h, m = W.BOOSTER_PURGE_AT[day.weekday()]
+        a = dt.datetime(day.year, day.month, day.day, h, m)
+        purges.append((a, a + dt.timedelta(minutes=W.BOOSTER_PURGE_MIN)))
+        day += dt.timedelta(days=1)
+    bst_min = _run_minutes(stamps, SM.all_down() + purges)
+    eng_hours = np.cumsum(eng_min) / 60.0
+    bst_hours = np.cumsum(bst_min) / 60.0
     replaced = np.array([s >= W.HOUR_COUNTER_SWAP for s in stamps])
     base = eng_hours[np.argmax(replaced)] if replaced.any() else 0.0
     eng_hours = np.where(replaced, eng_hours - base, 41820.0 + eng_hours)
+    bst_hours = 52960.0 + bst_hours
     gap = np.zeros(n, dtype=bool)
     for start, blocks in W.PLC_GAPS:
         end = start + dt.timedelta(minutes=15 * blocks)
         gap |= np.array([(s >= start) and (s < end) for s in stamps])
-    rows = []
+    held = np.zeros(n, dtype=bool)
+    for start, blocks in W.PLC_HELD:
+        end = start + dt.timedelta(minutes=15 * blocks)
+        held |= np.array([(s >= start) and (s < end) for s in stamps])
+    rows, last = [], None
     for i, s in enumerate(stamps):
         if gap[i]:
             continue
-        rows.append([s.strftime("%Y-%m-%d %H:%M"), "%.0f" % max(air[i], 0.0),
-                     "%.1f" % air_total[i], "%.1f" % max(feed[i], 0.0),
-                     "%.0f" % counter[i], "%.1f" % max(kw[i], 0.0), "%.1f" % eng_hours[i],
-                     "%.1f" % max(inflow[i], 0.0)])
+        if held[i] and last is not None:
+            rows.append([s.strftime("%Y-%m-%d %H:%M")] + last)
+            continue
+        vals = ["%.0f" % max(air[i], 0.0), "%.1f" % air_total[i],
+                "%.0f" % max(bl03[i], 0.0), "%.1f" % bl03_total[i],
+                "%.1f" % max(feed[i], 0.0), "%.0f" % counter[i], "%.1f" % max(kw[i], 0.0),
+                "%.1f" % eng_hours[i], "%.1f" % bst_hours[i], "%.1f" % max(inflow[i], 0.0)]
+        rows.append([s.strftime("%Y-%m-%d %H:%M")] + vals)
+        last = vals
     return _write_csv(os.path.join(target, FILES["scada"]),
                       ["logged_at", "blower_air_nm3_h", "blower_air_total_knm3",
+                       "bl03_air_nm3_h", "bl03_air_total_knm3",
                        "centrifuge_feed_m3_h", "biogas_meter_m3", "engine_export_kw",
-                       "engine_hours_run", "inlet_flow_m3_h"], rows)
+                       "engine_hours_run", "gas_booster_hours_run", "inlet_flow_m3_h"], rows)
+
+
+def _run_minutes(stamps, down):
+    """Minutes of the quarter hour ending at each stamp that the machine was turning, given the intervals
+    it was down for."""
+    out = np.zeros(len(stamps))
+    for i, s in enumerate(stamps):
+        a = s - dt.timedelta(minutes=15)
+        mins = 15.0
+        for lo, hi in down:
+            lo2, hi2 = max(a, lo), min(s, hi)
+            if hi2 > lo2:
+                mins -= (hi2 - lo2).total_seconds() / 60.0
+        out[i] = max(mins, 0.0)
+    return out
 
 
 def write_weather(target):

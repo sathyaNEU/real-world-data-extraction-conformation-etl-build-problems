@@ -104,7 +104,8 @@ def stays(rows):
     load re-sends a record under a fresh episode identifier, so records are counted once on the separation
     key the dictionary states: unit, patient, admission date and diagnosis related group. Second, a stay
     whose care type changed inside it reaches the feed as two episode records, one ending and one beginning
-    on the same day, and the patient left the hospital once: those episodes are chained into one stay,
+    on the same day under the same diagnosis related group, and the patient left the hospital once: those
+    episodes are chained into one stay,
     which is what the activity summary counts and what the question asks for. The stay falls in the quarter
     its last episode separated in.
     """
@@ -121,7 +122,7 @@ def stays(rows):
         eps.sort(key=lambda r: (r["adm"], r["sep"]))
         chains = []
         for r in eps:
-            if chains and chains[-1][-1]["sep"] == r["adm"]:
+            if chains and chains[-1][-1]["sep"] == r["adm"] and chains[-1][-1]["drg"] == r["drg"]:
                 chains[-1].append(r)      # the care type changed inside the stay
             else:
                 chains.append([r])

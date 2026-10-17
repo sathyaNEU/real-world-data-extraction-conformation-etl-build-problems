@@ -17,20 +17,22 @@ def write(task, gendir):
     exc = fig["excluded_minutes"]
     stp = fig["stop_minutes"]
     wk = fig["weekly_plant"]
-    cmin = fig["centrifuge_minutes"]
-    cruns = fig["centrifuge_runs_position"]
+    a1 = fig["air_knm3_first_deployment"]
+    a2 = fig["air_knm3_second_deployment"]
+    unrec = fig["unrecorded_quarter_hours"]
     first = sl[0]
     rows = []
     for c in ORDER:
-        rows.append("   - %s (%s): %.1f dB LAeq, %s minutes with a centrifuge running, %d runs"
-                    % (c, W.BY_CODE[c][1], lv[c], "{:,}".format(cmin[c]), cruns[c]))
+        rows.append("   - %s (%s): %.1f dB LAeq, %.1f and %.1f thousand Nm3 of blower air, "
+                    "%d quarter hours not recorded"
+                    % (c, W.BY_CODE[c][1], lv[c], a1[c], a2[c], unrec[c]))
     weekly = []
     for k in sorted(wk, key=int):
         w = wk[k]
-        weekly.append("   - Week beginning %d %s: blower air %s thousand Nm3, %d centrifuge runs, "
-                      "engine %.1f hours"
+        weekly.append("   - Week beginning %d %s: blower air %s thousand Nm3, %d quarter hours not "
+                      "recorded"
                       % (W.WEEKS[int(k)].day, W.WEEKS[int(k)].strftime("%B"),
-                         "{:,}".format(w["blower_air_knm3"]), w["centrifuge_runs"], w["engine_hours"]))
+                         "{:,}".format(w["blower_air_knm3"]), w["unrecorded_quarter_hours"]))
     txt = """**Domain:** Physical and environmental sciences (environmental monitoring and exceedance).
 **Analytical objective:** Anomaly detection and diagnostics.
 
@@ -55,7 +57,7 @@ Not the complaints register, which is a record of what neighbours heard and not 
 2. Read sound_levels_1min_2026.parquet, kept one copy of the repeated download, and took the meters' UTC stamps to local time as survey_notes.md states.
 3. Dropped the minutes whose ten-minute record in weather_10min_2026.csv counted rain or ran above the plan's wind limit, reading the replacement anemometer in km an hour from 20 September, and the minutes the meter recorded no measurement for, per plan 4.2.
 4. Energetically averaged each position's assessment-period minutes for its measured sound level, per plan 3.1 and 3.2.
-5. Took each position's residual sound from the minutes inside the intervals in plant_equipment_events_2026.csv where the blowers, the centrifuges and the gas engine are all recorded down, and read the plant's running state over each position's assessment period from the same log, per plan 5.2.
+5. Took each position's residual sound from the minutes inside the intervals in plant_equipment_events_2026.csv where the blowers, the centrifuges and the gas engine are all recorded down.
 6. Subtracted residual from measured level in energy for the specific sound level at each position, per plan 3.1.
 7. Ranked the fourteen positions on that level and took the five the slot reaches, per plan 7.1: %(sl)s.
 8. Recommended those five dwellings for the October slot, with %(sixth)s named as the first off the list.

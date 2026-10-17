@@ -277,10 +277,10 @@ def run(g, target):
     a1 = g["a1"]
     ok("A1 four quarters", len(a1) == 4)
     ok("A1 the value past the cut-off is non-nil in every quarter",
-       all(a1[q][2] > 0 for q in a1), str({q: a1[q][2] for q in a1}))
+       all(a1[q][1] > 0 for q in a1), str({q: a1[q][1] for q in a1}))
     ok("A1 using one cut-off for the whole year undercounts the second half",
-       g["a1_stops"]["cutoff_1500_only"]["2026Q3"][1] < a1["2026Q3"][1] and
-       g["a1_stops"]["cutoff_1500_only"]["2026Q4"][1] < a1["2026Q4"][1])
+       g["a1_stops"]["cutoff_1500_only"]["2026Q3"][0] < a1["2026Q3"][0] and
+       g["a1_stops"]["cutoff_1500_only"]["2026Q4"][0] < a1["2026Q4"][0])
     ok("A1 grouping on the opening date rather than the release moves the quarters",
        g["a1_stops"]["grouped_on_the_opening_date"] != a1)
     ok("A1 a run released past midnight ends a quarter",
@@ -359,7 +359,7 @@ def run(g, target):
        max(perdate.values()) == 1, str(max(perdate.values())))
     ok("A2 some events were superseded", g["ncorr"] >= 5, str(g["ncorr"]))
     month, nabs, absn, ntw, twn = g["a3"]
-    ok("A3 twelve months", len(month) == 12)
+    ok("A3 four quarters of payment", len(month) == 4)
     rev = g["revenue"]
     ok("A3 the schedule lines absent from the capital ledger are the revenue sample",
        nabs == len(rev) == 17, "%d absent, %d revenue" % (nabs, len(rev)))

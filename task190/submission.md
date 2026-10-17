@@ -47,28 +47,20 @@ Security and access systems carries most of it at 250,000. Not the 21,004.93 the
 
 ### Also asked
 
-1. Payment runs released, those past the cut-off then in force and the value those carried, by quarter of release, values to the cent. A run pays the whole authority, so the value is the run's own as the log records it and not the capital extract's part of it:
-   - 2026Q1: 24 runs, 9 past the cut-off, 9,243,842.36 released past it
-   - 2026Q2: 24 runs, 9 past the cut-off, 5,911,811.17 released past it
-   - 2026Q3: 26 runs, 7 past the cut-off, 5,603,125.12 released past it
-   - 2026Q4: 24 runs, 7 past the cut-off, 6,124,569.07 released past it
+1. Payment runs released past the cut-off then in force and the value those carried, by quarter of release, values to the cent. A run pays the whole authority, so the value is the run's own as the log records it and not the capital extract's part of it; a release carrying a later date than its run ran past midnight and is past that date's cut-off:
+   - 2026Q1: 11 released past it, carrying 11,152,377.12
+   - 2026Q2: 10 released past it, carrying 7,116,710.85
+   - 2026Q3: 10 released past it, carrying 9,115,055.38
+   - 2026Q4: 8 released past it, carrying 6,663,248.13
 2. Suppliers raised into the category, removed from it, and raised in then removed, by supplier risk category:
    - Category 1 (R-A): 0 raised into it, 31 removed from it, 0 raised in then removed
    - Category 2 (R-B): 29 raised into it, 69 removed from it, 16 raised in then removed
    - Category 3 (R-C): 42 raised into it, 49 removed from it, 11 raised in then removed
    - Category 4 (R-D): 31 raised into it, 76 removed from it, 16 raised in then removed
    - Category 5 (R-E): 39 raised into it, 27 removed from it, 0 raised in then removed
-3. Distinct ledger lines the testing schedule covers, by month of payment:
-   - 2026-01: 28
-   - 2026-02: 20
-   - 2026-03: 22
-   - 2026-04: 24
-   - 2026-05: 19
-   - 2026-06: 27
-   - 2026-07: 33
-   - 2026-08: 17
-   - 2026-09: 23
-   - 2026-10: 25
-   - 2026-11: 16
-   - 2026-12: 21
-   17 rows on the working paper resolve to no line in the capital payment ledger: they are the revenue expenditure sample plan 4.4 tests, on the same paper under their own cost centres and their own ledger prefix, and they are counted in no month. One capital ledger line is on the paper twice, CPL-26-172282, re-tested after a query, so the paper carries 293 rows against 276 distinct capital lines.
+3. Distinct ledger lines the schedule covers, by quarter of payment:
+   - 2026Q1: 72
+   - 2026Q2: 72
+   - 2026Q3: 74
+   - 2026Q4: 67
+   17 rows on the working paper resolve to no line in the capital payment ledger: they are the revenue expenditure sample plan 4.4 tests, on the same paper under their own cost centres and their own ledger prefix, and they are counted in no quarter. One capital ledger line is on the paper twice, CPL-26-172282, re-tested after a query.

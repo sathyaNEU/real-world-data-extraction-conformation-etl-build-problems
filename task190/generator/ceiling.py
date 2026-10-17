@@ -105,19 +105,19 @@ def responses(fig):
         is short by the revenue part, which is every value figure and nothing else."""
         n = 0
         for q in a1:
-            for i in range(3):
+            for i in range(2):
                 got = agg[q][i]
-                if i == 2 and rebuilt_the_value_from_the_capital_extract:
+                if i == 1 and rebuilt_the_value_from_the_capital_extract:
                     got = None
                 n += 1 if got == a1[q][i] else 0
-        return n, 3 * len(a1)
+        return n, 2 * len(a1)
 
     # ---- A2, five categories x three figures
     def a2_hits(agg):
         return sum(1 for b in a2 for i in range(3) if agg[b][i] == a2[b][i]), 3 * len(a2)
 
     # ---- A3, twelve months plus the two reconciling counts, both rows actually scored
-    a3_month = fig["asks"]["schedule_lines_by_month"]
+    a3_month = fig["asks"]["schedule_lines_by_quarter"]
     a3_absent = fig["asks"]["schedule_lines_absent_from_the_ledger"]
     a3_twice = fig["asks"]["ledger_lines_on_the_schedule_twice"]
     # read from the cut pack, exactly as a response does
@@ -136,6 +136,10 @@ def responses(fig):
         come off the join to the ledger. Joining on the raw schedule_ref resolves nothing, because
         the reference is the master supplier number and the line reference joined by a slash, so
         every schedule row reads as absent and no ledger line reads as doubled."""
+
+        def qof(iso):
+            return "%sQ%d" % (iso[:4], (int(iso[5:7]) - 1) // 3 + 1)
+
         n = 0
         # the asking sentence pins the monthly figure to distinct ledger lines. The cracker
         # executes the pin; the mirror counts the schedule's rows, which is one too many in the
@@ -145,7 +149,7 @@ def responses(fig):
             # the paper's rows on the paper's own date, revenue sample and re-tested line included
             bym = {m: 0 for m in a3_month}
             for r in sched:
-                bym[r["date_released"][:7]] += 1
+                bym[qof(r["date_released"])] += 1
         else:
             # the cracker splits the reference, joins to the ledger and runs the unmatched-join
             # sweep, so it drops the rows that resolve to no capital line and de-duplicates
@@ -157,7 +161,7 @@ def responses(fig):
                 # the asking sentence asks for the month of payment, which is the ledger's own
                 # date; the paper carries the date the run was released, and the two differ for
                 # the runs whose release ran past midnight
-                seenm[ledger[line][:7]].add(line)
+                seenm[qof(ledger[line])].add(line)
             bym = {m: len(v) for m, v in seenm.items()}
         n += sum(1 for m in a3_month if bym[m] == a3_month[m])
         if join_on_the_raw_reference:

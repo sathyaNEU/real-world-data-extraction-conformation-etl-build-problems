@@ -328,17 +328,18 @@ def main(target, figpath):
     for r in rows(target, "payment_run_log_2026.csv"):
         if r["run_status"] != "released":          # the re-released row is the same run
             continue
-        day = r["released_ts"][:10]
-        qq = "%sQ%d" % (day[:4], (int(day[5:7]) - 1) // 3 + 1)
-        a = q.setdefault(qq, [0, 0, 0.0])
-        a[0] += 1
-        if r["released_ts"][11:16] > cutoff(day):
-            a[1] += 1
-            a[2] += float(r["run_value_eur"])
-    for k, v in fig["asks"]["runs_by_quarter"].items():
-        chk("A1 %s runs" % k, q[k][0], v[0])
-        chk("A1 %s past the cut-off" % k, q[k][1], v[1])
-        chk("A1 %s value past the cut-off" % k, round(q[k][2], 2), v[2])
+        rel = r["released_ts"][:10]
+        qq = "%sQ%d" % (rel[:4], (int(rel[5:7]) - 1) // 3 + 1)
+        a = q.setdefault(qq, [0, 0.0])
+        # the cut-off in force on the run's own date, and a release carrying a later date than the
+        # run ran past midnight, so it is past that date's cut-off however early the clock reads
+        late = rel != r["run_date"] or r["released_ts"][11:16] > cutoff(r["run_date"])
+        if late:
+            a[0] += 1
+            a[1] += float(r["run_value_eur"])
+    for k, v in fig["asks"]["runs_past_the_cutoff_by_quarter"].items():
+        chk("A1 %s past the cut-off" % k, q[k][0], v[0])
+        chk("A1 %s value past the cut-off" % k, round(q[k][1], 2), v[1])
 
     ev = rows(target, "supplier_risk_approval_history.csv")
     cmap = {r["label_from_2026_10_01"]: r["label_to_2026_09_30"]
@@ -371,13 +372,15 @@ def main(target, figpath):
         chk("A2 category %s raised then removed" % k, len(off.get(k, ())), v[2])
 
     # distinct ledger lines per month, as the asking sentence pins it
+    # distinct ledger lines per quarter of payment, as the asking sentence pins it
     bym = {}
     for line, code, rec, pay, r in tested:
         if r is None:
             continue
-        bym.setdefault(r["paid_date"][:7], set()).add(line)
+        d = r["paid_date"]
+        bym.setdefault("%sQ%d" % (d[:4], (int(d[5:7]) - 1) // 3 + 1), set()).add(line)
     bym = {k: len(v) for k, v in bym.items()}
-    for k, v in fig["asks"]["schedule_lines_by_month"].items():
+    for k, v in fig["asks"]["schedule_lines_by_quarter"].items():
         chk("A3 %s" % k, bym.get(k, 0), v)
     chk("A3 schedule lines absent from the ledger",
         sum(1 for t in tested if t[4] is None),

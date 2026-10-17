@@ -67,99 +67,89 @@ def tone_call(levels):
     return BANDS[i], bool(levels[i] - adj >= 5.0), round(float(levels[i] - adj), 2)
 
 
+def hist_rows(target):
+    """The historian's rows by stamp, and the stamps whose row carries nothing of its own: when the radio
+    link drops the interface holds the last value it had and writes it again, so the row is there and the
+    plant's state is not. Those rows are found by what they are, every channel the same as the row before
+    while the rates read above zero and the counters stand still, and by nothing that is written down."""
+    import csv as _c
+    rows, held, prev = {}, set(), None
+    with open(os.path.join(target, PK.FILES["scada"]), encoding="utf-8") as fh:
+        for r in _c.DictReader(fh):
+            t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+            rows[t] = r
+            if prev is not None and all(v == prev[k] for k, v in r.items() if k != "logged_at"):
+                held.add(t)
+            prev = r
+    return rows, held
+
+
+def air_total(row):
+    """The air the blowers delivered, off the two totalisers the plant's three machines are metered on."""
+    return float(row["blower_air_total_knm3"]) + float(row["bl03_air_total_knm3"])
+
+
+def position_windows(target):
+    """Per position, per deployment, the weekday assessment windows the deployment covered, in local
+    time, from the deployment record's own stamps."""
+    import csv as _c
+    out = {}
+    for d in sorted(_c.DictReader(open(os.path.join(target, PK.FILES["deployments"]), encoding="utf-8")),
+                    key=lambda r: r["deployed_at"]):
+        a = dt.datetime.strptime(d["deployed_at"], "%Y-%m-%d %H:%M")
+        b = dt.datetime.strptime(d["collected_at"], "%Y-%m-%d %H:%M")
+        wins = []
+        for k in range((b.date() - a.date()).days + 1):
+            day = a.date() + dt.timedelta(days=k)
+            if day.weekday() > 4:
+                continue
+            lo = dt.datetime(day.year, day.month, day.day, W.DAY_START)
+            hi = dt.datetime(day.year, day.month, day.day, W.DAY_END)
+            if lo >= a and hi <= b:
+                wins.append((lo, hi))
+        out.setdefault(d["position_code"], []).append(wins)
+    return out
+
+
+def unrecorded(rows, held, lo, hi):
+    """Quarter hours in (lo, hi] the historian did not record the plant's state in: the ones it wrote no
+    row for, and the ones whose row is the quarter hour before it written again."""
+    n, t = 0, lo + dt.timedelta(minutes=15)
+    while t <= hi:
+        if t not in rows or t in held:
+            n += 1
+        t += dt.timedelta(minutes=15)
+    return n
+
+
+def plant_behind_level(target):
+    """A2 and A3: the air the blowers delivered through each deployment's assessment hours, and the
+    quarter hours of the position's assessment period the historian did not record the plant's state in."""
+    rows, held = hist_rows(target)
+    out = {}
+    for code, deps in position_windows(target).items():
+        air, miss = [], 0
+        for wins in deps:
+            a = 0.0
+            for lo, hi in wins:
+                a += air_total(rows[hi]) - air_total(rows[lo])
+                miss += unrecorded(rows, held, lo, hi)
+            air.append(round(a, 1))
+        out[code] = {"air_knm3": air, "unrecorded_quarter_hours": miss}
+    return out
+
+
 def weekly_plant(target):
-    """A3: the biogas burned and the blower air delivered, read off the counters at the week boundaries
-    (plan 5.1), and the centrifuge runs the equipment log carries in the week (plan 5.2)."""
-    import csv as _c
-    scada = {}
-    for r in _c.DictReader(open(os.path.join(target, PK.FILES["scada"]), encoding="utf-8")):
-        scada[dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")] = r
-    # plan 5.2: a week's runs are the runs that start in it, and a start the log does not stop before the
-    # machine starts again is not a run
-    starts = [a for a, _ in log_runs(target)]
+    """A4: per survey week, the air the blowers delivered off the two totalisers at the week's own
+    boundaries (plan 5.1), and the quarter hours the historian did not record the plant's state in."""
+    rows, held = hist_rows(target)
     out = {}
     for i, wk in enumerate(W.WEEKS):
         a = dt.datetime(wk.year, wk.month, wk.day)
         b = a + dt.timedelta(days=7)
-        ra, rb = scada[a], scada[b]
-        gas = float(rb["biogas_meter_m3"]) - float(ra["biogas_meter_m3"])
-        while gas < 0:
-            gas += 100000.0
-        air = float(rb["blower_air_total_knm3"]) - float(ra["blower_air_total_knm3"])
-        out[i] = {"biogas_m3": int(round(gas)),
-                  "blower_air_knm3": int(round(air)),
-                  "centrifuge_runs": sum(1 for t in starts if a <= t < b)}
-    return out
-
-
-def log_runs(target):
-    """Every centrifuge run the equipment log carries, as plan 5.2 defines it: a start, and the first stop
-    the log records for the same machine after it. A start the log does not stop before that machine
-    starts again is not a run, so the start the shift wrote on 10 September and never stopped drops out,
-    and an orphan stop closes nothing."""
-    import csv as _c
-    opens, runs = {}, []
-    rows = sorted(_c.DictReader(open(os.path.join(target, PK.FILES["events"]), encoding="utf-8")),
-                  key=lambda r: r["logged_at"])
-    for r in rows:
-        if r["equipment"] not in W.CENTRIFUGES:
-            continue
-        t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
-        if r["event"] == "START":
-            opens[r["equipment"]] = t
-        elif r["equipment"] in opens:
-            runs.append((opens.pop(r["equipment"]), t))
-    return sorted(runs)
-
-
-def plant_state_per_position(target, frames):
-    """A2: how many valid minutes of each position's assessment period a centrifuge was running in, and
-    how many runs reached into that period, which a run does when it overlaps any minute of it. Plan 5.2
-    says what a run is and when it ends."""
-    runs = log_runs(target)
-    out = {}
-    for code, d in frames.items():
-        stamps = d["stamps"]
-        lo, hi = stamps.min(), stamps.max()
-        near = [(a, b) for a, b in runs if a <= hi and b > lo]
-        inrun = np.zeros(len(stamps), dtype=bool)
-        for a, b in near:
-            inrun |= (stamps >= a) & (stamps < b)
-        mins = int((inrun & d["keep"]).sum())
-        # the assessment period itself, valid or not, in contiguous blocks
-        idx = np.flatnonzero(d["am"])
-        blocks, start = [], None
-        for j, i in enumerate(idx):
-            if start is None:
-                start = i
-            if j + 1 == len(idx) or idx[j + 1] != i + 1:
-                blocks.append((stamps[start], stamps[i] + dt.timedelta(minutes=1)))
-                start = None
-        n = sum(1 for a, b in near if any(a < q and b > p for p, q in blocks))
-        out[code] = {"centrifuge_minutes": mins, "centrifuge_runs": n}
-    return out
-
-
-def engine_hours(target):
-    """A3: the hours the gas engine ran in each survey week, from its own hour counter (plan 5.1). The
-    counter was changed during the inspection on 15 September, with the engine down, and starts again
-    from zero."""
-    import csv as _c
-    rows = [(dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M"), float(r["engine_hours_run"]))
-            for r in _c.DictReader(open(os.path.join(target, PK.FILES["scada"]), encoding="utf-8"))]
-    by_t = dict(rows)
-    out = {}
-    for i, wk in enumerate(W.WEEKS):
-        a = dt.datetime(wk.year, wk.month, wk.day)
-        b = a + dt.timedelta(days=7)
-        seg, prev_t = 0.0, None
-        inside = [(t, v) for t, v in rows if a <= t <= b]
-        for j in range(1, len(inside)):
-            step = inside[j][1] - inside[j - 1][1]
-            if step < 0:                      # the counter was changed inside this week
-                step = inside[j][1]
-            seg += step
-        out[i] = round(seg, 1)
+        out[i] = {"blower_air_knm3": int(round(air_total(rows[b]) - air_total(rows[a]))),
+                  "blower_air_knm3_raw": round(air_total(rows[b]) - air_total(rows[a]), 1),
+                  "unrecorded_quarter_hours": unrecorded(rows, held, a, b)}
     return out
 
 
@@ -177,10 +167,7 @@ def compute(target, series, dup):
         else:
             tones[c] = {"band_hz": None, "tone": None, "excess_db": None}
     weekly = weekly_plant(target)
-    eng = engine_hours(target)
-    for k in weekly:
-        weekly[k]["engine_hours"] = eng[k]
-    plant = plant_state_per_position(target, frames)
+    plant = plant_behind_level(target)
     rows = []
     for c in W.CODES:
         rows.append({
@@ -188,8 +175,9 @@ def compute(target, series, dup):
             "specific_db": round(spec[c], 1), "specific_raw": spec[c],
             "valid_minutes": r[c]["minutes_valid"], "excluded_minutes": r[c]["minutes_excluded"],
             "band_hz": tones[c]["band_hz"], "tone": tones[c]["tone"],
-            "centrifuge_minutes": plant[c]["centrifuge_minutes"],
-            "centrifuge_runs": plant[c]["centrifuge_runs"],
+            "air_knm3_first": plant[c]["air_knm3"][0],
+            "air_knm3_second": plant[c]["air_knm3"][1],
+            "unrecorded_quarter_hours": plant[c]["unrecorded_quarter_hours"],
             "total_db": round(r[c]["total"], 1), "residual_db": round(r[c]["resid"], 1),
             "stop_minutes": r[c]["minutes_stop"], "distance_m": W.BY_CODE[c][3],
         })

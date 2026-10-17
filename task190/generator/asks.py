@@ -67,9 +67,11 @@ def run_log(target, rows, runs):
         last_of_quarter = any(day.isoformat() == hi for _n, _lo, hi in QUARTERS)
         if last_of_quarter or rng.u() < 0.04:
             rel = day + dt.timedelta(days=1)
-            mins = (1 + rng.below(3)) * 60 + rng.below(60)
+            # minutes are measured from the run's own date, so a release that ran past midnight is
+            # later than any cut-off on that date rather than earlier than all of them
+            mins = 24 * 60 + (1 + rng.below(3)) * 60 + rng.below(60)
         out.append([run, day.isoformat(),
-                    "%s %02d:%02d:00" % (rel.isoformat(), mins // 60, mins % 60),
+                    "%s %02d:%02d:00" % (rel.isoformat(), (mins // 60) % 24, mins % 60),
                     cap_lines + rev_lines, "%.2f" % value, "%.2f" % (-rev), "released",
                     "FO%03d" % (11 + rng.below(14))])
         truth[run] = (rel, mins, cap_lines + rev_lines, value, -rev, cut, day,
@@ -122,16 +124,15 @@ def a1_golden(truth):
     """
     out = {}
     for name, lo, hi in QUARTERS:
-        n, past, val = 0, 0, 0.0
+        past, val = 0, 0.0
         for run, (day, mins, nl, value, r, cut, opened, cv, cl, rv, rl) in truth.items():
             if not (lo <= day.isoformat() <= hi):
                 continue
-            n += 1
             ch, cm = [int(v) for v in cut.split(":")]
             if mins > ch * 60 + cm:
                 past += 1
                 val += value
-        out[name] = (n, past, round(val, 2))
+        out[name] = (past, round(val, 2))
     return out
 
 
@@ -163,7 +164,7 @@ def a1_stops(truth):
                     val += value
             if name == "the_mirror":                  # the re-released run counted twice
                 n += 1 if lo <= "2026-05-01" <= hi else 0
-            agg[q] = (n, past, round(val, 2))
+            agg[q] = (past, round(val, 2))
         stops[name] = agg
     return stops
 
@@ -322,7 +323,7 @@ def a3_golden(tested_rows, ledger_lines, invoices=None):
         ledger[r["line"]] += 1
     # the monthly figure is DISTINCT ledger lines, pinned in the asking sentence, so the line the
     # schedule carries twice after a query counts once and the twelve months sum to the tested count
-    bymonth = {m: set() for m in MONTHS}
+    bymonth = {q: set() for q, _lo, _hi in QUARTERS}
     absent, twice = [], []
     seen = {}
     inv = invoices or {}
@@ -332,7 +333,7 @@ def a3_golden(tested_rows, ledger_lines, invoices=None):
             # the row is recorded at invoice level, so it covers every payment line on that
             # invoice, which is more lines than the selection chose
             for line in inv[ref]:
-                bymonth[t["day"].isoformat()[:7]].add(line)
+                bymonth[_q(t["day"])].add(line)
                 seen[line] = seen.get(line, 0) + 1
             continue
         if ref not in ledger:
@@ -340,7 +341,7 @@ def a3_golden(tested_rows, ledger_lines, invoices=None):
             # part of this population, so it is counted as absent and counted in no month
             absent.append(t["schedule_ref"])
             continue
-        bymonth[t["day"].isoformat()[:7]].add(ref)
+        bymonth[_q(t["day"])].add(ref)
         seen[ref] = seen.get(ref, 0) + 1
     bymonth = {m: len(v) for m, v in bymonth.items()}
     for line, n in sorted(seen.items()):

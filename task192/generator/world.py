@@ -31,7 +31,7 @@ CODER_PACE_W = [7, 9, 11, 12, 11, 10, 9, 8, 7, 6, 6, 4]
 # association's holiday month and the desk thins out rather than stopping
 DESK_WORKED = {5: 0.72, 6: 0.78, 7: 0.70, 8: 0.38, 9: 0.80}
 DESK_SATURDAY = 0.09
-DESK_SIT = 0.73         # how much of a coder's rota share is a sitting on a day the desk worked
+DESK_SIT = 0.78         # how much of a coder's rota share is a sitting on a day the desk worked
 # a second coder reads a report when the first coder flags it, which happens far more often on the
 # ambiguous reports the classifier also tends to get wrong
 ADJ_AGREE = 0.052
@@ -80,20 +80,16 @@ def fortnights():
 # dispute themes the protocol monitors. opens_on is the first day a theme can appear in the
 # register: the autumn wave brings two disputes the register had not seen before.
 THEMES = [
-    ("TRM", "transporte rodoviario de mercadorias", 1.25, 1.20, None),
-    ("AGR", "agricultura e pecuaria", 1.10, 1.05, None),
-    ("SAU", "saude", 0.80, 0.70, None),
-    ("EDU", "educacao", 0.70, 0.65, None),
-    ("HAB", "habitacao", 1.05, 1.45, None),
-    ("CVD", "combustiveis e custo de vida", 1.20, 1.00, None),
-    ("PES", "pescas", 0.95, 0.90, None),
-    ("SMU", "servicos municipais", 0.85, 0.80, None),
-    ("AGU", "agua e saneamento", 0.45, 0.95, None),
-    ("RES", "residuos e tratamento", 0.40, 1.10, None),
-    ("PEN", "pensoes e seguranca social", 0.55, 0.60, None),
-    ("ADM", "administracao publica", 0.60, 0.55, None),
-    ("ENE", "energia e redes", 0.90, 0.85, SURGE_FROM),
-    ("FLO", "florestas e fogos", 0.75, 0.75, SURGE_FROM),
+    ("TRM", "transporte rodoviario de mercadorias", 1.15, 1.20, None),
+    ("AGR", "agricultura e pecuaria", 1.05, 1.05, None),
+    ("SAU", "saude", 0.95, 0.70, None),
+    ("EDU", "educacao", 0.90, 0.65, None),
+    ("HAB", "habitacao", 1.10, 1.45, None),
+    ("CVD", "combustiveis e custo de vida", 1.10, 1.00, None),
+    ("PES", "pescas", 0.85, 0.90, None),
+    ("AGU", "agua e saneamento", 0.90, 0.95, None),
+    ("ENE", "energia e redes", 0.95, 0.85, SURGE_FROM),
+    ("FLO", "florestas e fogos", 0.85, 0.75, SURGE_FROM),
 ]
 SURGE_THEMES = ["TRM", "AGR", "CVD", "ENE", "FLO"]
 LATE_THEMES = [t for t, _, _, _, o in THEMES if o is not None]
@@ -246,11 +242,7 @@ THEME_GROUND = {
     "HAB": {"metro": 2.20, "litoral": 0.80, "interior": 0.22, "ilhas": 0.95},
     "CVD": {"metro": 1.05, "litoral": 1.00, "interior": 0.95, "ilhas": 1.00},
     "PES": {"metro": 1.00, "litoral": 1.40, "interior": 0.00, "ilhas": 1.90},
-    "SMU": {"metro": 1.05, "litoral": 1.00, "interior": 0.95, "ilhas": 1.05},
     "AGU": {"metro": 0.65, "litoral": 1.00, "interior": 1.70, "ilhas": 1.20},
-    "RES": {"metro": 1.40, "litoral": 1.10, "interior": 0.55, "ilhas": 0.85},
-    "PEN": {"metro": 0.95, "litoral": 1.00, "interior": 1.30, "ilhas": 1.05},
-    "ADM": {"metro": 1.25, "litoral": 1.00, "interior": 1.10, "ilhas": 1.00},
     "ENE": {"metro": 0.35, "litoral": 0.85, "interior": 2.80, "ilhas": 0.55},
     "FLO": {"metro": 0.18, "litoral": 0.95, "interior": 3.20, "ilhas": 0.45},
 }
