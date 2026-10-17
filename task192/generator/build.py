@@ -49,7 +49,11 @@ def dictionary_sheets():
           ("local_texto", "texto", "localidade tal como o relato a da"),
           ("data_ocorrencia", "data", "dia de calendario local da acao"),
           ("inicio_acao", "data e hora", "hora a que a acao comecou, no relogio local do local da acao"),
-          ("carimbo_entrega_utc", "data e hora", "momento da entrega no portal de parceiros, em UTC")]),
+          ("carimbo_entrega_utc", "data e hora", "momento em que o portal de parceiros registou a "
+                                                 "entrega da linha, em UTC; uma carga reposta "
+                                                 "registou as suas linhas no dia em que chegou, e o "
+                                                 "momento em que a rede entregou o relato e o da "
+                                                 "primeira carga que o trouxe")]),
         ("relatos_linha_publica", "Um registo por relato recebido na linha de participacao publica.",
          [("id_relato", "texto", "identificador do relato"),
           ("canal", "texto", "web ou telefone"),
@@ -69,12 +73,15 @@ def dictionary_sheets():
           ("tema", "texto", "tema de disputa do relato"),
           ("codigo_monitor", "texto", "codigo de acao que o classificador do monitor atribuiu ao relato"),
           ("codigo_manual", "texto", "codigo de acao da codificacao manual, depois da decisao da "
-                                     "mesa nas linhas que foram a segunda codificacao"),
+                                     "mesa nas linhas que foram a segunda codificacao; vazio nas "
+                                     "linhas que a mesa nao conseguiu codificar, que por isso nao "
+                                     "comparam codigos"),
           ("codificador", "texto", "iniciais de quem codificou a mao"),
-          ("data_codificacao", "data", "dia em que a codificacao manual foi feita; a mesa trabalha o "
-                                       "lote nos seus dias de trabalho anteriores ao fecho da "
-                                       "ronda, com dias de recuperacao ao fim de semana quando o "
-                                       "lote o exige"),
+          ("data_codificacao", "data", "dia em que a codificacao manual foi feita; a mesa abre o "
+                                       "lote depois de fechar a ronda anterior e trabalha-o nos "
+                                       "seus dias de trabalho ate ao fecho, mais fino no mes de "
+                                       "ferias da associacao, com dias de recuperacao ao fim de "
+                                       "semana quando o lote o exige"),
           ("ronda", "texto", "ronda de codificacao, com o seu corte e o seu fecho: R1, corte em 19 "
                              "de junho e fecho em 20 de junho de 2026, sobre os relatos de 1 de "
                              "maio a 19 de junho; R2, corte em 31 de agosto e fecho em 10 de "
@@ -82,7 +89,8 @@ def dictionary_sheets():
           ("revisto_por", "texto", "iniciais de quem fez a segunda codificacao; vazio nas linhas "
                                    "que nao foram revistas"),
           ("decisao_da_mesa", "texto", "mantido ou alterado, nas linhas que foram revistas"),
-          ("nota", "texto", "nota de codificacao, quando quem codificou deixou uma")]),
+          ("nota", "texto", "nota de codificacao, nas linhas que foram a segunda codificacao e "
+                            "nas que ficaram sem codigo manual")]),
         ("gazeteiro_localidades", "Uma linha por nome de localidade. Uma localidade com nome novo "
          "fica com duas linhas, a atual e a anterior, ambas com o mesmo codigo_localidade.",
          [("codigo_localidade", "texto", "codigo da localidade no gazeteiro de 2024"),

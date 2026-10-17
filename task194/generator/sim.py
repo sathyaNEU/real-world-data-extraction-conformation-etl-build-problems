@@ -295,28 +295,40 @@ def episodes(units):
     return rows, expected, expected_net, inscope
 
 
-def centre_plans(plans, per_separation, graded, pick, expected_per_sep):
+EDGE_BAR = 0.15          # a graded figure sits at least this fraction of its rounding unit from the edge
+
+
+def bin_edge(value, unit=0.1):
+    """Distance from a printed cell's nearest edge: the unit's half less the distance to the cell centre.
+
+    The two sum to the unit's half, so computing the distance to the centre and calling it clearance
+    reports proximity as room. This returns the edge distance itself.
+    """
+    scale = round(1.0 / unit)
+    centre = round(value * scale) / float(scale)
+    return unit / 2.0 - abs(value - centre)
+
+
+def centre_plans(plans, per_separation, graded, pick, expected_per_sep,
+                 count_unit=1.0, rate_unit=0.1):
     """The planned separations of the eligible units, nudged by a few per cent.
 
     Every eligible unit's planned volume is moved to the nearest value inside a few per cent that leaves
-    the avoidable complications its planned activity carries clear of the whole complication's rounding
-    edge, and leaves the complications its patients would be expected to have clear of the edge at the
-    decimal it is shown to. Nothing here is fitted: each figure is a sum over the record times a volume.
+    the avoidable complications its planned activity carries, stated to the nearest whole complication,
+    and the complications its patients would be expected to have, stated to one decimal, at least
+    EDGE_BAR of their own rounding unit from the edge of their printed cells. Nothing here is fitted:
+    each figure is a sum over the record times a volume.
     """
     for code in graded:
         per = per_separation[code]
         epl = expected_per_sep[code]
         best = None
         for plan in range(int(plans[code] * 0.90), int(plans[code] * 1.10) + 1):
-            x = per * plan
-            if 0.5 - abs(x - round(x)) < 0.17:
+            if bin_edge(per * plan, count_unit) < EDGE_BAR * count_unit:
                 continue
-            e = epl * plan
-            if 0.05 - abs(e * 10 - round(e * 10)) / 10.0 < 0.0085:
+            if bin_edge(epl * plan, rate_unit) < EDGE_BAR * rate_unit:
                 continue
-            if code == pick and 0.5 - abs(e - round(e)) < 0.09:
-                continue
-            score = (abs(plan - plans[code]),)
+            score = abs(plan - plans[code])
             if best is None or score < best[0]:
                 best = (score, plan)
         if best is None:
@@ -332,17 +344,14 @@ def assign_complications(rows, expected, design, units, targets=None):
     for i, row in enumerate(rows):
         if row["in_scope"]:
             by_uq.setdefault((row["unit"], row["q"]), []).append(i)
-    embed_q = {v: k for k, v in W.EMBEDS.items()}
     observed = {}
     for (code, q), idx in sorted(by_uq.items()):
         exp = expected[(code, q)]
         ratio = design[code][q]
         target = int(round(exp * ratio))
-        if targets and code in targets and embed_q.get(code) == q:
-            target = targets[code]
-        # which episodes carry the complications follows the rate the network itself runs at in the
-        # band, not the rate published with the specification, so the record's own stratum rates are the
-        # network's and not the table's
+        # which episodes carry the complications follows the frequency the network itself runs at in the
+        # band, not the rate published with the specification, so the record's own stratum frequencies are
+        # the network's and not the table's
         p = np.array([W.STRATUM_RATE[(W.DRG_BAND[rows[i]["drg"]], rows[i]["age"])]
                       * W.NETWORK_DRIFT[W.DRG_BAND[rows[i]["drg"]]]
                       * (1.0 + 0.145 * rows[i]["los"]) ** 0.78
@@ -356,6 +365,38 @@ def assign_complications(rows, expected, design, units, targets=None):
     for i, row in enumerate(rows):
         if not row["in_scope"] and row["rstream"] < 0.052:
             rows[i]["hac"] = True
+    return observed
+
+
+def settle_additive(rows, expected, design, units, passes=3):
+    """Fix the demonstration unit against the frequency the record itself ends up carrying.
+
+    One unit's own practice has to be flat by construction, so that when its case mix moves its avoidable
+    count does not. Its complication count is therefore set to the complications the record's own stratum
+    frequencies give its patients, plus one constant per episode, which is its own practice. Those
+    frequencies depend on every unit's counts, including this one's, so the definition is a fixed point and
+    is reached by iterating it: set the count, re-flag the record, re-measure the frequencies, repeat.
+    """
+    code = W.ADDITIVE_UNIT
+    for _ in range(passes):
+        num, den = {}, {}
+        for r in rows:
+            if not r["in_scope"]:
+                continue
+            st = (W.DRG_BAND[r["drg"]], r["age"])
+            den[st] = den.get(st, 0) + 1
+            num[st] = num.get(st, 0) + (1 if r["hac"] else 0)
+        rate = {st: num[st] / den[st] for st in den}
+        acc, cnt = {}, {}
+        for r in rows:
+            if r["unit"] == code and r["in_scope"]:
+                acc[r["q"]] = acc.get(r["q"], 0.0) + rate[(W.DRG_BAND[r["drg"]], r["age"])]
+                cnt[r["q"]] = cnt.get(r["q"], 0) + 1
+        for q in acc:
+            design[code][q] = (acc[q] + W.ADDITIVE_C * cnt[q]) / expected[(code, q)]
+        for r in rows:
+            r["hac"] = False
+        observed = assign_complications(rows, expected, design, units)
     return observed
 
 

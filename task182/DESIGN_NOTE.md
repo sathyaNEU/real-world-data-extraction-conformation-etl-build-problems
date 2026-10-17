@@ -131,6 +131,88 @@ decision needs that run through the plant's own records, where the devices live.
 scores it on the cut pack, and the measured ceiling is 39.1 with 4.3 per cent mirror leakage. The whole
 arithmetic, and the sensitivity against a perfect clause-executing reader, is in `## Ask sheet` below.
 
+## STAGE 4, ROUND 2 (the seven rulings, and what each cost)
+
+Round 2 of stage 4 returned **NOT_DETERMINISTIC, FIX_NOW** again, with Gate G and Gate H passed and Gate F
+moderate: the call, the stump and the decisive step stand, and the findings were on one shipped log
+sequence, the per-position runs column, two unstated bases, two rounding edges and a realism list. The
+author ruled on all six findings and on the realism pass; the rulings are the specification this round
+executed, and every fix is in the generator.
+
+1. **The 10 September CF-02 sequence stays, and the golden stops reading it two ways.** The log carries a
+   stop at 13:06, a second stop at 13:38 for a machine already stopped, a start at 14:06 the log never
+   stops, and the next start for that machine on 11 September at 06:16. Two starts with no stop between
+   them is a cardinality violation the log carries on its own, so the device is findable without the other
+   records and it stays. What was not allowed was the golden treating that start as spurious for the
+   per-position minutes while the weekly count of 13 counted it as a start. Plan 5.2 is reworded (a run is
+   a start and the first stop the log records for the same machine after it; a start the log does not stop
+   before that machine starts again is not a run; a week's runs are the runs that start in it), and
+   executing that wording gives the weekly runs, the per-position runs and the per-position minutes on one
+   reading, the unstopped start excluded from all three. The week beginning 7 September is 12 runs.
+   `checks.py` asserts the cardinality rule and names the one start it holds, and measures the naive count
+   that keeps it (13) beside the 12 the clause gives, so the hazard is measured rather than asserted.
+2. **The per-position runs column was a golden bug and an undefined term, and both are fixed.** The
+   committed 14, 14, 11 ... came from counting only the first run that covered each minute, which is a
+   CF-01-only reading. The term is now defined in the asking sentence (a run reached into the period when
+   it overlaps any minute of it), the golden computes exactly that from the log under the new 5.2, and the
+   column is 22, 22, 18, 22, 22, 18, 18, 18, 23, 23, 20, 20, 15, 19. `verify.py` recomputes it twice from
+   the bundle alone, once minute by minute and once by interval arithmetic against the deployment record's
+   own windows.
+3. **The minutes basis is stated in the asking sentence.** "The valid minutes of its assessment period a
+   centrifuge was running": the committed figures were valid minutes only and the two bases differ by
+   about a fifth (4,306 against 5,336 at NSL01). Every figure, unit and rounding word is otherwise
+   unchanged, and the call sentence is untouched (963 characters, `voice-check.py` exit 0).
+4. **Every weekly blower figure is off its rounding edge.** The week beginning 21 September sat at exactly
+   699.5 against a whole-unit ask, and the other five sat 0.1 from theirs, because the trim's own variation
+   was invisible at the totaliser's printed resolution. The blower header now follows its dissolved-oxygen
+   trim (an AR(1) wander on top of the diurnal shape), so the totaliser's quarter-hour steps are not all
+   equal, and the draw was scanned for a week set clear of the edges: 688.7, 667.9, 677.8, 701.1, 659.0 and
+   683.0, every one of them 0.2 or more of a whole unit from its edge, asserted per week in `checks.py` and
+   again in `verify.py`.
+5. **The minute file's stamp convention is filed at authority, once.** Plan 2.2 already filed that the
+   meter stamps in UTC; it now reads "each record at the start of the interval it measures". That is the
+   sentence in the pack that speaks for the instrument, and it is not the survey notes. The pack ships no
+   logger manual and the deployment record is a flat CSV with no description block, so neither of the two
+   homes the ruling named exists; the clause that already files the other half of the same convention is
+   where a real plan states it. The survey notes do not restate it (asserted). This closes the reading that
+   moved four printed levels by a tenth and the margin from 1.3 to 1.2.
+6. **The fifth-to-sixth margin is off its edge.** 1.2548 sat 0.0048 from the 1.25 edge. The lever is
+   NSL06's own level, since NSL13 is the fifth and the five levels are frozen: NSL06's specific level is
+   44.6817 (printed 44.7, 0.032 from its edge, 0.018 off its printed value) and the margin is 1.2877
+   (printed 1.3, 0.038 from its edge). The five levels, the sixth's printed level and the printed margin
+   are byte-identical to the shipped build. The cost is the sixth-to-seventh gap, which falls from 0.098 to
+   0.062 dB, because the margin can only be moved by moving the sixth's own level; it is reported in the
+   ladder section rather than tuned away.
+7. **The realism pass, item by item.** The plant's sound now reaches each position through the weather: a
+   downwind-and-upwind term on the mast's own wind and the position's bearing, a night-time inversion that
+   grows with distance and calm, and turbulent scattering minute to minute. Measured on the shipped
+   columns, the minute level now correlates with the wind's direction at -0.35 to +0.50 by position (0.02
+   before), with its speed up to 0.29 and with temperature up to -0.30, and a night minute moves 0.5 to 2.8
+   dB about its hour (0.4 to 0.7 before). The round is now a round: the five meters go in and come out at
+   different minutes of the Monday morning between 04:48 and 06:41, no record is a week of minutes (25
+   different lengths from 9,948 to 10,159), and the record carries what the technician did at the
+   microphone, the handling minutes as the tripod goes up and comes down and the field check itself, which
+   reads the level the deployment sheet records, to the tenth. Every one of those minutes falls outside
+   every assessment period and outside every process stop (asserted), so no graded level moves, and the
+   loudest minute in the file is now the calibrator at 94.9 dB rather than 59.3. The band export carries
+   the same minutes, the calibrator in its own 1 kHz band. The schedule's grid references are a survey
+   again: each sits within 9 m of its scaled distance and bearing and the fourteen no longer reduce to one
+   gable point. The complaints register carries 24 contacts in 24 different sentences. The process channels
+   wander instead of jumping (lag-1 0.5 or more on the blower channel), and the totaliser's printed steps
+   take five or more values. The engine's hour counter still steps 0.25 a running quarter, which is what an
+   hour counter does and is left alone. `survey_notes.md` is stripped: no bolding anywhere, and the
+   sentence about the early morning at the roadside positions is gone. The call survives that cut and it is
+   proved rather than argued: `checks.py` asserts that the only minutes of any record with every source
+   down are the intervals the log shows them all down in, and that the residual taken from the weekday
+   hours before 05:00, from the nights, from the Sundays or from the minutes with both centrifuges off
+   files a slate with NSL06 in and NSL13 out.
+
+**What this round cost the ask layer, measured.** Rulings 1 to 3 put every A2 and A3 figure inside a filed
+rule. The clause-executing cracker, written as code in `generator/cracker.py` and run on the cut pack,
+keeps 70 of 70 ask criteria: the pair is 75.2 and the mirror keeps 70.0 per cent. The Part 1.1 cracker
+still measures 39.1 and 4.3. The ask sheet states both and names the re-cut that would close the gap; it is
+an open finding for the author, not a sensitivity, and it is not papered over.
+
 ## Draw
 
 **Pairing.** Domain physical and environmental sciences, task type environmental monitoring and exceedance,
@@ -297,6 +379,7 @@ alternative a literal reader could take, and what closes it. `checks.py` asserts
 | SF4 | the position's level | the energetic mean of its valid assessment minutes | the arithmetic mean of the same minutes | plan 3.1 states the level is an energy-equivalent level; the arithmetic reading files its own wrong slate (ladder rung 2c) |
 | SF5 | valid minute, rain | a minute whose ten-minute met record counted rain on the gauge | the same record read as a rate above a limit | plan 4.2 states the test as a count and states no rate; a rate test on the ten-minute record selects exactly the same records, since one tip is 1.2 mm an hour (asserted equal, record by record) |
 | SF6 | valid minute, the met record | the record whose ten minutes contain the minute, the stamp being its start | the record stamped at the end of those ten minutes | the survey notes file the stamp as the start of the ten minutes each record covers (asserted present) |
+| SF6b | the meter record's stamp | the record covers the minute it is stamped at, the start of the interval | the stamp read as the end of the minute it covers | plan 2.2 files it in the sentence that already files the UTC stamp ("the meter stamps its records in UTC, each record at the start of the interval it measures"), stated there and nowhere else; unfiled, the end-of-minute reading moved four printed levels by a tenth and the margin from 1.3 to 1.2 |
 | SF7 | valid minute, no measurement | a minute whose levels are the instrument's no-data value is not valid | the no-data value read as a level | plan 4.2's last sentence; the notes file the value, the deployment remarks file each spell, and no no-data minute falls inside a process stop (asserted) |
 | SF8 | calibration correction | the deployment's deviation, the mean of its two field checks less 94.0 dB, taken off its levels, with its sign | the same difference taken as an absolute value | plan 4.1 defines the deviation as the mean less the reference and says it is taken off, so the sign follows the arithmetic; the two meters outside the window sit on opposite sides, so the signed reading is the only one that returns both to the calibrator |
 | SF9 | the stops | every interval in which all three plant sources are recorded down | the weekly planned stop only | every printed level is identical to one decimal under both (asserted) |
@@ -309,8 +392,9 @@ alternative a literal reader could take, and what closes it. `checks.py` asserts
 | SF16 | the band file's time base | stamped UTC, like the minute file | stamped local | the notes file it; the tone verdicts are the same under both (asserted) |
 | SF17 | tonality, the adjacent mean | the mean of the two adjacent band levels as the file writes them | the energetic mean of the same two | plan 4.3 says the mean of the levels; both give the same verdict at every position (asserted) |
 | SF18 | the week, for a process figure | the counter reading at 00:00 on the Monday taken from the reading at 00:00 on the Monday after | the sum of the readings the historian holds inside the week | plan 5.1 files the two readings and says a spell it did not record leaves them as they stand |
-| SF19 | a centrifuge run | one start of a centrifuge in the equipment log, lasting to the stop the log records for the same machine | a block of feed in the process channel | plan 5.2 files both halves of it; the channel's blocks count 6 or fewer where the log counts 8 to 13 |
-| SF20 | the minutes behind a level | the minutes that went into it, which are its valid assessment minutes | every minute of its assessment period, valid or not | the ask says the minutes behind the level, and plan 4.2 scopes its exclusions to levels, so the two readings are different quantities and the asked one is named |
+| SF19 | a centrifuge run | one start of a centrifuge in the equipment log and the first stop the log records for the same machine after it; a start the log does not stop before that machine starts again is not a run | a block of feed in the process channel, or the bare count of START rows, which keeps the start of 10 September the log never stopped | plan 5.2 files all three parts of it, so one reading gives the weekly runs, the per-position runs and the per-position minutes; the channel's blocks count 6 or fewer where the log counts 8 to 13, and the bare count of starts gives 13 in the week beginning 7 September against the 12 the clause gives (both measured in `checks.py`) |
+| SF20 | the minutes a centrifuge was running | the valid minutes of the position's assessment period, which is what the ask asks for | every minute of that period, valid or not | the ask states the basis in its own sentence ("the valid minutes of its assessment period"); the two readings differ by about a fifth (4,306 against 5,336 at NSL01), and plan 4.2 defines what a valid minute is |
+| SF22 | a run reaching into the assessment period | a run that overlaps any minute of that period | a run that starts inside it, or one wholly inside it | the ask states the test in its own sentence ("overlapped any minute of that period"); counting the starts inside the period instead differs at ten or more of the fourteen positions (asserted) |
 | SF21 | the engine's hours | the hour counter's own reading at the week boundaries, with the counter changed at the inspection on 15 September | the quarter hours whose export reading is above zero | plan 5.1 reads a week's figure off the counter; the counter was changed with the engine down, so no running hour falls either side of the change (asserted) |
 
 ## Ladder
@@ -321,27 +405,32 @@ Each figure is that rung's specific-level estimate in dB for the position, as bu
 | Rung | What it computes | Slate | 5th to 6th | Dies to |
 |---|---|---|---|---|
 | 0 complaints | rank by the complaints register's own count per dwelling | NSL01, NSL03, NSL06, NSL09, NSL12 | 1 complaint | plan 7.1: the slot is picked on the specific sound level, not on complaints |
-| 1 measured total | the energetic mean of each position's valid assessment minutes | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.50 dB | plan 3.1's definition, which subtracts the residual |
-| 2 statistical background (default) | total less the energetic mean of the position's minute LA90 values | NSL03, NSL04, NSL06, NSL11, NSL12 | 0.10 dB | the event log: the plant ran through every minute of that background |
-| 2' tenth percentile | total less the tenth percentile of the position's LAeq minutes | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.72 dB | the same event log |
-| 2b quietest interval | total less the quietest quarter hour of the position's record | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.88 dB | the same event log |
-| 2c arithmetic means | the arithmetic mean of the minute levels less the arithmetic mean of the minute LA90s | NSL03, NSL04, NSL06, NSL07, NSL11 | 0.39 dB | the same event log, and plan 3.1's energy-equivalent level |
-| **3 residual in the plant's stops (answer)** | total less the energetic mean of the position's minutes inside the plant's recorded stops | **NSL04, NSL11, NSL07, NSL02, NSL13** | **1.25 dB** | nothing in the pack |
+| 1 measured total | the energetic mean of each position's valid assessment minutes | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.48 dB | plan 3.1's definition, which subtracts the residual |
+| 2 statistical background (default) | total less the energetic mean of the position's minute LA90 values | NSL03, NSL04, NSL06, NSL11, NSL12 | 0.08 dB | the event log: the plant ran through every minute of that background |
+| 2' tenth percentile | total less the tenth percentile of the position's LAeq minutes | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.52 dB | the same event log |
+| 2b quietest interval | total less the quietest quarter hour of the position's record | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.70 dB | the same event log |
+| 2c arithmetic means | the arithmetic mean of the minute levels less the arithmetic mean of the minute LA90s | NSL03, NSL04, NSL06, NSL07, NSL11 | 0.43 dB | the same event log, and plan 3.1's energy-equivalent level |
+| **3 residual in the plant's stops (answer)** | total less the energetic mean of the position's minutes inside the plant's recorded stops | **NSL04, NSL11, NSL07, NSL02, NSL13** | **1.29 dB** | nothing in the pack |
 
 **As built (`generator/figures.json`).** Specific sound levels 37.4 to 53.0 dB LAeq, residual sounds 31.1
 to 42.2 dB, measured totals 38.6 to 53.2 dB, every position's total at least 4.2 dB above its own residual,
 240 stop minutes behind every position's residual, and 5,463 to 6,130 valid assessment minutes a position
 against 1,070 to 1,737 excluded. The slate is NSL04 (53.0), NSL11 (49.9), NSL07 (47.8), NSL02 (47.3) and
-NSL13 (46.0); NSL06 is the first dwelling off the list at 44.7, 1.3 dB behind. Four distinct wrong slates
+NSL13 (46.0); NSL06 is the first dwelling off the list at 44.7, 1.3 dB behind (1.2877 dB unrounded, 0.038
+from its rounding edge). Four distinct wrong slates
 sit on the ladder above (the tenth-percentile and quietest-interval routes land on the measured total's
 slate), and where a wrong rung's own boundary is thin the slate across it is wrong too, asserted rung by
 rung rather than assumed.
 
-**The flip conditions, as numbers.** The fifth and sixth places are NSL13 at 46.0 and NSL06 at 44.7. NSL06
-enters the slate only once its residual falls below 38.31 dB; the record puts it at 42.23, so 3.9 dB of
-residual has to go missing before the call moves. NSL13 leaves only once its own residual rises above
-40.67 dB; the record puts it at 32.42, 8.3 dB below that. One extra minute of record moves a position's
-level by under 0.003 dB, and no printed level sits closer than 0.017 dB to its rounding edge.
+**The flip conditions, as numbers.** The fifth and sixth places are NSL13 at 46.0 (45.9694) and NSL06 at
+44.7 (44.6817). NSL06 enters the slate only once its residual falls below 38.17 dB; the record puts it at
+42.23, so 4.1 dB of residual has to go missing before the call moves. NSL13 leaves only once its own
+residual rises above 40.75 dB; the record puts it at 32.42, 8.3 dB below that. One extra minute of record
+moves a position's level by under 0.003 dB; no printed level sits closer than 0.015 dB to its rounding edge
+and none is closer than 0.018 dB to the printed value itself; the margin sits 0.038 dB from its own edge.
+The sixth and seventh places (NSL06 and NSL09) stand 0.06 dB apart, which is the price of carrying the
+margin on NSL06's own level: it is reported rather than tuned away, since the five levels are frozen and
+NSL13 is the fifth.
 
 **Worth of each rung, on the graded quantity.** Rung 1 moves one member of the slate (NSL06 for NSL13) and
 every printed level by 0.2 to 1.8 dB. Rung 2 moves three members and every printed level by 4 to 15 dB.
@@ -364,7 +453,12 @@ since no inspection reaches into the assessment period); and the position's resi
 weeks against the mean of the two weeks' own residuals (identical to one decimal at all fourteen). Two
 readings that violate a filed rule keep the slate and move figures: the calibration correction skipped
 (plan 4.1) moves ten printed levels by up to 0.39 dB, and the met exclusions skipped (plan 4.2) moves four
-by up to 0.19 dB. Every background taken from the running record gives a wrong slate, in the rows above.
+by up to 0.19 dB. Every background taken from the running record gives a wrong slate, in the rows above. So does every
+other window the pack permits, asserted window by window on the clean truth: the weekday hours before
+05:00, the nights from 23:00, the Sundays and the minutes with both centrifuges off each file a slate with
+NSL06 in and NSL13 out, because the blowers and the engine run through all of them. `checks.py` asserts
+that the only minutes of any record with every source down are the intervals the log shows them all down
+in, so no window but those is free of the plant.
 
 ## Closure table
 
@@ -379,8 +473,8 @@ by up to 0.19 dB. Every background taken from the running record gives a wrong s
 | 6b Process figures | each week's figure is the difference of two counter readings at its boundaries, and its runs are the log's starts inside it | plan 5.1 and 5.2, SF18, SF19 and SF21 |
 | 7 Weighting | every valid minute weighted equally in energy | plan 3.1's energy-equivalent level |
 | 8 Window length | each position's own deployment week, weekday daytime only | plan 3.2 |
-| 9 Boundary | the slate's 5th to 6th gap is 1.25 dB; NSL06 needs 3.9 dB of residual to go missing to enter, NSL13 8.3 dB to appear to leave | asserted |
-| 10 Rounding | levels and the margin to one decimal, counts whole, engine hours to one decimal, the slate on unrounded levels | prompt's closing sentence; every printed level at least 0.017 dB from a rounding edge and at least 0.018 dB off the printed value itself, no two equal (asserted) |
+| 9 Boundary | the slate's 5th to 6th gap is 1.2877 dB, 0.038 from its printed edge; NSL06 needs 4.1 dB of residual to go missing to enter, NSL13 8.3 dB to appear to leave | asserted in `checks.py` and again in `verify.py` |
+| 10 Rounding | levels and the margin to one decimal, counts whole, engine hours to one decimal, the slate on unrounded levels | prompt's closing sentence; every printed level at least 0.015 dB from a rounding edge and at least 0.018 dB off the printed value itself, no two equal; the margin 0.038 from its edge; every week's delivered air at least 0.15 of a whole unit from its edge (asserted in `checks.py` and again in `verify.py`) |
 | 11 Tie-break | none needed: no two positions share a printed level | asserted |
 | 12 Maturity | every deployment is complete and downloaded; the survey closed 2026-10-11 | asserted |
 | 13 Order | identity, deployment pairing, drift, time base, validity, energetic mean, residual, subtraction, rank | the plan's own order of clauses |
@@ -389,6 +483,7 @@ by up to 0.19 dB. Every background taken from the running record gives a wrong s
 | 16 Identity | position code, dwelling reference and the crew's shorthand all map through the register | SF13 |
 | 17 Netting | energetic subtraction of the residual, once, at the position level | plan 3.1 |
 | 18 Units | dB(A) for levels, tips of 0.2 mm for rain, m a second for wind after conversion from km an hour, cubic metres and thousands of normal cubic metres for the plant's counters, hours for the engine | the survey notes state the met channels' units and the swap date, and the process channels' headers carry theirs |
+| 18b Stamp | every record covers the interval it is stamped at, the meters' minutes and the mast's ten minutes alike | plan 2.2 for the meters (SF6b), the survey notes for the mast (SF6); the deployment record carries the minute each meter was set running and the minute it was stopped, so no minute is claimed by two deployments |
 | 19 Code semantics | the equipment identifiers and states in the event log, mapped in the survey notes | asserted |
 | 20 Integerisation | the minute counts and the run counts are counts; the counter figures round once, at the answer; no rounding of intermediate levels | asserted |
 | 21 Scope | sound only; the effluent quality and complaint files are outside the question | plan 1.2 |
@@ -407,8 +502,14 @@ measured level over weekday 07:00 to 19:00 less the residual sound, in dB LAeq, 
 other term is either the golden's or ruled out in the fork table, and the two open readings of the residual
 are separated by the records rather than by a sentence, which is the stump. The supplementary figures are
 closed the same way: the rain test is a count of tips and the nearest rate reading selects the same records
-(SF5), the no-data minutes are filed as no measurement (SF7), the week's process figures are two counter
-readings (SF18 and SF21) and a run is a logged start with the stop that closes it (SF19).
+(SF5), the meters' minutes and the mast's ten minutes are both stamped at the start of the interval they
+cover (SF6b and SF6), the no-data minutes are filed as no measurement (SF7), the week's process figures are
+two counter readings (SF18 and SF21), and a run is a logged start with the first stop that closes it, a
+start the log never stops before that machine starts again counting for nothing (SF19). The two quantities
+the position table asks for state their own basis in the asking sentence, the valid minutes of the
+assessment period and the runs that overlap any minute of it (SF20 and SF22), so executing plan 5.2 gives
+the weekly runs, the per-position runs and the per-position minutes on one reading of the log, with the
+start of 10 September the log never stopped excluded from all three.
 
 ## Oracles
 
@@ -440,11 +541,12 @@ call reads the log only for the intervals where all three sources are down. Ever
 identical to one decimal with the met exclusions skipped, the unit swap misread, the repeated block kept and
 the no-data minutes read as levels (asserted).
 
-**The cracker sheet.** The cracker landed the call, ran the hygiene battery (key uniqueness, exact
-duplicates, unmatched joins, fan-out, count ties), executed the filed rules that battery points at and the
-clauses its own quantities name (3.1 and 3.2 for the level, 4.1 and 4.2 for validity, 4.3 for tonality), and
-took the plant's records at face value, which means the process channel the historian writes. Scored figure
-by figure on the cut pack by `generator/cracker.py`, and asserted in `checks.py`.
+**The cracker sheet (the Part 1.1 cracker).** The cracker landed the call, ran the hygiene battery (key
+uniqueness, exact duplicates, unmatched joins, fan-out, count ties), executed the filed rules that battery
+points at and the clauses its own quantities name (3.1 and 3.2 for the level, 4.1 and 4.2 for validity, 4.3
+for tonality), and took the plant's records at face value, which means the process channel the historian
+writes. Scored figure by figure on the cut pack by `generator/cracker.py`, and asserted in `checks.py`. The
+clause-executing cracker is scored in the same script and reported under the pair ceiling below.
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
@@ -462,20 +564,29 @@ the mirror, which stops at the statistical-background rung, keeps A4's 3 alone, 
 **Measured by:** `generator/cracker.py`, run on the cut pack after every change and asserted figure by
 figure in `generator/checks.py`
 
-**The sensitivity, stated.** A second cracker was scored beside that one: a solver that reads every clause
-of the plan, section 5 included, and so executes the counter and run conventions as well. It keeps all 70
-and the pair rises to 75.2. That number is the price of the determinism closures the judge required, and it
-is what the ask layer would measure against a perfect clause-executing reader. The sheet's cracker is the
-one `supplemental-stumping` Part 1.1 defines, and it is also what both stage-4 threads behaved like: the
-judge and the isolated reader each computed the process figures from the channel and from the counters and
-asked which was meant, neither having been pointed at a section 5 that did not then exist.
+**The clause-executing cracker, measured as code, and the open finding it leaves.** The same script scores
+a second cracker, and this one is computed rather than described: it executes plan 5.2 on the shipped log
+(a start and the first stop after it, an unstopped start counting for nothing), plan 5.1 on the counters at
+the week boundaries, and the ask's own two stated bases, over the validity mask the call already gave it.
+It keeps **70 of 70** ask criteria; the pair is **75.2** and the mirror keeps **70.0 per cent**.
+
+That is the finding the determinism rulings leave behind, and it is not a sensitivity. Closing the run
+definition (5.2 reworded), stating the minutes basis and defining the overlap put every A2 and A3 figure
+inside a filed rule, so the device the ask layer rode on, the plant recording the same facts twice at two
+grains, no longer bites a solver who reads section 5: the filed rule now adjudicates it, which
+`supplemental-stumping` ban 1 forbids of a device. The two numbers at the head of this sheet are the Part
+1.1 cracker's, which is what both stage-4 threads behaved like and what the bar is defined against; the
+clause-executing reader is now the realistic top response for these asks, because the plan points at the
+log in so many words. Bringing the pair to 40 against it needs an ask-layer re-cut onto quantities with a
+silent second step (`/fix-rubric`, Part 6), which moves every ask figure and is outside the rulings this
+pass executed. It is reported, not papered over.
 
 ## Pack
 
 | File | Format | Role |
 |---|---|---|
-| `sound_levels_1min_2026.parquet` | parquet | spine: one minute of logged level per position (LAeq, LA90, LAmax, LAmin), the volume gate |
-| `meter_deployments_2026.csv` | csv | which meter at which position, from and to, the height it stood at, the field check either side, who deployed it, remarks |
+| `sound_levels_1min_2026.parquet` | parquet | spine: one minute of logged level per position (LAeq, LA90, LAmax, LAmin), the handling and field-check minutes at either end of each record, the volume gate |
+| `meter_deployments_2026.csv` | csv | which meter at which position, the minute it was set running and the minute it was stopped on the next round, the height it stood at, the field check either side, who deployed it, remarks |
 | `monitoring_positions.xlsx` | xlsx | context artifact: the register of positions, dwellings, distances, bearings, screening |
 | `noise_management_plan.pdf` | pdf | governing document: the quantity, the period, the validity criteria, the tonality test, the slot |
 | `survey_notes.md` | md | the technician's notes: meters, identities, time base, met channels, file conventions |
@@ -493,24 +604,37 @@ asked which was meant, neither having been pointed at a section 5 that did not t
 - `generator/build.py` runs everything: the survey (`world.py`, `sim.py`), the pack (`pack.py`, `docs.py`,
   `postprocess.py`), the golden (`golden.py` over `analysis.py`, `deliver.py`), `metadata.py`,
   `figures.py`, `submission.py`, then `checks.py` and `verify.py`.
-- Final run: `checks.py` **786 assertions passed**; `verify.py` **282,493 independent checks passed** (the
-  per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
+- Final run: `checks.py` **1,217 assertions passed**; `verify.py` **282,108 independent checks passed**
+  (the per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
   consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
-  8cbff07f533865d0); about 70 seconds.
+  ab9b5efda9bb4309); about 11 seconds.
 - `verify.py` reads only the bundle (standard library, numpy-free, pyarrow for the parquet), encodes the
   plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
-  residuals, valid, excluded and stop minutes, the slate, its order, the sixth and the margin, the default
-  path's own slate, the highest band and tone verdict at every position, and the six weeks of plant
-  figures, against `generator/figures.json` and against the golden table. It also checks, on every shipped
+  residuals, valid, excluded and stop minutes, each level's distance to its rounding edge, the slate, its
+  order, the sixth, the margin and its distance to its edge, the default path's own slate, the highest band
+  and tone verdict at every position, the six weeks of plant figures with each week's air measured against
+  the whole-unit edge, the log's one unstopped start, and the per-position runs twice over (minute by
+  minute, and by interval arithmetic against the deployment record's windows), against
+  `generator/figures.json` and against the golden table. It also checks, on every shipped
   minute, that the four level columns order as an instrument reports them and that a minute with no
   measurement carries no statistics.
 - `figures_check.py` exit 0: 68 figures in blocks 1 to 4, none absent from `figures.json`.
 - Parameters chosen by search in scratch and never shipped: the designed specific levels and residuals
   (`world.POSITIONS`), the residual texture (`EVENT_DB`, `JITTER`, `SLOW`), the plant's own load curve and
-  minute-to-minute swing (`sim.plant_load`), the two tones' survival to each position (`BARRIER`,
-  `TONE_K`, `pack._spectra`) and the per-position micro-adjustments (`world.SHIFT`, at most 0.82 dB) that
-  leave all 14 printed levels distinct, each 0.017 dB or more from its rounding edge and 0.018 dB or more
-  off the printed value itself, so no level sits on a round number.
+  minute-to-minute swing (`sim.plant_load`), the propagation to each position (`sim.plant_propagation`,
+  which the normalisation takes the mean out of, so it moves the spread of a record and not its level),
+  the evening and night texture (`world.NIGHT_TEX`, 0.2), the within-minute depth of the plant's own level
+  (`world.F90`), the blower trim's draw (`world.AIR_SEED`, 2, scanned for a week set clear of the
+  whole-unit edges), the two tones' survival to each position (`BARRIER`, `TONE_K`, `pack._spectra`) and
+  the per-position micro-adjustments (`world.SHIFT`, at most 0.93 dB) that leave all 14 printed levels
+  distinct, each 0.015 dB or more from its rounding edge and 0.018 dB or more off the printed value itself,
+  so no level sits on a round number. Two of those moved this round: NSL06's, which carries the margin
+  (ruling 6), and NSL09's, which keeps the repeated-download reading inside its own printed tenth.
+- The deployment windows come from `world.visit`, the Monday round: a start time per meter per week, the
+  record running from the minute the meter was set going to twenty minutes before the next round reaches
+  it. The week's own series is generated on the week grid it always was and the collection Monday's
+  minutes continue it (`sim.residual_shape`'s `i0` and `carry`), so no printed level moved when the
+  records stopped being a round week.
 - Invented names: Drumlorne, Tulcarra Foods, Clonaraght, and the townland-style dwelling names in the
   register, checked against the thirty-one Irish local authorities and the sixty largest towns (edit
   distance above 2, no containment). No offline register of Irish townlands was available, which is
@@ -524,16 +648,18 @@ asked which was meant, neither having been pointed at a section 5 that did not t
   words are October, treatment and slot, which clause 7.1 needs to say what the mitigation programme is. No
   figure of the answer appears in any shipped file (asserted: no shipped file holds a specific level, a
   residual level or a corrected level for any position).
-- Sweep 4, the plan and the survey notes share eight of the stump paragraph's terms: they are the field's
-  own nouns (position, measured, residual, record, register, records), and the plan defines the residual
-  because the estimand has to be filed. The sweep's own test is whether the document names the move; it
-  does not, and `checks.py` asserts the plan names no background, percentile, L90, stop or non-operating
-  state, and the notes name no residual, background, percentile or stop window.
+- Sweep 4, the plan carries ten and the survey notes seven of the stump paragraph's twenty-five terms:
+  they are the field's own nouns (position, measured, residual, record, reading, register, process,
+  counter, deployment), and the plan defines the residual because the estimand has to be filed. The
+  sweep's own test is whether the document names the move; it does not, and `checks.py` asserts the plan
+  names no background, percentile, L90, stop or non-operating state, and the notes name no residual,
+  background, percentile or stop window. The notes lost their bolding and their sentence about the early
+  morning at the roadside positions this round, so nothing in them points at a window at all.
 - Sweep 9, `calibration_records_2026.csv` carries six dates after the as-of: they are the five meters' and
   the calibrator's verification due dates, a forward validity window, which `reduce-house-fixes` H16 puts
   on the allow-list.
 
-`guard.py surface task182`: 218 pairs in scope, **0 promoted**; nearest neighbour task228 at 0.096.
+`guard.py surface task182`: 220 pairs in scope, **0 promoted**; nearest neighbour task228 at 0.096.
 Personas in the cut pack: Aiden Hawthorn and Orla O'Hurley, with the engineer and the operations manager
 by initials on the deployment records. `guard.py heart task182`: **WARN, not BLOCK**; nearest driver 0.07
 (task263), answered in the card's differentiation.
@@ -545,10 +671,12 @@ by initials on the deployment records. `guard.py heart task182`: **WARN, not BLO
    field's nouns have no energetic summation and no quantity that the source's own presence makes
    unmeasurable.
 2. **Real work, nothing planted.** The inputs take work to put in order: UTC meters against local
-   paperwork, five meters rotated over fourteen positions, a field check either side of all 28 deployments
-   with 11 of them outside the plan's window, a met mast at ten minutes with a mid-survey unit change and a
-   tip counter, minutes the meters recorded nothing for, a repeated download, three names per position, and
-   band levels on three meters of five. Every one of them comes from the survey's own equipment.
+   paperwork, five meters rotated over fourteen positions on a Monday round that starts at a different
+   time each week, records that are not a round week and carry the technician's own handling and field
+   check at either end, a field check either side of all 28 deployments with 11 of them outside the plan's
+   window, a met mast at ten minutes with a mid-survey unit change and a tip counter, minutes the meters
+   recorded nothing for, a repeated download, three names per position, and band levels on three meters of
+   five. Every one of them comes from the survey's own equipment.
 3. **The flip is a method choice.** What flips the call is where the residual term of the plan's own
    subtraction is measured: the position's own running record, or the minutes inside the plant's weekly
    process stops. The plan files the quantity and no method.
@@ -676,3 +804,29 @@ by initials on the deployment records. `guard.py heart task182`: **WARN, not BLO
   when a fifth of the plant came off load, which is the kind of contradiction between shipped records a
   judge is right to call. The plant's sound is now built source by source, so an engine stop shows as a 1 dB
   dip while the blowers carry on.
+
+- The record generated over its own window once the deployments stopped starting at Monday 00:00: the
+  residual's draws moved with the window, which moved the stop-window residual and every printed level. The
+  week's series is generated on the week grid it always was and the collection Monday's minutes continue it
+  (`i0` and `carry`), so the levels, the totals, the residuals and the minute counts are what they were.
+- Sorting the deployment list by the new start times: it reassigned every `D` number and with them the
+  field-check sequence per meter, so the corrections moved. The list is still ordered by date and meter and
+  only the stamps are new.
+- The propagation term at five times the amplitude it ships at (plus or minus 4 dB at 300 m): it overstated
+  what the field sees and it flipped the LA90 rung's own 0.08 dB boundary, which the stump sentence names.
+  Scaled to the 1 to 3 dB a receptor at 100 to 500 m actually swings, with the within-minute factors drawn
+  on the week grid so only the propagation moves that rung.
+- The evening and night texture at full amplitude: measured, at 0.45 of full the weekday hours before 05:00
+  landed the golden slate, because the texture's own size tracks each position's event rate and so tracked
+  the residual's ranking. Cut to 0.2, where every night, Sunday and centrifuges-off window files a slate
+  with NSL06 in and NSL13 out, asserted window by window.
+- A per-position residual diurnal shape as the answer to the reader's "same shape, scaled": it moves the
+  residual inside the stop window and so every printed level and NSL04's two critical components. The
+  propagation carries the per-position shape instead, and the texture that does touch the residual is
+  confined to 19:00 to 04:30, outside every assessment period and every stop.
+- NSL13's own level as the margin's lever: ruled out by the author, NSL13 being the fifth. NSL06's level
+  carries it, at the cost of the sixth-to-seventh gap falling to 0.062 dB, which is reported.
+- The engine hour counter made exact to the minute, which would have answered the reader's "regular
+  increments": it collapses the counter onto the log's own up-time and spends the only disagreement the
+  weekly engine figure rides on. The counter still steps 0.25 a running quarter, which is what an hour
+  counter does; the channels that were white noise around a sine are the ones that changed.

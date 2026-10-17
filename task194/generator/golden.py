@@ -120,177 +120,343 @@ def eligible_units(b):
     return sorted(out)
 
 
-def record_share(b):
-    """The share of a unit's persistent excess a placement removes, from the closed placement register.
+def net_rates(b, qs=None, exclude_unit=None, hospital=None, peer=None, floor=30):
+    """The frequency patients of each stratum ordinarily have, measured from the record itself.
 
-    For each closed placement: what the unit stood at over its own closed quarters before the placement,
-    the complications that standing carries over the assessment quarter, and what the unit actually
-    recorded in it.
+    Charter 4.3 asks for the complications that patients of the same risk band and age band ordinarily
+    have. No file carries them: this is the sum over the acute record's own in-scope episodes, by stratum.
+    `hospital` and `peer` restrict the comparison population, which charter 4.3 does not do; they are here
+    so the readings that restrict it can be measured and shown to be ruled out rather than asserted to be.
     """
-    rows = []
-    for p in b["placements"]:
-        if p["status"] != "closed":
+    num = defaultdict(float)
+    den = defaultdict(float)
+    for (unit, q), counts in b["sc"].items():
+        if qs is not None and q not in qs:
             continue
-        unit, q = p["unit_code"], p["assessment_quarter"]
-        qs = quarters(b["panel"], unit)
-        if q not in qs:
-            continue                      # placed before the specification period
-        pre = [x for x in qs if x < q]
-        ratio, _, _ = pooled(b["panel"], unit, pre)
-        e = b["panel"][(unit, q)]["expected"]
-        o = b["panel"][(unit, q)]["observed"]
-        rows.append(dict(unit=unit, quarter=q, pre_ratio=ratio, expected=e, observed=o,
-                         carried=(ratio - 1) * e, realised=o - e, pre_quarters=len(pre)))
-    carried = sum(r["carried"] for r in rows)
-    removed = sum(r["carried"] - r["realised"] for r in rows)
-    return removed / carried, rows, carried, removed
+        if exclude_unit is not None and unit == exclude_unit:
+            continue
+        h = b["units"][unit]["hospital_code"]
+        if hospital is not None and h != hospital:
+            continue
+        if peer is not None and b["peer"][h] != peer:
+            continue
+        for st, (n, o) in counts.items():
+            den[st] += n
+            num[st] += o
+    rates = {st: num[st] / den[st] for st in den if den[st] > 0}
+    if hospital is not None or peer is not None:
+        wide = net_rates(b, qs=qs)[0]           # a thin stratum falls back to the whole record
+        rates = {st: (rates[st] if den.get(st, 0) >= floor else wide[st]) for st in wide}
+    return rates, dict(den)
 
 
-def placement_record(b):
-    """Each closed placement, measured from the shipped panel.
+def unit_tally(b, code, qs):
+    """A unit's observed, published-expected, episodes, separations and stratum counts over `qs`."""
+    o = e = 0.0
+    n = sp = 0
+    strat = defaultdict(int)
+    for q in qs:
+        p = b["panel"].get((code, q))
+        if p is None:
+            continue
+        o += p["observed"]
+        e += p["expected"]
+        n += p["episodes"]
+        sp += p["separations"]
+        for st, (cnt, _) in b["sc"].get((code, q), {}).items():
+            strat[st] += cnt
+    return o, e, n, sp, strat
 
-    For every closed placement whose assessment quarter is inside the specification period: the level the
-    unit was running at over its closed quarters before the team arrived, the complications that level
-    carries over the assessment quarter, what the unit recorded in it, and what every other unit did
-    between the quarter before and the quarter of the placement.
+
+def avoidable(b, code, qs, rates, denom="separations"):
+    """Charter 4.3 carried onto the planned separations under specification 3.4.
+
+    The complications the unit's own patients had, less the complications patients of the same risk band
+    and age band ordinarily have, counted patient by patient and summed, then carried onto the quarter's
+    planned separations at the unit's own rate per separation.
     """
-    panel = b["panel"]
-    allq = sorted({q for (_, q) in panel})
-    acute = sorted({u for (u, _) in panel})
-    rows = []
-    for p in b["placements"]:
-        if p["status"] != "closed":
-            continue
-        unit, q = p["unit_code"], p["assessment_quarter"]
-        qs = quarters(panel, unit)
-        if q not in qs:
-            continue
-        i = allq.index(q)
-        pre = [x for x in qs if x < q]
-        e = panel[(unit, q)]["expected"]
-        o = panel[(unit, q)]["observed"]
-        prev = allq[i - 1]
-        # the comparison is the units the team was not working on over those two quarters: a unit inside
-        # its own placement's window is not a control for another placement
-        treated = set()
-        for p2 in b["placements"]:
-            if p2["status"] != "closed" or p2["assessment_quarter"] not in allq:
-                continue
-            j = allq.index(p2["assessment_quarter"])
-            treated.update((p2["unit_code"], allq[m]) for m in range(j, min(j + 3, len(allq))))
-        others = [c for c in acute if c != unit and (c, prev) in panel and (c, q) in panel
-                  and (c, prev) not in treated and (c, q) not in treated]
-        pooled_move = (sum(panel[(c, prev)]["observed"] for c in others)
-                       / sum(panel[(c, prev)]["expected"] for c in others)
-                       - sum(panel[(c, q)]["observed"] for c in others)
-                       / sum(panel[(c, q)]["expected"] for c in others))
-        before = pooled(panel, unit, pre)[0]
-        rows.append(dict(unit=unit, quarter=q, before=before, expected=e, observed=o,
-                         carried=(before - 1) * e, realised=o - e,
-                         counterfactual=before * e,
-                         concurrent_pooled=pooled_move * e))
-    return rows
+    o, e, n, sp, strat = unit_tally(b, code, qs)
+    if not sp:
+        return 0.0
+    expected_net = sum(cnt * rates[st] for st, cnt in strat.items())
+    d = sp if denom == "separations" else n
+    return (o - expected_net) * b["plan"][code] / d
 
 
-def effect_models(b):
-    """What the closed register says a placement does, under each shape the fall could take.
+def all_quarters(b):
+    return sorted({q for (_, q) in b["panel"]})
 
-    Each shape is fitted to the seven or more closed placements by weighted least squares with the
-    counterfactual count as the variance, which is the error a count of complications carries, and scored
-    by the chi-square it leaves. The spread of standing across the register is what separates them: a share
-    of standing excess scales with how far above its own level a unit was sitting, a constant drop in the
-    standardised ratio does not, and a constant percent of the counterfactual tracks the unit's level.
+
+def standings(b):
+    """Every eligible unit on charter 4.3, and on the published basis beside it."""
+    elig = eligible_units(b)
+    rates, _ = net_rates(b)
+    out = []
+    for code in elig:
+        qs = quarters(b["panel"], code)
+        o, e, n, sp, strat = unit_tally(b, code, qs)
+        expected_net = sum(cnt * rates[st] for st, cnt in strat.items())
+        plan = b["plan"][code]
+        k = plan / sp
+        last = qs[-1]
+        lp = b["panel"][(code, last)]
+        out.append(dict(
+            unit=code, name=b["units"][code]["unit_name"], hospital=b["units"][code]["hospital_code"],
+            quarters=len(qs), observed=o, expected=e, expected_net=expected_net,
+            episodes=n, separations=sp, plan=plan,
+            avoidable=(o - expected_net) * k,
+            published_excess=(o - e) * k,
+            per_1000=(o - expected_net) / sp * 1000.0,
+            expected_plan=e / sp * plan,
+            ratio=o / e, ratio_net=o / expected_net,
+            adjusted_rate=o / e * REF_RATE,
+            se=math.sqrt(o) * k,
+            last_ratio=lp["observed"] / lp["expected"],
+            last_excess=(lp["observed"] - lp["expected"]) * lp["separations"] and
+                        (lp["observed"] - lp["expected"]) * plan / lp["separations"]))
+    out.sort(key=lambda d: -d["avoidable"])
+    return out, rates
+
+
+def convergence(b):
+    """Every reading of charter 4.3 the text leaves open, computed on the record.
+
+    The clause names whose patients, which strata, what is compared with what and over which window; it
+    does not name the frequency's own window, whether the unit's own patients sit inside the comparison,
+    or the denominator the rate is carried on. Each reading is formed and ranked here so a parameter change
+    that breaks the convergence fails the build instead of passing quietly (C1, `determinism-check` 3).
     """
-    rows = placement_record(b)
-    n = len(rows)
-    fall = [r["carried"] - r["realised"] for r in rows]
-    V = [max(1.0, r["counterfactual"]) for r in rows]
-    bases = OrderedDict([
-        ("a share of the unit's standing excess", [r["carried"] for r in rows]),
-        ("a constant drop in the standardised ratio", [r["expected"] for r in rows]),
-        ("a constant percent of the counterfactual", [r["counterfactual"] for r in rows]),
-        ("a constant number of complications", [1.0] * n),
+    allq = all_quarters(b)
+    n = len(allq)
+    windows = OrderedDict([
+        ("the ten closed quarters of the specification period", set(allq)),
+        ("the eight most recent closed quarters", set(allq[n - 8:])),
+        ("the four most recent closed quarters", set(allq[n - 4:])),
+        ("the latest closed quarter alone", {allq[-1]}),
     ])
+    elig = eligible_units(b)
+    readings = OrderedDict()
+
+    def add(label, fn):
+        v = {c: fn(c) for c in elig}
+        order = sorted(v, key=lambda c: -v[c])
+        first, second = order[0], order[1]
+        readings[label] = dict(first=first, first_value=v[first], second=second,
+                               second_value=v[second], margin=v[first] / v[second] if v[second] > 0 else None)
+
+    for lab, qs in windows.items():
+        rates = net_rates(b, qs=qs)[0]
+        add("the comparison frequency measured over %s" % lab,
+            lambda c, r=rates: avoidable(b, c, set(allq), r))
+    for lab, qs in list(windows.items())[:1] + list(windows.items())[2:3]:
+        add("the unit's own patients left out of the comparison, frequency over %s" % lab,
+            lambda c, qs=qs: avoidable(b, c, set(allq), net_rates(b, qs=qs, exclude_unit=c)[0]))
+    rates = net_rates(b)[0]
+    for lab, denom in (("all separations in the record", "separations"),
+                       ("in-scope episodes in the record", "episodes")):
+        add("the unit's rate taken per %s" % lab,
+            lambda c, d=denom: avoidable(b, c, set(allq), rates, denom=d))
+    for lab, qs in windows.items():
+        add("the unit's own record taken over %s" % lab,
+            lambda c, qs=qs: avoidable(b, c, qs, rates))
+    return readings
+
+
+def routes(b):
+    """The competing route definitions a careful analyst would try, each ranked on the record.
+
+    Nine name a unit other than the answer and are the ladder's rungs and its measured near misses; four
+    name the answer, so the call is robust to them. Every figure is a sum over the record: no functional
+    form is chosen anywhere and there is no free parameter to estimate.
+    """
+    allq = all_quarters(b)
+    rates = net_rates(b)[0]
+    elig = eligible_units(b)
+    last = {allq[-1]}
+    four = set(allq[len(allq) - 4:])
     out = OrderedDict()
-    for label, x in bases.items():
-        num = sum(xi * f / v for xi, f, v in zip(x, fall, V))
-        den = sum(xi * xi / v for xi, v in zip(x, V))
-        c = num / den if den else 0.0
-        chi = sum((f - c * xi) ** 2 / v for xi, f, v in zip(x, fall, V))
-        out[label] = dict(parameter=c, chi_square=chi, df=n - 1)
-    best = out["a share of the unit's standing excess"]["chi_square"]
-    for label, d in out.items():
-        d["likelihood_ratio"] = math.exp((d["chi_square"] - best) / 2.0)
-    return rows, out
+
+    def add(label, fn):
+        v = {}
+        for c in elig:
+            o, e, n, sp, strat = unit_tally(b, c, set(allq))
+            v[c] = fn(c, o, e, n, sp, strat)
+        order = sorted(v, key=lambda c: -v[c])
+        out[label] = dict(first=order[0], first_value=v[order[0]], second=order[1],
+                          second_value=v[order[1]],
+                          margin=v[order[0]] / v[order[1]] if v[order[1]] > 0 else None,
+                          rank_of=lambda code, order=order: order.index(code) + 1,
+                          order=order)
+
+    add("R0 the published excess, carried onto the planned separations",
+        lambda c, o, e, n, sp, st: (o - e) * b["plan"][c] / sp)
+    add("R1 the published excess over the window, not carried",
+        lambda c, o, e, n, sp, st: o - e)
+    add("R2 the published standardised ratio",
+        lambda c, o, e, n, sp, st: o / e)
+    add("R3 the published adjusted rate, the ratio times the reference rate",
+        lambda c, o, e, n, sp, st: o / e * REF_RATE)
+    add("R4 the raw complication count over the window",
+        lambda c, o, e, n, sp, st: o)
+    add("R5 the crude complication rate per 1,000 in-scope episodes",
+        lambda c, o, e, n, sp, st: 1000.0 * o / n)
+    add("R6 the published excess on the latest closed quarter alone, carried",
+        lambda c, o, e, n, sp, st: _window_excess(b, c, last, None))
+    add("R7 the avoidable count on the latest closed quarter alone, carried",
+        lambda c, o, e, n, sp, st: avoidable(b, c, last, rates))
+    add("R8 the avoidable count over the window, not carried",
+        lambda c, o, e, n, sp, st: o - sum(k * rates[s] for s, k in st.items()))
+    add("R9 the standardised ratio against the comparison frequency",
+        lambda c, o, e, n, sp, st: o / sum(k * rates[s] for s, k in st.items()))
+    add("R10 the avoidable count as a rate per 1,000 separations, not as a count",
+        lambda c, o, e, n, sp, st: 1000.0 * (o - sum(k * rates[s] for s, k in st.items())) / sp)
+    add("R11 the avoidable count over the last four closed quarters, carried",
+        lambda c, o, e, n, sp, st: avoidable(b, c, four, rates))
+    add("R12 the avoidable count over the window, carried onto the planned separations",
+        lambda c, o, e, n, sp, st: avoidable(b, c, set(allq), rates))
+    return out
 
 
-def share_readings(b):
-    """The share of a unit's standing excess a placement removes, under every way of reading the register.
+def _window_excess(b, code, qs, _):
+    o, e, n, sp, strat = unit_tally(b, code, qs)
+    return (o - e) * b["plan"][code] / sp if sp else 0.0
 
-    Eight routes a careful analyst could take of the same closed placements: the pooled sums, the mean of
-    the placements' own shares, the expected-weighted mean of them, their median, least squares through the
-    origin and with an intercept, the variance-weighted fit a count of complications calls for, and the same
-    pooled fall net of what the units the team was not working on did over the same two quarters. Every
-    placement has a standing excess to take a share of, so every route can be formed; what separates the
-    shapes the fall could take is the fit, not whether an estimator exists.
+
+def ruled_out(b):
+    """The readings that do move the call, each with the sentence that rules it out.
+
+    Charter 4.3 stratifies on a risk band and an age band and names no site, division or peer condition,
+    and it names the strata at all, so a restricted comparison population and an unstratified comparison
+    are both out on the clause's own words. They are measured here rather than argued: a reading ruled out
+    by a sentence still has to be shown to be the reading the sentence excludes.
     """
-    rows = placement_record(b)
-    n = len(rows)
-    P = [r["carried"] for r in rows]
-    fall = [r["carried"] - r["realised"] for r in rows]
-    V = [max(1.0, r["counterfactual"]) for r in rows]
-    E = [r["expected"] for r in rows]
-    sh = [f / p for f, p in zip(fall, P)]
-    pm, fm = sum(P) / n, sum(fall) / n
-    pv = sum((p - pm) ** 2 for p in P) / n
-    return rows, OrderedDict([
-        ("pooled sums", sum(fall) / sum(P)),
-        ("the mean of the placements' shares", sum(sh) / n),
-        ("the expected-weighted mean of the placements' shares",
-         sum(e * s for e, s in zip(E, sh)) / sum(E)),
-        ("the median of the placements' shares", sorted(sh)[n // 2]),
-        ("least squares through the origin",
-         sum(p * f for p, f in zip(P, fall)) / sum(p * p for p in P)),
-        ("least squares with an intercept",
-         sum((p - pm) * (f - fm) for p, f in zip(P, fall)) / (pv * n)),
-        ("the variance-weighted fit",
-         sum(p * f / v for p, f, v in zip(P, fall, V)) / sum(p * p / v for p, v in zip(P, V))),
-        ("against what the other units did over the same quarters",
-         sum(r["carried"] - r["realised"] - r["concurrent_pooled"] for r in rows) / sum(P)),
-    ])
+    allq = set(all_quarters(b))
+    elig = eligible_units(b)
+    out = OrderedDict()
+
+    def add(label, fn, sentence):
+        v = {c: fn(c) for c in elig}
+        order = sorted(v, key=lambda c: -v[c])
+        out[label] = dict(first=order[0], first_value=v[order[0]], second=order[1],
+                          second_value=v[order[1]],
+                          margin=v[order[0]] / v[order[1]] if v[order[1]] > 0 else None,
+                          sentence=sentence)
+
+    clause = ("charter 4.3, 'the complications that patients of the same risk band and age band "
+              "ordinarily have': it stratifies on a risk band and an age band and names no other condition")
+    add("the comparison restricted to the unit's own hospital",
+        lambda c: avoidable(b, c, allq,
+                            net_rates(b, hospital=b["units"][c]["hospital_code"])[0]), clause)
+    add("the comparison restricted to the hospital's peer group",
+        lambda c: avoidable(b, c, allq,
+                            net_rates(b, peer=b["peer"][b["units"][c]["hospital_code"]])[0]), clause)
+    tot_o = sum(cell[1] for counts in b["sc"].values() for cell in counts.values())
+    tot_n = sum(cell[0] for counts in b["sc"].values() for cell in counts.values())
+    crude = tot_o / tot_n
+
+    def unstratified(c):
+        o, e, n, sp, strat = unit_tally(b, c, allq)
+        return (o - n * crude) * b["plan"][c] / sp
+
+    add("one crude network rate with no strata at all", unstratified, clause)
+    return out
+
+
+def forcing_facts(b):
+    """The three facts that force the comparison frequency, measured from the bundle.
+
+    One: the published table is a fixed vintage. Appendix A states it was derived from network activity in
+    the year ended 30 June 2024 and specification 3.1 says the rates are not re-estimated between
+    specifications. Two: the network's own frequency has since moved by different amounts in different risk
+    bands, and in both directions. Three: the candidates' case mixes differ several-fold, so the direction
+    and the size of the error differ unit by unit.
+    """
+    rates, den = net_rates(b)
+    byband = defaultdict(lambda: [0.0, 0.0])
+    for (unit, q), counts in b["sc"].items():
+        for (band, age), (n, o) in counts.items():
+            byband[band][0] += o
+            byband[band][1] += n * b["strata"][(band, age)]
+    drift = {band: o / e for band, (o, e) in byband.items() if e}
+    elig = eligible_units(b)
+    share = {}
+    for c in elig:
+        o, e, n, sp, strat = unit_tally(b, c, set(all_quarters(b)))
+        surg = sum(cnt for (band, _), cnt in strat.items() if band.startswith("SURG"))
+        share[c] = surg / n if n else 0.0
+    nz = [v for v in share.values() if v > 0.01]
+    return dict(drift=drift,
+                drift_low=min(drift.values()), drift_high=max(drift.values()),
+                drift_spread=max(drift.values()) / min(drift.values()),
+                surgical_share=share, surgical_low=min(nz), surgical_high=max(share.values()),
+                surgical_none=sum(1 for v in share.values() if v <= 0.01))
+
+
+def mix_shift_demo(b):
+    """The unit whose patients moved while its own practice did not, quarter by quarter, on both bases.
+
+    This is the measurement that forces the comparison frequency. One unit treated the same number of
+    patients in every closed quarter and changed nothing it does; for two of them its case mix moved. On
+    the published basis its avoidable count moves by a multiple; on the record's own frequency it does not
+    move at all. A count that moves when only the patients change is not a count of complications a unit
+    carries as avoidable.
+    """
+    rates, _ = net_rates(b)
+    allq = all_quarters(b)
+    best = None
+    for code in sorted({u for (u, _) in b["panel"]}):
+        qs = quarters(b["panel"], code)
+        if len(qs) < len(allq):
+            continue
+        rows = []
+        for q in qs:
+            p = b["panel"][(code, q)]
+            strat = b["sc"].get((code, q), {})
+            en = sum(cnt * rates[st] for st, (cnt, _) in strat.items())
+            surg = sum(cnt for (band, _), (cnt, _) in strat.items() if band.startswith("SURG"))
+            rows.append(dict(quarter=q, episodes=p["episodes"], observed=p["observed"],
+                             expected=p["expected"], expected_net=en,
+                             published=p["observed"] - p["expected"],
+                             internal=p["observed"] - en,
+                             ratio=p["observed"] / p["expected"],
+                             surgical_share=surg / p["episodes"] if p["episodes"] else 0.0))
+        sh = [r["surgical_share"] for r in rows]
+        swing = max(sh) - min(sh)
+        pub = [r["published"] for r in rows]
+        net = [r["internal"] for r in rows]
+        pub_swing = (max(pub) / min(pub)) if min(pub) > 0 else 0.0
+        net_swing = max(net) - min(net)
+        score = (swing > 0.25, pub_swing, -net_swing)
+        if swing > 0.25 and (best is None or score > best[0]):
+            best = (score, dict(unit=code, name=b["units"][code]["unit_name"], rows=rows,
+                                mix_swing=swing, published_multiple=pub_swing,
+                                internal_spread=net_swing,
+                                shifted=[r["quarter"] for r in rows if r["surgical_share"] > 0.25],
+                                published_low=min(pub), published_high=max(pub),
+                                internal_low=min(net), internal_high=max(net)))
+    assert best is not None, "no unit in the record carries a case-mix shift to demonstrate on"
+    return best[1]
 
 
 def compute(target):
     b = load(target)
-    panel = b["panel"]
-    share, record, carried, removed = record_share(b)
-    _, readings = share_readings(b)
-    _, models = effect_models(b)
-    elig = eligible_units(b)
-    units = []
-    for code in elig:
-        qs = quarters(panel, code)
-        ratio, o, e = pooled(panel, code, qs)
-        seps = sum(panel[(code, q)]["separations"] for q in qs)
-        per_sep = e / seps                                   # specification 3.4
-        e_plan = b["plan"][code] * per_sep
-        last = qs[-1]
-        y_last = panel[(code, last)]["observed"] / panel[(code, last)]["expected"]
-        units.append(dict(
-            unit=code, name=b["units"][code]["unit_name"], hospital=b["units"][code]["hospital_code"],
-            quarters=len(qs), ratio=ratio, observed=o, expected=e, separations=seps,
-            plan=b["plan"][code], expected_plan=e_plan, excess=(ratio - 1) * e_plan,
-            avoided=share * (ratio - 1) * e_plan, adjusted_rate=ratio * REF_RATE,
-            last_ratio=y_last, last_excess=(y_last - 1) * panel[(code, last)]["expected"],
-            last_observed=panel[(code, last)]["observed"],
-            expected_next=ratio * e_plan))
-    units.sort(key=lambda d: -d["avoided"])
+    units, rates = standings(b)
     answer, runner = units[0], units[1]
+    third = units[2]
+    conv = convergence(b)
+    rts = routes(b)
+    rout = ruled_out(b)
+    facts = forcing_facts(b)
+    demo = mix_shift_demo(b)
+    elig = eligible_units(b)
 
-    # the rungs, for the generator's own assertions
-    rung0 = max(units, key=lambda d: share * d["last_excess"])
-    rung1 = max(units, key=lambda d: d["ratio"])
-    rung2 = max(units, key=lambda d: d["expected_next"])
+    # the three rungs the ladder claims, each named on the record rather than chosen
+    by = {d["unit"]: d for d in units}
+    rung0 = by[rts["R0 the published excess, carried onto the planned separations"]["first"]]
+    rung3 = by[rts["R10 the avoidable count as a rate per 1,000 separations, not as a count"]["first"]]
+    rung4 = answer
+    se_gap = math.sqrt(answer["se"] ** 2 + runner["se"] ** 2)
+    se_gap3 = math.sqrt(answer["se"] ** 2 + third["se"] ** 2)
 
     # ask 2: the hospital year ended 31 December 2026
     sites = {r["hospital_code"]: r["hospital_name"] for r in _read(target, "hospital_sites.csv")}
@@ -344,11 +510,18 @@ def compute(target):
         groups.append(dict(group=gid, name=group_names[gid],
                            fy2025=len(found["2025-26"][gid]), fy2026=len(found["2026-27"][gid])))
 
-    return dict(units=units, answer=answer, runner=runner, share=share, record=record,
-                carried=carried, removed=removed, rung0=rung0, rung1=rung1, rung2=rung2,
-                hospitals=hosp, outside=outside, groups=groups, eligible=elig, readings=readings, models=models,
-                gap=round(answer["avoided"]) - round(runner["avoided"]),
-                margin=answer["avoided"] / runner["avoided"], bundle=b)
+    return dict(units=units, answer=answer, runner=runner, third=third, eligible=elig,
+                net_rates=rates, convergence=conv, routes=rts, ruled_out=rout,
+                facts=facts, demo=demo,
+                rung0=rung0, rung3=rung3, rung4=rung4,
+                hospitals=hosp, outside=outside, groups=groups,
+                gap=answer["avoidable"] - runner["avoidable"],
+                margin=answer["avoidable"] / runner["avoidable"],
+                se_gap=se_gap, se_lead=(answer["avoidable"] - runner["avoidable"]) / se_gap,
+                se_lead_third=(answer["avoidable"] - third["avoidable"]) / se_gap3,
+                published_rank=[d["unit"] for d in sorted(units, key=lambda x: -x["published_excess"])]
+                .index(answer["unit"]) + 1,
+                bundle=b)
 
 
 # Appendix B of the specification: the 2022 revision's codes and the groups they belong to. The 2026

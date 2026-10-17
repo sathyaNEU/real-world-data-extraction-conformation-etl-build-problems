@@ -711,12 +711,12 @@ def run(target, g):
         A(len(wins) == 10, "%s has ten weekday assessment windows in its two deployments" % c)
         n_overlap = sum(1 for a, b in runs_log2 if any(a < hi and b > lo for lo, hi in wins))
         A(n_overlap == rows[c]["centrifuge_runs"],
-          "%s: the runs reaching into the period are %d, the table says %d"
+          "SF22 %s: the runs reaching into the period are %d, the table says %d"
           % (c, n_overlap, rows[c]["centrifuge_runs"]))
     starts_in = {c: sum(1 for a, _ in runs_log2 if any(lo <= a < hi for lo, hi in depwin[c]))
                  for c in W.CODES}
     A(sum(1 for c in W.CODES if starts_in[c] != rows[c]["centrifuge_runs"]) >= 10,
-      "counting the starts inside the period instead of the runs over it differs at %d positions"
+      "SF22 counting the starts inside the period instead of the runs over it differs at %d positions"
       % sum(1 for c in W.CODES if starts_in[c] != rows[c]["centrifuge_runs"]))
     prompt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
     A("valid minutes of its assessment period" in prompt,

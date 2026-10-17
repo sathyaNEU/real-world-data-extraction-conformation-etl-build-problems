@@ -167,7 +167,7 @@ UNITS = [
     ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.85000, 1900, 2305, 1.14000, "answer", "eligible"),
     ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.03100, 1050, 1257, 1.28000, "hot2", "eligible"),
     ("41310", "General Medicine", "H2", "gen_med", "acute", 1.06900, 1350, 1364, 1.09000, "mid", "eligible"),
-    ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.03000, 1200, 1470, 1.12000, "hot3", "eligible"),
+    ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.02760, 1200, 1470, 1.12000, "hot3", "eligible"),
     ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.05200, 430, 506, 1.17000, "worst_level", "eligible"),
     ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.00000, 620, 735, None, "hot1", "eligible"),
     ("41420", "General Medicine", "H3", "gen_med", "acute", 1.34500, 980, 1090, 1.10000, "mid", "eligible"),

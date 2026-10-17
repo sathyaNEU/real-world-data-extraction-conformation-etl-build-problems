@@ -22,34 +22,48 @@ def cut(target):
     if os.path.isdir(target):
         shutil.rmtree(target)
     os.makedirs(target)
-    rows, expected, inscope = sim.episodes(W.UNITS)
-    design = sim.design_ratios(W.UNITS, expected)
+    rows, expected, expected_net, inscope = sim.episodes(W.UNITS)
+    design = sim.design_ratios(W.UNITS, expected, expected_net, inscope)
+    sim.assign_complications(rows, expected, design, W.UNITS)
+    observed = sim.settle_additive(rows, expected, design, W.UNITS)
     allsep = {}
     for r in rows:
         allsep[(r["unit"], r["q"])] = allsep.get((r["unit"], r["q"]), 0) + 1
     plans = {x[0]: x[7] for x in W.UNITS if x[7] is not None}
+
+    # the comparison frequency the record itself carries, and each unit's avoidable count per separation
+    num, den = {}, {}
+    for r in rows:
+        if not r["in_scope"]:
+            continue
+        st = (W.DRG_BAND[r["drg"]], r["age"])
+        den[st] = den.get(st, 0) + 1
+        num[st] = num.get(st, 0) + (1 if r["hac"] else 0)
+    rate = {st: num[st] / den[st] for st in den}
     per_sep, expected_per_sep = {}, {}
     for x in W.UNITS:
-        if x[0] not in plans:
+        code = x[0]
+        if code not in plans:
             continue
-        qs = [q for q in sim.quarters_for(x) if (x[0], q) in expected]
-        e = sum(expected[(x[0], q)] for q in qs)
-        n = sum(allsep[(x[0], q)] for q in qs)
+        qs = [q for q in sim.quarters_for(x) if (code, q) in expected]
+        if not qs:
+            continue
+        e = sum(expected[(code, q)] for q in qs)
+        n = sum(allsep[(code, q)] for q in qs)
         if not e or not n:
             continue                                  # a unit outside the indicator carries no excess
-        o = sum(int(round(expected[(x[0], q)] * design[x[0]][q])) for q in qs)
-        per_sep[x[0]] = (o / e - 1) * e / n          # excess complications per planned separation
-        expected_per_sep[x[0]] = e / n              # clause 3.4 expected complications per separation
-    sim.EXPECTED_PER_SEP = {c: expected_per_sep[c] for c in expected_per_sep}
-    chosen, thetas, models, _ = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=False)
+        o = sum(observed[(code, q)] for q in qs)
+        en = 0.0
+        for r in rows:
+            if r["unit"] == code and r["in_scope"]:
+                en += rate[(W.DRG_BAND[r["drg"]], r["age"])]
+        per_sep[code] = (o - en) / n                  # charter 4.3 per separation
+        expected_per_sep[code] = e / n                # specification 3.4 per separation
     elig = [c for c in per_sep if c in {x[0] for x in W.UNITS if x[10] == "eligible"}]
     ranked = sorted(elig, key=lambda c: -per_sep[c] * plans[c])
-    plans = sim.centre_plans(plans, per_sep, thetas, ranked[0], ranked)
+    plans = sim.centre_plans(plans, per_sep, ranked, ranked[0], expected_per_sep)
     assert sorted(elig, key=lambda c: -per_sep[c] * plans[c])[:2] == ranked[:2], \
         "centring the planned volumes moved the two graded units"
-    targets, thetas, models, clear = sim.record_targets(expected, allsep, design, W.UNITS, plans,
-                                                       bins=True, fixed=chosen)
-    observed = sim.assign_complications(rows, expected, design, W.UNITS, targets)
     detail = sim.complications(rows, W.UNITS)
     replays = sim.add_replays(rows, W.UNITS)
     allrows = PK.write_extract(target, rows, replays)
@@ -80,9 +94,10 @@ def cut(target):
     stamp = time.mktime(EXPORT_STAMP.timetuple())
     for name in sorted(os.listdir(target)):
         os.utime(os.path.join(target, name), (stamp, stamp))
-    return dict(rows=rows, allrows=allrows, expected=expected, observed=observed, inscope=inscope,
-                allsep=allsep, detail=detail, replays=replays, design=design, targets=targets,
-                plans=plans, thetas=thetas, models=models, clearance=clear)
+    return dict(rows=rows, allrows=allrows, expected=expected, expected_net=expected_net,
+                observed=observed, inscope=inscope, allsep=allsep, detail=detail, replays=replays,
+                design=design, plans=plans, net_rate=rate, per_sep=per_sep,
+                expected_per_sep=expected_per_sep)
 
 
 def zip_pack(target, path):
@@ -135,15 +150,24 @@ if __name__ == "__main__":
     n = CK.run(tgt, g, state)
     k = VF.run(tgt, os.path.join(gendir, "figures.json"))
     print("generator assertions", n, "independent checks", k)
-    print("call    : %s %s, %d avoided" % (g["answer"]["unit"], g["answer"]["name"],
-                                           round(g["answer"]["avoided"])))
-    print("closest : %s %s, %d avoided, gap %d, margin %.3fx" % (
-        g["runner"]["unit"], g["runner"]["name"], round(g["runner"]["avoided"]), g["gap"], g["margin"]))
-    print("share   : %.4f of a unit's standing excess, over %d closed placements"
-          % (g["share"], len(g["record"])))
-    print("rung 0  : %s files %d avoided, rung 1 %s, rung 2 %s" % (
-        g["rung0"]["unit"], round(g["share"] * g["rung0"]["last_excess"]), g["rung1"]["unit"],
-        g["rung2"]["unit"]))
+    print("call    : %s %s, %.1f avoidable complications on %d planned separations"
+          % (g["answer"]["unit"], g["answer"]["name"], g["answer"]["avoidable"], g["answer"]["plan"]))
+    print("closest : %s %s, %.1f; lead %.2f complications, %.2fx, %.2f standard errors (SE gap %.2f)"
+          % (g["runner"]["unit"], g["runner"]["name"], g["runner"]["avoidable"], g["gap"], g["margin"],
+             g["se_lead"], g["se_gap"]))
+    print("rungs   : 0 %s %.1f published, 3 %s %.1f per 1,000, 4 %s %.1f; answer %d of %d published"
+          % (g["rung0"]["unit"], g["rung0"]["published_excess"], g["rung3"]["unit"],
+             g["rung3"]["per_1000"], g["rung4"]["unit"], g["rung4"]["avoidable"],
+             g["published_rank"], len(g["eligible"])))
+    print("forcing : band drift %.3f to %.3f (factor %.2f); surgical share %.3f to %.3f, %d carrying none"
+          % (g["facts"]["drift_low"], g["facts"]["drift_high"], g["facts"]["drift_spread"],
+             g["facts"]["surgical_low"], g["facts"]["surgical_high"], g["facts"]["surgical_none"]))
+    print("demo    : %s published %.1f to %.1f (x%.1f), internal %.1f to %.1f (spread %.2f)"
+          % (g["demo"]["unit"], g["demo"]["published_low"], g["demo"]["published_high"],
+             g["demo"]["published_multiple"], g["demo"]["internal_low"], g["demo"]["internal_high"],
+             g["demo"]["internal_spread"]))
+    moved = [k for k, v in g["convergence"].items() if v["first"] != g["answer"]["unit"]]
+    print("converge: %d readings of charter 4.3, %d naming another unit" % (len(g["convergence"]), len(moved)))
     if tgt == os.path.join(task, "target"):
         zip_pack(tgt, os.path.join(task, "target.zip"))
         print("zip     : %s" % os.path.join(task, "target.zip"))
