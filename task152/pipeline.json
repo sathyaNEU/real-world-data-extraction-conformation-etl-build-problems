@@ -1,26 +1,48 @@
 {
   "task": "task152",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "energy-systems-utilities/asset-condition-maintenance",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-16",
-  "stump": "Carrying the plant's last twelve months' performance ratio onto the new modules with the side-by-side test's gain files the 2027 P90 far under the golden; restoring the plant's whole decline since 2016, or its whole DC-side decline, files it far over; the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on freshly washed days at the inverters' DC input, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-17",
+  "stump": "Carrying the plant's last twelve months' performance ratio onto the new modules with the side-by-side gain files 62,000 MWh against the golden 70,000; restoring the plant's whole decline since 2016 (76,000), its whole DC-side decline (73,000) or its decline after washes read at the inverters' AC output (72,000) overshoots; the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on the days after each block's wash at the inverters' DC input, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "driver 0.04 (task459, task230 v3, task132); guard check WARN (overuse.objective, repeat.decision, repeat.question_form), answered in the design note; task232 same-driver older signature differentiated"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-17"
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (2026-10-17; leak_check_report.md)",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN (overuse.objective); nearest 0.07, task132's ledger row",
+    "nearest": "driver 0.04 (task459, task230 v3, task132); guard check WARN overuse.objective (forum redrawn to executive_team at stage 3 after a ban.forum BLOCK against task233); surface: one pair promoted on the card signature already differentiated (task232, surface 0.083, percentile 68), no surface clone"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: finish the design note (default path, ladder, fork table, closure, ask sheet), prompt.txt, precut.py",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 4 (new), seed FC23 (world, decision and quantity kept; pitfall re-found from the plant's monitoring records)"
+  "wave": "wave 4 (new), seed FC23 (world, decision and quantity kept; pitfall re-found from the plant's monitoring records)",
+  "gates_stage3": {
+    "checks": "148 of 148",
+    "verify": "green",
+    "rebuild": "two builds byte-identical (target, golden, metadata, figures.json, submission.md, target.zip)",
+    "figures_check": "exit 0, 62 figures",
+    "container": "clean on target and golden",
+    "voice_check": "PASS",
+    "input_gates": "23 files, 6 formats, largest 219,144 rows, 2 distractors"
+  }
 }
