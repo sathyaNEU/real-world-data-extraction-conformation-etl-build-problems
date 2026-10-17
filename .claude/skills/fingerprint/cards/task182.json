@@ -1,34 +1,35 @@
 {
   "task": "task182",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-17",
-  "slot_note": "Re-root of architecture 1 (central Queensland make-good bore assessments) after the portal solved it: see lineage. The objective and the number are kept, the domain's only anomaly-detection task type is kept because the taxonomy offers no other, and every other axis is drawn fresh. Architecture 2's first draw (a static flux chamber campaign, the rate at placement against the straight-line slope) was redrawn at the ladder measurement before any file was cut: the straight-line bias is monotone in one visible feature, so the quadratic and short-window corrections land the golden slate (97 and 84 per cent of 120,000 parameter sets) and no configuration separates them cleanly.",
+  "slot_note": "Re-root of architecture 2 after both stage 4 cold threads landed the call: see lineage. The world is kept whole (Drumlorne, the fourteen positions, the five meters, the plant, the met mast, the historian) and the decisive step is new, so this is a new decisive step in the same world rather than a new world. Architecture 2's rung is now the attractive wrong route: the plant-off windows the equipment log carries sit between 04:30 and 06:45, outside the 07:00 to 19:00 assessment period the plan files.",
   "domain": "physical-environmental-sciences",
   "subdomain": "environmental-monitoring-exceedance",
   "client_domain": "physical-environmental-sciences",
-  "niche": "the specific sound level of a dairy site's new effluent-plant blower house, centrifuges and gas engine at the dwellings around it, where that plant runs continuously, so the residual sound the measured total has to be corrected for cannot be taken from the record the plant is in",
+  "niche": "the specific sound level of a dairy site's effluent-plant blower house, centrifuges and gas engine at the dwellings around it, where the plant never stops inside the assessment period and the non-plant sound those dwellings sit in is a different mixture of sources at the only hours the plant can be observed shut down",
   "objective": "anomaly-detection",
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "The October acoustic treatment slot covers NSL04 (DW-101), NSL11 (DW-104), NSL07 (DW-110), NSL02 (DW-103) and NSL13 (DW-105); NSL06 is the first dwelling off the list at 44.7 dB LAeq, 1.3 dB below the fifth.",
-  "answer_source": "task182/submission.md, 1. Final Recommendation",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G3"
+    "G6",
+    "G7"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "filed_standard",
   "stakeholder_role": "the site's environmental engineer, who sets the quarter's noise mitigation list",
   "role_family": "field_unit_lead",
   "scoring_unit": "per certified output",
@@ -66,32 +67,37 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is one source's own contribution to a measured total, and the nuisance part of that total cannot be measured while the source runs, because the source's steady presence lifts even the quietest moments of the record; so every background taken from the running record subtracts the source along with the nuisance and leaves the nuisance's own variability, ranking the units by how variable their surroundings are instead of by how much the source contributes.",
-  "driver_concrete": "Each dwelling's specific sound level from the works is the energetic difference between its measured weekday daytime total and the residual sound, and because the blowers and the gas engine run without stopping the statistical background in a position's own record sits within a decibel or two of its total, so subtracting it returns a level built out of the residual's variability and ranks the dwellings by how busy their surroundings are; only the residual measured inside the works' own weekly process stops recovers the five dwellings the plant contributes most to.",
-  "stump": "The wrong committed answer is NSL03, NSL04, NSL06, NSL11 and NSL12, filed by taking the residual term of the plan's energetic subtraction from the statistical background of the position's own record (the energetic mean of its minute LA90 values, or the tenth percentile of its LAeq minutes); the plant's blowers, centrifuges and gas engine run through every assessment minute, so that background contains the plant and the subtraction returns the surroundings' own variability, 31.1 to 42.3 dB against specific levels of 37.4 to 53.0.",
+  "driver": "The decisive quantity is one continuously running source's own share of a measured total at each receptor, and the nuisance term it is netted against is directly observable only in a window outside the one the estimand names, where the nuisance is a different mixture of its own constituents; that mixture's shift has opposite sign at different receptors, so the directly observable estimate inflates some and deflates others and mis-ranks them, while the term that holds is identified inside the named window from the source's own recorded output.",
+  "driver_concrete": "Each dwelling's specific sound level is its measured assessment-period total less the residual sound, and the only minutes in which the residual is directly observable are the plant's own early-morning process stops, where the road is empty and the dawn chorus is at its loudest, so that residual is too low at the roadside positions and too high at the hedgerow and woodland positions and the ranking moves; the residual that holds is the one estimated inside 07:00 to 19:00 from each position's own level against the plant's recorded aeration output, extrapolated to zero output.",
+  "stump": "The wrong committed answer is the slate filed by taking the residual term of the plan's energetic subtraction from the plant-off windows the equipment log carries, which fall between 04:30 and 06:45 and so lie entirely outside the 07:00 to 19:00 assessment period: at that hour the roads carry no traffic and the dawn chorus is at its peak, so the residual is understated at the roadside positions and overstated at the hedgerow and woodland positions, the specific levels move in opposite directions by position, and the slate's fourth to sixth places change. The exact wrong set and the margins are filed at stage 2 when the ladder is measured.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who maps each deployment to its position, applies the drift from the calibration checks, excludes exactly the minutes the plan excludes and does the energetic arithmetic correctly still takes the background from the record the works were running in and files NSL03, NSL04, NSL06, NSL11 and NSL12; only the residual measured inside the plant's own weekly process stops, found by joining the stop times in the equipment log to the meter records, gives NSL04, NSL11, NSL07, NSL02 and NSL13.",
-  "domain_test": "What decides the slate is separating a steady source's own contribution from the residual sound by energetic subtraction, which is how acoustics practitioners determine a specific sound level, and the residual has to be measured with the source shut down because a statistical background taken while it runs already contains it; with another field's nouns there is no energetic summation of a source with its surroundings and no quantity that cannot be observed while the source is present, so the task does not read the same.",
+  "analyst_test": "A strong analyst who maps each deployment to its position, applies the field-check drift, excludes exactly the minutes the plan excludes and does the energetic arithmetic correctly still takes the residual from the only minutes the pack shows the plant shut down, which are all before 07:00, and files a slate whose fourth to sixth places are wrong; only a residual estimated inside the assessment period, from each position's own measured level against the plant's own recorded output, gives the committed five.",
+  "domain_test": "What decides the slate is separating a continuous source's contribution from a time-varying residual by energetic subtraction and, because the source cannot be shut down in the assessment period, recovering the residual by regressing each position's measured level on the source's own recorded output and extrapolating to zero output, which is how acoustics practitioners determine a specific sound level when the plant will not stop; with another field's nouns there is no energetic summation of a source with its surroundings, no residual that changes composition with the hour and no output channel to extrapolate against, so the task does not read the same.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:residual-measured-in-the-source-s-own-absence",
+  "layer2_pattern": "own:nuisance-term-identified-inside-the-estimand-s-own-window",
   "layer1": [
     "meter exports stamped in UTC against field sheets kept in Irish Standard Time",
-    "six logging meters rotated over fourteen positions, so each position has its own week, meter and surroundings",
-    "pre- and post-deployment calibration checks, with one meter's sensitivity drifting",
-    "the met station logging ten-minute means while the meters log every minute, and wind speed in metres a second before a sensor swap and kilometres an hour after it",
-    "positions known by a dwelling reference, a position code and the crew's shorthand, with one position moved mid-week",
-    "a meter download repeated after a card error, duplicating part of a day"
+    "five logging meters rotated over fourteen positions, so each position has its own week, meter and surroundings",
+    "a field calibration check either side of every deployment, with the drift to be taken off the levels",
+    "the met mast's anemometer replaced mid-survey, the units changing with it",
+    "minutes the meters recorded nothing for, carried as a sentinel",
+    "one card read error and a repeated download, so one position's week is partly duplicated",
+    "the plant's historian dropping its radio link, and holding the last value it had when it does",
+    "the aeration air metered on two counters since the third blower was tied in",
+    "band levels on three meters of five"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
     "task228": "Shares the gap, the decision type and the Gate G mechanism with task228 architecture 2, and nothing else. task228's decisive quantity is each unit's own random measurement error against a latent signal, where two comparators share an input in one region so their errors co-vary there; the comparison is between measuring instruments. Here there is one instrument and no comparator: the instrument damps the quantity it measures while measuring it, and the decisive move is reading the rate at placement off each deployment's own approach to its asymptote. One is error covariance across comparators, the other is a measurand that falls because it is being measured, and neither route reaches the other's answer.",
-    "task182": "Own lineage. Architecture 1's decisive step was which level an observed level is set against (the baseline, the reference bores or a fitted climate path), a comparison inside the estimand, driven by a lagged response every unit shares to an external driver. Architecture 2 settles no part of the estimand: the works' specific level at a dwelling over the plan's assessment period is filed, and the open question is where the residual in the energetic subtraction is measured from. No file, world, persona, forcing event, deliverable or figure is carried over.",
+    "task182": "Against this slot's own architecture 2, which shares the world and the call and nothing of the decisive step. Architecture 2's decisive quantity was the residual itself, measurable only in the source's own absence, and its wrong route was a statistical background taken from a record the plant was running in. Architecture 3 makes architecture 2's right route the wrong one: the plant-off windows are shown to be a different mixture of non-plant sources from the assessment period's, so the decisive quantity is the residual of the window the estimand names and the work is identifying it where it cannot be observed directly. The gap moves from objective to population, the generator from record-versus-operation to composition shift and operating window, the Gate G mechanism from method selection to decomposition and attribution, and the strategy from other to composition mix.",
     "task187": "The nearest curved-response build on file. task187 averages a capped, curved response over a spread of inputs whose width differs by unit, which is an aggregation effect across a distribution of inputs at one instant. Here the response is not curved in the input but in time, and only because the measurement feeds back on the thing measured, so the bias is set by the apparatus's time constant against the window length rather than by the spread of any input.",
     "task189": "Shares the domain and the only anomaly-detection task type the taxonomy gives it. task189's decisive quantity is a per-unit average over measurements known only to lie below a limit that differs by laboratory, which is about what to put in place of a censored value. Nothing here is censored: every second of every deployment is recorded, and the question is what rate those records imply.",
     "task462": "Shares methane as the measured gas. task462 conforms repeated aerial plume survey estimates into a production-weighted intensity, an ETL build whose difficulty is the definition of the denominator and the vintage of each survey. Here the measurement is a static chamber on a restoration layer and the difficulty is the estimator for one deployment's rate.",
     "task186": "The nearest build on a monitored level against its own surroundings. task186 tests each unit's change across an event against what the event alone would leave, where the units' levels swing in local cycles shared within a place, so its decisive quantity is the reference distribution for a difference. Here there is no change and no test: the quantity is one source's share of a level that is the energetic sum of two sources, and the decisive move is which windows measure the other one.",
     "task263": "The nearest driver on file (0.07) and the closest in words: a source's own level recovered from mixtures. task263 mixes many sources in proportions that change between measurements and separates them by a mass balance across the mixtures, a linear system over several unknowns, and its wrong routes over-credit clean sources. Here the mixture has exactly two parts, the works and everything else, it is energetic rather than proportional, and nothing can be inverted: the second part is unobservable while the first runs, so the decisive move is which windows of the same record measure it, and the wrong routes understate the source by the surroundings' own variability.",
-    "task234": "Shares the shape of recovering what one source contributed to a reported figure. task234's quantity is what a source produced when a transit loss removed part of its output, read from a share its own output cannot move, which is a maturity and completeness mechanism. Nothing is lost or late here: every minute is recorded, and the question is which minutes measure the part of the total that is not the works."
+    "task234": "Shares the shape of recovering what one source contributed to a reported figure. task234's quantity is what a source produced when a transit loss removed part of its output, read from a share its own output cannot move, which is a maturity and completeness mechanism. Nothing is lost or late here: every minute is recorded, and the question is which minutes measure the part of the total that is not the works.",
+    "task192": "Shares nothing but the shape of the words 'measured in one window, applied to another'. task192's decisive quantity is a count of units carrying a property an instrument labels, where the instrument's validation batch covered only the window's opening and the population's class mix moved after it, so the question is which of the instrument's rates carry forward to a cohort the batch never reached. Architecture 3 carries nothing forward at all: its right route never transports a measurement between windows, it identifies the in-window quantity from the source's own recorded output, and what shifts is the composition of the nuisance sound by hour of the day at a fixed set of receptors, with the shift's sign differing by receptor. No cohort, no instrument performance and no rate transport appears in it.",
+    "task451": "Shares the decisive gap, the pattern slot and the Gate G mechanism with task451's architecture 1 and nothing of the move. task451 v1's decisive quantity is money credited back to original sources through an intermediary that collects in one period and pays out in the next, so the mix that applies to a payment is a previous period's inflow mix and the work is an accounting reallocation of a flow across periods. Architecture 3's decisive quantity is a physical level at a fixed receptor, obtained by subtracting a nuisance term from a measured total; nothing is reallocated and nothing lags, the work is identifying a term that cannot be observed in the window the estimand names, and what makes the observable estimate wrong is that the nuisance sound is a different mixture of its own sources at the only hours the plant can be seen shut down, with the difference's sign changing from receptor to receptor."
   },
   "lineage": [
     {
@@ -118,8 +124,13 @@
       "driver_concrete": "Each landholder bore's September 2026 assessment level is set against the make-good trigger for its aquifer (2 m in the alluvium, 5 m in the coal measures and basalt) since the pit's dewatering began on 4 July 2022; the alluvial bores fell 4.6 to 5.2 m through the failed 2022-23 to 2025-26 seasons on rainfall alone, while the coal-measure bores near the pit, still rising on the 2019-20 and 2020-21 wet seasons through a six to seven year rainfall memory, were drawn 8.3 to 9.3 m below where that rise was taking them and show only 2.2 to 2.5 m of net decline.",
       "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change, or with the far-field coal-measure bore KV-LB16 as a control) and offers make good to the alluvial bores and the ridge basalt bore that fell past their triggers (or to KV-LB12 alone, or to KV-LB04, KV-LB05 and KV-LB12); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and basalt fell through the dry seasons and the coal measures' small net fall hides 8.3 to 9.3 m of drawdown under a rise the wet seasons had set going.",
       "answer": "Offer make-good agreements to four owners for five bores: Yarrowmere Pastoral Co Pty Ltd for KV-LB04 and KV-LB05 (one agreement), Tondara Grazing Pty Ltd for KV-LB07, Bluebush Downs Pty Ltd for KV-LB10 and Cypress Ridge Pastoral Trust for KV-LB12."
+    },
+    {
+      "architecture": "v2",
+      "fate": "spent 2026-10-17 without shipping: both stage 4 cold threads landed the call. The isolated reader, on the prompt and the 13 files alone, named the five with their levels, the sixth and its margin, the tone and both device asks, at about 70 per cent confidence on the call; the determinism judge returned DETERMINISTIC with Gate F read LOW to MODERATE and too-easy risk named on the main call, and derived the same answer. The decisive step was readable: clause 3.1 obliged every solver to produce a residual and the pack offered exactly one place to get one, labelled in the equipment log's own words as the weekly MCC inspection, so the step the filed clause demanded and the data supplied in one move was found by both threads. The ask layer's measured pair ceiling of 37.3 proved nothing, because a pair ceiling cannot validate the ladder it assumes (the rule this wave filed from task190). Evidence kept in the task folder: determinism_check_report.md and leak_check_report.md's Solver's-eye read.",
+      "driver": "The decisive quantity is one source's own contribution to a measured total, and the nuisance part of that total cannot be measured while the source runs, because the source's steady presence lifts even the quietest moments of the record; so every background taken from the running record subtracts the source along with the nuisance and leaves the nuisance's own variability, ranking the units by how variable their surroundings are instead of by how much the source contributes."
     }
   ],
-  "notes": "Re-root at architecture 2. stump_strategy is other: the decisive move is where the nuisance quantity in an energetic subtraction is measured from, which no strategy key names. subdomain repeats architecture 1's because environmental-monitoring-exceedance is the only task type the taxonomy gives anomaly-detection in this domain; the differentiation entry carries the separation. calibration_form is none: no corpus and no closed-outcome ledger ships, and the method is forced by the records' own structure. decisive_rule_filed is false: the noise management plan files the assessment period, the sample validity criteria, the positions and the mitigation slot, and says nothing about how the residual is determined; no filed sentence names a statistical background, so there is no official decoy.",
-  "registered": "2026-10-17T15:57:45Z"
+  "notes": "context_artifact moved from register to filed_standard at the architecture 3 draw. It is the honest key and it clears ban.artifact against task196: the document the engineer works from is the site noise management plan, which files the estimand, and the complaints register is a declared distractor the call reads for nothing.",
+  "registered": "2026-10-17T22:53:50Z"
 }

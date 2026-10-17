@@ -1,48 +1,40 @@
 {
   "task": "task182",
   "owner": "oviya13ya",
-  "status": "BUILD",
+  "status": "DRAWING",
   "domain": "physical-environmental-sciences",
   "objective": "anomaly-detection",
-  "stage": 4,
-  "stage_name": "check: the determinism re-judge, after the round-2 determinism repair, the round-3 ask-layer re-cut, the round-4 closure of the judge's three ask forks and the round-5 measurement of each ask device's forcing figure on the cut pack plus three call-side repairs (the sixth stable under every window reading without pinning the window, the rain fork removed at its root, survey_notes.md cut back to a technician's note)",
+  "stage": 1,
+  "stage_name": "draw: architecture 3 registered, the card filed and the design note's re-root and Draw sections written. Stage 2 has not started: no design section, no ladder and no file is cut until precut.py passes on architecture 3",
   "updated": "2026-10-17",
-  "stump": "A competent solver pairs every deployment with its position, takes each deployment's field-check deviation off its levels, excludes exactly the minutes the plan excludes, energetically averages each position's weekday daytime LAeq, energetically subtracts the background the position's own record shows and files NSL03, NSL04, NSL06, NSL11 and NSL12; the step that lands it there is taking that background from a record the plant was running in, when the blowers, the centrifuges and the gas engine run through every assessment minute, so the subtraction returns the surroundings' own variability instead of the plant's contribution.",
-  "architecture": 2,
-  "loops": 2,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-17",
-    "checks": "50 checks, 0 FAIL, 0 WARN",
-    "pair_ceiling": "37.3 with 3.6 per cent mirror leakage against the cracker Part 1.1 defines, measured as code by generator/cracker.py on the cut pack and asserted row by row in checks.py: 24 of 84 criteria kept, all of them the construction layer or the tone summary, and every one of the 60 device criteria missed"
+  "architecture": 3,
+  "loops": 0,
+  "stump": "A competent solver pairs every deployment with its position, takes each deployment's field-check deviation off its levels, excludes exactly the minutes the plan excludes, energetically averages each position's weekday daytime LAeq and then needs the residual term of the plan's subtraction; the step that lands it on the wrong slate is taking that residual from the only minutes the pack records the plant shut down, the weekly process stops between 04:30 and 06:45, which lie outside the 07:00 to 19:00 assessment period the plan files, so at the roadside positions the empty road understates the residual and at the hedgerow and woodland positions the dawn chorus overstates it, the specific levels move in opposite directions by position and the slate's fourth to sixth places change. The exact wrong set and the margins are filed at stage 2 when the ladder is measured.",
+  "guard": {
+    "verdict": "WARN, no BLOCK (guard.py check on the registered card)",
+    "warns": "the last-twelve window moves while other builds register, so the design note answers every WARN this draw has raised, not only those standing at the last run: repeat.gate_g against task197, repeat.question_form against task197 and task242, overuse.strategy (population_selection in three of the last twelve) and overuse.objective (anomaly detection in four)",
+    "notes": "two structural NOTEs, test.same_puzzle_older and test.same_driver_older, both differentiated on the card against task451's architecture 1",
+    "nearest_driver": "0.11, this slot's own architecture 2, under the guard's 0.12 near threshold; then task263 and task49 at 0.06. task192, the build the brief warned the draw might repeat, does not reach the list",
+    "registered": "cards/task182.json filed as architecture v3 at 2026-10-17T22:53:50Z; guard.py validate 231 cards, 0 invalid",
+    "abandoned_at_the_guard": "three, before any design time: stump_strategy composition_mix (ban.strategy against task467), gate_g method_or_model_selection (test.same_driver, the signature spent in five earlier builds and clashing in batch with task265) and context_artifact register (ban.artifact against task196). All three are axis bans or spent signatures, so none was argued round; each is in the design note's ## Tried and rejected"
   },
-  "build": {
-    "answer": "the October slot covers NSL04, NSL11, NSL07, NSL02 and NSL13; NSL06 is first off the list at 44.7 dB, 1.3 dB behind the fifth (1.2877 unrounded, 0.038 from its rounding edge)",
-    "checks": "1,925 assertions passed, plus the three SF20 reconciliation assertions added after the author's query (not yet executed: the reader and the judge are reading this pack, so no rebuild was run; they run on the next rebuild)",
-    "verify": "OK, 282,167 independent checks from the bundle alone; the ask figures are rebuilt from the historian's own rows and the deployment record's windows, the band verdicts on both aggregations, and verify.call_only rebuilds the call's half with the historian deleted",
-    "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 ab3198a15c906f7b)",
-    "figures_check": "exit 0, 63 figures in blocks 1 to 4, none absent",
-    "gates": "13 files, 5 formats (csv, md, parquet, pdf, xlsx), sound_levels_1min_2026.parquet 281,918 rows, distractors complaints_register_2026.xlsx and effluent_quality_2026.csv declared in metadata.json",
-    "rungs": "complaints NSL01/03/06/09/12; measured total NSL02/04/06/07/11 (0.48 dB); LA90 background NSL03/04/06/11/12 (0.08); tenth percentile NSL02/04/06/07/11 (0.52); quietest quarter hour NSL02/04/06/07/11 (0.70); arithmetic means NSL03/04/06/07/11 (0.43); answer NSL04/11/07/02/13 (1.29). Every other window the pack permits (weekday hours before 05:00, nights, Sundays, centrifuges off) files NSL06 in and NSL13 out, asserted window by window. The sixth is the same dwelling read over every window the residual can be taken in: NSL06 stands 0.66 dB clear of the seventh on the equipment log's own intervals, 0.52 on the historian's quarter hours and 0.32 on the log's intervals trimmed by ten minutes, the five unchanged and the printed margin 1.3 in all three. The window is not filed, because filing it would make the decisive step the execution of a stated sentence",
-    "asks": "84 ask criteria: 21 construction, 14 air behind each level, 14 quarter hours with no reading of their own and 14 longest runs per position, 18 weekly (the same three), 3 tone summary. Two primaries, both in scada_15min_2026.csv which the call reads for nothing, and each one's forcing figure is measured on the cut pack: the aeration header's meter, which across each of the three spells where the shift isolates BL-01 and BL-02 advances 0.0 thousand Nm3 while BL-03's advances 1.1, 1.0 and 1.4 (the log showing BL-03 running and the header's two machines stopped), with BL-03's rate no fraction of the header's at 0.34 to 0.85 and spread inside every week, the header alone short by 163 to 169 of 498 to 521 a position and 219 to 232 a week; and the interface's held rows, 54 of them claiming 56.7 thousand Nm3 of air was flowing while their own counters record none of it, against a record short by 179 quarter hours of which the absent stamps are 125, with the 42 honest repeats the stops leave (a row identical to the one before it in all ten channels, both its own flow channels at zero: 7 in each weekly inspection but the third, which gives 6 because the engine hour counter resets inside it, and one in the short all-source stop of 26 August) separated by the flow channels reading zero inside an all-down spell; the looser test of the same idea, the air and gas counters standing still, over-counts by 53 instead, and both are asserted",
-    "target_zip": "cut from the final rebuild: 13 entries, 2.6 MB; recut after every rebuild and asserted fresh against the tree"
+  "three_rules": {
+    "domain": "pass at the draw: the specific sound level by energetic subtraction, with the residual recovered by regression on the source's own recorded output, which is the field's own instrument when the plant cannot be shut down; the noun swap breaks it",
+    "layers": "pass at the draw: Layer 1 is the survey's own mess, Layer 2 is the residual's estimation over the window the estimand names",
+    "decisive_step": "analytical",
+    "analyst_test": "a strong analyst who cleans every reading and executes every filed clause still takes the residual from the only minutes the pack shows the plant shut down, all of them before 07:00, and files a slate whose fourth to sixth places are wrong; only a residual estimated inside the assessment period gives the committed five"
   },
-  "leak": {
-    "leak_py": "REVIEW, no LEAK (3 lines: the plan's three call words, the field vocabulary in the plan, and the instruments' verification due dates), each answered in the design note's Leak check section. survey_notes.md no longer trips any sweep",
-    "reader": "round 2 run 2026-10-17 on the cut pack; every realism finding fixed in the generator (propagation and night texture, the Monday round and the technician's own minutes, the grid references, the complaints texts, the process channels), and the two items held over from round 4 measured closed on the shipped files: the diurnal finding rested on the notes claiming roadside traffic, which the cut notes do not claim, and the tone is not an offset on one band (each band keeps 0.4 to 2.3 dB of its own residual on the 29-band common mode, 400 Hz swinging 4.93 dB at a correlation of 0.44, the three meters' mean shapes differing by up to 3.5 dB in a band). survey_notes.md cut back to a technician's note"
-  },
-  "duplicate_check": {
-    "heart": "WARN, not BLOCK (nearest driver 0.07, task263, differentiated on the card)",
-    "nearest": "guard.py surface: 224 builds screened, 223 pairs in scope, 0 promoted"
-  },
-  "judge": {
-    "verdict": "NOT_DETERMINISTIC (rounds 1, 2 and 3; the call forced in every one)",
-    "disposition": "FIX_NOW; round 2 executed the author's seven determinism rulings, round 3 re-cut the ask layer and round 4 closed the three ask forks the judge found in it (a channel named for the ask's own words, a wording a held row did not fail, and the band aggregation). One re-judge owed, the author's to license; the author's stopping rule applies to the next finding on the ask layer",
-    "report": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t182/judge/verdict.md (round 2)",
-    "gate_g": "pass (decomposition; the difficulty survives deleting every wrong number; not a lens swap)",
-    "gate_h": "pass (domain, both layers, decisive step analytical)",
-    "gate_f": "moderate (round 2); the call and the stump stand",
-    "freeze": "freeze.py check --mode rubric: the 28 frozen main-side figure keys are all unchanged, as are the recommendation and critical-components numbers, the stump sentence, the card's stump and driver, the prompt's call sentence and the default-path section; 113 ask figures moved, which is what the re-cut is. The one item it reports is the design note's ladder section hash, and that is the author's own ruling: widening the sixth-to-seventh separation changed the numbers the flip-conditions paragraph records (NSL09 44.6 to 44.0, the sixth 0.66 / 0.52 / 0.32 dB clear under the three window readings). --allow takes figures.json keys only, so the section hash cannot be allow-listed; it is reported rather than suppressed. Accepted by the author on that basis, recorded under the design note's pre-ship check; the snapshot is not retaken"
+  "design_constraints_from_architecture_2": [
+    "list the figures the prompt's rounding sentence governs and check each printed precision against it in the verifier, not by eye: architecture 2 shipped eighteen weekly air figures whole where the prompt asked for one decimal, with every gate green, because figures_check.py asks only whether the block's number is in figures.json (determinism-check section 5)",
+    "no shipped sentence names what a rejected route would give unless each rejected route is recomputed and the candidates it yields are named exactly, or the sentence is written without the candidate list (determinism-check section 5)",
+    "no clause says how to obtain the residual, says the plant-off windows are unrepresentative, or bars any route textually: a textual bar on the wrong route hands the answer over, which is the judge's reading of architecture 2's 'in dB LAeq' re-examined",
+    "the plan's tutoring sentences come out or are reworded in the standard's own register",
+    "survey_notes.md stops itemising defects and stops pointing at what was not collected",
+    "the complaints register honours its own one-row-per-contact header or explains the repeat in its own words"
+  ],
+  "evidence_filed": {
+    "determinism_check_report.md": "architecture 2's verdict, headed as a verdict on a pack that no longer exists, with the three things it binds in architecture 3",
+    "leak_check_report.md": "leak.py's mechanical half plus ## Solver's-eye read: the reader's verdict on each REVIEW line, its question 6 answer, what it landed and the three realism findings, with its answers in full"
   },
   "returned": [
     {
@@ -51,9 +43,16 @@
       "repair": "design",
       "detail": "re-rooted at stage 1 as architecture 2: the WHAT screen killed architecture 1 (its decisive step settled the estimand's comparison) and the shared-driver mechanism is spent. Architecture 2's first draw (static flux chambers) was redrawn at the ladder measurement before any file was cut. The build is the autumn noise survey at Drumlorne. Stage 4 round 1 returned NOT_DETERMINISTIC/FIX_NOW on five supplementary forks plus an impossible set of meter columns; all fixed in one generator pass on 2026-10-17 (see the design note's STAGE 4 ROUND section). Stage 4 round 2 returned NOT_DETERMINISTIC/FIX_NOW on the 10 September CF-02 log sequence read two ways, the per-position runs column, the unstated minutes basis, two rounding edges (the week beginning 21 September at exactly 699.5 and the margin 0.0048 from its edge), the unfiled minute stamp and a realism list; all seven of the author's rulings executed in one generator pass on 2026-10-17 (see the design note's STAGE 4, ROUND 2 section).",
       "commit": ""
+    },
+    {
+      "date": "2026-10-17",
+      "portal": "not a portal return: architecture 2 was spent at stage 4 without shipping. Both cold threads landed the call. The isolated reader, on prompt.txt and the 13 files alone, named NSL04, NSL11, NSL07, NSL02 and NSL13 with their levels, NSL06 sixth at 44.7 about 1.3 dB behind, the 400 Hz tone at six positions, and both device asks (the aeration header plus BL-03 over the 07:00 to 19:00 counter differences, and absent rows plus exact repeats with the plant running), at about 70 per cent confidence on the call and 75 on the plant figures. The determinism judge returned DETERMINISTIC with Gate F LOW to MODERATE and too-easy risk named on the main call, derived the same five, and reported the call unchanged under six botchings of the Layer 1 mess.",
+      "repair": "design",
+      "detail": "re-rooted at stage 1 as architecture 3, a new decisive step in architecture 2's world. Diagnosis: clause 3.1 obliged every solver to produce a residual and the pack offered exactly one place to get one, labelled in the equipment log's own words as the weekly MCC inspection, so the step the filed clause demanded and the data supplied in one move was found by both threads. The ask layer's measured 37.3 pair ceiling proved nothing: a pair ceiling cannot validate the ladder it assumes (the rule filed from task190). Architecture 3 makes the plant-off windows the attractive wrong route, because they fall between 04:30 and 06:45, outside the 07:00 to 19:00 assessment period, where the roads are empty and the dawn chorus is loudest, so the non-plant sound they record is a different mixture by a different amount at every position; the residual that holds is estimated inside the assessment period from each position's own level against the plant's recorded aeration output, extrapolated to zero output. Two judge findings bind the new build as design constraints: the figures the prompt's rounding sentence governs are checked for printed precision in the verifier, and no shipped sentence names what a rejected route would give unless each route is recomputed and its candidates named exactly. The three realism findings (the plan's tutoring sentences, survey_notes.md itemising defects and pointing at what was not collected, the complaints register's one-row-per-contact header against C01 repeating five times) are in scope. Architecture 2's evidence is filed in determinism_check_report.md and in leak_check_report.md under ## Solver's-eye read.",
+      "commit": ""
     }
   ],
-  "resume": "stage 4: the call side has been forced in three judge rounds and is untouched; rounds 2 to 5 are in the generator and every free gate is green (precut 50 checks, 0 FAIL, 0 WARN, with the re-cut layer's own measurement 37.3 and 3.6 in the gated pair fields, measured as code by generator/cracker.py rather than argued; voice-check PASS at 952 characters, figures_check 63 of 63, leak.py REVIEW and no LEAK, guard surface 0 promoted of 221, heart WARN, two byte-identical rebuilds at ab3198a15c906f7b, target.zip recut). Each ask device's forcing figure is measured on the cut pack and asserted (SF19, SF20), the sixth is stable under all three window readings with the window unpinned, and the one re-judge is the author's to license. The author's stopping rule: if the next judge finds another ask fork, the ask layer is cut back to figures the records force outright and the build ships on a weaker ask layer.",
+  "resume": "stage 2 (design): write the default path ending on a wrong answer, the stump sentence, the ladder with the plant-off-window route as the attractive wrong rung, the fork table, the closure table, the literal reader, the oracles, the ask layer and prompt.txt, then run precut.py. Nothing is cut until it exits 0. The world, the positions, the meters, the plant, the met mast and the historian are kept, and as much of generator/ as the new decisive step allows; architecture 2's target/, golden/, submission.md, metadata.json, target.zip, figures.json and .freeze.json are architecture 2's and are rebuilt or removed at stage 3.",
   "approved": false,
   "delivered": null,
   "portal": null,
@@ -81,11 +80,5 @@
       "cracked": 0,
       "items": 5
     }
-  ],
-  "three_rules": {
-    "domain": "pass (the determination of a specific sound level, the separation of one source's contribution from the residual by energetic subtraction; the swap breaks it)",
-    "layers": "pass",
-    "decisive_step": "analytical",
-    "analyst_test": "the background taken from the position's own running record files NSL03, NSL04, NSL06, NSL11 and NSL12; only the residual measured inside the plant's weekly process stops gives NSL04, NSL11, NSL07, NSL02 and NSL13"
-  }
+  ]
 }

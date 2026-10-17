@@ -1,10 +1,89 @@
-# task182 design note (architecture 2)
+# task182 design note (architecture 3)
 
-Architecture 1 (make-good bore assessments at a central Queensland coal mine) shipped on 2026-10-11, the
-portal solved it, and the slot came back `FAILED_TO_STUMP`. The diagnosis is below, written before anything
-was changed. Architecture 2 is a fresh draw on the same number and objective: the card's lineage carries
-architecture 1's identity and fate, `architecture` is 2 and `loops` 0. Architecture 1's own ladder, pack and
-build record are not reproduced here; the card holds its identity and `## Tried and rejected` its deaths.
+Architecture 1 (make-good bore assessments at a central Queensland coal mine) shipped on 2026-10-11 and the
+portal solved it. Architecture 2 (this world, the residual measured in the plant's own process stops) was
+spent at stage 4 on 2026-10-17 without shipping, because both cold threads landed the call. Architecture 3
+is a new decisive step in architecture 2's world: the card's lineage carries both earlier identities with
+their fates, `architecture` is 3 and `loops` 0.
+
+**Reading order while architecture 3 is at stage 1.** The `## ARCHITECTURE 3 RE-ROOT` section below is the
+current draw. Every section from `## Default path` to `## Pre-ship check` is architecture 2's and is
+replaced at stage 2; it is left in place only so the re-root can be read against what it replaces, and
+`precut.py` is not run against architecture 3 until those sections are rewritten. `## Tried and rejected`
+is append-only and spans all three architectures. Architecture 2's own evidence is in
+`determinism_check_report.md` and `leak_check_report.md`.
+
+## ARCHITECTURE 3 RE-ROOT (stage 1, the draw)
+
+**Why architecture 2 died, in one line.** Clause 3.1 obliged every solver to produce a residual and the
+pack offered exactly one place to get one, labelled in the equipment log's own words as the weekly MCC
+inspection, so the step the filed clause demanded and the data supplied in one move was found by both stage
+4 threads: the isolated reader named the five with their levels, the sixth and its margin, the tone and
+both device asks at about 70 per cent confidence, and the determinism judge returned DETERMINISTIC with
+Gate F read LOW to MODERATE and too-easy risk named on the main call. A decisive step a filed clause demands
+and the data supplies in one move is readable, and a readable decisive rung is dead. The ask layer's
+measured pair ceiling of 37.3 proved nothing: a pair ceiling cannot validate the ladder it assumes, which
+is the rule this wave already filed from task190.
+
+**What architecture 3 keeps.** The world whole: Drumlorne, Tulcarra Foods, the fourteen positions and their
+surroundings, the five meters and their rotation, the blower house, the two centrifuges and the gas engine,
+the met mast, the historian, the register and the personas. The call stays the same question, which five of
+the fourteen dwellings the October acoustic treatment slot covers, and the estimand stays filed in the same
+five parts. As much of the generator as the new decisive step allows is kept.
+
+**What architecture 3 changes, and the one constraint it is drawn to.** Architecture 2's right route becomes
+architecture 3's attractive wrong route. The plant-off windows the equipment log carries fall between 04:30
+and 06:45, outside the 07:00 to 19:00 assessment period the plan files, so a residual taken from them is the
+non-plant sound of a different hour. At that hour the roads around Drumlorne carry no traffic and the dawn
+chorus is at its loudest, so the mixture of non-plant sources is not the mixture the assessment period sits
+in, and the difference has opposite sign by position: the residual is understated at the roadside positions
+and overstated at the hedgerow and woodland positions. The specific levels therefore move in opposite
+directions by position and the slate's fourth to sixth places change. The residual that holds is the one
+estimated inside the assessment period, from each position's own measured level against the plant's own
+recorded aeration output, extrapolated to zero output, which is what an acoustics practitioner does when
+the plant will not stop.
+
+**Guard verdict (run before any design time was spent).** `guard.py check` on the registered card: **WARN,
+no BLOCK.** Three WARNs and two NOTEs, each answered in the `## Draw` section: `repeat.gate_g` and
+`repeat.question_form` against task197, `overuse.objective`, and the two structural NOTEs differentiated on
+the card against task451's architecture 1. The nearest driver on the whole corpus is this slot's own
+architecture 2 at **0.11**, below the guard's 0.12 near threshold, so the re-root's driver is new by the
+guard's own measure; the next nearest are task263 and task49 at 0.06, and task192, the build the brief
+warned the draw might repeat, does not reach the list at all. Three draws were tested and abandoned at the
+guard before any design time was spent, each recorded in `## Tried and rejected`: `composition_mix` as the
+strategy, `method_or_model_selection` as the Gate G key, and the register as the context artifact.
+
+**The draw's axes, and what moved.** gap objective to **population** (the file is not the thing: the minutes
+in which the residual is directly observable are not the minutes the estimand names); generators G3 to
+**G6 then G7** (composition shift carries the stump, the operating window creates the opportunity); Gate G
+method_or_model_selection to **decomposition_attribution**; strategy other to **population_selection**;
+layer 2 pattern to `own:nuisance-term-identified-inside-the-estimand-s-own-window`. Domain, subdomain,
+objective, shape, decision type, role, forum, forcing event, organisation family, spine and world are
+unchanged, and each cleared its own axis ban on this draw.
+
+**The three rules, answered at the draw (the full block is written at stage 2).** The domain really decides:
+the quantity is a specific sound level obtained by energetic subtraction and the residual is recovered by
+regression on the source's own output, which is the field's own instrument when the plant cannot be shut
+down; swap the nouns and there is no energetic summation, no residual that changes composition with the
+hour and no output channel to extrapolate against. Two layers: Layer 1 is the survey's own mess (UTC
+against local, the meter rotation, the field-check drift, the anemometer's unit change, the sentinel
+minutes, the repeated download, the historian's dropouts and held values, the air on two counters); Layer 2
+is the residual's estimation inside the window the estimand names. The decisive step is **analytical**: no
+clause says how to obtain the residual, no clause says the plant-off windows are unrepresentative, no
+clause textually bars any route (the judge's reading of architecture 2's "in dB LAeq" as a textual bar is
+the sentence this architecture does not write, because a textual bar on the wrong route hands the answer
+over), and nothing is planted.
+
+**What the two judge findings bind, and they are design constraints here, not write-up fixes.** First, the
+figures the prompt's rounding sentence governs are listed and each one's printed precision is checked
+against it in the verifier, because architecture 2 shipped eighteen weekly air figures whole where the
+prompt asked for one decimal with every gate green. Second, no shipped sentence names what a rejected route
+would give unless each rejected route is recomputed and the candidates it yields are named exactly;
+architecture 2's recommendation sentence named NSL03 and NSL12 and no background proxy put NSL12 in the
+five. The three realism findings are in scope too: the plan's tutoring sentences come out or are reworded
+in the standard's own register, `survey_notes.md` stops itemising defects and stops pointing at what was
+not collected, and the complaints register either honours its own one-row-per-contact header or explains
+the repeat in its own words.
 
 ## PORTAL RETURN AND DIAGNOSIS (architecture 1, written before any change)
 
@@ -356,44 +435,76 @@ deliverable carries.
 objective anomaly detection and diagnostics. The decision-maker is the site's environmental engineer; the
 forum is the site's own mitigation programme; the forcing event is the contractor's slot, ordered on Monday
 26 October 2026. As-of 2026-10-16, the date the folder was handed over. Prompt shape 01, a ranked list under
-a cap: which five dwellings of the fourteen monitored the October acoustic treatment slot covers.
+a cap: which five dwellings of the fourteen monitored the October acoustic treatment slot covers. Every one
+of these axes is held from architecture 2 and every one cleared its own ban on this draw.
 
-**Shape arithmetic (criteria after the round-3 re-cut).** 14 specific levels + 14 air figures + 14
-unrecorded-quarter-hour counts + 14 longest-run figures + the five as a set, the sixth and the margin (3) +
-the ranked chart's named parts (4) + six weeks x three plant figures (18) + the tone summary (3) = 84 ask
-criteria, on top of the recommendation and instruction-following criteria. Over the 25 the spec asks for,
-and dense rather than stacked: every figure is a cell of one of two deliverables.
+**Shape arithmetic.** The recommendation side is the fourteen specific levels, the five as a set, the sixth
+and the margin. The ask layer is drawn at stage 2 against the new decisive step, and the criteria are
+counted there; architecture 2's 84 are not carried over, because the devices they rode on sat in files the
+new call may read.
 
 **Data-native sentence.** The blower house, the two centrifuges and the gas engine run through every weekday
-daytime minute of a six-week survey, so the only record of the sound without the plant is the two hours a
-week the plant is down for its inspection, which fall outside the assessment period the plan fixes for the
-measurement itself.
+daytime minute of the survey, so the only minutes in which the plant's absence is recorded are the two
+hours a week it is down for its inspection, and those fall between 04:30 and 06:45, when the roads are
+empty and the dawn chorus is loudest, so the non-plant sound they record is a different mixture of sources
+from the one the assessment period sits in, by a different amount at every position.
 
-**Sources read, one line each.** `stumping` 1.4, gap 3 and the objective gap: the deciding quantity is not
-in any shipped column and has to be estimated from the records. `guide-to-prompt`: the pairing, the shape
-and the 25 criteria. `supplemental-stumping`: the ask layer, re-cut in the stage-4 round-3 pass. The
-client's 10/10 rules: the three-rules block below. The seeds were read for the world, the decision and the
-quantity only.
+**Sources read, one line each.** `fingerprint`: the re-root procedure, the card's lineage and the guard
+reads run before any design time (`recent`, `coverage`, `check`). `stumping` 1.2 and 1.4: the WHAT screen
+below and the gap. `guide-to-prompt`: the pairing and the shape. `determinism-check` section 5: the two
+findings architecture 2's judge filed, carried as design constraints. The client's 10/10 rules: the
+three-rules block. The seeds were read for the world, the decision and the quantity only.
 
-**The WHAT screen (`stumping` 1.2), answered before the default path.** Decisive step: measure the residual
-sound in the plant's own process stops rather than taking it from the record the plant was running in. The
-five parts of the estimand and the sentence that files each: **population**, the 14 monitoring positions in
-the register (noise management plan 2.1, "the positions listed in the monitoring schedule"); **outcome**,
-the specific sound level of the effluent plant at the position, in dB LAeq (plan 3.1, "the sound level at a
-position attributable to the plant, the measured level less the residual sound"); **window**, weekday 07:00
-to 19:00 inside the position's own deployment (plan 3.2); **unit**, one monitoring position (plan 2.1);
+**The WHAT screen (`stumping` 1.2), answered before the default path.** Decisive step: estimate the
+residual term of the plan's filed subtraction over the window the estimand already names, rather than over
+the only minutes in which it is directly observable. The five parts of the estimand and the sentence that
+files each: **population**, the fourteen monitoring positions in the register; **outcome**, the specific
+sound level of the effluent plant at the position, in dB LAeq, the measured level less the residual sound;
+**window**, weekday 07:00 to 19:00 inside the position's own deployment; **unit**, one monitoring position;
 **comparison**, none, the quantity is a level and the slot is a cap of five from the prompt. The decisive
-step settles none of them: it is where in the record the residual term of a filed subtraction is measured,
-and the plan files the subtraction's meaning without naming a window for it. Two ways of measuring it stand
-(the statistical background of the position's own record, and the record inside the plant's stops), and the
-records rule the first out: the plant's own event log shows the blowers, centrifuges and engine running
-through every minute a position's background would be taken from, so that background contains the quantity
-being subtracted.
+step settles none of them. It is not a window choice for the estimand, which is filed: it is how a term
+defined over that window is obtained when the plant does not stop inside it. Two routes stand, the
+directly observable plant-off minutes and identification inside the window from the plant's own recorded
+output, and the records rule the first out without any sentence doing so: the non-plant sound at 05:00 is a
+different mixture from the non-plant sound at midday, the pack carries that shape in the minute record and
+in the third-octave bands, and no clause mentions it.
 
-**Guard WARNs answered.** `repeat.gate_g` and `overuse.gate_g` (method_or_model_selection, against task192
-v3 and five of the last twelve): the key is the honest one, two defensible estimators of one filed quantity
-with the data ruling one out, and the mechanism is unlike every other carrier of that key on file, the
-nearest driver on the corpus standing at 0.07 (task263, separated in the card's differentiation).
+**Why the easy route is not rule application, and why the right one is not a withheld rule.** No shipped
+sentence says how to obtain the residual, says the plant-off windows are unrepresentative, or bars any
+route textually. A solver who executes every filed clause correctly reaches a residual, and the clause does
+not tell them which minutes to take it from; the work is seeing that the term is defined over a window
+whose non-plant sound it must therefore describe. That is choosing the estimator of a filed estimand, which
+`CLAUDE.md` counts as analysis, and it is what the field does.
+
+**Guard WARNs answered.** The last-twelve window moves while other builds register, so every WARN this
+draw has raised is answered here rather than only the ones standing at the minute of the last run.
+`repeat.gate_g`, decomposition_attribution against task197 in the last two: the key is the honest one
+here, a correctly measured total at a receptor split between a continuous source and its surroundings, and
+the mechanism is unlike task197's, which attributes a grid reliability movement to a driver with a causal
+design. `repeat.question_form`, which against task197 and task242: the decision is a pick of five
+dwellings from fourteen, so the form comes from the decision and no other form is true of it.
+`overuse.strategy`, population_selection in three of the last twelve: it is the honest label once
+`composition_mix` was closed by an axis ban, and the three other carriers in the window select a
+population of units, which records belong in a tested or a compared set, while what is selected here is
+the set of minutes a nuisance term of a filed subtraction is estimated over, named by the estimand's own
+window; it is the support of an estimator, not a comparison group. `overuse.objective`, anomaly detection
+in four of the last twelve: the objective is the slot's own and is not redrawn at a re-root, and the
+diagnostics content here, how much of a measured total one source is answerable for at each receptor, is
+not the content of the other three. The two structural NOTEs are differentiated on the card against
+task451's architecture 1, and the nearest driver on the corpus is this slot's own architecture 2 at 0.11,
+under the near threshold.
+
+**One axis redrawn at the guard.** `context_artifact` moved from `register` to `filed_standard`:
+`ban.artifact` blocked the register against task196, and `filed_standard` is the honest key anyway, since
+the document the engineer works from is the site noise management plan that files the estimand, and the
+complaints register is a declared distractor the call reads for nothing.
+
+## ARCHITECTURE 2 (archived, replaced at stage 2)
+
+Everything from here to `## Pre-ship check` is architecture 2's design and build record, kept so the
+re-root can be read against what it replaces. It is not architecture 3's design and `precut.py` is not run
+against it. Architecture 2's pack no longer exists; its evidence is in `determinism_check_report.md` and in
+`leak_check_report.md` under `## Solver's-eye read`.
 
 ## Default path
 
@@ -1133,3 +1244,35 @@ the check pass: the move is reported and accepted on that basis.
   sufficient. Two readers still followed the technician's notes, which called the header "the blower
   header", and read the header as the whole. The notes no longer name the header at all and the isolation
   spells carry the figure.
+- **Architecture 2 itself, spent at stage 4 on 2026-10-17 without shipping.** Both cold threads landed the
+  call: the isolated reader named the five, their levels, the sixth, its margin, the tone and both device
+  asks on the prompt and the 13 files alone, and the determinism judge returned DETERMINISTIC with Gate F
+  LOW to MODERATE and too-easy risk on the main call. Clause 3.1 obliged a residual and the pack offered
+  one place to get one, labelled in the log's own words; a decisive step a filed clause demands and the
+  data supplies in one move is readable. Re-rooted at architecture 3 in the same world.
+- **The ask layer's 37.3 pair ceiling as evidence of stump power.** It was measured as code with every
+  device row asserted to miss, and it was still worth nothing: the reader landed both device asks. A pair
+  ceiling cannot validate the ladder it assumes, which is what task190 filed and what this build confirmed.
+- **Architecture 3 drawn with `stump_strategy: composition_mix`.** The honest label for the mixture shift,
+  and `ban.strategy` blocked it against task467 in the last three. An axis ban is not clearable by
+  differentiation, so the label was redrawn to `population_selection`, honest for the same move: the
+  residual's population of minutes is the estimand's own window, not the window where it is observable.
+- **Architecture 3 drawn with `gate_g: method_or_model_selection`,** architecture 2's own key: the guard
+  blocked it, the signature gap population plus G6 plus that key being spent in five earlier builds and
+  clashing inside the batch with task265. Redrawn to `decomposition_attribution`, the reviewer's key for
+  splitting a correctly measured total between a source and its surroundings, at one WARN instead of five
+  differentiation lines.
+- **Architecture 3 drawn with `context_artifact: register`,** held over from architecture 2: `ban.artifact`
+  blocked it against task196 in the last three. Redrawn to `filed_standard`, which is the honest key, since
+  the document the engineer works from is the noise management plan that files the estimand and the
+  complaints register is a declared distractor the call reads for nothing.
+- **The residual transported from a reference position.** A continuously running background monitor where
+  the plant is inaudible, with each assessment position's offset to it established in the plant-off
+  windows: that is the transport shape the guard warns about against task192, and the offset still has to
+  be established in the window whose mixture is wrong, so it carries the error it is meant to remove.
+- **The residual identified from wind direction,** upwind hours against downwind hours inside the
+  assessment period: it needs an upwind attenuation figure, and any figure the pack files turns the
+  decisive step into the execution of that figure.
+- **A daytime plant shutdown added to the pack.** It would make the in-window residual directly
+  observable, which is architecture 2's finding again one window later: the step would be to find the
+  daytime stop in the log.

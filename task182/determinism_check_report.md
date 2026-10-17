@@ -1,10 +1,11 @@
 # Determinism check report, task182 ARCHITECTURE 2 (archived evidence)
 
-**This is architecture 2's verdict, on a pack that no longer exists.** The judge ran on the bundle whose
-tree digest was `ab3198a15c906f7b`, cut 2026-10-17, and that bundle was removed when the build was
-re-rooted at architecture 3 the same day. Nothing below describes the shipped files of this task folder
-now. It is kept so that the next person to read the folder can see why architecture 2 died without taking
-anyone's word for it.
+**This is architecture 2's verdict, and architecture 2 is spent.** The judge ran on the bundle whose tree
+digest was `ab3198a15c906f7b`, cut 2026-10-17, and the build was re-rooted at architecture 3 the same day.
+That bundle is superseded: it is still on disk while architecture 3 is designed, because architecture 3
+keeps as much of the generator as its new decisive step allows, and it is rebuilt or removed at stage 3.
+Nothing below describes architecture 3, whose decisive step is different. The report is kept so that the
+next person to read the folder can see why architecture 2 died without taking anyone's word for it.
 
 **What it settles.** The verdict is DETERMINISTIC with a cosmetic SOLUTION_WRONG, and the call was
 derived from the 13 files alone: the same five dwellings, the same fourteen levels at one decimal, the

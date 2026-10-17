@@ -1,0 +1,14 @@
+{
+  "task": "task197",
+  "owner": "oviya13ya",
+  "status": "DRAWING",
+  "stage": 1,
+  "architecture": "v1",
+  "objective": "anomaly-detection",
+  "domain": "energy-systems-utilities",
+  "subdomain": "grid-reliability-outage-analysis",
+  "drawn": "2026-10-17",
+  "card": ".claude/skills/fingerprint/cards/task197.json",
+  "resume": "stage 2: design note and prompt.txt, then precut.py",
+  "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list."
+}

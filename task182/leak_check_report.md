@@ -37,9 +37,11 @@ Stump terms swept: residual, record, measured, minutes, decisive, background, qu
 
 # ARCHITECTURE 2 (archived evidence)
 
-Everything above and below ran on architecture 2's pack, tree digest `ab3198a15c906f7b`, cut 2026-10-17
-and removed when the build was re-rooted at architecture 3 the same day. It does not describe the shipped
-files of this task folder now. It is kept so the folder shows why architecture 2 died.
+Everything above and below ran on architecture 2's pack, tree digest `ab3198a15c906f7b`, cut 2026-10-17.
+The build was re-rooted at architecture 3 the same day, so that pack is superseded: it is still on disk
+while architecture 3 is designed, because architecture 3 keeps as much of the generator as its new decisive
+step allows, and it is rebuilt or removed at stage 3. None of it describes architecture 3. It is kept so
+the folder shows why architecture 2 died.
 
 ## Solver's-eye read
 
