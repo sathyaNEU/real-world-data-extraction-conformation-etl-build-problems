@@ -27,6 +27,16 @@ judge reads that source as the count and the other source's excess as error (tas
 design (the data's structure rules out every other method; preferred), a governing standard's general
 method, or a filed selection criterion in general terms that never names the method (a recognisable
 organ, never in consecutive builds). The data separates every reasonable candidate with margin, asserted.
+**Forcing measured on smooth data is not forcing.** Where the design forces the method, the separation is
+measured on a pack whose sampling noise is plausible for the process (a Poisson-like record at chi-square
+per degree of freedom near 1, never far below it), because a draw taken from evenly spaced quantiles of a
+fixed curve makes every estimator agree whatever the method. Measure the candidates' spread on that pack
+first, then set the graded granularity from the spread, raising the record's volume where the figure needs
+finer reporting than the noise supports. Coarsening the stated rounding to dodge the measurement is the
+banned move; stating the figure at the precision the data carries is the honest one, and leaving the
+amounts smooth to keep a fine rounding is the defect both ways round (task190 architecture 2: 199
+estimators and 180 fit specifications agreed at chi-square per degree of freedom 0.029, and the judge put
+the realistic spread at plus or minus 50 on a 400 figure reported to the nearest 10).
 Nothing forcing it: two methods survive (`underspecified_objective`). The method itself filed: the step
 is rule application and the stump is gone.
 

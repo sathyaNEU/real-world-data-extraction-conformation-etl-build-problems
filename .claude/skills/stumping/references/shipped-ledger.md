@@ -470,5 +470,29 @@ One line each, with the builds that paid for it. The techniques behind them are 
 - Where an ask layer is re-cut, freeze the call: the files it reads byte-identical, every call figure
   unchanged, `freeze.py check --mode rubric` exit 0.
 
+**Convergence is bought from the data, so measure what the data pays** (`determinism-check` §1, task190 architecture 2)
+- A method forced by the data's structure is forced only on data with the process's own sampling noise. A
+  pack whose amounts come from evenly spaced quantiles of a fixed curve makes every estimator agree: 199
+  estimators and 180 fit specifications converged on one answer at a Poisson chi-square per degree of
+  freedom of 0.029 bank-wide and 0.004 to 0.026 per segment, tail probabilities below 1e-26, and the judge
+  put the honest spread at plus or minus 50 on a 400 figure reported to the nearest 10. The convergence and
+  the realism failure were one defect, not two.
+- So measure the candidate spread on a realistic pack first, then set the graded granularity from it,
+  raising the record's volume where the figure needs finer reporting than the noise supports. Coarsening the
+  stated rounding to dodge the measurement is the banned move; stating the figure at the precision the data
+  carries is the honest one.
+- A convergence claim is asserted over a named candidate set, never stated as agreement: a write-up step
+  claiming every window, step width and fit family agreed matched 84 per cent of the judge's own
+  1,080-specification grid, and the exceptions named a different largest segment.
+
+**The reader and the judge answer different questions** (`build-pipeline`, stage 4)
+- The reader reports what a solver sees and does not recompute; the judge recomputes. Where they disagree on
+  what a shipped sentence licenses, the judge settles it: on task190 the reader read a band bound as the
+  definition of the graded figure and called a main-call fork, while the judge, cold on the same pack, found
+  the estimand filed and the method open with Gates A to E passing. On task194 the reader's narrative said
+  regression to the mean and the judge's arithmetic showed the structure sound.
+- So relay nothing structural, and re-root nothing, until both reports are in. A reader finding is evidence
+  of what a solver sees, which is Gate F, not Gate C. Two builds paid a wasted instruction for this.
+
 **Unspent, so not mistaken for spent**
 - The ledger's old row 41 (displacement under fixed assessment capacity, four outreach arms) was drawn and never built.

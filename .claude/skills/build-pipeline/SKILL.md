@@ -43,6 +43,12 @@ decisive path; a portal return where the call landed.
   design note and the finding, never a resumed finished agent.
 - **Stage 4 spawns the reader and the judge together** (same pack, neither changes it). While they run, update
   the card and write the pre-ship check. Collect both reports, fix everything in one generator pass, rebuild,
+  and relay nothing structural until both are in: a fork, a decoy or a re-root called on one report alone
+  costs the build a wasted pass. Where they disagree on what a shipped sentence licenses, the judge
+  recomputed and the reader did not, so the judge settles it (task190: the reader read a band bound as the
+  definition of the graded figure and the judge, cold on the same pack, found the estimand filed and the
+  method open; task194: the reader's narrative said regression to the mean and the judge's arithmetic showed
+  the structure sound). A reader finding is evidence of what a solver sees, which is Gate F, not Gate C.
   re-run the free gates, then re-judge only on FIX_NOW and re-read only if a document or the prompt changed.
 - **The free gates come first, always:** nothing with a token cost runs on a pack the scripts have not passed.
 - **No author checkpoints.** The draw is shown in ten lines and the build carries on; the author can stop or
