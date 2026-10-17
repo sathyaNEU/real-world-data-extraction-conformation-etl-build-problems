@@ -1,0 +1,106 @@
+{
+  "task": "task159",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 5, new; seed FC30 (world, decision and quantity only)",
+  "domain": "urban-regional-science",
+  "subdomain": "forecasting",
+  "client_domain": "urban-regional-science",
+  "niche": "a city transit commission's spring 2027 pick of weekday-morning platform conductor shifts, one conductor on a watch-list platform on each weekday morning whose forecast peak quarter-hour accumulation is more than 85 per cent of its rated capacity, when fare entries are kept per station complex, the inbound platforms where the Line 1, Line 4 and Line 5 suburban branches first meet the network hold mid-week crowds of riders full six-car trains left behind, and the spring service plan runs Line 5 in eight-car trains",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G8",
+    "G16",
+    "G13"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the station operations planning manager who files the platform conductor shift count in the spring pick notice",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "vtc_fare_entries_hourly_2024-07-01_2027-01-10.parquet (with the legacy four-hour register reads, afc_register_reads_2022-02-01_2024-06-30.csv)",
+    "rows": 0,
+    "entity": "one station complex's fare-array entries in one hour, by payment type",
+    "grain": "complex x hour",
+    "source": "synthetic (constructed in the layout of a transit agency's open-data hourly ridership export)"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "shift_or_daily_cycle",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States (Vellmouth, a city whose transit commission runs a six-line subway; the city, commission, stations, people, systems and data are fictional)",
+    "currency": "USD",
+    "org_type": "a city transit commission running a six-line subway",
+    "invented_names": [
+      "Vellmouth",
+      "Vellmouth Transit Commission",
+      "Garnett Street",
+      "Sallow Park",
+      "Hesper Avenue",
+      "Corran Junction",
+      "Ferrier Square",
+      "Albrecht Place",
+      "Quarry Road"
+    ],
+    "people": [
+      "Beth Lewis",
+      "Ralph Chambers",
+      "Mary Wheeler",
+      "Caleb Rowe"
+    ]
+  },
+  "deliverables": [
+    "spring_2027_platform_conductors.xlsx",
+    "spring_2027_platform_conductors.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "A stock counted at each stop on the heaviest days is mostly the backlog left by services that arrive with less room than one interval's arrivals, a backlog that builds only while that shortfall lasts; on lighter days, when the arrivals and the services' own incoming loads both fall, and once a service is lengthened, no backlog forms and the stock is one interval's arrivals, so carrying the heavy-day stock to other days in proportion to arrivals overstates them and a stock built from arrivals alone understates the heavy days.",
+  "driver_concrete": "Each watch-list platform's forecast peak quarter-hour accumulation on each spring weekday is the riders arriving over each headway plus those the train before could not take: on Tuesday to Thursday mornings the six-car trains of Line 1 and Line 4 at Sallow Park and of Line 5 at Corran Junction arrive carrying their suburban branches' riders, with less room than a headway's arrivals, so those counted crowds are queues; on Mondays and Fridays the branches and the platforms both carry fewer riders and every train takes everyone, and on Line 5 the spring plan's eight-car trains take everyone on every weekday, so those crowds are a headway's arrivals.",
+  "stump": "A competent solver carries each watch-list platform's mid-week counted peak quarter-hour to each spring weekday in proportion to its complex's morning entries, posting Monday and Friday conductors at Sallow Park's Line 1 and Line 4 platforms and keeping Corran Junction's Line 5 platform staffed every weekday; the step that lands it there is treating a mid-week crowd behind full trains as proportional to arrivals, when on Mondays, Fridays and eight-car Line 5 trains every train takes everyone (figures fixed at design).",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stitches the two fare-export layouts, maps the census and the counts onto platforms, reads the standard correctly and carries each platform's mid-week counted peak to each spring weekday by its complex's morning entries posts Monday and Friday conductors at Sallow Park's Line 1 and Line 4 platforms and keeps Corran Junction's Line 5 platform staffed, about nine shifts a week too many, and one who builds each crowd from the arrivals over one headway posts none at those platforms, about six too few; only a crowd that carries the riders a full train leaves behind, against the room each train brings from its branch, files the golden.",
+  "domain_test": "The quantity that decides the call is each platform's forecast peak quarter-hour accumulation by weekday, built the way transit capacity analysis builds platform loading, the arrivals over each headway against the room each arriving train still has, with the riders a full train leaves behind waiting for the next; swap the trains for clinic appointment slots and nothing sets the room by how full each batch arrives from upstream or changes it when the consist is lengthened.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:platform-queue-behind-trains-arriving-full",
+  "layer1": [
+    "two fare-export layouts across the July 2024 back-office cutover: legacy four-hour register reads per complex in local time, then hourly entries per complex and payment type in UTC",
+    "local time against UTC across the 1 November 2026 clock change, the count sheets in local time",
+    "imperfect keys: complex ids in the fare export, complex names and platform labels on the count sheets, platform codes in the capacity register and the engineering map",
+    "the ridership dashboard's preliminary and revised months beside the device export",
+    "the count contractor's workbook, one sheet per platform and count day under a title block, large crowds estimated in tens",
+    "the transfer and stair census as PDF tables by quarter-hour",
+    "counted train arrivals against the timetable, late and cancelled trips included",
+    "documentation to apply: the count method, the census method and the data dictionary"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task148": "task148 drains a 911 queue by callers who give up, patience estimated with censoring; here nobody leaves the queue: a platform's backlog is the riders a full train could not take, set by how full trains arrive from upstream, and the rival rejected is proportional scaling of a counted crowd, not the patience-free Erlang model",
+    "task156": "task156 routes work to a paid tier only when a shrinking volunteer pool falls short, the pool's capacity seen only when it binds; here capacity is a train's remaining room, known to move with the weekday's upstream riders and with the consist, and the graded quantity is a backlog that accumulates over the peak, not the overflow volume of each period",
+    "task153": "task153 caps each segment's draw at a tankful between yard visits; here no per-visit cap is summed: a queue carries from train to train while arrivals per headway exceed the room, and vanishes on lighter days",
+    "task150": "task150 carries transfers on the sending school's base in a cohort-component projection; here every rider source follows one weekday pattern and nothing is carried on a sender's base: the forecast turns on whether a train can take a headway's arrivals",
+    "task254": "task254 composes a shuttle trip from segment delays read at the time the vehicle reaches each segment; here no trip is timed: the platform's crowd is a backlog behind full trains",
+    "task147": "task147 loses a multi-night request whenever any night of its run is already full, so the nights around a sold-out pair take less than their history; here nothing is lost or blocked: a platform's riders all board eventually, the ones a full train cannot take wait for the next, so the backlog inflates the counted crowd on the heavy days and is absent on the light ones, and the error the decisive step corrects is a heavy-day stock scaled onto lighter days and longer trains"
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-17T19:48:28Z"
+}
