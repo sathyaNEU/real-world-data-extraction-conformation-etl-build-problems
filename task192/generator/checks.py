@@ -63,6 +63,23 @@ def dispersion(counts):
     return statistics.variance(counts) / m if m else 0.0
 
 
+def dispersion_by_week(pairs):
+    """Poisson dispersion against a weekday-specific mean: the register has a working week, so the
+    unconditional dispersion of a daily count carries that cycle and only the conditional one says
+    whether the noise itself is plausible."""
+    groups = {}
+    for day, n in pairs:
+        groups.setdefault(day.weekday(), []).append(n)
+    chi, df = 0.0, 0
+    for wd, xs in groups.items():
+        m = statistics.mean(xs)
+        if m <= 0:
+            continue
+        chi += sum((x - m) ** 2 / m for x in xs)
+        df += len(xs) - 1
+    return chi / df if df else 0.0
+
+
 def bootstrap(g, draws=20000, seed=7):
     """The sampling spread of the two families on this record, resampling the audit's four cells."""
     cells = (g["tp"], g["fn"], g["fp"], g["tn"])
@@ -244,15 +261,18 @@ def run(target, g=None):
     for a in acts:
         if W.PERIOD_FROM <= a["day"] <= W.SURGE_FROM - dt.timedelta(days=1):
             daily[a["day"]] = daily.get(a["day"], 0) + 1
-    disp = dispersion(list(daily.values()))
+    disp = dispersion_by_week(sorted(daily.items()))
     ok("noise.dispersion_plausible", 0.8 <= disp <= 1.35,
-       "chi-square per degree of freedom %.3f on daily action counts before the surge" % disp)
+       "chi-square per degree of freedom %.3f on daily action counts before the surge, against a "
+       "weekday mean" % disp)
+    ok("noise.weekly_cycle_present", dispersion(list(daily.values())) > 1.2,
+       "unconditional dispersion %.3f" % dispersion(list(daily.values())))
     conf_daily = {}
     for a in acts:
         if W.PERIOD_FROM <= a["day"] <= W.PERIOD_TO:
             conf_daily[a["day"]] = conf_daily.get(a["day"], 0) + (1 if a["coded_conf"] else 0)
-    ok("noise.dispersion_marked", 0.75 <= dispersion(list(conf_daily.values())) <= 1.4,
-       "%.3f" % dispersion(list(conf_daily.values())))
+    dm = dispersion_by_week(sorted(conf_daily.items()))
+    ok("noise.dispersion_marked", 0.75 <= dm <= 1.4, "%.3f" % dm)
 
     # ---------------------------------------------------------------- the ladder and the bins
     order = [cand["remove_fp_fpr"], cand["remove_fp_ppv"], cand["naive"],
