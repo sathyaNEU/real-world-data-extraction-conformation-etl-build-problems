@@ -13,6 +13,63 @@ the year's payments hold, projected from a tested set that was drawn in euro rat
 for a decisive quantity that is determinate by construction rather than by a fit, and the ladder's
 separation and the blind-response score are measured on paper below before a single file is cut.
 
+## Author override of the judge's disposition
+
+Architecture 3's first determinism judge returned **NOT_DETERMINISTIC, SEND_BACK**. By the letter of
+`build-pipeline` that spends the architecture and retires the number, because a SEND_BACK spends an
+architecture and this is task190's third. The author overrode the disposition to **FIX_NOW**. The
+reasoning and the condition are recorded here verbatim, because an author override of a judge's
+disposition that nobody can find later is worse than no override.
+
+> **The test I applied.** An architecture is spent when the decisive step cannot be saved, and the mark of
+> that is when the only way to close the fork is to file the HOW. That is what killed architecture 1 of
+> task194 this morning. It is not what is happening here. Every fix the judge asks for files the WHAT: what
+> the sample is, how it was drawn, what the terms in its own working papers mean. None of them files the
+> estimator. And the judge's own gates say the decisive step is alive: Gate F high, with every easy route
+> accepting the population; Gate G pass; Gate H pass with the decisive step analytical and no decoy; the
+> headline reproducing at 800,000, refer, Rail siding and yard 250,000. The proof is in the cold reader: it
+> saw the certainty stratum perfectly well, called it out at about 100,000, and still used a value-weighted
+> ratio estimator, got about 130,000 and accepted the population. Telling a solver how the sample was drawn
+> does not tell it how to project from a sample drawn that way, and that gap is the whole build.
+>
+> **The condition, and it is hard.** If the re-judge after this pass is not APPROVE, task190 retires,
+> without further argument and without another override. This is the only one.
+
+The eight fixes the override carries are worked in the order they bind: the sampling design filed as a fact
+about the sample; the reliability factors shipped; the terms the graded components use defined; the
+allowance and the upper limit made to reproduce from the shipped table; tolerable misstatement stated as a
+judgement with the derivation deleted; the four ask forks pinned in the asking sentences; the whole-euro
+marker taken off the certainty lines; and the payment-run realism done with the run pins in one pass.
+
+## What is filed and what is open, after the override
+
+**Filed, as facts about the sample and not as a method.** The testing schedule's basis of selection states
+that the lines tested were selected with probability proportional to recorded value by stepping one
+interval of 180,000 euro through the population's cumulated recorded value from a random start; that the
+single interval was used for the whole population and was **common to every work programme**, none having
+an interval of its own; that a line recorded at 180,000 or more spans a whole interval and was therefore
+certain of selection; and that a line below the interval was selected with probability equal to its
+recorded amount over the interval. Manual 9.3 defines selection interval, certain of selection, tainting,
+basic precision, incremental allowance and upper misstatement limit. Manual 9.5 ships the Poisson
+reliability factors at 95 per cent for nil to twenty overstatements.
+
+**Open, and it is the decisive step.** No shipped sentence says how to get from the tested lines to the
+population. The estimator is the analysis: the misstatement the testing found, the findings scaled on
+recorded value, the certainty lines at their own error with the rest scaled on their stratum, or each
+tainting at the interval with the certainty lines at their own error. `checks.py` asserts by word sweep,
+with the PDFs' content streams decompressed, that no shipped file projects, extrapolates, scales up,
+grosses up or multiplies a tainting.
+
+**Why filing the design does not file the answer, measured rather than argued.** The cold reader had the
+certainty stratum without being told it, named it at about 100,000, and still filed a value-weighted ratio
+estimate of about 130,000 and accepted the population. Knowing how a sample was drawn and knowing what one
+of its rows stands for are different pieces of knowledge, and only the second decides the call.
+
+**What filing the interval closed.** The per-programme-interval route, which gave an authority figure a
+quarter again as large and which nothing in the earlier pack refuted, is closed by the one clause that the
+interval was common to every programme. `checks.py` computes that route and asserts it lands on a
+different stated figure, so the closure is executed rather than claimed.
+
 ## Draw
 
 | | |
@@ -108,51 +165,16 @@ needs, and the headroom is exactly the expected misstatement times the expansion
 | Basic precision | 180,000 x 3.00 = **540,000, which is 0.466 of materiality**, so step one escalates nothing |
 | Stated granularity | the nearest **50,000** EUR, set from the measured route spread below |
 
-### Every recovery route, and what the record does with it
+### The selection interval, filed rather than recovered
 
-The figure is linear in the interval, so a route that recovers the interval differently files a
-proportionally different figure. Ten routes, the figure each files, and whether the record admits it:
-
-| Route | Interval | Figure | Stated | The record |
-|---|---|---|---|---|
-| the lattice: the only interval fitting every tested and every untested line | 180,000 | **811,170.09** | **800,000** | admits |
-| the median gap between selections, line end to line end | 180,116 | 811,692.98 | 800,000 | refuses |
-| the median gap, midpoint to midpoint | 180,239 | 812,248.27 | 800,000 | refuses |
-| the certainty threshold, the smallest line certain of selection | 180,726 | 814,441.81 | 800,000 | refuses |
-| the median gap, line start to line start | 180,827 | 814,895.43 | 800,000 | refuses |
-| recorded value over the count of distinct tested lines | 219,446 | 988,931.41 | 1,000,000 | refuses |
-| recorded value over the count of tested lines below the interval | 247,791 | 1,116,668.39 | 1,100,000 | refuses |
-| the mean gap, midpoint to midpoint | 247,823 | 1,116,814.17 | 1,100,000 | refuses |
-| the certainty bracket's midpoint | 132,907 | 598,944.79 | 600,000 | refuses |
-| the certainty bracket's lower end, the largest untested line | 85,088 | 383,447.76 | 400,000 | refuses |
-
-Over every route the figures run 383,447.76 to 1,116,814.17, a spread of 191 per cent across five stated
-cells, so the routes genuinely disagree and the set was not narrowed to the ones that agree. **The record
-admits exactly one of them.** And the five routes that land within two per cent of the interval span
-811,170.09 to 814,895.43, 0.46 per cent, **all in one stated cell at the nearest fifty thousand**: so a
-solver who takes the natural approximate route rather than the lattice still files the graded figure. That
-is what sets the granularity. The underlying 811,170.09 sits 13,830 inside its cell against a half cell of
-25,000, and **the nearest wrong answer a defensible route produces is 988,931.41, 21.9 per cent away**,
-which is the measurement C4 asks for: route to route, not against the adjacent cell of the stated grid.
-The five far routes are each refused by the record, and `checks.py` asserts the whole table, both the
-family that agrees and the distance to the nearest route that does not, rather than claiming agreement.
-
-### What the lattice's feasible set is, stated precisely
-
-It is not an invariance over a feasible set and not a unique value on a chosen grid. **On a one-euro grid
-over 178,000 to 182,000, exactly one interval is feasible: 180,000**, and the search was run over that
-whole 4,001-euro range rather than at a chosen point, so the neighbouring intervals were excluded rather
-than assumed away; `checks.py` re-sweeps the inner band of plus or minus 40 euro exhaustively on every
-rebuild. The five far routes in the table above sit at 85,088, 132,907, 219,446, 247,791 and 247,823 and
-are each refused by the same test. At that interval the starts that reproduce the realised pattern span
-**23.76 euro**, from 121,746.57 to 121,770.33, which contains the start the selection actually ran from.
-The constraint is that every one of the 271 tested lines must contain a step of cumulated recorded value
-under one common start and none of the 26,377 untested lines may. **Measured, and it corrects what the
-first draft of this section claimed:** the tested lines alone already pin both the start window and the
-interval, to the same 23.76 euro and the same single value over the whole 4,001-euro band, so the untested
-lines confirm the recovery rather than carrying it and a solver who sweeps only the tested side gets there.
-So the projection is a single value, and the feasible set's size is 23.76 euro of start and one euro of
-interval.
+Earlier passes of this build left the interval to be recovered from the tested set and enumerated ten
+routes a solver might recover it by, one of which the record admitted. The first determinism judge refused
+that: the pack did not hold the interval, the decision rested on it through basic precision, and the
+recovery the note claimed was not one either isolated thread performed. The interval is now filed. The
+route table, the lattice feasibility search and the granularity argument built on the route spread are all
+retired with it, and the generator's determinism block now asserts the two things that matter instead:
+that the filed interval and the filed start reproduce the shipped selection exactly, and that the
+per-programme-interval route the working paper rules out lands on a different figure.
 
 ### The programme table, and the blind responses
 
@@ -429,25 +451,25 @@ on its own code path, recovering the interval itself rather than being told it.
 
 | Rung | The analysis | Figure | Upper limit | Decision | Step |
 |---|---|---|---|---|---|
-| below 0 | the misstatement found in the tested lines | 15,445.38 | 561,623.53 | certify | |
-| 0 | the errors found scaled on the population's recorded value over the tested recorded value | **43,648.52** | 601,107.92 | certify | x2.83 |
-| 1 | certainty lines at their own error, the rest on their stratum's recorded value | 129,201.54 | 720,882.15 | certify | x2.96 |
-| 2 | **each tainting at the recovered interval, certainty lines at their own error** | **811,170.09** | **1,698,967.57** | **extended testing** | x6.28 |
+| below 0 | the misstatement found in the tested lines | 21,004.93 | 569,406.90 | certify | |
+| 0 | the errors found scaled on the population's recorded value over the tested recorded value | **57,577.47** | 620,608.46 | certify | x2.74 |
+| 1 | certainty lines at their own error, the rest on their stratum's recorded value | 156,183.24 | 758,656.54 | certify | x2.71 |
+| 2 | **each tainting at the filed interval, certainty lines at their own error** | **840,096.72** | **1,607,781.54** | **extended testing** | x5.38 |
 
-The incremental allowance on the golden is 347,797.48, which is 0.43 of its projection, and the allowance
+The incremental allowance on the golden is 227,684.83, which is 0.27 of its projection, and the allowance
 on each wrong rung is modelled at 0.40 of its own sample part, so every rung is tested at the conservatism
 the golden itself earns. **No wrong rung reaches extended testing**: the nearest one's upper limit is
-720,882.15, **62 per cent of materiality, a 38 per cent margin**, while the golden clears materiality by
-**46 per cent**. Basic precision alone is 0.466 of materiality. Every certainty line was found sound, so
+758,656.54, **65 per cent of materiality, a 35 per cent margin**, while the golden clears materiality by
+**39 per cent**. Basic precision alone is 0.466 of materiality. Every certainty line was found sound, so
 the certainty part of each rung is nil and the allowance falls entirely on the sampled part.
 
 **The decision is robust to how the bound is built, which matters because the bound's construction is not
 filed.** The crudest defensible one-sided bound at the stated confidence is the projection plus basic
-precision, because basic precision is by definition the bound when nothing is found: 811,170.09 plus
-540,000 is **1,351,170.09, which clears materiality by 16 per cent**. So a solver who knows only the
-single most standard constant in the field, the factor 3.00 at 95 per cent, reaches the right decision,
+precision, because basic precision is by definition the bound when nothing is found: 840,096.72 plus
+540,000 is **1,380,096.72, which clears materiality by 19 per cent**. So a solver who knows only the
+single factor the manual's own table gives at nil overstatements, 3.00, reaches the right decision,
 and every richer bound clears it by more. The nearest wrong rung fails under every bound: 129,201.54 plus
-540,000 is 669,201.54, 58 per cent of materiality. Every rung walks one way, the decisive move is the
+540,000 is 696,183.24, 60 per cent of materiality. Every rung walks one way, the decisive move is the
 largest, and the golden is the extreme.
 
 
@@ -533,49 +555,36 @@ device against the careful solver's path.
 
 Every A3 ask is worded so that "none" is a grammatical answer, per H23.
 
-Pair ceiling: 37.1
+Pair ceiling: 69.3
 
-Mirror leakage: 22.0 per cent of ask weight
+Mirror leakage: 51.2 per cent of ask weight
 
-Measured by: `generator/ceiling.py`, which builds both responses as code, scores them against the graded
-figures in `figures.json` on the cut pack and prints the pair ceiling and the mirror leakage; it exits
-non-zero if the ceiling reaches 50. `generator/checks.py` measures the five blind families on the same
-pack and runs each cracker reading in the table above against the golden.
+Measured by: `generator/ceiling.py`, which builds both responses as code, scores each on its OWN ask
+readings against the graded figures in `figures.json` on the cut pack, and exits non-zero unless the
+cracker keeps nothing, the mirror keeps under 35 per cent and the pair sits at or under 40. **It currently
+exits non-zero on all three.**
 
-**What the script changed, and it is the reason the line exists.** The paper figures were a pair ceiling
-of 38 and a mirror leakage of 21.0, and neither was measured. Written as code and run on the cut pack, the
-first run gave a pair ceiling of 45.1 and **a mirror leakage of 46.3**, which fails its gate outright: the
-A1 and A2 devices each moved two or three cells out of twelve and fifteen, so a response that reached the
-call banked nearly half the ask weight. Four things were rebuilt until the script read 37.1 and 22.0.
+**The measurement is failing and the asks are open work.** The first version of this script scored both
+responses on the same ask readings, both rows taking the mirror's A1 stops and the mirror's A2 reading,
+and hardcoded the third ask to nil for both, so the ask component of the ceiling and the whole of the
+mirror leakage were one reading counted twice; the two labels were crossed against
+`supplemental-stumping` Part 1.1 as well. Scored properly, with each response on its own readings and the
+third ask actually scored:
 
-- **A1 turns on three devices rather than one.** The cut-off moved on 1 July, so one cut-off for the year
-  undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the
-  opening date rather than the release moves the quarter counts; and one run was rejected by the bank and
-  re-released, so the log carries it twice and the count needs de-duplicating.
-- **A1's third figure was nil in three quarters of four**, so anyone took it. The net value reversed is
-  replaced by the value the runs past the cut-off carried, which is non-nil in every quarter and inherits
-  both the cut-off and the quarter device, asserted.
-- **A2's cracker reading is now the scale map rather than the superseded rows.** Ignoring the October
-  relabelling is wrong in almost every cell; the superseded rows moved three.
-- **Nine of the nineteen cells in the widest graded component were free to every response**, because the
-  payments recorded per programme is a plain sum of the pack. That column is out of the graded table and
-  out of the prompt: both figures per programme, the misstatement and the share of recorded value certain
-  of selection, now need the recovered interval, so neither is free. The cracker's take in that band fell
-  from 12 of 19 to 3 of 19, which is the three nil programmes it reaches by filing a figure nineteen times
-  too small.
+| The cracker, and the mirror beside it | call | components | instruction | A1 | A2 | A3 | score |
+|---|---|---|---|---|---|---|---|
+| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/19 | 2/2 | 12/12 | 15/15 | 14/14 | **100.0** |
+| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/19 | 1/2 | 5/12 | 4/15 | 12/14 | **38.6** |
 
-Measured after all four: the cracker takes 9 of the 41 ask figures and 3 of the 19 component cells and
-scores 21.0; a response that answers the call correctly and still takes each ask's obvious reading scores
-53.2; the pair is **37.1**, under the 40 the house builds to.
-
-
-| Ask | The cracker, a response that answers the call correctly and takes each ask's obvious reading | What it never reaches | Verdict |
-|---|---|---|---|
-| A1 | one cut-off applied to the whole year | the cut-off moved on 1 July and the register carries both effective dates, so the second half is counted against the wrong one, and a run sitting exactly on the cut-off is within it | miss |
-| A2 | every row of the approval register, each move counted | the superseded rows the dictionary rules out of a supplier's history, and the category relabelled on 1 October, which the scale map resolves | miss |
-| A3 | the schedule joined to the ledger on its own line reference | the schedule's references carry the ledger's supplier prefix, so the join needs the crosswalk, and the re-delivered batch puts one ledger line on the schedule twice | miss |
-
-
+**Why the cracker keeps everything, which is the diagnosis and not a wording problem.** Every device on
+every ask is adjudicated by a filed sentence or found by the hygiene battery, so a careful solver executes
+it: the cut-off register carries both effective dates, the run log carries the release timestamp and marks
+the re-released run, the scale map resolves the October relabelling, `event_status` marks the superseded
+rows, and A3's twelve monthly counts come straight off the schedule's own `paid_date` column and need no
+join at all, which is why even the mirror takes 12 of 14 there. There is not one silent primary in the
+set. `supplemental-stumping` Part 5 names this exactly: a pin says what to compute and never makes
+computing it correctly hard, so every pin has to be paired with a silent primary underneath it. The asks
+need silent primaries, which is design work on the ask data, not a re-worded sheet, and it is open.
 
 ## Pre-ship check
 
@@ -619,29 +628,27 @@ and nothing about projecting, scaling, weighting, extrapolating or monetary unit
 | `guard.py check` / `heart` | no BLOCK; WARN on the two answered gate_g repeats (`repeat.gate_g` against task468, `overuse.gate_g` at 7 of the last 12); nearest driver 0.07 on `check`, 0.05 against card drivers on `heart` |
 | `guard.py surface` | no BLOCK; no persona the card never planned, and only two of the three carded names ship; eight pairs promoted for the author's adjudication, five on corpus-wide surface idiom (shared file names, the `pdf+png` deliverable pair, `quantity_figure`) and three on the same-driver signature, gap `rule` plus pattern G16 plus Gate G `method_or_model_selection`, against task185, task457 and task80, each already answered by a differentiation line on the card |
 
-**The leak report's lines, answered.** REVIEW on six lines, each read and each answered.
+**The leak report's lines, answered.** REVIEW on seven lines, no LEAK, each read and answered against
+this pass's pack.
 
 - **Block 3, "golden figure 4.3 appears" in the plan.** The sweep matched the clause number 4.3, not a
-  figure: the text it quotes is the heading "4.3 Conclusion on a tested population". Tolerable
-  misstatement is in the plan by design and approved, and the write-up no longer repeats the figure in a
-  graded block, so the sweep that first flagged 1,160,000 as a golden figure now passes. No golden figure
-  appears in any shipped file, asserted by word sweep in `checks.py`.
-- **Block 3, the plan carries 14 of 14 and the provenance note 9 of 14 of the call's distinctive words.**
-  The call is asked in the manual's own words because 9.1 is the estimand: payment, population,
-  misstatement, programme, tested, year, euro. The question cannot be asked without them, and neither
-  document carries the figure, the interval, a projection or any step of the method.
-- **Block 4, 5 of 25 stump-paragraph terms in the manual and 4 of 25 in the schedule.** The matches are
-  tested, amount, carries, stated, payment and nothing, which are the vocabulary of any audit working
-  paper. Read for whether either document names the move: neither names a selection interval, a selection
-  count, an inclusion probability, a projection, a weighting or a stratum, and neither says how the
-  population was ordered or selected from, asserted.
+  figure: the text it quotes is the heading "4.3 Conclusion on a tested population". No golden figure
+  appears in any shipped file, asserted by word sweep with the PDF streams decompressed.
+- **Block 3, the plan carries 14 of 14 of the call's distinctive words.** The call is asked in the
+  manual's own words because 9.1 is the estimand: payment, population, misstatement, programme, tested,
+  year, euro. The question cannot be asked without them, and the plan carries no figure for it.
+- **Block 4, 9 of 25 stump-paragraph terms in the manual and 7 of 25 in the schedule.** This is the
+  override's doing and it is deliberate: the manual now defines selection interval, certain of selection,
+  tainting, basic precision, incremental allowance and upper misstatement limit, and the schedule states
+  the basis of selection, so the pack and the design note necessarily share that vocabulary. Read for
+  whether either document names the move: neither says how to get from the tested lines to the
+  population, and `checks.py` sweeps for projecting, extrapolating, scaling up, grossing up and
+  multiplying a tainting and finds none.
 - **Block 9, nine ISO dates after the as-of in the capital programme register.** They are the programmes'
-  scheduled completion dates, the latest 2028-03-31. A capital programme register carries the dates the
-  works are due to finish, so dates beyond the audit as-of are what the file is for; none of them bears on
-  the figure, and the register's values are the only thing the figure could read from it and it does not
-  read them (SF11).
-- **Block 10, container metadata.** INFO; `scrub_producer_metadata.py` reports the pack clean, with no
-  producer signature and no out-of-band timestamp.
+  planned completion dates, now spread from 2027-05-31 to 2029-01-31. A capital programme register carries
+  the dates the works are due to finish, so dates beyond the audit as-of are what the file is for, and the
+  figure never reads the register's values (SF11).
+- **Block 10, container metadata.** INFO; `scrub_producer_metadata.py` reports the pack clean.
 
 **Golden realism.** The schedule is sorted by the misstatement indicated and then by programme name, the
 order the chart uses; recorded value to the cent as the ledger holds it, the misstatement whole because
@@ -825,3 +832,33 @@ were round too, so both were redrawn.
   1,000 euro of the interval, "asserted", and no assertion existed; the nearest line is 726 euro above it.
   The row now states the measured gaps and two assertions were added to `checks.py`, so the boundary
   reading cannot move the certainty set and the claim is executed rather than written.
+- **The interval left to be recovered from the tested set.** Ten routes were enumerated, one admitted by
+  the record, and the granularity was set from the spread of the five that agreed. The first determinism
+  judge refused it: the pack did not hold the interval, the call rested on it through basic precision, and
+  neither isolated thread performed the recovery the note claimed, the cold reader instead taking
+  materiality over the reliability factor and filing a figure twice the golden. The design is now filed as
+  a fact about the sample and the estimator alone is open. The route table, the lattice search and the
+  granularity argument built on the route spread are retired with it.
+- **The whole-euro contractor certificates.** Every line certain of selection was a whole number of euro
+  and the only whole-euro line above 100,000, so `cents == 0 and amount >= 100,000` selected the certainty
+  set exactly, with no false positives and none missed. Both isolated threads found the certainty set that
+  way rather than from the interval. Measured: 31 of 31 certainty lines whole euro against 1.04 per cent of
+  the lines below the interval. The certificates now carry cents and about one sundry line in nine is
+  invoiced at a round euro, a half euro or a round five euro across every size band.
+- **The paper cracker sheet, and the first code that replaced it.** The sheet claimed every ask figure
+  missed and reported a pair ceiling of 37.1 with 22.0 per cent mirror leakage. Written as code the two
+  responses were scored on the same ask readings, both rows taking `the_cracker` for A1 and `a2_unmapped`
+  for A2, and the third ask was hardcoded to nil for both, so the ask component of the ceiling and the
+  whole of the leakage were one reading counted twice. The labels were also crossed against
+  `supplemental-stumping` Part 1.1. Scored properly the cracker takes 41 of 41 and the pair ceiling is
+  69.3. The asks need silent primaries, which is open work and not a re-wording.
+- **The word sweep that could not see the PDFs.** `_sweep` read every shipped file as raw bytes, so it
+  never saw inside the three PDFs' Flate-compressed content streams, which is exactly where the authority
+  sentences live. Every R3c claim rested on it. It now decompresses the streams through `verify.pdf_text`.
+- **Tolerable misstatement derived from budgeted capital expenditure.** The plan called 1,160,000 two per
+  cent of budgeted capital expenditure while the register summed to a figure giving 1,189,620, a
+  contradiction of 29,620 that the call did not turn on. The derivation is deleted and the figure is stated
+  as the head of internal audit's judgement, which is what an audit plan does.
+- **The register's approved budget equal to the year's spend.** Each programme's budget was the year's own
+  recorded value rounded to the thousand, so the register reconciled to the ledger exactly and the budget
+  carried no information. It now carries the board's approval figure, which differs from the spend.

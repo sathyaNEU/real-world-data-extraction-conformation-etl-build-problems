@@ -103,25 +103,129 @@ def channel_weekly():
                 "engine_hours": round(v["engine_hours"], 1)} for k, v in out.items()}
 
 
+def log_runs():
+    """Plan 5.2 executed on the shipped log: a start, and the first stop the log records for the same
+    machine after it; a start the log does not stop before that machine starts again is not a run."""
+    opens, runs = {}, []
+    for r in sorted(rows("plant_equipment_events_2026.csv"), key=lambda x: x["logged_at"]):
+        if not r["equipment"].startswith("CF-"):
+            continue
+        t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+        if r["event"] == "START":
+            opens[r["equipment"]] = t
+        elif r["equipment"] in opens:
+            runs.append((opens.pop(r["equipment"]), t))
+    return sorted(runs)
+
+
+def valid_minutes():
+    """The validity mask behind the levels, as plan 4.1 and 4.2 give it: the solver that landed the call
+    already holds this, so the clause-reading cracker is given exactly it."""
+    import pyarrow.parquet as pq
+    met, wind, rained = rows("weather_10min_2026.csv"), {}, {}
+    prev_tips, prev_day = None, None
+    for r in met:
+        t = dt.datetime.strptime(r["measured_at_utc"], "%Y-%m-%d %H:%M")
+        v = float(r["wind_speed"])
+        wind[t] = round(v / 3.6, 6) if t.date() >= dt.date(2026, 9, 20) else v
+        tips = int(r["rain_tips_today"])
+        step = tips if (prev_day is None or t.date() != prev_day) else tips - prev_tips
+        rained[t] = max(step, 0) > 0
+        prev_tips, prev_day = tips, t.date()
+    spans = {}
+    for d in rows("meter_deployments_2026.csv"):
+        spans.setdefault(d["meter_serial"], []).append(
+            (dt.datetime.strptime(d["deployed_at"], "%Y-%m-%d %H:%M"),
+             dt.datetime.strptime(d["collected_at"], "%Y-%m-%d %H:%M"), d["position_code"]))
+    tbl = pq.read_table(os.path.join(T, "sound_levels_1min_2026.parquet")).to_pydict()
+    out, seen = {}, set()
+    for i in range(len(tbl["meter_serial"])):
+        serial, stamp = tbl["meter_serial"][i], tbl["measured_at_utc"][i]
+        if (serial, stamp) in seen:
+            continue
+        seen.add((serial, stamp))
+        local = stamp + dt.timedelta(hours=1)
+        if local.weekday() > 4 or not (DAY_START <= local.hour < DAY_END):
+            continue
+        code = None
+        for a, b, c in spans.get(serial, []):
+            if a <= local <= b:
+                code = c
+                break
+        if code is None:
+            continue
+        if float(tbl["laeq_db"][i]) <= -120.0:
+            continue
+        k = stamp - dt.timedelta(minutes=stamp.minute % 10)
+        if k in wind and (rained.get(k, False) or wind[k] > 5.0):
+            continue
+        out.setdefault(code, set()).add(local)
+    return out
+
+
+def clause_plant_state():
+    """What a solver who reads plan 5.2 and the ask's own wording files: the log's runs against the valid
+    minutes of each position's assessment period, and the runs that overlap any minute of that period."""
+    runs = log_runs()
+    wins = windows()
+    valid = valid_minutes()
+    mins, nruns = {}, {}
+    for code, w in wins.items():
+        n = 0
+        for t in sorted(valid.get(code, ())):
+            if any(a <= t < b for a, b in runs):
+                n += 1
+        mins[code] = n
+        nruns[code] = sum(1 for a, b in runs if any(a < hi and b > lo for lo, hi in w))
+    return mins, nruns
+
+
+def clause_weekly():
+    """What that solver files for the week: plan 5.1's two counter readings, the log's runs that start in
+    the week, and the engine's own hour counter with its replacement taken account of."""
+    sc = {dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M"): r
+          for r in rows("scada_15min_2026.csv")}
+    runs = log_runs()
+    out = {}
+    for i, wk in enumerate(WEEKS):
+        a = dt.datetime(wk.year, wk.month, wk.day)
+        b = a + dt.timedelta(days=7)
+        air = float(sc[b]["blower_air_total_knm3"]) - float(sc[a]["blower_air_total_knm3"])
+        inside = sorted((t, float(r["engine_hours_run"])) for t, r in sc.items() if a <= t <= b)
+        eng = 0.0
+        for j in range(1, len(inside)):
+            step = inside[j][1] - inside[j - 1][1]
+            eng += inside[j][1] if step < 0 else step
+        out[i] = {"blower_air_knm3": int(round(air)),
+                  "centrifuge_runs": sum(1 for s, _ in runs if a <= s < b),
+                  "engine_hours": round(eng, 1)}
+    return out
+
+
 def score():
     gold_min = FIG["centrifuge_minutes"]
     gold_run = FIG["centrifuge_runs_position"]
     gold_wk = {int(k): v for k, v in FIG["weekly_plant"].items()}
     ch_min, ch_run = channel_plant_state()
     ch_wk = channel_weekly()
+    cl_min, cl_run = clause_plant_state()
+    cl_wk = clause_weekly()
 
     asks = []           # (ask, figure group, criteria, cracker hits, clause-reading cracker hits)
     asks.append(("A1 the fourteen specific levels", 14, 14, 14))
     asks.append(("A1 the five, the sixth and the margin", 3, 3, 3))
     asks.append(("A1 the ranked chart", 4, 4, 4))
-    hit = sum(1 for c in gold_min if ch_min[c] == gold_min[c])
-    asks.append(("A2 centrifuge minutes per position", 14, hit, 14))
-    hit = sum(1 for c in gold_run if ch_run[c] == gold_run[c])
-    asks.append(("A2 centrifuge runs per position", 14, hit, 14))
+    asks.append(("A2 centrifuge minutes per position", 14,
+                 sum(1 for c in gold_min if ch_min[c] == gold_min[c]),
+                 sum(1 for c in gold_min if cl_min[c] == gold_min[c])))
+    asks.append(("A2 centrifuge runs per position", 14,
+                 sum(1 for c in gold_run if ch_run[c] == gold_run[c]),
+                 sum(1 for c in gold_run if cl_run[c] == gold_run[c])))
     for key, label in (("blower_air_knm3", "blower air delivered"),
                        ("centrifuge_runs", "centrifuge runs"), ("engine_hours", "engine hours run")):
-        hit = sum(1 for i in range(6) if ch_wk[i][key] == gold_wk[i][key])
-        asks.append(("A3 %s, six weeks" % label, 6, hit, 6))
+        asks.append(("A3 %s, six weeks" % label, 6,
+                     sum(1 for i in range(6) if ch_wk[i][key] == gold_wk[i][key]),
+                     sum(1 for i in range(6) if cl_wk[i][key] == gold_wk[i][key])))
     asks.append(("A4 the tone summary", 3, 3, 3))
 
     n = sum(a[1] for a in asks)

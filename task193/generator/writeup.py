@@ -81,19 +81,19 @@ def write(task, g):
             A("   - %s and %s: %d patients, %d after, %d before, referred %s"
               % (r["brand"], r["marker_treatment"], r["patients"], r["after"], r["before"],
                  r["referred"]))
+    # The nearest unreferred pair is not graded: the prompt asks for no such figure, and a graded
+    # figure with no asking sentence has nothing to fix its basis or its population.
     A("2. Pairs referred: %d." % g["referred_count"])
-    A("3. Nearest pair on the wrong side of the referral line: %s."
-      % g["nearest_miss"]["label"])
-    A("4. Lines accepted, lines rejected and median days from dispensing to submission, by chain "
+    A("3. Lines accepted, lines rejected and median days from dispensing to submission, by chain "
       "and quarter of dispensing, whole counts and days to one decimal:")
     for r in g["a1"]:
         A("   - %s, %s: %d accepted, %d rejected, %s days"
           % (r["chain"], r["quarter"], r["accepted"], r["rejected"], f1(r["median_days"])))
-    A("5. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, "
+    A("4. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, "
       "doses to one decimal and fees to the nearest krone:")
     for r in g["a2"]:
         A("   - %s (%s): %s DDD, %d kroner" % (r["name"], r["holder"], f1(r["ddd"]), r["fee_dkk"]))
-    A("6. Patients with a first receipt of a screened product in the window and the share of them "
+    A("5. Patients with a first receipt of a screened product in the window and the share of them "
       "with a first marker-treatment receipt in it, by region and age band at 1 October 2025, "
       "shares to one decimal:")
     for r in g["a3"]:

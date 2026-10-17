@@ -849,9 +849,8 @@ VARIABLE_DOC = [
      "The date the pharmacy chain transmitted the line to the register. It is on or after the "
      "date of dispensing and may fall in a later month or quarter."),
     ("dispensings_2025_2026.csv", "n_packages",
-     "Packages handed out on the line. Defined daily doses are this times the package's "
-     "ddd_per_pack in package_index.csv, where the anatomical therapeutic chemical index assigns "
-     "the package a defined daily dose."),
+     "Packages of the dispensed package code handed out on the line. A line is written for one "
+     "package code only, so a prescription filled from two package codes is two lines."),
     ("dispensings_2025_2026.csv", "pharmacy",
      "The dispensing pharmacy. pharmacy_register.csv gives its chain."),
     ("dispensings_2025_2026.csv", "prescriber",
@@ -884,8 +883,12 @@ VARIABLE_DOC = [
      "dose the anatomical therapeutic chemical index assigns the substance. Blank where the index "
      "assigns none, as for topical preparations."),
     ("person_register.csv", "region",
-     "The region recorded for the patient at the extract date. Where region_recorded_from falls "
-     "inside the extract period, previous_region is the region recorded before that date."),
+     "The region recorded for the patient at the extract date."),
+    ("person_register.csv", "previous_region, region_recorded_from",
+     "The region recorded before the current one and the date the current one was recorded. The "
+     "register began keeping a previous region on 1 April 2026 and holds none for a change "
+     "recorded before that date, so these columns do not reconstruct a region the register held "
+     "earlier. Both are blank for a patient whose region has not changed since."),
     ("person_register.csv", "year_of_birth",
      "Year of birth as the civil registration system holds it."),
     ("person_register.csv", "person_key",
@@ -916,9 +919,8 @@ VARIABLE_DOC = [
      "line: a chain counts lines it withdrew before the register wrote them, and a batch sent "
      "after a month's cut-off is counted by the chain in the month it sent it."),
     ("pharmacy_register.csv", "pharmacy_id, pharmacy_name, chain_code, chain_name",
-     "The dispensing pharmacy, the name it trades under and the chain that owns it at the extract "
-     "date. A pharmacy keeps its identifier for as long as it holds its authorisation to "
-     "dispense."),
+     "The dispensing pharmacy, the name it trades under and the chain it belongs to. A pharmacy "
+     "keeps its identifier for as long as it holds its authorisation to dispense."),
     ("pharmacy_register.csv", "previous_chain_code, in_chain_from",
      "Where the pharmacy's authorisation has passed from one chain to another, the chain that "
      "held it before and the date the transfer took effect. Both are blank for a pharmacy that "

@@ -1,18 +1,19 @@
 {
  "task": "task194",
  "owner": "oviya13ya",
- "status": "DRAWING",
+ "status": "DESIGN",
  "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-17",
- "stump": "A competent solver reconciles to the published indicator, ranks the eligible units on the complications each records above the expectation the published stratum rates give it, and places the improvement team with Stonecreek General Surgery, which is the unit whose case mix sits where the network has moved least since those rates were set rather than the unit whose own patients are having the most complications they should not be having.",
+ "stump": "A competent solver reconciles to the published indicator, ranks the eligible units on the complications each records above the expectation the published stratum rates give it, and places the improvement team with Alderbrook General Surgery (41220), whose patients sit where the published standard has gone most out of date, rather than with Alderbrook Orthopaedics (41230), whose own patients are having the most complications they should not be having. On the comparison the charter asks for, 41220 carries minus 3.7 avoidable complications and 41230 carries 40.0.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 1,
+  "date": "2026-10-17",
+  "detail": "50 checks, 4 FAIL, 1 WARN, all of them the ## Ask sheet: the pair ceiling, the mirror leakage, the Measured by script and the cracker table. Every other section passes. The three ceilings are measurements on the cut pack and cannot be written before the generator's downstream modules are rebuilt for architecture 2."
  },
  "leak": {
   "leak_py": "",
@@ -28,11 +29,12 @@
   "report": "architecture 1 spent: see the card's lineage and the design note's Tried and rejected"
  },
  "returned": [],
- "resume": "Architecture 2 drawn and registered; guard.py check PASS with no BLOCK and no WARN. The design note carries ## Draw, ## Default path, ## Stump sentence, ## Three rules with the WHAT screen, and the re-root lines under ## Tried and rejected. Next, on the author's go: stage 2, which is the ladder measured on a rebuilt panel, the semantic fork table, the 22-axis closure table, the ask sheet and prompt.txt, to precut.py exit 0. The world, the episode engine, the documents and the realism work are kept; the register loses its calibration role and the stratum rates become the decisive structure.",
+ "resume": "Stage 2 design complete and measured except the ask sheet. MEASURED DESIGN POINT, on the built record: easy route 41220 published excess 59.2 (true avoidable count minus 3.7); golden 41230 avoidable count 40.0; runner-up 41420 25.1; lead 14.91 complications, 1.59x, 2.38 standard errors (SE_gap 6.25); golden 4th of 12 on the published ranking; three ladder rungs at 2.09x, 1.33x and 1.59x. FORCING, computed on closed data: the network's own stratum rate runs 0.886 to 1.319 of the published rate across six risk bands (factor 1.49, crossing 1.00 both ways); the twelve candidates' surgical share runs 0.075 to 0.851 with three carrying none; unit 41410's avoidable count on the published basis reads 1.1 to 2.1 a quarter then 9.2 and 9.4 across a pure case-mix shift, while on the record's own frequencies it holds 6.2 to 7.1 in all ten quarters. Twenty-two readings of the decisive route were measured and every one names 41230; only dropping risk adjustment entirely moves it, and charter 4.3 names the strata. CHARTER REPAIRS this pass: 4.3 re-worded to the five-part WHAT with 'ordinarily have' in place of 'would be expected to have' (which collided with specification 3.1's defined term and would have made the published rates rule-mandated and the golden wrong); 6.2's 'does not maintain a measure of its own' narrowed, it ruled the decisive step out by elimination; Appendix A now states its FY2023-24 vintage. NEXT, stage 3: rewrite golden.py, build.py, pack.py, checks.py, verify.py, figures.py, deliver.py for architecture 2 (sim.py and world.py are done); assert the three forcing facts and the 41410 demonstration in checks.py and again in verify.py; every SF1 to SF13 id in checks.py; then supplemental-stumping for the asks, the cracker run, prompt.txt, submission.md, and precut.py to exit 0. Two carried-forward defects still open: the four edge-fragile hospital adjusted rates, and the activity summary's de-duplication key against the dictionary's (supplementary answer 6's two defensible series).",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "call": "Alderbrook Orthopaedics (cost centre 41230), 40.0 avoidable complications on 2,305 planned separations"
 }

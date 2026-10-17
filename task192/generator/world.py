@@ -31,7 +31,7 @@ CODER_PACE_W = [7, 9, 11, 12, 11, 10, 9, 8, 7, 6, 6, 4]
 # association's holiday month and the desk thins out rather than stopping
 DESK_WORKED = {5: 0.72, 6: 0.78, 7: 0.70, 8: 0.38, 9: 0.80}
 DESK_SATURDAY = 0.09
-DESK_SIT = 0.85         # how much of a coder's rota share is a sitting on a day the desk worked
+DESK_SIT = 0.73         # how much of a coder's rota share is a sitting on a day the desk worked
 # a second coder reads a report when the first coder flags it, which happens far more often on the
 # ambiguous reports the classifier also tends to get wrong
 ADJ_AGREE = 0.052
@@ -126,8 +126,8 @@ P_LINE = 0.17           # the public line receives one
 
 # the press classifier. its two error rates are properties of the model, which was trained before
 # the register opened and not retrained inside the period.
-CLS_RECALL = 0.46       # confrontational actions it codes as confrontational
-CLS_FALSE_MARK = 0.0295  # ordinary actions it codes as confrontational
+CLS_RECALL = 0.495      # confrontational actions it codes as confrontational
+CLS_FALSE_MARK = 0.0255  # ordinary actions it codes as confrontational
 CLS_DIAGONAL = 7.0      # weight on the code itself against its neighbours
 CLS_DECAY = 1.95        # how fast the confusion falls away with distance in the code order
 CLS_TRAINED = dt.date(2026, 3, 18)
@@ -135,8 +135,8 @@ CLS_TRAINED = dt.date(2026, 3, 18)
 # the share of actions that were confrontational falls across the period: the spring and summer
 # disputes over evictions and road haulage were confrontational, the autumn mobilisation that
 # trebles the volume is overwhelmingly peaceful
-CONF_RATE_HI = 0.1674
-CONF_RATE_LO = CONF_RATE_HI / 4.2
+CONF_RATE_HI = 0.156
+CONF_RATE_LO = CONF_RATE_HI / 3.1
 CONF_RAMP_FROM = dt.date(2026, 8, 9)
 CONF_RAMP_TO = dt.date(2026, 9, 18)
 
