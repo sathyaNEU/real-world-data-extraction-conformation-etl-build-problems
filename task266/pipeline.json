@@ -1,7 +1,7 @@
 {
   "task": "task266",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "sociology-demography",
   "objective": "descriptive-distribution",
   "stage": 5,
@@ -19,7 +19,7 @@
     "reader": "round 1: Q6 read the first form of 3.3 as a stated rule (degrees to date over entrants), a main-call fork, fixed in 3.3; round 2: Q1 none, Q2 none, Q4 none, Q6 an analytical choice (the estimate for the students whose ninth term is still to come); realism residue fixed (the outlook widened to 41 occupations)"
   },
   "duplicate_check": {
-    "heart": "PASS at stage 3; BLOCK at ship on G17, register and vote_or_meeting against task466, whose card was re-keyed to them after this card was filed",
+    "heart": "PASS at stage 3; BLOCK at ship on G17, register and vote_or_meeting against task466, whose card was re-keyed to them after this card was filed; shipped under the author's override (2026-10-17, in session), recorded on the card",
     "nearest": "task134 ledger 0.09; task265 0.08",
     "surface": "task265 and task448 promoted, answered on the card; persona sweep: Early Childhood is the program's name"
   },
@@ -29,9 +29,9 @@
     "report": "task266/determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 5: built and checked, target.zip cut from the final rebuild; the ship waits on the author's decision on the guard heart BLOCK against task466 (re-keyed to this card's keys after it was filed). On the override: write the author's authorisation in the card's notes and the design note's build record, set SHIPPED and delivered, the ledger row SHIPPED, commit SHIPPED (task266) with target.zip and golden/ force-added and the wave 4 row in the author file. On a re-root: build-pipeline Re-root.",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-17",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
