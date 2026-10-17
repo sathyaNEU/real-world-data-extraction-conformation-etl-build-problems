@@ -290,3 +290,16 @@ patch.
 - [ ] Rungs forward-computed, separated, dominant; fork grid and `SF` rows asserted; pin once, at authority
 - [ ] Mess real and neutral; clean-data test and realism sweep pass; every graded figure mid-bin
 - [ ] 40+ assertions, verifier green from the bundle, byte-identical rebuild, `figures.json`, `guard.py surface`
+
+## Document control dates are a consistency surface
+
+Every date a document states about itself (approved, issued, refreshed, reviewed, superseded, a revision
+row) has to be checked against the window of the data that document covers and against every event it
+mentions. Adding owners, issue histories and review dates to make a file read as the organisation's own
+record creates this surface where there was none, so the check runs after the addition, not before.
+Measured instances in one wave: a model card refreshed two days before the run it reported completed; a
+handbook approved in one year describing a code reissue from the next; a dictionary at issue 4 dated
+February listing files that cover March to May; an extract stated as pulled on one date carrying 1,291
+release dates after it; a protocol approved in February naming a June pull date and a May window; and four
+tracker entries opening before the products they track were marketed. Assert it: no document's stated date
+precedes an event it describes, and no extract carries a date after its own pull.
