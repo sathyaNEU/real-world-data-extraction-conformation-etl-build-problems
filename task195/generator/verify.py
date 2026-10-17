@@ -143,7 +143,7 @@ def run(target, figures_path):
         if day.year == 2027 and day.month in (4, 5):
             w = weeks.setdefault(r["report_ref"], {"rows": 0, "spec": set()})
             w["rows"] += 1
-            w["spec"].add(biobank.get(r["specimen_id"], r["specimen_id"]))
+            w["spec"].add(biobank[r["specimen_id"]])
     same("report weeks", sorted(weeks), sorted(fig["panel_weeks"]))
     for ref, w in sorted(weeks.items()):
         same("%s specimens" % ref, len(w["spec"]), fig["panel_weeks"][ref]["specimens"])

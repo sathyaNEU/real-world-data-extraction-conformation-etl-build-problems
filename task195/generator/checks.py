@@ -410,6 +410,21 @@ def run(target, g=None):
        len({d["within_fifth"] for d in g["dilution"]}) >= 2)
     ok("ask 3 the per cent label is two orders from the prepared level",
        all(abs(d["median_recovery"] - d["median_recovery"] * 100) > 1 for d in g["dilution"]))
+    # the count the ask grades cannot turn on a hair: every replicate sits clear of the one-fifth
+    # line, so the flip condition is a measured distance and not a rounding accident
+    _vals = {}
+    for row in _wb["Replicate results"].iter_rows(min_row=2, values_only=True):
+        if row[4] not in (None, ""):
+            _vals.setdefault(str(row[0]).strip().upper(), []).append(float(row[4]))
+    for d in g["dilution"]:
+        lv = d["level"]
+        edge = min(abs(abs(v - d["prepared"]) / d["prepared"] - 0.20) for v in _vals[lv])
+        ok("ask 3 %s's replicates are clear of the one-fifth line" % lv, edge >= 0.020,
+           "nearest replicate %.4f of the level from 20 per cent" % edge)
+    _covered = {r["specimen_id"] for r in cross_all}
+    ok("ask 1 the biobank's register covers every accession the panel register holds",
+       not ({r["specimen_id"] for r in panel_rows} - _covered),
+       "%d uncovered" % len({r["specimen_id"] for r in panel_rows} - _covered))
 
     # the ask layer's devices sit outside the call's row population, counted in one place
     dev_a1 = sum(1 for r in panel_rows
@@ -489,6 +504,52 @@ def run(target, g=None):
        max(r["completed_date"] for r in mf_rows) <= "2027-06-18")
     ok("the protocol's annex does not predate its issue",
        re.search(r"requested the verification on 5 February 2027", doc_text) is not None)
+    # the two sequencers are two instruments, not one copied twice
+    rates = []
+    for key in ("qc_a", "qc_b"):
+        acc = [r for r in rows_of(os.path.join(target, W.FILES[key]), ";") if r["read_accepted"] == "Y"]
+        rates.append(sum(1 for r in acc if r["hetx_call"] == "FLAG") / float(len(acc)))
+    ok("the two sequencers do not flag at the same rate",
+       max(rates) / min(rates) >= 1.35 and max(rates) / min(rates) <= 2.4,
+       "%.2f and %.2f per cent" % (100 * rates[0], 100 * rates[1]))
+    # the accession counter is shared with the laboratory's other work, so no one stride dominates
+    acc_nums = sorted({int(r["specimen_id"].split("-")[1]) for r in cross_all})
+    strides2 = [b - a for a, b in zip(acc_nums, acc_nums[1:])]
+    top = max(strides2.count(x) for x in set(strides2)) / float(len(strides2))
+    ok("no single accession stride dominates", top <= 0.34 and len(set(strides2)) >= 8,
+       "commonest stride is %.0f per cent of %d gaps, %d distinct" % (100 * top, len(strides2),
+                                                                      len(set(strides2))))
+    # the booking clock is a clock: it records the second, and the minutes are not flat
+    stamps = [r["received_utc"] for r in hist]
+    secs = {t[17:19] for t in stamps}
+    mins = [t[14:16] for t in stamps]
+    mtop = max(mins.count(x) for x in set(mins)) / float(len(mins))
+    ok("the booking clock records the second", len(secs) >= 50, "%d distinct seconds" % len(secs))
+    ok("the booking minutes are not flat across the hour", mtop >= 0.024,
+       "commonest minute is %.1f per cent against a flat 1.7" % (100 * mtop))
+    # the manifest and the dictionary are controlled documents
+    man = rows_of(os.path.join(target, W.FILES["manifest"]))
+    ok("the manifest records a licence for every file",
+       all(r["licence"].strip() for r in man), "%d rows" % len(man))
+    ok("the manifest records a source and a pull date for every file",
+       all(r["produced_by"].strip() and r["pulled"].strip() for r in man))
+    dicrows = rows_of(os.path.join(target, W.FILES["dictionary"]))
+    ok("the dictionary records an owner and a review date for every entry",
+       all(r["owner"].strip() and r["last_reviewed"].strip() for r in dicrows),
+       "%d entries" % len(dicrows))
+    ok("the dictionary carries its own issue history",
+       open(os.path.join(target, W.FILES["dictionary"]), encoding="utf-8").read().count("# issue") >= 3)
+    # the model card: its version predates the re-run and its addendum follows the last batch
+    first_done = min(r["completed_date"] for r in mf_rows)
+    last_done = max(r["completed_date"] for r in mf_rows)
+    ok("the model card's version predates the re-run",
+       re.search(r"issued 2027-05-14", doc_text) is not None and "2027-05-14" < first_done,
+       "card 2027-05-14, first batch %s" % first_done)
+    ok("the model card's addendum follows the last batch",
+       re.search(r"Addendum, 19 June 2027", doc_text) is not None and "2027-06-19" > last_done,
+       "addendum 2027-06-19, last batch %s" % last_done)
+    ok("the model card owns the distribution it reports",
+       "states no verdict" not in doc_text and "revision history" in doc_text.lower())
     amd = rows_of(os.path.join(target, W.FILES["amendments"]))
     span = re.findall(r"(\d{4}-\d{2})", W.FILES["amendments"])
     ok("the amendments file's name brackets the amendments it holds",

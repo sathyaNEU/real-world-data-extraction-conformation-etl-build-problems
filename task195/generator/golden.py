@@ -134,18 +134,22 @@ def rungs(tab):
 
 
 def ask_panel(target, panel_rows):
-    """Ask 1: the specimens each April and May weekly report holds a verdict for, against its own
-    total. A specimen re-accessioned for a repeat request carries one biobank reference across its
-    accessions, so it is one specimen."""
+    """Ask 1: the distinct vials the results in each April and May weekly report came from, and the
+    excess of results issued over vials. The register's identifier is an accession; the vial's own
+    reference is the biobank's, and one vial booked in twice carries two accessions."""
     biobank = {r["specimen_id"]: r["biobank_ref"]
                for r in _rows(os.path.join(target, W.FILES["crosswalk"]), "\t")}
+    # the biobank's register covers every accession the panel register holds, so the vial a result
+    # came from is never guessed from the accession
+    missing = {r["specimen_id"] for r in panel_rows} - set(biobank)
+    assert not missing, "the crosswalk does not cover %d register accessions" % len(missing)
     per = {}
     for r in panel_rows:
         day = dt.date.fromisoformat(r["report_date"])
         if day.month in (4, 5) and day.year == 2027:
             per.setdefault(r["report_ref"], {"rows": 0, "spec": set(), "date": r["report_date"]})
             per[r["report_ref"]]["rows"] += 1
-            per[r["report_ref"]]["spec"].add(biobank.get(r["specimen_id"], r["specimen_id"]))
+            per[r["report_ref"]]["spec"].add(biobank[r["specimen_id"]])
     out = []
     for ref in sorted(per):
         d = per[ref]
