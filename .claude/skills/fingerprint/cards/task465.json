@@ -1,0 +1,98 @@
+{
+  "task": "task465",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "seed ET22 (analytical_tasks/07_data_extraction_conformation): a reinsurer pricing a parametric June to August drought cover for a farmers' cooperative from GHCN-Daily station data, a 40 mm daily cap, burn analysis over 1991 onward; the seed's own trap (tenths of millimetres, quality flags, weekend totals) is Layer 1 here and decides nothing",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a reinsurer's county drought covers for a High Plains growers' cooperative, priced on each county's cooperative-observer rain gauge, whose record has whole seasons missing when the volunteer observer left, rebuilt from the county's airport station",
+  "objective": "etl",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G12"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the reinsurer's head of agricultural reinsurance",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "ghcnd_ardley_plains_1991_2026.csv",
+    "rows": 0,
+    "entity": "one station's value of one element on one day, as the climate data centre publishes it (precipitation in tenths of a millimetre, with multi-day totals after unread days)",
+    "grain": "station x element x day",
+    "source": "synthetic"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "season_or_peak",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "an invented High Plains region of the United States: five invented counties, their cooperative-observer stations and two airport stations",
+    "currency": "USD",
+    "org_type": "a reinsurer's agricultural parametric desk and a growers' cooperative",
+    "invented_names": [
+      "Quillfield Re",
+      "Ardley Plains Growers' Cooperative",
+      "Ardley County",
+      "Corvin County",
+      "Elster County",
+      "Pallard County",
+      "Tresham County",
+      "Corvin Regional Airport",
+      "Pallard Municipal Airport"
+    ],
+    "people": [
+      "Brent Little",
+      "Martha Dalton"
+    ]
+  },
+  "deliverables": [
+    "county_drought_quotes_2027.xlsx",
+    "conformed_county_rainfall_jja_1991_2025.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the long-run average of a payoff that is zero on one side of a threshold and rises to a cap on the other, and in the periods the target series was not observed its value is known only through a correlated series; a prediction is the conditional mean, so the payoff of the prediction is not the expected payoff, which has to be averaged over the prediction's error: predictions just short of the threshold pay nothing while their expectation pays, and predictions near the cap pay more than their expectation.",
+  "driver_concrete": "Each county's cover pays between its trigger and exit on the June to August rainfall at the county's cooperative-observer gauge, each day capped at 40 mm; several gauges went dormant for whole seasons when their observers left, among them two of the region's dry seasons; rebuilding those seasons from the airport station and replaying the cover on the rebuilt totals pays almost nothing for them, while the expected payout given the airport's record, averaged over the rebuilding's error, pays a material share of the limit, and the technical premium of some counties' covers then exceeds the cooperative's offer.",
+  "stump": "The default path rebuilds each dormant season from the airport station through the regression their shared seasons show and replays the cover on the rebuilt totals, so the dry seasons rebuild just above the triggers and pay nothing, and it writes covers whose technical premium, with each rebuilt season's payout averaged over the rebuilding's error, exceeds the cooperative's offer.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly and applies every filed rule rebuilds the dormant seasons from the airport station by regression (or by the ratio of the stations' means) and replays the contract on the rebuilt totals, writing the wrong set of covers; averaging each rebuilt season's payout over the rebuilding's error writes the right set.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, the expected payout over seasons the county gauge never observed, carried from the airport station through their relationship together with its error; replacing the carried distribution by its point prediction (or by the gauge's observed seasons alone, or the airport's seasons as they are) changes which covers clear their premiums, and without a payout that bends at the trigger the point prediction would do.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:payout-averaged-over-reconstruction-error",
+  "layer1": [
+    "several sources for one picture: the climate data centre's daily file for five cooperative-observer gauges and two airport stations, the airports' hourly observations, the station histories, the cooperative's request, the term sheet and the underwriting guidelines",
+    "precipitation in tenths of a millimetre, trace kept as a flag on a zero value, values that failed a quality check flagged in place",
+    "multi-day totals after days the observer did not read (weekends and holidays), the unread days left blank and the total carried in its own element with its day count",
+    "cooperative observers reading at 7 am against the airports' midnight days; the airports' hourly precipitation in UTC",
+    "a gauge renumbered by the data centre without moving, mapped through the station history",
+    "the cooperative's limits written as insured acres and dollars an acre"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task461": "task461 carried a short record to a long one through the overlap's ratio and read a quantile off the carried record; here the carried values are the default path, and the decisive move is averaging a payout that bends at the trigger over the carrying's error, which the carried values do not carry",
+    "task182": "task182 separates an effect from each unit's own lagged response to a shared driver fitted before the effect; here nothing is separated from a driver: the move is averaging a payout that bends at its trigger and exit over a reconstruction's error in seasons the series never observed",
+    "task228": "task228 builds a ratio's variance at the randomised unit and separates three comparators' errors to rank units; here no variance is tested and nothing is ranked: the reconstruction's error enters the expected value of a kinked payout"
+  },
+  "lineage": [],
+  "notes": "stump_strategy other: the move is the expectation of a kinked payout over a reconstruction's error (Jensen at the trigger and the exit), which no strategy key names",
+  "registered": "2026-10-17T03:46:03Z"
+}

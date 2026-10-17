@@ -1,0 +1,23 @@
+{
+  "task": "task465",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-17",
+  "stump": "The default path rebuilds each dormant season of a county gauge from its airport station at the regression's fitted index and replays the cover on it, so Corvin's two dormant dry seasons rebuild just above the trigger and pay nothing and Tresham's dormant drought season rebuilds below the exit and pays the full limit, writing Corvin's cover and declining Tresham's; the golden averages each rebuilt season's payout over the rebuilding's error and declines Corvin's and writes Tresham's.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {"exit": null, "date": ""},
+  "leak": {"leak_py": "", "reader": ""},
+  "duplicate_check": {"heart": "", "nearest": ""},
+  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "returned": [],
+  "resume": "stage 2: calibrate the five counties (dormant seasons, triggers, exits, offers) so the golden writes Ardley, Pallard and Tresham and declines Corvin and Elster while every naive estimator files another set; then the screen, fork table, ladder, closure, asks and prompt to precut exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET22 (analytical_tasks/07_data_extraction_conformation): a reinsurer pricing a parametric June to August drought cover for a farmers' cooperative from GHCN-Daily station data with a 40 mm daily cap and burn analysis; the seed's own trap (tenths of millimetres, quality flags, weekend totals) is Layer 1 here"
+}
