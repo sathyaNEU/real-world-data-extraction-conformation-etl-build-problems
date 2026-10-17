@@ -1,0 +1,97 @@
+{
+  "task": "task466",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a small town water department's 2027 emergency interconnect reservation, sized to the river's 50-year 7-day low flow fitted to the gauge's record and to the town's nineteenth and early twentieth century water-works reports, which record each year only whether pumping was suspended for low water",
+  "objective": "etl",
+  "shape": "13",
+  "decision_type": "dial_setting",
+  "answer_unit": "named_option",
+  "answer": "Reserve 0.3 MGD (three 0.1 MGD blocks) of firm capacity on the Castlewick interconnect for 2027: the Varrow River's 50-year 7-day low flow of 1.55 cfs lets the permit take 0.68 MGD, 0.23 MGD short of the 0.91 MGD Stage 2 demand.",
+  "answer_source": "task466/submission.md, block 1; golden quillfield_interconnect_reservation_2027.pdf",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G17",
+    "G12",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "the town's water superintendent, who plans the town's supply capacity and brings the interconnect reservation to the select board",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "varrow_river_at_quillfield_daily_values.txt",
+    "rows": 27592,
+    "entity": "one day's mean discharge at the State Hydrologic Survey's gauge at the Quillfield dam",
+    "grain": "gauge x day",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "local_government",
+  "world": {
+    "geography": "an unnamed New England state of the United States (the town, its river, the neighbouring city, the mill and the state hydrologic survey's gauge are fictional; personas on the en_US index)",
+    "currency": "USD",
+    "org_type": "a town water department",
+    "invented_names": [
+      "Quillfield",
+      "Varrow River",
+      "Castlewick",
+      "Ansel and Hale Woolen Company",
+      "Quillfield Historical Society",
+      "State Hydrologic Survey"
+    ],
+    "people": [
+      "Jaime Galloway",
+      "Phyllis Mitchell",
+      "Darryl Powell"
+    ]
+  },
+  "deliverables": [
+    "quillfield_interconnect_reservation_2027.pdf",
+    "varrow_river_annual_low_flows.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is a low quantile of a yearly extreme fitted to two records of the same process: a recent record measures each year's extreme, and a long earlier record says for each year only whether the extreme fell below one fixed level; every year of the earlier record is a censored observation, a year that stayed above the level as informative as one that fell below it, so entering the below-level years as values at the level, or as the only informative years, or leaving the earlier record out, each misplaces the quantile, and only a likelihood with both kinds of censored year places it.",
+  "driver_concrete": "Quillfield's 50-year 7-day low flow at the intake comes from the regional-skew log-Pearson Type III fitted by maximum likelihood to the State Hydrologic Survey gauge's approved climatic-year minima since 1951 and to the water-works reports since 1894, each report year entered as its measured lowest seven-day flow (pumping suspended) or as a seven-day low flow above the 3.09 cfs suspension flow (no suspension), not the measured years alone, the silent years at the suspension flow, or the gauge alone.",
+  "stump": "The default path fits the regional-skew log-Pearson Type III to the gauge's 74 annual minima and the 14 report years with a measured flow, leaving out the 40 report years without a stoppage because they carry no flow, and lands on a 50-year 7-day low flow of 1.31 cfs and a 0.4 MGD reservation (a 0.38 MGD shortfall), where entering each silent year as a 7-day low flow above the 3.09 cfs suspension flow gives 1.55 cfs and 0.3 MGD.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who converts the units, builds the climatic-year minima from the approved daily values and adds the 14 report years with a measured flow fits the regional-skew log-Pearson Type III by maximum likelihood, gets a 50-year 7-day low flow of 1.31 cfs and reserves 0.4 MGD where 0.3 MGD is right.",
+  "domain_test": "Data integration of two records of one river with different observation mechanisms: the 50-year 7-day low flow comes from a likelihood in which each gauged year enters as its 7-day minimum and each report year as below or above the suspension flow; a fit to the gauge alone, or to the suspension years as flows at the threshold, changes the reservation.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task255": "task255 v1 fits the upper tail of a size distribution truncated below a reporting floor, items under the floor never reaching the record; here every year reaches the record and the earlier years are censored at one level, the silent ones above it, for a low quantile of a yearly minimum",
+    "task456": "task456 recovers how often a state held from three imperfect records by a latent-class model; here one quantity is observed exactly in one era and only against a fixed level in the other, combined in one censored likelihood",
+    "task462": "task462 corrects snapshot surveys for a detection probability that rises with size; here nothing goes undetected, every earlier year is a complete binary observation of the yearly minimum against one level",
+    "task449": "task449 recovers a share read through a link that is right only one time in k, inverting the dilution with each record's chance of a right link; here no record is linked and no value is wrong: one era observes each year's minimum and the other only whether it fell below a fixed level, and the step is entering the silent years as bounds in a frequency fit's likelihood"
+  },
+  "lineage": [],
+  "notes": "Seed ET23's world (a water utility's drought restriction trigger and an emergency interconnect) kept; the pitfall re-found in the river's historical record. Strategy other: censored observation, an earlier record that observed each year's 7-day low flow only against the suspension flow, each silent year entering the likelihood as a bound (dropping them selects the river's droughts as its early record). Decisive generator G17 (the likelihood fitted to the record's real observation structure), framed by G12 (a year with no measured flow is a record that the flow stayed above the level). Context artifact register: the select board's drought-notice register and the meter register. Forcing event: the select board's December 2026 vote on the Castlewick agreement. Redrawn on these five axes at stage 3, 2026-10-17: task265 and task157, registered 40 minutes before this card and pulled with its DRAWN commit, hold population_selection, purchase_order_or_contract, G12, operations_director and published_series; the design is unchanged.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:historical threshold information entered as censored years in a low-flow frequency fit",
+  "layer1": [
+    "gauge daily values in the agency's tab-delimited export with comment header and qualifier codes",
+    "provisional and approved values overlapping",
+    "climatic year against the town's calendar fiscal year in the reports",
+    "annual reports transcribed into a PDF table with gaps",
+    "flows in cubic feet per second against demand in million gallons a day"
+  ],
+  "registered": "2026-10-17T12:31:28Z"
+}

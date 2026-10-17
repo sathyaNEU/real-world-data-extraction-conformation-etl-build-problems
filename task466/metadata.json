@@ -1,0 +1,49 @@
+{
+ "task": "task466",
+ "architecture": 1,
+ "title": "How much firm emergency capacity the Town of Quillfield should reserve on the Castlewick interconnect for 2027, sized to the Varrow River's 50-year 7-day low flow fitted to the gauge's record and the water works' reports; with the drought scenarios, the recurrence interval the block covers, and the water the town's own system drew in each declared Stage 2 period",
+ "domain": "General Statistics & Data Science",
+ "subdomain": "data-integration-record-linkage-entity-resolution (two records of one river kept under different observation mechanisms, a gauge's measured years and a water works' reports, conformed into one annual low-flow record and one maximum-likelihood fit)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "13: scenarios and the flip point: the 10-, 25-, 50- and 100-year 7-day low flows with the permitted withdrawal and the Stage 2 shortfall at each, the block and the recurrence interval at which it stops covering, a chart, and two figures for each declared Stage 2 period",
+ "as_of": "2026-10-16",
+ "deliverables": [
+  "quillfield_interconnect_reservation_2027.pdf",
+  "varrow_river_annual_low_flows.csv"
+ ],
+ "distractor_files": [
+  "swrb_regional_low_flow_regression_2019.pdf",
+  "quillfield_2nw_monthly_precipitation.csv"
+ ],
+ "stated_inputs": [
+  "2027",
+  "2012",
+  "1894",
+  "2024",
+  "10",
+  "25",
+  "50",
+  "100",
+  "7-day",
+  "Stage 2"
+ ],
+ "input_gates": {
+  "files": 16,
+  "formats": [
+   "csv",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "varrow_river_at_quillfield_daily_values.txt",
+  "largest_file_rows": 27592
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task466/generator/build.py (seeded, deterministic) in the layouts of a state hydrologic survey's daily-values export and station description, a historical society's transcription of a town water works' annual reports, a state board's guidance, permit and regional report, a town's drought plan, notices, plant historian export, wholesale meter reads, operator round sheets and meter register, a neighbouring city's offer letter and a cooperative weather station's record; the state is unnamed and its town, river, city, mill, agencies and people are fictional",
+   "date": "2026-10-16",
+   "license": "original work for this task; no third-party data"
+  }
+ ]
+}

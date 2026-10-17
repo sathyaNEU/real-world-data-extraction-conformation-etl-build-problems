@@ -1,0 +1,36 @@
+{
+ "task": "task467",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-17",
+ "stump": "The default path restates Velmont's 2025 fee-liable taxi pickups by their whole fall when the temporary rank opened on 4 November 2024 (about 21 per cent) and sets the 2027 fee at $5.75; the analyst who sees that the Airport Line opened the same day and controls for it with all of the airport's taxi drop-offs finds the rank cost only about 4 per cent and sets $7.00; measured within the taxi zones the line serves and within the zones it does not, the rank cost about 11.5 per cent in each, and the fee is $6.50.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "task463 0.06 (guard check at the draw, WARN only: Gate G repeats task266)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: write the readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet; draft prompt.txt; precut.py task467 to exit 0",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET24 (an airport ground transportation team budgets next year's per-trip taxi fee revenue from monthly trip-record drops; a fee column that changed case and a fee that changed price): the world, the decision and the quantity kept; the seed's mechanisms kept only as Layer 1; the pitfall re-found in the series' own structure"
+}

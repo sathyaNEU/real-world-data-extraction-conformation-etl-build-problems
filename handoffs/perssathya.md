@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 2: task234 shipped on architecture 2 after the judge's round-2 SEND_BACK of architecture 1; task235 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 3 under way: task237 shipped; task238 next, its seed's pairing banned against task237 so its draw takes another domain). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task234 shipped; task235 and task236 next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 shipped; task238 to task242 next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,61 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task237: SHIPPED 2026-10-17 (wave 3, first build; architecture 1); waiting on the portal.**
+- The Survey Research Centre at Marlowe University and its Community Connections Survey (Psychology & Behavioral
+  Science, psychometric-measurement-scale-validation x Data Quality Monitoring). Call: release the Punjabi, Spanish and
+  Persian versions of the BCS-12 for the wave 6 fieldwork, hold the Mandarin, Tagalog, Arabic and Korean versions for a
+  second pilot, and send the Cantonese, Urdu and Vietnamese versions back for retranslation. In six translations the
+  six negatively worded items share a wording factor; with it separated, the trait's share of score variance (omega
+  hierarchical) is under 0.80 in all six and under 0.70 in the Cantonese and Vietnamese versions. Cronbach's alpha (0.85
+  to 0.87) or a one-factor omega releases eight versions (6 of 10 wrong); omega total from the wording model files the
+  same 6, the positively worded items alone 4. Asks: each version's valid pilot completes and pilot mean score to two
+  decimals (the vendors' status against the module's end, reissued CAPI cases against the checked interviewer, merged
+  panel accounts).
+- Gates: 114 generator checks with the realism sweep, verify green (its own valid-complete rules and bifactor fit),
+  byte-identical rebuilds, figures_check 44 of 44, precut 49, leak.py REVIEW only; two leak reads (question 1 none,
+  question 6 analytical; ages, version means, the duration cap, the ledger's provenance and the reissued cases' pattern
+  fixed in the generator); judge DETERMINISTIC, APPROVE on three passes (the last on the final pack). Pair ceiling 38.7
+  on paper rests mostly on the status device. Surface screen promotes task236, task235, task234 and task233 (the same
+  author's Data Quality builds: a README file name and a designation set) for the author's read.
+
+**task236: SHIPPED 2026-10-17 (wave 2, sixth build; architecture 1); waiting on the portal.**
+- A state health department's Communicable Diseases Branch and its weekly influenza report (Epidemiology & Public
+  Health, disease-surveillance-outbreak-anomaly-detection x Data Quality Monitoring). Call: flag the notified influenza
+  series of Far North, Metropolitan South, Metropolitan West and South Coast from their testing changes in the week 36
+  report of 2027, and not those of North Coast, Tablelands, Central West or Metropolitan North. Against the sentinel
+  general practice network's influenza activity (ILI rate times the protocol swabs' influenza positivity), the share of
+  infections notified rose 1.87, 1.53 and 1.53 times where point-of-care testing came in and fell to 0.45 when
+  Metropolitan South's drive-through clinics closed; the other four stay within 0.99 to 1.01. Positivity flags seven
+  regions (5 of 8 wrong); raw counts and the unchanged regions as controls 5 wrong; ILI rate or swab positivity alone
+  flag all eight. Asks: each region's season-to-date notified cases (the 28 June boundary review) and week 36 rate per
+  100,000 (preliminary reports notify; the Monday 09:00 cut-off in UTC).
+- Gates: 125 generator checks with the realism sweep, verify green, byte-identical rebuilds, figures_check 93 of 93,
+  precut 49, leak.py REVIEW only; three leak reads (question 1 none each time, question 6 analytical; the register's
+  repeated wording, a merger clause close to a verdict, overlapping point-of-care codes and a quarter readable as
+  absolute were fixed); judge DETERMINISTIC, APPROVE in one pass (stump power strong; its low-risk note, the index is
+  no filed formula, stays by design). At stage 3 the shape moved from 07 to 11 (task465's re-draw holds 07) and the
+  metropolitan regions were renamed (the people screen read "Metro" as a first name). Surface screen promotes task234,
+  task235 and task233 (the same author's Data Quality builds) and task81, task95, task73 for the author's read.
+
+**task235: SHIPPED 2026-10-17 (wave 2, fifth build; architecture 2); waiting on the portal.**
+- Fogbell Games, a Dublin game studio, and its match-3 game Kittiwake Cove (Product Analytics,
+  metric-definition-measurement-science x Data Quality Monitoring; the seed's disease surveillance moved because
+  Epidemiology x Data Quality was banned at the draw). Call: alert Android 7.41.0 and iOS 7.42.0 in the KC-DQ-04 run of
+  Monday 9 November 2026, and no other build. The analytics SDK keeps a purchase event on the phone until the game next
+  starts, so a missing event is lost only once that phone has opened the game again (the session service's log):
+  Android 7.41.0 loses 6.34 per cent with none open, iOS 7.42.0 at least 3.10. A seven-day settle window alerts four
+  old builds whose weekly players have not come back and cannot judge the 7.42.0 pair (5 of 12 wrong); the account's
+  next session alerts three old iOS builds. Asks: each build's paying players (a guest who signs in to an older account
+  leaves no link, so the phone's sign-in joins it) and gross bookings per paying player.
+- Gates: 193 generator checks with the realism sweep, verify green (the alert set at three rates for the open
+  purchases), byte-identical rebuilds, figures_check 109 of 109, precut 49, leak.py REVIEW only; two leak reads
+  (questions 1 to 4 none, question 6 analytical; both landed the call and missed every ask figure); judge
+  DETERMINISTIC, APPROVE in one pass (stump power moderate: the asks carry the bar). Architecture 1 graded the loss at
+  two decimals and was sent back; re-rooted the same day with the alert graded instead. Surface screen promotes task234,
+  task233, task81, task95, task73, task459 and task445 (other mechanisms, differentiated on the card): the adjudicated
+  clone check is the author's call.
 
 **task234: SHIPPED 2026-10-17 (wave 2, fourth build; architecture 2); waiting on the portal.**
 - Tamsen County Department of Public Health's epidemiology unit (Epidemiology & Public Health,

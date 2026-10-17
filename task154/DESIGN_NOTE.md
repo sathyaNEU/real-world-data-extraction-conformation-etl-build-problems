@@ -508,3 +508,7 @@ from the generated rubric.
 - Relabelling the stump strategy `time_semantics` to clear `ban.strategy` (stage 3): a card written to pass, naming the
   move in the client's banned word (rule 3 audit); reverted to the drawn `decomposition_attribution`, which the guard bans
   against task234 v2, and the build stopped for a different decisive move.
+- Architecture 2 (household services in the advance estimate forecast with the indicator chosen and fitted against the
+  Office's own advance estimates, `forecast_method_backtest`, decisive G16): drafted and held at the draw on adjacency
+  with task236 (G16, research_desk, operations_desk among the last three registrations); not relabelled or forced, to be
+  registered as drafted once task236 leaves the last three.

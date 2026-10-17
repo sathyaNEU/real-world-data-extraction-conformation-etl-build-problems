@@ -1,0 +1,95 @@
+{
+  "task": "task467",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "Wave 5, second of six (oviya1301). Seed ET24's world kept (an airport ground transportation team budgets next year's per-trip taxi pickup fee revenue from monthly trip-record drops); the seed's schema drift and fee change are Layer 1 only, and the pitfall is re-found in the series' own structure.",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "seasonal-adjustment-official-time-series-production",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "an airport authority restating its official monthly series of taxi pickups to the loading arrangement the budget year will have, across a temporary rank relocation that began the day a new rail line to the airport opened, to set the next year's cost-recovery pickup fee",
+  "objective": "etl",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G6",
+    "G14",
+    "G13"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the airport authority's manager of ground transportation finance, who brings the 2027 taxi pickup fee to the board of directors with the 2027 budget",
+  "role_family": "finance_controller",
+  "scoring_unit": "per settled transaction",
+  "spine": {
+    "file": "the Vehicle-for-Hire Office's monthly airport taxi trip drops (Parquet, one per month, January 2024 to August 2026)",
+    "rows": 0,
+    "entity": "one metered taxi trip that began or ended in the airport zone",
+    "grain": "trip",
+    "source": "synthetic (constructed in the layout of a municipal regulator's taxi trip open data, one Parquet file per month, with the authority's airport-zone filter applied)"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "Canada, an unnamed province (the city of Velmont, its airport authority, its Vehicle-for-Hire Office, Velmont Transit's Airport Line, the taxi zones and the people are fictional; personas on the en_CA index)",
+    "currency": "CAD",
+    "org_type": "a not-for-profit airport authority",
+    "invented_names": [
+      "Velmont",
+      "Velmont Airport Authority",
+      "Velmont International Airport",
+      "Velmont Transit",
+      "Airport Line",
+      "Vehicle-for-Hire Office"
+    ],
+    "people": [
+      "Olivia White",
+      "Joseph Heath",
+      "Johnny Houston"
+    ]
+  },
+  "deliverables": [
+    "velmont_2027_taxi_pickup_fee.docx",
+    "velmont_airport_taxi_monthly_2024_2026.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "layer1": [
+    "monthly Parquet drops whose fee column changes case from the July 2025 drop",
+    "meter timestamps in local time until a firmware change and in UTC after it",
+    "voided trips as negative-amount reversal rows beside the original trip",
+    "store-and-forward trips arriving in the next month's drop",
+    "a republished 2026 drop beside the original",
+    "a pickup fee that changes each 1 January while meters are reprogrammed over the first weeks",
+    "billing statements by taxi operator that lag and differ from the trip records",
+    "2023 kept only as the regulator's daily origin-destination archive"
+  ],
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:a temporary break and a permanent one that began the same day, separated against a comparison series within the components the permanent one acts on, because the comparison series carries those components in a different mix",
+  "driver": "The decisive quantity is the effect of a temporary change on one series that began the same day as a permanent change acting on that series and on a comparison series, and the permanent change acts only on some components, which make up a far larger share of the comparison series than of the treated one; the treated series' own fall carries the permanent change, the aggregate comparison carries the components' different mix and shows almost no temporary effect, and only comparisons made within each component, which agree, recover the temporary effect the budget year reverses.",
+  "driver_concrete": "Velmont's 2025 fee-liable taxi pickups are restated to the forecourt rank by the temporary rank's effect measured within the taxi zones the Airport Line serves and within the zones it does not (pickups fell by the same share relative to drop-offs in each), not by the pickups' whole fall when the rank moved and the line opened on 4 November 2024, nor by the few per cent all the airport's drop-offs imply, because the line took riders in both directions from its station zones and the airport's drop-offs come from those zones far more often than its pickups go to them.",
+  "stump": "The default path restates Velmont's 2025 fee-liable taxi pickups by their whole fall when the temporary rank opened on 4 November 2024 and sets the 2027 fee at $5.75, and the analyst who controls for the Airport Line, which opened the same day, with all of the airport's taxi drop-offs finds the rank cost only about 4 per cent and sets $7.00, because the drop-offs come mostly from the line's station zones; within the station zones and within the rest the rank cost about 11.5 per cent in each and the fee is $6.50.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms every drop and counts 2025's fee-liable pickups correctly restates them by their fall when the rank moved and sets $5.75, and one who also controls for the Airport Line with all of the airport's drop-offs finds about 4 per cent and sets $7.00, where the within-zone comparison sets $6.50.",
+  "domain_test": "Official time-series production: restating the authority's monthly taxi pickup series to the arrangement the budget year will have means estimating a temporary intervention that coincides with a permanent one, component by component, because the comparison series carries the components in a different mix; the series' own break and the aggregate intervention estimate (the generic moves) each move the fee, so replacing the component estimate with either changes the call.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Seed ET24's world (an airport ground transportation team budgets next year's per-trip taxi fee revenue from monthly trip drops); the seed's mechanisms (a fee column that changed case, a fee that changed price) are Layer 1 only. Domain survey-research-official-statistics, task type seasonal-adjustment-official-time-series-production (serves ETL): the conformed official monthly series and its restatement across a temporary intervention. Strategy causal_design: the comparison the design implies (a temporary rank and a permanent rail line from the same day; the line acts only on its station zones, which carry 64 per cent of the drop-offs and 42 per cent of the pickups, a Simpson's paradox in the aggregate comparison). Gap time first (the base year's pickups carry a temporary rank the budget year reverses, so the evidence window and the decision window differ in one arrangement), population second (the temporary effect is read within the components the permanent line acts on). Pattern E: an absolute split (station zones against the rest), the confounder controlled by construction, no column naming it. Generators: G6 (the comparison series' mix), G14 (the pooled comparison does not apply), G13 (the budget year differs from the base year). Gate decomposition_attribution: the fall split between the rank and the line. Shape 04: the fee in 25-cent steps under the cost-recovery bylaw. Context artifact monitoring_export: the authority's monthly billing statements by taxi operator. Calibration none. Forcing event: the 2027 budget, which carries the fee. Personas drawn with guard.py names --geo Canada --seed 467.",
+  "registered": "2026-10-17T15:08:49Z"
+}

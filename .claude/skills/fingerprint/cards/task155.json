@@ -1,0 +1,96 @@
+{
+  "task": "task155",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 5 (new), seed FC26: world, decision and quantity kept; the seed's borrowed-cover mechanism not used as the decisive step",
+  "domain": "economics-econometrics",
+  "subdomain": "discrete-choice-limited-dependent-variable-modeling",
+  "client_domain": "economics-econometrics",
+  "niche": "a Victorian grocery chain placing its one relief crew for the four trading weeks to Christmas Eve at the store whose open roster hours its casual call-ins would most leave unfilled, when a casual takes a call-in that carries on from a shift already rostered far more readily than one needing a separate trip to work",
+  "objective": "forecasting",
+  "shape": "09",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G6",
+    "G7"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "the chain's workforce planning manager, who places the relief crew under the chain's placement standard",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "callin_offers_2025-08-29_2026-11-12.csv",
+    "rows": 0,
+    "entity": "one offer of one call-in shift to one casual, with the casual's answer",
+    "grain": "offer",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "season_or_peak",
+  "org_family": "retailer_or_ecommerce",
+  "world": {
+    "geography": "Australia, Victoria (stores in Melbourne's west and east and in Ballarat)",
+    "currency": "AUD",
+    "org_type": "a family-owned grocery chain of eight stores",
+    "invented_names": [
+      "Kellaway's"
+    ],
+    "people": [
+      "Beth Hill",
+      "Meredith Stevens",
+      "Kristina Patel",
+      "Belinda Friedman"
+    ]
+  },
+  "deliverables": [
+    "relief_crew_placement_xmas2026.pdf",
+    "relief_crew_xmas2026.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A member's chance of taking on an extra task is high when the task carries straight on from work it is already scheduled to do at the same place and low when it needs a separate start, so the share of a forward period's open tasks that get taken rests on how many of them sit directly against work already scheduled for someone; a take-up rate or model measured on a history where open tasks seldom sat against scheduled work, or one that reads a member already scheduled that day as less willing, writes off the site whose open tasks carry on from its own scheduled work and names it the worst.",
+  "driver_concrete": "A Kellaway's casual offered a call-in that starts as their own rostered shift at that store ends, or ends as it starts, takes it many times as often as one that needs a separate trip in, and far more so in the Christmas weeks; Werribee's Christmas roster puts its 2026 university intake on 8-to-2 and 2-to-6 shifts and lists its uplift open from 2 and from 6 until midnight, right against those shifts, so its casuals stay on, while Camberwell's online-picking uplift sits in school hours against no casual's rostered shift, and only an acceptance model that separates staying on from a separate trip ranks Camberwell first.",
+  "stump": "A competent solver takes each store's call-in fill rate from the call-in register, or fits each offer's acceptance on shift time, length, notice, sister-store travel, weekly hours and the December season, applies it to the open shifts in the published Christmas rosters and sends the crew to Werribee, its 2,850 open hours the crew hours; the step that lands it there is pricing every offer as a separate trip to work, when a casual whose rostered shift ends as the open shift starts, or starts as it ends, takes it many times as often and Werribee's open shifts sit against its own casuals' shifts, so Camberwell, whose picking uplift no casual's shift abuts, is the store, with 2,220 crew hours.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field and rule correctly computes each store's call-in fill rate (ordinary weeks, last Christmas or long-notice call-ins) or fits an offer-level acceptance model on shift time, length, notice, sister-store travel, weekly hours and the December season, applies it to every store's open Christmas shifts and sends the crew to Werribee with 2,850 crew hours, because none of those routes separates an offer that carries on from the casual's own rostered shift from one that needs a separate trip.",
+  "domain_test": "The deciding quantity is each open shift's chance of going unfilled, which comes from casuals' accept-or-decline choices: a binary labour-supply decision at the extensive margin with a fixed cost per trip to work that staying on avoids, modelled as a discrete choice on the offer log and aggregated over the published roster; put megawatt-hours or classrooms in place of shifts and no worker decides whether to make a trip, so the call stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:fixed-cost-of-a-trip-in-extra-shift-take-up",
+  "layer1": [
+    "utc_vs_local_time",
+    "two_keys_across_systems",
+    "layout_change_across_periods",
+    "codes_vs_names",
+    "cross_midnight_times",
+    "effective_dated_records",
+    "unpaid_break_rules"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task117": "task117 replays closed operations whose start times follow the operation ahead of them in a shared slot; here no replay is involved, an offer's take-up is rebuilt from whether it carries on from the casual's own rostered shift, a property found by joining each offer to the roster.",
+    "task137": "task137 conditions a repricing share on a unit class rebuilt from the unit's price against its entry cohort's floor; here the conditioning property is an offer's position against the offeree's own rostered shift that day, and the forward pool differs because the Christmas roster lists its uplift against rostered shifts.",
+    "task37": "task37 recovers an unstated coupling rule from a closed outcome roll; here no rule is withheld or recovered, the acceptance split is estimated from the offer log, and the forward count is aggregated over the published roster.",
+    "task44": "task44 measures a behavioural moderator over a prior instance of the future window to split a pilot's pooled effect; here there is no pilot or treatment, the split is the fixed cost of a separate trip to work and the forward exposure comes from the roster already published.",
+    "task97": "task97 carries a place's cumulative history across occupants through an account conversion; here nothing is carried across occupants or systems, the take-up of each forward offer depends on the offeree's own shift that day in the published roster."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-17T09:07:27Z"
+}

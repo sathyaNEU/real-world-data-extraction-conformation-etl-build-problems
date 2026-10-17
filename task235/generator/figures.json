@@ -1,0 +1,167 @@
+{
+ "call": [
+  "iOS 7.42.0",
+  "Android 7.41.0"
+ ],
+ "components": {
+  "Android 7.41.0": {
+   "lost": 157,
+   "purchases": 2477,
+   "open": 0,
+   "tracking_loss_pct": "6.34"
+  },
+  "iOS 7.42.0": {
+   "lost": 10,
+   "open": 8,
+   "purchases": 323,
+   "if_every_open_event_arrives": "3.10",
+   "if_no_open_event_arrives": "5.57"
+  },
+  "highest_other_lost": {
+   "build": "iOS 7.41.0",
+   "lost": 8,
+   "purchases": 1447,
+   "open": 0,
+   "lost_pct": "0.55"
+  }
+ },
+ "rivals": {
+  "old_builds_open_share_to_cross_pct": 33,
+  "old_builds_resolved_share_lost_pct_at_most": 2,
+  "android_7_42_0": {
+   "open": 34,
+   "resolved": 62,
+   "resolved_lost": 0
+  }
+ },
+ "steps": {
+  "purchases": 15705,
+  "matched": 15204,
+  "missing_at_run": 501,
+  "phone_opened_since": 14604,
+  "lost": 204,
+  "open": 297,
+  "players_range": {
+   "iOS 7.42.0": 275,
+   "Android 7.41.3": 1538
+  },
+  "per_player_range": {
+   "iOS 7.42.0": "5.58",
+   "iOS 7.41.1": "11.73"
+  }
+ },
+ "builds": {
+  "iOS 7.38.2": {
+   "build_number": "4417",
+   "alert": false,
+   "paying_players": 377,
+   "gross_bookings_per_paying_player_eur": "9.93",
+   "chart_tracking_loss_pct": "0.35"
+  },
+  "iOS 7.39.1": {
+   "build_number": "4521",
+   "alert": false,
+   "paying_players": 294,
+   "gross_bookings_per_paying_player_eur": "10.39",
+   "chart_tracking_loss_pct": "0.22"
+  },
+  "iOS 7.40.0": {
+   "build_number": "4588",
+   "alert": false,
+   "paying_players": 855,
+   "gross_bookings_per_paying_player_eur": "8.23",
+   "chart_tracking_loss_pct": "0.19"
+  },
+  "iOS 7.41.0": {
+   "build_number": "4652",
+   "alert": false,
+   "paying_players": 890,
+   "gross_bookings_per_paying_player_eur": "8.08",
+   "chart_tracking_loss_pct": "0.55"
+  },
+  "iOS 7.41.1": {
+   "build_number": "4671",
+   "alert": false,
+   "paying_players": 1362,
+   "gross_bookings_per_paying_player_eur": "11.73",
+   "chart_tracking_loss_pct": "0.32"
+  },
+  "iOS 7.42.0": {
+   "build_number": "4730",
+   "alert": true,
+   "paying_players": 275,
+   "gross_bookings_per_paying_player_eur": "5.58",
+   "chart_tracking_loss_pct": "4.75"
+  },
+  "Android 7.38.1": {
+   "build_number": "7380100",
+   "alert": false,
+   "paying_players": 386,
+   "gross_bookings_per_paying_player_eur": "9.86",
+   "chart_tracking_loss_pct": "0.19"
+  },
+  "Android 7.39.0": {
+   "build_number": "7390000",
+   "alert": false,
+   "paying_players": 293,
+   "gross_bookings_per_paying_player_eur": "9.82",
+   "chart_tracking_loss_pct": "0.00"
+  },
+  "Android 7.40.2": {
+   "build_number": "7400200",
+   "alert": false,
+   "paying_players": 669,
+   "gross_bookings_per_paying_player_eur": "7.03",
+   "chart_tracking_loss_pct": "0.33"
+  },
+  "Android 7.41.0": {
+   "build_number": "7410000",
+   "alert": true,
+   "paying_players": 1392,
+   "gross_bookings_per_paying_player_eur": "8.99",
+   "chart_tracking_loss_pct": "6.34"
+  },
+  "Android 7.41.3": {
+   "build_number": "7410300",
+   "alert": false,
+   "paying_players": 1538,
+   "gross_bookings_per_paying_player_eur": "9.91",
+   "chart_tracking_loss_pct": "0.40"
+  },
+  "Android 7.42.0": {
+   "build_number": "7420000",
+   "alert": false,
+   "paying_players": 320,
+   "gross_bookings_per_paying_player_eur": "5.58",
+   "chart_tracking_loss_pct": "0.00"
+  }
+ },
+ "line_per_cent": 2,
+ "default_path": {
+  "alerted": [
+   "iOS 7.38.2",
+   "iOS 7.39.1",
+   "iOS 7.40.0",
+   "Android 7.38.1",
+   "Android 7.41.0"
+  ],
+  "window_days": 7
+ },
+ "versions": [
+  "7.38.1",
+  "7.38.2",
+  "7.39.0",
+  "7.39.1",
+  "7.40.0",
+  "7.40.2",
+  "7.41.0",
+  "7.41.1",
+  "7.41.3",
+  "7.42.0"
+ ],
+ "run": "Monday 9 November 2026",
+ "sdk_versions": [
+  "4.6.0",
+  "5.0.1"
+ ]
+}

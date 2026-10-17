@@ -1,39 +1,63 @@
 {
   "task": "task264",
   "owner": "sathay3012",
-  "status": "DESIGN",
-  "domain": "general-statistics-data-science",
+  "status": "SHIPPED",
+  "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-17",
-  "stump": "The default path averages each item's sales over all the format's stores before comparing weeks, so the value chain that joined the panel in July and shoppers' moves toward cheaper chains read as price falls in the supermarket format and the index publishes too few categories; the careful store-by-store match drops a convenience chain's price in every week one small store sold none of a slow line; following each item at the chain that prices it publishes the golden set.",
-  "architecture": 1,
+  "stump": "The default path turns each member council's expanded visits into residents with its respondents' average 12-month visit count, a visit-weighted average in an exit survey, so the three valley councils' frequent visitors are undercounted and their levy share falls well below the share the survey's weight over each respondent's own visit count gives.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK; the levy requirement a stated input; sweeps 3, 4, 6 and 9 answered in the design note)",
+    "reader": "three readers, each Q1 none and Q6 analytical; realism notes fixed in the generator"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (repeat.gate_g, overuse.gate_g; ban.artifact cleared by correcting the card's context artifact to close_out_summary)",
+    "nearest": "task256 (v1) 0.11 driver; surface promotes task136 at 0.102 on card axes alone"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (r1 FIX_NOW, r2 APPROVE)",
+    "disposition": "APPROVE on the one re-judge: every committed answer reproduced; Gate G statistical_rigor, analytical_non_defect; Gate H pass",
+    "report": "task264/determinism_check_report.md, task264/determinism_check_report_pass2.md"
   },
   "returned": [],
   "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-17",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "analytical_tasks/03_descriptive_distribution/DA14_index-publication-structure-matched-pair-minimum.md (header and Situation only)"
+  "seed": "none (re-root to a new world; architecture 1 took DA14's world)",
+  "history": [
+    {
+      "architecture": 1,
+      "fate": "spent 2026-10-17 at stage 4: re-judge SEND_BACK (competing_defensible_answer, the unfiled product unit)",
+      "judge": {
+        "verdict": "DETERMINISTIC (first pass)",
+        "disposition": "FIX_NOW: four ask-side forks (gap rounding basis, C2's PC before 2 August 2026, the continuity window, the repeated store totals); main call reproduced, Gate G method_or_model_selection analytical_non_defect, Gate H pass",
+        "report": "task264/determinism_check_report.md"
+      },
+      "leak": {
+        "leak_py": "REVIEW (sweep 3: the filed 1.5 test; sweep 4: methodology and terms vocabulary; sweep 6: banners beside store counts; sweep 9: the retail calendar's forward weeks)",
+        "reader": "Q1 none, Q6 analytical; Q5: the level at which a line's price is formed is not filed (constrained by methodology section 1 and the partner register's one shelf price); realism and ask-wording notes staged in the generator, not yet rebuilt"
+      }
+    }
+  ],
+  "gates": {
+    "checks": 111,
+    "verify": "PASS",
+    "rebuild": "byte-identical",
+    "figures_check": "76 of 76",
+    "precut": "49 of 49",
+    "voice_check": "PASS",
+    "producer_metadata": "clean"
+  }
 }

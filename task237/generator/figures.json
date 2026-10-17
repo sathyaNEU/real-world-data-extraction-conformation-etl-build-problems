@@ -1,0 +1,194 @@
+{
+ "call": {
+  "release": [
+   "Punjabi",
+   "Spanish",
+   "Persian (Farsi)"
+  ],
+  "hold": [
+   "Chinese, Simplified (Mandarin)",
+   "Tagalog",
+   "Arabic",
+   "Korean"
+  ],
+  "rework": [
+   "Cantonese",
+   "Urdu",
+   "Vietnamese"
+  ]
+ },
+ "components": {
+  "wording_factor_versions": [
+   "Chinese, Simplified (Mandarin)",
+   "Cantonese",
+   "Tagalog",
+   "Arabic",
+   "Vietnamese",
+   "Korean"
+  ],
+  "single_factor_versions": [
+   "Punjabi",
+   "Spanish",
+   "Urdu",
+   "Persian (Farsi)"
+  ],
+  "trait_share_band": {
+   "Punjabi": "release",
+   "Chinese, Simplified (Mandarin)": "hold",
+   "Cantonese": "rework",
+   "Tagalog": "hold",
+   "Arabic": "hold",
+   "Spanish": "release",
+   "Urdu": "rework",
+   "Vietnamese": "rework",
+   "Persian (Farsi)": "release",
+   "Korean": "hold"
+  }
+ },
+ "rivals": {
+  "alpha": {
+   "Punjabi": "0.85",
+   "Chinese, Simplified (Mandarin)": "0.87",
+   "Cantonese": "0.75",
+   "Tagalog": "0.87",
+   "Arabic": "0.85",
+   "Spanish": "0.88",
+   "Urdu": "0.60",
+   "Vietnamese": "0.85",
+   "Persian (Farsi)": "0.89",
+   "Korean": "0.86"
+  },
+  "alpha_wrong": [
+   "Chinese, Simplified (Mandarin)",
+   "Cantonese",
+   "Tagalog",
+   "Arabic",
+   "Vietnamese",
+   "Korean"
+  ],
+  "alpha_release_count": 8,
+  "alpha_range_released_wrongly": [
+   "0.85",
+   "0.87"
+  ],
+  "positive_items_only_wrong": [
+   "Punjabi",
+   "Chinese, Simplified (Mandarin)",
+   "Tagalog",
+   "Vietnamese"
+  ]
+ },
+ "steps": {
+  "online_entries": 3772,
+  "capi_interviews": 2332,
+  "online_valid": 3253,
+  "capi_valid": 2078,
+  "full_answerers_range": [
+   395,
+   557
+  ]
+ },
+ "deliverables": {
+  "bcs12_wave6_release_decisions.csv": [
+   {
+    "version": "pa",
+    "decision": "release",
+    "valid_pilot_completes": 542,
+    "pilot_mean_score": "41.76"
+   },
+   {
+    "version": "zh-Hans",
+    "decision": "hold",
+    "valid_pilot_completes": 606,
+    "pilot_mean_score": "39.18"
+   },
+   {
+    "version": "yue",
+    "decision": "rework",
+    "valid_pilot_completes": 489,
+    "pilot_mean_score": "38.29"
+   },
+   {
+    "version": "tl",
+    "decision": "hold",
+    "valid_pilot_completes": 450,
+    "pilot_mean_score": "38.36"
+   },
+   {
+    "version": "ar",
+    "decision": "hold",
+    "valid_pilot_completes": 569,
+    "pilot_mean_score": "39.53"
+   },
+   {
+    "version": "es",
+    "decision": "release",
+    "valid_pilot_completes": 622,
+    "pilot_mean_score": "41.47"
+   },
+   {
+    "version": "ur",
+    "decision": "rework",
+    "valid_pilot_completes": 478,
+    "pilot_mean_score": "38.46"
+   },
+   {
+    "version": "vi",
+    "decision": "rework",
+    "valid_pilot_completes": 512,
+    "pilot_mean_score": "39.04"
+   },
+   {
+    "version": "fa",
+    "decision": "release",
+    "valid_pilot_completes": 490,
+    "pilot_mean_score": "40.23"
+   },
+   {
+    "version": "ko",
+    "decision": "hold",
+    "valid_pilot_completes": 573,
+    "pilot_mean_score": "36.89"
+   }
+  ]
+ },
+ "bands": [
+  "0.70",
+  "0.80"
+ ],
+ "items": [
+  12,
+  6
+ ],
+ "scale_range": [
+  12,
+  60
+ ],
+ "prorate": [
+  1,
+  2,
+  3
+ ],
+ "age": 18,
+ "versions": 10,
+ "counts": {
+  "release": 3,
+  "hold": 4,
+  "rework": 3
+ },
+ "wave": 6,
+ "codes": [
+  9,
+  -8,
+  -9
+ ],
+ "items_reversed": [
+  "02",
+  "04",
+  "06",
+  "08",
+  "10",
+  "12"
+ ],
+ "decimals": 2
+}

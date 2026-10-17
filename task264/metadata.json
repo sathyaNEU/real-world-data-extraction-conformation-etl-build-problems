@@ -1,0 +1,10 @@
+{
+  "distractor_files": [
+    "target/annual_permits_2025-26.csv",
+    "target/population_estimates_mid-2025.xlsx",
+    "target/supplier_payments_2025-26.csv"
+  ],
+  "stated_inputs": [
+    "7,416,300"
+  ]
+}

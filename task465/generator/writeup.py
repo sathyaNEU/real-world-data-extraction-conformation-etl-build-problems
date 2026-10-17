@@ -1,116 +1,99 @@
-"""submission.md, drafted from generator/figures.json: every figure in it is emitted, none typed."""
+"""Write task465/submission.md from generator/figures.json."""
 import json
 import os
-
-import world as W
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import world as W   # noqa: E402
 
 
 def _and(names):
-    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+    return ", ".join(names[:-1]) + " and " + names[-1] if len(names) > 1 else names[0]
 
 
-def _p(x):
-    return "%.2f" % x
-
-
-def _d(x):
-    return "{:,}".format(int(x))
+def n(v):
+    return "{:,}".format(int(v))
 
 
 def write(fig_path, out_path):
     F = json.load(open(fig_path))
-    cv = F["covers"]
-    buy, dec = F["call"]["buy"], F["call"]["decline"]
-    rec = F["recovered"]
+    st = F["call"]["by_division"]
+    pr = F["pilot_rates"]
+    F_ = W.FILES
     L = []
-    L.append("## Tags")
+    L.append("## Tags\n")
+    L.append("**Domain:** General Statistics & Data Science (data integration: two state surveys that each measured one "
+             "of a programme's two eligibility traits, fused through the county and income band they share with a "
+             "utility's screening pilot that asked both).")
+    L.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
+    L.append("## 1. Final Recommendation\n")
+    L.append("**Staff %d Home Energy Medical Assistance caseworkers for 2027: %s.**" % (
+        F["call"]["total"], _and(["%s %d" % (d, st[d]) for d in W.DIV_NAMES])))
+    L.append("Each division's 2025 eligible households fuse the energy survey's high-burden share and the health survey's "
+             "equipment share in each income band with the screening pilot's odds ratio between the two traits inside the "
+             "band (%s under $25,000, %s from $25,000 to $49,999). Not the %d caseworkers that multiplying the two "
+             "surveys' shares staffs: inside each band the pilot's high-burden homes report the equipment about three "
+             "times as often as the rest (%s against %s per cent under $25,000, %s against %s per cent from $25,000 to "
+             "$49,999), so treating the traits as independent undercounts every division.\n" % (
+                 "%.2f" % F["psi"]["0"], "%.2f" % F["psi"]["1"], F["rivals"]["independence"]["total"],
+                 pr["0"]["equip_high"], pr["0"]["equip_rest"], pr["1"]["equip_high"], pr["1"]["equip_rest"]))
+    L.append("## 2. Critical Components\n")
+    L.append("1. In the pilot's complete screens the equipment is reported in **%s** per cent of high-burden homes against "
+             "**%s** per cent of the rest under $25,000, and in **%s** against **%s** per cent from $25,000 to $49,999." % (
+                 pr["0"]["equip_high"], pr["0"]["equip_rest"], pr["1"]["equip_high"], pr["1"]["equip_rest"]))
+    L.append("2. The pilot's odds ratio between high energy burden and the equipment inside each band: **%.2f** under "
+             "$25,000 and **%.2f** from $25,000 to $49,999." % (F["psi"]["0"], F["psi"]["1"]))
+    L.append("3. Caseworkers in total: **%d**." % F["call"]["total"])
     L.append("")
-    L.append("**Domain:** General Statistics & Data Science (data integration: each county's dryland grain sorghum "
-             "yield history conformed from a state statistics service's county and district estimates in two "
-             "downloads, the years it withheld recovered from the district totals).")
-    L.append("**Analytical objective:** Data Extraction & Conformation (ETL).")
+    L.append("## 3. Step-by-Step Solution\n")
+    L.append("1. Took each division's counties from %s and each county's households in the two eligible bands from %s "
+             "(county rows, not the region and state rows)." % (F_["divisions"], F_["estimates"]))
+    L.append("2. From %s, computed each household's annual home energy cost (ELEC_AMT times 12 where ELEC_BASIS is M, "
+             "plus GAS_AMT and OTHER_AMT) and its band from HHINC, and took each division and band's WT_FINAL-weighted "
+             "share with costs above 6 per cent of income." % F_["heas"])
+    L.append("3. From %s, nested INCCAT 1 to 3 and 4 to 5 into the two bands, matched CNTYFIPS to the register's "
+             "three-digit codes, and took each division and band's HH_WT-weighted share with MEDEQUIP 1 among answers 1 "
+             "and 2." % F_["shs"])
+    L.append("4. From %s, kept each address's latest complete screen, computed its burden from HH_INCOME, ELEC_12M and "
+             "OTHER_FUELS_12M, and tabulated burden against MED_EQUIPMENT (Yes or No) in each band: odds ratios %.2f and "
+             "%.2f." % (F_["pilot"], F["psi"]["0"], F["psi"]["1"]))
+    L.append("5. Raked each band's pilot table to each division and band's two survey shares and multiplied the share "
+             "with both traits by the households; a Mantel-Haenszel odds ratio, each pilot division's own odds ratio or "
+             "the pilot's equipment rate ratio puts every cell on the same hundred. Multiplying the two shares, as if independent inside the "
+             "cell, was not used: the pilot rejects independence in both bands, and it staffs %d." % (
+                 F["rivals"]["independence"]["total"]))
+    L.append("6. Staffed each division at one caseworker for every 400 eligible households or part of that number, from "
+             "the unrounded counts: %d in all." % F["call"]["total"])
+    L.append("7. Joined accounts into households through PRIOR_ACCOUNT_NO in %s and counted the households with a spell "
+             "open on October 31, 2026 (START_DATE on or before it, END_DATE blank or on or after it), each in its "
+             "premise county's division." % F_["baseline"])
+    L.append("8. Counted the households (accounts joined the same way) with a Completed order in %s whose COMPLETED_UTC "
+             "falls from January 1 to October 31, 2026 on Central Time, each in its premise county's division." % (
+                 F_["batteries"]))
     L.append("")
-    L.append("## 1. Final Recommendation")
+    L.append("## 4. Deliverable Answers\n")
+    L.append("### %s\n" % W.GOLDEN["workbook"])
+    L.append("1. Each division's eligible households in 2025 (nearest hundred) and caseworkers for 2027:")
+    for d in W.DIV_NAMES:
+        L.append("   - %s: %s eligible households, %d caseworkers" % (d, n(F["eligible"][d]), st[d]))
+    L.append("   - Total caseworkers: %d" % F["call"]["total"])
+    L.append("2. Each division's households on the medical baseline rate at the end of October 2026:")
+    for d in W.DIV_NAMES:
+        L.append("   - %s: %s" % (d, n(F["baseline"][d])))
+    L.append("3. Each division's households given a backup battery from January to October 2026:")
+    for d in W.DIV_NAMES:
+        L.append("   - %s: %s" % (d, n(F["battery"][d])))
+    L.append("4. A horizontal bar chart of eligible households by division, each bar labelled with its caseworkers, on the "
+             "Caseworkers 2027 sheet.")
     L.append("")
-    L.append("**Buy the %s covers and decline %s's.**" % (_and(buy), "'s and ".join(dec)))
-    L.append("Their quoted rates are %s times their expected losses of %s per cent, under the policy's 1.4; %s. "
-             "Not the published years alone, which leave out the %d county-years the service withheld and decline all "
-             "five covers; not filling those years from the district's yield or the county's published years, which "
-             "still declines all five; not reading them as total failures, which buys Tresham's too." % (
-                 _and([_p(cv[c]["multiple"]) for c in buy]), _and([_p(cv[c]["expected_loss"]) for c in buy]),
-                 "; ".join("%s's runs %s times its %s" % (c, _p(cv[c]["multiple"]), _p(cv[c]["expected_loss"]))
-                           for c in dec), F["withheld_count"]))
-    L.append("")
-    L.append("## 2. Critical Components")
-    L.append("")
-    def recs(c):
-        return ", ".join("**%.1f** (%s)" % (rec["%s %s" % (c, y)]["yld"], y)
-                         for y in sorted(k.split()[1] for k in rec if k.split()[0] == c))
-    L.append("1. Withheld years recovered from the district totals, bushels per harvested acre: Ardley %s; Elster %s; "
-             "Pallard %s; Tresham %s." % (recs("Ardley"), recs("Elster"), recs("Pallard"), recs("Tresham")))
-    L.append("2. Expected loss, per cent of liability: %s." % "; ".join(
-        "%s **%s**" % (c, _p(cv[c]["expected_loss"])) for c in W.MEMBERS))
-    L.append("3. Quoted rate as a multiple of expected loss: %s." % "; ".join(
-        "%s **%s**" % (c, _p(cv[c]["multiple"])) for c in W.MEMBERS))
-    L.append("")
-    L.append("## 3. Step-by-Step Solution")
-    L.append("")
-    L.append("1. Took non-irrigated grain sorghum harvested acres, production and yield for every county and district "
-             "from %s and %s, the October 2026 download for the years it holds (methods note 4.1) and the 2008 "
-             "district recode applied (5.1): %d county-years of the five counties are withheld (S)." % (
-                 W.FILES["pull24"], W.FILES["pull26"], F["withheld_count"]))
-    L.append("2. Recovered each withheld county-year as its district's harvested acres and production less those of "
-             "the district's published counties (methods note 2.1), yield their ratio: %s." % "; ".join(
-                 "%s %s" % (k, "%.1f" % v["yld"]) for k, v in sorted(rec.items())))
-    L.append("3. Brought each crop year's yield, 1991 to 2025, to 2027 by adding the trend in %s for each year, took "
-             "each year's indemnity share against 90 per cent of the expected 2027 yield and averaged the 35 shares "
-             "(risk policy 5.3): expected losses %s per cent." % (
-                 W.FILES["terms"], ", ".join("%s %s" % (c, _p(cv[c]["expected_loss"])) for c in W.MEMBERS)))
-    L.append("4. Set each quoted rate in %s against 1.4 times the expected loss (risk policy 5.2): buy %s, decline %s." % (
-        W.FILES["quotes"], _and(buy), _and(dec)))
-    L.append("5. Summed the non-irrigated acres in %s submitted before the 5:00 p.m. Central close of 30 October 2026 "
-             "(22:00 UTC; %s), each field's latest submission, by the field's county: %s acres; each cover's liability "
-             "is its acres times its expected yield times 90 per cent times $%s a bushel (the term sheet's $%s per "
-             "hundredweight at %d pounds), its premium the quoted rate times the liability." % (
-                 W.FILES["enrol"], W.FILES["notice"],
-                 ", ".join("%s %s" % (c, "{:,.1f}".format(F["acres"][c])) for c in W.MEMBERS),
-                 "%.2f" % F["price_per_bu"], "%.2f" % F["stated"]["price_cwt"], F["stated"]["bushel_lb"]))
-    L.append("6. Converted the grain sorghum tickets in %s to bushels at 14 per cent moisture by the conversion in %s, "
-             "left out the terminal's tickets written against a transfer in %s and summed by origin county: %s bushels "
-             "received, divided by each county's 2016 to 2020 all-practices production in the October 2026 download." % (
-                 W.FILES["tickets"], W.FILES["dict"], W.FILES["transfers"],
-                 ", ".join("%s %s" % (c, _d(F["receipts_bu"][c])) for c in W.MEMBERS)))
-    L.append("")
-    L.append("## 4. Deliverable Answers")
-    L.append("")
-    L.append("### %s" % W.GOLDEN["workbook"])
-    L.append("")
-    L.append("1. Buy the %s covers; decline %s." % (_and(buy), _and(dec)))
-    L.append("2. Each cover's expected loss, quoted rate, quoted rate as a multiple of the expected loss, the quoted "
-             "rate at which its call changes (per cent of liability; the multiple to two decimals) and its call:")
-    for c in W.MEMBERS:
-        L.append("   - %s: %s, %s, %s, %s, %s" % (c, _p(cv[c]["expected_loss"]), _p(cv[c]["quote"]), _p(cv[c]["multiple"]),
-                                                _p(cv[c]["change_rate"]), cv[c]["call"].lower()))
-    L.append("3. Each cover's 2027 liability and premium, dollars to the nearest hundred:")
-    for c in W.MEMBERS:
-        L.append("   - %s: %s and %s" % (c, _d(F["liability"][c]), _d(F["premium"][c])))
-    L.append("4. The cooperative's 2016 to 2020 grain sorghum receipts from each county as a share of the county's "
-             "grain sorghum production (all practices), per cent to one decimal:")
-    for c in W.MEMBERS:
-        L.append("   - %s: %.1f" % (c, F["receipts_share"][c]))
-    L.append("5. Chart on the Covers sheet: clustered columns of each cover's quoted rate beside the rate at which its "
-             "call changes, both labelled in per cent of liability.")
-    L.append("")
-    L.append("### %s" % W.GOLDEN["record"])
-    L.append("")
-    L.append("1. %d rows, one per county and crop year 1991 to 2025, with harvested acres, production, yield and "
-             "source; the withheld county-years recovered from district totals (harvested acres, bushels, bushels per "
-             "acre):" % F["record_rows"])
-    for k, v in sorted(rec.items()):
-        L.append("   - %s: %s, %s, %.1f" % (k, _d(v["harvested"]), _d(v["production"]), v["yld"]))
+    L.append("### %s\n" % W.GOLDEN["table"])
+    L.append("1. Eligible households in 2025 by division and income band (nearest hundred):")
+    for d in W.DIV_NAMES:
+        for b in W.ELIGIBLE_BANDS:
+            L.append("   - %s, %s: %s" % (d, W.BANDS[b].replace("Under", "under"), n(F["cells"]["%s|%d" % (d, b)])))
     txt = "\n".join(L) + "\n"
-    assert "—" not in txt and "–" not in txt
+    assert "\u2014" not in txt and "\u2013" not in txt
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write(txt)
+    return txt

@@ -1,0 +1,167 @@
+{
+ "call": [
+  "Far North",
+  "Metropolitan South",
+  "Metropolitan West",
+  "South Coast"
+ ],
+ "components": {
+  "notified_before_after": {
+   "Far North": [
+    434,
+    2226
+   ],
+   "North Coast": [
+    763,
+    2267
+   ],
+   "Tablelands": [
+    286,
+    895
+   ],
+   "Central West": [
+    583,
+    1368
+   ],
+   "Metropolitan North": [
+    2459,
+    6943
+   ],
+   "Metropolitan South": [
+    2603,
+    2638
+   ],
+   "Metropolitan West": [
+    1210,
+    6763
+   ],
+   "South Coast": [
+    655,
+    2487
+   ]
+  },
+  "share_notified_after_over_before": {
+   "Far North": "1.87",
+   "North Coast": "1.01",
+   "Tablelands": "1.00",
+   "Central West": "1.00",
+   "Metropolitan North": "0.99",
+   "Metropolitan South": "0.45",
+   "Metropolitan West": "1.53",
+   "South Coast": "1.53"
+  }
+ },
+ "rivals": {
+  "positivity_after_over_before": {
+   "Far North": "1.0",
+   "North Coast": "1.6",
+   "Tablelands": "2.0",
+   "Central West": "1.9",
+   "Metropolitan North": "2.0",
+   "Metropolitan South": "3.1",
+   "Metropolitan West": "2.5",
+   "South Coast": "1.6"
+  },
+  "positivity_false_flags": [
+   "Central West",
+   "Metropolitan North",
+   "North Coast",
+   "Tablelands"
+  ],
+  "raw_rise_range": [
+   "2.3",
+   "5.6"
+  ],
+  "unflagged_ratio_range": [
+   "0.99",
+   "1.01"
+  ]
+ },
+ "steps": {
+  "cases_built": 46380,
+  "cases_in_eight_regions": 44872
+ },
+ "deliverables": {
+  "influenza_testing_break_flags_week36_2027.xlsx": [
+   {
+    "region": "Far North",
+    "code": "FN",
+    "flag": "yes",
+    "season_to_date": 3560,
+    "rate_week36": "53.7"
+   },
+   {
+    "region": "North Coast",
+    "code": "NC",
+    "flag": "no",
+    "season_to_date": 4113,
+    "rate_week36": "39.1"
+   },
+   {
+    "region": "Tablelands",
+    "code": "TB",
+    "flag": "no",
+    "season_to_date": 1505,
+    "rate_week36": "54.6"
+   },
+   {
+    "region": "Central West",
+    "code": "CW",
+    "flag": "no",
+    "season_to_date": 2491,
+    "rate_week36": "50.6"
+   },
+   {
+    "region": "Metropolitan North",
+    "code": "MN",
+    "flag": "no",
+    "season_to_date": 12037,
+    "rate_week36": "36.7"
+   },
+   {
+    "region": "Metropolitan South",
+    "code": "MS",
+    "flag": "yes",
+    "season_to_date": 6133,
+    "rate_week36": "24.9"
+   },
+   {
+    "region": "Metropolitan West",
+    "code": "MW",
+    "flag": "yes",
+    "season_to_date": 11230,
+    "rate_week36": "68.4"
+   },
+   {
+    "region": "South Coast",
+    "code": "SC",
+    "flag": "yes",
+    "season_to_date": 3646,
+    "rate_week36": "104.0"
+   }
+  ]
+ },
+ "cutoff": {
+  "local": "09:00 Monday 13 September 2027",
+  "utc": "23:00 Sunday 12 September 2027"
+ },
+ "report_week": 36,
+ "weeks": [
+  14,
+  26,
+  36
+ ],
+ "window_weeks": 4,
+ "line": "a quarter",
+ "rate_base": "100,000",
+ "change_weeks": {
+  "Far North": 30,
+  "North Coast": 30,
+  "Tablelands": 31,
+  "Central West": 31,
+  "Metropolitan North": 30,
+  "Metropolitan South": 31,
+  "Metropolitan West": 30,
+  "South Coast": 32
+ }
+}

@@ -317,6 +317,69 @@ every price and currency scrambled.
   construction).
 - Pair ceiling: 31.3 (C = 38 + 7 + 55 x 0.05 = 47.8; S = 5 + 7 + 55 x 0.05 = 14.8; mean 31.3).
 
+## Pre-ship check
+
+1. Domain: the call stands on each build's purchase-tracking loss, the client events reconciled against the
+   store-verified purchases with each missing event judged against the next session of the phone that made the purchase
+   (the SDK's queue on the phone, uploaded when the game starts). With a seven-day settle window 5 builds change, with
+   the account's next session 3, and any reading by age swaps the 7.42.0 pair. With wards or tills for builds there is
+   no queue on a phone, no session handshake and no store receipt to read.
+2. Two layers: Layer 1 (renewals, sandbox and licence-tester purchases, duplicate uploads and restored events, skewed
+   device clocks, build numbers against version names, Irish dates against UTC with the end of Irish Summer Time inside
+   the window) is neutral on the call, each item asserted (R2, SF rows); Layer 2 is the censoring of a missing event
+   until its phone's next session, asserted alone to move the default path to the golden (R3b), the rate for the open
+   purchases a corridor every reading of which alerts the same pair (C3).
+3. No banned stump decides: nothing is planted (Android 7.41.0's and iOS 7.42.0's losses are recorded only as missing
+   events; no memo, alert, dashboard or draft); not semantics (the default path reads every field and code right and
+   files 5 wrong builds on the clean truth, R3a, the younger purchases kept or left out); not rule application (KC-DQ-04
+   files the share, the outcome for an event not arrived by the run and the line, and names no way of telling a lost
+   event from a late one, asserted on the catalogue's text).
+4. Gate G: no shipped artifact estimates, flags or ranks a build; the three distractors count no purchase or event.
+5. Determinism: the list grades each build's alert, paying players and gross bookings per paying player, never the
+   loss; the alert set is the same under every rate the resolved gaps give the open purchases (the build's own, the
+   platform's, the pooled, a silence cut-off, every open event delivered), the nearest other build 0.32 points below
+   the line; Android 7.41.0's 6.34 and iOS 7.42.0's floor of 3.10 are known outright; every gross bookings per paying
+   player sits 0.077 cent or more from a rounding edge; paying players are integers. Judge (architecture 2, round 1):
+   DETERMINISTIC, APPROVE; Gate G statistical_rigor, analytical_non_defect, no surface read; Gate H domain pass,
+   layers pass, decisive step analytical; stump power moderate (s.4's outcome sentence and the SDK notes let a strong
+   solver reach the censoring, so the asks carry the bar). Its one low note, "resolved gaps" undefined in the write-up,
+   is fixed: the write-up names the set (the build's events still on a phone when the game next opened). The judged
+   bundle and the shipped one differ in the support merges' times of day, the SDK notes' unrelated entries and the
+   distractor ratings; every graded figure, the alert list and the golden list are byte-identical.
+6. Asks: A (12 figures) is moved on every build by the guest sign-ins to older accounts (the links alone 5 to 20 high),
+   B (12) on every build by the yen and won exponents (0.78 to 1.31 euro low) and by A's players (0.06 to 0.21 euro low
+   through the links); the call reads neither (asserted by scrambling accounts, prices and currencies and dropping the
+   links and the rates).
+7. Input gates: 13 files in four formats (csv, md, pdf, xlsx), the session log at 325,515 rows, three distractors named
+   in metadata.json; 193 generator checks with the realism sweep; the verifier (its own merge and union-find, the alert
+   set at three rates) green; two builds byte-identical; figures_check 109 of 109; containers clean.
+8. Duplicate guard: `guard.py heart` WARN (repeat.gate_g and repeat.decision against task264, drawn since this build's
+   first draw; same_puzzle_older and same_driver_older differentiated against task445 and task459; the driver near only
+   its own lineage); `guard.py surface` promoted seven pairs for the author's adjudicated read, none a shared mechanism:
+   task234 (back to back, a README, the time gap and a designation set: task234 predicts a source's output from a share
+   a loss cannot move), task233 (a README and a designation set), task81, task95 and task73 (surface in the corpus top 1
+   per cent, other mechanisms), task459 and task445 (the time gap, pattern E and Gate G on the cards, differentiated on
+   the card: neither judges a missing item by its own sender's next contact).
+
+## Leak check
+
+Architecture 1: leak.py REVIEW, no LEAK; reader: Q5 read s.4's "may still reach it" as counting every missing event
+lost (8 alerts), a main-call fork, and the bookings ask fell whole; with the judge's SEND_BACK, re-rooted.
+Architecture 2: leak.py REVIEW, no LEAK (--asof 2026-11-09). Reader pass 1: Q1 none (s.4 "names the issue but not how
+to judge it"), Q2 to Q4 none, Q5 s.4 leaves the pending-or-lost judgement to the analysis (counting every unarrived
+event lost is the naive option, ruled out by "lost only if it never will"), Q6 an analytical choice; it landed the call
+and missed both asks on every build (paying players off the links alone). Realism notes fixed in the generator: support
+merges no longer pile up at the desk's opening (a request out of hours is taken up during the next working day, an
+older account's request at any point in the weeks, the link set unchanged), the SDK notes read as a changelog (the
+queue in 4.6.0, unrelated entries in each release). Reader pass 2 (the changed documents): Q1 to Q4 none, Q6 an
+analytical choice; it again landed the call and missed both asks. Its realism notes: the ratings' weekly counts jumped
+at random (fixed: each version's count follows its players that week, a data-only change checked by leak.py); the
+links file's note reads as a hint (it is the determinism-check §1 sentence a completed source must carry, true of the
+792 guests whose phone shows a sign-in the links do not record); the catalogue reads tidy (left: it is a metrics catalogue). Its "links only or links with each phone's
+sign-in" is no fork: the links alone leave every guest who signed in to an older account counted twice, against s.6.
+REVIEW lines, all harmless: build numbers and version names in the pack are the candidates' own identifiers; the
+dictionary carries the call's words as build names; device_id is the SDK's and the services' own column name.
+
 ## Tried and rejected
 
 - The seed's world (notifiable disease reports by area, nowcast against the delay distribution): Epidemiology & Public

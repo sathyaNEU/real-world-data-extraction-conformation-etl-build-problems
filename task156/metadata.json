@@ -1,0 +1,260 @@
+{
+  "task": "task156",
+  "title": "How many paid moderator FTE a developer question-and-answer network's council requests for 2027 across its nine topic sites, when community review items reach the paid team only after volunteer reviewers have left them for 72 hours",
+  "domain": "Product Analytics",
+  "client_domain": "Product Analytics",
+  "house_domain": "product-analytics",
+  "subdomain": "retention-cohort-lifetime-value-modeling (trust and safety at a developer Q&A network: each site's volunteer reviewer pool carried forward on its own monthly lapse rate, and the reviews a retained reviewer delivers when the inbox outruns the pool, set against the 2027 inbox the question plan implies)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a committed FTE request with each of nine sites' whole-FTE need and the distance from finance's envelope, a stacked monthly chart of paid review hours by site from January 2024 to December 2027 with the envelope drawn across, and three tables (each site's share of flags first acted on within 24 hours in July, August and September 2026; each site's paid moderators' hours worked in the first three quarters of 2026; each site's January to September 2026 questions as a percentage of 2022's)",
+  "as_of": "2026-10-09",
+  "deliverables": [
+    "moderation_pool_2027.xlsx",
+    "council_pool_request_2027.pptx"
+  ],
+  "distractor_files": [
+    "pageviews_by_site_month_2021-01_2026-09.csv",
+    "member_survey_2026_ai_assistants.pdf"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 24,
+    "formats": [
+      "csv",
+      "md",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "question_moves_2021-2023.csv",
+    "largest_file_rows": 49530
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task156/generator/build.py (seeded, deterministic) around a fictional Toronto-run developer question-and-answer network of nine topic sites, in the layouts of a review platform's daily inbox export and reviewer roster, an older review system's monthly queue workbook, a moderator tool's flag exports, a posts warehouse, a planning team's question plan, a WFM system's shift lines and an HR assignment history; no real organisation's records or person is depicted.",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-17",
+  "generator": "task156/generator/build.py",
+  "files": [
+    {
+      "path": "finance_envelope_2027_paid_moderation.pdf",
+      "format": "pdf",
+      "bytes": 34303,
+      "rows": null,
+      "source": "Constructed: Millrind Finance, 2027 envelope letter for paid moderation (30 September 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "flag_decision_reviews_2026-07_to_2026-09.csv",
+      "format": "csv",
+      "bytes": 262967,
+      "rows": 2103,
+      "source": "Constructed: Millrind moderation quality programme, decision-review log for flag decisions",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "flag_service_standard.pdf",
+      "format": "pdf",
+      "bytes": 56798,
+      "rows": null,
+      "source": "Constructed: Millrind moderation operations, flag service standard (revised 4 February 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "handle_time_standards_2027.pdf",
+      "format": "pdf",
+      "bytes": 44538,
+      "rows": null,
+      "source": "Constructed: Millrind Moderation Council, handle-time standards for 2027 (17 June 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "member_survey_2026_ai_assistants.pdf",
+      "format": "pdf",
+      "bytes": 35151,
+      "rows": null,
+      "source": "Constructed: Millrind community research, 2026 member survey on AI assistants (2 June 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "moderation_council_charter_2025.pdf",
+      "format": "pdf",
+      "bytes": 45041,
+      "rows": null,
+      "source": "Constructed: Millrind Moderation Council charter, as amended 12 March 2025",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "moderation_ops_notes.md",
+      "format": "md",
+      "bytes": 2198,
+      "rows": null,
+      "source": "Constructed: Millrind moderation operations notes (6 October 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "moderator_site_assignments.csv",
+      "format": "csv",
+      "bytes": 1338,
+      "rows": 35,
+      "source": "Constructed: Millrind HR, assignment history for the paid moderation team",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "modtool_flag_summary_daily_2024-01-01_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 244697,
+      "rows": 9036,
+      "source": "Constructed: Millrind moderator tool, daily flag summary by site",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "modtool_flags_2026-07-01_to_2026-08-15.csv",
+      "format": "csv",
+      "bytes": 2718370,
+      "rows": 24591,
+      "source": "Constructed: Millrind moderator tool, flag export (flags raised 1 July to 15 August 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "modtool_flags_2026-08-15_to_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 3270168,
+      "rows": 29578,
+      "source": "Constructed: Millrind moderator tool, flag export (flags raised 15 August to 30 September 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pageviews_by_site_month_2021-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 18300,
+      "rows": 621,
+      "source": "Constructed: Millrind web analytics, page views and unique visitors by site and month",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "pool_request_files_2026-10-09.md",
+      "format": "md",
+      "bytes": 2531,
+      "rows": null,
+      "source": "Constructed: Millrind moderation operations, list of the files pulled for the 2027 pool request (9 October 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "posts_questions_by_site_month_2024-01_2026-09.csv",
+      "format": "csv",
+      "bytes": 6258,
+      "rows": 297,
+      "source": "Constructed: Millrind posts warehouse, questions by site and month",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "posts_warehouse_notes.md",
+      "format": "md",
+      "bytes": 896,
+      "rows": null,
+      "source": "Constructed: Millrind data platform team, posts warehouse notes",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "question_moves_2021-2023.csv",
+      "format": "csv",
+      "bytes": 4646475,
+      "rows": 49530,
+      "source": "Constructed: Millrind moderators' log of questions moved between sites, 2021 to 2023",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "question_plan_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 9989,
+      "rows": 35,
+      "source": "Constructed: Millrind Planning & Analytics, 2027 question plan by site and month",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "review_inbox_daily_2024-01-01_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 2260392,
+      "rows": 36144,
+      "source": "Constructed: Millrind review platform, daily review inbox export by site, entry day and item type (pulled 8 October 2026)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "review_inbox_daily_2026-09_pulled_2026-10-02.csv",
+      "format": "csv",
+      "bytes": 67810,
+      "rows": 1080,
+      "source": "Constructed: Millrind review platform, daily review inbox export for September 2026 as first pulled on 2 October 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "review_platform_data_dictionary.md",
+      "format": "md",
+      "bytes": 2285,
+      "rows": null,
+      "source": "Constructed: Millrind review platform and moderator tool, export field notes",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "review_queues_monthly_2021-2023.xlsx",
+      "format": "xlsx",
+      "bytes": 42749,
+      "rows": 388,
+      "source": "Constructed: Millrind community operations, the old review system's monthly queue workbook, 2021 to 2023",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "reviewer_roster_2026-10-08.csv",
+      "format": "csv",
+      "bytes": 1218711,
+      "rows": 20080,
+      "source": "Constructed: Millrind review platform, reviewer roster (access spells by reviewer and site)",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "site_register.csv",
+      "format": "csv",
+      "bytes": 953,
+      "rows": 10,
+      "source": "Constructed: Millrind site register",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "wfm_shift_lines_2026-01-01_2026-09-30.csv",
+      "format": "csv",
+      "bytes": 464003,
+      "rows": 4635,
+      "source": "Constructed: Millrind WFM system, shift line export, January to September 2026",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

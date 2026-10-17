@@ -1,0 +1,93 @@
+{
+  "task": "task237",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "",
+  "domain": "psychology-behavioral-science",
+  "subdomain": "psychometric-measurement-scale-validation",
+  "niche": "a survey's translated versions of a twelve-item connectedness scale gated for fieldwork on the share of each version's total-score variance due to the trait, where the negatively worded items carry a wording factor in some translations",
+  "objective": "data-quality-monitoring",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Release the Punjabi, Spanish and Persian versions of the BCS-12 for the wave 6 fieldwork, hold the Mandarin, Tagalog, Arabic and Korean versions for cognitive interviews and a second pilot, and send the Cantonese, Urdu and Vietnamese versions back for retranslation.",
+  "answer_source": "submission.md block 1",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G17",
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "the survey's translation quality lead",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "flr_bcs12_pilot_interviews_long.csv",
+    "rows": 39298,
+    "entity": "one interviewer-administered pilot or pretest interview's value for one questionnaire variable",
+    "grain": "interview x variable",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "Canada (an unnamed province)",
+    "currency": "CAD",
+    "org_type": "university survey research centre",
+    "invented_names": [
+      "Marlowe University Survey Research Centre",
+      "Community Connections Survey",
+      "Belonging and Connection Scale (BCS-12)",
+      "Nesscroft Panels",
+      "Fernlow Research"
+    ],
+    "people": [
+      "Tara Bauer",
+      "Rodney Fernandez",
+      "Cindy Stein"
+    ]
+  },
+  "deliverables": [
+    "bcs12_wave6_release_decisions.csv",
+    "bcs12_wave6_release_chart.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "The decisive quantity is the share of a composite's variance due to the one attribute it is meant to capture, and in some versions a subset of its components shares a second source of variance unrelated to the attribute, so the components' average agreement or a single-source fit counts that second source as the attribute and passes versions whose attribute share falls short; only a fit that gives the subset its own source shows the shortfall.",
+  "driver_concrete": "In six of the ten translated versions of the BCS-12 the six negatively worded items (BCS02, BCS04, BCS06, BCS08, BCS10 and BCS12) share a wording factor (the translation's rendering of negation), so Cronbach's alpha and a one-factor omega count the wording variance as connectedness and release or hold versions whose connectedness share is below the bands; a bifactor model with a wording factor on those six items (or their correlated residuals) gives the trait's share and holds or reworks them.",
+  "stump": "A competent solver gates each version on Cronbach's alpha (or a one-factor omega) and files 6 of the 10 versions wrong (the Mandarin, Tagalog, Arabic, Vietnamese and Korean versions released and the Cantonese version held); the step that lands it there is taking the score's whole common variance for connectedness when the negatively worded items share a wording factor in those translations.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who builds each version's valid pilot completes, reverse-scores the six negatively worded items, reads the release standard's definition of reliability correctly and estimates it with Cronbach's alpha or a one-factor omega files 6 of the 10 versions wrong, releasing or holding the six wording-affected versions on variance their negatively worded items share with each other and not with connectedness.",
+  "domain_test": "The deciding quantity is the share of the scale score's variance due to the trait (omega hierarchical) under the measurement model each version's item responses support, with a reverse-keyed wording factor separated from the trait; with meters or wards for items there are no negatively worded statements, no translation that changes how negation is answered and no latent trait to separate from a response style, and the task stops making sense.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task257": "task257 counts a scale's dimensions when lopsided item splits distort Pearson correlations; this build estimates a trait's share of a translated version's score with a reverse-keyed wording factor separated from it."
+  },
+  "lineage": [],
+  "notes": "Seed DQ10: the world, decision and quantity kept; the seed's own pitfall (alpha against congeneric omega) is a wrong rung here: the decisive step is separating a wording factor that alpha and a one-factor omega both count as the trait. G17 decisive (the model the data supports), G16 supporting. Six of ten versions carry the factor; the default path files those six wrong.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:trait-share-under-a-wording-method-factor",
+  "layer1": [
+    "two fieldwork vendors' layouts: a wide online panel export and a long interviewer-administered file keyed by sample case",
+    "missing-answer codes that differ by vendor (9, -8, -9; blank or no row for not reached)",
+    "panel retakes under fresh entry ids, some from second accounts the panel merged afterwards",
+    "screen-outs, partials and soft-launch entries kept in the panel export",
+    "interviews the vendor's back-check could not confirm, their cases reissued to other interviewers",
+    "cases revisited by another interviewer after a break-off inside the module",
+    "pretest interviews in the interviewer-administered file",
+    "respondents who left in the background questions after the module, marked partial by the vendors"
+  ],
+  "registered": "2026-10-17T08:42:40Z"
+}

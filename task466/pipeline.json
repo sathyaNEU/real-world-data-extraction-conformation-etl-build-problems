@@ -1,0 +1,36 @@
+{
+ "task": "task466",
+ "owner": "oviya1301",
+ "status": "SHIPPED",
+ "domain": "general-statistics-data-science",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-17",
+ "stump": "The default path fits the regional-skew log-Pearson Type III to the gauge's 74 annual minima and the 14 report years with a measured flow, leaving out the 40 report years without a stoppage, and reserves 0.4 MGD on a 50-year 7-day low flow of 1.31 cfs; entering each silent year as a 7-day low flow above the 3.09 cfs suspension flow gives 1.55 cfs and 0.3 MGD.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK; every REVIEW line answered in the design note)",
+  "reader": "two rounds: nothing quoted for question 1, the literal reading the golden, question 6 analytical; realism tells fixed"
+ },
+ "duplicate_check": {
+  "heart": "WARN (gate_g repeat and overuse, question form; five axes redrawn at stage 3 against task265 and task157)",
+  "nearest": "task255 v1 0.08; surface promotions card-level only: task465 (back to back GSDS x ETL), task449 (gap, G17, dial setting), task50 (surface top 1 per cent)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW on two metadata dates)",
+  "report": "determinism_check_report_pass2.md"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-17",
+ "portal": null,
+ "source_note": "seed ET23 (a water utility's drought-restriction trigger and an emergency interconnect sized by replaying it over history): the world, the decision and the quantity kept; the pitfall re-found in the river's historical record"
+}

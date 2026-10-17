@@ -1,0 +1,38 @@
+{
+ "task": "task236",
+ "owner": "perssathya",
+ "status": "SHIPPED",
+ "domain": "epidemiology-public-health",
+ "objective": "data-quality-monitoring",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-17",
+ "stump": "A competent solver adjusts for testing by comparing each region's positivity in the four weeks from its testing change with the four weeks before and files 5 of the 8 regions wrong (North Coast, Tablelands, Central West and Metropolitan North flagged, Far North missed); the step that lands it there is reading the share of infections notified off the tests the region's own services ran, which the testing change itself moved, instead of off the sentinel practices' influenza-like-illness consultations attributed to influenza by their protocol swabs, which no testing change reaches.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), --asof 2027-09-14",
+  "reader": "three passes: Q1 none each time; Q6 an analytical choice; realism notes fixed"
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.org_family, repeat.question_form; same_puzzle_older differentiated)",
+  "nearest": "task57 0.06 (driver); surface pairs task234, task235, task233 for the author's read"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
+ },
+ "returned": [],
+ "resume": "shipped; next: wave 3 (task237)",
+ "approved": null,
+ "delivered": "2026-10-17",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}

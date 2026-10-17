@@ -1,135 +1,99 @@
-"""Independent verifier for task465: reads only the shipped folder and the goldens, on its own code path (pandas, pypdf,
-zoneinfo), and recomputes the withheld county-years from the district totals, each cover's expected loss, multiple, rate
-at which its call changes and call, each cover's 2027 liability and premium, each county's 2016 to 2020 receipts share
-and the conformed record, against generator/figures.json, the golden workbook and the golden record. Imports nothing
-from the generator.
+"""Independent verifier for task465: reads only the shipped folder and the goldens, on its own code path (pandas, numpy,
+zoneinfo), and recomputes each division and band's households and survey shares, the pilot's tables and odds ratios,
+the fused eligible households and the caseworkers, and the two asks' household counts, against generator/figures.json,
+the golden workbook and the golden table. Imports nothing from the generator.
 
     python3 task465/generator/verify.py
 """
 import json
 import math
 import os
-import re
 import sys
 from zoneinfo import ZoneInfo
 
+import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-COVERS = ["Ardley", "Corvin", "Elster", "Pallard", "Tresham"]
-NI = "SORGHUM, GRAIN, NON-IRRIGATED - "
-ALL = "SORGHUM, GRAIN - "
-FIELD = {"ACRES HARVESTED": "harvested", "PRODUCTION, MEASURED IN BU": "production", "YIELD, MEASURED IN BU / ACRE": "yield"}
+CASELOAD = 400
 
 
-def find(target, stem):
-    hit = [f for f in os.listdir(target) if f.startswith(stem)]
+def f(target, stem):
+    hit = [x for x in os.listdir(target) if x.startswith(stem)]
     assert len(hit) == 1, (stem, hit)
     return os.path.join(target, hit[0])
 
 
-def half_up(x, nd):
-    return math.floor(x * 10 ** nd + 0.5) / 10 ** nd
+def fuse(p, q, psi):
+    """Share with both traits in the 2x2 table with margins p and q and odds ratio psi."""
+    a = psi - 1.0
+    b = -(1.0 + a * (p + q))
+    c = psi * p * q
+    return (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a)
 
 
-def estimates(target, prefix):
-    """County and district rows of one sorghum practice, the October 2026 download taking every year it holds."""
-    frames = []
-    for vint, stem in ((0, "clrs_county_estimates_pull_2024"), (1, "clrs_county_estimates_pull_2026")):
-        d = pd.read_csv(find(target, stem), dtype=str, keep_default_na=False)
-        d = d[d["Data Item"].str.startswith(prefix) & d["Geo Level"].isin(["COUNTY", "AGRICULTURAL DISTRICT"])].copy()
-        d = d[d["Data Item"].str[len(prefix):].isin(FIELD)]
-        d["vint"] = vint
-        frames.append(d)
-    x = pd.concat(frames)
-    x["field"] = x["Data Item"].str[len(prefix):].map(FIELD)
-    x["year"] = x["Year"].astype(int)
-    code = x["Ag District Code"].astype(int)
-    x["district"] = code.where(code >= 10, code * 10)
-    x["county"] = x["County"].str.title()
-    x["value"] = pd.to_numeric(x["Value"].str.replace(",", ""), errors="coerce")
-    x = x.sort_values("vint").drop_duplicates(["Geo Level", "district", "county", "year", "field"], keep="last")
-    cty = x[x["Geo Level"] == "COUNTY"].pivot_table(index=["county", "year"], columns="field", values="value",
-                                                    aggfunc="first", dropna=False)
-    dist = x[x["Geo Level"] == "AGRICULTURAL DISTRICT"].pivot_table(index=["district", "year"], columns="field",
-                                                                     values="value", aggfunc="first")
-    home = x[x["Geo Level"] == "COUNTY"].groupby("county")["district"].agg(lambda s: sorted(set(s)))
-    return cty, dist, home
+def shares(target):
+    reg = pd.read_csv(f(target, "callowmere_service_divisions"), dtype=str)
+    div = dict(zip(reg["COUNTY_FIPS"], reg["SERVICE_DIVISION"]))
+    h = pd.read_csv(f(target, "heas_2025_household_puf"), dtype={"COUNTY": str})
+    h["div"] = h["COUNTY"].map(div)
+    h["band"] = np.where(h["HHINC"] < 25000, 0, np.where(h["HHINC"] < 50000, 1, 2))
+    h["cost"] = np.where(h["ELEC_BASIS"] == "M", 12, 1) * h["ELEC_AMT"] + h["GAS_AMT"] + h["OTHER_AMT"]
+    h["hi"] = (h["cost"] / h["HHINC"] > 0.06).astype(float)
+    h = h[h["div"].notna() & (h["band"] < 2)]
+    p = (h["hi"] * h["WT_FINAL"]).groupby([h["div"], h["band"]]).sum() / h.groupby(["div", "band"])["WT_FINAL"].sum()
+    s = pd.read_csv(f(target, "shs_2025_household_file"))
+    s["div"] = s["CNTYFIPS"].map(lambda v: div.get("%03d" % v))
+    s["band"] = s["INCCAT"].map(lambda c: 0 if c <= 3 else 1 if c <= 5 else 2)
+    s = s[s["div"].notna() & (s["band"] < 2) & s["MEDEQUIP"].isin([1, 2])]
+    s["eq"] = (s["MEDEQUIP"] == 1).astype(float)
+    q = (s["eq"] * s["HH_WT"]).groupby([s["div"], s["band"]]).sum() / s.groupby(["div", "band"])["HH_WT"].sum()
+    e = pd.read_excel(f(target, "household_estimates_county_income_2025"), sheet_name="Households by income", header=3,
+                      dtype={"FIPS": str})
+    e = e[e["FIPS"].isin(div)]
+    e["div"] = e["FIPS"].map(div)
+    n = pd.concat([e.groupby("div")["Under $25,000"].sum().rename(0), e.groupby("div")["$25,000 to $49,999"].sum()
+                   .rename(1)], axis=1).stack()
+    n.index.names = ["div", "band"]
+    return p, q, n, div
 
 
-def conformed(target):
-    """Each cover county's yield 1991 to 2025: published, or recovered as the district less its other counties."""
-    cty, dist, home = estimates(target, NI)
-    assert all(len(v) == 1 for v in home), "a county in two districts"
-    home = {c: v[0] for c, v in home.items()}
-    rows = []
-    for c in COVERS:
-        d = home[c]
-        others = [k for k, v in home.items() if v == d and k != c]
-        for y in range(1991, 2026):
-            r = cty.loc[(c, y)]
-            if not math.isnan(r["yield"]):
-                rows.append(dict(county=c, year=y, harvested=r["harvested"], production=r["production"],
-                                 yld=r["yield"], recovered=False))
-                continue
-            o = cty.loc[[(k, y) for k in others]]
-            assert o["harvested"].notna().all() and o["production"].notna().all(), (c, y)
-            h = dist.loc[(d, y), "harvested"] - o["harvested"].sum()
-            p = dist.loc[(d, y), "production"] - o["production"].sum()
-            rows.append(dict(county=c, year=y, harvested=h, production=p, yld=half_up(p / h, 1), recovered=True))
-    return pd.DataFrame(rows), home
+def pilot(target):
+    s = pd.read_csv(f(target, "hema_screening_pilot_2025"))
+    s = s[s["STATUS"] == "Complete"].sort_values(["RECEIVED", "SCREEN_ID"]).groupby("ADDRESS_KEY").tail(1)
+    s = s[s["MED_EQUIPMENT"].isin(["Yes", "No"])]
+    s["band"] = np.where(s["HH_INCOME"] < 25000, 0, 1)
+    s["x"] = (s["ELEC_12M"] + s["OTHER_FUELS_12M"]) / s["HH_INCOME"] > 0.06
+    s["y"] = s["MED_EQUIPMENT"] == "Yes"
+    psi = {}
+    for b, t in s.groupby("band"):
+        a = ((t.x) & (t.y)).sum()
+        bb = ((t.x) & (~t.y)).sum()
+        c = ((~t.x) & (t.y)).sum()
+        d = ((~t.x) & (~t.y)).sum()
+        psi[b] = a * d / (bb * c)
+    return psi, s
 
 
-def term_sheet(target):
-    import pypdf
-    txt = " ".join(p.extract_text() for p in pypdf.PdfReader(find(target, "quillfield_re_area_yield_term_sheet")).pages)
-    txt = re.sub(r"\s+", " ", txt)
-    table = {}
-    for c in COVERS:
-        m = re.search(r"%s (\d+\.\d) (\d+\.\d+)" % c, txt)
-        table[c] = (float(m.group(1)), float(m.group(2)))
-    trig = float(re.search(r"Trigger (\d+) per cent of the expected yield", txt).group(1)) / 100
-    cwt = float(re.search(r"\$(\d+\.\d\d) per hundredweight", txt).group(1))
-    lb = float(re.search(r"weighs (\d+) pounds", txt).group(1))
-    return table, trig, cwt * lb / 100
+def households_on_rate(target):
+    e = pd.read_csv(f(target, "medical_baseline_enrolment_2026"), dtype=str, keep_default_na=False)
+    root = {a: a for a in e["ACCOUNT_NO"]}
+    for a, prior in zip(e["ACCOUNT_NO"], e["PRIOR_ACCOUNT_NO"]):
+        if prior:
+            root.setdefault(prior, prior)
 
-
-def quoted(target):
-    q = pd.read_excel(find(target, "quillfield_re_quote_schedule"), sheet_name="Dryland grain sorghum", header=3)
-    q = q[q["County"].isin(COVERS)]
-    return dict(zip(q["County"], 100 * q["Quoted premium rate (per cent of liability)"].astype(float)))
-
-
-def losses(rec, table, trig):
-    el = {}
-    for c in COVERS:
-        e, b = table[c]
-        t = trig * e
-        s = rec[rec["county"] == c]
-        level = s["yld"] + b * (2027 - s["year"])
-        el[c] = 100 * ((t - level) / t).clip(0, 1).mean()
-    return el
-
-
-def acres_enrolled(target):
-    e = pd.read_csv(find(target, "apgc_cover_enrolment_2027"), dtype={"acres": float})
-    e["t"] = pd.to_datetime(e["submitted_at"], utc=True)
-    close = pd.Timestamp("2026-10-30 17:00").tz_localize(ZoneInfo("America/Chicago"))
-    e = e[e["t"] < close].sort_values("t").groupby("field_id").tail(1)
-    e = e[(e["crop"] == "Grain sorghum") & (e["practice"] == "Non-irrigated")]
-    return e.groupby("field_county")["acres"].sum().reindex(COVERS).fillna(0).to_dict()
-
-
-def receipts(target):
-    t = pd.read_csv(find(target, "apgc_scale_tickets"), dtype={"reference": str})
-    tr = set(pd.read_csv(find(target, "apgc_site_transfers"), dtype={"transfer_no": str})["transfer_no"])
-    t = t[(t["commodity"] == "Sorghum") & ~((t["site"] == "MAIN") & t["reference"].isin(tr))]
-    t["bu"] = t["net_lb"] * (100 - t["moisture_pct"]) / 86 / 56
-    bu = t.groupby("origin_county")["bu"].sum()
-    cty, _, _ = estimates(target, ALL)
-    prod = {c: sum(cty.loc[(c, y), "production"] for y in range(2016, 2021)) for c in COVERS}
-    return {c: float(bu[c]) for c in COVERS}, prod
+    def find(a):
+        while root[a] != a:
+            root[a] = root[root[a]]
+            a = root[a]
+        return a
+    for a, prior in zip(e["ACCOUNT_NO"], e["PRIOR_ACCOUNT_NO"]):
+        if prior:
+            ra, rb = find(a), find(prior)
+            if ra != rb:
+                root[max(ra, rb)] = min(ra, rb)
+    return e, find
 
 
 def main(target, golden, fig_path=None):
@@ -141,65 +105,59 @@ def main(target, golden, fig_path=None):
         if not cond:
             bad.append(label)
 
-    rec, home = conformed(target)
-    got = {"%s %d" % (r.county, r.year): (int(r.harvested), int(r.production), r.yld) for r in rec.itertuples()
-           if r.recovered}
-    want = {k: (v["harvested"], v["production"], v["yld"]) for k, v in F["recovered"].items()}
-    check("the ten withheld county-years recovered from the district totals", got == want and len(got) == 10, got)
-    table, trig, price = term_sheet(target)
-    q = quoted(target)
-    el = losses(rec, table, trig)
-    buy = [c for c in COVERS if q[c] <= 1.4 * el[c]]
-    check("each cover's expected loss, two decimals of a per cent", all(
-        half_up(el[c], 2) == F["covers"][c]["expected_loss"] for c in COVERS), {c: round(el[c], 4) for c in COVERS})
-    check("each cover's quoted rate as a multiple of its expected loss", all(
-        half_up(q[c] / el[c], 2) == F["covers"][c]["multiple"] for c in COVERS))
-    check("each cover's rate at which the call changes", all(
-        half_up(1.4 * el[c], 2) == F["covers"][c]["change_rate"] for c in COVERS))
-    check("the call: buy %s" % ", ".join(buy), buy == F["call"]["buy"])
-    pub = rec[~rec["recovered"]]
-    el0 = losses(pub, table, trig)
-    check("the published years alone buy none of the five covers", [c for c in COVERS if q[c] <= 1.4 * el0[c]] == [])
-    acres = acres_enrolled(target)
-    lia = {c: acres[c] * table[c][0] * trig * price for c in COVERS}
-    prem = {c: lia[c] * q[c] / 100 for c in COVERS}
-    check("each cover's 2027 liability, nearest hundred dollars", all(
-        half_up(lia[c], -2) == F["liability"][c] for c in COVERS), {c: round(lia[c], 2) for c in COVERS})
-    check("each cover's 2027 premium, nearest hundred dollars", all(
-        half_up(prem[c], -2) == F["premium"][c] for c in COVERS), {c: round(prem[c], 2) for c in COVERS})
-    bu, prod = receipts(target)
-    share = {c: 100 * bu[c] / prod[c] for c in COVERS}
-    check("each county's 2016 to 2020 receipts share, one decimal of a per cent", all(
-        half_up(share[c], 1) == F["receipts_share"][c] for c in COVERS), {c: round(share[c], 3) for c in COVERS})
+    p, q, n, div = shares(target)
+    psi, scr = pilot(target)
+    check("the pilot's odds ratios inside each band", all(round(psi[b], 2) == F["psi"][str(b)] for b in (0, 1)),
+          {b: round(v, 3) for b, v in psi.items()})
+    cells = {(d, b): n[(d, b)] * fuse(p[(d, b)], q[(d, b)], psi[b]) for d, b in n.index}
+    divs = sorted({d for d, _ in cells})
+    tot = {d: cells[(d, 0)] + cells[(d, 1)] for d in divs}
+    staff = {d: int(math.ceil(tot[d] / CASELOAD)) for d in divs}
+    check("each division's caseworkers and the total", staff == F["call"]["by_division"]
+          and sum(staff.values()) == F["call"]["total"], staff)
+    r = lambda v: int(math.floor(v / 100 + 0.5) * 100)
+    check("each division's eligible households to the nearest hundred", {d: r(tot[d]) for d in divs} == F["eligible"])
+    check("each cell's eligible households to the nearest hundred",
+          all(r(cells[(d, b)]) == F["cells"]["%s|%d" % (d, b)] for d, b in cells))
+    check("each cell's households, the demographer's county rows summed",
+          all(int(n[(d, b)]) == F["households"]["%s|%d" % (d, b)] for d, b in cells))
+    indep = {d: int(math.ceil((n[(d, 0)] * p[(d, 0)] * q[(d, 0)] + n[(d, 1)] * p[(d, 1)] * q[(d, 1)]) / CASELOAD))
+             for d in divs}
+    check("the two surveys' shares multiplied staff %d" % sum(indep.values()),
+          sum(indep.values()) == F["rivals"]["independence"]["total"])
 
-    import csv
-    with open(os.path.join(golden, "conformed_county_dryland_sorghum_yields.csv"), encoding="utf-8") as fh:
-        g = list(csv.DictReader(fh))
-    ok = len(g) == len(rec) == 175
-    for r, s in zip(g, rec.itertuples()):
-        ok &= (r["county"], int(r["crop_year"])) == (s.county, s.year) and int(r["harvested_acres"]) == int(s.harvested) \
-            and int(r["production_bu"]) == int(s.production) and float(r["yield_bu_per_acre"]) == s.yld \
-            and int(r["ag_district_code"]) == home[s.county] and r["source"].lower().startswith("recovered") == s.recovered
-    check("the golden record: 175 county-years as conformed", ok)
+    e, find = households_on_rate(target)
+    e["start"] = pd.to_datetime(e["START_DATE"])
+    e["end"] = pd.to_datetime(e["END_DATE"].replace("", None))
+    cut = pd.Timestamp("2026-10-31")
+    act = e[(e["start"] <= cut) & (e["end"].isna() | (e["end"] >= cut))].copy()
+    reg = pd.read_csv(f(target, "callowmere_service_divisions"), dtype=str)
+    cdiv = dict(zip(reg["COUNTY"], reg["SERVICE_DIVISION"]))
+    act["hh"] = act["ACCOUNT_NO"].map(find)
+    act["div"] = act["SERVICE_COUNTY"].map(cdiv)
+    a = act.sort_values("start").groupby("hh").tail(1).groupby("div").size().to_dict()
+    check("Ask A: households on the medical baseline rate on 31 October 2026", a == F["baseline"], a)
+    o = pd.read_csv(f(target, "battery_placement_work_orders_2026"), dtype=str, keep_default_na=False)
+    o = o[o["STATUS"] == "Completed"].copy()
+    local = pd.to_datetime(o["COMPLETED_UTC"], utc=True).dt.tz_convert(ZoneInfo("America/Chicago"))
+    o["day"] = local.dt.date.astype(str)
+    o = o[(o["day"] >= "2026-01-01") & (o["day"] <= "2026-10-31")]
+    o["hh"] = o["ACCOUNT_NO"].map(lambda x: find(x) if x in set(e["ACCOUNT_NO"]) else x)
+    o["div"] = o["SERVICE_COUNTY"].map(cdiv)
+    bcount = o.groupby("hh")["div"].last().value_counts().to_dict()
+    check("Ask B: households given a backup battery from January to October 2026", bcount == F["battery"], bcount)
+
     import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(golden, "county_area_yield_quotes_2027.xlsx"))
-    ws = wb["Covers"]
-    rows = {ws.cell(row=i, column=1).value: [ws.cell(row=i, column=j).value for j in range(2, 9)] for i in range(5, 10)}
-    check("the golden workbook's Covers sheet", all(
-        abs(rows[c][2] * 100 - half_up(el[c], 2)) < 1e-9 and abs(rows[c][3] * 100 - q[c]) < 1e-9
-        and abs(rows[c][4] - half_up(q[c] / el[c], 2)) < 1e-9 and abs(rows[c][5] * 100 - half_up(1.4 * el[c], 2)) < 1e-9
-        and rows[c][6] == ("Buy" if c in buy else "Decline") for c in COVERS))
-    ws = wb["Liability and premium"]
-    rows = {ws.cell(row=i, column=1).value: [ws.cell(row=i, column=j).value for j in range(2, 9)] for i in range(5, 10)}
-    check("the golden workbook's liability and premium sheet", all(
-        rows[c][4] == half_up(lia[c], -2) and rows[c][6] == half_up(prem[c], -2) for c in COVERS))
-    ws = wb["Receipts 2016-2020"]
-    rows = {ws.cell(row=i, column=1).value: [ws.cell(row=i, column=j).value for j in range(2, 5)] for i in range(5, 10)}
-    check("the golden workbook's receipts sheet", all(abs(rows[c][2] * 100 - half_up(share[c], 1)) < 1e-9
-                                                      and rows[c][1] == prod[c] for c in COVERS))
+    ws = openpyxl.load_workbook(os.path.join(golden, "hema_caseworkers_2027.xlsx"))["Caseworkers 2027"]
+    rows = {ws.cell(row=i, column=1).value: [ws.cell(row=i, column=j).value for j in range(2, 6)] for i in range(5, 15)}
+    check("the golden workbook", all(rows[d] == [r(tot[d]), staff[d], a[d], bcount[d]] for d in divs))
+    t = pd.read_csv(os.path.join(golden, "hema_eligible_households_2025.csv"))
+    band = {"Under $25,000": 0, "$25,000 to $49,999": 1}
+    check("the golden table", len(t) == 18 and all(
+        row.ELIGIBLE_HOUSEHOLDS_2025 == r(cells[(row.SERVICE_DIVISION, band[row.INCOME_BAND])])
+        for row in t.itertuples()))
     if bad:
         raise SystemExit("verify failed: %s" % bad)
-    return el
 
 
 if __name__ == "__main__":

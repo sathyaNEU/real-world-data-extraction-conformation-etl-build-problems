@@ -1,269 +1,733 @@
-"""The service's estimates: county, district and state acres, production and yield by crop and practice,
-1991 to 2025, in two vintages (before and after the county estimates for 2017 to 2021 were revised to the 2022
-Census of Agriculture). Every figure is computed forward from the world's parameters; nothing is fitted to a target.
+"""The random world of task465: the territory's households by county and income band, the two state surveys' microdata,
+Callowmere's 2025 screening pilot, the household estimates as the demographer publishes them, and the centring that
+keeps every graded figure mid-bin. Seeded and deterministic."""
+import math
 
-Rounding follows the service's practice: county and district acres to the nearest 10, production to the nearest
-100 bushels (sunflower 1,000 pounds, hay 10 tons); a district's acres and production are the sums of its counties'
-rounded estimates, published or not, and the state's the sums of its districts'; yields are production over
-harvested acres to one decimal (sunflower whole pounds, hay hundredths of a ton).
-"""
 import numpy as np
 
 import world as W
 
-YEARS = np.array(W.YEARS)
-N = len(YEARS)
-T = YEARS - W.Y0
+SEED = 148
+PILOT_DRAW = 1243                             # the pilot's own draw (its two divisions' tables agree within sampling error)
+PSI = 3.3                                  # within-band odds ratio between high burden and medical equipment
+PB = (0.56, 0.24, 0.09, 0.028)             # high-burden share by band before each division's multiplier
+QB = (0.050, 0.036, 0.020, 0.013)          # equipment share by band before each division's multiplier
+NA, NB = 9000, 12000                       # completed households in the energy survey and the health survey
+PILOT_SAMPLED = 10800                      # addresses mailed in each pilot division
+ADULT_SLOPE = 0.10                         # equipment rises gently with the number of adults in the home
 
 
-def rng(*k):
-    return np.random.default_rng([W.STREAM] + list(k))
+def joint(p, q, psi):
+    """The share with both traits in a 2x2 table with margins p and q and odds ratio psi."""
+    if abs(psi - 1) < 1e-12:
+        return p * q
+    a = psi - 1
+    b = -(1 + (psi - 1) * (p + q))
+    c = psi * p * q
+    return (-b - math.sqrt(b * b - 4 * a * c)) / (2 * a)
 
 
-# ---------------------------------------------------------------- weather
-def weather():
-    """Each district's share of normal dryland yield potential by year, and a wheat-season factor."""
-    out, wheat = {}, {}
-    for d in W.DISTRICTS:
-        r = rng(11, d)
-        w = 1 + r.normal(0, 0.065, N)
-        for y, v in W.DROUGHT.get(d, {}).items():
-            w[y - W.Y0] = v
-        if d not in W.DROUGHT:            # the other districts share the region's big years, less sharply
-            for y, v in ((2002, 0.66), (2011, 0.58), (2012, 0.74), (2022, 0.68)):
-                w[y - W.Y0] = v + r.normal(0, 0.04)
-        out[d] = np.clip(w, 0.45, 1.18)
-        ww = 1 + rng(12, d).normal(0, 0.08, N)
-        for y, v in ((1996, 0.70), (2002, 0.78), (2006, 0.74), (2011, 0.62), (2014, 0.72), (2018, 0.80), (2022, 0.66)):
-            ww[y - W.Y0] = v + rng(13, d, y).normal(0, 0.03)
-        wheat[d] = np.clip(ww, 0.45, 1.2)
-    return out, wheat
+def population(rng):
+    """County by band cells: households before publication, high-burden share p, equipment share q, joint share j."""
+    cells = []
+    for name, pm, qm, nk, counties, inc in W.DIVISIONS:
+        w = rng.dirichlet(np.ones(len(counties)) * 6)
+        for k, c in enumerate(counties):
+            for b in range(4):
+                n = nk * 1000.0 * w[k] * inc[b]
+                p = min(PB[b] * pm * rng.lognormal(0, 0.06), 0.92)
+                q = min(QB[b] * qm * rng.lognormal(0, 0.06), 0.5)
+                cells.append(dict(county=c, division=W.DIVISION_OF[c], band=b, n=n, p=p, q=q, j=joint(p, q, PSI)))
+    for c, pm, qm, nk in W.OUTSIDE:
+        for b in range(4):
+            n = nk * 1000.0 * W.OUTSIDE_INC[b]
+            p = min(PB[b] * pm * rng.lognormal(0, 0.06), 0.92)
+            q = min(QB[b] * qm * rng.lognormal(0, 0.06), 0.5)
+            cells.append(dict(county=c, division=None, band=b, n=n, p=p, q=q, j=joint(p, q, PSI)))
+    return cells
 
 
-# ---------------------------------------------------------------- crops, county by county
-CROPS = ("SORGHUM", "WHEAT", "CORN", "SOYBEANS", "SUNFLOWER", "HAY")
+def draw_traits(rng, cells, idx):
+    """High burden x and medical equipment y for households drawn from the given cells."""
+    p = np.array([cells[i]["p"] for i in idx])
+    q = np.array([cells[i]["q"] for i in idx])
+    j = np.array([cells[i]["j"] for i in idx])
+    u, v = rng.random(len(idx)), rng.random(len(idx))
+    x = (u < p).astype(int)
+    y = np.where(x == 1, (v < j / p).astype(int), (v < (q - j) / (1 - p)).astype(int))
+    return x, y
 
 
-def county_crops(wx, wheat):
-    """{(county, crop, practice): dict(planted, harvested, production)} true-world arrays, unrounded."""
-    est = {}
-    for c, (ansi, d, member, b, s, sens, nz, pl, irr) in W.COUNTIES.items():
-        r = rng(21, int(ansi))
-        w = wx[d]
-        # dryland grain sorghum
-        fac = np.clip(1 - sens * (1 - w) + r.normal(0, nz, N), 0.35, 1.30)
-        y = (b + s * T) * fac
-        hs = np.clip(0.95 - 0.85 * np.clip(0.82 - fac, 0, None), 0.45, 0.97)
-        pa = pl * (1 + r.normal(0, 0.05, N)) * (1 - 0.006 * T)
-        ha = pa * hs
-        for (cc, yy), (fy, fa) in W.WITHHELD.items():
-            if cc == c:
-                i = yy - W.Y0
-                y[i] = fy
-                ha[i] = fa
-        est[(c, "SORGHUM", "NON-IRRIGATED")] = dict(planted=pa, harvested=ha, production=ha * y)
-        if irr:
-            yi = (1.55 * b + 0.95 * s * T) * np.clip(1 - 0.22 * (1 - w) + r.normal(0, 0.03, N), 0.7, 1.15)
-            pai = irr * (1 + r.normal(0, 0.08, N)) * (1 - 0.009 * T)
-            hai = pai * np.clip(0.97 + r.normal(0, 0.01, N), 0.9, 0.99)
-            est[(c, "SORGHUM", "IRRIGATED")] = dict(planted=pai, harvested=hai, production=hai * yi)
-        # winter wheat, dryland everywhere, irrigated where the county irrigates
-        wf = np.clip(wheat[d] + r.normal(0, 0.05, N), 0.4, 1.25)
-        wy = (34 + 0.36 * T) * wf * (1 + 0.04 * (b - 46) / 46)
-        wpa = (pl * 2.3) * (1 + r.normal(0, 0.04, N)) * (1 - 0.004 * T)
-        wha = wpa * np.clip(0.93 - 0.6 * np.clip(0.75 - wf, 0, None), 0.5, 0.97)
-        est[(c, "WHEAT", "NON-IRRIGATED")] = dict(planted=wpa, harvested=wha, production=wha * wy)
-        if irr:
-            wyi = (52 + 0.45 * T) * np.clip(1 + r.normal(0, 0.05, N), 0.8, 1.2)
-            wpai = irr * 1.1 * (1 + r.normal(0, 0.07, N))
-            whai = wpai * 0.97
-            est[(c, "WHEAT", "IRRIGATED")] = dict(planted=wpai, harvested=whai, production=whai * wyi)
-        # corn: irrigated where the county irrigates, a little dryland corn everywhere since 2000
-        if irr:
-            cy = (158 + 1.9 * T) * np.clip(1 + r.normal(0, 0.04, N), 0.85, 1.12)
-            cpa = irr * 3.2 * (1 + r.normal(0, 0.06, N))
-            cha = cpa * 0.96
-            est[(c, "CORN", "IRRIGATED")] = dict(planted=cpa, harvested=cha, production=cha * cy)
-        dpa = np.where(YEARS >= 2000, pl * 0.12 * (1 + 0.03 * (YEARS - 2000)) * (1 + r.normal(0, 0.15, N)), 0)
-        dcy = (68 + 0.9 * T) * np.clip(1 - 1.15 * (1 - w) + r.normal(0, 0.06, N), 0.2, 1.3)
-        dha = dpa * np.clip(0.9 - 0.9 * np.clip(0.8 - w, 0, None), 0.3, 0.95)
-        est[(c, "CORN", "NON-IRRIGATED")] = dict(planted=dpa, harvested=dha, production=dha * dcy)
-        # soybeans, irrigated only, where the county irrigates
-        if irr:
-            sy = (46 + 0.35 * T) * np.clip(1 + r.normal(0, 0.05, N), 0.8, 1.15)
-            spa = irr * 1.4 * (1 + r.normal(0, 0.1, N)) * (1 + 0.01 * T)
-            est[(c, "SOYBEANS", "IRRIGATED")] = dict(planted=spa, harvested=spa * 0.97, production=spa * 0.97 * sy)
-        # sunflower, dryland, a few hundred to a few thousand acres
-        fpa = pl * 0.05 * (1 + r.normal(0, 0.35, N)).clip(0.1)
-        fy = (1250 + 9 * T) * np.clip(1 - 0.9 * (1 - w) + r.normal(0, 0.08, N), 0.3, 1.3)
-        fha = fpa * np.clip(0.92 - 0.7 * np.clip(0.8 - w, 0, None), 0.4, 0.97)
-        est[(c, "SUNFLOWER", "NON-IRRIGATED")] = dict(planted=fpa, harvested=fha, production=fha * fy)
-        # alfalfa hay, all practices only
-        hay_a = pl * 0.35 * (1 + r.normal(0, 0.05, N))
-        hy = (2.6 + 0.012 * T) * np.clip(1 - 0.5 * (1 - w) + r.normal(0, 0.05, N), 0.5, 1.2)
-        est[(c, "HAY", "ALL")] = dict(planted=None, harvested=hay_a, production=hay_a * hy)
-    return est
+def sample_counties(rng, cells, n_total, floor):
+    """A county-stratified sample: each county's allocation proportional to its households with a floor, households
+    drawn at random within the county (so the band mix follows the county's own)."""
+    by_c = {}
+    for i, c in enumerate(cells):
+        by_c.setdefault(c["county"], []).append(i)
+    tot = {c: sum(cells[i]["n"] for i in ix) for c, ix in by_c.items()}
+    raw = {c: max(floor, n_total * tot[c] / sum(tot.values())) for c in by_c}
+    scale = n_total / sum(raw.values())
+    alloc = {c: int(round(raw[c] * scale)) for c in sorted(by_c)}
+    drift = n_total - sum(alloc.values())
+    for c in sorted(alloc, key=lambda c: -tot[c])[:abs(drift)]:
+        alloc[c] += 1 if drift > 0 else -1
+    idx = []
+    for c in sorted(by_c):
+        ix = by_c[c]
+        pr = np.array([cells[i]["n"] for i in ix])
+        idx.extend(rng.choice(ix, size=alloc[c], p=pr / pr.sum()).tolist())
+    return np.array(idx), alloc, tot
 
 
-UNIT = {"SORGHUM": ("BU", 100, 1), "WHEAT": ("BU", 100, 1), "CORN": ("BU", 100, 1), "SOYBEANS": ("BU", 100, 1),
-        "SUNFLOWER": ("LB", 1000, 0), "HAY": ("TONS", 10, 2)}
+def incomes(rng, band, n):
+    """Household income in dollars inside its band, as respondents give it (to the hundred)."""
+    if band == 0:
+        v = 7000 + (24900 - 7000) * rng.beta(1.6, 1.3, n)
+    elif band == 1:
+        v = 25000 + 24900 * rng.beta(1.2, 1.1, n)
+    elif band == 2:
+        v = 50100 + 24800 * rng.beta(1.1, 1.2, n)
+    else:
+        v = np.minimum(75000 * np.exp(rng.exponential(0.45, n)), 248000)
+    return np.round(v / 100) * 100
 
 
-def round_county(est):
-    """Rounded county estimates: {(county, crop, practice): {item: array}} with ALL practices added up."""
-    out = {}
-    for (c, crop, pr), v in est.items():
-        step = UNIT[crop][1]
-        rec = {"harvested": np.round(v["harvested"], -1), "production": np.round(v["production"] / step) * step}
-        if v["planted"] is not None:
-            rec["planted"] = np.maximum(np.round(v["planted"], -1), rec["harvested"])
-        out[(c, crop, pr)] = rec
-    for c in W.COUNTIES:
-        for crop in CROPS:
-            prs = [k for k in out if k[0] == c and k[1] == crop and k[2] != "ALL"]
-            if not prs:
+# Heating costs run higher where winters are longer (the divisions' own climates; outside counties near the middle).
+CLIMATE = {"Northern": 1.24, "Lakeshore": 1.17, "River Valley": 1.10, "High Plains": 1.07, "Central": 1.0,
+           "Southern Hills": 0.95, "Southwest": 0.92, "North Metro": 0.90, "South Metro": 0.88}
+
+
+def climate(county):
+    return CLIMATE.get(W.HOME_OF.get(county), 1.0)
+
+
+def household_costs(rng, band, x, y, clim):
+    """Income and annual home energy costs drawn together so each household's burden flag holds: a candidate's income
+    from its band and its costs from the territory's cost distribution (higher where winters are longer and where
+    someone runs medical equipment), kept when costs over income fall on its side of 6 per cent with a little room."""
+    n = len(band)
+    inc, cost = np.zeros(n), np.zeros(n)
+    todo = np.arange(n)
+    while len(todo):
+        b = band[todo]
+        cand = np.zeros(len(todo))
+        for bb in range(4):
+            m = b == bb
+            cand[m] = incomes(rng, bb, int(m.sum()))
+        c = np.exp(rng.normal(np.log(1650 * clim[todo] * (1 + 0.22 * y[todo])), 0.45))
+        r = c / cand
+        ok = np.where(x[todo] == 1, r > 0.0624, r < 0.0576)
+        inc[todo[ok]], cost[todo[ok]] = cand[ok], c[ok]
+        todo = todo[~ok]
+    return inc, cost
+
+
+def split_costs(rng, total, n):
+    """Electricity, utility gas and other fuels (annual dollars) by the home's main heating fuel."""
+    fuel = rng.choice([1, 2, 3, 4, 5, 6], size=n, p=[0.46, 0.31, 0.10, 0.06, 0.04, 0.03])
+    elec_share = np.where(fuel == 2, rng.uniform(0.88, 1.0, n),
+                          np.where(fuel == 1, rng.uniform(0.48, 0.70, n), rng.uniform(0.40, 0.62, n)))
+    elec = total * elec_share
+    gas = np.where(fuel == 1, total - elec, 0.0)
+    other = np.where(fuel == 1, 0.0, total - elec)
+    return fuel, np.round(elec), np.round(gas), np.round(other)
+
+
+def energy_survey(rng, rc, cells):
+    idx, alloc, tot = sample_counties(rng, cells, NA, 70)
+    x, y = draw_traits(rng, cells, idx)
+    band = np.array([cells[i]["band"] for i in idx])
+    county = [cells[i]["county"] for i in idx]
+    monthly = rng.random(len(idx)) < 0.08
+    mode = rng.choice(["W", "T", "P"], size=len(idx), p=[0.52, 0.21, 0.27])
+    tenure = np.where(rng.random(len(idx)) < np.where(band <= 1, 0.48, 0.74), 1, 2)
+    adj = {"W": 0.94, "T": 1.11, "P": 1.03}
+    base = np.array([tot[c] / alloc[c] * adj[m] for c, m in zip(county, mode)])
+    inc, total = household_costs(rc, band, x, y, np.array([climate(c) for c in county]))
+    fuel, elec, gas, other = split_costs(rc, total, len(idx))
+    elec_amt = np.where(monthly, np.round(elec / 12), elec)
+    elec_ann = np.where(monthly, elec_amt * 12, elec_amt)
+    chk = ((elec_ann + gas + other) / inc > W.BURDEN).astype(int)
+    assert (chk == x).all(), "a rounded cost moved a household across the burden line"
+    return dict(idx=idx, x=x, y=y, band=band, income=inc, fuel=fuel, elec_amt=elec_amt, monthly=monthly, gas=gas,
+                other=other, mode=mode, tenure=tenure, county=county, base=base)
+
+
+def health_survey(rng, cells):
+    idx, alloc, tot = sample_counties(rng, cells, NB, 90)
+    n = len(idx)
+    band = np.array([cells[i]["band"] for i in idx])
+    adults = rng.choice([1, 2, 3, 4], size=n, p=[0.33, 0.48, 0.13, 0.06])
+    f = 1 + ADULT_SLOPE * (adults - 1)
+    ef = 1 + ADULT_SLOPE * (np.array([1, 2, 3, 4]) - 1) @ np.array([0.33, 0.48, 0.13, 0.06])
+    q = np.array([cells[i]["q"] for i in idx]) * f / ef
+    y = (rng.random(n) < q).astype(int)
+    cat = np.zeros(n, int)
+    for b, (cats, pr) in enumerate([((1, 2, 3), (0.30, 0.25, 0.45)), ((4, 5), (0.42, 0.58)), ((6,), (1.0,)),
+                                     ((7, 8), (0.40, 0.60))]):
+        m = band == b
+        cat[m] = rng.choice(cats, size=int(m.sum()), p=pr)
+    u = rng.random(n)
+    answer = np.where(u < 0.016, 7, np.where(u < 0.021, 9, np.where(y == 1, 1, 2)))
+    children = rng.choice([0, 1, 2, 3], size=n, p=[0.62, 0.17, 0.14, 0.07])
+    age = rng.choice([1, 2, 3, 4, 5, 6], size=n, p=[0.07, 0.14, 0.15, 0.16, 0.19, 0.29])
+    genhlth = rng.choice([1, 2, 3, 4, 5, 7, 9], size=n, p=[0.17, 0.31, 0.30, 0.14, 0.06, 0.01, 0.01])
+    county = [cells[i]["county"] for i in idx]
+    base = np.array([tot[c] / alloc[c] for c in county]) * rng.uniform(0.86, 1.16, n)
+    return dict(idx=idx, y=y, band=band, cat=cat, answer=answer, adults=adults, children=children, age=age,
+                genhlth=genhlth, county=county, base=base)
+
+
+def pilot(rng, rc, cells):
+    """Callowmere's screener mailed to random residential addresses in the two pilot divisions, telephone follow-up to
+    non-respondents; the screen ends at an income of $50,000 or more."""
+    rows = []
+    for d in W.PILOT_DIVISIONS:
+        ix = [i for i, c in enumerate(cells) if c["division"] == d]
+        pr = np.array([cells[i]["n"] for i in ix])
+        idx = rng.choice(ix, size=PILOT_SAMPLED, p=pr / pr.sum())
+        resp = rng.random(PILOT_SAMPLED)
+        mode = np.where(resp < 0.305, "Mail", np.where(resp < 0.415, "Phone", ""))
+        keep = mode != ""
+        idx, mode = idx[keep], mode[keep]
+        x, y = draw_traits(rng, cells, idx)
+        band = np.array([cells[i]["band"] for i in idx])
+        u = rng.random(len(idx))
+        county = [cells[i]["county"] for i in idx]
+        inc, total = household_costs(rc, band, x, y, np.array([climate(c) for c in county]))
+        fuel, elec, gas, other = split_costs(rc, total, len(idx))
+        for k in range(len(idx)):
+            if band[k] >= 2:
+                status, equip = "Ended - income", None
+            elif u[k] < 0.025:
+                status, equip = "Partial", None
+            else:
+                status = "Complete"
+                equip = "Don't know" if u[k] > 0.988 else ("Yes" if y[k] else "No")
+            rows.append(dict(division=d, county=county[k], band=int(band[k]), x=int(x[k]), y=int(y[k]),
+                             income=float(inc[k]), elec=float(elec[k]), other=float(gas[k] + other[k]),
+                             mode=str(mode[k]), status=status, equip=equip))
+    return rows
+
+
+def pilot_tables(P, partial_as_no=False, dk_as_no=False):
+    """The pilot's complete screens with a yes or no on the equipment, by band and by division and band: (both,
+    burden only, equipment only, neither); the keywords are the natural mishandlings of its screens."""
+    tabs, tabs_div = {}, {}
+    for r in P:
+        if r["status"] == "Ended - income":
+            continue
+        ans = r["equip"]
+        if r["status"] == "Partial":
+            if not partial_as_no:
                 continue
-            keys = set.intersection(*[set(out[k]) for k in prs])
-            out[(c, crop, "ALL")] = {i: sum(out[k][i] for k in prs) for i in keys}
+            ans = "No"
+        if ans == "Don't know":
+            if not dk_as_no:
+                continue
+            ans = "No"
+        x = int((r["elec"] + r["other"]) / r["income"] > W.BURDEN)
+        y = int(ans == "Yes")
+        k = 0 if (x and y) else 1 if x else 2 if y else 3
+        for key, store in ((r["band"], tabs), ((r["division"], r["band"]), tabs_div)):
+            store.setdefault(key, [0, 0, 0, 0])[k] += 1
+    return tabs, tabs_div
+
+
+def eligible_cells(cells, pub):
+    """Published households of each territory division and eligible band (the pack's own county rows summed)."""
+    out = {}
+    for c in cells:
+        if c["division"] and c["band"] in W.ELIGIBLE_BANDS:
+            out[(c["division"], c["band"])] = out.get((c["division"], c["band"]), 0) + pub[(c["county"], c["band"])]
     return out
 
 
-def revise(cty):
-    """The county estimates for 2017 to 2021 as revised to the 2022 Census of Agriculture: acres and production of
-    every published-practice estimate moved by a few per cent, withheld cells left as they were."""
-    out = {k: {i: a.copy() for i, a in v.items()} for k, v in cty.items()}
-    for (c, crop, pr), v in out.items():
-        if pr == "ALL":
-            continue
-        r = rng(31, int(W.COUNTIES[c][0]), CROPS.index(crop), len(pr))
-        step = UNIT[crop][1]
-        for y in range(W.REVISED[0], W.REVISED[1] + 1):
-            i = y - W.Y0
-            if (c, y) in W.WITHHELD and crop == "SORGHUM":
-                continue
-            da, dp = r.uniform(-0.03, 0.03), r.uniform(-0.025, 0.025)
-            v["harvested"][i] = np.round(v["harvested"][i] * (1 + da), -1)
-            v["production"][i] = np.round(v["production"][i] * (1 + da + dp) / step) * step
-            if "planted" in v:
-                v["planted"][i] = max(np.round(v["planted"][i] * (1 + da), -1), v["harvested"][i])
-    for c in W.COUNTIES:                    # ALL practices re-added
-        for crop in CROPS:
-            prs = [k for k in out if k[0] == c and k[1] == crop and k[2] != "ALL"]
-            if prs:
-                keys = set.intersection(*[set(out[k]) for k in prs])
-                out[(c, crop, "ALL")] = {i: sum(out[k][i] for k in prs) for i in keys}
-    return out
+def world(seed=SEED):
+    """One stream per component, so the asks' files and the costs never move the calibrated survey draws."""
+    rngs = [np.random.default_rng([seed, k]) for k in range(8)]
+    cells = population(rngs[1])
+    A = energy_survey(rngs[2], rngs[3], cells)
+    B = health_survey(rngs[4], cells)
+    P = pilot(np.random.default_rng([seed, 5, PILOT_DRAW]), np.random.default_rng([seed, 6, PILOT_DRAW]), cells)
+    return dict(rng=rngs[7], cells=cells, A=A, B=B, P=P)
 
 
-def other_districts(wx, wheat):
-    """District-level estimates for the seven districts whose counties the pull does not hold."""
-    out = {}
-    for d in W.DISTRICTS:
-        if d in W.COUNTY_DISTRICTS:
-            continue
-        r = rng(41, d)
-        w = wx[d]
-        scale = r.uniform(0.6, 1.6)
-        sh = np.clip(0.95 - 0.85 * np.clip(0.82 - w, 0, None), 0.45, 0.97)
-        pa = 230000 * scale * (1 - 0.006 * T) * (1 + r.normal(0, 0.04, N))
-        y = (45 + 0.54 * T) * np.clip(w + r.normal(0, 0.03, N), 0.35, 1.25)
-        out[(d, "SORGHUM", "NON-IRRIGATED")] = dict(planted=pa, harvested=pa * sh, production=pa * sh * y)
-        ipa = 20000 * scale * (1 + r.normal(0, 0.06, N))
-        out[(d, "SORGHUM", "IRRIGATED")] = dict(planted=ipa, harvested=ipa * 0.97,
-                                                 production=ipa * 0.97 * (72 + 0.5 * T))
-        wpa = 520000 * scale * (1 + r.normal(0, 0.03, N))
-        wy = (34 + 0.36 * T) * np.clip(wheat[d] + r.normal(0, 0.03, N), 0.4, 1.25)
-        out[(d, "WHEAT", "NON-IRRIGATED")] = dict(planted=wpa, harvested=wpa * 0.92, production=wpa * 0.92 * wy)
-        cpa = 60000 * scale * (1 + r.normal(0, 0.05, N))
-        out[(d, "CORN", "IRRIGATED")] = dict(planted=cpa, harvested=cpa * 0.96, production=cpa * 0.96 * (158 + 1.9 * T))
-        hay = 80000 * scale * (1 + r.normal(0, 0.04, N))
-        out[(d, "HAY", "ALL")] = dict(planted=None, harvested=hay, production=hay * (2.6 + 0.012 * T))
-    rounded = {}
-    for k, v in out.items():
-        step = UNIT[k[1]][1]
-        rec = {"harvested": np.round(v["harvested"], -1), "production": np.round(v["production"] / step) * step}
-        if v["planted"] is not None:
-            rec["planted"] = np.maximum(np.round(v["planted"], -1), rec["harvested"])
-        rounded[k] = rec
-    for d in {k[0] for k in rounded}:
-        for crop in CROPS:
-            prs = [k for k in rounded if k[0] == d and k[1] == crop and k[2] != "ALL"]
-            if prs:
-                keys = set.intersection(*[set(rounded[k]) for k in prs])
-                rounded[(d, crop, "ALL")] = {i: sum(rounded[k][i] for k in prs) for i in keys}
-    return rounded
+def final_weights(base, county, band, pub):
+    """Base weights post-stratified to the published households of each county and income band."""
+    w = np.zeros(len(base))
+    cells = {}
+    for i, key in enumerate(zip(county, band)):
+        cells.setdefault(key, []).append(i)
+    for key, ix in cells.items():
+        w[ix] = base[ix] * pub[key] / base[ix].sum()
+    return w
 
 
-def districts(cty):
-    """District estimates where the pull holds the counties: the sums of their counties' rounded estimates,
-    published or not."""
-    out = {}
-    for d in W.COUNTY_DISTRICTS:
-        cs = [c for c, v in W.COUNTIES.items() if v[1] == d]
-        for crop in CROPS:
-            for pr in ("NON-IRRIGATED", "IRRIGATED", "ALL"):
-                ks = [(c, crop, pr) for c in cs if (c, crop, pr) in cty]
-                if not ks:
+def conformed(x, pub, monthly_as_annual=False, dk_as_no=False, base_only=False):
+    """Each territory division and eligible band's weighted high-burden share (energy survey) and equipment share (health
+    survey), the way the pack is read; the keywords are the natural mishandlings of the mess."""
+    A, B = x["A"], x["B"]
+    elec = A["elec_amt"] if monthly_as_annual else np.where(A["monthly"], A["elec_amt"] * 12, A["elec_amt"])
+    xa = ((elec + A["gas"] + A["other"]) / A["income"] > W.BURDEN).astype(float)
+    wa = A["base"] if base_only else final_weights(A["base"], A["county"], A["band"], pub)
+    wb = final_weights(B["base"], B["county"], B["band"], pub)
+    yb = (B["answer"] == 1).astype(float)
+    okb = np.ones(len(yb), bool) if dk_as_no else B["answer"] <= 2
+    div_a = np.array([W.DIVISION_OF.get(c) for c in A["county"]])
+    div_b = np.array([W.DIVISION_OF.get(c) for c in B["county"]])
+    p, q = {}, {}
+    for d in W.DIV_NAMES:
+        for b in W.ELIGIBLE_BANDS:
+            m = (div_a == d) & (A["band"] == b)
+            p[(d, b)] = float((wa[m] * xa[m]).sum() / wa[m].sum())
+            m = (div_b == d) & (B["band"] == b) & okb
+            q[(d, b)] = float((wb[m] * yb[m]).sum() / wb[m].sum())
+    return p, q
+
+
+def publish(x, lo=0.80, hi=1.20, tol=8, gap=90, spread=36, seed=SEED):
+    """The demographer's published households: each territory division and eligible band's county figures scaled by one
+    factor so the fused eligible households sit within a few households of a hundred in every cell, each division's
+    total clear of a caseworker step and off the round thousands, the territory total rounding to the sum of the
+    divisions' rounded totals and off the round thousands, and the independence product's totals as clear of a step as
+    the grid allows."""
+    import methods as M
+    raw = {(c["county"], c["band"]): round(c["n"], -1) for c in x["cells"]}
+    p, q = conformed(x, raw)
+    tabs, tabs_div = pilot_tables(x["P"])
+    N = eligible_cells(x["cells"], raw)
+    R, _ = M.routes(N, p, q, tabs, tabs_div)
+    g, ind = R["golden"], R["independence"]
+    fam = [R[m] for m in M.FAMILY]
+    pm, _ = conformed(x, raw, monthly_as_annual=True)
+    pb, _ = conformed(x, raw, base_only=True)
+    _, qd = conformed(x, raw, dk_as_no=True)
+    layer1 = [M.routes(N, a, b, t, tabs_div)[0]["golden"] for a, b, t in
+              ((pm, q, tabs), (pb, q, tabs), (p, qd, tabs), (p, q, pilot_tables(x["P"], partial_as_no=True)[0]),
+               (p, q, pilot_tables(x["P"], dk_as_no=True)[0]))]
+    grid = np.arange(lo, hi + 1e-9, 0.0025)
+
+    shown = {n for _, _, v in pilot_counts(pilot_records(np.random.default_rng([seed, 11]), x["P"])) for n in v}
+
+    def mid(k, s):             # the golden near its hundred and every fusion keeping both shares on the same hundred
+        h = round(g[k] * s, -2)
+        return abs(g[k] * s - h) <= tol and all(abs(f[k] * s - h) <= spread for f in fam) and h not in shown
+    options = {}
+    for d in W.DIV_NAMES:
+        opts = []
+        c0 = [s for s in grid if mid((d, 0), s)]
+        c1 = [s for s in grid if mid((d, 1), s)]
+        for s0 in c0:
+            for s1 in c1:
+                t = g[(d, 0)] * s0 + g[(d, 1)] * s1
+                if min(t % W.CASELOAD, W.CASELOAD - t % W.CASELOAD) < gap or round(t, -2) % 1000 == 0 \
+                        or round(t, -2) in shown:          # no staffing figure repeats a count in the pilot report
                     continue
-                keys = set.intersection(*[set(cty[k]) for k in ks])
-                out[(d, crop, pr)] = {i: sum(cty[k][i] for k in ks) for i in keys}
-    return out
-
-
-def state(dist, other):
-    allk = {}
-    for src in (dist, other):
-        for (d, crop, pr), v in src.items():
-            allk.setdefault((crop, pr), []).append(v)
-    out = {}
-    for k, vs in allk.items():
-        keys = set.intersection(*[set(v) for v in vs])
-        out[k] = {i: sum(v[i] for v in vs) for i in keys}
-    return out
-
-
-# ---------------------------------------------------------------- publication
-def published_mask(cty):
-    """True where the service publishes a county estimate (every item of a practice together). A practice is not
-    published when it rests on fewer than five reports: the dryland sorghum years too few farms harvested in the
-    sandy counties, and the small irrigated, dryland corn and sunflower estimates whose harvested acres fall under
-    the reports a county estimate needs. An all-practices estimate is published when it meets the standard itself."""
+                if any(abs(f[(d, 0)] * s0 + f[(d, 1)] * s1 - round(t, -2)) > 50 - 12 for f in fam):
+                    continue
+                if any(M.caseworkers(v[(d, 0)] * s0 + v[(d, 1)] * s1) != M.caseworkers(t) for v in layer1):
+                    continue           # each mishandling of the mess leaves the division's staffing where it is
+                ti = ind[(d, 0)] * s0 + ind[(d, 1)] * s1
+                di = min(ti % W.CASELOAD, W.CASELOAD - ti % W.CASELOAD)
+                opts.append((abs(s0 - 1) + abs(s1 - 1) - 0.004 * min(di, 60), s0, s1, int(round(t - round(t, -2))),
+                             int(round(t, -2))))
+        if not opts:
+            raise SystemExit("no centring for %s" % d)
+        options[d] = sorted(opts)[:30]
+    states = {(0, 0): (0.0, [])}       # (summed rounding error, rounded sum mod 1000) -> cheapest choice
+    for d in W.DIV_NAMES:
+        nxt = {}
+        for (err, mod), (cost, picks) in states.items():
+            for o in options[d]:
+                key, c = (err + o[3], (mod + o[4]) % 1000), cost + o[0]
+                if key not in nxt or c < nxt[key][0]:
+                    nxt[key] = (c, picks + [o])
+        states = nxt
+    ok = [(v[0], k) for k, v in states.items() if abs(k[0]) <= 25 and k[1] != 0]
+    if not ok:
+        raise SystemExit("no centring keeps the territory total on the divisions' rounded sum")
+    best = states[min(ok)[1]][1]
+    scale = {}
+    for d, o in zip(W.DIV_NAMES, best):
+        scale[(d, 0)], scale[(d, 1)] = o[1], o[2]
     pub = {}
-    floors = {"SUNFLOWER": 900, "SOYBEANS": 1500, "CORN": 900, "SORGHUM": 1500, "WHEAT": 3000, "HAY": 2000}
-    for k, v in cty.items():
-        c, crop, pr = k
-        if crop == "SORGHUM" and pr in ("NON-IRRIGATED", "ALL") and any(w[0] == c for w in W.WITHHELD):
-            m = np.array([(c, int(y)) not in W.WITHHELD for y in YEARS])
-        elif crop == "SORGHUM" and pr in ("NON-IRRIGATED", "ALL"):
-            m = np.ones(N, bool)
+    noise = np.random.default_rng([seed, 13])
+    county_f = {c: noise.lognormal(0, 0.05) for c in W.COUNTIES}
+    for c in x["cells"]:
+        if c["division"] and c["band"] in W.ELIGIBLE_BANDS:
+            s = scale[(c["division"], c["band"])]
+        else:                    # the cells the staffing never reads carry their own estimation error
+            s = (county_f[c["county"]] if not c["division"] else 1.0) * noise.lognormal(0, 0.035)
+        pub[(c["county"], c["band"])] = round(c["n"] * s, -1)
+    return pub, scale
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Callowmere's own operational records: the medical baseline enrolment extract and the backup battery work orders.
+import datetime as _dt
+
+EXTRACT = _dt.date(2026, 11, 3)            # the enrolment and battery extracts were run on 3 November 2026
+COUNT_DATE = _dt.date(2026, 10, 31)
+HISTORY_FROM = _dt.date(2020, 1, 1)        # the extract holds every spell active on or after 1 January 2020
+TAKE_UP = 0.55                             # share of equipment households on the medical baseline rate at a time
+EXIT_RATE, MOVE_RATE = 0.11, 0.075         # a year: leaving the rate, and moving home inside the territory
+END_REASONS = (("Deceased", 0.34), ("Recertification not received", 0.27), ("Moved", 0.24),
+               ("Customer request", 0.15))
+EQUIPMENT = (("Oxygen concentrator", 0.31), ("Power wheelchair or scooter", 0.17), ("Home dialysis", 0.07),
+             ("Ventilator or BiPAP", 0.12), ("Enteral feeding pump", 0.05), ("Apnea monitor", 0.04),
+             ("Electric hospital bed", 0.14), ("Other", 0.10))
+
+
+def _day(d0, days):
+    return d0 + _dt.timedelta(days=int(days))
+
+
+def _pick(rng, pairs):
+    names, pr = zip(*pairs)
+    return names[rng.choice(len(names), p=np.array(pr) / sum(pr))]
+
+
+def enrolment(rng, cells):
+    """Medical baseline households, their accounts and spells from 2020 to the extract. A move inside the territory
+    opens a new account at the new premise with the rate transferred (the new spell names the old account); the
+    customer usually starts service at the new home before stopping it at the old one, so for a few days or weeks
+    both accounts are billed at the rate. Moves stay inside the household's division."""
+    eq = {}
+    for c in cells:
+        if c["division"]:
+            eq[c["county"]] = eq.get(c["county"], 0) + c["n"] * c["q"]
+    households = []
+    span = (EXTRACT - HISTORY_FROM).days
+    for county in sorted(eq):
+        stock = eq[county] * TAKE_UP
+        start_stock = int(round(stock * 0.97))
+        arrivals = int(rng.poisson(stock * (EXIT_RATE + 0.0045) * span / 365.25))
+        tail = 1 - math.exp(-6200 / 1500)             # spells open in 2020 began up to 17 years earlier, fewer the
+        starts = [_day(HISTORY_FROM, -1 - int(-1500 * math.log(1 - rng.random() * tail)))   # further back
+                  for _ in range(start_stock)]
+        starts += [_day(HISTORY_FROM, int(rng.integers(0, span))) for _ in range(arrivals)]
+        sib = [c for c in W.DIVISION_OF if W.DIVISION_OF[c] == W.DIVISION_OF[county] and c != county]
+        for s0 in starts:
+            hh = dict(life_support=bool(rng.random() < 0.31), equipment=_pick(rng, EQUIPMENT), spells=[])
+            t, here = s0, county
+            exit_at = _day(max(s0, HISTORY_FROM), rng.exponential(365.25 / EXIT_RATE))
+            while True:
+                move = _day(max(t, HISTORY_FROM), rng.exponential(365.25 / MOVE_RATE))
+                if move >= exit_at or move > EXTRACT:
+                    end = exit_at if exit_at <= EXTRACT else None
+                    hh["spells"].append(dict(start=t, end=end, reason=_pick(rng, END_REASONS) if end else "",
+                                             county=here))
+                    break
+                overlap = 0 if rng.random() < 0.22 else int(min(rng.gamma(1.6, 11.0), 75))
+                stop = _day(move, overlap)
+                hh["spells"].append(dict(start=t, end=stop if stop <= EXTRACT else None,
+                                         reason="Moved" if stop <= EXTRACT else "", county=here))
+                t = move
+                if sib and rng.random() < 0.18:
+                    here = sib[int(rng.integers(len(sib)))]
+            if hh["spells"][-1]["end"] is None or hh["spells"][-1]["end"] >= HISTORY_FROM:
+                households.append(hh)
+    _ensure_overlaps(rng, households)
+    _ensure_new_starts(rng, households)
+    for hh in households:                        # nothing starts or ends on the count date itself
+        for sp in hh["spells"]:
+            if sp["start"] == COUNT_DATE:
+                sp["start"] = _day(COUNT_DATE, -1)
+            if sp["end"] == COUNT_DATE:
+                sp["end"] = _day(COUNT_DATE, -1)
+    _number(rng, households)
+    return households
+
+
+def open_on(sp, d):
+    return sp["start"] <= d and (sp["end"] is None or sp["end"] > d)
+
+
+def _ensure_overlaps(rng, households, floor=3):
+    """Every division holds a few households moving house across the count date (both accounts on the rate)."""
+    per = {}
+    for hh in households:
+        if sum(open_on(sp, COUNT_DATE) for sp in hh["spells"]) > 1:
+            d = W.DIVISION_OF[hh["spells"][-1]["county"]]
+            per[d] = per.get(d, 0) + 1
+    for d in W.DIV_NAMES:
+        need = floor - per.get(d, 0)
+        pool = [hh for hh in households if len(hh["spells"]) == 1 and hh["spells"][0]["end"] is None
+                and W.DIVISION_OF[hh["spells"][0]["county"]] == d and hh["spells"][0]["start"] < _dt.date(2025, 6, 1)]
+        for k in range(max(need, 0)):
+            hh = pool[int(rng.integers(len(pool)))]
+            pool.remove(hh)
+            sp = hh["spells"][0]
+            move = _day(_dt.date(2026, 10, 9), int(rng.integers(0, 19)))
+            stop = _day(_dt.date(2026, 11, 1), int(rng.integers(1, 30)))
+            hh["spells"] = [dict(start=sp["start"], end=stop if stop <= EXTRACT else None,
+                                 reason="Moved" if stop <= EXTRACT else "", county=sp["county"]),
+                            dict(start=move, end=None, reason="", county=sp["county"])]
+
+
+def _ensure_new_starts(rng, households):
+    """Certifications keep arriving after the month closes: where a division's accounts open at the extract would
+    still equal its households on the rate on the count date, a household joins the rate on 1 to 3 November."""
+    for d in W.DIV_NAMES:
+        on = sum(1 for hh in households
+                 if any(open_on(sp, COUNT_DATE) and W.DIVISION_OF[sp["county"]] == d for sp in hh["spells"]))
+        at = sum(1 for hh in households for sp in hh["spells"] if sp["end"] is None and W.DIVISION_OF[sp["county"]] == d)
+        if at == on:
+            here = [c for c in W.DIVISION_OF if W.DIVISION_OF[c] == d]
+            households.append(dict(life_support=bool(rng.random() < 0.31), equipment=_pick(rng, EQUIPMENT),
+                                   spells=[dict(start=_day(COUNT_DATE, int(rng.integers(1, 4))), end=None, reason="",
+                                                county=here[int(rng.integers(len(here)))])]))
+
+
+def _number(rng, households):
+    """Accounts numbered in the order they were opened, premises drawn from the territory's premise register, each
+    account's division as set up when it was opened."""
+    opened = []
+    for h, hh in enumerate(households):
+        for k, sp in enumerate(hh["spells"]):
+            opened.append((sp["start"], h, k))
+    opened.sort()
+    acct = 6100000000
+    premises = rng.choice(np.arange(10000000, 99999999), size=len(opened), replace=False)
+    for (d0, h, k), prem in zip(opened, premises):
+        acct += int(rng.integers(40, 160))
+        sp = households[h]["spells"][k]
+        sp["account"] = str(acct)
+        sp["premise"] = "P%08d" % prem
+        c = sp["county"]
+        if c in W.REORG and sp["start"] < _dt.date.fromisoformat(W.REORG[c][2]):
+            sp["division_stored"] = W.REORG[c][0]
         else:
-            m = v["harvested"] >= floors[crop]
-        pub[k] = m
-    return pub
+            sp["division_stored"] = W.DIVISION_OF[c]
+    for hh in households:
+        for k, sp in enumerate(hh["spells"]):
+            sp["prior"] = hh["spells"][k - 1]["account"] if k else ""
 
 
-def cv_percent(c, crop, pr, harvested, year):
-    """The coefficient of variation the service prints beside a published county yield, from 2008."""
-    if year < 2008:
+# The backup battery programme: free units for life-support customers on the medical baseline rate, rolled out county
+# by county from December 2025; crews' handhelds stamp completion times in UTC, the company works on Central Time.
+CENTRAL = None
+
+
+def central_offset(d):
+    """Hours behind UTC on Central Time for a local date (daylight time from 8 March to 1 November 2026)."""
+    return 5 if _dt.date(2026, 3, 8) <= d < _dt.date(2026, 11, 1) else 6
+
+
+def _utc(day, hour, minute):
+    local = _dt.datetime(day.year, day.month, day.day, hour, minute)
+    return local + _dt.timedelta(hours=central_offset(day))
+
+
+def batteries(rng, households):
+    """Work orders: first placements (some after a no-access or cancelled visit), exchanges of failed units at the same
+    account, and re-installs at the new account after a household moves; a few evening completions at the window's
+    two ends."""
+    counties = sorted(W.DIVISION_OF)
+    roll = {}
+    for c in counties:
+        roll[c] = _day(_dt.date(2025, 12, 1), int(rng.integers(0, 190)))
+        if c in W.REORG:
+            roll[c] = _day(_dt.date(2026, 8, 3), int(rng.integers(0, 20)))
+    orders, serial = [], [251000]
+
+    def unit():
+        serial[0] += int(rng.integers(1, 9))
+        return "BU-%07d" % serial[0]
+
+    def stamp(day, evening=False):
+        if evening:
+            h, m = int(rng.integers(19, 21)), int(rng.integers(0, 60))
+        else:
+            h, m = int(rng.integers(8, 18)), int(rng.integers(0, 60))
+        return _utc(day, h, m)
+
+    def spell_on(hh, d):
+        for sp in hh["spells"]:
+            if open_on(sp, d):
+                return sp
         return None
-    r = rng(51, int(W.COUNTIES[c][0]), CROPS.index(crop), len(pr), year)
-    base = 4.0 + 900.0 / np.sqrt(max(harvested, 50.0))
-    return round(float(np.clip(base * r.uniform(0.85, 1.15), 3.0, 29.5)), 1)
+
+    placed = []
+    for h, hh in enumerate(households):
+        if not hh["life_support"]:
+            continue
+        last = hh["spells"][-1]
+        c0 = last["county"]
+        day = _day(roll[c0], int(rng.integers(0, 150)))
+        if day > _day(EXTRACT, -1) or rng.random() > 0.62:
+            continue
+        sp = spell_on(hh, day)
+        if sp is None or sp is not last and len(hh["spells"]) > 1 and sp["end"] and sp["end"] < _day(day, 30):
+            continue
+        if rng.random() < 0.11:          # a first visit that found nobody home or was called off
+            orders.append(dict(h=h, sp=sp, day=_day(day, -int(rng.integers(6, 21))), status=_pick(
+                rng, (("No access", 0.65), ("Cancelled", 0.35))), at=None, unit="", removed=""))
+        u = unit()
+        orders.append(dict(h=h, sp=sp, day=day, status="Completed", at=stamp(day, rng.random() < 0.04), unit=u,
+                           removed=""))
+        placed.append((h, sp, day, u))
+    for o in orders:                     # a crew that ran over finishes a booked visit a day or three later
+        if o["status"] == "Completed" and rng.random() < 0.09:
+            late = _day(o["day"], int(rng.integers(1, 4)))
+            if late < EXTRACT and open_on(o["sp"], late) and not (o["day"] <= COUNT_DATE < late) \
+                    and not (o["day"] < _dt.date(2026, 1, 1) <= late):
+                o["at"] = stamp(late)
+    for h, sp, day, u in placed:
+        hh = households[h]
+        if day < _dt.date(2026, 1, 1):
+            continue                       # nothing more inside the window for a household placed in 2025
+        later = [s for s in hh["spells"] if s["start"] > day]
+        if later and later[0]["start"] <= _day(COUNT_DATE, -12):
+            nxt = later[0]
+            d2 = _day(nxt["start"], int(rng.integers(2, 11)))
+            orders.append(dict(h=h, sp=nxt, day=d2, status="Completed", at=stamp(d2), unit=u, removed=""))
+        elif rng.random() < 0.05:
+            d2 = _day(day, int(rng.integers(12, 140)))
+            if d2 <= _day(COUNT_DATE, -3) and open_on(sp, d2):
+                orders.append(dict(h=h, sp=sp, day=d2, status="Completed", at=stamp(d2), unit=unit(), removed=u))
+    _evening_edges(rng, orders)
+    _booked_edges(rng, orders)
+    orders.sort(key=lambda o: (o["day"], o["at"] or _dt.datetime(o["day"].year, o["day"].month, o["day"].day, 12)))
+    return orders
 
 
-def world():
-    wx, wh = weather()
-    est = county_crops(wx, wh)
-    cty_old = round_county(est)
-    cty_new = revise(cty_old)
-    other = other_districts(wx, wh)
-    d_old, d_new = districts(cty_old), districts(cty_new)
-    return dict(weather=wx, wheat=wh, est=est, cty_old=cty_old, cty_new=cty_new, other=other,
-                dist_old=d_old, dist_new=d_new, state_old=state(d_old, other), state_new=state(d_new, other),
-                pub=published_mask(cty_old))
+def _evening_edges(rng, orders):
+    """Crews finishing late on the window's last day (the Saturday push before winter, every division) and on New
+    Year's Eve: single-visit households, their one completed order on that evening."""
+    done = {}
+    for o in orders:
+        if o["status"] == "Completed":
+            done.setdefault(o["h"], []).append(o)
+    single = [os_[0] for os_ in done.values() if len(os_) == 1]
+    quota = {}
+    for day, lo, hi, count in ((_dt.date(2025, 12, 31), _dt.date(2025, 12, 1), _dt.date(2025, 12, 31), 3),
+                               (COUNT_DATE, _dt.date(2026, 4, 1), COUNT_DATE, 9)):
+        pool = [o for o in single if lo <= o["day"] <= hi and open_on(o["sp"], day) and o["day"] != day]
+        seen = {}
+        for o in sorted(pool, key=lambda o: (o["sp"]["account"])):
+            d = W.DIVISION_OF[o["sp"]["county"]]
+            want = 1 if day != COUNT_DATE else 1 + quota.get(d, 0)
+            if seen.get(d, 0) >= want or (d not in seen and len(seen) == count):
+                continue
+            seen[d] = seen.get(d, 0) + 1
+            if day != COUNT_DATE:
+                quota[d] = 1
+            o["day"] = day
+            hour = 19 if day == COUNT_DATE else 18
+            o["at"] = _utc(day, hour + int(rng.integers(0, 2)), int(rng.integers(5, 55)))
 
 
-def current(x):
-    """The estimates as the service now publishes them: the revised county figures from 2017 on, the first
-    vintage before (they are the same outside the revised years)."""
-    return x["cty_new"], x["dist_new"]
+def _booked_edges(rng, orders):
+    """Visits booked for the last days of a window and finished after it: booked for October 29 to 31 and completed on
+    November 2, and booked for December 29 to 31, 2025 and completed in the first days of January."""
+    done = {}
+    for o in orders:
+        if o["status"] == "Completed":
+            done.setdefault(o["h"], []).append(o)
+    single = [os_[0] for os_ in done.values() if len(os_) == 1 and os_[0]["at"].date() == os_[0]["day"]]
+    for lo, hi, finish, count in ((_dt.date(2026, 10, 29), _dt.date(2026, 10, 30), _dt.date(2026, 11, 2), 4),
+                                  (_dt.date(2025, 12, 29), _dt.date(2025, 12, 30), _dt.date(2026, 1, 2), 2)):
+        pool = [o for o in single if lo <= o["day"] <= hi and open_on(o["sp"], finish)]
+        seen = set()
+        for o in sorted(pool, key=lambda o: o["sp"]["account"]):
+            d = W.DIVISION_OF[o["sp"]["county"]]
+            if d in seen or len(seen) == count:
+                continue
+            seen.add(d)
+            o["at"] = _utc(finish, int(rng.integers(9, 16)), int(rng.integers(0, 60)))
+
+
+def pilot_counts(screens):
+    """The pilot report's table: screens returned, ended at the income question, complete and partial, by division and
+    mode and in all."""
+    sts = ("Ended - income", "Complete", "Partial")
+    rows = []
+    for d in W.PILOT_DIVISIONS:
+        for m in ("Mail", "Phone"):
+            rs = [r for r in screens if r["division"] == d and r["mode"] == m]
+            rows.append((d, m, [len(rs)] + [sum(r["status"] == st for r in rs) for st in sts]))
+    rows.append(("Both", "Both", [len(screens)] + [sum(r["status"] == st for r in screens) for st in sts]))
+    return rows
+
+
+def pilot_records(rng, P):
+    """The screening system's records: one per returned screen, an address that answered by mail and then by telephone
+    holding two (the same answers, the income sometimes given a little differently), each with its date."""
+    keys = set()
+    rows = []
+    for r in P:
+        while True:
+            k = "".join(rng.choice(list("ABCDEFGHJKLMNPQRSTUVWXYZ23456789"), size=10))
+            if k not in keys:
+                keys.add(k)
+                break
+        first = _day(_dt.date(2025, 3, 10), int(rng.integers(0, 112))) if r["mode"] == "Mail" else \
+            _day(_dt.date(2025, 5, 5), int(rng.integers(0, 116)))
+        rows.append(dict(r, key=k, received=first))
+        if r["status"] == "Complete" and r["mode"] == "Mail" and rng.random() < 0.07:
+            inc = r["income"]
+            for _ in range(20):
+                alt = inc + 100 * int(rng.integers(-3, 4))
+                same_band = (alt < 25000) == (inc < 25000) and alt < W.INCOME_LIMIT
+                same_flag = ((r["elec"] + r["other"]) / alt > W.BURDEN) == ((r["elec"] + r["other"]) / inc > W.BURDEN)
+                if same_band and same_flag and abs((r["elec"] + r["other"]) / alt - W.BURDEN) > 0.0012:
+                    break
+            else:
+                alt = inc
+            rows.append(dict(r, key=k, mode="Phone", income=alt, received=_day(_dt.date(2025, 7, 1),
+                                                                              int(rng.integers(0, 59)))))
+    rows.sort(key=lambda r: (r["received"], r["key"]))
+    return rows
+
+
+def distractor_data(rng, cells):
+    """The health department's heat vulnerability index by county and the energy office's energy assistance
+    applications by county and month (2025)."""
+    n = {}
+    low = {}
+    for c in cells:
+        n[c["county"]] = n.get(c["county"], 0) + c["n"]
+        if c["band"] == 0:
+            low[c["county"]] = low.get(c["county"], 0) + c["n"] * c["p"]
+    hvi = []
+    for c in W.COUNTIES:
+        old = rng.uniform(14.5, 24.5)
+        alone = old * rng.uniform(0.25, 0.36)
+        noac = rng.uniform(4.0, 31.0)
+        imperv = rng.uniform(1.2, 9.0) if n[c] < 60000 else rng.uniform(9.0, 26.0)
+        score = 0.9 * old + 1.1 * alone + 0.6 * noac + 0.8 * imperv + rng.normal(0, 2.5)
+        hvi.append(dict(county=c, old=old, alone=alone, noac=noac, imperv=imperv, score=score))
+    mu = sum(h["score"] for h in hvi) / len(hvi)
+    sd = (sum((h["score"] - mu) ** 2 for h in hvi) / (len(hvi) - 1)) ** 0.5
+    for h in hvi:
+        h["score"] = 50 + 15 * (h["score"] - mu) / sd
+    order = sorted(hvi, key=lambda h: -h["score"])
+    for k, h in enumerate(order, start=1):
+        h["rank"] = k
+    season = [1.9, 1.7, 1.2, 0.8, 0.6, 0.7, 0.9, 0.9, 0.7, 0.8, 1.2, 1.6]
+    apps = []
+    for c in W.COUNTIES:
+        base = low[c] * 0.021
+        for m in range(12):
+            a = int(rng.poisson(base * season[m]))
+            ok = int(rng.binomial(a, 0.81)) if a else 0
+            crisis = int(rng.poisson(a * (0.24 if m in (0, 1, 11) else 0.07)))
+            benefit = round(float(rng.normal(462 if m in (0, 1, 2, 10, 11) else 338, 22)))
+            apps.append(dict(county=c, month="2025-%02d" % (m + 1), received=a, approved=ok, crisis=crisis,
+                             benefit=benefit))
+    return hvi, apps
+
+
+def everything(seed=SEED):
+    """The whole world: the calibrated surveys and pilot, the published estimates, the operational records and the
+    distractors' data."""
+    x = world(seed)
+    x["pub"], x["scale"] = publish(x, seed=seed)
+    rk = np.random.default_rng([seed, 9])
+    x["households"] = enrolment(rk, x["cells"])
+    x["orders"] = batteries(np.random.default_rng([seed, 10]), x["households"])
+    x["screens"] = pilot_records(np.random.default_rng([seed, 11]), x["P"])
+    x["hvi"], x["apps"] = distractor_data(np.random.default_rng([seed, 12]), x["cells"])
+    return x

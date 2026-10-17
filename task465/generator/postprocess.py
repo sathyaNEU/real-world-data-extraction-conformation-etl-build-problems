@@ -4,7 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Ardley Plains Growers Cooperative"
+COMPANY = "Callowmere Electric Company"
 
 
 def _x(s):
@@ -331,7 +331,8 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
                 data = data.replace(b"</Properties>", b"<Company>" + _x(company or COMPANY).encode() + b"</Company></Properties>")
         out.append((name, data))
     if ext == ".xlsx":
-        out = [(n, d if d.startswith(b"<?xml") else XML_DECL + d) for n, d in share_strings(out)]
+        out = [(n, d if d.startswith(b"<?xml") or not n.endswith((".xml", ".rels")) else XML_DECL + d)
+               for n, d in share_strings(out)]
         if excel:
             out = excel_dialect(out, key=path.replace("\\", "/").rsplit("/", 1)[-1], company=company)
     with zipfile.ZipFile(path, "w") as z:

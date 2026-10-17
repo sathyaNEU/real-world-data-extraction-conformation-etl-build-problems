@@ -1,0 +1,563 @@
+{
+ "ask_a": {
+  "Biological Sciences": 358.0,
+  "Business Administration": 531.7,
+  "Criminal Justice": 397.1,
+  "Early Childhood Education": 343.6,
+  "General Studies": 1164.1,
+  "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 274.5,
+  "Medical Assisting": 386.6,
+  "Nursing": 538.3,
+  "Psychology": 404.0
+ },
+ "ask_a_stops": {
+  "history_only": {
+   "Biological Sciences": 462.8,
+   "Business Administration": 554.3,
+   "Criminal Justice": 412.5,
+   "Early Childhood Education": 354.0,
+   "General Studies": 1283.1,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 388.3,
+   "Medical Assisting": 492.2,
+   "Nursing": 842.3,
+   "Psychology": 417.6
+  },
+  "natural": {
+   "Biological Sciences": 472.0,
+   "Business Administration": 541.7,
+   "Criminal Justice": 398.0,
+   "Early Childhood Education": 348.9,
+   "General Studies": 1310.3,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 370.1,
+   "Medical Assisting": 478.9,
+   "Nursing": 837.9,
+   "Psychology": 449.4
+  },
+  "section_only": {
+   "Biological Sciences": 366.0,
+   "Business Administration": 516.3,
+   "Criminal Justice": 382.8,
+   "Early Childhood Education": 337.9,
+   "General Studies": 1185.1,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 261.9,
+   "Medical Assisting": 375.9,
+   "Nursing": 536.9,
+   "Psychology": 435.0
+  },
+  "without_withdrawals": {
+   "Biological Sciences": 325.9,
+   "Business Administration": 489.5,
+   "Criminal Justice": 365.1,
+   "Early Childhood Education": 314.8,
+   "General Studies": 1072.0,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 254.7,
+   "Medical Assisting": 352.5,
+   "Nursing": 496.6,
+   "Psychology": 372.3
+  }
+ },
+ "ask_a_unrounded": {
+  "Biological Sciences": 358.0,
+  "Business Administration": 531.6666666666666,
+  "Criminal Justice": 397.06666666666666,
+  "Early Childhood Education": 343.6,
+  "General Studies": 1164.1333333333334,
+  "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 274.46666666666664,
+  "Medical Assisting": 386.6,
+  "Nursing": 538.2666666666667,
+  "Psychology": 404.0
+ },
+ "ask_b": {
+  "Biological Sciences": 13,
+  "Business Administration": 5,
+  "Criminal Justice": 3,
+  "Early Childhood Education": 3,
+  "General Studies": 1,
+  "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 13,
+  "Medical Assisting": 9,
+  "Nursing": 78,
+  "Psychology": 5
+ },
+ "ask_b_stops": {
+  "census_uncombined": {
+   "Biological Sciences": 14,
+   "Business Administration": 8,
+   "Criminal Justice": 5,
+   "Early Childhood Education": 5,
+   "General Studies": 3,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 14,
+   "Medical Assisting": 10,
+   "Nursing": 79,
+   "Psychology": 6
+  },
+  "natural": {
+   "Biological Sciences": 18,
+   "Business Administration": 9,
+   "Criminal Justice": 6,
+   "Early Childhood Education": 6,
+   "General Studies": 3,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 17,
+   "Medical Assisting": 10,
+   "Nursing": 79,
+   "Psychology": 7
+  },
+  "room": {
+   "Biological Sciences": 14,
+   "Business Administration": 8,
+   "Criminal Justice": 5,
+   "Early Childhood Education": 5,
+   "General Studies": 3,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 14,
+   "Medical Assisting": 10,
+   "Nursing": 79,
+   "Psychology": 6
+  },
+  "text": {
+   "Biological Sciences": 13,
+   "Business Administration": 1,
+   "Criminal Justice": 1,
+   "Early Childhood Education": 1,
+   "General Studies": 0,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 13,
+   "Medical Assisting": 7,
+   "Nursing": 77,
+   "Psychology": 2
+  }
+ },
+ "call": {
+  "count": 6,
+  "in_review": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ],
+  "share": {
+   "Biological Sciences": 24.9,
+   "Business Administration": 22.2,
+   "Criminal Justice": 32.5,
+   "Early Childhood Education": 19.5,
+   "General Studies": 20.9,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 44.4,
+   "Medical Assisting": 26.2,
+   "Nursing": 36.7,
+   "Psychology": 25.9
+  },
+  "unrounded": {
+   "Biological Sciences": 24.883945841392652,
+   "Business Administration": 22.23326551312291,
+   "Criminal Justice": 32.51799520127966,
+   "Early Childhood Education": 19.46730462519936,
+   "General Studies": 20.921561307141847,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 44.4267053701016,
+   "Medical Assisting": 26.23358979599874,
+   "Nursing": 36.72174244686753,
+   "Psychology": 25.87005190876433
+  }
+ },
+ "curves": {
+  "Biological Sciences": [
+   0.0,
+   0.0,
+   0.0,
+   3.0,
+   16.0,
+   17.3,
+   19.0,
+   24.9,
+   24.9
+  ],
+  "Business Administration": [
+   0.0,
+   0.0,
+   0.0,
+   3.0,
+   12.5,
+   14.1,
+   16.1,
+   21.8,
+   22.2
+  ],
+  "Criminal Justice": [
+   0.0,
+   0.0,
+   0.0,
+   3.1,
+   17.6,
+   19.6,
+   23.7,
+   32.5,
+   32.5
+  ],
+  "Early Childhood Education": [
+   0.0,
+   0.0,
+   0.0,
+   0.9,
+   5.0,
+   6.3,
+   9.4,
+   14.8,
+   19.5
+  ],
+  "General Studies": [
+   0.0,
+   0.0,
+   0.0,
+   3.0,
+   11.9,
+   13.7,
+   15.4,
+   19.9,
+   20.9
+  ],
+  "Heating, Ventilation, Air Conditioning and Refrigeration Technology": [
+   0.0,
+   0.0,
+   0.0,
+   4.5,
+   26.4,
+   30.6,
+   33.6,
+   43.2,
+   44.4
+  ],
+  "Medical Assisting": [
+   0.0,
+   0.0,
+   0.0,
+   3.0,
+   14.0,
+   16.0,
+   18.3,
+   24.4,
+   26.2
+  ],
+  "Nursing": [
+   0.0,
+   0.0,
+   0.0,
+   1.1,
+   12.3,
+   14.7,
+   19.2,
+   35.0,
+   36.7
+  ],
+  "Psychology": [
+   0.0,
+   0.0,
+   0.0,
+   2.5,
+   14.3,
+   16.7,
+   18.5,
+   24.6,
+   25.9
+  ]
+ },
+ "deaths": 5,
+ "entering_in_files": 5292,
+ "entering_total": 5287,
+ "entrants": {
+  "Biological Sciences": 470,
+  "Business Administration": 765,
+  "Criminal Justice": 484,
+  "Early Childhood Education": 341,
+  "General Studies": 1594,
+  "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 265,
+  "Medical Assisting": 406,
+  "Nursing": 446,
+  "Psychology": 516
+ },
+ "floor": 30.0,
+ "fte_hours": 15,
+ "nur_clinical": 77,
+ "observed_terms": {
+  "2023": 11,
+  "2024": 8,
+  "2025": 5
+ },
+ "rival_text": {
+  "cj_2023": 26.8,
+  "op_transfer_high": 41,
+  "op_transfer_low": 35
+ },
+ "rung_lists": {
+  "closed2023": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education",
+   "Criminal Justice"
+  ],
+  "complete": [
+   "General Studies",
+   "Business Administration"
+  ],
+  "crude": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education",
+   "Criminal Justice",
+   "Nursing"
+  ],
+  "dc_censor": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ],
+  "dc_compete": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ],
+  "final": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ],
+  "golden": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ],
+  "half_to": [
+   "General Studies",
+   "Business Administration",
+   "Early Childhood Education"
+  ],
+  "half_wd": [
+   "General Studies",
+   "Business Administration",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ],
+  "op": [
+   "Early Childhood Education"
+  ],
+  "op_exits_first": [
+   "Early Childhood Education"
+  ],
+  "own": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ],
+  "person": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ],
+  "redate": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ],
+  "strat": [
+   "General Studies",
+   "Biological Sciences",
+   "Business Administration",
+   "Psychology",
+   "Medical Assisting",
+   "Early Childhood Education"
+  ]
+ },
+ "rungs": {
+  "closed2023": {
+   "Biological Sciences": 22.69503546099291,
+   "Business Administration": 22.131147540983605,
+   "Criminal Justice": 26.751592356687897,
+   "Early Childhood Education": 22.123893805309734,
+   "General Studies": 21.72211350293542,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 43.02325581395349,
+   "Medical Assisting": 26.5625,
+   "Nursing": 37.67123287671233,
+   "Psychology": 20.37037037037037
+  },
+  "complete": {
+   "Biological Sciences": 31.076923076923077,
+   "Business Administration": 28.685258964143426,
+   "Criminal Justice": 43.58108108108108,
+   "Early Childhood Education": 48.888888888888886,
+   "General Studies": 26.09942638623327,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 62.65822784810127,
+   "Medical Assisting": 35.833333333333336,
+   "Nursing": 50.40983606557377,
+   "Psychology": 32.551319648093845
+  },
+  "crude": {
+   "Biological Sciences": 21.48936170212766,
+   "Business Administration": 18.823529411764707,
+   "Criminal Justice": 26.65289256198347,
+   "Early Childhood Education": 12.903225806451612,
+   "General Studies": 17.1267252195734,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 37.35849056603774,
+   "Medical Assisting": 21.182266009852217,
+   "Nursing": 27.57847533632287,
+   "Psychology": 21.511627906976745
+  },
+  "dc_censor": {
+   "Biological Sciences": 24.883945841392652,
+   "Business Administration": 22.242643621115022,
+   "Criminal Justice": 32.51799520127966,
+   "Early Childhood Education": 19.3525514898664,
+   "General Studies": 20.921561307141847,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 44.4267053701016,
+   "Medical Assisting": 26.244986363157196,
+   "Nursing": 36.72174244686753,
+   "Psychology": 25.87005190876433
+  },
+  "dc_compete": {
+   "Biological Sciences": 24.883945841392652,
+   "Business Administration": 22.204240362322484,
+   "Criminal Justice": 32.51799520127966,
+   "Early Childhood Education": 19.3525514898664,
+   "General Studies": 20.921561307141847,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 44.4267053701016,
+   "Medical Assisting": 26.16913380141397,
+   "Nursing": 36.639590897769395,
+   "Psychology": 25.820013123640994
+  },
+  "final": {
+   "Biological Sciences": 26.17441413753362,
+   "Business Administration": 21.926442357368543,
+   "Criminal Justice": 31.573656469053958,
+   "Early Childhood Education": 19.226037161231798,
+   "General Studies": 20.609327687708838,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 43.84361792054099,
+   "Medical Assisting": 25.7456253947482,
+   "Nursing": 37.231514645709446,
+   "Psychology": 27.44327181099557
+  },
+  "golden": {
+   "Biological Sciences": 24.883945841392652,
+   "Business Administration": 22.23326551312291,
+   "Criminal Justice": 32.51799520127966,
+   "Early Childhood Education": 19.46730462519936,
+   "General Studies": 20.921561307141847,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 44.4267053701016,
+   "Medical Assisting": 26.23358979599874,
+   "Nursing": 36.72174244686753,
+   "Psychology": 25.87005190876433
+  },
+  "half_to": {
+   "Biological Sciences": 31.898511738080337,
+   "Business Administration": 29.787006685842464,
+   "Criminal Justice": 42.02777966408909,
+   "Early Childhood Education": 21.59308351393466,
+   "General Studies": 27.841716946845658,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 53.318414757453944,
+   "Medical Assisting": 36.73663496331167,
+   "Nursing": 45.897829796529614,
+   "Psychology": 33.89056628766176
+  },
+  "half_wd": {
+   "Biological Sciences": 31.64131855066246,
+   "Business Administration": 27.193710046659803,
+   "Criminal Justice": 36.02169519005783,
+   "Early Childhood Education": 19.994454324251535,
+   "General Studies": 26.487951969628735,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 45.279698512373415,
+   "Medical Assisting": 27.328764042242593,
+   "Nursing": 38.70663721050733,
+   "Psychology": 31.939761246780478
+  },
+  "op": {
+   "Biological Sciences": 40.109650769892426,
+   "Business Administration": 35.9543761395175,
+   "Criminal Justice": 46.294437393821944,
+   "Early Childhood Education": 22.16806662658789,
+   "General Studies": 34.84170365463816,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 54.31206688204395,
+   "Medical Assisting": 38.13507426282084,
+   "Nursing": 48.24887659434744,
+   "Psychology": 41.39481119941386
+  },
+  "op_exits_first": {
+   "Biological Sciences": 45.73761437762154,
+   "Business Administration": 40.084537246814264,
+   "Criminal Justice": 49.164128424093455,
+   "Early Childhood Education": 22.546787028366655,
+   "General Studies": 39.04665578015943,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 56.44880798250303,
+   "Medical Assisting": 41.18281583256588,
+   "Nursing": 50.84078561058645,
+   "Psychology": 45.28999299312966
+  },
+  "own": {
+   "Biological Sciences": 23.90232108317215,
+   "Business Administration": 20.809161130016747,
+   "Criminal Justice": 31.145027992535322,
+   "Early Childhood Education": 18.727993003035447,
+   "General Studies": 19.4007483685121,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 42.91727140783744,
+   "Medical Assisting": 25.494673539841102,
+   "Nursing": 36.27331195359399,
+   "Psychology": 25.28865655992712
+  },
+  "person": {
+   "Biological Sciences": 25.445058028863325,
+   "Business Administration": 22.424504048194617,
+   "Criminal Justice": 33.424875519737185,
+   "Early Childhood Education": 19.413623921851777,
+   "General Studies": 21.107075069742418,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 44.236566258413326,
+   "Medical Assisting": 27.04724274767379,
+   "Nursing": 37.737459155990486,
+   "Psychology": 27.318053845475216
+  },
+  "redate": {
+   "Biological Sciences": 25.638297872340427,
+   "Business Administration": 22.661377205969234,
+   "Criminal Justice": 33.146399055489965,
+   "Early Childhood Education": 19.817314114230886,
+   "General Studies": 21.510510209472013,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 44.89547678990694,
+   "Medical Assisting": 26.773022975971124,
+   "Nursing": 37.36048829098157,
+   "Psychology": 26.511978849843242
+  },
+  "strat": {
+   "Biological Sciences": 24.883945841392652,
+   "Business Administration": 22.233265513122912,
+   "Criminal Justice": 32.51799520127966,
+   "Early Childhood Education": 19.467304625199365,
+   "General Studies": 20.921561307141847,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 44.4267053701016,
+   "Medical Assisting": 26.233589795998732,
+   "Nursing": 36.72174244686753,
+   "Psychology": 25.87005190876433
+  }
+ },
+ "small": 10,
+ "window_terms": 9
+}

@@ -1,0 +1,136 @@
+{
+  "task": "task265",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "Wave 3, Descriptive lane (sathay3012). Seed DA15's connected-TV world (which adult age group a home-screen trailer capped at one impression per TV per day is cut for) was worked at the draw and set aside: with profile-level home-screen logs every step except age attribution is a count under stated rules (the cap, the broadcast day, kids profiles), and the attribution's one estimation step, inverting the age model's per-age error rates for profiles without a typed birth year, is task446's lesson (a screen's error rates carry to a population with a different base rate, its yield does not). The slot draws a new world in the same objective: a health system's joint registry deciding which hip constructs stay on the implant contract by their ten-year revision-free survival.",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "survival-time-to-event-analysis",
+  "client_domain": "biomedical-clinical-research",
+  "niche": "a regional health system's value-analysis committee deciding which of six hip replacement constructs (stem and cup combinations) stay on the 2027-2031 implant contract, by each construct's cumulative percent revision ten years after surgery on the system's own joint registry, which began prospective capture in January 2018 and enrolled implants done earlier at their patients' first registry clinic visit",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Keep Askvane/Quarvel, Holbrin/Pellvoro and Askvane/Pellvoro on the hip agreement renewed on 1 July 2027, and take Edvalt/Kelvarne, Edvalt/Pellvoro and Kalvoran/Morvenne off it.",
+  "answer_source": "submission.md block 1; ten-year cumulative percent revision 3.7, 4.1 and 3.5 against 7.0, 5.7 and 7.6 (bar 5.0)",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G16",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the orthopaedic service line's outcomes analyst, scoring each construct for the value-analysis committee before the implant contract is renewed on 1 July 2027",
+  "role_family": "procurement_lead",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "bvjr_prospective_hips_2018-2026.csv with bvjr_legacy_enrolment_2018-2021.xlsx (one row per primary total hip on the registry)",
+    "rows": 12079,
+    "entity": "one primary total hip (one stem and cup construct in one hip)",
+    "grain": "implant",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "United States (Wisconsin; the health system, its hospitals, its registry, the implant manufacturers and the constructs are fictional; personas on the en_US index)",
+    "currency": "USD",
+    "org_type": "a regional health system with an orthopaedic service line and its own joint replacement registry",
+    "invented_names": [
+      "Brennick Valley Health",
+      "Brennick Valley Joint Registry",
+      "Brennick Valley Medical Center",
+      "Tollefson Lake Hospital",
+      "Kittelstad Orthopaedic Hospital",
+      "Varnholt Orthopedics",
+      "Thorvik Surgical",
+      "Juvenor Medical",
+      "Brysholt Implants",
+      "Edvalt",
+      "Kelvarne",
+      "Askvane",
+      "Quarvel",
+      "Orsinne",
+      "Holbrin",
+      "Pellvoro",
+      "Kalvoran",
+      "Morvenne",
+      "Fennimark"
+    ],
+    "people": [
+      "Melinda Boyd",
+      "Richard Hart",
+      "Sara Gray"
+    ]
+  },
+  "deliverables": [
+    "hip_construct_scorecard_2027.xlsx",
+    "construct_review_memo_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the share of units still free of an event a fixed time after their start, estimated from a record that began after many units had started and holds those earlier starters only if they were still event-free when the record first saw them; counting each earlier starter at risk from its own start credits it with years in which any event would have kept it out of the record, so the curve has to admit each unit to the risk set only from the time the record first saw it.",
+  "driver_concrete": "The contract keeps a hip construct only if no more than 5 per cent of its implants are revised within ten years of surgery on the system's registry, but the registry began capturing operations in January 2018 and enrolled implants done earlier only when their patients came to a registry clinic with the hip still in place, so a Kaplan-Meier curve that counts each legacy implant at risk from its operation credits it with years in which any revision would have kept it out of the registry; the older constructs, whose ten-year evidence is mostly legacy, pass the benchmark they fail once each legacy implant enters the risk set at its enrolment visit.",
+  "stump": "A competent solver builds each construct's Kaplan-Meier curve from the operation date, with deaths and moves out of Wisconsin censored as the policy files, and keeps Edvalt/Kelvarne and Edvalt/Pellvoro on the agreement under the 5.0 per cent bar; the step that lands it there is counting each hip entered at a 2018 to 2021 registry clinic as at risk from its operation, so the years before its entry, in which any revision would have kept it off the registry, enter the curve as revision-free, while admitting each legacy hip at its enrolment visit puts both constructs over the bar and off the agreement.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reconciles the two registry exports and the component crosswalk, counts every hip separately, censors deaths and loss to follow-up as the policy files and reads the registry's note that implants done before 2018 were enrolled at their first registry clinic visit still runs Kaplan-Meier from the operation date for every implant and keeps the older constructs whose ten-year evidence is mostly legacy, because those implants are in the registry only because they had not been revised by the day they were enrolled; only admitting each legacy implant to the risk set at its enrolment (left truncation) drops them.",
+  "domain_test": "The deciding quantity is each construct's cumulative percent revision ten years after surgery, the joint registry's own Kaplan-Meier estimate with deaths censored, worked with left truncation for implants enrolled after their operation; with another field's nouns the registry's legacy enrolment of hips still in place, the ten-year implant benchmark and the revision of a component have nothing to attach to.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task139": "task139 reads a randomised intake intervention per assigned unit because it changes which units become costly cases; task265 estimates a revision-free survival curve from a registry that admits earlier implants only if still unrevised, by delayed entry",
+    "task452": "task452 weights reference observations by inclusion probabilities from a revised classification; task265 has no sampling weights, it builds risk sets that admit each legacy implant at its enrolment",
+    "task255": "task255 fits a severity distribution through each claim's deductible floor and retention ceiling (truncation and censoring in the size of a loss); task265 is truncation in time, legacy implants entering the survival risk set at the date the registry first saw them",
+    "task133": "task133 carries a filed cumulative curve forward for units that have already survived part of it (conditional survival); task265 estimates the curve itself from a record that admits earlier starters only as survivors, so the risk sets need delayed entry"
+  },
+  "lineage": [
+    {
+      "domain": "marketing-consumer-research",
+      "subdomain": "media-reach-frequency-audience-measurement",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G16",
+        "G17"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "driver": "The decisive quantity is how a population of events divides among classes when each event's class is recorded for a self-selected part and predicted for the rest by a classifier whose error counts were measured on a sample of the recorded part; spreading the rest's predictions by the share of each predicted class that truly belonged to each class carries the recorded part's class mix into the rest, and only solving for the class mix whose expected predictions under the per-class error rates match the predictions observed recovers it.",
+      "architecture": "v0 (seed DA15 connected-TV world, worked at the draw, never registered)",
+      "drawn": "2026-10-17",
+      "fate": "set aside at the draw 2026-10-17: the guard blocked its signature (population, G6) against task144, task228, task68, task230, task253 and task455, and its insight (per-class error rates carry to a population with a different class mix, the precision does not, so invert) is task446's shipped lesson; every other step in the world is a count under stated rules"
+    }
+  ],
+  "notes": "Calibration organ none. stump_strategy population_selection: the registry holds earlier implants only as survivors of the years before it began (who is in the risk set), not a row grain or a reading. Context artifact operations_log: the registry's data-management log (the 2018 launch, the 2018 to 2021 legacy enrolment clinics, the death-index linkages, the 2020 component catalogue re-coding), which answers what the registry did when and never ranks a construct. forcing_event purchase_order_or_contract: the implant contract renews on 1 July 2027. Gate G method_or_model_selection: Kaplan-Meier with and without delayed entry are both standard curves; the record's own enrolment design selects one.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:legacy-enrolment-left-truncation",
+  "layer1": [
+    "the registry in two exports with different layouts: the prospective capture from 2018 and the legacy enrolment workbook kept by the 2018 to 2021 clinics",
+    "stem and cup catalogue numbers, one maker's renumbered on 1 July 2020, mapped to constructs through the registry's crosswalk",
+    "bilateral patients with two hips on file, each hip its own record",
+    "deaths from the Wisconsin death-index linkage, some with month and year only",
+    "dates written three ways across the exports (ISO, month/day/year text, spreadsheet dates)",
+    "one hospital's medical record numbers in its own format until its move to the system health record in 2024"
+  ],
+  "registered": "2026-10-17T11:49:16Z"
+}

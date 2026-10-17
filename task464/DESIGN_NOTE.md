@@ -1,386 +1,364 @@
-# task464 design note: Wendlemere accelerator advisor slate (architecture 1)
+# task464 design note: the 2027 Adolescent Literacy Partnership grants (architecture 2)
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
+Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first: architecture 1 (the
+Wendlemere building emissions slate) was sent back by the determinism judge and a first redraw was dropped before
+registration; architecture 2 is drawn afresh in the ETL objective.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task464.json`, registered 2026-10-17, guard PASS. The first keying (gap
-  time, pattern A, Gate G forecasting) blocked on `test.same_driver_older` against seven older builds; keyed again on
-  the skill's own definitions (below), which also reads truer to the mechanism. Personas re-drawn from the same
-  `guard.py names` list after a first-name WARN.
-- **Seed:** ET21 (`analytical_tasks/07_data_extraction_conformation`), world, decision and quantity only: a city-funded
-  building decarbonization accelerator assigns its advisors to the covered buildings in one community district with the
-  largest expected penalty under a building emissions limits law. The seed's own mechanism (a benchmarking file's
-  greenhouse gas column against the law's coefficients, the largest use type's limit for a mixed-use building, campus
-  rows) is data semantics and rule application; it survives only as Layer 1, lower rungs and ask hazards.
-- **Pairing:** Physical & Environmental Sciences / emissions-inventory / ETL, own pattern weather-normalized emissions on
-  the current operating regime. A building-level emissions inventory for a city's covered buildings, conformed from the
-  utility's whole-building bills, the steam utility's statements and two oil dealers' tickets into one energy record and
-  turned into each building's emissions by the law's coefficients, is emissions inventory work; weather normalization
-  of building emissions is part of the field's inventory practice (temperature-adjusted series, like-for-like portfolio
-  inventories). The last three draws are genomics, safety signals and provider quality (all anomaly detection); this
-  task type last carried task263, nine builds back, and before it my lane's task462 and task460 (which share none of
-  this mechanism).
-- **Why this task type and mechanism:** the ETL builds on file spent completion of open periods (445, 451, 457),
-  capture and coverage of registers (448, 454, 455), links and continuity (449, 455), a link through shared items (450),
-  a rotating panel's measurement change (453), a stratified sample on a revised map (452), latent classes (456),
-  partial observation selected on the trait (458), an operating level (459), a dispatch margin (460), a record extended
-  through an auxiliary series (461), detection-weighted snapshots (462) and a drift-free price index (463); none
-  normalizes a unit's output to a standard year of an external driver, and none has to find, inside each unit's own
-  record, the point from which the record describes the unit being decided.
-- **Shape:** 01, a ranked list under a cap (twelve advisor places): the twelve (each one's 2027 penalty), the first
-  property left out, its gap to the twelfth and a chart of the thirteen; the asks and the conformed record add 19.
-- **Strategy:** forecast_method_backtest (a regime change inside each building's own record makes the natural fit, over
-  the whole record or the latest twelve months, wrong out of sample on its own latest bills), on the population gap (a
-  building's bills from before its last change in how it runs describe a building that is no longer the one decided)
-  with the time gap behind it (the record's weather against the normal year). Generators G4 (each record split at its
-  own change), G13 (the record's horizon against the normal year as run now) and G16 (a degree-day model over a ratio
-  of degree days). Gate G forecasting.
-- **World:** Wendlemere, an invented city in the northeastern United States. Its Local Law 18 of 2022 sets annual
-  emissions limits on covered properties (over 25,000 square feet) by occupancy group for 2024 to 2029, converts each
-  fuel to tonnes of CO2e by a schedule of coefficients and charges $275 a tonne over the limit. The Wendlemere Building
-  Decarbonization Accelerator, run under a city contract by the nonprofit Wendlemere Building Futures, gives covered
-  properties a year of free technical advisors; its 2027 cycle has twelve advisor places in Community District 4, 158
-  covered properties (multifamily heated by oil, gas, district steam or packaged heat pumps, mixed-use blocks, a few
-  hotels and offices). Data: Wendlemere Electric & Gas's whole-building billing export (electricity and gas, December
-  2022 to September 2026), Wendlemere Thermal's steam statements, Dunmarrow Fuel Oil's and Velsby Brothers Petroleum's
-  delivery tickets, the utility account crosswalk, the covered buildings register, the Lindqvist Field airport's daily
-  weather record from 1991 and its 1991 to 2020 normals; for the asks, the benchmarking filings for 2023 to 2025, the
-  Department of Finance's penalty ledger and its tax lot changes.
-- **Forcing fact:** the 2027 cycle runs January to December 2027 and the slate goes to the city's Office of Climate and
-  Environment for sign-off by 20 November 2026; the call faces forward (the penalty each property would owe for 2027)
-  on a record that closes at the end of September 2026.
-- **Forum and forcing event:** funder_or_donor (the city's Office of Climate and Environment funds the advisors and
-  signs off the slate), launch_or_rollout (the 2027 advisory cycle). Organisation nonprofit_or_charity; role
-  field_unit_lead. Personas from `guard.py names --geo "United States" --seed 464`: Kelli Pierce (the accelerator's
-  district lead for Community District 4, who issues the cycle rules), Nicholas Clay (an advisor).
-- **Data-native sentence:** Wendlemere's covered buildings are partway through their own decarbonization, so three and
-  a half years of a building's bills often hold two buildings, the one before a boiler was replaced, heat pumps went in,
-  a hot water plant was converted or a tenant fitted out and the one after, on a date no file records; nineteen of the
-  district's 158 buildings made such a change between December 2025 and February 2026, inside the latest twelve months,
-  so their records are mostly the building that no longer exists.
+- **Card:** `.claude/skills/fingerprint/cards/task464.json` (architecture v2, architecture 1 in `lineage`), registered
+  2026-10-17 09:40 UTC, guard WARN only. Answered: the first name Jeffrey appears in one older build (task141); the
+  state department of education is the honest organisation (government_agency, overused); Gate G
+  method_or_model_selection repeats across the batch, the honest mechanism; the question form is which, because the
+  call picks districts. Differentiated: task450 (common-item linking of two forms given to different groups, the
+  instrument's change separated from the groups' difference; here one group took both tests and the trap is a
+  regression's prediction used as a concordance) and task184 (an offence spread over its occurrence window).
+- **Seed:** none kept. ET21's world (a building emissions slate) is spent with architecture 1; the slot is re-drawn in
+  a new world.
+- **Pairing:** Education & Learning Sciences / item-response-theory-test-equating / ETL, own pattern "concordance by
+  distribution matching, not regression". Placing a retired test's scores on a new test's scale is the task type's own
+  work, and the conformed file (each counted student's latest grade 8 result and its level on the new scale) is the
+  dataset the grants are set on. The task type is the least drawn of the six that serve ETL (task450 alone), and none
+  of its three listed patterns (DIF matched on ability, anchor drift, anchor-based equating for nonequivalent groups)
+  is this mechanism.
+- **Shape:** 01, a ranked list under a cap: the six of fourteen applicant districts funded, every applicant's grade 9
+  and 10 students at Level 1, the first district left out and its gap to the sixth, and a chart; the conformed file and
+  the ask add the rest.
+- **Strategy:** other (scale linking). The decisive step is the field's concordance between the retiring and the new
+  test, on the population gap (a regression's predicted scores are not the scores the 2025 cohort would have had, and
+  the grants count a distribution's tail) with G1 (a score on one scale read on another's) and G16 (method selection).
+  Gate G method_or_model_selection.
+- **World:** an unnamed state of the United States. Its Department of Education replaced the Grade-Level Reading
+  Assessment (grades 3 to 8, last given in spring 2025; a fixed 30-item paper form per grade whose raw-to-scale table
+  reports scale scores from 150 to 450, so only 31 scale scores occur on each form, six to eleven points apart near the
+  Level 1 boundary; four levels) with the Statewide Literacy Measure (first given in spring 2026; adaptive, any integer
+  from 2100 to 2900; four levels). In spring 2026 the Office of Assessment ran a bridge study: the grade 8 students of 24
+  public middle schools drawn at random took the retiring test's grade 8 form as well, the order set by school. The
+  2027 Adolescent Literacy Partnership grants go to the six of the fourteen districts that filed a notice of intent with
+  the most students in grade 9 or 10 on the roll on 1 October 2026 whose latest grade 8 state reading result is at the
+  Measure's Level 1 (a grade 8 score below 2415), a retiring-test result counted at the level it places at on the
+  Measure's scale. This year's grade 9 took the new test in grade 8; grade 10 took the retiring one. The 2025 grade 8
+  cohort read less well than the 2026 one statewide (0.20 standard deviations; its retiring-test mean 291.3 against the
+  bridge sample's 301.3 on the same form). The vendor's June student file reports performance levels on the cut scores
+  known in June: the Board adopted grade 8's on 11 June 2026 and set grades 3 to 7 on 13 August 2026.
+- **Forcing fact:** the State Board of Education awards the grants at its December 2026 meeting for calendar 2027; the
+  call faces forward (the 2027 grants on the students now in grades 9 and 10).
+- **Forum and forcing event:** trustees_or_governors (the State Board of Education), budget_or_appropriation (the 2027
+  grant appropriation). Organisation government_agency; role programme_officer. Personas from `guard.py names --geo
+  "United States" --seed 464`: Jeffrey Warren (the programme's director, who issues the grant rules) and William
+  Holloway (the assessment office's psychometrician who ran the bridge study).
+- **Data-native sentence:** the state changed its reading test after spring 2025, so this year's grade 10 carries only
+  the retiring test's grade 8 scores while grade 9 carries the new test's, and the only link is a bridge study in which
+  each student's two scores both carry measurement error, so the regression of one score on the other is flatter than
+  the line that matches the two scales, and placing each 2025 score at its regression prediction pulls the low scores
+  toward the bridge sample's mean and out of Level 1.
+- **The WHAT screen.** The estimand's five parts are filed by the grant rules: the population (students in grade 9 or 10
+  on the roll of each applicant on 1 October 2026), the outcome (the latest grade 8 state reading result at the new
+  test's Level 1, a 2025 result counted at the level it places at on the new scale), the window (the latest grade 8
+  administration, spring 2025 or spring 2026), the unit (students) and the comparison (the fourteen applicants, the six
+  with the most). The decisive step settles none of them: it is how a 2025 score is placed on the new scale, a
+  regression's prediction or a concordance that matches the two tests' score distributions, two ways of estimating one
+  filed quantity, and the bridge data rule out the easy one (placed by the regression, 11.1 per cent of the bridge
+  students sit at Level 1 against 15.7 per cent on the new test itself).
 - **Sources, one line each:**
-  - `stumping/references/client/two-layer-task-design.md`, forecasting and uncertainty: model choice on out-of-sample
-    error; here a degree-day model fitted across a building's change in how it runs fails on its own latest bills.
-  - `stumping/references/client/two-layer-task-design.md`, the field's own method: building energy analysts estimate a
-    building's normal-year use with inverse degree-day models over a baseline period that represents current
-    operation (the measurement and verification practice); this build makes the baseline period the decisive choice.
-  - `dataset-generation/references/layer1-messiness.md`: several feeds for one picture, billing periods off the
-    calendar, estimated reads trued up later, delivered fuel as tank fills, units per fuel, imperfect keys, a weather
-    record in tenths of a degree Celsius; none on the decisive step.
-- **Same-puzzle and abstraction:** gap population, G4, Gate G forecasting, decision ranked_slate_under_cap: guard PASS.
-  Nearest drivers 0.06 to 0.10 (task182, task51 lineage, task460, task445 v1, task32 v2 lineage). task182 measures an
-  effect as the gap between a level and each unit's driver-only path fitted before a known start; here no effect is
-  measured, the change in each building is undated and is found from its own series, and the quantity is a forward
-  normal year on the regime that holds now. task32 v2 fitted a conversion rate jointly across one dated regime break;
-  here each of many units carries its own undated change, or none.
+  - `stumping/references/client/layer2-rigor-patterns.md`, item-response-theory-test-equating: DIF, anchor drift and
+    nonequivalent-groups equating are the listed patterns; this build takes the linking design itself (a single-group
+    bridge) and the decision between prediction and scale alignment, which none of them covers.
+  - `stumping/references/client/two-layer-task-design.md`, estimation that fits the data: both variables carry error,
+    so the least-squares line of one on the other is attenuated; here the attenuation decides who counts at Level 1.
+  - The field's own practice: tests are placed on a common scale by equating or concordance (equipercentile or linear,
+    symmetric and invariant across groups), and a regression of one test on the other is a prediction, not a linking;
+    the build files neither, it files the quantity.
+  - `dataset-generation/references/layer1-messiness.md`: two vendors' layouts and identifiers, not-tested and
+    invalidation codes with make-up sessions, transfers between districts, a merged district, enrolment spells, new
+    arrivals and nonpublic test takers; none on the decisive step.
 
 ## Default path
 
-1. Read the accelerator's 2027 cycle rules: the twelve places go to the covered properties in the district that would
-   owe the largest penalties under Local Law 18 for calendar year 2027, with the year's weather at the 1991 to 2020
-   normal at Lindqvist Field, each estimated from the property's own bills, statements and delivery tickets through 30
-   September 2026.
-2. Read the law's schedule: each fuel's coefficient and energy per unit (Table 1), each occupancy group's limit for 2024
-   to 2029 (Table 2), the limit as the sum over the register's occupancy areas, $275 a tonne over it.
-3. Conform the records: Wendlemere Electric & Gas's bills (gas in CCF times each period's therm factor), Wendlemere
-   Thermal's statements (the 2025 and 2026 sheets in pounds), the two dealers' tickets (gross gallons, fill to fill),
-   each account to its property through the crosswalk for the dates it served it; Lindqvist Field's daily mean
-   temperature from TMAX and TMIN, heating and cooling degree days at base 65 F.
-4. Fit each fuel's degree-day model (use per day on heating and cooling degree days per day, each span weighted by its
-   days) over the property's whole record and evaluate it at the normals (4,735 heating and 1,048 cooling degree days).
-5. Price each property's 2027 emissions over its limit at $275 a tonne and take the twelve largest.
+1. Read the grant rules: for each of the fourteen applicants, count the students in grade 9 or 10 on the roll on
+   1 October 2026 whose latest grade 8 state reading result is at the Measure's Level 1 (a grade 8 score below 2415), a
+   retiring-test result counted at the level it places at on the Measure's scale; fund the six with the most.
+2. Conform the two vendors' files: the retiring test's 2025 rows keyed to state identifiers through Calderwood's
+   test-taker crosswalk; the new test's 2026 rows; a make-up session's score after an invalidation; absent and exempt
+   rows left out.
+3. Take the October 2026 enrolment spells that cover 1 October in grades 9 and 10 of the applicants (Ashgrove-Fenley as
+   one district) and each student's latest grade 8 result.
+4. Grade 9 on the new test: Level 1 below 2415.
+5. Place the 2025 retiring-test results on the new scale with the bridge study: regress the new test's score on the
+   retiring test's (3,968 students in 24 schools, slope 1.39), take each 2025 score's predicted new-scale value and count
+   it at Level 1 when the prediction is below 2415 (retiring scores of 231 and below).
+6. Sum each applicant's grade 9 and 10 students at Level 1 and fund the six with the most.
 
-- **Ends on:** the whole-record slate, with 429 Quillen Avenue ($154,452), 461 Tallman Street ($143,441) and 173 Orrin
-  Place ($140,659) in place of 758 Fenwright Avenue, 843 Merrow Street and 137 Ashlar Street (13th, 18th and 16th on it).
-- **Golden:** 808 Thornwick Avenue, 686 Fenwright Avenue, 76 Thornwick Avenue, 34 Thornwick Avenue, 62 Merrow Street, 157
-  Lattermore Place, 185 Brennick Avenue, 758 Fenwright Avenue, 151 Orrin Place, 843 Merrow Street, 937 Haddon Street and
-  137 Ashlar Street, from each fuel's degree-day model fitted on the spans since the property last changed how that
-  fuel's use responds (found in its own record) and evaluated at the normals.
+Ends on: Harlenbrook funded in Elmorrow's place (Harlenbrook 323 against Elmorrow 315)
+
+Golden: Elmorrow funded and Harlenbrook the first left out (Elmorrow 368 against Harlenbrook 353, a gap of 15)
 
 ## Stump sentence
 
-The default path fits each fuel's degree-day model over the property's whole record and files a slate with 429 Quillen
-Avenue, 461 Tallman Street and 173 Orrin Place in place of 758 Fenwright Avenue, 843 Merrow Street and 137 Ashlar Street,
-because those three replaced a boiler or put in heat pumps between 29 December 2025 and 3 February 2026 and three
-years of their bills still describe the plant they had (their heating fuel's bills since then run 10 to 20 per cent
-under the whole-record model at the same weather); the obvious correction, the latest twelve months, still straddles
-those changes and keeps 461 Tallman Street and 173 Orrin Place in.
+The default path places each 2025 retiring-test score at its regression prediction on the new scale, which pulls the
+low scores toward the bridge sample's mean and out of Level 1, so it counts too few of the grade 10 students at Level 1
+and lands on Harlenbrook funded in Elmorrow's place (Harlenbrook 323 against Elmorrow 315), where the bridge study's
+concordance funds Elmorrow at 368 and leaves Harlenbrook out at 353.
 
 ## Three rules
 
-- **Task type:** physical-environmental-sciences/emissions-inventory (serves ETL): a building-level emissions inventory
-  of a city district's covered properties, conformed from a utility's, a steam company's and two oil dealers' records
-  into one energy record and converted to emissions by the law's coefficients.
-- **Domain test:** the deciding quantity is each property's emissions in a year of normal weather as it now runs,
-  estimated the way building energy analysts estimate it: inverse degree-day models of each fuel over its billing
-  periods or fill intervals, a baseline period that represents the building's current operation, and the station's
-  1991 to 2020 normals, priced against the law's limit.
-- **Swap:** "which twelve buildings would owe the largest penalty in a year of normal weather as they now run" with a
-  clinic's nouns ("which twelve clinics would see the most visits in a normal flu season as they now operate") loses
-  what decides it: a heating plant's response to degree days, a hot water and cooking load the weather does not drive,
-  a cooling response in the summer bills, and a retrofit that changes the response partway through the bills.
-- **Layer 1:** Wendlemere Electric & Gas's export (billing periods off the calendar, estimated reads trued up at the next
-  actual read, gas in CCF with a heat factor per period, accounts replaced after service upgrades), Wendlemere
-  Thermal's statements (thousands of pounds, then pounds and a text period from its 2025 billing system), two oil
-  dealers' tickets in their own layouts (a Y/N fill flag against FILL and PARTIAL, gross and net gallons, two grades
-  under three product names, partial deliveries in the 2022 to 2023 season), the airport's daily record in tenths of a
-  degree Celsius with missing days and flagged values, and for the asks lots with and without separators and the
-  portal's own greenhouse gas column. Each comes from the system that writes it; nothing is placed to be caught, and
-  each mishandled leaves the call and every graded 2027 figure where they are (`## Layer 1 inventory`, asserted).
-- **Layer 2:** field_method (and forecasting and uncertainty behind it): the choice that flips the call is the baseline
-  period each property's degree-day models are fitted on, the stretch of its own record since it last changed how it
-  runs, found from the record itself.
-- **Decisive step:** a property whose response to the weather, or whose fixed draw, stepped partway through the record
-  has two models in its bills; its 2027 at normal weather comes from the bills after the step, found by the fit that
-  breaks there, while a model over the whole record, or over the latest twelve months when the step falls inside them,
-  describes a building that no longer exists.
-- **Not semantics:** every field read correctly (billing periods, read types, heat factors, steam pounds, gallons, grades
-  and fill flags, the weather record's units and flags, the register's occupancy areas, the law's coefficients) still
-  leaves a model fitted over the whole record, or the latest twelve months, on the wrong slate; no field, code, flag or
-  account records a property's change in how it runs.
-- **Not rule application:** the law turns energy into tonnes and tonnes over the limit into dollars, and the cycle rules
-  fix the quantity (the penalty for calendar year 2027 at the normal weather, from the property's own records through
-  30 September 2026); nothing states how a property's 2027 is estimated from its records or which of them describe how
-  it runs now, so executing every stated rule on a fit over the whole record files the wrong slate.
-- **Analyst test:** a strong analyst who conforms every bill, statement and fill correctly, reads the law and the cycle
-  rules and fits each fuel's degree-day model the usual way, over the whole record (the default path) or over the
-  latest twelve months, evaluated at the normals, files a slate with 461 Tallman Street and 173 Orrin Place in (and on
-  the whole record 429 Quillen Avenue), in place of 843 Merrow Street and 137 Ashlar Street (and 758 Fenwright Avenue).
-- **Estimand:** the cycle rules 2.1: the twelve covered properties in the district that would owe the largest penalties
-  under Local Law 18 for calendar year 2027, with the year's weather at the 1991 to 2020 normal at Lindqvist Field, each
-  estimated from the property's own records through 30 September 2026 (the bills, the statements and the tickets);
-  every one of the register's 158 properties is a candidate, and the law's schedule converts and prices.
-- **No decoy:** no document gives a 2027 figure, a normal-year figure, a penalty estimate or a ranking; nothing records a
-  retrofit, conversion or fit-out, and no document describes or endorses a normalization or argues for a slate; the
-  owners' filings and the city's ledger, read only by the asks, describe 2025 as filed and billed.
-- **No certified replay:** no published or certified figure is reproduced by the golden method and missed by another;
-  the 2025 filings and billing are not a control any 2027 method must replay.
-- **Lesson:** a building's expected compliance exposure is a weather-normalized year on the regime it runs in now: a
-  model fitted across a retrofit describes neither building, and a recent window that straddles the retrofit does too.
-  No build on file normalizes an output to a standard year of its driver or locates each unit's own regime.
+Task type: item-response-theory-test-equating: placing the retiring test's scores on the new test's scale through a single-group bridge study to build one conformed dataset of grade 8 reading levels, a task type serving Data Extraction & Conformation (ETL).
+
+Domain test: the deciding quantity is each district's count of students below the new test's Level 2 cut when its grade 10 students were measured only on the retiring test; psychometrics places one test's scores on another's scale by a concordance that matches the two score distributions (equipercentile or linear linking, symmetric and the same in every subgroup when the tests are equally reliable), while a regression of one score on the other is a prediction that pulls every converted score toward the sample's mean.
+
+Swap: "the six hospitals with the most patients below the new triage score's level 2, a third of them scored only on the old score" keeps the shape and loses the move: no bridge sample of two error-laden measures of one ability, no reported scale with performance cut scores, no field standard placing one scale on another by matching distributions, so the swapped call is a lookup and the linking is what this task tests.
+
+Layer 1: two vendors' layouts and identifiers (retiring-test booklets scanned without a pre-ID label carry only the vendor's test-taker number, joined through its crosswalk), absent, exempt and invalidated sessions with make-ups, the merged district's predecessor codes in both test files, students tested in one district and enrolled in another, enrolment spells (September transfers, late entrants, September withdrawals), arrivals with no state record, nonpublic test takers now in public high schools and the files' other grades; each written by the system that produces it, none placed to be caught, each neutral on the call (asserted).
+
+Layer 2: field method (scale linking): the call flips on linking the two tests by matching their score distributions in the bridge study instead of predicting new-test scores from retiring-test scores by regression.
+
+Decisive step: placing the retiring test's 2025 scores on the new scale with a concordance from the single-group bridge study (every equipercentile convention and linear linking place 241 and below at Level 1), not a regression prediction (231 and below), the field's choice between linking and prediction.
+
+Not semantics: every field, code, unit and definition read correctly (the 2415 cut, the latest grade 8 result, the count day, the make-ups, the crosswalk, the merged codes) still leaves the regression route on Harlenbrook, because the error is in how a score is carried from one scale to the other, which no field or definition sets.
+
+Not rule application: the rules file the population and the outcome and no rule or procedure says how a retiring-test score is placed on the new scale; executing every filed rule with a regression placement funds Harlenbrook, so the step no rule performs is the choice of a linking method.
+
+Analyst test: a strong analyst who conforms both vendors' files, keys each student through the count-day spells, takes each latest grade 8 result and applies the 2415 cut places the 2025 scores by the bridge regression and lands on Harlenbrook funded in Elmorrow's place (Harlenbrook 323 against Elmorrow 315), executed in checks.py on the generator's clean truth.
+
+Estimand: alp_2027_grant_rules.pdf, sections 3 and 4: each applicant's students in grade 9 or 10 on its roll on 1 October 2026 whose latest grade 8 state reading result is at the Statewide Literacy Measure's Level 1 (a grade 8 score below 2415), a Grade-Level Reading Assessment result counted at the level it places at on the Measure's scale; the six applicants with the most.
+
+No decoy: nothing is planted to be caught; no file states a regression, a predicted score, a conversion, a concordance or a linking method, no memo or briefing argues for a method, the bridge memo describes the study's design and participation only, and no file counts or ranks the applicants.
+
+No certified replay: no certified or published figure reproduces a method; the bridge memo's means, standard deviations and correlation describe the sample under every method, and no table of converted scores or district counts ships.
+
+Lesson: a score from one test placed on another test's scale to count students below a cut must be linked by matching the two distributions, because a regression prediction regresses to the mean and empties the tails; no build on file teaches the choice between prediction and linking (task450 links two forms through common items given to different groups).
 
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| The owners' 2025 filings as reported (three swaps) | the cycle rules 2.1 name the bills, statements and tickets and the 2027 normal weather | the filings carry each fuel for 2025 | yes: take the latest reported year | no | no | one product per property | readable |
-| The 2025 filings with the heating fuels scaled by 4,735 over 4,142 degree days (three swaps) | 2.1 as above | as above | yes: a degree-day ratio | no | no | one ratio | readable |
-| Each fuel's degree-day model over the whole record (the default path, three swaps) | 2.1 "estimated from the property's own records through 30 September 2026" reads as all of them | bills, statements and tickets for every property | yes: fit everything | no | no | one regression per fuel | readable |
-| The same model over the latest twelve months (two swaps) | 2.1 asks for 2027, the year ahead | the records end 30 September 2026 | yes: recent data for current operation | no | no | one regression per fuel | readable |
-| The whole record with a linear time trend to mid-2027 (two swaps) | none | none | yes: a trend for drift | no | no | one regression per fuel | readable |
-| Each fuel's model fitted on the spans since the property last changed how that fuel's use responds, the change found in its own record (decisive) | no: the rules fix the quantity and the records, and no sentence names a change, a baseline period, a break or a regime | no column, flag, note or account marks a retrofit; the account replacements fall on dates unrelated to any change near the cut (asserted) | no: every reflex (all records, the latest year, a trend, a ratio, a heating-only model) files a wrong slate | no: nothing reports 2027 or a normal year; the 2025 filings and ledger describe 2025 | no: every bill and ticket is valid and the battery finds nothing | no: a break search on each stream of each property | silent |
+| R0 each 2025 score placed at its regression prediction from the bridge (231 and below; Harlenbrook; the default path) | the rules count a result "at the level it places at on the Measure's scale", which a predicted score satisfies | the bridge file pairs each student's two scores | yes: predict the new score from the old | no | no | one fitted line | readable |
+| R0b a classifier: Level 1 where the bridge's chance of Level 1 at that score passes one half (a logistic fit, or the score's majority) (231; Harlenbrook) | none | the pairs | yes: classify each score by its likeliest level | no | no | one rule | readable |
+| R1 the two cohorts matched statewide by percentiles or z-scores (231; Harlenbrook) | none | the two statewide files | yes: standardise both tests | no | no | one match | readable |
+| R1b the retiring test's own levels, Below Basic read as Level 1 (220; Harlenbrook and Garnet Hills ahead of Elmorrow) | the guide's level table | the file's performance level column | yes | no | no | none | readable |
+| R2 the retiring score at the cut predicted from the new score, inverse regression (249; the golden slate, every count high) | none | the pairs | yes | no | no | one fitted line | readable |
+| R3 a concordance matching the two score distributions in the bridge (241; decisive) | no: the rules file the population and the outcome, the memo the study's design; no sentence names a concordance, equating, linking, a percentile match, an equivalent or a conversion | no column holds an equivalent or a converted score; no table of equivalents ships | no: the prediction reflexes and the cohort match land on 231 | no | no | no: the move is the choice of a distribution match, not a figure | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | covered property | the register's covered property ID, its accounts through the crosswalk | a tax lot or a building | same call (no property near the cut shares an account or a lot) | the law's 103-01(a); asserted |
-| SF2 | in the district | the register's 158 properties, all in Community District 4 | none in the files | same call | the register (DISTRICT 4 on every row); asserted |
-| SF3 | penalty under Local Law 18 for calendar year 2027 | $275 a tonne over the limit, Table 1 and Table 2 for 2024 to 2029, nothing below zero | the 2030 limits | not 2027 | Table 2's caption; 103-04(b) |
-| SF4 | the limit | the sum over the register's occupancy areas of area times the group's limit | the largest group's limit on the whole floor area | a different slate (four swaps) | the law's 103-03(a) |
-| SF5 | the year's weather at the 1991 to 2020 normal | 4,735 heating and 1,048 cooling degree days, the sums of the normals file's monthly normals, base 65 F | the annual means of the daily record for 1991 to 2020 | same call, every graded figure in its bin | the cycle rules 2.1 and the dictionary (the normals file); asserted |
-| SF6 | weather terms in the model | heating and cooling degree days | heating degree days alone | same slate; the order of 151 Orrin Place and 843 Merrow Street and the gap move | the bills: every slate property's electricity carries a cooling response (t of 36 or more) and a heating-only fit leaves 67 to 1,250 times the residual; asserted |
-| SF7 | the property's own records | its bills, statements and tickets, each account while the crosswalk has it serving the property | the owners' 2025 benchmarking filings | a different slate (three swaps) | the cycle rules 2.1 list the records |
-| SF8 | through 30 September 2026 | bills whose period ends by then, deliveries dated by then | bills that start by then | same call: no bill or ticket in the pack runs past 30 September 2026 | the cycle rules 2.1 and 3.1; asserted |
-| SF9 | an account's dates | the crosswalk's VALID_FROM and VALID_TO | the account alone, dates ignored | same call | the crosswalk; asserted |
-| SF10 | gas quantity | CCF times the period's THERM_FACTOR, in therms | one average factor; CCF read as therms | one factor: same call; CCF as therms is not a reading of the export | the dictionary (UOM CCF, THERM_FACTOR therms per CCF) and Table 1 (therm); asserted |
-| SF11 | steam quantity | thousands of pounds, the 2025 and 2026 sheets' pounds over 1,000 | pounds read as thousands | not a reading: the 2025 header says pounds and only the conversion joins the 2024 and 2025 sheets | the dictionary; asserted |
-| SF12 | oil quantity | gross gallons as metered at the truck | Velsby's net gallons at 60 F | same call | the law's 103-02(b); asserted |
-| SF13 | an estimated read | the period it closes measured with the next actual read | each estimated bill as read | same call | the dictionary (READ_TYPE); asserted |
-| SF14 | a partial delivery | the tank measured fill to fill, a partial adding to the next fill | every delivery taken as a fill | same call | the dictionary (TANK_FILLED, FILL or PARTIAL); asserted |
-| SF15 | the twelve largest | ranked on the unrounded 2027 penalties | ranked on the rounded penalties | same call: the 12th ($75,180) and 13th ($68,388) round apart | the cycle rules 2.1; asserted |
-| SF16 | the gap | the twelfth's unrounded penalty less the thirteenth's, then rounded to $1,000 | the difference of the rounded penalties | $5,000 against $7,000 | the prompt rounds the gap to $1,000, which a difference of $5,000-rounded penalties could never need |
-| SF17 | the first property left out | the thirteenth on the same estimate | the thirteenth after removing 2026 advisees | same call | the cycle rules 2.2 (a 2026 advisee may take a place) |
-| SF18 | calendar year 2027 | 365 days at the normal year's degree days | none | same call | the cycle rules 1.1 and 2.1 |
+| SF1 | on the roll on 1 October 2026 | an enrolment spell whose entry is on or before 1 October and whose exit is blank or on or after it (an October withdrawal counts) | every spell in the extract (late entrants, September withdrawals, closed transfer spells and October moves kept); only the spells still open at the extract | same call under each (asserted) | the rules' count day; no spell opens or closes on 1 or 2 October (asserted) |
+| SF2 | each applicant's students | the district of the count-day spell | the district of the grade 8 test | same call (asserted) | the rules ("on its roll") |
+| SF3 | latest grade 8 state reading result | the most recent grade 8 administration that produced a score, a make-up session's score after an invalidation | the earliest grade 8 result; make-ups ignored; the invalidated score kept | same call under each (asserted) | the rules ("latest ... result"); the vendors' status codes |
+| SF4 | Level 1 | a grade 8 score below 2415 | the vendor's performance level column | same call and figures: the column agrees with the cut on every grade 8 row (asserted) | the rules and the grade 8 summary |
+| SF5 | a retiring-test result counted at the level it places at on the Measure's scale | the level of the new-scale score the bridge's distributions link it to (241 and below at Level 1 under all 30 conventions) | the level of its regression prediction (231 and below) | a different call (the stump) | the bridge study's own scores: placed by the regression 11.1 per cent of its students sit at Level 1 against 15.7 per cent on the new test; placed by the concordance 14.6 per cent, the nearest the form's attainable scores allow (asserted) |
+| SF6 | the concordance's convention | equipercentile with mid-percentile ranks | at-or-below ranks, log-linear presmoothing of degree 4 or 6, a quantile match, nearest ranks, linear linking, rounded or unrounded equivalents, cut scores carried to the retiring scale and rounded | same call and figures: every convention places 241 highest at Level 1, with 1.8 new-scale points and 41 bridge students to spare, and so it stays with any 2 per cent of the bridge rows or any one school left out (asserted) | C1, convergence |
+| SF7 | the merged district | Ashgrove-Fenley Consolidated (1700) as one applicant, its students tested under 1701 and 1702 | the predecessor codes counted apart | same call (asserted) | the directory's note on the consolidation; the rules' applicant list |
+| SF8 | a nonpublic school's test taker now in a public high school | counted with that result (a state reading result) | left out | same call (asserted) | the rules ("latest grade 8 state reading result") |
+| SF9 | a grade 9 student retained after grade 8 in 2025 | placed through the concordance like grade 10 | left out | same call (asserted) | the rules count grade 9 and grade 10 alike |
+| SF10 | the six with the most | the six highest counts; no tie at the sixth place | n/a | same call | asserted: 15 between the sixth and the seventh |
+| SF11 | applicants | the fourteen districts in the rules' list of notices of intent | every district | same call: no other district would rank in the top six (asserted) | the rules' attachment |
+| SF12 | each applicant's grade 7 students (the ask) | students tested in the applicant's own middle schools in spring 2026 (the directory's schools; the merged district's two predecessors') | rows under the vendor's district code, nonpublic schools' students included | different figures (the ask's device) | the nonpublic schools registry |
+| SF13 | grade 7 Level 1 (the ask) | a grade 7 score below 2390 | the vendor's June performance level (below 2383) | different figures (the ask's device) | the Board's resolution of 13 August 2026 |
+| SF14 | with a score (the ask) | a scored session or a make-up score; absent, exempt and invalidated sessions without a make-up left out | none open | same figures | the ask's wording |
 
 ## Ladder
 
-| Rung | Construction | Departs from the golden | Nearest the line |
-|---|---|---|---|
-| below 0 | the owners' 2025 filings as reported, the law applied | 429 Quillen Avenue ($137,528), 461 Tallman Street ($124,851), 173 Orrin Place ($106,959) in; 157 Lattermore Place, 843 Merrow Street, 137 Ashlar Street out (13th, 14th, 16th) | 12th 758 Fenwright Avenue $92,770; 13th 157 Lattermore Place $85,225 |
-| below 0 | the 2025 filings, heating fuels times 4,735 over 4,142 | the same three in ($205,273, $204,399, $190,923); 758 Fenwright Avenue, 843 Merrow Street, 137 Ashlar Street out (13th, 14th, 16th) | 12th 157 Lattermore Place $139,190; 13th 758 Fenwright Avenue $127,512 |
-| 0, the default path | each fuel's degree-day model over the whole record | 429 Quillen Avenue ($154,452), 461 Tallman Street ($143,441), 173 Orrin Place ($140,659) in; 758 Fenwright Avenue, 843 Merrow Street, 137 Ashlar Street out (13th, 18th, 16th) | 12th 173 Orrin Place $140,659; 13th 758 Fenwright Avenue $128,313 |
-| 1, the obvious correction | the same over the latest twelve months (spans from 1 October 2025) | 461 Tallman Street ($111,369), 173 Orrin Place ($99,403) in; 843 Merrow Street, 137 Ashlar Street out (13th, 15th) | 12th 937 Haddon Street $92,651; 13th 843 Merrow Street $91,231 |
-| 2, the sophisticated one | the whole record with a linear time trend, evaluated at mid-2027 | 461 Tallman Street ($108,744), 173 Orrin Place ($96,532) in; 758 Fenwright Avenue, 137 Ashlar Street out (14th, 15th) | 12th 157 Lattermore Place $94,008; 13th 429 Quillen Avenue $88,895 |
-| 3, the golden | each fuel's model on the spans since its last change, found in the record | none | 12th 137 Ashlar Street $75,180; 13th 633 Lattermore Place $68,388 |
+| Rung | Construction | Retiring scores at Level 1 | Funded (sixth; first left out) | Elmorrow, Harlenbrook, Garnet Hills, Dunstree |
+|---|---|---|---|---|
+| R0 | the bridge regression's prediction (the default path) | 231 and below | Harlenbrook in Elmorrow's place (Harlenbrook 323; Elmorrow 315) | 315, 323, 327, 277 |
+| R0b | a logistic or per-score majority classifier from the bridge | 231 and below | the same | 315, 323, 327, 277 |
+| R1 | the two cohorts' statewide percentiles or z-scores | 231 and below | the same | 315, 323, 327, 277 |
+| R1b | the retiring test's own levels | 220 and below | Harlenbrook and Garnet Hills ahead of Elmorrow (Garnet Hills 288; Elmorrow 252) | 252, 299, 288, 237 |
+| R2 | inverse regression | 249 and below | the golden six, every count high (Garnet Hills 413; Harlenbrook 382) | 431, 382, 413, 371 |
+| R2b | the two scales' ranges matched | 265 and below | the golden six, every count far off (Garnet Hills 535; Dunstree 455) | 610, 444, 535, 455 |
+| R3 | a concordance from the bridge (golden) | 241 and below | Elmorrow (368; Harlenbrook 353) | 368, 353, 372, 320 |
 
-- **The golden slate:** 808 Thornwick Avenue $260,354; 686 Fenwright Avenue $251,002; 76 Thornwick Avenue $239,558; 34
-  Thornwick Avenue $159,752; 62 Merrow Street $148,767; 157 Lattermore Place $129,858; 185 Brennick Avenue $119,480; 758
-  Fenwright Avenue $100,579; 151 Orrin Place $90,584; 843 Merrow Street $88,578; 937 Haddon Street $81,286; 137 Ashlar
-  Street $75,180. First left out: 633 Lattermore Place $68,388; gap $6,792 (to $7,000). Of the 158 properties, 64 owe a
-  2027 penalty and the search finds a change in 58.
-- **Position:** the golden's twelve sit at 2, 3, 4, 1, 5, 7, 6, 13, 9, 18, 11 and 16 on the default path's ranking; 758
-  Fenwright Avenue is 13th there, 8.8 per cent under the twelfth.
-- **Margins:** the golden's cut is 1.10 times ($75,180 against $68,388); the three properties the default path brings in
-  sit at $46,276, $41,659 and $37,371 on the golden (0.62, 0.55 and 0.50 of the twelfth). The cut holds under every
-  variant of the golden method (unweighted fits, flagged values kept, missing days left out, normals averaged from the
-  daily record, the generator's true change dates), asserted; a heating-only model,
-  which the bills reject, keeps the slate and moves only the order of 151 Orrin Place and 843 Merrow Street and the gap.
-- **Dominance:** the three properties the default path brings in changed between 29 December 2025 and 3 February 2026;
-  their heating fuel's bills since run 10 to 20 per cent under the whole-record model at the same weather (single winter
-  spans 26 to 51 per cent), and the whole record overstates their 2027 penalty 3.3, 3.8 and 3.4 times (429 Quillen
-  Avenue, 461 Tallman Street, 173 Orrin Place); the latest twelve months still hold two to four pre-change spans,
-  overstating 461 Tallman Street and 173 Orrin Place 3.0 and 2.4 times.
-- **Grid:** two choices (the window: whole record, latest twelve months, since the last change; the trend: none or
-  linear) give five cells, each a named slate above; the since-the-change window with a trend is not a cell (the trend
-  term has nothing to estimate on seven to nine spans and is not asserted).
-- **Worth:** the decisive move takes the three late changers' 2027 penalties from $140,659 to $154,452 down to $37,371
-  to $46,276 and lifts the three it displaces back into the slate; on the latest twelve months it still moves two.
-- **A second wrong route, not on the ladder:** summing each oil delivery into its calendar month and fitting monthly
-  files another wrong slate (157 Lattermore Place's 2027 penalty up 50 per cent, 355 Gaskell Avenue into the slate);
-  the tickets record deliveries, not use, and the field's method measures a tank fill to fill.
+- **Margins:** the golden's sixth (Elmorrow 368) is 15 above the first left out (Harlenbrook 353); the fifth (Garnet
+  Hills 372) is 19 above it. Under R0 Harlenbrook leads Elmorrow by 8; under R1b by 47.
+- **Position and dominance:** R0 moves every applicant's count (Kessick 1,113 to 971) and drops Elmorrow from sixth to
+  seventh: a large, strong-reading district with most of its Level 1 students in grade 10 loses 53 of them to the
+  regression's pull toward the mean, Harlenbrook (a small, weaker district whose Level 1 students are mostly in grade 9)
+  loses 30.
+- **Grid:** two choices, the placement (prediction, cohort match, the retiring test's levels, a concordance, the
+  inverse line, the range match) and the Layer 1 handling (each item in the inventory either way): every prediction and
+  cohort cell funds Harlenbrook, the retiring test's levels fund Harlenbrook and Garnet Hills, every concordance cell
+  files the golden, and every Layer 1 handling keeps each cell's slate (asserted).
+- **Worth:** the decisive rung moves all fourteen counts and the slate; R2 and R2b land the slate with every count
+  wrong.
+- **Truth:** the 2025 cohort's expected Level 1 count on the new test, from each student's reading ability, funds the
+  golden six with 29.4 between the sixth and the seventh, and the regression route's slate differs from it (asserted).
 
 ## Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
-| 1 | Population | the register's 158 covered properties in the district, every one estimated | the cycle rules 2.1; the register (SF1, SF2) |
-| 2 | Unit of account | the covered property, its accounts through the crosswalk | the law's 103-01(a) (SF1, SF9) |
-| 3 | Attribution window | records through 30 September 2026, a bill by its period end, a delivery by its date | the cycle rules 2.1 and 3.1 (SF8); no record runs past the date (C1) |
-| 4 | As-of dating | the exports as pulled (bills and tickets to 30 September 2026, the register's extract of 1 October 2026) | the dictionary |
-| 5 | Version basis | each bill as issued, an estimated period measured with the next actual read | SF13, asserted (C1) |
-| 6 | Denominator | none in the call (a penalty is a level); the limit from the register's occupancy areas | the law's 103-03(a) (SF4) |
-| 7 | Weighting | each span weighted by its days in the fit | C1: unweighted fits keep every graded figure in its bin (asserted) |
-| 8 | Window length | each fuel's spans since its last change, found in its own record; an unchanged fuel's whole record | the decisive step (HOW, forced by the records: a fit across the change mispredicts the property's own latest bills); C1 across the found and the true change dates (asserted) |
-| 9 | Boundary inclusivity | twelve places, no tie at the cut | C1: $75,180 against $68,388 |
-| 10 | Rounding path | rank on unrounded penalties, round each to $5,000; the gap from unrounded penalties to $1,000 | the prompt (SF15, SF16); asserted |
-| 11 | Tie-break | none needed: adjacent slate penalties at least 2.3 per cent apart | C1, asserted |
-| 12 | Maturity and censoring | a late changer's own record since its change is seven to nine spans, through a winter, a spring and a summer | asserted: every graded figure holds at the generator's true change dates |
-| 13 | Order of operations | conform, assign to properties, find each fuel's change, fit, evaluate at the normals, convert, price | C4: no reordering is defined |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | none: no account and period appears twice | asserted |
-| 16 | Identity normalisation | accounts to properties through the crosswalk; Velsby's customer numbers as text | SF9 |
-| 17 | Netting against gross | a true-up bill's negative usage nets inside its span | SF13 |
-| 18 | Dimensional units | kWh, therms, thousands of pounds, gross gallons; Table 1's coefficients | SF10, SF11, SF12; Table 1 |
-| 19 | Code and status semantics | read types (A or E, ACT or EST, Actual or Estimated), fill flags (Y or N, FILL or PARTIAL), product names to grades | the dictionary (SF13, SF14) |
-| 20 | Integerisation | none | n/a |
-| 21 | Clause scope | 2.2 lets a 2026 advisee take a place, so it removes nobody | the cycle rules 2.2 (SF17) |
-| 22 | Forward window contents | calendar 2027 at the normal weather, each property as it runs after its last change | the cycle rules 2.1; the records end 30 September 2026 |
+| 1 | Population | grade 9 and 10 students on the fourteen applicants' rolls on 1 October 2026 with a grade 8 state reading result | the rules, sections 3 and 4; SF1, SF2, SF11 |
+| 2 | Unit of account | the student | the rules |
+| 3 | Attribution window | each student's latest grade 8 administration, spring 2025 or spring 2026 | SF3 |
+| 4 | As-of dating | the count day, 1 October 2026; the enrolment extract of 2 November 2026 | SF1 |
+| 5 | Version basis | one release of each vendor's file; the make-up session's score after an invalidation | SF3 |
+| 6 | Denominator | none: counts | n/a |
+| 7 | Weighting | none: each student once | n/a |
+| 8 | Window length | one count day | the rules |
+| 9 | Boundary inclusivity | below 2415 at Level 1; a retiring score placed at or below 241 | SF4, SF6; no applicant within 15 of changing the slate |
+| 10 | Rounding path | whole students, no rounding before the ranking; shares to one decimal in the ask | the prompt |
+| 11 | Tie-break | none needed | SF10 |
+| 12 | Maturity and censoring | the spring tests and the count day are closed | n/a |
+| 13 | Order of operations | conform, key, take the latest result, place, count, rank | C1: order-free counts |
+| 14 | Row order | none matters | C1 |
+| 15 | Duplicate resolution | one count-day spell per student; an invalidated session and its make-up give one result | SF1, SF3 |
+| 16 | Identity normalisation | state identifiers as ten-digit text; retiring-test numbers through the crosswalk | every retiring-test row joins through the crosswalk (asserted) |
+| 17 | Netting against gross | none | n/a |
+| 18 | Dimensional units | two score scales, 150 to 450 and 2100 to 2900 | SF5, SF6 |
+| 19 | Code and status semantics | the vendors' status codes and sessions | SF3 |
+| 20 | Integerisation | whole students | n/a |
+| 21 | Clause scope | grades 9 and 10 alike; the grade 8 cut for every grade 8 result | the rules; SF9 |
+| 22 | Forward window contents | the 2027 grants on the students on the roll on 1 October 2026 | the rules, section 3 |
 
 ## Literal reader
 
-Executed word for word, the cycle rules ask for each covered property's penalty under the law for calendar year 2027
-with the year's weather at the 1991 to 2020 normal, estimated from its own bills, statements and delivery tickets
-through 30 September 2026; the law converts each fuel and prices the excess over the limit, summed over the register's
-occupancy areas. The text leaves open how a property's 2027 is estimated from its records. A reader who fits every
-record files the default path's slate, and the records rule that reading out as an estimate of 2027: for each of the
-three properties it brings in, its heating fuel's bills since its change (January to February 2026) run 10 to 20
-per cent under the whole-record model at the same weather, a winter span by 26 to 51 per cent, so the whole-record model
-mispredicts the property's own latest eight months and every month of 2027 it is asked about. The latest twelve months
-straddle those changes for 461 Tallman Street and 173 Orrin Place. Every model fitted only on the spans after each
-change (found by the search or at the generator's own dates, weighted or not) files the
-golden's twelve and the same graded figures. The owners' filings are not among the records 2.1 names.
+Executed word for word, the rules count, for each of the fourteen applicants, the students in grade 9 or 10 on its roll
+on 1 October 2026 whose latest grade 8 state reading result is at the Measure's Level 1 (a grade 8 score below 2415), a
+Grade-Level Reading Assessment result counted at the level it places at on the Measure's scale, and fund the six with
+the most. The text leaves open how a retiring-test score is placed on the new scale; the bridge study is the folder's
+only link. A regression of the new score on the old satisfies every filed sentence and funds Harlenbrook; the bridge's
+own scores reject it (placed by the regression 11.1 per cent of its students sit at Level 1 against 15.7 per cent on the
+new test). Every concordance that matches the two distributions in the bridge (equipercentile with mid-percentile or
+at-or-below ranks, presmoothed or not, a quantile match, linear linking, rounded or unrounded equivalents, cut scores
+carried either way) places 241 and below at Level 1 and files the golden, every applicant's count identical.
 
 ## Oracles
 
-None ties only under the golden. The owners' 2025 filings and the 2025 ledger (the asks' files) describe 2025 as filed
-and billed; they reproduce the filings route's 2025 arithmetic, which is true for 2025, and report nothing for 2027 or
-a normal year. The 2025 energy grades score 2025 intensity and the grid's hourly marginal emission rates are not the
-law's coefficients; both are declared distractors. No file reports a normal-year figure, a 2027 figure or a change.
+None ties only under the golden. The bridge memo's means, standard deviations and correlation describe the sample under
+every method; the Measure's grade 8 summary reports the statewide grade 8 results every route reads alike; the retiring
+test's guide publishes its own levels and its raw-to-scale tables. No file reports a converted score or a district's
+count. The expenditure and graduation files are distractors that confirm nothing.
 
 ## Ask sheet
 
-- **Ask A, for the district's multifamily, mixed-use, hotel and office properties, each type's 2025 Local Law 18
-  penalties as the city billed them, net of deductions and reassessments, and how many properties of the type it billed
-  (8 figures: four in whole dollars, four counts).** H18 home: the 2025 exposure every candidate carries, by type, read
-  beside the slate at the climate office's sign-off; the call does not turn on it. Path: the Department of Finance's
-  ledger (BBL, REPORT_YEAR, TRANSACTION, AMOUNT), its tax lot changes (RETIRED_LOTS, NEW_LOTS) and the register
-  (TAX_LOTS, PRIMARY_PROPERTY_TYPE): three files, eight columns. Primary device: D7, records billed to a lot since
-  retired: six billed properties (three multifamily, one mixed-use, one hotel, one office) had their 2025 lines posted
-  in July 2026, before their lots were retired on 31 July 2026 by a condominium declaration or a merger, and the
-  register lists their new lots, so the join on the register's lots drops them; the ledger's other districts' lines
-  leave the dropped lines among hundreds of unmatched ones. Golden: Multifamily Housing $2,508,379 (46), Mixed Use
-  Property $591,784 (10), Hotel $94,657 (2), Office $42,848 (1). Stops (asserted): the register's lots only (the
-  cracker) $2,458,453 (43), $566,059 (9), $70,488 (1), $0 (0); payments netted in (H1) Multifamily $741,658 and Mixed
-  Use $183,442 (no hotel or office has paid its 2025 penalty yet); the posting year 2026 for the report year (H2) moves
-  Multifamily to $2,497,501 (2024 reassessments posted in 2026); assessments alone, before deductions, reversals and
-  reassessments (H3) $2,506,685 and $645,030. Realism: a finance
-  department keys each line to the lot it was posted to, and a condominium declaration or merger retires lots without
-  moving the lines already on them.
-- **Ask B, for the same four types, each type's 2025 emissions under the law and site energy on the owners' accepted
-  filings (8 figures: whole tonnes, whole million Btu).** H18 home: the district's 2025 inventory by type as owners
-  filed it, the baseline the accelerator reports its cycle against; the call does not turn on it. Path: the
-  benchmarking export (Report Year, Filing ID, Tax Lot, the five energy columns), the register (TAX_LOTS,
-  PRIMARY_PROPERTY_TYPE) and the law's Table 1 (coefficients, energy per unit): three files, eleven columns. Primary
-  device: D6, a filing's quantity on every line it covers: the export writes one row for each tax lot of a filing,
-  each carrying the property's whole use, so summing the rows counts a multi-lot property once per lot; every type
-  holds one. Golden: Multifamily Housing 112,776 t and 1,678,848 million Btu, Mixed Use Property 31,951 t and 456,003,
-  Hotel 7,887 t and 119,295, Office 12,292 t and 165,192. Stops (asserted): every row summed (the cracker) 126,293 t
-  and 1,871,328, 43,635 and 620,863, 9,890 and 150,116, 15,226 and 205,129; the portal's greenhouse gas column at
-  federal factors (H5) 107,500, 28,905, 7,214 and 10,809 t; site energy as Site EUI times the self-reported floor area
-  (H6) 1 to 71 million Btu off in every type. Realism: a benchmarking export written by tax lot repeats a multi-lot
-  property's filing on each lot's row.
-- **The construction layer:** the conformed building energy record (one row per bill or delivery, 16,124 rows, the
-  fields of the cycle rules' Table 1); the cracker has it, and the call's own construction feeds it.
-- **Main population zero-counts (asserted):** the call reads no ledger, lot change or filing row (the call and every
-  graded figure computed with those files deleted are identical); the asks read no bill, statement, ticket or weather
-  row (Ask A and Ask B computed with those files deleted are identical). No device or hazard row sits in a file the
-  call reads, and no main-call document carries an ask's organ (the law's 103-04 names the penalty only).
-- **Hazard table (asserted):** H1 moves Multifamily and Mixed Use; H2 moves Multifamily; H3 moves
-  Multifamily and Mixed Use; H5 every Ask B emissions figure; H6 every Ask B site energy figure.
-- **Rounding edges (asserted):** every Ask A and Ask B figure is an exact sum of shipped values; each graded 2027
-  penalty at least $888 inside its $5,000 bin (633 Lattermore Place; 686 Fenwright Avenue the closest in relative terms,
-  0.60 per cent) and the gap $292 inside its $1,000 bin, under every variant of the golden method above.
-- **Referee:** none; no total in an ask file ties only under one handling.
+- **Ask A, each applicant's grade 7 students at Level 1 on the Measure in spring 2026 and their share of its grade 7
+  students with a score (28 figures: 14 in whole students, 14 in per cent to one decimal).** H18 home: the students who
+  reach grade 9 in fall 2027, inside the 2027 grant year, a measure every applicant carries that the call does not turn
+  on. Path: the new test's results file (its grade 7 rows: district code, school code, session, status, scale score,
+  performance level), the 2026 directory's schools, the nonpublic schools registry, the Board's resolution of 13 August
+  2026 and the dictionary (five files, nine columns). Primary device: D2, an attribute at the wrong vintage: the
+  vendor's June file reports grades 3 to 7 on the panel's recommended cut scores; the Board set grade 7's Level 2 at
+  2390 in August, seven points above the June cut, so every applicant's grade 7 scores from 2383 to 2389 read Level 2 in
+  the file and are Level 1. Second device: D5, out-of-scope rows known only by structure: nonpublic schools' students
+  sit the test under the code of the district the school stands in; every applicant has a nonpublic grade 7 test taker
+  at Level 1 (asserted). Texture: the merged district's predecessor codes; make-up sessions after invalidations. Stops
+  (asserted): the file's district code with its June levels (the cracker), every applicant low on both figures (Kessick
+  461 and 16.6 against 532 and 19.8); the directory's schools with the June levels, every count 10 to 74 low; the file's
+  district code with the adopted cut, every count 1 to 7 high and every share 0.1 to 0.5 points off; the golden 69 to
+  532 students and 7.1 to 23.5 per cent. Realism: a vendor's June file carries the levels known in June, and nonpublic
+  schools test under their host district's code.
+- **The construction layer:** every applicant's grade 9 and 10 students at Level 1, the six funded, the first left out
+  and its gap, the chart and the conformed file; the cracker has them.
+- **Main population zero-counts (asserted):** none of the spring 2026 grade 7 test takers is in grade 9 or 10 on the
+  count day; the ask reads no enrolment, bridge or retiring-test row; the main call reads no grade 6 or 7 row, no Board
+  resolution and no registry row.
+- **Hazard table (asserted):** the June levels move all fourteen counts and shares; the nonpublic rows move all fourteen
+  counts and shares read by district code.
+- **Referee:** none; no total in the ask's files ties only under one handling.
 
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Verdict |
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, 2025 penalties billed by type | nets assessments, deductions, reversals and reassessments for report year 2025, leaves out payments and interest, joins the ledger to the register's lots | miss |
-| A, properties billed by type | counts the properties with a 2025 assessment on the register's lots | miss |
-| B, 2025 emissions under the law by type | takes the accepted filings, converts kBtu by Table 1, applies the coefficients, sums the rows by the register's type | miss |
-| B, 2025 site energy by type | sums each row's fuels at Table 1's energy per unit | miss |
+| A, each applicant's grade 7 students at Level 1 in spring 2026 and their share | counts scored grade 7 rows at the file's performance level 1 under the file's district code, the merged codes joined; the June cut and the nonpublic rows both kept | miss |
 
-- Mirror leakage: 15.8 per cent of ask weight (a response on the latest twelve months runs the same battery and keeps
-  only the conformed record's criteria; it misses every Ask A and Ask B figure on the same devices as the cracker).
-- Pair ceiling: 38.7 (planning weights 38 / 7 / 55; the main block's 38 as the twelve 8, their order 3, their twelve
-  penalties 18 at 1.5 each, the first left out 3, its penalty 2, the gap 2 and the chart 2; the mirror on the latest
-  twelve months keeps four penalties in their bins (686 Fenwright Avenue, 76 Thornwick Avenue, 157 Lattermore Place, 758
-  Fenwright Avenue) and the chart, r = 4 x 1.5 + 2 = 8; the ask weight over 19 criteria, A 8, B 8, the record 3; the
-  cracker keeps the record, 38 + 7 + 55 x 3 / 19 = 53.7; the mirror 8 + 7 + 8.7 = 23.7; average 38.7), rerun from the
-  generated rubric at ship.
+- Mirror leakage: about 7 per cent of ask weight (a response on R0 keeps the two files and misses every Ask A figure on
+  the same devices as the cracker).
+- Pair ceiling: 32.2 (planning weights 38 / 7 / 55 with the call, the six funded, every applicant's count, the first
+  left out and its gap, the chart and the conformed file in the main block and r = 5; the ask weight over 30 criteria:
+  Ask A 28, the two files 2; the cracker keeps the files, 38 + 7 + 3.7 = 48.7; the mirror keeps r, instruction-following
+  and the files, 5 + 7 + 3.7 = 15.7; average 32.2), rerun from the generated rubric at ship.
 
 ## Layer 1 inventory
 
 | Item | System that writes it | File | Natural mishandling | Effect (asserted) |
 |---|---|---|---|---|
-| estimated reads trued up at the next actual read | the utility's and the steam company's billing | WEG export, Thermal statements | each estimate taken as read | none: slate, order and every graded figure unchanged |
-| gas in CCF with a heat factor per period | the utility's billing | WEG export | one average factor (1.037) | none (largest move 2.2 per cent, no bin) |
-| steam in pounds with a text period from 2025 | Thermal's new billing system | Thermal statements | the period text split wrongly or pounds read as thousands | not a reading: only the conversion joins the 2024 and 2025 sheets (asserted) |
-| two dealers' layouts: Y/N fill flag against FILL and PARTIAL, gross and net gallons, three product names | Dunmarrow's ticketing and Velsby's delivery report | the dealers' files | Velsby's net gallons; partial deliveries taken as fills | none: largest move 1.0 per cent; slate, order and bins unchanged |
-| accounts replaced after service upgrades | the utility's account system | crosswalk | the validity dates ignored | none |
-| weather in tenths of a degree Celsius with missing days and flagged values | the weather service | Lindqvist Field daily record | flagged values kept; missing days left out of the degree days | none: every graded figure in its bin |
-| bills that closed in early 2023 from December 2022 | the billing cycle | WEG export, Thermal statements | dropped from the fits | none |
-| lots with and without separators; the portal's own emissions column | the register, the portal, the ledger | asks' files | as the asks' hazards | asks only |
+| Booklets scanned without a pre-ID label carry only the vendor's test-taker number | the retiring test's scanning | retiring-test results, crosswalk | rows without a state identifier dropped | call unchanged |
+| Absent, exempt and invalidated sessions; make-ups after an invalidation | both vendors' scoring | both results files | make-ups ignored; the invalidated score kept | call unchanged |
+| Students tested in one district and enrolled in another | the enrolment system and the test registrations | results, enrolment | counted by the testing district | call unchanged |
+| The merged district's students tested under its predecessors' codes | the consolidation of 1 July 2026 | both results files, directory | the predecessor codes unmapped | call unchanged (counted by enrolment) |
+| Transfers in August and September, late entrants, withdrawals in September and in October | the enrolment system's spells, with exit reasons | enrolment | every spell kept; only open spells kept | call unchanged |
+| Arrivals with no state test record | the enrolment system | enrolment | none likely (no result to count) | call unchanged |
+| Nonpublic test takers now in public high schools | the vendors' nonpublic testing | both results files | their results left out | call unchanged |
+| Grade 9 students retained after grade 8 in 2025, and students tested in grade 8 twice | the schools' promotion decisions | both results files, enrolment | the earliest grade 8 result taken | call unchanged |
+| Grades 6, 7, 11 and 12 rows | the vendors' and the enrolment system's full files | both results files, enrolment | none likely (filtered by grade) | call unchanged |
 
 ## Pre-ship check
 
-- **Three rules, re-read against the built pack.** Domain: the deciding quantity is each covered property's emissions
-  in a year of normal weather as it now runs, estimated the way building energy analysts estimate it (inverse
-  degree-day models of each fuel over billing periods and fill intervals, on a baseline that represents current
-  operation, at the station's 1991 to 2020 normals) and priced against the law's limit; a fit over the whole record
-  files the default path's slate, the latest twelve months, a time trend and the owners' 2025 filings each another. Two
-  layers: the Layer 1 inventory above, each main-call item asserted neutral (R2 and SF9 to SF14: estimates taken as read,
-  one heat factor, Velsby's net gallons, partials taken as fills, the crosswalk's dates dropped, bills before 2023
-  dropped, flagged values kept, missing days left out) and each ask device confined to its ask with zero main-call rows
-  (the separation checks); Layer 2 the baseline period since each fuel's last change. The decisive step is none of the
-  three banned kinds, each executed in `checks.py`: not a plant (R3c: no document names a retrofit, a change, a
-  baseline, a break, a regime or a normalization; no column flags one; no account replacement near the cut falls within
-  120 days of a found change; no copied run of bills); not data semantics (every field read correctly still leaves the
-  whole-record fit on its slate, and every field mishandled leaves the call and every graded figure where they are);
-  not rule application (R3a: every filed rule executed with a whole-record fit on the clean truth files the default
-  path's slate; R3b: only the fit from each fuel's true last change files the twelve, while the latest twelve months and
-  a trend land elsewhere).
-- **Gates.** 16 files in 3 formats (csv, pdf, xlsx); the station's daily record at 52,094 rows; two distractors (the 2025
-  energy grades and the grid's hourly marginal emission rates) the solution never reads, the call, every rung and both
-  asks unchanged with them deleted; 85 checks; `verify.py` from the bundle alone on its own break search; two builds
-  byte-identical; `figures_check.py`, `precut.py` (49) and `voice-check.py` exit 0; `leak.py` REVIEW (no LEAK, every
-  line answered: covered property IDs carry digits, the cycle rules use the estimand's own words, the register, filings
-  and grades rank nothing on the 2027 question, the weather record's flag columns are the weather service's own); guard
-  heart PASS (nearest task182 at 0.10); surface promoting task462 (two apart, PES x ETL, the population gap), task450
-  (retired, the population gap and G4) and task136 (top 1 per cent) for the author's read; containers carry the
-  fiction's owners and dates (H1 audit clean); the golden's chart is a PNG inside the workbook (the container
-  normalizer had declared every part as XML; it now declares XML parts only, and a check opens every binary part).
+- **Three rules, re-read against the built pack.** Domain: the deciding quantity is each applicant's count of grade 9
+  and 10 students at the new test's Level 1 when its grade 10 students carry only retiring-test scores, built the way
+  psychometricians place one test on another's scale (a concordance matching the two score distributions in the
+  single-group bridge study); the regression of new on old funds Harlenbrook (323 against Elmorrow's 315), the
+  retiring test's own levels Harlenbrook and Garnet Hills, the two cohorts' statewide percentiles or z-scores
+  Harlenbrook, and every concordance convention the golden. Two layers: the Layer 1 inventory above, each item
+  asserted neutral on the call (SF1, SF2, SF3, SF7, SF8, SF9 and the identifier check); the ask's two devices confined
+  to the spring 2026 grade 7 rows (the separation checks); Layer 2 the linking method. The decisive step is none of
+  the three banned kinds, each executed in `checks.py`: not a plant (R3c: no document names a concordance, equating,
+  linking, a regression, a prediction, percentiles or an equivalent; no repeated record in any file); not data
+  semantics (SF1 to SF11: every field read right still leaves the regression route on Harlenbrook); not rule
+  application (R3a: every filed rule executed with the regression placement funds Harlenbrook; R3b: only the
+  concordance funds the golden, every count equal to the pack's).
+- **Gates.** 16 files in 3 formats (csv, pdf, xlsx); enrollment_october_2026_grades_9_12.csv at 91,075 rows; two
+  distractors (district spending and graduation rates) the solution never reads; 61 generator checks; `verify.py` from
+  the bundle alone (its own equipercentile and linear linking, the applicants and cut scores read from the PDFs); two
+  builds byte-identical; `figures_check.py` (79 figures), `precut.py` (49) and `voice-check.py` exit 0; `leak.py`
+  REVIEW (no LEAK); guard heart WARN (answered in the draw); the containers clean (H1 audit). The surface screen
+  promotes five card-level pairs for the author's read, none on the pack's surface: task465 and task450 (the
+  population gap; task450 the same pairing, retired), task136 and task131 (surface similarity only) and task184 (the
+  same gap, pattern and decision family, differentiated on the card). The folder index and the dictionary's columns
+  were renamed after the screen matched them to task465's.
+
+## Leak check
+
+`leak.py --asof 2026-11-20`: REVIEW, no LEAK (a first run's LEAK on the crosswalk's file name, which held the author
+word "test_", fixed by naming it calderwood_examinee_id_crosswalk_2025.csv). Each REVIEW line answered:
+- Eight three-digit golden figures (168, 225, 231, 241, 262, 264, 280, 320) sit in the retiring test's raw-to-scale
+  table, scale scores of the forms: harmless (the reader read each as a table cell; 241 is also the boundary, a
+  coincidence of the table the concordance lands on, and the table states no cut).
+- The grant rules carry every district name of the call and name fourteen candidates beside numbers: Attachment A lists
+  the applicants with their codes and notice dates, no count and no ranking. Harmless.
+- The rules, the guide, the bridge memo and the grade 8 summary carry three to six generic stump terms (scores,
+  levels, bridge, retiring, schools, window): each describes its own subject; none names a placement method. Harmless.
+- The directory and the graduation rates file name the candidates beside numbers: codes, counties and a different
+  measure, no ranking on the question. Harmless.
+
+Reader, round 1 (answers and rulings in `leak_check_report.md`): nothing quoted for question 1 (the rules' "counts at
+the level it places at on the Measure's scale" says a conversion is needed, not how); no ranking file; its literal
+reading put the cut at the linear equivalent of 2415 (241 and below) and reproduced the golden exactly (the six, 368
+and 353, the gap of 15), listing the regression (231), the inverse line (249), the retiring test's levels (220) and
+per-order subsets as the open choices; question 6 an analytical choice (the conversion of about 21,500 grade 10
+results through the bridge study). Its realism tells were fixed in the generator, nothing graded moving: school names
+drawn from varied invented names instead of a rotating list of directions; the rules' attachment on its own page; the
+registry holding non-participating schools too; the 2025 spending and graduation files under the predecessor codes
+1701 and 1702 (the consolidation came in July 2026), two graduating classes, whole-dollar spending; the two tests'
+stated reliabilities 0.87 and 0.88, no longer equal to the bridge correlation; October withdrawals and moves in the
+enrolment extract with varied exit reasons (asserted neutral, SF1); each file dated by its own as-of date; each
+issuer's documents in its own layout. The district codes in tens stay (codes assigned in blocks).
+
+Judge, pass 1 on architecture 2 (`determinism_check_report_pass2.md`): DETERMINISTIC, APPROVE. Every figure reproduced
+(the fourteen counts, the conformed file's levels, the fourteen grade 7 counts and shares, the bridge shares); every
+linking convention it tried placed 241 and below; the regression (231) and the statewide cohort match refuted by the
+bridge file. Gate G method_or_model_selection, analytical_non_defect, no surface-read dependency, no sole data defect;
+Gate H domain pass, layers pass, decisive step analytical; no mismatch with this note or the card. Three minor notes,
+none on the call: the conformed file's Level 2 to 4 placements follow the same concordance (asserted at 2508 and 2579,
+SF6); whether nonpublic schools' grade 7 students are an applicant's (the golden leaves them out, SF12, the ask's
+device); the distractors bear on no graded quantity (as distractors must).
+
+Reader, round 2 (after the realism fixes): nothing quoted for question 1; no ranking file; its literal execution put
+the linear and the equipercentile equivalents of 2415 between 241 and 249, placed 241 and below and reproduced the
+golden exactly (the six, 368 and 353, the gap of 15), naming the regression (231) and the retiring test's Below Basic
+(220) as the easy routes, both funding Harlenbrook in Elmorrow's place; question 6 an analytical choice, no planted
+defect and no executed rule. Its determinism caveat (the method is not filed) is the design: every linking
+convention places 241 and below (SF5, SF6; the judge found the same) and the regression is a prediction, not a
+placement. Its open question on a student with both results is the rules' "latest" (SF3). Its realism tells were
+fixed in the generator, nothing graded moving (figures.json, submission.md and both goldens byte-identical): every
+enrolment date on a school day (the largest district first day had fallen on a Saturday; no Labor Day dates), October
+moves re-entering one to seven days after their exit instead of exactly two, every test session on one of its
+window's school days (no Monday pile-up from weekends rolled forward, no Memorial Day make-up), the bridge's
+retiring-test sessions two school days before or three after the new test. Left as they are: the folder's as-of date
+of November 20 (assembled after the October count for the December 10 meeting), first days clustered on a few dates
+(district calendars), the index's record counts (its own column), the equal grants (the rules set them). A data-only
+repair: `leak.py` re-run (REVIEW, the same lines), no third reader.
 
 ## Tried and rejected
 
@@ -428,3 +406,21 @@ law's coefficients; both are declared distractors. No file reports a normal-year
   the district's fuel total instead of building by building. The correlated-error lesson is already task228's,
   task229 v1's, task260's and task261's (an error shared by the units does not average away); dropped before
   registration.
+- The retiring test on a continuous scale (every integer a possible score): the concordance conventions disagreed at
+  the Level 1 boundary unless the bridge's share sat within a student of a cumulative step (an exact count match tied
+  the at-or-below conventions, a gap of one to three students split the quantile cut's "below" and "at or below"); the
+  retiring test is now a 30-item paper form whose raw-to-scale table leaves six to eleven points between scale scores
+  near the cut, and all 30 conventions agree with 41 bridge students to spare.
+- A bracket of the slate, the overcounting routes (inverse regression, the range match) also wrong: it needed grade 9
+  cohorts two to three times the grade 10 ones in two districts; those routes land the golden six with every count
+  wrong, and the ladder rests on the prediction and cohort routes.
+- Equal cohorts statewide: matching the two cohorts' statewide percentiles or z-scores landed the golden; the 2025 grade
+  8 cohort now reads 0.20 standard deviations below the 2026 one, which the bridge sample's retiring-test mean shows,
+  and every cohort match places 231.
+- Bridge draw 0: 53 per cent of its students with a retiring score of 241 sat at Level 1, so a per-score majority rule
+  placed 241 at Level 1 and filed the golden; the bridge's schools are drawn again (draw 11: 43.5 per cent, all 30
+  conventions still agreeing at every cut).
+- A school realignment between two districts as an ask hazard, the vendor's file keeping the old district: the date of
+  the move could not be read from the folder without a filed sentence, a fork; dropped.
+- Asks on the students the count leaves out (no grade 8 result) or on the movers: the complement or a split of the main
+  population, so a device on them moves the call's rows; dropped.
