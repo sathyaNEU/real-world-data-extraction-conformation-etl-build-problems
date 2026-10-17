@@ -357,6 +357,28 @@ def statistical_discharges(rows, units):
     none of it, asserted.
     """
     by_code = {u[0]: u for u in units}
+    # a stay is recovered from the feed by chaining an episode onto one that ended the same day under the
+    # same diagnosis related group, so two genuinely separate stays must never look like that pair. A
+    # patient discharged and readmitted on the same day is readmitted under a different group, which is
+    # what a regrouping does; the one episode in the record that was not is moved to its band's next code.
+    opts = {}
+    for code, _, band in W.DRGS:
+        if band:
+            opts.setdefault(band, []).append(code)
+    ends = {}
+    for row in rows:
+        if by_code[row["unit"]][4] == "acute":
+            continue
+        ends.setdefault((row["unit"], row["pid"], row["drg"]), set()).add(row["sep_date"])
+    for row in rows:
+        if by_code[row["unit"]][4] == "acute":
+            continue
+        key = (row["unit"], row["pid"], row["drg"])
+        if row["adm_date"] in ends.get(key, ()):
+            band = W.DRG_BAND.get(row["drg"])
+            choices = [c for c in opts.get(band, []) if c != row["drg"]]
+            if choices:
+                row["drg"] = choices[0]
     out = []
     for i, row in enumerate(rows):
         row.setdefault("stay", None)

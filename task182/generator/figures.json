@@ -1,38 +1,38 @@
 {
+ "air_knm3_first_deployment": {
+  "NSL01": 253.6,
+  "NSL02": 253.6,
+  "NSL03": 253.6,
+  "NSL04": 253.6,
+  "NSL05": 253.6,
+  "NSL06": 253.9,
+  "NSL07": 253.9,
+  "NSL08": 253.9,
+  "NSL09": 253.9,
+  "NSL10": 253.9,
+  "NSL11": 257.3,
+  "NSL12": 257.3,
+  "NSL13": 257.3,
+  "NSL14": 257.3
+ },
+ "air_knm3_second_deployment": {
+  "NSL01": 259.5,
+  "NSL02": 259.5,
+  "NSL03": 247.0,
+  "NSL04": 259.5,
+  "NSL05": 259.5,
+  "NSL06": 247.0,
+  "NSL07": 247.0,
+  "NSL08": 247.0,
+  "NSL09": 256.2,
+  "NSL10": 256.2,
+  "NSL11": 256.2,
+  "NSL12": 256.2,
+  "NSL13": 247.0,
+  "NSL14": 259.5
+ },
  "call": "the October slot covers NSL04, NSL11, NSL07, NSL02, NSL13",
  "cap": 5,
- "centrifuge_minutes": {
-  "NSL01": 4306,
-  "NSL02": 4306,
-  "NSL03": 4024,
-  "NSL04": 4306,
-  "NSL05": 4268,
-  "NSL06": 3973,
-  "NSL07": 3973,
-  "NSL08": 3973,
-  "NSL09": 3885,
-  "NSL10": 3902,
-  "NSL11": 3515,
-  "NSL12": 3515,
-  "NSL13": 3586,
-  "NSL14": 3868
- },
- "centrifuge_runs_position": {
-  "NSL01": 22,
-  "NSL02": 22,
-  "NSL03": 18,
-  "NSL04": 22,
-  "NSL05": 22,
-  "NSL06": 18,
-  "NSL07": 18,
-  "NSL08": 18,
-  "NSL09": 23,
-  "NSL10": 23,
-  "NSL11": 20,
-  "NSL12": 20,
-  "NSL13": 15,
-  "NSL14": 19
- },
  "deployments": 28,
  "deployments_corrected": 11,
  "excluded_minutes": {
@@ -275,6 +275,22 @@
   "NSL13": "no",
   "NSL14": "none"
  },
+ "unrecorded_quarter_hours": {
+  "NSL01": 19,
+  "NSL02": 19,
+  "NSL03": 27,
+  "NSL04": 19,
+  "NSL05": 19,
+  "NSL06": 22,
+  "NSL07": 22,
+  "NSL08": 22,
+  "NSL09": 27,
+  "NSL10": 27,
+  "NSL11": 27,
+  "NSL12": 27,
+  "NSL13": 22,
+  "NSL14": 14
+ },
  "valid_minutes": {
   "NSL01": 6130,
   "NSL02": 6130,
@@ -293,40 +309,34 @@
  },
  "weekly_plant": {
   "0": {
-   "biogas_m3": 35181,
-   "blower_air_knm3": 689,
-   "centrifuge_runs": 12,
-   "engine_hours": 164.3
+   "blower_air_knm3": 690,
+   "blower_air_knm3_raw": 689.9,
+   "unrecorded_quarter_hours": 21
   },
   "1": {
-   "biogas_m3": 34755,
-   "blower_air_knm3": 668,
-   "centrifuge_runs": 12,
-   "engine_hours": 162.0
+   "blower_air_knm3": 681,
+   "blower_air_knm3_raw": 681.2,
+   "unrecorded_quarter_hours": 15
   },
   "2": {
-   "biogas_m3": 34904,
-   "blower_air_knm3": 678,
-   "centrifuge_runs": 9,
-   "engine_hours": 166.0
+   "blower_air_knm3": 689,
+   "blower_air_knm3_raw": 689.0,
+   "unrecorded_quarter_hours": 14
   },
   "3": {
-   "biogas_m3": 35987,
-   "blower_air_knm3": 701,
-   "centrifuge_runs": 12,
-   "engine_hours": 163.2
+   "blower_air_knm3": 694,
+   "blower_air_knm3_raw": 693.6,
+   "unrecorded_quarter_hours": 87
   },
   "4": {
-   "biogas_m3": 34594,
-   "blower_air_knm3": 659,
-   "centrifuge_runs": 8,
-   "engine_hours": 160.5
+   "blower_air_knm3": 674,
+   "blower_air_knm3_raw": 673.8,
+   "unrecorded_quarter_hours": 20
   },
   "5": {
-   "biogas_m3": 35289,
-   "blower_air_knm3": 683,
-   "centrifuge_runs": 13,
-   "engine_hours": 164.7
+   "blower_air_knm3": 680,
+   "blower_air_knm3_raw": 680.1,
+   "unrecorded_quarter_hours": 22
   }
  }
 }
