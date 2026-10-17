@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Give the twelve 2027 advisor places in Community District 4 to 808 Thornwick Avenue, 686 Fenwright Avenue, 76 Thornwick Avenue, 34 Thornwick Avenue, 62 Merrow Street, 157 Lattermore Place, 185 Brennick Avenue, 758 Fenwright Avenue, 151 Orrin Place, 843 Merrow Street, 937 Haddon Street and 137 Ashlar Street (2027 penalties at normal weather $260,000 down to $75,000); 633 Lattermore Place is the first left out at $70,000, $7,000 below the twelfth.",
+  "answer_source": "task464/submission.md block 1, from task464/generator/figures.json",
   "gap": [
     "population",
     "time"
@@ -36,7 +36,7 @@
   "scoring_unit": "per boarded entity",
   "spine": {
     "file": "wegco_whole_building_bills_2023_2026.csv",
-    "rows": 0,
+    "rows": 13617,
     "entity": "one utility's aggregated whole-building reading for one covered building, one fuel and one billing period (actual or estimated read)",
     "grain": "building x fuel x billing period",
     "source": "synthetic (constructed in the layout of an electric and gas utility's whole-building aggregated data export)"
@@ -51,9 +51,23 @@
     "invented_names": [
       "Wendlemere",
       "Wendlemere Building Decarbonization Accelerator",
+      "Wendlemere Building Futures",
       "Wendlemere Electric & Gas",
       "Wendlemere Thermal",
-      "Lindqvist Field"
+      "Lindqvist Field",
+      "Dunmarrow Fuel Oil",
+      "Velsby Brothers Petroleum",
+      "Thornwick Avenue",
+      "Fenwright Avenue",
+      "Merrow Street",
+      "Lattermore Place",
+      "Brennick Avenue",
+      "Orrin Place",
+      "Haddon Street",
+      "Ashlar Street",
+      "Quillen Avenue",
+      "Tallman Street",
+      "Gaskell Avenue"
     ],
     "people": [
       "Kelli Pierce",
@@ -68,20 +82,20 @@
   "question_form": "where",
   "driver": "The decisive quantity is each unit's output in a standard year of an external driver as the unit now operates, estimated from a response model fitted on the unit's own record; partway through the record many units changed how they respond to the driver or how much they draw regardless of it, on dates no file records, so a model fitted over the whole record or over the latest twelve months, or one recent year scaled by the driver's ratio, misstates the units whose response changed or whose fixed draw does not scale, and each moves a different set of units across the cap.",
   "driver_concrete": "Each covered building's emissions in a year of the 1991 to 2020 normal weather as it runs at the end of September 2026 comes from degree-day models of each fuel fitted on the bills and oil fills since the building last changed how it runs (a boiler replaced, heat pumps added, a hot water plant converted, a tenant fit-out), found in its own record, and not from the 2025 benchmarking year scaled by the degree-day ratio, a model fitted over the whole record or one fitted over the latest twelve months, which each move a different set of buildings across the twelve advisor places.",
-  "stump": "The default path takes each building's 2025 energy as benchmarked, scales its heating fuels by the ratio of normal to 2025 heating degree days, prices the excess over its limit and files a slate whose differences from the golden come from fixed loads scaled with the weather and from buildings whose 2025 year mixes two ways of running; a strong analyst's degree-day regression over each building's whole record, or over its latest twelve months, files a different wrong slate because the buildings that changed how they run partway through the record are modelled across the change.",
+  "stump": "The default path fits each fuel's degree-day model over each property's whole record and files a slate with 429 Quillen Avenue, 461 Tallman Street and 173 Orrin Place in place of 758 Fenwright Avenue, 843 Merrow Street and 137 Ashlar Street, because those three stepped to a lower heating use in January and February 2026 and three years of their bills still describe the plant they had; the obvious correction, the latest twelve months, still straddles the steps and keeps 461 Tallman Street and 173 Orrin Place in, and the golden fits each fuel on the spans since the property's last change, found in its own record.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who conforms the bills, fills and weather correctly, reads the law and the accelerator's selection rule, and normalizes each building the usual way (a degree-day regression of each fuel over its whole record, or over the latest twelve months, evaluated at the 1991 to 2020 normals) files a slate that keeps buildings whose record mixes the plant they had with the one they run now and drops buildings that changed the other way, instead of the golden slate.",
   "domain_test": "The deciding quantity is a building's weather-normalized emissions on its current operation, estimated the way building energy analysts do it (inverse degree-day models of each fuel on billing periods and fill intervals, a baseline period that represents current operation, normals from the station's record) and priced against the law's limit; with another field's nouns (patients and clinic visits, trucks and miles) neither the degree-day response of a heating plant, its fixed hot water and lighting draw, nor a retrofit changing that response reads.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:weather-normalized emissions on the current operating regime (inverse degree-day models fitted after each building's last non-routine change)",
   "layer1": [
-    "several sources for one picture: the electric and gas utility's whole-building billing export, the steam utility's account statements, two heating oil dealers' delivery tickets in their own layouts, the city's benchmarking submissions, the covered buildings register and the airport's daily weather record",
-    "billing periods that do not follow the calendar, and estimated reads trued up by the next actual read",
-    "delivered fuel recorded as tank fills, partial deliveries flagged, two grades of heating oil",
-    "units: gas in hundreds of cubic feet with a heat content factor per billing period, steam in thousands of pounds, oil in gallons, electricity in kWh, weather in tenths of degrees Celsius",
-    "imperfect keys: borough-block-lot numbers with and without separators, a campus benchmarked under one parent property, utility accounts mapped to buildings through a crosswalk",
-    "the benchmarking file's own greenhouse gas column computed with federal emission factors, not the law's coefficients",
-    "a weather record with missing days and flagged values"
+    "several sources for one picture: an electric and gas utility's whole-building billing export, a steam company's statements, two heating oil dealers' delivery tickets in their own layouts, the account crosswalk, the covered buildings register and the airport's daily weather record",
+    "billing periods off the calendar and estimated reads trued up at the next actual read, ending when the meters went to remote reads",
+    "gas in hundreds of cubic feet with a heat content factor per billing period; steam in thousands of pounds, then in pounds with a text period after a billing-system change",
+    "delivered fuel as tank fills with partial deliveries in one heating season, a Y/N fill flag against FILL and PARTIAL, gross and temperature-corrected gallons, three product names for two grades",
+    "utility accounts replaced after service upgrades, mapped to properties through a crosswalk with validity dates",
+    "a weather record in tenths of a degree Celsius with missing days and quality-flagged values",
+    "for the asks: tax lots with and without separators, lots retired by condominium declarations and mergers, a benchmarking export written by tax lot, and the portal's own greenhouse gas column at federal factors"
   ],
   "mechanism_source": "design_note",
   "differentiation": {},

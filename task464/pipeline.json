@@ -1,34 +1,34 @@
 {
   "task": "task464",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "physical-environmental-sciences",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-17",
-  "stump": "The default path scales each building's 2025 benchmarked heating fuels by the ratio of normal to 2025 heating degree days and files a wrong slate (fixed loads scaled with the weather, 2025 straddling changes); a degree-day regression over each building's whole record, or its latest twelve months, files a second wrong slate because buildings near the line changed how they run partway through the record; the golden fits each fuel's degree-day model on the bills since the building's last change.",
-  "architecture": 1,
+  "stump": "The default path fits each fuel's degree-day model over each property's whole record and files a slate with 429 Quillen Avenue, 461 Tallman Street and 173 Orrin Place in place of 758 Fenwright Avenue, 843 Merrow Street and 137 Ashlar Street, because those three changed how they run between 29 December 2025 and 3 February 2026 and their records still describe the plant they had; the latest twelve months still straddle the changes and keep 461 Tallman Street and 173 Orrin Place in; the golden fits each fuel on the spans since the property's last change, found in its own record.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (benign: covered property IDs carrying digits, the estimand's own words in the cycle rules, the register, the 2025 filings and the 2025 grades naming candidates without ranking them on the 2027 question, the weather service's own flag columns)",
+    "reader": "architecture 1: no decisive-step sentence, no ranking or helping file (data_dictionary.csv ruled the accelerator's own field guide), every quoted sentence executes to the estimand, decisive step analytical; realism tells fixed in the generator before the judge returned"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task182 0.10"
+    "heart": "PASS",
+    "nearest": "task182 0.10; surface promoted task462 (two apart, PES x ETL), task450 (retired, same gap and G4) and task136 (top 1 per cent) for the author's adjudicated check"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (architecture 1)",
+    "disposition": "SEND_BACK",
+    "report": "task464/determinism_check_report.md (2026-10-17): post-change window start and the electricity refit unforced, $7,000 12th-to-13th margin inside a $40,000 to $57,000 window freedom; Gate G pass, Gate H pass"
   },
   "returned": [],
-  "resume": "stage 2: generator prototype (weather 1991-2026, ~150 covered buildings, bills, steam, oil fills, undated changes), calibrate the ladder (as benchmarked, degree-day ratio, whole-record fit, latest-twelve fit, current-regime fit) with a 1.2x cut margin, then the fork table, closure, asks and prompt.txt to precut exit 0",
+  "resume": "re-root at stage 1: architecture 1 spent on the judge's SEND_BACK (2026-10-17); the first redraw considered (an inventory interval set by shared emission-factor errors) repeats the correlated-error drivers of task228, task229 v1, task260 and task261 and was dropped before registration; draw a new driver in the ETL objective, move architecture 1 into the card's lineage, register, commit DRAWN",
   "approved": null,
   "delivered": null,
   "portal": null,
