@@ -328,8 +328,11 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("SF14 a departure is in the window by the clock hour the bus left (guidance 3.2); windowed by the scheduled "
           "time instead, %s" % ("the shares move for Routes " + ", ".join(moved_h) if moved_h else "no share moves"),
           True, {r: round(sh_sched[r], 2) for r in moved_h})
-    check("SF15 the scheduled departure is the trip's in the feed in effect that day: the winter feed's trips run to "
-          "April 4 and the spring feed's from April 5, and every tied departure's trip is in the feed of its day",
+    guide = docs[W.FILES["guidance"]]
+    check("SF15 the scheduled departure is the trip's in the published timetable, the GTFS feeds (guidance 4.1 and 4.2): "
+          "the winter feed's trips run to April 4 and the spring feed's from April 5, and every tied departure's trip is in "
+          "the feed of its day", "GTFS feeds of its published timetable" in guide and
+          "scheduled departure in the published timetable" in guide and
           all((d < W.TIMETABLE_CHANGE) == ("_2601_" in t_) for d, t_ in zip(att["service_day"], att["trip"])))
     check("SF16 DeviationSec is Quinnell's departure against ScheduledDeparture, so read as Quinnell's adherence it "
           "gives the golden Quinnell shares", q_dev_ok)
@@ -397,9 +400,10 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("realism: no column of the fleet roster holds one value for every bus", not flat, flat)
 
     # ------------------------------------------------------------------ house fixes, wired
-    idx = [r["file"] for r in csv.DictReader(open(B.path(target, "index"), encoding="utf-8"))]
-    check("H9 the folder list names every shipped file but itself, once", sorted(idx) == sorted(
-        f for f in files if f != W.FILES["index"]) and len(idx) == len(set(idx)))
+    import docs as DC_
+    dated = {W.FILES[k] for k, src, d, desc in DC_.INDEX}
+    check("H9 every shipped file has its date in the folder's register, and no register file ships", sorted(dated) ==
+          sorted(files) and not any("folder" in f or "manifest" in f or "contents" in f for f in files))
     tree = [os.path.relpath(os.path.join(r, f), TASK) for r, _, fs in os.walk(TASK) for f in fs]
     check("H11 one submission.md and one prompt.txt under the task, no superseded copy or snapshot",
           sum(os.path.basename(t_) == "submission.md" for t_ in tree) == 1 and

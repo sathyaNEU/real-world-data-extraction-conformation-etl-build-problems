@@ -1,7 +1,7 @@
 {
  "task": "task468",
  "owner": "oviya1301",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
  "stage": 4,
@@ -11,24 +11,24 @@
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": "0",
+  "exit": "0 at design; the ask sheet now records the pinned cracker's 11 of 11 (pair ceiling 91.5), so precut fails until the ask is rebuilt",
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK): the program's name in the guidance, the program's and the review's own words in the guidance, notes and memo, the ridership report (the cap's filed order), the distractors, the candidate list in route order, two GTFS zips (nested_zip)",
-  "reader": "round 1: no leak, six findings fixed in the generator; round 2 running on the rebuilt pack"
+  "leak_py": "REVIEW (no LEAK) on the pinned pack: the program's name in the guidance, the program's and the review's own words in the guidance, notes and memo, the ridership report (the cap's filed order), the distractors, the candidate list in route order, two GTFS zips (nested_zip)",
+  "reader": "round 1: no leak, six findings fixed; round 2: no leak, the folder list dropped, on-time device held 11 of 11; round 3 (pinned pack 2c828983): no leak, landed the call and all eleven on-time shares against the feeds (device dead), and an H14 grain fork on the call (the review's weighted mix per stop and hour files 4, 6, 22, 11 and 40)"
  },
  "duplicate_check": {
   "heart": "WARN (answered in ## Draw)",
   "nearest": "task28 0.06"
  },
  "judge": {
-  "verdict": "pass 1 NOT_DETERMINISTIC (asks only)",
-  "disposition": "SEND_BACK in the judge's sense (ask layer; call forced, Gates F G H pass)",
-  "report": "determinism_check_report.md; pass 2 running"
+  "verdict": "pass 1 NOT_DETERMINISTIC (asks only); pass 2 DETERMINISTIC",
+  "disposition": "pass 1 SEND_BACK in the judge's sense (ask layer; call forced, Gates F G H pass); pass 2 FIX_NOW (the on-time schedule source), pinned in guidance 4.1 and 4.2",
+  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4 round 2: the reader re-runs on the rebuilt pack (prompt and documents changed) and the one licensed re-judge runs (brief from the determinism-judge agent, report determinism_check_report_pass2.md); fix any finding in the generator without a third judge, append the reader rounds to leak_check_report.md after the final leak.py run, then ship",
+ "resume": "stage 4 repair, two findings from reader round 3 before any ship. (1) The call: an H14 grain fork. The review's weighted mix applied per stop and clock hour files Routes 4, 6, 22, 11 and 40 (Route 2 3.94, Route 17 3.86) against the golden's 2, 4, 6, 17 and 22; per stop, per stop and band and per stop and month agree with the golden. Repair in the data: draw each sampled bus-day's reviewed event so every stop-hour's weighted mix tracks its stop's, with the raw mix still failing Route 17 at every grain; assert the stop-hour estimator in checks.py and verify.py; re-assert the ladder. (2) The asks: the on-time device died with the guidance pin (round 3 hit 11 of 11 against the feeds) and every other column the ask reads sits on the call's population; rebuild the ask layer on a per-candidate measure the nomination carries that the call does not read, with a device a GTFS-literate cracker misses, then ceiling.py, precut, the stage-3 gates, leak.py and a reader round; a judge pass only if the author licenses it (the one re-judge is spent)",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -1,0 +1,90 @@
+{
+  "task": "task241",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 3, seed DQ14 (which domain estimates fail the calibration margin check and are reissued); the seed's survey pairing is banned against task240, so the world moved to a sensor-calibration release: which floats' salinity records the delayed-mode release adjusts",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "sensor-calibration-measurement",
+  "niche": "a national ocean institute's delayed-mode quality control of its regional profiling-float array: which floats' 2027 salinity records the delayed-mode release adjusts, each float's conductivity-sensor offset read against ship reference casts in the deep water below the Mediterranean outflow",
+  "objective": "data-quality-monitoring",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G6",
+    "G14"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "other",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stakeholder_role": "the array's delayed-mode quality-control operator at the institute's ocean data centre",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "ioa_floats_2027_profile_levels.csv",
+    "rows": 0,
+    "entity": "one pressure level of one float profile",
+    "grain": "float x cycle x level",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "period_close",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "Portugal, the Iberian Basin of the eastern North Atlantic (a fictional national ocean institute and its float array; real ocean geography)",
+    "currency": "EUR",
+    "org_type": "national ocean research institute running a regional profiling-float array and its data centre",
+    "invented_names": [
+      "Instituto Oceânico do Atlântico",
+      "Iberian Basin Float Array"
+    ],
+    "people": [
+      "Naiara Nogueira",
+      "Tiago Tavares",
+      "Patrícia Araújo"
+    ]
+  },
+  "deliverables": [
+    "ioa_dmqc_salinity_2027.xlsx",
+    "ioa_dmqc_offsets_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a sensor's own error read against an external reference whose value at a fixed position in the medium moves with a displacement of the medium that the reference years did not share and with a slow drift of the medium's properties across the area, so the error has to be read on a coordinate the displacement carries with it and against reference medium from the sensor's own place; read at fixed position against the area's average, the medium's shift and its gradient are taken for sensor error, and both false flags and misses follow.",
+  "driver_concrete": "A float's conductivity offset is the difference between the salinity it reported and the true salinity of the water it sampled; below the Mediterranean outflow the deep layer heaves with eddies and sat deeper in 2027 than in the reference years, while the salinity of water at a given temperature falls westward as the outflow thins, so comparing at fixed pressure, or on temperature levels against the whole basin's reference, takes heave and position for sensor error; only the salinity on potential temperature levels against reference water at the profile's own position isolates the sensor.",
+  "stump": "A competent analyst interpolates each float's 2027 salinity and the reference casts' mean salinity onto common pressure levels in the 1,400 to 1,900 dbar layer and adjusts 17 of the 24 floats, missing a drifting float; the step that lands it there is comparing at fixed pressure, when the layer heaved deeper in 2027 and the water's salinity at a given temperature changes across the basin, so only the offset on temperature levels against reference water at the float's own position gives the six.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every flag and file correctly, keeps the good 2027 ascending profiles and differences each float's salinity against the reference casts' salinity at the same pressures over the 1,400 to 1,900 dbar layer adjusts 17 floats; one who compares on temperature levels against the whole basin's reference adjusts another 10, and one who measures drift from each float's first profiles finds only the four drifting floats; only the offset on temperature levels against reference water at each profile's position gives the six.",
+  "domain_test": "The deciding quantity is each float's conductivity-sensor offset estimated the way delayed-mode quality control of profiling floats estimates it, against ship CTD reference data on potential-temperature levels where the deep water masses' temperature-salinity relation is conserved, mapped to the float's position; with hospital thermometers or meter readings in place of ocean profiles there is no water column that heaves, no water mass whose temperature fixes its salinity and no basin-scale property gradient, so the task stops making sense.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task148": "task148 (v2) estimates queue patience from censored waits for a demand forecast; task241 reads a float sensor's salinity error against reference water on the coordinate that heave carries, at the float's own position: no quantity, mechanism or file shared"
+  },
+  "lineage": [],
+  "notes": "Seed DQ14: the decision (the reissue list of a release) and the quantity (each estimate against a calibration margin) kept; the seed's world (raking margins in a survey release) and its pairing are banned against task240, so the release is an ocean data centre's delayed-mode salinity adjustment. The seed's pitfall (one raking pass) is not used.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:float-salinity-offset-on-isotherms-against-local-reference",
+  "layer1": [
+    "profiles at two grains (the profile index with each cycle's time as days since 1950 in UTC and its position, the level file with pressure in dbar), joined on float and cycle",
+    "real-time quality flags on every value (1 good to 4 bad, 9 missing), salinity spikes and a few pressure values flagged",
+    "profiles the data centre received twice when a transmission was resent, and descending profiles from floats set to record on the way down beside the ascending ones",
+    "each float's cycle 0 test profile taken on deck or at the deployment station",
+    "reference casts from several cruises, the older ones in the IPTS-68 temperature scale",
+    "the data centre's receipt log in Lisbon local time against profile times in UTC"
+  ],
+  "registered": "2026-10-17T20:27:00Z"
+}

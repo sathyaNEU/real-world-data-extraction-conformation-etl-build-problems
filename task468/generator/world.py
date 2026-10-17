@@ -145,10 +145,8 @@ FILES = {
     "fleet": "fleet_roster_2026.csv",
     "equity": "title_vi_service_monitoring_2025.pdf",
     "farebox": "farebox_revenue_by_route_2026h1.xlsx",
-    "index": "nominations_folder_list.csv",
     "candidates": "ftc_candidate_routes_fy2027.csv",
 }
-INDEX_DATE = "2026-08-03"                  # the folder list's own date: the folder as assembled after the last paper
 GOLDEN = {"workbook": "larkhaven_frequent_corridor_nominations_fy2027.xlsx"}
 DISTRACTORS = ["equity", "farebox"]
 
