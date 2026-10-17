@@ -347,22 +347,24 @@ def pool_of(node, t):
 # ------------------------------------------------------------------------------------------------- maintenance
 WAVES = {   # pool: the nights (UTC dates) of its driver rollout, nodes per night
     "batch-prod": [dt.date(2026, 10, 27), dt.date(2026, 10, 28), dt.date(2026, 10, 29), dt.date(2026, 11, 3),
-                   dt.date(2026, 11, 4)],
+                   dt.date(2026, 11, 4), dt.date(2026, 11, 7)],
     "agents-prod": [dt.date(2026, 11, 3), dt.date(2026, 11, 4), dt.date(2026, 11, 5), dt.date(2026, 11, 7),
                     dt.date(2026, 11, 10), dt.date(2026, 11, 11)],
     "chat-prod": [dt.date(2026, 11, 3), dt.date(2026, 11, 4), dt.date(2026, 11, 5), dt.date(2026, 11, 10),
                   dt.date(2026, 11, 11), dt.date(2026, 11, 12), dt.date(2026, 11, 17), dt.date(2026, 11, 18),
                   dt.date(2026, 11, 19), dt.date(2026, 11, 21), dt.date(2026, 11, 24), dt.date(2026, 11, 25),
                   dt.date(2026, 11, 26)],
-    "code-prod": [dt.date(2026, 11, 10), dt.date(2026, 11, 11), dt.date(2026, 11, 12), dt.date(2026, 11, 13)],
+    "code-prod": [dt.date(2026, 11, 10), dt.date(2026, 11, 11), dt.date(2026, 11, 12), dt.date(2026, 11, 13),
+                  dt.date(2026, 11, 15)],
     "docs-prod": [dt.date(2026, 11, 10), dt.date(2026, 11, 11), dt.date(2026, 11, 12), dt.date(2026, 11, 14),
                   dt.date(2026, 11, 17), dt.date(2026, 11, 18), dt.date(2026, 11, 19)],
-    "voice-prod": [dt.date(2026, 11, 24), dt.date(2026, 11, 25), dt.date(2026, 11, 26)],
+    "voice-prod": [dt.date(2026, 11, 24), dt.date(2026, 11, 25), dt.date(2026, 11, 26), dt.date(2026, 11, 28)],
 }
-# Saturday-night waves (the extra night each pool's change window allowed): the first job of each failed, and
-# its node waited for Monday morning
+# weekend-night waves (the extra night each pool's change window allowed): the first job of each failed, and its
+# node waited for Monday morning
 WEEKEND_FAIL = {("docs-prod", dt.date(2026, 11, 14)), ("agents-prod", dt.date(2026, 11, 7)),
-                ("chat-prod", dt.date(2026, 11, 21))}
+                ("chat-prod", dt.date(2026, 11, 21)), ("code-prod", dt.date(2026, 11, 15)),
+                ("batch-prod", dt.date(2026, 11, 7)), ("voice-prod", dt.date(2026, 11, 28))}
 ENGINEERS = ["a.schrant", "m.bosch", "j.claesner", "t.groenendaal", "n.vertooren", "l.rietveld", "a.kleibrink",
              "s.cammel"]
 FAIL_DETAIL = ["exit 2: nvidia-fabricmanager did not start", "exit 1: dkms build failed for 580.95.05",
@@ -583,13 +585,18 @@ def center_ask_a(M, NODES):
     def closer(c):
         return c["obj"] if c["action"] == "node.uncordon" else job_node.get(c["obj"])
 
+    used = set()
     for p in K.POOLS:
         stays = stays_from_events(M["jobs"], M["console"])
         inside = [s for s in stays if s["start"] >= K.NOV[0] and s["end"] <= K.NOV[1]
                   and pool_of(idx[s["node"]], s["start"]) == p]
         top = max(inside, key=lambda s: s["end"] - s["start"])
         h = (top["end"] - top["start"]).total_seconds() / 3600.0
-        grid = math.floor(h * 10 + 0.5) / 10.0 + float(rng.uniform(-0.015, 0.015))
+        g0 = int(math.floor(h * 10 + 0.5))
+        if g0 in used:                   # another pool already ends on this tenth: the engineer came a few minutes later
+            g0 = min((g for g in (g0 - 1, g0 + 1, g0 + 2) if g not in used), key=lambda g: abs(g / 10.0 - h))
+        used.add(g0)
+        grid = g0 / 10.0 + float(rng.uniform(-0.015, 0.015))
         shift = dt.timedelta(seconds=int(round((grid - h) * 3600)))
         c = [c for c in M["console"] if c["action"] in ("node.uncordon", "fleetctl.job.complete")
              and closer(c) == top["node"] and K.ams_to_utc(c["local"]) == top["end"]][0]
@@ -620,8 +627,9 @@ def center_ask_a(M, NODES):
 # ------------------------------------------------------------------------------------------------- the stopgap's acceptance
 def acceptance():
     """The provider's burn-in and fabric results for the 30 nodes of the leased cluster, and its handover inventory.
-    Two nodes were re-racked from R11 to R14 on 30 November, after burn-in and before their fabric runs; the fabric
-    harness release of 1 December reports bus bandwidth in Gbit/s where the earlier release reported GB/s."""
+    Three nodes were re-racked after burn-in and before their fabric runs (two from R11 to R14, one from R12 to R11);
+    the fabric harness release of 1 December reports bandwidth in Gbit/s where the earlier release reported GB/s, says
+    so in the export's unit column, and numbers each node's runs from 1 again."""
     rng = np.random.default_rng(K.SEED + 40)
     racks = {"R11": 8, "R12": 8, "R13": 7, "R14": 7}
     names, serial = [], {}
@@ -686,7 +694,7 @@ def acceptance():
     true_bw = {nm: float(rng.normal(371.5, 3.2)) for nm in names}
     held = {names[3]: 355.2, names[8 + 4]: 333.9, names[8 + 5]: 336.8, names[16 + 2]: 358.3, moved[1]: 354.8}
     true_bw.update(held)
-    rerun_fail = names[23 + 1]           # R14 node 2: a first run below the line, cable reseated, then clear
+    rerun_fail = names[23 + 1]           # R14 node 2: two runs below the line on 25 November, clear on 2 December
     for nm in names:
         r = hand_rack[nm] if (nm in moved or nm == moved_r12) else node_rack[nm]
         if nm in moved or nm == moved_r12:
@@ -696,15 +704,30 @@ def acceptance():
         else:
             t = fab_day[r] + dt.timedelta(minutes=int(rng.integers(0, 420)))
         runs = []
+        if nm == names[8 + 2]:           # R12 node 3: started on 30 November, two runs short, clear on 1 December
+            t0 = dt.datetime(2026, 11, 30, 14, 5)
+            runs.append((t0, 351.8))
+            runs.append((t0 + dt.timedelta(minutes=97), 353.9))
         if nm == rerun_fail:
             runs.append((t, 349.6))
             t = t + dt.timedelta(seconds=int(rng.uniform(4, 7) * 3600))
-        runs.append((t, true_bw[nm]))
-        for j, (tt, bw) in enumerate(runs):
-            unit_gbit = tt >= K.HARNESS_CHANGE
-            fabric.append(dict(rack=r, node=nm, run=j + 1, start=tt,
+            runs.append((t, 352.3))      # cable reseated, still short; the transceiver was replaced on 1 December
+            t = dt.datetime(2026, 12, 2, 15, 26)
+        final_bw = true_bw[nm]
+        if nm in (names[3], names[16 + 2]):    # repaired on 4 December and run again, after the 14:00 review
+            runs.append((t, true_bw[nm]))
+            t = {names[3]: dt.datetime(2026, 12, 4, 13, 34), names[16 + 2]: dt.datetime(2026, 12, 4, 13, 41)}[nm]
+            final_bw = {names[3]: 370.9, names[16 + 2]: 368.2}[nm]
+        runs.append((t, final_bw))
+        seq = {}
+        for tt, bw in runs:
+            new_release = tt >= K.HARNESS_CHANGE
+            rel = K.HARNESS_NEW if new_release else K.HARNESS_OLD
+            seq[rel] = seq.get(rel, 0) + 1          # each harness release numbers a node's runs from 1
+            fabric.append(dict(rack=r, node=nm, harness=rel, run=seq[rel], start=tt,
                                end=tt + dt.timedelta(minutes=int(rng.integers(11, 19)), seconds=int(rng.integers(0, 60))),
-                               busbw=round(bw * 8, 1) if unit_gbit else round(bw, 1), algbw=None, true_gbs=bw))
+                               busbw=round(bw * 8, 1) if new_release else round(bw, 1),
+                               unit="Gbit/s" if new_release else "GB/s", algbw=None, true_gbs=bw))
     for f in fabric:
         f["algbw"] = round(f["busbw"] * 8 / 14, 1)     # all-reduce over 8 ranks: algbw = busbw * n / (2 (n - 1))
     inventory = []

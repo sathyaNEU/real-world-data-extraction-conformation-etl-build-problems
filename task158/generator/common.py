@@ -48,6 +48,8 @@ INTAKE_DUE = dt.date(2026, 11, 27)
 PLAN_DATE = dt.date(2026, 12, 1)
 LEDGER_DATE = dt.date(2026, 12, 4)
 HARNESS_CHANGE = dt.datetime(2026, 12, 1, 0, 0)         # UTC, the provider's fabric harness release
+HARNESS_OLD, HARNESS_NEW = "nm-fabcheck 3.8.4", "nm-fabcheck 4.0.1"
+REVIEW_LOCAL = dt.datetime(2026, 12, 4, 14, 0)            # the acceptance review, Amsterdam time (Schedule 3.3)
 REVIEW_DATE = dt.date(2026, 12, 4)
 HANDOVER = dt.date(2027, 1, 4)
 Q1_WEEKS = [dt.date(2027, 1, 4) + dt.timedelta(weeks=i) for i in range(13)]   # Mondays of 2027-W01 .. W13
@@ -66,7 +68,7 @@ LC1_TAG, LC2_TAG = "lc1-2025.11", "lc2-2026.05"
 
 # the long-context models' cost of serving, GPU-seconds per prompt token computed and per completion token
 A_LC2, B_LC2 = 0.000248, 0.00185
-A_LC1, B_LC1 = 0.000287, 0.00231
+A_LC1, B_LC1 = 0.000360, 0.00280
 # the other models (cost per computed prompt token, per completion token)
 COST = {"l3": (0.000150, 0.000920), "c2": (0.000300, 0.00250), "s2rt": (0.000060, 0.00085)}
 

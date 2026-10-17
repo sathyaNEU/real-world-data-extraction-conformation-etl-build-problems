@@ -63,6 +63,19 @@ def q3_rate(roll):
     return g
 
 
+def closeout_rates(target):
+    """Table 1 of the Q3 close-out, read from the PDF's text: each pool's GPU-seconds per request."""
+    from pypdf import PdfReader
+    text = "\n".join(pg.extract_text() or "" for pg in PdfReader(os.path.join(target, "capacity_closeout_2026Q3.pdf"))
+                     .pages)
+    lines = [x.strip() for x in text.splitlines()]
+    out = {}
+    for i, x in enumerate(lines):          # each table cell is its own line: pool, GPUs, busy, share, ... per request
+        if x in POOLS and x not in out and i + 10 < len(lines) and lines[i + 3].endswith("%"):
+            out[x] = float(lines[i + 8])
+    return out
+
+
 def lc2_rates(roll, exact_tag=True):
     b = roll[roll["pool"] == "batch-prod"]
     b = b[b["model"] == "lc2-2026.05"] if exact_tag else b
@@ -96,7 +109,11 @@ def main(target):
     G = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
     roll, req, plan, con, tiers = load(target)
     g3 = q3_rate(roll)
-    rate = (g3["gpu_busy_s"] / g3["requests"]).to_dict()
+    exact = (g3["gpu_busy_s"] / g3["requests"]).to_dict()
+    rate = closeout_rates(target)          # policy s3: the latest close-out's GPU-seconds per request, as printed
+    ok("V0 the close-out prints each pool's Q3 rate from the rollup, to three decimals",
+       sorted(rate) == sorted(POOLS) and all(abs(rate[p] - round(exact[p], 3)) < 1e-9 for p in POOLS),
+       " ".join("%.3f" % rate[p] for p in POOLS))
     a, b = lc2_rates(roll)
     calls, pmax, qmax = "Calls per report", "Prompt tokens per call (limit)", "Completion tokens per call (limit)"
     gold_cost = lambda r: r[calls] * (a * r[pmax] + b * r[qmax])
@@ -148,11 +165,19 @@ def main(target):
     excess = float((dd.loc[tday.index, "gpu_busy_s"] - rate["docs-prod"] * other).sum())
     pred = float(a * ten["input_tokens"].sum() + b * ten["output_tokens"].sum())
     per_req = float(rate["docs-prod"] * ten["requests"].sum())
-    ok("V14 lc2's rates predict the tenant's excess busy time within the write-up's bound",
-       abs(pred / excess - 1) * 100 <= int(G["steps"]["pilot_within_pct"]), "%.4f" % (pred / excess))
+    excess_x = float((dd.loc[tday.index, "gpu_busy_s"] - exact["docs-prod"] * other).sum())
+    ok("V14 lc2's rates predict the tenant's excess busy time within the write-up's bound, at the printed and the exact "
+       "Docs rate", max(abs(pred / excess - 1), abs(pred / excess_x - 1)) * 100 <= int(G["steps"]["pilot_within_pct"]),
+       "%.4f %.4f" % (pred / excess, pred / excess_x))
     ok("V15 Docs' rate per request predicts under a third of it", per_req / excess < 0.33, "%.3f" % (per_req / excess))
     ok("V16 the tenant's report calls in billing", "{:,}".format(int(ten["requests"].sum())) == G["steps"]["pilot_calls"])
-    ok("V17 every tenant report call is its own session", bool((ten["requests"] == ten["sessions"]).all()))
+    gw = docs.groupby("day")["sessions_new"].sum()
+    aa = bill[bill["channel"] != "report"].copy()
+    aa["day"] = pd.to_datetime(aa["usage_date"]).dt.date
+    aa = aa.groupby("day")["sessions"].sum()
+    gap = float((gw.loc[tday.index] - aa.loc[tday.index]).sum()) / float(tday["requests"].sum())
+    ok("V17 billing bills a report as one session; the gateway opened one session per report call",
+       bool((ten["requests"] == 6 * ten["sessions"]).all()) and abs(gap - 1) < 0.005, "%.4f" % gap)
 
     # ------------------------------------------------------------------------------------------- Ask A
     nodes = pd.read_csv(os.path.join(target, "fleet_nodes_2026-12-06.csv"))
@@ -214,10 +239,16 @@ def main(target):
     inv = pd.read_csv(os.path.join(target, "nx7_handover_inventory_2026-12-04.csv"))
     burn = pd.read_csv(os.path.join(target, "nx7_burnin_results.csv"))
     fab = pd.read_csv(os.path.join(target, "nx7_fabric_results.csv"))
-    last = burn.sort_values("run").groupby(["gpu_serial", "test"]).tail(1).set_index(["gpu_serial", "test"])["result"]
+    last = burn.sort_values("finished_utc").groupby(["gpu_serial", "test"]).tail(1).set_index(
+        ["gpu_serial", "test"])["result"]
     tests = sorted(burn["test"].unique())
-    fab = fab.sort_values("run").groupby("node").tail(1).set_index("node")
-    gbps = np.where(fab["busbw"] > 1000, fab["busbw"] / 8.0, fab["busbw"])      # Gbit/s runs read by their size
+    ok("V20b the fabric export's unit column agrees with the figures' size", bool(
+        ((fab["bw_unit"] == "Gbit/s") == (fab["busbw"] > 1000)).all()))
+    review = pd.Timestamp("2026-12-04 14:00").tz_localize("Europe/Amsterdam").tz_convert("UTC").tz_convert(None)
+    fab["fin"] = utc_naive(fab["finished_utc"])
+    fab = fab[fab["fin"] < review]                       # Schedule 3.3: the results reported by the 14:00 review
+    fab = fab.sort_values("fin").groupby("node").tail(1).set_index("node")               # each node's latest run
+    gbps = np.where(fab["bw_unit"] == "Gbit/s", fab["busbw"] / 8.0, fab["busbw"])
     fab_ok = pd.Series(gbps >= 360.0, index=fab.index)
     acc, held = {r: 0 for r in ("R11", "R12", "R13", "R14")}, []
     for node, g in inv.groupby("node"):

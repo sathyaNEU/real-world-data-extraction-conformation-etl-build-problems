@@ -89,7 +89,8 @@ POLICY = [
     ]),
     ("3. Traffic in the busiest hour", [
         "The busiest hour's traffic is the product team's figure for that week in the Q1 capacity intake, plus the "
-        "pool's committed report-service volume.",
+        "pool's committed report-service volume. The product team's figure is converted to busy GPU-seconds at the "
+        "pool's GPU-seconds per request in the latest quarterly capacity close-out.",
         "A signed report-service contract counts on the pool of the product that sold it, at its contracted peak "
         "reports per hour in every hour from the Monday of its go-live week, each report at its tier's calls per report "
         "and its tier's prompt and completion limits per call. Proposals and ended agreements do not count.",
@@ -143,8 +144,7 @@ def write_closeout(out, C):
     flow.append(Paragraph("Summary", st["h2"]))
     flow.append(Paragraph(esc(
         "The fleet ran %s busy GPU-hours in the quarter, %s per cent of the GPU-hours allocated. Docs added four nodes "
-        "on 6 July and Code three on 7 September; Code's agent preview has been live since 14 September. Docs and Batch "
-        "API have served lc2 since the rolling upgrade of 11 and 12 May, so the whole quarter is on lc2 for both."
+        "on 6 July and Code three on 7 September; Code's agent preview has been live since 14 September."
         % (K.fmt_int(C["fleet_busy_h"]), "%.1f" % C["fleet_share"])), st["body"]))
     flow.append(Paragraph("Table 1. Pools in Q3 2026", st["h2"]))
     head = ["Pool", "GPUs, 30 Sep", "GPU-hours busy (k)", "Busy share", "Requests (m)", "Sessions (m)",
@@ -203,8 +203,9 @@ SCHEDULE = [
         "Burn-in counts on the GPU fitted at the review: a GPU replaced after its burn-in is burned in again.",
     ]),
     ("3.3 Review", [
-        "The parties review acceptance on Friday 4 December 2026 on the results reported by then. The Provider repairs "
-        "and presents again any node held back; a node accepted later is handed over on its acceptance.",
+        "The parties review acceptance at 14:00 on Friday 4 December 2026, Amsterdam time, on the results reported by "
+        "then. The Provider repairs and presents again any node held back; a node accepted later is handed over on its "
+        "acceptance.",
     ]),
     ("3.4 Handover", [
         "The Provider hands over the accepted nodes on Monday 4 January 2027 with its handover inventory (rack, "
@@ -308,8 +309,8 @@ the time.
 
 ## Stopgap cluster (Noordermeer, NX7)
 
-The provider's burn-in and fabric exports (`nx7_burnin_results.csv`, `nx7_fabric_results.csv`) as sent for the 4 December
-review, and its handover inventory (`nx7_handover_inventory_2026-12-04.csv`). Acceptance is Schedule 3 of the lease.
+The provider's burn-in and fabric exports (`nx7_burnin_results.csv`, `nx7_fabric_results.csv`) as received on 4
+December, and its handover inventory (`nx7_handover_inventory_2026-12-04.csv`). Acceptance is Schedule 3 of the lease.
 
 ## Also in the folder
 

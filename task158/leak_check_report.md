@@ -4,20 +4,21 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: report, tenant, traffic, prompt, tokens, nothing, rollup, session, early-access, computed, close-out, capacity, decisive, gpu-seconds, forecasting, completion, reflex, request, population, contracts, fitted, busiest, october, billing, intake
+Stump terms swept: report, tenant, traffic, session, prompt, tokens, nothing, rollup, early-access, computed, decisive, billing, close-out, capacity, gpu-seconds, policy, request, forecasting, completion, reflex, population, product, contracts, sentence, fitted
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `capacity_desk_notes.md`: \bthe model\b x1: ..._start_utc`: start of the hour. - `pool`, `model`: the deployment and the model build it served; both builds, joined by `+`, while a rolling upgrade...
 
-## 3 answer figures in the pack (REVIEW 2)
+## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `capacity_closeout_2026Q3.pdf`: golden figure 57.4 appears: ...82.6 79.4 98.4 260.5 batch-prod 55.7 57.1 57.4 170.2 voice-prod 81.1 83.3 83.6 247.9 Lookin...
+- **REVIEW** `capacity_closeout_2026Q3.pdf`: golden figure 57.1 appears: ...s-prod 82.6 79.4 98.4 260.5 batch-prod 55.7 57.1 57.4 170.2 voice-prod 81.1 83.3 83.6 247.9...
 - **REVIEW** `stopgap_assignment_policy_2026-11.pdf`: carries 9 of 10 distinctive words of the committed call: 'Give the stopgap cluster to docs-prod (Docs): its Q1 peak-week shortfall is 340 GPUs, in 2027-W13.'
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `capacity_closeout_2026Q3.pdf`: 12 of 25 stump-paragraph terms appear (prompt, tokens, rollup, session, close-out, capacity); read whether the document names the move
-- **REVIEW** `capacity_desk_notes.md`: 11 of 25 stump-paragraph terms appear (report, prompt, tokens, rollup, session, close-out); read whether the document names the move
+- **REVIEW** `capacity_closeout_2026Q3.pdf`: 9 of 25 stump-paragraph terms appear (session, prompt, tokens, rollup, close-out, capacity); read whether the document names the move
+- **REVIEW** `capacity_desk_notes.md`: 11 of 25 stump-paragraph terms appear (report, session, prompt, tokens, rollup, close-out); read whether the document names the move
 - **REVIEW** `lease_schedule3_acceptance.pdf`: 3 of 25 stump-paragraph terms appear (report, capacity, fitted); read whether the document names the move
-- **REVIEW** `stopgap_assignment_policy_2026-11.pdf`: 10 of 25 stump-paragraph terms appear (report, traffic, prompt, rollup, computed, capacity); read whether the document names the move
+- **REVIEW** `stopgap_assignment_policy_2026-11.pdf`: 12 of 25 stump-paragraph terms appear (report, traffic, prompt, rollup, computed, close-out); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 2)
 - **REVIEW** `fleet_plan_2027Q1.xlsx`: 1 ISO dates after 2026-12-07, e.g. 2027-02-15

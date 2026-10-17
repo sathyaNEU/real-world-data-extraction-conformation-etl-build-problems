@@ -22,33 +22,35 @@
     "gbit": "8",
     "bw_floor": "360",
     "eleven": "11",
-    "six": "6"
+    "six": "6",
+    "review_local": "14:00",
+    "review_utc": "13:00"
   },
   "answers": {
     "out_of_service": {
       "chat-prod": {
-        "gpu_hours": "3,760",
+        "gpu_hours": "3,630",
         "longest": "57.4"
       },
       "code-prod": {
-        "gpu_hours": "920",
-        "longest": "22.9"
+        "gpu_hours": "1,110",
+        "longest": "33.7"
       },
       "agents-prod": {
-        "gpu_hours": "1,100",
-        "longest": "55.6"
+        "gpu_hours": "1,470",
+        "longest": "57.0"
       },
       "docs-prod": {
-        "gpu_hours": "1,340",
-        "longest": "55.5"
+        "gpu_hours": "1,260",
+        "longest": "57.1"
       },
       "batch-prod": {
-        "gpu_hours": "460",
-        "longest": "22.3"
+        "gpu_hours": "810",
+        "longest": "56.0"
       },
       "voice-prod": {
-        "gpu_hours": "500",
-        "longest": "15.2"
+        "gpu_hours": "1,250",
+        "longest": "55.9"
       }
     },
     "acceptance": {

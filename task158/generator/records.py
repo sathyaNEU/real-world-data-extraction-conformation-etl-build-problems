@@ -33,7 +33,7 @@ BILLING_COLS = ["usage_date", "org_id", "org_name", "product", "channel", "reque
 NODE_COLS = ["node", "hall", "rack", "gpu_model", "gpus", "pool", "member_from", "member_to"]
 CONSOLE_COLS = ["time (Europe/Amsterdam)", "user", "action", "object", "detail", "ticket"]
 BURN_COLS = ["rack", "node", "slot", "gpu_serial", "run", "test", "started_utc", "finished_utc", "result", "note"]
-FABRIC_COLS = ["rack", "node", "run", "test", "started_utc", "finished_utc", "algbw", "busbw"]
+FABRIC_COLS = ["rack", "node", "harness", "run", "test", "started_utc", "finished_utc", "algbw", "busbw", "bw_unit"]
 HANDOVER_COLS = ["rack", "position", "node", "slot", "gpu_serial"]
 INCIDENT_COLS = ["incident", "opened_utc", "resolved_utc", "severity", "pools", "summary"]
 SPEC_COLS = ["deployment", "model", "gpu", "gpus_per_node", "tensor_parallel", "replicas_at_peak", "max_num_seqs",
@@ -106,7 +106,8 @@ def billing_rows(W):
         pr = W.pilot["calls"][ii].sum()
         if pr > 0:
             o = W.pilot_org
-            out.append([d.isoformat(), O.ids[o], O.names[o], "docs", "report", int(round(pr)), int(round(pr)),
+            reps = int(round(W.pilot["reports"][ii].sum()))      # the report service bills one session per report
+            out.append([d.isoformat(), O.ids[o], O.names[o], "docs", "report", int(round(pr)), reps,
                         int(round(W.pilot["prompt"][ii].sum())), int(round(W.pilot["completion"][ii].sum()))])
     out.sort(key=lambda r: (r[0], r[1], r[4]))
     return out
@@ -143,8 +144,8 @@ def burn_rows(A):
 def fabric_rows(A):
     rows = sorted(A.fabric, key=lambda f: (f["start"], f["node"]))
     for f in rows:
-        yield [f["rack"], f["node"], f["run"], "all_reduce_perf -b 8G -e 8G -g 8", K.iso(f["start"]), K.iso(f["end"]),
-               "%.1f" % f["algbw"], "%.1f" % f["busbw"]]
+        yield [f["rack"], f["node"], f["harness"], f["run"], "all_reduce_perf -b 8G -e 8G -g 8", K.iso(f["start"]),
+               K.iso(f["end"]), "%.1f" % f["algbw"], "%.1f" % f["busbw"], f["unit"]]
 
 
 def handover_rows(A):
