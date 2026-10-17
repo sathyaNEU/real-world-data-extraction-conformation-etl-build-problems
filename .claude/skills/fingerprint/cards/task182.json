@@ -1,17 +1,18 @@
 {
   "task": "task182",
-  "architecture": "v1",
-  "drawn": "2026-10-11",
-  "slot_note": "seed AD05 (a prescriber's high-dose patient count, a daily dose built from overlapping fills) re-rooted at the draw: its reviewer-determination corpus pins the construction by replaying settled figures, which the client's 10/10 standard caps, and its world (a state programme-integrity unit referring a prescriber to a medical board) repeats task180's role, forum and organisation family; the objective and the number are kept and the draw is new. A first draft on left-censored laboratory results was dropped at the guard (same gap, G-code and Gate G as task134, and a third censoring stump in a row after task134 and task181)",
+  "architecture": "v2",
+  "drawn": "2026-10-17",
+  "slot_note": "Re-root of architecture 1 (central Queensland make-good bore assessments) after the portal solved it: see lineage. The objective and the number are kept, the domain's only anomaly-detection task type is kept because the taxonomy offers no other, and every other axis is drawn fresh. Architecture 2's first draw (a static flux chamber campaign, the rate at placement against the straight-line slope) was redrawn at the ladder measurement before any file was cut: the straight-line bias is monotone in one visible feature, so the quadratic and short-window corrections land the golden slate (97 and 84 per cent of 120,000 parameter sets) and no configuration separates them cleanly.",
   "domain": "physical-environmental-sciences",
   "subdomain": "environmental-monitoring-exceedance",
-  "niche": "make-good bore assessments at an open-cut coal mine in central Queensland whose pit has been dewatered since mid-2022: which neighbouring landholders' water bores have lost more water level to the mine's take than the trigger threshold for their aquifer, through two dry years that lowered every shallow bore in the district",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "the specific sound level of a dairy site's new effluent-plant blower house, centrifuges and gas engine at the dwellings around it, where that plant runs continuously, so the residual sound the measured total has to be corrected for cannot be taken from the record the plant is in",
   "objective": "anomaly-detection",
-  "shape": "11",
-  "decision_type": "designation_set",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "Offer make-good agreements to four owners for five bores: Yarrowmere Pastoral Co Pty Ltd for KV-LB04 and KV-LB05 (one agreement), Tondara Grazing Pty Ltd for KV-LB07, Bluebush Downs Pty Ltd for KV-LB10 and Cypress Ridge Pastoral Trust for KV-LB12.",
-  "answer_source": "task182/submission.md, 1. Final Recommendation",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "objective"
   ],
@@ -19,68 +20,105 @@
     "none"
   ],
   "generators": [
-    "G16"
+    "G3"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "other",
-  "stump_strategy": "decomposition_attribution",
-  "decisive_rule_filed": true,
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "register",
-  "stakeholder_role": "principal hydrogeologist at the mine, who recommends which landholders are offered make-good agreements",
-  "role_family": "other",
-  "scoring_unit": "per resolved case",
+  "stakeholder_role": "the site's environmental engineer, who sets the quarter's noise mitigation list",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "per certified output",
   "spine": {
-    "file": "water_level_dips_2012-2026.csv",
-    "rows": 4214,
-    "entity": "one manual depth-to-water reading at one bore, by the field team or the EIS consultant (logged bores add hourly pressures in logger_pressure_2015-2026.parquet, 994,869 rows)",
-    "grain": "bore x observation",
+    "file": "sound_levels_1min_2026.parquet",
+    "rows": 0,
+    "entity": "one minute of logged sound level at one monitoring position (LAeq, LA90, LAmax, LAmin)",
+    "grain": "position x minute",
     "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "incident_or_complaint",
-  "org_family": "other",
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "manufacturer",
   "world": {
-    "geography": "Australia, central Queensland (Isaac region, Bowen Basin)",
-    "currency": "AUD",
-    "org_type": "an open-cut coal mine owned by a mid-sized mining company, whose pit dewatering takes associated water from the coal measures",
+    "geography": "Ireland, the midlands",
+    "currency": "EUR",
+    "org_type": "a milk processing site whose upgraded effluent treatment plant, with a blower house, two sludge centrifuges and a biogas engine, has drawn noise complaints from the dwellings around it",
     "invented_names": [
-      "Kelvale Mine",
-      "Tarrabool Resources",
-      "Mundoora Creek"
+      "Drumlorne",
+      "Tulcarra Foods",
+      "Clonaraght"
     ],
     "people": [
-      "Rebecca Quinn",
-      "Stephen Anderson",
-      "Erika Martin",
-      "Ernest Walker",
-      "Clarence Lewis",
-      "Noah Carrillo"
+      "Keelan Moher",
+      "Aiden Hawthorn",
+      "Orla O'Hurley",
+      "Cormac Cashman",
+      "Helen Deeny"
     ]
   },
   "deliverables": [
-    "bore_impact_assessment.xlsx",
-    "make_good_recommendation.docx"
+    "specific_sound_levels.csv",
+    "mitigation_shortlist.pdf"
   ],
   "opening_move": "question-first",
-  "driver": "When every unit's level follows a shared external driver through its own lagged response, a change measured from a fixed baseline mixes that response with the effect being assessed, so the effect is the gap between the observed level and each unit's own driver-only path fitted before the effect began, which hides large effects where the driver was lifting the level and invents them where it was pulling it down.",
-  "driver_concrete": "Each landholder bore's September 2026 assessment level is set against the make-good trigger for its aquifer (2 m in the alluvium, 5 m in the coal measures and basalt) since the pit's dewatering began on 4 July 2022; the alluvial bores fell 4.6 to 5.2 m through the failed 2022-23 to 2025-26 seasons on rainfall alone, while the coal-measure bores near the pit, still rising on the 2019-20 and 2020-21 wet seasons through a six to seven year rainfall memory, were drawn 8.3 to 9.3 m below where that rise was taking them and show only 2.2 to 2.5 m of net decline.",
-  "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change, or with the far-field coal-measure bore KV-LB16 as a control) and offers make good to the alluvial bores and the ridge basalt bore that fell past their triggers (or to KV-LB12 alone, or to KV-LB04, KV-LB05 and KV-LB12); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and basalt fell through the dry seasons and the coal measures' small net fall hides 8.3 to 9.3 m of drawdown under a rise the wet seasons had set going.",
+  "question_form": "which",
+  "driver": "The decisive quantity is one source's own contribution to a measured total, and the nuisance part of that total cannot be measured while the source runs, because the source's steady presence lifts even the quietest moments of the record; so every background taken from the running record subtracts the source along with the nuisance and leaves the nuisance's own variability, ranking the units by how variable their surroundings are instead of by how much the source contributes.",
+  "driver_concrete": "Each dwelling's specific sound level from the works is the energetic difference between its measured weekday daytime total and the residual sound, and because the blowers and the gas engine run without stopping the statistical background in a position's own record sits within a decibel or two of its total, so subtracting it returns a level built out of the residual's variability and ranks the dwellings by how busy their surroundings are; only the residual measured inside the works' own weekly process stops recovers the five dwellings the plant contributes most to.",
+  "stump": "A competent solver maps every meter deployment to its position, applies the calibration checks, excludes exactly the rain- and wind-affected samples the plan excludes, energetically averages each position's weekday daytime one-minute LAeq, energetically subtracts the position's own statistical background and files the five dwellings with the highest corrected level; the step that lands it there is taking that background from a record the works were running in, when the works run continuously, so the subtraction returns the residual's own variability and the slate fills with the dwellings beside the road and the stream while the quiet-surroundings dwellings the plant contributes most to are left out.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who turns every reading into a reduced level, drops pumped and duplicate dips, compensates the loggers for air pressure and applies each aquifer's trigger exactly still measures each bore's decline from its baseline (or against the reference bores) and designates the alluvial bores and the ridge basalt bore, or takes the far-field coal-measure bore KV-LB16 as the coal measures' climate control, which the mine has itself drawn down about 2.4 m, so KV-LB04 sits at 5.0 to 5.1 m on its 5 m trigger, KV-LB07 and KV-LB10 fall under it and the set is KV-LB04, KV-LB05 and KV-LB12 or KV-LB05 and KV-LB12; only a model of each bore's own response to rainfall and evaporation, calibrated before dewatering and run forward as the level without the mine, shows which bores the mine has drawn down past their trigger.",
-  "domain_test": "What decides the set is attributing groundwater-level change between climate-driven recharge and pumping with response functions calibrated on each bore's pre-impact record, which is how hydrogeologists assess drawdown impacts on neighbouring bores; with another field's nouns there is no recharge, no aquifer memory that differs between shallow and deep bores and no drawdown cone, so the task does not read the same.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:counterfactual-groundwater-level-from-calibrated-climate-response",
+  "analyst_test": "A strong analyst who maps each deployment to its position, applies the drift from the calibration checks, excludes exactly the samples the plan excludes and energetically averages and subtracts still takes the background from the record the works were running in, and files the dwellings with the most variable surroundings; only the residual measured inside the works' own process stops, found by joining the stop times in the plant's equipment log to the meter records, gives the specific levels.",
+  "domain_test": "What decides the slate is separating a steady source's own contribution from the residual sound by energetic subtraction, which is how acoustics practitioners determine a specific sound level, and the residual has to be measured with the source shut down because a statistical background taken while it runs already contains it; with another field's nouns there is no energetic summation of a source with its surroundings and no quantity that cannot be observed while the source is present, so the task does not read the same.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:residual-measured-in-the-source-s-own-absence",
   "layer1": [
-    "depth to water below a measuring point that changed when headworks were rebuilt, against reduced levels in metres AHD",
-    "landholder dips taken while the bore's own pump was running (pumped, not static, levels) flagged only in a free-text remark",
-    "unvented pressure loggers that need the site barometric logger subtracted, stamped in UTC and averaged to Queensland days",
-    "bores known by a state registered number, the landholder's name for it and the company's monitoring code",
-    "the 2012 to 2014 EIS consultant rounds in feet, and duplicate dips entered twice"
+    "meter exports stamped in UTC against field sheets kept in Irish Standard Time",
+    "six logging meters rotated over fourteen positions, so each position has its own week, meter and surroundings",
+    "pre- and post-deployment calibration checks, with one meter's sensitivity drifting",
+    "the met station logging ten-minute means while the meters log every minute, and wind speed in metres a second before a sensor swap and kilometres an hour after it",
+    "positions known by a dwelling reference, a position code and the crew's shorthand, with one position moved mid-week",
+    "a meter download repeated after a card error, duplicating part of a day"
   ],
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Re-root of seed AD05 at the draw (see slot_note). Anomaly Detection & Diagnostics: which bores show a drawdown the mine caused, as against the dry years' decline. decisive_rule_filed is true: the make-good procedure files the trigger (a decline attributable to the mine's take beyond 2 m in unconsolidated and 5 m in consolidated aquifers) and the baseline assessment, and nothing files how the attributable part is estimated; no filed document defines the decline as the baseline minus the current level, so there is no official decoy. calibration_form is other: reference bores outside the predicted zone of influence show the climate-only model holds after July 2022. org_family is other (a coal mining company) and role_family is other (a hydrogeologist)."
+  "differentiation": {
+    "task228": "Shares the gap, the decision type and the Gate G mechanism with task228 architecture 2, and nothing else. task228's decisive quantity is each unit's own random measurement error against a latent signal, where two comparators share an input in one region so their errors co-vary there; the comparison is between measuring instruments. Here there is one instrument and no comparator: the instrument damps the quantity it measures while measuring it, and the decisive move is reading the rate at placement off each deployment's own approach to its asymptote. One is error covariance across comparators, the other is a measurand that falls because it is being measured, and neither route reaches the other's answer.",
+    "task182": "Own lineage. Architecture 1's decisive step was which level an observed level is set against (the baseline, the reference bores or a fitted climate path), a comparison inside the estimand, driven by a lagged response every unit shares to an external driver. Architecture 2 settles no part of the estimand: the works' specific level at a dwelling over the plan's assessment period is filed, and the open question is where the residual in the energetic subtraction is measured from. No file, world, persona, forcing event, deliverable or figure is carried over.",
+    "task187": "The nearest curved-response build on file. task187 averages a capped, curved response over a spread of inputs whose width differs by unit, which is an aggregation effect across a distribution of inputs at one instant. Here the response is not curved in the input but in time, and only because the measurement feeds back on the thing measured, so the bias is set by the apparatus's time constant against the window length rather than by the spread of any input.",
+    "task189": "Shares the domain and the only anomaly-detection task type the taxonomy gives it. task189's decisive quantity is a per-unit average over measurements known only to lie below a limit that differs by laboratory, which is about what to put in place of a censored value. Nothing here is censored: every second of every deployment is recorded, and the question is what rate those records imply.",
+    "task462": "Shares methane as the measured gas. task462 conforms repeated aerial plume survey estimates into a production-weighted intensity, an ETL build whose difficulty is the definition of the denominator and the vintage of each survey. Here the measurement is a static chamber on a restoration layer and the difficulty is the estimator for one deployment's rate.",
+    "task186": "The nearest build on a monitored level against its own surroundings. task186 tests each unit's change across an event against what the event alone would leave, where the units' levels swing in local cycles shared within a place, so its decisive quantity is the reference distribution for a difference. Here there is no change and no test: the quantity is one source's share of a level that is the energetic sum of two sources, and the decisive move is which windows measure the other one.",
+    "task263": "The nearest driver on file (0.07) and the closest in words: a source's own level recovered from mixtures. task263 mixes many sources in proportions that change between measurements and separates them by a mass balance across the mixtures, a linear system over several unknowns, and its wrong routes over-credit clean sources. Here the mixture has exactly two parts, the works and everything else, it is energetic rather than proportional, and nothing can be inverted: the second part is unobservable while the first runs, so the decisive move is which windows of the same record measure it, and the wrong routes understate the source by the surroundings' own variability.",
+    "task234": "Shares the shape of recovering what one source contributed to a reported figure. task234's quantity is what a source produced when a transit loss removed part of its output, read from a share its own output cannot move, which is a maturity and completeness mechanism. Nothing is lost or late here: every minute is recorded, and the question is which minutes measure the part of the total that is not the works."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "shipped 2026-10-11 and solved on the portal, so FAILED_TO_STUMP; spent as an architecture on 2026-10-17. The portal executed the decisive rung as a work order: the in-house round already held the pre-take-calibration-and-run-forward construction and only wanted a better regressor, the isolated leak reader reached the answer with a lagged-rainfall model on the pack alone, and the pack shipped a 13,422 day rainfall and evaporation series no graded figure or ask reads, which is a file whose presence is the hint. The WHAT screen kills it besides: the decisive step was which level the observed level is set against, which is the estimand's comparison, so filing it makes the computation follow from the clause and leaving it unfiled leaves the call open. The shared-driver mechanism is spent in its own right.",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "environmental-monitoring-exceedance",
+      "objective": "anomaly-detection",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "decision_type": "designation_set",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:counterfactual-groundwater-level-from-calibrated-climate-response",
+      "driver": "When every unit's level follows a shared external driver through its own lagged response, a change measured from a fixed baseline mixes that response with the effect being assessed, so the effect is the gap between the observed level and each unit's own driver-only path fitted before the effect began, which hides large effects where the driver was lifting the level and invents them where it was pulling it down.",
+      "driver_concrete": "Each landholder bore's September 2026 assessment level is set against the make-good trigger for its aquifer (2 m in the alluvium, 5 m in the coal measures and basalt) since the pit's dewatering began on 4 July 2022; the alluvial bores fell 4.6 to 5.2 m through the failed 2022-23 to 2025-26 seasons on rainfall alone, while the coal-measure bores near the pit, still rising on the 2019-20 and 2020-21 wet seasons through a six to seven year rainfall memory, were drawn 8.3 to 9.3 m below where that rise was taking them and show only 2.2 to 2.5 m of net decline.",
+      "stump": "A competent solver converts every dip and logger reading to a reduced level, compares each bore's September 2026 level with its baseline assessment (or with the reference bores' change, or with the far-field coal-measure bore KV-LB16 as a control) and offers make good to the alluvial bores and the ridge basalt bore that fell past their triggers (or to KV-LB12 alone, or to KV-LB04, KV-LB05 and KV-LB12); the step that lands it there is reading the decline since the baseline as the mine's, when the alluvium and basalt fell through the dry seasons and the coal measures' small net fall hides 8.3 to 9.3 m of drawdown under a rise the wet seasons had set going.",
+      "answer": "Offer make-good agreements to four owners for five bores: Yarrowmere Pastoral Co Pty Ltd for KV-LB04 and KV-LB05 (one agreement), Tondara Grazing Pty Ltd for KV-LB07, Bluebush Downs Pty Ltd for KV-LB10 and Cypress Ridge Pastoral Trust for KV-LB12."
+    }
+  ],
+  "notes": "Re-root at architecture 2. stump_strategy is other: the decisive move is where the nuisance quantity in an energetic subtraction is measured from, which no strategy key names. subdomain repeats architecture 1's because environmental-monitoring-exceedance is the only task type the taxonomy gives anomaly-detection in this domain; the differentiation entry carries the separation. calibration_form is none: no corpus and no closed-outcome ledger ships, and the method is forced by the records' own structure. decisive_rule_filed is false: the noise management plan files the assessment period, the sample validity criteria, the positions and the mitigation slot, and says nothing about how the residual is determined; no filed sentence names a statistical background, so there is no official decoy.",
+  "registered": "2026-10-17T15:57:45Z"
 }
