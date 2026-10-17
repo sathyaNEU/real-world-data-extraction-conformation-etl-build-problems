@@ -33,10 +33,14 @@ def text_of(target, name):
         out = []
         for m in re.finditer(rb"stream\r?\n(.*?)endstream", raw, re.S):
             body = m.group(1)
-            try:
-                body = zlib.decompress(body.strip(b"\r\n"))
-            except Exception:
-                pass
+            # a flate stream may end on a byte that looks like a newline, so decompress what is there and
+            # ignore any trailing bytes rather than stripping the data itself
+            for cand in (body, body.rstrip(b"\r\n"), body.strip(b"\r\n")):
+                try:
+                    body = zlib.decompressobj().decompress(cand)
+                    break
+                except Exception:
+                    continue
             if b" Tj" not in body and b" TJ" not in body:
                 continue            # an image or a font, not a content stream
             for t in re.finditer(rb"\((?:\\.|[^\\()])*\)", body):
@@ -314,9 +318,11 @@ def run(target, g):
     for c in withband:
         A(abs(g["tones"][c]["excess_db"] - 5.0) > 0.4,
           "%s sits %.2f dB from the prominence test" % (c, g["tones"][c]["excess_db"] - 5.0))
-    note = text_of(os.path.join(os.path.dirname(target), "golden"), "mitigation_shortlist.pdf") \
-        if os.path.exists(os.path.join(os.path.dirname(target), "golden",
-                                       "mitigation_shortlist.pdf")) else ""
+    gnote = os.path.join(os.path.dirname(target), "golden", "mitigation_shortlist.pdf")
+    note = text_of(os.path.dirname(gnote), os.path.basename(gnote)) if os.path.exists(gnote) else ""
+    if os.path.exists(gnote):
+        A(len(note) > 1500, "the golden note's text is readable for the figure sweep (%d characters)"
+          % len(note))
     if note:
         tones = sum(1 for c in g["slate"] if rows[c]["tone"])
         A(has(note, "A tone is prominent at %d of the five" % tones),

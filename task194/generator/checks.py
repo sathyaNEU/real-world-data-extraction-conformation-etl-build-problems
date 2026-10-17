@@ -303,7 +303,7 @@ def run(target, g, state):
            "SF13 a mean of quarterly ratios gives %s the same avoided count" % d["unit"])
     # ---------- the register, read ten ways ----------
     # the twelve avoided counts are the figures the register's reading touches, and every reading a
-    # careful analyst could take of the seven closed placements lands on the same twelve integers
+    # careful analyst could take of the eight closed placements lands on the same twelve integers
     rec_rows, readings = G.share_readings(b)
     ok(len(rec_rows) == 8, "the register prices eight closed placements (%d)" % len(rec_rows))
     ok(len(readings) == 6, "six readings of the register (%d)" % len(readings))
@@ -482,6 +482,9 @@ def run(target, g, state):
        "R2 the dashboard says which quarter it is")
     # tables inside the PDFs carry the figures the lookups carry
     ok("0.1683" in spec and "HAC13" in spec, "R2 the specification's appendices are in the PDF")
+    ok("eight closed" in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "deliver.py"),
+                              encoding="utf-8").read(),
+       "the brief names the register's size as the register carries it")
     for clause in ("3.3", "3.4", "2.1", "2.2"):
         ok(clause in spec, "the specification carries clause %s" % clause)
     for clause in ("4.1", "4.2", "4.3", "4.4"):

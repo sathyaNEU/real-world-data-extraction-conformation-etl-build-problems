@@ -192,7 +192,8 @@ the plan alone. **The sizing formula is the inverse of the recovery problem the 
 its inputs at authority states the answer. The expected-misstatement sentence is therefore cut from every
 shipped document, and the allowance lives only in this note as the reason the sizing is defensible. Without
 it a reader has (1,160,000 less an unknown times 1.60) / 3.00 and can only bound the interval below
-433,333, which leaves the recovery intact. The general rule, going into the slot's record: **before filing
+**386,667**, which is 1,160,000 over 3.00 and still a factor of 2.1 above the true 180,000, so the
+recovery is left intact. The general rule, going into the slot's record: **before filing
 any figure at authority, invert every formula the field would apply to it and check what the inverse
 yields.**
 
@@ -239,13 +240,13 @@ The audit manual, part 9, which files the estimand and nothing else:
 >
 > **9.2 Records.** No feed, schedule or register the authority keeps records a population's misstatement,
 > and none can: the payment records carry what was paid, not what was properly payable, and the testing
-> establishes the difference only for the lines tested. The head of internal audit satisfies himself each
+> establishes the difference only for the lines tested. The head of internal audit is satisfied each
 > year that the figure reported rests on the year's own payment records and the testing performed on them.
 
 What those two documents between them do **not** say: the interval, the number of selections, how the
 population was ordered or selected from, the expected misstatement allowance, any reliability or expansion
 factor, any evaluation procedure, and anything about projecting, scaling, weighting or extrapolating a
-finding. 4.2's two figures bound the interval below 433,333 and no further. 9.1 files population, outcome,
+finding. 4.2's two figures bound the interval below 386,667 and no further. 9.1 files population, outcome,
 window, unit, segmentation and grain, and 9.2 says no column holds the answer.
 
 

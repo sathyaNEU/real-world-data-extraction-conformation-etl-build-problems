@@ -133,8 +133,10 @@ def note(path, g, chart_png):
                         "%d" % v["centrifuge_runs"]]
                        for k, v in sorted(g["weekly"].items())]),
                colWidths=[32 * mm, 40 * mm, 56 * mm, 32 * mm], style=TBL),
-         Paragraph("Levels are to one decimal place. Minutes the met mast showed as wet or windy are out "
-                   "of every level, as the plan requires, and the two meters whose field checks sat away "
-                   "from the calibrator have been corrected.", SMALL)]
+         Paragraph("Levels are to one decimal place. Minutes the mast counted rain in, minutes it showed "
+                   "above the plan's wind limit and minutes a meter recorded nothing for are out of every "
+                   "level, as the plan requires, and the %d deployments whose field checks sat away from "
+                   "the calibrator, on two of the five meters, have been corrected."
+                   % g["corrected_count"], SMALL)]
     d.build(f)
     return path

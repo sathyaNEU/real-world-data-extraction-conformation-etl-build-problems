@@ -218,7 +218,7 @@ def brief(path, g, chart_path):
                   "The unit's planned %s separations for the quarter carry %.0f expected complications, it "
                   "has stood at %.2f times its expected complications across the ten closed quarters of "
                   "specification 4.0, and the %.1f complications that standing puts above expectation are the "
-                  "largest avoidable number in the network. On what the partnership's seven closed "
+                  "largest avoidable number in the network. On what the partnership's eight closed "
                   "placements have taken off a unit's standing excess, the placement avoids <b>%d "
                   "complications</b> over the quarter, against %d at %s %s, the closest unit."
                   % (a["unit"], "{:,}".format(a["plan"]), a["expected_plan"], a["ratio"],
@@ -253,7 +253,7 @@ def brief(path, g, chart_path):
                   "31 December 2026, and tie to the quarterly indicator series. Each unit's expected "
                   "complications for the quarter are clause 3.4's: the separations the activity plan carries "
                   "times the unit's expected complications per separation over the specification period. "
-                  "What a placement takes off a unit's standing excess comes from the seven closed "
+                  "What a placement takes off a unit's standing excess comes from the eight closed "
                   "placements in the register, each measured against what the unit stood at over its own "
                   "closed quarters before the team arrived."), BODY),
         Table([[Paragraph(c, CELLB if i == 0 else CELL) for c in row] for i, row in enumerate(tbl)],

@@ -1,109 +1,72 @@
-"""Arahura Bank: the world the pack is cut from."""
+"""Carrowmore Port Authority: the world the pack is cut from."""
 
-BANK = "Arahura Bank"
-GEO = "New Zealand"
-CCY = "NZD"
+AUTHORITY = "Carrowmore Port Authority"
+GEO = "Ireland"
+CCY = "EUR"
 
-# The AML/CFT Act 2009 threshold for a domestic physical cash transaction report.
-THRESHOLD = 10000.00
-BAND_LO, BAND_HI = 9000.00, 10000.00
+YEAR = "2026"
+YEAR_LO, YEAR_HI = "2026-01-01", "2026-12-31"
+PRIOR_LO, PRIOR_HI = "2025-01-01", "2025-12-31"
+LEDGER_EXTRACT = "2027-01-14"            # the day the payment ledger was pulled
+TESTING_DONE = "2027-02-26"              # the day the testing was completed
+CERTIFY_BY = "2027-06-30"                # the statements' certification date
 
-YEAR_LO, YEAR_HI = "2026-07-01", "2027-06-30"          # the reporting year the figure is for
-PRIOR_LO, PRIOR_HI = "2025-07-01", "2026-06-30"
-EXTRACT = "2027-07-19"                                  # the as-of date of every extract
-REPORT_DUE = "2027-09-30"                               # the annual report to the supervisor
+HEAD_OF_AUDIT = "Tanya McCrea"           # head of internal audit
+SENIOR_AUDITOR = "Colm Shaffrey"         # the auditor who performed the testing
+FINANCE = "Marc O'Reardon"               # head of finance
 
-MLRO = "Manaaki Little"                                 # money laundering reporting officer
-ASSURANCE = "Emma Gullery"                              # the bank's assurance lead
+# What the plan states, and only these two figures ship.
+TOLERABLE = 1_160_000.00                 # tolerable misstatement for the population
+CAPITAL_BUDGET = 58_000_000.00           # the base the 2.0 per cent was taken on
+CONFIDENCE = 95                          # per cent
 
-# segment: key, name, cash deposits paid in during the reporting year, the decay its own
-#          amount density runs at, customers, structured deposits planted in the reporting
-#          year, planted in the prior year
-SEGMENTS = [
-    ("GRO", "Grocery and convenience", 15037, 9600.0, 1163, 94, 66),
-    ("HOS", "Hospitality", 4723, 8200.0, 2247, 35, 24),
-    ("TRA", "Transport and courier", 10261, 11500.0, 857, 172, 120),
-    ("CON", "Trades and construction", 3118, 10400.0, 1538, 50, 35),
-    ("RUR", "Rural supply and horticulture", 2396, 10900.0, 971, 0, 0),
-    ("FUE", "Fuel and automotive", 4109, 9100.0, 418, 66, 46),
-    ("PER", "Personal services", 3944, 7600.0, 1764, 50, 35),
-    ("CLB", "Clubs and community", 2713, 8800.0, 643, 6, 4),
+# What the plan does NOT state, and what no shipped file states.
+EXPECTED_MISSTATEMENT = 387_500.00       # the allowance used in planning; note only
+EXPANSION_FACTOR = 1.60                  # note only
+RELIABILITY_0 = 3.00                     # note only
+INTERVAL = 180_000                       # the selection interval; recovered, never stated
+RANDOM_START = 123_455                   # the selection's start; never stated
+
+GRAIN = 50_000                           # the misstatement is stated to the nearest fifty thousand
+
+# programme: code, name, recorded value, payment lines, the contractor certificates it paid
+PROGRAMMES = [
+    ("CP-11", "Deepwater berth renewal", 13_900_000,
+     [1_940_000, 1_210_000, 760_000, 455_000, 310_000, 224_000]),
+    ("CP-14", "Quay 3 reconstruction", 10_600_000,
+     [1_480_000, 905_000, 612_000, 388_000, 241_000]),
+    ("CP-21", "Terminal roof and cladding", 8_400_000,
+     [690_000, 402_000, 265_000, 196_000]),
+    ("CP-23", "Rail siding and yard", 6_300_000, [540_000, 318_000, 207_000]),
+    ("CP-31", "Dredging programme", 5_600_000, [1_120_000, 660_000, 395_000, 212_000]),
+    ("CP-34", "Shore power installation", 4_700_000, [430_000, 254_000, 183_000]),
+    ("CP-41", "Security and access systems", 3_500_000, [296_000, 188_000]),
+    ("CP-44", "Pavement and surfacing", 3_300_000, [315_000, 201_000]),
+    ("CP-47", "Welfare and offices fit-out", 3_200_000, [268_000, 181_000]),
 ]
+PROG_CODES = [p[0] for p in PROGRAMMES]
+PROG_NAME = {p[0]: p[1] for p in PROGRAMMES}
 
-# the figure is stated to the nearest fifty deposits per segment: the granularity the record's own
-# scatter supports, measured over the judge's candidate set
-GRAIN = 50
+# the payment lines per programme, and the mean day-work variation invoice
+LINES = {"CP-11": 3100, "CP-14": 2650, "CP-21": 3550, "CP-23": 3000, "CP-31": 1750,
+         "CP-34": 3350, "CP-41": 3450, "CP-44": 2700, "CP-47": 3100}
+DAYWORK_MEAN = {"CP-11": 4900.0, "CP-14": 4600.0, "CP-21": 4100.0, "CP-23": 4300.0,
+                "CP-31": 5200.0, "CP-34": 3900.0, "CP-41": 3500.0, "CP-44": 3700.0,
+                "CP-47": 3300.0}
+DW_SHARE = 0.27                          # of a programme's non-certificate value
+INT_SHARE = 0.34
+INTERIM_MEAN = 56_000.0
 
-SEG_NAME = {k: n for k, n, *_ in SEGMENTS}
-SEG_KEYS = [k for k, *_ in SEGMENTS]
+# the defect: a wrong day-work labour rate, applied in six of the nine programmes
+DEFECT = {"CP-41": (193, 0.58), "CP-23": (140, 0.49), "CP-47": (120, 0.52),
+          "CP-34": (113, 0.41), "CP-21": (87, 0.37), "CP-44": (36, 0.44)}
+TAINT_MUL = 0.98
+CERT_ERROR = ("CP-31", 660_000, 24_000.00)   # one certificate overstated
 
-# The bank's own segment map was reissued in April 2027: the codes changed, the segments did not.
-OLD_CODE = {"GRO": "B12", "HOS": "B14", "TRA": "B21", "CON": "B23",
-            "RUR": "B31", "FUE": "B17", "PER": "B41", "CLB": "B52"}
-NEW_CODE = {"GRO": "BB-RET-02", "HOS": "BB-HOS-01", "TRA": "BB-TRN-03", "CON": "BB-CON-01",
-            "RUR": "BB-RUR-02", "FUE": "BB-RET-05", "PER": "BB-SRV-04", "CLB": "BB-COM-01"}
-RECODE_DATE = "2027-04-06"
+# the payment release cut-off, which moved mid-year (ask A1)
+CUTOFF = [("2026-01-01", "2026-06-30", "15:00"), ("2026-07-01", "", "14:00")]
 
-# branches: code, name, region, opened, closed (the Hastings pair merged in the window)
-BRANCHES = [
-    ("AR01", "Queen Street", "Auckland", "2009-03-02", ""),
-    ("AR02", "Newmarket", "Auckland", "2011-08-15", ""),
-    ("AR04", "Manukau", "Auckland", "2013-02-04", ""),
-    ("AR07", "Hamilton Central", "Waikato", "2010-06-21", ""),
-    ("AR09", "Tauranga", "Bay of Plenty", "2012-11-05", ""),
-    ("AR11", "Hastings Heretaunga", "Hawke's Bay", "2008-04-07", "2026-11-27"),
-    ("AR12", "Hastings Karamu", "Hawke's Bay", "2014-09-01", ""),
-    ("AR15", "Palmerston North", "Manawatu", "2009-10-12", ""),
-    ("AR18", "Wellington Lambton", "Wellington", "2007-02-05", ""),
-    ("AR19", "Porirua", "Wellington", "2015-03-30", ""),
-    ("AR23", "Christchurch Riccarton", "Canterbury", "2010-01-18", ""),
-    ("AR25", "Timaru", "Canterbury", "2013-07-08", ""),
-    ("AR28", "Dunedin Octagon", "Otago", "2011-04-11", ""),
-    ("AR31", "Invercargill", "Southland", "2016-02-15", ""),
-]
-# AR11 closed into AR12 on 27 November 2026; AR12 was renamed on the same day.
-MERGED_INTO = {"AR11": "AR12"}
-RENAMED = {"AR12": ("Hastings Karamu", "Hastings", "2026-11-27")}
-
-CHANNELS = ["counter", "machine"]
-
-# The smart deposit machine estate, as the property register keeps it: machine, site, the day it
-# went in and the day it came out. Deposits are taken only by a machine in service that day.
-MACHINES = [
-    ("SDM-0412", "AR01", "2019-03-18", ""),
-    ("SDM-0413", "AR01", "2019-03-18", ""),
-    ("SDM-0518", "AR02", "2020-07-06", ""),
-    ("SDM-0641", "AR04", "2021-02-15", ""),
-    ("SDM-0642", "AR04", "2021-02-15", ""),
-    ("SDM-0703", "AR07", "2021-09-13", ""),
-    ("SDM-0811", "AR09", "2022-05-09", ""),
-    ("SDM-0907", "AR11", "2022-11-21", "2026-11-27"),
-    ("SDM-1044", "AR12", "2023-04-03", ""),
-    ("SDM-1045", "AR12", "2026-11-30", ""),
-    ("SDM-1162", "AR15", "2023-10-16", ""),
-    ("SDM-1208", "AR18", "2024-02-26", ""),
-    ("SDM-1209", "AR18", "2024-02-26", ""),
-    ("SDM-1317", "AR19", "2024-08-12", ""),
-    ("SDM-1402", "AR23", "2025-01-20", ""),
-    ("SDM-1403", "AR23", "2025-01-20", ""),
-    ("SDM-1455", "AR25", "2025-06-02", ""),
-    ("SDM-1509", "AR28", "2025-11-10", ""),
-    ("SDM-1562", "AR31", "2026-09-07", ""),
-    ("SDM-1577", "AR02", "2027-02-01", ""),
-]
-# Two sites run two machines and the vendor reports by site; these two sign off after restoring.
-TWO_MACHINE_SITES = ["AR01", "AR04", "AR12", "AR18", "AR23"]
-SIGNOFF_SITES = ["AR15", "AR19"]
-# Machines in service through the year that raised no service call at all.
-NO_INCIDENT = ["SDM-1455", "SDM-1562", "SDM-1509"]
-
-ANZSIC = {
-    "GRO": ["4110", "4121", "4129", "4123"],
-    "HOS": ["4511", "4512", "4513", "4520"],
-    "TRA": ["4610", "4621", "5101", "5102"],
-    "CON": ["3231", "3232", "3234", "3242", "3099"],
-    "RUR": ["0121", "0132", "0149", "3323"],
-    "FUE": ["4000", "3912", "9411", "9412"],
-    "PER": ["9511", "9512", "9520", "9531"],
-    "CLB": ["9112", "9113", "9139", "9559"],
-}
+# supplier risk categories, relabelled on 1 October 2026 (ask A2)
+RISK_BANDS = ["1", "2", "3", "4", "5"]
+RISK_NEW = {"1": "R-A", "2": "R-B", "3": "R-C", "4": "R-D", "5": "R-E"}
+RISK_RELABEL = "2026-10-01"

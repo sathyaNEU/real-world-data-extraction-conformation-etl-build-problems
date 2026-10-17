@@ -362,8 +362,8 @@ distance is a number the generator asserts rather than a hope.
 | Figure | Rounding | Construction | Measured distance | What would flip it |
 |---|---|---|---|---|
 | a payer's defined daily doses | one decimal | every screened product's strengths are whole or half doses per unit, so a package holds a whole number of tenths of a dose and a payer's window total is exact at one decimal | 0.05 of a tenth, the maximum: the figure needs no rounding at all | nothing: there is no fractional part to round |
-| a payer's data fee | nearest krone | the rates in the executive order were chosen against the realised dose totals | 0.38 krone at the tightest of the seven, half-up and half-even agreeing for all seven | one more half-dose package on the tightest payer, worth about 0.67 krone |
-| a region and age cell's share | one decimal | the reporting bands were chosen against the realised cells | 0.00833 of a point at the tightest of the 24 | one patient either way in that cell, worth 0.15 of a point, which no filed reading of the population produces |
+| a payer's data fee | nearest krone | the rates in the executive order were chosen against the realised dose totals | 0.38 krone at the tightest of the seven, half-up and half-even agreeing for all seven | one more half-dose package on that payer, worth 0.55 krone |
+| a region and age cell's share | one decimal | the reporting bands were chosen against the realised cells | 0.00638 of a point at the tightest of the 24, against 0.00011 in the judged pass | one patient either way in that cell, worth 0.17 of a point, which no filed reading of the population produces |
 | a chain-quarter's median days | one decimal | every even cell's two middle values are equal | exact: every median convention gives the same figure | nothing |
 | a pair's referral multiple | two decimals against 1.25 | the effects and the product lifecycles | 8.5 per cent of the multiple over 20 candidates by 5 arithmetics | a sixth arithmetic 8.5 per cent away from all four window-aware ones |
 | the chart's bar order | one decimal on the share | all 23 pairs carry a share | 0.1 of a point between the closest two bars | a share tie, which the generator refuses |
@@ -512,7 +512,7 @@ recommendation weight, so C is 38 + 7 + 55 x 0.21 = 56.6 and S is 5 + 7 + 55 x 0
 - Reporting the utilisation table on 18 to 39, 40 to 59, 60 to 74 and 75 and over: four of the 24 cells
   then sat within 0.07 of a point of a tenth, the tightest 0.00011 from 79.65. The reporting bands are a
   filed convention and re-partition the same patients without touching the draw, so they were searched
-  instead: 18 to 29, 30 to 49, 50 to 64 and 65 and over puts the tightest cell 0.00833 of a point from a
+  instead: 18 to 34, 35 to 44, 45 to 64 and 65 and over puts the tightest cell 0.00638 of a point from a
   boundary, asserted, with no cell on an exact half.
 - Marking each pair's referral threshold on the chart: the marker's position is 1.25 times the pair's
   expected share, and the expected share is the one quantity the standard leaves to the division's own

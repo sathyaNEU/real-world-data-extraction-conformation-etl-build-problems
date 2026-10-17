@@ -102,7 +102,7 @@ def run(target, figures_path):
         removed += (ratio - 1) * row.expected - (row.observed - row.expected)
         n_closed += 1
     share = removed / carried
-    ok(n_closed == fig["closed_placements"], "seven closed placements inside the specification period")
+    ok(n_closed == fig["closed_placements"], "eight closed placements inside the specification period")
 
     # the register read every way it pools, and the shapes the fall could take scored against it
     allq = sorted(grp.quarter.unique())

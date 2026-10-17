@@ -4,7 +4,7 @@
  "rung0_count": 9,
  "candidate_count": 20,
  "screened_count": 23,
- "patients_in_extract": 16961,
+ "patients_in_extract": 16957,
  "referred": [
   {
    "product": "Dalvextin",
@@ -757,164 +757,164 @@
  "a3": [
   {
    "region": "Hovedstaden",
-   "band": "18-29",
-   "patients": 482,
-   "share_pct": 68.9,
-   "with_marker": 332
+   "band": "18-34",
+   "patients": 679,
+   "share_pct": 69.5,
+   "with_marker": 472
   },
   {
    "region": "Hovedstaden",
-   "band": "30-49",
-   "patients": 797,
-   "share_pct": 72.3,
-   "with_marker": 576
+   "band": "35-44",
+   "patients": 385,
+   "share_pct": 70.4,
+   "with_marker": 271
   },
   {
    "region": "Hovedstaden",
-   "band": "50-64",
-   "patients": 568,
-   "share_pct": 80.3,
-   "with_marker": 456
+   "band": "45-64",
+   "patients": 779,
+   "share_pct": 79.1,
+   "with_marker": 616
   },
   {
    "region": "Hovedstaden",
    "band": "65 and over",
-   "patients": 1102,
+   "patients": 1099,
    "share_pct": 80.6,
-   "with_marker": 888
+   "with_marker": 886
   },
   {
    "region": "Midtjylland",
-   "band": "18-29",
-   "patients": 359,
-   "share_pct": 68.8,
-   "with_marker": 247
+   "band": "18-34",
+   "patients": 512,
+   "share_pct": 67.2,
+   "with_marker": 344
   },
   {
    "region": "Midtjylland",
-   "band": "30-49",
-   "patients": 617,
-   "share_pct": 73.1,
-   "with_marker": 451
+   "band": "35-44",
+   "patients": 321,
+   "share_pct": 74.1,
+   "with_marker": 238
   },
   {
    "region": "Midtjylland",
-   "band": "50-64",
-   "patients": 461,
-   "share_pct": 77.0,
-   "with_marker": 355
-  },
-  {
-   "region": "Midtjylland",
-   "band": "65 and over",
-   "patients": 831,
+   "band": "45-64",
+   "patients": 603,
    "share_pct": 77.9,
-   "with_marker": 647
+   "with_marker": 470
+  },
+  {
+   "region": "Midtjylland",
+   "band": "65 and over",
+   "patients": 835,
+   "share_pct": 78.0,
+   "with_marker": 651
   },
   {
    "region": "Nordjylland",
-   "band": "18-29",
-   "patients": 174,
-   "share_pct": 64.9,
-   "with_marker": 113
+   "band": "18-34",
+   "patients": 232,
+   "share_pct": 66.8,
+   "with_marker": 155
   },
   {
    "region": "Nordjylland",
-   "band": "30-49",
+   "band": "35-44",
+   "patients": 137,
+   "share_pct": 73.7,
+   "with_marker": 101
+  },
+  {
+   "region": "Nordjylland",
+   "band": "45-64",
    "patients": 277,
-   "share_pct": 73.3,
-   "with_marker": 203
-  },
-  {
-   "region": "Nordjylland",
-   "band": "50-64",
-   "patients": 197,
-   "share_pct": 72.1,
-   "with_marker": 142
+   "share_pct": 72.9,
+   "with_marker": 202
   },
   {
    "region": "Nordjylland",
    "band": "65 and over",
-   "patients": 335,
-   "share_pct": 81.8,
-   "with_marker": 274
+   "patients": 340,
+   "share_pct": 81.5,
+   "with_marker": 277
   },
   {
    "region": "Sjaelland",
-   "band": "18-29",
-   "patients": 202,
-   "share_pct": 73.8,
-   "with_marker": 149
+   "band": "18-34",
+   "patients": 297,
+   "share_pct": 72.7,
+   "with_marker": 216
   },
   {
    "region": "Sjaelland",
-   "band": "30-49",
-   "patients": 393,
-   "share_pct": 74.6,
-   "with_marker": 293
+   "band": "35-44",
+   "patients": 196,
+   "share_pct": 76.5,
+   "with_marker": 150
   },
   {
    "region": "Sjaelland",
-   "band": "50-64",
-   "patients": 307,
-   "share_pct": 75.9,
-   "with_marker": 233
+   "band": "45-64",
+   "patients": 415,
+   "share_pct": 75.4,
+   "with_marker": 313
   },
   {
    "region": "Sjaelland",
    "band": "65 and over",
-   "patients": 539,
+   "patients": 538,
    "share_pct": 80.7,
-   "with_marker": 435
+   "with_marker": 434
   },
   {
    "region": "Syddanmark",
-   "band": "18-29",
-   "patients": 337,
-   "share_pct": 69.7,
-   "with_marker": 235
+   "band": "18-34",
+   "patients": 480,
+   "share_pct": 69.6,
+   "with_marker": 334
   },
   {
    "region": "Syddanmark",
-   "band": "30-49",
-   "patients": 552,
-   "share_pct": 72.8,
-   "with_marker": 402
+   "band": "35-44",
+   "patients": 258,
+   "share_pct": 74.0,
+   "with_marker": 191
   },
   {
    "region": "Syddanmark",
-   "band": "50-64",
-   "patients": 432,
+   "band": "45-64",
+   "patients": 584,
    "share_pct": 75.2,
-   "with_marker": 325
+   "with_marker": 439
   },
   {
    "region": "Syddanmark",
    "band": "65 and over",
-   "patients": 696,
+   "patients": 691,
    "share_pct": 79.9,
-   "with_marker": 556
+   "with_marker": 552
   },
   {
    "region": "not stated",
-   "band": "18-29",
-   "patients": 38,
-   "share_pct": 68.4,
-   "with_marker": 26
+   "band": "18-34",
+   "patients": 61,
+   "share_pct": 70.5,
+   "with_marker": 43
   },
   {
    "region": "not stated",
-   "band": "30-49",
-   "patients": 75,
-   "share_pct": 77.3,
-   "with_marker": 58
+   "band": "35-44",
+   "patients": 32,
+   "share_pct": 87.5,
+   "with_marker": 28
   },
   {
    "region": "not stated",
-   "band": "50-64",
-   "patients": 49,
-   "share_pct": 75.5,
-   "with_marker": 37
+   "band": "45-64",
+   "patients": 69,
+   "share_pct": 72.5,
+   "with_marker": 50
   },
   {
    "region": "not stated",

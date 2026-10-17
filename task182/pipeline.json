@@ -5,50 +5,53 @@
   "domain": "physical-environmental-sciences",
   "objective": "anomaly-detection",
   "stage": 4,
-  "stage_name": "check: the leak reader and the determinism judge",
+  "stage_name": "check: the determinism re-judge and the solver's-eye re-read after the FIX_NOW pass",
   "updated": "2026-10-17",
-  "stump": "A competent solver pairs every deployment with its position, applies the calibration drift, excludes exactly the minutes the plan excludes, energetically averages each position's weekday daytime LAeq, energetically subtracts the background the position's own record shows and files NSL03, NSL04, NSL06, NSL11 and NSL12; the step that lands it there is taking that background from a record the plant was running in, when the blowers, the centrifuges and the gas engine run through every assessment minute, so the subtraction returns the surroundings' own variability instead of the plant's contribution.",
+  "stump": "A competent solver pairs every deployment with its position, takes each deployment's field-check deviation off its levels, excludes exactly the minutes the plan excludes, energetically averages each position's weekday daytime LAeq, energetically subtracts the background the position's own record shows and files NSL03, NSL04, NSL06, NSL11 and NSL12; the step that lands it there is taking that background from a record the plant was running in, when the blowers, the centrifuges and the gas engine run through every assessment minute, so the subtraction returns the surroundings' own variability instead of the plant's contribution.",
   "architecture": 2,
-  "loops": 0,
+  "loops": 1,
   "precut": {
-    "exit": 0,
+    "exit": 1,
     "date": "2026-10-17",
-    "checks": "49 checks, 0 FAIL, 0 WARN"
+    "checks": "49 checks, 3 FAIL, 0 WARN",
+    "fails": "pair ceiling 69.2 against 40, mirror leakage 64.0 against 35, and the cracker keeps A2 and A4. All three are the ask layer and none touches the call, the stump, the ladder or any determinism gate: closing the judge's five supplementary forks at authority removed the ways a careful solver could miss those asks. The arithmetic is in the design note's Ask sheet; the repair is ask-layer device work (/fix-rubric's lane), which needs A4 re-cut around a device and a second silent hazard on A2."
   },
   "build": {
-    "answer": "the October slot covers NSL04, NSL11, NSL07, NSL02 and NSL13; NSL06 is first off the list at 45.2 dB LAeq, 0.8 dB behind the fifth",
-    "checks": "377 assertions passed",
-    "verify": "OK, 234 independent checks from the bundle alone",
-    "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 0373bc0f07eea0f6)",
+    "answer": "the October slot covers NSL04, NSL11, NSL07, NSL02 and NSL13; NSL06 is first off the list at 44.7 dB LAeq, 1.3 dB behind the fifth",
+    "checks": "614 assertions passed",
+    "verify": "OK, 282,493 independent checks from the bundle alone (the per-minute instrument-ordering check runs on every shipped row)",
+    "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 069208833e6db276)",
     "figures_check": "exit 0, 90 figures in blocks 1 to 4, none absent",
     "gates": "13 files, 5 formats (csv, md, parquet, pdf, xlsx), sound_levels_1min_2026.parquet 282,360 rows, distractors complaints_register_2026.xlsx and effluent_quality_2026.csv declared in metadata.json",
-    "rungs": "complaints NSL01/03/06/09/12; measured total NSL02/04/06/07/11 (0.38 dB); LA90 background NSL03/04/06/11/12 (1.34); tenth percentile NSL02/03/04/06/07 (0.24); quietest quarter hour NSL03/04/06/07/11 (0.14); arithmetic means NSL03/04/06/11/12 (1.24); answer NSL04/11/07/02/13 (0.80)",
-    "target_zip": "cut from this rebuild for the stage-4 briefs: 13 entries, 1.8 MB, sha256 076c2488fe19ccd79cf3646e62689c1f4a47bd2ccebeaf0c93d86d5f18ca129f; re-cut from the final rebuild once the stage-4 findings are fixed"
+    "rungs": "complaints NSL01/03/06/09/12; measured total NSL02/04/06/07/11 (0.55 dB); LA90 background NSL03/04/06/11/12 (0.11); tenth percentile NSL03/04/06/07/11 (0.34); quietest quarter hour NSL02/04/06/07/11 (1.50); arithmetic means NSL03/04/06/07/11 (0.37); answer NSL04/11/07/02/13 (1.26)",
+    "target_zip": "cut from this rebuild: 13 entries, 2.4 MB, sha256 f8a8ca60034b2a9343815ee6860e7685fe1e245b6edf8f9919613c55b7bb5979"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (5 lines: the plan's three call words, the field vocabulary in the plan, the survey notes and the prompt, and the meters' calibration due dates), each answered in the design note's Leak check section",
-    "reader": "brief staged, not yet run"
+    "leak_py": "REVIEW, no LEAK (5 lines: the plan's three call words, the field vocabulary in the plan, the notes and the prompt, and the instruments' verification due dates), each answered in the design note's Leak check section",
+    "reader": "round 1 run 2026-10-17, answers appended to leak_check_report.md; every realism finding fixed in the generator in this pass; brief re-staged for a second read because documents and the prompt changed"
   },
   "duplicate_check": {
     "heart": "WARN, not BLOCK (nearest driver 0.07, task263, differentiated on the card)",
     "nearest": "guard.py surface: 216 pairs in scope, 0 promoted; nearest task228 at 0.096"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "",
-    "brief": "staged, not yet run"
+    "verdict": "NOT_DETERMINISTIC (round 1)",
+    "disposition": "FIX_NOW (round 1), every finding fixed in one generator pass; re-judge owed",
+    "report": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t182/judge/verdict.md (round 1)",
+    "gate_g": "pass (decomposition; the difficulty survives deleting every wrong number; not a lens swap)",
+    "gate_h": "pass (domain, both layers, decisive step analytical), with the caveat answered in the note's Not rule application line",
+    "brief": "re-staged, not yet run"
   },
   "returned": [
     {
       "date": "2026-10-17",
       "portal": "architecture 1 shipped 2026-10-11 and the portal solved it: FAILED_TO_STUMP. Diagnosed as 'executed the rung as a work order' (build-pipeline, Returned tasks): the in-house round already held the pre-take-calibration-and-run-forward construction, the isolated leak reader reached the answer with a lagged-rainfall model on the pack alone, and the pack shipped a 13,422 day rainfall and evaporation series no graded figure or ask reads.",
       "repair": "design",
-      "detail": "re-rooted at stage 1 as architecture 2: the WHAT screen killed architecture 1 (its decisive step settled the estimand's comparison) and the shared-driver mechanism is spent. Architecture 2's first draw (static flux chambers) was redrawn at the ladder measurement before any file was cut. The build is the autumn noise survey at Drumlorne.",
+      "detail": "re-rooted at stage 1 as architecture 2: the WHAT screen killed architecture 1 (its decisive step settled the estimand's comparison) and the shared-driver mechanism is spent. Architecture 2's first draw (static flux chambers) was redrawn at the ladder measurement before any file was cut. The build is the autumn noise survey at Drumlorne. Stage 4 round 1 returned NOT_DETERMINISTIC/FIX_NOW on five supplementary forks plus an impossible set of meter columns; all fixed in one generator pass on 2026-10-17 (see the design note's STAGE 4 ROUND section).",
       "commit": ""
     }
   ],
-  "resume": "stage 4: two briefs are staged for the orchestrating session to spawn as general-purpose sonnet agents at medium effort, each with its isolated inputs beside it: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t182/judge (judge_brief.md, verdict to verdict.md) and /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t182/reader (reader_brief.md, answers to reader_answers.md). Fix every finding in one generator pass, rebuild, re-run the free gates, then cut target.zip and ship.",
+  "resume": "stage 4, round 2: two briefs are staged for the orchestrating session to spawn as general-purpose sonnet agents at medium effort, each with its isolated inputs beside it: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t182/judge (judge_brief.md, verdict to verdict.md) and /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t182/reader (reader_brief.md, answers to reader_answers.md). The determinism side is repaired and every free gate is green except precut's three ask-layer lines, which need an author decision: ship with the rubric exposure recorded, or authorise an ask-layer pass (A4 re-cut around a device, a second silent hazard on A2) before shipping.",
   "approved": false,
   "delivered": null,
   "portal": null,

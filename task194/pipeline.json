@@ -7,9 +7,9 @@
  "stage": 4,
  "stage_name": "check",
  "updated": "2026-10-17",
- "stump": "A competent solver computes the complications each eligible unit is recording above its risk-adjusted expectation in the latest closed quarter, scales them by the 38.1 per cent of excess the closed placement register removed, and places the team with Alderbrook General Medicine for 14 complications avoided, which is the unit with the most room to return to its own level rather than the unit a placement moves most.",
+ "stump": "A competent solver takes each unit's standing exactly as charter 4.3 files it, prices the programme off the closed register as the average drop in the standardised ratio a placement produced, applies that drop to the complications the quarter's planned activity carries, and places the team with Alderbrook General Surgery for 35 complications avoided.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-17"
@@ -19,16 +19,16 @@
   "reader": "re-read staged, awaiting the orchestrator's spawn"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-17 (repeat.gate_g and overuse.gate_g, answered in the design note)",
-  "nearest": "0.11 task258 (v1)"
+  "heart": "WARN 2026-10-17 (no BLOCK, nearest driver 0.10 task38 v3)",
+  "nearest": "0.10 task38 (v3)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "NOT_DETERMINISTIC (pass 1)",
+  "disposition": "SEND_BACK, repaired on architecture 1",
   "report": "re-judge staged, awaiting the orchestrator's spawn"
  },
  "returned": [],
- "resume": "Stage 4, second pass. Every free gate is green on the rebuilt pack: 682 generator assertions, 220 independent verify checks, two byte-identical rebuilds, figures_check 98/0, precut 49/0/0, voice-check PASS, leak.py REVIEW (no LEAK), guard surface clean and heart WARN. target.zip is cut at the archive root, md5 1bd7f06b02b6ed1c76a67eded3d13da4, 20 entries. Both isolated briefs are re-staged with the fresh pack for the orchestrator to spawn: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_judge/judge_brief.md (verdict to verdict.md) and /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_reader/reader_brief.md (answers to reader_answers.md). Next: collect both reports, fix any finding in the generator in one pass, then stage 5.",
+ "resume": "Stage 4, third pass, after the judge's SEND_BACK on competing pricings of the embed. The register now separates the shapes of the fall: chi-square 2.68 on seven degrees of freedom for a share of standing excess against 35.57, 22.50 and 22.54, likelihood ratios 1.4e7, 2.0e4 and 2.1e4 to one, on a record carrying honest scatter. Charter 4.3 files the baseline's population and window and nothing about the shape. Every free gate is green: 656 generator assertions, 177 independent verify checks, two byte-identical rebuilds, figures_check 100/0, precut 49/0/0, voice-check PASS, leak.py REVIEW (no LEAK), guard surface clean and heart WARN. target.zip is cut at the archive root, md5 84f68fedbfb1b8eec10f7dd925333841, 20 entries. Both isolated briefs are re-staged for the orchestrator to spawn: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_judge/judge_brief.md (verdict to verdict.md) and /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_reader/reader_brief.md (answers to reader_answers.md). Next: collect both reports, fix any finding in the generator in one pass, then stage 5.",
  "approved": null,
  "delivered": null,
  "portal": null,
