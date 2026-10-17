@@ -1,0 +1,13 @@
+{"task": "task239", "owner": "perssathya", "status": "DESIGN",
+ "domain": "psychology-behavioral-science/psychometric-measurement-scale-validation", "objective": "data-quality-monitoring",
+ "stage": 2, "stage_name": "design", "updated": "2026-10-17",
+ "stump": "A competent analyst fits one factor to the 2027 team means of the teams with five or more returns and withdraws four items for 2028 (TC09, TC10, TC11, TC12), keeping eight; the between-team covariance net of the pooled within-team covariance keeps both practice items and withdraws only TC11 and TC12, so ten items stay.",
+ "architecture": 1, "loops": 0,
+ "precut": {"exit": null, "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": ""},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "returned": [],
+ "resume": "stage 2: simulator tuned to the ladder (team means drop the practice items, net-of-within keeps them), ask layer, fork table, closure, prompt, precut",
+ "approved": null, "delivered": null, "portal": null,
+ "portal_id": "", "portal_status": "", "portal_status_date": ""}
