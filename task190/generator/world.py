@@ -25,7 +25,7 @@ EXPECTED_MISSTATEMENT = 387_500.00       # the allowance used in planning; note 
 EXPANSION_FACTOR = 1.60                  # note only
 RELIABILITY_0 = 3.00                     # note only
 INTERVAL = 180_000                       # the selection interval; recovered, never stated
-RANDOM_START = 123_455                   # the selection's start; never stated
+RANDOM_START = 5_000                   # the selection's start; never stated
 
 GRAIN = 50_000                           # the misstatement is stated to the nearest fifty thousand
 
@@ -57,11 +57,13 @@ DW_SHARE = 0.27                          # of a programme's non-certificate valu
 INT_SHARE = 0.34
 INTERIM_MEAN = 56_000.0
 
-# the defect: a wrong day-work labour rate, applied in six of the nine programmes
-DEFECT = {"CP-41": (193, 0.58), "CP-23": (140, 0.49), "CP-47": (120, 0.52),
-          "CP-34": (113, 0.41), "CP-21": (87, 0.37), "CP-44": (36, 0.44)}
+# The defect: a wrong day-work labour rate, applied in seven of the nine programmes. The two
+# largest, which are paid almost entirely on contractor certificates, carry none of it, and no
+# certificate is overstated: every line certain of selection was found sound.
+DEFECT = {"CP-41": (128, 0.58), "CP-23": (92, 0.49), "CP-47": (79, 0.52),
+          "CP-34": (75, 0.41), "CP-21": (57, 0.37), "CP-44": (24, 0.44),
+          "CP-31": (34, 0.46)}
 TAINT_MUL = 0.98
-CERT_ERROR = ("CP-31", 660_000, 62_400.00)   # one certificate overstated
 
 # the payment release cut-off, which moved mid-year (ask A1)
 CUTOFF = [("2026-01-01", "2026-06-30", "15:00"), ("2026-07-01", "", "14:00")]

@@ -388,21 +388,25 @@ def _readings(rows):
     P = [r["carried"] for r in rows]
     fall = [r["carried"] - r["realised"] for r in rows]
     V = [max(1.0, r["counterfactual"]) for r in rows]
-    defined = [f / p for f, p in zip(fall, P) if abs(p) >= 5.0]
+    E = [r["expected"] for r in rows]
+    sh = [f / p for f, p in zip(fall, P)]
     pm, fm = sum(P) / n, sum(fall) / n
     pv = sum((p - pm) ** 2 for p in P) / n
-    return {
-        "pooled sums": sum(fall) / sum(P),
-        "least squares through the origin":
-            sum(p * f for p, f in zip(P, fall)) / sum(p * p for p in P),
-        "least squares with an intercept":
-            sum((p - pm) * (f - fm) for p, f in zip(P, fall)) / (pv * n),
-        "the variance-weighted fit":
-            sum(p * f / v for p, f, v in zip(P, fall, V)) / sum(p * p / v for p, v in zip(P, V)),
-        "the median of the shares that are defined": sorted(defined)[len(defined) // 2],
-        "against what the other units did over the same quarters":
-            sum(r["carried"] - r["realised"] - r["concurrent_pooled"] for r in rows) / sum(P),
-    }
+    return dict([
+        ("pooled sums", sum(fall) / sum(P)),
+        ("the mean of the placements' shares", sum(sh) / n),
+        ("the expected-weighted mean of the placements' shares",
+         sum(e * s for e, s in zip(E, sh)) / sum(E)),
+        ("the median of the placements' shares", sorted(sh)[n // 2]),
+        ("least squares through the origin",
+         sum(p * f for p, f in zip(P, fall)) / sum(p * p for p in P)),
+        ("least squares with an intercept",
+         sum((p - pm) * (f - fm) for p, f in zip(P, fall)) / (pv * n)),
+        ("the variance-weighted fit",
+         sum(p * f / v for p, f, v in zip(P, fall, V)) / sum(p * p / v for p, v in zip(P, V))),
+        ("against what the other units did over the same quarters",
+         sum(r["carried"] - r["realised"] - r["concurrent_pooled"] for r in rows) / sum(P)),
+    ])
 
 
 def _models(rows):
@@ -479,8 +483,15 @@ def record_targets(expected, allsep, design, units, plans, bins=True, fixed=None
             pen += 30000.0 * max(0.0, 0.9 * SHARE_CLEARANCE - clear)
             pen += 300.0 * max(0.0, 0.13 - count_clear)
         else:
-            pen += 300.0 * max(0.0, band - 0.62)
-        soft = pen + 0.02 * sum(abs(cand[c] - base[c]) for c in cand) + 4.0 * band
+            # what the planned volumes can still centre: the band every route leaves around a count has to
+            # fit inside the bin with the register's own headroom left over
+            room = 1.0 - 2.0 * SHARE_CLEARANCE * max(abs(v) for v in top)
+            pen += 900.0 * max(0.0, band - max(0.02, room))
+        # the register keeps the scatter a count of complications produces: one placement that shows a rise
+        # and one that takes off more than the standing excess it was carrying
+        shares = [(r["carried"] - r["realised"]) / r["carried"] for r in rows]
+        scatter = 8.0 * (max(0.0, min(shares) + 0.05) + max(0.0, 1.00 - max(shares)))
+        soft = (pen + scatter + 0.02 * sum(abs(cand[c] - base[c]) for c in cand) + 4.0 * band)
         return pen, soft, clear, rd, md
 
     if fixed is not None:
@@ -568,7 +579,7 @@ def centre_plans(plans, per_separation, thetas, pick, graded):
     return plans
 
 
-SHARE_CLEARANCE = 0.0094      # of a share, between the count's bin edge and the register's reading
+SHARE_CLEARANCE = 0.0111      # of a share, between the count's bin edge and the register's reading
 EXPECTED_PER_SEP = {}
 
 

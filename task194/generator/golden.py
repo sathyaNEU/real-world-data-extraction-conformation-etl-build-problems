@@ -219,33 +219,36 @@ def effect_models(b):
 
 
 def share_readings(b):
-    """The share of a unit's standing excess a placement removes, under every way of pooling the register.
+    """The share of a unit's standing excess a placement removes, under every way of reading the register.
 
-    One closed placement was made with a unit that was running at its expected number over its own record,
-    so that placement has no standing excess to take a share of and a per-placement share cannot be formed
-    for it. What remains are the estimators that pool the register: the pooled sums, least squares through
-    the origin, least squares with an intercept, the variance-weighted fit a count of complications calls
-    for, the median of the shares that are defined, and the same pooled fall net of what the other units
-    did over the same two quarters, as a mean across those units and pooled over them.
+    Eight routes a careful analyst could take of the same closed placements: the pooled sums, the mean of
+    the placements' own shares, the expected-weighted mean of them, their median, least squares through the
+    origin and with an intercept, the variance-weighted fit a count of complications calls for, and the same
+    pooled fall net of what the units the team was not working on did over the same two quarters. Every
+    placement has a standing excess to take a share of, so every route can be formed; what separates the
+    shapes the fall could take is the fit, not whether an estimator exists.
     """
     rows = placement_record(b)
     n = len(rows)
     P = [r["carried"] for r in rows]
     fall = [r["carried"] - r["realised"] for r in rows]
     V = [max(1.0, r["counterfactual"]) for r in rows]
-    defined = [f / p for f, p in zip(fall, P) if abs(p) >= 5.0]
+    E = [r["expected"] for r in rows]
+    sh = [f / p for f, p in zip(fall, P)]
     pm, fm = sum(P) / n, sum(fall) / n
     pv = sum((p - pm) ** 2 for p in P) / n
     return rows, OrderedDict([
         ("pooled sums", sum(fall) / sum(P)),
+        ("the mean of the placements' shares", sum(sh) / n),
+        ("the expected-weighted mean of the placements' shares",
+         sum(e * s for e, s in zip(E, sh)) / sum(E)),
+        ("the median of the placements' shares", sorted(sh)[n // 2]),
         ("least squares through the origin",
          sum(p * f for p, f in zip(P, fall)) / sum(p * p for p in P)),
         ("least squares with an intercept",
          sum((p - pm) * (f - fm) for p, f in zip(P, fall)) / (pv * n)),
         ("the variance-weighted fit",
          sum(p * f / v for p, f, v in zip(P, fall, V)) / sum(p * p / v for p, v in zip(P, V))),
-        ("the median of the shares that are defined",
-         sorted(defined)[len(defined) // 2]),
         ("against what the other units did over the same quarters",
          sum(r["carried"] - r["realised"] - r["concurrent_pooled"] for r in rows) / sum(P)),
     ])
