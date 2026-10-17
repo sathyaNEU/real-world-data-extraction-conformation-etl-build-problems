@@ -39,6 +39,24 @@ reproduced. Three flavours of this have now been measured, and each needs its ow
 smooth to separate anything, the candidates differing by less than their own sampling error, and the
 agreeing estimator insensitive by construction.
 
+**Two candidates can be collinear, and then no pack separates them.** The three flavours above are
+measured on the pack; this one is settled before a file exists, because it is a property of the candidate
+set rather than of the data. Where the candidates are functional forms, write each one out and compare
+them over the range the record can actually occupy: forms that agree to first order there will fit within
+noise of each other however much data you cut, and the margin you measure is the fit's arbitrariness
+rather than a separation. task194's architecture 1 priced its counterfactual as a constant share of the
+standing excess and its rival as a power on the standardised ratio; near a ratio of 1 those agree to first
+order, so the two fitted at chi-square 3.30 and 3.34 on 7 degrees of freedom, a likelihood ratio of 1.02
+to 1, and separating them would have needed units at ratios of three or four, which the domain does not
+contain. Neither fix works on a collinear pair: filing the form files the HOW, and more placements buy
+nothing, so the architecture is spent and the draw is re-rooted onto a quantity the record measures.
+**Enumerate the forms before the routes.** That build enumerated eight pooling routes exhaustively and
+two functional forms carelessly, which is the wrong way round: the forms are the outer loop and a wrong
+one invalidates every route inside it. And **a separation measured on under-dispersed data is not a
+separation**: report the dispersion of the subset carrying the comparison beside the dispersion of the
+rest of the record, because the same build's placement quarters ran at 0.47 per degree of freedom against
+1.65 elsewhere, so every likelihood ratio it reported was inflated about three and a half times.
+
 **Forcing measured on smooth data is not forcing.** Where the design forces the method, the separation is
 measured on a pack whose sampling noise is plausible for the process (a Poisson-like record at chi-square
 per degree of freedom near 1, never far below it), because a draw taken from evenly spaced quantiles of a
@@ -122,6 +140,16 @@ python3 .claude/skills/determinism-check/figures_check.py taskNN   # 0 every num
 
 Typed figures were the commonest judge finding (12 of 16 in one window). Each step names the file and
 rule in the verifier's words.
+
+**A graded figure the prompt never asked for is an open fork by construction.** The rubric can only owe
+what the question asks, so a figure that sits in Deliverable Answers without an ask behind it has no
+asking sentence to fix its basis, its population or its rounding, and a judge reads that as Gate E and
+Gate C at once. task192 graded a five-part decomposition and a per-fortnight shaded series the prompt
+never requested; both reproduced, and both were findings. Walk the prompt's own sentences against block 4
+before the judge does: every number in it answers an ask, or it leaves. The call's components are
+different and stay in Critical Components, where they are the recommendation's working rather than an
+answer the rubric owes, and a deliverable may still carry context the prompt did not ask for as long as
+the write-up does not grade it.
 
 ## 6. The gates, in the judge's order
 

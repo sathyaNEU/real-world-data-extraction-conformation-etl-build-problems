@@ -137,6 +137,13 @@ script that exists in the build, and the gate fails without it. Re-run the scrip
 once at the end: a determinism repair that closes a reading can spend the device that rode on it, which is
 measurable the moment the sentence is filed and invisible in prose.
 
+**A pin's scope has two halves, and the second is which neighbouring convention it must not reach.** A
+conventions sheet is read as a list, so a row that fixes one table's basis is read against the row beside
+it. task192's route table needed its window pinned while the partner table one row below stayed keyed to
+the action date, and the pin had to name the route figures so the two read as the two different things
+they are; written loosely it would have moved the partner figures too. Before writing a pin, name the
+figures it governs and the figures sitting next to it that it must leave alone, and assert both.
+
 ## Part 7. The ask sheet
 
 `## Ask sheet` is the device ledger `dataset-generation` builds against and `precut.py` reads. Per ask: figures, H18 home, use, primary device and hazards, file path and column count, stops and lazy delta, realism sentence, any reused device. Then the main population's zero-counts, the hazard table (asks moved, per-ask deltas), the referee, the cracker sheet (a table whose header names the cracker, every row ending `miss`), `Mirror leakage:` under 35 per cent, `Pair ceiling:` at or under 40, rerun from the generated rubric. Reuse is legal re-skinned, measured devices first (references Part 3); a device in consecutive builds or a repeated set is a template finding, and demoting a retired main mechanism is reuse.
