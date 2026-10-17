@@ -91,7 +91,20 @@ Each ask is a ladder of three to five stops, complete competent pipelines at dis
 
 ## Part 5. Determinism and the audit
 
-Every ask answer recomputes from the bundle, forced by the records: enumerate the wording's readings and prove convergence (align the data so every licensed reading selects the same rows) or pin the wording; band by the margin you own; the records, never the ask, force the device; assert disjointness wherever a breakdown could count two ways. Two rigorous readers splitting means a missing organ: fix it, never harden the ask. Assert every stop and delta, recompute every ask in the verifier, and sweep: lazy, necessity matrix (whatever moves nothing comes out; rerun after every parameter change), pair simulation on the cut pack, over-cleaner, oracle, wrong-path battery, separation count, and a grep for each device's words and any organ stated twice. Repair one device at a time, organ and records together; never delete an organ.
+Every ask answer recomputes from the bundle, forced by the records: enumerate the wording's readings and prove convergence (align the data so every licensed reading selects the same rows) or pin the wording; band by the margin you own; the records, never the ask, force the device; assert disjointness wherever a breakdown could count two ways.
+
+**A pin is paid for, not free.** A pin says what to compute; it never makes computing it correctly hard,
+and the reading it closes was often carrying the ask's difficulty. So every pin added to close a fork is
+paired with a silent primary underneath it, and the pair is **measured** afterwards, never assumed: run
+the cracker's path on the cut pack and require every row to miss, and put the measured pair ceiling and
+mirror leakage in the sheet. Two builds in one window paid for this rule. One had its determinism pins
+written into a release-notes handling block, which the leak reader then named as a file existing only to
+help the analyst; the fix was to move each pin into the document and voice the organisation would state
+it in, keeping its force. The other had three pins close the two readings its devices rode on, and the
+measured pair ceiling came out at 83.5 against a paper 35.1 with mirror leakage at 100 per cent, so the
+ask paths were re-cut with silent primaries while the call stayed byte-identical (`freeze.py check
+--mode rubric`). Pins and devices are not substitutes: a pinned convention with a silent device under it
+is the shape that holds. Two rigorous readers splitting means a missing organ: fix it, never harden the ask. Assert every stop and delta, recompute every ask in the verifier, and sweep: lazy, necessity matrix (whatever moves nothing comes out; rerun after every parameter change), pair simulation on the cut pack, over-cleaner, oracle, wrong-path battery, separation count, and a grep for each device's words and any organ stated twice. Repair one device at a time, organ and records together; never delete an organ.
 
 ## Part 6. The returned-task revision
 

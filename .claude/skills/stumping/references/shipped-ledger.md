@@ -458,5 +458,16 @@ One line each, with the builds that paid for it. The techniques behind them are 
   generated a record reads the same with machines on maintenance cycles, so the domain was a backdrop
   however carefully the nouns were chosen (192).
 
+**Pins are paid for** (`supplemental-stumping` Part 5, two builds in one window)
+- A pin closes a fork and takes the ask's difficulty with it, because the reading it closed was what the
+  device rode on. Pair every pin with a silent primary and measure the cracker sheet, the pair ceiling and
+  the mirror leakage on the cut pack afterwards: one build's measured ceiling was 83.5 against a paper 35.1
+  with leakage at 100 per cent, discovered only because the author wrote the measurement rather than the
+  estimate and let `precut.py` fail.
+- A determinism pin written as a handling note reads as a solver checklist. Put each pin in the document
+  and the voice the organisation would state it in; the force is in the sentence, not the list.
+- Where an ask layer is re-cut, freeze the call: the files it reads byte-identical, every call figure
+  unchanged, `freeze.py check --mode rubric` exit 0.
+
 **Unspent, so not mistaken for spent**
 - The ledger's old row 41 (displacement under fixed assessment capacity, four outreach arms) was drawn and never built.
