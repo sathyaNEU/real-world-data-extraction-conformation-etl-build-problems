@@ -42,14 +42,16 @@ def windows():
     """Per position, its weekday assessment windows in local time."""
     out = {}
     for d in rows("meter_deployments_2026.csv"):
-        a = dt.date.fromisoformat(d["start_date"])
-        b = dt.date.fromisoformat(d["end_date"])
-        for k in range((b - a).days + 1):
-            day = a + dt.timedelta(days=k)
-            if day.weekday() <= 4:
-                out.setdefault(d["position_code"], []).append(
-                    (dt.datetime(day.year, day.month, day.day, DAY_START),
-                     dt.datetime(day.year, day.month, day.day, DAY_END)))
+        a = dt.datetime.strptime(d["deployed_at"], "%Y-%m-%d %H:%M")
+        b = dt.datetime.strptime(d["collected_at"], "%Y-%m-%d %H:%M")
+        for k in range((b.date() - a.date()).days + 1):
+            day = a.date() + dt.timedelta(days=k)
+            if day.weekday() > 4:
+                continue
+            lo = dt.datetime(day.year, day.month, day.day, DAY_START)
+            hi = dt.datetime(day.year, day.month, day.day, DAY_END)
+            if lo >= a and hi <= b:
+                out.setdefault(d["position_code"], []).append((lo, hi))
     return out
 
 

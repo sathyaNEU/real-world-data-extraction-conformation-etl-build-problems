@@ -118,26 +118,32 @@ def a1_golden(truth):
 
 
 def a1_stops(truth):
-    """The cracker's readings: one cut-off for the year, and counting the run on the cut-off."""
+    """Every reading an ask ladder stop needs.
+
+    `the_mirror` is the response that stops at the wrong rung and takes each obvious reading: one
+    cut-off for the whole year, the run grouped on the date it opened, and the re-released run
+    counted twice. `answer` is the reading the filed rules and the hygiene battery give, which is
+    what the cracker executes.
+    """
     stops = {}
     for name in ("cutoff_1500_only", "cutoff_1400_only", "on_the_cutoff_counted",
-                 "grouped_on_the_opening_date", "the_cracker", "answer"):
+                 "grouped_on_the_opening_date", "the_mirror", "answer"):
         agg = {}
         for q, lo, hi in QUARTERS:
             n, past, val = 0, 0, 0.0
             for run, (day, mins, nl, value, r, cut, opened) in truth.items():
-                d = opened if name in ("grouped_on_the_opening_date", "the_cracker") else day
+                d = opened if name in ("grouped_on_the_opening_date", "the_mirror") else day
                 if not (lo <= d.isoformat() <= hi):
                     continue
                 n += 1
-                use = ("15:00" if name in ("cutoff_1500_only", "the_cracker")
+                use = ("15:00" if name in ("cutoff_1500_only", "the_mirror")
                        else "14:00" if name == "cutoff_1400_only" else cut)
                 ch, cm = [int(v) for v in use.split(":")]
                 if mins > ch * 60 + cm or (name == "on_the_cutoff_counted"
                                            and mins == ch * 60 + cm):
                     past += 1
                     val += value
-            if name == "the_cracker":                 # the re-released run counted twice
+            if name == "the_mirror":                  # the re-released run counted twice
                 n += 1 if lo <= "2026-05-01" <= hi else 0
             agg[q] = (n, past, round(val, 2))
         stops[name] = agg
@@ -229,7 +235,7 @@ def risk_history(target, cross):
 
 
 def a2_unmapped(events):
-    """The cracker's reading: the labels taken as they stand, so the October relabelling splits
+    """The mirror's reading: the labels taken as they stand, so the October relabelling splits
     every category in two and no count is the register's."""
     byc = {}
     for e in events:

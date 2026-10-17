@@ -38,14 +38,14 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Dalvextin and loop diuretic: 375 patients, 277 after, 98 before, referred yes
    - Pirenoxol and acid-suppressant: 363 patients, 273 after, 90 before, referred yes
    - Pirenoxol and antidepressant: 169 patients, 94 after, 75 before, referred no
-   - Pirenoxol and hypnotic: 172 patients, 91 after, 81 before, referred no
+   - Pirenoxol and hypnotic: 171 patients, 91 after, 80 before, referred no
    - Ternivast and antiemetic: 346 patients, 71 after, 275 before, referred no
    - Ternivast and gout treatment: 546 patients, 268 after, 278 before, referred yes
-   - Ternivast and hypnotic: 324 patients, 63 after, 261 before, referred no
+   - Ternivast and hypnotic: 322 patients, 63 after, 259 before, referred no
    - Oxelumab and loop diuretic: 423 patients, 147 after, 276 before, referred no
    - Oxelumab and antidepressant: 694 patients, 383 after, 311 before, referred yes
-   - Oxelumab and topical corticosteroid: 502 patients, 143 after, 359 before, referred no
-   - Varenadol and antiemetic: 279 patients, 227 after, 52 before, referred no
+   - Oxelumab and topical corticosteroid: 501 patients, 142 after, 359 before, referred no
+   - Varenadol and antiemetic: 278 patients, 227 after, 51 before, referred no
    - Varenadol and acid-suppressant: 301 patients, 229 after, 72 before, referred no
    - Varenadol and hypnotic: 269 patients, 208 after, 61 before, referred no
    - Hestroban and antiemetic: 480 patients, 346 after, 134 before, referred yes
@@ -54,56 +54,56 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Kirunelle and antipsychotic: 13 patients, 7 after, 6 before, below the 25-patient minimum
    - Admirabin and loop diuretic: 210 patients, 159 after, 51 before, referred no
    - Admirabin and antidepressant: 268 patients, 215 after, 53 before, referred no
-   - Sovraxil and topical corticosteroid: 631 patients, 496 after, 135 before, referred yes
+   - Sovraxil and topical corticosteroid: 629 patients, 494 after, 135 before, referred yes
    - Sovraxil and antipsychotic: 17 patients, 11 after, 6 before, below the 25-patient minimum
 2. Pairs referred: 7.
 3. Nearest pair on the wrong side of the referral line: Dalvextin and acid-suppressant.
 4. Lines accepted, lines rejected and median days from dispensing to submission, by chain and quarter of dispensing, whole counts and days to one decimal:
-   - APK, 2025 Q4: 6265 accepted, 75 rejected, 4.0 days
-   - APK, 2026 Q1: 5675 accepted, 67 rejected, 5.0 days
-   - APK, 2026 Q2: 5731 accepted, 44 rejected, 4.0 days
-   - APK, 2026 Q3: 5665 accepted, 50 rejected, 6.0 days
-   - DSA, 2025 Q4: 3330 accepted, 42 rejected, 3.0 days
-   - DSA, 2026 Q1: 2990 accepted, 53 rejected, 4.0 days
-   - DSA, 2026 Q2: 2975 accepted, 24 rejected, 4.0 days
-   - DSA, 2026 Q3: 2990 accepted, 45 rejected, 6.0 days
-   - NOR, 2025 Q4: 3604 accepted, 71 rejected, 4.0 days
-   - NOR, 2026 Q1: 3271 accepted, 67 rejected, 4.0 days
-   - NOR, 2026 Q2: 3077 accepted, 81 rejected, 5.0 days
-   - NOR, 2026 Q3: 3690 accepted, 58 rejected, 4.0 days
-   - VST, 2025 Q4: 3109 accepted, 41 rejected, 6.0 days
-   - VST, 2026 Q1: 2729 accepted, 29 rejected, 6.0 days
-   - VST, 2026 Q2: 2665 accepted, 32 rejected, 7.0 days
-   - VST, 2026 Q3: 2922 accepted, 29 rejected, 6.0 days
+   - APK, 2025 Q4: 6287 accepted, 53 rejected, 4.0 days
+   - APK, 2026 Q1: 5669 accepted, 73 rejected, 5.0 days
+   - APK, 2026 Q2: 5739 accepted, 36 rejected, 4.0 days
+   - APK, 2026 Q3: 5666 accepted, 49 rejected, 6.0 days
+   - DSA, 2025 Q4: 3331 accepted, 41 rejected, 3.0 days
+   - DSA, 2026 Q1: 2982 accepted, 61 rejected, 4.0 days
+   - DSA, 2026 Q2: 2965 accepted, 34 rejected, 4.0 days
+   - DSA, 2026 Q3: 3010 accepted, 25 rejected, 6.0 days
+   - NOR, 2025 Q4: 3597 accepted, 78 rejected, 4.0 days
+   - NOR, 2026 Q1: 3258 accepted, 80 rejected, 4.0 days
+   - NOR, 2026 Q2: 3083 accepted, 75 rejected, 5.0 days
+   - NOR, 2026 Q3: 3683 accepted, 65 rejected, 4.0 days
+   - VST, 2025 Q4: 3114 accepted, 36 rejected, 6.0 days
+   - VST, 2026 Q1: 2716 accepted, 42 rejected, 6.0 days
+   - VST, 2026 Q2: 2673 accepted, 24 rejected, 7.0 days
+   - VST, 2026 Q3: 2924 accepted, 27 rejected, 6.0 days
 5. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
-   - Nordlys Pharma A/S (H1): 265203.0 DDD, 333475 kroner
-   - Bregnholt Laegemidler A/S (H2): 472479.0 DDD, 597898 kroner
-   - Vindeby Therapeutics ApS (H3): 407642.0 DDD, 536131 kroner
-   - Soegaard Medica A/S (H4): 191750.0 DDD, 288316 kroner
-   - Kastholm Pharma A/S (H5): 595146.0 DDD, 719749 kroner
-   - Ellevang Biosciences A/S (H6): 1027312.0 DDD, 1032066 kroner
-   - Strandby Farma ApS (H7): 113505.0 DDD, 170258 kroner
+   - Nordlys Pharma A/S (H1): 263773.0 DDD, 330714 kroner
+   - Bregnholt Laegemidler A/S (H2): 472215.0 DDD, 594024 kroner
+   - Vindeby Therapeutics ApS (H3): 407056.0 DDD, 522466 kroner
+   - Soegaard Medica A/S (H4): 192160.0 DDD, 285555 kroner
+   - Kastholm Pharma A/S (H5): 592862.0 DDD, 728677 kroner
+   - Ellevang Biosciences A/S (H6): 1027258.0 DDD, 1067099 kroner
+   - Strandby Farma ApS (H7): 114082.5 DDD, 168728 kroner
 6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
    - Hovedstaden, 18-24: 251 patients, 70.5 per cent
-   - Hovedstaden, 25-44: 753 patients, 68.8 per cent
-   - Hovedstaden, 45-74: 1090 patients, 79.8 per cent
-   - Hovedstaden, 75 and over: 679 patients, 80.3 per cent
+   - Hovedstaden, 25-44: 753 patients, 68.9 per cent
+   - Hovedstaden, 45-74: 1089 patients, 79.8 per cent
+   - Hovedstaden, 75 and over: 680 patients, 80.3 per cent
    - Midtjylland, 18-24: 209 patients, 68.9 per cent
-   - Midtjylland, 25-44: 597 patients, 69.5 per cent
-   - Midtjylland, 45-74: 878 patients, 78.1 per cent
-   - Midtjylland, 75 and over: 515 patients, 76.9 per cent
-   - Nordjylland, 18-24: 91 patients, 70.3 per cent
-   - Nordjylland, 25-44: 301 patients, 69.4 per cent
-   - Nordjylland, 45-74: 451 patients, 77.4 per cent
-   - Nordjylland, 75 and over: 228 patients, 79.4 per cent
-   - Sjaelland, 18-24: 130 patients, 69.2 per cent
+   - Midtjylland, 25-44: 598 patients, 69.6 per cent
+   - Midtjylland, 45-74: 876 patients, 78.3 per cent
+   - Midtjylland, 75 and over: 513 patients, 77.2 per cent
+   - Nordjylland, 18-24: 91 patients, 69.2 per cent
+   - Nordjylland, 25-44: 302 patients, 69.2 per cent
+   - Nordjylland, 45-74: 450 patients, 77.3 per cent
+   - Nordjylland, 75 and over: 227 patients, 79.3 per cent
+   - Sjaelland, 18-24: 131 patients, 69.5 per cent
    - Sjaelland, 25-44: 385 patients, 76.1 per cent
-   - Sjaelland, 45-74: 653 patients, 76.6 per cent
+   - Sjaelland, 45-74: 654 patients, 76.6 per cent
    - Sjaelland, 75 and over: 362 patients, 80.4 per cent
-   - Syddanmark, 18-24: 197 patients, 72.1 per cent
-   - Syddanmark, 25-44: 565 patients, 72.0 per cent
-   - Syddanmark, 45-74: 866 patients, 76.9 per cent
-   - Syddanmark, 75 and over: 424 patients, 80.9 per cent
+   - Syddanmark, 18-24: 196 patients, 71.9 per cent
+   - Syddanmark, 25-44: 562 patients, 71.7 per cent
+   - Syddanmark, 45-74: 867 patients, 76.7 per cent
+   - Syddanmark, 75 and over: 426 patients, 80.5 per cent
    - not stated, 18-24: 29 patients, 72.4 per cent
    - not stated, 25-44: 82 patients, 76.8 per cent
    - not stated, 45-74: 103 patients, 75.7 per cent
@@ -112,5 +112,5 @@ The expected after-count comes from the window's own first-receipt dates, so the
 ### order_shares_by_pair.png
 
 1. One horizontal bar for each of the 23 screened pairs for the share of its patients who received the marker treatment after the product, with the 7 referred pairs in the darker fill and the other 16 in the lighter one.
-2. The bars run longest share first, from Varenadol + antiemetic at 81.4 per cent to Ternivast + hypnotic at 19.4 per cent.
+2. The bars run longest share first, from Varenadol + antiemetic at 81.7 per cent to Ternivast + hypnotic at 19.6 per cent.
 3. Title states that 7 of the 20 candidate pairs clear the referral line.

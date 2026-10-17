@@ -22,11 +22,11 @@ def _db(e):
     return 10.0 * np.log10(np.maximum(np.asarray(e, dtype=float), 1e-12))
 
 
-def week_minutes(start):
-    """Local naive minute stamps for the seven days from Monday 00:00."""
-    base = dt.datetime(start.year, start.month, start.day)
-    n = 7 * 24 * 60
-    return base, np.arange(n)
+def record_minutes(dep):
+    """Local naive minute stamps for one deployment: from the minute the technician set the meter running
+    to the minute it was stopped on the collection round."""
+    n = int((dep["end_dt"] - dep["start_dt"]).total_seconds() // 60) + 1
+    return dep["start_dt"], np.arange(n)
 
 
 def met_series():
@@ -141,6 +141,67 @@ def plant_load(stamps_local):
             - 0.022 * (dow >= 5)) * wf
     idx = np.array([int((s - PLANT_T0).total_seconds() // 60) for s in stamps_local])
     return load * PLANT_JIT[np.clip(idx, 0, _PJ_N - 1)]
+
+
+def plant_propagation(code, stamps_local, seed):
+    """How much of the plant's sound reaches the position, minute by minute: the wind carries it to the
+    positions it blows towards and away from the others, a still night with the ground cooling bends it
+    back down, and the turbulence it travels through moves it from minute to minute. Energy factor, mean
+    taken out by the normalisation in `build`, so it moves the spread of a position's record and not its
+    level."""
+    p = W.BY_CODE[code]
+    dist, bear = p[3], p[4]
+    idx = met_index(stamps_local)
+    v = MET["wind_ms"][idx]
+    wd = MET["wind_dir"][idx].astype(float)
+    hours = np.array([s.hour + s.minute / 60.0 for s in stamps_local])
+    # the wind blows towards bearing wd + 180: a position on that bearing is downwind of the plant
+    toward = np.cos(np.radians(bear - (wd + 180.0)))
+    k = 0.40 + 0.00135 * dist                      # the farther the position, the more the wind decides
+    db = k * np.clip(v, 0.0, 9.0) * toward
+    # the night-time inversion, strongest when the wind is light and the ground has had hours to cool
+    night = np.clip(np.cos(2 * math.pi * (hours - 3.0) / 24.0), 0.0, 1.0)
+    db = db + (0.25 + 0.0012 * dist) * night * np.clip(3.4 - v, 0.0, 3.4)
+    # turbulent scattering: the minute-to-minute swing of what arrives, which grows with the wind
+    rng = np.random.default_rng(seed)
+    a, n = 0.62, len(stamps_local)
+    sd = 0.10 + 0.00042 * dist
+    wn = rng.normal(0.0, math.sqrt(1 - a * a), n)
+    scat = np.zeros(n)
+    for i in range(n):
+        scat[i] = a * scat[i - 1] + wn[i] if i else wn[i]
+    db = db + scat * sd * (0.9 + 0.42 * np.clip(v, 0.0, 9.0))
+    return _e(db)
+
+
+def night_texture(code, stamps_local, seed):
+    """What the surroundings do when the assessment period is shut: the last of the evening traffic, the
+    milk lorry before first light, a dog, the wind getting up in the trees. Energy added to the residual
+    between 19:00 and 04:30 only, so no minute of any assessment period and no minute of a process stop
+    carries it."""
+    rng = np.random.default_rng(seed)
+    p = W.BY_CODE[code]
+    ev, dist = p[9], p[3]
+    hours = np.array([s.hour + s.minute / 60.0 for s in stamps_local])
+    n = len(stamps_local)
+    out_of = (hours >= 19.0) | (hours < 4.5)
+    # each position has its own evening: a lane with a few late cars, a yard with a dog, a bend the
+    # lorries take at five, a position in trees that only hears the wind
+    phase = 0.37 * (W.CODES.index(code) % 7)
+    late = 0.52 + 0.46 * math.sin(1.9 * W.CODES.index(code) + 0.6)
+    lam = (ev / 60.0) * (0.22 + 0.9 * np.exp(-((hours - (20.4 + phase)) ** 2) / 1.5)
+                         + 1.25 * np.exp(-((hours - (4.9 + 0.3 * late)) ** 2) / 0.35)
+                         + 0.35 * np.exp(-((hours - 22.6) ** 2) / 2.4) * late)
+    lam = np.where(out_of, lam, 0.0)
+    hit = rng.random(n) < lam
+    amp = np.where(hit, _e(rng.uniform(9.0, 23.5, n)), 0.0)
+    amp = amp + np.concatenate([[0.0], amp[:-1] * 0.3])
+    # the wind in the hedge or the trees, which gusts more at some positions than others
+    idx = met_index(stamps_local)
+    gust = np.clip(MET["wind_ms"][idx] - 1.6, 0.0, None) ** 1.5
+    swing = _e(rng.normal(0.0, 0.55 + 0.35 * late, n)) - 1.0
+    tex = np.where(out_of, 0.12 * gust * (0.5 + 0.0012 * dist) * (1.0 + swing), 0.0)
+    return amp + np.clip(tex, 0.0, None)
 
 
 def centrifuge_runs(day):
@@ -264,6 +325,26 @@ def residual_shape(code, stamps_local, seed):
     return total, quiet, loud, tiny
 
 
+def technician(dep, stamps_local):
+    """The minutes the technician was at the microphone: the field check, which is the calibrator level
+    the sheet records, and the handling either side of it as the tripod and windshield go up and come
+    down. Every one of them falls outside the assessment period, because the round is before 07:00."""
+    n = len(stamps_local)
+    cal = np.zeros(n)
+    hand = np.zeros(n)
+    rng = np.random.default_rng(W.SEED + 1511 + 97 * int(dep["id"][1:]))
+    lo, hi = W.HANDLING_DB
+    a = W.SETUP_HANDLING
+    b = n - 1 - W.PICKUP_HANDLING
+    cal[a] = dep["cal_before"]
+    cal[b] = dep["cal_after"]
+    span = list(range(0, a)) + list(range(a + 1, a + 1 + W.SETUP_AFTER)) \
+        + [b - 1] + list(range(b + 1, n))
+    for i in span:
+        hand[i] = _e(rng.uniform(lo, hi))
+    return cal, hand
+
+
 def assessment_mask(stamps_local):
     hours = np.array([s.hour + s.minute / 60.0 for s in stamps_local])
     dows = np.array([s.weekday() for s in stamps_local])
@@ -287,13 +368,17 @@ def nodata_mask(dep, stamps_local):
 
 
 def deployments():
-    """Every deployment: position, meter, week, local start and end, mounting."""
+    """Every deployment: position, meter, week, the minute the meter was set running and the minute it was
+    stopped on the next round, and the mounting."""
     out = []
     for code in W.CODES:
         for k, (wk, meter) in enumerate(W.SCHEDULE[code]):
             start = W.WEEKS[wk]
+            start_dt = W.visit(meter, wk)
+            end_dt = W.visit(meter, wk + 1) - dt.timedelta(minutes=W.TURNAROUND)
             out.append({"code": code, "meter": meter, "week": wk, "start": start,
                         "end": start + dt.timedelta(days=6),
+                        "start_dt": start_dt, "end_dt": end_dt,
                         "mount": W.HEIGHT_DEPART.get((code, k), W.HEIGHT[code]), "k": k})
     out.sort(key=lambda d: (d["start"], d["meter"]))
     seen = {}
@@ -328,15 +413,19 @@ def build(codes=None):
         S_t, R_t = p[5], p[6]
         parts = []
         for d in ds:
-            base, mins = week_minutes(d["start"])
+            base, mins = record_minutes(d)
             stamps = [base + dt.timedelta(minutes=int(m)) for m in mins]
-            k = plant_state(stamps)
-            res, quiet, loud, tiny = residual_shape(code, stamps, W.SEED + 7919 * W.CODES.index(code) + d["week"])
+            seed = W.SEED + 7919 * W.CODES.index(code) + d["week"]
+            k = plant_state(stamps) * plant_propagation(code, stamps, seed + 311)
+            res, quiet, loud, tiny = residual_shape(code, stamps, seed)
+            tex = night_texture(code, stamps, seed + 577)
             am = assessment_mask(stamps)
             nd = nodata_mask(d, stamps)
             vm = validity_mask(stamps) & ~nd
-            parts.append({"dep": d, "stamps": stamps, "k": k, "res": res, "quiet": quiet,
-                          "loud": loud, "tiny": tiny, "am": am, "vm": vm, "nd": nd})
+            cal, hand = technician(d, stamps)
+            parts.append({"dep": d, "stamps": stamps, "k": k, "res": res + tex, "quiet": quiet,
+                          "loud": loud, "tiny": tiny, "tex": tex, "am": am, "vm": vm, "nd": nd,
+                          "cal": cal, "hand": hand})
         use = np.concatenate([(pp["am"] & pp["vm"] & (pp["k"] > 0)) for pp in parts])
         kk = np.concatenate([pp["k"] for pp in parts])
         rr = np.concatenate([pp["res"] for pp in parts])
@@ -354,14 +443,26 @@ def build(codes=None):
             f90 = _e(-wrng.uniform(0.08, 0.55, m))
             fmax = _e(wrng.uniform(0.5, 2.4, m))
             fmin = f90 * _e(-wrng.uniform(0.3, 1.2, m))
-            laeq = _db(pe + re)
-            la90 = _db(pe * f90 + gr * pp["quiet"])
-            lamax = _db(pe * fmax + gr * pp["loud"])
+            hand = pp["hand"]
+            tex = pp["tex"]
+            laeq = _db(pe + re + hand)
+            la90 = _db(pe * f90 + gr * (pp["quiet"] + 0.10 * tex) + 0.12 * hand)
+            lamax = _db(pe * fmax + gr * (pp["loud"] + 2.6 * tex) + 3.0 * hand)
             lamin = _db(pe * fmin + gr * pp["tiny"])
+            # the field check: the calibrator on the microphone, which is all the meter hears for that
+            # minute and reads as the level the technician wrote on the sheet
+            cal = pp["cal"]
+            on = cal > 0
+            dev = dep_dev(pp["dep"])
+            laeq = np.where(on, cal - dev, laeq)
+            la90 = np.where(on, cal - dev - 0.1, la90)
+            lamax = np.where(on, cal - dev + 0.2, lamax)
+            lamin = np.where(on, cal - dev - 0.3, lamin)
             series[pp["dep"]["id"]] = {
                 "dep": pp["dep"], "stamps": pp["stamps"], "laeq": laeq, "la90": la90,
                 "lamax": lamax, "lamin": lamin, "am": pp["am"], "vm": pp["vm"], "nd": pp["nd"],
-                "k": pp["k"], "plant_e": pe, "resid_e": re}
+                "k": pp["k"], "plant_e": pe, "resid_e": re,
+                "cal_e": np.where(on, _e(cal - dev), 0.0), "hand_e": hand}
     return deps, series
 
 

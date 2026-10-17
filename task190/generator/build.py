@@ -71,7 +71,9 @@ def cut(target, golden_dir):
     again = dict(clean[len(clean) // 2], finding="re-tested after query, no exception")
     tested.append(again)
     tested.sort(key=lambda t: (t["day"], t["schedule_ref"], t["finding"]))
-    docs.schedule(target, tested)
+    cert_n = len([x for x in lines if x[1] >= W.INTERVAL])
+    docs.schedule(target, tested, nsel=nsel, ntested=len(set(i for i, _ in hits)),
+                  ncert=cert_n)
     # the two-year extract the schedule was pulled from
     ptested = []
     pbyidx = {r["idx"]: r for r in prows}

@@ -447,6 +447,16 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
                and (new_keys.get(r["pid"], keys[r["pid"]]) in in_window
                     or keys[r["pid"]] in in_window)]
     ok("ask.zero_devices_in_main_population", not bad_rej, str(bad_rej[:5]))
+    # the ask layer's rejection device cannot touch a first receipt the screen reads
+    first_line = {}
+    for r in lines:
+        k = (r["pid"], r["code"])
+        if k not in first_line or (r["day"], r["line"]) < first_line[k]:
+            first_line[k] = (r["day"], r["line"])
+    moved_first = [r["line"] for r in rejected
+                   if first_line[(r["pid"], r["code"])] == (r["day"], r["line"])
+                   and r["day"] > W.CLEAR_B]
+    ok("ask.rejection_never_moves_a_first_receipt", not moved_first, str(moved_first[:5]))
     ok("ask.rejected_firsts_are_outside_the_window",
        all(r["day"] <= W.CLEAR_B for r in rejected if r["is_first"]),
        "%d rejected first receipts, all in the clearance period"

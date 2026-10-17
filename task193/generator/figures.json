@@ -57,8 +57,8 @@
   {
    "product": "Sovraxil",
    "marker": "topical corticosteroid",
-   "patients": 631,
-   "after": 496,
+   "patients": 629,
+   "after": 494,
    "multiple": 1.5,
    "crude_multiple": 1.57
   }
@@ -189,11 +189,11 @@
    "brand": "Pirenoxol",
    "marker": "M6",
    "marker_treatment": "hypnotic",
-   "patients": 172,
+   "patients": 171,
    "after": 91,
-   "before": 81,
-   "share_pct": 52.9,
-   "expected": 92.7,
+   "before": 80,
+   "share_pct": 53.2,
+   "expected": 92.5,
    "multiple": 0.98,
    "referred": "no",
    "crude_multiple": 1.06
@@ -231,12 +231,12 @@
    "brand": "Ternivast",
    "marker": "M6",
    "marker_treatment": "hypnotic",
-   "patients": 324,
+   "patients": 322,
    "after": 63,
-   "before": 261,
-   "share_pct": 19.4,
-   "expected": 67.6,
-   "multiple": 0.93,
+   "before": 259,
+   "share_pct": 19.6,
+   "expected": 67.3,
+   "multiple": 0.94,
    "referred": "no",
    "crude_multiple": 0.39
   },
@@ -273,11 +273,11 @@
    "brand": "Oxelumab",
    "marker": "M7",
    "marker_treatment": "topical corticosteroid",
-   "patients": 502,
-   "after": 143,
+   "patients": 501,
+   "after": 142,
    "before": 359,
-   "share_pct": 28.5,
-   "expected": 140.7,
+   "share_pct": 28.3,
+   "expected": 139.7,
    "multiple": 1.02,
    "referred": "no",
    "crude_multiple": 0.57
@@ -287,11 +287,11 @@
    "brand": "Varenadol",
    "marker": "M1",
    "marker_treatment": "antiemetic",
-   "patients": 279,
+   "patients": 278,
    "after": 227,
-   "before": 52,
-   "share_pct": 81.4,
-   "expected": 229.5,
+   "before": 51,
+   "share_pct": 81.7,
+   "expected": 229.4,
    "multiple": 0.99,
    "referred": "no",
    "crude_multiple": 1.63
@@ -413,11 +413,11 @@
    "brand": "Sovraxil",
    "marker": "M7",
    "marker_treatment": "topical corticosteroid",
-   "patients": 631,
-   "after": 496,
+   "patients": 629,
+   "after": 494,
    "before": 135,
-   "share_pct": 78.6,
-   "expected": 330.9,
+   "share_pct": 78.5,
+   "expected": 329.6,
    "multiple": 1.5,
    "referred": "yes",
    "crude_multiple": 1.57
@@ -440,7 +440,7 @@
  "chart_rows": [
   {
    "label": "Varenadol + antiemetic",
-   "share_pct": 81.4,
+   "share_pct": 81.7,
    "referred": "no"
   },
   {
@@ -450,7 +450,7 @@
   },
   {
    "label": "Sovraxil + topical corticosteroid",
-   "share_pct": 78.6,
+   "share_pct": 78.5,
    "referred": "yes"
   },
   {
@@ -515,7 +515,7 @@
   },
   {
    "label": "Pirenoxol + hypnotic",
-   "share_pct": 52.9,
+   "share_pct": 53.2,
    "referred": "no"
   },
   {
@@ -540,7 +540,7 @@
   },
   {
    "label": "Oxelumab + topical corticosteroid",
-   "share_pct": 28.5,
+   "share_pct": 28.3,
    "referred": "no"
   },
   {
@@ -550,7 +550,7 @@
   },
   {
    "label": "Ternivast + hypnotic",
-   "share_pct": 19.4,
+   "share_pct": 19.6,
    "referred": "no"
   }
  ],
@@ -558,113 +558,113 @@
   {
    "chain": "APK",
    "quarter": "2025 Q4",
-   "accepted": 6265,
-   "rejected": 75,
+   "accepted": 6287,
+   "rejected": 53,
    "median_days": 4.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q1",
-   "accepted": 5675,
-   "rejected": 67,
+   "accepted": 5669,
+   "rejected": 73,
    "median_days": 5.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q2",
-   "accepted": 5731,
-   "rejected": 44,
+   "accepted": 5739,
+   "rejected": 36,
    "median_days": 4.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q3",
-   "accepted": 5665,
-   "rejected": 50,
+   "accepted": 5666,
+   "rejected": 49,
    "median_days": 6.0
   },
   {
    "chain": "DSA",
    "quarter": "2025 Q4",
-   "accepted": 3330,
-   "rejected": 42,
+   "accepted": 3331,
+   "rejected": 41,
    "median_days": 3.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q1",
-   "accepted": 2990,
-   "rejected": 53,
+   "accepted": 2982,
+   "rejected": 61,
    "median_days": 4.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q2",
-   "accepted": 2975,
-   "rejected": 24,
+   "accepted": 2965,
+   "rejected": 34,
    "median_days": 4.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q3",
-   "accepted": 2990,
-   "rejected": 45,
+   "accepted": 3010,
+   "rejected": 25,
    "median_days": 6.0
   },
   {
    "chain": "NOR",
    "quarter": "2025 Q4",
-   "accepted": 3604,
-   "rejected": 71,
+   "accepted": 3597,
+   "rejected": 78,
    "median_days": 4.0
   },
   {
    "chain": "NOR",
    "quarter": "2026 Q1",
-   "accepted": 3271,
-   "rejected": 67,
+   "accepted": 3258,
+   "rejected": 80,
    "median_days": 4.0
   },
   {
    "chain": "NOR",
    "quarter": "2026 Q2",
-   "accepted": 3077,
-   "rejected": 81,
+   "accepted": 3083,
+   "rejected": 75,
    "median_days": 5.0
   },
   {
    "chain": "NOR",
    "quarter": "2026 Q3",
-   "accepted": 3690,
-   "rejected": 58,
+   "accepted": 3683,
+   "rejected": 65,
    "median_days": 4.0
   },
   {
    "chain": "VST",
    "quarter": "2025 Q4",
-   "accepted": 3109,
-   "rejected": 41,
+   "accepted": 3114,
+   "rejected": 36,
    "median_days": 6.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q1",
-   "accepted": 2729,
-   "rejected": 29,
+   "accepted": 2716,
+   "rejected": 42,
    "median_days": 6.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q2",
-   "accepted": 2665,
-   "rejected": 32,
+   "accepted": 2673,
+   "rejected": 24,
    "median_days": 7.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q3",
-   "accepted": 2922,
-   "rejected": 29,
+   "accepted": 2924,
+   "rejected": 27,
    "median_days": 6.0
   }
  ],
@@ -672,86 +672,86 @@
   {
    "holder": "H1",
    "name": "Nordlys Pharma A/S",
-   "ddd": 265203.0,
-   "ddd_before": 127642.0,
-   "ddd_after": 137561.0,
-   "rate_before": 1190,
-   "rate_after": 1320,
-   "fee_dkk": 333475,
-   "fee_exact": "333474.5",
-   "fee_distance": 0.0
+   "ddd": 263773.0,
+   "ddd_before": 126837.0,
+   "ddd_after": 136936.0,
+   "rate_before": 1219,
+   "rate_after": 1286,
+   "fee_dkk": 330714,
+   "fee_exact": "330713.999",
+   "fee_distance": 0.499
   },
   {
    "holder": "H2",
    "name": "Bregnholt Laegemidler A/S",
-   "ddd": 472479.0,
-   "ddd_before": 198260.0,
-   "ddd_after": 274219.0,
-   "rate_before": 1190,
-   "rate_after": 1320,
-   "fee_dkk": 597898,
-   "fee_exact": "597898.48",
-   "fee_distance": 0.02
+   "ddd": 472215.0,
+   "ddd_before": 197680.0,
+   "ddd_after": 274535.0,
+   "rate_before": 1219,
+   "rate_after": 1286,
+   "fee_dkk": 594024,
+   "fee_exact": "594023.93",
+   "fee_distance": 0.43
   },
   {
    "holder": "H3",
    "name": "Vindeby Therapeutics ApS",
-   "ddd": 407642.0,
+   "ddd": 407056.0,
    "ddd_before": 15046.0,
-   "ddd_after": 392596.0,
-   "rate_before": 1190,
-   "rate_after": 1320,
-   "fee_dkk": 536131,
-   "fee_exact": "536131.46",
-   "fee_distance": 0.04
+   "ddd_after": 392010.0,
+   "rate_before": 1219,
+   "rate_after": 1286,
+   "fee_dkk": 522466,
+   "fee_exact": "522465.934",
+   "fee_distance": 0.434
   },
   {
    "holder": "H4",
    "name": "Soegaard Medica A/S",
-   "ddd": 191750.0,
-   "ddd_before": 184845.0,
-   "ddd_after": 6905.0,
-   "rate_before": 1500,
-   "rate_after": 1600,
-   "fee_dkk": 288316,
-   "fee_exact": "288315.5",
-   "fee_distance": 0.0
+   "ddd": 192160.0,
+   "ddd_before": 185305.0,
+   "ddd_after": 6855.0,
+   "rate_before": 1479,
+   "rate_after": 1676,
+   "fee_dkk": 285555,
+   "fee_exact": "285555.075",
+   "fee_distance": 0.425
   },
   {
    "holder": "H5",
    "name": "Kastholm Pharma A/S",
-   "ddd": 595146.0,
-   "ddd_before": 506494.0,
-   "ddd_after": 88652.0,
-   "rate_before": 1190,
-   "rate_after": 1320,
-   "fee_dkk": 719749,
-   "fee_exact": "719748.5",
-   "fee_distance": 0.0
+   "ddd": 592862.0,
+   "ddd_before": 503634.0,
+   "ddd_after": 89228.0,
+   "rate_before": 1219,
+   "rate_after": 1286,
+   "fee_dkk": 728677,
+   "fee_exact": "728677.054",
+   "fee_distance": 0.446
   },
   {
    "holder": "H6",
    "name": "Ellevang Biosciences A/S",
-   "ddd": 1027312.0,
-   "ddd_before": 517138.0,
-   "ddd_after": 510174.0,
-   "rate_before": 950,
-   "rate_after": 1060,
-   "fee_dkk": 1032066,
-   "fee_exact": "1032065.54",
-   "fee_distance": 0.04
+   "ddd": 1027258.0,
+   "ddd_before": 515000.0,
+   "ddd_after": 512258.0,
+   "rate_before": 958,
+   "rate_after": 1120,
+   "fee_dkk": 1067099,
+   "fee_exact": "1067098.96",
+   "fee_distance": 0.46
   },
   {
    "holder": "H7",
    "name": "Strandby Farma ApS",
-   "ddd": 113505.0,
-   "ddd_before": 113505.0,
+   "ddd": 114082.5,
+   "ddd_before": 114082.5,
    "ddd_after": 0.0,
-   "rate_before": 1500,
-   "rate_after": 1600,
-   "fee_dkk": 170258,
-   "fee_exact": "170257.5",
-   "fee_distance": 0.0
+   "rate_before": 1479,
+   "rate_after": 1676,
+   "fee_dkk": 168728,
+   "fee_exact": "168728.0175",
+   "fee_distance": 0.4825
   }
  ],
  "a3": [
@@ -766,22 +766,22 @@
    "region": "Hovedstaden",
    "band": "25-44",
    "patients": 753,
-   "share_pct": 68.8,
-   "with_marker": 518
+   "share_pct": 68.9,
+   "with_marker": 519
   },
   {
    "region": "Hovedstaden",
    "band": "45-74",
-   "patients": 1090,
+   "patients": 1089,
    "share_pct": 79.8,
-   "with_marker": 870
+   "with_marker": 869
   },
   {
    "region": "Hovedstaden",
    "band": "75 and over",
-   "patients": 679,
+   "patients": 680,
    "share_pct": 80.3,
-   "with_marker": 545
+   "with_marker": 546
   },
   {
    "region": "Midtjylland",
@@ -793,58 +793,58 @@
   {
    "region": "Midtjylland",
    "band": "25-44",
-   "patients": 597,
-   "share_pct": 69.5,
-   "with_marker": 415
+   "patients": 598,
+   "share_pct": 69.6,
+   "with_marker": 416
   },
   {
    "region": "Midtjylland",
    "band": "45-74",
-   "patients": 878,
-   "share_pct": 78.1,
+   "patients": 876,
+   "share_pct": 78.3,
    "with_marker": 686
   },
   {
    "region": "Midtjylland",
    "band": "75 and over",
-   "patients": 515,
-   "share_pct": 76.9,
+   "patients": 513,
+   "share_pct": 77.2,
    "with_marker": 396
   },
   {
    "region": "Nordjylland",
    "band": "18-24",
    "patients": 91,
-   "share_pct": 70.3,
-   "with_marker": 64
+   "share_pct": 69.2,
+   "with_marker": 63
   },
   {
    "region": "Nordjylland",
    "band": "25-44",
-   "patients": 301,
-   "share_pct": 69.4,
+   "patients": 302,
+   "share_pct": 69.2,
    "with_marker": 209
   },
   {
    "region": "Nordjylland",
    "band": "45-74",
-   "patients": 451,
-   "share_pct": 77.4,
-   "with_marker": 349
+   "patients": 450,
+   "share_pct": 77.3,
+   "with_marker": 348
   },
   {
    "region": "Nordjylland",
    "band": "75 and over",
-   "patients": 228,
-   "share_pct": 79.4,
-   "with_marker": 181
+   "patients": 227,
+   "share_pct": 79.3,
+   "with_marker": 180
   },
   {
    "region": "Sjaelland",
    "band": "18-24",
-   "patients": 130,
-   "share_pct": 69.2,
-   "with_marker": 90
+   "patients": 131,
+   "share_pct": 69.5,
+   "with_marker": 91
   },
   {
    "region": "Sjaelland",
@@ -856,9 +856,9 @@
   {
    "region": "Sjaelland",
    "band": "45-74",
-   "patients": 653,
+   "patients": 654,
    "share_pct": 76.6,
-   "with_marker": 500
+   "with_marker": 501
   },
   {
    "region": "Sjaelland",
@@ -870,29 +870,29 @@
   {
    "region": "Syddanmark",
    "band": "18-24",
-   "patients": 197,
-   "share_pct": 72.1,
-   "with_marker": 142
+   "patients": 196,
+   "share_pct": 71.9,
+   "with_marker": 141
   },
   {
    "region": "Syddanmark",
    "band": "25-44",
-   "patients": 565,
-   "share_pct": 72.0,
-   "with_marker": 407
+   "patients": 562,
+   "share_pct": 71.7,
+   "with_marker": 403
   },
   {
    "region": "Syddanmark",
    "band": "45-74",
-   "patients": 866,
-   "share_pct": 76.9,
-   "with_marker": 666
+   "patients": 867,
+   "share_pct": 76.7,
+   "with_marker": 665
   },
   {
    "region": "Syddanmark",
    "band": "75 and over",
-   "patients": 424,
-   "share_pct": 80.9,
+   "patients": 426,
+   "share_pct": 80.5,
    "with_marker": 343
   },
   {

@@ -29,7 +29,8 @@ def band_rows(target):
     by_meter = {}
     for d in deps:
         by_meter.setdefault(d["meter_serial"], []).append(
-            (dt.date.fromisoformat(d["start_date"]), dt.date.fromisoformat(d["end_date"]), d["position_code"]))
+            (dt.datetime.strptime(d["deployed_at"], "%Y-%m-%d %H:%M"),
+             dt.datetime.strptime(d["collected_at"], "%Y-%m-%d %H:%M"), d["position_code"]))
     acc = {}
     with open(os.path.join(target, PK.FILES["bands"]), encoding="utf-8") as fh:
         rd = _c.reader(fh)
@@ -43,7 +44,7 @@ def band_rows(target):
                 continue
             code = None
             for a, b, c in by_meter.get(serial, []):
-                if a <= stamp.date() <= b:
+                if a <= stamp <= b:
                     code = c
                     break
             if code is None:
@@ -73,10 +74,9 @@ def weekly_plant(target):
     scada = {}
     for r in _c.DictReader(open(os.path.join(target, PK.FILES["scada"]), encoding="utf-8")):
         scada[dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")] = r
-    starts = []
-    for r in _c.DictReader(open(os.path.join(target, PK.FILES["events"]), encoding="utf-8")):
-        if r["equipment"] in W.CENTRIFUGES and r["event"] == "START":
-            starts.append(dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M"))
+    # plan 5.2: a week's runs are the runs that start in it, and a start the log does not stop before the
+    # machine starts again is not a run
+    starts = [a for a, _ in log_runs(target)]
     out = {}
     for i, wk in enumerate(W.WEEKS):
         a = dt.datetime(wk.year, wk.month, wk.day)
@@ -93,8 +93,10 @@ def weekly_plant(target):
 
 
 def log_runs(target):
-    """Every centrifuge run the equipment log carries, as plan 5.2 defines it: a start, and the stop the
-    log records for the same machine."""
+    """Every centrifuge run the equipment log carries, as plan 5.2 defines it: a start, and the first stop
+    the log records for the same machine after it. A start the log does not stop before that machine
+    starts again is not a run, so the start the shift wrote on 10 September and never stopped drops out,
+    and an orphan stop closes nothing."""
     import csv as _c
     opens, runs = {}, []
     rows = sorted(_c.DictReader(open(os.path.join(target, PK.FILES["events"]), encoding="utf-8")),
@@ -111,20 +113,30 @@ def log_runs(target):
 
 
 def plant_state_per_position(target, frames):
-    """A2: of the minutes behind each position's level, how many fell in a dewatering run and how many
-    runs those minutes span. Plan 5.2 says what a run is and how long it lasts."""
+    """A2: how many valid minutes of each position's assessment period a centrifuge was running in, and
+    how many runs reached into that period, which a run does when it overlaps any minute of it. Plan 5.2
+    says what a run is and when it ends."""
     runs = log_runs(target)
     out = {}
     for code, d in frames.items():
-        stamps = d["stamps"][d["keep"]]
-        mins, hit = 0, set()
-        for t in stamps:
-            for i, (a, b) in enumerate(runs):
-                if a <= t < b:
-                    mins += 1
-                    hit.add(i)
-                    break
-        out[code] = {"centrifuge_minutes": mins, "centrifuge_runs": len(hit)}
+        stamps = d["stamps"]
+        lo, hi = stamps.min(), stamps.max()
+        near = [(a, b) for a, b in runs if a <= hi and b > lo]
+        inrun = np.zeros(len(stamps), dtype=bool)
+        for a, b in near:
+            inrun |= (stamps >= a) & (stamps < b)
+        mins = int((inrun & d["keep"]).sum())
+        # the assessment period itself, valid or not, in contiguous blocks
+        idx = np.flatnonzero(d["am"])
+        blocks, start = [], None
+        for j, i in enumerate(idx):
+            if start is None:
+                start = i
+            if j + 1 == len(idx) or idx[j + 1] != i + 1:
+                blocks.append((stamps[start], stamps[i] + dt.timedelta(minutes=1)))
+                start = None
+        n = sum(1 for a, b in near if any(a < q and b > p for p, q in blocks))
+        out[code] = {"centrifuge_minutes": mins, "centrifuge_runs": n}
     return out
 
 

@@ -101,7 +101,7 @@ AGE_BANDS = ["U50", "50-64", "65-79", "80+"]
 # 4.0. The published table was built on FY2023-24 activity and clause 3.1 says it is not re-estimated
 # between specifications; since it was set, a falls and pressure-injury programme has pulled the
 # orthopaedic and medical bands below it while theatre throughput has pushed the surgical bands above it.
-NETWORK_DRIFT = {"ORTH-MAJ": 0.700, "ORTH-MIN": 0.722, "MED-COMPLEX": 0.948, "MED-GEN": 0.972,
+NETWORK_DRIFT = {"ORTH-MAJ": 0.567, "ORTH-MIN": 0.584, "MED-COMPLEX": 0.948, "MED-GEN": 0.972,
                  "SURG-MAJ": 1.221, "SURG-MIN": 1.254, "SAME-DAY": 1.0}
 
 # the unit whose case mix moved between two closed quarters while its own practice did not: the theatre
@@ -161,13 +161,13 @@ UNITS = [
     # code, name, hospital, mix, service, psi, sep, plan, ylast, role, status
     ("41210", "General Medicine", "H1", "gen_med", "acute", 1.01400, 2300, 2077, 1.21000, "largest", "eligible"),
     ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.00600, 2600, 3560, 1.02000, "runner_up", "eligible"),
-    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.45000, 1900, 2305, 1.14000, "answer", "eligible"),
+    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.85000, 1900, 2305, 1.14000, "answer", "eligible"),
     ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.03100, 1050, 1257, 1.28000, "hot2", "eligible"),
     ("41310", "General Medicine", "H2", "gen_med", "acute", 1.06900, 1350, 1364, 1.09000, "mid", "eligible"),
-    ("41320", "General Surgery", "H2", "gen_surg", "acute", 0.99400, 1200, 1470, 1.12000, "hot3", "eligible"),
+    ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.03000, 1200, 1470, 1.12000, "hot3", "eligible"),
     ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.05200, 430, 506, 1.17000, "worst_level", "eligible"),
     ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.00000, 620, 735, None, "hot1", "eligible"),
-    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.22000, 980, 1162, 1.10000, "mid", "eligible"),
+    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.30000, 980, 1162, 1.10000, "mid", "eligible"),
     ("41430", "Renal Medicine", "H3", "renal", "acute", 1.02200, 560, 652, 1.13000, "mid", "eligible"),
     ("41510", "General Medicine", "H4", "gen_med", "acute", 1.05800, 390, 466, 1.05000, "merged", "eligible"),
     ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.01900, 500, 779, 1.09000, "rising", "eligible"),

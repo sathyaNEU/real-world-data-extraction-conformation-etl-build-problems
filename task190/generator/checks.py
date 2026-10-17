@@ -248,7 +248,7 @@ def run(g, target):
     ok("A1 one run is in the log twice", len([r for r in
        _rows(target, "payment_run_log_2026.csv") if r["run_status"] == "re-released"]) == 1)
     for nm in ("cutoff_1500_only", "cutoff_1400_only", "on_the_cutoff_counted"):
-        ok("A1 the cracker's reading %s misses" % nm, g["a1_stops"][nm] != a1)
+        ok("A1 the wrong reading %s misses" % nm, g["a1_stops"][nm] != a1)
     onc = [r for r in _rows(target, "payment_run_log_2026.csv")
            if r["released_ts"][11:16] in ("15:00", "14:00")]
     ok("A1 at least one run lands exactly on a cut-off", len(onc) >= 1, str(len(onc)))

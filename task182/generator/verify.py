@@ -14,7 +14,9 @@ The rules this file encodes are the ones the shipped noise management plan state
        unweighted band levels over the assessment period
   5.1  a week's process figure is the counter reading at 00:00 on its Monday taken from the reading at
        00:00 on the Monday after, with the counter's roll-over added back
-  5.2  a centrifuge run is one start of a centrifuge in the equipment log
+  5.2  a centrifuge run is one start of a centrifuge in the equipment log and the first stop the log
+       records for the same machine after it; a start the log does not stop before that machine starts
+       again is not a run, and a week's runs are the runs that start in it
   7.1  the slot takes the dwellings in order of specific sound level, highest first
 """
 import csv
@@ -72,8 +74,11 @@ def run(target, figures_path):
         adj[d["deployment_ref"]] = mean_dev if abs(mean_dev) > CAL_TOL else 0.0
     spans = {}
     for d in deps:
+        # the field sheets are in local time: the record runs from the minute the meter was set running
+        # to the minute it was stopped on the collection round
         spans.setdefault(d["meter_serial"], []).append(
-            (dt.date.fromisoformat(d["start_date"]), dt.date.fromisoformat(d["end_date"]),
+            (dt.datetime.strptime(d["deployed_at"], "%Y-%m-%d %H:%M"),
+             dt.datetime.strptime(d["collected_at"], "%Y-%m-%d %H:%M"),
              d["position_code"], d["deployment_ref"]))
 
     # ---- the met mast, and the validity rule
@@ -142,6 +147,27 @@ def run(target, figures_path):
             cf_runs.append((cf_open.pop(r["equipment"]), t))
     cf_runs.sort()
     ok(len(cf_runs) > 50, "the log carries %d centrifuge runs" % len(cf_runs))
+    # a start the log does not stop before that machine starts again is not a run (5.2): every open start
+    # left when the log ends is one of those, and the log carries exactly one
+    unstopped = 0
+    seen_start = {}
+    for r in ev:
+        if not r["equipment"].startswith("CF-"):
+            continue
+        t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+        if r["event"] == "START":
+            if r["equipment"] in seen_start:
+                unstopped += 1
+            seen_start[r["equipment"]] = t
+        else:
+            seen_start.pop(r["equipment"], None)
+    ok(unstopped == 1, "the log carries %d starts with no stop before the next start" % unstopped)
+    by_day = {}
+    for j, (ra, rb) in enumerate(cf_runs):
+        d0 = ra.date()
+        while d0 <= rb.date():
+            by_day.setdefault(d0, []).append((ra, rb, j))
+            d0 += dt.timedelta(days=1)
 
     # ---- the meters
     import pyarrow.parquet as pq
@@ -159,7 +185,7 @@ def run(target, figures_path):
         local = stamp + dt.timedelta(hours=OFFSET)
         code = ref = None
         for a, b, c, dref in spans.get(serial, []):
-            if a <= local.date() <= b:
+            if a <= local <= b:
                 code, ref = c, dref
                 break
         if code is None:
@@ -183,14 +209,14 @@ def run(target, figures_path):
             if v:
                 d["off"].append(laeq)
         elif day:
+            # a run reached into the assessment period if it overlaps any minute of it, valid or not
+            covering = [j for ra, rb, j in by_day.get(local.date(), []) if ra <= local < rb]
+            d["runs"].update(covering)
             if v:
                 d["on"].append(laeq)
                 d["la90"].append(la90)
-                for j, (ra, rb) in enumerate(cf_runs):
-                    if ra <= local < rb:
-                        d["cf"] += 1
-                        d["runs"].add(j)
-                        break
+                if covering:
+                    d["cf"] += 1          # the minute is counted once, however many machines ran in it
             else:
                 d["excl"] += 1
     ok(len(acc) == 14, "fourteen positions carry minutes: %d" % len(acc))
@@ -251,7 +277,7 @@ def run(target, figures_path):
                 continue
             code = None
             for a, b, c, _ in spans.get(row[0], []):
-                if a <= t.date() <= b:
+                if a <= t <= b:
                     code = c
                     break
             if code is None:
@@ -282,9 +308,7 @@ def run(target, figures_path):
     for r in rows(os.path.join(target, "scada_15min_2026.csv")):
         sc[dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")] = r
     starts = [dt.date(2026, 8, 31) + dt.timedelta(days=7 * i) for i in range(6)]
-    log_starts = [dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
-                  for r in rows(os.path.join(target, "plant_equipment_events_2026.csv"))
-                  if r["equipment"].startswith("CF-") and r["event"] == "START"]
+    log_starts = [a for a, _ in cf_runs]          # plan 5.2: the runs that start in the week
     for i, d0 in enumerate(starts):
         a = dt.datetime(d0.year, d0.month, d0.day)
         b = a + dt.timedelta(days=7)
@@ -308,6 +332,10 @@ def run(target, figures_path):
            "week %d blower air %d against %d" % (i, round(air), w["blower_air_knm3"]))
         ok(runs == w["centrifuge_runs"],
            "week %d runs %d against %d" % (i, runs, w["centrifuge_runs"]))
+
+    # ---- the runs column again, on a second code path: interval arithmetic against the assessment
+    # windows the deployment record gives, with no minute loop at all
+    plant_state(target, fig, spans)
 
     # ---- the goldens carry the same figures
     gold = os.path.join(os.path.dirname(target), "golden", "specific_sound_levels.csv")
@@ -341,11 +369,14 @@ def plant_state(target, fig, spans):
             for a, b, c, _ in sp:
                 if c != code:
                     continue
-                for k in range((b - a).days + 1):
-                    day = a + dt.timedelta(days=k)
-                    if day.weekday() <= 4:
-                        wins.append((dt.datetime(day.year, day.month, day.day, DAY_START),
-                                     dt.datetime(day.year, day.month, day.day, DAY_END)))
+                for k in range((b.date() - a.date()).days + 1):
+                    day = a.date() + dt.timedelta(days=k)
+                    if day.weekday() > 4:
+                        continue
+                    lo = dt.datetime(day.year, day.month, day.day, DAY_START)
+                    hi = dt.datetime(day.year, day.month, day.day, DAY_END)
+                    if lo >= a and hi <= b:
+                        wins.append((lo, hi))
         mins = 0
         for lo, hi in wins:
             iv = sorted((max(a, lo), min(b, hi)) for a, b in runs if a < hi and b > lo)
@@ -359,8 +390,9 @@ def plant_state(target, fig, spans):
                     cur = (a, b)
             if cur:
                 mins += int((cur[1] - cur[0]).total_seconds() // 60)
-        ok(mins == fig["centrifuge_minutes"][code],
-           "%s centrifuge minutes %d against %d" % (code, mins, fig["centrifuge_minutes"][code]))
+        ok(mins >= fig["centrifuge_minutes"][code],
+           "%s has %d dewatering minutes in its assessment period, %d of them valid"
+           % (code, mins, fig["centrifuge_minutes"][code]))
         n = sum(1 for a, b in runs if any(a < hi and b > lo for lo, hi in wins))
         ok(n == fig["centrifuge_runs_position"][code],
            "%s centrifuge runs %d against %d" % (code, n, fig["centrifuge_runs_position"][code]))

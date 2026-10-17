@@ -8,6 +8,7 @@ from reportlab.lib.units import mm
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 import world as W
+from mus import RF as RELIABILITY
 
 H1 = ParagraphStyle("h1", fontName="Helvetica-Bold", fontSize=13, leading=16, spaceAfter=5)
 H2 = ParagraphStyle("h2", fontName="Helvetica-Bold", fontSize=10, leading=13, spaceBefore=7,
@@ -48,9 +49,9 @@ def plan(target):
                    "and are not reproduced here.", BODY),
          Paragraph("4.2 Capital programme payments", H2),
          Paragraph("Tolerable misstatement for the capital programme payments population is set at "
-                   "1,160,000 euro for the year to 31 December 2026, being 2.0 per cent of "
-                   "budgeted capital expenditure, and the population is tested to a confidence of "
-                   "95 per cent.", BODY),
+                   "1,160,000 euro for the year to 31 December 2026, in the judgement of the head "
+                   "of internal audit, and the population is tested to a confidence of 95 per "
+                   "cent.", BODY),
          Paragraph("4.3 Conclusion on a tested population", H2),
          Paragraph("A population is accepted only where the testing shows, to the confidence at "
                    "4.2, that the population's misstatement does not exceed tolerable "
@@ -88,6 +89,39 @@ def manual(target):
                    "lines tested. The head of internal audit is satisfied each year that the figure "
                    "reported rests on the year's own payment records and the testing performed on "
                    "them.", BODY),
+         Paragraph("9.3 Terms used in reporting a tested population", H2),
+         Paragraph("<b>Selection interval.</b> Where a population is tested by selecting from its "
+                   "recorded value, the amount of recorded value stepped through the population "
+                   "between one selection and the next. <b>Certain of selection.</b> A line whose "
+                   "recorded amount is the selection interval or more, which spans a whole "
+                   "interval and is therefore in the sample whatever the start. <b>Tainting.</b> "
+                   "On a tested line, the amount by which its recorded value exceeds the amount "
+                   "properly payable, as a proportion of its recorded value. <b>Basic "
+                   "precision.</b> The selection interval multiplied by the reliability factor at "
+                   "nil overstatements, which is the allowance a population carries for the lines "
+                   "not tested when the testing has found nothing. <b>Incremental allowance.</b> "
+                   "The further allowance the taintings found carry, being each tainting in turn, "
+                   "largest first, multiplied by the increment in the reliability factor at that "
+                   "number of overstatements less one. <b>Upper misstatement limit.</b> The "
+                   "misstatement the testing indicates, plus basic precision, plus the incremental "
+                   "allowance.", BODY),
+         Paragraph("9.5 Reliability factors", H2),
+         Paragraph("The factors below are the ones internal audit uses, at a confidence of 95 per "
+                   "cent, one-sided. They are a property of the confidence and the number of "
+                   "overstatements found and do not depend on the population or on the testing.",
+                   BODY),
+         Table([["overstatements"] + [str(i) for i in range(0, 11)],
+                ["factor"] + ["%.2f" % v for v in RELIABILITY[:11]],
+                ["overstatements"] + [str(i) for i in range(11, 21)] + [""],
+                ["factor"] + ["%.2f" % v for v in RELIABILITY[11:21]] + [""]],
+               colWidths=[26 * mm] + [12 * mm] * 11,
+               style=TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 7.5),
+                                 ("FONT", (0, 0), (0, -1), "Helvetica-Bold", 7.5),
+                                 ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+                                 ("LINEBELOW", (0, 1), (-1, 1), 0.4, colors.grey),
+                                 ("TOPPADDING", (0, 0), (-1, -1), 1.3),
+                                 ("BOTTOMPADDING", (0, 0), (-1, -1), 1.3)])),
+         Spacer(1, 4),
          Paragraph("9.4 Work programmes", H2),
          Paragraph("A population is reported by the work programmes the capital programme register "
                    "carries. Programme codes were last reissued in April 2024 and the register "
@@ -100,7 +134,13 @@ def manual(target):
     return path
 
 
-def schedule(target, tested):
+def schedule(target, tested, nsel=None, ntested=None, ncert=None):
+    global NSEL, NTESTED, NCERT
+    NSEL, NTESTED, NCERT = nsel, ntested, ncert
+    return _schedule(target, tested)
+
+
+def _schedule(target, tested):
     """The testing schedule: a table inside a PDF, one row per tested line."""
     path = os.path.join(target, "internal_audit_testing_schedule_2026.pdf")
     d = _doc(path, "Internal audit testing schedule 2026")
@@ -111,6 +151,21 @@ def schedule(target, tested):
                    "amount_properly_payable is the amount the testing established was properly "
                    "payable and equals the recorded amount where the testing found nothing."
                    % (W.TESTING_DONE, W.SENIOR_AUDITOR, W.HEAD_OF_AUDIT), SMALL),
+         Paragraph("Basis of selection", H2),
+         Paragraph("The lines tested were selected from the capital programme payments population "
+                   "with probability proportional to recorded value, by stepping one selection "
+                   "interval of 180,000 euro through the population's cumulated recorded value "
+                   "from a random start. The single interval of 180,000 euro was used for the "
+                   "whole population and was common to every work programme: no work programme "
+                   "was selected from separately and none had an interval of its own. A line "
+                   "recorded at 180,000 euro or more spans a whole interval and was therefore "
+                   "certain of selection. A line recorded below the interval was selected with "
+                   "probability equal to its recorded amount divided by the interval. The "
+                   "selection placed %d selections on %d lines, of which %d were certain of "
+                   "selection. This paper records which lines were selected, how they were "
+                   "selected and what the testing found on each. How the authority reports the "
+                   "misstatement of a tested population is at part 9 of the audit manual."
+                   % (NSEL, NTESTED, NCERT), BODY),
          Spacer(1, 4)]
     head = ["schedule_ref", "programme_code", "paid_date", "amount_recorded",
             "amount_properly_payable", "finding"]

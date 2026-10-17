@@ -475,8 +475,12 @@ def run(target, g):
       "the engine's weekly hours are not all the same: %s"
       % sorted({v["engine_hours"] for v in g["weekly"].values()}))
     # the log and the channel are both shipped, and the log is the only minute-resolution record
-    A(has(plan, "lasts to the stop the log records for the same machine"),
-      "plan 5.2 files what a run's minutes are")
+    A(has(plan, "the first stop the log records for the same machine after it"),
+      "plan 5.2 files when a run ends")
+    A(has(plan, "A start the log does not stop before that machine starts again is not a run"),
+      "plan 5.2 files that an unstopped start is not a run")
+    A(has(plan, "A week's runs are the runs that start in that week"),
+      "plan 5.2 files which week a run belongs to")
     A(has(plan, "Invalid minutes are left out of every level"),
       "plan 4.2 scopes the validity exclusions to levels, so a minute count is of the period itself")
 

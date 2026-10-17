@@ -104,13 +104,14 @@ def write_deployments(target, deps):
         for a, mins, why in d["nodata"]:
             rem.append("%s, %s to %s" % (why, a.strftime("%d/%m %H:%M"),
                                          (a + dt.timedelta(minutes=mins)).strftime("%H:%M")))
-        rows.append([d["id"], m["serial"], d["code"], d["start"].isoformat(), d["end"].isoformat(),
+        rows.append([d["id"], m["serial"], d["code"], d["start_dt"].strftime("%Y-%m-%d %H:%M"),
+                     d["end_dt"].strftime("%Y-%m-%d %H:%M"),
                      "%.1f" % d["mount"], "%.1f" % d["cal_before"], "%.1f" % d["cal_after"],
                      W.PEOPLE[d["crew"]][1], "; ".join(rem)])
     return _write_csv(os.path.join(target, FILES["deployments"]),
-                      ["deployment_ref", "meter_serial", "position_code", "start_date", "end_date",
-                       "mic_height_m", "cal_check_before_db", "cal_check_after_db", "operator",
-                       "remarks"], rows)
+                      ["deployment_ref", "meter_serial", "position_code", "deployed_at",
+                       "collected_at", "mic_height_m", "cal_check_before_db", "cal_check_after_db",
+                       "operator", "remarks"], rows)
 
 
 def write_positions(target):
@@ -313,14 +314,29 @@ def write_bands(target, series):
         stamps = s["stamps"]
         pe = s["plant_e"] * gain
         re = s["resid_e"] * gain
+        ce = s["cal_e"] * gain
+        he = s["hand_e"] * gain
         nd = s["nd"]
-        for q in range(0, len(stamps) - 14, 15):
+        i1k = BANDS.index(1000)
+        # the module logs on the clock, so its first quarter hour is the first one that starts on a
+        # quarter of an hour after the meter was set running
+        q0 = (-stamps[0].minute) % 15
+        for q in range(q0, len(stamps) - 14, 15):
             sl = slice(q, q + 15)
             if nd[sl].any():
                 continue
             ep = float(np.mean(pe[sl])) / apl
             er = float(np.mean(re[sl])) / ars
-            vals = 10.0 * np.log10(ep * pl + er * rs) + rng.normal(0.0, 0.3, len(BANDS))
+            vals = ep * pl + er * rs
+            # the field check and the handling: a 1 kHz tone on the microphone, and the tripod itself
+            ec = float(np.mean(ce[sl]))
+            eh = float(np.mean(he[sl]))
+            if ec > 0.0:
+                vals = vals.copy()
+                vals[i1k] += ec
+            if eh > 0.0:
+                vals = vals + (eh / ars) * rs
+            vals = 10.0 * np.log10(vals) + rng.normal(0.0, 0.3, len(BANDS))
             rows.append([W_serial(dep["meter"]), utc(stamps[q]).strftime("%Y-%m-%d %H:%M")]
                         + ["%.1f" % v for v in vals])
     rows.sort(key=lambda r: (r[0], r[1]))

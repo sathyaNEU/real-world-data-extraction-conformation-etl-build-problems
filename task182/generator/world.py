@@ -29,6 +29,38 @@ DAY_START, DAY_END = 7, 19
 # Six survey weeks, Monday to Sunday.
 WEEKS = [dt.date(2026, 8, 31) + dt.timedelta(days=7 * i) for i in range(6)]
 
+# The Monday morning round. One technician works through the five meters: at each position the meter
+# standing there is checked against the calibrator, stopped and lifted, and the next one is set running
+# and checked. The round starts at a different time each week and the order rotates, so no two meters go
+# in or come out at the same instant and no record is exactly a week long. Every visit is before 07:00,
+# so the set-up and pick-up minutes fall outside the assessment period. The seventh round is the
+# collection Monday, 12 October, after the survey's last week.
+ROUND_MONDAYS = WEEKS + [dt.date(2026, 10, 12)]
+ROUND_START = [(4, 48), (5, 2), (4, 41), (4, 57), (4, 36), (5, 6), (4, 52)]
+ROUND_GAP = [[0, 26, 49, 74, 97], [0, 22, 47, 71, 94], [0, 28, 52, 79, 101],
+             [0, 23, 45, 70, 92], [0, 27, 50, 73, 99], [0, 21, 46, 72, 95],
+             [0, 25, 48, 76, 98]]
+ROUND_ORDER = [["M1", "M4", "M2", "M5", "M3"], ["M3", "M1", "M5", "M2", "M4"],
+               ["M2", "M5", "M1", "M3", "M4"], ["M4", "M2", "M3", "M1", "M5"],
+               ["M5", "M3", "M4", "M2", "M1"], ["M1", "M2", "M5", "M4", "M3"],
+               ["M3", "M4", "M1", "M5", "M2"]]
+# Minutes between stopping a meter at one position and starting it at the next: the drive and the walk in.
+TURNAROUND = 20
+# What the meter logs while the technician is at it: the minutes the tripod and windshield are handled,
+# and the minute the calibrator sits on the microphone for the field check.
+SETUP_HANDLING = 2        # minutes of handling as the meter is set up, before the field check
+SETUP_AFTER = 1           # minutes of handling between the field check and the technician leaving
+PICKUP_HANDLING = 2       # minutes of handling after the closing field check
+HANDLING_DB = (61.5, 77.0)
+
+
+def visit(meter, week):
+    """When the technician got to the meter on the Monday of that round, local time."""
+    d = ROUND_MONDAYS[week]
+    h, m = ROUND_START[week]
+    return (dt.datetime(d.year, d.month, d.day, h, m)
+            + dt.timedelta(minutes=ROUND_GAP[week][ROUND_ORDER[week].index(meter)]))
+
 # The plant's weekly planned process stop (local), and the unplanned stops, as the event log records them.
 # The weekly inspection takes as long as it takes; every one of them is over before the assessment period
 # opens at 07:00.

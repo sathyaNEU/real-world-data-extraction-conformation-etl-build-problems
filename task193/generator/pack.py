@@ -220,7 +220,18 @@ def apply_mess(lines, people):
             r["key"] = keys[pid]
     # (2) the rejected lines: repeat dispensings the register turned back at validation,
     #     so no patient's first receipt of anything is touched
-    repeats = [i for i, r in enumerate(lines) if not r["is_first"]]
+    # a line the register turns back must never be a patient's earliest observed receipt of a
+    # treatment, or the ask layer's device would move the screen's own first receipts. The
+    # generator's is_first flag is not enough on its own, because a prevalent user's earliest line
+    # in the extract carries no flag, so the earliest line per patient and medicine is taken here.
+    earliest = {}
+    for i, r in enumerate(lines):
+        k = (r["pid"], r["code"])
+        if k not in earliest or (r["day"], r["line"]) < (lines[earliest[k]]["day"],
+                                                         lines[earliest[k]]["line"]):
+            earliest[k] = i
+    protected = set(earliest.values())
+    repeats = [i for i, r in enumerate(lines) if not r["is_first"] and i not in protected]
     # each chain validates to its own standard and each quarter has its own run of trouble; one
     # chain's spring release left a month of price records missing
     chain_rate = [0.021, 0.034, 0.047, 0.029]
