@@ -1,0 +1,243 @@
+{
+  "task": "task153",
+  "title": "How many of a fuel jobber's discounted transport loads a distributor contracts for its six yard islands over eight weeks, when only what each island will hand out is wanted and its vehicles otherwise buy on three fleet card accounts",
+  "domain": "General Statistics & Data Science",
+  "client_domain": "General Statistics & Data Science",
+  "house_domain": "supply-chain-logistics",
+  "subdomain": "resampling-simulation-monte-carlo-methods (fleet fuel procurement: each yard island's eight-week draw replayed from the vehicles' recent duty, stretch by stretch between yard visits, each stretch capped at the tankful above the driver's reserve)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a committed load count with each yard's whole loads and the saving they book, a chart of each yard's island draw against its card gallons with the loads marked, and two tables (each card account's diesel gallons in May, June and July 2026; each month of the 2025 island programmes' net gallons delivered and dollars billed above the posted rack)",
+  "as_of": "2026-08-28",
+  "deliverables": [
+    "overton_loads_sep-nov_2026.xlsx",
+    "yard_island_draw.png"
+  ],
+  "distractor_files": [
+    "ifta_returns_2025Q3-2026Q2.xlsx",
+    "overton_tank_wagon_prices_2026-08-24.pdf"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 22,
+    "formats": [
+      "csv",
+      "md",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "vehicle_days_2024-09-01_2026-08-27.csv",
+    "largest_file_rows": 78789
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task153/generator/build.py (seeded, deterministic) around a fictional Tennessee wholesale distributor, its two acquired companies, a fuel jobber, three fleet card programmes and a rack price service, in the layouts of a telematics service's vehicle-day and geofence exports, a maintenance system's unit list, a fuel management system's island log, three card programmes' transaction files and a jobber's portal exports; no real organisation's records or person is depicted.",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-17",
+  "generator": "task153/generator/build.py",
+  "files": [
+    {
+      "path": "card_programmes_pricing_schedules.pdf",
+      "format": "pdf",
+      "bytes": 63079,
+      "rows": null,
+      "source": "Constructed: Riverbend, Crossroads and SMPM pricing schedules (copies held by Keeble Supply Co.)",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "crossroads_transactions_2024-09_2026-08.xlsx",
+      "format": "xlsx",
+      "bytes": 2967077,
+      "rows": 33025,
+      "source": "Constructed: Crossroads Fleet Card, portal transaction export for Keeble Supply Co.",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fleet_units_2026-08.xlsx",
+      "format": "xlsx",
+      "bytes": 15465,
+      "rows": 164,
+      "source": "Constructed: Keeble Supply Co., maintenance system unit list and model specifications",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fms_island_transactions_2025.csv",
+      "format": "csv",
+      "bytes": 158687,
+      "rows": 2520,
+      "source": "Constructed: Keeble Supply Co., fuel management system island transactions, 2025",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fuel_review_files_2026-08-28.md",
+      "format": "md",
+      "bytes": 2543,
+      "rows": null,
+      "source": "Constructed: Keeble Supply Co., fleet services list of the files pulled for the fuel review",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "geofence_events_2026-03-01_2026-08-27.csv",
+      "format": "csv",
+      "bytes": 2910385,
+      "rows": 42446,
+      "source": "Constructed: Keeble Supply Co., telematics service geofence event export",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ifta_returns_2025Q3-2026Q2.xlsx",
+      "format": "xlsx",
+      "bytes": 10062,
+      "rows": 52,
+      "source": "Constructed: Keeble Supply Co., IFTA quarterly returns for the three licences",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "overton_credit_memos_2025.csv",
+      "format": "csv",
+      "bytes": 1480,
+      "rows": 14,
+      "source": "Constructed: Overton Petroleum Co., customer portal credit memo lines, 2025",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "overton_deliveries_2025.csv",
+      "format": "csv",
+      "bytes": 2903,
+      "rows": 24,
+      "source": "Constructed: Overton Petroleum Co., customer portal delivery tickets, 2025",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "overton_invoices_2025.csv",
+      "format": "csv",
+      "bytes": 9119,
+      "rows": 100,
+      "source": "Constructed: Overton Petroleum Co., customer portal invoice lines, 2025",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "overton_jackson_tank_programme_2025-03-03.pdf",
+      "format": "pdf",
+      "bytes": 41581,
+      "rows": null,
+      "source": "Constructed: Overton Petroleum Co., Jackson yard tank programme letter, 2025",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "overton_knoxville_tank_programme_2025-06-02.pdf",
+      "format": "pdf",
+      "bytes": 41555,
+      "rows": null,
+      "source": "Constructed: Overton Petroleum Co., Knoxville yard tank programme letter, 2025",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "overton_offer_2026-08-26.pdf",
+      "format": "pdf",
+      "bytes": 42165,
+      "rows": null,
+      "source": "Constructed: Overton Petroleum Co., transport load offer of August 26, 2026",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "overton_rack_postings_2024-09_2026-08.csv",
+      "format": "csv",
+      "bytes": 92398,
+      "rows": 2181,
+      "source": "Constructed: Overton Petroleum Co., posted rack and TriState contract average history",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "overton_tank_wagon_prices_2026-08-24.pdf",
+      "format": "pdf",
+      "bytes": 41379,
+      "rows": null,
+      "source": "Constructed: Overton Petroleum Co., tank wagon prices, week of August 24, 2026",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "riverbend_direct_bill_2024-09_2026-08.csv",
+      "format": "csv",
+      "bytes": 3014695,
+      "rows": 21213,
+      "source": "Constructed: Riverbend Travel Plazas, direct-bill transaction download for Delta Paper & Chemical",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "smpm_card_activity_2024-09_2026-08.txt",
+      "format": "txt",
+      "bytes": 1435974,
+      "rows": 13181,
+      "source": "Constructed: Smoky Mountain Petroleum Marketers, member transaction files for Holston Sanitary Supply",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "smpm_member_transaction_file_layout_v3.pdf",
+      "format": "pdf",
+      "bytes": 42503,
+      "rows": null,
+      "source": "Constructed: Smoky Mountain Petroleum Marketers, member transaction file layout v3",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "telematics_device_assignments.csv",
+      "format": "csv",
+      "bytes": 5905,
+      "rows": 167,
+      "source": "Constructed: Keeble Supply Co., telematics device assignments",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "vehicle_days_2024-09-01_2026-08-27.csv",
+      "format": "csv",
+      "bytes": 9775904,
+      "rows": 78789,
+      "source": "Constructed: Keeble Supply Co., telematics service vehicle-day export",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "yard_notes_2026-08.md",
+      "format": "md",
+      "bytes": 1867,
+      "rows": null,
+      "source": "Constructed: Keeble Supply Co., fleet services yard notes, August 2026",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "yard_tank_register.xlsx",
+      "format": "xlsx",
+      "bytes": 6968,
+      "rows": 6,
+      "source": "Constructed: Keeble Supply Co., yard tank register",
+      "date": "2026-08-28",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

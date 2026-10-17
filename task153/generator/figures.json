@@ -1,0 +1,154 @@
+{
+  "call": {
+    "total_loads": 23,
+    "loads_by_yard": {
+      "Memphis": 2,
+      "Jackson": 5,
+      "Nashville": 8,
+      "Cookeville": 1,
+      "Knoxville": 4,
+      "Blountville": 3
+    },
+    "saving_usd": "17,408"
+  },
+  "components": {
+    "nashville_sleepers": 15,
+    "nashville_midday_weeks": 8,
+    "blountville_sleepers": 11,
+    "cookeville_vans": 32,
+    "saving_per_load_usd": {
+      "West": "800",
+      "Central": "640",
+      "East": "864"
+    },
+    "saving_per_gallon": {
+      "West": 0.1,
+      "Central": 0.08,
+      "East": 0.108
+    }
+  },
+  "steps": {
+    "active_units": 157,
+    "reserve_fills": 48,
+    "reserve_mean_fill_gal": "269.3",
+    "reserve_pct": "10.2",
+    "fill_threshold_gal": 225,
+    "tank_gal": 300,
+    "base_working_days": 39,
+    "window_working_days": 40,
+    "load_net_gal": 8000,
+    "adder": "0.019",
+    "draw_gal": {
+      "Memphis": "21,303",
+      "Jackson": "44,695",
+      "Nashville": "69,402",
+      "Cookeville": "12,898",
+      "Knoxville": "37,575",
+      "Blountville": "27,835"
+    },
+    "build": {
+      "Memphis": {
+        "units": 29,
+        "visits": 1131,
+        "fuel": 20771,
+        "fills": 20771,
+        "draw": 21303,
+        "loads": 2,
+        "card": 20800
+      },
+      "Jackson": {
+        "units": 21,
+        "visits": 901,
+        "fuel": 45118,
+        "fills": 43578,
+        "draw": 44695,
+        "loads": 5,
+        "card": 45086
+      },
+      "Nashville": {
+        "units": 28,
+        "visits": 747,
+        "fuel": 67715,
+        "fills": 67667,
+        "draw": 69402,
+        "loads": 8,
+        "card": 67745
+      },
+      "Cookeville": {
+        "units": 40,
+        "visits": 568,
+        "fuel": 27574,
+        "fills": 12575,
+        "draw": 12898,
+        "loads": 1,
+        "card": 27541
+      },
+      "Knoxville": {
+        "units": 24,
+        "visits": 746,
+        "fuel": 41050,
+        "fills": 36635,
+        "draw": 37575,
+        "loads": 4,
+        "card": 41057
+      },
+      "Blountville": {
+        "units": 15,
+        "visits": 244,
+        "fuel": 51325,
+        "fills": 27139,
+        "draw": 27835,
+        "loads": 3,
+        "card": 51272
+      }
+    }
+  },
+  "rivals": {
+    "card_gallons": 29,
+    "share_2025": 26,
+    "overnight_cut": 19
+  },
+  "answers": {
+    "ask_a": {
+      "West 2026-05": "33,472",
+      "West 2026-06": "36,732",
+      "West 2026-07": "37,170",
+      "Central 2026-05": "46,569",
+      "Central 2026-06": "54,781",
+      "Central 2026-07": "52,821",
+      "East 2026-05": "46,391",
+      "East 2026-06": "51,215",
+      "East 2026-07": "53,258"
+    },
+    "ask_b": {
+      "JXN 2025-03": {
+        "net_gal": "31,911",
+        "usd": "891"
+      },
+      "JXN 2025-04": {
+        "net_gal": "24,004",
+        "usd": "811"
+      },
+      "JXN 2025-05": {
+        "net_gal": "7,986",
+        "usd": "254"
+      },
+      "KNX 2025-06": {
+        "net_gal": "23,977",
+        "usd": "446"
+      },
+      "KNX 2025-07": {
+        "net_gal": "24,021",
+        "usd": "542"
+      },
+      "KNX 2025-08": {
+        "net_gal": "8,021",
+        "usd": "191"
+      }
+    }
+  },
+  "dates": {
+    "base": "29 June to 23 August",
+    "window": "14 September to 8 November"
+  }
+}
