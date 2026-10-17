@@ -28,7 +28,9 @@ class AskA:
     pass
 
 
-def read_ask_a(folder):
+def read_ask_a(folder, align="end"):
+    """align: how the hourly AC file's stamps meet the met station's local hour starts. 'end' (each row is the hour
+    ending at its UTC stamp), 'begin' (the stamp read as the hour's start), 'utc' (the UTC stamp read as local)."""
     A = AskA()
     A.prod = set()
     with open(os.path.join(folder, R.F_MET), encoding="utf-8") as fh:
@@ -38,7 +40,9 @@ def read_ask_a(folder):
     A.hours = {t: {} for t in TAGS_2025}      # local hour start -> (ac_kwh, register at the hour's end)
     with open(os.path.join(folder, R.F_HOURLY), encoding="utf-8") as fh:
         for row in csv.DictReader(fh):
-            start = _utc(row["interval_end_utc"]) - R.UTC_OFF - dt.timedelta(hours=1)
+            end = _utc(row["interval_end_utc"])
+            start = {"end": end - R.UTC_OFF - dt.timedelta(hours=1), "begin": end - R.UTC_OFF,
+                     "utc": end - dt.timedelta(hours=1)}[align]
             A.hours[row["device"]][start] = (float(row["ac_kwh"]), int(row["ac_register_kwh"]))
     A.events = []
     with open(os.path.join(folder, R.F_EVENTS), encoding="utf-8") as fh:
@@ -144,6 +148,8 @@ def ask_a(folder):
         "S5 the event log's stamps read as local time": availability(A, exclude="f217+owner", local_events=True),
         "S6 every S-020 stop excluded": availability(A, exclude="s020"),
         "S7 derate hours counted unavailable": availability(A, derate_unavailable=True),
+        "S8 the hourly file's hour-ending stamps read as hour-beginning": availability(read_ask_a(folder, "begin")),
+        "S9 the hourly file's UTC stamps read as Arizona time": availability(read_ask_a(folder, "utc")),
     }
     return A, gold, stops
 
@@ -192,7 +198,7 @@ def read_ask_b(folder):
 def net_by_year(B, sps=("0417",), stack=False, versions="latest", legacy_year="day"):
     """Each year's REC less DEL over the service points given, in MWh: the legacy file to February 29, 2020 and the
     meter data system after it (stack: both files summed where they overlap), the meter data system's latest version
-    of each day (versions 'all': every version summed), the legacy totals dated by their day (legacy_year 'stamp':
+    of each day (versions 'all': every version summed; 'first': each day's first), the legacy totals dated by their day (legacy_year 'stamp':
     by the date in the interval-end stamp)."""
     recs = []
     legacy_days = set()
@@ -206,7 +212,7 @@ def net_by_year(B, sps=("0417",), stack=False, versions="latest", legacy_year="d
         if key in legacy_days and not stack:
             continue
         vs = sorted(mdm[key])
-        for v, k in (vs if versions == "all" else vs[-1:]):
+        for v, k in (vs if versions == "all" else vs[:1] if versions == "first" else vs[-1:]):
             recs.append((key[0], key[1], key[2].year, k))
     tot = {}
     for sp, ch, y, k in recs:
@@ -239,6 +245,7 @@ def ask_b(folder):
         "S5 the buy-backs added": over_under(net_by_year(B), sold_by_year(B, sides=False)),
         "S6 the legacy totals dated by their stamps": over_under(net_by_year(B, legacy_year="stamp"), sold_by_year(B)),
         "S7 every meter data version summed": over_under(net_by_year(B, versions="all"), sold_by_year(B)),
+        "S8 the meter data system's first version of each day": over_under(net_by_year(B, versions="first"), sold_by_year(B)),
     }
     return B, gold, stops
 

@@ -78,7 +78,7 @@ def write_book(path, G):
          "per cent: base-period ratio restored by the wear alone, times the gain"),
         ("Repowered DC capacity (kWp)", 37324.8, "82,944 CV-450BHC modules of 450 W"),
         (None, None, None),
-        ("Losses the plant keeps in 2027: the inverters' conversion losses and outages, and the dust between November "
+        ("Losses the plant keeps in 2027: the inverters' conversion losses and outages, and the dust between December "
          "washes under the current O&M agreement, all as in the base period.", None, None),
     ]
     for i, (a, b, c) in enumerate(rows, start=1):
@@ -171,7 +171,7 @@ def write_book(path, G):
                               "irradiation times DC nameplate."),
         ("Wear", "Days 1 to 3 after each block's wash in the CLN work orders, inverters with full operating hours; DC "
                  "energy at the inverter input per kWp per kWh/m2, corrected to 25 degC at -0.42 per cent per degC on the "
-                 "irradiance-weighted module temperature (KS-315P datasheet). 2016 against the November 2025 wash."),
+                 "irradiance-weighted module temperature (KS-315P datasheet). 2016 against the December 2025 wash."),
         ("Weather years", "Full calendar years 2001 to 2025 of the long-term record, Arizona time (policy section 4.2)."),
         ("Rounding", "Volume rounded down to the nearest 1,000 MWh from the unrounded P90 (policy section 4.1); P50 to the "
                      "nearest 1,000 MWh, standard deviation to the nearest 100 MWh, weather-year outputs to the nearest "
@@ -274,7 +274,7 @@ def write_note(path, G):
                    "37,324.8 kWp." % (100.0 * G["PR_B"], wear, G["gain_pct"], prn), body),
          Paragraph("What the replacement does not touch stays in the number: the inverters, which have run on "
                    "refurbished power stages since 2018 and are out more often than they were, and the dust that builds "
-                   "between the single November wash the O&amp;M agreement provides through 2027. Carrying the plant's whole "
+                   "between the single December wash the O&amp;M agreement provides through 2027. Carrying the plant's whole "
                    "decline since 2016 back into 2027 would overstate the sale; carrying today's output without the "
                    "wear would understate it.", body),
          Spacer(1, 2),
@@ -352,7 +352,7 @@ def write_submission(path, G):
          "## 2. Critical Components", "",
          "1. The original modules' own wear since 2016: the DC energy per kWp per unit of plane-of-array irradiation at "
          "the inverters' DC input, temperature-corrected, on the days after each block's wash, is **%d%%** lower after "
-         "the November 2025 wash than in 2016." % int(K.round_half_up(G["wear_pct"], 0)),
+         "the December 2025 wash than in 2016." % int(K.round_half_up(G["wear_pct"], 0)),
          "2. The plant's performance ratio over the base period, October 2025 to September 2026: **%.1f%%**."
          % (100.0 * G["PR_B"]),
          "3. The repowered plant's performance ratio, the base period's restored by the wear alone and raised by the "
@@ -366,7 +366,7 @@ def write_submission(path, G):
          "H_POA times 40,320 kWp gives a performance ratio of %.1f%%." % (100.0 * G["PR_B"]),
          "3. Took each block's washes from the CLN work orders in tresco_work_orders_hadley_ranch_2015-2026.xlsx and, on "
          "the inverter-days 1 to 3 days after each wash with full operating hours, E_DC over H_POA times 2,520 kWp "
-         "corrected to 25 degC with the KS-315P's -0.42 %%/degC on T_MOD_IW: the level after the November 2025 wash is "
+         "corrected to 25 degC with the KS-315P's -0.42 %%/degC on T_MOD_IW: the level after the December 2025 wash is "
          "%d%% below 2016's, the original modules' own wear." % int(K.round_half_up(G["wear_pct"], 0)),
          "4. On the same record the inverters' AC-to-DC ratio has fallen and the DC energy on every available day has "
          "fallen further than on the days after the washes, now one a year under Schedule 2 of the O&M agreement: "

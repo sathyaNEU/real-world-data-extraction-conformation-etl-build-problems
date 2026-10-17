@@ -1,34 +1,35 @@
 {
   "task": "task152",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "energy-systems-utilities/asset-condition-maintenance",
   "objective": "forecasting",
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-17",
-  "stump": "Carrying the plant's last twelve months' performance ratio onto the new modules with the side-by-side gain files 62,000 MWh against the golden 70,000; restoring the plant's whole decline since 2016 (76,000), its whole DC-side decline (73,000) or its decline after washes read at the inverters' AC output (72,000) overshoots; the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on the days after each block's wash at the inverters' DC input, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
+  "stump": "Carrying the plant's last twelve months' performance ratio onto the new modules with the side-by-side gain files 60,000 MWh against the golden 70,000; restoring the plant's whole decline since 2016 (76,000), its whole DC-side decline (73,000) or its decline after washes read at the inverters' AC output (72,000) overshoots; the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on the days after each block's wash at the inverters' DC input and corrected for temperature, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-17; leak_check_report.md)",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (2026-10-17, after the round-2 hardening; leak_check_report.md)",
+    "reader": "clean (round 1, 2026-10-17); its four readings asserted in checks.py (SF21, Ask B S3 and S8, Ask A S8 and S9)"
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.objective); nearest 0.07, task132's ledger row",
+    "heart": "WARN (overuse.objective); nearest 0.06, task132's ledger row",
     "nearest": "driver 0.04 (task459, task230 v3, task132); guard check WARN overuse.objective (forum redrawn to executive_team at stage 3 after a ban.forum BLOCK against task233's first card; context artifact redrawn to operations_log after a ban.artifact BLOCK against task189, pulled at the PAUSED push); surface: one pair promoted on the card signature already differentiated (task232, surface 0.083, percentile 68), no surface clone"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (round 1, optional pins taken)",
+    "report": "determinism_check_report_round1.md",
+    "round2": "pending: one re-judge of the hardened build"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stage 4: the coordinator's single re-judge of the round-2 build, then stage 5 ship",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -37,12 +38,29 @@
   "portal_status_date": "",
   "wave": "wave 4 (new), seed FC23 (world, decision and quantity kept; pitfall re-found from the plant's monitoring records)",
   "gates_stage3": {
-    "checks": "148 of 148",
+    "checks": "198 of 198",
     "verify": "green",
     "rebuild": "two builds byte-identical (target, golden, metadata, figures.json, submission.md, target.zip)",
     "figures_check": "exit 0, 62 figures",
     "container": "clean on target and golden",
     "voice_check": "PASS",
+    "precut": "exit 0, 49 checks",
+    "guard": "check WARN overuse.objective (task151, task190 and task464 cards from origin read, no BLOCK); validate clean; heart WARN; surface one promoted pair on the differentiated card signature (task232), no surface clone",
     "input_gates": "23 files, 6 formats, largest 219,144 rows, 2 distractors"
+  },
+  "rule3_audit": "PASS (round 1); its accidental landers moved a bin or more away and asserted (LADDER, SF10b)",
+  "hardening_round2": "world laws reset once: six-wash era in the cool months, December wash a block a week from 2021, wear fast phase 3.85%/yr mid-2017 to mid-2020, seasonal wind, spring dust from February, clear-sky year spread 1.33%; corridor of 31 constructions (window, estimator, reference, temperature correction incl. NOCT, regressions and first-order forms) each 284 MWh or more inside the volume's and the P50's bins; every rival 300 MWh or more outside (nearest 443)",
+  "moved_figures": {
+    "volume": "70,000 (unchanged)",
+    "p90": "70,686 -> 70,619.5",
+    "p50": "72,863 -> 73,084.5 (73,000 unchanged)",
+    "sd": "1,698.8 -> 1,923.4 (rounded 1,700 -> 1,900)",
+    "wear": "12% -> 14%",
+    "gain": "13.6% -> 14.7%",
+    "base_pr": "65.5% -> 63.7%",
+    "default_path": "62,000 -> 60,000",
+    "rung1": "76,000 (76,520)",
+    "ask_a": "16 availabilities re-drawn, 96.70 to 99.82",
+    "ask_b": "10 over/unders re-drawn, -2,923 to +10,084"
   }
 }

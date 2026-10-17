@@ -159,16 +159,17 @@ SCOPE = [
         "modules: 2,332.8 kWp per inverter and 37,324.8 kWp for the plant.",
         "The string length is set by the inverters' 1,000 V DC input limit at the site's record low temperature. The "
         "string count keeps each inverter's AC output under its 2,500 kW rating with the rear-side gain the site's "
-        "ground gives."]),
+        "ground gives; only the odd cloud-edge hour on a bright spring day reaches it."]),
     ("What stays", [
         "The tables and foundations, the DC cabling and combiner boxes, the sixteen central inverters, the 34.5 kV "
         "collection system, the substation and the district's revenue meter stay as they are. Tresco Field Services "
-        "continues to operate and maintain the plant under the current O&M agreement, which runs to December 31, "
-        "2027."]),
+        "continues to operate, wash and maintain the plant under the current O&M agreement, which runs to December "
+        "31, 2027."]),
     ("Schedule", [
         "The works run from October 5 to December 18, 2026, one block at a time, about eighteen working days a block. "
         "Each block returns to service with its new modules as it is finished, and the whole plant runs on the new "
-        "modules from December 19, 2026.",
+        "modules from December 19, 2026. Tresco's December wash goes ahead as usual, one block a week, each block "
+        "after Corvane hands it back.",
         "Corvane's side-by-side comparison inside block 3 ran from October 1, 2025 to September 30, 2026; its report "
         "is due in the first week of October."]),
     ("Contract", [
@@ -212,12 +213,12 @@ def write_scope(path):
 F_OM = "tresco_om_agreement_2021_schedules_2_and_4.pdf"
 OM_S2 = [
     "2.1 The Contractor shall wash every module in the Facility once in each Contract Year. The wash is carried out "
-    "block by block in November, each block in one working day where the weather allows.",
+    "block by block in December, one block each week, each block in one working day where the weather allows.",
     "2.2 The Contractor shall carry out further washes of one or more blocks at the Owner's written request, at the "
     "rate per block in Schedule 6.",
-    "2.3 Washing uses deionized water drawn from the Facility's Well 2 under the Owner's groundwater permit. No "
-    "further washes are requested or carried out while a drought restriction on non-essential industrial water use "
-    "applies to that permit.",
+    "2.3 Washing uses deionized water drawn from the Facility's Well 2 under the Owner's groundwater permit, whose "
+    "weekly limit covers one block's wash. No further washes are requested or carried out while a drought restriction "
+    "on non-essential industrial water use applies to that permit.",
     "2.4 The Contractor shall clean the meteorological station's pyranometer domes and check their level at every "
     "site round, and in any case at least once a week."]
 OM_S4 = [
@@ -594,7 +595,9 @@ def readme_text(W):
           "December 31, 2025; one row per service point, channel, day and version." % R.F_MDM,
           "- `%s`: the service points on the account." % R.F_SP,
           "- Channels are named from the district's side: REC is the energy the district received from the service "
-          "point, DEL the energy it delivered to it.", "",
+          "point, DEL the energy it delivered to it.",
+          "- The district's files are the meter of record (interconnection agreement, Exhibit C). The SCADA's "
+          "`PLANT-RM` points are the control room's own read of the same meter and stop when the SCADA does.", "",
           "## Desk", "",
           "- `%s`: the desk's blotter of Hadley Ranch forward trades, quantities as traded." % R.F_BLOTTER,
           "- `%s`: Westmark's confirmations." % F_CONF,

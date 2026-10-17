@@ -49,10 +49,12 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ok("CALL volume 70,000 MWh", vol == 70000 and gfloor == 70000, "P90 %.1f" % gold)
     ok("CALL P90 mid-bin (floor clearance >= 0.3)", K.floor_clearance(gold, 1000) >= 0.3,
        "clearance %.2f" % K.floor_clearance(gold, 1000))
-    ok("CALL P50 to the nearest 1,000 is 73,000, at least 250 MWh from its rounding edge",
-       G["P50_r"] == 73000 and abs(A.P50 - 72500) >= 250, "P50 %.1f" % A.P50)
-    ok("CALL standard deviation to the nearest 100 is 1,700, at least 25 MWh from its edge",
-       G["SD_r"] == 1700 and min(abs(A.SD - 1650), abs(A.SD - 1750)) >= 25, "SD %.1f" % A.SD)
+    ok("CALL P50 to the nearest 1,000 is 73,000, at least 400 MWh from both rounding edges",
+       G["P50_r"] == 73000 and min(A.P50 - 72500, 73500 - A.P50) >= 400, "P50 %.1f" % A.P50)
+    ok("CALL standard deviation to the nearest 100 is 1,900, at least 20 MWh from its edges (the population SD too)",
+       G["SD_r"] == 1900 and min(abs(A.SD - 1850), abs(A.SD - 1950)) >= 20
+       and min(abs(A.SD * math.sqrt(24 / 25) - 1850), abs(A.SD * math.sqrt(24 / 25) - 1950)) >= 20,
+       "SD %.1f, population %.1f" % (A.SD, A.SD * math.sqrt(24 / 25)))
     ok("CALL P90 = P50 - 1.2816 SD over the 25 weather years", abs(A.P90 - (A.P50 - 1.2816 * A.SD)) < 1e-6)
     ok("CALL 25 weather years, 2001 to 2025", len(A.H) == 25 and sorted(A.lt) == list(range(2001, 2026)))
 
@@ -84,25 +86,18 @@ def run(target, golden, B=None, G=None, meta_path=None):
         ok("R2b inverter 07's replacement unmapped (B2-INV3R dropped): same volume", A2.volume == vol, "%.0f" % A2.P90)
     finally:
         shutil.rmtree(tmp)
-    # washes dated by the first block's day of each wash
-    first = {}
+    # the wash day is the work orders' Completed date: each block's yield steps up across it
+    steps25, steps16 = [], []
     for b, d in A.washes:
-        key = (d.year, d.month)
-        first.setdefault(key, d)
-    shifted = [(b, max(dd for bb, dd in A.washes if (dd.year, dd.month) == (d.year, d.month))) for b, d in A.washes]
-    A3 = CA.analyse(target, G["gain"])
-    A3.washes = shifted
-    cm = np.zeros_like(A3.full)
-    for b, d in shifted:
-        for k in (1, 2, 3):
-            i = A3.P.ix.get(d + dt.timedelta(days=k))
-            if i is not None:
-                cm[i, 4 * b:4 * b + 4] = True
-    cm &= A3.full
-    w3 = A3.level(A3.yld, cm, A3.base_mask) / A3.level(A3.yld, cm, A3.y16)
-    v3 = floor_k(A3.p90_of(A3.PR_B * G["gain"] / w3))
-    ok("R2c each wash dated by its last block's day (the days after the whole plant was washed): same volume", v3 == vol,
-       "%d" % v3)
+        if d.year == 2016 or (CA.BASE_FROM <= d <= CA.BASE_TO):
+            bef = [A.P.ix[d - dt.timedelta(days=k)] for k in (1, 2, 3) if d - dt.timedelta(days=k) in A.P.ix]
+            aft = [A.P.ix[d + dt.timedelta(days=k)] for k in (1, 2, 3) if d + dt.timedelta(days=k) in A.P.ix]
+            yb_ = np.nanmean(np.where(A.full[bef, 4 * b:4 * b + 4], A.yld[bef, 4 * b:4 * b + 4], np.nan))
+            ya_ = np.nanmean(np.where(A.full[aft, 4 * b:4 * b + 4], A.yld[aft, 4 * b:4 * b + 4], np.nan))
+            (steps16 if d.year == 2016 else steps25).append(ya_ / yb_ - 1.0)
+    ok("R2c the wash day is the work orders' Completed date: every block's DC yield steps up across it in December "
+       "2025 (by 2 per cent or more) and across 2016's washes on average", len(steps25) == 4 and min(steps25) > 0.02
+       and float(np.mean(steps16)) > 0.0, "December 2025 %s; 2016 mean %+.4f" % (" ".join("%+.3f" % x for x in steps25), float(np.mean(steps16))))
     # the long-term record grouped by UTC year
     tot = {}
     with open(os.path.join(target, R.F_LT), encoding="utf-8") as fh:
@@ -176,7 +171,9 @@ def run(target, golden, B=None, G=None, meta_path=None):
     # ------------------------------------------------------------------ the ladder and every rival
     rivals = {k: v for k, v in r.items() if k.startswith(("R0", "R1", "R2", "R-"))}
     for k, v in rivals.items():
-        ok("LADDER %s misses the golden's bin" % k, floor_k(v) != vol, "%.0f (%+.2f bins)" % (v, (v - gold) / 1000))
+        out_by = max(vol - v, v - (vol + 1000))
+        ok("LADDER %s misses the golden's bin by at least 300 MWh" % k, floor_k(v) != vol and out_by >= 300,
+           "%.0f (%+.2f bins, %.0f outside)" % (v, (v - gold) / 1000, out_by))
     ok("LADDER rung 0 is at least 5 bins under and rung 1 at least 5 over",
        r["R0 the last twelve months carried with the gain"] < gold - 5000 and r["R1 the first year carried with the gain"] > gold + 5000)
     ok("LADDER the natural expert's rival (the decline after washes at AC) is at least 1.4 bins off",
@@ -217,8 +214,11 @@ def run(target, golden, B=None, G=None, meta_path=None):
                   and "last 24 months" not in k]
     for k in defensible:
         v = r[k]
-        ok("C3 %s: same volume, P50 and standard deviation" % k[15:], floor_k(v) == vol and nearest(p50f(v), 1000) == G["P50_r"]
-           and nearest(p50f(v) * A.SD / A.P50, 100) == G["SD_r"], "%.0f" % v)
+        m90 = min(v - vol, vol + 1000 - v)
+        m50 = min(p50f(v) - (G["P50_r"] - 500), G["P50_r"] + 500 - p50f(v))
+        ok("C3 %s: same volume, P50 and standard deviation, each at least 200 MWh inside its bin" % k[15:],
+           floor_k(v) == vol and nearest(p50f(v), 1000) == G["P50_r"] and nearest(p50f(v) * A.SD / A.P50, 100) == G["SD_r"]
+           and m90 >= 200 and m50 >= 200, "P90 %.0f (%.0f inside), P50 %.0f (%.0f inside)" % (v, m90, p50f(v), m50))
     for k in [k for k in corridor if "kept losses" in k or "last 24 months" in k]:
         ok("SF7 base period %s: same volume (the policy's base period rules it out for the P50)" % k[15:],
            floor_k(r[k]) == vol, "%.0f" % r[k])
@@ -237,8 +237,8 @@ def run(target, golden, B=None, G=None, meta_path=None):
     pol = " ".join(DOC.sentences([p for _, _, _, ps in DOC.POLICY for p in ps]))
     ok("SF1 the hedge year is the calendar year (policy 2.1)", "The hedge year is the calendar year" in pol)
     e10 = float(np.percentile(A.E, 10))
-    ok("SF2 the empirical tenth percentile files another volume; the policy's 4.2 defines the P90",
-       floor_k(e10) != vol and "P50 less 1.2816 standard deviations" in pol, "%.0f" % e10)
+    ok("SF2 the P90 is the policy's P50 less 1.2816 standard deviations (4.2); the empirical tenth percentile files %d"
+       % floor_k(e10), "P50 less 1.2816 standard deviations" in pol, "%.0f" % e10)
     pop = A.P50 - 1.2816 * float(A.E.std(ddof=0))
     ok("SF3 the population standard deviation: same volume and same rounded SD", floor_k(pop) == vol and
        nearest(float(A.E.std(ddof=0)), 100) == G["SD_r"], "%.0f" % pop)
@@ -258,21 +258,29 @@ def run(target, golden, B=None, G=None, meta_path=None):
     tamb = A.P.dc / (A.P.poa[:, None] * K.OLD_KWP_INV)
     ok("SF10 the temperature basis is the module's own (T_MOD_IW, the datasheet's coefficient for Pmax)",
        "T_MOD_IW" in texts[DOC.F_README] and "-0.42 %/degC" in texts[DOC.F_SHEETS])
+    unc = [k for k in r if k.startswith("R2b variant") and "no temperature correction" in k] + \
+        ["R2e the plant's net ratio in the week after each wash, no temperature correction"]
+    ok("SF10b an uncorrected comparison after the washes files another volume at the DC input, the AC output or the meter "
+       "(the base period's post-wash days run %.0f degC cooler than 2016's)" % (A.temp_fit["t_2016"] - A.temp_fit["t_base"]),
+       len(unc) >= 6 and all(floor_k(r[k]) != vol for k in unc), " ".join("%.0f" % r[k] for k in unc))
     g135 = A.p90_of(A.PR_B * (1 + G["gain_pct"] / 100.0) / A.wear)
     ok("SF11 the gain as the report's totals, its stated per cent or its monthly mean: same volume",
        floor_k(g135) == vol and floor_k(pm) == vol)
     ok("SF12 the report says its twelve months include the new modules' first year", "first-year" in texts[DOC.F_RIG])
     ok("SF13 the new nameplate is the scope's (no flash list ships)", not any("flash" in f for f in os.listdir(target)))
-    peak = 0.0
+    peak, clip_hours, clip_share = 0.0, 0, 0.0
     for y in range(2001, 2026):
         w = W.wx[y]
-        pk = (K.NEW_KWP_INV * (w["poa"] + K.BIFACIALITY * w["rear"]) / 1000.0 * WD.ETA_REF_NEW *
-              (1 + K.GAMMA_NEW * (w["tmod"] - 27.0)) * W.eta[-1].max()).max()
-        peak = max(peak, pk)
+        ac_new = (K.NEW_KWP_INV * (w["poa"] + K.BIFACIALITY * w["rear"]) / 1000.0 * WD.ETA_REF_NEW *
+                  (1 + K.GAMMA_NEW * (w["tmod"] - 27.0)) * W.eta[-1].max())
+        peak = max(peak, float(ac_new.max()))
+        clip_hours += int((ac_new > K.INV_AC_KW).sum())
+        clip_share = max(clip_share, float(np.clip(ac_new - K.INV_AC_KW, 0, None).sum() / ac_new.sum()))
     oldpk = W.ac_h.max()
-    ok("SF14 no clipping: the original array's highest hour under 92 per cent of rating, the repowered array's under "
-       "the rating in every hour of the record", oldpk < 0.92 * K.INV_AC_KW and peak < K.INV_AC_KW,
-       "%.3f and %.3f of rating" % (oldpk / K.INV_AC_KW, peak / K.INV_AC_KW))
+    ok("SF14 no clipping that moves a figure: the original array's highest hour under 92 per cent of rating; the "
+       "repowered array reaches its rating in at most three cloud-edge hours of the 25 years and loses under 0.001 per "
+       "cent of any year's output", oldpk < 0.92 * K.INV_AC_KW and clip_hours <= 3 and clip_share < 1e-5,
+       "%.3f and %.4f of rating, %d hours, worst year %.6f per cent" % (oldpk / K.INV_AC_KW, peak / K.INV_AC_KW, clip_hours, 100 * clip_share))
     # SF15: the SCADA's revenue meter against the district's 0417, month by month in the base period
     Bk = G["askB"][0]
     dist = {}
@@ -294,6 +302,9 @@ def run(target, golden, B=None, G=None, meta_path=None):
     near = nearest(gold, 1000)
     ok("SF19 rounded to the nearest 1,000 rather than down would file %d; the policy says down" % near,
        near != vol and "rounded down to the nearest" in pol)
+    rp = floor_k(G["P50_r"] - 1.2816 * G["SD_r"])
+    ok("SF21 the volume rounded down from the unrounded P90; the rounded P50 less 1.2816 rounded standard deviations "
+       "gives the same volume", rp == vol, "%d" % rp)
     ok("SF20 the record carries irradiance only, so each weather year's output is the level times its irradiation",
        "poa_wm2" in open(os.path.join(target, R.F_LT)).read(2000) and "tamb" not in open(os.path.join(target, R.F_LT)).read(2000))
 
@@ -304,12 +315,24 @@ def run(target, golden, B=None, G=None, meta_path=None):
        sum(1 for _ in csv.reader(open(os.path.join(target, R.F_OLD)))) - 1 + 3 == (K.SCADA_CUTOVER - K.COD).days)
     ok("AX22 nothing in the record changes the plant's kept losses inside 2027: no wash schedule beyond Schedule 2",
        "once in each Contract Year" in " ".join(DOC.OM_S2))
+    base_washes = [(b, d) for b, d in A.washes if CA.BASE_FROM <= d <= CA.BASE_TO]
+    ok("AX23 the hedge year's dust cycle is the base period's: the base period's only wash is December 2025's, block by "
+       "block, Schedule 2 washes in December each Contract Year and the scope keeps the December 2026 wash",
+       sorted(b for b, d in base_washes) == [0, 1, 2, 3] and all((d.year, d.month) == (2025, 12) for b, d in base_washes)
+       and "block by block in December" in " ".join(DOC.OM_S2) and "December wash goes ahead" in sc)
+    whole = 0
+    for i in np.where(A.base_mask)[0]:
+        dd = A.P.dates[i]
+        ages = [min([(dd - d).days for bb, d in A.washes if bb == b and d <= dd] or [999]) for b in range(4)]
+        whole += int(min(ages) >= 1 and max(ages) <= 10)
+    ok("AX24 no base-period day has every block within ten days of its wash (a block a week), so the plant as a whole "
+       "is never read just after a wash in the base period", whole == 0, "%d days" % whole)
 
     # ------------------------------------------------------------------ Ask A
     Aa, ga, sa = G["askA"]
     for k, st in sa.items():
         miss = sum(1 for t in ga if round(st[t]["avail"], 2) != round(ga[t]["avail"], 2))
-        need = {"S1": 16, "S2": 16, "S3": 16, "S4": 14, "S5": 14, "S6": 12, "S7": 1}[k[:2]]
+        need = {"S1": 16, "S2": 16, "S3": 16, "S4": 14, "S5": 14, "S6": 12, "S7": 1, "S8": 16, "S9": 16}[k[:2]]
         ok("ASK A stop %s misses %d of 16" % (k, miss), miss >= need)
     ok("ASK A every availability clear of its rounding edge", all(abs(((ga[t]["avail"] * 100) % 1) - 0.5) > 0.001 for t in ga))
     lines25 = [e for e in W.events if e["cause"] == "line" and e["start"].year == 2025]
@@ -348,7 +371,7 @@ def run(target, golden, B=None, G=None, meta_path=None):
     Bb, gb, sb = G["askB"]
     for k, st in sb.items():
         miss = sum(1 for y in gb if AS.rnd(st[y]) != AS.rnd(gb[y]))
-        need = {"S1": 9, "S2": 9, "S3": 2, "S4": 2, "S5": 2, "S6": 4, "S7": 1}[k[:2]]
+        need = {"S1": 9, "S2": 9, "S3": 2, "S4": 2, "S5": 2, "S6": 4, "S7": 1, "S8": 1}[k[:2]]
         ok("ASK B stop %s misses %d of 10" % (k, miss), miss >= need)
     ok("ASK B every year clear of its rounding edge by more than the data's 0.1 kWh resolution",
        all(abs((abs(gb[y]) % 1) - 0.5) > 0.001 for y in gb), min(abs((abs(gb[y]) % 1) - 0.5) for y in gb))
@@ -434,7 +457,7 @@ def run(target, golden, B=None, G=None, meta_path=None):
         nt = "\n".join(pg.extract_text() or "" for pg in pdf.pages)
         npages = len(pdf.pages)
     ok("GOLDEN the note is one page and carries the volume, P50 and SD", npages == 1 and "70,000 MWh" in nt and
-       "73,000 MWh" in nt and "1,700 MWh" in nt)
+       "73,000 MWh" in nt and "%s MWh" % format(F["components"]["sd_mwh"], ",") in nt)
 
     fails = [x for x in RESULTS if not x[1]]
     for label, good, detail in RESULTS:

@@ -44,6 +44,12 @@ REGIME = {1: (0.70, 0.17, 0.13), 2: (0.70, 0.18, 0.12), 3: (0.74, 0.17, 0.09), 4
           5: (0.89, 0.09, 0.02), 6: (0.91, 0.08, 0.01), 7: (0.54, 0.38, 0.08), 8: (0.56, 0.36, 0.08),
           9: (0.70, 0.24, 0.06), 10: (0.82, 0.13, 0.05), 11: (0.79, 0.13, 0.08), 12: (0.70, 0.16, 0.14)}
 T_MONTH = {1: 12.6, 2: 14.9, 3: 18.4, 4: 22.6, 5: 27.6, 6: 32.6, 7: 34.3, 8: 33.6, 9: 30.6, 10: 24.4, 11: 17.3, 12: 12.3}
+# the month's mean wind against the year's: calm winters, the spring winds from March to June
+WIND_MONTH = {1: 0.85, 2: 0.95, 3: 1.10, 4: 1.20, 5: 1.25, 6: 1.20, 7: 1.10, 8: 1.00, 9: 0.95, 10: 0.90, 11: 0.85,
+              12: 0.80}
+CLOUD_YEAR_SD = 0.16        # a year's cloudiness against the usual, relative
+HAZE_YEAR_SD = 0.0133       # a year's clear-sky transmittance against the usual (dust, smoke), relative
+HAZE_DAY_MAX = 1.06         # the clearest air the site sees, against the usual
 RAIN_P = {1: 0.55, 2: 0.55, 3: 0.50, 4: 0.30, 5: 0.15, 6: 0.15, 7: 0.40, 8: 0.45, 9: 0.40, 10: 0.35, 11: 0.40, 12: 0.55}
 
 
@@ -55,8 +61,8 @@ def year_weather(y):
     month_d = np.array([d.month for d in dates])
     cosz, cost, i0 = geometry(doy, hour, y)
     # the year's own character: cloudier or clearer than usual, hazier or cleaner air
-    cloud_year = float(np.clip(1.0 + r.normal(0.0, 0.16), 0.6, 1.4))
-    haze_year = float(r.normal(1.0, 0.0065))
+    cloud_year = float(np.clip(1.0 + r.normal(0.0, CLOUD_YEAR_SD), 0.6, 1.4))
+    haze_year = float(r.normal(1.0, HAZE_YEAR_SD))
     # day regimes, with persistence
     regime = np.zeros(n, dtype=int)
     prev = 0
@@ -73,7 +79,7 @@ def year_weather(y):
     cz = np.clip(cosz, 0.0, None)
     with np.errstate(divide="ignore", over="ignore"):
         cs = np.where(cz > 0.01, 1098.0 * cz * np.exp(-0.057 / np.maximum(cz, 1e-3)), 0.0)
-    day_haze = np.repeat(np.clip(r.normal(haze_year, 0.012, n), 0.93, 1.06), 24)
+    day_haze = np.repeat(np.clip(r.normal(haze_year, 0.012, n), 0.93, HAZE_DAY_MAX), 24)
     cs = cs * 1.022 * day_haze
     # hourly cloud transmission by regime
     reg_h = np.repeat(regime, 24)
@@ -122,7 +128,8 @@ def year_weather(y):
     swing = np.where(regime == 2, 4.0, 8.2)
     tmean_h, swing_h = np.repeat(tmean, 24), np.repeat(swing, 24)
     tamb = tmean_h + swing_h * np.sin(2 * np.pi * (hour - 9.0) / 24.0)
-    wind = np.clip(r.weibull(2.0, 24 * n) * 3.1 * (1.0 + 0.35 * np.sin(2 * np.pi * (hour - 10) / 24.0)), 0.2, 15.0)
+    wm = np.repeat(np.array([WIND_MONTH[int(m)] for m in month_d]), 24)
+    wind = np.clip(r.weibull(2.0, 24 * n) * 3.1 * wm * (1.0 + 0.35 * np.sin(2 * np.pi * (hour - 10) / 24.0)), 0.2, 15.0)
     tmod = tamb + poa * np.exp(-3.47 - 0.0594 * wind)
     # rain on cloudy days: winter storm totals, monsoon cells
     rain_d = np.zeros(n)

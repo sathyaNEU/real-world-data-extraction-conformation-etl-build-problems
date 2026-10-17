@@ -16,6 +16,7 @@ import common as K
 import world as Wm
 
 UTC_OFF = dt.timedelta(hours=7)          # Arizona keeps mountain standard time: UTC = local + 7 hours
+TMOD_NOISE, TAMB_NOISE = 0.15, 0.10      # the met station's daily temperature readings' scatter, degrees C
 
 F_OLD = "hrs_scada_daily_report_2015-11-20_to_2020-03-02.csv"
 F_NEW = "hadley_scada_daily_2020-03-03_to_2026-09-30.csv"
@@ -58,8 +59,8 @@ def sensors(W):
     scatter), the back-of-module sensor's irradiance-weighted daily temperature and the air temperature."""
     r = K.rng("sensors")
     nd = len(W.plant_days)
-    W.tmod_w_meas = W.tmod_w + r.normal(0.0, 0.15, nd)
-    W.tamb_meas = W.tamb_d + r.normal(0.0, 0.10, nd)
+    W.tmod_w_meas = W.tmod_w + r.normal(0.0, TMOD_NOISE, nd)
+    W.tamb_meas = W.tamb_d + r.normal(0.0, TAMB_NOISE, nd)
     r2 = K.rng("scada-meter")
     W.scada_exp = W.del_d * (1.0 + r2.normal(0.0, 0.0002, nd))
     W.scada_imp = W.rec_d * (1.0 + r2.normal(0.0, 0.0005, nd))

@@ -12,23 +12,30 @@ import common as K
 import solar as S
 
 # ---------------------------------------------------------------------------------------------------- the world's laws
-# the original modules' own wear: slow in the first year, fast from 2017 as the cells degraded under the summer heat,
-# slow again from 2020 once that degradation had run its course (per year, by period)
-WEAR_KNOTS = [(dt.date(2015, 11, 20), 0.0025), (dt.date(2017, 1, 1), 0.0330), (dt.date(2020, 1, 1), 0.0035)]
+# the original modules' own wear: slow for the first eighteen months, fast from the summer of 2017 as the cells
+# degraded under the heat, slow again from mid-2020 once that degradation had run its course (per year, by period)
+WEAR_KNOTS = [(dt.date(2015, 11, 20), 0.0025), (dt.date(2017, 7, 1), 0.0385), (dt.date(2020, 7, 1), 0.0035)]
 WEAR_SPREAD = 0.04          # inverter-to-inverter spread of the wear (module batches), relative
+INV_NOISE = 0.0035          # day-to-day scatter of an inverter's DC energy about the array's physics, relative
+PYR_NOISE = 0.002           # the plant pyranometer's daily reading scatter, relative
 ETA_REF_OLD = 0.955         # DC side at 25 degrees: wiring, mismatch, reflection, spectrum
-ETA_REF_NEW = 0.9652        # the new half-cut modules: lower mismatch and reflection, coated glass
+ETA_REF_NEW = 0.9747        # the new half-cut modules: lower mismatch and reflection, coated glass
 # soiling: the share of light the dust takes, built up day by day (per day, by month) and cleared by washes and rain
-SOIL_RATE = {1: 0.00016, 2: 0.00016, 3: 0.00018, 4: 0.00048, 5: 0.00052, 6: 0.00050, 7: 0.00032, 8: 0.00032,
+SOIL_RATE = {1: 0.00016, 2: 0.00024, 3: 0.00038, 4: 0.00048, 5: 0.00052, 6: 0.00050, 7: 0.00032, 8: 0.00032,
              9: 0.00030, 10: 0.00024, 11: 0.00022, 12: 0.00016}
 BLOCK_DUST = [1.12, 0.97, 0.95, 1.00]   # block 1 sits beside the county road
 HEAVY_RAIN, HEAVY_KEEP, MOD_RAIN, MOD_KEEP, CEMENT = 25.0, 0.80, 6.0, 0.985, 0.0005
 HABOOB_P, HABOOB_LO, HABOOB_HI = 0.020, 0.003, 0.008
 SOIL_CAP = 0.30
 CONSTRUCTION_DUST = 0.020   # the blocks not yet washed at handover
-# the washes Tresco ran: six a year to 2018, four in 2019, two in 2020, one each November from 2021
-WASH_MONTHS = {2015: [11], 2016: [1, 3, 5, 7, 9, 11], 2017: [1, 3, 5, 7, 9, 11], 2018: [1, 3, 5, 7, 9, 11], 2019: [2, 5, 8, 11],
-               2020: [3, 11], 2021: [11], 2022: [11], 2023: [11], 2024: [11], 2025: [11]}
+WASH_GAP = {y: 7 for y in range(2021, 2026)}   # days from one block's wash to the next's (else consecutive working days)
+GUARD_DAYS = 3              # no outage touches a block's inverters in this many days after its wash
+# the washes Tresco ran: six a year to 2018 in the cool months (January to April, October and November; never in the
+# summer heat, when cold water on hot glass risks breakage and the monsoon dust undoes a wash within days), four in
+# 2019, two in 2020, one each December from 2021 under the 2021 O&M agreement, one block a week as Well 2's permitted
+# draw allows
+WASH_MONTHS = {2015: [11], 2016: [1, 2, 3, 4, 10, 11], 2017: [1, 2, 3, 4, 10, 11], 2018: [1, 2, 3, 4, 10, 11],
+               2019: [2, 4, 10, 12], 2020: [3, 11], 2021: [12], 2022: [12], 2023: [12], 2024: [12], 2025: [12]}
 # inverters: AC-to-DC efficiency, failure rate and repair time. The maker left the US market in 2018; from then each
 # power stage that failed was replaced with a refurbished third-party stage, which runs with higher losses
 ETA_NEW_INV = 0.9800
@@ -129,7 +136,9 @@ def _washes(W):
     for y, months in sorted(WASH_MONTHS.items()):
         for m in months:
             # the first is Tresco's wash of the construction dust in the week the plant was handed over
-            start = dt.date(2015, 11, 18) if y == 2015 else dt.date(y, m, int(r.integers(4, 16)))
+            gap = WASH_GAP.get(y, 1)
+            lo, hi = (1, 4) if gap > 1 else (4, 16)
+            start = dt.date(2015, 11, 18) if y == 2015 else dt.date(y, m, int(r.integers(lo, hi)))
             while start.weekday() >= 5:
                 start += dt.timedelta(days=1)
             no += 1
@@ -138,8 +147,11 @@ def _washes(W):
             for b in blocks:
                 while d.weekday() >= 5:
                     d += dt.timedelta(days=1)
-                W.wash_events.append((no, b, d))
-                d += dt.timedelta(days=1)
+                day = d
+                while (day.month, day.day) in ((12, 24), (12, 25), (12, 26)) or day.weekday() >= 5:
+                    day -= dt.timedelta(days=1)          # the crew is off over Christmas: the working day before
+                W.wash_events.append((no, b, day))
+                d += dt.timedelta(days=gap)
     W.wash_day = {(b, d) for _, b, d in W.wash_events}
 
 
@@ -207,7 +219,7 @@ def _outages(W):
     nd = len(W.plant_days)
     guard = {j: set() for j in range(K.N_INV)}
     for (b, d) in W.wash_day:
-        for k in range(1, 4):
+        for k in range(1, GUARD_DAYS + 1):
             for j in range(4 * b, 4 * b + 4):
                 guard[j].add(d + dt.timedelta(days=k))
     derate_guard = {j: set() for j in range(K.N_INV)}
@@ -377,7 +389,7 @@ def _energy(W):
     tc = 1.0 + K.GAMMA_OLD * (W.tmod - 25.0)                 # (days, 24)
     W.tc = tc
     soil_inv = W.soil[:, K.BLOCK_OF]                          # (days, inverters)
-    noise = 1.0 + r.normal(0.0, 0.0035, (nd, K.N_INV))
+    noise = 1.0 + r.normal(0.0, INV_NOISE, (nd, K.N_INV))
     dc = (W.poa[:, :, None] / 1000.0 * K.OLD_KWP_INV * ETA_REF_OLD * tc[:, :, None]
           * W.D[:, None, :] * (1.0 - soil_inv[:, None, :]) * noise[:, None, :] * W.online)
     ac = dc * W.eta[:, None, :]
@@ -416,7 +428,7 @@ def _energy(W):
     W.station_d = np.array([STATION_KW[d.month] * 24.0 if d < K.STATION_SERVICE_END else 0.0 for d in W.plant_days])
     # the plant pyranometer: cleaned weekly, a small reading scatter
     r2 = K.rng("pyranometer")
-    W.pyr_d = W.poa_d * (1.0 + r2.normal(0.0, 0.002, nd))
+    W.pyr_d = W.poa_d * (1.0 + r2.normal(0.0, PYR_NOISE, nd))
 
 
 def _rig(W):

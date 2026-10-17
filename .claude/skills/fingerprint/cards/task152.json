@@ -6,12 +6,12 @@
   "domain": "energy-systems-utilities",
   "subdomain": "asset-condition-maintenance",
   "client_domain": "energy-systems-utilities",
-  "niche": "a Phoenix building-products manufacturer's energy desk sizing the 2027 forward sale of its 40 MWac fixed-tilt solar plant in Pinal County at the plant's one-year P90 after a December 2026 module replacement on the same tables and inverters, when the plant's ten-year decline mixes the original modules' own wear, which the replacement removes, with the dust the array carries between washes, which grew as drought restrictions on the plant's well cut the washes from six a year to one, and with ageing inverters' conversion losses and outages, which the replacement keeps",
+  "niche": "a Phoenix building-products manufacturer's energy desk sizing the 2027 forward sale of its 40 MWac fixed-tilt solar plant in Pinal County at the plant's one-year P90 after a December 2026 module replacement on the same tables and inverters, when the plant's ten-year decline mixes the original modules' own wear, which the replacement removes, with the dust the array carries between washes, which grew as drought restrictions on the plant's well cut the washes from six a year in the cool months to one each December, a block a week, and with ageing inverters' conversion losses and outages, which the replacement keeps",
   "objective": "forecasting",
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Sell 70,000 MWh of Hadley Ranch Solar's 2027 output forward (P50 73,000 MWh, standard deviation 1,700 MWh).",
+  "answer": "Sell 70,000 MWh of Hadley Ranch Solar's 2027 output forward (P50 73,000 MWh, standard deviation 1,900 MWh).",
   "answer_source": "task152/submission.md, Final Recommendation; generator/figures.json",
   "gap": [
     "time",
@@ -32,7 +32,7 @@
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "operations_log",
-  "stakeholder_role": "the energy and commodities manager on the treasury team, who sets the hedge volume the risk committee approves",
+  "stakeholder_role": "the energy and commodities manager on the treasury team, who sets the hedge volume the treasurer approves",
   "role_family": "procurement_lead",
   "scoring_unit": "other",
   "spine": {
@@ -53,10 +53,11 @@
       "Marden-Vail Building Products",
       "Hadley Ranch Solar",
       "Tresco Field Services",
-      "Tianrun New Energy",
+      "Corvane Solar",
       "Kellerman Solar",
       "Clearfield Solar Resource",
-      "Santa Rosa Irrigation and Power District"
+      "Vado Seco Irrigation and Power District",
+      "Westmark Power Trading LLC"
     ],
     "people": [
       "Kristopher Lara",
@@ -78,10 +79,10 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "The forward level after a worn part is replaced is the present output restored by the part's own wear only, and that wear is the decline of the unit's just-reset states read at the boundary inside the unit that leaves out the losses the replacement keeps: the unit's average output also carries a loss that accumulates between recurring resets and whose mean grew as the resets grew rarer, so a decline taken over every day, or over the whole unit, books that kept loss as wear and overstates what the replacement restores, while carrying the present output unrestored understates it.",
-  "driver_concrete": "Hadley Ranch's 2027 P50 is its October 2025 to September 2026 performance ratio (65.5 per cent), restored by the original modules' own wear alone (12 per cent, the fall since 2016 of the inverters' DC input per kWp per unit of plane-of-array irradiation, temperature-corrected, on fully available inverter-days 1 to 3 days after each block's wash) and raised by the side-by-side gain of the new bifacial modules over unexposed original spares (13.6 per cent), on the new 37,324.8 kWp and the 25 weather years; the plant's AC performance fell further because the inverters lost conversion efficiency on refurbished power stages and availability, and the washes fell from six a year to one, losses the new modules keep, so neither the plant's whole decline, its whole DC-side decline nor its decline after washes read at the AC side is what the replacement restores.",
-  "stump": "A competent solver carries the plant's last twelve months' performance ratio onto the new modules with the side-by-side gain and runs the 25 weather years, filing 62,000 MWh against the golden 70,000; the stronger one restores the plant's whole decline since 2016 (76,000), its whole DC-side decline (73,000) or its decline after washes read at the inverters' AC output (72,000); the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on the days after each wash at the inverters' DC input, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
+  "driver_concrete": "Hadley Ranch's 2027 P50 is its October 2025 to September 2026 performance ratio (63.7 per cent), restored by the original modules' own wear alone (14 per cent, the fall since 2016 of the inverters' DC input per kWp per unit of plane-of-array irradiation, temperature-corrected, on fully available inverter-days 1 to 3 days after each block's wash) and raised by the side-by-side gain of the new bifacial modules over unexposed original spares (14.7 per cent), on the new 37,324.8 kWp and the 25 weather years; the plant's AC performance fell further because the inverters lost conversion efficiency on refurbished power stages and availability, and the washes fell from six a year to one each December, losses the new modules keep, so neither the plant's whole decline, its whole DC-side decline nor its decline after washes read at the AC side is what the replacement restores, and the base period's post-wash days, 9 degC cooler than 2016's, leave no temperature-blind read near it.",
+  "stump": "A competent solver carries the plant's last twelve months' performance ratio onto the new modules with the side-by-side gain and runs the 25 weather years, filing 60,000 MWh against the golden 70,000; the stronger one restores the plant's whole decline since 2016 (76,000), its whole DC-side decline (73,000) or its decline after washes read at the inverters' AC output (72,000); the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on the days after each wash at the inverters' DC input, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the two SCADA layouts, reads the hedge policy, the replacement scope and the side-by-side report correctly and computes the P90 over the 25 weather years carries the plant's last twelve months' performance ratio onto the new modules with the report's gain and files 62,000 MWh, 12 per cent under the golden 70,000; restoring the plant's whole decline since 2016 files 76,000, its whole DC-side decline on available days 73,000, and the decline after washes read at the inverters' AC output 72,000.",
+  "analyst_test": "A strong analyst who joins the two SCADA layouts, reads the hedge policy, the replacement scope and the side-by-side report correctly and computes the P90 over the 25 weather years carries the plant's last twelve months' performance ratio onto the new modules with the report's gain and files 60,000 MWh, 14 per cent under the golden 70,000; restoring the plant's whole decline since 2016 files 76,000, its whole DC-side decline on available days 73,000, and the decline after washes read at the inverters' AC output 72,000; skipping the temperature correction after the washes files 67,000 to 69,000.",
   "domain_test": "The deciding quantity is the repowered plant's 2027 performance level, which a solar asset analyst builds from the plant's own monitoring by separating the losses the module swap removes (the original modules' wear) from those it keeps (inverter efficiency and availability, and soiling under the cleaning regime), with the wear measured the way PV degradation studies measure it, on the DC side, temperature-corrected and on clean-module days, then run over the long-term irradiance record for the one-year P90; with another field's nouns there is no irradiance to normalise by, no inverter boundary between DC and AC, and no dust reset by washes and rain, so the task stops reading the same.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:module-wear-net-of-soiling-at-the-inverter-dc-boundary",
@@ -90,7 +91,7 @@
     "an inverter replaced in 2021 under a new tag after a fire",
     "the original SCADA's three lost days in 2018",
     "a long-term satellite record hourly in UTC with a provider header block",
-    "work orders in free text, washes block by block over several days among every other job",
+    "work orders in free text, washes block by block (on consecutive days to 2020, a block a week each December since) among every other job",
     "the station service moved behind the revenue meter in April 2024",
     "PDF tables (side-by-side report, interruption report), a Word scope paper, contracts as PDF extracts",
     "utility billing exports in a legacy fixed-width layout and a meter data system with a history load and versioned reads"
@@ -109,6 +110,6 @@
     "task187": "task187 ranks turbines on a power-curve shortfall read at matched turbulence, a capped curve averaged over a spread; here a single plant's forward level is rebuilt after a part swap, the kept losses read off at the inverter boundary and the wear on the days a wash has just reset the dust"
   },
   "lineage": [],
-  "notes": "Kinship cards read at the draw: task136, task460, task185, task260, task30, task68, task132, task79. Forum redrawn at stage 3 from committee_or_panel to executive_team (the treasurer approves the volume): task233, registered before this card but pulled only at the DRAWN push, holds committee_or_panel. Context artifact redrawn at stage 3 from monitoring_export to operations_log (Tresco's work orders, which carry the washes the decisive step reads, and the inverter event log): task189, registered before this card, reached this worktree only with the PAUSED pull and holds monitoring_export; the SCADA exports remain the spine.",
+  "notes": "Kinship cards read at the draw: task136, task460, task185, task260, task30, task68, task132, task79. Forum redrawn at stage 3 from committee_or_panel to executive_team (the treasurer approves the volume): task233, registered before this card but pulled only at the DRAWN push, holds committee_or_panel. Context artifact redrawn at stage 3 from monitoring_export to operations_log (Tresco's work orders, which carry the washes the decisive step reads, and the inverter event log): task189, registered before this card, reached this worktree only with the PAUSED pull and holds monitoring_export; the SCADA exports remain the spine. Stage 4 round 1 (judge APPROVE, rule-3 audit PASS with notes) hardened the world before the re-judge: the single wash moved from November to December, a block a week, and the six-wash era's washes to the cool months; the wear's fast phase steepened and moved to mid-2017 to mid-2020; seasonal wind and a wider year-to-year clear-sky spread; the call stays 70,000, the P50 73,000, the standard deviation moves to 1,900.",
   "registered": "2026-10-16T22:18:16Z"
 }

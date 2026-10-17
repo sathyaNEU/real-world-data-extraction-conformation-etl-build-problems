@@ -46,7 +46,7 @@
     {
       "path": "README.md",
       "format": "md",
-      "bytes": 5459,
+      "bytes": 5656,
       "rows": null,
       "source": "Constructed: Marden-Vail Building Products, README for the data pull",
       "date": "2026-10-06",
@@ -55,7 +55,7 @@
     {
       "path": "clearfield_hadley_ranch_poa_hourly_2001-2025.csv",
       "format": "csv",
-      "bytes": 5623446,
+      "bytes": 5623535,
       "rows": 219144,
       "source": "Constructed: Clearfield Solar Resource, site-adapted hourly irradiance series for Hadley Ranch Solar",
       "date": "2026-10-06",
@@ -64,7 +64,7 @@
     {
       "path": "corvane_fa-2026-114_hadley_ranch_side_by_side.pdf",
       "format": "pdf",
-      "bytes": 42982,
+      "bytes": 42966,
       "rows": null,
       "source": "Constructed: Corvane Solar, field applications report FA-2026-114",
       "date": "2026-10-06",
@@ -73,7 +73,7 @@
     {
       "path": "hadley_ranch_module_replacement_scope_2026-07.docx",
       "format": "docx",
-      "bytes": 10127,
+      "bytes": 10212,
       "rows": null,
       "source": "Constructed: Marden-Vail Building Products, module replacement scope and schedule",
       "date": "2026-10-06",
@@ -82,7 +82,7 @@
     {
       "path": "hadley_scada_daily_2020-03-03_to_2026-09-30.csv",
       "format": "csv",
-      "bytes": 5691693,
+      "bytes": 5687947,
       "rows": 127359,
       "source": "Constructed: Hadley Ranch Solar, replacement SCADA daily export",
       "date": "2026-10-06",
@@ -91,7 +91,7 @@
     {
       "path": "hrs_scada_daily_report_2015-11-20_to_2020-03-02.csv",
       "format": "csv",
-      "bytes": 600474,
+      "bytes": 600282,
       "rows": 1562,
       "source": "Constructed: Hadley Ranch Solar, original SCADA daily report export",
       "date": "2026-10-06",
@@ -100,8 +100,8 @@
     {
       "path": "inverter_event_log_2025.csv",
       "format": "csv",
-      "bytes": 25420,
-      "rows": 305,
+      "bytes": 23691,
+      "rows": 283,
       "source": "Constructed: Hadley Ranch Solar, inverter alarm and event log, 2025",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -109,7 +109,7 @@
     {
       "path": "inverter_hourly_ac_2025.csv",
       "format": "csv",
-      "bytes": 6027810,
+      "bytes": 6026855,
       "rows": 139508,
       "source": "Constructed: Hadley Ranch Solar, block data loggers' hourly inverter AC export, 2025",
       "date": "2026-10-06",
@@ -127,7 +127,7 @@
     {
       "path": "met_station_hourly_2025.csv",
       "format": "csv",
-      "bytes": 356258,
+      "bytes": 356175,
       "rows": 8760,
       "source": "Constructed: Hadley Ranch Solar, meteorological station hourly export, 2025",
       "date": "2026-10-06",
@@ -154,7 +154,7 @@
     {
       "path": "power_forward_blotter_2015-2025.xlsx",
       "format": "xlsx",
-      "bytes": 7394,
+      "bytes": 7395,
       "rows": 16,
       "source": "Constructed: Marden-Vail Building Products, energy and commodities desk forward blotter",
       "date": "2026-10-06",
@@ -172,7 +172,7 @@
     {
       "path": "tresco_om_agreement_2021_schedules_2_and_4.pdf",
       "format": "pdf",
-      "bytes": 42204,
+      "bytes": 42250,
       "rows": null,
       "source": "Constructed: Tresco Field Services and Marden-Vail Building Products, O&M agreement schedules 2 and 4",
       "date": "2026-10-06",
@@ -190,8 +190,8 @@
     {
       "path": "tresco_work_orders_hadley_ranch_2015-2026.xlsx",
       "format": "xlsx",
-      "bytes": 73232,
-      "rows": 1390,
+      "bytes": 73531,
+      "rows": 1396,
       "source": "Constructed: Tresco Field Services, CMMS work order export for Hadley Ranch Solar",
       "date": "2026-10-06",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -208,7 +208,7 @@
     {
       "path": "vsipd_acct_7731-0459_mdm_daily_2019-10-01_2025-12-31.csv",
       "format": "csv",
-      "bytes": 376436,
+      "bytes": 376423,
       "rows": 6242,
       "source": "Constructed: Vado Seco Irrigation and Power District, meter data system daily export for account 7731-0459",
       "date": "2026-10-06",
@@ -244,7 +244,7 @@
     {
       "path": "westmark_confirmations_hadley_ranch_cy2016-cy2026.pdf",
       "format": "pdf",
-      "bytes": 47867,
+      "bytes": 47864,
       "rows": null,
       "source": "Constructed: Westmark Power Trading, confirmations file",
       "date": "2026-10-06",
