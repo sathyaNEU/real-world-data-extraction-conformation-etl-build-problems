@@ -1,116 +1,114 @@
 {
-  "task": "task190",
-  "architecture": "v2",
-  "drawn": "2026-10-17",
-  "slot_note": "seed AD13 is spent with architecture 1 and nothing of it is carried: the seed's scarce-team placement, its caseload quantity and its stock-from-arrivals driver are all retired. Architecture 2 keeps only the slot's objective, its number and a New Zealand bank, and re-roots on the incidence of structuring, which the bank's own deposit record fixes and which the field estimates as an excess over the deposit sizes a segment's ordinary trade produces.",
-  "domain": "banking-credit-financial-risk",
-  "subdomain": "fraud-aml-detection",
-  "client_domain": "banking-credit-financial-risk",
-  "niche": "sizing the cash deposits placed below the reporting threshold on purpose against the deposits a cash-intensive book ordinarily makes at that size",
-  "objective": "anomaly-detection",
-  "shape": "05",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "400 cash deposits were split below the prescribed transaction threshold in the year ended 30 June 2027, the largest segment being transport and courier at 90.",
-  "answer_source": "golden/structured_cash_deposits_2027.xlsx; generator/figures.json call.deposits_split",
-  "gap": [
-    "population"
-  ],
-  "pattern": [
+ "analyst_test": "A strong analyst who carries every customer number through the crosswalk, applies the branch merger and the April code reissue, converts the machine feed's UTC stamps and reads clause 7.4 exactly builds the same-day screen, counting every band deposit on a day the customer's cash reached the threshold over more than one deposit, and files 1,287, where the number placed below the threshold on purpose is 400.",
+ "answer": "400 cash deposits were split below the prescribed transaction threshold in the year ended 30 June 2027, the largest segment being transport and courier at 90.",
+ "answer_source": "golden/structured_cash_deposits_2027.xlsx; generator/figures.json call.deposits_split",
+ "answer_unit": "count",
+ "architecture": "v2",
+ "calibration_form": "none",
+ "client_domain": "banking-credit-financial-risk",
+ "context_artifact": "filed_standard",
+ "decision_type": "quantity_figure",
+ "decisive_rule_filed": false,
+ "deliverables": [
+  "structured_cash_deposits_2027.xlsx",
+  "structured_deposits_by_segment.png"
+ ],
+ "differentiation": {
+  "task193": "Shares the Gate G mechanism key with task193 v1 and the deliverable format set. task193 v1's decisive step was which population the measure is taken against, a comparison-set question the WHAT screen retired; this build's estimand fixes the population, the outcome, the window, the unit and the comparison, and the open step is how the background at one size is estimated.",
+  "task195": "Shares the Gate G mechanism key on the cards, which is why the guard WARNs. task195's mechanism is the uncertainty of a paired difference against two separate intervals, an interval question; this build's decisive step is the separation of an observed mass into a background and an excess, which carries no interval. The gate_g key is varied at task195's own draw rather than here, since this build's signal and background are both counts.",
+  "task228": "Shares the decisive gap and the Gate G mechanism. Every task228 architecture turns on a variance or a measurement error, the clustering of counted events inside randomised units, a run's exposure to a mid-run configuration change, or comparators whose errors co-vary; this build has no variance in its decisive step at all, and its background is the number of items the unit's own size profile away from the threshold produces.",
+  "task260": "Shares the decisive gap, the generator code and the Gate G mechanism on the cards. task260's decisive quantity is whether an average improvement measured once on one shared sample of raters and items holds for new raters and new items, which is a variance-component question answered with an interval; this build's is a point count of a mass in excess of a background, with no interval and no resampling anywhere in the golden. One is the uncertainty of an estimate, the other the estimand's background.",
+  "task70": "Shares the decisive gap and generator code and the decision type on the cards, and nothing else. task70 v2 rebuilds a per-record date from an event log under a clause that bars one record class from a late slot, so its decisive move is a class-conditional construction of a date; this build's is the size at which a payer chose to place a deposit, and the quantity is the mass at that size over what the payer's ordinary trade produces. One is a date construction, the other a mixture separated on a size profile, and neither route reaches the other's figure."
+ },
+ "domain": "banking-credit-financial-risk",
+ "domain_test": "The deciding quantity is the incidence of structuring, which financial-crime analytics estimates as the excess of deposits massed below a reporting threshold over the number the segment's own deposit-size profile away from the threshold implies; swap the deposits for hospital admissions and the threshold for a ward's bed count and nobody is choosing a size in order to stay under a reporting duty, so there is no excess to measure and the count of admissions at that size is the whole of the quantity.",
+ "drawn": "2026-10-17",
+ "driver": "The decisive quantity is how many items were placed just under a threshold to stay under it, and the practice that placed them there leaves a matching shortfall just over the threshold, because the item each one replaced is not in the record any more. The surplus below and the shortfall above are the same quantity measured twice off one fitted size profile, so the record's own arithmetic refuses any profile whose two sides disagree, and a profile fitted through the emptied interval reads the surplus too large.",
+ "driver_concrete": "Each business segment's cash deposits just below the ten thousand dollar reporting threshold include the ones its ordinary takings would put there anyway, and the segments differ by more than three times in how much of their ordinary cash sits at that size, so the count of deposits in the range and the number actually split to stay under the threshold are different quantities with different segment shares and a total three times apart.",
+ "forcing_event": "statutory_or_regulatory_filing",
+ "forum": "regulator_or_inspector",
+ "gap": [
+  "population"
+ ],
+ "gate_g": "signal_vs_noise_or_hold",
+ "generators": [
+  "G6",
+  "G16",
+  "G12"
+ ],
+ "layer1": [
+  "two deposit feeds at different grains, the counter feed per deposit and the machine feed per envelope batch",
+  "deposit system customer numbers against the customer master's, carried by a crosswalk",
+  "two branches merged and one renamed mid-year, with effective dates in the branch register",
+  "the bank's own segment map remapped in April 2027, the register holding both codes",
+  "machine timestamps in UTC against counter timestamps in local time over a daylight saving change",
+  "a preliminary and a revised prescribed-transaction extract overlapping by six weeks",
+  "amounts as dollars and cents in the feeds and as thousands in one workbook",
+  "tables inside PDFs"
+ ],
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:the-takes-that-are-missing-from-just-above-the-reporting-threshold",
+ "lineage": [
+  {
+   "architecture": "v1",
+   "decision_type": "designation_set",
+   "domain": "banking-credit-financial-risk",
+   "driver": "The decisive quantity is the stock of undetected cases a scarce reviewer would meet, which is each unit's arrival rate multiplied by how long a case goes unseen there, so ranking units by the cases they confirm ranks them by arrivals alone and passes over the unit whose cases sit longest before anyone sees them.",
+   "fate": "spent at stage 4 on 2026-10-17 after three consecutive determinism SEND_BACK verdicts (r2 the working-day calendar, r3 the counting convention, r4 three ask conventions), with Gate F graded moderate to borderline then moderate to low. The decisive step was deciding to nowcast the caseload rather than count it, which settles whether members not yet observed are in the population: filing it made the computation follow from clause 6.2 and not filing it left the call open. Three isolated readers built the nowcast and landed the call at 80 to 90 per cent confidence. Re-rooted, not resumed; the stock-from-arrivals-and-time-unseen driver is not reused.",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "gate_g": "method_or_model_selection",
+   "objective": "anomaly-detection",
+   "pattern": [
     "none"
+   ],
+   "shape": "09",
+   "stump": "A competent solver conforms the alert and adjudication extracts, computes each line's confirmed cases per 1,000 customers over the last two quarters, and assigns the team to the lines that confirm the most, which is the lines where cases are found fastest rather than where they are sitting unfound.",
+   "stump_strategy": "maturity_censoring",
+   "subdomain": "fraud-aml-detection"
+  }
+ ],
+ "mechanism_source": "design_note",
+ "niche": "sizing the cash deposits placed below the reporting threshold on purpose against the deposits a cash-intensive book ordinarily makes at that size",
+ "notes": "The decisive generator is filed G6 because 'one band moves against the rest' is the only code in the taxonomy for a band of a distribution that moves against the rest of it, and that is what makes the excess identifiable here. It is not the composition mechanism the house bans as a decisive step: nothing applies a pooled or stratum rate to a pool whose mix has moved, no segment's mix is standardised against another's, and the quantity is not a rate. The band is a band of deposit sizes inside one segment's own profile, and the decisive move separates an observed mass at that size into the number the segment's own profile away from the threshold produces and the number in excess of it. G16 sits second because the open step is which estimator of that excess the data supports; it is not first because the guard bans G16 against task195. Architecture 2, loop 3: the determinism judge's second SEND_BACK was on the realism of the amount draw with every structural gate passing, so this is a generator and world repair and not a re-root. The amounts are now an independent sample per deposit (chi-square per degree of freedom 0.80 to 1.14), splitting is generated by moving a take rather than adding to a day, and the decisive step is reconciling the band's surplus against the deficit the movement leaves in 10,000 to 11,000. The stated grain is the nearest fifty deposits, set from the measured spread over the judge's own 225 specification grid.",
+ "objective": "anomaly-detection",
+ "official_decoy": false,
+ "opening_move": "question-first",
+ "org_family": "financial_institution",
+ "pattern": [
+  "none"
+ ],
+ "question_form": "how-many",
+ "registered": "2026-10-17T14:53:52Z",
+ "role_family": "programme_officer",
+ "scoring_unit": "per active unit per period",
+ "shape": "05",
+ "slot_note": "seed AD13 is spent with architecture 1 and nothing of it is carried: the seed's scarce-team placement, its caseload quantity and its stock-from-arrivals driver are all retired. Architecture 2 keeps only the slot's objective, its number and a New Zealand bank, and re-roots on the incidence of structuring, which the bank's own deposit record fixes and which the field estimates as an excess over the deposit sizes a segment's ordinary trade produces.",
+ "spine": {
+  "entity": "one cash deposit paid in over a branch counter",
+  "file": "cash_deposit_counter_2026_2027.csv",
+  "rows": 61568
+ },
+ "stakeholder_role": "the bank's money laundering reporting officer, who runs the AML programme",
+ "stump": "A competent solver conforms the two deposit feeds to the customer register, reads the handbook's definition of structuring and the ten thousand dollar reporting threshold, builds the split out of the customer's own day and files 1,287, which is the number of band deposits belonging to businesses that pay their takings in more than once a day, when the number placed below the threshold on purpose is the amount by which the band exceeds what each segment's own deposit-size profile away from it produces, 400.",
+ "stump_class": "analytical",
+ "stump_strategy": "other",
+ "subdomain": "fraud-aml-detection",
+ "task": "task190",
+ "validated_decoy": false,
+ "world": {
+  "currency": "NZD",
+  "geography": "New Zealand",
+  "invented_names": [
+   "Arahura Bank"
   ],
-  "generators": [
-    "G6",
-    "G16",
-    "G12"
-  ],
-  "gate_g": "signal_vs_noise_or_hold",
-  "calibration_form": "none",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "the bank's money laundering reporting officer, who runs the AML programme",
-  "role_family": "programme_officer",
-  "scoring_unit": "per active unit per period",
-  "spine": {
-    "file": "cash_deposit_counter_2026_2027.csv",
-    "rows": 56080,
-    "entity": "one deposit paid in over a branch counter, cash, cheque or electronic credit",
-    "grain": "deposit",
-    "source": "synthetic"
-  },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "financial_institution",
-  "world": {
-    "geography": "New Zealand",
-    "currency": "NZD",
-    "org_type": "retail and business bank",
-    "invented_names": [
-      "Arahura Bank"
-    ],
-    "people": [
-      "Manaaki Little",
-      "Emma Gullery",
-      "Brian Simonsen"
-    ]
-  },
-  "deliverables": [
-    "structured_cash_deposits_2027.xlsx",
-    "structured_deposits_by_segment.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is how many items were placed just under a threshold in order to stay under it, which is the amount by which the items observed just under it exceed the number each unit's own size profile away from the threshold produces, so counting the items in that range measures how much ordinary activity a unit has at that size rather than how much was moved there.",
-  "driver_concrete": "Each business segment's cash deposits just below the ten thousand dollar reporting threshold include the ones its ordinary takings would put there anyway, and the segments differ by more than three times in how much of their ordinary cash sits at that size, so the count of deposits in the range and the number actually split to stay under the threshold are different quantities with different segment shares and a total three times apart.",
-  "stump": "A competent solver conforms the two deposit feeds to the customer register, reads the handbook's definition of structuring and the ten thousand dollar reporting threshold, builds the split out of the customer's own day and files 1,287, which is the number of band deposits belonging to businesses that pay their takings in more than once a day, when the number placed below the threshold on purpose is the amount by which the band exceeds what each segment's own deposit-size profile away from it produces, 400.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who carries every customer number through the crosswalk, applies the branch merger and the April code reissue, converts the machine feed's UTC stamps and reads clause 7.4 exactly builds the same-day screen, counting every band deposit on a day the customer's cash reached the threshold over more than one deposit, and files 1,287, where the number placed below the threshold on purpose is 400.",
-  "domain_test": "The deciding quantity is the incidence of structuring, which financial-crime analytics estimates as the excess of deposits massed below a reporting threshold over the number the segment's own deposit-size profile away from the threshold implies; swap the deposits for hospital admissions and the threshold for a ward's bed count and nobody is choosing a size in order to stay under a reporting duty, so there is no excess to measure and the count of admissions at that size is the whole of the quantity.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task70": "Shares the decisive gap and generator code and the decision type on the cards, and nothing else. task70 v2 rebuilds a per-record date from an event log under a clause that bars one record class from a late slot, so its decisive move is a class-conditional construction of a date; this build's is the size at which a payer chose to place a deposit, and the quantity is the mass at that size over what the payer's ordinary trade produces. One is a date construction, the other a mixture separated on a size profile, and neither route reaches the other's figure.",
-    "task260": "Shares the decisive gap, the generator code and the Gate G mechanism on the cards. task260's decisive quantity is whether an average improvement measured once on one shared sample of raters and items holds for new raters and new items, which is a variance-component question answered with an interval; this build's is a point count of a mass in excess of a background, with no interval and no resampling anywhere in the golden. One is the uncertainty of an estimate, the other the estimand's background.",
-    "task228": "Shares the decisive gap and the Gate G mechanism. Every task228 architecture turns on a variance or a measurement error, the clustering of counted events inside randomised units, a run's exposure to a mid-run configuration change, or comparators whose errors co-vary; this build has no variance in its decisive step at all, and its background is the number of items the unit's own size profile away from the threshold produces.",
-    "task195": "Shares the Gate G mechanism key on the cards, which is why the guard WARNs. task195's mechanism is the uncertainty of a paired difference against two separate intervals, an interval question; this build's decisive step is the separation of an observed mass into a background and an excess, which carries no interval. The gate_g key is varied at task195's own draw rather than here, since this build's signal and background are both counts.",
-    "task193": "Shares the Gate G mechanism key with task193 v1 and the deliverable format set. task193 v1's decisive step was which population the measure is taken against, a comparison-set question the WHAT screen retired; this build's estimand fixes the population, the outcome, the window, the unit and the comparison, and the open step is how the background at one size is estimated."
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "fate": "spent at stage 4 on 2026-10-17 after three consecutive determinism SEND_BACK verdicts (r2 the working-day calendar, r3 the counting convention, r4 three ask conventions), with Gate F graded moderate to borderline then moderate to low. The decisive step was deciding to nowcast the caseload rather than count it, which settles whether members not yet observed are in the population: filing it made the computation follow from clause 6.2 and not filing it left the call open. Three isolated readers built the nowcast and landed the call at 80 to 90 per cent confidence. Re-rooted, not resumed; the stock-from-arrivals-and-time-unseen driver is not reused.",
-      "domain": "banking-credit-financial-risk",
-      "subdomain": "fraud-aml-detection",
-      "objective": "anomaly-detection",
-      "shape": "09",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "designation_set",
-      "stump_strategy": "maturity_censoring",
-      "driver": "The decisive quantity is the stock of undetected cases a scarce reviewer would meet, which is each unit's arrival rate multiplied by how long a case goes unseen there, so ranking units by the cases they confirm ranks them by arrivals alone and passes over the unit whose cases sit longest before anyone sees them.",
-      "stump": "A competent solver conforms the alert and adjudication extracts, computes each line's confirmed cases per 1,000 customers over the last two quarters, and assigns the team to the lines that confirm the most, which is the lines where cases are found fastest rather than where they are sitting unfound."
-    }
-  ],
-  "notes": "The decisive generator is filed G6 because 'one band moves against the rest' is the only code in the taxonomy for a band of a distribution that moves against the rest of it, and that is what makes the excess identifiable here. It is not the composition mechanism the house bans as a decisive step: nothing applies a pooled or stratum rate to a pool whose mix has moved, no segment's mix is standardised against another's, and the quantity is not a rate. The band is a band of deposit sizes inside one segment's own profile, and the decisive move separates an observed mass at that size into the number the segment's own profile away from the threshold produces and the number in excess of it. G16 sits second because the open step is which estimator of that excess the data supports; it is not first because the guard bans G16 against task195.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:excess-over-the-size-profile-a-cash-book-ordinarily-shows",
-  "layer1": [
-    "two deposit feeds at different grains, the counter feed per deposit and the machine feed per envelope batch",
-    "deposit system customer numbers against the customer master's, carried by a crosswalk",
-    "two branches merged and one renamed mid-year, with effective dates in the branch register",
-    "the bank's own segment map remapped in April 2027, the register holding both codes",
-    "machine timestamps in UTC against counter timestamps in local time over a daylight saving change",
-    "a preliminary and a revised prescribed-transaction extract overlapping by six weeks",
-    "amounts as dollars and cents in the feeds and as thousands in one workbook",
-    "tables inside PDFs"
-  ],
-  "registered": "2026-10-17T14:53:52Z"
+  "org_type": "retail and business bank",
+  "people": [
+   "Manaaki Little",
+   "Emma Gullery",
+   "Brian Simonsen"
+  ]
+ }
 }

@@ -304,8 +304,8 @@ run of the same two-sided reading at ten positions away from the band and its mi
 
 **The dispersion, measured, not forced.** The amounts are a sample: each deposit is drawn independently
 from its segment's own density, so every bin count carries a sample's scatter. Chi-square per degree of
-freedom against a log-linear profile is 0.80 to 1.14 bank-wide across 50, 100, 250 and 500 dollar bins and
-0.83 to 1.30 across the eight segments, with variance over mean 0.97 to 1.73 in 100-dollar bins from 5,000
+freedom against a log-linear profile is 1.05 to 1.48 bank-wide across 50, 100, 250 and 500 dollar bins and
+0.52 to 1.36 across the eight segments, with variance over mean 1.09 to 2.46 in 100-dollar bins from 5,000
 to 9,000. The determinism judge's own objection to the previous build, that the method fork was tight only
 because the record was too smooth to separate the candidates, does not survive these numbers: the record
 is as noisy as a count process and 84 of the 225 specifications still fall, because what separates them is
@@ -408,7 +408,7 @@ Mirror leakage: 22.0
 | Gate | Result |
 |---|---|
 | `precut.py task190` | 49 checks, 0 FAIL, 0 WARN |
-| `voice-check.py task190` | PASS, 997 characters |
+| `voice-check.py task190` | PASS, 998 characters |
 | generator `checks.py` | 159 assertions, including the three-rules block R1 to R3c on the clean truth and the convergence sweep over the judge's 225-specification grid |
 | `verify.py` (reads `target/` and `figures.json` only, own code path) | 210 checks, 0 failed, including the whole grid on its own implementation |
 | two consecutive rebuilds | `target/` and `golden/` byte-identical |
@@ -418,6 +418,7 @@ Mirror leakage: 22.0
 | `guard.py surface task190` | no promoted pair; no persona appears in the cut pack's content |
 | `guard.py heart task190` | WARN, nearest driver 0.11 (task445 v1) |
 | container scrub audit | clean: no writer signature, no out-of-band timestamp |
+| `target.zip` | 21 members, 2,976,151 bytes, md5 `01335d47c2745a9040e7308ce8c4bd97`, cut from the final rebuild |
 
 **Guard WARNs answered.** `repeat.deliverables` (png and xlsx, shared with task238): the chart earns its
 place because the decision is one total split across eight buckets, which reads at a glance as bars and not
@@ -444,19 +445,71 @@ is a register and the service log covers it. The provenance file reads as the da
 (`reduce-house-fixes` H24), the manifest names every shipped file (H9), no record or report date runs past
 the pull date (H16), and every handbook paragraph the goldens cite resolves (H8).
 
-**What the stage 4 threads found, and what was done.** The determinism judge returned NOT_DETERMINISTIC,
-`competing_defensible_answer`, SEND_BACK, with Gate G and Gate H passing and the decisive step graded
-analytical. The finding was calibration, not architecture: the counterfactual's method was not forced and
-the data did not separate the candidates, with the judge measuring 310 to 512 across windows and families
-against the filed 400. Three side answers did not reproduce, the ladder's rung 0 could not be reproduced,
-and the reader found the rating history contradicting itself and the structuring signal too faint. Every
-one of those is closed in the generator in one pass: the deposit-size record is now one shape from end to
-end so all 199 estimators agree; the rounding path, the hours source and the band wording are pinned in the
-prompt; the machine estate ships as a register so the machines with no service record are forced; the
-rating events chain; the split deposits pile on round figures just under the threshold as real structuring
-does; every rung is re-measured on the shipped bundle; and the note reports the measured spread instead of
-claiming convergence. The claim the judge showed to be false, that every window and step width gives the
-same figures, is gone.
+**What the stage 4 threads found, and what was done.** This is on the record as a generator and world
+repair, not a re-root. `architecture` stays at 2 and `loops` carries the count.
+
+Round one. The determinism judge returned NOT_DETERMINISTIC, `competing_defensible_answer`, SEND_BACK,
+with every structural gate passing and the decisive step graded analytical; the finding was that the
+counterfactual's method was not forced and the data did not separate the candidates. The isolated reader
+found the rating history contradicting itself, the structuring signal too faint and three side answers
+unforced. The generator was rebuilt in one pass: one shape end to end, a register-driven machine estate,
+chained rating events, rungs re-measured on the shipped bundle.
+
+Round two, which is this cut. The judge returned SEND_BACK again, on the realism of the decisive data and
+with every structural gate passing again, Gate G and Gate H included and the decisive step read as
+analytical: pooled 100-dollar bins reading 187, 187, 188, 186, 187 where a Poisson standard deviation
+would be about 14, chi-square per degree of freedom of 0.029 bank-wide and 0.004 to 0.026 per segment,
+each with a tail probability below 1e-26. Its decisive sentence was that the absence of sampling noise was
+why the method fork looked tight: the convergence the previous cut asserted was bought by the defect and
+not by the design. The reader on the same pack found no hole above the threshold, matching spikes of 35 at
+four round values, a hard floor and ceiling, twenty cents values and identical adjacent bin counts.
+
+Everything in both reports is closed here, and three of them changed the architecture's own posture:
+
+- **The amount draw is a sample.** Each deposit is drawn independently from its segment's own density,
+  with a soft rise from fifty dollars and a faster tail above 22,000 so neither end is a wall, and a share of each
+  draw snapping to the nearest fifty because counted cash lands on round figures. Chi-square per degree of
+  freedom is now 1.05 to 1.48 bank-wide and 0.52 to 1.36 per segment, variance over mean 1.09 to 2.46, and
+  the cents alphabet runs to 72 values. No two adjacent bins and no two round values carry the same count
+  by construction.
+- **The split mass balances.** Splitting is generated by replacing a take rather than adding to a day: a
+  deposit at or just above the threshold is taken out of the record and paid in instead as two deposits on
+  the same day. The dollars balance to the cent, 10,000 to 11,000 carries a deficit the size of the band's
+  surplus, and that deficit became the forcing structure and the decisive step. The identical spikes are
+  gone with the additive construction that produced them.
+- **The stated granularity is the nearest fifty, set from the measurement.** The measurement said the level
+  could not be made determinate at the nearest ten on a realistic record, and said so before any figure
+  was chosen; `## Dispersion and granularity, measured` carries the sweep. Coarsening to dodge a
+  measurement would be a cheat; setting the grain to what the record honestly supports, after measuring
+  it, is what the bank would state.
+- **The write-up asserts a candidate set rather than claiming agreement.** Solution step 6 now names the
+  judge's own grid, says how many specifications the data drops and how many the record refuses, and
+  `checks.py` asserts the surviving set has exactly one member. The lesson is in `## Tried and rejected`.
+- **The bank figure's path is filed as the WHAT.** 7.4 says the bank's figure is the sum of the segment
+  figures as stated, so the path follows from the estimand rather than from a rounding rule, and SF12
+  asserts both paths give 450.
+- **Three asks closed by convergence and one by authority.** One machine is out once at a time, so a
+  month's hours are its incidents' sum and their union alike; a rating moves one way across the year and
+  never returns to a band it left, so raised-in-then-out and not-in-it-at-year-end are the same set, and
+  counting events matches counting customers; every machine collection and machine deposit is stamped so
+  its UTC date and branch local date fall on the same day. What convergence could not reach is pinned once
+  in the bank's own documents: 1.2 says the report's quarters are the reporting year's, the dictionary says
+  both collection sources are cash count sessions, that a superseded row is not part of the customer's
+  history, that a reversed deposit and its reversal are both out of what was paid in, and that the minutes
+  column is the figure of record where it differs from the stamps.
+- **The handbook's own contradictions and the pack's computed look.** The handbook is version 9.4 approved
+  11 June 2027, which postdates the April 2027 reissue its 7.5 describes; 7.6 now says customers rather
+  than ratings, matching the prompt; `provenance.md` is cut back to where each extract came from and when,
+  with no inventory of what is wrong with the files. The branch summary now carries a small residue the
+  desk does not chase and says so, a few service logs show minutes that are not the stamp difference, the
+  rating register has gaps where a move was never filed, at least one variance lands exactly on a
+  tolerance, and incidents are reported across the whole day including after hours.
+
+**The all-nil response, measured.** Two of the eight segments are nil, so a response that concludes there
+is no splitting and writes nought everywhere banks 2 of the 18 segment-table cells, 11.1 per cent, and
+none of the 42 ask figures. Both nil segments sit deep in their cell, at 4.7 and 2.8 from nought against
+the 25 half-way point, asserted per segment. A fit of the band alone gives a positive surplus for every
+one of the eight, so a correct nil is reachable only through the balance.
 
 ## Dispersion and granularity, measured
 
@@ -471,20 +524,22 @@ segment has empty bins outside the band, which no log fit takes. That leaves 165
 density, which is log-linear in the amount across 1,500 to 22,000 with a soft rise below and a faster tail
 above, a share of each draw snapping to the nearest fifty because counted cash lands on round figures.
 
-| measure | before | after |
-|---|---|---|
-| chi-square per dof, bank, 50-dollar bins | 0.001 class | 0.82 |
-| chi-square per dof, bank, 100 / 250 / 500 | 0.013 / 0.004 / 0.001 | 0.80 / 0.90 / 1.14 |
-| chi-square per dof, per segment | 0.004 to 0.026 | 0.55 to 1.39 |
-| variance over mean, 100-dollar bins, 5,000 to 9,000 | 0.02 to 0.08 | 0.97 to 1.73 |
-| distinct cents values | 20 | 74 |
-| lowest and highest amount | 500.00 and 32,222.20, both walls | 50.00 and about 49,500, both tails |
+Measured on the shipped pack, with the band and the interval above it out of the fit:
 
-**What that costs, measured.** Reading the band alone, the bank figure spans 285.7 to 446.9 across the 165
-specifications against a construction of 402: a span of 44 per cent of the figure. Raising the record's
-volume with the construction scaled alongside gives 40 per cent at 2x, 37 per cent at 4x and 29 per cent
-at 8x, so volume does not reach an interesting granularity: the residue is specification bias, which
-scales with the figure. No derived object escapes it either (the lines in `## Tried and rejected`).
+| measure | before | shipped |
+|---|---|---|
+| chi-square per dof, bank, 50-dollar bins | 0.001 class | 1.05 on 178 dof |
+| chi-square per dof, bank, 100 / 250 / 500 | 0.013 / 0.004 / 0.001 | 1.09 / 1.44 / 1.48 |
+| chi-square per dof, per segment, 50 to 500 | 0.004 to 0.026 | 0.52 to 1.36 |
+| variance over mean, 100-dollar bins, 5,000 to 9,000, per segment | 0.02 to 0.08 | 1.09 to 2.46 |
+| distinct cents values | 20 | 72 |
+| lowest and highest amount | 500.00 and 32,222.20, both walls | 50.00 and 53,471.19, both tails |
+
+**What that costs, measured.** Reading the band alone, the bank figure spans 338.6 to 565.1 across the 165
+specifications the data leaves available: a span of 47 per cent of the figure. Raising the record's volume
+with the construction scaled alongside was measured at 2x, 4x and 8x and moves the relative span only from
+44 per cent to 29, because the residue is specification bias, which scales with the figure and not with
+its square root. No derived object escapes it either (the lines in `## Tried and rejected`).
 
 **What forces it is the record's own mass balance.** Every split take was moved from at or above the
 threshold to below it, to the cent, so 10,000 to 11,000 carries a deficit the same size as the band's
@@ -495,18 +550,20 @@ contradicts the data. Measured, requiring the two sides to agree within a fifth:
 
 | reading | specifications | bank figure | span |
 |---|---|---|---|
-| the band alone | 165 | 285.7 to 446.9 | 161.2, 44 per cent |
-| the two sides reconciled | 150 | 341.9 to 394.4 | 52.5, 13.5 per cent |
+| the band alone | 165 | 338.6 to 565.1 | 226.4, 47 per cent |
+| the two sides reconciled | 141 | 424.2 to 480.6 | 56.3, 12 per cent |
 
-The filter is insensitive to its own tolerance: at a tenth and at a twelfth the surviving span is the same
-52.5. Per segment the reconciled spans are 5.4 to 23.5.
+The filter is insensitive to its own tolerance: at a tenth and at a twelfth the surviving stated figures
+are the same, asserted in `checks.py`. Per segment the reconciled spans are 4.9 to 17.6.
 
 **The granularity the data supports is the nearest fifty deposits per segment, the bank figure their sum.**
-At fifty, every one of the eight segments resolves to one cell across all surviving specifications and the
-bank figure resolves to one value. At twenty-five, two segments split; at one hundred, three do. The
-nearest wrong cell is fifty away, which is 14 per cent of the bank figure and at least 33 per cent of
-every segment figure that is not nil, against the 6 per cent the judge asks for. The easy routes are
-nowhere near: the band count is about 1,650 and the same-day screen about 1,300.
+At fifty, every one of the eight segments resolves to one cell across all 141 surviving specifications and
+the bank figure resolves to one value, 450. At twenty-five, two segments split; at one hundred, three do.
+The closest figure to a rounding line is grocery and convenience, 15.8 clear of the line at 125 against
+the 25 half-way point; the two nil segments sit 4.7 and 2.8 from nought. The nearest wrong cell is fifty
+away, which is 11 per cent of the bank figure and at least 33 per cent of every segment figure that is
+not nil, against the 6 per cent the judge asks for. The easy routes are nowhere near: counting the band
+gives 2,583, the same-day screen 1,438, and the band read on its own 500.
 
 ## Tried and rejected
 
@@ -594,9 +651,7 @@ nowhere near: the band count is about 1,650 and the same-day screen about 1,300.
   determinism judge named this as the reason the method fork looked tight: the 199-estimator agreement and
   the 180-specification agreement were both bought by the absence of sampling noise, not by the design.
   Replaced by drawing each deposit independently from its segment's own density, so every bin count is a
-  genuine sample. Measured after the rebuild: chi-square per degree of freedom 0.80 to 1.14 bank-wide
-  across 50, 100, 250 and 500 dollar bins, 0.55 to 1.39 per segment, variance over mean 0.97 to 1.73 per
-  segment. The dispersion sweep that was to find a ceiling is therefore dead: there is no ceiling to find,
+  genuine sample, which `## Dispersion and granularity, measured` reports on the shipped pack. The dispersion sweep that was to find a ceiling is therefore dead: there is no ceiling to find,
   because block-level dispersion bought no chi-square at all (chi-square tracks the dispersion parameter
   squared, so the honest value needs the parameter at 1, which is a sample) and cost convergence at 0.02.
 - **Block-exact generation with an evenly spread round-figure pile.** It was what made 199 estimators

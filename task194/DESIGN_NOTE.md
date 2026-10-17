@@ -85,6 +85,19 @@ unit's level (worst miss 131 per cent) and a reduction per expected complication
 Filing the difference in clause 4.3, the standing's window in specification 3.3 and the in-progress
 placement in clause 4.2 closes three readings of WHAT and leaves both HOW questions open.
 
+**The three surface promotions, ruled by the author.** `guard.py surface` promotes task194 against
+task266, task448 and task466, each at 0.102 in the corpus's top 1 per cent, and none is a finding. The
+promotion reason is surface similarity at the corpus's own floor, where `fingerprint` Part 5 puts the
+cross-slot 99.9th percentile under 0.10, combined with this build carrying no ledger row yet, which makes
+the severity read "status unknown on at least one side". The mechanism layer is card against card and the
+hard-tell screen is clean, with only the two drawn personas in the cut pack, both on the card. The four
+drivers are unrelated: this build prices the fall a scarce intervention causes against the unit's own
+return to level, task266 estimates the share of spells ending one way from a record with many still open,
+task448 completes a register from a second list whose capture depends on the filing route, and task466
+fits a low quantile of a yearly extreme to two records of one process. Shared only are the coarse
+`gate_g` and, with task266, `layer2_family`. `heart` is WARN and not BLOCK, so the stage-3 gate holds; the
+adjudicated read stays the author's call under `/clone-check`.
+
 ## Default path
 
 The pipeline a competent analyst builds from the prompt's words and the files' own grain.
