@@ -33,84 +33,74 @@ def responses(fig):
     import golden as G
     import mus
     import world as Wd
+    import tempfile
 
+    target = os.path.join(TASK, "target")
     allrows, rows, lines, hits_, nsel, extra, dup, dr, dn, revs, runs = build.realise()
     g = G.compute(lines, hits_)
     prog = fig["critical_components"]["programme_misstatement"]
     rec = fig["critical_components"]["programme_payments_recorded"]
-    share = fig["critical_components"]["programme_certain_share_pct"]
 
-    # --- the call: the total, the largest programme, its figure, the conclusion ----------
+    def per_from(total_raw):
+        """The programme figures a response files, scaled from the route it took."""
+        k = total_raw / g["total_raw"]
+        return {Wd.PROG_NAME[c]: mus.r_grain(g["per_raw"][c] * k) for c in Wd.PROG_CODES}
+
     def call_hits(total_raw):
-        stated = mus.r_grain(total_raw)
-        per = {Wd.PROG_NAME[c]: mus.r_grain(g["per_raw"][c] * total_raw / g["total_raw"])
-               for c in Wd.PROG_CODES}
+        per = per_from(total_raw)
         big = max(per, key=lambda k: (per[k], k))
         n = 0
-        n += 1 if stated == fig["call"]["misstatement_indicated"] else 0
+        n += 1 if sum(per.values()) == fig["call"]["misstatement_indicated"] else 0
         n += 1 if big == fig["call"]["largest_programme"] else 0
         n += 1 if per[big] == fig["call"]["largest_programme_misstatement"] else 0
         n += 1 if (total_raw + g["bp"] > Wd.TOLERABLE) == \
             fig["call"]["referred_for_extended_testing"] else 0
         return n, per
 
-    # --- the components: nine programmes, two figures each, plus the authority ----------
     def comp_hits(per):
-        n = 0
+        """Recorded value is in the pack, so every response takes those nine; the misstatement
+        cells and the authority total are the response's own."""
+        n = len(rec)
         for k in rec:
-            n += 1 if abs(rec[k] - rec[k]) < 0.005 else 0          # recorded value is in the pack
-            n += 1 if per.get(k, None) == prog[k] else 0
+            n += 1 if per.get(k) == prog[k] else 0
         n += 1 if sum(per.values()) == fig["call"]["misstatement_indicated"] else 0
         return n, 2 * len(rec) + 1
 
-    # --- the asks, each on the cracker's own reading -------------------------------------
-    run_truth = {}
-    for r in sorted(allrows + extra + dup, key=lambda r: r["run"]):
-        pass
-    import tempfile
     tmp = tempfile.mkdtemp()
     rt = A.run_log(tmp, allrows + extra + dup, runs)
     a1 = A.a1_golden(rt)
     stops = A.a1_stops(rt)
     ev, ncorr = A.risk_history(tmp, {r["sup"]: r["sup"] for r in allrows})
     a2 = A.a2_golden(ev)
-    a2_all = A.a2_golden(ev, "all")
+    a2_cracker = A.a2_unmapped(ev)
 
     def a1_hits(agg):
-        n = 0
-        for q in a1:
-            for i in range(3):
-                n += 1 if agg[q][i] == a1[q][i] else 0
-        return n, 3 * len(a1)
+        return sum(1 for q in a1 for i in range(3) if agg[q][i] == a1[q][i]), 3 * len(a1)
 
     def a2_hits(agg):
-        n = 0
-        for b in a2:
-            for i in range(3):
-                n += 1 if agg[b][i] == a2[b][i] else 0
-        return n, 3 * len(a2)
+        return sum(1 for b in a2 for i in range(3) if agg[b][i] == a2[b][i]), 3 * len(a2)
 
-    # A3 on the cracker's reading: the schedule joined on its own reference, so nothing matches
-    a3_total = len(fig["asks"]["schedule_lines_by_month"]) + 2
-    a3_cracker = 0            # twelve monthly counts nil, absent reads 273, twice reads nil
-    a3_mirror = 0
+    # A3 on the cracker's reading: the schedule joined on its own reference without the
+    # crosswalk, so no row resolves; the monthly counts read nil and "absent" reads every row
+    a3_n = len(fig["asks"]["schedule_lines_by_month"]) + 2
+    a3_cracker = 0
 
     cr_call, cr_per = call_hits(g["ratio"])
     mi_call, mi_per = call_hits(g["total_raw"])
     cr_comp, comp_n = comp_hits(cr_per)
     mi_comp, _ = comp_hits(mi_per)
-    cr_a1, a1_n = a1_hits(stops["cutoff_1500_only"])
-    mi_a1, _ = a1_hits(stops["cutoff_1500_only"])
-    cr_a2, a2_n = a2_hits(a2_all)
-    mi_a2, _ = a2_hits(a2_all)
-    asks_n = a1_n + a2_n + a3_total
+    cr_a1, a1_n = a1_hits(stops["the_cracker"])
+    mi_a1, _ = a1_hits(stops["the_cracker"])
+    cr_a2, a2_n = a2_hits(a2_cracker)
+    mi_a2, _ = a2_hits(a2_cracker)
+    asks_n = a1_n + a2_n + a3_n
     return {
         "the cracker": {"call": (cr_call, 4), "components": (cr_comp, comp_n),
                         "instruction": (1, 2),
                         "asks": (cr_a1 + cr_a2 + a3_cracker, asks_n)},
         "the mirror": {"call": (mi_call, 4), "components": (mi_comp, comp_n),
                        "instruction": (2, 2),
-                       "asks": (mi_a1 + mi_a2 + a3_mirror, asks_n)},
+                       "asks": (mi_a1 + mi_a2 + a3_cracker, asks_n)},
     }
 
 

@@ -64,6 +64,11 @@ def has(hay, needle):
     return re.sub(r"\s+", "", needle.lower()) in re.sub(r"\s+", "", hay.lower())
 
 
+def GD_runs(target):
+    import golden as GD
+    return GD.log_runs(target)
+
+
 def run(target, g):
     global N
     N = 0
@@ -474,6 +479,36 @@ def run(target, g):
       "plan 5.2 files what a run's minutes are")
     A(has(plan, "Invalid minutes are left out of every level"),
       "plan 4.2 scopes the validity exclusions to levels, so a minute count is of the period itself")
+
+    # SF20 the minutes behind a level are the minutes that went into it
+    runs_log = GD_runs(target)
+    for c in W.CODES:
+        A(rows[c]["centrifuge_minutes"] <= rows[c]["valid_minutes"],
+          "SF20 %s's dewatering minutes sit inside the minutes behind its level" % c)
+    whole = {}
+    for sid, ss in g["series"].items():
+        code = ss["dep"]["code"]
+        n = 0
+        for t, am in zip(ss["stamps"], ss["am"]):
+            if not am:
+                continue
+            for a, b in runs_log:
+                if a <= t < b:
+                    n += 1
+                    break
+        whole[code] = whole.get(code, 0) + n
+    for c in W.CODES:
+        A(whole[c] > rows[c]["centrifuge_minutes"],
+          "SF20 at %s the whole assessment period is a different quantity (%d against %d)"
+          % (c, whole[c], rows[c]["centrifuge_minutes"]))
+
+    # SF21 the engine's hours come off its own counter, and the counter was changed with the engine down
+    sw = W.HOUR_COUNTER_SWAP
+    A(any(a <= sw < b for a, b in SM.all_down()),
+      "SF21 the hour counter was changed inside a stop, so no running hour falls either side of it")
+    for i in range(6):
+        A(g["weekly"][i]["engine_hours"] < 168.0,
+          "SF21 week %d's engine hours are a week's worth or less" % i)
 
     # ------------------------------------------------------- the readings that converge, asserted on data
     # pooling: the position's residual over both deployments against the mean of the two deployments'

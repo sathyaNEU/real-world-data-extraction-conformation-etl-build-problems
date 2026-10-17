@@ -189,23 +189,20 @@ def run(g, target):
     ok("SF12 comparing the projection itself to materiality would accept the population",
        g["total_raw"] < W.TOLERABLE and g["uml"] > W.TOLERABLE,
        "%.0f against %.0f" % (g["total_raw"], W.TOLERABLE))
-    # SF13: the two rankings the pack hands over both name a different programme from the golden.
-    # The ranking by the misstatement the testing found happens to name the same programme, so the
-    # note says so rather than claiming three; it files 6,644 euro for it against 200,000, and nil
-    # for two programmes that are not nil.
+    # SF13: three natural rankings, three different programmes, and none is the golden's
     bytested = max(W.PROG_CODES, key=lambda c: sum(1 for t in g["tested"] if t["code"] == c))
+    byfound = {c: sum(t["amount"] * t["taint"] for t in g["tested"] if t["code"] == c)
+               for c in W.PROG_CODES}
+    bigfound = max(W.PROG_CODES, key=lambda c: byfound[c])
     ok("SF13 the recorded-value ranking names another programme", byrec[0] != g["largest"],
        byrec[0])
     ok("SF13 the tested-lines ranking names another programme", bytested != g["largest"],
        bytested)
-    byfound = {c: sum(t["amount"] * t["taint"] for t in g["tested"] if t["code"] == c)
-               for c in W.PROG_CODES}
-    ok("SF13 the misstatement-found ranking names the same programme on a figure 30 times too small",
-       max(W.PROG_CODES, key=lambda c: byfound[c]) == g["largest"]
-       and byfound[g["largest"]] * 25 < g["per"][g["largest"]],
-       "%.0f against %d" % (byfound[g["largest"]], g["per"][g["largest"]]))
-    ok("SF13 the misstatement-found reading files nil for programmes that are not nil",
-       sum(1 for c in W.PROG_CODES if byfound[c] == 0 and g["per"][c] > 0) >= 0)
+    ok("SF13 the misstatement-found ranking names another programme", bigfound != g["largest"],
+       bigfound)
+    ok("SF13 the three rankings name three different programmes",
+       len({g["largest"], byrec[0], bigfound}) == 3,
+       "%s / %s / %s" % (g["largest"], byrec[0], bigfound))
 
     # ---------------------------------------------------------------- the input gates
     ok("input gate: ten or more files", len(files) >= 10, str(len(files)))
@@ -219,8 +216,17 @@ def run(g, target):
     # ---------------------------------------------------------------- the asks
     a1 = g["a1"]
     ok("A1 four quarters", len(a1) == 4)
-    ok("A1 the cut-off change bites", a1["2026Q3"][1] + a1["2026Q4"][1] >
-       a1["2026Q1"][1] + a1["2026Q2"][1])
+    ok("A1 using one cut-off for the whole year undercounts the second half",
+       g["a1_stops"]["cutoff_1500_only"]["2026Q3"][1] < a1["2026Q3"][1] and
+       g["a1_stops"]["cutoff_1500_only"]["2026Q4"][1] < a1["2026Q4"][1])
+    ok("A1 grouping on the opening date rather than the release moves the quarters",
+       g["a1_stops"]["grouped_on_the_opening_date"] != a1)
+    ok("A1 a run released past midnight ends a quarter",
+       any(r["run_date"][5:7] in ("03", "06", "09", "12") and
+           r["released_ts"][:10] != r["run_date"]
+           for r in _rows(target, "payment_run_log_2026.csv")))
+    ok("A1 one run is in the log twice", len([r for r in
+       _rows(target, "payment_run_log_2026.csv") if r["run_status"] == "re-released"]) == 1)
     for nm in ("cutoff_1500_only", "cutoff_1400_only", "on_the_cutoff_counted"):
         ok("A1 the cracker's reading %s misses" % nm, g["a1_stops"][nm] != a1)
     onc = [r for r in _rows(target, "payment_run_log_2026.csv")

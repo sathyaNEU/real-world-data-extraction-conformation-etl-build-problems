@@ -53,7 +53,8 @@ def run_log(target, rows, runs):
         # a run is opened on one day and released on it, except where the release ran past
         # midnight: four of them in the year, and the quarter is the quarter it was released in
         rel = day
-        if rng.u() < 0.055:
+        last_of_quarter = any(day.isoformat() == hi for _n, _lo, hi in QUARTERS)
+        if last_of_quarter or rng.u() < 0.04:
             rel = day + dt.timedelta(days=1)
             mins = (1 + rng.below(3)) * 60 + rng.below(60)
         out.append([run, day.isoformat(),
