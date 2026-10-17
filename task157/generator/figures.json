@@ -1,0 +1,84 @@
+{
+  "call": {
+    "fund": "$1,650,000",
+    "drivers": "4,700"
+  },
+  "terms": {
+    "amount": "$350",
+    "trips": "40",
+    "step": "$50,000",
+    "driver_step": "100",
+    "go_live_day": "4",
+    "window_last_day": "31"
+  },
+  "components": {
+    "back_by_asof": "1,100",
+    "ratio": "1.1",
+    "due_back": "1,200",
+    "wave_qualifiers": "2,000"
+  },
+  "steps": {
+    "back_count": "1,087",
+    "ratio_exact": "1.086",
+    "backtest_within_pct": "2",
+    "pool_miss_2025_pct": "14",
+    "pool_miss_2026_pct": "16",
+    "roster_part": "2,700",
+    "qD_pct": "93",
+    "due_back_exact": "1,180",
+    "qJ_pct": "82",
+    "other_returns": "26",
+    "approved_not_started": "195",
+    "new_paid_2026": "14",
+    "approved_not_started_2026": "174"
+  },
+  "answers": {
+    "fund": "$1,650,000",
+    "drivers": "4,700",
+    "ask_a": {
+      "2025": {
+        "never_reached": "$12,950",
+        "net_cost": "$889,350",
+        "drivers_paid": "2,541",
+        "main_run": "$900,900",
+        "later_runs": "$5,950",
+        "recovered": "$4,550"
+      },
+      "2026": {
+        "never_reached": "$16,100",
+        "net_cost": "$1,038,450",
+        "drivers_paid": "2,966",
+        "main_run": "$1,053,500",
+        "later_runs": "$7,350",
+        "recovered": "$6,300"
+      }
+    },
+    "ask_b": {
+      "June": {
+        "applied": "446",
+        "approved": "313",
+        "first_trip": "263"
+      },
+      "July": {
+        "applied": "448",
+        "approved": "322",
+        "first_trip": "274"
+      },
+      "August": {
+        "applied": "500",
+        "approved": "350",
+        "first_trip": "294"
+      },
+      "September": {
+        "applied": "423",
+        "approved": "311",
+        "first_trip": "255"
+      },
+      "October": {
+        "applied": "481",
+        "approved": "338",
+        "first_trip": "286"
+      }
+    }
+  }
+}
