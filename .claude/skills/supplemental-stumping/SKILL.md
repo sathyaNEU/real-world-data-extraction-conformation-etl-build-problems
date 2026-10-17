@@ -194,6 +194,26 @@ measure that before cutting rather than after. That is the right order. A device
 gravest finding in the book, and the cost of holding one for a pass is nothing beside the cost of
 finding it in a verdict.
 
+**An internal inconsistency makes a device findable; it does not make the figure forced. A device
+needs both.** This is the half of law 1 that two builds in one wave got wrong in the same way. The
+inconsistency is what lets a careful analyst discover the device without being told; the asking
+sentence's own words are what stop a different analyst computing a defensible figure that never meets
+the inconsistency at all. task182's replacement devices each had a real inconsistency behind them, a
+counter standing still while its own rate channel read above zero, and both were still judged open
+forks: "the blower air delivered" has a column literally named for the blowers' air that holds two
+machines of three, and "the quarter hours the historian did not record the plant's state in" is
+satisfied by the absent rows alone, since a row that repeats the one before did record something, just
+not the state. Both readings are coherent, nothing shipped closes either, and a solver taking them
+never looks at the rate channels.
+
+Two fixes, and neither is a pin. **Take the lazy answer's handhold away:** where a column name matches
+the ask's words, rename the channels after what the instrument measures rather than after what the ask
+asks for, so there is nothing to grab and the analyst has to work out which machines feed which meter.
+**And word the quantity so the device's rows are inside it by construction:** not "the quarter hours
+the record does not cover", which the absent rows satisfy, but a phrase that a held value also fails,
+so finding the held rows is the work rather than the question. A term that admits a figure reached
+without the inconsistency is a fork however good the inconsistency is.
+
 **A device that rides on an undefined term is a fork, not a device, and determinism will collect it.**
 task182 carried an ask whose device was that the plant records the same facts at two grains, and the
 device worked only while "the minutes of its assessment period" and "runs reached into it" were
