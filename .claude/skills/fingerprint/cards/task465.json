@@ -6,13 +6,13 @@
   "domain": "general-statistics-data-science",
   "subdomain": "data-integration-record-linkage-entity-resolution",
   "client_domain": "general-statistics-data-science",
-  "niche": "a growers' cooperative's 2027 purchase of area-yield drought covers for its five counties at a reinsurer's quoted premiums, each judged on its expected loss by burn analysis on the county's official dryland sorghum yields since 1991, where the statistics service withholds a county's figures in the years too few farms harvest, which are the drought years",
+  "niche": "a growers' cooperative's 2027 purchase of area-yield drought covers for its five counties at a reinsurer's quoted rates, each judged on its expected loss by burn analysis on the county's official dryland sorghum yields since 1991, where the state statistics service withholds a sandy county's estimate in the years too few farms harvest, which are the drought years",
   "objective": "etl",
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Buy the Ardley, Elster and Pallard covers and decline Corvin's and Tresham's.",
+  "answer_source": "submission.md block 1; county_area_yield_quotes_2027.xlsx, Covers sheet",
   "gap": [
     "population",
     "objective"
@@ -35,9 +35,9 @@
   "role_family": "finance_controller",
   "scoring_unit": "per accepted item",
   "spine": {
-    "file": "nass_county_sorghum_estimates_1991_2025.csv",
-    "rows": 0,
-    "entity": "one published estimate (a county's, a district's or the state's harvested acres, production or yield for one crop, practice and year), or a withheld mark",
+    "file": "clrs_county_estimates_pull_2024-03.csv",
+    "rows": 48354,
+    "entity": "one published estimate (a county's, a district's or the state's planted or harvested acres, production or yield for one crop, practice and year), or a withheld mark",
     "grain": "geography x data item x practice x year",
     "source": "synthetic"
   },
@@ -45,17 +45,37 @@
   "forcing_event": "season_or_peak",
   "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "an invented High Plains region of the United States: five invented counties, their cooperative-observer stations and two airport stations",
+    "geography": "an unnamed High Plains state of the United States: five invented counties on the sandy ground where four agricultural statistics districts meet, and nineteen invented neighbouring counties in those districts",
     "currency": "USD",
     "org_type": "a High Plains growers' cooperative buying area-yield drought covers from a reinsurer",
     "invented_names": [
       "Quillfield Re",
       "Ardley Plains Growers' Cooperative",
+      "Crop and Livestock Reporting Service",
       "Ardley County",
       "Corvin County",
       "Elster County",
       "Pallard County",
-      "Tresham County"
+      "Tresham County",
+      "Brannock",
+      "Lindqvist",
+      "Pellow",
+      "Ruddock",
+      "Tolsey",
+      "Cobbett",
+      "Durrance",
+      "Kestner",
+      "Quenby",
+      "Varga",
+      "Fothergill",
+      "Gaddis",
+      "Iverly",
+      "Stannard",
+      "Dornick",
+      "Halvorsen",
+      "Ingleby",
+      "Rumbold",
+      "Treloar"
     ],
     "people": [
       "Brent Little",
@@ -64,30 +84,30 @@
   },
   "deliverables": [
     "county_area_yield_quotes_2027.xlsx",
-    "conformed_county_dryland_sorghum_1991_2025.csv"
+    "conformed_county_dryland_sorghum_yields.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "whether",
   "driver": "The decisive quantity is the long-run average loss of a cover paid on a unit's annual value, and the published history withholds the unit's value in the years too few contributors report, which are the years the value collapses; each withheld value is fixed by the published total of the group it sits in less the group's published members, so a burn over the published years, or with the withheld years filled from the group's average, misstates the loss the cover must be priced on.",
-  "driver_concrete": "Each county cover pays on the county's official dryland sorghum yield against a trigger at a share of its trend yield for 2027; the statistics service withholds a county's harvested acres and production when fewer than three farms harvest, which in the region's drought years (abandoned fields) is exactly when small counties' yields collapse; the agricultural district's published totals less its published counties give each withheld county's acres and production, so the burn over the published years leaves out the covers' worst losses and a district-yield fill dilutes them.",
-  "stump": "The default path prices each county's cover by burn analysis over the years its yield is published, treating withheld years as missing, so the counties whose drought years were withheld look safe, their quoted premiums look dear against their expected loss, and it buys the wrong set; with each withheld year recovered from the district's totals less its published counties, those covers' expected losses rise and the board's rule buys them.",
+  "driver_concrete": "Each county cover pays on the county's official dryland sorghum yield against a trigger at 90 per cent of its expected 2027 yield; the state's statistics service does not publish a county estimate resting on fewer than five reports, which in the region's drought years (abandoned fields) is exactly when the sandy counties' yields collapse, and builds each district's estimates up from all its county estimates; the district's acres and production less its published counties' give each withheld county-year, so the burn over the published years leaves out three covers' worst losses and every fill from the district or the published years dilutes them.",
+  "stump": "The default path prices each county's cover by burn analysis over the years its yield is published, treating withheld years as missing, so the sandy counties whose drought years were withheld look safe, their quoted rates look several times their expected loss, and it buys none of the five covers; with each withheld year recovered from the district's totals less its published counties, three covers' expected losses rise and the board's rule buys them, while a fourth stays dear even with its years back.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the statistics service's export correctly (a withheld mark is not a zero), applies every filed rule and detrends as the board's rule says judges each quote on the county's published years (or fills withheld years with the district's yield), buying the wrong set of covers; recovering each withheld year from the district's totals less its published counties buys the right set.",
+  "analyst_test": "A strong analyst who reads the statistics service's export correctly (a withheld mark is not a zero), applies every filed rule and detrends as the term sheet says judges each quote on the county's published years and buys none of the five covers; one who fills withheld years from the district's yield, the county's ratio to it, a regression on it or its worst year also buys none, and one who reads every withheld year as a total failure buys a fourth cover; recovering each withheld year from the district's totals less its published counties buys the right three.",
   "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, each county's yield history completed from the county, district and state tables of the same statistics by their additive structure, which withholding hides cell by cell; replacing it with the published years alone, or a fill from the district, changes which covers clear their premiums, and the withheld years are not missing at random but the drought years.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:area-yield burn on a history whose withheld years are recovered from the district totals",
   "layer1": [
-    "several sources for one picture: the statistics service's county, district and state estimates export, its revision notes, the cooperative's request, the term sheet and the underwriting guidelines",
-    "values written with thousands separators and withheld or not-published marks in the value column, and a coefficient of variation column on some rows",
-    "data items as long text strings naming crop, practice, statistic and unit; dryland and irrigated rows beside all-practice rows, some years published only for all practices",
-    "district codes and county codes with leading zeros, one district renumbered in a redefinition",
-    "preliminary estimates beside the revised ones for the latest years",
-    "the cooperative's liability written as insured acres times an expected yield and a price"
+    "several sources for one picture: two downloads of the statistics service's county, district and state export overlapping 2016 to 2023, its methods and symbols notes, the term sheet, the quote schedule and the cooperative's policy",
+    "vintages and revisions: the later download revises the county estimates for 2017 to 2021 to the 2022 census",
+    "values written with thousands separators and the service's symbols in the value column, and a coefficient of variation column from 2008",
+    "data items as long text strings naming crop, practice, statistic and unit; six crops, non-irrigated and irrigated rows beside all-practice rows",
+    "district codes one digit before a 2008 recode and two after; county codes without their leading zeros in one download",
+    "the cooperative's enrolment stamped in UTC against a closing time in local time; scale tickets in pounds at delivery moisture; a price per hundredweight against yields in bushels"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task182": "task182 separates an effect from each unit's own lagged response to a shared driver fitted before the effect; here nothing is separated from a driver: the move is averaging a payout that bends at its trigger and exit over a reconstruction's error in seasons the series never observed",
-    "task228": "task228 builds a ratio's variance at the randomised unit and separates three comparators' errors to rank units; here no variance is tested and nothing is ranked: the reconstruction's error enters the expected value of a kinked payout",
+    "task182": "task182 separates an effect from each unit's own lagged response to a shared driver fitted before the effect; here nothing is separated from a driver: the move is restoring the years the publisher withheld from the totals that contain them, and the burn over every year is the filed estimand",
+    "task228": "task228 builds a ratio's variance at the randomised unit and separates three comparators' errors to rank units; here no variance is tested and nothing is ranked: withheld values are recovered exactly and enter a filed average",
     "task461": "task461 carried a short record through an overlap ratio; here no relationship is carried: each withheld value is pinned exactly by the published group totals less the published members",
     "task448": "task448 completed a register from a second incomplete list through capture rates; here the withheld cells are recovered exactly from the same statistics' group totals, and their absence is concentrated in the decisive years",
     "task180": "task180 restores small events that a detection threshold hides in the noisy hours; here nothing went undetected: the service measured every withheld value and published the totals that fix it, so the move is exact recovery from the tables' additive structure, not a detection model",
@@ -97,7 +117,9 @@
     "task230": "task230 v1 reads a staggered switch against a not-yet-switched pool whose mix differs; here there is no comparison pool: the published years are a sample of years selected on the outcome, and the withheld ones are recovered exactly from totals",
     "task124": "task124 infers an unexamined unit's kind from the surviving records of the group laid down with it; here nothing is inferred from group members: the group's published total less its published members is the withheld value itself",
     "task132": "task132 resets a wear-out curve at each replacement; here no rate is carried forward: the decision turns on which past years enter a burn and on recovering the ones the publisher withheld",
-    "task144": "task144 grows an intervention's yield through a branching process; here there is no propagation: a loss average over years is biased by the publisher withholding exactly the bad years"
+    "task144": "task144 grows an intervention's yield through a branching process; here there is no propagation: a loss average over years is biased by the publisher withholding exactly the bad years",
+    "task189": "task189 averages measurements known only to lie below instrument-specific limits, estimated with each observation's own limit; here nothing is censored at a limit: each withheld value is pinned exactly by the published group totals less the published members, and the years withheld are selected on the outcome",
+    "task233": "task233 carries a departure measured on a gold-standard follow-up to every unit's imputed values by an odds ratio; here nothing is imputed or carried: the withheld values are recovered exactly from the same statistics' totals, and every imputation from the published years lands on the wrong covers"
   },
   "lineage": [
     {
@@ -123,6 +145,6 @@
       "fate": "superseded 2026-10-17 before any data was cut: the decisive move (a kinked payout averaged over a reconstruction's error instead of paid on the reconstructed value) is the expectation-of-a-nonlinear-payout lesson task151, task187 and task229 already carry, and the rainfall world's other cruxes (a short gauge carried through an airport's overlap, a gauge's own change, a network's averaging) are task461's, task464 v1's and too small; redrawn on an area-yield index whose published history withholds the bad years"
     }
   ],
-  "notes": "Gap population first (the published years are not the population of years the expected loss runs over: the withheld years are the drought years), objective behind it (each quote is judged on the cover's expected loss). Pattern none. Generators: G6 (the published years' composition shifts away from the bad years; recovering the withheld ones restores it) and G12 (a withheld mark is a non-answer whose value the totals hold, neither a zero nor an ordinary missing year). Gate G forecasting (each cover's expected 2027 loss). Strategy population_selection.",
+  "notes": "Gap population first (the published years are not the population of years the expected loss runs over: the withheld years are the drought years), objective behind it (each quote is judged on the cover's expected loss). Pattern none. Generators: G6 (the published years' composition shifts away from the bad years; recovering the withheld ones restores it) and G12 (a withheld mark is a non-answer whose value the totals hold, neither a zero nor an ordinary missing year). Gate G forecasting (each cover's expected 2027 loss). Strategy population_selection. Stage 2 (2026-10-17): the withholding rule re-framed from disclosure to the service's reliability standard (no complementary suppression), and the world re-laid from two districts to four so three covers turn on recovery (golden buys Ardley, Elster and Pallard; Corvin and Tresham declined; the default path buys none).",
   "registered": "2026-10-17T04:15:04Z"
 }

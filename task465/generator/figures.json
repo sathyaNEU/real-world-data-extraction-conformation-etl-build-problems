@@ -1,0 +1,190 @@
+{
+ "acres": {
+  "Ardley": 3657.7,
+  "Corvin": 9905.6,
+  "Elster": 3848.1,
+  "Pallard": 3980.0,
+  "Tresham": 2943.7
+ },
+ "call": {
+  "buy": [
+   "Ardley",
+   "Elster",
+   "Pallard"
+  ],
+  "decline": [
+   "Corvin",
+   "Tresham"
+  ]
+ },
+ "covers": {
+  "Ardley": {
+   "call": "Buy",
+   "change_rate": 9.06,
+   "default_el": 1.25,
+   "default_multiple": 5.59,
+   "expected": 57.9,
+   "expected_loss": 6.47,
+   "multiple": 1.08,
+   "quote": 7.0,
+   "trend": 0.58,
+   "trigger": 52.11
+  },
+  "Corvin": {
+   "call": "Decline",
+   "change_rate": 4.62,
+   "default_el": 3.3,
+   "default_multiple": 1.71,
+   "expected": 69.3,
+   "expected_loss": 3.3,
+   "multiple": 1.71,
+   "quote": 5.65,
+   "trend": 0.54,
+   "trigger": 62.37
+  },
+  "Elster": {
+   "call": "Buy",
+   "change_rate": 10.45,
+   "default_el": 1.91,
+   "default_multiple": 4.29,
+   "expected": 52.0,
+   "expected_loss": 7.46,
+   "multiple": 1.1,
+   "quote": 8.2,
+   "trend": 0.33,
+   "trigger": 46.8
+  },
+  "Pallard": {
+   "call": "Buy",
+   "change_rate": 6.62,
+   "default_el": 1.0,
+   "default_multiple": 5.1,
+   "expected": 53.5,
+   "expected_loss": 4.73,
+   "multiple": 1.08,
+   "quote": 5.1,
+   "trend": 0.28,
+   "trigger": 48.15
+  },
+  "Tresham": {
+   "call": "Decline",
+   "change_rate": 5.52,
+   "default_el": 2.01,
+   "default_multiple": 3.6,
+   "expected": 51.6,
+   "expected_loss": 3.94,
+   "multiple": 1.84,
+   "quote": 7.25,
+   "trend": 0.34,
+   "trigger": 46.44
+  }
+ },
+ "liability": {
+  "Ardley": 827200,
+  "Corvin": 2681300,
+  "Elster": 781600,
+  "Pallard": 831700,
+  "Tresham": 593300
+ },
+ "premium": {
+  "Ardley": 57900,
+  "Corvin": 151500,
+  "Elster": 64100,
+  "Pallard": 42400,
+  "Tresham": 43000
+ },
+ "price_per_bu": 4.34,
+ "production_2016_2020": {
+  "Ardley": 1385800,
+  "Corvin": 10789500,
+  "Elster": 1158800,
+  "Pallard": 1388200,
+  "Tresham": 1146100
+ },
+ "receipts_bu": {
+  "Ardley": 440937,
+  "Corvin": 2352717,
+  "Elster": 449844,
+  "Pallard": 381491,
+  "Tresham": 399069
+ },
+ "receipts_share": {
+  "Ardley": 31.8,
+  "Corvin": 21.8,
+  "Elster": 38.8,
+  "Pallard": 27.5,
+  "Tresham": 34.8
+ },
+ "record_rows": 175,
+ "recovered": {
+  "Ardley 2002": {
+   "harvested": 500,
+   "production": 5700,
+   "yld": 11.4
+  },
+  "Ardley 2011": {
+   "harvested": 500,
+   "production": 4300,
+   "yld": 8.6
+  },
+  "Ardley 2022": {
+   "harvested": 400,
+   "production": 5000,
+   "yld": 12.5
+  },
+  "Elster 2002": {
+   "harvested": 500,
+   "production": 5200,
+   "yld": 10.4
+  },
+  "Elster 2011": {
+   "harvested": 300,
+   "production": 2400,
+   "yld": 8.0
+  },
+  "Elster 2022": {
+   "harvested": 500,
+   "production": 6600,
+   "yld": 13.2
+  },
+  "Pallard 2003": {
+   "harvested": 500,
+   "production": 4900,
+   "yld": 9.8
+  },
+  "Pallard 2011": {
+   "harvested": 600,
+   "production": 6900,
+   "yld": 11.5
+  },
+  "Tresham 2006": {
+   "harvested": 800,
+   "production": 19600,
+   "yld": 24.5
+  },
+  "Tresham 2011": {
+   "harvested": 500,
+   "production": 11300,
+   "yld": 22.6
+  }
+ },
+ "stated": {
+  "bushel_lb": 56,
+  "cited": {
+   "methods_note": [
+    "2.1",
+    "4.1",
+    "5.1"
+   ],
+   "risk_policy": [
+    "5.2",
+    "5.3"
+   ]
+  },
+  "policy_multiple": 1.4,
+  "price_cwt": 7.75,
+  "standard_moisture_pct": 14,
+  "trigger_pct": 90
+ },
+ "withheld_count": 10
+}
