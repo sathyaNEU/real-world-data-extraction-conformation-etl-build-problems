@@ -1,10 +1,10 @@
 # leak check, task156
 
-**Verdict: REVIEW.** 24 files read, 61 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 24 files read, 64 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: capacity, routed, reviewer, arrivals, volunteer, decisive, volunteers, export, quantity, nothing, carries, forecast, twelve, reviews, back-test, records, trended, reviewers, domain, segment, retained, activity, projected, platform, states
+Stump terms swept: capacity, routed, reviewer, arrivals, volunteer, decisive, volunteers, export, quantity, nothing, carries, forecast, twelve, reviews, back-test, records, reviewers, platform, trended, domain, segment, retained, activity, projected, states
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `member_survey_2026_ai_assistants.pdf`: carries 14 of 20 distinctive words of the committed call: "The council should request 35 paid moderator FTE for 2027, 9 above finance's 26-FTE envelope: Frontend & Web 5, Mobile A"

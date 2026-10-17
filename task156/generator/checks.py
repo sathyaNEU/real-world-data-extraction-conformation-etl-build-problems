@@ -192,6 +192,12 @@ def ask_c_variant(target, X, merger=True, mode="golden"):
         elif mode == "by_move_month":
             if win(b) and src:
                 adj[src] -= 1            # the original leaves its source when it moves; the copy stands for it
+        elif mode == "net_move":         # the old job read as counting each question once, on the site posted to
+            if win(a):
+                if src:
+                    adj[src] -= 1
+                if dst:
+                    adj[dst] += 1
     q22 = {s: wb[s] + adj[s] for s in K.SITES}
     return {s: 100.0 * X.q26[s] / q22[s] for s in K.SITES}
 
@@ -319,6 +325,72 @@ def run(target, golden, B, X, meta_path):
     ok("CALL each site's own pace and own floor (the pooled pace where a site never ran short) file the same nine",
        rnd(own) == GOLD and sum(1 for s in K.SITES if ps[s] != D.pace) >= 5,
        "%s; paces %s" % (nine(own), ", ".join("%s %.1f" % (s, v) for s, v in ps.items())))
+    # the lapse rate read by lapse date over the whole roster (the reviewers whose access lapsed in January and February
+    # 2024 without a review on the platform are on it), against the golden's window of last reviews
+    lap = {s: 0 for s in K.SITES}
+    pre = 0
+    for r_ in rows(target, R.F_ROSTER):
+        if r_["access_status"] == "lapsed" and "2024-01-01" <= r_["lapsed_on"] <= "2026-09-30":
+            lap[r_["site"]] += 1
+            pre += not r_["first_review_on_platform"]
+    risk = {s: D.R[s].sum() for s in K.SITES}
+    h_ld = {s: lap[s] / risk[s] for s in K.SITES}
+    ld = {s: C.fte(C.site_need(D, s, pool=C.project_pool(D, s, hz_mult=h_ld[s] / C.exit_rate(D, s)[0]))[1])
+          for s in K.SITES}
+    ok("CALL the lapse rate read by lapse date over January 2024 to September 2026 (the %d reviewers who lapsed in "
+       "January and February 2024 without a platform review included) is %.2f to %.2f per cent and files the same "
+       "nine; the golden reads lapses by last review, September 2024 to August 2026" % (
+           pre, 100 * min(h_ld.values()), 100 * max(h_ld.values())),
+       rnd(ld) == GOLD and pre > 300 and all(0.0195 <= v <= 0.0215 for v in h_ld.values()) and
+       "a reviewer whose last review fell in March lapses on 1 May." in flat, nine(ld))
+    # routed items priced at the routed mix the records show instead of the inbox's mix
+    rmix = {}
+    for s in K.SITES:
+        tot = sum(D.rout[s][t].sum() for t in K.ITEMS)
+        rmix[s] = {t: D.rout[s][t].sum() / tot for t in K.ITEMS}
+
+    def need_mix(s, mix):
+        items, flag = C.ratios(D, s)
+        per_q = sum(items.values())
+        pool = C.project_pool(D, s)
+        mins = 0.0
+        for k, (y, m) in enumerate(C.FWD_MONTHS):
+            if y == 2027:
+                q = D.plan[s][m - 1]
+                A = q * per_q
+                sh = max(D.floor, 1 - pool[k] * D.pace / A)
+                mins += flag * q * C.STD27["flag"] + A * sh * sum(mix[t] * C.STD27[t] for t in K.ITEMS)
+        return mins / 60.0 / K.FTE_HOURS
+    rm = {s: need_mix(s, rmix[s]) for s in K.SITES}
+    ok("CALL the routed items priced at each site's own routed mix since January 2024 instead of its inbox mix: the "
+       "same nine", rnd(rm) == GOLD, nine(rm))
+    slack_share = {}
+    for t in K.ITEMS:
+        num = den = 0.0
+        for s in K.SITES:
+            for i in range(len(C.HIST_MONTHS)):
+                if D.rout_all[s][i] / D.ent_all[s][i] < 1 / 60.0:
+                    num += D.rout[s][t][i]
+                    den += D.ent[s][t][i]
+        slack_share[t] = num / den
+    ok("REALISM item types route differently where the volunteers keep up (the items nobody picks up differ by type): "
+       "%s" % ", ".join("%s %.2f%%" % (t, 100 * v) for t, v in slack_share.items()),
+       max(slack_share.values()) / min(slack_share.values()) > 1.8)
+    # the chart's actual months: paid review hours as the operations notes define them
+    defn = ("each moderator flag a paid moderator handled and each community item routed to the team, at the handle-time "
+            "standard in force for its year (close votes at 5.0 minutes to the end of 2026, 2.0 from 2027), in the month "
+            "the flag was raised or the item entered the inbox, on UTC.")
+    tot_y = {}
+    for y in DL.ACTUAL_YEARS:
+        idx = [i for i, (yy, m) in enumerate(C.HIST_MONTHS) if yy == y]
+        mins = sum(D.flags[s][idx].sum() * K.STD_2026["flag"] + sum(D.rout[s][t][idx].sum() * K.STD_2026[t]
+                                                                       for t in K.ITEMS) for s in K.SITES)
+        tot_y[y] = mins / 60.0
+    ok("CHART the operations notes define paid review hours once, and the chart's actual years total %s hours, each "
+       "an exact count off any half hour" % ", ".join("%s %s" % (DL.YEAR_LABEL[y], DL.fmt(v)) for y, v in tot_y.items()),
+       defn in flat and all(F["answers"]["chart_actual_hours"][DL.YEAR_LABEL[y]] == DL.fmt(v) and
+                            abs((v % 1) - 0.5) > 1e-6 for y, v in tot_y.items()) and
+       "each year's actual hours totalled" in ptxt)
     i27 = [K.month_index(2027, m) for m in range(1, 13)]
     real = {s: WD.paid_hours_month(W, s, K.STD_2027)[i27].sum() / K.FTE_HOURS for s in K.SITES}
     ok("CALL the forecast is the world's own 2027: the generator's realised 2027 hours give the same nine site needs",
@@ -475,7 +547,7 @@ def run(target, golden, B, X, meta_path):
             x *= (1 - K.CHURN)
             if y == 2027:
                 A = S.plan[m] * per_q
-                sh = max(K.SKIP_SHARE, 1 - x * K.KAPPA / A)
+                sh = max(sum(mix[t] * K.SKIP_BY_TYPE[t] for t in K.ITEMS), 1 - x * K.KAPPA / A)
                 hrs += (S.plan[m] * fr * K.STD_2027["flag"] + A * sh * sum(mix[t] * K.STD_2027[t] for t in K.ITEMS)) / 60
         return hrs
 
@@ -586,8 +658,10 @@ def run(target, golden, B, X, meta_path):
     once = int(K.round_half_up(sum(X.need_h.values()) / K.FTE_HOURS))
     ok("SF8 the network's hours over 1,600 rounded once: %d, the same request; the charter fixes the rounding path" %
        once, once == 35 and how["rounding"] in flat)
-    ok("SF9 how far from the envelope: 9 FTE, whole FTE by the prompt's rounding sentence",
-       X.gap == 9 and "Give FTE in whole numbers" in ptxt)
+    ok("SF9 how far from the envelope: the request less the envelope, 9 FTE above, whole FTE by the prompt's rounding "
+       "sentence; the prompt asks how far above or below it sits",
+       X.gap == 9 and "Give FTE in whole numbers" in ptxt and "how far above or below finance's envelope" in ptxt and
+       "Above finance's 26-FTE envelope by 9 FTE." in sub)
     ok("SF10 the items on posts and accounts not yet written are in the need: the charter says so and the plan's "
        "questions carry them", how["future"] in flat)
     ok("SF11 the chart's history at the standards in force then: the request is computed on 2027 only, so restating the "
@@ -693,6 +767,10 @@ def run(target, golden, B, X, meta_path):
               if max(v for k, v in r_.items() if k.endswith("_utc") and v) > "2026-10-08 05:38:21"]
     ok("ASK A every time in the flag exports and the review log precedes the export run on 8 October", not late_t,
        str(late_t[:2]))
+    ok("ASK A the 24-hour flag response is the standard's share, the post-deleted closures out of both counts; the "
+       "prompt names the measure",
+       "for each site and month, the share of the flags raised in the month, on UTC, that were answered within 24 hours."
+       in flat and "left out of both counts." in flat and "24-hour flag response" in ptxt)
     ok("ASK A the flag service standard files the basis once, and no file says the export time moves on review",
        "first action on it came within 24 hours of the flag being raised" in flat and
        not re.search(r"marked handled again|re-?stamp|overwrit", flat, re.I))
@@ -766,6 +844,17 @@ def run(target, golden, B, X, meta_path):
     ok("ASK C the warehouse notes file the basis once and the workbook's own note says what it counted",
        "Questions are counted once each, in the month the question was first asked (UTC), on the site the question is "
        "on today." in flat)
+    old_job = ("The old statistics job counted a question on every site it was posted to. A question moved to another "
+               "site is posted there anew under a new question id, so the job counted it on its first site in the month "
+               "it was asked and on its new site in the month it moved.")
+    c5 = ask_c_variant(target, X, mode="net_move")
+    ok("ASK C the reading that the old job counted each question once on the site it was posted to (moves netted in "
+       "the month asked, no copies taken off) misses all nine, and the warehouse notes' sentence on the old job rules "
+       "it out", not miss(c5, Cq, K.SITES, 1) and old_job in flat, "min gap %.2f" % min(abs(c5[s] - Cq[s])
+                                                                                   for s in K.SITES))
+    ok("ASK C the reading with no restatement (the workbook's 2022 as reported, S2) is ruled out by the warehouse "
+       "notes: comparisons with 2021 to 2023 are made on the warehouse's basis",
+       "Comparisons with 2021 to 2023 are made on the warehouse's basis." in flat and not miss(c2, Cq, K.SITES, 1))
 
     # ------------------------------------------------------------------ realism sweep
     by_site = {}

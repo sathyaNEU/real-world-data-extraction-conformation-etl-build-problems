@@ -203,9 +203,9 @@ def write_envelope(path):
 # ---------------------------------------------------------------------------------------------------- flag service
 F_FLAGSTD = "flag_service_standard.pdf"
 FLAGSTD_PARAS = [
-    "Flag response is the moderation team's service measure to the sites. It is reported monthly for each site on the "
-    "flags raised in the month, on UTC.",
-    "Flags the platform closed because the post was deleted before a moderator acted are left out.",
+    "Flag response is the moderation team's service measure to the sites: for each site and month, the share of the "
+    "flags raised in the month, on UTC, that were answered within 24 hours.",
+    "Flags the platform closed because the post was deleted before a moderator acted are left out of both counts.",
     "A flag is answered within 24 hours when a paid moderator's first action on it came within 24 hours of the flag "
     "being raised. A first action accepts the flag (and acts on the post) or declines it.",
     "The measure is reported to the council each quarter beside the sites' flag counts.",
@@ -293,6 +293,14 @@ Duane Zamora, head of moderation operations. Kept for the council's pool work; l
   kept for 2021 to 2023 in the monthly queue workbook.
 - The platform's daily inbox export counts, for each site, entry day and item type, the items that entered the inbox
   and what became of them: reviewed by a volunteer, routed to the moderation queue, or still open when the export ran.
+
+## Paid review hours
+
+- The council follows the paid team's review work as paid review hours: each moderator flag a paid moderator handled
+  and each community item routed to the team, at the handle-time standard in force for its year (close votes at 5.0
+  minutes to the end of 2026, 2.0 from 2027), in the month the flag was raised or the item entered the inbox, on UTC.
+  They are not the hours worked on the WFM lines.
+- Months still to come are counted on the planning team's question plan, and October to December 2026 on its outlook.
 """
 
 
@@ -305,6 +313,10 @@ Data platform team. The warehouse replaced the old reporting jobs on 1 January 2
   today.
 - Months before January 2024 are not in the warehouse; the old review system's monthly queue workbook carries the
   question counts its statistics job reported for 2021 to 2023.
+- The old statistics job counted a question on every site it was posted to. A question moved to another site is posted
+  there anew under a new question id, so the job counted it on its first site in the month it was asked and on its new
+  site in the month it moved.
+- Comparisons with 2021 to 2023 are made on the warehouse's basis.
 - The planning team's question plan counts questions the way the warehouse does.
 - Deleted questions are counted in the month they were asked.
 """
@@ -328,20 +340,21 @@ def data_dictionary():
 
 entered is the sum of reviewed_by_volunteer, routed_to_moderation and open_at_pull on every row.
 
-## reviewer_roster (one row per reviewer and site, every reviewer with review access at any time since 1 January 2024)
+## reviewer_roster (one row per reviewer and site, every reviewer whose review access had not lapsed before 1 January 2024)
 
 | Field | Meaning |
 |---|---|
 | account_id | network account id |
 | site | the site the reviewer reviews on |
 | access_granted | the day review access was granted (may be before the platform) |
-| first_review_on_platform | the reviewer's first review on the platform |
+| first_review_on_platform | the reviewer's first review on the platform (blank for a reviewer who made none) |
 | last_review | the reviewer's last review before the export |
 | access_status | active, or lapsed |
 | lapsed_on | the day access lapsed |
 
-Review access lapses after a calendar month in which the reviewer made no reviews, on the first day of the month after
-it. A reviewer whose access lapsed and who asks for it again gets a new row.
+A reviewer is active in a month in which they made at least one review. Review access lapses after a calendar month in
+which the reviewer made no reviews, on the first day of the month after it: a reviewer whose last review fell in March
+lapses on 1 May. A reviewer whose access lapsed and who asks for it again gets a new row.
 
 ## modtool_flag_summary_daily (one row per site and day)
 

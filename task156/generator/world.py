@@ -165,7 +165,7 @@ def _fifo(code, all_days, items, Kday):
         today = {}
         for t in K.ITEMS:
             n = items[t][di]
-            sk = int(r.binomial(n, K.SKIP_SHARE)) if n > 0 else 0
+            sk = int(r.binomial(n, K.SKIP_BY_TYPE[t])) if n > 0 else 0
             rout[t][di] += sk
             today[t] = float(n - sk)
         queue.append([di, today])

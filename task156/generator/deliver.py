@@ -26,6 +26,8 @@ NAME = {s: K.SITE[s]["name"] for s in K.SITES}
 MONTHS_ALL = C.HIST_MONTHS + C.FWD_MONTHS                  # 2024-01 .. 2027-12
 SAT_CUT = 5                                                 # per cent routed: the inbox outran the volunteers
 ENV_MONTH = K.ENVELOPE_2027 * K.FTE_HOURS / 12.0
+ACTUAL_YEARS = (2024, 2025, 2026)                           # 2026: January to September, the months closed
+YEAR_LABEL = {2024: "2024", 2025: "2025", 2026: "January to September 2026"}
 
 
 def fmt(x, dp=0):
@@ -78,6 +80,10 @@ def compute(target):
     X.newly_from = min(min(X.short[s]) for s in X.newly)
     X.share26 = share26
     X.monthly = {s: np.concatenate([X.hist_hours[s], X.fwd_hours[s]]) for s in K.SITES}
+    X.actual_year = {}
+    for y in ACTUAL_YEARS:
+        idx = [i for i, (yy, m) in enumerate(C.HIST_MONTHS) if yy == y]
+        X.actual_year[y] = sum(X.hist_hours[s][idx].sum() for s in K.SITES)
     return X
 
 
@@ -244,9 +250,10 @@ def write_xlsx(path, X):
 
     w6 = wb.create_sheet("Monthly hours")
     _title(w6, "Paid review hours by month and site, January 2024 to December 2027 (the deck's chart)", [
-        "Moderator flags handled and community items reaching the paid team, each at the handle-time standard in force "
-        "(close votes 5.0 minutes to December 2026, 2.0 from January 2027). Actual to September 2026, forecast from "
-        "October 2026."], "M")
+        "Paid review hours as the operations notes define them: each moderator flag a paid moderator handled and each "
+        "community item routed to the team, at the handle-time standard in force for its year (close votes 5.0 minutes "
+        "to December 2026, 2.0 from January 2027), in the month the flag was raised or the item entered the inbox, UTC. "
+        "Actual to September 2026; forecast from October 2026 on the question plan and its outlook."], "M")
     _head(w6, 4, ["Month", "Basis"] + [NAME[s] for s in K.SITES] + ["Network", "2027 envelope"],
           [10, 9] + [11] * 9 + [10, 10], 45)
     for i, (y, m) in enumerate(MONTHS_ALL):
@@ -260,6 +267,18 @@ def write_xlsx(path, X):
             w6.cell(row=row, column=3 + j, value=v).number_format = "#,##0"
         w6.cell(row=row, column=12, value=int(K.round_half_up(tot))).number_format = "#,##0"
         w6.cell(row=row, column=13, value=int(K.round_half_up(ENV_MONTH))).number_format = "#,##0"
+    row = 5 + len(MONTHS_ALL) + 1
+    for y in ACTUAL_YEARS:
+        idx = [i for i, (yy, m) in enumerate(C.HIST_MONTHS) if yy == y]
+        a = w6.cell(row=row, column=1, value="Actual, %s" % YEAR_LABEL[y])
+        a.font = Font(bold=True)
+        for j, s in enumerate(K.SITES):
+            c = w6.cell(row=row, column=3 + j, value=int(K.round_half_up(X.hist_hours[s][idx].sum())))
+            c.number_format = "#,##0"
+        c = w6.cell(row=row, column=12, value=int(K.round_half_up(X.actual_year[y])))
+        c.number_format = "#,##0"
+        c.font = Font(bold=True)
+        row += 1
     w6.freeze_panes = "C5"
 
     w7 = wb.create_sheet("Notes")
@@ -301,8 +320,9 @@ def write_xlsx(path, X):
                                  "most months of 2027. %s are short already. %s stay covered through 2027." % (
                                      names(X.newly), K.MONTH_NAMES[X.newly_from[1]], X.newly_from[0],
                                      names(X.already), names(X.covered))),
-        ("Flag response", "The flag service standard: flags raised in the month on UTC, a paid moderator's first "
-                          "action within 24 hours, flags closed because the post was deleted left out. The flag "
+        ("Flag response", "The flag service standard's measure: the share of a site's flags raised in the month, on UTC, "
+                          "that a paid moderator first acted on within 24 hours, flags the platform closed because the "
+                          "post was deleted left out of both counts. The flag "
                           "export's handled time is when the flag was last marked handled, which a decision review "
                           "moves; the decision-review log keeps the first action. Flags raised on 15 August are in "
                           "both parts of the export and are counted once."),
@@ -310,10 +330,16 @@ def write_xlsx(path, X):
                          "six moderators changed site in July and August 2026, so each shift goes to the site the HR "
                          "assignment history has for its start day. Infrastructure & DevOps appears in WFM as Ops & "
                          "Cloud."),
-        ("Questions vs 2022", "The old workbook counted a question moved between sites at its source in the month it "
-                              "was asked and again at its destination in the month it moved. The migration log puts "
-                              "each moved question on its destination in the month it was asked, as the warehouse "
-                              "counts today."),
+        ("Questions vs 2022", "The old statistics job counted a question on every site it was posted to, so a moved "
+                              "question counted on its first site in the month it was asked and again on its new site "
+                              "in the month it moved (posts warehouse notes). Comparisons are on the warehouse's basis: "
+                              "the migration log puts each moved question on the site it moved to, in the month it was "
+                              "asked, once."),
+        ("Paid review hours", "The deck's chart, as the operations notes define them: each moderator flag a paid "
+                              "moderator handled and each community item routed to the team, at the standard in force "
+                              "for its year, in the month the flag was raised or the item entered the inbox (UTC); not "
+                              "the hours worked on the WFM lines. Actual hours: %s." % "; ".join(
+                                  "%s %s" % (YEAR_LABEL[y], fmt(X.actual_year[y])) for y in ACTUAL_YEARS)),
     ]
     _head(w7, 1, ["Item", "Note"])
     for i, (k, v) in enumerate(notes, 2):
@@ -365,6 +391,12 @@ def chart_png(X):
         ax.plot([xx, xx], [yb, yb - ymax * 0.02], color=INK2, lw=1.0, zorder=5)
     ax.text((i27 - 0.4 + n - 0.6) / 2, yb + ymax * 0.012, "2027: %d FTE of need" % X.request, ha="center",
             va="bottom", fontsize=10.5, color=INK, fontweight="bold", zorder=6)
+    for y in ACTUAL_YEARS:
+        idx = [i for i, (yy, m) in enumerate(MONTHS_ALL) if yy == y and (yy, m) <= (2026, 9)]
+        xm = (idx[0] + idx[-1]) / 2.0
+        ax.text(xm, ymax * 0.56, "%s\n%s hours" % ("Jan to Sep 2026" if y == 2026 else str(y),
+                                                   fmt(X.actual_year[y])),
+                ha="center", va="bottom", fontsize=10, color=INK, zorder=6)
     ax.text(k0 - 0.2, ymax * 0.975, "Actual", fontsize=10, color=INK2, ha="right", va="top")
     ax.text(k0 + 0.2, ymax * 0.975, "Forecast", fontsize=10, color=INK2, ha="left", va="top")
     ax.set_xlim(-0.5, n - 0.5)
@@ -511,9 +543,10 @@ def submission(X):
     exit_pc = int(K.round_half_up(100 * X.exit_net))
     s = []
     s += ["## Tags", "",
-          "**Domain:** Product Analytics (retention, cohort and lifetime value modeling: each site's volunteer reviewer "
-          "pool carried forward on its own monthly lapse rate, and the reviews a retained reviewer delivers when the "
-          "inbox outruns the pool).",
+          "**Domain:** Product Analytics (retention, cohort and lifetime value modeling: a Q&A platform's volunteer "
+          "reviewers as a retained-user cohort, each site's pool carried forward on its own lapse hazard with almost no "
+          "new reviewers arriving, times the activity a retained reviewer delivers, seen only where work outran the "
+          "pool).",
           "**Analytical objective:** Forecasting & Predictive Modeling.", ""]
     s += ["## 1. Final Recommendation", "",
           "**The council should request %d paid moderator FTE for 2027, %d above finance's %d-FTE envelope: %s.**" % (
@@ -559,7 +592,7 @@ def submission(X):
         s.append("   - %s: %d" % (NAME[site], X.need_round[site]))
     s += ["2. Council request for 2027: %d FTE." % X.request,
           "3. Above finance's %d-FTE envelope by %d FTE." % (K.ENVELOPE_2027, X.gap),
-          "4. Share of the moderator flags raised in each month that a moderator first acted on within 24 hours:"]
+          "4. 24-hour flag response by site and month:"]
     for site in K.SITES:
         s.append("   - %s: July 2026 %s%%, August 2026 %s%%, September 2026 %s%%" % (
             NAME[site], pct(X.ask_a[(site, 7)]), pct(X.ask_a[(site, 8)]), pct(X.ask_a[(site, 9)])))
@@ -574,8 +607,11 @@ def submission(X):
           "7. Slide 1 states the request: %d paid moderator FTE for 2027, %d above the %d-FTE envelope, with each "
           "site's need." % (X.request, X.gap, K.ENVELOPE_2027),
           "8. Slide 2 charts the network's monthly paid review hours from January 2024 to December 2027, one stacked "
-          "band per site, the forecast from October 2026 shaded, with finance's envelope (%d FTE, %s hours a month) "
-          "drawn across." % (K.ENVELOPE_2027, fmt(ENV_MONTH)), ""]
+          "band per site, the forecast from October 2026 shaded, finance's envelope drawn across at %s hours a month "
+          "(%d FTE), and each year's actual hours totalled:" % (fmt(ENV_MONTH), K.ENVELOPE_2027)]
+    for y in ACTUAL_YEARS:
+        s.append("   - %s: %s hours" % (YEAR_LABEL[y], fmt(X.actual_year[y])))
+    s.append("")
     return "\n".join(s)
 
 
@@ -597,6 +633,7 @@ def figures(X):
             "ask_b_hours": {"%s Q%d 2026" % (NAME[s], q): fmt(X.ask_b[(s, q)]) for s in K.SITES for q in (1, 2, 3)},
             "ask_c_pct": {NAME[s]: pct(X.ask_c[s]) for s in K.SITES},
             "chart_envelope_hours_a_month": fmt(ENV_MONTH),
+            "chart_actual_hours": {YEAR_LABEL[y]: fmt(X.actual_year[y]) for y in ACTUAL_YEARS},
         },
     }
 

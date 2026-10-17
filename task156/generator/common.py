@@ -92,7 +92,8 @@ CHURN = 0.0205                           # monthly share of reviewers who stop (
 PIPE_MID = dt.date(2024, 9, 15)          # the reputation pipeline runs dry around here
 PIPE_WIDTH_M = 1.4                       # months
 PIPE_FLOOR = 0.004                       # inflow after the pipeline dried up, share of the old steady inflow
-SKIP_SHARE = 0.0058                      # items no volunteer ever picks up (obscure tags), routed regardless
+SKIP_SHARE = 0.0058                      # the network mean of the items no volunteer ever picks up
+SKIP_BY_TYPE = {"close": 0.0091, "first_post": 0.0035, "low_quality": 0.0072, "edit": 0.0040}   # by item type
 HANDOFF_DAYS = 3                         # 72 hours
 
 # question volume shape

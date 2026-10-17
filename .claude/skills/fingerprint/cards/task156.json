@@ -78,7 +78,8 @@
     "UTC day boundaries in the platform exports against Toronto time in the moderation team's own records",
     "the September 2026 inbox export pulled twice, a preliminary pull with the last days' routing still open and a revised pull a week later",
     "the moderator tool's flag export pulled in two parts that both carry 15 August",
-    "a WFM week re-sent after a payroll query, the original lines kept and marked superseded, and Infrastructure & DevOps still under its old WFM name"
+    "a WFM week re-sent after a payroll query, the original lines kept and marked superseded, and Infrastructure & DevOps still under its old WFM name",
+    "a reviewer roster that keeps the reviewers whose access lapsed in January or February 2024 without a review on the platform (first review blank)"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
@@ -88,6 +89,6 @@
     "task140": "task140 strikes a residual after higher reservations that include a dependent load; here the volunteers are no reservation and their capacity does not depend on the paid tier"
   },
   "lineage": [],
-  "notes": "Kinship cards read at the draw: task150, task153, task152, task149 (the lane's last builds), task140, task147, task148, task111, task128 (capacity and overflow drivers on file). No trust-and-safety card in the corpus carries a moderation-capacity driver.",
+  "notes": "Kinship cards read at the draw: task150, task153, task152, task149 (the lane's last builds), task140, task147, task148, task111, task128 (capacity and overflow drivers on file). No trust-and-safety card in the corpus carries a moderation-capacity driver. Round 1 (stage 4): the rule 3 audit called the retention tag thin and suggested a trust-and-safety or community-moderation workforce task type; vocab.json has none (healthcare's patient-flow workforce type would make the domain a backdrop), so the tag stays product-analytics retention, the deciding quantity being the volunteer reviewer cohort's retained activity.",
   "registered": "2026-10-17T08:19:38Z"
 }

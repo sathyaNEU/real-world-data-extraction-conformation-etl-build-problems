@@ -88,11 +88,11 @@ def main(target):
 
     # the filed numbers: standards, FTE hours, envelope
     std_txt = pdf_text(os.path.join(target, "handle_time_standards_2027.pdf"))
-    std = {}
+    std, std_old = {}, {}
     for label, key in (("Moderator flag", "flag"), ("Close vote", "close"), ("First post", "first_post"),
                        ("Low quality", "low_quality"), ("Suggested edit", "edit")):
         m = re.search(r"%s\s+(\d+\.\d)\s+(\d+\.\d)" % label, std_txt)
-        std[key] = float(m.group(2))
+        std_old[key], std[key] = float(m.group(1)), float(m.group(2))
     charter = re.sub(r"\s+", " ", pdf_text(os.path.join(target, "moderation_council_charter_2025.pdf")))
     fte_hours = float(re.search(r"One FTE is ([\d,]+) hours", charter).group(1).replace(",", ""))
     env_txt = re.sub(r"\s+", " ", pdf_text(os.path.join(target, "finance_envelope_2027_paid_moderation.pdf")))
@@ -103,12 +103,14 @@ def main(target):
     ent_t = defaultdict(float)
     rev = defaultdict(float)
     rout = defaultdict(float)
+    rout_t = defaultdict(float)
     for r in read_csv(target, "review_inbox_daily_2024-01-01_2026-09-30.csv"):
         k = (r["site"],) + month_key(r["entry_date_utc"])
         ent[k] += int(r["entered"])
         ent_t[k + (TYPES[r["item_type"]],)] += int(r["entered"])
         rev[k] += int(r["reviewed_by_volunteer"])
         rout[k] += int(r["routed_to_moderation"])
+        rout_t[k + (TYPES[r["item_type"]],)] += int(r["routed_to_moderation"])
     flags = defaultdict(float)
     for r in read_csv(target, "modtool_flag_summary_daily_2024-01-01_2026-09-30.csv"):
         flags[(r["site"],) + month_key(r["date_utc"])] += int(r["handled_by_moderator"])
@@ -124,6 +126,8 @@ def main(target):
     lapses = defaultdict(int)
     joins = defaultdict(int)
     for r in read_csv(target, "reviewer_roster_2026-10-08.csv"):
+        if not r["first_review_on_platform"]:
+            continue
         a, b = month_key(r["first_review_on_platform"]), month_key(r["last_review"])
         for ym in months:
             if a <= ym <= b:
@@ -197,6 +201,18 @@ def main(target):
         bad.append("request %d, envelope %d" % (request, envelope))
     if int(half_up(pace)) != F["components"]["reviews_a_month"]:
         bad.append("pace %.2f" % pace)
+
+    # the chart's actual years: paid review hours as the operations notes define them (2023 to 2026 standards)
+    for label, yr in (("2024", 2024), ("2025", 2025), ("January to September 2026", 2026)):
+        mins = 0.0
+        for s in codes:
+            for (y, mo) in months:
+                if y != yr:
+                    continue
+                mins += flags[(s, y, mo)] * std_old["flag"]
+                mins += sum(rout_t[(s, y, mo, t)] * std_old[t] for t in std_old if t != "flag")
+        if format(int(half_up(mins / 60.0)), ",") != F["answers"]["chart_actual_hours"][label]:
+            bad.append("chart %s %.2f" % (label, mins / 60.0))
 
     # Ask A: first action within 24 hours, the decision-review log's first action where a decision was reviewed
     first = {r["flag_id"]: r["first_action_at_utc"] for r in read_csv(target, "flag_decision_reviews_2026-07_to_2026-09.csv")}

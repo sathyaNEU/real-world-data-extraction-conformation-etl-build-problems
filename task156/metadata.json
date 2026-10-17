@@ -61,7 +61,7 @@
     {
       "path": "flag_service_standard.pdf",
       "format": "pdf",
-      "bytes": 56800,
+      "bytes": 56798,
       "rows": null,
       "source": "Constructed: Millrind moderation operations, flag service standard (revised 4 February 2026)",
       "date": "2026-10-09",
@@ -97,7 +97,7 @@
     {
       "path": "moderation_ops_notes.md",
       "format": "md",
-      "bytes": 1656,
+      "bytes": 2198,
       "rows": null,
       "source": "Constructed: Millrind moderation operations notes (6 October 2026)",
       "date": "2026-10-09",
@@ -169,7 +169,7 @@
     {
       "path": "posts_warehouse_notes.md",
       "format": "md",
-      "bytes": 561,
+      "bytes": 896,
       "rows": null,
       "source": "Constructed: Millrind data platform team, posts warehouse notes",
       "date": "2026-10-09",
@@ -187,7 +187,7 @@
     {
       "path": "question_plan_2027.xlsx",
       "format": "xlsx",
-      "bytes": 10046,
+      "bytes": 9989,
       "rows": 35,
       "source": "Constructed: Millrind Planning & Analytics, 2027 question plan by site and month",
       "date": "2026-10-09",
@@ -196,7 +196,7 @@
     {
       "path": "review_inbox_daily_2024-01-01_2026-09-30.csv",
       "format": "csv",
-      "bytes": 2260287,
+      "bytes": 2260392,
       "rows": 36144,
       "source": "Constructed: Millrind review platform, daily review inbox export by site, entry day and item type (pulled 8 October 2026)",
       "date": "2026-10-09",
@@ -205,7 +205,7 @@
     {
       "path": "review_inbox_daily_2026-09_pulled_2026-10-02.csv",
       "format": "csv",
-      "bytes": 67807,
+      "bytes": 67810,
       "rows": 1080,
       "source": "Constructed: Millrind review platform, daily review inbox export for September 2026 as first pulled on 2 October 2026",
       "date": "2026-10-09",
@@ -214,7 +214,7 @@
     {
       "path": "review_platform_data_dictionary.md",
       "format": "md",
-      "bytes": 2111,
+      "bytes": 2285,
       "rows": null,
       "source": "Constructed: Millrind review platform and moderator tool, export field notes",
       "date": "2026-10-09",
@@ -223,7 +223,7 @@
     {
       "path": "review_queues_monthly_2021-2023.xlsx",
       "format": "xlsx",
-      "bytes": 42464,
+      "bytes": 42206,
       "rows": 373,
       "source": "Constructed: Millrind community operations, the old review system's monthly queue workbook, 2021 to 2023",
       "date": "2026-10-09",
@@ -232,8 +232,8 @@
     {
       "path": "reviewer_roster_2026-10-08.csv",
       "format": "csv",
-      "bytes": 1180118,
-      "rows": 19391,
+      "bytes": 1218711,
+      "rows": 20080,
       "source": "Constructed: Millrind review platform, reviewer roster (access spells by reviewer and site)",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"

@@ -84,6 +84,8 @@ def load(target):
     joins = {s: np.zeros(len(HIST_MONTHS)) for s in K.SITES}
     for r in _rows(p(R.F_ROSTER)):
         s = r["site"]
+        if not r["first_review_on_platform"]:
+            continue                 # access open on 1 January 2024, no review on the platform: never active on it
         a, b = MIDX[ym_of(r["first_review_on_platform"])], MIDX[ym_of(r["last_review"])]
         Rm[s][a:b + 1] += 1
         if r["access_status"] == "lapsed":

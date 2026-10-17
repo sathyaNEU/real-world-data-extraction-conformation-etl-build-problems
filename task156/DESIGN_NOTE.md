@@ -35,6 +35,12 @@ council votes; the finance envelope is the comparison the request is read agains
 context artifact is the platform's daily inbox export (`monitoring_export`); the charter and the standards are filed
 documents the call reads but not the stakeholder's working file.
 
+**Domain tag (round 1).** The rule 3 audit called the product-analytics retention tag thin for a capacity-censored
+queue forecast and suggested a trust-and-safety or community-moderation workforce task type; `vocab.json` carries none
+(the only workforce task type is healthcare's patient flow, which would make the domain a backdrop), so the tag stays
+`product-analytics/retention-cohort-lifetime-value-modeling`, honestly the closest: the deciding quantity is the
+volunteer reviewer cohort's retained activity. The tag line now names the reviewers as the retained-user cohort.
+
 **Same-puzzle and same-driver tests.** Gap time, decisive G-code G5, decision `quantity_figure`, Gate G
 `binding_constraint`: no build in the last twelve and no older build carries either triple (the guard reports none).
 
@@ -112,7 +118,7 @@ review, the pool projected from September 2026 at its own monthly lapse rate (2.
 network) with almost no new reviewers, each retained reviewer at the pace reviewers keep when the inbox is full (40.0
 reviews a month, read from the 89 site-months since 2021 in which more than 5 per cent of entering items were routed);
 the handled flags at the plan's questions times the site's flag rate. The generator's own realised 2027 hours give the
-same nine site needs (34.47 FTE against the forecast's 34.97; `checks.py` CALL).
+same nine site needs (34.44 FTE against the forecast's 34.97; `checks.py` CALL).
 
 ## Stump sentence
 
@@ -142,9 +148,10 @@ pool trended over the platform's whole record, 53 with the pace read from 2026 t
   codes with Graphics folded into Game Development in 2023 (the site register), UTC day boundaries in the platform
   exports against Toronto time in the moderation team's records, the September 2026 export pulled twice (a preliminary
   pull with the last days' routing still open, a revised pull a week later), the moderator tool's flag export pulled in
-  two parts that both carry 15 August, and a WFM week re-sent after a payroll query with its original lines kept as
-  superseded. Each is what these systems write; none carries the stump (`checks.py` R2a to R2e: each mishandled, the
-  same nine site needs).
+  two parts that both carry 15 August, a WFM week re-sent after a payroll query with its original lines kept as
+  superseded, and the roster's 689 reviewers whose access lapsed in January or February 2024 without a review on the
+  platform (first review blank). Each is what these systems write; none carries the stump (`checks.py` R2a to R2e and
+  the lapse-date reading: each mishandled, the same nine site needs).
 - **Layer 2:** `allocation_constraints`: the paid team's work is what a capacity-limited first tier leaves, so it is
   forecast as arrivals less the first tier's capacity, month by month, the capacity projected from the volunteer pool's
   own retention and read at the pace volunteers keep when work outruns them; validated out of sample on the closed months.
@@ -192,8 +199,8 @@ subtraction, ratio or half of a figure). Built figures (`generator/calc.py`; the
 |---|---|---|---|---|---|---|---|
 | R0 each site's paid queue hours per question over the last twelve months carried onto the plan (23) | the charter prices items at the standard and the plan gives the questions, which invites a rate per question | the inbox export and the flag summary carry routed items and flags by site and day | yes, the default | the analyst's own back-test refutes it (from September 2025 it misses the next twelve months' routed items by 73 per cent) | no | yes, one ratio | readable |
 | R1 each site's routed share or monthly paid hours trended forward (25, 28) | no | the same columns | yes, the trend reflex | the same back-test: the trended share misses by 68 per cent, the hours trend at Security, Embedded and Scientific Computing only | no | yes, a fitted line | readable |
-| R2a volunteer capacity against arrivals, the reviewer pool trended over the platform's whole record from January 2024 (31) | no | the roster carries each reviewer's first and last review | a careful forecaster's reflex once capacity is seen | the back-test from September 2025 under-predicts routed items by 30 per cent (the record's first nine months, before the pipeline dried up, flatten the trend) | no | no | readable |
-| R2b volunteer capacity read from each site's own reviews per reviewer in January to September 2026 (53) | no | reviews and reviewers by site and month | the capacity-modeller's reflex (current throughput as capacity) | the back-test over-predicts routed items by 596 per cent: at every site with spare volunteers the throughput is held down by the work that arrived | no | no | readable |
+| R2a volunteer capacity against arrivals, the reviewer pool trended over the platform's whole record from January 2024 (31) | no | the roster carries each reviewer's first and last review | a careful forecaster's reflex once capacity is seen | the back-test from September 2025 under-predicts routed items by 31 per cent (the record's first nine months, before the pipeline dried up, flatten the trend) | no | no | readable |
+| R2b volunteer capacity read from each site's own reviews per reviewer in January to September 2026 (53) | no | reviews and reviewers by site and month | the capacity-modeller's reflex (current throughput as capacity) | the back-test over-predicts routed items by 597 per cent: at every site with spare volunteers the throughput is held down by the work that arrived | no | no | readable |
 | R3 (decisive) each site's reviewer pool projected from September 2026 at the exit rate its records show since the pipeline dried up, each reviewer at the pace reviewers keep when the inbox is full, each 2027 month's arrivals beyond that capacity routed (35) | no sentence states a capacity, a pace, an exit rate or a pipeline; the charter defines what reaches the paid team, not how many items will | no column carries capacity, pace or exits: the roster lists access spells, the inbox export counts items, nothing names a site as short | no: the reflexes are a rate per question, a trend, a share, current throughput | none ships: the closed months are raw records every candidate is scored on, no document scores the methods | no: nothing is duplicated, missing or mis-keyed on the call's rows | no: a capacity built from a projected pool and a pace read only where work outran it, set month by month against arrivals | silent |
 
 ## Semantic fork table
@@ -226,8 +233,8 @@ scicomp).
 | R0 default | each site's flags and routed items over the last twelve months at the 2027 standards, per question, carried onto the 2027 plan (nine months gives the same) | 23 (5, 2, 4, 3, 3, 1, 2, 2, 1) | the back-test: carrying the routed share from September 2025 misses the next twelve months' routed items by 73 per cent |
 | R1a | each site's routed share trended (the last twelve months against the twelve before) | 25 (5, 2, 4, 3, 3, 1, 3, 3, 1) | the same back-test, 68 per cent low |
 | R1b | each site's monthly paid hours, seasonally adjusted, trended log-linearly from January 2025 | 28 (5, 2, 4, 3, 3, 1, 4, 4, 2) | a trend of the residue cannot see a crossing: Data & ML, Databases, Infrastructure & DevOps and Game Development move by less than a whole FTE from R0 |
-| R2a | capacity against arrivals, the reviewer pool trended log-linearly over January 2024 to September 2026 | 31 (5, 2, 6, 4, 4, 2, 3, 3, 2) | the back-test from September 2025, 30 per cent low: the pools held until new reviewers stopped arriving in the autumn of 2024 |
-| R2b | capacity against arrivals, the pace read from each site's own reviews per reviewer in January to September 2026 | 53 (13, 5, 9, 7, 7, 3, 4, 3, 2) | the back-test, 596 per cent high: where volunteers had spare capacity their throughput was the work that arrived |
+| R2a | capacity against arrivals, the reviewer pool trended log-linearly over January 2024 to September 2026 | 31 (5, 2, 6, 4, 4, 2, 3, 3, 2) | the back-test from September 2025, 31 per cent low: the pools held until new reviewers stopped arriving in the autumn of 2024 |
+| R2b | capacity against arrivals, the pace read from each site's own reviews per reviewer in January to September 2026 | 53 (13, 5, 9, 7, 7, 3, 4, 3, 2) | the back-test, 597 per cent high: where volunteers had spare capacity their throughput was the work that arrived |
 | R3 decisive | each pool projected from September 2026 at its own lapse rate (2.03 to 2.09 per cent a month), each reviewer at the pace kept when the inbox is full (40.0 reviews a month over the 89 saturated site-months since 2021), each 2027 month's arrivals beyond that capacity routed | 35 (5, 2, 7, 5, 5, 2, 4, 3, 2) | golden |
 
 **Position and margins.** The golden is bracketed: R0 to R2a below (23 to 31), R2b above (53). Every correction short
@@ -242,7 +249,7 @@ band, or the pool trended log-linearly over the last 12 to 21 months; the trickl
 the pace read from 2021 to 2023, from 2024 to 2026 or pooled, at any saturation cut from 1 to 15 per cent of items
 routed (39.7 to 40.2 reviews a month across every cut and era), or each site's own pace with the pooled pace where a
 site never ran short; monthly or annual netting; item ratios from 2025; no floor. The network's unrounded need runs
-34.45 to 35.51 FTE across them (the one-sigma lapse rates at the ends), and every site stays 0.17 FTE or more inside
+34.44 to 35.51 FTE across them (the one-sigma lapse rates at the ends), and every site stays 0.17 FTE or more inside
 its bin (Frontend & Web the closest).
 
 **Worth on the graded quantity.** Seeing the volunteers' capacity is worth 8 FTE (R0 23 to R2a 31), and projecting the
@@ -252,8 +259,8 @@ Development by a whole FTE (asserted).
 
 **Out of sample.** A rolling-origin test on the closed months (fit through September 2025, score the routed items of
 October 2025 to September 2026; `checks.py` BACKTEST): the capacity method misses by 4.9 per cent network-wide (worst
-site 16 per cent); the carried share by 73, the trended share by 68, the full-record pool trend by 30, the censored pace
-by 596 (over). The test is the analyst's own, run on records no document summarises.
+site 16 per cent); the carried share by 73, the trended share by 68, the full-record pool trend by 31, the censored pace
+by 597 (over). The test is the analyst's own, run on records no document summarises.
 
 **Strength.** P(one strong solver lands) about 0.12: it must see that routed items are the arrivals beyond a capacity
 rather than a share (the dictionary defines the column, nothing else points there), read the volunteers' capacity
@@ -345,7 +352,7 @@ reviewer roster, the moderator tool's daily flag summary, the posts warehouse's 
 hazard rows in it: 0 (asserted: the call reads no per-flag export, decision review, WFM line, assignment,
 migration or 2022 question count). The asks read files the call never reads and share no primary device or path.
 
-**Ask A. For each site, the share of the moderator flags raised in each of July, August and September 2026 that a
+**Ask A. Each site's 24-hour flag response (the flag service standard's measure: the share of the flags raised in each of July, August and September 2026 that a
 paid moderator first acted on within 24 hours** (27 figures, per cent to one decimal).
 - H18 home: a component of the request's case: the service the 2026 pool held, a measure every site carries that the
   call never turns on.
@@ -401,12 +408,15 @@ cent to one decimal).
   call reads no 2022 question count.
 - Use: the first table of the council's paper.
 - Basis (filed in the posts warehouse notes): each question counts once, on the site it lives on now, in the month it
-  was first asked (UTC).
+  was first asked (UTC); comparisons with 2021 to 2023 are made on that basis.
 - Primary C1 (D1, the same records under two sources): the old monthly workbook counted a question moved between sites
   twice, on the site it was asked on and again on the site it moved to, in the month of the move; the 2026 counts come
   from the posts warehouse, which counts each question once. Fair: the moderators' migration log (2021 to 2023) lists
-  every move with both question ids, both sites and both dates. Silent: the workbook's question column is internally
-  consistent and its note says it counts the questions posted on the site in the month.
+  every move with both question ids, both sites and both dates. Round 1 (the judge's FIX_NOW): the old job's counting is
+  now filed in the warehouse notes in the data team's voice ("The old statistics job counted a question on every site
+  it was posted to ..."), with the comparison basis, so the device is no longer silent: it is seen and repaired from the
+  migration log. The two readings the judge licensed are asserted out: the old job read as counting each question once
+  on its posting site misses all nine (nearest 0.22 points), and no restatement (S2) misses all nine.
 - Hazards: HC1 Graphics & Shaders folded into Game Development in July 2023 (the register); HC2 the 2022 sheet's
   layout (a title block, old site names, a totals row).
 - Stops (built, asserted): S1 the workbook as it stands, Graphics left out of Game Development (9 miss); S2 the merger
@@ -418,9 +428,13 @@ cent to one decimal).
 - Realism: a Q&A platform migrates a question by creating it on the new site and closing the original, and a monthly
   report counts posts created per site.
 
-**The chart and slide** (`council_pool_request_2027.pptx`) are the call's own figures: the request slide and the
-network's monthly paid review hours from January 2024 to December 2027, each site stacked, the envelope (26 FTE, 3,467
-hours a month) drawn across; graded on its parts and its 2027 months, which are the call's.
+**The chart and slide** (`council_pool_request_2027.pptx`): the request slide and the network's monthly paid review
+hours from January 2024 to December 2027, each site stacked, each year's actual hours totalled, the envelope (26 FTE,
+3,467 hours a month) drawn across. Round 1 (the judge's FIX_NOW): the series is filed once in the operations notes
+(each moderator flag a paid moderator handled and each community item routed to the team, at the standard in force for
+its year, by the month raised or entered, UTC; not WFM hours; months to come on the plan and its outlook), and its
+graded figures are the three actual totals (2024 36,419 hours, 2025 36,233, January to September 2026 29,626), exact
+counts asserted and reproduced by the verifier; the 2027 months sum to the call's own need.
 
 **Hazard table.**
 
@@ -440,16 +454,20 @@ control):
 |---|---|---|---|
 | A, July to September by site (27) | duplicates and closed flags out, export time as the first action | A1 the reviewed flags' export time is the review's | miss |
 | B, Q1 to Q3 by site (27) | superseded lines out, old name mapped, by start day on Toronto time, by the export's site | B1 the six moves overwrite the site on every 2026 shift | miss |
-| C, nine sites (9) | the merger applied, the workbook's 2022 counts against the warehouse's 2026 | C1 every moved question counted on both sites in 2022 | miss |
+| C, nine sites (9) | the merger applied, the old job's double count undone from the migration log on the warehouse's basis, as the warehouse notes now file it | none since round 1: the old job's counting is filed | hit |
+| Chart, three actual totals (3) | paid review hours as the operations notes define them, from the inbox export and the flag summary | none: a construction figure | hit |
 
 **Mirror sheet.** The mirror stops at R2a (31) or R1 (25 to 28) and meets the same devices; it keeps the chart's
-history parts and stacking, the site needs R2a shares with the golden (web, mobile, gamedev, embedded, scicomp), and
-nothing in A, B or C unless it cracks a device.
+history parts and stacking, the chart's three actual totals and, since round 1, Ask C's nine figures, the site needs R2a
+shares with the golden (web, mobile, gamedev, embedded, scicomp), and nothing in A or B unless it cracks a device.
 
-Mirror leakage: 6 per cent of ask weight (the chart's history months and stacking, no A, B or C figure).
+Mirror leakage: 22 per cent of ask weight (the chart's parts and three actual totals and Ask C's nine figures, about 15
+of 69 ask criteria; no A or B figure).
 
-Pair ceiling: 31.0 (the cracker at 38 + 7 + about 3 of 55 ask points; the mirror at about 5 + 7 + 3, its matching site
-needs counted in its recommendation share). The devices hold the asks whole; rerun from the generated rubric at stage 4.
+Pair ceiling: 41.0 (round 1: the cracker at 38 + 7 + about 13 of 55 ask points, Ask C, the chart's totals and parts and
+the request slide; the mirror at about 5 + 7 + 12). Before round 1 it was 31.0; the two FIX_NOW repairs (Ask C's
+counting filed, the chart's totals graded) cost about ten points of pair score, all of it on rows both top responses
+now land. Asks A and B still hold both whole. Rerun from the generated rubric at stage 4.
 
 ## Tried and rejected
 
@@ -489,3 +507,27 @@ needs counted in its recommendation share). The devices hold the asks whole; rer
   edges enough to cross a rounding step), so it is recorded as a convergence, not a stop; Ask A's over-correction stop
   (reviewed flags dropped) misses 14 of 27, not 27.
 - target.zip cut with a `target/` folder inside: the archive now carries the files at its root (house fix H4).
+- Round 1, Ask C's device left silent (no file said how the old statistics job counted a moved question): the judge
+  licensed three readings one decimal apart at every site (FIX_NOW). The warehouse notes now file the old job's counting
+  and the comparison basis in the data team's voice; both other readings are asserted out. The device is no longer
+  silent, so the cracker and the mirror both land Ask C (cracker sheet `hit`).
+- Round 1, slide 2's series undefined (hours worked or need hours, flags in or out, which close standard, how October
+  to December 2026 is counted): the operations notes now define paid review hours once, the prompt asks each year's
+  actual hours totalled, and the three actual totals are graded and asserted (36,419, 36,233 and 29,626 hours); being
+  construction figures, both top responses land them (cracker sheet `hit`). With Ask C, the pair ceiling moves from
+  31.0 to about 41.0, over the 40 build target and under the 50 bar; precut fails its pair-ceiling and cracker rows on
+  this alone, reported to the coordinator.
+- Round 1, the roster missed the reviewers whose access lapsed in January or February 2024 without a platform review
+  (its dictionary scope said every reviewer with access since 1 January 2024): a lapse rate read by lapse date then
+  counted zero lapses in those months (1.92 per cent, 33). The 689 rows are now in the roster (first review blank), the
+  dictionary's scope and lapse rule carry a worked example, and the lapse-date reading files the same nine.
+- Round 1, the items no volunteer ever picks up drawn at one share for every item type: routed shares were identical
+  across types in slack months, which read synthetic. Each type now has its own (close votes 0.91, low quality 0.72,
+  edits 0.40, first posts 0.35 per cent); no graded figure moved. In saturated months the shares stay close across types
+  because the 72-hour hand-off takes the oldest items first whatever their type; a per-type volunteer preference would
+  change the routed mix that prices the frozen call, so it was not added.
+- Round 1, the 24-hour share's denominator and the envelope's sign: the flag service standard now defines flag
+  response as a share with the post-deleted closures out of both counts, the prompt names the measure (24-hour flag
+  response), and the prompt asks how far above or below the envelope the request sits.
+- Round 1, the question plan's 2026 actuals sheet stamped as pulled 8 October inside a workbook issued 18 September:
+  the sheet now carries January to August 2026 as pulled on 14 September (no figure reads it).

@@ -1,6 +1,6 @@
 ## Tags
 
-**Domain:** Product Analytics (retention, cohort and lifetime value modeling: each site's volunteer reviewer pool carried forward on its own monthly lapse rate, and the reviews a retained reviewer delivers when the inbox outruns the pool).
+**Domain:** Product Analytics (retention, cohort and lifetime value modeling: a Q&A platform's volunteer reviewers as a retained-user cohort, each site's pool carried forward on its own lapse hazard with almost no new reviewers arriving, times the activity a retained reviewer delivers, seen only where work outran the pool).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
@@ -38,7 +38,7 @@ Items reach the paid team only when the volunteers fall short, so each site's 20
    - Scientific Computing: 2
 2. Council request for 2027: 35 FTE.
 3. Above finance's 26-FTE envelope by 9 FTE.
-4. Share of the moderator flags raised in each month that a moderator first acted on within 24 hours:
+4. 24-hour flag response by site and month:
    - Frontend & Web: July 2026 97.9%, August 2026 97.0%, September 2026 97.1%
    - Mobile Apps: July 2026 97.2%, August 2026 96.4%, September 2026 96.3%
    - Data & ML: July 2026 97.8%, August 2026 97.3%, September 2026 97.4%
@@ -72,4 +72,7 @@ Items reach the paid team only when the volunteers fall short, so each site's 20
 ### council_pool_request_2027.pptx
 
 7. Slide 1 states the request: 35 paid moderator FTE for 2027, 9 above the 26-FTE envelope, with each site's need.
-8. Slide 2 charts the network's monthly paid review hours from January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, with finance's envelope (26 FTE, 3,467 hours a month) drawn across.
+8. Slide 2 charts the network's monthly paid review hours from January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, finance's envelope drawn across at 3,467 hours a month (26 FTE), and each year's actual hours totalled:
+   - 2024: 36,419 hours
+   - 2025: 36,233 hours
+   - January to September 2026: 29,626 hours
