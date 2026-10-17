@@ -1,0 +1,181 @@
+{
+  "call": {
+    "items_staying": 10,
+    "stay": [
+      "TC01",
+      "TC02",
+      "TC03",
+      "TC04",
+      "TC05",
+      "TC06",
+      "TC07",
+      "TC08",
+      "TC09",
+      "TC10"
+    ],
+    "withdrawn": [
+      "TC11",
+      "TC12"
+    ]
+  },
+  "cited_sections": [
+    "3.4",
+    "4.2",
+    "4.3",
+    "5.1"
+  ],
+  "components": {
+    "kept_band": 0.8,
+    "line": 0.75,
+    "withdrawn_band": 0.25
+  },
+  "deliverables": {
+    "divisions": {
+      "Corporate Services": {
+        "teams": 143,
+        "used": 1212
+      },
+      "Customer Service": {
+        "teams": 103,
+        "used": 781
+      },
+      "Delivery Operations": {
+        "teams": 245,
+        "used": 2060
+      },
+      "Engineering": {
+        "teams": 148,
+        "used": 1140
+      },
+      "Hub Operations": {
+        "teams": 228,
+        "used": 1821
+      },
+      "Linehaul and Fleet": {
+        "teams": 149,
+        "used": 1309
+      }
+    },
+    "favourable": {
+      "TC01": {
+        "base": 11329,
+        "fav": 6824
+      },
+      "TC02": {
+        "base": 11342,
+        "fav": 7442
+      },
+      "TC03": {
+        "base": 11387,
+        "fav": 8404
+      },
+      "TC04": {
+        "base": 11294,
+        "fav": 6262
+      },
+      "TC05": {
+        "base": 11419,
+        "fav": 8923
+      },
+      "TC06": {
+        "base": 11359,
+        "fav": 7254
+      },
+      "TC07": {
+        "base": 11273,
+        "fav": 6070
+      },
+      "TC08": {
+        "base": 11415,
+        "fav": 9020
+      },
+      "TC09": {
+        "base": 11162,
+        "fav": 6072
+      },
+      "TC10": {
+        "base": 11150,
+        "fav": 6613
+      },
+      "TC11": {
+        "base": 11374,
+        "fav": 7533
+      },
+      "TC12": {
+        "base": 11393,
+        "fav": 7817
+      }
+    },
+    "ledger": {
+      "paper": {
+        "count": 1714,
+        "incomplete": 255,
+        "outside": 290,
+        "used": 1169
+      },
+      "personal": {
+        "count": 7793,
+        "incomplete": 929,
+        "outside": 1156,
+        "used": 5708
+      },
+      "site": {
+        "count": 1975,
+        "incomplete": 215,
+        "outside": 314,
+        "used": 1446
+      }
+    },
+    "loadings": {
+      "TC01": 0.91,
+      "TC02": 0.92,
+      "TC03": 0.89,
+      "TC04": 0.9,
+      "TC05": 0.92,
+      "TC06": 0.9,
+      "TC07": 0.92,
+      "TC08": 0.9,
+      "TC09": 0.94,
+      "TC10": 0.91,
+      "TC11": -0.02,
+      "TC12": -0.02
+    }
+  },
+  "rungs": {
+    "reliability_corrected": {
+      "TC01": 1.04,
+      "TC02": 1.02,
+      "TC03": 1.03,
+      "TC04": 1.0,
+      "TC05": 1.03,
+      "TC06": 1.02,
+      "TC07": 1.01,
+      "TC08": 1.01,
+      "TC09": 0.68,
+      "TC10": 0.65,
+      "TC11": 0.91,
+      "TC12": 0.84
+    },
+    "reliability_corrected_stay": 10,
+    "team_means": {
+      "TC01": 0.82,
+      "TC02": 0.82,
+      "TC03": 0.79,
+      "TC04": 0.81,
+      "TC05": 0.79,
+      "TC06": 0.81,
+      "TC07": 0.8,
+      "TC08": 0.79,
+      "TC09": 0.58,
+      "TC10": 0.58,
+      "TC11": 0.34,
+      "TC12": 0.33
+    },
+    "team_means_stay": 8
+  },
+  "steps": {
+    "returns_that_count": 11482,
+    "returns_used": 8323,
+    "teams_reported": 1016
+  }
+}
