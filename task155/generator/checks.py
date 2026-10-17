@@ -63,6 +63,40 @@ def world_truth(runs=32):
     return Wd, mean, med, res
 
 
+def world_asks(Wd, B):
+    """last Christmas's call-ins as the world ran them: every line put out once (an absence reported twice is one
+    line), covered when the last fill on it held (a give-back's re-raise carries the line on), each filler's home
+    store on the shift date"""
+    final = W.settle(Wd.needs)
+    lines = collections.OrderedDict()
+    for nid, fin in final.items():
+        nd = Wd.needs[nid]
+        d = W.ddate(nd["day"])
+        if not (A.WINDOW[0] <= d <= A.WINDOW[1]) or not nd["postings"]:
+            continue
+        key = (nd["line"], nd["kind"], nd["absent"])
+        lines.setdefault(key, []).append((nd, fin))
+    put = collections.Counter()
+    cov = collections.Counter()
+    imp = collections.Counter()
+    exp = collections.Counter()
+    for key, lst in lines.items():
+        nd = lst[0][0]
+        loc = K.LOC[nd["store"]]
+        h = W.paid(nd["e"] - nd["s"]) / 60.0
+        put[loc] += h
+        filled = [fin["filled"] for _, fin in lst if fin["filled"] is not None]
+        if filled:
+            cov[loc] += h
+            home = K.LOC[Wd.cas[filled[0][0]].home(W.ddate(nd["day"]))]
+            if home != loc:
+                imp[loc] += h
+                exp[home] += h
+    tA = {l: dict(put_out=put[l], covered=cov[l], uncovered=put[l] - cov[l]) for l in B.locs}
+    tB = {l: dict(imports=imp[l], exports=exp[l]) for l in B.locs}
+    return tA, tB
+
+
 # ------------------------------------------------------------------------------------------------ routes on the bundle
 def routes(B, rows):
     out = collections.OrderedDict()
@@ -198,10 +232,11 @@ def main(task, F):
           "%d variants; Camberwell second on %d" % (len(r2), seconds))
     sig = np.sqrt(np.diag(models["golden"]["cov"]))
     mods = []
+    j_ext = len(models["golden"]["b"]) - 2          # the golden's last two terms: the carry-on, a separate second shift
     for sgn in (-1, 1):
         mm = dict(models["golden"])
         b = mm["b"].copy()
-        b[-2] += sgn * sig[-2]
+        b[j_ext] += sgn * sig[j_ext]
         mm["b"] = b
         mods.append(C.rank(C.Forward(B, mm).static()))
     check("L4 a one-sigma move in the trip-cost term keeps Camberwell", all(o[0] == CAMB for o, _ in mods),
@@ -291,21 +326,52 @@ def main(task, F):
         return [d[l][k] for l in B.locs for k in ("imports", "exports")]
 
     ga, gb = figs_a(S["A_golden"]), figs_b(S["B_golden"])
-    for name in ("A_S1_rows", "A_S2_keys", "A_S3_nodrops", "A_S4_utc", "A_S5_span"):
-        miss = sum(abs(round(x, 1) - round(y, 1)) >= 0.05 for x, y in zip(figs_a(S[name]), ga))
-        check("ASK A stop %s misses" % name[2:], miss >= 18 if name in ("A_S1_rows", "A_S2_keys", "A_S5_span") else miss >= 6,
-              "%d of 24 figures off" % miss)
-    for name in ("B_S1_current", "B_S2_nodrops", "B_S3_rows"):
-        miss = sum(abs(round(x, 1) - round(y, 1)) >= 0.05 for x, y in zip(figs_b(S[name]), gb))
-        check("ASK B %s %s" % ("stop" if name == "B_S1_current" else "hazard", name[2:]),
-              miss >= (12 if name == "B_S1_current" else 1), "%d of 16 figures off" % miss)
-    # the cracker chains reposts into their shifts but leaves a dropped fill as cover, and reads the home store current
-    crack = sum(abs(x - y) < 0.05 for x, y in zip(figs_a(S["A_S3_nodrops"]), ga)) + \
-        sum(abs(x - y) < 0.05 for x, y in zip(figs_b(S["B_S4_crack"]), gb))
-    lazy = sum(abs(x - y) < 0.05 for x, y in zip(figs_a(S["A_S1_rows"]), ga)) + \
-        sum(abs(x - y) < 0.05 for x, y in zip(figs_b(S["B_S1_current"]), gb))
-    check("ASK the cracker keeps a fifth of the figures or fewer", crack <= 8, "%d of 40 (every register row a shift: %d)"
-          % (crack, lazy))
+
+    def off_a(name):
+        return sum(abs(round(x, 1) - round(y, 1)) >= 0.05 for x, y in zip(figs_a(S[name]), ga))
+
+    def off_b(name):
+        return sum(abs(round(x, 1) - round(y, 1)) >= 0.05 for x, y in zip(figs_b(S[name]), gb))
+
+    # the world's own last Christmas: each line put out once, covered when its last fill held, the filler's store
+    tA, tB = world_asks(Wd, B)
+    check("ASK the golden tables equal the world's own last Christmas", all(
+        abs(tA[l][k] - S["A_golden"][l][k]) < 1e-6 for l in B.locs for k in ("put_out", "covered", "uncovered")) and all(
+        abs(tB[l][k] - S["B_golden"][l][k]) < 1e-6 for l in B.locs for k in ("imports", "exports")))
+    # the readings the module notes and the transmittal file, each run as the alternative
+    for name, label, need in (("A_S1_rows", "every call-in a shift, re-raises counted", 18),
+                              ("A_S1b_noninstant", "every call-in a shift but those closed the minute raised", 18),
+                              ("A_S3_nodrops", "a given-back shift's re-raise counted as another shift, its first "
+                                               "fill kept", 6),
+                              ("A_S3c_keepfill", "a given-back shift counted once, its first fill kept as the cover",
+                               4),
+                              ("A_S4_utc", "shift dates read in UTC", 6),
+                              ("A_S5_span", "span hours for paid", 18),
+                              ("A_S6_noopn", "open lines left out of the hours put out", 16)):
+        check("ASK A filed: %s misses" % label, off_a(name) >= need, "%d of 24 figures off" % off_a(name))
+    check("ASK B filed: the home store read current misses", off_b("B_S1_current") >= 12,
+          "%d of 16 figures off" % off_b("B_S1_current"))
+    check("ASK B filed: a given-back shift credited to its first filler misses", off_b("B_S3c_keepfill") >= 1,
+          "%d of 16 figures off" % off_b("B_S3c_keepfill"))
+    for name in ("B_S2_nodrops", "B_S3_rows"):
+        check("ASK B hazard %s" % name[2:], off_b(name) >= 1, "%d of 16 figures off" % off_b(name))
+    # the silent devices that outlive the filing
+    check("ASK A device: the stores' identical open lines merged with their re-raises misses", off_a("A_S2_keys") >= 18,
+          "%d of 24 figures off" % off_a("A_S2_keys"))
+    check("ASK A device: an absence reported twice counted as two shifts misses", off_a("A_S3b_raise") >= 12,
+          "%d of 24 figures off" % off_a("A_S3b_raise"))
+    # the module offers a casual who gave a shift back nothing else that day, so voiding by the day's absence and
+    # by the shift's own re-raise agree
+    check("ASK the day's absence voids the same fills as the shift's re-raise", off_a("A_S7_dayvoid") == 0 and
+          off_b("B_S7_dayvoid") == 0)
+    # the cracker folds re-raises into their shift by store, date, times, reason and absent payroll number, voids
+    # give-backs as the notes file them and reads home stores from payroll on the shift date
+    crack = sum(abs(x - y) < 0.05 for x, y in zip(figs_a(S["A_crack"]), ga)) + \
+        sum(abs(x - y) < 0.05 for x, y in zip(figs_b(S["B_crack"]), gb))
+    chain = sum(abs(x - y) < 0.05 for x, y in zip(figs_a(S["A_S3b_raise"]), ga)) + \
+        sum(abs(x - y) < 0.05 for x, y in zip(figs_b(S["B_S3b_raise"]), gb))
+    check("ASK the cracker keeps a fifth of the figures or fewer", crack <= 8,
+          "%d of 40 (a re-raise chained to its own line: %d of 40)" % (crack, chain))
     exact = all(abs(x * 2 - round(x * 2)) < 1e-6 for x in ga + gb)
     check("ASK every figure is exact at one decimal (paid hours come in half hours)", exact)
     pub = collections.Counter()
@@ -362,6 +428,21 @@ def main(task, F):
     check("RZ5 no round headline total", all(abs(x / 50.0 - round(x / 50.0)) > 1e-9 for x in tot), str(tot))
     wcount = collections.Counter((o_["location_id"], o_["shift_date"][:7]) for o_ in B.offers)
     check("RZ6 no two stores share a month's offer count", len(set(wcount.values())) > 0.9 * len(wcount))
+    # behavioural cells a reviewer would cross-tab: none empty of take-up. The second-shift cell is held well under the
+    # day-off rate on purpose (DESIGN_NOTE, Tried and rejected: a higher rate lends the pooled same-day model the
+    # carry-on effect)
+    cell = collections.defaultdict(lambda: [0, 0])
+    for r_ in rows:
+        k_ = "ext" if r_["ext"] else ("split" if r_["split"] else "off")
+        cell[k_][0] += 1
+        cell[k_][1] += r_["y"]
+    rate = {k_: v[1] / v[0] for k_, v in cell.items()}
+    check("RZ10 a second, separate shift on a rostered day is taken, well under the day-off rate", cell["split"][1] >= 30
+          and rate["split"] < rate["off"] / 5, "%.2f%% of %d (%d taken), a day off %.1f%%" % (
+              100 * rate["split"], cell["split"][0], cell["split"][1], 100 * rate["off"]))
+    near = sum(r_["near"] for r_ in rows)
+    check("RZ11 no offer leaves a casual under an hour to get from or to a shift at another store (the notes' rule)",
+          near == 0, "%d of %d offers" % (near, len(rows)))
     # the brief's statements about the two stores, held against the record (house fix H6)
     C.index_availability(B)
     week = [C.D0 + dt.timedelta(days=C.dn(dt.date(2026, 11, 30)) + k) for k in range(5)]

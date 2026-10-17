@@ -227,48 +227,49 @@ def main(target, figfile):
     same("other offers", n_oth, F["other_offers"], 0)
     same("of them accepted", a_oth, F["other_accepted"], 0)
 
-    # ask A and ask B
+    # ask A and ask B, on a path of their own: each line's call-ins walked in the order KWS raised them, a re-raise
+    # at 07:00 taking the next line of its shift still waiting, a second report of an absence joining its line, a
+    # give-back's ABS call-in carrying on the line its casual had filled
     win = (dt.date(2025, 11, 28), dt.date(2025, 12, 24))
-    W_ = [x for x in R if win[0] <= x["d"] <= win[1]]
-    groups = collections.defaultdict(list)
+    W_ = sorted([x for x in R if win[0] <= x["d"] <= win[1]], key=lambda x: (x["raised"], int(x["id"])))
+    walked = []
+    waiting = collections.defaultdict(list)       # (shift, reason, absent) -> lines whose last call-in went unfilled
+    reported = {}                                 # (shift, reason, absent) -> the line an absence or leave vacated
+    taken = {}                                    # (shift, payroll no) -> the line that casual filled
     for x in W_:
-        groups[(x["loc"], x["d"], x["s"], x["e"])].append(x)
+        key = (x["loc"], x["d"], x["s"], x["e"])
+        tag = (key, x["reason"], x["absent"])
+        at7 = x["raised"].hour == 7 and x["raised"].minute == 0 and x["raised"].second == 0
+        line = None
+        if x["reason"] == "ABS" and (key, x["absent"]) in taken:
+            line = taken.pop((key, x["absent"]))          # given back: the first fill no longer covers it
+            line["fill"] = None
+        elif at7 and waiting[tag]:
+            line = waiting[tag].pop(0)
+        elif x["reason"] != "OPN" and tag in reported:
+            line = reported[tag]                           # the same absence, reported again
+        if line is None:
+            line = dict(loc=x["loc"], d=x["d"], h=paid(x["span"]) / 60, fill=None)
+            walked.append(line)
+            if x["reason"] != "OPN":
+                reported[tag] = line
+        if x["outcome"] == "FILLED":
+            line["fill"] = x["by"]
+            taken[(key, str(number_on(x["by"], x["d"])))] = line
+        elif line["fill"] is None and all(w is not line for w in waiting[tag]):
+            waiting[tag].append(line)
     put = collections.Counter()
     cov = collections.Counter()
     imp = collections.Counter()
     exp = collections.Counter()
-    for key, lst in groups.items():
-        lst.sort(key=lambda x: x["raised"])
-        h = paid(lst[0]["span"]) / 60
-        dropped, carried = set(), set()
-        for f in lst:
-            if f["outcome"] != "FILLED":
-                continue
-            no = str(number_on(f["by"], f["d"]))
-            later = [x for x in lst if x["reason"] == "ABS" and x["absent"] == no and x["raised"] > f["closed"]]
-            if later:
-                dropped.add(f["id"])
-                carried |= {x["id"] for x in lst if x["reason"] == "ABS" and x["absent"] == no
-                            and x["raised"] >= later[0]["raised"]}
-        units = set()
-        n_open = 0
-        for x in lst:
-            if x["id"] in carried:
-                continue
-            if x["reason"] == "OPN":
-                if not (x["raised"].hour == 7 and x["raised"].minute == 0 and x["raised"].second == 0):
-                    n_open += 1
-            else:
-                units.add((x["reason"], x["absent"]))
-        n_units = n_open + len(units)
-        put[key[0]] += n_units * h
-        for f in lst:
-            if f["outcome"] == "FILLED" and f["id"] not in dropped:
-                cov[key[0]] += h
-                home = home_on(f["by"], f["d"])
-                if home != key[0]:
-                    imp[key[0]] += h
-                    exp[home] += h
+    for line in walked:
+        put[line["loc"]] += line["h"]
+        if line["fill"]:
+            cov[line["loc"]] += line["h"]
+            home = home_on(line["fill"], line["d"])
+            if home != line["loc"]:
+                imp[line["loc"]] += line["h"]
+                exp[home] += line["h"]
     for loc in name:
         k = name[loc].lower().replace(" ", "_")
         same("ask A put out %s" % name[loc], round(put[loc], 1), F["A_put_out_%s" % k])

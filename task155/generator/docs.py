@@ -96,7 +96,8 @@ STANDARD = [
         "that would otherwise go unworked."]),
     ("4. What is counted", [
         "The crew works every shift the store's published Christmas roster lists as open, that is a roster line with "
-        "no employee on it. Those shifts are not posted to call-in.",
+        "no employee on it. At the store where the crew is placed those shifts are not posted to call-in; at the "
+        "other stores they are posted as usual.",
         "The hours that would otherwise go unworked are the paid hours of those open shifts that the store's "
         "call-ins would leave unfilled. They are forecast for each store as if the crew were placed at none, with "
         "every store's open shifts posted to call-in.",
@@ -118,30 +119,38 @@ NOTES_HEAD = ("KWS Call-in: how the module works",
               "Workforce Systems, version 2.3, 4 August 2026. Contact: Meredith Stevens, Workforce Systems Lead.")
 NOTES = [
     ("Call-ins", [
-        "A call-in puts one shift out to casuals through KWS. Store managers raise call-ins for shifts vacated after "
-        "a roster is published: a reported absence, or leave approved after publication. A line a published roster "
-        "leaves open is raised as a call-in when the roster is published; for Christmas rosters this waits until "
-        "the relief crew is placed.",
-        "Absences of permanent staff are covered inside the store's permanent team and are not raised as call-ins."]),
+        "A call-in puts one shift out to casuals through KWS. A shift is put out to call-in when its line is left "
+        "open on a published roster (reason OPN, raised when the roster is published), or when it is vacated after "
+        "publication by a reported absence (ABS) or by leave approved after publication (LVE), which store managers "
+        "raise. For the Christmas rosters the open lines are raised once the relief crew is placed, and the open "
+        "lines of the store where the crew is placed are not raised.",
+        "Absences of permanent staff through sickness are covered inside the store's permanent team and are not "
+        "raised as call-ins."]),
     ("Who is offered the shift", [
         "KWS offers a call-in to one casual at a time. It goes first to the store's own casuals in order of service "
         "date, longest first, then to casuals of the store's call-in cluster who have opted in to sister-store "
         "call-ins, in order of service date. The West cluster is Altona, Sunshine, Werribee and Williamstown; the "
         "East cluster is Box Hill, Camberwell and Ringwood. Ballarat is in no cluster.",
         "A casual is skipped if their availability profile does not cover the whole shift on that date, if they are "
-        "rostered or booked at an overlapping time, if the shift would take their paid hours over 11 for the day or "
-        "38 for the roster week, or if they would have less than 10 hours between finishing one day and starting the "
-        "next. A casual who has reported an absence for a day is not offered call-ins on that day."]),
+        "rostered or booked at an overlapping time, or at another store for a shift that ends less than an hour "
+        "before this one starts or starts less than an hour after it ends, if the shift would take their paid hours "
+        "over 11 for the day or 38 for the roster week, or if they would have less than 10 hours between finishing "
+        "one day and starting the next. A casual who has reported an absence for a day is not offered call-ins on "
+        "that day."]),
     ("When offers go out", [
         "Offers go out by SMS and the KWS app between 07:00 and 21:00 store time. Outside those hours an offer waits "
         "until 07:00, unless the shift starts within 12 hours.",
         "The casual has 60 minutes to respond, or 20 minutes if the shift starts within 24 hours."]),
     ("Responses", [
-        "Accepting books the shift to the casual. A decline is final for that shift. If there is no response in time "
-        "the offer moves to the next casual, and the casual stays on the list.",
-        "When the list runs out with no acceptance, the shift is offered again from the top of the list at 07:00 the "
-        "next day to every casual who has not declined it. Offering stops 15 minutes before the shift starts and the "
-        "call-in closes unfilled."]),
+        "Accepting books the shift to the casual and closes the call-in FILLED. A decline is final for that shift. If "
+        "there is no response in time the offer moves to the next casual, and the casual stays on the list.",
+        "When the list runs out with no acceptance, the call-in closes UNFILLED and KWS raises the shift again as a "
+        "new call-in, offered from the top of the list at 07:00 the next day to every casual who has not declined "
+        "it, so a shift offered over several days has a call-in for each day. Offering stops 15 minutes before the "
+        "shift starts and the call-in closes UNFILLED.",
+        "A casual who took a shift through call-in and then cannot work it reports an absence, as a rostered casual "
+        "does: the store raises the shift again as an ABS call-in naming them, their own call-in keeps its FILLED "
+        "outcome, and KWS offers them no other call-ins that day."]),
     ("Times and records", [
         "KWS stores times in UTC. Shift dates and times on rosters, in the offer history report and in availability "
         "profiles are store time.",
@@ -224,6 +233,12 @@ def transmittal(counts):
         "the availability file's are people.",
         "KWS timestamps are UTC. Roster weeks run Friday to Thursday.",
         "Rosters before the roster week of 27/02/2026 come from the legacy rostering tool's weekly export.",
+        "",
+        "Payroll casual register (K. Patel): one row for each period a cost centre applied to an engagement, from",
+        "cc_effective_from to cc_effective_to (blank for the period current at extraction). A casual's home store on",
+        "a date is the store whose cost centre applied to them that day; KWS people shows only the home store at",
+        "extraction. A casual re-engaged after leaving has a new employee number, the earlier one in",
+        "previous_employee_no.",
     ]
     return "\r\n".join(lines) + "\r\n"
 

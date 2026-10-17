@@ -69,7 +69,7 @@ def text(F):
       "sister-store offer, rostered hours over 10 that week, the Christmas weeks, the casual's age band and home store.")
     a("4. Ran the fitted choice through the offer order, eligibility checks and offer hours in "
       "kws_callin_module_notes.pdf over the published Christmas rosters, every store's open shifts posted at 09:00 on "
-      "Monday 16 November with the crew at no store (relief_crew_placement_standard.pdf, section 4), %d runs: "
+      "16 November with the crew at no store (relief_crew_placement_standard.pdf, section 4), %d runs: "
       "call-ins would leave about %s of Camberwell's open hours unworked, the most of any store, with %s next at "
       "about %s." % (F["runs"], n(F["unworked_camberwell"]), F["runner_up"],
                      n(F["unworked_" + F["runner_up"].lower().replace(" ", "_")])))
