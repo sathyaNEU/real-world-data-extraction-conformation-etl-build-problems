@@ -71,7 +71,7 @@ REVIEWED_SHARE = 0.031                    # specimens whose call the duty bioinf
 REACCESSIONED = 214        # specimens re-accessioned for a repeat panel, typed under a second accession
 RERELEASED = 0             # set from the warehouse build: results released a second time after a correction
 
-DILUTION = [("L1", "0.4 %", 0.0041), ("L2", "1.6 %", 0.0163), ("L3", "6.4 %", 0.0629)]
+DILUTION = [("L1", "0.8 %", 0.0081), ("L2", "1.6 %", 0.0163), ("L3", "6.4 %", 0.0629)]
 DILUTION_REPLICATES = 9
 # the series ran out of stock part way through, so the second half of every level's replicates was
 # prepared from a fresh stock dilution with its own gravimetric fraction

@@ -433,8 +433,27 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     ok("real.personas_drawn", all(" " in p for p in people_names))
 
     # ---------------------------------------------------------------- the ask layer
-    ok("ask.zero_devices_in_main_population",
-       all(not r["is_first"] for r in rejected))
+    # a turned-back line may be a patient's only one, but never one that could reach the screen:
+    # every rejected first receipt belongs to a patient with no receipt at all inside the window
+    in_window = set()
+    for (k, code), d in firsts.items():
+        if G.WIN_A <= d <= G.WIN_B:
+            in_window.add(k)
+    keyof = dict(new_keys)
+    bad_rej = [r["line"] for r in rejected if r["is_first"]
+               and (new_keys.get(r["pid"], keys[r["pid"]]) in in_window
+                    or keys[r["pid"]] in in_window)]
+    ok("ask.zero_devices_in_main_population", not bad_rej, str(bad_rej[:5]))
+    ok("ask.rejected_firsts_are_outside_the_window",
+       all(r["day"] <= W.CLEAR_B for r in rejected if r["is_first"]),
+       "%d rejected first receipts, all in the clearance period"
+       % sum(1 for r in rejected if r["is_first"]))
+    pr_keys = set(r["person_key"] for r in rd(tgt, "person_register.csv"))
+    disp_keys = set(k for k, code, d, vnr, ph in rp[0])
+    ok("real.register_holds_people_with_no_dispensing",
+       len(pr_keys - disp_keys) >= 100,
+       "%d of %d register rows have no line in either extract"
+       % (len(pr_keys - disp_keys), len(pr_keys)))
     exrefs = [r["exception_ref"] for r in rd(tgt, "submission_exceptions.csv")]
     ok("ask.exceptions_outside_extracts",
        len(set(exrefs)) == len(exrefs) == len(rejected), "%d refs, %d rejected"

@@ -195,6 +195,16 @@ def apply_mess(lines, people):
             rate *= 2.4
         pr[j] = rate
     rej_idx = set(int(i) for i, u, rate in zip(repeats, rng.random(len(repeats)), pr) if u < rate)
+    # a handful of patients whose single dispensing was turned back: the register holds the
+    # civil-registration record it was asked for and no dispensing for them in either extract.
+    # Their one line falls in the clearance period, so no first receipt inside the screen window
+    # moves and the screen cannot see them (checks.py asserts both).
+    by_pid = collections.Counter(r["pid"] for r in lines)
+    solo = [i for i, r in enumerate(lines)
+            if by_pid[r["pid"]] == 1 and r["day"] <= W.CLEAR_B]
+    if solo:
+        take = rng.choice(len(solo), size=min(160, len(solo)), replace=False)
+        rej_idx |= set(int(solo[int(j)]) for j in take)
     rejected, kept = [], []
     reasons = ["prescriber identifier not in the authorisation register",
                "package code not valid on the date of dispensing",

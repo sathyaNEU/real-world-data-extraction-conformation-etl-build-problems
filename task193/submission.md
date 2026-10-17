@@ -19,7 +19,7 @@ The expected after-count comes from the window's own first-receipt dates, so the
 
 ## 3. Step-by-Step Solution
 
-1. Stacked dispensings_2023_2025.csv and dispensings_2025_2026.csv on the layouts register_release_notes.json gives and counted a re-sent line once, as those notes require: 16991 person keys appear across the extract.
+1. Stacked dispensings_2023_2025.csv and dispensings_2025_2026.csv on the layouts register_release_notes.json gives and counted a re-sent line once, as those notes require: 16961 person keys appear across the extract.
 2. Folded the retired person keys in person_key_crosswalk.csv onto their current keys and mapped each package code to its treatment through package_index.csv at the date of the dispensing, per section 2.4.
 3. Took each patient's earliest dispensing in each treatment as the first receipt and dropped first receipts falling in the clearance period, per sections 2.2 and 2.3.
 4. Built each pair in screen_annexes.csv from the patients whose two first receipts both fall in the screen window and not on the same day, per section 2.5: 20 of the 23 pairs have at least 25 patients.
@@ -84,26 +84,26 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Ellevang Biosciences A/S (H6): 1027098.0 DDD, 1067868 kroner
    - Strandby Farma ApS (H7): 227031.0 DDD, 332600 kroner
 6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
-   - Hovedstaden, 18-29: 480 patients, 69.0 per cent
+   - Hovedstaden, 18-29: 482 patients, 68.9 per cent
    - Hovedstaden, 30-49: 797 patients, 72.3 per cent
-   - Hovedstaden, 50-64: 564 patients, 80.0 per cent
-   - Hovedstaden, 65 and over: 1097 patients, 80.6 per cent
-   - Midtjylland, 18-29: 357 patients, 68.6 per cent
-   - Midtjylland, 30-49: 621 patients, 73.1 per cent
-   - Midtjylland, 50-64: 459 patients, 76.9 per cent
-   - Midtjylland, 65 and over: 833 patients, 77.9 per cent
-   - Nordjylland, 18-29: 172 patients, 65.7 per cent
-   - Nordjylland, 30-49: 277 patients, 72.9 per cent
-   - Nordjylland, 50-64: 198 patients, 72.7 per cent
-   - Nordjylland, 65 and over: 339 patients, 81.4 per cent
-   - Sjaelland, 18-29: 206 patients, 73.3 per cent
-   - Sjaelland, 30-49: 391 patients, 74.7 per cent
-   - Sjaelland, 50-64: 311 patients, 75.9 per cent
-   - Sjaelland, 65 and over: 542 patients, 80.8 per cent
-   - Syddanmark, 18-29: 339 patients, 69.6 per cent
-   - Syddanmark, 30-49: 550 patients, 72.9 per cent
-   - Syddanmark, 50-64: 433 patients, 75.5 per cent
-   - Syddanmark, 65 and over: 692 patients, 79.9 per cent
+   - Hovedstaden, 50-64: 568 patients, 80.3 per cent
+   - Hovedstaden, 65 and over: 1102 patients, 80.6 per cent
+   - Midtjylland, 18-29: 359 patients, 68.8 per cent
+   - Midtjylland, 30-49: 617 patients, 73.1 per cent
+   - Midtjylland, 50-64: 461 patients, 77.0 per cent
+   - Midtjylland, 65 and over: 831 patients, 77.9 per cent
+   - Nordjylland, 18-29: 174 patients, 64.9 per cent
+   - Nordjylland, 30-49: 277 patients, 73.3 per cent
+   - Nordjylland, 50-64: 197 patients, 72.1 per cent
+   - Nordjylland, 65 and over: 335 patients, 81.8 per cent
+   - Sjaelland, 18-29: 202 patients, 73.8 per cent
+   - Sjaelland, 30-49: 393 patients, 74.6 per cent
+   - Sjaelland, 50-64: 307 patients, 75.9 per cent
+   - Sjaelland, 65 and over: 539 patients, 80.7 per cent
+   - Syddanmark, 18-29: 337 patients, 69.7 per cent
+   - Syddanmark, 30-49: 552 patients, 72.8 per cent
+   - Syddanmark, 50-64: 432 patients, 75.2 per cent
+   - Syddanmark, 65 and over: 696 patients, 79.9 per cent
    - not stated, 18-29: 38 patients, 68.4 per cent
    - not stated, 30-49: 75 patients, 77.3 per cent
    - not stated, 50-64: 49 patients, 75.5 per cent

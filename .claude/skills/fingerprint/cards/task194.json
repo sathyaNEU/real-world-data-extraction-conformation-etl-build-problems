@@ -1,6 +1,6 @@
 {
-  "analyst_test": "A strong analyst who risk-adjusts every unit correctly, applies the charter's eligibility and activity clauses and prices the programme off the closed placement register ranks the units by the complications they are recording above expectation in the latest closed quarter and places the team with the unit carrying the largest current excess, whose ten-quarter standing is 1.03 against 1.20 in the quarter in hand, so the placement there avoids 2 complications rather than the 13 it files.",
-  "answer": "Alderbrook Orthopaedics, cost centre 41230: the cycle IP-10 placement avoids 18 hospital-acquired complications over the quarter from 1 April 2027, against 12 at Alderbrook General Surgery",
+  "analyst_test": "A strong analyst who risk-adjusts every unit correctly, applies the charter's eligibility, baseline and activity clauses and prices the programme off the closed register states the effect the way a quality team states it, as the drop in the standardised ratio a placement produced, and places the team with the largest unit for 35 complications avoided; the same register read as a share of standing excess gives that unit 15 and names another unit at 24.",
+  "answer": "Alderbrook Orthopaedics, cost centre 41230: the cycle IP-10 placement avoids 24 hospital-acquired complications over the quarter from 1 April 2027, against 15 at Alderbrook General Surgery",
   "answer_source": "golden/embed_placement_2027q4.xlsx and golden/embed_placement_brief.pdf, computed from target/ by generator/golden.py and asserted in checks.py and verify.py",
   "answer_unit": "named_option",
   "architecture": "v1",
@@ -21,10 +21,10 @@
     "task452": "task452 v1's lineage multiplies two series, one recorded always and one sampled mostly in the quiet state, so its work is imputing the sampled factor across the unsampled intervals. Here both series are complete and nothing is imputed: the decisive work is that a unit chosen for standing worst falls back toward its own level whatever the team does."
   },
   "domain": "healthcare-delivery-health-economics",
-  "domain_test": "The deciding quantity is the reduction in a risk-adjusted provider outcome attributable to an improvement intervention, which provider profiling estimates by splitting a unit's observed excess over its risk-adjusted expectation into its own standing and this quarter's variation and by pricing the intervention on closed placements net of that variation; swap the units for machines measured without error and there is nothing to return to, so the ranking on the current period is the answer.",
+  "domain_test": "The deciding quantity is the reduction in a risk-adjusted provider outcome attributable to an improvement intervention, which provider profiling estimates by fitting the intervention's effect to a closed record of past interventions against the sampling error a count of complications carries and asking what that effect is proportional to; swap the units for machines measured without error and the record fits every shape exactly, so nothing chooses between them and the question becomes arithmetic.",
   "drawn": "2026-10-16",
-  "driver": "The decisive quantity is the fall a scarce intervention causes, and because units are picked for standing worst now, most of the fall that follows is their own return toward their long-run level, so ranking units by their current level picks the unit with the most room to revert rather than the one the intervention changes most, which only the record of past interventions separates.",
-  "driver_concrete": "Each unit's last-quarter risk-adjusted position is correct and the unit carrying the most complications above expectation now is the obvious placement, but a unit's quarterly standardised ratio swings by 0.114 about its own level while the units' levels are only 0.083 apart, so most of the excess the worst unit carries now is its own variation, and the seven closed placements price what an embed itself removes.",
+  "driver": "The decisive quantity is what a scarce intervention's measured effect is proportional to, recovered by fitting competing shapes of that effect to a closed corpus of past interventions against the sampling error of the outcome, where the corpus's own spread of pre-intervention level is what separates them and the shapes rank the candidates differently.",
+  "driver_concrete": "The closed register of past interventions is the only evidence that says what an intervention's effect is proportional to, and its spread of pre-intervention standing, from a unit at its expected number to one at nearly twice it, separates a share of standing excess from a constant drop in the rate by many times the sampling error a count of a few hundred events carries; the two shapes rank the candidates by excess and by volume and name different units.",
   "forcing_event": "vote_or_meeting",
   "forum": "line_manager_or_team",
   "gap": [
@@ -61,7 +61,7 @@
     "none"
   ],
   "question_form": "where",
-  "registered": "2026-10-17T17:16:00Z",
+  "registered": "2026-10-17T18:24:44Z",
   "role_family": "operations_director",
   "scoring_unit": "per covered member",
   "shape": "11",
@@ -70,11 +70,11 @@
     "entity": "one episode of care with its risk fields and its complication flag",
     "file": "episode_outcomes_extract.csv",
     "grain": "episode x unit x separation month",
-    "rows": 238727,
+    "rows": 290787,
     "source": "synthetic"
   },
   "stakeholder_role": "the network's director of clinical improvement",
-  "stump": "A competent solver computes the complications each eligible unit is recording above its risk-adjusted expectation in the latest closed quarter, scales them by the 38.1 per cent of excess the closed placement register removed, and places the team with Alderbrook General Medicine for 14 complications avoided, which is the unit with the most room to return to its own level rather than the unit a placement moves most.",
+  "stump": "A competent solver takes each unit's standing exactly as charter 4.3 files it, prices the programme off the closed register as the average drop in the standardised ratio a placement produced, applies that drop to the complications the quarter's planned activity carries, and places the team with Alderbrook General Surgery for 35 complications avoided, which is the unit with the most activity rather than the unit with the most excess for an embed to work on.",
   "stump_class": "analytical",
   "stump_strategy": "causal_design",
   "subdomain": "provider-quality-risk-adjustment",

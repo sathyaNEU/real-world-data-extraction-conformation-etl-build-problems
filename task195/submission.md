@@ -63,7 +63,7 @@ Not holding the change, which follows only if each screen's detection rate is ju
    - 2027-01: 20.7
    - 2027-02: 16.1
 5. The dilution panel's median recovery as a share of the prepared level and how many results reported fall within a fifth of it, by level:
-   - L1: 0.878, 7
+   - L1: 0.963, 7
    - L2: 0.865, 7
    - L3: 1.027, 6
 

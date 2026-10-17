@@ -55,6 +55,68 @@ own right, so the slot is re-rooted at stage 1 as architecture 2 rather than har
 identity moves into the card's `lineage` with its fate, `architecture` becomes 2, `loops` 0, and every other
 axis is drawn independently.
 
+## STAGE 4 ROUND (the judge and the reader, architecture 2)
+
+The determinism judge returned **NOT_DETERMINISTIC, FIX_NOW**, with the call and the stump standing: all 14
+specific levels, the ranked five, the critical components, the 240 residual minutes and every band and tone
+verdict reproduced from the bundle on its own code path, Gate G and Gate H passed, and probe 1 confirmed the
+design (LA90, a median, an arithmetic dB mean or no subtraction each put the sixth position in and the fifth
+out, and each contradicts plan 3.1). Five supplementary answers were not forced and one write-up line was
+wrong. The isolated reader reached the five dwellings from the bundle alone and listed the same open choices,
+plus a realism list.
+
+**What this pass changed, in one generator pass.**
+
+1. **The instrument's own columns were impossible.** The reader measured 36 per cent of minutes with LAmax
+   below LAeq and 13 per cent with LA90 above it; the judge found 77 minutes of one residual window reading
+   -120.2 dB LAeq while LA90 in the same minutes read 6 to 33 dB. The cause was one index: `residual_shape`
+   read the position tuple's event rate as its steady share and its quietest-interval figure as the event
+   rate, so the residual's steady term carried a negative coefficient and the within-minute statistics came
+   out in the wrong order, with the negative energies clamping to -120. Fixed at the index; the ordering
+   now holds on every shipped row and is asserted there and in the verifier. The -120.2 values were that
+   bug, not a sentinel: a real dropout is now built on purpose, three spells named in the deployment
+   remarks, filed as a rule in plan 4.2 and as a fact in the notes, written into all four level columns and
+   never inside a process stop.
+2. **The rain test.** Clause 4.2 asked for a rate ("above 0.5 mm an hour for the ten minutes") while the
+   golden read a trailing hour, which moved every minute count by 30 to 130. The clause now files the test
+   as the gauge's own count of tips in the ten minutes, and the nearest reading a solver could reach for, a
+   rate on the same record, selects exactly the same records (one tip is 1.2 mm an hour), asserted record by
+   record. The notes file which end of its ten minutes a met record is stamped at.
+3. **The week's process figures.** Plan 5 is new: 5.1 files a week's figure as the counter reading at 00:00
+   on its Monday taken from the reading at 00:00 on the Monday after, with the roll-over added back, and
+   says a spell the historian did not record leaves those readings as they stand; 5.2 files a centrifuge run
+   as one start in the equipment log. The blower header now ships as a totaliser beside its rate channel,
+   so the gap week's delivery is 700 against the rate sum's 617, and the runs come from the log (10 to 13 a
+   week) rather than from feed blocks (6). The write-up's "two deployments" is now the 11 of 28 the plan's
+   window catches, emitted from the generator.
+4. **Two construction tells.** Ten of 14 levels sat within 0.002 dB of a one-decimal value; every printed
+   level now sits 0.018 to 0.033 dB off its own printed value and 0.017 dB or more from its rounding edge,
+   and the flip conditions are stated as numbers in the ladder section. The top band at NSL09 was decided by
+   0.04 dB; the two tones' survival now turns on screening as well as distance, which is how a barrier
+   works, and every position's highest band wins by 1.07 dB or more with every tone verdict 1.48 dB or more
+   clear of the 5 dB test.
+5. **The reader's realism list.** The plant's own load now moves over the day and the week, so no position's
+   hourly means are flat (1.2 to 1.6 dB of spread); the minute-to-minute swing of the source gives minute
+   standard deviations of 0.70 to 2.31 dB with lag-1 autocorrelation 0.44 to 0.68 and 11 to 16 per cent of
+   consecutive minutes equal, where it was 37; the one-third-octave excess now differs between a position's
+   two deployments; the field checks differ deployment by deployment and the certificates moved to their own
+   file; the deployment record carries who deployed each meter and the height it stood at, which the
+   schedule now matches; the complaints register carries 24 distinct texts with the channel each came in on;
+   the met mast's wind has a diurnal cycle (2.3 to 4.2 m/s by hour) and a direction that sits for a day
+   rather than sweeping; the effluent file carries a laboratory, its references, detection limits and
+   non-detects; and the export manifest is a provenance record with the source, extract date and licence of
+   every file instead of a tidy list of the gaps. The five pieces of mess the reader read as real (the
+   dropout, the repeated download, the counter roll-over, the replaced hour counter and the historian's
+   gap) are all kept.
+6. **The Gate H caveat** ("3.1 and 7.1 give most of the recipe, so the step is close to rule application")
+   is answered in the `Not rule application:` line of `## Three rules`, which names the step no filed clause
+   performs.
+
+**What this pass cost, stated rather than smoothed.** Four of the five fork closures removed a way for a
+careful solver to miss a supplementary figure, and the ask layer now carries device mass on A3 alone. The
+measured pair ceiling is 69.2 against a bar of 40, with the arithmetic in `## Ask sheet`. The call is
+stumped and every figure is forced; the ask layer needs device work, which is `/fix-rubric`'s lane.
+
 ## Draw
 
 ```
@@ -408,7 +470,7 @@ Scored on the built pack.
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
 | A2 valid and excluded minutes | the battery reports no nulls, because the no-data minutes carry a number; they stay in the count | the valid and excluded counts at 3 of the 14 positions, 6 of the 28 figures, by up to 38 minutes | plan 4.2's last sentence: a minute the meter recorded no measurement for is not valid | partial, 6 of 28 |
-| A3 biogas, blower air, centrifuge runs | the process channel read as the plant's record: the counter differenced row by row inside each week, the blower's rate column summed, a run counted as a block of feed | all six biogas figures about 55 m3 low, the gap week's air 617 against 700, all six run counts 6 against 10 to 13 | plan 5.1's two counter readings at the week boundaries and 5.2's start in the equipment log | miss, 13 of 18 |
+| A3 biogas, blower air, centrifuge runs | the process channel read as the plant's record: the counter differenced row by row inside each week, the blower's rate column summed, a run counted as a block of feed | all six biogas figures about 55 m3 low, the gap week's air 617 against 700, all six run counts 6 against 10 to 13 | plan 5.1's two counter readings at the week boundaries and 5.2's start in the equipment log | miss |
 | A4 highest band and tone | the band rows paired to positions through the deployment windows, pooled energetically over the assessment period, unweighted as the column names and the notes state | every figure | the same | hit |
 
 **Pair ceiling:** 69.2, over the bar, and the reason is written out here rather than smoothed. Ask weight 57
@@ -435,37 +497,42 @@ new ask-only rows, and neither belongs in a determinism repair that holds the ca
 | File | Format | Role |
 |---|---|---|
 | `sound_levels_1min_2026.parquet` | parquet | spine: one minute of logged level per position (LAeq, LA90, LAmax, LAmin), the volume gate |
-| `meter_deployments_2026.csv` | csv | which meter at which position, from and to, mounting, calibration checks, remarks |
+| `meter_deployments_2026.csv` | csv | which meter at which position, from and to, the height it stood at, the field check either side, who deployed it, remarks |
 | `monitoring_positions.xlsx` | xlsx | context artifact: the register of positions, dwellings, distances, bearings, screening |
 | `noise_management_plan.pdf` | pdf | governing document: the quantity, the period, the validity criteria, the tonality test, the slot |
 | `survey_notes.md` | md | the technician's notes: meters, identities, time base, met channels, file conventions |
 | `plant_equipment_events_2026.csv` | csv | the process operator's equipment log: starts, stops and reasons |
-| `scada_15min_2026.csv` | csv | plant process channels at fifteen minutes (air flow, biogas, centrifuge, inlet) |
+| `scada_15min_2026.csv` | csv | plant process channels at fifteen minutes: the blower header as a rate and as a totaliser, the biogas counter, the centrifuge feed, the engine, the inlet |
 | `weather_10min_2026.csv` | csv | the met mast at ten minutes: wind, rain, temperature |
 | `third_octave_15min_2026.csv` | csv | one-third-octave band levels per position and quarter hour |
-| `calibration_records_2026.csv` | csv | meter and calibrator serials, certificates, field checks |
+| `calibration_records_2026.csv` | csv | the laboratory certificates for the five meters and the field calibrator, as found and as left |
 | `complaints_register_2026.xlsx` | xlsx | distractor, declared in metadata.json: complaints, dates, dwellings |
-| `effluent_quality_2026.csv` | csv | distractor, declared in metadata.json: the site's discharge monitoring |
-| `export_manifest.csv` | csv | provenance: what each file is, covers and omits |
+| `effluent_quality_2026.csv` | csv | distractor, declared in metadata.json: the laboratory's discharge results, with its references, detection limits and non-detects |
+| `export_manifest.csv` | csv | provenance: per file what it is, what it covers, the system it came off, when it was extracted and on what terms |
 
 ## Build record
 
 - `generator/build.py` runs everything: the survey (`world.py`, `sim.py`), the pack (`pack.py`, `docs.py`,
   `postprocess.py`), the golden (`golden.py` over `analysis.py`, `deliver.py`), `metadata.py`,
   `figures.py`, `submission.py`, then `checks.py` and `verify.py`.
-- Final run: `checks.py` **377 assertions passed**; `verify.py` **234 independent checks passed**; two
+- Final run: `checks.py` **614 assertions passed**; `verify.py` **282,493 independent checks passed** (the
+  per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
   consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
-  0373bc0f07eea0f6); about 40 seconds.
+  069208833e6db276); about 70 seconds.
 - `verify.py` reads only the bundle (standard library, numpy-free, pyarrow for the parquet), encodes the
   plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
   residuals, valid, excluded and stop minutes, the slate, its order, the sixth and the margin, the default
   path's own slate, the highest band and tone verdict at every position, and the six weeks of plant
-  figures, against `generator/figures.json` and against the golden table.
+  figures, against `generator/figures.json` and against the golden table. It also checks, on every shipped
+  minute, that the four level columns order as an instrument reports them and that a minute with no
+  measurement carries no statistics.
 - `figures_check.py` exit 0: 90 figures in blocks 1 to 4, none absent from `figures.json`.
 - Parameters chosen by search in scratch and never shipped: the designed specific levels and residuals
-  (`world.POSITIONS`), the residual texture (`EVENT_DB`, `JITTER`, `SLOW`), the tone survival (`BARRIER`,
-  `TONE_K`) and the per-position micro-adjustments (`world.SHIFT`, at most 0.87 dB) that put every printed
-  level mid-bin, all 14 distinct, none within 0.038 dB of a rounding edge.
+  (`world.POSITIONS`), the residual texture (`EVENT_DB`, `JITTER`, `SLOW`), the plant's own load curve and
+  minute-to-minute swing (`sim.plant_load`), the two tones' survival to each position (`BARRIER`,
+  `TONE_K`, `pack._spectra`) and the per-position micro-adjustments (`world.SHIFT`, at most 0.82 dB) that
+  leave all 14 printed levels distinct, each 0.017 dB or more from its rounding edge and 0.018 dB or more
+  off the printed value itself, so no level sits on a round number.
 - Invented names: Drumlorne, Tulcarra Foods, Clonaraght, and the townland-style dwelling names in the
   register, checked against the thirty-one Irish local authorities and the sixty largest towns (edit
   distance above 2, no containment). No offline register of Irish townlands was available, which is
@@ -476,23 +543,24 @@ new ask-only rows, and neither belongs in a determinism repair that holds the ca
 `leak.py task182 --asof 2026-10-16`: **REVIEW, no LEAK**, five lines, each answered here.
 
 - Sweep 3, `noise_management_plan.pdf` carries three of five distinctive words of the committed call: the
-  words are October, treatment and slot, which clause 6.1 needs to say what the mitigation programme is. No
+  words are October, treatment and slot, which clause 7.1 needs to say what the mitigation programme is. No
   figure of the answer appears in any shipped file (asserted: no shipped file holds a specific level, a
   residual level or a corrected level for any position).
 - Sweep 4, the plan and the survey notes share eight of the stump paragraph's terms: they are the field's
-  own nouns (position, measured, residual, record, register, period), and the plan defines the residual
+  own nouns (position, measured, residual, record, register, records), and the plan defines the residual
   because the estimand has to be filed. The sweep's own test is whether the document names the move; it
   does not, and `checks.py` asserts the plan names no background, percentile, L90, stop or non-operating
-  state.
+  state, and the notes name no residual, background, percentile or stop window.
 - Sweep 4, the prompt carries two stump terms: the prompt has to name the quantity (the specific sound
   level) and the window (the assessment minutes), which is the WHAT every build files. It names no method.
-- Sweep 9, `calibration_records_2026.csv` carries five dates after the as-of: they are the meters'
-  calibration due dates, a forward validity window, which `reduce-house-fixes` H16 puts on the allow-list.
+- Sweep 9, `calibration_records_2026.csv` carries six dates after the as-of: they are the five meters' and
+  the calibrator's verification due dates, a forward validity window, which `reduce-house-fixes` H16 puts
+  on the allow-list.
 
-`guard.py surface task182`: 216 pairs in scope, **0 promoted**; nearest neighbour task228 at 0.096.
-Personas in the cut pack: Aiden Hawthorn and Orla O'Hurley, both on the card.
-`guard.py heart task182`: **WARN, not BLOCK**; nearest driver 0.07 (task263), answered in the card's
-differentiation.
+`guard.py surface task182`: 218 pairs in scope, **0 promoted**; nearest neighbour task228 at 0.096.
+Personas in the cut pack: Aiden Hawthorn and Orla O'Hurley, with the engineer and the operations manager
+by initials on the deployment records. `guard.py heart task182`: **WARN, not BLOCK**; nearest driver 0.07
+(task263), answered in the card's differentiation.
 
 ## Pre-ship check (client, eight points)
 
@@ -501,9 +569,10 @@ differentiation.
    field's nouns have no energetic summation and no quantity that the source's own presence makes
    unmeasurable.
 2. **Real work, nothing planted.** The inputs take work to put in order: UTC meters against local
-   paperwork, five meters rotated over fourteen positions, two field-check corrections, a met mast at ten
-   minutes with a mid-survey unit change and a tip counter, a repeated download, three names per position,
-   and band levels on three meters of five. Every one of them comes from the survey's own equipment.
+   paperwork, five meters rotated over fourteen positions, a field check either side of all 28 deployments
+   with 11 of them outside the plan's window, a met mast at ten minutes with a mid-survey unit change and a
+   tip counter, minutes the meters recorded nothing for, a repeated download, three names per position, and
+   band levels on three meters of five. Every one of them comes from the survey's own equipment.
 3. **The flip is a method choice.** What flips the call is where the residual term of the plan's own
    subtraction is measured: the position's own running record, or the minutes inside the plant's weekly
    process stops. The plan files the quantity and no method.
@@ -583,3 +652,28 @@ differentiation.
   lagged-rainfall model, and the WHAT screen then killed the design outright because the decisive step
   settles the estimand's comparison, task193 v1's shape. Re-rooted at stage 1 rather than hardened, the
   mechanism being spent in its own right.
+
+- The residual texture read off the wrong tuple fields (`ev, strm = p[8], p[9]`): the steady share came out
+  as 0.4 to 5.1 and the event rate as 3.4 to 11.3, so the steady term carried a negative coefficient. It
+  produced 36 per cent of minutes with LAmax below LAeq, 13 per cent with LA90 above it, and clamped
+  negative energies to -120.2 dB, which both stage-4 threads found from opposite sides. One index.
+- Clause 4.2's rain test stated as a rate (0.5 mm an hour on a ten-minute record), with the golden reading a
+  trailing hour: 30 to 130 minutes a position between the two readings, and the judge was right that neither
+  is forced. Replaced by the gauge's own count of tips, which the nearest rate reading matches record for
+  record.
+- The blower air taken from the rate channel alone: the historian's 20-hour gap loses about 84 thousand Nm3,
+  so "the air delivered in the week" had two defensible answers. The header now ships its totaliser too, and
+  plan 5.1 files the boundary readings.
+- Centrifuge runs counted as blocks of feed in the process channel: 6 a week against the equipment log's 10
+  to 13, and nothing said which was a run. Plan 5.2 files it.
+- Printed levels tuned onto the one-decimal value (ten of 14 within 0.002 dB): a tuning signature the judge
+  read straight off the figures. The scan now targets an offset of 0.018 to 0.033 dB from the printed value.
+- The two tones' survival set by distance alone: the 100 Hz and 400 Hz bands crossed over between 240 and
+  300 m, so the highest band at NSL09 was decided by 0.04 dB. Screening now takes the higher tone much
+  harder than the lower one, and the thinnest band gap is 1.07 dB.
+- A second ask-side device for A4, searched and abandoned in this pass: an A-weighted reading of the band
+  levels (closed by the column names and the notes, and it moves only 2 of 10 answers), a band export in
+  local time (converges), a wider window (moves nothing), a module serial needing a crosswalk and a repeated
+  band block (both surfaced by the hygiene battery's join and duplicate checks). The band world as built is
+  a robust physical measurement; a device aimed at it either breaks a clearance the judge asked for or is
+  caught by the battery, so the ask sheet records the cracker's hit instead of claiming a miss.

@@ -289,7 +289,9 @@ def dilution(target):
             # grades cannot turn on a hair. The margin is measured where it bites, in the stored
             # four decimals: the nearest replicate is at least 4 stored steps from the line.
             edge = min(abs(abs(v - level) - 0.20 * level) for v in vals)
-            if _slack3(median / level) >= 0.00042 and edge >= 0.0004:
+            ratio = median / level
+            round_number = abs(ratio - round(ratio, 2)) < 0.0015
+            if _slack3(ratio) >= 0.00042 and edge >= 0.0004 and not round_number:
                 break
         for i, v in enumerate(vals):
             dser[0] += rng.choice([1, 1, 2, 2, 3, 4, 6, 9])
