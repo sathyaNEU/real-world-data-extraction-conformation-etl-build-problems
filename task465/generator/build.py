@@ -17,28 +17,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 warnings.filterwarnings("ignore")
 
-import coop as C         # noqa: E402
-import methods as M      # noqa: E402
 import pack as P         # noqa: E402
 import sim as S          # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
 CENTRAL = dt.timezone(dt.timedelta(hours=-6))
-STAMP = dt.datetime(2026, 11, 2, 16, 25, tzinfo=CENTRAL)      # the folder as the risk manager assembled it
-
-
-def world():
-    x = S.world()
-    cty, dist = S.current(x)
-    x["terms"] = M.term_sheet(cty, x["pub"])
-    x["members"] = C.roster()
-    x["enrol"] = C.center_enrolment(C.enrolment(x["members"]), x["terms"], W.QUOTES)
-    x["tickets"], x["transfers"] = C.tickets(x["members"], x)
-    x["tickets"] = C.center_tickets(x["tickets"], x)
-    x["prior"] = C.prior_covers(x)
-    x["drought"] = C.drought_weeks(x)
-    return x
+STAMP = dt.datetime(2026, 11, 16, 15, 40, tzinfo=CENTRAL)      # the folder as the programme manager assembled it
 
 
 def build(out, x=None, quiet=False):
@@ -48,39 +33,36 @@ def build(out, x=None, quiet=False):
         shutil.rmtree(out)
     os.makedirs(out)
     f = lambda k: os.path.join(out, W.FILES[k])
-    x = x or world()
+    x = x or S.everything()
     n = {}
-    n["pull24"] = P.write_csv(f("pull24"), P.EXPORT_COLS, P.export_rows(x, "old"))
-    n["pull26"] = P.write_csv(f("pull26"), P.EXPORT_COLS, P.export_rows(x, "new"))
-    n["enrol"] = P.write_csv(f("enrol"), P.ENROL_COLS, P.enrol_rows(x["enrol"]))
-    n["tickets"] = P.write_csv(f("tickets"), P.TICKET_COLS, P.ticket_rows(x["tickets"]))
-    n["transfers"] = P.write_csv(f("transfers"), P.TRANSFER_COLS, P.transfer_rows(x["transfers"]))
-    n["drought"] = P.write_csv(f("drought"), P.DROUGHT_COLS, P.drought_rows(x["drought"]))
-    P.quote_workbook(f("quotes"), x["terms"])
-    P.roster_workbook(f("roster"), x["members"])
-    P.prior_workbook(f("prior"), x["prior"])
-    n["roster"] = len(x["members"])
-    n["prior"] = len(x["prior"])
-    DC.write_methods(f("methods"))
-    DC.write_terms(f("terms"), x["terms"])
-    DC.write_policy(f("policy"))
-    DC.write_notice(f("notice"))
+    n["heas"] = P.write_csv(f("heas"), P.HEAS_COLS, P.heas_rows(x))
+    n["shs"] = P.write_csv(f("shs"), P.SHS_COLS, P.shs_rows(x))
+    n["pilot"] = P.write_csv(f("pilot"), P.PILOT_COLS, P.pilot_rows(x))
+    n["divisions"] = P.write_csv(f("divisions"), P.DIV_COLS, P.division_rows())
+    n["baseline"] = P.write_csv(f("baseline"), P.ENROL_COLS, P.enrol_rows(x))
+    n["batteries"] = P.write_csv(f("batteries"), P.ORDER_COLS, P.order_rows(x))
+    n["hvi"] = P.write_csv(f("hvi"), P.HVI_COLS, P.hvi_rows(x))
+    n["liheap"] = P.write_csv(f("liheap"), P.APPS_COLS, P.apps_rows(x))
+    P.estimates_workbook(f("estimates"), x)
+    DC.write_shs_codebook(f("shs_codebook"))
+    DC.write_heas_notes(f("heas_methods"), n["heas"])
+    DC.write_pilot_report(f("pilot_report"), x["screens"])
+    DC.write_plan(f("plan"))
     n["dict"] = DC.write_dictionary(f("dict"))
     n["register"] = DC.write_register(f("register"), n)
-    PP.normalize_ooxml(f("quotes"), "Quillfield Re", "Quillfield Re", "2026-10-09T14:20:00Z", "2026-10-14T16:02:41Z",
-                       excel=True, company=W.REINSURER)
-    PP.normalize_ooxml(f("roster"), "Member Services", "Member Services", "2019-02-11T15:00:00Z",
-                       "2026-09-30T21:14:08Z", excel=True, company=W.ORG)
-    PP.normalize_ooxml(f("prior"), W.PEOPLE["risk"], W.PEOPLE["risk"], "2026-10-05T19:40:00Z", "2026-10-06T14:31:52Z",
-                       excel=True, company=W.ORG)
-    PP.normalize_pdf(f("methods"), b"D:20260326100000-05'00'", b"D:20260326100000-05'00'")
-    PP.normalize_pdf(f("terms"), b"D:20261014153000-05'00'", b"D:20261014153000-05'00'")
-    PP.normalize_pdf(f("policy"), b"D:20260122090000-06'00'", b"D:20260122090000-06'00'")
+    PP.normalize_ooxml(f("estimates"), "Population Estimates Unit", "Population Estimates Unit", "2026-02-24T15:10:00Z",
+                       "2026-03-17T21:42:19Z", excel=True, company=W.DEMOGRAPHER)
+    PP.normalize_ooxml(f("shs_codebook"), "Center for Health Statistics", "Center for Health Statistics",
+                       "2026-04-02T13:30:00Z", "2026-05-11T19:06:44Z", excel=True, company=W.HEALTH_DEPT)
+    PP.normalize_pdf(f("heas_methods"), b"D:20251120093000-06'00'", b"D:20251120093000-06'00'")
+    PP.normalize_pdf(f("pilot_report"), b"D:20250926141500-05'00'", b"D:20250926141500-05'00'")
+    PP.normalize_pdf(f("plan"), b"D:20261112163000-06'00'", b"D:20261112163000-06'00'")
     ts = STAMP.timestamp()
     for k in W.FILES:
         os.utime(f(k), (ts, ts))
     if not quiet:
-        print("pack: %d files, largest %s (%d rows)" % (len(W.FILES), W.FILES["pull24"], n["pull24"]))
+        big = max(n, key=lambda k: n[k])
+        print("pack: %d files, largest %s (%d rows)" % (len(W.FILES), W.FILES[big], n[big]))
     return n, x
 
 
@@ -91,7 +73,7 @@ def digest(folder):
 def cut_zip(root):
     import zipfile
     folder = os.path.join(root, "target")
-    stamp = (2026, 11, 2, 16, 25, 0)
+    stamp = (2026, 11, 16, 15, 40, 0)
     zp = os.path.join(root, "target.zip")
     with zipfile.ZipFile(zp, "w") as z:
         for name in sorted(os.listdir(folder)):
@@ -113,9 +95,9 @@ def everything(root, quiet=False):
         shutil.rmtree(gdir)
     fig = os.path.join(root, "generator", "figures.json")
     GO.main(os.path.join(root, "target"), gdir, fig)
-    PP.normalize_ooxml(os.path.join(gdir, W.GOLDEN["workbook"]), W.PEOPLE["risk"], W.PEOPLE["risk"],
-                       "2026-11-03T14:05:00Z", "2026-11-09T22:48:16Z", excel=False, company=W.ORG)
-    ts = dt.datetime(2026, 11, 9, 16, 48, tzinfo=CENTRAL).timestamp()
+    PP.normalize_ooxml(os.path.join(gdir, W.GOLDEN["workbook"]), W.PEOPLE["manager"], W.PEOPLE["manager"],
+                       "2026-11-16T15:05:00Z", "2026-11-17T22:31:08Z", excel=False, company=W.ORG)
+    ts = dt.datetime(2026, 11, 17, 16, 31, tzinfo=CENTRAL).timestamp()
     for fn in os.listdir(gdir):
         os.utime(os.path.join(gdir, fn), (ts, ts))
     MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"), n)

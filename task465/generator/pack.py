@@ -1,6 +1,6 @@
-"""Write the pack's data files: the two downloads of the service's estimates, the cooperative's enrolment, scale
-tickets, transfer log, member roster and prior covers, the drought-monitor extract and Quillfield Re's quote
-schedule."""
+"""Write the pack's data files: the two surveys' household files, the screening pilot's records, the demographer's
+household estimates, the division register, the medical baseline enrolment extract, the battery work orders and the two
+neighbouring state files."""
 import csv
 import datetime as dt
 
@@ -19,241 +19,194 @@ def write_csv(path, header, rows, delimiter=",", lineterminator="\r\n"):
     return len(rows)
 
 
-# ---------------------------------------------------------------- the service's export
-EXPORT_COLS = ["Program", "Year", "Period", "Geo Level", "Ag District", "Ag District Code", "County", "County ANSI",
-               "Commodity", "Data Item", "Domain", "Domain Category", "Value", "CV (%)", "Load Time"]
-
-PREFIX = {
-    ("SORGHUM", "NON-IRRIGATED"): ("SORGHUM, GRAIN, NON-IRRIGATED", "SORGHUM, NON-IRRIGATED"),
-    ("SORGHUM", "IRRIGATED"): ("SORGHUM, GRAIN, IRRIGATED", "SORGHUM, IRRIGATED"),
-    ("SORGHUM", "ALL"): ("SORGHUM, GRAIN", "SORGHUM"),
-    ("WHEAT", "NON-IRRIGATED"): ("WHEAT, WINTER, NON-IRRIGATED", "WHEAT, WINTER, NON-IRRIGATED"),
-    ("WHEAT", "IRRIGATED"): ("WHEAT, WINTER, IRRIGATED", "WHEAT, WINTER, IRRIGATED"),
-    ("WHEAT", "ALL"): ("WHEAT, WINTER", "WHEAT, WINTER"),
-    ("CORN", "NON-IRRIGATED"): ("CORN, GRAIN, NON-IRRIGATED", "CORN, NON-IRRIGATED"),
-    ("CORN", "IRRIGATED"): ("CORN, GRAIN, IRRIGATED", "CORN, IRRIGATED"),
-    ("CORN", "ALL"): ("CORN, GRAIN", "CORN"),
-    ("SOYBEANS", "IRRIGATED"): ("SOYBEANS, IRRIGATED", "SOYBEANS, IRRIGATED"),
-    ("SOYBEANS", "ALL"): ("SOYBEANS", "SOYBEANS"),
-    ("SUNFLOWER", "NON-IRRIGATED"): ("SUNFLOWER, NON-IRRIGATED", "SUNFLOWER, NON-IRRIGATED"),
-    ("SUNFLOWER", "ALL"): ("SUNFLOWER", "SUNFLOWER"),
-    ("HAY", "ALL"): ("HAY, ALFALFA", None),
-}
-PRACTICE_ORDER = {"ALL": 0, "IRRIGATED": 1, "NON-IRRIGATED": 2}
+def money(v):
+    return "%.2f" % v
 
 
-def fmt_int(v):
-    return "{:,}".format(int(round(float(v))))
+def weight(v):
+    return "%.4f" % v
 
 
-def fmt_yield(crop, prod, harv):
-    if harv <= 0:
-        return "(NA)"
-    y = prod / harv
-    if crop == "SUNFLOWER":
-        return fmt_int(y)
-    if crop == "HAY":
-        return "%.2f" % y
-    return "%.1f" % y
+def numbers(key, n, lo, hi):
+    """Record numbers as a system issues them: increasing, with the gaps left by records not in the extract."""
+    rng = np.random.default_rng([S.SEED, 30, key])
+    return np.sort(rng.choice(np.arange(lo, hi), size=n, replace=False))
 
 
-def items(crop, pr, rec, i):
-    """(data item, value) pairs for one estimate in one year, unformatted value or None for a withheld mark."""
-    unit = S.UNIT[crop][0]
-    main, plant = PREFIX[(crop, pr)]
-    out = []
-    if plant and "planted" in rec:
-        out.append((plant + " - ACRES PLANTED", ("int", rec["planted"][i])))
-    out.append((main + " - ACRES HARVESTED", ("int", rec["harvested"][i])))
-    out.append((main + " - PRODUCTION, MEASURED IN " + unit, ("int", rec["production"][i])))
-    out.append((main + " - YIELD, MEASURED IN " + unit + " / ACRE", ("yield", rec["production"][i], rec["harvested"][i])))
-    return out
+# ---------------------------------------------------------------- the energy office's public-use file
+HEAS_COLS = ["RESPID", "COUNTY", "INTMODE", "TENURE", "HEATFUEL", "HHINC", "ELEC_AMT", "ELEC_BASIS", "GAS_AMT",
+             "OTHER_AMT", "WT_BASE", "WT_FINAL"]
 
 
-def load_time(year, revised):
-    if revised:
-        return "2026-03-26 15:00:00.000"
-    if year < 2001:
-        return "2002-06-18 09:00:00.000"
-    rel = dt.date(year + 1, 2, 20) + dt.timedelta(days=int(np.random.default_rng([W.STREAM, 61, year]).integers(0, 9)))
-    return "%s 15:00:00.000" % rel.isoformat()
-
-
-def export_rows(x, vintage):
-    """The rows of one download: 'old' is March 2024 (1991 to 2023, before the 2026 revision), 'new' October 2026
-    (2016 to 2025, county estimates for 2017 to 2021 revised)."""
-    lo, hi = W.OLD_PULL if vintage == "old" else W.NEW_PULL
-    cty = x["cty_old"] if vintage == "old" else x["cty_new"]
-    dist = x["dist_old"] if vintage == "old" else x["dist_new"]
-    state = x["state_old"] if vintage == "old" else x["state_new"]
-    pub = x["pub"]
+def heas_rows(x):
+    A = x["A"]
+    wf = S.final_weights(A["base"], A["county"], A["band"], x["pub"])
+    rng = np.random.default_rng([S.SEED, 21])
+    order = rng.permutation(len(A["base"]))
+    ids = numbers(1, len(order), 10001, 99999)
     rows = []
-
-    def code(d, year):
-        if vintage == "old" and year < W.RECODE_YEAR:
-            return str(d // 10)
-        return str(d)
-
-    def ansi(c):
-        a = W.COUNTIES[c][0]
-        return str(int(a)) if vintage == "old" else a
-
-    def emit(year, level, d, county, crop, pr, rec, i, published, cv_ok):
-        if rec["harvested"][i] <= 0 and rec.get("planted", np.zeros(len(S.YEARS)))[i] <= 0:
-            return                       # no estimate where the crop was not grown
-        revised = vintage == "new" and W.REVISED[0] <= year <= W.REVISED[1]
-        for item, val in items(crop, pr, rec, i):
-            if not published:
-                v, cv = "(S)", ""
-            elif val[0] == "int":
-                v, cv = fmt_int(val[1]), ""
-            else:
-                v = fmt_yield(crop, val[1], val[2])
-                cv = ""
-                if cv_ok and year >= 2008:
-                    c = S.cv_percent(county.title() if county else "", crop, pr, float(val[2]), year) if county else None
-                    cv = "%.1f" % c if c is not None else ""
-            rows.append(["SURVEY", year, "YEAR", level, W.DISTRICTS[d].upper() if d else "", code(d, year) if d else "",
-                         county, ansi(county.title()) if county else "", crop, item, "TOTAL", "NOT SPECIFIED", v, cv,
-                         load_time(year, revised)])
-
-    for year in range(lo, hi + 1):
-        i = year - W.Y0
-        for (crop, pr), rec in sorted(state.items(), key=lambda kv: (S.CROPS.index(kv[0][0]), PRACTICE_ORDER[kv[0][1]])):
-            emit(year, "STATE", None, "", crop, pr, rec, i, True, False)
-        dkeys = {}
-        for (d, crop, pr), rec in list(dist.items()) + list(x["other"].items()):
-            dkeys[(d, crop, pr)] = rec
-        for (d, crop, pr), rec in sorted(dkeys.items(), key=lambda kv: (kv[0][0], S.CROPS.index(kv[0][1]),
-                                                                       PRACTICE_ORDER[kv[0][2]])):
-            emit(year, "AGRICULTURAL DISTRICT", d, "", crop, pr, rec, i, True, False)
-        for c in sorted(W.COUNTIES, key=lambda k: (W.COUNTIES[k][1], k)):
-            d = W.COUNTIES[c][1]
-            for crop in S.CROPS:
-                for pr in ("ALL", "IRRIGATED", "NON-IRRIGATED"):
-                    if (c, crop, pr) not in cty:
-                        continue
-                    if (crop, pr) not in PREFIX:
-                        continue
-                    if crop == "HAY" and pr != "ALL":
-                        continue
-                    emit(year, "COUNTY", d, c.upper(), crop, pr, cty[(c, crop, pr)], i, bool(pub[(c, crop, pr)][i]), True)
+    for k, i in enumerate(order):
+        rows.append(["H25%05d" % ids[k], W.FIPS[A["county"][i]], A["mode"][i], int(A["tenure"][i]),
+                     int(A["fuel"][i]), int(A["income"][i]), int(A["elec_amt"][i]), "M" if A["monthly"][i] else "A",
+                     int(A["gas"][i]), int(A["other"][i]), weight(A["base"][i]), weight(wf[i])])
     return rows
 
 
-# ---------------------------------------------------------------- the cooperative's files
-ENROL_COLS = ["submission_id", "submitted_at", "member_no", "field_id", "field_county", "crop", "practice", "acres",
-              "action"]
-TICKET_COLS = ["ticket_no", "site", "ticket_date", "account", "commodity", "origin_county", "gross_lb", "tare_lb",
-               "net_lb", "moisture_pct", "test_weight", "reference"]
-TRANSFER_COLS = ["transfer_no", "ship_date", "from_site", "to_site", "commodity", "net_lb", "carrier"]
-DROUGHT_COLS = ["MapDate", "County", "None", "D0", "D1", "D2", "D3", "D4", "ValidStart", "ValidEnd"]
+# ---------------------------------------------------------------- the health department's household file
+SHS_COLS = ["SEQNO", "CNTYFIPS", "PHD", "INCCAT", "ADULTS", "CHILDREN", "AGEGRP", "GENHLTH", "MEDEQUIP", "HH_WT"]
 
 
-def enrol_rows(subs):
-    return [[s["sid"], s["stamp"], s["member"], s["field"], s["county"], "Grain sorghum", s["practice"],
-             "%.1f" % s["acres"], s["action"]] for s in subs]
+def shs_rows(x):
+    B = x["B"]
+    wb = S.final_weights(B["base"], B["county"], B["band"], x["pub"])
+    rng = np.random.default_rng([S.SEED, 22])
+    order = rng.permutation(len(B["base"]))
+    ids = numbers(2, len(order), 1, 99999)
+    rows = []
+    for k, i in enumerate(order):
+        c = B["county"][i]
+        rows.append([2025000000 + int(ids[k]), int(W.FIPS[c]), W.PHD[c], int(B["cat"][i]), int(B["adults"][i]),
+                     int(B["children"][i]), int(B["age"][i]), int(B["genhlth"][i]), int(B["answer"][i]), weight(wb[i])])
+    return rows
 
 
-def ticket_rows(rows):
-    return [[t["ticket"], t["site"], t["date"].isoformat(), t["account"], t["crop"].title(), t["origin"],
-             t["gross"], t["tare"], t["net"], "%.1f" % t["moisture"], "%.1f" % t["tw"], t["reference"]] for t in rows]
+# ---------------------------------------------------------------- the screening pilot
+PILOT_COLS = ["SCREEN_ID", "ADDRESS_KEY", "DIVISION", "MODE", "RECEIVED", "STATUS", "HH_INCOME", "ELEC_12M",
+              "OTHER_FUELS_12M", "MED_EQUIPMENT"]
 
 
-def transfer_rows(tr):
-    return [[t["transfer"], t["date"].isoformat(), t["frm"], t["to"], t["crop"].title(), t["net"], t["carrier"]]
-            for t in tr]
+def pilot_rows(x):
+    rows = []
+    ids = numbers(3, len(x["screens"]), 100001, 199999)
+    for k, r in enumerate(x["screens"]):
+        complete = r["status"] in ("Complete", "Partial")
+        rows.append(["S25-%06d" % ids[k], r["key"], r["division"], r["mode"], r["received"].isoformat(),
+                     r["status"], int(r["income"]), int(r["elec"]) if complete else "",
+                     int(r["other"]) if complete else "", r["equip"] or ""])
+    return rows
 
 
-def drought_rows(ws):
-    out = []
-    for w in ws:
-        d = w["date"]
-        end = d + dt.timedelta(days=6)
-        out.append([d.strftime("%Y%m%d"), w["county"] + " County", "%.2f" % w["none"]] + ["%.2f" % v for v in w["d"]]
-                   + [d.isoformat(), end.isoformat()])
-    return out
+# ---------------------------------------------------------------- the division register
+DIV_COLS = ["COUNTY_FIPS", "COUNTY", "SERVICE_DIVISION"]
 
 
+def division_rows():
+    return [[W.FIPS[c], c, W.DIVISION_OF[c]] for c in W.COUNTIES if c in W.DIVISION_OF]
+
+
+# ---------------------------------------------------------------- the medical baseline enrolment extract
+ENROL_COLS = ["ENROL_ID", "ACCOUNT_NO", "PRIOR_ACCOUNT_NO", "PREMISE_ID", "SERVICE_COUNTY", "DIVISION", "START_DATE",
+              "END_DATE", "END_REASON", "QUALIFYING_EQUIPMENT", "LIFE_SUPPORT"]
+
+
+def enrol_rows(x):
+    spells = []
+    for hh in x["households"]:
+        for sp in hh["spells"]:
+            spells.append((sp["start"], sp["account"], hh, sp))
+    spells.sort(key=lambda t: (t[0], t[1]))
+    rows = []
+    ids = numbers(4, len(spells), 1000001, 1999999)
+    for k, (_, _, hh, sp) in enumerate(spells):
+        rows.append(["MB%07d" % ids[k], sp["account"], sp["prior"], sp["premise"], sp["county"],
+                     sp["division_stored"], sp["start"].isoformat(), sp["end"].isoformat() if sp["end"] else "",
+                     sp["reason"], hh["equipment"], "Y" if hh["life_support"] else "N"])
+    return rows
+
+
+# ---------------------------------------------------------------- the battery work orders
+ORDER_COLS = ["WORK_ORDER", "ACCOUNT_NO", "PREMISE_ID", "SERVICE_COUNTY", "SCHEDULED", "STATUS", "COMPLETED_UTC",
+              "UNIT_SERIAL", "REMOVED_SERIAL", "CREW"]
+
+
+def order_rows(x):
+    rng = np.random.default_rng([S.SEED, 23])
+    crews = {d: ["%s-%02d" % ("".join(w[0] for w in d.split()), k) for k in range(1, 4)] for d in W.DIV_NAMES}
+    rows = []
+    ids = numbers(15, len(x["orders"]), 410001, 499999)
+    for k, o in enumerate(x["orders"]):
+        d = W.DIVISION_OF[o["sp"]["county"]]
+        at = o["at"].strftime("%Y-%m-%dT%H:%M:%SZ") if o["at"] else ""
+        rows.append(["WO-%06d" % ids[k], o["sp"]["account"], o["sp"]["premise"], o["sp"]["county"],
+                     o["day"].isoformat(), o["status"], at, o["unit"], o["removed"],
+                     crews[d][int(rng.integers(0, 3))]])
+    return rows
+
+
+# ---------------------------------------------------------------- the two neighbouring state files
+HVI_COLS = ["COUNTY_FIPS", "COUNTY", "HVI_SCORE", "PCT_AGE_65_PLUS", "PCT_65_PLUS_LIVING_ALONE", "PCT_NO_CENTRAL_AC",
+            "PCT_IMPERVIOUS", "HVI_RANK"]
+
+
+def hvi_rows(x):
+    return [[W.FIPS[h["county"]], h["county"], "%.1f" % h["score"], "%.1f" % h["old"], "%.1f" % h["alone"],
+             "%.1f" % h["noac"], "%.1f" % h["imperv"], h["rank"]] for h in x["hvi"]]
+
+
+APPS_COLS = ["COUNTY_FIPS", "COUNTY", "MONTH", "APPLICATIONS_RECEIVED", "APPLICATIONS_APPROVED", "CRISIS_APPLICATIONS",
+             "AVERAGE_BENEFIT_USD"]
+
+
+def apps_rows(x):
+    return [[W.FIPS[a["county"]], a["county"], a["month"], a["received"], a["approved"], a["crisis"], a["benefit"]]
+            for a in x["apps"]]
+
+
+# ---------------------------------------------------------------- the demographer's household estimates
 def _sheet_header(ws, title, sub, row=1):
     from openpyxl.styles import Font
     ws.cell(row=row, column=1, value=title).font = Font(name="Calibri", size=13, bold=True)
     ws.cell(row=row + 1, column=1, value=sub).font = Font(name="Calibri", size=9, italic=True, color="595959")
 
 
-def _table(ws, top, header, rows, widths, formats=None):
+def estimates_workbook(path, x):
+    import openpyxl
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+    pub = x["pub"]
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Households by income"
+    _sheet_header(ws, "Households by household income, counties and planning regions: July 1, 2025",
+                  "State Demographer's Office, county household estimates, vintage 2025. Released March 18, 2026.")
+    head = ["Area", "FIPS", "Total households", "Under $25,000", "$25,000 to $49,999", "$50,000 to $74,999",
+            "$75,000 and over"]
     thin = Side(style="thin", color="A6A6A6")
-    for j, h in enumerate(header, start=1):
-        c = ws.cell(row=top, column=j, value=h)
+    for j, h in enumerate(head, start=1):
+        c = ws.cell(row=4, column=j, value=h)
         c.font = Font(name="Calibri", size=10, bold=True)
-        c.fill = PatternFill("solid", fgColor="E7EEF3")
+        c.fill = PatternFill("solid", fgColor="DCE6F0")
         c.alignment = Alignment(wrap_text=True, vertical="top")
         c.border = Border(bottom=thin)
-    for i, r in enumerate(rows, start=top + 1):
-        for j, v in enumerate(r, start=1):
-            c = ws.cell(row=i, column=j, value=v)
-            c.font = Font(name="Calibri", size=10)
-            if formats and formats.get(j):
-                c.number_format = formats[j]
+    bands = lambda c: [int(pub[(c, b)]) for b in range(4)]
+    regions = sorted(set(W.REGION.values()))
+    state = [sum(bands(c)[b] for c in W.COUNTIES) for b in range(4)]
+    row = [5]
+
+    def put(label, fips, vals, bold=False, indent=0):
+        cells = [label, fips, sum(vals)] + vals
+        for j, v in enumerate(cells, start=1):
+            c = ws.cell(row=row[0], column=j, value=v)
+            c.font = Font(name="Calibri", size=10, bold=bold)
+            if j >= 3:
+                c.number_format = "#,##0"
+            if j == 1 and indent:
+                c.alignment = Alignment(indent=indent)
+        row[0] += 1
+    put("State", "000", state, bold=True)
+    for g in regions:
+        cs = [c for c in W.COUNTIES if W.REGION[c] == g]
+        put("Planning Region %d" % g, None, [sum(bands(c)[b] for c in cs) for b in range(4)], bold=True)
+        for c in cs:
+            put("%s County" % c, W.FIPS[c], bands(c), indent=1)
+    widths = [26, 7, 14, 13, 14, 14, 13]
     for j, w in enumerate(widths, start=1):
-        ws.column_dimensions[ws.cell(row=top, column=j).column_letter].width = w
-    ws.freeze_panes = ws.cell(row=top + 1, column=1)
-
-
-def quote_workbook(path, ts):
-    import openpyxl
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Dryland grain sorghum"
-    _sheet_header(ws, "Quillfield Re: area-yield drought covers, 2027 crop year",
-                  "Quote schedule for Ardley Plains Growers' Cooperative, 14 October 2026; rates hold to 30 November "
-                  "2026 and are subject to the term sheet of the same date.")
-    rows = [[c, ts[c]["expected"], "90%", round(W.QUOTES[c] / 100.0, 6)] for c in W.MEMBERS]
-    _table(ws, 4, ["County", "Expected yield 2027 (bu per harvested acre)", "Coverage level",
-                   "Quoted premium rate (per cent of liability)"], rows, [14, 22, 12, 24],
-           {2: "0.0", 4: "0.00%"})
-    ws.cell(row=11, column=1, value="Each county's cover is quoted and may be bought on its own.")
-    ws2 = wb.create_sheet("Irrigated grain sorghum")
-    _sheet_header(ws2, "Irrigated grain sorghum, 2027 crop year", "Quoted at the cooperative's request of 2 October "
-                  "2026; index the county's irrigated grain sorghum yield.")
-    _table(ws2, 4, ["County", "Expected yield 2027 (bu per harvested acre)", "Coverage level",
-                    "Quoted premium rate (per cent of liability)"], [["Corvin", 109.4, "85%", 0.0185]],
-           [14, 22, 12, 24], {2: "0.0", 4: "0.00%"})
-    ws3 = wb.create_sheet("Dryland winter wheat")
-    _sheet_header(ws3, "Dryland winter wheat, 2027 crop year", "Indicative only; the wheat term sheet follows in "
-                  "January 2027.")
-    wq = {"Ardley": (47.2, 0.0612), "Corvin": (49.8, 0.0455), "Elster": (45.9, 0.0688), "Pallard": (47.6, 0.0581),
-          "Tresham": (44.8, 0.0640)}
-    _table(ws3, 4, ["County", "Expected yield 2027 (bu per harvested acre)", "Coverage level",
-                    "Indicative premium rate (per cent of liability)"], [[c, wq[c][0], "85%", wq[c][1]] for c in W.MEMBERS],
-           [14, 22, 12, 24], {2: "0.0", 4: "0.00%"})
+        ws.column_dimensions[ws.cell(row=4, column=j).column_letter].width = w
+    ws.freeze_panes = "A5"
+    r = row[0] + 1
+    for line in ("Households are occupied housing units. Household income is money income in the previous 12 months.",
+                 "Estimates are rounded to the nearest ten; region and state rows are the sums of their county rows.",
+                 "Source: State Demographer's Office, county household estimates program, vintage 2025."):
+        ws.cell(row=r, column=1, value=line).font = Font(name="Calibri", size=9, italic=True, color="595959")
+        r += 1
     wb.save(path)
-
-
-def roster_workbook(path, members):
-    import openpyxl
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Members"
-    _sheet_header(ws, "Ardley Plains Growers' Cooperative: member roster", "As at 30 September 2026. Member numbers "
-                  "are the accounts the elevators and the member portal use.")
-    _table(ws, 4, ["Member no.", "Entity type", "Home county", "Joined", "Status"],
-           [[m["member_no"], m["entity"], m["home_county"], m["joined"], m["status"]] for m in members],
-           [12, 14, 14, 9, 10])
-    wb.save(path)
-
-
-def prior_workbook(path, rows):
-    import openpyxl
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Statements"
-    _sheet_header(ws, "Area-yield covers 2019 to 2025: annual statements", "Corvin and Tresham dryland grain sorghum "
-                  "covers, one-year terms, trigger at 85 per cent of each year's expected yield.")
-    _table(ws, 4, ["County", "Crop year", "Expected yield (bu/acre)", "Trigger yield (bu/acre)",
-                   "Final county yield (bu/acre)", "Liability ($)", "Premium rate", "Indemnity ($)"],
-           [[r["county"], r["year"], r["expected"], r["trigger"], r["final"], r["liability"], r["rate"] / 100.0,
-             r["indemnity"]] for r in rows], [10, 10, 13, 13, 14, 14, 11, 13],
-           {3: "0.0", 4: "0.0", 5: "0.0", 6: "#,##0", 7: "0.00%", 8: "#,##0"})
-    wb.save(path)
+    return len(W.COUNTIES)

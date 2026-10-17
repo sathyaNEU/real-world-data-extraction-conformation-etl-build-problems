@@ -3,243 +3,205 @@ internal state. Every handling a route can take is a keyword, the golden's the d
 import csv
 import datetime as dt
 import os
-import re
 
 import world as W
-
-NI_ITEMS = {
-    "SORGHUM, GRAIN, NON-IRRIGATED - ACRES HARVESTED": "harvested",
-    "SORGHUM, GRAIN, NON-IRRIGATED - PRODUCTION, MEASURED IN BU": "production",
-    "SORGHUM, GRAIN, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE": "yield",
-}
-ALL_ITEMS = {
-    "SORGHUM, GRAIN - ACRES HARVESTED": "harvested",
-    "SORGHUM, GRAIN - PRODUCTION, MEASURED IN BU": "production",
-    "SORGHUM, GRAIN - YIELD, MEASURED IN BU / ACRE": "yield",
-}
 
 
 def path(target, key):
     return os.path.join(target, W.FILES[key])
 
 
-def num(v):
-    v = v.strip()
-    if v.startswith("("):
-        return None
-    return float(v.replace(",", ""))
-
-
-def district_code(code, year):
-    c = int(code)
-    return c * 10 if c < 10 else c
-
-
-def read_export(target, key):
+def rows(target, key):
     with open(path(target, key), newline="", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
 
 
-def estimates(target, vintage="latest", items=None):
-    """{(level, district, county, year, field): value or None} for the sorghum items asked, with the later download
-    taking the years it holds ('latest'), or the March 2024 download wherever it has the year ('early')."""
-    items = items or NI_ITEMS
-    out = {}
-    order = ("pull24", "pull26") if vintage == "latest" else ("pull26", "pull24")
-    for key in order:
-        for r in read_export(target, key):
-            if r["Data Item"] not in items or r["Geo Level"] == "STATE":
-                continue
-            y = int(r["Year"])
-            d = district_code(r["Ag District Code"], y)
-            c = r["County"].title() if r["Geo Level"] == "COUNTY" else ""
-            out[(r["Geo Level"], d, c, y, items[r["Data Item"]])] = num(r["Value"])
-    return out
+def register(target):
+    """County code (three digits) to service division."""
+    return {r["COUNTY_FIPS"]: r["SERVICE_DIVISION"] for r in rows(target, "divisions")}
 
 
-def county_district(target):
-    """Each county's district, from the export (unchanged over the years)."""
-    out = {}
-    for r in read_export(target, "pull26"):
-        if r["Geo Level"] == "COUNTY":
-            out[r["County"].title()] = district_code(r["Ag District Code"], int(r["Year"]))
-    return out
+def county_names(target):
+    return {r["COUNTY"]: r["SERVICE_DIVISION"] for r in rows(target, "divisions")}
 
 
-def sorghum(target, vintage="latest", practice="NI"):
-    """county -> year -> dict(harvested, production, yield) (None where withheld); district -> year -> dict."""
-    e = estimates(target, vintage, NI_ITEMS if practice == "NI" else ALL_ITEMS)
-    cty, dist = {}, {}
-    for (lvl, d, c, y, f), v in e.items():
-        if lvl == "COUNTY":
-            cty.setdefault(c, {}).setdefault(y, {})[f] = v
-        else:
-            dist.setdefault(d, {}).setdefault(y, {})[f] = v
-    return cty, dist
+def band_of_income(v):
+    v = float(v)
+    return 0 if v < 25000 else 1 if v < 50000 else 2 if v < 75000 else 3
 
 
-def terms(target):
-    """The term sheet's expected 2027 yield and trend per county, read from its table."""
-    import pypdf
-    txt = "\n".join(p.extract_text() for p in pypdf.PdfReader(path(target, "terms")).pages)
-    out = {}
-    for c in W.MEMBERS:
-        m = re.search(r"\b%s\s+(\d+\.\d)\s+(\d+\.\d\d)\b" % c, txt)
-        out[c] = dict(expected=float(m.group(1)), trend=float(m.group(2)))
-    return out
+INCCAT_BAND = {k: b for k, _, b in W.INCCAT}
 
 
-def quotes(target):
+def burden_shares(target, monthly_as_annual=False, weight="WT_FINAL", by="division"):
+    """The energy survey's weighted share with annual home energy costs above 6 per cent of income, by division (or
+    county) and eligible band."""
+    reg = register(target)
+    num, den = {}, {}
+    for r in rows(target, "heas"):
+        d = reg.get(r["COUNTY"])
+        if d is not None and by == "county":
+            d = r["COUNTY"]
+        b = band_of_income(r["HHINC"])
+        if d is None or b not in W.ELIGIBLE_BANDS:
+            continue
+        elec = float(r["ELEC_AMT"]) * (12 if r["ELEC_BASIS"] == "M" and not monthly_as_annual else 1)
+        cost = elec + float(r["GAS_AMT"]) + float(r["OTHER_AMT"])
+        w = float(r[weight])
+        key = (d, b)
+        den[key] = den.get(key, 0.0) + w
+        num[key] = num.get(key, 0.0) + w * (cost / float(r["HHINC"]) > W.BURDEN)
+    return {k: num[k] / den[k] for k in den}
+
+
+def equipment_shares(target, dk_as_no=False, by="division"):
+    """The health survey's household-weighted share with someone using electrically powered medical equipment, by
+    division (or county) and eligible band."""
+    reg = register(target)
+    num, den = {}, {}
+    for r in rows(target, "shs"):
+        d = reg.get("%03d" % int(r["CNTYFIPS"]))
+        if d is not None and by == "county":
+            d = "%03d" % int(r["CNTYFIPS"])
+        b = INCCAT_BAND[int(r["INCCAT"])]
+        a = int(r["MEDEQUIP"])
+        if d is None or b not in W.ELIGIBLE_BANDS or (a in (7, 9) and not dk_as_no):
+            continue
+        w = float(r["HH_WT"])
+        key = (d, b)
+        den[key] = den.get(key, 0.0) + w
+        num[key] = num.get(key, 0.0) + w * (a == 1)
+    return {k: num[k] / den[k] for k in den}
+
+
+def households(target, by="division"):
+    """The demographer's July 1, 2025 households of each division (or county) and eligible band (county rows only)."""
     import openpyxl
-    wb = openpyxl.load_workbook(path(target, "quotes"), data_only=True)
-    ws = wb["Dryland grain sorghum"]
+    reg = register(target)
+    ws = openpyxl.load_workbook(path(target, "estimates"), data_only=True)["Households by income"]
     out = {}
     for row in ws.iter_rows(min_row=5, values_only=True):
-        if row[0] in W.MEMBERS:
-            out[row[0]] = 100.0 * float(row[3])
+        fips = row[1]
+        if not fips or fips not in reg:
+            continue
+        for b in W.ELIGIBLE_BANDS:
+            key = (reg[fips] if by == "division" else fips, b)
+            out[key] = out.get(key, 0) + int(row[3 + b])
     return out
 
 
-def enrolment(target):
-    with open(path(target, "enrol"), newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
-
-
-def tickets(target):
-    with open(path(target, "tickets"), newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
-
-
-def transfers(target):
-    with open(path(target, "transfers"), newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
-
-
-# ---------------------------------------------------------------- the main call
-def yields(target, mode="golden", vintage="latest", practice="NI"):
-    """county -> year -> the yield a route uses (absent where it drops the year)."""
-    cty, dist = sorghum(target, vintage, practice)
-    cd = county_district(target)
-    out = {}
-    for c in W.MEMBERS:
-        d = cd[c]
-        peers = [k for k, v in cd.items() if v == d and k != c]
-        ser = {}
-        pub = {y: v["yield"] for y, v in cty[c].items() if v["yield"] is not None}
-        dy = {y: v["production"] / v["harvested"] for y, v in dist[d].items()}
-        pubyears = sorted(pub)
-        ratio = sum(pub[y] / dy[y] for y in pubyears) / len(pubyears)
-        import numpy as np
-        bb, aa = np.polyfit([dy[y] for y in pubyears], [pub[y] for y in pubyears], 1)
-        worst = min(pub.values())
-        for y in range(1991, 2026):
-            if y in pub:
-                ser[y] = pub[y]
+def pilot_tables(target, keep_dups=False, partial_as_no=False, dk_as_no=False):
+    """The pilot's 2x2 tables (both, burden only, equipment only, neither) by band and by division and band, from each
+    address's latest complete screen."""
+    recs = rows(target, "pilot")
+    if not keep_dups:
+        latest = {}
+        for r in recs:
+            if r["STATUS"] == "Complete" or (partial_as_no and r["STATUS"] == "Partial"):
+                k = r["ADDRESS_KEY"]
+                if k not in latest or (r["RECEIVED"], r["SCREEN_ID"]) > (latest[k]["RECEIVED"], latest[k]["SCREEN_ID"]):
+                    latest[k] = r
+        recs = list(latest.values())
+    tabs, tabs_div = {}, {}
+    for r in recs:
+        st = r["STATUS"]
+        if st == "Ended - income" or (st == "Partial" and not partial_as_no):
+            continue
+        eq = r["MED_EQUIPMENT"] or "No"
+        if eq == "Don't know":
+            if not dk_as_no:
                 continue
-            if mode == "drop":
-                continue
-            if mode == "golden":
-                h = dist[d][y]["harvested"] - sum(cty[k][y]["harvested"] for k in peers)
-                p = dist[d][y]["production"] - sum(cty[k][y]["production"] for k in peers)
-                ser[y] = round(p / h, 1)
-            elif mode == "golden_unrounded":
-                h = dist[d][y]["harvested"] - sum(cty[k][y]["harvested"] for k in peers)
-                p = dist[d][y]["production"] - sum(cty[k][y]["production"] for k in peers)
-                ser[y] = p / h
-            elif mode == "district":
-                ser[y] = round(dy[y], 1)
-            elif mode == "ratio":
-                ser[y] = ratio * dy[y]
-            elif mode == "regress":
-                ser[y] = float(aa + bb * dy[y])
-            elif mode == "worst":
-                ser[y] = worst
-            elif mode == "zero":
-                ser[y] = 0.0
-        out[c] = ser
+            eq = "No"
+        inc = float(r["HH_INCOME"])
+        x = (float(r["ELEC_12M"]) + float(r["OTHER_FUELS_12M"])) / inc > W.BURDEN
+        y = eq == "Yes"
+        k = 0 if (x and y) else 1 if x else 2 if y else 3
+        b = band_of_income(inc)
+        for key, store in ((b, tabs), ((r["DIVISION"], b), tabs_div)):
+            store.setdefault(key, [0, 0, 0, 0])[k] += 1
+    return tabs, tabs_div
+
+
+def conformed(target, **kw):
+    """Everything the fusion reads: households, the two surveys' shares and the pilot's tables."""
+    p = burden_shares(target, monthly_as_annual=kw.get("monthly_as_annual", False), weight=kw.get("weight", "WT_FINAL"))
+    q = equipment_shares(target, dk_as_no=kw.get("dk_as_no", False))
+    tabs, tabs_div = pilot_tables(target, keep_dups=kw.get("keep_dups", False),
+                                  partial_as_no=kw.get("partial_as_no", False), dk_as_no=kw.get("pilot_dk_as_no", False))
+    return households(target), p, q, tabs, tabs_div
+
+
+# ---------------------------------------------------------------- the asks
+COUNT_DATE = dt.date(2026, 10, 31)
+
+
+class Chains:
+    """Accounts joined into households through the enrolment extract's prior accounts."""
+
+    def __init__(self, target):
+        self.parent = {}
+        for r in rows(target, "baseline"):
+            self.find(r["ACCOUNT_NO"])
+            if r["PRIOR_ACCOUNT_NO"]:
+                self.union(r["ACCOUNT_NO"], r["PRIOR_ACCOUNT_NO"])
+
+    def find(self, a):
+        self.parent.setdefault(a, a)
+        while self.parent[a] != a:
+            self.parent[a] = self.parent[self.parent[a]]
+            a = self.parent[a]
+        return a
+
+    def union(self, a, b):
+        ra, rb = self.find(a), self.find(b)
+        if ra != rb:
+            self.parent[max(ra, rb)] = min(ra, rb)
+
+
+def baseline_households(target, unit="household", division="register"):
+    """Households (or accounts) on the medical baseline rate at the end of October 2026, by division: unit 'household'
+    joins accounts through prior accounts, 'account' counts accounts; division 'register' takes the premise county's
+    division from the register, 'stored' the extract's own column."""
+    names = county_names(target)
+    ch = Chains(target) if unit == "household" else None
+    seen = {}
+    for r in rows(target, "baseline"):
+        start = dt.date.fromisoformat(r["START_DATE"])
+        end = dt.date.fromisoformat(r["END_DATE"]) if r["END_DATE"] else None
+        if not (start <= COUNT_DATE and (end is None or end >= COUNT_DATE)):
+            continue
+        key = ch.find(r["ACCOUNT_NO"]) if ch else r["ACCOUNT_NO"]
+        d = names[r["SERVICE_COUNTY"]] if division == "register" else r["DIVISION"]
+        if key not in seen or start > seen[key][0]:
+            seen[key] = (start, d)
+    out = {d: 0 for d in W.DIV_NAMES}
+    for start, d in seen.values():
+        out[d] += 1
     return out
 
 
-def recovered(target, vintage="latest"):
-    cty, dist = sorghum(target, vintage)
-    cd = county_district(target)
-    out = {}
-    for c in W.MEMBERS:
-        d = cd[c]
-        peers = [k for k, v in cd.items() if v == d and k != c]
-        for y, v in cty[c].items():
-            if v["yield"] is None:
-                h = dist[d][y]["harvested"] - sum(cty[k][y]["harvested"] for k in peers)
-                p = dist[d][y]["production"] - sum(cty[k][y]["production"] for k in peers)
-                out[(c, y)] = dict(harvested=h, production=p, yld=round(p / h, 1))
-    return out
+def central_date(utc):
+    t = dt.datetime.strptime(utc, "%Y-%m-%dT%H:%M:%SZ")
+    off = 5 if dt.datetime(2026, 3, 8, 8) <= t < dt.datetime(2026, 11, 1, 7) else 6
+    return (t - dt.timedelta(hours=off)).date()
 
 
-def share(c, y, v, ts, ratio_trend=False):
-    e, b = ts[c]["expected"], ts[c]["trend"]
-    trig = W.COVERAGE * e
-    if ratio_trend:
-        adj = v * e / (e - b * (2027 - y))
-    else:
-        adj = v + b * (2027 - y)
-    return min(1.0, max(0.0, (trig - adj) / trig))
-
-
-def expected_loss(series, ts, ratio_trend=False):
-    return {c: 100.0 * sum(share(c, y, v, ts, ratio_trend) for y, v in s.items()) / len(s) for c, s in series.items()}
-
-
-# ---------------------------------------------------------------- Ask A
-def utc(s):
-    return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
-
-
-def enrolled(target, local_close=True, keep_irrigated=False, latest=True):
-    close = dt.datetime(2026, 10, 30, 17, 0, tzinfo=dt.timezone(dt.timedelta(hours=-5)))
-    rows = enrolment(target)
-    if local_close:
-        ok = [r for r in rows if utc(r["submitted_at"]) < close]
-    else:
-        ok = [r for r in rows if r["submitted_at"][:10] <= "2026-10-30"]
-    by = {}
-    for r in sorted(ok, key=lambda r: r["submitted_at"]):
-        if not latest and r["field_id"] in by:
+def battery_households(target, unit="household", clock="central"):
+    """Households given a backup battery from January to October 2026, by division: unit 'household' (accounts joined
+    through the enrolment extract's prior accounts), 'account', 'serial' or 'order'; clock 'central' or 'utc'."""
+    names = county_names(target)
+    ch = Chains(target) if unit == "household" else None
+    seen = {}
+    for r in rows(target, "batteries"):
+        if r["STATUS"] != "Completed":
             continue
-        by[r["field_id"]] = r
-    out = {c: 0.0 for c in W.MEMBERS}
-    for r in by.values():
-        if r["practice"] != "Non-irrigated" and not keep_irrigated:
+        day = central_date(r["COMPLETED_UTC"]) if clock == "central" else dt.date.fromisoformat(r["COMPLETED_UTC"][:10])
+        if not (dt.date(2026, 1, 1) <= day <= COUNT_DATE):
             continue
-        out[r["field_county"]] += float(r["acres"])
-    return out
-
-
-def liability(target, price_per_bu=None, **kw):
-    ts = terms(target)
-    q = quotes(target)
-    acres = enrolled(target, **kw)
-    p = W.PRICE_CWT * W.BUSHEL_LB / 100.0 if price_per_bu is None else price_per_bu
-    lia = {c: acres[c] * ts[c]["expected"] * W.COVERAGE * p for c in W.MEMBERS}
-    prem = {c: lia[c] * q[c] / 100.0 for c in W.MEMBERS}
-    return acres, lia, prem
-
-
-# ---------------------------------------------------------------- Ask B
-def receipts_share(target, drop_transfers=True, shrink=True, sorghum_only=True, vintage="latest"):
-    tr = {t["transfer_no"] for t in transfers(target)}
-    bu = {c: 0.0 for c in W.MEMBERS}
-    for t in tickets(target):
-        if sorghum_only and t["commodity"] != "Sorghum":
-            continue
-        if drop_transfers and t["site"] == "MAIN" and t["reference"] in tr:
-            continue
-        net = float(t["net_lb"])
-        m = float(t["moisture_pct"])
-        b = net * (100 - m) / (100 - W.STANDARD_MOISTURE) / W.BUSHEL_LB if shrink else net / W.BUSHEL_LB
-        bu[t["origin_county"]] += b
-    cty, _ = sorghum(target, vintage, practice="ALL")
-    out = {}
-    for c in W.MEMBERS:
-        prod = sum(cty[c][y]["production"] for y in range(2016, 2021))
-        out[c] = 100.0 * bu[c] / prod
+        key = {"household": lambda: ch.find(r["ACCOUNT_NO"]), "account": lambda: r["ACCOUNT_NO"],
+               "serial": lambda: r["UNIT_SERIAL"], "order": lambda: r["WORK_ORDER"]}[unit]()
+        seen[key] = names[r["SERVICE_COUNTY"]]
+    out = {d: 0 for d in W.DIV_NAMES}
+    for d in seen.values():
+        out[d] += 1
     return out

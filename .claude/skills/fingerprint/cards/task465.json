@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Staff 38 Home Energy Medical Assistance caseworkers for 2027: Northern 2, Lakeshore 3, River Valley 4, High Plains 4, Central 4, Southern Hills 3, Southwest 7, North Metro 6 and South Metro 5.",
+  "answer_source": "submission.md block 1; golden hema_caseworkers_2027.xlsx (Caseworkers 2027 sheet)",
   "gap": [
     "population"
   ],
@@ -34,8 +34,8 @@
   "role_family": "capacity_planner",
   "scoring_unit": "units served",
   "spine": {
-    "file": "utility_medical_baseline_enrolment_2026.csv",
-    "rows": 0,
+    "file": "medical_baseline_enrolment_2026.csv",
+    "rows": 38848,
     "entity": "one utility account's enrolment spell in a medical baseline (powered medical equipment) rate",
     "grain": "utility account x enrolment spell",
     "source": "synthetic"
@@ -48,7 +48,19 @@
     "currency": "USD",
     "org_type": "an electric utility running a medical energy assistance programme under the state utility commission",
     "invented_names": [
-      "Home Energy Medical Assistance"
+      "Home Energy Medical Assistance",
+      "Callowmere Electric Company",
+      "Household Energy Affordability Survey",
+      "North Metro",
+      "South Metro",
+      "River Valley",
+      "High Plains",
+      "Southern Hills",
+      "Kestrelmere",
+      "Pellingmere",
+      "Vetchmere",
+      "Quillholme",
+      "Tarnholme"
     ],
     "people": [
       "Stacy Williams",
@@ -62,11 +74,11 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The decisive quantity is how many units carry two traits that no large source records together: one source measures the first trait and the shared attributes, another the second trait and the same attributes, and a small third source records both; within every cell of the shared attributes the two traits go together, so the second source's rate is not the rate among the units carrying the first, and joining the large sources on their shared attributes and multiplying the rates counts too few, while only the small source's within-cell association, carried into a table that keeps both large sources' rates, counts the units that carry both.",
-  "driver_concrete": "Each planning region's 2027 caseworkers are set at one for every 1,200 eligible households, or part of 1,200 (energy burden above 6 per cent and someone at home relying on electrically powered medical equipment), and no survey measured both traits: the energy affordability survey measured burden, the state health survey the equipment, both weighted to the same household estimates by county and income band, and the 2025 screening pilot measured both on a statewide address sample; the equipment raises the household's electricity bill, so within every income band burdened households are several times as likely to have it, the product of the two surveys' rates in each region and band counts about half the eligible households, and only the pilot's within-band odds ratio carried into each cell, the cell keeping both surveys' rates, counts them.",
-  "stump": "The default path aligns the two surveys' regions and income bands, applies their weights and multiplies each region-and-band cell's burden rate by its equipment rate, treating the two traits as independent within the cell, so it counts about half the eligible households and staffs about 14 caseworkers where the programme needs about 25; carrying the screening pilot's within-band association into each cell, with both surveys' rates kept, counts them, while the pilot's own shares or one survey's rate with the pilot's conditional rate staff other wrong sets.",
+  "driver_concrete": "Each service division's 2027 caseworkers are set at one for every 400 eligible households, or part of 400 (income under $50,000, energy costs above 6 per cent of income and someone at home relying on electrically powered medical equipment), and no survey measured both traits: the energy affordability survey measured costs and income, the state health survey the equipment, both weighted to the demographer's household estimates by county and income band, and the 2025 screening pilot asked both at random addresses in the two metropolitan divisions; the equipment raises the household's electricity bill, so inside every income band high-burden homes report it about three times as often, the product of the two surveys' shares counts 8,200 eligible households and staffs 26, and only the pilot's within-band odds ratio carried into each division and band, the cell keeping both surveys' shares, counts 13,300 and staffs 38.",
+  "stump": "The default path aligns the two surveys on service division and income band, applies their weights and multiplies each cell's burden share by its equipment share, treating the two traits as independent inside the cell, so it counts 8,200 eligible households where the fused table holds 13,300 and staffs 26 caseworkers where the programme needs 38; carrying the screening pilot's within-band association into each cell, with both surveys' shares kept, counts them, while the pilot's own shares (42), one survey's share times the pilot's conditional rate (51 and 33) and the pilot's dependence ratio (41) each break a survey's share in some cell.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who maps the health survey's counties to planning regions and its income categories to the programme's bands, computes burden from annual costs, uses the final and household weights, leaves out don't-know and refused answers and reads the plan's caseload standard joins the two surveys' rates on region and income band and multiplies them, counting about half the eligible households and staffing about 14 caseworkers; the pilot's own eligible shares, or one survey's rate times the pilot's conditional rate, keep only one survey's estimates and staff other wrong sets; only the pilot's within-band odds ratio carried into cells that keep both surveys' rates staffs the programme's 25.",
-  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a joint distribution rebuilt by statistical matching, two surveys' marginal rates fused with an auxiliary sample's within-cell association (the match's identifying assumption); replacing it with the product of the margins (conditional independence) or with the auxiliary sample's own joint shares changes most regions' staffing.",
+  "analyst_test": "A strong analyst who maps both surveys' counties to the nine service divisions through the division register, nests the health survey's income categories into the plan's two eligible bands, annualises monthly electricity bills, uses the final and household weights, leaves out don't-know and refused answers and applies the plan's caseload standard multiplies each division and band's burden share by its equipment share, as if the two traits were independent inside the cell, counting 8,200 eligible households and staffing 26 caseworkers; the pilot's own shares (42), one survey's share times the pilot's conditional rate (51 and 33) and the pilot's dependence ratio (41) each break a survey's share in some cell; only the pilot's within-band odds ratio carried into cells that keep both surveys' shares staffs the programme's 38.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a joint distribution rebuilt by statistical matching, two surveys' marginal rates fused with an auxiliary sample's within-cell association (the match's identifying assumption); replacing it with the product of the margins (conditional independence) or with the auxiliary sample's own joint shares changes most divisions' staffing.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:statistical matching beyond conditional independence (an auxiliary sample's within-band association carried into cells calibrated to two surveys)",
   "layer1": [

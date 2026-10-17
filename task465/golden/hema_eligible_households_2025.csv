@@ -1,0 +1,19 @@
+SERVICE_DIVISION,INCOME_BAND,HOUSEHOLDS_2025,ELIGIBLE_HOUSEHOLDS_2025
+Northern,"Under $25,000",21080,500
+Northern,"$25,000 to $49,999",20000,200
+Lakeshore,"Under $25,000",14430,600
+Lakeshore,"$25,000 to $49,999",16450,300
+River Valley,"Under $25,000",22020,900
+River Valley,"$25,000 to $49,999",27110,500
+High Plains,"Under $25,000",19330,1000
+High Plains,"$25,000 to $49,999",21320,300
+Central,"Under $25,000",17060,1000
+Central,"$25,000 to $49,999",22130,500
+Southern Hills,"Under $25,000",10940,600
+Southern Hills,"$25,000 to $49,999",15660,300
+Southwest,"Under $25,000",34600,1700
+Southwest,"$25,000 to $49,999",43990,800
+North Metro,"Under $25,000",28780,1300
+North Metro,"$25,000 to $49,999",48940,1000
+South Metro,"Under $25,000",32370,1200
+South Metro,"$25,000 to $49,999",40370,600

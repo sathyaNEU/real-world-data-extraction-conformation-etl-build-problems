@@ -1,190 +1,272 @@
 {
- "acres": {
-  "Ardley": 3657.7,
-  "Corvin": 9905.6,
-  "Elster": 3848.1,
-  "Pallard": 3980.0,
-  "Tresham": 2943.7
+ "baseline": {
+  "Central": 1313,
+  "High Plains": 1359,
+  "Lakeshore": 821,
+  "North Metro": 3320,
+  "Northern": 933,
+  "River Valley": 1506,
+  "South Metro": 3391,
+  "Southern Hills": 1181,
+  "Southwest": 3500
+ },
+ "baseline_total": 17324,
+ "battery": {
+  "Central": 237,
+  "High Plains": 255,
+  "Lakeshore": 161,
+  "North Metro": 641,
+  "Northern": 202,
+  "River Valley": 283,
+  "South Metro": 635,
+  "Southern Hills": 219,
+  "Southwest": 603
+ },
+ "battery_total": 3236,
+ "burden_share": {
+  "Central|0": 0.5467,
+  "Central|1": 0.2167,
+  "High Plains|0": 0.5693,
+  "High Plains|1": 0.3137,
+  "Lakeshore|0": 0.7751,
+  "Lakeshore|1": 0.3425,
+  "North Metro|0": 0.4881,
+  "North Metro|1": 0.172,
+  "Northern|0": 0.8112,
+  "Northern|1": 0.2831,
+  "River Valley|0": 0.6528,
+  "River Valley|1": 0.2567,
+  "South Metro|0": 0.4271,
+  "South Metro|1": 0.1728,
+  "Southern Hills|0": 0.5644,
+  "Southern Hills|1": 0.2503,
+  "Southwest|0": 0.5223,
+  "Southwest|1": 0.2109
  },
  "call": {
-  "buy": [
-   "Ardley",
-   "Elster",
-   "Pallard"
-  ],
-  "decline": [
-   "Corvin",
-   "Tresham"
-  ]
+  "by_division": {
+   "Central": 4,
+   "High Plains": 4,
+   "Lakeshore": 3,
+   "North Metro": 6,
+   "Northern": 2,
+   "River Valley": 4,
+   "South Metro": 5,
+   "Southern Hills": 3,
+   "Southwest": 7
+  },
+  "total": 38
  },
- "covers": {
-  "Ardley": {
-   "call": "Buy",
-   "change_rate": 9.06,
-   "default_el": 1.25,
-   "default_multiple": 5.59,
-   "expected": 57.9,
-   "expected_loss": 6.47,
-   "multiple": 1.08,
-   "quote": 7.0,
-   "trend": 0.58,
-   "trigger": 52.11
+ "cells": {
+  "Central|0": 1000,
+  "Central|1": 500,
+  "High Plains|0": 1000,
+  "High Plains|1": 300,
+  "Lakeshore|0": 600,
+  "Lakeshore|1": 300,
+  "North Metro|0": 1300,
+  "North Metro|1": 1000,
+  "Northern|0": 500,
+  "Northern|1": 200,
+  "River Valley|0": 900,
+  "River Valley|1": 500,
+  "South Metro|0": 1200,
+  "South Metro|1": 600,
+  "Southern Hills|0": 600,
+  "Southern Hills|1": 300,
+  "Southwest|0": 1700,
+  "Southwest|1": 800
+ },
+ "cells_raw": {
+  "Central|0": 991.23,
+  "Central|1": 496.83,
+  "High Plains|0": 1007.32,
+  "High Plains|1": 292.27,
+  "Lakeshore|0": 607.47,
+  "Lakeshore|1": 291.92,
+  "North Metro|0": 1295.1,
+  "North Metro|1": 994.57,
+  "Northern|0": 493.2,
+  "Northern|1": 192.4,
+  "River Valley|0": 905.66,
+  "River Valley|1": 492.32,
+  "South Metro|0": 1193.08,
+  "South Metro|1": 593.04,
+  "Southern Hills|0": 607.03,
+  "Southern Hills|1": 307.75,
+  "Southwest|0": 1705.11,
+  "Southwest|1": 807.11
+ },
+ "eligible": {
+  "Central": 1500,
+  "High Plains": 1300,
+  "Lakeshore": 900,
+  "North Metro": 2300,
+  "Northern": 700,
+  "River Valley": 1400,
+  "South Metro": 1800,
+  "Southern Hills": 900,
+  "Southwest": 2500
+ },
+ "eligible_raw": {
+  "Central": 1488.06,
+  "High Plains": 1299.59,
+  "Lakeshore": 899.4,
+  "North Metro": 2289.67,
+  "Northern": 685.6,
+  "River Valley": 1397.99,
+  "South Metro": 1786.12,
+  "Southern Hills": 914.78,
+  "Southwest": 2512.22
+ },
+ "eligible_sum": 13300,
+ "equipment_share": {
+  "Central|0": 0.0731,
+  "Central|1": 0.0477,
+  "High Plains|0": 0.0642,
+  "High Plains|1": 0.0226,
+  "Lakeshore|0": 0.0457,
+  "Lakeshore|1": 0.028,
+  "North Metro|0": 0.0595,
+  "North Metro|1": 0.0512,
+  "Northern|0": 0.025,
+  "Northern|1": 0.0168,
+  "River Valley|0": 0.0477,
+  "River Valley|1": 0.0341,
+  "South Metro|0": 0.052,
+  "South Metro|1": 0.0363,
+  "Southern Hills|0": 0.0687,
+  "Southern Hills|1": 0.0376,
+  "Southwest|0": 0.0631,
+  "Southwest|1": 0.0395
+ },
+ "households": {
+  "Central|0": 17060,
+  "Central|1": 22130,
+  "High Plains|0": 19330,
+  "High Plains|1": 21320,
+  "Lakeshore|0": 14430,
+  "Lakeshore|1": 16450,
+  "North Metro|0": 28780,
+  "North Metro|1": 48940,
+  "Northern|0": 21080,
+  "Northern|1": 20000,
+  "River Valley|0": 22020,
+  "River Valley|1": 27110,
+  "South Metro|0": 32370,
+  "South Metro|1": 40370,
+  "Southern Hills|0": 10940,
+  "Southern Hills|1": 15660,
+  "Southwest|0": 34600,
+  "Southwest|1": 43990
+ },
+ "pilot_rates": {
+  "0": {
+   "equip_high": 10.7,
+   "equip_rest": 3.3,
+   "screens": 1238
   },
-  "Corvin": {
-   "call": "Decline",
-   "change_rate": 4.62,
-   "default_el": 3.3,
-   "default_multiple": 1.71,
-   "expected": 69.3,
-   "expected_loss": 3.3,
-   "multiple": 1.71,
-   "quote": 5.65,
-   "trend": 0.54,
-   "trigger": 62.37
-  },
-  "Elster": {
-   "call": "Buy",
-   "change_rate": 10.45,
-   "default_el": 1.91,
-   "default_multiple": 4.29,
-   "expected": 52.0,
-   "expected_loss": 7.46,
-   "multiple": 1.1,
-   "quote": 8.2,
-   "trend": 0.33,
-   "trigger": 46.8
-  },
-  "Pallard": {
-   "call": "Buy",
-   "change_rate": 6.62,
-   "default_el": 1.0,
-   "default_multiple": 5.1,
-   "expected": 53.5,
-   "expected_loss": 4.73,
-   "multiple": 1.08,
-   "quote": 5.1,
-   "trend": 0.28,
-   "trigger": 48.15
-  },
-  "Tresham": {
-   "call": "Decline",
-   "change_rate": 5.52,
-   "default_el": 2.01,
-   "default_multiple": 3.6,
-   "expected": 51.6,
-   "expected_loss": 3.94,
-   "multiple": 1.84,
-   "quote": 7.25,
-   "trend": 0.34,
-   "trigger": 46.44
+  "1": {
+   "equip_high": 11.7,
+   "equip_rest": 3.7,
+   "screens": 1879
   }
  },
- "liability": {
-  "Ardley": 827200,
-  "Corvin": 2681300,
-  "Elster": 781600,
-  "Pallard": 831700,
-  "Tresham": 593300
+ "psi": {
+  "0": 3.49,
+  "1": 3.47
  },
- "premium": {
-  "Ardley": 57900,
-  "Corvin": 151500,
-  "Elster": 64100,
-  "Pallard": 42400,
-  "Tresham": 43000
- },
- "price_per_bu": 4.34,
- "production_2016_2020": {
-  "Ardley": 1385800,
-  "Corvin": 10789500,
-  "Elster": 1158800,
-  "Pallard": 1388200,
-  "Tresham": 1146100
- },
- "receipts_bu": {
-  "Ardley": 440937,
-  "Corvin": 2352717,
-  "Elster": 449844,
-  "Pallard": 381491,
-  "Tresham": 399069
- },
- "receipts_share": {
-  "Ardley": 31.8,
-  "Corvin": 21.8,
-  "Elster": 38.8,
-  "Pallard": 27.5,
-  "Tresham": 34.8
- },
- "record_rows": 175,
- "recovered": {
-  "Ardley 2002": {
-   "harvested": 500,
-   "production": 5700,
-   "yld": 11.4
+ "psi_mh": 3.48,
+ "rivals": {
+  "energy_x_pilot": {
+   "caseworkers": {
+    "Central": 4,
+    "High Plains": 5,
+    "Lakeshore": 5,
+    "North Metro": 7,
+    "Northern": 7,
+    "River Valley": 6,
+    "South Metro": 6,
+    "Southern Hills": 3,
+    "Southwest": 8
+   },
+   "eligible": 19200,
+   "total": 51
   },
-  "Ardley 2011": {
-   "harvested": 500,
-   "production": 4300,
-   "yld": 8.6
+  "health_x_pilot": {
+   "caseworkers": {
+    "Central": 4,
+    "High Plains": 3,
+    "Lakeshore": 2,
+    "North Metro": 6,
+    "Northern": 2,
+    "River Valley": 3,
+    "South Metro": 5,
+    "Southern Hills": 2,
+    "Southwest": 6
+   },
+   "eligible": 11800,
+   "total": 33
   },
-  "Ardley 2022": {
-   "harvested": 400,
-   "production": 5000,
-   "yld": 12.5
+  "independence": {
+   "caseworkers": {
+    "Central": 3,
+    "High Plains": 3,
+    "Lakeshore": 2,
+    "North Metro": 4,
+    "Northern": 2,
+    "River Valley": 3,
+    "South Metro": 3,
+    "Southern Hills": 2,
+    "Southwest": 4
+   },
+   "eligible": 8200,
+   "total": 26
   },
-  "Elster 2002": {
-   "harvested": 500,
-   "production": 5200,
-   "yld": 10.4
+  "independence_pooled": {
+   "total": 25
   },
-  "Elster 2011": {
-   "harvested": 300,
-   "production": 2400,
-   "yld": 8.0
+  "lift": {
+   "caseworkers": {
+    "Central": 5,
+    "High Plains": 4,
+    "Lakeshore": 3,
+    "North Metro": 6,
+    "Northern": 3,
+    "River Valley": 5,
+    "South Metro": 5,
+    "Southern Hills": 3,
+    "Southwest": 7
+   },
+   "eligible": 14700,
+   "total": 41
   },
-  "Elster 2022": {
-   "harvested": 500,
-   "production": 6600,
-   "yld": 13.2
-  },
-  "Pallard 2003": {
-   "harvested": 500,
-   "production": 4900,
-   "yld": 9.8
-  },
-  "Pallard 2011": {
-   "harvested": 600,
-   "production": 6900,
-   "yld": 11.5
-  },
-  "Tresham 2006": {
-   "harvested": 800,
-   "production": 19600,
-   "yld": 24.5
-  },
-  "Tresham 2011": {
-   "harvested": 500,
-   "production": 11300,
-   "yld": 22.6
+  "pilot_shares": {
+   "caseworkers": {
+    "Central": 4,
+    "High Plains": 4,
+    "Lakeshore": 3,
+    "North Metro": 6,
+    "Northern": 4,
+    "River Valley": 5,
+    "South Metro": 6,
+    "Southern Hills": 3,
+    "Southwest": 7
+   },
+   "eligible": 14900,
+   "total": 42
   }
  },
  "stated": {
-  "bushel_lb": 56,
-  "cited": {
-   "methods_note": [
-    "2.1",
-    "4.1",
-    "5.1"
-   ],
-   "risk_policy": [
-    "5.2",
-    "5.3"
-   ]
-  },
-  "policy_multiple": 1.4,
-  "price_cwt": 7.75,
-  "standard_moisture_pct": 14,
-  "trigger_pct": 90
- },
- "withheld_count": 10
+  "band_edges": [
+   25000,
+   49999,
+   50000
+  ],
+  "burden_line_pct": 6,
+  "caseload": 400,
+  "count_date": "2026-10-31",
+  "data_year": 2025,
+  "plan_year": 2027
+ }
 }
