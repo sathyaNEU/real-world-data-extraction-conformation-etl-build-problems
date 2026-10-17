@@ -9,7 +9,7 @@
  "updated": "2026-10-17",
  "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window.",
  "architecture": 2,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "checks": 49,
@@ -18,28 +18,38 @@
   "date": "2026-10-17"
  },
  "build": {
-  "generator_assertions": 103,
-  "verifier_checks": 248,
-  "figures_check": "204 of 204",
-  "voice_check": "exit 0 at 999 characters",
-  "rebuilds": "two byte-identical; pack md5 ac34b82f609ab66d1cbe63fe011d8424, target.zip md5 decb95077ed08bf7afbb107f469b9037, 19 entries",
-  "input_gates": "19 files, 4 formats, 73,639 and 46,749 row extracts, two distractors in metadata.json"
+  "generator_assertions": 115,
+  "verifier_checks": 251,
+  "figures_check": "206 of 206",
+  "voice_check": "exit 0 at 988 characters",
+  "rebuilds": "two byte-identical; target.zip md5 cd6519fc91b14402d4d395038de2b050, 19 entries",
+  "input_gates": "19 files, 4 formats, 73,879 and 47,012 row extracts, three distractors in metadata.json"
  },
  "leak": {
   "leak_py": "REVIEW, three lines answered in the design note, no LEAK",
-  "reader": "not run: this session has no Agent tool. Brief and an isolated bundle are prepared."
+  "reader": "pass 1 back: nothing quoted for the decisive step, no ranking file, question 6 an analytical choice, and it reached the golden seven cold at about 90 per cent confidence. It found three ask-layer forks and eight realism tells, all fixed in the generator in this pass."
  },
  "duplicate_check": {
   "heart": "WARN (overuse.org_family, overuse.objective, repeat.gate_g, overuse.gate_g, repeat.deliverables, repeat.question_form), all answered in the design note's ## Draw; two differentiated NOTEs against task254 and task50",
   "surface": "no file name and no persona promoted"
  },
  "judge": {
-  "verdict": null,
-  "disposition": null,
-  "report": null
+  "verdict": "pass 1: NOT_DETERMINISTIC, SEND_BACK, with Gate G (statistical_rigor, analytical_non_defect) and Gate H passing and the main call, the pair data and the region table all forced. Every finding was in the chain-and-quarter and holder-fee asks.",
+  "disposition": "fix pass, not a re-root: the judge's own fix note keeps the main call, the pair data and the region ask",
+  "report": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/verdict.md (pass 1)",
+  "fixed": [
+   "product_register.csv now carries holder_code, previous_holder_code and holder_code_from, so the Sovraxil authorisation transfer names H6 and its date",
+   "register_release_notes.json states that a line re-sent after a transmission failure counts once in any count of lines and once in any count of doses",
+   "register_release_notes.json states that the register reports a line in the quarter of its date of dispensing, and that the chains' log counts by month of submission",
+   "the fee schedule states that a payer's band rate is charged on all of its doses and the bands are not applied in tiers, and the notes sheet states who pays before and after a merger",
+   "the fee golden carries seven payers, including the pre-merger holder, and counts re-sent lines once",
+   "the prompt scopes the chain ask to the quarter of dispensing in the window and words the chart as each pair's referral threshold marked",
+   "section 2.5's death and emigration sentence, which could never apply, is removed and the convergence asserted instead",
+   "eight realism tells fixed in the generator: dose per pack constant per medicine, a skewed package count, a submission lag that drifts by quarter, skewed rejection reasons, per-chain municipalities, an irregular literature log, a varied serious share, and the extract's stated adult scope"
+  ]
  },
  "returned": [],
- "resume": "STAGE 4 IS NOT RUN. Every free gate is green and target.zip is cut from the final rebuild, but this session had no Agent tool, so neither isolated thread could be spawned. Both briefs are written and their isolated inputs staged: the determinism judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/judge_brief.md (with prompt.txt and a fresh unzip of target/ beside it; it writes verdict.md there) and the leak reader at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_reader/reader_brief.md (with prompt.txt and bundle/ beside it; it writes reader_answers.md there). Spawn both as general-purpose sonnet agents at medium effort in one message, fix every finding in the generator in one pass, rebuild, re-run precut.py, figures_check.py, leak.py, verify.py and the two byte-identical rebuilds, re-cut target.zip, then ship. If the judge returns SEND_BACK, stop and report: this slot has already spent one architecture that way.",
+ "resume": "FIX PASS COMPLETE, AWAITING THE RE-JUDGE. Every free gate is green on the repaired pack and target.zip is cut from the final rebuild (md5 cd6519fc91b14402d4d395038de2b050). The main call, the pair table, the ladder and the region ask are byte-for-byte the same analysis as the judged pass: 7 referred of 20 candidates, rungs 9 / 10 / 12 / 7. This session has no Agent tool, so spawn both threads: the judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/judge_brief.md (prompt.txt and a fresh unzip of target/ beside it; it writes verdict.md there) and the leak reader at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_reader/reader_brief.md (prompt.txt and bundle/ beside it; it writes reader_answers.md there), both general-purpose sonnet at medium effort. On APPROVE, ship: ledger row, card current, pipeline.json SHIPPED with delivered set. On a further FIX_NOW, fix in the generator and re-judge once. On SEND_BACK, stop and report.",
  "approved": null,
  "delivered": null,
  "portal": null,

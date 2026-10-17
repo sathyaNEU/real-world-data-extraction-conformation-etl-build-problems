@@ -64,7 +64,11 @@ def run(tgt, figures_path):
     xw = {r["retired_person_key"]: r["current_person_key"]
           for r in tab(tgt, "person_key_crosswalk.csv")}
     chain_of = {r["pharmacy_id"]: r["chain_code"] for r in tab(tgt, "pharmacy_register.csv")}
-    holder_of = {r["product_code"]: r["holder_code"] for r in tab(tgt, "product_register.csv")}
+    preg = {r["product_code"]: r for r in tab(tgt, "product_register.csv")}
+    holder_of = {k: r["holder_code"] for k, r in preg.items()}
+    prev_of = {k: (r["previous_holder_code"],
+                   d_iso(r["holder_code_from"]) if r["holder_code_from"] else None)
+               for k, r in preg.items()}
     merged = {r["holder_code"]: r["merged_into"] for r in tab(tgt, "holder_register.csv")
               if r["merged_into"]}
 
@@ -88,6 +92,15 @@ def run(tgt, figures_path):
                           "atc": atc})
             if code is not None:
                 seen.add((key, code, d, vnr, r[phc]))
+    # a line re-sent after a transmission failure is one dispensing (register_release_notes.json)
+    dedup, seen_line = [], set()
+    for r in lines:
+        k = (r["key"], r["vnr"], r["day"], r["ph"])
+        if k in seen_line:
+            continue
+        seen_line.add(k)
+        dedup.append(r)
+    lines = dedup
 
     first = {}
     for k, code, d, vnr, ph in seen:
@@ -213,9 +226,8 @@ def run(tgt, figures_path):
         code = prod.get(r["atc"])
         if code is None:
             continue
-        h = holder_of[code]
-        if code == "P09" and r["day"] >= TRANSFER:
-            h = "H6"
+        prev, since = prev_of[code]
+        h = holder_of[code] if (since is None or r["day"] >= since) else prev
         if h in merged and r["day"] >= MERGER:
             h = merged[h]
         if not (WIN_A <= r["day"] <= WIN_B):
@@ -226,6 +238,8 @@ def run(tgt, figures_path):
             before[h] += q
         else:
             after_d[h] += q
+    ck("v.a2_payers", len(fg["a2"]) == len([h for h in tot if tot[h] > 0]),
+       "%d against %d" % (len(fg["a2"]), len([h for h in tot if tot[h] > 0])))
     for r in fg["a2"]:
         h = r["holder"]
         th = tot[h] / 1000.0

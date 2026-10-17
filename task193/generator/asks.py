@@ -56,8 +56,21 @@ def write_submission_log(tgt, kept, rejected):
                       "lines_turned_back"], rows)
 
 
+def distinct(kept):
+    """One row per dispensing: a line re-sent after a transmission failure counts once."""
+    seen, out = set(), []
+    for r in sorted(kept, key=lambda r: (r["day"], r["line"])):
+        k = (r["key"], r["vnr"], r["day"], r["pharmacy"])
+        if k in seen:
+            continue
+        seen.add(k)
+        out.append(r)
+    return out
+
+
 def a1_golden(kept, rejected):
     """Per chain and quarter of dispensing: accepted lines, rejected lines, median days to submission."""
+    kept = distinct(kept)
     out = []
     for ci, (code, name) in enumerate(W.CHAINS):
         for label, a, b in QUARTERS:
@@ -70,16 +83,17 @@ def a1_golden(kept, rejected):
     return out
 
 
-# ---------------------------------------------------------------- A2 files
-def holder_of_product(code):
-    """The product's authorisation holder at the end of the screen window."""
-    if code == "P09":
-        return "H6"
+# ---------------------------------------------------------------- A2
+def holder_at(code, d):
+    """The marketing authorisation holder of the product on that date, as the register gives it."""
+    succ = W.TRANSFERS.get(code)
+    if succ and d >= succ[1]:
+        return succ[0]
     return W.HOLDER_OF[code]
 
 
 def fee_payer(holder_code, d):
-    """The company that pays, after the merger."""
+    """The company that pays: the surviving company from the merger date, the merged one before it."""
     for code, name, cvr, merged in W.HOLDERS:
         if code == holder_code and merged and d >= W.MERGER_DAY:
             return merged
@@ -87,47 +101,33 @@ def fee_payer(holder_code, d):
 
 
 def a2_golden(kept, ddd_of):
-    """Per fee payer: DDD of its Annex A products dispensed in the window, and the fee due."""
-    ddd = collections.Counter()
+    """Per fee payer: DDD of Annex A products dispensed in the window, and the fee due."""
+    kept = distinct(kept)
+    before = collections.Counter()
+    after = collections.Counter()
     for r in kept:
         if r["day"] < W.WIN_A or r["day"] > W.WIN_B:
             continue
         code, kind = W.PKG_OF[r["vnr"]][0], W.PKG_OF[r["vnr"]][1]
         if kind != "product":
             continue
-        holder = W.HOLDER_OF[code]
-        if code == "P09" and r["day"] >= W.TRANSFER_DAY:
-            holder = "H6"
-        ddd[fee_payer(holder, r["day"])] += ddd_of[r["vnr"]] * r["packs"]
+        payer = fee_payer(holder_at(code, r["day"]), r["day"])
+        q = ddd_of[r["vnr"]] * r["packs"]
+        if r["day"] < W.FEE_AMENDMENT_DAY:
+            before[payer] += q
+        else:
+            after[payer] += q
     out = []
     for code, name, cvr, merged in W.HOLDERS:
-        if merged:
+        total = before[code] + after[code]
+        if total <= 0:
             continue
-        total = ddd[code]
         thousands = total / 1000.0
         rate_before = next(rt for lo, hi, rt in W.FEE_BANDS if lo <= thousands < hi)
         rate_after = next(rt for lo, hi, rt in W.FEE_BANDS_AMENDED if lo <= thousands < hi)
-        # the schedule charges on doses dispensed before the amendment at the old rate
-        before = after = 0.0
-        for r in kept:
-            if r["day"] < W.WIN_A or r["day"] > W.WIN_B:
-                continue
-            c, kind = W.PKG_OF[r["vnr"]][0], W.PKG_OF[r["vnr"]][1]
-            if kind != "product":
-                continue
-            h = W.HOLDER_OF[c]
-            if c == "P09" and r["day"] >= W.TRANSFER_DAY:
-                h = "H6"
-            if fee_payer(h, r["day"]) != code:
-                continue
-            q = ddd_of[r["vnr"]] * r["packs"]
-            if r["day"] < W.FEE_AMENDMENT_DAY:
-                before += q
-            else:
-                after += q
-        fee = round(before / 1000.0 * rate_before + after / 1000.0 * rate_after)
+        fee = round(before[code] / 1000.0 * rate_before + after[code] / 1000.0 * rate_after)
         out.append({"holder": code, "name": name, "ddd": round(total, 1),
-                    "ddd_before": round(before, 1), "ddd_after": round(after, 1),
+                    "ddd_before": round(before[code], 1), "ddd_after": round(after[code], 1),
                     "rate_before": rate_before, "rate_after": rate_after, "fee_dkk": int(fee)})
     return out
 

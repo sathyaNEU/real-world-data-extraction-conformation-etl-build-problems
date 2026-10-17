@@ -2,7 +2,8 @@
 import json
 import os
 
-DISTRACTORS = ["spontaneous_reports_summary.csv", "literature_screening_log.csv"]
+DISTRACTORS = ["spontaneous_reports_summary.csv", "literature_screening_log.csv",
+               "atc_text.csv"]
 
 
 def write(task, counts):

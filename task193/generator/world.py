@@ -73,6 +73,10 @@ PRODUCTS = [
     ("P08", "Admirabin", "B01AF05", peak(260, 660, 1010),      0.290, 260,  1010, "H6"),
     ("P09", "Sovraxil",  "R03DX13", peak(60, 700, 1420),       0.235, None, None, "H5"),
 ]
+# product -> (successor holder, the day the authorisation transferred)
+TRANSFERS = {
+    "P09": ("H6", 880),
+}
 # ---------------------------------------------------------------- Annex B, the marker treatments
 # code, name, atc group, profile, incidence
 MARKERS = [
@@ -107,6 +111,22 @@ EFFECTS = {
     ("P07", "M6"): (0.287018, 38.0),
     ("P09", "M7"): (0.475877, 41.0),
 }
+# defined daily dose per dispensed unit, constant within a medicine (the ATC index's own figure)
+DDD_PER_UNIT = {
+    "P01": 0.8, "P02": 0.5, "P03": 1.5, "P04": 0.25, "P05": 1.2,
+    "P06": 3.0, "P07": 0.9, "P08": 0.6, "P09": 2.5,
+    "M1": 1.6, "M2": 0.75, "M3": 0.4, "M4": 1.25, "M5": 0.6, "M6": 1.1, "M7": 0.35, "M8": 0.7,
+}
+# pack sizes per medicine, as the register's own package list holds them
+PACK_SIZES = {
+    "P01": [28, 56, 98], "P02": [20, 30, 60], "P03": [28, 98, 100],
+    "P04": [1, 2, 6], "P05": [10, 20, 50], "P06": [14, 21, 30],
+    "P07": [21, 63, 84], "P08": [28, 56, 100], "P09": [30, 60, 120],
+    "M1": [10, 20, 30, 60], "M2": [14, 28, 56, 100], "M3": [30, 50, 100, 200],
+    "M4": [20, 30, 60, 100], "M5": [14, 28, 56, 98], "M6": [10, 20, 30, 50],
+    "M7": [15, 30, 60, 100], "M8": [20, 28, 50, 98],
+}
+
 PCODES = [p[0] for p in PRODUCTS]
 MCODES = [m[0] for m in MARKERS]
 PNAME = {p[0]: p[1] for p in PRODUCTS}

@@ -44,8 +44,8 @@ def write(task, g):
     A("## 3. Step-by-Step Solution")
     A("")
     A("1. Stacked dispensings_2023_2025.csv and dispensings_2025_2026.csv on the layouts "
-      "register_release_notes.json gives, taking one row per accepted line: %d person keys appear "
-      "across the extract." % g["patients_in_extract"])
+      "register_release_notes.json gives and counted a re-sent line once, as those notes require: "
+      "%d person keys appear across the extract." % g["patients_in_extract"])
     A("2. Folded the retired person keys in person_key_crosswalk.csv onto their current keys and "
       "mapped each package code to its treatment through package_index.csv at the date of the "
       "dispensing, per section 2.4.")
@@ -103,8 +103,8 @@ def write(task, g):
     A("### order_shares_by_pair.png")
     A("")
     A("1. One horizontal bar per screened pair for the share of its patients who received the "
-      "marker treatment after the product, longest first, with the referral line marked at 1.25 "
-      "times each pair's expected share and the referred pairs in the darker fill.")
+      "marker treatment after the product, longest first, with each pair's referral threshold "
+      "marked at 1.25 times its expected share and the referred pairs in the darker fill.")
     A("2. Title states that %d of the %d candidate pairs clear the referral line."
       % (g["referred_count"], g["candidate_count"]))
     A("")

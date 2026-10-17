@@ -73,9 +73,7 @@ def standard(tgt):
                        "whose first receipt of the product and whose first receipt of the marker "
                        "treatment both fall inside the screen window. A patient whose two first "
                        "receipts fall on the same day is not one of the pair's patients. Each "
-                       "patient counts once in each pair. A patient who died or left the country "
-                       "inside the screen window is one of the pair's patients where both first "
-                       "receipts fall on or before the date recorded for that event.", BODY))
+                       "patient counts once in each pair.", BODY))
 
     f.append(Paragraph("3. The referral test", H2))
     f.append(Paragraph("3.1 The order. For each of a pair's patients the run records whether the "
@@ -143,13 +141,16 @@ def fee_schedule(tgt, pulled):
                 "whatever month the line was submitted in; a line submitted after the quarter "
                 "closed is charged in the quarter of its dispensing.")
     ws["A4"] = "Doses are stated in thousands of DDD on this sheet."
+    ws["A5"] = ("A payer's band is settled on its total doses for the whole screen window, and the "
+                "band's rate is charged on every one of that payer's doses. The bands are not "
+                "applied in tiers.")
     rows = [("Band", "From (thousand DDD)", "To (thousand DDD)", "Rate (DKK per 1.000 DDD)")]
     for i, (lo, hi, rt) in enumerate(W.FEE_BANDS):
         rows.append(("%d" % (i + 1), "%.0f" % lo, "-" if hi > 10 ** 8 else "%.0f" % hi, "%d" % rt))
-    for r, row in enumerate(rows, start=6):
+    for r, row in enumerate(rows, start=7):
         for c, v in enumerate(row, start=1):
             cell = ws.cell(row=r, column=c, value=v)
-            if r == 6:
+            if r == 7:
                 cell.font = head_font
                 cell.fill = fill
     ws2 = wb.create_sheet("Amendment 2026-04-01")
@@ -172,10 +173,14 @@ def fee_schedule(tgt, pulled):
     ws3["A1"] = "Notes"
     ws3["A1"].font = Font(name="Calibri", size=12, bold=True)
     ws3["A2"] = ("The fee payer is the marketing authorisation holder of the product on the date of "
-                 "the dispensing. Where a holder has merged into another company, the surviving "
-                 "company is the fee payer for dispensings on and after the merger date.")
+                 "the dispensing, as the product register gives it for that date. Where a holder "
+                 "has merged into another company, the surviving company is the fee payer for "
+                 "dispensings on and after the merger date, and the merged company remains the "
+                 "payer for its dispensings before that date.")
     ws3["A3"] = ("Band membership is settled on the payer's total doses for the whole screen "
-                 "window, in thousands of DDD.")
+                 "window, in thousands of DDD, and the band's rate is charged on all of those "
+                 "doses. A dispensing line re-sent after a transmission failure is one dispensing "
+                 "and its doses are charged once.")
     ws3["A4"] = "Prepared by the finance office, " + W.iso(pulled) + "."
     for w in (ws, ws2, ws3):
         for col in range(1, 6):

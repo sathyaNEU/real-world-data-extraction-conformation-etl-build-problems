@@ -61,8 +61,9 @@ def workbook(path, g):
     ws2 = wb.create_sheet("Chain submissions")
     ws2["A1"] = "Dispensing lines by chain and quarter of dispensing"
     ws2["A1"].font = Font(name="Calibri", size=12, bold=True)
-    ws2["A2"] = ("Accepted lines are the rows in the two register extracts; lines turned back at "
-                 "validation are in submission_exceptions.csv and never reach them.")
+    ws2["A2"] = ("Quarters are quarters of dispensing. Accepted lines are the distinct dispensings "
+                 "in the two register extracts, counting a re-sent line once; lines turned back at "
+                 "validation are in submission_exceptions.csv and never reach the extracts.")
     ws2["A2"].font = note
     for c, v in enumerate(["Chain", "Quarter", "Lines accepted", "Lines rejected",
                            "Median days to submission"], start=1):
@@ -80,8 +81,11 @@ def workbook(path, g):
     ws3["A1"] = "Statutory data fee, screen window 2025-26"
     ws3["A1"].font = Font(name="Calibri", size=12, bold=True)
     ws3["A2"] = ("Doses at the rates in schedule 3, with the amendment of 1 April 2026 applied to "
-                 "doses dispensed on or after that date. Strandby Farma's doses are charged to "
-                 "Bregnholt from the merger on 1 April 2026.")
+                 "doses dispensed on or after that date, and each payer's band rate charged on all "
+                 "of its doses. Sovraxil's doses move to Ellevang with the authorisation on "
+                 "27 February 2026; Strandby's own doses before the merger of 1 April 2026 are "
+                 "charged to Strandby and its later doses to Bregnholt. Re-sent lines are counted "
+                 "once.")
     ws3["A2"].font = note
     for c, v in enumerate(["Holder", "Name", "DDD dispensed", "Fee due (DKK)"], start=1):
         cell = ws3.cell(row=4, column=c, value=v)
@@ -158,7 +162,7 @@ def chart(path, g):
     handles = [Patch(facecolor=REF, label="referred to assessment"),
                Patch(facecolor=NOT, label="not referred"),
                Line2D([0], [0], color=LINE, linewidth=1.8,
-                      label="referral line: 1.25 times the pair's expected share")]
+                      label="referral threshold: 1.25 times the pair's expected share")]
     ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.155), ncol=3,
               fontsize=8.5, frameon=False, handlelength=1.4, columnspacing=1.6)
     ax.set_title("%d of the %d candidate pairs clear the referral line once the expected share is "

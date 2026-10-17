@@ -441,176 +441,186 @@
   {
    "chain": "APK",
    "quarter": "2025 Q4",
-   "accepted": 5795,
-   "rejected": 157,
+   "accepted": 4500,
+   "rejected": 172,
    "median_days": 2.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q1",
-   "accepted": 4044,
-   "rejected": 162,
-   "median_days": 2.0
+   "accepted": 4156,
+   "rejected": 152,
+   "median_days": 3.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q2",
-   "accepted": 3995,
-   "rejected": 125,
-   "median_days": 2.0
+   "accepted": 4068,
+   "rejected": 147,
+   "median_days": 3.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q3",
-   "accepted": 4379,
-   "rejected": 128,
-   "median_days": 2.0
+   "accepted": 4374,
+   "rejected": 152,
+   "median_days": 3.0
   },
   {
    "chain": "DSA",
    "quarter": "2025 Q4",
-   "accepted": 3455,
-   "rejected": 133,
+   "accepted": 3448,
+   "rejected": 132,
    "median_days": 4.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q1",
-   "accepted": 3077,
-   "rejected": 112,
+   "accepted": 3067,
+   "rejected": 134,
    "median_days": 4.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q2",
-   "accepted": 2993,
-   "rejected": 107,
-   "median_days": 4.0
+   "accepted": 2909,
+   "rejected": 113,
+   "median_days": 5.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q3",
-   "accepted": 3213,
-   "rejected": 106,
-   "median_days": 4.0
+   "accepted": 3216,
+   "rejected": 98,
+   "median_days": 5.0
   },
   {
    "chain": "NOR",
    "quarter": "2025 Q4",
-   "accepted": 2451,
-   "rejected": 92,
+   "accepted": 2432,
+   "rejected": 74,
    "median_days": 5.0
   },
   {
    "chain": "NOR",
    "quarter": "2026 Q1",
-   "accepted": 2291,
-   "rejected": 85,
-   "median_days": 5.0
-  },
-  {
-   "chain": "NOR",
-   "quarter": "2026 Q2",
-   "accepted": 2288,
-   "rejected": 73,
+   "accepted": 2306,
+   "rejected": 79,
    "median_days": 6.0
   },
   {
    "chain": "NOR",
+   "quarter": "2026 Q2",
+   "accepted": 2250,
+   "rejected": 63,
+   "median_days": 7.0
+  },
+  {
+   "chain": "NOR",
    "quarter": "2026 Q3",
-   "accepted": 2323,
-   "rejected": 67,
+   "accepted": 2351,
+   "rejected": 58,
    "median_days": 6.0
   },
   {
    "chain": "VST",
    "quarter": "2025 Q4",
-   "accepted": 1714,
-   "rejected": 54,
+   "accepted": 1706,
+   "rejected": 61,
    "median_days": 7.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q1",
-   "accepted": 1540,
-   "rejected": 64,
-   "median_days": 7.0
+   "accepted": 1555,
+   "rejected": 59,
+   "median_days": 8.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q2",
-   "accepted": 1495,
-   "rejected": 68,
+   "accepted": 1496,
+   "rejected": 50,
    "median_days": 7.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q3",
-   "accepted": 1696,
-   "rejected": 42,
-   "median_days": 7.0
+   "accepted": 1701,
+   "rejected": 45,
+   "median_days": 9.0
   }
  ],
  "a2": [
   {
    "holder": "H1",
    "name": "Nordlys Pharma A/S",
-   "ddd": 195245.6,
-   "ddd_before": 60248.0,
-   "ddd_after": 134997.6,
+   "ddd": 101540.2,
+   "ddd_before": 51030.3,
+   "ddd_after": 50510.0,
    "rate_before": 1480,
    "rate_after": 1595,
-   "fee_dkk": 304488
+   "fee_dkk": 156088
   },
   {
    "holder": "H2",
    "name": "Bregnholt Laegemidler A/S",
-   "ddd": 108844.8,
-   "ddd_before": 41783.0,
-   "ddd_after": 67061.8,
+   "ddd": 92050.3,
+   "ddd_before": 22125.0,
+   "ddd_after": 69925.3,
    "rate_before": 1480,
    "rate_after": 1595,
-   "fee_dkk": 168802
+   "fee_dkk": 144276
   },
   {
    "holder": "H3",
    "name": "Vindeby Therapeutics ApS",
-   "ddd": 97738.8,
-   "ddd_before": 4986.8,
-   "ddd_after": 92752.0,
-   "rate_before": 1480,
-   "rate_after": 1595,
-   "fee_dkk": 155320
+   "ddd": 333552.0,
+   "ddd_before": 16107.0,
+   "ddd_after": 317445.0,
+   "rate_before": 1240,
+   "rate_after": 1335,
+   "fee_dkk": 443762
   },
   {
    "holder": "H4",
    "name": "Soegaard Medica A/S",
-   "ddd": 165851.6,
-   "ddd_before": 146880.2,
-   "ddd_after": 18971.4,
+   "ddd": 149580.0,
+   "ddd_before": 134268.0,
+   "ddd_after": 15312.0,
    "rate_before": 1480,
    "rate_after": 1595,
-   "fee_dkk": 247642
+   "fee_dkk": 223139
   },
   {
    "holder": "H5",
    "name": "Kastholm Pharma A/S",
-   "ddd": 133872.2,
-   "ddd_before": 91865.8,
-   "ddd_after": 42006.4,
-   "rate_before": 1480,
-   "rate_after": 1595,
-   "fee_dkk": 202962
+   "ddd": 418008.0,
+   "ddd_before": 332517.0,
+   "ddd_after": 85491.0,
+   "rate_before": 1240,
+   "rate_after": 1335,
+   "fee_dkk": 526452
   },
   {
    "holder": "H6",
    "name": "Ellevang Biosciences A/S",
-   "ddd": 341279.9,
-   "ddd_before": 144234.7,
-   "ddd_after": 197045.2,
+   "ddd": 457387.2,
+   "ddd_before": 173509.2,
+   "ddd_after": 283878.0,
    "rate_before": 1240,
    "rate_after": 1335,
-   "fee_dkk": 441906
+   "fee_dkk": 594129
+  },
+  {
+   "holder": "H7",
+   "name": "Strandby Farma ApS",
+   "ddd": 51710.4,
+   "ddd_before": 51710.4,
+   "ddd_after": 0,
+   "rate_before": 1480,
+   "rate_after": 1595,
+   "fee_dkk": 76531
   }
  ],
  "a3": [

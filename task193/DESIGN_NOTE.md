@@ -147,7 +147,8 @@ leaves the two orders nothing like equal room.
   from, so nothing is left to estimate and the sort of the two counts is the whole answer.
 - **Layer 1:** the agency's own pipeline produces all of it. The register's 2025 release renamed columns
   and changed the date format, so the clearance extract and the window extract have different layouts; one
-  pharmacy chain's October batch was re-sent and its lines appear twice under fresh line identifiers; 420
+  pharmacy chain's October batch was re-sent, so 1,477 lines appear twice under fresh record identifiers
+  while the register's own note says a re-sent line is one dispensing; 420
   patients had their pseudonym replaced after a civil-registration correction and a crosswalk ships; every
   package code of one product was reissued when its marketing authorisation transferred in February 2026,
   and the register carries both code sets with valid-from and valid-to dates; the fee workbook quotes
@@ -211,13 +212,13 @@ leaves the two orders nothing like equal room.
 | SF5 | a product | the product code, with the reissued package codes carried onto one code at each dispensing's own date | the package code as dispensed, so the February transfer splits one product | one product's patients split in two | `product_register.csv`'s valid-from and valid-to dates, and section 2.4; asserted |
 | SF6 | a marker treatment | the ATC group named in Annex B, so any package in the group counts | the single package code, or the whole ATC class above the group | the pair counts change | Annex B, which lists the group codes; `atc_group_index.csv`; asserted |
 | SF7 | the pair's patients | patients whose two first receipts both fall in the window, same-day patients excluded | same-day patients counted as after, or as before | the pair counts change | section 2.5, quoted; asserted both ways |
-| SF8 | a patient who died or left the country | counted if both first receipts fall on or before the recorded date | excluded from the pair | `same call`, asserted on the set and on every pair's two counts |
+| SF8 | a patient who died or left the country | the register records the dates and the standard says nothing of them, because no dispensing falls after any such date | excluded from the pair | `same call`, asserted on the set and on every pair's two counts: both readings select the same patients |
 | SF9 | at least 25 patients | 25 or more of the pair's patients, after the same-day exclusion | 25 or more dispensings, or 25 or more in each order | the candidate set changes | section 3.2(a), quoted; asserted |
 | SF10 | at least 1.25 times | at or above 1.25 times the expected number | strictly above | `same call`, asserted: no pair's ratio is 1.250 on any of the five arithmetics |
 | SF11 | the expected number | the number expected if receiving the product had no bearing on when the marker treatment is first received, taken from the window's own first-receipt dates | half of the pair | the referral set changes, 7 against 10 | nothing: this is the method, not a term. `## Literal reader` gives the forcing, and all four window-aware arithmetics give the same seven pairs, asserted |
 | SF12 | a pair already under assessment | a pair the tracker records as opened before the extract date | any pair the tracker names, including closed ones | `same call`, asserted: no pair the tracker names passes 3.2(b) on either basis |
 | SF13 | rounding | counts whole, shares and days to one decimal, fees to the nearest krone | shares to two decimals | `same call`, asserted: no pair's share sits within 0.004 of a referral boundary on any basis |
-| SF14 | the re-sent batch | one dispensing per pharmacy reference, so the resend collapses | every line counted | `same call` on the referral set, asserted; the ask figures move and that is graded there |
+| SF14 | the re-sent batch | one dispensing, as `register_release_notes.json` states: a line re-sent after a transmission failure counts once in any count of lines and once in any count of doses | every transmission counted | `same call` on the referral set, asserted; the ask figures are fixed by that quoted note and asserted both ways |
 | SF15 | the two layouts' dates | ISO in the clearance extract, day-month-year in the window extract, both read as calendar dates | the window extract read as month-day-year | the pair counts change | `register_release_notes.json` states each layout's date format; asserted that the misread produces impossible dates in 61 per cent of rows |
 | SF16 | the order of the output rows | the share receiving the marker after, longest first, as the asking sentence says | by product code | `same call`; the chart's ordering is graded and the asking sentence fixes it |
 | SF17 | the referral quarter | the quarter beginning 1 January 2027, as section 4.1 states | the quarter the extract was pulled in | `same call`: the referral test reads the tracker at the extract date, asserted |
@@ -283,7 +284,7 @@ two of Oxelumab's three pairs and two of Ternivast's three are refused on both.
 | 12 | Maturity and censoring | dispensings still arriving for the window | the manifest's note and the submission log: every window line was submitted before the pull, asserted; a line's submission date is never before its dispensing date, asserted over all 120,388 rows |
 | 13 | Order of operations | clean then count, or count then clean | sections 2.3 and 2.4 file the conformance (one patient across a replaced key, the package read at the dispensing date, the earliest dispensing the first receipt), so the order is filed rather than open; the grid names the figure for each cell |
 | 14 | Row order | the extract's order | C1, asserted over three permutations |
-| 15 | Duplicate resolution | the re-sent batch's lines | C1 on the call: both copies carry the same person key, package code, dispensing date and pharmacy, so any resolution leaves the first receipts alone and the referral set is identical with the resend kept, asserted. The manifest states that the extract holds one row per accepted transmission, which fixes the chain counts in the first ask |
+| 15 | Duplicate resolution | the re-sent batch's lines | C1 on the call: both copies carry the same person key, package code, dispensing date and pharmacy, so any resolution leaves the first receipts alone and the referral set is identical with the resend kept, asserted. `register_release_notes.json` states that a re-sent line counts once in any count of lines and once in any count of doses, which fixes both ask layers |
 | 16 | Identity normalisation | replaced pseudonyms, reissued package codes, ATC groups | the crosswalk, the register's validity dates and `atc_group_index.csv`; asserted that every code resolves to one treatment |
 | 17 | Netting against gross | nothing is netted | stated |
 | 18 | Dimensional units | patients, dispensing lines, packages, defined daily doses | the data dictionary names each; the call reads patients, asserted |
@@ -341,8 +342,8 @@ easy answer is an easy arithmetic on the same literal estimand.
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A1 per pharmacy chain and quarter of the window, the dispensing lines the register accepted, the lines it rejected and the median days from dispensing to submission | 3 per chain-quarter, 4 chains by 4 quarters | the audit trail from an input the call consumes, through lines it never reads, to the chain's own control total | the register's own quarterly ingest review | D4 absence as the signal: the rejected lines sit in `submission_exceptions.csv`, which no habitual join reaches, and never enter either extract | D6 the exceptions file is per line while the chain log is per chain-month; D8 the submission stamp is the chain's own clock and the acceptance date the register's business date | both extracts, the exceptions file, the submission log, the manifest, the release notes, the standard, the product register; 12 columns | 4 stops, lazy delta 11 of 16 chain-quarters | an ingest pipeline's own quarterly review |
-| A2 per marketing authorisation holder, the defined daily doses of its Annex A products dispensed inside the window and the statutory data fee due | 2 per holder, 6 holders | an input reconciled to another system's total, the gap made of devices | the finance office settles the holders' statutory fees | D2 version: the fee schedule was amended with effect from 1 April 2026 and the amended rate applies to the window's later half, which the superseded sheet does not carry | D3 one sheet quotes defined daily doses in thousands and uses Danish decimal commas; D7 one holder files under two codes after a merger dated inside the window | the fee workbook and its amendment sheet, the holder register, the product register, both extracts, the manifest; 13 columns | 5 stops, lazy delta 4 of 6 holders | the finance office's quarterly settlement |
+| A1 per pharmacy chain and quarter of the window, the dispensing lines the register accepted, the lines it rejected and the median days from dispensing to submission | 3 per chain-quarter, 4 chains by 4 quarters | the audit trail from an input the call consumes, through lines it never reads, to the chain's own control total | the register's own quarterly ingest review | D4 absence as the signal: the rejected lines sit in `submission_exceptions.csv`, which no habitual join reaches, and never enter either extract | D6 the chains' log counts by month of submission while the register reports a line in the quarter of its dispensing, which the release notes state; D1 the re-sent lines, one dispensing by that same note | both extracts, the exceptions file, the submission log, the pharmacy register, the manifest, the release notes, the standard; 12 columns | 4 stops, lazy delta 12 of 16 chain-quarters | an ingest pipeline's own quarterly review |
+| A2 per marketing authorisation holder, the defined daily doses of its Annex A products dispensed inside the window and the statutory data fee due | 2 per payer, 7 payers | an input reconciled to another system's total, the gap made of devices | the finance office settles the holders' statutory fees | D2 version: the fee schedule was amended with effect from 1 April 2026 and the amended rate applies to the window's later half, which the superseded sheet does not carry | D3 the schedule's bands are in thousands of defined daily doses while the extract gives doses; D7 one product's authorisation transfers to another holder inside the window and one holder merges into another, so a payer is read at the dispensing's own date; D1 the re-sent lines, which the register's note says are one dispensing | the fee workbook's three sheets, the holder register, the product register's holder columns, the package index, both extracts, the release notes, the manifest; 15 columns | 5 stops, lazy delta 6 of 7 payers | the finance office's quarterly settlement |
 | A3 per region and age band at the window's start, the patients with a first receipt of an Annex A product inside the window and the share of them who also had a first receipt of an Annex B marker treatment inside it | 2 per cell, 5 regions by 4 bands | the decisive construction's output on the segment the agency publishes anyway | the agency's standing quarterly utilisation table | the construction layer: a wrong patient unit, an unmapped reissued package code or a clearance period read at 12 months fails every cell | D4 region blank for patients registered outside Denmark, whose meaning the person register's own notes state; D5 patients who died or emigrated inside the window | the person register, both extracts, the crosswalk, the product register, the ATC index, the standard, the manifest; 11 columns | 4 stops, lazy delta 14 of 20 cells | the agency's own quarterly table |
 
 **The main population's zero counts.** Zero device rows and zero hazard rows in the patients and pairs the
@@ -355,10 +356,11 @@ the seven and the ten exactly as they are, asserted.
 
 | Hazard | Asks moved | Per-ask delta |
 |---|---|---|
-| D6 grain | A1, A2 | A1 three chain-quarters, A2 two holders |
-| D8 clocks | A1 | A1 the accepted count in 14 of 16 chain-quarters, by 6 to 43 lines |
+| D6 grain | A1, A2 | A1 every chain-quarter when the chains' log is used instead of the extracts, A2 the band of every payer when thousands are read as doses |
+| D1 duplication | A1, A2 | A1 the accepted count for the chain that re-sent a batch, by 1,477 lines, A2 the doses of every payer whose products that chain dispensed |
 | D4 absence | A1, A3 | A1 the rejected count in all 16 chain-quarters, A3 the four "not stated" cells |
-| D5 scope | A3 | A3 the patient counts in the cells holding the 266 patients who changed region |
+| D7 keys | A2 | A2 one payer's whole dose total when the authorisation transfer or the merger is read at the wrong date |
+| D5 scope | A3 | A3 the patient counts in the cells holding the patients who changed region inside the window |
 
 **The referee.** `extract_manifest.csv` states each file's rows, date range and layout version and settles
 the one designed disagreement, the exceptions file's scope, without naming a level.
@@ -369,12 +371,14 @@ control total.
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
-| A1 lines the register rejected, all 16 chain-quarters | both extracts, which hold only accepted lines | 0 | 42 to 162 | miss |
-| A1 lines the register accepted, 14 of 16 chain-quarters | the chains' own monthly log, which counts by month of submission | 6 to 43 lines out per cell | 1,495 to 5,795 | miss |
-| A2 data fee due, all six payers | the schedule sheet, whose rates the amendment of 1 April 2026 replaced for later doses | 2,182 to 18,719 kroner low | 155,320 to 441,906 | miss |
-| A2 data fee due, every payer's band | the band thresholds read as doses rather than thousands of doses | the lowest rate, 860 against 1,480 | as above | miss |
-| A3 patients and share, all four "not stated" cells | the region column as recorded, so the blanks leave the table | the four cells absent | 35 to 63 patients, 68.6 to 87.3 per cent | miss |
-| A3 patients, the cells holding the 266 patients who changed region inside the window | the region recorded at the pull, not at the window's start | two to five patients out per cell | as published | miss |
+| A1 lines the register rejected, all 16 chain-quarters | both extracts, which hold only accepted lines | 0 | 45 to 172 | miss |
+| A1 lines the register accepted, the chain that re-sent a batch | every transmission counted, against the release notes' one dispensing per re-sent line | 1,477 lines too many | 1,496 to 4,500 | miss |
+| A1 lines the register accepted, 14 of 16 chain-quarters | the chains' own monthly log, which counts by month of submission | lines out in every cell it touches | as above | miss |
+| A2 data fee due, all seven payers | the schedule sheet, whose rates the amendment of 1 April 2026 replaced for later doses | low in every row | 76,531 to 594,129 | miss |
+| A2 data fee due, every payer's band | the band thresholds read as doses rather than thousands of doses | the lowest rate, 860 against 1,240 or 1,480 | as above | miss |
+| A2 doses, the product whose authorisation transferred inside the window | the holder column alone, without the register's holder-from date | one payer's doses on the wrong payer | as above | miss |
+| A3 patients and share, all four "not stated" cells | the region column as recorded, so the blanks leave the table | the four cells absent | 35 to 676 patients, 68.6 to 87.3 per cent | miss |
+| A3 patients, the cells holding the patients who changed region inside the window | the region recorded at the pull, not at the window's start | patients out in several cells | as published | miss |
 
 **Pair ceiling:** 39.4
 **Mirror leakage:** 18.5
@@ -442,6 +446,33 @@ recommendation weight, so C is 38 + 7 + 55 x 0.21 = 56.6 and S is 5 + 7 + 55 x 0
 - A submission lag that let the slowest chain's September lines arrive after the extract was pulled: three
   days of lines sat outside the extract's own as-of date. The pull moved to 20 October 2026, which is after
   every line in the pack, asserted over all 120,388 rows.
+- Architecture 2, first judge pass: NOT_DETERMINISTIC, SEND_BACK, with the main call, the pair data and the
+  region table all forced and every finding in the other two asks. Four of them: `product_register.csv`
+  named the authorisation transfer but not the holder it went to, and about 221 thousand doses turn on it;
+  the fee golden counted the re-sent lines twice; it left out the pre-merger payer, which the ask's own
+  wording licenses; and the schedule did not say whether a band's rate is charged flat or in tiers, which
+  split one payer by 63 thousand kroner. Fixed by filing each of the four in a shipped file (the register's
+  `holder_code`, `previous_holder_code` and `holder_code_from`; a release note saying a re-sent line is one
+  dispensing in any count of lines or doses; the notes sheet on the payer before and after a merger; and the
+  schedule's own sentence that the bands are not applied in tiers), and the fee golden now carries seven
+  payers.
+- The chain-and-quarter ask took its quarter from nothing in particular: dispensing or submission, the
+  window's quarters or all thirteen, and a re-sent line once or twice. The release notes now state that the
+  register reports a line in the quarter of its date of dispensing and that the chains' own log counts by
+  month of submission instead, the asking sentence says quarter of dispensing in the window, and the re-sent
+  rule covers the third.
+- The chart ask said the referral line was labelled at its value, which reads as one number, while the
+  threshold is 1.25 times each pair's own expected share. Reworded as each pair's referral threshold marked.
+- Section 2.5 carried a sentence on patients who died or left the country that could never apply, because
+  no dispensing falls after any such date. The sentence is gone and the convergence is asserted instead: a
+  clause that never binds reads as scaffolding.
+- Eight realism tells the cold reader found, all fixed in the generator without moving the call: the dose
+  per pack was a function of pack size rather than a constant per medicine, packages came in an exact
+  one-third split across one, two and three, the submission lag's median never moved inside a chain, the
+  five rejection reasons came in near-equal counts, the same 22 municipalities repeated across all four
+  chains, the literature log stepped exactly three days and cycled its titles, the spontaneous-report
+  summary's serious share was 43 per cent every quarter, and the register held no patient under 18, which is
+  now the extract's own stated scope.
 
 ## Architecture 1, spent at stage 4 on the judge's SEND_BACK
 
@@ -518,14 +549,14 @@ forks on a rule the pack does not state.
 
 The pack as built, read against the gates one last time.
 
-- **Free gates.** 103 generator assertions, 248 independent checks in `verify.py` (it reads only `target/`
-  and `figures.json`), `precut.py` 49 checks 0 FAIL 0 WARN, `figures_check.py` 204 of 204,
-  `voice-check.py` exit 0 at 999 characters, `leak.py` REVIEW with three answered lines and no LEAK,
+- **Free gates.** 115 generator assertions, 251 independent checks in `verify.py` (it reads only `target/`
+  and `figures.json`), `precut.py` 49 checks 0 FAIL 0 WARN, `figures_check.py` 206 of 206,
+  `voice-check.py` exit 0 at 988 characters, `leak.py` REVIEW with three answered lines and no LEAK,
   `guard.py heart` WARN with every line answered in `## Draw`, `guard.py surface` promoting no file name
   and no persona. Two rebuilds byte-identical, `target.zip` cut from the final rebuild, 19 entries.
 - **Input gates.** 19 files, 4 formats (csv, pdf, xlsx, json), two files above 25,000 rows
-  (`dispensings_2023_2025.csv` at 73,639 and `dispensings_2025_2026.csv` at 46,749), two distractors named
-  in `metadata.json` and in no file name.
+  (`dispensings_2023_2025.csv` at 73,879 and `dispensings_2025_2026.csv` at 47,012), three distractors
+  named in `metadata.json` and in no file name.
 - **The three rules against the built pack.** R1: the pack ships patient-level dispensing lines with their
   dates and no shipped column holds an expected number, a multiple or a referral, asserted over every csv
   header. R2: the referral set is identical with the retired person keys unfolded, with the package index
@@ -533,6 +564,17 @@ The pack as built, read against the gates one last time.
   on the clean truth, every filed rule applied, refers 10 pairs. R3b: changing only the expected number
   refers 7, and all four window-aware arithmetics give that same 7. R3c: nothing is planted, and a word
   sweep over all nineteen files finds none of nineteen phrasings of the decisive move.
+- **The judge's first pass.** NOT_DETERMINISTIC with disposition SEND_BACK, and every reason in the ask
+  layer: Gate G passed (`statistical_rigor`, `analytical_non_defect`, no surface-read dependency, no sole
+  data defect), Gate H passed with the decisive step analytical, all 23 pair rows reproduced, and the judge
+  built the no-bearing expectation six ways (pair marginals, the same with ties excluded, permutation with
+  and without ties, all-window marginals, a marker spread evenly) and every one referred the same seven
+  pairs, with referred multiples 1.33 to 1.47 and the nearest miss at 1.07 to 1.12. It ruled the
+  equal-chance reading not a licensed second reading, because it assumes identical date distributions and
+  the launches inside the window contradict that. The cold reader reached the same seven at about 90 per
+  cent confidence, quoted nothing for the decisive step, found no ranking file and answered question 6 an
+  analytical choice. Every ask-layer finding is closed in `## Tried and rejected` and asserted in
+  `checks.py`.
 - **Gate G.** No shipped artifact ranks the pairs on the decision question and `metadata.json` declares no
   wrong-basis distractor. The tracker names two pairs as under assessment and neither passes 3.2(b) on any
   of the five arithmetics; the two distractors carry no marker treatment, no patient key and no pair.

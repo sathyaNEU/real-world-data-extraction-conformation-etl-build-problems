@@ -11,6 +11,7 @@ import numpy as np
 import world as W
 import golden as G
 import asks as AS
+from asks import distinct as asks_distinct
 
 N = 0
 FAILED = []
@@ -262,6 +263,27 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     ok("defect3.fee_rule_states_the_payer", "surviving company is the fee payer" in sheet_text)
     ok("defect3.fee_rule_states_the_amendment_scope",
        "dispensed on or after 1 April 2026" in sheet_text)
+    ok("pin.band_rule_filed", "not applied in tiers" in sheet_text)
+    ok("pin.resend_counts_once_for_doses", "charged once" in sheet_text)
+    ok("pin.payer_before_a_merger_filed", "remains the payer for its dispensings before" in sheet_text)
+    reg = {r["product_code"]: r for r in rd(tgt, "product_register.csv")}
+    ok("pin.successor_holder_named",
+       reg["P09"]["holder_code"] == "H6" and reg["P09"]["previous_holder_code"] == "H5"
+       and reg["P09"]["holder_code_from"] == "2026-02-27", str(reg["P09"]))
+    notes = json.load(open(os.path.join(tgt, "register_release_notes.json")))
+    kh = " ".join(notes["known_handling"])
+    ok("pin.resend_counts_once_for_lines", "counts once in any count of lines" in kh)
+    ok("pin.quarter_of_dispensing", "in the quarter of its date of dispensing" in kh)
+    ok("pin.extract_scope_is_adults", "aged 18 and over" in kh)
+    ok("pin.no_inert_clause", "left the country" not in open(
+        os.path.join(tgt, "screen_standard_7_2024.pdf"), "rb").read().decode("latin-1"))
+    dist = asks_distinct(kept)
+    ok("ask.a1_counts_distinct_lines",
+       [r for r in g["a1"] if r["chain"] == "APK" and r["quarter"] == "2025 Q4"][0]["accepted"]
+       == len([r for r in dist if r["chain"] == 0 and 731 <= r["day"] <= 822]),
+       "APK 2025 Q4")
+    ok("ask.a1_resend_removed",
+       len(dist) < len(kept), "%d distinct of %d rows" % (len(dist), len(kept)))
 
     # ---------------------------------------------------------------- input gates
     files = sorted(os.listdir(tgt))
@@ -321,7 +343,9 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
                 mid_ok = False
     ok("ask.a1_median_convention_free", mid_ok,
        "every even cell's two middle values are equal, so every median convention agrees")
-    ok("ask.a2_payers", len(g["a2"]) == 6, "%d" % len(g["a2"]))
+    ok("ask.a2_payers", len(g["a2"]) == 7, "%d" % len(g["a2"]))
+    ok("ask.a2_premerger_payer_present",
+       any(r["holder"] == "H7" and r["ddd"] > 0 for r in g["a2"]))
     ok("ask.a2_amendment_bites",
        all(r["rate_before"] != r["rate_after"] for r in g["a2"]))
     ok("ask.a2_merger_folded",

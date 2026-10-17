@@ -19,7 +19,7 @@ The expected after-count comes from the window's own first-receipt dates, so the
 
 ## 3. Step-by-Step Solution
 
-1. Stacked dispensings_2023_2025.csv and dispensings_2025_2026.csv on the layouts register_release_notes.json gives, taking one row per accepted line: 12993 person keys appear across the extract.
+1. Stacked dispensings_2023_2025.csv and dispensings_2025_2026.csv on the layouts register_release_notes.json gives and counted a re-sent line once, as those notes require: 12993 person keys appear across the extract.
 2. Folded the retired person keys in person_key_crosswalk.csv onto their current keys and mapped each package code to its treatment through package_index.csv at the date of the dispensing, per section 2.4.
 3. Took each patient's earliest dispensing in each treatment as the first receipt and dropped first receipts falling in the clearance period, per sections 2.2 and 2.3.
 4. Built each pair in screen_annexes.csv from the patients whose two first receipts both fall in the screen window and not on the same day, per section 2.5: 20 of the 23 pairs have at least 25 patients.
@@ -59,29 +59,30 @@ The expected after-count comes from the window's own first-receipt dates, so the
 2. Pairs referred: 7.
 3. Nearest pair on the wrong side of the referral line: Dalvextin and acid-suppressant.
 4. Lines accepted, lines rejected and median days from dispensing to submission, by chain and quarter of dispensing, whole counts and days to one decimal:
-   - APK, 2025 Q4: 5795 accepted, 157 rejected, 2.0 days
-   - APK, 2026 Q1: 4044 accepted, 162 rejected, 2.0 days
-   - APK, 2026 Q2: 3995 accepted, 125 rejected, 2.0 days
-   - APK, 2026 Q3: 4379 accepted, 128 rejected, 2.0 days
-   - DSA, 2025 Q4: 3455 accepted, 133 rejected, 4.0 days
-   - DSA, 2026 Q1: 3077 accepted, 112 rejected, 4.0 days
-   - DSA, 2026 Q2: 2993 accepted, 107 rejected, 4.0 days
-   - DSA, 2026 Q3: 3213 accepted, 106 rejected, 4.0 days
-   - NOR, 2025 Q4: 2451 accepted, 92 rejected, 5.0 days
-   - NOR, 2026 Q1: 2291 accepted, 85 rejected, 5.0 days
-   - NOR, 2026 Q2: 2288 accepted, 73 rejected, 6.0 days
-   - NOR, 2026 Q3: 2323 accepted, 67 rejected, 6.0 days
-   - VST, 2025 Q4: 1714 accepted, 54 rejected, 7.0 days
-   - VST, 2026 Q1: 1540 accepted, 64 rejected, 7.0 days
-   - VST, 2026 Q2: 1495 accepted, 68 rejected, 7.0 days
-   - VST, 2026 Q3: 1696 accepted, 42 rejected, 7.0 days
+   - APK, 2025 Q4: 4500 accepted, 172 rejected, 2.0 days
+   - APK, 2026 Q1: 4156 accepted, 152 rejected, 3.0 days
+   - APK, 2026 Q2: 4068 accepted, 147 rejected, 3.0 days
+   - APK, 2026 Q3: 4374 accepted, 152 rejected, 3.0 days
+   - DSA, 2025 Q4: 3448 accepted, 132 rejected, 4.0 days
+   - DSA, 2026 Q1: 3067 accepted, 134 rejected, 4.0 days
+   - DSA, 2026 Q2: 2909 accepted, 113 rejected, 5.0 days
+   - DSA, 2026 Q3: 3216 accepted, 98 rejected, 5.0 days
+   - NOR, 2025 Q4: 2432 accepted, 74 rejected, 5.0 days
+   - NOR, 2026 Q1: 2306 accepted, 79 rejected, 6.0 days
+   - NOR, 2026 Q2: 2250 accepted, 63 rejected, 7.0 days
+   - NOR, 2026 Q3: 2351 accepted, 58 rejected, 6.0 days
+   - VST, 2025 Q4: 1706 accepted, 61 rejected, 7.0 days
+   - VST, 2026 Q1: 1555 accepted, 59 rejected, 8.0 days
+   - VST, 2026 Q2: 1496 accepted, 50 rejected, 7.0 days
+   - VST, 2026 Q3: 1701 accepted, 45 rejected, 9.0 days
 5. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
-   - Nordlys Pharma A/S (H1): 195245.6 DDD, 304488 kroner
-   - Bregnholt Laegemidler A/S (H2): 108844.8 DDD, 168802 kroner
-   - Vindeby Therapeutics ApS (H3): 97738.8 DDD, 155320 kroner
-   - Soegaard Medica A/S (H4): 165851.6 DDD, 247642 kroner
-   - Kastholm Pharma A/S (H5): 133872.2 DDD, 202962 kroner
-   - Ellevang Biosciences A/S (H6): 341279.9 DDD, 441906 kroner
+   - Nordlys Pharma A/S (H1): 101540.2 DDD, 156088 kroner
+   - Bregnholt Laegemidler A/S (H2): 92050.3 DDD, 144276 kroner
+   - Vindeby Therapeutics ApS (H3): 333552.0 DDD, 443762 kroner
+   - Soegaard Medica A/S (H4): 149580.0 DDD, 223139 kroner
+   - Kastholm Pharma A/S (H5): 418008.0 DDD, 526452 kroner
+   - Ellevang Biosciences A/S (H6): 457387.2 DDD, 594129 kroner
+   - Strandby Farma ApS (H7): 51710.4 DDD, 76531 kroner
 6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
    - Hovedstaden, 18-39: 676 patients, 76.2 per cent
    - Hovedstaden, 40-59: 653 patients, 74.9 per cent
@@ -110,5 +111,5 @@ The expected after-count comes from the window's own first-receipt dates, so the
 
 ### order_shares_by_pair.png
 
-1. One horizontal bar per screened pair for the share of its patients who received the marker treatment after the product, longest first, with the referral line marked at 1.25 times each pair's expected share and the referred pairs in the darker fill.
+1. One horizontal bar per screened pair for the share of its patients who received the marker treatment after the product, longest first, with each pair's referral threshold marked at 1.25 times its expected share and the referred pairs in the darker fill.
 2. Title states that 7 of the 20 candidate pairs clear the referral line.
