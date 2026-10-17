@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 2 fully shipped with task236; wave 3, task237 to task242, cut into the author file and next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 3 under way: task237 shipped; task238 next, its seed's pairing banned against task237 so its draw takes another domain). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3 (task237 to task242) is next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 shipped; task238 to task242 next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,24 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task237: SHIPPED 2026-10-17 (wave 3, first build; architecture 1); waiting on the portal.**
+- The Survey Research Centre at Marlowe University and its Community Connections Survey (Psychology & Behavioral
+  Science, psychometric-measurement-scale-validation x Data Quality Monitoring). Call: release the Punjabi, Spanish and
+  Persian versions of the BCS-12 for the wave 6 fieldwork, hold the Mandarin, Tagalog, Arabic and Korean versions for a
+  second pilot, and send the Cantonese, Urdu and Vietnamese versions back for retranslation. In six translations the
+  six negatively worded items share a wording factor; with it separated, the trait's share of score variance (omega
+  hierarchical) is under 0.80 in all six and under 0.70 in the Cantonese and Vietnamese versions. Cronbach's alpha (0.85
+  to 0.87) or a one-factor omega releases eight versions (6 of 10 wrong); omega total from the wording model files the
+  same 6, the positively worded items alone 4. Asks: each version's valid pilot completes and pilot mean score to two
+  decimals (the vendors' status against the module's end, reissued CAPI cases against the checked interviewer, merged
+  panel accounts).
+- Gates: 114 generator checks with the realism sweep, verify green (its own valid-complete rules and bifactor fit),
+  byte-identical rebuilds, figures_check 44 of 44, precut 49, leak.py REVIEW only; two leak reads (question 1 none,
+  question 6 analytical; ages, version means, the duration cap, the ledger's provenance and the reissued cases' pattern
+  fixed in the generator); judge DETERMINISTIC, APPROVE on three passes (the last on the final pack). Pair ceiling 38.7
+  on paper rests mostly on the status device. Surface screen promotes task236, task235, task234 and task233 (the same
+  author's Data Quality builds: a README file name and a designation set) for the author's read.
 
 **task236: SHIPPED 2026-10-17 (wave 2, sixth build; architecture 1); waiting on the portal.**
 - A state health department's Communicable Diseases Branch and its weekly influenza report (Epidemiology & Public

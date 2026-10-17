@@ -1,0 +1,11 @@
+version,language,vendor,mode,decision,valid_pilot_completes,pilot_mean_score
+pa,Punjabi,Fernlow Research,interviewer-administered (CAPI),release,542,41.76
+zh-Hans,"Chinese, Simplified (Mandarin)",Nesscroft Panels,online panel,hold,606,39.18
+yue,Cantonese,Fernlow Research,interviewer-administered (CAPI),rework,489,38.29
+tl,Tagalog,Nesscroft Panels,online panel,hold,450,38.36
+ar,Arabic,Fernlow Research,interviewer-administered (CAPI),hold,569,39.53
+es,Spanish,Nesscroft Panels,online panel,release,622,41.47
+ur,Urdu,Fernlow Research,interviewer-administered (CAPI),rework,478,38.46
+vi,Vietnamese,Nesscroft Panels,online panel,rework,512,39.04
+fa,Persian (Farsi),Nesscroft Panels,online panel,release,490,40.23
+ko,Korean,Nesscroft Panels,online panel,hold,573,36.89

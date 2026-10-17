@@ -1,23 +1,36 @@
 {
  "task": "task237",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "psychology-behavioral-science",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
- "stump": "A competent solver gates each version on Cronbach's alpha or a one-factor omega and files 5 of the 10 versions wrong; the step that lands it there is taking the score's whole common variance for connectedness when, in those five translations, the negatively worded items share a wording factor that the standard's quantity leaves out.",
+ "stump": "A competent solver gates each version on Cronbach's alpha or a one-factor omega and files 6 of the 10 versions wrong; the step that lands it there is taking the score's whole common variance for connectedness when, in those six translations, the negatively worded items share a wording factor that the standard's quantity leaves out.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), 2027-03-01",
+  "reader": "two passes: question 1 none, question 6 analytical; realism notes fixed"
+ },
+ "duplicate_check": {
+  "heart": "PASS",
+  "nearest": "task181 and task135 (0.08)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (pass r3 on the final pack; r1 and r2 APPROVE on earlier builds)"
+ },
  "returned": [],
- "resume": "stage 2: simulator tuned to the ladder (ten versions, five with a wording factor), asks and devices, note sections, prompt, precut",
+ "resume": "shipped; waits on the portal",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
