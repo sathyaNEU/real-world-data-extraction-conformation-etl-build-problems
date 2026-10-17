@@ -24,8 +24,10 @@ TBL = TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 7.5),
 
 
 def _doc(path, title):
+    from reportlab import rl_config
+    rl_config.invariant = 1
     return SimpleDocTemplate(path, pagesize=A4, title=title, author=W.AUTHORITY,
-                             leftMargin=20 * mm, rightMargin=20 * mm,
+                             invariant=1, leftMargin=20 * mm, rightMargin=20 * mm,
                              topMargin=18 * mm, bottomMargin=18 * mm)
 
 

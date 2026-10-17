@@ -1,21 +1,21 @@
 {
- "answer": "450 cash deposits were split below the prescribed transaction threshold in the year ended 30 June 2027, the largest segment being Transport and courier at 150.",
- "answer_unit": "count of deposits",
- "as_of": "2027-07-19",
- "currency": "NZD",
+ "answer": "800,000 euro of the capital programme payments for the year to 31 December 2026 was misstated, which does not meet the conclusion at plan 4.3 and refers the population for extended testing; Welfare and offices fit-out carries most of it at 250,000 euro.",
+ "answer_unit": "euro of misstatement",
+ "as_of": "2027-01-14",
+ "currency": "EUR",
  "distractor_files": [
-  "prescribed_transaction_extract_preliminary.csv",
-  "prescribed_transaction_extract_revised.csv",
-  "card_settlement_summary_2027.csv"
+  "grant_claim_2026.csv",
+  "revenue_expenditure_summary_2026.csv",
+  "capital_payment_lines_2025.csv"
  ],
- "distractor_note": "The two prescribed transaction extracts cover cash at or above the threshold, so they hold no deposit the figure counts; the card settlement summary is the obvious way to judge whether a cash take is plausible and the figure never reads it. Neither is a wrong-basis distractor: neither states or ranks anything on the decision question.",
- "domain": "banking-credit-financial-risk",
+ "distractor_note": "The funder's grant claim covers a claim year to 31 March and a share of eligible expenditure, so it holds no payment line the figure counts and reconciles to nothing on the decision question. The revenue expenditure summary is the other population the plan tests and the figure never reads it. The prior year's payment lines ship because the testing schedule extract covers two years, and the prior year's own misstatement is stated nowhere. None of the three states or ranks anything on the decision question.",
+ "domain": "accounting-audit-forensic",
  "files": [],
- "geography": "New Zealand",
+ "geography": "Ireland",
  "licence": "Synthetic records generated for this task; no third party licence attached.",
  "objective": "anomaly-detection",
  "task": "task190",
- "task_type": "fraud-aml-detection",
- "window": "2026-07-01 to 2027-06-30",
+ "task_type": "audit-testing-sampling",
+ "window": "2026-01-01 to 2026-12-31",
  "wrong_basis_distractor": null
 }

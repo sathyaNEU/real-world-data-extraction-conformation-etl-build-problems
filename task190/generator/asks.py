@@ -166,7 +166,7 @@ def risk_history(target, cross):
         byc.setdefault(e["sup"], []).append(e)
     for sup in sorted(byc):
         es = sorted(byc[sup], key=lambda e: (e["eff"], e["eid"]))
-        if picked >= 9 or len(es) < 2 or sim.shash(sup) % 29:
+        if picked >= 14 or len(es) < 2 or sim.shash(sup) % 7:
             continue
         e = es[0]
         e["status"] = "superseded"
