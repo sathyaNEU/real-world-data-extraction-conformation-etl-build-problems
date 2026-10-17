@@ -1,53 +1,56 @@
 {
- "analyst_test": "A strong analyst who carries every customer number through the crosswalk, applies the branch merger and the April code reissue, converts the machine feed's UTC stamps and reads clause 7.4 exactly builds the same-day screen, counting every band deposit on a day the customer's cash reached the threshold over more than one deposit, and files 1,287, where the number placed below the threshold on purpose is 400.",
- "answer": "400 cash deposits were split below the prescribed transaction threshold in the year ended 30 June 2027, the largest segment being transport and courier at 90.",
- "answer_source": "golden/structured_cash_deposits_2027.xlsx; generator/figures.json call.deposits_split",
- "answer_unit": "count",
- "architecture": "v2",
+ "analyst_test": "A strong analyst who joins the testing schedule to the payment population, resolves the payment lines to invoices, drops the two credit notes and the re-delivered batch, carries the supplier numbers through the crosswalk and reads every working paper correctly still projects the misstatement by scaling the errors found on the ratio the files make obvious, the population's book value over the tested book value, and files about 320,000 euro against materiality of 750,000, so the population is certified. The projection the tested set's own selection entitles is about 1,160,000 euro, over materiality, so the population goes to extended testing. Design targets, pinned in figures.json at stage 3.",
+ "answer": "to be filled at stage 3",
+ "answer_source": "generator/figures.json",
+ "answer_unit": "currency",
+ "architecture": 3,
  "calibration_form": "none",
- "client_domain": "banking-credit-financial-risk",
- "context_artifact": "filed_standard",
+ "client_domain": "survey-research-official-statistics",
+ "context_artifact": "other",
  "decision_type": "quantity_figure",
  "decisive_rule_filed": false,
  "deliverables": [
-  "structured_cash_deposits_2027.xlsx",
-  "structured_deposits_by_segment.png"
+  "projected_misstatement_2026.csv",
+  "misstatement_by_population_2026.png"
  ],
  "differentiation": {
-  "task193": "Shares the Gate G mechanism key with task193 v1 and the deliverable format set. task193 v1's decisive step was which population the measure is taken against, a comparison-set question the WHAT screen retired; this build's estimand fixes the population, the outcome, the window, the unit and the comparison, and the open step is how the background at one size is estimated.",
-  "task195": "Shares the Gate G mechanism key on the cards, which is why the guard WARNs. task195's mechanism is the uncertainty of a paired difference against two separate intervals, an interval question; this build's decisive step is the separation of an observed mass into a background and an excess, which carries no interval. The gate_g key is varied at task195's own draw rather than here, since this build's signal and background are both counts.",
-  "task228": "Shares the decisive gap and the Gate G mechanism. Every task228 architecture turns on a variance or a measurement error, the clustering of counted events inside randomised units, a run's exposure to a mid-run configuration change, or comparators whose errors co-vary; this build has no variance in its decisive step at all, and its background is the number of items the unit's own size profile away from the threshold produces.",
-  "task260": "Shares the decisive gap, the generator code and the Gate G mechanism on the cards. task260's decisive quantity is whether an average improvement measured once on one shared sample of raters and items holds for new raters and new items, which is a variance-component question answered with an interval; this build's is a point count of a mass in excess of a background, with no interval and no resampling anywhere in the golden. One is the uncertainty of an estimate, the other the estimand's background.",
-  "task70": "Shares the decisive gap and generator code and the decision type on the cards, and nothing else. task70 v2 rebuilds a per-record date from an event log under a clause that bars one record class from a late slot, so its decisive move is a class-conditional construction of a date; this build's is the size at which a payer chose to place a deposit, and the quantity is the mass at that size over what the payer's ordinary trade produces. One is a date construction, the other a mixture separated on a size profile, and neither route reaches the other's figure."
+  "task184": "the unit there is the event-hour a thing could have happened in; here the unit is sound and what changes is how much of the population one tested unit represents.",
+  "task185": "the method there is selected between conversions of one measuring device, and what the data settles is which conversion applies at the value being converted; here nothing is converted and no device changes. What the data settles is how much of an untested population one tested item represents, recovered from the realised selection itself, and the easy route is a scale-up that is arithmetically sound and demographically wrong.",
+  "task190_v1": "architecture 1 settled whether unobserved members were in the population, which failed the WHAT screen. Here the population is every payment line in the year and is beyond argument; what is open is what a tested line stands for.",
+  "task190_v2": "the slot's own architecture 2 estimated a counterfactual density and the specifications disagreed; here no curve is fitted to anything. The deciding quantity is an exact weighted sum over the tested items once one integer, the selection interval, is recovered, and the interval is pinned three independent ways by the realised set.",
+  "task195": "G16 there selects between two screens on the uncertainty of their paired difference; here the realised selection pattern entitles one projection and no uncertainty argument is needed to reach it.",
+  "task267": "population_selection there is survival behind a join on a diagnostic cohort; here it is the inclusion probability of a designed sample, recovered from the sample rather than filed.",
+  "task457": "that architecture measured a reporting error against what each report could have covered by its own date, which is a maturity problem and is banned on this slot. Here every record is complete and final on the day it is read; nothing arrives late and nothing is unobserved. What is unknown is only the design that chose which complete records were examined.",
+  "task80": "the rule there dates a conferred status from its criterion event rather than from first observation, so the decisive quantity is a date and the correction is a re-dating. Here there is no status and no dating: the decisive quantity is a currency amount and the correction is a reweighting of findings by the probability each tested item had of being tested at all."
  },
- "domain": "banking-credit-financial-risk",
- "domain_test": "The deciding quantity is the incidence of structuring, which financial-crime analytics estimates as the excess of deposits massed below a reporting threshold over the number the segment's own deposit-size profile away from the threshold implies; swap the deposits for hospital admissions and the threshold for a ward's bed count and nobody is choosing a size in order to stay under a reporting duty, so there is no excess to measure and the count of admissions at that size is the whole of the quantity.",
+ "domain": "accounting-audit-forensic",
+ "domain_test": "The deciding quantity is the misstatement in a population projected from a sample, which audit estimates on the sample's own inclusion probabilities because the sample was drawn in euro and not in items: every item at or above the sampling interval was certain of selection and stands only for itself, and every item below it was selected with probability proportional to its amount, so a tainting projects at the interval and not at a book-value ratio. Swap the nouns to a utility sampling meter readings for a billing error rate and the design has no reason to exist: a utility samples meters, because what it is testing is meters, so inclusion is equal and the ratio projection is the right one. The proportional design exists only because materiality is denominated in the same unit as the population, which is what makes this an audit sampling problem and not a counting one.",
  "drawn": "2026-10-17",
- "driver": "The decisive quantity is how many items were placed just under a threshold to stay under it, and the practice that placed them there leaves a matching shortfall just over the threshold, because the item each one replaced is not in the record any more. The surplus below and the shortfall above are the same quantity measured twice off one fitted size profile, so the record's own arithmetic refuses any profile whose two sides disagree, and a profile fitted through the emptied interval reads the surplus too large.",
- "driver_concrete": "Each business segment's cash deposits just below the ten thousand dollar reporting threshold include the ones its ordinary takings would put there anyway, and the segments differ by more than three times in how much of their ordinary cash sits at that size, so the count of deposits in the range and the number actually split to stay under the threshold are different quantities with different segment shares and a total three times apart.",
- "forcing_event": "statutory_or_regulatory_filing",
- "forum": "regulator_or_inspector",
+ "driver": "Items were drawn into the tested set with probability proportional to their size, so a tested item stands for a fixed amount of the population rather than for one item, and every item above that amount was certain to be drawn and stands only for itself. The selection amount is not recorded anywhere and is recovered from the realised set itself, so scaling the findings on the ratio of total size to tested size understates the population's defect by a multiple, because the large items are all tested and sound while the defects sit in small items that each stand for many.",
+ "driver_concrete": "The year's capital payments were tested by monetary-unit selection at an interval no file records, recovered two independent ways from the tested set itself: the amount above which every population item is tested, and the population book value between consecutive tested items in value order. Projecting each tainting at that interval, with the certainty items at their own error, gives about 1,160,000 euro against materiality of 750,000; scaling the errors found on book value gives about 320,000 and certifies the population.",
+ "forcing_event": "audit_or_inspection",
+ "forum": "auditor",
  "gap": [
-  "population"
+  "rule"
  ],
- "gate_g": "signal_vs_noise_or_hold",
+ "gate_g": "method_or_model_selection",
  "generators": [
-  "G6",
   "G16",
-  "G12"
+  "G17",
+  "G10"
  ],
  "layer1": [
-  "two deposit feeds at different grains, the counter feed per deposit and the machine feed per envelope batch",
-  "deposit system customer numbers against the customer master's, carried by a crosswalk",
-  "two branches merged and one renamed mid-year, with effective dates in the branch register",
-  "the bank's own segment map remapped in April 2027, the register holding both codes",
-  "machine timestamps in UTC against counter timestamps in local time over a daylight saving change",
-  "a preliminary and a revised prescribed-transaction extract overlapping by six weeks",
-  "amounts as dollars and cents in the feeds and as thousands in one workbook",
-  "tables inside PDFs"
+  "payment lines resolving many-to-one onto invoices",
+  "two credit notes reversing payments inside the year",
+  "a re-issued payment batch delivered twice with its own sequence",
+  "a supplier master whose numbers differ from the ledger's, with a crosswalk",
+  "the testing schedule as a table inside a PDF working paper",
+  "a prior-year sample and the current year's overlapping in one file",
+  "amounts in euro to the cent against one file in thousands",
+  "the authority's financial year against the funder's calendar year"
  ],
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:the-takes-that-are-missing-from-just-above-the-reporting-threshold",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:what-one-tested-item-stands-for-when-the-sample-was-drawn-in-euro",
  "lineage": [
   {
    "architecture": "v1",
@@ -68,47 +71,56 @@
    "stump": "A competent solver conforms the alert and adjudication extracts, computes each line's confirmed cases per 1,000 customers over the last two quarters, and assigns the team to the lines that confirm the most, which is the lines where cases are found fastest rather than where they are sitting unfound.",
    "stump_strategy": "maturity_censoring",
    "subdomain": "fraud-aml-detection"
+  },
+  {
+   "architecture": 2,
+   "driver": "The decisive quantity is how many items were placed just under a threshold to stay under it, and the practice that placed them there leaves a matching shortfall just over the threshold, because the item each one replaced is not in the record any more. The surplus below and the shortfall above are the same quantity measured twice off one fitted size profile, so the record's own arithmetic refuses any profile whose two sides disagree, and a profile fitted through the emptied interval reads the surplus too large.",
+   "fate": "spent 2026-10-17 after three passes. Judge pass 1 SEND_BACK: the method was not forced and the data did not separate the candidates (310 to 512 across windows and families). Judge pass 2 SEND_BACK: the convergence was bought by an amount draw too smooth to separate them (chi-square per degree of freedom 0.029 bank-wide, tail probability below 1e-26). Judge pass 3 SEND_BACK, NOT_DETERMINISTIC: the realism was fixed and held (chi-square 1.11 to 1.44, p 0.06 to 0.23, amounts sampled not drawn from a curve) but the golden then reproduced under exactly one estimator, the average of the surplus below and the deficit above, which the pack files nowhere; surplus alone gave 71 to 786 and deficit alone 207 to 858, and the average agreed only because it cancels the fitted profile's level algebraically, being the half difference of two observed counts less a half slope correction. The refusal rule the build used, failing to reconcile within a fifth, is in no shipped file, so the 141 standing specifications cannot be reproduced from the bundle. Three further findings each needed redesign rather than repair: a flat rate on the paid-in column matched 7 of 8 segment cells, so book size alone reproduced the table; summing rounded segments and rounding the unrounded sum agreed in only 93 of 186 specifications; and the half difference's own sampling standard error was 31.7 against a cell 1.6 standard errors wide. Every structural gate passed every time, Gate G and Gate H included. The lesson for the slot: a decisive step that is an estimation choice over a fitted counterfactual density cannot be both forced and silent, because the specifications always disagree and nothing filable chooses between them without becoming rule application.",
+   "label": "v2 (Arahura Bank, cash deposits split below the NZ prescribed transaction threshold; excess mass below the line reconciled against the deficit above it)"
   }
  ],
+ "loops": 0,
  "mechanism_source": "design_note",
- "niche": "sizing the cash deposits placed below the reporting threshold on purpose against the deposits a cash-intensive book ordinarily makes at that size",
- "notes": "The decisive generator is filed G6 because 'one band moves against the rest' is the only code in the taxonomy for a band of a distribution that moves against the rest of it, and that is what makes the excess identifiable here. It is not the composition mechanism the house bans as a decisive step: nothing applies a pooled or stratum rate to a pool whose mix has moved, no segment's mix is standardised against another's, and the quantity is not a rate. The band is a band of deposit sizes inside one segment's own profile, and the decisive move separates an observed mass at that size into the number the segment's own profile away from the threshold produces and the number in excess of it. G16 sits second because the open step is which estimator of that excess the data supports; it is not first because the guard bans G16 against task195. Architecture 2, loop 3: the determinism judge's second SEND_BACK was on the realism of the amount draw with every structural gate passing, so this is a generator and world repair and not a re-root. The amounts are now an independent sample per deposit (chi-square per degree of freedom 0.80 to 1.14), splitting is generated by moving a take rather than adding to a day, and the decisive step is reconciling the band's surplus against the deficit the movement leaves in 10,000 to 11,000. The stated grain is the nearest fifty deposits, set from the measured spread over the judge's own 225 specification grid.",
+ "niche": "internal audit of a port authority's capital programme payments, where the year's testing was drawn by monetary-unit selection and the projected misstatement decides whether the population is certified or goes to extended testing",
+ "notes": "Architecture 3, drawn 2026-10-17 after the author called architecture 2 spent. Drawn under four constraints written from this slot's own lineage: no quantity whose estimate depends on a fitted counterfactual density; the blind-response test run at the draw on the widest graded component; any convergence claim screened for insensitivity rather than asserted; and no sentence filed at authority without the author's approval. The decisive quantity is determinate by construction: once the selection interval is recovered it is one exact sum, with no window, bin, family or order to choose. G16 is the decisive generator because the realised selection pattern, and nothing filed, entitles the projection; G17 carries the supporting rung (whether the projection survives its own sampling uncertainty against materiality) and G10 the Layer 1 many-to-one from payment lines to invoices. This is the number's third architecture, so if it is spent the number retires. The house domain is Accounting, Audit and Forensic and it is filed against the client's Survey Research and Official Statistics, because the deciding method is design-based estimation from a probability-proportional-to-size sample; the subdomain audit-testing-sampling has never been drawn and accounting-audit-forensic x anomaly-detection is a never-built pairing. WARN repeat.gate_g and overuse.gate_g answered together: method_or_model_selection is the honest Gate G because the realised selection pattern, and nothing filed, entitles one projection; it is used in 5 of the last 12 but every one of those selects between models, back-tests or screens fitted to data, while this one selects between weightings of a complete record, which is why the nearest driver on file scores 0.08. context_artifact is 'other', named here as required: the head of internal audit works from the audit file itself, a working paper pack holding the year's testing schedule as a table inside a PDF with the tested lines, their book amounts and their audited amounts. That is none of the listed types, and the three that were close are each banned against the last three builds (register, close_out_summary, filed_standard), which is how the honest key was reached rather than a dodge. The gate_g WARNs are accepted rather than redrawn because no other key is true of this build: binding_constraint, decomposition_attribution, forecasting and signal_vs_noise would each misdescribe it, statistical_rigor alone is illegal, and the two surface-read keys are rejections. The right place to carry the variety is the driver, which scores 0.08 against the whole corpus.",
  "objective": "anomaly-detection",
  "official_decoy": false,
  "opening_move": "question-first",
- "org_family": "financial_institution",
+ "org_family": "utility_or_infrastructure",
  "pattern": [
   "none"
  ],
- "question_form": "how-many",
- "registered": "2026-10-17T14:53:52Z",
- "role_family": "programme_officer",
- "scoring_unit": "per active unit per period",
- "shape": "05",
+ "question_form": "how-much",
+ "registered": "2026-10-17T17:46:26Z",
+ "role_family": "compliance_or_audit",
+ "scoring_unit": "per settled transaction",
+ "shape": "12",
  "slot_note": "seed AD13 is spent with architecture 1 and nothing of it is carried: the seed's scarce-team placement, its caseload quantity and its stock-from-arrivals driver are all retired. Architecture 2 keeps only the slot's objective, its number and a New Zealand bank, and re-roots on the incidence of structuring, which the bank's own deposit record fixes and which the field estimates as an excess over the deposit sizes a segment's ordinary trade produces.",
  "spine": {
-  "entity": "one cash deposit paid in over a branch counter",
-  "file": "cash_deposit_counter_2026_2027.csv",
-  "rows": 61568
+  "entity": "one payment line on one capital programme invoice",
+  "file": "capital_payment_lines_2026.csv",
+  "grain": "payment line",
+  "rows": 0,
+  "source": "synthetic, generated for this task"
  },
- "stakeholder_role": "the bank's money laundering reporting officer, who runs the AML programme",
- "stump": "A competent solver conforms the two deposit feeds to the customer register, reads the handbook's definition of structuring and the ten thousand dollar reporting threshold, builds the split out of the customer's own day and files 1,287, which is the number of band deposits belonging to businesses that pay their takings in more than once a day, when the number placed below the threshold on purpose is the amount by which the band exceeds what each segment's own deposit-size profile away from it produces, 400.",
+ "stakeholder_role": "head of internal audit",
+ "stump": "The default path scales the errors found on the ratio of the population's book value to the tested book value and files about 320,000 euro, certifying the population, because the tested set is read as a sample of items when it is a sample of euro: every item at or above the recovered interval was certain of selection and stands only for itself, which is where most of the tested book value sits and where the records are sound, while each tainting in a small item stands for a whole interval of untested euro.",
  "stump_class": "analytical",
- "stump_strategy": "other",
- "subdomain": "fraud-aml-detection",
+ "stump_strategy": "population_selection",
+ "subdomain": "audit-testing-sampling",
  "task": "task190",
  "validated_decoy": false,
  "world": {
-  "currency": "NZD",
-  "geography": "New Zealand",
-  "invented_names": [
-   "Arahura Bank"
+  "currency": "EUR",
+  "geography": "Ireland",
+  "invented_nouns": [
+   "Carrowmore Port Authority"
   ],
-  "org_type": "retail and business bank",
+  "org_type": "port authority",
   "people": [
-   "Manaaki Little",
-   "Emma Gullery",
-   "Brian Simonsen"
+   "Tanya McCrea",
+   "Colm Shaffrey",
+   "Marc O'Reardon"
   ]
  }
 }
