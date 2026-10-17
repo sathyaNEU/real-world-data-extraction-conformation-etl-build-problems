@@ -1,0 +1,170 @@
+{
+ "call": {
+  "block_mgd": "0.3",
+  "blocks": 3,
+  "reservation_charge_2027": "85,200"
+ },
+ "components": {
+  "design_flow_cfs": "1.55",
+  "withdrawal_mgd": "0.68",
+  "shortfall_mgd": "0.23",
+  "stage2_demand_mgd": "0.91",
+  "gauged_years": 74,
+  "measured_years": 14,
+  "silent_years": 40,
+  "missing_reports": 3,
+  "suspension_flow_cfs": "3.09"
+ },
+ "scenarios": {
+  "10": {
+   "flow_cfs": "2.54",
+   "withdrawal_mgd": "1.32",
+   "shortfall_mgd": "0.00"
+  },
+  "25": {
+   "flow_cfs": "1.89",
+   "withdrawal_mgd": "0.90",
+   "shortfall_mgd": "0.01"
+  },
+  "50": {
+   "flow_cfs": "1.55",
+   "withdrawal_mgd": "0.68",
+   "shortfall_mgd": "0.23"
+  },
+  "100": {
+   "flow_cfs": "1.29",
+   "withdrawal_mgd": "0.51",
+   "shortfall_mgd": "0.40"
+  }
+ },
+ "flip": {
+  "years": "65",
+  "flow_cfs": "1.44"
+ },
+ "rivals": {
+  "R0": {
+   "design_flow_cfs": "1.87",
+   "shortfall_mgd": "0.02",
+   "block_mgd": "0.1"
+  },
+  "R0m": {
+   "design_flow_cfs": "1.86",
+   "shortfall_mgd": "0.03",
+   "block_mgd": "0.1"
+  },
+  "R1": {
+   "design_flow_cfs": "1.31",
+   "shortfall_mgd": "0.38",
+   "block_mgd": "0.4"
+  },
+  "R1m": {
+   "design_flow_cfs": "1.30",
+   "shortfall_mgd": "0.39",
+   "block_mgd": "0.4"
+  },
+  "R1b": {
+   "design_flow_cfs": "1.23",
+   "shortfall_mgd": "0.44",
+   "block_mgd": "0.5"
+  },
+  "R1c": {
+   "design_flow_cfs": "1.30",
+   "shortfall_mgd": "0.39",
+   "block_mgd": "0.4"
+  },
+  "R1d": {
+   "design_flow_cfs": "1.58",
+   "shortfall_mgd": "0.21",
+   "block_mgd": "0.3"
+  },
+  "R2": {
+   "design_flow_cfs": "1.55",
+   "shortfall_mgd": "0.23",
+   "block_mgd": "0.3"
+  }
+ },
+ "ask": [
+  {
+   "year": 2016,
+   "start": "2016-08-16",
+   "end": "2016-10-02",
+   "days": 48,
+   "average_mgd": "0.81",
+   "highest_mgd": "0.90"
+  },
+  {
+   "year": 2020,
+   "start": "2020-08-04",
+   "end": "2020-08-26",
+   "days": 23,
+   "average_mgd": "0.86",
+   "highest_mgd": "0.93"
+  },
+  {
+   "year": 2020,
+   "start": "2020-09-13",
+   "end": "2020-10-04",
+   "days": 22,
+   "average_mgd": "0.78",
+   "highest_mgd": "0.86"
+  },
+  {
+   "year": 2022,
+   "start": "2022-08-28",
+   "end": "2022-09-14",
+   "days": 18,
+   "average_mgd": "0.85",
+   "highest_mgd": "0.90"
+  },
+  {
+   "year": 2023,
+   "start": "2023-08-13",
+   "end": "2023-09-29",
+   "days": 48,
+   "average_mgd": "0.84",
+   "highest_mgd": "0.90"
+  },
+  {
+   "year": 2024,
+   "start": "2024-08-15",
+   "end": "2024-09-22",
+   "days": 39,
+   "average_mgd": "0.85",
+   "highest_mgd": "0.93"
+  },
+  {
+   "year": 2025,
+   "start": "2025-08-10",
+   "end": "2025-09-17",
+   "days": 39,
+   "average_mgd": "0.87",
+   "highest_mgd": "0.93"
+  },
+  {
+   "year": 2025,
+   "start": "2025-09-23",
+   "end": "2025-10-11",
+   "days": 19,
+   "average_mgd": "0.79",
+   "highest_mgd": "0.84"
+  }
+ ],
+ "conformed_rows": 131,
+ "stated": {
+  "recurrence_intervals": [
+   10,
+   25,
+   50,
+   100
+  ],
+  "window_days": 7,
+  "agreement_year": 1893,
+  "regional_skew": "-0.30",
+  "record_years": [
+   1894,
+   2024
+  ],
+  "passby_cfs": "0.50",
+  "block_size_mgd": "0.1"
+ }
+}
