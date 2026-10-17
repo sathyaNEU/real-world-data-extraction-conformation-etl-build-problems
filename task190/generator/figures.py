@@ -1,6 +1,7 @@
 """Every figure the write-up states, so figures_check.py can hold it to the data."""
 import json
 
+import estimators as E
 import world as W
 
 
@@ -10,8 +11,13 @@ def write(g, path):
         "constants": {
             "band_lower_bound": 9000,
             "band_upper_bound": 10000,
+            "mirror_upper_bound": E.MIRROR_HI,
             "handbook_clause": 7.4,
             "handbook_segment_clause": 7.5,
+            "fit_window_lower_bound": min(lo for lo, hi in E.WINDOWS),
+            "fit_window_upper_bound": max(hi for lo, hi in E.WINDOWS),
+            "bin_width_smallest": min(E.WIDTHS),
+            "bin_width_largest": max(E.WIDTHS),
         },
         "call": {
             "deposits_split": g["total"],
@@ -37,6 +43,10 @@ def write(g, path):
             "machine_rows": g["stats"]["machine"],
             "specifications_in_the_grid": g["grid_n"],
             "specifications_the_record_leaves": g["sweep_n"],
+            "specifications_the_record_refuses": g["grid_n"] - g["sweep_n"],
+            "mirror_deposits_the_profile_puts_there":
+                int(round(sum(g["mirror_obs"].values()) + sum(g["per_seg_raw"].values()))),
+            "least_distance_to_a_rounding_edge": round(min(g["edges"].values()), 1),
         },
         "deliverables": {
             "structured_cash_deposits_2027.xlsx": {

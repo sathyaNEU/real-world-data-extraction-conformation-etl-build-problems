@@ -286,6 +286,12 @@ def run(g, target):
        sum(g["per_seg"].values()) == GOLD == sum(G.r50(v) for v in g["per_seg_raw"].values()))
     ok("SF13 the three constructions differ from each other and from the golden",
        len({g["band_all"], g["screen"], g["one_total"], g["total"]}) == 4)
+    ok("SF17 the band read on its own gives a different cell from the two sides reconciled",
+       g["one_total"] != g["total"] and
+       g["one_total"] - g["total"] == W.GRAIN, str(g["one_total"]))
+    ok("SF17 the record refuses the specifications whose two sides disagree",
+       0 < g["grid_n"] - g["sweep_n"] < g["grid_n"],
+       "%d of %d" % (g["grid_n"] - g["sweep_n"], g["grid_n"]))
     ok("SF14 the segment figures sum to the bank's figure",
        sum(g["per_seg"].values()) == g["total"])
     vend = {}

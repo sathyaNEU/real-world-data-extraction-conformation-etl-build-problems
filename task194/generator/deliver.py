@@ -33,9 +33,6 @@ def chart(path, g):
     fig, ax = plt.subplots(figsize=(6.9, 3.9), dpi=200)
     bars = ax.barh(labels, values, height=0.62, color=colours, linewidth=0)
     ax.set_xlabel("Complications avoided over the quarter from 1 April 2027", fontsize=8.5, color=INK)
-    ax.set_title("Alderbrook Orthopaedics avoids %d complications, %d more than the closest unit"
-                 % (round(g["answer"]["avoided"]), g["gap"]),
-                 fontsize=9.8, color=INK, loc="left", pad=9)
     ax.xaxis.grid(True, color=GRID, linewidth=0.7)
     ax.set_axisbelow(True)
     for side in ("top", "right", "left"):
@@ -53,7 +50,10 @@ def chart(path, g):
                         fontweight="bold" if d["unit"] == pick else "normal")
     ax.annotate("recommended", (bars[-1].get_width(), bars[-1].get_y() + bars[-1].get_height() / 2),
                 xytext=(22, 0), textcoords="offset points", va="center", fontsize=7.6, color=BAR)
-    fig.tight_layout(pad=0.6)
+    fig.tight_layout(pad=0.6, rect=(0, 0, 1, 0.918))
+    # the finding runs across the figure, not the axes, so a long title is never clipped
+    fig.text(0.011, 0.985, "Alderbrook Orthopaedics avoids %d complications, %d more than the closest unit"
+             % (round(g["answer"]["avoided"]), g["gap"]), ha="left", va="top", fontsize=9.8, color=INK)
     fig.savefig(path, facecolor="white", metadata={"Software": None, "Creation Time": None})
     plt.close(fig)
     return path

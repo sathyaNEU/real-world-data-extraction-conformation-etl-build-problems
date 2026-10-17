@@ -24,9 +24,9 @@ the call, the closest unit and the gap = 3; the brief's chart (one bar per unit,
 the axis in complications, the finding as the title, the units in avoided order) = 5; the two deliverables
 present and named = 2; the three critical components = 3. Main side 25. The asks add 12 + 18 + 16 = 46.
 
-**Data-native sentence.** In this panel a unit's quarterly standardised ratio swings by 0.128 about its own
-level while the twelve units' own levels are only 0.085 apart, and the quarterly deviations carry no serial
-correlation (-0.089 over the candidates' 103 consecutive pairs, -0.091 over the whole panel's 192, which is
+**Data-native sentence.** In this panel a unit's quarterly standardised ratio swings by 0.114 about its own
+level while the twelve units' own levels are only 0.083 apart, and the quarterly deviations carry no serial
+correlation (-0.121 over the candidates' 103 consecutive pairs, -0.153 over the whole panel's 192, which is
 what de-meaning a ten-quarter record implies on its own), so the quarter that makes a unit look worst is
 mostly the unit's own variation, and the closed placement register is the only thing in the pack that prices
 what a placement itself removes.
