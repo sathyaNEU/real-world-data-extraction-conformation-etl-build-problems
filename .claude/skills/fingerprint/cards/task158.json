@@ -36,8 +36,8 @@
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "pool_hourly_2026-01-01_2026-12-06.csv",
-    "rows": 49000,
+    "file": "fleet_rollup_hourly_2026-01-01_2026-12-06.csv",
+    "rows": 48956,
     "entity": "one GPU pool's serving totals for one UTC hour: GPUs in service, busy GPU-seconds, requests, new sessions, prompt and completion tokens, time to first token",
     "grain": "pool x hour",
     "source": "synthetic (constructed in the layout of a fleet capacity rollup that joins GPU busy time to gateway counters)"
@@ -61,7 +61,7 @@
   },
   "deliverables": [
     "stopgap_q1_2027.xlsx",
-    "pool_busiest_hours_nov2026.png"
+    "pool_out_of_service_nov2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
@@ -74,11 +74,13 @@
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:gpu-work-priced-on-computed-prompt-tokens-validated-on-an-early-access-onboarding",
   "layer1": [
-    "model upgrade mid-year changes the pool's model tag and its costs",
-    "UTC telemetry hours against CET billing days across the October clock change",
+    "rollout hours tagged with both model builds in the rollup's model column",
+    "UTC telemetry hours against Amsterdam billing days across the October clock change",
     "billing meter by organisation and channel against pool totals",
-    "contract ledger with tier codes resolved through a tier sheet and staggered go-live weeks",
-    "fleet plan with a mid-quarter node move"
+    "contract ledger with tier codes resolved through a tier sheet, an early-access agreement and a proposal beside the signed contracts, staggered go-live weeks",
+    "close-out rates inside a PDF at three decimals",
+    "one intake filed in requests per second, the others in thousands per busiest hour",
+    "collector gaps in two pools' hourly rows"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
