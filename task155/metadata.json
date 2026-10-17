@@ -1,0 +1,179 @@
+{
+  "task": "task155",
+  "title": "Which of a Victorian grocery chain's eight stores gets its one 25-person relief crew for the four trading weeks to Christmas Eve 2026, placed where it will work the most hours the stores' casual call-ins would otherwise leave unworked, and the crew hours it will work there",
+  "domain": "Economics & Econometrics",
+  "client_domain": "Economics & Econometrics",
+  "subdomain": "discrete-choice-limited-dependent-variable-modeling (each casual's accept-or-decline choice on a call-in offer, fitted on the offer log with the offer's position against the casual's own rostered shift as a term, and run through the call-in module over the published Christmas rosters)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a committed store and its crew hours in a one-page placement brief with a chart of every store's expected unworked hours, and two tables: last Christmas's call-ins by store (hours put out, covered and left uncovered, 24 cells) and cover across stores in those weeks (each store's call-in hours covered by other stores' casuals and its casuals' hours covered elsewhere, 16 cells)",
+  "as_of": "2026-11-13",
+  "deliverables": [
+    "relief_crew_placement_xmas2026.pdf",
+    "relief_crew_xmas2026.xlsx"
+  ],
+  "distractor_files": [
+    "christmas_trading_plan_2026.xlsx",
+    "vic_school_terms_public_holidays_2025_2026.csv"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 15,
+    "formats": [
+      "csv",
+      "json",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "callin_offers_20250829_20261112.csv",
+    "largest_file_rows": 138219
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task155/generator/build.py (seeded, deterministic) around a fictional family-owned Victorian grocery chain of eight stores, in the layouts of a workforce management system's call-in register, offer history, roster lines, people and availability exports, a legacy rostering spreadsheet tool's weekly export, a payroll casual register, a published roster workbook, a planning standard, system notes, an enterprise agreement summary, a trading plan, a calendar and an extract transmittal; no real organisation's records or person is depicted.",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-17",
+  "generator": "task155/generator/build.py",
+  "files": [
+    {
+      "path": "WR-26-1187_extract_transmittal.txt",
+      "format": "txt",
+      "bytes": 1928,
+      "rows": 25,
+      "source": "Constructed: Kellaway's Workforce Systems, transmittal for data extract WR-26-1187, 12/11/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "callin_offers_20250829_20261112.csv",
+      "format": "csv",
+      "bytes": 14128421,
+      "rows": 138219,
+      "source": "Constructed: Kellaway's Workforce Systems, KWS offer history report, shifts 29/08/2025 to 12/11/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "callin_register_20250829_20261112.csv",
+      "format": "csv",
+      "bytes": 4673433,
+      "rows": 40779,
+      "source": "Constructed: Kellaway's Workforce Systems, KWS call-in register, shifts 29/08/2025 to 12/11/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "christmas_roster_2026_published.xlsx",
+      "format": "xlsx",
+      "bytes": 620560,
+      "rows": 17624,
+      "source": "Constructed: Kellaway's Workforce Systems, KWS roster report, Christmas 2026 rosters as published 12/11/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "christmas_trading_plan_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 7255,
+      "rows": 8,
+      "source": "Constructed: Kellaway's Store Operations, Christmas trading plan 2026 version 2, 30/10/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ea_2024_casual_employment_summary.pdf",
+      "format": "pdf",
+      "bytes": 35162,
+      "rows": null,
+      "source": "Constructed: Kellaway's People and Payroll, enterprise agreement 2024 casual employment summary, 01/07/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kws_availability_20261112.json",
+      "format": "json",
+      "bytes": 3170666,
+      "rows": 832,
+      "source": "Constructed: Kellaway's Workforce Systems, KWS availability profiles, 12/11/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kws_callin_module_notes.pdf",
+      "format": "pdf",
+      "bytes": 42532,
+      "rows": null,
+      "source": "Constructed: Kellaway's Workforce Systems, KWS Call-in module notes version 2.3, 04/08/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "kws_people_20261112.csv",
+      "format": "csv",
+      "bytes": 33390,
+      "rows": 832,
+      "source": "Constructed: Kellaway's Workforce Systems, KWS people, 12/11/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "payroll_casual_register_20261112.csv",
+      "format": "csv",
+      "bytes": 51508,
+      "rows": 895,
+      "source": "Constructed: Kellaway's People and Payroll, payroll casual register, 12/11/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "relief_crew_placement_standard.pdf",
+      "format": "pdf",
+      "bytes": 35169,
+      "rows": null,
+      "source": "Constructed: Kellaway's Workforce Planning, relief crew placement standard WP-04 version 4, 09/10/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "roster_export_legacy_20250829_20260226.csv",
+      "format": "csv",
+      "bytes": 5575272,
+      "rows": 79643,
+      "source": "Constructed: Kellaway's stores, legacy rostering tool weekly export, roster weeks 29/08/2025 to 20/02/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "roster_lines_kws_20260227_20261112.csv",
+      "format": "csv",
+      "bytes": 7431284,
+      "rows": 108481,
+      "source": "Constructed: Kellaway's Workforce Systems, KWS roster lines, roster weeks 27/02/2026 to 06/11/2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "stores.csv",
+      "format": "csv",
+      "bytes": 324,
+      "rows": 8,
+      "source": "Constructed: Kellaway's, store list",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "vic_school_terms_public_holidays_2025_2026.csv",
+      "format": "csv",
+      "bytes": 1607,
+      "rows": 23,
+      "source": "Constructed: Kellaway's Store Operations, Victorian school terms and public holidays 2025 and 2026",
+      "date": "2026-11-13",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
