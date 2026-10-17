@@ -10,8 +10,8 @@
   "shape": "10",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher (A57G120): 91.3% of the adults with undiagnosed diabetes among everyone screened, 35.9% of the adults screened referred",
+  "answer_source": "submission.md",
   "gap": [
     "population"
   ],
@@ -34,9 +34,9 @@
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "community_screening_encounters_2026.csv",
-    "rows": 0,
-    "entity": "one adult screened at one community screening event",
+    "file": "screening_encounters_2026.csv",
+    "rows": 39484,
+    "entity": "one screening encounter as a tablet synced it",
     "grain": "screening encounter",
     "source": "synthetic"
   },
@@ -47,11 +47,21 @@
     "geography": "a US state (the health system, its counties' screening sites and its reference laboratory are fictional; personas on the en_US index)",
     "currency": "USD",
     "org_type": "regional health system",
-    "invented_names": [],
+    "invented_names": [
+      "Sallowfield Health",
+      "Orlenby",
+      "Fenwater",
+      "Drummery",
+      "Pellowmoor",
+      "Quessly",
+      "Thessler Laboratories",
+      "Glyquant"
+    ],
     "people": [
       "Aaron Bradley",
       "Ariel Tucker",
-      "Bryan Gardner"
+      "Bryan Gardner",
+      "Matthew Garcia"
     ]
   },
   "deliverables": [
@@ -82,16 +92,15 @@
       "note": "seed DA17, an annuity insurer's size-banded rates in six markets: it serves Descriptive only through sociology-demography's life-table task type (a third sociology-demography Descriptive build after task262 and task266), the seed's contract-against-annuitant grain is identity resolution (a reading, banned as the decisive step), and its natural analytical stump, deaths notified late for small pensions estimated from the notification delays, would file an estimate of the not-yet-observed in the governing document for a second consecutive build"
     }
   ],
-  "notes": "WARNs answered in the design note.",
+  "notes": "WARNs answered in the design note. Matthew Garcia was drawn with the other three from guard.py names at the draw (the suggestion list now omits names on file). Stage 3 (2026-10-17): the invented names Ostervale, Lindqvale, Cressfield and Elverston renamed Orlenby, Thessler, Drummery and Pellowmoor on the H21 screen; the ask devices redrawn (Ask A, the run database holding runs under two clocks, D1; Ask B, credit memo amounts on every line they cover, D6).",
   "client_domain": "biomedical-clinical-research",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "biomedical-clinical-research/diagnostic-biomarker-accuracy/1",
   "layer1": [
-    "the screening tablets' event exports, one adult screened at more than one event in the season",
-    "OGTT results from the reference laboratory keyed by its accession number with the program ID typed on the requisition",
-    "point-of-care HbA1c from the analysers' exports, with repeats after a failed control and results beyond the reportable range shown as text",
-    "the 2026 referral flag set by the tablet from the questionnaire score and the fingerstick glucose, the random fifth drawn by the tablet",
-    "OGTT appointments not kept, rescheduled or completed at another site"
+    "the tablets' encounter export: an event's rows re-sent when a tablet reconnects, and later screenings of the same adult under the same program ID",
+    "the laboratory's OGTT extract keyed by its own accession, the program ID as the patient service center typed it (hyphen or leading zero dropped, lower case, digits only)",
+    "OGTT dates month/day/year, incomplete tests when the two-hour sample was not taken, missed appointments leaving no row",
+    "tests at a patient service center outside the adult's service area"
   ],
   "registered": "2026-10-17T16:13:13Z"
 }

@@ -1,34 +1,35 @@
 {
   "task": "task267",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-17",
   "stump": "The default path reads each referral rule's sensitivity among the participants with an OGTT result and recommends the 2026 rule plus an HbA1c of 6.0 per cent or more (about 93 per cent there, a quarter of those screened referred), because the OGTT went to everyone the 2026 rule referred and to only a random fifth of everyone else, so any rule that contains the 2026 rule finds nearly every tested case; weighting each tested participant by the inverse of their group's OGTT rate puts that rule at about 77 per cent and makes an HbA1c of 5.7 per cent or more or a random glucose of 120 mg/dL or more (about 90 per cent) the rule with the fewest referrals that meets the 85 per cent target.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (sweep 3: 120 in the column GLU_120MIN_MGDL; sweep 4: the program's own words), every line harmless",
+    "reader": "clean on the call: Q1 to Q4 none, Q5 protocol 6.2 (the estimand, no computation fixed), Q6 an analytical choice; realism nothing generated; asks: the reader saw neither device; its two Ask B readings (a credit's month, mistyped program IDs) closed by the prompt and asserted"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form, answered at the draw)",
     "nearest": "task257 0.07; task57 (v20, lineage) 0.07"
   },
   "judge": {
-    "verdict": "",
+    "verdict": "running",
     "disposition": "",
-    "report": ""
+    "report": "",
+    "note": "the judge agent had no Agent tool and left its brief; the isolated thread was spawned from it"
   },
   "returned": [],
-  "resume": "stage 2: the semantic fork table, ladder (built in the generator from the simulation in the draw), closure table, literal reader, oracles, ask sheet and prompt.txt, then precut.py",
+  "resume": "stage 4: when the judge thread's verdict lands, hand it to the determinism-judge agent for the report, fix every finding in one generator pass (re-judge once on FIX_NOW), then ship",
   "approved": null,
   "delivered": null,
   "portal": null,

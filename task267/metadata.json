@@ -1,0 +1,11 @@
+{
+  "distractor_files": [
+    "target/participant_feedback_2026.csv",
+    "target/orlenby_chronic_disease_profile_2024.xlsx"
+  ],
+  "deliverables": [
+    "referral_rule_review_2027.xlsx",
+    "referral_rule_2027_memo.docx"
+  ],
+  "stated_inputs": []
+}
