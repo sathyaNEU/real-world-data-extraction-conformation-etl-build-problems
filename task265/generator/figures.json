@@ -1,0 +1,234 @@
+{
+ "ask_a": {
+  "Askvane/Pellvoro": {
+   "Brennick Valley Medical Center": 85,
+   "Kittelstad Orthopaedic Hospital": 92,
+   "Tollefson Lake Hospital": 34
+  },
+  "Askvane/Quarvel": {
+   "Brennick Valley Medical Center": 83,
+   "Kittelstad Orthopaedic Hospital": 34,
+   "Tollefson Lake Hospital": 48
+  },
+  "Edvalt/Kelvarne": {
+   "Brennick Valley Medical Center": 32,
+   "Kittelstad Orthopaedic Hospital": 14,
+   "Tollefson Lake Hospital": 29
+  },
+  "Edvalt/Pellvoro": {
+   "Brennick Valley Medical Center": 18,
+   "Kittelstad Orthopaedic Hospital": 63,
+   "Tollefson Lake Hospital": 9
+  },
+  "Holbrin/Pellvoro": {
+   "Brennick Valley Medical Center": 89,
+   "Kittelstad Orthopaedic Hospital": 174,
+   "Tollefson Lake Hospital": 54
+  },
+  "Kalvoran/Morvenne": {
+   "Brennick Valley Medical Center": 46,
+   "Kittelstad Orthopaedic Hospital": 71,
+   "Tollefson Lake Hospital": 34
+  }
+ },
+ "ask_a_construct_totals": {
+  "Askvane/Pellvoro": 211,
+  "Askvane/Quarvel": 165,
+  "Edvalt/Kelvarne": 75,
+  "Edvalt/Pellvoro": 90,
+  "Holbrin/Pellvoro": 317,
+  "Kalvoran/Morvenne": 151
+ },
+ "ask_a_hospital_totals": {
+  "Brennick Valley Medical Center": 353,
+  "Kittelstad Orthopaedic Hospital": 448,
+  "Tollefson Lake Hospital": 208
+ },
+ "ask_a_total": 1009,
+ "ask_c_construct": {
+  "Askvane/Pellvoro": 8,
+  "Askvane/Quarvel": 7,
+  "Edvalt/Kelvarne": 1,
+  "Edvalt/Pellvoro": 2,
+  "Holbrin/Pellvoro": 4,
+  "Kalvoran/Morvenne": 6
+ },
+ "ask_c_hospital": {
+  "Brennick Valley Medical Center": 12,
+  "Kittelstad Orthopaedic Hospital": 11,
+  "Tollefson Lake Hospital": 5
+ },
+ "ask_c_total": 28,
+ "bar": 5.0,
+ "call": {
+  "bar": 5.0,
+  "cpr10": {
+   "Askvane/Pellvoro": 3.5,
+   "Askvane/Quarvel": 3.7,
+   "Edvalt/Kelvarne": 7.0,
+   "Edvalt/Pellvoro": 5.7,
+   "Holbrin/Pellvoro": 4.1,
+   "Kalvoran/Morvenne": 7.6
+  },
+  "off": [
+   "Edvalt/Kelvarne",
+   "Edvalt/Pellvoro",
+   "Kalvoran/Morvenne"
+  ],
+  "stays": [
+   "Askvane/Quarvel",
+   "Holbrin/Pellvoro",
+   "Askvane/Pellvoro"
+  ]
+ },
+ "month_only_death_day": 15,
+ "natural": {
+  "ask_a": {
+   "Askvane/Pellvoro": {
+    "Brennick Valley Medical Center": 88,
+    "Kittelstad Orthopaedic Hospital": 95,
+    "Tollefson Lake Hospital": 37
+   },
+   "Askvane/Quarvel": {
+    "Brennick Valley Medical Center": 84,
+    "Kittelstad Orthopaedic Hospital": 36,
+    "Tollefson Lake Hospital": 51
+   },
+   "Edvalt/Kelvarne": {
+    "Brennick Valley Medical Center": 35,
+    "Kittelstad Orthopaedic Hospital": 15,
+    "Tollefson Lake Hospital": 33
+   },
+   "Edvalt/Pellvoro": {
+    "Brennick Valley Medical Center": 19,
+    "Kittelstad Orthopaedic Hospital": 67,
+    "Tollefson Lake Hospital": 13
+   },
+   "Holbrin/Pellvoro": {
+    "Brennick Valley Medical Center": 93,
+    "Kittelstad Orthopaedic Hospital": 177,
+    "Tollefson Lake Hospital": 56
+   },
+   "Kalvoran/Morvenne": {
+    "Brennick Valley Medical Center": 50,
+    "Kittelstad Orthopaedic Hospital": 73,
+    "Tollefson Lake Hospital": 35
+   }
+  },
+  "ask_c_construct": {
+   "Askvane/Pellvoro": 18,
+   "Askvane/Quarvel": 15,
+   "Edvalt/Kelvarne": 11,
+   "Edvalt/Pellvoro": 14,
+   "Holbrin/Pellvoro": 16,
+   "Kalvoran/Morvenne": 14
+  },
+  "ask_c_hospital": {
+   "Brennick Valley Medical Center": 30,
+   "Kittelstad Orthopaedic Hospital": 31,
+   "Tollefson Lake Hospital": 27
+  }
+ },
+ "policy_sections": [
+  "4.2",
+  "4.3"
+ ],
+ "registry": {
+  "at_risk_10": {
+   "Askvane/Pellvoro": 196,
+   "Askvane/Quarvel": 475,
+   "Edvalt/Kelvarne": 422,
+   "Edvalt/Pellvoro": 315,
+   "Holbrin/Pellvoro": 340,
+   "Kalvoran/Morvenne": 165
+  },
+  "hips": {
+   "Askvane/Pellvoro": 2178,
+   "Askvane/Quarvel": 2191,
+   "Edvalt/Kelvarne": 1379,
+   "Edvalt/Pellvoro": 1252,
+   "Holbrin/Pellvoro": 3382,
+   "Kalvoran/Morvenne": 1453
+  },
+  "legacy": {
+   "Askvane/Pellvoro": 271,
+   "Askvane/Quarvel": 856,
+   "Edvalt/Kelvarne": 777,
+   "Edvalt/Pellvoro": 532,
+   "Holbrin/Pellvoro": 577,
+   "Kalvoran/Morvenne": 224
+  },
+  "prospective_max_years": {
+   "Askvane/Pellvoro": 8.99,
+   "Askvane/Quarvel": 8.99,
+   "Edvalt/Kelvarne": 9.0,
+   "Edvalt/Pellvoro": 8.99,
+   "Holbrin/Pellvoro": 9.0,
+   "Kalvoran/Morvenne": 8.97
+  }
+ },
+ "rung_sets": {
+  "crude": [
+   "Edvalt/Kelvarne",
+   "Edvalt/Pellvoro",
+   "Askvane/Quarvel",
+   "Holbrin/Pellvoro",
+   "Askvane/Pellvoro",
+   "Kalvoran/Morvenne"
+  ],
+  "golden": [
+   "Askvane/Quarvel",
+   "Holbrin/Pellvoro",
+   "Askvane/Pellvoro"
+  ],
+  "op": [
+   "Edvalt/Kelvarne",
+   "Edvalt/Pellvoro",
+   "Askvane/Quarvel",
+   "Holbrin/Pellvoro",
+   "Askvane/Pellvoro"
+  ],
+  "reg": [
+   "Edvalt/Pellvoro",
+   "Askvane/Quarvel",
+   "Holbrin/Pellvoro",
+   "Askvane/Pellvoro"
+  ]
+ },
+ "rungs": {
+  "crude": {
+   "Askvane/Pellvoro": 2.2,
+   "Askvane/Quarvel": 2.1,
+   "Edvalt/Kelvarne": 3.8,
+   "Edvalt/Pellvoro": 3.0,
+   "Holbrin/Pellvoro": 2.4,
+   "Kalvoran/Morvenne": 4.3
+  },
+  "golden": {
+   "Askvane/Pellvoro": 3.5,
+   "Askvane/Quarvel": 3.7,
+   "Edvalt/Kelvarne": 7.0,
+   "Edvalt/Pellvoro": 5.7,
+   "Holbrin/Pellvoro": 4.1,
+   "Kalvoran/Morvenne": 7.6
+  },
+  "op": {
+   "Askvane/Pellvoro": 3.0,
+   "Askvane/Quarvel": 2.2,
+   "Edvalt/Kelvarne": 3.1,
+   "Edvalt/Pellvoro": 3.2,
+   "Holbrin/Pellvoro": 3.2,
+   "Kalvoran/Morvenne": 6.3
+  },
+  "reg": {
+   "Askvane/Pellvoro": 3.3,
+   "Askvane/Quarvel": 3.3,
+   "Edvalt/Kelvarne": 6.2,
+   "Edvalt/Pellvoro": 4.6,
+   "Holbrin/Pellvoro": 3.8,
+   "Kalvoran/Morvenne": 7.1
+  }
+ },
+ "ten_years_days": 3652.5,
+ "years": 10
+}

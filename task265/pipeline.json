@@ -1,36 +1,36 @@
 {
   "task": "task265",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-17",
-  "stump": "The default path keeps Taperline/Arcis and Taperline/Sora on the contract under the 5.0 per cent ten-year bar because it counts each hip enrolled at a 2018 to 2021 registry clinic as at risk from its operation, so the years before its enrolment, in which any revision would have kept it out of the registry, enter the Kaplan-Meier curve as revision-free; delayed entry at the enrolment visit puts both constructs over the bar.",
+  "stump": "The default path keeps Edvalt/Kelvarne and Edvalt/Pellvoro on the agreement at 3.1 and 3.2 per cent revised by ten years because it counts each hip entered at a 2018 to 2021 registry clinic as at risk from its operation, so the years before its enrolment, in which any revision would have kept it off the registry, enter the Kaplan-Meier curve as revision-free; delayed entry at the enrolment visit puts them at 7.0 and 5.7 and off the agreement.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (asof 2027-01-27), every line harmless (design note build record)",
+    "reader": "two reads: Q1 none, Q2 none, Q4 none; Q6 analytical choice; move-out reading and realism tells fixed"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form answered in ## Draw)",
     "nearest": "task130 (v4 round 3c, lineage) 0.09"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task265/determinism_check_report.md; Gate G analytical_non_defect, no surface read; Gate H domain pass, layers pass, decisive step analytical"
   },
   "returned": [],
-  "resume": "stage 2: readability screen, semantic fork table, ladder with built margins, closure table, literal reader, oracles, ask sheet, prompt.txt; then precut.py task265 to exit 0",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-17",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
