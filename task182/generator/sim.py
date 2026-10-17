@@ -37,7 +37,8 @@ def met_series():
     hours = np.arange(n10) / 6.0
     # wind: a slow synoptic swing plus a diurnal lift, never negative
     wind = (3.05 + 1.35 * np.sin(2 * math.pi * hours / 86.0 + 0.7)
-            + 0.95 * np.sin(2 * math.pi * hours / 23.0 - 1.1)
+            + 1.15 * np.sin(2 * math.pi * (hours - 3.4) / 24.0)
+            + 0.55 * np.sin(2 * math.pi * hours / 61.0 - 1.1)
             + rng.normal(0, 0.45, n10))
     wind = np.clip(wind, 0.2, 12.0)
     # rain: wet spells, a few per survey
@@ -89,31 +90,95 @@ def met_index(stamps_local):
     return np.clip((secs // 600).astype(int), 0, MET["n"] - 1)
 
 
-def rain_rate_mmh():
-    """Rolling hourly rain rate on the ten-minute grid, mm an hour, from the tip counts the mast file
-    carries: six consecutive ten-minute increments, the hour ending at the record."""
-    r = MET["rain_mm_shipped"]
-    out = np.zeros(len(r))
-    for i in range(len(r)):
-        out[i] = r[max(0, i - 5):i + 1].sum()
+def rain_counted():
+    """Whether the gauge counted rain in each ten-minute record, from the tip counts the mast file carries
+    (plan 4.2). The counter resets at midnight, so the day's first record counts its own tips."""
+    return MET["rain_mm_shipped"] > 0.0
+
+
+RAIN_ON = rain_counted()
+
+
+PLANT_T0 = dt.datetime(2026, 8, 24)
+_PJ_N = 60 * 24 * 60
+
+
+def _plant_jitter():
+    """Minute-to-minute swing of the source itself, one series for the whole survey: the blowers' load
+    valves and the engine's governor never hold a level to the tenth of a decibel."""
+    rng = np.random.default_rng(W.SEED + 97)
+    a, sd = 0.93, 0.26
+    out = np.zeros(_PJ_N)
+    wn = rng.normal(0.0, sd * math.sqrt(1 - a * a), _PJ_N)
+    for i in range(_PJ_N):
+        out[i] = a * out[i - 1] + wn[i] if i else wn[i]
+    return _e(out)
+
+
+PLANT_JIT = _plant_jitter()
+
+
+def week_factor(day):
+    """The site's weekly milk intake, which moves the plant's load from week to week. The process log and
+    the sound both run off it."""
+    w = (day - dt.date(2026, 8, 3)).days // 7
+    return 1.0 + 0.021 * math.sin(2.1 * w) - 0.014 * math.cos(3.3 * w)
+
+
+def plant_load(stamps_local):
+    """Energy factor of the plant's own sound while it runs: the digester's feed pattern over the day, the
+    week's intake, and the source's own minute-to-minute swing."""
+    h = np.array([s.hour + s.minute / 60.0 for s in stamps_local])
+    wf = np.array([week_factor(s.date()) for s in stamps_local])
+    dow = np.array([s.weekday() for s in stamps_local])
+    load = (1.0 + 0.088 * np.sin(2 * math.pi * (h - 4.2) / 24.0)
+            + 0.034 * np.sin(2 * math.pi * h / 8.0 + 0.6)
+            - 0.022 * (dow >= 5)) * wf
+    idx = np.array([int((s - PLANT_T0).total_seconds() // 60) for s in stamps_local])
+    return load * PLANT_JIT[np.clip(idx, 0, _PJ_N - 1)]
+
+
+def centrifuge_runs(day):
+    """Every dewatering run on a date, one entry a centrifuge a spell: unit, start, end, local time. The
+    shift runs both machines on weekdays and one on a Saturday, splits a run where the liquor tank has to
+    be drawn down mid-shift, and leaves a machine down on the day its scroll is checked. One definition,
+    used by the simulation, by the equipment log and by the process channels."""
+    if day.weekday() > 5:
+        return []
+    o = day.toordinal()
+    stops = [s for s, m, _ in W.PLANNED_STOPS if s.date() == day]
+    if stops:
+        begin = stops[0] + dt.timedelta(minutes=W.PLANNED_STOPS[0][1] + 5 + 2 * (o % 5))
+    else:
+        begin = dt.datetime(day.year, day.month, day.day, 6, 2 + 2 * (o % 7))
+    finish = dt.datetime(day.year, day.month, day.day, 17, 40 + 3 * (o % 4))
+    if day.weekday() == 5:                      # Saturday: one machine, the shift alternates them
+        units = [W.CENTRIFUGES[(o // 7) % 2]]
+        finish = finish - dt.timedelta(hours=3, minutes=25)
+    else:
+        units = list(W.CENTRIFUGES)
+    if day in W.CF_DOWN:
+        units = [u for u in units if u not in W.CF_DOWN[day]]
+    out = []
+    for i, u in enumerate(units):
+        a = begin + dt.timedelta(minutes=4 * i)
+        b = finish - dt.timedelta(minutes=7 * i)
+        if (u, day) in W.CF_SPLIT:
+            mid = a + dt.timedelta(minutes=W.CF_SPLIT[(u, day)])
+            out.append((u, a, mid))
+            out.append((u, mid + dt.timedelta(minutes=48 + 3 * (o % 5)), b))
+        else:
+            out.append((u, a, b))
     return out
 
 
-RAIN_H = rain_rate_mmh()
-
-
-def centrifuge_window(day):
-    """When the two centrifuges ran on a date: the dewatering shift, pushed back behind the weekly
-    inspection on the day it falls. One definition, used by the simulation and by the shipped log."""
-    if day.weekday() > 5:
+def centrifuge_span(day):
+    """The span the dewatering shift covered on a date, or None: start of the first run to end of the
+    last, used where only the plant's own sound matters."""
+    rs = centrifuge_runs(day)
+    if not rs:
         return None
-    stops = [s for s, m, _ in W.PLANNED_STOPS if s.date() == day]
-    o = day.toordinal()
-    if stops:
-        start = stops[0] + dt.timedelta(minutes=W.PLANNED_STOPS[0][1] + 5 + 2 * (o % 5))
-    else:
-        start = dt.datetime(day.year, day.month, day.day, 6, 2 + 2 * (o % 7))
-    return start, dt.datetime(day.year, day.month, day.day, 17, 40 + 3 * (o % 4))
+    return min(r[1] for r in rs), max(r[2] for r in rs)
 
 
 def all_down():
@@ -125,12 +190,13 @@ def plant_state(stamps_local):
     """Energy factor of the plant's own sound: 0 in a stop, 1 running, more while a centrifuge runs."""
     cf = np.zeros(len(stamps_local), dtype=bool)
     days = sorted({s.date() for s in stamps_local})
-    wins = {d: centrifuge_window(d) for d in days}
+    runs = {d: centrifuge_runs(d) for d in days}
     for i, s in enumerate(stamps_local):
-        w = wins[s.date()]
-        if w and w[0] <= s < w[1]:
-            cf[i] = True
-    k = np.where(cf, 1.22, 1.0)
+        for _, a, b in runs[s.date()]:
+            if a <= s < b:
+                cf[i] = True
+                break
+    k = plant_load(stamps_local) * np.where(cf, 1.22, 1.0)
     for start, end in all_down():
         inside = np.array([(s >= start) and (s < end) for s in stamps_local])
         k = np.where(inside, 0.0, k)
@@ -140,7 +206,7 @@ def plant_state(stamps_local):
 def residual_shape(code, stamps_local, seed):
     """Unit-scale residual energy per minute: a steady part that drifts slowly, plus passby events."""
     p = W.BY_CODE[code]
-    ev, strm = p[8], p[9]
+    ev, strm = p[9], p[10]
     rng = np.random.default_rng(seed)
     n = len(stamps_local)
     hours = np.array([s.hour + s.minute / 60.0 for s in stamps_local])
@@ -158,9 +224,10 @@ def residual_shape(code, stamps_local, seed):
         jit[i] = a * jit[i - 1] + wn[i] if i else wn[i]
     steady = _e(slow + jit)
     # road traffic diurnal shape on the event rate
-    shape = (0.78 + 0.30 * np.exp(-((hours - 8.3) ** 2) / 2.2)
+    shape = (0.64 + 0.30 * np.exp(-((hours - 8.3) ** 2) / 2.2)
              + 0.34 * np.exp(-((hours - 17.6) ** 2) / 3.0)
-             + 0.18 * np.exp(-((hours - 12.5) ** 2) / 8.0))
+             + 0.18 * np.exp(-((hours - 12.5) ** 2) / 8.0)
+             + 0.33 * np.exp(-((hours - 6.1) ** 2) / 1.6))
     shape = np.where(dows <= 4, shape, shape * 0.82)
     lam = ev * shape / 60.0
     hit = rng.random(n) < lam
@@ -183,9 +250,19 @@ def assessment_mask(stamps_local):
 
 
 def validity_mask(stamps_local):
-    """Plan 4.2: a minute is invalid where its met record shows rain above 0.5 mm an hour or wind above 5 m/s."""
+    """Plan 4.2: a minute is invalid where the met record for its ten minutes counted rain or shows wind
+    above 5 m a second."""
     idx = met_index(stamps_local)
-    return (RAIN_H[idx] <= 0.5) & (MET["wind_eff"][idx] <= 5.0)
+    return (~RAIN_ON[idx]) & (MET["wind_eff"][idx] <= 5.0)
+
+
+def nodata_mask(dep, stamps_local):
+    """Minutes the meter wrote no measurement for (plan 4.2's last sentence)."""
+    out = np.zeros(len(stamps_local), dtype=bool)
+    for start, mins, _ in dep.get("nodata", []):
+        end = start + dt.timedelta(minutes=mins)
+        out |= np.array([(x >= start) and (x < end) for x in stamps_local])
+    return out
 
 
 def deployments():
@@ -195,10 +272,23 @@ def deployments():
         for k, (wk, meter) in enumerate(W.SCHEDULE[code]):
             start = W.WEEKS[wk]
             out.append({"code": code, "meter": meter, "week": wk, "start": start,
-                        "end": start + dt.timedelta(days=6), "mount": W.MOUNT[k], "k": k})
+                        "end": start + dt.timedelta(days=6),
+                        "mount": W.HEIGHT_DEPART.get((code, k), W.HEIGHT[code]), "k": k})
     out.sort(key=lambda d: (d["start"], d["meter"]))
+    seen = {}
     for i, d in enumerate(out, start=1):
         d["id"] = "D%02d" % i
+        j = seen.get(d["meter"], 0)
+        seen[d["meter"]] = j + 1
+        mean = W.CAL_MEAN[d["meter"]][j]
+        spread = W.CAL_SPREAD[d["meter"]][j]
+        d["cal_before"] = round(mean - spread / 2.0, 1)
+        d["cal_after"] = round(mean + spread / 2.0, 1)
+        d["cal_mean"] = round((d["cal_before"] + d["cal_after"]) / 2.0, 1)
+        d["dev"] = round(d["cal_mean"] - W.CAL_REF, 1)
+        d["correction"] = d["dev"] if abs(d["dev"]) > W.CAL_THRESHOLD else 0.0
+        d["crew"] = W.CREW[i - 1]
+        d["nodata"] = [(a, b, c) for (sel, a, b, c) in W.NODATA if sel == (d["code"], d["k"])]
     return out
 
 
@@ -222,9 +312,10 @@ def build(codes=None):
             k = plant_state(stamps)
             res, quiet, loud, tiny = residual_shape(code, stamps, W.SEED + 7919 * W.CODES.index(code) + d["week"])
             am = assessment_mask(stamps)
-            vm = validity_mask(stamps)
+            nd = nodata_mask(d, stamps)
+            vm = validity_mask(stamps) & ~nd
             parts.append({"dep": d, "stamps": stamps, "k": k, "res": res, "quiet": quiet,
-                          "loud": loud, "tiny": tiny, "am": am, "vm": vm})
+                          "loud": loud, "tiny": tiny, "am": am, "vm": vm, "nd": nd})
         use = np.concatenate([(pp["am"] & pp["vm"] & (pp["k"] > 0)) for pp in parts])
         kk = np.concatenate([pp["k"] for pp in parts])
         rr = np.concatenate([pp["res"] for pp in parts])
@@ -241,20 +332,27 @@ def build(codes=None):
             lamin = _db(pe + gr * pp["tiny"])
             series[pp["dep"]["id"]] = {
                 "dep": pp["dep"], "stamps": pp["stamps"], "laeq": laeq, "la90": la90,
-                "lamax": lamax, "lamin": lamin, "am": pp["am"], "vm": pp["vm"], "k": pp["k"],
-                "plant_e": pe, "resid_e": re}
+                "lamax": lamax, "lamin": lamin, "am": pp["am"], "vm": pp["vm"], "nd": pp["nd"],
+                "k": pp["k"], "plant_e": pe, "resid_e": re}
     return deps, series
 
 
-def meter_dev(meter):
-    m = [x for x in W.METERS if x["id"] == meter][0]
-    return round((m["pre"] + m["post"]) / 2.0 - W.CAL_REF, 3)
+def dep_dev(dep):
+    """The deployment's deviation from the calibrator, the mean of its two field checks less 94.0 dB."""
+    return dep["dev"]
+
+
+def dep_correction(dep):
+    """What plan 4.1 takes off that deployment's levels: nothing inside the 0.3 dB window."""
+    return dep["correction"]
 
 
 def logged(series_one):
-    """What the meter wrote: the true level plus the deployment's calibration deviation, to 0.1 dB."""
-    dev = meter_dev(series_one["dep"]["meter"])
+    """What the meter wrote: the true level plus the deployment's calibration deviation, to 0.1 dB, with
+    the instrument's no-data value in every level column for the minutes it recorded nothing."""
+    dev = dep_dev(series_one["dep"])
+    nd = series_one["nd"]
     out = {}
     for key in ("laeq", "la90", "lamax", "lamin"):
-        out[key] = np.round(series_one[key] + dev, 1)
+        out[key] = np.where(nd, W.NODATA_VALUE, np.round(series_one[key] + dev, 1))
     return out

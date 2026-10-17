@@ -217,6 +217,7 @@ def double_coding(acts, reps, rng):
     for name, close, fa, fb, size in W.SAMPLE_ROUNDS:
         pool = [r for r in press if fa <= d(r["action"]["day"]) <= fb and r["ident"] not in taken]
         pick = rng.sample(pool, min(size, len(pool)))
+        pick.sort(key=lambda r: (r["action"]["day"], r["ident"]))
         cal = desk_calendar(close, rng)
         weight = sum(w for _, w in cal)
         # the batch is spread over the desk's own days, and each day has its coder on the rota
@@ -232,14 +233,16 @@ def double_coding(acts, reps, rng):
             rota.append(rng.choices(coder_names, weights=coder_share)[0])
         pos = 0
         for (day, n), coder in zip(plan, rota):
-            for _ in range(max(0, n)):
-                if pos >= len(pick):
-                    break
+            room = max(0, n)
+            while room and pos < len(pick):
                 r = pick[pos]
-                pos += 1
                 a = r["action"]
+                if d(a["day"]) >= day:          # the desk cannot code a report before it arrives
+                    break
+                pos += 1
+                room -= 1
                 taken.add(r["ident"])
-                coded = max(day, d(a["day"]) + dt.timedelta(days=1))
+                coded = day
                 second, decision = "", ""
                 if rng.random() < W.ADJUDICATED:
                     other = [c for c in coder_names if c != coder]
@@ -249,5 +252,21 @@ def double_coding(acts, reps, rng):
                 rows.append(dict(report=r, round_name=name, round_day=close, coder=coder,
                                  coded_day=coded, machine=a["cls_code"], hand=a["code"],
                                  second=second, decision=decision, note=note))
+        last = cal[-1][0] if cal else close - dt.timedelta(days=1)
+        while pos < len(pick):                   # whatever is left is cleared on the last day
+            r = pick[pos]
+            pos += 1
+            a = r["action"]
+            taken.add(r["ident"])
+            coder = rng.choices(coder_names, weights=coder_share)[0]
+            second, decision = "", ""
+            if rng.random() < W.ADJUDICATED:
+                second = rng.choice([c for c in coder_names if c != coder])
+                decision = rng.choices(["mantido", "alterado"], weights=[78, 22])[0]
+            note = rng.choice(notes) if rng.random() < 0.045 else ""
+            rows.append(dict(report=r, round_name=name, round_day=close, coder=coder,
+                             coded_day=max(last, d(a["day"]) + dt.timedelta(days=1)),
+                             machine=a["cls_code"], hand=a["code"], second=second,
+                             decision=decision, note=note))
     rows.sort(key=lambda x: (x["round_name"], x["coded_day"], x["report"]["ident"]))
     return rows

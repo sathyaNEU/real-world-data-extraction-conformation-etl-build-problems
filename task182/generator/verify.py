@@ -11,7 +11,7 @@ The rules this file encodes are the ones the shipped noise management plan state
        is not valid
   4.3  a tone is prominent where a band exceeds the mean of its two neighbours by 5 dB or more, on the
        unweighted band levels over the assessment period
-  6.1  the slot takes the dwellings in order of specific sound level, highest first
+  7.1  the slot takes the dwellings in order of specific sound level, highest first
 """
 import csv
 import datetime as dt

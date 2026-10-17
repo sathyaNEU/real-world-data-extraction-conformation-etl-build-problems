@@ -30,7 +30,7 @@ def plan(target):
                           bottomMargin=18 * mm)
     f = [
         Paragraph("%s %s: noise management plan" % (W.OPERATOR, W.SITE), H1),
-        Paragraph("Revision 4, effective 01/06/2026. Supersedes revision 3. Parts 7 to 9 (training, "
+        Paragraph("Revision 4, effective 01/06/2026. Supersedes revision 3. Parts 8 to 10 (training, "
                   "records retention, review) are not reproduced in this extract.", SMALL),
         Paragraph("1 Purpose and scope", H2),
         Paragraph("1.1 This plan sets out how the site measures and manages the sound its plant makes at "
@@ -59,27 +59,37 @@ def plan(target):
                   "the schedule and reports it to one decimal place.", BODY),
         Paragraph("4 Measurement conditions", H2),
         Paragraph("4.1 Each deployment is checked against the acoustic calibrator before it starts and "
-                  "after it ends. Where the mean of a deployment's two field checks differs from the "
-                  "calibrator's reference level by more than 0.3 dB, every level that deployment recorded "
-                  "is corrected by subtracting that difference. A deployment whose checks differ from each "
-                  "other by more than 1.0 dB is not used.", BODY),
-        Paragraph("4.2 A minute is not valid where the met mast records rain above 0.5 mm an hour or wind "
-                  "above 5 m a second for the ten minutes the minute falls in. Invalid minutes are left "
-                  "out of every level.", BODY),
+                  "after it ends. A deployment's deviation is the mean of its two field checks less the "
+                  "calibrator's reference level. Where that deviation is more than 0.3 dB away from zero, "
+                  "every level the deployment recorded is corrected by taking the deviation off it. A "
+                  "deployment whose two checks differ from each other by more than 1.0 dB is not used.",
+                  BODY),
+        Paragraph("4.2 A minute is not valid where the met mast's record for the ten minutes the minute "
+                  "falls in counted rain on the gauge or shows wind above 5 m a second, or where the "
+                  "meter recorded no measurement for that minute. Invalid minutes are left out of every "
+                  "level.", BODY),
         Paragraph("4.3 A tone is prominent in a one-third-octave band where that band's level over the "
                   "assessment period exceeds the mean of the levels in the two adjacent bands by 5 dB or "
                   "more. The test is taken on the unweighted band levels.", BODY),
-        Paragraph("5 Complaints", H2),
-        Paragraph("5.1 Every noise complaint is logged in the complaints register with the dwelling it "
+        Paragraph("5 Process records", H2),
+        Paragraph("5.1 The plant's figures for a week are read from the process meters' own counters: the "
+                  "counter reading stamped at 00:00 on the Monday the week begins, taken from the reading "
+                  "stamped at 00:00 on the Monday after it, with the counter's roll-over added back where "
+                  "it has passed it. A spell the historian did not record leaves those two readings as "
+                  "they stand.", BODY),
+        Paragraph("5.2 A centrifuge run is one start of a centrifuge in the equipment log, and a week's "
+                  "runs are the starts the log carries in that week.", BODY),
+        Paragraph("6 Complaints", H2),
+        Paragraph("6.1 Every noise complaint is logged in the complaints register with the dwelling it "
                   "came from, and the dwelling's reference is carried on the monitoring position "
                   "schedule. A complaint is a record of what a neighbour heard and is not a measurement.",
                   BODY),
-        Paragraph("6 The mitigation programme", H2),
-        Paragraph("6.1 The mitigation programme offers acoustic treatment to the dwellings the plant "
+        Paragraph("7 The mitigation programme", H2),
+        Paragraph("7.1 The mitigation programme offers acoustic treatment to the dwellings the plant "
                   "contributes most sound to, taken in order of the specific sound level at the position, "
                   "highest first, as far as the quarter's slot with the acoustic contractor reaches. The "
                   "number of dwellings the slot covers is set when the slot is ordered.", BODY),
-        Paragraph("6.2 Treatment is secondary glazing with acoustic trickle vents to the habitable rooms "
+        Paragraph("7.2 Treatment is secondary glazing with acoustic trickle vents to the habitable rooms "
                   "facing the plant, or a close-boarded screen where the site and the occupier agree one.",
                   BODY),
         Paragraph("Revision history: 1 (14/08/2019), 2 (02/11/2021), 3 (19/05/2024), 4 (01/06/2026), "
@@ -98,7 +108,8 @@ engineer on 16 October.
 
 Fourteen positions, two deployments of a week each, from Monday 31 August to Sunday 11 October. Five
 logging meters, moved on Monday mornings. Every position in the schedule was covered twice. The deployment
-table says which meter stood where, with the mast height and the field checks either side.
+table says which meter stood where, with the height it stood at and the field checks either side. Heights
+are the ones the schedule sets; two deployments stood at another height and the remark says why.
 
 ## The meter files
 
@@ -107,32 +118,44 @@ A-weighted equivalent level for the minute and the statistical levels LA90, LAma
 minute. **The meters stamp in UTC**; the field sheets and everything the plant logs are in local time, which
 was Irish Standard Time for the whole survey. The download of one deployment was repeated after the card
 threw a read error on collection, so part of that day appears twice in the file; the remarks column in the
-deployment table names it.
+deployment table names it. Where the measurement channel dropped out or the logger reset, the meter writes
+**-120.2 dB in every level column** for those minutes rather than leaving the row out; the deployment
+remarks give each spell.
 
 `%(bands)s` holds the one-third-octave band levels, one row a quarter hour, from the three meters that
-carry the band module (%(band_serials)s). The band levels are unweighted. The other two meters log
-broadband only, so the positions they stood at have no band rows.
+carry the band module (%(band_serials)s), stamped UTC like the minute file. The band levels are unweighted.
+The other two meters log broadband only, so the positions they stood at have no band rows.
 
 ## Calibration
 
-`%(cal)s` carries the certificates and the field check each deployment started and finished with, against
-the 94.0 dB calibrator. The plan says what to do where the checks sit away from the reference.
+`%(cal)s` is the laboratory verification of the five meters and of the field calibrator, with the as-found
+and as-left levels from each certificate. The field check each deployment started and finished with is on
+the deployment record, against the 94.0 dB calibrator. The plan says what to do where a deployment's checks
+sit away from the reference.
 
 ## The met mast
 
-`%(weather)s` is the mast on the blower house roof, ten-minute means, stamped UTC. The anemometer was
-replaced on 20 September; **the one fitted since reports in kilometres an hour, the one before it in metres a
-second**, and the column was not renamed. The rain gauge reports its tip count since midnight, one tip to
-0.2 mm, and the count resets at midnight rather than running on.
+`%(weather)s` is the mast on the blower house roof, ten-minute means, stamped UTC at the start of the ten
+minutes each record covers. The anemometer was replaced on 20 September; **the one fitted since reports in
+kilometres an hour, the one before it in metres a second**, and the column was not renamed. The rain gauge
+reports its tip count since midnight, one tip to 0.2 mm, and the count resets at midnight rather than
+running on.
 
 ## The plant's own records
 
 `%(events)s` is the process operator's equipment log in local time: a row whenever a blower, a centrifuge
 or the gas engine was started or stopped, with the reason the shift wrote. `%(scada)s` is the
-fifteen-minute channel log off the plant PLC, also local time. The biogas channel is the meter's own
-counter and wraps at 99,999 m3; the engine's hour counter was replaced on 18 September and starts again
-from zero; and the link to the PLC was down from the afternoon of 24 September to the morning of the 25th,
-so there are no rows for that spell.
+fifteen-minute channel log off the plant PLC, also local time. Two channels are counters that run on from
+commissioning, the biogas meter in cubic metres (it wraps at 99,999) and the blower header's flow
+totaliser in thousands of normal cubic metres; the blower flow is logged as a rate as well. The engine's
+hour counter was replaced on 18 September and starts again from zero, and the link to the PLC was down from
+the afternoon of 24 September to the morning of the 25th, so there are no rows for that spell.
+
+## What the surroundings sound like
+
+The road through Clonaraght carries milk lorries and farm traffic from first light, so the early morning is
+no quieter at the roadside positions than the middle of the day; the two busy spells are around eight and
+around half five. Away from the road it is the Glasha and wind in the trees.
 
 ## Identities
 

@@ -24,8 +24,9 @@ def workbook(path, g):
     ws.title = "Resumo"
     ws["A1"] = "Vigilancia Nacional: boletim do periodo de 1 de maio a 30 de outubro de 2026"
     ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = ("Indicador 2 do protocolo. Registo extraido em 6 de novembro de 2026; o numero de "
-                "acoes de confronto e o das acoes que o foram.")
+    ws["A2"] = ("Indicador 2 do protocolo, ao mais proximo de cinquenta acoes. Registo extraido "
+                "em 6 de novembro de 2026; o numero de acoes de confronto e o das acoes que o "
+                "foram, nao o dos codigos atribuidos.")
     ws["A2"].font = Font(size=9, italic=True)
     rows = [("Acoes de confronto do periodo", "%d acoes" % g["total"]),
             ("Acoes registadas no periodo", "%d acoes" % g["actions_in_period"]),
@@ -41,8 +42,10 @@ def workbook(path, g):
         b.font = Font(bold=(i == 4))
         b.alignment = Alignment(horizontal="right")
     ws.cell(row=12, column=1, value=("As acoes com relato do monitor de imprensa levam o codigo do "
-                                     "classificador (protocolo 2.6), medido pela mesa de codificacao "
-                                     "na amostra de dupla codificacao do periodo."))
+                                     "classificador (protocolo 2.6). As duas rondas de dupla "
+                                     "codificacao do periodo fecharam em 20 de junho e em 10 de "
+                                     "setembro de 2026 e cobrem os relatos de 1 de maio a 31 de "
+                                     "agosto."))
     ws.cell(row=12, column=1).font = Font(size=9, italic=True)
     ws.cell(row=13, column=1, value="Preparado para o conselho de curadores de 19 de novembro de 2026.")
     ws.cell(row=13, column=1).font = Font(size=9, italic=True)
@@ -70,7 +73,8 @@ def workbook(path, g):
         r += 1
     q.cell(row=r + 1, column=1, value=("Uma acao e um tema numa localidade num dia, qualquer que "
                                        "seja o numero de relatos. A quota e a parte das acoes da "
-                                       "quinzena que a rede de parceiros relatou."))
+                                       "quinzena que a rede de parceiros relatou. As quinzenas tem "
+                                       "catorze dias e a ultima tem quinze."))
     q.cell(row=r + 1, column=1).font = Font(size=9, italic=True)
     q.freeze_panes = "A4"
 
@@ -132,19 +136,21 @@ def workbook(path, g):
     nt["A1"].font = Font(bold=True, size=12)
     notes = [
         ("Registo", "Vigilancia Nacional, aberta em 1 de maio de 2026; extracao de 6 de novembro de 2026."),
-        ("Indicador 2", "Acoes de confronto do protocolo 3.3, em numero inteiro de acoes."),
+        ("Indicador 2", "Acoes de confronto do protocolo 3.3, ao mais proximo de cinquenta acoes."),
         ("Acao", "Um tema de disputa numa localidade num dia (protocolo 2.1). Os relatos das tres "
                  "vias e das duas edicoes do grupo Atlantico contam uma vez."),
         ("Codigo da acao", "O do relato do monitor de imprensa quando existe, o de quem entregou nas "
                            "restantes acoes (protocolo 2.6)."),
-        ("Quinzenas", "Contadas a partir de 1 de maio; a ultima tem quinze dias e termina com o "
-                      "periodo (protocolo 3.4)."),
+        ("Quinzenas", "Catorze dias cada, contadas a partir de 1 de maio; os dias que sobram "
+                      "entram na ultima, que tem quinze (protocolo 3.4)."),
         ("Carga de agosto", "O mes de agosto da rede de parceiros foi reposto numa segunda carga; "
                             "cada relato conta uma vez (registo_importacoes)."),
-        ("Relogios", "O carimbo de recepcao do monitor de imprensa vem em UTC; as horas de inicio "
-                     "das acoes sao locais."),
-        ("Dupla codificacao", "Duas rondas, julho e novembro, sobre relatos aceites do monitor "
-                              "(protocolo 4.5)."),
+        ("Relogios", "O carimbo de recepcao do monitor de imprensa e o do portal de parceiros "
+                     "vem em UTC; a hora de inicio de cada acao vem no relogio local do seu "
+                     "distrito, e os Acores estao uma hora atras do continente."),
+        ("Dupla codificacao", "Duas rondas, fechadas em 20 de junho e em 10 de setembro, sobre "
+                              "os relatos aceites do monitor entrados desde o fecho anterior "
+                              "(protocolo 4.5). A ronda de outono e do periodo seguinte."),
     ]
     for i, (k, vtxt) in enumerate(notes, 3):
         a = nt.cell(row=i, column=1, value=k)
@@ -182,8 +188,8 @@ def chart(path, g):
     ax.tick_params(axis="x", labelsize=9)
     ax.grid(axis="y", color="#dcdfe4", linewidth=0.6)
     ax.set_axisbelow(True)
-    fig.text(0.012, 0.012, "Vigilancia Nacional, registo extraido em 6 de novembro de 2026. A "
-                           "ultima quinzena do periodo tem seis dias.", fontsize=7.6,
+    fig.text(0.012, 0.012, "Vigilancia Nacional, registo extraido em 6 de novembro de 2026. As "
+                           "quinzenas tem catorze dias e a ultima tem quinze.", fontsize=7.6,
              color="#55606b")
     fig.tight_layout(rect=(0, 0.035, 1, 1))
     fig.savefig(path, metadata={"Software": None, "Creation Time": None})
@@ -229,14 +235,15 @@ def bulletin(path, g, chart_png):
                       "Registo extraido em 6 de novembro de 2026.", small),
             Spacer(1, 6),
             Paragraph("%d" % g["total"], big),
-            Paragraph("acoes de confronto no periodo, de %d acoes registadas (indicador 2 do "
-                      "protocolo)." % g["actions_in_period"], body),
+            Paragraph("acoes de confronto no periodo, ao mais proximo de cinquenta, de %d acoes "
+                      "registadas (indicador 2 do protocolo)." % g["actions_in_period"], body),
             Spacer(1, 4),
             Paragraph("Das acoes do periodo, %d tem relato do monitor de imprensa e levam o codigo "
                       "do classificador, e %d chegam so pela rede de parceiros ou pela linha de "
                       "participacao publica. O registo carrega codigo de confronto em %d acoes do "
                       "primeiro grupo e em %d do segundo. A mesa de codificacao codificou a mao %d "
-                      "relatos do monitor nas duas rondas do periodo."
+                      "relatos do monitor nas duas rondas do periodo, fechadas em 20 de junho e em "
+                      "10 de setembro."
                       % (g["press_only"], g["filed_by_hand"], g["press_marked"],
                          g["hand_confrontational"], g["sample_rows"]), body),
             Spacer(1, 6),
@@ -247,7 +254,7 @@ def bulletin(path, g, chart_png):
                   colWidths=[26 * mm, 40 * mm, 42 * mm, 40 * mm], style=tbl, hAlign="LEFT"),
             Spacer(1, 4),
             Paragraph("Uma acao e um tema de disputa numa localidade num dia (protocolo 2.1), "
-                      "qualquer que seja o numero de relatos. A ultima quinzena do periodo tem "
-                      "quinze dias.", small)]
+                      "qualquer que seja o numero de relatos. As quinzenas tem catorze dias e a "
+                      "ultima tem quinze.", small)]
     d.build(flow)
     return path

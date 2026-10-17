@@ -60,7 +60,7 @@ Not the complaints register, which is a record of what neighbours heard and not 
 4. Energetically averaged each position's assessment-period minutes for its measured sound level, per plan 3.1 and 3.2.
 5. Took each position's residual sound from the minutes inside the intervals in plant_equipment_events_2026.csv where the blowers, the centrifuges and the gas engine are all recorded down.
 6. Subtracted residual from measured level in energy for the specific sound level at each position, per plan 3.1.
-7. Ranked the fourteen positions on that level and took the five the slot reaches, per plan 6.1: %(sl)s.
+7. Ranked the fourteen positions on that level and took the five the slot reaches, per plan 7.1: %(sl)s.
 8. Recommended those five dwellings for the October slot, with %(sixth)s named as the first off the list.
 
 ## 4. Deliverable Answers

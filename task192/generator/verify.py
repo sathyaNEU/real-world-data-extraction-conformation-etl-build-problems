@@ -1,8 +1,9 @@
 """An independent read of the shipped bundle: nothing from the generator, its own code path.
 
-Builds the actions from a dictionary of keys rather than the generator's objects, reads the two error
-rates off the hand-coding file as counts, and writes the correction as the inverted confusion matrix
-over the observed counts instead of the rates applied to the observed share.
+Builds the actions from a dictionary of keys rather than the generator's objects, reads the
+classifier's two error rates off the hand-coding worksheet as counts, and writes the correction as
+the inverted confusion matrix over the marked counts instead of the rates applied to the marked
+share. Converts every moment through the offsets the monitor's configuration states.
 """
 import csv
 import datetime as dt
@@ -13,7 +14,10 @@ CONF = {"CF", "RF", "DP"}
 P0, P1 = dt.date(2026, 5, 1), dt.date(2026, 10, 30)
 EXTRACT = dt.date(2026, 11, 6)
 DST = dt.date(2026, 10, 25)
-RATE = {"P01": 6.40, "P02": 5.95, "P03": 7.25, "P04": 5.45, "P05": 6.75, "P06": 8.15, "P07": 6.40}
+AZORES = "Acores"
+RATE = {"P01": 6.35, "P02": 5.95, "P03": 7.20, "P04": 5.45, "P05": 6.90, "P06": 8.10, "P07": 6.15}
+AMENDED = ("P04", dt.date(2026, 8, 1), 6.30)
+GRAIN = 50
 N = 0
 
 
@@ -34,39 +38,52 @@ def moment(s):
     return dt.datetime(int(s[0:4]), int(s[5:7]), int(s[8:10]), int(s[11:13]), int(s[14:16]))
 
 
-def to_local(m, utc):
-    return m + dt.timedelta(hours=1 if (utc and (m + dt.timedelta(hours=1)).date() < DST) else 0) \
-        if utc else m
+def off(district, local_day):
+    if district == AZORES:
+        return 0 if local_day < DST else -1
+    return 1 if local_day < DST else 0
+
+
+def grain(x):
+    return int(round(x / float(GRAIN))) * GRAIN
 
 
 def run(target, figures):
     global N
     N = 0
     f = json.load(open(figures))
-    loc_of, muni_of = {}, {}
+    loc_of, muni_of, dist_of = {}, {}, {}
     for r in table(target, "gazeteiro_localidades.csv"):
         loc_of[r["nome"]] = r["codigo_localidade"]
         muni_of[r["codigo_localidade"]] = r["codigo_municipio"]
+        dist_of[r["codigo_localidade"]] = r["distrito"]
 
-    recs, seen = [], set()
+    recs, first = [], {}
     for r in table(target, "registo_itens_imprensa.csv"):
-        if r["estado"] != "aceite" or r["id_relato"] in seen:
+        if r["estado"] != "aceite":
             continue
-        seen.add(r["id_relato"])
-        recs.append(("IMP", r["id_relato"], r["orgao"], r["tema"], r["codigo_acao"],
-                     r["local_texto"], dt.date.fromisoformat(r["data_ocorrencia"]),
-                     moment(r["inicio_acao"]), to_local(moment(r["carimbo_recepcao"]), True)))
+        m = moment(r["carimbo_recepcao"])
+        if r["id_relato"] in first:
+            if m < first[r["id_relato"]][0]:
+                first[r["id_relato"]] = (m, r)
+            continue
+        first[r["id_relato"]] = (m, r)
+    for ident, (m, r) in first.items():
+        recs.append(["IMP", ident, r["orgao"], r["tema"], r["codigo_acao"], r["local_texto"],
+                     dt.date.fromisoformat(r["data_ocorrencia"]), moment(r["inicio_acao"]), m])
     for r in table(target, "relatos_rede_parceiros.csv"):
-        recs.append(("PAR", r["id_relato"], r["codigo_parceiro"], r["tema"], r["codigo_acao"],
+        recs.append(["PAR", r["id_relato"], r["codigo_parceiro"], r["tema"], r["codigo_acao"],
                      r["local_texto"], dt.date.fromisoformat(r["data_ocorrencia"]),
-                     moment(r["inicio_acao"]), to_local(moment(r["carimbo_entrega_utc"]), True)))
+                     moment(r["inicio_acao"]), moment(r["carimbo_entrega_utc"])])
     for r in table(target, "relatos_linha_publica.csv"):
-        recs.append(("LIN", r["id_relato"], "LIN", r["tema"], r["codigo_acao"], r["local_texto"],
+        local = moment(r["carimbo_recepcao"])
+        recs.append(["LIN", r["id_relato"], "LIN", r["tema"], r["codigo_acao"], r["local_texto"],
                      dt.date.fromisoformat(r["data_ocorrencia"]), moment(r["inicio_acao"]),
-                     to_local(moment(r["carimbo_recepcao"]), False)))
+                     local - dt.timedelta(hours=off("Lisboa", local.date()))])
 
-    press_code, filer_code, routes_of, muni_key = {}, {}, {}, {}
-    for route, ident, src, theme, code, place, day, start, recv in recs:
+    press_code, filer_code, routes_of, muni_key, idents = {}, {}, {}, {}, {}
+    lag_of, recv_of = {}, {}
+    for route, ident, src, theme, code, place, day, start, recv_utc in recs:
         loc = loc_of.get(place)
         if loc is None:
             continue
@@ -75,8 +92,12 @@ def run(target, figures):
         muni_key[k] = muni_of[loc]
         if route == "IMP":
             press_code[k] = code
+            idents.setdefault(k, set()).add(ident)
         else:
             filer_code.setdefault(k, code)
+        start_utc = start - dt.timedelta(hours=off(dist_of[loc], start.date()))
+        lag_of[(route, ident)] = (recv_utc - start_utc).total_seconds() / 60.0
+        recv_of[(route, ident)] = recv_utc + dt.timedelta(hours=off("Lisboa", recv_utc.date()))
     keys = sorted(routes_of)
     ok("actions", len(keys) > 0)
     inper = [k for k in keys if P0 <= k[2] <= P1]
@@ -90,32 +111,59 @@ def run(target, figures):
     ok("hand_conf", H == f["hand_coded_confrontational"], "%d" % H)
     ok("press_marked", O == f["press_marked_confrontational"], "%d" % O)
 
+    sample = table(target, "amostra_dupla_codificacao.csv")
     tp = fn = fp = tn = 0
-    for r in table(target, "amostra_dupla_codificacao.csv"):
+    for r in sample:
         m, h = r["codigo_monitor"] in CONF, r["codigo_manual"] in CONF
         tp, fn, fp, tn = tp + (m and h), fn + (h and not m), fp + (m and not h), \
             tn + (not m and not h)
     ok("sample.cells", (tp, fn, fp, tn) == (f["sample_tp"], f["sample_fn"], f["sample_fp"],
                                             f["sample_tn"]), str((tp, fn, fp, tn)))
-    se = tp / (tp + fn)
-    fmr = fp / (fp + tn)
+    se = tp / float(tp + fn)
+    fmr = fp / float(fp + tn)
     ok("sample.recall", abs(se - f["classifier_recall"]) < 5e-5, "%.5f" % se)
     ok("sample.false_mark", abs(fmr - f["classifier_false_mark_rate"]) < 5e-5, "%.5f" % fmr)
-    # the inverted confusion matrix over the observed counts, not the rates over the observed share
+    # the inverted confusion matrix over the marked counts, not the rates over the marked share
     n = len(pressed)
     true_marked = (O - n * fmr) / (se - fmr)
     total = H + true_marked
-    ok("call.total", round(total) == f["call_actions"], "%.4f" % total)
+    ok("call.total", grain(total) == f["call_actions"], "%.4f" % total)
     ok("call.raw", abs(total - f["raw_total"]) < 0.01, "%.4f" % total)
-    ok("rung0", H + O == f["rung0_actions"], "%d" % (H + O))
-    ok("rung1", round(H + O * tp / (tp + fp)) == f["rung1_actions"])
-    ok("rung2", round(H + O / se) == f["rung2_actions"])
-    ok("ladder.order", H + O * tp / (tp + fp) < H + O < total < H + O / se)
+    ok("call.grain", f["grain"] == GRAIN)
+
+    # every other route the record leaves standing
+    ppv = tp / float(tp + fp)
+    npv = fn / float(fn + tn)
+    sid = {r["id_relato"] for r in sample}
+    hand_true = sum(1 for r in sample if r["codigo_manual"] in CONF)
+    unsampled_marked = sum(1 for k in pressed
+                           if press_code[k] in CONF and not (idents[k] & sid))
+    routes = {"naive": float(H + O), "remove_fp_ppv": H + O * ppv,
+              "remove_fp_fpr": H + O - fmr * n, "recall_only": H + O / se,
+              "pv_pooled": H + O * ppv + (n - O) * npv,
+              "audit_prevalence": H + (tp + fn) / float(len(sample)) * n,
+              "hand_where_audited": float(H + hand_true + unsampled_marked)}
+    for name, value in sorted(routes.items()):
+        ok("route.%s" % name, abs(value - f["candidates"][name]) < 0.01,
+           "%s %.4f against %.4f" % (name, value, f["candidates"][name]))
+        ok("route.%s.cell" % name, grain(value) != f["call_actions"],
+           "%s lands in the committed cell" % name)
+        ok("route.%s.six" % name, abs(value - total) >= 0.06 * total,
+           "%s is %.2f per cent away" % (name, 100 * abs(value - total) / total))
+    # the stratified families have no rate for the autumn, which the audit never reached
+    audit_months = sorted({dt.date.fromisoformat(r["data_ocorrencia"]).month for r in sample})
+    ok("strata.audit_months", audit_months == f["audit_months"], str(audit_months))
+    ok("strata.population_months",
+       sorted({k[2].month for k in pressed}) == [5, 6, 7, 8, 9, 10])
+    audit_themes = {r["tema"] for r in sample}
+    missing = sorted({k[0] for k in pressed} - audit_themes)
+    ok("strata.themes_without_a_rate", missing == f["themes_without_an_audited_report"],
+       str(missing))
 
     bounds, start, k = [], P0, 1
     while start <= P1:
         end = min(start + dt.timedelta(days=13), P1)
-        if (P1 - end).days < 7:
+        if (P1 - end).days < 14:
             end = P1
         bounds.append(("Q%d" % k, start, end))
         start, k = end + dt.timedelta(days=1), k + 1
@@ -137,12 +185,14 @@ def run(target, figures):
 
     exc = table(target, "excecoes_geocodificacao.csv")
     for route in ("IMP", "PAR", "LIN"):
-        placed, ids = [], set()
+        seen, placed = set(), []
         for r in recs:
-            if r[0] != route or r[1] in ids:
+            if r[0] != route or r[1] in seen:
                 continue
-            ids.add(r[1])
-            if P0 <= r[8].date() <= P1:
+            seen.add(r[1])
+            if r[5] not in loc_of:
+                continue
+            if P0 <= recv_of[(route, r[1])].date() <= P1:
                 placed.append(r)
         unp = [e for e in exc if e["via"] == route
                and P0 <= moment(e["carimbo_recepcao"]).date() <= P1]
@@ -150,24 +200,25 @@ def run(target, figures):
         ok("a2.%s.received" % route, len(placed) + len(unp) == got["received"],
            "%d" % (len(placed) + len(unp)))
         ok("a2.%s.unplaceable" % route, len(unp) == got["unplaceable"])
-        mins = sorted((r[8] - r[7]).total_seconds() / 60.0 for r in placed)
+        mins = sorted(lag_of[(route, r[1])] for r in placed)
         mid = (mins[len(mins) // 2] if len(mins) % 2 else
                (mins[len(mins) // 2 - 1] + mins[len(mins) // 2]) / 2.0)
         ok("a2.%s.median" % route, abs(mid - got["median_minutes"]) < 0.051, "%.1f" % mid)
 
-    first = {}
+    first_par = {}
     for r in recs:
         if r[0] == "PAR":
-            first.setdefault(r[1], r)
+            first_par.setdefault(r[1], r)
     for code, rate in sorted(RATE.items()):
-        mine = [r for r in first.values()
+        mine = [r for r in first_par.values()
                 if (r[2] if r[2] in RATE else "P07") == code and P0 <= r[6] <= P1]
-        late = [r for r in mine if r[8].date() > P1]
+        late = [r for r in mine if recv_of[("PAR", r[1])].date() > P1]
         euros = 0.0
         for r in mine:
-            if r[8].date() > P1:
+            day = recv_of[("PAR", r[1])].date()
+            if day > P1:
                 continue
-            euros += 6.20 if (code == "P04" and r[8].date() >= dt.date(2026, 8, 1)) else rate
+            euros += AMENDED[2] if (code == AMENDED[0] and day >= AMENDED[1]) else rate
         got = f["partners"][code]
         ok("a3.%s.filed" % code, len(mine) == got["filed"], "%d" % len(mine))
         ok("a3.%s.late" % code, len(late) == got["after_close"])

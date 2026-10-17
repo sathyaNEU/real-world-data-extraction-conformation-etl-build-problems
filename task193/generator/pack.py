@@ -1,6 +1,7 @@
 """task193: the register extracts, the lookup tables and the operating files."""
 import collections
 import csv
+from decimal import Decimal
 import json
 import os
 
@@ -248,6 +249,14 @@ MARK_STRENGTH = {"M1": ["4 mg", "8 mg", "10 mg", "80 mg"], "M2": ["20 mg", "40 m
                  "M7": ["0.1 %", "0.05 %", "0.1 %", "0.064 %"], "M8": ["5 mg", "10 mg", "25 mg", "50 mg"]}
 
 
+def _plain(d):
+    """A decimal as the package index prints it: no exponent and no trailing zero."""
+    t = format(d, "f")
+    if "." in t:
+        t = t.rstrip("0").rstrip(".")
+    return t or "0"
+
+
 def write_package_index(tgt):
     rows = []
     for code in W.PCODES + W.MCODES:
@@ -261,7 +270,16 @@ def write_package_index(tgt):
             mg = STRENGTH_MG[code][i % len(STRENGTH_MG[code])]
             size = sizes[i % len(sizes)]
             unit = "%g mg" % mg if atc != "D07AC" else "%g %%" % mg
-            ddd = "" if ddd_mg is None else round(size * mg / ddd_mg, 2)
+            if ddd_mg is None:
+                ddd = ""
+            else:
+                exact = (Decimal(str(size)) * Decimal(str(mg)) / Decimal(str(ddd_mg)))
+                if kind == "product":
+                    # a screened product's package is a whole number of tenths of a daily dose
+                    assert (exact * 10) % 1 == 0, (code, mg, size, exact)
+                    ddd = _plain(exact.quantize(Decimal("0.1")))
+                else:
+                    ddd = _plain(exact.quantize(Decimal("0.01")))
             rows.append([vnr, atc, name, unit, size, ddd,
                          W.iso(vf) if vf is not None else "", W.iso(vt) if vt is not None else ""])
     rows.sort(key=lambda r: r[0])

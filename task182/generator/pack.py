@@ -92,17 +92,21 @@ def write_deployments(target, deps):
     rows = []
     for d in sorted(deps, key=lambda x: x["id"]):
         m = [x for x in W.METERS if x["id"] == d["meter"]][0]
-        rem = ""
+        rem = []
         if (d["code"], d["k"]) == W.DUP_DEPLOYMENT:
-            rem = "card read error on collection, download repeated"
+            rem.append("card read error on collection, download repeated")
         if d["code"] == "NSL08" and d["k"] == 0:
-            rem = "mic moved 3 m west on the Wednesday, stock had reached the tripod"
+            rem.append("mic 3 m west of the scheduled spot and at 1.5 m, stock had reached the tripod")
         if d["code"] == "NSL04" and d["k"] == 1:
-            rem = "windshield replaced at mid-week check"
-        mount = 1.2 + 0.1 * ((W.CODES.index(d["code"]) + 3 * d["k"]) % 6)
+            rem.append("windshield replaced at mid-week check")
+        if d["code"] == "NSL13" and d["k"] == 1:
+            rem.append("tripod dropped to 1.2 m, garden wall rebuilt")
+        for a, mins, why in d["nodata"]:
+            rem.append("%s, %s to %s" % (why, a.strftime("%d/%m %H:%M"),
+                                         (a + dt.timedelta(minutes=mins)).strftime("%H:%M")))
         rows.append([d["id"], m["serial"], d["code"], d["start"].isoformat(), d["end"].isoformat(),
-                     "%.1f" % mount, "%.1f" % m["pre"], "%.1f" % m["post"],
-                     W.PEOPLE["technician"][1], rem])
+                     "%.1f" % d["mount"], "%.1f" % d["cal_before"], "%.1f" % d["cal_after"],
+                     W.PEOPLE[d["crew"]][1], "; ".join(rem)])
     return _write_csv(os.path.join(target, FILES["deployments"]),
                       ["deployment_ref", "meter_serial", "position_code", "start_date", "end_date",
                        "mic_height_m", "cal_check_before_db", "cal_check_after_db", "operator",
@@ -120,7 +124,8 @@ def write_positions(target):
     ws["A2"] = "Schedule held under the site noise management plan, clause 2.1. Grid references are Irish " \
                "Transverse Mercator. Distances are to the blower house gable."
     ws["A3"] = "Maintained by the environmental engineer. Positions with a complaint reference were added " \
-               "after the reference was logged."
+               "after the reference was logged. Mic height is the height set for the position; a " \
+               "deployment that stood at another height says so in the deployment record."
     head = ["position_code", "dwelling_ref", "dwelling", "easting", "northing", "distance_m",
             "bearing_deg", "mic_height_m", "mounting", "screening", "complaint_ref"]
     for j, h in enumerate(head):
@@ -136,8 +141,8 @@ def write_positions(target):
         cref = None if W.COMPLAINTS[code] == 0 else "C%02d" % (1 + sorted(
             [c for c in W.CODES if W.COMPLAINTS[c] > 0], key=lambda c: -W.COMPLAINTS[c]).index(code))
         r = 6 + i
-        for j, v in enumerate([code, dref, desc, e, n, dist, bear, 1.5, "free field, 3.5 m from facade",
-                               W.SCREEN[code], cref]):
+        for j, v in enumerate([code, dref, desc, e, n, dist, bear, W.HEIGHT[code],
+                               "free field, 3.5 m from facade", W.SCREEN[code], cref]):
             ws.cell(row=r, column=1 + j, value=v)
     for col, wd in zip("ABCDEFGHIJK", (14, 12, 34, 9, 9, 11, 12, 13, 28, 42, 13)):
         ws.column_dimensions[col].width = wd
@@ -155,14 +160,17 @@ def write_events(target):
     day = dt.date(2026, 8, 24)
     end = dt.date(2026, 10, 16)
     while day <= end:
-        win = SM.centrifuge_window(day)
-        if win:
-            a, b = win
-            for cf in W.CENTRIFUGES:
-                rows.append([a, cf, "START", W.PEOPLE["operator"][1],
-                             "dewatering shift start behind the weekly inspection"
-                             if a.hour >= 7 else "dewatering shift start"])
-                rows.append([b, cf, "STOP", W.PEOPLE["operator"][1], "dewatering shift end"])
+        runs = SM.centrifuge_runs(day)
+        for i, (cf, a, b) in enumerate(runs):
+            same = [r for r in runs if r[0] == cf]
+            second = len(same) > 1 and same.index((cf, a, b)) == 1
+            why = ("dewatering restarted, liquor tank drawn down" if second else
+                   "dewatering shift start behind the weekly inspection" if a.hour >= 7 else
+                   "dewatering shift start")
+            rows.append([a, cf, "START", W.PEOPLE["operator"][1], why])
+            rows.append([b, cf, "STOP", W.PEOPLE["operator"][1],
+                         "stopped to draw the liquor tank down" if (len(same) > 1 and not second)
+                         else "dewatering shift end"])
         day += dt.timedelta(days=1)
     for start, mins, reason in W.PLANNED_STOPS + W.UNPLANNED_STOPS:
         planned = any(start == s for s, _, _ in W.PLANNED_STOPS)
@@ -192,17 +200,20 @@ def write_scada(target):
         stopped |= np.array([(s >= start - dt.timedelta(minutes=14)) and (s < e) for s in stamps])
     hours = np.array([s.hour + s.minute / 60.0 for s in stamps])
     dows = np.array([s.weekday() for s in stamps])
-    # the site's weekly milk intake moves the plant's load from week to week
-    wkf = np.array([1.0 + 0.021 * math.sin(2.1 * ((s.date() - dt.date(2026, 8, 3)).days // 7))
-                    - 0.014 * math.cos(3.3 * ((s.date() - dt.date(2026, 8, 3)).days // 7))
-                    for s in stamps])
+    # the site's weekly milk intake moves the plant's load from week to week; the sound carries it too
+    wkf = np.array([SM.week_factor(s.date()) for s in stamps])
     air = (4120 + 180 * np.sin(2 * math.pi * hours / 24.0 - 1.2) + rng.normal(0, 46, n)) * wkf
     air = np.where(stopped, 0.0, air)
+    # the blower header's flow totaliser, thousands of normal cubic metres, running since commissioning
+    air_total = 128450.0 + np.cumsum(air * 0.25) / 1000.0
     cf_on = np.zeros(n, dtype=bool)
-    wins = {d: SM.centrifuge_window(d) for d in sorted({s.date() for s in stamps})}
-    for i, s in enumerate(stamps):
-        w = wins[s.date()]
-        cf_on[i] = bool(w and w[0] <= s < w[1]) and not stopped[i]
+    runs = {d: SM.centrifuge_runs(d) for d in sorted({s.date() for s in stamps})}
+    for i, st in enumerate(stamps):
+        for _, a, b in runs[st.date()]:
+            if a <= st < b:
+                cf_on[i] = True
+                break
+        cf_on[i] = cf_on[i] and not stopped[i]
     feed = np.where(cf_on, 31.5 + rng.normal(0, 1.4, n), 0.0)
     gas_rate = np.where(stopped, 0.0, (212 + 9.5 * np.sin(2 * math.pi * hours / 24.0 + 0.4)
                                        + rng.normal(0, 4.0, n)) * wkf)   # m3 an hour to the engine
@@ -220,12 +231,14 @@ def write_scada(target):
     for i, s in enumerate(stamps):
         if gap[i]:
             continue
-        rows.append([s.strftime("%Y-%m-%d %H:%M"), "%.0f" % max(air[i], 0.0), "%.1f" % max(feed[i], 0.0),
+        rows.append([s.strftime("%Y-%m-%d %H:%M"), "%.0f" % max(air[i], 0.0),
+                     "%.1f" % air_total[i], "%.1f" % max(feed[i], 0.0),
                      "%.0f" % counter[i], "%.1f" % max(kw[i], 0.0), "%.1f" % eng_hours[i],
                      "%.1f" % max(inflow[i], 0.0)])
     return _write_csv(os.path.join(target, FILES["scada"]),
-                      ["logged_at", "blower_air_nm3_h", "centrifuge_feed_m3_h", "biogas_meter_m3",
-                       "engine_export_kw", "engine_hours_run", "inlet_flow_m3_h"], rows)
+                      ["logged_at", "blower_air_nm3_h", "blower_air_total_knm3",
+                       "centrifuge_feed_m3_h", "biogas_meter_m3", "engine_export_kw",
+                       "engine_hours_run", "inlet_flow_m3_h"], rows)
 
 
 def write_weather(target):
@@ -242,55 +255,85 @@ def write_weather(target):
                        "air_temperature_c"], rows)
 
 
+A_WEIGHT = {25: -44.7, 31.5: -39.4, 40: -34.6, 50: -30.2, 63: -26.2, 80: -22.5, 100: -19.1,
+            125: -16.1, 160: -13.4, 200: -10.9, 250: -8.6, 315: -6.6, 400: -4.8, 500: -3.2,
+            630: -1.9, 800: -0.8, 1000: 0.0, 1250: 0.6, 1600: 1.0, 2000: 1.2, 2500: 1.3,
+            3150: 1.2, 4000: 1.0, 5000: 0.5, 6300: -0.1, 8000: -1.1, 10000: -2.5, 12500: -4.3}
+
+
+def _spectra(code, wobble):
+    """Unweighted band energy fractions for the two sources at a position: the plant, with the blower's
+    blade tone at 400 Hz and the engine's firing tone at 100 Hz as far as they carry to the position, and
+    the surroundings, which are road traffic and wind in trees and carry no tone."""
+    k400, k100 = W.TONE_K[code]
+    pl, rs = [], []
+    for i, b in enumerate(BANDS):
+        f = float(b)
+        p = -8.5 - 6.2 * abs(math.log10(f / 200.0)) ** 1.85 + wobble[i]
+        if abs(f - 400.0) < 1.0:
+            p += 9.6 * k400
+        elif abs(f - 100.0) < 1.0:
+            p += 7.4 * k100
+        elif abs(f - 800.0) < 1.0:
+            p += 2.2 * k400 * k400
+        elif abs(f - 200.0) < 1.0:
+            p += 1.1 * k400
+        r = -7.0 - 7.4 * abs(math.log10(f / 125.0)) ** 1.62 + 0.6 * wobble[i]
+        pl.append(10.0 ** (p / 10.0))
+        rs.append(10.0 ** (r / 10.0))
+    pl = np.array(pl) / sum(pl)
+    rs = np.array(rs) / sum(rs)
+    aw = np.array([10.0 ** (A_WEIGHT[b] / 10.0) for b in BANDS])
+    return pl, rs, float((pl * aw).sum()), float((rs * aw).sum())
+
+
 def write_bands(target, series):
     """One-third-octave band levels, quarter hour, unweighted, on the three meters that carry the module."""
-    rng = np.random.default_rng(W.SEED + 29)
     rows = []
     licensed = {m["id"] for m in W.METERS if m["bands"]}
     for sid in sorted(series):
         s = series[sid]
         if s["dep"]["meter"] not in licensed:
             continue
-        lg = SM.logged(s)
-        laeq = lg["laeq"]
+        dep = s["dep"]
+        rng = np.random.default_rng(W.SEED + 29 + 613 * int(dep["id"][1:]))
+        # the mic's own position in the garden moves the spectrum a little week to week
+        wob = rng.normal(0.0, 0.42, len(BANDS))
+        pl, rs, apl, ars = _spectra(dep["code"], wob)
+        gain = 10.0 ** (SM.dep_dev(dep) / 10.0)
         stamps = s["stamps"]
-        plant_share = s["plant_e"] / (s["plant_e"] + s["resid_e"])
+        pe = s["plant_e"] * gain
+        re = s["resid_e"] * gain
+        nd = s["nd"]
         for q in range(0, len(stamps) - 14, 15):
             sl = slice(q, q + 15)
-            lev = 10.0 * math.log10(float(np.mean(np.power(10.0, laeq[sl] / 10.0))))
-            ps = float(np.mean(plant_share[sl]))
-            vals = []
-            for b in BANDS:
-                f = float(b)
-                # broadband shape of the residual, plus the plant's own two tones
-                shape = -11.0 - 7.5 * abs(math.log10(f / 160.0)) ** 1.9
-                tone = 0.0
-                k400, k100 = W.TONE_K[s["dep"]["code"]]
-                if abs(f - 400.0) < 1.0:
-                    tone = 9.2 * ps * k400
-                elif abs(f - 100.0) < 1.0:
-                    tone = 7.0 * ps * k100
-                elif abs(f - 800.0) < 1.0:
-                    tone = 2.1 * ps * k400 * k400
-                vals.append(lev + shape + tone + float(rng.normal(0, 0.35)))
-            rows.append([W_serial(s["dep"]["meter"]), stamps[q].strftime("%Y-%m-%d %H:%M")]
+            if nd[sl].any():
+                continue
+            ep = float(np.mean(pe[sl])) / apl
+            er = float(np.mean(re[sl])) / ars
+            vals = 10.0 * np.log10(ep * pl + er * rs) + rng.normal(0.0, 0.3, len(BANDS))
+            rows.append([W_serial(dep["meter"]), utc(stamps[q]).strftime("%Y-%m-%d %H:%M")]
                         + ["%.1f" % v for v in vals])
     rows.sort(key=lambda r: (r[0], r[1]))
     return _write_csv(os.path.join(target, FILES["bands"]),
-                      ["meter_serial", "logged_at"] + ["lzeq_%s_hz" % str(b).replace(".", "p")
-                                                       for b in BANDS], rows)
+                      ["meter_serial", "measured_at_utc"] + ["lzeq_%s_hz" % str(b).replace(".", "p")
+                                                             for b in BANDS], rows)
 
 
 def write_calibration(target):
+    """The laboratory certificates for the five meters and the field calibrator. The field checks either
+    side of a deployment are on the deployment record, not here."""
     rows = []
     for m in W.METERS:
-        rows.append([m["serial"], m["model"], "CAL-4621", "2026-03-12",
-                     "2027-03-11", "%.1f" % W.CAL_REF, "%.1f" % m["pre"], "%.1f" % m["post"],
-                     "field check at 1 kHz before and after each deployment"])
+        rows.append([m["serial"], m["model"], m["cert"], m["due"], "CAL-4621",
+                     "%.1f" % W.CAL_REF, "%.1f" % m["found"], "%.1f" % m["left"],
+                     "periodic verification to IEC 61672-3, class 1"])
+    rows.append(["CAL-4621", "Class 1 acoustic calibrator, 1 kHz", "2026-02-19", "2028-02-18", "",
+                 "%.1f" % W.CAL_REF, "", "", "calibrator output verified, 94.0 and 114.0 dB"])
     return _write_csv(os.path.join(target, FILES["calibration"]),
-                      ["meter_serial", "model", "calibrator_serial", "calibrated_on",
-                       "calibration_due", "calibrator_level_db", "field_check_before_db",
-                       "field_check_after_db", "note"], rows)
+                      ["instrument_serial", "model", "verified_on", "verification_due",
+                       "calibrator_serial", "calibrator_level_db", "as_found_db", "as_left_db",
+                       "note"], rows)
 
 
 def write_complaints(target):
@@ -302,24 +345,45 @@ def write_complaints(target):
     ws.title = "Complaints 2026"
     ws["A1"] = "%s %s: noise complaints received" % (W.OPERATOR, W.SITE)
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Logged under the site noise management plan, clause 5.1. One row per contact."
-    head = ["complaint_ref", "received_on", "dwelling_ref", "received_by", "description", "response_sent_on"]
+    ws["A2"] = "Logged under the site noise management plan, clause 6.1. One row per contact."
+    head = ["complaint_ref", "received_on", "dwelling_ref", "received_via", "received_by",
+            "description", "response_sent_on"]
     for j, h in enumerate(head):
         ws.cell(row=4, column=1 + j, value=h).font = Font(bold=True)
-    texts = ["hum carrying across the yard in the evening", "low drone, worse with the wind from the plant",
-             "constant noise at night, cannot open the bedroom window", "whine from the new building",
-             "humming through the day, worse since the summer", "noise from the plant at the gable",
-             "drone in the evening, children cannot sleep", "steady hum from the direction of the works",
-             "noise worse since the new building went up", "rumble that carries down the lane",
-             "cannot sit out in the garden with the hum",
-             "a tone off the plant, there all weekend", "hum through the floor at night",
-             "noise from the works, louder in the mornings", "whining noise, getting worse",
-             "the drone starts early and does not stop", "steady noise, worse on still nights",
-             "humming from the plant, heard it all week", "noise carries up to the house on a calm day",
-             "a hum we can hear with the windows shut", "constant drone from the direction of the plant",
-             "noise off the works at the back of the house",
-             "a whine from the new plant, new since the summer",
-             "humming noise, we are not able to sleep with it"]
+    texts = [
+        "Hum carrying across the yard again from about nine last night.",
+        "Low drone, worse when the wind comes up from the plant. Noticed it most of the weekend.",
+        "Caller cannot open the bedroom window at night for the noise.",
+        "Whine off the new building, started after the upgrade went in.",
+        "Humming all day Tuesday and Wednesday. Caller says it has got worse since July.",
+        "Noise at the gable end of the house, caller asked what the plant is running at night.",
+        "Drone in the evening. Two children not sleeping.",
+        "Steady hum from the direction of the works, heard from the back door.",
+        "Caller rang to ask whether the plant is running differently. Noise louder than last year.",
+        "Rumble carrying down the lane, worst between six and eight in the morning.",
+        "Cannot sit out in the garden with the hum, caller has given up on the patio.",
+        "A tone off the plant, there all weekend and still there this morning.",
+        "Hum through the floor of the front room at night.",
+        "Noise from the works louder in the mornings this week.",
+        "Whining noise, caller says it is getting worse month by month.",
+        "The drone starts before six and does not stop.",
+        "Steady noise on still nights. Caller asked for the plant to be turned down after ten.",
+        "Humming from the plant heard all week, caller wants to know what is being done.",
+        "Noise carries up to the house on a calm day, worse since the dry spell.",
+        "A hum audible with the windows shut.",
+        "Constant drone from the direction of the plant since Saturday.",
+        "Noise off the works at the back of the house, caller rang twice.",
+        "A whine from the new plant, caller says it was not there last autumn.",
+        "Humming noise. Caller and her husband are not able to sleep with it.",
+    ]
+    channels = ["telephone", "telephone", "email", "telephone", "letter", "email", "telephone",
+                "telephone", "email", "telephone", "telephone", "email", "telephone", "letter",
+                "telephone", "email", "telephone", "telephone", "email", "telephone", "telephone",
+                "email", "telephone", "letter"]
+    takers = ["engineer", "engineer", "operations", "engineer", "operations", "engineer",
+              "operations", "engineer", "engineer", "operations", "engineer", "engineer",
+              "operations", "engineer", "engineer", "operations", "engineer", "engineer",
+              "operations", "engineer", "operations", "engineer", "engineer", "operations"]
     rng = random.Random(W.SEED + 31)
     rows, n = [], 0
     ordered = sorted([c for c in W.CODES if W.COMPLAINTS[c] > 0], key=lambda c: -W.COMPLAINTS[c])
@@ -330,14 +394,15 @@ def write_complaints(target):
         for k in range(W.COMPLAINTS[code]):
             d = dt.date(2026, 6, 4) + dt.timedelta(days=int(round(span * n / float(total))) + k)
             sent = min(d + dt.timedelta(days=rng.choice([4, 6, 9])), dt.date(2026, 10, 9))
-            rows.append([ref, d.isoformat(), W.BY_CODE[code][1], W.PEOPLE["engineer"][1],
-                         texts[(7 * n + 5 * k) % len(texts)], sent.isoformat()])
+            j = (7 * n + 5 * k) % len(texts)
+            rows.append([ref, d.isoformat(), W.BY_CODE[code][1], channels[j],
+                         W.PEOPLE[takers[j]][1], texts[j], sent.isoformat()])
             n += 1
     rows.sort(key=lambda r: (r[1], r[0]))
     for i, r in enumerate(rows):
         for j, v in enumerate(r):
             ws.cell(row=5 + i, column=1 + j, value=v)
-    for col, wd in zip("ABCDEF", (14, 13, 13, 12, 52, 17)):
+    for col, wd in zip("ABCDEFG", (14, 13, 13, 13, 12, 76, 17)):
         ws.column_dimensions[col].width = wd
     path = os.path.join(target, FILES["complaints"])
     wb.save(path)
@@ -345,54 +410,85 @@ def write_complaints(target):
 
 
 def write_effluent(target):
-    """The works' discharge monitoring. Nothing in the question reads it."""
+    """The works' discharge monitoring, as the laboratory reports it. Nothing in the question reads it."""
     rng = np.random.default_rng(W.SEED + 37)
+    LOD = {"bod": 2.0, "cod": 5.0, "ss": 2.0, "amm": 0.05}
     rows = []
     day = dt.date(2026, 7, 1)
+    seq = 0
     while day <= dt.date(2026, 10, 15):
         if day.weekday() in (0, 2, 4):
-            rows.append([day.isoformat(), "final effluent",
-                         "%.1f" % max(2.0, rng.normal(9.8, 2.6)),
-                         "%.1f" % max(1.0, rng.normal(6.4, 1.9)),
-                         "%.1f" % max(0.5, rng.normal(3.1, 0.9)),
-                         "%.2f" % max(0.05, rng.normal(0.42, 0.14)),
-                         "%.1f" % rng.normal(7.3, 0.2), "composite, 24 hour"])
+            seq += 1
+            grab = (seq % 7 == 3)
+            pt = "final effluent" if not grab else rng.choice(["final effluent", "balance tank outfall"])
+            bod = max(0.4, rng.normal(7.4 if grab else 9.8, 2.6))
+            cod = max(1.0, rng.normal(6.4, 1.9)) * 4.6
+            ss = max(0.3, rng.normal(3.1, 0.9))
+            amm = max(0.01, rng.normal(0.42, 0.19))
+            def val(x, lod, fmt):
+                return ("<%s" % (fmt % lod)) if x < lod else (fmt % x)
+            note = ""
+            if seq % 11 == 5:
+                note = "sample received outside the 24 h holding time, result indicative"
+            elif seq % 13 == 8:
+                note = "suspended solids filter blinded, result from duplicate"
+            rows.append([day.isoformat(), pt, "grab" if grab else "composite, 24 hour",
+                         "Ardbeggan Analytical", "AA26-%05d" % (41200 + 37 * seq),
+                         val(bod, LOD["bod"], "%.1f"), val(cod, LOD["cod"], "%.0f"),
+                         val(ss, LOD["ss"], "%.1f"), val(amm, LOD["amm"], "%.2f"),
+                         "%.1f" % rng.normal(7.3, 0.2), note])
         day += dt.timedelta(days=1)
     return _write_csv(os.path.join(target, FILES["effluent"]),
-                      ["sampled_on", "sample_point", "bod_mg_l", "cod_mg_l", "suspended_solids_mg_l",
-                       "ammonia_mg_l", "ph", "sample_type"], rows)
+                      ["sampled_on", "sample_point", "sample_type", "laboratory", "lab_reference",
+                       "bod_mg_l", "cod_mg_l", "suspended_solids_mg_l", "ammonia_n_mg_l", "ph",
+                       "note"], rows)
 
 
 def write_manifest(target, counts):
+    """What was copied into the folder handed to the environmental engineer, where each file came from and
+    on what terms. Site systems and survey paperwork are the operator's own records."""
+    OWN = "Tulcarra Foods internal, not for release outside the site"
     rows = [
-        [FILES["levels"], "parquet", counts["levels"], "measured_at_utc",
-         "every logged minute from the five meters, as downloaded; stamps are UTC",
-         "the download of D%02d was repeated after a card read error" % counts["dup_dep"]],
-        [FILES["deployments"], "csv", counts["deployments"], "start_date",
-         "which meter stood at which position, with its field checks", ""],
-        [FILES["positions"], "xlsx", len(W.POSITIONS), "",
-         "the monitoring position schedule held under the plan", ""],
-        [FILES["plan"], "pdf", "", "", "the site noise management plan, revision 4", "clauses 1 to 6"],
-        [FILES["notes"], "md", "", "", "the monitoring technician's notes on the survey", ""],
-        [FILES["events"], "csv", counts["events"], "logged_at",
-         "the process operator's equipment log, local time", ""],
-        [FILES["scada"], "csv", counts["scada"], "logged_at",
-         "fifteen-minute process channels from the plant PLC, local time",
-         "no records 24 September 13:00 to 25 September 09:00, link to the PLC down"],
-        [FILES["weather"], "csv", counts["weather"], "measured_at_utc",
-         "the met mast, ten-minute means, UTC",
-         "anemometer replaced 20 September, the replacement reports in km an hour"],
-        [FILES["bands"], "csv", counts["bands"], "logged_at",
-         "one-third-octave band levels where the meter carries the module", ""],
-        [FILES["calibration"], "csv", len(W.METERS), "calibrated_on",
-         "meter and calibrator certificates with each deployment's field checks", ""],
-        [FILES["complaints"], "xlsx", counts["complaints"], "received_on",
-         "noise complaints received in 2026", ""],
-        [FILES["effluent"], "csv", counts["effluent"], "sampled_on",
-         "final effluent monitoring results", ""],
+        [FILES["levels"], "parquet", counts["levels"], "31/08/2026 to 11/10/2026",
+         "meter download software, five instruments", "2026-10-13", OWN,
+         "every logged minute from the five meters, stamps in UTC"],
+        [FILES["deployments"], "csv", counts["deployments"], "31/08/2026 to 11/10/2026",
+         "survey field sheets, transcribed", "2026-10-13", OWN,
+         "which meter stood at which position, with its field checks"],
+        [FILES["positions"], "xlsx", len(W.POSITIONS), "current",
+         "monitoring position schedule, environmental engineer", "2026-10-14", OWN,
+         "the schedule held under the plan, clause 2.1"],
+        [FILES["plan"], "pdf", "", "effective 01/06/2026",
+         "site document register, revision 4", "2026-10-14", OWN,
+         "the site noise management plan, clauses 1 to 7"],
+        [FILES["notes"], "md", "", "31/08/2026 to 11/10/2026",
+         "monitoring technician", "2026-10-16", OWN, "the technician's notes on the survey"],
+        [FILES["events"], "csv", counts["events"], "24/08/2026 to 16/10/2026",
+         "process operator equipment log, local time", "2026-10-16", OWN,
+         "a row for every start and stop of a blower, a centrifuge or the gas engine"],
+        [FILES["scada"], "csv", counts["scada"], "01/08/2026 to 16/10/2026",
+         "plant PLC historian, local time", "2026-10-16", OWN,
+         "fifteen-minute process channels, counters as the meters read them"],
+        [FILES["weather"], "csv", counts["weather"], "30/08/2026 to 16/10/2026",
+         "met mast on the blower house roof, UTC", "2026-10-16", OWN,
+         "ten-minute means, wind, direction, rain gauge count and air temperature"],
+        [FILES["bands"], "csv", counts["bands"], "31/08/2026 to 11/10/2026",
+         "meter download software, band module", "2026-10-13", OWN,
+         "one-third-octave band levels from the three meters that carry the module"],
+        [FILES["calibration"], "csv", len(W.METERS) + 1, "2025-11-27 to 2026-04-08",
+         "instrument certificates, document register", "2026-10-14", OWN,
+         "laboratory verification of the five meters and the field calibrator"],
+        [FILES["complaints"], "xlsx", counts["complaints"], "01/01/2026 to 28/09/2026",
+         "complaints register, environmental engineer", "2026-10-14", OWN,
+         "noise complaints received in 2026, one row a contact"],
+        [FILES["effluent"], "csv", counts["effluent"], "01/07/2026 to 15/10/2026",
+         "Ardbeggan Analytical reports, discharge monitoring", "2026-10-14",
+         "Tulcarra Foods internal; laboratory reports used under the testing contract",
+         "final effluent and balance tank results for the licence"],
     ]
     return _write_csv(os.path.join(target, FILES["manifest"]),
-                      ["file", "format", "rows", "date_column", "contents", "known_gaps"], rows)
+                      ["file", "format", "rows", "covers", "source", "extracted_on", "licence",
+                       "contents"], rows)
 
 
 def set_mtimes(target):

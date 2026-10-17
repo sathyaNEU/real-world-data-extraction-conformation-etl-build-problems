@@ -41,14 +41,14 @@ def cut(target):
         per_sep[x[0]] = (o / e - 1) * e / n          # excess complications per planned separation
         expected_per_sep[x[0]] = e / n              # clause 3.4 expected complications per separation
     sim.EXPECTED_PER_SEP = {c: expected_per_sep[c] for c in expected_per_sep}
-    chosen, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=False)
+    chosen, thetas, models, _ = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=False)
     elig = [c for c in per_sep if c in {x[0] for x in W.UNITS if x[10] == "eligible"}]
     ranked = sorted(elig, key=lambda c: -per_sep[c] * plans[c])
     plans = sim.centre_plans(plans, per_sep, thetas, ranked[0], ranked)
     assert sorted(elig, key=lambda c: -per_sep[c] * plans[c])[:2] == ranked[:2], \
         "centring the planned volumes moved the two graded units"
-    targets, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=True,
-                                         fixed=chosen)
+    targets, thetas, models, clear = sim.record_targets(expected, allsep, design, W.UNITS, plans,
+                                                       bins=True, fixed=chosen)
     observed = sim.assign_complications(rows, expected, design, W.UNITS, targets)
     detail = sim.complications(rows, W.UNITS)
     replays = sim.add_replays(rows, W.UNITS)
@@ -82,7 +82,7 @@ def cut(target):
         os.utime(os.path.join(target, name), (stamp, stamp))
     return dict(rows=rows, allrows=allrows, expected=expected, observed=observed, inscope=inscope,
                 allsep=allsep, detail=detail, replays=replays, design=design, targets=targets,
-                plans=plans, thetas=thetas)
+                plans=plans, thetas=thetas, models=models, clearance=clear)
 
 
 def zip_pack(target, path):

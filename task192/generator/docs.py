@@ -45,6 +45,9 @@ def protocol(target):
     codes = [["Codigo", "Acao", "Acao de confronto"]]
     for c, name, conf in W.ACTION_CODES:
         codes.append([c, name, "sim" if conf else "nao"])
+    themes = [["Codigo", "Tema de disputa"]]
+    for c, name, _, _, _ in W.THEMES:
+        themes.append([c, name])
     f = [Paragraph("%s: protocolo da %s" % (W.ASSOCIATION, W.REGISTER), H1),
          Paragraph("Versao 4, aprovada pelo conselho de curadores em 24 de abril de 2026. As partes "
                    "1 e 5 e os anexos nao vao neste extrato.", SMALL),
@@ -65,18 +68,23 @@ def protocol(target):
          Paragraph("2.6 O codigo que o registo guarda para uma acao e o do relato do monitor de "
                    "imprensa quando o monitor tem relato dessa acao, e o do relato da organizacao "
                    "parceira ou da linha de participacao publica nas restantes acoes.", BODY),
+         Paragraph("2.7 Os temas de disputa do registo sao os da tabela seguinte. Um tema entra no "
+                   "registo no dia em que a primeira acao desse tema e registada.", BODY),
+         Table(wrap(themes), colWidths=[18 * mm, 127 * mm], style=TBL, hAlign="LEFT"),
+         Spacer(1, 5),
          Paragraph("Parte 3 Periodo e indicadores", H2),
          Paragraph("3.2 O periodo de relato e de 1 de maio a 30 de outubro de 2026, inclusive. O "
                    "registo abriu em 1 de maio de 2026 e nao traz nenhuma acao anterior a essa data.",
                    BODY),
          Paragraph("3.3 Indicador 2, acoes de confronto: o numero das acoes registadas no periodo de "
-                   "relato que foram acoes de confronto na acepcao de 2.2, em numero inteiro de "
-                   "acoes. O codigo que o classificador do monitor de imprensa atribui e a leitura do "
-                   "classificador, que a amostra de dupla codificacao da associacao mede contra a "
-                   "codificacao manual. O numero que o boletim fixa e o das acoes que foram de "
-                   "confronto e nao o dos codigos atribuidos.", BODY),
-         Paragraph("3.4 As quinzenas de relato contam-se a partir de 1 de maio e a ultima quinzena "
-                   "do periodo termina com o periodo.", BODY),
+                   "relato que foram acoes de confronto na acepcao de 2.2, ao mais proximo de "
+                   "cinquenta acoes. O codigo que o classificador do monitor de imprensa atribui e "
+                   "a leitura do classificador, que a mesa de codificacao mede contra a codificacao "
+                   "manual. O numero que o boletim fixa e o das acoes que foram de confronto e nao "
+                   "o dos codigos atribuidos.", BODY),
+         Paragraph("3.4 As quinzenas de relato tem catorze dias e contam-se a partir de 1 de maio. "
+                   "Os dias que sobram no fim do periodo entram na ultima quinzena, que por isso "
+                   "tem quinze dias.", BODY),
          Paragraph("3.5 O boletim do periodo e levado ao conselho de curadores, que fixa com ele a "
                    "dotacao de terreno do ano seguinte.", BODY),
          Paragraph("Parte 4 Vias de acesso e codificacao", H2),
@@ -93,12 +101,17 @@ def protocol(target):
                    "os entrega e revistos pela mesa de codificacao.", BODY),
          Paragraph("4.4 O registo e extraido para o boletim de cada periodo; a extracao deste periodo "
                    "e de 6 de novembro de 2026.", BODY),
-         Paragraph("4.5 Duas vezes por periodo a mesa de codificacao tira uma amostra aleatoria "
-                   "simples dos relatos aceites do monitor de imprensa e codifica-os a mao, sem ver o "
-                   "codigo do classificador; a codificacao manual e a referencia da associacao e a "
-                   "amostra fica no ficheiro de dupla codificacao, com o codigo de cada lado. A "
-                   "amostra do periodo e o conjunto das duas rondas e mede o classificador no "
-                   "conjunto dos relatos aceites do periodo.", BODY)]
+         Paragraph("4.5 A mesa de codificacao faz duas rondas de dupla codificacao por periodo de "
+                   "relato. Cada ronda tira ao acaso um lote dos relatos aceites do monitor de "
+                   "imprensa entrados desde o fecho da ronda anterior e codifica cada relato do "
+                   "lote a mao, sem ver o codigo do classificador; a codificacao manual e a "
+                   "referencia da associacao. A ronda fica no ficheiro de dupla codificacao, com o "
+                   "codigo de cada lado, o dia da codificacao manual e a decisao da mesa nas linhas "
+                   "que foram a segunda codificacao. A ronda deste periodo que o calendario poe no "
+                   "outono e feita no periodo seguinte.", BODY),
+         Paragraph("4.6 O classificador do monitor de imprensa e o modelo que a configuracao do "
+                   "monitor declara, com a data em que foi treinado e as alteracoes que teve dentro "
+                   "do periodo.", BODY)]
     d.build(f)
     return path
 
@@ -125,7 +138,12 @@ def agreements(target):
                    "de 2026. As restantes clausulas do acordo mantem-se." %
                    (W.PARTNERS[3][1], W.AMENDED[0], W.AMENDED[2]), BODY),
          Paragraph("Assinada pelo gabinete financeiro da associacao e pela direcao da organizacao "
-                   "parceira.", SMALL)]
+                   "parceira.", SMALL),
+         Paragraph("Adenda de 8 de setembro de 2026", H2),
+         Paragraph("Apos a fusao das suas estruturas de terreno, o %s (%s) passa a entregar sob o "
+                   "codigo de entrega %s a partir de 10 de setembro de 2026. O acordo, a regiao e a "
+                   "tabela mantem-se e as entregas sob os dois codigos sao do mesmo acordo." %
+                   (W.PARTNERS[6][1], W.MERGED[0], W.MERGED[1]), BODY)]
     d.build(f)
     return path
 
@@ -169,7 +187,10 @@ def bulletins(target, series):
                    "a tenham registado. Os municipios e as localidades sao os do gazeteiro nacional "
                    "na versao de 2024.", BODY),
          Paragraph("O boletim de maio cobre o mes em que o registo abriu, pelo que nao ha serie "
-                   "anterior para comparacao.", BODY)]
+                   "anterior para comparacao.", BODY),
+         Paragraph("O boletim de setembro registou a entrada de dois temas de disputa que o registo "
+                   "ainda nao tinha visto, energia e redes e florestas e fogos, com a mobilizacao "
+                   "do outono.", BODY)]
     d.build(f)
     return path
 

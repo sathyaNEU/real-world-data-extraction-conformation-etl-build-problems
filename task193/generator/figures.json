@@ -555,22 +555,26 @@
   {
    "holder": "H1",
    "name": "Nordlys Pharma A/S",
-   "ddd": 255520.5,
-   "ddd_before": 125736.0,
-   "ddd_after": 129784.5,
+   "ddd": 265159.0,
+   "ddd_before": 127656.0,
+   "ddd_after": 137503.0,
    "rate_before": 1240,
-   "rate_after": 1335,
-   "fee_dkk": 329175
+   "rate_after": 1340,
+   "fee_dkk": 342547,
+   "fee_exact": "342547.46",
+   "fee_distance": 0.46
   },
   {
    "holder": "H2",
    "name": "Bregnholt Laegemidler A/S",
-   "ddd": 231565.7,
-   "ddd_before": 66084.9,
-   "ddd_after": 165480.8,
-   "rate_before": 1480,
-   "rate_after": 1595,
-   "fee_dkk": 361748
+   "ddd": 402993.0,
+   "ddd_before": 99130.0,
+   "ddd_after": 303863.0,
+   "rate_before": 1240,
+   "rate_after": 1340,
+   "fee_dkk": 530098,
+   "fee_exact": "530097.62",
+   "fee_distance": 0.38
   },
   {
    "holder": "H3",
@@ -579,48 +583,58 @@
    "ddd_before": 15046.0,
    "ddd_after": 392610.0,
    "rate_before": 1240,
-   "rate_after": 1335,
-   "fee_dkk": 542791
+   "rate_after": 1340,
+   "fee_dkk": 544754,
+   "fee_exact": "544754.44",
+   "fee_distance": 0.44
   },
   {
    "holder": "H4",
    "name": "Soegaard Medica A/S",
-   "ddd": 159766.9,
-   "ddd_before": 154012.3,
-   "ddd_after": 5754.7,
-   "rate_before": 1480,
-   "rate_after": 1595,
-   "fee_dkk": 237117
+   "ddd": 383410.0,
+   "ddd_before": 369600.0,
+   "ddd_after": 13810.0,
+   "rate_before": 1240,
+   "rate_after": 1340,
+   "fee_dkk": 476809,
+   "fee_exact": "476809.4",
+   "fee_distance": 0.4
   },
   {
    "holder": "H5",
    "name": "Kastholm Pharma A/S",
-   "ddd": 80973.6,
-   "ddd_before": 66197.8,
-   "ddd_after": 14775.7,
-   "rate_before": 1480,
-   "rate_after": 1595,
-   "fee_dkk": 121540
+   "ddd": 595520.0,
+   "ddd_before": 506854.0,
+   "ddd_after": 88666.0,
+   "rate_before": 1240,
+   "rate_after": 1340,
+   "fee_dkk": 747311,
+   "fee_exact": "747311.4",
+   "fee_distance": 0.4
   },
   {
    "holder": "H6",
    "name": "Ellevang Biosciences A/S",
-   "ddd": 316685.2,
-   "ddd_before": 221374.5,
-   "ddd_after": 95310.8,
-   "rate_before": 1240,
-   "rate_after": 1335,
-   "fee_dkk": 401744
+   "ddd": 1027098.0,
+   "ddd_before": 516684.0,
+   "ddd_after": 510414.0,
+   "rate_before": 990,
+   "rate_after": 1090,
+   "fee_dkk": 1067868,
+   "fee_exact": "1067868.42",
+   "fee_distance": 0.42
   },
   {
    "holder": "H7",
    "name": "Strandby Farma ApS",
-   "ddd": 113515.5,
-   "ddd_before": 113515.5,
-   "ddd_after": 0,
-   "rate_before": 1480,
-   "rate_after": 1595,
-   "fee_dkk": 168003
+   "ddd": 227031.0,
+   "ddd_before": 227031.0,
+   "ddd_after": 0.0,
+   "rate_before": 1465,
+   "rate_after": 1570,
+   "fee_dkk": 332600,
+   "fee_exact": "332600.415",
+   "fee_distance": 0.415
   }
  ],
  "a3": [

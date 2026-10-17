@@ -51,6 +51,10 @@ def text_of(target, name):
     return open(p, encoding="utf-8", errors="replace").read()
 
 
+def io_open(target, name):
+    return open(os.path.join(target, name), encoding="utf-8")
+
+
 def has(hay, needle):
     """Phrase match that does not care how the writer broke its lines."""
     return re.sub(r"\s+", "", needle.lower()) in re.sub(r"\s+", "", hay.lower())
@@ -112,7 +116,11 @@ def run(target, g):
         A(p[0] in pos_txt and p[1] in pos_txt, "R2 the schedule maps %s and %s" % (p[0], p[1]))
     # the unit swap and the tip counter move counts, not levels
     A(abs(SM.MET["wind_eff"] - 5.0).min() > 0.03, "R2 no met record sits on the plan's wind threshold")
-    A(abs(SM.RAIN_H - 0.5).min() > 0.02, "R2 no met record sits on the plan's rain threshold")
+    # the rain test is a count of tips, so there is no rate for a record to sit on and no rate to read
+    A(not has(text_of(target, PK.FILES["plan"]), "mm an hour"),
+      "R2 the plan states no rain rate, so no rate reading of 4.2 is licensed")
+    A(SM.RAIN_ON.sum() > 40 and SM.RAIN_ON.mean() < 0.2,
+      "R2 the gauge counted rain in %d of %d ten-minute records" % (SM.RAIN_ON.sum(), SM.MET["n"]))
 
     # ------------------------------------------------- R3a: the analyst test, executed on the clean truth
     naive = {c: r[c]["rung2_p10"] for c in W.CODES}
@@ -180,7 +188,10 @@ def run(target, g):
     A(tuple(AN.slate({c: r[c]["rung2c_arith"] for c in W.CODES})[0]) != gold,
       "SF4 the arithmetic reading files another slate")
     # SF5 valid minute
-    A(has(plan, "0.5 mm an hour") and has(plan, "5 m a second"), "SF5 the plan files the validity criteria")
+    A(has(plan, "counted rain on the gauge") and has(plan, "5 m a second"),
+      "SF5 the plan files the validity criteria")
+    A(has(plan, "where the meter recorded no measurement for that minute"),
+      "SF5 the plan files what a minute with no measurement is")
     # SF6 calibration drift
     A(has(plan, "0.3 dB"), "SF6 the plan files the calibration adjustment")
     # SF7 which stops: inside the assessment period the planned stops are the whole stop set
@@ -194,13 +205,15 @@ def run(target, g):
         A(abs(r[c]["total"] - r[c]["total_running"]) < 1e-9,
           "SF8 at %s the assessment period holds no stop minute" % c)
     # SF9 the repeated download, asserted above; SF10 identity, asserted above
-    # SF11 rounding: every printed level mid-bin and no two equal
+    # SF11 rounding: every printed level clear of its rounding edge, no two equal, and none of them
+    # sitting on the printed value itself (a level tuned onto the decimal is a construction tell)
     printed = [round(rows[c]["specific_raw"], 1) for c in W.CODES]
     A(len(set(printed)) == len(printed), "SF11 no two positions share a printed level")
     for c in W.CODES:
         v = rows[c]["specific_raw"]
-        edge = abs(abs(v * 10 - round(v * 10)) * 0.1 - 0.05)
-        A(edge >= 0.015, "SF11 %s sits %.3f dB from a rounding edge" % (c, edge))
+        off = abs(v * 10 - round(v * 10)) * 0.1          # distance from the one-decimal value
+        A(0.05 - off >= 0.015, "SF11 %s sits %.3f dB from a rounding edge" % (c, 0.05 - off))
+        A(off >= 0.012, "SF11 %s sits %.4f dB from its own printed value" % (c, off))
     # SF12 the five dwellings are the five highest specific levels, not the five highest totals
     A(tuple(AN.slate({c: r[c]["total"] for c in W.CODES})[0]) != gold, "SF12 the totals rank differently")
 
@@ -291,6 +304,125 @@ def run(target, g):
         for c, dref, name, lvl in g["slate_dwellings"]:
             A(has(note, "%.1f" % lvl), "the note carries %s's level" % c)
         A(has(note, "%.1f dB below the fifth" % g["margin_db"]), "the note carries the margin")
+    # ----------------------------------------------------------- the instrument's own columns are possible
+    laeq = np.array(tbl.column("laeq_db").to_pylist(), dtype=float)
+    la90 = np.array(tbl.column("la90_db").to_pylist(), dtype=float)
+    lamax = np.array(tbl.column("lamax_db").to_pylist(), dtype=float)
+    lamin = np.array(tbl.column("lamin_db").to_pylist(), dtype=float)
+    nd = laeq <= W.NODATA_VALUE + 0.001
+    A(np.all(lamax[~nd] >= laeq[~nd]), "every logged minute has LAmax at or above LAeq")
+    A(np.all(laeq[~nd] >= la90[~nd]), "every logged minute has LAeq at or above LA90")
+    A(np.all(la90[~nd] >= lamin[~nd]), "every logged minute has LA90 at or above LAmin")
+    A(np.all((la90[nd] == W.NODATA_VALUE) & (lamax[nd] == W.NODATA_VALUE)
+             & (lamin[nd] == W.NODATA_VALUE)),
+      "a minute with no measurement carries no partial statistics")
+    A(nd.sum() == sum(m for _, _, m, _ in [(0,) + x[1:] for x in W.NODATA]),
+      "the no-data minutes are the %d the deployment records name" % nd.sum())
+    A(np.all(lamax[~nd] > -10.0) and np.all(lamin[~nd] > -10.0),
+      "no level column carries an impossible value")
+    A(float(np.mean(lamax[~nd] - laeq[~nd])) > 1.0,
+      "the loudest second of a minute stands above its equivalent level")
+    # no no-data minute falls inside a process stop, so the residual is measured on a full window
+    for sid, ss in g["series"].items():
+        st = AN.stop_mask(ss["stamps"])
+        A(not bool((ss["nd"] & st).any()), "%s has no no-data minute inside a process stop" % sid)
+    for c in W.CODES:
+        A(r[c]["minutes_stop"] >= 230, "%s measures its residual on %d minutes" % (c, r[c]["minutes_stop"]))
+
+    # -------------------------------------------------------- the field checks, deployment by deployment
+    corrected = [d for d in deps if d["correction"] != 0.0]
+    A(len(deps) == 28 and len(corrected) == 11,
+      "the plan's 0.3 dB window catches %d of %d deployments" % (len(corrected), len(deps)))
+    A({d["meter"] for d in corrected} == {"M2", "M4"},
+      "two meters sit outside the window all survey: %s" % sorted({d["meter"] for d in corrected}))
+    for d in deps:
+        A(abs(abs(d["dev"]) - W.CAL_THRESHOLD) > 0.05,
+          "%s sits %.2f dB from the plan's 0.3 dB window" % (d["id"], abs(abs(d["dev"]) - W.CAL_THRESHOLD)))
+        A(abs(d["cal_after"] - d["cal_before"]) <= 0.8,
+          "%s spreads %.1f dB between its checks, inside 4.1's 1.0 dB" % (d["id"],
+                                                                          abs(d["cal_after"] - d["cal_before"])))
+        A(abs(d["cal_mean"] * 10 - round(d["cal_mean"] * 10)) < 1e-9,
+          "%s has its field checks' mean on a tenth" % d["id"])
+        A(d["mount"] == W.HEIGHT_DEPART.get((d["code"], d["k"]), W.HEIGHT[d["code"]]),
+          "%s stood at the height the schedule sets, or the remark says why" % d["id"])
+    dep_txt = text_of(target, PK.FILES["deployments"])
+    A(len({row["cal_check_after_db"] for row in _csv.DictReader(io_open(target, PK.FILES["deployments"]))})
+      >= 8, "the field checks vary deployment to deployment")
+    A(len({row["operator"] for row in _csv.DictReader(io_open(target, PK.FILES["deployments"]))}) >= 3,
+      "more than one person deployed the meters")
+    for a, mins, why in [(x[1], x[2], x[3]) for x in W.NODATA]:
+        A(a.strftime("%d/%m %H:%M") in dep_txt, "the deployment record names the %s dropout" % a.date())
+
+    # -------------------------------------------------------------- the weekly plant figures, as filed
+    A(has(plan, "counter reading stamped at 00:00 on the Monday"),
+      "plan 5.1 files the week boundary the figures are read at")
+    A(has(plan, "one start of a centrifuge in the equipment log"), "plan 5.2 files what a run is")
+    scada_rows = list(_csv.DictReader(io_open(target, PK.FILES["scada"])))
+    by_t = {dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M"): x for x in scada_rows}
+    gap = [dt.datetime(2026, 9, 24, 13, 0) + dt.timedelta(minutes=15 * i) for i in range(80)]
+    A(all(t not in by_t for t in gap), "the historian's gap is %d quarter hours" % len(gap))
+    for i, wk in enumerate(W.WEEKS):
+        a = dt.datetime(wk.year, wk.month, wk.day)
+        A(a in by_t and a + dt.timedelta(days=7) in by_t,
+          "week %d has a counter reading at both of its boundaries" % i)
+    # the counters carry the gap; the rate column does not, which is what moves the gap week's ask
+    wk3 = [x for x in scada_rows
+           if W.WEEKS[3] <= dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M").date()
+           < W.WEEKS[3] + dt.timedelta(days=7)]
+    rate_sum = sum(float(x["blower_air_nm3_h"]) for x in wk3) * 0.25 / 1000.0
+    A(g["weekly"][3]["blower_air_knm3"] - rate_sum > 60.0,
+      "the gap week's totaliser stands %.0f above the rate sum" % (g["weekly"][3]["blower_air_knm3"]
+                                                                  - rate_sum))
+    for i in (0, 1, 2, 4, 5):
+        wkr = [x for x in scada_rows
+               if W.WEEKS[i] <= dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M").date()
+               < W.WEEKS[i] + dt.timedelta(days=7)]
+        A(abs(g["weekly"][i]["blower_air_knm3"]
+              - sum(float(x["blower_air_nm3_h"]) for x in wkr) * 0.25 / 1000.0) < 2.0,
+          "week %d agrees between the totaliser and the rate" % i)
+    blocks = {}
+    prev = 0.0
+    for x in scada_rows:
+        t = dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M")
+        f = float(x["centrifuge_feed_m3_h"])
+        if f > 0 and prev == 0:
+            for i, wk in enumerate(W.WEEKS):
+                if wk <= t.date() < wk + dt.timedelta(days=7):
+                    blocks[i] = blocks.get(i, 0) + 1
+        prev = f
+    A(any(blocks.get(i, 0) != g["weekly"][i]["centrifuge_runs"] for i in range(6)),
+      "the process channel's feed blocks do not count the log's runs: %s against %s"
+      % (blocks, {i: g["weekly"][i]["centrifuge_runs"] for i in range(6)}))
+    A(len({v["centrifuge_runs"] for v in g["weekly"].values()}) >= 3,
+      "the weekly run counts vary: %s" % sorted(v["centrifuge_runs"] for v in g["weekly"].values()))
+    A(len({v["blower_air_knm3"] for v in g["weekly"].values()}) == 6, "the weekly air figures differ")
+
+    # ------------------------------------------------------- the readings that converge, asserted on data
+    # pooling: the position's residual over both deployments against the mean of the two deployments'
+    per_dep = {}
+    for sid, ss in g["series"].items():
+        code = ss["dep"]["code"]
+        lg = SM.logged(ss)
+        adj = SM.dep_correction(ss["dep"])
+        lv = np.where(ss["nd"], W.NODATA_VALUE, lg["laeq"] - adj)
+        st = AN.stop_mask(ss["stamps"]) & ss["vm"]
+        if st.any():
+            per_dep.setdefault(code, []).append(AN.eavg(lv[st]))
+    pooled_mean = {c: AN.esub(r[c]["total"], AN.eavg(v)) for c, v in per_dep.items()}
+    sl_pool, _, _ = AN.slate(pooled_mean)
+    A(tuple(sl_pool) == gold, "the per-deployment residual averaged gives the golden slate")
+    for c in W.CODES:
+        A(round(pooled_mean[c], 1) == rows[c]["specific_db"],
+          "%s prints the same level either way of pooling the two deployments" % c)
+    # tonality: the mean of the two adjacent band levels, taken as written or in energy
+    for c in [x for x in W.CODES if g["bands"].get(x) is not None]:
+        lv = g["bands"][c]
+        i = int(np.argmax(lv))
+        nb = [lv[j] for j in (i - 1, i + 1) if 0 <= j < len(lv)]
+        en = 10.0 * math.log10(float(np.mean(np.power(10.0, np.array(nb) / 10.0))))
+        A((lv[i] - float(np.mean(nb)) >= 5.0) == (lv[i] - en >= 5.0),
+          "%s gives the same tone verdict on either mean of the adjacent bands" % c)
+
     for k, v in g["weekly"].items():
         A(v["biogas_m3"] > 20000 and v["blower_air_knm3"] > 300 and v["centrifuge_runs"] >= 4,
           "week %s plant figures %s" % (k, v))

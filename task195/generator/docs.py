@@ -154,10 +154,10 @@ def model_card(target, estimates):
                      ["3.2", "2026-04-20", "First card for the v3.2 estimator", "Group lead"],
                      ["3.4", "2027-01-26", "Two-component fit over the core panel; depth floor raised",
                       "Group lead"],
-                     ["3.4.1", "2027-05-14", "Marker count floor stated; limit of detection restated "
-                      "from the vendor series", "Group lead"],
-                     ["3.4.1 add.", "2027-06-19", "Addendum: output distribution on the 2027 re-run",
-                      "Group lead"]]), colWidths=[18 * mm, 22 * mm, 60 * mm, 22 * mm])]
+                     ["3.4.1", "2027-05-14", "Marker count floor stated; limit of detection "
+                      "restated from the vendor series", "Group lead"],
+                     ["3.4.1 add.", "2027-06-19", "Addendum: output on the 2027 re-run",
+                      "Group lead"]]), colWidths=[16 * mm, 20 * mm, 58 * mm, 22 * mm])]
     d.build(f)
 
 

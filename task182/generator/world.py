@@ -48,21 +48,58 @@ BLOWERS = ["BL-01", "BL-02", "BL-03"]
 CENTRIFUGES = ["CF-01", "CF-02"]
 ENGINE = "CHP-01"
 
+# Days a centrifuge did not run: the scroll check at the weekly inspection, and the day the second
+# machine was down for a bearing.
+CF_DOWN = {
+    dt.date(2026, 9, 29): ["CF-02"],
+    dt.date(2026, 9, 16): ["CF-01"],
+}
+# Runs the shift split in two to draw the liquor tank down, with the minutes into the run it stopped.
+CF_SPLIT = {
+    ("CF-01", dt.date(2026, 9, 2)): 212,
+    ("CF-02", dt.date(2026, 9, 8)): 174,
+    ("CF-02", dt.date(2026, 9, 10)): 265,
+    ("CF-01", dt.date(2026, 9, 23)): 198,
+    ("CF-02", dt.date(2026, 10, 1)): 243,
+    ("CF-01", dt.date(2026, 10, 8)): 227,
+    ("CF-02", dt.date(2026, 10, 9)): 189,
+}
+
 # The five meters. The one-third-octave module is licensed on the first three only.
 METERS = [
     {"id": "M1", "serial": "SLM-21884", "model": "Class 1 logging sound level meter", "bands": True,
-     "pre": 93.9, "post": 94.0},
+     "cert": "2026-02-19", "due": "2027-02-18", "found": 94.1, "left": 94.0},
     {"id": "M2", "serial": "SLM-21907", "model": "Class 1 logging sound level meter", "bands": True,
-     "pre": 94.0, "post": 94.8},
+     "cert": "2026-03-12", "due": "2027-03-11", "found": 94.5, "left": 94.1},
     {"id": "M3", "serial": "SLM-22043", "model": "Class 1 logging sound level meter", "bands": True,
-     "pre": 93.8, "post": 93.9},
+     "cert": "2025-11-27", "due": "2026-11-26", "found": 93.8, "left": 94.0},
     {"id": "M4", "serial": "SLM-19651", "model": "Class 1 logging sound level meter", "bands": False,
-     "pre": 93.5, "post": 93.3},
+     "cert": "2026-01-23", "due": "2027-01-22", "found": 93.2, "left": 93.9},
     {"id": "M5", "serial": "SLM-19744", "model": "Class 1 logging sound level meter", "bands": False,
-     "pre": 94.0, "post": 94.1},
+     "cert": "2026-04-08", "due": "2027-04-07", "found": 94.0, "left": 94.0},
 ]
 CAL_REF = 94.0          # the calibrator's reference level, dB
 CAL_THRESHOLD = 0.3     # plan 4.1: adjust where the checks differ from the reference by more than this
+
+# The field check either side of each deployment, as the technician wrote them on the sheet: the mean of
+# the pair is the deployment's deviation from the calibrator. Two meters sit outside the plan's 0.3 dB
+# window all survey (M2 reads high, M4 low); the other three stay inside it and are not corrected. No
+# pair's mean lands on the window's edge and no pair spreads more than 0.8 dB, so no deployment is
+# dropped under 4.1's second sentence. Means on a tenth: both checks move in the same tenth.
+CAL_MEAN = {
+    "M1": [94.1, 93.9, 94.0, 94.2, 93.9, 94.1],
+    "M2": [94.4, 94.6, 94.5, 94.4, 94.6, 94.5],
+    "M3": [93.9, 94.1, 93.8, 94.0, 94.2, 93.9],
+    "M4": [93.3, 93.2, 93.4, 93.2, 93.3],
+    "M5": [94.0, 94.2, 93.9, 94.1, 94.0],
+}
+CAL_SPREAD = {
+    "M1": [0.2, 0.4, 0.2, 0.0, 0.6, 0.2],
+    "M2": [0.8, 0.4, 0.6, 0.2, 0.4, 0.8],
+    "M3": [0.2, 0.6, 0.4, 0.2, 0.4, 0.0],
+    "M4": [0.6, 0.2, 0.4, 0.8, 0.2],
+    "M5": [0.0, 0.4, 0.2, 0.6, 0.2],
+}
 
 # The fourteen monitoring positions. S is the designed specific sound level of the plant at the position,
 # R the designed residual, v the residual's energetic mean over its own tenth percentile, m its mean over
@@ -122,8 +159,34 @@ SCHEDULE = {
     "NSL13": [(2, "M3"), (4, "M4")],
     "NSL14": [(2, "M5"), (3, "M5")],
 }
-# Mounting height, metres above ground, per deployment index.
-MOUNT = {0: 1.5, 1: 1.5}
+# Mounting height the schedule sets for each position, metres above ground, inside the 1.2 to 1.5 m the
+# free-field standard allows. The lower positions are the ones where the tripod had to stand clear of a
+# roadside hedge or a garden wall.
+HEIGHT = {
+    "NSL01": 1.5, "NSL02": 1.5, "NSL03": 1.2, "NSL04": 1.5, "NSL05": 1.5, "NSL06": 1.3,
+    "NSL07": 1.5, "NSL08": 1.2, "NSL09": 1.5, "NSL10": 1.5, "NSL11": 1.5, "NSL12": 1.2,
+    "NSL13": 1.5, "NSL14": 1.4,
+}
+# The two deployments where the height on the sheet is not the scheduled one, with the sheet's reason.
+HEIGHT_DEPART = {("NSL08", 0): 1.5, ("NSL13", 1): 1.2}
+
+# Who deployed and collected each meter: the technician on most, the engineer and the operations
+# manager where the week was covered.
+CREW = ["technician", "technician", "engineer", "technician", "operations", "technician",
+        "technician", "engineer", "technician", "technician", "technician", "operations",
+        "engineer", "technician", "technician", "technician", "operations", "technician",
+        "technician", "engineer", "technician", "technician", "technician", "operations",
+        "technician", "engineer", "technician", "technician"]
+
+# Spells where a meter wrote no measurement: the logger reset or the measurement channel dropped out, and
+# the download carries the instrument's no-data value in every level column for those minutes. None falls
+# inside a process stop.
+NODATA_VALUE = -120.2
+NODATA = [
+    (("NSL12", 1), dt.datetime(2026, 10, 8, 13, 12), 95, "logger reset, channel down until the mid-week visit"),
+    (("NSL05", 0), dt.datetime(2026, 9, 4, 9, 5), 38, "measurement channel dropout"),
+    (("NSL09", 1), dt.datetime(2026, 10, 7, 15, 41), 17, "measurement channel dropout"),
+]
 # The repeated download: this deployment's card was re-read and part of a day came through twice.
 DUP_DEPLOYMENT = ("NSL09", 0)
 DUP_DAY = dt.date(2026, 9, 10)

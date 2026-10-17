@@ -2,11 +2,29 @@
 import json
 import os
 
+import golden as G
+import world as W
+
+CANDIDATES = ("naive", "remove_fp_ppv", "remove_fp_fpr", "recall_only", "pv_pooled",
+              "audit_prevalence", "hand_where_audited")
+
 
 def write(gendir, g):
+    cand = {"naive": g["raw_rung0"], "remove_fp_ppv": g["raw_rung1"],
+            "remove_fp_fpr": g["raw_rung1b"], "recall_only": g["raw_rung2"],
+            "pv_pooled": g["raw_rung3"], "audit_prevalence": g["raw_rung4"],
+            "hand_where_audited": g["raw_rung5"]}
     out = {
         "call_actions": g["total"],
-        "rung0_actions": g["rung0"], "rung1_actions": g["rung1"], "rung2_actions": g["rung2"],
+        "grain": g["grain"],
+        "raw_total": round(g["raw_total"], 2),
+        "candidates": {k: round(v, 2) for k, v in cand.items()},
+        "candidate_cells": {k: G.grain(v) for k, v in cand.items()},
+        "rung_codes_as_filed": G.grain(g["raw_rung0"]),
+        "rung_false_marks_out": G.grain(g["raw_rung1"]),
+        "rung_hand_where_audited": G.grain(g["raw_rung5"]),
+        "rung_audited_shares": G.grain(g["raw_rung3"]),
+        "rung_recall_only": G.grain(g["raw_rung2"]),
         "actions_in_period": g["actions_in_period"],
         "press_only_actions": g["press_only"],
         "actions_with_a_filer_report": g["filed_by_hand"],
@@ -15,15 +33,23 @@ def write(gendir, g):
         "sample_rows": g["sample_rows"],
         "sample_tp": g["tp"], "sample_fn": g["fn"], "sample_fp": g["fp"], "sample_tn": g["tn"],
         "classifier_recall": g["recall"], "classifier_false_mark_rate": g["false_mark"],
-        "raw_total": round(g["raw_total"], 2),
+        "audit_months": g["audit_covers"],
+        "themes_without_an_audited_report": sorted(g["dead"]["rg_by_theme"]["broken"]),
+        "audit_prevalence_share": round(g["audit_prevalence"], 4),
+        "record_prevalence_share": round(g["record_prevalence"], 4),
         "variant_continuity": round(g["variant_continuity"], 2),
-        "variant_by_round": round(g["variant_by_round"], 2),
-        "variant_by_theme": round(g["variant_by_theme"], 2),
-        "variant_press_only_sample": round(g["variant_press_only_sample"], 2),
         "variant_matrix_inverse": round(g["variant_matrix_inverse"], 2),
+        "variant_hybrid": round(g["variant_hybrid"], 2),
+        "variant_rg_fb_month": round(g["variant_rg_fb_month"], 2),
+        "variant_rg_fb_theme": round(g["variant_rg_fb_theme"], 2),
+        "variant_pv_fb_month": round(g["variant_pv_fb_month"], 2),
+        "variant_pv_fb_theme": round(g["variant_pv_fb_theme"], 2),
+        "sampling_sd": round(g.get("boot", {}).get("sd_rg", 0.0), 1),
+        "sampling_sd_of_the_gap": round(g.get("boot", {}).get("sd_gap", 0.0), 1),
+        "mean_gap": round(g.get("boot", {}).get("mean_gap", 0.0), 1),
         "fortnight_rows": len(g["a1"]), "route_rows": len(g["a2"]), "partner_rows": len(g["a3"]),
-        "protocol_paragraphs": ["2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "3.2", "3.3", "3.4",
-                                "4.1", "4.2", "4.3", "4.4", "4.5", "6.1", "6.2"],
+        "protocol_paragraphs": ["2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "3.2", "3.3",
+                                "3.4", "4.1", "4.2", "4.3", "4.4", "4.5", "4.6", "6.1", "6.2"],
         "fortnights": {k: {"actions": v["actions"], "municipalities": v["municipalities"],
                            "partner_share_pct": v["partner_share"], "marked_actions": v["marked"]}
                        for k, v in g["a1"].items()},

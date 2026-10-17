@@ -147,15 +147,17 @@ UNITS = [
     ("41430", "Renal Medicine", "H3", "renal", "acute", 1.050, 560, 652, 1.119, "mid", "eligible"),
     ("41510", "General Medicine", "H4", "gen_med", "acute", 1.162, 390, 466, 1.071, "merged", "eligible"),
     ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.124, 500, 779, 1.121, "rising", "eligible"),
-    # units the programme has already been placed with inside the twelve closed quarters
-    ("41250", "Colorectal Surgery", "H1", "colorectal", "acute", 1.236, 1150, 1210, None, "embed", "embedded"),
-    ("41260", "Aged Care", "H1", "aged", "acute", 1.288, 880, 920, None, "embed", "embedded"),
-    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.194, 1150, 800, None, "embed", "embedded"),
-    ("41340", "Orthopaedics", "H2", "ortho", "acute", 1.252, 900, 950, None, "embed", "embedded"),
-    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.173, 1000, 870, None, "embed", "embedded"),
-    ("41360", "Aged Care", "H2", "aged", "acute", 1.311, 640, 680, None, "embed", "embedded"),
-    ("41440", "General Surgery", "H3", "gen_surg", "acute", 1.112, 2400, 1080, None, "embed", "embedded"),
-    ("41450", "Aged Care", "H3", "aged", "acute", 1.464, 520, 550, None, "embed", "embedded"),
+    # units the programme has already been placed with inside the twelve closed quarters. Earlier cycles
+    # were decided on the quarter closed at the time, so the register holds units that were standing badly
+    # over their own record beside units that were having one bad quarter on an ordinary record.
+    ("41250", "Colorectal Surgery", "H1", "colorectal", "acute", 1.060, 2200, 2240, None, "embed", "embedded"),
+    ("41260", "Aged Care", "H1", "aged", "acute", 1.090, 1670, 1700, None, "embed", "embedded"),
+    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.070, 2200, 2250, None, "embed", "embedded"),
+    ("41340", "Orthopaedics", "H2", "ortho", "acute", 1.870, 1250, 1290, None, "embed", "embedded"),
+    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.720, 1330, 1360, None, "embed", "embedded"),
+    ("41360", "Aged Care", "H2", "aged", "acute", 1.930, 1115, 1140, None, "embed", "embedded"),
+    ("41440", "General Surgery", "H3", "gen_surg", "acute", 1.000, 3020, 3080, None, "embed", "embedded"),
+    ("41450", "Aged Care", "H3", "aged", "acute", 1.980, 1082, 1110, None, "embed", "embedded"),
     # the unit the team is with now, for the quarter in progress: no closed data for the placement
     ("41460", "Rehabilitation and Aged Care", "H3", "aged", "acute", 1.221, 470, 500, None, "current", "embedded"),
     # non-acute units: outside the indicator's scope (specification 4.0 clause 2.3)
@@ -172,10 +174,13 @@ MERGE_INTO = "41510"
 MERGE_FROM = ["41511", "41512"]
 
 # The improvement embeds already closed, quarter index -> unit code (quarter index into QUARTERS).
-EMBEDS = {3: "41250", 4: "41260", 5: "41340", 6: "41440", 7: "41350", 8: "41450", 9: "41270"}
+EMBEDS = {2: "41440", 3: "41250", 4: "41270", 5: "41260", 6: "41350", 7: "41340",
+          8: "41360", 9: "41450"}
 EMBED_CURRENT = ("2026-27 Q3", "41460")   # in progress, outside the extract
-EMBED_EFFECT = 0.41                      # share of a unit's persistent excess an embed removes in its quarter
-EMBED_RETAIN = [0.72, 0.84]              # the gain fades: excess back to these shares of persistent in later quarters
+EMBED_EFFECT = 0.50                      # share of a unit's persistent excess an embed removes in its quarter
+EMBED_RETAIN = [0.68, 0.85]              # the gain fades: excess back to these shares of persistent in later quarters
+EMBED_Q = {v: k for k, v in EMBEDS.items()}
+OVERDISPERSION = 1.45                    # Pearson residual of a unit-quarter count against its expected number
 TEAM_FTE = 2.4
 
 # The hospital-acquired complication list, as the national list numbered the categories under the 2022

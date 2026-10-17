@@ -108,13 +108,13 @@ P_LINE = 0.17           # the public line receives one
 CLS_RECALL = 0.46       # confrontational actions it codes as confrontational
 CLS_FALSE_MARK = 0.0295  # ordinary actions it codes as confrontational
 CLS_DIAGONAL = 7.0      # weight on the code itself against its neighbours
-CLS_DECAY = 1.15        # how fast the confusion falls away with distance in the code order
+CLS_DECAY = 1.95        # how fast the confusion falls away with distance in the code order
 CLS_TRAINED = dt.date(2026, 3, 18)
 
 # the share of actions that were confrontational falls across the period: the spring and summer
 # disputes over evictions and road haulage were confrontational, the autumn mobilisation that
 # trebles the volume is overwhelmingly peaceful
-CONF_RATE_HI = 0.1480
+CONF_RATE_HI = 0.1674
 CONF_RATE_LO = CONF_RATE_HI / 4.2
 CONF_RAMP_FROM = dt.date(2026, 8, 9)
 CONF_RAMP_TO = dt.date(2026, 9, 18)
@@ -125,15 +125,15 @@ SAMPLE_ROUNDS = [("R1", dt.date(2026, 6, 20), dt.date(2026, 5, 1), dt.date(2026,
 ADJUDICATED = 0.085     # share of coded rows a second coder looked at
 
 PARTNERS = [
-    ("P01", "Nucleo de Estudos do Trabalho do Minho", "Norte", 6.40),
+    ("P01", "Nucleo de Estudos do Trabalho do Minho", "Norte", 6.35),
     ("P02", "Associacao Civica do Mondego", "Centro", 5.95),
-    ("P03", "Plataforma de Bairros da Margem Sul", "A.M. Lisboa", 7.25),
+    ("P03", "Plataforma de Bairros da Margem Sul", "A.M. Lisboa", 7.20),
     ("P04", "Observatorio Rural do Alentejo Central", "Alentejo", 5.45),
-    ("P05", "Liga dos Direitos do Barlavento", "Algarve", 6.75),
-    ("P06", "Centro de Estudos Insulares", "Acores e Madeira", 8.15),
-    ("P07", "Nucleo de Acompanhamento do Douro", "Norte", 6.40),
+    ("P05", "Liga dos Direitos do Barlavento", "Algarve", 6.90),
+    ("P06", "Centro de Estudos Insulares", "Acores e Madeira", 8.10),
+    ("P07", "Nucleo de Acompanhamento do Douro", "Norte", 6.15),
 ]
-AMENDED = ("P04", dt.date(2026, 8, 1), 6.20)
+AMENDED = ("P04", dt.date(2026, 8, 1), 6.30)
 MERGED = ("P07", "P12", dt.date(2026, 9, 10))
 
 OUTLETS = [

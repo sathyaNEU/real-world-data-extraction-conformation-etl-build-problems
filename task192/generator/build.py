@@ -32,8 +32,13 @@ def dictionary_sheets():
           ("codigo_acao", "texto", "codigo de acao que o classificador atribuiu ao relato (protocolo 4.2); igual em todos os itens do mesmo relato"),
           ("local_texto", "texto", "localidade tal como o relato a da, com o nome atual ou o nome anterior do gazeteiro"),
           ("data_ocorrencia", "data", "dia de calendario local da acao, tal como o registo o fixa"),
-          ("inicio_acao", "data e hora", "hora local a que a acao comecou"),
-          ("carimbo_recepcao", "data e hora", "momento em que o item entrou no monitor, no relogio UTC do servidor de recolha")]),
+          ("inicio_acao", "data e hora", "hora a que a acao comecou, no relogio local do local da "
+                                         "acao; o fuso de cada distrito do gazeteiro esta em "
+                                         "config_monitor.json"),
+          ("carimbo_recepcao", "data e hora", "momento em que o item entrou no monitor, no relogio "
+                                              "UTC do servidor de recolha; um relato reune os itens "
+                                              "da mesma acao e o relato entrou no monitor com o "
+                                              "primeiro deles")]),
         ("relatos_rede_parceiros", "Um registo por relato entregue por uma organizacao parceira. "
          "O mesmo relato aparece em duas cargas quando um mes foi reposto; o id_relato e o mesmo.",
          [("id_relato", "texto", "identificador do relato"),
@@ -43,7 +48,7 @@ def dictionary_sheets():
           ("codigo_acao", "texto", "codigo de acao do protocolo 2.2"),
           ("local_texto", "texto", "localidade tal como o relato a da"),
           ("data_ocorrencia", "data", "dia de calendario local da acao"),
-          ("inicio_acao", "data e hora", "hora local a que a acao comecou"),
+          ("inicio_acao", "data e hora", "hora a que a acao comecou, no relogio local do local da acao"),
           ("carimbo_entrega_utc", "data e hora", "momento da entrega no portal de parceiros, em UTC")]),
         ("relatos_linha_publica", "Um registo por relato recebido na linha de participacao publica.",
          [("id_relato", "texto", "identificador do relato"),
@@ -52,21 +57,29 @@ def dictionary_sheets():
           ("codigo_acao", "texto", "codigo de acao do protocolo 2.2"),
           ("local_texto", "texto", "localidade tal como o relato a da"),
           ("data_ocorrencia", "data", "dia de calendario local da acao"),
-          ("inicio_acao", "data e hora", "hora local a que a acao comecou"),
-          ("carimbo_recepcao", "data e hora", "momento da recepcao, na hora local")]),
-        ("amostra_dupla_codificacao", "Uma linha por relato do monitor de imprensa que a mesa de "
-         "codificacao tirou para a amostra e codificou a mao (protocolo 4.5). Nao ha linhas de "
-         "outras vias.",
+          ("inicio_acao", "data e hora", "hora a que a acao comecou, no relogio local do local da acao"),
+          ("carimbo_recepcao", "data e hora", "momento da recepcao na linha, no relogio local de "
+                                              "Lisboa da associacao")]),
+        ("amostra_dupla_codificacao", "Folha de trabalho da mesa de codificacao: uma linha por "
+         "relato do monitor de imprensa que a mesa tirou para o lote da ronda e codificou a mao "
+         "(protocolo 4.5). Cada ronda tira o lote dos relatos aceites entrados desde o fecho da "
+         "ronda anterior. Nao ha linhas de outras vias.",
          [("id_relato", "texto", "relato do monitor de imprensa que foi codificado a mao"),
           ("data_ocorrencia", "data", "dia de calendario local da acao do relato"),
           ("tema", "texto", "tema de disputa do relato"),
           ("codigo_monitor", "texto", "codigo de acao que o classificador do monitor atribuiu ao relato"),
-          ("codigo_manual", "texto", "codigo de acao que a mesa de codificacao atribuiu a mao"),
+          ("codigo_manual", "texto", "codigo de acao da codificacao manual, depois da decisao da "
+                                     "mesa nas linhas que foram a segunda codificacao"),
           ("codificador", "texto", "iniciais de quem codificou a mao"),
           ("data_codificacao", "data", "dia em que a codificacao manual foi feita; a mesa trabalha o "
-                                       "lote nos dias anteriores ao fecho da ronda"),
-          ("ronda", "texto", "ronda de codificacao: R1 fechada em 20 de julho de 2026, R2 em 3 de "
-                             "novembro de 2026")]),
+                                       "lote nos dias de trabalho anteriores ao fecho da ronda"),
+          ("ronda", "texto", "ronda de codificacao: R1 fechada em 20 de junho de 2026 sobre os "
+                             "relatos de 1 de maio a 19 de junho, R2 fechada em 10 de setembro de "
+                             "2026 sobre os relatos de 20 de junho a 31 de agosto"),
+          ("revisto_por", "texto", "iniciais de quem fez a segunda codificacao; vazio nas linhas "
+                                   "que nao foram revistas"),
+          ("decisao_da_mesa", "texto", "mantido ou alterado, nas linhas que foram revistas"),
+          ("nota", "texto", "nota de codificacao, quando quem codificou deixou uma")]),
         ("gazeteiro_localidades", "Uma linha por nome de localidade. Uma localidade com nome novo "
          "fica com duas linhas, a atual e a anterior, ambas com o mesmo codigo_localidade.",
          [("codigo_localidade", "texto", "codigo da localidade no gazeteiro de 2024"),
@@ -83,11 +96,13 @@ def dictionary_sheets():
           ("local_texto", "texto", "texto de localidade que nao foi fixado"),
           ("tema", "texto", "tema de disputa declarado"),
           ("motivo", "texto", "motivo pelo qual a localidade nao foi fixada")]),
-        ("totais_por_via", "Uma linha por dia e por via: os relatos que a via recebeu nesse dia, na "
-         "hora local, incluindo os que o gazeteiro nao fixou.",
-         [("data", "data", "dia de recepcao, na hora local"),
+        ("totais_por_via", "Uma linha por dia e por via: o contador que o processo de importacao "
+         "escreve a medida que as entregas chegam, na hora local de Lisboa, incluindo os relatos "
+         "que o gazeteiro nao fixou. O contador conta cada chegada, pelo que uma carga reposta e "
+         "contada outra vez no dia em que chegou.",
+         [("data", "data", "dia de recepcao, na hora local de Lisboa"),
           ("via", "texto", "via de acesso"),
-          ("relatos_recebidos", "inteiro", "relatos recebidos nesse dia nessa via")]),
+          ("relatos_recebidos", "inteiro", "chegadas contadas nesse dia nessa via")]),
         ("registo_importacoes", "Uma linha por carga de importacao.",
          [("id_carga", "texto", "codigo da carga"), ("via", "texto", "via de acesso"),
           ("ficheiro", "texto", "ficheiro de origem"),
@@ -95,9 +110,22 @@ def dictionary_sheets():
           ("concluida_em", "data", "dia em que a carga terminou"),
           ("estado", "texto", "estado da carga"), ("nota", "texto", "nota de operacao")]),
         ("convencoes", "Convencoes de leitura dos quadros do boletim.",
-         [("mediana", "regra", "num conjunto com um numero par de valores a mediana e a media dos dois valores centrais"),
-          ("quinzena", "regra", "as quinzenas contam-se a partir de 1 de maio e a ultima termina com o periodo (protocolo 3.4)"),
-          ("acao", "regra", "uma acao e um tema numa localidade num dia (protocolo 2.1), qualquer que seja o numero de relatos")]),
+         [("mediana", "regra", "num conjunto com um numero par de valores a mediana e a media dos "
+                               "dois valores centrais"),
+          ("quinzena", "regra", "as quinzenas tem catorze dias e contam-se a partir de 1 de maio; "
+                                "os dias que sobram no fim do periodo entram na ultima, que tem "
+                                "quinze dias (protocolo 3.4)"),
+          ("acao", "regra", "uma acao e um tema numa localidade num dia (protocolo 2.1), qualquer "
+                            "que seja o numero de relatos"),
+          ("relato recebido", "regra", "um relato conta uma vez na via que o recebeu, qualquer que "
+                                       "seja o numero de cargas de importacao que o trouxeram"),
+          ("minutos do inicio ao relato", "regra", "a diferenca entre o momento do relato e o "
+                                                   "inicio da acao, com cada momento no fuso que "
+                                                   "config_monitor.json da ao distrito da acao"),
+          ("relatos de um parceiro", "regra", "os relatos que a organizacao entregou sobre acoes "
+                                              "datadas no periodo de relato"),
+          ("codigo de entrega", "regra", "os codigos de entrega de um mesmo acordo contam juntos; "
+                                         "as adendas aos acordos estao em acordos_dados_parceiros")]),
         ("outros ficheiros", "Os restantes ficheiros da extracao.",
          [("config_monitor.json", "json", "configuracao do monitor de imprensa: orgaos, palavras-chave, regra de aceitacao e nota de relogio"),
           ("notificacoes_reuniao_publica.csv", "csv", "notificacoes de reuniao e manifestacao entregues nas camaras municipais"),
@@ -195,12 +223,12 @@ def cut(target):
         else:
             n, first, last = "", "", ""
         note = {"registo_itens_imprensa.csv": "itens do monitor de imprensa, por item",
-                "amostra_dupla_codificacao.csv": "relatos do monitor codificados a mao pela mesa",
+                "amostra_dupla_codificacao.csv": "folha de trabalho da mesa de codificacao",
                 "relatos_rede_parceiros.csv": "relatos das organizacoes parceiras, por linha de carga",
                 "relatos_linha_publica.csv": "relatos da linha de participacao publica",
                 "gazeteiro_localidades.csv": "gazeteiro de 2024, uma linha por nome",
                 "excecoes_geocodificacao.csv": "relatos sem localidade fixada",
-                "totais_por_via.csv": "contagem diaria da associacao, por via",
+                "totais_por_via.csv": "contador diario do processo de importacao, por via",
                 "registo_importacoes.csv": "cargas de importacao",
                 "notificacoes_reuniao_publica.csv": "notificacoes entregues nas camaras",
                 "cobertura_meios.csv": "cobertura declarada dos orgaos",
@@ -239,19 +267,29 @@ if __name__ == "__main__":
                      b"D:20261113164500+00'00'", b"D:20261113164500+00'00'")
     os.remove(chart_png)
     MD.write(TASK, g)
-    FG.write(HERE, g)
     import checks as CK
     import verify as VF
     n = CK.run(target, g)
+    FG.write(HERE, g)
     k = VF.run(target, os.path.join(HERE, "figures.json"))
     print("generator assertions", n, "independent checks", k)
     print("actions %d | press reported %d | other %d" % (g["actions_in_period"], g["press_only"],
                                                          g["filed_by_hand"]))
-    print("call    : %d confrontational actions (raw %.3f)" % (g["total"], g["raw_total"]))
-    print("rung 0  : %d, rung 1 %d, rung 2 %d" % (g["rung0"], g["rung1"], g["rung2"]))
-    print("sample  : %d rows, %d/%d/%d/%d, recall %.4f, false mark %.4f"
-          % (g["sample_rows"], g["tp"], g["fn"], g["fp"], g["tn"], g["recall"], g["false_mark"]))
-    print("variants: continuity %.3f by round %.3f by theme %.3f matrix %.3f sample-pop %.3f"
-          % (g["variant_continuity"], g["variant_by_round"], g["variant_by_theme"],
-             g["variant_matrix_inverse"], g["variant_press_only_sample"]))
+    print("call    : %d confrontational actions (raw %.3f, to the nearest %d)"
+          % (g["total"], g["raw_total"], g["grain"]))
+    print("routes  : codes as filed %d, false marks out %d, hand where audited %d, audited "
+          "shares %d, recall only %d, audited prevalence %d"
+          % (g["rung0"], g["rung1"], g["rung5"], g["rung3"], g["rung2"], g["rung4"]))
+    print("sample  : %d rows, %d/%d/%d/%d, recall %.4f, false mark %.4f, months %s"
+          % (g["sample_rows"], g["tp"], g["fn"], g["fp"], g["tn"], g["recall"], g["false_mark"],
+             g["audit_covers"]))
+    print("mix     : audited prevalence %.4f against the record's %.4f"
+          % (g["audit_prevalence"], g["record_prevalence"]))
+    print("variants: continuity %.2f hybrid %.2f matrix %.2f rg-fb-month %.2f rg-fb-theme %.2f"
+          % (g["variant_continuity"], g["variant_hybrid"], g["variant_matrix_inverse"],
+             g["variant_rg_fb_month"], g["variant_rg_fb_theme"]))
+    print("dead    : %s" % {k: v["broken"] for k, v in sorted(g["dead"].items())})
+    if "boot" in g:
+        print("noise   : sd of the call %.1f, sd of the gap %.1f, mean gap %.1f"
+              % (g["boot"]["sd_rg"], g["boot"]["sd_gap"], g["boot"]["mean_gap"]))
     print("pack    :", counts)

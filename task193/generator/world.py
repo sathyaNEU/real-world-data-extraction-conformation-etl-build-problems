@@ -128,9 +128,12 @@ EFFECTS = {
 }
 # the defined daily dose in milligrams, as the ATC index assigns it. A package's defined daily
 # doses are its pack size times its strength divided by this. D07AC carries no defined daily dose.
+# Every screened product's strengths are whole or half defined daily doses per unit, so a package
+# holds a whole number of tenths of a defined daily dose and a holder's window total is exact at
+# one decimal. The marker treatments are real substances and keep the index's own values.
 DDD_MG = {
-    "P01": 50.0, "P02": 90.0, "P03": 10.0, "P04": 300.0, "P05": 60.0,
-    "P06": 1500.0, "P07": 2.0, "P08": 20.0, "P09": 400.0,
+    "P01": 50.0, "P02": 60.0, "P03": 10.0, "P04": 150.0, "P05": 25.0,
+    "P06": 250.0, "P07": 1.0, "P08": 10.0, "P09": 50.0,
     "M1": 16.0, "M2": 30.0, "M3": 400.0, "M4": 40.0, "M5": 50.0, "M6": 7.5,
     "M7": None, "M8": 20.0,
 }
@@ -171,8 +174,10 @@ CHAINS = [("APK", "Apotekerkaeden"), ("DSA", "Danmarks Sundhedsapotek"),
 REGIONS = ["Hovedstaden", "Midtjylland", "Nordjylland", "Sjaelland", "Syddanmark"]
 REGION_W = [0.316, 0.230, 0.102, 0.147, 0.205]
 AGE_BANDS = [(0, 39, "18-39"), (40, 59, "40-59"), (60, 74, "60-74"), (75, 200, "75 and over")]
-FEE_BANDS = [(0, 250, 1480), (250, 1000, 1240), (1000, 4000, 1015), (4000, 10 ** 9, 860)]
-FEE_BANDS_AMENDED = [(0, 250, 1595), (250, 1000, 1335), (1000, 4000, 1095), (4000, 10 ** 9, 930)]
+# The statutory rates. Chosen so that every payer's fee falls at least 0.38 krone from the nearest
+# half krone, which is what keeps the rounded figure the same under every convention.
+FEE_BANDS = [(0, 250, 1465), (250, 1000, 1240), (1000, 4000, 990), (4000, 10 ** 9, 860)]
+FEE_BANDS_AMENDED = [(0, 250, 1570), (250, 1000, 1340), (1000, 4000, 1090), (4000, 10 ** 9, 930)]
 FEE_AMENDMENT_DAY = 913               # 2026-04-01
 
 

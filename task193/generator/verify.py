@@ -4,6 +4,7 @@ code path, and recomputes the screen, every rung and every ask figure.
 import bisect
 import collections
 import csv
+from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN
 import datetime as dt
 import json
 import os
@@ -56,7 +57,7 @@ def run(tgt, figures_path):
         pkg[r["vnr"]] = (r["atc_code"],
                          d_iso(r["valid_from"]) if r["valid_from"] else None,
                          d_iso(r["valid_to"]) if r["valid_to"] else None)
-        ddd[r["vnr"]] = float(r["ddd_per_pack"]) if r["ddd_per_pack"] else 0.0
+        ddd[r["vnr"]] = int(Decimal(r["ddd_per_pack"]) * 10) if r["ddd_per_pack"] else 0
     annex = tab(tgt, "screen_annexes.csv")
     prod = {r["product_atc"]: r["product_code"] for r in annex}
     mark = {r["marker_atc_group"]: r["marker_code"] for r in annex}
@@ -242,13 +243,20 @@ def run(tgt, figures_path):
        "%d against %d" % (len(fg["a2"]), len([h for h in tot if tot[h] > 0])))
     for r in fg["a2"]:
         h = r["holder"]
-        th = tot[h] / 1000.0
+        th = Decimal(tot[h]) / Decimal(10000)
         rb = next(x for lo, hi, x in BANDS_BEFORE if lo <= th < hi)
         ra = next(x for lo, hi, x in BANDS_AFTER if lo <= th < hi)
-        fee = round(before[h] / 1000.0 * rb + after_d[h] / 1000.0 * ra)
-        ck("v.a2_ddd_" + h, abs(round(tot[h], 1) - r["ddd"]) < 0.11,
-           "%.1f against %.1f" % (tot[h], r["ddd"]))
+        exact = (Decimal(before[h]) * rb + Decimal(after_d[h]) * ra) / Decimal(10000)
+        fee = exact.quantize(Decimal(1), rounding=ROUND_HALF_UP)
+        ck("v.a2_ddd_" + h, Decimal(tot[h]) / 10 == Decimal(str(r["ddd"])),
+           "%s against %s" % (Decimal(tot[h]) / 10, r["ddd"]))
         ck("v.a2_fee_" + h, int(fee) == r["fee_dkk"], "%d against %d" % (fee, r["fee_dkk"]))
+        # the figure is not near a rounding boundary: half-up and half-even agree
+        other = exact.quantize(Decimal(1), rounding=ROUND_HALF_EVEN)
+        ck("v.a2_fee_mid_bin_" + h, int(other) == r["fee_dkk"] and r["fee_distance"] >= 0.02,
+           "distance %.4f" % r["fee_distance"])
+        ck("v.a2_ddd_exact_" + h, Decimal(tot[h]) % 1 == 0,
+           "tenths are whole: %s" % tot[h])
 
     # ---- A3
     reg = {}

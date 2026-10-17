@@ -5,6 +5,7 @@ would build it, so the goldens, the write-up and the verifier all stand on the b
 """
 import csv
 import datetime as dt
+import math
 import os
 from collections import OrderedDict, defaultdict
 
@@ -139,14 +140,13 @@ def record_share(b):
     return removed / carried, rows, carried, removed
 
 
-def share_readings(b):
-    """The share of a unit's standing excess a placement removes, under every reading of the register.
+def placement_record(b):
+    """Each closed placement, measured from the shipped panel.
 
-    Ten readings a careful analyst could take of the same seven closed placements: the mean, the median and
-    the expected-weighted mean of the placements' own shares, the two pooled sums, least squares through
-    the origin and with an intercept, the same pooled share measured from the quarter that was closed when
-    the placement was decided and from the quarter before the placement, and the fall net of what the other
-    units did over the same two quarters, as a mean across those units and pooled over them.
+    For every closed placement whose assessment quarter is inside the specification period: the level the
+    unit was running at over its closed quarters before the team arrived, the complications that level
+    carries over the assessment quarter, what the unit recorded in it, and what every other unit did
+    between the quarter before and the quarter of the placement.
     """
     panel = b["panel"]
     allq = sorted({q for (_, q) in panel})
@@ -163,45 +163,91 @@ def share_readings(b):
         pre = [x for x in qs if x < q]
         e = panel[(unit, q)]["expected"]
         o = panel[(unit, q)]["observed"]
-        prev, dec = allq[i - 1], allq[i - 2]
-        others = [c for c in acute if c != unit and (c, prev) in panel and (c, q) in panel]
-        moved = [panel[(c, prev)]["observed"] / panel[(c, prev)]["expected"]
-                 - panel[(c, q)]["observed"] / panel[(c, q)]["expected"] for c in others]
+        prev = allq[i - 1]
+        # the comparison is the units the team was not working on over those two quarters: a unit inside
+        # its own placement's window is not a control for another placement
+        treated = set()
+        for p2 in b["placements"]:
+            if p2["status"] != "closed" or p2["assessment_quarter"] not in allq:
+                continue
+            j = allq.index(p2["assessment_quarter"])
+            treated.update((p2["unit_code"], allq[m]) for m in range(j, min(j + 3, len(allq))))
+        others = [c for c in acute if c != unit and (c, prev) in panel and (c, q) in panel
+                  and (c, prev) not in treated and (c, q) not in treated]
         pooled_move = (sum(panel[(c, prev)]["observed"] for c in others)
                        / sum(panel[(c, prev)]["expected"] for c in others)
                        - sum(panel[(c, q)]["observed"] for c in others)
                        / sum(panel[(c, q)]["expected"] for c in others))
-        rows.append(dict(
-            unit=unit, expected=e, realised=o - e,
-            carried=(pooled(panel, unit, pre)[0] - 1) * e,
-            from_decision=(panel[(unit, dec)]["observed"] / panel[(unit, dec)]["expected"] - 1) * e,
-            from_previous=(panel[(unit, prev)]["observed"] / panel[(unit, prev)]["expected"] - 1) * e,
-            concurrent=sum(moved) / len(moved) * e, concurrent_pooled=pooled_move * e))
+        before = pooled(panel, unit, pre)[0]
+        rows.append(dict(unit=unit, quarter=q, before=before, expected=e, observed=o,
+                         carried=(before - 1) * e, realised=o - e,
+                         counterfactual=before * e,
+                         concurrent_pooled=pooled_move * e))
+    return rows
+
+
+def effect_models(b):
+    """What the closed register says a placement does, under each shape the fall could take.
+
+    Each shape is fitted to the seven or more closed placements by weighted least squares with the
+    counterfactual count as the variance, which is the error a count of complications carries, and scored
+    by the chi-square it leaves. The spread of standing across the register is what separates them: a share
+    of standing excess scales with how far above its own level a unit was sitting, a constant drop in the
+    standardised ratio does not, and a constant percent of the counterfactual tracks the unit's level.
+    """
+    rows = placement_record(b)
+    n = len(rows)
+    fall = [r["carried"] - r["realised"] for r in rows]
+    V = [max(1.0, r["counterfactual"]) for r in rows]
+    bases = OrderedDict([
+        ("a share of the unit's standing excess", [r["carried"] for r in rows]),
+        ("a constant drop in the standardised ratio", [r["expected"] for r in rows]),
+        ("a constant percent of the counterfactual", [r["counterfactual"] for r in rows]),
+        ("a constant number of complications", [1.0] * n),
+    ])
+    out = OrderedDict()
+    for label, x in bases.items():
+        num = sum(xi * f / v for xi, f, v in zip(x, fall, V))
+        den = sum(xi * xi / v for xi, v in zip(x, V))
+        c = num / den if den else 0.0
+        chi = sum((f - c * xi) ** 2 / v for xi, f, v in zip(x, fall, V))
+        out[label] = dict(parameter=c, chi_square=chi, df=n - 1)
+    best = out["a share of the unit's standing excess"]["chi_square"]
+    for label, d in out.items():
+        d["likelihood_ratio"] = math.exp((d["chi_square"] - best) / 2.0)
+    return rows, out
+
+
+def share_readings(b):
+    """The share of a unit's standing excess a placement removes, under every way of pooling the register.
+
+    One closed placement was made with a unit that was running at its expected number over its own record,
+    so that placement has no standing excess to take a share of and a per-placement share cannot be formed
+    for it. What remains are the estimators that pool the register: the pooled sums, least squares through
+    the origin, least squares with an intercept, the variance-weighted fit a count of complications calls
+    for, the median of the shares that are defined, and the same pooled fall net of what the other units
+    did over the same two quarters, as a mean across those units and pooled over them.
+    """
+    rows = placement_record(b)
     n = len(rows)
     P = [r["carried"] for r in rows]
     fall = [r["carried"] - r["realised"] for r in rows]
-    sh = [f / p for f, p in zip(fall, P)]
-    E = [r["expected"] for r in rows]
+    V = [max(1.0, r["counterfactual"]) for r in rows]
+    defined = [f / p for f, p in zip(fall, P) if abs(p) >= 5.0]
     pm, fm = sum(P) / n, sum(fall) / n
     pv = sum((p - pm) ** 2 for p in P) / n
     return rows, OrderedDict([
-        ("mean of the placements' shares", sum(sh) / n),
-        ("median of the shares", sorted(sh)[n // 2]),
-        ("expected-weighted mean of the shares",
-         sum(e * s for e, s in zip(E, sh)) / sum(E)),
         ("pooled sums", sum(fall) / sum(P)),
         ("least squares through the origin",
          sum(p * f for p, f in zip(P, fall)) / sum(p * p for p in P)),
         ("least squares with an intercept",
          sum((p - pm) * (f - fm) for p, f in zip(P, fall)) / (pv * n)),
-        ("measured from the quarter closed at the decision",
-         sum(r["from_decision"] - r["realised"] for r in rows) / sum(r["from_decision"] for r in rows)),
-        ("measured from the quarter before the placement",
-         sum(r["from_previous"] - r["realised"] for r in rows) / sum(r["from_previous"] for r in rows)),
+        ("the variance-weighted fit",
+         sum(p * f / v for p, f, v in zip(P, fall, V)) / sum(p * p / v for p, v in zip(P, V))),
+        ("the median of the shares that are defined",
+         sorted(defined)[len(defined) // 2]),
         ("against what the other units did over the same quarters",
-         sum(r["from_previous"] - r["realised"] - r["concurrent"] for r in rows) / sum(P)),
-        ("against the other units pooled over the same quarters",
-         sum(r["from_previous"] - r["realised"] - r["concurrent_pooled"] for r in rows) / sum(P)),
+         sum(r["carried"] - r["realised"] - r["concurrent_pooled"] for r in rows) / sum(P)),
     ])
 
 
@@ -210,6 +256,7 @@ def compute(target):
     panel = b["panel"]
     share, record, carried, removed = record_share(b)
     _, readings = share_readings(b)
+    _, models = effect_models(b)
     elig = eligible_units(b)
     units = []
     for code in elig:
@@ -292,7 +339,7 @@ def compute(target):
 
     return dict(units=units, answer=answer, runner=runner, share=share, record=record,
                 carried=carried, removed=removed, rung0=rung0, rung1=rung1, rung2=rung2,
-                hospitals=hosp, outside=outside, groups=groups, eligible=elig, readings=readings,
+                hospitals=hosp, outside=outside, groups=groups, eligible=elig, readings=readings, models=models,
                 gap=round(answer["avoided"]) - round(runner["avoided"]),
                 margin=answer["avoided"] / runner["avoided"], bundle=b)
 

@@ -66,11 +66,13 @@ def main():
         routes[route] = G.screen(TGT, rp, route, firsts)[0]
     r0, r0rows = G.rung0(TGT)
 
+    # tenths of a defined daily dose per package, read from the shipped index as exact decimals
     ddd_of = {}
     import csv as _csv
+    from decimal import Decimal as _D
     with open(os.path.join(TGT, "package_index.csv"), newline="", encoding="utf-8") as fh:
         for r in _csv.DictReader(fh):
-            ddd_of[r["vnr"]] = float(r["ddd_per_pack"]) if r["ddd_per_pack"] else 0.0
+            ddd_of[r["vnr"]] = int(_D(r["ddd_per_pack"]) * 10) if r["ddd_per_pack"] else 0
     a1 = asks.a1_golden(kept, rejected)
     a2 = asks.a2_golden(kept, ddd_of)
     a3 = asks.a3_golden(TGT, firsts, rp[1])

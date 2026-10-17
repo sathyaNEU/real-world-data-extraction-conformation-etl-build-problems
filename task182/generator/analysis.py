@@ -47,12 +47,12 @@ def position_frames(series, adjust=True, drop_invalid=True, keep_dup=False, dup_
     out = {}
     for sid, s in series.items():
         code = s["dep"]["code"]
-        dev = SM.meter_dev(s["dep"]["meter"]) if adjust else 0.0
-        adj = dev if abs(SM.meter_dev(s["dep"]["meter"])) > W.CAL_THRESHOLD else 0.0
-        if not adjust:
-            adj = 0.0
-        laeq = np.round(s["laeq"] + SM.meter_dev(s["dep"]["meter"]), 1) - adj
-        la90 = np.round(s["la90"] + SM.meter_dev(s["dep"]["meter"]), 1) - adj
+        dev = SM.dep_dev(s["dep"])
+        adj = SM.dep_correction(s["dep"]) if adjust else 0.0
+        # the shipped columns, with the deployment's no-data minutes left as the file carries them: every
+        # route below reads them through a mask that drops those minutes
+        laeq = np.where(s["nd"], W.NODATA_VALUE, np.round(s["laeq"] + dev, 1) - adj)
+        la90 = np.where(s["nd"], W.NODATA_VALUE, np.round(s["la90"] + dev, 1) - adj)
         st = stop_mask(s["stamps"])
         pl = planned_mask(s["stamps"])
         keep = s["am"].copy()

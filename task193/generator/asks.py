@@ -3,6 +3,7 @@ import collections
 import csv
 import os
 import statistics
+from decimal import Decimal, ROUND_HALF_UP
 
 import numpy as np
 
@@ -104,7 +105,11 @@ def fee_payer(holder_code, d):
 
 
 def a2_golden(kept, ddd_of):
-    """Per fee payer: DDD of Annex A products dispensed in the window, and the fee due."""
+    """Per fee payer: DDD of Annex A products dispensed in the window, and the fee due.
+
+    Every screened product's package holds a whole number of tenths of a defined daily dose, so
+    the arithmetic runs in tenths as integers and the figures carry no floating-point residue.
+    """
     kept = distinct(kept)
     before = collections.Counter()
     after = collections.Counter()
@@ -115,23 +120,31 @@ def a2_golden(kept, ddd_of):
         if kind != "product":
             continue
         payer = fee_payer(holder_at(code, r["day"]), r["day"])
-        q = ddd_of[r["vnr"]] * r["packs"]
+        deci = ddd_of[r["vnr"]]                    # tenths of a defined daily dose, an integer
+        assert deci == int(deci), (r["vnr"], deci)
+        q = int(deci) * r["packs"]
         if r["day"] < W.FEE_AMENDMENT_DAY:
             before[payer] += q
         else:
             after[payer] += q
     out = []
     for code, name, cvr, merged in W.HOLDERS:
-        total = before[code] + after[code]
+        tb, ta = before[code], after[code]         # tenths
+        total = tb + ta
         if total <= 0:
             continue
-        thousands = total / 1000.0
+        thousands = Decimal(total) / Decimal(10000)
         rate_before = next(rt for lo, hi, rt in W.FEE_BANDS if lo <= thousands < hi)
         rate_after = next(rt for lo, hi, rt in W.FEE_BANDS_AMENDED if lo <= thousands < hi)
-        fee = round(before[code] / 1000.0 * rate_before + after[code] / 1000.0 * rate_after)
-        out.append({"holder": code, "name": name, "ddd": round(total, 1),
-                    "ddd_before": round(before[code], 1), "ddd_after": round(after[code], 1),
-                    "rate_before": rate_before, "rate_after": rate_after, "fee_dkk": int(fee)})
+        exact = (Decimal(tb) * rate_before + Decimal(ta) * rate_after) / Decimal(10000)
+        fee = exact.quantize(Decimal(1), rounding=ROUND_HALF_UP)
+        out.append({"holder": code, "name": name,
+                    "ddd": float(Decimal(total) / 10), "ddd_before": float(Decimal(tb) / 10),
+                    "ddd_after": float(Decimal(ta) / 10), "rate_before": rate_before,
+                    "rate_after": rate_after, "fee_dkk": int(fee),
+                    "fee_exact": str(exact),
+                    "fee_distance": float(abs(exact - exact.to_integral_value(
+                        rounding=ROUND_HALF_UP)))})
     return out
 
 

@@ -32,19 +32,27 @@ def local_offset(district, day):
     return pair[0] if summer else pair[1]
 
 
+WORK_HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+WORK_WEIGHTS = [9, 14, 15, 12, 7, 6, 10, 11, 9, 7, 5, 3]
+
+
+def work_moment(day, rng):
+    """A moment inside a partner organisation's own working day."""
+    return dt.datetime.combine(day, dt.time(rng.choices(WORK_HOURS, weights=WORK_WEIGHTS)[0],
+                                            rng.randrange(0, 60)))
+
+
 def snap_working(local_moment, rng):
-    """A partner organisation delivers through the portal in its own working hours."""
+    """A partner organisation delivers through the portal in its own working hours, so a report
+    whose turn comes outside them waits for the next working day."""
     for _ in range(4):
         if local_moment.weekday() >= 5 and rng.random() < 0.74:
-            local_moment = dt.datetime.combine(local_moment.date() + dt.timedelta(days=1),
-                                               dt.time(8, 30)) \
-                + dt.timedelta(minutes=rng.randrange(0, 660))
+            local_moment = work_moment(local_moment.date() + dt.timedelta(days=1), rng)
             continue
         if local_moment.hour < 8:
-            return local_moment.replace(hour=8, minute=rng.randrange(18, 59))
+            return work_moment(local_moment.date(), rng)
         if local_moment.hour >= 20:
-            local_moment = dt.datetime.combine(local_moment.date() + dt.timedelta(days=1),
-                                               dt.time(8, rng.randrange(18, 59)))
+            local_moment = work_moment(local_moment.date() + dt.timedelta(days=1), rng)
             continue
         return local_moment
     return local_moment
@@ -126,7 +134,7 @@ def write_item_log(target, reps, rng):
                 recv=r["recv_utc"] + drift)))
     titles = [o[0] for o in W.OUTLETS]
     weights = [o[3] for o in W.OUTLETS]
-    for i in range(19240):
+    for i in range(19900):
         off = rng.randrange(0, (W.EXTRACT - W.PERIOD_FROM).days + 1)
         recv = dt.datetime.combine(sim.d(off), dt.time(rng.randrange(6, 23), rng.randrange(0, 60)))
         items.append((recv, dict(
