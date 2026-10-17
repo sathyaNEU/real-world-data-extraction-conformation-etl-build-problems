@@ -549,7 +549,7 @@ device against the careful solver's path.
 
 | Ask | Figures | The device |
 |---|---|---|
-| A1, per quarter of release: the runs released past the cut-off then in force and the value those carried. Both conventions are pinned in the asking sentence. The plain count of runs released was cut: it was free to the cracker and no device reached it | 4 x 2 = 8 | three devices, each measured: the cut-off moved from 15:00 to 14:00 on 1 July 2026 and the register carries both effective dates, so one cut-off for the year undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the opening date rather than the release moves the counts; and one run was rejected by the bank and re-released, so the log carries it twice. A run released exactly at the cut-off is within it, which the register states |
+| A1, per quarter of release: the value the runs released past the cut-off then in force carried. Both conventions are pinned in the asking sentence. The plain count of runs released was cut first, then the count past the cut-off: each was free to the cracker and no device reached either | 4 x 1 = 4 | three devices, each measured: the cut-off moved from 15:00 to 14:00 on 1 July 2026 and the register carries both effective dates, so one cut-off for the year undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the opening date rather than the release moves the counts; and one run was rejected by the bank and re-released, so the log carries it twice. A run released exactly at the cut-off is within it, which the register states |
 | A2, per supplier risk category: the suppliers raised into it, those removed from it, and those raised in then removed. "Removed from it" is pinned in the asking sentence, against the removed-into reading | 5 x 3 = 15 | the **grain** primary: an approval decision is taken on a trading group and recorded against the parent only, so a decision reaches every member the master names. Nothing says a row covers more than the number on it; a reader finds it by seeing a member hold a current risk category with no approval row to account for it, and then intersecting the register against the master's parent column. Hazards beside it: the superseded rows the dictionary rules out of the history, and the October relabelling the scale map resolves | the approval register chains per supplier and carries superseded rows the dictionary rules out of the history; a category was relabelled on 1 October and the scale map carries both codings |
 | A3, per month of payment: the distinct ledger lines the testing schedule covers, whether any schedule line is missing from the ledger and if so how many, and whether any ledger line is on it twice and if so how many. "Distinct" and the month of payment are pinned in the asking sentence | 12 + 2 = 14 | two primaries. **Scope:** the working paper is internal audit's paper for the year, so plan 4.4's revenue expenditure sample sits on it under its own cost centres and its own ledger prefix; seventeen rows resolve to no capital line, are counted in no month, and nothing flags them. **Clock:** the paper carries the date the run was released, as the payment run log records it, while the ledger carries the date of the run that paid the line, and the two differ for the seven runs whose release ran past midnight, two of which cross a month end | the schedule is a table inside a PDF and its line references carry the ledger's supplier prefix, so the join needs the crosswalk; the re-delivered batch puts one ledger line on the schedule twice |
 
@@ -557,7 +557,7 @@ Every A3 ask is worded so that "none" is a grammatical answer, per H23.
 
 Pair ceiling: 38.1
 
-Mirror leakage: 13.8 per cent of ask weight
+Mirror leakage: 12.0 per cent of ask weight
 
 Measured by: `generator/ceiling.py`, which builds both responses as code, scores each on its OWN ask
 readings against the graded figures in `figures.json` on the cut pack, and exits non-zero unless the
@@ -573,8 +573,8 @@ third ask actually scored:
 
 | Response | call | components | instruction | A1 | A2 | A3 | score |
 |---|---|---|---|---|---|---|---|
-| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/21 | 2/2 | 4/8 | **5/15** | 1/6 | **61.8** |
-| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/21 | 1/2 | 1/8 | 3/15 | 0/6 | **14.3** |
+| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/21 | 2/2 | 0/4 | 5/15 | 1/6 | **56.0** |
+| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 6/21 | 2/2 | 0/4 | 3/15 | 0/6 | **20.1** |
 
 **Why the cracker keeps everything, which is the diagnosis and not a wording problem.** Every device on
 every ask is adjudicated by a filed sentence or found by the hygiene battery, so a careful solver executes
@@ -963,3 +963,25 @@ were round too, so both were redrawn.
   revenue summary's maintenance line is seasonal on the spring and autumn shutdowns. It was cleared first
   because the next isolated reader sees a pack whose prompt and documents have moved, and a reader
   rediscovering a known item spends the pass on a list already in hand.
+- **The mirror modelled rather than measured, which flattered the pair twice over.** Two of its scores
+  were assumptions with nothing behind them. Its nine certain-share cells were credited only to the
+  response that lands the call, which was true while the interval had to be recovered and false the moment
+  the interval was filed: any response that reads the working paper computes all nine. And its
+  instruction-following was scored 1 of 2, where the rubric spec says instruction-following covers the
+  requested files and output-shape asks, all of which a wrong-rung response produces. Corrected, the
+  honest pair was **44.7**, not 38.1. Two cuts brought it back: the deliverable's second column is now the
+  misstatement as a share of the programme's recorded value, which moves with the estimator, in place of
+  the certain share, which every route banked; and A1's count of runs past the cut-off was cut after its
+  plain run count, because the cut-off register files both effective dates so the cracker applies them.
+  **Measured against `supplemental-stumping` Part 0: the mirror's recommendation side is 6.5 of the 38
+  points, above Part 0's r of about 5, and 13.5 before the asks against Part 0's 12**, so the model is now
+  slightly more generous to the mirror than Part 0 assumes rather than harsher. The six component criteria
+  it earns are named: the three nil programmes, Deepwater berth renewal, Quay 3 reconstruction and the
+  Dredging programme, on both columns, where nil is nil under any route.
+- **The prose of Part 1.1 and the script that enforces it disagree, and the disagreement is worth
+  filing.** The prose scores "each ask figure and chart criterion" and then says "every row misses or the
+  ask is rebuilt", which reads as a per-figure zero; `precut.py` reads the rows of the cracker table in
+  the design note, at whatever granularity the author wrote them, and checks each ends in a miss. Read as
+  a per-figure zero the prose makes the pair ceiling redundant, which cannot be its purpose, so it is a
+  design-iteration instruction and the ship gates are Part 7's two numbers. `ceiling.py` gates on those
+  two and prints the figure keep beside them, because every figure the cracker takes costs pair points.

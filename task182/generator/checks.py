@@ -456,7 +456,7 @@ def run(target, g):
             for lo, hi in wins:
                 for edge in (lo, hi):
                     A(edge in hrows and edge not in hheld,
-                      "%s's window at %s has its own row at %s" % (code, lo.date(), edge.strftime("%H:%M")))
+                      "SF22 %s's window at %s has its own row at %s" % (code, lo.date(), edge.strftime("%H:%M")))
     # D1, the air: the plant's three blowers are metered twice and the header's meter is upstream of
     # where the third was tied in, so the header alone is not the air the blowers delivered. Measured:
     # the two counters each match their own rate channel, and the header's share of the air moves week to
@@ -482,12 +482,12 @@ def run(target, g):
         d1 = np.diff(tot)[ok1] * 1000.0
         e1 = (rate[1:][ok1]) * 0.25
         A(float(np.abs(d1 - e1).max()) < 120.0,
-          "the %s totaliser carries its own rate channel and nothing else, to the tenth it prints "
+          "SF19 the %s totaliser carries its own rate channel and nothing else, to the tenth it prints "
           "(worst %.1f Nm3)" % (nm, float(np.abs(d1 - e1).max())))
     run = (hdr_rate > 100) & (bl3_rate > 100)
     sh = bl3_rate[run] / (hdr_rate[run] + bl3_rate[run])
     A(sh.min() < 0.27 and sh.max() > 0.36,
-      "the duty rotates: BL-03 carried %.2f to %.2f of the air" % (sh.min(), sh.max()))
+      "SF19 the duty rotates: BL-03 carried %.2f to %.2f of the air" % (sh.min(), sh.max()))
     # and the air the works takes per cubic metre it treats holds steady week to week on the two meters
     # together while the header alone swings with the duty, which is the reading the records settle
     wk_h, wk_b, wk_i = {}, {}, {}
@@ -504,7 +504,7 @@ def run(target, g):
     sp_both = 100.0 * (both.max() - both.min()) / both.mean()
     sp_only = 100.0 * (only.max() - only.min()) / only.mean()
     A(sp_both < 9.0 and sp_only > 18.0 and sp_only > 2.5 * sp_both,
-      "the air per cubic metre treated holds to %.1f per cent on the two meters together and swings "
+      "SF19 the air per cubic metre treated holds to %.1f per cent on the two meters together and swings "
       "%.1f per cent on the header alone" % (sp_both, sp_only))
     # D3, the record: a held row's counters stand still while its rates read above zero
     prev = None
@@ -517,8 +517,8 @@ def run(target, g):
                 bad_held += 1
         prev = x
     A(bad_held == len(heldw),
-      "every held row is an impossible row on its face: the air counter stands still while the air flows "
-      "(%d of %d)" % (bad_held, len(heldw)))
+      "SF20 every held row is an impossible row on its face: the air counter stands still while the air "
+      "flows (%d of %d)" % (bad_held, len(heldw)))
     # and no row the historian wrote itself repeats the row before it, so the held rows are the only ones
     reps = 0
     prev = None
@@ -527,7 +527,7 @@ def run(target, g):
         if prev is not None and all(v == prev[k] for k, v in x.items() if k != "logged_at"):
             reps += 1
         prev = x
-    A(reps == len(heldw), "the only rows that repeat the row before them are the held ones (%d)" % reps)
+    A(reps == len(heldw), "SF20 the only rows that repeat the row before them are the held ones (%d)" % reps)
 
     # ------------------------------------------------------- the readings that converge, asserted on data
     # pooling: the position's residual over both deployments against the mean of the two deployments'
@@ -730,7 +730,7 @@ def run(target, g):
         easy = sum(float(hrows[hi]["blower_air_total_knm3"]) - float(hrows[lo]["blower_air_total_knm3"])
                    for lo, hi in depwin[c])
         A(rows[c]["air_knm3"] - easy > 100.0,
-          "%s: the header counter alone gives %.1f against %.1f, short by %.1f thousand Nm3"
+          "SF19 %s: the header counter alone gives %.1f against %.1f, short by %.1f thousand Nm3"
           % (c, easy, rows[c]["air_knm3"], rows[c]["air_knm3"] - easy))
         rate_route = 0.0
         for lo, hi in depwin[c]:
@@ -741,7 +741,7 @@ def run(target, g):
                                    + float(hrows[tt]["bl03_air_nm3_h"])) * 0.25 / 1000.0
                 tt += dt.timedelta(minutes=15)
         A(abs(rate_route - rows[c]["air_knm3"]) > 0.5,
-          "%s: summing the rate channels instead gives %.1f against %.1f"
+          "SF22 %s: summing the rate channels instead gives %.1f against %.1f"
           % (c, rate_route, rows[c]["air_knm3"]))
     for i, wk in enumerate(W.WEEKS):
         a2 = dt.datetime(wk.year, wk.month, wk.day)
@@ -749,7 +749,7 @@ def run(target, g):
         easy = (float(hrows[b2]["blower_air_total_knm3"])
                 - float(hrows[a2]["blower_air_total_knm3"]))
         A(g["weekly"][i]["blower_air_knm3"] - easy > 100.0,
-          "week %d: the header counter alone gives %.0f against %d"
+          "SF19 week %d: the header counter alone gives %.0f against %d"
           % (i, easy, g["weekly"][i]["blower_air_knm3"]))
     # D3, position by position and week by week: counting the rows the historian is missing and stopping
     # there is the easy figure, and the record it holds nothing of is longer than that every time
@@ -766,10 +766,10 @@ def run(target, g):
                     cur = 0
                 tt += dt.timedelta(minutes=15)
         A(miss_only < rows[c]["unrecorded_quarter_hours"],
-          "%s: the missing rows are %d of the %d quarter hours the record does not cover"
+          "SF20 %s: the missing rows are %d of the %d quarter hours the record does not cover"
           % (c, miss_only, rows[c]["unrecorded_quarter_hours"]))
         A(run_only < rows[c]["longest_unrecorded_run"],
-          "%s: the longest run of missing rows is %d against the %d the record does not cover"
+          "SF21 %s: the longest run of missing rows is %d against the %d the record does not cover"
           % (c, run_only, rows[c]["longest_unrecorded_run"]))
     for i, wk in enumerate(W.WEEKS):
         a2 = dt.datetime(wk.year, wk.month, wk.day)
@@ -784,10 +784,10 @@ def run(target, g):
                 cur = 0
             tt += dt.timedelta(minutes=15)
         A(miss_only < g["weekly"][i]["unrecorded_quarter_hours"],
-          "week %d: the missing rows are %d of %d" % (i, miss_only,
+          "SF20 week %d: the missing rows are %d of %d" % (i, miss_only,
                                                       g["weekly"][i]["unrecorded_quarter_hours"]))
         A(run_only < g["weekly"][i]["longest_unrecorded_run"],
-          "week %d: the longest run of missing rows is %d against %d"
+          "SF21 week %d: the longest run of missing rows is %d against %d"
           % (i, run_only, g["weekly"][i]["longest_unrecorded_run"]))
     # the two readings of which quarter hours a window holds give the same count, because no window edge
     # is a quarter hour the record does not cover
@@ -800,7 +800,7 @@ def run(target, g):
                     opening += 1
                 tt += dt.timedelta(minutes=15)
         A(opening == rows[c]["unrecorded_quarter_hours"],
-          "%s: the count is the same whether a quarter hour is stamped at its start or its close "
+          "SF20 %s: the count is the same whether a quarter hour is stamped at its start or its close "
           "(%d, %d)" % (c, opening, rows[c]["unrecorded_quarter_hours"]))
     prompt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
     A("blower air delivered through its assessment period" in prompt,

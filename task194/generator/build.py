@@ -89,7 +89,7 @@ def cut(target):
                      b"D:20240617093000+11'00'", b"D:20240617093000+11'00'")
     PP.normalize_pdf(os.path.join(target, "hac_indicator_specification_v4.pdf"),
                      b"D:20240624141500+11'00'", b"D:20240624141500+11'00'")
-    PP.normalize_ooxml(os.path.join(target, PK.FILES["dashboard"]), "Nicholas Fields", "Nicholas Fields",
+    PP.normalize_ooxml(os.path.join(target, PK.FILES["dashboard"]), "Joseph Hunter", "Joseph Hunter",
                        "2027-03-05T06:12:00Z", "2027-03-05T06:40:00Z",
                        title="Inpatient quality indicators, quarter ended 31 December 2026", excel=True)
     stamp = time.mktime(EXPORT_STAMP.timetuple())
@@ -139,8 +139,8 @@ if __name__ == "__main__":
     DL.chart(chart_png, g)
     DL.workbook(os.path.join(gold, "embed_placement_2027q4.xlsx"), g)
     DL.brief(os.path.join(gold, "embed_placement_brief.pdf"), g, chart_png)
-    PP.normalize_ooxml(os.path.join(gold, "embed_placement_2027q4.xlsx"), "Katherine Klein",
-                       "Katherine Klein", "2027-03-17T23:15:00Z", "2027-03-18T04:05:00Z",
+    PP.normalize_ooxml(os.path.join(gold, "embed_placement_2027q4.xlsx"), "Maureen Watts",
+                       "Maureen Watts", "2027-03-17T23:15:00Z", "2027-03-18T04:05:00Z",
                        title="Cycle IP-09 placement", excel=True)
     PP.normalize_pdf(os.path.join(gold, "embed_placement_brief.pdf"),
                      b"D:20270318151000+11'00'", b"D:20270318151000+11'00'")

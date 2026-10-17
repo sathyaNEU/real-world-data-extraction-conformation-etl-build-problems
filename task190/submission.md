@@ -28,17 +28,17 @@ Security and access systems carries most of it at 250,000. Not the 21,004.93 the
 
 1. Misstatement indicated, the authority: 850,000
 2. The programme carrying most of it: Security and access systems, 250,000
-3. One row per work programme, the misstatement indicated and the share of its recorded value certain of selection:
-   - Security and access systems: 250,000 misstated, 13.8 per cent certain
-   - Rail siding and yard: 200,000 misstated, 16.9 per cent certain
-   - Pavement and surfacing: 150,000 misstated, 15.6 per cent certain
-   - Shore power installation: 150,000 misstated, 18.4 per cent certain
-   - Terminal roof and cladding: 50,000 misstated, 18.5 per cent certain
-   - Welfare and offices fit-out: 50,000 misstated, 14.0 per cent certain
-   - Deepwater berth renewal: 0 misstated, 35.2 per cent certain
-   - Dredging programme: 0 misstated, 42.6 per cent certain
-   - Quay 3 reconstruction: 0 misstated, 34.2 per cent certain
-   - Authority: 850,000 misstated, 26.6 per cent certain
+3. One row per work programme, the misstatement indicated and that as a share of the programme's recorded value:
+   - Security and access systems: 250,000 misstated, 7.16 per cent of its recorded value
+   - Rail siding and yard: 200,000 misstated, 3.17 per cent of its recorded value
+   - Pavement and surfacing: 150,000 misstated, 4.53 per cent of its recorded value
+   - Shore power installation: 150,000 misstated, 3.18 per cent of its recorded value
+   - Terminal roof and cladding: 50,000 misstated, 0.60 per cent of its recorded value
+   - Welfare and offices fit-out: 50,000 misstated, 1.57 per cent of its recorded value
+   - Deepwater berth renewal: 0 misstated, 0.00 per cent of its recorded value
+   - Dredging programme: 0 misstated, 0.00 per cent of its recorded value
+   - Quay 3 reconstruction: 0 misstated, 0.00 per cent of its recorded value
+   - Authority: 850,000 misstated, 1.43 per cent of recorded value
 
 ### misstatement_by_population_2026.png
 
@@ -47,11 +47,11 @@ Security and access systems carries most of it at 250,000. Not the 21,004.93 the
 
 ### Also asked
 
-1. Payment runs released past the cut-off then in force and the value those carried, by quarter of release, values to the cent. A run pays the whole authority, so the value is the run's own as the log records it and not the capital extract's part of it; a release carrying a later date than its run ran past midnight and is past that date's cut-off:
-   - 2026Q1: 11 released past it, carrying 11,152,377.12
-   - 2026Q2: 10 released past it, carrying 7,116,710.85
-   - 2026Q3: 10 released past it, carrying 9,115,055.38
-   - 2026Q4: 8 released past it, carrying 6,663,248.13
+1. The value the runs released past the cut-off then in force carried, by quarter of release, to the cent. A run pays the whole authority, so the value is the run's own as the log records it and not the capital extract's part of it; a release carrying a later date than its run ran past midnight and is past that date's cut-off:
+   - 2026Q1: 11,152,377.12
+   - 2026Q2: 7,116,710.85
+   - 2026Q3: 9,115,055.38
+   - 2026Q4: 6,663,248.13
 2. Suppliers raised into the category, removed from it, and raised in then removed, by supplier risk category. An approval decision is taken on a trading group and recorded against the parent only, so each decision reaches every member the master names:
    - Category 1 (R-A): 0 raised into it, 31 removed from it, 0 raised in then removed
    - Category 2 (R-B): 29 raised into it, 83 removed from it, 16 raised in then removed

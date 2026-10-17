@@ -24,8 +24,8 @@ EASTER = {2024: dt.date(2024, 3, 29), 2025: dt.date(2025, 4, 18), 2026: dt.date(
 CODESET_CHANGE = dt.date(2026, 7, 1)     # national complication list revision, list 2022 -> list 2026
 
 PEOPLE = {
-    "director": ("Katherine Klein", "Director, Clinical Improvement"),
-    "governance": ("Nicholas Fields", "Manager, Clinical Information and Coding"),
+    "director": ("Maureen Watts", "Director, Clinical Improvement"),
+    "governance": ("Joseph Hunter", "Manager, Clinical Information and Coding"),
 }
 
 HOSPITALS = [
