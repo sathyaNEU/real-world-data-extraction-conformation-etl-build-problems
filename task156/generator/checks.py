@@ -985,6 +985,25 @@ def run(target, golden, B, X, meta_path):
     ok("GOLDEN the submission states the call and every figure from figures.json (figures_check runs separately)",
        "**The council should request 35 paid moderator FTE for 2027, 9 above finance's 26-FTE envelope" in sub)
 
+    # the pace stated loosely everywhere a grader reads it; the envelope compared network-wide only
+    blocks = sub.split("## 4. Deliverable Answers")[0]
+    gold_txt = gtext + "\n" + "\n".join(str(c) for ws in wb.worksheets for row in ws.iter_rows(values_only=True)
+                                         for c in row if isinstance(c, str))
+    paces_said = re.findall(r"(about )?\b40(?:\.\d+)? (?:reviews|items)", blocks + gold_txt, re.I)
+    ok("WRITEUP the volunteer pace appears only as about 40 reviews a month, never a finer figure, in the graded blocks "
+       "and both goldens (the call holds from a pace of about 39 to 41.3)",
+       paces_said and all(a for a in paces_said) and not re.search(r"\b(?:39|40|41)\.\d+ reviews", blocks + gold_txt),
+       str(len(paces_said)))
+    ws_need = wb["Need 2027"]
+    need_heads = [ws_need.cell(row=5, column=c).value for c in range(1, 9)]
+    env_cells = [c for ws in wb.worksheets for row in ws.iter_rows(values_only=True) for c in row
+                 if isinstance(c, str) and "envelope" in c.lower()]
+    ok("WRITEUP the envelope is compared network-wide only: request less 26 is 9 above; no per-site envelope column or "
+       "share in either golden",
+       not any("envelope" in str(h).lower() for h in need_heads) and X.gap == X.request - K.ENVELOPE_2027 == 9 and
+       "Request above the envelope (FTE)" in env_cells and "9 FTE above finance's 2027 envelope of 26 FTE" in s1x and
+       not any(re.search(r"envelope (?:share|by site|per site)|site'?s? (?:share of the )?envelope", c, re.I)
+               for c in env_cells), str(env_cells))
     fails = [x for x in RESULTS if not x[1]]
     for label, good, detail in RESULTS:
         print("%s  %s%s" % ("PASS" if good else "FAIL", label, ("  [%s]" % detail) if detail else ""))

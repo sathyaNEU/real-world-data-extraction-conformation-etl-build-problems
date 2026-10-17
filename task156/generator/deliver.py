@@ -175,8 +175,8 @@ def write_xlsx(path, X):
     _title(w2, "Every site's reviewer pool is losing about %d per cent a month, with almost no new reviewers" % (
         K.round_half_up(100 * X.exit_net)), [
         "Active reviewers made at least one review in the month (reviewer roster). Each pool is carried forward month "
-        "by month at its own lapse rate, with the new reviewers it has been getting; every reviewer at %d reviews a "
-        "month, the pace reviewers keep when the inbox outruns them." % K.round_half_up(D.pace)], "F")
+        "by month at its own lapse rate, with the new reviewers it has been getting; every reviewer at about %d "
+        "reviews a month, the pace reviewers keep when the inbox outruns them." % K.round_half_up(D.pace)], "F")
     _head(w2, 4, ["Site", "Active reviewers, September 2026", "Lapsing a month, September 2024 to August 2026",
                   "New reviewers a month, October 2025 to September 2026", "Active reviewers, December 2027",
                   "Months short of the inbox, October 2026 to December 2027"], [24, 14, 16, 17, 14, 17], 58)
@@ -569,7 +569,7 @@ def submission(X):
           "give each site's monthly lapse rate, about %d per cent on every site, and the last twelve months' new "
           "reviewers give each site fewer than one a month." % exit_pc,
           "3. Carried each site's September 2026 active reviewers forward month by month at its lapse rate plus its new "
-          "reviewers, at %d reviews a reviewer a month, against the inbox of each month in 2027 (the questions in "
+          "reviewers, at about %d reviews a reviewer a month, against the inbox of each month in 2027 (the questions in "
           "question_plan_2027.xlsx times the site's inbox items per question since January 2024), and routed the items "
           "beyond that capacity to the paid team (where a pool has room, the %.1f per cent no volunteer picks up): %s "
           "fall short of their inbox." % (pace, 100 * D.floor, names(X.newly)),
@@ -577,8 +577,18 @@ def submission(X):
           "(modtool_flag_summary_daily_2024-01-01_2026-09-30.csv) times the plan, and its routed items, at "
           "handle_time_standards_2027.pdf, and divided by the charter's 1,600 hours, each site to the nearest whole "
           "FTE: %d FTE in all." % X.request,
-          "5. Against finance_envelope_2027_paid_moderation.pdf the request of %d FTE is %d above the %d-FTE envelope." %
-          (X.request, X.gap, K.ENVELOPE_2027), ""]
+          "5. For the 24-hour flag response, counted each flag once across the two parts of the moderator tool's "
+          "export, left out the post-deleted closures and took the first action from "
+          "flag_decision_reviews_2026-07_to_2026-09.csv where a decision was reviewed (flag_service_standard.pdf): the "
+          "shares in table 4 of the deliverable answers.",
+          "6. For the hours worked, kept the approved lines of wfm_shift_lines_2026-01-01_2026-09-30.csv and put each "
+          "shift on the site moderator_site_assignments.csv gives for its start day, in the quarter it started on "
+          "Toronto time (moderation_ops_notes.md): the totals in table 5.",
+          "7. For the questions, restated January to September 2022 on the warehouse's basis (posts_warehouse_notes.md) "
+          "from review_queues_monthly_2021-2023.xlsx, its March 2023 rerun replacing May to August, and "
+          "question_moves_2021-2023.csv, with Graphics & Shaders in Game Development: the percentages in table 6.",
+          "8. Against finance_envelope_2027_paid_moderation.pdf the request of %d FTE is %d above the %d-FTE envelope, "
+          "network-wide." % (X.request, X.gap, K.ENVELOPE_2027), ""]
     s += ["## 4. Deliverable Answers", "", "### %s" % XLSX, "",
           "1. 2027 need by site, whole FTE:"]
     for site in K.SITES:

@@ -1,11 +1,11 @@
 {
   "task": "task156",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: trust and safety at a developer Q&A network)",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-17",
   "stump": "Carrying each site's paid queue hours per question over the last twelve months onto the 2027 question plan files a request of 23 FTE, inside finance's 26-FTE envelope, and trending each site's routed share or its monthly paid hours forward still files 25 to 28; the step that lands each there is treating the items that reach the paid team as a share of what arrives, when they are what arrives beyond what each site's shrinking reviewer pool can review at the pace reviewers keep when the inbox is full, so Data & ML, Databases, Infrastructure & DevOps and Game Development, which have routed almost nothing since January 2024, fall short of their 2027 inbox and the request needed is 35 FTE (31 with the pool trended over the platform's whole record, 53 with the pace read from 2026 throughput).",
   "architecture": 1,
@@ -16,8 +16,8 @@
     "checks": "49 checks, 0 FAIL, 0 WARN after round 2 (pair ceiling 31.4, mirror leakage 4.5 per cent, the cracker misses every ask)"
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-10-17 after round 2; every REVIEW line answered in the design note ## Leak sweep",
-    "reader": "stage 4: no leak (coordinator, 2026-10-17)"
+    "leak_py": "REVIEW (no LEAK), 2026-10-17 at ship; every REVIEW line answered in the design note ## Leak sweep",
+    "reader": "clean (stage 4); the targeted re-read of the 2022 rerun block clean"
   },
   "duplicate_check": {
     "heart": "PASS, 2026-10-17 (nearest driver 0.09, task181 v2)",
@@ -25,14 +25,14 @@
     "surface": "two promotions, no hard tell: task154 (two apart) on the card-level gap, decision type and context artifact, drivers unrelated, keys honest and not relabelled; task103 at surface 0.102 from the flat layout and the same four formats alone; written up in the design note ## Surface screen; adjudicated /clone-check left to the author"
   },
   "judge": {
-    "verdict": "DETERMINISTIC on the main call and supplementary answers 1 to 5",
-    "disposition": "FIX_NOW (Ask C's 2022 counting semantics; slide 2's series under-specified); fixed in rounds 1 and 2, awaiting the coordinator's one re-judge",
-    "report": "task156/determinism_check_report_round1.md"
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (re-judge covering rounds 1 and 2; every figure reproduced)",
+    "report": "task156/determinism_check_report.md (round 1: task156/determinism_check_report_round1.md)"
   },
   "returned": [],
-  "resume": "stage 4: the coordinator's one re-judge covering rounds 1 and 2",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-17",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -40,7 +40,7 @@
   "wave": "wave 5 (new), seed FC27 (world, decision and quantity kept; the certified-figure clause not shipped; the revised close standard filed as context, never decisive; pitfall re-found from the review platform's 72-hour hand-off to the paid team)",
   "answer": "Request 35 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 7, Databases 5, Infrastructure & DevOps 5, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 9 above finance's 26-FTE envelope",
   "gates_stage3": {
-    "checks": "104 assertions, 0 failed (round 2 adds the Ask C restatement device: the golden's construction exact, the careful-but-literal path missing all nine by 0.27 points or more, the restatement fair, honest and off the call's columns; the chart's 33 actual months exact on the filed definition)",
+    "checks": "106 assertions, 0 failed (at ship: the pace stated only as about 40 in the graded blocks and goldens, the envelope compared network-wide)",
     "verify": "independent verifier reproduces the 35 FTE and nine site needs, the pace, Ask A (27), Ask B (27) and Ask C (9, reading the March 2023 restatement)",
     "rebuild": "two consecutive builds byte-identical: 24 target files, 2 goldens, figures.json, submission.md; target.zip cut flat",
     "target_zip_sha256": "4a2dc4633613aeb35a0e72602967e72411a8731a5a0b626c856567f3f85fcda3",
