@@ -71,6 +71,7 @@ The author's portal list, rewritten whole each time they report it. Tasks below 
 
 | Task | Status | Domain | Obj | Gap | Pattern | Stump mechanism | Cal | Art | Decision | Portal result | Author |
 |---|---|---|---|---|---|---|---|---|---|---|---|
+| 192 | SHIPPED, delivered 10-17, pending review | POL&PUB conflict and protest event data | AD | objective | own | misclassification correction where the audit's frame is not the population: the classifier's error rates transport and its predictive values do not | none | bulletin workbook and PDF | how many confrontational actions | none reported | oviya13ya |
 | 25 | approved | P&E public admin | AD | objective | C | serviceable timeliness against a filed standard | - | - | where one team goes | stump and determinism cleared | - |
 | 26 | contested | PA monetisation | - | objective | C | settlement-side witness on fee itemisation | - | - | which programme | none reported | - |
 | 27 | approved | ECON public finance | FC | rule | B | recapture netting, gross against net, behind a join | - | - | which of five lapses | stump and determinism cleared | - |

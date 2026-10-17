@@ -1,7 +1,7 @@
 {
  "task": "task192",
  "owner": "oviya13ya",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "political-science-public-policy/conflict-protest-event-data-analysis",
  "objective": "anomaly-detection",
  "stage": 5,
@@ -9,7 +9,7 @@
  "updated": "2026-10-17",
  "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, reads 3.3, corrects the classifier's labels with the confrontational shares the hand coding found on each side of them and files 600 confrontational actions, because those shares were measured on the four months the coding desk audited and the record's composition moves after them.",
  "architecture": 3,
- "loops": 3,
+ "loops": 4,
  "precut": {
   "exit": 0,
   "date": "2026-10-17",
@@ -18,8 +18,8 @@
   "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17, no LEAK: 1 figure collision (the protocol's own paragraph 4.3 against the 4.3 per cent marked rate the write-up states) and 2 date lines (the planned-gathering dates in notificacoes_reuniao_publica.csv and the manifest cell derived from them), each answered in the design note's ## Leak sweep answers; 1 INFO on container metadata. The three figure collisions of the earlier pack are gone with the geography.",
-  "reader": "owed: the worksheet, protocol 4.5, three dictionary field lines and the monitor's intake hours changed in the realism pass, so the isolated read is re-staged on the new pack."
+  "leak_py": "REVIEW, no LEAK",
+  "reader": "loop 4: missed the call, filed 550 at 50 per cent with the golden's 450 at 6"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-17, no BLOCK: nearest driver 0.09 task189 and task58",
@@ -28,12 +28,12 @@
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "loop 3 on the pre-realism pack: Gates A to E, G and H pass, one Gate E watch item closed by the author. The realism pass moved the audit's cells and every figure downstream, so the author's one licensed re-judge is owed on this pack."
+  "report": "loop 4 on the re-drawn record: nothing failed to reproduce, Gate G and H pass, stump power moderate, blind enumeration of 14 candidates over 6 cells"
  },
  "returned": [],
- "resume": "loop 3 after the realism pass of 2026-10-17: the six held items are built, the design point is re-tuned on action seed 10461 and desk seed 4, every free gate is green and the pack is recut. Owed before ship: the author's one licensed re-judge and the leak reader on the new pack (the worksheet, the protocol's 4.5, the dictionary's three new field lines and the monitor's intake hours all changed).",
+ "resume": "SHIPPED. Held realism items are in the design note's Tried and rejected: the partner and line codes agreeing on 205 of 205 overlaps, the audit's 54 per cent coverage answered by framing, the classifier reading as a relabeller, gap-free identifiers, the tension index contradicting its own trend labels, the coverage file expanding the monitor's config weights, and lags with no long tail. The reader's claim that the exception file reuses identifiers is wrong: 308 distinct across 308 rows, checked.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
