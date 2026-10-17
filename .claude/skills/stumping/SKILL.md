@@ -86,6 +86,25 @@ golden's quantity (`determinism-check` §1). The method stays open only when the
 structure (preferred), a standard's method or a filed selection criterion (an organ, never in consecutive
 builds) force it. If the literal estimand makes the call easy, it was a fork.
 
+**The WHAT screen, run at the draw.** Name the decisive step, then ask which part of the estimand it
+settles. If it settles the population, the outcome, the window, the unit or the comparison, the draw is
+dead and no hardening saves it: file that part and the computation follows from the clause, which is rule
+application; leave it unfiled and the call is not determinate; there is no third position. Three
+architectures died at stage 4 on this one shape, each with Gate G and Gate H passing and every figure
+reproducing:
+
+| Build | The decisive step | The part of the estimand it settled |
+|---|---|---|
+| 190 | decide to nowcast the caseload rather than count it | whether members not yet observed are in the population |
+| 192 | count the processes behind the bursts, not the bursts | the unit of the count, which no parameter-free reading fixed |
+| 193 | leave the one dominant product out of the comparison | the comparison population |
+
+A step that survives the screen settles none of them: the estimand is beyond argument and two or more
+methods still stand on it, with the data's own structure ruling out the easy one. That is
+`method_or_model_selection` on a filed estimand, and the card's `layer2_family` says so;
+`estimand_identification` is the family these three carried, and a draw that names it answers the screen
+in writing before the default path is written.
+
 ### 1.3 Couple the pitfall to the domain
 
 The decisive step is the field's own method for the deciding quantity, which an expert applies and a

@@ -432,5 +432,18 @@ One line each, with the builds that paid for it. The techniques behind them are 
 - A request block can be a template at 1.5 per cent n-gram overlap; compare sentence shapes (63). A hardening loop can land on an earlier driver (130 v2 loop 1 against 73 world 10).
 - Generators: `hash()` is salted per process (use blake2b); replacing a seeded draw shifts every later draw; assert key uniqueness across the file and every replayed quantity against the generator (48, 56, 58 v12).
 
+**The WHAT screen** (`stumping` 1.2, paid for by three stage-4 deaths in one wave)
+- A decisive step that settles the population, the outcome, the window, the unit or the comparison is a
+  dead draw: filing that part makes the computation follow from the clause, not filing it leaves the call
+  open. 190 (unobserved members in the population), 192 (the unit of the count, no parameter-free reading)
+  and 193 (the comparison population) each passed Gate G and Gate H with every figure reproducing and
+  still failed, two on the judge's SEND_BACK and one on measurement before any file was cut.
+- Measure the ladder on the record before the note's numbers are written. 192's rung 0 was a clustering
+  whose one free parameter ran from 673 to 1 through the golden, and the note's figure for it had never
+  been computed.
+- The swap test is run on the deciding quantity, not the setting: counting how many periodic processes
+  generated a record reads the same with machines on maintenance cycles, so the domain was a backdrop
+  however carefully the nouns were chosen (192).
+
 **Unspent, so not mistaken for spent**
 - The ledger's old row 41 (displacement under fixed assessment capacity, four outreach arms) was drawn and never built.
