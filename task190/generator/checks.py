@@ -66,6 +66,29 @@ def run(g, target):
        "%.2f" % g["stratum"])
     ok("R3b the decisive step files the golden", abs(g["total_raw"] - PROJ) < 0.01)
     ok("R3b the golden's stated figure is the note's", g["total"] == TOTAL, str(g["total"]))
+    # ---- positive controls, before any absence is asserted.
+    # A grep reports the same "not found" whether the string is absent or the file could not be
+    # read. _sweep used to read the PDFs as raw bytes and never saw inside their Flate streams, so
+    # every absence claim below passed by never executing. Each PDF therefore has to yield text,
+    # and a sentence known to be in it has to be found, through the same decoder the sweep uses,
+    # before a single absence assertion runs.
+    CONTROLS = {
+        "audit_plan_2026.pdf": "Conclusion on a tested population",
+        "audit_manual_part9.pdf": "Terms used in reporting a tested population",
+        "internal_audit_testing_schedule_2026.pdf": "Basis of selection",
+    }
+    for name, sentence in sorted(CONTROLS.items()):
+        extracted = " ".join(verify_mod().pdf_text(os.path.join(target, name)))
+        ok("control: %s yields text through the sweep's own decoder" % name,
+           len(extracted) > 500, "%d characters" % len(extracted))
+        ok("control: the known sentence in %s is found" % name,
+           sentence in extracted, sentence)
+        ok("control: _sweep itself finds that sentence in %s" % name,
+           name in _sweep(target, re.escape(sentence)),
+           str(_sweep(target, re.escape(sentence))))
+    ok("control: every shipped csv and md yields its own text to the sweep",
+       all(_sweep(target, re.escape(w)) for w in ("ledger_sequence", "programme_code")))
+
     # the sampling design is filed as a fact about the sample; the estimator is not filed
     ok("R3c the pack files the design: probability proportional to recorded value",
        _sweep(target, r"probability proportional to recorded value") ==

@@ -558,113 +558,113 @@
   {
    "chain": "APK",
    "quarter": "2025 Q4",
-   "accepted": 6283,
-   "rejected": 57,
+   "accepted": 5265,
+   "rejected": 48,
    "median_days": 4.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q1",
-   "accepted": 5657,
-   "rejected": 85,
+   "accepted": 4783,
+   "rejected": 78,
    "median_days": 5.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q2",
-   "accepted": 5724,
-   "rejected": 51,
+   "accepted": 4877,
+   "rejected": 44,
    "median_days": 4.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q3",
-   "accepted": 5639,
-   "rejected": 54,
+   "accepted": 4647,
+   "rejected": 45,
    "median_days": 6.0
   },
   {
    "chain": "DSA",
    "quarter": "2025 Q4",
-   "accepted": 3330,
-   "rejected": 42,
+   "accepted": 4554,
+   "rejected": 59,
    "median_days": 3.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q1",
-   "accepted": 2981,
-   "rejected": 62,
+   "accepted": 4079,
+   "rejected": 76,
    "median_days": 4.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q2",
-   "accepted": 3025,
-   "rejected": 37,
+   "accepted": 4011,
+   "rejected": 51,
    "median_days": 4.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q3",
-   "accepted": 3159,
-   "rejected": 27,
+   "accepted": 4380,
+   "rejected": 44,
    "median_days": 6.0
   },
   {
    "chain": "NOR",
    "quarter": "2025 Q4",
-   "accepted": 3597,
-   "rejected": 78,
-   "median_days": 4.0
-  },
-  {
-   "chain": "NOR",
-   "quarter": "2026 Q1",
-   "accepted": 3258,
+   "accepted": 3777,
    "rejected": 80,
    "median_days": 4.0
   },
   {
    "chain": "NOR",
+   "quarter": "2026 Q1",
+   "accepted": 3316,
+   "rejected": 78,
+   "median_days": 4.0
+  },
+  {
+   "chain": "NOR",
    "quarter": "2026 Q2",
-   "accepted": 3019,
-   "rejected": 76,
+   "accepted": 3123,
+   "rejected": 82,
    "median_days": 5.0
   },
   {
    "chain": "NOR",
    "quarter": "2026 Q3",
-   "accepted": 3473,
-   "rejected": 63,
+   "accepted": 3613,
+   "rejected": 57,
    "median_days": 4.0
   },
   {
    "chain": "VST",
    "quarter": "2025 Q4",
-   "accepted": 3113,
-   "rejected": 37,
+   "accepted": 2719,
+   "rejected": 35,
    "median_days": 6.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q1",
-   "accepted": 2715,
-   "rejected": 43,
-   "median_days": 6.0
+   "accepted": 2434,
+   "rejected": 37,
+   "median_days": 7.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q2",
-   "accepted": 2673,
-   "rejected": 24,
+   "accepted": 2419,
+   "rejected": 22,
    "median_days": 7.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q3",
-   "accepted": 3005,
-   "rejected": 29,
+   "accepted": 2633,
+   "rejected": 30,
    "median_days": 6.0
   }
  ],
@@ -672,165 +672,165 @@
   {
    "holder": "H1",
    "name": "Nordlys Pharma A/S",
-   "ddd": 282252.0,
-   "ddd_before": 135988.0,
-   "ddd_after": 146264.0,
+   "ddd": 281932.0,
+   "ddd_before": 135546.0,
+   "ddd_after": 146386.0,
    "rate_before": 1219,
    "rate_after": 1286,
-   "fee_dkk": 353865,
-   "fee_exact": "353864.876",
-   "fee_distance": 0.376
+   "fee_dkk": 353483,
+   "fee_exact": "353482.97",
+   "fee_distance": 0.47
   },
   {
    "holder": "H2",
    "name": "Bregnholt Laegemidler A/S",
-   "ddd": 503166.5,
-   "ddd_before": 213570.0,
-   "ddd_after": 289596.5,
+   "ddd": 504333.5,
+   "ddd_before": 214530.0,
+   "ddd_after": 289803.5,
    "rate_before": 1219,
    "rate_after": 1286,
-   "fee_dkk": 632763,
-   "fee_exact": "632762.929",
-   "fee_distance": 0.429
+   "fee_dkk": 634199,
+   "fee_exact": "634199.371",
+   "fee_distance": 0.129
   },
   {
    "holder": "H3",
    "name": "Vindeby Therapeutics ApS",
-   "ddd": 434820.0,
+   "ddd": 434434.0,
    "ddd_before": 16382.0,
-   "ddd_after": 418438.0,
+   "ddd_after": 418052.0,
    "rate_before": 1219,
    "rate_after": 1286,
-   "fee_dkk": 558081,
-   "fee_exact": "558080.926",
-   "fee_distance": 0.426
+   "fee_dkk": 557585,
+   "fee_exact": "557584.53",
+   "fee_distance": 0.03
   },
   {
    "holder": "H4",
    "name": "Soegaard Medica A/S",
-   "ddd": 204605.0,
-   "ddd_before": 197190.0,
-   "ddd_after": 7415.0,
+   "ddd": 204690.0,
+   "ddd_before": 197355.0,
+   "ddd_after": 7335.0,
    "rate_before": 1479,
    "rate_after": 1676,
-   "fee_dkk": 304072,
-   "fee_exact": "304071.55",
-   "fee_distance": 0.05
+   "fee_dkk": 304182,
+   "fee_exact": "304181.505",
+   "fee_distance": 0.005
   },
   {
    "holder": "H5",
    "name": "Kastholm Pharma A/S",
-   "ddd": 627178.0,
-   "ddd_before": 533424.0,
-   "ddd_after": 93754.0,
+   "ddd": 626840.0,
+   "ddd_before": 533170.0,
+   "ddd_after": 93670.0,
    "rate_before": 1219,
    "rate_after": 1286,
-   "fee_dkk": 770812,
-   "fee_exact": "770811.5",
-   "fee_distance": 0.0
+   "fee_dkk": 770394,
+   "fee_exact": "770393.85",
+   "fee_distance": 0.35
   },
   {
    "holder": "H6",
    "name": "Ellevang Biosciences A/S",
-   "ddd": 1090114.0,
-   "ddd_before": 546524.0,
-   "ddd_after": 543590.0,
+   "ddd": 1088808.0,
+   "ddd_before": 545928.0,
+   "ddd_after": 542880.0,
    "rate_before": 958,
    "rate_after": 1120,
-   "fee_dkk": 1132391,
-   "fee_exact": "1132390.792",
-   "fee_distance": 0.292
+   "fee_dkk": 1131025,
+   "fee_exact": "1131024.624",
+   "fee_distance": 0.124
   },
   {
    "holder": "H7",
    "name": "Strandby Farma ApS",
-   "ddd": 121348.5,
-   "ddd_before": 121348.5,
+   "ddd": 120991.5,
+   "ddd_before": 120991.5,
    "ddd_after": 0.0,
    "rate_before": 1479,
    "rate_after": 1676,
-   "fee_dkk": 179474,
-   "fee_exact": "179474.4315",
-   "fee_distance": 0.0685
+   "fee_dkk": 178946,
+   "fee_exact": "178946.4285",
+   "fee_distance": 0.0715
   }
  ],
  "a3": [
   {
    "region": "Hovedstaden",
    "band": "18-24",
-   "patients": 251,
-   "share_pct": 70.5,
-   "with_marker": 177
+   "patients": 250,
+   "share_pct": 70.4,
+   "with_marker": 176
   },
   {
    "region": "Hovedstaden",
    "band": "25-44",
-   "patients": 753,
-   "share_pct": 68.9,
-   "with_marker": 519
+   "patients": 751,
+   "share_pct": 68.7,
+   "with_marker": 516
   },
   {
    "region": "Hovedstaden",
    "band": "45-74",
-   "patients": 1089,
-   "share_pct": 79.8,
-   "with_marker": 869
+   "patients": 1085,
+   "share_pct": 79.7,
+   "with_marker": 865
   },
   {
    "region": "Hovedstaden",
    "band": "75 and over",
-   "patients": 680,
-   "share_pct": 80.3,
+   "patients": 679,
+   "share_pct": 80.4,
    "with_marker": 546
   },
   {
    "region": "Midtjylland",
    "band": "18-24",
-   "patients": 209,
-   "share_pct": 68.9,
-   "with_marker": 144
+   "patients": 207,
+   "share_pct": 68.6,
+   "with_marker": 142
   },
   {
    "region": "Midtjylland",
    "band": "25-44",
-   "patients": 598,
-   "share_pct": 69.6,
-   "with_marker": 416
+   "patients": 596,
+   "share_pct": 69.5,
+   "with_marker": 414
   },
   {
    "region": "Midtjylland",
    "band": "45-74",
-   "patients": 876,
-   "share_pct": 78.3,
-   "with_marker": 686
+   "patients": 864,
+   "share_pct": 78.1,
+   "with_marker": 675
   },
   {
    "region": "Midtjylland",
    "band": "75 and over",
-   "patients": 513,
-   "share_pct": 77.2,
-   "with_marker": 396
+   "patients": 511,
+   "share_pct": 77.3,
+   "with_marker": 395
   },
   {
    "region": "Nordjylland",
    "band": "18-24",
-   "patients": 91,
-   "share_pct": 69.2,
-   "with_marker": 63
+   "patients": 92,
+   "share_pct": 69.6,
+   "with_marker": 64
   },
   {
    "region": "Nordjylland",
    "band": "25-44",
-   "patients": 302,
-   "share_pct": 69.2,
-   "with_marker": 209
+   "patients": 304,
+   "share_pct": 69.1,
+   "with_marker": 210
   },
   {
    "region": "Nordjylland",
    "band": "45-74",
-   "patients": 450,
-   "share_pct": 77.3,
-   "with_marker": 348
+   "patients": 451,
+   "share_pct": 77.4,
+   "with_marker": 349
   },
   {
    "region": "Nordjylland",
@@ -842,58 +842,58 @@
   {
    "region": "Sjaelland",
    "band": "18-24",
-   "patients": 131,
-   "share_pct": 69.5,
-   "with_marker": 91
+   "patients": 132,
+   "share_pct": 69.7,
+   "with_marker": 92
   },
   {
    "region": "Sjaelland",
    "band": "25-44",
-   "patients": 385,
-   "share_pct": 76.1,
-   "with_marker": 293
+   "patients": 387,
+   "share_pct": 76.2,
+   "with_marker": 295
   },
   {
    "region": "Sjaelland",
    "band": "45-74",
-   "patients": 654,
-   "share_pct": 76.6,
-   "with_marker": 501
+   "patients": 657,
+   "share_pct": 76.7,
+   "with_marker": 504
   },
   {
    "region": "Sjaelland",
    "band": "75 and over",
    "patients": 362,
-   "share_pct": 80.4,
-   "with_marker": 291
+   "share_pct": 79.8,
+   "with_marker": 289
   },
   {
    "region": "Syddanmark",
    "band": "18-24",
-   "patients": 196,
-   "share_pct": 71.9,
-   "with_marker": 141
+   "patients": 197,
+   "share_pct": 72.1,
+   "with_marker": 142
   },
   {
    "region": "Syddanmark",
    "band": "25-44",
    "patients": 562,
-   "share_pct": 71.7,
-   "with_marker": 403
+   "share_pct": 72.1,
+   "with_marker": 405
   },
   {
    "region": "Syddanmark",
    "band": "45-74",
-   "patients": 867,
-   "share_pct": 76.7,
-   "with_marker": 665
+   "patients": 879,
+   "share_pct": 76.9,
+   "with_marker": 676
   },
   {
    "region": "Syddanmark",
    "band": "75 and over",
-   "patients": 426,
-   "share_pct": 80.5,
-   "with_marker": 343
+   "patients": 429,
+   "share_pct": 80.7,
+   "with_marker": 346
   },
   {
    "region": "not stated",

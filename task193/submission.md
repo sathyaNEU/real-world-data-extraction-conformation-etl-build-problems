@@ -58,51 +58,51 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Sovraxil and antipsychotic: 17 patients, 11 after, 6 before, below the 25-patient minimum
 2. Pairs referred: 7.
 3. Lines accepted, lines rejected and median days from dispensing to submission, by chain and quarter of dispensing, whole counts and days to one decimal:
-   - APK, 2025 Q4: 6283 accepted, 57 rejected, 4.0 days
-   - APK, 2026 Q1: 5657 accepted, 85 rejected, 5.0 days
-   - APK, 2026 Q2: 5724 accepted, 51 rejected, 4.0 days
-   - APK, 2026 Q3: 5639 accepted, 54 rejected, 6.0 days
-   - DSA, 2025 Q4: 3330 accepted, 42 rejected, 3.0 days
-   - DSA, 2026 Q1: 2981 accepted, 62 rejected, 4.0 days
-   - DSA, 2026 Q2: 3025 accepted, 37 rejected, 4.0 days
-   - DSA, 2026 Q3: 3159 accepted, 27 rejected, 6.0 days
-   - NOR, 2025 Q4: 3597 accepted, 78 rejected, 4.0 days
-   - NOR, 2026 Q1: 3258 accepted, 80 rejected, 4.0 days
-   - NOR, 2026 Q2: 3019 accepted, 76 rejected, 5.0 days
-   - NOR, 2026 Q3: 3473 accepted, 63 rejected, 4.0 days
-   - VST, 2025 Q4: 3113 accepted, 37 rejected, 6.0 days
-   - VST, 2026 Q1: 2715 accepted, 43 rejected, 6.0 days
-   - VST, 2026 Q2: 2673 accepted, 24 rejected, 7.0 days
-   - VST, 2026 Q3: 3005 accepted, 29 rejected, 6.0 days
+   - APK, 2025 Q4: 5265 accepted, 48 rejected, 4.0 days
+   - APK, 2026 Q1: 4783 accepted, 78 rejected, 5.0 days
+   - APK, 2026 Q2: 4877 accepted, 44 rejected, 4.0 days
+   - APK, 2026 Q3: 4647 accepted, 45 rejected, 6.0 days
+   - DSA, 2025 Q4: 4554 accepted, 59 rejected, 3.0 days
+   - DSA, 2026 Q1: 4079 accepted, 76 rejected, 4.0 days
+   - DSA, 2026 Q2: 4011 accepted, 51 rejected, 4.0 days
+   - DSA, 2026 Q3: 4380 accepted, 44 rejected, 6.0 days
+   - NOR, 2025 Q4: 3777 accepted, 80 rejected, 4.0 days
+   - NOR, 2026 Q1: 3316 accepted, 78 rejected, 4.0 days
+   - NOR, 2026 Q2: 3123 accepted, 82 rejected, 5.0 days
+   - NOR, 2026 Q3: 3613 accepted, 57 rejected, 4.0 days
+   - VST, 2025 Q4: 2719 accepted, 35 rejected, 6.0 days
+   - VST, 2026 Q1: 2434 accepted, 37 rejected, 7.0 days
+   - VST, 2026 Q2: 2419 accepted, 22 rejected, 7.0 days
+   - VST, 2026 Q3: 2633 accepted, 30 rejected, 6.0 days
 4. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
-   - Nordlys Pharma A/S (H1): 282252.0 DDD, 353865 kroner
-   - Bregnholt Laegemidler A/S (H2): 503166.5 DDD, 632763 kroner
-   - Vindeby Therapeutics ApS (H3): 434820.0 DDD, 558081 kroner
-   - Soegaard Medica A/S (H4): 204605.0 DDD, 304072 kroner
-   - Kastholm Pharma A/S (H5): 627178.0 DDD, 770812 kroner
-   - Ellevang Biosciences A/S (H6): 1090114.0 DDD, 1132391 kroner
-   - Strandby Farma ApS (H7): 121348.5 DDD, 179474 kroner
+   - Nordlys Pharma A/S (H1): 281932.0 DDD, 353483 kroner
+   - Bregnholt Laegemidler A/S (H2): 504333.5 DDD, 634199 kroner
+   - Vindeby Therapeutics ApS (H3): 434434.0 DDD, 557585 kroner
+   - Soegaard Medica A/S (H4): 204690.0 DDD, 304182 kroner
+   - Kastholm Pharma A/S (H5): 626840.0 DDD, 770394 kroner
+   - Ellevang Biosciences A/S (H6): 1088808.0 DDD, 1131025 kroner
+   - Strandby Farma ApS (H7): 120991.5 DDD, 178946 kroner
 5. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
-   - Hovedstaden, 18-24: 251 patients, 70.5 per cent
-   - Hovedstaden, 25-44: 753 patients, 68.9 per cent
-   - Hovedstaden, 45-74: 1089 patients, 79.8 per cent
-   - Hovedstaden, 75 and over: 680 patients, 80.3 per cent
-   - Midtjylland, 18-24: 209 patients, 68.9 per cent
-   - Midtjylland, 25-44: 598 patients, 69.6 per cent
-   - Midtjylland, 45-74: 876 patients, 78.3 per cent
-   - Midtjylland, 75 and over: 513 patients, 77.2 per cent
-   - Nordjylland, 18-24: 91 patients, 69.2 per cent
-   - Nordjylland, 25-44: 302 patients, 69.2 per cent
-   - Nordjylland, 45-74: 450 patients, 77.3 per cent
+   - Hovedstaden, 18-24: 250 patients, 70.4 per cent
+   - Hovedstaden, 25-44: 751 patients, 68.7 per cent
+   - Hovedstaden, 45-74: 1085 patients, 79.7 per cent
+   - Hovedstaden, 75 and over: 679 patients, 80.4 per cent
+   - Midtjylland, 18-24: 207 patients, 68.6 per cent
+   - Midtjylland, 25-44: 596 patients, 69.5 per cent
+   - Midtjylland, 45-74: 864 patients, 78.1 per cent
+   - Midtjylland, 75 and over: 511 patients, 77.3 per cent
+   - Nordjylland, 18-24: 92 patients, 69.6 per cent
+   - Nordjylland, 25-44: 304 patients, 69.1 per cent
+   - Nordjylland, 45-74: 451 patients, 77.4 per cent
    - Nordjylland, 75 and over: 227 patients, 79.3 per cent
-   - Sjaelland, 18-24: 131 patients, 69.5 per cent
-   - Sjaelland, 25-44: 385 patients, 76.1 per cent
-   - Sjaelland, 45-74: 654 patients, 76.6 per cent
-   - Sjaelland, 75 and over: 362 patients, 80.4 per cent
-   - Syddanmark, 18-24: 196 patients, 71.9 per cent
-   - Syddanmark, 25-44: 562 patients, 71.7 per cent
-   - Syddanmark, 45-74: 867 patients, 76.7 per cent
-   - Syddanmark, 75 and over: 426 patients, 80.5 per cent
+   - Sjaelland, 18-24: 132 patients, 69.7 per cent
+   - Sjaelland, 25-44: 387 patients, 76.2 per cent
+   - Sjaelland, 45-74: 657 patients, 76.7 per cent
+   - Sjaelland, 75 and over: 362 patients, 79.8 per cent
+   - Syddanmark, 18-24: 197 patients, 72.1 per cent
+   - Syddanmark, 25-44: 562 patients, 72.1 per cent
+   - Syddanmark, 45-74: 879 patients, 76.9 per cent
+   - Syddanmark, 75 and over: 429 patients, 80.7 per cent
    - not stated, 18-24: 29 patients, 72.4 per cent
    - not stated, 25-44: 82 patients, 76.8 per cent
    - not stated, 45-74: 103 patients, 75.7 per cent
