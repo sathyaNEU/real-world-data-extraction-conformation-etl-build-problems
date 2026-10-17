@@ -1,0 +1,525 @@
+{
+  "call": {
+    "flagged": [
+      "Melmangalam",
+      "Vadakkupatti",
+      "Velliyanur",
+      "Chinnakulam",
+      "Periyamalai",
+      "Sengalur"
+    ],
+    "flagged_count": 6,
+    "tolerance": [
+      0.6667,
+      1.5
+    ],
+    "tolerance_text": [
+      "two thirds",
+      "one and a half"
+    ],
+    "zones": 12
+  },
+  "components": {
+    "band": 0.15,
+    "band_percent": 15,
+    "estimated_flagged": {
+      "Chinnakulam": 15.5,
+      "Melmangalam": 17.0,
+      "Periyamalai": 20.1,
+      "Sengalur": 13.8,
+      "Vadakkupatti": 18.7,
+      "Velliyanur": 11.9
+    },
+    "max_unflagged": {
+      "ratio": 1.29,
+      "zone": "Puthanpalli"
+    },
+    "min_flagged": {
+      "ratio": 1.85,
+      "zone": "Sengalur"
+    },
+    "published_flagged": {
+      "Chinnakulam": 4.7,
+      "Melmangalam": 5.7,
+      "Periyamalai": 6.7,
+      "Sengalur": 7.4,
+      "Vadakkupatti": 9.3,
+      "Velliyanur": 4.4
+    },
+    "ratio_flagged": {
+      "Chinnakulam": 3.28,
+      "Melmangalam": 3.0,
+      "Periyamalai": 3.0,
+      "Sengalur": 1.85,
+      "Vadakkupatti": 2.02,
+      "Velliyanur": 2.71
+    }
+  },
+  "deliverables": {
+    "breteau": {
+      "Aranmanai": 16.7,
+      "Chinnakulam": 24.8,
+      "Kadalur": 18.9,
+      "Kizhakkoor": 10.6,
+      "Kottaivayal": 14.9,
+      "Melmangalam": 21.2,
+      "Periyamalai": 17.0,
+      "Puthanpalli": 22.4,
+      "Sengalur": 23.8,
+      "Thenkarai": 18.5,
+      "Vadakkupatti": 17.6,
+      "Velliyanur": 24.2
+    },
+    "estimated": {
+      "Aranmanai": 15.8,
+      "Chinnakulam": 15.5,
+      "Kadalur": 17.2,
+      "Kizhakkoor": 11.1,
+      "Kottaivayal": 6.5,
+      "Melmangalam": 17.0,
+      "Periyamalai": 20.1,
+      "Puthanpalli": 15.9,
+      "Sengalur": 13.8,
+      "Thenkarai": 14.7,
+      "Vadakkupatti": 18.7,
+      "Velliyanur": 11.9
+    },
+    "flag": {
+      "Aranmanai": "",
+      "Chinnakulam": "M",
+      "Kadalur": "",
+      "Kizhakkoor": "",
+      "Kottaivayal": "",
+      "Melmangalam": "M",
+      "Periyamalai": "M",
+      "Puthanpalli": "",
+      "Sengalur": "M",
+      "Thenkarai": "",
+      "Vadakkupatti": "M",
+      "Velliyanur": "M"
+    },
+    "published": {
+      "Aranmanai": 13.2,
+      "Chinnakulam": 4.7,
+      "Kadalur": 14.2,
+      "Kizhakkoor": 10.2,
+      "Kottaivayal": 5.1,
+      "Melmangalam": 5.7,
+      "Periyamalai": 6.7,
+      "Puthanpalli": 12.3,
+      "Sengalur": 7.4,
+      "Thenkarai": 12.7,
+      "Vadakkupatti": 9.3,
+      "Velliyanur": 4.4
+    },
+    "ratio": {
+      "Aranmanai": 1.2,
+      "Chinnakulam": 3.28,
+      "Kadalur": 1.21,
+      "Kizhakkoor": 1.09,
+      "Kottaivayal": 1.27,
+      "Melmangalam": 3.0,
+      "Periyamalai": 3.0,
+      "Puthanpalli": 1.29,
+      "Sengalur": 1.85,
+      "Thenkarai": 1.16,
+      "Vadakkupatti": 2.02,
+      "Velliyanur": 2.71
+    },
+    "reactive": {
+      "Aranmanai": 54,
+      "Chinnakulam": 19,
+      "Kadalur": 60,
+      "Kizhakkoor": 43,
+      "Kottaivayal": 19,
+      "Melmangalam": 23,
+      "Periyamalai": 28,
+      "Puthanpalli": 50,
+      "Sengalur": 31,
+      "Thenkarai": 59,
+      "Vadakkupatti": 35,
+      "Velliyanur": 19
+    },
+    "response": {
+      "Aranmanai": 77.5,
+      "Chinnakulam": 80.4,
+      "Kadalur": 75.7,
+      "Kizhakkoor": 74.7,
+      "Kottaivayal": 75.3,
+      "Melmangalam": 76.9,
+      "Periyamalai": 73.8,
+      "Puthanpalli": 77.2,
+      "Sengalur": 78.9,
+      "Thenkarai": 77.6,
+      "Vadakkupatti": 74.3,
+      "Velliyanur": 79.0
+    },
+    "tested": {
+      "Aranmanai": 409,
+      "Chinnakulam": 403,
+      "Kadalur": 422,
+      "Kizhakkoor": 423,
+      "Kottaivayal": 372,
+      "Melmangalam": 407,
+      "Periyamalai": 418,
+      "Puthanpalli": 406,
+      "Sengalur": 417,
+      "Thenkarai": 465,
+      "Vadakkupatti": 378,
+      "Velliyanur": 432
+    }
+  },
+  "old_cases_pct": {
+    "Aranmanai": 14,
+    "Chinnakulam": 97,
+    "Kadalur": 14,
+    "Kizhakkoor": 7,
+    "Kottaivayal": 34,
+    "Melmangalam": 96,
+    "Periyamalai": 97,
+    "Puthanpalli": 41,
+    "Sengalur": 46,
+    "Thenkarai": 10,
+    "Vadakkupatti": 48,
+    "Velliyanur": 100
+  },
+  "panel_summary": {
+    "breteau_per_houses": 100,
+    "day75_pct": 46,
+    "early_hi_pct": 94,
+    "early_lo_pct": 85,
+    "fixed_window_days": 90,
+    "kit_window_days": [
+      5,
+      60
+    ],
+    "scheduled_visits": [
+      3,
+      7,
+      14,
+      21,
+      30,
+      45,
+      60,
+      75,
+      90,
+      120,
+      150
+    ]
+  },
+  "rungs": {
+    "city": {
+      "extra": [
+        "Aranmanai",
+        "Kizhakkoor",
+        "Kottaivayal",
+        "Puthanpalli"
+      ],
+      "flagged": [
+        "Puthanpalli",
+        "Melmangalam",
+        "Vadakkupatti",
+        "Kizhakkoor",
+        "Chinnakulam",
+        "Periyamalai",
+        "Kottaivayal",
+        "Sengalur",
+        "Aranmanai"
+      ],
+      "max_ratio": 2.41,
+      "min_ratio": 1.35,
+      "missed": [
+        "Velliyanur"
+      ],
+      "n": 9
+    },
+    "from5": {
+      "extra": [],
+      "flagged": [],
+      "max_ratio": 1.3,
+      "min_ratio": 1.0,
+      "missed": [
+        "Chinnakulam",
+        "Melmangalam",
+        "Periyamalai",
+        "Sengalur",
+        "Vadakkupatti",
+        "Velliyanur"
+      ],
+      "n": 0
+    },
+    "kit": {
+      "extra": [],
+      "flagged": [],
+      "max_ratio": 1.06,
+      "min_ratio": 0.82,
+      "missed": [
+        "Chinnakulam",
+        "Melmangalam",
+        "Periyamalai",
+        "Sengalur",
+        "Vadakkupatti",
+        "Velliyanur"
+      ],
+      "n": 0
+    },
+    "mean": {
+      "extra": [
+        "Kottaivayal"
+      ],
+      "flagged": [
+        "Melmangalam",
+        "Vadakkupatti",
+        "Velliyanur",
+        "Chinnakulam",
+        "Periyamalai",
+        "Kottaivayal",
+        "Sengalur"
+      ],
+      "max_ratio": 6.74,
+      "min_ratio": 1.05,
+      "missed": [],
+      "n": 7
+    },
+    "median": {
+      "extra": [],
+      "flagged": [
+        "Melmangalam",
+        "Velliyanur",
+        "Chinnakulam",
+        "Periyamalai"
+      ],
+      "max_ratio": 5.36,
+      "min_ratio": 0.91,
+      "missed": [
+        "Sengalur",
+        "Vadakkupatti"
+      ],
+      "n": 4
+    },
+    "peak": {
+      "extra": [
+        "Puthanpalli"
+      ],
+      "flagged": [
+        "Puthanpalli",
+        "Melmangalam",
+        "Velliyanur",
+        "Chinnakulam",
+        "Periyamalai"
+      ],
+      "max_ratio": 6.03,
+      "min_ratio": 0.91,
+      "missed": [
+        "Sengalur",
+        "Vadakkupatti"
+      ],
+      "n": 5
+    },
+    "pooled": {
+      "extra": [],
+      "flagged": [],
+      "max_ratio": 1.37,
+      "min_ratio": 1.05,
+      "missed": [
+        "Chinnakulam",
+        "Melmangalam",
+        "Periyamalai",
+        "Sengalur",
+        "Vadakkupatti",
+        "Velliyanur"
+      ],
+      "n": 0
+    },
+    "spread": {
+      "bins": {
+        "hi": 0.021,
+        "lo": -0.021,
+        "same": true
+      },
+      "confirmed_only": {
+        "hi": 0.01,
+        "lo": -0.015,
+        "same": true
+      },
+      "dedup": {
+        "hi": 0.102,
+        "lo": -0.022,
+        "same": true
+      },
+      "kernel": {
+        "hi": 0.013,
+        "lo": -0.049,
+        "same": true
+      },
+      "logistic": {
+        "hi": 0.052,
+        "lo": -0.012,
+        "same": true
+      },
+      "steps": {
+        "hi": 0.021,
+        "lo": -0.016,
+        "same": true
+      },
+      "zone_midpoint": {
+        "hi": 0.01,
+        "lo": -0.018,
+        "same": true
+      }
+    },
+    "w60": {
+      "extra": [
+        "Puthanpalli"
+      ],
+      "flagged": [
+        "Puthanpalli",
+        "Melmangalam",
+        "Vadakkupatti",
+        "Velliyanur",
+        "Chinnakulam",
+        "Periyamalai",
+        "Sengalur"
+      ],
+      "max_ratio": 113.78,
+      "min_ratio": -69.68,
+      "missed": [],
+      "n": 7
+    },
+    "w90": {
+      "extra": [],
+      "flagged": [
+        "Vadakkupatti",
+        "Chinnakulam",
+        "Sengalur"
+      ],
+      "max_ratio": 2.18,
+      "min_ratio": 0.99,
+      "missed": [
+        "Melmangalam",
+        "Periyamalai",
+        "Velliyanur"
+      ],
+      "n": 3
+    }
+  },
+  "steps": {
+    "before_2027": 7554,
+    "cases_used": 35166,
+    "controls": 300,
+    "controls_reactive": 4,
+    "effective_sensitivity": {
+      "Aranmanai": 0.764,
+      "Chinnakulam": 0.232,
+      "Kadalur": 0.76,
+      "Kizhakkoor": 0.808,
+      "Kottaivayal": 0.594,
+      "Melmangalam": 0.268,
+      "Periyamalai": 0.28,
+      "Puthanpalli": 0.703,
+      "Sengalur": 0.457,
+      "Thenkarai": 0.783,
+      "Vadakkupatti": 0.438,
+      "Velliyanur": 0.271
+    },
+    "insp_exact_dups": 123,
+    "insp_houses": 13250,
+    "insp_locked": 813,
+    "insp_rows": 15544,
+    "lab_rejected": 525,
+    "lab_rows": 5477,
+    "line_rows": 44196,
+    "never_called": 25,
+    "non_resident": 1476,
+    "not_dwelling": 58,
+    "occupied": 2037,
+    "panel_cases": 557,
+    "panel_patients": 216,
+    "reactive": 440,
+    "renumber": "2027-11-16",
+    "responding": 1564,
+    "sampled": 2178,
+    "single_sensitivity": {
+      "from5": 0.708,
+      "kit": 0.868,
+      "pooled": 0.677
+    },
+    "specificity": 0.9867,
+    "tested": 4952,
+    "vacant": 83,
+    "visit_counts": {
+      "120": 24,
+      "14": 90,
+      "150": 16,
+      "21": 75,
+      "3": 30,
+      "30": 62,
+      "45": 48,
+      "60": 46,
+      "7": 80,
+      "75": 46,
+      "90": 40
+    },
+    "visit_days": {
+      "120": [
+        117,
+        123
+      ],
+      "14": [
+        13,
+        15
+      ],
+      "150": [
+        147,
+        152
+      ],
+      "21": [
+        20,
+        22
+      ],
+      "3": [
+        2,
+        4
+      ],
+      "30": [
+        28,
+        32
+      ],
+      "45": [
+        43,
+        47
+      ],
+      "60": [
+        58,
+        62
+      ],
+      "7": [
+        6,
+        8
+      ],
+      "75": [
+        73,
+        77
+      ],
+      "90": [
+        87,
+        93
+      ]
+    },
+    "visit_sensitivity": {
+      "120": 0.042,
+      "14": 0.944,
+      "150": 0.0,
+      "21": 0.92,
+      "3": 0.133,
+      "30": 0.919,
+      "45": 0.812,
+      "60": 0.587,
+      "7": 0.85,
+      "75": 0.457,
+      "90": 0.15
+    },
+    "visits_resent": 57,
+    "visits_rows": 2792
+  }
+}

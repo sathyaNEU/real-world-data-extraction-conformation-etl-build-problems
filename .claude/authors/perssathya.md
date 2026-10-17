@@ -28,3 +28,4 @@ architecture), new. A task from an objective no developer owns says so.
 | 1 | task230 (resume 2: the asks) · task129 (10/10 gate first: drawn before the rules, then resume 2 or re-root, Root-Cause) · task229 (resume 1: architecture 3 draft) · task131 (redesign under the 10/10 rules: drawn before them, Experiment & Causal) · task228 (re-root) · task122 (re-root, Experiment & Causal) |
 | 2 | task231 (new) · task232 (new) · task233 (new) · task234 (new) · task235 (new) · task236 (new) |
 | 3 | task237 (new) · task238 (new) · task239 (new) · task240 (new) · task241 (new) · task242 (new) |
+| 4 | task243 (new) · task244 (new) · task245 (new) · task246 (new) · task247 (new) · task248 (new) |
