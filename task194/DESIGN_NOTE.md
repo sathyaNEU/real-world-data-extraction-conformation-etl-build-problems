@@ -650,3 +650,30 @@ script says that in its output instead of printing the row twice and calling it 
   a joint replacement and an appendicectomy currently averaging the same stay. It was held because the
   stay feeds the complication selection, so changing it moves the realised stratum frequencies and would
   need the design point and the hospital-rate centring re-measured.
+- **This pass, A2 re-sited off the call's own population, which is the rule the pass produced.** Ask of
+  each ask which rows its quantity reads, and where the call reads them too, re-site the ask before
+  building anything. A2 read the in-scope acute episodes, which are exactly the rows the comparison
+  frequency is built from, so no device could live there; it now reads the complement, the 10,377
+  separations in the calendar year that specification 2.1 to 2.3 exclude. The primary is the day-procedure
+  feed's two missing months at three units the team has already been placed with, all of them same-day
+  records, so it can reach neither a candidate's separations nor an in-scope episode, asserted both ways by
+  count. A2 went from keeping 12 of 12 against the cracker to 2 of 8, and the pair ceiling from 39.5 to
+  **36.4** with mirror leakage at **3.6**.
+- **Rejected: the first wording of the re-sited ask, which signposted its own answer.** It asked for the
+  separations a hospital's acute units reported, how many the indicator excludes and how many of those
+  recorded a complication. Naming the reported separations points straight at the activity summary, which
+  is the system that counts them, so a careful response reconciles to it and the feed gap costs it nothing:
+  measured, the cracker kept all 12 and the ceiling went to 40.9. The reported column came out, and with
+  the summary unnamed the natural path is to count the extract's out-of-scope rows, which runs short at
+  three of the four sites. A reconciliation ask that names both sides of the reconciliation has given its
+  answer away.
+- **Rejected: buying Carrowdean's last two figures.** It would take either a ninth placed unit at
+  Carrowdean, which removes one of the twelve candidates, or moving the amalgamation date so the
+  predecessor wards still report in 2026, which leaves 41510 one closed quarter against charter 4.2's
+  floor of four. Both cost more than two figures are worth, and the sheet says so rather than hiding the
+  residue.
+- **Checked, not assumed: the mirror's leakage is attempted and missed.** `cracker.py` now carries what
+  each response computed beside what the rubric owes for every one of the 44 ask figures and all 12
+  construction figures, and `checks.py` asserts that every scored figure carries a computed value and that
+  the mirror's twelve construction figures are all attempted and all wrong. A figure scored as a miss
+  because the response reached for nothing would show as a blank rather than hide inside a count.

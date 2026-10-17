@@ -1,55 +1,60 @@
 {
- "task": "task194",
- "owner": "oviya13ya",
- "status": "BUILD",
- "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
- "objective": "anomaly-detection",
- "stage": 3,
- "stage_name": "build",
- "updated": "2026-10-17",
- "stump": "A competent solver reconciles to the published indicator, ranks the eligible units on the complications each records above the expectation the published stratum rates give it, and places the improvement team with Alderbrook General Surgery (41220), whose patients sit where the published standard has gone most out of date, rather than with Alderbrook Orthopaedics (41230), whose own patients are having the most complications they should not be having. On the comparison the charter asks for, 41220 carries minus 3.7 avoidable complications and 41230 carries 40.0.",
- "architecture": 2,
- "loops": 0,
- "precut": {
-  "exit": 1,
-  "date": "2026-10-17",
-  "detail": "50 checks, 1 FAIL, 0 WARN. The one failure is supplemental-stumping Part 1.1: the cracker keeps 12 of 48 ask figures, all of them A2's. Pair ceiling 39.5 and mirror leakage 0.0 both pass, measured by generator/cracker.py on the cut pack."
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": "0.06 task464 (v1)"
- },
- "judge": {
-  "verdict": "SEND_BACK on architecture 1",
-  "disposition": "re-rooted at stage 1",
-  "report": "architecture 1 spent: see the card's lineage and the design note's Tried and rejected"
- },
- "returned": [],
- "resume": "Stage 3 complete except A2's silent primary. BUILT AND MEASURED: answer 41230 Alderbrook Orthopaedics, 40 avoidable complications on 2,305 planned separations; runner-up 41420 at 25; lead 15.05 complications, 1.60x, 2.41 standard errors (SE gap 6.25, 5.17 and 3.52 per unit); answer 4 of 12 on the published ranking; three rungs at 2.11x, 1.32x and 1.60x; the easy route 41220 at 59.2 published is carrying minus 3. FORCING, asserted in checks.py and again in verify.py: band drift 0.887 to 1.313 (factor 1.48, crossing 1.00 both ways); surgical share 0.075 to 0.851 with two carrying none; unit 41410's avoidable count 1.1 to 2.1 a quarter on the published basis then 9.2 and 9.4 (a factor of 8.5) across a pure case-mix shift, while on the record's own frequencies it holds 6.2 to 7.1 in all ten quarters. C1 CONVERGENCE: all 12 readings of charter 4.3 name 41230, margins 1.14x to 2.86x, asserted reading by reading in checks.py and recomputed independently in verify.py on a pandas code path. CARRIED DEFECTS CLOSED: all four hospital adjusted rates now sit 0.022 to 0.037 from their cell edges against a 0.015 bar (41310's mean quarterly separations moved 1350 to 1344, the only knob that reaches them); the activity summary's de-duplication now forces one series, and A3's chain rule reproduces the summary's separations exactly in all ten quarters. ASK LAYER: pair ceiling 39.5 and mirror leakage 0.0 both pass; A2 keeps 12 of 48 against the cracker and the note records that an ask computed over the call's own population cannot carry a primary, with the redraw named. NEXT: give A2 a silent primary by redrawing it onto a quantity over all care types, re-measure the ceiling, then stage 4, the leak reader and the determinism judge.",
- "approved": null,
- "delivered": null,
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "call": "Alderbrook Orthopaedics (cost centre 41230), 40 avoidable complications on 2,305 planned separations, against 25 at Marrowfield General Medicine",
- "build": {
-  "generator_assertions": 585,
-  "independent_checks": 185,
-  "figures_check": "PASS, 144 figures in blocks 1 to 4, 0 absent",
-  "byte_identical_rebuilds": true,
-  "target_zip_md5": "f42fef8d5469ae73b809ec32cb2c0735",
-  "zip_entries": 20,
-  "guard_surface": "clean, personas match the card",
-  "guard_heart": "WARN, nearest driver 0.06, the two WARNs answered in the note",
-  "leak_py": "REVIEW: 122 cost-centre and clause-number coincidences, the charter's own vocabulary, the dashboard confirmed to sort by hospital then unit name, and one scheduled end date after the as-of. No finding.",
-  "design_gate_red": "the cracker keeps 12 of 48 ask figures on A2; the ask sheet states it and the design note records why A2 cannot hold a primary as worded",
-  "target_zip_bytes": 4042547,
-  "operational_trace": "the theatre closure is visible in the rostering file: 41410's nursing hours per patient day run 4.49 to 4.66 in the ordinary months and 5.13 to 5.30 in the six months of the closure"
- },
- "notes": "determinism_check_report.md in this folder is architecture 1's verdict and describes a design that no longer exists; it is overwritten at stage 4 and should not be read as this build's report."
+  "task": "task194",
+  "owner": "oviya13ya",
+  "status": "BUILD",
+  "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
+  "objective": "anomaly-detection",
+  "stage": 3,
+  "stage_name": "build",
+  "updated": "2026-10-17",
+  "stump": "A competent solver reconciles to the published indicator, ranks the eligible units on the complications each records above the expectation the published stratum rates give it, and places the improvement team with Alderbrook General Surgery (41220), whose patients sit where the published standard has gone most out of date, rather than with Alderbrook Orthopaedics (41230), whose own patients are having the most complications they should not be having. On the comparison the charter asks for, 41220 carries minus 3.7 avoidable complications and 41230 carries 40.0.",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+    "exit": 1,
+    "date": "2026-10-17",
+    "detail": "50 checks, 1 FAIL, 0 WARN. The one failure is supplemental-stumping Part 1.1 on two of 44 ask figures, both Carrowdean's A2 figures. Pair ceiling 36.4 and mirror leakage 3.6 both pass, measured by generator/cracker.py on the cut pack."
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.06 task464 (v1)"
+  },
+  "judge": {
+    "verdict": "SEND_BACK on architecture 1",
+    "disposition": "re-rooted at stage 1",
+    "report": "architecture 1 spent: see the card's lineage and the design note's Tried and rejected"
+  },
+  "returned": [],
+  "resume": "Stage 3 complete. Ready for stage 4: the leak reader and the determinism judge. BUILT AND MEASURED: answer 41230 Alderbrook Orthopaedics, 40 avoidable complications on 2,305 planned separations; runner-up 41420 at 25; lead 15.05 complications, 1.60x, 2.41 standard errors; answer 4 of 12 on the published ranking; three rungs at 2.11x, 1.32x, 1.60x; the easy route 41220 at 59.2 published carries minus 3. All 12 readings of charter 4.3 name 41230 at 1.14x to 2.86x, asserted reading by reading in checks.py and recomputed independently in verify.py. 585-plus generator assertions, 185-plus independent checks, figures_check PASS on 148 figures, two byte-identical rebuilds, guard surface clean, leak REVIEW with no finding. precut 50 checks 1 FAIL: Part 1.1 on Carrowdean's two A2 figures, with the cost of buying them stated. STOP OPTIMISING THE CEILING: the 36.4 assumes a ladder nothing independent has tested yet.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "call": "Alderbrook Orthopaedics (cost centre 41230), 40 avoidable complications on 2,305 planned separations, against 25 at Marrowfield General Medicine",
+  "build": {
+    "generator_assertions": 585,
+    "independent_checks": 185,
+    "figures_check": "PASS, 148 figures in blocks 1 to 4, 0 absent",
+    "byte_identical_rebuilds": true,
+    "target_zip_md5": "970a12b40e366bc46aeac0c9a287be46",
+    "zip_entries": 20,
+    "guard_surface": "clean, personas match the card",
+    "guard_heart": "WARN, nearest driver 0.06, the two WARNs answered in the note",
+    "leak_py": "REVIEW: 122 cost-centre and clause-number coincidences, the charter's own vocabulary, the dashboard confirmed to sort by hospital then unit name, and one scheduled end date after the as-of. No finding.",
+    "design_gate_red": "the cracker keeps 2 of 44 ask figures, both Carrowdean's, because Carrowdean's only acute units are two of the twelve candidates so the feed gap cannot reach the site without moving the call",
+    "target_zip_bytes": 4038765,
+    "operational_trace": "the theatre closure is visible in the rostering file: 41410's nursing hours per patient day run 4.49 to 4.66 in the ordinary months and 5.13 to 5.30 in the six months of the closure",
+    "ask_layer": "A2 re-sited off the call's own population onto the activity the indicator excludes; its primary is the day-procedure feed's two missing months at three placed units, all same-day records. Cracker keeps 2 of 44 (Carrowdean's two A2 figures), mirror 2 of 44, construction 12 of 12 and 0 of 12. Pair ceiling 36.4, mirror leakage 3.6 per cent."
+  },
+  "notes": "determinism_check_report.md in this folder is architecture 1's verdict and describes a design that no longer exists; it is overwritten at stage 4 and should not be read as this build's report.",
+  "held_for_next_pass": [
+    "Length of stay should follow the episode's risk band, not only the unit's mix. It would put the theatre closure in bed-days and stop a joint replacement and an appendicectomy averaging the same stay. It also moves the complication selection, so the realised stratum frequencies, the design point and the hospital-rate centring all need re-measuring. Does not gate stage 4. Recorded under the design note's ## Tried and rejected.",
+    "The pair ceiling of 36.4 rests on the premise that the ladder keeps the second-best response off the call, which nothing independent has yet tested. If the cold reader lands the call the finding is in the ladder and the ceiling does not matter; if it misses, the 36.4 becomes evidence."
+  ]
 }

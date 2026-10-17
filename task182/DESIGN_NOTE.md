@@ -686,10 +686,10 @@ whatever the wording, because an interface that holds a value writes rows that a
 - `generator/build.py` runs everything: the survey (`world.py`, `sim.py`), the pack (`pack.py`, `docs.py`,
   `postprocess.py`), the golden (`golden.py` over `analysis.py`, `deliver.py`), `metadata.py`,
   `figures.py`, `submission.py`, then `checks.py` and `verify.py`.
-- Final run: `checks.py` **1,537 assertions passed**; `verify.py` **282,104 independent checks passed**
+- Final run: `checks.py` **1,884 assertions passed**; `verify.py` **282,167 independent checks passed**
   (the per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
   consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
-  38c1498f20627a18); about 25 seconds.
+  f3a88420d82ccb1f); about 25 seconds.
 - `verify.py` reads only the bundle (standard library, numpy-free, pyarrow for the parquet), encodes the
   plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
   residuals, valid, excluded and stop minutes, each level's distance to its rounding edge, the slate, its
@@ -709,8 +709,10 @@ whatever the wording, because an interface that holds a value writes rows that a
   which the normalisation takes the mean out of, so it moves the spread of a record and not its level),
   the evening and night texture (`world.NIGHT_TEX`, 0.2), the within-minute depth of the plant's own level
   (`world.F90`), the blower trim's draw (`world.AIR_SEED`, 3, scanned for a week set clear of the
-  whole-unit edges on the two meters together), the duty rotation (`world.BL03_SHARE`) and the historian's
-  held spells (`world.PLC_HELD`, placed against each week's own dropout and clear of every window edge), the two tones' survival to each position (`BARRIER`, `TONE_K`, `pack._spectra`) and
+  whole-unit edges on the two meters together, distinct week by week), the duty rotation
+  (`world.BL03_SHARE`), the historian's held spells (`world.PLC_HELD`, placed against each week's own
+  dropout and clear of every window edge) and the engine's 100 Hz firing tone, lowered until no band at any
+  position sits within 0.45 dB of the prominence test, the two tones' survival to each position (`BARRIER`, `TONE_K`, `pack._spectra`) and
   the per-position micro-adjustments (`world.SHIFT`, at most 0.93 dB) that leave all 14 printed levels
   distinct, each 0.015 dB or more from its rounding edge and 0.018 dB or more off the printed value itself,
   so no level sits on a round number. Two of those moved this round: NSL06's, which carries the margin

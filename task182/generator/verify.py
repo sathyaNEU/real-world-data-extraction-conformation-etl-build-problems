@@ -340,6 +340,17 @@ def _core(target, fig, with_asks):
     ok(len(hist) > 7000, "the historian carries %d rows" % len(hist))
     ok(len(held) > 40,
        "%d of them are the quarter hour before them written again while the plant ran on" % len(held))
+    # the other repeated rows are readings of a stopped works, and the equipment log says so independently
+    prev, honest = None, 0
+    for r in rows(os.path.join(target, "scada_15min_2026.csv")):
+        t0 = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+        if prev is not None and all(v == prev[k] for k, v in r.items() if k != "logged_at") \
+                and t0 not in held:
+            honest += 1
+            ok(in_down(t0 - dt.timedelta(minutes=15)) or in_down(t0),
+               "the repeated row at %s falls in a spell the log shows every source down in" % t0)
+        prev = r
+    ok(honest >= 36, "%d repeated rows are the works' own stop, which is a reading" % honest)
 
     def air_at(t0):
         return float(hist[t0]["aeration_header_total_knm3"]) + float(hist[t0]["bl03_discharge_total_knm3"])

@@ -5,7 +5,7 @@
   "domain": "physical-environmental-sciences",
   "objective": "anomaly-detection",
   "stage": 4,
-  "stage_name": "check: the determinism re-judge, after the round-2 determinism repair and the round-3 ask-layer re-cut; the re-judge is the author's to license",
+  "stage_name": "check: the determinism re-judge, after the round-2 determinism repair, the round-3 ask-layer re-cut and the round-4 closure of the judge's three ask forks",
   "updated": "2026-10-17",
   "stump": "A competent solver pairs every deployment with its position, takes each deployment's field-check deviation off its levels, excludes exactly the minutes the plan excludes, energetically averages each position's weekday daytime LAeq, energetically subtracts the background the position's own record shows and files NSL03, NSL04, NSL06, NSL11 and NSL12; the step that lands it there is taking that background from a record the plant was running in, when the blowers, the centrifuges and the gas engine run through every assessment minute, so the subtraction returns the surroundings' own variability instead of the plant's contribution.",
   "architecture": 2,
@@ -14,17 +14,17 @@
     "exit": 0,
     "date": "2026-10-17",
     "checks": "50 checks, 0 FAIL, 0 WARN",
-    "pair_ceiling": "37.3 with 3.6 per cent mirror leakage against the cracker Part 1.1 defines (the response that landed the call, ran the hygiene battery and executed every filed rule it points at), measured as code by generator/cracker.py on the cut pack and asserted row by row in checks.py: the cracker keeps 24 of 84 criteria, the construction layer and the tone summary, and misses every one of the 60 device criteria"
+    "pair_ceiling": "37.3 with 3.6 per cent mirror leakage against the cracker Part 1.1 defines, measured as code by generator/cracker.py on the cut pack and asserted row by row in checks.py: 24 of 84 criteria kept, all of them the construction layer or the tone summary, and every one of the 60 device criteria missed"
   },
   "build": {
     "answer": "the October slot covers NSL04, NSL11, NSL07, NSL02 and NSL13; NSL06 is first off the list at 44.7 dB, 1.3 dB behind the fifth (1.2877 unrounded, 0.038 from its rounding edge)",
-    "checks": "1,537 assertions passed",
-    "verify": "OK, 282,104 independent checks from the bundle alone; the ask layer's figures are rebuilt from the historian's own rows and the deployment record's windows, and verify.call_only rebuilds the call's half with the historian deleted",
-    "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 38c1498f20627a18)",
+    "checks": "1,884 assertions passed",
+    "verify": "OK, 282,167 independent checks from the bundle alone; the ask figures are rebuilt from the historian's own rows and the deployment record's windows, the band verdicts on both aggregations, and verify.call_only rebuilds the call's half with the historian deleted",
+    "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 f3a88420d82ccb1f)",
     "figures_check": "exit 0, 63 figures in blocks 1 to 4, none absent",
     "gates": "13 files, 5 formats (csv, md, parquet, pdf, xlsx), sound_levels_1min_2026.parquet 281,918 rows, distractors complaints_register_2026.xlsx and effluent_quality_2026.csv declared in metadata.json",
     "rungs": "complaints NSL01/03/06/09/12; measured total NSL02/04/06/07/11 (0.48 dB); LA90 background NSL03/04/06/11/12 (0.08); tenth percentile NSL02/04/06/07/11 (0.52); quietest quarter hour NSL02/04/06/07/11 (0.70); arithmetic means NSL03/04/06/07/11 (0.43); answer NSL04/11/07/02/13 (1.29). Every other window the pack permits (weekday hours before 05:00, nights, Sundays, centrifuges off) files NSL06 in and NSL13 out, asserted window by window",
-    "asks": "84 ask criteria after the round-3 re-cut: 21 construction, 14 air behind each level, 14 unrecorded quarter hours and 14 longest runs per position, 18 weekly (air, unrecorded, longest run), 3 tone summary. The round-2 figures (dewatering minutes, runs, weekly runs and engine hours) are retired: a filed rule answered them. The two primaries are the header meter that does not see BL-03 and the historian's held rows, both in scada_15min_2026.csv, which the call reads for nothing",
+    "asks": "84 ask criteria: 21 construction, 14 air behind each level, 14 quarter hours with no reading of their own and 14 longest runs per position, 18 weekly (the same three), 3 tone summary. Two primaries, both in scada_15min_2026.csv which the call reads for nothing: the aeration header's meter, which is upstream of where BL-03 was tied in, with no channel named for what the ask asks for; and the interface that holds the last value when the link drops, against the honest repeats the MCC inspection leaves, which the flow channels separate",
     "target_zip": "cut from the final rebuild: 13 entries, 2.6 MB; recut after every rebuild and asserted fresh against the tree"
   },
   "leak": {
@@ -36,8 +36,8 @@
     "nearest": "guard.py surface: 220 pairs in scope, 0 promoted; nearest task228 at 0.096"
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (round 2)",
-    "disposition": "FIX_NOW (round 2); the author ruled on all six findings and the realism list, and every ruling is executed in the generator in one pass; one re-judge owed, the author's to license",
+    "verdict": "NOT_DETERMINISTIC (rounds 1, 2 and 3; the call forced in every one)",
+    "disposition": "FIX_NOW; round 2 executed the author's seven determinism rulings, round 3 re-cut the ask layer and round 4 closed the three ask forks the judge found in it (a channel named for the ask's own words, a wording a held row did not fail, and the band aggregation). One re-judge owed, the author's to license; the author's stopping rule applies to the next finding on the ask layer",
     "report": "/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t182/judge/verdict.md (round 2)",
     "gate_g": "pass (decomposition; the difficulty survives deleting every wrong number; not a lens swap)",
     "gate_h": "pass (domain, both layers, decisive step analytical)",
@@ -53,7 +53,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 4, round 4: the author's seven determinism rulings (round 2) and the ask-layer re-cut (round 3) are both in the generator, and every free gate is green: precut 50/0/0 with the measured 37.3 and 3.6 in its own fields, voice-check, figures_check, leak.py REVIEW and no LEAK, guard surface 0 promoted of 221, heart WARN, two byte-identical rebuilds, target.zip recut. The one re-judge this FIX_NOW still owes is the author's to license.",
+  "resume": "stage 4: the call side has been forced in three judge rounds and is untouched; rounds 2 to 4 are in the generator and every free gate is green (precut 50/0/0 with 37.3 and 3.6 in its own fields, voice-check, figures_check, leak.py REVIEW and no LEAK, guard surface 0 promoted of 221, heart WARN, two byte-identical rebuilds, target.zip recut). The author's stopping rule: if the next judge finds another ask fork, the ask layer is cut back to figures the records force outright and the build ships on a weaker ask layer.",
   "approved": false,
   "delivered": null,
   "portal": null,
