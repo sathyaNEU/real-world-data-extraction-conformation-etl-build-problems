@@ -1,23 +1,36 @@
 {
  "task": "task238",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
- "stump": "A competent analyst estimates each index's mode effect by comparing web with telephone completes adjusted for every recorded characteristic and sets the monitor band at 3 points, binge drinking binding; the step that lands it there is reading the mode effect off households that chose their mode, when the test's randomly allocated letters give a contrast that, divided by the letters' difference in web uptake, sets the band at 4.",
+ "stump": "A competent analyst estimates each index's mode effect by comparing web with telephone completes adjusted for every recorded characteristic and sets the monitor band at 3 points, safe after dark binding; the step that lands it there is reading the mode effect off households that chose their mode, when the test's randomly allocated letters give a contrast that, divided by the letters' difference in web uptake, sets the band at 4.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK; every REVIEW line answered in the note)",
+  "reader": "four isolated reads: question 1 none in each, question 6 analytical; the close-out's processing list rewritten after pass 1"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g against task266, answered)",
+  "nearest": "task259 0.10"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (r2; r1 FIX_NOW on asks 2 and 3 fixed by filing the selected-person rule in plan section 5)",
+  "report": "determinism_check_report.md"
+ },
  "returned": [],
- "resume": "stage 2: simulator tuned to the band ladder (raw 2, adjusted 3, letters' difference 6, golden 4), asks and devices, note sections, prompt, precut",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

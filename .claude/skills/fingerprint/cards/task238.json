@@ -10,8 +10,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Run the Halvreth Wellbeing Tracker's mode-mix monitor at a band of 4 percentage points of web share from the fourth quarter of 2027, heavy drinking binding",
+  "answer_source": "submission.md block 1; golden mwt_mode_mix_band_2027q4.xlsx, sheet Band",
   "gap": [
     "population"
   ],
@@ -34,22 +34,22 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "index points",
   "spine": {
-    "file": "mwt_contact_test_interviews.csv",
-    "rows": 0,
-    "entity": "one interview record (complete, partial, duplicate or late return) in the 2027 contact strategy test",
-    "grain": "interview record",
+    "file": "mwt_cst27_issued_addresses.csv",
+    "rows": 76000,
+    "entity": "one address issued in the 2027 contact strategy test, its random letter allocation and final outcome",
+    "grain": "address",
     "source": "synthetic"
   },
-  "forum": "executive_team",
+  "forum": "line_manager_or_team",
   "forcing_event": "cutover_or_migration",
   "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "Morvenna, an invented island state (New Zealand English)",
+    "geography": "Halvreth, an invented island state (New Zealand English)",
     "currency": "none",
     "org_type": "national statistics office",
     "invented_names": [
-      "Morvenna Statistics Office",
-      "Morvenna Wellbeing Tracker"
+      "Halvreth Statistics Office",
+      "Halvreth Wellbeing Tracker"
     ],
     "people": [
       "Bernard Johnstone",
@@ -64,15 +64,15 @@
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "The decisive quantity is how much the channel a unit reports through changes what it reports, and units choose their channel on traits that also move their reports, some of them unrecorded; a randomized nudge toward one channel shifted uptake without changing who reports, so the effect is the arms' difference in reports divided by their difference in uptake, while comparing the channels' reporters, even with every recorded trait held fixed, counts who chose the channel as its effect, and the arms' raw difference counts only the units the nudge moved.",
-  "driver_concrete": "The tracker's mode-mix monitor band is the widest whole-point departure of a quarter's web share that moves no headline index by more than its continuity tolerance, so it rests on each index's mode effect; households that answer online are younger and, in ways no field records, more often away from home, so comparing web with telephone completes, even adjusted for age, sex, education, region, household size, tenure and employment, overstates binge drinking's mode effect and sets the band at 3 points, while the contact strategy test allocated the web-first and telephone-first letters at random, so each index's difference between the letters divided by the letters' difference in web share gives the effect and sets the band at 4; the letters' difference alone sets 6.",
-  "stump": "A competent analyst estimates each index's mode effect by comparing web with telephone completes adjusted for every recorded characteristic and sets the monitor band at 3 points, binge drinking binding; the step that lands it there is reading the mode effect off households that chose their mode, when the test's randomly allocated letters give a contrast that, divided by the letters' difference in web uptake, sets the band at 4.",
+  "driver_concrete": "The tracker's mode-mix monitor band is the widest whole-point departure of a quarter's web share that moves no headline index by more than its continuity tolerance, so it rests on each index's mode effect; households that answer online are younger and, in ways no field records, more often away from home, so comparing web with telephone completes, even adjusted for age, sex, education, region, household size, tenure and employment, overstates the mode effects of safe after dark and heavy drinking and sets the band at 3 points, safe after dark binding, while the contact strategy test allocated the web-first and telephone-first letters at random, so each index's difference between the letters divided by the letters' difference in web share gives the effect and sets the band at 4; the letters' difference alone sets 6.",
+  "stump": "A competent analyst estimates each index's mode effect by comparing web with telephone completes adjusted for every recorded characteristic and sets the monitor band at 3 points, safe after dark binding; the step that lands it there is reading the mode effect off households that chose their mode, when the test's randomly allocated letters give a contrast that, divided by the letters' difference in web uptake, sets the band at 4.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who builds the test's completes under the test plan's rules, scores each index as the codebook defines it, reads the continuity standard correctly and estimates each mode effect from web against telephone completes adjusted for every recorded characteristic files a band of 3 points; one who takes the two letters' difference as the mode effect files 6; the golden 4 comes from each index's difference between the letters scaled by the letters' difference in web share.",
   "domain_test": "The deciding quantity is each index's mode effect, the measurement difference between answering online and by telephone for the same households, which survey methodology separates from self-selection into the mode by reading a randomized contact-strategy contrast through the shift it causes in web uptake; with hospital visits or megawatt-hours in place of web and telephone answers, the measurement-versus-selection split, the contact letters as the lever and the mode-mix artefact on a published series stop meaning anything.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [],
-  "notes": "Seed DQ11: the world (a tracker adding a new mode) and the quantity (each index's mode effect) kept; the seed's pairing (psychometric invariance) is banned against task237, so the draw sits in survey methodology's own mode-effect analysis. The decision is cut as the mode-mix monitor's band, a monitoring dial that governs every release after the cutover; a per-index pool, flag or new-series designation repeated task465 v1's gap, pattern and decision type. G14 decisive (the telephone completes' level is not what the web completes would have answered by telephone), G16 (the estimator the random letter allocation entitles), G6 (the answerer groups' mix).",
+  "notes": "Seed DQ11: the world (a tracker adding a new mode) and the quantity (each index's mode effect) kept; the seed's pairing (psychometric invariance) is banned against task237, so the draw sits in survey methodology's own mode-effect analysis. The decision is cut as the mode-mix monitor's band, a monitoring dial that governs every release after the cutover; a per-index pool, flag or new-series designation repeated task465 v1's gap, pattern and decision type. G14 decisive (the telephone completes' level is not what the web completes would have answered by telephone), G16 (the estimator the random letter allocation entitles), G6 (the answerer groups' mix). Forum line_manager_or_team: MS-14 s.5 has the Head of Survey Methodology set the band, with no formal forum (redrawn at stage 3 from executive_team, which task157, filed earlier the same day, holds).",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:mode-effect-through-a-randomized-contact-strategy",
   "layer1": [
