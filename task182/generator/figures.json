@@ -63,20 +63,20 @@
   "6.1"
  ],
  "residual_db": {
-  "NSL01": 31.2,
-  "NSL02": 31.9,
-  "NSL03": 37.4,
+  "NSL01": 31.1,
+  "NSL02": 32.2,
+  "NSL03": 37.6,
   "NSL04": 39.3,
-  "NSL05": 33.9,
+  "NSL05": 33.3,
   "NSL06": 40.9,
-  "NSL07": 36.3,
-  "NSL08": 32.8,
-  "NSL09": 29.8,
-  "NSL10": 31.4,
+  "NSL07": 35.9,
+  "NSL08": 32.9,
+  "NSL09": 29.3,
+  "NSL10": 31.5,
   "NSL11": 36.3,
   "NSL12": 36.4,
-  "NSL13": 32.4,
-  "NSL14": 32.1
+  "NSL13": 32.3,
+  "NSL14": 32.5
  },
  "rungs": {
   "rung0_complaints": {
@@ -91,7 +91,7 @@
    ]
   },
   "rung1_total": {
-   "margin_db": 0.382,
+   "margin_db": 0.388,
    "next": "NSL13",
    "slate": [
     "NSL02",
@@ -102,7 +102,7 @@
    ]
   },
   "rung2_la90": {
-   "margin_db": 1.436,
+   "margin_db": 1.348,
    "next": "NSL07",
    "slate": [
     "NSL03",
@@ -113,7 +113,7 @@
    ]
   },
   "rung2_p10": {
-   "margin_db": 0.524,
+   "margin_db": 0.117,
    "next": "NSL02",
    "slate": [
     "NSL03",
@@ -124,7 +124,7 @@
    ]
   },
   "rung2b_min15": {
-   "margin_db": 0.23,
+   "margin_db": 0.128,
    "next": "NSL02",
    "slate": [
     "NSL03",
@@ -135,7 +135,7 @@
    ]
   },
   "rung2c_arith": {
-   "margin_db": 1.403,
+   "margin_db": 1.274,
    "next": "NSL07",
    "slate": [
     "NSL03",
@@ -146,7 +146,7 @@
    ]
   },
   "specific": {
-   "margin_db": 0.802,
+   "margin_db": 0.799,
    "next": "NSL06",
    "slate": [
     "NSL02",
@@ -184,9 +184,9 @@
  "specific_level_db": {
   "NSL01": 43.9,
   "NSL02": 47.2,
-  "NSL03": 43.7,
+  "NSL03": 43.6,
   "NSL04": 53.1,
-  "NSL05": 39.4,
+  "NSL05": 39.6,
   "NSL06": 45.2,
   "NSL07": 47.9,
   "NSL08": 41.7,
@@ -195,23 +195,23 @@
   "NSL11": 49.9,
   "NSL12": 43.5,
   "NSL13": 46.0,
-  "NSL14": 42.1
+  "NSL14": 42.0
  },
  "stop_minutes": {
-  "NSL01": 280,
-  "NSL02": 280,
-  "NSL03": 258,
-  "NSL04": 280,
-  "NSL05": 280,
-  "NSL06": 283,
-  "NSL07": 283,
-  "NSL08": 283,
-  "NSL09": 265,
-  "NSL10": 265,
+  "NSL01": 240,
+  "NSL02": 240,
+  "NSL03": 240,
+  "NSL04": 240,
+  "NSL05": 240,
+  "NSL06": 240,
+  "NSL07": 240,
+  "NSL08": 240,
+  "NSL09": 240,
+  "NSL10": 240,
   "NSL11": 240,
   "NSL12": 240,
-  "NSL13": 258,
-  "NSL14": 280
+  "NSL13": 240,
+  "NSL14": 240
  },
  "tone_prominent": {
   "NSL01": "no",
@@ -252,8 +252,8 @@
    "centrifuge_runs": 6
   },
   "1": {
-   "biogas_m3": 35016,
-   "blower_air_knm3": 681,
+   "biogas_m3": 35125,
+   "blower_air_knm3": 683,
    "centrifuge_runs": 6
   },
   "2": {
@@ -262,17 +262,17 @@
    "centrifuge_runs": 6
   },
   "3": {
-   "biogas_m3": 35020,
-   "blower_air_knm3": 599,
+   "biogas_m3": 35186,
+   "blower_air_knm3": 602,
    "centrifuge_runs": 5
   },
   "4": {
-   "biogas_m3": 35071,
-   "blower_air_knm3": 682,
+   "biogas_m3": 35178,
+   "blower_air_knm3": 684,
    "centrifuge_runs": 6
   },
   "5": {
-   "biogas_m3": 35121,
+   "biogas_m3": 35122,
    "blower_air_knm3": 684,
    "centrifuge_runs": 6
   }

@@ -277,7 +277,7 @@ Measured on the graded name and the graded figures separately, as `stumping` Par
 | 15 | Duplicate resolution | repeated episode records | none in the indicator's population, asserted by count; the re-sent batches sit in the non-acute units (ask 3's device) and the activity summary reconciles them |
 | 16 | Identity normalisation | unit codes across files | cost centre codes are the key everywhere, zero-padded five digits, asserted joinable with no residue; the amalgamation is filed (SF11) |
 | 17 | Netting against gross | may a unit below expectation offset one above | the question is one unit's placement, so nothing nets; units below expectation carry no excess and the golden names none |
-| 18 | Dimensional units | complications, episodes, separations, rates per 1,000 | the dictionary states each column's unit; the reference rate 96.4 per 1,000 is filed in specification 3.2 |
+| 18 | Dimensional units | complications, episodes, separations, rates per 1,000 | the dictionary states each column's unit; the reference rate 96.5 per 1,000 is filed in specification 3.2 |
 | 19 | Code and status semantics | care type, service type, DRG bands, complication codes | the dictionary and the specification's appendices; never decisive |
 | 20 | Integerisation | avoided complications are a count | computed unrounded and rounded once; every figure at least 0.10 of a complication inside its bin, asserted |
 | 21 | Clause scope | charter clauses against specification clauses | the charter governs the placement, the specification governs the indicator; no clause of one restates the other, asserted by grep |

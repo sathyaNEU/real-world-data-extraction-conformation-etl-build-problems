@@ -15,7 +15,7 @@ EMBED_FROM = dt.date(2027, 4, 1)
 EMBED_TO = dt.date(2027, 6, 30)
 SPEC_VERSION = "4.0"
 SPEC_EFFECTIVE = dt.date(2024, 7, 1)
-REF_RATE = 96.4                          # complications per 1,000 episodes, published with specification 4.0
+REF_RATE = 96.5                          # complications per 1,000 episodes, published with specification 4.0
 CODESET_CHANGE = dt.date(2026, 7, 1)     # national complication list revision, list 2022 -> list 2026
 
 PEOPLE = {

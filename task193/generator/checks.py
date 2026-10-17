@@ -281,6 +281,22 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
                 bad_t.append(("dispensing", code, str(d)))
                 break
     ok("defect4.no_row_outside_its_product_lifecycle", not bad_t, str(bad_t[:6]))
+    pull = W.day(W.PULL_DAY)
+    future = []
+    for name, cols, parse in (
+            ("literature_screening_log.csv", ("screened_on",), G.iso),
+            ("submission_exceptions.csv", ("date_of_dispensing", "submitted_on"), G.iso),
+            ("signal_tracker_export.csv", ("opened_on", "closed_on"), G.iso),
+            ("product_register.csv", ("first_marketed", "holder_code_from"), G.iso),
+            ("person_register.csv", ("date_of_death", "date_of_emigration",
+                                     "region_recorded_from"), G.iso),
+            ("person_key_crosswalk.csv", ("replaced_on",), G.iso),
+            ("holder_register.csv", ("merger_date",), G.iso)):
+        for r in rd(tgt, name):
+            for c in cols:
+                if r.get(c) and parse(r[c]) > pull:
+                    future.append((name, c, r[c]))
+    ok("defect4.no_date_after_the_pull", not future, str(future[:6]))
     ok("defect4.standard_stamp_is_consistent",
        "2026" not in _pdf_text(tgt).split("Annex A")[0].replace("7-2024", "").replace(
            "1 April 2026", ""), "the standing standard names no run-specific year")

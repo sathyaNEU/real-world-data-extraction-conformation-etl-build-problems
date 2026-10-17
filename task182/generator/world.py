@@ -39,9 +39,8 @@ PLANNED_STOPS = [
     (dt.datetime(2026, 10, 6, 5, 0), 120, "weekly MCC inspection and belt check"),
 ]
 UNPLANNED_STOPS = [
-    (dt.datetime(2026, 9, 10, 23, 50), 25, "balance tank high level alarm"),
-    (dt.datetime(2026, 9, 23, 5, 15), 40, "blower 2 bearing temperature trip"),
-    (dt.datetime(2026, 10, 2, 2, 10), 18, "ESB supply dip, all drives tripped"),
+    # the only unplanned stop the log holds falls before the survey's first deployment
+    (dt.datetime(2026, 8, 26, 2, 10), 22, "ESB supply dip, all drives tripped"),
 ]
 
 # Equipment the three noise sources run on.
@@ -154,20 +153,20 @@ SLOW = {
 # Micro-adjustments to the designed specific levels, so every printed level sits mid-bin and no two
 # positions share a printed value. Fixed by the search in scratch; they move no slate.
 SHIFT = {
-    "NSL01": -0.07170,
-    "NSL02": -0.12643,
-    "NSL03": -0.41431,
-    "NSL04": -0.04934,
-    "NSL05": -0.02427,
-    "NSL06": -0.77408,
-    "NSL07": -0.01277,
-    "NSL08": -0.74206,
-    "NSL09": -0.15477,
-    "NSL10": -0.83756,
-    "NSL11": -0.02758,
-    "NSL12": -0.31026,
-    "NSL13": +0.04479,
-    "NSL14": -0.07501,
+    "NSL01": -0.0477,
+    "NSL02": -0.1144,
+    "NSL03": -0.4143,
+    "NSL04": -0.0413,
+    "NSL05": -0.0163,
+    "NSL06": -0.7741,
+    "NSL07": -0.0208,
+    "NSL08": -0.7581,
+    "NSL09": -0.1428,
+    "NSL10": -0.8416,
+    "NSL11": -0.0356,
+    "NSL12": -0.3143,
+    "NSL13": +0.0328,
+    "NSL14": -0.0910,
 }
 
 

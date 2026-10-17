@@ -300,7 +300,7 @@ def write_manifest(target, counts):
         [W.FILES["history"], "QC warehouse extract", "2027-03-04",
          "receipts 2026-02-15 to 2027-02-28", counts["history"], "nightly load, two call columns"],
         [W.FILES["amendments"], "release desk", W.AS_OF.isoformat(),
-         "amendments to released records, July 2026 to March 2027", counts.get("amendments", ""),
+         "amendments to released records, March 2026 to April 2027", counts.get("amendments", ""),
          "raised after the reporting month closed"],
         [W.FILES["volumes"], "laboratory reporting pack", "2027-03-06",
          "releases 2026-03 to 2027-02", counts["volumes"], ""],

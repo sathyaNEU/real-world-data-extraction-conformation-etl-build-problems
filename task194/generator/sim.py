@@ -457,10 +457,11 @@ def centre_plans(plans, per_separation, thetas, codes, graded, pick):
             if not 0.008 <= off1 <= 0.032:            # inside the tenth, and not sitting on it
                 continue
             if code in codes:
-                v_lo, v_hi = lo * x, hi * x
+                mid, w = (lo + hi) / 2.0, (hi - lo) * 1.15     # room for the record's own rounding
+                v_lo, v_hi = (mid - w / 2) * x, (mid + w / 2) * x
                 if round(v_lo) != round(v_hi):
                     continue
-                if 0.5 - max(abs(v_lo - round(v_lo)), abs(v_hi - round(v_hi))) < 0.14:
+                if 0.5 - max(abs(v_lo - round(v_lo)), abs(v_hi - round(v_hi))) < 0.145:
                     continue
             e = epl * plan
             if 0.05 - abs(e * 10 - round(e * 10)) / 10.0 < 0.0055:

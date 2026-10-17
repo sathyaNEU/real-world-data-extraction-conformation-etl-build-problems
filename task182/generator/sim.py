@@ -82,8 +82,10 @@ MET = met_series()
 
 
 def met_index(stamps_local):
-    """Index into the ten-minute met record for local-time minute stamps."""
-    secs = np.array([(s - MET["t0"]).total_seconds() for s in stamps_local])
+    """Index into the ten-minute met record for local-time minute stamps. The mast's file is stamped UTC,
+    so the local stamp is taken back to UTC first, exactly as a reader of the two files has to."""
+    secs = np.array([(s - dt.timedelta(hours=LOCAL_OFFSET) - MET["t0"]).total_seconds()
+                     for s in stamps_local])
     return np.clip((secs // 600).astype(int), 0, MET["n"] - 1)
 
 

@@ -1,47 +1,47 @@
 {
- "task": "task190",
- "owner": "oviya13ya",
- "status": "BUILD",
- "domain": "banking-credit-financial-risk/fraud-aml-detection",
- "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
- "updated": "2026-10-17",
- "stump": "The default path builds the split out of the customer's own day, counting every band deposit on a day the customer's cash reached the threshold over more than one deposit, and files 1,223, when the number placed below the threshold on purpose is the amount by which the band exceeds what each segment's own deposit-size profile away from the band produces, 400.",
- "architecture": 2,
- "loops": 1,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-17",
-  "checks": "49 checks, 0 FAIL, 0 WARN"
- },
- "build_gates": {
-  "generator_checks": "114 assertions, three-rules block R1 to R3c on the clean truth, 199-estimator convergence sweep",
-  "verify": "185 checks, 0 failed, reads target/ and figures.json only, 120 estimators on its own code path",
-  "rebuilds": "two consecutive rebuilds byte-identical, target/ and golden/",
-  "figures_check": "86 figures in blocks 1 to 4, 0 absent",
-  "input_gates": "21 files, 4 formats, 56,080 rows in the spine, 3 distractors declared",
-  "container": "scrub audit clean"
- },
- "leak": {
-  "leak_py": "REVIEW, every line answered in the design note's pre-ship check",
-  "reader": "round 1 answered; round 2 staged"
- },
- "duplicate_check": {
-  "heart": "WARN, repeat.deliverables and repeat.question_form, both answered",
-  "surface": "no promoted pair",
-  "nearest": "0.11 task445 v1"
- },
- "judge": {
-  "round_1": "NOT_DETERMINISTIC, competing_defensible_answer, SEND_BACK; Gate G pass, Gate H pass, decisive step analytical",
-  "disposition": "calibration, not architecture: one fix pass applied, re-judge staged"
- },
- "returned": [],
- "resume": "Stage 4, second pass. The judge's round-1 SEND_BACK was calibration, not architecture, and the whole finding list is closed in one generator pass: the deposit-size record is now one shape end to end, so all 199 estimators (four fit families, twelve windows, four step widths, one-sided and pooled variants) give the same eight segment figures and the same total; the rounding path, the hours source and the risk-band wording are pinned in the prompt; the machine estate ships as a register so the machines with no service record are forced; rating histories chain; the split deposits pile on round figures just under the threshold with same-day repeats; every rung is re-measured on the shipped bundle; and the note reports the measured spread instead of the claim the judge showed to be false. Figures now: golden 400, per segment transport and courier 90, trades and construction 70, grocery and convenience 60, hospitality 60, and 30 each for clubs, fuel, personal services and rural; band count 2,196; same-day screen 1,287; habit filter 1,088; prior-year control 1,406. Every free gate is green and target.zip is re-cut (21 members, 3,088,384 bytes, md5 b1c84145b312f9d9718c14102dd43edb). The re-judge and re-read are staged for the orchestrator to spawn: judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t190/stage4b/judge (judge_brief.md with five probes and the judge system prompt inlined, prompt.txt, submission_graded_blocks.md, fresh unzip in target/, verdict to verdict.md) and reader at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t190/stage4b/reader (reader_brief.md, prompt.txt, fresh unzip in bundle/, answers to reader_answers.md).",
- "approved": null,
- "delivered": null,
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": ""
+  "task": "task190",
+  "owner": "oviya13ya",
+  "status": "BUILD",
+  "domain": "banking-credit-financial-risk/fraud-aml-detection",
+  "objective": "anomaly-detection",
+  "stage": 3,
+  "stage_name": "build",
+  "updated": "2026-10-17",
+  "stump": "The default path builds the split out of the customer's own day, counting every band deposit on a day the customer's cash reached the threshold over more than one deposit, and files 1,223, when the number placed below the threshold on purpose is the amount by which the band exceeds what each segment's own deposit-size profile away from the band produces, 400.",
+  "architecture": 2,
+  "loops": 3,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-17",
+    "checks": "49 checks, 0 FAIL, 0 WARN"
+  },
+  "build_gates": {
+    "generator_checks": "114 assertions, three-rules block R1 to R3c on the clean truth, 199-estimator convergence sweep",
+    "verify": "185 checks, 0 failed, reads target/ and figures.json only, 120 estimators on its own code path",
+    "rebuilds": "two consecutive rebuilds byte-identical, target/ and golden/",
+    "figures_check": "86 figures in blocks 1 to 4, 0 absent",
+    "input_gates": "21 files, 4 formats, 56,080 rows in the spine, 3 distractors declared",
+    "container": "scrub audit clean"
+  },
+  "leak": {
+    "leak_py": "REVIEW, every line answered in the design note's pre-ship check",
+    "reader": "round 1 answered; round 2 staged"
+  },
+  "duplicate_check": {
+    "heart": "WARN, repeat.deliverables and repeat.question_form, both answered",
+    "surface": "no promoted pair",
+    "nearest": "0.11 task445 v1"
+  },
+  "judge": {
+    "round_1": "NOT_DETERMINISTIC, competing_defensible_answer, SEND_BACK; Gate G pass, Gate H pass, decisive step analytical",
+    "disposition": "calibration, not architecture: one fix pass applied, re-judge staged"
+  },
+  "returned": [],
+  "resume": "Stage 3 rebuild in progress after the determinism judge's SEND_BACK on the realism of the amount draw (every structural gate passed; not a re-root). Done: handbook 7.4 tightened (band named as the region reviewed and estimated, one-for-one kept as the unit, no method filed), 7.6 aligned to customers, handbook version date fixed, amount draw rebuilt as an independent sample per deposit (chi2/dof 0.8 to 1.14 bank-wide), soft floor and tail, 74 cents values, depletion above the threshold so the split mass balances. Measured on the judge's own grid and written up in the note's '## Dispersion and granularity, measured'. AWAITING THE AUTHOR'S DESIGN DECISION on the stated granularity (recommendation: nearest fifty per segment, bank figure their sum, forced by the record's mass balance) before the prompt, goldens, figures.json, checks.py, verify.py and submission.md are re-cut. Then the remaining judge and reader items: solution step 6 reworded to a named candidate set, provenance.md cut back, SDM-0907's log rows, the overlapping incidents, the risk-band forks, the quarterly deposit convention, and the realism list.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
 }

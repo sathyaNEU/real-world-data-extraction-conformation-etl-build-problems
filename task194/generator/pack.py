@@ -171,11 +171,12 @@ def write_units(target):
             opened = "2014-07-01"
         if code == W.MERGE_INTO:
             opened = W.MERGE_DATE.isoformat()
-        out.append([code, name, site, SERVICE_LABEL[service], DIVISION[mix], opened, closed, into])
+        cis = "N" if code in W.DETAIL_EXCLUDED else "Y"
+        out.append([code, name, site, SERVICE_LABEL[service], DIVISION[mix], cis, opened, closed, into])
     out.sort()
     return _csv(os.path.join(target, FILES["units"]),
-                ["unit_code", "unit_name", "hospital_code", "service_type", "division", "opened_date",
-                 "closed_date", "amalgamated_into"], out)
+                ["unit_code", "unit_name", "hospital_code", "service_type", "division",
+                 "clinical_information_system", "opened_date", "closed_date", "amalgamated_into"], out)
 
 
 def write_sites(target):
@@ -286,7 +287,7 @@ def write_dashboard(target, expected, observed, inscope, rows):
     for line in [["Indicator", "Definition"],
                  ["Standardised ratio", "Complications observed divided by complications expected under "
                   "specification 4.0, in-scope episodes only"],
-                 ["Adjusted rate per 1,000", "Standardised ratio times the reference rate of 96.4 "
+                 ["Adjusted rate per 1,000", "Standardised ratio times the reference rate of 96.5 "
                   "complications per 1,000 episodes"],
                  ["Unplanned readmissions per 100", "Unplanned readmissions within 28 days per 100 "
                   "separations, all care types"],
@@ -377,6 +378,9 @@ DICTIONARY = [
     ("activity_plan_2027q4.csv", "planned_separations", "Separations planned for the unit for the quarter, "
      "all care types", "count"),
     ("unit_register.csv", "hospital_code", "Hospital site the unit is aligned to at the export date", "code"),
+    ("unit_register.csv", "clinical_information_system", "Y where the unit's wards are on the clinical "
+     "information system, which is the source of the complication level detail; N where a complication "
+     "reaches the warehouse only as the episode record's own category", "indicator"),
     ("unit_register.csv", "service_type", "Service type of the unit", "code"),
     ("unit_register.csv", "amalgamated_into", "Cost centre the unit's activity transferred to on closure",
      "code"),

@@ -472,6 +472,16 @@ def run(target, g=None):
        max(r["completed_date"] for r in mf_rows) <= "2027-06-18")
     ok("the protocol's annex does not predate its issue",
        re.search(r"requested the verification on 5 February 2027", doc_text) is not None)
+    amd = rows_of(os.path.join(target, W.FILES["amendments"]))
+    span = re.findall(r"(\d{4}-\d{2})", W.FILES["amendments"])
+    ok("the amendments file's name brackets the amendments it holds",
+       len(span) == 2 and span[0] <= min(a["amended_date"][:7] for a in amd)
+       and max(a["amended_date"][:7] for a in amd) <= span[1],
+       "%s against %s to %s" % ("/".join(span), min(a["amended_date"][:7] for a in amd),
+                                max(a["amended_date"][:7] for a in amd)))
+    ok("an amendment is dated after the release it corrects",
+       all(a["amended_date"] > max(a["value_before"], a["value_after"]) for a in amd
+           if a["field"] == "released_date"))
 
     # ---------------------------------------------------------------- the ask layer, measured
     import cracker as CR

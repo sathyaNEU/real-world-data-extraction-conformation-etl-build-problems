@@ -86,25 +86,25 @@
  "gap_complications": 6,
  "hospital_year": {
   "H1": {
-   "adjusted_rate_per_1000": 108.9,
+   "adjusted_rate_per_1000": 109.0,
    "complications": 4016,
    "episodes": 38247,
    "name": "Alderbrook Hospital"
   },
   "H2": {
-   "adjusted_rate_per_1000": 112.1,
+   "adjusted_rate_per_1000": 112.2,
    "complications": 2526,
    "episodes": 23182,
    "name": "Stonecreek Hospital"
   },
   "H3": {
-   "adjusted_rate_per_1000": 110.2,
+   "adjusted_rate_per_1000": 110.3,
    "complications": 2015,
    "episodes": 19733,
    "name": "Marrowfield Hospital"
   },
   "H4": {
-   "adjusted_rate_per_1000": 111.5,
+   "adjusted_rate_per_1000": 111.6,
    "complications": 234,
    "episodes": 2340,
    "name": "Carrowdean District Hospital"
@@ -153,8 +153,8 @@
   }
  },
  "pick_excess_complications": 46,
- "pick_expected_complications": 203,
- "pick_planned_separations": 2352,
+ "pick_expected_complications": 204,
+ "pick_planned_separations": 2360,
  "pick_standardised_ratio": 1.23,
  "rate_denominator": 1000,
  "rung0_avoided": 2,
@@ -163,7 +163,7 @@
  "rung0_ratio_quarter": 1.2,
  "rung0_ratio_record": 1.03,
  "rung0_unit_code": "41210",
- "rung1_adjusted_rate": 124.6,
+ "rung1_adjusted_rate": 124.7,
  "rung1_avoided": 6,
  "rung1_excess": 15,
  "rung1_planned_separations": 508,
@@ -171,7 +171,7 @@
  "rung1_unit_code": "41330",
  "rung2_avoided": 12,
  "rung2_excess": 31,
- "rung2_expected_next": 309,
+ "rung2_expected_next": 311,
  "rung2_unit_code": "41220",
  "runner_unit": "Alderbrook General Surgery",
  "runner_unit_code": "41220",

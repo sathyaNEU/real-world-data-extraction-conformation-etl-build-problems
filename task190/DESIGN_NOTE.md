@@ -386,6 +386,56 @@ does; every rung is re-measured on the shipped bundle; and the note reports the 
 claiming convergence. The claim the judge showed to be false, that every window and step width gives the
 same figures, is gone.
 
+## Dispersion and granularity, measured
+
+The judge's SEND_BACK was on the realism of the decisive data, with every structural gate passed. This
+section is the measurement it asked for, taken on the rebuilt amount draw, over the judge's own grid and
+not over the author's: Poisson, OLS and log-OLS; polynomial orders 1 to 3; bin widths 50, 100, 200, 250
+and 500; five windows (5,000 to 16,000; 6,000 to 14,000; 7,000 to 13,000; 8,000 to 12,000; 5,000 to
+20,000); the whole band excluded. The 50-dollar width is dropped by the data, not by choice: at 50 every
+segment has empty bins outside the band, which no log fit takes. That leaves 165 clean specifications.
+
+**The amounts now carry a sample's scatter.** Each deposit is drawn independently from its segment's own
+density, which is log-linear in the amount across 1,500 to 22,000 with a soft rise below and a faster tail
+above, a share of each draw snapping to the nearest fifty because counted cash lands on round figures.
+
+| measure | before | after |
+|---|---|---|
+| chi-square per dof, bank, 50-dollar bins | 0.001 class | 0.82 |
+| chi-square per dof, bank, 100 / 250 / 500 | 0.013 / 0.004 / 0.001 | 0.80 / 0.90 / 1.14 |
+| chi-square per dof, per segment | 0.004 to 0.026 | 0.55 to 1.39 |
+| variance over mean, 100-dollar bins, 5,000 to 9,000 | 0.02 to 0.08 | 0.97 to 1.73 |
+| distinct cents values | 20 | 74 |
+| lowest and highest amount | 500.00 and 32,222.20, both walls | 50.00 and about 49,500, both tails |
+
+**What that costs, measured.** Reading the band alone, the bank figure spans 285.7 to 446.9 across the 165
+specifications against a construction of 402: a span of 44 per cent of the figure. Raising the record's
+volume with the construction scaled alongside gives 40 per cent at 2x, 37 per cent at 4x and 29 per cent
+at 8x, so volume does not reach an interesting granularity: the residue is specification bias, which
+scales with the figure. No derived object escapes it either (the lines in `## Tried and rejected`).
+
+**What forces it is the record's own mass balance.** Every split take was moved from at or above the
+threshold to below it, to the cent, so 10,000 to 11,000 carries a deficit the same size as the band's
+surplus. The same fit measures both, and a baseline implying a 447 surplus below and a 320 deficit above
+is refuted by the record it was fitted to. Nothing in the pack says to do this and no method is filed: the
+depletion is simply there to be seen, and a specification that does not reconcile the two sides
+contradicts the data. Measured, requiring the two sides to agree within a fifth:
+
+| reading | specifications | bank figure | span |
+|---|---|---|---|
+| the band alone | 165 | 285.7 to 446.9 | 161.2, 44 per cent |
+| the two sides reconciled | 150 | 341.9 to 394.4 | 52.5, 13.5 per cent |
+
+The filter is insensitive to its own tolerance: at a tenth and at a twelfth the surviving span is the same
+52.5. Per segment the reconciled spans are 5.4 to 23.5.
+
+**The granularity the data supports is the nearest fifty deposits per segment, the bank figure their sum.**
+At fifty, every one of the eight segments resolves to one cell across all surviving specifications and the
+bank figure resolves to one value. At twenty-five, two segments split; at one hundred, three do. The
+nearest wrong cell is fifty away, which is 14 per cent of the bank figure and at least 33 per cent of
+every segment figure that is not nil, against the 6 per cent the judge asks for. The easy routes are
+nowhere near: the band count is about 1,650 and the same-day screen about 1,300.
+
 ## Tried and rejected
 
 - Ranking the lines by the share of alerts that prove real (the yield reading): `guard.py nearest`
@@ -466,3 +516,34 @@ same figures, is gone.
   held, so "any machine with no service record" had no forced answer. The estate now ships as
   `deposit_machine_register.csv` with install and withdrawal dates, the feed takes deposits only at a
   machine in service that day, and the answer is the register's own.
+- **Amounts drawn from evenly spaced quantiles of a fixed curve.** Every bin count was the curve's own
+  value, so variance over mean was 0.11 bank-wide at 100-dollar bins and the eight segments gave
+  chi-square per degree of freedom of 0.004 to 0.026, each with a tail probability below 1e-26. The
+  determinism judge named this as the reason the method fork looked tight: the 199-estimator agreement and
+  the 180-specification agreement were both bought by the absence of sampling noise, not by the design.
+  Replaced by drawing each deposit independently from its segment's own density, so every bin count is a
+  genuine sample. Measured after the rebuild: chi-square per degree of freedom 0.80 to 1.14 bank-wide
+  across 50, 100, 250 and 500 dollar bins, 0.55 to 1.39 per segment, variance over mean 0.97 to 1.73 per
+  segment. The dispersion sweep that was to find a ceiling is therefore dead: there is no ceiling to find,
+  because block-level dispersion bought no chi-square at all (chi-square tracks the dispersion parameter
+  squared, so the honest value needs the parameter at 1, which is a sample) and cost convergence at 0.02.
+- **Block-exact generation with an evenly spread round-figure pile.** It was what made 199 estimators
+  agree, and that is the defect above, restated. Recorded here so it is not reached for again.
+- **Splitting generated by adding a band deposit on top of an existing day.** It put a surplus below the
+  threshold with no matching deficit above, which both readers found: a real splitting process moves mass,
+  so the takes that would have been reported are missing. Replaced by replacing a take: a deposit at or
+  just above the threshold is taken out of the record and paid in instead as two deposits on the same day,
+  the larger inside the band. The dollars balance to the cent and 10,000 to 11,000 carries a deficit of the
+  same size as the band's surplus.
+- **Raising the record's volume to beat the noise.** Measured at 2x, 4x and 8x with the construction
+  scaled alongside: the bank figure's span across the judge's grid falls only from 44 per cent of the
+  figure to 29 per cent, because the residue is specification bias (OLS on counts extrapolates the
+  baseline low, log-OLS with curvature extrapolates it high) and bias scales with the figure, not with its
+  square root. Flattening the baseline's curvature over the fit window, measured at 2x, 4x and 8x the
+  decay length, does not remove it either.
+- **Grading something derived instead of the level.** Measured across the 165 clean specifications: the
+  rise over the prior year spans 125 to 244, the ratio 1.46 to 2.58, every segment's share of the bank
+  figure spans 5 to 21 points, the largest segment splits 113 to 52 between two segments, and a
+  significance call on each segment's own trade gives 4 to 10 distinct answer sets at every bar from 1.5
+  to 5. The specification bias does not cancel in a difference, a ratio, a share or a ranking, so none of
+  these is determinate either.

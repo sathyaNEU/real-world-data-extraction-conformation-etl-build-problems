@@ -8,7 +8,7 @@ import datetime as dt
 import os
 from collections import OrderedDict, defaultdict
 
-REF_RATE = 96.4                      # specification 3.2, read back from the bundle below
+REF_RATE = 96.5                      # specification 3.2, read back from the bundle below
 SPEC_START = dt.date(2024, 7, 1)
 ASSESS_QUARTER = "2026-27 Q4"
 

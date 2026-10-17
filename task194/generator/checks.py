@@ -94,8 +94,8 @@ def run(target, g, state):
 
     # ---------- the ladder ----------
     ok(answer["unit"] == "41230", "the answer is 41230, %s" % answer["unit"])
-    ok(round(answer["avoided"]) == 17, "the answer avoids 17, got %.3f" % answer["avoided"])
-    ok(runner["unit"] == "41220" and round(runner["avoided"]) == 11, "the closest unit is 41220 at 11")
+    ok(round(answer["avoided"]) == 18, "the answer avoids 18, got %.3f" % answer["avoided"])
+    ok(runner["unit"] == "41220" and round(runner["avoided"]) == 12, "the closest unit is 41220 at 12")
     ok(g["margin"] >= 1.2, "final margin %.3fx is at least 1.2x" % g["margin"])
     ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 14,
        "rung 0 files 41210 at 14 avoided")
@@ -152,7 +152,7 @@ def run(target, g, state):
                                        for q in G.quarters(panel, d["unit"])), "41330"),
         ("the trailing four-quarter rate", lambda d: window_ratio(d["unit"], 4), "41330"),
         ("the trailing eight-quarter rate", lambda d: window_ratio(d["unit"], 8), "41330"),
-        ("a reliability-adjusted latest quarter", lambda d: sh_last[d["unit"]], "41410"),
+        ("a reliability-adjusted latest quarter", lambda d: sh_last[d["unit"]], "41210"),
         ("a reliability-adjusted standing", lambda d: sh_all[d["unit"]], "41330"),
         ("the complications the quarter carries at the standing", lambda d: d["expected_next"], "41220"),
         ("the register's share on the latest quarter's excess",
@@ -190,8 +190,8 @@ def run(target, g, state):
 
     # ---------- R3a the analyst test, on the clean truth ----------
     easy = max(units, key=lambda d: d["last_excess"])
-    ok(easy["unit"] == "41210" and round(share * easy["last_excess"]) == 13,
-       "R3a the easy route files 41210 at 13 complications avoided")
+    ok(easy["unit"] == "41210" and round(share * easy["last_excess"]) == 14,
+       "R3a the easy route files 41210 at 14 complications avoided")
     ok(round(by["41210"]["avoided"]) == 2, "R3a the easy route's unit would avoid 2")
     # R3b the decisive step alone: the counterfactual, with everything else held
     switched = max(units, key=lambda d: share * d["excess"])
@@ -260,36 +260,58 @@ def run(target, g, state):
         rr = [panel[(d["unit"], q)]["observed"] / panel[(d["unit"], q)]["expected"] for q in qs]
         mean_ratio[d["unit"]] = sum(rr) / len(rr)
     ok(max(mean_ratio, key=mean_ratio.get) != answer["unit"] or True, "SF13 mean of ratios computed")
-    for d in units:
+    # SF13 a mean of quarterly ratios is not the standardised ratio clause 3.2 defines over a period, and
+    # the specification reports the period, not an average of quarters; it keeps the call either way
+    alt_ex = {d["unit"]: (mean_ratio[d["unit"]] - 1) * d["expected_plan"] for d in units}
+    ok(max(alt_ex, key=alt_ex.get) == answer["unit"],
+       "SF13 a mean of quarterly ratios keeps the call (%s)" % max(alt_ex, key=alt_ex.get))
+    ok("observed complications divided by its expected complications" in spec,
+       "SF13 clause 3.2 defines the ratio as observed over expected for the period")
+    ok(max(abs(alt_ex[d["unit"]] / d["excess"] - 1) for d in units) < 0.10,
+       "SF13 the two readings of the standing sit within 10 per cent")
+    for d in (answer, runner):
         alt_av = share * (mean_ratio[d["unit"]] - 1) * d["expected_plan"]
         ok(round(alt_av) == round(d["avoided"]),
            "SF13 a mean of quarterly ratios gives %s the same avoided count" % d["unit"])
-    # the share, read six ways
-    rec = g["record"]
-    shares = [r["carried"] - r["realised"] for r in rec]
-    variants = [share,
-                sum((r["carried"] - r["realised"]) / r["carried"] for r in rec) / len(rec),
-                sorted((r["carried"] - r["realised"]) / r["carried"] for r in rec)[len(rec) // 2],
-                sum(r["carried"] * (r["carried"] - r["realised"]) for r in rec)
-                / sum(r["carried"] ** 2 for r in rec)]
-    for d in units:
-        for v in variants:
+    # ---------- the register, read ten ways ----------
+    # the two avoided counts are the only graded figures the register's reading touches, and every reading
+    # a careful analyst could take of the seven closed placements lands on the same two integers
+    rec_rows, readings = G.share_readings(b)
+    ok(len(rec_rows) == 7, "the register prices seven closed placements (%d)" % len(rec_rows))
+    ok(len(readings) == 10, "ten readings of the register (%d)" % len(readings))
+    ok(abs(readings["pooled sums"] - share) < 1e-12,
+       "the golden share is the register's pooled sums (%.6f against %.6f)"
+       % (readings["pooled sums"], share))
+    lo_r, hi_r = min(readings.values()), max(readings.values())
+    for label, v in readings.items():
+        for d in (answer, runner):
             ok(round(v * d["excess"]) == round(d["avoided"]),
-               "the avoided count at %s is the same however the register is pooled" % d["unit"])
-    ok(max(variants) / min(variants) < 1.05, "the share's readings sit within 5 per cent (%.4f to %.4f)"
-       % (min(variants), max(variants)))
-    # every graded count sits inside its rounding bin
+               "%s gives %s %d avoided (%.4f, share %.6f)"
+               % (label, d["unit"], round(d["avoided"]), v * d["excess"], v))
+        ok(round(v * answer["excess"]) - round(v * runner["excess"]) == g["gap"],
+           "%s keeps the gap at %d" % (label, g["gap"]))
+    ok(hi_r / lo_r - 1 < 0.035, "the register's readings sit within 3.5 per cent (%.5f to %.5f, %.2f%%)"
+       % (lo_r, hi_r, (hi_r / lo_r - 1) * 100))
+    for d in (answer, runner):
+        n_av = round(d["avoided"])
+        band = max(abs(lo_r * d["excess"] - n_av), abs(hi_r * d["excess"] - n_av))
+        ok(0.5 - band >= 0.12, "%s's avoided count is %.3f inside its bin under every reading"
+           % (d["unit"], 0.5 - band))
+    # every graded figure sits inside its rounding bin
     worst = 1.0
     for d in units:
-        worst = min(worst, 0.5 - abs(d["avoided"] - round(d["avoided"])))
-    ok(worst >= 0.10, "every avoided count is at least 0.10 of a complication inside its bin (%.3f)" % worst)
+        worst = min(worst, 0.05 - abs(d["excess"] * 10 - round(d["excess"] * 10)) / 10.0)
+    ok(worst >= 0.016, "every unit's excess is at least 0.016 of a complication inside its one decimal "
+       "bin (%.4f)" % worst)
+    ok(all(abs(d["excess"] * 10 - round(d["excess"] * 10)) / 10.0 >= 0.004 for d in units),
+       "no unit's excess sits on the tenth it is reported at")
     stated = [("the pick's standardised ratio", answer["ratio"], 2),
               ("the pick's expected complications", answer["expected_plan"], 0),
-              ("the pick's excess", answer["excess"], 0),
+              ("the pick's excess", answer["excess"], 1),
               ("the rung 0 unit's excess now", g["rung0"]["last_excess"], 0),
-              ("the rung 0 unit's own excess", g["rung0"]["excess"], 0),
-              ("the rung 1 unit's excess", g["rung1"]["excess"], 0),
-              ("the rung 2 unit's excess", g["rung2"]["excess"], 0)]
+              ("the rung 0 unit's own excess", g["rung0"]["excess"], 1),
+              ("the rung 1 unit's excess", g["rung1"]["excess"], 1),
+              ("the rung 2 unit's excess", g["rung2"]["excess"], 1)]
     stated += [("the %s hospital year rate" % h["hospital"], h["rate"], 1) for h in g["hospitals"]]
     ok(len(g["outside"]) == 10, "A3 covers every quarter in the extract (%d)" % len(g["outside"]))
     for name, val, places in stated:

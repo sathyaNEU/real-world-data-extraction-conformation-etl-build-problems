@@ -54,13 +54,14 @@ def charter(target):
                    "December meeting.", BODY),
          Paragraph("4.2 Every acute inpatient unit with four or more closed quarters of reported indicator "
                    "data under the current specification is eligible for a placement, except a unit the "
-                   "team has been placed with in the previous twelve closed quarters. The partnership does "
-                   "not return to a unit inside three years, so that the gains a unit holds are the unit's "
+                   "team has been placed with in the previous twelve closed quarters and except the unit "
+                   "the team is placed with when the placement is decided. The partnership does not "
+                   "return to a unit inside three years, so that the gains a unit holds are the unit's "
                    "own to hold.", BODY),
          Paragraph("4.3 A placement is made where it will avoid the most hospital-acquired complications. "
                    "The complications a placement avoids are the complications the unit would have "
-                   "recorded over the assessment quarter and does not record because the team is there.",
-                   BODY),
+                   "recorded over the assessment quarter without the embedded team, less the "
+                   "complications it records over that quarter with the team there.", BODY),
          Paragraph("4.4 A placement is assessed on the separations planned for the unit for the assessment "
                    "quarter, as published in the network's activity plan for that quarter.", BODY),
          Paragraph("4.5 The Director of Clinical Improvement recommends the placement for each cycle and "
@@ -116,9 +117,10 @@ def specification(target):
                    "are not re-estimated between specifications.", BODY),
          Paragraph("3.2 A unit's standardised ratio for a period is its observed complications divided by "
                    "its expected complications. Its adjusted rate is the standardised ratio multiplied by "
-                   "the reference rate of 96.4 complications per 1,000 episodes.", BODY),
+                   "the reference rate of 96.5 complications per 1,000 episodes.", BODY),
          Paragraph("3.3 A unit's standardised ratio is reported for each closed quarter and for the "
-                   "specification period to date, being every closed quarter from 1 July 2024.", BODY),
+                   "specification period to date, being every closed quarter from 1 July 2024. No other "
+                   "period is reported for a unit.", BODY),
          Paragraph("3.4 Where the expected complications of a period are required before the period is "
                    "observed, they are the separations planned for the unit multiplied by the unit's "
                    "expected complications per separation over the specification period to date.", BODY),

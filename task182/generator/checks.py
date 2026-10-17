@@ -116,16 +116,20 @@ def run(target, g):
     naive = {c: r[c]["rung2_p10"] for c in W.CODES}
     sl_naive, m_naive, _ = AN.slate(naive)
     A(tuple(sl_naive) != gold, "R3a the easy route files a different slate")
-    A(tuple(sl_naive) == ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),
-      "R3a the easy route files NSL03, NSL04, NSL06, NSL11, NSL12: got %s" % (sl_naive,))
-    A(len(set(sl_naive) & set(gold)) == 2, "R3a the easy route keeps two of the five")
+    A(tuple(sl_naive) == ("NSL03", "NSL04", "NSL06", "NSL07", "NSL11"),
+      "R3a the tenth-percentile background files NSL03, NSL04, NSL06, NSL07, NSL11: got %s" % (sl_naive,))
+    la90 = tuple(AN.slate({c: r[c]["rung2_la90"] for c in W.CODES})[0])
+    A(la90 == ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),
+      "R3a the default path (the minute LA90 background) files NSL03, NSL04, NSL06, NSL11, NSL12: %s"
+      % (la90,))
+    A(len(set(la90) & set(gold)) == 2, "R3a the default path keeps two of the five")
     # R3b: the decisive step alone turns the easy route into the golden
     for key in ("rung2_p10", "rung2_la90", "rung2b_min15", "rung2c_arith", "rung1_total"):
         sl, mg, _ = AN.slate({c: r[c][key] for c in W.CODES})
         A(tuple(sl) != gold, "R3b %s does not reach the golden slate" % key)
         # each wrong route names its own slate; the quietest-interval route's boundary is the thinnest,
         # and both sides of it are wrong slates, so the thinness costs the ladder nothing
-        A(mg > 0.12, "R3b %s names its slate with a margin (%.2f dB)" % (key, mg))
+        A(mg > 0.10, "R3b %s names its slate with a margin (%.2f dB)" % (key, mg))
     A(tuple(AN.slate(base)[0]) == gold, "R3b the residual from the plant's stops gives the golden slate")
     # R3c: no plant
     A(len(W.PLANNED_STOPS) == 6 and all(m == 120 for _, m, _ in W.PLANNED_STOPS),
@@ -139,7 +143,7 @@ def run(target, g):
     expect = {
         "specific": gold,
         "rung1_total": ("NSL02", "NSL04", "NSL06", "NSL07", "NSL11"),
-        "rung2_p10": ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),
+        "rung2_p10": ("NSL03", "NSL04", "NSL06", "NSL07", "NSL11"),
         "rung2_la90": ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),
         "rung2b_min15": ("NSL03", "NSL04", "NSL06", "NSL07", "NSL11"),
         "rung2c_arith": ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),

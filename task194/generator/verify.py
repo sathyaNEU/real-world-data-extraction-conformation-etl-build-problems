@@ -40,7 +40,7 @@ def run(target, figures_path):
         ref = float(m.group(1))
     except Exception:
         ref = None
-    ok(ref == 96.4, "the specification's reference rate is 96.4 (%s)" % ref)
+    ok(ref == 96.5, "the specification's reference rate is 96.5 (%s)" % ref)
 
     ep = pd.read_csv(os.path.join(target, "episode_outcomes_extract.csv"),
                      parse_dates=["admission_date", "separation_date"], dtype={"unit_code": str})
