@@ -1,0 +1,39 @@
+{
+  "task": "task265",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "biomedical-clinical-research",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-17",
+  "stump": "The default path keeps Taperline/Arcis and Taperline/Sora on the contract under the 5.0 per cent ten-year bar because it counts each hip enrolled at a 2018 to 2021 registry clinic as at risk from its operation, so the years before its enrolment, in which any revision would have kept it out of the registry, enter the Kaplan-Meier curve as revision-free; delayed entry at the enrolment visit puts both constructs over the bar.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task130 (v4 round 3c, lineage) 0.09"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: readability screen, semantic fork table, ladder with built margins, closure table, literal reader, oracles, ask sheet, prompt.txt; then precut.py task265 to exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "DA15 worked at the draw and set aside (task446's lesson); the slot draws a new world, a health system's joint registry"
+}
