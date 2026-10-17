@@ -1,34 +1,34 @@
 {
  "task": "task194",
  "owner": "oviya13ya",
- "status": "BUILD",
+ "status": "DRAWING",
  "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-17",
- "stump": "A competent solver takes each unit's standing exactly as charter 4.3 files it, prices the programme off the closed register as the average drop in the standardised ratio a placement produced, applies that drop to the complications the quarter's planned activity carries, and places the team with Alderbrook General Surgery for 53 complications avoided.",
- "architecture": 1,
- "loops": 2,
+ "stump": "A competent solver reconciles to the published indicator, ranks the eligible units on the complications each records above the expectation the published stratum rates give it, and places the improvement team with Stonecreek General Surgery, which is the unit whose case mix sits where the network has moved least since those rates were set rather than the unit whose own patients are having the most complications they should not be having.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17 (no LEAK, every REVIEW answered in the design note)",
-  "reader": "re-read staged, awaiting the orchestrator's spawn"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-17 (no BLOCK, nearest driver 0.10 task38 v3)",
-  "nearest": "0.10 task38 (v3)"
+  "heart": "",
+  "nearest": "0.06 task464 (v1)"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (pass 1)",
-  "disposition": "SEND_BACK, repaired on architecture 1",
-  "report": "re-judge staged, awaiting the orchestrator's spawn"
+  "verdict": "SEND_BACK on architecture 1",
+  "disposition": "re-rooted at stage 1",
+  "report": "architecture 1 spent: see the card's lineage and the design note's Tried and rejected"
  },
  "returned": [],
- "resume": "Stage 4, fourth pass. Every route through the register is now formable and all eight converge: they span 0.672126 to 0.679434 (1.087 per cent) and give all twelve units the same whole complication and the same gap of 8. The four shapes the fall could take leave chi-square 2.67, 47.35, 27.71 and 25.51 on seven degrees of freedom, likelihood ratios of 5.0e9, 2.7e5 and 9.2e4 to one. Headroom 6.6 complications to the floor and 7.3 to the ceiling. Every free gate green: 690 generator assertions, 204 independent verify checks, two byte-identical rebuilds, figures_check 100/0, precut 50/0/0, voice-check PASS, leak.py REVIEW (no LEAK), guard surface clean and heart WARN. target.zip md5 a1985ee1649f92a3ff69ccbfb6d03a1f, 20 entries at the archive root. Both briefs re-staged at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_judge/judge_brief.md and .../task194_reader/reader_brief.md. Next: collect both reports, fix any finding in the generator in one pass, then stage 5.",
+ "resume": "Architecture 2 drawn and registered; guard.py check PASS with no BLOCK and no WARN. The design note carries ## Draw, ## Default path, ## Stump sentence, ## Three rules with the WHAT screen, and the re-root lines under ## Tried and rejected. Next, on the author's go: stage 2, which is the ladder measured on a rebuilt panel, the semantic fork table, the 22-axis closure table, the ask sheet and prompt.txt, to precut.py exit 0. The world, the episode engine, the documents and the realism work are kept; the register loses its calibration role and the stratum rates become the decisive structure.",
  "approved": null,
  "delivered": null,
  "portal": null,
