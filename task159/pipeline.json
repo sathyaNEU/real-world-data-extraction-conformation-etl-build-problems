@@ -1,21 +1,34 @@
 {
  "task": "task159",
  "owner": "sathya8571",
- "status": "DRAWING",
+ "status": "BUILD",
  "domain": "urban-regional-science/forecasting",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-17",
- "stump": "A competent solver carries each watch-list platform's mid-week counted peak quarter-hour to each spring weekday in proportion to its complex's morning entries and posts Monday and Friday conductors on the Line 1 and Line 5 inbound platforms and keeps Corran Junction's Line 5 platform staffed; the step that lands it there is treating a mid-week crowd behind full trains as proportional to arrivals, when on lighter days and on eight-car trains every train takes everyone.",
+ "stump": "A competent solver carries each watch-list platform's mid-week counted peak to each spring weekday in proportion to its complex's morning entries and files 35 shifts a week, posting Monday and Friday conductors on Sallow Park's Line 1 and Line 4 southbound platforms and keeping Corran Junction's Line 5 westbound platform posted every weekday; the step that lands it there is treating a mid-week crowd behind full trains as proportional to arrivals, when on Mondays, Fridays and eight-car Line 5 trains every train takes everyone and the pick needs 26.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), every line answered in the design note",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.org_family, answered at the draw)",
+  "nearest": "0.07 task451 v2; surface: one card-level pair, task147, differentiated"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: design (precut.py)",
+ "resume": "stage 4: reader and judge",
  "approved": null,
  "delivered": null,
  "portal": null,
