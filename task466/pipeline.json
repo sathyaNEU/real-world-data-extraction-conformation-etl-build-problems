@@ -1,0 +1,36 @@
+{
+ "task": "task466",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-17",
+ "stump": "The default path fits the regional-skew log-Pearson Type III to the gauge's annual minima and the report years with a measured flow, leaving out the report years without a suspension, and reserves 0.4 MGD on a 50-year 7-day low flow of 1.29 cfs; entering each silent year as a low flow above the 3.094 cfs suspension flow gives 1.53 cfs and 0.3 MGD.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: ladder, readability screen, fork table, closure, literal reader, oracles, asks and prompt.txt to precut exit 0; then the generator",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET23 (a water utility's drought-restriction trigger and an emergency interconnect sized by replaying it over history): the world, the decision and the quantity kept; the pitfall re-found in the river's historical record"
+}
