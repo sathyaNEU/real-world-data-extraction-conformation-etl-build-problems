@@ -187,7 +187,7 @@ def main():
     import figures
     figures.write(g, os.path.join(HERE, "figures.json"))
     import metadata
-    metadata.write(g, os.path.join(TASK, "metadata.json"))
+    metadata.write(g, os.path.join(TASK, "metadata.json"), target)
     import checks
     checks.run(g, target)
     print("cut %d files into target/" % len(os.listdir(target)))

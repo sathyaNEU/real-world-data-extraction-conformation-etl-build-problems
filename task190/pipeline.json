@@ -1,43 +1,46 @@
 {
   "task": "task190",
   "owner": "oviya13ya",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "accounting-audit-forensic/audit-testing-sampling",
   "objective": "anomaly-detection",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-17",
-  "stump": "The default path scales the errors found on the ratio of the population's book value to the tested book value and certifies the population, because the tested set is read as a sample of items when it was drawn in euro: every line at or above the recovered selection interval was certain and stands only for itself, and each tainting in a small line stands for a whole interval of untested euro.",
+  "stump": "The default path scales the errors found on the ratio of the population's recorded value to the tested recorded value and files 43,648.52 euro, which certifies the population, because the tested set is read as a sample of items when it was drawn in euro: every line at or above the recovered selection interval of 180,000 was certain of selection and stands only for itself, and each tainting in a small line stands for a whole interval of untested euro. The misstatement the selection entitles is 800,000 euro, which refers the population for extended testing.",
   "architecture": 3,
   "loops": 0,
   "precut": {
     "exit": 0,
     "date": "2026-10-17",
-    "checks": "49 checks, 0 FAIL, 0 WARN"
+    "checks": "50 checks, 0 FAIL, 0 WARN"
   },
   "build_gates": {
-    "generator_checks": "114 assertions, three-rules block R1 to R3c on the clean truth, 199-estimator convergence sweep",
-    "verify": "185 checks, 0 failed, reads target/ and figures.json only, 120 estimators on its own code path",
+    "generator_checks": "121 assertions: R1 to R3c on the clean truth, the analyst test executed, the ladder's conclusions at 4.3, the determinism block (the ten-route table, the lattice, its neighbouring band and the interval's boundary), SF1 to SF13, the five blind families, the input gates including every shipped file's licence record, and the asks",
+    "verify": "105 checks, 0 failed; reads target/ and figures.json only, lifts the schedule out of the PDF and recovers the selection interval itself by lattice feasibility",
     "rebuilds": "two consecutive rebuilds byte-identical, target/ and golden/",
-    "figures_check": "86 figures in blocks 1 to 4, 0 absent",
-    "input_gates": "21 files, 4 formats, 56,080 rows in the spine, 3 distractors declared",
-    "container": "scrub audit clean"
+    "figures_check": "91 figures in blocks 1 to 4, 0 absent",
+    "ceiling": "pair ceiling 37.1, mirror leakage 22.0 per cent of ask weight, measured by generator/ceiling.py on the cut pack",
+    "input_gates": "18 files, 4 formats (11 csv, 2 xlsx, 3 pdf, 1 md), 26,874 rows in the spine, 2 distractors declared, every file carrying a source, a date and a CC0 licence in metadata.json and asserted complete against the cut directory",
+    "voice_check": "PASS, 974 characters",
+    "container": "scrub clean on target/, no producer signature and no out-of-band timestamp",
+    "zip": "target.zip cut from the final rebuild: 18 members, 1,000,348 bytes, md5 f0b6202d4c7f4f3d407e8bec9ff715f6, reproducible"
   },
   "leak": {
-    "leak_py": "REVIEW, every line answered in the design note's pre-ship check",
-    "reader": "round 1 answered; round 2 staged"
+    "leak_py": "REVIEW, no LEAK; six REVIEW lines over blocks 3, 4 and 9, each read and answered in the design note's pre-ship check",
+    "reader": "brief staged at scratchpad/t190/stage4_a3/reader, not spawned: the author spawns it"
   },
   "duplicate_check": {
-    "heart": "WARN, repeat.deliverables and repeat.question_form, both answered",
-    "surface": "no promoted pair",
-    "nearest": "0.11 task445 v1"
+    "heart": "WARN; nearest driver 0.05 against every card driver and 0.06 against the nearest ledger row, the lowest this slot has drawn",
+    "check": "WARN repeat.gate_g against task468 and overuse.gate_g at 7 of the last 12, both answered in the card's notes; nearest driver 0.07",
+    "surface": "no BLOCK; eight pairs promoted for the author's adjudication, five on corpus-wide surface idiom and three on the same-driver signature (gap rule, pattern G16, Gate G method_or_model_selection) against task185, task457 and task80, each already answered by a differentiation line on the card"
   },
   "judge": {
-    "round_1": "NOT_DETERMINISTIC, competing_defensible_answer, SEND_BACK; Gate G pass, Gate H pass, decisive step analytical",
-    "disposition": "calibration, not architecture: one fix pass applied, re-judge staged"
+    "architecture_2": "round 1 NOT_DETERMINISTIC SEND_BACK, round 2 and round 3 the same on the same shape; the author called architecture 2 spent on 2026-10-17",
+    "architecture_3": "brief staged at scratchpad/t190/stage4_a3/judge, not spawned: the author spawns it"
   },
   "returned": [],
-  "resume": "Architecture 3, stage 3. The generator is written and green: 18 files, 4 formats, spine over 26,000 payment lines, 2 declared distractors; generator checks.py 109 assertions, verify.py 114 checks on its own code path recovering the interval itself, two rebuilds byte-identical, precut 50/0/0, voice-check PASS at 991 chars, figures_check 0 absent, leak REVIEW (no LEAK; tolerable misstatement stays in the plan and is out of the write-up's graded blocks), guard check and heart WARN on the two answered gate_g repeats, container scrub clean on target/ and golden/. The four approved authority sentences are in audit_plan_2026.pdf (4.2, 4.3) and audit_manual_part9.pdf (9.1, 9.2) and nothing else is filed. IN FLIGHT: the programme recorded values were redrawn off round numbers (nine totals within a euro of a round million was the first draft's clearest realism tell) and the design point is being re-tuned; the tuner is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t190/tune6.py and its output tune6.out. On a candidate: bake the DEFECT counts and RANDOM_START into world.py, update checks.py's FOUND/RATIO/STRATUM/PROJ/TOTAL and CALL, rebuild, re-run every gate, cut target.zip, and hand the two stage-4 briefs at scratchpad/t190/stage4_a3/{judge,reader} to the author.",
+  "resume": "Architecture 3, stage 4, bundle ready and every free gate green. Design point locked: population 26,648 payment lines and 59,469,739.92 EUR over nine programmes; tolerable misstatement 1,160,000 shipped; expected misstatement 387,500 and interval 180,000 never shipped; 330 selections on 271 distinct tested lines, 31 certainty lines holding 15,826,525; ladder 15,445.38 to 43,648.52 to 129,201.54 to 811,170.09 stated 800,000; basic precision 540,000 (0.466 TM), incremental allowance 347,797.48, UML 1,698,967.57, crude bound 1,351,170.09; largest programme Rail siding and yard at 250,000; three nils; six distinct stated values. The four approved authority sentences are in audit_plan_2026.pdf (4.2, 4.3) and audit_manual_part9.pdf (9.1, 9.2) and nothing else is filed. NEXT, AND IT IS THE AUTHOR'S: spawn the two stage-4 briefs at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t190/stage4_a3/{judge,reader} (both medium, in the background), commit the bundle, and on a clean verdict go to stage 5. Every finding is fixed in the generator in one pass; a FIX_NOW is re-judged once. If the judge returns SEND_BACK the build stops and the author decides, because architecture 3 is this number's third.",
   "approved": null,
   "delivered": null,
   "portal": null,

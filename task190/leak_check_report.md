@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: tested, interval, sample, decisive, projection, amount, carries, nothing, decision, stands, quantity, materiality, tainting, stated, shipped, factor, sentence, sampled, inclusion, payment, stratum, probability, projects, arithmetic, follows
+Stump terms swept: tested, interval, sample, decisive, projection, amount, decision, carries, nothing, stands, stated, quantity, tainting, stratum, shipped, factor, sentence, materiality, sampled, inclusion, payment, probability, projects, arithmetic, follows
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `audit_plan_2026.pdf`: golden figure 4.3 appears: ...ulation is tested to a confidence of 95 per cent. 4.3 Conclusion on a tested population A population is...

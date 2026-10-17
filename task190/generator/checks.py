@@ -1,5 +1,6 @@
 """Every claim the build makes, asserted against the clean truth and the cut pack."""
 import csv
+import json
 import datetime as dt
 import math
 import os
@@ -141,6 +142,13 @@ def run(g, target):
     near = min(abs(f - g["total_raw"]) / g["total_raw"] for f in out)
     ok("C4 the nearest wrong answer a defensible route produces is at least six per cent away",
        near >= 0.06, "%.3f" % near)
+    below = max(x[1] for x in lines if x[1] < W.INTERVAL)
+    above = min(x[1] for x in lines if x[1] >= W.INTERVAL)
+    ok("C1 no population line sits at the interval, so the boundary reading cannot move it",
+       below < W.INTERVAL < above, "%.2f %.2f" % (below, above))
+    ok("C1 the nearest population line is clear of the interval",
+       min(above - W.INTERVAL, W.INTERVAL - below) >= 500.0,
+       "%.2f" % min(above - W.INTERVAL, W.INTERVAL - below))
     ok("C1 the underlying sits clear of its rounding line",
        W.GRAIN / 2.0 - abs(g["total_raw"] - g["total"]) >= 11000.0,
        "%.0f" % (W.GRAIN / 2.0 - abs(g["total_raw"] - g["total"])))
@@ -212,6 +220,16 @@ def run(g, target):
     ok("input gate: a file of 25,000 rows or more", len(spine) >= 25000, str(len(spine)))
     ok("input gate: the distractors ship",
        {"grant_claim_2026.csv", "revenue_expenditure_summary_2026.csv"} <= set(files))
+    md = json.load(open(os.path.join(os.path.dirname(target), "metadata.json"), encoding="utf-8"))
+    ok("input gate: every shipped file has a licence record",
+       sorted(r["path"] for r in md["files"]) == sorted(files),
+       str(sorted(set(files) - {r["path"] for r in md["files"]})))
+    ok("input gate: every licence record carries a source, a date and a licence",
+       all(r["source"] and r["date"] and r["license"] for r in md["files"]))
+    ok("input gate: two or more distractors are declared", len(md["distractor_files"]) >= 2,
+       str(md["distractor_files"]))
+    ok("input gate: no distractor is named in a file name",
+       not [f for f in files if "distract" in f.lower()])
 
     # ---------------------------------------------------------------- the asks
     a1 = g["a1"]

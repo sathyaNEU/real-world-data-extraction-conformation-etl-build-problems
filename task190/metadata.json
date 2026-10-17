@@ -10,7 +10,170 @@
  ],
  "distractor_note": "The funder's grant claim covers a claim year to 31 March and a share of eligible expenditure, so it holds no payment line the figure counts and reconciles to nothing on the decision question. The revenue expenditure summary is the other population the plan tests and the figure never reads it. The prior year's payment lines ship because the testing schedule extract covers two years, and the prior year's own misstatement is stated nowhere. None of the three states or ranks anything on the decision question.",
  "domain": "accounting-audit-forensic",
- "files": [],
+ "files": [
+  {
+   "bytes": 2745,
+   "date": "2027-01-14",
+   "format": "pdf",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "audit_manual_part9.pdf",
+   "rows": null,
+   "source": "Constructed: internal audit manual, part 9"
+  },
+  {
+   "bytes": 2690,
+   "date": "2027-01-14",
+   "format": "pdf",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "audit_plan_2026.pdf",
+   "rows": null,
+   "source": "Constructed: internal audit plan 2026, section 4"
+  },
+  {
+   "bytes": 1898068,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "capital_payment_lines_2025.csv",
+   "rows": 22919,
+   "source": "Constructed: the payment ledger's capital programme payment lines, year to 31 December 2025"
+  },
+  {
+   "bytes": 2226988,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "capital_payment_lines_2026.csv",
+   "rows": 26874,
+   "source": "Constructed: the payment ledger's capital programme payment lines, year to 31 December 2026"
+  },
+  {
+   "bytes": 690,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "capital_programme_register.csv",
+   "rows": 9,
+   "source": "Constructed: the capital programme board's register of work programmes, values in thousands"
+  },
+  {
+   "bytes": 1667,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "export_manifest.csv",
+   "rows": 18,
+   "source": "Constructed: internal audit's manifest of this cut"
+  },
+  {
+   "bytes": 3008,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "field_dictionary.csv",
+   "rows": 20,
+   "source": "Constructed: finance systems' field definitions across the extracts"
+  },
+  {
+   "bytes": 651,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "grant_claim_2026.csv",
+   "rows": 9,
+   "source": "Constructed: finance's funder grant claim for the claim year to 31 March"
+  },
+  {
+   "bytes": 19025,
+   "date": "2027-01-14",
+   "format": "pdf",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "internal_audit_testing_schedule_2026.pdf",
+   "rows": null,
+   "source": "Constructed: internal audit's testing schedule for the year to 31 December 2026, the tested lines as a table inside the working paper"
+  },
+  {
+   "bytes": 6346,
+   "date": "2027-01-14",
+   "format": "xlsx",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "payment_release_cutoff_register.xlsx",
+   "rows": null,
+   "source": "Constructed: finance operations' payment release cut-off register with its effective dates"
+  },
+  {
+   "bytes": 7994,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "payment_run_log_2026.csv",
+   "rows": 105,
+   "source": "Constructed: finance operations' payment run log, year to 31 December 2026"
+  },
+  {
+   "bytes": 1446,
+   "date": "2027-01-14",
+   "format": "md",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "provenance.md",
+   "rows": null,
+   "source": "Constructed: internal audit's extract notes for this cut"
+  },
+  {
+   "bytes": 475,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "revenue_expenditure_summary_2026.csv",
+   "rows": 12,
+   "source": "Constructed: finance's revenue expenditure summary, year to 31 December 2026"
+  },
+  {
+   "bytes": 19148,
+   "date": "2027-01-14",
+   "format": "xlsx",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "supplier_master.xlsx",
+   "rows": null,
+   "source": "Constructed: procurement's supplier master at the extract date"
+  },
+  {
+   "bytes": 6498,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "supplier_number_crosswalk.csv",
+   "rows": 380,
+   "source": "Constructed: finance systems' crosswalk from the ledger's supplier numbers to the master's"
+  },
+  {
+   "bytes": 18503,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "supplier_risk_approval_history.csv",
+   "rows": 263,
+   "source": "Constructed: procurement's supplier risk approval history, year to 31 December 2026"
+  },
+  {
+   "bytes": 115,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "supplier_risk_category_map.csv",
+   "rows": 5,
+   "source": "Constructed: procurement's risk category labelling map, from 1 October 2026"
+  },
+  {
+   "bytes": 32057,
+   "date": "2027-01-14",
+   "format": "csv",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "path": "testing_schedule_extract_2025_2026.csv",
+   "rows": 510,
+   "source": "Constructed: internal audit's two-year extract of the testing schedules, 2025 and 2026"
+  }
+ ],
  "geography": "Ireland",
  "licence": "Synthetic records generated for this task; no third party licence attached.",
  "objective": "anomaly-detection",

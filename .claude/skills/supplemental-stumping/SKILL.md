@@ -137,6 +137,19 @@ script that exists in the build, and the gate fails without it. Re-run the scrip
 once at the end: a determinism repair that closes a reading can spend the device that rode on it, which is
 measurable the moment the sentence is filed and invisible in prose.
 
+**The ceiling script is read, not just run.** `precut.py` checks that a script is named and exists;
+nothing checks that it measures what it says, and three ways of getting that wrong have now been found
+in one build's `ceiling.py`. It scored both responses on the same ask readings, passing the cracker's
+stops to the mirror's row as well, so the whole ask band, 0.60 of the rubric, was one reading counted
+twice and both rows printed the same 9 of 41. It hardcoded one ask's contribution to zero for both
+rows, so that ask's fourteen figures sat in the denominator and were never scored, which flatters the
+build. And it named the two responses the other way round from this skill, which is how the first two
+survived being read at all. So: the script prints one row per response with the two scored from
+different readings, every ask contributes a scored figure to both rows, the response that lands the
+call is the cracker and its ask row reads 0 of N, and the author reads the scoring lines rather than
+the summary. Where the printed cracker keeps ask figures while the note's table says every row misses,
+the code is right and the asks need more device mass.
+
 **A pin's scope has two halves, and the second is which neighbouring convention it must not reach.** A
 conventions sheet is read as a list, so a row that fixes one table's basis is read against the row beside
 it. task192's route table needed its window pinned while the partner table one row below stayed keyed to
