@@ -112,3 +112,64 @@ Strong. Last week's aggregate (or a seasonal ratio) files 14 to 15 streams, nine
 
 ## Next action for the author
 Add to FCP-2 (or the prompt) a filed selection criterion for the week-3 denominator (a stated one-step-ahead back-test on the aggregate history, with window and error measure) together with the missing-at-random premise, regenerate, keep every graded figure unchanged, and re-judge. This is a design-level change, so /fix-determinism's frozen-stump constraint should be checked first.
+
+
+---
+
+# Architecture 2, round 1, 2026-10-17
+
+Scratch: /tmp/determinism-check-task234-a2r1/ (judged unzip in target/, current shipped zip in new/, verdict at /tmp/determinism-check-task234-a2r1/verdict.md). One thread, literal reading first, spawned by the main session from judge_brief.md (this runtime has no Agent tool).
+
+## Verdict
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+
+## Why
+FCP-2 s.2 pins the test and the week, s.3 the ratio and its denominator (the aggregate report's tests), s.5 the choice of the week's tests estimate (the way whose largest week-2 miss is smallest). The judge back-tested about 40 estimators on week 2. Every positivity-conditioned variant (Poisson or log-OLS, with or without trend, holiday exclusion, 26/52/full window) escalates exactly Wexmoor and Westmarch, six streams at 54.7 to 60.8 per cent, the other 23 at 87.4 or more. Non-positivity ways miss by 54 to 73 per cent and escalate 0 to 15 streams. All 68 graded cells reproduced. Architecture 1's open fork (no filed check) is closed by s.5; the round-1/2 findings (received clock, specimen key) are closed by the change log row and s.6.
+
+## Recomputation ledger
+| Figure | Claimed | Judge recomputed | Me, on shipped zip | Reproduced |
+|---|---|---|---|---|
+| Week-3 tests collapsed | 80,671, 29 streams | 80,671 | 80,671, 29 | yes |
+| Wexmoor / Westmarch week-3 tests | 3128/607/1234, 1943/621/1454 | same | same | yes |
+| Positivity | 33.1/7.9/9.6, 23.3/9.0/17.0 | same | same | yes |
+| Predicted tests | 5714/1064/2219, 3514/1102/2391 | same | same | yes |
+| Completeness | 55/57/56, 55/56/61; others 87+ | 54.7/57.1/55.6, 55.3/56.3/60.8; min other 87.4 (Bluestem RSV) | same | yes |
+| Week-2 largest miss: model / held / last week | 7.8 / 52.6 / 54.0 | same | 7.78 / 52.62 / 53.99 | yes |
+| Last week's report as estimate | 15 streams escalated | 15 | 15 | yes |
+| Week-2 completeness, 29 values | 47.4 (Brandmoor RSV) to 98.0 | all match | all 29 match to 0.1 | yes |
+| Specimens, 10 laboratories | 2,850 ... 9,204 ... 2,835 | all match | all match | yes |
+
+## Competing answers that survived
+None on the call. Residuals, none moving a graded figure:
+- Ask 2 clock: `received` is county time before the 19 Jan 2027 06:00 hub migration and UTC after. The data dictionary says only "as the state hub's message broker stamped it"; the change log gives the migration and the data force the reading (pre-migration `received` precedes `released` by 5.75 to 6.0 hours). Read as UTC, nine laboratories sit near 99 and Brandmoor near 50 to 52, a different grid. The judge calls it forced by data; it is the one place a reading is inferred, not stated, and it sits in ask 2 only.
+- Specimens by collection week instead of test week (Westmarch 2,333 against 2,835): s.2 and s.6 make test week the literal reading.
+- Ellery RSV 97.498 rounds to 97.5 only if the protocol's county date, first release and first received are applied literally.
+
+## Spec gates
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files, formats, large file | 10+, 3+, 25,000+ rows | 11 files; csv, md, pdf, xlsx; result extract 211,361 rows | yes |
+| Distractors | 2+ named in metadata.json, no file name labels one | 3 named (ED ILI, state positivity, county admissions); names are plain; none counts a laboratory's tests or flags a stream | yes |
+| Distractors unused yet weighable | yes | all three are relevant surveillance series; judge found none needed | yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, png), both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | 29 escalation marks, 29 week-2 percentages (one decimal in prompt), 10 specimen counts (count of specimens) | yes |
+| Prompt shape, rubric | shape identifiable, 25+ criteria | shape 07 grid, 68 graded cells plus the call and chart | yes |
+| Prompt | one paragraph, question first, under 1,000 characters | 640 characters | yes |
+| Reads as real | no LLM tells, real work product | judge saw none; README a plain index; goldens not re-read by me | yes (judge) |
+
+## Gate G reconciliation
+Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and card: stump_class analytical, layer 2 forecast_uncertainty (tests predicted from the stream's own positivity), stump sentence the past-report default ending on 15 streams, 9 wrong; analyst_test and domain_test as the thread found them. Match. The thread names no declared distractor as the surface read carrying the task: the carrier is last week's aggregate report (an input, not a ranking of the candidates), and the three distractors are unused. Gate G holds: no shipped artifact estimates, flags or ranks a stream.
+Gate H line: domain: pass, layers: pass, decisive_step: analytical (estimating expected tests from received positivity, validated by the s.5 week-2 back-test). Agrees with the card and the note's `## Three rules` (No decoy, Not semantics, Not rule application).
+
+## Stump power (Gate F)
+Good. The easy route (last week's report, the only report in hand) escalates 15 streams and flags 9 complete streams; the seasonal baseline and other-laboratories' change are also wrong; the rest of the grid and the week-2 and specimen asks reward the same careful handling.
+
+## Findings, ranked
+1. Bundle drift (process, not a determinism finding). The judged unzip was cut before the coordinator's cancelled-order change; the shipped target.zip (elr extract 30,832,585 bytes, 211,361 rows, matching metadata.json) differs from the judged one in more than the cancelled rows: accessions are renumbered after the cancelled orders took sequence numbers, and lab_weekly_aggregate_reports.csv, ed_syndromic_ili_weekly.csv, county_respiratory_admissions_weekly.csv and state_respiratory_positivity_by_region.csv are not byte-identical to the judged copies (6,485 of 6,638 report rows differ in `tests`, submission dates also differ). The note that reports were unchanged is therefore not true at the byte level. I reran the whole golden pipeline on the shipped zip (table above) and every graded figure, the 7.8 / 52.6 / 54.0 back-test and the 15-stream failure reproduce, so the verdict carries to the shipped bundle. The verdict rests on the judge's thread for the judged bundle and my own recompute for the shipped one, not a second isolated thread.
+2. Ask 2 clock reading inferred from data (low; above).
+3. Specimen-week wording (low; above).
+
+## Next action for the author
+None required to ship. Optionally, if the byte differences in the four context files were not intended, confirm they are only seeded noise draws shifting with the new accession sequence; no graded figure moved.

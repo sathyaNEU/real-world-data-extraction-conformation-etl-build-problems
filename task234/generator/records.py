@@ -30,6 +30,7 @@ class Records:
         self.W = W
         self.rng = np.random.default_rng(P.RECORDS_SEED)
         self.rng_week = {wk: np.random.default_rng(s) for wk, s in P.WEEK_SEED.items()}
+        self.gaps = {}                   # (lab, week) -> accessions numbered for orders cancelled before testing
         self.truth = {}                  # (lab, virus, week) -> dict of test-level truth
 
     # ---------------------------------------------------------------- tests of one laboratory and week
@@ -81,11 +82,16 @@ class Records:
             for i in range(len(ss) - 2, -1, -1):
                 if coll_kept[ss[i + 1]] - coll_kept[ss[i]] < dt.timedelta(hours=24):
                     coll_kept[ss[i]] = coll_kept[ss[i + 1]] - dt.timedelta(hours=24, minutes=7 * (i + 1))
-        # accessions: per test ordered, or one per swab for the panel with add-on tests on new accessions
+        # accessions: per test ordered, or one per swab for the panel with add-on tests on new accessions; one order in
+        # about 250 is a duplicate cancelled before testing, numbered in sequence with the rest
         base_acc = P.ACC_BASE[code] + (wk - 2) * P.ACC_PER_WEEK
+        grng = np.random.default_rng([P.SEED, wk, [l[0] for l in P.LABS].index(code)])
+        gaps = []
         out = []
         for s in sorted(used, key=lambda x: coll[x]):
             tlist = swab_tests[s]
+            if grng.random() < 1 / 250:
+                gaps.append(("%s%07d" % (P.PREFIX[code], base_acc), tlist[0])); base_acc += 1
             if acc_mode == "panel":
                 main = "%s%07d" % (P.PREFIX[code], base_acc); base_acc += 1
                 for j, ti in enumerate(tlist):
@@ -107,6 +113,7 @@ class Records:
                 t["collected"] = coll_kept[s]; t["patient"] = pat_of[s]
                 t["facility"] = facs[0] if len(facs) == 1 or rng.random() < 0.92 else facs[1]
                 out.append(t)
+        self.gaps[(code, wk)] = [dict(accession=a, test=tests[ti]) for a, ti in gaps]
         return out
 
     # ---------------------------------------------------------------- messages of one test
@@ -185,22 +192,38 @@ class Records:
         return df
 
     def cancelled(self, df):
-        """orders cancelled before testing (no result), one in 250, on the same accession numbering"""
+        """duplicate orders cancelled before testing (no result), on the accessions numbered for them; the cancellation
+        goes through the laboratory's interface like a result: held over the weekend, lost when the interface loses"""
         rng = self.rng
         rows = []
-        for (code, wk), tests in self.week_truth.items():
-            n = int(len(tests) / 250)
-            for t in [tests[i] for i in rng.choice(len(tests), size=n, replace=False)]:
-                rel = t["released"] - dt.timedelta(minutes=int(rng.integers(30, 600)))
-                if rel < dt.datetime.combine(P.PREV_WEEK if wk == 2 else P.CUR_WEEK, dt.time()):
+        for (code, wk), gaps in self.gaps.items():
+            week_start = P.PREV_WEEK if wk == 2 else P.CUR_WEEK
+            monday = dt.datetime.combine(week_start + dt.timedelta(days=8), dt.time())
+            hold_from = dt.datetime.combine(week_start + dt.timedelta(days=6), dt.time(P.HOLD_FROM[code]))
+            sunday_end = dt.datetime.combine(week_start + dt.timedelta(days=1), dt.time())
+            flush = monday + dt.timedelta(hours=P.FLUSH_AT[code][0], minutes=P.FLUSH_AT[code][1])
+            out_w2 = P.OUTAGE_W2.get(code) if wk == 2 else None
+            for g in gaps:
+                t = g["test"]
+                rel = max(t["released"] - dt.timedelta(minutes=int(rng.integers(30, 600))),
+                          t["collected"] + dt.timedelta(minutes=int(rng.integers(10, 40))))
+                if rel < dt.datetime.combine(week_start, dt.time()) or (out_w2 and out_w2[0] <= rel < out_w2[1]):
+                    continue
+                if wk == 3 and code in P.LOSS and rng.random() < P.LOSS[code]:
+                    continue
+                if rel >= hold_from:
+                    recv = flush + dt.timedelta(seconds=int(rng.integers(0, 2400)))
+                elif rel < sunday_end:
+                    recv = flush - dt.timedelta(days=7) + dt.timedelta(seconds=int(rng.integers(0, 2400)))
+                else:
+                    recv = rel + dt.timedelta(seconds=int(rng.exponential(420)) + 5)
+                if recv > P.EXTRACT_LOCAL:
                     continue
                 c = "RV-FLU" if t["virus"] == "flu" else CODE[t["virus"]]
                 if t["virus"] == "flu" and P.LAB[code][7] == "target":
                     c = "RV-FLUA"
-                acc = "%s%07d" % (P.PREFIX[code], P.ACC_BASE[code] + (wk - 2) * P.ACC_PER_WEEK + 45_000 + len(rows))
-                rows.append(dict(week=wk, lab=code, facility=t["facility"], accession=acc, patient=t["patient"],
-                                 collected=t["collected"], code=c, result="", status="X", released=rel,
-                                 received=rel + dt.timedelta(seconds=int(rng.exponential(420)) + 5)))
+                rows.append(dict(week=wk, lab=code, facility=t["facility"], accession=g["accession"], patient=t["patient"],
+                                 collected=t["collected"], code=c, result="", status="X", released=rel, received=recv))
         return pd.concat([df, pd.DataFrame(rows)], ignore_index=True)
 
     def as_stored(self, df):

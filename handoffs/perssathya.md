@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-16 (wave 2: task233 shipped on architecture 2 after the judge's SEND_BACK of architecture 1; task234 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 2: task234 shipped on architecture 2 after the judge's round-2 SEND_BACK of architecture 1; task235 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 and task232 shipped; task233 to task236 next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task234 shipped; task235 and task236 next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,22 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task234: SHIPPED 2026-10-17 (wave 2, fourth build; architecture 2); waiting on the portal.**
+- Tamsen County Department of Public Health's epidemiology unit (Epidemiology & Public Health,
+  disease-surveillance-outbreak-anomaly-detection x Data Quality Monitoring). Call: the laboratory liaison escalates the
+  influenza, RSV and SARS-CoV-2 streams of Wexmoor Regional Medical Center Laboratory and Westmarch Reference Laboratory
+  for MMWR week 3 of 2027, and no other stream. A lost result message drops a positive and a negative alike, so each
+  stream's week-3 positivity predicts the tests its laboratory ran (a Poisson fit of the testing response on its
+  aggregate reports): the six sit at 55 to 61 per cent, every other stream at 87 or more. The protocol's week-2 check
+  (FCP-2 s.5), run on a week when Brandmoor's interface lost half its results, keeps that way (largest miss 7.8 per cent)
+  over last week's report (54.0), which escalates 15 streams, 9 of them complete streams whose epidemic fell.
+- Gates: 487 generator checks with the realism sweep, verify green (its own Poisson fit), byte-identical rebuilds,
+  figures_check 103 of 103, precut 49, leak.py REVIEW only; leak reader questions 1 to 4 none, question 6 analytical
+  (its cancelled-order realism note fixed in the generator, no figure moved); judge DETERMINISTIC, APPROVE in one pass.
+  Architecture 1 left the estimator of the week's tests to the data and was sent back at its round 2; re-rooted the same
+  day with the week-2 check filed. Surface screen promotes task233, task232, task81, task95, task73 and task231 (other
+  mechanisms, differentiated on the card): the adjudicated clone check is the author's call.
 
 **task233: SHIPPED 2026-10-16 (wave 2, third build; architecture 2); waiting on the portal.**
 - A university Social Survey Unit runs an island state's school-leaver destinations survey for its Department of

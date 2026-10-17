@@ -1,11 +1,11 @@
 {
  "task": "task234",
  "owner": "perssathya",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "epidemiology-public-health",
  "objective": "data-quality-monitoring",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
  "stump": "A competent solver runs the protocol's week-2 check over the textbook baselines, keeps last week's aggregate report as the way that missed least, divides each stream's week-3 results by it and files 9 of the 29 cells wrong (15 streams escalated, nine of them complete streams whose epidemic fell in the week); the step that lands it there is taking the week's tests from the past instead of from the stream's own positivity, which moves with its patients' epidemic and not with a lost message.",
  "architecture": 2,
@@ -15,22 +15,22 @@
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK; three design-note vocabulary lines, harmless)",
+  "reader": "architecture 2: Q1 none (s.5's criterion names no candidate), Q2 to Q4 none, Q5 executes to the week-2 figures, Q6 analytical; cancelled-order timing and numbering fixed in the generator, no figure moved"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (repeat.question_form task194; same_puzzle_older differentiated task231, task445; driver near own lineage)",
+  "nearest": "task234 v1 lineage 0.29; surface promoted task233, task232, task81, task95, task73, task231 (other mechanisms, differentiated on the card)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": "determinism_check_report.md (architecture 1 rounds kept as evidence)"
+  "verdict": "architecture 2 round 1 DETERMINISTIC",
+  "disposition": "APPROVE (Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 3: python3 task234/generator/make.py (two builds, the zip), then figures_check, leak.py --asof 2027-01-25, guard.py surface and heart, the realism sweep; then stage 4 (the leak reader and the determinism judge on the rebuilt pack)",
+ "resume": "shipped; waiting on the portal",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

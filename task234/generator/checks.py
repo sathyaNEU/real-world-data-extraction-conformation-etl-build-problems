@@ -1,8 +1,10 @@
-"""task234 checks: the three rules executed (R1 to R3c), every semantic fork row (SF1 to SF12), the golden's margins
-under every model of the testing response, the rungs, the bench, the ask devices and their stops, the separation of
-the call from the devices, and the input gates."""
+"""task234 checks: the three rules executed (R1 to R3c), every semantic fork row (SF1 to SF15), the golden's margins
+under every model of the testing response, FCP-2 s.5's week-2 check, the rungs, the bench, the ask devices and their
+stops, the separation of the call from the devices, the input gates and the realism sweep."""
+import json
 import os
 import re
+import sys
 
 import numpy as np
 import pandas as pd
@@ -170,8 +172,8 @@ def run(target, golden, o, X):
         ok((w3.first_received <= pd.Timestamp("2027-01-25 08:00")).all(),
            "SF6 every week-3 result in the extract reached the platform by the Monday cutoff (%s clock)" % clock)
     rawrec = pd.to_datetime(D["res"].received)
-    ok((rawrec - E.TZ <= pd.Timestamp("2027-01-25 08:00")).all() and (rawrec <= pd.Timestamp("2027-01-25 14:00")).all(),
-       "SF6 no row of the extract after the cutoff under either clock")
+    ok((rawrec - E.TZ <= pd.Timestamp("2027-01-25 08:00")).all() and (rawrec <= pd.Timestamp("2027-01-25 08:00")).all(),
+       "SF6 no row of the extract after the cutoff whichever clock its receipt times are read in (county, UTC or both)")
     ok(X["routes"]["persist"]["esc"] != GOLD, "SF7 last week's report as the denominator is the default path")
     first = D["agg"].sort_values("version").groupby(["lab_id", "virus", "mmwr_year", "mmwr_week"]).head(1)
     ok((D["agg"].version > 1).sum() >= 50, "SF8 resubmissions exist")
@@ -338,6 +340,33 @@ def run(target, golden, o, X):
         p = os.path.join(os.path.dirname(target), f)
         if os.path.exists(p):
             ok("\u2014" not in open(p).read(), "no em dash in %s" % f)
+
+    # ------------------------------------------------------------ realism sweep (dataset-generation)
+    rep = E.reports_of_record(D["agg"]).sort_values(["mmwr_year", "mmwr_week"])
+    runs = blocks = 0
+    for _, g in rep.groupby(["lab_id", "virus"]):
+        t = g.tests.values
+        runs += sum(t[i] == t[i + 1] == t[i + 2] for i in range(len(t) - 2))
+        quads = [tuple(t[i:i + 4]) for i in range(len(t) - 3)]
+        blocks += len(quads) - len(set(quads))
+    ok(runs == 0 and blocks == 0, "realism: no stream repeats a weekly count three weeks running or a four-week block")
+    res = D["res"]
+    ok(not [c for c in res.columns if res[c].nunique() == 1], "realism: no constant column in the extract")
+    lag = (pd.to_datetime(res.received) - pd.to_datetime(res.released)).dt.total_seconds()
+    ok(lag.groupby(res.sending_facility).std().min() > 600, "realism: receipt lags vary at every sending facility")
+    ok(log.change.is_unique, "realism: no change-log text recurs")
+    W3 = E.week_counts(E.conform(D), 3)
+    ok(int(W3.tests.sum()) % 100 and sum(X["B"].values()) % 100, "realism: no round headline total (%d tests, %d specimens)"
+       % (int(W3.tests.sum()), sum(X["B"].values())))
+    card = json.load(open(os.path.join(os.path.dirname(__file__), "..", "..", ".claude", "skills", "fingerprint", "cards",
+                                       "task234.json")))
+    ok(set(P.PEOPLE.values()) == set(card["world"]["people"]), "realism: every persona drawn by guard.py names")
+    import subprocess
+    scrub = os.path.join(os.path.dirname(__file__), "..", "..", ".claude", "skills", "reduce-house-fixes", "scripts",
+                         "scrub_producer_metadata.py")
+    for folder in (target, golden):
+        out = subprocess.run([sys.executable, scrub, folder], capture_output=True, text=True).stdout
+        ok("clean, no producer signature" in out, "realism: containers scrubbed in %s" % os.path.basename(folder))
     return N[0]
 
 

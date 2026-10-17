@@ -89,7 +89,7 @@ def main(target, golden, figs_path, sub_path):
         miss["golden"].append(abs(e2 / T[n - 1] - 1))
         miss["received"].append(abs(len(h) / T[n - 1] - 1))
         miss["persist"].append(abs(T[n - 2] / T[n - 1] - 1))
-    check = {k: round(100 * max(m), 1) for k, m in miss.items()}
+    check = {k: round(float(100 * max(m)), 1) for k, m in miss.items()}
     assert check["golden"] * 5 < min(check["received"], check["persist"]), check
     esc = {k for k, v in got.items() if v["comp"] < 0.80}
     assert esc == {("L03", v) for v in ("Influenza", "RSV", "SARS-CoV-2")} | {("L10", v) for v in ("Influenza", "RSV", "SARS-CoV-2")}, esc
@@ -135,7 +135,8 @@ def main(target, golden, figs_path, sub_path):
     assert {names[k]: v for k, v in spec.items()} == figs["specimens"]
     sub = open(sub_path).read()
     assert "\u2014" not in sub and "\u2013" not in sub
-    step3 = next(l for l in sub.splitlines() if l.startswith("3. "))
+    steps = sub.split("## 3. Step-by-Step Solution")[1].split("## 4.")[0]
+    step3 = next(l for l in steps.splitlines() if l.startswith("3. "))
     assert ("missed some stream by %.1f per cent at most; those held tests themselves missed by %.1f and last week's "
             "report by %.1f." % (check["golden"], check["received"], check["persist"])) in step3, step3
     block4 = sub.split("## 4. Deliverable Answers")[1]

@@ -1,15 +1,15 @@
 # leak check, task234
 
-**Verdict: REVIEW.** 11 files read, 31 golden figures and 12 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 36 golden figures and 12 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: positivity, laboratories, county, report, testing, asserted, epidemic, counts, patients, default, decisive, message, baseline, golden, linear, surveillance, messages, weekly, positives, change, season, sentence, seasonal, fitted, denominator
+Stump terms swept: positivity, laboratories, asserted, report, architecture, epidemic, golden, decisive, surveillance, county, testing, change, default, counts, message, monday, patients, brandmoor, linear, baseline, weekly, interface, period, messages, positives
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `DATA_DICTIONARY.md`: 8 of 25 stump-paragraph terms appear (laboratories, county, report, message, surveillance, weekly); read whether the document names the move
-- **REVIEW** `FCP-2_feed_completeness_protocol.pdf`: 7 of 25 stump-paragraph terms appear (laboratories, county, report, counts, surveillance, weekly); read whether the document names the move
-- **REVIEW** `README.md`: 8 of 25 stump-paragraph terms appear (laboratories, county, report, message, surveillance, messages); read whether the document names the move
+- **REVIEW** `DATA_DICTIONARY.md`: 9 of 25 stump-paragraph terms appear (laboratories, report, surveillance, county, change, message); read whether the document names the move
+- **REVIEW** `FCP-2_feed_completeness_protocol.pdf`: 9 of 25 stump-paragraph terms appear (laboratories, report, surveillance, county, counts, monday); read whether the document names the move
+- **REVIEW** `README.md`: 9 of 25 stump-paragraph terms appear (laboratories, report, surveillance, county, change, message); read whether the document names the move
 
 ## 6 ranking artifacts (INFO 1)
 - **INFO** `respiratory_stream_register.xlsx`: names 10 of 12 answer-set candidates; confirm it does not rank them on the decision question
@@ -35,28 +35,50 @@ Stump terms swept: positivity, laboratories, county, report, testing, asserted, 
 
 ## Solver's-eye read
 
-### Pass 1 (isolated reader, fresh copy of prompt.txt and target/, before the round-1 fix)
+Architecture 2, one isolated reader (general-purpose, medium) on fresh copies of prompt.txt and target/, read before
+the cancelled-order realism fix (a data-only change: the reports, documents and prompt are unchanged).
 
-1. Decisive step: none named. Nearest is FCP-2 s.4, "The escalations are set that Monday, before the week's aggregate reports are due, so that a laboratory losing results is called while the week's results can still be resent", which says week 3's denominator is not yet filed; "No sentence says how to estimate week 3's denominator."
-2. Ranking or scoring file: none (the register lists streams with no numbers; the reports are history).
-3. Helper files: elr_result_codes.csv ("read with RV-FLUB as one influenza test"); the change log and the dictionary mildly.
-4. Answer-like figure or name: none.
-5. FCP-2 s.3 executed literally gives the week-2 percentages from the extract and the reports of record; for week 3 it gives nothing, the denominator not yet existing; it fixes the population and window, not the method.
-6. "Mostly an analytical choice": the week-3 denominator has to be estimated from earlier weeks' reports.
+### Questions
 
-REVIEW rulings: DATA_DICTIONARY.md harmless (column definitions); FCP-2 harmless (the governing rules; s.4's timing is a process fact, not a method); README.md harmless (a file index); respiratory_stream_register.xlsx harmless (no counts, rates or ranking).
+1. None announces it. The nearest is FCP-2 s.5, "The next Monday's escalations are judged against the week's tests
+   estimated in the way whose largest miss across the streams, as a share of the tests the reports counted, was
+   smallest": a selection criterion that names no estimator; s.4's "The escalations are set that Monday, before the
+   week's aggregate reports are due" makes the estimate necessary without naming it.
+2. None. No file ranks or scores the streams on completeness.
+3. None. The register, change log, result codes, README and dictionary read as the county's own records; the ED ILI,
+   state positivity and admissions files read as plausible county files left unused.
+4. None. The only call-adjacent number is the 80 per cent line, which is context.
+5. FCP-2 s.3 (completeness) and s.4 (below 80 per cent, compared unrounded): for week 2 they execute to tests received
+   by Monday 18 January 08:00 county time over the week-2 report of record; for week 3 they fix the numerator and leave
+   the denominator, a report not yet due, to be estimated in the way s.5's check keeps; s.1, s.2 and s.6 fix the
+   laboratory, the test and the specimen.
+6. An analytical choice: estimating the missing week-3 denominators from the reports' history and choosing among the
+   ways by s.5's check. The receipt clock (the broker migration, CHG-2027-0019), the facility merge, the influenza A and
+   B rows and the corrections are Layer 1 mess on the numerators; the reader asked whether the clock could decide a
+   stream near the line and did not run the analysis.
 
-Realism notes and their disposition: receipt before release in 57 per cent of rows (the pre-migration county clock, the week-2 device, kept); "visible" in the sheet names (the reader's printout of the sheet state, no change); identical in_protocol_from dates (replaced by each stream's test codes); a sparse change log (enriched with routine entries).
+### REVIEW lines
 
-### Pass 2 (isolated reader, fresh copy of the rebuilt pack)
+- `DATA_DICTIONARY.md`: harmless; it defines the columns and the MMWR convention and names no move.
+- `FCP-2_feed_completeness_protocol.pdf`: harmless; the governing document, s.5 the filed selection criterion naming no
+  candidate estimator.
+- `README.md`: harmless; a file list naming no move.
 
-1. Decisive step: "no single sentence announces it"; nearest FCP-2 s.3 and s.4, which say week 3's report is not yet filed but not what to use as the denominator.
-2. Ranking or scoring file: none.
-3. Helper files: README.md, DATA_DICTIONARY.md, elr_result_codes.csv.
-4. Answer-like figure or name: none.
-5. FCP-2 s.3 and s.4 literally: no week-3 denominator; week 2 computable from the extract and the week-2 reports of record.
-6. An analytical choice: "The solver must estimate an expected week 3 denominator ... No file or sentence tells them how."
+### Realism
 
-REVIEW rulings: DATA_DICTIONARY.md, FCP-2 and README.md harmless.
+- Receipt times about six hours before release from 10 to 18 January (county time before the broker migration): the
+  Ask A device, with CHG-2027-0019 the migration's record.
+- The distractors, the 142 resubmitted reports and the change log's unrelated IT entries read as plausible.
+- Cancelled orders clustered at the start of the extract on Sunday 10 January: fixed in the generator (cancellations
+  now held and lost with the results and numbered in sequence; no figure moved).
+- Sheet names read as "Laboratories visible", "Streams visible": the reader's printout of the sheet state.
 
-Realism notes (mild, kept): the migration and firewall entries in the change log, the six-hour receipt inversion before the migration (both the week-2 device's evidence), the dictionary's county-time note, the register's 29 rows matching the change log.
+### Disposition (main thread)
+
+- Q1 to Q4: nothing to fix. Q5 executes to the golden's week-2 figures and leaves week 3 to s.5, as designed. Q6
+  analytical.
+- The clock and week 3: no receipt in the extract is stored after 08:00 on 25 January, so under every reading of the
+  receipt clock every week-3 result reached the platform before the cutoff (SF6, now asserted on all three readings);
+  the call reads no receipt time.
+- Cancelled orders: fixed; leak.py re-run on the rebuilt pack (REVIEW, no LEAK); goldens, figures.json and
+  submission.md byte-identical.

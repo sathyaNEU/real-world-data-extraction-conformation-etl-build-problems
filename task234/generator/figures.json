@@ -11,37 +11,37 @@
   "Wexmoor Regional Medical Center Laboratory Influenza": {
    "received": 3128,
    "positivity": 33.1,
-   "expected_tests": 5732,
+   "expected_tests": 5714,
    "completeness": 55
   },
   "Wexmoor Regional Medical Center Laboratory RSV": {
    "received": 607,
    "positivity": 7.9,
-   "expected_tests": 1061,
+   "expected_tests": 1064,
    "completeness": 57
   },
   "Wexmoor Regional Medical Center Laboratory SARS-CoV-2": {
    "received": 1234,
    "positivity": 9.6,
-   "expected_tests": 2216,
+   "expected_tests": 2219,
    "completeness": 56
   },
   "Westmarch Reference Laboratory Influenza": {
    "received": 1943,
    "positivity": 23.3,
-   "expected_tests": 3521,
+   "expected_tests": 3514,
    "completeness": 55
   },
   "Westmarch Reference Laboratory RSV": {
    "received": 621,
    "positivity": 9.0,
-   "expected_tests": 1103,
+   "expected_tests": 1102,
    "completeness": 56
   },
   "Westmarch Reference Laboratory SARS-CoV-2": {
    "received": 1454,
    "positivity": 17.0,
-   "expected_tests": 2381,
+   "expected_tests": 2391,
    "completeness": 61
   }
  },
@@ -58,77 +58,77 @@
   "L01 Influenza": {
    "received": 2545,
    "positivity": 22.8,
-   "expected_tests": 2584,
-   "completeness": 98,
+   "expected_tests": 2571,
+   "completeness": 99,
    "escalate": false
   },
   "L01 RSV": {
    "received": 1452,
    "positivity": 6.3,
-   "expected_tests": 1534,
+   "expected_tests": 1531,
    "completeness": 95,
    "escalate": false
   },
   "L01 SARS-CoV-2": {
    "received": 867,
    "positivity": 7.0,
-   "expected_tests": 845,
-   "completeness": 103,
+   "expected_tests": 848,
+   "completeness": 102,
    "escalate": false
   },
   "L02 Influenza": {
    "received": 6266,
    "positivity": 34.3,
-   "expected_tests": 6768,
-   "completeness": 93,
+   "expected_tests": 6781,
+   "completeness": 92,
    "escalate": false
   },
   "L02 RSV": {
    "received": 1153,
    "positivity": 7.5,
-   "expected_tests": 1123,
-   "completeness": 103,
+   "expected_tests": 1126,
+   "completeness": 102,
    "escalate": false
   },
   "L02 SARS-CoV-2": {
    "received": 2590,
    "positivity": 10.5,
-   "expected_tests": 2509,
+   "expected_tests": 2506,
    "completeness": 103,
    "escalate": false
   },
   "L03 Influenza": {
    "received": 3128,
    "positivity": 33.1,
-   "expected_tests": 5732,
+   "expected_tests": 5714,
    "completeness": 55,
    "escalate": true
   },
   "L03 RSV": {
    "received": 607,
    "positivity": 7.9,
-   "expected_tests": 1061,
+   "expected_tests": 1064,
    "completeness": 57,
    "escalate": true
   },
   "L03 SARS-CoV-2": {
    "received": 1234,
    "positivity": 9.6,
-   "expected_tests": 2216,
+   "expected_tests": 2219,
    "completeness": 56,
    "escalate": true
   },
   "L04 Influenza": {
    "received": 4993,
    "positivity": 31.1,
-   "expected_tests": 4952,
-   "completeness": 101,
+   "expected_tests": 4988,
+   "completeness": 100,
    "escalate": false
   },
   "L04 RSV": {
    "received": 1041,
    "positivity": 7.9,
-   "expected_tests": 1011,
+   "expected_tests": 1013,
    "completeness": 103,
    "escalate": false
   },
@@ -142,126 +142,126 @@
   "L05 Influenza": {
    "received": 4053,
    "positivity": 33.5,
-   "expected_tests": 4262,
-   "completeness": 95,
+   "expected_tests": 4308,
+   "completeness": 94,
    "escalate": false
   },
   "L05 RSV": {
    "received": 762,
    "positivity": 7.7,
-   "expected_tests": 802,
+   "expected_tests": 804,
    "completeness": 95,
    "escalate": false
   },
   "L05 SARS-CoV-2": {
    "received": 1663,
    "positivity": 10.6,
-   "expected_tests": 1720,
+   "expected_tests": 1717,
    "completeness": 97,
    "escalate": false
   },
   "L06 Influenza": {
    "received": 8541,
    "positivity": 34.7,
-   "expected_tests": 9103,
+   "expected_tests": 9122,
    "completeness": 94,
    "escalate": false
   },
   "L06 RSV": {
    "received": 1255,
    "positivity": 7.9,
-   "expected_tests": 1438,
+   "expected_tests": 1435,
    "completeness": 87,
    "escalate": false
   },
   "L06 SARS-CoV-2": {
    "received": 3067,
    "positivity": 9.3,
-   "expected_tests": 3204,
+   "expected_tests": 3202,
    "completeness": 96,
    "escalate": false
   },
   "L07 Influenza": {
    "received": 8467,
    "positivity": 34.6,
-   "expected_tests": 8687,
+   "expected_tests": 8750,
    "completeness": 97,
    "escalate": false
   },
   "L07 RSV": {
    "received": 1252,
    "positivity": 7.7,
-   "expected_tests": 1335,
+   "expected_tests": 1338,
    "completeness": 94,
    "escalate": false
   },
   "L07 SARS-CoV-2": {
    "received": 3003,
    "positivity": 9.1,
-   "expected_tests": 2989,
+   "expected_tests": 2993,
    "completeness": 100,
    "escalate": false
   },
   "L08 Influenza": {
    "received": 6704,
    "positivity": 35.2,
-   "expected_tests": 7019,
+   "expected_tests": 7011,
    "completeness": 96,
    "escalate": false
   },
   "L08 RSV": {
    "received": 1149,
    "positivity": 7.5,
-   "expected_tests": 1093,
+   "expected_tests": 1096,
    "completeness": 105,
    "escalate": false
   },
   "L08 SARS-CoV-2": {
    "received": 2429,
    "positivity": 10.0,
-   "expected_tests": 2519,
+   "expected_tests": 2525,
    "completeness": 96,
    "escalate": false
   },
   "L09 Influenza": {
    "received": 2517,
    "positivity": 28.6,
-   "expected_tests": 2567,
+   "expected_tests": 2564,
    "completeness": 98,
    "escalate": false
   },
   "L09 SARS-CoV-2": {
    "received": 3786,
    "positivity": 11.0,
-   "expected_tests": 3787,
+   "expected_tests": 3791,
    "completeness": 100,
    "escalate": false
   },
   "L10 Influenza": {
    "received": 1943,
    "positivity": 23.3,
-   "expected_tests": 3521,
+   "expected_tests": 3514,
    "completeness": 55,
    "escalate": true
   },
   "L10 RSV": {
    "received": 621,
    "positivity": 9.0,
-   "expected_tests": 1103,
+   "expected_tests": 1102,
    "completeness": 56,
    "escalate": true
   },
   "L10 SARS-CoV-2": {
    "received": 1454,
    "positivity": 17.0,
-   "expected_tests": 2381,
+   "expected_tests": 2391,
    "completeness": 61,
    "escalate": true
   }
  },
  "week2": {
   "L01 Influenza": {
-   "received_by_cutoff": 3969,
+   "received_by_cutoff": 3970,
    "report_tests": 4051,
    "completeness": 98.0
   },
@@ -271,129 +271,129 @@
    "completeness": 96.9
   },
   "L01 SARS-CoV-2": {
-   "received_by_cutoff": 969,
+   "received_by_cutoff": 977,
    "report_tests": 999,
-   "completeness": 97.0
+   "completeness": 97.8
   },
   "L02 Influenza": {
-   "received_by_cutoff": 6334,
+   "received_by_cutoff": 6348,
    "report_tests": 6519,
-   "completeness": 97.2
+   "completeness": 97.4
   },
   "L02 RSV": {
-   "received_by_cutoff": 1206,
+   "received_by_cutoff": 1208,
    "report_tests": 1239,
-   "completeness": 97.3
+   "completeness": 97.5
   },
   "L02 SARS-CoV-2": {
-   "received_by_cutoff": 3597,
+   "received_by_cutoff": 3599,
    "report_tests": 3690,
    "completeness": 97.5
   },
   "L03 Influenza": {
-   "received_by_cutoff": 5530,
+   "received_by_cutoff": 5568,
    "report_tests": 5780,
-   "completeness": 95.7
-  },
-  "L03 RSV": {
-   "received_by_cutoff": 1129,
-   "report_tests": 1172,
    "completeness": 96.3
   },
-  "L03 SARS-CoV-2": {
-   "received_by_cutoff": 3069,
-   "report_tests": 3197,
+  "L03 RSV": {
+   "received_by_cutoff": 1125,
+   "report_tests": 1172,
    "completeness": 96.0
+  },
+  "L03 SARS-CoV-2": {
+   "received_by_cutoff": 3067,
+   "report_tests": 3197,
+   "completeness": 95.9
   },
   "L04 Influenza": {
-   "received_by_cutoff": 5127,
+   "received_by_cutoff": 5101,
    "report_tests": 5252,
-   "completeness": 97.6
+   "completeness": 97.1
   },
   "L04 RSV": {
-   "received_by_cutoff": 1103,
+   "received_by_cutoff": 1098,
    "report_tests": 1131,
-   "completeness": 97.5
+   "completeness": 97.1
   },
   "L04 SARS-CoV-2": {
-   "received_by_cutoff": 3193,
+   "received_by_cutoff": 3173,
    "report_tests": 3275,
-   "completeness": 97.5
-  },
-  "L05 Influenza": {
-   "received_by_cutoff": 4094,
-   "report_tests": 4309,
-   "completeness": 95.0
-  },
-  "L05 RSV": {
-   "received_by_cutoff": 823,
-   "report_tests": 859,
-   "completeness": 95.8
-  },
-  "L05 SARS-CoV-2": {
-   "received_by_cutoff": 2363,
-   "report_tests": 2470,
-   "completeness": 95.7
-  },
-  "L06 Influenza": {
-   "received_by_cutoff": 8563,
-   "report_tests": 9109,
-   "completeness": 94.0
-  },
-  "L06 RSV": {
-   "received_by_cutoff": 1366,
-   "report_tests": 1456,
-   "completeness": 93.8
-  },
-  "L06 SARS-CoV-2": {
-   "received_by_cutoff": 4183,
-   "report_tests": 4408,
-   "completeness": 94.9
-  },
-  "L07 Influenza": {
-   "received_by_cutoff": 8659,
-   "report_tests": 8937,
    "completeness": 96.9
   },
+  "L05 Influenza": {
+   "received_by_cutoff": 2067,
+   "report_tests": 4309,
+   "completeness": 48.0
+  },
+  "L05 RSV": {
+   "received_by_cutoff": 407,
+   "report_tests": 859,
+   "completeness": 47.4
+  },
+  "L05 SARS-CoV-2": {
+   "received_by_cutoff": 1194,
+   "report_tests": 2470,
+   "completeness": 48.3
+  },
+  "L06 Influenza": {
+   "received_by_cutoff": 8619,
+   "report_tests": 9109,
+   "completeness": 94.6
+  },
+  "L06 RSV": {
+   "received_by_cutoff": 1374,
+   "report_tests": 1456,
+   "completeness": 94.4
+  },
+  "L06 SARS-CoV-2": {
+   "received_by_cutoff": 4152,
+   "report_tests": 4408,
+   "completeness": 94.2
+  },
+  "L07 Influenza": {
+   "received_by_cutoff": 8651,
+   "report_tests": 8937,
+   "completeness": 96.8
+  },
   "L07 RSV": {
-   "received_by_cutoff": 1451,
+   "received_by_cutoff": 1435,
    "report_tests": 1487,
-   "completeness": 97.6
+   "completeness": 96.5
   },
   "L07 SARS-CoV-2": {
-   "received_by_cutoff": 4214,
+   "received_by_cutoff": 4196,
    "report_tests": 4344,
-   "completeness": 97.0
+   "completeness": 96.6
   },
   "L08 Influenza": {
-   "received_by_cutoff": 6631,
+   "received_by_cutoff": 6610,
    "report_tests": 6894,
-   "completeness": 96.2
+   "completeness": 95.9
   },
   "L08 RSV": {
-   "received_by_cutoff": 1154,
+   "received_by_cutoff": 1121,
    "report_tests": 1179,
-   "completeness": 97.9
+   "completeness": 95.1
   },
   "L08 SARS-CoV-2": {
-   "received_by_cutoff": 3133,
+   "received_by_cutoff": 3139,
    "report_tests": 3264,
-   "completeness": 96.0
+   "completeness": 96.2
   },
   "L09 Influenza": {
-   "received_by_cutoff": 2637,
+   "received_by_cutoff": 2629,
    "report_tests": 2765,
-   "completeness": 95.4
+   "completeness": 95.1
   },
   "L09 SARS-CoV-2": {
-   "received_by_cutoff": 6596,
+   "received_by_cutoff": 6579,
    "report_tests": 6930,
-   "completeness": 95.2
+   "completeness": 94.9
   },
   "L10 Influenza": {
-   "received_by_cutoff": 2527,
+   "received_by_cutoff": 2520,
    "report_tests": 2679,
-   "completeness": 94.3
+   "completeness": 94.1
   },
   "L10 RSV": {
    "received_by_cutoff": 929,
@@ -401,13 +401,13 @@
    "completeness": 94.0
   },
   "L10 SARS-CoV-2": {
-   "received_by_cutoff": 2275,
+   "received_by_cutoff": 2269,
    "report_tests": 2417,
-   "completeness": 94.1
+   "completeness": 93.9
   }
  },
  "week2_range": [
-  93.8,
+  47.4,
   98.0
  ],
  "specimens": {
@@ -424,6 +424,16 @@
  },
  "line_per_cent": 80,
  "streams_count": 29,
+ "week2_check_largest_miss": {
+  "golden": 7.8,
+  "peers": 44.5,
+  "received": 52.6,
+  "persist": 54.0,
+  "calendar": 56.7,
+  "poscount": 63.1,
+  "mean3": 80.4,
+  "trend": 111.7
+ },
  "reports_span": {
   "first": "2022 week 40",
   "last": "2027 week 2"

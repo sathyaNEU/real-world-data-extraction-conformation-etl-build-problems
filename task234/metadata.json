@@ -25,7 +25,7 @@
       "xlsx"
     ],
     "largest_file": "elr_respiratory_results_extract_2027-01-25.csv",
-    "largest_file_rows": 217357
+    "largest_file_rows": 211361
   },
   "sources": [
     {
@@ -41,8 +41,8 @@
     {
       "path": "elr_respiratory_results_extract_2027-01-25.csv",
       "format": "csv",
-      "bytes": 31695019,
-      "rows": 217357,
+      "bytes": 30832585,
+      "rows": 211361,
       "source": "Constructed (seeded generator)",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work)"
@@ -50,8 +50,8 @@
     {
       "path": "lab_weekly_aggregate_reports.csv",
       "format": "csv",
-      "bytes": 274631,
-      "rows": 6685,
+      "bytes": 272650,
+      "rows": 6638,
       "source": "Constructed (seeded generator)",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work)"
@@ -77,7 +77,7 @@
     {
       "path": "FCP-2_feed_completeness_protocol.pdf",
       "format": "pdf",
-      "bytes": 3945,
+      "bytes": 4124,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-01-25",
@@ -113,7 +113,7 @@
     {
       "path": "ed_syndromic_ili_weekly.csv",
       "format": "csv",
-      "bytes": 20201,
+      "bytes": 20200,
       "rows": 900,
       "source": "Constructed (seeded generator)",
       "date": "2027-01-25",
@@ -122,7 +122,7 @@
     {
       "path": "state_respiratory_positivity_by_region.csv",
       "format": "csv",
-      "bytes": 36863,
+      "bytes": 36857,
       "rows": 1020,
       "source": "Constructed (seeded generator)",
       "date": "2027-01-25",
@@ -131,7 +131,7 @@
     {
       "path": "county_respiratory_admissions_weekly.csv",
       "format": "csv",
-      "bytes": 14818,
+      "bytes": 14820,
       "rows": 672,
       "source": "Constructed (seeded generator)",
       "date": "2027-01-25",
