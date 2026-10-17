@@ -1,11 +1,11 @@
 {
  "task": "task467",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
  "stump": "The default path restates Velmont's 2025 fee-liable taxi pickups by their whole 22 per cent fall when the temporary rank opened on 4 November 2024 and sets the 2027 fee at $5.75; the analyst who sees that the Airport Line opened the same day and controls for it with all of the airport's taxi drop-offs finds the rank cost only about 3 per cent and sets $7.00; measured within the taxi zones the line serves and within the zones it does not, the rank cost about 11 per cent in each, and the fee is $6.50.",
  "architecture": 1,
@@ -15,8 +15,8 @@
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17: Schedule A's 2025 and 2026 fees, generic vocabulary; no LEAK",
-  "reader": "round 1 and round 2 clean on the call (nothing quoted, Q6 analytical, the reader's own estimate on the $7.00 rung); round 1 realism fixes made in the generator; answers kept for the report"
+  "leak_py": "REVIEW 2026-10-17 on the ship build: Schedule A's 2025 fee, generic vocabulary; no LEAK",
+  "reader": "rounds 1 and 2 nothing quoted, Q6 analytical, the reader's estimate on the $7.00 rung; round 1 realism findings fixed in the generator"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-17 after the redraw (shape 07, composition_mix): Gate G, decision type and question form repeat task238, answered in the design note's Draw",
@@ -24,14 +24,14 @@
   "surface": "0 promoted; nearest task453 0.100"
  },
  "judge": {
-  "verdict": "pass 1 NOT_DETERMINISTIC (ledger only: records against trips for the 2026 re-sent copies)",
-  "disposition": "pass 1 FIX_NOW, fixed (by-law s.3(2) counts each trip once); pass 2 running",
-  "report": "task467/determinism_check_report.md"
+  "verdict": "pass 1 NOT_DETERMINISTIC (ledger only), pass 2 DETERMINISTIC",
+  "disposition": "pass 1 FIX_NOW (by-law s.3(2) now counts each trip once), pass 2 APPROVE",
+  "report": "task467/determinism_check_report.md, task467/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4 pass 2: the one re-judge thread is running on /tmp/determinism-check-task467-r2/judge_brief.md (if lost with the container, have the determinism-judge agent write a fresh r2 brief and spawn one thread); on its verdict have the agent write determinism_check_report_pass2.md, append both reader rounds and their rulings to leak_check_report.md after the last leak.py run, then ship (target.zip, golden/, ledger row, card, board)",
+ "resume": "shipped; next task468 (wave 5)",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
  "source_note": "seed ET24 (an airport ground transportation team budgets next year's per-trip taxi fee revenue from monthly trip-record drops; a fee column that changed case and a fee that changed price): the world, the decision and the quantity kept; the seed's mechanisms kept only as Layer 1; the pitfall re-found in the series' own structure"
 }

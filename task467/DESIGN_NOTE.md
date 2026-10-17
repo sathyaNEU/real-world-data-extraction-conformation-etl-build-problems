@@ -335,6 +335,71 @@ or formula reads to another fee.
   two files 2; the cracker keeps the files, 38 + 7 + 4.2 = 49.2; the mirror keeps r, instruction-following and the
   files, 5 + 7 + 4.2 = 16.2; average 32.7), rerun from the generated rubric at ship.
 
+## Pre-ship check
+
+- **Three rules, re-read against the built pack.** Domain: the deciding quantity is the temporary rank's effect on the
+  Authority's monthly pickup series, estimated the way an official-statistics producer restates a series across an
+  intervention: against a comparison series (the drop-offs) within the components the coincident permanent change (the
+  Airport Line) acts on; the pickups' own fall files $5.75, the pooled comparison $7.00, the within-zone comparison
+  $6.50, on the clean truth and on the noise-free expectation. Two layers: the Layer 1 inventory in `## Three rules`,
+  each item asserted neutral on the call (checks.py R2, SF6, SF12, SF13); the asks' devices confined to the brokerage
+  column and the 2026 files (the separation checks); Layer 2 the within-zone comparison. The decisive step is none of
+  the three banned kinds, each executed in `checks.py`: not a plant (R3c: no document names a candidate fee, a stratum
+  or a comparison group; no copied, held or swapped block; no memo, draft or stakeholder volume); not data semantics
+  (SF1 to SF13: every term read right still leaves the pickups' own fall at $5.75 and the pooled comparison at $7.00);
+  not rule application (R3a: every filed rule executed with the pickups' own fall files $5.75; R3b: only the
+  within-zone comparison files $6.50, the pooled comparison's single correction staying at $7.00).
+- **Gates.** 23 files in 4 formats (csv, parquet, pdf, xlsx); vfh_taxi_trips_airport_2024.parquet at 169,753 rows;
+  two distractors (the passenger statistics workbook and the 2023 ground access survey) the solution never reads, each
+  deletion asserted; 75 generator checks; `verify.py` from the bundle alone (pyarrow, pdftotext and openpyxl, its own
+  void netting, copy matching and as-of join, the station zones read from the bulletin against the zone list, the
+  zone-by-zone estimate); two builds byte-identical; `figures_check.py` (280 figures), `precut.py` (49) and
+  `voice-check.py` exit 0; `leak.py` REVIEW (no LEAK); guard heart WARN (answered in the draw, shape and strategy
+  redrawn after task238); the surface screen promotes nothing (nearest task453 at 0.100); the containers clean (H1
+  audit, pack and goldens).
+
+## Leak check
+
+`leak.py --asof 2026-10-16`: REVIEW, no LEAK. Each REVIEW line answered:
+- Schedule A's 2025 fee ($5.75) in the by-law: the fee the ledger bills 2025 at; it equals the default path's 2027 fee
+  only by value, and no document sets or proposes a 2027 fee. Harmless.
+- FP-07, the transit bulletin and the dictionary carry three to five stump-paragraph terms (change, annual,
+  arrangement, office, program, station): each describes its own subject; none names the line's station zones as a
+  comparison group or says how the rank's effect is read. Harmless.
+
+Reader, round 1 (answers in `leak_check_report.md`): nothing quoted for question 1 (FP-07 4.3 files the restatement's
+target, not its estimate); no ranking, computing or helping file; nothing reads as the answer; its own estimate, all
+pickups against all drop-offs, sat on the $7.00 rung; question 6 an analytical choice. Its findings were fixed in the
+generator in one pass with the judge's: the by-law's billing clause no longer bills the records "as the records show
+them" but counts each trip once; taxis on overlapping trips (6 per cent of 2025's) now take a 25-minute turnaround,
+so a same-licence, same-minute pair can only be one trip recorded twice; the affiliation register gives each spell's
+reason (the 1 January batches are annual renewals); PDF stamps carry seconds; the dictionary's contact line has no
+.example address; pickups and drop-offs lean by season (netting to nothing over January to October and over November
+and December), so the monthly ratio is no longer flat. The call held ($6.50, 84,000, 11 per cent); every figure
+moved with the data and recomputes.
+
+Judge, pass 1 (`determinism_check_report.md`): NOT_DETERMINISTIC, FIX_NOW, on the ledger only: no shipped sentence
+said a trip the meter sent twice counts once, so counting every record (51,993) or dropping exact duplicates only
+(51,934) stood beside the golden on 48 brokerage-months. Fixed by filing the population at authority (by-law s.3(2):
+each month's fee-liable pickups billed counting each trip once), never the matching rule. Every main figure
+reproduced; the call held on every window and grouping tried; Gate G decomposition_attribution, analytical_non_defect;
+Gate H domain pass, layers pass, decisive step analytical.
+
+Reader, round 2 (the shipped pack): nothing quoted for question 1; no ranking, helping or answer-shaped file; every
+quoted sentence executes to the golden's population (74,753, local months, each trip once, the brokerage when the trip
+begins, the fee in force); its estimate again on the $7.00 rung; question 6 an analytical choice; no impossible taxi
+trip. Its remark on meter_off came from converting one column (both carry UTC); the exact copies, the void pairs, the
+minute-stamped memory records, the fee column's case, the workbook stamps and the 2026 fee step are the
+organisations' own records. Harmless.
+
+Judge, pass 2 (`determinism_check_report_pass2.md`): DETERMINISTIC, APPROVE. Every figure and all 120 ledger rows
+reproduced from an independent rebuild; the station zones found from the data (drop-offs down about a third in each,
+every other zone up); $6.50 holding for any restated figure from 82,312 to 85,603; Gate G decomposition_attribution,
+analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical. Its residual note (pickups against
+the non-station zones' drop-offs with no growth control, 81,578 and $6.75) is closed by FP-07 4.3's counterfactual and
+falls once growth is controlled; its optional prompt line was not taken. Step 7 of the write-up now cites by-law s.3
+for billing each trip once at the year's fee, no figure moving.
+
 ## Tried and rejected
 
 - 2026-10-17, at the draw: a moving-holiday stump (Eid al-Fitr, Lunar New Year or Easter falling in a new month of

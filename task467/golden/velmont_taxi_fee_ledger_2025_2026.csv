@@ -1,0 +1,121 @@
+month,brokerage_id,brokerage_name,fee_liable_pickups,fees_owed
+2025-01,1,Kestrel Cabs,1070,6152.50
+2025-01,2,Northgate Taxi,1033,5939.75
+2025-01,3,Lakeside Cabs,921,5295.75
+2025-01,4,Velmont City Cab,1319,7584.25
+2025-01,5,Harbour Taxi,774,4450.50
+2025-01,6,Westbrook Taxi,583,3352.25
+2025-02,1,Kestrel Cabs,941,5410.75
+2025-02,2,Northgate Taxi,863,4962.25
+2025-02,3,Lakeside Cabs,797,4582.75
+2025-02,4,Velmont City Cab,1134,6520.50
+2025-02,5,Harbour Taxi,633,3639.75
+2025-02,6,Westbrook Taxi,556,3197.00
+2025-03,1,Kestrel Cabs,1148,6601.00
+2025-03,2,Northgate Taxi,1142,6566.50
+2025-03,3,Lakeside Cabs,1015,5836.25
+2025-03,4,Velmont City Cab,1419,8159.25
+2025-03,5,Harbour Taxi,848,4876.00
+2025-03,6,Westbrook Taxi,702,4036.50
+2025-04,1,Kestrel Cabs,1127,6480.25
+2025-04,2,Northgate Taxi,1093,6284.75
+2025-04,3,Lakeside Cabs,908,5221.00
+2025-04,4,Velmont City Cab,1339,7699.25
+2025-04,5,Harbour Taxi,784,4508.00
+2025-04,6,Westbrook Taxi,692,3979.00
+2025-05,1,Kestrel Cabs,1222,7026.50
+2025-05,2,Northgate Taxi,1184,6808.00
+2025-05,3,Lakeside Cabs,978,5623.50
+2025-05,4,Velmont City Cab,1544,8878.00
+2025-05,5,Harbour Taxi,926,5324.50
+2025-05,6,Westbrook Taxi,721,4145.75
+2025-06,1,Kestrel Cabs,1144,6578.00
+2025-06,2,Northgate Taxi,1086,6244.50
+2025-06,3,Lakeside Cabs,931,5353.25
+2025-06,4,Velmont City Cab,1385,7963.75
+2025-06,5,Harbour Taxi,803,4617.25
+2025-06,6,Westbrook Taxi,714,4105.50
+2025-07,1,Kestrel Cabs,1354,7785.50
+2025-07,2,Northgate Taxi,1261,7250.75
+2025-07,3,Lakeside Cabs,1098,6313.50
+2025-07,4,Velmont City Cab,1612,9269.00
+2025-07,5,Harbour Taxi,1005,5778.75
+2025-07,6,Westbrook Taxi,831,4778.25
+2025-08,1,Kestrel Cabs,1388,7981.00
+2025-08,2,Northgate Taxi,1347,7745.25
+2025-08,3,Lakeside Cabs,1144,6578.00
+2025-08,4,Velmont City Cab,1721,9895.75
+2025-08,5,Harbour Taxi,978,5623.50
+2025-08,6,Westbrook Taxi,816,4692.00
+2025-09,1,Kestrel Cabs,1123,6457.25
+2025-09,2,Northgate Taxi,1068,6141.00
+2025-09,3,Lakeside Cabs,885,5088.75
+2025-09,4,Velmont City Cab,1385,7963.75
+2025-09,5,Harbour Taxi,785,4513.75
+2025-09,6,Westbrook Taxi,661,3800.75
+2025-10,1,Kestrel Cabs,1202,6911.50
+2025-10,2,Northgate Taxi,1171,6733.25
+2025-10,3,Lakeside Cabs,979,5629.25
+2025-10,4,Velmont City Cab,1480,8510.00
+2025-10,5,Harbour Taxi,808,4646.00
+2025-10,6,Westbrook Taxi,729,4191.75
+2025-11,1,Kestrel Cabs,1152,6624.00
+2025-11,2,Northgate Taxi,1116,6417.00
+2025-11,3,Lakeside Cabs,962,5531.50
+2025-11,4,Velmont City Cab,1421,8170.75
+2025-11,5,Harbour Taxi,816,4692.00
+2025-11,6,Westbrook Taxi,683,3927.25
+2025-12,1,Kestrel Cabs,1145,6583.75
+2025-12,2,Northgate Taxi,1164,6693.00
+2025-12,3,Lakeside Cabs,963,5537.25
+2025-12,4,Velmont City Cab,1459,8389.25
+2025-12,5,Harbour Taxi,846,4864.50
+2025-12,6,Westbrook Taxi,716,4117.00
+2026-01,1,Kestrel Cabs,1255,8471.25
+2026-01,2,Northgate Taxi,1000,6750.00
+2026-01,3,Lakeside Cabs,947,6392.25
+2026-01,4,Velmont City Cab,1166,7870.50
+2026-01,5,Harbour Taxi,826,5575.50
+2026-01,6,Westbrook Taxi,568,3834.00
+2026-02,1,Kestrel Cabs,1069,7215.75
+2026-02,2,Northgate Taxi,861,5811.75
+2026-02,3,Lakeside Cabs,769,5190.75
+2026-02,4,Velmont City Cab,974,6574.50
+2026-02,5,Harbour Taxi,747,5042.25
+2026-02,6,Westbrook Taxi,480,3240.00
+2026-03,1,Kestrel Cabs,1409,9510.75
+2026-03,2,Northgate Taxi,1144,7722.00
+2026-03,3,Lakeside Cabs,1112,7506.00
+2026-03,4,Velmont City Cab,1345,9078.75
+2026-03,5,Harbour Taxi,954,6439.50
+2026-03,6,Westbrook Taxi,609,4110.75
+2026-04,1,Kestrel Cabs,1356,9153.00
+2026-04,2,Northgate Taxi,1120,7560.00
+2026-04,3,Lakeside Cabs,1158,7816.50
+2026-04,4,Velmont City Cab,1294,8734.50
+2026-04,5,Harbour Taxi,879,5933.25
+2026-04,6,Westbrook Taxi,600,4050.00
+2026-05,1,Kestrel Cabs,1331,8984.25
+2026-05,2,Northgate Taxi,1122,7573.50
+2026-05,3,Lakeside Cabs,1191,8039.25
+2026-05,4,Velmont City Cab,1297,8754.75
+2026-05,5,Harbour Taxi,929,6270.75
+2026-05,6,Westbrook Taxi,630,4252.50
+2026-06,1,Kestrel Cabs,1274,8599.50
+2026-06,2,Northgate Taxi,1112,7506.00
+2026-06,3,Lakeside Cabs,1159,7823.25
+2026-06,4,Velmont City Cab,1247,8417.25
+2026-06,5,Harbour Taxi,968,6534.00
+2026-06,6,Westbrook Taxi,634,4279.50
+2026-07,1,Kestrel Cabs,1511,10199.25
+2026-07,2,Northgate Taxi,1257,8484.75
+2026-07,3,Lakeside Cabs,1314,8869.50
+2026-07,4,Velmont City Cab,1536,10368.00
+2026-07,5,Harbour Taxi,1122,7573.50
+2026-07,6,Westbrook Taxi,737,4974.75
+2026-08,1,Kestrel Cabs,1483,10010.25
+2026-08,2,Northgate Taxi,1210,8167.50
+2026-08,3,Lakeside Cabs,1263,8525.25
+2026-08,4,Velmont City Cab,1466,9895.50
+2026-08,5,Harbour Taxi,1054,7114.50
+2026-08,6,Westbrook Taxi,666,4495.50
