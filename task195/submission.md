@@ -6,7 +6,7 @@
 **Replace the contamination screen in service with the re-run mixture-fraction screen at the 0.030 cutoff for the quarter from 1 July 2027.**
 At 0.030 the candidate screen detects 16 more of the parallel run's 393 confirmed contamination events, an increase of 4.07 percentage points whose 95 per cent interval, taken from the specimens the two screens call differently, is clear of zero on every paired estimator, and its false-call rate is 1.36 per cent against 1.67 per cent.
 Not 0.050, whose increase of 2 specimens (0.51 points) is established by no reading of the parallel run.
-Not 0.020 or 0.015, which clear both tests but are not the highest listed cutoff that does.
+Not 0.020 or 0.015, which clear both tests on the paired interval but are not the highest listed cutoff that does.
 Not 0.010, whose false-call rate of 1.91 per cent is above the screen in service's.
 Not holding the change, which follows only if each screen's detection rate is judged against its own interval rather than the increase being judged on the specimens that carry both calls.
 

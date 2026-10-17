@@ -84,32 +84,33 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Ellevang Biosciences A/S (H6): 1027098.0 DDD, 1067868 kroner
    - Strandby Farma ApS (H7): 227031.0 DDD, 332600 kroner
 6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
-   - Hovedstaden, 18-34: 678 patients, 69.6 per cent
-   - Hovedstaden, 35-54: 800 patients, 73.9 per cent
-   - Hovedstaden, 55-69: 558 patients, 80.8 per cent
-   - Hovedstaden, 70 and over: 902 patients, 80.7 per cent
-   - Midtjylland, 18-34: 513 patients, 67.1 per cent
-   - Midtjylland, 35-54: 606 patients, 76.6 per cent
-   - Midtjylland, 55-69: 469 patients, 77.4 per cent
-   - Midtjylland, 70 and over: 682 patients, 77.7 per cent
-   - Nordjylland, 18-34: 232 patients, 66.8 per cent
-   - Nordjylland, 35-54: 290 patients, 72.4 per cent
-   - Nordjylland, 55-69: 185 patients, 78.4 per cent
-   - Nordjylland, 70 and over: 279 patients, 80.6 per cent
-   - Sjaelland, 18-34: 297 patients, 72.7 per cent
-   - Sjaelland, 35-54: 401 patients, 74.6 per cent
-   - Sjaelland, 55-69: 303 patients, 79.5 per cent
-   - Sjaelland, 70 and over: 449 patients, 80.4 per cent
-   - Syddanmark, 18-34: 480 patients, 69.6 per cent
-   - Syddanmark, 35-54: 557 patients, 73.2 per cent
-   - Syddanmark, 55-69: 408 patients, 77.7 per cent
-   - Syddanmark, 70 and over: 569 patients, 80.5 per cent
-   - not stated, 18-34: 61 patients, 70.5 per cent
-   - not stated, 35-54: 66 patients, 77.3 per cent
-   - not stated, 55-69: 48 patients, 77.1 per cent
-   - not stated, 70 and over: 62 patients, 79.0 per cent
+   - Hovedstaden, 18-29: 480 patients, 69.0 per cent
+   - Hovedstaden, 30-49: 797 patients, 72.3 per cent
+   - Hovedstaden, 50-64: 564 patients, 80.0 per cent
+   - Hovedstaden, 65 and over: 1097 patients, 80.6 per cent
+   - Midtjylland, 18-29: 357 patients, 68.6 per cent
+   - Midtjylland, 30-49: 621 patients, 73.1 per cent
+   - Midtjylland, 50-64: 459 patients, 76.9 per cent
+   - Midtjylland, 65 and over: 833 patients, 77.9 per cent
+   - Nordjylland, 18-29: 172 patients, 65.7 per cent
+   - Nordjylland, 30-49: 277 patients, 72.9 per cent
+   - Nordjylland, 50-64: 198 patients, 72.7 per cent
+   - Nordjylland, 65 and over: 339 patients, 81.4 per cent
+   - Sjaelland, 18-29: 206 patients, 73.3 per cent
+   - Sjaelland, 30-49: 391 patients, 74.7 per cent
+   - Sjaelland, 50-64: 311 patients, 75.9 per cent
+   - Sjaelland, 65 and over: 542 patients, 80.8 per cent
+   - Syddanmark, 18-29: 339 patients, 69.6 per cent
+   - Syddanmark, 30-49: 550 patients, 72.9 per cent
+   - Syddanmark, 50-64: 433 patients, 75.5 per cent
+   - Syddanmark, 65 and over: 692 patients, 79.9 per cent
+   - not stated, 18-29: 38 patients, 68.4 per cent
+   - not stated, 30-49: 75 patients, 77.3 per cent
+   - not stated, 50-64: 49 patients, 75.5 per cent
+   - not stated, 65 and over: 75 patients, 78.7 per cent
 
 ### order_shares_by_pair.png
 
-1. One horizontal bar per screened pair for the share of its patients who received the marker treatment after the product, longest first, with each pair's referral threshold marked at 1.25 times its expected share and the referred pairs in the darker fill.
-2. Title states that 7 of the 20 candidate pairs clear the referral line.
+1. One horizontal bar for each of the 23 screened pairs for the share of its patients who received the marker treatment after the product, longest first, with the 7 referred pairs in the darker fill and the other 16 in the lighter one.
+2. The bars in order, longest share first: Varenadol + antiemetic 81.4; Admirabin + antidepressant 80.2; Sovraxil + topical corticosteroid 78.6; Varenadol + hypnotic 77.3; Varenadol + acid-suppressant 76.1; Admirabin + loop diuretic 75.7; Pirenoxol + acid-suppressant 75.2; Kirunelle + hypnotic 74.3; Dalvextin + loop diuretic 73.9; Hestroban + antiemetic 72.1; Sovraxil + antipsychotic 64.7; Pirenoxol + antidepressant 55.6; Oxelumab + antidepressant 55.2; Dalvextin + gout treatment 53.9; Kirunelle + antipsychotic 53.8; Pirenoxol + hypnotic 52.9; Dalvextin + acid-suppressant 50.8; Ternivast + gout treatment 49.1; Hestroban + antipsychotic 42.9; Oxelumab + loop diuretic 34.8; Oxelumab + topical corticosteroid 28.5; Ternivast + antiemetic 20.5; Ternivast + hypnotic 19.4.
+3. Title states that 7 of the 20 candidate pairs clear the referral line.

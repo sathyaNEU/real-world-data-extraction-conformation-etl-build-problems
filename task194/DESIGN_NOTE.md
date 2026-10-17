@@ -108,28 +108,31 @@ The pipeline a competent analyst builds from the prompt's words and the files' o
    ended 31 December 2026.
 2. Apply charter clause 4.2 through `unit_register.csv` and `improvement_placements.csv`: twelve eligible
    units.
-3. Take the latest closed quarter (2026-27 Q2) and compute what each eligible unit recorded above its
-   expected number: Alderbrook General Medicine 36, Alderbrook Respiratory Medicine 23, Marrowfield
-   Orthopaedics 21, Alderbrook Orthopaedics 15.
-4. Price the programme off `improvement_placements.csv` and the same extract: across the seven closed
-   placements the units' complications fell 38.1 per cent of the excess they were carrying.
-5. Apply that share to each unit's current excess: Alderbrook General Medicine 14 complications avoided,
-   Alderbrook Respiratory Medicine 9, Marrowfield Orthopaedics 8, Alderbrook Orthopaedics 6.
-6. Place the team with Alderbrook General Medicine, 14 complications avoided over the quarter.
+3. Take each unit's standing over the specification period, which charter 4.3 holds it to without the team,
+   and clause 3.4's expected complications on the quarter's planned separations.
+4. Price the programme off `improvement_placements.csv`: across the eight closed placements the standardised
+   ratio fell by 0.128 on average, which is how a quality team states what an embed achieves.
+5. Apply that drop to each unit's expected complications for the quarter: Alderbrook General Surgery 35,
+   Alderbrook Orthopaedics 24, Alderbrook General Medicine 22, Alderbrook Respiratory Medicine 15.
+6. Place the team with Alderbrook General Surgery, 35 complications avoided over the quarter.
 
-**Ends on:** Alderbrook General Medicine (cost centre 41210), 14 complications avoided.
-**Golden:** Alderbrook Orthopaedics (cost centre 41230), 18 complications avoided.
+**Ends on:** Alderbrook General Surgery (cost centre 41220), 35 complications avoided.
+**Golden:** Alderbrook Orthopaedics (cost centre 41230), 24 complications avoided.
 
-The default path reconciles everywhere a solver checks it: the unit-quarter observed and expected counts tie
-to the published indicator series row for row, the quarter's adjusted rates tie to the dashboard export, and
-the monthly activity summary ties to the extract's separations.
+Reading the register as a constant percent of what the unit would have recorded files the same unit
+(41220 at 41 against 41230 at 32); reading it as a flat number of complications a placement removes files
+26.9 for every unit and ranks nothing. The default path reconciles everywhere a solver checks it: the
+unit-quarter observed and expected counts tie to the published indicator series row for row, the quarter's
+adjusted rates tie to the dashboard export, and the monthly activity summary ties to the extract's
+separations.
 
 ## Stump sentence
 
-A competent solver computes the complications each eligible unit is recording above its risk-adjusted
-expectation in the latest closed quarter, scales them by the 38.1 per cent of excess the closed placement
-register removed, and places the team with Alderbrook General Medicine for 14 complications avoided, which is
-the unit with the most room to return to its own level rather than the unit a placement moves most.
+A competent solver takes each unit's standing exactly as charter 4.3 files it, prices the programme off the
+closed register as the average drop in the standardised ratio a placement produced, applies that drop to the
+complications the quarter's planned activity carries, and places the team with Alderbrook General Surgery
+for 35 complications avoided, which is the unit with the most activity rather than the unit with the most
+excess for an embed to work on.
 
 ## Three rules
 
@@ -316,7 +319,7 @@ Measured on the graded name and the graded figures separately, as `stumping` Par
 | 15 | Duplicate resolution | repeated episode records | none in the indicator's population, asserted by count; the re-sent batches sit in the non-acute units (ask 3's device) and the activity summary reconciles them |
 | 16 | Identity normalisation | unit codes across files | cost centre codes are the key everywhere, zero-padded five digits, asserted joinable with no residue; the amalgamation is filed (SF11) |
 | 17 | Netting against gross | may a unit below expectation offset one above | the question is one unit's placement, so nothing nets; units below expectation carry no excess and the golden names none |
-| 18 | Dimensional units | complications, episodes, separations, rates per 1,000 | the dictionary states each column's unit; the reference rate 96.5 per 1,000 is filed in specification 3.2 |
+| 18 | Dimensional units | complications, episodes, separations, rates per 1,000 | the dictionary states each column's unit; the reference rate 96.6 per 1,000 is filed in specification 3.2 |
 | 19 | Code and status semantics | care type, service type, DRG bands, complication codes | the dictionary and the specification's appendices; never decisive |
 | 20 | Integerisation | avoided complications are a count | computed unrounded and rounded once; every figure at least 0.10 of a complication inside its bin, asserted |
 | 21 | Clause scope | charter clauses against specification clauses | the charter governs the placement, the specification governs the indicator; no clause of one restates the other, asserted by grep |

@@ -295,7 +295,8 @@ def write_config(target):
                                      "UTC+00:00 a partir desse momento"),
             "acores": ("UTC+00:00 ate 25 de outubro de 2026 as 01:00 UTC e UTC-01:00 a partir "
                        "desse momento"),
-            "distritos_dos_acores": W.DISTRICTS["Acores"],
+            "nota": ("o fuso de uma acao e o do distrito que o gazeteiro da a sua localidade; os "
+                     "Acores e a Madeira sao distritos distintos no gazeteiro"),
         },
     }
     path = os.path.join(target, "config_monitor.json")

@@ -121,6 +121,13 @@ def run(target, g):
       "R2 the plan states no rain rate, so no rate reading of 4.2 is licensed")
     A(SM.RAIN_ON.sum() > 40 and SM.RAIN_ON.mean() < 0.2,
       "R2 the gauge counted rain in %d of %d ten-minute records" % (SM.RAIN_ON.sum(), SM.MET["n"]))
+    # and the nearest reading a solver could reach for converges on the same records: one tip in ten
+    # minutes is 1.2 mm an hour, so any rate test at or under that selects exactly the counted records
+    rate = (SM.MET["rain_mm_shipped"] * 6.0) > 0.5
+    A(bool((rate == SM.RAIN_ON).all()),
+      "R2 the counted-rain records and a rate reading of the same record are the same minutes")
+    A(has(text_of(target, PK.FILES["notes"]), "stamped UTC at the start of the ten minutes"),
+      "SF6 the notes file which end of its ten minutes a met record is stamped at")
 
     # ------------------------------------------------- R3a: the analyst test, executed on the clean truth
     naive = {c: r[c]["rung2_p10"] for c in W.CODES}
@@ -201,33 +208,33 @@ def run(target, g):
       "SF4 the arithmetic reading files another slate")
     # SF5 valid minute
     A(has(plan, "counted rain on the gauge") and has(plan, "5 m a second"),
-      "SF5 the plan files the validity criteria")
+      "SF5 the plan files the rain test")
     A(has(plan, "where the meter recorded no measurement for that minute"),
-      "SF5 the plan files what a minute with no measurement is")
+      "SF7 the plan files what a minute with no measurement is")
     # SF6 calibration drift
-    A(has(plan, "0.3 dB"), "SF6 the plan files the calibration adjustment")
+    A(has(plan, "0.3 dB"), "SF8 the plan files the calibration adjustment")
     # SF7 which stops: inside the assessment period the planned stops are the whole stop set
     for c in W.CODES:
         A(abs(r[c]["specific"] - r[c]["specific_planned"]) < 0.01,
-          "SF7 at %s the planned stops and every stop give the same residual" % c)
+          "SF9 at %s the planned stops and every stop give the same residual" % c)
         A(round(r[c]["specific"], 1) == round(r[c]["specific_planned"], 1),
-          "SF7 at %s both readings print the same level" % c)
+          "SF9 at %s both readings print the same level" % c)
     # SF8 the total: no stop minute falls in the assessment period
     for c in W.CODES:
         A(abs(r[c]["total"] - r[c]["total_running"]) < 1e-9,
-          "SF8 at %s the assessment period holds no stop minute" % c)
-    # SF9 the repeated download, asserted above; SF10 identity, asserted above
-    # SF11 rounding: every printed level clear of its rounding edge, no two equal, and none of them
+          "SF10 at %s the assessment period holds no stop minute" % c)
+    # SF12 the repeated download and SF13 position identity are asserted in the R2 block above
+    # SF14 rounding: every printed level clear of its rounding edge, no two equal, and none of them
     # sitting on the printed value itself (a level tuned onto the decimal is a construction tell)
     printed = [round(rows[c]["specific_raw"], 1) for c in W.CODES]
-    A(len(set(printed)) == len(printed), "SF11 no two positions share a printed level")
+    A(len(set(printed)) == len(printed), "SF14 no two positions share a printed level")
     for c in W.CODES:
         v = rows[c]["specific_raw"]
         off = abs(v * 10 - round(v * 10)) * 0.1          # distance from the one-decimal value
-        A(0.05 - off >= 0.015, "SF11 %s sits %.3f dB from a rounding edge" % (c, 0.05 - off))
-        A(off >= 0.012, "SF11 %s sits %.4f dB from its own printed value" % (c, off))
-    # SF12 the five dwellings are the five highest specific levels, not the five highest totals
-    A(tuple(AN.slate({c: r[c]["total"] for c in W.CODES})[0]) != gold, "SF12 the totals rank differently")
+        A(0.05 - off >= 0.015, "SF14 %s sits %.3f dB from a rounding edge" % (c, 0.05 - off))
+        A(off >= 0.012, "SF14 %s sits %.4f dB from its own printed value" % (c, off))
+    # SF15 the five dwellings are the five highest specific levels, not the five highest totals
+    A(tuple(AN.slate({c: r[c]["total"] for c in W.CODES})[0]) != gold, "SF15 the totals rank differently")
 
     # ------------------------------------------------------------------------------- the pin, once, at authority
     for word in ("background", "percentile", "L90", "LA90", "shutdown", "stopped", "not operating",
@@ -368,8 +375,8 @@ def run(target, g):
 
     # -------------------------------------------------------------- the weekly plant figures, as filed
     A(has(plan, "counter reading stamped at 00:00 on the Monday"),
-      "plan 5.1 files the week boundary the figures are read at")
-    A(has(plan, "one start of a centrifuge in the equipment log"), "plan 5.2 files what a run is")
+      "SF18 plan 5.1 files the week boundary the figures are read at")
+    A(has(plan, "one start of a centrifuge in the equipment log"), "SF19 plan 5.2 files what a run is")
     scada_rows = list(_csv.DictReader(io_open(target, PK.FILES["scada"])))
     by_t = {dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M"): x for x in scada_rows}
     gap = [dt.datetime(2026, 9, 24, 13, 0) + dt.timedelta(minutes=15 * i) for i in range(80)]
@@ -384,7 +391,7 @@ def run(target, g):
            < W.WEEKS[3] + dt.timedelta(days=7)]
     rate_sum = sum(float(x["blower_air_nm3_h"]) for x in wk3) * 0.25 / 1000.0
     A(g["weekly"][3]["blower_air_knm3"] - rate_sum > 60.0,
-      "the gap week's totaliser stands %.0f above the rate sum" % (g["weekly"][3]["blower_air_knm3"]
+      "SF18 the gap week's totaliser stands %.0f above the rate sum" % (g["weekly"][3]["blower_air_knm3"]
                                                                   - rate_sum))
     for i in (0, 1, 2, 4, 5):
         wkr = [x for x in scada_rows
@@ -404,7 +411,7 @@ def run(target, g):
                     blocks[i] = blocks.get(i, 0) + 1
         prev = f
     A(any(blocks.get(i, 0) != g["weekly"][i]["centrifuge_runs"] for i in range(6)),
-      "the process channel's feed blocks do not count the log's runs: %s against %s"
+      "SF19 the process channel's feed blocks do not count the log's runs: %s against %s"
       % (blocks, {i: g["weekly"][i]["centrifuge_runs"] for i in range(6)}))
     A(len({v["centrifuge_runs"] for v in g["weekly"].values()}) >= 3,
       "the weekly run counts vary: %s" % sorted(v["centrifuge_runs"] for v in g["weekly"].values()))
@@ -423,10 +430,23 @@ def run(target, g):
             per_dep.setdefault(code, []).append(AN.eavg(lv[st]))
     pooled_mean = {c: AN.esub(r[c]["total"], AN.eavg(v)) for c, v in per_dep.items()}
     sl_pool, _, _ = AN.slate(pooled_mean)
-    A(tuple(sl_pool) == gold, "the per-deployment residual averaged gives the golden slate")
+    A(tuple(sl_pool) == gold, "SF11 the per-deployment residual averaged gives the golden slate")
     for c in W.CODES:
         A(round(pooled_mean[c], 1) == rows[c]["specific_db"],
-          "%s prints the same level either way of pooling the two deployments" % c)
+          "SF11 %s prints the same level either way of pooling the two deployments" % c)
+    # SF16 the band export's time base: the same answers whether its stamps are read as UTC or as local
+    import golden as GD
+    _orig = SM.LOCAL_OFFSET
+    try:
+        SM.LOCAL_OFFSET = 0
+        as_local = GD.band_rows(target)
+    finally:
+        SM.LOCAL_OFFSET = _orig
+    for c in sorted(as_local):
+        b2, t2, _ = GD.tone_call(as_local[c])
+        A(b2 == rows[c]["band_hz"] and t2 == rows[c]["tone"],
+          "SF16 %s gives the same band and tone with the band file read as local" % c)
+
     # tonality: the mean of the two adjacent band levels, taken as written or in energy
     for c in [x for x in W.CODES if g["bands"].get(x) is not None]:
         lv = g["bands"][c]
@@ -434,7 +454,7 @@ def run(target, g):
         nb = [lv[j] for j in (i - 1, i + 1) if 0 <= j < len(lv)]
         en = 10.0 * math.log10(float(np.mean(np.power(10.0, np.array(nb) / 10.0))))
         A((lv[i] - float(np.mean(nb)) >= 5.0) == (lv[i] - en >= 5.0),
-          "%s gives the same tone verdict on either mean of the adjacent bands" % c)
+          "SF17 %s gives the same tone verdict on either mean of the adjacent bands" % c)
 
     for k, v in g["weekly"].items():
         A(v["biogas_m3"] > 20000 and v["blower_air_knm3"] > 300 and v["centrifuge_runs"] >= 4,

@@ -188,7 +188,7 @@ settles no part of it.
 | SF5 | false-call rate | flags among the comparison's CONCORDANT specimens, 5,446 | flags among all 5,839 comparison specimens | 0.030 | 3.5 names the CONCORDANT specimens; `same call` asserted on both denominators |
 | SF6 | "the highest cutoff value listed in Table 2" | the largest mixture-fraction value, 0.050 first | the cutoff flagging most specimens, so the list is walked the other way | 0.015 | 4.1 says "the highest cutoff value listed in Table 2" and Table 2 lists values, not flag counts; `checks.py` asserts both the ordering and the other walk's answer |
 | SF7 | a flag at a cutoff | estimate at or above the cutoff | estimate strictly above the cutoff | 0.030 | 3.4 "at or above"; no estimate equals a listed cutoff (asserted, C1) |
-| SF8 | the screen in service's call | the flag the quality-control export records, reviewed calls included | the flag re-derived from the het-excess value and the batch control threshold | `same call` | 3.4 "when the quality-control export records the flag"; the re-derived route moves the counts to 283 detections and 93 false calls and still answers 0.030, asserted |
+| SF8 | the screen in service's call | the flag the quality-control export records, reviewed calls included | the flag re-derived from the het-excess value and the control threshold the run log records | `same call` | 3.4 "when the quality-control export records the flag"; the two converge inside the comparison, 292 detections and 91 false calls either way, because the 15 calls the laboratory overturned at review sit on receipts the comparison does not hold, asserted |
 | SF9 | the window | receipt date on or after 1 March and on or before 31 May 2027 | a processing or release date | `same call` | 3.1 names the receipt date, and the quality-control export carries no other date for a specimen, so the readings converge on the same rows (asserted) |
 | SF10 | the increase | the difference between the two detection counts on the filed population | the ratio of the two detection rates | 0.030 | 4.1(a) says "the increase in confirmed contamination events detected"; `same call` asserted on the paired log-ratio interval |
 | SF11 | accepted read | `read_accepted` is Y in the quality-control export | the latest read whatever its status | 0.030 | 3.2 "an accepted read"; the dictionary defines `read_accepted`; voided reads carry no call, `same call` asserted |
@@ -336,12 +336,12 @@ asks read six others, and the one shared file is the register, whose comparison 
 
 ## Pre-ship check
 
-**Free gates, all green on the final rebuild.** `generator/checks.py` 230 assertions; `generator/verify.py`
+**Free gates, all green on the final rebuild.** `generator/checks.py` 279 assertions; `generator/verify.py`
 125 independent checks from the bundle and `figures.json` alone; two fresh rebuilds byte-identical to the
-shipped `target/` (sha256 f9072d22ea1b7a9b over all 19 files) and to `golden/`; input gates 19 files, 5
+shipped `target/` (sha256 12f81b0ec084f18e over all 19 files) and to `golden/`; input gates 19 files, 5
 formats (csv, tsv, json, xlsx, pdf), a 32,647-row file, 4 distractors declared in `metadata.json` and named
 in no file name; `figures_check.py` 111 figures, 0 absent; `precut.py` 49 checks, 0 FAIL, 0 WARN;
-`freeze.py check --mode rubric` down to the two items the third pass was ordered to move, filed below;
+`freeze.py check --mode rubric` down to the two items the repair passes were ordered to move, filed below;
 `leak.py --asof 2027-06-21` REVIEW, four lines, each answered: the protocol carries 8 of the call's 10
 distinctive words because it is the protocol the call executes and it names no cutoff, no detection count
 and no interval method; the protocol, the model card and the platform validation share 3 to 9 of the stump
@@ -350,9 +350,13 @@ reading or the move; the container audit reports no writer signature, which is t
 `guard.py surface` 0 promoted pairs; `guard.py heart` WARN, nearest 0.08 (task185's ledger row), no BLOCK;
 containers audited clean by `scrub_producer_metadata.py` for both `target/` and `golden/`.
 
-**The 10/10 rules re-read against the built pack.** The decisive step is still analytical: the pack ships
-the two screens' per specimen calls and the panel's verdicts, and the increase's uncertainty is the only
-thing no filed sentence settles. Every mess item is Layer 1 and asserted neutral (R2); R3a files the hold on
+**The 10/10 rules re-read against the built pack, at ship.** The decisive step is still analytical: the
+pack ships the two screens' per specimen calls and the panel's verdicts, and the increase's uncertainty is
+the only thing no filed sentence settles. Four passes of repair have moved the ask layer twice and the
+realism of every file once, and none of them touched it: the comparison is the same 5,839 specimens with
+393 confirmed events, the screen in service flags the same 292 and 91, the four rungs answer 0.050, the
+hold, 0.015 and 0.030, and every paired estimator still establishes the 0.030 increase while no unpaired
+one does. Every mess item is Layer 1 and asserted neutral (R2); R3a files the hold on
 the clean truth and R3b files 0.030 when only the estimator changes. Nothing is planted: no document
 recommends a cutoff, states a detection count or argues a basis, and the difficulty survives deleting every
 document, because the ladder lives in the records.
@@ -516,6 +520,65 @@ pack's documents.
   A3 3 of 6, so 3 of 36, pair ceiling 33.1 and mirror leakage 8.3 per cent. The three ask devices survived
   the re-wording, which is the test that mattered.
 
+**The fourth pass, realism on an approved build, with the call frozen.** The second judge pass returned
+DETERMINISTIC, APPROVE, no fix and no rerun: every figure in blocks 1 to 4 reproduced from the bundle,
+Gate G `method_selection` / `statistical_method_choice` with no surface-read dependency and no sole data
+defect, Gate H passing with the decisive step analytical, and all four asks forced. Ask 3's re-wording
+closed through the weekly report's own footer on re-sent results, and ask 4 through the dictionary's
+value-after-amendment entry and the manifest's amendments line. This pass is realism in the data, one
+date correction and one write-up qualifier; no graded figure of the call moved and `figures.json` differs
+from the judge-approved set on 45 keys, 27 under `panel_weeks` and 18 under `dilution`, and nothing else.
+
+- **Three date anachronisms closed, and the pattern is now a gate.** The warehouse extract is pulled
+  2027-04-09, after the last release it carries (2027-03-31), and every one of its 390 amendments is
+  raised on the spring reconciliation that followed, 2027-04-12 to 2027-06-11, so the extract cannot hold
+  a value the log postdates. The protocol is issue 4 approved 2027-02-19 and its revision table states
+  that the issue pre-specifies the run's window, its data cut and the decision rule and is approved
+  before a run opens, so no clause describes an event that had not happened. The dictionary is issue 5 of
+  2027-06-18 with an issue history behind it, and no entry is reviewed before the data it describes
+  begins. `checks.py` now runs the general check after the metadata is written: every delimited file's
+  latest date is at or before its own pull date in the manifest, the extract's pull follows its last
+  release, every amendment follows the pull, and every dictionary entry follows its data's start.
+- **The protocol is no longer an extract.** The line saying sections 1, 2, 6 and 7 were "not reproduced
+  in this extract" is gone and those sections are in the document: purpose and scope with the two files
+  it does not cover, responsibilities with the separation of the run from the decision, deviations and
+  records with the fifteen-year retention and the manifest requirement, and references with the four-issue
+  revision table. The clauses the call executes, 3.1 to 3.5 and 4.1, are byte-identical.
+- **Six measurement shapes, none of which touches a call.** DNA input is an extraction yield, right
+  skewed, quartiles 43.1, 62.1 and 88.4 against a flat 54, 96 and 140; the depth a run reaches follows the
+  input it was given with a left tail, quartiles 40.1, 47.0 and 53.7, and the read sets the pipeline
+  could not estimate on now sit below the depth floor, from 5.4, which is why they have no estimate; the
+  typed-marker count thins out, 4,236 panels at the full 96 then 1,582, 878, 489, 270, 154, 90, 61 and 14,
+  against four near-equal bins; the read-set counter steps irregularly, commonest stride 25 per cent of
+  6,105 gaps across 7 strides, as does the dilution workbook's; and the warehouse extract's depth is a
+  measurement rather than a flat spread.
+- **The empty guard band around the threshold is gone.** The screen in service's het-excess value now sits
+  against the one control threshold the run log records for every batch, 36.60, with 28 values within 0.02
+  of it and none inside: a 2-decimal measurement against a threshold, which is what the data should look
+  like. The laboratory overturned 15 borderline calls at review, each of them on a receipt the comparison
+  does not hold, so the override cannot move the screen in service's 292 detections or its 91 false calls,
+  and both counts are re-asserted. SF8's closure is stronger for it: re-deriving the call from the run
+  log's threshold reproduces every call inside the comparison, so the fork converges rather than merely
+  landing the same way.
+- **The reconciliations are no longer exact everywhere.** The nine weekly reports the validation file
+  reports still tie to the register exactly, which is what ask 3's referee needs, and the volumes file
+  still ties to the pre-amendment row counts, which is what A2's device needs. Three reports outside April
+  and May do not tie, each stating why: results returned on receipt for re-typing and re-issued in a later
+  week. The model card's addendum states that it was prepared on the read sets completed by 16 June while
+  the file as filed carries the batches of 17 June, so recomputing from the file moves its figures a
+  little, which is asserted rather than hidden.
+- **One write-up qualifier, taken from the judge.** Block 1 now reads "which clear both tests on the
+  paired interval", because 0.020 and 0.015 clear both tests in the paired family only; the unpaired 0.020
+  fails at a lower bound of -1.33. No figure moved with it.
+- **What `freeze.py` reports, and why.** Two items, both ordered. Final Recommendation loses exactly
+  `1.37` and `6.77`, the paired Wald endpoints; Critical Components loses exactly `1`, `2`, `3`, `4`, the
+  list markers that `freeze.py` now strips and this build's pre-fix snapshot still holds. Measured against
+  the snapshot directly: zero main-call figures moved, and the stump, the card's driver, the prompt's call
+  sentence, the ladder section and the default-path section are byte-identical.
+- **The cracker sheet, re-measured again on the rebuilt pack**, because the realism changes touch the ask
+  files: A1 keeps 0 of 18, A2 0 of 12, A3 3 of 6, so 3 of 36, pair ceiling 33.1, mirror leakage 8.3 per
+  cent. Both clear the bar.
+
 ## Tried and rejected
 
 - Seed AD18's own architecture (the parallel run was a statement about another season, so the switch is held
@@ -614,3 +677,24 @@ pack's documents.
   main-call figures moved, the stump, the card's driver, the prompt's call sentence, the ladder section and
   the default-path section are all byte-identical, and the three `panel_weeks` difference keys still need
   `--allow` because the stale snapshot classified them as main-call for the same marker reason.
+- Adding "after the release desk's amendments" to ask 4, the judge's second optional tightening:
+  declined. That clause tells the solver the amendments exist and to apply them, which is the whole of
+  A2's work. The judge marks it optional and has already ruled the ask forced, so there is nothing to buy
+  and a device to lose, and this build has already spent its devices on pins once, at a measured pair
+  ceiling of 83.5 with 100 per cent leakage.
+- Adding "within a fifth of that level" to ask 5, the judge's third optional tightening: declined. The
+  judge ruled the ask forced and found the alternative reading fails on units, because the replicate
+  results are fractions near 0.004 to 0.06 while a median recovery is a share near 1. The prompt sits at
+  996 of 1,000 characters, so the eight characters would have to come out of a load-bearing clause.
+- A single global het threshold of 36.50 in `checks.py`'s SF8 probe: dropped with the two-threshold run
+  log that justified it. The run log now records one validated threshold, 36.60, held for every batch of
+  the quarter, so re-deriving the call from the run log converges on the recorded call exactly and SF8
+  closes by convergence. A threshold that moved mid-quarter made a sloppy single-threshold re-derivation
+  land on a different cutoff, which is a fork the build does not need.
+- Giving the April and May weekly reports a reconciliation residue along with the rest: dropped. Those
+  nine are ask 3's referee and the judge credited the report footer with ruling out the specimen-and-aliquot
+  handling, so a residue there would reopen what "results issued" means. The residue sits on three reports
+  outside the ask's window, each with its reason stated in the report.
+- Keeping the warehouse extract's 2027-03-04 pull date and truncating its releases instead: dropped,
+  because the releases run to 2027-03-31 by the extract's own four-to-twenty-six-day lag and truncating
+  them would move A2's twelve monthly figures, which the judge has approved twice.

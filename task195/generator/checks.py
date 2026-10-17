@@ -255,12 +255,24 @@ def run(target, g=None):
     ok("SF6 walking the list the other way names another cutoff", reverse_walk == "0.015", reverse_walk)
     ok("SF7 no estimate sits on a listed cutoff",
        not any(abs(float(r["mixture_fraction"]) - c) < 1e-12 for r in mf_rows for c in W.CUTOFFS))
-    rederived = [dict(r, flag=(r["het"] is not None and r["het"] >= 36.5)) for r in rows]
+    rederived = [dict(r, flag=(r["het"] is not None and r["het"] >= W.HETX_THRESHOLD)) for r in rows]
     rd = G.table(rederived)
     ok("SF8 re-deriving the recorded call leaves the call", G.decide(rd) == g["call"])
-    ok("SF8 re-deriving the recorded call moves the counts",
-       rd["inc_detected"] != t["inc_detected"] and rd["inc_false"] != t["inc_false"],
+    ok("SF8 re-deriving the recorded call from the run log's threshold reproduces every call",
+       rd["inc_detected"] == t["inc_detected"] and rd["inc_false"] == t["inc_false"],
        "%d %d" % (rd["inc_detected"], rd["inc_false"]))
+    ok("SF8 the overturned calls sit outside the comparison",
+       all((r["het"] >= W.HETX_THRESHOLD) == bool(r["flag"]) for r in rows if r["het"] is not None),
+       "overridden rows inside the comparison")
+    over = [sid for sid, q in qc_all.items()
+            if q.get("call_source") == "REVIEWED" and q.get("het_excess_pct")
+            and ((float(q["het_excess_pct"].replace(",", ".")) >= W.HETX_THRESHOLD)
+                 != (q["hetx_call"] == "FLAG"))]
+    ok("SF8 the laboratory overturned a handful of borderline calls at review",
+       8 <= len(over) <= 40, "%d overturned" % len(over))
+    ok("SF8 no het value sits in an empty guard band around the threshold",
+       min(abs(float(q["het_excess_pct"].replace(",", ".")) - W.HETX_THRESHOLD)
+           for q in qc_all.values() if q.get("het_excess_pct")) <= 0.02)
     ok("SF8 the recorded call is the filed one", "hetx_call" in qc_all[rows[0]["specimen_id"]])
     ok("SF9 the export carries one date per specimen",
        not any(k.endswith("_date") and k != "received_date" and k != "extract_date"
@@ -466,7 +478,8 @@ def run(target, g=None):
     thresholds = {}
     for r in run_log:
         thresholds.setdefault(r["batch_id"], set()).add(r["control_threshold_het_pct"])
-    ok("a control threshold is set and held", max(len(v) for v in thresholds.values()) <= 2)
+    ok("a control threshold is set and held", max(len(v) for v in thresholds.values()) == 1
+       and len({v for sv in thresholds.values() for v in sv}) == 1)
     typed_all = {r["panel_markers_typed"] for r in panel_rows}
     ok("the panel's typing record varies", len(typed_all) > 6)
     ok("an inconclusive result is one the panel could not type",
@@ -550,6 +563,70 @@ def run(target, g=None):
        "addendum 2027-06-19, last batch %s" % last_done)
     ok("the model card owns the distribution it reports",
        "states no verdict" not in doc_text and "revision history" in doc_text.lower())
+
+    # ---------------------------------------------------------------- dates: no document describes an
+    # event that had not happened when it was stated, and no extract carries a date after its own pull
+    pulled = {r["file"]: r["pulled"] for r in man}
+    amd = rows_of(os.path.join(target, W.FILES["amendments"]))
+    ISO = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
+    for f, pull in sorted(pulled.items()):
+        path = os.path.join(target, f)
+        if not f.endswith((".csv", ".tsv", ".json")) or not os.path.exists(path):
+            continue
+        body = open(path, encoding="utf-8").read()
+        latest = max(ISO.findall(body) or ["0000-00-00"])
+        ok("%s carries no date after its own pull" % f, latest <= pull,
+           "latest %s, pulled %s" % (latest, pull))
+    hist_last = max(r["released_date"] for r in hist if r["released_date"])
+    ok("the warehouse extract was pulled after its last release",
+       hist_last <= pulled[W.FILES["history"]], "%s against %s" % (hist_last, pulled[W.FILES["history"]]))
+    ok("every amendment was raised after the extract was pulled",
+       min(a["amended_date"] for a in amd) > pulled[W.FILES["history"]],
+       "earliest %s, extract pulled %s" % (min(a["amended_date"] for a in amd),
+                                           pulled[W.FILES["history"]]))
+    starts = {}
+    for f in pulled:
+        path = os.path.join(target, f)
+        if f.endswith((".csv", ".tsv")) and os.path.exists(path):
+            found = ISO.findall(open(path, encoding="utf-8").read())
+            if found:
+                starts[f] = min(found)
+    for r in dicrows:
+        if r["file"] in starts:
+            ok("the dictionary entry for %s is not reviewed before that data begins" % r["file"],
+               r["last_reviewed"] >= starts[r["file"]],
+               "reviewed %s, data from %s" % (r["last_reviewed"], starts[r["file"]]))
+    ok("the protocol's issue says it pre-specifies the run it governs",
+       "pre-specified" in doc_text and "approved before a run opens" in doc_text)
+    ok("the protocol is not a conspicuous extract",
+       "not reproduced in this extract" not in doc_text
+       and all(h in doc_text for h in ("Purpose and scope", "Responsibilities",
+                                       "Deviations and records", "References and revision history")))
+    ok("the model card's revision history skips no version",
+       all(v in doc_text for v in ("3.2", "3.3", "3.4", "3.4.1")))
+
+    # ---------------------------------------------------------------- the reconciliations are not all
+    # exact: a real pack carries a residue, and each one a document states
+    weekly_total = {}
+    for m in re.finditer(r"(BA-2027-W\d\d)\s+(\d{4}-\d\d-\d\d)\s+\d{4}-\d\d-\d\d\s+(\d+)", doc_text):
+        weekly_total[m.group(1)] = (m.group(2), int(m.group(3)))
+    reg_rows = {}
+    for r in panel_rows:
+        reg_rows[r["report_ref"]] = reg_rows.get(r["report_ref"], 0) + 1
+    ok("the weekly reports the validation file reports tie to the register exactly",
+       all(weekly_total[w["report_ref"]][1] == w["results_issued"] for w in g["panel_weeks"]),
+       "the nine April and May reports")
+    off = [k for k, (d, n) in weekly_total.items() if n != reg_rows.get(k)]
+    ok("some other weekly report does not tie, and the report says why",
+       len(off) >= 2 and all(d[5:7] not in ("04", "05") for d, _n in
+                             [(weekly_total[k][0], 0) for k in off])
+       and "returned on receipt for re-typing" in doc_text,
+       "%d reports off: %s" % (len(off), ", ".join(sorted(off))))
+    card_n = re.search(r"Read sets with an estimate\s+(\d+)", doc_text)
+    accepted_now = sum(1 for r in mf_rows if r["read_set_accepted"] == "Y")
+    ok("the model card's addendum does not tie to the file as filed, and says so",
+       card_n and int(card_n.group(1)) < accepted_now and "batches of 17 June" in doc_text,
+       "card %s against %d accepted read sets" % (card_n.group(1) if card_n else "?", accepted_now))
     amd = rows_of(os.path.join(target, W.FILES["amendments"]))
     span = re.findall(r"(\d{4}-\d{2})", W.FILES["amendments"])
     ok("the amendments file's name brackets the amendments it holds",

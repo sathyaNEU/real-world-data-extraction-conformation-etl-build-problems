@@ -85,7 +85,9 @@ def main():
         screen_rows.append({
             "product": pc, "brand": W.PNAME[pc], "marker": mc, "marker_treatment": W.MNAME[mc],
             "patients": r["n"], "after": r["after"], "before": r["before"],
-            "share_pct": round(100.0 * r["after"] / r["n"], 1) if r["candidate"] else None,
+            # every screened pair has a share, including the three below the patient minimum,
+            # because the chart carries one bar for each of the 23
+            "share_pct": round(100.0 * r["after"] / r["n"], 1) if r["n"] else None,
             "expected": round(r["expected"], 1) if r["candidate"] else None,
             "multiple": round(r["ratio"], 2) if r["candidate"] else None,
             "referred": ("yes" if r["referred"] else "no") if r["candidate"] else "below minimum",
@@ -101,6 +103,9 @@ def main():
         "rung2_count": 0,
         "candidate_count": len(cands),
         "screened_count": len(screen_rows),
+        "chart_rows": [{"label": "%s + %s" % (x["brand"], x["marker_treatment"]),
+                        "share_pct": x["share_pct"], "referred": x["referred"]}
+                       for x in sorted(screen_rows, key=lambda x: -x["share_pct"])],
         "patients_in_extract": len(set(k for k, c in firsts)),
         "referred": [{"product": W.PNAME[k.split("/")[0]], "marker": W.MNAME[k.split("/")[1]],
                       "patients": by_key[k]["n"], "after": by_key[k]["after"],

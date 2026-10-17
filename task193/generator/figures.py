@@ -16,6 +16,7 @@ def write(here, g):
         "window_only": g["window_only"],
         "nearest_miss": g["nearest_miss"],
         "screen_rows": g["screen_rows"],
+        "chart_rows": g["chart_rows"],
         "a1": g["a1"],
         "a2": g["a2"],
         "a3": g["a3"],

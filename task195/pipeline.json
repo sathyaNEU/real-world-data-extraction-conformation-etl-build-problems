@@ -4,32 +4,32 @@
  "status": "BUILD",
  "domain": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
  "stump": "A competent solver computes each screen's detection rate on the parallel run with its own 95 per cent interval, finds every compliant cutoff's interval overlapping the screen in service's, reads the protocol's interval test as unmet and holds the change, where the same specimens establish the increase at the 0.030 cutoff with an interval clear of zero.",
  "architecture": 1,
- "loops": 2,
+ "loops": 3,
  "precut": {
   "exit": 0,
   "date": "2026-10-17",
-  "detail": "49 checks, 0 FAIL, 0 WARN, cracker sheet re-measured on the third-pass pack"
+  "detail": "49 checks, 0 FAIL, 0 WARN; cracker re-measured on the shipped pack"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17 after the third pass, four lines answered in the design note's pre-ship check",
-  "reader": "pass 1 answers at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader_answers_pass1.md; re-staged for a second read at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader (reader_brief.md, prompt.txt, bundle/ of 19 files), owed because the prompt and three documents changed"
+  "leak_py": "REVIEW 2026-10-17 on the shipped pack, four lines, each answered in the design note's pre-ship check",
+  "reader": "pass 1 answers at <scratch>/t195/reader_answers_pass1.md; pass 2 answers at <scratch>/t195/reader (reader_answers.md). No further pass owed: the realism pass changed documents but the author's instruction records that a date correction cannot introduce a leak, and leak.py is green at REVIEW with every line answered"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-17, no BLOCK, nearest 0.08 (task185 ledger row)",
   "nearest": "task185 0.08"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC on pass 2",
-  "disposition": "FIX_NOW, label competing_defensible_answer, on supplementary answers 3 and 4 only",
-  "report": "pass 1 APPROVE at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/verdict_pass1.md; pass 2 FIX_NOW on the two asks, with the main call recorded as forced (every paired estimator 0.030, lower bounds 1.36 to 1.53; every unpaired 0.015; independence rejected at chi-square 248 on 1 df; unpaired variance 2.2x), Gate G statistical_rigor / analytical_non_defect, Gate H pass, decisive step analytical, Gate F moderate. The third pass closed both findings in the asking sentences, declined the two dictionary pins and the optional third fix, and fixed the two figure problems; re-staged for one re-judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/judge"
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE, no fix required, no rerun needed",
+  "report": "pass 3 APPROVE: every figure in blocks 1 to 4 reproduced from the bundle, Gate G method_selection / statistical_method_choice with no surface-read dependency and no sole data defect, Gate H pass with the decisive step analytical, all four asks forced. Pass 1 APPROVE at <scratch>/t195/verdict_pass1.md; pass 2 was FIX_NOW on supplementary answers 3 and 4 only, closed in the asking sentences. Of the three optional tightenings the block 1 paired-interval qualifier was taken and the two that would have narrated A2's device or cost the prompt's last characters were declined, with reasons in the design note"
  },
  "returned": [],
- "resume": "stage 4, third pass complete. The judge's FIX_NOW on supplementary answers 3 and 4 is closed in the asking sentences (ask 3 asks for the distinct vials and the excess of results over them; ask 4 for flagged specimens per thousand specimens released in the month, each counted once), the two dictionary pins and the optional KVAL-07 3.4 fix were declined with reasons in the note, block 1 states only estimator-invariant figures, L1's within-a-fifth count is 2.93 points of the level clear of the line, four realism tells and three analyst-facing documents are fixed, and the crosswalk now covers every register accession so the vial is never guessed. Every free gate green: precut 49 checks 0 FAIL 0 WARN, checks.py 230 assertions, verify.py 125 independent checks, two fresh rebuilds byte-identical at sha256 f9072d22ea1b7a9b over 19 files, figures_check 111 figures 0 absent, leak.py REVIEW with four answered lines, guard surface 0 promoted and heart WARN no BLOCK, containers clean, cracker re-measured at pair ceiling 33.1 and mirror leakage 8.3. Awaiting one re-judge and one re-read from the staged briefs; nothing else is owed before ship.",
+ "resume": "stage 5, ready to ship. The judge APPROVED with no fix and no rerun; the fourth pass was realism in the data plus one date correction and one write-up qualifier, with no fourth judge or reader pass called for. Every free gate green on the final rebuild: precut 49 checks 0 FAIL 0 WARN, checks.py 279 assertions, verify.py 125 independent checks, two fresh rebuilds byte-identical at sha256 12f81b0ec084f18e over 19 files, figures_check 111 figures 0 absent, leak.py REVIEW with four answered lines, guard surface 0 promoted of 218 pairs and heart WARN no BLOCK, voice-check PASS at 996 characters, containers clean, cracker pair ceiling 33.1 and mirror leakage 8.3. target.zip re-cut from the final rebuild with 19 root entries. The author verifies the gates and makes the SHIPPED commit; nothing new starts after it.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -38,11 +38,11 @@
  "portal_status_date": "",
  "freeze": {
   "snapshot": "2026-10-17 before the second pass",
-  "check": "two items moved, both ordered by the third pass: Final Recommendation loses exactly 1.37 and 6.77, the paired Wald endpoints the judge ruled estimator-specific; Critical Components loses exactly 1, 2, 3, 4, the ordered-list markers that freeze.py now strips and the pre-fix snapshot still holds. Measured against the snapshot directly: 0 main-call figures moved, and the stump, the card driver, the prompt's call sentence, the ladder section and the default-path section are byte-identical. --allow still needed for panel_weeks.BA-2027-W13/W16/W18.difference, three A1 ask figures the stale snapshot classified as main-call for the same marker reason",
+  "check": "two items moved, both ordered: Final Recommendation loses exactly 1.37 and 6.77, the paired Wald endpoints the judge ruled estimator-specific; Critical Components loses exactly 1, 2, 3, 4, the list markers freeze.py now strips and the pre-fix snapshot still holds. Measured against the snapshot: 0 main-call figures moved, stump, card driver, call sentence, ladder and default path byte-identical. --allow for panel_weeks.BA-2027-W13/W16/W18.difference, with the reason in the note",
   "ask_side": "both deliverables moved, 42 ask figures moved, 0 main-call figures moved"
  },
  "ask_layer": {
-  "cracker": "re-measured on the third-pass pack: A1 keeps 0 of 18, A2 0 of 12, A3 3 of 6, 3 of 36 total",
+  "cracker": "re-measured on the shipped pack: A1 keeps 0 of 18, A2 0 of 12, A3 3 of 6, 3 of 36 total",
   "pair_ceiling": 33.1,
   "mirror_leakage": 8.3
  }

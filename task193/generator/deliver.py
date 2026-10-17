@@ -154,16 +154,10 @@ def chart(path, g):
     for i, r in enumerate(rows):
         ax.text(r["share_pct"] + 1.1, i, "%.1f%%" % r["share_pct"], va="center", fontsize=8,
                 color="#2b2b2b")
-        line = 100.0 * r["expected"] / r["patients"] * 1.25
-        ax.plot([line, line], [i - 0.33, i + 0.33], color=LINE, linewidth=1.8,
-                solid_capstyle="butt", zorder=3)
-    from matplotlib.lines import Line2D
     from matplotlib.patches import Patch
     handles = [Patch(facecolor=REF, label="referred to assessment"),
-               Patch(facecolor=NOT, label="not referred"),
-               Line2D([0], [0], color=LINE, linewidth=1.8,
-                      label="referral threshold: 1.25 times the pair's expected share")]
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.155), ncol=3,
+               Patch(facecolor=NOT, label="not referred")]
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.135), ncol=2,
               fontsize=8.5, frameon=False, handlelength=1.4, columnspacing=1.6)
     ax.set_title("%d of the %d candidate pairs clear the referral line once the expected share is "
                  "taken\nfrom the window's own first-receipt dates, against %d on an equal-chance "

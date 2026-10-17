@@ -7,9 +7,9 @@
  "stage": 4,
  "stage_name": "check",
  "updated": "2026-10-17",
- "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, applies the protocol's confrontational codes and files 178 confrontational actions, which counts the labels the press classifier assigned rather than the confrontational actions the period held.",
+ "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, reads 3.3, corrects the classifier's labels with the confrontational shares the hand coding found on each side of them and files 600 confrontational actions, because those shares were measured on the four months the coding desk audited and the record's composition moves after them.",
  "architecture": 3,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-17",
@@ -18,20 +18,20 @@
   "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17, no LEAK: 4 REVIEW lines (two monthly municipality counts in boletins_anteriores_2026.pdf, planned-gathering dates in notificacoes_reuniao_publica.csv and the manifest cell derived from them, no writer signature), each answered in the design note's ## Leak sweep answers",
-  "reader": "staged, not run: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/reader/reader_brief.md"
+  "leak_py": "REVIEW 2026-10-17, no LEAK: 3 figure collisions (118 and 119 in boletins_anteriores_2026.pdf, 103 in relatorios_mensais_parceiros_2026.pdf) and 2 date lines (the planned-gathering dates in notificacoes_reuniao_publica.csv and the manifest cell derived from them), each answered in the design note's ## Leak sweep answers; 1 INFO on container metadata",
+  "reader": "staged, not run: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/loop1/reader/reader_brief.md -> reader_answers.md. The loop-0 reader's answers were on the superseded architecture-3 pack (flat confrontational rate, a 2,600-row validation sample over 59.7 per cent of the period); its findings are recorded in the design note's ## Tried and rejected and must be re-run on this pack."
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-17, no BLOCK: repeat.gate_g against task193 (v2), nearest driver 0.10 task189",
-  "nearest": "0.10 task189 on the driver; task445, task446 v2, task448 and task455 differentiated on the card"
+  "heart": "WARN 2026-10-17, no BLOCK: repeat.gate_g and overuse.gate_g against task193 (v2), nearest driver 0.09 task189",
+  "nearest": "0.09 task189 and task58 on the driver, down from 0.10; surface 0.102 task191 and 0.100 task193, no BLOCK"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": "staged, not run: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/judge/judge_brief.md -> verdict.md"
+  "verdict": "loop 0: NOT_DETERMINISTIC, competing_defensible_answer, disposition SEND_BACK (eight routes standing between 226 and 237 on a golden of 234; the two families differed by less than their own sampling error)",
+  "disposition": "loop 0 SEND_BACK, repaired and re-staged",
+  "report": "staged, not run: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/loop1/judge/judge_brief.md -> verdict.md. The loop-0 verdict is at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/judge/verdict.md"
  },
  "returned": [],
- "resume": "Stage 4 CHECK. Architecture 3 is built and every free gate is green: 152 generator assertions, 102 independent checks, figures_check 102/0 absent, two byte-identical rebuilds, leak.py REVIEW with no LEAK and all four lines answered in the note, guard.py surface and heart WARN with no BLOCK, precut 49 checks 0 FAIL 0 WARN, target.zip re-cut from the final rebuild (18 members, deterministic timestamps). The two stage-4 threads are STAGED, NOT SPAWNED, because this session has no Agent tool: the orchestrating session spawns them at medium effort from /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/judge/judge_brief.md (verdict to verdict.md beside it) and /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/reader/reader_brief.md (answers to reader_answers.md beside it); each directory holds its own prompt.txt and a fresh unzip of the current target.zip. Next after both return: fix every finding in the generator in one pass, re-run the gate chain, then stage 5 SHIP.",
+ "resume": "Stage 4 CHECK, loop 1. The determinism repair is built and every free gate is green: 254 generator assertions, 123 independent checks, figures_check 114/0 absent, three byte-identical rebuilds, leak.py REVIEW with no LEAK and every line answered in the note, guard.py surface and heart WARN with no BLOCK, precut 49 checks 0 FAIL 0 WARN, target.zip re-cut from the final rebuild (18 members, every entry at the archive root, content matching the tree). The repair forces the estimator from the record's own structure: the coding desk's two rounds closed on 20 June and 10 September and cover the reports of 1 May to 31 August, the confrontational share falls fourfold across the period and the classifier's marked rate with it (9.7 per cent inside the audited window against 4.9 outside, p = 2.0e-09), so the audited reports' own confrontational shares are a property of the audited weeks while the classifier's recall and false-mark rate are a property of the coder; and every month-, theme- or round-stratified route is left without a rate for September, October, ENE or FLO. The two stage-4 threads are STAGED, NOT SPAWNED, because this session has no Agent tool: the orchestrating session spawns them at medium effort from the two briefs above; each directory holds its own prompt.txt and a fresh unzip of the current target.zip. Next after both return: fix every finding in the generator in one pass, re-run the gate chain, then stage 5 SHIP.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -39,11 +39,14 @@
  "portal_status": "",
  "portal_status_date": "",
  "build": {
-  "generator_assertions": 152,
-  "independent_checks": 102,
-  "figures_check": "102 figures in blocks 1 to 4, 0 absent",
-  "rebuilds": "two byte-identical over target/ and golden/ (062078602f4a07a55a38f8125fe176657236cf6ec635079ddeacc666eb2eee2f)",
-  "zip": "target.zip, 18 members, 0e65c1070050c37b47c94116c4a61bf7e1660045104e80a97ebd887e432c9856",
-  "call": "234 confrontational actions (raw 234.134), default path 178, rungs 126 and 336"
+  "generator_assertions": 254,
+  "independent_checks": 123,
+  "figures_check": "114 figures in blocks 1 to 4, 0 absent",
+  "rebuilds": "three byte-identical over target/ and golden/ (5d1edfd62d6e9be0b0a89b989098f30b3a89f81fb6cff9863d1677255b871ed2)",
+  "zip": "target.zip, 18 members at the archive root, 7424feaee1ffad4dd8f9394dda79a5350a494c52e9f9737e862d882d317547ee",
+  "call": "450 confrontational actions to the nearest fifty (raw 453.013), default path 600, other routes 250, 350, 400 and 650",
+  "granularity": "the nearest fifty actions, measured: the call's sampling standard deviation is 57.4 actions and the granularity is 0.87 of it",
+  "forcing": "the audit covers months 5 to 8 of 5 to 10 and 12 of the 14 dispute themes; every stratified route has no rate for the rest; the gap between the two families of correction is 139.58 actions against a sampling standard deviation of 50.2, 2.78 sigma",
+  "audit": "1,000 hand-coded reports in two rounds, 23.8 per cent of the period's 4,200 press-reported actions, cells 74/76/21/829, recall 0.4933, false-mark rate 0.0247"
  }
 }

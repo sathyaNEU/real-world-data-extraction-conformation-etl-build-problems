@@ -174,7 +174,7 @@ def build():
         # the screen in service's het-excess value: the signal its threshold rule reads, against the
         # control threshold the specimen's own batch held, which the run log records. The recorded
         # call follows the rule except where the duty bioinformatician reviewed the specimen.
-        thr = 36.50 if rec["received"] >= dt.date(2027, 4, 12) else 36.60
+        thr = W.HETX_THRESHOLD
         if rec["service_flag"]:
             rng.gauss(37.70, 0.84)           # the old draw, kept so the stream does not move
             rec["het"] = round(thr + 0.01 + abs(hrng.gauss(0.0, 0.62)), 2)
@@ -218,14 +218,12 @@ def build():
     over_c = [s for s in cleared if out(s)][:4]
     for s in over_f:                        # reviewed and flagged on a mixture signal the rule misses
         rng.uniform(34.9, 36.3)             # the old draw, kept so the stream does not move
-        thr = 36.50 if s["received"] >= dt.date(2027, 4, 12) else 36.60
         s["call_source"] = "REVIEWED"
-        s["het"] = round(thr - 0.02 - abs(hrng.gauss(0.0, 0.17)), 2)
+        s["het"] = round(W.HETX_THRESHOLD - 0.02 - abs(hrng.gauss(0.0, 0.17)), 2)
     for s in over_c:                        # reviewed and cleared, the het excess explained by ancestry
         rng.uniform(36.7, 37.4)             # the old draw, kept so the stream does not move
-        thr = 36.50 if s["received"] >= dt.date(2027, 4, 12) else 36.60
         s["call_source"] = "REVIEWED"
-        s["het"] = round(thr + 0.02 + abs(hrng.gauss(0.0, 0.17)), 2)
+        s["het"] = round(W.HETX_THRESHOLD + 0.02 + abs(hrng.gauss(0.0, 0.17)), 2)
     done = {id(s) for s in over_f + over_c}
     agree = [s for s in flagged if id(s) not in done][:24] + [s for s in cleared if id(s) not in done][:138]
     for s in agree:

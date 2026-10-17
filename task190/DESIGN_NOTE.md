@@ -83,81 +83,131 @@ precision plus an incremental allowance for the taintings found, compared agains
 as an upper limit. Basic precision is the interval times the reliability factor at the stated confidence
 and is computed before any tainting is looked at, so a draw whose basic precision already exceeds
 materiality is escalated by step one of a textbook evaluation with no projection and no insight at all.
-The draw as first sketched did exactly that, and the sizing was the cause.
+The first sketch did exactly that: an interval of 520,000 against materiality of 750,000 gives basic
+precision of 1,560,000, **2.08 times materiality**.
+
+**Why that sizing was indefensible, which is the reason and not just the arithmetic.** The interval an
+auditor draws is (tolerable misstatement less expected misstatement times the expansion factor) over the
+reliability factor. **Sizing with no allowance for expected misstatement therefore forces basic precision
+to equal materiality exactly**, at any materiality: the interval is materiality over the factor, so the
+factor cancels. A sample sized that way rejects its population on any tainting at all, which is why no
+auditor sizes one that way, and it is why the first sketch's interval could not have been drawn by the
+body it was attributed to. Planning for expected misstatement is what opens the headroom the decision
+needs, and the headroom is exactly the expected misstatement times the expansion factor.
+
+### The design point
 
 | | |
 |---|---|
-| Reliability factors | Poisson, one-sided upper bound, 95 per cent: RF(0) 3.00, then 4.75, 6.30, 7.76 and so on, the table every audit text carries. Expansion factor 1.60. |
-| Tolerable misstatement | 1,500,000 EUR, 2.5 per cent of the population |
-| Expected misstatement allowed in planning | 600,000 EUR |
-| Interval | (1,500,000 less 600,000 x 1.60) / 3.00 = **180,000**, the textbook sizing |
-| Selections | 331 over 59,500,000 EUR, 273 distinct tested lines holding 19,639,766 (33.0 per cent of the population), of which 31 certainty lines hold 15,846,000, which is 81 per cent of the tested book value |
-| Basic precision | 180,000 x 3.00 = **540,000, which is 0.36 of materiality**, so step one escalates nothing |
+| Reliability factors | Poisson, one-sided upper bound, 95 per cent: RF(0) 3.00, then 4.75, 6.30, 7.76 and on, the table every audit text carries. Expansion factor 1.60. |
+| Population | 59,500,000 EUR over 24,700 payment lines, nine work programmes |
+| Tolerable misstatement | 1,300,000 EUR |
+| Expected misstatement allowed in planning | 475,000 EUR |
+| Interval | (1,300,000 less 475,000 x 1.60) / 3.00 = **180,000** |
+| Selections | 331, on 274 distinct tested lines; 31 certainty lines hold 81 per cent of the tested book value |
+| Basic precision | 180,000 x 3.00 = **540,000, which is 0.415 of materiality**, so step one escalates nothing |
+| Stated granularity | the nearest **50,000** EUR, set from the measured route spread below |
 
-The first sketch had an interval of 520,000 against materiality of 750,000, so basic precision alone was
-1,560,000, **2.08 times materiality**. That is both a realism failure, because the usual sizing would have
-put the interval near 250,000, and the source of a shortcut that reaches the right decision with none of
-the analysis. Sizing with no allowance for expected misstatement is what creates it: the interval is then
-materiality over the reliability factor, so basic precision equals materiality exactly and any tainting at
-all escalates. Planning for expected misstatement is what opens the headroom the decision needs, and it is
-what a real auditor does.
+### The ladder, measured on a real selection
 
-**The ladder, measured on a real selection rather than modelled.** A synthetic population of 24,700 lines
-in three classes (contractor certificates, subcontractor interims, day-work variation invoices and
-sundries), a real monetary-unit selection at 180,000 from a random start, and the systematic defect a
-wrong day-work labour rate applied across 519 small invoices in six of the nine programmes, 12 of which
-the selection caught. One certificate carries a separate 24,000 error.
+A synthetic population in four classes (contractor certificates, subcontractor interim payments, day-work
+variation invoices, sundries) and a real monetary-unit selection at 180,000 from a random start. The
+defect is a wrong day-work labour rate applied across small variation invoices in six programmes; eleven
+of them fall in the sample, and one certificate carries a separate 24,000 error.
 
-| Rung | The analysis | Figure | +BP | +BP+allowance | Decision |
+| Rung | The analysis | Figure | Upper limit | Decision | Step |
 |---|---|---|---|---|---|
-| below 0 | the misstatement actually found in the tested lines | 54,063 | 594,063 | 606,088 | certify |
-| 0 | the errors found scaled on the population's book value over the tested book value | **159,241** | 699,241 | 753,338 | certify |
-| 1 | certainty lines at their own error, the rest scaled on their stratum's book value | 325,381 | 865,381 | 985,933 | certify |
-| 2 | **each tainting at the recovered interval, certainty lines at their own error** | **1,043,412** | 1,583,412 | **1,997,810** | **extended testing** |
+| below 0 | the misstatement found in the tested lines | 41,306 | 588,229 | certify | |
+| 0 | the errors found scaled on the population's book value over the tested book value | **115,600** | 692,239 | certify | x2.80 |
+| 1 | certainty lines at their own error, the rest on their stratum's book value | 163,525 | 759,335 | certify | x1.41 |
+| 2 | **each tainting at the recovered interval, certainty lines at their own error** | **799,422** | **1,649,650** | **extended testing** | x4.89 |
 
-Spacing x2.95, x2.04, x3.21: every rung walks one way, the decisive move is the largest, and the golden is
-the extreme. **No wrong rung reaches extended testing even with basic precision and the field's own
-allowance added**: the nearest wrong rung's upper limit is 985,933, which is 66 per cent of materiality, a
-34 per cent margin, and the golden clears materiality by 33 per cent. The allowance on a wrong rung is
-modelled at 0.40 of its own sample part, which is what the incremental allowance comes to on the golden
-(0.41 of its sample projection), so the test is run at the golden's own conservatism.
+The incremental allowance on the golden is 310,228, which is 0.40 of its sample projection, and the
+allowance on each wrong rung is modelled at that same 0.40 of its own sample part, so every rung is tested
+at the golden's own conservatism. **No wrong rung reaches extended testing**: the nearest one's upper limit
+is 759,335, 58 per cent of materiality, a 42 per cent margin, while the golden clears materiality by 27
+per cent. Basic precision alone is 0.415 of materiality. Every rung walks one way, the decisive move is
+the largest, and the golden is the extreme.
 
-**How the interval is recovered, and the correction to the draw.** The certainty threshold does **not** pin
-it. The largest untested line is 82,852 and the smallest certainty line is 181,000, so that route gives
-only the bracket (82,852, 181,000], a 53 per cent spread in the figure, and the card has been corrected.
-What pins it uniquely is the lattice: 180,000 is the only interval on a ten-euro grid for which every one
-of the 273 tested lines contains a step of cumulated book value under one common start and none of the
-24,427 untested lines does. The projection over the whole feasible set has a spread of nought. A practical
-route reaches the same place: the median cumulated-value gap between consecutive proportional selections
-measures 180,764, which rounds to the working figure a plan would use, and the lattice confirms it. The
-certainty threshold is a check on the answer, not an independent pin.
+### Every recovery route, and what the record does with it
 
-**The blind-response test, widened and measured on the pair of figures.** The nine programmes carry the
-projected misstatement and the share of the programme's book value that was certain of selection. Three
-programmes carry no tainting; **no programme has a nil certainty share**, which is what protects the pair
-against the all-nil response.
+The figure is linear in the interval, so a route that recovers the interval differently files a
+proportionally different figure. Ten routes, the figure each files, and whether the record admits it:
 
-| Blind response | Cells matched of 18 |
-|---|---|
-| the best single rate on book value | 3 (17 per cent) |
-| the best single rate on the number of tested lines | 3 (17 per cent) |
-| the best single rate on the misstatement actually found | 3 (17 per cent) |
-| the best constant in every cell | 3 (17 per cent) |
-| nil in every cell | 3 (17 per cent) |
+| Route | Interval | Figure | Stated | The record |
+|---|---|---|---|---|
+| the lattice: the only interval fitting every tested and every untested line | 180,000 | **799,422** | **800,000** | admits |
+| the median gap between selections, line end to line end | 180,579 | 801,918 | 800,000 | refuses |
+| the median gap, line start to line start | 181,006 | 803,754 | 800,000 | refuses |
+| the median gap, midpoint to midpoint | 180,423 | 801,243 | 800,000 | refuses |
+| the mean gap, midpoint to midpoint | 245,812 | 1,082,934 | 1,100,000 | refuses |
+| book value over the count of distinct tested lines | 217,949 | 962,901 | 950,000 | refuses |
+| book value over the count of tested lines below the interval | 245,868 | 1,083,173 | 1,100,000 | refuses |
+| the certainty threshold, the smallest line certain of selection | 181,000 | 803,730 | 800,000 | refuses |
+| the certainty bracket's lower end, the largest untested line | 79,325 | 365,722 | 350,000 | refuses |
+| the certainty bracket's midpoint | 130,162 | 584,726 | 600,000 | refuses |
 
-All five sit under the quarter the author set and under a fifth. The largest misstatement is in Rail siding
-and yard, fourth of nine by book value, and the second largest in Security and access systems, seventh of
-nine, so the column is not monotone in size. Both paths to the headline agree: the rounded programme
-figures sum to 1,040,000 and the unrounded total of 1,043,412 rounds to 1,040,000, which is asserted rather
-than claimed.
+Over every route the figures run 365,722 to 1,083,173, a spread of 89 per cent across five stated cells,
+so the routes genuinely disagree and the set was not narrowed to the ones that agree. **The record admits
+exactly one of them.** And the five routes that land within two per cent of the interval span 799,422 to
+803,754, 0.54 per cent, **all in one stated cell at the nearest fifty thousand**: so a solver who takes
+the natural approximate route rather than the lattice still files the graded figure. That is what sets the
+granularity. The underlying 799,422 sits 24,422 from its nearest rounding line, almost the whole half
+cell, and **the nearest wrong cell is 50,000 away, 6.25 per cent of the figure**, which clears the six per
+cent the judge asks for. The three far routes are each refused by the record, and `checks.py` asserts the
+whole table rather than claiming agreement.
 
-**What may be filed at authority, and what may not.** The evaluation needs tolerable misstatement and the
-confidence, so the audit plan states those two and the expected misstatement it allowed in planning, and
-nothing else. **It does not state the interval, the number of selections, the reliability factors, or any
-instruction about how to project**, because the interval is the whole of the analysis and a reliability
-table is half the method. The exact wording of every sentence in that plan goes to the author before it
-ships, and that undertaking covers the audit manual and anything stating materiality, the confidence or
-the sampling method.
+### What the lattice's feasible set is, stated precisely
+
+It is not an invariance over a feasible set and not a unique value on a chosen grid. **On a one-euro grid
+over the eighty euro either side of the interval, exactly one interval is feasible: 180,000.** At that
+interval the starts that reproduce the realised pattern span **10.96 euro**, from 123,445.38 to
+123,456.34, which contains the start the selection actually ran from. The constraint is that every one of
+the 274 tested lines must contain a step of cumulated book value under one common start and none of the
+24,426 untested lines may, and the untested lines are what make it unique: the tested lines alone narrow
+the start to a six-euro window but admit many intervals. So the projection is a single value, and the
+feasible set's size is 10.96 euro of start and one euro of interval.
+
+### The programme table, and the blind responses
+
+Nine programmes, each carrying the projected misstatement and the share of its book value that was
+certain of selection. Measured at the design point: all five blind families score **4 of 18, 22 per
+cent**, because four programmes currently read nil. **That is above the fifth the author set as the point
+to act, so the construction is re-tuned at stage 3 to three nil programmes rather than four.**
+
+### The stage 3 tuning targets, written before any file is cut
+
+Two residual defects at the design point, both tuning rather than design, with the constraints to assert:
+
+1. **The two paths to the headline disagree.** The rounded programme figures sum to 750,000 while the
+   unrounded total of 799,422 rounds to 800,000. That is architecture 2's SF12 failure exactly, and it is
+   not fixed by filing the WHAT, because the other path stays computable. The generator tunes each
+   programme's taintings so **the sum of the stated programme figures equals the stated total**, asserted.
+2. **Four nil programmes.** Re-tuned to three, each nil deep in its cell (underlying under 15,000 against
+   a 25,000 half cell), with no programme carrying a nil certain share, which is what protects the pair.
+
+With, as the rest of the tuning contract: every programme's underlying figure at least 5,000 from its
+rounding edge against a route band of plus or minus 1,500; the headline's underlying at least 20,000 from
+its edge; the largest programme by misstatement outside the top three by book value; and all five blind
+families at 3 of 18 or fewer.
+
+### Readability screen, test 6, written out
+
+The author's ruling is taken: test 6 asks how the decisive step is **found**, not how much arithmetic
+follows once it is found. The step here is recognising that the sample was drawn in euro rather than in
+items, so a line at or above the interval stands only for itself while a tainting in a small line carries
+a whole interval of untested euro. That is a reconceptualisation of what one tested row represents, not a
+subtraction, a ratio or half of a reported figure, and the multiplication that follows being trivial is
+what a correct estimator usually looks like. **Verdict: silent.** Having written it out, it does not fire.
+
+### What may be filed at authority, and what may not
+
+The evaluation needs tolerable misstatement and the confidence, so the audit plan states those two and the
+expected misstatement it allowed in planning, and nothing else. **It does not state the interval, the
+number of selections, the reliability factors, or any instruction about how to project**, because the
+interval is the whole of the analysis and a reliability table is half the method. The exact wording of
+every sentence in that plan, in the audit manual, and in anything stating materiality, the confidence or
+the sampling method goes to the author before it ships.
 
 
 ## Tried and rejected

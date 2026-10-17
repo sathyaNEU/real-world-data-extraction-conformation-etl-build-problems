@@ -30,6 +30,9 @@ def cut(target):
     counts["volumes"] = AS.volumes(target, events)
     PK._write(os.path.join(target, W.FILES["amendments"]),
               ["specimen_id", "field", "value_before", "value_after", "amended_date", "reason"], amend)
+    with open(os.path.join(target, W.FILES["amendments"]), "a", encoding="utf-8") as fh:
+        fh.write("# Release desk amendment log: one row per field amended on a released record.\n")
+        fh.write("# Maintained by the release desk. Owner: the laboratory manager.\n")
     counts["amendments"] = len(amend)
     AS.dilution(target)
     counts["runlog"] = AS.run_log(target, specimens)
@@ -38,7 +41,12 @@ def cut(target):
         with open(os.path.join(target, W.FILES[key]), encoding="utf-8") as fh:
             counts[key] = sum(1 for _ in fh) - 1
     DC.protocol(target)
-    estimates = [rs["estimate"] for s in specimens for rs in s["read_sets"] if rs["accepted"]]
+    # the card's addendum was prepared on what had completed by 16 June, which is what it says
+    done_by = {}
+    for r in PK._mf_completions(specimens):
+        done_by[r[0]] = r[1]
+    estimates = [rs["estimate"] for s in specimens for rs in s["read_sets"]
+                 if rs["accepted"] and done_by.get(s["specimen_id"], "9999") <= "2027-06-16"]
     DC.model_card(target, estimates)
     DC.weekly_reports(target, panel)
     DC.platform(target)

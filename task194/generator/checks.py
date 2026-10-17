@@ -8,7 +8,7 @@ import csv
 import datetime as dt
 import json
 import os
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 import golden as G
 import world as W
@@ -97,8 +97,8 @@ def run(target, g, state):
     ok(round(answer["avoided"]) == 24, "the answer avoids 24, got %.3f" % answer["avoided"])
     ok(runner["unit"] == "41220" and round(runner["avoided"]) == 15, "the closest unit is 41220 at 15")
     ok(g["margin"] >= 1.2, "final margin %.3fx is at least 1.2x" % g["margin"])
-    ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 22,
-       "rung 0 files 41210 at 22 avoided")
+    ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 23,
+       "rung 0 files 41210 at 23 avoided")
     ok(g["rung1"]["unit"] == "41330", "rung 1 files 41330")
     ok(g["rung2"]["unit"] == "41220", "rung 2 files 41220")
     for label, key in (("rung 0", lambda d: share * d["last_excess"]), ("rung 1", lambda d: d["ratio"]),
@@ -189,22 +189,32 @@ def run(target, g, state):
         ok(unit != answer["unit"], "the %s reflex does not name the answer (%s)" % (name, unit))
 
     # ---------- R3a the analyst test, on the clean truth ----------
-    easy = max(units, key=lambda d: d["last_excess"])
-    ok(easy["unit"] == "41210" and round(share * easy["last_excess"]) == 22,
-       "R3a the easy route files 41210 at 22 complications avoided")
-    ok(round(by["41210"]["avoided"]) == 4, "R3a the easy route's unit would avoid 4")
-    # R3b the decisive step alone: the counterfactual, with everything else held
+    # the easy route: take the standing the charter files, then price the programme off the register the
+    # way a quality team states it, as the drop in the standardised ratio a placement produced
+    _, models = G.effect_models(b)
+    drop = models["a constant drop in the standardised ratio"]["parameter"]
+    percent = models["a constant percent of the counterfactual"]["parameter"]
+    easy = max(units, key=lambda d: drop * d["expected_plan"])
+    ok(easy["unit"] == "41220", "R3a pricing the register as a drop in the standardised ratio files "
+       "41220 (%s)" % easy["unit"])
+    ok(round(drop * easy["expected_plan"]) == 35,
+       "R3a the easy route files 35 complications avoided at 41220 (%.2f)"
+       % (drop * easy["expected_plan"]))
+    ok(round(drop * answer["expected_plan"]) < round(drop * easy["expected_plan"]),
+       "R3a the easy route puts the golden below its own answer")
+    easy2 = max(units, key=lambda d: percent * d["ratio"] * d["expected_plan"])
+    ok(easy2["unit"] == "41220", "R3a pricing it as a percent of the counterfactual also files 41220 (%s)"
+       % easy2["unit"])
+    flat = sum(r["carried"] - r["realised"] for r in G.placement_record(b)) / 8.0
+    ok(abs(flat - 26.0) < 6.0, "R3a a flat complications-per-placement reading is %.1f and ranks nothing"
+       % flat)
+    quarter = max(units, key=lambda d: d["last_excess"])
+    ok(quarter["unit"] == "41210" and round(share * quarter["last_excess"]) == 23,
+       "R3a a lower route, the quarter in hand, files 41210 at 23 avoided")
+    ok(round(by["41210"]["avoided"]) == 4, "R3a that unit would avoid 4")
+    # R3b the decisive step alone: the shape of the fall, with everything else held
     switched = max(units, key=lambda d: share * d["excess"])
-    ok(switched["unit"] == answer["unit"], "R3b changing only the counterfactual files the golden")
-    naive_share_of_rate = sum(r["carried"] - r["realised"] for r in g["record"]) / \
-        sum(r["pre_ratio"] * r["expected"] for r in g["record"])
-    alt = max(units, key=lambda d: naive_share_of_rate * d["ratio"] * d["expected_plan"])
-    ok(alt["unit"] != answer["unit"], "R3b reading the register as a share of the level files %s"
-       % alt["unit"])
-    per_sep = sum(r["carried"] - r["realised"] for r in g["record"]) / \
-        sum(r["expected"] for r in g["record"])
-    alt2 = max(units, key=lambda d: per_sep * d["expected_plan"])
-    ok(alt2["unit"] != answer["unit"], "R3b reading it per expected complication files %s" % alt2["unit"])
+    ok(switched["unit"] == answer["unit"], "R3b changing only the shape of the fall files the golden")
     # the record separates the shapes the fall could take, on its own sampling error
     _, models = G.effect_models(b)
     mine = "a share of the unit's standing excess"
@@ -521,7 +531,9 @@ def run(target, g, state):
        "A4 the detail extract does not reach every unit")
     only_detail = defaultdict(lambda: defaultdict(set))
     raw_join = defaultdict(lambda: defaultdict(set))
-    cat26 = {r["complication_code"]: r["group_id"] for r in read(target, "hac_category_list.csv")}
+    cat_rows = read(target, "hac_category_list.csv")
+    cat26 = {r["complication_code"]: r["group_id"] for r in cat_rows if r["list_revision"] == "2026"}
+    cat22 = {r["complication_code"]: r["group_id"] for r in cat_rows if r["list_revision"] == "2022"}
     for r in detail:
         eid = r["episode_id"]
         if eid not in b["inscope_episode"]:
@@ -530,7 +542,7 @@ def run(target, g, state):
         if fy not in ("2025-26", "2026-27"):
             continue
         rev = "2026" if sep >= W.CODESET_CHANGE else "2022"
-        only_detail[fy][G.LIST_2022_GROUPS[r["complication_code"]] if rev == "2022"
+        only_detail[fy][cat22[r["complication_code"]] if rev == "2022"
                         else cat26[r["complication_code"]]].add(eid)
         if r["complication_code"] in cat26:
             raw_join[fy][cat26[r["complication_code"]]].add(eid)
@@ -549,6 +561,74 @@ def run(target, g, state):
            "the distractor %s is not in the dictionary's scope" % d["file"])
 
     # ---------- realism sweep ----------
+    # the pack has to behave like a hospital's own records, not like a simulation
+    import statistics as _st
+    ext = read(target, "episode_outcomes_extract.csv")
+    los_rate = defaultdict(lambda: [0, 0])
+    for r in ext:
+        if r["care_type"] != "Acute":
+            continue
+        bucket = min(int(r["los_days"]), 14)
+        los_rate[bucket][0] += 1
+        los_rate[bucket][1] += 1 if r["hac_recorded"] == "1" else 0
+    short = los_rate[2][1] / los_rate[2][0]
+    long_ = los_rate[14][1] / los_rate[14][0]
+    ok(long_ / short > 1.6, "a complication is likelier on a long stay (%.3f against %.3f)"
+       % (long_, short))
+    cmb = defaultdict(list)
+    for r in ext:
+        if r["comorbidity_score"]:
+            cmb[r["age_band"]].append(int(r["comorbidity_score"]))
+    ok(_st.mean(cmb["80+"]) - _st.mean(cmb["U50"]) > 1.5,
+       "the comorbidity score runs with age (%.2f against %.2f)"
+       % (_st.mean(cmb["80+"]), _st.mean(cmb["U50"])))
+    with_c = [int(r["comorbidity_score"]) for r in ext
+              if r["comorbidity_score"] and r["hac_recorded"] == "1"]
+    no_c = [int(r["comorbidity_score"]) for r in ext
+            if r["comorbidity_score"] and r["hac_recorded"] == "0"]
+    ok(_st.mean(with_c) - _st.mean(no_c) > 0.25,
+       "the comorbidity score predicts a complication (%.2f against %.2f)"
+       % (_st.mean(with_c), _st.mean(no_c)))
+    miss = defaultdict(lambda: [0, 0])
+    for r in ext:
+        m = r["separation_date"][:7]
+        miss[m][0] += 1
+        miss[m][1] += 0 if r["comorbidity_score"] else 1
+    rates = [v[1] / v[0] for v in miss.values()]
+    ok(max(rates) - min(rates) > 0.03, "the coding queue keys the comorbidity score at a rate that moves "
+       "with the month (%.3f to %.3f)" % (min(rates), max(rates)))
+    wd_adm = defaultdict(int)
+    wd_sep = defaultdict(int)
+    for r in ext:
+        wd_adm[dt.date.fromisoformat(r["admission_date"]).weekday()] += 1
+        wd_sep[dt.date.fromisoformat(r["separation_date"]).weekday()] += 1
+    ok(wd_adm[0] / wd_adm[6] > 1.3, "admissions fall away over a weekend (%d against %d)"
+       % (wd_adm[0], wd_adm[6]))
+    ok(wd_sep[4] / wd_sep[6] > 1.8, "separations fall away over a weekend (%d against %d)"
+       % (wd_sep[4], wd_sep[6]))
+    byday = defaultdict(int)
+    for r in ext:
+        byday[r["separation_date"]] += 1
+    med = _st.median(byday.values())
+    ok(byday.get("2025-12-25", 0) < 0.35 * med, "separations stop on Christmas Day (%d against a median "
+       "day of %d)" % (byday.get("2025-12-25", 0), med))
+    ok(byday.get("2026-04-03", 0) < 0.55 * med, "separations stop on Good Friday (%d)"
+       % byday.get("2026-04-03", 0))
+    eids = [r["episode_id"] for r in ext]
+    ok(len(set(eids)) == len(eids), "every episode identifier is distinct")
+    first = sorted(e for e in eids if e.startswith("MR2407"))
+    ok(int(first[0][-5:]) > 1, "the record number does not start at one in a month (%s)" % first[0])
+    gaps = sum(1 for a, b in zip(first, first[1:]) if int(b[-5:]) - int(a[-5:]) > 1)
+    ok(gaps > len(first) * 0.03, "the record numbers the warehouse allocates are not all in the extract "
+       "(%d gaps in %d)" % (gaps, len(first)))
+    mult = Counter(Counter((r["unit_code"], r["patient_uid"], r["admission_date"], r["drg_code"])
+                           for r in ext).values())
+    ok(mult.get(3, 0) > 10, "the overlapping feed does not always re-send exactly twice (%s)" % dict(mult))
+    hh = read(target, "hand_hygiene_audit_2026.csv")
+    closed = {c for c, u in b["units"].items() if u["closed_date"]}
+    ok(not (closed & {r["unit_code"] for r in hh}), "the hand hygiene audit does not visit a closed ward")
+    ok(len({r["moments_observed"] for r in hh}) > len(hh) * 0.75,
+       "the hand hygiene audit observes a different number of moments each time")
     for d in units:
         ok(abs(d["avoided"] - round(d["avoided"])) > 1e-6, "no avoided count is a round number (%s)"
            % d["unit"])

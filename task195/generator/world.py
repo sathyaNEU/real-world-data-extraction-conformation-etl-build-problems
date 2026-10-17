@@ -9,6 +9,7 @@ RUN_FROM = dt.date(2027, 3, 1)            # the parallel run's receipt window
 RUN_TO = dt.date(2027, 5, 31)
 HIST_FROM = dt.date(2026, 2, 15)          # the quality-control warehouse extract
 HIST_TO = dt.date(2027, 2, 28)
+HIST_PULL = dt.date(2027, 4, 9)           # the day the warehouse extract was pulled
 BASE_FROM = dt.date(2026, 3, 1)           # the twelve reporting months the baseline covers
 BASE_TO = dt.date(2027, 2, 28)
 
@@ -53,6 +54,7 @@ EXTRACTION = ["magnetic bead", "silica column", "salting out"]
 INSTRUMENTS = ["GSQ-A", "GSQ-B"]
 DEPTH_FLOOR = 20                          # the pipeline's minimum mean depth
 PANEL_MARKERS = 96
+HETX_THRESHOLD = 36.60                    # the screen in service's validated control threshold
 PANEL_LOD = 0.005                         # the panel calls MIXED above this second-contributor share
 
 # the laboratory is closed on these days, so nothing is received on them
@@ -91,7 +93,7 @@ FILES = {
     "config": "rerun_pipeline_config_v34.json",
     "manifest": "export_manifest.csv",
     "runlog": "lims_run_log_2027-03_2027-05.csv",
-    "amendments": "release_amendments_2026-03_2027-05.csv",
+    "amendments": "release_amendments_2027-04_2027-06.csv",
     "costs": "assay_unit_costs_2027.csv",
     "platform": "extraction_platform_validation_2025.pdf",
     "plates": "plate_layout_map_2027q2.csv",

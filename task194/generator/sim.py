@@ -27,10 +27,18 @@ SAME_DAY_SHARE = 0.071          # episodes separated the day they were admitted
 UNGROUPABLE_SHARE = 0.0118      # episodes the grouper could not assign a valid DRG
 NONACUTE_CARE_SHARE = 0.0152    # acute units also report a few rehabilitation or maintenance episodes
 BLANK_COMORBIDITY = 0.148       # the comorbidity score is not keyed for every episode
+COMORBID_SHAPE = {"U50": 0.85, "50-64": 1.45, "65-79": 2.15, "80+": 2.75}   # older patients carry more
 DIALYSIS_MIXES = {"renal", "gen_med", "subacute"}     # the units that separate same-day haemodialysis
 # separations fall away over a weekend, hard on a surgical unit and less so on a medical one
 WEEKDAY_SHAPE = {"med": [1.10, 1.07, 1.05, 1.08, 1.21, 0.76, 0.69],
                  "surg": [1.16, 1.12, 1.13, 1.18, 1.27, 0.46, 0.34]}
+# how willing each kind of unit is to start an episode on a given weekday: a surgical list runs Monday to
+# Thursday, a medical unit takes what the emergency department sends it
+ADMIT_WEEKDAY = {m: ([0.97, 0.99, 0.97, 0.93, 0.74, 0.40, 0.36] if m in ("ortho", "gen_surg",
+                                                                         "colorectal", "vasc")
+                     else [0.95, 0.95, 0.94, 0.93, 0.90, 0.80, 0.78])
+                 for m in ("ortho", "gen_surg", "colorectal", "vasc", "gen_med", "resp", "renal",
+                           "aged", "neuro", "subacute")}
 # the patient master index was issued in blocks as each site came onto it
 MRN_BLOCK = {"H1": (1000000, 1399999), "H2": (1400000, 1649999),
              "H3": (1650000, 1849999), "H4": (1850000, 1899999)}
@@ -257,10 +265,21 @@ def episodes(units):
             recent = []
             for mi, month in enumerate(months):
                 r = rng("eps", code, label, mi)
+                blank_season = 1.0 + (0.22 if month.month in (1, 7, 12) else -0.07)
                 drift = 1.0 + 0.045 * r.normal()
                 n = int(round(sep / 3.0 * shape[month.month - 1] * drift))
                 last = (month.replace(day=28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1)
-                dayw = np.array([wshape[month.replace(day=d).weekday()] for d in range(1, last.day + 1)])
+                dayw = []
+                for d in range(1, last.day + 1):
+                    day = month.replace(day=d)
+                    f = wshape[day.weekday()]
+                    if (day.month, day.day) in W.PUBLIC_HOLIDAYS:
+                        f *= 0.22
+                    gf = W.EASTER.get(day.year)
+                    if gf is not None and 0 <= (day - gf).days <= 3:
+                        f *= 0.26
+                    dayw.append(f)
+                dayw = np.array(dayw)
                 dayw = dayw / dayw.sum()
                 for _ in range(n):
                     bands = list(W.MIX[mix].items())
@@ -283,16 +302,21 @@ def episodes(units):
                         care = "Rehabilitation" if service == "rehabilitation" else "Psychiatric"
                     elif r.random() < prof["nonacute"]:
                         care = "Maintenance" if r.random() < 0.35 else "Rehabilitation"
+                    day = 1 + int(np.searchsorted(np.cumsum(dayw), r.random(), side="left"))
+                    sep_date = month.replace(day=min(day, last.day))
                     if same_day:
                         los = 0
                         if mix in DIALYSIS_MIXES and r.random() < 0.46:
                             drg = "L61Z"
                     else:
                         los = int(1 + r.gamma(2.1, 2.3 * LOS_SCALE[mix]))
+                        for _ in range(2):
+                            adm_wd = (sep_date - dt.timedelta(days=los)).weekday()
+                            if r.random() < ADMIT_WEEKDAY[mix][adm_wd]:
+                                break
+                            los = int(1 + r.gamma(2.1, 2.3 * LOS_SCALE[mix]))
                     if ungroup:
                         drg = "960Z" if r.random() < 0.6 else "961Z"
-                    day = 1 + int(np.searchsorted(np.cumsum(dayw), r.random(), side="left"))
-                    sep_date = month.replace(day=min(day, last.day))
                     pid = "MRN%07d" % int(r.integers(mrn_lo, mrn_hi + 1))
                     adm_date = sep_date - dt.timedelta(days=los)
                     # a patient admitted twice on one day for two different procedures, which happens
@@ -317,8 +341,8 @@ def episodes(units):
                     rows.append(dict(unit=code, q=q, qlabel=label, month=month, sep_date=sep_date, los=los,
                                      drg=drg, age=age, care=care, in_scope=in_scope, pid=pid,
                                      adm_date=adm_date,
-                                     comorbidity=None if r.random() < prof["blank"] else
-                                     int(min(9, max(0, round(r.gamma(1.9, 1.15))))),
+                                     comorbidity=None if r.random() < prof["blank"] * blank_season else
+                                     int(min(9, max(0, round(r.gamma(COMORBID_SHAPE[age], 1.15))))),
                                      hac=False, rstream=float(r.random())))
             expected[(code, q)] = exp_sum
             inscope[(code, q)] = n_scope
@@ -563,7 +587,9 @@ def assign_complications(rows, expected, design, units, targets=None):
         target = int(round(exp * ratio))
         if targets and code in targets and embed_q.get(code) == q:
             target = targets[code]
-        p = np.array([W.STRATUM_RATE[(W.DRG_BAND[rows[i]["drg"]], rows[i]["age"])] for i in idx])
+        p = np.array([W.STRATUM_RATE[(W.DRG_BAND[rows[i]["drg"]], rows[i]["age"])]
+                      * (1.0 + 0.145 * rows[i]["los"]) ** 0.78
+                      * (1.0 + 0.11 * (rows[i]["comorbidity"] or 1.4)) for i in idx])
         r = rng("hac", code, q)
         chosen = r.choice(len(idx), size=min(target, len(idx)), replace=False, p=p / p.sum())
         for c in chosen:
@@ -632,7 +658,15 @@ def add_replays(rows, units):
             continue
         last = (row["sep_date"].replace(day=28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1)
         if (last - row["sep_date"]).days <= 2:
-            copy = dict(row)
-            copy["replay_of"] = i
-            extra.append(copy)
+            rr = rng("replay", row["unit"], row["sep_date"].isoformat(), i)
+            for j in range(2 if rr.random() < 0.085 else 1):
+                copy = dict(row)
+                copy["replay_of"] = i
+                if j == 0 and rr.random() < 0.21:
+                    # the second load carries the stay as the ward later recoded it
+                    copy["los"] = max(1, row["los"] + int(rr.integers(-2, 3)))
+                    copy["adm_date"] = row["sep_date"] - dt.timedelta(days=copy["los"])
+                if rr.random() < 0.14:
+                    copy["comorbidity"] = None
+                extra.append(copy)
     return extra

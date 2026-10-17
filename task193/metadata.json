@@ -10,11 +10,20 @@
   "atc_text.csv"
  ],
  "wrong_basis_distractor": null,
+ "neutral_rule_inputs": {
+  "signal_tracker_export.csv": "Standard 7-2024 section 3.2(c) reads it and excludes a pair it records as under assessment. No pair it names reaches the referral multiple on any construction of the expected number, so the rule ties: checks.py asserts that."
+ },
+ "unused_fields": {
+  "person_register.csv": [
+   "date_of_death",
+   "date_of_emigration"
+  ]
+ },
  "files": {
   "atc_text.csv": 17,
   "data_fee_schedule.xlsx": 3,
   "dispensings_2023_2025.csv": 113824,
-  "dispensings_2025_2026.csv": 62788,
+  "dispensings_2025_2026.csv": 62836,
   "extract_manifest.csv": 20,
   "holder_register.csv": 7,
   "literature_screening_log.csv": 96,
@@ -25,7 +34,7 @@
   "pharmacy_submission_log.csv": 148,
   "product_register.csv": 9,
   "register_release_notes.json": 1,
-  "register_variable_documentation.csv": 25,
+  "register_variable_documentation.csv": 44,
   "screen_annexes.csv": 23,
   "screen_standard_7_2024.pdf": 1,
   "signal_tracker_export.csv": 7,

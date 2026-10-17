@@ -217,11 +217,14 @@ leaves the two orders nothing like equal room.
 | SF10 | at least 1.25 times | at or above 1.25 times the expected number | strictly above | `same call`, asserted: no pair's ratio is 1.250 on any of the five arithmetics |
 | SF11 | the expected number | the number expected if receiving the product had no bearing on when the marker treatment is first received, taken from the window's own first-receipt dates | half of the pair | the referral set changes, 7 against 10 | nothing: this is the method, not a term. `## Literal reader` gives the forcing, and all four window-aware arithmetics give the same seven pairs, asserted |
 | SF12 | a pair already under assessment | a pair the tracker records as opened before the extract date | any pair the tracker names, including closed ones | `same call`, asserted: no pair the tracker names passes 3.2(b) on either basis |
-| SF13 | rounding | counts whole, shares and days to one decimal, fees to the nearest krone | shares to two decimals | `same call`, asserted: no pair's share sits within 0.004 of a referral boundary on any basis |
+| SF13 | rounding | counts whole, shares and days to one decimal, fees to the nearest krone | shares to two decimals | `same call`, asserted: no pair's share sits within 0.004 of a referral boundary on any basis, and every graded figure sits mid bin (see `## Mid-bin figures`) |
 | SF14 | the re-sent batch | one dispensing, as `register_release_notes.json` states: a line re-sent after a transmission failure counts once in any count of lines and once in any count of doses | every transmission counted | `same call` on the referral set, asserted; the ask figures are fixed by that quoted note and asserted both ways |
 | SF15 | the two layouts' dates | ISO in the clearance extract, day-month-year in the window extract, both read as calendar dates | the window extract read as month-day-year | the pair counts change | `register_release_notes.json` states each layout's date format; asserted that the misread produces impossible dates in 61 per cent of rows |
 | SF16 | the order of the output rows | the share receiving the marker after, longest first, as the asking sentence says | by product code | `same call`; the chart's ordering is graded and the asking sentence fixes it |
 | SF17 | the referral quarter | the quarter beginning 1 January 2027, as section 4.1 states | the quarter the extract was pulled in | `same call`: the referral test reads the tracker at the extract date, asserted |
+| SF18 | the fee's unit of account | the holder that pays the fee for a dispensing, which the asking sentence names as the unit | the marketing authorisation holder of record at the extract date, so the transfer and the merger are not followed | the ask's figures change, 7 payers against 6, and two payers' doses swap | the asking sentence names the payer as the unit; the workbook's Notes sheet states who pays before and after a merger and the product register carries the transfer date. The figures are graded and asserted |
+| SF19 | how many bars the chart carries | one for each of the 23 screened pairs, as the asking sentence says | the 20 candidates only | the chart's row set changes | the asking sentence states all 23, and every pair including the three below the patient minimum carries a share; asserted |
+| SF20 | the chart's referral line | not drawn: its position is 1.25 times a pair's expected share, which depends on the construction the standard leaves open | drawn at each pair's expected share times 1.25 | no graded element moves, because the marker is not a graded element | the asking sentence asks only for the referred pairs in the darker fill; asserted that no threshold is drawn |
 
 ## Ladder
 
@@ -330,22 +333,59 @@ easy answer is an easy arithmetic on the same literal estimand.
   states no result for this window, so it ties under every rung, asserted.
 - `extract_manifest.csv` states each file's rows, date range and layout version, and settles the ask
   layer's one designed disagreement (the exceptions file's scope) without naming a level.
-- `pharmacy_submission_log.csv` gives each chain's submitted and accepted line counts by month. It
-  reconciles to the extract once the rejected lines are added and ties under every rung of the main call,
-  asserted.
+- `pharmacy_submission_log.csv` gives each chain's submitted, accepted, turned-back and withdrawn line
+  counts by month of submission. It is the chains' own count, not the register's, so it does not
+  reconcile to the extract line for line, and it ties under every rung of the main call.
 - `spontaneous_reports_summary.csv` and `literature_screening_log.csv` are the declared distractors: the
   agency's other two signal sources for the same quarter. Neither holds a marker treatment, a patient
   pseudonym or a pair, so neither ranks the candidates on the decision question, asserted by column name.
+- **The reports file is held to a tie, not merely to silence.** A distractor whose counts happen to agree
+  with the right answer and not with the easy one is an oracle even with no marker column, because the
+  two constructions disagree about exactly four products: Ternivast and Oxelumab entering the market, and
+  Varenadol and Admirabin leaving it. On a first cut this file failed that test badly, because the
+  realistic pattern it carried, a newly marketed product under additional monitoring being reported on
+  far more, put Ternivast and Oxelumab at the top of every reading by a factor of two to five, which is
+  the whole difference between the seven and the ten. It now carries a reporting rate driven by how
+  visible the reaction is rather than by how new the product is, and the generator asserts, on each of
+  the reports received, the serious reports, the reports from patients and the reports per thousand
+  window dispensings, that all four of those products sit strictly inside the range the other five span
+  and that no cut of the ordering isolates the two entering, the two leaving, or the four together.
+  Eight assertions, one per reading per claim.
 - No shipped file states a referral list, an expected number, a sequence ratio or a count of referrals for
   any window. There is no calibration organ.
+
+## Mid-bin figures
+
+Every graded figure sits away from the boundary that would make its rounding a convention, and the
+distance is a number the generator asserts rather than a hope.
+
+| Figure | Rounding | Construction | Measured distance | What would flip it |
+|---|---|---|---|---|
+| a payer's defined daily doses | one decimal | every screened product's strengths are whole or half doses per unit, so a package holds a whole number of tenths of a dose and a payer's window total is exact at one decimal | 0.05 of a tenth, the maximum: the figure needs no rounding at all | nothing: there is no fractional part to round |
+| a payer's data fee | nearest krone | the rates in the executive order were chosen against the realised dose totals | 0.38 krone at the tightest of the seven, half-up and half-even agreeing for all seven | one more half-dose package on the tightest payer, worth about 0.67 krone |
+| a region and age cell's share | one decimal | the reporting bands were chosen against the realised cells | 0.00833 of a point at the tightest of the 24 | one patient either way in that cell, worth 0.15 of a point, which no filed reading of the population produces |
+| a chain-quarter's median days | one decimal | every even cell's two middle values are equal | exact: every median convention gives the same figure | nothing |
+| a pair's referral multiple | two decimals against 1.25 | the effects and the product lifecycles | 8.5 per cent of the multiple over 20 candidates by 5 arithmetics | a sixth arithmetic 8.5 per cent away from all four window-aware ones |
+| the chart's bar order | one decimal on the share | all 23 pairs carry a share | 0.1 of a point between the closest two bars | a share tie, which the generator refuses |
+
+The arithmetic runs in integers where it can: the doses accumulate in tenths as whole numbers and the
+fee is struck with exact decimals and an explicit half-up, in the golden and in the independent
+verifier alike, so no figure carries a floating-point residue. The verifier reads the rates out of the
+shipped workbook rather than holding its own copy.
+
+**What is deliberately not a graded element.** The chart carries no referral-line marker. Its position
+is 1.25 times a pair's expected share, and the expected share is the one thing the standard leaves to
+the division's own epidemiology, so the marker's position is the stump wearing a ruler. Dropping it
+costs nothing the ask was buying: the referred pairs are still read off the chart, in the darker fill,
+and the bar order is graded bar by bar.
 
 ## Ask sheet
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
 |---|---|---|---|---|---|---|---|---|
 | A1 per pharmacy chain and quarter of the window, the dispensing lines the register accepted, the lines it rejected and the median days from dispensing to submission | 3 per chain-quarter, 4 chains by 4 quarters | the audit trail from an input the call consumes, through lines it never reads, to the chain's own control total | the register's own quarterly ingest review | D4 absence as the signal: the rejected lines sit in `submission_exceptions.csv`, which no habitual join reaches, and never enter either extract | D6 the chains' log counts by month of submission while the register reports a line in the quarter of its dispensing, which the release notes state; D1 the re-sent lines, one dispensing by that same note | both extracts, the exceptions file, the submission log, the pharmacy register, the manifest, the release notes, the standard; 12 columns | 4 stops, lazy delta 12 of 16 chain-quarters | an ingest pipeline's own quarterly review |
-| A2 per marketing authorisation holder, the defined daily doses of its Annex A products dispensed inside the window and the statutory data fee due | 2 per payer, 7 payers | an input reconciled to another system's total, the gap made of devices | the finance office settles the holders' statutory fees | D2 version: the fee schedule was amended with effect from 1 April 2026 and the amended rate applies to the window's later half, which the superseded sheet does not carry | D3 the schedule's bands are in thousands of defined daily doses while the extract gives doses; D7 one product's authorisation transfers to another holder inside the window and one holder merges into another, so a payer is read at the dispensing's own date; D1 the re-sent lines, which the register's note says are one dispensing | the fee workbook's three sheets, the holder register, the product register's holder columns, the package index, both extracts, the release notes, the manifest; 15 columns | 5 stops, lazy delta 6 of 7 payers | the finance office's quarterly settlement |
-| A3 per region and age band at the window's start, the patients with a first receipt of an Annex A product inside the window and the share of them who also had a first receipt of an Annex B marker treatment inside it | 2 per cell, 5 regions by 4 bands | the decisive construction's output on the segment the agency publishes anyway | the agency's standing quarterly utilisation table | the construction layer: a wrong patient unit, an unmapped reissued package code or a clearance period read at 12 months fails every cell | D4 region blank for patients registered outside Denmark, whose meaning the person register's own notes state; D5 patients who died or emigrated inside the window | the person register, both extracts, the crosswalk, the product register, the ATC index, the standard, the manifest; 11 columns | 4 stops, lazy delta 14 of 20 cells | the agency's own quarterly table |
+| A2 per holder that pays the fee for a dispensing, the defined daily doses of its Annex A products dispensed inside the window and the statutory data fee due | 2 per payer, 7 payers | an input reconciled to another system's total, the gap made of devices | the finance office settles the holders' statutory fees | D2 version: the fee schedule was amended with effect from 1 April 2026 and the amended rate applies to the window's later half, which the superseded sheet does not carry | D3 the schedule's bands are in thousands of defined daily doses while the extract gives doses; D7 one product's authorisation transfers to another holder inside the window and one holder merges into another, so a payer is read at the dispensing's own date; D1 the re-sent lines, which the register's note says are one dispensing | the fee workbook's three sheets, the holder register, the product register's holder columns, the package index, both extracts, the release notes, the manifest; 15 columns | 5 stops, lazy delta 6 of 7 payers | the finance office's quarterly settlement |
+| A3 per region and age band at the window's start, the patients with a first receipt of an Annex A product inside the window and the share of them who also had a first receipt of an Annex B marker treatment inside it | 2 per cell, 6 regions including not stated by 4 bands | the decisive construction's output on the segment the agency publishes anyway | the agency's standing quarterly utilisation table | the construction layer: a wrong patient unit, an unmapped reissued package code or a clearance period read at 12 months fails every cell | D4 region blank for patients registered outside Denmark, whose meaning the person register's own notes state; D5 patients who died or emigrated inside the window | the person register, both extracts, the crosswalk, the product register, the ATC index, the standard, the manifest; 11 columns | 4 stops, lazy delta 14 of 20 cells | the agency's own quarterly table |
 
 **The main population's zero counts.** Zero device rows and zero hazard rows in the patients and pairs the
 call rests on: A1's device sits in the exceptions file, which carries no accepted dispensing; A2's sit in
@@ -357,8 +397,8 @@ the seven and the ten exactly as they are, asserted.
 
 | Hazard | Asks moved | Per-ask delta |
 |---|---|---|
-| D6 grain | A1, A2 | A1 every chain-quarter when the chains' log is used instead of the extracts, A2 the band of every payer when thousands are read as doses |
-| D1 duplication | A1, A2 | A1 the accepted count for the chain that re-sent a batch, by 1,477 lines, A2 the doses of every payer whose products that chain dispensed |
+| D6 grain | A1, A2 | A1 every chain-quarter when the chains' log is used instead of the extracts, which is also the file that does not reconcile to the extract line for line, A2 the band of every payer when thousands are read as doses |
+| D1 duplication | A1, A2 | A1 the accepted count for the two chains that re-sent a transmission, A2 the doses of every payer whose products those chains dispensed |
 | D4 absence | A1, A3 | A1 the rejected count in all 16 chain-quarters, A3 the four "not stated" cells |
 | D7 keys | A2 | A2 one payer's whole dose total when the authorisation transfer or the merger is read at the wrong date |
 | D5 scope | A3 | A3 the patient counts in the cells holding the patients who changed region inside the window |
@@ -455,6 +495,54 @@ recommendation weight, so C is 38 + 7 + 55 x 0.21 = 56.6 and S is 5 + 7 + 55 x 0
   lifecycle. Every dated row in the pack now falls inside its product's marketing dates and no date passes
   the extract's pull, both asserted; the tracker's entries still fail 3.2(b) on every arithmetic, which is
   what closes SF12.
+- Carrying a payer's doses and fee as floating-point sums: one holder's total was exactly 159766.95
+  defined daily doses and the shipped figure was 159766.9, which no rounding convention reaches, and
+  three of the seven totals landed on an exact half. Pinning a tie convention was offered and refused: it
+  would add a shipped sentence the pack needs only because our own arithmetic lands on halves, and whole
+  doses would not help, since whole numbers tie at a half just as readily. Instead every screened
+  product's strengths are now whole or half defined daily doses per unit, so a package holds a whole
+  number of tenths and a payer's window total is exact at one decimal with no fractional part to round;
+  the doses accumulate in tenths as integers and the fee is struck with exact decimals and an explicit
+  half-up in the golden and in the verifier alike. The marker treatments keep the index's own two-decimal
+  values, because no graded figure sums them.
+- Leaving the statutory rates where they were: two payers' fees then sat 0.06 and 0.11 krone from the
+  half krone, which one fewer half-dose package flips. The rates were re-struck against the realised
+  dose totals, and the tightest of the seven is now 0.38 krone from the boundary with half-up and
+  half-even agreeing for all seven, asserted with the distance.
+- Reporting the utilisation table on 18 to 39, 40 to 59, 60 to 74 and 75 and over: four of the 24 cells
+  then sat within 0.07 of a point of a tenth, the tightest 0.00011 from 79.65. The reporting bands are a
+  filed convention and re-partition the same patients without touching the draw, so they were searched
+  instead: 18 to 29, 30 to 49, 50 to 64 and 65 and over puts the tightest cell 0.00833 of a point from a
+  boundary, asserted, with no cell on an exact half.
+- Marking each pair's referral threshold on the chart: the marker's position is 1.25 times the pair's
+  expected share, and the expected share is the one quantity the standard leaves to the division's own
+  epidemiology, so two constructions put the Ternivast gout marker at 0.451, 0.291 or 0.404. A graded
+  element cannot depend on the stump. The marker is gone and the chart's graded elements are the 23 bars,
+  their order and the darker fill on the referred seven.
+- Letting the chart's bar count follow from the data: the deliverable showed the 20 candidates while the
+  workbook showed all 23, and nothing said which. The asking sentence now says all 23 and every pair,
+  including the three below the patient minimum, carries a share, with the closest two bars 0.1 of a
+  point apart.
+- Leaving the fee ask on "per authorisation holder" while the golden was struck per fee payer: the holder
+  reading gives one payer 224,794.5 doses against the golden's 113,515.5, which is a semantic fork on a
+  graded figure. The merger and the transfer are the ask's own device, so nothing was pinned in a
+  document; the asking sentence names the payer as the unit, the way it names any other population, and
+  the work of noticing the transfer stays where it was.
+- A `person_register.csv` whose dictionary entry said a replaced pseudonym appears under both while the
+  360 retired keys were absent: a flat self-contradiction in a file a solver reads closely, with no
+  arithmetic consequence. The entry and the manifest note now say what the file is, one row per current
+  pseudonym, and the crosswalk carries the retired one.
+- A submission side that was too clean: the chains' log reconciled to the extract line for line in all
+  148 cells, every retransmission belonged to one chain in one month, submissions fell on Sundays as
+  often as on Tuesdays, the lag stopped at 20 days and the chain means were a clean ladder. The log now
+  counts what the chains transmitted, including lines they withdrew and a cut-off difference, so it does
+  not reconcile; the retransmissions are two batches on two chains; the chains transmit on working days
+  with weekend batches swept either side; the lag reaches 48 days; and a per-chain, per-quarter transfer
+  offset breaks the ordering. All of it is drawn on its own random stream, so the first receipts and the
+  whole screen are bit-identical to the judged pass.
+- Rejection reasons drawn without regard to the registers: 547 of 568 package-code rejections named codes
+  with no validity period and the pharmacy-closed reason had no closing date behind it. A reason is now
+  only available to a line the registers can support, and `pharmacy_register.csv` carries `closed_on`.
 - Reading the third ask's share as the earliest marker receipt across all eight marker groups: measured at
   the build, and the earliest is in the clearance period for almost every patient, so nineteen of the
   twenty-four cells sat between 2 and 7 per cent and three were zero. The standard's section 4.2 now states

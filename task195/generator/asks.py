@@ -75,7 +75,7 @@ def history(target):
                          "instrument": W.INSTRUMENTS[0] if rng.random() < 0.52 else W.INSTRUMENTS[1],
                          "plate": "GKP-%s%02d-%s%02d" % (str(d.year)[2:], d.month, "ABCD"[k % 4], (k % 23) + 1),
                          "received": rec, "utc": local - dt.timedelta(hours=offset),
-                         "depth": rng.uniform(24.0, 73.0), "status": status,
+                         "depth": _depth(rng.uniform(24.0, 73.0), mrng), "status": status,
                          "released": rel if status == "RELEASED" else None,
                          "month": "%04d-%02d" % (rel.year, rel.month) if status == "RELEASED" else "",
                          "flag": False, "reviewed": False})
@@ -158,14 +158,13 @@ def history(target):
                 was -= dt.timedelta(days=1)
             if was >= r["received"] + dt.timedelta(days=2):
                 amend.append([r["sid"], "released_date", was.isoformat(), r["released"].isoformat(),
-                              (max(was, r["released"]) + dt.timedelta(days=trng.randint(6, 40))).isoformat(),
-                              "release booked on the wrong day"])
+                              _amend_day(trng), "release booked on the wrong day"])
                 r["stale_released"] = was
                 r["stale"] = True
         else:
             # the desk amends the column that holds the call of record for that specimen: the review
             # outcome where a bioinformatician reviewed it, the screen's own call where none did
-            when = (r["released"] + dt.timedelta(days=trng.randint(6, 40))).isoformat()
+            when = _amend_day(trng)
             why = "flag raised on plate review" if r["flag"] else "flag cleared on plate review"
             if r["reviewed"]:
                 amend.append([r["sid"], "review_outcome", "CLEARED" if r["flag"] else "FLAGGED",
@@ -216,6 +215,21 @@ def history(target):
     return len(out), released, flagged, events, amend
 
 
+def _depth(_old_draw, rng):
+    """The mean depth a run reached: a measurement with a left tail, not a flat spread. The old
+    uniform draw is taken and discarded in its original position so no other draw moves."""
+    return max(21.5, 46.0 + 9.1 * rng.gauss(0.0, 1.0) - 7.2 * max(0.0, rng.gauss(0.0, 1.0)))
+
+
+def _amend_day(rng):
+    """The day the release desk posted an amendment: a working day of the spring reconciliation, which
+    ran after the warehouse extract had been pulled."""
+    day = W.HIST_PULL + dt.timedelta(days=rng.randint(3, 63))
+    while day.weekday() > 4 or day in W.HOLIDAYS:
+        day += dt.timedelta(days=1)
+    return day.isoformat()
+
+
 def _slack(rate):
     """How far a per-thousand figure sits from the nearest one-decimal bin edge."""
     return abs((rate * 10) % 1 - 0.5) / 10
@@ -258,6 +272,7 @@ def dilution(target):
                        W.PEOPLE["lead"].split()[1][:2].upper(), W.DILUTION_REPLICATES])
     ws["D1"].alignment = Alignment(wrap_text=True)
     results = []
+    dser = [4100]
     for li, (lv, label, frac) in enumerate(W.DILUTION):
         spread = 0.21 if lv in ("L1", "L2") else (0.15 if lv == "L3" else 0.085)
         level = frac * (1.0 if stock_of[lv] == "NS-27-04" else W.DILUTION_SECOND_PREP)
@@ -277,12 +292,14 @@ def dilution(target):
             if _slack3(median / level) >= 0.00042 and edge >= 0.020:
                 break
         for i, v in enumerate(vals):
+            dser[0] += rng.choice([1, 1, 2, 2, 3, 4, 6, 9])
             results.append([lv.lower() if rng.random() < 0.21 else lv, stock_of[lv], i + 1,
-                            "RS27-D%05d" % (4100 + len(results) * 3),
+                            "RS27-D%05d" % dser[0],
                             v, round(rng.uniform(31.0, 58.0), 1), None])
         if lv == "L3":
+            dser[0] += rng.choice([1, 2, 3, 5])
             results.append([lv, stock_of[lv], W.DILUTION_REPLICATES + 1,
-                            "RS27-D%05d" % (4100 + len(results) * 3),
+                            "RS27-D%05d" % dser[0],
                             None, round(rng.uniform(31.0, 58.0), 1), "voided, control failure"])
     ws2 = wb.create_sheet("Replicate results")
     ws2.append(["Level", "Stock", "Replicate", "Read set", "Recovered fraction", "Mean depth", "Note"])
@@ -327,9 +344,9 @@ def run_log(target, specimens):
     for s in specimens:
         aliquots = ["A1", "A2"] if s["replated"] else ["A1"]
         batch = "B27%03d" % (100 + (s["received"].toordinal() % 7) * 3 + s["instrument"].count("B"))
-        # the control threshold is set for the instrument and held; it was lowered after the March
-        # control review
-        threshold = 36.50 if s["received"] >= dt.date(2027, 4, 12) else 36.60
+        # the control threshold is the validated one for the screen, set in the method file and held
+        # for every batch of the quarter
+        threshold = 36.60
         for al in aliquots:
             hour = min(17, max(7, int(rng.gauss(11.4, 2.6))))
             rows.append([s["specimen_id"], al, s["request_id"],

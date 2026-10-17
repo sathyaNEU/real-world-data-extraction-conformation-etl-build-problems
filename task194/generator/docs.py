@@ -119,7 +119,7 @@ def specification(target):
                    "are not re-estimated between specifications.", BODY),
          Paragraph("3.2 A unit's standardised ratio for a period is its observed complications divided by "
                    "its expected complications. Its adjusted rate is the standardised ratio multiplied by "
-                   "the reference rate of 96.5 complications per 1,000 episodes.", BODY),
+                   "the reference rate of 96.6 complications per 1,000 episodes.", BODY),
          Paragraph("3.3 A unit's standardised ratio is reported for each closed quarter and for the "
                    "specification period to date, being every closed quarter from 1 July 2024. No other "
                    "period is reported for a unit.", BODY),
@@ -160,27 +160,24 @@ def thread(target):
 Kept by Clinical Improvement. Latest note first.
 
 5 March 2027, %(gov)s
-Extract is out and in the cycle folder: episode_outcomes_extract.csv, every separation to
-31 December 2026, with the complication detail and the quarterly series beside it. Coding for the
-December quarter closed on 28 February, so that quarter is complete. The March quarter will not be
-coded until the end of May, which is after your committee. The activity plan for the April quarter
-went up on 20 February and I have put a copy in the folder with the unit register and the
-hospital reference.
+Extract is out and in the cycle folder, with the complication detail and the quarterly series beside
+it. Coding for the December quarter closed on 28 February. The March quarter will not be coded until
+the end of May, which is after your committee. The activity plan for the April quarter went up on
+20 February and I have put a copy in the folder with the unit register and the hospital reference.
 
 3 March 2027, %(director)s
-Thanks. Add the placement register with IP-09 on it, which runs with Rehabilitation and Aged Care
-until 31 March, and the three unit-level files the consumer, nursing and infection prevention teams
-sent across, in case the committee asks what else moved. Papers close on the 20th.
+Thanks. Add the placement register, and the three unit-level files the consumer, nursing and
+infection prevention teams sent across, in case the committee asks what else moved. Papers close on
+the 20th.
 
 24 February 2027, %(director)s
 The team finishes at Rehabilitation and Aged Care on 31 March and starts wherever we land on
 1 April, so the recommendation goes to the committee on the 24th with the charter extract attached.
-Same cycle as last time: one unit, one quarter, 2.4 FTE.
 
 19 February 2027, %(gov)s
-Two housekeeping notes. The comorbidity score is keyed on about six episodes in seven, which is
-where it has sat since the field was added. The sub-acute and mental health units are in the extract
-but not in the quarterly series.
+Two housekeeping notes. The comorbidity score is keyed on about six episodes in seven and the rate
+drops away in January and over winter, which is when the coding queue is longest. The sub-acute and
+mental health units are in the extract but not in the quarterly series.
 """ % dict(director=director, gov=gov)
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(text)

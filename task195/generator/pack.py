@@ -61,6 +61,14 @@ def write_qc(target, specimens):
     return sum(len(v) for v in rows.values())
 
 
+def _mf_completions(specimens):
+    """The day each specimen's re-run batch completed, as write_mf stamps it."""
+    batch_days = [dt.date(2027, 6, d) for d in (9, 10, 11, 14, 15, 16, 17)]
+    return [(s["specimen_id"],
+             batch_days[(int(s["plate"][-2:]) + ord(s["plate"][9])) % len(batch_days)].isoformat())
+            for s in specimens]
+
+
 def write_mf(target, specimens):
     """The v3.4 re-run's mixture-fraction estimate, one row per archived read set."""
     header = ["specimen_id", "read_set_id", "read_set_accepted", "mixture_fraction",
@@ -112,7 +120,11 @@ def panel_rows(specimens):
         not type enough markers for.""" % W.PANEL_MARKERS
         if verdict == "INCONCLUSIVE":
             return 26 + int(46 * draw)
-        return W.PANEL_MARKERS - (0 if draw < 0.55 else int(1 + 8 * draw))
+        if draw < 0.55:
+            return W.PANEL_MARKERS
+        # the markers a panel drops thin out quickly: one or two is common, eight is rare
+        short = 1 + int(-math.log(max(1e-6, (draw - 0.55) / 0.45)) / 0.62)
+        return W.PANEL_MARKERS - min(11, short)
 
     def row(sid, aliquot, request, day, seq, verdict, share, draw):
         ref, friday = week_ref(day)
@@ -307,17 +319,19 @@ def write_dictionary(target):
               W.FILES["mf"]: "bioinformatics group", W.FILES["crosswalk"]: "biobank liaison",
               W.FILES["panel"]: "quality team", W.FILES["history"]: "warehouse team",
               W.FILES["amendments"]: "release desk"}
-    reviewed = {W.FILES["history"]: "2026-11-02", W.FILES["amendments"]: "2027-02-19",
-                W.FILES["crosswalk"]: "2027-02-19"}
+    # an entry is reviewed once the export it describes has been pulled, never before
+    reviewed = {W.FILES["history"]: "2027-04-12"}
     _write(os.path.join(target, W.FILES["dictionary"]), header,
-           [[a, b, c, e, reviewed.get(a, "2026-06-15"), owners.get(a, "quality team")]
+           [[a, b, c, e, reviewed.get(a, "2027-06-18"), owners.get(a, "quality team")]
             for a, b, c, e in d])
     with open(os.path.join(target, W.FILES["dictionary"]), "a", encoding="utf-8") as fh:
-        fh.write("# Validation extract dictionary, issue 4. Document owner: the quality system "
-                 "manager. Entries are reviewed when the source export changes.\n")
-        fh.write("# issue 2, 2026-06-15, first issue for the validation extracts\n")
-        fh.write("# issue 3, 2026-11-02, warehouse extract entries added with the release columns\n")
-        fh.write("# issue 4, 2027-02-19, biobank request register and release desk entries added\n")
+        fh.write("# Validation extract dictionary, issue 5. Document owner: the quality system "
+                 "manager. An entry is reviewed once the export it describes has been pulled.\n")
+        fh.write("# issue 2, 2025-09-08, first issue for the validation extracts\n")
+        fh.write("# issue 3, 2026-04-21, warehouse extract entries added with the release columns\n")
+        fh.write("# issue 4, 2027-04-12, warehouse entries reviewed against the April pull\n")
+        fh.write("# issue 5, 2027-06-18, entries added for the 2027 parallel run and the "
+                 "amendment log\n")
 
 
 def write_manifest(target, counts):
@@ -337,11 +351,11 @@ def write_manifest(target, counts):
         [W.FILES["weekly"], W.PARTNER, W.AS_OF.isoformat(),
          "weekly reports, 5 March to 18 June 2027", "", "partner laboratory, supplied under the service agreement",
          "scanned to PDF as each report arrived"],
-        [W.FILES["history"], "QC warehouse extract", "2027-03-04",
+        [W.FILES["history"], "QC warehouse extract", W.HIST_PULL.isoformat(),
          "receipts 2026-02-15 to 2027-02-28", counts["history"], "institute internal, not for redistribution",
          "nightly load, two call columns"],
         [W.FILES["amendments"], "release desk", W.AS_OF.isoformat(),
-         "amendments to released records, March 2026 to May 2027", counts.get("amendments", ""),
+         "records released 2026-03 to 2027-03, amended 2027-04 to 2027-06", counts.get("amendments", ""),
          "institute internal, not for redistribution", "raised after the reporting month closed"],
         [W.FILES["volumes"], "laboratory reporting pack", "2027-03-06",
          "releases 2026-03 to 2027-02", counts["volumes"], "institute internal, not for redistribution", "as booked at month end"],
@@ -353,7 +367,7 @@ def write_manifest(target, counts):
         [W.FILES["modelcard"], "bioinformatics group", "2027-06-19", "estimator v3.4",
          "", "institute internal, quality system controlled", "version 3.4.1 with the June addendum"],
         [W.FILES["dictionary"], "quality system", W.AS_OF.isoformat(), "validation extracts",
-         "", "institute internal, quality system controlled", "issue 4"],
+         "", "institute internal, quality system controlled", "issue 5"],
         [W.FILES["config"], "GKJ-PIPE", "2027-06-08", "re-run configuration", "", "institute internal, not for redistribution", ""],
         [W.FILES["runlog"], "LIMS run log", W.AS_OF.isoformat(),
          "receipts 2027-03-01 to 2027-05-31", counts["runlog"], "institute internal, not for redistribution",

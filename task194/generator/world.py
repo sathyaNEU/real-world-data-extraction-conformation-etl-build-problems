@@ -15,7 +15,12 @@ EMBED_FROM = dt.date(2027, 4, 1)
 EMBED_TO = dt.date(2027, 6, 30)
 SPEC_VERSION = "4.0"
 SPEC_EFFECTIVE = dt.date(2024, 7, 1)
-REF_RATE = 96.5                          # complications per 1,000 episodes, published with specification 4.0
+REF_RATE = 96.6                          # complications per 1,000 episodes, published with specification 4.0
+PUBLIC_HOLIDAYS = {    # the network's own calendar: separations fall away and admissions stop
+    (1, 1), (1, 26), (4, 25), (6, 9), (10, 6), (12, 24), (12, 25), (12, 26), (12, 27), (12, 31),
+}
+EASTER = {2024: dt.date(2024, 3, 29), 2025: dt.date(2025, 4, 18), 2026: dt.date(2026, 4, 3),
+          2027: dt.date(2027, 3, 26)}      # Good Friday; Easter Monday is three days later
 CODESET_CHANGE = dt.date(2026, 7, 1)     # national complication list revision, list 2022 -> list 2026
 
 PEOPLE = {
@@ -136,7 +141,7 @@ MIX = {
 UNITS = [
     # code, name, hospital, mix, service, psi, sep, plan, ylast, role, status
     ("41210", "General Medicine", "H1", "gen_med", "acute", 1.034, 2300, 2077, 1.188, "largest", "eligible"),
-    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.098, 2600, 3560, 1.043, "runner_up", "eligible"),
+    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.0945, 2600, 3560, 1.043, "runner_up", "eligible"),
     ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.233, 1900, 2305, 1.090, "answer", "eligible"),
     ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.091, 1050, 1257, 1.272, "hot2", "eligible"),
     ("41310", "General Medicine", "H2", "gen_med", "acute", 1.158, 1350, 1364, 1.088, "mid", "eligible"),

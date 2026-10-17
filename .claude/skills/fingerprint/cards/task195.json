@@ -1,88 +1,88 @@
 {
-  "task": "task195",
-  "architecture": "v1",
-  "drawn": "2026-10-16",
-  "slot_note": "seed AD18 kept its decision shape only: whether a screen replaces the incumbent for the coming quarter, on evidence from a parallel run, or the switch is held. The seed's own architecture turns on the parallel run having been a statement about another season, which is a transportability argument already drawn on this objective, so the build is re-rooted on the field's own treatment of two screens read on the same units.",
-  "domain": "biomedical-clinical-research",
-  "subdomain": "genomics-gwas-high-dimensional-association",
-  "niche": "choosing the cutoff at which a re-run screen replaces the one in service, where both screens were read on the same specimens and only the paired comparison is tight",
-  "objective": "anomaly-detection",
-  "shape": "04",
-  "decision_type": "dial_setting",
-  "answer_unit": "named_option",
-  "answer": "Replace the contamination screen in service with the re-run mixture-fraction screen at the 0.030 cutoff for the quarter from 1 July 2027",
-  "answer_source": "KVAL-07 4.1 on the parallel run: at 0.030 the increase is 16 of the 393 confirmed contamination events, 4.07 percentage points, 95 per cent interval 1.37 to 6.77 points on the specimens the two screens call differently, and the false-call rate is 1.36 per cent against 1.67 per cent",
-  "gap": [
-    "objective"
+ "task": "task195",
+ "architecture": "v1",
+ "drawn": "2026-10-16",
+ "slot_note": "seed AD18 kept its decision shape only: whether a screen replaces the incumbent for the coming quarter, on evidence from a parallel run, or the switch is held. The seed's own architecture turns on the parallel run having been a statement about another season, which is a transportability argument already drawn on this objective, so the build is re-rooted on the field's own treatment of two screens read on the same units.",
+ "domain": "biomedical-clinical-research",
+ "subdomain": "genomics-gwas-high-dimensional-association",
+ "niche": "choosing the cutoff at which a re-run screen replaces the one in service, where both screens were read on the same specimens and only the paired comparison is tight",
+ "objective": "anomaly-detection",
+ "shape": "04",
+ "decision_type": "dial_setting",
+ "answer_unit": "named_option",
+ "answer": "Replace the contamination screen in service with the re-run mixture-fraction screen at the 0.030 cutoff for the quarter from 1 July 2027",
+ "answer_source": "KVAL-07 4.1 on the parallel run: at 0.030 the increase is 16 of the 393 confirmed contamination events, 4.07 percentage points, with a 95 per cent interval clear of zero on every paired estimator taken from the specimens the two screens call differently, and the false-call rate is 1.36 per cent against 1.67 per cent",
+ "gap": [
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G16",
+  "G17"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "parallel_run_overlap",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_model",
+ "stakeholder_role": "the laboratory's screening lead",
+ "role_family": "other",
+ "scoring_unit": "per certified output",
+ "spine": {
+  "file": "qc_screen_history_2026-02-15_2027-02-28.csv",
+  "rows": 32647,
+  "entity": "one specimen's quality-control screen record at release",
+  "grain": "specimen",
+  "source": "synthetic"
+ },
+ "forum": "auditor",
+ "forcing_event": "season_or_peak",
+ "org_family": "research_or_statistics_office",
+ "world": {
+  "geography": "Norway",
+  "currency": "NOK",
+  "org_type": "research institute genomics core laboratory",
+  "invented_names": [
+   "Genomkjernen",
+   "Nordfjell forskningsinstitutt",
+   "Bergsvik Analyse"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G16",
-    "G17"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_model",
-  "stakeholder_role": "the laboratory's screening lead",
-  "role_family": "other",
-  "scoring_unit": "per certified output",
-  "spine": {
-    "file": "qc_screen_history_2026-02-15_2027-02-28.csv",
-    "rows": 31200,
-    "entity": "one specimen's quality-control screen record at release",
-    "grain": "specimen",
-    "source": "synthetic"
-  },
-  "forum": "auditor",
-  "forcing_event": "season_or_peak",
-  "org_family": "research_or_statistics_office",
-  "world": {
-    "geography": "Norway",
-    "currency": "NOK",
-    "org_type": "research institute genomics core laboratory",
-    "invented_names": [
-      "Genomkjernen",
-      "Nordfjell forskningsinstitutt",
-      "Bergsvik Analyse"
-    ],
-    "people": [
-      "Laila Johannessen",
-      "Dag Rasmussen"
-    ]
-  },
-  "deliverables": [
-    "screen_change_validation_2027q3.xlsx",
-    "detection_gain_by_cutoff.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "The decisive quantity is the difference between two screens applied to the same units, so its uncertainty is the uncertainty of the paired difference and not the overlap of each screen's own interval, and judging the two intervals separately calls a difference the same units establish unproven.",
-  "driver_concrete": "Both screens were read on the same archived read sets of every specimen in the parallel run and they agree on all but a few dozen, so the increase in detection is established far more tightly than either screen's own detection rate is, and the rule's qualifying cutoff moves two steps tighter when the uncertainty is taken from the discordant specimens instead of from the two rates' own intervals.",
-  "stump": "A competent solver computes each screen's detection rate on the parallel run with its own 95 per cent interval, finds every compliant cutoff's interval overlapping the screen in service's, reads the protocol's interval test as unmet and holds the change, where the same specimens establish the increase at the 0.030 cutoff with an interval clear of zero.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reconciles the parallel run correctly, applies the protocol's two tests and judges each screen's detection rate against its own 95 per cent interval finds the intervals overlapping at every compliant cutoff and holds the change, where the increase measured on the same specimens is established at 0.030 and the change is made.",
-  "domain_test": "The deciding quantity is the increase in confirmed contamination events detected when the same archived read sets are re-called by a second screen, which a laboratory validation estimates on the discordant specimens because one library prep and one set of reads carry both calls; swap the specimens for separately inspected units and the two screens no longer share the material, so each screen's own marginal rate is all the evidence there is and the paired estimator has nothing to pair.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task228": "task228 builds the variance of one rate at the unit that was randomised, where the naive session-level test understates it and the fix widens the interval against a false-alarm cap on a labelled corpus; task195 estimates one filed difference between two screens read on the same specimens, where the naive two-sample test overstates its uncertainty and the fix narrows the interval, with no corpus, no cap and no clustering in play."
-  },
-  "lineage": [],
-  "notes": "",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:paired-difference-against-marginal-intervals",
-  "layer1": [
-    "two screens' call files with different layouts",
-    "a specimen re-run after a failed control",
-    "specimen identifiers differing between systems",
-    "thresholds recorded per batch",
-    "a run split across two instruments",
-    "tables inside PDFs"
-  ],
-  "registered": "2026-10-17T15:41:53Z"
+  "people": [
+   "Laila Johannessen",
+   "Dag Rasmussen"
+  ]
+ },
+ "deliverables": [
+  "screen_change_validation_2027q3.xlsx",
+  "detection_gain_by_cutoff.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "The decisive quantity is the difference between two screens applied to the same units, so its uncertainty is the uncertainty of the paired difference and not the overlap of each screen's own interval, and judging the two intervals separately calls a difference the same units establish unproven.",
+ "driver_concrete": "Both screens were read on the same archived read sets of every specimen in the parallel run and they agree on all but a few dozen, so the increase in detection is established far more tightly than either screen's own detection rate is, and the rule's qualifying cutoff moves two steps tighter when the uncertainty is taken from the discordant specimens instead of from the two rates' own intervals.",
+ "stump": "A competent solver computes each screen's detection rate on the parallel run with its own 95 per cent interval, finds every compliant cutoff's interval overlapping the screen in service's, reads the protocol's interval test as unmet and holds the change, where the same specimens establish the increase at the 0.030 cutoff with an interval clear of zero.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reconciles the parallel run correctly, applies the protocol's two tests and judges each screen's detection rate against its own 95 per cent interval finds the intervals overlapping at every compliant cutoff and holds the change, where the increase measured on the same specimens is established at 0.030 and the change is made.",
+ "domain_test": "The deciding quantity is the increase in confirmed contamination events detected when the same archived read sets are re-called by a second screen, which a laboratory validation estimates on the discordant specimens because one library prep and one set of reads carry both calls; swap the specimens for separately inspected units and the two screens no longer share the material, so each screen's own marginal rate is all the evidence there is and the paired estimator has nothing to pair.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task228": "task228 builds the variance of one rate at the unit that was randomised, where the naive session-level test understates it and the fix widens the interval against a false-alarm cap on a labelled corpus; task195 estimates one filed difference between two screens read on the same specimens, where the naive two-sample test overstates its uncertainty and the fix narrows the interval, with no corpus, no cap and no clustering in play."
+ },
+ "lineage": [],
+ "notes": "",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:paired-difference-against-marginal-intervals",
+ "layer1": [
+  "two screens' call files with different layouts",
+  "a specimen re-run after a failed control",
+  "specimen identifiers differing between systems",
+  "thresholds recorded per batch",
+  "a run split across two instruments",
+  "tables inside PDFs"
+ ],
+ "registered": "2026-10-17T15:41:53Z"
 }

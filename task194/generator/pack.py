@@ -67,11 +67,17 @@ def write_extract(target, rows, replays):
         r.setdefault("replay_of", None)
     allrows = list(rows) + list(replays)
     allrows.sort(key=lambda r: (r["sep_date"], r["unit"], r["replay_of"] is not None))
-    seq = {}
+    # the warehouse allocates a record number per separation month, and not every number it allocates
+    # reaches the extract: cancelled admissions and records merged into another one keep theirs
+    seq, step = {}, {}
     out = []
     for i, r in enumerate(allrows):
         key = (r["sep_date"].year, r["sep_date"].month)
-        seq[key] = seq.get(key, 0) + 1
+        if key not in seq:
+            rr = sim.rng("eid", *key)
+            seq[key] = int(rr.integers(17, 240))
+            step[key] = rr
+        seq[key] += 1 + (int(step[key].integers(1, 5)) if step[key].random() < 0.063 else 0)
         eid = "MR%02d%02d%05d" % (r["sep_date"].year % 100, r["sep_date"].month, seq[key])
         codes = r.get("hac_codes") or []
         out.append([eid, r["unit"], r["pid"], r["adm_date"].isoformat(), r["sep_date"].isoformat(),
@@ -199,9 +205,15 @@ def write_strata(target):
 
 
 def write_catlist(target):
-    out = [[c, n, g, W.GROUP_NAME[g]] for c, n, g in W.LIST_2026]
+    out = []
+    for rev, start, end, table in (("2022", dt.date(2022, 7, 1), dt.date(2026, 6, 30), W.LIST_2022),
+                                   ("2026", W.CODESET_CHANGE, None, W.LIST_2026)):
+        for c, n, g in table:
+            out.append([rev, start.isoformat(), "" if end is None else end.isoformat(),
+                        c, n, g, W.GROUP_NAME[g]])
     return _csv(os.path.join(target, FILES["catlist"]),
-                ["complication_code", "complication_name", "group_id", "group_name"], out)
+                ["list_revision", "effective_from", "effective_to", "complication_code",
+                 "complication_name", "group_id", "group_name"], out)
 
 
 def write_placements(target):
@@ -288,7 +300,7 @@ def write_dashboard(target, expected, observed, inscope, rows):
     for line in [["Indicator", "Definition"],
                  ["Standardised ratio", "Complications observed divided by complications expected under "
                   "specification 4.0, in-scope episodes only"],
-                 ["Adjusted rate per 1,000", "Standardised ratio times the reference rate of 96.5 "
+                 ["Adjusted rate per 1,000", "Standardised ratio times the reference rate of 96.6 "
                   "complications per 1,000 episodes"],
                  ["Unplanned readmissions per 100", "Unplanned readmissions within 28 days per 100 "
                   "separations, all care types"],
@@ -350,6 +362,8 @@ def write_distractors(target):
          ["month", "unit_code", "nursing_hours_per_patient_day", "agency_share", "overtime_share"], out)
     out = []
     for u in W.UNITS:
+        if u[10] == "merged_into":
+            continue                              # the ward closed before the 2026 audit year
         lv = sim.rng("hhlevel", u[0])
         rate = float(0.775 + 0.175 * lv.random())
         gain = float(0.004 + 0.022 * lv.random())          # the audit programme lifts compliance
@@ -427,68 +441,72 @@ GRAINS = [
 
 
 def write_dictionary(target):
+    rows = [[f, "column", c, d, u] for f, c, d, u in DICTIONARY]
+    rows += [[f, "grain", "", d, u] for f, _, d, u in GRAINS]
     return _csv(os.path.join(target, FILES["dictionary"]),
-                ["file_name", "column_name", "description", "unit_of_measure"], DICTIONARY + GRAINS)
+                ["file_name", "entry_type", "column_name", "description", "unit_of_measure"], rows)
 
 
 MANIFEST = [
+    # file, content, covers, omits, prepared by, source system
     ("episode_outcomes_extract.csv", "Episode level extract of separations with their complication flags",
-     "1 July 2024 to 31 December 2026, every unit", "episodes not yet coded; the quarter in progress",
-     "Clinical Information and Coding"),
-    ("hac_detail_extract.csv", "Complication level detail from the clinical information system",
-     "the units on the clinical information system, 1 July 2024 to 31 December 2026",
-     "units not on the clinical information system", "Clinical Information and Coding"),
+     "1 July 2024 to 31 December 2026", "uncoded episodes", "Clinical Information and Coding",
+     "Patient administration system via the clinical data warehouse"),
+    ("hac_detail_extract.csv", "Complication level detail",
+     "1 July 2024 to 31 December 2026", "units off the clinical information system",
+     "Clinical Information and Coding", "Clinical information system"),
     ("unit_indicator_series.csv", "Quarterly complication indicator series as reported",
-     "in-scope units, specification 4.0 period", "quarters before 1 July 2024, reported on specification 3.2",
-     "Clinical Governance"),
+     "specification 4.0 period", "quarters before 1 July 2024", "Clinical Governance",
+     "Indicator reporting database"),
     ("activity_summary_monthly.csv", "Monthly activity and complication counts as published",
-     "every unit and month in the period, all care types", "nothing", "Activity Reporting"),
+     "every unit and month", "nothing", "Activity Reporting", "Activity reporting cube"),
     ("activity_plan_2027q4.csv", "Planned separations for the quarter from 1 April 2027",
-     "every reporting unit", "sub-acute and psychiatric units are planned separately",
-     "Performance and Planning"),
+     "every reporting unit", "sub-acute and psychiatric units", "Performance and Planning",
+     "Annual operational plan, April quarter release"),
     ("unit_register.csv", "Unit master as it stands at the export date", "every cost centre in the period",
-     "earlier site alignments and names", "Finance Systems"),
+     "earlier site alignments and names", "Finance Systems", "General ledger cost centre master"),
     ("hospital_sites.csv", "Hospital site reference", "the network's four hospitals", "nothing",
-     "Finance Systems"),
+     "Finance Systems", "General ledger site master"),
     ("drg_risk_bands.csv", "Diagnosis related group to risk band map, specification 4.0",
-     "every group in the period", "groups retired before the specification took effect", "Clinical Governance"),
+     "every group in the period", "retired groups", "Clinical Governance", "Specification 4.0 build"),
     ("hac_stratum_rates.csv", "Published stratum rates, specification 4.0", "every stratum", "nothing",
-     "Clinical Governance"),
-    ("hac_category_list.csv", "National complication list, 2026 revision",
-     "codes in force from 1 July 2026", "the 2022 revision, which the specification's appendix carries",
-     "Clinical Governance"),
+     "Clinical Governance", "Specification 4.0 build"),
+    ("hac_category_list.csv", "National complication list, both revisions in the period",
+     "2022 and 2026 revisions", "revisions before 2022", "Clinical Governance",
+     "National complication list, as loaded"),
     ("improvement_placements.csv", "Improvement partnership placement register",
-     "every placement since the partnership began", "the placement in progress has no close-out",
-     "Clinical Improvement"),
+     "every placement since the partnership began", "nothing", "Clinical Improvement",
+     "Clinical Improvement cycle register"),
     ("quality_dashboard_2026q2.xlsx", "Quality dashboard export, quarter ended 31 December 2026",
-     "acute inpatient units", "sub-acute and psychiatric units", "Clinical Governance"),
+     "acute inpatient units", "sub-acute and psychiatric units", "Clinical Governance",
+     "Quality dashboard, quarterly export"),
     ("improvement_partnership_charter_v3.pdf", "Improvement partnership charter, version 3",
-     "the partnership's purpose, placement and assessment clauses", "schedules 1 to 3",
-     "Clinical Improvement"),
+     "parts 4 and 6", "parts 1 to 3, part 5, schedules 1 to 3", "Clinical Improvement",
+     "Committee papers, June 2024"),
     ("hac_indicator_specification_v4.pdf", "Hospital-acquired complication indicator specification 4.0",
-     "definition, risk adjustment, reporting and the complication list appendices", "worked examples",
-     "Clinical Governance"),
-    ("placement_cycle_notes.txt", "Notes on the placement cycle from the improvement unit's own thread",
-     "the cycle from 1 April 2027", "nothing", "Clinical Improvement"),
-    ("data_dictionary.csv", "Field semantics and grain statements for the extracts", "the files listed",
-     "the reference files", "Clinical Information and Coding"),
+     "sections 2 and 3, appendices A and B", "sections 1, 4 and 5, worked examples", "Clinical Governance",
+     "Clinical Governance document library"),
+    ("placement_cycle_notes.txt", "Notes on the placement cycle", "the cycle from 1 April 2027", "nothing",
+     "Clinical Improvement", "Clinical Improvement cycle folder"),
+    ("data_dictionary.csv", "Field semantics and grain statements", "the extracts and registers",
+     "the reference tables", "Clinical Information and Coding", "Warehouse catalogue"),
     ("patient_experience_unit_quarterly.csv", "Patient experience survey results by unit",
-     "the last six quarters", "units with fewer than 25 responses are reported as published",
-     "Consumer Engagement"),
+     "the last six quarters", "nothing; small response counts are reported as published",
+     "Consumer Engagement", "Patient experience survey platform"),
     ("nursing_hours_by_unit_monthly.csv", "Nursing hours per patient day and agency share by unit",
-     "the last four quarters", "medical staffing", "Nursing and Midwifery"),
+     "the last four quarters", "medical staffing", "Nursing and Midwifery", "Rostering system"),
     ("hand_hygiene_audit_2026.csv", "Hand hygiene audit moments and compliance by unit",
-     "the three 2026 audit periods", "audits before 2026", "Infection Prevention"),
+     "the three 2026 audit periods", "audits before 2026", "Infection Prevention",
+     "Hand hygiene audit tool"),
 ]
 
 
 def write_manifest(target):
-    rows = [[f, c, cov, om, owner, W.PULL_DATE.isoformat(),
-             "Mid-Rivers Health Network administrative and clinical systems", "Internal use"]
-            for f, c, cov, om, owner in MANIFEST]
+    rows = [[f, c, cov, om, owner, W.PULL_DATE.isoformat(), src,
+             "Mid-Rivers Health Network internal use"] for f, c, cov, om, owner, src in MANIFEST]
     rows.append([FILES["manifest"], "This inventory", "every file in the folder", "nothing",
-                 "Clinical Information and Coding", W.PULL_DATE.isoformat(),
-                 "Mid-Rivers Health Network administrative and clinical systems", "Internal use"])
+                 "Clinical Information and Coding", W.PULL_DATE.isoformat(), "Warehouse catalogue",
+                 "Mid-Rivers Health Network internal use"])
     return _csv(os.path.join(target, FILES["manifest"]),
-                ["file_name", "content", "covers", "omits", "prepared_by", "export_date", "source",
-                 "licence"], rows)
+                ["file_name", "content", "covers", "omits", "prepared_by", "export_date",
+                 "source_system", "licence"], rows)

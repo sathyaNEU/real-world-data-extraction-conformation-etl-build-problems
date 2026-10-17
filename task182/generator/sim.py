@@ -46,6 +46,10 @@ def met_series():
     for c in rng.choice(n10 - 60, size=11, replace=False):
         dur = int(rng.integers(3, 16))
         rain[c:c + dur] += np.abs(rng.normal(0.20, 0.13, dur))
+    # wind direction: a synoptic bearing that sits for a day or two, with the gust-to-gust scatter on it
+    synoptic = (212.0 + 86.0 * np.sin(2 * math.pi * hours / 71.0 + 1.3)
+                + 54.0 * np.sin(2 * math.pi * hours / 173.0 - 0.4))
+    wdir = (synoptic + rng.normal(0, 11.0, n10)) % 360.0
     temp = (11.6 + 4.1 * np.sin(2 * math.pi * hours / 24.0 - 2.2)
             + 2.2 * np.sin(2 * math.pi * hours / 150.0) + rng.normal(0, 0.4, n10))
     # what the mast's file carries, and what a reader of that file recovers
@@ -76,6 +80,7 @@ def met_series():
     rain_mm_shipped = inc * W.RAIN_TIP_MM
     return {"t0": t0, "n": n10, "wind_ms": wind, "wind_eff": eff_wind, "wind_shipped": shipped_wind,
             "rain_mm": rain, "rain_mm_shipped": rain_mm_shipped, "tips": tips,
+            "wind_dir": np.round(wdir).astype(int) % 360,
             "temp_c": np.round(temp, 1)}
 
 

@@ -149,14 +149,15 @@ Golden: NSL04, NSL11, NSL07, NSL02 and NSL13
 
 ## Stump sentence
 
-A competent solver pairs every deployment with its position, applies the calibration drift, excludes exactly
-the minutes the plan excludes, energetically averages each position's weekday daytime LAeq, energetically
-subtracts the background the position's own record shows and files NSL03, NSL04, NSL06, NSL11 and NSL12.
-The step that lands it there is taking that background from a record the plant was running in: the blowers,
-the centrifuges and the gas engine run through every assessment minute, so the background already contains
-the plant, the subtraction returns the surroundings' own variability (29.3 to 40.9 dB against specific
-levels of 37.5 to 53.1) and the slate fills with the dwellings on the Clonaraght road and the Glasha while
-NSL07, NSL02 and NSL13, the quiet-surroundings dwellings the plant contributes most to, drop out.
+A competent solver pairs every deployment with its position, takes each deployment's field-check deviation
+off its levels, excludes exactly the minutes the plan excludes, energetically averages each position's
+weekday daytime LAeq, energetically subtracts the background the position's own record shows and files
+NSL03, NSL04, NSL06, NSL11 and NSL12. The step that lands it there is taking that background from a record
+the plant was running in: the blowers, the centrifuges and the gas engine run through every assessment
+minute, so the background already contains the plant, the subtraction returns the surroundings' own
+variability (31.1 to 42.3 dB against specific levels of 37.4 to 53.0) and the slate fills with the dwellings
+on the Clonaraght road and the Glasha while NSL07, NSL02 and NSL13, the quiet-surroundings dwellings the
+plant contributes most to, drop out.
 
 ## Three rules
 
@@ -170,12 +171,16 @@ NSL07, NSL02 and NSL13, the quiet-surroundings dwellings the plant contributes m
   ("which five wards does the ventilation plant contribute most infections to") stops making sense, because
   infections do not add in energy, a ward's background infection rate is observable while the plant runs, and
   there is no quantity that the presence of the source makes unmeasurable.
-- **Layer 1:** UTC meter exports against field sheets in Irish Standard Time; six meters rotated over fourteen
-  positions so each has its own week and surroundings; pre- and post-deployment calibration checks with one
-  meter drifting; the met station logging ten-minute means against the meters' minutes, and wind in metres a
-  second before a sensor swap and kilometres an hour after it; positions known by a dwelling reference, a
-  position code and the crew's shorthand, one position moved mid-week; a download repeated after a card
-  error. Each comes from the survey's own equipment and paperwork and none is placed to be caught.
+- **Layer 1:** UTC meter exports against field sheets in Irish Standard Time; five meters rotated over
+  fourteen positions so each has its own week and surroundings; a field check either side of all 28
+  deployments, two meters reading outside the plan's window all survey and in opposite directions; the met
+  station logging ten-minute means against the meters' minutes, its rain gauge counting tips since midnight,
+  and wind in metres a second before a sensor swap and kilometres an hour after it; minutes the meter wrote
+  its no-data value for; positions known by a dwelling reference, a position code and the crew's shorthand,
+  two deployments standing at a height the schedule did not set; a download repeated after a card error; a
+  process historian carrying a counter that wraps, an hour counter replaced mid-survey, a blower channel
+  logged as both a rate and a totaliser, and a spell with no rows at all. Each comes from the survey's own
+  equipment and paperwork and none is placed to be caught.
 - **Layer 2:** field_method, own:residual-measured-in-the-source-s-own-absence. The methodological choice that
   flips the call is where the residual term of the energetic subtraction is measured: the position's own
   running record, or the minutes inside the plant's weekly process stops.
@@ -187,10 +192,19 @@ NSL07, NSL02 and NSL13, the quiet-surroundings dwellings the plant contributes m
   the dB(A) unit, the time base, the drift and the exclusions can all be handled exactly and the easy route
   still subtracts a background that contains the plant, because nothing in any field or definition says that
   the plant never stops.
-- **Not rule application:** no filed rule or procedure determines the residual. The plan files the quantity,
-  the assessment period, the validity criteria, the tonality test, the positions and the slot's size, and
-  stops there; executing every filed rule gives the measured total and the valid minute counts and leaves the
-  residual to the analyst.
+- **Not rule application:** the judge's caveat is that plan 3.1 and 7.1 "give most of the recipe, so the step
+  is close to rule application". They do give the recipe for everything except the one term that decides the
+  answer. 3.1 says the specific level is the measured level less the residual sound and defines the residual
+  as the sound from sources other than the plant; 7.1 says the slot takes the dwellings in order of that
+  level. Executing every filed clause end to end yields the measured level, the valid minute counts, the
+  energetic arithmetic and the ranking rule, and leaves the residual term unmeasured: no clause says over
+  which minutes of a six-week record the sound from sources other than the plant is to be taken, and no
+  clause says the plant ever stops. **The step no filed clause performs is choosing the plant-off window as
+  the residual's record**, which means reading the process log for the intervals where the blowers, the
+  centrifuges and the gas engine are all down, deciding that those 240 minutes a position are the only
+  record of the quantity 3.1 names, and accepting that they sit outside the assessment period 3.2 fixes for
+  the measured level. A solver who executes the plan and never opens the equipment log has every figure but
+  that one, and files a wrong slate; the five rungs above are what the record's own statistics give instead.
 - **Analyst test:** a strong analyst who maps every deployment, applies the drift, excludes exactly the plan's
   minutes and does the energetic arithmetic correctly still takes the background from the running record and
   files NSL03, NSL04, NSL06, NSL11 and NSL12.
@@ -240,20 +254,30 @@ Six tests per rung: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hyg
 
 ## Semantic fork table
 
+Every term and convention the main call runs on, with the reading the golden executes, the nearest
+alternative a literal reader could take, and what closes it. `checks.py` asserts every row.
+
 | id | Term or convention | Golden reading | Alternative | Ruled out by |
 |---|---|---|---|---|
 | SF1 | specific sound level | the measured level less the residual sound, energetically, in dB LAeq | the measured level itself | plan 3.1 names the subtraction in its definition |
 | SF2 | residual sound | the sound at the position with the plant's rotating equipment down | the statistical background of the position's own record | the quantity is the sound without the plant, and the event log shows the plant running through every minute a background would be taken from (asserted); this is the stump, not a reading: both readings execute, and the records decide |
 | SF3 | assessment period | weekday 07:00 to 19:00 inside the position's own deployment | every hour of the deployment | plan 3.2 states the period; weekend and night minutes are outside it |
-| SF4 | the position's level | the energetic mean of its valid assessment minutes | the arithmetic mean of the same minutes | plan 3.1 states the level is an energy-equivalent level; same slate either way, asserted |
-| SF5 | valid minute | a minute whose enclosing met record is inside the plan's rain and wind criteria | every logged minute | plan 4.2 states the criteria; the slate and every printed level are unchanged either way, asserted |
-| SF6 | calibration drift | the deployment's own adjustment from its pre- and post-deployment check | the certificate's nominal sensitivity | plan 4.1 states the field check governs; same call either way, asserted |
-| SF7 | the stops | every interval in which all three plant sources are recorded down | the weekly planned stop only | every printed level is identical to one decimal under both (asserted) |
-| SF8 | the total | the energetic mean over the assessment minutes outside the stops | the same including the stopped minutes | every printed level is identical to one decimal under both (asserted) |
-| SF9 | duplicated download | one copy of the repeated block | both copies | every printed level is identical to one decimal under both (asserted) |
-| SF10 | position identity | the position code in the register | the dwelling reference or the crew's shorthand | the register maps all three, one to one (asserted) |
-| SF11 | rounding | levels and the margin to one decimal, the slate on unrounded levels | the slate on rounded levels | the prompt's closing sentence; no two positions share a printed level and none sits within 0.25 dB of a rounding edge (asserted) |
-| SF12 | the five dwellings | the five highest specific levels | the five highest measured totals | the prompt asks what the slot is picked on, which plan 6.1 defines as the specific sound level |
+| SF4 | the position's level | the energetic mean of its valid assessment minutes | the arithmetic mean of the same minutes | plan 3.1 states the level is an energy-equivalent level; the arithmetic reading files its own wrong slate (ladder rung 2c) |
+| SF5 | valid minute, rain | a minute whose ten-minute met record counted rain on the gauge | the same record read as a rate above a limit | plan 4.2 states the test as a count and states no rate; a rate test on the ten-minute record selects exactly the same records, since one tip is 1.2 mm an hour (asserted equal, record by record) |
+| SF6 | valid minute, the met record | the record whose ten minutes contain the minute, the stamp being its start | the record stamped at the end of those ten minutes | the survey notes file the stamp as the start of the ten minutes each record covers (asserted present) |
+| SF7 | valid minute, no measurement | a minute whose levels are the instrument's no-data value is not valid | the no-data value read as a level | plan 4.2's last sentence; the notes file the value, the deployment remarks file each spell, and no no-data minute falls inside a process stop (asserted) |
+| SF8 | calibration correction | the deployment's deviation, the mean of its two field checks less 94.0 dB, taken off its levels, with its sign | the same difference taken as an absolute value | plan 4.1 defines the deviation as the mean less the reference and says it is taken off, so the sign follows the arithmetic; the two meters outside the window sit on opposite sides, so the signed reading is the only one that returns both to the calibrator |
+| SF9 | the stops | every interval in which all three plant sources are recorded down | the weekly planned stop only | every printed level is identical to one decimal under both (asserted) |
+| SF10 | the total | the energetic mean over the assessment minutes outside the stops | the same including the stopped minutes | every printed level is identical to one decimal under both, since no stop minute falls in the assessment period (asserted) |
+| SF11 | the two deployments | the position's residual over both of its weeks pooled | the mean of its two deployments' own residuals | every printed level is identical to one decimal under both (asserted) |
+| SF12 | duplicated download | one copy of the repeated block | both copies | every printed level is identical to one decimal under both (asserted) |
+| SF13 | position identity | the position code in the register | the dwelling reference or the crew's shorthand | the register maps all three, one to one (asserted) |
+| SF14 | rounding | levels and the margin to one decimal, the slate on unrounded levels | the slate on rounded levels | the prompt's closing sentence; no two positions share a printed level and none sits within 0.017 dB of a rounding edge (asserted) |
+| SF15 | the five dwellings | the five highest specific levels | the five highest measured totals | the prompt asks what the slot is picked on, which plan 7.1 defines as the specific sound level |
+| SF16 | the band file's time base | stamped UTC, like the minute file | stamped local | the notes file it; the highest band and every tone verdict are the same under both (asserted) |
+| SF17 | tonality, the adjacent mean | the mean of the two adjacent band levels as the file writes them | the energetic mean of the same two | plan 4.3 says the mean of the levels; both give the same verdict at every position (asserted) |
+| SF18 | the week, for a process figure | the counter reading at 00:00 on the Monday taken from the reading at 00:00 on the Monday after | the sum of the increments stamped inside the week | plan 5.1 files the two readings; the increment sum sits about 55 m3 low every week, so the ask turns on executing the filed convention |
+| SF19 | a centrifuge run | one start of a centrifuge in the equipment log | a block of feed in the process channel | plan 5.2 files what a run is; the channel's blocks count 6 where the log counts 10 to 13 |
 
 ## Ladder
 
@@ -262,27 +286,35 @@ Each figure is that rung's specific-level estimate in dB for the position, as bu
 
 | Rung | What it computes | Slate | 5th to 6th | Dies to |
 |---|---|---|---|---|
-| 0 complaints | rank by the complaints register's own count per dwelling | NSL01, NSL03, NSL06, NSL09, NSL12 | 1 complaint | plan 6.1: the slot is picked on the specific sound level, not on complaints |
-| 1 measured total | the energetic mean of each position's valid assessment minutes, uncorrected | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.38 dB | plan 3.1's definition, which subtracts the residual |
-| 2 statistical background (default) | total less the energetic mean of the position's minute LA90 values | NSL03, NSL04, NSL06, NSL11, NSL12 | 1.34 dB | the event log: the plant ran through every minute of that background |
-| 2' tenth percentile | total less the tenth percentile of the position's LAeq minutes | NSL02, NSL03, NSL04, NSL06, NSL07 | 0.24 dB | the same event log |
-| 2b quietest interval | total less the quietest quarter hour of the position's record | NSL03, NSL04, NSL06, NSL07, NSL11 | 0.14 dB | the same event log |
-| 2c arithmetic means | the arithmetic mean of the minute levels less the arithmetic mean of the minute LA90s | NSL03, NSL04, NSL06, NSL11, NSL12 | 1.24 dB | the same event log, and plan 3.1's energy-equivalent level |
-| **3 residual in the plant's stops (answer)** | total less the energetic mean of the position's minutes inside the plant's recorded stops | **NSL04, NSL11, NSL07, NSL02, NSL13** | **0.80 dB** | nothing in the pack |
+| 0 complaints | rank by the complaints register's own count per dwelling | NSL01, NSL03, NSL06, NSL09, NSL12 | 1 complaint | plan 7.1: the slot is picked on the specific sound level, not on complaints |
+| 1 measured total | the energetic mean of each position's valid assessment minutes | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.55 dB | plan 3.1's definition, which subtracts the residual |
+| 2 statistical background (default) | total less the energetic mean of the position's minute LA90 values | NSL03, NSL04, NSL06, NSL11, NSL12 | 0.11 dB | the event log: the plant ran through every minute of that background |
+| 2' tenth percentile | total less the tenth percentile of the position's LAeq minutes | NSL03, NSL04, NSL06, NSL07, NSL11 | 0.34 dB | the same event log |
+| 2b quietest interval | total less the quietest quarter hour of the position's record | NSL02, NSL04, NSL06, NSL07, NSL11 | 1.50 dB | the same event log |
+| 2c arithmetic means | the arithmetic mean of the minute levels less the arithmetic mean of the minute LA90s | NSL03, NSL04, NSL06, NSL07, NSL11 | 0.37 dB | the same event log, and plan 3.1's energy-equivalent level |
+| **3 residual in the plant's stops (answer)** | total less the energetic mean of the position's minutes inside the plant's recorded stops | **NSL04, NSL11, NSL07, NSL02, NSL13** | **1.26 dB** | nothing in the pack |
 
-**As built (`generator/figures.json`).** Specific sound levels 37.5 to 53.1 dB LAeq, residual sounds 29.3
-to 40.9 dB, measured totals 38.5 to 53.3 dB, every position's total at least 5.7 dB above its own residual,
-240 stop minutes behind every position's residual, and 6,190 to 6,900 valid assessment minutes a position.
-The slate is NSL04 (53.1), NSL11 (49.9), NSL07 (47.9), NSL02 (47.2) and NSL13 (46.0); NSL06 is the first
-dwelling off the list at 45.2, 0.8 dB behind. Five distinct wrong slates sit on the ladder above, and the
-thinnest of their own boundaries is 0.14 dB, on a route whose two sides are both wrong slates.
+**As built (`generator/figures.json`).** Specific sound levels 37.4 to 53.0 dB LAeq, residual sounds 31.1
+to 42.3 dB, measured totals 38.6 to 53.2 dB, every position's total at least 4.4 dB above its own residual,
+240 stop minutes behind every position's residual, and 5,463 to 6,130 valid assessment minutes a position
+against 1,070 to 1,737 excluded. The slate is NSL04 (53.0), NSL11 (49.9), NSL07 (47.8), NSL02 (47.3) and
+NSL13 (46.0); NSL06 is the first dwelling off the list at 44.7, 1.3 dB behind. Four distinct wrong slates
+sit on the ladder above (the quietest-interval route lands on the measured total's slate, and the
+arithmetic route on the tenth percentile's), and the thinnest of their own boundaries is 0.11 dB, on a
+route whose two sides are both wrong slates.
+
+**The flip conditions, as numbers.** The fifth and sixth places are NSL13 at 46.0 and NSL06 at 44.7. NSL06
+enters the slate only once its residual falls below 38.59 dB; the record puts it at 42.35, so 3.8 dB of
+residual has to go missing before the call moves. NSL13 leaves only once its own residual rises above
+40.66 dB; the record puts it at 32.34, 8.3 dB below that. One extra minute of record moves a position's
+level by under 0.003 dB, and no printed level sits closer than 0.017 dB to its rounding edge.
 
 **Worth of each rung, on the graded quantity.** Rung 1 moves one member of the slate (NSL06 for NSL13) and
-every printed level by 0.2 to 1.7 dB. Rung 2 moves three members and every printed level by 5 to 15 dB. Rung
-2b and 2c move the same three members by different amounts. No rung is a partial version of the decisive
-move: a background taken from the running record cannot be improved into the residual, because every
-percentile, interval and average of that record contains the plant. That is the property architecture 2's
-first draw lacked and the reason this ladder holds.
+every printed level by 0.2 to 1.8 dB. Rung 2 moves three members and every printed level by 4 to 15 dB.
+Rungs 2', 2b and 2c move one to three members by different amounts. No rung is a partial version of the
+decisive move: a background taken from the running record cannot be improved into the residual, because
+every percentile, interval and average of that record contains the plant. That is the property architecture
+2's first draw lacked and the reason this ladder holds.
 
 **Dominance and position.** The answer's slate is not the complaints slate (rung 0 shares one member), not
 the measured-total slate (four of five), and not the default path's slate (two of five). The default path's
@@ -291,12 +323,14 @@ dwelling and the plant dominates there, and the ladder's work is at the fourth a
 
 **The grid (measured on the built pack, asserted in `checks.py`).** The licensed readings of the golden's
 own route all give the golden slate and the same fourteen printed levels: the planned stops alone against
-every interval the log shows with all three sources down (identical to 0.000 dB, since the only other stop
-in the log falls before the first deployment), and the total over the assessment minutes against the total
-over the same minutes outside the stops (identical, since no stop minute falls in the assessment period).
-Two readings that violate a filed rule keep the slate and move figures: the calibration correction skipped
-(plan 4.1) moves ten printed levels by up to 0.31 dB, and the met exclusions skipped (plan 4.2) moves one
-by 0.08 dB. Every background taken from the running record gives a wrong slate, in the five rows above.
+every interval the log shows with all three sources down (identical, since the only other stop in the log
+falls before the first deployment); the total over the assessment minutes against the total over the same
+minutes outside the stops (identical, since no stop minute falls in the assessment period); and the
+position's residual pooled over its two weeks against the mean of the two weeks' own residuals (identical
+to one decimal at all fourteen). Two readings that violate a filed rule keep the slate and move figures:
+the calibration correction skipped (plan 4.1) moves ten printed levels by up to 0.40 dB, and the met
+exclusions skipped (plan 4.2) moves four by up to 0.20 dB. Every background taken from the running record
+gives a wrong slate, in the rows above.
 
 ## Closure table
 
@@ -306,22 +340,23 @@ by 0.08 dB. Every background taken from the running record gives a wrong slate, 
 | 2 Unit | one monitoring position at one dwelling | plan 2.1 |
 | 3 Window | weekday 07:00 to 19:00 within each position's deployment | plan 3.2 |
 | 4 As-of | records to 2026-10-16, the extract date; the slot ordered 2026-10-26 | no date after 2026-10-16 in any shipped file (asserted) |
-| 5 Version basis | one row per logged minute; the repeated download block counted once | SF9, convergent to one decimal |
+| 5 Version basis | one row per logged minute; the repeated download block counted once, and a minute whose columns carry the instrument's no-data value counted as no measurement | SF12 and SF7, convergent to one decimal |
 | 6 Divisor | none; levels are energetic means over the minutes in scope | SF4 |
+| 6b Process figures | each week's figure is the difference of two counter readings at its boundaries, and its runs are the log's starts inside it | plan 5.1 and 5.2, SF18 and SF19 |
 | 7 Weighting | every valid minute weighted equally in energy | plan 3.1's energy-equivalent level |
 | 8 Window length | each position's own deployment week, weekday daytime only | plan 3.2 |
-| 9 Boundary | the slate's 5th to 6th gap is 0.80 dB and every rung's is 0.71 dB or more | asserted |
-| 10 Rounding | levels and the margin to one decimal, counts and hours whole, the slate on unrounded levels | prompt's closing sentence; every printed level at least 0.25 dB from a rounding edge, no two equal (asserted) |
+| 9 Boundary | the slate's 5th to 6th gap is 1.26 dB; NSL06 needs 3.8 dB of residual to go missing to enter, NSL13 8.3 dB to appear to leave | asserted |
+| 10 Rounding | levels and the margin to one decimal, counts whole, the slate on unrounded levels | prompt's closing sentence; every printed level at least 0.017 dB from a rounding edge and at least 0.018 dB off the printed value itself, no two equal (asserted) |
 | 11 Tie-break | none needed: no two positions share a printed level | asserted |
 | 12 Maturity | every deployment is complete and downloaded; the survey closed 2026-10-09 | asserted |
 | 13 Order | identity, deployment pairing, drift, time base, validity, energetic mean, residual, subtraction, rank | the plan's own order of clauses |
 | 14 Row order | irrelevant; every figure is an aggregate | asserted |
-| 15 Duplicates | the repeated download block, identical minute for minute | SF9 |
-| 16 Identity | position code, dwelling reference and the crew's shorthand all map through the register | SF10 |
+| 15 Duplicates | the repeated download block, identical minute for minute | SF12 |
+| 16 Identity | position code, dwelling reference and the crew's shorthand all map through the register | SF13 |
 | 17 Netting | energetic subtraction of the residual, once, at the position level | plan 3.1 |
-| 18 Units | dB(A) for levels, mm an hour for rain, m a second for wind after conversion from km an hour | the survey notes state the met channels' units and the swap date |
+| 18 Units | dB(A) for levels, tips of 0.2 mm for rain, m a second for wind after conversion from km an hour, cubic metres and thousands of normal cubic metres for the plant's counters | the survey notes state the met channels' units and the swap date, and the process channels' headers carry theirs |
 | 19 Code semantics | the equipment identifiers and states in the event log, mapped in the survey notes | asserted |
-| 20 Integerisation | the minute counts are counts; no rounding of intermediate levels | asserted |
+| 20 Integerisation | the minute counts and the run counts are counts; the two counter figures round once, at the answer; no rounding of intermediate levels | asserted |
 | 21 Scope | sound only; the effluent quality and complaint files are outside the question | plan 1.2 |
 | 22 Forward window | none: the quantity is measured over a closed survey, and the slot it drives is not yet ordered | the design note's retrospective-quantity line below |
 
@@ -336,7 +371,10 @@ Executed word for word, the prompt and `noise_management_plan.pdf` give one quan
 measured level over weekday 07:00 to 19:00 less the residual sound, in dB LAeq, to one decimal) and one slate
 (the five highest), and leave exactly one thing open, where the residual is measured; every reading of every
 other term is either the golden's or ruled out in the fork table, and the two open readings of the residual
-are separated by the records rather than by a sentence, which is the stump.
+are separated by the records rather than by a sentence, which is the stump. The supplementary figures are
+closed the same way: the rain test is a count of tips and the nearest rate reading selects the same records
+(SF5), the no-data minutes are filed as no measurement (SF7), the week's process figures are two counter
+readings (SF18) and a run is a logged start (SF19).
 
 ## Oracles
 

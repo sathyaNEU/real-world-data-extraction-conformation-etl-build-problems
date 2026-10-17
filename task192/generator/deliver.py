@@ -151,6 +151,11 @@ def workbook(path, g):
         ("Dupla codificacao", "Duas rondas, fechadas em 20 de junho e em 10 de setembro, sobre "
                               "os relatos aceites do monitor entrados desde o fecho anterior "
                               "(protocolo 4.5). A ronda de outono e do periodo seguinte."),
+        ("Temas", "Dos catorze temas de disputa do protocolo (2.7), energia e redes e florestas e "
+                  "fogos entraram no registo com a mobilizacao de setembro."),
+        ("Contador de importacao", "O contador diario por via conta cada chegada, pelo que a carga "
+                                   "reposta de agosto esta contada outra vez em 14 de setembro; "
+                                   "cada relato conta uma vez."),
     ]
     for i, (k, vtxt) in enumerate(notes, 3):
         a = nt.cell(row=i, column=1, value=k)

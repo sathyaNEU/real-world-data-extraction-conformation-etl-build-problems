@@ -1,5 +1,7 @@
 # Determinism verdict, task192
 
+*Loop 0, architecture 3, 2026-10-17. Superseded: this verdict sent the build back and the repair it asked for is built. The design note's `## Tried and rejected` records what moved and `pipeline.json` names the re-staged loop-1 brief. Kept as the loop-0 evidence; it is not a verdict on the current pack.*
+
 **Verdict:** NOT_DETERMINISTIC (main recommendation, and supplementary answers 3, 4, 5 each carry an open fork). Failure label: `competing_defensible_answer` (governing), with `underspecified_objective` on the fortnight and partner-scope readings.
 
 **Disposition:** SEND_BACK. The committed 234 is one of at least eight values between 226 and 237 that the shipped files leave standing. Closing it changes what solvers see (the protocol text and/or the hand-coding design), so it needs a regenerate and a rerun. The three supplementary forks (fortnight length, P12 code, Azores clock) are fixable in the dictionary/protocol with no rerun of data, but the main fork is not.

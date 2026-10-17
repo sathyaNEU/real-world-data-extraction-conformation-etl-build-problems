@@ -87,7 +87,9 @@ def dictionary_sheets():
           ("estado_nome", "texto", "atual ou anterior"),
           ("codigo_municipio", "texto", "codigo do municipio"),
           ("municipio", "texto", "nome do municipio"),
-          ("distrito", "texto", "distrito"), ("regiao", "texto", "regiao de monitorizacao")]),
+          ("distrito", "texto", "distrito do gazeteiro; os Acores e a Madeira sao distritos "
+                                "distintos e config_monitor.json da o fuso de cada um"),
+          ("regiao", "texto", "regiao de monitorizacao")]),
         ("excecoes_geocodificacao", "Um registo por relato recebido que o gazeteiro nao fixou. Nao "
          "produz acao (protocolo 2.5) e nao entra nos ficheiros de relatos.",
          [("id_relato", "texto", "identificador do relato"),

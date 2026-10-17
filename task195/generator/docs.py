@@ -47,8 +47,26 @@ def protocol(target):
     for i, c in enumerate(W.CUTOFFS):
         cut_rows.append(["C%d" % (i + 1), "%.3f" % c, "issue 3, 2026-09-14"])
     f = [Paragraph("%s, %s: KVAL-07 method validation and method change" % (W.LAB, W.INSTITUTE), H1),
-         Paragraph("Issue 4, approved %s by %s, quality manager. Sections 1, 2, 6 and 7 and annexes B "
-                   "to E are not reproduced in this extract." % ("2027-02-19", W.PEOPLE["quality"]), SMALL),
+         Paragraph("Issue 4, approved %s by %s, quality manager. Review interval twelve months. "
+                   "Controlled copy, printed %s." % ("2027-02-19", W.PEOPLE["quality"],
+                                                      W.AS_OF.isoformat()), SMALL),
+         Paragraph("1 Purpose and scope", H2),
+         Paragraph("1.1 This file states how the laboratory validates a method change on an assay "
+                   "already in service, and how the change decision is taken and recorded. It covers "
+                   "the quality-control screens applied to sequencing output before release. It does "
+                   "not cover instrument qualification, which is KVAL-02, or the reference standards "
+                   "themselves, which are KVAL-11.", BODY),
+         Paragraph("1.2 A method already in service is replaced only on the evidence of a parallel run "
+                   "carried out under this file. A screen in service continues unchanged until the "
+                   "decision in section 4 is recorded.", BODY),
+         Paragraph("2 Responsibilities", H2),
+         Paragraph("2.1 The screening lead requests a verification, specifies the candidate method and "
+                   "is responsible for the parallel run being carried out as section 3 requires. The "
+                   "bioinformatics group is responsible for the candidate method's own documentation. "
+                   "The quality manager approves this file and its issues. The laboratory quality "
+                   "review takes the change decision and the quality team compiles the validation "
+                   "file.", BODY),
+         Paragraph("2.2 No one person both carries out a parallel run and takes the decision on it.", BODY),
          Paragraph("3 Verification of a replacement screen", H2),
          Paragraph("3.1 A replacement screen is verified on a parallel run. The parallel run for the "
                    "contamination screen covers specimens received on or after 1 March 2027 and on or "
@@ -91,6 +109,26 @@ def protocol(target):
          Paragraph("5.2 Where the identity panel reports a verdict after the validation extract is "
                    "taken, the specimen is carried into the next parallel run and is not added to a "
                    "closed comparison.", BODY),
+         Paragraph("6 Deviations and records", H2),
+         Paragraph("6.1 A departure from this file is recorded as a deviation against the validation "
+                   "and closed before the decision is taken. A deviation that changes the comparison's "
+                   "population or the decision rule voids the parallel run.", BODY),
+         Paragraph("6.2 The validation file, its extracts and the exports they were taken from are "
+                   "retained for fifteen years. Each extract is listed in the file's export manifest "
+                   "with its source, the date it was pulled and the terms it is held under.", BODY),
+         Paragraph("7 References and revision history", H2),
+         Paragraph("7.1 KVAL-02 instrument qualification. KVAL-11 reference standards and control "
+                   "material. SOP-LAB-18 release of sequencing results. The candidate method's own "
+                   "documentation is filed with the validation.", BODY),
+         Table(wrap([["Issue", "Approved", "Change", "Approved by"],
+                     ["2", "2025-11-03", "Validation of a new assay restructured into sections 3 to 5",
+                      W.PEOPLE["quality"]],
+                     ["3", "2026-09-14", "Candidate cutoffs listed in Table 2", W.PEOPLE["quality"]],
+                     ["4", "2027-02-19", "Verification of a replacement screen on a parallel run "
+                      "added; the run's window, its data cut and the decision rule are pre-specified "
+                      "by this issue, which is approved before a run opens", W.PEOPLE["quality"]]]),
+               colWidths=[14 * mm, 20 * mm, 60 * mm, 22 * mm]),
+         Spacer(1, 5 * mm),
          Paragraph("Annex A Validation request", H2),
          Paragraph("A.1 The screening lead requested the verification on 5 February 2027. The autumn intake "
                    "quarter is the heaviest of the year and the confirmatory queue is set before it "
@@ -139,11 +177,12 @@ def model_card(target, estimates):
          Table(wrap(rows), colWidths=[76 * mm, 40 * mm]),
          Spacer(1, 4 * mm),
          Paragraph("Computed by the bioinformatics group on the accepted read sets of the March to May "
-                   "2027 re-run, the file %s, after the last batch completed. The run's scope, reference "
-                   "build, marker panel and depth floor are in %s, filed with the re-run. The group "
-                   "reports this distribution as the estimator's behaviour on production material; "
-                   "where a share falls relative to any screening cutoff is KVAL-07's matter."
-                   % (W.FILES["mf"], W.FILES["config"]), SMALL),
+                   "2027 re-run that had completed by 16 June 2027; the file %s as filed also carries "
+                   "the batches of 17 June, so recomputing from the file moves these figures a little. "
+                   "The run's scope, reference build, marker panel and depth floor are in %s, filed "
+                   "with the re-run. The group reports this distribution as the estimator's behaviour "
+                   "on production material; where a share falls relative to any screening cutoff is "
+                   "KVAL-07's matter." % (W.FILES["mf"], W.FILES["config"]), SMALL),
          Paragraph("Known behaviour", H2),
          Paragraph("Specimens from the same donor sequenced twice return estimates within about 0.002 "
                    "of each other at low shares. A depth top-up library typed from the same extraction "
@@ -152,8 +191,8 @@ def model_card(target, estimates):
          Paragraph("Revision history", H2),
          Table(wrap([["Version", "Date", "Change", "Approved by"],
                      ["3.2", "2026-04-20", "First card for the v3.2 estimator", "Group lead"],
-                     ["3.4", "2027-01-26", "Two-component fit over the core panel; depth floor raised",
-                      "Group lead"],
+                     ["3.3", "2026-09-30", "Depth floor raised; marker panel re-stated", "Group lead"],
+                     ["3.4", "2027-01-26", "Two-component fit over the core panel", "Group lead"],
                      ["3.4.1", "2027-05-14", "Marker count floor stated; limit of detection "
                       "restated from the vendor series", "Group lead"],
                      ["3.4.1 add.", "2027-06-19", "Addendum: output on the 2027 re-run",
@@ -170,19 +209,29 @@ def weekly_reports(target, panel):
         counts[r[3]] = counts.get(r[3], 0) + 1
         dates[r[3]] = r[4]
     refs = sorted(counts)
+    # a handful of results are returned to the partner for re-typing on receipt, so for those weeks
+    # the partner's own total runs above what the laboratory loaded. The weeks the validation file
+    # reports are not among them.
+    returned = {}
+    outside = [r for r in refs if dates[r][5:7] not in ("04", "05")]
+    for r, n in zip([outside[1], outside[3], outside[-2]], (3, 2, 4)):
+        returned[r] = n
     f = [Paragraph("%s: identity panel weekly reports" % W.PARTNER, H1),
          Paragraph("Framework agreement AVT-2025-088 with %s, %s. Each report covers the results "
                    "issued in the week ending on the report date. Scanned on receipt by the "
                    "laboratory's reception desk." % (W.LAB, W.INSTITUTE), SMALL)]
     for ref in refs:
         rows = [["Report", "Issued", "Week ending", "Results issued"],
-                [ref, dates[ref], dates[ref], "%d" % counts[ref]]]
+                [ref, dates[ref], dates[ref], "%d" % (counts[ref] + returned.get(ref, 0))]]
         f.append(Paragraph("Report %s" % ref, H2))
         f.append(Table(wrap(rows), colWidths=[30 * mm, 30 * mm, 30 * mm, 30 * mm]))
         f.append(Spacer(1, 2.5 * mm))
         if ref == "BA-2027-W19":
             f.append(Paragraph("Issued two working days late; the courier returned the week's batch to "
                                "the depot on the Thursday.", SMALL))
+        if ref in returned:
+            f.append(Paragraph("%d of these results were returned on receipt for re-typing and were "
+                               "re-issued in a later week." % returned[ref], SMALL))
     f.append(Paragraph("A result is issued per specimen and aliquot typed. Where a report is re-sent, "
                        "the week's count includes the results sent again.", SMALL))
     d.build(f)

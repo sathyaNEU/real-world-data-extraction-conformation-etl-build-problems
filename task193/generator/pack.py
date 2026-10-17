@@ -223,8 +223,13 @@ def apply_mess(lines, people):
             rejected.append(r)
         else:
             kept.append(r)
-    # (3) one chain's first batch of the window re-sent under fresh line identifiers
-    resent = [r for r in kept if r["chain"] == 0 and 731 <= r["day"] <= 761]
+    # (3) a chain's transfers re-sent under fresh line identifiers after a failed transmission.
+    #     The large one is the October 2025 batch the register asked for again; a second, much
+    #     smaller one follows in the spring, so the pattern is not a single unique burst.
+    resent = [r for r in kept if r["chain"] == 0 and 731 <= r["day"] <= 764
+              and rng.random() < 0.91]
+    resent += [r for r in kept if r["chain"] == 3 and 952 <= r["day"] <= 958
+               and rng.random() < 0.63]
     base = max(r["line"] for r in lines) + 1000
     extra = []
     for j, r in enumerate(resent):
@@ -615,26 +620,25 @@ def write_distractors(tgt, kept=None):
     n1 = write_csv(os.path.join(tgt, "spontaneous_reports_summary.csv"),
                    ["product_code", "brand_name", "quarter", "reports_received",
                     "reports_serious", "reports_from_patients"], rows)
-    titles = ["Utilisation of %s in Danish primary care",
-              "A case series of %s exposure in pregnancy",
-              "Prescribing trends for %s after the reimbursement change",
-              "Adherence to %s over twelve months",
-              "Treatment persistence among new users of %s",
-              "Switching patterns away from %s",
-              "Dispensing of %s to older patients",
-              "Off-label dispensing of %s",
-              "A cohort study of %s initiation",
-              "Co-medication among %s users",
-              "Hepatic laboratory monitoring during %s treatment",
-              "Hospital admissions in the first year of %s",
-              "A nested case-control study of %s and fracture",
-              "Drug-utilisation review of %s in nursing homes",
-              "Reporting of adverse reactions to %s in the Nordic countries",
-              "A signal evaluation of %s and sleep disturbance",
-              "%s in renal impairment: a register study",
-              "Two years of %s on the Danish market",
-              "Discontinuation of %s after a safety communication",
-              "Comparative safety of %s and its class"]
+    # the screening desk's own titles, composed the way papers are titled rather than from one
+    # template: a design, a question and a setting, drawn independently
+    DESIGN = ["A register-based cohort study of", "A nested case-control study of",
+              "A self-controlled case series of", "A cross-sectional survey of",
+              "A systematic review of", "A drug-utilisation study of",
+              "An interrupted time-series analysis of", "A case series of",
+              "A record-linkage study of", "A prospective cohort study of"]
+    TOPIC = ["initiation of %s", "persistence on %s", "discontinuation of %s",
+             "co-medication with %s", "dose reduction of %s", "switching away from %s",
+             "adherence to %s", "off-label use of %s", "hospital admission after %s",
+             "laboratory monitoring during %s treatment", "reported reactions to %s",
+             "prescribing of %s to older patients", "%s in renal impairment",
+             "%s and the risk of fracture", "%s after a safety communication",
+             "the first two years of %s on the market"]
+    SETTING = ["in Danish primary care", "in the Nordic countries", "in nursing homes",
+               "in hospital outpatient clinics", "among women of childbearing age",
+               "in patients over 75", "across five regions", "in a national register",
+               "before and after the reimbursement change", "in general practice", "",
+               "in a prescription register", "among new users", "in routine care"]
     # the desk notes the signal a screened-in paper was read against, where it has one open
     tracked = {W.PNAME[pc]: "SM-%s-%s" % (pc, mc) for pc, mc in TRACKED_PAIRS}
     subjects = [W.PNAME[c] for c in W.PCODES] + sorted(
@@ -646,7 +650,10 @@ def write_distractors(tgt, kept=None):
         day = min(day, W.PULL_DAY - 3)
         decision = "screened in" if rng.random() < 0.22 else "not relevant"
         rows.append(["LS-2026-%03d" % (i + 1), W.iso(day),
-                     titles[int(rng.integers(0, len(titles)))] % name, name,
+                     (" ".join([DESIGN[int(rng.integers(0, len(DESIGN)))],
+                                TOPIC[int(rng.integers(0, len(TOPIC)))] % name,
+                                SETTING[int(rng.integers(0, len(SETTING)))]]).strip()
+                      .replace("  ", " ")), name,
                      str(rng.choice(["Embase", "Medline", "Scopus", "Web of Science"],
                                     p=[0.41, 0.33, 0.17, 0.09])),
                      decision,
@@ -795,6 +802,67 @@ VARIABLE_DOC = [
     ("submission_exceptions.csv", "rejection_reason",
      "The validation rule the line failed. One rule is recorded for a line even where it fails "
      "more than one."),
+    ("submission_exceptions.csv", "submitted_on",
+     "The date the chain transmitted the line. A line turned back may be transmitted again, and "
+     "the later transmission is a row of its own in the dispensing extract, not here."),
+    ("pharmacy_submission_log.csv", "lines_submitted, lines_accepted, lines_turned_back, "
+                                    "lines_withdrawn_by_chain",
+     "The chains' own monthly counts, by the month the chain transmitted the lines. They are the "
+     "chains' figures and not the register's, so they do not reconcile to the extract line for "
+     "line: a chain counts lines it withdrew before the register wrote them, and a batch sent "
+     "after a month's cut-off is counted by the chain in the month it sent it."),
+    ("pharmacy_register.csv", "pharmacy_id, pharmacy_name, chain_code, chain_name",
+     "The dispensing pharmacy, the name it trades under and the chain that owns it. A pharmacy "
+     "keeps its identifier if it changes chain."),
+    ("pharmacy_register.csv", "municipality",
+     "The municipality the pharmacy is sited in, as the authorisation register holds it."),
+    ("pharmacy_register.csv", "closed_on",
+     "The date the pharmacy's authorisation to dispense ended. Blank for a pharmacy still open "
+     "at the extract date. The register holds a closed pharmacy so that its earlier lines "
+     "resolve."),
+    ("product_register.csv", "product_code, brand_name, atc_code",
+     "The product as the authorisation register holds it. The product code is the division's "
+     "own and is the code Annex A of Standard 7-2024 uses."),
+    ("product_register.csv", "holder_code, previous_holder_code, holder_code_from",
+     "The marketing authorisation holder at the extract date, the holder before the latest "
+     "transfer, and the date that transfer took effect. Both are blank where the authorisation "
+     "has never been transferred."),
+    ("product_register.csv", "first_marketed, authorisation_valid_to",
+     "The first day the product could be dispensed in Denmark and, where the authorisation has "
+     "lapsed, the last. Blank where the authorisation is still in force."),
+    ("holder_register.csv", "holder_code, holder_name, cvr",
+     "The marketing authorisation holder and its central business register number."),
+    ("holder_register.csv", "merged_into, merger_date",
+     "Where a holder has merged into another company, the company that survives the merger and "
+     "the date it took effect. Both are blank for a holder that has not merged."),
+    ("screen_annexes.csv", "product_code, marker_code",
+     "One row per pair of a product in Annex A of Standard 7-2024 and a marker treatment group "
+     "in its Annex B, as the standard lists them for this run."),
+    ("signal_tracker_export.csv", "tracker_ref, opened_on, closed_on, status",
+     "The division's signal management tracker as it stood at the extract date: the reference "
+     "it gave the signal, the day it was opened, the day it was closed where it has been, and "
+     "the status it then carried."),
+    ("person_key_crosswalk.csv", "retired_person_key, current_person_key, replaced_on, reason",
+     "A pseudonym the register has replaced, the pseudonym that replaced it, the day of the "
+     "replacement and the civil-registration event behind it."),
+    ("atc_text.csv", "atc_code, atc_text, edition",
+     "The text the anatomical therapeutic chemical index gives a code, and the edition of the "
+     "index the text is taken from."),
+    ("(codelist)", "sex",
+     "K a woman, M a man, as the civil registration system codes it."),
+    ("(codelist)", "region",
+     "Hovedstaden, Midtjylland, Nordjylland, Sjaelland, Syddanmark. A patient the civil "
+     "registration system records outside Denmark carries no region."),
+    ("(codelist)", "rejection_reason",
+     "prescriber identifier not in the authorisation register; package code not valid on the "
+     "date of dispensing; reimbursement code missing; pharmacy identifier closed before the "
+     "date of dispensing; reimbursed price missing for the package on that date."),
+    ("(codelist)", "status",
+     "under assessment; closed, no further action; closed, product information updated; "
+     "closed, referred to the committee."),
+    ("(codelist)", "reason",
+     "The events that replace a pseudonym: civil registration number corrected; duplicate "
+     "registration resolved; pseudonymisation key regenerated after a data correction."),
     ("submission_exceptions.csv", "exception_ref",
      "One row for every line the register turned back at validation. A line turned back is not "
      "written to the dispensing extracts and has to be re-submitted to be held."),

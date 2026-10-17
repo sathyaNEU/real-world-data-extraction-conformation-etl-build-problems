@@ -9,7 +9,7 @@ import math
 import os
 from collections import OrderedDict, defaultdict
 
-REF_RATE = 96.5                      # specification 3.2, read back from the bundle below
+REF_RATE = 96.6                      # specification 3.2, read back from the bundle below
 SPEC_START = dt.date(2024, 7, 1)
 ASSESS_QUARTER = "2026-27 Q4"
 
@@ -301,12 +301,10 @@ def compute(target):
                             per_1000=hac / seps * 1000))
 
     # ask 4: the complication groups, by fiscal year
-    cat_group = {}
+    cat_group, group_names = {}, {}
     for r in _read(target, "hac_category_list.csv"):
-        cat_group[("2026", r["complication_code"])] = r["group_id"]
-    for code, group in LIST_2022_GROUPS.items():
-        cat_group[("2022", code)] = group
-    group_names = {r["group_id"]: r["group_name"] for r in _read(target, "hac_category_list.csv")}
+        cat_group[(r["list_revision"], r["complication_code"])] = r["group_id"]
+        group_names[r["group_id"]] = r["group_name"]
     found = defaultdict(lambda: defaultdict(set))
     detail_units = set()
     for r in _read(target, "hac_detail_extract.csv"):

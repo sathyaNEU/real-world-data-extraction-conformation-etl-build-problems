@@ -248,7 +248,7 @@ def write_weather(target):
     for i in range(SM.MET["n"]):
         stamp = SM.MET["t0"] + dt.timedelta(minutes=10 * i)
         rows.append([stamp.strftime("%Y-%m-%d %H:%M"), "%.1f" % SM.MET["wind_shipped"][i],
-                     "%d" % int((37 + 211 * math.sin(i / 97.0)) % 360),
+                     "%d" % SM.MET["wind_dir"][i],
                      "%d" % SM.MET["tips"][i], "%.1f" % SM.MET["temp_c"][i]])
     return _write_csv(os.path.join(target, FILES["weather"]),
                       ["measured_at_utc", "wind_speed", "wind_direction_deg", "rain_tips_today",
@@ -420,7 +420,7 @@ def write_effluent(target):
             grab = (seq % 7 == 3)
             pt = "final effluent" if not grab else rng.choice(["final effluent", "balance tank outfall"])
             bod = max(0.4, rng.normal(7.4 if grab else 9.8, 2.6))
-            cod = max(1.0, rng.normal(6.4, 1.9)) * 4.6
+            cod = bod * rng.uniform(2.4, 4.1) + max(0.0, rng.normal(6.0, 2.4))
             ss = max(0.3, rng.normal(3.1, 0.9))
             amm = max(0.01, rng.normal(0.42, 0.19))
             def val(x, lod, fmt):
@@ -431,7 +431,7 @@ def write_effluent(target):
             elif seq % 13 == 8:
                 note = "suspended solids filter blinded, result from duplicate"
             rows.append([day.isoformat(), pt, "grab" if grab else "composite, 24 hour",
-                         "Nore Valley Laboratories", "AA26-%05d" % (41200 + 37 * seq),
+                         "Nore Valley Laboratories", "NV26-%05d" % (41200 + 37 * seq),
                          val(bod, LOD["bod"], "%.1f"), val(cod, LOD["cod"], "%.0f"),
                          val(ss, LOD["ss"], "%.1f"), val(amm, LOD["amm"], "%.2f"),
                          "%.1f" % rng.normal(7.3, 0.2), note])

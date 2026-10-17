@@ -14,9 +14,6 @@ Stump terms swept: position, measured, residual, record, background, quantity, d
 - **REVIEW** `survey_notes.md`: 8 of 25 stump-paragraph terms appear (position, measured, record, register, records, running); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Put the answer in specific_sound_levels.csv, a row for each of the 14 monitoring positions: the plant's specific sound level in dB LAeq, the valid and the excluded assessment minutes, the one-third-octave band with the h"
 
-## 5 announcements (REVIEW 1)
-- **REVIEW** `survey_notes.md`: Where the measurement channel dropped out or the logger reset, the meter writes **-120.2 dB in every level column** for those minutes rather than leaving the row out; the deployment remarks give each spell.
-
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `calibration_records_2026.csv`: 6 ISO dates after 2026-10-16, e.g. 2026-11-26, 2027-01-22, 2027-02-18, 2027-03-11, 2027-04-07
 
@@ -26,6 +23,8 @@ Stump terms swept: position, measured, residual, record, background, quantity, d
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
+
+## 5 announcements (clean)
 
 ## 6 ranking artifacts (clean)
 

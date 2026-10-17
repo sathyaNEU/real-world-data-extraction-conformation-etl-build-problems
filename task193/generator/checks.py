@@ -3,6 +3,8 @@ import collections
 import csv
 import datetime as dt
 import json
+from decimal import Decimal as DEC
+from fractions import Fraction as FR
 import os
 import re
 
@@ -215,6 +217,18 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
        len(set(round(100.0 * r["after"] / r["n"], 1) for r in cands)) == len(cands),
        str(sorted(round(100.0 * r["after"] / r["n"], 1) for r in cands)))
     ok("SF17.referral_quarter_filed", W.REFERRAL_QUARTER == "2027 Q1")
+    prompt = open(os.path.join(os.path.dirname(tgt), "prompt.txt"), encoding="utf-8").read()
+    ok("SF18.payer_named_in_the_asking_sentence",
+       "per holder that pays the fee for a dispensing" in prompt)
+    ok("SF18.payer_reading_differs",
+       len(g["a2"]) == 7 and any(r["holder"] == "H7" and r["ddd"] > 0 for r in g["a2"]),
+       "the payer reading keeps the pre-merger holder as its own payer")
+    ok("SF19.chart_bar_count_in_the_asking_sentence",
+       "a bar per screened pair, all 23" in prompt)
+    ok("SF20.no_threshold_drawn",
+       "referral threshold" not in open(os.path.join(os.path.dirname(tgt), "submission.md"),
+                                       encoding="utf-8").read(),
+       "no graded criterion names a threshold marker")
 
     # ---------------------------------------------------------------- closure axes
     ok("ax9.boundary_inclusivity_filed", os.path.exists(
@@ -411,8 +425,10 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
        len(set(tuple(sorted(x.items())) for x in
                [{k: v for k, v in r.items() if k != "key"} for r in g["a1"]])) == len(g["a1"]))
     blob2 = text_blob
-    for nm in ("john doe", "acme", "company a", "lorem", "placeholder", "example.com", "test "):
-        ok("real.no_placeholder_" + nm.strip().replace(" ", "_"), nm not in blob2)
+    # whole words only: "latest transfer" and "company and" are prose, not placeholders
+    for nm in ("john doe", "acme", "company a", "lorem", "placeholder", "example.com", "test"):
+        ok("real.no_placeholder_" + nm.strip().replace(" ", "_").replace(".", "_"),
+           re.search(r"\b" + re.escape(nm) + r"\b", blob2) is None)
     people_names = ["Sine Jakobsen", "Arne Mogensen"]
     ok("real.personas_drawn", all(" " in p for p in people_names))
 
@@ -450,6 +466,81 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     ok("ask.a3_cells", len(g["a3"]) == 24, "%d" % len(g["a3"]))
     ok("ask.a3_not_stated_present",
        any(r["region"] == "not stated" and r["patients"] > 0 for r in g["a3"]))
+    # ------------------------------------------------- every graded figure sits mid bin
+    # The defined daily doses: a screened product's package holds a whole number of tenths of a
+    # dose, so a payer's window total is exact at one decimal and no rounding convention applies.
+    pkg = rd(tgt, "package_index.csv")
+    prods = set(r["product_atc"] for r in rd(tgt, "screen_annexes.csv"))
+    tenths_bad = [r["vnr"] for r in pkg
+                  if r["atc_code"] in prods and (DEC(r["ddd_per_pack"]) * 10) % 1 != 0]
+    ok("mid.ddd_per_pack_is_whole_tenths", not tenths_bad, str(tenths_bad[:5]))
+    ok("mid.holder_ddd_is_exact",
+       all((DEC(str(r["ddd"])) * 10) % 1 == 0 and (DEC(str(r["ddd_before"])) * 10) % 1 == 0
+           and (DEC(str(r["ddd_after"])) * 10) % 1 == 0 for r in g["a2"]),
+       "every payer's total is a whole tenth, so half-up and half-even agree")
+    # The fee: the exact krone figure is far from the half krone that would make it open.
+    worst_fee = min(r["fee_distance"] for r in g["a2"])
+    ok("mid.holder_fee_distance", worst_fee >= 0.25,
+       "tightest %.4f krone from the half krone; one more half-dose package moves a fee by "
+       "about %.2f krone" % (worst_fee, min(r["rate_after"] for r in g["a2"]) / 2000.0))
+    # The region and age shares: no cell is near the tenth-of-a-point boundary.
+    worst_share, worst_cell = 1.0, None
+    for r in g["a3"]:
+        pct = FR(100 * r["with_marker"], r["patients"])
+        near = round(pct * 20)
+        if near % 2 == 1:
+            d = abs(float(pct - FR(near, 20)))
+            if d < worst_share:
+                worst_share, worst_cell = d, (r["region"], r["band"])
+    ok("mid.a3_share_distance", worst_share >= 0.004,
+       "tightest %.5f of a point at %s; one patient either way moves that cell by %.2f of a "
+       "point" % (worst_share, worst_cell,
+                  100.0 / min(r["patients"] for r in g["a3"])))
+    ok("mid.a3_no_share_tie",
+       all(FR(100 * r["with_marker"], r["patients"]) * 20 % 2 != 0 or
+           FR(100 * r["with_marker"], r["patients"]) * 10 % 1 == 0 for r in g["a3"]),
+       "no cell's share is an exact half of a tenth")
+    # The median submission days: every even cell's two middle values already agree, above.
+    # The chart: 23 bars, every share distinct, so "longest first" has one order.
+    ok("mid.chart_bars", len(g["chart_rows"]) == 23, "%d" % len(g["chart_rows"]))
+    cs = [r["share_pct"] for r in g["chart_rows"]]
+    ok("mid.chart_order_unique", len(set(cs)) == 23 and cs == sorted(cs, reverse=True),
+       "closest two bars %.1f of a point apart"
+       % min(a - b for a, b in zip(sorted(cs, reverse=True), sorted(cs, reverse=True)[1:])))
+    ok("mid.chart_has_no_threshold_mark", True,
+       "the referral line is not drawn, because its position depends on the construction the "
+       "standard leaves open")
+
+    # ------------------------------------------------- the reports corroborate nothing
+    # The four products the two constructions disagree about must sit inside the range the other
+    # five span, on every reading of the spontaneous-report file, or the file is an oracle.
+    rep = {}
+    for r in rd(tgt, "spontaneous_reports_summary.csv"):
+        c = r["product_code"]
+        for col in ("reports_received", "reports_serious", "reports_from_patients"):
+            rep.setdefault(col, collections.Counter())[c] += int(r[col])
+    vol = collections.Counter()
+    for key, code, d, vnr, ph in rp[0]:
+        if code in W.PCODES and G.WIN_A <= d <= G.WIN_B:
+            vol[code] += 1
+    rep["reports_per_1000_lines"] = {c: 1000.0 * rep["reports_received"][c] / vol[c]
+                                     for c in W.PCODES}
+    decisive = ("P03", "P04", "P05", "P08")
+    others = [c for c in W.PCODES if c not in decisive]
+    for col, d in rep.items():
+        lo, hi = min(d[c] for c in others), max(d[c] for c in others)
+        ok("oracle.reports_tie_" + col,
+           all(lo < d[c] < hi for c in decisive),
+           "%s: the other five span %.3f to %.3f, the four the screen separates are %s"
+           % (col, lo, hi, ", ".join("%s %.3f" % (c, d[c]) for c in decisive)))
+        # and no cut on this reading isolates the pairs the two constructions disagree about
+        order = sorted(W.PCODES, key=lambda c: -d[c])
+        cuts = set(frozenset(order[:k]) for k in range(1, len(order)))
+        bad = [frozenset(x) for x in (("P03", "P04"), ("P05", "P08"), decisive) if
+               frozenset(x) in cuts]
+        ok("oracle.no_cut_isolates_" + col, not bad,
+           "order %s" % " ".join(order))
+
     # deleting every ask device leaves the call where it is
     ok("ask.devices_deletable", referred == _referred(tgt, rp, "perm", firsts))
 

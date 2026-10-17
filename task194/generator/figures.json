@@ -8,7 +8,7 @@
   "41240": 6,
   "41310": 9,
   "41320": 3,
-  "41330": 8,
+  "41330": 9,
   "41410": 3,
   "41420": 12,
   "41430": 2,
@@ -26,68 +26,69 @@
   "4.5"
  ],
  "closed_placements": 8,
+ "closed_placements_in_period": 8,
  "complication_groups": {
   "G1": {
-   "fy2025_26": 2829,
-   "fy2026_27": 1348,
+   "fy2025_26": 2837,
+   "fy2026_27": 1380,
    "name": "Healthcare-associated infections"
   },
   "G2": {
-   "fy2025_26": 1901,
-   "fy2026_27": 932,
+   "fy2025_26": 1945,
+   "fy2026_27": 899,
    "name": "Pressure injuries"
   },
   "G3": {
-   "fy2025_26": 1675,
-   "fy2026_27": 846,
+   "fy2025_26": 1710,
+   "fy2026_27": 861,
    "name": "Falls resulting in fracture or intracranial injury"
   },
   "G4": {
-   "fy2025_26": 1908,
-   "fy2026_27": 975,
+   "fy2025_26": 1824,
+   "fy2026_27": 952,
    "name": "Medication and anaesthetic complications"
   },
   "G5": {
-   "fy2025_26": 2274,
-   "fy2026_27": 1058,
+   "fy2025_26": 2074,
+   "fy2026_27": 1105,
    "name": "Delirium"
   },
   "G6": {
-   "fy2025_26": 2236,
-   "fy2026_27": 1110,
+   "fy2025_26": 2277,
+   "fy2026_27": 1166,
    "name": "Respiratory complications"
   },
   "G7": {
-   "fy2025_26": 1088,
-   "fy2026_27": 563,
+   "fy2025_26": 1172,
+   "fy2026_27": 537,
    "name": "Venous thromboembolism"
   },
   "G8": {
-   "fy2025_26": 1248,
-   "fy2026_27": 605,
+   "fy2025_26": 1259,
+   "fy2026_27": 608,
    "name": "Surgical complications requiring unplanned return to theatre"
   }
  },
  "effect_models": {
   "a constant drop in the standardised ratio": {
-   "chi_square": 36.312,
-   "likelihood_ratio": 18832700.0,
-   "parameter": 0.128226
+   "chi_square": 35.5661,
+   "likelihood_ratio": 13835400.0,
+   "parameter": 0.127638
   },
   "a constant number of complications": {
-   "chi_square": 23.569,
-   "likelihood_ratio": 32195.8,
-   "parameter": 26.771419
+   "chi_square": 22.538,
+   "likelihood_ratio": 20510.6,
+   "parameter": 26.701692
   },
   "a constant percent of the counterfactual": {
-   "chi_square": 22.9777,
-   "likelihood_ratio": 23955.2,
-   "parameter": 0.134503
+   "chi_square": 22.4961,
+   "likelihood_ratio": 20085.0,
+   "parameter": 0.133948
   },
   "a share of the unit's standing excess": {
-   "chi_square": 2.8098,
+   "chi_square": 2.6806,
    "likelihood_ratio": 1.0,
-   "parameter": 0.529857
+   "parameter": 0.529989
   }
  },
  "eligible_unit_codes": [
@@ -98,8 +99,8 @@
   "41330",
   "41240",
   "41520",
-  "41510",
   "41210",
+  "41510",
   "41320",
   "41410",
   "41430"
@@ -108,100 +109,100 @@
  "gap_complications": 9,
  "hospital_year": {
   "H1": {
-   "adjusted_rate_per_1000": 116.0,
-   "complications": 5555,
-   "episodes": 48656,
+   "adjusted_rate_per_1000": 116.1,
+   "complications": 5553,
+   "episodes": 48617,
    "name": "Alderbrook Hospital"
   },
   "H2": {
-   "adjusted_rate_per_1000": 119.3,
+   "adjusted_rate_per_1000": 119.5,
    "complications": 3159,
-   "episodes": 26850,
+   "episodes": 26869,
    "name": "Stonecreek Hospital"
   },
   "H3": {
-   "adjusted_rate_per_1000": 118.4,
-   "complications": 2669,
-   "episodes": 24519,
+   "adjusted_rate_per_1000": 118.2,
+   "complications": 2637,
+   "episodes": 24533,
    "name": "Marrowfield Hospital"
   },
   "H4": {
-   "adjusted_rate_per_1000": 114.5,
-   "complications": 240,
-   "episodes": 2340,
+   "adjusted_rate_per_1000": 113.7,
+   "complications": 238,
+   "episodes": 2323,
    "name": "Carrowdean District Hospital"
   }
  },
  "outside_indicator": {
   "2024-25 Q1": {
-   "separations": 901,
-   "with_complication": 50
+   "separations": 913,
+   "with_complication": 45
   },
   "2024-25 Q2": {
-   "separations": 793,
-   "with_complication": 42
+   "separations": 800,
+   "with_complication": 45
   },
   "2024-25 Q3": {
-   "separations": 832,
-   "with_complication": 44
+   "separations": 844,
+   "with_complication": 47
   },
   "2024-25 Q4": {
-   "separations": 918,
-   "with_complication": 46
+   "separations": 930,
+   "with_complication": 55
   },
   "2025-26 Q1": {
-   "separations": 908,
-   "with_complication": 37
+   "separations": 930,
+   "with_complication": 41
   },
   "2025-26 Q2": {
-   "separations": 808,
-   "with_complication": 36
+   "separations": 825,
+   "with_complication": 46
   },
   "2025-26 Q3": {
-   "separations": 819,
-   "with_complication": 42
+   "separations": 839,
+   "with_complication": 41
   },
   "2025-26 Q4": {
-   "separations": 900,
-   "with_complication": 50
+   "separations": 915,
+   "with_complication": 54
   },
   "2026-27 Q1": {
-   "separations": 917,
-   "with_complication": 47
+   "separations": 931,
+   "with_complication": 37
   },
   "2026-27 Q2": {
-   "separations": 809,
-   "with_complication": 47
+   "separations": 817,
+   "with_complication": 59
   }
  },
  "pick_excess_complications": 45.4,
- "pick_expected_complications": 190,
- "pick_planned_separations": 2196,
+ "pick_expected_complications": 189,
+ "pick_planned_separations": 2200,
  "pick_standardised_ratio": 1.24,
  "rate_denominator": 1000,
  "register_readings": {
-  "against what the other units did over the same quarters": 0.528018,
-  "least squares through the origin": 0.528591,
-  "least squares with an intercept": 0.529538,
-  "pooled sums": 0.527965,
-  "the median of the shares that are defined": 0.529271,
-  "the variance-weighted fit": 0.529857
+  "against what the other units did over the same quarters": 0.529681,
+  "least squares through the origin": 0.52886,
+  "least squares with an intercept": 0.527921,
+  "pooled sums": 0.52947,
+  "the median of the shares that are defined": 0.529538,
+  "the variance-weighted fit": 0.529989
  },
  "rung0_avoided": 4,
- "rung0_excess": 6.9,
- "rung0_excess_now": 42,
+ "rung0_excess": 7.1,
+ "rung0_excess_now": 43,
  "rung0_ratio_quarter": 1.23,
  "rung0_ratio_record": 1.04,
  "rung0_unit_code": "41210",
- "rung1_adjusted_rate": 126.7,
- "rung1_avoided": 8,
- "rung1_excess": 15.7,
- "rung1_planned_separations": 503,
- "rung1_ratio": 1.31,
+ "rung1_adjusted_rate": 127.2,
+ "rung1_avoided": 9,
+ "rung1_excess": 16.4,
+ "rung1_planned_separations": 513,
+ "rung1_ratio": 1.32,
  "rung1_unit_code": "41330",
  "rung2_avoided": 15,
- "rung2_excess": 28.7,
- "rung2_expected_next": 301,
+ "rung2_excess": 28.0,
+ "rung2_expected_next": 304,
  "rung2_unit_code": "41220",
  "runner_unit": "Alderbrook General Surgery",
  "runner_unit_code": "41220",
@@ -215,5 +216,6 @@
   "3.2",
   "3.3",
   "3.4"
- ]
+ ],
+ "year_end_day": 31
 }

@@ -25,6 +25,8 @@ def write(gendir, g):
         "charter_clauses": ["4.1", "4.2", "4.3", "4.4", "4.5"],
         "specification_clauses": ["2.1", "2.2", "2.3", "2.4", "2.5", "3.1", "3.2", "3.3", "3.4"],
         "rate_denominator": 1000,
+        "year_end_day": 31,
+        "closed_placements_in_period": 8,
         "closed_placements": len(g["record"]),
         "register_readings": {k: round(v, 6) for k, v in g["readings"].items()},
         "effect_models": {k: {"chi_square": round(v["chi_square"], 4),

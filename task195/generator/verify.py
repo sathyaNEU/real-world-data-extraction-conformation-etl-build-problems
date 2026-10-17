@@ -151,7 +151,7 @@ def run(target, figures_path):
         same("%s results issued" % ref, w["rows"], fig["panel_weeks"][ref]["results_issued"])
 
     amended = {}
-    for a in table(os.path.join(target, "release_amendments_2026-03_2027-05.csv")):
+    for a in table(os.path.join(target, "release_amendments_2027-04_2027-06.csv")):
         amended[(a["specimen_id"], a["field"])] = a["value_after"]
     months, rel_seen, flag_seen = {}, set(), set()
     with open(os.path.join(target, "qc_screen_history_2026-02-15_2027-02-28.csv"), encoding="utf-8") as fh:

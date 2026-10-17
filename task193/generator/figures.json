@@ -346,7 +346,7 @@
    "patients": 7,
    "after": 3,
    "before": 4,
-   "share_pct": null,
+   "share_pct": 42.9,
    "expected": null,
    "multiple": null,
    "referred": "below minimum",
@@ -374,7 +374,7 @@
    "patients": 13,
    "after": 7,
    "before": 6,
-   "share_pct": null,
+   "share_pct": 53.8,
    "expected": null,
    "multiple": null,
    "referred": "below minimum",
@@ -430,11 +430,128 @@
    "patients": 17,
    "after": 11,
    "before": 6,
-   "share_pct": null,
+   "share_pct": 64.7,
    "expected": null,
    "multiple": null,
    "referred": "below minimum",
    "crude_multiple": null
+  }
+ ],
+ "chart_rows": [
+  {
+   "label": "Varenadol + antiemetic",
+   "share_pct": 81.4,
+   "referred": "no"
+  },
+  {
+   "label": "Admirabin + antidepressant",
+   "share_pct": 80.2,
+   "referred": "no"
+  },
+  {
+   "label": "Sovraxil + topical corticosteroid",
+   "share_pct": 78.6,
+   "referred": "yes"
+  },
+  {
+   "label": "Varenadol + hypnotic",
+   "share_pct": 77.3,
+   "referred": "no"
+  },
+  {
+   "label": "Varenadol + acid-suppressant",
+   "share_pct": 76.1,
+   "referred": "no"
+  },
+  {
+   "label": "Admirabin + loop diuretic",
+   "share_pct": 75.7,
+   "referred": "no"
+  },
+  {
+   "label": "Pirenoxol + acid-suppressant",
+   "share_pct": 75.2,
+   "referred": "yes"
+  },
+  {
+   "label": "Kirunelle + hypnotic",
+   "share_pct": 74.3,
+   "referred": "yes"
+  },
+  {
+   "label": "Dalvextin + loop diuretic",
+   "share_pct": 73.9,
+   "referred": "yes"
+  },
+  {
+   "label": "Hestroban + antiemetic",
+   "share_pct": 72.1,
+   "referred": "yes"
+  },
+  {
+   "label": "Sovraxil + antipsychotic",
+   "share_pct": 64.7,
+   "referred": "below minimum"
+  },
+  {
+   "label": "Pirenoxol + antidepressant",
+   "share_pct": 55.6,
+   "referred": "no"
+  },
+  {
+   "label": "Oxelumab + antidepressant",
+   "share_pct": 55.2,
+   "referred": "yes"
+  },
+  {
+   "label": "Dalvextin + gout treatment",
+   "share_pct": 53.9,
+   "referred": "no"
+  },
+  {
+   "label": "Kirunelle + antipsychotic",
+   "share_pct": 53.8,
+   "referred": "below minimum"
+  },
+  {
+   "label": "Pirenoxol + hypnotic",
+   "share_pct": 52.9,
+   "referred": "no"
+  },
+  {
+   "label": "Dalvextin + acid-suppressant",
+   "share_pct": 50.8,
+   "referred": "no"
+  },
+  {
+   "label": "Ternivast + gout treatment",
+   "share_pct": 49.1,
+   "referred": "yes"
+  },
+  {
+   "label": "Hestroban + antipsychotic",
+   "share_pct": 42.9,
+   "referred": "below minimum"
+  },
+  {
+   "label": "Oxelumab + loop diuretic",
+   "share_pct": 34.8,
+   "referred": "no"
+  },
+  {
+   "label": "Oxelumab + topical corticosteroid",
+   "share_pct": 28.5,
+   "referred": "no"
+  },
+  {
+   "label": "Ternivast + antiemetic",
+   "share_pct": 20.5,
+   "referred": "no"
+  },
+  {
+   "label": "Ternivast + hypnotic",
+   "share_pct": 19.4,
+   "referred": "no"
   }
  ],
  "a1": [
@@ -640,171 +757,171 @@
  "a3": [
   {
    "region": "Hovedstaden",
-   "band": "18-34",
-   "patients": 678,
-   "share_pct": 69.6,
-   "with_marker": 472
+   "band": "18-29",
+   "patients": 480,
+   "share_pct": 69.0,
+   "with_marker": 331
   },
   {
    "region": "Hovedstaden",
-   "band": "35-54",
-   "patients": 800,
-   "share_pct": 73.9,
-   "with_marker": 591
+   "band": "30-49",
+   "patients": 797,
+   "share_pct": 72.3,
+   "with_marker": 576
   },
   {
    "region": "Hovedstaden",
-   "band": "55-69",
-   "patients": 558,
-   "share_pct": 80.8,
+   "band": "50-64",
+   "patients": 564,
+   "share_pct": 80.0,
    "with_marker": 451
   },
   {
    "region": "Hovedstaden",
-   "band": "70 and over",
-   "patients": 902,
-   "share_pct": 80.7,
-   "with_marker": 728
-  },
-  {
-   "region": "Midtjylland",
-   "band": "18-34",
-   "patients": 513,
-   "share_pct": 67.1,
-   "with_marker": 344
-  },
-  {
-   "region": "Midtjylland",
-   "band": "35-54",
-   "patients": 606,
-   "share_pct": 76.6,
-   "with_marker": 464
-  },
-  {
-   "region": "Midtjylland",
-   "band": "55-69",
-   "patients": 469,
-   "share_pct": 77.4,
-   "with_marker": 363
-  },
-  {
-   "region": "Midtjylland",
-   "band": "70 and over",
-   "patients": 682,
-   "share_pct": 77.7,
-   "with_marker": 530
-  },
-  {
-   "region": "Nordjylland",
-   "band": "18-34",
-   "patients": 232,
-   "share_pct": 66.8,
-   "with_marker": 155
-  },
-  {
-   "region": "Nordjylland",
-   "band": "35-54",
-   "patients": 290,
-   "share_pct": 72.4,
-   "with_marker": 210
-  },
-  {
-   "region": "Nordjylland",
-   "band": "55-69",
-   "patients": 185,
-   "share_pct": 78.4,
-   "with_marker": 145
-  },
-  {
-   "region": "Nordjylland",
-   "band": "70 and over",
-   "patients": 279,
+   "band": "65 and over",
+   "patients": 1097,
    "share_pct": 80.6,
-   "with_marker": 225
+   "with_marker": 884
   },
   {
-   "region": "Sjaelland",
-   "band": "18-34",
-   "patients": 297,
+   "region": "Midtjylland",
+   "band": "18-29",
+   "patients": 357,
+   "share_pct": 68.6,
+   "with_marker": 245
+  },
+  {
+   "region": "Midtjylland",
+   "band": "30-49",
+   "patients": 621,
+   "share_pct": 73.1,
+   "with_marker": 454
+  },
+  {
+   "region": "Midtjylland",
+   "band": "50-64",
+   "patients": 459,
+   "share_pct": 76.9,
+   "with_marker": 353
+  },
+  {
+   "region": "Midtjylland",
+   "band": "65 and over",
+   "patients": 833,
+   "share_pct": 77.9,
+   "with_marker": 649
+  },
+  {
+   "region": "Nordjylland",
+   "band": "18-29",
+   "patients": 172,
+   "share_pct": 65.7,
+   "with_marker": 113
+  },
+  {
+   "region": "Nordjylland",
+   "band": "30-49",
+   "patients": 277,
+   "share_pct": 72.9,
+   "with_marker": 202
+  },
+  {
+   "region": "Nordjylland",
+   "band": "50-64",
+   "patients": 198,
    "share_pct": 72.7,
-   "with_marker": 216
+   "with_marker": 144
+  },
+  {
+   "region": "Nordjylland",
+   "band": "65 and over",
+   "patients": 339,
+   "share_pct": 81.4,
+   "with_marker": 276
   },
   {
    "region": "Sjaelland",
-   "band": "35-54",
-   "patients": 401,
-   "share_pct": 74.6,
-   "with_marker": 299
+   "band": "18-29",
+   "patients": 206,
+   "share_pct": 73.3,
+   "with_marker": 151
   },
   {
    "region": "Sjaelland",
-   "band": "55-69",
-   "patients": 303,
-   "share_pct": 79.5,
-   "with_marker": 241
+   "band": "30-49",
+   "patients": 391,
+   "share_pct": 74.7,
+   "with_marker": 292
   },
   {
    "region": "Sjaelland",
-   "band": "70 and over",
-   "patients": 449,
-   "share_pct": 80.4,
-   "with_marker": 361
+   "band": "50-64",
+   "patients": 311,
+   "share_pct": 75.9,
+   "with_marker": 236
+  },
+  {
+   "region": "Sjaelland",
+   "band": "65 and over",
+   "patients": 542,
+   "share_pct": 80.8,
+   "with_marker": 438
   },
   {
    "region": "Syddanmark",
-   "band": "18-34",
-   "patients": 480,
+   "band": "18-29",
+   "patients": 339,
    "share_pct": 69.6,
-   "with_marker": 334
+   "with_marker": 236
   },
   {
    "region": "Syddanmark",
-   "band": "35-54",
-   "patients": 557,
-   "share_pct": 73.2,
-   "with_marker": 408
+   "band": "30-49",
+   "patients": 550,
+   "share_pct": 72.9,
+   "with_marker": 401
   },
   {
    "region": "Syddanmark",
-   "band": "55-69",
-   "patients": 408,
-   "share_pct": 77.7,
-   "with_marker": 317
+   "band": "50-64",
+   "patients": 433,
+   "share_pct": 75.5,
+   "with_marker": 327
   },
   {
    "region": "Syddanmark",
-   "band": "70 and over",
-   "patients": 569,
-   "share_pct": 80.5,
-   "with_marker": 458
+   "band": "65 and over",
+   "patients": 692,
+   "share_pct": 79.9,
+   "with_marker": 553
   },
   {
    "region": "not stated",
-   "band": "18-34",
-   "patients": 61,
-   "share_pct": 70.5,
-   "with_marker": 43
+   "band": "18-29",
+   "patients": 38,
+   "share_pct": 68.4,
+   "with_marker": 26
   },
   {
    "region": "not stated",
-   "band": "35-54",
-   "patients": 66,
+   "band": "30-49",
+   "patients": 75,
    "share_pct": 77.3,
-   "with_marker": 51
+   "with_marker": 58
   },
   {
    "region": "not stated",
-   "band": "55-69",
-   "patients": 48,
-   "share_pct": 77.1,
+   "band": "50-64",
+   "patients": 49,
+   "share_pct": 75.5,
    "with_marker": 37
   },
   {
    "region": "not stated",
-   "band": "70 and over",
-   "patients": 62,
-   "share_pct": 79.0,
-   "with_marker": 49
+   "band": "65 and over",
+   "patients": 75,
+   "share_pct": 78.7,
+   "with_marker": 59
   }
  ],
  "routes": {
