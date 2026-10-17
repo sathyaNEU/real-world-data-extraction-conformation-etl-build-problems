@@ -51,7 +51,7 @@ def actions(muni, locs):
     for l in locs:
         by_muni.setdefault(l["muni"], []).append(l)
     themes = [(t, w) for t, _, w in W.THEMES]
-    out = []
+    out, taken = [], set()
     for off in range(XDAY + 1):
         lam = W.ACTIONS_BASE * (W.ACTIONS_SURGE if d(off) >= W.SURGE_FROM else 1.0)
         limit, k, q = math.exp(-lam), 0, rng.random()
@@ -66,6 +66,9 @@ def actions(muni, locs):
             if theme == "PES" and not m["coastal"]:
                 theme = "SMU"
             loc = rng.choice(by_muni[m["code"]])
+            if (theme, loc["code"], off) in taken:
+                continue
+            taken.add((theme, loc["code"], off))
             weight = dict((t, w) for t, _, w in W.THEMES)[theme]
             conf = rng.random() < W.CONF_RATE * weight
             code = rng.choice(W.CONFRONTATIONAL) if conf else \
@@ -101,8 +104,8 @@ def routes(acts, rng):
             got.append("IMP")
         a["routes"] = got
         # the protocol keeps a filer's code where one exists, the classifier's otherwise
-        a["press_only"] = got == ["IMP"]
-        a["register_code"] = a["cls_code"] if a["press_only"] else a["code"]
+        a["pressed"] = "IMP" in got
+        a["register_code"] = a["cls_code"] if a["pressed"] else a["code"]
     return acts
 
 

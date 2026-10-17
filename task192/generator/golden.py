@@ -88,8 +88,8 @@ def actions(reports):
             a["filer_code"] = r["code"]
     out = []
     for a in acts.values():
-        a["press_only"] = a["routes"] == {"IMP"}
-        a["code"] = a["press_code"] if a["press_only"] else (a["filer_code"] or a["press_code"])
+        a["press_only"] = "IMP" in a["routes"]
+        a["code"] = a["press_code"] if a["press_code"] else a["filer_code"]
         a["coded_conf"] = a["code"] in CONF
         out.append(a)
     return sorted(out, key=lambda a: (a["day"], a["loc"], a["theme"]))

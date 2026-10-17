@@ -63,15 +63,15 @@ def peak(a, top, b):
 # ---------------------------------------------------------------- Annex A, the screened products
 # code, brand, atc, profile, incidence, first marketed (day or None), authorisation lapses, holder
 PRODUCTS = [
-    ("P01", "Dalvextin", "A10BX09", flat(),                    0.185, None, None, "H1"),
-    ("P02", "Pirenoxol", "M01AH07", seasonal(1.0, 0.18, 0.10), 0.205, None, None, "H2"),
-    ("P03", "Ternivast", "C10AX18", launch(860),               0.120, 860,  None, "H3"),
-    ("P04", "Oxelumab",  "L04AC22", launch(745),               0.150, 745,  None, "H1"),
-    ("P05", "Varenadol", "N02AX09", peak(380, 700, 930),       0.330, 380,  930,  "H4"),
-    ("P06", "Hestroban", "J01DH08", seasonal(1.0, 0.26, 0.55), 0.215, None, None, "H5"),
-    ("P07", "Kirunelle", "G03AA18", flat(),                    0.195, None, None, "H7"),
-    ("P08", "Admirabin", "B01AF05", peak(260, 660, 1010),      0.290, 260,  1010, "H6"),
-    ("P09", "Sovraxil",  "R03DX13", peak(60, 700, 1420),       0.235, None, None, "H5"),
+    ("P01", "Dalvextin", "A10BX09", flat(),                    0.185, -1631, None, "H1"),
+    ("P02", "Pirenoxol", "M01AH07", seasonal(1.0, 0.18, 0.10), 0.205, -2284, None, "H2"),
+    ("P03", "Ternivast", "C10AX18", launch(860),               0.120, 860,   None, "H3"),
+    ("P04", "Oxelumab",  "L04AC22", launch(745),               0.150, 745,   None, "H1"),
+    ("P05", "Varenadol", "N02AX09", peak(380, 700, 930),       0.330, 380,   930,  "H4"),
+    ("P06", "Hestroban", "J01DH08", seasonal(1.0, 0.26, 0.55), 0.215, -948,  None, "H5"),
+    ("P07", "Kirunelle", "G03AA18", flat(),                    0.195, -3012, None, "H7"),
+    ("P08", "Admirabin", "B01AF05", peak(260, 660, 1010),      0.290, 260,   1010, "H6"),
+    ("P09", "Sovraxil",  "R03DX13", peak(60, 700, 1420),       0.235, -1265, None, "H5"),
 ]
 # product -> (successor holder, the day the authorisation transferred)
 TRANSFERS = {
@@ -89,6 +89,13 @@ MARKERS = [
     ("M7", "topical corticosteroid", "D07AC", flat(), 0.580),
     ("M8", "antipsychotic",          "N05AH", flat(), 0.030),
 ]
+# how a patient's age band at the window's start multiplies each marker treatment's incidence
+AGE_TILT = {
+    "M1": [0.92, 0.98, 1.04, 1.08], "M2": [0.74, 0.95, 1.15, 1.26],
+    "M3": [0.55, 0.92, 1.24, 1.36], "M4": [0.48, 0.84, 1.28, 1.52],
+    "M5": [1.18, 1.10, 0.92, 0.78], "M6": [0.70, 0.93, 1.16, 1.33],
+    "M7": [1.14, 1.02, 0.95, 0.88], "M8": [0.86, 1.00, 1.08, 1.12],
+}
 ANNEX = {
     "P01": ["M4", "M2", "M3"],
     "P02": ["M2", "M6", "M5"],
@@ -111,11 +118,13 @@ EFFECTS = {
     ("P07", "M6"): (0.287018, 38.0),
     ("P09", "M7"): (0.475877, 41.0),
 }
-# defined daily dose per dispensed unit, constant within a medicine (the ATC index's own figure)
-DDD_PER_UNIT = {
-    "P01": 0.8, "P02": 0.5, "P03": 1.5, "P04": 0.25, "P05": 1.2,
-    "P06": 3.0, "P07": 0.9, "P08": 0.6, "P09": 2.5,
-    "M1": 1.6, "M2": 0.75, "M3": 0.4, "M4": 1.25, "M5": 0.6, "M6": 1.1, "M7": 0.35, "M8": 0.7,
+# the defined daily dose in milligrams, as the ATC index assigns it. A package's defined daily
+# doses are its pack size times its strength divided by this. D07AC carries no defined daily dose.
+DDD_MG = {
+    "P01": 50.0, "P02": 90.0, "P03": 10.0, "P04": 300.0, "P05": 60.0,
+    "P06": 1500.0, "P07": 2.0, "P08": 20.0, "P09": 400.0,
+    "M1": 16.0, "M2": 30.0, "M3": 400.0, "M4": 40.0, "M5": 50.0, "M6": 7.5,
+    "M7": None, "M8": 20.0,
 }
 # pack sizes per medicine, as the register's own package list holds them
 PACK_SIZES = {
@@ -160,30 +169,20 @@ FEE_AMENDMENT_DAY = 913               # 2026-04-01
 
 
 def packages():
-    """Package codes per medicine: structured Nordic article numbers, several per medicine."""
+    """Package codes per medicine: Nordic article numbers as the register issues them."""
+    rng = np.random.default_rng(SEED + 7)
+    pool = sorted(set(int(x) for x in rng.integers(100000, 599999, size=400)))
+    rng.shuffle(pool)
+    it = iter(pool)
     out = {}
-    n = 0
     for code in PCODES:
-        lst = []
-        for i in range(3):
-            n += 1
-            lst.append(("%06d" % (104200 + 37 * n), code, "product", None, None))
+        lst = [("%06d" % next(it), code, "product", None, None) for _ in range(3)]
         if code == "P09":                       # reissued at the authorisation transfer
-            old = []
-            for i, (vnr, c, kind, vf, vt) in enumerate(lst):
-                old.append((vnr, c, kind, None, TRANSFER_DAY - 1))
-            new = []
-            for i in range(3):
-                n += 1
-                new.append(("%06d" % (104200 + 37 * n), code, "product", TRANSFER_DAY, None))
-            lst = old + new
+            lst = [(v, c, k, None, TRANSFER_DAY - 1) for v, c, k, _, _ in lst]
+            lst += [("%06d" % next(it), code, "product", TRANSFER_DAY, None) for _ in range(3)]
         out[code] = lst
     for code in MCODES:
-        lst = []
-        for i in range(4):
-            n += 1
-            lst.append(("%06d" % (104200 + 37 * n), code, "marker", None, None))
-        out[code] = lst
+        out[code] = [("%06d" % next(it), code, "marker", None, None) for _ in range(4)]
     return out
 
 
@@ -194,9 +193,25 @@ for _c, _lst in PACKAGES.items():
         PKG_OF[_vnr] = (_code, _kind, _vf, _vt)
 
 
+BIRTH_LO, BIRTH_HI = 1934, 2008
+
+
+def age_bands(n_pat, seed=SEED + 101):
+    """Each patient's year of birth and their age band index at the window's start."""
+    rng = np.random.default_rng(seed)
+    birth = rng.integers(BIRTH_LO, BIRTH_HI, size=n_pat)
+    age = 2025 - birth
+    band = np.zeros(n_pat, dtype=int)
+    band = np.where(age >= 40, 1, band)
+    band = np.where(age >= 60, 2, band)
+    band = np.where(age >= 75, 3, band)
+    return birth, band
+
+
 def draw(seed=SEED, n_pat=N_PAT):
     """First-ever receipt day per medicine per patient; -1 where the patient never receives it."""
     rng = np.random.default_rng(seed)
+    birth, band = age_bands(n_pat)
     first = {}
     for row in PRODUCTS:
         code, prof, pi = row[0], row[3], row[4]
@@ -205,7 +220,10 @@ def draw(seed=SEED, n_pat=N_PAT):
         first[code] = np.where(hit, rng.choice(NDAY, size=n_pat, p=p), -1)
     for code, name, atc, prof, pi in MARKERS:
         p = prof / prof.sum()
-        hit = rng.random(n_pat) < pi
+        tilt = np.array(AGE_TILT[code], dtype=float)
+        share = np.bincount(band, minlength=4) / float(n_pat)
+        tilt = tilt / float((tilt * share).sum())          # mean preserving
+        hit = rng.random(n_pat) < np.clip(pi * tilt[band], 0.0, 0.98)
         first[code] = np.where(hit, rng.choice(NDAY, size=n_pat, p=p), -1)
     for (pc, mc), (e, lag_mean) in EFFECTS.items():
         tp = first[pc]

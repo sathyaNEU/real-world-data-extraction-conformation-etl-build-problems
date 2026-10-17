@@ -101,14 +101,14 @@ def workbook(path, g):
     rows = []
     for d in sorted(g["units"], key=lambda x: -x["avoided"]):
         rows.append([d["unit"], "%s %s" % (short(d["hospital"]), d["name"]), d["plan"],
-                     round(d["expected_plan"], 1), round(d["ratio"], 3), round(d["avoided"])])
+                     round(d["expected_plan"], 1), round(d["ratio"], 2), round(d["avoided"])])
     _sheet(ws, "Cycle IP-10 placement: complications a placement would avoid, by unit",
            "Quarter from 1 April 2027. Eligible units under charter clause 4.2. Prepared by Clinical "
            "Improvement, 18 March 2027.",
            ["Cost centre", "Unit", "Planned separations", "Expected complications",
             "Standardised ratio, specification period", "Complications avoided"],
            rows, [12, 30, 13, 13, 15, 13],
-           {3: "#,##0", 4: "0.0", 5: "0.000", 6: "#,##0"})
+           {3: "#,##0", 4: "0.0", 5: "0.00", 6: "#,##0"})
     n = len(rows)
     ws.append([])
     ws.append(["Recommendation", "%s %s (%s)" % (short(a["hospital"]), a["name"], a["unit"])])

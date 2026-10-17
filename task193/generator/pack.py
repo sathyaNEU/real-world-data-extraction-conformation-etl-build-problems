@@ -18,6 +18,20 @@ def write_csv(path, head, rows):
 
 
 # ---------------------------------------------------------------- dispensing lines
+WEEKDAY_WEIGHT = [1.0, 1.0, 1.0, 1.0, 1.0, 0.42, 0.0]
+
+
+def open_day(d, rng):
+    """Pharmacies do not dispense on a Sunday and dispense little on a Saturday, so a dispensing
+    falling on one is taken on an earlier open day."""
+    for _ in range(7):
+        w = WEEKDAY_WEIGHT[W.day(d).weekday()]
+        if w >= 1.0 or rng.random() < w:
+            return d
+        d = max(0, d - 1)
+    return d
+
+
 def dispensings(first):
     """Every dispensing line in the clean truth, plus the patient attributes behind them."""
     rng = np.random.default_rng(W.SEED + 11)
@@ -25,7 +39,7 @@ def dispensings(first):
     chain_of = rng.choice(len(W.CHAINS), size=n, p=[0.37, 0.28, 0.21, 0.14])
     region_of = rng.choice(len(W.REGIONS), size=n, p=W.REGION_W)
     outside = rng.random(n) < 0.023                     # registered outside Denmark at window start
-    birth = rng.integers(1934, 2008, size=n)
+    birth, _band = W.age_bands(n)
     sex = np.where(rng.random(n) < 0.508, "K", "M")
     pharm_of = {}
     for ci, (code, name) in enumerate(W.CHAINS):
@@ -45,6 +59,7 @@ def dispensings(first):
                 if d > W.NDAY - 1:
                     break
                 days.append(d)
+            days = [open_day(int(x), rng) for x in days]
             pk = W.PACKAGES[code]
             pres = "L%05d" % (10000 + int(rng.integers(0, 7400)))
             for j, d in enumerate(days):
@@ -57,12 +72,49 @@ def dispensings(first):
                 q = 0 if d < 823 else (1 if d < 913 else (2 if d < 1004 else 3))
                 mu = [[1.4, 1.9, 2.6, 2.2], [3.3, 2.8, 3.9, 4.5],
                       [4.6, 5.4, 6.3, 5.7], [6.1, 7.2, 6.6, 8.0]][ci][q]
-                lag = 1 + int(rng.poisson(mu))
+                lag = int(rng.poisson(mu))
                 lid += 1
                 lines.append({"line": lid, "pid": int(pid), "code": code, "vnr": vnr, "day": d,
                               "pharmacy": ph, "chain": ci, "packs": npk,
                               "submitted": min(d + lag, W.NDAY + 20), "prescriber": pres,
                               "is_first": j == 0})
+    # patients already on a medicine when the extract opens: their earliest line in the extract is
+    # in its first weeks, so the register's volume is in steady state from the first month and none
+    # of them can be a pair's patient (every first receipt falls in the clearance period).
+    prev_rng = np.random.default_rng(W.SEED + 53)
+    base = max(r["line"] for r in lines) + 1
+    for code in W.PCODES + W.MCODES:
+        pi = dict([(x[0], x[4]) for x in W.PRODUCTS] + [(m[0], m[4]) for m in W.MARKERS])[code]
+        n_prev = int(round(1.05 * pi * n))
+        who = prev_rng.choice(n, size=n_prev, replace=False)
+        pk = W.PACKAGES[code]
+        for pid in who:
+            d = int(prev_rng.integers(-150, 0))
+            reps = 1 + int(prev_rng.poisson(0.72))
+            pres = "L%05d" % (10000 + int(prev_rng.integers(0, 7400)))
+            for _ in range(reps):
+                d += int(prev_rng.integers(26, 124))
+                if d < 0 or d >= W.NDAY:
+                    continue
+                valid = [q for q in pk
+                         if (q[3] is None or d >= q[3]) and (q[4] is None or d <= q[4])]
+                if not valid:
+                    break
+                vnr = valid[int(prev_rng.integers(0, len(valid)))][0]
+                ci = int(chain_of[pid])
+                ph = pharm_of[ci][int(prev_rng.integers(0, len(pharm_of[ci])))]
+                q2 = 0 if d < 823 else (1 if d < 913 else (2 if d < 1004 else 3))
+                mu = [[1.4, 1.9, 2.6, 2.2], [3.3, 2.8, 3.9, 4.5],
+                      [4.6, 5.4, 6.3, 5.7], [6.1, 7.2, 6.6, 8.0]][ci][q2]
+                base += 1
+                dd = open_day(d, prev_rng)
+                lines.append({"line": base, "pid": int(pid), "code": code, "vnr": vnr, "day": dd,
+                              "pharmacy": ph, "chain": ci, "packs": int(prev_rng.choice(
+                                  [1, 2, 3], p=[0.615, 0.265, 0.120])),
+                              "submitted": dd + int(prev_rng.poisson(mu)), "prescriber": pres,
+                              "is_first": False, "prevalent": True})
+    for r in lines:
+        r.setdefault("prevalent", False)
     lines.sort(key=lambda r: (r["day"], r["line"]))
     people = {"chain": chain_of, "region": region_of, "outside": outside, "birth": birth, "sex": sex}
     return lines, people

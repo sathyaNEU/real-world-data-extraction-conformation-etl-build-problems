@@ -96,7 +96,7 @@ def write_item_log(target, reps, rng):
                 recv=r["recv_utc"] + drift)))
     titles = [o[0] for o in W.OUTLETS]
     weights = [o[3] for o in W.OUTLETS]
-    for i in range(16820):
+    for i in range(19240):
         off = rng.randrange(0, (W.EXTRACT - W.PERIOD_FROM).days + 1)
         recv = dt.datetime.combine(sim.d(off), dt.time(rng.randrange(6, 23), rng.randrange(0, 60)))
         items.append((recv, dict(

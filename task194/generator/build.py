@@ -64,16 +64,28 @@ def cut(target):
 
 
 def zip_pack(target, path):
-    """target.zip from the cut bundle: entries sorted, one fixed timestamp, deflated, so the archive is a
-    function of the bundle's bytes and nothing else."""
+    """target.zip from the cut bundle: the files at the archive's root under their own names, sorted, one
+    fixed timestamp, deflated, so a solver who unzips it gets the pack and not a folder, and so the archive
+    is a function of the bundle's bytes and nothing else."""
+    import hashlib
     import zipfile
+    names = sorted(os.listdir(target))
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
-        for name in sorted(os.listdir(target)):
-            info = zipfile.ZipInfo("target/" + name, date_time=(1980, 1, 1, 0, 0, 0))
+        for name in names:
+            info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o644 << 16
             with open(os.path.join(target, name), "rb") as fh:
                 z.writestr(info, fh.read())
+    # what a consumer unzips is the pack: the same names at the root, byte for byte
+    with zipfile.ZipFile(path) as z:
+        entries = z.namelist()
+        assert entries == names, "zip entries are not the pack's files: %s" % (set(entries) ^ set(names))
+        assert not any("/" in n or "\\" in n for n in entries), "a zip entry carries a directory"
+        for name in entries:
+            on_disk = open(os.path.join(target, name), "rb").read()
+            assert hashlib.sha256(z.read(name)).hexdigest() == hashlib.sha256(on_disk).hexdigest(), \
+                "zip entry %s differs from the file on disk" % name
     return path
 
 

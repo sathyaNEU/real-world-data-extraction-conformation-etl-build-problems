@@ -114,6 +114,63 @@ def run(target, g, state):
     edge = answer["excess"] / g["rung0"]["excess"]
     carried = g["rung0"]["last_excess"] / answer["last_excess"]
     ok(edge >= 1.2 * carried, "dominance %.2fx against 1.2 x %.2fx" % (edge, carried))
+    # every ranking a careful analyst would try, with its own margin, and what the golden quantity is at
+    # the unit it names: only the golden's own family names the answer
+    import statistics as st
+
+    def shrink(values, variances, mu):
+        tau2 = max(1e-9, st.pvariance(values) - sum(variances) / len(variances))
+        return {d["unit"]: mu + (tau2 / (tau2 + v)) * (y - mu)
+                for d, y, v in zip(units, values, variances)}
+
+    last_q = sorted({q for (u, q) in panel})[-1]
+    net_last = (sum(panel[(d["unit"], last_q)]["observed"] for d in units)
+                / sum(panel[(d["unit"], last_q)]["expected"] for d in units))
+    net_all = sum(d["observed"] for d in units) / sum(d["expected"] for d in units)
+    sh_last = shrink([d["last_ratio"] for d in units],
+                     [d["last_ratio"] / panel[(d["unit"], last_q)]["expected"] for d in units], net_last)
+    sh_all = shrink([d["ratio"] for d in units], [d["ratio"] / d["expected"] for d in units], net_all)
+
+    def window_ratio(code, w):
+        qs = G.quarters(panel, code)[-w:]
+        return pooled(panel, code, qs)
+
+    rankings = [
+        ("the latest quarter's risk-adjusted rate", lambda d: d["last_ratio"], "41410"),
+        ("the latest quarter's crude rate",
+         lambda d: panel[(d["unit"], last_q)]["observed"] / panel[(d["unit"], last_q)]["episodes"], "41410"),
+        ("the latest quarter's excess complications", lambda d: d["last_excess"], "41210"),
+        ("the risk-adjusted rate over the specification period", lambda d: d["ratio"], "41330"),
+        ("the crude rate over the specification period",
+         lambda d: d["observed"] / sum(panel[(d["unit"], q)]["episodes"]
+                                       for q in G.quarters(panel, d["unit"])), "41330"),
+        ("the trailing four-quarter rate", lambda d: window_ratio(d["unit"], 4), "41330"),
+        ("the trailing eight-quarter rate", lambda d: window_ratio(d["unit"], 8), "41330"),
+        ("a reliability-adjusted latest quarter", lambda d: sh_last[d["unit"]], "41410"),
+        ("a reliability-adjusted standing", lambda d: sh_all[d["unit"]], "41330"),
+        ("the complications the quarter carries at the standing", lambda d: d["expected_next"], "41220"),
+        ("the register's share on the latest quarter's excess",
+         lambda d: share * d["last_excess"], "41210"),
+        ("the golden's ranking", lambda d: d["excess"], "41230"),
+        ("the golden on a four-quarter standing",
+         lambda d: (window_ratio(d["unit"], 4) - 1) * d["expected_plan"], "41230"),
+        ("the golden on an eight-quarter standing",
+         lambda d: (window_ratio(d["unit"], 8) - 1) * d["expected_plan"], "41230"),
+        ("the golden on recent activity instead of the plan",
+         lambda d: (d["ratio"] - 1) * d["expected"] / d["quarters"], "41230"),
+    ]
+    for label, key, expected_unit in rankings:
+        order = sorted(units, key=lambda d: -key(d))
+        ok(order[0]["unit"] == expected_unit,
+           "the ranking on %s names %s (got %s)" % (label, expected_unit, order[0]["unit"]))
+        if expected_unit != answer["unit"]:
+            ok(order[0]["avoided"] < 0.70 * answer["avoided"],
+               "the unit %s names avoids %.2f against %.2f at the answer"
+               % (label, order[0]["avoided"], answer["avoided"]))
+        else:
+            ok(key(order[0]) / key(order[1]) >= 1.35,
+               "%s holds the answer by %.3fx" % (label, key(order[0]) / key(order[1])))
+
     # every reflex lands on a unit the golden does not name
     reflex = {
         "adjusted rate now": max(units, key=lambda d: d["last_ratio"])["unit"],
@@ -234,6 +291,14 @@ def run(target, g, state):
         dist = abs(val / step - round(val / step))
         ok(0.5 - dist >= 0.07, "%s sits inside its bin (%.3f)" % (name, 0.5 - dist))
     ok(g["gap"] == round(answer["avoided"]) - round(runner["avoided"]), "the gap is the two rounded counts")
+    # the workbook's two context columns, which the prompt does not ask for and the write-up does not
+    # state, still sit clear of their own rounding edges at the precision they are shown to
+    for d in units:
+        for label, val, places in ((" expected complications", d["expected_plan"], 1),
+                                   (" standardised ratio", d["ratio"], 2)):
+            step = 10.0 ** -places
+            dist = abs(val / step - round(val / step))
+            ok(0.5 - dist >= 0.05, "%s%s sits inside its bin (%.3f)" % (d["unit"], label, 0.5 - dist))
 
     # ---------- the semantic fork table ----------
     # SF1 eligibility

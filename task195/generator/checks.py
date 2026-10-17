@@ -351,6 +351,68 @@ def run(target, g=None):
     ok("ask 3 the per cent label is two orders from the prepared level",
        all(abs(d["median_recovery"] - d["median_recovery"] * 100) > 1 for d in g["dilution"]))
 
+    # ---------------------------------------------------------------- the pack reads as the laboratory's
+    accepted = {r["specimen_id"]: float(r["mixture_fraction"]) for r in mf_rows
+                if r["read_set_accepted"] == "Y"}
+    shares = [(float(r["second_contributor_share"]), accepted.get(r["specimen_id"]))
+              for r in panel_rows if r["verdict"] == "MIXED" and r["second_contributor_share"]]
+    shares = [(a, b) for a, b in shares if b is not None]
+    mx = sum(b for _a, b in shares) / len(shares)
+    my = sum(a for a, _b in shares) / len(shares)
+    cov = sum((b - mx) * (a - my) for a, b in shares)
+    den = (sum((b - mx) ** 2 for _a, b in shares) * sum((a - my) ** 2 for a, _b in shares)) ** 0.5
+    ok("the panel's share and the re-run's estimate measure the same mixture", cov / den > 0.75,
+       "r %.3f" % (cov / den))
+    run_log = rows_of(os.path.join(target, W.FILES["runlog"]), ";")
+    received = {r["received_local"][:10] for r in run_log} | {r["received_date"] for r in hist}
+    ok("nothing is received on a day the laboratory is closed",
+       not (received & {d.isoformat() for d in W.HOLIDAYS}))
+    per_day = {}
+    for r in run_log:
+        per_day[r["received_local"][:10]] = per_day.get(r["received_local"][:10], 0) + 1
+    ok("the receipt day's own size varies", max(per_day.values()) - min(per_day.values()) > 30)
+    thresholds = {}
+    for r in run_log:
+        thresholds.setdefault(r["batch_id"], set()).add(r["control_threshold_het_pct"])
+    ok("a control threshold is set and held", max(len(v) for v in thresholds.values()) <= 2)
+    typed_all = {r["panel_markers_typed"] for r in panel_rows}
+    ok("the panel's typing record varies", len(typed_all) > 6)
+    ok("an inconclusive result is one the panel could not type",
+       all(int(r["panel_markers_typed"]) < 80 for r in panel_rows if r["verdict"] == "INCONCLUSIVE"))
+    cross = {r["specimen_id"]: r for r in rows_of(os.path.join(target, W.FILES["crosswalk"]), "\t")}
+    ok("the register's request is the biobank's request",
+       all(cross[r["specimen_id"]]["request_id"] == r["request_id"] for r in panel_rows
+           if r["specimen_id"] in cross))
+    per_request = {}
+    for r in cross.values():
+        per_request[r["request_id"]] = per_request.get(r["request_id"], 0) + 1
+    ok("a request covers a specimen or a family group", max(per_request.values()) <= 3)
+    ok("the biobank reference is well formed",
+       not any("--" in r["biobank_ref"] for r in cross.values()))
+    est_vals = [r["mixture_fraction"] for r in mf_rows]
+    ok("the estimate has no floor",
+       max(est_vals.count(v) for v in set(est_vals)) < len(est_vals) / 20)
+    strides = sorted({int(a["specimen_id"].split("-")[1]) - int(b["specimen_id"].split("-")[1])
+                      for a, b in zip(hist[1:], hist)} - {0})
+    ok("accessions are not issued on a fixed stride", len(strides) > 4)
+    import openpyxl as _x
+    wb = _x.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
+    dil = [r for r in wb["Replicate results"].iter_rows(min_row=2, values_only=True)]
+    d5 = [r[4] for r in dil if str(r[0]).upper() == "L5"]
+    d6 = [r[4] for r in dil if str(r[0]).upper() == "L6"]
+    ok("each level was sequenced on its own", d5 != d6)
+    lower = [i for i, r in enumerate(dil) if str(r[0])[0].islower()]
+    ok("the operator's casing is not a pattern",
+       len({b - a for a, b in zip(lower, lower[1:])}) > 2)
+    for key, pulled in (("mf", "2027-06-18"), ("weekly", W.AS_OF.isoformat()),
+                        ("panel", W.AS_OF.isoformat())):
+        rowm = [r for r in rows_of(os.path.join(target, W.FILES["manifest"])) if r["file"] == W.FILES[key]]
+        ok("the manifest's pull date for %s is the file's own" % key, rowm and rowm[0]["pulled"] == pulled)
+    ok("no estimate was completed after the re-run was pulled",
+       max(r["completed_date"] for r in mf_rows) <= "2027-06-18")
+    ok("the protocol's annex does not predate its issue",
+       re.search(r"requested the verification on 5 February 2027", doc_text) is not None)
+
     # ---------------------------------------------------------------- gates, provenance, realism
     files = sorted(os.listdir(target))
     ok("input gate, ten files or more", len(files) >= 10, str(len(files)))

@@ -174,12 +174,12 @@ def dilution(target):
             if _slack3(median / frac) >= 0.00042:
                 break
         for i, v in enumerate(vals):
-            results.append([lv if i % 3 else lv.lower(), i + 1,
+            results.append([lv.lower() if rng.random() < 0.21 else lv, i + 1,
                             "RS27-D%05d" % (4100 + len(results) * 3),
-                            v, round(lrng.uniform(31.0, 58.0), 1), None])
+                            v, round(rng.uniform(31.0, 58.0), 1), None])
         if lv == "L3":
             results.append([lv, W.DILUTION_REPLICATES + 1, "RS27-D%05d" % (4100 + len(results) * 3),
-                            None, round(lrng.uniform(31.0, 58.0), 1), "voided, control failure"])
+                            None, round(rng.uniform(31.0, 58.0), 1), "voided, control failure"])
     ws2 = wb.create_sheet("Replicate results")
     ws2.append(["Level", "Replicate", "Read set", "Recovered fraction", "Mean depth", "Note"])
     for r in results:

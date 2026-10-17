@@ -62,9 +62,9 @@ def protocol(target):
          Paragraph("2.4 A data de uma acao e o dia de calendario local em que a acao comecou, tal "
                    "como o registo o fixa, e nao a data de nenhum relato.", BODY),
          Paragraph("2.5 Um relato cuja localidade o gazeteiro nao fixa nao produz acao.", BODY),
-         Paragraph("2.6 O codigo que o registo guarda para uma acao e o do relato de uma organizacao "
-                   "parceira ou da linha de participacao publica quando existe um, e o do monitor de "
-                   "imprensa nas restantes acoes.", BODY),
+         Paragraph("2.6 O codigo que o registo guarda para uma acao e o do relato do monitor de "
+                   "imprensa quando o monitor tem relato dessa acao, e o do relato da organizacao "
+                   "parceira ou da linha de participacao publica nas restantes acoes.", BODY),
          Paragraph("Parte 3 Periodo e indicadores", H2),
          Paragraph("3.2 O periodo de relato e de 1 de maio a 30 de outubro de 2026, inclusive. O "
                    "registo abriu em 1 de maio de 2026 e nao traz nenhuma acao anterior a essa data.",

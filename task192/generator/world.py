@@ -75,8 +75,8 @@ P_LINE = 0.17           # the public line receives one
 CLS_RECALL = 0.44       # confrontational actions it codes as confrontational
 CLS_FALSE_MARK = 0.0125  # ordinary actions it codes as confrontational
 CONF_RATE = 0.051      # the share of actions that are confrontational
-SAMPLE_SIZE = 1500      # press reports hand coded over the period's two rounds
-SAMPLE_ROUNDS = [(dt.date(2026, 7, 20), 600), (dt.date(2026, 11, 3), 900)]
+SAMPLE_SIZE = 2600      # press reports hand coded over the period's two rounds
+SAMPLE_ROUNDS = [(dt.date(2026, 7, 20), 1100), (dt.date(2026, 11, 3), 1500)]
 
 PARTNERS = [
     ("P01", "Nucleo de Estudos do Trabalho do Minho", "Norte", 6.40),

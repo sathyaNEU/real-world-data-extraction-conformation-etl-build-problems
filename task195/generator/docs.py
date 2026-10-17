@@ -92,7 +92,7 @@ def protocol(target):
                    "taken, the specimen is carried into the next parallel run and is not added to a "
                    "closed comparison.", BODY),
          Paragraph("Annex A Validation request", H2),
-         Paragraph("A.1 The screening lead requested the verification on 4 June 2027. The autumn intake "
+         Paragraph("A.1 The screening lead requested the verification on 5 February 2027. The autumn intake "
                    "quarter is the heaviest of the year and the confirmatory queue is set before it "
                    "opens, so a change to the contamination screen is decided at the June review or "
                    "left for the next quarter.", BODY),
@@ -138,8 +138,10 @@ def model_card(target, estimates):
          Paragraph("What the estimator returned on the 2027 archive", H2),
          Table(wrap(rows), colWidths=[76 * mm, 40 * mm]),
          Spacer(1, 4 * mm),
-         Paragraph("Computed on the accepted read sets of the March to May 2027 re-run, the file "
-                   "%s. The table describes the estimator's output and states no verdict." % W.FILES["mf"], SMALL),
+         Paragraph("Computed on the accepted read sets of the March to May 2027 re-run, the file %s. "
+                   "The run's scope, reference build, marker panel and depth floor are in %s, filed with "
+                   "the re-run. The table describes the estimator's output and states no verdict."
+                   % (W.FILES["mf"], W.FILES["config"]), SMALL),
          Paragraph("Known behaviour", H2),
          Paragraph("Specimens from the same donor sequenced twice return estimates within about 0.002 "
                    "of each other at low shares. A depth top-up library typed from the same extraction "
