@@ -194,6 +194,26 @@ measure that before cutting rather than after. That is the right order. A device
 gravest finding in the book, and the cost of holding one for a pass is nothing beside the cost of
 finding it in a verdict.
 
+**Measure the forcing before the pack is cut, and state it as a number.** The difference between a
+device and a fork is not how good the inconsistency is, it is whether you can say what makes the wrong
+reading wrong. task193's chain ask stopped being a fork the moment it could report that the chains' own
+log ties to the extract in all 148 chain-months under one reading and fails in 144 of them by 56,626
+lines under the other; its dose ask the moment nine package rows contradicted their column's own
+documented formula while the other 49 satisfied it. task182's air ask had an argument of the same kind
+and no number of that kind, and a judge then found a number pointing the other way: the third meter's
+rate was a constant fraction of the header's in every week, always below 1, which reads as that meter
+sitting inside the header rather than beside it. An argument loses to an arithmetic pattern. So for
+each ask device, compute the figure that makes the wrong reading wrong, assert it on the cut pack, and
+where no such figure exists, replace the ask rather than ship it.
+
+**A stopping rule has to check its fallback is shippable.** Four ask passes into task182 the author set
+one: another fork and the ask layer is cut back to what the records force, shipping on a weaker layer
+rather than spending more passes. The judge's own figures then showed the fallback did not exist, since
+pinning the two open quantities kills both devices and a response that lands the call banks about 45
+plus most of the ask weight, putting the pair near 70. A weaker ask layer is not always a shippable
+one. Before setting a limit that ends in "ship it as it stands", price what shipping it as it stands
+actually measures.
+
 **An internal inconsistency makes a device findable; it does not make the figure forced. A device
 needs both.** This is the half of law 1 that two builds in one wave got wrong in the same way. The
 inconsistency is what lets a careful analyst discover the device without being told; the asking
