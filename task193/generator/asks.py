@@ -42,22 +42,32 @@ def write_exceptions(tgt, rejected):
 
 
 def write_submission_log(tgt, kept, rejected):
-    """The chains' own monthly totals, counted by month of submission, not of dispensing."""
-    sub = collections.Counter()
+    """The chains' own monthly totals, counted by month of submission, not of dispensing.
+
+    It is the chains' count and not the register's, so it does not reconcile to the extract line
+    for line: it counts the lines a chain withdrew before the register wrote them, and a batch
+    transmitted after a month's cut-off is counted by the chain in the month it sent it and by
+    the register in the next one.
+    """
+    rng = np.random.default_rng(W.SEED + 71)
     acc = collections.Counter()
+    rej = collections.Counter()
     for r in kept:
-        sub[(r["chain"], month_key(r["submitted"]))] += 1
         acc[(r["chain"], month_key(r["submitted"]))] += 1
     for r in rejected:
-        sub[(r["chain"], month_key(r["submitted"]))] += 1
+        rej[(r["chain"], month_key(r["submitted"]))] += 1
     rows = []
     for ci, (code, name) in enumerate(W.CHAINS):
-        months = sorted(set(m for (c, m) in sub if c == ci))
+        months = sorted(set(m for (c, m) in acc) | set(m for (c, m) in rej))
+        months = sorted(set(m for (c, m) in list(acc) + list(rej) if c == ci))
         for m in months:
-            rows.append([code, m, sub[(ci, m)], acc[(ci, m)], sub[(ci, m)] - acc[(ci, m)]])
+            a, t = acc[(ci, m)], rej[(ci, m)]
+            cancelled = int(rng.poisson(0.0021 * max(a, 1) + 0.6))
+            cutoff = int(rng.integers(-3, 4))      # lines the two sides place in adjacent months
+            rows.append([code, m, a + t + cancelled + cutoff, a, t, cancelled])
     return write_csv(os.path.join(tgt, "pharmacy_submission_log.csv"),
                      ["chain_code", "submission_month", "lines_submitted", "lines_accepted",
-                      "lines_turned_back"], rows)
+                      "lines_turned_back", "lines_withdrawn_by_chain"], rows)
 
 
 def distinct(kept):

@@ -417,7 +417,7 @@ DICTIONARY = [
 ]
 GRAINS = [
     ("episode_outcomes_extract.csv", "Grain", "One row per episode record received from a source system. "
-     "A separation is distinct within patient, admission date and diagnosis related group.", "-"),
+     "A separation is distinct within unit, patient, admission date and diagnosis related group.", "-"),
     ("hac_detail_extract.csv", "Grain", "One row per complication recorded against an episode on the "
      "clinical information system.", "-"),
     ("unit_indicator_series.csv", "Grain", "One row per in-scope unit and closed quarter.", "-"),
