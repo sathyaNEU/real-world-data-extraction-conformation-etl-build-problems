@@ -13,7 +13,7 @@ CONF = {"CF", "RF", "DP"}
 P0, P1 = dt.date(2026, 5, 1), dt.date(2026, 10, 30)
 EXTRACT = dt.date(2026, 11, 6)
 DST = dt.date(2026, 10, 25)
-RATE = {"P01": 6.40, "P02": 5.80, "P03": 7.10, "P04": 5.25, "P05": 6.75, "P06": 8.35, "P07": 6.40}
+RATE = {"P01": 6.40, "P02": 5.95, "P03": 7.25, "P04": 5.45, "P05": 6.75, "P06": 8.15, "P07": 6.40}
 N = 0
 
 
@@ -167,7 +167,7 @@ def run(target, figures):
         for r in mine:
             if r[8].date() > P1:
                 continue
-            euros += 6.15 if (code == "P04" and r[8].date() >= dt.date(2026, 8, 1)) else rate
+            euros += 6.20 if (code == "P04" and r[8].date() >= dt.date(2026, 8, 1)) else rate
         got = f["partners"][code]
         ok("a3.%s.filed" % code, len(mine) == got["filed"], "%d" % len(mine))
         ok("a3.%s.late" % code, len(late) == got["after_close"])

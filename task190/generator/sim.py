@@ -12,10 +12,12 @@ import math
 import world as W
 
 BLOCK = 500                 # the law is exact at this width, so every wider binning is an exact sum
+HALF = 250                  # a 250 wide bin is exact; the scatter lives inside it
 AMT_LO, AMT_HI = 500, 26000  # the stretch one shape covers, end to end
 TAIL_HI = 60000
 SCALE = 55000.0             # the density's own decay, the same shape in every segment
 ROUND_SHARE = 0.45          # cash is counted in notes, so amounts pile on multiples of fifty
+DISP = 0.0                  # how much of a Poisson record's scatter the block counts carry
 GROWTH = 1.058              # the book's cash volume, prior year to reporting year
 
 
@@ -53,6 +55,13 @@ class Rng(object):
         return seq
 
 
+def _z(key, i):
+    """A standard normal drawn off a hashed stream, so the scatter is reproducible per block."""
+    a = (shash("%s|%d|a" % (key, i)) + 1) / 4294967297.0
+    b = shash("%s|%d|b" % (key, i)) / 4294967296.0
+    return math.sqrt(-2.0 * math.log(a)) * math.cos(2.0 * math.pi * b)
+
+
 def _law(level, x):
     """Deposits per 500 dollars at amount x. One shape from end to end: a gentle decay over the
     stretch the book's amounts cover, then a tail."""
@@ -62,28 +71,46 @@ def _law(level, x):
     return tail * (0.40 ** ((x - AMT_HI) / 1000.0))
 
 
-def law_blocks(level, scale=1.0):
-    """Exact integer deposit counts per 500 dollar block, over the whole amount range."""
+def law_blocks(level, scale=1.0, key=""):
+    """Deposit counts per 500 dollar block. The block count carries DISP of the scatter a
+    Poisson record would show; at DISP 0 it is the law exactly."""
     out = []
     x = AMT_LO
+    i = 0
     while x < TAIL_HI:
-        out.append((x, int(round(_law(level * scale, x + BLOCK / 2.0)))))
+        mu = _law(level * scale, x + BLOCK / 2.0)
+        n = mu + (DISP * math.sqrt(mu) * _z(key, i) if DISP and mu > 0 else 0.0)
+        out.append((x, max(0, int(round(n)))))
         x += BLOCK
+        i += 1
     return out
 
 
 def _amounts(block_lo, n, rng):
+    """A block's deposits, split exactly between its two halves and scattered inside each."""
+    half = HALF
+    a = _law(1.0, block_lo)
+    b = _law(1.0, block_lo + BLOCK)
+    mid = _law(1.0, block_lo + half)
+    w1 = (a + mid) / 2.0
+    w2 = (mid + b) / 2.0
+    n1 = int(round(n * w1 / (w1 + w2)))
+    return (_half_amounts(block_lo, n1, rng) +
+            _half_amounts(block_lo + half, n - n1, rng))
+
+
+def _half_amounts(block_lo, n, rng):
     """Place a block's deposits along the law's own slope across the block, a share of them on the
     multiples of fifty a counted cash take lands on. The block's count is exact, so any binning
     wider than a block is an exact sum and any narrower one follows the same curve."""
     if n <= 0:
         return []
     a = _law(1.0, block_lo)
-    b = _law(1.0, block_lo + BLOCK)
+    b = _law(1.0, block_lo + HALF)
     out = []
-    fifties = [block_lo + 50 * i for i in range(BLOCK // 50)]
-    # the same number on every multiple of fifty in the block, so the pile on round figures is
-    # the same at any width a reader bins at
+    fifties = [block_lo + 50 * i for i in range(HALF // 50)]
+    # the same number on every multiple of fifty in the half block, so the pile on round figures
+    # reads the same at any width a reader bins at and no sub-block edge cuts it unevenly
     per = int(n * ROUND_SHARE) // len(fifties)
     n_round = per * len(fifties)
     for v in fifties:
@@ -95,8 +122,8 @@ def _amounts(block_lo, n, rng):
             t = u
         else:
             t = (math.sqrt(a * a + (b * b - a * a) * u) - a) / (b - a)
-        cents = int(t * BLOCK * 20) * 5
-        out.append(round(block_lo + min(cents, BLOCK * 100 - 5) / 100.0, 2))
+        cents = int(t * HALF * 20) * 5
+        out.append(round(block_lo + min(cents, HALF * 100 - 5) / 100.0, 2))
     rng.shuffle(out)
     return out
 
@@ -198,7 +225,7 @@ def build(seed=4471):
         for key, name, level, ratio, ncust, plant, pplant in W.SEGMENTS:
             rng = Rng(seed + shash(key + year) % 100000)
             amts = []
-            for block_lo, n in law_blocks(level, scale):
+            for block_lo, n in law_blocks(level, scale, key + year):
                 amts.extend(_amounts(block_lo, n, rng))
             rng.shuffle(amts)
             slots = _slots(byseg[key], days, len(amts), rng)

@@ -71,7 +71,7 @@ def window_devs(sd, n, fixed_last, seedparts, level_at=(), cap=0.0075, tail4_cap
     return dev
 
 
-def design_ratios(units):
+def design_ratios(units, expected):
     """Every unit's designed standardised ratio by quarter.
 
     Drawn first as ordinary quarters around each unit's persistent ratio, with the last closed quarter set
@@ -79,6 +79,10 @@ def design_ratios(units):
     each placement is written on top of the levelled record, so the fall a placement produces is the same
     whether it is read against the unit's own record, against the quarter the placement was decided on,
     against the quarter before it, or against what the rest of the network did over the same quarters.
+
+    A placement writes the five quarters either side of itself; the comparison levelling moves only quarters
+    no placement writes, so the two never undo each other. Each round re-reads a placed unit's standing from
+    the quarters the levelling has moved, which settles after a couple of passes.
     """
     design = {}
     for u in units:
@@ -87,12 +91,24 @@ def design_ratios(units):
         sd = 0.155 if sep < 700 else (0.118 if sep < 1500 else 0.088)
         dev = window_devs(sd, len(qs), None if ylast is None else ylast / psi - 1.0, (code,))
         design[code] = {qs[i]: psi * (1 + dev[i]) for i in range(len(qs))}
-    design = level_network(design, units)
-
-    for _ in range(4):
+    design = level_network(design, units, expected)
+    for _ in range(3):
         write_placements(design, units)
-        level_comparisons(design, units)
+        level_comparisons(design, units, expected)
     return design
+
+
+def placement_window(units):
+    """The unit-quarters a placement writes: the two quarters it was taken on, its own quarter and the two
+    quarters the unit holds the gain."""
+    by_code = {u[0]: u for u in units}
+    written = set()
+    for k, code in W.EMBEDS.items():
+        qs = quarters_for(by_code[code])
+        pos = qs.index(k)
+        written.update((code, q) for q in (k - 2, k - 1) if q in qs)
+        written.update((code, qs[i]) for i in range(pos, min(pos + 1 + len(W.EMBED_RETAIN), len(qs))))
+    return written
 
 
 def write_placements(design, units):
@@ -118,69 +134,63 @@ def write_placements(design, units):
 
 
 
-def level_comparisons(design, units):
+def level_comparisons(design, units, expected):
     """Hold the rest of the network still across each placement's own two quarters.
 
-    A placement's fall has to read the same against the unit's own record and against what every other unit
-    did over the same two quarters, so for each placement quarter the units that are not hosting a team are
-    shifted by one common amount that takes their mean movement between the quarter before and the quarter
-    of the placement to zero. The shift is a few thousandths of a ratio and leaves every unit's own record
-    where it was to three decimals.
+    A placement's fall has to read the same against the unit's own record and against what the other units
+    did over the same two quarters, so for each placement quarter the units whose quarters no placement
+    writes are shifted by one common amount that takes the movement of *every* other unit between the
+    quarter before the placement and the quarter of the placement to zero, both as a mean across units and
+    pooled over their expected complications. The shift is a few thousandths of a ratio. The two readings
+    close together because the earlier cohorts' own partial recoveries, which fall inside later placements'
+    comparison windows, are carried by the units that are free to move.
     """
     by_code = {u[0]: u for u in units}
-    treated = set()
-    for k, code in W.EMBEDS.items():
-        qs = quarters_for(by_code[code])
-        pos = qs.index(k)
-        treated.update((code, qs[i]) for i in range(pos, min(pos + 1 + len(W.EMBED_RETAIN), len(qs))))
+    written = placement_window(units)
     acute = [u[0] for u in units if u[4] == "acute"]
-    for _ in range(3):
+    for _ in range(60):
         for k, placed in sorted(W.EMBEDS.items()):
-            comp = [c for c in acute if c != placed and k in design[c] and (k - 1) in design[c]
-                    and (c, k) not in treated and (c, k - 1) not in treated]
-            if not comp:
+            others = [c for c in acute if c != placed and (c, k) in expected and (c, k - 1) in expected]
+            free = [c for c in others if (c, k) not in written]
+            if not others or not free:
                 continue
-            w = {c: by_code[c][6] * unit_rate(by_code[c][3]) for c in comp}
-            d = {c: design[c][k - 1] - design[c][k] for c in comp}
-            n = len(comp)
-            sw = sum(w[c] for c in comp)
-            sww = sum(w[c] * w[c] for c in comp)
-            sd = sum(d[c] for c in comp)
-            swd = sum(w[c] * d[c] for c in comp)
-            det = n * sww - sw * sw
+            d = {c: design[c][k - 1] - design[c][k] for c in others}
+            e = {c: expected[(c, k)] for c in others}
+            # the movement to take out: across all the other units, and pooled over their expected counts
+            d1 = sum(d[c] for c in others)
+            pooled = (sum(expected[(c, k - 1)] * design[c][k - 1] for c in others)
+                      / sum(expected[(c, k - 1)] for c in others)
+                      - sum(e[c] * design[c][k] for c in others) / sum(e[c] for c in others))
+            d2 = pooled * sum(e[c] for c in others)
+            n = len(free)
+            se = sum(e[c] for c in free)
+            see = sum(e[c] * e[c] for c in free)
+            det = n * see - se * se
             if abs(det) < 1e-12:
                 continue
-            a = (sd * sww - sw * swd) / det
-            b = (n * swd - sw * sd) / det
-            for c in comp:
-                design[c][k] += a + b * w[c]
+            a = (d1 * see - se * d2) / det
+            b = (n * d2 - se * d1) / det
+            for c in free:
+                design[c][k] += a + b * e[c]
     return design
 
 
-def level_network(design, units):
+def level_network(design, units, expected):
     """Hold the network's own quarterly position flat.
 
     The network's complication rate does not move quarter to quarter in this period; what moves is where
-    the complications sit. Each quarter's weighted mean deviation across the units that are not hosting the
-    team is taken out of every unit's ratio in that quarter, which leaves each unit's own record where it
-    was and leaves a placement's fall where it was against both its own record and the rest of the network.
+    the complications sit. Each quarter's mean deviation across the units no placement writes is taken out
+    of every unit's ratio in that quarter, both unweighted and pooled over expected complications, which
+    leaves each unit's own record where it was and leaves a placement's fall where it was against both its
+    own record and the rest of the network.
     """
-    treated = set()
-    for k, code in W.EMBEDS.items():
-        qs = quarters_for({u[0]: u for u in units}[code])
-        pos = qs.index(k)
-        treated.update((code, qs[i]) for i in range(pos, min(pos + 1 + len(W.EMBED_RETAIN), len(qs))))
+    written = placement_window(units)
     psi = {u[0]: u[5] for u in units}
-    weight = {u[0]: u[6] * unit_rate(u[3]) for u in units}
     for q in range(len(W.QUARTERS)):
-        den = sum(weight[code] for code, ratios in design.items()
-                  if q in ratios and (code, q) not in treated)
-        if den <= 0:
+        rowsq = [(code, ratios[q] - psi[code], expected[(code, q)]) for code, ratios in design.items()
+                 if q in ratios and (code, q) not in written and (code, q) in expected]
+        if len(rowsq) < 3:
             continue
-        # take out both the weighted and the unweighted movement of the untreated units, so a placement's
-        # fall reads the same against a pooled comparison group and against a mean of the other units
-        rowsq = [(code, ratios[q] - psi[code], weight[code]) for code, ratios in design.items()
-                 if q in ratios and (code, q) not in treated]
         n = len(rowsq)
         sw = sum(wt for _, _, wt in rowsq)
         sww = sum(wt * wt for _, _, wt in rowsq)
@@ -192,8 +202,8 @@ def level_network(design, units):
         a = (sd * sww - sw * swd) / det
         b = (n * swd - sw * sd) / det
         for code, ratios in design.items():
-            if q in ratios:
-                ratios[q] -= a + b * weight[code]
+            if q in ratios and (code, q) in expected:
+                ratios[q] -= a + b * expected[(code, q)]
     return design
 
 

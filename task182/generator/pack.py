@@ -132,9 +132,8 @@ def write_positions(target):
         ang = math.radians(bear)
         e = 612430 + int(round(dist * math.sin(ang)))
         n = 748215 + int(round(dist * math.cos(ang)))
-        cref = "" if W.COMPLAINTS[code] == 0 else "C%02d" % (1 + sorted(
+        cref = None if W.COMPLAINTS[code] == 0 else "C%02d" % (1 + sorted(
             [c for c in W.CODES if W.COMPLAINTS[c] > 0], key=lambda c: -W.COMPLAINTS[c]).index(code))
-        ws.append([])
         r = 6 + i
         for j, v in enumerate([code, dref, desc, e, n, dist, bear, 1.5, "free field, 3.5 m from facade",
                                W.SCREEN[code], cref]):
@@ -230,16 +229,9 @@ def write_weather(target):
     rows = []
     for i in range(SM.MET["n"]):
         stamp = SM.MET["t0"] + dt.timedelta(minutes=10 * i)
-        ws = SM.MET["wind_ms"][i]
-        if stamp.date() >= W.MAST_SWAP:
-            val = "%.1f" % (ws * 3.6)
-        else:
-            val = "%.1f" % ws
-        mid = dt.datetime(stamp.year, stamp.month, stamp.day)
-        j0 = int((mid - SM.MET["t0"]).total_seconds() // 600)
-        tips = int(round(SM.MET["rain_mm"][max(j0, 0):i + 1].sum() / W.RAIN_TIP_MM))
-        rows.append([stamp.strftime("%Y-%m-%d %H:%M"), val, "%d" % int((37 + 211 * math.sin(i / 97.0)) % 360),
-                     "%d" % tips, "%.1f" % SM.MET["temp_c"][i]])
+        rows.append([stamp.strftime("%Y-%m-%d %H:%M"), "%.1f" % SM.MET["wind_shipped"][i],
+                     "%d" % int((37 + 211 * math.sin(i / 97.0)) % 360),
+                     "%d" % SM.MET["tips"][i], "%.1f" % SM.MET["temp_c"][i]])
     return _write_csv(os.path.join(target, FILES["weather"]),
                       ["measured_at_utc", "wind_speed", "wind_direction_deg", "rain_tips_today",
                        "air_temp_c"], rows)

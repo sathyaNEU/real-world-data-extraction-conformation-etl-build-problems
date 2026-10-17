@@ -80,14 +80,14 @@ SAMPLE_ROUNDS = [(dt.date(2026, 7, 20), 1100), (dt.date(2026, 11, 3), 1500)]
 
 PARTNERS = [
     ("P01", "Nucleo de Estudos do Trabalho do Minho", "Norte", 6.40),
-    ("P02", "Associacao Civica do Mondego", "Centro", 5.80),
-    ("P03", "Plataforma de Bairros da Margem Sul", "A.M. Lisboa", 7.10),
-    ("P04", "Observatorio Rural do Alentejo Central", "Alentejo", 5.25),
+    ("P02", "Associacao Civica do Mondego", "Centro", 5.95),
+    ("P03", "Plataforma de Bairros da Margem Sul", "A.M. Lisboa", 7.25),
+    ("P04", "Observatorio Rural do Alentejo Central", "Alentejo", 5.45),
     ("P05", "Liga dos Direitos do Barlavento", "Algarve", 6.75),
-    ("P06", "Centro de Estudos Insulares", "Acores e Madeira", 8.35),
+    ("P06", "Centro de Estudos Insulares", "Acores e Madeira", 8.15),
     ("P07", "Nucleo de Acompanhamento do Douro", "Norte", 6.40),
 ]
-AMENDED = ("P04", dt.date(2026, 8, 1), 6.15)
+AMENDED = ("P04", dt.date(2026, 8, 1), 6.20)
 MERGED = ("P07", "P12")
 
 OUTLETS = [

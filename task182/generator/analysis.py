@@ -25,6 +25,8 @@ def esub(a, b):
 def stop_mask(stamps):
     """Minutes inside an interval in which every plant source is recorded down."""
     out = np.zeros(len(stamps), dtype=bool)
+    if not len(stamps):
+        return out
     for start, mins, _ in W.PLANNED_STOPS + W.UNPLANNED_STOPS:
         end = start + dt.timedelta(minutes=mins)
         out |= np.array([(s >= start) and (s < end) for s in stamps])
@@ -33,6 +35,8 @@ def stop_mask(stamps):
 
 def planned_mask(stamps):
     out = np.zeros(len(stamps), dtype=bool)
+    if not len(stamps):
+        return out
     for start, mins, _ in W.PLANNED_STOPS:
         end = start + dt.timedelta(minutes=mins)
         out |= np.array([(s >= start) and (s < end) for s in stamps])

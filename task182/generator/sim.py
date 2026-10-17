@@ -45,10 +45,37 @@ def met_series():
     for c in rng.choice(n10 - 60, size=11, replace=False):
         dur = int(rng.integers(3, 16))
         rain[c:c + dur] += np.abs(rng.normal(0.20, 0.13, dur))
-    rain = np.round(rain, 2)
     temp = (11.6 + 4.1 * np.sin(2 * math.pi * hours / 24.0 - 2.2)
             + 2.2 * np.sin(2 * math.pi * hours / 150.0) + rng.normal(0, 0.4, n10))
-    return {"t0": t0, "n": n10, "wind_ms": wind, "rain_mm": rain, "temp_c": np.round(temp, 1)}
+    # what the mast's file carries, and what a reader of that file recovers
+    swap = np.array([(t0 + dt.timedelta(minutes=10 * i)).date() >= W.MAST_SWAP for i in range(n10)])
+    shipped_wind = np.where(swap, np.round(wind * 3.6, 1), np.round(wind, 1))
+    eff_wind = np.where(swap, np.round(shipped_wind / 3.6, 6), shipped_wind)
+    # no record may sit on the plan's 5 m a second, in either unit: the mast is nudged one tick clear
+    for _ in range(3):
+        tie = np.abs(eff_wind - 5.0) < 0.03
+        if not tie.any():
+            break
+        step = np.where(swap, 0.4, 0.1)
+        shipped_wind = np.where(tie & (eff_wind <= 5.0), np.round(shipped_wind - step, 1),
+                                np.where(tie, np.round(shipped_wind + step, 1), shipped_wind))
+        eff_wind = np.where(swap, np.round(shipped_wind / 3.6, 6), shipped_wind)
+    day_index = np.array([(t0 + dt.timedelta(minutes=10 * i)).toordinal() for i in range(n10)])
+    tips = np.zeros(n10, dtype=int)
+    acc = 0.0
+    last_day = day_index[0]
+    for i in range(n10):
+        if day_index[i] != last_day:
+            acc = 0.0
+            last_day = day_index[i]
+        acc += rain[i]
+        tips[i] = int(round(acc / W.RAIN_TIP_MM))
+    inc = np.diff(np.concatenate([[0], tips]))
+    inc = np.where(day_index != np.concatenate([[day_index[0]], day_index[:-1]]), tips, inc)
+    rain_mm_shipped = inc * W.RAIN_TIP_MM
+    return {"t0": t0, "n": n10, "wind_ms": wind, "wind_eff": eff_wind, "wind_shipped": shipped_wind,
+            "rain_mm": rain, "rain_mm_shipped": rain_mm_shipped, "tips": tips,
+            "temp_c": np.round(temp, 1)}
 
 
 MET = met_series()
@@ -61,10 +88,13 @@ def met_index(stamps_local):
 
 
 def rain_rate_mmh():
-    """Rolling hourly rain rate on the ten-minute grid, mm an hour."""
-    r = MET["rain_mm"]
-    k = np.ones(6)
-    return np.convolve(r, k, mode="full")[:len(r)]
+    """Rolling hourly rain rate on the ten-minute grid, mm an hour, from the tip counts the mast file
+    carries: six consecutive ten-minute increments, the hour ending at the record."""
+    r = MET["rain_mm_shipped"]
+    out = np.zeros(len(r))
+    for i in range(len(r)):
+        out[i] = r[max(0, i - 5):i + 1].sum()
+    return out
 
 
 RAIN_H = rain_rate_mmh()
@@ -133,7 +163,7 @@ def assessment_mask(stamps_local):
 def validity_mask(stamps_local):
     """Plan 4.2: a minute is invalid where its met record shows rain above 0.5 mm an hour or wind above 5 m/s."""
     idx = met_index(stamps_local)
-    return (RAIN_H[idx] <= 0.5) & (MET["wind_ms"][idx] <= 5.0)
+    return (RAIN_H[idx] <= 0.5) & (MET["wind_eff"][idx] <= 5.0)
 
 
 def deployments():

@@ -128,7 +128,7 @@ SCHEDULE = {
 # Mounting height, metres above ground, per deployment index.
 MOUNT = {0: 1.5, 1: 1.5}
 # The repeated download: this deployment's card was re-read and part of a day came through twice.
-DUP_DEPLOYMENT = ("NSL09", 1)
+DUP_DEPLOYMENT = ("NSL09", 0)
 DUP_DAY = dt.date(2026, 9, 10)
 DUP_FROM, DUP_TO = 14, 16          # local hours duplicated
 
@@ -148,7 +148,7 @@ BY_CODE = {p[0]: p for p in POSITIONS}
 EVENT_DB = {c: (10.0, 22.0) for c in CODES}
 JITTER = {c: 0.8 for c in CODES}
 SLOW = {
-    "NSL01": 2.2, "NSL02": 1.6, "NSL03": 1.6, "NSL04": 0.7, "NSL05": 0.6, "NSL06": 0.6,
+    "NSL01": 2.2, "NSL02": 0.7, "NSL03": 1.6, "NSL04": 0.7, "NSL05": 0.6, "NSL06": 0.6,
     "NSL07": 0.8, "NSL08": 2.1, "NSL09": 2.2, "NSL10": 1.5, "NSL11": 2.2, "NSL12": 2.2,
     "NSL13": 1.5, "NSL14": 0.4,
 }
@@ -156,18 +156,18 @@ SLOW = {
 # Micro-adjustments to the designed specific levels, so every printed level sits mid-bin and no two
 # positions share a printed value. Fixed by the search in scratch; they move no slate.
 SHIFT = {
-    "NSL01": -0.0196,
-    "NSL02": -0.1841,
+    "NSL01": -0.0367,
+    "NSL02": -0.1537,
     "NSL03": -0.3801,
-    "NSL04": -0.0447,
-    "NSL05": +0.0084,
-    "NSL06": -0.8045,
-    "NSL07": -0.0155,
-    "NSL08": -0.7923,
-    "NSL09": -0.1169,
-    "NSL10": -0.8701,
+    "NSL04": -0.0445,
+    "NSL05": +0.0098,
+    "NSL06": -0.8007,
+    "NSL07": -0.0017,
+    "NSL08": -0.7900,
+    "NSL09": -0.1168,
+    "NSL10": -0.8662,
     "NSL11": -0.0144,
-    "NSL12": -0.3349,
-    "NSL13": +0.0672,
+    "NSL12": -0.3339,
+    "NSL13": +0.0690,
     "NSL14": -0.1598,
 }

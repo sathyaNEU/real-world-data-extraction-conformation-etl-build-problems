@@ -138,4 +138,29 @@ def compute(target, series, dup):
         "weekly": weekly, "cap": CAP,
     }
     g["slates"] = AN.all_slates(r)
+    g["series"] = series
+    g["reads"] = [PK.FILES[k] for k in ("levels", "deployments", "positions", "plan", "notes",
+                                        "events", "weather", "bands", "calibration", "scada")]
+    g["dup_rows"] = dup_arrays(series)
     return g
+
+
+def dup_arrays(series):
+    """The repeated download's minutes, as position_frames takes them for the keep-both reading."""
+    for sid in sorted(series):
+        s = series[sid]
+        if (s["dep"]["code"], s["dep"]["k"]) != W.DUP_DEPLOYMENT:
+            continue
+        m = np.array([(x.date() == W.DUP_DAY) and (W.DUP_FROM <= x.hour < W.DUP_TO)
+                      for x in s["stamps"]])
+        dev = SM.meter_dev(s["dep"]["meter"])
+        adj = dev if abs(dev) > W.CAL_THRESHOLD else 0.0
+        laeq = np.round(s["laeq"] + dev, 1)[m] - adj
+        la90 = np.round(s["la90"] + dev, 1)[m] - adj
+        stamps = [x for x, k in zip(s["stamps"], m) if k]
+        am = AN.np.array([(x.weekday() <= 4) and (W.DAY_START <= x.hour < W.DAY_END) for x in stamps])
+        vm = s["vm"][m]
+        st = AN.stop_mask(stamps)
+        pl = AN.planned_mask(stamps)
+        return (s["dep"]["code"], laeq, la90, am & vm, st, pl, vm)
+    return None

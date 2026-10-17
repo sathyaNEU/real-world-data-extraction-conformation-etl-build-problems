@@ -67,6 +67,7 @@ def chart(path, g):
 def note(path, g, chart_png):
     from reportlab import rl_config
     rl_config.invariant = 1
+    rl_config.useA85 = 0
     from reportlab.lib import colors
     from reportlab.lib.enums import TA_JUSTIFY
     from reportlab.lib.pagesizes import A4

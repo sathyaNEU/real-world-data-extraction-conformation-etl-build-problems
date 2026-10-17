@@ -92,9 +92,27 @@ def run(target, g=None):
     ok("ladder.decisive_move_largest",
        (vals[3] - vals[2]) > max(vals[1] - vals[0], vals[2] - vals[1]), str(vals))
     ok("bin.total", abs(g["raw_total"] - g["total"]) <= 0.30, "%.3f" % g["raw_total"])
-    ok("bin.edge", abs(g["raw_total"] - g["total"]) >= 0.02, "%.3f" % g["raw_total"])
+    ok("bin.edge", 0.5 - abs(g["raw_total"] - g["total"]) >= 0.25, "%.3f" % g["raw_total"])
     for name, v in (("rung1", g["raw_rung1"]), ("rung2", g["raw_rung2"])):
         ok("bin.%s" % name, abs(v - round(v)) <= 0.45, "%.3f" % v)
+    # every graded figure that rounds sits off its edge: the euros a quarter of a bin clear, the
+    # shares exact ratios of two integers and none of them on an edge
+    for code, v in sorted(g["a3"].items()):
+        ok("bin.euros.%s" % code, 0.5 - abs(v["raw_euros"] - round(v["raw_euros"])) >= 0.25,
+           "%.4f" % v["raw_euros"])
+    inside_by = {}
+    for label, a, bb in W.fortnights():
+        inside = [x for x in acts if a <= x["day"] <= bb]
+        par = [x for x in inside if "PAR" in x["routes"]]
+        inside_by[label] = (len(par), len(inside))
+        tenths = 1000.0 * len(par) / len(inside)
+        ok("bin.share.%s" % label, abs(tenths - round(tenths)) >= 0.02, "%.5f" % tenths)
+        ok("bin.share_exact.%s" % label, 2000 * len(par) % len(inside) != 0
+           or (2000 * len(par) // len(inside)) % 10 != 5, "%d/%d" % (len(par), len(inside)))
+    for route, v in g["a2"].items():
+        ok("bin.median.%s" % route, abs(v["median_minutes"] * 10
+                                        - round(v["median_minutes"] * 10)) < 1e-9,
+           "%.4f" % v["median_minutes"])
 
     # ---------------------------------------------------------------- the variants
     ok("variant.matrix_inverse", abs(g["variant_matrix_inverse"] - g["raw_total"]) < 1e-9,

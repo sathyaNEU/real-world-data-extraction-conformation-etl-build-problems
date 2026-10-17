@@ -1,134 +1,135 @@
 {
- "task": "task192",
- "architecture": "v3",
- "drawn": "2026-10-17",
- "slot_note": "Seed AD15 kept its decision shape only: one figure committed at a date to a standing body, about coordinated contention. Architecture 1 counted the operations behind overlapping bursts and died on measurement (see lineage). Architecture 2 keeps the world (a Portuguese conflict monitoring association, three access routes, a settlement gazetteer, partner organisations under data agreements) and the ask layer's shape, and re-roots the decisive step on the register's own two ways for a dispute episode to end.",
- "domain": "political-science-public-policy",
- "subdomain": "conflict-protest-event-data-analysis",
- "client_domain": "political-science-public-policy",
- "niche": "how many of a protest register's recorded actions were confrontational when most of the labels come from a classifier the association measures against hand coding",
- "objective": "anomaly-detection",
- "shape": "17",
- "decision_type": "quantity_figure",
- "answer_unit": "count",
- "answer": "",
- "answer_source": "",
- "gap": [
-  "objective",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G12",
-  "G3"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "gold_standard_subsample",
- "context_artifact": "published_series",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who resolves the three routes, drops the re-imported month, resolves the superseded place names and applies the protocol's action grain and its list of confrontational codes counts the actions the register carries under those codes and files 182 confrontational actions, where the period's recorded actions hold 225 once the press classifier's own measured error in both directions is carried into the count.",
- "domain_test": "The deciding quantity is the count of confrontational actions in a contentious event record, which protest event analysis estimates from a machine-coded corpus against a hand-coded double-coding sample, because an automatic coder of news text misses a large share of a rare event type and marks a small share of the many ordinary ones. Swap the actions for parcels on a belt and there is no coder reading text, no hand-coding standard to measure it against and no protocol definition of the class being counted: the quantity becomes a physical count and the task is gone.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:machine-coded-record-corrected-in-both-directions",
- "layer1": [
-  "a media monitor's item log with accepted and rejected items",
-  "three access routes reporting the same action",
-  "two language feeds of one media group overlapping",
-  "one month of partner reports loaded twice",
-  "local time against the UTC clock of the collection server, with the October clock change",
-  "partner monthly tables inside PDFs",
-  "a settlement gazetteer with superseded names"
- ],
- "stakeholder_role": "the association's coding and methods desk",
- "role_family": "research_desk",
- "scoring_unit": "per accepted item",
- "spine": {
-  "file": "registo_itens_imprensa.csv",
-  "rows": 25688,
-  "entity": "one item the media monitor matched to a candidate contentious action, accepted or rejected",
-  "grain": "item",
-  "source": "synthetic"
- },
- "forum": "trustees_or_governors",
- "forcing_event": "vote_or_meeting",
- "org_family": "nonprofit_or_charity",
- "world": {
-  "geography": "Portugal",
-  "currency": "EUR",
-  "org_type": "conflict monitoring association",
-  "invented_names": [
-   "Observatorio de Acao Coletiva",
-   "Vigilancia Nacional"
+  "task": "task192",
+  "architecture": "v3",
+  "drawn": "2026-10-17",
+  "slot_note": "Seed AD15 kept its decision shape only: one figure committed at a date to a standing body, about coordinated contention. Architecture 1 counted the operations behind overlapping bursts and died on measurement (see lineage). Architecture 2 re-rooted on the register's two ways for a dispute episode to end and was blocked at the draw by the remote merge (see lineage). Architecture 3 keeps the world (a Portuguese conflict monitoring association, three access routes, a settlement gazetteer, partner organisations under data agreements) and the ask layer's shape, and re-roots the decisive step on the press classifier the association measures against its own double-coding sample.",
+  "domain": "political-science-public-policy",
+  "subdomain": "conflict-protest-event-data-analysis",
+  "client_domain": "political-science-public-policy",
+  "niche": "how many of a protest register's recorded actions were confrontational when most of the labels come from a classifier the association measures against hand coding",
+  "objective": "anomaly-detection",
+  "shape": "17",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "234 confrontational actions between 1 May and 30 October 2026",
+  "answer_source": "the accepted items of registo_itens_imprensa.csv with relatos_rede_parceiros.csv and relatos_linha_publica.csv collapsed to the protocol's action grain, the press classifier's 153 marked actions among 4,357 rebuilt from both error rates of amostra_dupla_codificacao.csv (59/61/30/2450) and the 25 a filer coded added",
+  "gap": [
+    "objective",
+    "population"
   ],
-  "people": [
-   "Rafaela Carvalho",
-   "Joel Branco"
-  ]
- },
- "deliverables": [
-  "boletim_vigilancia_2026S2.xlsx",
-  "boletim_confrontos_2026S2.pdf"
- ],
- "opening_move": "question-first",
- "question_form": "how-many",
- "driver": "The decisive count is of the units that truly carry a rare property, where most of the record's labels come from an instrument that misses a large share of the units that carry it and also marks a small share of the many that do not, so the count has to be rebuilt from both of the instrument's measured error rates together, and taking the labels as they stand, removing only the wrong marks, or scaling only for the misses each files a different wrong total.",
- "driver_concrete": "Most of the register's actions are known only from the press monitor, whose classifier the association measures against a hand-coded sample: it finds about half the confrontational actions and marks about one in a hundred ordinary ones, so the period's confrontational count is neither the coded count nor the coded count with the false marks taken out nor the coded count divided by the classifier's recall.",
- "stump": "A competent solver builds the action record, applies the protocol's confrontational codes, counts the actions carrying them and files 182, which counts the labels the press classifier assigned rather than the confrontational actions the period held.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task445": "task445 v1 completes a period's total for reporters whose reports have not arrived, carrying each missing reporter from its own last report: the gap is in the recording, and every unit's outcome has already happened. Here every report has arrived and the gap is in the outcome itself: a third of the cohort's episodes have not yet ended, and the decisive move is that an episode which has already demobilised has no confrontation left to come while one still running has.",
-  "task446": "task446 v2's decisive quantity is a forward count for a population whose base rate has moved, and its error is carrying a yield measured on earlier populations onto that one; here nothing is carried anywhere, the double-coding sample and the record are the same items at the same time, and the error is that a correction built on one of the instrument's two arms is wrong whichever arm it takes. Neither route reaches the other's answer: there is no second population here for a yield to be carried to, and there is no recorded label set there to rebuild, its count being of outcomes that have not happened yet.",
-  "task448": "task448 completes a register that misses whole producers by estimating a second list's capture on the producers both lists hold and carrying it within route strata to the producers the register never saw; here nothing is missing from the record, every action is in it and the question is which class it belongs to, so the correction takes wrongly marked actions out as well as putting missed ones in, which a completeness estimate never does and cannot do."
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "fate": "spent at stage 3 on measurement 2026-10-17, before any file was cut. The default path's grouping of flagged location-days is a single-linkage clustering whose one free parameter takes the count from 673 through 65, 22 and 9 to 1: no parameter-free reading gives a plausible count and the range covers the golden, so a solver can land 9 by tuning and the note's 23 was never reproducible. Rule 1 also fails on measurement: the number of arithmetic progressions in a union of them is not a quantity conflict event analysis estimates, and the swap reads unchanged with machines on fixed maintenance cycles.",
-   "domain": "political-science-public-policy",
-   "objective": "anomaly-detection",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G10",
-    "G6"
-   ],
-   "gate_g": "decomposition_attribution",
-   "decision_type": "quantity_figure",
-   "driver": "The decisive count is of the distinct generating processes behind overlapping bursts, recovered from the interval each process repeats on, where counting flagged items counts the targets they share and counting flagged intervals counts their overlaps.",
-   "stump": "A competent solver takes the flagged location-days, groups the ones that touch in time and place, counts the groups and files that number, which counts the overlaps of the operations rather than the operations."
-  },
-  {
-   "architecture": "v2",
-   "fate": "blocked at the draw on 2026-10-17 after the remote merge, with the pack built and every free gate green: the competing-exit mechanism had been taken the same day by task266 (own:competing-endings-cumulative-incidence), and the gap, decisive pattern and decision type repeated task157 (time, G12, quantity_figure) while the stakeholder role repeated task190 v2. The world, the ask layer and every pack writer that is not about the decisive quantity were kept.",
-   "domain": "political-science-public-policy",
-   "objective": "anomaly-detection",
-   "gap": [
-    "time",
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
+  ],
+  "generators": [
     "G12",
-    "G7"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "quantity_figure",
-   "driver": "The decisive quantity is how many units of a cohort will have shown an event by the end of their own lives, and because a unit that has already reached the other, terminal end can never show it while a unit still running can, the count has to treat that other end as leaving the population at risk and the running units as the only ones with an event still to come, which is exactly what both natural corrections get wrong.",
-   "stump": "A competent solver builds the register, counts the 89 episodes of the period's cohort that have already recorded a confrontational action and files that number, which counts the confrontations the record has already seen rather than the confrontations the cohort will have recorded by the time its episodes close."
-  }
- ],
- "notes": "stump_strategy is `other`: no vocab strategy names a measurement-error correction. calibration_form gold_standard_subsample is the association's own double-coding sample, which measures the classifier and states no count, rate or method. Architecture 3 drawn after architecture 2 was blocked at the draw by the remote merge.",
- "registered": "2026-10-17T15:52:44Z"
+    "G3"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "context_artifact": "published_series",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who resolves the three routes, drops the re-imported month, resolves the superseded place names and applies the protocol's action grain and its list of confrontational codes counts the actions the register carries under those codes and files 178 confrontational actions, where the period's recorded actions hold 234 once the press classifier's own measured error in both directions is carried into the count.",
+  "domain_test": "The deciding quantity is the count of confrontational actions in a contentious event record, which protest event analysis estimates from a machine-coded corpus against a hand-coded double-coding sample, because an automatic coder of news text misses a large share of a rare event type and marks a small share of the many ordinary ones. Swap the actions for parcels on a belt and there is no coder reading text, no hand-coding standard to measure it against and no protocol definition of the class being counted: the quantity becomes a physical count and the task is gone.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:machine-coded-record-corrected-in-both-directions",
+  "layer1": [
+    "a media monitor's item log with accepted and rejected items",
+    "three access routes reporting the same action",
+    "two language feeds of one media group overlapping",
+    "one month of partner reports loaded twice",
+    "local time against the UTC clock of the collection server, with the October clock change",
+    "partner monthly tables inside PDFs",
+    "a settlement gazetteer with superseded names"
+  ],
+  "stakeholder_role": "the association's coding and methods desk",
+  "role_family": "research_desk",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "registo_itens_imprensa.csv",
+    "rows": 25545,
+    "entity": "one item the media monitor matched to a candidate contentious action, accepted or rejected",
+    "grain": "item",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "Portugal",
+    "currency": "EUR",
+    "org_type": "conflict monitoring association",
+    "invented_names": [
+      "Observatorio de Acao Coletiva",
+      "Vigilancia Nacional"
+    ],
+    "people": [
+      "Rafaela Carvalho",
+      "Joel Branco"
+    ]
+  },
+  "deliverables": [
+    "boletim_vigilancia_2026S2.xlsx",
+    "boletim_confrontos_2026S2.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive count is of the units that truly carry a rare property, where most of the record's labels come from an instrument that misses a large share of the units that carry it and also marks a small share of the many that do not, so the count has to be rebuilt from both of the instrument's measured error rates together, and taking the labels as they stand, removing only the wrong marks, or scaling only for the misses each files a different wrong total.",
+  "driver_concrete": "Most of the register's actions are known only from the press monitor, whose classifier the association measures against a hand-coded sample: it finds about half the confrontational actions and marks about one in a hundred ordinary ones, so the period's confrontational count is neither the coded count nor the coded count with the false marks taken out nor the coded count divided by the classifier's recall.",
+  "stump": "A competent solver builds the action record, applies the protocol's confrontational codes, counts the actions carrying them and files 178, which counts the labels the press classifier assigned rather than the confrontational actions the period held.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task445": "task445 v1 completes a period total for reporters whose reports have not arrived, carrying each silent reporter forward from its own last filing: the gap is in the recording, each unit is its own evidence and nothing is wrong with the reports that did arrive. Here nothing is late and nothing is carried forward: every report of the period is in hand and the error is in the label each one was given, so the figure moves on the classifier's two measured error rates read off a hand-coded sample of those same items, and the correction takes wrongly marked actions out as well as putting missed ones in, which no carry-forward of a reporter's own history does.",
+    "task446": "task446 v2's decisive quantity is a forward count for a population whose base rate has moved, and its error is carrying a yield measured on earlier populations onto that one; here nothing is carried anywhere, the double-coding sample and the record are the same items at the same time, and the error is that a correction built on one of the instrument's two arms is wrong whichever arm it takes. Neither route reaches the other's answer: there is no second population here for a yield to be carried to, and there is no recorded label set there to rebuild, its count being of outcomes that have not happened yet.",
+    "task448": "task448 completes a register that misses whole producers by estimating a second list's capture on the producers both lists hold and carrying it within route strata to the producers the register never saw; here nothing is missing from the record, every action is in it and the question is which class it belongs to, so the correction takes wrongly marked actions out as well as putting missed ones in, which a completeness estimate never does and cannot do.",
+    "task455": "task455's live v2 designates establishment continuity from worker flows and shares nothing here; its dead v1 (spent at stage 4) counted a class a coroner's certificates list both too often and too rarely, but its decisive step was which drug codes constitute the class, which the judge found to be semantics, and no error rate was ever measured. Here the class is filed by the protocol and settled before the decisive step, and what decides the call is the classifier's two measured rates applied together."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent at stage 3 on measurement 2026-10-17, before any file was cut. The default path's grouping of flagged location-days is a single-linkage clustering whose one free parameter takes the count from 673 through 65, 22 and 9 to 1: no parameter-free reading gives a plausible count and the range covers the golden, so a solver can land 9 by tuning and the note's 23 was never reproducible. Rule 1 also fails on measurement: the number of arithmetic progressions in a union of them is not a quantity conflict event analysis estimates, and the swap reads unchanged with machines on fixed maintenance cycles.",
+      "domain": "political-science-public-policy",
+      "objective": "anomaly-detection",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G10",
+        "G6"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "driver": "The decisive count is of the distinct generating processes behind overlapping bursts, recovered from the interval each process repeats on, where counting flagged items counts the targets they share and counting flagged intervals counts their overlaps.",
+      "stump": "A competent solver takes the flagged location-days, groups the ones that touch in time and place, counts the groups and files that number, which counts the overlaps of the operations rather than the operations."
+    },
+    {
+      "architecture": "v2",
+      "fate": "blocked at the draw on 2026-10-17 after the remote merge, with the pack built and every free gate green: the competing-exit mechanism had been taken the same day by task266 (own:competing-endings-cumulative-incidence), and the gap, decisive pattern and decision type repeated task157 (time, G12, quantity_figure) while the stakeholder role repeated task190 v2. The world, the ask layer and every pack writer that is not about the decisive quantity were kept.",
+      "domain": "political-science-public-policy",
+      "objective": "anomaly-detection",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G7"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "quantity_figure",
+      "driver": "The decisive quantity is how many units of a cohort will have shown an event by the end of their own lives, and because a unit that has already reached the other, terminal end can never show it while a unit still running can, the count has to treat that other end as leaving the population at risk and the running units as the only ones with an event still to come, which is exactly what both natural corrections get wrong.",
+      "stump": "A competent solver builds the register, counts the 89 episodes of the period's cohort that have already recorded a confrontational action and files that number, which counts the confrontations the record has already seen rather than the confrontations the cohort will have recorded by the time its episodes close."
+    }
+  ],
+  "notes": "stump_strategy is `other`: no vocab strategy names a measurement-error correction. calibration_form gold_standard_subsample is the association's own double-coding sample, which measures the classifier and states no count, rate or method. Architecture 3 drawn after architecture 2 was blocked at the draw by the remote merge.",
+  "registered": "2026-10-17T15:52:44Z"
 }
