@@ -450,6 +450,9 @@ def run(target, T):
     check("input gate: two or more distractors", len(meta["distractor_files"]) >= 2)
     man = pd.read_csv(G.f(target, "manifest"))
     check("H9: the manifest lists every shipped file but itself", set(man["file"]) == set(files) - {K.FILES["manifest"]})
+    pages = {f: "%d pages" % len(PdfReader(os.path.join(target, f)).pages) for f in files if f.endswith(".pdf")}
+    check("H3: the manifest's page counts are the PDFs' (%s)" % pages,
+          all(man.loc[man["file"] == f, "rows or pages"].item() == v for f, v in pages.items()))
 
     # ------------------------------------------------------------------------------------------ realism
     blob = " ".join(tx.values())

@@ -63,6 +63,9 @@ def build(out):
     n["payments"] = O.write_supplier_payments(p("payments"), inv)
     n["permits"] = O.write_permits(p("permits"))
     O.write_population(p("population"))
+    from pypdf import PdfReader
+    n["fieldnote_pages"] = len(PdfReader(p("fieldnote")).pages)
+    n["levypapers_pages"] = len(PdfReader(p("levypapers")).pages)
     D.write_manifest(p("manifest"), manifest(n))
     PP.COMPANY = K.AUTH
     PP.normalize_ooxml(p("wave1"), K.PEOPLE["contractor"], K.PEOPLE["contractor"], "2025-10-13T15:42:10Z",
@@ -87,13 +90,14 @@ def manifest(n):
     F = K.FILES
     return [
         (F["levypapers"], "Item 7 for the meeting of 21 January 2027: the 2027-28 levy requirement, resolution 14/2026, "
-                          "the 2026-27 levy", "Finance", "8 January 2027", "3 pages"),
+                          "the 2026-27 levy", "Finance", "8 January 2027", "%d pages" % n["levypapers_pages"]),
         (F["wave1"], "Visitor survey 2025-26, wave 1 (April to September 2025), one row per interview", K.CONTRACTOR,
          "14 October 2025", n["wave1"]),
         (F["wave2"], "Visitor survey 2025-26, wave 2 (October 2025 to March 2026), one row per interview", K.CONTRACTOR,
          "9 April 2026", n["wave2"]),
         (F["weights"], "Expansion weights for every interview of both waves", K.CONTRACTOR, "9 April 2026", n["weights"]),
-        (F["fieldnote"], "How the 2025-26 survey was drawn and weighted", K.CONTRACTOR, "9 April 2026", "2 pages"),
+        (F["fieldnote"], "How the 2025-26 survey was drawn and weighted", K.CONTRACTOR, "9 April 2026",
+         "%d pages" % n["fieldnote_pages"]),
         (F["codebook"], "Field names and codes for both waves", K.CONTRACTOR, "8 April 2026", "3 sheets"),
         (F["gazetteer"], "Settlements in the member councils and the council each lies in", "Parks and GIS",
          "4 March 2025", n["gazetteer"]),
