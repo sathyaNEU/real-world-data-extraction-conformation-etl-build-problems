@@ -107,8 +107,13 @@ def enrich(custs, rows):
                 d["day"] in (dt.date(2026, 7, 1), dt.date(2027, 6, 30), dt.date(2025, 7, 1),
                              dt.date(2026, 6, 30)):
             d["day"] = d["day"] + dt.timedelta(days=2 if d["day"].day == 1 else -2)
-        if d["kind"] == "machine" and d["hhmm"] < 8 * 60 + 30:
-            d["hhmm"] = 8 * 60 + 30 + rng.below(120)
+        # a machine deposit is stamped in UTC. New Zealand runs twelve or thirteen hours
+        # ahead, so a deposit fed in before midday local would carry the previous UTC date.
+        # The estate's lobbies open at noon for business cash, so every row's UTC date and
+        # branch local date are the same day and the year it falls in does not turn on which
+        # is read.
+        if d["kind"] == "machine" and d["hhmm"] < 13 * 60:
+            d["hhmm"] = 13 * 60 + rng.below(330)
     return out, acct
 
 
@@ -275,7 +280,14 @@ def write_summary(target, deposits):
         a = agg.setdefault(key, [0, 0.0])
         a[0] += 1
         a[1] += d["amount"]
-    rows = [[b, m, n, "%.2f" % v] for (b, m), (n, v) in sorted(agg.items())]
+    # the operations desk builds this from its own end of day totals, which carry the cash sent
+    # to the cash centre as well as the ledger's. A handful of months do not tie to the feed to
+    # the cent, which the desk's own note at the foot of its pack explains and does not chase.
+    rows = []
+    for i, ((b, m), (n, v)) in enumerate(sorted(agg.items())):
+        if i % 29 == 11:
+            v += (11.40 if i % 2 else -6.85)
+        rows.append([b, m, n, "%.2f" % v])
     return write_csv(target, "branch_cash_summary_2027.csv",
                      ["branch_code", "month", "cash_deposits", "cash_paid_in_nzd"], rows)
 
@@ -348,7 +360,12 @@ DICT = [
     ("machine_service_log_2027.csv", "machine_id", "One machine, as deposit_machine_register.csv names it. The vendor reports by site, summing the machines a site runs."),
     ("deposit_machine_register.csv", "installed_on", "The day the machine went into service at the site."),
     ("deposit_machine_register.csv", "withdrawn_on", "The day the machine came out of service. Blank where it is still in service at the extract date."),
-    ("machine_service_log_2027.csv", "out_of_service_minutes", "Minutes unavailable in this incident. A machine with no row in a month had no incident recorded; a decommissioned machine has no rows at all."),
+    ("machine_service_log_2027.csv", "out_of_service_minutes", "Minutes unavailable in this incident, as the engineer closed the call. A machine with no row in a month had no incident recorded. The log holds nothing against a machine after the day it was withdrawn."),
+    ("machine_service_log_2027.csv", "restored_ts", "When the call was closed. The minutes column is the figure of record where the two disagree, which happens where the engineer wrote the time on the docket."),
+    ("risk_rating_history.csv", "rating_after", "The band the event moved the customer to. A customer's rating moves one way across the year and never returns to a band it left."),
+    ("risk_rating_history.csv", "master_customer_no", "The customer master's number. A superseded row is not part of the customer's rating history: it was replaced, and only the accepted rows carry what the register holds."),
+    ("till_balance_log_2026_2027.csv", "collection_source", "counter for a till count, machine for a smart deposit machine collection. Both are cash count sessions."),
+    ("cash_deposit_counter_2026_2027.csv", "deposit_ref", "The deposit system's reference. A reversed deposit and the row that reverses it are both out of what was paid in: the pair nets to nothing."),
 ]
 
 
@@ -391,6 +408,7 @@ def write_manifest(target, stats):
 
 
 def write_provenance(target, stats):
+    """What a real provenance note holds: where each extract came from and when it was pulled."""
     txt = """# Extract notes, financial crime data team
 
 These files were pulled on %(pull)s for the annual report for the year ended 30 June 2027 and cover the
@@ -398,25 +416,28 @@ reporting years ended 30 June 2026 and 30 June 2027 unless `export_manifest.csv`
 the bank's own records and are held under the retention rule at paragraph 9.1 of the programme handbook.
 Nothing here may leave the financial crime team without the reporting officer's approval.
 
+| extract | source system | pulled |
+|---|---|---|
+| counter deposit feed | teller platform, nightly ledger extract | %(pull)s |
+| machine deposit feed | smart deposit machine estate, vendor delivery | %(pull)s |
+| customer register and crosswalk | customer master | %(pull)s |
+| branch register, machine register | branch operations and property | %(pull)s |
+| till balance log, tolerance register | branch operations desk | %(pull)s |
+| rating history, scale map | financial crime rating register | %(pull)s |
+| machine service log | estate management system | %(pull)s |
+| prescribed transaction extracts | reporting engine, preliminary and revised runs | %(pull)s |
+| branch cash summary | operations desk reconciliation pack | %(pull)s |
+| card settlement summary | merchant acquiring | %(pull)s |
+
 The teller feed carries %(counter)d rows and the machine feed %(machine)d. The two are joined on
 `acct_customer_no` through `customer_number_crosswalk.csv`; neither feed carries a segment, which sits on
-the customer register.
+the customer register. Field definitions are in `field_dictionary.csv`.
 
-Known limits of this cut:
-
-- The machine estate re-sent %(resent)d rows during the year. A re-sent row carries `pull_sequence` 2 and
-  repeats the reference of the row already delivered.
-- %(posted)d counter deposits have a posted date one day later than the deposit date, which is the
-  overnight ledger run being missed.
-- The branch at Hastings Heretaunga (AR11) closed on 27 November 2026 and its deposits are taken up at
-  AR12 from that date. AR12 was renamed on the same day.
-- Segment codes were reissued on %(recode)s. The register carries the current code and the one in force
-  to 5 April 2027.
-- The prescribed transaction extract was re-run on 18 May 2027 after a reporting engine upgrade. The two
-  extracts overlap from 6 April to 16 May 2027; the revised run supersedes the preliminary one.
-- The machine estate stamps in Coordinated Universal Time and the teller system in branch local time.
-""" % dict(pull=PULL, counter=stats["counter"], machine=stats["machine"],
-           resent=stats["resent"], posted=stats["posted_shift"], recode=W.RECODE_DATE)
+Extracts are pulled once, after the year closes, and are not re-pulled for the report. The operations
+desk builds its branch summary from its own end of day totals rather than from the ledger extract, so a
+few months in that file do not tie to the feed to the cent; the desk does not chase differences under
+twenty dollars.
+""" % dict(pull=PULL, counter=stats["counter"], machine=stats["machine"])
     path = os.path.join(target, "provenance.md")
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(txt)

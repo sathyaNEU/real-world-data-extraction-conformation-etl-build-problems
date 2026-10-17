@@ -420,7 +420,7 @@ cent = 17.8, and the pair averages 39.2, which the regrade margin rounds to 39.5
 
 ## Leak check (mechanical half)
 
-`leak.py task182 --asof 2026-10-16`: **REVIEW, no LEAK**, four lines, each answered here.
+`leak.py task182 --asof 2026-10-16`: **REVIEW, no LEAK**, five lines, each answered here.
 
 - Sweep 3, `noise_management_plan.pdf` carries three of five distinctive words of the committed call: the
   words are October, treatment and slot, which clause 6.1 needs to say what the mitigation programme is. No

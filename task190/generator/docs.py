@@ -57,7 +57,9 @@ def handbook(target):
     f.append(Paragraph("The programme's reporting year runs from 1 July to 30 June. The annual "
                        "report for the year ended 30 June 2027 is due with the supervisor by "
                        "30 September 2027 and is signed by the money laundering reporting officer "
-                       "after the board's audit and risk committee has seen it.", BODY))
+                       "after the board's audit and risk committee has seen it. Where the report "
+                       "states a figure by quarter it means the quarters of the reporting year, "
+                       "the first running July to September.", BODY))
 
     f.append(Paragraph("3.1 Prescribed transactions", H2))
     f.append(Paragraph("A domestic physical cash transaction of ten thousand dollars or more "

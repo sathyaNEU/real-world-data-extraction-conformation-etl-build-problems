@@ -7,7 +7,7 @@
  "stage": 4,
  "stage_name": "check",
  "updated": "2026-10-17",
- "stump": "A competent solver computes the complications each eligible unit is recording above its risk-adjusted expectation in the latest closed quarter, scales them by the 38 per cent of excess the closed placement register removed, and places the team with Alderbrook General Medicine for 13 complications avoided, which is the unit with the most room to return to its own level rather than the unit a placement moves most.",
+ "stump": "A competent solver computes the complications each eligible unit is recording above its risk-adjusted expectation in the latest closed quarter, scales them by the 38.1 per cent of excess the closed placement register removed, and places the team with Alderbrook General Medicine for 14 complications avoided, which is the unit with the most room to return to its own level rather than the unit a placement moves most.",
  "architecture": 1,
  "loops": 0,
  "precut": {
@@ -15,20 +15,20 @@
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17 (no LEAK; sweeps 1, 2, 5, 7, 8, 11 clean; every REVIEW answered in the design note's Leak sweeps answered section)",
-  "reader": "staged, not yet run"
+  "leak_py": "REVIEW 2026-10-17 (no LEAK, every REVIEW answered in the design note)",
+  "reader": "re-read staged, awaiting the orchestrator's spawn"
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK), nearest driver 0.11 task258 v1, nearest stump 0.06 task191",
-  "nearest": "task258 (v1)"
+  "heart": "WARN 2026-10-17 (repeat.gate_g and overuse.gate_g, answered in the design note)",
+  "nearest": "0.11 task258 (v1)"
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "re-judge staged, awaiting the orchestrator's spawn"
  },
  "returned": [],
- "resume": "Stage 4 is staged, not spawned: this session has no Agent tool, so the two isolated threads are briefs on disk for the orchestrating session to spawn as general-purpose sonnet agents at medium effort. Judge: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_judge/judge_brief.md (verdict to verdict.md in that directory). Reader: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_reader/reader_brief.md (answers to reader_answers.md in that directory). Both directories already hold prompt.txt and a fresh unzip of task194/target.zip; the judge directory also holds the submission's graded blocks and the judge system prompt inlined in the brief. When both come back, fix every finding in generator/ in one pass, rebuild, re-run the free gates (build.py, figures_check.py, leak.py --asof 2027-03-18, guard surface and heart, two byte-identical rebuilds), re-cut target.zip, then ship.",
+ "resume": "Stage 4, second pass. Every free gate is green on the rebuilt pack: 682 generator assertions, 220 independent verify checks, two byte-identical rebuilds, figures_check 98/0, precut 49/0/0, voice-check PASS, leak.py REVIEW (no LEAK), guard surface clean and heart WARN. target.zip is cut at the archive root, md5 1bd7f06b02b6ed1c76a67eded3d13da4, 20 entries. Both isolated briefs are re-staged with the fresh pack for the orchestrator to spawn: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_judge/judge_brief.md (verdict to verdict.md) and /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_reader/reader_brief.md (answers to reader_answers.md). Next: collect both reports, fix any finding in the generator in one pass, then stage 5.",
  "approved": null,
  "delivered": null,
  "portal": null,

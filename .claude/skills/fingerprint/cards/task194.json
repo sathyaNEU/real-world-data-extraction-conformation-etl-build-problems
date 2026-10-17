@@ -1,99 +1,99 @@
 {
- "task": "task194",
- "architecture": "v1",
- "drawn": "2026-10-16",
- "slot_note": "seed AD17 kept its decision shape only: one scarce improvement team embedded with one unit for a quarter, judged on the fall in the failures users see. The seed's own architecture attributes failures through traces from the returning unit to the causing one, which is attribution a trace join performs and a spent mechanism on this objective, so the build is re-rooted on the field's own treatment of units chosen for standing worst.",
- "domain": "healthcare-delivery-health-economics",
- "subdomain": "provider-quality-risk-adjustment",
- "niche": "placing a scarce improvement team when the unit standing worst is partly standing worst by chance",
- "objective": "anomaly-detection",
- "shape": "11",
- "decision_type": "pick_one_of_n",
- "answer_unit": "named_option",
- "answer": "Alderbrook Orthopaedics, cost centre 41230: the cycle IP-09 placement avoids 17 hospital-acquired complications over the quarter from 1 April 2027, against 11 at Alderbrook General Surgery",
- "answer_source": "golden/embed_placement_2027q4.xlsx and golden/embed_placement_brief.pdf, computed from target/ by generator/golden.py and asserted in checks.py and verify.py",
- "gap": [
-  "time",
-  "objective"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G8",
-  "G16",
-  "G14",
-  "G17"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "closed_decision_corpus",
- "stump_strategy": "causal_design",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "planning_thread",
- "stakeholder_role": "the network's director of clinical improvement",
- "role_family": "operations_director",
- "scoring_unit": "per covered member",
- "spine": {
-  "file": "episode_outcomes_extract.csv",
-  "rows": 219348,
-  "entity": "one episode of care with its risk fields and its complication flag",
-  "grain": "episode x unit x separation month",
-  "source": "synthetic"
- },
- "forum": "line_manager_or_team",
- "forcing_event": "vote_or_meeting",
- "org_family": "hospital_or_health_provider",
- "world": {
-  "geography": "Australia",
-  "currency": "AUD",
-  "org_type": "hospital network",
-  "invented_names": [
-   "Mid-Rivers Health Network",
-   "Alderbrook Hospital",
-   "Stonecreek Hospital",
-   "Marrowfield Hospital",
-   "Carrowdean District Hospital"
+  "analyst_test": "A strong analyst who risk-adjusts every unit correctly, applies the charter's eligibility and activity clauses and prices the programme off the closed placement register ranks the units by the complications they are recording above expectation in the latest closed quarter and places the team with the unit carrying the largest current excess, whose ten-quarter standing is 1.03 against 1.20 in the quarter in hand, so the placement there avoids 2 complications rather than the 13 it files.",
+  "answer": "Alderbrook Orthopaedics, cost centre 41230: the cycle IP-10 placement avoids 18 hospital-acquired complications over the quarter from 1 April 2027, against 12 at Alderbrook General Surgery",
+  "answer_source": "golden/embed_placement_2027q4.xlsx and golden/embed_placement_brief.pdf, computed from target/ by generator/golden.py and asserted in checks.py and verify.py",
+  "answer_unit": "named_option",
+  "architecture": "v1",
+  "calibration_form": "closed_decision_corpus",
+  "context_artifact": "planning_thread",
+  "decision_type": "pick_one_of_n",
+  "decisive_rule_filed": false,
+  "deliverables": [
+    "embed_placement_2027q4.xlsx",
+    "embed_placement_brief.pdf"
   ],
-  "people": [
-   "Katherine Klein",
-   "Nicholas Fields"
-  ]
- },
- "deliverables": [
-  "embed_placement_2027q4.xlsx",
-  "embed_placement_brief.pdf"
- ],
- "opening_move": "question-first",
- "question_form": "where",
- "driver": "The decisive quantity is the fall a scarce intervention causes, and because units are picked for standing worst now, most of the fall that follows is their own return toward their long-run level, so ranking units by their current level picks the unit with the most room to revert rather than the one the intervention changes most, which only the record of past interventions separates.",
- "driver_concrete": "Each unit's last-quarter risk-adjusted position is correct and the unit carrying the most complications above expectation now is the obvious placement, but a unit's quarterly standardised ratio swings by 0.142 about its own level while the units' levels are only 0.085 apart, so most of the excess the worst unit carries now is its own variation, and the seven closed placements price what an embed itself removes.",
- "stump": "A competent solver computes the complications each eligible unit is recording above its risk-adjusted expectation in the latest closed quarter, scales them by the 38 per cent of excess the closed placement register removed, and places the team with Alderbrook General Medicine for 13 complications avoided, which is the unit with the most room to return to its own level rather than the unit a placement moves most.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who risk-adjusts every unit correctly, applies the charter's eligibility and activity clauses and prices the programme off the closed placement register ranks the units by the complications they are recording above expectation in the latest closed quarter and places the team with the unit carrying the largest current excess, whose ten-quarter standing is 1.03 against 1.19 in the quarter in hand, so the placement there avoids 2 complications rather than the 13 it files.",
- "domain_test": "The deciding quantity is the reduction in a risk-adjusted provider outcome attributable to an improvement intervention, which provider profiling estimates by splitting a unit's observed excess over its risk-adjusted expectation into its own standing and this quarter's variation and by pricing the intervention on closed placements net of that variation; swap the units for machines measured without error and there is nothing to return to, so the ranking on the current period is the answer.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task258": "task258 v1's decisive quantity is how many units an intervention moves across a threshold when it acts on only some of the additive parts of each unit, so its work is decomposing the measure into parts. Here the measure has no parts to decompose: the decisive work separates the part of a fall that is the unit's own return to its long-run level from the part the intervention caused.",
-  "task131": "task131 v2's decisive quantity is what a randomised treatment does to the peak of a summed curve: load moved out of a window returns as a synchronised surge, so the mechanism is the treatment's own physical rebound. Here the treatment has no rebound and the curve has no peak: the decisive work separates a unit's return to its long-run level from the effect of placing a team with it.",
-  "task183": "task183's decisive quantity is a forward count that arises in a unit's parts, where a part with a history of repeat failures keeps failing at many times the rate of its siblings, so the work is heterogeneity inside the unit. Here the units have no parts and nothing is forecast: the work is separating reversion from effect in a unit chosen for standing worst.",
-  "task149": "task149's decisive quantity is a hazard that rises with how fast a fixed content of work is done, so its work is finding the right denominator for a rate and carrying it into a plan. Here the rate and its denominator are both correct and agreed: the decisive work is that the fall which follows placing a team with the worst unit is mostly that unit's own reversion.",
-  "task134": "task134 v2 round 1's lineage turns on an inflow a pool outside the register will send in, generated by a hazard that peaks a year after entry, so its work is a forward conversion curve. Here nothing converts and nothing flows in: the decisive work is separating a unit's return to its own long-run level from the effect of placing a team with it.",
-  "task452": "task452 v1's lineage multiplies two series, one recorded always and one sampled mostly in the quiet state, so its work is imputing the sampled factor across the unsampled intervals. Here both series are complete and nothing is imputed: the decisive work is that a unit chosen for standing worst falls back toward its own level whatever the team does."
- },
- "lineage": [],
- "notes": "forcing_event vote_or_meeting: the clinical quality committee notes the placement at its meeting on 24 March, before the quarter starts on 1 April. Generators: G8 carries the decisive rung in a graded form (which part of a unit's excess a placement can move: the part that is the unit's own standing, not the part that is this quarter's variation), G16 frames it (the data, not a filed criterion, selects the estimator and the form the placement record is read in), G14 the pooled share against the right pool and G17 the unit's own between-quarter variation, supporting.",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:reversion-against-effect-in-a-chosen-worst-unit",
- "layer1": [
-  "episode records at two grains",
-  "a national complication list revision mid-period",
-  "units amalgamated during the period",
-  "a case-mix field keyed on only part of the episodes",
-  "a dashboard export correct and labelled for the last closed quarter",
-  "tables inside PDFs",
-  "fiscal quarters against a calendar year"
- ],
- "registered": "2026-10-16T23:57:11Z"
+  "differentiation": {
+    "task131": "task131 v2's decisive quantity is what a randomised treatment does to the peak of a summed curve: load moved out of a window returns as a synchronised surge, so the mechanism is the treatment's own physical rebound. Here the treatment has no rebound and the curve has no peak: the decisive work separates a unit's return to its long-run level from the effect of placing a team with it.",
+    "task134": "task134 v2 round 1's lineage turns on an inflow a pool outside the register will send in, generated by a hazard that peaks a year after entry, so its work is a forward conversion curve. Here nothing converts and nothing flows in: the decisive work is separating a unit's return to its own long-run level from the effect of placing a team with it.",
+    "task149": "task149's decisive quantity is a hazard that rises with how fast a fixed content of work is done, so its work is finding the right denominator for a rate and carrying it into a plan. Here the rate and its denominator are both correct and agreed: the decisive work is that the fall which follows placing a team with the worst unit is mostly that unit's own reversion.",
+    "task183": "task183's decisive quantity is a forward count that arises in a unit's parts, where a part with a history of repeat failures keeps failing at many times the rate of its siblings, so the work is heterogeneity inside the unit. Here the units have no parts and nothing is forecast: the work is separating reversion from effect in a unit chosen for standing worst.",
+    "task258": "task258 v1's decisive quantity is how many units an intervention moves across a threshold when it acts on only some of the additive parts of each unit, so its work is decomposing the measure into parts. Here the measure has no parts to decompose: the decisive work separates the part of a fall that is the unit's own return to its long-run level from the part the intervention caused.",
+    "task452": "task452 v1's lineage multiplies two series, one recorded always and one sampled mostly in the quiet state, so its work is imputing the sampled factor across the unsampled intervals. Here both series are complete and nothing is imputed: the decisive work is that a unit chosen for standing worst falls back toward its own level whatever the team does."
+  },
+  "domain": "healthcare-delivery-health-economics",
+  "domain_test": "The deciding quantity is the reduction in a risk-adjusted provider outcome attributable to an improvement intervention, which provider profiling estimates by splitting a unit's observed excess over its risk-adjusted expectation into its own standing and this quarter's variation and by pricing the intervention on closed placements net of that variation; swap the units for machines measured without error and there is nothing to return to, so the ranking on the current period is the answer.",
+  "drawn": "2026-10-16",
+  "driver": "The decisive quantity is the fall a scarce intervention causes, and because units are picked for standing worst now, most of the fall that follows is their own return toward their long-run level, so ranking units by their current level picks the unit with the most room to revert rather than the one the intervention changes most, which only the record of past interventions separates.",
+  "driver_concrete": "Each unit's last-quarter risk-adjusted position is correct and the unit carrying the most complications above expectation now is the obvious placement, but a unit's quarterly standardised ratio swings by 0.142 about its own level while the units' levels are only 0.085 apart, so most of the excess the worst unit carries now is its own variation, and the seven closed placements price what an embed itself removes.",
+  "forcing_event": "vote_or_meeting",
+  "forum": "line_manager_or_team",
+  "gap": [
+    "time",
+    "objective"
+  ],
+  "gate_g": "method_or_model_selection",
+  "generators": [
+    "G8",
+    "G16",
+    "G14",
+    "G17"
+  ],
+  "layer1": [
+    "episode records at two grains",
+    "a national complication list revision mid-period",
+    "units amalgamated during the period",
+    "a case-mix field keyed on only part of the episodes",
+    "a dashboard export correct and labelled for the last closed quarter",
+    "tables inside PDFs",
+    "fiscal quarters against a calendar year"
+  ],
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:reversion-against-effect-in-a-chosen-worst-unit",
+  "lineage": [],
+  "mechanism_source": "design_note",
+  "niche": "placing a scarce improvement team when the unit standing worst is partly standing worst by chance",
+  "notes": "forcing_event vote_or_meeting: the clinical quality committee notes the placement at its meeting on 24 March, before the quarter starts on 1 April. Generators: G8 carries the decisive rung in a graded form (which part of a unit's excess a placement can move: the part that is the unit's own standing, not the part that is this quarter's variation), G16 frames it (the data, not a filed criterion, selects the estimator and the form the placement record is read in), G14 the pooled share against the right pool and G17 the unit's own between-quarter variation, supporting.",
+  "objective": "anomaly-detection",
+  "official_decoy": false,
+  "opening_move": "question-first",
+  "org_family": "hospital_or_health_provider",
+  "pattern": [
+    "none"
+  ],
+  "question_form": "where",
+  "registered": "2026-10-17T17:11:00Z",
+  "role_family": "operations_director",
+  "scoring_unit": "per covered member",
+  "shape": "11",
+  "slot_note": "seed AD17 kept its decision shape only: one scarce improvement team embedded with one unit for a quarter, judged on the fall in the failures users see. The seed's own architecture attributes failures through traces from the returning unit to the causing one, which is attribution a trace join performs and a spent mechanism on this objective, so the build is re-rooted on the field's own treatment of units chosen for standing worst.",
+  "spine": {
+    "entity": "one episode of care with its risk fields and its complication flag",
+    "file": "episode_outcomes_extract.csv",
+    "grain": "episode x unit x separation month",
+    "rows": 238727,
+    "source": "synthetic"
+  },
+  "stakeholder_role": "the network's director of clinical improvement",
+  "stump": "A competent solver computes the complications each eligible unit is recording above its risk-adjusted expectation in the latest closed quarter, scales them by the 38.1 per cent of excess the closed placement register removed, and places the team with Alderbrook General Medicine for 14 complications avoided, which is the unit with the most room to return to its own level rather than the unit a placement moves most.",
+  "stump_class": "analytical",
+  "stump_strategy": "causal_design",
+  "subdomain": "provider-quality-risk-adjustment",
+  "task": "task194",
+  "validated_decoy": false,
+  "world": {
+    "currency": "AUD",
+    "geography": "Australia",
+    "invented_names": [
+      "Mid-Rivers Health Network",
+      "Alderbrook Hospital",
+      "Stonecreek Hospital",
+      "Marrowfield Hospital",
+      "Carrowdean District Hospital"
+    ],
+    "org_type": "hospital network",
+    "people": [
+      "Katherine Klein",
+      "Nicholas Fields"
+    ]
+  }
 }

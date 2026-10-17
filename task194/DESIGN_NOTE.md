@@ -71,17 +71,19 @@ Which part of the estimand does it settle? **None of the five.**
 
 | Part | Filed by | Sentence |
 |---|---|---|
-| Population | charter clause 4.2 | every acute inpatient unit with four or more closed quarters of reported indicator data on specification 4.0, except a unit the team has been placed with in the previous twelve closed quarters (12 units; the unit register and the placement register make the set computable, and no unit is near the four-quarter edge except the amalgamated 41510 at five) |
+| Population | charter clause 4.2 | every acute inpatient unit with four or more closed quarters of reported indicator data on specification 4.0, except a unit the team has been placed with in the previous twelve closed quarters and except the unit the team is placed with when the placement is decided (12 units; the unit register and the placement register make the set computable, the in-progress placement at 41460 is excluded by name of its condition rather than by its quarter being unclosed, and no unit is near the four-quarter edge except the amalgamated 41510 at five) |
 | Outcome | specification 4.0 clauses 2.1 to 2.4 | episodes with one or more hospital-acquired complications, against the published stratum rates by risk band and age band, observed over expected |
-| Window | charter clause 4.1 and the prompt | the assessment quarter, being the quarter the team is embedded: 1 April to 30 June 2027 |
+| Window | charter clause 4.1 and the prompt | the assessment quarter, being the quarter the team is embedded: 1 April to 30 June 2027. The window of a unit's standing is specification 3.3's: every closed quarter from 1 July 2024, and no other period is reported for a unit |
 | Unit | charter clause 4.3 | complications, counted at the unit that hosts the team, over the assessment quarter |
-| Comparison | charter clause 4.3 | the complications the unit would have recorded over the same quarter without the team, against what it records with the team there |
+| Comparison | charter clause 4.3 | the complications the unit would have recorded over the assessment quarter without the embedded team, less the complications it records over that quarter with the team there: a difference between two counts over one quarter, not a movement between periods |
 
 What stays open is how the "without the team" branch is estimated and how the register prices the team.
 Both are estimation, and the data separates every candidate: the units' own quarterly deviations carry no
 serial correlation, so a quarter's deviation is not the unit's position, and the register's seven closed
-placements fit a share of persistent excess (worst miss 21 per cent) against a share of the unit's level
-(worst miss 141 per cent) and a reduction per expected complication (worst miss 177 per cent).
+placements fit a share of persistent excess (worst per-placement miss 12 per cent) against a share of the
+unit's level (worst miss 131 per cent) and a reduction per expected complication (worst miss 161 per cent).
+Filing the difference in clause 4.3, the standing's window in specification 3.3 and the in-progress
+placement in clause 4.2 closes three readings of WHAT and leaves both HOW questions open.
 
 ## Default path
 
@@ -94,16 +96,16 @@ The pipeline a competent analyst builds from the prompt's words and the files' o
 2. Apply charter clause 4.2 through `unit_register.csv` and `improvement_placements.csv`: twelve eligible
    units.
 3. Take the latest closed quarter (2026-27 Q2) and compute what each eligible unit recorded above its
-   expected number: Alderbrook General Medicine 34, Alderbrook Respiratory Medicine 25, Marrowfield
-   Orthopaedics 23, Alderbrook Orthopaedics 21.
+   expected number: Alderbrook General Medicine 36, Alderbrook Respiratory Medicine 23, Marrowfield
+   Orthopaedics 21, Alderbrook Orthopaedics 15.
 4. Price the programme off `improvement_placements.csv` and the same extract: across the seven closed
-   placements the units' complications fell 38 per cent of the excess they were carrying.
-5. Apply that share to each unit's current excess: Alderbrook General Medicine 13 complications avoided,
-   Alderbrook Respiratory Medicine 10, Marrowfield Orthopaedics 9, Alderbrook Orthopaedics 8.
-6. Place the team with Alderbrook General Medicine, 13 complications avoided over the quarter.
+   placements the units' complications fell 38.1 per cent of the excess they were carrying.
+5. Apply that share to each unit's current excess: Alderbrook General Medicine 14 complications avoided,
+   Alderbrook Respiratory Medicine 9, Marrowfield Orthopaedics 8, Alderbrook Orthopaedics 6.
+6. Place the team with Alderbrook General Medicine, 14 complications avoided over the quarter.
 
-**Ends on:** Alderbrook General Medicine (cost centre 41210), 13 complications avoided.
-**Golden:** Alderbrook Orthopaedics (cost centre 41230), 17 complications avoided.
+**Ends on:** Alderbrook General Medicine (cost centre 41210), 14 complications avoided.
+**Golden:** Alderbrook Orthopaedics (cost centre 41230), 18 complications avoided.
 
 The default path reconciles everywhere a solver checks it: the unit-quarter observed and expected counts tie
 to the published indicator series row for row, the quarter's adjusted rates tie to the dashboard export, and
@@ -112,8 +114,8 @@ the monthly activity summary ties to the extract's separations.
 ## Stump sentence
 
 A competent solver computes the complications each eligible unit is recording above its risk-adjusted
-expectation in the latest closed quarter, scales them by the 38 per cent of excess the closed placement
-register removed, and places the team with Alderbrook General Medicine for 13 complications avoided, which is
+expectation in the latest closed quarter, scales them by the 38.1 per cent of excess the closed placement
+register removed, and places the team with Alderbrook General Medicine for 14 complications avoided, which is
 the unit with the most room to return to its own level rather than the unit a placement moves most.
 
 ## Three rules
@@ -136,24 +138,30 @@ the unit with the most room to return to its own level rather than the unit a pl
   the quarterly indicator series, both rollups of the same records); a national complication list revision on
   1 July 2026 that renames and reissues category codes (the coding service's own change); two medical wards
   amalgamated into cost centre 41510 on 1 October 2025 (a service reconfiguration); a comorbidity score keyed
-  on only 85 per cent of episodes (clinical coding does not key it for every episode); a dashboard export
-  correct and labelled for the quarter ended 31 December 2026 (the monitoring system's quarterly export);
-  tables inside PDFs (the specification's stratum and category appendices); fiscal quarters against the
-  calendar year the hospital-level ask uses. Every item is what these systems produce, nothing is placed to
-  be caught, and each is asserted neutral in `checks.py` (R2).
+  on only 85 per cent of episodes network wide and at a rate that varies by unit (clinical coding does not
+  key it for every episode); a dashboard export correct and labelled for the quarter ended 31 December 2026
+  (the monitoring system's quarterly export); tables inside PDFs (the specification's stratum and category
+  appendices); fiscal quarters against the calendar year the hospital-level ask uses; three cost centres
+  realigned to another hospital site on 1 July 2026 while the register carries only the current alignment (a
+  divisional restructure); wards that are not on the clinical information system, so their complications
+  reach the warehouse only as the episode record's own category (a system boundary the register and the
+  manifest both declare); patient index numbers issued in blocks as each site came onto the index, so the
+  same number is never shared across two sites. Every item is what these systems produce, nothing is placed
+  to be caught, and each is asserted neutral in `checks.py` (R2).
 - **Layer 2:** `estimand_identification`. The methodological choice that flips the call is which position the
   unit is expected to hold over the assessment quarter without the team, and what the placement register
   prices: the quarter the unit is standing in, or the unit's own standing over the specification period.
 - **Decisive step:** take the unit's own standing as the counterfactual and read the register as a share of
-  standing excess, because the units' quarterly deviations carry no serial correlation (-0.089) and the
-  register's own falls track standing excess (worst miss 21 per cent) rather than the unit's level (worst
-  miss 141 per cent) or its expected complications (worst miss 177 per cent).
+  standing excess, because the units' quarterly deviations carry no serial correlation (-0.121, the artefact
+  of de-meaning a ten-quarter record) and the register's own falls track standing excess (worst
+  per-placement miss 12 per cent) rather than the unit's level (worst miss 131 per cent) or its expected
+  complications (worst miss 161 per cent).
 - **Not semantics:** every field, code, unit and definition read correctly still leaves the easy route on
   Alderbrook General Medicine. The extract's fields are plain, the specification files the denominator, the
   exclusions, the stratum rates, the reporting periods and the forward expectation basis, and the charter
   files the population, the outcome, the window, the unit and the comparison. A solver who reads every one of
   them correctly, and whose observed and expected counts tie to the published series row for row, still ranks
-  on the quarter in hand and files 13 complications avoided at 41210.
+  on the quarter in hand and files 14 complications avoided at 41210.
 - **Not rule application:** no filed rule, formula or procedure says what a unit would have recorded without
   the team, or how the placement record prices a placement. The charter names the quantity and stops; the
   specification defines the indicator and its reporting periods and stops. The decisive step is the choice of
@@ -161,13 +169,14 @@ the unit with the most room to return to its own level rather than the unit a pl
 - **Analyst test:** a strong analyst who risk-adjusts every unit correctly, applies the charter's eligibility
   and activity clauses and prices the programme off the closed register ranks the units by the complications
   they are recording above expectation in the latest closed quarter and places the team with Alderbrook
-  General Medicine (41210) for 13 complications avoided; 41210's ten quarters stand at 1.03 against 1.19 in
+  General Medicine (41210) for 14 complications avoided; 41210's ten quarters stand at 1.03 against 1.20 in
   the quarter in hand, so the excess it is carrying now is mostly its own variation and the placement would
   avoid 2.
-- **Estimand:** "the complications the unit would have recorded over the assessment quarter and does not
-  record because the team is there", charter clause 4.3, with the population in clause 4.2, the assessment
-  quarter in clause 4.1, the activity basis in clause 4.4 and the indicator in specification 4.0 clauses 2.1
-  to 2.4 and 3.1 to 3.4.
+- **Estimand:** "the complications the unit would have recorded over the assessment quarter without the
+  embedded team, less the complications it records over that quarter with the team there", charter clause
+  4.3, with the population in clause 4.2, the assessment quarter in clause 4.1, the activity basis in clause
+  4.4, the standing's reporting period in specification 3.3 and the indicator in specification 4.0 clauses
+  2.1 to 2.4 and 3.1 to 3.4.
 - **No decoy:** nothing in the pack is planted to be caught. No block of readings is copied or backfilled, no
   memo or draft argues a candidate, no stakeholder figure is wrong, and no document ranks the units. The
   dashboard export, the indicator series and the activity summary are each correct for the question they
@@ -198,21 +207,21 @@ Six tests per rung: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hyg
 
 | id | Term or convention | Golden reading | Alternatives and their call | Ruled out by |
 |---|---|---|---|---|
-| SF1 | "inpatient units" eligible for the placement | the 12 acute units with four or more closed quarters on specification 4.0 and no placement in the previous twelve closed quarters | all 21 acute units (41450 at 1.42 would win); all 24 units including non-acute | charter 4.2 names both conditions; specification 2.3 puts non-acute service types outside the indicator |
+| SF1 | "inpatient units" eligible for the placement | the 12 acute units with four or more closed quarters on specification 4.0 and no placement in the previous twelve closed quarters | all 21 acute units (41450 at 1.48 would win); all 24 units including non-acute | charter 4.2 names both conditions; specification 2.3 puts non-acute service types outside the indicator |
 | SF2 | "hospital-acquired complications" | episodes with one or more complications on the national list in force at separation, specification 2.1 | complications counted (the detail extract's rows) | specification 2.1 counts episodes; `same call` on the ranking, different figures, asserted |
 | SF3 | the indicator's denominator | acute multi-day episodes with a valid DRG band from an in-scope unit, specification 2.2 and 2.3 | all separations; all episodes including same-day | specification 2.2 and 2.3, four exclusions listed |
-| SF4 | "avoid" | the difference between what the unit records with the team and what it would have recorded without it, charter 4.3 | the fall from the quarter before the placement to the assessment quarter | charter 4.3 states the counterfactual, not a period-on-period fall |
+| SF4 | "avoid" | the difference between what the unit records with the team and what it would have recorded without it, charter 4.3 | the fall from the quarter before the placement to the assessment quarter (41210 would win) | charter 4.3 states the counterfactual as a difference between two counts over the same quarter, not a fall between periods |
 | SF5 | the unit of the answer | complications (a count) at the host unit over the assessment quarter, charter 4.3 | the fall in the unit's adjusted rate (41330 would win) | charter 4.3 counts complications; clause 4.4 ties them to planned separations |
 | SF6 | the assessment quarter | 1 April to 30 June 2027, charter 4.1 and the prompt | the quarter after the placement; the following year | charter 4.1 names the quarter the team is embedded |
 | SF7 | the activity the quarter carries | the planned separations in `activity_plan_2027q4.csv`, charter 4.4 | the latest closed quarter's separations; the four-quarter mean | charter 4.4 names the published plan |
 | SF8 | a unit's expected complications for a future period | planned separations times the unit's expected complications per in-scope episode over the specification period to date, specification 3.4 | the latest quarter's rate per episode; the network's rate | specification 3.4 |
 | SF9 | the reporting period of a unit's standardised ratio | every closed quarter from 1 July 2024, specification 3.3 | the last four quarters; the last eight; the fiscal year | specification 3.3; and `same call` under 4, 6 and 8 quarter windows, asserted |
 | SF10 | the comparable history | 2024-25 Q1 to 2026-27 Q2 | quarters before 1 July 2024 | specification 3.5: earlier values are on specification 3.2's risk model and not comparable |
-| SF11 | the amalgamated unit's record | 41510 from 1 October 2025, its predecessors 41511 and 41512 under their own codes | the three pooled into one ten-quarter record | specification 3.6; `same call` and the same figure either way, asserted (both stand at 1.16) |
-| SF12 | the period an episode falls in | the period of its separation date, specification 2.5 | admission date; the complication's onset date | specification 2.5 |
+| SF11 | the amalgamated unit's record | 41510 from 1 October 2025, its predecessors 41511 and 41512 under their own codes | the three pooled into one ten-quarter record | specification 3.6; `same call` and the same figure either way, asserted (1.142 on its own record against 1.141 pooled, 2.08 against 2.07 avoided, both 2) |
+| SF12 | the period an episode falls in | the period of its separation date, specification 2.5 | admission date; the complication's onset date | specification 2.5; and `same call` on the admission period, computed and asserted (7.1 per cent of in-scope episodes span a quarter boundary) |
 | SF13 | the stratum rates | the rates published with specification 4.0 in `hac_stratum_rates.csv` | rates re-estimated from the extract | specification 3.1 names the published rates; `same call`, asserted |
-| SF14 | rounding of the avoided complications | whole complications, as the prompt asks | one decimal | the prompt's closing sentence; every figure sits at least 0.10 of a complication inside its bin |
-| SF15 | ties on the recommendation | none arises: 17 against 11 | - | `same call`; the margin is 1.52x, asserted |
+| SF14 | rounding of the avoided complications | whole complications, as the prompt asks | one decimal | the prompt's closing sentence; every figure sits at least 0.13 of a complication inside its bin under every reading of the register |
+| SF15 | ties on the recommendation | none arises: 18 against 12 | - | `same call`; the margin is 1.52x, asserted |
 
 ## Ladder
 
@@ -221,39 +230,56 @@ stop at. Figures measured on the built panel, not intended.
 
 | Rung | The analysis | Names | Its own figure | Dies to |
 |---|---|---|---|---|
-| 0 | the complications each unit is recording above expectation in the quarter in hand, times the share the register's placements fell | 41210 Alderbrook General Medicine | 13 avoided | the unit's own record: 1.03 over ten quarters against 1.19 in the quarter, deviations with no serial correlation |
-| 1 | the unit standing worst on its own record (highest standardised ratio over the specification period) | 41330 Stonecreek Vascular Surgery | 6 avoided | charter 4.3 counts complications and 4.4 ties them to planned separations: its 506 planned separations carry 16 complications above expectation, against 44 at 41230 |
-| 2 | the complications the assessment quarter carries at each unit's own standing (where the harm will be) | 41220 Alderbrook General Surgery | 287 complications expected | the charter's word "avoid": 258 of the 287 are the expected number, and the register's falls track the excess, not the level (a share of the level misses the placement at 41440 by 141 per cent) |
-| 3 (decisive) | the excess the planned quarter carries at the unit's own standing, priced as the share of persistent excess the seven closed placements removed | 41230 Alderbrook Orthopaedics | 17 avoided | - |
+| 0 | the complications each unit is recording above expectation in the quarter in hand, times the share the register's placements fell | 41210 Alderbrook General Medicine | 14 avoided | the unit's own record: 1.03 over ten quarters against 1.20 in the quarter, deviations with no serial correlation |
+| 1 | the unit standing worst on its own record (highest standardised ratio over the specification period) | 41330 Stonecreek Vascular Surgery | 6 avoided | charter 4.3 counts complications and 4.4 ties them to planned separations: its 508 planned separations carry 14.8 complications above expectation, against 46.4 at 41230 |
+| 2 | the complications the assessment quarter carries at each unit's own standing (where the harm will be) | 41220 Alderbrook General Surgery | 310 complications expected | the charter's word "avoid": 279.3 of the 309.9 are the expected number, and the register's falls track the excess, not the level (a share of the level misses one of the seven closed placements by 131 per cent, against 12 per cent for the excess reading) |
+| 3 (decisive) | the excess the planned quarter carries at the unit's own standing, priced as the share of persistent excess the seven closed placements removed | 41230 Alderbrook Orthopaedics | 18 avoided | - |
 
-**Arithmetic, measured on the built pack.** Answer 41230, 16.83 complications avoided, rounding to 17.
-Final margin 1.51x over 41220 (11.15, rounding to 11), gap 6. Position of the answer: 4th on rung 0 (41210
-13.01, 41240 9.63, 41410 8.75, 41230 8.08), 3rd on rung 1 (41330 1.3118, 41420 1.2471, 41230 1.2311), 2nd on
-rung 2 by 1.21x (41220 286.6 against 41230 236.4). No rung margin under 1.15x. Dominance: the answer's edge
-on the decisive axis (excess at planned activity, 44.4 against 5.8 at the rung-0 unit, 7.7x) against the
-rung-0 unit's carried advantage on the quarter in hand (34.0 against 21.3 excess complications, 1.60x):
-7.7 >= 1.2 x 1.60. The share a placement removes is 0.3791 of a unit's standing excess, read over the seven
-closed placements; its six readings (pooled, mean of the placements' own shares, median, least squares
-through the origin, and two other readings of each unit's pre-placement record) span 0.375 to 0.383 and give
-every one of the twelve units the same whole-complication figure, asserted.
+**Arithmetic, measured on the built pack.** Answer 41230, 17.68 complications avoided, rounding to 18.
+Final margin 1.52x over 41220 (11.66, rounding to 12), gap 6. Position of the answer: 4th on rung 0 (41210
+13.85, 41240 8.86, 41410 8.14, 41230 5.62), 3rd on rung 1 (41330 1.2921, 41420 1.2305, 41230 1.2277), 2nd on
+rung 2 by 1.24x (41220 309.9 against 41230 250.3). No rung margin under 1.15x. Dominance: the answer's edge
+on the decisive axis (excess at planned activity, 46.4 against 5.6 at the rung-0 unit, 8.28x) against the
+rung-0 unit's carried advantage on the quarter in hand (36.4 against 14.8 excess complications, 2.46x):
+8.28 >= 1.2 x 2.46.
 
-**Reflexes, each measured on the built pack.** Adjusted rate now: 41410 at 141.0 per 1,000. Trend over the
-last four quarters: 41410. Reliability-shrink the quarter toward the network mean: 41210. Most complications
-recorded last quarter: 41210 (218). Biggest unit by planned separations: 41220. Every reflex lands on a unit
-the golden does not name, asserted in `checks.py`.
+**The share a placement removes, and why it does not fork.** 0.3809 of a unit's standing excess, read over
+the seven closed placements as the pooled sums. Ten readings a careful analyst could take of the same
+register are computed from the shipped bundle in `golden.share_readings`, asserted in `checks.py` and again
+independently in `verify.py`: the mean of the placements' own shares (0.3812), the median (0.3866), the
+expected-weighted mean (0.3825), the pooled sums (0.3809), least squares through the origin (0.3811) and
+with an intercept (0.3834), the pooled share measured from the quarter that was closed when the placement was
+decided (0.3819) and from the quarter before the placement (0.3881), and the fall net of what the other units
+did over the same two quarters as a mean across them (0.3919) and pooled over them (0.3918). They span 0.3809
+to 0.3919, 2.9 per cent, and every one of them gives all twelve units the same whole-complication figure and
+the same gap of 6, each asserted by name with its measured value. The register is tight because the network's
+own quarterly position is levelled before the placements are written and the comparison units are held still
+across each placement's two quarters, so a placement's fall reads the same against the unit's own record,
+against the quarter it was decided on, against the quarter before it and against the rest of the network. The
+closest figure to a rounding edge is 41430's at 0.134 of a complication; the widest band any reading leaves
+around a count is 0.57 of a complication, at the answer.
+
+**Reflexes, each measured on the built pack.** Adjusted rate now: 41410 at 138.0 per 1,000. Trailing
+four-quarter rate: 41330. Reliability-shrink the quarter toward the network mean: 41210. Most complications
+recorded last quarter: 41210 (218). Biggest unit by planned separations: 41220 (3,602). Fifteen rankings a
+careful analyst would try are computed in `checks.py` with the unit each one names; only the golden's own
+family names 41230.
 
 **Grid.** Three binary axes: the counterfactual (the quarter in hand or the unit's own standing), the form
 the register is read in (a share of the unit's standing excess, a share of its level, or a reduction per
 expected complication, taken here as excess against level) and the activity basis (the published plan or the
 latest quarter's separations). Eight cells, each computed in `checks.py`: every cell on the quarter in hand
-files 41210, every cell that reads the register as a share of the level files 41220, the cell on the
-standing with the wrong activity basis keeps 41230 but moves nine of the twelve figures, and only
-(standing, share of standing excess, plan) is the golden. Every single-error cell files a feasible figure
-and names a unit the answer does not, and the answer is the grid's extreme cell.
+files 41210, every cell that reads the register as a share of the level files 41220 (21.9 against 17.7 at
+41230), the cell on the standing with the wrong activity basis keeps 41230 but moves six of the twelve
+figures, and only (standing, share of standing excess, plan) is the golden. The data separate the three
+forms: priced on each unit's standing excess the register's worst per-placement error is 12 per cent, priced
+on the level it is 131 per cent and priced as a constant per expected complication 161 per cent, so the two
+readings that would move the call are the two the closed record refutes. Every single-error cell files a
+feasible figure and names a unit the answer does not, and the answer is the grid's extreme cell.
 
 **Worth.** The decisive step moves the name (41210 to 41230) and all twelve graded figures; a response that
-takes the unit's own standing but prices the register as the fall after a placement keeps the name and loses
-every figure (17 becomes 32); a response that prices correctly but ranks on the quarter in hand loses both.
+takes the unit's own standing but prices the register as a share of the level keeps every figure wrong and
+loses the name to 41220; a response that prices correctly but ranks on the quarter in hand loses both.
 Measured on the graded name and the graded figures separately, as `stumping` Part 3 requires.
 
 ## Closure table
@@ -286,9 +312,12 @@ Measured on the graded name and the graded figures separately, as `stumping` Par
 ## Literal reader
 
 Executing the prompt, charter clauses 4.1 to 4.4 and specification clauses 2.1 to 2.5 and 3.1 to 3.6 word for
-word: the population is the twelve eligible units, the outcome is the specification's indicator, the window
-is 1 April to 30 June 2027, the quantity is complications at the host unit, and the comparison is against
-what the unit would have recorded without the team. Nothing in the shipped text says how that branch is
+word: the population is the twelve eligible units (clause 4.2's two exceptions both computable, the second
+excluding the unit the team is with when the placement is decided), the outcome is the specification's
+indicator, the window is 1 April to 30 June 2027 for the placement and specification 3.3's every closed
+quarter from 1 July 2024 for a unit's standing, the quantity is complications at the host unit, and the
+comparison is the count without the team less the count with it, clause 4.3. The hospital-level ask's basis
+is pinned in its own asking sentence. Nothing in the shipped text says how that branch is
 estimated or how the register prices a placement, and the easy estimator (the quarter in hand) comes from the
 same literal estimand, so the literal reading lands on the golden's quantity and the stump sits in the
 method. Every alternative reading in the fork table either violates a quoted sentence or returns the same
@@ -313,17 +342,19 @@ No shipped control, corpus or document scores a method or ranks the units.
 
 | Gate | Result |
 |---|---|
-| `generator/build.py` | 526 generator assertions, 88 independent checks, both green |
-| Three-rules block on the clean truth | R1 raw material, R2 per Layer 1 item, R3a the easy route files 41210 at 13, R3b the decisive step alone files 41230, R3c no plant: all green |
+| `generator/build.py` | 682 generator assertions, 220 independent checks, both green |
+| Three-rules block on the clean truth | R1 raw material, R2 per Layer 1 item, R3a the easy route files 41210 at 14, R3b the decisive step alone files 41230, R3c no plant: all green |
 | Independent verifier | `generator/verify.py` reads only `target/` and `figures.json`, recomputes every stated figure on pandas against the generator's csv path |
 | Two byte-identical rebuilds | pack and both goldens identical across two fresh builds; `target/` equals the rebuild |
-| Input gates | 20 files, 4 formats (csv, pdf, xlsx, txt), `episode_outcomes_extract.csv` at 219,348 rows, 3 distractors declared in `metadata.json` and named in no file name |
-| `figures_check.py task194` | 97 figures in blocks 1 to 4, 0 absent from `generator/figures.json` |
+| Input gates | 20 files, 4 formats (csv, pdf, xlsx, txt), `episode_outcomes_extract.csv` at 238,727 rows, 3 distractors declared in `metadata.json` and named in no file name |
+| `figures_check.py task194` | 98 figures in blocks 1 to 4, 0 absent from `generator/figures.json` |
 | Realism sweep | no repeated unit-quarter counts, no round headline figure, personas only the two drawn, one export stamp on every file, containers clean under `scrub_producer_metadata.py` |
 | `leak.py task194 --asof 2027-03-18` | REVIEW, no LEAK; every REVIEW answered above |
-| `guard.py surface task194` | exit 0, three pairs promoted at 0.102 on relative surface similarity, no hard tell |
+| `guard.py surface task194` | exit 0, five pairs promoted on relative surface similarity in the corpus top 1 per cent, no hard tell, only the two drawn personas in the cut pack |
 | `guard.py heart task194` | WARN, no BLOCK |
 | `precut.py task194` | 49 checks, 0 FAIL, 0 WARN |
+| `target.zip` | 20 entries at the archive root under their own names, md5 1bd7f06b02b6ed1c76a67eded3d13da4, 3,356,866 bytes, every entry asserted byte-identical to the file of the same name in `target/` and no entry carrying a directory |
+| Register readings | the ten readings of the closed placement register span 0.3809 to 0.3919 (2.9 per cent) and give all twelve units the same whole complication and the same gap, asserted by name with its measured value in `checks.py` and again in `verify.py` |
 | House fixes | H1 containers scrubbed and audited, H4 the shipped set equals the manifest, H8 every cited clause and file resolves, H9 manifest set equality asserted, H11 one `submission.md` and one `prompt.txt`, H16 the only date past the as-of is the in-progress placement's planned end, H24 the manifest is the organisation's own compile note |
 
 **Stage 4 is staged, not spawned.** This session has no Agent tool, so the leak reader and the determinism
@@ -342,7 +373,7 @@ REVIEW:
   candidates' own identifiers have to be in the register, the series, the extract, the plan, the summary, the
   dashboard and the three unit-level files; the answer is a named unit, so its code is in the pack by
   construction. No golden figure of four digits or more appears anywhere in the pack.
-- **Sweep 4, three documents sharing 5 to 10 of the design note's 25 stump terms** (charter, activity,
+- **Sweep 4, three documents sharing 5 to 12 of the design note's 25 stump terms** (charter, activity,
   planned, record, closed, indicator, quarterly). These are the domain's own nouns and the words the
   specification and the charter use for the measure and the cycle. Neither document, nor the thread, names a
   counterfactual, a standing, an excess, a share or a placement's effect.
@@ -370,10 +401,10 @@ and the activity summary's `facility`, A3 only non-acute units' rows, A4 only `h
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, measured on the built pack |
 |---|---|---|---|---|---|---|---|
-| A1 construction | 12 per-unit avoided complications, whole | the call's own construction on every candidate | the committee sees what each unit would gain | none (the ladder carries it) | - | 6 files, 11 columns | rung 0 files 13, 10, 9, 8 at the top and 2 at the answer; rung 2 files the expected-complication vector; the golden 17, 11, 9, 7, 6, 4, 3, 2, 2, 2, 2, 1 |
-| A2 hospital year | 4 hospitals x (adjusted rate to one decimal, in-scope episodes, complications) = 12 | the audit trail of the indicator the call rests on, at the hospital cut the network reports on | the quality committee's own annual table | D2 attribute at the wrong vintage: three cost centres were realigned to another hospital site on 1 July 2026 and `unit_register.csv` is the master at the export date, so the site each unit reported under in each month lives only in `activity_summary_monthly.csv` | the calendar year against fiscal quarters; the amalgamation; the specification's four exclusions | 5 files, 12 columns | the register's alignment moves every one of the twelve figures: episodes by 42, 931, 1,364 and 2,337, complications by 3, 89, 159 and 251, and the rates by 0.1 to 3.0 per 1,000; a fiscal-year read moves all twelve |
-| A3 activity outside the indicator | 10 quarters x (separations, episodes with a complication) = 20 | the audit trail of the indicator's scope, which the call's denominator consumes | the committee asks every cycle what sits outside the indicator | D1 replay under fresh identifiers: the sub-acute and mental health feed loads on an overlapping window, so the episodes separated in the last three days of a month arrive again in the next batch under new episode identifiers with the patient, the admission date and the DRG kept, beside genuine same-day pairs that differ in DRG; `activity_summary_monthly.csv` is the network's separations record and reconciles only on the de-duplicated count | the three non-acute service types; care type against service type | 4 files, 10 columns | the row count runs 8.1 to 11.4 per cent high in every one of the ten quarters; a de-duplication on unit, patient and admission date alone runs low in every quarter and loses an affected episode in 2025-26 Q3; the golden reconciles to the summary |
-| A4 complication groups | 8 groups x 2 fiscal years = 16 | the audit trail of the numerator the call consumes, grouped as the specification groups it | the work plan for whichever unit is chosen | D5 silently partial extract: `hac_detail_extract.csv` is the clinical information system's feed and does not reach the wards on the Carrowdean campus, whose complications arrive only through the extract's own category column, one to an episode | the 1 July 2026 list revision, where HAC04 and HAC05 name different categories either side of the date and HAC13 was folded into HAC03; episodes with two complications | 4 files, 9 columns | the detail extract alone runs 1.8 to 4.7 per cent low in every group and both years; a raw code join against the current list moves G1 by +28, G2 by -17, G3 by -46 and G4 by -53 per cent in 2025-26 |
+| A1 construction | 12 per-unit avoided complications, whole | the call's own construction on every candidate | the committee sees what each unit would gain | none (the ladder carries it) | - | 6 files, 11 columns | rung 0 files 14, 9, 8, 6 at the top and 6 at the answer; rung 2 files the expected-complication vector; the golden 18, 12, 8, 6, 6, 4, 3, 2, 2, 1, 1, 1 |
+| A2 hospital year | 4 hospitals x (adjusted rate to one decimal, in-scope episodes, complications) = 12 | the audit trail of the indicator the call rests on, at the hospital cut the network reports on | the quality committee's own annual table | D2 attribute at the wrong vintage: three cost centres were realigned to another hospital site on 1 July 2026 and `unit_register.csv` is the master at the export date, so the site each unit reported under when an episode separated lives only in `activity_summary_monthly.csv`'s `facility` column, which the asking sentence points at without naming | the calendar year against fiscal quarters; the amalgamation; the specification's four exclusions | 5 files, 12 columns | the register's alignment moves every one of the twelve figures: episodes by 2,025, 3,046, 78 and 943 at the four hospitals, and the rates with them; a fiscal-year read moves all twelve |
+| A3 activity outside the indicator | 10 quarters x (separations, episodes with a complication) = 20 | the audit trail of the indicator's scope, which the call's denominator consumes | the committee asks every cycle what sits outside the indicator | D1 replay under fresh identifiers: the sub-acute and mental health feed loads on an overlapping window, so the episodes separated in the last three days of a month arrive again in the next batch under new episode identifiers with the patient, the admission date and the DRG kept, beside genuine same-day pairs that differ in DRG; `activity_summary_monthly.csv` is the network's separations record and reconciles only on the de-duplicated count | the three non-acute service types; care type against service type | 4 files, 10 columns | the row count runs 8.7 to 11.5 per cent high in every one of the ten quarters; a de-duplication on unit, patient and admission date alone runs low in every quarter and loses an affected episode in 2025-26 Q3; the golden reconciles to the summary |
+| A4 complication groups | 8 groups x 2 fiscal years = 16 | the audit trail of the numerator the call consumes, grouped as the specification groups it | the work plan for whichever unit is chosen | D5 silently partial extract: `hac_detail_extract.csv` is the clinical information system's feed and does not reach the wards that are not on that system, whose complications arrive only through the extract's own category column, one to an episode; `unit_register.csv`'s `clinical_information_system` column says which units those are and the manifest says what the feed omits | the 1 July 2026 list revision, where HAC04 and HAC05 name different categories either side of the date and HAC13 was folded into HAC03; episodes with two complications | 4 files, 9 columns | the detail extract alone runs 1.4 to 4.2 per cent low in every group and both years; a raw code join against the current list moves G1 by +29, G2 by -11, G3 by -42 and G4 by -51 per cent in 2025-26 |
 
 **Hazard table.** The 2026 list revision moves A4's sixteen figures and nothing else. The amalgamation moves
 A2's Carrowdean figures and nothing in A3. The fiscal-against-calendar boundary moves A2's twelve figures.
@@ -388,24 +419,27 @@ reconciliation.
 
 | Ask figure (cracker) | What the cracker does | Verdict |
 |---|---|---|
-| A2 four adjusted rates | joins `unit_register.csv` for the hospital, which is the master at the export date | miss |
+| A2 four adjusted rates | joins `unit_register.csv` for the hospital, which is the master at the export date and not the site the episode separated under | miss |
 | A2 four episode counts | same join | miss |
 | A2 four complication counts | same join | miss |
 | A3 six separation counts | counts the extract's rows for the non-acute units (no exact duplicates, no fan-out, keys unique) | miss |
 | A3 six complication counts | same | miss |
 | A3 six rates per 1,000 | same numerator and denominator | miss |
 | A4 eight 2025-26 group counts | groups `hac_detail_extract.csv` on the code as recorded | miss |
-| A4 eight 2026-27 group counts | same source, so Carrowdean is absent | miss |
+| A4 eight 2026-27 group counts | same source, so the units off the clinical information system are absent | miss |
 
 **Pair ceiling:** 36.2. The landed call banks 38 + 7 + 55 x (12 of 60 ask criteria) = 56.0 if it keeps the
 construction layer whole and misses every device ask; the best response off the call keeps 5 + 7 + 55 x 0.08
-= 16.4, since rung 2's response matches none of the twelve avoided counts and carries the same devices.
+= 16.4, since rung 2's response matches none of the twelve avoided counts and carries the same devices. A2's
+basis is now pinned in the asking sentence, so a response that reads the register's current alignment is
+wrong against a quotable sentence rather than on a second reading; the device survives because the
+historical alignment is not in the register at all.
 Average 36.2. The sensitivity worth naming: if the cracker also reads `unit_register.csv` as the master at
 the export date and takes A2 whole, the pair rises to 41.7, which is why A2's device is the one measured
 against the hygiene battery, where the register has one row per unit so no key check, fan-out check or
 unmatched join reaches it.
 **Mirror leakage:** 8.0 per cent of ask weight. The mirror stops at rung 2, files none of the twelve avoided
-counts (its vector is the expected-complication one, 287, 236, 176, 128), and carries the same devices.
+counts (its vector is the expected-complication one, 310, 250, 175, 132), and carries the same devices.
 
 ## Tried and rejected
 
@@ -425,3 +459,21 @@ counts (its vector is the expected-complication one, 287, 236, 176, 128), and ca
 - A monthly reconciliation ask whose gap was the activity summary's own vintage: it needed the summary to be
   short for the acute units too, which breaks the referee the call's own reconciliation leans on. Replaced by
   A3 on the non-acute units, where the summary stays exact and the replay is the device.
+
+- **This pass, the reader's and the judge's findings in one generator pass.** The judge's recomputation
+  confirmed the structure and asked for four things; the reader found a data defect and a realism list. The
+  register's ten readings were brought from a 10.75 per cent spread to 2.9 per cent by levelling the network's
+  own quarterly position and holding the comparison units still across each placement's two quarters, with
+  the two operations writing disjoint unit-quarters so they no longer undo each other, and by choosing the
+  embed-quarter counts once on the narrowest reading band rather than twice on different objectives. What
+  "avoided" means is filed as a difference between two counts in charter 4.3, the standing's window in
+  specification 3.3, and the in-progress placement in charter 4.2. The shared-admission path recomputed the
+  length of stay, so no episode now separates before it was admitted. Ask 1's basis is pinned in the asking
+  sentence and ask 3's missing units are declared in `unit_register.csv`.
+- **Rejected: grading the twelve per-unit figures as the effect-free excess** to take the register's reading
+  out of them. The prompt would then have to ask for the complications a unit's planned activity carries
+  above its own standing, which files the decisive step. Kept the avoided counts and centred each unit's
+  planned volume so all twelve round the same way under every reading instead.
+- **Rejected: a cross-site patient index collision as texture.** Two episodes in different hospitals shared a
+  patient number and an admission date, which reads as one duplicated episode and puts ask 1's episode count
+  in play. Issued the index in blocks by site instead, which is what a master index does.
