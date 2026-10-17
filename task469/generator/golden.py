@@ -67,7 +67,7 @@ def figures(fx):
                        "ground_time_min_pct": pct(min(v["share"] for v in r1.values()))},
             "peak": [W.PEAK_FROM.isoformat(), W.PEAK_TO.isoformat()],
             "week": [W.WEEK27[0].isoformat(), W.WEEK27[1].isoformat()],
-            "stated": {"clauses": ["SFG-3 2.2", "SFG-3 2.4", "SFG-3 3.1", "SFG-3 3.3"],
+            "stated": {"clauses": ["SFG-3 2.1", "SFG-3 2.2", "SFG-3 2.4", "SFG-3 3.1", "SFG-3 3.3"],
                        "operating_day": ["03:00", "02:59"], "season_2026": "2026", "chart_minutes": ["20", "60"]}}
 
 

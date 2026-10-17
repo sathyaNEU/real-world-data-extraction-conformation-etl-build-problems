@@ -82,7 +82,9 @@ def to_record(leg, utc=False):
     dep = leg["kdy_dep"] - 60 * W.UTC_OFF
     arr = leg["kdy_arr"] - 60 * W.UTC_OFF
     d0 = dep // 1440
-    return dict(leg, std=dep % 1440, sta=arr % 1440, dep_var=0, arr_var=0, arr_dayvar=arr // 1440 - d0, day_shift=d0)
+    # times in UTC; each station keeps its own variation from UTC, as the record always carries it
+    return dict(leg, std=dep % 1440, sta=arr % 1440, dep_var=W.UTC_OFF - leg["dep_tz"],
+                arr_var=W.UTC_OFF - leg["arr_tz"], arr_dayvar=arr // 1440 - d0, day_shift=d0)
 
 
 def shift_days(dow, k):

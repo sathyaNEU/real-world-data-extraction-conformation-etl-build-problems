@@ -23,12 +23,12 @@
   "surface": "3 promoted for the author: task468 (back to back pairing), task101, task126 (differentiated on the card)"
  },
  "judge": {
-  "verdict": "pass 1 DETERMINISTIC",
-  "disposition": "pass 1 APPROVE",
-  "report": "task469/determinism_check_report.md"
+  "verdict": "pass 1 DETERMINISTIC, pass 2 (the one re-judge, fix-pass build) DETERMINISTIC",
+  "disposition": "pass 1 APPROVE, pass 2 APPROVE",
+  "report": "task469/determinism_check_report.md, task469/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "stage 4: reader round 2 and the one re-judge (pass 2) in flight on the fix-pass build (the schedule ask's evidence rebuilt: no segment data records, repeated rotations); then append both reader rounds to leak_check_report.md, fix anything new, and ship",
+ "resume": "stage 4: reader round 3 in flight on the build with the SFG-3 2.1 clause (a turn's relationship is the number the operator flies it under); read it, append rounds 1 to 3 to leak_check_report.md after the final leak.py run, fix anything new without moving a graded figure, then ship (ledger row drafted)",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -72,7 +72,8 @@ GUIDELINE = [
     ("2. Terms", [
         "2.1 <b>Carrier relationship.</b> One brand selling the flights, the operator flying them and the aircraft type: "
         "for example, Norvale Connect flights flown by Pellmont Aviation's Embraer 175s. A filing is made for each "
-        "relationship. A turn belongs to the relationship of its departing flight.",
+        "relationship. A turn belongs to the relationship of its departing flight: the flight number the operator flies "
+        "it under, the number in its ATC callsign.",
         "2.2 <b>Turn.</b> An aircraft's visit to an E gate stand between its arrival and its next departure from "
         "Kelderby when both fall on the same operating day, which at Kelderby runs from 03:00 to 02:59 local time. A "
         "turn begins at on-block on the E gate stand and ends at off-block, including any time on a remote stand after "

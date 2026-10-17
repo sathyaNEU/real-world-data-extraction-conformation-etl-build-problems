@@ -167,7 +167,7 @@ Lesson: when a schedule's allowance hides how long a process needed whenever it 
 | SF5 | needing longer than | need strictly over the ground time | at least the ground time | same call (asserted) | SFG-3 3.1 "need longer than it" |
 | SF6 | no more than 20 per cent | at or under 20 per cent | under 20 per cent | same call: no share within 6 points of 20 at any step (asserted) | SFG-3 3.1 "no more than" |
 | SF7 | the peak | on-block 15 June to 15 September 2026 inclusive | a day off either end | same call (asserted) | SFG-3 3.2 "from 15 June to 15 September inclusive" |
-| SF8 | the turn's relationship | the departing flight's | the arriving flight's | same call: no turn's two flights differ (asserted) | SFG-3 2.1 "the relationship of its departing flight" |
+| SF8 | the turn's relationship | the departing flight's, by the number the operator flies it under | the arriving flight's | same call: no turn's two flights differ (asserted) | SFG-3 2.1 "the relationship of its departing flight: the flight number the operator flies it under, the number in its ATC callsign" |
 | SF9 | IATA code 93 (late inbound rotation) | aircraft not ready | held for another reason | accept all six (asserted) | kdy_delay_code_groups.csv: 93 "aircraft not ready" |
 | SF10 | Sable Coast's lettered sub-codes | the two digits' group | codes not in the file left unread | send back the Pellmont E175 pair only (asserted) | SFG-3 2.5 "an operator's sub-code letter does not change the group" |
 | SF11 | minutes a ready aircraft was held | not need | counted as need | send back four (asserted, R5) | SFG-3 2.4 "time a ready aircraft is held ... is not time the turn needs" |
@@ -344,6 +344,22 @@ winter UTC offsets); a ready aircraft always pushed back on the scheduled minute
 late minute coded as a start-up hold); an added 2027 line kept its template's first arrival number (renumbered); 2027
 ground times now include the longer midday turns. Every graded figure is unchanged (figures.json differs only in its
 stated-reference block).
+
+Reader, round 2 (the fix-pass build): nothing quoted for question 1 beyond SFG-3 2.4, which defines need and gives no
+method for a turn that left on time; no ranking, helping or answer-shaped file; question 6 an analytical choice (the
+censoring); its own answer landed the call (the same three filings back at 40, 45 and 35 minutes); on the schedule ask
+it counted every leg and missed all twelve figures (290 and 63 for Norvale Connect by Pellmont, and so on). Its
+findings on the UTC files (every station's variation written as +0000; a UTC file still carries each station's own
+variation) and on the start-up minutes (always code 89; now 89, 87 or 81) were fixed without moving a graded figure;
+the minute's agreement between the operators' block times and the stand log, and the punctuality workbook's even
+months (no cancellation in the season), stand as the systems' own.
+
+Judge, pass 2 (`determinism_check_report_pass2.md`, the one re-judge, on the fix-pass build): DETERMINISTIC, APPROVE.
+The main call and every graded figure reproduced, the twelve week figures among them once each re-filed rotation was
+counted once; Gate G statistical_rigor and analytical_non_defect, Gate H domain, layers and decisive step all pass.
+One residual note on the schedule ask: no filed sentence said which of two identical rotations is the operating one.
+SFG-3 2.1 now files a turn's relationship as that of the flight number the operator flies it under, the number in its
+ATC callsign, in the guideline's own terms and without naming a partner's numbers; every graded figure is unchanged.
 
 Judge, pass 1 (`determinism_check_report.md`): DETERMINISTIC, APPROVE. Every graded figure reproduced from a fresh
 unzip (the six peak turn counts, the shares, the six decisions and shortest times, the twelve week figures); the

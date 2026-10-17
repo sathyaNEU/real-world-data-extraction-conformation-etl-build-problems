@@ -67,8 +67,8 @@ def write(fig_path, out_path):
         "7. Counted the turns of the week of 12 to 18 July 2027 in %s, UTC files on Kelderby time, each arrival paired "
         "with the same aircraft's next departure on the same operating day by its onward link or its next leg; each "
         "rotation a brand files again under its own numbers (the same legs, times and type as a partner's, numbers "
-        "%s never carried, more rotations than %s gives the operators aircraft) counted once, under the operating "
-        "flights." % (W.FILES["ssim27"], W.FILES["ssim26"], W.FILES["fleet27"]),
+        "%s never carried, more rotations than %s gives the operators aircraft) counted once, under the numbers the "
+        "operator flies (SFG-3 2.1)." % (W.FILES["ssim27"], W.FILES["ssim26"], W.FILES["fleet27"]),
         "8. Recommended sending back the three filings and accepting the other three.",
         "",
         "## 4. Deliverable Answers",

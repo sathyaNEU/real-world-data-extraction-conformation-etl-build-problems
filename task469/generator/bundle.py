@@ -204,8 +204,10 @@ def dated(legs, lo, hi, utc_as_local=False):
                 arr = base + dt.timedelta(days=lg["arr_dayvar"], minutes=_min(lg["sta"][:2] + ":" + lg["sta"][2:]))
                 if lg["mode"] == "U" and utc_as_local:
                     kdep, karr = dep, arr
+                elif lg["mode"] == "U":
+                    kdep, karr = dep + dt.timedelta(hours=W.UTC_OFF), arr + dt.timedelta(hours=W.UTC_OFF)
                 else:
-                    # each end's clock to Kelderby's: back to UTC by its variation, then UTC-4
+                    # each end's local clock to Kelderby's: back to UTC by its variation, then UTC-4
                     kdep = dep - dt.timedelta(hours=_var(lg["dep_var"]) - W.UTC_OFF)
                     karr = arr - dt.timedelta(hours=_var(lg["arr_var"]) - W.UTC_OFF)
                 out.append(dict(lg, date=d, kdep=kdep, karr=karr))

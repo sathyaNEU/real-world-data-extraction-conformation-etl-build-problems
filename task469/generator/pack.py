@@ -53,6 +53,8 @@ def write_csv(path, cols, rows):
 
 # ---------------------------------------------------------------- what happened, once
 def everything():
+    global STARTUP
+    STARTUP = _rng(11)
     x = S.everything()
     push = _rng(8)
     for r in x["rows"]:
@@ -103,8 +105,11 @@ def delay_codes(r, rng):
     if held > 0:
         hour = r["sched"] // 60
         pool = ["81", "89", "87", "16"] + (["71", "84", "83"] if hour >= 13 else [])
-        out.append(("89" if hold < 0.5 else str(rng.choice(pool)), held))
+        out.append((str(STARTUP.choice(["89", "89", "87", "81"])) if hold < 0.5 else str(rng.choice(pool)), held))
     return out
+
+
+STARTUP = np.random.default_rng([W.SEED, 9, 11])   # a ready aircraft's late minute: pushback, apron or ATC start-up
 
 
 # ---------------------------------------------------------------- the authority's stand log

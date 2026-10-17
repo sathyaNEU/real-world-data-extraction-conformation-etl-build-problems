@@ -144,9 +144,11 @@ def ssim_week(target, rel, filings, types_of):
         while d <= min(t, hi):
             if x["dow"][d.isoweekday() - 1] != " ":
                 base = dt.datetime(d.year, d.month, d.day)
-                # each end on Kelderby's clock (UTC-4): the record's own UTC variation back to UTC first
-                kd = base + dt.timedelta(minutes=hm(x["std"]) - 60 * (x["dvar"] + 4))
-                ka = base + dt.timedelta(days=x["dv"], minutes=hm(x["sta"]) - 60 * (x["avar"] + 4))
+                # each end on Kelderby's clock (UTC-4): UTC files directly, local files through the record's own
+                # UTC variation
+                dvar, avar = (0, 0) if x["mode"] == "U" else (x["dvar"], x["avar"])
+                kd = base + dt.timedelta(minutes=hm(x["std"]) - 60 * (dvar + 4))
+                ka = base + dt.timedelta(days=x["dv"], minutes=hm(x["sta"]) - 60 * (avar + 4))
                 D.append(dict(x, date=d, kd=kd, ka=ka))
             d += dt.timedelta(days=1)
     od = lambda t: (t - dt.timedelta(hours=3)).date()
