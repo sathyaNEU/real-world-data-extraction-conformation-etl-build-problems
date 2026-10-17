@@ -172,27 +172,38 @@ from the segment's own deposit-size profile away from the band, and take the exc
 | Population | the physical cash deposits of 9,000 or more and below 10,000 that the segment's customers paid in during the reporting year | clause 7.4, first sentence, and its closing clause putting every customer on the business register at year end inside its segment's count | No. Every member is on the register and every deposit is in the feeds; nothing is unobserved, censored or still to arrive, and the step adds and removes nobody. |
 | Outcome | the deposit was paid in below the threshold when the amount would otherwise have been at or above it | clause 7.4, first sentence | No. The step does not change what is being counted; it changes how many of them the record is read to hold. |
 | Window | the reporting year, 1 July 2026 to 30 June 2027 | clause 1.2, and clause 7.4's "a deposit is counted in the reporting year in which it was paid in" | No. |
-| Unit | one deposit, counted one for one | clause 7.4, second sentence: "The count is of deposits, one for one, and not of customers or of days" | No. |
+| Unit | one deposit, counted one for one, stated to the nearest fifty | clause 7.4: "Each such deposit counts one for one: the figure is of deposits and not of their value, and not of customers and not of days", and "Each segment's figure is stated to the nearest ten deposits and the bank's figure is the sum of the segment figures as stated" | No. |
 | Comparison | none: the figure is a level, per segment and in total, against nothing | clause 7.4 states a number per segment and no difference, ratio or benchmark | No. |
 
 So the step settles none of the five, and the estimand is beyond argument without it. What is left open is
-how the number clause 7.4 describes is arrived at, and on that several methods stand: the same-day screen
-(1,287), the same screen with each customer's habit netted out (1,088), each customer against its own prior
-year (1,406), and the excess of the band over what the segment's own deposit-size profile produces (400).
-The first three are rejected by the record, not by argument: the screen flags 886 ordinary band deposits,
-twice the number actually split, and flags deposits at every size, so it measures how often a
-business pays in twice rather than what was moved; the habit filter removes 199 of them and leaves the
-rest; the prior-year control counts a year's ordinary movement in the band as if it were new.
+how the number clause 7.4 describes is arrived at, and on that several methods stand: counting the band
+(2,583), the same-day screen (1,438), each customer against its own prior year (1,633), the band's surplus
+over the segment's own deposit-size profile (500), and that surplus reconciled against the deficit the
+record carries just above the threshold (450).
 
-The fourth is one figure, not a family of them. The deposit-size record is one shape from end to end, so
-every way of reading the background lands in the same place: 199 estimators (fit windows from 3,000 to
-16,000 down to 8,000 to 11,000, step widths of 100, 200, 250 and 500 dollars, the Poisson log link,
-ordinary least squares on log counts, ordinary least squares on the counts themselves, a Poisson quadratic,
-one-sided fits on either side alone, one profile fitted to the whole book, and the two neighbouring
-thousands averaged) give **the same eight segment figures**, every one of them, with each segment's
-unrounded value 2.29 to 3.75 away from its rounding edge. The unrounded bank sum across those estimators runs
-396.9 to 411.0, which is why the prompt states the bank's figure as the sum of the segment rows rather than
-leaving the rounding path open.
+The first three are rejected by the record, not by argument: the screen flags ordinary band deposits at
+every size, three times the number actually split, so it measures how often a business pays in twice
+rather than what was moved; the prior-year control counts a year's ordinary movement in the band as if it
+were new; counting the band takes 3.2's review queue for the answer, when 3.2 says the queue decides
+nothing.
+
+The fourth and the fifth are the real fork, and they are a fork between methods and not between readings:
+both execute the same filed estimand on the same filed population. What separates them is the record's own
+arithmetic. The practice the figure measures moves a take from at or above the threshold to below it, so
+the record carries 1,428 deposits in 10,000 to 11,000 where each segment's own trade puts about 1,900. The
+band's surplus and that deficit are the same quantity measured twice off one fit. A baseline that implies
+a surplus below of one size and a deficit above of another contradicts the record it was fitted to, and
+84 of the judge's 225 specifications fall to exactly that. **Of the 141 that stand, every one gives the
+same eight segment figures and the same bank figure of 450.** No sentence in the pack says the two sides
+must agree; the depletion is simply there, and the easy route is to see it, note it and fit the band
+anyway, which files 500.
+
+**Why this is analysis and not a reading.** The surviving question is which evidence fixes the band's
+counterfactual, and 7.4 answers only that it must come from the segment's trade outside the band. Whether
+that trade includes the interval the practice emptied is a modelling judgement about what is contaminated,
+which is the ordinary substance of estimating a mass that stands on one side of a threshold. A strong
+analyst who cleans every key, converts every stamp and reads every clause correctly can still take the
+easy route, and 84 specifications' worth of the judge's own grid do.
 
 
 ## Readability screen
@@ -398,11 +409,11 @@ Mirror leakage: 22.0
 |---|---|
 | `precut.py task190` | 49 checks, 0 FAIL, 0 WARN |
 | `voice-check.py task190` | PASS, 997 characters |
-| generator `checks.py` | 114 assertions, including the three-rules block R1 to R3c on the clean truth and the 199-estimator convergence sweep |
-| `verify.py` (reads `target/` and `figures.json` only, own code path) | 185 checks, 0 failed, including 120 of the estimators on its own implementation |
+| generator `checks.py` | 159 assertions, including the three-rules block R1 to R3c on the clean truth and the convergence sweep over the judge's 225-specification grid |
+| `verify.py` (reads `target/` and `figures.json` only, own code path) | 210 checks, 0 failed, including the whole grid on its own implementation |
 | two consecutive rebuilds | `target/` and `golden/` byte-identical |
-| `figures_check.py task190` | 86 figures in blocks 1 to 4, 0 absent from `figures.json` |
-| input gates | 21 files, 4 formats (csv, xlsx, pdf, md), 56,080 rows in `cash_deposit_counter_2026_2027.csv`, 3 distractors declared in `metadata.json` |
+| `figures_check.py task190` | 113 figures in blocks 1 to 4, 0 absent from `figures.json` |
+| input gates | 21 files, 4 formats (csv, xlsx, pdf, md), 61,568 rows in `cash_deposit_counter_2026_2027.csv`, 3 distractors declared in `metadata.json` |
 | `leak.py task190 --asof 2027-07-19` | REVIEW, every line answered below |
 | `guard.py surface task190` | no promoted pair; no persona appears in the cut pack's content |
 | `guard.py heart task190` | WARN, nearest driver 0.11 (task445 v1) |
@@ -419,7 +430,7 @@ and the extract notes for sharing the call's vocabulary and between 5 and 9 of t
 terms. The shared terms are deposit, register, reporting, extract, customer, states and counter, which are
 the ordinary nouns of a bank's deposit records; the call's vocabulary is shared because clause 7.4 is the
 estimand and the question is asked in the handbook's words. No golden figure appears in any document:
-asserted over every shipped PDF, which carry no 400 and no 2,196. None of profile, background, excess,
+asserted over every shipped PDF, which carry no 450 and no 2,583. None of profile, background, excess,
 screen, same-day, construction or decisive appears in any shipped file, asserted by word sweep in
 `checks.py`. The prompt's own flagged sentence carries two stump terms, deposit and customer, which the
 question cannot be asked without. Sweep 10 is the container audit reporting that it ran and found nothing.

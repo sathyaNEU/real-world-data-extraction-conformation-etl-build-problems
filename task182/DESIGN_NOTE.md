@@ -521,3 +521,12 @@ differentiation.
   bias is a monotone function of one visible feature, so every partial correction walks toward the answer and
   a response that merely notices the curvature lands the call; the top two would have averaged about 59.
   Replaced by a mechanism whose wrong routes are not partial versions of the right one.
+
+- Architecture 1, the shared-driver counterfactual (which landholder bores the mine's take drew down past
+  the 5 m trigger, each bore's decline read against its own climate-only path fitted before the take):
+  shipped 2026-10-11 and solved at the portal, FAILED_TO_STUMP. The portal response executed the rung as a
+  work order, which is the diagnosis written above: the in-house round had already held the
+  fit-before-the-take construction, the isolated leak reader reached the answer from the pack alone with a
+  lagged-rainfall model, and the WHAT screen then killed the design outright because the decisive step
+  settles the estimand's comparison, task193 v1's shape. Re-rooted at stage 1 rather than hardened, the
+  mechanism being spent in its own right.
