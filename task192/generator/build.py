@@ -63,8 +63,10 @@ def dictionary_sheets():
           ("codigo_monitor", "texto", "codigo de acao que o classificador do monitor atribuiu ao relato"),
           ("codigo_manual", "texto", "codigo de acao que a mesa de codificacao atribuiu a mao"),
           ("codificador", "texto", "iniciais de quem codificou a mao"),
-          ("data_codificacao", "data", "dia em que a codificacao manual foi feita"),
-          ("ronda", "texto", "ronda de codificacao: R1 em julho, R2 em novembro")]),
+          ("data_codificacao", "data", "dia em que a codificacao manual foi feita; a mesa trabalha o "
+                                       "lote nos dias anteriores ao fecho da ronda"),
+          ("ronda", "texto", "ronda de codificacao: R1 fechada em 20 de julho de 2026, R2 em 3 de "
+                             "novembro de 2026")]),
         ("gazeteiro_localidades", "Uma linha por nome de localidade. Uma localidade com nome novo "
          "fica com duas linhas, a atual e a anterior, ambas com o mesmo codigo_localidade.",
          [("codigo_localidade", "texto", "codigo da localidade no gazeteiro de 2024"),

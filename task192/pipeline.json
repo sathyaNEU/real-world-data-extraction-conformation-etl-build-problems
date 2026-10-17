@@ -1,13 +1,13 @@
 {
  "task": "task192",
  "owner": "oviya13ya",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "political-science-public-policy/conflict-protest-event-data-analysis",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-17",
- "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, applies the protocol's confrontational codes and files 182 confrontational actions, which counts the labels the press classifier assigned rather than the confrontational actions the period held.",
+ "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, applies the protocol's confrontational codes and files 178 confrontational actions, which counts the labels the press classifier assigned rather than the confrontational actions the period held.",
  "architecture": 3,
  "loops": 0,
  "precut": {
@@ -18,24 +18,32 @@
   "warn": 0
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-17, no LEAK: 4 REVIEW lines (two monthly municipality counts in boletins_anteriores_2026.pdf, planned-gathering dates in notificacoes_reuniao_publica.csv and the manifest cell derived from them, no writer signature), each answered in the design note's ## Leak sweep answers",
+  "reader": "staged, not run: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/reader/reader_brief.md"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "0.10 task189 on the driver; task446 v2 and task448 differentiated on the card"
+  "heart": "WARN 2026-10-17, no BLOCK: repeat.gate_g against task193 (v2), nearest driver 0.10 task189",
+  "nearest": "0.10 task189 on the driver; task445, task446 v2, task448 and task455 differentiated on the card"
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "staged, not run: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/judge/judge_brief.md -> verdict.md"
  },
  "returned": [],
- "resume": "Architecture 3 drawn and designed; card registered 2026-10-17T15:52:44Z with v1 and v2 in lineage and differentiation lines for task445, task446 and task448; precut 49 checks 0 FAIL 0 WARN. Architecture 2's pack, goldens, submission and zip were removed from the tree (house fix H11: a superseded write-up must not sit where a consumer can grade it); the stage-4 briefs under /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/ hold the architecture-2 bundle and are stale. Next: stage 3, rebuild generator/ for architecture 3 from the measured model at scratchpad/t192/m8.py seed 41 (4,400 actions, two in three press-only, a double-coding sample of 1,500 items returning 46/40/16/1398, ladder 152, 182, 225 golden, 285). world.py, sim.py and golden.py are rewritten; pack.py, docs.py, deliver.py, archive.py and postprocess.py are reused, and the second deliverable becomes a bulletin PDF carrying the chart.",
+ "resume": "Stage 4 CHECK. Architecture 3 is built and every free gate is green: 152 generator assertions, 102 independent checks, figures_check 102/0 absent, two byte-identical rebuilds, leak.py REVIEW with no LEAK and all four lines answered in the note, guard.py surface and heart WARN with no BLOCK, precut 49 checks 0 FAIL 0 WARN, target.zip re-cut from the final rebuild (18 members, deterministic timestamps). The two stage-4 threads are STAGED, NOT SPAWNED, because this session has no Agent tool: the orchestrating session spawns them at medium effort from /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/judge/judge_brief.md (verdict to verdict.md beside it) and /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/reader/reader_brief.md (answers to reader_answers.md beside it); each directory holds its own prompt.txt and a fresh unzip of the current target.zip. Next after both return: fix every finding in the generator in one pass, re-run the gate chain, then stage 5 SHIP.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "build": {
+  "generator_assertions": 152,
+  "independent_checks": 102,
+  "figures_check": "102 figures in blocks 1 to 4, 0 absent",
+  "rebuilds": "two byte-identical over target/ and golden/ (062078602f4a07a55a38f8125fe176657236cf6ec635079ddeacc666eb2eee2f)",
+  "zip": "target.zip, 18 members, 0e65c1070050c37b47c94116c4a61bf7e1660045104e80a97ebd887e432c9856",
+  "call": "234 confrontational actions (raw 234.134), default path 178, rungs 126 and 336"
+ }
 }

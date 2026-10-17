@@ -37,6 +37,15 @@ subset of them.
 - The driver sits at 0.10 against task189's left-censored averages and below that against every other
   card on file; no card and no lineage entry corrects a count for an instrument's sensitivity and its
   specificity together.
+- Neither this build nor task193 moves on it, and that is the author's call rather than the guard's.
+  `method_or_model_selection` is the label every build carries whose decisive step is choosing the field's
+  estimator over the generic move, which is what the client's rule 1 asks for, so it recurs in any wave
+  built to the spec and is not evidence of a monoculture on its own. What would be is a repeated driver,
+  and the drivers here are 0.09 at their nearest neighbour and sit in different Layer 2 families
+  (`field_method` against task193's `estimation_fit`), different domains and different patterns: a count
+  rebuilt from an instrument's two error rates against a null expectation set by where in an observation
+  window a unit's first exposure falls. Moving a built architecture to vary a coarse label would answer
+  the label and not the repeat.
 
 **Sources read.**
 - `analytical_tasks/02_anomaly_detection/` seed AD15: the decision shape only, one figure committed at a
@@ -233,11 +242,30 @@ the shipped bundle, and the spread is reported rather than claimed:
 | the correction taken inside each dispute theme and added | 235.925 | ruled out by the same sentence; the sample is a simple random sample of the reports and is not stratified, and four themes hold three or fewer agreed confrontational rows |
 
 The widest of the five sits 1.8 actions from the golden, so no variant crosses the next rung and the
-three that differ are each closed by a quoted sentence or by the table's own cells.
+three that differ are each closed by a quoted sentence or by the table's own cells. The spread of the
+five, 232.403 to 235.925, is 3.5 actions wide and sits inside rung 3's bin but for the continuity
+variant, which is 1.7 below it and still 50 actions clear of rung 0 and 100 clear of rung 2: whichever of
+the five a careful analyst reaches, the call it files is not one of the three wrong rungs. A sixth
+variant, the correction taken inside each access route and pooled, does not exist here: the correction
+applies to the 4,357 actions the press monitor carries, which are one route by construction, and the 433
+that reach the register only through a filer are not corrected at all because no classifier read them.
+The theme row above is the stratified variant in its place.
 
 **Robustness and fairness.** The figure sits 0.134 from the centre of its bin, 0.37 from the nearest
 edge. The truth behind the simulated record is 239 confrontational actions, 2.1 per cent above the
 estimate, so the estimator is fair as well as determinate; the generator asserts the gap.
+
+**Every graded figure off its rounding edge.** The call rounds from 234.134, 0.37 of a bin from the
+nearest edge. The seven euro totals are a per-report rate in cents times a count, so the generator's
+rates were moved until each total sits at least 0.35 of a euro from its edge (928.00, 2,481.15, 1,566.00,
+907.15, 621.00, 497.15 and 992.00): the schedule reads 5.95, 7.25, 5.45 and 8.15 where it read 5.80,
+7.10, 5.25 and 8.35, and the July adenda raises P04 to 6.20 rather than 6.15, because 152 paid reports at
+the old pair came to exactly 892.50 and a solver rounding half up and a solver rounding half to even
+would have filed different euros. The three medians are whole minutes, so nothing rounds. The thirteen
+partner shares are exact ratios of two integers, so no convention and no order of operations can move
+which side of an edge they fall: the generator asserts that none of them is an exact x.x5 and that the
+tightest, Q12 at 27.4478 per cent, clears its edge by 0.0022 percentage points. All of it is asserted
+(`bin.total`, `bin.edge`, `bin.euros.*`, `bin.share.*`, `bin.share_exact.*`, `bin.median.*`).
 
 **The grid.** Two axes, how the reports are resolved and which error rates the count carries:
 
@@ -327,7 +355,7 @@ by a quoted sentence or asserted to give the same call.
   municipalities is bounded by the 119 municipalities the gazetteer carries, so the monthly figure and a
   fortnight's figure land on the same number without either being the other. No monthly row is graded, no
   fortnight row is recoverable from a monthly one, and the file states nothing about confrontational
-  actions: the note under its table says the episode indicators belong to the period bulletin and go to
+  actions: the note under its table says the confrontation indicators belong to the period bulletin and go to
   the trustees in November. Under every rung the file ties.
 - **`notificacoes_reuniao_publica.csv`, 95 dates after 6 November.** The column is `data_prevista`, the
   day a gathering is *planned* for, on notifications lodged with the councils before the extract. A
@@ -376,7 +404,7 @@ executed every filed paragraph and matched every control total.
 | A2 reports received, the partner network | counts the rows of the partner file, so the reposted August month counts twice and the unplaceable reports are missing | 1,463 | 1,298 | miss |
 | A2 reports that could not be placed, the press monitor | the item log alone, which holds only the items it placed | 0 | 148 | miss |
 | A2 median minutes from the action to the report, the press monitor | reads the monitor's reception stamp as local time | 51.0 | 111.0 | miss |
-| A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | 798 | 892 | miss |
+| A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | 828 | 907 | miss |
 | A3 reports filed, the merged partner | one delivery code | 122 | 156 | miss |
 
 **Pair ceiling:** 39.5
@@ -421,6 +449,15 @@ executed every filed paragraph and matched every control total.
   negatives, which is what a real quality desk draws: it forces a weighted estimator and leaves two
   defensible weightings of the same cells, so the sample is drawn simple at random from the press
   monitor's items and paragraph 4.5 says so.
+- Dating the desk's hand coding forward from each round, the round day plus nought to eight days: the
+  November round then codes 821 reports after the 6 November extract, which the leak sweep caught and
+  which no extract of 6 November could contain. Replaced by the round's date as its sign-off with the
+  coders working the batch in the eight days before it, which draws from the same stream and so leaves
+  the sample, the 2x2 and the call untouched.
+- Partner rates of 5.25 and 6.15 euros for the amended agreement: the 152 paid reports come to exactly
+  892.50 euros, so a solver rounding half up files 893 and one rounding half to even files 892 on a
+  graded figure. Replaced by 5.45 and 6.20, which land the total on 907.15, and the three other totals
+  that sat within 0.15 of an edge were moved with them.
 
 ## Architecture 2, blocked at the draw by the remote merge
 

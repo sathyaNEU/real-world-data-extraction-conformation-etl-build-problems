@@ -159,7 +159,7 @@ def bulletins(target, series):
         rows.append([m, "%d" % a, "%d" % mu, "%d" % lo])
     f = [Paragraph("%s: boletins mensais da %s" % (W.ASSOCIATION, W.REGISTER), H1),
          Paragraph("Extrato dos boletins publicados de maio a setembro de 2026. O boletim mensal "
-                   "conta acoes e territorio tocado; os indicadores de episodio sao do boletim de "
+                   "conta acoes e territorio tocado; os indicadores de confronto sao do boletim de "
                    "periodo e vao pela primeira vez ao conselho de curadores de novembro.", SMALL),
          Paragraph("Quadro 1 Acoes e territorio, por mes", H2),
          Table(wrap(rows), colWidths=[30 * mm, 38 * mm, 40 * mm, 40 * mm], style=TBL, hAlign="LEFT"),

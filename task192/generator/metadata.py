@@ -26,7 +26,7 @@ def write(task, g):
              "why_relevant": "the declared coverage of each title by district invites a correction "
                              "of the register for how much press reach each district has",
              "why_unused": "every action in the register is recorded by at least one route and the "
-                           "indicator counts episodes, not press items; no graded figure uses a "
+                           "indicator counts actions, not press items; no graded figure uses a "
                            "circulation weight"},
             {"file": "indice_tensao_distrital.csv",
              "why_relevant": "the association's own district tension index reads as the thing a "

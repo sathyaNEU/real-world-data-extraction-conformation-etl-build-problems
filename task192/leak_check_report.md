@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: asserted, sample, classifier, record, carries, quoted, decisive, nothing, protocol, double-coding, measured, sentence, population, method, correction, recall, shipped, changes, change, reporting, instrument, sensitivity, specificity, labels, monitor
+Stump terms swept: asserted, sample, classifier, record, carries, quoted, nothing, decisive, correction, double-coding, sentence, protocol, measured, population, method, monitor, shipped, changes, change, reporting, instrument, sensitivity, specificity, reaches, recall
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `boletins_anteriores_2026.pdf`: golden figure 119 appears: ...os Localidades tocadas maio 552 117 333 junho 560 119 341 julho 533 119 337 agosto 553 119 335 setembro...

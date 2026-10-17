@@ -73,11 +73,11 @@ leaves its false marks in.
 5. Per partner organisation, the reports it filed, those filed after the period closed and the euros
    paid under its data agreement, 7 rows, counts as whole numbers and euros to the nearest euro:
    - P01: 146 filed, 1 after the close, 928 euros
-   - P02: 419 filed, 2 after the close, 2,419 euros
-   - P03: 218 filed, 2 after the close, 1,534 euros
-   - P04: 153 filed, 1 after the close, 892 euros
+   - P02: 419 filed, 2 after the close, 2,481 euros
+   - P03: 218 filed, 2 after the close, 1,566 euros
+   - P04: 153 filed, 1 after the close, 907 euros
    - P05: 93 filed, 1 after the close, 621 euros
-   - P06: 61 filed, 0 after the close, 509 euros
+   - P06: 61 filed, 0 after the close, 497 euros
    - P07: 156 filed, 1 after the close, 992 euros
 
 ### boletim_confrontos_2026S2.pdf
