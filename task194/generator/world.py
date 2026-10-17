@@ -97,6 +97,21 @@ DRGS = [
 DRG_BAND = {c: b for c, _, b in DRGS}
 AGE_BANDS = ["U50", "50-64", "65-79", "80+"]
 
+# What the network's own rate in each risk band now sits at, against the rate published with specification
+# 4.0. The published table was built on FY2023-24 activity and clause 3.1 says it is not re-estimated
+# between specifications; since it was set, a falls and pressure-injury programme has pulled the
+# orthopaedic and medical bands below it while theatre throughput has pushed the surgical bands above it.
+NETWORK_DRIFT = {"ORTH-MAJ": 0.700, "ORTH-MIN": 0.722, "MED-COMPLEX": 0.948, "MED-GEN": 0.972,
+                 "SURG-MAJ": 1.221, "SURG-MIN": 1.254, "SAME-DAY": 1.0}
+
+# the unit whose case mix moved between two closed quarters while its own practice did not: the theatre
+# refurbishment at Stonecreek sent its major surgical work to Marrowfield for two quarters
+MIX_SHIFT_UNIT = "41410"
+MIX_SHIFT_QUARTERS = (5, 6)
+MIX_SHIFT_PROFILE = "ortho_major"
+ADDITIVE_UNIT = "41410"       # its rate is the network's rate in each band plus a constant per episode
+ADDITIVE_C = 0.0121
+
 # Baseline stratum rates published with specification 4.0 (complications per episode), risk band x age band.
 # Derived in the fiction from FY2023-24 network activity; the pack ships them as a lookup.
 STRATUM_RATE = {
@@ -122,6 +137,10 @@ MIX = {
                  "MED-GEN": (0.15, [0.16, 0.25, 0.33, 0.26])},
     "ortho": {"ORTH-MAJ": (0.52, [0.07, 0.19, 0.42, 0.32]), "ORTH-MIN": (0.37, [0.19, 0.24, 0.31, 0.26]),
               "MED-GEN": (0.11, [0.13, 0.22, 0.34, 0.31])},
+    # the two quarters Marrowfield Orthopaedics took Stonecreek's major joint work while its theatres were
+    # refurbished: the same unit and the same staff, a different mix of patients
+    "ortho_major": {"ORTH-MAJ": (0.26, [0.07, 0.19, 0.42, 0.32]), "ORTH-MIN": (0.19, [0.19, 0.24, 0.31, 0.26]),
+                    "SURG-MAJ": (0.43, [0.09, 0.23, 0.40, 0.28]), "MED-GEN": (0.12, [0.13, 0.22, 0.34, 0.31])},
     "resp": {"MED-COMPLEX": (0.74, [0.06, 0.16, 0.38, 0.40]), "MED-GEN": (0.26, [0.10, 0.20, 0.36, 0.34])},
     "vasc": {"SURG-MAJ": (0.44, [0.05, 0.21, 0.43, 0.31]), "SURG-MIN": (0.33, [0.09, 0.24, 0.39, 0.28]),
              "MED-COMPLEX": (0.23, [0.06, 0.18, 0.40, 0.36])},
@@ -140,38 +159,38 @@ MIX = {
 # status: "eligible" (a candidate), "embedded" (placed within twelve closed quarters), "nonacute", "merged_into".
 UNITS = [
     # code, name, hospital, mix, service, psi, sep, plan, ylast, role, status
-    ("41210", "General Medicine", "H1", "gen_med", "acute", 1.02312, 2300, 2077, 1.12784, "largest", "eligible"),
-    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.06426, 2600, 3560, 1.02924, "runner_up", "eligible"),
-    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.15844, 1900, 2305, 1.06120, "answer", "eligible"),
-    ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.06188, 1050, 1257, 1.18496, "hot2", "eligible"),
-    ("41310", "General Medicine", "H2", "gen_med", "acute", 1.10744, 1350, 1364, 1.05984, "mid", "eligible"),
-    ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.03196, 1200, 1470, 1.06936, "hot3", "eligible"),
-    ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.27500, 430, 506, 1.10948, "worst_level", "eligible"),
-    ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.05508, 620, 735, 1.31416, "hot1", "eligible"),
-    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.16660, 980, 1162, 1.07616, "mid", "eligible"),
-    ("41430", "Renal Medicine", "H3", "renal", "acute", 1.03400, 560, 652, 1.08092, "mid", "eligible"),
-    ("41510", "General Medicine", "H4", "gen_med", "acute", 1.10650, 390, 466, 1.04828, "merged", "eligible"),
-    ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.08432, 500, 779, 1.08228, "rising", "eligible"),
+    ("41210", "General Medicine", "H1", "gen_med", "acute", 1.01400, 2300, 2077, 1.21000, "largest", "eligible"),
+    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.00600, 2600, 3560, 1.02000, "runner_up", "eligible"),
+    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.45000, 1900, 2305, 1.14000, "answer", "eligible"),
+    ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.03100, 1050, 1257, 1.28000, "hot2", "eligible"),
+    ("41310", "General Medicine", "H2", "gen_med", "acute", 1.06900, 1350, 1364, 1.09000, "mid", "eligible"),
+    ("41320", "General Surgery", "H2", "gen_surg", "acute", 0.99400, 1200, 1470, 1.12000, "hot3", "eligible"),
+    ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.05200, 430, 506, 1.17000, "worst_level", "eligible"),
+    ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.00000, 620, 735, None, "hot1", "eligible"),
+    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.22000, 980, 1162, 1.10000, "mid", "eligible"),
+    ("41430", "Renal Medicine", "H3", "renal", "acute", 1.02200, 560, 652, 1.13000, "mid", "eligible"),
+    ("41510", "General Medicine", "H4", "gen_med", "acute", 1.05800, 390, 466, 1.05000, "merged", "eligible"),
+    ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.01900, 500, 779, 1.09000, "rising", "eligible"),
     # units the programme has already been placed with inside the twelve closed quarters. Earlier cycles
     # were decided on the quarter closed at the time, so the register holds units that were standing badly
     # over their own record beside units that were having one bad quarter on an ordinary record.
-    ("41250", "Colorectal Surgery", "H1", "colorectal", "acute", 1.105, 2200, 2240, None, "embed", "embedded"),
-    ("41260", "Aged Care", "H2", "aged", "acute", 1.120, 1670, 1700, None, "embed", "embedded"),
-    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.110, 2200, 2250, None, "embed", "embedded"),
-    ("41340", "Orthopaedics", "H3", "ortho", "acute", 1.870, 1250, 1290, None, "embed", "embedded"),
-    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.720, 1330, 1360, None, "embed", "embedded"),
-    ("41360", "Aged Care", "H1", "aged", "acute", 1.930, 1115, 1140, None, "embed", "embedded"),
-    ("41440", "General Surgery", "H3", "gen_surg", "acute", 1.100, 3020, 3080, None, "embed", "embedded"),
-    ("41450", "Geriatric Evaluation and Management", "H1", "aged", "acute", 1.980, 1082, 1110, None, "embed", "embedded"),
+    ("41250", "Colorectal Surgery", "H1", "colorectal", "acute", 1.01100, 2200, 2240, None, "embed", "embedded"),
+    ("41260", "Aged Care", "H2", "aged", "acute", 1.03400, 1670, 1700, None, "embed", "embedded"),
+    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.00600, 2200, 2250, None, "embed", "embedded"),
+    ("41340", "Orthopaedics", "H3", "ortho", "acute", 1.02100, 1250, 1290, None, "embed", "embedded"),
+    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.02700, 1330, 1360, None, "embed", "embedded"),
+    ("41360", "Aged Care", "H1", "aged", "acute", 0.99800, 1115, 1140, None, "embed", "embedded"),
+    ("41440", "General Surgery", "H3", "gen_surg", "acute", 0.99100, 3020, 3080, None, "embed", "embedded"),
+    ("41450", "Geriatric Evaluation and Management", "H1", "aged", "acute", 1.04100, 1082, 1110, None, "embed", "embedded"),
     # the unit the team is with now, for the quarter in progress: no closed data for the placement
-    ("41460", "Rehabilitation and Aged Care", "H3", "aged", "acute", 1.221, 470, 500, None, "current", "embedded"),
+    ("41460", "Rehabilitation and Aged Care", "H3", "aged", "acute", 1.01600, 470, 500, None, "current", "embedded"),
     # non-acute units: outside the indicator's scope (specification 4.0 clause 2.3)
     ("41610", "Sub-acute Rehabilitation", "H2", "subacute", "rehabilitation", 1.0, 330, 350, None, "scope", "nonacute"),
     ("41620", "Older Persons Mental Health", "H3", "subacute", "psychiatric", 1.0, 290, 300, None, "scope", "nonacute"),
     ("41630", "Sub-acute Rehabilitation", "H4", "subacute", "rehabilitation", 1.0, 240, 250, None, "scope", "nonacute"),
     # predecessor units amalgamated into 41510 on 1 October 2025
-    ("41511", "Medical Ward 1", "H4", "gen_med", "acute", 1.10650, 205, None, None, "pred", "merged_into"),
-    ("41512", "Medical Ward 2", "H4", "gen_med", "acute", 1.10650, 185, None, None, "pred", "merged_into"),
+    ("41511", "Medical Ward 1", "H4", "gen_med", "acute", 1.05800, 205, None, None, "pred", "merged_into"),
+    ("41512", "Medical Ward 2", "H4", "gen_med", "acute", 1.05800, 185, None, None, "pred", "merged_into"),
 ]
 
 MERGE_DATE = dt.date(2025, 10, 1)

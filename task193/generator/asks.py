@@ -3,7 +3,7 @@ import collections
 import csv
 import os
 import statistics
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_UP, ROUND_FLOOR
 
 import numpy as np
 
@@ -153,8 +153,10 @@ def a2_golden(kept, ddd_of):
                     "ddd_after": float(Decimal(ta) / 10), "rate_before": rate_before,
                     "rate_after": rate_after, "fee_dkk": int(fee),
                     "fee_exact": str(exact),
+                    # how far the exact krone figure sits from the half krone that would make the
+                    # rounding a convention: 0 is on the boundary, 0.5 is a whole krone
                     "fee_distance": float(abs(exact - exact.to_integral_value(
-                        rounding=ROUND_HALF_UP)))})
+                        rounding=ROUND_FLOOR) - Decimal("0.5")))})
     return out
 
 

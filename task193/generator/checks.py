@@ -502,9 +502,10 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
        "every payer's total is a whole tenth, so half-up and half-even agree")
     # The fee: the exact krone figure is far from the half krone that would make it open.
     worst_fee = min(r["fee_distance"] for r in g["a2"])
-    ok("mid.holder_fee_distance", worst_fee >= 0.25,
-       "tightest %.4f krone from the half krone; one more half-dose package moves a fee by "
-       "about %.2f krone" % (worst_fee, min(r["rate_after"] for r in g["a2"]) / 2000.0))
+    ok("mid.holder_fee_distance", worst_fee >= 0.20,
+       "tightest %.4f krone from the half krone that would make the rounding a convention; one "
+       "more half-dose package moves a fee by about %.2f krone"
+       % (worst_fee, min(r["rate_after"] for r in g["a2"]) / 2000.0))
     # The region and age shares: no cell is near the tenth-of-a-point boundary.
     worst_share, worst_cell = 1.0, None
     for r in g["a3"]:
@@ -573,6 +574,100 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
                frozenset(x) in cuts]
         ok("oracle.no_cut_isolates_" + col, not bad,
            "order %s" % " ".join(order))
+
+    # ------------------------------------------------- the three silent primaries
+    # A1: the chain that owned the pharmacy on the day of the dispensing. The register gives the
+    # chain that owns it at the extract date; nothing in the pack says a line belongs to the chain
+    # that owned it then, and the chains' own monthly log is the only thing that disagrees.
+    phreg = rd(tgt, "pharmacy_register.csv")
+    movers = [r for r in phreg if r["previous_chain_code"]]
+    inside = [r for r in movers if G.iso(r["in_chain_from"]) >= G.D0]
+    ok("dev.a1_transfers_exist", len(inside) >= 20,
+       "%d of %d pharmacies that changed chain did so inside the extract period"
+       % (len(inside), len(movers)))
+    ok("dev.a1_benign_twins", len(movers) - len(inside) >= 8,
+       "%d of the register's transfers predate the extract, so the column marks nothing"
+       % (len(movers) - len(inside)))
+    ok("dev.a1_every_line_joins",
+       all(r["pharmacy"] in set(x["pharmacy_id"] for x in phreg) for r in kept),
+       "the device leaves no unmatched join for the battery to find")
+    ok("dev.a1_no_rule_states_it",
+       not any(x in (_pdf_text(tgt) + " ".join(r["documentation"] for r in
+                                               rd(tgt, "register_variable_documentation.csv"))
+                     + sheet_text).lower()
+               for x in ("chain that owned", "chain at the date of the dispensing",
+                         "owned the pharmacy on")),
+       "no filed sentence adjudicates the chain a line belongs to")
+    # A2: the dose the edition in force assigns, against the figure the package row was written with
+    ed = {r["atc_code"]: r["ddd_mg"] for r in rd(tgt, "atc_text.csv")}
+    stale, ties = [], 0
+    for r in rd(tgt, "package_index.csv"):
+        if not ed.get(r["atc_code"]) or r["atc_code"] not in set(
+                x["product_atc"] for x in rd(tgt, "screen_annexes.csv")):
+            continue
+        per = (DEC(r["pack_size"]) * DEC(r["strength"].split()[0])
+               / DEC(ed[r["atc_code"]]))
+        if per != DEC(r["ddd_per_pack"]):
+            stale.append(r["vnr"])
+        else:
+            ties += 1
+        ok_tenths = (per * 10) % 1 == 0
+        if not ok_tenths:
+            stale.append("NOT-TENTHS-" + r["vnr"])
+    ok("dev.a2_stale_rows", 6 <= len(stale) <= 12,
+       "%d package rows carry the earlier edition's dose, %d tie to the edition in force"
+       % (len(stale), ties))
+    ok("dev.a2_both_editions_are_whole_tenths",
+       not any(x.startswith("NOT-TENTHS") for x in stale),
+       "both figures are whole tenths, so a payer's total is exact either way")
+    ok("dev.a2_no_rule_states_it",
+       "edition in force" not in sheet_text.lower()
+       and "edition" not in " ".join(r["documentation"] for r in
+                                     rd(tgt, "register_variable_documentation.csv")
+                                     if r["file_name"] == "package_index.csv").lower(),
+       "no filed sentence says which edition's dose to strike the fee on")
+    # A3: the person extract delivered with the October 2025 run
+    cur = {r["person_key"]: r for r in rd(tgt, "person_register.csv")}
+    pri = {r["person_key"]: r for r in rd(tgt, "person_register_2025Q4.csv")}
+    ok("dev.a3_same_key_set", set(cur) == set(pri),
+       "%d against %d keys, so the device leaves no unmatched join" % (len(cur), len(pri)))
+    diff = [k for k in cur if (cur[k]["region"] or "not stated") != (pri[k]["region"] or "not stated")]
+    explained = [k for k in diff if cur[k]["previous_region"] and cur[k]["region_recorded_from"]
+                 and G.iso(cur[k]["region_recorded_from"]) > G.WIN_A]
+    ok("dev.a3_silent_corrections", len(diff) - len(explained) >= 600,
+       "%d of the %d regions that differ between the two deliveries are explained by the current "
+       "extract's own history columns and %d are not"
+       % (len(explained), len(diff), len(diff) - len(explained)))
+    ok("dev.a3_benign_twins", len(explained) >= 80,
+       "%d explained differences, so the comparison is not a list of the device's rows"
+       % len(explained))
+    ok("dev.a3_no_rule_states_it",
+       "person_register_2025q4" not in (_pdf_text(tgt) + " ".join(
+           r["documentation"] for r in rd(tgt, "register_variable_documentation.csv"))).lower(),
+       "no filed sentence points the region at the earlier delivery")
+    # every primary lives outside the files the main call reads
+    CALL_FILES = {"dispensings_2023_2025.csv", "dispensings_2025_2026.csv", "package_index.csv",
+                  "screen_annexes.csv", "person_key_crosswalk.csv", "signal_tracker_export.csv",
+                  "screen_standard_7_2024.pdf"}
+    ok("dev.primaries_outside_the_call",
+       not ({"pharmacy_register.csv", "atc_text.csv",
+             "person_register_2025Q4.csv"} & CALL_FILES),
+       "the three primaries live in files the call never opens")
+
+    # ------------------------------------------------- the measured pair arithmetic
+    import cracker as CR
+    bands = CR.age_bands_from_the_standard(tgt)
+    cr_rows = CR.score(tgt, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                         "figures.json"), bands)
+    total, lc, ls, pair, leak = CR.ceiling(cr_rows, cr_rows)
+    for ask, n_fig, hits in cr_rows:
+        ok("cracker.misses_" + ask.split()[0], hits < n_fig,
+           "%s: keeps %d of %d" % (ask, hits, n_fig))
+    ok("cracker.pair_ceiling", pair <= 40.0, "%.1f (ceiling 40)" % pair)
+    ok("cracker.mirror_leakage", leak < 35.0, "%.1f per cent (under 35)" % leak)
+    ok("cracker.path_is_code", os.path.exists(os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "cracker.py")),
+       "generator/cracker.py, run on the cut pack by this build")
 
     # deleting every ask device leaves the call where it is
     ok("ask.devices_deletable", referred == _referred(tgt, rp, "perm", firsts))

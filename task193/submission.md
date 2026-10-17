@@ -76,38 +76,38 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - VST, 2026 Q2: 2665 accepted, 32 rejected, 7.0 days
    - VST, 2026 Q3: 2922 accepted, 29 rejected, 6.0 days
 5. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
-   - Nordlys Pharma A/S (H1): 265203.0 DDD, 342608 kroner
-   - Bregnholt Laegemidler A/S (H2): 403788.0 DDD, 531163 kroner
-   - Vindeby Therapeutics ApS (H3): 407642.0 DDD, 544736 kroner
-   - Soegaard Medica A/S (H4): 383500.0 DDD, 476921 kroner
-   - Kastholm Pharma A/S (H5): 595146.0 DDD, 746846 kroner
-   - Ellevang Biosciences A/S (H6): 1027312.0 DDD, 1068056 kroner
-   - Strandby Farma ApS (H7): 227010.0 DDD, 332570 kroner
+   - Nordlys Pharma A/S (H1): 265203.0 DDD, 333475 kroner
+   - Bregnholt Laegemidler A/S (H2): 472479.0 DDD, 597898 kroner
+   - Vindeby Therapeutics ApS (H3): 407642.0 DDD, 536131 kroner
+   - Soegaard Medica A/S (H4): 191750.0 DDD, 288316 kroner
+   - Kastholm Pharma A/S (H5): 595146.0 DDD, 719749 kroner
+   - Ellevang Biosciences A/S (H6): 1027312.0 DDD, 1032066 kroner
+   - Strandby Farma ApS (H7): 113505.0 DDD, 170258 kroner
 6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
-   - Hovedstaden, 18-34: 638 patients, 69.1 per cent
-   - Hovedstaden, 35-44: 366 patients, 69.4 per cent
-   - Hovedstaden, 45-64: 734 patients, 78.3 per cent
-   - Hovedstaden, 65 and over: 1035 patients, 81.2 per cent
-   - Midtjylland, 18-34: 498 patients, 66.9 per cent
-   - Midtjylland, 35-44: 308 patients, 73.4 per cent
-   - Midtjylland, 45-64: 590 patients, 77.6 per cent
-   - Midtjylland, 65 and over: 803 patients, 77.7 per cent
-   - Nordjylland, 18-34: 249 patients, 68.3 per cent
-   - Nordjylland, 35-44: 143 patients, 72.0 per cent
-   - Nordjylland, 45-64: 308 patients, 74.7 per cent
-   - Nordjylland, 65 and over: 371 patients, 80.9 per cent
-   - Sjaelland, 18-34: 310 patients, 72.3 per cent
-   - Sjaelland, 35-44: 205 patients, 77.6 per cent
-   - Sjaelland, 45-64: 439 patients, 75.4 per cent
-   - Sjaelland, 65 and over: 576 patients, 79.9 per cent
-   - Syddanmark, 18-34: 495 patients, 69.9 per cent
-   - Syddanmark, 35-44: 267 patients, 76.0 per cent
-   - Syddanmark, 45-64: 585 patients, 75.6 per cent
-   - Syddanmark, 65 and over: 705 patients, 80.4 per cent
-   - not stated, 18-34: 71 patients, 70.4 per cent
-   - not stated, 35-44: 40 patients, 85.0 per cent
-   - not stated, 45-64: 71 patients, 76.1 per cent
-   - not stated, 65 and over: 88 patients, 77.3 per cent
+   - Hovedstaden, 18-24: 251 patients, 70.5 per cent
+   - Hovedstaden, 25-44: 753 patients, 68.8 per cent
+   - Hovedstaden, 45-74: 1090 patients, 79.8 per cent
+   - Hovedstaden, 75 and over: 679 patients, 80.3 per cent
+   - Midtjylland, 18-24: 209 patients, 68.9 per cent
+   - Midtjylland, 25-44: 597 patients, 69.5 per cent
+   - Midtjylland, 45-74: 878 patients, 78.1 per cent
+   - Midtjylland, 75 and over: 515 patients, 76.9 per cent
+   - Nordjylland, 18-24: 91 patients, 70.3 per cent
+   - Nordjylland, 25-44: 301 patients, 69.4 per cent
+   - Nordjylland, 45-74: 451 patients, 77.4 per cent
+   - Nordjylland, 75 and over: 228 patients, 79.4 per cent
+   - Sjaelland, 18-24: 130 patients, 69.2 per cent
+   - Sjaelland, 25-44: 385 patients, 76.1 per cent
+   - Sjaelland, 45-74: 653 patients, 76.6 per cent
+   - Sjaelland, 75 and over: 362 patients, 80.4 per cent
+   - Syddanmark, 18-24: 197 patients, 72.1 per cent
+   - Syddanmark, 25-44: 565 patients, 72.0 per cent
+   - Syddanmark, 45-74: 866 patients, 76.9 per cent
+   - Syddanmark, 75 and over: 424 patients, 80.9 per cent
+   - not stated, 18-24: 29 patients, 72.4 per cent
+   - not stated, 25-44: 82 patients, 76.8 per cent
+   - not stated, 45-74: 103 patients, 75.7 per cent
+   - not stated, 75 and over: 56 patients, 78.6 per cent
 
 ### order_shares_by_pair.png
 

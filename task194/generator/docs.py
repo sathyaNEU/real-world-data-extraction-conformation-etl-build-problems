@@ -58,12 +58,11 @@ def charter(target):
                    "placed with in the previous twelve closed quarters and except the unit the team is "
                    "placed with when the placement is decided. The partnership does not return to a unit "
                    "inside three years, so that the gains a unit holds are the unit's own to hold.", BODY),
-         Paragraph("4.3 A placement is made where it will avoid the most hospital-acquired complications. "
-                   "The complications a placement avoids are the complications the unit would have "
-                   "recorded over the assessment quarter without the embedded team, less the "
-                   "complications it records over that quarter with the team there. The position the unit "
-                   "would have held without the team is its position over its own closed quarters before "
-                   "the team arrived, and not its position in any one of them.", BODY),
+         Paragraph("4.3 A placement is made with the unit carrying the most avoidable complications. The "
+                   "complications a unit carries as avoidable over a period are the complications its own "
+                   "patients had, less the complications patients in the same risk band and age band "
+                   "would be expected to have, counted patient by patient and summed over the unit's "
+                   "episodes in that period.", BODY),
          Paragraph("4.4 A placement is assessed on the separations planned for the unit for the assessment "
                    "quarter, as published in the network's activity plan for that quarter.", BODY),
          Paragraph("4.5 The Director of Clinical Improvement recommends the placement for each cycle and "

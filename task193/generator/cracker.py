@@ -168,7 +168,7 @@ def fee_bands(tgt):
     return out[0], out[1]
 
 
-def ask2(tgt, follow_the_payer=True):
+def ask2(tgt, follow_the_payer=True, edition_in_force=False):
     """Per payer: the defined daily doses of Annex A products dispensed in the window and the fee.
 
     The workbook's Notes sheet states who pays before and after a merger, the product register
@@ -177,12 +177,20 @@ def ask2(tgt, follow_the_payer=True):
     of them; `follow_the_payer` False is the natural reading a solver takes when nothing says to
     follow the transfer, and is what the mirror of this ask would do.
     """
+    # the natural reading takes the register's own ddd_per_pack; `edition_in_force` recomputes it
+    # from the package's strength and the dose the edition names, which nothing in the pack says
+    ed = {r["atc_code"]: (Decimal(r["ddd_mg"]) if r["ddd_mg"] else None)
+          for r in rd(tgt, "atc_text.csv")}
     atc_of, tenths = {}, {}
     for r in rd(tgt, "package_index.csv"):
         atc_of[r["vnr"]] = (r["atc_code"],
                             iso(r["valid_from"]) if r["valid_from"] else None,
                             iso(r["valid_to"]) if r["valid_to"] else None)
-        tenths[r["vnr"]] = int(Decimal(r["ddd_per_pack"]) * 10) if r["ddd_per_pack"] else 0
+        if edition_in_force and ed.get(r["atc_code"]) is not None:
+            tenths[r["vnr"]] = int(Decimal(r["pack_size"])
+                                   * Decimal(r["strength"].split()[0]) / ed[r["atc_code"]] * 10)
+        else:
+            tenths[r["vnr"]] = int(Decimal(r["ddd_per_pack"]) * 10) if r["ddd_per_pack"] else 0
     prod_atc = {r["product_atc"]: r["product_code"] for r in rd(tgt, "screen_annexes.csv")}
     reg = {r["product_code"]: r for r in rd(tgt, "product_register.csv")}
     hold = {r["holder_code"]: r for r in rd(tgt, "holder_register.csv")}
@@ -292,7 +300,8 @@ def ask3(tgt, bands, region_at_window_start=True, prior_vintage=False):
 
 # ---------------------------------------------------------------- scoring
 def score(tgt, figures, bands, a2_payer=True, a3_vintage=True, a1_quarter=True,
-          a1_dedup=True, a1_exceptions=True, a1_chain_as_of=False, a3_prior=False):
+          a1_dedup=True, a1_exceptions=True, a1_chain_as_of=False, a3_prior=False,
+          a2_edition=False):
     g = json.load(open(figures, encoding="utf-8"))
     rows = []
 
@@ -306,7 +315,7 @@ def score(tgt, figures, bands, a2_payer=True, a3_vintage=True, a1_quarter=True,
         hits += 1 if abs(got.get("median_days", -99) - r["median_days"]) < 0.05 else 0
     rows.append(("A1 chain and quarter", 3 * len(g["a1"]), hits))
 
-    a2 = ask2(tgt, follow_the_payer=a2_payer)
+    a2 = ask2(tgt, follow_the_payer=a2_payer, edition_in_force=a2_edition)
     hits = 0
     for r in g["a2"]:
         got = a2.get(r["holder"], {})
@@ -361,8 +370,10 @@ if __name__ == "__main__":
     print()
     print("and what the two new primaries are worth: the path that finds each of them")
     for lbl, kw in (("A1 chain that owned the pharmacy", {"a1_chain_as_of": True}),
+                    ("A2 the edition's own dose", {"a2_edition": True}),
                     ("A3 the prior person extract", {"a3_prior": True}),
-                    ("both found", {"a1_chain_as_of": True, "a3_prior": True})):
+                    ("all three found", {"a1_chain_as_of": True, "a2_edition": True,
+                                         "a3_prior": True})):
         rr = score(tgt, figures, bands, **kw)
         t, lc2, ls2, p2, lk2 = ceiling(rr, rr)
         print("  %-34s keeps %.1f per cent, pair ceiling %.1f" % (lbl, 100 * lc2, p2))

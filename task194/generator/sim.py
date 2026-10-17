@@ -107,135 +107,75 @@ def window_devs(sd, n, fixed_last, seedparts, level_at=(), cap=0.0075, tail4_cap
     return dev
 
 
-def design_ratios(units, expected):
-    """Every unit's designed standardised ratio by quarter.
+def unit_base(units, expected, expected_net, inscope):
+    """The published standardised ratio each unit-quarter sits at before its own quarterly shock.
 
-    A unit-quarter's ratio is its own persistent level plus a quarterly shock sized so the count sits about
-    `OVERDISPERSION` Pearson residuals from its expected number, which is what a real indicator does: a
-    quarter of a few hundred episodes carries more than sampling error. The network's own quarterly position
-    is then levelled, and each placement is written on top: for a placed unit the quarters before the team
-    arrived come back to the unit's persistent level as a block, so the unit's standing over that block is
-    its level while no single quarter in it is, and the assessment quarter and the two after it carry the
-    programme's effect.
+    A unit's complication rate in a risk band is the rate the network itself runs at in that band, which is
+    the rate published with specification 4.0 times how far the network has moved in that band since the
+    table was set, multiplied by the unit's own practice factor. The published ratio a unit therefore
+    reports is its practice factor times the mix-weighted drift of its own patients, so two units with the
+    same practice report different published ratios when their patients sit in different bands.
     """
+    base = {}
+    for u in units:
+        code, psi = u[0], u[5]
+        for q in quarters_for(u):
+            if (code, q) not in expected or expected[(code, q)] <= 0:
+                continue
+            if code == W.ADDITIVE_UNIT:
+                # this unit runs at the network's own rate in every band plus a constant per episode, so
+                # its excess over the network is the same whatever mix of patients it is sent
+                target = expected_net[(code, q)] + W.ADDITIVE_C * inscope[(code, q)]
+            else:
+                target = expected_net[(code, q)] * psi
+            base[(code, q)] = target / expected[(code, q)]
+    return base
+
+
+def design_ratios(units, expected, expected_net, inscope):
+    """Every unit's designed published standardised ratio by quarter.
+
+    Each unit-quarter sits at its own base (`unit_base`) plus a quarterly shock sized so the count lands
+    about `OVERDISPERSION` Pearson residuals from its expected number, which is what a real indicator does.
+    The network's own quarterly position is then levelled, so what moves between quarters is where the
+    complications sit rather than how many the network has. The unit whose patients move between quarters
+    carries no shock at all, so its record shows a mix effect and nothing else.
+    """
+    base = unit_base(units, expected, expected_net, inscope)
     design = {}
     for u in units:
         code, _, _, mix, _, psi, sep, _, ylast, _, status = u
-        qs = quarters_for(u)
+        qs = [q for q in quarters_for(u) if (code, q) in base]
+        if not qs:
+            continue
+        if code == W.ADDITIVE_UNIT:
+            design[code] = {q: base[(code, q)] for q in qs}
+            continue
         e = [max(1.0, expected.get((code, q), 1.0)) for q in qs]
         sd = sum(W.OVERDISPERSION / (psi * x) ** 0.5 for x in e) / len(e)
-        dev = window_devs(sd, len(qs), None if ylast is None else ylast / psi - 1.0, (code,))
-        design[code] = {qs[i]: psi * (1 + dev[i]) for i in range(len(qs))}
-    design = level_network(design, units, expected)
-    for _ in range(3):
-        write_placements(design, units, expected)
-        level_comparisons(design, units, expected)
-    # the amalgamated unit's predecessors were the same service under two cost centres, so the two wards
-    # together stood where the amalgamated unit stands: pooling them changes no figure
-    pre = [u[0] for u in units if u[10] == "merged_into"]
-    into = W.MERGE_INTO
-    if pre and into in design:
-        qs = [q for q in design[into] if (into, q) in expected]
-        target = (sum(expected[(into, q)] * design[into][q] for q in qs)
-                  / sum(expected[(into, q)] for q in qs))
-        num = sum(expected[(c, q)] * design[c][q] for c in pre for q in design[c] if (c, q) in expected)
-        den = sum(expected[(c, q)] for c in pre for q in design[c] if (c, q) in expected)
-        if den and num:
-            k = target * den / num
-            for c in pre:
-                for q in design[c]:
-                    design[c][q] *= k
+        last = None if ylast is None else ylast / base[(code, qs[-1])] - 1.0
+        dev = window_devs(sd, len(qs), last, (code,))
+        design[code] = {qs[i]: base[(code, qs[i])] * (1 + dev[i]) for i in range(len(qs))}
+    design = level_network(design, units, expected, base)
     return design
 
 
-def placement_window(units):
-    """The unit-quarters a placement writes: its own quarter and the two quarters the unit holds the gain.
-    The quarters before the team arrived are ordinary quarters and the levelling may move them."""
-    by_code = {u[0]: u for u in units}
-    written = set()
-    for k, code in W.EMBEDS.items():
-        qs = quarters_for(by_code[code])
-        pos = qs.index(k)
-        written.update((code, qs[i]) for i in range(pos, min(pos + 1 + len(W.EMBED_RETAIN), len(qs))))
-    return written
-
-
-def write_placements(design, units, expected):
-    """Write each placement on top of the levelled record.
-
-    The quarters before the team arrived keep their own shocks and are shifted as a block, weighted by each
-    quarter's expected complications, so the unit's pooled standing over them is its persistent level and no
-    single quarter equals that level. The assessment quarter sits at that standing less the programme's
-    effect, and the two quarters after it at the shares of the standing excess the unit holds.
-    """
-    by_code = {u[0]: u for u in units}
-    for k, code in sorted(W.EMBEDS.items()):
-        u = by_code[code]
-        qs = quarters_for(u)
-        pos = qs.index(k)
-        pre = qs[:pos]
-        ew = {q: max(1.0, expected.get((code, q), 1.0)) for q in pre}
-        o = sum(ew[q] * design[code][q] for q in pre)
-        e = sum(ew[q] for q in pre)
-        shift = u[5] - o / e                      # the block comes back to the unit's own level
-        for q in pre:
-            design[code][q] += shift
-        standing = u[5]
-        noise = rng("embed", code).normal(0.0, 0.010, 3)
-        design[code][k] = 1 + (1 - W.EMBED_EFFECT) * (standing - 1) + noise[0] * max(0.12, standing - 1)
-        for j, keep in enumerate(W.EMBED_RETAIN):
-            if pos + 1 + j < len(qs):
-                design[code][qs[pos + 1 + j]] = (1 + keep * (standing - 1)
-                                                 + noise[1 + j] * max(0.12, standing - 1))
-    return design
-
-
-def level_comparisons(design, units, expected):
-    """Hold the rest of the network still across each placement's own two quarters.
-
-    A placement's fall has to read the same against the unit's own record and against what the units the
-    team was not working on did over the same two quarters, so for each placement quarter the units no
-    placement is acting on are shifted by one common amount that takes their pooled movement between the
-    quarter before the placement and the quarter of the placement to zero. The shift is a few thousandths
-    of a ratio and leaves each unit's own record where it was to three decimals.
-    """
-    by_code = {u[0]: u for u in units}
-    written = placement_window(units)
-    acute = [u[0] for u in units if u[4] == "acute"]
-    for _ in range(40):
-        for k, placed in sorted(W.EMBEDS.items()):
-            others = [c for c in acute if c != placed and (c, k) in expected and (c, k - 1) in expected
-                      and (c, k) not in written and (c, k - 1) not in written]
-            if not others:
-                continue
-            e = {c: expected[(c, k)] for c in others}
-            pooled = (sum(expected[(c, k - 1)] * design[c][k - 1] for c in others)
-                      / sum(expected[(c, k - 1)] for c in others)
-                      - sum(e[c] * design[c][k] for c in others) / sum(e[c] for c in others))
-            shift = pooled * sum(e[c] for c in others) / sum(e[c] for c in others)
-            for c in others:
-                design[c][k] += shift
-    return design
-
-
-def level_network(design, units, expected):
+def level_network(design, units, expected, base):
     """Hold the network's own quarterly position flat.
 
     The network's complication rate does not move quarter to quarter in this period; what moves is where
-    the complications sit. Each quarter's pooled deviation across the units no placement is acting on is
-    taken out of every unit's ratio in that quarter, which leaves each unit's own record where it was and
-    leaves a placement's fall where it was against both its own record and the rest of the network.
+    the complications sit. Each quarter's pooled deviation from the units' own bases is taken out of every
+    unit's ratio in that quarter, which leaves each unit's own record where it was.
     """
-    written = placement_window(units)
-    psi = {u[0]: u[5] for u in units}
     for q in range(len(W.QUARTERS)):
-        rowsq = [(code, ratios[q] - psi[code], expected[(code, q)]) for code, ratios in design.items()
-                 if q in ratios and (code, q) not in written and (code, q) in expected]
-        if len(rowsq) < 3:
+        rows = [(code, ratios[q] - base[(code, q)], expected[(code, q)])
+                for code, ratios in design.items()
+                if q in ratios and (code, q) in expected and code != W.ADDITIVE_UNIT]
+        if len(rows) < 3:
             continue
-        shift = sum(wt * d for _, d, wt in rowsq) / sum(wt for _, _, wt in rowsq)
+        shift = sum(wt * d for _, d, wt in rows) / sum(wt for _, _, wt in rows)
         for code, ratios in design.items():
-            if q in ratios and (code, q) in expected:
+            if q in ratios and (code, q) in expected and code != W.ADDITIVE_UNIT:
                 ratios[q] -= shift
     return design
 
@@ -246,7 +186,7 @@ def episodes(units):
     Returns (rows, expected) where rows are dicts in separation order and expected maps (code, q) to the
     summed stratum rates of the unit-quarter's in-scope episodes.
     """
-    rows, expected, inscope = [], {}, {}
+    rows, expected, expected_net, inscope = [], {}, {}, {}
     used = set()
     drg_by_band = {}
     for code, _, band in W.DRGS:
@@ -261,7 +201,10 @@ def episodes(units):
         wmix = {b: drg_weights(code, b, opts) for b, opts in drg_by_band.items() if b}
         for q in quarters_for(u):
             label, _, _, _, months = W.QUARTERS[q]
-            exp_sum, n_scope = 0.0, 0
+            qmix = (W.MIX_SHIFT_PROFILE if code == W.MIX_SHIFT_UNIT and q in W.MIX_SHIFT_QUARTERS
+                    else mix)
+            wmix_q = {b: drg_weights(code, b, opts) for b, opts in drg_by_band.items() if b}
+            exp_sum, exp_net, n_scope = 0.0, 0.0, 0
             recent = []
             for mi, month in enumerate(months):
                 r = rng("eps", code, label, mi)
@@ -282,7 +225,7 @@ def episodes(units):
                 dayw = np.array(dayw)
                 dayw = dayw / dayw.sum()
                 for _ in range(n):
-                    bands = list(W.MIX[mix].items())
+                    bands = list(W.MIX[qmix].items())
                     pick = r.random()
                     acc = 0.0
                     band = bands[-1][0]
@@ -291,7 +234,7 @@ def episodes(units):
                         if pick <= acc:
                             band = b
                             break
-                    ages = W.MIX[mix][band][1]
+                    ages = W.MIX[qmix][band][1]
                     age = W.AGE_BANDS[int(np.searchsorted(np.cumsum(ages), r.random(), side="left"))]
                     opts = drg_by_band[band]
                     drg = opts[int(np.searchsorted(np.cumsum(wmix[band]), r.random(), side="left"))]
@@ -330,7 +273,9 @@ def episodes(units):
                     in_scope = (care == "Acute" and los >= 1 and W.DRG_BAND.get(drg) not in (None, "SAME-DAY")
                                 and service == "acute")
                     if in_scope:
-                        exp_sum += W.STRATUM_RATE[(W.DRG_BAND[drg], age)]
+                        rate = W.STRATUM_RATE[(W.DRG_BAND[drg], age)]
+                        exp_sum += rate
+                        exp_net += rate * W.NETWORK_DRIFT[W.DRG_BAND[drg]]
                         n_scope += 1
                     while (code, pid, adm_date, drg) in used:
                         pid = "MRN%07d" % int(r.integers(mrn_lo, mrn_hi + 1))
@@ -345,255 +290,39 @@ def episodes(units):
                                      int(min(9, max(0, round(r.gamma(COMORBID_SHAPE[age], 1.15))))),
                                      hac=False, rstream=float(r.random())))
             expected[(code, q)] = exp_sum
+            expected_net[(code, q)] = exp_net
             inscope[(code, q)] = n_scope
-    return rows, expected, inscope
+    return rows, expected, expected_net, inscope
 
 
-def _panel(expected, design, units):
-    """The integer complication count of every in-scope unit-quarter the design implies."""
-    obs = {}
-    for u in units:
-        if u[4] != "acute":
-            continue
-        for q in quarters_for(u):
-            if (u[0], q) in expected:
-                obs[(u[0], q)] = int(round(expected[(u[0], q)] * design[u[0]][q]))
-    return obs
-
-
-def _register(obs, expected, units):
-    """The closed register as `golden.placement_record` reads it, from an integer panel."""
-    by_code = {u[0]: u for u in units}
-    acute = [u[0] for u in units if u[4] == "acute"]
-    rows = []
-    for k, code in sorted(W.EMBEDS.items()):
-        qs = [q for q in quarters_for(by_code[code]) if (code, q) in obs]
-        pre = [q for q in qs if q < k]
-        e = expected[(code, k)]
-        before = sum(obs[(code, q)] for q in pre) / sum(expected[(code, q)] for q in pre)
-        written = placement_window(units)
-        others = [c for c in acute if c != code and (c, k) in obs and (c, k - 1) in obs
-                  and (c, k) not in written and (c, k - 1) not in written]
-        pm = (sum(obs[(c, k - 1)] for c in others) / sum(expected[(c, k - 1)] for c in others)
-              - sum(obs[(c, k)] for c in others) / sum(expected[(c, k)] for c in others))
-        rows.append(dict(code=code, q=k, before=before, expected=e, observed=obs[(code, k)],
-                         carried=(before - 1) * e, realised=obs[(code, k)] - e,
-                         counterfactual=before * e,
-                         concurrent_pooled=pm * e))
-    return rows
-
-
-def _readings(rows):
-    n = len(rows)
-    P = [r["carried"] for r in rows]
-    fall = [r["carried"] - r["realised"] for r in rows]
-    V = [max(1.0, r["counterfactual"]) for r in rows]
-    E = [r["expected"] for r in rows]
-    sh = [f / p for f, p in zip(fall, P)]
-    pm, fm = sum(P) / n, sum(fall) / n
-    pv = sum((p - pm) ** 2 for p in P) / n
-    return dict([
-        ("pooled sums", sum(fall) / sum(P)),
-        ("the mean of the placements' shares", sum(sh) / n),
-        ("the expected-weighted mean of the placements' shares",
-         sum(e * s for e, s in zip(E, sh)) / sum(E)),
-        ("the median of the placements' shares", sorted(sh)[n // 2]),
-        ("least squares through the origin",
-         sum(p * f for p, f in zip(P, fall)) / sum(p * p for p in P)),
-        ("least squares with an intercept",
-         sum((p - pm) * (f - fm) for p, f in zip(P, fall)) / (pv * n)),
-        ("the variance-weighted fit",
-         sum(p * f / v for p, f, v in zip(P, fall, V)) / sum(p * p / v for p, v in zip(P, V))),
-        ("against what the other units did over the same quarters",
-         sum(r["carried"] - r["realised"] - r["concurrent_pooled"] for r in rows) / sum(P)),
-    ])
-
-
-def _models(rows):
-    n = len(rows)
-    fall = [r["carried"] - r["realised"] for r in rows]
-    V = [max(1.0, r["counterfactual"]) for r in rows]
-    out = {}
-    for label, x in (("excess", [r["carried"] for r in rows]),
-                     ("drop", [r["expected"] for r in rows]),
-                     ("percent", [r["counterfactual"] for r in rows]),
-                     ("constant", [1.0] * n)):
-        den = sum(xi * xi / v for xi, v in zip(x, V))
-        c = sum(xi * f / v for xi, f, v in zip(x, fall, V)) / den if den else 0.0
-        out[label] = sum((f - c * xi) ** 2 / v for xi, f, v in zip(x, fall, V))
-    return out
-
-
-CHI_MIN, CHI_MAX = 2.6, 12.0           # the true shape's own fit, on n-1 degrees of freedom
-LR_TARGET = {"drop": 200.0, "percent": 60.0, "constant": 60.0}
-
-
-def record_targets(expected, allsep, design, units, plans, bins=True, fixed=None):
-    """The complications each embed quarter records.
-
-    The register has to do two things at once. It has to carry honest scatter, so the shape of the fall is
-    read off a record that looks like counts of complications rather than a fitted line, and it has to
-    separate the shapes the fall could take by well more than that scatter, which the spread of standing
-    across the closed placements provides. The assessment-quarter counts are searched over the integers for
-    a record whose own fit sits inside an ordinary chi-square band, whose likelihood against each competing
-    shape clears its target, and on which every way of pooling the register lands on the same twelve
-    whole complications.
-    """
-    obs = _panel(expected, design, units)
-    base = {code: obs[(code, k)] for k, code in W.EMBEDS.items()}
-    eligible = [u for u in units if u[10] == "eligible"]
-
-    def excess_of():
-        out = {}
-        for u in eligible:
-            code = u[0]
-            qs = [q for q in quarters_for(u) if (code, q) in obs]
-            e = sum(expected[(code, q)] for q in qs)
-            n = sum(allsep[(code, q)] for q in qs)
-            o = sum(obs[(code, q)] for q in qs)
-            out[code] = (o / e - 1) * plans[code] * e / n
-        return out
-
-    excess = excess_of()
-    top = sorted(excess.values(), reverse=True)
-
-    def evaluate(cand):
-        for code, v in cand.items():
-            obs[(code, W.EMBED_Q[code])] = v
-        rows = _register(obs, expected, units)
-        rd = _readings(rows)
-        md = _models(rows)
-        lo, hi = min(rd.values()), max(rd.values())
-        pen = 0.0
-        chi = md["excess"]
-        pen += 60.0 * max(0.0, CHI_MIN - chi) + 60.0 * max(0.0, chi - CHI_MAX)
-        for key, target in LR_TARGET.items():
-            lr = math.exp(min(60.0, (md[key] - chi) / 2.0))
-            pen += 25.0 * max(0.0, math.log(target) - math.log(max(lr, 1e-9)))
-        clear = 1.0
-        for v in top:
-            n0 = round(rd["pooled sums"] * v)
-            clear = min(clear, (0.5 - max(abs(lo * v - n0), abs(hi * v - n0))) / abs(v))
-        count_clear = 1.0
-        for v in excess.values():
-            n0 = round(rd["pooled sums"] * v)
-            count_clear = min(count_clear, 0.5 - max(abs(lo * v - n0), abs(hi * v - n0)))
-        band = (hi - lo) * max(abs(v) for v in top)       # what the planned volumes have to fit in a bin
-        if fixed is not None:
-            pen += 30000.0 * max(0.0, 0.9 * SHARE_CLEARANCE - clear)
-            pen += 300.0 * max(0.0, 0.13 - count_clear)
-        else:
-            # what the planned volumes can still centre: the band every route leaves around a count has to
-            # fit inside the bin with the register's own headroom left over
-            room = 1.0 - 2.0 * SHARE_CLEARANCE * max(abs(v) for v in top)
-            pen += 900.0 * max(0.0, band - max(0.02, room))
-        # the register keeps the scatter a count of complications produces: one placement that shows a rise
-        # and one that takes off more than the standing excess it was carrying
-        shares = [(r["carried"] - r["realised"]) / r["carried"] for r in rows]
-        scatter = 150.0 * max(0.0, min(shares) + 0.07) + 40.0 * max(0.0, 0.95 - max(shares))
-        soft = (pen + scatter + 0.02 * sum(abs(cand[c] - base[c]) for c in cand) + 4.0 * band)
-        return pen, soft, clear, rd, md
-
-    if fixed is not None:
-        pen, soft, clear, rd, md = evaluate(dict(fixed))
-        assert pen < 1e-6, ("the chosen record no longer satisfies the register's constraints "
-                            "(penalty %.3f, clearance %.3f, chi2 %.2f, LR %s)"
-                            % (pen, clear, md["excess"],
-                               {k: round(math.exp(min(60.0, (md[k] - md["excess"]) / 2.0)), 1)
-                                for k in LR_TARGET}))
-        return dict(fixed), rd, md, clear
-
-    best = dict(base)
-    best_pen = evaluate(best)[1]
-    codes = sorted(base)
-    r = np.random.default_rng(W.SEED ^ 0x5EED)
-    # restarts: the record as drawn, one per placement that starts it on a quarter that went backwards
-    # (so the search can reach a register with a placement showing a rise), and random ones
-    seeded = []
-    rows0 = _register(obs, expected, units)
-    for j, row in enumerate(rows0):
-        c0 = row["code"]
-        push = int(abs(row["carried"])) + 4
-        seeded.append({c: base[c] + (push if c == c0 else 0) for c in codes})
-    for start in range(26 + len(seeded)):
-        if start == 0:
-            cand = dict(best)
-        elif start <= len(seeded):
-            cand = dict(seeded[start - 1])
-        else:
-            cand = {c: int(base[c] + r.integers(-22, 23)) for c in codes}
-        pen = evaluate(cand)[1]
-        improved = True
-        while improved:
-            improved = False
-            for c in codes:
-                here = cand[c]
-                for step in (-9, -7, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 7, 9):
-                    cand[c] = here + step
-                    p = evaluate(cand)[1]
-                    if p < pen - 1e-12:
-                        pen, here, improved = p, here + step, True
-                cand[c] = here
-        if pen < best_pen:
-            best_pen, best = pen, dict(cand)
-    pen, soft, clear, rd, md = evaluate(best)
-    if pen > 1e-6:
-        raise AssertionError("no embed-quarter record separates the shapes and pools the same way "
-                             "(penalty %.3f, clearance %.3f, chi2 %.2f, LR %s)"
-                             % (pen, clear, md["excess"],
-                                {k: round(math.exp(min(60.0, (md[k] - md["excess"]) / 2.0)), 1)
-                                 for k in LR_TARGET}))
-    return best, rd, md, clear
-
-
-def centre_plans(plans, per_separation, thetas, pick, graded):
+def centre_plans(plans, per_separation, graded, pick, expected_per_sep):
     """The planned separations of the eligible units, nudged by a few per cent.
 
     Every eligible unit's planned volume is moved to the nearest value inside a few per cent that leaves
-    the complications a placement there would avoid clear of the whole complication's rounding edge under
-    every reading of the closed register, and leaves the unit's expected complications for the quarter
-    clear of the edge at the decimal it is shown to. The recommended unit's expected complications are
-    cleared on the whole complication as well, which is the figure the write-up states.
+    the avoidable complications its planned activity carries clear of the whole complication's rounding
+    edge, and leaves the complications its patients would be expected to have clear of the edge at the
+    decimal it is shown to. Nothing here is fitted: each figure is a sum over the record times a volume.
     """
-    lo, hi = min(thetas.values()), max(thetas.values())
-    mid, w = (lo + hi) / 2.0, (hi - lo) * 1.15      # room for the shipped record's own rounding
     for code in graded:
         per = per_separation[code]
-        epl = EXPECTED_PER_SEP[code]
+        epl = expected_per_sep[code]
         best = None
         for plan in range(int(plans[code] * 0.90), int(plans[code] * 1.10) + 1):
             x = per * plan
-            v_lo, v_hi = (mid - w / 2) * x, (mid + w / 2) * x
-            n = round(mid * x)
-            if round(v_lo) != n or round(v_hi) != n:
-                continue
-            # what has to clear is the share that reproduces the count, not the count itself: the
-            # window of shares this unit allows must hold the whole register's reading with room
-            room = 0.5 - max(abs(v_lo - n), abs(v_hi - n))
-            if room < 0.14 or room / abs(x) < SHARE_CLEARANCE:
+            if 0.5 - abs(x - round(x)) < 0.17:
                 continue
             e = epl * plan
-            if 0.05 - abs(e * 10 - round(e * 10)) / 10.0 < 0.0055:
+            if 0.05 - abs(e * 10 - round(e * 10)) / 10.0 < 0.0085:
                 continue
-            # the brief carries a unit's own excess to one decimal, so that sits clear of its edge too
-            if 0.05 - abs(x * 10 - round(x * 10)) / 10.0 < 0.0085:
+            if code == pick and 0.5 - abs(e - round(e)) < 0.09:
                 continue
-            if code == pick and 0.5 - abs(e - round(e)) < 0.08:
-                continue
-            # the share that reproduces the count has to clear the floor and the ceiling of its own
-            # window by the same margin, so the count is put as near the whole complication as the
-            # planned volume can put it
             score = (abs(plan - plans[code]),)
             if best is None or score < best[0]:
                 best = (score, plan)
         if best is None:
-            raise AssertionError("no planned volume centres %s's avoided count" % code)
+            raise AssertionError("no planned volume centres %s's avoidable complications" % code)
         plans[code] = best[1]
     return plans
-
-
-SHARE_CLEARANCE = 0.0111      # of a share, between the count's bin edge and the register's reading
-EXPECTED_PER_SEP = {}
 
 
 def assign_complications(rows, expected, design, units, targets=None):
@@ -611,7 +340,11 @@ def assign_complications(rows, expected, design, units, targets=None):
         target = int(round(exp * ratio))
         if targets and code in targets and embed_q.get(code) == q:
             target = targets[code]
+        # which episodes carry the complications follows the rate the network itself runs at in the
+        # band, not the rate published with the specification, so the record's own stratum rates are the
+        # network's and not the table's
         p = np.array([W.STRATUM_RATE[(W.DRG_BAND[rows[i]["drg"]], rows[i]["age"])]
+                      * W.NETWORK_DRIFT[W.DRG_BAND[rows[i]["drg"]]]
                       * (1.0 + 0.145 * rows[i]["los"]) ** 0.78
                       * (1.0 + 0.11 * (rows[i]["comorbidity"] or 1.4)) for i in idx])
         r = rng("hac", code, q)

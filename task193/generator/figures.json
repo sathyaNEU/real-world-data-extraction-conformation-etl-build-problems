@@ -675,23 +675,23 @@
    "ddd": 265203.0,
    "ddd_before": 127642.0,
    "ddd_after": 137561.0,
-   "rate_before": 1240,
-   "rate_after": 1340,
-   "fee_dkk": 342608,
-   "fee_exact": "342607.82",
-   "fee_distance": 0.18
+   "rate_before": 1190,
+   "rate_after": 1320,
+   "fee_dkk": 333475,
+   "fee_exact": "333474.5",
+   "fee_distance": 0.0
   },
   {
    "holder": "H2",
    "name": "Bregnholt Laegemidler A/S",
-   "ddd": 403788.0,
-   "ddd_before": 99130.0,
-   "ddd_after": 304658.0,
-   "rate_before": 1240,
-   "rate_after": 1340,
-   "fee_dkk": 531163,
-   "fee_exact": "531162.92",
-   "fee_distance": 0.08
+   "ddd": 472479.0,
+   "ddd_before": 198260.0,
+   "ddd_after": 274219.0,
+   "rate_before": 1190,
+   "rate_after": 1320,
+   "fee_dkk": 597898,
+   "fee_exact": "597898.48",
+   "fee_distance": 0.02
   },
   {
    "holder": "H3",
@@ -699,22 +699,22 @@
    "ddd": 407642.0,
    "ddd_before": 15046.0,
    "ddd_after": 392596.0,
-   "rate_before": 1240,
-   "rate_after": 1340,
-   "fee_dkk": 544736,
-   "fee_exact": "544735.68",
-   "fee_distance": 0.32
+   "rate_before": 1190,
+   "rate_after": 1320,
+   "fee_dkk": 536131,
+   "fee_exact": "536131.46",
+   "fee_distance": 0.04
   },
   {
    "holder": "H4",
    "name": "Soegaard Medica A/S",
-   "ddd": 383500.0,
-   "ddd_before": 369690.0,
-   "ddd_after": 13810.0,
-   "rate_before": 1240,
-   "rate_after": 1340,
-   "fee_dkk": 476921,
-   "fee_exact": "476921",
+   "ddd": 191750.0,
+   "ddd_before": 184845.0,
+   "ddd_after": 6905.0,
+   "rate_before": 1500,
+   "rate_after": 1600,
+   "fee_dkk": 288316,
+   "fee_exact": "288315.5",
    "fee_distance": 0.0
   },
   {
@@ -723,11 +723,11 @@
    "ddd": 595146.0,
    "ddd_before": 506494.0,
    "ddd_after": 88652.0,
-   "rate_before": 1240,
-   "rate_after": 1340,
-   "fee_dkk": 746846,
-   "fee_exact": "746846.24",
-   "fee_distance": 0.24
+   "rate_before": 1190,
+   "rate_after": 1320,
+   "fee_dkk": 719749,
+   "fee_exact": "719748.5",
+   "fee_distance": 0.0
   },
   {
    "holder": "H6",
@@ -735,193 +735,193 @@
    "ddd": 1027312.0,
    "ddd_before": 517138.0,
    "ddd_after": 510174.0,
-   "rate_before": 990,
-   "rate_after": 1090,
-   "fee_dkk": 1068056,
-   "fee_exact": "1068056.28",
-   "fee_distance": 0.28
+   "rate_before": 950,
+   "rate_after": 1060,
+   "fee_dkk": 1032066,
+   "fee_exact": "1032065.54",
+   "fee_distance": 0.04
   },
   {
    "holder": "H7",
    "name": "Strandby Farma ApS",
-   "ddd": 227010.0,
-   "ddd_before": 227010.0,
+   "ddd": 113505.0,
+   "ddd_before": 113505.0,
    "ddd_after": 0.0,
-   "rate_before": 1465,
-   "rate_after": 1570,
-   "fee_dkk": 332570,
-   "fee_exact": "332569.65",
-   "fee_distance": 0.35
+   "rate_before": 1500,
+   "rate_after": 1600,
+   "fee_dkk": 170258,
+   "fee_exact": "170257.5",
+   "fee_distance": 0.0
   }
  ],
  "a3": [
   {
    "region": "Hovedstaden",
-   "band": "18-34",
-   "patients": 638,
-   "share_pct": 69.1,
-   "with_marker": 441
+   "band": "18-24",
+   "patients": 251,
+   "share_pct": 70.5,
+   "with_marker": 177
   },
   {
    "region": "Hovedstaden",
-   "band": "35-44",
-   "patients": 366,
+   "band": "25-44",
+   "patients": 753,
+   "share_pct": 68.8,
+   "with_marker": 518
+  },
+  {
+   "region": "Hovedstaden",
+   "band": "45-74",
+   "patients": 1090,
+   "share_pct": 79.8,
+   "with_marker": 870
+  },
+  {
+   "region": "Hovedstaden",
+   "band": "75 and over",
+   "patients": 679,
+   "share_pct": 80.3,
+   "with_marker": 545
+  },
+  {
+   "region": "Midtjylland",
+   "band": "18-24",
+   "patients": 209,
+   "share_pct": 68.9,
+   "with_marker": 144
+  },
+  {
+   "region": "Midtjylland",
+   "band": "25-44",
+   "patients": 597,
+   "share_pct": 69.5,
+   "with_marker": 415
+  },
+  {
+   "region": "Midtjylland",
+   "band": "45-74",
+   "patients": 878,
+   "share_pct": 78.1,
+   "with_marker": 686
+  },
+  {
+   "region": "Midtjylland",
+   "band": "75 and over",
+   "patients": 515,
+   "share_pct": 76.9,
+   "with_marker": 396
+  },
+  {
+   "region": "Nordjylland",
+   "band": "18-24",
+   "patients": 91,
+   "share_pct": 70.3,
+   "with_marker": 64
+  },
+  {
+   "region": "Nordjylland",
+   "band": "25-44",
+   "patients": 301,
    "share_pct": 69.4,
-   "with_marker": 254
-  },
-  {
-   "region": "Hovedstaden",
-   "band": "45-64",
-   "patients": 734,
-   "share_pct": 78.3,
-   "with_marker": 575
-  },
-  {
-   "region": "Hovedstaden",
-   "band": "65 and over",
-   "patients": 1035,
-   "share_pct": 81.2,
-   "with_marker": 840
-  },
-  {
-   "region": "Midtjylland",
-   "band": "18-34",
-   "patients": 498,
-   "share_pct": 66.9,
-   "with_marker": 333
-  },
-  {
-   "region": "Midtjylland",
-   "band": "35-44",
-   "patients": 308,
-   "share_pct": 73.4,
-   "with_marker": 226
-  },
-  {
-   "region": "Midtjylland",
-   "band": "45-64",
-   "patients": 590,
-   "share_pct": 77.6,
-   "with_marker": 458
-  },
-  {
-   "region": "Midtjylland",
-   "band": "65 and over",
-   "patients": 803,
-   "share_pct": 77.7,
-   "with_marker": 624
+   "with_marker": 209
   },
   {
    "region": "Nordjylland",
-   "band": "18-34",
-   "patients": 249,
-   "share_pct": 68.3,
-   "with_marker": 170
+   "band": "45-74",
+   "patients": 451,
+   "share_pct": 77.4,
+   "with_marker": 349
   },
   {
    "region": "Nordjylland",
-   "band": "35-44",
-   "patients": 143,
-   "share_pct": 72.0,
-   "with_marker": 103
-  },
-  {
-   "region": "Nordjylland",
-   "band": "45-64",
-   "patients": 308,
-   "share_pct": 74.7,
-   "with_marker": 230
-  },
-  {
-   "region": "Nordjylland",
-   "band": "65 and over",
-   "patients": 371,
-   "share_pct": 80.9,
-   "with_marker": 300
+   "band": "75 and over",
+   "patients": 228,
+   "share_pct": 79.4,
+   "with_marker": 181
   },
   {
    "region": "Sjaelland",
-   "band": "18-34",
-   "patients": 310,
-   "share_pct": 72.3,
-   "with_marker": 224
+   "band": "18-24",
+   "patients": 130,
+   "share_pct": 69.2,
+   "with_marker": 90
   },
   {
    "region": "Sjaelland",
-   "band": "35-44",
-   "patients": 205,
-   "share_pct": 77.6,
-   "with_marker": 159
-  },
-  {
-   "region": "Sjaelland",
-   "band": "45-64",
-   "patients": 439,
-   "share_pct": 75.4,
-   "with_marker": 331
-  },
-  {
-   "region": "Sjaelland",
-   "band": "65 and over",
-   "patients": 576,
-   "share_pct": 79.9,
-   "with_marker": 460
-  },
-  {
-   "region": "Syddanmark",
-   "band": "18-34",
-   "patients": 495,
-   "share_pct": 69.9,
-   "with_marker": 346
-  },
-  {
-   "region": "Syddanmark",
-   "band": "35-44",
-   "patients": 267,
-   "share_pct": 76.0,
-   "with_marker": 203
-  },
-  {
-   "region": "Syddanmark",
-   "band": "45-64",
-   "patients": 585,
-   "share_pct": 75.6,
-   "with_marker": 442
-  },
-  {
-   "region": "Syddanmark",
-   "band": "65 and over",
-   "patients": 705,
-   "share_pct": 80.4,
-   "with_marker": 567
-  },
-  {
-   "region": "not stated",
-   "band": "18-34",
-   "patients": 71,
-   "share_pct": 70.4,
-   "with_marker": 50
-  },
-  {
-   "region": "not stated",
-   "band": "35-44",
-   "patients": 40,
-   "share_pct": 85.0,
-   "with_marker": 34
-  },
-  {
-   "region": "not stated",
-   "band": "45-64",
-   "patients": 71,
+   "band": "25-44",
+   "patients": 385,
    "share_pct": 76.1,
-   "with_marker": 54
+   "with_marker": 293
+  },
+  {
+   "region": "Sjaelland",
+   "band": "45-74",
+   "patients": 653,
+   "share_pct": 76.6,
+   "with_marker": 500
+  },
+  {
+   "region": "Sjaelland",
+   "band": "75 and over",
+   "patients": 362,
+   "share_pct": 80.4,
+   "with_marker": 291
+  },
+  {
+   "region": "Syddanmark",
+   "band": "18-24",
+   "patients": 197,
+   "share_pct": 72.1,
+   "with_marker": 142
+  },
+  {
+   "region": "Syddanmark",
+   "band": "25-44",
+   "patients": 565,
+   "share_pct": 72.0,
+   "with_marker": 407
+  },
+  {
+   "region": "Syddanmark",
+   "band": "45-74",
+   "patients": 866,
+   "share_pct": 76.9,
+   "with_marker": 666
+  },
+  {
+   "region": "Syddanmark",
+   "band": "75 and over",
+   "patients": 424,
+   "share_pct": 80.9,
+   "with_marker": 343
   },
   {
    "region": "not stated",
-   "band": "65 and over",
-   "patients": 88,
-   "share_pct": 77.3,
-   "with_marker": 68
+   "band": "18-24",
+   "patients": 29,
+   "share_pct": 72.4,
+   "with_marker": 21
+  },
+  {
+   "region": "not stated",
+   "band": "25-44",
+   "patients": 82,
+   "share_pct": 76.8,
+   "with_marker": 63
+  },
+  {
+   "region": "not stated",
+   "band": "45-74",
+   "patients": 103,
+   "share_pct": 75.7,
+   "with_marker": 78
+  },
+  {
+   "region": "not stated",
+   "band": "75 and over",
+   "patients": 56,
+   "share_pct": 78.6,
+   "with_marker": 44
   }
  ],
  "routes": {

@@ -4,7 +4,7 @@ code path, and recomputes the screen, every rung and every ask figure.
 import bisect
 import collections
 import csv
-from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN
+from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN, ROUND_FLOOR
 import datetime as dt
 import json
 import os
@@ -21,7 +21,7 @@ QUARTERS = [("2025 Q4", dt.date(2025, 10, 1), dt.date(2025, 12, 31)),
             ("2026 Q1", dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
             ("2026 Q2", dt.date(2026, 4, 1), dt.date(2026, 6, 30)),
             ("2026 Q3", dt.date(2026, 7, 1), dt.date(2026, 9, 30))]
-BANDS = [(0, 34, "18-34"), (35, 44, "35-44"), (45, 64, "45-64"), (65, 200, "65 and over")]
+BANDS = [(0, 24, "18-24"), (25, 44, "25-44"), (45, 74, "45-74"), (75, 200, "75 and over")]
 N = 0
 
 
@@ -85,12 +85,18 @@ def run(tgt, figures_path):
     fg = json.load(open(figures_path))
 
     pkg = {}
+    # the defined daily dose the edition in force assigns each code, which the index names
+    edition = {r["atc_code"]: (Decimal(r["ddd_mg"]) if r["ddd_mg"] else None)
+               for r in tab(tgt, "atc_text.csv")}
+    prod_atcs = set(r["product_atc"] for r in tab(tgt, "screen_annexes.csv"))
     ddd = {}
     for r in tab(tgt, "package_index.csv"):
         pkg[r["vnr"]] = (r["atc_code"],
                          d_iso(r["valid_from"]) if r["valid_from"] else None,
                          d_iso(r["valid_to"]) if r["valid_to"] else None)
-        ddd[r["vnr"]] = int(Decimal(r["ddd_per_pack"]) * 10) if r["ddd_per_pack"] else 0
+        mg = edition.get(r["atc_code"])
+        ddd[r["vnr"]] = 0 if (mg is None or r["atc_code"] not in prod_atcs) else int(
+            Decimal(r["pack_size"]) * Decimal(r["strength"].split()[0]) / mg * 10)
     annex = tab(tgt, "screen_annexes.csv")
     prod = {r["product_atc"]: r["product_code"] for r in annex}
     mark = {r["marker_atc_group"]: r["marker_code"] for r in annex}
@@ -288,8 +294,12 @@ def run(tgt, figures_path):
         ck("v.a2_fee_" + h, int(fee) == r["fee_dkk"], "%d against %d" % (fee, r["fee_dkk"]))
         # the figure is not near a rounding boundary: half-up and half-even agree
         other = exact.quantize(Decimal(1), rounding=ROUND_HALF_EVEN)
-        ck("v.a2_fee_mid_bin_" + h, int(other) == r["fee_dkk"] and r["fee_distance"] >= 0.02,
-           "distance %.4f" % r["fee_distance"])
+        mine = float(abs(exact - exact.to_integral_value(rounding=ROUND_FLOOR)
+                         - Decimal("0.5")))
+        ck("v.a2_fee_mid_bin_" + h,
+           int(other) == r["fee_dkk"] and abs(mine - r["fee_distance"]) < 1e-9
+           and r["fee_distance"] >= 0.20,
+           "%.4f krone from the half krone" % r["fee_distance"])
         ck("v.a2_ddd_exact_" + h, Decimal(tot[h]) % 1 == 0,
            "tenths are whole: %s" % tot[h])
 

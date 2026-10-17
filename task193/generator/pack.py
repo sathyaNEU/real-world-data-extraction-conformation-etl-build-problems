@@ -418,8 +418,16 @@ def write_atc_text(tgt):
             "M04AA": "Preparations inhibiting uric acid production", "C03CA": "Sulfonamides, plain",
             "N06AB": "Selective serotonin reuptake inhibitors", "N05CF": "Benzodiazepine related drugs",
             "D07AC": "Corticosteroids, potent (group III)", "N05AH": "Diazepines, oxazepines and thiazepines"}
-    rows = sorted([k, v, "ATC 2026 edition"] for k, v in text.items())
-    return write_csv(os.path.join(tgt, "atc_text.csv"), ["atc_code", "atc_text", "edition"], rows)
+    ddd = {}
+    for code in W.PCODES:
+        ddd[W.PATC[code]] = W.DDD_MG_2026[code]
+    for code in W.MCODES:
+        ddd[W.MATC[code]] = W.DDD_MG_2026[code]
+    rows = sorted([k, v, "ATC 2026 edition",
+                   "" if ddd.get(k) is None else _plain(Decimal(str(ddd[k])))]
+                  for k, v in text.items())
+    return write_csv(os.path.join(tgt, "atc_text.csv"),
+                     ["atc_code", "atc_text", "edition", "ddd_mg"], rows)
 
 
 def write_crosswalk(tgt, switch_day, keys, new_keys):

@@ -67,13 +67,26 @@ def main():
         routes[route] = G.screen(TGT, rp, route, firsts)[0]
     r0, r0rows = G.rung0(TGT)
 
-    # tenths of a defined daily dose per package, read from the shipped index as exact decimals
-    ddd_of = {}
+    # Tenths of a defined daily dose per package, struck on the edition of the anatomical
+    # therapeutic chemical index in force for this window, which atc_text.csv names. The package
+    # register's own ddd_per_pack was written under the edition in force when the row was created.
     import csv as _csv
     from decimal import Decimal as _D
+    edition = {}
+    with open(os.path.join(TGT, "atc_text.csv"), newline="", encoding="utf-8") as fh:
+        for r in _csv.DictReader(fh):
+            edition[r["atc_code"]] = _D(r["ddd_mg"]) if r["ddd_mg"] else None
+    prod_atc = set(W.PATC[c] for c in W.PCODES)
+    ddd_of = {}
     with open(os.path.join(TGT, "package_index.csv"), newline="", encoding="utf-8") as fh:
         for r in _csv.DictReader(fh):
-            ddd_of[r["vnr"]] = int(_D(r["ddd_per_pack"]) * 10) if r["ddd_per_pack"] else 0
+            mg = edition.get(r["atc_code"])
+            if mg is None or r["atc_code"] not in prod_atc:
+                ddd_of[r["vnr"]] = 0      # only Annex A products carry the statutory fee
+                continue
+            per = _D(r["pack_size"]) * _D(r["strength"].split()[0]) / mg * 10
+            assert per % 1 == 0, (r["vnr"], per)
+            ddd_of[r["vnr"]] = int(per)
     a1 = asks.a1_golden(kept, rejected)
     a2 = asks.a2_golden(kept, ddd_of)
     a3 = asks.a3_golden(TGT, firsts, rp[1])

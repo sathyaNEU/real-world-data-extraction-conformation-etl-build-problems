@@ -46,7 +46,8 @@ def plan(target):
         Paragraph("2.2 A survey places a logging sound level meter at each position for two deployments of "
                   "one week. A meter logs the A-weighted equivalent continuous sound level and the "
                   "statistical levels for every minute, and the one-third-octave band levels for every "
-                  "quarter hour where it carries the module. The meter stamps its records in UTC.", BODY),
+                  "quarter hour where it carries the module. The meter stamps its records in UTC, each "
+                  "record at the start of the interval it measures.", BODY),
         Paragraph("3 The specific sound level", H2),
         Paragraph("3.1 The specific sound level of the plant at a position is the position's measured "
                   "sound level over the assessment period, less the residual sound, both in dB LAeq. The "
@@ -77,8 +78,9 @@ def plan(target):
                   "stamped at 00:00 on the Monday after it, with the counter's roll-over added back where "
                   "it has passed it. A spell the historian did not record leaves those two readings as "
                   "they stand.", BODY),
-        Paragraph("5.2 A centrifuge run is one start of a centrifuge in the equipment log and lasts to the "
-                  "stop the log records for the same machine. A week's runs are the starts the log carries "
+        Paragraph("5.2 A centrifuge run is one start of a centrifuge in the equipment log and the first "
+                  "stop the log records for the same machine after it. A start the log does not stop "
+                  "before that machine starts again is not a run. A week's runs are the runs that start "
                   "in that week.", BODY),
         Paragraph("6 Complaints", H2),
         Paragraph("6.1 Every noise complaint is logged in the complaints register with the dwelling it "

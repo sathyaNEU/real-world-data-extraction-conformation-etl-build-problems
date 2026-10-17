@@ -128,15 +128,24 @@ EFFECTS = {
 }
 # the defined daily dose in milligrams, as the ATC index assigns it. A package's defined daily
 # doses are its pack size times its strength divided by this. D07AC carries no defined daily dose.
-# Every screened product's strengths are whole or half defined daily doses per unit, so a package
-# holds a whole number of tenths of a defined daily dose and a holder's window total is exact at
-# one decimal. The marker treatments are real substances and keep the index's own values.
+# The defined daily dose the package register used when it wrote each package row. Every screened
+# product's strengths are whole or half doses per unit under it, so a package holds a whole number
+# of tenths of a dose and a holder's window total is exact at one decimal. The marker treatments
+# are real substances and keep the index's own values.
 DDD_MG = {
     "P01": 50.0, "P02": 60.0, "P03": 10.0, "P04": 150.0, "P05": 25.0,
     "P06": 250.0, "P07": 1.0, "P08": 10.0, "P09": 50.0,
     "M1": 16.0, "M2": 30.0, "M3": 400.0, "M4": 40.0, "M5": 50.0, "M6": 7.5,
     "M7": None, "M8": 20.0,
 }
+# The anatomical therapeutic chemical index revises defined daily doses with each edition. Three of
+# the screened substances were revised for the 2026 edition, which is the edition in force for this
+# window; the package register's own ddd_per_pack for them still carries the earlier figure, and
+# nothing in the pack says so. Every product's strengths stay whole or half doses per unit under
+# both editions, so both figures are whole tenths.
+DDD_MG_2026 = dict(DDD_MG)
+DDD_MG_2026.update({"P02": 30.0, "P05": 50.0, "P07": 2.0})
+
 # pack sizes per medicine, as the register's own package list holds them
 PACK_SIZES = {
     "P01": [28, 56, 98], "P02": [20, 30, 60], "P03": [28, 98, 100],
@@ -174,12 +183,12 @@ CHAINS = [("APK", "Apotekerkaeden"), ("DSA", "Danmarks Sundhedsapotek"),
 REGIONS = ["Hovedstaden", "Midtjylland", "Nordjylland", "Sjaelland", "Syddanmark"]
 REGION_W = [0.316, 0.230, 0.102, 0.147, 0.205]
 # the age bands the division's standing utilisation table reports. Chosen so that no cell's
-# share lands within 0.006 of a point of a one-decimal rounding boundary.
-AGE_BANDS = [(0, 34, "18-34"), (35, 44, "35-44"), (45, 64, "45-64"), (65, 200, "65 and over")]
+# share lands within 0.014 of a point of a one-decimal rounding boundary.
+AGE_BANDS = [(0, 24, "18-24"), (25, 44, "25-44"), (45, 74, "45-74"), (75, 200, "75 and over")]
 # The statutory rates. Chosen so that every payer's fee falls at least 0.38 krone from the nearest
 # half krone, which is what keeps the rounded figure the same under every convention.
-FEE_BANDS = [(0, 250, 1465), (250, 1000, 1240), (1000, 4000, 990), (4000, 10 ** 9, 860)]
-FEE_BANDS_AMENDED = [(0, 250, 1570), (250, 1000, 1340), (1000, 4000, 1090), (4000, 10 ** 9, 930)]
+FEE_BANDS = [(0, 250, 1500), (250, 1000, 1190), (1000, 4000, 950), (4000, 10 ** 9, 860)]
+FEE_BANDS_AMENDED = [(0, 250, 1600), (250, 1000, 1320), (1000, 4000, 1060), (4000, 10 ** 9, 930)]
 FEE_AMENDMENT_DAY = 913               # 2026-04-01
 
 
