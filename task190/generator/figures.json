@@ -2,7 +2,7 @@
  "asks": {
   "ledger_lines_on_the_schedule_twice": 1,
   "ledger_lines_on_the_schedule_twice_names": [
-   "CPL-26-038918"
+   "CPL-26-095171"
   ],
   "risk_moves_by_category": {
    "1": [
@@ -34,45 +34,45 @@
   "runs_by_quarter": {
    "2026Q1": [
     26,
-    4,
+    9,
     0.0
    ],
    "2026Q2": [
     26,
-    8,
-    -10584.67
+    9,
+    -10678.6
    ],
    "2026Q3": [
     26,
-    12,
+    5,
     0.0
    ],
    "2026Q4": [
     26,
-    8,
+    7,
     0.0
    ]
   },
   "schedule_lines_absent_from_the_ledger": 0,
   "schedule_lines_by_month": {
-   "2026-01": 26,
-   "2026-02": 22,
+   "2026-01": 34,
+   "2026-02": 19,
    "2026-03": 26,
-   "2026-04": 20,
-   "2026-05": 27,
-   "2026-06": 19,
+   "2026-04": 17,
+   "2026-05": 25,
+   "2026-06": 23,
    "2026-07": 28,
-   "2026-08": 21,
-   "2026-09": 19,
-   "2026-10": 28,
-   "2026-11": 17,
-   "2026-12": 20
+   "2026-08": 14,
+   "2026-09": 27,
+   "2026-10": 24,
+   "2026-11": 12,
+   "2026-12": 23
   },
-  "schedule_rows": 273
+  "schedule_rows": 272
  },
  "call": {
-  "largest_programme": "Dredging programme",
-  "largest_programme_misstatement": 200000,
+  "largest_programme": "Rail siding and yard",
+  "largest_programme_misstatement": 250000,
   "misstatement_indicated": 800000,
   "referred_for_extended_testing": true
  },
@@ -91,9 +91,9 @@
  },
  "critical_components": {
   "certainty_lines": 31,
-  "certainty_value": 15846000.0,
+  "certainty_value": 15826525.0,
   "payment_lines": 26648,
-  "payments_recorded_total": 59489415.33,
+  "payments_recorded_total": 59469739.92,
   "programme_certain_share_pct": {
    "Deepwater berth renewal": 35.2,
    "Dredging programme": 42.6,
@@ -107,91 +107,91 @@
   },
   "programme_misstatement": {
    "Deepwater berth renewal": 0,
-   "Dredging programme": 200000,
-   "Pavement and surfacing": 0,
+   "Dredging programme": 0,
+   "Pavement and surfacing": 150000,
    "Quay 3 reconstruction": 0,
-   "Rail siding and yard": 150000,
-   "Security and access systems": 100000,
-   "Shore power installation": 150000,
+   "Rail siding and yard": 250000,
+   "Security and access systems": 200000,
+   "Shore power installation": 50000,
    "Terminal roof and cladding": 50000,
-   "Welfare and offices fit-out": 150000
+   "Welfare and offices fit-out": 100000
   },
   "programme_payments_recorded": {
-   "Deepwater berth renewal": 13899999.86,
-   "Dredging programme": 5600000.02,
-   "Pavement and surfacing": 3299999.84,
-   "Quay 3 reconstruction": 10591471.66,
-   "Rail siding and yard": 6297943.84,
-   "Security and access systems": 3500000.07,
-   "Shore power installation": 4699999.78,
-   "Terminal roof and cladding": 8400000.17,
-   "Welfare and offices fit-out": 3200000.09
+   "Deepwater berth renewal": 13874317.9,
+   "Dredging programme": 5588431.19,
+   "Pavement and surfacing": 3307958.25,
+   "Quay 3 reconstruction": 10602065.41,
+   "Rail siding and yard": 6311872.03,
+   "Security and access systems": 3492617.16,
+   "Shore power installation": 4713285.68,
+   "Terminal roof and cladding": 8386509.34,
+   "Welfare and offices fit-out": 3192682.96
   },
-  "tested_lines": 272,
-  "tested_value": 21644557.86
+  "tested_lines": 271,
+  "tested_value": 21043847.13
  },
  "deliverables": {
   "misstatement_by_population_2026.png": {
    "bars": {
     "Deepwater berth renewal": 0,
-    "Dredging programme": 200000,
-    "Pavement and surfacing": 0,
+    "Dredging programme": 0,
+    "Pavement and surfacing": 150000,
     "Quay 3 reconstruction": 0,
-    "Rail siding and yard": 150000,
-    "Security and access systems": 100000,
-    "Shore power installation": 150000,
+    "Rail siding and yard": 250000,
+    "Security and access systems": 200000,
+    "Shore power installation": 50000,
     "Terminal roof and cladding": 50000,
-    "Welfare and offices fit-out": 150000
+    "Welfare and offices fit-out": 100000
    },
-   "marked": "Dredging programme"
+   "marked": "Rail siding and yard"
   },
   "projected_misstatement_2026.csv": {
-   "largest_programme": "Dredging programme",
+   "largest_programme": "Rail siding and yard",
    "misstatement_indicated_total": 800000,
    "rows": {
     "Deepwater berth renewal": [
-     13899999.86,
+     13874317.9,
      0,
      35.2
     ],
     "Dredging programme": [
-     5600000.02,
-     200000,
+     5588431.19,
+     0,
      42.6
     ],
     "Pavement and surfacing": [
-     3299999.84,
-     0,
+     3307958.25,
+     150000,
      15.6
     ],
     "Quay 3 reconstruction": [
-     10591471.66,
+     10602065.41,
      0,
      34.2
     ],
     "Rail siding and yard": [
-     6297943.84,
-     150000,
+     6311872.03,
+     250000,
      16.9
     ],
     "Security and access systems": [
-     3500000.07,
-     100000,
+     3492617.16,
+     200000,
      13.8
     ],
     "Shore power installation": [
-     4699999.78,
-     150000,
+     4713285.68,
+     50000,
      18.4
     ],
     "Terminal roof and cladding": [
-     8400000.17,
+     8386509.34,
      50000,
      18.5
     ],
     "Welfare and offices fit-out": [
-     3200000.09,
-     150000,
+     3192682.96,
+     100000,
      14.0
     ]
    }
@@ -199,16 +199,16 @@
  },
  "steps": {
   "basic_precision": 540000.0,
-  "errors_scaled_on_recorded_value": 54424.62,
-  "incremental_allowance": 342933.23,
-  "misstatement_found_in_tested_lines": 19801.79,
-  "prior_year_projection": 620280.53,
-  "projection_plus_basic_precision": 1353779.66,
-  "projection_unrounded": 813779.66,
+  "errors_scaled_on_recorded_value": 43648.52,
+  "incremental_allowance": 347797.48,
+  "misstatement_found_in_tested_lines": 15445.38,
+  "prior_year_projection": 663984.15,
+  "projection_plus_basic_precision": 1351170.09,
+  "projection_unrounded": 811170.09,
   "selections": 330,
-  "stratum_ratio": 149040.12,
+  "stratum_ratio": 129201.54,
   "sum_of_stated_programme_figures": 800000,
   "taintings_in_the_sample": 10,
-  "upper_misstatement_limit": 1696712.89
+  "upper_misstatement_limit": 1698967.57
  }
 }

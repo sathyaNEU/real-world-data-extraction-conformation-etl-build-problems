@@ -50,11 +50,24 @@ def run_log(target, rows, runs):
         mins = max(8 * 60 + 5, min(20 * 60 + 55, mins))
         value = sum(x["amount"] for x in rs)
         rev = sum(x["amount"] for x in rs if x["status"] == "reversed")
+        # a run is opened on one day and released on it, except where the release ran past
+        # midnight: four of them in the year, and the quarter is the quarter it was released in
+        rel = day
+        if rng.u() < 0.055:
+            rel = day + dt.timedelta(days=1)
+            mins = (1 + rng.below(3)) * 60 + rng.below(60)
         out.append([run, day.isoformat(),
-                    "%s %02d:%02d:00" % (day.isoformat(), mins // 60, mins % 60),
+                    "%s %02d:%02d:00" % (rel.isoformat(), mins // 60, mins % 60),
                     len(rs), "%.2f" % value, "%.2f" % (-rev), "released",
                     "FO%03d" % (11 + rng.below(14))])
-        truth[run] = (day, mins, len(rs), value, -rev, cut)
+        truth[run] = (rel, mins, len(rs), value, -rev, cut, day)
+        # one run was rejected by the bank and re-released, so the log carries it twice
+        if run.endswith("017"):
+            out.append([run, day.isoformat(),
+                        "%s %02d:%02d:00" % ((day + dt.timedelta(days=3)).isoformat(),
+                                             14, 12),
+                        len(rs), "%.2f" % value, "%.2f" % (-rev), "re-released",
+                        "FO%03d" % (11 + rng.below(14))])
     PK.write_csv(target, "payment_run_log_2026.csv",
                  ["run_id", "run_date", "released_ts", "lines_in_run", "run_value_eur",
                   "reversed_value_eur", "run_status", "operator_id"], out)
@@ -91,7 +104,7 @@ def a1_golden(truth):
     out = {}
     for name, lo, hi in QUARTERS:
         n, past, rev = 0, 0, 0.0
-        for run, (day, mins, nl, value, r, cut) in truth.items():
+        for run, (day, mins, nl, value, r, cut, opened) in truth.items():
             if not (lo <= day.isoformat() <= hi):
                 continue
             n += 1
@@ -106,21 +119,25 @@ def a1_golden(truth):
 def a1_stops(truth):
     """The cracker's readings: one cut-off for the year, and counting the run on the cut-off."""
     stops = {}
-    for name in ("cutoff_1500_only", "cutoff_1400_only", "on_the_cutoff_counted", "answer"):
+    for name in ("cutoff_1500_only", "cutoff_1400_only", "on_the_cutoff_counted",
+                 "grouped_on_the_opening_date", "the_cracker", "answer"):
         agg = {}
         for q, lo, hi in QUARTERS:
             n, past, rev = 0, 0, 0.0
-            for run, (day, mins, nl, value, r, cut) in truth.items():
-                if not (lo <= day.isoformat() <= hi):
+            for run, (day, mins, nl, value, r, cut, opened) in truth.items():
+                d = opened if name in ("grouped_on_the_opening_date", "the_cracker") else day
+                if not (lo <= d.isoformat() <= hi):
                     continue
                 n += 1
-                use = ("15:00" if name == "cutoff_1500_only"
+                use = ("15:00" if name in ("cutoff_1500_only", "the_cracker")
                        else "14:00" if name == "cutoff_1400_only" else cut)
                 ch, cm = [int(v) for v in use.split(":")]
                 if mins > ch * 60 + cm or (name == "on_the_cutoff_counted"
                                            and mins == ch * 60 + cm):
                     past += 1
                 rev += r
+            if name == "the_cracker":                 # the re-released run counted twice
+                n += 1 if lo <= "2026-05-01" <= hi else 0
             agg[q] = (n, past, round(rev, 2))
         stops[name] = agg
     return stops
@@ -208,6 +225,39 @@ def risk_history(target, cross):
                  [[b, W.RISK_NEW[b], ["Lowest", "Low", "Medium", "High", "Highest"][i]]
                   for i, b in enumerate(W.RISK_BANDS)])
     return events, picked
+
+
+def a2_unmapped(events):
+    """The cracker's reading: the labels taken as they stand, so the October relabelling splits
+    every category in two and no count is the register's."""
+    byc = {}
+    for e in events:
+        if e["status"] != "accepted":
+            continue
+        byc.setdefault(e["sup"], []).append(e)
+    lab = {}
+    for b in W.RISK_BANDS:
+        lab[b] = b
+        lab[W.RISK_NEW[b]] = W.RISK_NEW[b]
+    up = {}
+    down = {}
+    off = {}
+    rank = {b: i for i, b in enumerate(W.RISK_BANDS)}
+    rank.update({W.RISK_NEW[b]: i for i, b in enumerate(W.RISK_BANDS)})
+    for sup, es in byc.items():
+        es.sort(key=lambda e: (e["eff"], e["eid"]))
+        for i, e in enumerate(es):
+            b = W.RISK_NEW[e["before"]] if e["relab"] else e["before"]
+            a = W.RISK_NEW[e["after"]] if e["relab"] else e["after"]
+            if rank[a] > rank[b]:
+                up.setdefault(a, set()).add(sup)
+                if any((W.RISK_NEW[x["before"]] if x["relab"] else x["before"]) == a
+                       for x in es[i + 1:]):
+                    off.setdefault(a, set()).add(sup)
+            elif rank[a] < rank[b]:
+                down.setdefault(a, set()).add(sup)
+    return {b: (len(up.get(b, ())), len(down.get(b, ())), len(off.get(b, ())))
+            for b in W.RISK_BANDS}
 
 
 def a2_golden(events, mode="answer"):

@@ -25,7 +25,7 @@ EXPECTED_MISSTATEMENT = 387_500.00       # the allowance used in planning; note 
 EXPANSION_FACTOR = 1.60                  # note only
 RELIABILITY_0 = 3.00                     # note only
 INTERVAL = 180_000                       # the selection interval; recovered, never stated
-RANDOM_START = 125_000                   # the selection's start; never stated
+RANDOM_START = 121_750             # never stated; recovered from the tested set
 
 GRAIN = 50_000                           # the misstatement is stated to the nearest fifty thousand
 

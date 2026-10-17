@@ -26,11 +26,15 @@ def pharmacy_moves(pharm_of):
     """pharmacy id -> (previous chain, new chain, the day the transfer took effect)."""
     rng = np.random.default_rng(W.SEED + 83)
     moves = {}
-    # the four transfers inside the extract period: one out of each chain, late in the window
-    cycle = [(0, 1, 1047), (1, 2, 1021), (2, 3, 1063), (3, 0, 1035)]
-    for a, b, day in cycle:
+    # the four transactions inside the extract period: each chain sells a cluster of its pharmacies
+    # to another, late in the window, so the lines dispensed before the transfer belong to the
+    # chain that then owned them
+    cycle = [(0, 1, 1047, 5), (1, 2, 1021, 7), (2, 3, 1063, 8), (3, 0, 1035, 9)]
+    for a, b, day, k in cycle:
         pool = [p for p in pharm_of[a] if p not in moves]
-        moves[pool[int(rng.integers(0, len(pool)))]] = (a, b, day)
+        take = rng.choice(len(pool), size=min(k, len(pool)), replace=False)
+        for j in take:
+            moves[pool[int(j)]] = (a, b, day)
     # and the benign twins: transfers settled long before the extract opens
     for _ in range(11):
         a = int(rng.integers(0, len(W.CHAINS)))
@@ -459,8 +463,15 @@ def write_person_register(tgt, people, keys, new_keys, switch_day, kept, rejecte
             since = W.iso(int(rng.integers(140, W.WIN_B - 20)))
             if W.day(140) < W.day(W.WIN_A) and since > W.iso(W.WIN_A):
                 was = prev
-        elif pid in silent and reg:
-            was = W.REGIONS[(int(people["region"][pid]) + 3) % len(W.REGIONS)]
+        elif pid in silent:
+            # a registration corrected without a recorded date, which for some of them is a
+            # registration abroad resolved to a Danish region and for a few the other way about
+            if not reg:
+                was = W.REGIONS[(int(people["region"][pid]) + 1) % len(W.REGIONS)]
+            elif pid % 17 == 0:
+                was = "not stated"
+            else:
+                was = W.REGIONS[(int(people["region"][pid]) + 3) % len(W.REGIONS)]
         at_window_start[key] = was
         dd = de = ""
         lp = last.get(pid, -1)

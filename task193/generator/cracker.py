@@ -100,31 +100,43 @@ def extract(tgt, dedup=True):
     return out
 
 
-def chain_of(tgt):
-    return {r["pharmacy_id"]: r["chain_code"] for r in rd(tgt, "pharmacy_register.csv")}
+def chain_of(tgt, as_of=False):
+    """The chain a line belongs to. The natural reading is the chain the register gives the
+    pharmacy; `as_of` is the chain that owned it on the day, which nothing in the pack states."""
+    reg = {r["pharmacy_id"]: (r["chain_code"], r["previous_chain_code"],
+                              iso(r["in_chain_from"]) if r["in_chain_from"] else None)
+           for r in rd(tgt, "pharmacy_register.csv")}
+    if not as_of:
+        return lambda ph, _d: reg[ph][0]
+
+    def at(ph, d):
+        now, prev, since = reg[ph]
+        return prev if (prev and since and d < since) else now
+    return at
 
 
 # ---------------------------------------------------------------- A1
-def ask1(tgt, quarter_of_dispensing=True, drop_resend=True, exceptions_file=True):
+def ask1(tgt, quarter_of_dispensing=True, drop_resend=True, exceptions_file=True,
+         chain_as_of=False):
     """Per chain and quarter of dispensing: the lines rejected, the lines accepted and the median
     days from dispensing to submission.
 
     The asking sentence pins the quarter basis, the dictionary pins the re-sent line, and the
     manifest points at the exceptions file. Nothing is left for the cracker to get wrong.
     """
-    ch = chain_of(tgt)
+    ch = chain_of(tgt, as_of=chain_as_of)
     acc = collections.defaultdict(list)
     for r in extract(tgt, dedup=drop_resend):
         q = quarter_of(r["day"] if quarter_of_dispensing else r["submitted"])
         if q:
-            acc[(ch[r["pharmacy"]], q)].append((r["submitted"] - r["day"]).days)
+            acc[(ch(r["pharmacy"], r["day"]), q)].append((r["submitted"] - r["day"]).days)
     rej = collections.Counter()
     if exceptions_file:
         for r in rd(tgt, "submission_exceptions.csv"):
             d = iso(r["date_of_dispensing"] if quarter_of_dispensing else r["submitted_on"])
             q = quarter_of(d)
             if q:
-                rej[(ch[r["pharmacy"]], q)] += 1
+                rej[(ch(r["pharmacy"], d), q)] += 1
     else:
         for r in rd(tgt, "pharmacy_submission_log.csv"):
             q = quarter_of(dt.date(int(r["submission_month"][:4]),
@@ -132,7 +144,7 @@ def ask1(tgt, quarter_of_dispensing=True, drop_resend=True, exceptions_file=True
             if q:
                 rej[(r["chain_code"], q)] += int(r["lines_turned_back"])
     out = {}
-    for code in sorted(set(ch.values())):
+    for code in sorted(set(r["chain_code"] for r in rd(tgt, "pharmacy_register.csv"))):
         for label, _a, _b in QUARTERS:
             days = sorted(acc[(code, label)])
             out[(code, label)] = {
@@ -243,7 +255,7 @@ def first_receipts(tgt):
     return first, set(r["product_code"] for r in annex), set(r["marker_code"] for r in annex)
 
 
-def ask3(tgt, bands, region_at_window_start=True):
+def ask3(tgt, bands, region_at_window_start=True, prior_vintage=False):
     """Per region and age band at the window's start: the patients with a first receipt of an Annex A
     product inside the window and the share of them with a first Annex B marker receipt inside it.
 
@@ -251,13 +263,15 @@ def ask3(tgt, bands, region_at_window_start=True):
     dictionary states what previous_region holds. `region_at_window_start` False is the natural
     reading a solver takes when nothing states the vintage.
     """
+    prior = {r["person_key"]: (r["region"] or "not stated")
+             for r in rd(tgt, "person_register_2025Q4.csv")} if prior_vintage else {}
     reg = {}
     for r in rd(tgt, "person_register.csv"):
         region = r["region"] or "not stated"
         if region_at_window_start and r["previous_region"] and r["region_recorded_from"] \
                 and iso(r["region_recorded_from"]) > WIN_A:
             region = r["previous_region"]
-        reg[r["person_key"]] = (region, int(r["year_of_birth"]))
+        reg[r["person_key"]] = (prior.get(r["person_key"], region), int(r["year_of_birth"]))
     first, pset, mset = first_receipts(tgt)
     byp = collections.defaultdict(dict)
     for (k, c), d in first.items():
@@ -278,12 +292,12 @@ def ask3(tgt, bands, region_at_window_start=True):
 
 # ---------------------------------------------------------------- scoring
 def score(tgt, figures, bands, a2_payer=True, a3_vintage=True, a1_quarter=True,
-          a1_dedup=True, a1_exceptions=True):
+          a1_dedup=True, a1_exceptions=True, a1_chain_as_of=False, a3_prior=False):
     g = json.load(open(figures, encoding="utf-8"))
     rows = []
 
     a1 = ask1(tgt, quarter_of_dispensing=a1_quarter, drop_resend=a1_dedup,
-              exceptions_file=a1_exceptions)
+              exceptions_file=a1_exceptions, chain_as_of=a1_chain_as_of)
     hits = 0
     for r in g["a1"]:
         got = a1.get((r["chain"], r["quarter"]), {})
@@ -300,7 +314,7 @@ def score(tgt, figures, bands, a2_payer=True, a3_vintage=True, a1_quarter=True,
         hits += 1 if got.get("fee_dkk") == r["fee_dkk"] else 0
     rows.append(("A2 payer doses and fee", 2 * len(g["a2"]), hits))
 
-    a3 = ask3(tgt, bands, region_at_window_start=a3_vintage)
+    a3 = ask3(tgt, bands, region_at_window_start=a3_vintage, prior_vintage=a3_prior)
     hits = 0
     for r in g["a3"]:
         got = a3.get((r["region"], r["band"]), {})
@@ -345,7 +359,15 @@ if __name__ == "__main__":
     print("MEASURED pair ceiling %.1f (ceiling 40); mirror leakage %.1f per cent (under 35)"
           % (pair, leak))
     print()
-    print("counterfactual: what each device is worth if nothing in the pack adjudicated it")
+    print("and what the two new primaries are worth: the path that finds each of them")
+    for lbl, kw in (("A1 chain that owned the pharmacy", {"a1_chain_as_of": True}),
+                    ("A3 the prior person extract", {"a3_prior": True}),
+                    ("both found", {"a1_chain_as_of": True, "a3_prior": True})):
+        rr = score(tgt, figures, bands, **kw)
+        t, lc2, ls2, p2, lk2 = ceiling(rr, rr)
+        print("  %-34s keeps %.1f per cent, pair ceiling %.1f" % (lbl, 100 * lc2, p2))
+    print()
+    print("counterfactual: what each pinned device would be worth if nothing adjudicated it")
     for lbl, kw in (("A1 quarter of submission", {"a1_quarter": False}),
                     ("A1 re-sent lines kept", {"a1_dedup": False}),
                     ("A1 rejections from the chains' log", {"a1_exceptions": False}),

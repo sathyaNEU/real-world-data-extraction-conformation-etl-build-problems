@@ -12,9 +12,9 @@ import sim
 import world as W
 
 N = [0]
-FOUND, RATIO, STRATUM, PROJ, TOTAL = 19801.79, 54424.62, 149040.12, 813779.66, 800000
-CALL = {"CP-11": 0, "CP-14": 0, "CP-21": 50000, "CP-23": 150000, "CP-31": 200000,
-        "CP-34": 150000, "CP-41": 100000, "CP-44": 0, "CP-47": 150000}
+FOUND, RATIO, STRATUM, PROJ, TOTAL = 15445.38, 43648.52, 129201.54, 811170.09, 800000
+CALL = {"CP-11": 0, "CP-14": 0, "CP-21": 50000, "CP-23": 250000, "CP-31": 0,
+        "CP-34": 50000, "CP-41": 200000, "CP-44": 150000, "CP-47": 100000}
 
 
 def ok(label, cond, detail=""):
@@ -131,9 +131,16 @@ def run(g, target):
     allcells = {mus.r_grain(f) for nm, si, f in routes}
     ok("C1 the routes genuinely disagree before the record is applied", len(allcells) >= 4,
        str(sorted(allcells)))
-    ok("C1 the stated figure's nearest wrong cell is at least six per cent away",
-       W.GRAIN / float(g["total_raw"]) >= 0.06,
-       "%.4f" % (W.GRAIN / float(g["total_raw"])))
+    fam = [f for nm, si, f in routes if abs(si - W.INTERVAL) / float(W.INTERVAL) < 0.02]
+    out = [f for nm, si, f in routes if abs(si - W.INTERVAL) / float(W.INTERVAL) >= 0.02]
+    ok("C4 every route in the golden's family lands in its stated cell",
+       {mus.r_grain(f) for f in fam} == {TOTAL}, str(sorted({mus.r_grain(f) for f in fam})))
+    ok("C4 no route outside that family lands in the golden's stated cell",
+       all(mus.r_grain(f) != TOTAL for f in out),
+       str(sorted({mus.r_grain(f) for f in out})))
+    near = min(abs(f - g["total_raw"]) / g["total_raw"] for f in out)
+    ok("C4 the nearest wrong answer a defensible route produces is at least six per cent away",
+       near >= 0.06, "%.3f" % near)
     ok("C1 the underlying sits clear of its rounding line",
        W.GRAIN / 2.0 - abs(g["total_raw"] - g["total"]) >= 11000.0,
        "%.0f" % (W.GRAIN / 2.0 - abs(g["total_raw"] - g["total"])))

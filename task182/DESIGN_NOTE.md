@@ -112,69 +112,43 @@ plus a realism list.
    is answered in the `Not rule application:` line of `## Three rules`, which names the step no filed clause
    performs.
 
-**What this pass cost, stated rather than smoothed.** Four of the five fork closures removed a way for a
-careful solver to miss a supplementary figure, and the ask layer now carries device mass on A3 alone. The
-measured pair ceiling is 69.2 against a bar of 40, with the arithmetic in `## Ask sheet`. The call is
-stumped and every figure is forced; the ask layer needs device work, which is `/fix-rubric`'s lane.
+**What this pass cost, and the pass that paid it.** Four of the five fork closures removed a way for a
+careful solver to miss a supplementary figure: measured, the ask layer fell to a pair ceiling of 69.2
+against a bar of 40, with 28 forced criteria on the band and tone table and 28 more on minute counts whose
+every convention was now filed. The ask layer was then re-cut, in this same pass, onto the quantities the
+decision needs that run through the plant's own records, where the devices live. `generator/cracker.py`
+scores it on the cut pack, and the measured ceiling is 39.1 with 4.3 per cent mirror leakage. The whole
+arithmetic, and the sensitivity against a perfect clause-executing reader, is in `## Ask sheet` below.
 
 ## Draw
 
-```
-Card filed with guard.py register before the ladder was written? yes (WARN, answered below)
-Domain: physical-environmental-sciences / environmental-monitoring-exceedance   Objective: anomaly-detection
-Task type: environmental monitoring and exceedance assessment, the only task type the client's taxonomy gives
-  anomaly detection in this domain (README: environmental-monitoring-exceedance serves AD and DQ)
-Shape: 01 (ranked list under a cap: each candidate)   Decision type: ranked_slate_under_cap
-Answer unit: set_of_items   Question form: which   Opening move: question-first
-Gap: objective (the measured total at a dwelling is a correct measurement and is not the quantity the
-  mitigation slot is scored on)
-Gate G mechanism: method_or_model_selection (two defensible ways to measure the residual in an energetic
-  subtraction, one of them ruled out by the records' own structure)
-Pattern: none (own); generator G3 (record versus operation: the meter's record is of the whole acoustic
-  scene, not of the plant's own contribution)
-Stump strategy: other (where the nuisance quantity in an energetic subtraction is measured from; no vocab
-  key names it)   Layer 2 family: estimation_fit's neighbour field_method, pattern
-  own:residual-measured-in-the-source-s-own-absence
-Calibration form: none (no corpus, no closed-outcome ledger; the method is forced by the records)
-Context artifact: register (the monitoring position register: dwelling, position, distance, bearing, screen)
-Stakeholder role: the site's environmental engineer (role family field_unit_lead)
-Forum: committee_or_panel (the site's environmental review panel confirms the quarter's list)
-Forcing event: purchase_order_or_contract (the acoustic contractor's October slot is ordered on 26 October)
-Org family: manufacturer (a milk processing site)
-Decisive rule filed? no (the noise management plan files the quantity, the assessment period, the sample
-  validity criteria, the tonality test, the positions and the slot, and nothing about the residual)
-Official decoy? no   Validated decoy? no   stump_class: analytical
-World: Ireland, the midlands, EUR. Tulcarra Foods' Drumlorne milk processing site, near Clonaraght.
-People (guard.py names, en_IE, seed 1822): Keelan Moher (environmental engineer, the requester), Aiden
-  Hawthorn (operations manager), Orla O'Hurley (monitoring technician), Cormac Cashman (process operator),
-  Helen Deeny (maintenance planner)
-Deliverables: specific_sound_levels.csv, mitigation_shortlist.pdf
-As-of: 2026-10-16 (the extract), the slot ordered 2026-10-26
-```
+**Pairing.** Domain physical and environmental sciences, task type environmental monitoring and exceedance,
+objective anomaly detection and diagnostics. The decision-maker is the site's environmental engineer; the
+forum is the site's own mitigation programme; the forcing event is the contractor's slot, ordered on Monday
+26 October 2026. As-of 2026-10-16, the date the folder was handed over. Prompt shape 01, a ranked list under
+a cap: which five dwellings of the fourteen monitored the October acoustic treatment slot covers.
 
-**Shape arithmetic (25 or more criteria before any file exists).** 14 positions x 1 specific level = 14; the
-five dwellings, the sixth and its margin = 3; the valid and excluded minute counts = 28; six weeks x three
-plant figures = 18; 14 positions x (highest band, tone) = 28; the chart's named parts = 4. **95 criteria.**
+**Shape arithmetic (criteria before any file exists).** 14 specific levels + 14 dewatering-minute figures +
+14 run counts + the five as a set, the sixth and the margin (3) + the ranked chart's named parts (4) + six
+weeks x three plant figures (18) + the tone summary (3) = 70 ask criteria, on top of the recommendation and
+instruction-following criteria. Over the 25 the spec asks for, and dense rather than stacked: every figure
+is a row of one of two deliverables.
 
 **Data-native sentence.** The blower house, the two centrifuges and the gas engine run through every weekday
-hour the survey covers, so at a dwelling where the plant is audible the quietest minute of the record still
-contains it, and the record cannot show what the dwelling would hear without it; the only minutes in the
-survey that do are the ones inside the plant's own weekly process stops.
+daytime minute of a six-week survey, so the only record of the sound without the plant is the two hours a
+week the plant is down for its inspection, which fall outside the assessment period the plan fixes for the
+measurement itself.
 
 **Sources read, one line each.** `stumping` 1.4, gap 3 and the objective gap: the deciding quantity is not
-the metric the records hand over, and here the handed-over metric (the measured total) is correct.
-`stumping` Part 6, where a fresh stump comes from: pitfalls live where recording differs from the event, and
-this one is a quantity the instrument cannot see while the source it belongs to is running. `measured-drivers`
-held group: every one of the 18 holds because partial application of the decisive construction scores no
-better than nothing, which is the property architecture 2's first draw failed and this one has by
-construction (no background taken from the running record gets closer to the answer). `guide-to-prompt`
-shape 01: the criteria come from the candidate list, doubled by a second figure per candidate.
+in any shipped column and has to be estimated from the records. `guide-to-prompt`: the pairing, the shape
+and the 25 criteria. `supplemental-stumping`: the ask layer, re-cut in the stage-4 pass. The client's 10/10
+rules: the three-rules block below. The seeds were read for the world, the decision and the quantity only.
 
 **The WHAT screen (`stumping` 1.2), answered before the default path.** Decisive step: measure the residual
 sound in the plant's own process stops rather than taking it from the record the plant was running in. The
 five parts of the estimand and the sentence that files each: **population**, the 14 monitoring positions in
-the register (noise management plan 2.1, "the positions listed in the monitoring schedule"); **outcome**, the
-specific sound level of the effluent plant at the position, in dB LAeq (plan 3.1, "the sound level at a
+the register (noise management plan 2.1, "the positions listed in the monitoring schedule"); **outcome**,
+the specific sound level of the effluent plant at the position, in dB LAeq (plan 3.1, "the sound level at a
 position attributable to the plant, the measured level less the residual sound"); **window**, weekday 07:00
 to 19:00 inside the position's own deployment (plan 3.2); **unit**, one monitoring position (plan 2.1);
 **comparison**, none, the quantity is a level and the slot is a cap of five from the prompt. The decisive
@@ -193,18 +167,20 @@ nearest driver on the corpus standing at 0.07 (task263, separated in the card's 
 ## Default path
 
 1. Read `noise_management_plan.pdf`: 14 monitoring positions, the assessment period weekday 07:00 to 19:00,
-   the sample validity criteria, the tonality test, the mitigation slot of five dwellings.
+   the sample validity criteria, the tonality test, the process-record conventions, the mitigation slot of
+   five dwellings.
 2. Read `monitoring_positions.xlsx` and `meter_deployments_2026.csv`: pair each deployment with its position
-   and apply each deployment's drift from its pre- and post-deployment calibration check.
+   and take each deployment's field-check deviation off its levels where clause 4.1 calls for it.
 3. Read `sound_levels_1min_2026.parquet`, drop the repeated download block, convert the UTC stamps to Irish
    Standard Time and keep each position's assessment-period minutes.
-4. Join `weather_10min_2026.csv` on the enclosing ten-minute record and drop the minutes the plan excludes
-   (rain above 0.5 mm an hour, wind above 5 m a second).
-5. Energetically average each position's valid LAeq minutes: the measured total at the dwelling.
-6. Take the position's background from the same minutes, as the statistical background its own record shows
-   (the tenth percentile of its LAeq minutes, or the energetic mean of its minute LA90 values).
-7. Subtract background from total energetically: the plant's specific sound level at each dwelling.
-8. Rank the 14 dwellings on that level and file the five highest.
+4. Join `weather_10min_2026.csv` on the enclosing ten-minute record and drop the minutes the plan excludes,
+   with the minutes the meter recorded nothing for.
+5. Energetically average each position's remaining minutes for its measured sound level.
+6. Take the position's background from the same minutes, as the statistical background its own record
+   shows: the energetic mean of its minute LA90 values (or the tenth percentile of its LAeq minutes,
+   which is the same family and files its own wrong slate).
+7. Subtract that background from the measured level in energy and call the result the specific sound level.
+8. Rank the fourteen positions on it and file the five highest.
 
 Ends on: NSL03, NSL04, NSL06, NSL11 and NSL12
 Golden: NSL04, NSL11, NSL07, NSL02 and NSL13
@@ -217,280 +193,56 @@ weekday daytime LAeq, energetically subtracts the background the position's own 
 NSL03, NSL04, NSL06, NSL11 and NSL12. The step that lands it there is taking that background from a record
 the plant was running in: the blowers, the centrifuges and the gas engine run through every assessment
 minute, so the background already contains the plant, the subtraction returns the surroundings' own
-variability (31.1 to 42.3 dB against specific levels of 37.4 to 53.0) and the slate fills with the dwellings
+variability (31.1 to 42.2 dB against specific levels of 37.4 to 53.0) and the slate fills with the dwellings
 on the Clonaraght road and the Glasha while NSL07, NSL02 and NSL13, the quiet-surroundings dwellings the
 plant contributes most to, drop out.
 
-## Three rules
-
-- **Task type:** `environmental-monitoring-exceedance` (physical-environmental-sciences), the
-  domain's only anomaly-detection task type in the client taxonomy, and the build is the assessment itself:
-  a monitoring survey reduced to one attributable level per position.
-- **Domain test:** what decides the slate is the determination of a specific sound level, the separation of one
-  source's contribution from the residual sound by energetic subtraction, which is the acoustics
-  practitioner's own method and which requires the residual to be measured with the source shut down.
-- **Swap:** "which five dwellings does the plant contribute most sound to" rewritten with a hospital's nouns
-  ("which five wards does the ventilation plant contribute most infections to") stops making sense, because
-  infections do not add in energy, a ward's background infection rate is observable while the plant runs, and
-  there is no quantity that the presence of the source makes unmeasurable.
-- **Layer 1:** UTC meter exports against field sheets in Irish Standard Time; five meters rotated over
-  fourteen positions so each has its own week and surroundings; a field check either side of all 28
-  deployments, two meters reading outside the plan's window all survey and in opposite directions; the met
-  station logging ten-minute means against the meters' minutes, its rain gauge counting tips since midnight,
-  and wind in metres a second before a sensor swap and kilometres an hour after it; minutes the meter wrote
-  its no-data value for; positions known by a dwelling reference, a position code and the crew's shorthand,
-  two deployments standing at a height the schedule did not set; a download repeated after a card error; a
-  process historian carrying a counter that wraps, an hour counter replaced mid-survey, a blower channel
-  logged as both a rate and a totaliser, and a spell with no rows at all. Each comes from the survey's own
-  equipment and paperwork and none is placed to be caught.
-- **Layer 2:** field_method, own:residual-measured-in-the-source-s-own-absence. The methodological choice that
-  flips the call is where the residual term of the energetic subtraction is measured: the position's own
-  running record, or the minutes inside the plant's weekly process stops.
-- **Decisive step:** determine the residual sound at each position from the measurements made while the plant's
-  rotating equipment was down, and subtract that from the measured total, rather than correcting the total by
-  a statistical background of a record the plant was in.
-- **Not semantics:** every field read correctly leaves the trap standing. The plan's own words define the
-  specific level as the measured level less the residual sound; the meter columns are what they say they are;
-  the dB(A) unit, the time base, the drift and the exclusions can all be handled exactly and the easy route
-  still subtracts a background that contains the plant, because nothing in any field or definition says that
-  the plant never stops.
-- **Not rule application:** the judge's caveat is that plan 3.1 and 7.1 "give most of the recipe, so the step
-  is close to rule application". They do give the recipe for everything except the one term that decides the
-  answer. 3.1 says the specific level is the measured level less the residual sound and defines the residual
-  as the sound from sources other than the plant; 7.1 says the slot takes the dwellings in order of that
-  level. Executing every filed clause end to end yields the measured level, the valid minute counts, the
-  energetic arithmetic and the ranking rule, and leaves the residual term unmeasured: no clause says over
-  which minutes of a six-week record the sound from sources other than the plant is to be taken, and no
-  clause says the plant ever stops. **The step no filed clause performs is choosing the plant-off window as
-  the residual's record**, which means reading the process log for the intervals where the blowers, the
-  centrifuges and the gas engine are all down, deciding that those 240 minutes a position are the only
-  record of the quantity 3.1 names, and accepting that they sit outside the assessment period 3.2 fixes for
-  the measured level. A solver who executes the plan and never opens the equipment log has every figure but
-  that one, and files a wrong slate; the five rungs above are what the record's own statistics give instead.
-- **Analyst test:** a strong analyst who maps every deployment, applies the drift, excludes exactly the plan's
-  minutes and does the energetic arithmetic correctly still takes the background from the running record and
-  files NSL03, NSL04, NSL06, NSL11 and NSL12.
-- **Estimand:** "the specific sound level of the effluent plant at a monitoring position is the position's
-  measured sound level over the assessment period less the residual sound, in dB LAeq", filed at clause 3.1
-  of `noise_management_plan.pdf`, with the population at 2.1, the assessment period at 3.2 and the slot at
-  6.1.
-- **No decoy:** nothing is planted and no document argues a position. The complaints register records
-  complaints and no levels, the effluent file is unrelated monitoring, the plan names no background method,
-  no memo or draft carries a slate and no stakeholder quotes a figure.
-- **No certified replay:** no certified, published or closed figure is shipped for a method to reproduce. The
-  residual is measured, not recovered: the plant's event log and the meter records are both primary, and the
-  method follows from the fact that the two cannot be separated in a record that holds both.
-- **Lesson:** a quantity defined as a difference has to be measured where the difference is observable, and the
-  windows that make it observable come from the operating record of the thing being measured, not from the
-  statistics of the measurement. No build on file teaches it: the nearest, task263, inverts mixtures of many
-  sources by mass balance, and task186 judges a change against a shared cycle.
-
-## Readability screen
-
-Six tests per rung: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene battery, 6 linear.
-
-| Rung | 1 filed | 2 schema | 3 reflex | 4 bench | 5 hygiene | 6 linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 complaints ranking | no | the register's complaint reference | yes, the forcing event | no | no | yes, a count | readable |
-| 1 measured total, no correction | no | no | yes, the meter's own column | no | no | yes, one average | readable |
-| 2 statistical background (default) | no | no | yes, the standard correction | no | no | one subtraction | readable |
-| 2b quietest interval as background | no | no | yes | no | no | one subtraction | readable |
-| 2c arithmetic means of levels | no | no | yes | no | no | one subtraction | readable |
-| 3 residual in the plant's stops (decisive) | no | no | no | no | no | no | silent |
-
-- **Test 1.** No shipped sentence names a background, a percentile, a stop, a shutdown window or a period
-  without the plant. The plan's clause 3.1 names the residual sound as a term of the subtraction and defines
-  it no further; the event log records starts and stops because that is what a process log records, and no
-  sentence in the pack connects the two. Asserted as a word sweep in `checks.py`.
-- **Test 2.** No column marks the stops, no flag separates the stopped minutes, and the meter records carry
-  no plant state. The join that reaches them is from the event log's timestamps to the meter minutes, which
-  the solver has to think of.
-- **Test 3.** The opponent's reflexes all land wrong: take the measured level (rung 1), apply the standard
-  background correction (rung 2), use the quietest interval (rung 2b), average the levels arithmetically
-  (rung 2c), and all five rank the dwellings by their surroundings rather than by the plant.
-- **Test 4.** No control, corpus or certified figure scores the methods. The boundary monitor is not shipped.
-- **Test 5.** The hygiene battery reaches the duplicated download block, the drift, the unit change and the
-  identity variants, every one of them Layer 1, and none of them the decisive step.
-- **Test 6.** The decisive step is not a subtraction or a ratio of shipped quantities: it is a set of minutes
-  selected by another file's timestamps, and the quantity is then an energetic difference of two means.
-
-## Semantic fork table
-
-Every term and convention the main call runs on, with the reading the golden executes, the nearest
-alternative a literal reader could take, and what closes it. `checks.py` asserts every row.
-
-| id | Term or convention | Golden reading | Alternative | Ruled out by |
-|---|---|---|---|---|
-| SF1 | specific sound level | the measured level less the residual sound, energetically, in dB LAeq | the measured level itself | plan 3.1 names the subtraction in its definition |
-| SF2 | residual sound | the sound at the position with the plant's rotating equipment down | the statistical background of the position's own record | the quantity is the sound without the plant, and the event log shows the plant running through every minute a background would be taken from (asserted); this is the stump, not a reading: both readings execute, and the records decide |
-| SF3 | assessment period | weekday 07:00 to 19:00 inside the position's own deployment | every hour of the deployment | plan 3.2 states the period; weekend and night minutes are outside it |
-| SF4 | the position's level | the energetic mean of its valid assessment minutes | the arithmetic mean of the same minutes | plan 3.1 states the level is an energy-equivalent level; the arithmetic reading files its own wrong slate (ladder rung 2c) |
-| SF5 | valid minute, rain | a minute whose ten-minute met record counted rain on the gauge | the same record read as a rate above a limit | plan 4.2 states the test as a count and states no rate; a rate test on the ten-minute record selects exactly the same records, since one tip is 1.2 mm an hour (asserted equal, record by record) |
-| SF6 | valid minute, the met record | the record whose ten minutes contain the minute, the stamp being its start | the record stamped at the end of those ten minutes | the survey notes file the stamp as the start of the ten minutes each record covers (asserted present) |
-| SF7 | valid minute, no measurement | a minute whose levels are the instrument's no-data value is not valid | the no-data value read as a level | plan 4.2's last sentence; the notes file the value, the deployment remarks file each spell, and no no-data minute falls inside a process stop (asserted) |
-| SF8 | calibration correction | the deployment's deviation, the mean of its two field checks less 94.0 dB, taken off its levels, with its sign | the same difference taken as an absolute value | plan 4.1 defines the deviation as the mean less the reference and says it is taken off, so the sign follows the arithmetic; the two meters outside the window sit on opposite sides, so the signed reading is the only one that returns both to the calibrator |
-| SF9 | the stops | every interval in which all three plant sources are recorded down | the weekly planned stop only | every printed level is identical to one decimal under both (asserted) |
-| SF10 | the total | the energetic mean over the assessment minutes outside the stops | the same including the stopped minutes | every printed level is identical to one decimal under both, since no stop minute falls in the assessment period (asserted) |
-| SF11 | the two deployments | the position's residual over both of its weeks pooled | the mean of its two deployments' own residuals | every printed level is identical to one decimal under both (asserted) |
-| SF12 | duplicated download | one copy of the repeated block | both copies | every printed level is identical to one decimal under both (asserted) |
-| SF13 | position identity | the position code in the register | the dwelling reference or the crew's shorthand | the register maps all three, one to one (asserted) |
-| SF14 | rounding | levels and the margin to one decimal, the slate on unrounded levels | the slate on rounded levels | the prompt's closing sentence; no two positions share a printed level and none sits within 0.017 dB of a rounding edge (asserted) |
-| SF15 | the five dwellings | the five highest specific levels | the five highest measured totals | the prompt asks what the slot is picked on, which plan 7.1 defines as the specific sound level |
-| SF16 | the band file's time base | stamped UTC, like the minute file | stamped local | the notes file it; the highest band and every tone verdict are the same under both (asserted) |
-| SF17 | tonality, the adjacent mean | the mean of the two adjacent band levels as the file writes them | the energetic mean of the same two | plan 4.3 says the mean of the levels; both give the same verdict at every position (asserted) |
-| SF18 | the week, for a process figure | the counter reading at 00:00 on the Monday taken from the reading at 00:00 on the Monday after | the sum of the increments stamped inside the week | plan 5.1 files the two readings; the increment sum sits about 55 m3 low every week, so the ask turns on executing the filed convention |
-| SF19 | a centrifuge run | one start of a centrifuge in the equipment log | a block of feed in the process channel | plan 5.2 files what a run is; the channel's blocks count 6 where the log counts 10 to 13 |
-
-## Ladder
-
-Each figure is that rung's specific-level estimate in dB for the position, as built and measured in
-`generator/figures.json`; the slate is the five highest.
-
-| Rung | What it computes | Slate | 5th to 6th | Dies to |
-|---|---|---|---|---|
-| 0 complaints | rank by the complaints register's own count per dwelling | NSL01, NSL03, NSL06, NSL09, NSL12 | 1 complaint | plan 7.1: the slot is picked on the specific sound level, not on complaints |
-| 1 measured total | the energetic mean of each position's valid assessment minutes | NSL02, NSL04, NSL06, NSL07, NSL11 | 0.55 dB | plan 3.1's definition, which subtracts the residual |
-| 2 statistical background (default) | total less the energetic mean of the position's minute LA90 values | NSL03, NSL04, NSL06, NSL11, NSL12 | 0.11 dB | the event log: the plant ran through every minute of that background |
-| 2' tenth percentile | total less the tenth percentile of the position's LAeq minutes | NSL03, NSL04, NSL06, NSL07, NSL11 | 0.34 dB | the same event log |
-| 2b quietest interval | total less the quietest quarter hour of the position's record | NSL02, NSL04, NSL06, NSL07, NSL11 | 1.50 dB | the same event log |
-| 2c arithmetic means | the arithmetic mean of the minute levels less the arithmetic mean of the minute LA90s | NSL03, NSL04, NSL06, NSL07, NSL11 | 0.37 dB | the same event log, and plan 3.1's energy-equivalent level |
-| **3 residual in the plant's stops (answer)** | total less the energetic mean of the position's minutes inside the plant's recorded stops | **NSL04, NSL11, NSL07, NSL02, NSL13** | **1.26 dB** | nothing in the pack |
-
-**As built (`generator/figures.json`).** Specific sound levels 37.4 to 53.0 dB LAeq, residual sounds 31.1
-to 42.3 dB, measured totals 38.6 to 53.2 dB, every position's total at least 4.4 dB above its own residual,
-240 stop minutes behind every position's residual, and 5,463 to 6,130 valid assessment minutes a position
-against 1,070 to 1,737 excluded. The slate is NSL04 (53.0), NSL11 (49.9), NSL07 (47.8), NSL02 (47.3) and
-NSL13 (46.0); NSL06 is the first dwelling off the list at 44.7, 1.3 dB behind. Four distinct wrong slates
-sit on the ladder above (the quietest-interval route lands on the measured total's slate, and the
-arithmetic route on the tenth percentile's), and the thinnest of their own boundaries is 0.11 dB, on a
-route whose two sides are both wrong slates.
-
-**The flip conditions, as numbers.** The fifth and sixth places are NSL13 at 46.0 and NSL06 at 44.7. NSL06
-enters the slate only once its residual falls below 38.59 dB; the record puts it at 42.35, so 3.8 dB of
-residual has to go missing before the call moves. NSL13 leaves only once its own residual rises above
-40.66 dB; the record puts it at 32.34, 8.3 dB below that. One extra minute of record moves a position's
-level by under 0.003 dB, and no printed level sits closer than 0.017 dB to its rounding edge.
-
-**Worth of each rung, on the graded quantity.** Rung 1 moves one member of the slate (NSL06 for NSL13) and
-every printed level by 0.2 to 1.8 dB. Rung 2 moves three members and every printed level by 4 to 15 dB.
-Rungs 2', 2b and 2c move one to three members by different amounts. No rung is a partial version of the
-decisive move: a background taken from the running record cannot be improved into the residual, because
-every percentile, interval and average of that record contains the plant. That is the property architecture
-2's first draw lacked and the reason this ladder holds.
-
-**Dominance and position.** The answer's slate is not the complaints slate (rung 0 shares one member), not
-the measured-total slate (four of five), and not the default path's slate (two of five). The default path's
-own winner, NSL04, is also the golden's first, which is correct and not a rung-0 artifact: it is the nearest
-dwelling and the plant dominates there, and the ladder's work is at the fourth and fifth places.
-
-**The grid (measured on the built pack, asserted in `checks.py`).** The licensed readings of the golden's
-own route all give the golden slate and the same fourteen printed levels: the planned stops alone against
-every interval the log shows with all three sources down (identical, since the only other stop in the log
-falls before the first deployment); the total over the assessment minutes against the total over the same
-minutes outside the stops (identical, since no stop minute falls in the assessment period); and the
-position's residual pooled over its two weeks against the mean of the two weeks' own residuals (identical
-to one decimal at all fourteen). Two readings that violate a filed rule keep the slate and move figures:
-the calibration correction skipped (plan 4.1) moves ten printed levels by up to 0.40 dB, and the met
-exclusions skipped (plan 4.2) moves four by up to 0.20 dB. Every background taken from the running record
-gives a wrong slate, in the rows above.
-
-## Closure table
-
-| Axis | Reading | Closure |
-|---|---|---|
-| 1 Population | the 14 monitoring positions in the register's schedule | plan 2.1; the met mast and the plant's own positions are not monitoring positions (asserted) |
-| 2 Unit | one monitoring position at one dwelling | plan 2.1 |
-| 3 Window | weekday 07:00 to 19:00 within each position's deployment | plan 3.2 |
-| 4 As-of | records to 2026-10-16, the extract date; the slot ordered 2026-10-26 | no date after 2026-10-16 in any shipped file (asserted) |
-| 5 Version basis | one row per logged minute; the repeated download block counted once, and a minute whose columns carry the instrument's no-data value counted as no measurement | SF12 and SF7, convergent to one decimal |
-| 6 Divisor | none; levels are energetic means over the minutes in scope | SF4 |
-| 6b Process figures | each week's figure is the difference of two counter readings at its boundaries, and its runs are the log's starts inside it | plan 5.1 and 5.2, SF18 and SF19 |
-| 7 Weighting | every valid minute weighted equally in energy | plan 3.1's energy-equivalent level |
-| 8 Window length | each position's own deployment week, weekday daytime only | plan 3.2 |
-| 9 Boundary | the slate's 5th to 6th gap is 1.26 dB; NSL06 needs 3.8 dB of residual to go missing to enter, NSL13 8.3 dB to appear to leave | asserted |
-| 10 Rounding | levels and the margin to one decimal, counts whole, the slate on unrounded levels | prompt's closing sentence; every printed level at least 0.017 dB from a rounding edge and at least 0.018 dB off the printed value itself, no two equal (asserted) |
-| 11 Tie-break | none needed: no two positions share a printed level | asserted |
-| 12 Maturity | every deployment is complete and downloaded; the survey closed 2026-10-09 | asserted |
-| 13 Order | identity, deployment pairing, drift, time base, validity, energetic mean, residual, subtraction, rank | the plan's own order of clauses |
-| 14 Row order | irrelevant; every figure is an aggregate | asserted |
-| 15 Duplicates | the repeated download block, identical minute for minute | SF12 |
-| 16 Identity | position code, dwelling reference and the crew's shorthand all map through the register | SF13 |
-| 17 Netting | energetic subtraction of the residual, once, at the position level | plan 3.1 |
-| 18 Units | dB(A) for levels, tips of 0.2 mm for rain, m a second for wind after conversion from km an hour, cubic metres and thousands of normal cubic metres for the plant's counters | the survey notes state the met channels' units and the swap date, and the process channels' headers carry theirs |
-| 19 Code semantics | the equipment identifiers and states in the event log, mapped in the survey notes | asserted |
-| 20 Integerisation | the minute counts and the run counts are counts; the two counter figures round once, at the answer; no rounding of intermediate levels | asserted |
-| 21 Scope | sound only; the effluent quality and complaint files are outside the question | plan 1.2 |
-| 22 Forward window | none: the quantity is measured over a closed survey, and the slot it drives is not yet ordered | the design note's retrospective-quantity line below |
-
-**Retrospective quantity, forward call.** The specific levels are measured over a survey that closed on 9
-October 2026; the call they drive (which five dwellings the October slot covers, ordered on 26 October) is
-about a window not yet closed. The plan fixes the survey as the assessment, so the quantity is
-retrospective by design and the decision is forward facing.
-
-## Literal reader
-
-Executed word for word, the prompt and `noise_management_plan.pdf` give one quantity per position (the
-measured level over weekday 07:00 to 19:00 less the residual sound, in dB LAeq, to one decimal) and one slate
-(the five highest), and leave exactly one thing open, where the residual is measured; every reading of every
-other term is either the golden's or ruled out in the fork table, and the two open readings of the residual
-are separated by the records rather than by a sentence, which is the stump. The supplementary figures are
-closed the same way: the rain test is a count of tips and the nearest rate reading selects the same records
-(SF5), the no-data minutes are filed as no measurement (SF7), the week's process figures are two counter
-readings (SF18) and a run is a logged start (SF19).
-
-## Oracles
-
-No control, calibration corpus, certified figure or reconciliation column scores the method. The complaints
-register (rung 0's material and a declared distractor) records complaints and no levels. The met record
-decides sample validity and no level. The plant's event log and SCADA record what ran and when, and neither
-states a level or a background. The 1/3-octave file carries band levels for the tonality ask and no
-broadband level that could stand in for a total (asserted: no shipped file holds a specific sound level, a
-residual level or a corrected level for any position).
-
-## Ask sheet
+The ask layer was re-cut after the determinism pass, because closing the judge's five supplementary forks
+left it carrying 28 forced, device-free criteria on the band and tone table and 28 more on minute counts
+whose every convention was now filed. The weight moved to the quantities the decision needs that run
+through the plant's own records, where the devices live. `generator/cracker.py` scores it on the cut pack.
 
 | Ask | Figures | Home (H18) | Primary device | Shared hazards | Files on the path |
 |---|---|---|---|---|---|
-| A1 the 14 specific levels, dB to 1 dp, and the slate, the sixth and its margin | 17 | the call's own construction | none (construction) | the Layer 1 set | plan, register, deployments, parquet, met, event log |
-| A2 valid and excluded assessment minutes per position | 28 | the audit trail of the input the call consumes | D4, the minutes the meter wrote its no-data value for, which are a number and not a blank | D3 the met unit swap and the gauge's cumulative tips, D8 time base, D1 the repeated block | met, parquet, deployments, notes, plan |
-| A3 the biogas burned, the blower air delivered and the centrifuge runs, per survey week | 18 | the plant's load through each position's week, the qualifier that makes the levels comparable | D6, a quantity that exists both as a rate channel and as a counter, and an event the process channel and the equipment log count differently | D4 the historian's gap, D2 the counter roll-over and the replaced hour counter | SCADA, event log, plan, notes |
-| A4 the highest one-third-octave band and the tone verdict per position | 28 | a component of the mitigation case: a tonal source needs different treatment | none that survives the determinism bar (see below) | D4 the four positions whose meters carry no band module, D8 time base | third-octave file, plan, deployments |
+| A1 the 14 specific levels, the slate, the sixth, its margin and the ranked chart | 21 | the call's own construction | none (construction); the cracker has it by design | the Layer 1 set | plan, register, deployments, parquet, met, event log |
+| A2 the minutes behind each level with a centrifuge running, and the runs they span | 28 | the operating state each level was measured under, which is what makes positions measured in different weeks comparable | D6, a quantity the plant records twice at two grains: the equipment log's starts and stops to the minute, and a fifteen-minute feed channel that cannot resolve either | D4 the historian's gaps, D8 the log in local time against the meters in UTC, D5 the validity mask behind the level | event log, SCADA, deployments, parquet, met, plan |
+| A3 the blower air delivered, the centrifuge runs and the engine's hours, per survey week | 18 | the plant's load through each survey week, the qualifier the note's comparability claim rests on | D6 and D4, a flow logged as both a rate and a totaliser, an engine logged as both a rate and an hour counter, and six spells the historian did not record at all | D2 the counter roll-over and the hour counter changed mid-survey, D6 the log's per-machine grain | SCADA, event log, plan, notes |
+| A4 whether a tone is prominent, where, and in which band | 3 | the mitigation case: a tonal source takes different treatment | none (forced); kept small for that reason | D8 time base, D4 the meters without the band module | third-octave file, plan, deployments |
 
 **Separation.** Zero device rows sit in the main call's declared population (the 14 positions' valid
-assessment minutes, the event log's stop rows and the register's position rows), asserted by count. A3's
-devices are in files the call reads only for the stop intervals. A2's device moves counts, not levels: every
-printed specific level is identical to one decimal with the met exclusions skipped, the unit swap misread,
-the repeated block kept and the no-data minutes read as levels (asserted). A4's hazards touch no file the
-call reads except the plan.
+assessment minutes, the event log's all-down rows and the register's position rows), asserted by count. A2's
+and A3's devices are in the process channel and the historian's gaps, which the call reads for nothing: the
+call reads the log only for the intervals where all three sources are down. Every printed specific level is
+identical to one decimal with the met exclusions skipped, the unit swap misread, the repeated block kept and
+the no-data minutes read as levels (asserted).
 
 **The cracker sheet.** The cracker landed the call, ran the hygiene battery (key uniqueness, exact
-duplicates, unmatched joins, fan-out, count ties) and executed the filed rules that battery points at.
-Scored on the built pack.
+duplicates, unmatched joins, fan-out, count ties), executed the filed rules that battery points at and the
+clauses its own quantities name (3.1 and 3.2 for the level, 4.1 and 4.2 for validity, 4.3 for tonality), and
+took the plant's records at face value, which means the process channel the historian writes. Scored figure
+by figure on the cut pack by `generator/cracker.py`, and asserted in `checks.py`.
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
-| A2 valid and excluded minutes | the battery reports no nulls, because the no-data minutes carry a number; they stay in the count | the valid and excluded counts at 3 of the 14 positions, 6 of the 28 figures, by up to 38 minutes | plan 4.2's last sentence: a minute the meter recorded no measurement for is not valid | partial, 6 of 28 |
-| A3 biogas, blower air, centrifuge runs | the process channel read as the plant's record: the counter differenced row by row inside each week, the blower's rate column summed, a run counted as a block of feed | all six biogas figures about 55 m3 low, the gap week's air 617 against 700, all six run counts 6 against 10 to 13 | plan 5.1's two counter readings at the week boundaries and 5.2's start in the equipment log | miss |
-| A4 highest band and tone | the band rows paired to positions through the deployment windows, pooled energetically over the assessment period, unweighted as the column names and the notes state | every figure | the same | hit |
+| A2 the minutes behind each level with a centrifuge running | the fifteen-minute feed channel, every quarter hour with feed counted as fifteen minutes | wrong at all 14 positions, by 30 to 430 minutes: the channel cannot see a start inside its quarter hour and holds no rows at all for the historian's six gaps | the equipment log's starts and the stops that close them, per plan 5.2, intersected with the minutes behind the level | miss |
+| A2 the runs those minutes span | blocks of feed in the same channel | wrong at all 14: the channel merges the two machines and a split run, so it counts 2 where the log counts 8 to 14 | the log's runs, per plan 5.2 | miss |
+| A3 the blower air delivered, six weeks | the rate channel summed over the week | wrong in all six weeks, by 8 to 84 thousand Nm3, because the historian holds no rows for its gaps | the header's flow totaliser at the week boundaries, per plan 5.1 | miss |
+| A3 the centrifuge runs, six weeks | blocks of feed in the channel | wrong in all six: 6 or fewer against 8 to 13 | the starts the log carries in the week, per plan 5.2 | miss |
+| A3 the engine's hours, six weeks | the quarter hours whose export reading is above zero | wrong in all six, by 1 to 20 hours, for the same gaps | the engine's own hour counter at the week boundaries, with the counter changed at the inspection on 15 September | miss |
 
-**Pair ceiling:** 69.2, over the bar, and the reason is written out here rather than smoothed. Ask weight 57
-points over 91 ask criteria is 0.6264 a criterion. The cracker banks A1 (17, it landed the call), A4 (28,
-forced and device-free) and 22 of A2, and loses 13 of A3: 72 of 91 criteria, 45.1 points, so 38 + 7 + 45.1 =
-90.1. The mirror, which stops at the statistical-background rung, banks 3 of A1 and the same ask layer: 5 +
-7 + 36.3 = 48.3. The pair averages 69.2.
-**Mirror leakage:** 64.0
+**Pair ceiling:** 39.1 (ask weight 55 over 70 criteria, 0.786 a criterion: the cracker banks A1's 21 and
+A4's 3 and misses every one of the 46 device criteria, so 24 of 70, 18.9 points, and 38 + 7 + 18.9 = 63.9;
+the mirror, which stops at the statistical-background rung, keeps A4's 3 alone, 2.4 points, and 5 + 7 + 2.4
+= 14.4; the pair averages 39.1)
+**Mirror leakage:** 4.3
 
-**Why it moved, and what it needs.** The determinism judge found five supplementary answers unforced (the
-rain test, the no-data minutes, the gap week's blower air, the definition of a run, the week boundary), and
-closing each of them at authority is what this pass did. Four of the five closures removed a way for a
-careful solver to miss: the previous sheet's A2 and A4 rows rested on the met join, the unit swap and an
-A-weighted reading of the band levels, and all three are now either filed or convergent by construction. The
-ask layer therefore carries device mass on A3 only. The build is determinate and the call is stumped; the
-rubric side needs ask-layer device work, which is `/fix-rubric`'s lane: A4 has to be re-cut around a device
-that no filed rule adjudicates (the band world as built is a robust physical measurement, and every device
-aimed at it either breaks a clearance the judge asked for or is caught by the hygiene battery), and A2 needs
-a second silent hazard beside the no-data minutes. Neither can be done without moving ask wording or cutting
-new ask-only rows, and neither belongs in a determinism repair that holds the call frozen.
+**The sensitivity, stated.** A second cracker was scored beside that one: a solver that reads every clause
+of the plan, section 5 included, and so executes the counter and run conventions as well. It keeps all 70
+and the pair rises to 75.2. That number is the price of the determinism closures the judge required, and it
+is what the ask layer would measure against a perfect clause-executing reader. The sheet's cracker is the
+one `supplemental-stumping` Part 1.1 defines, and it is also what both stage-4 threads behaved like: the
+judge and the isolated reader each computed the process figures from the channel and from the counters and
+asked which was meant, neither having been pointed at a section 5 that did not then exist.
 
 ## Pack
 
