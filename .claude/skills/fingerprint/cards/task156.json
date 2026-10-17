@@ -6,13 +6,13 @@
   "domain": "product-analytics",
   "subdomain": "retention-cohort-lifetime-value-modeling",
   "client_domain": "product-analytics",
-  "niche": "a Toronto-run developer Q&A network's 2027 request for its paid moderation team, sized in FTE from the hours its nine topic sites' moderator flags and unreviewed community-inbox items will take at the 2027 handle-time standards, when every community item goes first to volunteer reviewers whose pools have been shrinking since the reputation pipeline dried up in autumn 2024, and the sites generative AI hurt least are the ones running out of volunteers",
+  "niche": "a Toronto-run developer Q&A network's 2027 request for its paid moderation team, sized in whole FTE per site from the hours its nine topic sites' moderator flags and unreviewed community-inbox items will take at the 2027 handle-time standards, when every community item goes first to volunteer reviewers whose pools have been shrinking since the reputation pipeline dried up in autumn 2024, and the sites generative AI hurt least are the ones running out of volunteers",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "35 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 7, Databases 5, Infrastructure & DevOps 5, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 9 above finance's 26-FTE envelope",
+  "answer_source": "task156/generator/calc.py compute() on the shipped bundle, reproduced by task156/generator/verify.py",
   "gap": [
     "time",
     "population"
@@ -32,25 +32,25 @@
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
-  "stakeholder_role": "Quernstone's head of moderation operations, who takes the 2027 paid moderation request to the Moderation Council's December sitting and then to finance",
+  "stakeholder_role": "Millrind's head of moderation operations, who takes the 2027 paid moderation request to the Moderation Council's December sitting and then to finance",
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "reviewer_activity_2024-01_2026-09.csv (the review platform's reviewer-month activity export) beside the platform's daily inbox export",
-    "rows": 0,
-    "entity": "one volunteer reviewer's calendar month on one site: reviews completed by item type and days with a review",
-    "grain": "reviewer x site x month",
-    "source": "synthetic (constructed in the layout of a Q&A platform's review-programme activity export)"
+    "file": "review_inbox_daily_2024-01-01_2026-09-30.csv (the review platform's daily inbox export) beside reviewer_roster_2026-10-08.csv (its reviewer access spells)",
+    "rows": 36144,
+    "entity": "one site's community review items of one type entering the inbox on one UTC day: entered, reviewed by a volunteer, routed to the paid team",
+    "grain": "site x day x item type",
+    "source": "synthetic (constructed in the layout of a Q&A platform's review inbox export and reviewer roster)"
   },
   "forum": "council_or_assembly",
   "forcing_event": "vote_or_meeting",
   "org_family": "software_or_platform",
   "world": {
-    "geography": "Canada, Ontario (Quernstone's operations and finance in Toronto; the nine sites serve developers worldwide; the network, its sites, people, systems and data are fictional)",
+    "geography": "Canada, Ontario (Millrind's operations and finance in Toronto; the nine sites serve developers worldwide; the network, its sites, people, systems and data are fictional)",
     "currency": "CAD",
     "org_type": "developer question-and-answer network of nine topic sites, volunteer review in front of a paid moderation team",
     "invented_names": [
-      "Quernstone"
+      "Millrind"
     ],
     "people": [
       "Duane Zamora",
@@ -65,10 +65,10 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "Work reaches a paid tier only when a volunteer tier falls short, and the volunteer tier's capacity shows only in the periods it fell short, since in every other period it handled everything that arrived; with almost no new volunteers arriving, each pool shrinks at a steady exit rate, so units whose records show almost nothing reaching the paid tier cross below their arrivals inside the forward window, while a share of arrivals carried forward, a trend in the paid work, or capacity read from recent throughput each misses the crossing.",
-  "driver_concrete": "Every community review item at Quernstone goes first to the volunteer reviewers and reaches the paid moderators only if no volunteer has reviewed it 72 hours after it entered the inbox; volunteers review at their own pace when the inbox is full and below it when it runs dry, so their pace shows only in months when items were routed (every site in 2021 and 2022, Security, Embedded and Scientific Computing since late 2025), and since almost no members have reached the review privilege after autumn 2024 every site's pool shrinks by about two per cent a month, which takes Data & ML, Databases, DevOps and Game Development, with almost nothing routed since 2023, below their 2027 inbox arrivals.",
-  "stump": "Carrying each site's paid queue hours per question over the last twelve months onto the 2027 question plan files a pool of about 105 FTE (about 110 to 114 with each site's routed share, its monthly paid hours or its reviewer pool trended forward), inside finance's 110-FTE envelope; the step that lands it there is treating routed items as a share of arrivals, when they are the arrivals each site's shrinking reviewer pool cannot review at the pace reviewers keep when the inbox is full, which puts four sites routed almost nothing since 2023 short of their 2027 arrivals and files about 130.",
+  "driver_concrete": "Every community review item at Millrind goes first to the volunteer reviewers and reaches the paid moderators only if no volunteer has reviewed it 72 hours after it entered the inbox; volunteers review at their own pace when the inbox is full and below it when it runs dry, so their pace shows only in months when items were routed (most sites in 2022, Security, Embedded & Hardware and Scientific Computing since 2025), and since almost no member has been granted review access after autumn 2024 every site's pool shrinks by about two per cent a month, which takes Data & ML, Databases, Infrastructure & DevOps and Game Development, with almost nothing routed since January 2024, below their 2027 inbox arrivals.",
+  "stump": "Carrying each site's paid queue hours per question over the last twelve months onto the 2027 question plan files a request of 23 FTE (25 to 28 with each site's routed share or its monthly paid hours trended forward), inside finance's 26-FTE envelope; the step that lands it there is treating routed items as a share of arrivals, when they are the arrivals each site's shrinking reviewer pool cannot review at the pace reviewers keep when the inbox is full, which puts four sites that have routed almost nothing since January 2024 short of their 2027 inbox and files 35 (31 with the pool trended over the platform's whole record, 53 with the pace read from 2026 throughput).",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stacks the old monthly queue workbook and the new daily inbox export, maps the old site names to the new codes, and reads the charter's need definition, the 2027 standards and the 2027 question plan correctly carries each site's paid queue hours per question (or each queue's routed share) onto the plan and files about 105 FTE, or 110 to 114 with the routed share, the paid hours or the reviewer count trended; items reach the paid team only when the volunteers fall short, so each site's 2027 routed items are its 2027 arrivals less what its shrinking reviewer pool can review at the pace reviewers keep when the inbox is full, which files about 130.",
+  "analyst_test": "A strong analyst who stacks the old monthly queue workbook and the new daily inbox export, maps the old site names to the new codes, and reads the charter's need definition, the 2027 standards and the 2027 question plan correctly carries each site's paid queue hours per question (or each queue's routed share) onto the plan and files 23 FTE, or 25 to 28 with the routed share or the paid hours trended; items reach the paid team only when the volunteers fall short, so each site's 2027 routed items are its 2027 arrivals less what its shrinking reviewer pool can review at the pace reviewers keep when the inbox is full, which files 35.",
   "domain_test": "The deciding quantity is each site's 2027 volunteer review capacity, forecast the way product analytics forecasts a user segment's retained activity (the reviewer pool projected from its own monthly exits and near-zero arrivals, times the activity each retained reviewer delivers when work is plentiful) and set against the 2027 inbox the plan implies; with another field's nouns (a hospital's agency nurses, a utility's call centre) there is no volunteer user cohort whose engagement decays on its own retention curve and whose output shows only when work outruns it, so the forecast that decides the call has nothing to stand on.",
   "layer2_family": "allocation_constraints",
   "layer2_pattern": "own:volunteer-review-capacity-projected-from-reviewer-retention-against-inbox-arrivals",
@@ -76,8 +76,9 @@
     "a review-platform change in January 2024: a monthly per-queue workbook for 2021 to 2023 (one sheet a year, the edit queue added in 2022) beside a daily inbox export by item type from 2024",
     "site names in the old workbook against site codes in the new export, with Graphics folded into Game Development in 2023, mapped by the site register",
     "UTC day boundaries in the platform exports against Toronto time in the moderation team's own records",
-    "the September 2026 inbox export pulled twice, a preliminary pull with the last three days' routing still open and a revised pull a week later",
-    "reviewer accounts re-keyed at the platform change, old site-local reviewer numbers mapped to network account ids"
+    "the September 2026 inbox export pulled twice, a preliminary pull with the last days' routing still open and a revised pull a week later",
+    "the moderator tool's flag export pulled in two parts that both carry 15 August",
+    "a WFM week re-sent after a payroll query, the original lines kept and marked superseded, and Infrastructure & DevOps still under its old WFM name"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

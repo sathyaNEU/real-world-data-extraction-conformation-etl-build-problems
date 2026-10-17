@@ -1,0 +1,126 @@
+{
+  "call": {
+    "request_fte": 35,
+    "envelope_fte": 26,
+    "above_envelope_fte": 9,
+    "need_fte": {
+      "Frontend & Web": 5,
+      "Mobile Apps": 2,
+      "Data & ML": 7,
+      "Databases": 5,
+      "Infrastructure & DevOps": 5,
+      "Game Development": 2,
+      "Security": 4,
+      "Embedded & Hardware": 3,
+      "Scientific Computing": 2
+    }
+  },
+  "components": {
+    "reviews_a_month": 40,
+    "saturation_cut_pct": 5,
+    "lapse_pct_a_month": 2,
+    "newly_short": [
+      "Data & ML",
+      "Databases",
+      "Infrastructure & DevOps",
+      "Game Development"
+    ],
+    "already_short": [
+      "Security",
+      "Embedded & Hardware",
+      "Scientific Computing"
+    ],
+    "covered": [
+      "Frontend & Web",
+      "Mobile Apps"
+    ]
+  },
+  "steps": {
+    "never_picked_up_pct": "0.6",
+    "fte_hours": 1600,
+    "newly_short_from": "October 2026"
+  },
+  "answers": {
+    "need_fte": {
+      "Frontend & Web": 5,
+      "Mobile Apps": 2,
+      "Data & ML": 7,
+      "Databases": 5,
+      "Infrastructure & DevOps": 5,
+      "Game Development": 2,
+      "Security": 4,
+      "Embedded & Hardware": 3,
+      "Scientific Computing": 2
+    },
+    "ask_a_pct": {
+      "Frontend & Web July 2026": "97.9",
+      "Frontend & Web August 2026": "97.0",
+      "Frontend & Web September 2026": "97.1",
+      "Mobile Apps July 2026": "97.2",
+      "Mobile Apps August 2026": "96.4",
+      "Mobile Apps September 2026": "96.3",
+      "Data & ML July 2026": "97.8",
+      "Data & ML August 2026": "97.3",
+      "Data & ML September 2026": "97.4",
+      "Databases July 2026": "97.1",
+      "Databases August 2026": "97.5",
+      "Databases September 2026": "96.4",
+      "Infrastructure & DevOps July 2026": "98.0",
+      "Infrastructure & DevOps August 2026": "96.8",
+      "Infrastructure & DevOps September 2026": "96.7",
+      "Game Development July 2026": "97.6",
+      "Game Development August 2026": "96.8",
+      "Game Development September 2026": "96.2",
+      "Security July 2026": "91.8",
+      "Security August 2026": "89.3",
+      "Security September 2026": "88.1",
+      "Embedded & Hardware July 2026": "91.4",
+      "Embedded & Hardware August 2026": "87.7",
+      "Embedded & Hardware September 2026": "87.1",
+      "Scientific Computing July 2026": "85.6",
+      "Scientific Computing August 2026": "90.0",
+      "Scientific Computing September 2026": "81.4"
+    },
+    "ask_b_hours": {
+      "Frontend & Web Q1 2026": "2,475",
+      "Frontend & Web Q2 2026": "2,893",
+      "Frontend & Web Q3 2026": "2,260",
+      "Mobile Apps Q1 2026": "879",
+      "Mobile Apps Q2 2026": "827",
+      "Mobile Apps Q3 2026": "540",
+      "Data & ML Q1 2026": "1,725",
+      "Data & ML Q2 2026": "1,719",
+      "Data & ML Q3 2026": "1,509",
+      "Databases Q1 2026": "1,643",
+      "Databases Q2 2026": "1,631",
+      "Databases Q3 2026": "1,280",
+      "Infrastructure & DevOps Q1 2026": "1,624",
+      "Infrastructure & DevOps Q2 2026": "1,616",
+      "Infrastructure & DevOps Q3 2026": "1,352",
+      "Game Development Q1 2026": "751",
+      "Game Development Q2 2026": "622",
+      "Game Development Q3 2026": "535",
+      "Security Q1 2026": "1,220",
+      "Security Q2 2026": "1,387",
+      "Security Q3 2026": "2,104",
+      "Embedded & Hardware Q1 2026": "898",
+      "Embedded & Hardware Q2 2026": "870",
+      "Embedded & Hardware Q3 2026": "1,531",
+      "Scientific Computing Q1 2026": "706",
+      "Scientific Computing Q2 2026": "683",
+      "Scientific Computing Q3 2026": "1,382"
+    },
+    "ask_c_pct": {
+      "Frontend & Web": "39.7",
+      "Mobile Apps": "42.1",
+      "Data & ML": "55.5",
+      "Databases": "58.4",
+      "Infrastructure & DevOps": "60.2",
+      "Game Development": "53.8",
+      "Security": "72.0",
+      "Embedded & Hardware": "76.0",
+      "Scientific Computing": "76.8"
+    },
+    "chart_envelope_hours_a_month": "3,467"
+  }
+}
