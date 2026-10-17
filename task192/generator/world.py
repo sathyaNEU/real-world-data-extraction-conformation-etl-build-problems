@@ -11,7 +11,7 @@ mobilisation that follows the surge has no audited reports in it.
 import datetime as dt
 
 SEED = 248                                 # the action layer, measured in the design note
-SEED_PACK = 410                             # a separate stream for reports, mess and the asks
+SEED_PACK = 599                             # a separate stream for reports, mess and the asks
 
 ASSOCIATION = "Observatorio de Acao Coletiva"
 REGISTER = "Vigilancia Nacional"
@@ -114,7 +114,7 @@ CLS_TRAINED = dt.date(2026, 3, 18)
 # the share of actions that were confrontational falls across the period: the spring and summer
 # disputes over evictions and road haulage were confrontational, the autumn mobilisation that
 # trebles the volume is overwhelmingly peaceful
-CONF_RATE_HI = 0.1635
+CONF_RATE_HI = 0.1480
 CONF_RATE_LO = CONF_RATE_HI / 4.2
 CONF_RAMP_FROM = dt.date(2026, 8, 9)
 CONF_RAMP_TO = dt.date(2026, 9, 18)
