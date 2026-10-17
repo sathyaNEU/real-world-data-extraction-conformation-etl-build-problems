@@ -241,6 +241,32 @@ def run(target, figures):
        "to the extract %s, by action date %s"
        % (_triple(lambda rc, dy: rc.date() <= EXTRACT),
           _triple(lambda rc, dy: P0 <= (dy or rc.date()) <= P1)))
+    def _med(key):
+        out = []
+        for route in ("IMP", "PAR", "LIN"):
+            seen, lags = set(), []
+            for r in recs:
+                if r[0] != route or r[1] in seen:
+                    continue
+                seen.add(r[1])
+                if r[5] not in loc_of:
+                    continue
+                if key(recv_of[(route, r[1])], r[6]):
+                    lags.append(lag_of[(route, r[1])])
+            lags.sort()
+            k = len(lags) // 2
+            out.append(round(lags[k] if len(lags) % 2 else (lags[k - 1] + lags[k]) / 2.0, 1))
+        return tuple(out)
+    _med_gold = tuple(f["routes"][r]["median_minutes"] for r in ("IMP", "PAR", "LIN"))
+    ok("a2.median_population_filed", "sobre estes que a mediana" in _conv,
+       "the dictionary names the reports the median is computed over")
+    ok("a2.median_population_golden",
+       _med(lambda rc, dy: P0 <= rc.date() <= P1) == _med_gold, str(_med_gold))
+    ok("a2.median_population_bites",
+       _med(lambda rc, dy: P0 <= dy <= P1) != _med_gold,
+       "received %s, by action date %s" % (str(_med_gold),
+                                           str(_med(lambda rc, dy: P0 <= dy <= P1))))
+
     for _h in (-1, 1):
         _sh = dt.timedelta(hours=_h)
         ok("a2.window_zone_invariant.%+dh" % _h,

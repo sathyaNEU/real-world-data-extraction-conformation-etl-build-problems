@@ -468,6 +468,32 @@ def run(target, g=None):
        _gold == tuple(g["a2"][route]["received"] for route, _ in W.ROUTES), str(_gold))
     ok("SF26.route_window_bites", _gold != _to_extract and _gold != _by_action,
        "golden %s, to the extract %s, by action date %s" % (_gold, _to_extract, _by_action))
+    # the median's own population, which the loop-3 judge found unnamed: over the received set PAR
+    # is 1327.0 and over the reports of actions dated in the period it is 1331.0, so the clause
+    # naming it is load-bearing on the median as well as on the counts
+    def _median_over(pick):
+        out = []
+        for route, _ in W.ROUTES:
+            seen, lags = set(), []
+            for r in b["reports"]:
+                if r["route"] != route or r["ident"] in seen:
+                    continue
+                seen.add(r["ident"])
+                if pick(r) and r["lag"] is not None:
+                    lags.append(r["lag"])
+            out.append(round(statistics.median(lags), 1) if lags else 0.0)
+        return tuple(out)
+    _med_gold = _median_over(lambda r: W.PERIOD_FROM <= r["recv"].date() <= W.PERIOD_TO)
+    _med_act = _median_over(lambda r: W.PERIOD_FROM <= r["day"] <= W.PERIOD_TO)
+    ok("SF26.median_population_filed", "sobre estes que a mediana" in conv,
+       "the convention names the reports the median is computed over")
+    ok("SF26.median_population_golden",
+       _med_gold == tuple(g["a2"][route]["median_minutes"] for route, _ in W.ROUTES), str(_med_gold))
+    ok("SF26.median_population_bites", _med_gold != _med_act,
+       "received %s, by action date %s" % (str(_med_gold), str(_med_act)))
+    ok("SF26.median_ignores_unplaced", all(e.get("lag") is None for e in b["exceptions"]),
+       "an unplaced report has no action, so it carries no lag and cannot enter the median")
+
     for _h in (-1, 1):
         _d = dt.timedelta(hours=_h)
         ok("SF26.route_window_zone_invariant.%+dh" % _h,
