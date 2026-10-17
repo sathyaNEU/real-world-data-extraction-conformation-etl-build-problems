@@ -1,34 +1,34 @@
 {
  "task": "task195",
  "owner": "oviya13ya",
- "status": "DRAWING",
+ "status": "BUILD",
  "domain": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-16",
- "stump": "A competent solver computes each screen's detection rate on the parallel run with its confidence interval, sees the two intervals overlap, reads the filed rule as unmet and holds the switch, where the same specimens establish the difference with an interval clear of zero.",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-17",
+ "stump": "A competent solver computes each screen's detection rate on the parallel run with its own 95 per cent interval, finds every compliant cutoff's interval overlapping the screen in service's, reads the protocol's interval test as unmet and holds the change, where the same specimens establish the increase at the 0.030 cutoff with an interval clear of zero.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-17, five lines answered in the design note",
+  "reader": "staged, not spawned: no agent tool in the build session; brief and isolated inputs at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader (reader_brief.md, prompt.txt, bundle/); answers go to reader_answers.md"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-10-17, no BLOCK, nearest 0.08 (task185 ledger row)",
+  "nearest": "task185 0.08"
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "staged, not spawned: no agent tool in the build session; brief and isolated inputs at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/judge (judge_brief.md with the judge's system prompt inlined verbatim, prompt.txt, submission_blocks.md, target/); verdict goes to verdict.md"
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4: the orchestrating session spawns the leak reader from /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/reader/reader_brief.md and the determinism judge from /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t195/judge/judge_brief.md, both general-purpose sonnet agents at medium effort in the background, and relays their findings; this session then fixes every finding in the generator in one pass, rebuilds and re-runs the free gates, re-judges once on FIX_NOW and re-reads only if a document or the prompt changed",
  "approved": null,
  "delivered": null,
  "portal": null,

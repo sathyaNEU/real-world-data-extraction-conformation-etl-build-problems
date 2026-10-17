@@ -1,0 +1,268 @@
+{
+ "baseline": {
+  "2026-03": {
+   "flagged": 35,
+   "per_thousand": 15.6,
+   "released": 2243
+  },
+  "2026-04": {
+   "flagged": 36,
+   "per_thousand": 15.3,
+   "released": 2353
+  },
+  "2026-05": {
+   "flagged": 32,
+   "per_thousand": 13.9,
+   "released": 2302
+  },
+  "2026-06": {
+   "flagged": 38,
+   "per_thousand": 14.9,
+   "released": 2549
+  },
+  "2026-07": {
+   "flagged": 35,
+   "per_thousand": 14.2,
+   "released": 2468
+  },
+  "2026-08": {
+   "flagged": 39,
+   "per_thousand": 15.1,
+   "released": 2582
+  },
+  "2026-09": {
+   "flagged": 42,
+   "per_thousand": 17.6,
+   "released": 2387
+  },
+  "2026-10": {
+   "flagged": 46,
+   "per_thousand": 19.6,
+   "released": 2348
+  },
+  "2026-11": {
+   "flagged": 48,
+   "per_thousand": 19.7,
+   "released": 2437
+  },
+  "2026-12": {
+   "flagged": 43,
+   "per_thousand": 18.8,
+   "released": 2288
+  },
+  "2027-01": {
+   "flagged": 47,
+   "per_thousand": 20.7,
+   "released": 2271
+  },
+  "2027-02": {
+   "flagged": 35,
+   "per_thousand": 16.1,
+   "released": 2173
+  }
+ },
+ "call": "0.030",
+ "chosen_cutoff": "0.030",
+ "chosen_detected": 308,
+ "chosen_false_rate_pct": 1.36,
+ "chosen_gain": 16,
+ "chosen_gain_pp": 4.07,
+ "comparison_specimens": 5839,
+ "confidence_level_pct": 95,
+ "confirmed_events": 393,
+ "cutoff_values": [
+  "0.050",
+  "0.030",
+  "0.020",
+  "0.015",
+  "0.010"
+ ],
+ "cutoffs": {
+  "0.010": {
+   "ceiling_ok": "No",
+   "detected": 326,
+   "established": "Yes",
+   "false_calls": 104,
+   "false_rate_pct": 1.91,
+   "gain": 34,
+   "gain_pp": 8.65,
+   "interval_pp": [
+    5.53,
+    11.77
+   ]
+  },
+  "0.015": {
+   "ceiling_ok": "Yes",
+   "detected": 319,
+   "established": "Yes",
+   "false_calls": 85,
+   "false_rate_pct": 1.56,
+   "gain": 27,
+   "gain_pp": 6.87,
+   "interval_pp": [
+    3.91,
+    9.83
+   ]
+  },
+  "0.020": {
+   "ceiling_ok": "Yes",
+   "detected": 310,
+   "established": "Yes",
+   "false_calls": 80,
+   "false_rate_pct": 1.47,
+   "gain": 18,
+   "gain_pp": 4.58,
+   "interval_pp": [
+    1.89,
+    7.27
+   ]
+  },
+  "0.030": {
+   "ceiling_ok": "Yes",
+   "detected": 308,
+   "established": "Yes",
+   "false_calls": 74,
+   "false_rate_pct": 1.36,
+   "gain": 16,
+   "gain_pp": 4.07,
+   "interval_pp": [
+    1.37,
+    6.77
+   ]
+  },
+  "0.050": {
+   "ceiling_ok": "Yes",
+   "detected": 294,
+   "established": "No",
+   "false_calls": 61,
+   "false_rate_pct": 1.12,
+   "gain": 2,
+   "gain_pp": 0.51,
+   "interval_pp": [
+    -2.03,
+    3.05
+   ]
+  }
+ },
+ "dilution": {
+  "L1": {
+   "median_recovery": 0.878,
+   "prepared": 0.0041,
+   "replicates": 9,
+   "within_fifth": 6
+  },
+  "L2": {
+   "median_recovery": 0.961,
+   "prepared": 0.0077,
+   "replicates": 9,
+   "within_fifth": 7
+  },
+  "L3": {
+   "median_recovery": 0.951,
+   "prepared": 0.0163,
+   "replicates": 9,
+   "within_fifth": 8
+  },
+  "L4": {
+   "median_recovery": 0.965,
+   "prepared": 0.0314,
+   "replicates": 9,
+   "within_fifth": 9
+  },
+  "L5": {
+   "median_recovery": 1.008,
+   "prepared": 0.0629,
+   "replicates": 9,
+   "within_fifth": 8
+  },
+  "L6": {
+   "median_recovery": 1.015,
+   "prepared": 0.1272,
+   "replicates": 9,
+   "within_fifth": 8
+  }
+ },
+ "panel_clean": 5446,
+ "panel_weeks": {
+  "BA-2027-W13": {
+   "difference": 4,
+   "results_issued": 581,
+   "specimens": 577,
+   "week_ending": "2027-04-02"
+  },
+  "BA-2027-W14": {
+   "difference": 6,
+   "results_issued": 594,
+   "specimens": 588,
+   "week_ending": "2027-04-09"
+  },
+  "BA-2027-W15": {
+   "difference": 5,
+   "results_issued": 590,
+   "specimens": 585,
+   "week_ending": "2027-04-16"
+  },
+  "BA-2027-W16": {
+   "difference": 3,
+   "results_issued": 617,
+   "specimens": 614,
+   "week_ending": "2027-04-23"
+  },
+  "BA-2027-W17": {
+   "difference": 7,
+   "results_issued": 557,
+   "specimens": 550,
+   "week_ending": "2027-04-30"
+  },
+  "BA-2027-W18": {
+   "difference": 4,
+   "results_issued": 535,
+   "specimens": 531,
+   "week_ending": "2027-05-07"
+  },
+  "BA-2027-W19": {
+   "difference": 6,
+   "results_issued": 529,
+   "specimens": 523,
+   "week_ending": "2027-05-14"
+  },
+  "BA-2027-W20": {
+   "difference": 5,
+   "results_issued": 519,
+   "specimens": 514,
+   "week_ending": "2027-05-21"
+  },
+  "BA-2027-W21": {
+   "difference": 5,
+   "results_issued": 522,
+   "specimens": 517,
+   "week_ending": "2027-05-28"
+  }
+ },
+ "protocol_clauses": [
+  "3.1",
+  "3.2",
+  "3.3",
+  "3.4",
+  "3.5",
+  "4.1",
+  "4.2",
+  "5.1",
+  "5.2"
+ ],
+ "rungs": {
+  "rung0_sign": "0.050",
+  "rung1_overlap": "hold",
+  "rung2_unpaired": "0.015",
+  "rung3_paired": "0.030",
+  "service_interval": [
+   69.75928201371158,
+   78.37076986310915
+  ]
+ },
+ "runner_up_cutoff": "0.020",
+ "runner_up_gain_pp": 4.58,
+ "service_detected": 292,
+ "service_false_calls": 91,
+ "service_false_rate_pct": 1.67
+}

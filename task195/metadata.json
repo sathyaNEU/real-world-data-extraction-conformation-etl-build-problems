@@ -1,0 +1,32 @@
+{
+ "answer": "Replace the screen in service at the 0.030 cutoff from 1 July 2027",
+ "as_of": "2027-06-21",
+ "distractor_files": [
+  "target/assay_unit_costs_2027.csv",
+  "target/extraction_platform_validation_2025.pdf",
+  "target/lims_run_log_2027-03_2027-05.csv",
+  "target/plate_layout_map_2027q2.csv"
+ ],
+ "domain": "Biomedical and clinical research (genomics, high-dimensional association)",
+ "field_terms": [
+  "panel",
+  "plate",
+  "well",
+  "read",
+  "mixture"
+ ],
+ "licence": "constructed, no third-party data",
+ "objective": "Anomaly Detection & Diagnostics",
+ "provenance": "Every file is constructed for this task from a simulated laboratory. No real specimen, person or organisation is represented; the organisations, projects and people are invented.",
+ "stated_inputs": [
+  "2027-07-01",
+  "2027-06-30",
+  "2027-02",
+  "0.030",
+  "0.020",
+  "0.015",
+  "0.010",
+  "0.050"
+ ],
+ "task": "task195"
+}
