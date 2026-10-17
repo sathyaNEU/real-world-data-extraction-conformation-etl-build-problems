@@ -433,7 +433,7 @@ def write_effluent(target):
             elif seq % 13 == 8:
                 note = "suspended solids filter blinded, result from duplicate"
             rows.append([day.isoformat(), pt, "grab" if grab else "composite, 24 hour",
-                         "Ardbeggan Analytical", "AA26-%05d" % (41200 + 37 * seq),
+                         "Nore Valley Laboratories", "AA26-%05d" % (41200 + 37 * seq),
                          val(bod, LOD["bod"], "%.1f"), val(cod, LOD["cod"], "%.0f"),
                          val(ss, LOD["ss"], "%.1f"), val(amm, LOD["amm"], "%.2f"),
                          "%.1f" % rng.normal(7.3, 0.2), note])
@@ -482,7 +482,7 @@ def write_manifest(target, counts):
          "complaints register, environmental engineer", "2026-10-14", OWN,
          "noise complaints received in 2026, one row a contact"],
         [FILES["effluent"], "csv", counts["effluent"], "01/07/2026 to 15/10/2026",
-         "Ardbeggan Analytical reports, discharge monitoring", "2026-10-14",
+         "Nore Valley Laboratories reports, discharge monitoring", "2026-10-14",
          "Tulcarra Foods internal; laboratory reports used under the testing contract",
          "final effluent and balance tank results for the licence"],
     ]

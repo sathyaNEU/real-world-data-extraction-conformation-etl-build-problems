@@ -136,7 +136,7 @@ MIX = {
 UNITS = [
     # code, name, hospital, mix, service, psi, sep, plan, ylast, role, status
     ("41210", "General Medicine", "H1", "gen_med", "acute", 1.034, 2300, 2077, 1.188, "largest", "eligible"),
-    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.112, 2600, 3560, 1.043, "runner_up", "eligible"),
+    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.098, 2600, 3560, 1.043, "runner_up", "eligible"),
     ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.233, 1900, 2305, 1.090, "answer", "eligible"),
     ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.091, 1050, 1257, 1.272, "hot2", "eligible"),
     ("41310", "General Medicine", "H2", "gen_med", "acute", 1.158, 1350, 1364, 1.088, "mid", "eligible"),
@@ -151,13 +151,13 @@ UNITS = [
     # were decided on the quarter closed at the time, so the register holds units that were standing badly
     # over their own record beside units that were having one bad quarter on an ordinary record.
     ("41250", "Colorectal Surgery", "H1", "colorectal", "acute", 1.060, 2200, 2240, None, "embed", "embedded"),
-    ("41260", "Aged Care", "H1", "aged", "acute", 1.090, 1670, 1700, None, "embed", "embedded"),
+    ("41260", "Aged Care", "H2", "aged", "acute", 1.090, 1670, 1700, None, "embed", "embedded"),
     ("41270", "Neurosciences", "H1", "neuro", "acute", 1.070, 2200, 2250, None, "embed", "embedded"),
-    ("41340", "Orthopaedics", "H2", "ortho", "acute", 1.870, 1250, 1290, None, "embed", "embedded"),
+    ("41340", "Orthopaedics", "H3", "ortho", "acute", 1.870, 1250, 1290, None, "embed", "embedded"),
     ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.720, 1330, 1360, None, "embed", "embedded"),
-    ("41360", "Aged Care", "H2", "aged", "acute", 1.930, 1115, 1140, None, "embed", "embedded"),
+    ("41360", "Aged Care", "H1", "aged", "acute", 1.930, 1115, 1140, None, "embed", "embedded"),
     ("41440", "General Surgery", "H3", "gen_surg", "acute", 1.000, 3020, 3080, None, "embed", "embedded"),
-    ("41450", "Aged Care", "H3", "aged", "acute", 1.980, 1082, 1110, None, "embed", "embedded"),
+    ("41450", "Geriatric Evaluation and Management", "H1", "aged", "acute", 1.980, 1082, 1110, None, "embed", "embedded"),
     # the unit the team is with now, for the quarter in progress: no closed data for the placement
     ("41460", "Rehabilitation and Aged Care", "H3", "aged", "acute", 1.221, 470, 500, None, "current", "embedded"),
     # non-acute units: outside the indicator's scope (specification 4.0 clause 2.3)

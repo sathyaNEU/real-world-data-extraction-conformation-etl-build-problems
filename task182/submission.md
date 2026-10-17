@@ -4,17 +4,17 @@
 ## 1. Final Recommendation
 
 **The October acoustic treatment slot should cover NSL04, NSL11, NSL07, NSL02 and NSL13.**
-Their specific sound levels are 53.0, 49.9, 47.8, 47.3, 46.0 dB LAeq, and NSL06 is the first dwelling off the list at 44.7 dB, 1.2 dB behind the fifth.
+Their specific sound levels are 53.0, 49.9, 47.8, 47.3, 46.0 dB LAeq, and NSL06 is the first dwelling off the list at 44.7 dB, 1.3 dB behind the fifth.
 Not the five highest measured levels, which put NSL06 in and NSL13 out, because the measured level at a dwelling still holds its surroundings.
 Not a background taken from the position's own record, which puts NSL03 and NSL12 in: the plant runs through every assessment minute, so that background contains it.
 Not the complaints register, which is a record of what neighbours heard and not a measurement.
 
 ## 2. Critical Components
 
-1. The measured sound level at NSL04 is **53.3 dB LAeq** over 6,130 valid assessment minutes
+1. The measured sound level at NSL04 is **53.2 dB LAeq** over 6,130 valid assessment minutes
 2. The residual sound at NSL04, from the 240 minutes inside the plant's weekly process stops, is **40.8 dB LAeq**
 3. The specific sound level at NSL04 is **53.0 dB LAeq**
-4. The fifth dwelling on the list stands **1.2 dB** above the sixth, NSL06
+4. The fifth dwelling on the list stands **1.3 dB** above the sixth, NSL06
 
 ## 3. Step-by-Step Solution
 
@@ -32,7 +32,7 @@ Not the complaints register, which is a record of what neighbours heard and not 
 ### specific_sound_levels.csv
 
 1. One row for each of the 14 monitoring positions, in schedule order:
-   - NSL01 (DW-114): 44.0 dB LAeq, 6130 valid minutes, 1070 excluded, highest band 100 Hz, tone no
+   - NSL01 (DW-114): 43.9 dB LAeq, 6130 valid minutes, 1070 excluded, highest band 100 Hz, tone no
    - NSL02 (DW-103): 47.3 dB LAeq, 6130 valid minutes, 1070 excluded, highest band 400 Hz, tone yes
    - NSL03 (DW-121): 43.6 dB LAeq, 5950 valid minutes, 1250 excluded, highest band 100 Hz, tone no
    - NSL04 (DW-101): 53.0 dB LAeq, 6130 valid minutes, 1070 excluded, highest band 400 Hz, tone yes
@@ -40,7 +40,7 @@ Not the complaints register, which is a record of what neighbours heard and not 
    - NSL06 (DW-107): 44.7 dB LAeq, 5860 valid minutes, 1340 excluded, highest band 100 Hz, tone no
    - NSL07 (DW-110): 47.8 dB LAeq, 5860 valid minutes, 1340 excluded, highest band 400 Hz, tone yes
    - NSL08 (DW-126): 41.4 dB LAeq, 5860 valid minutes, 1340 excluded, no band rows, so no highest band and no tone
-   - NSL09 (DW-112): 44.7 dB LAeq, 5463 valid minutes, 1737 excluded, highest band 100 Hz, tone yes
+   - NSL09 (DW-112): 44.6 dB LAeq, 5463 valid minutes, 1737 excluded, highest band 100 Hz, tone yes
    - NSL10 (DW-134): 37.4 dB LAeq, 5480 valid minutes, 1720 excluded, no band rows, so no highest band and no tone
    - NSL11 (DW-104): 49.9 dB LAeq, 5550 valid minutes, 1650 excluded, highest band 400 Hz, tone yes
    - NSL12 (DW-118): 43.3 dB LAeq, 5520 valid minutes, 1680 excluded, highest band 100 Hz, tone no
@@ -50,7 +50,7 @@ Not the complaints register, which is a record of what neighbours heard and not 
 ### mitigation_shortlist.pdf
 
 1. The five dwellings the slot covers: NSL04 (DW-101) at 53.0 dB LAeq, NSL11 (DW-104) at 49.9 dB LAeq, NSL07 (DW-110) at 47.8 dB LAeq, NSL02 (DW-103) at 47.3 dB LAeq, NSL13 (DW-105) at 46.0 dB LAeq
-2. The first dwelling off the list: NSL06 (DW-107) at 44.7 dB LAeq, 1.2 dB below the fifth
+2. The first dwelling off the list: NSL06 (DW-107) at 44.7 dB LAeq, 1.3 dB below the fifth
 3. The plant through the six survey weeks:
    - Week beginning 31 August: biogas 35,389 m3, blower air 689 thousand Nm3, 12 centrifuge runs
    - Week beginning 7 September: biogas 34,824 m3, blower air 678 thousand Nm3, 13 centrifuge runs

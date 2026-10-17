@@ -5,12 +5,16 @@ The rules this file encodes are the ones the shipped noise management plan state
   2.1  the positions are those in the monitoring position schedule
   3.1  specific sound level = measured sound level less residual sound, combined in energy
   3.2  the assessment period is 07:00 to 19:00 on weekdays, local time
-  4.1  a deployment whose two field checks average more than 0.3 dB from the calibrator's 94.0 dB is
-       corrected by subtracting that difference
-  4.2  a minute whose ten-minute met record shows rain above 0.5 mm an hour or wind above 5 m a second
-       is not valid
+  4.1  a deployment's deviation is the mean of its two field checks less the calibrator's 94.0 dB, and
+       where that deviation is more than 0.3 dB from zero it is taken off every level the deployment
+       recorded
+  4.2  a minute is not valid where the met record for its ten minutes counted rain on the gauge or shows
+       wind above 5 m a second, or where the meter recorded no measurement for that minute
   4.3  a tone is prominent where a band exceeds the mean of its two neighbours by 5 dB or more, on the
        unweighted band levels over the assessment period
+  5.1  a week's process figure is the counter reading at 00:00 on its Monday taken from the reading at
+       00:00 on the Monday after, with the counter's roll-over added back
+  5.2  a centrifuge run is one start of a centrifuge in the equipment log
   7.1  the slot takes the dwellings in order of specific sound level, highest first
 """
 import csv
@@ -21,8 +25,9 @@ import os
 
 CAL_REF, CAL_TOL = 94.0, 0.3
 DAY_START, DAY_END = 7, 19
-RAIN_LIMIT, WIND_LIMIT = 0.5, 5.0
+WIND_LIMIT = 5.0
 TIP_MM = 0.2
+NO_DATA = -120.0        # the survey notes: a minute with no measurement carries -120.2 in every column
 OFFSET = 1          # the survey notes: the meters stamp UTC, local time was UTC+1 throughout
 SWAP = dt.date(2026, 9, 20)      # the survey notes: the replacement anemometer reports km an hour
 CAP = 5
@@ -56,7 +61,9 @@ def run(target, figures_path):
 
     # ---- the paperwork
     deps = rows(os.path.join(target, "meter_deployments_2026.csv"))
-    cal = {r["meter_serial"]: r for r in rows(os.path.join(target, "calibration_records_2026.csv"))}
+    cal = {r["instrument_serial"]: r for r in rows(os.path.join(target, "calibration_records_2026.csv"))}
+    ref = {float(r["calibrator_level_db"]) for r in cal.values() if r["calibrator_level_db"]}
+    ok(ref == {CAL_REF}, "the certificates give the calibrator's reference level as %s" % sorted(ref))
     adj = {}
     for d in deps:
         mean_dev = (float(d["cal_check_before_db"]) + float(d["cal_check_after_db"])) / 2.0 - CAL_REF
@@ -87,10 +94,9 @@ def run(target, figures_path):
         inc.append((t, max(step, 0) * TIP_MM))
         prev_tips, prev_day = tips, t.date()
         stamps10.append(t)
-    hourly = {}
-    for i, (t, mm) in enumerate(inc):
-        hourly[t] = sum(x for _, x in inc[max(0, i - 5):i + 1])
+    rained = {t: mm > 0.0 for t, mm in inc}
     ok(len(wind) > 5000, "the met record covers the survey (%d records)" % len(wind))
+    ok(sum(1 for v in rained.values() if v) > 40, "the gauge counted rain in the survey")
 
     def met_key(stamp_utc):
         return stamp_utc - dt.timedelta(minutes=stamp_utc.minute % 10, seconds=0)
@@ -99,7 +105,7 @@ def run(target, figures_path):
         k = met_key(stamp_utc)
         if k not in wind:
             return True
-        return hourly.get(k, 0.0) <= RAIN_LIMIT and wind[k] <= WIND_LIMIT
+        return (not rained.get(k, False)) and wind[k] <= WIND_LIMIT
 
     # ---- the plant's own log: every interval in which all three sources are down
     ev = rows(os.path.join(target, "plant_equipment_events_2026.csv"))
@@ -145,11 +151,21 @@ def run(target, figures_path):
                 break
         if code is None:
             continue
-        laeq = float(cols["laeq_db"][i]) - adj[ref]
+        raw = float(cols["laeq_db"][i])
+        nodata = raw <= NO_DATA
+        if nodata:
+            ok(float(cols["la90_db"][i]) <= NO_DATA and float(cols["lamax_db"][i]) <= NO_DATA
+               and float(cols["lamin_db"][i]) <= NO_DATA,
+               "a minute with no measurement carries no statistics (%s %s)" % (serial, stamp))
+        else:
+            ok(float(cols["lamax_db"][i]) >= raw >= float(cols["la90_db"][i])
+               >= float(cols["lamin_db"][i]),
+               "the minute's levels order as an instrument reports them (%s %s)" % (serial, stamp))
+        laeq = raw - adj[ref]
         la90 = float(cols["la90_db"][i]) - adj[ref]
         d = acc.setdefault(code, {"on": [], "off": [], "excl": 0, "la90": []})
         day = local.weekday() <= 4 and DAY_START <= local.hour < DAY_END
-        v = valid(stamp)
+        v = valid(stamp) and not nodata
         if in_down(local):
             if v:
                 d["off"].append(laeq)

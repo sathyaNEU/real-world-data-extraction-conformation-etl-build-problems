@@ -2,6 +2,7 @@
 (pandas against the generator's csv module), and recomputes every figure the write-up states."""
 import datetime as dt
 import json
+import math
 import os
 import re
 
@@ -103,64 +104,76 @@ def run(target, figures_path):
     share = removed / carried
     ok(n_closed == fig["closed_placements"], "seven closed placements inside the specification period")
 
-    # the register read ten ways: the same seven placements priced as a careful analyst could price them
+    # the register read every way it pools, and the shapes the fall could take scored against it
     allq = sorted(grp.quarter.unique())
+    treated = set()
+    for _, p2 in closed.iterrows():
+        if p2.assessment_quarter not in allq:
+            continue
+        j = allq.index(p2.assessment_quarter)
+        treated.update((p2.unit_code, allq[m]) for m in range(j, min(j + 3, len(allq))))
     rec = []
     for _, p in closed.iterrows():
         u, q = p.unit_code, p.assessment_quarter
         own = grp[grp.unit_code == u]
         if q not in set(own.quarter):
             continue
-        i = allq.index(q)
-        prev, dec = allq[i - 1], allq[i - 2]
+        prev = allq[allq.index(q) - 1]
         pre = own[own.quarter < q]
         row = own[own.quarter == q].iloc[0]
-        rp = own[own.quarter == prev].iloc[0]
-        rd = own[own.quarter == dec].iloc[0]
         oth = grp[(grp.unit_code != u) & (grp.quarter.isin([prev, q]))]
+        oth = oth[[(r.unit_code, r.quarter) not in treated for r in oth.itertuples()]]
         wide = oth.pivot_table(index="unit_code", columns="quarter",
                                values=["observed", "expected"], aggfunc="sum").dropna()
-        mv = (wide[("observed", prev)] / wide[("expected", prev)]
-              - wide[("observed", q)] / wide[("expected", q)])
         pm = (wide[("observed", prev)].sum() / wide[("expected", prev)].sum()
               - wide[("observed", q)].sum() / wide[("expected", q)].sum())
+        before = pre.observed.sum() / pre.expected.sum()
         rec.append(dict(expected=row.expected, realised=row.observed - row.expected,
-                        carried=(pre.observed.sum() / pre.expected.sum() - 1) * row.expected,
-                        from_decision=(rd.observed / rd.expected - 1) * row.expected,
-                        from_previous=(rp.observed / rp.expected - 1) * row.expected,
-                        concurrent=float(mv.mean()) * row.expected,
+                        carried=(before - 1) * row.expected, counterfactual=before * row.expected,
                         concurrent_pooled=float(pm) * row.expected))
     nr = len(rec)
     P = [r["carried"] for r in rec]
     fl = [r["carried"] - r["realised"] for r in rec]
-    sh = [f / p for f, p in zip(fl, P)]
-    E = [r["expected"] for r in rec]
+    V = [max(1.0, r["counterfactual"]) for r in rec]
+    defined = [f / p for f, p in zip(fl, P) if abs(p) >= 5.0]
     pbar, fbar = sum(P) / nr, sum(fl) / nr
     pvar = sum((p - pbar) ** 2 for p in P) / nr
     readings = {
-        "mean of the placements' shares": sum(sh) / nr,
-        "median of the shares": sorted(sh)[nr // 2],
-        "expected-weighted mean of the shares": sum(e * s for e, s in zip(E, sh)) / sum(E),
         "pooled sums": sum(fl) / sum(P),
         "least squares through the origin":
             sum(p * f for p, f in zip(P, fl)) / sum(p * p for p in P),
         "least squares with an intercept":
             sum((p - pbar) * (f - fbar) for p, f in zip(P, fl)) / (pvar * nr),
-        "measured from the quarter closed at the decision":
-            sum(r["from_decision"] - r["realised"] for r in rec) / sum(r["from_decision"] for r in rec),
-        "measured from the quarter before the placement":
-            sum(r["from_previous"] - r["realised"] for r in rec) / sum(r["from_previous"] for r in rec),
+        "the variance-weighted fit":
+            sum(p * f / v for p, f, v in zip(P, fl, V)) / sum(p * p / v for p, v in zip(P, V)),
+        "the median of the shares that are defined": sorted(defined)[len(defined) // 2],
         "against what the other units did over the same quarters":
-            sum(r["from_previous"] - r["realised"] - r["concurrent"] for r in rec) / sum(P),
-        "against the other units pooled over the same quarters":
-            sum(r["from_previous"] - r["realised"] - r["concurrent_pooled"] for r in rec) / sum(P),
+            sum(c - r - cp for c, r, cp in
+                zip(P, [x["realised"] for x in rec], [x["concurrent_pooled"] for x in rec])) / sum(P),
     }
+    models = {}
+    for label, x in (("a share of the unit's standing excess", P),
+                     ("a constant drop in the standardised ratio", [r["expected"] for r in rec]),
+                     ("a constant percent of the counterfactual", [r["counterfactual"] for r in rec]),
+                     ("a constant number of complications", [1.0] * nr)):
+        den = sum(xi * xi / v for xi, v in zip(x, V))
+        c = sum(xi * f / v for xi, f, v in zip(x, fl, V)) / den
+        models[label] = sum((f - c * xi) ** 2 / v for xi, f, v in zip(x, fl, V))
+    bestchi = models["a share of the unit's standing excess"]
+    for label, want in fig["effect_models"].items():
+        ok(abs(models[label] - want["chi_square"]) < 5e-3,
+           "the %s leaves chi-square %.3f (%.3f)" % (label, models[label], want["chi_square"]))
+        lr = math.exp(min(600.0, (models[label] - bestchi) / 2.0))
+        ok(abs(math.log10(max(lr, 1e-12)) - math.log10(max(want["likelihood_ratio"], 1e-12))) < 1e-3,
+           "the likelihood ratio against the %s is %.4g (%.4g)" % (label, lr, want["likelihood_ratio"]))
+    ok(min(models[k] for k in models if k != "a share of the unit's standing excess") - bestchi > 12.0,
+       "every competing shape is at least 12 chi-square from the register's own fit")
     ok(abs(readings["pooled sums"] - share) < 1e-9, "the golden share is the register's pooled sums")
     for label, want in fig["register_readings"].items():
         ok(abs(readings[label] - want) < 5e-5,
            "the register read as %s is %.5f (%.5f)" % (label, readings[label], want))
-    ok(max(readings.values()) / min(readings.values()) - 1 < 0.035,
-       "the register's readings sit within 3.5 per cent (%.2f%%)"
+    ok(max(readings.values()) / min(readings.values()) - 1 < 0.015,
+       "the register's readings sit within 1.5 per cent (%.2f%%)"
        % ((max(readings.values()) / min(readings.values()) - 1) * 100))
 
     tot = grp.groupby("unit_code").agg(observed=("observed", "sum"), expected=("expected", "sum"),

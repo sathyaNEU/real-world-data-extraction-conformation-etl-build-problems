@@ -213,23 +213,24 @@ SLOW = {
     "NSL13": 1.5, "NSL14": 0.4,
 }
 
-# Micro-adjustments to the designed specific levels, so every printed level sits mid-bin and no two
-# positions share a printed value. Fixed by the search in scratch; they move no slate.
+# Micro-adjustments to the designed specific levels, so no two positions print the same level and no
+# printed level sits on a rounding edge or on the printed value itself. Fixed by the per-position scan in
+# scratch; they move no slate.
 SHIFT = {
-    "NSL01": -0.04770,
-    "NSL02": -0.11840,
-    "NSL03": -0.41830,
-    "NSL04": -0.03330,
-    "NSL05": -0.01630,
-    "NSL06": -0.78610,
-    "NSL07": -0.02080,
-    "NSL08": -0.75810,
-    "NSL09": -0.15480,
-    "NSL10": -0.82560,
-    "NSL11": -0.03160,
-    "NSL12": -0.31430,
-    "NSL13": +0.03680,
-    "NSL14": -0.08700,
+    "NSL01": -0.08070,
+    "NSL02": -0.14789,
+    "NSL03": -0.34837,
+    "NSL04": -0.07830,
+    "NSL05": +0.00652,
+    "NSL06": -0.81239,
+    "NSL07": -0.01810,
+    "NSL08": -0.70074,
+    "NSL09": -0.23995,
+    "NSL10": -0.74449,
+    "NSL11": -0.07560,
+    "NSL12": -0.25115,
+    "NSL13": +0.04794,
+    "NSL14": -0.01856,
 }
 
 

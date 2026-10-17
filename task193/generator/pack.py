@@ -512,12 +512,19 @@ QUARTER_SPAN = [("2025 Q4", 731, 822), ("2026 Q1", 823, 912),
                 ("2026 Q2", 913, 1003), ("2026 Q3", 1004, 1095)]
 
 
-# adverse reactions reported per dispensing of a product, and the share of those judged serious.
-# A newly marketed product under additional monitoring is reported on far more than an old one.
-REPORT_RATE = {"P01": 0.0042, "P02": 0.0031, "P03": 0.0171, "P04": 0.0196, "P05": 0.0064,
-               "P06": 0.0027, "P07": 0.0038, "P08": 0.0083, "P09": 0.0049}
-SERIOUS_SHARE = {"P01": 0.21, "P02": 0.17, "P03": 0.38, "P04": 0.46, "P05": 0.33,
-                 "P06": 0.24, "P07": 0.19, "P08": 0.41, "P09": 0.28}
+# Adverse reactions reported per dispensing of a product, and the share of those judged serious.
+# Reporting follows how visible the reaction is to the patient and the prescriber, which is a
+# property of the reaction rather than of the screen: the four products the sequence screen
+# separates (P03 and P04 entering the market, P05 and P08 leaving it) sit inside the range the
+# other five span on every reading of this file, so no ranking of it recovers the screen's answer.
+# checks.py asserts that, and the file carries no marker dimension at all.
+REPORT_RATE = {"P01": 0.01297, "P02": 0.00884, "P03": 0.00980, "P04": 0.00820,
+               "P05": 0.00740, "P06": 0.02000, "P07": 0.00620, "P08": 0.00880,
+               "P09": 0.01090}
+SERIOUS_SHARE = {"P01": 0.38, "P02": 0.21, "P03": 0.27, "P04": 0.31, "P05": 0.24,
+                 "P06": 0.35, "P07": 0.19, "P08": 0.29, "P09": 0.33}
+# the four products the screen's two methods disagree about
+SCREEN_DECISIVE = ("P03", "P04", "P05", "P08")
 
 
 def write_distractors(tgt, kept=None):

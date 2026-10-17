@@ -94,11 +94,11 @@ def run(target, g, state):
 
     # ---------- the ladder ----------
     ok(answer["unit"] == "41230", "the answer is 41230, %s" % answer["unit"])
-    ok(round(answer["avoided"]) == 18, "the answer avoids 18, got %.3f" % answer["avoided"])
-    ok(runner["unit"] == "41220" and round(runner["avoided"]) == 12, "the closest unit is 41220 at 12")
+    ok(round(answer["avoided"]) == 25, "the answer avoids 25, got %.3f" % answer["avoided"])
+    ok(runner["unit"] == "41220" and round(runner["avoided"]) == 15, "the closest unit is 41220 at 15")
     ok(g["margin"] >= 1.2, "final margin %.3fx is at least 1.2x" % g["margin"])
-    ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 14,
-       "rung 0 files 41210 at 14 avoided")
+    ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 22,
+       "rung 0 files 41210 at 22 avoided")
     ok(g["rung1"]["unit"] == "41330", "rung 1 files 41330")
     ok(g["rung2"]["unit"] == "41220", "rung 2 files 41220")
     for label, key in (("rung 0", lambda d: share * d["last_excess"]), ("rung 1", lambda d: d["ratio"]),
@@ -152,7 +152,7 @@ def run(target, g, state):
                                        for q in G.quarters(panel, d["unit"])), "41330"),
         ("the trailing four-quarter rate", lambda d: window_ratio(d["unit"], 4), "41330"),
         ("the trailing eight-quarter rate", lambda d: window_ratio(d["unit"], 8), "41330"),
-        ("a reliability-adjusted latest quarter", lambda d: sh_last[d["unit"]], "41210"),
+        ("a reliability-adjusted latest quarter", lambda d: sh_last[d["unit"]], "41410"),
         ("a reliability-adjusted standing", lambda d: sh_all[d["unit"]], "41330"),
         ("the complications the quarter carries at the standing", lambda d: d["expected_next"], "41220"),
         ("the register's share on the latest quarter's excess",
@@ -190,9 +190,9 @@ def run(target, g, state):
 
     # ---------- R3a the analyst test, on the clean truth ----------
     easy = max(units, key=lambda d: d["last_excess"])
-    ok(easy["unit"] == "41210" and round(share * easy["last_excess"]) == 14,
-       "R3a the easy route files 41210 at 14 complications avoided")
-    ok(round(by["41210"]["avoided"]) == 2, "R3a the easy route's unit would avoid 2")
+    ok(easy["unit"] == "41210" and round(share * easy["last_excess"]) == 22,
+       "R3a the easy route files 41210 at 22 complications avoided")
+    ok(round(by["41210"]["avoided"]) == 4, "R3a the easy route's unit would avoid 4")
     # R3b the decisive step alone: the counterfactual, with everything else held
     switched = max(units, key=lambda d: share * d["excess"])
     ok(switched["unit"] == answer["unit"], "R3b changing only the counterfactual files the golden")
@@ -205,17 +205,35 @@ def run(target, g, state):
         sum(r["expected"] for r in g["record"])
     alt2 = max(units, key=lambda d: per_sep * d["expected_plan"])
     ok(alt2["unit"] != answer["unit"], "R3b reading it per expected complication files %s" % alt2["unit"])
-    # the record separates the three forms it could be read in
-    miss_e, miss_r, miss_v = 0.0, 0.0, 0.0
-    for r in g["record"]:
-        fall = r["carried"] - r["realised"]
-        miss_e = max(miss_e, abs(share * r["carried"] / fall - 1))
-        miss_r = max(miss_r, abs(naive_share_of_rate * r["pre_ratio"] * r["expected"] / fall - 1))
-        miss_v = max(miss_v, abs(per_sep * r["expected"] / fall - 1))
-    ok(miss_e < 0.25, "the share-of-standing-excess form fits every placement within %.0f per cent"
-       % (100 * miss_e))
-    ok(miss_r > 0.6 and miss_v > 0.6, "the rival forms miss by %.0f and %.0f per cent"
-       % (100 * miss_r, 100 * miss_v))
+    # the record separates the shapes the fall could take, on its own sampling error
+    _, models = G.effect_models(b)
+    mine = "a share of the unit's standing excess"
+    ok(abs(models[mine]["parameter"] / share - 1) < 0.01,
+       "the register's variance-weighted fit is the pooled share to within 1 per cent "
+       "(%.5f against %.5f)" % (models[mine]["parameter"], share))
+    ok(2.0 <= models[mine]["chi_square"] <= 13.0,
+       "the shape the register carries leaves an ordinary chi-square (%.2f on %d degrees of freedom)"
+       % (models[mine]["chi_square"], models[mine]["df"]))
+    for label, m in models.items():
+        if label == mine:
+            continue
+        ok(m["chi_square"] - models[mine]["chi_square"] > 12.0,
+           "%s is %.1f chi-square worse than the register's own fit"
+           % (label, m["chi_square"] - models[mine]["chi_square"]))
+        ok(m["likelihood_ratio"] > 200.0,
+           "the register prefers its own shape over %s by %.4g to 1" % (label, m["likelihood_ratio"]))
+    spread = [r["before"] for r in G.placement_record(b)]
+    ok(max(spread) - min(spread) > 0.7,
+       "the closed placements' standing spreads %.2f, which is what separates the shapes"
+       % (max(spread) - min(spread)))
+    ok(min(abs(r["carried"]) for r in G.placement_record(b)) < 5.0,
+       "one closed placement carries no measurable standing excess, so a per-placement share cannot be "
+       "formed for it")
+    resid = [(r["carried"] - r["realised"] - share * r["carried"]) / max(1.0, r["counterfactual"]) ** 0.5
+             for r in G.placement_record(b)]
+    ok(max(abs(x) for x in resid) > 1.0,
+       "the register scatters like counts of complications (worst standardised residual %.2f)"
+       % max(abs(x) for x in resid))
     # R3c no plant
     pairs = defaultdict(int)
     for (u, q), p in panel.items():
@@ -277,8 +295,8 @@ def run(target, g, state):
     # the twelve avoided counts are the figures the register's reading touches, and every reading a
     # careful analyst could take of the seven closed placements lands on the same twelve integers
     rec_rows, readings = G.share_readings(b)
-    ok(len(rec_rows) == 7, "the register prices seven closed placements (%d)" % len(rec_rows))
-    ok(len(readings) == 10, "ten readings of the register (%d)" % len(readings))
+    ok(len(rec_rows) == 8, "the register prices eight closed placements (%d)" % len(rec_rows))
+    ok(len(readings) == 6, "six readings of the register (%d)" % len(readings))
     ok(abs(readings["pooled sums"] - share) < 1e-12,
        "the golden share is the register's pooled sums (%.6f against %.6f)"
        % (readings["pooled sums"], share))
@@ -290,7 +308,7 @@ def run(target, g, state):
                % (label, d["unit"], round(d["avoided"]), v * d["excess"], v))
         ok(round(v * answer["excess"]) - round(v * runner["excess"]) == g["gap"],
            "%s keeps the gap at %d" % (label, g["gap"]))
-    ok(hi_r / lo_r - 1 < 0.035, "the register's readings sit within 3.5 per cent (%.5f to %.5f, %.2f%%)"
+    ok(hi_r / lo_r - 1 < 0.015, "the register's readings sit within 1.5 per cent (%.5f to %.5f, %.2f%%)"
        % (lo_r, hi_r, (hi_r / lo_r - 1) * 100))
     for d in units:
         n_av = round(d["avoided"])

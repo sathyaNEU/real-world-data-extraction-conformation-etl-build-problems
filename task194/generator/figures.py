@@ -27,6 +27,10 @@ def write(gendir, g):
         "rate_denominator": 1000,
         "closed_placements": len(g["record"]),
         "register_readings": {k: round(v, 6) for k, v in g["readings"].items()},
+        "effect_models": {k: {"chi_square": round(v["chi_square"], 4),
+                              "likelihood_ratio": float("%.6g" % v["likelihood_ratio"]),
+                              "parameter": round(v["parameter"], 6)}
+                          for k, v in g["models"].items()},
         "avoided_by_unit": {d["unit"]: round(d["avoided"]) for d in g["units"]},
         "rung0_unit_code": r0["unit"],
         "rung0_excess_now": round(r0["last_excess"]),

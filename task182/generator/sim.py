@@ -236,10 +236,13 @@ def residual_shape(code, stamps_local, seed):
     # a second minute of decay on the louder events
     extra = extra + np.concatenate([[0.0], extra[:-1] * 0.35])
     total = strm * steady.mean() + (1.0 - strm) * steady + extra
-    # within-minute statistics: the quiet part of a minute, and its loudest second
-    quiet = strm * steady.mean() + (1.0 - strm) * steady * _e(-rng.uniform(0.25, 1.1, n))
-    loud = total + extra * 2.1 + (1.0 - strm) * steady * _e(rng.uniform(1.0, 7.0, n))
-    tiny = quiet * _e(-rng.uniform(0.4, 1.6, n))
+    # within-minute statistics of the surroundings: the level the minute fell to, its loudest second and
+    # its quietest. A minute of a rural background is never flat: the wind in the hedge alone moves it.
+    quiet = (strm * steady.mean() * _e(-rng.uniform(0.15, 0.9, n))
+             + (1.0 - strm) * steady * _e(-rng.uniform(0.8, 3.2, n)))
+    loud = (total + extra * 2.1 + (1.0 - strm) * steady * _e(rng.uniform(1.0, 7.0, n))
+            + 0.42 * steady * _e(rng.uniform(0.5, 6.5, n)))
+    tiny = quiet * _e(-rng.uniform(0.8, 3.0, n))
     return total, quiet, loud, tiny
 
 
@@ -326,10 +329,17 @@ def build(codes=None):
         for pp in parts:
             pe = gp * pp["k"]
             re = gr * pp["res"]
+            # the plant is steady over a minute but not flat: the blowers' blade passage and the engine's
+            # governor move it a little inside the minute too
+            wrng = np.random.default_rng(W.SEED + 4409 + 17 * W.CODES.index(code) + pp["dep"]["week"])
+            m = len(pe)
+            f90 = _e(-wrng.uniform(0.08, 0.55, m))
+            fmax = _e(wrng.uniform(0.5, 2.4, m))
+            fmin = f90 * _e(-wrng.uniform(0.3, 1.2, m))
             laeq = _db(pe + re)
-            la90 = _db(pe + gr * pp["quiet"])
-            lamax = _db(pe + gr * pp["loud"])
-            lamin = _db(pe + gr * pp["tiny"])
+            la90 = _db(pe * f90 + gr * pp["quiet"])
+            lamax = _db(pe * fmax + gr * pp["loud"])
+            lamin = _db(pe * fmin + gr * pp["tiny"])
             series[pp["dep"]["id"]] = {
                 "dep": pp["dep"], "stamps": pp["stamps"], "laeq": laeq, "la90": la90,
                 "lamax": lamax, "lamin": lamin, "am": pp["am"], "vm": pp["vm"], "nd": pp["nd"],

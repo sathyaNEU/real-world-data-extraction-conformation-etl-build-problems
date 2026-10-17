@@ -122,6 +122,21 @@ def design_ratios(units, expected):
     for _ in range(3):
         write_placements(design, units, expected)
         level_comparisons(design, units, expected)
+    # the amalgamated unit's predecessors were the same service under two cost centres, so the two wards
+    # together stood where the amalgamated unit stands: pooling them changes no figure
+    pre = [u[0] for u in units if u[10] == "merged_into"]
+    into = W.MERGE_INTO
+    if pre and into in design:
+        qs = [q for q in design[into] if (into, q) in expected]
+        target = (sum(expected[(into, q)] * design[into][q] for q in qs)
+                  / sum(expected[(into, q)] for q in qs))
+        num = sum(expected[(c, q)] * design[c][q] for c in pre for q in design[c] if (c, q) in expected)
+        den = sum(expected[(c, q)] for c in pre for q in design[c] if (c, q) in expected)
+        if den and num:
+            k = target * den / num
+            for c in pre:
+                for q in design[c]:
+                    design[c][q] *= k
     return design
 
 

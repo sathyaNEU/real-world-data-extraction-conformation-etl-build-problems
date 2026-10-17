@@ -33,22 +33,22 @@
   "NSL13": 400,
   "NSL14": "none"
  },
- "margin_db": 1.2,
+ "margin_db": 1.3,
  "measured_total_db": {
   "NSL01": 44.3,
-  "NSL02": 47.5,
-  "NSL03": 44.6,
-  "NSL04": 53.3,
+  "NSL02": 47.4,
+  "NSL03": 44.7,
+  "NSL04": 53.2,
   "NSL05": 40.5,
   "NSL06": 46.7,
   "NSL07": 48.1,
   "NSL08": 42.2,
-  "NSL09": 44.9,
+  "NSL09": 44.8,
   "NSL10": 38.6,
   "NSL11": 50.1,
   "NSL12": 44.4,
-  "NSL13": 46.1,
-  "NSL14": 42.4
+  "NSL13": 46.2,
+  "NSL14": 42.5
  },
  "plan_clauses": [
   "2.1",
@@ -93,7 +93,7 @@
    ]
   },
   "rung1_total": {
-   "margin_db": 0.571,
+   "margin_db": 0.545,
    "next": "NSL13",
    "slate": [
     "NSL02",
@@ -104,8 +104,8 @@
    ]
   },
   "rung2_la90": {
-   "margin_db": 3.59,
-   "next": "NSL08",
+   "margin_db": 0.099,
+   "next": "NSL07",
    "slate": [
     "NSL03",
     "NSL04",
@@ -115,7 +115,7 @@
    ]
   },
   "rung2_p10": {
-   "margin_db": 0.702,
+   "margin_db": 0.332,
    "next": "NSL02",
    "slate": [
     "NSL03",
@@ -126,7 +126,7 @@
    ]
   },
   "rung2b_min15": {
-   "margin_db": 1.269,
+   "margin_db": 1.223,
    "next": "NSL13",
    "slate": [
     "NSL02",
@@ -137,18 +137,18 @@
    ]
   },
   "rung2c_arith": {
-   "margin_db": 4.134,
-   "next": "NSL07",
+   "margin_db": 0.374,
+   "next": "NSL02",
    "slate": [
     "NSL03",
     "NSL04",
     "NSL06",
-    "NSL11",
-    "NSL12"
+    "NSL07",
+    "NSL11"
    ]
   },
   "specific": {
-   "margin_db": 1.22,
+   "margin_db": 1.256,
    "next": "NSL06",
    "slate": [
     "NSL02",
@@ -184,7 +184,7 @@
   "NSL13"
  ],
  "specific_level_db": {
-  "NSL01": 44.0,
+  "NSL01": 43.9,
   "NSL02": 47.3,
   "NSL03": 43.6,
   "NSL04": 53.0,
@@ -192,7 +192,7 @@
   "NSL06": 44.7,
   "NSL07": 47.8,
   "NSL08": 41.4,
-  "NSL09": 44.7,
+  "NSL09": 44.6,
   "NSL10": 37.4,
   "NSL11": 49.9,
   "NSL12": 43.3,

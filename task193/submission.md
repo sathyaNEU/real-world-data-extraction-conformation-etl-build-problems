@@ -84,30 +84,30 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Ellevang Biosciences A/S (H6): 1027098.0 DDD, 1067868 kroner
    - Strandby Farma ApS (H7): 227031.0 DDD, 332600 kroner
 6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
-   - Hovedstaden, 18-39: 868 patients, 68.5 per cent
-   - Hovedstaden, 40-59: 788 patients, 77.5 per cent
-   - Hovedstaden, 60-74: 552 patients, 81.9 per cent
-   - Hovedstaden, 75 and over: 709 patients, 79.5 per cent
-   - Midtjylland, 18-39: 667 patients, 68.1 per cent
-   - Midtjylland, 40-59: 626 patients, 76.7 per cent
-   - Midtjylland, 60-74: 457 patients, 79.6 per cent
-   - Midtjylland, 75 and over: 529 patients, 77.3 per cent
-   - Nordjylland, 18-39: 303 patients, 67.0 per cent
-   - Nordjylland, 40-59: 285 patients, 75.1 per cent
-   - Nordjylland, 60-74: 204 patients, 80.9 per cent
-   - Nordjylland, 75 and over: 222 patients, 80.6 per cent
-   - Sjaelland, 18-39: 391 patients, 73.4 per cent
-   - Sjaelland, 40-59: 422 patients, 73.9 per cent
-   - Sjaelland, 60-74: 303 patients, 80.2 per cent
-   - Sjaelland, 75 and over: 338 patients, 81.1 per cent
-   - Syddanmark, 18-39: 621 patients, 69.9 per cent
-   - Syddanmark, 40-59: 550 patients, 75.6 per cent
-   - Syddanmark, 60-74: 403 patients, 79.2 per cent
-   - Syddanmark, 75 and over: 420 patients, 80.2 per cent
-   - not stated, 18-39: 74 patients, 74.3 per cent
-   - not stated, 40-59: 64 patients, 75.0 per cent
-   - not stated, 60-74: 53 patients, 75.5 per cent
-   - not stated, 75 and over: 46 patients, 80.4 per cent
+   - Hovedstaden, 18-34: 678 patients, 69.5 per cent
+   - Hovedstaden, 35-54: 794 patients, 73.7 per cent
+   - Hovedstaden, 55-69: 554 patients, 80.9 per cent
+   - Hovedstaden, 70 and over: 891 patients, 80.6 per cent
+   - Midtjylland, 18-34: 516 patients, 67.1 per cent
+   - Midtjylland, 35-54: 611 patients, 76.3 per cent
+   - Midtjylland, 55-69: 471 patients, 77.5 per cent
+   - Midtjylland, 70 and over: 681 patients, 77.8 per cent
+   - Nordjylland, 18-34: 234 patients, 67.1 per cent
+   - Nordjylland, 35-54: 300 patients, 73.3 per cent
+   - Nordjylland, 55-69: 188 patients, 78.2 per cent
+   - Nordjylland, 70 and over: 292 patients, 81.2 per cent
+   - Sjaelland, 18-34: 298 patients, 72.8 per cent
+   - Sjaelland, 35-54: 402 patients, 74.1 per cent
+   - Sjaelland, 55-69: 303 patients, 79.2 per cent
+   - Sjaelland, 70 and over: 451 patients, 80.0 per cent
+   - Syddanmark, 18-34: 474 patients, 69.6 per cent
+   - Syddanmark, 35-54: 547 patients, 73.7 per cent
+   - Syddanmark, 55-69: 407 patients, 77.9 per cent
+   - Syddanmark, 70 and over: 566 patients, 80.6 per cent
+   - not stated, 18-34: 61 patients, 70.5 per cent
+   - not stated, 35-54: 66 patients, 77.3 per cent
+   - not stated, 55-69: 48 patients, 77.1 per cent
+   - not stated, 70 and over: 62 patients, 79.0 per cent
 
 ### order_shares_by_pair.png
 
