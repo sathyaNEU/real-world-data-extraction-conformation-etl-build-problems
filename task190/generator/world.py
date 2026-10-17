@@ -61,7 +61,7 @@ INTERIM_MEAN = 56_000.0
 DEFECT = {"CP-41": (193, 0.58), "CP-23": (140, 0.49), "CP-47": (120, 0.52),
           "CP-34": (113, 0.41), "CP-21": (87, 0.37), "CP-44": (36, 0.44)}
 TAINT_MUL = 0.98
-CERT_ERROR = ("CP-31", 660_000, 24_000.00)   # one certificate overstated
+CERT_ERROR = ("CP-31", 660_000, 62_400.00)   # one certificate overstated
 
 # the payment release cut-off, which moved mid-year (ask A1)
 CUTOFF = [("2026-01-01", "2026-06-30", "15:00"), ("2026-07-01", "", "14:00")]
