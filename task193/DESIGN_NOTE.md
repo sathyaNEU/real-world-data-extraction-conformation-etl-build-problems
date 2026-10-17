@@ -864,9 +864,9 @@ forks on a rule the pack does not state.
   for this run or any other.
 - **Sweep 4, eight of 25 stump-paragraph terms in the standard** (expected, standard, inside, package,
   patient, clearance). They are the words a prescription-screen standard is made of. The document never
-  says how the expected number is obtained, and a word sweep over all nineteen shipped files asserts that
-  none of nineteen phrasings of symmetry, equal likelihood, a null ratio, a sequence ratio or an
-  incidence distribution appears.
+  says how the expected number is obtained, and a word sweep over all nineteen shipped csv and json files
+  asserts that none of nineteen phrasings of symmetry, equal likelihood, a null ratio, a sequence ratio
+  or an incidence distribution appears.
 - **Sweep 6, `holder_register.csv` naming six of six answer-set candidates.** The names the sweep matched
   are marketing authorisation holders, not pairs. The file carries no marker treatment, no patient and no
   figure about any pair's reporting, asserted by column name.
@@ -875,21 +875,23 @@ forks on a rule the pack does not state.
 
 The pack as built, read against the gates one last time.
 
-- **Free gates.** 115 generator assertions, 251 independent checks in `verify.py` (it reads only `target/`
-  and `figures.json`), `precut.py` 49 checks 0 FAIL 0 WARN, `figures_check.py` 206 of 206,
-  `voice-check.py` exit 0 at 988 characters, `leak.py` REVIEW with three answered lines and no LEAK,
+- **Free gates.** 183 generator assertions, 267 independent checks in `verify.py` (it reads only `target/`
+  and `figures.json`), `precut.py` 50 checks 0 FAIL 0 WARN, `figures_check.py` 205 of 205,
+  `voice-check.py` exit 0 at 997 characters, `leak.py` REVIEW with three answered lines and no LEAK,
   `guard.py heart` WARN with every line answered in `## Draw`, `guard.py surface` promoting no file name
-  and no persona. Two rebuilds byte-identical, `target.zip` cut from the final rebuild, 19 entries.
-- **Input gates.** 19 files, 4 formats (csv, pdf, xlsx, json), two files above 25,000 rows
-  (`dispensings_2023_2025.csv` at 73,879 and `dispensings_2025_2026.csv` at 47,012), three distractors
-  named in `metadata.json` and in no file name.
+  and no persona, `freeze.py check --mode rubric` PASS. Two rebuilds byte-identical over 24 files,
+  `target.zip` cut from the final rebuild, 21 entries, md5 aa084e2f3354fce6ab82c4f09db87a61.
+- **Input gates.** 21 files, 4 formats (csv, pdf, xlsx, json), two files above 25,000 rows
+  (`dispensings_2023_2025.csv` at 113,764 and `dispensings_2025_2026.csv` at 62,644), two distractors
+  named in `metadata.json` and in no file name, with one neutral rule input declared beside them.
 - **The three rules against the built pack.** R1: the pack ships patient-level dispensing lines with their
   dates and no shipped column holds an expected number, a multiple or a referral, asserted over every csv
   header. R2: the referral set is identical with the retired person keys unfolded, with the package index
   joined without its date condition and with the re-sent batch left in, each asserted. R3a: the easy route
   on the clean truth, every filed rule applied, refers 10 pairs. R3b: changing only the expected number
   refers 7, and all four window-aware arithmetics give that same 7. R3c: nothing is planted, and a word
-  sweep over all nineteen files finds none of nineteen phrasings of the decisive move.
+  sweep over all nineteen csv and json files finds none of nineteen phrasings of the decisive move, and
+  the standard's own text is swept separately.
 - **The judge's first pass.** NOT_DETERMINISTIC with disposition SEND_BACK, and every reason in the ask
   layer: Gate G passed (`statistical_rigor`, `analytical_non_defect`, no surface-read dependency, no sole
   data defect), Gate H passed with the decisive step analytical, all 23 pair rows reproduced, and the judge

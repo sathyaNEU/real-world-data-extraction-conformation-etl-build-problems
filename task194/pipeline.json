@@ -1,19 +1,19 @@
 {
   "task": "task194",
   "owner": "oviya13ya",
-  "status": "BUILD",
+  "status": "DRAWING",
   "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
   "objective": "anomaly-detection",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-17",
   "stump": "A competent solver reconciles to the published indicator, ranks the eligible units on the complications each records above the expectation the published stratum rates give it, and places the improvement team with Alderbrook General Surgery (41220), whose patients sit where the published standard has gone most out of date, rather than with Alderbrook Orthopaedics (41230), whose own patients are having the most complications they should not be having. On the comparison the charter asks for, 41220 carries minus 3.7 avoidable complications and 41230 carries 40.0.",
-  "architecture": 2,
+  "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": 1,
-    "date": "2026-10-17",
-    "detail": "50 checks, 1 FAIL, 0 WARN. The one failure is supplemental-stumping Part 1.1 on two of 44 ask figures, both Carrowdean's A2 figures. Pair ceiling 36.4 and mirror leakage 3.6 both pass, measured by generator/cracker.py on the cut pack."
+    "exit": null,
+    "date": "",
+    "detail": "architecture 2's precut state is void"
   },
   "leak": {
     "leak_py": "",
@@ -24,12 +24,12 @@
     "nearest": "0.06 task464 (v1)"
   },
   "judge": {
-    "verdict": "SEND_BACK on architecture 1",
-    "disposition": "re-rooted at stage 1",
-    "report": "architecture 1 spent: see the card's lineage and the design note's Tried and rejected"
+    "verdict": "SEND_BACK on architecture 2",
+    "disposition": "re-rooted at stage 1; architecture 3 drawn, one axis blocked",
+    "report": "NOT_DETERMINISTIC, underspecified_objective on Gates C and E, plus Gate G surface_read_rejection. Charter 4.3's comparison was treated as HOW when it is one of the five parts of the WHAT. See the card's lineage."
   },
   "returned": [],
-  "resume": "Stage 3 complete. Ready for stage 4: the leak reader and the determinism judge. BUILT AND MEASURED: answer 41230 Alderbrook Orthopaedics, 40 avoidable complications on 2,305 planned separations; runner-up 41420 at 25; lead 15.05 complications, 1.60x, 2.41 standard errors; answer 4 of 12 on the published ranking; three rungs at 2.11x, 1.32x, 1.60x; the easy route 41220 at 59.2 published carries minus 3. All 12 readings of charter 4.3 name 41230 at 1.14x to 2.86x, asserted reading by reading in checks.py and recomputed independently in verify.py. 585-plus generator assertions, 185-plus independent checks, figures_check PASS on 148 figures, two byte-identical rebuilds, guard surface clean, leak REVIEW with no finding. precut 50 checks 1 FAIL: Part 1.1 on Carrowdean's two A2 figures, with the cost of buying them stated. STOP OPTIMISING THE CEILING: the 36.4 assumes a ladder nothing independent has tested yet.",
+  "resume": "Architecture 3 drawn on every axis but one. The card is written with architecture 2 in lineage, architecture 3's axes, loops 0, and differentiation against task157, task231 and task469; it is NOT registered, because guard.py check still returns one BLOCK: maturity_censoring repeats task469 inside the three-build novelty window. The decisive step passes the WHAT screen: the estimand's five parts are all filed, the comparison included, and what stays open is the observation process, the record's most recent quarters being short by a coding lag the series' own earlier vintages measure. The alternative examined at the draw, judging each unit's excess against its own sampling error, FAILS the screen because specification 3.4 already files how the record is carried onto the planned quarter, so the easy route would be a filed procedure and the golden a departure from it. Kept for whichever direction wins: the register and the charter's twelve-quarter bar, the eligible row set, the twelve-reading convergence machinery, the per-device assertion pattern, the measured cracker, the realism work on casemix, weekday, holidays, rostering and the theatre closure, and both fixes to the fiction's own history. The surgical share now carries its definition and its true floor of zero.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -56,5 +56,18 @@
   "held_for_next_pass": [
     "Length of stay should follow the episode's risk band, not only the unit's mix. It would put the theatre closure in bed-days and stop a joint replacement and an appendicectomy averaging the same stay. It also moves the complication selection, so the realised stratum frequencies, the design point and the hospital-rate centring all need re-measuring. Does not gate stage 4. Recorded under the design note's ## Tried and rejected.",
     "The pair ceiling of 36.4 rests on the premise that the ladder keeps the second-best response off the call, which nothing independent has yet tested. If the cold reader lands the call the finding is in the ladder and the ceiling does not matter; if it misses, the 36.4 becomes evidence."
-  ]
+  ],
+  "draw_blocked": {
+    "guard_verdict": "BLOCK on one axis, plus the known question_form WARN",
+    "block": "ban.strategy: stump strategy maturity_censoring repeats a recent build, against task469",
+    "measured_against": "the last three builds (guard.py RECENT = 3), so the strategy is held by a novelty window rather than permanently spent; it frees once task469 rolls out of it",
+    "cleared_on_the_way": [
+      "three_rules.task_type: forecasting is not served by provider-quality-risk-adjustment, so the objective stays anomaly-detection",
+      "ban.artifact: published_series repeats task159, now close_out_summary",
+      "ban.forum: committee_or_panel repeats task469 and line_manager_or_team repeats task241, now board_of_directors",
+      "ban.forcing_event: period_close repeats task241, now audit_or_inspection",
+      "test.same_driver_older: differentiation lines written against task157, task231 and task469"
+    ],
+    "decision_for_the_author": "override the strategy ban, hold the slot until the window frees, or name a different decisive step; the WHAT screen result for each candidate is in the handback"
+  }
 }

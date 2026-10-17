@@ -184,6 +184,11 @@ def write_events(target):
             rows.append([start, eq, "STOP", who, reason])
             rows.append([start + dt.timedelta(minutes=mins), eq, "START", who,
                          "returned to service after %s" % reason])
+    for start, mins, reason in W.BL12_STOPS:
+        for eq in ("BL-01", "BL-02"):
+            rows.append([start, eq, "STOP", W.PEOPLE["operator"][1], reason])
+            rows.append([start + dt.timedelta(minutes=mins), eq, "START", W.PEOPLE["operator"][1],
+                         "returned to service after %s" % reason.split(", ")[1]])
     for start, mins, reason in W.ENGINE_STOPS:
         rows.append([start, W.ENGINE, "STOP", W.PEOPLE["operator"][1], reason])
         rows.append([start + dt.timedelta(minutes=mins), W.ENGINE, "START", W.PEOPLE["operator"][1],
@@ -236,11 +241,18 @@ def write_scada(target):
                   + 232 * _ar1(n, 0.88, rng) + 78 * _ar1(n, 0.42, rng)) * wkf
                  + 7.4 * (inflow - float(inflow.mean())))
     total_air = np.where(stopped, 0.0, np.clip(total_air, 0.0, None))
-    # the duty rotates week to week, so what each meter sees moves while the air itself does not
-    share = np.array([W.BL03_SHARE[min(max((s.date() - W.WEEKS[0]).days // 7 + 1, 0),
-                                       len(W.BL03_SHARE) - 1)] for s in stamps])
-    bl03 = total_air * share
-    air = total_air - bl03
+    # BL-03 holds the output its drive is set to; the header's two machines take the trim, so the two
+    # meters' readings are not fractions of one another
+    setting = np.array([max(v for d0, v in W.BL03_SETTING if d0 <= s.date()) for s in stamps])
+    bl03 = np.where(stopped, 0.0, setting * (1.0 + 0.018 * _ar1(n, 0.8, rng)))
+    air = np.clip(total_air - bl03, 0.0, None)
+    # the spells the shift isolates the header's own two machines in: BL-03 carries the lanes alone, so
+    # the header's meter reads nothing and its totaliser does not advance while BL-03's does
+    iso = np.zeros(n, dtype=bool)
+    for start, mins, _ in W.BL12_STOPS:
+        end = start + dt.timedelta(minutes=mins)
+        iso |= np.array([(s > start) and (s <= end) for s in stamps])
+    air = np.where(iso, 0.0, air)
     # the two flow totalisers, thousands of normal cubic metres: the header's has run since the works was
     # built, BL-03's since it was commissioned at the upgrade
     air_total = 128450.0 + np.cumsum(air * 0.25) / 1000.0

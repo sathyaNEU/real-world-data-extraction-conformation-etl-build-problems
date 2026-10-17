@@ -276,12 +276,23 @@ PLC_HELD = [
 ]
 
 # The third blower was added when the plant was upgraded and tied into the aeration main downstream of
-# the header's flow meter, so it carries its own meter. The duty rotates: the shift puts a different
-# machine on lead each week, which moves BL-03's share of the air the lanes take without moving the air
-# itself, so the header's own figure swings against the works' inlet load and the two meters' sum does
-# not. Shares of the total air BL-03 carried, week by week (the survey's six weeks and the two either
-# side of them).
-BL03_SHARE = [0.33, 0.24, 0.37, 0.28, 0.40, 0.26, 0.31, 0.35]
+# the header's flow meter, so it carries its own meter. BL-03 is a fixed-speed machine: it holds the
+# output its drive is set to and the header's two machines take the dissolved oxygen trim, so what BL-03
+# delivers is no fraction of what the header reads and the ratio of the two moves with the load all day.
+# The shift reset BL-03's drive three times over the survey, in normal cubic metres an hour.
+BL03_SETTING = [(dt.date(2026, 8, 1), 1320.0), (dt.date(2026, 9, 8), 1395.0),
+                (dt.date(2026, 9, 24), 1275.0), (dt.date(2026, 10, 6), 1350.0)]
+
+# Spells where the header's own two machines were isolated and BL-03 carried the lanes on its own: the
+# shift takes BL-01 and BL-02 off to clean a strainer or to calibrate the dissolved oxygen probes, before
+# the day's assessment period opens and never on the morning of the weekly inspection. The plant is not
+# down in them, so they are no part of any residual window, and they are what the header's own meter
+# gives itself away in.
+BL12_STOPS = [
+    (dt.datetime(2026, 9, 10, 5, 0), 45, "BL-01 and BL-02 isolated, DO probe calibration"),
+    (dt.datetime(2026, 9, 30, 5, 15), 45, "BL-01 and BL-02 isolated, header strainer clean"),
+    (dt.datetime(2026, 10, 8, 4, 45), 60, "BL-01 and BL-02 isolated, DO probe calibration"),
+]
 
 # The gas booster on the digester's gas skid runs with the plant and takes a drain and purge cycle once a
 # day, and it keeps pushing gas to the flare through the engine's own stops. It makes no measurable sound

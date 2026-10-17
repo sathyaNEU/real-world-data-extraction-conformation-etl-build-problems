@@ -137,6 +137,16 @@ BLOCK if any rule blocks, else WARN, else PASS; exit 1 on BLOCK.
 - **Drawn, never typed:** personas (one first name stood in 23 builds), furniture (committees and boards
   decided 49 prompts, regulators none), and pack file names in the organisation's idiom.
 
+**Look up a strategy's ban window before spending design time on the direction.** `ban.strategy` is an
+axis ban, so differentiation does not clear it and no argument will: a direction is either available or
+it is not, and that is a fact to read off `coverage` and `recent` in the same breath as `mechanisms`,
+before the design exists. task194 drew a sound architecture on `maturity_censoring` and could not
+register it, because the immediately preceding build in the corpus carried the same label. Two costs
+follow from checking late. The design waits for a window to lapse rather than being drawn into a free
+cell, and the builder is put in front of a choice between relabelling the mechanism to pass the guard,
+which is a lie in the card, and handing the block back. The right answer to that choice is to hand it
+back; the better outcome is never to face it.
+
 ## Part 4. How this goes wrong
 
 - **A PASS read as "not a clone"**: the design note still answers the similarity test.

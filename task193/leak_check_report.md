@@ -15,9 +15,6 @@ Stump terms swept: asserted, expected, section, nothing, standard, sentence, dec
 ## 6 ranking artifacts (INFO 1)
 - **INFO** `holder_register.csv`: names 7 of 7 answer-set candidates; confirm it does not rank them on the decision question
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
-
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
@@ -30,5 +27,7 @@ Stump terms swept: asserted, expected, section, nothing, standard, sentence, dec
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)

@@ -5,7 +5,7 @@
  "answer_unit": "named_option",
  "architecture": "v3",
  "calibration_form": "censored_or_lagged_release",
- "context_artifact": "published_series",
+ "context_artifact": "close_out_summary",
  "decision_type": "pick_one_of_n",
  "decisive_rule_filed": true,
  "deliverables": [],
@@ -15,19 +15,22 @@
   "task149": "task149's decisive quantity is a hazard that rises with how fast a fixed content of work is done, so its work is finding the right denominator for a rate and carrying it into a plan. Here the rate and its denominator are both correct and agreed: the decisive work is that the fall which follows placing a team with the worst unit is mostly that unit's own reversion.",
   "task183": "task183's decisive quantity is a forward count that arises in a unit's parts, where a part with a history of repeat failures keeps failing at many times the rate of its siblings, so the work is heterogeneity inside the unit. Here the units have no parts and nothing is forecast: the work is separating reversion from effect in a unit chosen for standing worst.",
   "task258": "task258 v1's decisive quantity is how many units an intervention moves across a threshold when it acts on only some of the additive parts of each unit, so its work is decomposing the measure into parts. Here the measure has no parts to decompose: the decisive work separates the part of a fall that is the unit's own return to its long-run level from the part the intervention caused.",
-  "task452": "task452 v1's lineage multiplies two series, one recorded always and one sampled mostly in the quiet state, so its work is imputing the sampled factor across the unsampled intervals. Here both series are complete and nothing is imputed: the decisive work is that a unit chosen for standing worst falls back toward its own level whatever the team does."
+  "task452": "task452 v1's lineage multiplies two series, one recorded always and one sampled mostly in the quiet state, so its work is imputing the sampled factor across the unsampled intervals. Here both series are complete and nothing is imputed: the decisive work is that a unit chosen for standing worst falls back toward its own level whatever the team does.",
+  "task157": "task157's decisive gap is temporal because a filed window and the record's own clock disagree; here every window is filed and agreed, and what the record does not yet carry is the outcome itself, because a complication is coded after the episode it belongs to has separated.",
+  "task231": "task231 reaches its wrong answer by confirming a surface read of a derived measure whose components are mis-stated; here the surface read is arithmetically correct for the vintage it reports and wrong only because the vintage is not final, which the same series' earlier vintages measure.",
+  "task469": "task469's censoring is on a duration: a past task shows how long it needed only when it ran past its own allowance, so the quantity is observed only on a selected subset and is read there. Here nothing is selected and no duration is estimated: a count of events for a fully observed population is still accumulating, and the development is an observed ratio between two vintages of the same series rather than an inference from a surviving subset."
  },
  "domain": "healthcare-delivery-health-economics",
  "domain_test": "The deciding quantity is a count of hospital-acquired complications coded after the episode separates, which is why provider quality reporting restates its own quarters and why the field develops an immature period to its ultimate before comparing providers. Indirect standardisation against a published stratum table, a quarterly indicator series carrying vintages, and a coding-close rule are the field's own instruments and all three ship.",
  "drawn": "2026-10-17T21:52:23Z",
  "driver": "The decisive quantity is a count of events that crystallise after the period they belong to, so the record's most recent periods are short by a coding lag the record itself measures through two vintages of the same series, and ranking the candidates on the counts as reported names a different unit from ranking them on the counts developed to what the period's patients actually had.",
  "driver_concrete": "Every unit's standardised ratio in the pack is observed over expected against the stratum rates published with specification 4.0, which clause 3.1 says are not re-estimated between specifications; the network's own rates have since moved in opposite directions across the complication groups, so a unit's published ratio mixes its case mix with its practice, and rebuilding the expectation from the network's own observed stratum rates over the specification period names a different unit as the one carrying the most complications its patients should not be having.",
- "forcing_event": "period_close",
- "forum": "committee_or_panel",
+ "forcing_event": "audit_or_inspection",
+ "forum": "board_of_directors",
  "gap": [
   "time"
  ],
- "gate_g": "forecasting",
+ "gate_g": "confirm_surface_read",
  "generators": [
   "G12",
   "G13",
@@ -66,7 +69,7 @@
  "mechanism_source": "design_note",
  "niche": "developing an indicator's most recent quarters to what the period's own patients actually had, from the growth the series' earlier vintages show, before ranking providers on them",
  "notes": "Architecture 3 after SEND_BACKs on architectures 1 and 2 (see lineage). The world, the organisation, the geography, the indicator and the placement charter are kept. The comparison is now filed: the expectation is the published stratum table of Appendix A, as specification 3.1 defines it, so the estimand's five parts are all stated. What stays open is the observation process rather than any part of the estimand: the record shows the complications coded so far and the most recent quarters are short.",
- "objective": "forecasting",
+ "objective": "anomaly-detection",
  "official_decoy": false,
  "opening_move": "question-first",
  "org_family": "hospital_or_health_provider",
@@ -77,7 +80,7 @@
  "registered": "",
  "role_family": "programme_officer",
  "scoring_unit": "per episode",
- "shape": "02",
+ "shape": "17",
  "slot_note": "seed AD17 kept its decision shape only: one scarce improvement team embedded with one unit for a quarter, judged on the fall in the failures users see. The seed's own architecture attributes failures through traces from the returning unit to the causing one, which is attribution a trace join performs and a spent mechanism on this objective, so the build is re-rooted on the field's own treatment of units chosen for standing worst.",
  "spine": {
   "entity": "one episode of care with its risk fields and its complication flag",

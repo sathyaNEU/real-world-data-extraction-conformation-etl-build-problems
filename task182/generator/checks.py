@@ -484,10 +484,53 @@ def run(target, g):
         A(float(np.abs(d1 - e1).max()) < 120.0,
           "SF19 the %s totaliser carries its own rate channel and nothing else, to the tenth it prints "
           "(worst %.1f Nm3)" % (nm, float(np.abs(d1 - e1).max())))
+    # BL-03 is no fraction of the header: it holds its drive setting while the header takes the trim, so
+    # the ratio of the two moves with the load inside every week. This is the pattern that read as a
+    # sub-meter when the duty rotation set it week by week, and it is measured here rather than argued.
     run = (hdr_rate > 100) & (bl3_rate > 100)
-    sh = bl3_rate[run] / (hdr_rate[run] + bl3_rate[run])
-    A(sh.min() < 0.27 and sh.max() > 0.36,
-      "SF19 the duty rotates: BL-03 carried %.2f to %.2f of the air" % (sh.min(), sh.max()))
+    rt = bl3_rate[run] / hdr_rate[run]
+    A(rt.max() - rt.min() > 0.3,
+      "SF19 BL-03's reading is no fraction of the header's: the ratio runs %.2f to %.2f" % (rt.min(), rt.max()))
+    for i5, wk5 in enumerate(W.WEEKS):
+        sel5 = [j for j, ts5 in enumerate(stamps_s)
+                if wk5 <= ts5.date() < wk5 + dt.timedelta(days=7) and run[j]]
+        rr5 = bl3_rate[sel5] / hdr_rate[sel5]
+        A(float(rr5.std()) > 0.035 and float(rr5.max() - rr5.min()) > 0.2,
+          "SF19 week %d: the ratio spans %.2f to %.2f inside the week (sd %.3f), so no week has it fixed"
+          % (i5, rr5.min(), rr5.max(), float(rr5.std())))
+    # and the forcing fact, the one the records make and no sentence does: in each spell the shift
+    # isolates the header's own two machines, the header's totaliser does not advance at all while
+    # BL-03's does and the log shows BL-03 running through it. A meter that carried BL-03 could not.
+    ev_state = {}
+    for x in sorted(_csv.DictReader(io_open(target, PK.FILES["events"])), key=lambda r: r["logged_at"]):
+        ev_state.setdefault(x["equipment"], []).append(
+            (dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M"), x["event"]))
+
+    def _up(eq, when):
+        last = None
+        for ts6, e6 in ev_state.get(eq, []):
+            if ts6 <= when:
+                last = e6
+        return last == "START"
+
+    for start6, mins6, why6 in W.BL12_STOPS:
+        end6 = start6 + dt.timedelta(minutes=mins6)
+        A(start6 in by_t and end6 in by_t,
+          "the historian has a reading at both ends of the isolation spell on %s" % start6.date())
+        dh = float(by_t[end6]["aeration_header_total_knm3"]) - float(
+            by_t[start6]["aeration_header_total_knm3"])
+        db3 = float(by_t[end6]["bl03_discharge_total_knm3"]) - float(
+            by_t[start6]["bl03_discharge_total_knm3"])
+        A(abs(dh) < 0.05 and db3 > 0.9,
+          "SF19 across the %s spell the header's totaliser advances %.1f and BL-03's %.1f thousand Nm3"
+          % (start6.strftime("%d/%m"), dh, db3))
+        mid6 = start6 + dt.timedelta(minutes=mins6 // 2)
+        A(_up("BL-03", mid6) and not _up("BL-01", mid6) and not _up("BL-02", mid6),
+          "SF19 and the log has BL-03 running and the header's two machines stopped at %s" % mid6)
+        A(not any(a7 <= mid6 < b7 for a7, b7 in SM.all_down()),
+          "SF19 the %s spell is no part of any residual window" % start6.date())
+        A(not (mid6.weekday() <= 4 and W.DAY_START <= mid6.hour < W.DAY_END),
+          "SF19 and it falls outside every assessment period")
     # and the air the works takes per cubic metre it treats holds steady week to week on the two meters
     # together while the header alone swings with the duty, which is the reading the records settle
     wk_h, wk_b, wk_i = {}, {}, {}
@@ -503,8 +546,8 @@ def run(target, g):
     only = np.array([wk_h[i] / wk_i[i] for i in range(6)])
     sp_both = 100.0 * (both.max() - both.min()) / both.mean()
     sp_only = 100.0 * (only.max() - only.min()) / only.mean()
-    A(sp_both < 9.0 and sp_only > 18.0 and sp_only > 2.5 * sp_both,
-      "SF19 the air per cubic metre treated holds to %.1f per cent on the two meters together and swings "
+    A(sp_both < 7.0 and sp_only > 1.5 * sp_both,
+      "SF19 the air per cubic metre treated holds to %.1f per cent on the two meters together and moves "
       "%.1f per cent on the header alone" % (sp_both, sp_only))
     # D3, the record: a held row's counters stand still while its rates read above zero
     prev = None

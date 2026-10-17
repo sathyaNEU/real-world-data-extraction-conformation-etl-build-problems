@@ -453,17 +453,23 @@ def forcing_facts(b):
             byband[band][1] += n * b["strata"][(band, age)]
     drift = {band: o / e for band, (o, e) in byband.items() if e}
     elig = eligible_units(b)
+    # "surgical" is the risk band map's own word: a band of `drg_risk_bands.csv` whose name begins SURG,
+    # which is SURG-MAJ and SURG-MIN. Two of the twelve carry none at all, so the share runs from exactly
+    # zero, and the lowest non-zero share is reported separately rather than as the foot of the range.
     share = {}
     for c in elig:
         o, e, n, sp, strat = unit_tally(b, c, set(all_quarters(b)))
         surg = sum(cnt for (band, _), cnt in strat.items() if band.startswith("SURG"))
         share[c] = surg / n if n else 0.0
-    nz = [v for v in share.values() if v > 0.01]
+    nz = [v for v in share.values() if v > 0.0]
     return dict(drift=drift,
                 drift_low=min(drift.values()), drift_high=max(drift.values()),
                 drift_spread=max(drift.values()) / min(drift.values()),
-                surgical_share=share, surgical_low=min(nz), surgical_high=max(share.values()),
-                surgical_none=sum(1 for v in share.values() if v <= 0.01))
+                surgical_share=share,
+                surgical_definition="a risk band of drg_risk_bands.csv whose name begins SURG",
+                surgical_floor=min(share.values()),
+                surgical_low=min(nz), surgical_high=max(share.values()),
+                surgical_none=sum(1 for v in share.values() if v == 0.0))
 
 
 def mix_shift_demo(b):

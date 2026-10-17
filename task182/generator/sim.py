@@ -274,8 +274,15 @@ def plant_state(stamps_local):
     for start, mins, _ in W.ENGINE_STOPS:
         end = start + dt.timedelta(minutes=mins)
         eng &= ~np.array([(s >= start) and (s < end) for s in stamps_local])
+    # the header's two machines, which the shift isolates now and then before the day starts: BL-03
+    # carries the lanes on its own through those spells and the blower house is a third as loud
+    bl12 = np.ones(len(stamps_local), dtype=bool)
+    for start, mins, _ in W.BL12_STOPS:
+        end = start + dt.timedelta(minutes=mins)
+        bl12 &= ~np.array([(s >= start) and (s < end) for s in stamps_local])
     sh = W.SOURCE_SHARE
-    k = plant_load(stamps_local) * (sh["blowers"] + sh["engine"] * eng + sh["centrifuges"] * cf)
+    blow = sh["blowers"] * (1.0 / 3.0 + (2.0 / 3.0) * bl12)
+    k = plant_load(stamps_local) * (blow + sh["engine"] * eng + sh["centrifuges"] * cf)
     for start, end in all_down():
         inside = np.array([(s >= start) and (s < end) for s in stamps_local])
         k = np.where(inside, 0.0, k)

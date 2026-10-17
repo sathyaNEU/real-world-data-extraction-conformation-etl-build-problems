@@ -1,5 +1,7 @@
 # task194 design note
 
+> **Status: architecture 2 is spent and every section below this line describes it.** The judge returned NOT_DETERMINISTIC, underspecified_objective on Gates C and E, and the cause is in the card's `lineage` and the last entries under `## Tried and rejected`. Architecture 3 has been drawn but not designed, and the draw is blocked on one axis (see `pipeline.json`). A reader taking the ladder, fork table, closure table, oracles or ask sheet below as current would be reading a design that no longer exists.
+
 Placing a scarce improvement team when the unit standing worst is partly standing worst by chance.
 
 ## Draw
@@ -162,8 +164,9 @@ of the same risk band and age band ordinarily have. What stays open is which
 frequency answers "ordinarily have", and the data force it under `determinism-check` section 1's first
 licence, the design forcing the method with the data separating the candidates. The separation is measured,
 not asserted: the network's own rate runs from 0.887 to 1.313 of the published rate across the six risk
-bands, a factor of 1.48 crossing 1.00 in both directions; the twelve candidates' surgical share of in-scope
-episodes runs from 0.075 to 0.851 with two carrying none at all; and on the record one unit's own practice
+bands, a factor of 1.48 crossing 1.00 in both directions; the twelve candidates' share of in-scope episodes in a
+risk band of `drg_risk_bands.csv` whose name begins SURG runs from exactly 0.000, two units carrying
+none at all, to 0.851, and from 0.075 among the ten that carry any; and on the record one unit's own practice
 is flat across a case-mix shift while the published basis moves its avoidable count by a factor of 8.5
 (`## Literal reader`). Both candidate frequencies are measured sums over the record, neither is a fitted
 form, and no free parameter is chosen, so the collinearity that spent architecture 1 cannot arise.
@@ -694,3 +697,23 @@ script says that in its output instead of printing the row twice and calling it 
   construction figures, and `checks.py` asserts that every scored figure carries a computed value and that
   the mirror's twelve construction figures are all attempted and all wrong. A figure scored as a miss
   because the response reached for nothing would show as a blank rather than hide inside a count.
+
+- **Architecture 2 is spent, and the cause is a WHAT filed in the HOW column.** The decisive step was which
+  stratum rates answer charter 4.3's comparison, and whose rates supply the expectation **is** the
+  comparison, which `determinism-check` section 1 lists as one of the five parts of the WHAT the estimand
+  must file so that its literal execution is the golden. Treating it as HOW is what produced the whole
+  design: 4.3 was worded to say nothing about the rate set, the forcing was pushed onto the data, and the
+  judge executed the clause word for word against the only stratum rates the package carries, Appendix
+  A's, and got 41220 at 59.2 or 64.0 against the golden's 41230 at 40. Filing the comparison does not
+  rescue it either, because the next lever down is the comparison pool, and the pool is part of the
+  comparison's definition: all in-scope network episodes give 41230 at 40.1 against 25.0 while the twelve
+  eligible units give 41420 at 21.6 against 41230's 9.8. Every remaining lever was a part of the estimand.
+  **The rule for this slot and any other: before a decisive step is accepted, name which of the five parts
+  it could be mistaken for, and if the answer is any of them, it is a WHAT and must be filed.** Population,
+  outcome, window, unit and comparison, and the comparison includes both whose rates and which pool.
+- **Also fixed on the way through: the one figure the judge could not reproduce.** The note claimed the
+  candidates' surgical share runs 0.075 to 0.851, and nothing in the shipped files defines "surgical", so
+  the judge got 0.000 for two units with 0.075 belonging to a third. The measure is now named where it is
+  used, a risk band of `drg_risk_bands.csv` whose name begins SURG, and stated as running from exactly
+  0.000, with two units carrying none, to 0.851, and from 0.075 among the ten that carry any. A range whose
+  foot silently excludes the zeros is not reproducible however correct its arithmetic.
