@@ -421,17 +421,24 @@ give the same call.
 
 ## Leak sweep answers
 
-`leak.py task192 --asof 2026-11-06` returns REVIEW on the lines below and no LEAK. Each is answered
-here.
+`leak.py task192 --asof 2026-11-06` returns REVIEW on five lines and no LEAK: three figure
+collisions, the notifications distractor's planned dates and the manifest cell derived from them, plus
+one INFO on container metadata. Each is answered here.
 
-- **`boletins_anteriores_2026.pdf`, the monthly municipality and locality counts.** The earlier
-  bulletins print one row per month from May to September with the actions recorded, the municipalities
-  touched and the localities touched. A two-digit or three-digit count of territory is bounded by the
-  119 municipalities and 560 gazetteer names, so a monthly figure and a fortnight's figure land on the
-  same number without either being the other. No monthly row is graded, no fortnight row is
-  recoverable from a monthly one, and the file states nothing about confrontational actions: the note
-  under its table says the confrontation indicators belong to the period bulletin and go to the
-  trustees in November. Under every rung the file ties.
+- **`boletins_anteriores_2026.pdf`, the integers 118 and 119.** The earlier bulletins print one row per
+  month from May to September with the actions recorded, the municipalities touched and the localities
+  touched (592 / 118 / 349 for May, and so on). The collision is on a municipality count in a
+  different cut: the graded fortnight rows Q11, Q12 and Q13 touch 118, 119 and 119 municipalities, and
+  a count of municipalities is bounded by the 119 the gazetteer carries, so a monthly figure and a
+  fortnight's figure land on the same number without either being the other. No monthly row is graded,
+  no fortnight row is recoverable from a monthly one, and the file states nothing about confrontational
+  actions: the note under its table says the confrontation indicators belong to the period bulletin
+  and go to the trustees in November. Under every rung the file ties.
+- **`relatorios_mensais_parceiros_2026.pdf`, the integer 103.** That is one partner's own declared
+  deliveries for September, and it collides with the 103 municipalities the graded fortnights Q4 and Q6
+  touch. The two are counts of different things in different files at the same order of magnitude; the
+  partner table carries no municipality and no action, and the monthly returns are read only by the
+  partner ask, where they reconcile to the delivery counts rather than to any territory figure.
 - **`notificacoes_reuniao_publica.csv`, dates after 6 November.** The column is `data_prevista`, the
   day a gathering is *planned* for, on notifications lodged with the councils before the extract. A
   notification for later in November filed in October is exactly what the councils hold on 6 November,

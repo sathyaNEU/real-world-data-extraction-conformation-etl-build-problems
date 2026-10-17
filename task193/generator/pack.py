@@ -21,19 +21,26 @@ def write_csv(path, head, rows):
 # ---------------------------------------------------------------- dispensing lines
 # the mean days a chain takes to transmit a line, by quarter of the window. The chains overlap and
 # their order changes between quarters, as their own transfer schedules and backlogs do.
-SUB_LAG = [[1.8, 2.4, 3.1, 2.2],
-           [4.4, 3.7, 4.1, 5.2],
-           [3.1, 4.9, 5.6, 4.2],
-           [6.2, 5.1, 6.8, 5.9]]
+SUB_LAG = [[1.4, 1.9, 2.6, 2.2],
+           [3.3, 2.8, 3.9, 4.5],
+           [4.6, 5.4, 6.3, 5.7],
+           [6.1, 7.2, 6.6, 8.0]]
+# days a chain's own transfer schedule adds on top, by quarter. They overlap the chains and change
+# their order between quarters, so no chain is simply faster than another all year.
+SUB_EXTRA = [[2, 3, 1, 3],
+             [0, 1, 0, 1],
+             [0, -1, -1, 0],
+             [1, 0, 1, 0]]
 # how a pharmacy week falls: busiest on a Monday and a Friday, short hours on a Saturday, and
 # only the duty pharmacies open on a Sunday
 WEEK_SHAPE = [0.1845, 0.1705, 0.1655, 0.1680, 0.1965, 0.1065, 0.0085]
 
 
-def transmit_day(d, lag, rng):
+def transmit_day(d, lag, ci, q, rng):
     """The day a chain's batch reaches the register. A chain transmits on working days, so a lag
     that lands on a weekend carries to the Monday, and about one line in fifty is held back by a
     failed transfer or a re-key and arrives weeks late."""
+    lag = max(0, lag + SUB_EXTRA[ci][q])
     if rng.random() < 0.019 and d < W.NDAY - 46:
         lag += 11 + int(rng.poisson(16))
     t = d + lag
@@ -95,11 +102,11 @@ def dispensings(first):
                 npk = int(rng.choice([1, 2, 3], p=[0.615, 0.265, 0.120]))
                 q = 0 if d < 823 else (1 if d < 913 else (2 if d < 1004 else 3))
                 mu = SUB_LAG[ci][q]
-                lag = int(sub_rng.poisson(mu))
+                lag = int(rng.poisson(mu))
                 lid += 1
                 lines.append({"line": lid, "pid": int(pid), "code": code, "vnr": vnr, "day": d,
                               "pharmacy": ph, "chain": ci, "packs": npk,
-                              "submitted": transmit_day(d, lag, sub_rng),
+                              "submitted": transmit_day(d, lag, ci, q, sub_rng),
                               "prescriber": pres,
                               "is_first": j == 0})
     # patients already on a medicine when the extract opens: their earliest line in the extract is
@@ -139,8 +146,8 @@ def dispensings(first):
                 lines.append({"line": base, "pid": int(pid), "code": code, "vnr": vnr, "day": dd,
                               "pharmacy": ph, "chain": ci, "packs": int(prev_rng.choice(
                                   [1, 2, 3], p=[0.615, 0.265, 0.120])),
-                              "submitted": transmit_day(dd, int(sub_rng.poisson(mu)),
-                                                        sub_rng), "prescriber": pres,
+                              "submitted": transmit_day(dd, int(prev_rng.poisson(mu)),
+                                                        ci, q2, sub_rng), "prescriber": pres,
                               "is_first": False, "prevalent": True})
     for r in lines:
         r.setdefault("prevalent", False)
