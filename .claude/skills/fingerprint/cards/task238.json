@@ -1,0 +1,87 @@
+{
+  "task": "task238",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+  "niche": "a national statistics office's quarterly wellbeing tracker cutting over from telephone-first to web-first collection, setting how far its mode-mix monitor lets a quarter's web share move before the indexes are recalibrated, from each index's mode effect separated from who chooses to answer online",
+  "objective": "data-quality-monitoring",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "rate_or_share",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G16",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "the tracker's head of survey methodology",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "index points",
+  "spine": {
+    "file": "mwt_contact_test_interviews.csv",
+    "rows": 0,
+    "entity": "one interview record (complete, partial, duplicate or late return) in the 2027 contact strategy test",
+    "grain": "interview record",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "Morvenna, an invented island state (New Zealand English)",
+    "currency": "none",
+    "org_type": "national statistics office",
+    "invented_names": [
+      "Morvenna Statistics Office",
+      "Morvenna Wellbeing Tracker"
+    ],
+    "people": [
+      "Bernard Johnstone",
+      "Tania Nicholas",
+      "Leonard McMurray"
+    ]
+  },
+  "deliverables": [
+    "mwt_mode_mix_band_2027q4.xlsx",
+    "mwt_mode_mix_band_2027q4.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "The decisive quantity is how much the channel a unit reports through changes what it reports, and units choose their channel on traits that also move their reports, some of them unrecorded; a randomized nudge toward one channel shifted uptake without changing who reports, so the effect is the arms' difference in reports divided by their difference in uptake, while comparing the channels' reporters, even with every recorded trait held fixed, counts who chose the channel as its effect, and the arms' raw difference counts only the units the nudge moved.",
+  "driver_concrete": "The tracker's mode-mix monitor band is the widest whole-point departure of a quarter's web share that moves no headline index by more than its continuity tolerance, so it rests on each index's mode effect; households that answer online are younger and, in ways no field records, more often away from home, so comparing web with telephone completes, even adjusted for age, sex, education, region, household size, tenure and employment, overstates binge drinking's mode effect and sets the band at 3 points, while the contact strategy test allocated the web-first and telephone-first letters at random, so each index's difference between the letters divided by the letters' difference in web share gives the effect and sets the band at 4; the letters' difference alone sets 6.",
+  "stump": "A competent analyst estimates each index's mode effect by comparing web with telephone completes adjusted for every recorded characteristic and sets the monitor band at 3 points, binge drinking binding; the step that lands it there is reading the mode effect off households that chose their mode, when the test's randomly allocated letters give a contrast that, divided by the letters' difference in web uptake, sets the band at 4.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who builds the test's completes under the test plan's rules, scores each index as the codebook defines it, reads the continuity standard correctly and estimates each mode effect from web against telephone completes adjusted for every recorded characteristic files a band of 3 points; one who takes the two letters' difference as the mode effect files 6; the golden 4 comes from each index's difference between the letters scaled by the letters' difference in web share.",
+  "domain_test": "The deciding quantity is each index's mode effect, the measurement difference between answering online and by telephone for the same households, which survey methodology separates from self-selection into the mode by reading a randomized contact-strategy contrast through the shift it causes in web uptake; with hospital visits or megawatt-hours in place of web and telephone answers, the measurement-versus-selection split, the contact letters as the lever and the mode-mix artefact on a published series stop meaning anything.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Seed DQ11: the world (a tracker adding a new mode) and the quantity (each index's mode effect) kept; the seed's pairing (psychometric invariance) is banned against task237, so the draw sits in survey methodology's own mode-effect analysis. The decision is cut as the mode-mix monitor's band, a monitoring dial that governs every release after the cutover; a per-index pool, flag or new-series designation repeated task465 v1's gap, pattern and decision type. G14 decisive (the telephone completes' level is not what the web completes would have answered by telephone), G16 (the estimator the random letter allocation entitles), G6 (the answerer groups' mix).",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:mode-effect-through-a-randomized-contact-strategy",
+  "layer1": [
+    "an address-level issued-sample file and an interview-level file at different grains, joined by address",
+    "telephone interviews stamped in local time by the CATI system and web submissions stamped in UTC by the survey platform",
+    "web submissions arriving after a quarter's fieldwork close, kept in the export",
+    "households interviewed by telephone after they had already submitted online, or the reverse",
+    "web break-offs with answers to the early items only",
+    "item nonresponse codes that differ by mode"
+  ],
+  "registered": "2026-10-17T14:45:47Z"
+}
