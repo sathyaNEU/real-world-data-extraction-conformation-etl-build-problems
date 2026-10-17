@@ -15,6 +15,15 @@ The landed call scores `C = 38 + 7 + 55 Lc`, the best miss `S = r + 7 + 55 Ls`, 
 
 **1.1 The cracker and mirror sheets**, on paper before any device. The **cracker** landed the call, ran the hygiene battery (key uniqueness, exact duplicates, unmatched joins, fan-out, count ties), executed every filed rule it points at and matched every control and published figure. Score each ask figure and chart criterion, a hit within half a unit of the stated rounding: **every row misses** or the ask is rebuilt. The **mirror** stops at the most attractive wrong rung and keeps **under 35 per cent of ask weight** (target a fifth), no ask whole. A figure differing between sheets is coupled: re-route or drop it.
 
+**1.1b The blind-response test, run at the draw.** For the widest graded component, ask what a response
+that applies one obvious rate to one obvious size column would score, before any file exists. task190's
+eight-segment table was 7 of 8 reproducible from a flat 0.82 per cent of each segment's deposit count, and
+6 of 8 at 0.91 per cent with the headline landing on exactly the golden, so a response doing none of the
+analysis banked most of the rubric's widest component. Also score the constant response (one value in every
+cell) and the all-nil response. More than about a quarter of the cells recoverable that way means the
+component measures the data's shape rather than the solver's analysis, and the ask's shape has to change,
+not its wording.
+
 **1.2 Four bans.**
 1. **No filed rule adjudicates a device on the ask's path, and nothing narrates one**: only an internal inconsistency finds it (a wrong cardinality, an impossible row, a rollup above its parts), as a filed rule gets executed; a filed sentence may exist but never adjudicates.
 2. **No marker**: no batch id, source value, load stamp, flag or single column isolates device rows; blend benign rows into every batch touched, give each classifier column a benign twin.
@@ -105,6 +114,14 @@ measured pair ceiling came out at 83.5 against a paper 35.1 with mirror leakage 
 ask paths were re-cut with silent primaries while the call stayed byte-identical (`freeze.py check
 --mode rubric`). Pins and devices are not substitutes: a pinned convention with a silent device under it
 is the shape that holds. Two rigorous readers splitting means a missing organ: fix it, never harden the ask. Assert every stop and delta, recompute every ask in the verifier, and sweep: lazy, necessity matrix (whatever moves nothing comes out; rerun after every parameter change), pair simulation on the cut pack, over-cleaner, oracle, wrong-path battery, separation count, and a grep for each device's words and any organ stated twice. Repair one device at a time, organ and records together; never delete an organ.
+
+**A filed sentence's scope is stated before it is written, and its wording is approved before it ships.**
+Three pins ordered in one session each leaked something different: handling notes became a solver checklist
+in a release-note file, pins closed the readings an ask's devices rode on, and a clause added to state a
+band's role also said where to build the counterfactual, which is the method. The instruction has to name
+what the sentence may say and what it may not, and the wording comes back for a read before the pack is
+cut. "State the band's role and let the exclusion follow" produced "that has to come from the segment's
+trade outside the band", and the second half is the stump.
 
 ## Part 6. The returned-task revision
 

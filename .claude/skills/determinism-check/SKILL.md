@@ -27,6 +27,18 @@ judge reads that source as the count and the other source's excess as error (tas
 design (the data's structure rules out every other method; preferred), a governing standard's general
 method, or a filed selection criterion in general terms that never names the method (a recognisable
 organ, never in consecutive builds). The data separates every reasonable candidate with margin, asserted.
+**Convergence by insensitivity is not forcing either.** Before claiming the design forces the method, ask
+why the agreeing estimator agrees. If it agrees because the graded quantity is insensitive to exactly what
+the candidate specifications differ on, the agreement is algebra and every other candidate is still
+standing: task190's architecture 2 reproduced its golden under the average of the surplus below a threshold
+and the deficit above it, in 186 of 186 specifications, because averaging the two sides cancels the fitted
+profile's level, while the surplus alone spanned 71 to 786 and the deficit alone 207 to 858 over the same
+family. A refusal rule that lives only in the generator ("the specifications that fail to reconcile are
+dropped") is not in the bundle, so a literal reader cannot apply it and the surviving set cannot be
+reproduced. Three flavours of this have now been measured, and each needs its own check: the data too
+smooth to separate anything, the candidates differing by less than their own sampling error, and the
+agreeing estimator insensitive by construction.
+
 **Forcing measured on smooth data is not forcing.** Where the design forces the method, the separation is
 measured on a pack whose sampling noise is plausible for the process (a Poisson-like record at chi-square
 per degree of freedom near 1, never far below it), because a draw taken from evenly spaced quantiles of a

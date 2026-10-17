@@ -495,5 +495,39 @@ One line each, with the builds that paid for it. The techniques behind them are 
 - So relay nothing structural, and re-root nothing, until both reports are in. A reader finding is evidence
   of what a solver sees, which is Gate F, not Gate C. Two builds paid a wasted instruction for this.
 
+**Three ways to buy convergence instead of earning it** (`determinism-check` §1, measured across one wave)
+- **The data too smooth.** 199 estimators and 180 fit specifications agreed at a Poisson chi-square per
+  degree of freedom of 0.029 because the amounts came from evenly spaced quantiles of a fixed curve
+  (task190 architecture 2, pass 1).
+- **The candidates inside their own sampling error.** Eight estimators spanned 209 to 236.9 with a sampling
+  standard deviation of 28 on the estimate and 24 on the gap between the two families, so the observed
+  6-point gap was a typical draw and nothing in honest data separated them (task192 architecture 3). The
+  same shape caught task194, whose seven closed placements had a Poisson-scaled chi-square of 0.006 on 6
+  degrees of freedom and whose preferred pricing beat its rival by a likelihood ratio of only 1.8 to 1.
+- **The agreeing estimator insensitive by construction.** The average of a surplus below a threshold and a
+  deficit above it reproduced the golden in 186 of 186 specifications because averaging cancels the fitted
+  profile's level, while each side alone spanned a factor of ten (task190 architecture 2, pass 3). The
+  architecture was spent at that point: three passes each relocated the artifact rather than removing it.
+- So a convergence claim is asserted over the judge's own candidate list, measured on a pack whose noise is
+  plausible for the process, and screened for insensitivity. Volume is not the remedy for a specification
+  spread: measured at 2x, 4x and 8x with the construction scaled alongside, the relative span fell only
+  from 44 per cent to 29, because the residue is bias that scales with the figure rather than noise that
+  scales with its square root. What worked was a second independent measurement of the same quantity inside
+  the record whose arithmetic refuses the specifications that disagree.
+
+**A graded table can be answered without the analysis** (`supplemental-stumping` 1.1b)
+- task190's eight-segment table was 7 of 8 reproducible from a flat 0.82 per cent of each segment's deposit
+  count, and 6 of 8 at 0.91 per cent with the headline landing on exactly the golden. Book size alone
+  reproduced most of the rubric's widest component. Score the flat-rate, constant and all-nil responses at
+  the draw, before any file exists.
+
+**A pin's scope is stated before the sentence is written** (`supplemental-stumping` Part 5)
+- Three ordered pins leaked three different things in one session: handling notes that read as a solver
+  checklist in a release-note file, pins that closed the readings an ask's devices rode on, and a clause
+  added to state a band's role that also said where to build the counterfactual. "State the band's role and
+  let the exclusion follow" came back as "that has to come from the segment's trade outside the band", and
+  the second half is the method. Name what the sentence may and may not say, and read the wording before the
+  pack is cut.
+
 **Unspent, so not mistaken for spent**
 - The ledger's old row 41 (displacement under fixed assessment capacity, four outreach arms) was drawn and never built.
