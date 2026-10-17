@@ -119,10 +119,13 @@ for tag, v in FIG["ask_a"].items():
 inv = pd.read_csv(os.path.join(TGT, "thessler_invoice_lines_2026.csv"), dtype=str, keep_default_na=False)
 inv["cents"] = (inv["amount_usd"].astype(float) * 100).round().astype(int)
 amt = inv.set_index(inv["document_number"] + " line " + inv["line"])["cents"]
-inv["v"] = np.where(inv["document_type"] == "Invoice", inv["cents"], -inv["applies_to"].map(amt).fillna(0).astype(int))
-check((inv.loc[inv["document_type"] != "Invoice", "applies_to"].isin(amt.index)).all(), "every credit resolves")
-inv["month"] = pd.to_datetime(inv["service_date"]).dt.month
-inv["year"] = pd.to_datetime(inv["service_date"]).dt.year
+svc = inv.set_index(inv["document_number"] + " line " + inv["line"])["service_date"]
+credit = inv["document_type"] != "Invoice"
+inv["v"] = np.where(~credit, inv["cents"], -inv["applies_to"].map(amt).fillna(0).astype(int))
+check((inv.loc[credit, "applies_to"].isin(amt.index)).all(), "every credit resolves")
+inv["test_day"] = pd.to_datetime(np.where(credit, inv["applies_to"].map(svc), inv["service_date"]))
+inv["month"] = inv["test_day"].dt.month
+inv["year"] = inv["test_day"].dt.year
 ours = set(og["ACCESSION"])
 s = inv[(inv["year"] == 2026) & inv["month"].between(3, 11)]
 names = ["March", "April", "May", "June", "July", "August", "September", "October", "November"]

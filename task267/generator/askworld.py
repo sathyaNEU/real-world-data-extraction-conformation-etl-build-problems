@@ -279,8 +279,7 @@ def billing(T):
                 memo.sort(key=lambda l: l["applies"]["line"] + 100000 * (l["applies"]["inv"].month + 12 *
                                                                             l["applies"]["inv"].year))
                 for k, l in enumerate(memo):
-                    l.update(number="CM-%02d-%05d" % (d.year % 100, seq), date=d, doc="Credit memo", line=k + 1,
-                             memo_total=round(-K.OGTT_PRICE * n, 2))
+                    l.update(number="CM-%02d-%05d" % (d.year % 100, seq), date=d, doc="Credit memo", line=k + 1)
                     out.append(l)
     out.sort(key=lambda l: (l["date"], l["doc"] != "Invoice", l["number"], l["line"]))
     return out, tests

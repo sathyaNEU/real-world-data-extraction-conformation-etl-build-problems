@@ -190,17 +190,17 @@ def write_assets(path, rows):
 # ---------------------------------------------------------------------------------------------- invoices
 def write_invoices(path, lines):
     """The laboratory's account export: each invoice's lines and each credit memo's lines; a credit memo line carries
-    the memo's amount."""
+    the memo's own date in the date column."""
     rows = []
     for l in lines:
         if l["doc"] == "Invoice":
-            desc, amount, applies = "Glucose tolerance test, 75 g, fasting and 2 hour", l["amount"], ""
+            desc, day, applies = "Glucose tolerance test, 75 g, fasting and 2 hour", l["service"], ""
         else:
             desc = "Credit: billed twice" if l["kind"] == "credit_dup" else "Credit: specimen not tested"
-            amount = l["memo_total"]
+            day = l["date"]
             applies = "%s line %d" % (l["applies"]["number"], l["applies"]["line"])
-        rows.append([l["number"], l["date"].isoformat(), l["doc"], l["line"], l["acc"], l["service"].isoformat(),
-                     K.OGTT_CODE, desc, "%.2f" % amount, applies])
+        rows.append([l["number"], l["date"].isoformat(), l["doc"], l["line"], l["acc"], day.isoformat(),
+                     K.OGTT_CODE, desc, "%.2f" % l["amount"], applies])
     return _csv(path, ["document_number", "document_date", "document_type", "line", "accession", "service_date",
                        "test_code", "description", "amount_usd", "applies_to"], rows)
 

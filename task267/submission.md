@@ -22,7 +22,7 @@ Among everyone screened in 2026 it would have referred 90% of the adults with un
 4. Applied each rule's tablet logic in candidate_referral_rules_2027.xlsx to the first screening's values: its share of the adults screened and its weighted share of the adults with undiagnosed diabetes.
 5. Every rule referring fewer adults than A57G120 falls short of 85%: HbA1c of 6.0% at 51%, the 2026 rule or HbA1c of 6.0% at 79%, HbA1c of 5.7% at 80%, a risk score of 5 at 62%.
 6. Counted each analyzer's cartridges in gq200_run_log_2026.csv: a run held twice (a copy stamped in UTC, four hours later in summer and five before 8 March, every other field the same) once, each run on the asset tag analyzer_asset_register.xlsx gives its serial that day, runs stopped at the cartridge check (gq200_error_codes.pdf) excluded, season days only: 40,248 in all.
-7. Netted thessler_invoice_lines_2026.csv by the month each test was done, each credit memo line at the amount of the invoice line it applies to, tests of adults screened being the accessions in ogtt_results_2026.txt: $415,800.00 net, $409,255.00 for adults screened.
+7. Netted thessler_invoice_lines_2026.csv by the month each test was done, each credit memo line in the month of the invoice line it applies to (the test it reverses, not the memo's own date), tests of adults screened being the accessions in ogtt_results_2026.txt: $415,800.00 net, $409,255.00 for adults screened.
 8. Per protocol 6.3 the qualifying rule with the fewest referrals is HbA1c of 5.7% or higher, or a random glucose of 120 mg/dL or higher, at 90% with 36.3% referred.
 
 ## 4. Deliverable Answers
