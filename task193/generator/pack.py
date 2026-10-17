@@ -199,12 +199,15 @@ def apply_mess(lines, people):
     # civil-registration record it was asked for and no dispensing for them in either extract.
     # Their one line falls in the clearance period, so no first receipt inside the screen window
     # moves and the screen cannot see them (checks.py asserts both).
-    by_pid = collections.Counter(r["pid"] for r in lines)
-    solo = [i for i, r in enumerate(lines)
-            if by_pid[r["pid"]] == 1 and r["day"] <= W.CLEAR_B]
-    if solo:
-        take = rng.choice(len(solo), size=min(160, len(solo)), replace=False)
-        rej_idx |= set(int(solo[int(j)]) for j in take)
+    by_pid = collections.defaultdict(list)
+    for i, r in enumerate(lines):
+        by_pid[r["pid"]].append(i)
+    wholly_clear = sorted(p for p, ix in by_pid.items()
+                          if all(lines[i]["day"] <= W.CLEAR_B for i in ix))
+    if wholly_clear:
+        take = rng.choice(len(wholly_clear), size=min(34, len(wholly_clear)), replace=False)
+        for j in take:
+            rej_idx |= set(by_pid[wholly_clear[int(j)]])
     rejected, kept = [], []
     reasons = ["prescriber identifier not in the authorisation register",
                "package code not valid on the date of dispensing",
