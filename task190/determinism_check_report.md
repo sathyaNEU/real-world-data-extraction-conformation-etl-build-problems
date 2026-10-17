@@ -1,112 +1,146 @@
-# Determinism verdict, task190 (judged cold, files in this directory only)
+# Determinism verdict, task190 architecture 3
 
-**Verdict: NOT_DETERMINISTIC. Disposition: SEND_BACK.**
-**Gate G: no shipped artifact ranks the segments on the decision question** (not exhaustively proven; see G). **Gate H: analytical in kind, but the decisive estimator is not filed, so the call is not determinate (FAIL on determinism, not on the three rules).**
+Judged cold on the shipped bundle, 2026-10-17. This file replaces architecture 2's verdict, whose
+substance is in the design note's post-mortem; it was judging a different world (Arahura Bank, cash
+deposits below a reporting threshold) and would have read as current evidence if it shipped beside
+this pack.
 
-Scope note: my own specification family is 5 windows (half-width 5k,7.5k,10k,15k,20k around 10,000, floored at 0) x 5 bin widths (50,100,200,250,500) x 3 fits (Poisson, OLS, log-OLS) x polynomial order 1-3 = 225, of which 186 are complete (log fits fail on an empty bin in 39). The write-up's own family (225, 141 "standing") cannot be reproduced from the bundle: its refusal rule ("surplus below and deficit above fail to reconcile") is nowhere in the files. Scripts are in scratch/.
+**Verdict: NOT_DETERMINISTIC. Disposition: SEND_BACK, overridden by the author to FIX_NOW.** The
+override, its test and the condition attached to it are in the design note. In short: every fix this
+verdict asks for files the WHAT, none files the estimator, and this verdict's own Gate F, G and H
+findings say the decisive step is alive. If the re-judge after the fix pass is not APPROVE, the number
+retires.
 
-## 0. Reproduction table (shipped files, literal reading)
+The judge's own text follows, unedited.
 
-| Figure | Write-up | Mine | Note |
-|---|---|---|---|
-| Cash deposits paid in, bank | 46,772 | 46,772 | counter cash, less 2 reversed + 2 reversing rows, plus machine deduplicated on ref (82 re-sends); every machine row's UTC date equals its NZ date |
-| Per segment paid in | 10,433 / 15,131 / 4,758 / 3,168 / 4,175 / 3,993 / 2,396 / 2,718 | identical | all 46,772 map through the crosswalk |
-| 9,000-9,999.99 | 2,583 | 2,583 | |
-| 10,000-10,999.99 | 1,428 | 1,428 | |
-| "about 1,900" the profile puts in 10-11k | 1,900 | 1,635 to 2,286 over 186 specs (median 1,927; 72 of 186 round to 1,900) | NOT determinate |
-| Quarterly sessions / over tolerance / net | 1145/117/17.00, 1126/119/100.28, 1081/223/-798.74, 1101/238/944.81 | identical | tolerance 25 to 2026-12-31, 15 from 2027-01-01; "at or under passes": 2 sessions at exactly 25 and 5 at exactly 15 are correctly not over; local vs raw stamp gives the same quarters |
-| Risk bands raised in / lowered in / raised then out | B1 0/240/0, B2 392/241/153, B3 402/306/115, B4 320/391/3, B5 230/0/0 | identical (accepted rows only, letters mapped to 1-5) | including the 11 superseded rows would give 398/404 raised, 243/307 lowered, so the dictionary rule matters and is filed |
-| Monthly out-of-service hours | 75.9 91.7 94.0 78.9 56.9 82.5 95.4 134.9 54.2 98.2 72.9 63.2 | identical when an incident is put in its REPORTED month | see fork F1 below |
-| Machines with no service record | 3 (1455, 1509, 1562) | same | |
-| Sites differing from vendor by over 2 h | AR15, AR19 | same (-21.1 h and -34.6 h on the year; every other site 0.00) | robust |
-| Segment split table | 150/100/50/50/50/50/0/0, bank 450 | reproduced ONLY under one estimator, (surplus + deficit)/2, at 50 rounding (186 of 186 specs) | not filed anywhere; see section 1 |
+---
 
-## 1. Probe 1: estimand filed, method open?
+# verdict.md (working draft, part 1: BLIND CANDIDATE ENUMERATION, written before opening submission_graded_blocks.md)
 
-Filed by 7.4: population (physical cash deposits of business-register customers at year end, by segment), outcome (count of deposits, one for one, "below the threshold when the amount would otherwise have been at or above it"), window (the reporting year, by paid-in date; 1.2 defines the year), unit (deposits, not value, customers or days), comparison (counterfactual "from the segment's trade outside the band"). Rounding: 7.4 says nearest ten and bank = sum of stated segment figures; the prompt says nearest 50 and bank = their sum. The prompt is the later and more specific instruction, so I take 50 (closed, but the handbook and prompt disagree and nothing says which governs; low risk because both give the same bank-is-sum rule).
+Population: capital_payment_lines_2026.csv, delivery_sequence=1 only (26,652 lines; 222 bank-feed redeliveries dropped), 2 reversed + 2 credit_note
+lines (net nil, untested). Tested set: testing_schedule_extract 2026 rows (272 rows, 271 distinct lines; CPL-26-095171 listed twice), all of
+which match the ledger on amount and none missing from it. PDF schedule lists the same 271 refs. 10 lines show exceptions, all non-certain
+(smallest amount 1.4k..5.4k each; found misstatement total 15,445.38; none in CP-11, CP-14, CP-31).
+Structure of the tested set: every line >= 180,726 (31 lines, whole-euro amounts) is tested; below that the testing probability rises with
+value (0.26% below 1k, 1.3% 1-5k, 3.1% 5-10k, ~35% 50-100k), i.e. selection probability ~ value / ~182k (monetary-unit style selection).
+Largest untested line 85,087.70; 108,945.95 tested. Nothing in the shipped text states an interval, count or probability.
 
-No sentence gives a procedure, formula, fitting instruction, bin or profile. Good: the method is open. Executed literally, 7.4 names "deposits in the band (3.2: 9,000 to under 10,000) that would otherwise have been at or above 10,000". No column holds it (7.4 says so). What the literal text fixes is the surplus-in-band quantity S = observed(9-10k) minus counterfactual(9-10k) from "outside the band". It does NOT say that the 10-11k shortfall is part of the figure or that 10-11k is excluded from the profile. 3.2 defines the band as 9-10k, so "outside the band" literally includes 10-11k, which is visibly depleted (the 100-dollar histogram steps from about 240 per bin to about 145 per bin at exactly 10,000).
+Candidates (authority total, programme figures to 50k):
+C1  Known (found) only: 15,445 -> every programme rounds to 0 (authority 0). Not an estimate of the population.
+C2  Value-weighted ratio: sum(err)/sum(value) over tested non-certain lines x non-certain population value, + certain-stratum errors (0):
+    pooled 129,202; programme-by-programme sum 152,457 (CP-21 7,650; CP-23 52,905; CP-34 10,618; CP-41 47,252; CP-44 25,563; CP-47 8,470)
+    -> rounds 0/0/0/0/0/50k/0/50k/0 style; authority ~100k-150k. (Biased: sample is size-biased, so value-weighting double counts big lines.)
+C3  Inclusion-probability weighting (I x sum of taints, taint = error/recorded), I = interval, pi = value/I, certain stratum at full value:
+    I=180,000: CP-21 46,548; CP-23 264,312; CP-34 53,298; CP-41 214,056; CP-44 141,876; CP-47 91,080; others 0 -> sum 811,170
+    rounded 50k/250k/50k/200k/150k/100k = 800,000.
+    I=170,000: 43,962; 249,628; 50,337; 202,164; 133,994; 86,020 (766,105) -> 50/250/50/200/150/100 = 800,000.
+    I=183,200 (my MLE of the inclusion rate from the data): 47,375; 269,011; 54,246; 217,861; 144,398; 92,699 (825,591) -> 50/250/50/200/150/100 = 800,000.
+    I=190,000: 49,134; 278,996; 56,259; 225,948; 149,757; 96,140 (856,235) -> 50/300/50 or 250(CP-41 225,948 -> 250)/150/100 = 900,000.
+C4  Per-programme mean taint x non-certain population value (Hansen-Hurwitz by programme): CP-21 38,430; CP-23 428,005; CP-34 43,797;
+    CP-41 223,689; CP-44 146,731; CP-47 86,793 -> sum 967,446; rounds 50(CP-21 38k->50k)/450/50/200 (223.7k->200k)/150/100 -> 1,000,000.
+C5  Pooled mean taint x total non-certain value: 819,492 (-> not programme-resolved).
+Rounding-edge spread across plausible I (153k..187k): authority figure holds at 800,000 under C3; CP-23 flips to 300k at I>187.5k; CP-41 to 250k at I>189.2k;
+lower edges: CP-23 -> 200k below I=152.7k, CP-41 -> 150k below 147k, CP-44 -> 100k below 139k, CP-47 -> 50k below 148k.
+Certain-selection share (certain value / programme recorded value, certain = amount >= 150k, same set for any threshold in (108,945.95,180,726]):
+CP-11 .3524 CP-14 .3419 CP-21 .1849 CP-23 .1688 CP-31 .4263 CP-34 .1841 CP-41 .1383 CP-44 .1559 CP-47 .1404
+(if 108,945.95 were also certain, CP-21 becomes .1979).
+Easy way: value-weighted error rate x population (C2, ~150k) gives an authority figure ~1/5 the inclusion-weighted one and accepts the population
+(below 1,160,000) where C3 plus basic precision (3.0 x 180,000 = 540,000 -> ~1.35m) refers it.
+Recovery of I alternatives: (a) certain boundary from record: I in (108,945.95 or 85,087.70, 180,726]; (b) non-certain value / tested count = 181,847;
+(c) MLE from inclusion pattern 183,200 (+-6% sampling noise); (d) per-programme (non-certain value / count) ranges 148k..321k, so no per-programme interval;
+(e) systematic sampling in ledger order from a start: best fit I=180,000 leaves 199 mismatches, so not systematic in ledger order; (f) no I at all (C2).
 
-## 2. Probe 2: every defensible figure (bank, unrounded; segment rows in section 4)
+---------------------------------------------------------------------------------------------------
+# PART 2: VERDICT (written after reading submission_graded_blocks.md)
 
-All over my 186 complete specs; negative segment values clipped to 0 only where stated.
+## Verdict
+**NOT_DETERMINISTIC. Disposition: SEND_BACK.** Solution is not wrong on the headline call (800,000 / refer / Rail siding and yard 250,000 reproduce under
+the pooled-interval reading), but the golden holds only under an unfiled method and an unfiled interval; a defensible, equally natural reading gives
+1,000,000 and CP-23 450,000, and two graded critical components cannot be reproduced to the cent from anything shipped.
 
-| Estimator | What it is | Unrounded bank range | Sum of 50-rounded segment figures (distinct values) |
-|---|---|---|---|
-| S, exclude 9-11k from the fit | surplus below | 71 to 786 (median 439) | 13 values, 150 to 800; modal 500 (73 of 186), 450 in 17 |
-| S, exclude 9-10k only (literal 3.2 band) | surplus below, depleted 10-11k left in the fit | 171 to 799 on 120 specs (median 522) | 12 values, 250 to 850; modal 600 (25 of 120), 450 in 20 |
-| D, deficit above | expected minus observed in 10-11k | 207 to 858 (median 499) | 13 values, 250 to 950; modal 450 (51), 400 (43) |
-| min(S,D) | | 71 to 411 | 150 to 450 |
-| (S+D)/2 | the write-up's "reconciled" figure | 402.3 to 510.3 (median 474.2) | **450 in all 186** |
+## Probe 1: estimand filed, method open?
+- Population: 9.1 "every payment line in the population ... the year in which the line was paid"; 9.4 programmes from the register; ledger
+  paid_date all in 2026 (2025 file is wholly 2025). Fixed. Redeliveries (delivery_sequence 2, 222 rows) closed by field_dictionary. Reversed/credit pairs closed by dictionary.
+- Outcome: 9.1 euro by which recorded exceeds properly payable. Fixed. Window: year of payment. Fixed. Unit: euro, nearest 50k, authority = sum of stated. Fixed.
+  Comparison: recorded vs amount properly payable; population vs 4.2 tolerable (1,160,000) at 95% in 4.3. Fixed in words.
+- Literal execution of 9.1: the quantity is the population's total misstatement over every line. No column holds it (9.2 says so). The testing covers 271 of 26,652 lines.
+  Literally the only quantity the record gives is the found 15,445.38 (C1), which is the misstatement of the tested lines, not the population.
+- Method sentences shipped: none. No interval, selection count, inclusion probability, projection, weighting, stratum, reliability factor or ordering is stated anywhere
+  (audit_manual 9.1/9.2/9.4/9.7, audit_plan 4.1-4.6, provenance, dictionary). "Certain of selection" (asked in the prompt) and "taintings", "basic precision", "incremental
+  allowance", "upper limit" (recommendation) are defined nowhere in the bundle. Method is wholly open, and the design that forces it is only inferable from the tested-line pattern.
 
-Only the last row agrees across specs, and it agrees because of an identity, not because the data pick a candidate: (S+D)/2 = (obs_below - obs_above)/2 - (exp_below - exp_above)/2, so the profile enters only as a half-slope correction (range 2.7 to 58 deposits per segment, grocery the largest) and the huge level sensitivity of the extrapolation cancels. That is a legitimate discontinuity-style estimator, but the pack nowhere files it, and 7.4 reads as S. A literal solver running S gets 150 to 800 depending on window and polynomial order, and on the shipped record the specs do not agree (S minus D across specs: bank spread -786 to +579).
+## Probe 2: candidates (see part 1). Which I would file: C3 at I = 180,000, programme figures 0/0/0/50k/50k/100k/150k/200k/250k, authority 800,000, because the
+certain stratum (lines >= 180,726, 31 lines, all whole-euro) and the pooled inclusion rate (MLE I = 183,200; non-certain value / non-certain tested = 181,847) agree. The competing C4 (below) I
+cannot exclude.
 
-Easy-path figures named in the write-up (1,438 same-day, 500 band-alone, 1,633 prior-year) I did not reproduce: the same-day and prior-year definitions are not filed in the bundle, so I cannot confirm them. 2,583 (raw band) is exact.
+## Probe 3: recovery of the population scale
+Recovered I from: (a) certainty boundary: I in (85,087.70, 180,726] (108,945.95 tested, non-whole-euro, so sampled if I > 108,945.95); (b) non-certain value / tested count 181,847;
+(c) MLE of pi = v/I over all non-certain lines 183,200 (95% band about 172k-196k); (d) per-programme non-certain value / tested count (each programme its own interval; equals
+mean taint x non-certain value); (e) systematic from a start in ledger order: best fit 199 line mismatches, refused; (f) no interval, value-weighted ratio.
+Figures: (a)/(b)/(c) -> 800,000 (CP-23 250k, CP-41 200k, CP-44 150k, CP-47 100k, CP-21 50k, CP-34 50k). (d) -> CP-21 38,430 (50k), CP-23 428,005 (**450k**), CP-34 43,797 (50k), CP-41 223,689 (200k),
+CP-44 146,731 (150k), CP-47 86,793 (100k): authority **1,000,000**. (f) -> 129,202 pooled / 152,457 by programme (authority ~100k-150k, CP-23 50k).
+Using the all-line population as the base for I (59.47M/271 = 219,445) -> 900k-ish (CP-23 300k, CP-41 250k).
+What the record admits: pooled common interval (admitted: expected tested per programme at I=180k is 49.9/38.8/38.0/29.1/17.8/21.4/16.7/15.5/15.2 against actual 51/42/46/18/10/26/16/15/16,
+chi-square 10.8 on 8 df, p about 0.2, so a common Poisson-type interval is not refused) and the per-programme interval (not refused either: nothing in the record shows the sample was
+drawn with a common interval rather than a programme-by-programme count). Neither is refused by anything shipped. I cannot tell which; the answer to CP-23 and the authority figure moves
+between 250k/800k and 450k/1,000,000. Across I from 153k to 187k the pooled-interval figures hold; outside it CP-23 -> 200k (below 152.7k) or 300k (above 187.5k) and CP-41 -> 250k (above 189.2k).
 
-## 3. Probe 3: forced by the data, or by data too smooth?
+## Probe 4: rounding edges (pooled I = 180,000; unrounded -> nearest 50k line, distance, flip condition)
+- CP-21 46,548 -> lines 25k/75k, 21.5k; flips only I < 96.7k. Stated 50,000.
+- CP-23 264,312 -> line 275,000, 10,688; flips at I > 187,400 (+4.1%). Stated 250,000. Closest to an edge.
+- CP-34 53,298 -> 25k/75k, 21.7k. Stated 50,000.
+- CP-41 214,056 -> line 225,000, 10,944; flips at I > 189,200 (+5.1%). Stated 200,000.
+- CP-44 141,876 -> line 125,000, 16,876; flips at I < 158,400 (-12%). Stated 150,000.
+- CP-47 91,080 -> line 75,000, 16,080; flips at I < 148,200 (-18%). Stated 100,000.
+- CP-11, CP-14, CP-31: exactly 0 (no tainted line among 51, 42, 10 non-certain tested lines; no found error in the certain stratum). Genuinely nil on arithmetic, not an edge wearing a zero;
+  but a nil that depends on the sample having drawn no error (sampling luck), which a different recovery cannot change.
+- Authority: sum of stated figures = 800,000 (unrounded sum 811,170.09, 13.8k below the 825k line only if figures were not stated first; by 9.1 the stated sum governs).
+- Grain: the write-up's 50,000 grain is the filed one (9.1). Rounding is not chosen to make the figures agree.
+- Informativeness: nine figures carry six distinct values (0,0,0,50,50,100,150,200,250). A single rate times one column does not reproduce them (it would put a nonzero value on the three nil
+  programmes); the nil/non-nil split and the order need the taint pattern. Adequately informative.
+- Certain shares: CP-11 35.2, CP-14 34.2, CP-21 18.5, CP-23 16.9, CP-31 42.6, CP-34 18.4, CP-41 13.8, CP-44 15.6, CP-47 14.0, authority 26.6 all reproduce at certainty cut anywhere in
+  (108,945.95, 180,726]. If the cut were <= 108,945.95, CP-21 -> 19.8 (and authority 26.8). The data refutes such a cut (pooled inclusion fit), but no sentence does.
 
-Neither extreme. The amounts are sampled, not drawn from a curve. Poisson cubic fit, 9-11k excluded, window 5,000-15,000 (where a cubic is adequate):
+## Recomputation ledger (claimed / recomputed)
+- Lines in population 26,648, recorded 59,469,739.92 -> 26,652 deduped rows less 4 reversal/credit rows = 26,648; total 59,469,739.92 (same either way, pair nets nil). Reproduced.
+- Lines tested 271 recorded 21,043,847.13 -> 271 distinct; 21,043,847.13 (272 rows is 21,224,573.13). Reproduced. 31 certain holding 15,826,525.00 -> reproduced.
+- Found 15,445.38 -> reproduced (10 exceptions). 43,648.52 -> 15,445.38 x 59,469,739.92 / 21,043,847.13 = 43,648.52 reproduced. 129,201.54 -> reproduced (pooled value-weighted).
+- Projection 811,170.09 = 180,000 x sum of taints -> reproduced only if I = 180,000, which is not shipped (my recoveries give 181,847/183,200).
+- Basic precision 540,000 = 3.0 x 180,000 -> reproduced only with the factor 3.0 (exact Poisson 95% factor 2.996 gives 539,280) and I = 180,000. Not shipped.
+- **Incremental allowance 347,797.48 over 10 taintings: did NOT reproduce.** My value 347,603.78 (exact chi-square Poisson factors) or 347,332.00 (two-decimal published table). Neither matches to the cent; table not in bundle.
+- **Upper limit 1,698,967.57: did NOT reproduce** (mine 1,698,773.9 with exact factors; 1,698,502 with table). The refer call is robust (projection + basic precision alone is 1,351,170 > 1,160,000).
+- Tolerable 1,160,000 "2.0 per cent of budgeted capital expenditure": register budgets sum to 59,481 thousand, 2.0% = 1,189,620. **Did not reproduce** (58,000 thousand needed). Call is unaffected.
+- Programme figures: reproduced under C3 (I 153k-187k); did NOT reproduce under C4 (CP-23 450,000; authority 1,000,000).
+- Runs by quarter (released quarter, PR-26-017 once): 25/26/27/26 reproduced; past cut-off 9/8/5/6 and values 5,303,327.24 / 5,217,457.85 / 3,433,308.73 / 3,470,389.62 reproduced (gross run_value_eur; net of
+  reversed_value would be 5,215,326.86 for Q2). Forks: quarter by run_date gives runs 26/26/26/26; a release after midnight judged against the run day's cut-off gives past 13/9/7/7 (7,692,261.69 / 5,621,180.86 /
+  4,286,745.00 / 3,885,419.38).
+- Risk categories: raised 0/29/42/31/39 reproduced (accepted events only, labels mapped; superseded would add 2,5 to categories 2,3). "Removed into it" 25/24/36/26/0 reproduced as moved DOWN into the category;
+  "raised then removed" 0/16/11/16/0 reproduced only as raised into the category then later moved OUT of it. The prompt says "those removed", which read literally is removed from the category (31/69/49/76/27 move out
+  of cat 1..5; 0/24/23/37/27 moved down out). The dictionary claims categories move one way and never return, contradicted by the data (both directions occur). Open fork on the ask.
+- Lines covered per month: 34/19/26/17/25/23/28/14/27/24/12/23 reproduced as ROW counts (272). Distinct lines are 33 in January (the 1 duplicate row CPL-26-095171, 2026-01-30). The submission elsewhere says 271 lines
+  tested, so January 34 counts the duplicated line twice. Fork: 33 vs 34. Missing from ledger: none (reproduced). Duplicated: 1 (reproduced).
 
-| segment / bank | w50 chi2/df (df, p) | w100 | w250 | w500 |
-|---|---|---|---|---|
-| bank | 1.11 (156, .16) | 1.12 (76, .23) | 1.44 (28, .06) | 1.28 (12, .22) |
-| transport | 0.94 (156, .69) | 1.01 (76, .46) | 0.91 (28, .60) | 0.61 (12, .84) |
-| grocery | 1.18 (156, .06) | 1.11 (76, .23) | 1.39 (28, .08) | 1.23 (12, .26) |
-| hospitality | 0.95 (.67) | 0.91 (.69) | 0.81 (.75) | 0.37 (.97) |
-| fuel | 1.05 (.31) | 1.23 (.09) | 1.27 (.16) | 1.34 (.19) |
-| clubs / rural / trades / personal | 0.83-1.02 | 0.83-1.05 | 0.57-1.01 | 0.37-0.90 |
+## Gates
+- A (computation/determinism): FAIL. Programme figures depend on an unfiled interval and an unfiled choice between a common interval and a programme-by-programme count (CP-23 250k vs 450k; authority 800k vs 1,000k); the
+  incremental allowance and upper limit do not reproduce to the cent; asks carry forks (removed, quarter basis/cut-off day, January 33 vs 34).
+- B (inputs in bundle): FAIL. Needed from the field and not shipped: Poisson reliability factors / incremental-allowance method, basic precision factor 3.0, the meaning of "certain of selection", "taintings", the selection interval.
+  Tolerable 2.0% does not match the register.
+- C-E: no further issue found (units, 2025 vs 2026, redeliveries, reversals, superseded events closed by the dictionary).
+- F (stump power): high. The easy routes (15,445 found; 43,648 on recorded value; 129,202-152,457 value-weighted/stratified ratio) all accept the population and put every programme at 0 to 50k; only the
+  inclusion-weighted projection refers it. A strong analyst who guesses a ratio estimator fails.
+- G (**Gate G line**): PASS. No shipped artifact ranks programmes on the misstatement question and gets it wrong. grant_claim (claim year to 31 March), revenue_expenditure_summary and the 2025 ledger/testing rows are
+  wrong-population or wrong-basis files that do not rank programmes on misstatement; the 2025 extract (15,878.96 over 9 exceptions) is a different year.
+- H (**Gate H line**): domain = internal audit substantive testing / audit sampling (real: projecting tested lines to the population); layers = Layer 1 redelivered rows, reversed pairs, 2025 vs 2026, supplier-number
+  crosswalk, superseded events, relabelled categories; Layer 2 = recognising the tested set is selected with probability proportional to value above a certain stratum and weighting the taints accordingly;
+  decisive_step = project taints through the inclusion probabilities (recovered interval), certain stratum at its own error. Classification: analytical (data's real structure/estimand), not a planted decoy and not
+  data semantics; but not pure rule application only if the method is recoverable, which it is not exactly because the method and interval are unfiled (so the step also leans on field knowledge, Gate B).
+- Three rules: No decoy: pass (the 43,648 ratio route is an easy wrong route, not a certified decoy). Not semantics: pass for the main call. Not rule application: pass (no shipped rule produces the figure).
 
-Chi2/df about 1 with mid-range p values: consistent with a count process at about Poisson noise; not overdispersed, and not suspiciously under-dispersed in aggregate (the small segments at w500 run 0.4-0.6, low but with 12 df inside tail range). Over the full 0-20,000 window the same cubic fails badly (bank chi2/df 6.5 at w50 to 57 at w500, p < 0.001) because the profile is not a cubic over that range, i.e. the specifications really do disagree there. Adjacent-100-bin statistic (should be 1 for Poisson counts on a smooth density): bank 1.41, segments 0.68 to 1.20. Variance over mean in 100-dollar bins after linear detrend: 5-9k bank 1.31, 11-15k bank 0.93; segments 0.57 to 1.51.
+## Stumping type
+mechanism: inclusion-probability (monetary-unit style) projection of tested-line taints with a certain stratum; stumping_family: wrong estimator on a size-biased sample (value-weighted ratio / found-only);
+surface_read_dependency: none for the declared distractors (grant claim, revenue summary, 2025 rows are not on the path); sole_data_defect: none (no planted defect).
 
-Which side: the mean-of-S-and-D figure sits on the "agree" side but for an algebraic reason (cancellation), and its agreement is NOT within a wide scatter: sampling SE of (obs_below - obs_above)/2 is sqrt(ob+oa)/2: transport 15.1, grocery 18.3, hospitality 10.0, personal 9.3, fuel 9.4, trades 8.1, clubs 7.2, rural 6.9, bank 31.7. The rounding half-width is 25, so each segment's cell is 1.4 to 3.6 SE wide and the bank figure's rounding cell (50 wide) is only 1.6 SE: the grid is at the edge of what the record's own scatter supports. S and D individually disagree between candidate fits by several SE; that is the candidates differing by far more than sampling error, so the method is not forced by the data for the filed quantity S.
-
-## 4. Probe 4: distance to the rounding line (estimator (S+D)/2, 186 specs)
-
-| Segment | Figure | Unrounded min / median / max | Nearest edge (min over specs) | Flip condition |
-|---|---|---|---|---|
-| Transport and courier | 150 | 142.8 / 157.3 / 163.9 | 11.1 to the 175 edge (163.9) and 17.8 to 125 | +11 deposits flips to 200 |
-| Grocery and convenience | 100 | 80.4 / 105.3 / 116.7 | **5.4 to the 75 edge (80.4)**; 8.3 to 125 | -5.4 flips to 50 |
-| Hospitality | 50 | 39.2 / 46.0 / 49.6 | 14.2 to the 25 edge (39.2) | -14 flips to 0 |
-| Trades and construction | 50 | 48.4 / 52.1 / 53.7 | 21.3 | |
-| Fuel and automotive | 50 | 49.0 / 54.8 / 58.7 | 16.3 | |
-| Personal services | 50 | 50.6 / 56.7 / 61.0 | 14.0 | |
-| Rural supply and horticulture | 0 | -4.9 / 0.4 / 2.8 | 20.1 to +25 | genuinely nil |
-| Clubs and community | 0 | -3.1 / 2.2 / 4.6 | 20.4 to +25 | genuinely nil |
-| Bank, path 1 (sum of rounded) | 450 | 450 in all 186 | binding segment margin is grocery 5.4 | |
-| Bank, path 2 (round the unrounded sum) | | 402.3 / 474.2 / 510.3 | **median is 0.8 below the 475 edge** | |
-
-The write-up states "closest segment 15.8 clear"; in my family grocery gets to 5.4. Under the (S+D)/2 estimator both nils are genuinely nil (|F| <= 5, 20 from the edge). Under S they range -40 to +12, so they are nil on any reading, but "nothing the record can distinguish" there cannot say whether a negative estimate means no splitting or a profile misfit. The grain: the write-up says 50 is "the granularity the record's own scatter supports"; with SEs of 7 to 18 per segment that is defensible, but the grain is the prompt's, not the record's, and it is the grain at which the (S+D)/2 table collapses to one value across all specs; at the handbook's nearest-ten the table is not stable (e.g. transport 142.8 to 163.9 spans ten-cells 140, 150, 160), so the agreement exists only at this coarse a grid.
-
-## 5. The four requested answers
-
-**A. Two paths to the headline.** Path 1 (sum of 50-rounded segment figures, which is what the prompt files): 450 in 186 of 186 specs (and in every one of the 186, identical segment tables, a single distinct table). Path 2 (round the unrounded sum to 50): 400 in 12, 450 in 93, 500 in 81. Unrounded range 402.3 to 510.3, median 474.2, 0.8 below the 475 edge. By parameter: window 5,000 gives 450 in 29/500 in 13; 7,500 gives 450 in 42; 10,000 gives 400 in 12/450 in 5/500 in 19; 15,000 gives 450 in 12/500 in 24; 20,000 gives 450 in 5/500 in 25. Polynomial order 1 gives 450 in 24/500 in 38; order 2 the same 24/38; order 3 gives 400 in 12/450 in 45/500 in 5. So "both paths agree" is false across the surviving set: they agree in 93 of 186 (50 percent). The headline the prompt asks for is path 1, so the answer text is internally OK, but the stated robustness of the bank figure is not a property of the unrounded estimate, and a solver who sums first (the handbook says sum of the stated segment figures, but a solver producing one figure may not) gets 500 in 44 percent of specs.
-
-**B. Method forced or not.** Not forced for the filed quantity. S: 13 different 50-rounded bank values, 150 to 800. The record is not too smooth (chi2/df about 1, count-like, section 3) and the candidates differ by far more than sampling error on S and D, but they collapse to one table only under (S+D)/2, which the pack does not file and which a literal reading of 7.4 does not give. This sits on neither of the two failed sides cleanly: the data are properly noisy, and the candidates diverge by more than that noise unless one particular estimator is chosen; the agreement is manufactured by the estimator plus a 50-wide grid.
-
-**C. Distance to rounding line** is in section 4. Smallest margins: grocery 5.4 deposits (flip to 50), transport 11.1 (flip to 200), personal services 14.0, hospitality 14.2. Bank path-2 median 0.8 from its edge. No figure is a rounding edge wearing a zero.
-
-**D. Blind response on the per-segment table.** The split column takes 4 distinct values (150, 100, 50, 0): counts 1, 1, 4, 2 cells. A constant 50 in all eight cells scores 4 of 8 cells (50 percent of that column; the bank 400 is wrong, the largest segment is wrong). A constant 0 or nil scores 2 of 8 (25 percent; bank 0 wrong). A constant 100 scores 1 of 8. Worse, a flat rate on the paid-in column needs no look at amounts: at about 0.82 percent of paid in it matches 7 of 8 cells (bank 400); at 0.91 percent it matches 6 of 8 with the bank at exactly 450; only the top-two ordering (transport 150, grocery 100) is wrong. Proportional to the band count at 15 to 20 percent matches 7 of 8 (bank 400 to 500). So the only cells a no-analysis response misses are the two top segments and the largest-segment answer; roughly 6 to 7 of 8 of the split column plus the per-segment paid-in column (which is plain arithmetic, 8 cells) are obtainable blind. Rubric quality concern, not determinism: the grid is coarse enough that book size alone reproduces most of it.
-
-## 6. Forks found (fork table, each with arithmetic consequence)
-
-F0 (blocking). Estimator not filed: S vs D vs (S+D)/2, and whether 10-11k is in or out of the profile. Bank 71-786 (S), 207-858 (D), 402-510 (mean). The write-up's "reconciled" is a method, not an estimand; the handbook, field dictionary and prompt give no reconciling rule.
-F1 (blocking, graded). Month attribution of the 4 incidents that cross a month end (SI000515, SI000583, SI000397, SI000216) is unfiled. Reported-month gives the write-up (Aug 91.7, Sep 94.0, Oct 78.9, Nov 56.9, Dec 82.5, Apr 98.2, May 72.9); restored-month gives Aug 85.3, Sep 94.2, Oct 85.0, Nov 49.5, Dec 89.8, Apr 92.4, May 78.7; pro-rating by minutes gives Aug 89.5, Sep 92.2, Oct 82.9, Nov 54.2, Dec 85.2, Apr 94.2, May 76.9. Eight of twelve monthly figures move by up to 7.4 hours.
-F2. "About 1,900" in critical component 1 is 1,635 to 2,286 across specs; it is not a stable figure.
-F3 (minor). Handbook says nearest ten, prompt says nearest 50. Closed by taking the prompt, not stated.
-F4 (minor). Five service-log rows have minutes that differ from restored minus reported; the dictionary closes this ("minutes column is the figure of record"), which I applied.
-F5 (minor). Per-band raised/lowered "counted once each however many times the rating moved" is read per band; a customer climbing two bands is counted in each band. Closed enough by the sentence, but the reading is not explicit.
-
-## 7. Gates
-
-- **H (three rules).** No decoy: the shipped files contain no memo or certified record arguing the wrong method (prescribed extracts hold only 10k-plus rows; branch cash summary and card settlements are context). Not semantics: pass; the segment recode, UTC/local and reversals are handled the same by every reading. Not rule application: the decisive step is estimating a counterfactual deposit profile, which is analytical. Could a strong analyst who cleaned every key and read every clause still file a wrong figure? Yes: reading 7.4 literally (surplus above a profile fitted outside 9-10k) gives bank 171-799, median 522, modal rounded sum 600; this is the easy route and it is also literal. The content of H is analytical, but H also requires that the right answer be reachable from the record; here it is reached only by an unfiled estimator, so I do not clear H as determinate.
-- **G.** I found no shipped artifact that ranks segments on the split question. The prescribed extracts are 10k-plus only (so they hold none of the depleted-side or band information, only the above side), the branch cash summary is by branch, and the card file is a merchant-facility file. Not exhaustively tested against every column.
-- **A (estimand filed).** FAIL in part: population, outcome, window, unit filed; comparison filed only as "outside the band", not whether 10-11k counts as outside.
-- **B (no semantic fork on the main call).** FAIL at F0 and F2 above.
-- **C (literal execution = golden).** FAIL: literal execution of 7.4 gives S, not the golden.
-- **D (method open only where forced).** FAIL: S estimates are not separated by the data (13 candidate banks); only an unfiled estimator is stable.
-- **E (graded figures off their edge).** Grocery 5.4 deposits and bank path 2 0.8 from its edge are fragile; segments otherwise 11 to 21 clear. Marginal.
-- **F (stump power / the ladder holds on the record).** Not judged beyond the above; the analytical route does exist and the easy raw-band answer 2,583 is wrong, but the golden's own value is not unique.
-
-## 8. What would fix it (without moving the call)
-
-File the WHAT: state in the report brief that the figure is the surplus below the threshold and the shortfall above it measured together over the band 9,000 to 11,000 (so the estimate is each segment's half-difference in observed counts adjusted for the profile's slope), or equivalently state that deposits in 10,000 to 11,000 are part of what the figure reconciles. Fix the month attribution of an incident (reported month). Drop "about 1,900" or file its basis. Widen the grain, or state that the headline is the sum of the stated segment figures (the prompt already does).
+## Fix
+File the WHAT of the selection (that selection was with probability proportional to recorded value from the lines not certain of selection, the interval or sample size in force and whether it was common to
+the programmes, and what certain of selection means) in a shipped sentence, and file the reliability factor table or drop the incremental allowance and upper limit from the graded critical components; correct the
+2.0 per cent tolerable to the register; file "removed" and the January line count (lines versus rows) and the quarter/cut-off day basis for the asks.
