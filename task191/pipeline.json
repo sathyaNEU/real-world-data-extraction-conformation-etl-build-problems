@@ -4,8 +4,8 @@
  "status": "BUILD",
  "domain": "general-statistics-data-science/multiple-testing-selective-inference",
  "objective": "anomaly-detection",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-17",
  "stump": "A competent solver cleans the panel, excludes the maintenance evenings, takes the quarter's worst evening window at 412 kbps, tests it against that interconnect's own variation and against a seven-path multiplicity correction, finds it clears both and files fund the augment on HVT-01, where 412 kbps is the fourth largest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
  "architecture": 1,
@@ -15,12 +15,12 @@
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, 4 lines, all clause numbers or domain nouns",
+  "reader": "r1 running"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS after the forum was redrawn",
+  "nearest": "0.05 task130 v3"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 3. world.py, sim.py and postprocess.py are written and the signal is calibrated: sim.calibrate solves each quarter's measurement spread so its worst evening window hits world.WORST_WINDOW, and the ladder measures as designed. STR-01 544 kbps on 2027-02-08 in the 20:00 window with the maintenance evenings kept (11.3 per cent above the largest earlier quarter, so a confident wrong fund); HVT-01 412 kbps on 2027-02-17 in the 19:00 window with them excluded (32.1 per cent above its own 99th percentile); DLF-01 highest quarter mean at 132 kbps, 12.7 per cent above the next and 2.7 per cent below its own 2026Q4; and the answer, 412 kbps fourth of the nine quarterly worst windows with the largest earlier at 489. Still to write: pack.py (the minute panel, the eight quarters' daily rollup, the register, maintenance, the edge five-minute file and the three asks' files), docs.py (the framework, the quality standard, the dictionary, the published report), golden.py, figures.py, deliver.py, metadata.py, checks.py, verify.py, build.py, then the stage 3 gates.",
+ "resume": "Stage 4, first run. The bundle is cut and every free gate is green: 116 generator assertions, 166 independent checks, precut 0 FAIL 0 WARN, voice-check PASS at 977 characters, figures_check 101 of 101, leak.py REVIEW with four lines that are clause numbers or ordinary domain nouns, guard surface answered in the card's differentiation and heart PASS. Two byte-identical rebuilds; target.zip md5 7b126eae0242e941a19a6827b46cb20c, 22 files, 4.4 MB. The leak reader and the determinism judge are spawned. Resume: read both, fix every finding in one generator pass, re-run the free gates, re-judge once on FIX_NOW, then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -16,7 +16,7 @@ Judging the worst of many monitored series when the worst was chosen for being w
 | Layer 2 | `forecast_uncertainty`, own pattern `own:null-of-the-selected-maximum` |
 | World | Netherlands, video streaming platform, EUR |
 | As-of date | 2027-04-12 |
-| Guard | registered at PASS |
+| Guard | registered at PASS; the deciding forum redrawn to the capacity committee after `heart` blocked a board of directors against task263 |
 
 **Data-native sentence.** The figure the augment case is built on is the single worst interconnect
 evening of the quarter, picked out of 630 path-evening cells by a monitoring dashboard that reports
@@ -144,15 +144,15 @@ produced and the call is to fund nothing.
 | SF3 | shortfall | the daytime band's median less the evening window's median, per the standard | the evening median less the daytime median, or a mean | the sign or the level changes | the standard's definition, quoted; asserted |
 | SF4 | the clock | the windows in local time on timestamps the dictionary states are UTC, summer time from 28 March | the windows applied to UTC directly | the worst cells change | clause 4.3 "in local time" and the dictionary's UTC sentence, both quoted; asserted |
 | SF5 | median | the median of the band's minute values | the median of the seconds behind them, or a session-weighted mean | the level changes | the standard's definition of the minute value and of the band median, quoted |
-| SF6 | a usable evening | every evening the collector covered; gaps are either under four minutes or the whole band | a completeness rule of the solver's choosing | `same call`, asserted: no gap between four minutes and a whole band exists, so every completeness rule selects the same evenings |
+| SF6 | a usable evening | the evenings the collector captured both bands of, whole | a completeness rule of the solver's choosing | `same call`, asserted: a collector loss takes a whole band for a whole day on one port, so every band the panel holds is whole and every completeness rule selects the same evenings |
 | SF7 | maintenance evenings | the nine evenings clause 4.4 names, excluded | kept, or a wider exclusion around them | the worst cell changes | clause 4.4, quoted; asserted |
 | SF8 | the quarter | 1 January to 31 March 2027 | the four quarters to 31 March, or the fiscal quarter | the cell set changes | clause 4.1 and the prompt's quarter close, quoted |
 | SF9 | worst | the largest shortfall | the smallest delivered bitrate, or the most evenings below the floor | the candidate changes | clause 4.2 "the largest shortfall", quoted; asserted |
-| SF10 | comes closest | the interconnect with the largest worst-evening shortfall | the one nearest the flip on its quarter mean | `same call`, asserted: the same interconnect under both |
+| SF10 | comes closest | the interconnect with the largest worst-evening shortfall | the one nearest the record on its quarter mean | the named interconnect changes | clause 4.2, which takes the decision on the largest any interconnect shows in any window, quoted; asserted that the mean reading names a different one |
 | SF11 | rounding | to the nearest kbps, once, at the end | per window, or per minute value | `same call`, asserted at the nearest kbps and at one decimal |
 | SF12 | ties | none: the seven worst-evening figures are distinct in every window | a tie at the top | `same call`, asserted |
 | SF13 | the earlier quarters | the eight whole quarters the rollup covers before 2027 Q1 | the trailing eight quarters including the current one | `same call`, asserted: the rank of 412 kbps holds either way |
-| SF14 | the daytime band | 12:00 to 15:59 local, the standard's reference band | the whole non-evening day | `same call`, asserted at both bands |
+| SF14 | the reference band | 12:00 to 14:59 local, the band the standard names | the whole non-evening day | the alternative cannot be computed: the panel retains no minute outside the two bands, asserted | the standard's own sentence, quoted |
 
 ## Ladder
 
@@ -254,10 +254,9 @@ an SF row ruled out by a quoted sentence or asserted to give the same call.
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A1 billable 95th percentile per peer against the commitment it was billed on, and the overage in euros | 3 per peer | the audit trail from an input the call consumes to another system's control total | the quarter's peering invoices are being closed | D2 version: one commitment was restated after the quarter opened and the record billed on is the latest accepted, not the latest delivered | D6 the samples are per port and two transit peers hold two ports each; D3 Mbps against Gbps; D8 the sample clock | `edge_traffic_5min.csv`, `peering_commitments.csv`, `commitment_amendments.csv`, `interconnect_register.csv`, `invoice_credits.csv`, dictionary, standard, manifest; 13 columns | 4 stops, lazy delta 11.4 per cent of the overage | a peering team closing a quarter's invoices against commitments that move |
-| A2 sessions and the share that rebuffered, per client build | 2 per build | a measure every candidate carries that the call does not turn on | the release train's own quality review | D7 keys reissued: a build number was reused after a rollback, so one string covers two builds | D4 a channel absent for part of the quarter; D1 a re-sent daily file | `client_sdk_sessions.csv`, `sdk_release_log.json`, `rebuffer_events_daily.csv`, `collector_health_log.csv`, dictionary, manifest, register, standard; 11 columns | 4 stops, lazy delta 2 builds misread | a client team reading its own release quality |
-| A3 incidents opened, those restored inside the standard, and those whose recorded cause sits outside the platform, per month | 3 per month | the trail from an input the call consumes through rows it never reads to a control total | the operations review the board sees with the augment paper | D4 absence as the signal: the standard measures to service restoration and only some rows carry the restoration time, the rest evidenced in a file no habitual join reaches | D8 the ticket close against the restoration time; D5 a partial extract of one queue | `incident_log.csv`, `incident_restoration_extract.csv`, `service_standard` in the framework, `collector_health_log.csv`, dictionary, manifest; 12 columns | 5 stops, lazy delta 7 incidents a quarter | an operations manager reporting against a service standard |
-| A4 the delivered bitrate the published report states for each quarter against the figure the edge samples give, and the gap | 3 per published quarter | an input reconciled to another system's total, the gap made of devices | the investor-relations check before the next report | D3 the published figure is session weighted and the edge's is traffic weighted | D6 the report's quarters are fiscal and the edge file's are calendar; D2 one quarter was restated in a later report | `published_quarterly_quality_report.pdf`, `edge_traffic_5min.csv`, `client_sdk_sessions.csv`, `fiscal_calendar.csv`, dictionary, manifest; 12 columns | 4 stops, lazy delta 3 of 4 quarters | a reporting analyst reconciling a published series to the system behind it |
+| A1 billable 95th percentile per peer against the commitment it was billed on, and the overage in euros | 3 per peer | the audit trail from an input the call consumes to another system's control total | the quarter's peering invoices are being closed | D2 version: one commitment was restated after the quarter opened and the record billed on is the latest accepted, not the latest delivered | D6 the samples are per port and two transit peers hold two ports each; D3 Mbps against Gbps; D8 the sample clock | `edge_traffic_5min.csv`, `peering_commitments.csv`, `commitment_amendments.csv`, `interconnect_register.csv`, `invoice_credits.csv`, dictionary, standard, handover inventory; 13 columns | 4 stops, lazy delta 11.4 per cent of the overage | a peering team closing a quarter's invoices against commitments that move |
+| A2 sessions and the share that rebuffered, per client build | 2 per build | a measure every candidate carries that the call does not turn on | the release train's own quality review | D7 keys reissued: a build number was reused after a rollback, so one string covers two builds | D4 a channel absent for part of the quarter; D1 a re-sent daily file | `client_sdk_sessions.csv`, `sdk_release_log.json`, `rebuffer_events_daily.csv`, `collector_health_log.csv`, dictionary, handover inventory, register, standard; 11 columns | 4 stops, lazy delta 2 builds misread | a client team reading its own release quality |
+| A3 incidents opened, those restored inside the standard, and those whose recorded cause sits outside the platform, per month | 3 per month | the trail from an input the call consumes through rows it never reads to a control total | the operations review the board sees with the augment paper | D4 absence as the signal: the standard measures to service restoration and only some rows carry the restoration time, the rest evidenced in a file no habitual join reaches | D8 the ticket close against the restoration time; D5 a partial extract of one queue | `incident_log.csv`, `incident_restoration_extract.csv`, `service_standard` in the framework, `collector_health_log.csv`, dictionary, handover inventory; 12 columns | 5 stops, lazy delta 7 incidents a quarter | an operations manager reporting against a service standard |
 
 **The main population's zero counts.** Zero device rows and zero hazard rows in
 `panel_throughput_minutes.csv`, `evening_quality_daily.csv`, `interconnect_register.csv` and
@@ -268,12 +267,12 @@ quarters, asserted by count. Deleting every device leaves the call exactly as ha
 
 | Hazard | Asks moved | Per-ask delta |
 |---|---|---|
-| D6 port against peer grain | A1, A4 | A1 two peers, A4 one quarter |
-| D3 unit scale | A1, A4 | A1 the overage, A4 the gap |
+| D6 port against peer grain | A1, A2 | A1 two peers, A2 one build |
+| D3 unit scale | A1 | the overage on every peer |
 | D8 clocks | A1, A3 | A1 one sample day, A3 four incidents |
 | D4 absence | A2, A3 | A2 one build, A3 seven incidents |
 
-**The referee.** `extract_manifest.csv` states each file's row count and date range and arbitrates the
+**The referee.** `telemetry_handover_inventory.csv` states each file's row count and date range and arbitrates the
 one designed disagreement, the partial queue extract in A3, without naming a level.
 
 **The cracker sheet.** The cracker landed the call, ran the hygiene battery, executed every filed rule
@@ -284,7 +283,6 @@ and matched every control.
 | A1 overage per peer | the commitment as delivered, ports read as peers | overage on two peers too high and on two peers absent | the amended commitments, ports rolled to peers | miss |
 | A2 rebuffer share per build | the build string as the key | two builds blended into one | the release log's build windows | miss |
 | A3 restored inside the standard per month | the ticket close as the restoration | seven incidents counted inside | the restoration extract joined on the incident reference | miss |
-| A4 gap per published quarter | the edge total against the published figure | three of four quarters off | session weighting on the fiscal calendar | miss |
 
 **Pair ceiling:** 39.5
 **Mirror leakage:** 20.0

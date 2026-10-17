@@ -1,79 +1,82 @@
 {
-  "task": "task191",
-  "architecture": "v1",
-  "drawn": "2026-10-16",
-  "slot_note": "seed AD14 kept its decision shape only: one capacity upgrade funded among several candidates that all show an evening shortfall. The seed's own architecture compares the strongest gap against a range uncongested ports have shown, which is a filed reference band deciding the call, so the build is re-rooted on the field's own treatment of a maximum that was selected for being largest.",
-  "domain": "general-statistics-data-science",
-  "subdomain": "multiple-testing-selective-inference",
-  "niche": "judging the worst of many monitored series when the worst was chosen for being worst",
-  "objective": "anomaly-detection",
-  "shape": "13",
-  "decision_type": "go_hold_or_stop",
-  "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "objective"
-  ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G17",
-    "G18"
-  ],
-  "gate_g": "signal_vs_noise_or_hold",
-  "calibration_form": "none",
-  "stump_strategy": "uncertainty_hold",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "published_series",
-  "stakeholder_role": "the network planning lead",
-  "role_family": "capacity_planner",
-  "scoring_unit": "per active unit per period",
-  "spine": {
-    "file": "panel_throughput_minutes.csv",
-    "rows": 0,
-    "entity": "one measurement of one path in one minute",
-    "grain": "path x minute",
-    "source": "synthetic"
-  },
-  "forum": "board_of_directors",
-  "forcing_event": "period_close",
-  "org_family": "software_or_platform",
-  "world": {
-    "geography": "Netherlands",
-    "currency": "EUR",
-    "org_type": "video streaming platform",
-    "invented_names": [],
-    "people": [
-      "Amelia Jekel",
-      "Rick Claassen"
-    ]
-  },
-  "deliverables": [],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "The decisive quantity is whether the largest shortfall among many candidate series is larger than the largest a quiet set of the same size and length produces, because the candidate was chosen for standing out, so judging it against the spread of one series calls a routine extreme a real degradation.",
-  "driver_concrete": "Seven interconnects are watched every evening for a quarter and the worst of them is put forward, so the figure to beat is the distribution of the worst of seven over a quarter of evenings, which the uncongested paths' own record puts well above the one-series bound the worst interconnect clears.",
-  "stump": "A competent solver builds each interconnect's evening shortfall against its own daytime baseline, tests the worst one against its own variation, finds it clears comfortably and funds the augment, where the same shortfall is inside what the worst of seven quiet paths produces in a quarter.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans every series and applies the filed investment rule tests the worst interconnect's gap against that interconnect's own spread, gets a comfortable margin and funds the augment, where the honest comparison is against the maximum over seven paths and a quarter of evenings and the call is to hold.",
-  "domain_test": "The deciding quantity is the null distribution of a maximum over many series and many periods, which selective inference estimates from the family rather than from the selected member; swap the interconnects for a single meter read once and nothing was selected, so the correction and the call disappear.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "The uncongested paths are not a calibration organ: they are part of the same panel and carry no determination to reproduce, so the calibration form is none and the null of the selected maximum is estimated from the family itself.",
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:null-of-the-selected-maximum",
-  "layer1": [
-    "minute-level panel with gaps",
-    "two measurement vantage points",
-    "local time against UTC",
-    "a path renamed mid-quarter",
-    "a maintenance window to exclude",
-    "wide monthly sheets"
-  ],
-  "registered": "2026-10-16T23:55:31Z"
+ "task": "task191",
+ "architecture": "v1",
+ "drawn": "2026-10-16",
+ "slot_note": "seed AD14 kept its decision shape only: one capacity upgrade funded among several candidates that all show an evening shortfall. The seed's own architecture compares the strongest gap against a range uncongested ports have shown, which is a filed reference band deciding the call, so the build is re-rooted on the field's own treatment of a maximum that was selected for being largest.",
+ "domain": "general-statistics-data-science",
+ "subdomain": "multiple-testing-selective-inference",
+ "niche": "judging the worst of many monitored series when the worst was chosen for being worst",
+ "objective": "anomaly-detection",
+ "shape": "13",
+ "decision_type": "go_hold_or_stop",
+ "answer_unit": "named_option",
+ "answer": "",
+ "answer_source": "",
+ "gap": [
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G17",
+  "G18"
+ ],
+ "gate_g": "signal_vs_noise_or_hold",
+ "calibration_form": "none",
+ "stump_strategy": "uncertainty_hold",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "published_series",
+ "stakeholder_role": "the network planning lead",
+ "role_family": "capacity_planner",
+ "scoring_unit": "per active unit per period",
+ "spine": {
+  "file": "panel_throughput_minutes.csv",
+  "rows": 0,
+  "entity": "one measurement of one path in one minute",
+  "grain": "path x minute",
+  "source": "synthetic"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "period_close",
+ "org_family": "software_or_platform",
+ "world": {
+  "geography": "Netherlands",
+  "currency": "EUR",
+  "org_type": "video streaming platform",
+  "invented_names": [],
+  "people": [
+   "Amelia Jekel",
+   "Rick Claassen"
+  ]
+ },
+ "deliverables": [],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "The decisive quantity is whether the largest shortfall among many candidate series is larger than the largest a quiet set of the same size and length produces, because the candidate was chosen for standing out, so judging it against the spread of one series calls a routine extreme a real degradation.",
+ "driver_concrete": "Seven interconnects are watched every evening for a quarter and the worst of them is put forward, so the figure to beat is the distribution of the worst of seven over a quarter of evenings, which the uncongested paths' own record puts well above the one-series bound the worst interconnect clears.",
+ "stump": "A competent solver builds each interconnect's evening shortfall against its own daytime baseline, tests the worst one against its own variation, finds it clears comfortably and funds the augment, where the same shortfall is inside what the worst of seven quiet paths produces in a quarter.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who cleans every series and applies the filed investment rule tests the worst interconnect's gap against that interconnect's own spread, gets a comfortable margin and funds the augment, where the honest comparison is against the maximum over seven paths and a quarter of evenings and the call is to hold.",
+ "domain_test": "The deciding quantity is the null distribution of a maximum over many series and many periods, which selective inference estimates from the family rather than from the selected member; swap the interconnects for a single meter read once and nothing was selected, so the correction and the call disappear.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task189": "task189 and task191 share only the broadest generator tag, G17 statistical rigor, and the Gate G mechanism signal_vs_noise_or_hold. The mechanisms are unrelated. task189's decisive quantity is the mean of a set of results most of which carry only an upper bound, where two laboratories report to limits an order apart, so the call turns on estimating a mean under left censoring. task191's decisive quantity is the null distribution of a maximum: the figure is correct and uncensored, and the call turns on the breadth of the selection that produced it. Nothing is censored here and nothing is selected there.",
+  "task190": "furniture only: both packs shipped a handover manifest. task191's is renamed to the platform's own idiom and carries its own columns. task190's architecture 1 is spent and its driver, a stock read as a flow, has nothing to do with calibrating an extreme."
+ },
+ "lineage": [],
+ "notes": "The deciding forum is the platform's capacity committee, redrawn from a board of directors after guard.py heart blocked the forum against task263.",
+ "layer2_family": "forecast_uncertainty",
+ "layer2_pattern": "own:null-of-the-selected-maximum",
+ "layer1": [
+  "minute-level panel with gaps",
+  "two measurement vantage points",
+  "local time against UTC",
+  "a path renamed mid-quarter",
+  "a maintenance window to exclude",
+  "wide monthly sheets"
+ ],
+ "registered": "2026-10-16T23:55:31Z"
 }

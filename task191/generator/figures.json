@@ -1,0 +1,221 @@
+{
+ "a1_peers": {
+  "Delfzicht Breedband": {
+   "commitment_mbps": 124,
+   "overage_eur": 236,
+   "percentile_mbps": 159
+  },
+  "Grensweg Carrier": {
+   "commitment_mbps": 326,
+   "overage_eur": 86,
+   "percentile_mbps": 338
+  },
+  "Kabelnet Zuid": {
+   "commitment_mbps": 196,
+   "overage_eur": 246,
+   "percentile_mbps": 238
+  },
+  "Noordlijn Transit": {
+   "commitment_mbps": 540,
+   "overage_eur": 589,
+   "percentile_mbps": 649
+  },
+  "Rhenia Telecom": {
+   "commitment_mbps": 130,
+   "overage_eur": 85,
+   "percentile_mbps": 142
+  },
+  "Vastnet": {
+   "commitment_mbps": 183,
+   "overage_eur": 92,
+   "percentile_mbps": 198
+  },
+  "Zandpoort IX": {
+   "commitment_mbps": 72,
+   "overage_eur": 158,
+   "percentile_mbps": 89
+  }
+ },
+ "a2_builds": {
+  "b-41600": {
+   "build_version": "4.16.0",
+   "rebuffered_pct": 3.0,
+   "sessions": 7838242
+  },
+  "b-41700": {
+   "build_version": "4.17.0",
+   "rebuffered_pct": 2.8,
+   "sessions": 8340125
+  },
+  "b-41800": {
+   "build_version": "4.18.0",
+   "rebuffered_pct": 5.8,
+   "sessions": 5807199
+  },
+  "b-41806": {
+   "build_version": "4.18.0",
+   "rebuffered_pct": 3.2,
+   "sessions": 5082479
+  },
+  "b-41810": {
+   "build_version": "4.18.1",
+   "rebuffered_pct": 3.1,
+   "sessions": 4502318
+  },
+  "b-41900": {
+   "build_version": "4.19.0",
+   "rebuffered_pct": 3.2,
+   "sessions": 5876425
+  }
+ },
+ "a3_incidents": {
+  "2027-01": {
+   "cause_outside_platform": 30,
+   "opened": 56,
+   "restored_inside_standard": 31
+  },
+  "2027-02": {
+   "cause_outside_platform": 11,
+   "opened": 39,
+   "restored_inside_standard": 22
+  },
+  "2027-03": {
+   "cause_outside_platform": 27,
+   "opened": 51,
+   "restored_inside_standard": 37
+  }
+ },
+ "call": "none",
+ "closest_below_record_pct": 16,
+ "closest_over_own_99th_pct": 32,
+ "closest_port": "HVT-01",
+ "closest_shortfall_kbps": 412,
+ "decided_evening": "2027-02-17",
+ "decided_port": "HVT-01",
+ "decided_shortfall_kbps": 412,
+ "decided_window": "19:00",
+ "evenings_in_quarter": 90,
+ "flip_quarter": "2026Q1",
+ "flip_shortfall_kbps": 489,
+ "framework_clauses": [
+  "4.1",
+  "4.2",
+  "4.3",
+  "4.4",
+  "4.5",
+  "5.1",
+  "7.1",
+  "7.2"
+ ],
+ "grid": {
+  "DLF-01 19:00": {
+   "evening": "2027-03-18",
+   "worst_kbps": 301
+  },
+  "DLF-01 20:00": {
+   "evening": "2027-02-14",
+   "worst_kbps": 371
+  },
+  "DLF-01 21:00": {
+   "evening": "2027-01-22",
+   "worst_kbps": 298
+  },
+  "HVT-01 19:00": {
+   "evening": "2027-02-17",
+   "worst_kbps": 412
+  },
+  "HVT-01 20:00": {
+   "evening": "2027-03-22",
+   "worst_kbps": 311
+  },
+  "HVT-01 21:00": {
+   "evening": "2027-03-19",
+   "worst_kbps": 345
+  },
+  "KZD-01 19:00": {
+   "evening": "2027-03-20",
+   "worst_kbps": 368
+  },
+  "KZD-01 20:00": {
+   "evening": "2027-03-03",
+   "worst_kbps": 350
+  },
+  "KZD-01 21:00": {
+   "evening": "2027-02-08",
+   "worst_kbps": 306
+  },
+  "OPL-01 19:00": {
+   "evening": "2027-02-25",
+   "worst_kbps": 397
+  },
+  "OPL-01 20:00": {
+   "evening": "2027-03-19",
+   "worst_kbps": 334
+  },
+  "OPL-01 21:00": {
+   "evening": "2027-01-21",
+   "worst_kbps": 380
+  },
+  "RHN-01 19:00": {
+   "evening": "2027-02-24",
+   "worst_kbps": 332
+  },
+  "RHN-01 20:00": {
+   "evening": "2027-01-09",
+   "worst_kbps": 385
+  },
+  "RHN-01 21:00": {
+   "evening": "2027-01-19",
+   "worst_kbps": 392
+  },
+  "STR-01 19:00": {
+   "evening": "2027-01-17",
+   "worst_kbps": 370
+  },
+  "STR-01 20:00": {
+   "evening": "2027-03-31",
+   "worst_kbps": 333
+  },
+  "STR-01 21:00": {
+   "evening": "2027-03-06",
+   "worst_kbps": 400
+  },
+  "VSN-01 19:00": {
+   "evening": "2027-02-14",
+   "worst_kbps": 311
+  },
+  "VSN-01 20:00": {
+   "evening": "2027-01-08",
+   "worst_kbps": 296
+  },
+  "VSN-01 21:00": {
+   "evening": "2027-01-01",
+   "worst_kbps": 291
+  }
+ },
+ "own_99th_kbps": {
+  "DLF-01": 304,
+  "HVT-01": 311,
+  "KZD-01": 341,
+  "OPL-01": 334,
+  "RHN-01": 339,
+  "STR-01": 329,
+  "VSN-01": 295
+ },
+ "quarterly_worst_kbps": {
+  "2025Q1": 392,
+  "2025Q2": 368,
+  "2025Q3": 352,
+  "2025Q4": 441,
+  "2026Q1": 489,
+  "2026Q2": 379,
+  "2026Q3": 361,
+  "2026Q4": 452
+ },
+ "rank_of_nine": 4,
+ "rung0_port": "STR-01",
+ "rung0_shortfall_kbps": 544,
+ "rung2_mean_kbps": 131.6,
+ "rung2_port": "DLF-01",
+ "windows_assessed": 1890
+}

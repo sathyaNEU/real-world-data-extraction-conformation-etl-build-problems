@@ -3,7 +3,7 @@ import datetime as dt
 
 SEED = 191
 AS_OF = dt.date(2027, 4, 12)               # the telemetry extract date
-BOARD = dt.date(2027, 4, 19)               # the board sits
+COMMITTEE = dt.date(2027, 4, 19)           # the capacity committee sits
 Q_FROM = dt.date(2027, 1, 1)               # the quarter the decision is about
 Q_TO = dt.date(2027, 3, 31)
 PRIOR_FROM = dt.date(2025, 1, 1)           # the eight quarters the daily rollup covers
@@ -41,6 +41,6 @@ LOAD_TREND = {"2025Q1": 0.93, "2025Q2": 0.95, "2025Q3": 0.97, "2025Q4": 1.00,
               "2027Q1": 1.06}
 # the worst evening window each quarter's own record shows, which the calibration solves the
 # quarter's measurement spread to hit
-WORST_WINDOW = {"2025Q1": 409, "2025Q2": 368, "2025Q3": 352, "2025Q4": 441,
+WORST_WINDOW = {"2025Q1": 392, "2025Q2": 368, "2025Q3": 352, "2025Q4": 441,
                 "2026Q1": 489, "2026Q2": 379, "2026Q3": 361, "2026Q4": 452, "2027Q1": 412}
 TARGET_ROWS = 25000
