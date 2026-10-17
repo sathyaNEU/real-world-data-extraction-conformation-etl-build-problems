@@ -72,7 +72,8 @@ GUIDELINE = [
     ("2. Terms", [
         "2.1 <b>Carrier relationship.</b> One brand selling the flights, the operator flying them and the aircraft type: "
         "for example, Norvale Connect flights flown by Pellmont Aviation's Embraer 175s. A filing is made for each "
-        "relationship. A turn belongs to the relationship of its departing flight.",
+        "relationship. A turn belongs to the relationship of its departing flight: the flight number the operator flies "
+        "it under, the number in its ATC callsign.",
         "2.2 <b>Turn.</b> An aircraft's visit to an E gate stand between its arrival and its next departure from "
         "Kelderby when both fall on the same operating day, which at Kelderby runs from 03:00 to 02:59 local time. A "
         "turn begins at on-block on the E gate stand and ends at off-block, including any time on a remote stand after "
@@ -141,10 +142,6 @@ LAYOUT = [
         ["141-144", "Onward flight number"], ["145", "Aircraft rotation layover (days)"],
         ["173-192", "Aircraft configuration/version"], ["193", "Date variation, departure"],
         ["194", "Date variation, arrival"], ["195-200", "Record serial number"]]),
-    ("Record type 4, segment data", [
-        ["1", "Record type (4)"], ["3-14", "As the flight leg record it follows"],
-        ["29-30", "Board point and off point indicators"], ["31-33", "Data element identifier (DEI)"],
-        ["34-36", "Board point"], ["37-39", "Off point"], ["40-194", "Data"], ["195-200", "Record serial number"]]),
     ("Record type 5, trailer", [["1", "Record type (5)"], ["3-5", "Airline designator"],
                                 ["188-193", "Serial number check reference"], ["194", "End code"],
                                 ["195-200", "Record serial number"]]),
@@ -154,8 +151,8 @@ LAYOUT_TEXT = [
     "layout of Chapter 7 of the IATA Standard Schedules Information Manual. This note lists the positions the authority "
     "reads. Positions not listed are kept as received.",
     "Files from several carriers are merged in the order they arrive: each carrier's carrier record (type 2) is followed "
-    "by its flight leg records (type 3), each with any segment data records (type 4) the carrier sent for it, and its "
-    "trailer (type 5). Each carrier's records keep the time mode it filed in.",
+    "by its flight leg records (type 3) and its trailer (type 5). The authority's schedule database holds record types "
+    "1, 2, 3 and 5 only. Each carrier's records keep the time mode it filed in.",
     "A flight leg record covers the dates from its period of operation that fall on its days of operation. The onward "
     "airline, flight number and rotation layover give the next flight the aircraft operates. A flight that stops at "
     "Kelderby and continues under the same number has a leg record for each leg, in leg sequence.",
@@ -196,7 +193,6 @@ AGREEMENTS = [
     ("Grayling Air", "Grayling Air", "Grayling Air", "ATR 72-600", "Grayling Air (self-handled)", "own flying",
      "2011-06-01"),
 ]
-BLOCK_NOTES = {3450: "transferred to Sable Coast Air flying", 3800: ""}
 
 
 def write_affiliates(path):

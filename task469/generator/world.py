@@ -52,9 +52,7 @@ ORDER = list(SEGMENTS)
 
 # flight number blocks (commercial numbers the brands sell), as the affiliate register files them
 BLOCKS = [
-    ("NV", "PMV", 3000, 3449, None, None),
-    ("NV", "PMV", 3450, 3499, None, dt.date(2026, 7, 14)),
-    ("NV", "SBC", 3450, 3499, dt.date(2026, 7, 15), None),
+    ("NV", "PMV", 3000, 3499, None, None),
     ("NV", "SBC", 3500, 3799, None, None),
     ("TQ", "PMV", 5100, 5299, None, None),
     ("TQ", "SBC", 5300, 5399, None, None),

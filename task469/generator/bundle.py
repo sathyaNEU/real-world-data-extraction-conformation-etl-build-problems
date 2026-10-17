@@ -19,6 +19,11 @@ def _csv(target, key):
         return list(csv.DictReader(fh))
 
 
+def _var(v):
+    """An SSIM UTC/local time variation ('-0500') in hours."""
+    return (1 if v[0] == "+" else -1) * (int(v[1:3]) + int(v[3:5]) / 60.0)
+
+
 def _min(s):
     h, m = s.split(":")
     return int(h) * 60 + int(m)
@@ -197,22 +202,96 @@ def dated(legs, lo, hi, utc_as_local=False):
                 base = dt.datetime(d.year, d.month, d.day)
                 dep = base + dt.timedelta(minutes=_min(lg["std"][:2] + ":" + lg["std"][2:]))
                 arr = base + dt.timedelta(days=lg["arr_dayvar"], minutes=_min(lg["sta"][:2] + ":" + lg["sta"][2:]))
-                if lg["mode"] == "U" and not utc_as_local:
-                    dep, arr = dep + dt.timedelta(hours=W.UTC_OFF), arr + dt.timedelta(hours=W.UTC_OFF)
-                out.append(dict(lg, date=d, kdep=dep, karr=arr))
+                if lg["mode"] == "U" and utc_as_local:
+                    kdep, karr = dep, arr
+                elif lg["mode"] == "U":
+                    kdep, karr = dep + dt.timedelta(hours=W.UTC_OFF), arr + dt.timedelta(hours=W.UTC_OFF)
+                else:
+                    # each end's local clock to Kelderby's: back to UTC by its variation, then UTC-4
+                    kdep = dep - dt.timedelta(hours=_var(lg["dep_var"]) - W.UTC_OFF)
+                    karr = arr - dt.timedelta(hours=_var(lg["arr_var"]) - W.UTC_OFF)
+                out.append(dict(lg, date=d, kdep=kdep, karr=karr))
             d += dt.timedelta(days=1)
     return out
 
 
-def turns_2027(legs, refs, reg, dedup="dei", night="clock", through=True, utc_as_local=False):
-    """Scheduled turns at Kelderby in the week of 12 July 2027: an arrival and the same aircraft's next departure the
-    same local day, followed by the onward link or, at a through stop, the same flight's next leg. The handling
-    switches give the schedule ask's other stops."""
+def operating_2026(target):
+    """The flights the authority's 2026 season schedule carries (operating flights, as coordinated)."""
+    legs, refs = SS.parse(os.path.join(target, F["ssim26"]))
+    return {(lg["airline"], lg["flight"]) for lg in legs}
+
+
+def successor(x, by_flight):
+    """The next dated leg the same aircraft flies: the onward link, or at a through stop the same flight's next leg."""
+    if x["onward"]:
+        oa, of, lay = x["onward"]
+        c = by_flight.get((oa, of, x["date"] + dt.timedelta(days=x["arr_dayvar"] + lay)), [])
+        c = [y for y in c if y["dep"] == x["arr"]]
+        return c[0] if c else None
+    c = [y for y in by_flight.get((x["airline"], x["flight"], x["date"]), []) if y["leg"] == x["leg"] + 1]
+    return c[0] if c else None
+
+
+def rotations(D):
+    """Each aircraft's chain of dated legs within one operating day (a link into the next operating day, a night stop,
+    ends the chain)."""
+    by_flight = {}
+    for x in D:
+        by_flight.setdefault((x["airline"], x["flight"], x["date"]), []).append(x)
+    nxt, has_prev = {}, set()
+    for x in D:
+        y = successor(x, by_flight)
+        if y is not None and opday(y["kdep"]) == opday(x["kdep"]):
+            nxt[id(x)] = y
+            has_prev.add(id(y))
+    chains = []
+    for x in D:
+        if id(x) in has_prev:
+            continue
+        c = [x]
+        while id(c[-1]) in nxt:
+            c.append(nxt[id(c[-1])])
+        chains.append(c)
+    return chains
+
+
+def sole_rotations(D, operating):
+    """The dated legs left once each rotation filed twice (the same legs at the same times on the same aircraft type,
+    under two brands' numbers) is kept only under the numbers that operated in the 2026 season schedule."""
+    groups = {}
+    for c in rotations(D):
+        sig = tuple((y["dep"], y["arr"], y["kdep"], y["karr"], y["eqp"]) for y in c)
+        groups.setdefault(sig, []).append(c)
+    keep = []
+    for sig, cs in groups.items():
+        if len(cs) > 1:
+            op = [c for c in cs if all((y["airline"], y["flight"]) in operating for y in c)]
+            cs = op if len(op) == 1 else cs
+        for c in cs:
+            keep += c
+    return keep
+
+
+def turns_2027(legs, refs, reg, dedup="rotation", night="clock", through=True, utc_as_local=False, operating=None,
+               keep="operating"):
+    """Scheduled turns at Kelderby in the week of 12 July 2027: an arrival and the same aircraft's next departure on
+    the same operating day, followed by the onward link or, at a through stop, the same flight's next leg. The golden
+    counts a rotation filed under two brands' numbers once, under its operating numbers; the handling switches give
+    the schedule ask's other stops."""
     L = list(legs)
-    if dedup == "dei":
-        L = [x for x in L if (x["airline"], x["flight"], x["leg"]) not in refs]
     a, b = W.WEEK27
     D = dated(L, a - dt.timedelta(days=2), b + dt.timedelta(days=2), utc_as_local=utc_as_local)
+    if dedup == "rotation":
+        if keep == "operating":
+            D = sole_rotations(D, operating)
+        else:
+            seen, kept = set(), []
+            for c in rotations(D):
+                sig = tuple((y["dep"], y["arr"], y["kdep"], y["karr"], y["eqp"]) for y in c)
+                if sig not in seen:
+                    seen.add(sig)
+                    kept += c
+            D = kept
     if dedup == "schedule":
         seen, keep = set(), []
         for x in D:
@@ -256,7 +335,7 @@ def ask_a(target, reg=None, **handling):
     reg = reg or registers(target)
     legs, refs = legs_2027(target)
     out = {k: [0, 0] for k in W.ORDER}
-    for t in turns_2027(legs, refs, reg, **handling):
+    for t in turns_2027(legs, refs, reg, operating=operating_2026(target), **handling):
         if t["seg"] is None:
             continue
         out[t["seg"]][0] += 1

@@ -67,9 +67,8 @@ def figures(fx):
                        "ground_time_min_pct": pct(min(v["share"] for v in r1.values()))},
             "peak": [W.PEAK_FROM.isoformat(), W.PEAK_TO.isoformat()],
             "week": [W.WEEK27[0].isoformat(), W.WEEK27[1].isoformat()],
-            "stated": {"clauses": ["SFG-3 2.2", "SFG-3 2.4", "SFG-3 3.1", "SFG-3 3.3"],
-                       "operating_day": ["03:00", "02:59"], "duplicate_leg_record": "DEI 050",
-                       "chart_minutes": ["20", "60"]}}
+            "stated": {"clauses": ["SFG-3 2.1", "SFG-3 2.2", "SFG-3 2.4", "SFG-3 3.1", "SFG-3 3.3"],
+                       "operating_day": ["03:00", "02:59"], "season_2026": "2026", "chart_minutes": ["20", "60"]}}
 
 
 # ---------------------------------------------------------------- the workbook
@@ -209,9 +208,10 @@ def write_workbook(path, fx, fig):
     ks["A1"] = "Every relationship's July 2027 submission already schedules turns under its own filed ground time"
     ks["A1"].font = Font(name="Calibri", bold=True, size=12)
     ks["A2"] = ("Turns the summer 2027 initial submissions schedule at Kelderby, Monday 12 to Sunday 18 July 2027. "
-                "Operating flights only: a leg a brand sells on a partner's flight (its DEI 050 record names the "
-                "operating flight) is the partner's turn, counted once. A turn is an arrival and the same aircraft's "
-                "next departure on the same operating day; through stops included, night stops not.")
+                "Each aircraft once: where a brand files a partner's rotation again under its own numbers (the same "
+                "legs, times and type, numbers the 2026 season schedule never carried), the turns are the operating "
+                "flights'. A turn is an arrival and the same aircraft's next departure on the same operating day; "
+                "through stops included, night stops not.")
     ks["A2"].alignment = wrap
     ks.merge_cells("A2:F2")
     ks.row_dimensions[2].height = 58

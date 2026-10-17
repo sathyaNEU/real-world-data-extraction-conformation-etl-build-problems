@@ -106,6 +106,7 @@
  ],
  "stated": {
   "clauses": [
+   "SFG-3 2.1",
    "SFG-3 2.2",
    "SFG-3 2.4",
    "SFG-3 3.1",
@@ -115,7 +116,7 @@
    "03:00",
    "02:59"
   ],
-  "duplicate_leg_record": "DEI 050",
+  "season_2026": "2026",
   "chart_minutes": [
    "20",
    "60"

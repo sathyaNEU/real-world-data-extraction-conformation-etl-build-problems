@@ -205,11 +205,11 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     bh, shh, _ = verdicts(B.population(uh), fil)
     check("Layer 1 registrations read with and without the hyphen as written: towed turns split, the same call",
           (bh, shh) == (GOLD_BACK, GOLD_SHORTEST), int(len(pop) - len(B.population(uh))))
-    check("Layer 1 the 2026 season schedule carries no DEI 050 leg and every leg's flight is in an operator's log",
+    check("Layer 1 the 2026 season schedule holds operating flights only: every leg's flight is in an operator's log",
           ssim26_clean(target), "")
-    nb = turns_no_block_dates(target, reg)
-    check("Layer 1 the 15 July block transfer (3450 to 3499) carries no Kelderby flight: the call unchanged",
-          verdicts(B.population(nb), fil)[:2] == (GOLD_BACK, GOLD_SHORTEST))
+    jit = T[(T["nr"] == 0) & (T["held"] > 0) & (T["held"] <= 2)]
+    check("Layer 1 ready aircraft pushing back a minute or two after the scheduled time are coded held (start-up), so "
+          "they stay ready-in-time turns (%d of them)" % len(jit), len(jit) > 100 and not jit["exact"].any())
 
     # ------------------------------------------------------------------ the schedule ask
     truth = SC.ask_a_truth(x["lines27"])
@@ -217,6 +217,7 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("ask: the pack's operating turns in the week of 12 July 2027 equal the operating lines' truth", got == truth,
           got)
     stops = {"every leg counted (the cracker)": dict(dedup="none"), "schedule fields deduplicated": dict(dedup="schedule"),
+             "identical rotations kept once, first in the file": dict(keep="first"),
              "layover field as the day test": dict(night="layover"), "through stops missed": dict(through=False),
              "UTC files read as local": dict(utc_as_local=True)}
     moved = {}
@@ -225,6 +226,8 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
         moved[k] = sum(r[s][j] != truth[s][j] for s in W.ORDER for j in (0, 1))
     check("ask: counting every leg misses all 12 figures", moved["every leg counted (the cracker)"] == 12, moved)
     check("ask: deduplicating on schedule fields misses at least 10 of 12", moved["schedule fields deduplicated"] >= 10)
+    check("ask: keeping each repeated rotation once but under the first file's numbers misses at least 8 of 12",
+          moved["identical rotations kept once, first in the file"] >= 8)
     check("ask: missing the through stops misses all 12", moved["through stops missed"] == 12)
     check("ask: reading the rotation layover (UTC days in Tellura's and Grayling's files) as the day test moves a "
           "figure", moved["layover field as the day test"] >= 1, moved["layover field as the day test"])
@@ -234,13 +237,33 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
           all(t["through"] for t in short) and all(t["gt"] < W.SEGMENTS[t["seg"]]["filed"] for t in t27 if t["through"]),
           len(short))
     legs, refs = B.legs_2027(target)
-    dup_keys = set(refs)
-    sched_twins = twins_in(legs, refs)
-    check("ask: genuine same-schedule pairs (two aircraft) exist beside the duplicates, so a schedule dedup deletes "
-          "real turns", sched_twins >= 2, sched_twins)
-    check("ask: every relationship carries legs a partner sells (the device moves every row)",
-          all(any(r for r in refs if B.block_of(reg["blocks"], r[1], dt.date(2027, 7, 12))[1] == W.SEGMENTS[s]["op"])
-              for s in W.ORDER))
+    check("ask: the merged 2027 file carries no segment data record, so nothing flags a partner's rotation",
+          not refs and all(lg["airline"] in ("NV", "TQ", "GY") for lg in legs))
+    gen_refs = {(k, f) for a in x["refs27"].values() for (k, f, lg) in a}
+    sched_twins = twins_in(legs, gen_refs)
+    check("ask: genuine same-schedule pairs (two aircraft) exist beside the repeated rotations, so a schedule dedup "
+          "deletes real turns", sched_twins >= 2, sched_twins)
+    rel_of_dup = {W.segment_of(k, B.block_of(reg["blocks"], f, dt.date(2027, 7, 12))[1],
+                               next(lg["eqp"] for lg in legs if (lg["airline"], lg["flight"]) == (k, f)))
+                  for k, f in gen_refs}
+    check("ask: a partner's rotations land in every relationship by the register's blocks (the device moves every row)",
+          rel_of_dup == set(W.ORDER), sorted(rel_of_dup))
+    op26 = B.operating_2026(target)
+    check("ask: no repeated rotation's numbers are in the 2026 season schedule, and every operating copy's are",
+          not (gen_refs & op26))
+    fleet = pd.read_csv(os.path.join(target, W.FILES["fleet27"]))
+    jul = fleet[fleet["month"] == "2027-07"].set_index("operator")["aircraft_in_fleet"].to_dict()
+    rot_all = {op: 0 for op in jul}
+    for ln in x["lines27"]:
+        rot_all[W.OPERATORS[W.SEGMENTS[ln["seg"]]["op"]][0]] += 1
+    dups_by_op = {}
+    for seg, (mk, which) in SC.DUPLICATED.items():
+        o = W.OPERATORS[W.SEGMENTS[seg]["op"]][0]
+        dups_by_op[o] = dups_by_op.get(o, 0) + len(which)
+    check("ask: with the repeated rotations counted, every operator would need more aircraft in July 2027 than the fleet "
+          "plan gives it; without them, one each and a spare",
+          all(rot_all[o] + dups_by_op.get(o, 0) > jul[o] and rot_all[o] + 1 == jul[o] for o in jul),
+          {o: (rot_all[o], dups_by_op.get(o, 0), jul[o]) for o in jul})
     check("ask: no relationship in the week has none of its own turns shorter than its filing (every second figure "
           "is a count the device can move)", all(truth[s][1] > 0 for s in W.ORDER))
 
@@ -248,8 +271,8 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     nT = B.turns_2026(copy_without(target, ["ssim27", "fleet27", "ssim26"]), reg)
     check("separation: the call reads no 2027 file and no schedule file (deleting them leaves every turn)",
           len(nT) == len(T) and nT["need"].fillna(-1).equals(T["need"].fillna(-1)))
-    check("separation: zero 2026 turns carry a DEI 050 flight number (the ask's device lives only in the 2027 file)",
-          not set(T["dep_flight"]) & {r[1] for r in refs})
+    check("separation: zero 2026 turns carry a repeated rotation's number (the ask's device lives only in the 2027 "
+          "file)", not set(T["dep_flight"]) & {f for k, f in gen_refs})
 
     # ------------------------------------------------------------------ distractors
     tmp = copy_without(target, W.DISTRACTORS)
@@ -371,11 +394,6 @@ def turns_hyphen_kept(target, reg):
         B.stand_visits = orig
 
 
-def turns_no_block_dates(target, reg):
-    blocks = [(i, lo, hi, op, dt.date(2014, 1, 1), None) for i, lo, hi, op, f, t in reg["blocks"]]
-    return B.turns_2026(target, dict(reg, blocks=blocks))
-
-
 def ssim26_clean(target):
     legs, refs = SS.parse(os.path.join(target, W.FILES["ssim26"]))
     if refs:
@@ -392,11 +410,11 @@ def ssim26_clean(target):
     return all(lg["flight"] in mv for lg in legs)
 
 
-def twins_in(legs, refs):
-    """Same-schedule pairs on Kelderby's clock in the peak week where neither leg is a partner's duplicate: two
+def twins_in(legs, dups):
+    """Same-schedule pairs on Kelderby's clock in the peak week where neither leg is a partner's repeated rotation: two
     aircraft."""
     a, b = W.WEEK27
-    D = B.dated([lg for lg in legs if (lg["airline"], lg["flight"], lg["leg"]) not in refs], a, b)
+    D = B.dated([lg for lg in legs if (lg["airline"], lg["flight"]) not in dups], a, b)
     seen, n = set(), 0
     for x in D:
         k = (x["dep"], x["arr"], x["kdep"], x["karr"], x["eqp"])

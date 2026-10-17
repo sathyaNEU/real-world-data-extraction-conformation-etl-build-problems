@@ -39,7 +39,7 @@ def main(target):
         hits = sum(r[s][j] == truth[s][j] for s in W.ORDER for j in (0, 1))
         return 55 * hits / 12.0, hits
 
-    cracker_path = dict(dedup="none")          # every leg a key check passes; DEI meanings are not in the pack
+    cracker_path = dict(dedup="none")          # every leg passes the key checks; nothing flags a partner's rotation
     c_main, _, _, _ = main_score(gold)
     c_ask, c_hits = ask_score(cracker_path)
     C = c_main + 7 + c_ask
@@ -59,7 +59,8 @@ def main(target):
     print("Pair ceiling: %.1f (cracker %.1f, best mirror %.1f on %s)" % (pair, C, best[0], best[1]))
     print("Mirror leakage: %.1f per cent of ask weight (%d of 12 figures)" % (100.0 * best[2] / 12, best[2]))
     for k, h in (("schedule fields deduplicated (over-cleaner)", dict(dedup="schedule")),
-                 ("DEI 050 legs left to the operating flight (golden)", dict())):
+                 ("identical rotations kept once, first in the file", dict(keep="first")),
+                 ("identical rotations kept under the operating numbers (golden)", dict())):
         a, hits = ask_score(h)
         print("ask stop %-50s %d of 12" % (k, hits))
     return pair
