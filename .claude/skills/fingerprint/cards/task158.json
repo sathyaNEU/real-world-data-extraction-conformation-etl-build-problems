@@ -80,7 +80,8 @@
     "contract ledger with tier codes resolved through a tier sheet, an early-access agreement and a proposal beside the signed contracts, staggered go-live weeks",
     "close-out rates inside a PDF at three decimals",
     "one intake filed in requests per second, the others in thousands per busiest hour",
-    "collector gaps in two pools' hourly rows"
+    "collector gaps in two pools' hourly rows",
+    "billing's one session per report against the gateway's one serving session per report call"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

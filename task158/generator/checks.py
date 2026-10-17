@@ -98,6 +98,7 @@ def main(target):
           max(RG[k]["docs"] for k in under) < gold - 60, "nearest under-rung %.0f" % max(RG[k]["docs"] for k in under))
 
     # ------------------------------------------------------------------ the out-of-sample check
+    intake_, plan_ = M["intake"], M["plan"]
     P = C.pilot(M, target)
     rr = P["ratio"]
     check("O1 lc2's rates predict the tenant's excess within 3 per cent",
@@ -111,21 +112,50 @@ def main(target):
     check("O4 a two-rate fit on the tenant's own days is ill-conditioned (no answer key)",
           abs(a_own / K.A_LC2 - 1) > 0.5 or abs(b_own / K.B_LC2 - 1) > 0.5, "%.6f %.5f corr %.5f" %
           (a_own, b_own, P["corr_daily_tokens"]))
-    check("O5 the tenant's calls are each their own session in billing",
-          all(x["requests"] == x["sessions"] for x in C.read_billing(target) if x["channel"] == "report"))
+    # the rescale route: lc2's rates scaled by the tenant's whole-period excess over their prediction
+    resc = {}
+    for nm, (u, g) in {"Amsterdam days, the close-out's rate": (False, M["gpr"]["docs-prod"]),
+                       "UTC days, the close-out's rate": (True, M["gpr"]["docs-prod"]),
+                       "Amsterdam days, the exact rate": (False, M["gpr_exact"]["docs-prod"])}.items():
+        r_ = C.pilot_ratio(M, target, u, g)[0]
+        kk = 1.0 / r_
+        cost_k = lambda c, kk=kk: c["calls"] * kk * (M["a"] * c["pmax"] + M["b"] * c["qmax"])
+        resc[nm] = (r_, C.shortfalls(intake_, plan_, M["gpr"], M["live"], cost_k)[0]["docs-prod"]["peak"])
+    check("O7 the tenant's whole-period excess sits within 1.5 per cent of lc2's prediction on every day and rate basis",
+          all(abs(v[0] - 1) <= 0.015 for v in resc.values()), "; ".join("%s %.4f" % (k, v[0]) for k, v in resc.items()))
+    check("O8 a one-scalar rescale of lc2's rates to the tenant keeps Docs in the 340 bin",
+          all(K.nearest(v[1], 10) == 340 for v in resc.values()), "; ".join("%s %.2f" % (k, v[1]) for k, v in resc.items()))
+    d_q3 = M["R"]["docs-prod"]
+    q3m = np.array([dt.datetime(2026, 7, 1) <= t < dt.datetime(2026, 10, 1) for t in d_q3["t"]])
+    Xq = np.c_[d_q3["prompt_tokens"][q3m], d_q3["completion_tokens"][q3m]].astype(float)
+    fa, fb = np.linalg.lstsq(Xq, d_q3["gpu_busy_s"][q3m].astype(float), rcond=None)[0]
+    own = (fa * P["ptk"] + fb * P["ctk"]) / P["excess"]
+    check("O9 the rivals still miss the tenant by the same margins: Docs' rate per request about a fifth, Docs' own "
+          "two-rate fit well under two thirds", 0.15 < rr["Docs GPU-seconds per request"] < 0.27 and own < 0.65,
+          "%.3f %.3f" % (rr["Docs GPU-seconds per request"], own))
+    bill_ = C.read_billing(target)
+    check("O5 billing bills the report channel one session per report (six calls each)",
+          all(x["requests"] == 6 * x["sessions"] for x in bill_ if x["channel"] == "report"))
+    o6 = gateway_sessions_check(M, bill_)
+    check("O6 the rollup's new Docs sessions exceed billing's by the tenant's calls on its days, and match elsewhere "
+          "(each report call opened its own serving session)", o6[0] < 0.005 and o6[1] < 0.005, "%.4f %.4f" % o6)
 
     # ------------------------------------------------------------------ determinism variants of the golden
     intake, plan, live = M["intake"], M["plan"], M["live"]
     R_ = M["R"]
+    pin = DOC.POLICY[2][1][0]
+    PIN = ("The product team's figure is converted to busy GPU-seconds at the pool's GPU-seconds per request in the "
+           "latest quarterly capacity close-out.")
 
-    def golden_with(a, b, gpr_docs=None, live_=None):
+    def golden_with(a, b, gpr_docs=None, live_=None, gpr_all=None):
         cost = lambda c: c["calls"] * (a * c["pmax"] + b * c["qmax"])
-        g = dict(M["gpr_exact"])
+        g = dict(gpr_all or M["gpr"])
         if gpr_docs:
             g["docs-prod"] = gpr_docs
         s, pick = C.shortfalls(intake, plan, g, live_ or live, cost)
         return s["docs-prod"]["peak"], pick
-    variants = {}
+    variants = {}                        # defensible constructions: each must keep a quarter bin
+    variants["exact Q3 rates from the rollup"] = golden_with(M["a"], M["b"], gpr_all=M["gpr_exact"])
     a1, b1, _ = C.fit_two_rates(R_, intercept=True)
     variants["intercept"] = golden_with(a1, b1)
     for nm, (s, e) in {"Jun-Nov": (dt.datetime(2026, 6, 1), dt.datetime(2026, 12, 1)),
@@ -152,30 +182,58 @@ def main(target):
             yd[di[t.date()]] += b_
     cd = np.linalg.lstsq(Xd, yd, rcond=None)[0]
     variants["daily fit"] = golden_with(cd[0], cd[1])
-    variants["close-out gpr 1.630"] = golden_with(M["a"], M["b"], gpr_docs=M["gpr"]["docs-prod"])
-    dd_ = R_["docs-prod"]
-    on = np.array([dt.datetime(2026, 10, 5) <= t < dt.datetime(2026, 12, 1) for t in dd_["t"]])
-    g_on = dd_["gpu_busy_s"][on].sum() / dd_["requests"][on].sum()
-    variants["Oct-Nov gpr with the tenant"] = golden_with(M["a"], M["b"], gpr_docs=g_on)
-    ea = dict(ref="EA", tier="RS-6", peak=150, golive=dt.date(2026, 10, 5), calls=6, pmax=24000, qmax=1600)
-    variants["early-access agreement counted"] = golden_with(M["a"], M["b"], live_=live + [ea])
-    variants["tenant and agreement both"] = golden_with(M["a"], M["b"], gpr_docs=g_on, live_=live + [ea])
-    worst = min(bin_margin(v[0], 10) for v in variants.values())
     check("D1 every defensible construction files docs-prod at 340",
           all(v[1] == "docs-prod" and K.nearest(v[0], 10) == 340 for v in variants.values()),
           "; ".join("%s %.2f" % (k, v[0]) for k, v in variants.items()))
-    singles = [k for k in variants if k != "tenant and agreement both"]
-    check("D2 every single variant keeps a quarter bin of margin", min(bin_margin(variants[k][0], 10) for k in singles)
-          >= 2.5, "worst %.2f" % min(bin_margin(variants[k][0], 10) for k in singles))
-    check("D3 the combined variant keeps at least one GPU of margin", worst >= 1.0, "worst %.2f" % worst)
+    check("D2 every defensible construction keeps a quarter bin of margin",
+          min(bin_margin(v[0], 10) for v in variants.values()) >= 2.5,
+          "worst %.2f" % min(bin_margin(v[0], 10) for v in variants.values()))
+    # readings the filed text rules out, each with its sentence
+    ruled = {}
+    dd_ = R_["docs-prod"]
+    on = np.array([dt.datetime(2026, 10, 5) <= t < dt.datetime(2026, 12, 1) for t in dd_["t"]])
+    g_on = dd_["gpu_busy_s"][on].sum() / dd_["requests"][on].sum()
+    ruled["Oct-Nov Docs rate with the tenant (policy s3 pin)"] = golden_with(M["a"], M["b"], gpr_docs=g_on)
+    bh = C.busiest_hour_gpr(target)
+    sbh, pbh = C.shortfalls(intake, plan, bh, live, M["cost"])
+    ruled["busiest-hour rates (policy s3 pin)"] = (sbh["docs-prod"]["peak"], pbh)
+    ea_row = [x for x in M["rows"] if x["Contract"].startswith("EA")][0]
+    t_ = M["tiers"][ea_row["Tier"]]
+    ea = dict(ref=ea_row["Contract"], tier=ea_row["Tier"], peak=int(ea_row["Contracted peak (reports/hour)"]),
+              golive=dt.date.fromisoformat(ea_row["Go-live"]), calls=t_["calls"], pmax=t_["pmax"], qmax=t_["qmax"])
+    ruled["early-access agreement counted (policy s3)"] = golden_with(M["a"], M["b"], live_=live + [ea])
+    pa, pb = C.fit_pooled_models(R_)
+    ruled["lc1 and lc2 hours pooled (the model column)"] = golden_with(pa, pb)
+    allm = np.ones(len(d["t"]), bool)
+    Xa = np.c_[np.ones(allm.sum()), d["prompt_tokens"], d["completion_tokens"]].astype(float)
+    ca = np.linalg.lstsq(Xa, d["gpu_busy_s"].astype(float), rcond=None)[0]
+    ruled["lc1 and lc2 hours pooled with an intercept (the model column)"] = golden_with(ca[1], ca[2])
+    check("D3 the ordinary-traffic pin is filed once, in policy s3, and names no report call",
+          pin.endswith(PIN) and "report" not in PIN and sum(PIN in " ".join(ps) for _, ps in DOC.POLICY) == 1)
+    check("D3b the busiest-hour reading the pin rules out would put Code level with or ahead of Docs",
+          sbh["code-prod"]["peak"] >= sbh["docs-prod"]["peak"] - 5,
+          "Code %.1f Docs %.1f" % (sbh["code-prod"]["peak"], sbh["docs-prod"]["peak"]))
+    lc1m = np.array([x == K.LC1_TAG for x in d["model"]])
+    lc2m = np.array([x == K.LC2_TAG for x in d["model"]])
+    X1 = np.c_[d["prompt_tokens"][lc1m], d["completion_tokens"][lc1m]].astype(float)
+    c1 = np.linalg.lstsq(X1, d["gpu_busy_s"][lc1m].astype(float), rcond=None)[0]
+    res_all = d["gpu_busy_s"] - np.c_[d["prompt_tokens"], d["completion_tokens"]] @ np.array([pa, pb])
+    rel1 = float(np.mean(res_all[lc1m] / d["gpu_busy_s"][lc1m]))
+    rel2 = float(np.mean(res_all[lc2m] / d["gpu_busy_s"][lc2m]))
+    check("D5 the data force the lc2 window: lc1's own rates sit 30 per cent or more above lc2's, and a pooled fit "
+          "over-predicts lc2 hours while under-predicting lc1's", c1[0] / M["a"] > 1.3 and c1[1] / M["b"] > 1.3 and
+          rel1 > 0.03 and rel2 < -0.01, "lc1 %.6f %.5f; residual lc1 %+.3f lc2 %+.3f" % (c1[0], c1[1], rel1, rel2))
+    check("D6 the pooled fits land at least 5 GPUs outside the bin",
+          all(abs(v[0] - 340) >= 10 for k, v in ruled.items() if "pooled" in k),
+          "; ".join("%s %.2f" % (k, v[0]) for k, v in ruled.items()))
     # one sigma on the rates: the fit's standard errors move nothing
     resid = y - X @ ci
     cov = np.linalg.inv(X.T @ X) * (resid @ resid) / (len(y) - 2)
     se = np.sqrt(np.diag(cov))
     lo_ = golden_with(M["a"] - se[0], M["b"] - se[1])[0]
     hi_ = golden_with(M["a"] + se[0], M["b"] + se[1])[0]
-    check("D4 one standard error on both rates leaves the bin", K.nearest(lo_, 10) == K.nearest(hi_, 10) == 340,
-          "%.2f to %.2f" % (lo_, hi_))
+    check("D4 one standard error on both rates leaves the bin", K.nearest(lo_, 10) == K.nearest(hi_, 10) == 340
+          and min(bin_margin(lo_, 10), bin_margin(hi_, 10)) >= 2.5, "%.2f to %.2f" % (lo_, hi_))
 
     # ------------------------------------------------------------------ semantic fork rows
     check("SF1 one pool per product, six pools", sorted(intake) == sorted(K.POOLS) == sorted(plan))
@@ -190,19 +248,20 @@ def main(target):
     check("SF4 the intake's figures are busiest-hour figures", all("Busiest-hour" in M["unit"][p] for p in K.POOLS))
     check("SF5 busy is the rollup's gpu_busy_s, carried at 2,520", K.CARRY == 2520.0 and
           "as the fleet rollup counts them, divided by 2,520" in " ".join(DOC.POLICY[1][1]))
-    spread = C.shortfalls(intake, plan, M["gpr_exact"], [dict(c, peak=c["peak"] * 0.0) for c in live], M["cost"])[0]
     q1_avg = {}
     rows = M["rows"]
     for c in live:
         r = [x for x in rows if x["Contract"] == c["ref"]][0]
         q1_avg[c["ref"]] = r["Q1 committed reports"] / (13 * 7 * 24.0)
     spread_live = [dict(c, peak=q1_avg[c["ref"]]) for c in live]
-    sp = C.shortfalls(intake, plan, M["gpr_exact"], spread_live, M["cost"])[0]
+    sp = C.shortfalls(intake, plan, M["gpr"], spread_live, M["cost"])[0]
     check("SF6 Q1 committed reports spread over the quarter's hours file Code (the policy holds contracted peaks)",
           max(K.POOLS, key=lambda p: sp[p]["peak"]) == "code-prod", "Docs %.1f" % sp["docs-prod"]["peak"])
-    check("SF7 the early-access agreement counted leaves the bin", K.nearest(
-        variants["early-access agreement counted"][0], 10) == 340)
-    op = C.shortfalls(intake, plan, M["gpr_exact"], live, M["cost"],
+    check("SF7 the early-access agreement is not a signed contract and is ruled out by policy s3",
+          "Proposals and ended agreements do not count" in " ".join(DOC.POLICY[2][1]) and
+          not any(c["ref"].startswith("EA") for c in live),
+          "counted it would file %.2f" % ruled["early-access agreement counted (policy s3)"][0])
+    op = C.shortfalls(intake, plan, M["gpr"], live, M["cost"],
                       alloc_override={p: [plan[p][0]] * 13 for p in K.POOLS})[0]
     check("SF8 the opening allocation all quarter files another bin (the week's allocation is filed)",
           K.nearest(op["docs-prod"]["peak"], 10) != 340, "%.1f" % op["docs-prod"]["peak"])
@@ -210,13 +269,13 @@ def main(target):
     check("SF10 the stopgap's GPUs are the fleet's part", "H100 SXM5 80GB" in " ".join(DOC.POLICY[0][1]))
     weekly_round = max(round(x / 10) * 10 for x in sf["docs-prod"]["weekly"])
     check("SF11 rounding once or per week gives the same figure", weekly_round == 340)
-    check("SF12 October-November's pool rate with the tenant left in leaves the bin",
-          K.nearest(variants["Oct-Nov gpr with the tenant"][0], 10) == 340)
-    pa, pb = C.fit_pooled_models(R_)
-    pooled = golden_with(pa, pb)[0]
-    check("SF13 pooling lc1 and lc2 hours files another bin (ruled out by the model tag)",
-          K.nearest(pooled, 10) != 340, "%.1f" % pooled)
+    check("SF12 October-November's Docs rate with the tenant left in is ruled out by the s3 pin", pin.endswith(PIN),
+          "it would file %.2f" % ruled["Oct-Nov Docs rate with the tenant (policy s3 pin)"][0])
+    check("SF13 pooling lc1 and lc2 hours files another bin (ruled out by the model column, D5)",
+          all(K.nearest(v[0], 10) != 340 for k, v in ruled.items() if "pooled" in k))
     check("SF14 report calls count on docs-prod", "on the pool of the product that sold it" in " ".join(DOC.POLICY[2][1]))
+    check("SF15 the intake is costed at the close-out's printed rates, which file the golden exactly",
+          all(abs(M["gpr"][p] - round(M["gpr_exact"][p], 4)) < 1e-12 for p in K.POOLS))
 
     # ------------------------------------------------------------------ the three rules
     cols = set()
@@ -233,8 +292,10 @@ def main(target):
                     for f in files if f.endswith((".md", ".log")))
     docs_text = text + " " + " ".join(p for _, ps in DOC.POLICY for p in ps) + " " + \
         " ".join(p for _, ps in DOC.SCHEDULE for p in ps) + " " + " ".join(p for _, ps in DOC.LEASE for p in ps)
-    check("R1c no shipped sentence names reuse, prefix caching or how a call's GPU work is priced",
-          not re.search(r"prefix|cache|cached|reuse|re-use|per token|per request|GPU-seconds per", docs_text, re.I))
+    check("R1c no shipped sentence names reuse, prefix caching or how a report call's GPU work is priced (the s3 pin "
+          "aside, which prices the product teams' requests)",
+          not re.search(r"prefix|cache|cached|reuse|re-use|per token|per request|GPU-seconds per",
+                        docs_text.replace(PIN, ""), re.I) and "report" not in PIN)
     # R2: each Layer 1 item mishandled leaves the call and the critical components
     ci2 = np.linalg.lstsq(X, y, rcond=None)[0]
     g_roll = golden_with(ci2[0], ci2[1])
@@ -245,11 +306,11 @@ def main(target):
           utc_ratio[1] < 0.3, "%.3f %.3f" % utc_ratio)
     vi = dict(intake)
     vi["voice-prod"] = [v / 3.6 for v in intake["voice-prod"]]
-    vs, vp = C.shortfalls(vi, plan, M["gpr_exact"], live, M["cost"])
+    vs, vp = C.shortfalls(vi, plan, M["gpr"], live, M["cost"])
     check("R2c Voice's requests per second read as thousands moves nothing", vp == "docs-prod" and
           abs(vs["docs-prod"]["peak"] - gold) < 1e-9)
     allw1 = [dict(c, golive=K.Q1_WEEKS[0]) for c in live]
-    gs, gp = C.shortfalls(intake, plan, M["gpr_exact"], allw1, M["cost"])
+    gs, gp = C.shortfalls(intake, plan, M["gpr"], allw1, M["cost"])
     check("R2d every contract counted from W01 (go-live weeks ignored) leaves the call and its bin",
           gp == "docs-prod" and K.nearest(gs["docs-prod"]["peak"], 10) == 340, "%.2f" % gs["docs-prod"]["peak"])
     check("R2e the rollup's missing hours sit outside Docs and Batch", all(
@@ -280,8 +341,11 @@ def main(target):
     check("A4 the console's times read as UTC miss five pools' GPU-hours",
           sum(K.nearest(g3[p], 10) != K.nearest(gh[p], 10) for p in K.POOLS) >= 5)
     g4, l4 = C.ask_a(target, use_job_complete=False)
-    check("A5 jobs completed by hand missed: every pool's GPU-hours miss",
-          all(K.nearest(g4[p], 10) != K.nearest(gh[p], 10) for p in K.POOLS))
+    check("A5 jobs completed by hand missed: every pool's GPU-hours and every pool's longest stay miss",
+          all(K.nearest(g4[p], 10) != K.nearest(gh[p], 10) and round(l4[p], 1) != round(lo[p], 1) for p in K.POOLS),
+          " ".join("%.1f" % l4[p] for p in K.POOLS))
+    check("A5b every pool's longest November stay is a failed upgrade completed by hand from the console",
+          all(round(l3[p], 1) != round(lo[p], 1) for p in K.POOLS), " ".join("%.2f" % l3[p] for p in K.POOLS))
     g5, l5 = C.ask_a(target, current_pool=True)
     check("A6 today's pool for every hour misses Chat and Agents", K.nearest(g5["chat-prod"], 10) != K.nearest(
         gh["chat-prod"], 10) and K.nearest(g5["agents-prod"], 10) != K.nearest(gh["agents-prod"], 10))
@@ -307,17 +371,41 @@ def main(target):
     # ------------------------------------------------------------------ Ask B
     acc, held = C.ask_b(target)
     check("B1 golden acceptance by rack", acc == {"R11": 48, "R12": 40, "R13": 48, "R14": 64}, str(acc))
-    s1 = C.ask_b(target, gbit_fix=False)[0]
-    check("B2 raw bus bandwidth against 360 misses all four racks", all(s1[r] != acc[r] for r in acc), str(s1))
+    s1 = C.ask_b(target, use_unit=False)[0]
+    check("B2 the unit column ignored (every figure against 360) misses at least three racks",
+          sum(s1[r] != acc[r] for r in acc) >= 3, str(s1))
     s2 = C.ask_b(target, racks_from_results=True)[0]
-    check("B3 racks as the results record them miss R12 and R14", s2["R12"] != acc["R12"] and s2["R14"] != acc["R14"],
-          str(s2))
-    s3 = C.ask_b(target, divide_all=True)[0]
-    check("B4 every run divided by eight misses", any(s3[r] != acc[r] for r in acc), str(s3))
+    check("B3 racks as the burn-in results record them miss R12 and R14", s2["R12"] != acc["R12"] and
+          s2["R14"] != acc["R14"], str(s2))
+    s4 = C.ask_b(target, last_by="run")[0]
+    check("B4 the highest run number read as the last run misses R12 and R14 (runs renumbered by the new harness)",
+          [r for r in acc if s4[r] != acc[r]] == ["R12", "R14"], str(s4))
     fab = list(csv.DictReader(open(os.path.join(target, R.F_FABRIC), encoding="utf-8")))
-    check("B5 no column, run id or note names the unit change", "busbw" in fab[0] and not any(
-        re.search(r"gbit|gb/s|unit|v2\.|release", " ".join(x.values()), re.I) for x in fab))
-    check("B6 no shipped sentence names the re-racked nodes", not re.search(r"re-?rack|moved|rebalanc", text, re.I))
+    check("B5 the export states its unit and harness on every run: GB/s before 1 December, Gbit/s from it",
+          all((x["bw_unit"] == "Gbit/s") == (dt.datetime.strptime(x["started_utc"], "%Y-%m-%dT%H:%M:%SZ") >=
+                                              K.HARNESS_CHANGE) for x in fab) and
+          all((x["harness"] == K.HARNESS_NEW) == (x["bw_unit"] == "Gbit/s") for x in fab))
+    check("B6 no shipped sentence names the re-racked nodes or how runs are numbered",
+          not re.search(r"re-?rack|moved|rebalanc|renumber|run number", text, re.I))
+    last_t, last_r = {}, {}
+    for x in fab:
+        tt = x["finished_utc"]
+        if x["node"] not in last_t or tt > last_t[x["node"]]["finished_utc"]:
+            last_t[x["node"]] = x
+        if x["node"] not in last_r or int(x["run"]) > int(last_r[x["node"]]["run"]):
+            last_r[x["node"]] = x
+    differ = [n for n in last_t if last_t[n] is not last_r[n]]
+    check("B7 two nodes' latest run is not their highest-numbered run, one in R12 and one in R14", len(differ) == 2,
+          ", ".join(differ))
+    s5 = C.ask_b(target, by_serial=False)[0]
+    check("B8 burn-in keyed by node and slot gives the same table (the replacements were burned in again)", s5 == acc)
+    s6 = C.ask_b(target, cutoff="none")[0]
+    s7 = C.ask_b(target, cutoff="utc")[0]
+    check("B9 the 14:00 Amsterdam review ignored, or read as 14:00 UTC, takes two re-runs after the review and misses "
+          "R11 and R13", [r for r in acc if s6[r] != acc[r]] == ["R11", "R13"] and
+          [r for r in acc if s7[r] != acc[r]] == ["R11", "R13"], "%s %s" % (s6, s7))
+    check("B10 the review's time is filed once, in Schedule 3.3, in Amsterdam time",
+          sum("at 14:00 on Friday 4 December 2026, Amsterdam time" in " ".join(ps) for _, ps in DOC.SCHEDULE) == 1)
 
     # ------------------------------------------------------------------ separation line
     tmp = tempfile.mkdtemp(prefix="sep158_")
@@ -434,6 +522,27 @@ def main(target):
     n_fail = sum(1 for _, ok, _ in RESULTS if not ok)
     print("%d checks, %d FAIL" % (len(RESULTS), n_fail))
     return 0 if n_fail == 0 else 1
+
+
+def gateway_sessions_check(M, bill):
+    """Rollup new sessions on docs-prod against billing's sessions by Amsterdam day: on the tenant's report days the
+    rollup's excess over billing's app and API sessions is the tenant's report calls; on other days the two agree."""
+    from collections import defaultdict
+    d = M["R"]["docs-prod"]
+    gw = defaultdict(float)
+    for t, s_ in zip(d["t"], d["sessions_new"]):
+        gw[K.utc_to_ams(t).date()] += s_
+    appapi, calls = defaultdict(float), defaultdict(float)
+    for x in bill:
+        if x["channel"] == "report":
+            calls[x["date"]] += x["requests"]
+        else:
+            appapi[x["date"]] += x["sessions"]
+    rep_days = [dd for dd in calls if calls[dd] > 0]
+    other = [dd for dd in appapi if dd not in calls and dt.date(2026, 9, 1) <= dd <= dt.date(2026, 12, 6)]
+    e1 = abs(sum(gw[dd] - appapi[dd] for dd in rep_days) / sum(calls[dd] for dd in rep_days) - 1)
+    e2 = abs(sum(gw[dd] for dd in other) / sum(appapi[dd] for dd in other) - 1)
+    return e1, e2
 
 
 def recon(R_, bill):

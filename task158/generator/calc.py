@@ -161,9 +161,21 @@ def closeout(target):
 
 
 def closeout_gpr(target):
-    """GPU-seconds per request as the close-out prints them (three decimals), read back from the rollup."""
+    """GPU-seconds per request as the close-out prints them (four decimals), read back from the rollup."""
     C = closeout(target)
-    return {p: round(C["pools"][p]["gpr"], 3) for p in K.POOLS}, C
+    return {p: round(C["pools"][p]["gpr"], 4) for p in K.POOLS}, C
+
+
+def busiest_hour_gpr(target):
+    """Each pool's GPU-seconds per request in its single busiest Q3 hour (a reading the policy's s3 pin rules out)."""
+    R = read_rollup(target)
+    out = {}
+    for p in K.POOLS:
+        d = R[p]
+        m = np.array([dt.datetime(2026, 7, 1) <= t < dt.datetime(2026, 10, 1) for t in d["t"]])
+        i = int(np.argmax(np.where(m, d["gpu_busy_s"], -1)))
+        out[p] = d["gpu_busy_s"][i] / d["requests"][i]
+    return out
 
 
 # ------------------------------------------------------------------------------------------------- cost of a report call
@@ -230,15 +242,15 @@ def main_call(target):
     intake, unit = read_intake(target)
     plan = read_plan(target)
     rows, tiers = read_ledger(target)
-    gpr, C = closeout_gpr(target)
+    gpr, C = closeout_gpr(target)                 # policy s3: the latest close-out's GPU-seconds per request
     gpr_exact = {p: C["pools"][p]["gpr"] for p in K.POOLS}
     a, b, _ = fit_two_rates(R)
     live = contracts_live(rows, tiers)
     golden_cost = lambda c: c["calls"] * (a * c["pmax"] + b * c["qmax"])
-    sf, pick = shortfalls(intake, plan, gpr_exact, live, golden_cost)
+    sf, pick = shortfalls(intake, plan, gpr, live, golden_cost)
     docs = sf["docs-prod"]
     full = report_work_per_hour(live, K.Q1_WEEKS[-1], golden_cost) / K.CARRY
-    inter13 = intake["docs-prod"][12] * gpr_exact["docs-prod"] / K.CARRY
+    inter13 = intake["docs-prod"][12] * gpr["docs-prod"] / K.CARRY
     return dict(R=R, intake=intake, unit=unit, plan=plan, rows=rows, tiers=tiers, gpr=gpr, gpr_exact=gpr_exact, C=C,
                 a=a, b=b, live=live, sf=sf, pick=pick, docs_peak=docs["peak"], docs_week=docs["week"],
                 reports_full=full, docs_inter_w13=inter13, cost=golden_cost)
@@ -248,7 +260,7 @@ def main_call(target):
 def rungs(M, target):
     """Every route on the ladder, each costing report calls its own way on the same literal estimand."""
     R, intake, plan, live = M["R"], M["intake"], M["plan"], M["live"]
-    gpr = M["gpr_exact"]
+    gpr = M["gpr"]
     d = R["docs-prod"]
     q3 = np.array([dt.datetime(2026, 7, 1) <= t < dt.datetime(2026, 10, 1) for t in d["t"]])
     busy, req = d["gpu_busy_s"][q3].sum(), d["requests"][q3].sum()
@@ -427,24 +439,29 @@ def ask_a_rollup(target):
 
 
 # ------------------------------------------------------------------------------------------------- Ask B
-def ask_b(target, gbit_fix=True, by_serial=True, racks_from_results=False, divide_all=False):
+def ask_b(target, use_unit=True, by_serial=True, racks_from_results=False, divide_all=False, last_by="time",
+          cutoff="local"):
+    """Acceptance by rack at the 4 December review (lease Schedule 3): each fitted GPU's last burn-in run of every test
+    passed, and the node's last all-reduce at 360 GB/s bus bandwidth or more, the export's unit column read."""
     burn = list(csv.DictReader(open(os.path.join(target, F_BURN), encoding="utf-8")))
     fab = list(csv.DictReader(open(os.path.join(target, F_FABRIC), encoding="utf-8")))
     inv = list(csv.DictReader(open(os.path.join(target, F_HANDOVER), encoding="utf-8")))
-    review_end = dt.datetime(2026, 12, 4, 0, 0)
+    review_end = {"local": K.ams_to_utc(K.REVIEW_LOCAL),          # 14:00 Amsterdam is 13:00 UTC
+                  "utc": K.REVIEW_LOCAL,                            # the review's clock read as UTC
+                  "none": dt.datetime(2099, 1, 1)}[cutoff]          # every run in the export
     fitted = defaultdict(dict)
     hand_rack = {}
     for x in inv:
         fitted[x["node"]][int(x["slot"])] = x["gpu_serial"]
         hand_rack[x["node"]] = x["rack"]
-    # burn-in: the last run of each test on each GPU serial
+    order = (lambda r: _t(r["finished_utc"])) if last_by == "time" else (lambda r: int(r["run"]))
     last = {}
     for b in burn:
         if _t(b["finished_utc"]) >= review_end:
             continue
         key = (b["gpu_serial"], b["test"]) if by_serial else (b["node"], int(b["slot"]), b["test"])
         prev = last.get(key)
-        if prev is None or int(b["run"]) > int(prev["run"]):
+        if prev is None or order(b) > order(prev):
             last[key] = b
     gpu_ok = {}
     for node, slots in fitted.items():
@@ -461,7 +478,7 @@ def ask_b(target, gbit_fix=True, by_serial=True, racks_from_results=False, divid
         if _t(f["finished_utc"]) >= review_end:
             continue
         prev = fab_last.get(f["node"])
-        if prev is None or int(f["run"]) > int(prev["run"]):
+        if prev is None or order(f) > order(prev):
             fab_last[f["node"]] = f
     accepted, held = defaultdict(int), []
     result_rack = {}
@@ -474,7 +491,7 @@ def ask_b(target, gbit_fix=True, by_serial=True, racks_from_results=False, divid
             bw = float(f["busbw"])
             if divide_all:
                 bw = bw / 8.0
-            elif gbit_fix and _t(f["started_utc"]) >= K.HARNESS_CHANGE:
+            elif use_unit and f["bw_unit"] == "Gbit/s":
                 bw = bw / 8.0
         ok = gpu_ok[node] and bw is not None and bw >= 360.0
         rack = result_rack[node] if racks_from_results else hand_rack[node]
