@@ -1,114 +1,116 @@
 {
-  "task": "task464",
-  "architecture": "v2",
-  "drawn": "2026-10-17",
-  "slot_note": "wave 4 (re-root). Seed ET21's world spent with architecture 1 (judge SEND_BACK); architecture 2 drawn afresh in the ETL objective: a state education department's 2027 adolescent literacy grants to the districts with the most grade 9 and 10 students at the new state reading test's lowest level, the retiring test's 2025 grade 8 scores placed on the new scale through the 2026 bridge study.",
-  "domain": "education-learning-sciences",
-  "subdomain": "item-response-theory-test-equating",
-  "niche": "a state education department's 2027 adolescent literacy grants to the school districts with the most grade 9 and 10 students at the new state reading test's lowest performance level, where the grade 10 students' only grade 8 scores come from the retiring test and a single-group bridge study links the two scales",
-  "objective": "etl",
-  "shape": "01",
-  "decision_type": "ranked_slate_under_cap",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "population"
+ "task": "task464",
+ "architecture": "v2",
+ "drawn": "2026-10-17",
+ "slot_note": "wave 4 (re-root). Seed ET21's world spent with architecture 1 (judge SEND_BACK); architecture 2 drawn afresh in the ETL objective: a state education department's 2027 adolescent literacy grants to the districts with the most grade 9 and 10 students at the new state reading test's lowest level, the retiring test's 2025 grade 8 scores placed on the new scale through the 2026 bridge study.",
+ "domain": "education-learning-sciences",
+ "subdomain": "item-response-theory-test-equating",
+ "niche": "a state education department's 2027 adolescent literacy grants to the school districts with the most grade 9 and 10 students at the new state reading test's lowest performance level, where the grade 10 students' only grade 8 scores come from the retiring test and a single-group bridge study links the two scales",
+ "objective": "etl",
+ "shape": "01",
+ "decision_type": "ranked_slate_under_cap",
+ "answer_unit": "set_of_items",
+ "answer": "Fund Kessick Public Schools (1,113), Varlow City Schools (870), Brenmoor County Schools (503), Calderidge Unified School District (472), Garnet Hills School District (372) and Elmorrow Public Schools (368); Harlenbrook County Schools first left out at 353.",
+ "answer_source": "task464/submission.md, block 1",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G1",
+  "G16"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "parallel_run_overlap",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stakeholder_role": "the state education department's adolescent literacy programme director, who takes the 2027 grant awards to the State Board of Education",
+ "role_family": "programme_officer",
+ "scoring_unit": "units served",
+ "spine": {
+  "file": "enrollment_october_2026_grades_9_12.csv",
+  "rows": 91075,
+  "entity": "one student's enrolment spell at one school in grades 9 to 12, autumn 2026",
+  "grain": "student x school spell",
+  "source": "synthetic"
+ },
+ "forum": "trustees_or_governors",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "government_agency",
+ "world": {
+  "geography": "an unnamed state of the United States (its department of education, school districts and two test vendors are fictional)",
+  "currency": "USD",
+  "org_type": "a state department of education running an adolescent literacy grant programme",
+  "invented_names": [
+   "Grade-Level Reading Assessment",
+   "Statewide Literacy Measure",
+   "Adolescent Literacy Partnership"
   ],
-  "pattern": [
+  "people": [
+   "Jeffrey Warren",
+   "William Holloway"
+  ]
+ },
+ "deliverables": [
+  "alp_grants_2027.xlsx",
+  "alp_conformed_grade8_reading_2026.csv"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is how many units fall below a cut on a new instrument's scale when part of the population was measured only on the old instrument; a sample measured on both links the scales, and predicting each unit's new value by regression shrinks every converted value toward the sample's mean, so the converted spread is too narrow and the tail beyond the cut too thin, while matching the percentiles of two groups each measured on one instrument assumes the groups are alike; only a conversion that matches the two instruments' distributions in the sample measured on both keeps the share beyond the cut.",
+ "driver_concrete": "Each district's grade 9 and grade 10 students at Level 1 of the new state reading test decide the 2027 grants; the grade 10 students' latest grade 8 scores come from the retiring test in spring 2025, and the spring 2026 bridge study, in which a sample of grade 8 students took both tests, links the scales; placing each 2025 score at the new-scale value the regression of new on old predicts pulls the low scores toward the bridge sample's mean and drops about a fifth of the 2025 cohort's Level 1 students, matching the 2025 and 2026 cohorts' percentiles assumes the cohorts read equally well, and only a concordance that matches the two tests' score distributions in the bridge sample (equipercentile or linear) counts them.",
+ "stump": "The default path places each 2025 retiring-test score at its regression prediction from the bridge study, which pulls the low scores toward the sample's mean and out of Level 1, and funds Harlenbrook in Elmorrow's place (Harlenbrook 323 against Elmorrow 315); the concordance funds Elmorrow at 368 and leaves Harlenbrook out at 353.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms both vendors' files, keys each student through the count-day enrolment spells, takes each latest grade 8 result and applies the 2415 cut places the 2025 retiring-test scores by the bridge study's regression of new on old and funds Harlenbrook in Elmorrow's place (323 against 315); a concordance matching the two distributions funds Elmorrow (368 against 353).",
+ "domain_test": "Psychometrics: the deciding quantity is the share of a cohort below a performance level of a new test, for a cohort measured only on the retired test; the field links two tests' scales by equating or concordance (equipercentile or linear, symmetric and invariant across groups), and a prediction by regression is not a concordance; replacing the concordance with a regression, or with matching two different cohorts' percentiles, changes which districts get the grants.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:concordance by distribution matching, not regression",
+ "layer1": [
+  "two vendors' file layouts",
+  "student identifiers in two formats joined through a test-taker crosswalk",
+  "not-tested and invalidation codes with make-up sessions",
+  "transfers between districts after testing",
+  "a merged district's predecessor codes",
+  "enrolment spells with transfers, late entrants and withdrawals",
+  "nonpublic test takers under host district codes",
+  "a fixed form's gappy raw-to-scale table"
+ ],
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task450": "task450 links two forms given to different groups through common items, separating the instrument's change from the groups' difference; here one group took both tests and the trap is a regression's prediction used as a concordance",
+  "task184": "task184 spreads each offence over its occurrence window across a week's time slots (an interval-censored event time); here two tests' scales are linked through a sample that took both, and the trap is a regression's prediction used as a concordance, which thins the tail beyond a cut"
+ },
+ "lineage": [
+  {
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G1",
+   ],
+   "generators": [
+    "G4",
+    "G13",
     "G16"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "the state education department's adolescent literacy programme director, who takes the 2027 grant awards to the State Board of Education",
-  "role_family": "programme_officer",
-  "scoring_unit": "units served",
-  "spine": {
-    "file": "state_reading_results_2025_2026.csv",
-    "rows": 0,
-    "entity": "one student's state reading test result in one spring administration (grade 6 to 8)",
-    "grain": "student x administration",
-    "source": "synthetic"
-  },
-  "forum": "trustees_or_governors",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "government_agency",
-  "world": {
-    "geography": "an unnamed state of the United States (its department of education, school districts and two test vendors are fictional)",
-    "currency": "USD",
-    "org_type": "a state department of education running an adolescent literacy grant programme",
-    "invented_names": [
-      "Grade-Level Reading Assessment",
-      "Statewide Literacy Measure",
-      "Adolescent Literacy Partnership"
-    ],
-    "people": [
-      "Jeffrey Warren",
-      "William Holloway"
-    ]
-  },
-  "deliverables": [
-    "adolescent_literacy_grants_2027.xlsx",
-    "grade8_reading_levels_new_scale.csv"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is how many units fall below a cut on a new instrument's scale when part of the population was measured only on the old instrument; a sample measured on both links the scales, and predicting each unit's new value by regression shrinks every converted value toward the sample's mean, so the converted spread is too narrow and the tail beyond the cut too thin, while matching the percentiles of two groups each measured on one instrument assumes the groups are alike; only a conversion that matches the two instruments' distributions in the sample measured on both keeps the share beyond the cut.",
-  "driver_concrete": "Each district's grade 9 and grade 10 students at Level 1 of the new state reading test decide the 2027 grants; the grade 10 students' latest grade 8 scores come from the retiring test in spring 2025, and the spring 2026 bridge study, in which a sample of grade 8 students took both tests, links the scales; placing each 2025 score at the new-scale value the regression of new on old predicts pulls the low scores toward the bridge sample's mean and drops about a fifth of the 2025 cohort's Level 1 students, matching the 2025 and 2026 cohorts' percentiles assumes the cohorts read equally well, and only a concordance that matches the two tests' score distributions in the bridge sample (equipercentile or linear) counts them.",
-  "stump": "The default path regresses the new test's scores on the retiring test's in the bridge study and places each 2025 grade 8 score at its predicted new-scale value, so too few of the 2025 cohort land at Level 1 and the slate swaps districts whose Level 1 students are mostly in grade 10 for districts weighted to grade 9.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms both vendors' files, keys each student to the current district through the enrolment register, takes each student's latest grade 8 result and reads the new test's performance level table converts the retiring test's 2025 scores by the regression of new on old in the bridge study, the obvious way to predict a new score from an old one, and files a slate that undercounts the grade 10 students at Level 1; only a concordance that matches the two tests' score distributions in the bridge sample files the golden.",
-  "domain_test": "Psychometrics: the deciding quantity is the share of a cohort below a performance level of a new test, for a cohort measured only on the retired test; the field links two tests' scales by equating or concordance (equipercentile or linear, symmetric and invariant across groups), and a prediction by regression is not a concordance; replacing the concordance with a regression, or with matching two different cohorts' percentiles, changes which districts get the grants.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:concordance by distribution matching, not regression",
-  "layer1": [
-    "two vendors' file layouts",
-    "student identifiers in two formats",
-    "not-tested and invalidation codes",
-    "retests in one window",
-    "transfers between districts after testing",
-    "performance levels named differently by each vendor"
-  ],
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task450": "task450 links two forms given to different groups through common items, separating the instrument's change from the groups' difference; here one group took both tests and the trap is a regression's prediction used as a concordance",
-    "task184": "task184 spreads each offence over its occurrence window across a week's time slots (an interval-censored event time); here two tests' scales are linked through a sample that took both, and the trap is a regression's prediction used as a concordance, which thins the tail beyond a cut"
-  },
-  "lineage": [
-    {
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G4",
-        "G13",
-        "G16"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "ranked_slate_under_cap",
-      "stump_strategy": "forecast_method_backtest",
-      "layer2_pattern": "own:weather-normalized emissions on the current operating regime (inverse degree-day models fitted after each building's last non-routine change)",
-      "driver": "The decisive quantity is each unit's output in a standard year of an external driver as the unit now operates, estimated from a response model fitted on the unit's own record; partway through the record many units changed how they respond to the driver or how much they draw regardless of it, on dates no file records, so a model fitted over the whole record or over the latest twelve months, or one recent year scaled by the driver's ratio, misstates the units whose response changed or whose fixed draw does not scale, and each moves a different set of units across the cap.",
-      "driver_concrete": "Each covered building's emissions in a year of the 1991 to 2020 normal weather as it runs at the end of September 2026 comes from degree-day models of each fuel fitted on the bills and oil fills since the building last changed how it runs (a boiler replaced, heat pumps added, a hot water plant converted, a tenant fit-out), found in its own record, and not from the 2025 benchmarking year scaled by the degree-day ratio, a model fitted over the whole record or one fitted over the latest twelve months, which each move a different set of buildings across the twelve advisor places.",
-      "stump": "The default path fits each fuel's degree-day model over each property's whole record and files a slate with 429 Quillen Avenue, 461 Tallman Street and 173 Orrin Place in place of 758 Fenwright Avenue, 843 Merrow Street and 137 Ashlar Street, because those three stepped to a lower heating use in January and February 2026 and three years of their bills still describe the plant they had; the obvious correction, the latest twelve months, still straddles the steps and keeps 461 Tallman Street and 173 Orrin Place in, and the golden fits each fuel on the spans since the property's last change, found in its own record.",
-      "architecture": "v1 (weather-normalized emissions on the current operating regime, Wendlemere covered buildings)",
-      "fate": "judge SEND_BACK 2026-10-17 (NOT_DETERMINISTIC: the post-change window's first span and whether electricity is refit with the heating fuel unforced, a $7,000 12th-to-13th margin inside a $40,000 to $57,000 window freedom; filing the window or a dated change log would make the step rule application); a first redraw (an inventory interval set by shared emission-factor errors) repeats task228's, task229 v1's, task260's and task261's correlated-error drivers and was dropped before registration"
-    }
-  ],
-  "notes": "architecture 2 drawn 2026-10-17 after architecture 1's SEND_BACK; personas re-drawn from guard.py names --geo 'United States' --seed 464",
-  "client_domain": "education-learning-sciences",
-  "registered": "2026-10-17T09:40:00Z"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "ranked_slate_under_cap",
+   "stump_strategy": "forecast_method_backtest",
+   "layer2_pattern": "own:weather-normalized emissions on the current operating regime (inverse degree-day models fitted after each building's last non-routine change)",
+   "driver": "The decisive quantity is each unit's output in a standard year of an external driver as the unit now operates, estimated from a response model fitted on the unit's own record; partway through the record many units changed how they respond to the driver or how much they draw regardless of it, on dates no file records, so a model fitted over the whole record or over the latest twelve months, or one recent year scaled by the driver's ratio, misstates the units whose response changed or whose fixed draw does not scale, and each moves a different set of units across the cap.",
+   "driver_concrete": "Each covered building's emissions in a year of the 1991 to 2020 normal weather as it runs at the end of September 2026 comes from degree-day models of each fuel fitted on the bills and oil fills since the building last changed how it runs (a boiler replaced, heat pumps added, a hot water plant converted, a tenant fit-out), found in its own record, and not from the 2025 benchmarking year scaled by the degree-day ratio, a model fitted over the whole record or one fitted over the latest twelve months, which each move a different set of buildings across the twelve advisor places.",
+   "stump": "The default path fits each fuel's degree-day model over each property's whole record and files a slate with 429 Quillen Avenue, 461 Tallman Street and 173 Orrin Place in place of 758 Fenwright Avenue, 843 Merrow Street and 137 Ashlar Street, because those three stepped to a lower heating use in January and February 2026 and three years of their bills still describe the plant they had; the obvious correction, the latest twelve months, still straddles the steps and keeps 461 Tallman Street and 173 Orrin Place in, and the golden fits each fuel on the spans since the property's last change, found in its own record.",
+   "architecture": "v1 (weather-normalized emissions on the current operating regime, Wendlemere covered buildings)",
+   "fate": "judge SEND_BACK 2026-10-17 (NOT_DETERMINISTIC: the post-change window's first span and whether electricity is refit with the heating fuel unforced, a $7,000 12th-to-13th margin inside a $40,000 to $57,000 window freedom; filing the window or a dated change log would make the step rule application); a first redraw (an inventory interval set by shared emission-factor errors) repeats task228's, task229 v1's, task260's and task261's correlated-error drivers and was dropped before registration"
+  }
+ ],
+ "notes": "architecture 2 drawn 2026-10-17 after architecture 1's SEND_BACK; personas re-drawn from guard.py names --geo 'United States' --seed 464",
+ "client_domain": "education-learning-sciences",
+ "registered": "2026-10-17T09:40:00Z"
 }

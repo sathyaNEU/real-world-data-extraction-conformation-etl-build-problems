@@ -1,36 +1,36 @@
 {
-  "task": "task464",
-  "owner": "oviya1301",
-  "status": "DESIGN",
-  "domain": "education-learning-sciences",
-  "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-17",
-  "stump": "The default path regresses the new test's scores on the retiring test's in the bridge study and places each 2025 grade 8 score at its predicted new-scale value, so too few of the 2025 cohort land at Level 1 and the slate swaps districts whose Level 1 students are mostly in grade 10 for districts weighted to grade 9.",
-  "architecture": 2,
-  "loops": 0,
-  "precut": {
-    "exit": null,
-    "date": null
-  },
-  "leak": {
-    "leak_py": "",
-    "reader": ""
-  },
-  "duplicate_check": {
-    "heart": "",
-    "nearest": "task450 0.13 (differentiated)"
-  },
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "architecture 1: task464/determinism_check_report.md (NOT_DETERMINISTIC, SEND_BACK)"
-  },
-  "returned": [],
-  "resume": "stage 2: prototype the bridge study and the cohorts, calibrate the ladder (regression placement, the retiring test's own levels, the scale-range mapping) against the concordance family (equipercentile, linear, the cohorts' percentiles), then the design sections to precut exit 0",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "source_note": "architecture 2 drawn afresh after architecture 1's SEND_BACK: the 2027 adolescent literacy grants on grade 9 and 10 students at the new state reading test's Level 1, the retiring test's 2025 scores placed on the new scale through the 2026 bridge study"
+ "task": "task464",
+ "owner": "oviya1301",
+ "status": "SHIPPED",
+ "domain": "education-learning-sciences",
+ "objective": "etl",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-17",
+ "stump": "The default path places each 2025 retiring-test score at its regression prediction from the bridge study, which pulls the low scores toward the sample's mean and out of Level 1, and funds Harlenbrook in Elmorrow's place (Harlenbrook 323 against Elmorrow 315); the concordance funds Elmorrow at 368 and leaves Harlenbrook out at 353.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK), 2026-10-17",
+  "reader": "two rounds: round 1 nothing quoted, literal reading the golden, Q6 analytical, realism tells fixed; round 2 the same, its date tells (a Saturday first day, two-day re-entries, a Monday test pile-up) fixed in the generator with every graded figure byte-identical"
+ },
+ "duplicate_check": {
+  "heart": "WARN (answered at the draw)",
+  "surface": "five card-level promotions (task465, task450, task136, task131, task184), none on the pack's surface after the folder index and dictionary renames"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "architecture 1: determinism_check_report.md (NOT_DETERMINISTIC, SEND_BACK); architecture 2: determinism_check_report_pass2.md (DETERMINISTIC, APPROVE)"
+ },
+ "returned": [],
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-17",
+ "portal": null,
+ "source_note": "architecture 2 drawn afresh after architecture 1's SEND_BACK: the 2027 adolescent literacy grants on grade 9 and 10 students at the new state reading test's Level 1, the retiring test's 2025 scores placed on the new scale through the 2026 bridge study"
 }
