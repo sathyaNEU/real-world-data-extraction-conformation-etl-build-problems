@@ -162,6 +162,21 @@ python3 .claude/skills/determinism-check/figures_check.py taskNN   # 0 every num
 Typed figures were the commonest judge finding (12 of 16 in one window). Each step names the file and
 rule in the verifier's words.
 
+**Every graded figure is printed at the precision its asking sentence states.** A figure printed coarser
+than the prompt asked for is a wrong figure, not a rounding preference: task182's prompt said to give the
+air to one decimal and its write-up printed the six weekly figures whole, 689 for 689.2, so eighteen asked
+figures were wrong on the face of the submission while every gate stayed green. `figures_check.py` cannot
+see it, because it asks whether each number in the blocks is in `figures.json` and both carried the same
+coarse value. Read the prompt's rounding sentence, list the figures it governs, and check each one's
+printed precision against it by hand or in the verifier.
+
+**A clause that says what another method would give is a graded claim.** "Not a background taken from the
+position's own record, which puts NSL03 and NSL12 in" names two candidates, so the judge builds that
+background and checks: task182's judge could not get NSL12 into the five under any background proxy it
+tried, and the method it did reproduce brought in a candidate the sentence left out. Either recompute
+every rejected route the write-up names, and name exactly the candidates it yields, or write the sentence
+without the candidate list.
+
 **A graded figure the prompt never asked for is an open fork by construction.** The rubric can only owe
 what the question asks, so a figure that sits in Deliverable Answers without an ask behind it has no
 asking sentence to fix its basis, its population or its rounding, and a judge reads that as Gate E and
