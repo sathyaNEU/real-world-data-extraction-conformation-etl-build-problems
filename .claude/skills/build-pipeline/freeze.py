@@ -53,7 +53,19 @@ def read(path):
         return ""
 
 
+MARKER = re.compile(r"(?m)^[ \t]*(?:[0-9]{1,2}[.)]|[-*+])[ \t]+")
+
+
 def numbers(text):
+    """Every number a graded block states, with ordered-list markers removed first.
+
+    A marker is not a figure: "3." opening a Critical Components item is the item's
+    number. Leaving it in classified any ask figure equal to 3 as a main-call figure,
+    which cost task195's rubric fix three spurious findings and an --allow that read
+    like a waiver. Stripping markers cannot hide a real figure, because a figure the
+    block states in a sentence is matched there.
+    """
+    text = MARKER.sub(" ", text)
     text = FILE.sub(" ", ISO.sub(" ", text))
     return sorted(n.replace(",", "").lstrip("+") for n in NUM.findall(text))
 
