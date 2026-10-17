@@ -1,0 +1,38 @@
+{
+ "task": "task236",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "epidemiology-public-health",
+ "objective": "data-quality-monitoring",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-17",
+ "stump": "A competent solver adjusts for testing by comparing each region's positivity in the four weeks after its testing change with the four weeks before and files 4 of the 8 regions wrong; the step that lands it there is reading the share of infections notified off the tests the region's own laboratories ran, which the testing change itself moved, instead of off the sentinel practices' influenza-attributed consultations, which no testing change reaches.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: simulator tuned to the ladder (season, RSV, eight testing changes, sentinel network), ask design and devices, remaining note sections, prompt, precut",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
