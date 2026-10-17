@@ -320,12 +320,15 @@ def run(target, g, state):
         ok(clause in spec, "the specification carries clause %s" % clause)
     for clause in ("4.1", "4.2", "4.3", "4.4"):
         ok(clause in charter, "the charter carries clause %s" % clause)
-    ok("would have recorded over the assessment quarter" in charter,
-       "the charter files the comparison in clause 4.3")
+    ok("that patients of the same risk band and age band ordinarily have" in charter,
+       "the charter files the comparison in clause 4.3, and no rate set with it")
     ok("separations planned" in charter, "the charter files the activity basis in clause 4.4")
     ok("standardised ratio is reported" in spec, "the specification files the reporting period")
-    ok(sum(charter.count(x) for x in ("avoid the most", "would have recorded")) == 2,
-       "the pin is stated once, not restated")
+    ok(charter.count("most avoidable complications") == 1
+       and charter.count("ordinarily have") == 1,
+       "the pin is stated once, at authority, and not restated")
+    ok(spec.count("ordinarily have") == 0 and charter.count("stratum") == 0,
+       "neither document restates the other's term")
 
     # ---------- the asks: separation, devices and stops ----------
     acute_units = {c for c, u in b["units"].items() if u["service_type"] == "Acute inpatient"}

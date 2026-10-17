@@ -137,6 +137,31 @@ script that exists in the build, and the gate fails without it. Re-run the scrip
 once at the end: a determinism repair that closes a reading can spend the device that rode on it, which is
 measurable the moment the sentence is filed and invisible in prose.
 
+**A device the dictionary resolves moves the mirror and never the cracker, and both are worth having.**
+The cracker reads the dictionary and runs the battery, so it executes every documented handling and
+finds everything the five sweeps find; a device resolvable from a column description or caught by an
+unmatched join is therefore free to it. task190 built two good devices, a revenue sample sitting on
+the capital testing paper under its own prefix and a release date against the paying run's date, and
+measured both: the mirror's leakage fell 51.2 to 26.8 and the cracker kept 41 of 41 either way. Those
+are mirror devices, they are legitimate, and they are what buys the leakage bar. They cannot be the
+primary. Stated as the builder put it: a pin tells you what to compute, a documented device tells you
+how to handle it, the cracker executes both, and only an undocumented inconsistency costs it
+anything. So budget the two classes separately. The mirror bar is bought with documented mess and
+battery-visible mess; the cracker's rows are bought only with an inconsistency nothing in the pack
+invites, which in practice means a grain or a self-validation shape: a rollup above its own parts, a
+control total true only in its own scope, a paper row covering several ledger lines, a count that does
+not sum. Each of those is found by reconciling amounts across grains, which no column description asks
+for and no sweep performs.
+
+**A device that is draftable but moves the call is held, not built.** The same build drafted a grain
+device whose paper rows identify the tested item by invoice reference, covering two or three payment
+lines each, and stopped: as drafted it changed which lines the paper identifies as tested, and that
+moves the main call. It wrote the safe construction into `## Tried and rejected` instead, which is to
+have the invoice-level rows cover lines already in the tested set so the set is unchanged, and to
+measure that before cutting rather than after. That is the right order. A device moving the call is the
+gravest finding in the book, and the cost of holding one for a pass is nothing beside the cost of
+finding it in a verdict.
+
 **A device that rides on an undefined term is a fork, not a device, and determinism will collect it.**
 task182 carried an ask whose device was that the plant records the same facts at two grains, and the
 device worked only while "the minutes of its assessment period" and "runs reached into it" were
