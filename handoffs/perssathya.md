@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 3 under way: task237, task238 and task239 shipped; task240 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 3 under way: task237 to task240 shipped; task241 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237, task238 and task239 shipped; task240 to task242 next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task240 shipped; task241 and task242 next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,24 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task240: SHIPPED 2026-10-17 (wave 3, fourth build; architecture 1); waiting on the portal.**
+- Larchmere Social Research's 2027 Household Resources Survey for a province's Statistics and Surveys Branch (Survey
+  Research & Official Statistics, nonresponse-calibration-measurement-error-adjustment x Data Quality Monitoring).
+  Call: nine of the 48 published estimates carry the low-reliability warning (unpaid care and household-bill arrears in
+  the four northern regions, private renting in North West); the public pension estimates of all twelve regions do not.
+  The weights were post-stratified within region, age group and sex, so each total's standard error is that of its
+  residuals within those cells (the Taylor linearisation of the estimate as published, which QS-7 3.2 files): CVs 27.6
+  or more for the nine, 18.4 or less for the rest. Treating the final weights as fixed files 15, adding the four
+  northern pension estimates and two renting estimates. Asks: each region's response rate and the calls to its
+  addresses with a full interview (the master sample's pre-review region codes, an outcome extract taken before every
+  tablet synced, addresses never worked, tablets re-writing a day's calls, letters and cards).
+- Gates: 101 generator checks, verify green (its own linearisation, rates and counts), byte-identical rebuilds,
+  figures_check 118 of 118, precut 49, leak.py REVIEW only; two leak reads (question 1 none, question 6 analytical;
+  letters' times and one dictionary line fixed); judge pass 1 FIX_NOW on the write-up's step 7 alone, pass 2
+  DETERMINISTIC, APPROVE. The guard blocked the client's first name (task186 holds "Provincial Statistics Bureau"), so
+  it became the province's Statistics and Surveys Branch with every figure unchanged; heart WARN. Surface promotes
+  task238 (same pairing two builds apart, another mechanism, differentiated on the card).
 
 **task239: SHIPPED 2026-10-17 (wave 3, third build; architecture 1); waiting on the portal.**
 - Lowfirth Parcels, a national parcels carrier, and the Team Climate Index its Staff Voice survey reports per team

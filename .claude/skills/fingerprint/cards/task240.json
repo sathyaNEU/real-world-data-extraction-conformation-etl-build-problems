@@ -1,87 +1,92 @@
 {
-  "task": "task240",
-  "architecture": "v1",
-  "drawn": "2026-10-17",
-  "slot_note": "wave 3, seed DQ13 (whether this wave's estimate trips the weighting pipeline's quality alert)",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
-  "niche": "a social research agency's quality report on a provincial household survey's regional estimates: which published estimates carry the low-reliability warning, each estimate's coefficient of variation under the survey's clustered design and its post-stratification to population totals by region, age group and sex",
-  "objective": "data-quality-monitoring",
-  "shape": "07",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "rule"
+ "task": "task240",
+ "architecture": "v1",
+ "drawn": "2026-10-17",
+ "slot_note": "wave 3, seed DQ13 (whether this wave's estimate trips the weighting pipeline's quality alert)",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+ "niche": "a social research agency's quality report on a provincial household survey's regional estimates: which published estimates carry the branch's low-reliability warning, each estimate's coefficient of variation under the survey's clustered design and its post-stratification to population totals by region, age group and sex",
+ "objective": "data-quality-monitoring",
+ "shape": "07",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "Nine of the 48 estimates carry the low-reliability warning: adults in privately rented homes in North West (R02); adults providing unpaid care and adults in households behind on a household bill in Far North (R01), North West (R02), North East (R03) and Lakes (R04); the public pension estimates of all twelve regions do not.",
+ "answer_source": "submission.md block 1; hrs27_quality_report.xlsx sheet Estimates; hrs27_quality_note.docx",
+ "gap": [
+  "rule"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G17",
+  "G16",
+  "G2"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "decomposition_attribution",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stakeholder_role": "the agency's lead survey statistician, who signs off each wave's quality report for the client",
+ "role_family": "research_desk",
+ "scoring_unit": "per certified output",
+ "spine": {
+  "file": "hrs27_household_members.csv",
+  "rows": 8871,
+  "entity": "one member on the roster of a responding household of the 2027 wave (adults weighted in hrs27_final_weights.csv, 7,238 rows)",
+  "grain": "person",
+  "source": "synthetic"
+ },
+ "forum": "customer_or_counterparty",
+ "forcing_event": "purchase_order_or_contract",
+ "org_family": "professional_services",
+ "world": {
+  "geography": "Canada, an unnamed province (its twelve health regions, named by direction; the agency, the province's Statistics and Surveys Branch and the people are invented; personas on the en_CA index)",
+  "currency": "CAD",
+  "org_type": "social research agency delivering a provincial household survey under contract",
+  "invented_names": [
+   "Larchmere Social Research",
+   "Household Resources Survey",
+   "Statistics and Surveys Branch"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G17",
-    "G16",
-    "G2"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "the agency's lead survey statistician, who signs off each wave's quality report for the client",
-  "role_family": "research_desk",
-  "scoring_unit": "per certified output",
-  "spine": {
-    "file": "hrs27_adults.csv",
-    "rows": 0,
-    "entity": "one adult in a responding household of the 2027 wave",
-    "grain": "person",
-    "source": "synthetic"
-  },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "professional_services",
-  "world": {
-    "geography": "Canada, an unnamed province (its twelve health regions, named by direction; the agency, the client ministry and the people are invented; personas on the en_CA index)",
-    "currency": "CAD",
-    "org_type": "social research agency delivering a provincial household survey under contract",
-    "invented_names": [
-      "Larchmere Social Research",
-      "Household Resources Survey"
-    ],
-    "people": [
-      "Kristina Stephens",
-      "Latasha Evans",
-      "Anna Mckee"
-    ]
-  },
-  "deliverables": [
-    "hrs27_quality_report.xlsx",
-    "hrs27_quality_note.docx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is the sampling error of totals whose weights were scaled to known population counts within cells, which is the spread of each unit's departure from its cell's mean rather than of its own value, so an error taken from the scaled weights as if they were fixed overstates the error most for the quantities the cells explain, and flags as unreliable estimates the scaling has made precise.",
-  "driver_concrete": "The client's standard warns any regional estimate whose coefficient of variation is 20 per cent or more; the survey's final weights are post-stratified to population totals by region, age group and sex, so a count such as the adults receiving a public pension, which age largely decides, has a sampling error set by the residuals within the age-sex cells over the PSUs; Taylor linearisation with the final weights treated as fixed overstates those errors and warns the pension and full-time-education counts in the smaller regions, which the post-stratified estimator's variance clears.",
-  "stump": "A competent analyst computes each estimate's standard error by Taylor linearisation over the strata and PSUs with the final weights treated as fixed and adds low-reliability warnings to the pension and education counts of the smallest regions; the step that lands it there is treating post-stratified weights as fixed, when a post-stratified estimate's error is that of its residuals within the region, age group and sex cells.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds the responding adults, attaches the final weights, reads the design's strata and PSUs and computes each estimate's coefficient of variation by Taylor linearisation with the final weights treated as fixed also warns the pension and education counts of the smallest regions; one who ignores the clustering warns a different set; only the post-stratified estimator's variance, from the residuals within the region, age group and sex cells over the PSUs, gives the golden list.",
-  "domain_test": "The deciding quantity is each published estimate's sampling error under the survey's clustered design and its post-stratification to population totals, the variance of a calibrated estimator that survey statisticians take from the residuals within the calibration cells; with megawatt-hours or hospital visits in place of the sampled adults there is no sample, no design, no post-stratification and no sampling error to compute.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Seed DQ13: the world (a weighting pipeline's quality alert), the decision (which published estimates the wave's quality report flags) and the quantity (each estimate against the alert threshold) kept; the seed's pitfall (one overall nonresponse factor against cell adjustment) is not used: the weighting is filed and done, and the decisive step is the post-stratified estimate's variance. G17 decisive (each published estimate judged against its own sampling error, the call itself), G16 (the variance estimator the standard's sampling error of the estimate as published entitles), G2 (the PSU as the unit of the variance, a lower rung). Nearby spent drivers: task195 (a paired difference's own uncertainty), task228 (variance built at the randomised unit), task229 v1 (a standard error over entities failing through a shared node); none takes a calibrated estimator's variance from its residuals.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:post-stratified-estimate-variance-from-within-cell-residuals",
-  "layer1": [
-    "the fieldwork system's household and adult files at two grains beside the sample file of issued addresses with their strata, PSUs and selection probabilities",
-    "the weighting pipeline's person-level weights file keyed by a person number that restarts within each household",
-    "item codes for don't know and refused on the indicator questions, and proxy answers for absent adults",
-    "adults entered twice when a household's roster was re-sent, and household members under 16 in the adult file",
-    "health-region codes on older PSUs from before the 2025 boundary review, read through a lookup",
-    "population totals published in thousands by five-year age band, which the weighting groups into its age groups"
-  ],
-  "registered": "2026-10-17T18:42:57Z"
+  "people": [
+   "Kristina Stephens",
+   "Latasha Evans",
+   "Anna Mckee"
+  ]
+ },
+ "deliverables": [
+  "hrs27_quality_report.xlsx",
+  "hrs27_quality_note.docx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is the sampling error of totals whose weights were scaled to known population counts within cells, which is the spread of each unit's departure from its cell's mean rather than of its own value, so an error taken from the scaled weights as if they were fixed overstates the error most for the quantities the cells explain, and flags as unreliable estimates the scaling has made precise.",
+ "driver_concrete": "The branch's standard warns any regional estimate whose coefficient of variation is 20 per cent or more; the survey's final weights are post-stratified to population totals by region, age group and sex, so a count such as the adults receiving a public pension, which age largely decides, has a sampling error set by the residuals within the age-sex cells over the PSUs; Taylor linearisation with the final weights treated as fixed overstates those errors and warns the pension estimates of the four northern regions and two of their renting estimates, which the post-stratified estimator's variance clears.",
+ "stump": "A competent analyst takes each published total's standard error by Taylor linearisation over the strata and PSUs with the final weights treated as fixed and files 15 of the 48 estimates warned, the public pension estimates of all four northern regions and the private renting estimates of R01 and R03 among them; the step that lands it there is treating post-stratified weights as fixed, when a post-stratified total's sampling error is that of its residuals within the region, age group and sex cells, which warns 9.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who builds the responding adults, attaches the final weights, reads the design's strata and PSUs and computes each estimate's coefficient of variation by Taylor linearisation with the final weights treated as fixed warns 15 estimates, the pension estimates of the four northern regions and the renting estimates of R01 and R03 among them; one who ignores the clustering warns another set of 7 or 9; only the post-stratified estimator's variance, from the residuals within the region, age group and sex cells over the PSUs, gives the golden nine.",
+ "domain_test": "The deciding quantity is each published estimate's sampling error under the survey's clustered design and its post-stratification to population totals, the variance of a calibrated estimator that survey statisticians take from the residuals within the calibration cells; with megawatt-hours or hospital visits in place of the sampled adults there is no sample, no design, no post-stratification and no sampling error to compute.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task238": "same pairing two builds apart (outside the three-card ban window): task238 identifies a mode effect's estimand when a new survey mode joins a tracker; task240 takes the variance of a post-stratified estimator for a precision warning; no mechanism, file or quantity is shared"
+ },
+ "lineage": [],
+ "notes": "Seed DQ13: the world (a weighting pipeline's quality alert), the decision (which published estimates the wave's quality report flags) and the quantity (each estimate against the alert threshold) kept; the seed's pitfall (one overall nonresponse factor against cell adjustment) is not used: the weighting is filed and done, and the decisive step is the post-stratified estimate's variance. G17 decisive (each published estimate judged against its own sampling error, the call itself), G16 (the variance estimator the standard's sampling error of the estimate as published entitles), G2 (the PSU as the unit of the variance, a lower rung). Nearby spent drivers: task195 (a paired difference's own uncertainty), task228 (variance built at the randomised unit), task229 v1 (a standard error over entities failing through a shared node); none takes a calibrated estimator's variance from its residuals.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:post-stratified-estimate-variance-from-within-cell-residuals",
+ "layer1": [
+  "the analysis files at two grains (households with region, stratum, PSU and household answers; members with their own answers) and the weights file keyed by household and a person number restarting in each household",
+  "children under 16 on the household rosters, carrying no weight",
+  "not-asked, don't know and refused codes on the indicator questions, and proxy answers for absent adults",
+  "the master sample's health-region code on PSUs selected before the 2025 boundary review",
+  "an outcome extract taken before every tablet had synced, and issued addresses never worked absent from it",
+  "one outcome row per issue for reissued addresses",
+  "tablets re-writing a day's calls after a failed sync under new record numbers, beside advance letters and calling cards in the call log",
+  "population estimates published in thousands by five-year age band, which the weighting groups into its age groups"
+ ],
+ "registered": "2026-10-17T18:42:57Z"
 }
