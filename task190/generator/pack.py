@@ -46,7 +46,14 @@ def enrich(lines, year=W.YEAR, seed=4471):
                         line="CPL-%s-%06d" % (year[2:], 10000 + n * 7 + rng.below(6)),
                         inv=iv, sup=sup, day=day,
                         run="PR-%s-%03d" % (year[2:], runs.index(day) + 1),
-                        seq=n + 1, status="paid", reverses="", delivery=1))
+                        seq=0, status="paid", reverses="", delivery=1))
+    # the ledger posts revenue and payroll lines in the same sequence, so an extract filtered to
+    # the capital programme lines comes out with the gaps those left behind
+    s = 0
+    for r in out:
+        s += 1 + (sim.shash("%s/seq/%d" % (year, r["idx"])) % 7 == 0) \
+            + (sim.shash("%s/gap/%d" % (year, r["idx"])) % 23 == 0) * 3
+        r["seq"] = s
     seen = set()
     for r in out:
         while r["line"] in seen:
@@ -102,8 +109,9 @@ def write_programme_register(target):
              "CP-21": "Terminals", "CP-23": "Terminals", "CP-44": "Terminals",
              "CP-34": "Estate", "CP-41": "Estate", "CP-47": "Estate"}
     for code, name, value, certs in W.PROGRAMMES:
-        rows.append([code, name, direc[code], "%d" % int(round(value / 1000.0)),
-                     "2024-04-01", "2028-03-31"])
+        start, done = W.PROG_DATES[code]
+        rows.append([code, name, direc[code],
+                     "%d" % int(round(W.APPROVED_BUDGET[code] / 1000.0)), start, done])
     return write_csv(target, "capital_programme_register.csv",
                      ["programme_code", "programme_name", "directorate",
                       "approved_budget_eur_thousands", "start_date", "planned_completion"], rows)

@@ -122,11 +122,28 @@ def actions(reports):
     return sorted(out, key=lambda a: (a["day"], a["loc"], a["theme"]))
 
 
+def once_per_report(reports, route):
+    """One row per report on a route, the moment that route first received it. A report counts once
+    however many import loads brought it, and the reposted August load carries the stamp of the day
+    it arrived, so the delivery moment of a report is the first load's (the dictionary's two
+    lines)."""
+    best = {}
+    for r in reports:
+        if r["route"] != route:
+            continue
+        if r["ident"] not in best or r["recv_utc"] < best[r["ident"]]["recv_utc"]:
+            best[r["ident"]] = r
+    return sorted(best.values(), key=lambda r: (r["recv_utc"], r["ident"]))
+
+
 def matrix(sample, keep=None):
-    """The classifier's four cells, from the desk's hand coding."""
+    """The classifier's four cells, from the desk's hand coding. A row the desk could not code
+    carries no manual code, so it is not a comparison and no cell holds it."""
     tp = fn = fp = tn = 0
     for r in sample:
         if keep is not None and not keep(r):
+            continue
+        if not r["codigo_manual"]:
             continue
         m, h = r["codigo_monitor"] in CONF, r["codigo_manual"] in CONF
         if h and m:
@@ -202,10 +219,12 @@ def compute(target):
     sample = b["sample"]
     cells = matrix(sample)
     tp, fn, fp, tn = cells
+    coded = tp + fn + fp + tn
     raw, se, fmr = rogan_gladen(N, O, cells)
     g = dict(actions_in_period=len(inper), press_only=N, filed_by_hand=len(human),
              hand_confrontational=H, press_marked=O,
-             sample_rows=len(sample), tp=tp, fn=fn, fp=fp, tn=tn,
+             sample_rows=len(sample), sample_coded=coded,
+             sample_uncoded=len(sample) - coded, tp=tp, fn=fn, fp=fp, tn=tn,
              recall=round(se, 4), false_mark=round(fmr, 4),
              raw_total=H + raw, total=grain(H + raw), grain=GRAIN)
 
@@ -222,7 +241,7 @@ def compute(target):
     g["raw_rung1b"] = H + O - fmr * N
     g["raw_rung2"] = H + O / se
     g["raw_rung3"] = H + pv
-    g["raw_rung4"] = H + (tp + fn) / float(len(sample)) * N
+    g["raw_rung4"] = H + (tp + fn) / float(coded) * N
     g["raw_rung5"] = float(H + hand_true + unsampled_marked)
     g["rung0"] = grain(g["raw_rung0"])
     g["rung1"] = grain(g["raw_rung1"])
@@ -250,12 +269,20 @@ def compute(target):
                               ("pv_by_theme", theme_a, theme_r, predictive)):
         v, broken = strata(press, sample, ka, kr, fun)
         g["dead"][name] = dict(value=v, broken=broken)
+    coded_fb = lambda n, m: m
     for name, ka, kr, fun, fb in (("rg_fb_month", month_a, month_r, rg_only, pooled_rg),
                                   ("rg_fb_theme", theme_a, theme_r, rg_only, pooled_rg),
                                   ("pv_fb_month", month_a, month_r, predictive, pooled_pv),
-                                  ("pv_fb_theme", theme_a, theme_r, predictive, pooled_pv)):
+                                  ("pv_fb_theme", theme_a, theme_r, predictive, pooled_pv),
+                                  ("rg_coded_month", month_a, month_r, rg_only, coded_fb),
+                                  ("rg_coded_theme", theme_a, theme_r, rg_only, coded_fb)):
         v, broken = strata(press, sample, ka, kr, fun, fb)
         g["variant_" + name] = H + v
+    # one round's own cells carried over the whole record, which nothing in the record rules out
+    for name in sorted({r["ronda"] for r in sample}):
+        c = matrix(sample, lambda r, n=name: r["ronda"] == n)
+        v, se_r, fmr_r = rogan_gladen(N, O, c)
+        g["variant_rg_" + name.lower()] = H + v
 
     # what a solver sees in the record and in the audit
     marked_by_month, audit_by_month = {}, {}
@@ -265,6 +292,8 @@ def compute(target):
         marked_by_month[m][0] += 1
         marked_by_month[m][1] += 1 if a["coded_conf"] else 0
     for r in sample:
+        if not r["codigo_manual"]:
+            continue
         m = pdate(r["data_ocorrencia"]).month
         audit_by_month.setdefault(m, [0, 0])
         audit_by_month[m][0] += 1
@@ -275,8 +304,8 @@ def compute(target):
     for name in sorted({r["ronda"] for r in sample}):
         rows = [r for r in sample if r["ronda"] == name]
         c = matrix(rows, None)
-        g["audit_rounds"][name] = dict(rows=len(rows), cells=c,
-                                       prevalence=(c[0] + c[1]) / float(len(rows)),
+        g["audit_rounds"][name] = dict(rows=len(rows), cells=c, coded=sum(c),
+                                       prevalence=(c[0] + c[1]) / float(sum(c)),
                                        recall=c[0] / float(c[0] + c[1]) if (c[0] + c[1]) else None,
                                        false_mark=c[2] / float(c[2] + c[3]) if (c[2] + c[3]) else None)
     g["audit_covers"] = sorted(audit_by_month)
@@ -286,7 +315,7 @@ def compute(target):
                                / float(sum(marked_by_month[m][0] for m in inside)))
     g["marked_rate_outside"] = (sum(marked_by_month[m][1] for m in outside)
                                 / float(sum(marked_by_month[m][0] for m in outside)))
-    g["audit_prevalence"] = (tp + fn) / float(len(sample))
+    g["audit_prevalence"] = (tp + fn) / float(coded)
     g["record_prevalence"] = (H + raw) / float(len(inper))
 
     # ---- A1, per fortnight
@@ -304,12 +333,7 @@ def compute(target):
     # ---- A2, per access route
     a2 = {}
     for route, _ in W.ROUTES:
-        placed, seen = [], set()
-        for r in b["reports"]:
-            if r["route"] != route or r["ident"] in seen:
-                continue
-            seen.add(r["ident"])
-            placed.append(r)
+        placed = once_per_report(b["reports"], route)
         in_period = [r for r in placed if PERIOD[0] <= r["recv"].date() <= PERIOD[1]]
         exc = [e for e in b["exceptions"]
                if e["route"] == route and PERIOD[0] <= e["recv"].date() <= PERIOD[1]]
@@ -324,10 +348,7 @@ def compute(target):
     # ---- A3, per partner organisation
     code_to = {p[0]: p[0] for p in W.PARTNERS}
     code_to[W.MERGED[1]] = W.MERGED[0]
-    par_seen = {}
-    for r in b["reports"]:
-        if r["route"] == "PAR":
-            par_seen.setdefault(r["ident"], r)
+    par_seen = dict((r["ident"], r) for r in once_per_report(b["reports"], "PAR"))
     a3 = {}
     for code, name, region, rate in W.PARTNERS:
         mine = [r for r in par_seen.values() if code_to.get(r["src"]) == code

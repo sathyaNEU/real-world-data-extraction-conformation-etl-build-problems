@@ -244,12 +244,18 @@ def run(target, figures_path):
            "%s runs behind its level %d against %s" % (code, len(d["runs"]),
                                                        fig["centrifuge_runs_position"][code]))
 
+    for code in sorted(spec):
+        # every printed level clear of its own rounding edge, measured as the distance to the edge
+        edge = 0.05 - abs(spec[code] * 10 - round(spec[code] * 10)) * 0.1
+        ok(edge >= 0.015, "%s's level sits %.4f dB from a rounding edge" % (code, edge))
     order = sorted(spec, key=lambda c: -spec[c])
     ok(sorted(order[:CAP]) == sorted(fig["slate"]), "the slate is %s" % order[:CAP])
     ok(order[:CAP] == fig["slate_ordered"], "the slate's order is %s" % order[:CAP])
     ok(order[CAP] == fig["sixth"], "the sixth dwelling is %s" % order[CAP])
-    ok(round(spec[order[CAP - 1]] - spec[order[CAP]], 1) == fig["margin_db"],
-       "the margin is %.2f dB" % (spec[order[CAP - 1]] - spec[order[CAP]]))
+    mgn = spec[order[CAP - 1]] - spec[order[CAP]]
+    ok(round(mgn, 1) == fig["margin_db"], "the margin is %.2f dB" % mgn)
+    ok(0.05 - abs(mgn * 10 - round(mgn * 10)) * 0.1 >= 0.015,
+       "the margin sits %.4f dB from its rounding edge" % (0.05 - abs(mgn * 10 - round(mgn * 10)) * 0.1))
 
     # the default path, on its own code path: the background from the position's own running record
     naive = {}
@@ -330,6 +336,8 @@ def run(target, figures_path):
            "week %d biogas %d against %d" % (i, round(gas), w["biogas_m3"]))
         ok(int(round(air)) == w["blower_air_knm3"],
            "week %d blower air %d against %d" % (i, round(air), w["blower_air_knm3"]))
+        ok(0.5 - abs(air - round(air)) >= 0.15,
+           "week %d's air (%.1f) sits %.2f from the whole-unit edge" % (i, air, 0.5 - abs(air - round(air))))
         ok(runs == w["centrifuge_runs"],
            "week %d runs %d against %d" % (i, runs, w["centrifuge_runs"]))
 

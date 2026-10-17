@@ -137,6 +137,26 @@ script that exists in the build, and the gate fails without it. Re-run the scrip
 once at the end: a determinism repair that closes a reading can spend the device that rode on it, which is
 measurable the moment the sentence is filed and invisible in prose.
 
+**Two ways the ceiling script fakes its second column, and they look identical in the output.** The
+first is task190's: the two responses were meant to take different ask readings and the script passed
+one response's stops to both rows, so the ask band, 0.60 of the rubric, was one reading counted twice.
+The second is task193's: the asks were properly decoupled, so the two rows agree by construction, and
+the script computed the same call twice and printed the result as two measurements. The second is not a
+measurement error, because for decoupled asks the two columns should agree; it is evidence that is not
+evidence, because the skill's own coupling test, a figure differing between the sheets is coupled and
+is re-routed or dropped, cannot be performed by comparing a list with itself. Where the asks consume
+nothing the call's construction produces, say that in the output and point at the separation
+assertions that prove it, rather than printing a duplicate row. Where they do consume something,
+compute both paths for real.
+
+**An assertion that reads a generator flag is not an assertion about the shipped pack.** task193's
+separation check asked whether an ask's rejection device could move a patient's earliest observed
+receipt, and it read the generator's own `is_first`, which no prevalent user's first line in the
+extract carries. The check passed and the hazard was live: a path, however narrow, from an ask device
+into the call, which is the gravest finding there is. Recompute the property from the shipped rows,
+earliest day per entity from every line in the file, and assert that. A flag the generator wrote
+knows what the generator meant; the pack is what the solver reads.
+
 **The ceiling script is read, not just run.** `precut.py` checks that a script is named and exists;
 nothing checks that it measures what it says, and three ways of getting that wrong have now been found
 in one build's `ceiling.py`. It scored both responses on the same ask readings, passing the cracker's

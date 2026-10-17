@@ -3,7 +3,7 @@
  "domain": "Physical & Environmental Sciences, environmental monitoring and exceedance",
  "objective": "Anomaly Detection & Diagnostics",
  "as_of": "2026-10-16",
- "committed_answer": "the October slot covers NSL04, NSL11, NSL07, NSL02, NSL13; NSL09 is the first dwelling off the list, 1.3 dB below the fifth",
+ "committed_answer": "the October slot covers NSL04, NSL11, NSL07, NSL02, NSL13; NSL06 is the first dwelling off the list, 1.3 dB below the fifth",
  "deliverables": [
   "specific_sound_levels.csv",
   "mitigation_shortlist.pdf"

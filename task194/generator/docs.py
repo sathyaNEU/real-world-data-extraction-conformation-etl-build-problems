@@ -60,9 +60,9 @@ def charter(target):
                    "inside three years, so that the gains a unit holds are the unit's own to hold.", BODY),
          Paragraph("4.3 A placement is made with the unit carrying the most avoidable complications. The "
                    "complications a unit carries as avoidable over a period are the complications its own "
-                   "patients had, less the complications patients in the same risk band and age band "
-                   "would be expected to have, counted patient by patient and summed over the unit's "
-                   "episodes in that period.", BODY),
+                   "patients had, less the complications that patients of the same risk band and age band "
+                   "ordinarily have, counted patient by patient and summed over the unit's episodes in "
+                   "that period.", BODY),
          Paragraph("4.4 A placement is assessed on the separations planned for the unit for the assessment "
                    "quarter, as published in the network's activity plan for that quarter.", BODY),
          Paragraph("4.5 The Director of Clinical Improvement recommends the placement for each cycle and "
@@ -77,9 +77,9 @@ def charter(target):
          Paragraph("Part 6 Reporting", H2),
          Paragraph("6.1 The partnership reports each cycle to the committee, and annually to the board, on "
                    "the placements made and the complications avoided across the network.", BODY),
-         Paragraph("6.2 The indicator the partnership is assessed on is the hospital-acquired complication "
-                   "indicator as the current specification defines it. The partnership does not maintain a "
-                   "measure of its own.", BODY)]
+         Paragraph("6.2 The partnership's own performance is reported against the hospital-acquired "
+                   "complication indicator as the current specification defines it. The partnership "
+                   "publishes no indicator of its own.", BODY)]
     d.build(f)
     return path
 
@@ -135,8 +135,9 @@ def specification(target):
                    "quarter closes eight weeks after the quarter ends.", BODY),
          Spacer(1, 6),
          Paragraph("Appendix A Published stratum rates", H2),
-         Paragraph("Complications expected per in-scope episode, by risk band and age band at admission.",
-                   SMALL),
+         Paragraph("Complications expected per in-scope episode, by risk band and age band at admission. "
+                   "Derived from network activity in the year ended 30 June 2024 and published with this "
+                   "specification.", SMALL),
          Table(wrap(strata), colWidths=[30 * mm] + [24 * mm] * 4, style=TBL),
          Spacer(1, 8),
          Paragraph("Appendix B The national complication list", H2),

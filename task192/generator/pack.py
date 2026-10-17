@@ -181,9 +181,14 @@ def write_partner_reports(target, reps):
         rows.append([r["ident"], load, r["src"], a["theme"], r["code"], r["place"],
                      sim.d(a["day"]).isoformat(), r["start"].strftime("%Y-%m-%d %H:%M"),
                      recv_utc.strftime("%Y-%m-%dT%H:%MZ")])
+    # The second load is the August file sent again after the receiving server failed, so the portal
+    # stamped its rows on the day it arrived rather than on the day the network first delivered
+    # them: fresh stamps on old content, which is what counts the month twice.
     extra = [list(x) for x in rows if x[6][:7] == "2026-08"]
     for e in extra:
         e[1] = "C20260802"                      # the second load of the same month
+        e[8] = (dt.datetime.combine(RELOAD_ARRIVED, dt.time(8, 12))
+                + dt.timedelta(minutes=int(e[0][-5:]) % 287)).strftime("%Y-%m-%dT%H:%MZ")
     rows = rows + extra
     rows.sort(key=lambda x: (x[1], x[0]))
     head = ["id_relato", "id_carga", "codigo_parceiro", "tema", "codigo_acao", "local_texto",

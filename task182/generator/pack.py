@@ -136,9 +136,13 @@ def write_positions(target):
     rng = random.Random(W.SEED + 5)
     for i, p in enumerate(W.POSITIONS):
         code, dref, desc, dist, bear = p[0], p[1], p[2], p[3], p[4]
-        ang = math.radians(bear)
-        e = 612430 + int(round(dist * math.sin(ang)))
-        n = 748215 + int(round(dist * math.cos(ang)))
+        # the grid reference is where the tripod stood, surveyed on the ground; the distance and bearing
+        # are to the blower house gable, scaled off the site plan to the nearest five metres and degree,
+        # so the two do not reduce to one another
+        ang = math.radians(bear + rng.uniform(-1.4, 1.4))
+        d = dist + rng.uniform(-4.0, 4.0)
+        e = 612430 + int(round(d * math.sin(ang)))
+        n = 748215 + int(round(d * math.cos(ang)))
         cref = None if W.COMPLAINTS[code] == 0 else "C%02d" % (1 + sorted(
             [c for c in W.CODES if W.COMPLAINTS[c] > 0], key=lambda c: -W.COMPLAINTS[c]).index(code))
         r = 6 + i
@@ -193,10 +197,20 @@ def write_events(target):
                       ["logged_at", "equipment", "event", "logged_by", "reason"], out)
 
 
+def _ar1(n, a, rng):
+    """Unit-variance AR(1) noise: a process channel wanders, it does not jump about independently every
+    quarter of an hour."""
+    out = np.zeros(n)
+    wn = rng.normal(0.0, math.sqrt(1 - a * a), n)
+    for i in range(n):
+        out[i] = a * out[i - 1] + wn[i] if i else wn[i]
+    return out
+
+
 def write_scada(target):
     """Fifteen-minute process channels. The biogas meter is a counter and rolls over; the engine's hour
     counter was replaced; one spell is missing where the link to the PLC dropped."""
-    rng = np.random.default_rng(W.SEED + 23)
+    rng = np.random.default_rng(W.SEED + 23 + W.AIR_SEED)
     t0 = dt.datetime(2026, 8, 1, 0, 0)
     n = int((dt.datetime(2026, 10, 17) - t0).total_seconds() // 900)
     stamps = [t0 + dt.timedelta(minutes=15 * i) for i in range(n)]
@@ -207,8 +221,11 @@ def write_scada(target):
     dows = np.array([s.weekday() for s in stamps])
     # the site's weekly milk intake moves the plant's load from week to week; the sound carries it too
     wkf = np.array([SM.week_factor(s.date()) for s in stamps])
-    air = (4120 + 180 * np.sin(2 * math.pi * hours / 24.0 - 1.2) + rng.normal(0, 46, n)) * wkf
-    air = np.where(stopped, 0.0, air)
+    # the blower header follows the dissolved oxygen trim, so the flow wanders through the day as well
+    # as over it, and the totaliser's own quarter-hour steps are not all the same size
+    air = (4120 + 180 * np.sin(2 * math.pi * hours / 24.0 - 1.2)
+           + 232 * _ar1(n, 0.88, rng) + 78 * _ar1(n, 0.42, rng)) * wkf
+    air = np.where(stopped, 0.0, np.clip(air, 0.0, None))
     # the blower header's flow totaliser, thousands of normal cubic metres, running since commissioning
     air_total = 128450.0 + np.cumsum(air * 0.25) / 1000.0
     cf_on = np.zeros(n, dtype=bool)
@@ -221,16 +238,16 @@ def write_scada(target):
         cf_on[i] = cf_on[i] and not stopped[i]
     feed = np.where(cf_on, 31.5 + rng.normal(0, 1.4, n), 0.0)
     gas_rate = np.where(stopped, 0.0, (212 + 9.5 * np.sin(2 * math.pi * hours / 24.0 + 0.4)
-                                       + rng.normal(0, 4.0, n)) * wkf)   # m3 an hour to the engine
+                                       + 5.2 * _ar1(n, 0.84, rng)) * wkf)   # m3 an hour to the engine
     counter = (18640.0 + np.cumsum(gas_rate * 0.25)) % 100000.0
     eng_off = stopped.copy()
     for start, mins, _ in W.ENGINE_STOPS:
         end = start + dt.timedelta(minutes=mins)
         eng_off |= np.array([(s >= start - dt.timedelta(minutes=14)) and (s < end) for s in stamps])
     kw = np.where(eng_off, 0.0,
-                  268 + 7.0 * np.sin(2 * math.pi * hours / 24.0 + 0.4) + rng.normal(0, 3.1, n))
+                  268 + 7.0 * np.sin(2 * math.pi * hours / 24.0 + 0.4) + 4.2 * _ar1(n, 0.8, rng))
     inflow = (96 + 34 * np.exp(-((hours - 10.5) ** 2) / 9.0) + 26 * np.exp(-((hours - 19.0) ** 2) / 7.0)
-              + rng.normal(0, 4.5, n))
+              + 6.1 * _ar1(n, 0.74, rng))
     eng_hours = np.cumsum(np.where(eng_off, 0.0, 0.25))
     replaced = np.array([s >= W.HOUR_COUNTER_SWAP for s in stamps])
     base = eng_hours[np.argmax(replaced)] if replaced.any() else 0.0
@@ -361,6 +378,11 @@ def write_calibration(target):
                        "note"], rows)
 
 
+# The order the register's own contacts are written in: every contact is somebody's own words, so no two
+# rows carry the same sentence.
+TEXT_ORDER = [5, 17, 0, 9, 21, 13, 2, 19, 8, 11, 23, 3, 15, 6, 20, 1, 12, 22, 7, 16, 4, 18, 10, 14]
+
+
 def write_complaints(target):
     """The complaints register. The question does not use it (metadata.json declares it)."""
     from openpyxl import Workbook
@@ -419,7 +441,7 @@ def write_complaints(target):
         for k in range(W.COMPLAINTS[code]):
             d = dt.date(2026, 6, 4) + dt.timedelta(days=int(round(span * n / float(total))) + k)
             sent = min(d + dt.timedelta(days=rng.choice([4, 6, 9])), dt.date(2026, 10, 9))
-            j = (7 * n + 5 * k) % len(texts)
+            j = TEXT_ORDER[n % len(TEXT_ORDER)]
             rows.append([ref, d.isoformat(), W.BY_CODE[code][1], channels[j],
                          W.PEOPLE[takers[j]][1], texts[j], sent.isoformat()])
             n += 1
@@ -474,10 +496,10 @@ def write_manifest(target, counts):
     on what terms. Site systems and survey paperwork are the operator's own records."""
     OWN = "Tulcarra Foods internal, not for release outside the site"
     rows = [
-        [FILES["levels"], "parquet", counts["levels"], "31/08/2026 to 11/10/2026",
+        [FILES["levels"], "parquet", counts["levels"], "31/08/2026 to 12/10/2026",
          "meter download software, five instruments", "2026-10-13", OWN,
          "every logged minute from the five meters, stamps in UTC"],
-        [FILES["deployments"], "csv", counts["deployments"], "31/08/2026 to 11/10/2026",
+        [FILES["deployments"], "csv", counts["deployments"], "31/08/2026 to 12/10/2026",
          "survey field sheets, transcribed", "2026-10-13", OWN,
          "which meter stood at which position, with its field checks"],
         [FILES["positions"], "xlsx", len(W.POSITIONS), "current",
@@ -497,7 +519,7 @@ def write_manifest(target, counts):
         [FILES["weather"], "csv", counts["weather"], "30/08/2026 to 16/10/2026",
          "met mast on the blower house roof, UTC", "2026-10-16", OWN,
          "ten-minute means, wind, direction, rain gauge count and air temperature"],
-        [FILES["bands"], "csv", counts["bands"], "31/08/2026 to 11/10/2026",
+        [FILES["bands"], "csv", counts["bands"], "31/08/2026 to 12/10/2026",
          "meter download software, band module", "2026-10-13", OWN,
          "one-third-octave band levels from the three meters that carry the module"],
         [FILES["calibration"], "csv", len(W.METERS) + 1, "2025-11-27 to 2026-04-08",

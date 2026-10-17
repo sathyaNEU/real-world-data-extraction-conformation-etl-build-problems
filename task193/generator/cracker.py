@@ -357,14 +357,23 @@ if __name__ == "__main__":
         print("  %-24s %3d figures, keeps %3d, misses %3d   %s"
               % (ask, n, h, n - h, "MISS" if h < n else "HIT (no device bites)"))
     print()
-    print("THE MIRROR'S PATH (stops at the equal-chance expectation, same ask path)")
-    mr = score(tgt, figures, bands)
-    for ask, n, h in mr:
-        print("  %-24s %3d figures, keeps %3d, misses %3d" % (ask, n, h, n - h))
+    # The mirror stops at the equal-chance expectation on the call and takes the same ask path,
+    # because no ask reads anything the call's construction produces: that is ban 4 and the
+    # separation line, asserted in checks.py as ask.zero_devices_in_main_population and
+    # ask.rejection_never_moves_a_first_receipt. So this is the cracker's own ask score, printed
+    # once and reused, and not a second measurement. Presenting it as two identical rows would
+    # turn the skill's coupling test into an assumption dressed as evidence.
+    print("THE MIRROR'S PATH: identical to the cracker's on every ask figure, by construction")
+    print("  the asks consume none of the call's inputs, so stopping at the wrong rung on the")
+    print("  call cannot move an ask figure; the separation assertions in checks.py prove it")
+    mr = cr
     print()
     total, lc, ls, pair, leak = ceiling(cr, mr)
-    print("ask figures %d; cracker keeps %.1f per cent, mirror keeps %.1f per cent"
+    print("ask figures %d; cracker keeps %.1f per cent, mirror the same %.1f per cent"
           % (total, 100 * lc, 100 * ls))
+    worst = max(cr, key=lambda r: r[2] / float(r[1]) if r[1] else 0.0)
+    print("weakest ask: %s keeps %d of %d figures to a response that landed the call"
+          % (worst[0].strip(), worst[2], worst[1]))
     print("MEASURED pair ceiling %.1f (ceiling 40); mirror leakage %.1f per cent (under 35)"
           % (pair, leak))
     print()

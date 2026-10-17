@@ -18,6 +18,8 @@ def write(g, path):
             "plan_clause_conclusion": 4.3,
             "plan_clause_materiality": 4.2,
             "manual_clause_estimand": 9.1,
+            "manual_clause_terms": 9.3,
+            "manual_clause_reliability_factors": 9.5,
             "manual_clause_records": 9.2,
             "lattice_search_half_width_eur": 40,
         },

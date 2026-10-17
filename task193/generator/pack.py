@@ -776,6 +776,7 @@ def write_manifest(tgt, counts):
         "pharmacy_submission_log.csv": "the chains' own monthly totals, counted by month of submission",
         "package_index.csv": "package codes with the dates each was valid for dispensing",
         "person_register.csv": "one row per current person key, as the civil registration system recorded it at the pull",
+        "person_register_2025Q4.csv": "the person extract delivered with the October 2025 run of the screen",
         "register_variable_documentation.csv": "the register's documentation of the variables in this extract",
     }
     for name in sorted(counts):
@@ -915,8 +916,13 @@ VARIABLE_DOC = [
      "line: a chain counts lines it withdrew before the register wrote them, and a batch sent "
      "after a month's cut-off is counted by the chain in the month it sent it."),
     ("pharmacy_register.csv", "pharmacy_id, pharmacy_name, chain_code, chain_name",
-     "The dispensing pharmacy, the name it trades under and the chain that owns it. A pharmacy "
-     "keeps its identifier if it changes chain."),
+     "The dispensing pharmacy, the name it trades under and the chain that owns it at the extract "
+     "date. A pharmacy keeps its identifier for as long as it holds its authorisation to "
+     "dispense."),
+    ("pharmacy_register.csv", "previous_chain_code, in_chain_from",
+     "Where the pharmacy's authorisation has passed from one chain to another, the chain that "
+     "held it before and the date the transfer took effect. Both are blank for a pharmacy that "
+     "has not changed hands."),
     ("pharmacy_register.csv", "municipality",
      "The municipality the pharmacy is sited in, as the authorisation register holds it."),
     ("pharmacy_register.csv", "closed_on",
@@ -950,7 +956,14 @@ VARIABLE_DOC = [
      "replacement and the civil-registration event behind it."),
     ("atc_text.csv", "atc_code, atc_text, edition",
      "The text the anatomical therapeutic chemical index gives a code, and the edition of the "
-     "index the text is taken from."),
+     "index the entry is taken from."),
+    ("atc_text.csv", "ddd_mg",
+     "The defined daily dose in milligrams that this edition of the index assigns the code. Blank "
+     "where the edition assigns none. The index is revised with each edition."),
+    ("person_register_2025Q4.csv", "person_key, year_of_birth, sex, region",
+     "The person extract delivered with the October 2025 run of the screen. It carries the same "
+     "person keys as the current extract and the civil registration the register held when it was "
+     "drawn."),
     ("(codelist)", "sex",
      "K a woman, M a man, as the civil registration system codes it."),
     ("(codelist)", "region",

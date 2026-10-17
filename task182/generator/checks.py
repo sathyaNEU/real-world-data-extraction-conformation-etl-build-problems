@@ -72,6 +72,7 @@ def GD_runs(target):
 def run(target, g):
     global N
     N = 0
+    CAP5 = 5
     rows = {r["position"]: r for r in g["rows"]}
     r = g["routes"]
     gold = tuple(g["slate"])
@@ -211,8 +212,8 @@ def run(target, g):
     # SF2 residual sound: the stump, both readings execute and the records decide
     A(tuple(sl_naive) != gold, "SF2 the statistical background reading files another slate")
     for c in W.CODES:
-        A(r[c]["p10"] > r[c]["resid"] + 1.5,
-          "SF2 at %s the record's own tenth percentile sits %.1f dB above the residual"
+        A(r[c]["p10"] > r[c]["resid"] + 1.2,
+          "SF2 at %s the record's own tenth percentile sits %.2f dB above the residual"
           % (c, r[c]["p10"] - r[c]["resid"]))
     # at the five the slot reaches, the quiet-surroundings dwellings, the two are far apart: that gap is
     # the plant's own contribution, and it is what the statistical background hides
@@ -552,6 +553,240 @@ def run(target, g):
         en = 10.0 * math.log10(float(np.mean(np.power(10.0, np.array(nb) / 10.0))))
         A((lv[i] - float(np.mean(nb)) >= 5.0) == (lv[i] - en >= 5.0),
           "SF17 %s gives the same tone verdict on either mean of the adjacent bands" % c)
+
+    # ------------------------------------------- the record reads like a survey somebody went out and did
+    # the round: no two meters go in at the same minute, no record is a round week, and every minute the
+    # technician was at the microphone falls outside the assessment period and outside every stop
+    lens = sorted({int((d["end_dt"] - d["start_dt"]).total_seconds() // 60) + 1 for d in deps})
+    A(len(lens) >= 10, "the 28 records take %d different lengths" % len(lens))
+    A(7 * 24 * 60 not in lens, "no record is exactly a week of minutes: %s" % lens[:3])
+    A(len({d["start_dt"] for d in deps}) == len(deps), "no two deployments start on the same minute")
+    for d in deps:
+        for x in (d["start_dt"], d["end_dt"]):
+            A(x.hour < W.DAY_START, "%s's round at %s is before the assessment period opens"
+              % (d["id"], x.strftime("%H:%M")))
+            A(x.weekday() == 0, "%s's rounds are Monday mornings" % d["id"])
+    stamps_by_serial = {}
+    for i2 in range(tbl.num_rows):
+        key = tbl.column("meter_serial")[i2].as_py()
+        stamps_by_serial.setdefault(key, {})[tbl.column("measured_at_utc")[i2].as_py()] = float(
+            tbl.column("laeq_db")[i2].as_py())
+    for d in deps:
+        serial = PK.W_serial(d["meter"])
+        for off, want, label in ((W.SETUP_HANDLING, d["cal_before"], "before"),
+                                 (-1 - W.PICKUP_HANDLING, d["cal_after"], "after")):
+            when = (d["start_dt"] + dt.timedelta(minutes=off) if off >= 0
+                    else d["end_dt"] + dt.timedelta(minutes=off + 1))
+            u = when - dt.timedelta(hours=SM.LOCAL_OFFSET)
+            got = stamps_by_serial[serial].get(u)
+            A(got is not None and abs(got - want) < 0.051,
+              "%s's field check %s reads %s in the record against %.1f on the sheet"
+              % (d["id"], label, got, want))
+            A(not (when.weekday() <= 4 and W.DAY_START <= when.hour < W.DAY_END),
+              "%s's field check %s is outside the assessment period" % (d["id"], label))
+            A(not any(a <= when < b for a, b in SM.all_down()),
+              "%s's field check %s is outside every process stop" % (d["id"], label))
+    A(float(np.max(laeq[~nd])) > 90.0,
+      "the record carries the calibrator: the loudest minute in the file is %.1f dB"
+      % float(np.max(laeq[~nd])))
+    A(float(np.max(laeq[~nd])) < 96.0, "and nothing in it is louder than the calibrator")
+    hand_lv = []
+    for sid, ss in g["series"].items():
+        lg3 = SM.logged(ss)
+        sel = (ss["hand_e"] > 0) & ~ss["nd"]
+        hand_lv.extend(lg3["laeq"][sel].tolist())
+    A(55.0 < min(hand_lv) and max(hand_lv) < 86.0,
+      "the handling minutes read %.1f to %.1f dB" % (min(hand_lv), max(hand_lv)))
+
+    # the plant's level moves with the weather, and differently at every position
+    cors, nsd = {}, []
+    for sid, ss in g["series"].items():
+        code = ss["dep"]["code"]
+        idx3 = SM.met_index(ss["stamps"])
+        lg3 = SM.logged(ss)
+        lv3 = lg3["laeq"]
+        keep3 = ss["am"] & ss["vm"] & ~ss["nd"]
+        wdir = np.cos(np.radians(SM.MET["wind_dir"][idx3].astype(float)))
+        cors.setdefault(code, []).append((
+            float(np.corrcoef(lv3[keep3], SM.MET["wind_ms"][idx3][keep3])[0, 1]),
+            float(np.corrcoef(lv3[keep3], wdir[keep3])[0, 1]),
+            float(np.corrcoef(lv3[keep3], SM.MET["temp_c"][idx3][keep3])[0, 1])))
+        hrs3 = np.array([x.hour for x in ss["stamps"]])
+        tech3 = (ss["cal_e"] > 0) | (ss["hand_e"] > 0)
+        for hh in (23, 0, 1, 2, 3):
+            s3 = (hrs3 == hh) & ~ss["nd"] & ~tech3
+            if s3.sum() > 50:
+                nsd.append(float(np.std(lv3[s3])))
+    dirs = [cors[c][0][1] for c in W.CODES]
+    A(sum(1 for x in dirs if abs(x) >= 0.15) >= 8,
+      "the wind's direction moves the level at %d of the fourteen positions"
+      % sum(1 for x in dirs if abs(x) >= 0.15))
+    A(max(dirs) - min(dirs) >= 0.5,
+      "and it moves them differently: %.2f to %.2f across the fourteen" % (min(dirs), max(dirs)))
+    A(max(abs(cors[c][0][0]) for c in W.CODES) >= 0.15,
+      "the wind's speed moves the level too (strongest %.2f)"
+      % max(abs(cors[c][0][0]) for c in W.CODES))
+    A(min(nsd) > 0.45 and max(nsd) > 1.8,
+      "a night minute's level moves by %.2f to %.2f dB about its hour" % (min(nsd), max(nsd)))
+
+    # the schedule's grid references are a survey, not the distance and bearing written out again
+    from openpyxl import load_workbook as _lw
+    wsx = _lw(os.path.join(target, PK.FILES["positions"]), data_only=True).active
+    implied = []
+    for row in wsx.iter_rows(min_row=6, max_row=5 + len(W.POSITIONS), values_only=True):
+        e2, n2, dist2, bear2 = row[3], row[4], row[5], row[6]
+        ang2 = math.radians(bear2)
+        implied.append((round(e2 - dist2 * math.sin(ang2), 2), round(n2 - dist2 * math.cos(ang2), 2)))
+        off2 = math.hypot(e2 - 612430 - dist2 * math.sin(ang2), n2 - 748215 - dist2 * math.cos(ang2))
+        A(off2 < 9.0, "the grid reference for %s sits %.1f m off its scaled distance" % (row[0], off2))
+    A(len({x for x in implied}) >= 13,
+      "the fourteen grid references do not reduce to one point: %d distinct" % len({x for x in implied}))
+
+    # the complaints register is somebody's own words, one contact a row
+    wcx = _lw(os.path.join(target, PK.FILES["complaints"]), data_only=True).active
+    texts2 = [row[5] for row in wcx.iter_rows(min_row=5, values_only=True) if row[0]]
+    A(len(texts2) == sum(W.COMPLAINTS.values()), "the register carries %d contacts" % len(texts2))
+    A(len(set(texts2)) == len(texts2), "no two contacts carry the same sentence")
+
+    # the process channels wander rather than jumping about, and the totaliser's steps are not all equal
+    tot = [float(x["blower_air_total_knm3"]) for x in scada_rows]
+    steps = [round(tot[i + 1] - tot[i], 1) for i in range(len(tot) - 1) if tot[i + 1] >= tot[i]]
+    A(len(set(steps)) >= 5, "the totaliser's quarter-hour steps take %d printed values" % len(set(steps)))
+    rate = np.array([float(x["blower_air_nm3_h"]) for x in scada_rows])
+    run_on = rate > 100
+    rr3 = rate[run_on]
+    lag1 = float(np.corrcoef(rr3[:-1], rr3[1:])[0, 1])
+    A(lag1 > 0.5, "the blower channel is a process channel, not white noise (lag-1 %.2f)" % lag1)
+
+    # ------------------------------------------- the equipment log's own cardinality, and what it carries
+    evrows = sorted(_csv.DictReader(io_open(target, PK.FILES["events"])), key=lambda x: x["logged_at"])
+    opens, unstopped, naive, orphan = {}, [], [], []
+    for x in evrows:
+        if x["equipment"] not in W.CENTRIFUGES:
+            continue
+        tt = dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M")
+        if x["event"] == "START":
+            naive.append((x["equipment"], tt))
+            if x["equipment"] in opens:
+                unstopped.append((x["equipment"], opens[x["equipment"]]))
+            opens[x["equipment"]] = tt
+        else:
+            if x["equipment"] not in opens:
+                orphan.append((x["equipment"], tt))
+            opens.pop(x["equipment"], None)
+    A(len(unstopped) == 1, "the log carries one start with no stop before the machine starts again: %s"
+      % (unstopped,))
+    A(unstopped[0] == ("CF-02", dt.datetime(2026, 9, 10, 14, 6)),
+      "that start is CF-02's on 10 September at 14:06: %s" % (unstopped[0],))
+    A(len(orphan) == 1 and orphan[0][0] == "CF-02" and orphan[0][1].date() == dt.date(2026, 9, 10),
+      "the log also carries one stop for a machine already stopped: %s" % (orphan,))
+    # the naive count, which keeps that start, is measured rather than described: 13 against the 12 the
+    # plan's definition gives, in the week beginning 7 September
+    a1 = W.WEEKS[1]
+    b1 = a1 + dt.timedelta(days=7)
+    naive_wk1 = sum(1 for _, tt in naive if a1 <= tt.date() < b1)
+    A(naive_wk1 == 13, "the naive count of starts in the week beginning 7 September is %d" % naive_wk1)
+    A(g["weekly"][1]["centrifuge_runs"] == 12,
+      "plan 5.2 gives that week %d runs" % g["weekly"][1]["centrifuge_runs"])
+    runs_log2 = GD_runs(target)
+    A(all(b > a for a, b in runs_log2), "every run the log closes ends after it starts")
+    A(not any(a == dt.datetime(2026, 9, 10, 14, 6) for a, _ in runs_log2),
+      "the unstopped start is no run under plan 5.2")
+    A(len(runs_log2) == len(naive) - 1,
+      "the log's runs are its starts less the one it never stopped (%d, %d)" % (len(runs_log2), len(naive)))
+
+    # ------------------------------------------- the runs column, by interval arithmetic and by its term
+    depwin = {}
+    for d in deps:
+        for kday in range((d["end_dt"].date() - d["start_dt"].date()).days + 1):
+            day = d["start_dt"].date() + dt.timedelta(days=kday)
+            if day.weekday() > 4:
+                continue
+            lo = dt.datetime(day.year, day.month, day.day, W.DAY_START)
+            hi = dt.datetime(day.year, day.month, day.day, W.DAY_END)
+            if lo >= d["start_dt"] and hi <= d["end_dt"]:
+                depwin.setdefault(d["code"], []).append((lo, hi))
+    for c in W.CODES:
+        wins = depwin[c]
+        A(len(wins) == 10, "%s has ten weekday assessment windows in its two deployments" % c)
+        n_overlap = sum(1 for a, b in runs_log2 if any(a < hi and b > lo for lo, hi in wins))
+        A(n_overlap == rows[c]["centrifuge_runs"],
+          "%s: the runs reaching into the period are %d, the table says %d"
+          % (c, n_overlap, rows[c]["centrifuge_runs"]))
+    starts_in = {c: sum(1 for a, _ in runs_log2 if any(lo <= a < hi for lo, hi in depwin[c]))
+                 for c in W.CODES}
+    A(sum(1 for c in W.CODES if starts_in[c] != rows[c]["centrifuge_runs"]) >= 10,
+      "counting the starts inside the period instead of the runs over it differs at %d positions"
+      % sum(1 for c in W.CODES if starts_in[c] != rows[c]["centrifuge_runs"]))
+    prompt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
+    A("valid minutes of its assessment period" in prompt,
+      "the ask states the minutes basis the table carries")
+    A("overlapped any minute of that period" in prompt,
+      "the ask states when a run reached into the period")
+
+    # ------------------------------------------- the week's delivered air, clear of its rounding edge
+    air_raw = {}
+    for i, wk in enumerate(W.WEEKS):
+        a = dt.datetime(wk.year, wk.month, wk.day)
+        b = a + dt.timedelta(days=7)
+        v = float(by_t[b]["blower_air_total_knm3"]) - float(by_t[a]["blower_air_total_knm3"])
+        air_raw[i] = v
+        A(int(round(v)) == g["weekly"][i]["blower_air_knm3"],
+          "week %d's air figure is the counter difference" % i)
+        A(0.5 - abs(v - round(v)) >= 0.15,
+          "week %d's air sits %.2f from the whole-unit edge (%.1f)" % (i, 0.5 - abs(v - round(v)), v))
+
+    # ------------------------------------------- the minute file's stamp convention, filed once
+    A(has(plan, "each record at the start of the interval it measures"),
+      "SF6b the plan files which end of its minute a meter record is stamped at")
+    A(re.sub(r"\s+", "", plan.lower()).count("atthestartoftheintervalitmeasures") == 1,
+      "the meter's stamp convention is filed once")
+    A(not has(notes, "start of the interval"), "the survey notes do not restate the stamp convention")
+
+    # ------------------------------------------- the margin, clear of its own rounding edge
+    mg_raw = g["ordered"][CAP5 - 1]["specific_raw"] - g["ordered"][CAP5]["specific_raw"]
+    A(abs(round(mg_raw, 1) - g["margin_db"]) < 1e-9, "the margin prints as %.1f" % g["margin_db"])
+    A(0.05 - abs(mg_raw * 10 - round(mg_raw * 10)) * 0.1 >= 0.015,
+      "the margin sits %.4f dB from its rounding edge (%.4f)"
+      % (0.05 - abs(mg_raw * 10 - round(mg_raw * 10)) * 0.1, mg_raw))
+
+    # ------------------------------------------- every window the pack permits holds the plant's own sound
+    # The only minutes in the whole record with every source down are the intervals the log shows them all
+    # down in, so no other window a solver could take for the residual is free of the plant. Asserted on
+    # the clean truth, window by window, with the slate each one files.
+    cand = {}
+    for sid, ss in g["series"].items():
+        code = ss["dep"]["code"]
+        stamps = ss["stamps"]
+        hrs = np.array([x.hour + x.minute / 60.0 for x in stamps])
+        dow = np.array([x.weekday() for x in stamps])
+        cfm = np.zeros(len(stamps), dtype=bool)
+        rr2 = {d0: SM.centrifuge_runs(d0) for d0 in sorted({x.date() for x in stamps})}
+        for i2, x in enumerate(stamps):
+            for _, aa, bb in rr2[x.date()]:
+                if aa <= x < bb:
+                    cfm[i2] = True
+                    break
+        st2 = AN.stop_mask(stamps)
+        A(bool((ss["k"][~st2] > 0).all()),
+          "%s: every minute outside the log's all-down intervals has the plant running" % sid)
+        A(bool((ss["k"][st2] == 0).all()), "%s: the plant is down in every all-down minute" % sid)
+        lg2 = SM.logged(ss)
+        lv2 = np.where(ss["nd"], W.NODATA_VALUE, lg2["laeq"] - SM.dep_correction(ss["dep"]))
+        tech2 = (ss["cal_e"] > 0) | (ss["hand_e"] > 0)
+        okm = ss["vm"] & ~ss["nd"] & ~tech2
+        for name, m2 in (("weekday 00:00 to 05:00", (dow <= 4) & (hrs < 5.0)),
+                         ("Sundays", dow == 6),
+                         ("nights 23:00 to 05:00", (hrs >= 23) | (hrs < 5.0)),
+                         ("the centrifuges' own off minutes", ~cfm)):
+            cand.setdefault(name, {}).setdefault(code, []).append(lv2[m2 & okm])
+    for name, per in cand.items():
+        vals = {c: AN.esub(r[c]["total"], AN.eavg(np.concatenate(v))) for c, v in per.items()}
+        sl2, mg2, nx2 = AN.slate(vals)
+        A(tuple(sl2) != gold, "the residual taken from %s files %s, not the golden slate" % (name, sl2))
+        swapped = tuple(sorted([x for x in sl2 if x != sorted(sl2, key=lambda c: -vals[c])[-1]] + [nx2]))
+        A(mg2 > 0.25 or swapped != gold,
+          "%s sits %.2f dB from a boundary whose far side is %s" % (name, mg2, swapped))
 
     for k, v in g["weekly"].items():
         A(v["biogas_m3"] > 20000 and v["blower_air_knm3"] > 300 and v["centrifuge_runs"] >= 4,

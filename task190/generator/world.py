@@ -25,7 +25,7 @@ EXPECTED_MISSTATEMENT = 387_500.00       # the allowance used in planning; note 
 EXPANSION_FACTOR = 1.60                  # note only
 RELIABILITY_0 = 3.00                     # note only
 INTERVAL = 180_000                       # the selection interval; recovered, never stated
-RANDOM_START = 121_750             # never stated; recovered from the tested set
+RANDOM_START = 89_000             # the random start the selection ran from
 
 GRAIN = 50_000                           # the misstatement is stated to the nearest fifty thousand
 
@@ -44,12 +44,24 @@ PROGRAMMES = [
     ("CP-44", "Pavement and surfacing", 3_307_958, [314_726, 200_843]),
     ("CP-47", "Welfare and offices fit-out", 3_192_683, [267_518, 180_726]),
 ]
+# the capital programme board's approved budget per programme, in euro: a judgement made when
+# the programme was approved, so it does not equal the year's spend and is not derivable from it
+APPROVED_BUDGET = {"CP-11": 14_420_000, "CP-14": 10_250_000, "CP-21": 8_940_000,
+                   "CP-23": 6_080_000, "CP-31": 5_925_000, "CP-34": 4_460_000,
+                   "CP-41": 3_680_000, "CP-44": 3_140_000, "CP-47": 3_355_000}
+# each programme's start and planned completion: nine programmes approved over two years
+PROG_DATES = {"CP-11": ("2024-02-19", "2028-09-29"), "CP-14": ("2024-04-08", "2027-11-30"),
+              "CP-21": ("2024-09-02", "2028-03-31"), "CP-23": ("2025-01-13", "2028-06-30"),
+              "CP-31": ("2023-11-06", "2027-05-31"), "CP-34": ("2025-04-07", "2029-01-31"),
+              "CP-41": ("2024-06-17", "2027-08-31"), "CP-44": ("2025-02-24", "2028-02-29"),
+              "CP-47": ("2024-11-11", "2027-12-17")}
+
 PROG_CODES = [p[0] for p in PROGRAMMES]
 PROG_NAME = {p[0]: p[1] for p in PROGRAMMES}
 
 # the payment lines per programme, and the mean day-work variation invoice
-LINES = {"CP-11": 3100, "CP-14": 2650, "CP-21": 3550, "CP-23": 3000, "CP-31": 1750,
-         "CP-34": 3350, "CP-41": 3450, "CP-44": 2700, "CP-47": 3100}
+LINES = {"CP-11": 3083, "CP-14": 2671, "CP-21": 3542, "CP-23": 2987, "CP-31": 1764,
+         "CP-34": 3361, "CP-41": 3438, "CP-44": 2713, "CP-47": 3094}
 DAYWORK_MEAN = {"CP-11": 4900.0, "CP-14": 4600.0, "CP-21": 4100.0, "CP-23": 4300.0,
                 "CP-31": 5200.0, "CP-34": 3900.0, "CP-41": 3500.0, "CP-44": 3700.0,
                 "CP-47": 3300.0}
@@ -60,10 +72,9 @@ INTERIM_MEAN = 56_000.0
 # The defect: a wrong day-work labour rate, applied in seven of the nine programmes. The two
 # largest, which are paid almost entirely on contractor certificates, carry none of it, and no
 # certificate is overstated: every line certain of selection was found sound.
-DEFECT = {"CP-41": (115, 0.58), "CP-23": (83, 0.49), "CP-47": (71, 0.52),
-          "CP-34": (68, 0.41), "CP-21": (51, 0.37), "CP-44": (22, 0.44),
-          "CP-31": (31, 0.46)}
-TAINT_MUL = 0.98
+DEFECT = {"CP-41": (9999, 0.23), "CP-23": (9999, 0.20), "CP-47": (9999, 0.21),
+          "CP-34": (9999, 0.17), "CP-21": (9999, 0.15), "CP-44": (9999, 0.18)}
+TAINT_MUL = 0.94
 
 # the payment release cut-off, which moved mid-year (ask A1)
 CUTOFF = [("2026-01-01", "2026-06-30", "15:00"), ("2026-07-01", "", "14:00")]

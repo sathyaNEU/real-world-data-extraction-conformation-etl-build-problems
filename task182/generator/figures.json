@@ -69,12 +69,12 @@
  },
  "margin_db": 1.3,
  "measured_total_db": {
-  "NSL01": 44.2,
+  "NSL01": 44.3,
   "NSL02": 47.4,
   "NSL03": 44.7,
   "NSL04": 53.2,
   "NSL05": 40.8,
-  "NSL06": 46.7,
+  "NSL06": 46.6,
   "NSL07": 48.1,
   "NSL08": 42.3,
   "NSL09": 44.8,
@@ -99,20 +99,20 @@
   "7.1"
  ],
  "residual_db": {
-  "NSL01": 35.6,
-  "NSL02": 33.9,
-  "NSL03": 36.6,
-  "NSL04": 39.9,
-  "NSL05": 35.0,
-  "NSL06": 43.7,
-  "NSL07": 36.6,
-  "NSL08": 37.5,
-  "NSL09": 31.9,
-  "NSL10": 32.0,
-  "NSL11": 37.4,
-  "NSL12": 38.6,
-  "NSL13": 34.1,
-  "NSL14": 31.9
+  "NSL01": 32.9,
+  "NSL02": 33.3,
+  "NSL03": 38.1,
+  "NSL04": 40.5,
+  "NSL05": 36.6,
+  "NSL06": 42.2,
+  "NSL07": 37.0,
+  "NSL08": 34.6,
+  "NSL09": 31.1,
+  "NSL10": 32.4,
+  "NSL11": 37.3,
+  "NSL12": 37.7,
+  "NSL13": 32.4,
+  "NSL14": 33.7
  },
  "rungs": {
   "rung0_complaints": {
@@ -127,7 +127,7 @@
    ]
   },
   "rung1_total": {
-   "margin_db": 0.507,
+   "margin_db": 0.479,
    "next": "NSL13",
    "slate": [
     "NSL02",
@@ -138,18 +138,18 @@
    ]
   },
   "rung2_la90": {
-   "margin_db": 0.005,
-   "next": "NSL12",
+   "margin_db": 0.083,
+   "next": "NSL07",
    "slate": [
     "NSL03",
     "NSL04",
     "NSL06",
-    "NSL07",
-    "NSL11"
+    "NSL11",
+    "NSL12"
    ]
   },
   "rung2_p10": {
-   "margin_db": 0.654,
+   "margin_db": 0.52,
    "next": "NSL03",
    "slate": [
     "NSL02",
@@ -160,7 +160,7 @@
    ]
   },
   "rung2b_min15": {
-   "margin_db": 0.505,
+   "margin_db": 0.703,
    "next": "NSL03",
    "slate": [
     "NSL02",
@@ -171,7 +171,7 @@
    ]
   },
   "rung2c_arith": {
-   "margin_db": 0.376,
+   "margin_db": 0.433,
    "next": "NSL02",
    "slate": [
     "NSL03",
@@ -182,8 +182,8 @@
    ]
   },
   "specific": {
-   "margin_db": 1.339,
-   "next": "NSL09",
+   "margin_db": 1.288,
+   "next": "NSL06",
    "slate": [
     "NSL02",
     "NSL04",
@@ -193,9 +193,9 @@
    ]
   }
  },
- "sixth": "NSL09",
- "sixth_dwelling": "DW-112",
- "sixth_level_db": 44.5,
+ "sixth": "NSL06",
+ "sixth_dwelling": "DW-107",
+ "sixth_level_db": 44.7,
  "slate": [
   "NSL02",
   "NSL04",
@@ -218,20 +218,20 @@
   "NSL13"
  ],
  "specific_level_db": {
-  "NSL01": 43.6,
-  "NSL02": 47.2,
-  "NSL03": 44.0,
+  "NSL01": 43.9,
+  "NSL02": 47.3,
+  "NSL03": 43.6,
   "NSL04": 53.0,
-  "NSL05": 39.5,
-  "NSL06": 43.6,
+  "NSL05": 38.7,
+  "NSL06": 44.7,
   "NSL07": 47.8,
-  "NSL08": 40.5,
-  "NSL09": 44.5,
-  "NSL10": 37.5,
+  "NSL08": 41.4,
+  "NSL09": 44.6,
+  "NSL10": 37.4,
   "NSL11": 49.9,
-  "NSL12": 43.0,
-  "NSL13": 45.9,
-  "NSL14": 42.2
+  "NSL12": 43.3,
+  "NSL13": 46.0,
+  "NSL14": 42.0
  },
  "stop_minutes": {
   "NSL01": 240,
@@ -293,38 +293,38 @@
  },
  "weekly_plant": {
   "0": {
-   "biogas_m3": 35390,
+   "biogas_m3": 35181,
    "blower_air_knm3": 689,
    "centrifuge_runs": 12,
    "engine_hours": 164.3
   },
   "1": {
-   "biogas_m3": 34823,
-   "blower_air_knm3": 678,
+   "biogas_m3": 34755,
+   "blower_air_knm3": 668,
    "centrifuge_runs": 12,
    "engine_hours": 162.0
   },
   "2": {
-   "biogas_m3": 34933,
-   "blower_air_knm3": 679,
+   "biogas_m3": 34904,
+   "blower_air_knm3": 678,
    "centrifuge_runs": 9,
    "engine_hours": 166.0
   },
   "3": {
-   "biogas_m3": 35970,
-   "blower_air_knm3": 700,
+   "biogas_m3": 35987,
+   "blower_air_knm3": 701,
    "centrifuge_runs": 12,
    "engine_hours": 163.2
   },
   "4": {
-   "biogas_m3": 34323,
-   "blower_air_knm3": 668,
+   "biogas_m3": 34594,
+   "blower_air_knm3": 659,
    "centrifuge_runs": 8,
    "engine_hours": 160.5
   },
   "5": {
-   "biogas_m3": 35230,
-   "blower_air_knm3": 686,
+   "biogas_m3": 35289,
+   "blower_air_knm3": 683,
    "centrifuge_runs": 13,
    "engine_hours": 164.7
   }

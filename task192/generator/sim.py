@@ -5,6 +5,7 @@ The action layer is drawn first, from its own stream, so its figures are the one
 measured.
 """
 import datetime as dt
+import hashlib
 import math
 import random
 
@@ -13,8 +14,6 @@ import world as W
 DAY0 = W.OPEN_DAY
 NWIN = (W.PERIOD_TO - DAY0).days
 XDAY = (W.EXTRACT - DAY0).days
-START_HOURS = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
-START_WEIGHTS = [2, 6, 9, 12, 10, 5, 4, 11, 12, 10, 9, 7, 5, 3, 2]
 
 
 def d(off):
@@ -56,6 +55,29 @@ def geography(rng):
 
 # ---------------------------------------------------------------- the action layer
 
+def muni_weight(m):
+    """How much of its district's contention a municipality carries: the district capital most, and
+    a long tail of small ones. Fixed by the municipality's own code, so it does not move with a
+    draw."""
+    if m["name"] == m["district"]:
+        return W.CAPITAL_SIZE
+    h = int(hashlib.md5(m["code"].encode()).hexdigest()[:8], 16)
+    return W.MUNI_SIZE[h % len(W.MUNI_SIZE)]
+
+
+def ground(muni):
+    """Each theme's weight over the municipalities: its district's standing contention, the
+    municipality's own size and the territory the dispute falls on."""
+    out = {}
+    for theme in W.THEME_GROUND:
+        w = []
+        for m in muni:
+            w.append(W.DISTRICT_INTENSITY[m["district"]] * muni_weight(m)
+                     * W.THEME_GROUND[theme][W.DISTRICT_GROUP[m["district"]]])
+        out[theme] = w
+    return out
+
+
 def actions(muni, locs):
     """Every action the register holds: one dispute theme at one locality on one calendar day, with
     the kind of action it was and the code the press classifier put on its own report of it."""
@@ -66,6 +88,7 @@ def actions(muni, locs):
         by_muni.setdefault(l["muni"], []).append(l)
     conf_weight = dict((t, cw) for t, _, _, cw, _ in W.THEMES)
     opens_on = dict((t, o) for t, _, _, _, o in W.THEMES)
+    where = ground(muni)
     out, taken = [], set()
     for off in range(XDAY + 1):
         day = d(off)
@@ -78,12 +101,10 @@ def actions(muni, locs):
         pool = [(t, w) for t, _, w, _, o in W.THEMES if o is None or day >= o]
         surge_pool = [t for t in W.SURGE_THEMES if opens_on[t] is None or day >= opens_on[t]]
         for _ in range(k):
-            m = rng.choice(muni)
             surge = day >= W.SURGE_FROM
             theme = rng.choice(surge_pool) if (surge and rng.random() < 0.5) \
                 else rng.choices([t for t, _ in pool], weights=[w for _, w in pool])[0]
-            if theme == "PES" and not m["coastal"]:
-                theme = "SMU"
+            m = rng.choices(muni, weights=where[theme])[0]
             loc = rng.choice(by_muni[m["code"]])
             if (theme, loc["code"], off) in taken:
                 continue
@@ -137,12 +158,17 @@ def partner_for(region, rng):
 
 
 def start_minute(rng):
-    """Action start times cluster on the quarter hour without being confined to it."""
+    """The minute an action is reported to have started. A called action is called for the quarter
+    hour and a spontaneous one is not, and either way the minute in the report is what somebody
+    wrote down, so the quarter hour is the mode of a spread rather than a lattice with exceptions."""
     u = rng.random()
-    if u < 0.52:
+    if u < 0.44:
         return rng.choice([0, 15, 30, 45])
-    if u < 0.78:
+    if u < 0.66:
         return rng.choice([5, 10, 20, 25, 35, 40, 50, 55])
+    if u < 0.88:
+        anchor = rng.choice([0, 15, 30, 45])
+        return (anchor + rng.choice([-4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7])) % 60
     return rng.randrange(0, 60)
 
 
@@ -153,7 +179,7 @@ def reports(acts, rng):
         for route in a["routes"]:
             seq[route] += 1
             ident = "%s-2026-%06d" % (route, seq[route])
-            start_h = rng.choices(START_HOURS, weights=START_WEIGHTS)[0]
+            start_h = rng.choices(W.START_HOURS[route], weights=W.START_WEIGHTS[route])[0]
             start_m = start_minute(rng)
             lag = int(W.LAG_BASE[route] * math.exp(W.LAG_SIGMA[route] * rng.gauss(0, 1))) + 4
             src = "LIN"
@@ -182,91 +208,109 @@ def reports(acts, rng):
 
 # ---------------------------------------------------------------- the coding desk
 
-def desk_calendar(close, rng, span=34):
-    """The working days the desk had before a round closed, with the lumpy daily load a small desk
-    actually turns in: some days nothing, some days a long shift."""
-    days = []
-    for back in range(span, 0, -1):
-        day = close - dt.timedelta(days=back)
+def desk_calendar(opened, close, rng):
+    """The days the desk sat with a round's batch, from the day it opened the lot to the day it
+    signed it off, and who sat on each of them. The association's holiday month thins the desk out
+    rather than stopping it, and a long batch buys the odd catch-up Saturday."""
+    out, day = [], opened
+    while day <= close:
         if day.weekday() >= 5:
-            if rng.random() < 0.12:                 # the occasional catch-up Saturday
-                days.append((day, rng.choice([0.4, 0.6])))
-            continue
-        days.append((day, rng.choices([0.0, 0.45, 0.8, 1.0, 1.35, 1.7],
-                                      weights=[14, 16, 22, 20, 17, 11])[0]))
-    days = [(day, w) for day, w in days if w > 0]
-    return days
+            worked = rng.random() < W.DESK_SATURDAY
+        else:
+            worked = rng.random() < W.DESK_WORKED[day.month]
+        if worked:
+            team = []
+            for name, sits, pace, _style in W.CODERS:
+                if rng.random() < sits * W.DESK_SIT:
+                    load = rng.choices(W.CODER_PACE, weights=W.CODER_PACE_W)[0]
+                    team.append((name, max(1, int(round(load * pace)))))
+            if team:
+                out.append((day, team))
+        day += dt.timedelta(days=1)
+    return out
 
 
-def double_coding(acts, reps, rng):
-    """The coding desk's hand-coding rounds. Twice per reporting period the desk draws a batch at
-    random from the monitor's accepted reports that arrived since the previous round closed, and
-    codes each one by hand without the classifier's code in view."""
+def neighbour_of(code, rng):
+    """A coder reading an ambiguous report as another code of the same kind, the near codes of the
+    protocol's own order before the far ones."""
+    pos = dict((c, i) for i, (c, _, _) in enumerate(W.ACTION_CODES))
+    same = W.CONFRONTATIONAL if code in W.CONFRONTATIONAL else W.ORDINARY
+    others = [c for c in same if c != code]
+    w = [W.CLS_DECAY ** (-abs(pos[c] - pos[code])) for c in others]
+    return rng.choices(others, weights=w)[0]
+
+
+NOTE_SEEN = ["titulo pouco claro", "duas pecas do mesmo dia", "local confirmado pelo gazeteiro",
+             "relato sem hora da acao", "peca de agencia, sem detalhe de terreno",
+             "a fotografia nao confirma o titulo", "numeros do relato muito acima dos da peca",
+             "duvida entre dois codigos vizinhos", "relato encaminhado pela chefe de mesa"]
+NOTE_DONE = ["codificado pelo corpo do texto", "codigo corrigido depois de ler a peca toda",
+             "mantido o codigo do primeiro codificador", "confirmado com a segunda leitura",
+             "prevaleceu a leitura do corpo da peca", "codigo mantido, nota para a proxima ronda"]
+NOTE_NONE = ["sem elementos para fixar o codigo", "texto insuficiente para distinguir a acao",
+             "peca sem descricao do que se passou", "relato sem corpo de texto utilizavel"]
+
+
+def note_for(changed, coded, rng):
+    """What a coder wrote in the margin: on the rows a second coder read, and on the rows nobody
+    could code."""
+    if not coded:
+        return "%s; fica sem codificacao manual" % rng.choice(NOTE_NONE)
+    done = [n for n in NOTE_DONE if ("corrig" in n or "prevaleceu" in n or "corpo" in n)
+            == bool(changed)]
+    return "%s; %s" % (rng.choice(NOTE_SEEN), rng.choice(done or NOTE_DONE))
+
+
+def double_coding(acts, reps):
+    """The coding desk's hand-coding rounds, on the desk's own stream.
+
+    Twice per reporting period the desk draws a batch at random from the monitor's accepted reports
+    entered since the previous round's cut and dated up to its own, and codes each one by hand
+    without the classifier's code in view. The batch is as big as the days the desk had: it opens
+    the lot the day after the previous round closed and works it, a few coders at a time, until it
+    signs the lot off. A coder reads an ambiguous report as a neighbouring code of the same kind
+    more or less often than the next coder does, and a report a coder could not fix at all stays in
+    the worksheet with no manual code.
+    """
+    rng = random.Random(W.SEED_DESK)
     press = [r for r in reps if r["route"] == "IMP"]
     press.sort(key=lambda r: r["ident"])
-    rows, taken = [], set()
-    coder_names = [c for c, _ in W.CODERS]
-    coder_share = [s for _, s in W.CODERS]
-    notes = ["titulo pouco claro, codificado pelo corpo do texto",
-             "duas pecas do mesmo dia, uma acao",
-             "local confirmado pelo gazeteiro",
-             "relato sem hora, hora do registo",
-             "peca de agencia, sem detalhe de terreno",
-             "fotografia nao confirma o que o titulo diz",
-             "codigo alterado depois de rever o texto completo"]
-    for name, close, fa, fb, size in W.SAMPLE_ROUNDS:
-        pool = [r for r in press if fa <= d(r["action"]["day"]) <= fb and r["ident"] not in taken]
-        pick = rng.sample(pool, min(size, len(pool)))
-        pick.sort(key=lambda r: (r["action"]["day"], r["ident"]))
-        cal = desk_calendar(close, rng)
-        weight = sum(w for _, w in cal)
-        # the batch is spread over the desk's own days, and each day has its coder on the rota
-        plan = []
-        for i, (day, w) in enumerate(cal):
-            n = int(round(len(pick) * w / weight))
-            plan.append([day, n])
-        short = len(pick) - sum(n for _, n in plan)
-        for i in range(abs(short)):
-            plan[i % len(plan)][1] += 1 if short > 0 else -1
-        rota = []
-        for i, (day, _) in enumerate(cal):
-            rota.append(rng.choices(coder_names, weights=coder_share)[0])
-        pos = 0
-        for (day, n), coder in zip(plan, rota):
-            room = max(0, n)
-            while room and pos < len(pick):
-                r = pick[pos]
-                a = r["action"]
-                if d(a["day"]) >= day:          # the desk cannot code a report before it arrives
-                    break
-                pos += 1
-                room -= 1
-                taken.add(r["ident"])
-                coded = day
-                second, decision = "", ""
-                if rng.random() < W.ADJUDICATED:
-                    other = [c for c in coder_names if c != coder]
-                    second = rng.choice(other)
-                    decision = rng.choices(["mantido", "alterado"], weights=[78, 22])[0]
-                note = rng.choice(notes) if rng.random() < 0.045 else ""
-                rows.append(dict(report=r, round_name=name, round_day=close, coder=coder,
-                                 coded_day=coded, machine=a["cls_code"], hand=a["code"],
-                                 second=second, decision=decision, note=note))
-        last = cal[-1][0] if cal else close - dt.timedelta(days=1)
-        while pos < len(pick):                   # whatever is left is cleared on the last day
-            r = pick[pos]
-            pos += 1
-            a = r["action"]
-            taken.add(r["ident"])
-            coder = rng.choices(coder_names, weights=coder_share)[0]
-            second, decision = "", ""
-            if rng.random() < W.ADJUDICATED:
-                second = rng.choice([c for c in coder_names if c != coder])
-                decision = rng.choices(["mantido", "alterado"], weights=[78, 22])[0]
-            note = rng.choice(notes) if rng.random() < 0.045 else ""
-            rows.append(dict(report=r, round_name=name, round_day=close, coder=coder,
-                             coded_day=max(last, d(a["day"]) + dt.timedelta(days=1)),
-                             machine=a["cls_code"], hand=a["code"], second=second,
-                             decision=decision, note=note))
-    rows.sort(key=lambda x: (x["round_name"], x["coded_day"], x["report"]["ident"]))
+    style = dict((c, st) for c, _, _, st in W.CODERS)
+    rows, taken, seq = [], set(), 0
+    for name, close, cut_from, cut_to, opened in W.SAMPLE_ROUNDS:
+        pool = [r for r in press if cut_from <= d(r["action"]["day"]) <= cut_to]
+        cal = desk_calendar(opened, close, rng)
+        for day, team in cal:
+            for coder, load in team:
+                here = [r for r in pool
+                        if r["ident"] not in taken and d(r["action"]["day"]) < day]
+                if not here:
+                    continue
+                for r in rng.sample(here, min(load, len(here))):
+                    taken.add(r["ident"])
+                    seq += 1
+                    a = r["action"]
+                    hand = a["code"]
+                    if rng.random() < style[coder]:
+                        hand = neighbour_of(hand, rng)
+                    coded = rng.random() >= W.UNCODABLE
+                    machine = a["cls_code"]
+                    apart = coded and ((hand in W.CONFRONTATIONAL)
+                                       != (machine in W.CONFRONTATIONAL))
+                    second, decision, changed = "", "", False
+                    if coded and rng.random() < (W.ADJ_DISAGREE if apart else W.ADJ_AGREE):
+                        second = rng.choice([c for c, _, _, _ in W.CODERS if c != coder])
+                        changed = rng.random() < (W.ADJ_CHANGED_DISAGREE if apart
+                                                  else W.ADJ_CHANGED_AGREE)
+                        decision = "alterado" if changed else "mantido"
+                    note = ""
+                    if not coded:
+                        note = note_for(False, False, rng)
+                    elif second and rng.random() < W.NOTE_REVIEWED:
+                        note = note_for(changed, True, rng)
+                    rows.append(dict(report=r, round_name=name, round_day=close, coder=coder,
+                                     coded_day=day, machine=machine,
+                                     hand=hand if coded else "", second=second,
+                                     decision=decision, note=note, seq=seq))
+    rows.sort(key=lambda x: (x["round_name"], x["coded_day"], x["coder"], x["seq"]))
     return rows

@@ -79,16 +79,18 @@ measured at stage 2 on the built panel; the names below are what the design puts
 4. Rank the twelve on that excess and read the top.
 5. Put the improvement team with the unit at the top of that ranking.
 
-**Ends on:** Stonecreek General Surgery (cost centre 41320).
-**Golden:** a different unit, named at stage 2 once the ladder is measured on the built panel.
+**Ends on:** Alderbrook General Surgery (cost centre 41220).
+**Golden:** Alderbrook Orthopaedics (cost centre 41230), 40.0 avoidable complications on its 2,305
+planned separations. The unit the default path names carries minus 3.7.
 
 ## Stump sentence
 
 A competent solver reconciles to the published indicator, ranks the eligible units on the complications
 each records above the expectation the published stratum rates give it, and places the improvement team
-with Stonecreek General Surgery (cost centre 41320), which is the unit whose case mix sits where the network has moved least
-since those rates were set rather than the unit whose own patients are having the most complications they
-should not be having.
+with Alderbrook General Surgery (cost centre 41220), which is the unit whose patients sit where the
+published standard has gone most out of date rather than the unit whose own patients are having the most
+complications they should not be having; on the comparison the charter asks for, that unit is carrying
+minus 3.7 avoidable complications and the unit that is carrying 40.0 sits fourth on the ranking it read.
 
 ## Three rules
 
@@ -123,7 +125,7 @@ should not be having.
   exclusions, the published rates, the reporting periods and the forward activity basis, and the charter
   files the population, the outcome, the window, the unit and the comparison. A solver who reads every one
   of them correctly, and whose observed and expected counts tie to the published series row for row, still
-  ranks on the published excess and names Stonecreek General Surgery.
+  ranks on the published excess and names Alderbrook General Surgery.
 - **Not rule application:** no filed rule, formula or procedure builds the comparison the charter asks for.
   Specification 3.1 files the published rates and says in the same sentence that they are not re-estimated
   between specifications; nothing in the pack computes what the network's own units achieve, by stratum or
@@ -131,9 +133,9 @@ should not be having.
   ratio and stops there.
 - **Analyst test:** a strong analyst who applies charter 4.2 and 4.4, reads every field and every code
   correctly and reconciles to the published series row for row ranks the eligible units on the excess the
-  indicator reports and places the team with Stonecreek General Surgery (41320).
-- **Estimand:** the complications the unit's planned activity for the quarter carries above the number the
-  same patients would be expected to have at the level the network's own units achieve, charter clause 4.3,
+  indicator reports and places the team with Alderbrook General Surgery (41220).
+- **Estimand:** the complications the unit's planned activity for the quarter carries above the
+  complications that patients of the same risk band and age band ordinarily have, charter clause 4.3,
   with the population in clause 4.2, the activity basis in clause 4.4, the reporting period in
   specification 3.3 and the indicator's denominator and exclusions in specification 4.0 clauses 2.1 to 2.4.
 - **No decoy:** nothing is planted to be caught. The published stratum rates are the real published rates
@@ -153,13 +155,16 @@ should not be having.
 **The WHAT screen (`stumping` 1.2).** The decisive step settles none of the five parts. Population: charter
 4.2, the twelve eligible units. Outcome: specification 2.1 to 2.4, episodes recording a complication.
 Window: the assessment quarter for the activity, the specification period for the rates, both filed.
-Unit: complications, counted at the unit. Comparison: charter 4.3, against the number the same patients
-would be expected to have at the level the network's own units achieve. What stays open is how that level
-is built from the record, and the data force it: the network's observed rate differs from the published
-rate by different amounts in different strata, and the candidates' case mixes differ several-fold, so any
-construction that does not hold case mix fixed demonstrably mis-states what a unit's own patients should
-produce. Both candidates are measured sums over the record; neither is a fitted form, so the collinearity
-that spent architecture 1 cannot arise.
+Unit: complications, counted at the unit. Comparison: charter 4.3, against the complications that patients
+of the same risk band and age band ordinarily have. What stays open is which
+frequency answers "ordinarily have", and the data force it under `determinism-check` section 1's first
+licence, the design forcing the method with the data separating the candidates. The separation is measured,
+not asserted: the network's own rate runs from 0.886 to 1.319 of the published rate across the six risk
+bands, a factor of 1.49 crossing 1.00 in both directions; the twelve candidates' surgical share of in-scope
+episodes runs from 0.075 to 0.851 with three carrying none at all; and on the record one unit's own practice
+is flat across a case-mix shift while the published basis moves its avoidable count by a factor of five
+(`## Literal reader`). Both candidate frequencies are measured sums over the record, neither is a fitted
+form, and no free parameter is chosen, so the collinearity that spent architecture 1 cannot arise.
 
 ## Tried and rejected
 

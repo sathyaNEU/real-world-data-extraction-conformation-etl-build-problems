@@ -406,57 +406,102 @@ the seven and the ten exactly as they are, asserted.
 **The referee.** `extract_manifest.csv` states each file's rows, date range and layout version and settles
 the one designed disagreement, the exceptions file's scope, without naming a level.
 
-**The cracker sheet, measured.** `generator/cracker.py` writes the cracker's path as code and runs it
-on the cut pack. It reads `target/` only, down to taking the reporting bands out of the shipped PDF. It
-stacks both layouts on the release notes' column map, counts a re-sent line once, folds the retired
-pseudonyms, joins the package index at the date of the dispensing, and then executes every filed
-sentence the asking sentences point at, taking the natural reading only where nothing in the pack
-adjudicates one. Every figure is scored against the golden within half a unit of the stated rounding.
+**The cracker sheet, measured.** `generator/cracker.py` writes the cracker's path as code and the
+build runs it on the cut pack, so the figures below are output and not prose. It reads `target/`
+only, down to taking the reporting bands out of the shipped PDF. It stacks both layouts on the
+release notes' column map, counts a re-sent line once, folds the retired pseudonyms, joins the
+package index at the date of the dispensing, and then executes every filed sentence the asking
+sentences point at, taking the natural reading only where nothing in the pack adjudicates one.
+Every figure is scored against the golden within half a unit of the stated rounding.
 
-| Ask | Figures | Cracker keeps | Result |
-|---|---|---|---|
-| A1 chain and quarter: accepted, rejected, median days | 48 | 48 | **hit, no device bites** |
-| A2 payer: doses and fee | 14 | 14 | **hit, no device bites** |
-| A3 region and age band: patients and share | 48 | 48 | **hit, no device bites** |
+| Ask | Figures | Cracker keeps | What it misses on | Result |
+|---|---|---|---|---|
+| A1 chain and quarter: accepted, rejected, median days | 48 | 7 | the chain that owned the pharmacy on the day of the dispensing | miss |
+| A2 payer: doses and fee | 14 | 8 | the dose the edition in force assigns, against the figure the package row was written with | miss |
+| A3 region and age band: patients and share | 48 | 1 | the region the October 2025 delivery holds, where the current extract's own history columns are silent | miss |
 
-**Pair ceiling:** 83.5
-**Mirror leakage:** 100.0
+**Pair ceiling:** 36.5
+**Mirror leakage:** 14.5
+**Measured by:** `generator/cracker.py`, run on the cut pack by `checks.py` at every build
 
-The asks are decoupled from the call, so the mirror walks the cracker's ask path exactly: Ls equals Lc
-and the leakage is the whole ask weight. C is 38 + 7 + 55 x 1.00 = 100.0 and S is 5 + 7 + 55 x 1.00 =
-67.0, so the pair ceiling is 83.5 against a ceiling of 40. The bar needs the pair to keep 20.9 per cent
-of the ask weight; it keeps all of it.
+The asks are decoupled from the call, so the mirror walks the cracker's ask path: Ls equals Lc at
+0.145. C is 38 + 7 + 55 x 0.145 = 53.0 and S is 5 + 7 + 55 x 0.145 = 20.0, so the pair ceiling is
+36.5 against a ceiling of 40 and the leakage is 14.5 against 35.
 
-**What each device is worth, measured by restoring it one at a time.** The cracker is re-run with the
-pack's own adjudicating sentence ignored, which is what the device was designed to be worth:
+**The three silent primaries, and what each is worth.** Each sits under a pin that stays, and none
+of them is adjudicated by any filed sentence. Running the cracker again with one of them found
+measures what it carries:
 
-| Device | The sentence that adjudicates it | Cracker keeps | Pair ceiling |
-|---|---|---|---|
-| A3 D5 the region at the window's start | standard 4.2, and the dictionary's `region` entry | 70.9 per cent | 67.5 |
-| A1 D6 the quarter of dispensing | the asking sentence, standard 2.1, and the dictionary's `date_of_dispensing` entry | 74.5 per cent | 69.5 |
-| A1 D4 the rejected lines' own file | the asking sentence and the manifest's note on the file | 90.0 per cent | 78.0 |
-| A2 D7 the payer at the dispensing's own date | the fee workbook's Notes sheet | 92.7 per cent | 79.5 |
-| A1 D1 the re-sent line counted once | the dictionary's `record_id` entry and Notes A3 | 98.2 per cent | 82.5 |
-| all five restored at once | - | 38.2 per cent | 49.5 |
+| Primary | Family | The pin it sits under | What finds it | Ask weight then kept | Ceiling |
+|---|---|---|---|---|---|
+| the chain that owned the pharmacy on the day | D7 keys, an as-of join | the asking sentence's quarter of dispensing, standard 2.1 and the dictionary | the chains' own monthly log, which is a rollup above its parts for the two chains either side of a transaction | 50.9 per cent | 56.5 |
+| the dose the edition in force assigns | D2 version | the fee workbook's bands, its amendment and its payer rule | `ddd_per_pack` does not equal the package's own pack size times strength over the dose the index names, for three substances and no others | 19.1 per cent | 39.0 |
+| the region the October 2025 delivery holds | D2 version | standard 4.2's region vintage and the dictionary's `region` entry | the two deliveries disagree for about seven hundred patients, and the current extract's history columns explain only a tenth of them | 57.3 per cent | 60.0 |
+| all three found | - | - | 100 per cent | 83.5 |
 
-Two findings, and they are separate. The first is that the determinism pins of the previous pass closed
-the readings these devices rode on: the fee Notes sheet states the payer rule in full, standard 2.1 and
-the dictionary state the quarter basis three times over, the dictionary states that a re-sent line counts
-once, and 4.2 plus the dictionary's `region` entry state the region vintage and the column that holds it.
-`supplemental-stumping` Part 5 is explicit that a pin is paid for and never free, and that the pair is
-measured afterwards rather than assumed. It was not measured, and this is the bill.
+The last row is the fairness proof: one handling reproduces the golden exactly, and it is the only
+one that does.
 
-The second is worse and is not the pins' fault: with every one of those five sentences ignored the
-cracker still keeps 38.2 per cent and the ceiling is 49.5. The ask layer never had the device mass the
-sheet claimed. The old sheet's eight rows each describe a solver that reads none of the pack's filed
-sentences, which is the mirror of each ask and not the cracker, so the 39.4 it reported was measuring
-the wrong path from the start.
+**Why each is silent.** None is found by the hygiene battery. Every line joins the pharmacy register
+and every key joins both person extracts, so there is no unmatched join; the package index's keys
+are unique and its rows are not duplicates; the counts tie wherever the register publishes a
+control. The chain transaction shows up only when the chains' own monthly totals are set against
+the extract, which the dictionary warns does not reconcile line for line anyway. The stale dose
+shows up only when a derived column is recomputed from its own inputs across two files. The silent
+region correction shows up only when two deliveries of the same extract are set side by side.
 
-The pins are load-bearing for the judge's DETERMINISTIC verdict and do not come out. The fix is the one
-Part 5 names: a silent primary underneath each pin, with the ask paths re-cut and the call held
-byte-identical, which is `/fix-rubric` and the author's call to make.
+**Why none of them is marked.** `previous_chain_code` and `in_chain_from` are populated for every
+pharmacy that ever changed hands, and most of those transfers are years older than the extract, so
+the column does not isolate the four transactions that matter. `atc_text.csv` carries a dose for
+every code, not only the revised ones. The two person deliveries disagree for the recorded movers
+as well as the silent ones, and for the recorded movers the current extract explains itself.
+
+**Separation.** The three primaries live in `pharmacy_register.csv`, `atc_text.csv` and
+`person_register_2025Q4.csv`, none of which the main call opens. The call reads the two dispensing
+extracts, the package index, the annexes, the crosswalk, the tracker and the standard. No device
+adds, removes or alters a row of the call's own columns, and a line the register turns back is
+never a patient's earliest observed receipt of a treatment, asserted over every line rather than
+over the generator's own flag.
 
 ## Tried and rejected
+- The cold reader after the ask rebuild landed the main call at 85 per cent on the golden's seven
+  pairs, having considered the 0.5 shortcut and rejected it at 8 per cent because it wrongly refers
+  P05 and P08 whose base timing is skewed. That is the Gate F question this build now turns on, and it
+  is the judge's to settle, not mine: if the top responses land the call, the pair arithmetic is about
+  53 rather than 36.5, because the ceiling assumes one of the two misses it. My own reading of why it
+  was findable, for the judge to confirm or refute: standard 7-2024 s3.2(b) says "at least 1.25 times
+  the number that would be expected if receiving the product had no bearing on when the marker
+  treatment is first received", and the words "when ... is first received" name the timing the null
+  has to be adjusted for. A clause that names the decisive quantity's own null is readability screen
+  test 1, and a readable decisive rung is dead. Nothing is being changed on that argument until the
+  judge has recomputed it.
+- The reader found one of the three silent primaries, the chain that owned the pharmacy on the day of
+  the dispensing, and reported that reading the chain at the extract date instead changes every cell.
+  It missed the prior person extract, saying in terms that using `person_register_2025Q4.csv` changes
+  all 24 cells, and it did not reach the edition's own dose. One of three found is the ask layer
+  working as designed; the primary it found is the one whose own monthly log is a rollup above its
+  parts, which is the most visible of the three.
+- Its realism list is held rather than worked, because the judge is reading the same pack and a verdict
+  on a pack whose data moved underneath it is worth nothing. Held, and all of them real: 96 screening
+  titles from about ten stock templates with references stepping by exactly one and the last eight rows
+  all screened on one day; exactly 140 crosswalk rows for each of three reasons, a perfectly even
+  split; seven deaths and nine emigrations landing exactly on 2026-09-30, the window end, which reads
+  as clipped rather than recorded; a complete four chains by thirty-seven months submission grid; pack
+  counts only ever 1, 2 or 3; pharmacy names on a "<Town> <Area> Apotek" pattern with chain changes
+  arriving in blocks on identical dates; small round spontaneous-report counts that track each
+  product's market story; and exception references stepping one to five with 2026 references sitting on
+  2023 dispensings. The clipped register is the one that matters, because the person register is an
+  input the call reads.
+- One reader finding is the reader's own error and is recorded so nobody acts on it: it reported that
+  the prompt names two files absent from the bundle. Those two are the deliverables the solver
+  produces, not inputs.
+- The cracker script printed the mirror's ask score as a second measurement when it was the cracker's
+  own score computed twice. For asks that consume nothing the call produces the two agree by
+  construction, so this was evidence that was not evidence rather than a wrong number: the skill's
+  coupling test cannot be run by comparing a list with itself. The output now says so and points at
+  the separation assertions, and it names the weakest ask, A2, which keeps 8 of its 14 figures to a
+  response that landed the call. A2 is accepted on the pair arithmetic at 36.5 against a bar of 40 and
+  recorded as the layer's thin point.
 
 - The seed's own architecture, a channel attribute that explains every alarm on the channel: the answer
   flips on reading one field, which the client's rules ban as the decisive step. Re-rooted at the draw.
@@ -523,6 +568,28 @@ byte-identical, which is `/fix-rubric` and the author's call to make.
   lifecycle. Every dated row in the pack now falls inside its product's marketing dates and no date passes
   the extract's pull, both asserted; the tracker's entries still fail 3.2(b) on every arithmetic, which is
   what closes SF12.
+- An ask layer with no device mass under its pins. The measured ceiling was 83.5 with the cracker
+  keeping all 110 figures, and restoring every pinned reading still left it at 49.5, so the layer
+  was rebuilt rather than the pins thinned. Three silent primaries went in, one under each ask, each
+  in a file the call never opens: the chain that owned a pharmacy on the day of a dispensing, the
+  defined daily dose the edition in force assigns against the figure the package row was written
+  with, and the region the October 2025 delivery holds where the current extract's history columns
+  are silent. Measured after each one rather than at the end: 83.5, then 50.0, then 41.5, then 40.0,
+  then 36.5, with every ask row missing and the leakage at 14.5. The five pins all stayed and
+  `freeze.py check --mode rubric` is at exit 0.
+- Measuring a graded figure's distance from the wrong edge. `fee_distance` was computed as the gap
+  to the nearest whole krone rather than to the half krone that decides the rounding, so the metric
+  was inverted: the 0.38 reported last pass was 0.12 from the boundary, and the rates chosen to
+  maximise it put four of the seven fees exactly on it. The metric now measures the distance from
+  the half krone, the rates were struck against it, and the tightest of the seven is 0.425 with the
+  exact figure within a tenth of a whole krone. The verifier recomputes the distance itself rather
+  than trusting the figure.
+- A turned-back line that was a patient's earliest observed receipt. The rejection device read the
+  generator's own `is_first` flag, which no prevalent user's first line in the extract carries, so a
+  rejection could move a first receipt the screen reads. The protection is now computed over every
+  line, earliest day per patient and medicine, and asserted on the shipped pack rather than on a
+  flag.
+- Grading 23 chart bar positions when the workbook already grades their inputs: see the entry below.
 - A pair ceiling and a mirror leakage declared on paper and never measured. `generator/cracker.py`
   now writes the cracker's path as code and runs it on the cut pack: the measured ceiling is 83.5
   against the declared 39.4, and the leakage 100 per cent against 18.5, because the cracker keeps all

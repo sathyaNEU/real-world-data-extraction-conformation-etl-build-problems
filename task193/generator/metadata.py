@@ -2,8 +2,9 @@
 import json
 import os
 
-DISTRACTORS = ["spontaneous_reports_summary.csv", "literature_screening_log.csv",
-               "atc_text.csv"]
+# atc_text.csv is no longer among these: the statutory fee is struck on the defined daily dose the
+# edition in force assigns, which that file carries, so the solution reads it.
+DISTRACTORS = ["spontaneous_reports_summary.csv", "literature_screening_log.csv"]
 
 
 def write(task, counts):

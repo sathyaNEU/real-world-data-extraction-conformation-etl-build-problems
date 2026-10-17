@@ -188,7 +188,7 @@ def cut(target):
     acts = sim.actions(muni, locs)
     sim.routes(acts, rng)
     reps = sim.reports(acts, rng)
-    dc = sim.double_coding(acts, reps, rng)
+    dc = sim.double_coding(acts, reps)
     PK.build_reports(reps, locs, rng)
     exc = PK.exceptions(rng)
 

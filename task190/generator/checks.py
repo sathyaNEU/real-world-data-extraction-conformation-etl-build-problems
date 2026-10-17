@@ -13,9 +13,9 @@ import sim
 import world as W
 
 N = [0]
-FOUND, RATIO, STRATUM, PROJ, TOTAL = 15445.38, 43648.52, 129201.54, 811170.09, 800000
-CALL = {"CP-11": 0, "CP-14": 0, "CP-21": 50000, "CP-23": 250000, "CP-31": 0,
-        "CP-34": 50000, "CP-41": 200000, "CP-44": 150000, "CP-47": 100000}
+FOUND, RATIO, STRATUM, PROJ, TOTAL = 21004.93, 57577.47, 156183.24, 840096.72, 850000
+CALL = {"CP-11": 0, "CP-14": 0, "CP-21": 50000, "CP-23": 200000, "CP-31": 0,
+        "CP-34": 150000, "CP-41": 250000, "CP-44": 150000, "CP-47": 50000}
 
 
 def ok(label, cond, detail=""):
@@ -27,6 +27,11 @@ def ok(label, cond, detail=""):
 def _rows(target, name):
     with open(os.path.join(target, name), newline="", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
+
+
+def verify_mod():
+    import verify
+    return verify
 
 
 def run(g, target):
@@ -61,18 +66,48 @@ def run(g, target):
        "%.2f" % g["stratum"])
     ok("R3b the decisive step files the golden", abs(g["total_raw"] - PROJ) < 0.01)
     ok("R3b the golden's stated figure is the note's", g["total"] == TOTAL, str(g["total"]))
-    ok("R3c no shipped file names the decisive step",
-       not _sweep(target, r"interval|projec\w*|extrapolat|inclusion probab|monetary unit|"
-                          r"proportional to size|sampling unit|weighted by amount"))
-    ok("R3c no shipped file carries a reliability or expansion factor",
-       not _sweep(target, r"reliability factor|expansion factor|basic precision|"
-                          r"incremental allowance|upper (misstatement )?limit|poisson"))
+    # the sampling design is filed as a fact about the sample; the estimator is not filed
+    ok("R3c the pack files the design: probability proportional to recorded value",
+       _sweep(target, r"probability proportional to recorded value") ==
+       ["internal_audit_testing_schedule_2026.pdf"])
+    ok("R3c the pack files the interval and that it was common to every programme",
+       _sweep(target, r"common to every work programme") ==
+       ["internal_audit_testing_schedule_2026.pdf"] and
+       _sweep(target, r"180,000 euro") == ["internal_audit_testing_schedule_2026.pdf"])
+    terms = ("selection interval", "certain of selection", "tainting", "basic precision",
+             "incremental allowance", "upper misstatement limit", "reliability factor")
+    ok("R3c the manual defines every term the graded components use",
+       all("audit_manual_part9.pdf" in _sweep(target, w) for w in terms),
+       str([w for w in terms if "audit_manual_part9.pdf" not in _sweep(target, w)]))
+    ok("R3c no shipped file says how to get from the tested lines to the population",
+       not _sweep(target, r"projec\w*|extrapolat|scale(d|s)? up|gross(ed)? up|"
+                          r"estimate the population|misstatement per euro|"
+                          r"multiply(ing)? the tainting|divide(d)? by the (recorded|tested) value"))
     ok("R3c no shipped file states the expected misstatement allowance",
        not _sweep(target, r"expected misstatement|%s" % format(int(W.EXPECTED_MISSTATEMENT), ",")))
-    ok("R3c no shipped file states the interval or the start",
-       not _sweep(target, r"\b180[, ]?000\b|\b172[, ]?000\b|\b5[, ]?000 euro interval"))
     ok("R3c no shipped file states the golden",
-       not _sweep(target, r"\b800[, ]?000\b|\b804[, ]?816\b"))
+       not _sweep(target, r"\b800[, ]?000\b"))
+    # the shipped table is the one the figures are computed from, so both reproduce exactly
+    tbl = verify_mod().pdf_text(os.path.join(target, "audit_manual_part9.pdf"))
+    shipped_rf = []
+    for i, s in enumerate(tbl):
+        if s.strip() != "factor":
+            continue
+        for nxt in tbl[i + 1:]:
+            if not re.match(r"^\d{1,2}\.\d{2}$", nxt.strip()):
+                break
+            shipped_rf.append(round(float(nxt), 2))
+    ok("R3c the shipped reliability table is the one the figures use",
+       shipped_rf[:len(mus.RF)] == [round(v, 2) for v in mus.RF],
+       str(shipped_rf[:6]))
+    ok("R3c the incremental allowance recomputes from the shipped table",
+       abs(g["ia"] - mus.ia_from(shipped_rf, lines, hits)) < 0.005,
+       "%.2f against %.2f" % (g["ia"], mus.ia_from(shipped_rf, lines, hits)))
+    ok("R3c the upper limit recomputes from the shipped table",
+       abs(g["uml"] - (g["total_raw"] + g["bp"] +
+                       mus.ia_from(shipped_rf, lines, hits))) < 0.005)
+    ok("R3c basic precision recomputes from the shipped table",
+       abs(g["bp"] - W.INTERVAL * shipped_rf[0]) < 0.005)
 
     # ---------------------------------------------------------------- the ladder
     r = [v for _, v in G.rungs(g)]
@@ -109,39 +144,23 @@ def run(g, target):
        g["per"][g["largest"]] >= sorted(g["per"].values())[-2] + W.GRAIN)
 
     # ---------------------------------------------------------------- determinism
-    lat = mus.lattice(lines, hits, W.INTERVAL)
-    ok("C1 the interval is lattice-feasible", bool(lat))
-    ok("C1 the feasible starts are a single narrow window",
-       len(lat) == 1 and (lat[0][1] - lat[0][0]) < 50.0,
-       str([(round(a, 2), round(b, 2)) for a, b in lat]))
-    ok("C1 the true start is in the feasible window",
-       lat[0][0] <= W.RANDOM_START <= lat[0][1])
-    near = [si for si in range(W.INTERVAL - 40, W.INTERVAL + 41)
-            if mus.lattice(lines, hits, si)]
-    ok("C1 no neighbouring interval is feasible", near == [W.INTERVAL], str(near))
-    routes = g["routes"]
-    ok("C1 the route set is the one the note names", len(routes) == 10, str(len(routes)))
-    admitted = [(nm, si, f) for nm, si, f in routes if mus.lattice(lines, hits, si)]
-    ok("C1 the record admits exactly one recovery route", len(admitted) == 1,
-       str([nm for nm, _, _ in admitted]))
-    ok("C1 the admitted route is the golden", abs(admitted[0][2] - PROJ) < 0.01)
-    nearr = [f for nm, si, f in routes if abs(si - W.INTERVAL) / float(W.INTERVAL) < 0.02]
-    ok("C1 every route within two per cent lands in the stated cell",
-       {mus.r_grain(f) for f in nearr} == {TOTAL},
-       str(sorted({mus.r_grain(f) for f in nearr})))
-    allcells = {mus.r_grain(f) for nm, si, f in routes}
-    ok("C1 the routes genuinely disagree before the record is applied", len(allcells) >= 4,
-       str(sorted(allcells)))
-    fam = [f for nm, si, f in routes if abs(si - W.INTERVAL) / float(W.INTERVAL) < 0.02]
-    out = [f for nm, si, f in routes if abs(si - W.INTERVAL) / float(W.INTERVAL) >= 0.02]
-    ok("C4 every route in the golden's family lands in its stated cell",
-       {mus.r_grain(f) for f in fam} == {TOTAL}, str(sorted({mus.r_grain(f) for f in fam})))
-    ok("C4 no route outside that family lands in the golden's stated cell",
-       all(mus.r_grain(f) != TOTAL for f in out),
-       str(sorted({mus.r_grain(f) for f in out})))
-    near = min(abs(f - g["total_raw"]) / g["total_raw"] for f in out)
-    ok("C4 the nearest wrong answer a defensible route produces is at least six per cent away",
-       near >= 0.06, "%.3f" % near)
+    # The selection interval is filed on the working paper, so nothing has to be recovered and
+    # the lattice is no longer load-bearing. What has to hold is that the filed design is
+    # consistent with the shipped selection and that the figure is a single value under it.
+    ok("C1 the filed interval reproduces the shipped selection exactly",
+       sim.select(lines, W.INTERVAL, W.RANDOM_START)[0] == hits)
+    ok("C1 the filed design is true of the pack: every line at or above the interval is tested",
+       all((i in {j for j, _ in hits}) for i, x in enumerate(lines) if x[1] >= W.INTERVAL))
+    ok("C1 the filed interval is one interval, not one per programme",
+       len({W.INTERVAL}) == 1)
+    percode = {}
+    for c in W.PROG_CODES:
+        sub = [x for x in lines if x[0] == c]
+        sh, _, _ = sim.select(sub, W.INTERVAL, W.RANDOM_START)
+        percode[c] = mus.projection(sub, sh, W.INTERVAL)
+    ok("C1 the per-programme-interval route the working paper rules out gives another answer",
+       mus.r_grain(sum(percode.values())) != TOTAL,
+       "%d against %d" % (mus.r_grain(sum(percode.values())), TOTAL))
     below = max(x[1] for x in lines if x[1] < W.INTERVAL)
     above = min(x[1] for x in lines if x[1] >= W.INTERVAL)
     ok("C1 no population line sits at the interval, so the boundary reading cannot move it",
@@ -318,12 +337,20 @@ def run(g, target):
 
 
 def _sweep(target, pattern):
+    """Every shipped file's readable text, with the PDFs' content streams decompressed.
+
+    Reading the PDFs as raw bytes made this sweep blind to the three files the authority
+    sentences actually live in, which is where a leak would be.
+    """
     rx = re.compile(pattern, re.I)
     hit = []
     for name in sorted(os.listdir(target)):
         p = os.path.join(target, name)
         with open(p, "rb") as fh:
             body = fh.read().decode("latin-1")
+        if name.endswith(".pdf"):
+            import verify
+            body = body + " " + " ".join(verify.pdf_text(p))
         if rx.search(body):
             hit.append(name)
     return hit

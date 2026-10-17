@@ -143,7 +143,7 @@ def plant_load(stamps_local):
     return load * PLANT_JIT[np.clip(idx, 0, _PJ_N - 1)]
 
 
-def plant_propagation(code, stamps_local, seed):
+def plant_propagation(code, stamps_local, seed, scat0=0.0):
     """How much of the plant's sound reaches the position, minute by minute: the wind carries it to the
     positions it blows towards and away from the others, a still night with the ground cooling bends it
     back down, and the turbulence it travels through moves it from minute to minute. Energy factor, mean
@@ -169,9 +169,9 @@ def plant_propagation(code, stamps_local, seed):
     wn = rng.normal(0.0, math.sqrt(1 - a * a), n)
     scat = np.zeros(n)
     for i in range(n):
-        scat[i] = a * scat[i - 1] + wn[i] if i else wn[i]
+        scat[i] = a * scat[i - 1] + wn[i] if i else a * scat0 + wn[i]
     db = db + scat * sd * (0.9 + 0.42 * np.clip(v, 0.0, 9.0))
-    return _e(db)
+    return _e(db), float(scat[-1])
 
 
 def night_texture(code, stamps_local, seed):
@@ -201,7 +201,7 @@ def night_texture(code, stamps_local, seed):
     gust = np.clip(MET["wind_ms"][idx] - 1.6, 0.0, None) ** 1.5
     swing = _e(rng.normal(0.0, 0.55 + 0.35 * late, n)) - 1.0
     tex = np.where(out_of, 0.12 * gust * (0.5 + 0.0012 * dist) * (1.0 + swing), 0.0)
-    return amp + np.clip(tex, 0.0, None)
+    return W.NIGHT_TEX * (amp + np.clip(tex, 0.0, None))
 
 
 def centrifuge_runs(day):
@@ -282,8 +282,13 @@ def plant_state(stamps_local):
     return k
 
 
-def residual_shape(code, stamps_local, seed):
-    """Unit-scale residual energy per minute: a steady part that drifts slowly, plus passby events."""
+def residual_shape(code, stamps_local, seed, i0=0, carry=None):
+    """Unit-scale residual energy per minute: a steady part that drifts slowly, plus passby events.
+
+    A deployment's record runs from one Monday round to the next, so it is built in two pieces: the
+    survey week itself, and the minutes of the collection Monday before the meter was stopped. `i0` and
+    `carry` continue the slow drift, the steady part's own mean and the AR(1) jitter across the join, so
+    the second piece is the same series and not a second draw with its own level."""
     p = W.BY_CODE[code]
     ev, strm = p[9], p[10]
     rng = np.random.default_rng(seed)
@@ -294,13 +299,15 @@ def residual_shape(code, stamps_local, seed):
     wind = MET["wind_ms"][idx]
     # slow variation of the steady part, in dB: weather and the stream
     sv = W.SLOW[code]
-    slow = sv * np.sin(2 * math.pi * np.arange(n) / (1440 * 2.3) + 0.9 * W.CODES.index(code))
-    slow = slow + 0.055 * (wind - wind.mean()) * sv
+    slow = sv * np.sin(2 * math.pi * (np.arange(n) + i0) / (1440 * 2.3) + 0.9 * W.CODES.index(code))
+    wmean = wind.mean() if carry is None else carry["wind_mean"]
+    slow = slow + 0.055 * (wind - wmean) * sv
     jit = np.zeros(n)
     a = 0.985
     wn = rng.normal(0.0, W.JITTER[code] * math.sqrt(1 - a * a), n)
+    j0 = 0.0 if carry is None else carry["jit"]
     for i in range(n):
-        jit[i] = a * jit[i - 1] + wn[i] if i else wn[i]
+        jit[i] = a * jit[i - 1] + wn[i] if i else a * j0 + wn[i]
     steady = _e(slow + jit)
     # road traffic diurnal shape on the event rate
     shape = (0.64 + 0.30 * np.exp(-((hours - 8.3) ** 2) / 2.2)
@@ -314,15 +321,17 @@ def residual_shape(code, stamps_local, seed):
     extra = amp * steady
     # a second minute of decay on the louder events
     extra = extra + np.concatenate([[0.0], extra[:-1] * 0.35])
-    total = strm * steady.mean() + (1.0 - strm) * steady + extra
+    smean = steady.mean() if carry is None else carry["steady_mean"]
+    total = strm * smean + (1.0 - strm) * steady + extra
     # within-minute statistics of the surroundings: the level the minute fell to, its loudest second and
     # its quietest. A minute of a rural background is never flat: the wind in the hedge alone moves it.
-    quiet = (strm * steady.mean() * _e(-rng.uniform(0.15, 0.9, n))
+    quiet = (strm * smean * _e(-rng.uniform(0.15, 0.9, n))
              + (1.0 - strm) * steady * _e(-rng.uniform(0.8, 3.2, n)))
     loud = (total + extra * 2.1 + (1.0 - strm) * steady * _e(rng.uniform(1.0, 7.0, n))
             + 0.42 * steady * _e(rng.uniform(0.5, 6.5, n)))
     tiny = quiet * _e(-rng.uniform(0.8, 3.0, n))
-    return total, quiet, loud, tiny
+    on = {"jit": float(jit[-1]), "steady_mean": float(steady.mean()), "wind_mean": float(wind.mean())}
+    return total, quiet, loud, tiny, on
 
 
 def technician(dep, stamps_local):
@@ -413,19 +422,37 @@ def build(codes=None):
         S_t, R_t = p[5], p[6]
         parts = []
         for d in ds:
-            base, mins = record_minutes(d)
-            stamps = [base + dt.timedelta(minutes=int(m)) for m in mins]
+            # the record is built over the survey week and then over the minutes of the collection
+            # Monday the meter was still running for, so the week's own series is what it always was
+            base = dt.datetime(d["start"].year, d["start"].month, d["start"].day)
+            nweek = 7 * 24 * 60
+            sw = [base + dt.timedelta(minutes=i) for i in range(nweek)]
             seed = W.SEED + 7919 * W.CODES.index(code) + d["week"]
-            k = plant_state(stamps) * plant_propagation(code, stamps, seed + 311)
-            res, quiet, loud, tiny = residual_shape(code, stamps, seed)
-            tex = night_texture(code, stamps, seed + 577)
+            propw, scat0 = plant_propagation(code, sw, seed + 311)
+            kw = plant_state(sw) * propw
+            resw, quietw, loudw, tinyw, carry = residual_shape(code, sw, seed)
+            texw = night_texture(code, sw, seed + 577)
+            nt = int((d["end_dt"] - (base + dt.timedelta(minutes=nweek))).total_seconds() // 60) + 1
+            st = [base + dt.timedelta(minutes=nweek + i) for i in range(max(nt, 0))]
+            propt, _ = plant_propagation(code, st, seed + 311, scat0=scat0)
+            kt = plant_state(st) * propt
+            rest, quiett, loudt, tinyt, _ = residual_shape(code, st, seed + 1013, i0=nweek, carry=carry)
+            text = night_texture(code, st, seed + 1117)
+            t0 = int((d["start_dt"] - base).total_seconds() // 60)
+            stamps = sw[t0:] + st
+            k = np.concatenate([kw[t0:], kt])
+            res = np.concatenate([resw[t0:], rest])
+            quiet = np.concatenate([quietw[t0:], quiett])
+            loud = np.concatenate([loudw[t0:], loudt])
+            tiny = np.concatenate([tinyw[t0:], tinyt])
+            tex = np.concatenate([texw[t0:], text])
             am = assessment_mask(stamps)
             nd = nodata_mask(d, stamps)
             vm = validity_mask(stamps) & ~nd
             cal, hand = technician(d, stamps)
             parts.append({"dep": d, "stamps": stamps, "k": k, "res": res + tex, "quiet": quiet,
                           "loud": loud, "tiny": tiny, "tex": tex, "am": am, "vm": vm, "nd": nd,
-                          "cal": cal, "hand": hand})
+                          "cal": cal, "hand": hand, "t0": t0, "nt": max(nt, 0), "nweek": nweek})
         use = np.concatenate([(pp["am"] & pp["vm"] & (pp["k"] > 0)) for pp in parts])
         kk = np.concatenate([pp["k"] for pp in parts])
         rr = np.concatenate([pp["res"] for pp in parts])
@@ -438,11 +465,20 @@ def build(codes=None):
             re = gr * pp["res"]
             # the plant is steady over a minute but not flat: the blowers' blade passage and the engine's
             # governor move it a little inside the minute too
-            wrng = np.random.default_rng(W.SEED + 4409 + 17 * W.CODES.index(code) + pp["dep"]["week"])
-            m = len(pe)
-            f90 = _e(-wrng.uniform(0.08, 0.55, m))
-            fmax = _e(wrng.uniform(0.5, 2.4, m))
-            fmin = f90 * _e(-wrng.uniform(0.3, 1.2, m))
+            wseed = W.SEED + 4409 + 17 * W.CODES.index(code) + pp["dep"]["week"]
+            wrng = np.random.default_rng(wseed)
+            nw, t0, nt = pp["nweek"], pp["t0"], pp["nt"]
+            dp = W.F90[code]
+            f90w = _e(-wrng.uniform(0.08 * dp, 0.55 * dp, nw))
+            fmaxw = _e(wrng.uniform(0.5, 2.4, nw))
+            fminw = f90w * _e(-wrng.uniform(0.3, 1.2, nw))
+            trng = np.random.default_rng(wseed + 5000)
+            f90t = _e(-trng.uniform(0.08 * dp, 0.55 * dp, nt))
+            fmaxt = _e(trng.uniform(0.5, 2.4, nt))
+            fmint = f90t * _e(-trng.uniform(0.3, 1.2, nt))
+            f90 = np.concatenate([f90w[t0:], f90t])
+            fmax = np.concatenate([fmaxw[t0:], fmaxt])
+            fmin = np.concatenate([fminw[t0:], fmint])
             hand = pp["hand"]
             tex = pp["tex"]
             laeq = _db(pe + re + hand)

@@ -72,14 +72,27 @@ def population(year=W.YEAR, seed=190003, scale=1.0):
         cap = W.INTERVAL - 2500.0
         raw = [min(x * sunv / sum(raw), cap) for x in raw]
         raw = [x * sunv / sum(raw) for x in raw]
-        for a in certs:
-            lines.append([code, round(float(a), 2), "certificate", 0.0])
+        # a contractor certificate is a valuation to the cent like everything else: the whole-euro
+        # certificates were the one surface feature that identified the lines certain of selection
+        for k, a in enumerate(certs):
+            c = 1 + shash("%s/cert/%d" % (code, k)) % 99
+            lines.append([code, round(float(a) + c / 100.0, 2), "certificate", 0.0])
         for a in dw:
             lines.append([code, round(a, 2), "daywork", 0.0])
         for a in ints:
             lines.append([code, round(min(a, cap), 2), "interim", 0.0])
-        for a in raw:
-            lines.append([code, round(max(a, 15.0), 2), "sundry", 0.0])
+        for k, a in enumerate(raw):
+            a = max(a, 15.0)
+            # about one line in nine is invoiced at a round euro or half euro, as fee notes,
+            # retentions and standing charges are, so the cents profile is not flat
+            h = shash("%s/sun/%d" % (code, k)) % 36
+            if h == 0:
+                a = float(int(a))
+            elif h == 1:
+                a = int(a) + 0.5
+            elif h == 2:
+                a = round(a / 5.0) * 5.0 or 5.0
+            lines.append([code, round(a, 2), "sundry", 0.0])
     # the defect: a wrong day-work labour rate on a run of small variation invoices
     byprog = {}
     for L in lines:
@@ -93,8 +106,8 @@ def population(year=W.YEAR, seed=190003, scale=1.0):
         for i in range(0, len(cand), step):
             if taken >= cnt:
                 break
-            f = (tf + 0.24 * (rng.u() - 0.5)) * W.TAINT_MUL
-            cand[i][3] = round(min(1.0, max(0.14, f)), 4)
+            f = (tf + 0.11 * (rng.u() - 0.5)) * W.TAINT_MUL
+            cand[i][3] = round(min(1.0, max(0.05, f)), 4)
             taken += 1
     # the tainting is fixed by what the records hold, to the cent: the schedule states the amount
     # recorded and the amount properly payable, so the fraction is theirs and not the designer's

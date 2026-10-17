@@ -36,6 +36,36 @@ def realise(start=None, scale=1.0):
     return (allrows, rows, lines, hits, nsel, extra, dup, dup_run, dup_n, reversed_refs, runs)
 
 
+# a working paper carries several hands and several kinds of finding, not one phrase
+EXCEPTIONS = [
+    "labour rate not per the schedule",
+    "plant hire: day rate, part day",
+    "uplift applied twice",
+    "quantity exceeds site record",
+    "superseded rate schedule used",
+    "overtime not authorised",
+    "trade discount not deducted",
+    "preliminaries charged twice",
+]
+CLEAN = [
+    "no exception",
+    "no exception",
+    "no exception",
+    "agreed to valuation",
+    "no exception",
+    "agreed to site record",
+    "no exception",
+]
+
+
+def _finding(r):
+    """The finding wording for a tested line, stable on the line's own reference."""
+    h = sim.shash(r["line"])
+    if r["taint"] > 0:
+        return EXCEPTIONS[h % len(EXCEPTIONS)]
+    return CLEAN[h % len(CLEAN)]
+
+
 def cut(target, golden_dir):
     for d in (target, golden_dir):
         if os.path.isdir(d):
@@ -62,8 +92,7 @@ def cut(target, golden_dir):
         payable = round(r["amount"] * (1.0 - r["taint"]), 2)
         tested.append(dict(r, payable=payable,
                            schedule_ref="%s/%s" % (cross[r["sup"]], r["line"]),
-                           finding=("rate applied not the rate in the schedule of rates"
-                                    if r["taint"] > 0 else "no exception")))
+                           finding=_finding(r)))
     # one line was queried and re-tested, so the schedule carries it twice. It carries no
     # exception, so counting it twice changes no figure the report states.
     clean = [t for t in tested if t["taint"] == 0]

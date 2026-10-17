@@ -104,11 +104,13 @@ AGE_BANDS = ["U50", "50-64", "65-79", "80+"]
 NETWORK_DRIFT = {"ORTH-MAJ": 0.567, "ORTH-MIN": 0.584, "MED-COMPLEX": 0.948, "MED-GEN": 0.972,
                  "SURG-MAJ": 1.221, "SURG-MIN": 1.254, "SAME-DAY": 1.0}
 
-# the unit whose case mix moved between two closed quarters while its own practice did not: the theatre
-# refurbishment at Stonecreek sent its major surgical work to Marrowfield for two quarters
+# the unit whose case mix moved between two closed quarters while its own practice did not: the
+# orthopaedic theatre at Marrowfield was closed for ventilation works for two quarters, elective
+# joint replacement stopped, and the ward's beds carried the hospital's emergency general surgical
+# admissions instead. The unit's volume is unchanged and its own practice is unchanged.
 MIX_SHIFT_UNIT = "41410"
 MIX_SHIFT_QUARTERS = (5, 6)
-MIX_SHIFT_PROFILE = "ortho_major"
+MIX_SHIFT_PROFILE = "ortho_backfill"
 ADDITIVE_UNIT = "41410"       # its rate is the network's rate in each band plus a constant per episode
 ADDITIVE_C = 0.0121
 
@@ -137,10 +139,11 @@ MIX = {
                  "MED-GEN": (0.15, [0.16, 0.25, 0.33, 0.26])},
     "ortho": {"ORTH-MAJ": (0.52, [0.07, 0.19, 0.42, 0.32]), "ORTH-MIN": (0.37, [0.19, 0.24, 0.31, 0.26]),
               "MED-GEN": (0.11, [0.13, 0.22, 0.34, 0.31])},
-    # the two quarters Marrowfield Orthopaedics took Stonecreek's major joint work while its theatres were
-    # refurbished: the same unit and the same staff, a different mix of patients
-    "ortho_major": {"ORTH-MAJ": (0.26, [0.07, 0.19, 0.42, 0.32]), "ORTH-MIN": (0.19, [0.19, 0.24, 0.31, 0.26]),
-                    "SURG-MAJ": (0.43, [0.09, 0.23, 0.40, 0.28]), "MED-GEN": (0.12, [0.13, 0.22, 0.34, 0.31])},
+    # the two quarters the orthopaedic theatre at Marrowfield was closed: elective joint replacement
+    # stopped and the ward carried emergency general surgical admissions instead. The same unit, the
+    # same staff and the same number of beds, a different mix of patients.
+    "ortho_backfill": {"ORTH-MAJ": (0.09, [0.04, 0.14, 0.40, 0.42]), "ORTH-MIN": (0.27, [0.19, 0.24, 0.31, 0.26]),
+                       "SURG-MIN": (0.52, [0.24, 0.27, 0.30, 0.19]), "MED-GEN": (0.12, [0.13, 0.22, 0.34, 0.31])},
     "resp": {"MED-COMPLEX": (0.74, [0.06, 0.16, 0.38, 0.40]), "MED-GEN": (0.26, [0.10, 0.20, 0.36, 0.34])},
     "vasc": {"SURG-MAJ": (0.44, [0.05, 0.21, 0.43, 0.31]), "SURG-MIN": (0.33, [0.09, 0.24, 0.39, 0.28]),
              "MED-COMPLEX": (0.23, [0.06, 0.18, 0.40, 0.36])},
@@ -167,7 +170,7 @@ UNITS = [
     ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.03000, 1200, 1470, 1.12000, "hot3", "eligible"),
     ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.05200, 430, 506, 1.17000, "worst_level", "eligible"),
     ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.00000, 620, 735, None, "hot1", "eligible"),
-    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.30000, 980, 1162, 1.10000, "mid", "eligible"),
+    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.34500, 980, 1090, 1.10000, "mid", "eligible"),
     ("41430", "Renal Medicine", "H3", "renal", "acute", 1.02200, 560, 652, 1.13000, "mid", "eligible"),
     ("41510", "General Medicine", "H4", "gen_med", "acute", 1.05800, 390, 466, 1.05000, "merged", "eligible"),
     ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.01900, 500, 779, 1.09000, "rising", "eligible"),

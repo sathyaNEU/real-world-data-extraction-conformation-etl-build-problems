@@ -126,6 +126,13 @@ def lattice(lines, hits, interval):
     return keep
 
 
+def ia_from(rf, lines, hits, interval=W.INTERVAL):
+    """The incremental allowance computed from a given reliability table, as 9.3 defines it."""
+    prop = split(lines, hits, interval)[2]
+    each = sorted((t[3] * interval for t in prop if t[3] > 0), reverse=True)
+    return sum((rf[j] - rf[j - 1] - 1.0) * p for j, p in enumerate(each, 1) if j < len(rf))
+
+
 def gaps(lines, hits, interval=W.INTERVAL):
     """The cumulated value between consecutive proportional selections, three conventions."""
     cum = sim.cumulative(lines)

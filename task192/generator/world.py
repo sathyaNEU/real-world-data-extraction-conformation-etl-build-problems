@@ -12,13 +12,34 @@ import datetime as dt
 
 SEED = 248                                 # the action layer, measured in the design note
 SEED_PACK = 599                             # a separate stream for reports, mess and the asks
+SEED_DESK = 1                               # the coding desk's own stream: its calendar and its draw
 
 ASSOCIATION = "Observatorio de Acao Coletiva"
 REGISTER = "Vigilancia Nacional"
 PEOPLE = {"officer": "Rafaela Carvalho",    # coding and methods desk
           "data": "Joel Branco"}            # data manager
-# the desk's hand coders, by initials, with the share of each round's batch each one worked
-CODERS = [("RC", 0.34), ("JB", 0.26), ("MM", 0.23), ("LS", 0.17)]
+# The desk's hand coders. `sits` is how often the coder is on the rota, `pace` how many reports a
+# sitting gets through, and `style` how often the coder reads an ambiguous report as a neighbouring
+# code of the same kind: concentracao against marcha, bloqueio against paralisacao. The protocol's
+# confrontation classes (2.2) are the one boundary it defines sharply, so a coder's own style never
+# crosses it.
+CODERS = [("RC", 0.86, 1.22, 0.07), ("JB", 0.63, 1.00, 0.17),
+          ("MM", 0.58, 0.88, 0.22), ("LS", 0.41, 0.95, 0.11)]
+CODER_PACE = [2, 3, 4, 5, 6, 7, 9, 11, 13, 16, 19, 23]
+CODER_PACE_W = [7, 9, 11, 12, 11, 10, 9, 8, 7, 6, 6, 4]
+# the share of a sitting's working days the desk actually sat with a batch, by month: August is the
+# association's holiday month and the desk thins out rather than stopping
+DESK_WORKED = {5: 0.72, 6: 0.78, 7: 0.70, 8: 0.38, 9: 0.80}
+DESK_SATURDAY = 0.09
+DESK_SIT = 0.85         # how much of a coder's rota share is a sitting on a day the desk worked
+# a second coder reads a report when the first coder flags it, which happens far more often on the
+# ambiguous reports the classifier also tends to get wrong
+ADJ_AGREE = 0.052
+ADJ_DISAGREE = 0.44
+ADJ_CHANGED_AGREE = 0.13
+ADJ_CHANGED_DISAGREE = 0.52
+UNCODABLE = 0.011                           # reports the desk could not fix a code for at all
+NOTE_REVIEWED = 0.55                        # reviewed rows the coder left a note on
 
 OPEN_DAY = dt.date(2026, 5, 1)
 PERIOD_FROM = dt.date(2026, 5, 1)
@@ -120,9 +141,12 @@ CONF_RAMP_FROM = dt.date(2026, 8, 9)
 CONF_RAMP_TO = dt.date(2026, 9, 18)
 
 # the coding desk's rounds: the close, the window of action dates the round drew from, and the size
-SAMPLE_ROUNDS = [("R1", dt.date(2026, 6, 20), dt.date(2026, 5, 1), dt.date(2026, 6, 19), 420),
-                 ("R2", dt.date(2026, 9, 10), dt.date(2026, 6, 20), dt.date(2026, 8, 31), 580)]
-ADJUDICATED = 0.085     # share of coded rows a second coder looked at
+# the coding desk's rounds: the close, the window of action dates the round drew from, and the day
+# the desk opened the batch, which is the day after the previous round closed
+SAMPLE_ROUNDS = [("R1", dt.date(2026, 6, 20), dt.date(2026, 5, 1), dt.date(2026, 6, 19),
+                  dt.date(2026, 5, 4)),
+                 ("R2", dt.date(2026, 9, 10), dt.date(2026, 6, 20), dt.date(2026, 8, 31),
+                  dt.date(2026, 6, 22))]
 
 PARTNERS = [
     ("P01", "Nucleo de Estudos do Trabalho do Minho", "Norte", 6.35),
@@ -194,6 +218,47 @@ REGION_OF = {
 COASTAL = {"Viana do Castelo", "Porto", "Aveiro", "Leiria", "Lisboa", "Setubal", "Faro", "Acores",
            "Madeira"}
 
+# Where the register's contention stands before the autumn. The industrial belt and the two metro
+# areas carry most of it and the interior districts carry little, so the spring and summer months
+# never touch every municipality in the gazetteer.
+DISTRICT_INTENSITY = {
+    "Lisboa": 2.00, "Porto": 1.90, "Setubal": 1.60, "Braga": 1.20, "Aveiro": 1.10,
+    "Leiria": 0.95, "Faro": 0.90, "Coimbra": 0.85, "Santarem": 0.80, "Viana do Castelo": 0.50,
+    "Viseu": 0.34, "Evora": 0.30, "Beja": 0.27, "Vila Real": 0.26, "Castelo Branco": 0.24,
+    "Guarda": 0.19, "Portalegre": 0.19, "Braganca": 0.14, "Acores": 0.28, "Madeira": 0.24,
+}
+DISTRICT_GROUP = {
+    "Lisboa": "metro", "Setubal": "metro", "Porto": "metro", "Braga": "metro",
+    "Viana do Castelo": "litoral", "Aveiro": "litoral", "Coimbra": "litoral",
+    "Leiria": "litoral", "Santarem": "litoral", "Faro": "litoral",
+    "Vila Real": "interior", "Braganca": "interior", "Viseu": "interior", "Guarda": "interior",
+    "Castelo Branco": "interior", "Portalegre": "interior", "Evora": "interior", "Beja": "interior",
+    "Acores": "ilhas", "Madeira": "ilhas",
+}
+# which territory each dispute falls on. The two themes the autumn brings are disputes over the
+# transmission network and over the fire season, and both of them are interior disputes, so the
+# mobilisation reaches ground the first four months of the register never did.
+THEME_GROUND = {
+    "TRM": {"metro": 1.30, "litoral": 1.30, "interior": 0.55, "ilhas": 0.15},
+    "AGR": {"metro": 0.30, "litoral": 1.05, "interior": 2.10, "ilhas": 0.80},
+    "SAU": {"metro": 0.90, "litoral": 1.00, "interior": 1.25, "ilhas": 1.10},
+    "EDU": {"metro": 1.10, "litoral": 1.00, "interior": 0.85, "ilhas": 0.90},
+    "HAB": {"metro": 2.20, "litoral": 0.80, "interior": 0.22, "ilhas": 0.95},
+    "CVD": {"metro": 1.05, "litoral": 1.00, "interior": 0.95, "ilhas": 1.00},
+    "PES": {"metro": 1.00, "litoral": 1.40, "interior": 0.00, "ilhas": 1.90},
+    "SMU": {"metro": 1.05, "litoral": 1.00, "interior": 0.95, "ilhas": 1.05},
+    "AGU": {"metro": 0.65, "litoral": 1.00, "interior": 1.70, "ilhas": 1.20},
+    "RES": {"metro": 1.40, "litoral": 1.10, "interior": 0.55, "ilhas": 0.85},
+    "PEN": {"metro": 0.95, "litoral": 1.00, "interior": 1.30, "ilhas": 1.05},
+    "ADM": {"metro": 1.25, "litoral": 1.00, "interior": 1.10, "ilhas": 1.00},
+    "ENE": {"metro": 0.35, "litoral": 0.85, "interior": 2.80, "ilhas": 0.55},
+    "FLO": {"metro": 0.18, "litoral": 0.95, "interior": 3.20, "ilhas": 0.45},
+}
+# how much of a district's contention each of its municipalities carries: the district capital most,
+# a long tail of small ones that the register reaches only when the volume rises
+MUNI_SIZE = [1.00, 0.42, 0.68, 0.22, 1.35, 0.30, 0.85, 0.16, 0.55, 0.25, 1.10, 0.36]
+CAPITAL_SIZE = 2.30
+
 LOC_PREFIX = ["Sao Martinho", "Santa Marta", "Sao Miguel", "Santa Luzia", "Sao Bartolomeu",
               "Nossa Senhora da Graca", "Vila Nova", "Vila Cha", "Quinta do Lago", "Casal Novo",
               "Ribeira Brava", "Fonte Boa", "Alto da Serra", "Vale de Cambra", "Carvalhal",
@@ -203,6 +268,21 @@ RENAMES = 14
 # median minutes from the start of an action to the report, by route, and the shape of the spread
 LAG_BASE = {"IMP": 112, "PAR": 652, "LIN": 94}
 LAG_SIGMA = {"IMP": 0.62, "PAR": 0.46, "LIN": 0.70}
+
+# The hour an action starts, by the route that reported it. The three routes see different hours of
+# the day: the press monitor's titles cover the set-piece daytime actions, a partner organisation
+# writes up what its own people were at during their working day, and the public line is where the
+# evening and night-time blockades and occupations arrive, often from a passer-by.
+START_HOURS = {
+    "IMP": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+    "PAR": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    "LIN": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+}
+START_WEIGHTS = {
+    "IMP": [2, 7, 11, 14, 11, 5, 4, 12, 13, 10, 7, 4, 2, 1, 1],
+    "PAR": [5, 12, 14, 12, 7, 6, 11, 13, 10, 6, 3, 1, 1],
+    "LIN": [1, 2, 3, 4, 5, 5, 4, 3, 3, 5, 6, 7, 9, 11, 12, 10, 7, 5, 3],
+}
 
 
 def confusion():

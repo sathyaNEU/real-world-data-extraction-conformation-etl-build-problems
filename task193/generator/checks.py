@@ -601,6 +601,12 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     ok("dev.a1_every_line_joins",
        all(r["pharmacy"] in set(x["pharmacy_id"] for x in phreg) for r in kept),
        "the device leaves no unmatched join for the battery to find")
+    doc_ph = " ".join(r["documentation"] for r in
+                      rd(tgt, "register_variable_documentation.csv")
+                      if r["file_name"] == "pharmacy_register.csv").lower()
+    ok("dev.a1_dictionary_states_no_handling",
+       "date of the dispensing" not in doc_ph and "belongs" not in doc_ph,
+       "the dictionary defines the columns and says nothing about which chain a line belongs to")
     ok("dev.a1_no_rule_states_it",
        not any(x in (_pdf_text(tgt) + " ".join(r["documentation"] for r in
                                                rd(tgt, "register_variable_documentation.csv"))
@@ -651,10 +657,13 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     ok("dev.a3_benign_twins", len(explained) >= 80,
        "%d explained differences, so the comparison is not a list of the device's rows"
        % len(explained))
+    doc_prior = " ".join(r["documentation"] for r in
+                         rd(tgt, "register_variable_documentation.csv")
+                         if r["file_name"] == "person_register_2025Q4.csv").lower()
     ok("dev.a3_no_rule_states_it",
-       "person_register_2025q4" not in (_pdf_text(tgt) + " ".join(
-           r["documentation"] for r in rd(tgt, "register_variable_documentation.csv"))).lower(),
-       "no filed sentence points the region at the earlier delivery")
+       "person_register_2025q4" not in _pdf_text(tgt).lower()
+       and "screen window" not in doc_prior and "window" not in doc_prior,
+       "the standard names no file and the dictionary's entry ties the delivery to no window")
     # every primary lives outside the files the main call reads
     CALL_FILES = {"dispensings_2023_2025.csv", "dispensings_2025_2026.csv", "package_index.csv",
                   "screen_annexes.csv", "person_key_crosswalk.csv", "signal_tracker_export.csv",

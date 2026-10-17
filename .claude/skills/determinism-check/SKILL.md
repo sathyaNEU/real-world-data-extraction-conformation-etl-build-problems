@@ -111,6 +111,14 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   rather than from the data. Assert the edge distance, and name the tightest figure from the same number.
 - **Bins:** every graded figure mid-bin on a non-round value, flip condition stated as a number; never
   grade an iteration count, an even-set median, or a percentage near a one-decimal edge (Part 3).
+  **The cell width comes from the asking sentence's stated rounding, never from the quantity's natural
+  unit.** For a value `v` printed to unit `u` the cell centres on `round(v/u)*u` and the distance to
+  the nearest edge is `u/2 - abs(v - round(v/u)*u)`; the second term alone is the distance to the
+  centre, and the two sum to `u/2`. Both halves of that have now been got wrong in one wave: one build
+  measured the distance to the centre and called it the edge, and another measured a fee rounded to the
+  half against the nearest whole unit, so a reported 0.38 of clearance was really 0.12, and the rates
+  then chosen to widen it put four of seven fees exactly on the boundary. Have the verifier recompute
+  the distance from the shipped figure rather than read it out of `figures.json`.
 - No decision metric in the prompt's own voice that a filed policy contradicts.
 - No artifact ranks the candidates on the decision and gets it wrong, except a declared wrong-basis
   distractor (`dataset-generation` §8.3) that a shipped fact rules out and that is never the stump.

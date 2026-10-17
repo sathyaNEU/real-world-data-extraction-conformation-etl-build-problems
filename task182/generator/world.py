@@ -261,6 +261,13 @@ MAST_SWAP = dt.date(2026, 9, 20)
 RAIN_TIP_MM = 0.2
 
 SEED = 182182
+# The blower trim's own draw. Chosen by the scan in scratch so that every week's delivered air sits clear
+# of the whole-unit rounding edge the note reports it at.
+AIR_SEED = 2
+# How much of the surroundings' own evening and night texture the record carries. Set by the scan in
+# scratch: enough that no position's record is the same shape every day, little enough that the night is
+# the plant's own sound and not the road's.
+NIGHT_TEX = 0.2
 
 CODES = [p[0] for p in POSITIONS]
 BY_CODE = {p[0]: p for p in POSITIONS}
@@ -277,6 +284,12 @@ SLOW = {
     "NSL13": 1.5, "NSL14": 0.4,
 }
 
+# How deep the plant's own level falls inside a minute at each position, as a multiple of the base swing:
+# what arrives through a screen, a hedge or moving traffic is modulated more than what arrives across an
+# open field, and that depth is what sets how far the record's LA90 sits below its LAeq. Fixed by the scan
+# in scratch; it moves the minute LA90 column and no level.
+F90 = {c: 1.0 for c in CODES}
+
 # Micro-adjustments to the designed specific levels, so no two positions print the same level and no
 # printed level sits on a rounding edge or on the printed value itself. Fixed by the per-position scan in
 # scratch; they move no slate.
@@ -286,10 +299,10 @@ SHIFT = {
     "NSL03": -0.28131,
     "NSL04": -0.09112,
     "NSL05": +0.36613,
-    "NSL06": -0.88346,
+    "NSL06": -0.92500,
     "NSL07": -0.02562,
     "NSL08": -0.69449,
-    "NSL09": -0.24050,
+    "NSL09": -0.19550,
     "NSL10": -0.74610,
     "NSL11": -0.07719,
     "NSL12": -0.29204,

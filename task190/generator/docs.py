@@ -176,7 +176,7 @@ def _schedule(target, tested):
     per = 42
     for i in range(0, len(rows) - 1, per):
         chunk = [head] + rows[1 + i:1 + i + per]
-        f.append(Table(chunk, colWidths=[38 * mm, 18 * mm, 20 * mm, 25 * mm, 30 * mm, 36 * mm],
+        f.append(Table(chunk, colWidths=[34 * mm, 15 * mm, 18 * mm, 22 * mm, 26 * mm, 50 * mm],
                        style=TBL))
         f.append(Spacer(1, 3))
     d.build(f)

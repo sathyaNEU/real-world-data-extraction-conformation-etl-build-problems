@@ -109,19 +109,20 @@ engineer on 16 October.
 
 ## What was measured
 
-Fourteen positions, two deployments of a week each, from Monday 31 August to Sunday 11 October. Five
-logging meters, moved on Monday mornings. Every position in the schedule was covered twice. The deployment
-table says which meter stood where, with the height it stood at and the field checks either side. Heights
-are the ones the schedule sets; two deployments stood at another height and the remark says why.
+Fourteen positions, two deployments of a week each, from Monday 31 August to the collection round on
+Monday 12 October. Five logging meters, lifted and set down again on the Monday mornings, one round for the
+five of them. Every position in the schedule was covered twice. The deployment table says which meter stood
+where, when it was set running and stopped, the height it stood at and the field checks either side.
+Heights are the ones the schedule sets; two deployments stood at another height and the remark says why.
 
 ## The meter files
 
 `%(levels)s` is the five meters' own download, concatenated. One row a minute per meter, with the
 A-weighted equivalent level for the minute and the statistical levels LA90, LAmax and LAmin from the same
-minute. **The meters stamp in UTC**; the field sheets and everything the plant logs are in local time, which
+minute. The meters stamp in UTC; the field sheets and everything the plant logs are in local time, which
 was Irish Standard Time for the whole survey. The download of one deployment was repeated after the card
 threw a read error on collection, so part of that day appears twice in the file; the remarks column in the
-deployment table names it. The meters write **-120.2 dB in every level column** for a minute whose
+deployment table names it. The meters write -120.2 dB in every level column for a minute whose
 measurement channel was down; the deployment remarks give each spell.
 
 `%(bands)s` holds the one-third-octave band levels, one row a quarter hour, from the three meters that
@@ -138,8 +139,8 @@ sit away from the reference.
 ## The met mast
 
 `%(weather)s` is the mast on the blower house roof, ten-minute means, stamped UTC at the start of the ten
-minutes each record covers. The anemometer was replaced on 20 September; **the one fitted since reports in
-kilometres an hour, the one before it in metres a second**, and the column was not renamed. The rain gauge
+minutes each record covers. The anemometer was replaced on 20 September; the one fitted since reports in
+kilometres an hour, the one before it in metres a second, and the column was not renamed. The rain gauge
 reports its tip count since midnight, one tip to 0.2 mm, and the count resets at midnight rather than
 running on.
 
@@ -157,9 +158,8 @@ of the 25th, so there are no rows at all for those spells.
 
 ## What the surroundings sound like
 
-The road through Clonaraght carries milk lorries and farm traffic from first light, so the early morning is
-no quieter at the roadside positions than the middle of the day; the two busy spells are around eight and
-around half five. Away from the road it is the Glasha and wind in the trees.
+The road through Clonaraght carries milk lorries and farm traffic from first light, and the two busy
+spells are around eight and around half five. Away from the road it is the Glasha and wind in the trees.
 
 ## Identities
 

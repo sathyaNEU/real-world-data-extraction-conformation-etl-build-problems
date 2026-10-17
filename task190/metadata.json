@@ -1,5 +1,5 @@
 {
- "answer": "800,000 euro of the capital programme payments for the year to 31 December 2026 was misstated, which does not meet the conclusion at plan 4.3 and refers the population for extended testing; Rail siding and yard carries most of it at 250,000 euro.",
+ "answer": "850,000 euro of the capital programme payments for the year to 31 December 2026 was misstated, which does not meet the conclusion at plan 4.3 and refers the population for extended testing; Security and access systems carries most of it at 250,000 euro.",
  "answer_unit": "euro of misstatement",
  "as_of": "2027-01-14",
  "currency": "EUR",
@@ -30,21 +30,21 @@
    "source": "Constructed: internal audit plan 2026, section 4"
   },
   {
-   "bytes": 1898068,
+   "bytes": 1900364,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
    "path": "capital_payment_lines_2025.csv",
-   "rows": 22919,
+   "rows": 22918,
    "source": "Constructed: the payment ledger's capital programme payment lines, year to 31 December 2025"
   },
   {
-   "bytes": 2226988,
+   "bytes": 2229563,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
    "path": "capital_payment_lines_2026.csv",
-   "rows": 26874,
+   "rows": 26876,
    "source": "Constructed: the payment ledger's capital programme payment lines, year to 31 December 2026"
   },
   {
@@ -84,7 +84,7 @@
    "source": "Constructed: finance's funder grant claim for the claim year to 31 March"
   },
   {
-   "bytes": 19752,
+   "bytes": 21007,
    "date": "2027-01-14",
    "format": "pdf",
    "license": "CC0-1.0 (original work, constructed for this task)",
@@ -102,7 +102,7 @@
    "source": "Constructed: finance operations' payment release cut-off register with its effective dates"
   },
   {
-   "bytes": 7994,
+   "bytes": 7993,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
@@ -165,12 +165,12 @@
    "source": "Constructed: procurement's risk category labelling map, from 1 October 2026"
   },
   {
-   "bytes": 32057,
+   "bytes": 32469,
    "date": "2027-01-14",
    "format": "csv",
    "license": "CC0-1.0 (original work, constructed for this task)",
    "path": "testing_schedule_extract_2025_2026.csv",
-   "rows": 510,
+   "rows": 516,
    "source": "Constructed: internal audit's two-year extract of the testing schedules, 2025 and 2026"
   }
  ],

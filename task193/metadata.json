@@ -6,8 +6,7 @@
  "as_of": "2026-10-20",
  "distractor_files": [
   "spontaneous_reports_summary.csv",
-  "literature_screening_log.csv",
-  "atc_text.csv"
+  "literature_screening_log.csv"
  ],
  "wrong_basis_distractor": null,
  "neutral_rule_inputs": {
@@ -35,7 +34,7 @@
   "pharmacy_submission_log.csv": 148,
   "product_register.csv": 9,
   "register_release_notes.json": 1,
-  "register_variable_documentation.csv": 44,
+  "register_variable_documentation.csv": 47,
   "screen_annexes.csv": 23,
   "screen_standard_7_2024.pdf": 1,
   "signal_tracker_export.csv": 7,
