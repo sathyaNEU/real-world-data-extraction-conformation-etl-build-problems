@@ -309,6 +309,13 @@ has not shown that anything is absent. Where a format needs decoding, decode thr
 the verifier uses, so the bundle is read one way and only one way; and assert the extracted length is
 non-zero per file, since an empty extraction satisfies every absence check in the build.
 
+**The control runs through the same code path as the check, not merely the same file.** Proving the
+bytes are readable proves nothing about the search that matters: task190's first control scraped a
+reliability table with a generic number regex and matched version and clause numbers, so it would
+have passed on text the real check never reached. Call the same extractor and the same parse the
+absence assertion calls, and assert the control's own match, so a control that passes means that
+search, on that text, found what is there.
+
 ## Document control dates are a consistency surface
 
 Every date a document states about itself (approved, issued, refreshed, reviewed, superseded, a revision
