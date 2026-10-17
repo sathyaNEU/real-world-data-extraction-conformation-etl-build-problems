@@ -21,6 +21,11 @@ def r1(x):
     return int(x * 10 + 0.5) / 10
 
 
+def r0(x):
+    """A sensitivity, an estimate, to the whole percent."""
+    return int(x + 0.5)
+
+
 def results(target):
     pk = A.Pack(target)
     R = A.rungs(pk)
@@ -81,11 +86,11 @@ def workbook(path, o):
         c.alignment = Alignment(wrap_text=True, vertical="center")
     ws.row_dimensions[4].height = 44
     for r in sorted(K.RULE_IDS, key=lambda r: R[r]["share"]):
-        ws.append([r, K.RULE_NAME[r], r1(R[r]["golden"]) / 100, r1(R[r]["share"]) / 100,
+        ws.append([r, K.RULE_NAME[r], r0(R[r]["golden"]) / 100, r1(R[r]["share"]) / 100,
                    "Yes" if R[r]["golden"] >= K.TARGET else "No", "Chosen" if r == o["chosen"] else None])
         row = ws.max_row
-        for c in (3, 4):
-            ws.cell(row, c).number_format = "0.0%"
+        ws.cell(row, 3).number_format = "0%"
+        ws.cell(row, 4).number_format = "0.0%"
         for c in (5, 6):
             ws.cell(row, c).alignment = Alignment(horizontal="center")
         if r == o["chosen"]:
@@ -122,8 +127,8 @@ def workbook(path, o):
     ws2.append([])
     for line in ["Runs on the season's days, 2 March to 20 November 2026, each on the asset tag whose unit it was that day "
                  "(asset register). A run stopped at the cartridge check takes no cartridge; controls take one.",
-                 "The run database holds some runs twice, once in local time and once four hours later in UTC, with "
-                 "every other field the same; each is counted once."]:
+                 "The run database holds some runs twice, once in local time and once in UTC (four hours later in "
+                 "summer, five before 8 March), with every other field the same; each is counted once."]:
         _note(ws2, line, 5, 46)
     ws2.freeze_panes = "A2"
     _print(ws2, 1)
@@ -167,7 +172,8 @@ def workbook(path, o):
                  "%s adults had a complete OGTT: %s referred by the 2026 rule were offered the test, and %s were "
                  "offered it in the evaluation draw." % ("{:,}".format(o["tested"]), "{:,}".format(o["rule_n"]),
                                                          "{:,}".format(o["draws"])),
-                 "Shares are rounded to one decimal place from unrounded estimates."]:
+                 "Shares of the adults with undiagnosed diabetes are estimates, given to the whole percent; shares of the "
+                 "adults screened are counts, given to one decimal place; both are rounded from unrounded figures."]:
         ws4.append([line])
         ws4.cell(ws4.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
     ws4.column_dimensions["A"].width = 110
@@ -269,11 +275,11 @@ def memo(path, o, png):
     p = para(after=4)
     p.add_run("Load rule %s into the tablets: refer every adult with an HbA1c of 5.7%% or higher or a random glucose "
               "of 120 mg/dL or higher. " % c).bold = True
-    p.add_run("Among everyone we screened in 2026 it would have referred %.1f%% of the adults with undiagnosed "
+    p.add_run("Among everyone we screened in 2026 it would have referred %d%% of the adults with undiagnosed "
               "diabetes, above the protocol's 85%%, while referring %.1f%% of the adults screened. No rule that refers "
-              "fewer adults reaches 85%%: an HbA1c of 5.7%% or higher alone finds %.1f%%, and the 2026 rule plus an "
-              "HbA1c of 6.0%% or higher %.1f%%." % (r1(R[c]["golden"]), r1(R[c]["share"]), r1(R["A57"]["golden"]),
-                                                    r1(R["R26A60"]["golden"])))
+              "fewer adults reaches 85%%: an HbA1c of 5.7%% or higher alone finds %d%%, and the 2026 rule plus an "
+              "HbA1c of 6.0%% or higher %d%%." % (r0(R[c]["golden"]), r1(R[c]["share"]), r0(R["A57"]["golden"]),
+                                                  r0(R["R26A60"]["golden"])))
     tb = doc.add_table(rows=1, cols=4)
     tb.style = "Light List"
     for i, t in enumerate(["Candidate rule", "Adults screened referred", "Undiagnosed diabetes referred",
@@ -283,7 +289,7 @@ def memo(path, o, png):
         cells = tb.add_row().cells
         cells[0].text = "%s (%s)" % (K.RULE_NAME[r], r)
         cells[1].text = "%.1f%%" % r1(R[r]["share"])
-        cells[2].text = "%.1f%%" % r1(R[r]["golden"])
+        cells[2].text = "%d%%" % r0(R[r]["golden"])
         cells[3].text = "Yes" if R[r]["golden"] >= K.TARGET else "No"
         for i in (1, 2):
             cells[i].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -300,11 +306,11 @@ def memo(path, o, png):
          "OGTT." % (K.LAB, "{:,}".format(o["adults"]), "{:,}".format(o["tested"])), 7.5, color=GREY, before=2, after=6)
     para("Most of the season's OGTTs went to adults the 2026 rule referred; the evaluation draw offered the test to one "
          "in five of everyone else. Read among the adults who were tested, the 2026 rule plus an HbA1c of 6.0%% or "
-         "higher finds %.1f%% of the diabetes, because nearly every tested case was one the 2026 rule had already "
+         "higher finds %d%% of the diabetes, because nearly every tested case was one the 2026 rule had already "
          "flagged. Once each tested adult stands for the adults of their own group, %.0f%% of the adults with "
          "undiagnosed diabetes were among those the 2026 rule did not refer, milder cases that an HbA1c of 6.0%% "
-         "misses, and that rule falls to %.1f%%." % (r1(R["R26A60"]["cc"]), o["not_rule_share"],
-                                                     r1(R["R26A60"]["golden"])), after=4)
+         "misses, and that rule falls to %d%%." % (r0(R["R26A60"]["cc"]), o["not_rule_share"],
+                                                   r0(R["R26A60"]["golden"])), after=4)
     doc.add_picture(png, width=Mm(146))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
     para("The season's records are in the review workbook: the HbA1c cartridges each analyzer used, %s in all with "
@@ -312,8 +318,8 @@ def memo(path, o, png):
          "the season's OGTTs, $%s of it for adults we screened." % (
              "{:,}".format(sum(o["ask_a"].values())), LABP, "{:,.2f}".format(sum(v[0] for v in o["ask_b"].values()) / 100),
              "{:,.2f}".format(sum(v[1] for v in o["ask_b"].values()) / 100)), before=4, after=3)
-    para("Each adult counts once, at the first screening of the season. Shares are rounded to one decimal place from "
-         "unrounded estimates; the target is compared unrounded.", 7.5, color=GREY, after=0)
+    para("Each adult counts once, at the first screening of the season. Shares of the adults with undiagnosed diabetes "
+         "are estimates, given to the whole percent; the target is compared unrounded.", 7.5, color=GREY, after=0)
     doc.save(path)
 
 
@@ -322,10 +328,10 @@ def figures(o):
     R = o["R"]
     return dict(
         call=dict(rule=o["chosen"], rule_name=K.RULE_NAME[o["chosen"]], target=K.TARGET,
-                  sensitivity={K.RULE_NAME[r]: r1(R[r]["golden"]) for r in K.RULE_IDS},
+                  sensitivity={K.RULE_NAME[r]: r0(R[r]["golden"]) for r in K.RULE_IDS},
                   referral_share={K.RULE_NAME[r]: r1(R[r]["share"]) for r in K.RULE_IDS},
                   qualifies=[K.RULE_NAME[r] for r in K.RULE_IDS if R[r]["golden"] >= K.TARGET]),
-        rungs={k: {K.RULE_NAME[r]: r1(R[r][k]) for r in K.RULE_IDS} for k in
+        rungs={k: {K.RULE_NAME[r]: r0(R[r][k]) for r in K.RULE_IDS} for k in
                ("cc", "untested_free", "evalonly", "own_rates", "cells", "area", "month", "nominal")},
         rung_picks={k: A.call(R, k) for k in ("cc", "untested_free", "evalonly", "own_rates", "cells", "area", "month",
                                               "nominal", "golden")},

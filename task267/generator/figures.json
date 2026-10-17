@@ -1,60 +1,60 @@
 {
  "ask_a": {
-  "A01": 3602,
-  "A02": 4068,
-  "A03": 3661,
-  "A04": 3134,
-  "A05": 3879,
-  "A06": 3547,
-  "A07": 3036,
-  "A08": 3243,
-  "A09": 3040,
-  "A10": 3511,
-  "A11": 3560,
-  "A12": 3432
+  "A01": 3486,
+  "A02": 2686,
+  "A03": 2966,
+  "A04": 4216,
+  "A05": 3735,
+  "A06": 3535,
+  "A07": 3692,
+  "A08": 3864,
+  "A09": 2588,
+  "A10": 3449,
+  "A11": 3071,
+  "A12": 2960
  },
- "ask_a_total": 41713,
+ "ask_a_total": 40248,
  "ask_b": {
   "April": {
-   "billed": 43428.0,
-   "screened": 42812.0
+   "billed": 45276.0,
+   "screened": 44506.0
   },
   "August": {
-   "billed": 77731.5,
-   "screened": 76769.0
+   "billed": 75036.5,
+   "screened": 74151.0
   },
   "July": {
-   "billed": 44660.0,
-   "screened": 43890.0
+   "billed": 40463.5,
+   "screened": 39616.5
   },
   "June": {
-   "billed": 46585.0,
-   "screened": 45699.5
+   "billed": 43043.0,
+   "screened": 42234.5
   },
   "March": {
-   "billed": 15207.5,
-   "screened": 14630.0
+   "billed": 14630.0,
+   "screened": 14129.5
   },
   "May": {
-   "billed": 51513.0,
-   "screened": 50781.5
+   "billed": 43120.0,
+   "screened": 42542.5
   },
   "November": {
-   "billed": 49742.0,
-   "screened": 49126.0
+   "billed": 47509.0,
+   "screened": 46739.0
   },
   "October": {
-   "billed": 47355.0,
-   "screened": 46585.0
+   "billed": 51436.0,
+   "screened": 50666.0
   },
   "September": {
-   "billed": 58866.5,
-   "screened": 57981.0
+   "billed": 55286.0,
+   "screened": 54670.0
   }
  },
  "ask_b_totals": {
-  "billed": 435088.5,
-  "screened": 428274.0
+  "billed": 415800.0,
+  "screened": 409255.0
  },
  "call": {
   "qualifies": [
@@ -62,31 +62,31 @@
    "HbA1c of 5.5% or higher"
   ],
   "referral_share": {
-   "2026 rule, or HbA1c of 6.0% or higher": 24.5,
-   "HbA1c of 5.5% or higher": 48.7,
-   "HbA1c of 5.7% or higher": 28.1,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 35.9,
-   "HbA1c of 6.0% or higher": 8.5,
-   "Risk score of 5 or higher": 35.6
+   "2026 rule, or HbA1c of 6.0% or higher": 24.9,
+   "HbA1c of 5.5% or higher": 49.3,
+   "HbA1c of 5.7% or higher": 28.2,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 36.3,
+   "HbA1c of 6.0% or higher": 8.4,
+   "Risk score of 5 or higher": 35.9
   },
   "rule": "A57G120",
   "rule_name": "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher",
   "sensitivity": {
-   "2026 rule, or HbA1c of 6.0% or higher": 77.1,
-   "HbA1c of 5.5% or higher": 92.6,
-   "HbA1c of 5.7% or higher": 79.1,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 91.3,
-   "HbA1c of 6.0% or higher": 50.9,
-   "Risk score of 5 or higher": 59.0
+   "2026 rule, or HbA1c of 6.0% or higher": 79,
+   "HbA1c of 5.5% or higher": 93,
+   "HbA1c of 5.7% or higher": 80,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 90,
+   "HbA1c of 6.0% or higher": 51,
+   "Risk score of 5 or higher": 62
   },
   "target": 85.0
  },
  "counts": {
-  "adults": 38601,
-  "draws": 6268,
-  "not_rule_share": 37,
-  "referred_2026": 7604,
-  "tested": 11168
+  "adults": 37269,
+  "draws": 5912,
+  "not_rule_share": 33,
+  "referred_2026": 7477,
+  "tested": 10715
  },
  "protocol": {
   "decimals": 1,
@@ -128,68 +128,68 @@
  },
  "rungs": {
   "area": {
-   "2026 rule, or HbA1c of 6.0% or higher": 77.2,
-   "HbA1c of 5.5% or higher": 92.6,
-   "HbA1c of 5.7% or higher": 79.1,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 91.3,
-   "HbA1c of 6.0% or higher": 50.9,
-   "Risk score of 5 or higher": 59.1
+   "2026 rule, or HbA1c of 6.0% or higher": 79,
+   "HbA1c of 5.5% or higher": 93,
+   "HbA1c of 5.7% or higher": 80,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 90,
+   "HbA1c of 6.0% or higher": 51,
+   "Risk score of 5 or higher": 62
   },
   "cc": {
-   "2026 rule, or HbA1c of 6.0% or higher": 93.5,
-   "HbA1c of 5.5% or higher": 93.7,
-   "HbA1c of 5.7% or higher": 83.2,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 94.2,
-   "HbA1c of 6.0% or higher": 56.5,
-   "Risk score of 5 or higher": 73.1
+   "2026 rule, or HbA1c of 6.0% or higher": 94,
+   "HbA1c of 5.5% or higher": 94,
+   "HbA1c of 5.7% or higher": 83,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 94,
+   "HbA1c of 6.0% or higher": 57,
+   "Risk score of 5 or higher": 73
   },
   "cells": {
-   "2026 rule, or HbA1c of 6.0% or higher": 76.9,
-   "HbA1c of 5.5% or higher": 92.6,
-   "HbA1c of 5.7% or higher": 79.1,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 91.2,
-   "HbA1c of 6.0% or higher": 50.3,
-   "Risk score of 5 or higher": 59.4
+   "2026 rule, or HbA1c of 6.0% or higher": 79,
+   "HbA1c of 5.5% or higher": 93,
+   "HbA1c of 5.7% or higher": 80,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 90,
+   "HbA1c of 6.0% or higher": 51,
+   "Risk score of 5 or higher": 62
   },
   "evalonly": {
-   "2026 rule, or HbA1c of 6.0% or higher": 37.5,
-   "HbA1c of 5.5% or higher": 90.0,
-   "HbA1c of 5.7% or higher": 69.2,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 84.2,
-   "HbA1c of 6.0% or higher": 37.5,
-   "Risk score of 5 or higher": 25.0
+   "2026 rule, or HbA1c of 6.0% or higher": 35,
+   "HbA1c of 5.5% or higher": 91,
+   "HbA1c of 5.7% or higher": 73,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 80,
+   "HbA1c of 6.0% or higher": 35,
+   "Risk score of 5 or higher": 31
   },
   "month": {
-   "2026 rule, or HbA1c of 6.0% or higher": 77.2,
-   "HbA1c of 5.5% or higher": 92.6,
-   "HbA1c of 5.7% or higher": 79.1,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 91.3,
-   "HbA1c of 6.0% or higher": 50.9,
-   "Risk score of 5 or higher": 59.1
+   "2026 rule, or HbA1c of 6.0% or higher": 79,
+   "HbA1c of 5.5% or higher": 93,
+   "HbA1c of 5.7% or higher": 80,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 90,
+   "HbA1c of 6.0% or higher": 51,
+   "Risk score of 5 or higher": 62
   },
   "nominal": {
-   "2026 rule, or HbA1c of 6.0% or higher": 77.1,
-   "HbA1c of 5.5% or higher": 92.6,
-   "HbA1c of 5.7% or higher": 79.1,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 91.3,
-   "HbA1c of 6.0% or higher": 50.9,
-   "Risk score of 5 or higher": 59.0
+   "2026 rule, or HbA1c of 6.0% or higher": 79,
+   "HbA1c of 5.5% or higher": 93,
+   "HbA1c of 5.7% or higher": 80,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 90,
+   "HbA1c of 6.0% or higher": 51,
+   "Risk score of 5 or higher": 62
   },
   "own_rates": {
-   "2026 rule, or HbA1c of 6.0% or higher": 77.3,
-   "HbA1c of 5.5% or higher": 91.8,
-   "HbA1c of 5.7% or higher": 78.0,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 92.1,
-   "HbA1c of 6.0% or higher": 44.2,
-   "Risk score of 5 or higher": 49.2
+   "2026 rule, or HbA1c of 6.0% or higher": 80,
+   "HbA1c of 5.5% or higher": 92,
+   "HbA1c of 5.7% or higher": 78,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 91,
+   "HbA1c of 6.0% or higher": 45,
+   "Risk score of 5 or higher": 48
   },
   "untested_free": {
-   "2026 rule, or HbA1c of 6.0% or higher": 93.5,
-   "HbA1c of 5.5% or higher": 93.7,
-   "HbA1c of 5.7% or higher": 83.2,
-   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 94.2,
-   "HbA1c of 6.0% or higher": 56.5,
-   "Risk score of 5 or higher": 73.1
+   "2026 rule, or HbA1c of 6.0% or higher": 94,
+   "HbA1c of 5.5% or higher": 94,
+   "HbA1c of 5.7% or higher": 83,
+   "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher": 94,
+   "HbA1c of 6.0% or higher": 57,
+   "Risk score of 5 or higher": 73
   }
  }
 }

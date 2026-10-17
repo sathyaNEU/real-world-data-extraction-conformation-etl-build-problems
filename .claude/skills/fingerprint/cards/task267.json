@@ -10,7 +10,7 @@
   "shape": "10",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher (A57G120): 91.3% of the adults with undiagnosed diabetes among everyone screened, 35.9% of the adults screened referred",
+  "answer": "HbA1c of 5.7% or higher, or random glucose of 120 mg/dL or higher (A57G120): 90% of the adults with undiagnosed diabetes among everyone screened, 36.3% of the adults screened referred",
   "answer_source": "submission.md",
   "gap": [
     "population"
@@ -35,7 +35,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "screening_encounters_2026.csv",
-    "rows": 39484,
+    "rows": 38154,
     "entity": "one screening encounter as a tablet synced it",
     "grain": "screening encounter",
     "source": "synthetic"
@@ -71,10 +71,10 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is a rule's capture rate over a whole screened population when the reference check was given to everyone an older rule flagged and to a random fifth of everyone else; reading the capture rate among the checked members credits any rule that contains the older rule with nearly every case, so each checked member has to stand for the members of its own older-rule group at the inverse of that group's checking rate.",
-  "driver_concrete": "Each referral rule's sensitivity for undiagnosed diabetes among everyone screened in 2026, each participant with an OGTT result weighted by the inverse of the OGTT completion rate in their 2026 group (referred by the 2026 rule, or not referred and drawn into the random fifth), not read among the participants with a result, where the 2026 rule plus an HbA1c of 6.0 or more reads about 93 per cent and is about 77.",
-  "stump": "A competent solver computes each rule's sensitivity among the participants with an OGTT result, finds the 2026 rule plus an HbA1c of 6.0 or more at about 93 per cent, the rule with the fewest referrals above the 85 per cent target, and recommends it; weighted by the two groups' OGTT rates it reads about 77, and an HbA1c of 5.7 or more or a random glucose of 120 mg/dL or more (about 90) is the rule with the fewest referrals that meets the target.",
+  "driver_concrete": "Each referral rule's sensitivity for undiagnosed diabetes among everyone screened in 2026, each participant with an OGTT result weighted by the inverse of the OGTT completion rate in their 2026 group (referred by the 2026 rule, or not referred and drawn into the random fifth), not read among the participants with a result, where the 2026 rule plus an HbA1c of 6.0 or more reads 94 per cent and is 79.",
+  "stump": "A competent solver computes each rule's sensitivity among the participants with an OGTT result, finds the 2026 rule plus an HbA1c of 6.0 or more at 94 per cent, the rule with the fewest referrals above the 85 per cent target, and recommends it; weighted by the two groups' OGTT rates it reads 79, and an HbA1c of 5.7 or more or a random glucose of 120 mg/dL or more (90) is the rule with the fewest referrals that meets the target.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads a missing OGTT as not tested and applies the 85 per cent target computes each rule's sensitivity among the participants with an OGTT result and recommends the 2026 rule plus an HbA1c of 6.0 or more, about 93 per cent there with a quarter of those screened referred.",
+  "analyst_test": "A strong analyst who reads a missing OGTT as not tested and applies the 85 per cent target computes each rule's sensitivity among the participants with an OGTT result and recommends the 2026 rule plus an HbA1c of 6.0 or more, 94 per cent there with 24.9 per cent of those screened referred.",
   "domain_test": "The deciding quantity is each referral rule's sensitivity for diabetes among everyone screened, a diagnostic accuracy estimate under partial verification (the OGTT given by the old rule and to a random fifth), estimated by weighting the verified by the inverse of their referral group's verification rate; swapped into a warehouse's pallet scans, nothing ties the checking to a risk questionnaire and a glucose reading, and the mild cases only the random fifth reaches have no counterpart.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -92,7 +92,7 @@
       "note": "seed DA17, an annuity insurer's size-banded rates in six markets: it serves Descriptive only through sociology-demography's life-table task type (a third sociology-demography Descriptive build after task262 and task266), the seed's contract-against-annuitant grain is identity resolution (a reading, banned as the decisive step), and its natural analytical stump, deaths notified late for small pensions estimated from the notification delays, would file an estimate of the not-yet-observed in the governing document for a second consecutive build"
     }
   ],
-  "notes": "WARNs answered in the design note. Matthew Garcia was drawn with the other three from guard.py names at the draw (the suggestion list now omits names on file). Stage 3 (2026-10-17): the invented names Ostervale, Lindqvale, Cressfield and Elverston renamed Orlenby, Thessler, Drummery and Pellowmoor on the H21 screen; the ask devices redrawn (Ask A, the run database holding runs under two clocks, D1; Ask B, credit memo amounts on every line they cover, D6).",
+  "notes": "WARNs answered in the design note. Matthew Garcia was drawn with the other three from guard.py names at the draw (the suggestion list now omits names on file). Stage 3 (2026-10-17): the invented names Ostervale, Lindqvale, Cressfield and Elverston renamed Orlenby, Thessler, Drummery and Pellowmoor on the H21 screen; the ask devices redrawn (Ask A, the run database holding runs under two clocks, D1; Ask B, credit memo amounts on every line they cover, D6). Stage 4 round 1: the judge found other weightings of the estimand moving the last digit of the shares at one decimal; the sensitivities are asked to the whole percent and the world reseeded to 694, where every weighting agrees.",
   "client_domain": "biomedical-clinical-research",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "biomedical-clinical-research/diagnostic-biomarker-accuracy/1",
