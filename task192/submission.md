@@ -77,15 +77,15 @@ recall, and not 250, the coded count with its false marks taken out.
    - Rede de parceiros (PAR): 1,204 received, 61 not placed, 1,327.0 minutes
    - Linha de participacao publica (LIN): 945 received, 94 not placed, 98.0 minutes
 5. Per partner organisation, the reports it filed on actions in the period, those filed after the
-   period closed and the euros paid under its data agreement, 7 rows, counts as whole numbers and
-   euros to the nearest euro:
+   period closed and the euros its data agreement pays for the ones filed by the close, 7 rows,
+   counts as whole numbers and euros to the nearest euro:
    - P01: 134 filed, 0 after the close, 851 euros
    - P02: 421 filed, 2 after the close, 2,493 euros
    - P03: 216 filed, 1 after the close, 1,548 euros
    - P04: 127 filed, 3 after the close, 742 euros
    - P05: 84 filed, 3 after the close, 559 euros
    - P06: 52 filed, 1 after the close, 413 euros
-   - P07: 120 filed, 1 after the close, 732 euros
+   - P07: 120 filed, 1 after the close, 726 euros
 
 ### boletim_confrontos_2026S2.pdf
 

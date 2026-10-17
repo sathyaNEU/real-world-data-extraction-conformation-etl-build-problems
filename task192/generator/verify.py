@@ -15,7 +15,7 @@ P0, P1 = dt.date(2026, 5, 1), dt.date(2026, 10, 30)
 EXTRACT = dt.date(2026, 11, 6)
 DST = dt.date(2026, 10, 25)
 AZORES = "Acores"
-RATE = {"P01": 6.35, "P02": 5.95, "P03": 7.20, "P04": 5.45, "P05": 6.90, "P06": 8.10, "P07": 6.15}
+RATE = {"P01": 6.35, "P02": 5.95, "P03": 7.20, "P04": 5.45, "P05": 6.90, "P06": 8.10, "P07": 6.10}
 AMENDED = ("P04", dt.date(2026, 8, 1), 6.30)
 GRAIN = 50
 N = 0
@@ -175,8 +175,8 @@ def run(target, figures):
         ok("a1.%s.actions" % label, len(inside) == exp["actions"], "%d" % len(inside))
         ok("a1.%s.muni" % label, len({muni_key[k2] for k2 in inside}) == exp["municipalities"])
         par = [k2 for k2 in inside if "PAR" in routes_of[k2]]
-        ok("a1.%s.share" % label,
-           abs(round(100.0 * len(par) / len(inside), 1) - exp["partner_share_pct"]) < 0.051)
+        ok("a1.%s.partner_actions" % label, len(par) == exp["partner_actions"],
+           "%d against %d" % (len(par), exp["partner_actions"]))
         marked = [k2 for k2 in inside
                   if (press_code[k2] if k2 in press_code else filer_code[k2]) in CONF]
         ok("a1.%s.marked" % label, len(marked) == exp["marked_actions"])

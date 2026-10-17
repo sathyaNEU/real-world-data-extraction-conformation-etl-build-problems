@@ -294,14 +294,46 @@ def run(target, g=None):
     for code, v in sorted(g["a3"].items()):
         ok("bin.euros.%s" % code, 0.5 - abs(v["raw_euros"] - round(v["raw_euros"])) >= 0.25,
            "%.4f" % v["raw_euros"])
+    # a share is printed to one decimal, so its edge is at x.x5 and the distance to that edge is
+    # 0.5 tenths less the distance to the nearest printed value, NOT the distance to it
+    two_step = []
     for label, a, bb in W.fortnights():
         inside = [x for x in acts if a <= x["day"] <= bb]
         par = [x for x in inside if "PAR" in x["routes"]]
-        tenths = 1000.0 * len(par) / len(inside)
-        ok("bin.share.%s" % label, abs(tenths - round(tenths)) >= 0.12,
-           "%s %.5f, %d of %d" % (label, tenths, len(par), len(inside)))
+        share = 100.0 * len(par) / len(inside)
+        tenths = share * 10.0
+        edge = (0.5 - abs(tenths - round(tenths))) / 10.0
+        ok("bin.share.%s" % label, edge >= 0.001,
+           "%s %.6f per cent prints %.1f and sits %.4f points from its printed edge, %d of %d"
+           % (label, share, round(share, 1), edge, len(par), len(inside)))
         ok("bin.share_exact.%s" % label, 2000 * len(par) % len(inside) != 0
            or (2000 * len(par) // len(inside)) % 10 != 5, "%d/%d" % (len(par), len(inside)))
+        if round(round(share, 2), 1) != round(share, 1):
+            two_step.append("%s %.6f (%.1f against %.1f)"
+                            % (label, share, round(round(share, 2), 1), round(share, 1)))
+    # where a two-step rounding path would print a different figure, the shipped convention is what
+    # closes it, so the convention has to be in the dictionary and the path has to be reported
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(target, "dicionario_dados.xlsx"), read_only=True)
+    conv = " ".join(str(c.value) for row in wb["convencoes"].iter_rows() for c in row
+                    if c.value is not None)
+    wb.close()
+    ok("bin.share_rounding_filed",
+       "arredondada uma vez" in conv and "nao truncada" in conv,
+       "the percentage rule is in the dictionary's convencoes sheet")
+    ok("bin.share_two_step_reported", len(two_step) <= 1,
+       "shares a two-step rounding path would move: %s" % ("; ".join(two_step) or "none"))
+    g["share_two_step"] = two_step
+    g["share_edges"] = {label: round((0.5 - abs(100.0 * len([x for x in acts if a <= x["day"] <= bb
+                                                             if "PAR" in x["routes"]])
+                                                / len([x for x in acts if a <= x["day"] <= bb]) * 10.0
+                                                - round(100.0 * len([x for x in acts
+                                                                     if a <= x["day"] <= bb
+                                                                     if "PAR" in x["routes"]])
+                                                        / len([x for x in acts
+                                                               if a <= x["day"] <= bb]) * 10.0)))
+                                     / 10.0, 4)
+                        for label, a, bb in W.fortnights()}
     for route, v in g["a2"].items():
         ok("bin.median.%s" % route, abs(v["median_minutes"] * 10
                                         - round(v["median_minutes"] * 10)) < 1e-9,

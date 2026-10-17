@@ -77,8 +77,9 @@ def plan(target):
                   "stamped at 00:00 on the Monday after it, with the counter's roll-over added back where "
                   "it has passed it. A spell the historian did not record leaves those two readings as "
                   "they stand.", BODY),
-        Paragraph("5.2 A centrifuge run is one start of a centrifuge in the equipment log, and a week's "
-                  "runs are the starts the log carries in that week.", BODY),
+        Paragraph("5.2 A centrifuge run is one start of a centrifuge in the equipment log and lasts to the "
+                  "stop the log records for the same machine. A week's runs are the starts the log carries "
+                  "in that week.", BODY),
         Paragraph("6 Complaints", H2),
         Paragraph("6.1 Every noise complaint is logged in the complaints register with the dwelling it "
                   "came from, and the dwelling's reference is carried on the monitoring position "
@@ -143,12 +144,14 @@ running on.
 ## The plant's own records
 
 `%(events)s` is the process operator's equipment log in local time: a row whenever a blower, a centrifuge
-or the gas engine was started or stopped, with the reason the shift wrote. `%(scada)s` is the
+or the gas engine was started or stopped, with the reason the shift wrote. The two centrifuges run their own
+shifts and the log carries each machine separately. `%(scada)s` is the
 fifteen-minute channel log off the plant PLC, also local time. Two channels are counters that run on from
 commissioning, the biogas meter in cubic metres (it wraps at 99,999) and the blower header's flow
 totaliser in thousands of normal cubic metres; the blower flow is logged as a rate as well. The engine's
-hour counter was replaced on 18 September and starts again from zero, and the link to the PLC was down from
-the afternoon of 24 September to the morning of the 25th, so there are no rows for that spell.
+hour counter was changed at the inspection on 15 September and starts again from zero, and the radio link to the PLC
+dropped several times over the survey, the longest spell from the afternoon of 24 September to the morning
+of the 25th, so there are no rows at all for those spells.
 
 ## What the surroundings sound like
 

@@ -134,11 +134,11 @@ def run(target, g):
       "SF6 the notes file which end of its ten minutes a met record is stamped at")
 
     # ------------------------------------------------- R3a: the analyst test, executed on the clean truth
-    naive = {c: r[c]["rung2_p10"] for c in W.CODES}
+    naive = {c: r[c]["rung2_la90"] for c in W.CODES}
     sl_naive, m_naive, _ = AN.slate(naive)
     A(tuple(sl_naive) != gold, "R3a the easy route files a different slate")
     A(len(set(sl_naive) & set(gold)) <= 3,
-      "R3a the tenth-percentile background keeps at most three of the five: %s" % (sl_naive,))
+      "R3a the statistical background keeps at most three of the five: %s" % (sl_naive,))
     la90 = tuple(AN.slate({c: r[c]["rung2_la90"] for c in W.CODES})[0])
     A(la90 == ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),
       "R3a the default path (the minute LA90 background) files NSL03, NSL04, NSL06, NSL11, NSL12: %s"
@@ -154,8 +154,12 @@ def run(target, g):
         A(mg > 0.05, "R3b %s names its slate with a margin (%.2f dB)" % (key, mg))
     A(tuple(AN.slate(base)[0]) == gold, "R3b the residual from the plant's stops gives the golden slate")
     # R3c: no plant
-    A(len(W.PLANNED_STOPS) == 6 and all(m == 120 for _, m, _ in W.PLANNED_STOPS),
-      "R3c the stops are the plant's own weekly maintenance, not a planted window")
+    A(len(W.PLANNED_STOPS) == 6 and all(95 <= m <= 150 for _, m, _ in W.PLANNED_STOPS)
+      and len({m for _, m, _ in W.PLANNED_STOPS}) >= 5,
+      "R3c the stops are the plant's own weekly maintenance, each as long as it took")
+    for st, m, _ in W.PLANNED_STOPS:
+        A((st + dt.timedelta(minutes=m)).hour < W.DAY_START,
+          "R3c the inspection on %s is over before the assessment period opens" % st.date())
     ev = text_of(target, PK.FILES["events"])
     A(ev.count("weekly MCC inspection") >= 6 * 6, "R3c the stops are logged like every other event")
     A(not has(ev, "not operating") and not has(ev, "background"),
@@ -169,21 +173,19 @@ def run(target, g):
         "rung1_total": ("NSL02", "NSL04", "NSL06", "NSL07", "NSL11"),
         "rung2_la90": ("NSL03", "NSL04", "NSL06", "NSL11", "NSL12"),
         "rung2c_arith": ("NSL03", "NSL04", "NSL06", "NSL07", "NSL11"),
+        "rung2_p10": ("NSL02", "NSL04", "NSL06", "NSL07", "NSL11"),
         "rung0_complaints": ("NSL01", "NSL03", "NSL06", "NSL09", "NSL12"),
     }
     for key, want in expect.items():
         got = tuple(g["slates"][key][0])
         A(got == want, "ladder %s is %s: got %s" % (key, want, got))
-    got = tuple(g["slates"]["rung2_p10"][0])
-    A(got != gold, "ladder rung2_p10 differs from the golden slate")
-    A(len(set(got) & set(gold)) <= 3, "ladder rung2_p10 keeps at most three of the five")
-    # the quietest-interval route subtracts a floor that still holds the plant, so it lands on a slate the
-    # ladder already names rather than on one of its own
-    got = tuple(g["slates"]["rung2b_min15"][0])
-    A(got != gold, "ladder rung2b_min15 differs from the golden slate")
-    A(got in {tuple(g["slates"][k][0]) for k in ("rung1_total", "rung2_p10", "rung2_la90",
-                                                 "rung2c_arith")},
-      "ladder rung2b_min15 lands on a slate the ladder already names: %s" % (got,))
+    # the percentile and quietest-interval routes subtract a floor that still holds the plant, so they
+    # land on slates the ladder already names rather than on ones of their own
+    for key in ("rung2_p10", "rung2b_min15"):
+        got = tuple(g["slates"][key][0])
+        A(got != gold, "ladder %s differs from the golden slate" % key)
+        A(got in {tuple(g["slates"][k][0]) for k in ("rung1_total", "rung2_la90", "rung2c_arith")},
+          "ladder %s lands on a slate the ladder already names: %s" % (key, got))
     A(len({tuple(v[0]) for v in g["slates"].values()}) >= 5, "the ladder names five or more slates")
     A(g["slates"]["specific"][1] >= 0.7, "the golden slate's margin is %.2f dB" % g["slates"]["specific"][1])
     A(g["slates"]["specific"][2] == g["sixth"], "the sixth dwelling is %s" % g["sixth"])
@@ -281,6 +283,8 @@ def run(target, g):
         A(rows[c]["valid_minutes"] > 2500, "%s has %d valid minutes" % (c, rows[c]["valid_minutes"]))
         A(rows[c]["excluded_minutes"] > 0, "%s has excluded minutes" % c)
         A(rows[c]["stop_minutes"] >= 180, "%s has %d stop minutes" % (c, rows[c]["stop_minutes"]))
+        A(8000 < rows[c]["centrifuge_minutes"] < 12000,
+          "%s saw %d minutes of dewatering" % (c, rows[c]["centrifuge_minutes"]))
         A(28.0 < r[c]["resid"] < 46.0, "%s residual %.1f dB is a rural daytime residual" % (c, r[c]["resid"]))
         A(35.0 < rows[c]["specific_raw"] < 56.0, "%s specific level %.1f dB" % (c, rows[c]["specific_raw"]))
         A(r[c]["total"] - r[c]["resid"] > 3.0,
@@ -310,6 +314,9 @@ def run(target, g):
           "%s valid minutes is a count" % c)
         A(rows[c]["band_hz"] in PK.BANDS or rows[c]["band_hz"] is None, "%s band is a band" % c)
         A(rows[c]["tone"] in (True, False, None), "%s tone verdict" % c)
+        A(isinstance(rows[c]["centrifuge_minutes"], int), "%s centrifuge minutes is a count" % c)
+        A(isinstance(rows[c]["centrifuge_runs"], int) and 8 < rows[c]["centrifuge_runs"] < 40,
+          "%s saw %d centrifuge runs" % (c, rows[c]["centrifuge_runs"]))
     withband = [c for c in W.CODES if rows[c]["band_hz"]]
     A(len(withband) == 10, "ten positions carry band rows: %d" % len(withband))
     A(len([c for c in W.CODES if rows[c]["band_hz"] is None]) == 4, "four positions have no band rows")
@@ -324,9 +331,11 @@ def run(target, g):
         A(len(note) > 1500, "the golden note's text is readable for the figure sweep (%d characters)"
           % len(note))
     if note:
-        tones = sum(1 for c in g["slate"] if rows[c]["tone"])
-        A(has(note, "A tone is prominent at %d of the five" % tones),
-          "the note's tone count is the %d the table carries" % tones)
+        A(has(note, "A tone is prominent at %d of the fourteen positions" % len(g["tone_positions"])),
+          "the note's tone count is the %d the band file carries" % len(g["tone_positions"]))
+        for c in g["tone_positions"]:
+            A(has(note, c), "the note names %s among the positions carrying a tone" % c)
+        A(len(g["tone_bands"]) == 1, "every prominent tone sits in one band: %s" % (g["tone_bands"],))
         for c, dref, name, lvl in g["slate_dwellings"]:
             A(has(note, "%.1f" % lvl), "the note carries %s's level" % c)
         A(has(note, "%.1f dB below the fifth" % g["margin_db"]), "the note carries the margin")
@@ -353,7 +362,11 @@ def run(target, g):
         st = AN.stop_mask(ss["stamps"])
         A(not bool((ss["nd"] & st).any()), "%s has no no-data minute inside a process stop" % sid)
     for c in W.CODES:
-        A(r[c]["minutes_stop"] >= 230, "%s measures its residual on %d minutes" % (c, r[c]["minutes_stop"]))
+        A(r[c]["minutes_stop"] >= 200, "%s measures its residual on %d minutes" % (c, r[c]["minutes_stop"]))
+    A(len({r[c]["minutes_stop"] for c in W.CODES}) >= 4,
+      "the residual windows are the inspections' own lengths, not one number")
+    A(len({rows[c]["centrifuge_minutes"] for c in W.CODES}) >= 8,
+      "the dewatering minutes differ position to position")
 
     # -------------------------------------------------------- the field checks, deployment by deployment
     corrected = [d for d in deps if d["correction"] != 0.0]
@@ -385,8 +398,11 @@ def run(target, g):
     A(has(plan, "one start of a centrifuge in the equipment log"), "SF19 plan 5.2 files what a run is")
     scada_rows = list(_csv.DictReader(io_open(target, PK.FILES["scada"])))
     by_t = {dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M"): x for x in scada_rows}
-    gap = [dt.datetime(2026, 9, 24, 13, 0) + dt.timedelta(minutes=15 * i) for i in range(80)]
-    A(all(t not in by_t for t in gap), "the historian's gap is %d quarter hours" % len(gap))
+    gap = [a + dt.timedelta(minutes=15 * i) for a, n in W.PLC_GAPS for i in range(n)]
+    A(all(t not in by_t for t in gap), "the historian's gaps are %d quarter hours over %d spells"
+      % (len(gap), len(W.PLC_GAPS)))
+    A(len({(a.date() - W.WEEKS[0]).days // 7 for a, _ in W.PLC_GAPS}) == 6,
+      "every survey week carries one of the historian's gaps")
     for i, wk in enumerate(W.WEEKS):
         a = dt.datetime(wk.year, wk.month, wk.day)
         A(a in by_t and a + dt.timedelta(days=7) in by_t,
@@ -399,13 +415,13 @@ def run(target, g):
     A(g["weekly"][3]["blower_air_knm3"] - rate_sum > 60.0,
       "SF18 the gap week's totaliser stands %.0f above the rate sum" % (g["weekly"][3]["blower_air_knm3"]
                                                                   - rate_sum))
-    for i in (0, 1, 2, 4, 5):
+    for i in range(6):
         wkr = [x for x in scada_rows
                if W.WEEKS[i] <= dt.datetime.strptime(x["logged_at"], "%Y-%m-%d %H:%M").date()
                < W.WEEKS[i] + dt.timedelta(days=7)]
-        A(abs(g["weekly"][i]["blower_air_knm3"]
-              - sum(float(x["blower_air_nm3_h"]) for x in wkr) * 0.25 / 1000.0) < 2.0,
-          "week %d agrees between the totaliser and the rate" % i)
+        rs = sum(float(x["blower_air_nm3_h"]) for x in wkr) * 0.25 / 1000.0
+        A(g["weekly"][i]["blower_air_knm3"] - rs > 2.0,
+          "week %d: the totaliser stands %.1f above the rate sum" % (i, g["weekly"][i]["blower_air_knm3"] - rs))
     blocks = {}
     prev = 0.0
     for x in scada_rows:
@@ -422,6 +438,33 @@ def run(target, g):
     A(len({v["centrifuge_runs"] for v in g["weekly"].values()}) >= 3,
       "the weekly run counts vary: %s" % sorted(v["centrifuge_runs"] for v in g["weekly"].values()))
     A(len({v["blower_air_knm3"] for v in g["weekly"].values()}) == 6, "the weekly air figures differ")
+
+    # ------------------------------------------------ the ask layer's devices, measured on the cut pack
+    import cracker as CR
+    ch_min, ch_run = CR.channel_plant_state()
+    ch_wk = CR.channel_weekly()
+    for c in W.CODES:
+        A(ch_min[c] != rows[c]["centrifuge_minutes"],
+          "the process channel misses %s's centrifuge minutes (%d against %d)"
+          % (c, ch_min[c], rows[c]["centrifuge_minutes"]))
+        A(abs(ch_min[c] - rows[c]["centrifuge_minutes"]) >= 30,
+          "%s's channel reading is %d minutes out" % (c, abs(ch_min[c] - rows[c]["centrifuge_minutes"])))
+        A(ch_run[c] != rows[c]["centrifuge_runs"],
+          "the process channel misses %s's run count (%d against %d)"
+          % (c, ch_run[c], rows[c]["centrifuge_runs"]))
+    for i in range(6):
+        for key in ("blower_air_knm3", "centrifuge_runs", "engine_hours"):
+            A(ch_wk[i][key] != g["weekly"][i][key],
+              "the process channel misses week %d's %s (%s against %s)"
+              % (i, key, ch_wk[i][key], g["weekly"][i][key]))
+    A(len({v["engine_hours"] for v in g["weekly"].values()}) >= 2,
+      "the engine's weekly hours are not all the same: %s"
+      % sorted({v["engine_hours"] for v in g["weekly"].values()}))
+    # the log and the channel are both shipped, and the log is the only minute-resolution record
+    A(has(plan, "lasts to the stop the log records for the same machine"),
+      "plan 5.2 files what a run's minutes are")
+    A(has(plan, "Invalid minutes are left out of every level"),
+      "plan 4.2 scopes the validity exclusions to levels, so a minute count is of the period itself")
 
     # ------------------------------------------------------- the readings that converge, asserted on data
     # pooling: the position's residual over both deployments against the mean of the two deployments'

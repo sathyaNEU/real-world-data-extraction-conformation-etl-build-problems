@@ -490,7 +490,7 @@ def record_targets(expected, allsep, design, units, plans, bins=True, fixed=None
         # the register keeps the scatter a count of complications produces: one placement that shows a rise
         # and one that takes off more than the standing excess it was carrying
         shares = [(r["carried"] - r["realised"]) / r["carried"] for r in rows]
-        scatter = 60.0 * (max(0.0, min(shares) + 0.04) + max(0.0, 0.95 - max(shares)))
+        scatter = 150.0 * max(0.0, min(shares) + 0.07) + 40.0 * max(0.0, 0.95 - max(shares))
         soft = (pen + scatter + 0.02 * sum(abs(cand[c] - base[c]) for c in cand) + 4.0 * band)
         return pen, soft, clear, rd, md
 
@@ -507,8 +507,21 @@ def record_targets(expected, allsep, design, units, plans, bins=True, fixed=None
     best_pen = evaluate(best)[1]
     codes = sorted(base)
     r = np.random.default_rng(W.SEED ^ 0x5EED)
-    for start in range(26):
-        cand = dict(best) if start == 0 else {c: int(base[c] + r.integers(-22, 23)) for c in codes}
+    # restarts: the record as drawn, one per placement that starts it on a quarter that went backwards
+    # (so the search can reach a register with a placement showing a rise), and random ones
+    seeded = []
+    rows0 = _register(obs, expected, units)
+    for j, row in enumerate(rows0):
+        c0 = row["code"]
+        push = int(abs(row["carried"])) + 4
+        seeded.append({c: base[c] + (push if c == c0 else 0) for c in codes})
+    for start in range(26 + len(seeded)):
+        if start == 0:
+            cand = dict(best)
+        elif start <= len(seeded):
+            cand = dict(seeded[start - 1])
+        else:
+            cand = {c: int(base[c] + r.integers(-22, 23)) for c in codes}
         pen = evaluate(cand)[1]
         improved = True
         while improved:

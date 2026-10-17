@@ -1,6 +1,38 @@
 {
  "call": "the October slot covers NSL04, NSL11, NSL07, NSL02, NSL13",
  "cap": 5,
+ "centrifuge_minutes": {
+  "NSL01": 5334,
+  "NSL02": 5334,
+  "NSL03": 4981,
+  "NSL04": 5334,
+  "NSL05": 5334,
+  "NSL06": 4873,
+  "NSL07": 4873,
+  "NSL08": 4873,
+  "NSL09": 5274,
+  "NSL10": 5274,
+  "NSL11": 4711,
+  "NSL12": 4711,
+  "NSL13": 4310,
+  "NSL14": 4663
+ },
+ "centrifuge_runs_position": {
+  "NSL01": 22,
+  "NSL02": 22,
+  "NSL03": 18,
+  "NSL04": 22,
+  "NSL05": 22,
+  "NSL06": 18,
+  "NSL07": 18,
+  "NSL08": 18,
+  "NSL09": 23,
+  "NSL10": 23,
+  "NSL11": 20,
+  "NSL12": 20,
+  "NSL13": 15,
+  "NSL14": 19
+ },
  "deployments": 28,
  "deployments_corrected": 11,
  "excluded_minutes": {
@@ -41,16 +73,16 @@
   "NSL02": 47.4,
   "NSL03": 44.7,
   "NSL04": 53.2,
-  "NSL05": 40.5,
+  "NSL05": 40.3,
   "NSL06": 46.7,
   "NSL07": 48.1,
   "NSL08": 42.2,
   "NSL09": 44.8,
-  "NSL10": 38.6,
+  "NSL10": 38.3,
   "NSL11": 50.1,
-  "NSL12": 44.4,
+  "NSL12": 44.3,
   "NSL13": 46.2,
-  "NSL14": 42.5
+  "NSL14": 42.6
  },
  "plan_clauses": [
   "2.1",
@@ -67,20 +99,20 @@
   "7.1"
  ],
  "residual_db": {
-  "NSL01": 32.9,
+  "NSL01": 33.1,
   "NSL02": 33.3,
-  "NSL03": 37.9,
+  "NSL03": 38.1,
   "NSL04": 40.8,
-  "NSL05": 35.8,
+  "NSL05": 35.0,
   "NSL06": 42.3,
   "NSL07": 37.1,
   "NSL08": 34.6,
-  "NSL09": 31.1,
-  "NSL10": 32.4,
-  "NSL11": 37.3,
-  "NSL12": 37.8,
-  "NSL13": 32.3,
-  "NSL14": 32.6
+  "NSL09": 31.2,
+  "NSL10": 31.0,
+  "NSL11": 36.4,
+  "NSL12": 37.5,
+  "NSL13": 32.1,
+  "NSL14": 33.6
  },
  "rungs": {
   "rung0_complaints": {
@@ -95,7 +127,7 @@
    ]
   },
   "rung1_total": {
-   "margin_db": 0.545,
+   "margin_db": 0.536,
    "next": "NSL13",
    "slate": [
     "NSL02",
@@ -106,7 +138,7 @@
    ]
   },
   "rung2_la90": {
-   "margin_db": 0.106,
+   "margin_db": 0.083,
    "next": "NSL07",
    "slate": [
     "NSL03",
@@ -117,10 +149,10 @@
    ]
   },
   "rung2_p10": {
-   "margin_db": 0.339,
-   "next": "NSL02",
+   "margin_db": 0.039,
+   "next": "NSL03",
    "slate": [
-    "NSL03",
+    "NSL02",
     "NSL04",
     "NSL06",
     "NSL07",
@@ -128,8 +160,8 @@
    ]
   },
   "rung2b_min15": {
-   "margin_db": 1.505,
-   "next": "NSL13",
+   "margin_db": 1.444,
+   "next": "NSL03",
    "slate": [
     "NSL02",
     "NSL04",
@@ -139,7 +171,7 @@
    ]
   },
   "rung2c_arith": {
-   "margin_db": 0.366,
+   "margin_db": 0.398,
    "next": "NSL02",
    "slate": [
     "NSL03",
@@ -202,21 +234,31 @@
   "NSL14": 42.0
  },
  "stop_minutes": {
-  "NSL01": 240,
-  "NSL02": 240,
-  "NSL03": 240,
-  "NSL04": 240,
-  "NSL05": 240,
-  "NSL06": 240,
-  "NSL07": 240,
-  "NSL08": 240,
-  "NSL09": 240,
-  "NSL10": 240,
-  "NSL11": 240,
-  "NSL12": 240,
-  "NSL13": 240,
-  "NSL14": 240
+  "NSL01": 225,
+  "NSL02": 225,
+  "NSL03": 255,
+  "NSL04": 225,
+  "NSL05": 225,
+  "NSL06": 250,
+  "NSL07": 250,
+  "NSL08": 250,
+  "NSL09": 225,
+  "NSL10": 225,
+  "NSL11": 255,
+  "NSL12": 255,
+  "NSL13": 280,
+  "NSL14": 250
  },
+ "tone_band_hz": 400,
+ "tone_count": 6,
+ "tone_positions": [
+  "NSL02",
+  "NSL03",
+  "NSL04",
+  "NSL07",
+  "NSL09",
+  "NSL11"
+ ],
  "tone_prominent": {
   "NSL01": "no",
   "NSL02": "yes",
@@ -251,34 +293,40 @@
  },
  "weekly_plant": {
   "0": {
-   "biogas_m3": 35389,
+   "biogas_m3": 35390,
    "blower_air_knm3": 689,
-   "centrifuge_runs": 12
+   "centrifuge_runs": 12,
+   "engine_hours": 166.0
   },
   "1": {
-   "biogas_m3": 34824,
+   "biogas_m3": 34823,
    "blower_air_knm3": 678,
-   "centrifuge_runs": 13
+   "centrifuge_runs": 13,
+   "engine_hours": 166.0
   },
   "2": {
-   "biogas_m3": 34933,
-   "blower_air_knm3": 679,
-   "centrifuge_runs": 10
+   "biogas_m3": 34822,
+   "blower_air_knm3": 676,
+   "centrifuge_runs": 9,
+   "engine_hours": 165.5
   },
   "3": {
    "biogas_m3": 36028,
-   "blower_air_knm3": 700,
-   "centrifuge_runs": 12
+   "blower_air_knm3": 701,
+   "centrifuge_runs": 12,
+   "engine_hours": 166.0
   },
   "4": {
-   "biogas_m3": 34377,
-   "blower_air_knm3": 669,
-   "centrifuge_runs": 11
+   "biogas_m3": 34270,
+   "blower_air_knm3": 666,
+   "centrifuge_runs": 8,
+   "engine_hours": 165.6
   },
   "5": {
-   "biogas_m3": 35230,
+   "biogas_m3": 35229,
    "blower_air_knm3": 686,
-   "centrifuge_runs": 13
+   "centrifuge_runs": 13,
+   "engine_hours": 166.0
   }
  }
 }

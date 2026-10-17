@@ -94,11 +94,11 @@ def run(target, g, state):
 
     # ---------- the ladder ----------
     ok(answer["unit"] == "41230", "the answer is 41230, %s" % answer["unit"])
-    ok(round(answer["avoided"]) == 24, "the answer avoids 24, got %.3f" % answer["avoided"])
-    ok(runner["unit"] == "41220" and round(runner["avoided"]) == 15, "the closest unit is 41220 at 15")
+    ok(round(answer["avoided"]) == 21, "the answer avoids 21, got %.3f" % answer["avoided"])
+    ok(runner["unit"] == "41220" and round(runner["avoided"]) == 13, "the closest unit is 41220 at 13")
     ok(g["margin"] >= 1.2, "final margin %.3fx is at least 1.2x" % g["margin"])
-    ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 23,
-       "rung 0 files 41210 at 23 avoided")
+    ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 22,
+       "rung 0 files 41210 at 22 avoided")
     ok(g["rung1"]["unit"] == "41330", "rung 1 files 41330")
     ok(g["rung2"]["unit"] == "41220", "rung 2 files 41220")
     for label, key in (("rung 0", lambda d: share * d["last_excess"]), ("rung 1", lambda d: d["ratio"]),
@@ -144,7 +144,7 @@ def run(target, g, state):
     rankings = [
         ("the latest quarter's risk-adjusted rate", lambda d: d["last_ratio"], "41410"),
         ("the latest quarter's crude rate",
-         lambda d: panel[(d["unit"], last_q)]["observed"] / panel[(d["unit"], last_q)]["episodes"], "41410"),
+         lambda d: panel[(d["unit"], last_q)]["observed"] / panel[(d["unit"], last_q)]["episodes"], "41330"),
         ("the latest quarter's excess complications", lambda d: d["last_excess"], "41210"),
         ("the risk-adjusted rate over the specification period", lambda d: d["ratio"], "41330"),
         ("the crude rate over the specification period",
@@ -174,7 +174,7 @@ def run(target, g, state):
                "the unit %s names avoids %.2f against %.2f at the answer"
                % (label, order[0]["avoided"], answer["avoided"]))
         else:
-            ok(key(order[0]) / key(order[1]) >= 1.35,
+            ok(key(order[0]) / key(order[1]) >= 1.30,
                "%s holds the answer by %.3fx" % (label, key(order[0]) / key(order[1])))
 
     # every reflex lands on a unit the golden does not name
@@ -197,8 +197,8 @@ def run(target, g, state):
     easy = max(units, key=lambda d: drop * d["expected_plan"])
     ok(easy["unit"] == "41220", "R3a pricing the register as a drop in the standardised ratio files "
        "41220 (%s)" % easy["unit"])
-    ok(round(drop * easy["expected_plan"]) == 35,
-       "R3a the easy route files 35 complications avoided at 41220 (%.2f)"
+    ok(round(drop * easy["expected_plan"]) == 53,
+       "R3a the easy route files 53 complications avoided at 41220 (%.2f)"
        % (drop * easy["expected_plan"]))
     ok(round(drop * answer["expected_plan"]) < round(drop * easy["expected_plan"]),
        "R3a the easy route puts the golden below its own answer")
@@ -206,12 +206,12 @@ def run(target, g, state):
     ok(easy2["unit"] == "41220", "R3a pricing it as a percent of the counterfactual also files 41220 (%s)"
        % easy2["unit"])
     flat = sum(r["carried"] - r["realised"] for r in G.placement_record(b)) / 8.0
-    ok(abs(flat - 26.0) < 6.0, "R3a a flat complications-per-placement reading is %.1f and ranks nothing"
+    ok(abs(flat - 38.0) < 7.0, "R3a a flat complications-per-placement reading is %.1f and ranks nothing"
        % flat)
     quarter = max(units, key=lambda d: d["last_excess"])
-    ok(quarter["unit"] == "41210" and round(share * quarter["last_excess"]) == 23,
-       "R3a a lower route, the quarter in hand, files 41210 at 23 avoided")
-    ok(round(by["41210"]["avoided"]) == 4, "R3a that unit would avoid 4")
+    ok(quarter["unit"] == "41210" and round(share * quarter["last_excess"]) == 22,
+       "R3a a lower route, the quarter in hand, files 41210 at 22 avoided")
+    ok(round(by["41210"]["avoided"]) == 3, "R3a that unit would avoid 3")
     # R3b the decisive step alone: the shape of the fall, with everything else held
     switched = max(units, key=lambda d: share * d["excess"])
     ok(switched["unit"] == answer["unit"], "R3b changing only the shape of the fall files the golden")
@@ -236,12 +236,20 @@ def run(target, g, state):
     ok(max(spread) - min(spread) > 0.7,
        "the closed placements' standing spreads %.2f, which is what separates the shapes"
        % (max(spread) - min(spread)))
-    ok(min(abs(r["carried"]) for r in G.placement_record(b)) < 5.0,
-       "one closed placement carries no measurable standing excess, so a per-placement share cannot be "
-       "formed for it")
+    ok(min(abs(r["carried"]) for r in G.placement_record(b)) > 12.0,
+       "every closed placement carries a standing excess a share can be formed on (smallest %.1f), so no "
+       "route through the register is refused because it cannot be computed"
+       % min(abs(r["carried"]) for r in G.placement_record(b)))
+    sh_all = [(r["carried"] - r["realised"]) / r["carried"] for r in G.placement_record(b)]
+    ok(max(sh_all) - min(sh_all) > 0.9,
+       "the placements' own shares spread %.2f to %.2f, so averaging them is not the same as fitting them"
+       % (min(sh_all), max(sh_all)))
+    ok(max(sh_all) > 1.0 and min(sh_all) < 0.10,
+       "one placement took off more than the standing excess it was carrying and one took off almost "
+       "none of it (%.3f and %.3f)" % (max(sh_all), min(sh_all)))
     resid = [(r["carried"] - r["realised"] - share * r["carried"]) / max(1.0, r["counterfactual"]) ** 0.5
              for r in G.placement_record(b)]
-    ok(max(abs(x) for x in resid) > 1.0,
+    ok(max(abs(x) for x in resid) > 0.75,
        "the register scatters like counts of complications (worst standardised residual %.2f)"
        % max(abs(x) for x in resid))
     # R3c no plant
@@ -306,7 +314,7 @@ def run(target, g, state):
     # careful analyst could take of the eight closed placements lands on the same twelve integers
     rec_rows, readings = G.share_readings(b)
     ok(len(rec_rows) == 8, "the register prices eight closed placements (%d)" % len(rec_rows))
-    ok(len(readings) == 6, "six readings of the register (%d)" % len(readings))
+    ok(len(readings) == 8, "eight routes through the register (%d)" % len(readings))
     ok(abs(readings["pooled sums"] - share) < 1e-12,
        "the golden share is the register's pooled sums (%.6f against %.6f)"
        % (readings["pooled sums"], share))

@@ -11,16 +11,21 @@
  "architecture": 2,
  "loops": 3,
  "precut": {
-  "exit": 0,
+  "exit": 1,
   "checks": 49,
-  "fail": 0,
+  "fail": 3,
   "warn": 0,
-  "date": "2026-10-17"
+  "date": "2026-10-17",
+  "failing": [
+   "pair ceiling 83.5 (ceiling 40)",
+   "mirror leakage 100.0 per cent (under 35)",
+   "cracker misses every ask: it misses none"
+  ]
  },
  "build": {
-  "generator_assertions": 154,
+  "generator_assertions": 156,
   "verifier_checks": 265,
-  "figures_check": "221 of 221",
+  "figures_check": "200 of 200",
   "voice_check": "exit 0 at 997 characters",
   "rebuilds": "two byte-identical over 23 files; target.zip md5 47dbca99ac4a80e2d88fcca2fd0bb1cd, 20 entries",
   "input_gates": "20 files, 4 formats, 113,568 and 62,814 row extracts, three distractors and one neutral rule input in metadata.json",
@@ -55,7 +60,7 @@
   "verdict_pass_3": "DETERMINISTIC, SOLUTION_WRONG, FIX_NOW. The main call was forced and named the strongest result in the wave. One golden figure (H4's doses, 159766.95 shipped as 159766.9) was unreachable by any convention, three payer totals sat on exact halves, four figures sat near their edges, the fee ask's unit carried a semantic fork, the chart had two open points, and the dictionary contradicted the person register."
  },
  "returned": [],
- "resume": "FIX PASS 3 COMPLETE, AWAITING THE RE-JUDGE. Every free gate is green: 154 generator assertions, 265 independent checks, figures_check 221 of 221, voice-check exit 0 at 997 characters, precut 49 checks 0 FAIL 0 WARN, leak.py REVIEW with no LEAK, guard surface clean and heart WARN as drawn, two byte-identical rebuilds, target.zip md5 47dbca99ac4a80e2d88fcca2fd0bb1cd cut from the final rebuild. The main call, its ladder and its seven pairs are bit-identical to the approved pass; every ask figure moved. One re-judge is owed. Spawn both threads (this session has no Agent tool): the judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/judge_brief.md and the leak reader at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_reader/reader_brief.md, both general-purpose sonnet at medium effort, each with prompt.txt and a fresh unzip beside it. On APPROVE, ship. On SEND_BACK, stop and report.",
+ "resume": "MEASURED AND BLOCKED. The cracker's path is now code (generator/cracker.py) and the measured pair ceiling is 83.5 against the sheet's 39.4, with mirror leakage 100 per cent against 18.5: the cracker keeps all 110 ask figures. precut.py now reports the truth, 49 checks with 3 FAIL. target/ is byte-identical to the cut zip (md5 47dbca99ac4a80e2d88fcca2fd0bb1cd) and every other gate is green: 156 generator assertions, 265 independent checks, figures_check 200 of 200, voice-check exit 0, leak REVIEW with no LEAK, guard surface clean and heart WARN as drawn. The chart is back to its named parts. The determinism side is untouched and both briefs are staged and verified against the zip, so the judge and reader can still be spawned; the ask layer needs /fix-rubric before the build ships.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -83,5 +88,37 @@
   "the submission side was reworked: the chains' log no longer reconciles to the extract line for line, the retransmissions are two batches on two chains, the chains transmit on working days, the lag reaches 48 days, the chain means are no longer a ladder, and the rejection reasons are only available to lines the registers support (pharmacy_register.csv now carries closed_on). All on its own random stream, so the screen is bit-identical",
   "GATE F, my judgement: the spontaneous-report counts were an oracle. Ranking the nine products by reports put Ternivast and Oxelumab first by a factor of two to five, and those two are the whole difference between the seven and the ten. The rates now follow how visible a reaction is rather than how new the product is, and eight assertions hold all four products the two constructions disagree about strictly inside the range the other five span on each of four readings, with no cut of the ordering isolating them",
   "34 person-register rows now carry no dispensing in either extract: the patients whose every line fell in the clearance period and was turned back at validation. They have no receipt of anything inside the screen window, so the screen cannot see them, asserted both ways"
- ]
+ ],
+ "cracker": {
+  "code": "generator/cracker.py, reads target/ only (the reporting bands come out of the shipped PDF)",
+  "measured": {
+   "ask_figures": 110,
+   "cracker_keeps": "100.0 per cent",
+   "mirror_keeps": "100.0 per cent",
+   "pair_ceiling": 83.5,
+   "mirror_leakage": 100.0,
+   "bar": "ceiling 40, leakage under 35"
+  },
+  "per_ask": {
+   "A1 chain and quarter": "48 figures, keeps 48",
+   "A2 payer doses and fee": "14 figures, keeps 14",
+   "A3 region and age band": "48 figures, keeps 48"
+  },
+  "device_worth_when_its_sentence_is_ignored": {
+   "A3 region vintage (standard 4.2 and the dictionary)": "keeps 70.9 per cent, ceiling 67.5",
+   "A1 quarter of dispensing (asking sentence, 2.1, dictionary)": "keeps 74.5 per cent, ceiling 69.5",
+   "A1 the rejections file (asking sentence, manifest)": "keeps 90.0 per cent, ceiling 78.0",
+   "A2 payer at the dispensing's date (fee Notes)": "keeps 92.7 per cent, ceiling 79.5",
+   "A1 re-sent line counts once (dictionary, Notes A3)": "keeps 98.2 per cent, ceiling 82.5",
+   "all five at once": "keeps 38.2 per cent, ceiling 49.5"
+  },
+  "verdict": "the ask layer does not clear the bar. The determinism pins of pass 2 closed the readings the devices rode on, and even with all five ignored the layer keeps 38.2 per cent against a bar of 20.9. The pins stay, because the judge's DETERMINISTIC rests on them; the fix is a silent primary under each pin with the call held byte-identical, which is /fix-rubric and the author's call."
+ },
+ "chart_criteria": {
+  "question": "are the 23 graded bar positions distinct criteria or a second grading?",
+  "answer": "a second grading: all 23 bar shares are the workbook's own after-count over its patient count, to the decimal, and both are already graded, asserted by mid.chart_shares_are_not_graded_twice",
+  "with_the_23": "221 graded figures in the submission, 31 of them in the chart block",
+  "without_the_23": "200 graded figures, 10 of them in the chart block",
+  "kept": "the chart's named parts: 23 bars, the 7 and 16 of the two fills, the order with its two end anchors, and the title's claim. The determinism the 23 positions bought is kept in the generator, which refuses a share tie, holds the order strictly descending and asserts the two named anchors are its true ends"
+ }
 }

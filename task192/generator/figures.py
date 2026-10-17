@@ -53,7 +53,8 @@ def write(gendir, g):
         "protocol_paragraphs": ["2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "3.2", "3.3",
                                 "3.4", "4.1", "4.2", "4.3", "4.4", "4.5", "4.6", "6.1", "6.2"],
         "fortnights": {k: {"actions": v["actions"], "municipalities": v["municipalities"],
-                           "partner_share_pct": v["partner_share"], "marked_actions": v["marked"]}
+                           "partner_actions": v["partner_actions"],
+                           "marked_actions": v["marked"]}
                        for k, v in g["a1"].items()},
         "routes": {k: {"received": v["received"], "unplaceable": v["unplaceable"],
                        "median_minutes": v["median_minutes"]} for k, v in g["a2"].items()},

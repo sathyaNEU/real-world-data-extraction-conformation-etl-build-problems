@@ -35,79 +35,79 @@
    "actions": 289,
    "marked_actions": 38,
    "municipalities": 111,
-   "partner_share_pct": 23.9
+   "partner_actions": 69
   },
   "Q10": {
    "actions": 581,
    "marked_actions": 37,
    "municipalities": 116,
-   "partner_share_pct": 24.8
+   "partner_actions": 144
   },
   "Q11": {
    "actions": 565,
    "marked_actions": 20,
    "municipalities": 118,
-   "partner_share_pct": 26.5
+   "partner_actions": 150
   },
   "Q12": {
    "actions": 554,
    "marked_actions": 24,
    "municipalities": 119,
-   "partner_share_pct": 26.4
+   "partner_actions": 146
   },
   "Q13": {
    "actions": 657,
    "marked_actions": 24,
    "municipalities": 119,
-   "partner_share_pct": 25.4
+   "partner_actions": 167
   },
   "Q2": {
    "actions": 257,
    "marked_actions": 30,
    "municipalities": 110,
-   "partner_share_pct": 26.5
+   "partner_actions": 68
   },
   "Q3": {
    "actions": 234,
    "marked_actions": 24,
    "municipalities": 100,
-   "partner_share_pct": 20.9
+   "partner_actions": 49
   },
   "Q4": {
    "actions": 257,
    "marked_actions": 22,
    "municipalities": 103,
-   "partner_share_pct": 20.2
+   "partner_actions": 52
   },
   "Q5": {
    "actions": 265,
    "marked_actions": 26,
    "municipalities": 104,
-   "partner_share_pct": 25.3
+   "partner_actions": 67
   },
   "Q6": {
    "actions": 259,
    "marked_actions": 23,
    "municipalities": 103,
-   "partner_share_pct": 23.6
+   "partner_actions": 61
   },
   "Q7": {
    "actions": 230,
    "marked_actions": 16,
    "municipalities": 100,
-   "partner_share_pct": 27.8
+   "partner_actions": 64
   },
   "Q8": {
    "actions": 231,
    "marked_actions": 26,
    "municipalities": 105,
-   "partner_share_pct": 25.5
+   "partner_actions": 59
   },
   "Q9": {
    "actions": 248,
    "marked_actions": 22,
    "municipalities": 111,
-   "partner_share_pct": 23.4
+   "partner_actions": 58
   }
  },
  "grain": 50,
@@ -149,7 +149,7 @@
   },
   "P07": {
    "after_close": 1,
-   "euros": 732,
+   "euros": 726,
    "filed": 120
   }
  },

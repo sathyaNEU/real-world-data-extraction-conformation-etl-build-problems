@@ -311,6 +311,37 @@ of 0.987 against a weekday mean and 2.094 unconditionally, which is the register
 and the daily count of marked actions is at 1.191 (`noise.dispersion_plausible`,
 `noise.weekly_cycle_present`, `noise.dispersion_marked`).
 
+**What the stated figure is, and what it is not, accepted and recorded.** The judge raised one
+caution and still returned APPROVE with no fix location, and the ruling is to ship it and write it
+down so nobody rediscovers the question later. The committed count is a **point estimate**: its
+audit-sampling standard deviation is 57.4 actions, larger than the fifty-action granularity it is
+stated to, so a fresh draw of the same audit design would land in the stated cell about **34 per cent**
+of the time. Three things stand beside that and are why it ships.
+- **Determinism holds on the shipped data, which is what the gates ask.** Every pooled estimator built
+  on the classifier's two error rates agrees on 450 on this record, every stratified one is not
+  computable, and the judge confirmed it by recomputation.
+- **The granularity is squeezed from both sides and has exactly one workable value.** Finer splits the
+  right family: at twenty-five the continuity variant at 448.47 and the theme-fallback at 470.40 leave
+  the call's cell. Coarser swallows a wrong route: at one hundred the hand-code-where-audited route at
+  387.00 falls into the call's cell. Fifty is therefore the only grain available rather than a choice
+  declined, and it is 0.87 of the sampling standard deviation, so it over-claims by no margin at all.
+- **Only the count is an estimate.** The thirteen fortnight rows, the three route rows and the seven
+  partner rows are censuses of the record: every one of those 69 graded cells is a count, a share of
+  two counts, a median of observed minutes or a rate times a count, with no sampling in it.
+
+**Two thin closures the judge named, both accepted and recorded.**
+- **Round two alone gives 479 and a cell of 500,** and no shipped sentence says the two rounds are
+  pooled. 4.5 files each round's cut and the worksheet carries the round on every row, so a solver can
+  build either; nothing forces pooling except that a round is a batch of the same instrument and
+  pooling is what the field does with two batches of it. The build accepts the thinness rather than
+  filing a pooling rule, because filing one would make the decisive step rule application.
+- **The euros column rested on clause 6.2 by one inferential step,** since 6.2 says a report delivered
+  after a period's close is paid with the period it was delivered in and the golden read that as
+  excluding it here. That one is now closed in the asking sentence rather than in 6.2, which sits next
+  to the device: the ask names the observable, "the euros its data agreement pays for the ones filed by
+  the close", so the euro column is over the reports delivered on or before 30 October and the
+  late-filing count stays its own figure.
+
 **Robustness and fairness.** The truth behind the simulated record is 436 confrontational actions,
 3.9 per cent below the estimate, so the estimator is fair as well as determinate; the generator
 asserts the gap. The answer's raw figure sits 3.01 from the centre of its cell and 21.99 from the
@@ -320,20 +351,35 @@ so five such rows would be needed to reach a cell boundary (`bin.total`, `bin.to
 **Every graded figure off its rounding edge.** The call sits 21.99 of 25 from its nearest edge. The
 seven euro totals are a per-report rate in cents times a count, so the generator's rates were moved
 until each total sits at least 0.25 of a euro from its edge (850.90, 2,493.05, 1,548.00, 742.10,
-558.90, 413.10 and 731.85): the schedule reads 6.35, 7.20, 6.90, 8.10 and 6.15 where it read 6.40,
-7.25, 6.75, 8.15 and 6.40, and the July adenda raises P04 to 6.30 rather than 6.20. The three medians
+558.90, 413.10 and 725.90, each at 0.40 of a euro or more): the schedule reads 6.35, 7.20, 6.90, 8.10
+and 6.10 where it read 6.40, 7.25, 6.75, 8.15 and 6.40, and the July adenda raises P04 to 6.30 rather
+than 6.20. P07's rate moved from 6.15 to 6.10 after its total came in at 0.35 of a euro from its edge,
+the tightest of the seven. The three medians
 are whole minutes and each route's two middle values are equal, so neither the rounding nor the
-even-set convention can move them. The thirteen partner shares are exact ratios of two integers, so no
-convention and no order of operations can move which side of an edge they fall: the generator asserts
-that none of them is an exact x.x5 and that the tightest, Q9 at 23.3871 per cent (58 of 248), clears
-its edge by 0.0129 percentage points, with every other share at 0.0151 or more. **Why that clearance
-is enough, in the units that matter:** a share here is one integer over another, so its value does not
-drift with a convention, an order of operations or a floating-point path, and the only way it moves at
-all is for the numerator or the denominator to change by a whole action, which moves Q9 by 0.40
-percentage points, thirty-one times the clearance. The clearance is therefore a margin against the
-author's own rounding, where a hundredth of a point is already generous, and not a margin against any
-movement the data can make. All of it is asserted (`bin.total`, `bin.cand.*`, `bin.euros.*`,
-`bin.share.*`, `bin.share_exact.*`, `bin.median.*`).
+even-set convention can move them. **The thirteen partner shares, measured to the printed edge.** A
+share is printed to one decimal, so its edge is at x.x5 and the distance to it is half a tenth less the
+distance to the nearest printed value; the earlier reading of this note measured the distance to the
+printed value instead and so named the wrong share and the wrong distance. Measured correctly on the
+shipped pack:
+
+| | Q1 | Q2 | Q3 | Q4 | Q5 | Q6 | Q7 | Q8 | Q9 | Q10 | Q11 | Q12 | Q13 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| points to the printed edge | 0.0254 | 0.0091 | 0.0098 | 0.0165 | 0.0330 | **0.0021** | 0.0239 | 0.0089 | 0.0371 | 0.0349 | **0.0013** | 0.0038 | 0.0314 |
+
+The tightest is Q11, 18 September to 1 October, 150 of 565, exact 26.548673 per cent, printing 26.5
+and sitting 0.0013 points from the 26.55 edge; Q6 at 0.0021 is next. **What that can and cannot do.**
+Every share is an exact ratio of two integers, so no convention, order of operations or floating-point
+path moves its value, and the generator asserts none of them is an exact x.x5: the data cannot move
+Q11 either, since one more partner-reported action gives 26.73 and one more other action 26.50. The one
+path that misprints it is a two-step rounding, 26.548673 to 26.55 to 26.6, and **Q11 is the only one of
+the thirteen a two-step path would move**, which the generator measures and reports. That path is
+closed at authority rather than by distance: the dictionary's `convencoes` sheet now files "uma
+percentagem e arredondada uma vez, a uma decimal, a partir do valor exato, e nao truncada nem
+arredondada por etapas", which is the rounding path of axis 10 and holds for all thirteen at any
+distance from an edge, and the generator asserts that sentence is in the shipped workbook. The
+distances are reported rather than relied on, with a floating-point floor of 0.001 points asserted per
+share. All of it is asserted (`bin.total`, `bin.cand.*`, `bin.euros.*`, `bin.share.*`,
+`bin.share_exact.*`, `bin.share_rounding_filed`, `bin.share_two_step_reported`, `bin.median.*`).
 
 **The grid.** Two axes, how the reports are resolved and which measured quantity the count carries:
 
@@ -465,7 +511,7 @@ one INFO on container metadata. Each is answered here.
 |---|---|---|---|---|---|---|---|---|
 | A1 per fortnight, the actions recorded, the municipalities touched and the share of those actions the partner network reported | 3 per fortnight, 13 fortnights | the construction's own output on the segment the trustees want anyway, the actions the count is taken from | the bulletin's standing table | D6 grain: the share is the part of the fortnight's actions the network reported, not the part of the fortnight's reports the network filed, which moves nine of the thirteen rows and the last one by 6.5 points | D1 the re-imported month doubles reports and no actions; D5 scope: the last fortnight has fifteen days, so a solver who stops the thirteenth at 29 October loses 52 actions | item log, partner reports, public line, gazetteer, protocol, dictionary, manifest, import log; 12 columns | 4 stops, lazy delta 11 of 13 fortnights | the bulletin's own standing table |
 | A2 per access route, the reports received, those the association could not place and the median minutes from the action to the report | 3 per route, 3 routes | the audit trail from an input the call consumes, through rows it never reads, to the route's own control total | the pipeline review the data manager runs each period | D4 absence as the signal: the reports that could not be placed are held in a separate exceptions file no habitual join reaches, and the ingest counter counts the reposted load's second arrival again | D8 the reception stamps are UTC, the action times are the local clock of the action's district, the clocks go back on 25 October and the Azores run an hour behind; D6 a press report entered the monitor with the first of its items | exceptions file, ingest counter, item log, partner reports, public line, monitor configuration, gazetteer, dictionary, manifest; 12 columns | 5 stops, lazy delta 3 of 3 routes | an ingest pipeline's own period review |
-| A3 per partner organisation, the reports it filed on actions in the period, those filed after the period closed and the euros paid under its data agreement | 3 per partner, 7 partners | an input reconciled to another system's total, the gap made of devices | the finance office settles the data agreements | D2 version: one agreement was amended mid-period and the rate paid is the amended one, which the superseded schedule does not carry | D7 one partner's deliveries change code after a merger, under a second addendum; D8 the delivery stamp is UTC against the period close; D1 the reposted load is paid once | partner monthly tables in PDF, agreement schedule, two addenda, ingest counter, manifest, dictionary; 13 columns | 5 stops, lazy delta 4 of 7 partners | the finance office's quarterly settlement |
+| A3 per partner organisation, the reports it filed on actions in the period, those filed after the period closed and the euros its data agreement pays for the ones filed by the close | 3 per partner, 7 partners | an input reconciled to another system's total, the gap made of devices | the finance office settles the data agreements | D2 version: one agreement was amended mid-period and the rate paid is the amended one, which the superseded schedule does not carry | D7 one partner's deliveries change code after a merger, under a second addendum; D8 the delivery stamp is UTC against the period close; D1 the reposted load is paid once; D3 basis: each organisation's own monthly return counts its reports by the month of the action while the portal stamps the delivery, so the returns and the delivered rows differ at a month boundary | partner monthly tables in PDF, agreement schedule, two addenda, ingest counter, manifest, dictionary; 13 columns | 5 stops, lazy delta 4 of 7 partners | the finance office's quarterly settlement |
 
 **The main population's zero counts.** Zero device rows and zero hazard rows in the actions and
 episodes the share rests on: every device sits in the exceptions file, the ingest counter, the
@@ -480,7 +526,8 @@ Deleting every device leaves the share exactly as hard, asserted by count.
 | D6 grain | A1, A2 | A1 the partner share in nine fortnights; A2 one route's median by 12 minutes |
 | D1 the re-imported month | A2, A3 | A2 the partner route's received count by 126; A3 the euros of every partner |
 | D5 scope | A1 | the thirteenth fortnight's three figures |
-| D7 the second delivery code | A3 | one partner's filings by 28 and its euros by 166 |
+| D7 the second delivery code | A3 | one partner's filings by 28 and its euros by 165 |
+| D3 the returns' own basis | A3 | each organisation's declared month totals against its delivered rows at a month boundary, P01's May reading 18 against 17 delivered |
 
 **The referee.** `manifesto_extracao.csv` states each file's rows, range and extract date and settles
 the one designed disagreement, the exceptions file's extent, without naming a level.
@@ -498,10 +545,67 @@ executed every filed paragraph and matched every control total.
 | A2 median minutes, the press monitor, every item | takes every item of a report rather than the first | 127.0 | 115.0 | miss |
 | A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | 676 | 742 | miss |
 | A3 reports filed, the merged partner | one delivery code, without the September addendum | 92 | 120 | miss |
+| A3 euros paid, the merged partner | one delivery code, without the September addendum | 561 | 726 | miss |
 | A3 reports filed, all seven partners | every row of the partner file rather than the period's actions | 1,250 | 1,154 | miss |
 
 **Pair ceiling:** 39.0
 **Mirror leakage:** 20.0
+
+## Pre-ship check
+
+**The free gates, run on the shipped pack.**
+
+| Gate | Result |
+|---|---|
+| generator assertions | 256, 0 failures |
+| `verify.py`, own code path, bundle only | 123 independent checks, 0 failures |
+| rebuilds | three byte-identical over `target/` and `golden/`, `5b92bc359c23f51a3f335c6268621918423c2083ed4a9416abefbb7035dffaed` |
+| `figures_check.py` | exit 0, 114 figures in blocks 1 to 4, 0 absent |
+| `precut.py` | exit 0, 49 checks, 0 FAIL, 0 WARN |
+| `voice-check.py` | exit 0, 995 characters |
+| `leak.py --asof 2026-11-06` | REVIEW, no LEAK, five lines each answered above |
+| `guard.py surface` | 0 BLOCK lines |
+| `guard.py heart` | WARN, no BLOCK, nearest driver 0.09 |
+| container audit | `target/` and `golden/` clean, no producer signature, no out-of-band stamp |
+| input gates | 18 files, 4 formats, 26,055-row item log, 4 distractors |
+| `target.zip` | 18 members at the archive root, content byte-identical to the tree, `9f0d54cf622370c93172eed20c9806dc8acadd526dd705be28b265d24904f566` |
+
+**The client's three rules, re-read against the built pack and not against the design.**
+
+1. **The task really uses its domain.** The deciding quantity is the count of confrontational actions
+   in a contentious event record, and what decides it is which of the quantities a hand-coded
+   validation batch measures can be carried to a window the batch never reached. That is the
+   measurement-error half of protest event analysis, the literature the task type runs on. Swap run on
+   the sentence: with parcels on a belt and a scanner there is no coder reading news text, no
+   hand-coding standard to measure it against and no protocol definition of the class, so the quantity
+   becomes a physical count and nothing is left to estimate. No stated score, eligibility check, sort
+   or filter decides anything.
+2. **Two layers, both in the built pack.** Layer 1 is what the association's own systems produce: an
+   item log at item grain with accepted and rejected items and a report entering with its first item,
+   three routes and two language editions on the same actions, a month loaded twice with the ingest
+   counter counting the second arrival, UTC stamps against each district's local clock with a
+   summer-time change and an island district an hour behind, monthly returns inside a PDF counted on
+   the action's month, a delivery code change after a merger, superseded settlement names, and two
+   dispute themes entering with the autumn. None of it decides the count, and `R2.*` asserts the count
+   is invariant to the reload, the clocks and the name resolution. Layer 2 is the correction and it
+   carries the stump.
+3. **None of the three banned kinds decides the call.** No decoy: nothing is planted, no block copied
+   (asserted), no memo or stakeholder figure carries a count, and no shipped file states a
+   confrontational count, a rate or an error rate. Not semantics: every field, code, offset and
+   definition read correctly still leaves the default path carrying the audited batch's own shares onto
+   the record and filing 600. Not rule application: no shipped sentence says how the labels become the
+   count, and a word sweep over every file, every PDF and the workbook's cells asserts that nothing
+   names sensitivity, specificity, recall, precision, a correction, a false positive, a false negative,
+   representativeness or extrapolation.
+
+**The test, answered in writing.** Could a strong analyst who cleaned the data and read every rule
+correctly still get the answer wrong by doing the analysis the easy way? **Yes.** They resolve the
+three routes, the two editions and the reposted month, apply the offsets, read 3.3, open the worksheet,
+take the share of the audited reports on each side of the classifier's label that the desk found
+confrontational, carry those two shares onto the 4,200 press-reported actions and file 600. The shares
+were measured on the four months the desk audited, where the classifier marked 9.70 per cent of
+actions, and are carried onto a period where it marked 4.91 per cent after the cut. Analytical, and the
+generator executes it (`R3a.analyst_test`).
 
 ## Tried and rejected
 
@@ -593,6 +697,41 @@ executed every filed paragraph and matched every control total.
   Replaced by start times from 07:00 to 21:59 with 82 per cent of minutes on a multiple of five, a
   working week in the daily counts, partner deliveries inside each organisation's working day, and
   lognormal lags, all asserted.
+- **(architecture 3, the author's pre-ship pass of 2026-10-17) Measuring a share's distance to its
+  rounding edge as the distance to its printed value.** `checks.py` computed `abs(t - round(t))` on the
+  share in tenths of a point, which is the distance to the middle of the printed cell and not to its
+  edge, so it named Q9 at 0.0129 as the tightest when the real tightest is Q11 at 0.0013 and Q9 is
+  comfortably clear at 0.0371. The judge found it. The check now computes `(0.5 - abs(t - round(t)))/10`
+  and reports every one of the thirteen, and the seed hunt that had optimised the wrong quantity is
+  superseded by filing the rounding path instead (axis 10). A bar of 0.010 points on all thirteen is
+  reachable, 27 of 360 pack seeds clear it with no two-step drift, but reaching it means a different
+  `SEED_PACK`, which re-draws all 69 graded ask cells, the audit's own draw and therefore the call, and
+  voids the judge's reproduction table; held for the author's call rather than taken.
+- (architecture 3) P07's rate at 6.15, which put its euro total at 731.85, 0.35 of a euro from its
+  edge and the tightest of the seven: moved to 6.10, which lands 725.90 and 0.40, the clearance the
+  other six have. Only that one graded figure moved, confirmed by diffing `figures.json` across the
+  rebuild.
+- (architecture 3) Leaving "the euros paid under its data agreement" to clause 6.2. Two independent
+  threads reached two values on the same reading, 7,337.90 against 7,410.85 and P02 at 2,493.05
+  against 2,504.95, because 6.2 pays a late delivery with the period it was delivered in and whether
+  that excludes it here is one inferential step. Closed in the asking sentence rather than in 6.2,
+  which sits next to the device: the ask now names the observable, the euros the agreement pays for the
+  reports filed by the close. No golden figure moved, because the golden already computed exactly that.
+- (architecture 3) Paragraph 4.5 saying each round draws from the reports entered since the previous
+  round closed, while round two closed on 10 September and its batch stops at 31 August: the 305 press
+  reports of 1 to 10 September were in neither reading and a close reader was left holding a
+  contradiction, although the figure never moved because the dictionary's range is what controls. 4.5
+  now gives each round a cut and a close, the batch runs from the previous cut to its own cut, and the
+  round closes when the desk signs the batch off; the dictionary's `ronda` column states both dates for
+  both rounds. Text only, no figure moved.
+- (architecture 3) The dictionary saying the desk works the batch on working days while 56 of the
+  1,000 rows carry a weekend coding date: the generator's own calendar already models the occasional
+  catch-up Saturday, so the dictionary now admits it rather than the rows being moved. Text only.
+- (architecture 3) Leaving each partner's own monthly return to be read as the delivered rows. The
+  returns count a report by the month of its action and the portal stamps the delivery, so at a month
+  boundary the two differ, P01's May reading 18 against 17 delivered. That is the pack's own basis
+  difference and it is now a declared device in the ask sheet (D3) with the basis filed in the
+  dictionary's description of the returns, rather than an accident a reader has to guess at.
 - (architecture 3) Paragraph 4.5 closing on the desk's schedule, that the round the calendar puts in
   the autumn is done in the next reporting period: of the whole pack it was the one line nearest the
   signpost boundary, because its only function was to tell a reader that the autumn holds no audited

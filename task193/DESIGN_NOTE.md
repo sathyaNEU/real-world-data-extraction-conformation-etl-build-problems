@@ -406,27 +406,55 @@ the seven and the ten exactly as they are, asserted.
 **The referee.** `extract_manifest.csv` states each file's rows, date range and layout version and settles
 the one designed disagreement, the exceptions file's scope, without naming a level.
 
-**The cracker sheet.** The cracker referred the seven, ran the hygiene battery (key uniqueness, exact
-duplicates, unmatched joins, fan-out, count ties), executed every filed rule it points at and matched every
-control total.
+**The cracker sheet, measured.** `generator/cracker.py` writes the cracker's path as code and runs it
+on the cut pack. It reads `target/` only, down to taking the reporting bands out of the shipped PDF. It
+stacks both layouts on the release notes' column map, counts a re-sent line once, folds the retired
+pseudonyms, joins the package index at the date of the dispensing, and then executes every filed
+sentence the asking sentences point at, taking the natural reading only where nothing in the pack
+adjudicates one. Every figure is scored against the golden within half a unit of the stated rounding.
 
-| Ask figure | Cracker's path | Cracker's figure | Golden | Result |
-|---|---|---|---|---|
-| A1 lines the register rejected, all 16 chain-quarters | both extracts, which hold only accepted lines | 0 | 45 to 172 | miss |
-| A1 lines the register accepted, the chain that re-sent a batch | every transmission counted, against the release notes' one dispensing per re-sent line | 1,477 lines too many | 1,496 to 4,500 | miss |
-| A1 lines the register accepted, 14 of 16 chain-quarters | the chains' own monthly log, which counts by month of submission | lines out in every cell it touches | as above | miss |
-| A2 data fee due, all seven payers | the schedule sheet, whose rates the amendment of 1 April 2026 replaced for later doses | low in every row | 76,531 to 594,129 | miss |
-| A2 data fee due, every payer's band | the band thresholds read as doses rather than thousands of doses | the lowest rate, 860 against 1,240 or 1,480 | as above | miss |
-| A2 doses, the product whose authorisation transferred inside the window | the holder column alone, without the register's holder-from date | one payer's doses on the wrong payer | as above | miss |
-| A3 patients and share, all four "not stated" cells | the region column as recorded, so the blanks leave the table | the four cells absent | 35 to 676 patients, 68.6 to 87.3 per cent | miss |
-| A3 patients, the cells holding the patients who changed region inside the window | the region recorded at the pull, not at the window's start | patients out in several cells | as published | miss |
+| Ask | Figures | Cracker keeps | Result |
+|---|---|---|---|
+| A1 chain and quarter: accepted, rejected, median days | 48 | 48 | **hit, no device bites** |
+| A2 payer: doses and fee | 14 | 14 | **hit, no device bites** |
+| A3 region and age band: patients and share | 48 | 48 | **hit, no device bites** |
 
-**Pair ceiling:** 39.4
-**Mirror leakage:** 18.5
+**Pair ceiling:** 83.5
+**Mirror leakage:** 100.0
 
-The pair arithmetic: the cracker lands the call and keeps about a fifth of the ask weight (Lc 0.21), the
-mirror stops at rung 2's eleven pairs and keeps 0.185 of it, and a wrong call keeps about 5 of the
-recommendation weight, so C is 38 + 7 + 55 x 0.21 = 56.6 and S is 5 + 7 + 55 x 0.185 = 22.2.
+The asks are decoupled from the call, so the mirror walks the cracker's ask path exactly: Ls equals Lc
+and the leakage is the whole ask weight. C is 38 + 7 + 55 x 1.00 = 100.0 and S is 5 + 7 + 55 x 1.00 =
+67.0, so the pair ceiling is 83.5 against a ceiling of 40. The bar needs the pair to keep 20.9 per cent
+of the ask weight; it keeps all of it.
+
+**What each device is worth, measured by restoring it one at a time.** The cracker is re-run with the
+pack's own adjudicating sentence ignored, which is what the device was designed to be worth:
+
+| Device | The sentence that adjudicates it | Cracker keeps | Pair ceiling |
+|---|---|---|---|
+| A3 D5 the region at the window's start | standard 4.2, and the dictionary's `region` entry | 70.9 per cent | 67.5 |
+| A1 D6 the quarter of dispensing | the asking sentence, standard 2.1, and the dictionary's `date_of_dispensing` entry | 74.5 per cent | 69.5 |
+| A1 D4 the rejected lines' own file | the asking sentence and the manifest's note on the file | 90.0 per cent | 78.0 |
+| A2 D7 the payer at the dispensing's own date | the fee workbook's Notes sheet | 92.7 per cent | 79.5 |
+| A1 D1 the re-sent line counted once | the dictionary's `record_id` entry and Notes A3 | 98.2 per cent | 82.5 |
+| all five restored at once | - | 38.2 per cent | 49.5 |
+
+Two findings, and they are separate. The first is that the determinism pins of the previous pass closed
+the readings these devices rode on: the fee Notes sheet states the payer rule in full, standard 2.1 and
+the dictionary state the quarter basis three times over, the dictionary states that a re-sent line counts
+once, and 4.2 plus the dictionary's `region` entry state the region vintage and the column that holds it.
+`supplemental-stumping` Part 5 is explicit that a pin is paid for and never free, and that the pair is
+measured afterwards rather than assumed. It was not measured, and this is the bill.
+
+The second is worse and is not the pins' fault: with every one of those five sentences ignored the
+cracker still keeps 38.2 per cent and the ceiling is 49.5. The ask layer never had the device mass the
+sheet claimed. The old sheet's eight rows each describe a solver that reads none of the pack's filed
+sentences, which is the mirror of each ask and not the cracker, so the 39.4 it reported was measuring
+the wrong path from the start.
+
+The pins are load-bearing for the judge's DETERMINISTIC verdict and do not come out. The fix is the one
+Part 5 names: a silent primary underneath each pin, with the ask paths re-cut and the call held
+byte-identical, which is `/fix-rubric` and the author's call to make.
 
 ## Tried and rejected
 
@@ -495,6 +523,22 @@ recommendation weight, so C is 38 + 7 + 55 x 0.21 = 56.6 and S is 5 + 7 + 55 x 0
   lifecycle. Every dated row in the pack now falls inside its product's marketing dates and no date passes
   the extract's pull, both asserted; the tracker's entries still fail 3.2(b) on every arithmetic, which is
   what closes SF12.
+- A pair ceiling and a mirror leakage declared on paper and never measured. `generator/cracker.py`
+  now writes the cracker's path as code and runs it on the cut pack: the measured ceiling is 83.5
+  against the declared 39.4, and the leakage 100 per cent against 18.5, because the cracker keeps all
+  110 ask figures. The declared sheet had described, row by row, a solver that reads none of the pack's
+  filed sentences, which is each ask's mirror and not its cracker. The determinism pins of the previous
+  pass then closed the readings the devices rode on, and restoring all five at once still leaves the
+  cracker 38.2 per cent and the ceiling 49.5, so the layer's device mass was always short. The pins stay,
+  because the judge's verdict rests on them; the ask paths need silent primaries under them, which is
+  `/fix-rubric` and the author's call. The number is in the sheet in place of the claim.
+- Grading the chart as 23 bar positions: every one of the 23 shares is the workbook's own after-count
+  over its patient count, both already graded, so the 23 positions were a second grading of the same
+  figures, which is the stacked-ask shape `guide-to-prompt` bans. The chart is back to its named parts,
+  the 23 bars, the 7 and 16 of the two fills, the order with its two end anchors and the title's claim:
+  10 figures where there were 31, and 200 graded figures in the submission where there were 221. The
+  determinism the 23 positions bought is kept in the generator instead, which refuses a share tie, holds
+  the order strictly descending and asserts that the two named anchors are its true ends.
 - Carrying a payer's doses and fee as floating-point sums: one holder's total was exactly 159766.95
   defined daily doses and the shipped figure was 159766.9, which no rounding convention reaches, and
   three of the seven totals landed on an exact half. Pinning a tie convention was offered and refused: it

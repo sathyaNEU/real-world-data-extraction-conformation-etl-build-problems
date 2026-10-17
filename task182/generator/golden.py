@@ -92,6 +92,88 @@ def weekly_plant(target):
     return out
 
 
+def log_runs(target):
+    """Every centrifuge run the equipment log carries, as plan 5.2 defines it: a start, and the stop the
+    log records for the same machine."""
+    import csv as _c
+    opens, runs = {}, []
+    rows = sorted(_c.DictReader(open(os.path.join(target, PK.FILES["events"]), encoding="utf-8")),
+                  key=lambda r: r["logged_at"])
+    for r in rows:
+        if r["equipment"] not in W.CENTRIFUGES:
+            continue
+        t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+        if r["event"] == "START":
+            opens[r["equipment"]] = t
+        elif r["equipment"] in opens:
+            runs.append((opens.pop(r["equipment"]), t))
+    return sorted(runs)
+
+
+def assessment_days(target):
+    """Per position, the weekday assessment windows its deployments cover, in local time."""
+    import csv as _c
+    out = {}
+    for d in _c.DictReader(open(os.path.join(target, PK.FILES["deployments"]), encoding="utf-8")):
+        a = dt.date.fromisoformat(d["start_date"])
+        b = dt.date.fromisoformat(d["end_date"])
+        for k in range((b - a).days + 1):
+            day = a + dt.timedelta(days=k)
+            if day.weekday() > 4:
+                continue
+            out.setdefault(d["position_code"], []).append(
+                (dt.datetime(day.year, day.month, day.day, W.DAY_START),
+                 dt.datetime(day.year, day.month, day.day, W.DAY_END)))
+    return out
+
+
+def plant_state_per_position(target):
+    """A2: the minutes of each position's assessment period a centrifuge was running, and the number of
+    runs that reached into it."""
+    runs = log_runs(target)
+    out = {}
+    for code, wins in assessment_days(target).items():
+        mins = 0
+        for lo, hi in wins:
+            iv = sorted((max(a, lo), min(b, hi)) for a, b in runs if a < hi and b > lo)
+            cur = None
+            for a, b in iv:
+                if cur and a <= cur[1]:
+                    cur = (cur[0], max(cur[1], b))
+                else:
+                    if cur:
+                        mins += int((cur[1] - cur[0]).total_seconds() // 60)
+                    cur = (a, b)
+            if cur:
+                mins += int((cur[1] - cur[0]).total_seconds() // 60)
+        n = sum(1 for a, b in runs if any(a < hi and b > lo for lo, hi in wins))
+        out[code] = {"centrifuge_minutes": mins, "centrifuge_runs": n}
+    return out
+
+
+def engine_hours(target):
+    """A3: the hours the gas engine ran in each survey week, from its own hour counter (plan 5.1). The
+    counter was changed during the inspection on 15 September, with the engine down, and starts again
+    from zero."""
+    import csv as _c
+    rows = [(dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M"), float(r["engine_hours_run"]))
+            for r in _c.DictReader(open(os.path.join(target, PK.FILES["scada"]), encoding="utf-8"))]
+    by_t = dict(rows)
+    out = {}
+    for i, wk in enumerate(W.WEEKS):
+        a = dt.datetime(wk.year, wk.month, wk.day)
+        b = a + dt.timedelta(days=7)
+        seg, prev_t = 0.0, None
+        inside = [(t, v) for t, v in rows if a <= t <= b]
+        for j in range(1, len(inside)):
+            step = inside[j][1] - inside[j - 1][1]
+            if step < 0:                      # the counter was changed inside this week
+                step = inside[j][1]
+            seg += step
+        out[i] = round(seg, 1)
+    return out
+
+
 def compute(target, series, dup):
     frames = AN.position_frames(series)
     r = AN.routes(frames)
@@ -106,6 +188,10 @@ def compute(target, series, dup):
         else:
             tones[c] = {"band_hz": None, "tone": None, "excess_db": None}
     weekly = weekly_plant(target)
+    eng = engine_hours(target)
+    for k in weekly:
+        weekly[k]["engine_hours"] = eng[k]
+    plant = plant_state_per_position(target)
     rows = []
     for c in W.CODES:
         rows.append({
@@ -113,6 +199,8 @@ def compute(target, series, dup):
             "specific_db": round(spec[c], 1), "specific_raw": spec[c],
             "valid_minutes": r[c]["minutes_valid"], "excluded_minutes": r[c]["minutes_excluded"],
             "band_hz": tones[c]["band_hz"], "tone": tones[c]["tone"],
+            "centrifuge_minutes": plant[c]["centrifuge_minutes"],
+            "centrifuge_runs": plant[c]["centrifuge_runs"],
             "total_db": round(r[c]["total"], 1), "residual_db": round(r[c]["resid"], 1),
             "stop_minutes": r[c]["minutes_stop"], "distance_m": W.BY_CODE[c][3],
         })
@@ -128,6 +216,8 @@ def compute(target, series, dup):
         "margin_db": round(ordered[CAP - 1]["specific_raw"] - ordered[CAP]["specific_raw"], 1),
         "rows": rows, "ordered": ordered, "routes": r, "bands": bands, "tones": tones,
         "weekly": weekly, "cap": CAP,
+        "tone_positions": [c for c in W.CODES if tones[c]["tone"]],
+        "tone_bands": sorted({tones[c]["band_hz"] for c in W.CODES if tones[c]["tone"]}),
         "deployment_count": len(SM.deployments()),
         "corrected_count": len([d for d in SM.deployments() if d["correction"] != 0.0]),
     }

@@ -24,6 +24,11 @@ def write(gendir, g):
         "highest_band_hz": {c: (rows[c]["band_hz"] if rows[c]["band_hz"] else "none") for c in sorted(rows)},
         "tone_prominent": {c: ("none" if rows[c]["tone"] is None else ("yes" if rows[c]["tone"] else "no"))
                            for c in sorted(rows)},
+        "tone_positions": g["tone_positions"],
+        "tone_count": len(g["tone_positions"]),
+        "tone_band_hz": g["tone_bands"][0] if len(g["tone_bands"]) == 1 else g["tone_bands"],
+        "centrifuge_minutes": {c: rows[c]["centrifuge_minutes"] for c in sorted(rows)},
+        "centrifuge_runs_position": {c: rows[c]["centrifuge_runs"] for c in sorted(rows)},
         "weekly_plant": {str(k): v for k, v in sorted(g["weekly"].items())},
         "deployments": g["deployment_count"],
         "deployments_corrected": g["corrected_count"],

@@ -111,6 +111,6 @@ The expected after-count comes from the window's own first-receipt dates, so the
 
 ### order_shares_by_pair.png
 
-1. One horizontal bar for each of the 23 screened pairs for the share of its patients who received the marker treatment after the product, longest first, with the 7 referred pairs in the darker fill and the other 16 in the lighter one.
-2. The bars in order, longest share first: Varenadol + antiemetic 81.4; Admirabin + antidepressant 80.2; Sovraxil + topical corticosteroid 78.6; Varenadol + hypnotic 77.3; Varenadol + acid-suppressant 76.1; Admirabin + loop diuretic 75.7; Pirenoxol + acid-suppressant 75.2; Kirunelle + hypnotic 74.3; Dalvextin + loop diuretic 73.9; Hestroban + antiemetic 72.1; Sovraxil + antipsychotic 64.7; Pirenoxol + antidepressant 55.6; Oxelumab + antidepressant 55.2; Dalvextin + gout treatment 53.9; Kirunelle + antipsychotic 53.8; Pirenoxol + hypnotic 52.9; Dalvextin + acid-suppressant 50.8; Ternivast + gout treatment 49.1; Hestroban + antipsychotic 42.9; Oxelumab + loop diuretic 34.8; Oxelumab + topical corticosteroid 28.5; Ternivast + antiemetic 20.5; Ternivast + hypnotic 19.4.
+1. One horizontal bar for each of the 23 screened pairs for the share of its patients who received the marker treatment after the product, with the 7 referred pairs in the darker fill and the other 16 in the lighter one.
+2. The bars run longest share first, from Varenadol + antiemetic at 81.4 per cent to Ternivast + hypnotic at 19.4 per cent.
 3. Title states that 7 of the 20 candidate pairs clear the referral line.

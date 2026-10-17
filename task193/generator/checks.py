@@ -529,6 +529,17 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     ok("mid.chart_order_unique", len(set(cs)) == 23 and cs == sorted(cs, reverse=True),
        "closest two bars %.1f of a point apart"
        % min(a - b for a, b in zip(sorted(cs, reverse=True), sorted(cs, reverse=True)[1:])))
+    ok("mid.chart_anchors_are_the_extremes",
+       g["chart_rows"][0]["share_pct"] == max(r["share_pct"] for r in g["chart_rows"])
+       and g["chart_rows"][-1]["share_pct"] == min(r["share_pct"] for r in g["chart_rows"]),
+       "the two bars the criteria name are the true ends of the order")
+    ok("mid.chart_shares_are_not_graded_twice",
+       all(abs(round(100.0 * r["after"] / r["patients"], 1)
+               - next(c["share_pct"] for c in g["chart_rows"]
+                      if c["label"] == "%s + %s" % (r["brand"], r["marker_treatment"]))) < 1e-9
+           for r in g["screen_rows"] if r["patients"]),
+       "every bar's share is the workbook's own after over patients, so the chart grades the "
+       "order and the fill, not the shares a second time")
     ok("mid.chart_has_no_threshold_mark", True,
        "the referral line is not drawn, because its position depends on the construction the "
        "standard leaves open")

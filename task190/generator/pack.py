@@ -46,7 +46,7 @@ def enrich(lines, year=W.YEAR, seed=4471):
                         line="CPL-%s-%06d" % (year[2:], 10000 + n * 7 + rng.below(6)),
                         inv=iv, sup=sup, day=day,
                         run="PR-%s-%03d" % (year[2:], runs.index(day) + 1),
-                        status="paid", reverses="", delivery=1))
+                        seq=n + 1, status="paid", reverses="", delivery=1))
     seen = set()
     for r in out:
         while r["line"] in seen:
@@ -66,7 +66,7 @@ def credit_notes(rows, rng):
         r["status"] = "reversed"
         extra.append(dict(r, idx=-1, line="CPL-%s-9%05d" % (W.YEAR[2:], 1000 + i * 37),
                           amount=-r["amount"], status="credit_note", reverses=r["line"],
-                          taint=0.0, cls="credit_note",
+                          taint=0.0, cls="credit_note", seq=900000 + i,
                           day=r["day"] + dt.timedelta(days=21 + i * 9)))
     return extra, [r["line"] for r in picked]
 
@@ -79,20 +79,21 @@ def redelivered(rows, rng):
     key = sorted(runs, key=lambda k: (abs(len(runs[k]) - 38), k))[0]
     dup = []
     for r in runs[key]:
-        dup.append(dict(r, delivery=2))
+        dup.append(dict(r, delivery=2))      # the same posting sequence, delivered again
     return dup, key, len(runs[key])
 
 
 def write_lines(target, rows, year=W.YEAR):
+    """The ledger extract, in the ledger's own posting sequence, which is how it comes out."""
     name = "capital_payment_lines_%s.csv" % year
     out = []
-    for r in sorted(rows, key=lambda r: (r["day"], r["line"], r["delivery"])):
-        out.append([r["line"], r["inv"], r["sup"], r["code"], "%.2f" % r["amount"],
+    for r in sorted(rows, key=lambda r: (r["seq"], r["delivery"])):
+        out.append([r["seq"], r["line"], r["inv"], r["sup"], r["code"], "%.2f" % r["amount"],
                     r["day"].isoformat(), r["run"], r["status"], r["reverses"], r["delivery"]])
     return write_csv(target, name,
-                     ["line_ref", "invoice_ref", "supplier_no_ledger", "programme_code",
-                      "amount_eur", "paid_date", "run_id", "line_status", "reverses_line_ref",
-                      "delivery_sequence"], out)
+                     ["ledger_sequence", "line_ref", "invoice_ref", "supplier_no_ledger",
+                      "programme_code", "amount_eur", "paid_date", "run_id", "line_status",
+                      "reverses_line_ref", "delivery_sequence"], out)
 
 
 def write_programme_register(target):
@@ -163,6 +164,7 @@ def write_supplier_master(target, cross, cats):
 
 def write_dictionary(target):
     rows = [
+        ("capital_payment_lines_2026.csv", "ledger_sequence", "The ledger's own posting sequence for the line. The extract comes out in this order."),
         ("capital_payment_lines_2026.csv", "line_ref", "The payment ledger's reference for one payment line. One line is one payment however many times the bank feed delivered it."),
         ("capital_payment_lines_2026.csv", "invoice_ref", "The invoice the line pays. Several lines may pay one invoice."),
         ("capital_payment_lines_2026.csv", "amount_eur", "Euro and cents as recorded in the ledger. Negative on a credit note."),

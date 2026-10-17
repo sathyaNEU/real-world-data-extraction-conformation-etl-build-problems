@@ -146,11 +146,11 @@ UNITS = [
     ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.06188, 1050, 1257, 1.18496, "hot2", "eligible"),
     ("41310", "General Medicine", "H2", "gen_med", "acute", 1.10744, 1350, 1364, 1.05984, "mid", "eligible"),
     ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.03196, 1200, 1470, 1.06936, "hot3", "eligible"),
-    ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.20876, 430, 506, 1.10948, "worst_level", "eligible"),
+    ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.27500, 430, 506, 1.10948, "worst_level", "eligible"),
     ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.05508, 620, 735, 1.31416, "hot1", "eligible"),
     ("41420", "General Medicine", "H3", "gen_med", "acute", 1.16660, 980, 1162, 1.07616, "mid", "eligible"),
     ("41430", "Renal Medicine", "H3", "renal", "acute", 1.03400, 560, 652, 1.08092, "mid", "eligible"),
-    ("41510", "General Medicine", "H4", "gen_med", "acute", 1.11016, 390, 466, 1.04828, "merged", "eligible"),
+    ("41510", "General Medicine", "H4", "gen_med", "acute", 1.10650, 390, 466, 1.04828, "merged", "eligible"),
     ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.08432, 500, 779, 1.08228, "rising", "eligible"),
     # units the programme has already been placed with inside the twelve closed quarters. Earlier cycles
     # were decided on the quarter closed at the time, so the register holds units that were standing badly
@@ -170,8 +170,8 @@ UNITS = [
     ("41620", "Older Persons Mental Health", "H3", "subacute", "psychiatric", 1.0, 290, 300, None, "scope", "nonacute"),
     ("41630", "Sub-acute Rehabilitation", "H4", "subacute", "rehabilitation", 1.0, 240, 250, None, "scope", "nonacute"),
     # predecessor units amalgamated into 41510 on 1 October 2025
-    ("41511", "Medical Ward 1", "H4", "gen_med", "acute", 1.11016, 205, None, None, "pred", "merged_into"),
-    ("41512", "Medical Ward 2", "H4", "gen_med", "acute", 1.11016, 185, None, None, "pred", "merged_into"),
+    ("41511", "Medical Ward 1", "H4", "gen_med", "acute", 1.10650, 205, None, None, "pred", "merged_into"),
+    ("41512", "Medical Ward 2", "H4", "gen_med", "acute", 1.10650, 185, None, None, "pred", "merged_into"),
 ]
 
 MERGE_DATE = dt.date(2025, 10, 1)

@@ -222,11 +222,13 @@ def write_scada(target):
     inflow = (96 + 34 * np.exp(-((hours - 10.5) ** 2) / 9.0) + 26 * np.exp(-((hours - 19.0) ** 2) / 7.0)
               + rng.normal(0, 4.5, n))
     eng_hours = np.cumsum(np.where(stopped, 0.0, 0.25))
-    replaced = np.array([s >= dt.datetime(2026, 9, 18, 7, 0) for s in stamps])
+    replaced = np.array([s >= W.HOUR_COUNTER_SWAP for s in stamps])
     base = eng_hours[np.argmax(replaced)] if replaced.any() else 0.0
     eng_hours = np.where(replaced, eng_hours - base, 41820.0 + eng_hours)
-    gap = np.array([(s >= dt.datetime(2026, 9, 24, 13, 0)) and (s < dt.datetime(2026, 9, 25, 9, 0))
-                    for s in stamps])
+    gap = np.zeros(n, dtype=bool)
+    for start, blocks in W.PLC_GAPS:
+        end = start + dt.timedelta(minutes=15 * blocks)
+        gap |= np.array([(s >= start) and (s < end) for s in stamps])
     rows = []
     for i, s in enumerate(stamps):
         if gap[i]:

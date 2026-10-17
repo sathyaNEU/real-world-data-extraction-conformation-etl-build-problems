@@ -17,23 +17,37 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 
 
+def realise(start=None, scale=1.0):
+    """The population the authority tests, and the selection run on it.
+
+    The two reversed lines and the credit notes that reverse them are chosen before the selection
+    runs, because the authority tests the population after reversals are taken out.
+    """
+    allrows, runs = PK.enrich(sim.population(scale=scale))
+    rng = sim.Rng(991117)
+    extra, reversed_refs = PK.credit_notes(allrows, rng)
+    dup, dup_run, dup_n = PK.redelivered(allrows, rng)
+    rows = [r for r in allrows if r["status"] != "reversed"]
+    for i, r in enumerate(rows):
+        r["idx"] = i
+    lines = [[r["code"], r["amount"], r["cls"], r["taint"]] for r in rows]
+    hits, total, nsel = sim.select(lines, W.INTERVAL,
+                                  W.RANDOM_START if start is None else start)
+    return (allrows, rows, lines, hits, nsel, extra, dup, dup_run, dup_n, reversed_refs, runs)
+
+
 def cut(target, golden_dir):
     for d in (target, golden_dir):
         if os.path.isdir(d):
             shutil.rmtree(d)
         os.makedirs(d)
 
-    lines = sim.population()
-    hits, total, nsel = sim.select(lines)
-    rows, runs = PK.enrich(lines)
-    rng = sim.Rng(991117)
-    extra, reversed_refs = PK.credit_notes(rows, rng)
-    dup, dup_run, dup_n = PK.redelivered(rows, rng)
-    shipped = rows + extra + dup
+    allrows, rows, lines, hits, nsel, extra, dup, dup_run, dup_n, reversed_refs, runs = realise()
+    shipped = allrows + extra + dup
 
-    prior = sim.population(year="2025")
+    prows, pruns = PK.enrich(sim.population(year="2025"), year="2025")
+    prior = [[r["code"], r["amount"], r["cls"], r["taint"]] for r in prows]
     phits, ptotal, pnsel = sim.select(prior, W.INTERVAL, W.RANDOM_START + 611)
-    prows, pruns = PK.enrich(prior, year="2025")
 
     PK.write_lines(target, shipped, W.YEAR)
     PK.write_lines(target, prows, "2025")
@@ -47,10 +61,16 @@ def cut(target, golden_dir):
         r = byidx[i]
         payable = round(r["amount"] * (1.0 - r["taint"]), 2)
         tested.append(dict(r, payable=payable,
-                           schedule_ref="%s/%s" % (r["sup"], r["line"]),
+                           schedule_ref="%s/%s" % (cross[r["sup"]], r["line"]),
                            finding=("rate applied not the rate in the schedule of rates"
                                     if r["taint"] > 0 else "no exception")))
-    tested.sort(key=lambda t: (t["day"], t["schedule_ref"]))
+    # one line was queried and re-tested, so the schedule carries it twice. It carries no
+    # exception, so counting it twice changes no figure the report states.
+    clean = [t for t in tested if t["taint"] == 0]
+    clean.sort(key=lambda t: t["schedule_ref"])
+    again = dict(clean[len(clean) // 2], finding="re-tested after query, no exception")
+    tested.append(again)
+    tested.sort(key=lambda t: (t["day"], t["schedule_ref"], t["finding"]))
     docs.schedule(target, tested)
     # the two-year extract the schedule was pulled from
     ptested = []
@@ -58,7 +78,7 @@ def cut(target, golden_dir):
     for i, m in phits:
         r = pbyidx[i]
         ptested.append(dict(r, payable=round(r["amount"] * (1.0 - r["taint"]), 2),
-                            schedule_ref="%s/%s" % (r["sup"], r["line"])))
+                            schedule_ref="%s/%s" % (cross[r["sup"]], r["line"])))
     ext = []
     for t in sorted(ptested + tested, key=lambda t: (t["day"], t["schedule_ref"])):
         ext.append([t["day"].isoformat()[:4], t["schedule_ref"], t["code"],

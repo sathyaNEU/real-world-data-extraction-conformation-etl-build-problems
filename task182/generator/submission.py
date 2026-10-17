@@ -16,24 +16,21 @@ def write(task, gendir):
     val = fig["valid_minutes"]
     exc = fig["excluded_minutes"]
     stp = fig["stop_minutes"]
-    band = fig["highest_band_hz"]
-    tone = fig["tone_prominent"]
     wk = fig["weekly_plant"]
+    cmin = fig["centrifuge_minutes"]
+    cruns = fig["centrifuge_runs_position"]
     first = sl[0]
     rows = []
     for c in ORDER:
-        tail = ("highest band %s Hz, tone %s" % (band[c], tone[c]) if band[c] != "none"
-                else "no band rows, so no highest band and no tone")
-        rows.append("   - %s (%s): %.1f dB LAeq, %d valid minutes, %d excluded, %s"
-                    % (c, W.BY_CODE[c][1], lv[c], val[c], exc[c], tail))
+        rows.append("   - %s (%s): %.1f dB LAeq, %s minutes with a centrifuge running, %d runs"
+                    % (c, W.BY_CODE[c][1], lv[c], "{:,}".format(cmin[c]), cruns[c]))
     weekly = []
     for k in sorted(wk, key=int):
         w = wk[k]
-        weekly.append("   - Week beginning %d %s: biogas %s m3, blower air %s thousand Nm3, "
-                      "%d centrifuge runs"
+        weekly.append("   - Week beginning %d %s: blower air %s thousand Nm3, %d centrifuge runs, "
+                      "engine %.1f hours"
                       % (W.WEEKS[int(k)].day, W.WEEKS[int(k)].strftime("%B"),
-                         "{:,}".format(w["biogas_m3"]), "{:,}".format(w["blower_air_knm3"]),
-                         w["centrifuge_runs"]))
+                         "{:,}".format(w["blower_air_knm3"]), w["centrifuge_runs"], w["engine_hours"]))
     txt = """**Domain:** Physical and environmental sciences (environmental monitoring and exceedance).
 **Analytical objective:** Anomaly detection and diagnostics.
 
@@ -58,7 +55,7 @@ Not the complaints register, which is a record of what neighbours heard and not 
 2. Read sound_levels_1min_2026.parquet, kept one copy of the repeated download, and took the meters' UTC stamps to local time as survey_notes.md states.
 3. Dropped the minutes whose ten-minute record in weather_10min_2026.csv counted rain or ran above the plan's wind limit, reading the replacement anemometer in km an hour from 20 September, and the minutes the meter recorded no measurement for, per plan 4.2.
 4. Energetically averaged each position's assessment-period minutes for its measured sound level, per plan 3.1 and 3.2.
-5. Took each position's residual sound from the minutes inside the intervals in plant_equipment_events_2026.csv where the blowers, the centrifuges and the gas engine are all recorded down.
+5. Took each position's residual sound from the minutes inside the intervals in plant_equipment_events_2026.csv where the blowers, the centrifuges and the gas engine are all recorded down, and read the plant's running state over each position's assessment period from the same log, per plan 5.2.
 6. Subtracted residual from measured level in energy for the specific sound level at each position, per plan 3.1.
 7. Ranked the fourteen positions on that level and took the five the slot reaches, per plan 7.1: %(sl)s.
 8. Recommended those five dwellings for the October slot, with %(sixth)s named as the first off the list.
@@ -74,9 +71,10 @@ Not the complaints register, which is a record of what neighbours heard and not 
 
 1. The five dwellings the slot covers: %(sl_full)s
 2. The first dwelling off the list: %(sixth)s (%(sixth_dw)s) at %(sixthlv).1f dB LAeq, %(margin).1f dB below the fifth
-3. The plant through the six survey weeks:
+3. A tone is prominent at %(tonen)d of the fourteen positions, %(tonepos)s, and in every case in the %(toneband)s Hz band
+4. The plant through the six survey weeks:
 %(weekly)s
-4. Ranked bar chart of all fourteen specific sound levels with the five selected marked and the slot's reach drawn, on page 1
+5. Ranked bar chart of all fourteen specific sound levels with the five selected marked and the slot's reach drawn, on page 1
 """ % {
         "sl": ", ".join(sl[:-1]) + " and " + sl[-1],
         "sl_full": ", ".join("%s (%s) at %.1f dB LAeq" % (c, fig["slate_dwellings"][c], lv[c]) for c in sl),
@@ -87,6 +85,8 @@ Not the complaints register, which is a record of what neighbours heard and not 
         "in1": "NSL06", "out1": "NSL13", "in2": "NSL03", "in3": "NSL12",
         "rows": "\n".join(rows), "weekly": "\n".join(weekly),
         "deps": fig["deployments"], "calib": fig["deployments_corrected"],
+        "tonen": fig["tone_count"], "tonepos": ", ".join(fig["tone_positions"]),
+        "toneband": fig["tone_band_hz"],
     }
     p = os.path.join(task, "submission.md")
     with open(p, "w", encoding="utf-8") as fh:

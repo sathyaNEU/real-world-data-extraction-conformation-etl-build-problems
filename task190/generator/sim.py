@@ -96,6 +96,12 @@ def population(year=W.YEAR, seed=190003, scale=1.0):
             f = (tf + 0.24 * (rng.u() - 0.5)) * W.TAINT_MUL
             cand[i][3] = round(min(1.0, max(0.14, f)), 4)
             taken += 1
+    # the tainting is fixed by what the records hold, to the cent: the schedule states the amount
+    # recorded and the amount properly payable, so the fraction is theirs and not the designer's
+    for L in lines:
+        if L[3] > 0:
+            payable = round(L[1] * (1.0 - L[3]), 2)
+            L[3] = (L[1] - payable) / L[1]
     # the ledger's own sequence, which is the order the selection ran on
     rng2 = Rng(770119 if year == W.YEAR else 770119 + 13)
     order = sorted((rng2.next(), i) for i in range(len(lines)))

@@ -116,27 +116,26 @@ The pipeline a competent analyst builds from the prompt's words and the files' o
 3. Take each unit's standing over the specification period, which charter 4.3 holds it to without the team,
    and clause 3.4's expected complications on the quarter's planned separations.
 4. Price the programme off `improvement_placements.csv`: across the eight closed placements the standardised
-   ratio fell by 0.128 on average, which is how a quality team states what an embed achieves.
-5. Apply that drop to each unit's expected complications for the quarter: Alderbrook General Surgery 35,
-   Alderbrook Orthopaedics 24, Alderbrook General Medicine 22, Alderbrook Respiratory Medicine 15.
-6. Place the team with Alderbrook General Surgery, 35 complications avoided over the quarter.
+   ratio fell by 0.197 on average, which is how a quality team states what an embed achieves.
+5. Apply that drop to each unit's expected complications for the quarter: Alderbrook General Surgery 53,
+   Alderbrook Orthopaedics 37, Alderbrook General Medicine 34, Alderbrook Respiratory Medicine 23.
+6. Place the team with Alderbrook General Surgery, 53 complications avoided over the quarter.
 
-**Ends on:** Alderbrook General Surgery (cost centre 41220), 35 complications avoided.
-**Golden:** Alderbrook Orthopaedics (cost centre 41230), 24 complications avoided.
+**Ends on:** Alderbrook General Surgery (cost centre 41220), 53 complications avoided.
+**Golden:** Alderbrook Orthopaedics (cost centre 41230), 21 complications avoided.
 
-Reading the register as a constant percent of what the unit would have recorded files the same unit
-(41220 at 41 against 41230 at 32); reading it as a flat number of complications a placement removes files
-26.9 for every unit and ranks nothing. The default path reconciles everywhere a solver checks it: the
-unit-quarter observed and expected counts tie to the published indicator series row for row, the quarter's
-adjusted rates tie to the dashboard export, and the monthly activity summary ties to the extract's
-separations.
+Reading the register as a constant percent of what the unit would have recorded files the same unit (41220
+at 53 against 41230 at 41); reading it as a flat number of complications a placement removes files 37.9 for
+every unit and ranks nothing. The default path reconciles everywhere a solver checks it: the unit-quarter
+observed and expected counts tie to the published indicator series row for row, the quarter's adjusted rates
+tie to the dashboard export, and the monthly activity summary ties to the extract's separations.
 
 ## Stump sentence
 
 A competent solver takes each unit's standing exactly as charter 4.3 files it, prices the programme off the
 closed register as the average drop in the standardised ratio a placement produced, applies that drop to the
 complications the quarter's planned activity carries, and places the team with Alderbrook General Surgery
-for 35 complications avoided, which is the unit with the most activity rather than the unit with the most
+for 53 complications avoided, which is the unit with the most activity rather than the unit with the most
 excess for an embed to work on.
 
 ## Three rules
@@ -256,57 +255,73 @@ stop at. Figures measured on the built panel, not intended.
 
 | Rung | The analysis | Names | Its own figure | Dies to |
 |---|---|---|---|---|
-| 0 | the complications each unit is recording above expectation in the quarter in hand, times the share the register's placements fell | 41210 Alderbrook General Medicine | 23 avoided | charter 4.3, which takes the position the unit would have held from its own closed quarters before the team arrived and not from one of them; and the unit's own record, 1.0412 over ten quarters against 1.2316 in the quarter |
-| 1 | the unit standing worst on its own record (highest standardised ratio over the specification period) | 41330 Stonecreek Vascular Surgery | 9 avoided | charter 4.3 counts complications and 4.4 ties them to planned separations: its 513 planned separations carry 16.4 complications above its standing, against 45.4 at 41230 |
-| 2 (the default path) | the standing the charter files, with the programme priced off the register as the average drop in the standardised ratio a placement produced | 41220 Alderbrook General Surgery | 35 avoided | the register's own fit: a constant ratio-point drop leaves chi-square 35.57 on seven degrees of freedom against 2.68 for a share of standing excess, 1.4e7 to one against it |
-| 3 (decisive) | the same standing, with the programme priced as the share of standing excess the register's own spread supports | 41230 Alderbrook Orthopaedics | 24 avoided | - |
+| 0 | the complications each unit is recording above expectation in the quarter in hand, times the share the register's placements fell | 41210 Alderbrook General Medicine | 22 avoided | charter 4.3, which takes the position the unit would have held from its own closed quarters before the team arrived and not from one of them; and the unit's own record, 1.0291 over ten quarters against 1.1778 in the quarter |
+| 1 | the unit standing worst on its own record (highest standardised ratio over the specification period) | 41330 Stonecreek Vascular Surgery | 10 avoided | charter 4.3 counts complications and 4.4 ties them to planned separations: its 506 planned separations carry 14.8 complications above its standing, against 31.1 at 41230 |
+| 2 (the default path) | the standing the charter files, with the programme priced off the register as the average drop in the standardised ratio a placement produced | 41220 Alderbrook General Surgery | 53 avoided | the register's own fit: a constant ratio-point drop leaves chi-square 47.35 on seven degrees of freedom against 2.67 for a share of standing excess, 5.0e9 to one against it |
+| 3 (decisive) | the same standing, with the programme priced as the share of standing excess the register's own spread supports | 41230 Alderbrook Orthopaedics | 21 avoided | - |
 
-**Arithmetic, measured on the built pack.** Answer 41230, 24.04 complications avoided, rounding to 24.
-Final margin 1.62x over 41220 (14.81, rounding to 15), gap 9. Position of the answer: 4th on rung 0 (41210
-22.80, 41240 15.22, 41410 13.65, 41230 11.02), 3rd on rung 1 (41330 1.3164, 41420 1.2533, 41230 1.2397),
-2nd on rung 2 by 1.29x (41220 303.6 against 41230 234.8). No rung margin under 1.15x. Dominance: the
-answer's edge on the decisive axis (excess at planned activity, 45.4 against 7.1 at the rung-0 unit, 6.43x)
-against the rung-0 unit's carried advantage on the quarter in hand (43.1 against 20.8 excess complications,
-2.07x): 6.43 >= 1.2 x 2.07.
+**Arithmetic, measured on the built pack.** Answer 41230, 20.98 complications avoided, rounding to 21.
+Final margin 1.59x over 41220 (13.18, rounding to 13), gap 8. Position of the answer: 4th on rung 0 (41210
+22.31, 41240 14.01, 41410 12.00, 41230 11.35), 3rd on rung 1 (41330 1.2887, 41420 1.1709, 41230 1.1641), 2nd
+on rung 2 by 1.32x (41220 290.3 against 41230 220.5). No rung margin under 1.15x. Dominance: the answer's
+edge on the decisive axis (excess at planned activity, 31.1 against 4.9 at the rung-0 unit, 6.29x) against
+the rung-0 unit's carried advantage on the quarter in hand (33.1 against 16.8 excess complications, 1.97x):
+6.29 >= 1.2 x 1.97.
 
 **How the register forces the shape, measured.** Eight closed placements, fitted by weighted least squares
 with the counterfactual count as the variance, on seven degrees of freedom:
 
 | Shape of the fall | Parameter | Chi-square | Against the register's own fit |
 |---|---|---|---|
-| a share of the unit's standing excess | 0.52999 | 2.68 | - |
-| a constant drop in the standardised ratio | 0.12764 | 35.57 | 1.4e7 to 1 |
-| a constant percent of the counterfactual | 0.13395 | 22.50 | 2.0e4 to 1 |
-| a constant number of complications | 26.70 | 22.54 | 2.1e4 to 1 |
+| a share of the unit's standing excess | 0.67312 | 2.67 | - |
+| a constant drop in the standardised ratio | 0.19739 | 47.35 | 5.0e9 to 1 |
+| a constant percent of the counterfactual | 0.18397 | 27.71 | 2.7e5 to 1 |
+| a constant number of complications | 38.36 | 25.51 | 9.2e4 to 1 |
 
-What separates them is the spread of standing across the register: the placements run from a unit at its
-expected number (1.000) to one at nearly twice it (1.979), and over that spread a share of the excess and a
-drop in the ratio predict falls that differ by many times the error a count of complications carries. The
-register is not fitted: its standardised residuals run -1.23 to +0.75, its per-placement shares run -0.65 to
-1.33, and the placement whose unit was running at its expected number has no share at all, so the naive
-unweighted mean of per-placement shares cannot be formed. Each of the four fits, its parameter, its
-chi-square and its likelihood ratio is asserted by its measured value in `checks.py` and again in
-`verify.py`.
+What separates them is the spread of standing across the register: the placements run from units sitting a
+tenth above their expected number (1.102, 1.104, 1.110, 1.121) to units sitting nearly twice it (1.719,
+1.871, 1.930, 1.979), and over that spread a share of the excess and a drop in the ratio predict falls that
+differ by many times the error a count of complications carries. Each fit, its parameter, its chi-square and
+its likelihood ratio is asserted by its measured value in `checks.py` and again in `verify.py`.
 
-**The share, read every way the register pools.** The pooled sums give 0.52947; least squares through the
-origin 0.52886; least squares with an intercept 0.52792; the variance-weighted fit 0.52999; the median of
-the shares that are defined 0.52954; the pooled fall net of what the units the team was not working on did
-over the same two quarters 0.52968. They span 0.392 per cent and every one of them gives all twelve units
-the same whole complication and the same gap of 9, asserted by name with its measured value in `checks.py`
-and again in `verify.py`.
+**The register is read, not averaged, and its scatter says so.** The eight placements' own shares run
+0.022, 0.587, 0.639, 0.652, 0.673, 0.776, 0.796 and 1.232: one placement took off almost none of the
+standing excess its unit was carrying and one took off more than all of it. The standardised residuals run
+-0.92 to +0.84 and the fit leaves chi-square 2.67 on seven degrees of freedom, which is what a few hundred
+episodes a quarter produce. **A reader meeting a share of 0.022 beside one of 1.232 is seeing the point, not
+a defect**: the shares scatter because they are ratios of two noisy counts, which is exactly why the shape
+has to be fitted against that noise rather than read off an average, and it is why the four shapes separate
+by nine orders of magnitude while the eight ways of pooling the register agree to one per cent.
 
-**Edges, stated as flip conditions.** The shares that reproduce all twelve counts run 0.51834 to 0.53955.
-The pooled share 0.52947 sits 0.01113 above the floor and 0.01008 below the ceiling; the register's eight
-placements carry 406.3 complications of standing excess between them, so **4.5 complications more in the
-assessment quarters would take the share to the floor and 4.1 fewer to the ceiling**, and either edge moves
-the answer's count off 24. The unit nearest both edges is 41230 itself. No avoided count sits within 0.14 of
-a half (the closest is 41430 at 0.146). The hospital year rates sit 0.242, 0.339, 0.293 and 0.447 of a bin
-from their own one-decimal edges, Carrowdean the furthest.
+**Every route through the register, and all eight converge.** Every closed placement carries a standing
+excess a share can be formed on (the smallest is 15.9 complications), so no route is refused because it
+cannot be computed. The expected-weighted mean of the placements' shares gives 0.679434; least squares with
+an intercept 0.679270; least squares through the origin 0.676115; the pooled sums 0.674867; the pooled fall
+net of what the units the team was not working on did over the same two quarters 0.674821; the
+variance-weighted fit 0.673123; the median of the shares 0.672593; their unweighted mean 0.672126. They span
+0.007308 of a share, 1.087 per cent, and every one of them gives all twelve units the same whole
+complication and the same gap of 8, each asserted by name with its measured value in `checks.py` and again
+in `verify.py`.
+
+**Edges, stated as flip conditions.** The shares that reproduce all twelve counts run 0.66011 to 0.69109.
+The pooled share 0.67487 sits 0.01476 above the floor and 0.01622 below the ceiling; the register's eight
+placements carry 447 complications of standing excess between them, so **6.6 complications more in the
+assessment quarters would take the share to the floor and 7.3 fewer to the ceiling**, and either edge moves
+the answer's count off 21. No avoided count sits within 0.15 of a half (the closest is 41430 at 0.151). The
+hospital year rates sit 0.345, 0.396, 0.191 and 0.445 of a bin from their own one-decimal edges.
+
+**Why the reference rate is 96.6 and not 96.4.** The rate is specification 3.2's published constant and
+nothing outside the pack depends on it. It was moved one tenth in the pass that rebuilt the hospital cut,
+and one tenth again in the pass that rebuilt the register and the placed units, each time for the same
+reason: it is the only lever on the four hospital-level adjusted rates, and at 96.4 and again at 96.5 one of
+the four sat inside 0.07 of a bin from its one-decimal edge. At 96.6 the worst of the four sits 0.191 of a
+bin clear. The arithmetic is in this note so the constant is not read as tuning.
 
 **Reflexes, each measured on the built pack.** Adjusted rate now: 41410. Trailing four-quarter rate: 41330.
-Reliability-shrink the quarter toward the network mean: 41410. Most complications recorded last quarter:
+Reliability-shrink the standing toward the network mean: 41330. Most complications recorded last quarter:
 41210. Biggest unit by planned separations: 41220. Fifteen rankings a careful analyst would try are computed
-in `checks.py` with the unit each one names; only the golden's own family names 41230.
+in `checks.py` with the unit each one names; only the golden's own family names 41230, and it holds the
+answer by at least 1.30x wherever it does.
 
 **Grid.** Two axes: the position the unit would have held without the team (the quarter in hand or its own
 closed quarters before the team arrived, which charter 4.3 settles) and the shape of the fall (a share of
@@ -318,7 +333,7 @@ cell files a feasible figure and names a unit the answer does not.
 
 **Worth.** The decisive step moves the name (41220 to 41230) and all twelve graded figures; a response that
 takes the filed baseline but prices the register as a drop in the standardised ratio loses the name and
-every figure (24 becomes 35 at the wrong unit); a response that also reads the baseline off the quarter in
+every figure (21 becomes 53 at the wrong unit); a response that also reads the baseline off the quarter in
 hand loses both and lands on 41210. Measured on the graded name and the graded figures separately, as
 `stumping` Part 3 requires.
 

@@ -72,10 +72,13 @@ def dictionary_sheets():
                                      "mesa nas linhas que foram a segunda codificacao"),
           ("codificador", "texto", "iniciais de quem codificou a mao"),
           ("data_codificacao", "data", "dia em que a codificacao manual foi feita; a mesa trabalha o "
-                                       "lote nos dias de trabalho anteriores ao fecho da ronda"),
-          ("ronda", "texto", "ronda de codificacao: R1 fechada em 20 de junho de 2026 sobre os "
-                             "relatos de 1 de maio a 19 de junho, R2 fechada em 10 de setembro de "
-                             "2026 sobre os relatos de 20 de junho a 31 de agosto"),
+                                       "lote nos seus dias de trabalho anteriores ao fecho da "
+                                       "ronda, com dias de recuperacao ao fim de semana quando o "
+                                       "lote o exige"),
+          ("ronda", "texto", "ronda de codificacao, com o seu corte e o seu fecho: R1, corte em 19 "
+                             "de junho e fecho em 20 de junho de 2026, sobre os relatos de 1 de "
+                             "maio a 19 de junho; R2, corte em 31 de agosto e fecho em 10 de "
+                             "setembro de 2026, sobre os relatos de 20 de junho a 31 de agosto"),
           ("revisto_por", "texto", "iniciais de quem fez a segunda codificacao; vazio nas linhas "
                                    "que nao foram revistas"),
           ("decisao_da_mesa", "texto", "mantido ou alterado, nas linhas que foram revistas"),
@@ -114,6 +117,8 @@ def dictionary_sheets():
         ("convencoes", "Convencoes de leitura dos quadros do boletim.",
          [("mediana", "regra", "num conjunto com um numero par de valores a mediana e a media dos "
                                "dois valores centrais"),
+          ("percentagem", "regra", "uma percentagem e arredondada uma vez, a uma decimal, a partir "
+                                   "do valor exato, e nao truncada nem arredondada por etapas"),
           ("quinzena", "regra", "as quinzenas tem catorze dias e contam-se a partir de 1 de maio; "
                                 "os dias que sobram no fim do periodo entram na ultima, que tem "
                                 "quinze dias (protocolo 3.4)"),
@@ -136,7 +141,9 @@ def dictionary_sheets():
           ("manifesto_extracao.csv", "csv", "linhas, intervalo e data de extracao de cada ficheiro"),
           ("protocolo_vigilancia_v4.pdf", "pdf", "protocolo da Vigilancia Nacional, versao 4"),
           ("acordos_dados_parceiros.pdf", "pdf", "acordos de dados com as organizacoes parceiras e adenda"),
-          ("relatorios_mensais_parceiros_2026.pdf", "pdf", "relatorios mensais de entrega das organizacoes parceiras"),
+          ("relatorios_mensais_parceiros_2026.pdf", "pdf", "relatorios mensais de entrega das "
+           "organizacoes parceiras; cada organizacao conta os relatos pelo mes da acao, nao pelo "
+           "mes da entrega no portal"),
           ("boletins_anteriores_2026.pdf", "pdf", "boletins mensais publicados de maio a setembro")]),
     ]
 
@@ -238,7 +245,8 @@ def cut(target):
                 "config_monitor.json": "configuracao do monitor de imprensa",
                 "protocolo_vigilancia_v4.pdf": "protocolo da Vigilancia Nacional, versao 4",
                 "acordos_dados_parceiros.pdf": "acordos de dados e adenda",
-                "relatorios_mensais_parceiros_2026.pdf": "relatorios mensais das parceiras",
+                "relatorios_mensais_parceiros_2026.pdf": "relatorios mensais das parceiras, "
+                                                          "contados pelo mes da acao",
                 "boletins_anteriores_2026.pdf": "boletins mensais publicados",
                 "dicionario_dados.xlsx": "dicionario de dados"}.get(name, "")
         rows.append((name, n, first, last, note))

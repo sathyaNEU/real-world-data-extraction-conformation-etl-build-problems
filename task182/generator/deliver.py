@@ -19,13 +19,11 @@ def table(path, g):
     import csv as _c
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = _c.writer(fh, lineterminator="\n")
-        w.writerow(["position_code", "dwelling_ref", "specific_sound_level_db_laeq", "valid_minutes",
-                    "excluded_minutes", "highest_third_octave_band_hz", "tone_prominent"])
+        w.writerow(["position_code", "dwelling_ref", "specific_sound_level_db_laeq",
+                    "centrifuge_minutes_in_assessment_period", "centrifuge_runs_in_assessment_period"])
         for row in g["rows"]:
-            band = BAND_LABEL[row["band_hz"]] if row["band_hz"] else "none"
-            tone = "none" if row["tone"] is None else ("yes" if row["tone"] else "no")
             w.writerow([row["position"], row["dwelling"], "%.1f" % row["specific_db"],
-                        row["valid_minutes"], row["excluded_minutes"], band, tone])
+                        row["centrifuge_minutes"], row["centrifuge_runs"]])
     return path
 
 
@@ -120,20 +118,24 @@ def note(path, g, chart_png):
                         else "standard unit"]
                        for c, dref, name, lvl in sel]),
                colWidths=[22 * mm, 74 * mm, 34 * mm, 38 * mm], style=TBL),
-         Paragraph("A tone is prominent at %d of the five, and those four take the glazing with acoustic "
-                   "trickle vents; %s takes the standard unit."
-                   % (sum(1 for c, _, _, _ in sel if reasons[c]["tone"]),
+         Paragraph("A tone is prominent at %d of the fourteen positions, %s, and at every one of them it "
+                   "sits in the %s Hz band. %s of the five the slot covers carry it, and those take the "
+                   "glazing with acoustic trickle vents; %s takes the standard unit."
+                   % (len(g["tone_positions"]), ", ".join(g["tone_positions"]),
+                      ", ".join(BAND_LABEL[b] for b in g["tone_bands"]),
+                      ("Four" if sum(1 for c, _, _, _ in sel if reasons[c]["tone"]) == 4
+                       else str(sum(1 for c, _, _, _ in sel if reasons[c]["tone"]))),
                       ", ".join(c for c, _, _, _ in sel if not reasons[c]["tone"])), SMALL),
          Paragraph("The plant through the survey", H2),
          Paragraph("The plant ran to its ordinary pattern in every one of the six weeks, so the positions "
                    "measured in different weeks are comparable.", BODY),
-         Table(wrap([["Week beginning", "Biogas burned, m3", "Blower air delivered, thousand Nm3",
-                      "Centrifuge runs"]]
+         Table(wrap([["Week beginning", "Blower air delivered, thousand Nm3", "Centrifuge runs",
+                      "Engine hours run"]]
                     + [["%d %s" % (W.WEEKS[k].day, W.WEEKS[k].strftime("%B")),
-                        "{:,}".format(v["biogas_m3"]), "{:,}".format(v["blower_air_knm3"]),
-                        "%d" % v["centrifuge_runs"]]
+                        "{:,}".format(v["blower_air_knm3"]), "%d" % v["centrifuge_runs"],
+                        "%.1f" % v["engine_hours"]]
                        for k, v in sorted(g["weekly"].items())]),
-               colWidths=[32 * mm, 40 * mm, 56 * mm, 32 * mm], style=TBL),
+               colWidths=[34 * mm, 56 * mm, 32 * mm, 32 * mm], style=TBL),
          Paragraph("Levels are to one decimal place. Minutes the mast counted rain in, minutes it showed "
                    "above the plan's wind limit and minutes a meter recorded nothing for are out of every "
                    "level, as the plan requires, and the %d deployments whose field checks sat away from "

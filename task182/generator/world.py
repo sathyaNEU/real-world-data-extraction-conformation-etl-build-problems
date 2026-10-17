@@ -30,13 +30,16 @@ DAY_START, DAY_END = 7, 19
 WEEKS = [dt.date(2026, 8, 31) + dt.timedelta(days=7 * i) for i in range(6)]
 
 # The plant's weekly planned process stop (local), and the unplanned stops, as the event log records them.
+# The weekly inspection takes as long as it takes; every one of them is over before the assessment period
+# opens at 07:00.
 PLANNED_STOPS = [
-    (dt.datetime(2026, 9, 1, 5, 0), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 8, 5, 0), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 15, 5, 0), 120, "weekly MCC inspection, blower strainer clean"),
-    (dt.datetime(2026, 9, 22, 5, 0), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 29, 5, 0), 120, "weekly MCC inspection, centrifuge scroll check"),
-    (dt.datetime(2026, 10, 6, 5, 0), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 1, 4, 45), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 8, 5, 0), 115, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 15, 4, 30), 145, "weekly MCC inspection, blower strainer clean and hour "
+                                           "counter change on CHP-01"),
+    (dt.datetime(2026, 9, 22, 5, 10), 105, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 29, 4, 40), 135, "weekly MCC inspection, centrifuge scroll check"),
+    (dt.datetime(2026, 10, 6, 5, 0), 110, "weekly MCC inspection and belt check"),
 ]
 UNPLANNED_STOPS = [
     # the only unplanned stop the log holds falls before the survey's first deployment
@@ -51,8 +54,9 @@ ENGINE = "CHP-01"
 # Days a centrifuge did not run: the scroll check at the weekly inspection, and the day the second
 # machine was down for a bearing.
 CF_DOWN = {
+    dt.date(2026, 9, 16): ["CF-01", "CF-02"],     # scroll change, no dewatering that day
     dt.date(2026, 9, 29): ["CF-02"],
-    dt.date(2026, 9, 16): ["CF-01"],
+    dt.date(2026, 10, 1): ["CF-01", "CF-02"],     # liquor tank full, dewatering held over
 }
 # Runs the shift split in two to draw the liquor tank down, with the minutes into the run it stopped.
 CF_SPLIT = {
@@ -192,6 +196,21 @@ DUP_DEPLOYMENT = ("NSL09", 0)
 DUP_DAY = dt.date(2026, 9, 10)
 DUP_FROM, DUP_TO = 14, 16          # local hours duplicated
 
+# Spells with no rows at all in the historian: the radio link to the PLC has dropped through the whole
+# survey, most of them short, one of them most of a day. The counters carry through every one of them.
+PLC_GAPS = [
+    (dt.datetime(2026, 9, 2, 10, 15), 11),
+    (dt.datetime(2026, 9, 10, 14, 30), 7),
+    (dt.datetime(2026, 9, 16, 11, 15), 5),
+    (dt.datetime(2026, 9, 24, 13, 0), 80),
+    (dt.datetime(2026, 9, 29, 9, 30), 9),
+    (dt.datetime(2026, 10, 7, 8, 0), 13),
+]
+
+# The engine's hour counter was changed during a weekly inspection, with the engine down, so no running
+# hour falls either side of the change.
+HOUR_COUNTER_SWAP = dt.datetime(2026, 9, 15, 6, 0)
+
 # The met mast. Wind is logged in metres a second until the anemometer swap, kilometres an hour after it.
 MAST_SWAP = dt.date(2026, 9, 20)
 RAIN_TIP_MM = 0.2
@@ -217,20 +236,20 @@ SLOW = {
 # printed level sits on a rounding edge or on the printed value itself. Fixed by the per-position scan in
 # scratch; they move no slate.
 SHIFT = {
-    "NSL01": -0.08097,
-    "NSL02": -0.14936,
-    "NSL03": -0.34727,
-    "NSL04": -0.07768,
-    "NSL05": +0.00612,
-    "NSL06": -0.81240,
-    "NSL07": -0.01784,
-    "NSL08": -0.69980,
-    "NSL09": -0.24069,
-    "NSL10": -0.74640,
-    "NSL11": -0.07583,
-    "NSL12": -0.25151,
-    "NSL13": +0.04792,
-    "NSL14": -0.01882,
+    "NSL01": -0.06669,
+    "NSL02": -0.14614,
+    "NSL03": -0.27226,
+    "NSL04": -0.07547,
+    "NSL05": -0.31365,
+    "NSL06": -0.83881,
+    "NSL07": -0.02377,
+    "NSL08": -0.70789,
+    "NSL09": -0.24012,
+    "NSL10": -1.19479,
+    "NSL11": -0.12031,
+    "NSL12": -0.34761,
+    "NSL13": +0.03919,
+    "NSL14": +0.09857,
 }
 
 

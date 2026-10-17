@@ -102,13 +102,14 @@ def write(task, g):
     A("")
     A("### order_shares_by_pair.png")
     A("")
+    first, last = g["chart_rows"][0], g["chart_rows"][-1]
     A("1. One horizontal bar for each of the %d screened pairs for the share of its patients "
-      "who received the marker treatment after the product, longest first, with the %d referred "
-      "pairs in the darker fill and the other %d in the lighter one."
+      "who received the marker treatment after the product, with the %d referred pairs in the "
+      "darker fill and the other %d in the lighter one."
       % (g["screened_count"], g["referred_count"],
          g["screened_count"] - g["referred_count"]))
-    A("2. The bars in order, longest share first: %s."
-      % "; ".join("%s %s" % (r["label"], f1(r["share_pct"])) for r in g["chart_rows"]))
+    A("2. The bars run longest share first, from %s at %s per cent to %s at %s per cent."
+      % (first["label"], f1(first["share_pct"]), last["label"], f1(last["share_pct"])))
     A("3. Title states that %d of the %d candidate pairs clear the referral line."
       % (g["referred_count"], g["candidate_count"]))
     A("")

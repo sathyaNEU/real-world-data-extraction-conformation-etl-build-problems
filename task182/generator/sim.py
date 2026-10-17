@@ -153,10 +153,16 @@ def centrifuge_runs(day):
     o = day.toordinal()
     stops = [s for s, m, _ in W.PLANNED_STOPS if s.date() == day]
     if stops:
-        begin = stops[0] + dt.timedelta(minutes=W.PLANNED_STOPS[0][1] + 5 + 2 * (o % 5))
+        mins = [m for s, m, _ in W.PLANNED_STOPS if s.date() == day][0]
+        begin = stops[0] + dt.timedelta(minutes=mins + 5 + 2 * (o % 5))
+    elif o % 9 in (2, 6):
+        begin = dt.datetime(day.year, day.month, day.day, 8, 25 + 4 * (o % 6))   # a late start
     else:
         begin = dt.datetime(day.year, day.month, day.day, 6, 2 + 2 * (o % 7))
-    finish = dt.datetime(day.year, day.month, day.day, 17, 40 + 3 * (o % 4))
+    if o % 7 in (1, 4):
+        finish = dt.datetime(day.year, day.month, day.day, 13, 20 + 5 * (o % 8))  # feed tank run down
+    else:
+        finish = dt.datetime(day.year, day.month, day.day, 17, 40 + 3 * (o % 4))
     if day.weekday() == 5:                      # Saturday: one machine, the shift alternates them
         units = [W.CENTRIFUGES[(o // 7) % 2]]
         finish = finish - dt.timedelta(hours=3, minutes=25)

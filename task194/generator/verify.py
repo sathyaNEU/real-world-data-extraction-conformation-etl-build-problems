@@ -135,18 +135,22 @@ def run(target, figures_path):
     P = [r["carried"] for r in rec]
     fl = [r["carried"] - r["realised"] for r in rec]
     V = [max(1.0, r["counterfactual"]) for r in rec]
-    defined = [f / p for f, p in zip(fl, P) if abs(p) >= 5.0]
+    sh = [f / p for f, p in zip(fl, P)]
+    Ex = [r["expected"] for r in rec]
     pbar, fbar = sum(P) / nr, sum(fl) / nr
     pvar = sum((p - pbar) ** 2 for p in P) / nr
     readings = {
         "pooled sums": sum(fl) / sum(P),
+        "the mean of the placements' shares": sum(sh) / nr,
+        "the expected-weighted mean of the placements' shares":
+            sum(e * s for e, s in zip(Ex, sh)) / sum(Ex),
+        "the median of the placements' shares": sorted(sh)[nr // 2],
         "least squares through the origin":
             sum(p * f for p, f in zip(P, fl)) / sum(p * p for p in P),
         "least squares with an intercept":
             sum((p - pbar) * (f - fbar) for p, f in zip(P, fl)) / (pvar * nr),
         "the variance-weighted fit":
             sum(p * f / v for p, f, v in zip(P, fl, V)) / sum(p * p / v for p, v in zip(P, V)),
-        "the median of the shares that are defined": sorted(defined)[len(defined) // 2],
         "against what the other units did over the same quarters":
             sum(c - r - cp for c, r, cp in
                 zip(P, [x["realised"] for x in rec], [x["concurrent_pooled"] for x in rec])) / sum(P),
@@ -172,8 +176,9 @@ def run(target, figures_path):
     for label, want in fig["register_readings"].items():
         ok(abs(readings[label] - want) < 5e-5,
            "the register read as %s is %.5f (%.5f)" % (label, readings[label], want))
+    ok(len(readings) == 8, "eight routes through the register (%d)" % len(readings))
     ok(max(readings.values()) / min(readings.values()) - 1 < 0.015,
-       "the register's readings sit within 1.5 per cent (%.2f%%)"
+       "the register's routes sit within 1.5 per cent (%.2f%%)"
        % ((max(readings.values()) / min(readings.values()) - 1) * 100))
 
     tot = grp.groupby("unit_code").agg(observed=("observed", "sum"), expected=("expected", "sum"),

@@ -131,7 +131,7 @@ PARTNERS = [
     ("P04", "Observatorio Rural do Alentejo Central", "Alentejo", 5.45),
     ("P05", "Liga dos Direitos do Barlavento", "Algarve", 6.90),
     ("P06", "Centro de Estudos Insulares", "Acores e Madeira", 8.10),
-    ("P07", "Nucleo de Acompanhamento do Douro", "Norte", 6.15),
+    ("P07", "Nucleo de Acompanhamento do Douro", "Norte", 6.10),
 ]
 AMENDED = ("P04", dt.date(2026, 8, 1), 6.30)
 MERGED = ("P07", "P12", dt.date(2026, 9, 10))

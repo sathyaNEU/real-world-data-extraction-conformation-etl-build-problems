@@ -56,25 +56,24 @@ def workbook(path, g):
     q["A1"] = "Acoes, territorio e rede de parceiros, por quinzena"
     q["A1"].font = Font(bold=True, size=12)
     header(q, 3, ["Quinzena", "De", "A", "Acoes registadas", "Municipios tocados",
-                  "Quota da rede de parceiros, %"],
-           [("A", 12), ("B", 13), ("C", 13), ("D", 17), ("E", 18), ("F", 26)])
+                  "Acoes relatadas pela rede de parceiros"],
+           [("A", 12), ("B", 13), ("C", 13), ("D", 17), ("E", 18), ("F", 32)])
     r = 4
     for label, v in sorted(g["a1"].items(), key=lambda kv: int(kv[0][1:])):
         for j, val in enumerate([label, v["start"], v["end"], v["actions"], v["municipalities"],
-                                 v["partner_share"]]):
+                                 v["partner_actions"]]):
             c = q.cell(row=r, column=1 + j, value=val)
             c.border = box
             if j:
                 c.alignment = Alignment(horizontal="center")
-            if j in (3, 4):
+            if j in (3, 4, 5):
                 c.number_format = "#,##0"
-            if j == 5:
-                c.number_format = "0.0"
         r += 1
     q.cell(row=r + 1, column=1, value=("Uma acao e um tema numa localidade num dia, qualquer que "
-                                       "seja o numero de relatos. A quota e a parte das acoes da "
-                                       "quinzena que a rede de parceiros relatou. As quinzenas tem "
-                                       "catorze dias e a ultima tem quinze."))
+                                       "seja o numero de relatos. A ultima coluna conta as acoes da "
+                                       "quinzena de que a rede de parceiros entregou relato, cada "
+                                       "acao uma vez. As quinzenas tem catorze dias e a ultima tem "
+                                       "quinze."))
     q.cell(row=r + 1, column=1).font = Font(size=9, italic=True)
     q.freeze_panes = "A4"
 
@@ -227,11 +226,11 @@ def bulletin(path, g, chart_png):
                       ("VALIGN", (0, 0), (-1, -1), "TOP"),
                       ("LEFTPADDING", (0, 0), (-1, -1), 3), ("RIGHTPADDING", (0, 0), (-1, -1), 3),
                       ("TOPPADDING", (0, 0), (-1, -1), 1.6), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.6)])
-    rows = [["Quinzena", "Acoes registadas", "Municipios tocados", "Quota da rede, %"]]
+    rows = [["Quinzena", "Acoes registadas", "Municipios tocados", "Acoes da rede de parceiros"]]
     for label in sorted(g["a1"], key=lambda k: int(k[1:])):
         v = g["a1"][label]
         rows.append([label, "%d" % v["actions"], "%d" % v["municipalities"],
-                     "%.1f" % v["partner_share"]])
+                     "%d" % v["partner_actions"]])
     d = SimpleDocTemplate(path, pagesize=A4, title="Boletim de acoes de confronto, 2026",
                           author="", subject="", creator="", leftMargin=18 * mm, rightMargin=18 * mm,
                           topMargin=16 * mm, bottomMargin=16 * mm)

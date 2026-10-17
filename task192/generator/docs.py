@@ -102,12 +102,13 @@ def protocol(target):
          Paragraph("4.4 O registo e extraido para o boletim de cada periodo; a extracao deste periodo "
                    "e de 6 de novembro de 2026.", BODY),
          Paragraph("4.5 A mesa de codificacao faz duas rondas de dupla codificacao por periodo de "
-                   "relato. Cada ronda tira ao acaso um lote dos relatos aceites do monitor de "
-                   "imprensa entrados desde o fecho da ronda anterior e codifica cada relato do "
-                   "lote a mao, sem ver o codigo do classificador; a codificacao manual e a "
-                   "referencia da associacao. A ronda fica no ficheiro de dupla codificacao, com o "
-                   "codigo de cada lado, o dia da codificacao manual e a decisao da mesa nas linhas "
-                   "que foram a segunda codificacao.", BODY),
+                   "relato. Cada ronda tem um corte, e o seu lote e tirado ao acaso dos relatos "
+                   "aceites do monitor de imprensa entrados desde o corte da ronda anterior e "
+                   "datados ate ao seu proprio corte; a mesa codifica-os a mao a medida que entram, "
+                   "sem ver o codigo do classificador, e a ronda fecha no dia em que a mesa assina "
+                   "o lote. A codificacao manual e a referencia da associacao. A ronda fica no "
+                   "ficheiro de dupla codificacao, com o codigo de cada lado, o dia da codificacao "
+                   "manual e a decisao da mesa nas linhas que foram a segunda codificacao.", BODY),
          Paragraph("4.6 O classificador do monitor de imprensa e o modelo que a configuracao do "
                    "monitor declara, com a data em que foi treinado e as alteracoes que teve dentro "
                    "do periodo.", BODY)]

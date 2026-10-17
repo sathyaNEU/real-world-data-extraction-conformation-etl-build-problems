@@ -271,13 +271,22 @@ def run(target, figures_path):
             gas += 100000.0
         air = float(sc[b]["blower_air_total_knm3"]) - float(sc[a]["blower_air_total_knm3"])
         runs = sum(1 for t in log_starts if a <= t < b)
+        inside = sorted((t, float(r["engine_hours_run"])) for t, r in sc.items() if a <= t <= b)
+        eng = 0.0
+        for j in range(1, len(inside)):
+            step = inside[j][1] - inside[j - 1][1]
+            eng += inside[j][1] if step < 0 else step     # the counter was changed inside this week
         w = fig["weekly_plant"][str(i)]
+        ok(round(eng, 1) == w["engine_hours"],
+           "week %d engine hours %.1f against %.1f" % (i, eng, w["engine_hours"]))
         ok(int(round(gas)) == w["biogas_m3"],
            "week %d biogas %d against %d" % (i, round(gas), w["biogas_m3"]))
         ok(int(round(air)) == w["blower_air_knm3"],
            "week %d blower air %d against %d" % (i, round(air), w["blower_air_knm3"]))
         ok(runs == w["centrifuge_runs"],
            "week %d runs %d against %d" % (i, runs, w["centrifuge_runs"]))
+
+    plant_state(target, fig, spans)
 
     # ---- the goldens carry the same figures
     gold = os.path.join(os.path.dirname(target), "golden", "specific_sound_levels.csv")
@@ -286,12 +295,51 @@ def run(target, figures_path):
             c = r["position_code"]
             ok(float(r["specific_sound_level_db_laeq"]) == fig["specific_level_db"][c],
                "the golden table's level for %s" % c)
-            ok(int(r["valid_minutes"]) == fig["valid_minutes"][c],
-               "the golden table's valid minutes for %s" % c)
-            ok(int(r["excluded_minutes"]) == fig["excluded_minutes"][c],
-               "the golden table's excluded minutes for %s" % c)
-            ok(r["highest_third_octave_band_hz"] == str(fig["highest_band_hz"][c]),
-               "the golden table's band for %s" % c)
-            ok(r["tone_prominent"] == fig["tone_prominent"][c],
-               "the golden table's tone verdict for %s" % c)
+            ok(int(r["centrifuge_minutes_in_assessment_period"]) == fig["centrifuge_minutes"][c],
+               "the golden table's centrifuge minutes for %s" % c)
+            ok(int(r["centrifuge_runs_in_assessment_period"]) == fig["centrifuge_runs_position"][c],
+               "the golden table's centrifuge runs for %s" % c)
     return OK
+
+
+def plant_state(target, fig, spans):
+    """Plan 5.2 executed from the equipment log: what ran over each position's assessment period."""
+    opens, runs = {}, []
+    for r in sorted(rows(os.path.join(target, "plant_equipment_events_2026.csv")),
+                    key=lambda x: x["logged_at"]):
+        if not r["equipment"].startswith("CF-"):
+            continue
+        t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+        if r["event"] == "START":
+            opens[r["equipment"]] = t
+        elif r["equipment"] in opens:
+            runs.append((opens.pop(r["equipment"]), t))
+    for code in sorted(fig["centrifuge_minutes"]):
+        wins = []
+        for serial, sp in spans.items():
+            for a, b, c, _ in sp:
+                if c != code:
+                    continue
+                for k in range((b - a).days + 1):
+                    day = a + dt.timedelta(days=k)
+                    if day.weekday() <= 4:
+                        wins.append((dt.datetime(day.year, day.month, day.day, DAY_START),
+                                     dt.datetime(day.year, day.month, day.day, DAY_END)))
+        mins = 0
+        for lo, hi in wins:
+            iv = sorted((max(a, lo), min(b, hi)) for a, b in runs if a < hi and b > lo)
+            cur = None
+            for a, b in iv:
+                if cur and a <= cur[1]:
+                    cur = (cur[0], max(cur[1], b))
+                else:
+                    if cur:
+                        mins += int((cur[1] - cur[0]).total_seconds() // 60)
+                    cur = (a, b)
+            if cur:
+                mins += int((cur[1] - cur[0]).total_seconds() // 60)
+        ok(mins == fig["centrifuge_minutes"][code],
+           "%s centrifuge minutes %d against %d" % (code, mins, fig["centrifuge_minutes"][code]))
+        n = sum(1 for a, b in runs if any(a < hi and b > lo for lo, hi in wins))
+        ok(n == fig["centrifuge_runs_position"][code],
+           "%s centrifuge runs %d against %d" % (code, n, fig["centrifuge_runs_position"][code]))
