@@ -183,8 +183,8 @@
     {
       "path": "report_service_commitments_2026-12-04.xlsx",
       "format": "xlsx",
-      "bytes": 9719,
-      "rows": 18,
+      "bytes": 9766,
+      "rows": 19,
       "source": "Constructed: Slenk report service, commitments ledger export (4 December 2026)",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"

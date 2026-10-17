@@ -304,7 +304,8 @@ def write_ledger(path, W):
     n = wb.create_sheet("Notes")
     for line in [["Owner", K.PEOPLE["reports_pm"] + ", report service"], ["Exported", "2026-12-04"],
                  ["Calls", "A report is generated section by section; each section is one call to the Docs "
-                           "model. Q1 calls are committed reports times the tier's calls per report."]]:
+                           "model. Q1 calls are committed reports times the tier's calls per report."],
+                 ["Committed", "Q1 committed reports are each contract's minimum for the quarter."]]:
         n.append(line)
     _widths(n, [12, 100])
     wb.save(path)

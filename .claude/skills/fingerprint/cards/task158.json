@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "the leased 240-GPU stopgap to docs-prod (Docs) for Q1 2027, its Q1 peak-week shortfall 340 GPUs in 2027-W13 (338.8; Code 300 the runner-up; the default path, report calls at Docs' GPU-seconds per request, files Code at 300)",
+  "answer_source": "task158/generator/calc.py main_call() on the shipped bundle, reproduced by task158/generator/verify.py",
   "gap": [
     "population",
     "time"
