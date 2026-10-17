@@ -137,7 +137,7 @@
  "margin": 1.6,
  "outside_indicator": {
   "2024-25 Q1": {
-   "separations": 902,
+   "separations": 901,
    "with_complication": 45
   },
   "2024-25 Q2": {
@@ -149,31 +149,31 @@
    "with_complication": 46
   },
   "2024-25 Q4": {
-   "separations": 917,
+   "separations": 918,
    "with_complication": 54
   },
   "2025-26 Q1": {
-   "separations": 909,
+   "separations": 908,
    "with_complication": 41
   },
   "2025-26 Q2": {
-   "separations": 807,
+   "separations": 808,
    "with_complication": 45
   },
   "2025-26 Q3": {
-   "separations": 818,
+   "separations": 819,
    "with_complication": 40
   },
   "2025-26 Q4": {
-   "separations": 901,
+   "separations": 900,
    "with_complication": 53
   },
   "2026-27 Q1": {
-   "separations": 915,
+   "separations": 917,
    "with_complication": 37
   },
   "2026-27 Q2": {
-   "separations": 807,
+   "separations": 809,
    "with_complication": 58
   }
  },

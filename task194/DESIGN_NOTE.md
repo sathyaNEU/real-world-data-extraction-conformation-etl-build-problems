@@ -339,6 +339,89 @@ unit; the three distractor files carry no complication measure. The only indicat
 repository is in `generator/figures.py`, which writes the grading key and ships nothing. No document names a
 unit code at all.
 
+## Ask sheet
+
+Three asks, 48 separately gradable figures, each outside the main call's row population and consuming
+nothing the call's construction produces. The construction layer is the twelve avoidable counts the
+decisive construction produces, which the workbook grades a row at a time.
+
+**A2, each hospital's adjusted complication rate for the year ended 31 December 2026, with the episodes
+and complications behind it.** 12 figures (4 sites x episodes, complications, adjusted rate per 1,000).
+H18 home: a measure every candidate's hospital carries that the call does not turn on. Use: the quality
+committee reports by site and the partnership reports to it by site. Path: `episode_outcomes_extract.csv`,
+`activity_summary_monthly.csv`, `unit_register.csv`, `hospital_sites.csv`, `drg_risk_bands.csv`,
+`hac_stratum_rates.csv`, 11 columns. Primary device: **none, and this is the open defect in the ask
+layer.** The device it carries is the vintage of a unit's site: three cost centres were realigned to
+another hospital during the period, the register carries the alignment at the export date and the activity
+summary carries the site each unit reported under in each month, so the register join mis-assigns 3,918
+episodes away from Alderbrook and 4,958 onto Stonecreek. The dictionary describes both columns, so a
+response that reads it handles the device correctly: it is a mirror device, legitimate and worth having,
+and it is what holds the mirror to 0 of 12, but it cannot be the primary. Realism: a site register carries
+the current alignment and a monthly activity file carries the month's, which is what both systems are for.
+
+**A3, the separations the sub-acute and mental health units reported each quarter, and the episodes with a
+complication.** 20 figures (10 quarters x 2). H18 home: an input reconciled to another system's total, the
+gap made of devices, on rows the indicator excludes entirely. Use: the committee is asked every cycle why
+the partnership does not work on the sub-acute units, and the answer is the activity they carry.
+Path: `episode_outcomes_extract.csv`, `activity_summary_monthly.csv`, `unit_register.csv`,
+`data_dictionary.csv`, `export_manifest.csv`, 10 columns. **Primary device (D6 grain, a count that does
+not sum):** a stay whose care type changes inside it is statistically discharged and readmitted the same
+day, so one separation reaches the episode feed as two episode records under the same group. The patient
+administration system counts the separation once, so the activity summary sits below the extract however
+the extract is de-duplicated. Nothing in the pack says the extract carries more episodes than there are
+separations, and the only way to see it is to reconcile the two files' counts across their two grains.
+Hazard: the feed's overlapping monthly load re-sends the last three days of a month under fresh episode
+identifiers, which the stated separation key collapses exactly. Stops, measured on the cut pack: every row
+of the extract 10,117; de-duplicated on the separation key the dictionary states 9,143; chained into stays
+**8,605, the answer**, which ties to the activity summary in all ten quarters. Lazy delta on the careful
+read: **+538 separations, 6.3 per cent**, every quarter outside its bin. Realism: a statistical discharge
+is how a care-type change is recorded, and no file carries a flag for it.
+
+**A4, the in-scope episodes recording a complication by complication group, 2025-26 and 2026-27 to date.**
+16 figures (8 groups x 2 years). H18 home: the trail from an input the call consumes, through rows it
+never reads, to its control total. Use: the committee's standing report is by complication group.
+Path: `hac_detail_extract.csv`, `episode_outcomes_extract.csv`, `hac_category_list.csv`, the specification
+PDF's Appendix B, `unit_register.csv`, 9 columns. **Primary device (D5 scope, a silently partial
+extract):** the complication detail reaches only the units whose wards are on the clinical information
+system; for the rest, the complication is in the episode extract's own category column, one to an episode.
+The detail extract is therefore below the extract's own flag for those units, and the gap is visible only
+by reconciling the two across grains. Hazard: the national list was revised on 1 July 2026, the revision
+renumbered HAC03 to HAC06 and folded HAC13 into HAC03, and a code is read against the revision in force at
+separation. Stops, 2025-26: the detail extract on the current revision throughout 823 to 3,069 by group;
+on the revision in force at separation 1,056 to 2,443; **the answer 1,082 to 2,500**, above both, because
+the units the detail extract does not reach are only in the extract's own column. Realism: a clinical
+information system reaches the wards it has been rolled out to, and a national list is revised.
+
+**The main population's zero counts.** Zero device rows and zero hazard rows sit in the main call's
+declared population. A3's statistical discharges are on the three non-acute units only, which
+specification 2.3 puts outside the indicator, asserted at zero on every acute unit. A4's partial detail
+coverage moves no observed or expected count, because the indicator reads the extract's own flag and never
+the detail file, asserted. A2 reads the same episodes the call reads, so it carries no device at all: its
+site attribution is a reconciliation, not a device, which is exactly why it keeps nothing back from the
+cracker.
+
+**The referee.** `unit_indicator_series.csv` is byte-clean and arbitrates every disagreement about observed
+and expected complications without handing over a level: it ties to the extract on all 215 unit-quarters
+under every handling of the asks' devices, because none of them touches an in-scope acute episode.
+
+| Cracker row (the response that landed the call) | Figures | Verdict |
+|---|---|---|
+| A2 each hospital's episodes, complications and adjusted rate | 12 | keeps 12 of 12 |
+| A3 the separations outside the indicator, by quarter | 20 | miss |
+| A4 the complication groups, by year | 16 | miss |
+
+**Pair ceiling: 39.5** (cracker 67.0, mirror 12.0, measured on the cut pack).
+**Mirror leakage: 0.0** per cent of ask weight.
+**Measured by:** `generator/cracker.py`, which scores the two responses from their own handling and prints
+one row per response. The asks consume nothing the call's construction produces, so the two ask readings
+come from the two responses' own care rather than from the call, and the script says so in its output
+instead of printing a duplicate row.
+
+**The open defect, stated rather than dressed.** A2 keeps 12 of 12 against the cracker, so Part 1.1's rule
+that every cracker row misses is not met. The two gated figures are the worst honest measurements and both
+pass, and the ladder and the construction layer are what carry the pair. A2 needs a silent primary of a
+family A3 and A4 do not use, and until it has one this sheet says so.
+
 ## Tried and rejected
 
 - Ranking units by the fall in their adjusted rate rather than by complications avoided: the charter would

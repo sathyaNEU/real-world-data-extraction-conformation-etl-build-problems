@@ -1,14 +1,14 @@
 # leak check, task190
 
-**Verdict: REVIEW.** 18 files read, 28 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 18 files read, 26 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: sample, interval, decisive, projection, amount, carries, tainting, nothing, stratum, shipped, decision, stands, quantity, estimator, sentence, projects, sampled, inclusion, stated, asserts, probability, arithmetic, follows, subtraction, factor
 
 ## 3 answer figures in the pack (REVIEW 5)
-- **REVIEW** `audit_plan_2026.pdf`: golden figure 4.4 appears: ...ogramme payments population; the other two are at 4.4 and 4.5 and are not reproduced here. 4.2 Capital...
 - **REVIEW** `audit_plan_2026.pdf`: golden figure 4.3 appears: ...ulation is tested to a confidence of 95 per cent. 4.3 Conclusion on a tested population A population is...
+- **REVIEW** `audit_plan_2026.pdf`: golden figure 4.4 appears: ...ogramme payments population; the other two are at 4.4 and 4.5 and are not reproduced here. 4.2 Capital...
 - **REVIEW** `audit_plan_2026.pdf`: carries 14 of 14 distinctive words of the committed call: 'The misstatement in the capital programme payments population for the year to 31 December 2026 is 850,000 euro, and the '
 - **REVIEW** `internal_audit_testing_schedule_2026.pdf`: carries 11 of 14 distinctive words of the committed call: 'The misstatement in the capital programme payments population for the year to 31 December 2026 is 850,000 euro, and the '
 - **REVIEW** `provenance.md`: carries 9 of 14 distinctive words of the committed call: 'The misstatement in the capital programme payments population for the year to 31 December 2026 is 850,000 euro, and the '

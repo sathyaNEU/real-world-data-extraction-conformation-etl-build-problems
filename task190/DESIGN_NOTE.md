@@ -549,15 +549,15 @@ device against the careful solver's path.
 
 | Ask | Figures | The device |
 |---|---|---|
-| A1, per quarter of release: the payment runs released, those past the cut-off in force on the run's own date, and the value those carried. Both conventions are pinned in the asking sentence | 4 x 3 = 12 | three devices, each measured: the cut-off moved from 15:00 to 14:00 on 1 July 2026 and the register carries both effective dates, so one cut-off for the year undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the opening date rather than the release moves the counts; and one run was rejected by the bank and re-released, so the log carries it twice. A run released exactly at the cut-off is within it, which the register states |
+| A1, per quarter of release: the runs released past the cut-off then in force and the value those carried. Both conventions are pinned in the asking sentence. The plain count of runs released was cut: it was free to the cracker and no device reached it | 4 x 2 = 8 | three devices, each measured: the cut-off moved from 15:00 to 14:00 on 1 July 2026 and the register carries both effective dates, so one cut-off for the year undercounts both later quarters; a run released past midnight ends each quarter, so grouping on the opening date rather than the release moves the counts; and one run was rejected by the bank and re-released, so the log carries it twice. A run released exactly at the cut-off is within it, which the register states |
 | A2, per supplier risk category: the suppliers raised into it, those removed from it, and those raised in then removed. "Removed from it" is pinned in the asking sentence, against the removed-into reading | 5 x 3 = 15 | the approval register chains per supplier and carries superseded rows the dictionary rules out of the history; a category was relabelled on 1 October and the scale map carries both codings |
 | A3, per month of payment: the distinct ledger lines the testing schedule covers, whether any schedule line is missing from the ledger and if so how many, and whether any ledger line is on it twice and if so how many. "Distinct" and the month of payment are pinned in the asking sentence | 12 + 2 = 14 | two primaries. **Scope:** the working paper is internal audit's paper for the year, so plan 4.4's revenue expenditure sample sits on it under its own cost centres and its own ledger prefix; seventeen rows resolve to no capital line, are counted in no month, and nothing flags them. **Clock:** the paper carries the date the run was released, as the payment run log records it, while the ledger carries the date of the run that paid the line, and the two differ for the seven runs whose release ran past midnight, two of which cross a month end | the schedule is a table inside a PDF and its line references carry the ledger's supplier prefix, so the join needs the crosswalk; the re-delivered batch puts one ledger line on the schedule twice |
 
 Every A3 ask is worded so that "none" is a grammatical answer, per H23.
 
-Pair ceiling: 51.0
+Pair ceiling: 47.6
 
-Mirror leakage: 19.5 per cent of ask weight
+Mirror leakage: 13.8 per cent of ask weight
 
 Measured by: `generator/ceiling.py`, which builds both responses as code, scores each on its OWN ask
 readings against the graded figures in `figures.json` on the cut pack, and exits non-zero unless the
@@ -573,8 +573,8 @@ third ask actually scored:
 
 | The cracker, and the mirror beside it | call | components | instruction | A1 | A2 | A3 | score |
 |---|---|---|---|---|---|---|---|
-| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | **19/21** | 2/2 | **8/12** | 15/15 | **8/14** | **82.5** |
-| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/21 | 1/2 | 3/12 | 3/15 | 2/14 | **19.5** |
+| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/21 | 2/2 | **4/8** | 15/15 | **1/6** | **81.0** |
+| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/21 | 1/2 | 1/8 | 3/15 | 0/6 | **14.3** |
 
 **Why the cracker keeps everything, which is the diagnosis and not a wording problem.** Every device on
 every ask is adjudicated by a filed sentence or found by the hygiene battery, so a careful solver executes
@@ -919,3 +919,18 @@ were round too, so both were redrawn.
   testing covered and their recorded value, which is one determinate answer that a response counting the
   paper's rows gets wrong. The device then bites on a graded figure instead of costing one, and the three
   wrong rungs are quoted to the cent again. Measured: the cracker loses 2 of the 21 component cells.
+- **Ask figures the cracker kept that no device could protect, cut rather than defended.** The bar is a
+  share of ask weight, not a count, so a figure every strong response banks for free is worth less than
+  nothing: it dilutes every criterion beside it. Of the 31 the cracker still kept, twelve were free by
+  construction. **A1's plain count of runs released** was a row count per quarter after the duplicate
+  sweep and the pinned basis, so it is cut: A1 is now two figures per quarter, both of which need the
+  cut-off register and the run log's own value. **A3's twelve monthly counts** were a group-by in which
+  only four months carried a device, so they fold into four quarters of payment, and now every quarter
+  contains a device-touched month. Measured: the ask set falls from 41 criteria to 29, the cracker from 31
+  of 41 to 20 of 29, A3 from 8 of 14 to **1 of 6**, and the pair from 51.0 to **47.6**. The floors hold:
+  56 graded criteria against a floor of 25, and the ask weight is unchanged at 55 per cent.
+- **An overnight release scored as inside the cut-off, which the fold exposed.** A run released at 01:30
+  on the day after its run date was compared against that morning's clock, so the latest run of the
+  quarter counted as the earliest. Minutes now run from the run's own date, so a release that crossed
+  midnight is past that date's cut-off by construction, which is both the correct reading and what makes
+  the quarter basis worth pinning.
