@@ -713,7 +713,8 @@ def ask_b(P, mode="golden"):
     'code_payyear' (the playing-time code by pay year), 'code_season' (the playing-time code, each half to its season,
     pitchers in), 'register' (the register's plate-appearance terms against the season's plate appearances),
     'gross' (the face-value lines with the void reversal ignored), 'payyear' (each half under the year it was paid),
-    'five' (the five signings only), 'golden'."""
+    'five' (the five signings only), 'earned' (each season's bonus as earned, the half not yet paid included),
+    'golden'."""
     pay = read_csv(os.path.join(P.target, "ral_payroll_player_earnings_2023_2026.csv"))
     hmap = {r["legacy_employee_no"]: r["employee_id"] for r in read_csv(os.path.join(P.target, "ral_hris_legacy_employee_map.csv"))}
     wb = openpyxl.load_workbook(os.path.join(P.target, "ral_player_contract_register_2024_2026.xlsx"), read_only=True)
@@ -800,6 +801,11 @@ def ask_b(P, mode="golden"):
         lg = lg_of[t["name"]]
         pa = pa_club[(y, lg, "RAL")]
         earned = t["amount"] * sum(1 for x in t["lines"] if pa >= x)
+        if mode == "earned":
+            # the season's bonus as earned, both halves, whether or not the second has been paid yet
+            if any(v > 0.5 for v in parts.values()) and y in (2024, 2025, 2026):
+                out[(y, t["name"])] += earned
+            continue
         for half, v in parts.items():
             if v <= 0.5:
                 continue

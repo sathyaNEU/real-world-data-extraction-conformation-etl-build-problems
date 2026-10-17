@@ -118,7 +118,8 @@ def figures(R):
             rate_first_1dp="%.1f" % rt[1], rate_ninth_1dp="%.1f" % rt[9],
             line_probabilities={f_["name"]: ["%.1f%%" % (100 * p) for a, t, p in G["lines"][f_["name"]]] for f_ in F},
             per_player_unrounded={f_["name"]: usd(G["per"][f_["name"]]) for f_ in F}),
-        references=dict(fin14_sections=["4.2", "4.3", "4.4", "6"], rounding_total="$250,000", rounding_player="$100,000"),
+        references=dict(fin14_sections=["4.2", "4.3", "4.4", "6"], working_paper="CF-14.4", rounding_total="$250,000",
+                        rounding_player="$100,000"),
         lookback=dict(hitter_seasons="{:,}".format(R["n_lb"]), seasons="2023 to 2026", min_pa=str(calc.LB_MIN_PA),
                       thresholds=[str(int(t)) for t in calc.LB_THRESHOLDS],
                       scores={LB_LABEL[n]: "%.4f" % R["LB"][n] for n in LB_ROWS},
@@ -240,7 +241,8 @@ def write_book(R, path):
     ws.print_title_rows = "5:5"
     # the look-back
     wl = wb.create_sheet("Look-back (FIN-14 4.4)")
-    wl["A1"] = ("FIN-14 4.4 look-back: %s hitter-seasons, 2023 to 2026; the basis with the lowest score is used" %
+    wl["A1"] = ("FIN-14 4.4 look-back (working paper CF-14.4): %s hitter-seasons, 2023 to 2026; the basis with the "
+                "lowest score is used" %
                 "{:,}".format(R["n_lb"]))
     wl["A1"].font = Font(bold=True)
     wl["A2"] = ("Each basis applied to each season with what was published before it began, to every hitter in a "
@@ -257,7 +259,9 @@ def write_book(R, path):
         c.number_format = "0.0%"
         wl.cell(row=r, column=4, value=calc.r250(sum(R["ACC"][n].values()))).number_format = "$#,##0"
     r = 5 + len(LB_ROWS) + 1
-    wl.cell(row=r, column=1, value="The bases that tie the one used (the last three seasons; plate appearances "
+    wl.cell(row=r, column=1, value="The basis used prices each tested hitter from the seasons of his own group: a "
+                                   "catcher from the catcher regulars' seasons, every other hitter from the non-catcher "
+                                   "regulars'. The bases that tie it (the last three seasons; plate appearances "
                                    "rescaled) give the same accrual. Accruals to the nearest $250,000.")
     wl.cell(row=r + 1, column=1, value="Sources: hvbd_winter_depth_charts_2021_2026.xlsx; "
                                        "hvbd_hitter_projections_2022_2027.csv; the batting lines 2021 to 2026.")
@@ -425,9 +429,9 @@ def write_memo(R, path, fig):
     src.runs[0].italic = True
     lb = fig["lookback"]
     d.add_paragraph(
-        "Basis for the probabilities (FIN-14 4.4). We scored each basis on the %s hitter-seasons of 2023 to 2026 the "
-        "policy names, each basis given only what was published before the season. The lowest score went to the share "
-        "of the %s seasons of the non-catcher regulars in the vendor's January 31 depth charts, 2021 to 2026, whose "
+        "Basis for the probabilities (FIN-14 4.4 and working paper CF-14.4). We scored each basis on the %s "
+        "hitter-seasons of 2023 to 2026 the working paper names, each basis given only what was published before the "
+        "season. The lowest score went to the share of the %s seasons of the non-catcher regulars in the vendor's January 31 depth charts, 2021 to 2026, whose "
         "starts, times the plate appearances per start of the player's 2027 slot, reach the threshold; plate "
         "appearances per start fall from %s batting first to %s batting ninth. The vendor's projection with a band "
         "from its past misses scored %s worse and would have accrued %s; the players' own last three seasons scored %s "
@@ -436,8 +440,9 @@ def write_memo(R, path, fig):
                     lb["accrual_each"][LB_LABEL["default: vendor projection with a normal band"]],
                     lb["above_chosen"][LB_LABEL["own three seasons as the draws"]]))
     d.add_paragraph(
-        "The five come to us off full seasons batting higher for their old clubs; each will bat lower here, and a "
-        "regular's next season does not follow his last ones. Player figures are rounded to the nearest $100,000 and the "
+        "The five come to us off full seasons batting higher for their old clubs; each will bat lower here, and in the "
+        "look-back the regulars' seasons at the new slot forecast better than each hitter's own recent seasons. Player "
+        "figures are rounded to the nearest $100,000 and the "
         "total to the nearest $250,000 from the unrounded amounts (FIN-14 6), so the player figures add to %s. The "
         "accrual is remeasured at each 2027 quarter end (FIN-14 4.5); pa_bonus_accrual_2027.xlsx carries each bonus "
         "line and the look-back." % usd(sum(G["per_r"].values())))
@@ -498,9 +503,11 @@ def submission(R, fig, path):
                      S["first_season"], S["last_season"], S["rate_first"], S["rate_ninth"],
                      ", ".join("%s batting %s" % (v, k) for k, v in S["rates"].items())))
     sc = LBk["scores"]
-    lines.append("4. Ran the look-back of FIN-14 4.4 on the %s hitter-seasons of 2023 to 2026 (a starting lineup of the "
+    lines.append("4. Ran the look-back of FIN-14 4.4 (working paper CF-14.4) on the %s hitter-seasons of 2023 to 2026 (a starting lineup of the "
                  "January 31 depth charts and 100 plate appearances in each of the two seasons before), each basis "
-                 "built from what was published before the season: the regulars' seasons at the slot scored %s; the "
+                 "built from what was published before the season and each tested hitter priced from the seasons of "
+                 "his own group (a catcher from the catcher regulars' seasons, every other hitter from the non-catcher "
+                 "regulars'): the regulars' seasons at the slot scored %s; the "
                  "vendor's projection with a band from its misses %s; the players' own last three seasons %s; the "
                  "starting nines' plate appearances taken whole %s." % (
                      LBk["hitter_seasons"], sc[LB_LABEL["golden"]],

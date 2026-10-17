@@ -1,5 +1,6 @@
-"""The documents: the club's accounting policy FIN-14, the five term sheets, the League's injured-list rules excerpt,
-the statistics feed notes and the finance close-file index of the December 11 pull."""
+"""The documents: the club's accounting policy FIN-14 and its close-file working paper CF-14.4, the five term sheets,
+the League's injured-list rules excerpt, the statistics feed notes and the finance close-file index of the December 11
+pull."""
 from __future__ import annotations
 
 import datetime as dt
@@ -20,6 +21,7 @@ F_TERMS = "term_sheets_2027_free_agent_hitters.pdf"
 F_ILRULES = "league_rules_art22_injured_lists_excerpt.pdf"
 F_NOTES = "lsf_feed_notes.txt"
 F_MANIFEST = "ral_close_file_index_2026-12-11.csv"
+F_WP = "CF-14.4_look-back_working_paper.pdf"
 
 BODY = ParagraphStyle("body", fontName="Helvetica", fontSize=9.6, leading=12.6, alignment=TA_LEFT, spaceAfter=4.5)
 HEAD = ParagraphStyle("head", fontName="Helvetica-Bold", fontSize=10, leading=13, spaceBefore=6, spaceAfter=2.5,
@@ -74,15 +76,10 @@ def write_fin14(out):
             "the player is not traded or released and the contract is not renegotiated, and he is in the role the "
             "Club plans for him at the date of signing. His own health and playing time are not assumed: the chance "
             "that he is hurt, or plays less than planned, is part of the probability.",
-            "4.4 The Controller chooses the basis for the probabilities by a look-back, kept in the close file for "
-            "the auditors. Each basis considered is applied to each of the four championship seasons before the "
-            "contract is signed, as if that season were still to be played and using only what was published before "
-            "it began, to every hitter in a starting lineup of the January 31 depth charts for that season who made "
-            "at least 100 plate appearances in each of the two seasons before it. For each such hitter the basis "
-            "gives the probability that he makes at least 450, 500, 550, 600 and 650 plate appearances in the "
-            "season, counting his plate appearances for every club he played for. The Club uses the basis with the "
-            "lowest average, over every hitter, season and threshold, of the squared difference between that "
-            "probability and 1 where he reached the threshold or 0 where he did not.",
+            "4.4 The Controller chooses the basis for the probabilities by a look-back: each basis considered is "
+            "tried on the championship seasons before the contract is signed, using only what was published before "
+            "each began, and the Club uses the basis the look-back scores best. The hitters tried, the thresholds and "
+            "the score are set in close-file working paper CF-14.4, kept in the close file for the auditors.",
             "4.5 The accrual is remeasured at each quarter end during the season and settled at the end of the season "
             "against the bonuses earned."]),
         ("5. Award bonuses", [
@@ -102,10 +99,37 @@ def write_fin14(out):
     s.append(Spacer(1, 8))
     s.append(Paragraph("Revision history: March 2019, issued. January 2025, section 4 added (playing-time bonuses "
                        "were previously expensed when earned); section 3.2 discount rate basis changed. November 2026, "
-                       "4.3 restated and 4.4 added (the look-back, after the auditors' review of the 2025 close); 4.4 "
-                       "renumbered 4.5; section 6 extended.", SMALL))
+                       "4.3 restated and 4.4 added (the look-back, after the auditors' review of the 2025 close, with "
+                       "working paper CF-14.4); 4.4 renumbered 4.5; section 6 extended.", SMALL))
     _pdf(os.path.join(out, F_FIN14), s, "FIN-14 Player Compensation", K.PEOPLE["controller"],
          dt.datetime(2026, 11, 13, 9, 41), "Triangle Baseball Club, LLC: Finance policies", "Finance policy library")
+
+
+# ------------------------------------------------------------------------------------------- working paper CF-14.4
+def write_working_paper(out):
+    s = [Paragraph(K.CLUB_LEGAL.upper() + " (RALEIGH OAKS)", SMALL), Paragraph("Finance Department: close file", SMALL),
+         Spacer(1, 6), Paragraph("Working paper CF-14.4: the look-back for plate-appearance bonuses", TITLE),
+         Paragraph("Standing paper under Accounting Policy FIN-14 4.4. Prepared by %s, Controller, November 12, 2026, "
+                   "after the auditors' review of the 2025 close." % K.PEOPLE["controller"], SMALL), Spacer(1, 6)]
+    paras = [
+        ("1. Seasons", "Each basis considered is applied to each of the four championship seasons before the contract "
+                       "is signed, as if that season were still to be played and using only what was published before "
+                       "it began."),
+        ("2. Hitters", "The basis is tried on every hitter in a starting lineup of the January 31 depth charts for that "
+                       "season who made at least 100 plate appearances in each of the two seasons before it, counting "
+                       "his plate appearances for every club he played for."),
+        ("3. Thresholds and score", "For each such hitter the basis gives the probability that he makes at least 450, "
+                                    "500, 550, 600 and 650 plate appearances in the season. The score is the average, "
+                                    "over every hitter, season and threshold, of the squared difference between that "
+                                    "probability and 1 where he reached the threshold or 0 where he did not."),
+        ("4. Use", "The Club uses the basis with the lowest average. The scores of every basis considered are kept with "
+                   "the accrual in the close file of the period in which the contract is signed (FIN-14 6)."),
+    ]
+    for h, p in paras:
+        s.append(Paragraph(h, HEAD))
+        s.append(Paragraph(p, BODY))
+    _pdf(os.path.join(out, F_WP), s, "CF-14.4 Look-back", K.PEOPLE["controller"], dt.datetime(2026, 11, 13, 9, 52),
+         "Triangle Baseball Club, LLC: Finance close file", "Finance policy library")
 
 
 # ------------------------------------------------------------------------------------------------------- term sheets
@@ -273,6 +297,7 @@ def write_manifest(out, rows):
         (R.F_HRIS, "HRIS", "Legacy employee number map (January 2025 migration)", "players"),
         (R.F_CODES, "HRIS payroll", "Earning codes, legacy and HRIS", ""),
         (F_FIN14, "Finance", "Accounting Policy FIN-14", "effective 2025-01-01"),
+        (F_WP, "Finance", "Working paper CF-14.4, the FIN-14 4.4 look-back", "standing, from 2026-11-12"),
     ]
     out_rows = []
     for f, src, what, cover in items:

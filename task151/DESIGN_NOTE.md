@@ -28,6 +28,55 @@ coordinator's five closures (FIN-14 4.3 restated, Ask B's population and attribu
 effective date filed, the close-file index renamed). The world was redrawn under those constraints (seed 1539, the
 signings batting fifth to ninth) and the golden re-derived: $4,250,000.
 
+**Stage 4 loop 2: record fixes on the same world.** The re-judge returned DETERMINISTIC, APPROVE at $4,250,000 and the
+leak reader found no leak. The rule 3 re-audit returned AT_RISK on realism: the record carries no persistence (the
+vendor's projection correlates 0.005 with realised plate appearances, last season's plate appearances -0.04), and the
+seed search that kept 1539 is noise-picking. The loop tried honest persistence under a seed rule written first (next
+section). On the rule's seed the look-back's winner became a credibility blend on the player's own starts, and bases
+tying it within z 0.5 filed $5,250,000 and $5,500,000 with different player figures, so the total was not determinate
+and the loop stopped (the coordinator's stop rule). The 5a71a64 world ships unchanged, seed 1539 as searched, with the
+record fixes: step 4 of the write-up prices each look-back hitter from his own group's seasons (the judge scored 0.1972
+the other way); the prompt asks for the bonuses paid to date (SF15); the league is renamed from wider pools (945
+surnames; Lusk, Brock and Meeks unique, Rivas and Medina three times each, one Rivas the designed namesake pitcher); and
+FIN-14 4.4 keeps the principle while close-file working paper CF-14.4 holds the look-back's hitters, thresholds and
+score.
+
+## World seed rule (loop 2, stopped)
+
+Written at stage 4 loop 2, before any look-back or accrual was run on a world with persistence. The record gets honest
+persistence: a per-player durability drawn once for his career on its own stream (lognormal, sigma 0.8, on his chances
+of a spring placement, an in-season stint and a day-to-day absence), and a lost job more likely for a weaker regular (the
+6 per cent scaled by exp(-0.8 x (talent - 0.5))). Sigma was set on W1 alone, over seeds 1601 to 1606 (0.7 gave a mean
+plate-appearance correlation of 0.22, 0.8 gave 0.25, about what a regular's playing time carries year to year). The
+world seed is the first integer from 1601 upward whose world passes W1 to W4, read on league-wide tables only (never the
+five, the look-back's ranking or any accrual):
+- W1 persistence: over 4.4's non-catcher hitters (2023 to 2026, a depth chart's starting lineup, 100 plate appearances
+  in each of the two seasons before), a season's plate appearances correlate with the season before's between 0.15 and
+  0.40, and so do its starts;
+- W2 projection skill: the vendor's preseason projection correlates with those hitters' realised plate appearances
+  between 0.15 and 0.45;
+- W3 injured-list volume: hitters' placements average 8 to 18 a club-season, and 10 to 22 per cent of winter-planned
+  regulars miss the club's first game;
+- W4 integrity: 162 games a club-season, one line per player per game (a traded player leaves his old club's bench
+  and its injured-list cover on the trade's date, a generator fix made while calibrating), nine starters a club per
+  game, no club booked twice on one make-up date.
+
+The seed is kept whatever the look-back and the accrual then show. If no basis wins 4.4 cleanly, if the bases tying the
+winner file different rounded figures, or if the vendor's band or the player's own seasons land, the loop stops and the
+5a71a64 world ships with the record fixes (coordinator, loop 2).
+
+Outcome: stopped. Seed 1601 is the first from 1601 to pass W1 to W4 (W1 0.30 for plate appearances and 0.29 for starts,
+W2 0.31, W3 10.2 placements a club-season and 16.8 per cent missing game one, W4 clean). Its look-back ranks the
+player's own starts blended in at 30 per cent first (0.16837, $5,250,000; players $600,000, $1,400,000, $600,000,
+$1,500,000, $1,200,000). The regulars matched on last season's starts within 10 to 25 tie it (z 0.10 to 0.38 by hitter
+pairs) and file $5,500,000, as does the blend at 40 per cent (z 0.53); on 2024 to 2026 or 2023 to 2025 alone the
+matched set wins. This build's golden basis scores 6.7 per cent above the winner there; the vendor's band ($6,250,000)
+and the players' own seasons ($7,750,000) miss. Seeds 1602 and 1604, drawn after the stop only to see whether the shape
+was structural, gave the same at $5,000,000, with the 20 and 40 per cent blends a bin either side within z 1.5. A blend
+weight is continuous; the look-back pins it to about 0.1, and 0.1 of weight is about a bin. The generator's persistence
+was reverted, with the trade fix made while calibrating (the 1539 world has no line for a traded player's old club
+after his trade, checked).
+
 ## Draw
 
 | Axis | Value |
@@ -100,7 +149,8 @@ together. The seed's header and Situation (FC22) for the world, decision and qua
 fictional). The Raleigh Oaks signed five free-agent hitters between November 24 and December 10, 2026, each contract
 carrying plate-appearance bonuses for the 2027 season (amounts and lines differ by contract). The club's accounting
 policy FIN-14 accrues a playing-time bonus at signing at its expected amount for the season it covers, chooses the basis
-for the probabilities by a look-back (4.4, added November 2026) and rounds totals from unrounded amounts (6). Baseball
+for the probabilities by a look-back (4.4, added November 2026, its test set in close-file working paper CF-14.4) and
+rounds totals from unrounded amounts (6). Baseball
 Operations' depth chart of December 10, 2026 bats the club's own four first (Néstor Cabrera, Gilberto Polanco, Josh
 Atwell and the bat-first catcher Parker Burkett) and the five fifth to ninth: Sawyer Lusk fifth (fourth for his old club
 in 2026), Andres Rivas sixth (second), Drew Brock seventh (third), Ángel Medina eighth (first) and Mike Meeks ninth
@@ -191,7 +241,7 @@ included): the basis that scores lowest in the same look-back and accrues $4,250
   (its own hitters' seasons) files $4,500,000 (LB7), and the one literal combination with the field's ready projection
   (each bonus counted if the vendor's projection reaches it) files $8,000,000. The basis that wins the look-back is the
   analyst's construction from the data (slot rates, catchers apart, whole seasons of the winter plan).
-- **Analyst test:** a strong analyst who reads the five term sheets, FIN-14 (4.4 included) and the depth chart
+- **Analyst test:** a strong analyst who reads the five term sheets, FIN-14 (4.4 included), CF-14.4 and the depth chart
   correctly and runs the look-back on the bases at hand files $4,500,000 (Ends on); the vendor's projection with its
   band files $6,250,000, the players' own seasons $7,750,000, the non-catcher regulars at any slot $5,250,000, every
   regular at the slot with the catchers kept in $3,750,000, the new slot's rate with a normal band $3,500,000, the
@@ -203,7 +253,8 @@ included): the basis that scores lowest in the same look-back and accrues $4,250
   the 2027 championship season, plate appearances as the term sheets define them, the contract standing as signed all
   season with the player in the role the Club plans for him and his health and playing time inside the probability,
   added by player and over the five, the total from the unrounded amounts; the basis chosen by 4.4's look-back
-  (population, window, thresholds and score filed); in `target/FIN-14_player_compensation_accounting_policy.pdf`.
+  (population, window, thresholds and score filed in working paper CF-14.4); in
+  `target/FIN-14_player_compensation_accounting_policy.pdf` and `target/CF-14.4_look-back_working_paper.pdf`.
   Population, outcome, window, unit, comparison and the selection criterion are filed; the basis is not.
 - **No decoy:** no memo, earlier accrual, consultant estimate, agent's figure or stakeholder number states or argues an
   accrual or a probability; 4.4 is a scoring rule that ranks every basis an analyst brings and names none, and its one
@@ -254,10 +305,11 @@ Every row is asserted in `generator/checks.py` under its id.
 | SF8 | rounding path | each player's unrounded expected amount; the total from the unrounded amounts, rounded once | the total as the sum of the rounded player figures | $4,200,000 against $4,250,000, ruled out | FIN-14 6 ("a total is the sum of the unrounded amounts, rounded only where it is reported") |
 | SF9 | the memo's figures | the accrual and each player's amount as in the workbook | other figures | same figures (asserted) | the prompt |
 | SF10 | the as-of | December 11, 2026, every file pulled that day | a later pull | same call | the close-file index; every file stamped with the pull |
-| SF11 | 4.4's "four championship seasons before the contract is signed" | 2023 to 2026 (the 2026 season ended September 27, before the first signing) | 2024 to 2026, or 2023 to 2025 | same call (a construction of the golden ranks first either way, asserted) | FIN-14 4.4 |
-| SF12 | 4.4's "every hitter in a starting lineup" | the lineup rows of each January 31 depth chart, catchers in | the non-catchers only | same call (asserted) | FIN-14 4.4; the depth charts' legend |
-| SF13 | 4.4's "100 plate appearances in each of the two seasons before" | as the League counts them, every club | with the planning club only | same call (asserted) | FIN-14 4.4 ("counting his plate appearances for every club") |
-| SF14 | 4.4's "reached the threshold" | plate appearances at or above it | above it only | same call (asserted) | FIN-14 4.4; the term sheets ("when the Player reaches its threshold") |
+| SF11 | CF-14.4's "four championship seasons before the contract is signed" | 2023 to 2026 (the 2026 season ended September 27, before the first signing) | 2024 to 2026, or 2023 to 2025 | same call (a construction of the golden ranks first either way, asserted) | working paper CF-14.4 (FIN-14 4.4) |
+| SF12 | CF-14.4's "every hitter in a starting lineup" | the lineup rows of each January 31 depth chart, catchers in | the non-catchers only | same call (asserted) | CF-14.4; the depth charts' legend |
+| SF13 | CF-14.4's "100 plate appearances in each of the two seasons before" | as the League counts them, every club | with the planning club only | same call (asserted) | CF-14.4 ("counting his plate appearances for every club") |
+| SF14 | CF-14.4's "reached the threshold" | plate appearances at or above it | above it only | same call (asserted) | CF-14.4; the term sheets ("when the Player reaches its threshold") |
+| SF15 | Ask B's "bonuses we have paid to date" for 2026 | the payroll's payments through the December 11 pull (the October 15 first halves) | the season's bonus as earned, both halves (the January 15, 2027 half included) | the ask's 2026 figures: $825,000 against $412,500 (Briggs $525,000, Candelario $300,000), asserted (B2 'earned') | the prompt ("paid to date"); the register's notes (half on the following January 15); the payroll ends December 11 (B6) |
 
 ## Ladder
 
@@ -320,6 +372,10 @@ Brock seventh (third), Medina eighth (first), Meeks ninth (first).
   ($4,000,000 to $5,500,000). Estimated P(a strong solver implements the look-back) 0.6 to 0.7, P(it then builds the
   population, the slot and the catchers together) 0.25 to 0.3, plus about 0.02 landing through a near or same-slot
   route: P(one lands) about 0.15 to 0.2; P(both of two land), the two correlated (rho about 0.3), about 0.05 to 0.08.
+  The rule 3 re-audit's outside read is higher and is the one to plan on: the basin is wide (any model form on the slot
+  and catching over the depth-chart regulars files $4,250,000), so P(one lands) about 0.2 to 0.25 and P(both) about
+  0.07 to 0.11, borderline at 0.1. Loop 2 kept the world, so the estimate stands; the margin to a basis filing another
+  total is 0.2 to 0.6 per cent of the score (hitter-paired z 2.1 to 2.7).
 - **Worth.** Graded: the total accrual, each player's accrual, the slot rates and the look-back's ranking; never an
   intermediate a valid method could skip.
 
@@ -357,10 +413,10 @@ Each row's assertion is in `checks.py` (C1 to C22).
 Executing the prompt, FIN-14, the term sheets, the depth chart and the feed notes word for word fixes the target (each
 bonus's amount times the probability, as at signing, that the player reaches its line in the 2027 championship season,
 the contract standing all season with the player in his planned role and his health inside the probability), the rule
-that chooses the basis (4.4's look-back, its population, window, thresholds and score) and the arithmetic from the
-probabilities to the rounded totals; it leaves only which basis to build, and every reading of every term converges on
-the golden or violates a quoted line (SF1 to SF14). The literal executor of 4.4 still has to bring bases to rank; the
-one basis the clause's words suggest (its own hitters' seasons) files $4,500,000. The easy answers come from easy bases
+that chooses the basis (4.4's look-back, its population, window, thresholds and score set in working paper CF-14.4)
+and the arithmetic from the probabilities to the rounded totals; it leaves only which basis to build, and every reading
+of every term converges on the golden or violates a quoted line (SF1 to SF15). The literal executor of 4.4 and CF-14.4
+still has to bring bases to rank; the one basis the paper's words suggest (its own hitters' seasons) files $4,500,000. The easy answers come from easy bases
 ranked by the same look-back, never from another reading.
 
 ## Oracles
@@ -547,16 +603,33 @@ about 5 of the recommendation's weight plus 7 and 9 of structure, 21; neither ke
 - A FIN-14 4.4 dated in the 2024 policy: a December 2024 policy cannot name the 2023 to 2026 seasons; 4.4 says "the four
   championship seasons before the contract is signed" and the policy is revised November 12, 2026, after the auditors'
   review of the 2025 close.
+- Honest persistence (loop 2): a career durability (lognormal, sigma 0.8) on each player's injured-list and day-to-day
+  chances and a lost job likelier for a weaker regular, the seed by the rule written first (1601). The look-back's winner
+  became a credibility blend on the player's own starts and the bases tying it filed $5,250,000 and $5,500,000 with
+  different player figures (seeds 1602 and 1604 the same shape a bin lower): a continuous weight the look-back pins to
+  about 0.1, each 0.1 about a bin. Stopped under the coordinator's rule and reverted (World seed rule, Outcome).
+- FIN-14 4.4 carrying the look-back's hitters, thresholds and score in the policy itself: it read as a filed procedure
+  (coordinator, loop 2); the policy keeps the principle and close-file working paper CF-14.4, in the controller's voice,
+  holds the test.
+- League names from about 330 US and 95 Hispanic surnames (408 in all): the signings' surnames recurred 5 to 18 times
+  and near-duplicates crossed them (an Ángel Rivas beside Ángel Medina and Andres Rivas); renamed once every player exists, from
+  ranked pools of 879 US and 254 Hispanic surnames on its own stream, the designed players and the namesake pitcher kept.
+- Ask B's "bonuses we paid" for 2026 open to the season's bonus as earned, both halves (the judge's fork 3, $825,000
+  against $412,500): the prompt says "paid to date" (SF15).
+- The club's 2027 pitching staff drawn new: the 2027 depth chart asked for it before the 2023 to 2026 staffs existed, so
+  no 2026 pitcher was on it; every staff now exists before the league is named, and 2027's carries over from 2026.
 
 ## Build record
 
-Stage 3, built 2026-10-16 (world seed 1511), PAUSED at 5e385a0. Stage 4 repair, built 2026-10-16 from
-`task151/generator/build.py` (world seed 1539).
+Stage 3, built 2026-10-16 (world seed 1511), PAUSED at 5e385a0. Stage 4 repair, built 2026-10-16 (world seed 1539),
+PAUSED at 5a71a64. Stage 4 loop 2, built 2026-10-17 from `task151/generator/build.py` on the same world (seed 1539; the
+platform batting file byte-identical to 5a71a64's, every other change a name, CF-14.4, FIN-14 4.4's wording or the
+club's pitching staffs).
 
-- Pack: 20 files, 5 formats (csv, json, pdf, txt, xlsx); the spine 276,378 batting lines (`lsf_batting_2021_2024.txt`
+- Pack: 21 files, 5 formats (csv, json, pdf, txt, xlsx); the spine 276,378 batting lines (`lsf_batting_2021_2024.txt`
   184,271 rows, `lsf_batting_2025_2026.csv` 92,107); distractors `hvbd_hitter_projections_2022_2027.csv` and
   `league_schedule_2027.csv` (metadata.json); the close-file index `ral_close_file_index_2026-12-11.csv` (was
-  export_manifest).
+  export_manifest); the working paper `CF-14.4_look-back_working_paper.pdf` (loop 2).
 - Main call from the shipped files: $4,250,000 ($4,221,715), players $500,000, $1,000,000, $600,000, $1,200,000, $900,000
   (513,778; 1,010,938; 587,583; 1,198,417; 911,000; adding to $4,200,000); the vendor's band $6,250,000 on the pack and
   the clean truth alike; the look-back's pick among the bases at hand $4,500,000; every construction one rounded figure
@@ -569,18 +642,26 @@ Stage 3, built 2026-10-16 (world seed 1511), PAUSED at 5e385a0. Stage 4 repair, 
   asserted, B1b, B2); the index renamed (H9); world: no age effect, catchers kept to catching jobs, the club's catcher a
   bat-first hitter batting fourth, rainouts 0.5 per cent with clean make-up dates, one veteran's games-started line at
   110.
-- Gates: `checks.py` 276 assertions, 0 failed; `verify.py` agrees on its own pandas and pdftotext path (the accrual, the
+- Loop 2 items: step 4 of the write-up and the look-back sheet price each tested hitter from his own group's seasons
+  (catchers from the catcher regulars'); the prompt's "paid to date" (SF15, the earned reading $825,000 for 2026
+  asserted, B2); the league renamed (945 surnames, the commonest twelve times; the signings' surnames as in the
+  header); FIN-14 4.4 cut to the principle with CF-14.4 holding the test (R3s reads both); the memo's line on the
+  record now states the look-back's finding (the regulars' seasons at the new slot forecast better than each hitter's
+  own recent seasons) instead of saying a regular's next season does not follow his last ones; the 2027 pitching staff
+  carried over from 2026.
+- Gates: `checks.py` 278 assertions, 0 failed; `verify.py` agrees on its own pandas and pdftotext path (the accrual, the
   five player figures, the vendor's band, the at-hand pick, the step figures, the look-back for four bases, the nine
   stints and the bonuses paid); two byte-identical builds (target, goldens, metadata.json, submission.md, figures.json,
-  target.zip b6ee5326); container audit clean on the pack and the goldens; `figures_check.py` 87 figures, 0 absent;
-  `precut.py` exit 0; `voice-check.py` PASS (766 characters, the prompt unchanged); `leak.py` REVIEW, no LEAK (answered
-  below); `guard.py validate` clean, `heart` WARN (answered under Draw), `surface` promotes nothing.
-- `leak.py` REVIEW lines, each harmless: FIN-14's "4.4" is the section the write-up cites; the register's "$125,000
+  target.zip 83bf068f); container audit clean on the pack and the goldens; `figures_check.py` 87 figures, 0 absent;
+  `precut.py` exit 0 (49 checks); `voice-check.py` PASS (779 characters); `leak.py` REVIEW, no LEAK (answered below);
+  `guard.py validate` clean, `heart` WARN (answered under Draw), `surface` promotes nothing.
+- `leak.py` REVIEW lines, each harmless: FIN-14's and CF-14.4's "4.4" is the section the write-up cites and the paper
+  serves; the register's "$125,000
   each" and "$225,000 each" beside the $125,000 and $225,000 the club paid two veterans (each reached one line with the
   club; the register's term is the input); the term sheets carry the call's words (they are the contracts the call
-  accrues for); FIN-14 carries seven of the stump paragraph's terms (appearances, look-back, planned, starting,
-  contract, lineup): 4.3 names the planned role and 4.4 the hitters a basis is tested on, and neither names a basis, a
-  slot, a rate per start or catchers; the feed notes carry five (appearances, catchers in "catcher's interference",
+  accrues for); FIN-14 and CF-14.4 carry five of the stump paragraph's terms each (FIN-14: appearances, look-back,
+  planned, contract, record; CF-14.4: appearances, look-back, starting, contract, lineup): 4.3 names the planned role
+  and CF-14.4 the hitters a basis is tested on, and neither names a basis, a slot, a rate per start or catchers; the feed notes carry five (appearances, catchers in "catcher's interference",
   lineup, batting, position), field definitions naming no method; the projections, the depth charts, the wire and the
   term sheets name the five beside numbers (projected plate appearances, ages, transaction IDs, contract terms), none an
   accrual or a ranking on it; the calendar's and the 2027 schedule's dates after December 11, 2026 are the 2027 season's

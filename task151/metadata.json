@@ -17,7 +17,7 @@
   ],
   "stated_inputs": [],
   "input_gates": {
-    "files": 20,
+    "files": 21,
     "formats": [
       "csv",
       "json",
@@ -40,9 +40,18 @@
   "generator": "task151/generator/build.py",
   "files": [
     {
+      "path": "CF-14.4_look-back_working_paper.pdf",
+      "format": "pdf",
+      "bytes": 2641,
+      "rows": null,
+      "source": "Constructed: Triangle Baseball Club, LLC Finance Department, close-file working paper CF-14.4, the look-back under FIN-14 4.4 (November 12, 2026)",
+      "date": "2026-12-11",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
       "path": "FIN-14_player_compensation_accounting_policy.pdf",
       "format": "pdf",
-      "bytes": 4970,
+      "bytes": 4647,
       "rows": null,
       "source": "Constructed: Triangle Baseball Club, LLC Finance Department, Accounting Policy FIN-14 Player Compensation (effective January 1, 2025)",
       "date": "2026-12-11",
@@ -51,7 +60,7 @@
     {
       "path": "hvbd_hitter_projections_2022_2027.csv",
       "format": "csv",
-      "bytes": 437157,
+      "bytes": 435496,
       "rows": 4805,
       "source": "Constructed: Harlan Voss Baseball Data (fictional vendor), preseason hitter projections 2022 to 2027",
       "date": "2026-12-11",
@@ -60,7 +69,7 @@
     {
       "path": "hvbd_winter_depth_charts_2021_2026.xlsx",
       "format": "xlsx",
-      "bytes": 146173,
+      "bytes": 146606,
       "rows": null,
       "source": "Constructed: Harlan Voss Baseball Data (fictional vendor), projected depth charts, January 31 snapshots 2021 to 2026",
       "date": "2026-12-11",
@@ -87,7 +96,7 @@
     {
       "path": "league_office_il_report_2024_2026.csv",
       "format": "csv",
-      "bytes": 633999,
+      "bytes": 632457,
       "rows": 7389,
       "source": "Constructed: League office, weekly injured-list report, championship seasons 2024 to 2026",
       "date": "2026-12-11",
@@ -141,7 +150,7 @@
     {
       "path": "lsf_player_id_crosswalk.csv",
       "format": "csv",
-      "bytes": 56093,
+      "bytes": 55654,
       "rows": 1337,
       "source": "Constructed: League Statistics Feed, legacy player code to League player ID crosswalk built at the 2025 platform change",
       "date": "2026-12-11",
@@ -150,7 +159,7 @@
     {
       "path": "lsf_transactions_2024_2026.json",
       "format": "json",
-      "bytes": 1606169,
+      "bytes": 1603071,
       "rows": 5378,
       "source": "Constructed: League Statistics Feed, transaction wire January 1, 2024 to December 11, 2026 (JSON export)",
       "date": "2026-12-11",
@@ -159,8 +168,8 @@
     {
       "path": "ral_close_file_index_2026-12-11.csv",
       "format": "csv",
-      "bytes": 2408,
-      "rows": 20,
+      "bytes": 2542,
+      "rows": 21,
       "source": "Constructed: Raleigh Oaks Finance, index of the December 2026 close file as pulled December 11, 2026",
       "date": "2026-12-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -168,7 +177,7 @@
     {
       "path": "ral_depth_chart_2027.xlsx",
       "format": "xlsx",
-      "bytes": 6060,
+      "bytes": 6044,
       "rows": null,
       "source": "Constructed: Raleigh Oaks Baseball Operations, 2027 depth chart as of December 10, 2026",
       "date": "2026-12-11",
@@ -177,7 +186,7 @@
     {
       "path": "ral_hris_legacy_employee_map.csv",
       "format": "csv",
-      "bytes": 2522,
+      "bytes": 2494,
       "rows": 57,
       "source": "Constructed: Raleigh Oaks HRIS, legacy employee number map from the January 2025 migration",
       "date": "2026-12-11",
@@ -195,7 +204,7 @@
     {
       "path": "ral_payroll_player_earnings_2023_2026.csv",
       "format": "csv",
-      "bytes": 101038,
+      "bytes": 100459,
       "rows": 1364,
       "source": "Constructed: Raleigh Oaks HRIS payroll, player earnings register, pay dates January 2023 to December 11, 2026",
       "date": "2026-12-11",
@@ -204,7 +213,7 @@
     {
       "path": "ral_player_contract_register_2024_2026.xlsx",
       "format": "xlsx",
-      "bytes": 9778,
+      "bytes": 9825,
       "rows": null,
       "source": "Constructed: Raleigh Oaks Finance and Baseball Operations, player contract register extract, 2024 to 2026 seasons",
       "date": "2026-12-11",

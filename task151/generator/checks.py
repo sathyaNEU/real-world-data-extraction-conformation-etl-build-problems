@@ -32,7 +32,7 @@ NORM = NormalDist()
 DASH = re.compile("[%s%s]" % (chr(0x2013), chr(0x2014)))
 TASK = K.TASK
 MAIN_FILES = [REC.F_LEGACY, REC.F_BAT, REC.F_XWALK, REC.F_CLUBS, REC.F_DC, REC.F_DC27, DOC.F_TERMS, DOC.F_FIN14,
-              DOC.F_NOTES]
+              DOC.F_WP, DOC.F_NOTES]
 ASK_FILES = [REC.F_TRANS, REC.F_ILREP, DOC.F_ILRULES, REC.F_CAL, REC.F_PAY, REC.F_HRIS, REC.F_CODES, REC.F_REG]
 DISTRACTORS = [REC.F_PROJ, REC.F_SCHED27]
 METHOD = (r"per start|comparab|distribution|percentile|share of|simulat|resampl|bootstrap|regulars' seasons|"
@@ -253,14 +253,16 @@ def run(target, golden, W, R, meta_path):
     C("R3c no memo, draft, estimate or stakeholder figure ships", not memo_like and not re.search(
         r"accru\w* (of|at) \$|\$[\d,]+ (accrual|accrued)", " ".join(texts.values()), re.I), memo_like)
     # ---- R3s: every shipped sentence that bears on how the figure is computed, executed literally
-    fin = texts[DOC.F_FIN14]
+    fin = texts[DOC.F_FIN14] + " " + texts[DOC.F_WP]          # FIN-14 and its working paper CF-14.4 (4.4)
     terms = texts[DOC.F_TERMS]
     how = fin + " " + terms + " " + texts[REC.F_DC27] + " " + texts[DOC.F_NOTES] + " " + texts[REC.F_DC]
     C("R3s no shipped sentence names a distribution, a comparison set, a rate per start or how starts are lost",
       not re.search(METHOD, how, re.I), re.findall(r".{40}(?:%s).{40}" % METHOD, how, re.I)[:3])
-    C("R3s FIN-14 fixes the estimand (4.2, 4.3) and the selection criterion (4.4), and names no basis",
+    C("R3s FIN-14 fixes the estimand (4.2, 4.3) and the selection criterion (4.4, its population, thresholds and score "
+      "in working paper CF-14.4), and names no basis",
       "multiplied by the probability" in fin and "the contract stands as signed through the season" in fin and
-      "The Club uses the basis with the lowest average" in fin and not re.search(
+      "set in close-file working paper CF-14.4" in texts[DOC.F_FIN14] and
+      "The Club uses the basis with the lowest average" in texts[DOC.F_WP] and not re.search(
           r"projection|past seasons|player's record|regress|comparab|lineup slot|batting order|per start|catch|"
           r"\bstarts\b|\bslot", fin, re.I), re.findall(r".{30}(?:projection|regress|comparab|slot|catch).{30}", fin, re.I))
     vp = RV["vendor point"]
@@ -559,7 +561,7 @@ def run(target, golden, W, R, meta_path):
       "was paid to a player under a contract in this register that carries plate-appearance terms" in notes and
       "Both halves are the bonus of the season in which it was earned" in notes and
       "is one payment" in notes and "one E40 line can carry more than one bonus" in notes)
-    for mode in ("face", "code_payyear", "code_season", "register", "gross", "payyear", "five"):
+    for mode in ("face", "code_payyear", "code_season", "register", "gross", "payyear", "five", "earned"):
         B2 = calc.ask_b(P, mode)
         T2 = calc.ask_b_totals(B2)
         same = sum(1 for k2, v in B.items() if abs(B2.get(k2, 0) - v) < 0.5) + sum(
@@ -611,6 +613,12 @@ def run(target, golden, W, R, meta_path):
       abs(B.get((2025, v4), 0) - with_club) < 0.5 and with_club > 0, (reg[(2025, v4)], B.get((2025, v4)), with_club))
     C("B6 the 2026 second halves are not paid by December 11, 2026", not any(r["pay_date"] > "2026-12-11" for r in pay)
       and not any(r["pay_date"].startswith("2027") for r in pay))
+    earned = calc.ask_b_totals(calc.ask_b(P, "earned"))
+    ptxt = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
+    C("SF15 the prompt asks for the bonuses paid to date: the 2026 second halves fall after the pull, and the season's "
+      "bonus as earned (both halves) files 2026 at %s, not %s" % (K.money(earned.get(2026, 0)), K.money(BT[2026])),
+      "we have paid to date for each of the 2024, 2025 and 2026 seasons" in ptxt and
+      abs(earned.get(2026, 0) - BT[2026]) >= 0.5 and all(abs(earned[y] - BT[y]) < 0.5 for y in (2024, 2025)), earned)
     void = [r for r in pay if r["status"] in ("VOIDED", "VOID REVERSAL")]
     C("B7 one void and reissue nets to one payment", len(void) == 2 and sum(float(r["amount"]) for r in void) == 0)
     hm = {r["legacy_employee_no"] for r in csv.DictReader(open(os.path.join(target, REC.F_HRIS), encoding="utf-8"))}
@@ -643,7 +651,7 @@ def run(target, golden, W, R, meta_path):
         C("SEP2 both asks unchanged with the distractors deleted", calc.ask_a(Pa) == A and calc.ask_b(Pa) == B)
     finally:
         shutil.rmtree(tmp)
-    main_docs = " ".join(texts[f] for f in (DOC.F_FIN14, DOC.F_TERMS, REC.F_DC27, DOC.F_NOTES))
+    main_docs = " ".join(texts[f] for f in (DOC.F_FIN14, DOC.F_WP, DOC.F_TERMS, REC.F_DC27, DOC.F_NOTES))
     C("SEP3 no main-call document carries an ask's organ (payroll timing, earning codes, injured-list dates)",
       not re.search(r"January 15|earning code|E40|BPA|eligible|retroactive|half in the first payroll", main_docs))
     for f in DISTRACTORS:

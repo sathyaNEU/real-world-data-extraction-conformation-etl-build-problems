@@ -1,32 +1,32 @@
 {
   "task": "task151",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science/resampling-simulation-monte-carlo-methods",
   "objective": "forecasting",
   "stage": 4,
   "stage_name": "check",
-  "updated": "2026-10-16",
+  "updated": "2026-10-17",
   "stump": "Running FIN-14 4.4's look-back on the bases at hand (the vendor's projection with a band from its past misses, the players' own seasons, the depth charts' starting nines' seasons taken whole) keeps the starting nines' seasons and accrues $4,500,000; the step that lands it there is reading each signing off seasons that keep the catchers in and ignore where each hitter bats, when his 2027 total is his new lineup slot's plate appearances per start times the starts a winter-planned non-catcher regular makes, the basis that scores lowest and accrues $4,250,000.",
   "architecture": 1,
-  "loops": 1,
+  "loops": 2,
   "precut": {
     "exit": 0,
-    "date": "2026-10-16",
+    "date": "2026-10-17",
     "checks": 49
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-16, on the repaired pack; every REVIEW line answered in the design note's Build record)",
-    "reader": "round 1 (stage 3 pack): no leak, decisive step analytical (coordinator relay); FIN-14 4.4 is new text for a targeted re-read"
+    "leak_py": "REVIEW, no LEAK (2026-10-17, on the loop 2 pack; every REVIEW line answered in the design note's Build record)",
+    "reader": "round 2 (repaired pack): no leak (coordinator relay); CF-14.4 is new text, the 4.4 test moved out of the policy unchanged"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective, repeat.gate_g, people.first and people.last on one veteran's name; answered under Draw)",
     "nearest": "heart 0.05 (task132; task105 v1 lineage), surface 0 promoted (nearest task38, task147, task32 at 0.100)"
   },
   "judge": {
-    "verdict": "round 1 NOT_DETERMINISTIC (competing_defensible_answer on the main call)",
-    "disposition": "SEND_BACK, repaired at stage 4",
-    "report": "task151/determinism_check_report_round1.md"
+    "verdict": "round 2 DETERMINISTIC (round 1 NOT_DETERMINISTIC, competing_defensible_answer on the main call)",
+    "disposition": "APPROVE at round 2; the optional step 4 wording taken at loop 2",
+    "report": "task151/determinism_check_report_round2.md (round 1: task151/determinism_check_report_round1.md)"
   },
   "returned": [
     {
@@ -34,9 +34,15 @@
       "by": "determinism judge round 1 and the rule 3 audit (coordinator)",
       "finding": "no filed preference among the bases (vendor band, vendor residuals, own seasons defensible); the starting nines' raw seasons landing the call; 4.3's health reading; Ask B population and attribution; rounding path; Ask A effective date; the manifest's name",
       "repair": "FIN-14 4.4 filed look-back (selection criterion, no method named), lineup fifth to ninth with terms re-searched, world redrawn (seed 1539), 4.3 restated, register notes, FIN-14 6 rounding, rules 22.1 backdating, close-file index; golden re-derived $4,250,000"
+    },
+    {
+      "date": "2026-10-17",
+      "by": "re-judge round 2 (DETERMINISTIC, APPROVE) and the rule 3 re-audit (AT_RISK), coordinator loop 2",
+      "finding": "realism: the record carries no persistence (vendor projection 0.005, last season -0.04) and the seed search is noise-picking; the look-back's catcher pricing fork in step 4; Ask B's 2026 'paid' fork; the league's names (the signings' surnames recurring, near-duplicates); 4.4 over-specified in the policy",
+      "repair": "honest persistence tried under a seed rule written first (seed 1601): the look-back's credibility blends tie at $5,250,000 and $5,500,000, total not determinate, stopped and reverted under the coordinator's rule; the 5a71a64 world kept (seed 1539); step 4 prices catchers from catchers' seasons; prompt 'paid to date' (SF15); league renamed from wider pools; FIN-14 4.4 cut to the principle with working paper CF-14.4 holding the test; the 2027 pitching staff carried over from 2026"
     }
   ],
-  "resume": "stage 4: judge round 2 on the repaired pack (and the leak reader's targeted read of FIN-14 4.4)",
+  "resume": "stage 4: judge round 3 on the loop 2 pack (record fixes on the 5a71a64 world), then ship",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -45,11 +51,12 @@
   "portal_status_date": "",
   "wave": "wave 4 (new), seed FC22 (world, decision and quantity kept; the filed projection method and the shared-slot driver dropped; pitfall re-found)",
   "build": {
-    "checks": 276,
+    "checks": 278,
     "verify": "agreeing",
     "byte_identical": true,
     "figures_check": "87 of 87",
-    "target_zip_sha256": "b6ee5326bc84d051d85b70f009020564fe26590f2ad8f0965f9149eb8405c415",
-    "world_seed": 1539
+    "target_zip_sha256": "83bf068ff78b0077586aab20b9fd924c67131c6ba720ef45aae7951ca36d483b",
+    "world_seed": 1539,
+    "files": 21
   }
 }

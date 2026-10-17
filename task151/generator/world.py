@@ -884,6 +884,8 @@ def record_stints(L, y, AV, cg):
 
 
 # ---------------------------------------------------------------------------------------------------------- the design
+# the club's designed players and the signing's namesake pitcher: their names are the build's, never redrawn
+DESIGNED = ("P4", "P1", "P2", "P3", "P5", "RC", "RSS", "RCF", "RRF", "INC", "V1", "V2", "V3", "V4", "V5", "qTWIN")
 FIVE_BORN = {"P4": (1992, 9, 14), "P1": (1995, 10, 2), "P2": (1993, 11, 21), "P3": (1996, 8, 6), "P5": (1994, 12, 9)}
 FIVE_POS = {"P4": "3B", "P1": "1B", "P2": "1B", "P3": "LF", "P5": "2B"}
 FIVE_TALENT = {"P4": 1.1, "P1": 1.3, "P2": 1.2, "P3": 1.0, "P5": 0.8}

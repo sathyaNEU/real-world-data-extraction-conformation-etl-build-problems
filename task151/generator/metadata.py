@@ -33,6 +33,8 @@ SOURCES = {
     R.F_CODES: "Raleigh Oaks HRIS payroll, earning codes (legacy payroll and HRIS)",
     DOC.F_FIN14: "Triangle Baseball Club, LLC Finance Department, Accounting Policy FIN-14 Player Compensation "
                  "(effective January 1, 2025)",
+    DOC.F_WP: "Triangle Baseball Club, LLC Finance Department, close-file working paper CF-14.4, the look-back under "
+              "FIN-14 4.4 (November 12, 2026)",
     DOC.F_TERMS: "Raleigh Oaks Baseball Operations, summary of terms of the five free-agent hitters signed for 2027",
     DOC.F_ILRULES: "League office, League Rules (2024 edition) Article 22 Injured Lists, excerpt",
     DOC.F_NOTES: "League Statistics, field notes for the batting lines, crosswalk, club directory and calendar",

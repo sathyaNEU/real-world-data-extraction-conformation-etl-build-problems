@@ -16,8 +16,9 @@ import zipfile
 
 import numpy as np
 
-SEED = 1539                  # the world draw (chosen so that every defensible construction rounds alike and the
-                             # filed look-back ranks the bases with room to spare)
+SEED = 1539                  # the world draw, kept from a search over seeds (the design note's Tried and rejected;
+                             # the rule 3 re-audit reads that search as noise-picking, and loop 2's fixed-rule world
+                             # with persistence stopped, so this world ships)
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")

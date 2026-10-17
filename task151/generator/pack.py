@@ -6,12 +6,16 @@ import os
 
 import common as K
 import docs as DOC
+import names as NM
 import records as R
 import world as WD
 
 
 def build_world():
-    return WD.run()
+    L = WD.run()
+    R.club_people(L)            # the club's pitching staffs exist before the league is named
+    NM.rename_league(L, WD.DESIGNED, K.rng("league names"))
+    return L
 
 
 def write_pack(L, out):
@@ -39,6 +43,7 @@ def write_pack(L, out):
     rows[R.F_CODES] = R.write_earning_codes(out)
     rows[R.F_REG] = R.write_register(L, out, new, people)
     DOC.write_fin14(out)
+    DOC.write_working_paper(out)
     DOC.write_term_sheets(L, out)
     DOC.write_il_rules(out)
     DOC.write_feed_notes(out)
