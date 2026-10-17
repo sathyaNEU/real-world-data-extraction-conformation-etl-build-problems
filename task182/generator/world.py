@@ -243,14 +243,48 @@ DUP_FROM, DUP_TO = 14, 16          # local hours duplicated
 
 # Spells with no rows at all in the historian: the radio link to the PLC has dropped through the whole
 # survey, most of them short, one of them most of a day. The counters carry through every one of them.
+# None of them covers a 07:00 or a 19:00 stamp on a weekday or a Monday 00:00, so every window a figure
+# is read over has a row at both of its ends.
 PLC_GAPS = [
     (dt.datetime(2026, 9, 2, 10, 15), 11),
     (dt.datetime(2026, 9, 10, 14, 30), 7),
     (dt.datetime(2026, 9, 16, 11, 15), 5),
-    (dt.datetime(2026, 9, 24, 13, 0), 80),
+    (dt.datetime(2026, 9, 25, 19, 15), 80),
     (dt.datetime(2026, 9, 29, 9, 30), 9),
     (dt.datetime(2026, 10, 7, 8, 0), 13),
 ]
+# And the spells where the link dropped but the historian kept writing: the interface holds the last
+# value it had and writes it again every scan, so the rows are there and the plant's state is not. Two a
+# week, one inside the working day and one outside it. None covers a 07:00, a 19:00 or a Monday 00:00
+# stamp, and none touches a spell with no rows at all.
+PLC_HELD = [
+    (dt.datetime(2026, 9, 2, 15, 30), 4),
+    (dt.datetime(2026, 9, 5, 2, 45), 6),
+    (dt.datetime(2026, 9, 9, 9, 45), 3),
+    (dt.datetime(2026, 9, 13, 21, 15), 5),
+    (dt.datetime(2026, 9, 17, 13, 30), 5),
+    (dt.datetime(2026, 9, 19, 4, 0), 4),
+    (dt.datetime(2026, 9, 23, 8, 15), 4),
+    (dt.datetime(2026, 9, 27, 23, 30), 6),
+    (dt.datetime(2026, 10, 1, 15, 45), 3),
+    (dt.datetime(2026, 10, 3, 5, 30), 5),
+    (dt.datetime(2026, 10, 8, 10, 30), 4),
+    (dt.datetime(2026, 10, 11, 20, 45), 5),
+]
+
+# The third blower was added when the plant was upgraded and tied into the aeration main downstream of
+# the header's flow meter, so it carries its own meter. The duty rotates: the shift puts a different
+# machine on lead each week, which moves BL-03's share of the air the lanes take without moving the air
+# itself, so the header's own figure swings against the works' inlet load and the two meters' sum does
+# not. Shares of the total air BL-03 carried, week by week (the survey's six weeks and the two either
+# side of them).
+BL03_SHARE = [0.33, 0.24, 0.37, 0.28, 0.40, 0.26, 0.31, 0.35]
+
+# The gas booster on the digester's gas skid runs with the plant and takes a drain and purge cycle once a
+# day, and it keeps pushing gas to the flare through the engine's own stops. It makes no measurable sound
+# at any monitoring position. Minutes of the purge and the hour of the day it starts, by day of the week.
+BOOSTER_PURGE_MIN = 20
+BOOSTER_PURGE_AT = [(9, 40), (14, 10), (11, 25), (16, 5), (10, 50), (13, 35), (8, 55)]
 
 # The engine's hour counter was changed during a weekly inspection, with the engine down, so no running
 # hour falls either side of the change.
