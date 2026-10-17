@@ -305,6 +305,26 @@ def run(target, g=None):
        not any(r["specimen_id"] in comparison_ids for r in extra), str(len(extra)))
     ok("ask 1 every comparison specimen has exactly one verdict row",
        all(sum(1 for r in panel_rows if r["specimen_id"] == s) == 1 for s in list(comparison_ids)[:400]))
+    # A1's silent primary: a repeat panel typed under a second accession of the same specimen
+    cross_all = rows_of(os.path.join(target, W.FILES["crosswalk"]), "\t")
+    by_ref = {}
+    for r in cross_all:
+        by_ref.setdefault(r["biobank_ref"], []).append(r["specimen_id"])
+    reacc = {s for ids in by_ref.values() if len(ids) > 1 for s in ids}
+    ok("ask 1 the re-accessioned specimens exist", len(reacc) >= 2 * W.REACCESSIONED - 40, str(len(reacc)))
+    ok("ask 1 no re-accession sits in the comparison",
+       not (reacc & comparison_ids) or all(len(by_ref[r["biobank_ref"]]) == 1 for r in cross_all
+                                           if r["specimen_id"] in comparison_ids),
+       "comparison specimens sharing a biobank reference")
+    naive_week = {}
+    for r in panel_rows:
+        day = r["report_date"]
+        if day[:7] in ("2027-04", "2027-05"):
+            naive_week.setdefault(r["report_ref"], set()).add(r["specimen_id"])
+    for w in g["panel_weeks"]:
+        ok("ask 1 the accession count misses %s" % w["report_ref"],
+           len(naive_week[w["report_ref"]]) != w["specimens"],
+           "%d against %d" % (len(naive_week[w["report_ref"]]), w["specimens"]))
     ok("ask 2 covers twelve months", len(g["baseline"]) == 12)
     hist = rows_of(os.path.join(target, W.FILES["history"]))
     ok("ask 2 the history is 25,000 rows or more", len(hist) >= 25000, str(len(hist)))
@@ -341,20 +361,53 @@ def run(target, g=None):
         autoer[0] += 1 if round(only, 1) != round(b["per_thousand"], 1) else 0
         both = 1000.0 * ored[b["month"]][1] / ored[b["month"]][0]
         ok("ask 2 reading the two columns together misses %s" % b["month"],
-           both - b["per_thousand"] > 0.9, "%.2f against %.2f" % (both, b["per_thousand"]))
+           round(both, 1) != round(b["per_thousand"], 1), "%.2f against %.2f" % (both, b["per_thousand"]))
         ok("ask 2 %s sits mid-bin" % b["month"], _slack(b["per_thousand"], 1) > 0.02)
     ok("ask 2 the lazy read misses widely in most months", wide >= 8, str(wide))
     ok("ask 2 the automatic column alone misses most months", autoer[0] >= 9, str(autoer[0]))
-    vol = {r["reporting_month"]: int(r["specimens_released"].replace(" ", ""))
+    # A2's silent primary: a correction released again inside the month, and a pack that counts releases
+    vol = {r["reporting_month"]: int(r["results_released"].replace(" ", ""))
            for r in rows_of(os.path.join(target, W.FILES["volumes"]))}
-    ok("ask 2 ties to the reporting pack", all(vol[b["month"]] == b["released"] for b in g["baseline"]))
-    ok("ask 3 covers six levels", len(g["dilution"]) == 6)
+    rowcount = {}
+    for r in hist:
+        if r["release_status"] == "RELEASED" and r["released_date"]:
+            m = r["released_date"][:7]
+            d = rowcount.setdefault(m, [0, 0])
+            d[0] += 1
+            call = r["review_outcome"] if r["call_source"] == "REVIEWED" else r["hetx_call"]
+            d[1] += 1 if call in ("FLAG", "FLAGGED") else 0
+    ok("ask 2 the reporting pack counts releases, and ties with the row count",
+       all(vol[b["month"]] == rowcount[b["month"]][0] for b in g["baseline"]))
+    ok("ask 2 the pack is above the specimens released",
+       all(vol[b["month"]] > b["released"] for b in g["baseline"]))
+    for b in g["baseline"]:
+        naive_rate = 1000.0 * rowcount[b["month"]][1] / rowcount[b["month"]][0]
+        ok("ask 2 the release-row route misses %s" % b["month"],
+           round(naive_rate, 1) != round(b["per_thousand"], 1),
+           "%.2f against %.2f" % (naive_rate, b["per_thousand"]))
+    # A3's silent primary: the series was prepared from two stocks and each level ran from one
+    import openpyxl as _xl
+    _wb = _xl.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
+    first_row, stock_of = {}, {}
+    for row in _wb["Prepared levels"].iter_rows(min_row=2, values_only=True):
+        first_row.setdefault(str(row[1]).strip().upper(), float(row[3]))
+    for row in _wb["Replicate results"].iter_rows(min_row=2, values_only=True):
+        if row[4] not in (None, ""):
+            stock_of[str(row[0]).strip().upper()] = str(row[1]).strip()
+    ok("ask 3 the panel ran from one stock", set(stock_of.values()) == {"NS-27-04"},
+       str(set(stock_of.values())))
+    ok("ask 3 the workbook keeps the series of both stocks",
+       len({str(r[0]).strip() for r in _wb["Prepared levels"].iter_rows(min_row=2, values_only=True)}) == 2)
+    missed = sum(1 for d in g["dilution"] if abs(first_row[d["level"]] - d["prepared"]) > 1e-9)
+    ok("ask 3 the level-only join takes the other stock at every level", missed == len(W.DILUTION),
+       str(missed))
+    ok("ask 3 covers the panel's levels", len(g["dilution"]) == len(W.DILUTION))
     for d in g["dilution"]:
         ok("ask 3 %s sits mid-bin" % d["level"], _slack(d["median_recovery"], 3) > 0.0004)
         ok("ask 3 %s recovers against the prepared fraction" % d["level"],
            0.80 < d["median_recovery"] < 1.10)
     ok("ask 3 the replicates within a fifth vary",
-       len({d["within_fifth"] for d in g["dilution"]}) >= 3)
+       len({d["within_fifth"] for d in g["dilution"]}) >= 2)
     ok("ask 3 the per cent label is two orders from the prepared level",
        all(abs(d["median_recovery"] - d["median_recovery"] * 100) > 1 for d in g["dilution"]))
 
@@ -405,9 +458,9 @@ def run(target, g=None):
     import openpyxl as _x
     wb = _x.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
     dil = [r for r in wb["Replicate results"].iter_rows(min_row=2, values_only=True)]
-    d5 = [r[4] for r in dil if str(r[0]).upper() == "L5"]
-    d6 = [r[4] for r in dil if str(r[0]).upper() == "L6"]
-    ok("each level was sequenced on its own", d5 != d6)
+    depths = [[r[5] for r in dil if str(r[0]).upper() == lv] for lv, _l, _f in W.DILUTION]
+    ok("each level was sequenced on its own",
+       all(depths[i] != depths[j] for i in range(len(depths)) for j in range(i + 1, len(depths))))
     lower = [i for i, r in enumerate(dil) if str(r[0])[0].islower()]
     ok("the operator's casing is not a pattern",
        len({b - a for a, b in zip(lower, lower[1:])}) > 2)
@@ -419,6 +472,16 @@ def run(target, g=None):
        max(r["completed_date"] for r in mf_rows) <= "2027-06-18")
     ok("the protocol's annex does not predate its issue",
        re.search(r"requested the verification on 5 February 2027", doc_text) is not None)
+
+    # ---------------------------------------------------------------- the ask layer, measured
+    import cracker as CR
+    rows_c = CR.score(target, g)
+    total_f, kept_f, share, pair, mirror = CR.ceiling(rows_c)
+    for ask, n, hits in rows_c:
+        ok("the cracker's path misses at least half of %s" % ask, hits <= n // 2,
+           "keeps %d of %d" % (hits, n))
+    ok("the measured pair ceiling is at or under 40", pair <= 40.0, "%.1f" % pair)
+    ok("the measured mirror leakage is under 35 per cent", mirror < 35.0, "%.1f" % mirror)
 
     # ---------------------------------------------------------------- gates, provenance, realism
     files = sorted(os.listdir(target))
@@ -440,7 +503,8 @@ def run(target, g=None):
        not (read_by_solution & {os.path.basename(d) for d in meta["distractor_files"]}))
     dic = {r["file"] for r in rows_of(os.path.join(target, W.FILES["dictionary"]))}
     ok("the dictionary names every validation extract",
-       dic == {W.FILES[k] for k in ("qc_a", "qc_b", "mf", "panel", "history")}, str(dic))
+       dic == {W.FILES[k] for k in ("qc_a", "qc_b", "mf", "panel", "history", "crosswalk",
+                                     "amendments")}, str(dic))
     manifest = rows_of(os.path.join(target, W.FILES["manifest"]))
     ok("the manifest names every shipped file",
        {r["file"] for r in manifest} == set(files) - {W.FILES["manifest"]},

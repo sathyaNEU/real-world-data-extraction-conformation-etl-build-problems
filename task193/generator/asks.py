@@ -29,9 +29,12 @@ def quarter_of(d):
 # ---------------------------------------------------------------- A1 files
 def write_exceptions(tgt, rejected):
     rows = []
-    for r in sorted(rejected, key=lambda r: (r["day"], r["line"])):
-        rows.append(["EX%08d" % r["line"], r["key"], r["vnr"], W.iso(r["day"]),
+    # the register numbers an exception when it writes it, so the references run in the order the
+    # lines were submitted, not the order they were dispensed in
+    for i, r in enumerate(sorted(rejected, key=lambda r: (r["submitted"], r["line"]))):
+        rows.append(["EX-2026-%05d" % (1041 + i), r["key"], r["vnr"], W.iso(r["day"]),
                      r["pharmacy"], W.iso(r["submitted"]), r["reason"]])
+    rows.sort(key=lambda x: (x[3], x[0]))
     return write_csv(os.path.join(tgt, "submission_exceptions.csv"),
                      ["exception_ref", "person_key", "vnr", "date_of_dispensing", "pharmacy",
                       "submitted_on", "rejection_reason"], rows)

@@ -18,19 +18,19 @@
   "NSL14": 900
  },
  "highest_band_hz": {
-  "NSL01": 400,
+  "NSL01": 100,
   "NSL02": 400,
-  "NSL03": 400,
+  "NSL03": 100,
   "NSL04": 400,
   "NSL05": "none",
-  "NSL06": 400,
-  "NSL07": 400,
+  "NSL06": 100,
+  "NSL07": 100,
   "NSL08": "none",
-  "NSL09": 400,
+  "NSL09": 100,
   "NSL10": "none",
   "NSL11": 400,
-  "NSL12": 400,
-  "NSL13": 400,
+  "NSL12": 100,
+  "NSL13": 100,
   "NSL14": "none"
  },
  "margin_db": 0.8,
@@ -43,12 +43,12 @@
   "NSL06": 46.6,
   "NSL07": 48.2,
   "NSL08": 42.2,
-  "NSL09": 44.8,
+  "NSL09": 44.7,
   "NSL10": 38.5,
   "NSL11": 50.1,
   "NSL12": 44.3,
   "NSL13": 46.2,
-  "NSL14": 42.4
+  "NSL14": 42.5
  },
  "plan_clauses": [
   "2.1",
@@ -63,20 +63,20 @@
   "6.1"
  ],
  "residual_db": {
-  "NSL01": 31.1,
-  "NSL02": 32.2,
-  "NSL03": 37.6,
+  "NSL01": 31.2,
+  "NSL02": 31.9,
+  "NSL03": 37.4,
   "NSL04": 39.3,
-  "NSL05": 33.3,
+  "NSL05": 33.9,
   "NSL06": 40.9,
-  "NSL07": 35.5,
-  "NSL08": 32.9,
-  "NSL09": 29.3,
-  "NSL10": 31.5,
+  "NSL07": 36.3,
+  "NSL08": 32.8,
+  "NSL09": 29.8,
+  "NSL10": 31.4,
   "NSL11": 36.3,
   "NSL12": 36.4,
-  "NSL13": 32.3,
-  "NSL14": 32.5
+  "NSL13": 32.4,
+  "NSL14": 32.1
  },
  "rungs": {
   "rung0_complaints": {
@@ -91,7 +91,7 @@
    ]
   },
   "rung1_total": {
-   "margin_db": 0.344,
+   "margin_db": 0.382,
    "next": "NSL13",
    "slate": [
     "NSL02",
@@ -102,7 +102,7 @@
    ]
   },
   "rung2_la90": {
-   "margin_db": 1.365,
+   "margin_db": 1.436,
    "next": "NSL07",
    "slate": [
     "NSL03",
@@ -113,18 +113,18 @@
    ]
   },
   "rung2_p10": {
-   "margin_db": 2.205,
-   "next": "NSL08",
+   "margin_db": 0.524,
+   "next": "NSL02",
    "slate": [
     "NSL03",
     "NSL04",
     "NSL06",
-    "NSL11",
-    "NSL12"
+    "NSL07",
+    "NSL11"
    ]
   },
   "rung2b_min15": {
-   "margin_db": 0.371,
+   "margin_db": 0.23,
    "next": "NSL02",
    "slate": [
     "NSL03",
@@ -135,7 +135,7 @@
    ]
   },
   "rung2c_arith": {
-   "margin_db": 1.256,
+   "margin_db": 1.403,
    "next": "NSL07",
    "slate": [
     "NSL03",
@@ -146,7 +146,7 @@
    ]
   },
   "specific": {
-   "margin_db": 0.85,
+   "margin_db": 0.802,
    "next": "NSL06",
    "slate": [
     "NSL02",
@@ -184,9 +184,9 @@
  "specific_level_db": {
   "NSL01": 43.9,
   "NSL02": 47.2,
-  "NSL03": 43.6,
+  "NSL03": 43.7,
   "NSL04": 53.1,
-  "NSL05": 39.6,
+  "NSL05": 39.4,
   "NSL06": 45.2,
   "NSL07": 47.9,
   "NSL08": 41.7,
@@ -195,38 +195,38 @@
   "NSL11": 49.9,
   "NSL12": 43.5,
   "NSL13": 46.0,
-  "NSL14": 42.0
+  "NSL14": 42.1
  },
  "stop_minutes": {
-  "NSL01": 240,
-  "NSL02": 240,
-  "NSL03": 240,
-  "NSL04": 240,
-  "NSL05": 240,
-  "NSL06": 240,
-  "NSL07": 240,
-  "NSL08": 240,
-  "NSL09": 240,
-  "NSL10": 240,
+  "NSL01": 280,
+  "NSL02": 280,
+  "NSL03": 258,
+  "NSL04": 280,
+  "NSL05": 280,
+  "NSL06": 283,
+  "NSL07": 283,
+  "NSL08": 283,
+  "NSL09": 265,
+  "NSL10": 265,
   "NSL11": 240,
   "NSL12": 240,
-  "NSL13": 240,
-  "NSL14": 240
+  "NSL13": 258,
+  "NSL14": 280
  },
  "tone_prominent": {
-  "NSL01": "yes",
+  "NSL01": "no",
   "NSL02": "yes",
-  "NSL03": "yes",
+  "NSL03": "no",
   "NSL04": "yes",
   "NSL05": "none",
-  "NSL06": "yes",
+  "NSL06": "no",
   "NSL07": "yes",
   "NSL08": "none",
   "NSL09": "yes",
   "NSL10": "none",
   "NSL11": "yes",
-  "NSL12": "yes",
-  "NSL13": "yes",
+  "NSL12": "no",
+  "NSL13": "no",
   "NSL14": "none"
  },
  "valid_minutes": {
@@ -252,8 +252,8 @@
    "centrifuge_runs": 6
   },
   "1": {
-   "biogas_m3": 35125,
-   "blower_air_knm3": 683,
+   "biogas_m3": 35016,
+   "blower_air_knm3": 681,
    "centrifuge_runs": 6
   },
   "2": {
@@ -262,17 +262,17 @@
    "centrifuge_runs": 6
   },
   "3": {
-   "biogas_m3": 35186,
-   "blower_air_knm3": 602,
+   "biogas_m3": 35020,
+   "blower_air_knm3": 599,
    "centrifuge_runs": 5
   },
   "4": {
-   "biogas_m3": 35178,
-   "blower_air_knm3": 684,
+   "biogas_m3": 35071,
+   "blower_air_knm3": 682,
    "centrifuge_runs": 6
   },
   "5": {
-   "biogas_m3": 35122,
+   "biogas_m3": 35121,
    "blower_air_knm3": 684,
    "centrifuge_runs": 6
   }

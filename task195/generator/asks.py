@@ -108,11 +108,70 @@ def history(target):
             elif not r["flag"] and trng.random() < 0.085:
                 r["auto"] = True       # the rule flagged it and the reviewer cleared it
 
+    # a correction is released again inside the same reporting month, so the warehouse holds a second
+    # release row for the specimen, carrying the same call
+    rerun = []
+    for r in rows:
+        if r["status"] != "RELEASED" or trng.random() >= 0.052:
+            continue
+        again = dict(r)
+        rel = r["released"] + dt.timedelta(days=trng.randint(2, 13))
+        while rel.weekday() > 4 or rel in W.HOLIDAYS:
+            rel += dt.timedelta(days=1)
+        if "%04d-%02d" % (rel.year, rel.month) != r["month"]:
+            rel = r["released"]
+            while (rel + dt.timedelta(days=1)).month == r["released"].month:
+                rel += dt.timedelta(days=1)
+            while rel.weekday() > 4 or rel in W.HOLIDAYS:
+                rel -= dt.timedelta(days=1)
+            if rel <= r["released"]:
+                continue
+        again["released"] = rel
+        again["plate"] = r["plate"][:-2] + "%02d" % ((int(r["plate"][-2:]) % 23) + 1)
+        again["depth"] = r["depth"] * (0.88 + 0.2 * trng.random())
+        rerun.append(again)
+    rows.extend(rerun)
+    rows.sort(key=lambda r: (r["received"], r["sid"], r["released"] or dt.date(2026, 1, 1)))
+
+    # the release desk amends a record after the month has been reported: a release booked on the
+    # wrong day, a call corrected on a second look. The warehouse extract predates the amendments, so
+    # it holds the value before each one.
+    amend = []
+    pool = [r for r in rows if r["status"] == "RELEASED" and r["released"]]
+    pool.sort(key=lambda r: (r["released"], r["sid"]))
+    step = max(1, len(pool) // 430)
+    for i in range(0, len(pool), step):
+        r = pool[i]
+        if r.get("stale"):
+            continue
+        if trng.random() < 0.55:
+            shift = (-1 if trng.random() < 0.5 else 1) * trng.randint(3, 19)
+            was = r["released"] - dt.timedelta(days=shift)
+            while was.weekday() > 4 or was in W.HOLIDAYS:
+                was -= dt.timedelta(days=1)
+            if was >= r["received"] + dt.timedelta(days=2):
+                amend.append([r["sid"], "released_date", was.isoformat(), r["released"].isoformat(),
+                              (max(was, r["released"]) + dt.timedelta(days=trng.randint(6, 40))).isoformat(),
+                              "release booked on the wrong day"])
+                r["stale_released"] = was
+                r["stale"] = True
+        else:
+            amend.append([r["sid"], "hetx_call", "CLEAR" if r["flag"] else "FLAG",
+                          "FLAG" if r["flag"] else "CLEAR",
+                          (r["released"] + dt.timedelta(days=trng.randint(6, 40))).isoformat(),
+                          "call corrected on review of the plate"])
+            r["stale_call"] = not r["flag"]
+            r["stale"] = True
+    amend.sort(key=lambda x: (x[4], x[0]))
+
     out = []
     for r in rows:
         # heterozygosity carries a plate effect and a right tail, and the flagged specimens sit in it
         plate_shift = (int(r["plate"][-2:]) % 11 - 5) * 0.042
-        if r["flag"]:
+        stored_flag = r["stale_call"] if "stale_call" in r else r["flag"]
+        stored_auto = r["stale_call"] if "stale_call" in r else r["auto"]
+        stored_rel = r.get("stale_released", r["released"])
+        if stored_flag:
             het = 36.9 + abs(trng.gauss(0.0, 1.25)) + plate_shift
         else:
             het = trng.gauss(33.86, 0.93) + plate_shift
@@ -123,9 +182,9 @@ def history(target):
                     r["received"].isoformat(), r["utc"].strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "%.1f" % r["depth"], "%.2f" % het,
                     "REVIEWED" if r["reviewed"] else "AUTO",
-                    "FLAG" if r["auto"] else "CLEAR",
-                    ("FLAGGED" if r["flag"] else "CLEARED") if r["reviewed"] else "",
-                    r["status"], r["released"].isoformat() if r["released"] else ""])
+                    "FLAG" if stored_auto else "CLEAR",
+                    ("FLAGGED" if stored_flag else "CLEARED") if r["reviewed"] else "",
+                    r["status"], stored_rel.isoformat() if stored_rel else ""])
     out.sort(key=lambda r: (r[5], r[0]))
     PK._write(os.path.join(target, W.FILES["history"]),
               ["specimen_id", "project_code", "extraction_method", "instrument", "plate_id",
@@ -133,7 +192,13 @@ def history(target):
                "hetx_call", "review_outcome", "release_status", "released_date"], out)
     released = {m: len(p) for m, p in by_month.items()}
     flagged = {m: sum(1 for r in p if r["flag"]) for m, p in by_month.items()}
-    return len(out), released, flagged
+    events = {}
+    for r in rows:
+        if r["status"] == "RELEASED" and r["released"]:
+            stored = r.get("stale_released", r["released"])
+            m = "%04d-%02d" % (stored.year, stored.month)
+            events[m] = events.get(m, 0) + 1
+    return len(out), released, flagged, events, amend
 
 
 def _slack(rate):
@@ -146,13 +211,13 @@ def _slack3(value):
     return abs((value * 1000) % 1 - 0.5) / 1000
 
 
-def volumes(target, released_by_month):
-    """The laboratory's reporting pack: specimens released each reporting month."""
+def volumes(target, events_by_month):
+    """The laboratory's reporting pack: results released each reporting month."""
     rows = []
     for m in _months():
-        rows.append([m, "{:,}".format(released_by_month.get(m, 0)).replace(",", " ")])
+        rows.append([m, "{:,}".format(events_by_month.get(m, 0)).replace(",", " ")])
     PK._write(os.path.join(target, W.FILES["volumes"]),
-              ["reporting_month", "specimens_released"], rows)
+              ["reporting_month", "results_released"], rows)
     return len(rows)
 
 
@@ -164,39 +229,47 @@ def dilution(target):
     head = Font(name="Calibri", size=11, bold=True)
     ws = wb.active
     ws.title = "Prepared levels"
-    ws.append(["Level", "Label", "Prepared level (fraction)", "Prepared", "Operator",
+    ws.append(["Stock", "Level", "Label", "Prepared level (fraction)", "Prepared", "Operator",
                "Replicates planned"])
-    for lv, label, frac in W.DILUTION:
-        ws.append([lv, label, frac, dt.date(2027, 3, 11), W.PEOPLE["lead"].split()[1][:2].upper(),
-                   W.DILUTION_REPLICATES])
-    ws["C1"].alignment = Alignment(wrap_text=True)
+    stock_of = {lv: "NS-27-04" for lv, _l, _f in W.DILUTION}
+    for stock, day, scale in (("NS-27-07", dt.date(2027, 3, 18), W.DILUTION_SECOND_PREP),
+                              ("NS-27-04", dt.date(2027, 3, 11), 1.0)):
+        for lv, label, frac in W.DILUTION:
+            ws.append([stock, lv, label, round(frac * scale, 4), day,
+                       W.PEOPLE["lead"].split()[1][:2].upper(), W.DILUTION_REPLICATES])
+    ws["D1"].alignment = Alignment(wrap_text=True)
     results = []
     for li, (lv, label, frac) in enumerate(W.DILUTION):
         spread = 0.21 if lv in ("L1", "L2") else (0.15 if lv == "L3" else 0.085)
+        level = frac * (1.0 if stock_of[lv] == "NS-27-04" else W.DILUTION_SECOND_PREP)
+        level = round(level, 4)
         # the run itself, with the level's recovery stepped until the median the panel reports sits
         # mid-bin at the three decimals the validation file states it to
         for attempt in range(60):
             lrng = random.Random(W.SEED + 31 + li * 7 + attempt)
             rec = W.DILUTION_RECOVERY[lv] + 0.0009 * attempt
-            vals = [round(max(0.0002, frac * rec * (1.0 + lrng.gauss(0.0, spread))), 4)
+            vals = [round(max(0.0002, level * rec * (1.0 + lrng.gauss(0.0, spread))), 4)
                     for _ in range(W.DILUTION_REPLICATES)]
             median = sorted(vals)[W.DILUTION_REPLICATES // 2]
-            if _slack3(median / frac) >= 0.00042:
+            if _slack3(median / level) >= 0.00042:
                 break
         for i, v in enumerate(vals):
-            results.append([lv.lower() if rng.random() < 0.21 else lv, i + 1,
+            results.append([lv.lower() if rng.random() < 0.21 else lv, stock_of[lv], i + 1,
                             "RS27-D%05d" % (4100 + len(results) * 3),
                             v, round(rng.uniform(31.0, 58.0), 1), None])
         if lv == "L3":
-            results.append([lv, W.DILUTION_REPLICATES + 1, "RS27-D%05d" % (4100 + len(results) * 3),
+            results.append([lv, stock_of[lv], W.DILUTION_REPLICATES + 1,
+                            "RS27-D%05d" % (4100 + len(results) * 3),
                             None, round(rng.uniform(31.0, 58.0), 1), "voided, control failure"])
     ws2 = wb.create_sheet("Replicate results")
-    ws2.append(["Level", "Replicate", "Read set", "Recovered fraction", "Mean depth", "Note"])
+    ws2.append(["Level", "Stock", "Replicate", "Read set", "Recovered fraction", "Mean depth", "Note"])
     for r in results:
         ws2.append(r)
     ws3 = wb.create_sheet("Panel notes")
     for line in [["Analytical sensitivity panel, 2027Q1"],
-                 ["Prepared by the method group on 11 March 2027 from two anonymised cell line DNAs."],
+                 ["Prepared by the method group from two anonymised cell line DNAs. The series is made "
+                  "up from a stock each time a stock is drawn; the workbook keeps the series of every "
+                  "stock the group has made up."],
                  ["Levels are labelled as the second contributor's share in per cent; the prepared "
                   "level column is the gravimetric fraction."],
                  ["Replicates were sequenced on GSQ-B and processed with GKJ-PIPE v3.4.1."],
@@ -205,19 +278,19 @@ def dilution(target):
         ws3.append(line)
     for sheet in (ws, ws2, ws3):
         sheet.freeze_panes = "A2" if sheet is not ws3 else None
-        for i, width in enumerate([14, 12, 24, 18, 14, 26][:sheet.max_column], start=1):
+        for i, width in enumerate([12, 10, 12, 24, 14, 12, 20, 26][:sheet.max_column], start=1):
             sheet.column_dimensions[get_column_letter(i)].width = width
         if sheet is not ws3:
             for c in sheet[1]:
                 c.font = head
                 c.border = Border(bottom=thin)
-    for row in ws2.iter_rows(min_row=2, min_col=4, max_col=4):
-        for c in row:
-            c.number_format = "0.0000"
-    for row in ws.iter_rows(min_row=2, min_col=3, max_col=3):
+    for row in ws2.iter_rows(min_row=2, min_col=5, max_col=5):
         for c in row:
             c.number_format = "0.0000"
     for row in ws.iter_rows(min_row=2, min_col=4, max_col=4):
+        for c in row:
+            c.number_format = "0.0000"
+    for row in ws.iter_rows(min_row=2, min_col=5, max_col=5):
         for c in row:
             c.number_format = "yyyy-mm-dd"
     wb.save(os.path.join(target, W.FILES["dilution"]))

@@ -23,6 +23,30 @@ SAME_DAY_SHARE = 0.071          # episodes separated the day they were admitted
 UNGROUPABLE_SHARE = 0.0118      # episodes the grouper could not assign a valid DRG
 NONACUTE_CARE_SHARE = 0.0152    # acute units also report a few rehabilitation or maintenance episodes
 BLANK_COMORBIDITY = 0.148       # the comorbidity score is not keyed for every episode
+DIALYSIS_MIXES = {"renal", "gen_med", "subacute"}     # the units that separate same-day haemodialysis
+# separations fall away over a weekend, hard on a surgical unit and less so on a medical one
+WEEKDAY_SHAPE = {"med": [1.10, 1.07, 1.05, 1.08, 1.21, 0.76, 0.69],
+                 "surg": [1.16, 1.12, 1.13, 1.18, 1.27, 0.46, 0.34]}
+# the patient master index was issued in blocks as each site came onto it
+MRN_BLOCK = {"H1": (1000000, 1399999), "H2": (1400000, 1649999),
+             "H3": (1650000, 1849999), "H4": (1850000, 1899999)}
+
+
+def unit_profile(code):
+    """The rates a unit's own practice and recording sit at, around the network's."""
+    r = rng("profile", code)
+    return dict(same_day=SAME_DAY_SHARE * float(0.55 + 0.90 * r.random()),
+                ungroup=UNGROUPABLE_SHARE * float(0.45 + 1.10 * r.random()),
+                nonacute=NONACUTE_CARE_SHARE * float(0.40 + 1.25 * r.random()),
+                blank=BLANK_COMORBIDITY * float(0.58 + 0.86 * r.random()))
+
+
+def drg_weights(code, band, options):
+    """A unit's own caseload inside a risk band: a few groups carry most of it."""
+    r = rng("drgmix", code, band)
+    w = np.sort(r.gamma(0.9, 1.0, len(options)))[::-1]
+    w = w[r.permutation(len(options))] + 0.05
+    return w / w.sum()
 
 
 def rng(*parts):
@@ -219,9 +243,13 @@ def episodes(units):
     for code, _, band in W.DRGS:
         drg_by_band.setdefault(band, []).append(code)
     for u in units:
-        code, _, _, mix, service, _, sep, _, _, _, status = u
-        shape = MONTH_SHAPE["med" if mix in MED_MIXES else "surg"]
-        prate = unit_rate(mix)
+        code, _, base, mix, service, _, sep, _, _, _, status = u
+        medical = mix in MED_MIXES
+        shape = MONTH_SHAPE["med" if medical else "surg"]
+        wshape = WEEKDAY_SHAPE["med" if medical else "surg"]
+        prof = unit_profile(code)
+        mrn_lo, mrn_hi = MRN_BLOCK[base]
+        wmix = {b: drg_weights(code, b, opts) for b, opts in drg_by_band.items() if b}
         for q in quarters_for(u):
             label, _, _, _, months = W.QUARTERS[q]
             exp_sum, n_scope = 0.0, 0
@@ -230,6 +258,9 @@ def episodes(units):
                 r = rng("eps", code, label, mi)
                 drift = 1.0 + 0.045 * r.normal()
                 n = int(round(sep / 3.0 * shape[month.month - 1] * drift))
+                last = (month.replace(day=28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1)
+                dayw = np.array([wshape[month.replace(day=d).weekday()] for d in range(1, last.day + 1)])
+                dayw = dayw / dayw.sum()
                 for _ in range(n):
                     bands = list(W.MIX[mix].items())
                     pick = r.random()
@@ -242,39 +273,42 @@ def episodes(units):
                             break
                     ages = W.MIX[mix][band][1]
                     age = W.AGE_BANDS[int(np.searchsorted(np.cumsum(ages), r.random(), side="left"))]
-                    drg = drg_by_band[band][int(r.integers(len(drg_by_band[band])))]
-                    same_day = r.random() < SAME_DAY_SHARE
-                    ungroup = (not same_day) and r.random() < UNGROUPABLE_SHARE
+                    opts = drg_by_band[band]
+                    drg = opts[int(np.searchsorted(np.cumsum(wmix[band]), r.random(), side="left"))]
+                    same_day = r.random() < prof["same_day"]
+                    ungroup = (not same_day) and r.random() < prof["ungroup"]
                     care = "Acute"
                     if service in ("rehabilitation", "psychiatric"):
                         care = "Rehabilitation" if service == "rehabilitation" else "Psychiatric"
-                    elif r.random() < NONACUTE_CARE_SHARE:
+                    elif r.random() < prof["nonacute"]:
                         care = "Maintenance" if r.random() < 0.35 else "Rehabilitation"
                     if same_day:
                         los = 0
-                        drg = "L61Z" if r.random() < 0.4 else drg
+                        if mix in DIALYSIS_MIXES and r.random() < 0.46:
+                            drg = "L61Z"
                     else:
                         los = int(1 + r.gamma(2.1, 2.3))
                     if ungroup:
                         drg = "960Z" if r.random() < 0.6 else "961Z"
-                    last = (month.replace(day=28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1)
-                    day = int(r.integers(1, last.day + 1))
-                    sep_date = month.replace(day=day)
-                    pid = "MRN%07d" % (1000000 + int(r.integers(0, 840000)))
+                    day = 1 + int(np.searchsorted(np.cumsum(dayw), r.random(), side="left"))
+                    sep_date = month.replace(day=min(day, last.day))
+                    pid = "MRN%07d" % int(r.integers(mrn_lo, mrn_hi + 1))
                     adm_date = sep_date - dt.timedelta(days=los)
                     # a patient admitted twice on one day for two different procedures, which happens
-                    if recent and r.random() < 0.016:
+                    if recent and not same_day and r.random() < 0.016:
                         prev = recent[int(r.integers(len(recent)))]
-                        pid, adm_date = prev[0], prev[1]
-                        while drg == prev[2]:
-                            drg = drg_by_band[band][int(r.integers(len(drg_by_band[band])))]
+                        shared = (sep_date - prev[1]).days
+                        if 1 <= shared <= 60:
+                            pid, adm_date, los = prev[0], prev[1], shared
+                            while drg == prev[2]:
+                                drg = opts[int(r.integers(len(opts)))]
                     in_scope = (care == "Acute" and los >= 1 and W.DRG_BAND.get(drg) not in (None, "SAME-DAY")
                                 and service == "acute")
                     if in_scope:
                         exp_sum += W.STRATUM_RATE[(W.DRG_BAND[drg], age)]
                         n_scope += 1
                     while (code, pid, adm_date, drg) in used:
-                        pid = "MRN%07d" % (1000000 + int(r.integers(0, 840000)))
+                        pid = "MRN%07d" % int(r.integers(mrn_lo, mrn_hi + 1))
                     used.add((code, pid, adm_date, drg))
                     recent.append((pid, adm_date, drg))
                     if len(recent) > 6:
@@ -282,7 +316,7 @@ def episodes(units):
                     rows.append(dict(unit=code, q=q, qlabel=label, month=month, sep_date=sep_date, los=los,
                                      drg=drg, age=age, care=care, in_scope=in_scope, pid=pid,
                                      adm_date=adm_date,
-                                     comorbidity=None if r.random() < BLANK_COMORBIDITY else
+                                     comorbidity=None if r.random() < prof["blank"] else
                                      int(min(9, max(0, round(r.gamma(1.9, 1.15))))),
                                      hac=False, rstream=float(r.random())))
             expected[(code, q)] = exp_sum
@@ -290,7 +324,7 @@ def episodes(units):
     return rows, expected, inscope
 
 
-def record_targets(expected, allsep, design, units, plans, bins=True):
+def record_targets(expected, allsep, design, units, plans, bins=True, fixed=None):
     """The complications each embed quarter records.
 
     The programme's effect is read off the closed record, so the record has to price the same programme
@@ -346,12 +380,15 @@ def record_targets(expected, allsep, design, units, plans, bins=True):
     excess = np.array(excess)
 
     best = None
-    for deltas in itertools.product((0, 1, -1, 2, -2), repeat=len(embeds)):
+    space = ([tuple(fixed[code] - base[i] for i, (k, code) in enumerate(embeds))] if fixed
+             else itertools.product((0, 1, -1, 2, -2, 3, -3), repeat=len(embeds)))
+    for deltas in space:
         O = np.array(base) + np.array(deltas)
         R = O - E_k
         fall = P - R
         shares = fall / P
-        if shares.min() < 0.32 or shares.max() > 0.46 or shares.max() - shares.min() < 0.030:
+        if not fixed and (shares.min() < 0.30 or shares.max() > 0.48
+                          or shares.max() - shares.min() < 0.030):
             continue
         pm, pv = P.mean(), P.var()
         thetas = {
@@ -368,13 +405,14 @@ def record_targets(expected, allsep, design, units, plans, bins=True):
             "against the other units pooled over the same quarters":
                 float(((Pprev - R) - concurrent_pooled).sum() / P.sum()),
         }
-        if min(thetas.values()) <= 0:
+        if not fixed and min(thetas.values()) <= 0:
             continue
         theta = thetas["mean of the placements' shares"]
+        lo, hi = min(thetas.values()), max(thetas.values())
         top = np.sort(excess)[::-1][:2]          # the recommendation and the closest unit
-        clear = float(np.min(0.5 - np.abs(theta * top - np.round(theta * top))))
+        ref = np.round(theta * top)
+        clear = float(np.min(0.5 - np.maximum(np.abs(lo * top - ref), np.abs(hi * top - ref))))
         if bins:
-            ref = np.round(theta * top)
             if any(not np.array_equal(ref, np.round(t * top)) for t in thetas.values()):
                 continue
             if ref[0] - ref[1] != 6 or clear < 0.12:
@@ -385,11 +423,11 @@ def record_targets(expected, allsep, design, units, plans, bins=True):
         miss_e = float(np.max(np.abs(pred_e / fall - 1)))
         miss_r = float(np.max(np.abs(theta_rate * rate_base / fall - 1)))
         miss_v = float(np.max(np.abs(delta_vol * E_k / fall - 1)))
-        if miss_e > 0.14 or miss_r < 0.55 or miss_v < 0.70:
+        if not fixed and (miss_e > 0.14 or miss_r < 0.55 or miss_v < 0.70):
             continue
-        spread = max(abs(t / theta - 1) for t in thetas.values())
-        score = ((round(spread, 4), sum(abs(d) for d in deltas), -round(clear, 3)) if not bins
-                 else (sum(abs(d) for d in deltas), round(spread, 4), -round(clear, 3)))
+        # the band every reading of the register leaves around a count is what has to be narrow, so the
+        # record is chosen on the absolute range of the readings and the same way in both passes
+        score = (round(hi - lo, 5), sum(abs(d) for d in deltas))
         if best is None or score < best[0]:
             best = (score, {code: int(O[i]) for i, (k, code) in enumerate(embeds)}, thetas, clear)
     if best is None:
@@ -398,25 +436,47 @@ def record_targets(expected, allsep, design, units, plans, bins=True):
     return best[1], best[2]
 
 
-def centre_plans(plans, per_separation, thetas, codes):
-    """The planned separations of the two units whose avoided complications are graded, nudged by up to a
-    few per cent so the count they produce sits mid-bin under every reading of the placement register."""
+def centre_plans(plans, per_separation, thetas, codes, graded, pick):
+    """The planned separations of the units whose figures are graded, nudged by a few separations.
+
+    Each eligible unit's figure is the complications its planned activity carries above the unit's own
+    standing, reported to one decimal, so each unit's planned volume is moved to the nearest value that
+    leaves that figure clear of a rounding edge without sitting on the tenth itself. The two units whose
+    avoided complications are also graded are cleared on the whole complication as well, under every
+    reading of the register, and the recommended unit's expected complications for the quarter on the
+    whole complication it is reported at.
+    """
     lo, hi = min(thetas.values()), max(thetas.values())
-    for code in codes:
+    for code in graded:
         per = per_separation[code]
+        epl = EXPECTED_PER_SEP[code]
         best = None
-        for plan in range(int(plans[code] * 0.94), int(plans[code] * 1.06) + 1):
-            v_lo, v_hi = lo * per * plan, hi * per * plan
-            if round(v_lo) != round(v_hi):
+        for plan in range(int(plans[code] * 0.955), int(plans[code] * 1.045) + 1):
+            x = per * plan
+            off1 = abs(x * 10 - round(x * 10)) / 10.0
+            if not 0.008 <= off1 <= 0.032:            # inside the tenth, and not sitting on it
                 continue
-            clear = 0.5 - max(abs(v_lo - round(v_lo)), abs(v_hi - round(v_hi)))
-            score = (-round(clear, 3), abs(plan - plans[code]))
+            if code in codes:
+                v_lo, v_hi = lo * x, hi * x
+                if round(v_lo) != round(v_hi):
+                    continue
+                if 0.5 - max(abs(v_lo - round(v_lo)), abs(v_hi - round(v_hi))) < 0.14:
+                    continue
+            e = epl * plan
+            if 0.05 - abs(e * 10 - round(e * 10)) / 10.0 < 0.0055:
+                continue
+            if code == pick and 0.5 - abs(e - round(e)) < 0.08:
+                continue
+            score = (abs(plan - plans[code]),)
             if best is None or score < best[0]:
                 best = (score, plan)
         if best is None:
-            raise AssertionError("no planned volume centres %s's avoided count" % code)
+            raise AssertionError("no planned volume centres %s's graded figures" % code)
         plans[code] = best[1]
     return plans
+
+
+EXPECTED_PER_SEP = {}
 
 
 def assign_complications(rows, expected, design, units, targets=None):
@@ -469,7 +529,10 @@ def complications(rows, units):
         groups = list(mix)
         weights = np.array([mix[g] for g in groups], dtype=float)
         weights = weights / weights.sum()
-        n = 1 if off_cis else (2 if r.random() < W.SECOND_COMPLICATION else 1)
+        n = 1
+        if not off_cis:
+            draw = r.random()
+            n = 3 if draw < W.THIRD_COMPLICATION else (2 if draw < W.SECOND_COMPLICATION else 1)
         picked = list(r.choice(len(groups), size=n, replace=False, p=weights)) if n > 1 else \
             [int(r.choice(len(groups), p=weights))]
         table = W.LIST_2026 if row["sep_date"] >= W.CODESET_CHANGE else W.LIST_2022

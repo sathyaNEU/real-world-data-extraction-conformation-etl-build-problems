@@ -18,15 +18,16 @@ def write_csv(path, head, rows):
 
 
 # ---------------------------------------------------------------- dispensing lines
+# how a pharmacy week falls: busiest on a Monday and a Friday, short hours on a Saturday, and
+# only the duty pharmacies open on a Sunday
+WEEK_SHAPE = [0.1845, 0.1705, 0.1655, 0.1680, 0.1965, 0.1065, 0.0085]
+
+
 def open_day(d, rng):
-    """Pharmacies close on a Sunday and open short hours on a Saturday, so a dispensing falling on
-    one is mostly taken on one of the open days before it."""
-    wd = W.day(d).weekday()
-    if wd == 6:
-        return max(0, d - int(rng.choice([1, 2, 3, 4], p=[0.24, 0.34, 0.24, 0.18])))
-    if wd == 5 and rng.random() < 0.58:
-        return max(0, d - int(rng.choice([1, 2, 3], p=[0.45, 0.33, 0.22])))
-    return d
+    """A dispensing is taken on one of the days its own week is open."""
+    monday = d - W.day(d).weekday()
+    out = monday + int(rng.choice(7, p=WEEK_SHAPE))
+    return int(min(max(out, 0), W.NDAY - 1))
 
 
 def dispensings(first):
@@ -34,7 +35,7 @@ def dispensings(first):
     rng = np.random.default_rng(W.SEED + 11)
     n = W.N_PAT
     chain_of = rng.choice(len(W.CHAINS), size=n, p=[0.37, 0.28, 0.21, 0.14])
-    region_of = rng.choice(len(W.REGIONS), size=n, p=W.REGION_W)
+    region_of = W.regions(n)
     outside = rng.random(n) < 0.023                     # registered outside Denmark at window start
     birth, _band = W.age_bands(n)
     sex = np.where(rng.random(n) < 0.508, "K", "M")
@@ -133,12 +134,11 @@ def apply_mess(lines, people):
     # (1) pseudonyms replaced after a civil-registration correction
     switched = np.sort(rng.choice(n, size=420, replace=False))
     switch_day = {int(p): int(d) for p, d in zip(switched, rng.integers(420, 1011, size=420))}
-    keys = {}
-    for pid in range(n):
-        keys[pid] = "PK%07d" % (3100000 + 83 * pid)
-    new_keys = {}
-    for pid in switch_day:
-        new_keys[pid] = "PK%07d" % (8400000 + 211 * pid)
+    pool = rng.choice(np.arange(3100000, 3100000 + 14 * n), size=n, replace=False)
+    keys = {pid: "PK%07d" % int(pool[pid]) for pid in range(n)}
+    pool2 = rng.choice(np.arange(8400000, 8400000 + 37 * max(len(switch_day), 1)),
+                       size=len(switch_day), replace=False)
+    new_keys = {pid: "PK%07d" % int(v) for pid, v in zip(sorted(switch_day), pool2)}
     for r in lines:
         pid = r["pid"]
         if pid in switch_day and r["day"] >= switch_day[pid]:
@@ -148,7 +148,19 @@ def apply_mess(lines, people):
     # (2) the rejected lines: repeat dispensings the register turned back at validation,
     #     so no patient's first receipt of anything is touched
     repeats = [i for i, r in enumerate(lines) if not r["is_first"]]
-    rej_idx = set(rng.choice(repeats, size=int(0.031 * len(lines)), replace=False).tolist())
+    # each chain validates to its own standard and each quarter has its own run of trouble; one
+    # chain's spring release left a month of price records missing
+    chain_rate = [0.021, 0.034, 0.047, 0.029]
+    quarter_lift = {0: 1.00, 1: 1.18, 2: 0.86, 3: 0.93}
+    pr = np.empty(len(repeats))
+    for j, i in enumerate(repeats):
+        r = lines[i]
+        q = 0 if r["day"] < 823 else (1 if r["day"] < 913 else (2 if r["day"] < 1004 else 3))
+        rate = chain_rate[r["chain"]] * quarter_lift[q]
+        if r["chain"] == 2 and 913 <= r["day"] <= 943:
+            rate *= 2.4
+        pr[j] = rate
+    rej_idx = set(int(i) for i, u, rate in zip(repeats, rng.random(len(repeats)), pr) if u < rate)
     rejected, kept = [], []
     reasons = ["prescriber identifier not in the authorisation register",
                "package code not valid on the date of dispensing",
@@ -157,7 +169,10 @@ def apply_mess(lines, people):
                "reimbursed price missing for the package on that date"]
     for i, r in enumerate(lines):
         if i in rej_idx:
-            r["reason"] = str(rng.choice(reasons, p=[0.407, 0.231, 0.168, 0.117, 0.077]))
+            if r["chain"] == 2 and 913 <= r["day"] <= 943 and rng.random() < 0.74:
+                r["reason"] = reasons[4]          # the month the chain's price records were missing
+            else:
+                r["reason"] = str(rng.choice(reasons, p=[0.407, 0.231, 0.168, 0.117, 0.077]))
             rejected.append(r)
         else:
             kept.append(r)
@@ -203,13 +218,14 @@ def write_extracts(tgt, kept):
     return a, b
 
 
+# the strengths each preparation is marketed in, in the order MARKER_NAMES lists the generics
 STRENGTH_MG = {
     "P01": [25, 50, 100], "P02": [60, 90, 120], "P03": [5, 10, 20],
     "P04": [150, 300, 150], "P05": [25, 50, 75], "P06": [250, 500, 750],
-    "P07": [1, 2, 4], "P08": [10, 15, 20], "P09": [100, 200, 400],
-    "M1": [4, 8, 16, 24], "M2": [10, 20, 30, 40], "M3": [100, 200, 300, 400],
-    "M4": [20, 40, 10, 5], "M5": [25, 50, 100, 150], "M6": [3.75, 5, 7.5, 10],
-    "M7": [0.05, 0.1, 0.05, 0.064], "M8": [5, 10, 15, 25],
+    "P07": [1, 2, 4], "P08": [10, 15, 20], "P09": [50, 100, 200],
+    "M1": [4, 8, 10, 10], "M2": [20, 40, 20, 40], "M3": [100, 300, 80, 120],
+    "M4": [20, 40, 1, 2], "M5": [50, 100, 10, 20], "M6": [3.75, 7.5, 5, 10],
+    "M7": [0.1, 0.05, 0.1, 0.064], "M8": [5, 10, 25, 100],
 }
 MARKER_NAMES = {
     "M1": ["Ondansetron", "Ondansetron", "Metoclopramid", "Metoclopramid"],
@@ -361,12 +377,70 @@ PHARMACY_NAMES = [
     ("Hvidovre", ["Risbjerggaard"]),
     ("Gentofte", ["Ordrup"]),
     ("Birkeroed", ["Hovedgaden"]),
+    ("Taastrup", ["City2"]),
+    ("Albertslund", ["Bytorvet"]),
+    ("Roedovre", ["Roedovrevej"]),
+    ("Greve", ["Waves"]),
+    ("Solroed", ["Strandvejen"]),
+    ("Farum", ["Bytorv"]),
+    ("Frederikssund", ["Sillebroen"]),
+    ("Kalundborg", ["Kordilgade"]),
+    ("Nykoebing Falster", ["Jernbanegade"]),
+    ("Nakskov", ["Axeltorv"]),
+    ("Vordingborg", ["Algade"]),
+    ("Faaborg", ["Graabroedretorv"]),
+    ("Nyborg", ["Kongegade"]),
+    ("Middelfart", ["Algade"]),
+    ("Assens", ["Oestergade"]),
+    ("Varde", ["Torvegade"]),
+    ("Ribe", ["Seminarievej"]),
+    ("Toender", ["Storegade"]),
+    ("Aabenraa", ["Soendergade"]),
+    ("Vejen", ["Soendergade"]),
+    ("Grindsted", ["Borgergade"]),
+    ("Billund", ["Hovedgaden"]),
+    ("Ikast", ["Raadhusstraede"]),
+    ("Struer", ["Oestergade"]),
+    ("Lemvig", ["Vestergade"]),
+    ("Thisted", ["Storegade"]),
+    ("Nykoebing Mors", ["Algade"]),
+    ("Hobro", ["Adelgade"]),
+    ("Hadsund", ["Storegade"]),
+    ("Aars", ["Himmerlandsgade"]),
+    ("Broenderslev", ["Bredgade"]),
+    ("Saeby", ["Algade"]),
+    ("Skagen", ["Sankt Laurentii Vej"]),
+    ("Grenaa", ["Storegade"]),
+    ("Ebeltoft", ["Adelgade"]),
+    ("Odder", ["Rosensgade"]),
+    ("Skanderborg", ["Adelgade"]),
+    ("Hedensted", ["Bytorvet"]),
+    ("Brande", ["Torvegade"]),
+    ("Bjerringbro", ["Storegade"]),
+    ("Hammel", ["Vestergade"]),
+    ("Ringkoebing", ["Algade"]),
+    ("Skjern", ["Bredgade"]),
+    ("Aalestrup", ["Jernbanegade"]),
+    ("Stege", ["Storegade"]),
+    ("Roenne", ["Store Torvegade"]),
+    ("Maribo", ["Vestergade"]),
+    ("Rudkoebing", ["Oerstedsgade"]),
+    ("Fredensborg", ["Jernbanegade"]),
+    ("Frederiksvaerk", ["Noerregade"]),
+    ("Hundested", ["Noerregade"]),
+    ("Stenloese", ["Egedal Centret"]),
+    ("Smoerum", ["Flodvej"]),
+    ("Dragoer", ["Kongevejen"]),
+    ("Taarnby", ["Amager Landevej"]),
 ]
 
 
 def write_pharmacy_register(tgt, kept):
-    flat = [(m, "%s Apotek" % n if n in ("Svanen", "Stjerne", "Budolfi", "Dom", "Loeveapoteket")
-             else "%s %s Apotek" % (m, n)) for m, names in PHARMACY_NAMES for n in names]
+    # the old named pharmacies carry their own name; the rest are named for their street or quarter
+    NAMED = ("Svanen", "Stjerne", "Budolfi", "Dom", "Loeveapoteket", "Metropol", "Posthuset")
+    flat = [(m, "%s Apotek" % n if n in NAMED else "%s %s Apotek" % (m, n))
+            for m, names in PHARMACY_NAMES for n in names]
+    assert len(set(x[1] for x in flat)) == len(flat), "two pharmacies would carry the same name"
     seen = sorted(set((r["chain"], r["pharmacy"]) for r in kept))
     rows, used = [], 0
     for ci, ph in seen:
@@ -386,20 +460,27 @@ def write_holder_register(tgt):
                      ["holder_code", "holder_name", "cvr", "merged_into", "merger_date", "note"], rows)
 
 
+# the signal desk's open and closed signals, each on a pair that fails the referral test on every
+# route (checks.py asserts it): (product, marker) -> (opened, closed or 0, status)
+TRACKER = {
+    ("P01", "M2"): (520, 645, "closed, no further action"),
+    ("P02", "M5"): (455, 700, "closed, product information updated"),
+    ("P04", "M7"): (905, 0, "under assessment"),
+    ("P05", "M2"): (505, 661, "closed, no further action"),
+    ("P08", "M5"): (548, 712, "closed, referred to the committee"),
+    ("P03", "M1"): (1004, 0, "under assessment"),
+    ("P09", "M8"): (480, 622, "closed, no further action"),
+}
+TRACKED_PAIRS = list(TRACKER)
+
+
 def write_tracker(tgt, first):
     """The signal desk's own tracker export: pairs opened before the window, with status.
 
     Chosen so that no pair it names passes the referral test on any route (checks.py asserts it).
     """
     rows = []
-    picks = [("P01", "M2", 520, 645, "closed, no further action"),
-             ("P02", "M5", 455, 700, "closed, product information updated"),
-             ("P04", "M7", 905, 0, "under assessment"),
-             ("P05", "M2", 505, 661, "closed, no further action"),
-             ("P08", "M5", 548, 712, "closed, referred to the committee"),
-             ("P03", "M1", 1004, 0, "under assessment"),
-             ("P09", "M8", 480, 622, "closed, no further action")]
-    for pc, mc, opened, closed, status in picks:
+    for (pc, mc), (opened, closed, status) in TRACKER.items():
         mf = W.MARKETED[pc][0]
         assert mf is None or opened >= mf, (pc, opened, mf)
         rows.append(["SM-%s-%s" % (pc, mc), pc, W.PNAME[pc], mc, W.MNAME[mc],
@@ -411,6 +492,14 @@ def write_tracker(tgt, first):
 
 QUARTER_SPAN = [("2025 Q4", 731, 822), ("2026 Q1", 823, 912),
                 ("2026 Q2", 913, 1003), ("2026 Q3", 1004, 1095)]
+
+
+# adverse reactions reported per dispensing of a product, and the share of those judged serious.
+# A newly marketed product under additional monitoring is reported on far more than an old one.
+REPORT_RATE = {"P01": 0.0042, "P02": 0.0031, "P03": 0.0171, "P04": 0.0196, "P05": 0.0064,
+               "P06": 0.0027, "P07": 0.0038, "P08": 0.0083, "P09": 0.0049}
+SERIOUS_SHARE = {"P01": 0.21, "P02": 0.17, "P03": 0.38, "P04": 0.46, "P05": 0.33,
+                 "P06": 0.24, "P07": 0.19, "P08": 0.41, "P09": 0.28}
 
 
 def write_distractors(tgt, kept=None):
@@ -430,27 +519,54 @@ def write_distractors(tgt, kept=None):
             if mf is not None and mf > b:
                 continue                      # not yet on the market in that quarter
             n = vol.get((code, label), 0)
-            base = int(round(n * float(rng.uniform(0.006, 0.019)))) + int(rng.integers(0, 4))
-            ser = int(round(base * float(rng.uniform(0.17, 0.62))))
+            rate = REPORT_RATE[code] * float(rng.normal(1.0, 0.13))
+            base = max(0, int(round(n * max(rate, 0.0))) + int(rng.integers(-1, 2)))
+            ser = int(round(base * SERIOUS_SHARE[code] * float(rng.normal(1.0, 0.18))))
+            ser = min(max(ser, 0), base)
             rows.append([code, W.PNAME[code], label, base, ser,
-                         int(round(ser * float(rng.uniform(0.1, 0.8))))])
+                         min(ser, int(round(base * 0.21 * float(rng.normal(1.0, 0.4)))))])
     n1 = write_csv(os.path.join(tgt, "spontaneous_reports_summary.csv"),
                    ["product_code", "brand_name", "quarter", "reports_received",
                     "reports_serious", "reports_from_patients"], rows)
-    titles = ["Utilisation of %s in Danish primary care", "A case series of %s exposure in pregnancy",
-              "Prescribing trends for %s after reimbursement change", "Adherence to %s over twelve months",
-              "Treatment persistence among new users of %s", "Switching patterns away from %s",
-              "Dispensing of %s to older patients", "Off-label dispensing of %s",
-              "A cohort study of %s initiation", "Co-medication among %s users"]
-    rows = []
+    titles = ["Utilisation of %s in Danish primary care",
+              "A case series of %s exposure in pregnancy",
+              "Prescribing trends for %s after the reimbursement change",
+              "Adherence to %s over twelve months",
+              "Treatment persistence among new users of %s",
+              "Switching patterns away from %s",
+              "Dispensing of %s to older patients",
+              "Off-label dispensing of %s",
+              "A cohort study of %s initiation",
+              "Co-medication among %s users",
+              "Hepatic laboratory monitoring during %s treatment",
+              "Hospital admissions in the first year of %s",
+              "A nested case-control study of %s and fracture",
+              "Drug-utilisation review of %s in nursing homes",
+              "Reporting of adverse reactions to %s in the Nordic countries",
+              "A signal evaluation of %s and sleep disturbance",
+              "%s in renal impairment: a register study",
+              "Two years of %s on the Danish market",
+              "Discontinuation of %s after a safety communication",
+              "Comparative safety of %s and its class"]
+    # the desk notes the signal a screened-in paper was read against, where it has one open
+    tracked = {W.PNAME[pc]: "SM-%s-%s" % (pc, mc) for pc, mc in TRACKED_PAIRS}
+    subjects = [W.PNAME[c] for c in W.PCODES] + sorted(
+        set(n for code in W.MCODES for n in MARKER_NAMES[code]))
+    rows, day = [], 1001
     for i in range(96):
-        code = W.PCODES[i % len(W.PCODES)]
-        rows.append(["LS-2026-%03d" % (i + 1), W.iso(1000 + (i * 3) % 95),
-                     titles[i % len(titles)] % W.PNAME[code], W.PNAME[code],
-                     ["Embase", "Medline", "Scopus"][i % 3],
-                     ["not relevant", "not relevant", "screened in", "not relevant"][i % 4]])
+        name = subjects[int(rng.integers(0, len(subjects)))]
+        day += int(rng.choice([0, 1, 2, 3, 4, 7], p=[0.21, 0.26, 0.19, 0.13, 0.11, 0.10]))
+        day = min(day, W.PULL_DAY - 3)
+        decision = "screened in" if rng.random() < 0.22 else "not relevant"
+        rows.append(["LS-2026-%03d" % (i + 1), W.iso(day),
+                     titles[int(rng.integers(0, len(titles)))] % name, name,
+                     str(rng.choice(["Embase", "Medline", "Scopus", "Web of Science"],
+                                    p=[0.41, 0.33, 0.17, 0.09])),
+                     decision,
+                     tracked.get(name, "") if decision == "screened in" else ""])
     n2 = write_csv(os.path.join(tgt, "literature_screening_log.csv"),
-                   ["screening_ref", "screened_on", "title", "medicine", "source", "decision"], rows)
+                   ["screening_ref", "screened_on", "title", "medicine", "source", "decision",
+                    "read_against"], rows)
     return n1, n2
 
 

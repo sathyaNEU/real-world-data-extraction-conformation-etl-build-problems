@@ -40,15 +40,15 @@ Not holding the change, which follows only if each screen's detection rate is ju
    - 0.010: 326, 34, 8.65, 1.91, yes, no
 2. The cutoff recommended: 0.030, replacing the screen in service from 1 July 2027.
 3. The specimens with any verdict in each weekly report issued in April and May, and the difference against that report's own total, nine reports in order:
-   - BA-2027-W13: 577, 4
-   - BA-2027-W14: 588, 6
-   - BA-2027-W15: 585, 5
-   - BA-2027-W16: 614, 3
-   - BA-2027-W17: 550, 7
-   - BA-2027-W18: 531, 4
-   - BA-2027-W19: 523, 6
-   - BA-2027-W20: 514, 5
-   - BA-2027-W21: 517, 5
+   - BA-2027-W13: 577, 11
+   - BA-2027-W14: 598, 14
+   - BA-2027-W15: 600, 13
+   - BA-2027-W16: 627, 9
+   - BA-2027-W17: 564, 16
+   - BA-2027-W18: 552, 14
+   - BA-2027-W19: 541, 14
+   - BA-2027-W20: 531, 26
+   - BA-2027-W21: 529, 22
 4. The screen in service's flagged specimens, reviewed ones by their review outcome, per thousand released by release month, twelve months in order:
    - 2026-03: 15.6
    - 2026-04: 15.3
@@ -64,11 +64,8 @@ Not holding the change, which follows only if each screen's detection rate is ju
    - 2027-02: 16.1
 5. The dilution panel's median recovery as a share of the prepared level and how many results reported fall within a fifth of it, by level:
    - L1: 0.878, 6
-   - L2: 0.961, 7
-   - L3: 0.951, 8
-   - L4: 0.965, 9
-   - L5: 1.008, 8
-   - L6: 1.015, 8
+   - L2: 0.865, 7
+   - L3: 1.027, 6
 
 ### detection_gain_by_cutoff.png
 

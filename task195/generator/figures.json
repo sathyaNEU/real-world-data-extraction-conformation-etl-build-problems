@@ -152,90 +152,72 @@
    "within_fifth": 6
   },
   "L2": {
-   "median_recovery": 0.961,
-   "prepared": 0.0077,
+   "median_recovery": 0.865,
+   "prepared": 0.0163,
    "replicates": 9,
    "within_fifth": 7
   },
   "L3": {
-   "median_recovery": 0.951,
-   "prepared": 0.0163,
-   "replicates": 9,
-   "within_fifth": 8
-  },
-  "L4": {
-   "median_recovery": 0.965,
-   "prepared": 0.0314,
-   "replicates": 9,
-   "within_fifth": 9
-  },
-  "L5": {
-   "median_recovery": 1.008,
+   "median_recovery": 1.027,
    "prepared": 0.0629,
    "replicates": 9,
-   "within_fifth": 8
-  },
-  "L6": {
-   "median_recovery": 1.015,
-   "prepared": 0.1272,
-   "replicates": 9,
-   "within_fifth": 8
+   "within_fifth": 6
   }
  },
  "panel_clean": 5446,
  "panel_weeks": {
   "BA-2027-W13": {
-   "difference": 4,
-   "results_issued": 581,
+   "difference": 11,
+   "results_issued": 588,
    "specimens": 577,
    "week_ending": "2027-04-02"
   },
   "BA-2027-W14": {
-   "difference": 6,
-   "results_issued": 594,
-   "specimens": 588,
+   "difference": 14,
+   "results_issued": 612,
+   "specimens": 598,
    "week_ending": "2027-04-09"
   },
   "BA-2027-W15": {
-   "difference": 5,
-   "results_issued": 590,
-   "specimens": 585,
+   "difference": 13,
+   "results_issued": 613,
+   "specimens": 600,
    "week_ending": "2027-04-16"
   },
   "BA-2027-W16": {
-   "difference": 3,
-   "results_issued": 617,
-   "specimens": 614,
+   "difference": 9,
+   "results_issued": 636,
+   "specimens": 627,
    "week_ending": "2027-04-23"
   },
   "BA-2027-W17": {
-   "difference": 7,
-   "results_issued": 557,
-   "specimens": 550,
+   "difference": 16,
+   "results_issued": 580,
+   "specimens": 564,
    "week_ending": "2027-04-30"
   },
   "BA-2027-W18": {
-   "difference": 4,
-   "results_issued": 535,
-   "specimens": 531,
+   "difference": 14,
+   "results_issued": 566,
+   "specimens": 552,
    "week_ending": "2027-05-07"
   },
   "BA-2027-W19": {
-   "difference": 6,
-   "results_issued": 529,
-   "specimens": 523,
+   "difference": 14,
+   "results_issued": 555,
+   "specimens": 541,
    "week_ending": "2027-05-14"
   },
   "BA-2027-W20": {
-   "difference": 5,
-   "results_issued": 519,
-   "specimens": 514,
+   "difference": 26,
+   "results_issued": 557,
+   "specimens": 531,
    "week_ending": "2027-05-21"
   },
   "BA-2027-W21": {
-   "difference": 5,
-   "results_issued": 522,
-   "specimens": 517,
+   "difference": 22,
+   "results_issued": 551,
+   "specimens": 529,
    "week_ending": "2027-05-28"
   }
  },

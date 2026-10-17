@@ -27,8 +27,7 @@ def stop_mask(stamps):
     out = np.zeros(len(stamps), dtype=bool)
     if not len(stamps):
         return out
-    for start, mins, _ in W.PLANNED_STOPS + W.UNPLANNED_STOPS:
-        end = start + dt.timedelta(minutes=mins)
+    for start, end in SM.all_down():
         out |= np.array([(s >= start) and (s < end) for s in stamps])
     return out
 

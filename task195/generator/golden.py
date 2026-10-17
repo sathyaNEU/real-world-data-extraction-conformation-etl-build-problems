@@ -134,14 +134,18 @@ def rungs(tab):
 
 
 def ask_panel(target, panel_rows):
-    """Ask 1: the specimens each April and May weekly report covers, against its own total."""
+    """Ask 1: the specimens each April and May weekly report holds a verdict for, against its own
+    total. A specimen re-accessioned for a repeat request carries one biobank reference across its
+    accessions, so it is one specimen."""
+    biobank = {r["specimen_id"]: r["biobank_ref"]
+               for r in _rows(os.path.join(target, W.FILES["crosswalk"]), "\t")}
     per = {}
     for r in panel_rows:
         day = dt.date.fromisoformat(r["report_date"])
         if day.month in (4, 5) and day.year == 2027:
             per.setdefault(r["report_ref"], {"rows": 0, "spec": set(), "date": r["report_date"]})
             per[r["report_ref"]]["rows"] += 1
-            per[r["report_ref"]]["spec"].add(r["specimen_id"])
+            per[r["report_ref"]]["spec"].add(biobank.get(r["specimen_id"], r["specimen_id"]))
     out = []
     for ref in sorted(per):
         d = per[ref]
@@ -151,16 +155,30 @@ def ask_panel(target, panel_rows):
 
 
 def ask_baseline(target):
-    """Ask 2: the screen in service's flagged specimens per thousand released, by reporting month."""
+    """Ask 2: the screen in service's flagged specimens per thousand released, by release month.
+    A corrected result is released again, so a specimen released twice in a month is one specimen."""
+    amend = {}
+    for a in _rows(os.path.join(target, W.FILES["amendments"])):
+        amend[(a["specimen_id"], a["field"])] = a["value_after"]
     flagged, released = {}, {}
+    seen_rel, seen_flag = set(), set()
     with open(os.path.join(target, W.FILES["history"]), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
             if r["release_status"] != "RELEASED" or not r["released_date"]:
                 continue
-            month = r["released_date"][:7]
-            released[month] = released.get(month, 0) + 1
+            released_date = amend.get((r["specimen_id"], "released_date"), r["released_date"])
+            if (r["specimen_id"], "hetx_call") in amend:
+                r = dict(r, hetx_call=amend[(r["specimen_id"], "hetx_call")],
+                         review_outcome=("FLAGGED" if amend[(r["specimen_id"], "hetx_call")] == "FLAG"
+                                         else "CLEARED") if r["call_source"] == "REVIEWED" else r["review_outcome"])
+            month = released_date[:7]
+            key = (month, r["specimen_id"])
+            if key not in seen_rel:
+                seen_rel.add(key)
+                released[month] = released.get(month, 0) + 1
             flagged_call = (r["review_outcome"] if r["call_source"] == "REVIEWED" else r["hetx_call"])
-            if flagged_call in ("FLAG", "FLAGGED"):
+            if flagged_call in ("FLAG", "FLAGGED") and key not in seen_flag:
+                seen_flag.add(key)
                 flagged[month] = flagged.get(month, 0) + 1
     months = [r["reporting_month"] for r in _rows(os.path.join(target, W.FILES["volumes"]))]
     return [{"month": m, "released": released.get(m, 0), "flagged": flagged.get(m, 0),
@@ -170,18 +188,20 @@ def ask_baseline(target):
 def ask_dilution(target):
     """Ask 3: the dilution panel's median recovery and the replicates within a fifth of the level."""
     wb = openpyxl.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
-    prepared = {}
+    prepared, stocks = {}, {}
     for row in wb["Prepared levels"].iter_rows(min_row=2, values_only=True):
-        prepared[str(row[0]).strip().upper()] = float(row[2])
+        prepared[(str(row[0]).strip(), str(row[1]).strip().upper())] = float(row[3])
     results = {}
     for row in wb["Replicate results"].iter_rows(min_row=2, values_only=True):
-        if row[3] in (None, ""):
+        if row[4] in (None, ""):
             continue
-        results.setdefault(str(row[0]).strip().upper(), []).append(float(row[3]))
+        key = str(row[0]).strip().upper()
+        stocks[key] = str(row[1]).strip()
+        results.setdefault(key, []).append(float(row[4]))
     out = []
     for lv, _label, _frac in W.DILUTION:
         vals = sorted(results[lv])
-        level = prepared[lv]
+        level = prepared[(stocks[lv], lv)]
         within = sum(1 for v in vals if abs(v - level) <= 0.2 * level)
         out.append({"level": lv, "prepared": level, "replicates": len(vals),
                     "median_recovery": statistics.median(vals) / level, "within_fifth": within})

@@ -147,33 +147,30 @@ def write_positions(target):
 
 
 def write_events(target):
-    """The process operator's equipment log, local time, as the shift writes it."""
+    """The process operator's equipment log, local time, as the shift writes it. The weekly inspection
+    stops the blowers and the engine; the centrifuges are already down at that hour and come back behind
+    the inspection."""
     rows = []
-    stops = [(s, m, r, "planned") for s, m, r in W.PLANNED_STOPS] + \
-            [(s, m, r, "unplanned") for s, m, r in W.UNPLANNED_STOPS]
     day = dt.date(2026, 8, 24)
     end = dt.date(2026, 10, 16)
-    rng = random.Random(W.SEED + 17)
     while day <= end:
-        if day.weekday() <= 5:
-            for cf, t0 in zip(W.CENTRIFUGES, (6, 6)):
-                h = t0
-                mi = rng.choice([2, 4, 7, 9, 12, 14, 18])
-                rows.append([dt.datetime(day.year, day.month, day.day, h, mi), cf, "START",
-                             W.PEOPLE["operator"][1], "dewatering shift start"])
-                rows.append([dt.datetime(day.year, day.month, day.day, 17, 40 + rng.choice([0, 5, 9, 14])),
-                             cf, "STOP", W.PEOPLE["operator"][1], "dewatering shift end"])
+        win = SM.centrifuge_window(day)
+        if win:
+            a, b = win
+            for cf in W.CENTRIFUGES:
+                rows.append([a, cf, "START", W.PEOPLE["operator"][1],
+                             "dewatering shift start behind the weekly inspection"
+                             if a.hour >= 7 else "dewatering shift start"])
+                rows.append([b, cf, "STOP", W.PEOPLE["operator"][1], "dewatering shift end"])
         day += dt.timedelta(days=1)
-    for start, mins, reason, kind in stops:
-        who = W.PEOPLE["planner"][1] if kind == "planned" else W.PEOPLE["operator"][1]
-        for eq in W.BLOWERS + W.CENTRIFUGES + [W.ENGINE]:
+    for start, mins, reason in W.PLANNED_STOPS + W.UNPLANNED_STOPS:
+        planned = any(start == s for s, _, _ in W.PLANNED_STOPS)
+        who = W.PEOPLE["planner"][1] if planned else W.PEOPLE["operator"][1]
+        for eq in W.BLOWERS + [W.ENGINE]:
             rows.append([start, eq, "STOP", who, reason])
             rows.append([start + dt.timedelta(minutes=mins), eq, "START", who,
                          "returned to service after %s" % reason])
-    # the blowers and the engine otherwise run on, with the quarterly oil change noted
-    rows.append([dt.datetime(2026, 8, 24, 6, 5), W.ENGINE, "START", W.PEOPLE["operator"][1],
-                 "returned to service after oil change"])
-    for eq in W.BLOWERS:
+    for eq in W.BLOWERS + [W.ENGINE]:
         rows.append([dt.datetime(2026, 8, 24, 6, 12), eq, "START", W.PEOPLE["operator"][1],
                      "returned to service after oil change"])
     rows.sort(key=lambda r: (r[0], r[1], r[2]))
@@ -190,14 +187,17 @@ def write_scada(target):
     n = int((dt.datetime(2026, 10, 17) - t0).total_seconds() // 900)
     stamps = [t0 + dt.timedelta(minutes=15 * i) for i in range(n)]
     stopped = np.zeros(n, dtype=bool)
-    for start, mins, _ in W.PLANNED_STOPS + W.UNPLANNED_STOPS:
-        e = start + dt.timedelta(minutes=mins)
+    for start, e in SM.all_down():
         stopped |= np.array([(s >= start - dt.timedelta(minutes=14)) and (s < e) for s in stamps])
     hours = np.array([s.hour + s.minute / 60.0 for s in stamps])
     dows = np.array([s.weekday() for s in stamps])
     air = 4120 + 180 * np.sin(2 * math.pi * hours / 24.0 - 1.2) + rng.normal(0, 46, n)
     air = np.where(stopped, 0.0, air)
-    cf_on = (hours >= 6.2) & (hours < 17.7) & (dows <= 5) & ~stopped
+    cf_on = np.zeros(n, dtype=bool)
+    wins = {d: SM.centrifuge_window(d) for d in sorted({s.date() for s in stamps})}
+    for i, s in enumerate(stamps):
+        w = wins[s.date()]
+        cf_on[i] = bool(w and w[0] <= s < w[1]) and not stopped[i]
     feed = np.where(cf_on, 31.5 + rng.normal(0, 1.4, n), 0.0)
     gas_rate = np.where(stopped, 0.0, 212 + 9.5 * np.sin(2 * math.pi * hours / 24.0 + 0.4)
                         + rng.normal(0, 4.0, n))      # m3 an hour to the engine
@@ -260,12 +260,13 @@ def write_bands(target, series):
                 # broadband shape of the residual, plus the plant's own two tones
                 shape = -11.0 - 7.5 * abs(math.log10(f / 160.0)) ** 1.9
                 tone = 0.0
+                k400, k100 = W.TONE_K[s["dep"]["code"]]
                 if abs(f - 400.0) < 1.0:
-                    tone = 9.2 * ps
+                    tone = 9.2 * ps * k400
                 elif abs(f - 100.0) < 1.0:
-                    tone = 7.4 * ps
+                    tone = 7.0 * ps * k100
                 elif abs(f - 800.0) < 1.0:
-                    tone = 2.1 * ps
+                    tone = 2.1 * ps * k400 * k400
                 vals.append(lev + shape + tone + float(rng.normal(0, 0.35)))
             rows.append([W_serial(s["dep"]["meter"]), stamps[q].strftime("%Y-%m-%d %H:%M")]
                         + ["%.1f" % v for v in vals])

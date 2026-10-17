@@ -135,59 +135,76 @@ def run(target, figures_path):
     same("the chosen cutoff's false-call rate", fig["cutoffs"][decision]["false_rate_pct"],
          fig["chosen_false_rate_pct"])
 
+    biobank = {r["specimen_id"]: r["biobank_ref"]
+               for r in table(os.path.join(target, "specimen_request_crosswalk.tsv"), "\t")}
     weeks = {}
     for r in table(os.path.join(target, "identity_panel_register_2027.csv")):
         day = dt.date.fromisoformat(r["report_date"])
         if day.year == 2027 and day.month in (4, 5):
             w = weeks.setdefault(r["report_ref"], {"rows": 0, "spec": set()})
             w["rows"] += 1
-            w["spec"].add(r["specimen_id"])
+            w["spec"].add(biobank.get(r["specimen_id"], r["specimen_id"]))
     same("report weeks", sorted(weeks), sorted(fig["panel_weeks"]))
     for ref, w in sorted(weeks.items()):
         same("%s specimens" % ref, len(w["spec"]), fig["panel_weeks"][ref]["specimens"])
         same("%s difference" % ref, w["rows"] - len(w["spec"]), fig["panel_weeks"][ref]["difference"])
         same("%s results issued" % ref, w["rows"], fig["panel_weeks"][ref]["results_issued"])
 
-    months = {}
+    amended = {}
+    for a in table(os.path.join(target, "release_amendments_2026-07_2027-03.csv")):
+        amended[(a["specimen_id"], a["field"])] = a["value_after"]
+    months, rel_seen, flag_seen = {}, set(), set()
     with open(os.path.join(target, "qc_screen_history_2026-02-15_2027-02-28.csv"), encoding="utf-8") as fh:
         head = fh.readline().rstrip("\n").split(",")
-        ix = {k: head.index(k) for k in ("released_date", "release_status", "hetx_call",
+        ix = {k: head.index(k) for k in ("specimen_id", "released_date", "release_status", "hetx_call",
                                          "review_outcome", "call_source")}
         for line in fh:
             f = line.rstrip("\n").split(",")
             if f[ix["release_status"]] != "RELEASED":
                 continue
-            m = f[ix["released_date"]][:7]
+            sid = f[ix["specimen_id"]]
+            released = amended.get((sid, "released_date"), f[ix["released_date"]])
+            m = released[:7]
+            key = (m, sid)
             d = months.setdefault(m, [0, 0])
-            d[0] += 1
+            if key not in rel_seen:
+                rel_seen.add(key)
+                d[0] += 1
             call = (f[ix["review_outcome"]] if f[ix["call_source"]] == "REVIEWED"
                     else f[ix["hetx_call"]])
-            if call in ("FLAG", "FLAGGED"):
+            if (sid, "hetx_call") in amended:
+                call = amended[(sid, "hetx_call")]
+            if call in ("FLAG", "FLAGGED") and key not in flag_seen:
+                flag_seen.add(key)
                 d[1] += 1
     for m, row in sorted(fig["baseline"].items()):
         same("%s released" % m, months[m][0], row["released"])
         same("%s flagged" % m, months[m][1], row["flagged"])
         same("%s per thousand" % m, round(1000.0 * months[m][1] / months[m][0], 1), row["per_thousand"])
-    vol = {r["reporting_month"]: int(r["specimens_released"].replace(" ", ""))
+    vol = {r["reporting_month"]: int(r["results_released"].replace(" ", ""))
            for r in table(os.path.join(target, "release_volumes_monthly_2026-03_2027-02.csv"))}
-    same("the reporting pack ties", {m: fig["baseline"][m]["released"] for m in fig["baseline"]}, vol)
+    same("the reporting pack counts releases, not specimens",
+         all(vol[m] >= fig["baseline"][m]["released"] for m in fig["baseline"]), True)
 
     book = os.path.join(target, "dilution_panel_2027q1.xlsx")
     prepared = {}
     for row in sheet_rows(book, "Prepared levels")[1:]:
-        prepared[row[0].strip().upper()] = float(row[2])
-    results = {}
+        prepared[(row[0].strip(), row[1].strip().upper())] = float(row[3])
+    results, stock = {}, {}
     for row in sheet_rows(book, "Replicate results")[1:]:
-        if len(row) < 4 or row[3] in ("", None):
+        if len(row) < 5 or row[4] in ("", None):
             continue
-        results.setdefault(row[0].strip().upper(), []).append(float(row[3]))
+        key = row[0].strip().upper()
+        stock[key] = row[1].strip()
+        results.setdefault(key, []).append(float(row[4]))
     for lv, row in sorted(fig["dilution"].items()):
         vals = sorted(results[lv])
+        level = prepared[(stock[lv], lv)]
         same("%s replicates" % lv, len(vals), row["replicates"])
-        same("%s median recovery" % lv,
-             round(statistics.median(vals) / prepared[lv], 3), row["median_recovery"])
+        same("%s median recovery" % lv, round(statistics.median(vals) / level, 3),
+             row["median_recovery"])
         same("%s within a fifth" % lv,
-             sum(1 for v in vals if abs(v - prepared[lv]) <= 0.2 * prepared[lv]), row["within_fifth"])
+             sum(1 for v in vals if abs(v - level) <= 0.2 * level), row["within_fifth"])
     return CHECKS[0]
 
 

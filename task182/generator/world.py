@@ -4,6 +4,7 @@ Nothing in this module ships. The designed specific levels and residuals fix the
 pack and the goldens carry is measured from the built data (dataset-generation 6.1).
 """
 import datetime as dt
+import math
 
 SITE = "Drumlorne"
 OPERATOR = "Tulcarra Foods"
@@ -38,12 +39,9 @@ PLANNED_STOPS = [
     (dt.datetime(2026, 10, 6, 5, 0), 120, "weekly MCC inspection and belt check"),
 ]
 UNPLANNED_STOPS = [
-    (dt.datetime(2026, 9, 1, 5, 0), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 8, 5, 0), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 15, 5, 0), 120, "weekly MCC inspection, blower strainer clean"),
-    (dt.datetime(2026, 9, 22, 5, 0), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 29, 5, 0), 120, "weekly MCC inspection, centrifuge scroll check"),
-    (dt.datetime(2026, 10, 6, 5, 0), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 10, 23, 50), 25, "balance tank high level alarm"),
+    (dt.datetime(2026, 9, 23, 5, 15), 40, "blower 2 bearing temperature trip"),
+    (dt.datetime(2026, 10, 2, 2, 10), 18, "ESB supply dip, all drives tripped"),
 ]
 
 # Equipment the three noise sources run on.
@@ -93,14 +91,14 @@ SCREEN = {
     "NSL03": "roadside, no screening",
     "NSL04": "open field, no screening",
     "NSL05": "farm buildings between position and plant",
-    "NSL06": "roadside, no screening",
+    "NSL06": "road embankment between position and plant",
     "NSL07": "open field, no screening",
     "NSL08": "trees and river bank",
-    "NSL09": "slurry store and shed between position and plant",
+    "NSL09": "open ground, no screening",
     "NSL10": "rising ground and trees",
     "NSL11": "open, facing the access road",
     "NSL12": "roadside hedge",
-    "NSL13": "open field, no screening",
+    "NSL13": "farm buildings between position and plant",
     "NSL14": "mature trees along the road",
 }
 # Complaints: rung 0's material, recorded in the register and in the complaints file.
@@ -149,25 +147,41 @@ EVENT_DB = {c: (10.0, 22.0) for c in CODES}
 JITTER = {c: 0.8 for c in CODES}
 SLOW = {
     "NSL01": 2.2, "NSL02": 0.7, "NSL03": 1.6, "NSL04": 0.7, "NSL05": 0.6, "NSL06": 0.6,
-    "NSL07": 0.8, "NSL08": 2.1, "NSL09": 2.2, "NSL10": 1.5, "NSL11": 2.2, "NSL12": 2.2,
+    "NSL07": 1.7, "NSL08": 2.1, "NSL09": 2.2, "NSL10": 1.5, "NSL11": 2.2, "NSL12": 2.2,
     "NSL13": 1.5, "NSL14": 0.4,
 }
 
 # Micro-adjustments to the designed specific levels, so every printed level sits mid-bin and no two
 # positions share a printed value. Fixed by the search in scratch; they move no slate.
 SHIFT = {
-    "NSL01": -0.0367,
-    "NSL02": -0.1537,
-    "NSL03": -0.3801,
-    "NSL04": -0.0445,
-    "NSL05": +0.0098,
-    "NSL06": -0.8007,
-    "NSL07": -0.0017,
-    "NSL08": -0.7900,
-    "NSL09": -0.1168,
-    "NSL10": -0.8662,
-    "NSL11": -0.0144,
-    "NSL12": -0.3339,
-    "NSL13": +0.0690,
-    "NSL14": -0.1598,
+    "NSL01": -0.07170,
+    "NSL02": -0.12643,
+    "NSL03": -0.41431,
+    "NSL04": -0.04934,
+    "NSL05": -0.02427,
+    "NSL06": -0.77408,
+    "NSL07": -0.01277,
+    "NSL08": -0.74206,
+    "NSL09": -0.15477,
+    "NSL10": -0.83756,
+    "NSL11": -0.02758,
+    "NSL12": -0.31026,
+    "NSL13": +0.04479,
+    "NSL14": -0.07501,
 }
+
+
+# How much of each tone survives to a position: the blower's 400 Hz blade tone falls away faster with
+# distance than the engine's 100 Hz firing tone, and a solid barrier in the line of sight takes more of
+# both than a hedge or open ground does. Ordinary air absorption and barrier attenuation.
+BARRIER = {}
+for _p in POSITIONS:
+    _s = SCREEN[_p[0]]
+    BARRIER[_p[0]] = (0.55 if ("buildings" in _s or "embankment" in _s or "shed" in _s)
+                      else (0.78 if ("hedge" in _s or "trees" in _s or "hedgerow" in _s or "ground and" in _s)
+                            else 1.0))
+TONE_K = {}
+for _p in POSITIONS:
+    _d, _b = _p[3], BARRIER[_p[0]]
+    TONE_K[_p[0]] = (round(_b * math.exp(-(_d - 98) / 420.0), 4),
+                     round(_b * math.exp(-(_d - 98) / 900.0), 4))

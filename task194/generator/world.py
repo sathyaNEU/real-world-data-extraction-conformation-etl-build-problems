@@ -136,8 +136,8 @@ MIX = {
 UNITS = [
     # code, name, hospital, mix, service, psi, sep, plan, ylast, role, status
     ("41210", "General Medicine", "H1", "gen_med", "acute", 1.034, 2300, 2077, 1.188, "largest", "eligible"),
-    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.112, 2600, 3367, 1.043, "runner_up", "eligible"),
-    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.232, 1900, 2305, 1.137, "answer", "eligible"),
+    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.112, 2600, 3560, 1.043, "runner_up", "eligible"),
+    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.233, 1900, 2305, 1.090, "answer", "eligible"),
     ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.091, 1050, 1257, 1.272, "hot2", "eligible"),
     ("41310", "General Medicine", "H2", "gen_med", "acute", 1.158, 1350, 1364, 1.088, "mid", "eligible"),
     ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.047, 1200, 1470, 1.102, "hot3", "eligible"),
@@ -234,6 +234,7 @@ MIX_FAMILY = {"gen_med": "medical", "resp": "medical", "renal": "medical", "aged
               "neuro": "medical", "subacute": "medical", "gen_surg": "surgical", "vasc": "surgical",
               "colorectal": "surgical", "ortho": "ortho"}
 SECOND_COMPLICATION = 0.268     # share of affected episodes recording a second complication
+THIRD_COMPLICATION = 0.031      # and a third
 # the complication detail extract covers the units on the clinical information system; the wards on the
 # Carrowdean campus record complications in the campus module and reach the warehouse through the extract
 DETAIL_EXCLUDED = ("41510", "41511", "41512", "41520", "41630")

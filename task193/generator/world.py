@@ -96,6 +96,14 @@ AGE_TILT = {
     "M5": [1.18, 1.10, 0.92, 0.78], "M6": [0.70, 0.93, 1.16, 1.33],
     "M7": [1.14, 1.02, 0.95, 0.88], "M8": [0.86, 1.00, 1.08, 1.12],
 }
+# how a patient's region multiplies each marker treatment's incidence: prescribing habits differ
+# between the regions' own medicines committees
+REGION_TILT = {
+    "M1": [0.96, 1.07, 1.02, 0.95, 1.01], "M2": [1.09, 0.91, 0.96, 1.04, 0.97],
+    "M3": [0.94, 1.02, 1.11, 0.98, 1.04], "M4": [1.03, 0.97, 0.92, 1.08, 1.01],
+    "M5": [1.12, 0.93, 0.88, 1.06, 0.95], "M6": [0.89, 1.04, 1.14, 0.96, 1.08],
+    "M7": [1.02, 0.98, 1.05, 0.95, 1.00], "M8": [0.97, 1.03, 0.99, 1.06, 0.96],
+}
 ANNEX = {
     "P01": ["M4", "M2", "M3"],
     "P02": ["M2", "M6", "M5"],
@@ -208,10 +216,24 @@ def age_bands(n_pat, seed=SEED + 101):
     return birth, band
 
 
+def regions(n_pat, seed=SEED + 103):
+    """Each patient's region of residence at the window's start."""
+    rng = np.random.default_rng(seed)
+    return rng.choice(len(REGIONS), size=n_pat, p=REGION_W)
+
+
+def _tilt(code, idx, n_pat, table):
+    """A mean-preserving multiplier on a marker treatment's incidence, by group."""
+    t = np.array(table[code], dtype=float)
+    share = np.bincount(idx, minlength=len(t)) / float(n_pat)
+    return t / float((t * share).sum())
+
+
 def draw(seed=SEED, n_pat=N_PAT):
     """First-ever receipt day per medicine per patient; -1 where the patient never receives it."""
     rng = np.random.default_rng(seed)
     birth, band = age_bands(n_pat)
+    reg = regions(n_pat)
     first = {}
     for row in PRODUCTS:
         code, prof, pi = row[0], row[3], row[4]
@@ -220,10 +242,9 @@ def draw(seed=SEED, n_pat=N_PAT):
         first[code] = np.where(hit, rng.choice(NDAY, size=n_pat, p=p), -1)
     for code, name, atc, prof, pi in MARKERS:
         p = prof / prof.sum()
-        tilt = np.array(AGE_TILT[code], dtype=float)
-        share = np.bincount(band, minlength=4) / float(n_pat)
-        tilt = tilt / float((tilt * share).sum())          # mean preserving
-        hit = rng.random(n_pat) < np.clip(pi * tilt[band], 0.0, 0.98)
+        at = _tilt(code, band, n_pat, AGE_TILT)
+        rt = _tilt(code, reg, n_pat, REGION_TILT)
+        hit = rng.random(n_pat) < np.clip(pi * at[band] * rt[reg], 0.0, 0.98)
         first[code] = np.where(hit, rng.choice(NDAY, size=n_pat, p=p), -1)
     for (pc, mc), (e, lag_mean) in EFFECTS.items():
         tp = first[pc]

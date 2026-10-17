@@ -16,10 +16,16 @@ import world as W
 N = 0
 
 
+FAILS = []
+
+
 def ok(flag, label):
     global N
     N += 1
-    assert flag, "FAILED: %s" % label
+    if not flag:
+        FAILS.append(label)
+        if not os.environ.get("CHECKS_COLLECT"):
+            assert flag, "FAILED: %s" % label
 
 
 def read(target, name):
@@ -91,8 +97,8 @@ def run(target, g, state):
     ok(round(answer["avoided"]) == 17, "the answer avoids 17, got %.3f" % answer["avoided"])
     ok(runner["unit"] == "41220" and round(runner["avoided"]) == 11, "the closest unit is 41220 at 11")
     ok(g["margin"] >= 1.2, "final margin %.3fx is at least 1.2x" % g["margin"])
-    ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 13,
-       "rung 0 files 41210 at 13 avoided")
+    ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 14,
+       "rung 0 files 41210 at 14 avoided")
     ok(g["rung1"]["unit"] == "41330", "rung 1 files 41330")
     ok(g["rung2"]["unit"] == "41220", "rung 2 files 41220")
     for label, key in (("rung 0", lambda d: share * d["last_excess"]), ("rung 1", lambda d: d["ratio"]),
@@ -513,4 +519,7 @@ def run(target, g, state):
         ok(fig["avoided_at_pick"] == round(answer["avoided"]), "figures.json carries the call's figure")
         ok(all(fig["avoided_by_unit"][d["unit"]] == round(d["avoided"]) for d in units),
            "figures.json carries every unit's avoided count")
+    if FAILS:
+        print("\n".join("FAILED: " + f for f in FAILS))
+        print("%d failures of %d" % (len(FAILS), N))
     return N

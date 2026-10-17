@@ -9,109 +9,109 @@
   {
    "product": "Dalvextin",
    "marker": "loop diuretic",
-   "patients": 333,
-   "after": 242,
-   "multiple": 1.42,
-   "crude_multiple": 1.45
+   "patients": 338,
+   "after": 240,
+   "multiple": 1.4,
+   "crude_multiple": 1.42
   },
   {
    "product": "Pirenoxol",
    "marker": "acid-suppressant",
-   "patients": 338,
+   "patients": 336,
    "after": 246,
-   "multiple": 1.41,
+   "multiple": 1.39,
    "crude_multiple": 1.46
   },
   {
    "product": "Ternivast",
    "marker": "gout treatment",
-   "patients": 540,
-   "after": 275,
-   "multiple": 1.41,
-   "crude_multiple": 1.02
+   "patients": 547,
+   "after": 273,
+   "multiple": 1.4,
+   "crude_multiple": 1.0
   },
   {
    "product": "Oxelumab",
    "marker": "antidepressant",
-   "patients": 700,
-   "after": 406,
-   "multiple": 1.4,
-   "crude_multiple": 1.16
+   "patients": 692,
+   "after": 381,
+   "multiple": 1.36,
+   "crude_multiple": 1.1
   },
   {
    "product": "Hestroban",
    "marker": "antiemetic",
-   "patients": 434,
-   "after": 316,
+   "patients": 436,
+   "after": 317,
    "multiple": 1.46,
-   "crude_multiple": 1.46
+   "crude_multiple": 1.45
   },
   {
    "product": "Kirunelle",
    "marker": "hypnotic",
-   "patients": 276,
-   "after": 209,
-   "multiple": 1.41,
-   "crude_multiple": 1.51
+   "patients": 294,
+   "after": 217,
+   "multiple": 1.33,
+   "crude_multiple": 1.48
   },
   {
    "product": "Sovraxil",
    "marker": "topical corticosteroid",
-   "patients": 556,
-   "after": 430,
-   "multiple": 1.44,
-   "crude_multiple": 1.55
+   "patients": 536,
+   "after": 401,
+   "multiple": 1.38,
+   "crude_multiple": 1.5
   }
  ],
  "crude_only": [
   {
    "product": "Varenadol",
    "marker": "antiemetic",
-   "multiple": 1.01,
-   "crude_multiple": 1.63
+   "multiple": 1.0,
+   "crude_multiple": 1.64
   },
   {
    "product": "Varenadol",
    "marker": "acid-suppressant",
-   "multiple": 1.0,
-   "crude_multiple": 1.54
+   "multiple": 0.98,
+   "crude_multiple": 1.52
   },
   {
    "product": "Varenadol",
    "marker": "hypnotic",
    "multiple": 1.0,
-   "crude_multiple": 1.57
+   "crude_multiple": 1.56
   },
   {
    "product": "Admirabin",
    "marker": "loop diuretic",
    "multiple": 1.0,
-   "crude_multiple": 1.54
+   "crude_multiple": 1.52
   },
   {
    "product": "Admirabin",
    "marker": "antidepressant",
-   "multiple": 1.03,
-   "crude_multiple": 1.58
+   "multiple": 1.02,
+   "crude_multiple": 1.6
   }
  ],
  "window_only": [
   {
    "product": "Ternivast",
    "marker": "gout treatment",
-   "multiple": 1.41,
-   "crude_multiple": 1.02
+   "multiple": 1.4,
+   "crude_multiple": 1.0
   },
   {
    "product": "Oxelumab",
    "marker": "antidepressant",
-   "multiple": 1.4,
-   "crude_multiple": 1.16
+   "multiple": 1.36,
+   "crude_multiple": 1.1
   }
  ],
  "nearest_miss": {
   "label": "Dalvextin and acid-suppressant",
-  "multiple": 1.07
+  "multiple": 1.02
  },
  "screen_rows": [
   {
@@ -119,12 +119,12 @@
    "brand": "Dalvextin",
    "marker": "M2",
    "marker_treatment": "acid-suppressant",
-   "patients": 182,
-   "after": 93,
-   "before": 89,
-   "share_pct": 51.1,
-   "expected": 86.7,
-   "multiple": 1.07,
+   "patients": 189,
+   "after": 96,
+   "before": 93,
+   "share_pct": 50.8,
+   "expected": 93.7,
+   "multiple": 1.02,
    "referred": "no",
    "crude_multiple": 1.02
   },
@@ -133,219 +133,219 @@
    "brand": "Dalvextin",
    "marker": "M3",
    "marker_treatment": "gout treatment",
-   "patients": 188,
-   "after": 103,
-   "before": 85,
-   "share_pct": 54.8,
-   "expected": 103.6,
-   "multiple": 0.99,
-   "referred": "no",
-   "crude_multiple": 1.1
-  },
-  {
-   "product": "P01",
-   "brand": "Dalvextin",
-   "marker": "M4",
-   "marker_treatment": "loop diuretic",
-   "patients": 333,
-   "after": 242,
-   "before": 91,
-   "share_pct": 72.7,
-   "expected": 170.4,
-   "multiple": 1.42,
-   "referred": "yes",
-   "crude_multiple": 1.45
-  },
-  {
-   "product": "P02",
-   "brand": "Pirenoxol",
-   "marker": "M2",
-   "marker_treatment": "acid-suppressant",
-   "patients": 338,
-   "after": 246,
-   "before": 92,
-   "share_pct": 72.8,
-   "expected": 175.1,
-   "multiple": 1.41,
-   "referred": "yes",
-   "crude_multiple": 1.46
-  },
-  {
-   "product": "P02",
-   "brand": "Pirenoxol",
-   "marker": "M5",
-   "marker_treatment": "antidepressant",
-   "patients": 176,
-   "after": 97,
-   "before": 79,
-   "share_pct": 55.1,
-   "expected": 97.5,
-   "multiple": 0.99,
-   "referred": "no",
-   "crude_multiple": 1.1
-  },
-  {
-   "product": "P02",
-   "brand": "Pirenoxol",
-   "marker": "M6",
-   "marker_treatment": "hypnotic",
-   "patients": 165,
-   "after": 89,
-   "before": 76,
+   "patients": 204,
+   "after": 110,
+   "before": 94,
    "share_pct": 53.9,
-   "expected": 87.4,
-   "multiple": 1.02,
+   "expected": 113.1,
+   "multiple": 0.97,
    "referred": "no",
    "crude_multiple": 1.08
   },
   {
+   "product": "P01",
+   "brand": "Dalvextin",
+   "marker": "M4",
+   "marker_treatment": "loop diuretic",
+   "patients": 338,
+   "after": 240,
+   "before": 98,
+   "share_pct": 71.0,
+   "expected": 171.2,
+   "multiple": 1.4,
+   "referred": "yes",
+   "crude_multiple": 1.42
+  },
+  {
+   "product": "P02",
+   "brand": "Pirenoxol",
+   "marker": "M2",
+   "marker_treatment": "acid-suppressant",
+   "patients": 336,
+   "after": 246,
+   "before": 90,
+   "share_pct": 73.2,
+   "expected": 176.8,
+   "multiple": 1.39,
+   "referred": "yes",
+   "crude_multiple": 1.46
+  },
+  {
+   "product": "P02",
+   "brand": "Pirenoxol",
+   "marker": "M5",
+   "marker_treatment": "antidepressant",
+   "patients": 168,
+   "after": 94,
+   "before": 74,
+   "share_pct": 56.0,
+   "expected": 93.9,
+   "multiple": 1.0,
+   "referred": "no",
+   "crude_multiple": 1.12
+  },
+  {
+   "product": "P02",
+   "brand": "Pirenoxol",
+   "marker": "M6",
+   "marker_treatment": "hypnotic",
+   "patients": 174,
+   "after": 92,
+   "before": 82,
+   "share_pct": 52.9,
+   "expected": 92.5,
+   "multiple": 1.0,
+   "referred": "no",
+   "crude_multiple": 1.06
+  },
+  {
    "product": "P03",
    "brand": "Ternivast",
    "marker": "M1",
    "marker_treatment": "antiemetic",
-   "patients": 336,
-   "after": 68,
-   "before": 268,
-   "share_pct": 20.2,
-   "expected": 73.1,
-   "multiple": 0.93,
+   "patients": 349,
+   "after": 71,
+   "before": 278,
+   "share_pct": 20.3,
+   "expected": 75.1,
+   "multiple": 0.95,
    "referred": "no",
-   "crude_multiple": 0.4
+   "crude_multiple": 0.41
   },
   {
    "product": "P03",
    "brand": "Ternivast",
    "marker": "M3",
    "marker_treatment": "gout treatment",
-   "patients": 540,
-   "after": 275,
-   "before": 265,
-   "share_pct": 50.9,
-   "expected": 195.2,
-   "multiple": 1.41,
+   "patients": 547,
+   "after": 273,
+   "before": 274,
+   "share_pct": 49.9,
+   "expected": 195.5,
+   "multiple": 1.4,
    "referred": "yes",
-   "crude_multiple": 1.02
+   "crude_multiple": 1.0
   },
   {
    "product": "P03",
    "brand": "Ternivast",
    "marker": "M6",
    "marker_treatment": "hypnotic",
-   "patients": 339,
-   "after": 72,
-   "before": 267,
-   "share_pct": 21.2,
-   "expected": 74.9,
+   "patients": 331,
+   "after": 71,
+   "before": 260,
+   "share_pct": 21.5,
+   "expected": 74.1,
    "multiple": 0.96,
    "referred": "no",
-   "crude_multiple": 0.42
+   "crude_multiple": 0.43
   },
   {
    "product": "P04",
    "brand": "Oxelumab",
    "marker": "M4",
    "marker_treatment": "loop diuretic",
-   "patients": 435,
-   "after": 142,
-   "before": 293,
-   "share_pct": 32.6,
-   "expected": 142.6,
+   "patients": 423,
+   "after": 147,
+   "before": 276,
+   "share_pct": 34.8,
+   "expected": 146.5,
    "multiple": 1.0,
    "referred": "no",
-   "crude_multiple": 0.65
+   "crude_multiple": 0.7
   },
   {
    "product": "P04",
    "brand": "Oxelumab",
    "marker": "M5",
    "marker_treatment": "antidepressant",
-   "patients": 700,
-   "after": 406,
-   "before": 294,
-   "share_pct": 58.0,
-   "expected": 290.6,
-   "multiple": 1.4,
+   "patients": 692,
+   "after": 381,
+   "before": 311,
+   "share_pct": 55.1,
+   "expected": 280.9,
+   "multiple": 1.36,
    "referred": "yes",
-   "crude_multiple": 1.16
+   "crude_multiple": 1.1
   },
   {
    "product": "P04",
    "brand": "Oxelumab",
    "marker": "M7",
    "marker_treatment": "topical corticosteroid",
-   "patients": 494,
-   "after": 138,
-   "before": 356,
-   "share_pct": 27.9,
-   "expected": 137.6,
-   "multiple": 1.0,
+   "patients": 487,
+   "after": 145,
+   "before": 342,
+   "share_pct": 29.8,
+   "expected": 142.0,
+   "multiple": 1.02,
    "referred": "no",
-   "crude_multiple": 0.56
+   "crude_multiple": 0.6
   },
   {
    "product": "P05",
    "brand": "Varenadol",
    "marker": "M1",
    "marker_treatment": "antiemetic",
-   "patients": 266,
-   "after": 217,
-   "before": 49,
-   "share_pct": 81.6,
-   "expected": 215.9,
-   "multiple": 1.01,
+   "patients": 279,
+   "after": 229,
+   "before": 50,
+   "share_pct": 82.1,
+   "expected": 230.1,
+   "multiple": 1.0,
    "referred": "no",
-   "crude_multiple": 1.63
+   "crude_multiple": 1.64
   },
   {
    "product": "P05",
    "brand": "Varenadol",
    "marker": "M2",
    "marker_treatment": "acid-suppressant",
-   "patients": 291,
-   "after": 224,
-   "before": 67,
-   "share_pct": 77.0,
-   "expected": 224.8,
-   "multiple": 1.0,
+   "patients": 298,
+   "after": 226,
+   "before": 72,
+   "share_pct": 75.8,
+   "expected": 230.7,
+   "multiple": 0.98,
    "referred": "no",
-   "crude_multiple": 1.54
+   "crude_multiple": 1.52
   },
   {
    "product": "P05",
    "brand": "Varenadol",
    "marker": "M6",
    "marker_treatment": "hypnotic",
-   "patients": 268,
+   "patients": 269,
    "after": 210,
-   "before": 58,
-   "share_pct": 78.4,
+   "before": 59,
+   "share_pct": 78.1,
    "expected": 210.1,
    "multiple": 1.0,
    "referred": "no",
-   "crude_multiple": 1.57
+   "crude_multiple": 1.56
   },
   {
    "product": "P06",
    "brand": "Hestroban",
    "marker": "M1",
    "marker_treatment": "antiemetic",
-   "patients": 434,
-   "after": 316,
-   "before": 118,
-   "share_pct": 72.8,
-   "expected": 215.8,
+   "patients": 436,
+   "after": 317,
+   "before": 119,
+   "share_pct": 72.7,
+   "expected": 216.9,
    "multiple": 1.46,
    "referred": "yes",
-   "crude_multiple": 1.46
+   "crude_multiple": 1.45
   },
   {
    "product": "P06",
    "brand": "Hestroban",
    "marker": "M8",
    "marker_treatment": "antipsychotic",
-   "patients": 5,
+   "patients": 7,
    "after": 2,
-   "before": 3,
+   "before": 5,
    "share_pct": null,
    "expected": null,
    "multiple": null,
@@ -357,22 +357,22 @@
    "brand": "Kirunelle",
    "marker": "M6",
    "marker_treatment": "hypnotic",
-   "patients": 276,
-   "after": 209,
-   "before": 67,
-   "share_pct": 75.7,
-   "expected": 148.4,
-   "multiple": 1.41,
+   "patients": 294,
+   "after": 217,
+   "before": 77,
+   "share_pct": 73.8,
+   "expected": 163.5,
+   "multiple": 1.33,
    "referred": "yes",
-   "crude_multiple": 1.51
+   "crude_multiple": 1.48
   },
   {
    "product": "P07",
    "brand": "Kirunelle",
    "marker": "M8",
    "marker_treatment": "antipsychotic",
-   "patients": 12,
-   "after": 6,
+   "patients": 13,
+   "after": 7,
    "before": 6,
    "share_pct": null,
    "expected": null,
@@ -385,51 +385,51 @@
    "brand": "Admirabin",
    "marker": "M4",
    "marker_treatment": "loop diuretic",
-   "patients": 216,
-   "after": 166,
-   "before": 50,
-   "share_pct": 76.9,
-   "expected": 166.1,
+   "patients": 213,
+   "after": 162,
+   "before": 51,
+   "share_pct": 76.1,
+   "expected": 162.4,
    "multiple": 1.0,
    "referred": "no",
-   "crude_multiple": 1.54
+   "crude_multiple": 1.52
   },
   {
    "product": "P08",
    "brand": "Admirabin",
    "marker": "M5",
    "marker_treatment": "antidepressant",
-   "patients": 255,
-   "after": 201,
-   "before": 54,
-   "share_pct": 78.8,
-   "expected": 195.9,
-   "multiple": 1.03,
+   "patients": 267,
+   "after": 214,
+   "before": 53,
+   "share_pct": 80.1,
+   "expected": 210.4,
+   "multiple": 1.02,
    "referred": "no",
-   "crude_multiple": 1.58
+   "crude_multiple": 1.6
   },
   {
    "product": "P09",
    "brand": "Sovraxil",
    "marker": "M7",
    "marker_treatment": "topical corticosteroid",
-   "patients": 556,
-   "after": 430,
-   "before": 126,
-   "share_pct": 77.3,
-   "expected": 298.8,
-   "multiple": 1.44,
+   "patients": 536,
+   "after": 401,
+   "before": 135,
+   "share_pct": 74.8,
+   "expected": 289.7,
+   "multiple": 1.38,
    "referred": "yes",
-   "crude_multiple": 1.55
+   "crude_multiple": 1.5
   },
   {
    "product": "P09",
    "brand": "Sovraxil",
    "marker": "M8",
    "marker_treatment": "antipsychotic",
-   "patients": 19,
-   "after": 13,
-   "before": 6,
+   "patients": 17,
+   "after": 12,
+   "before": 5,
    "share_pct": null,
    "expected": null,
    "multiple": null,
@@ -441,113 +441,113 @@
   {
    "chain": "APK",
    "quarter": "2025 Q4",
-   "accepted": 5869,
-   "rejected": 175,
+   "accepted": 5882,
+   "rejected": 52,
    "median_days": 1.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q1",
-   "accepted": 5325,
-   "rejected": 184,
+   "accepted": 5453,
+   "rejected": 54,
    "median_days": 2.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q2",
-   "accepted": 5364,
-   "rejected": 167,
+   "accepted": 5499,
+   "rejected": 43,
    "median_days": 2.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q3",
-   "accepted": 5674,
-   "rejected": 142,
+   "accepted": 5661,
+   "rejected": 48,
    "median_days": 2.0
   },
   {
    "chain": "DSA",
    "quarter": "2025 Q4",
-   "accepted": 4564,
-   "rejected": 144,
+   "accepted": 4620,
+   "rejected": 73,
    "median_days": 3.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q1",
-   "accepted": 4087,
-   "rejected": 143,
+   "accepted": 4167,
+   "rejected": 60,
    "median_days": 3.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q2",
-   "accepted": 3966,
-   "rejected": 130,
+   "accepted": 4137,
+   "rejected": 47,
    "median_days": 4.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q3",
-   "accepted": 4361,
-   "rejected": 115,
+   "accepted": 4379,
+   "rejected": 50,
    "median_days": 4.0
   },
   {
    "chain": "NOR",
    "quarter": "2025 Q4",
-   "accepted": 3293,
-   "rejected": 107,
+   "accepted": 3343,
+   "rejected": 75,
    "median_days": 4.0
   },
   {
    "chain": "NOR",
    "quarter": "2026 Q1",
-   "accepted": 3031,
-   "rejected": 82,
+   "accepted": 3059,
+   "rejected": 72,
    "median_days": 5.0
   },
   {
    "chain": "NOR",
    "quarter": "2026 Q2",
-   "accepted": 2905,
-   "rejected": 84,
+   "accepted": 2895,
+   "rejected": 80,
    "median_days": 6.0
   },
   {
    "chain": "NOR",
    "quarter": "2026 Q3",
-   "accepted": 3257,
-   "rejected": 93,
-   "median_days": 5.0
-  },
-  {
-   "chain": "VST",
-   "quarter": "2025 Q4",
-   "accepted": 2293,
-   "rejected": 70,
+   "accepted": 3204,
+   "rejected": 39,
    "median_days": 6.0
   },
   {
    "chain": "VST",
-   "quarter": "2026 Q1",
-   "accepted": 1967,
-   "rejected": 58,
-   "median_days": 7.0
-  },
-  {
-   "chain": "VST",
-   "quarter": "2026 Q2",
-   "accepted": 1884,
+   "quarter": "2025 Q4",
+   "accepted": 2244,
    "rejected": 38,
    "median_days": 6.0
   },
   {
    "chain": "VST",
+   "quarter": "2026 Q1",
+   "accepted": 1984,
+   "rejected": 22,
+   "median_days": 7.0
+  },
+  {
+   "chain": "VST",
+   "quarter": "2026 Q2",
+   "accepted": 1940,
+   "rejected": 18,
+   "median_days": 6.0
+  },
+  {
+   "chain": "VST",
    "quarter": "2026 Q3",
-   "accepted": 1959,
-   "rejected": 69,
+   "accepted": 2003,
+   "rejected": 25,
    "median_days": 8.0
   }
  ],
@@ -555,242 +555,242 @@
   {
    "holder": "H1",
    "name": "Nordlys Pharma A/S",
-   "ddd": 249236.0,
-   "ddd_before": 113923.5,
-   "ddd_after": 135312.5,
-   "rate_before": 1480,
-   "rate_after": 1595,
-   "fee_dkk": 384430
+   "ddd": 256094.5,
+   "ddd_before": 127368.0,
+   "ddd_after": 128726.5,
+   "rate_before": 1240,
+   "rate_after": 1335,
+   "fee_dkk": 329786
   },
   {
    "holder": "H2",
    "name": "Bregnholt Laegemidler A/S",
-   "ddd": 235701.2,
-   "ddd_before": 67115.1,
-   "ddd_after": 168586.2,
+   "ddd": 233630.2,
+   "ddd_before": 66498.2,
+   "ddd_after": 167132.0,
    "rate_before": 1480,
    "rate_after": 1595,
-   "fee_dkk": 368225
+   "fee_dkk": 364993
   },
   {
    "holder": "H3",
    "name": "Vindeby Therapeutics ApS",
-   "ddd": 408294.0,
-   "ddd_before": 16292.0,
-   "ddd_after": 392002.0,
+   "ddd": 407568.0,
+   "ddd_before": 15046.0,
+   "ddd_after": 392522.0,
    "rate_before": 1240,
    "rate_after": 1335,
-   "fee_dkk": 543525
+   "fee_dkk": 542674
   },
   {
    "holder": "H4",
    "name": "Soegaard Medica A/S",
-   "ddd": 156154.3,
-   "ddd_before": 149745.5,
-   "ddd_after": 6408.9,
+   "ddd": 159687.8,
+   "ddd_before": 154020.6,
+   "ddd_after": 5667.2,
    "rate_before": 1480,
    "rate_after": 1595,
-   "fee_dkk": 231845
+   "fee_dkk": 236990
   },
   {
    "holder": "H5",
    "name": "Kastholm Pharma A/S",
-   "ddd": 134301.3,
-   "ddd_before": 119911.5,
-   "ddd_after": 14389.8,
+   "ddd": 80303.2,
+   "ddd_before": 65598.5,
+   "ddd_after": 14704.7,
    "rate_before": 1480,
    "rate_after": 1595,
-   "fee_dkk": 200421
+   "fee_dkk": 120540
   },
   {
    "holder": "H6",
    "name": "Ellevang Biosciences A/S",
-   "ddd": 370231.0,
-   "ddd_before": 223679.5,
-   "ddd_after": 146551.5,
+   "ddd": 315988.0,
+   "ddd_before": 220905.2,
+   "ddd_after": 95082.8,
    "rate_before": 1240,
    "rate_after": 1335,
-   "fee_dkk": 473009
+   "fee_dkk": 400858
   },
   {
    "holder": "H7",
    "name": "Strandby Farma ApS",
-   "ddd": 115878.0,
-   "ddd_before": 115878.0,
+   "ddd": 114198.0,
+   "ddd_before": 114198.0,
    "ddd_after": 0,
    "rate_before": 1480,
    "rate_after": 1595,
-   "fee_dkk": 171499
+   "fee_dkk": 169013
   }
  ],
  "a3": [
   {
    "region": "Hovedstaden",
    "band": "18-39",
-   "patients": 879,
-   "share_pct": 66.9,
-   "with_marker": 588
-  },
-  {
-   "region": "Hovedstaden",
-   "band": "40-59",
    "patients": 868,
-   "share_pct": 75.0,
-   "with_marker": 651
+   "share_pct": 68.0,
+   "with_marker": 590
+  },
+  {
+   "region": "Hovedstaden",
+   "band": "40-59",
+   "patients": 787,
+   "share_pct": 77.8,
+   "with_marker": 612
   },
   {
    "region": "Hovedstaden",
    "band": "60-74",
-   "patients": 603,
-   "share_pct": 76.9,
-   "with_marker": 464
+   "patients": 551,
+   "share_pct": 80.8,
+   "with_marker": 445
   },
   {
    "region": "Hovedstaden",
    "band": "75 and over",
-   "patients": 707,
-   "share_pct": 77.9,
-   "with_marker": 551
+   "patients": 709,
+   "share_pct": 79.7,
+   "with_marker": 565
   },
   {
    "region": "Midtjylland",
    "band": "18-39",
-   "patients": 671,
-   "share_pct": 68.1,
-   "with_marker": 457
+   "patients": 667,
+   "share_pct": 67.2,
+   "with_marker": 448
   },
   {
    "region": "Midtjylland",
    "band": "40-59",
-   "patients": 614,
-   "share_pct": 73.9,
-   "with_marker": 454
+   "patients": 626,
+   "share_pct": 75.9,
+   "with_marker": 475
   },
   {
    "region": "Midtjylland",
    "band": "60-74",
-   "patients": 445,
-   "share_pct": 78.7,
-   "with_marker": 350
+   "patients": 458,
+   "share_pct": 79.7,
+   "with_marker": 365
   },
   {
    "region": "Midtjylland",
    "band": "75 and over",
-   "patients": 513,
-   "share_pct": 82.7,
-   "with_marker": 424
+   "patients": 529,
+   "share_pct": 76.7,
+   "with_marker": 406
   },
   {
    "region": "Nordjylland",
    "band": "18-39",
-   "patients": 306,
-   "share_pct": 70.9,
-   "with_marker": 217
+   "patients": 303,
+   "share_pct": 66.7,
+   "with_marker": 202
   },
   {
    "region": "Nordjylland",
    "band": "40-59",
-   "patients": 308,
-   "share_pct": 75.6,
-   "with_marker": 233
+   "patients": 285,
+   "share_pct": 75.8,
+   "with_marker": 216
   },
   {
    "region": "Nordjylland",
    "band": "60-74",
-   "patients": 214,
-   "share_pct": 82.2,
-   "with_marker": 176
+   "patients": 204,
+   "share_pct": 80.9,
+   "with_marker": 165
   },
   {
    "region": "Nordjylland",
    "band": "75 and over",
-   "patients": 234,
+   "patients": 222,
+   "share_pct": 80.6,
+   "with_marker": 179
+  },
+  {
+   "region": "Sjaelland",
+   "band": "18-39",
+   "patients": 391,
    "share_pct": 72.6,
-   "with_marker": 170
-  },
-  {
-   "region": "Sjaelland",
-   "band": "18-39",
-   "patients": 448,
-   "share_pct": 70.3,
-   "with_marker": 315
+   "with_marker": 284
   },
   {
    "region": "Sjaelland",
    "band": "40-59",
-   "patients": 377,
-   "share_pct": 77.7,
-   "with_marker": 293
+   "patients": 422,
+   "share_pct": 72.3,
+   "with_marker": 305
   },
   {
    "region": "Sjaelland",
    "band": "60-74",
-   "patients": 278,
-   "share_pct": 80.2,
-   "with_marker": 223
+   "patients": 303,
+   "share_pct": 78.9,
+   "with_marker": 239
   },
   {
    "region": "Sjaelland",
    "band": "75 and over",
-   "patients": 304,
-   "share_pct": 76.3,
-   "with_marker": 232
+   "patients": 338,
+   "share_pct": 80.8,
+   "with_marker": 273
   },
   {
    "region": "Syddanmark",
    "band": "18-39",
-   "patients": 563,
-   "share_pct": 68.7,
-   "with_marker": 387
+   "patients": 621,
+   "share_pct": 68.4,
+   "with_marker": 425
   },
   {
    "region": "Syddanmark",
    "band": "40-59",
-   "patients": 517,
-   "share_pct": 77.2,
-   "with_marker": 399
+   "patients": 550,
+   "share_pct": 74.9,
+   "with_marker": 412
   },
   {
    "region": "Syddanmark",
    "band": "60-74",
-   "patients": 397,
-   "share_pct": 82.6,
-   "with_marker": 328
+   "patients": 403,
+   "share_pct": 79.2,
+   "with_marker": 319
   },
   {
    "region": "Syddanmark",
    "band": "75 and over",
-   "patients": 448,
-   "share_pct": 81.2,
-   "with_marker": 364
+   "patients": 420,
+   "share_pct": 79.5,
+   "with_marker": 334
   },
   {
    "region": "not stated",
    "band": "18-39",
+   "patients": 74,
+   "share_pct": 73.0,
+   "with_marker": 54
+  },
+  {
+   "region": "not stated",
+   "band": "40-59",
    "patients": 64,
-   "share_pct": 70.3,
-   "with_marker": 45
-  },
-  {
-   "region": "not stated",
-   "band": "40-59",
-   "patients": 58,
-   "share_pct": 72.4,
-   "with_marker": 42
+   "share_pct": 75.0,
+   "with_marker": 48
   },
   {
    "region": "not stated",
    "band": "60-74",
-   "patients": 40,
-   "share_pct": 92.5,
-   "with_marker": 37
+   "patients": 53,
+   "share_pct": 77.4,
+   "with_marker": 41
   },
   {
    "region": "not stated",
    "band": "75 and over",
-   "patients": 60,
-   "share_pct": 78.3,
-   "with_marker": 47
+   "patients": 46,
+   "share_pct": 80.4,
+   "with_marker": 37
   }
  ],
  "routes": {
@@ -815,5 +815,5 @@
  ],
  "referral_multiple": 1.25,
  "referral_year": 2027,
- "rung2_count": 11
+ "rung2_count": 10
 }

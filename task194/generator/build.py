@@ -22,13 +22,13 @@ def cut(target):
     if os.path.isdir(target):
         shutil.rmtree(target)
     os.makedirs(target)
-    design = sim.design_ratios(W.UNITS)
     rows, expected, inscope = sim.episodes(W.UNITS)
+    design = sim.design_ratios(W.UNITS, expected)
     allsep = {}
     for r in rows:
         allsep[(r["unit"], r["q"])] = allsep.get((r["unit"], r["q"]), 0) + 1
     plans = {x[0]: x[7] for x in W.UNITS if x[7] is not None}
-    per_sep = {}
+    per_sep, expected_per_sep = {}, {}
     for x in W.UNITS:
         if x[0] not in plans:
             continue
@@ -39,11 +39,16 @@ def cut(target):
             continue                                  # a unit outside the indicator carries no excess
         o = sum(int(round(expected[(x[0], q)] * design[x[0]][q])) for q in qs)
         per_sep[x[0]] = (o / e - 1) * e / n          # excess complications per planned separation
-    _, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=False)
-    graded = sorted((c for c in per_sep if c in {x[0] for x in W.UNITS if x[10] == "eligible"}),
-                    key=lambda c: -per_sep[c] * plans[c])[:2]
-    plans = sim.centre_plans(plans, per_sep, thetas, graded)
-    targets, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=True)
+        expected_per_sep[x[0]] = (o / e) * e / n     # complications the standing carries per separation
+    sim.EXPECTED_PER_SEP = {c: expected_per_sep[c] for c in expected_per_sep}
+    chosen, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=False)
+    elig = [c for c in per_sep if c in {x[0] for x in W.UNITS if x[10] == "eligible"}]
+    ranked = sorted(elig, key=lambda c: -per_sep[c] * plans[c])
+    plans = sim.centre_plans(plans, per_sep, thetas, ranked[:2], ranked, ranked[0])
+    assert sorted(elig, key=lambda c: -per_sep[c] * plans[c])[:2] == ranked[:2], \
+        "centring the planned volumes moved the two graded units"
+    targets, thetas = sim.record_targets(expected, allsep, design, W.UNITS, plans, bins=True,
+                                         fixed=chosen)
     observed = sim.assign_complications(rows, expected, design, W.UNITS, targets)
     detail = sim.complications(rows, W.UNITS)
     replays = sim.add_replays(rows, W.UNITS)

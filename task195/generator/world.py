@@ -66,9 +66,14 @@ DAY_WEIGHT = [1.12, 1.07, 1.01, 0.95, 0.85]
 HIST_ROWS = 31200                         # rows in the warehouse extract
 REVIEWED_SHARE = 0.031                    # specimens whose call the duty bioinformatician reviewed
 
-DILUTION = [("L1", "0.4 %", 0.0041), ("L2", "0.8 %", 0.0077), ("L3", "1.6 %", 0.0163),
-            ("L4", "3.2 %", 0.0314), ("L5", "6.4 %", 0.0629), ("L6", "12.8 %", 0.1272)]
+REACCESSIONED = 214        # specimens re-accessioned for a repeat panel, typed under a second accession
+RERELEASED = 0             # set from the warehouse build: results released a second time after a correction
+
+DILUTION = [("L1", "0.4 %", 0.0041), ("L2", "1.6 %", 0.0163), ("L3", "6.4 %", 0.0629)]
 DILUTION_REPLICATES = 9
+# the series ran out of stock part way through, so the second half of every level's replicates was
+# prepared from a fresh stock dilution with its own gravimetric fraction
+DILUTION_SECOND_PREP = 0.963
 
 FILES = {
     "qc_a": "qc_screen_calls_gsqa_2027-03_2027-05.csv",
@@ -86,6 +91,7 @@ FILES = {
     "config": "rerun_pipeline_config_v34.json",
     "manifest": "export_manifest.csv",
     "runlog": "lims_run_log_2027-03_2027-05.csv",
+    "amendments": "release_amendments_2026-07_2027-03.csv",
     "costs": "assay_unit_costs_2027.csv",
     "platform": "extraction_platform_validation_2025.pdf",
     "plates": "plate_layout_map_2027q2.csv",
@@ -97,4 +103,4 @@ DISTRACTORS = ["runlog", "costs", "platform", "plates"]
 HIST_FLAG_RATE = {"2026-03": 0.0163, "2026-04": 0.0151, "2026-05": 0.0144, "2026-06": 0.0138,
                   "2026-07": 0.0129, "2026-08": 0.0147, "2026-09": 0.0172, "2026-10": 0.0186,
                   "2026-11": 0.0191, "2026-12": 0.0178, "2027-01": 0.0203, "2027-02": 0.0169}
-DILUTION_RECOVERY = {"L1": 0.861, "L2": 0.906, "L3": 0.948, "L4": 0.973, "L5": 0.991, "L6": 1.004}
+DILUTION_RECOVERY = {"L1": 0.861, "L2": 0.948, "L3": 0.991}

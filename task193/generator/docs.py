@@ -8,7 +8,8 @@ from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import (KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer,
+                                Table, TableStyle)
 
 import world as W
 
@@ -99,10 +100,10 @@ def standard(tgt):
                        "tracker at the date the extract was pulled.", BODY))
     f.append(Paragraph("3.3 Figures. Patient counts are whole. The expected number is carried to "
                        "one decimal and the multiple in 3.2(b) to two decimals.", BODY))
-    f.append(Paragraph("3.5 The construction of the expected number in 3.2(b) is the division's "
-                       "own epidemiological work and is recorded with each run.", BODY))
     f.append(Paragraph("3.4 A pair that meets 3.2(a) but not 3.2(b) is carried forward to the next "
                        "run unchanged and is not reported as a referral.", BODY))
+    f.append(Paragraph("3.5 The construction of the expected number in 3.2(b) is the division's "
+                       "own epidemiological work and is recorded with each run.", BODY))
 
     f.append(Paragraph("4. After the run", H2))
     f.append(Paragraph("4.1 The referral quarter. Pairs a run refers are assessed in the quarter "
@@ -118,17 +119,19 @@ def standard(tgt):
                        "bands 18 to 39, 40 to 59, 60 to 74, and 75 and over. A patient for whom no "
                        "region is recorded is counted under \"not stated\".", BODY))
 
-    f.append(Spacer(1, 5))
-    f.append(Paragraph("Annex A. Products under additional monitoring during the screen window", H2))
+    f.append(PageBreak())
     rows = []
     for code, brand, atc, prof, pi, mf, mt, holder in W.PRODUCTS:
         rows.append([code, brand, atc, ", ".join(W.ANNEX[code])])
-    f.append(_table(["Product code", "Brand name", "ATC code", "Marker groups screened"],
-                    rows, [22, 30, 24, 44]))
-    f.append(Spacer(1, 5))
-    f.append(Paragraph("Annex B. Marker treatments", H2))
+    f.append(KeepTogether([
+        Paragraph("Annex A. Products under additional monitoring during the screen window", H2),
+        _table(["Product code", "Brand name", "ATC code", "Marker groups screened"],
+               rows, [22, 30, 24, 44])]))
+    f.append(Spacer(1, 6))
     rows = [[m[0], m[1], m[2]] for m in W.MARKERS]
-    f.append(_table(["Marker code", "Marker treatment", "ATC group"], rows, [24, 54, 30]))
+    f.append(KeepTogether([
+        Paragraph("Annex B. Marker treatments", H2),
+        _table(["Marker code", "Marker treatment", "ATC group"], rows, [24, 54, 30])]))
     f.append(Spacer(1, 4))
     f.append(Paragraph("A marker treatment is the treatment a clinician gives for the event the "
                        "division is watching for, and the division screens for the treatment "
@@ -155,10 +158,10 @@ def fee_schedule(tgt, pulled):
                 "closed is charged in the quarter of its dispensing.")
     ws["A4"] = "Doses are stated in thousands of DDD on this sheet."
     ws["A5"] = ("A payer's band is settled once, on its total doses for the whole screen window. "
-                "The band's rate is charged on every one of that payer's doses; the bands are not "
-                "applied in tiers. Doses dispensed before 1 April 2026 are charged at this "
-                "sheet's rate for the band and doses dispensed on or after that date at the "
-                "Amendment sheet's rate for the same band.")
+                "The band's rate is charged on all of those doses; the bands are not applied in "
+                "tiers. Doses dispensed before 1 April 2026 are charged at this sheet's rate for "
+                "the band and doses dispensed on or after that date at the Amendment sheet's rate "
+                "for the same band.")
     rows = [("Band", "From (thousand DDD)", "To (thousand DDD)", "Rate (DKK per 1.000 DDD)")]
     for i, (lo, hi, rt) in enumerate(W.FEE_BANDS):
         rows.append(("%d" % (i + 1), "%.0f" % lo, "-" if hi > 10 ** 8 else "%.0f" % hi, "%d" % rt))
@@ -192,11 +195,9 @@ def fee_schedule(tgt, pulled):
                  "has merged into another company, the surviving company is the fee payer for "
                  "dispensings on and after the merger date, and the merged company remains the "
                  "payer for its dispensings before that date.")
-    ws3["A3"] = ("Band membership is settled on the payer's total doses for the whole screen "
-                 "window, in thousands of DDD, and the band's rate is charged on all of those "
-                 "doses. A dispensing re-transmitted after a failed transfer is charged once. "
-                 "Every dispensing inside the screen window is charged, including a dispensing of "
-                 "a product whose marketing authorisation has since lapsed.")
+    ws3["A3"] = ("A dispensing re-transmitted after a failed transfer is charged once. Every "
+                 "dispensing inside the screen window is charged, including a dispensing of a "
+                 "product whose marketing authorisation has since lapsed.")
     ws3["A4"] = "Prepared by the finance office, " + W.iso(pulled) + "."
     for w in (ws, ws2, ws3):
         for col in range(1, 6):

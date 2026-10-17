@@ -16,17 +16,18 @@ REPORT_DUE = "2027-09-30"                               # the annual report to t
 MLRO = "Manaaki Little"                                 # money laundering reporting officer
 ASSURANCE = "Emma Gullery"                              # the bank's assurance lead
 
-# segment: key, name, level at 5,000 of the fit region, per-bin ratio, customers,
-#          structured deposits planted in the reporting year, planted in the prior year
+# segment: key, name, cash deposits paid in during the reporting year, the decay its own
+#          amount density runs at, customers, structured deposits planted in the reporting
+#          year, planted in the prior year
 SEGMENTS = [
-    ("GRO", "Grocery and convenience", 333.2, 0.9835, 1163, 60, 42),
-    ("HOS", "Hospitality", 266.6, 0.9890, 2247, 60, 42),
-    ("TRA", "Transport and courier", 52.4, 1.0115, 857, 90, 63),
-    ("CON", "Trades and construction", 85.7, 1.0070, 1538, 71, 50),
-    ("RUR", "Rural supply and horticulture", 71.4, 0.9960, 971, 30, 21),
-    ("FUE", "Fuel and automotive", 157.1, 0.9865, 418, 31, 22),
-    ("PER", "Personal services", 47.6, 1.0150, 1764, 30, 21),
-    ("CLB", "Clubs and community", 42.8, 1.0055, 643, 30, 21),
+    ("GRO", "Grocery and convenience", 5900, 9600.0, 1163, 60, 42),
+    ("HOS", "Hospitality", 4700, 8200.0, 2247, 60, 42),
+    ("TRA", "Transport and courier", 2250, 11500.0, 857, 90, 63),
+    ("CON", "Trades and construction", 3100, 10400.0, 1538, 71, 50),
+    ("RUR", "Rural supply and horticulture", 2400, 10900.0, 971, 30, 21),
+    ("FUE", "Fuel and automotive", 4100, 9100.0, 418, 31, 22),
+    ("PER", "Personal services", 2850, 7600.0, 1764, 30, 21),
+    ("CLB", "Clubs and community", 2700, 8800.0, 643, 30, 21),
 ]
 
 SEG_NAME = {k: n for k, n, *_ in SEGMENTS}

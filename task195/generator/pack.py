@@ -162,30 +162,63 @@ def devices(rows, specimens):
     return extra
 
 
+def reaccessions(rows, specimens):
+    """The laboratory re-accessions the biobank's second vial when a typing comes back borderline, so
+    the panel types the same specimen again under a new accession. The register holds both."""
+    rng = random.Random(W.SEED + 13)
+    by_id = {s["specimen_id"]: s for s in specimens
+             if s["role"] in ("scope", "noread", "noest", "inconclusive")}
+    april_may = sorted([r for r in rows if r[4][:7] in ("2027-04", "2027-05") and r[0] in by_id],
+                       key=lambda r: (r[4], r[0]))
+    rng.shuffle(april_may)
+    extra, pairs = [], []
+    for r in april_may[:W.REACCESSIONED]:
+        parent = by_id[r[0]]
+        sid = "NFG27-%06d" % (160000 + len(extra) * 7 + (len(extra) % 5))
+        day = dt.date.fromisoformat(r[4]) + dt.timedelta(days=7 * rng.randint(0, 2))
+        ref, friday = week_ref(day)
+        if friday.month not in (4, 5):
+            ref, friday = r[3], dt.date.fromisoformat(r[4])
+        base = r[6] if r[6] in ("MIXED", "CONCORDANT") else "CONCORDANT"
+        verdict = base if rng.random() < 0.55 else ("MIXED" if base == "CONCORDANT" else "CONCORDANT")
+        share = ("%.4f" % round(max(W.PANEL_LOD + 0.0009, math.exp(rng.gauss(math.log(0.045), 0.8))), 4)
+                 if verdict == "MIXED" else "")
+        extra.append([sid, "A1", parent["request_id"], ref, friday.isoformat(), 1, verdict, share,
+                      W.PANEL_MARKERS - (0 if rng.random() < 0.5 else rng.randint(1, 7))])
+        pairs.append((sid, parent["specimen_id"]))
+    return extra, pairs
+
+
 def write_panel(target, specimens):
     rows = panel_rows(specimens)
-    rows = rows + devices(rows, specimens)
+    extra, pairs = reaccessions(rows, specimens)
+    rows = rows + extra + devices(rows, specimens)
     rows.sort(key=lambda r: (r[4], r[0], r[1], r[5]))
     header = ["specimen_id", "aliquot_id", "request_id", "report_ref", "report_date", "result_seq",
               "verdict", "second_contributor_share", "panel_markers_typed"]
     _write(os.path.join(target, W.FILES["panel"]), header, rows)
-    return rows
+    return rows, pairs
 
 
-def write_crosswalk(target, specimens):
+def write_crosswalk(target, specimens, pairs=()):
     """The biobank's request register against the laboratory's accessions and plate barcodes."""
     rng = random.Random(W.SEED + 11)
     header = ["request_id", "specimen_id", "plate_barcode", "project_code", "registered_date",
               "biobank_ref"]
-    rows = []
+    rows, serial = [], 1200
     for s in specimens:
         barcode = "PB%07d" % (2710000 + rng.randint(0, 89999))
         if rng.random() < 0.004:               # a barcode reissued after a printer batch was voided
             barcode = "PB%07d" % (2700000 + rng.randint(0, 999))
         stem = re.sub(r"[^A-Z0-9]", "", s["project"])[:3]
+        serial += rng.randint(1, 4)
         rows.append([s["request_id"], s["specimen_id"], barcode, s["project"],
                      (s["received"] - dt.timedelta(days=rng.randint(1, 9))).isoformat(),
-                     "BB-%s-%04d" % (stem, rng.randint(100, 9999))])
+                     "BB-%s-%05d" % (stem, serial)])
+    by_id = {r[1]: r for r in rows}
+    for sid, parent in pairs:
+        p = by_id[parent]
+        rows.append([p[0], sid, "PB%07d" % (2710000 + rng.randint(0, 89999)), p[3], p[4], p[5]])
     rows.sort(key=lambda r: r[1])
     _write(os.path.join(target, W.FILES["crosswalk"]), header, rows, delim="\t")
 
@@ -234,6 +267,7 @@ def write_dictionary(target):
         (W.FILES["mf"], "read_set_id", "text", "The archived read set the estimate was computed on. A specimen has a second read set where a depth top-up library was sequenced."),
         (W.FILES["mf"], "read_set_accepted", "text", "Y on the read set the laboratory accepted for the specimen."),
         (W.FILES["mf"], "mixture_fraction", "number", "The estimated share of the specimen's reads from a second contributor, as a fraction, four decimals."),
+        (W.FILES["crosswalk"], "biobank_ref", "text", "The biobank's reference for the specimen. A specimen re-accessioned for a repeat request carries one reference across its accessions."),
         (W.FILES["panel"], "verdict", "text", "The identity panel's verdict: CONCORDANT, MIXED where a second contributor was typed, INCONCLUSIVE where the panel did not type enough markers."),
         (W.FILES["panel"], "report_ref", "text", "The partner laboratory's weekly report the result was issued in."),
         (W.FILES["panel"], "result_seq", "number", "The sequence number of the result for the specimen and aliquot within the report."),
@@ -242,6 +276,8 @@ def write_dictionary(target):
         (W.FILES["history"], "hetx_call", "text", "The automatic HETX call for the specimen, as the nightly load carries it."),
         (W.FILES["history"], "review_outcome", "text", "The duty bioinformatician's outcome where call_source is REVIEWED: FLAGGED or CLEARED. Empty where the specimen was not reviewed."),
         (W.FILES["history"], "release_status", "text", "RELEASED, WITHHELD or SUPERSEDED, as the release desk left the specimen."),
+        (W.FILES["amendments"], "field", "text", "The field the release desk amended on the record."),
+        (W.FILES["amendments"], "value_after", "text", "The value the record carries after the amendment."),
         (W.FILES["history"], "released_date", "date", "The date the specimen's result was released, local date; empty where nothing was released."),
     ]
     _write(os.path.join(target, W.FILES["dictionary"]), header,
@@ -263,6 +299,9 @@ def write_manifest(target, counts):
          "weekly reports, 5 March to 18 June 2027", "", "scanned to PDF as each report arrived"],
         [W.FILES["history"], "QC warehouse extract", "2027-03-04",
          "receipts 2026-02-15 to 2027-02-28", counts["history"], "nightly load, two call columns"],
+        [W.FILES["amendments"], "release desk", W.AS_OF.isoformat(),
+         "amendments to released records, July 2026 to March 2027", counts.get("amendments", ""),
+         "raised after the reporting month closed"],
         [W.FILES["volumes"], "laboratory reporting pack", "2027-03-06",
          "releases 2026-03 to 2027-02", counts["volumes"], ""],
         [W.FILES["dilution"], "analytical sensitivity run", "2027-04-02",

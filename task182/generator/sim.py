@@ -100,16 +100,36 @@ def rain_rate_mmh():
 RAIN_H = rain_rate_mmh()
 
 
+def centrifuge_window(day):
+    """When the two centrifuges ran on a date: the dewatering shift, pushed back behind the weekly
+    inspection on the day it falls. One definition, used by the simulation and by the shipped log."""
+    if day.weekday() > 5:
+        return None
+    stops = [s for s, m, _ in W.PLANNED_STOPS if s.date() == day]
+    o = day.toordinal()
+    if stops:
+        start = stops[0] + dt.timedelta(minutes=W.PLANNED_STOPS[0][1] + 5 + 2 * (o % 5))
+    else:
+        start = dt.datetime(day.year, day.month, day.day, 6, 2 + 2 * (o % 7))
+    return start, dt.datetime(day.year, day.month, day.day, 17, 40 + 3 * (o % 4))
+
+
+def all_down():
+    """Every interval in which the blowers, the centrifuges and the engine are all down."""
+    return [(s, s + dt.timedelta(minutes=m)) for s, m, _ in W.PLANNED_STOPS + W.UNPLANNED_STOPS]
+
+
 def plant_state(stamps_local):
     """Energy factor of the plant's own sound: 0 in a stop, 1 running, more while a centrifuge runs."""
-    k = np.ones(len(stamps_local))
-    hours = np.array([s.hour + s.minute / 60.0 for s in stamps_local])
-    dows = np.array([s.weekday() for s in stamps_local])
-    # the centrifuges run 06:00 to 18:00 Monday to Saturday
-    cf = (hours >= 6.0) & (hours < 18.0) & (dows <= 5)
+    cf = np.zeros(len(stamps_local), dtype=bool)
+    days = sorted({s.date() for s in stamps_local})
+    wins = {d: centrifuge_window(d) for d in days}
+    for i, s in enumerate(stamps_local):
+        w = wins[s.date()]
+        if w and w[0] <= s < w[1]:
+            cf[i] = True
     k = np.where(cf, 1.22, 1.0)
-    for start, mins, _ in W.PLANNED_STOPS + W.UNPLANNED_STOPS:
-        end = start + dt.timedelta(minutes=mins)
+    for start, end in all_down():
         inside = np.array([(s >= start) and (s < end) for s in stamps_local])
         k = np.where(inside, 0.0, k)
     return k
@@ -180,7 +200,7 @@ def deployments():
     return out
 
 
-def build():
+def build(codes=None):
     """Every deployment's minute series, with the plant and residual normalised on the position's own
     valid assessment minutes outside the plant's stops."""
     deps = deployments()
@@ -189,6 +209,8 @@ def build():
         by_code.setdefault(d["code"], []).append(d)
     series = {}
     for code, ds in by_code.items():
+        if codes is not None and code not in codes:
+            continue
         p = W.BY_CODE[code]
         S_t, R_t = p[5], p[6]
         parts = []

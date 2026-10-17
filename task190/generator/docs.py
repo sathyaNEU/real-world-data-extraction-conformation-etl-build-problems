@@ -48,8 +48,9 @@ def handbook(target):
     f.append(Paragraph("%s" % W.BANK, H1))
     f.append(Paragraph("Anti-money laundering and countering financing of terrorism programme: "
                        "handbook, part 7, reporting", H2))
-    f.append(Paragraph("Version 9.2, approved 14 May 2026. Owner: money laundering reporting "
-                       "officer. Review due May 2028.", SMALL))
+    f.append(Paragraph("Version 9.4, approved 11 June 2027; part 7 first approved at version 9.2 "
+                       "in May 2026 and amended at 7.5 since. Owner: money laundering reporting "
+                       "officer. Review due May 2029.", SMALL))
     f.append(Spacer(1, 5))
 
     f.append(Paragraph("1.2 Reporting year", H2))
@@ -71,17 +72,37 @@ def handbook(target):
                        "or not the cash itself is the proceeds of anything. The programme treats "
                        "the practice as a risk in its own right and reports on its extent each "
                        "year.", BODY))
+    f.append(Paragraph("The transaction monitoring team reviews cash deposits of nine thousand "
+                       "dollars or more and below ten thousand dollars as its standing near "
+                       "threshold queue, and a day on which one customer's cash reached the "
+                       "threshold over two or more deposits raises an alert for an analyst to "
+                       "look at. Neither the queue nor the alert decides anything: both are "
+                       "review triggers, and the great majority of what they raise is ordinary "
+                       "trade.", BODY))
 
     f.append(Paragraph("7.4 The annual report's structuring figure", H2))
-    f.append(Paragraph("The annual report states, for each business segment, the number of "
-                       "physical cash deposits of nine thousand dollars or more and below ten "
-                       "thousand dollars that the segment's customers paid in during the "
-                       "reporting year and that were paid in below the prescribed transaction "
-                       "threshold when the amount would otherwise have been at or above it. The "
-                       "count is of deposits, one for one, and not of customers or of days; a "
-                       "deposit is counted in the reporting year in which it was paid in; every "
-                       "customer on the business register at the end of the reporting year is "
-                       "within its segment's count.", BODY))
+    f.append(Paragraph("The annual report states, for each business segment, how many physical "
+                       "cash deposits its customers paid in during the reporting year were paid "
+                       "in below the prescribed transaction threshold when the amount would "
+                       "otherwise have been at or above it. Each such deposit counts one for "
+                       "one: the figure is of deposits and not of their value, and not of "
+                       "customers and not of days. A deposit falls in the reporting year in "
+                       "which it was paid in. Every customer on the business register at the end "
+                       "of the reporting year is within its segment's figure. Each segment's "
+                       "figure is stated to the nearest ten deposits and the bank's figure is "
+                       "the sum of the segment figures as stated.", BODY))
+    f.append(Paragraph("The figure concerns the near threshold band at 3.2, which is the region "
+                       "of the amount distribution the monitoring team reviews and the region "
+                       "this figure is about. The whole of that band is what the figure "
+                       "estimates, so no part of it evidences what the band would have held "
+                       "absent the practice; that has to come from the segment's trade outside "
+                       "the band.", BODY))
+    f.append(Paragraph("The figure is a property of the year's deposits and is not a field. No "
+                       "feed, extract or register the programme keeps records it, and none can: "
+                       "the deposit records carry the amount that was paid in, not the amount "
+                       "that would have been paid in had the cash not been split. The reporting "
+                       "officer satisfies himself each year that the figure stated rests on the "
+                       "year's own deposit records and on nothing outside them.", BODY))
     f.append(Paragraph("7.5 Segments", H2))
     f.append(Paragraph("The report uses the eight business banking segments the customer register "
                        "carries. Segment codes were reissued on 6 April 2027 under the bank's new "
@@ -92,7 +113,8 @@ def handbook(target):
                        "deposits its customers paid in during the reporting year; for each branch "
                        "and quarter, the cash count sessions recorded, those whose variance "
                        "exceeded the tolerance in force and the net variance; for each customer "
-                       "risk band, the ratings raised and lowered during the year; and for each "
+                       "risk band, the customers raised into it and lowered into it during the "
+                       "year, counted once each however many times the rating moved; and for each "
                        "month, the availability of the deposit machine estate.", BODY))
 
     f.append(Paragraph("9.1 Records", H2))

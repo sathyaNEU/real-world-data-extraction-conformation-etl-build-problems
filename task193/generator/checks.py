@@ -403,8 +403,10 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     # ---------------------------------------------------------------- the ask layer
     ok("ask.zero_devices_in_main_population",
        all(not r["is_first"] for r in rejected))
+    exrefs = [r["exception_ref"] for r in rd(tgt, "submission_exceptions.csv")]
     ok("ask.exceptions_outside_extracts",
-       len(set(("EX%08d" % r["line"]) for r in rejected)) == len(rejected))
+       len(set(exrefs)) == len(exrefs) == len(rejected), "%d refs, %d rejected"
+       % (len(set(exrefs)), len(rejected)))
     a1_total = sum(r["rejected"] for r in g["a1"])
     ok("ask.a1_rejected_nonzero", a1_total > 500, "%d" % a1_total)
     ok("ask.a1_median_spread",
