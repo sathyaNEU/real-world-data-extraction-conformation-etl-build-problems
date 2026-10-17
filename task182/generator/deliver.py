@@ -50,9 +50,10 @@ def chart(path, g):
         ax.spines[s].set_visible(False)
     cut = (vals[g["cap"] - 1] + vals[g["cap"]]) / 2.0
     for i, (b, v) in enumerate(zip(bars, vals)):
-        off = 0.46 if abs(v + 0.22 - cut) < 0.3 else 0.22
-        ax.text(b.get_x() + b.get_width() / 2.0, v + off, "%.1f" % v, ha="center", fontsize=6.6,
-                color="#13343b")
+        # a value label that would sit on the slot's cut line goes inside its bar instead
+        inside = abs(v + 0.22 - cut) < 0.55
+        ax.text(b.get_x() + b.get_width() / 2.0, v - 0.62 if inside else v + 0.22, "%.1f" % v,
+                ha="center", va="center" if inside else "baseline", fontsize=6.6, color="#13343b")
     ax.axhline(cut, color="#8a4b08", linewidth=0.9, linestyle=(0, (4, 3)))
     ax.text(len(codes) - 0.4, cut + 0.18, "slot reaches %d dwellings" % g["cap"], ha="right",
             fontsize=6.8, color="#8a4b08")

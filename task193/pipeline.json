@@ -18,15 +18,15 @@
   "date": "2026-10-17"
  },
  "build": {
-  "generator_assertions": 152,
+  "generator_assertions": 154,
   "verifier_checks": 265,
-  "figures_check": "215 of 215",
+  "figures_check": "221 of 221",
   "voice_check": "exit 0 at 997 characters",
-  "rebuilds": "two byte-identical over 23 files; target.zip md5 4b08cedea8a67505473d7cbe25501048, 20 entries",
-  "input_gates": "20 files, 4 formats, 113,824 and 62,836 row extracts, three distractors and one neutral rule input in metadata.json",
+  "rebuilds": "two byte-identical over 23 files; target.zip md5 47dbca99ac4a80e2d88fcca2fd0bb1cd, 20 entries",
+  "input_gates": "20 files, 4 formats, 113,568 and 62,814 row extracts, three distractors and one neutral rule input in metadata.json",
   "ladder": "rung0 9, crude 10, rung2 11, answer 7; all four window-aware arithmetics refer the same 7",
   "separation": "tightest margin 8.5 per cent of the 1.25 multiple over 20 candidates x 5 arithmetics; lowest referred 1.365, highest refused 1.033",
-  "mid_bin": "payer doses exact at one decimal (no fractional part); tightest fee 0.38 krone from the half krone with half-up and half-even agreeing for all seven; tightest region and age share 0.00833 of a point from a tenth; closest two chart bars 0.1 of a point apart"
+  "mid_bin": "payer doses exact at one decimal (no fractional part to round); tightest fee 0.38 krone from the half krone with half-up and half-even agreeing for all seven; tightest region and age share 0.00638 of a point from a tenth, against 0.00011 in the judged pass; closest two chart bars 0.1 of a point apart"
  },
  "leak": {
   "leak_py": "REVIEW, three lines answered in the design note, no LEAK",
@@ -55,7 +55,7 @@
   "verdict_pass_3": "DETERMINISTIC, SOLUTION_WRONG, FIX_NOW. The main call was forced and named the strongest result in the wave. One golden figure (H4's doses, 159766.95 shipped as 159766.9) was unreachable by any convention, three payer totals sat on exact halves, four figures sat near their edges, the fee ask's unit carried a semantic fork, the chart had two open points, and the dictionary contradicted the person register."
  },
  "returned": [],
- "resume": "FIX PASS 3 COMPLETE, AWAITING THE RE-JUDGE. Every free gate is green: 152 generator assertions, 265 independent checks, figures_check 215 of 215, voice-check exit 0 at 997 characters, precut 49 checks 0 FAIL 0 WARN, leak.py REVIEW with no LEAK, guard surface clean and heart WARN as drawn, two byte-identical rebuilds, target.zip md5 4b08cedea8a67505473d7cbe25501048 cut from the final rebuild. The main call, its ladder and its seven pairs are bit-identical to the approved pass; every ask figure moved. One re-judge is owed. Spawn both threads (this session has no Agent tool): the judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/judge_brief.md and the leak reader at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_reader/reader_brief.md, both general-purpose sonnet at medium effort, each with prompt.txt and a fresh unzip beside it. On APPROVE, ship. On SEND_BACK, stop and report.",
+ "resume": "FIX PASS 3 COMPLETE, AWAITING THE RE-JUDGE. Every free gate is green: 154 generator assertions, 265 independent checks, figures_check 221 of 221, voice-check exit 0 at 997 characters, precut 49 checks 0 FAIL 0 WARN, leak.py REVIEW with no LEAK, guard surface clean and heart WARN as drawn, two byte-identical rebuilds, target.zip md5 47dbca99ac4a80e2d88fcca2fd0bb1cd cut from the final rebuild. The main call, its ladder and its seven pairs are bit-identical to the approved pass; every ask figure moved. One re-judge is owed. Spawn both threads (this session has no Agent tool): the judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/judge_brief.md and the leak reader at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_reader/reader_brief.md, both general-purpose sonnet at medium effort, each with prompt.txt and a fresh unzip beside it. On APPROVE, ship. On SEND_BACK, stop and report.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -74,13 +74,14 @@
  "fix_pass_3": [
   "the doses now run in tenths as integers and the fee in exact decimals with an explicit half-up, in the golden and the verifier alike; every screened product's strengths are whole or half doses per unit so a payer's window total is exact at one decimal and the tie family is gone by construction, not by a pinned convention",
   "the statutory rates were re-struck against the realised totals: the tightest of the seven fees is 0.38 krone from the half krone and half-up and half-even agree for all seven, asserted with the distance and the flip condition",
-  "the reporting age bands moved to 18-29, 30-49, 50-64 and 65 and over, searched against the realised cells: the tightest of the 24 shares is 0.00833 of a point from a tenth, up from 0.00011, with no cell on an exact half",
+  "the reporting age bands moved to 18-34, 35-44, 45-64 and 65 and over, searched against the realised cells: the tightest of the 24 shares is 0.00638 of a point from a tenth, up from 0.00011, with no cell on an exact half and every cell at least 32 patients",
   "the fee ask's unit is named in the asking sentence as the holder that pays the fee for a dispensing, so the transfer and the merger stay to be noticed and nothing is pinned in a document (SF18)",
   "the chart asks for all 23 bars and drops the threshold marker from the graded criteria, because the marker's position depends on the construction the standard leaves open; the bar order is now graded bar by bar and the closest two bars are 0.1 of a point apart (SF19, SF20)",
   "the dictionary's person_register entry and the manifest note now say the file holds one row per current pseudonym, which is what it holds",
   "the data dictionary covers every variable of the nine files it documents plus five codelists, 44 rows, so it documents the register rather than the four things a solver must get right",
   "metadata.json declares signal_tracker_export.csv as a neutral rule input with the reason, and the two unused person-register fields, so no shipped file is unaccounted for",
   "the submission side was reworked: the chains' log no longer reconciles to the extract line for line, the retransmissions are two batches on two chains, the chains transmit on working days, the lag reaches 48 days, the chain means are no longer a ladder, and the rejection reasons are only available to lines the registers support (pharmacy_register.csv now carries closed_on). All on its own random stream, so the screen is bit-identical",
-  "GATE F, my judgement: the spontaneous-report counts were an oracle. Ranking the nine products by reports put Ternivast and Oxelumab first by a factor of two to five, and those two are the whole difference between the seven and the ten. The rates now follow how visible a reaction is rather than how new the product is, and eight assertions hold all four products the two constructions disagree about strictly inside the range the other five span on each of four readings, with no cut of the ordering isolating them"
+  "GATE F, my judgement: the spontaneous-report counts were an oracle. Ranking the nine products by reports put Ternivast and Oxelumab first by a factor of two to five, and those two are the whole difference between the seven and the ten. The rates now follow how visible a reaction is rather than how new the product is, and eight assertions hold all four products the two constructions disagree about strictly inside the range the other five span on each of four readings, with no cut of the ordering isolating them",
+  "34 person-register rows now carry no dispensing in either extract: the patients whose every line fell in the clearance period and was turned back at validation. They have no receipt of anything inside the screen window, so the screen cannot see them, asserted both ways"
  ]
 }
