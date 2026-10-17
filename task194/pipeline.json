@@ -42,11 +42,14 @@
   "independent_checks": 185,
   "figures_check": "PASS, 144 figures in blocks 1 to 4, 0 absent",
   "byte_identical_rebuilds": true,
-  "target_zip_md5": "8c378aebafd8bf8b5c2eab643f63ff4b",
+  "target_zip_md5": "f42fef8d5469ae73b809ec32cb2c0735",
   "zip_entries": 20,
   "guard_surface": "clean, personas match the card",
   "guard_heart": "WARN, nearest driver 0.06, the two WARNs answered in the note",
   "leak_py": "REVIEW: 122 cost-centre and clause-number coincidences, the charter's own vocabulary, the dashboard confirmed to sort by hospital then unit name, and one scheduled end date after the as-of. No finding.",
-  "design_gate_red": "the cracker keeps 12 of 48 ask figures on A2; the ask sheet states it and the design note records why A2 cannot hold a primary as worded"
- }
+  "design_gate_red": "the cracker keeps 12 of 48 ask figures on A2; the ask sheet states it and the design note records why A2 cannot hold a primary as worded",
+  "target_zip_bytes": 4042547,
+  "operational_trace": "the theatre closure is visible in the rostering file: 41410's nursing hours per patient day run 4.49 to 4.66 in the ordinary months and 5.13 to 5.30 in the six months of the closure"
+ },
+ "notes": "determinism_check_report.md in this folder is architecture 1's verdict and describes a design that no longer exists; it is overwritten at stage 4 and should not be read as this build's report."
 }

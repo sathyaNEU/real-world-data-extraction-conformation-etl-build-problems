@@ -596,3 +596,18 @@ family A3 and A4 do not use, and until it has one this sheet says so.
   is excluded by service type anyway. The second defect: the register's in-progress cycle is IP-10, and the
   deliverables called the cycle being decided IP-10 as well. The placement for the quarter from 1 April
   2027 is IP-11.
+- **The theatre closure leaves a trace a hospital would actually have, checked rather than assumed.** The
+  case mix shows it loudly: elective joint replacements at 41410 run about 300 a quarter and fall to 63 and
+  60 in the two closed quarters. Bed-days do not show it, because length of stay is drawn per unit rather
+  than per procedure, so the unit's mean stay holds at 6.8 and 7.2 nights across the closure against 6.7
+  to 7.3 elsewhere. The operational trace is therefore in the rostering file, whose coverage was widened
+  from four quarters to six so it reaches both closed quarters: nursing hours per patient day at 41410 run
+  4.49 to 4.66 in the ordinary months and **5.13 to 5.30 in exactly the six months of the closure**, with
+  the agency share up by nearly half, because unplanned general surgical admissions need more nursing per
+  patient day than an elective list and the roster had been built for the list that stopped. The file is a
+  declared distractor and no graded figure reads it, so the trace corroborates the argument without
+  entering the computation. **Open realism item for the next pass:** length of stay should follow the
+  episode's risk band, not only the unit's mix, which would put the closure in bed-days too and would fix
+  a joint replacement and an appendicectomy currently averaging the same stay. It was held because the
+  stay feeds the complication selection, so changing it moves the realised stratum frequencies and would
+  need the design point and the hospital-rate centring re-measured.
