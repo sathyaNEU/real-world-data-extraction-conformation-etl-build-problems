@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 2: task234 shipped on architecture 2 after the judge's round-2 SEND_BACK of architecture 1; task235 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 2: task235 shipped on architecture 2 after the judge's SEND_BACK of architecture 1; task236 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task234 shipped; task235 and task236 next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task235 shipped; task236 next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,24 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task235: SHIPPED 2026-10-17 (wave 2, fifth build; architecture 2); waiting on the portal.**
+- Fogbell Games, a Dublin game studio, and its match-3 game Kittiwake Cove (Product Analytics,
+  metric-definition-measurement-science x Data Quality Monitoring; the seed's disease surveillance moved because
+  Epidemiology x Data Quality was banned at the draw). Call: alert Android 7.41.0 and iOS 7.42.0 in the KC-DQ-04 run of
+  Monday 9 November 2026, and no other build. The analytics SDK keeps a purchase event on the phone until the game next
+  starts, so a missing event is lost only once that phone has opened the game again (the session service's log):
+  Android 7.41.0 loses 6.34 per cent with none open, iOS 7.42.0 at least 3.10. A seven-day settle window alerts four
+  old builds whose weekly players have not come back and cannot judge the 7.42.0 pair (5 of 12 wrong); the account's
+  next session alerts three old iOS builds. Asks: each build's paying players (a guest who signs in to an older account
+  leaves no link, so the phone's sign-in joins it) and gross bookings per paying player.
+- Gates: 193 generator checks with the realism sweep, verify green (the alert set at three rates for the open
+  purchases), byte-identical rebuilds, figures_check 109 of 109, precut 49, leak.py REVIEW only; two leak reads
+  (questions 1 to 4 none, question 6 analytical; both landed the call and missed every ask figure); judge
+  DETERMINISTIC, APPROVE in one pass (stump power moderate: the asks carry the bar). Architecture 1 graded the loss at
+  two decimals and was sent back; re-rooted the same day with the alert graded instead. Surface screen promotes task234,
+  task233, task81, task95, task73, task459 and task445 (other mechanisms, differentiated on the card): the adjudicated
+  clone check is the author's call.
 
 **task234: SHIPPED 2026-10-17 (wave 2, fourth build; architecture 2); waiting on the portal.**
 - Tamsen County Department of Public Health's epidemiology unit (Epidemiology & Public Health,

@@ -1,11 +1,11 @@
 {
  "task": "task235",
  "owner": "perssathya",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "product-analytics",
  "objective": "data-quality-monitoring",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
  "stump": "A competent solver counts a purchase as lost when its event is still missing seven days later and files 5 of the 12 builds wrong (Android 7.41.0 and four old builds alerted, iOS 7.42.0 missed for want of a week-old purchase); the step that lands it there is judging a missing event by its age instead of by whether the phone that made the purchase has opened the game since, the only moment the event can leave it.",
  "architecture": 2,
@@ -15,22 +15,22 @@
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK), --asof 2026-11-09",
+  "reader": "architecture 2, two passes: Q1 to Q4 none, Q6 analytical; the reader landed the call and missed both asks"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN",
+  "nearest": "task234 v2 0.10 (own lineage 1.00, differentiated); surface promoted 7 pairs, none a shared mechanism"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 3 (architecture 2): estim per-player bookings and flip shares, golden CSV columns (alert, paying players, gross bookings per paying player), writeup blocks with forced components, checks and verify, rebuild, free gates; then stage 4 reader and judge",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

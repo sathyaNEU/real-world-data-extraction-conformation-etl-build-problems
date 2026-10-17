@@ -1,0 +1,13 @@
+platform,version,build_number,alert,paying_players,gross_bookings_per_paying_player_eur
+ios,7.38.2,4417,no,377,9.93
+ios,7.39.1,4521,no,294,10.39
+ios,7.40.0,4588,no,855,8.23
+ios,7.41.0,4652,no,890,8.08
+ios,7.41.1,4671,no,1362,11.73
+ios,7.42.0,4730,yes,275,5.58
+android,7.38.1,7380100,no,386,9.86
+android,7.39.0,7390000,no,293,9.82
+android,7.40.2,7400200,no,669,7.03
+android,7.41.0,7410000,yes,1392,8.99
+android,7.41.3,7410300,no,1538,9.91
+android,7.42.0,7420000,no,320,5.58
