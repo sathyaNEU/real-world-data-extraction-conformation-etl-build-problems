@@ -1,0 +1,103 @@
+{
+  "task": "task153",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 4 (new); seed FC24 kept for its world, decision and quantity only (discounted bulk tanker loads after a 60-cent wholesale drop, six depots, three fleet card accounts); the procurement standard (greedy one-load-at-a-time placement) and the procurement memo (the retail-price regression) are not shipped, the rebate floor is not a withheld rule, and the pitfall is re-found from the fleet's own trip, yard-visit and island records",
+  "domain": "supply-chain-logistics",
+  "subdomain": "sourcing-procurement",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a Tennessee janitorial and foodservice-disposables distributor's fleet cost analyst deciding how many of a bulk jobber's discounted 8,000-gallon transport loads to contract for six yard tanks over the eight weeks after a 60-cent rack drop, when only what the yard islands hand out inside the window is wanted and the vehicles otherwise buy on three fleet card accounts inherited from two acquisitions",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "C",
+    "D"
+  ],
+  "generators": [
+    "G7",
+    "G2",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "the distributor's fleet cost analyst, who commits the load count the jobber needs and books the programme's saving",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "vehicle_days_2024-09-01_2026-08-27.csv (the telematics service vehicle-day export) beside its yard geofence event export",
+    "rows": 112000,
+    "entity": "one vehicle on one calendar day: miles, engine hours, idle hours, engine-reported fuel, first and last positions",
+    "grain": "vehicle x day",
+    "source": "synthetic (constructed in the layout of a fleet telematics provider's vehicle-day export)"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "other",
+  "world": {
+    "geography": "United States, Tennessee (yards at Memphis, Jackson, Nashville, Cookeville, Knoxville and Blountville; the distributor, its acquired companies, the fuel jobber, the card programmes, people, systems and data are fictional)",
+    "currency": "USD",
+    "org_type": "regional wholesale distributor of janitorial, paper and foodservice-disposable supplies (fleet cost desk)",
+    "invented_names": [
+      "Keeble Supply Co.",
+      "Delta Paper & Chemical",
+      "Holston Sanitary Supply",
+      "Overton Petroleum Co."
+    ],
+    "people": [
+      "Theresa Mercado",
+      "Gabriel Wyatt",
+      "Dennis Stewart"
+    ]
+  },
+  "deliverables": [
+    "overton_loads_sep-nov_2026.xlsx",
+    "yard_island_draw.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The volume a site's own supply takes over from a roaming supply is set segment by segment, between each unit's visits to the site, at the smaller of the segment's need and what one fill carries, so the units' purchase history overstates it where segments outrun a fill, a share measured at sites whose units visit often misstates sites whose units visit rarely, and segments cut only at overnight stops understate it where units come back during the day.",
+  "driver_concrete": "Each yard island hands out, per vehicle, the fuel it burns between one yard visit and the next up to the tankful above the reserve drivers keep, so the Blountville sleepers on four-night loops and the Cookeville vans parked at the Sparta lot move far less than their card gallons, the 2025 Jackson and Knoxville island programmes (vehicles back daily or between short loops) overstate both, and the Nashville sleepers on double loops move nearly all their fuel because they reload at the yard midweek.",
+  "stump": "Taking each yard island to hand out what its vehicles now buy on the three card accounts contracts 30 loads (27 with the 2025 islands' share applied, 26 by vehicle class); the step that lands it there is treating a yard as able to supply a vehicle's whole fuel, when it supplies a vehicle only at its yard visits and at most a tankful each time, which contracts 23.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stacks the three card exports, maps cards to units and units to yards and reads the jobber's offer and the card terms correctly forecasts each yard's eight-week card gallons and contracts the loads they fill, 30, or scales them by the share the 2025 Jackson and Knoxville islands handed out, 27, or by vehicle class, 26; each island hands a vehicle only the fuel it burns between yard visits capped at a tankful, which contracts 23.",
+  "domain_test": "The deciding quantity is each yard tank's eight-week draw, which fleet fuel management sizes from duty cycles (how often each vehicle is at its yard against how far a tankful carries it) and checks against past on-site programmes; with another field's nouns (a hospital's admissions, a utility's megawatt-hours) there is no fuel tank, no yard visit and no segment for a tankful to cap, so the forecast that decides the call has nothing to stand on.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:yard-island-draw-built-segment-by-segment-between-yard-visits-capped-at-a-tankful",
+  "layer1": [
+    "three fleet card exports in three layouts (a truck-stop chain's direct-bill CSV, a network's monthly XLSX statements, a marketers' group fixed-width TXT), times in three conventions",
+    "telematics vehicle days in UTC with device serials, mapped to units through a dated device-assignment table with swaps",
+    "unit numbers written three ways across the maintenance system, the card prompts and the yard gate system",
+    "2025 island transactions from the fuel management system with a resent batch after a modem outage",
+    "jobber bills of lading in net gallons at 60 F against island meters in gross gallons",
+    "rack postings effective 6 pm for the next day's liftings",
+    "tank capacities by model in the maintenance system's spec table, not on the unit record"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task150": "task150 places a fixed 24 classrooms across seven schools at most eight each on a cohort-component projection; here the total is the answer, there is no per-site cap, and the deciding quantity is a channel switch's draw built from yard visits and a tankful",
+    "task145": "task145 forecasts a count above a line through each segment's exchange-rate pass-through; here card prices are cost-plus on the same rack the loads are priced on, so no price is forecast and the decisive step is on volume",
+    "task16": "task16 floors per-building shortfalls at zero because stock cannot move between sites; here nothing is netted across sites, and the cap is a vehicle's tankful per yard visit, built from where and when each vehicle comes back",
+    "task106": "task106 sizes suppliers that share one corridor's return legs; here no capacity is shared between yards or vehicles",
+    "task94": "task94 tests whether a site's tank can receive a full delivery on top of its held stock; here every yard tank holds two loads with room and receiving never binds, the draw does",
+    "task105": "task105 cuts a new outlet's catchment at the bisector with an open sister outlet; here no site competes with another for anything, and the cut is each vehicle's tankful at each yard visit",
+    "task37": "task37 counts forward completions under filed conditions applied across joins; here nothing is filed about the draw, which is built from where and when each vehicle comes back to its yard and what its tanks hold",
+    "task69": "task69 prices what a count cap can buy of a trial effect, then the value of a capped set whose members overlap; here the cap is physical, a tankful per yard visit, and nothing is selected or priced against a trial",
+    "task87": "task87 resolves which entity a joint cap counts through a group ruling or a filed feasible set; here every cap is one vehicle's tankful at one visit, and the unit is the stretch of driving between two yard visits"
+  },
+  "lineage": [],
+  "notes": "Kinship cards read at the draw: task150, task145, task16, task106, task11, task94, task138, task147, task67.",
+  "registered": "2026-10-17T02:13:54Z"
+}
