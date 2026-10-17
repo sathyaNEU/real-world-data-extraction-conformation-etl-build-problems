@@ -97,14 +97,14 @@ def run(target):
                    "how long", "time to detection", "undetected caseload", "little's law",
                    "months unseen", "average delay", "mean time"):
         A(banned not in low, "R3b a shipped file says '%s'" % banned)
-    # R3c no shipped artifact ranks or scores the lines
+    # R3c no shipped artifact ranks or scores the lines, and none says the bank does not
     fw = doc_text(target, "financial_crime_framework.pdf")
-    A("does not maintain a ranking of its business lines" in fw, "R3c the framework's own disclaimer")
     for f in files:
         if f.endswith(".pdf"):
             t = doc_text(target, f).lower()
-            A("ranked" not in t and "league" not in t and "scorecard" not in t,
-              "R3c %s ranks the lines" % f)
+            for w in ("ranked", "ranking", "league", "scorecard", "highest risk line",
+                      "most exposed"):
+                A(w not in t, "R3c %s says '%s'" % (f, w))
 
     # ---- the ladder ----------------------------------------------------------------------------
     L = g["rungs"]
@@ -160,16 +160,40 @@ def run(target):
         alt[n] = lam * float(wconf)
     A("which is the first seen month the investigation handbook defines, and not once it is confirmed"
       in fw, "SF4 clause 6.2 does not file which event ends the count")
-    A(sorted(sorted(alt, key=lambda n: -alt[n])[:W.CAPACITY]) != g["covered"],
-      "SF4 the confirmed-month reading is not separated from the filed one")
+    A(sorted(sorted(alt, key=lambda n: -alt[n])[:W.CAPACITY]) == g["covered"],
+      "SF4 the confirmed-month reading moves the call")
+    A(sorted(((alt[n], n) for n in alt), reverse=True)[W.CAPACITY][1] == g["just_misses"],
+      "SF4 the confirmed-month reading moves the line that just misses")
+    cut = sorted(((alt[n], n) for n in alt), reverse=True)[W.CAPACITY][0]
+    for n in alt:
+        if n in g["covered"] or n == g["just_misses"]:
+            continue
+        A(alt[n] < cut, "SF4 %s reaches the cut under the confirmed-month reading" % n)
     # SF5 the review date against the extract date: both give the same call
     A(W.REVIEW_FROM > W.AS_OF, "SF5 the review date is not after the extract date")
     # SF6 the closed window
-    A("began between 1 January 2021 and 31 January 2024" in fw, "SF6 clause 6.3 is not filed")
+    A("between 1 January 2021 and 31 January 2024 is complete" in fw,
+      "SF6 clause 6.3 does not file the look-back span")
     closed_all = d[(d["onset_month"] >= cf) & (d["onset_month"] <= ct)]
     A(len(closed_all) == sum(a[n]["closed_cases"] for n in a), "SF6 the closed window's counts")
     A((closed_all["first_seen_month"] <= W.AS_OF.strftime("%Y-%m")).all(),
-      "SF6 a closed-window case has not been seen, so clause 6.3 is false")
+      "SF6 a look-back case has not been seen, so clause 6.3 is false")
+    # SF6b every window the longest observed delay resolves, and the register as a whole, name the
+    # same three lines, so no choice of estimation window can move the call
+    longest = int(d["delay"].max())
+    A(longest == W.DELAY_CAP, "SF6b the longest observed delay is not the record's cap")
+    wins = [(lo, hi) for lo in ("2020-07", "2020-10", "2021-01", "2021-04", "2021-07", "2021-10",
+                                "2022-01")
+            for hi in ("2023-06", "2023-09", "2023-12", "2024-01", "2024-02")
+            if G.months(lo, hi) >= 24] + [("2020-07", W.AS_OF.strftime("%Y-%m"))]
+    for lo, hi in wins:
+        e = {}
+        for n in [l[0] for l in W.LINES]:
+            gg = d[(d["line"] == n) & (d["onset_month"] >= lo) & (d["onset_month"] <= hi)]
+            e[n] = len(gg) / G.months(lo, hi) * float(gg["delay"].mean())
+        A(sorted(sorted(e, key=lambda n: -e[n])[:W.CAPACITY]) == g["covered"],
+          "SF6b window %s..%s moves the call" % (lo, hi))
+    A(len(wins) >= 30, "SF6b too few windows swept")
     # SF7 the governing version
     A((cases["record_version"] == "2").any(), "SF7 no case carries a second version")
     A(len(d) == len(d.drop_duplicates(subset=["case_id"])), "SF7 two versions reached the population")
@@ -184,9 +208,116 @@ def run(target):
     for nd in (0, 1):
         s = sorted(a, key=lambda n: -round(a[n]["expected_carrying"], nd))[:W.CAPACITY]
         A(sorted(s) == g["covered"], "SF11 rounding to %d decimals changes the call" % nd)
-    # SF13 the expectation against a single realisation
-    A("expected to be carrying" in fw and "the expectation is taken over the cases the line's own "
-      "closed record implies" in fw, "SF13 clause 6.2 does not file the expectation")
+    # SF13 the expectation, and nothing in the pack saying how it is formed
+    A("expected to be carrying" in fw, "SF13 clause 6.2 does not file the expectation")
+    A("closed record" not in fw, "SF13 clause 6.2 still points at a record to estimate from")
+    A("whether or not the bank yet holds a record of it" in fw,
+      "SF13 clause 6.2 does not say the unobserved cases are in the population")
+    A(len(d[(d["onset_month"] <= W.REVIEW_FROM.strftime("%Y-%m")) &
+            (d["first_seen_month"] > W.REVIEW_FROM.strftime("%Y-%m"))]) == 0,
+      "SF13 the register can be read as holding the unseen cases, so no construction is forced")
+    # SF15 the count at a month end: a case seen in the month it began was never carried
+    hb = doc_text(target, "investigation_handbook.pdf")
+    A("A case seen in the month it began was never carried unseen past any month end" in hb,
+      "SF15 the handbook does not close the count at a month end")
+    inc = {}
+    for n in [l[0] for l in W.LINES]:
+        gg = d[(d["line"] == n) & (d["onset_month"] >= cf) & (d["onset_month"] <= ct)]
+        inc[n] = len(gg) / G.months(cf, ct) * (float(gg["delay"].mean()) + 1.0)
+    inc_top = sorted(sorted(inc, key=lambda n: -inc[n])[:W.CAPACITY])
+    A(inc_top != g["covered"],
+      "SF15 the inclusive month count gives the same call, so nothing turns on the sentence")
+    third = sorted(((inc[n], n) for n in inc), reverse=True)[W.CAPACITY - 1][0]
+    fourth = sorted(((inc[n], n) for n in inc), reverse=True)[W.CAPACITY][0]
+    A(third / fourth >= 1.06,
+      "SF15 the inclusive month count is a coin flip, not a named wrong answer")
+
+    # SF14 the disposition: counting the cases that were put forward and not accepted gives the
+    # same three lines, so no reading of the register's disposition field can move the call
+    A(set(cases["disposition"]) == {"confirmed", "withdrawn"}, "SF14 the register's dispositions")
+    A((cases.loc[cases["disposition"] == "withdrawn", "confirmed_month"] == "").all(),
+      "SF14 a withdrawn case carries a confirmed month")
+    A((cases.loc[cases["disposition"] == "confirmed", "confirmed_month"] != "").all(),
+      "SF14 a confirmed case carries no confirmed month")
+    A("withdrawn for one that was put to them and not accepted" in doc_text(
+        target, "extract_dictionary.pdf"), "SF14 the dictionary does not define the disposition")
+    wide = cases.copy()
+    wide["ver"] = pd.to_numeric(wide["record_version"], errors="coerce")
+    wide = wide.sort_values(["case_id", "ver"]).groupby("case_id", as_index=False).tail(1)
+    nmw = G.line_now(lines)
+    wide["line"] = [nmw.get(x, x) for x in wide["line_code"]]
+    wide["delay"] = [G.months(o, f) - 1 for o, f in zip(wide["onset_month"], wide["first_seen_month"])]
+    wide = wide.drop_duplicates(subset=["customer_ref", "typology", "line"])
+    A(len(wide) > len(d), "SF14 the wider reading adds no case")
+    ew = {}
+    for n in [l[0] for l in W.LINES]:
+        gw = wide[(wide["line"] == n) & (wide["onset_month"] >= cf) & (wide["onset_month"] <= ct)]
+        ew[n] = len(gw) / G.months(cf, ct) * float(gw["delay"].mean())
+    A(sorted(sorted(ew, key=lambda n: -ew[n])[:W.CAPACITY]) == g["covered"],
+      "SF14 counting the withdrawn cases moves the call")
+    # A2 the screening ask: an entry is removed once, so "an entry a later version removed" and
+    # "an entry on the list at screening that a later version removed" select the same matches
+    seen_removed = []
+    for v in lists["versions"]:
+        seen_removed += list(v["entries_removed"])
+    A(len(seen_removed) == len(set(seen_removed)), "A2 an entry is removed by two versions")
+    added_at = {}
+    for v in lists["versions"]:
+        for e in v["entries_added"]:
+            added_at[e] = v["in_force_from"]
+    A(all(r.list_entry in added_at for r in matches.itertuples()),
+      "A2 a match names an entry no version ever added")
+    A(all(added_at[r.list_entry] <= r.screened_on for r in matches.itertuples()),
+      "A2 a match was recorded before its entry was on the list")
+    # A1 the reissued reversal moves the quarter it sits in by more than the stated rounding
+    led = ledger.copy()
+    led["h"] = pd.to_numeric(led["hours"])
+    for q, want in g["a1"].items():
+        gq = led[led["quarter"] == q]
+        A(abs(round(float(gq["h"].sum()), 1) - want["hours_billed"]) >= 0.1 * 30 or
+          q != "2026-Q1", "A1 the reissued reversal does not move %s" % q)
+
+    # A1 the quarter a ticket is billed to is the quarter it is dated in, so no reading forks
+    led = ledger.copy()
+    for r in led.itertuples():
+        y, q = r.quarter.split("-Q")
+        mo = int(r.ticket_date[5:7])
+        A((mo - 1) // 3 + 1 == int(q) and r.ticket_date[:4] == y,
+          "A1 ticket %s is dated outside the quarter it is billed to" % r.ticket)
+    A("the contract quarter the ticket is billed to" in doc_text(target, "extract_dictionary.pdf"),
+      "A1 the dictionary does not say what the quarter field is")
+    A("a rate the card does not carry for its work type" in doc_text(target, "contract_register.pdf"),
+      "A1 the contract does not say what is outside the rate card")
+
+    # A3 every triage lands on a working day, and clause 7.2 pins the count exactly
+    shut = {dt.date.fromisoformat(x) for x in
+            pd.read_csv(os.path.join(target, "bank_closed_days.csv"), dtype=str)["closed_on"]}
+    A(len(shut) >= 12, "A3 the pack ships too few closed days")
+    tri = alerts[alerts["stage"].isin(["triaged", "escalated", "reopened"])]
+    for x in set(tri["stage_at"]):
+        day = dt.date.fromisoformat(x)
+        A(day.weekday() < 5 and day not in shut, "A3 an adjudication fell on %s, a closed day" % x)
+    A("A working day is a day from Monday to Friday that is not a day the bank is closed" in fw,
+      "A3 clause 7.2 does not pin the working day")
+    A("from the day after the alert was raised up to and including the day the triage recorded it"
+      in fw, "A3 clause 7.2 does not pin how the days are counted")
+
+    # A2 no match is recorded against an entry the list had already removed
+    removed_on = {}
+    for v in lists["versions"]:
+        for e in v["entries_removed"]:
+            removed_on[e] = v["in_force_from"]
+    for r in matches.itertuples():
+        A(removed_on.get(r.list_entry, "9999") > r.screened_on,
+          "A2 match %s is against an entry already removed" % r.match_id)
+
+    # the register as a record: amended cases past a second version, and identifiers with gaps
+    A(set(cases["record_version"]) >= {"1", "2", "3"}, "the register holds no third version")
+    ids = sorted({int(x[4:]) for x in cases["case_id"]})
+    steps = [b - a for a, b in zip(ids, ids[1:])]
+    A(max(ids) - min(ids) + 1 > len(ids), "the register's identifiers run without gaps")
+    A(steps.count(1) / len(steps) > 0.75, "the register's identifiers do not mostly run consecutively")
+    A(max(steps) > 4, "the register's identifiers never jump")
 
     # ---- closure axes --------------------------------------------------------------------------
     for perm in (1, 2, 3):

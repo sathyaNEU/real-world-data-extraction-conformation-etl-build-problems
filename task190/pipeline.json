@@ -1,7 +1,7 @@
 {
  "task": "task190",
  "owner": "oviya13ya",
- "status": "PAUSED",
+ "status": "BUILD",
  "domain": "banking-credit-financial-risk/fraud-aml-detection",
  "objective": "anomaly-detection",
  "stage": 4,
@@ -9,26 +9,26 @@
  "updated": "2026-10-17",
  "stump": "A competent solver conforms the alert and adjudication extracts, computes each line's confirmed cases per 1,000 customers over the last two quarters, and assigns the team to the lines that confirm the most, which is the lines where cases are found fastest rather than where they are sitting unfound.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-17"
  },
  "leak": {
   "leak_py": "REVIEW",
-  "reader": "pass 1: nothing quoted for question 1, question 6 analytical, every figure independently reproduced; it landed the call, recorded as the Gate F signal; two realism findings open"
+  "reader": "r3 running"
  },
  "duplicate_check": {
   "heart": "WARN",
-  "nearest": "0.08 task181 v2 (lineage)"
+  "nearest": "0.08 task181 v2"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "r2 NOT_DETERMINISTIC on ask 7; r3 running",
+  "disposition": "fixed in the generator",
+  "report": "task190/determinism_check_report.md"
  },
  "returned": [],
- "resume": "Stage 4. Every free gate is green (precut 49/0/0, voice-check 938 chars, 120 generator assertions, 112 independent checks, byte-identical rebuilds, figures_check 64/64, leak.py REVIEW, guard surface clean, heart WARN) and target.zip is cut. The leak reader's pass 1 is recorded in leak_check_report.md with two realism findings still to apply: drop framework clause 9.2 (it reads as reassurance placed on purpose) and give the case register the withdrawn cases and non-sequential identifiers it would really carry, neither of which may move a graded figure. The determinism judge was spawned on /tmp/determinism-check-task190-r1/judge_brief.md and had not written its verdict.md when the session paused. Resume: read that verdict (or re-spawn the thread from the brief), apply it together with the two realism fixes in one generator pass, rebuild, re-run the free gates, re-read and re-judge if a document changed, then ship.",
+ "resume": "Stage 4 run 3. The r2 judge returned NOT_DETERMINISTIC on supplementary answer 7 (no shipped working-day calendar) and both isolated readers quoted framework clause 6.2 as naming the method, which is the determinism-repair-files-the-HOW failure. Fixed in one generator pass: 6.2's closed-record phrase and 6.3's closed-record definition removed, framework Part 7 and bank_closed_days.csv added, the contract register's and the ledger's narration of the ask device removed, the screening list's repeated removals fixed, the alert extract trimmed to the pull date, the manifest rebuilt over every file, and the register's typology mix, yearly volumes, confirmation lag, amendments and identifiers made to look like a record. Free gates all green at 200 generator assertions and 123 independent checks. Resume: read the r3 reader and judge, fix in one pass, then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,

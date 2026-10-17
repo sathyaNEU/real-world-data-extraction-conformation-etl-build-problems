@@ -1,18 +1,18 @@
 {
  "task": "task191",
  "owner": "oviya13ya",
- "status": "DRAWING",
+ "status": "DESIGN",
  "domain": "general-statistics-data-science/multiple-testing-selective-inference",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-16",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-17",
  "stump": "A competent solver builds each interconnect's evening shortfall against its own daytime baseline, tests the worst one against its own variation, finds it clears comfortably and funds the augment, where the same shortfall is inside what the worst of seven quiet paths produces in a quarter.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-17"
  },
  "leak": {
   "leak_py": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "Stage 2 complete: precut.py exit 0, voice-check PASS at 989 characters. Resume at stage 3, the generator: the panel at minute grain for the retained evening and daytime bands, the eight earlier quarters' daily rollup, the register, the standard and the framework, then the three asks' files.",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -12,9 +12,6 @@ CAP = 3
 CLOSED = ("2021-01", "2024-01")
 TWO_Q = ("2026-07", "2026-12")
 STANDARD = 5
-HOLIDAYS = {dt.date(2026, 1, 1), dt.date(2026, 1, 2), dt.date(2026, 2, 6), dt.date(2026, 4, 3),
-            dt.date(2026, 4, 6), dt.date(2026, 4, 27), dt.date(2026, 6, 1), dt.date(2026, 10, 26),
-            dt.date(2026, 12, 25), dt.date(2026, 12, 28), dt.date(2027, 1, 1), dt.date(2027, 1, 4)}
 K = [0]
 
 
@@ -28,11 +25,11 @@ def mon(a, b):
     return (int(b[:4]) - int(a[:4])) * 12 + int(b[5:7]) - int(a[5:7])
 
 
-def wdays(a, b):
+def wdays(a, b, shut):
     n, d = 0, a
     while d < b:
         d += dt.timedelta(days=1)
-        if d.weekday() < 5 and d not in HOLIDAYS:
+        if d.weekday() < 5 and d not in shut:
             n += 1
     return n
 
@@ -100,12 +97,26 @@ def run(target, figures):
     l = ledger.copy()
     l["h"] = pd.to_numeric(l["hours"])
     l["rate"] = pd.to_numeric(l["hourly_rate"])
-    l = l.sort_values(["ticket", "reference"]).groupby("ticket", as_index=False).head(1)
+    # a ticket's hours are reversed once, however many credit notes name it
+    notes = l[l["ticket_type"] == "credit note"].sort_values(["reverses_ticket", "ticket"])
+    ok(len(notes) > len(notes.drop_duplicates(subset=["reverses_ticket"])),
+       "A1 no reversal is recorded twice, so the ask has no device")
+    notes = notes.groupby("reverses_ticket", as_index=False).head(1)
+    l = pd.concat([l[l["ticket_type"] != "credit note"], notes], ignore_index=True)
+    card = {"review": 285.0, "expert testimony": 410.0, "credit note": 285.0}
+    for r in notes.itertuples():
+        billed = l[(l["ticket"] == r.reverses_ticket) & (l["ticket_type"] != "credit note")]
+        ok(len(billed) == 1 and abs(float(billed["h"].iloc[0]) + float(r.h)) < 0.05,
+           "A1 credit note %s does not reverse its ticket exactly" % r.ticket)
     for q, want in fig["a1_contract"].items():
         gq = l[l["quarter"] == q]
         ok(round(float(gq["h"].sum()), 1) == want["hours_billed"], "A1 hours at %s" % q)
         ok(allowed[q] == want["hours_allowed"], "A1 allowed at %s" % q)
-        ok(int((gq["rate"] != 285.0).sum()) == want["tickets_outside_rate_card"], "A1 rate card at %s" % q)
+        off = sum(1 for r in gq.itertuples() if r.rate != card.get(r.ticket_type))
+        ok(off == want["tickets_outside_rate_card"], "A1 rate card at %s" % q)
+        ok(0.6 < want["hours_billed"] / want["hours_allowed"] < 1.0,
+           "A1 the contractor bills only %.0f per cent of %s" %
+           (100 * want["hours_billed"] / want["hours_allowed"], q))
 
     # A2: the list version in force at the screening date
     vers = lists["versions"]
@@ -130,7 +141,9 @@ def run(target, figures):
         ok(got[v][0] == want["matched_an_entry_later_removed"], "A2 matches at %s" % v)
         ok(got[v][1] == want["of_those_cleared"], "A2 cleared at %s" % v)
 
-    # A3: working days, and the re-sent batch counted once
+    # A3: business days off the shipped calendar, and the re-sent batch counted once
+    shut = {dt.date.fromisoformat(x) for x in rd("bank_closed_days.csv")["closed_on"]}
+    ok(len(shut) >= 12, "the pack ships %d closed days" % len(shut))
     al = alerts[alerts["queue"].isin(["card disputes", "chargebacks"])].copy()
     al = al[~al["batch_id"].str.endswith("R")]
     al["raised"] = pd.to_datetime(al["raised_at"]).dt.date
@@ -140,8 +153,8 @@ def run(target, figures):
         gm = al[[x.month == m for x in al["raised"]]]
         want = fig["a3_queue"]["2026-%02d" % m]
         ok(int((gm["stage"] == "raised").sum()) == want["alerts_raised"], "A3 raised in month %d" % m)
-        tri = gm[gm["stage"] == "triaged"]
-        ok(sum(1 for r in tri.itertuples() if wdays(r.raised, r.at) <= STANDARD)
+        tri = gm[(gm["stage"] == "triaged") & (gm["outcome"] == "closed")]
+        ok(sum(1 for r in tri.itertuples() if wdays(r.raised, r.at, shut) <= STANDARD)
            == want["closed_inside_standard"], "A3 inside the standard in month %d" % m)
         ok(int((gm["stage"] == "escalated").sum()) == want["escalated"], "A3 escalated in month %d" % m)
 
@@ -154,10 +167,15 @@ def run(target, figures):
         elif f.endswith((".csv", ".json")):
             blob += " " + open(os.path.join(target, f), encoding="utf-8", errors="ignore").read()
     low = re.sub(r"\s+", " ", blob).lower()
-    for banned in ("multiplied by", "arrival", "per month", "stock of", "little's law", "mean time"):
+    for banned in ("multiplied by", "arrival", "per month", "stock of", "little's law", "mean time",
+                   "closed record", "ranking", "ranked", "scorecard", "league"):
         ok(banned not in low, "a shipped file says '%s'" % banned)
     for needed in ("a case is one customer and one typology", "the review covers three business lines",
-                   "expected to be carrying", "began between 1 january 2021 and 31 january 2024",
+                   "expected to be carrying",
+                   "between 1 january 2021 and 31 january 2024 is complete",
+                   "whether or not the bank yet holds a record of it",
+                   "a case seen in the month it began was never carried unseen past any month end",
+                   "the five working day standard",
                    "which is the first seen month the investigation handbook defines"):
         ok(needed in low, "a shipped file no longer says '%s'" % needed)
 

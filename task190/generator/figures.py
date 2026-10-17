@@ -7,7 +7,7 @@ import world as W
 
 def write(gen_dir, g):
     a = g["assess"]
-    fig = {"framework_clauses": ["2.3", "6.2", "6.3", "6.4", "6.5"],
+    fig = {"framework_clauses": ["2.3", "6.2", "6.3", "6.4", "6.5", "7.2"],
            "closed_record_cases": sum(a[n]["closed_cases"] for n in a),
            "covered": g["covered"], "just_misses": g["just_misses"],
            "capacity": W.CAPACITY, "lines_assessed": len(a),

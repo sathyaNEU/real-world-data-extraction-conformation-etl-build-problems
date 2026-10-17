@@ -43,8 +43,8 @@ def framework(target):
     d = _doc(path, "Financial crime framework")
     f = [Paragraph("%s: financial crime framework" % W.BANK, H1),
          Paragraph("Approved by the board risk committee, 19 November 2026. Issued under the bank's "
-                   "obligations to %s. Parts 1, 3, 4, 5, 7 and 8 and the appendices are not "
-                   "reproduced in this extract." % W.SUPERVISOR, SMALL),
+                   "obligations to %s. Parts 1, 4, 8 and 10 and the appendices are not reproduced in "
+                   "this extract." % W.SUPERVISOR, SMALL),
          Paragraph("Part 2 Cases", H2),
          Paragraph("2.1 The bank maintains a register of the financial crime cases it has confirmed, "
                    "with the business line the customer was served by, the typology, and the months "
@@ -59,6 +59,17 @@ def framework(target):
                    "bank has reorganised its lines, the line structure register carries each line "
                    "the records name and the line it now forms part of, with the dates each was in "
                    "force.", BODY),
+         Paragraph("Part 3 Training", H2),
+         Paragraph("3.1 Every member of staff in a customer facing or operations role completes the "
+                   "bank's financial crime training each year, and the business line's head is "
+                   "accountable for completion in that line.", BODY),
+         Paragraph("3.2 A member of staff who has not completed the training within the year does not "
+                   "adjudicate alerts until they have.", BODY),
+         Paragraph("Part 5 Reporting to the supervisor", H2),
+         Paragraph("5.1 The bank reports to %s on the schedule the supervisor sets, and the head of "
+                   "financial crime signs each return." % W.SUPERVISOR, BODY),
+         Paragraph("5.2 A return once filed is amended only on the supervisor's direction, and the "
+                   "bank keeps the direction with the amended return.", BODY),
          Paragraph("Part 6 The specialist review", H2),
          Paragraph("6.1 The bank engages a specialist review each year under contract ARW/FC/2024. "
                    "The review works in the business lines the committee places it with, for the "
@@ -69,22 +80,30 @@ def framework(target):
                    "case is no longer within this count once anyone at the bank has seen the activity "
                    "it is about, which is the first seen month the investigation handbook defines, "
                    "and not once it is confirmed. A case that has begun and that no one has yet seen "
-                   "is within this count whether or not the bank yet holds a record of it, and the "
-                   "expectation is taken over the cases the line's own closed record implies.", BODY),
-         Paragraph("6.3 A line's closed record is its cases whose activity began between 1 January "
-                   "2021 and 31 January 2024. The bank's look-back review of those months is "
-                   "complete, and no case that began in them is still to be detected.", BODY),
+                   "is within this count whether or not the bank yet holds a record of it.", BODY),
+         Paragraph("6.3 The bank's look-back review of activity between 1 January 2021 and 31 January "
+                   "2024 is complete. Every case it found is in the register, no case that began in "
+                   "those months is still to be found, and the committee does not reopen its "
+                   "findings.", BODY),
          Paragraph("6.4 The review covers three business lines. The committee places it on the "
                    "assessment the head of financial crime puts to it.", BODY),
          Paragraph("6.5 The head of financial crime reports to the committee each quarter the cases "
                    "the bank confirmed in the two complete quarters before the report, by business "
                    "line.", BODY),
+         Paragraph("Part 7 Alerts", H2),
+         Paragraph("7.1 Every alert the screening and monitoring systems raise is triaged, and the "
+                   "triage records an outcome of closed or escalated. An alert the triage escalates "
+                   "passes to investigations and is not closed.", BODY),
+         Paragraph("7.2 The operations report measures an alert against the five working day "
+                   "standard. The standard is met where the triage records the alert closed, and the "
+                   "working days from the day after the alert was raised up to and including the day "
+                   "the triage recorded it number five or fewer. A working day is a day from Monday "
+                   "to Friday that is not a day the bank is closed, and the operations office keeps "
+                   "the days the bank is closed.", BODY),
          Paragraph("Part 9 Records", H2),
          Paragraph("9.1 The bank keeps the alert system's record of every alert and of each stage of "
                    "its adjudication, and the case register, and reconciles the two through the "
-                   "customer identifier crosswalk.", BODY),
-         Paragraph("9.2 The bank does not maintain a ranking of its business lines for any purpose "
-                   "under this framework.", BODY)]
+                   "customer identifier crosswalk.", BODY)]
     d.build(f)
     return path
 
@@ -99,6 +118,12 @@ def handbook(target):
                    "investigator establishes it from the account record after the case is opened, and "
                    "it is often well before anything was noticed. It is not the month an alert fired "
                    "and not the month the case was opened.", BODY),
+         Paragraph("A case at the end of a calendar month", H2),
+         Paragraph("A case has begun in its onset month and has been seen in its first seen month. At "
+                   "the end of any month, a case had begun and had not been seen where its onset "
+                   "month is that month or an earlier one and its first seen month is a later month "
+                   "than that one. A case seen in the month it began was never carried unseen past "
+                   "any month end.", BODY),
          Paragraph("The first seen month", H2),
          Paragraph("The first seen month is the month in which anyone at the bank first saw the "
                    "activity the case is about, whether through an alert, a customer's dispute, a "
@@ -111,10 +136,9 @@ def handbook(target):
          Paragraph("All three months are recorded for every confirmed case. An amendment to a case "
                    "may change the amount or the typology and does not change any of the three "
                    "months.", BODY),
-         Paragraph("Cases differ widely in how they come to light. A card or payment case is "
-                   "ordinarily seen when the customer disputes a transaction. A trade finance or "
-                   "correspondent case is seen when a document review, a counterparty enquiry or a "
-                   "report from outside the bank reaches it.", BODY)]
+         Paragraph("Where the investigator cannot establish the onset month from the account record, "
+                   "the case is referred back and is not confirmed until the month is established.",
+                   BODY)]
     d.build(f)
     return path
 
@@ -131,18 +155,29 @@ def dictionary(target):
             ["typology", "the financial crime typology the case was confirmed under"],
             ["onset_month, first_seen_month, confirmed_month", "the three months the investigation "
                                                                "handbook defines"],
-            ["disposition", "confirmed for a case the head of financial crime has accepted"],
+            ["disposition", "confirmed for a case the head of financial crime has accepted, "
+                            "withdrawn for one that was put to them and not accepted, which "
+                            "carries no confirmed month"],
             ["record_version", "the version of the case record; a later version supersedes an earlier"],
+            ["reverses_ticket", "on a credit note, the ticket whose hours it reverses"],
+            ["quarter", "the contract quarter the ticket is billed to, which is not always the "
+                        "quarter the ticket is dated in"],
+            ["ticket_type", "the work type the ticket was billed as, which the contract's rate card "
+                            "prices"],
+            ["closed_on, occasion", "a day the bank is closed and what it is closed for"],
             ["amount", "the amount at issue, in the currency of the currency field"],
             ["alert_id, queue, stage, stage_at", "an alert, the queue it was raised in, the "
                                                  "adjudication stage and the date that stage was reached"],
-            ["outcome", "closed or escalated at triage; with investigations once escalated"],
+            ["outcome", "closed or escalated at triage; with investigations once escalated. An alert "
+                        "the triage has not reached carries no outcome, and an alert reopened on new "
+                        "information is triaged again"],
             ["batch_id", "the load batch the alert rows arrived in"],
             ["alerts_awaiting_review", "alerts in the queue that no analyst has yet opened, at the "
                                        "week ending date"]]
     f = [Paragraph("%s: extract dictionary" % W.BANK, H1),
          Paragraph("The fields of the case register, the alert extract and the weekly backlog, as the "
-                   "data office maintains them.", SMALL)]
+                   "data office maintains them. A case reaches the register when the head of "
+                   "financial crime accepts or declines the investigation's finding.", SMALL)]
     t = Table(wrap(rows), colWidths=[52 * mm, 122 * mm])
     t.setStyle(TBL)
     f.append(t)
@@ -184,10 +219,10 @@ def contract(target):
     f.append(t)
     f.append(Spacer(1, 4 * mm))
     f.append(Paragraph("Notes", H2))
-    f.append(Paragraph("A ticket billed at a rate other than the rate card's review rate is outside "
-                       "the rate card and is listed separately in the quarterly reconciliation.", BODY))
-    f.append(Paragraph("A credit note reverses hours already billed. Where the contractor has "
-                       "reissued a credit note under the credit note reference series, the ledger "
-                       "holds the ticket under both references and the hours are owed once.", BODY))
+    f.append(Paragraph("A ticket billed at a rate the card does not carry for its work type is "
+                       "outside the rate card and is listed separately in the quarterly "
+                       "reconciliation.", BODY))
+    f.append(Paragraph("A credit note reverses hours already billed on the ticket it names, at the "
+                       "review rate.", BODY))
     d.build(f)
     return path

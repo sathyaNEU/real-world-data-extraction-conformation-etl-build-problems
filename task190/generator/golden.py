@@ -82,11 +82,19 @@ def ladder(target):
     }
 
 
-def working_days(a, b):
+def closed_days(target):
+    """the days the bank is closed, as the pack ships them"""
+    with open(os.path.join(target, "bank_closed_days.csv"), encoding="utf-8") as fh:
+        import csv as _c
+        return {dt.date.fromisoformat(r["closed_on"]) for r in _c.DictReader(fh)}
+
+
+def working_days(a, b, shut):
+    """business days after the day an alert was raised, up to and including the day given"""
     n, d = 0, a
     while d < b:
         d += dt.timedelta(days=1)
-        if d.weekday() < 5 and d not in W.HOLIDAYS:
+        if d.weekday() < 5 and d not in shut:
             n += 1
     return n
 
@@ -98,12 +106,18 @@ def ask_contract(target):
     d = ledger.copy()
     d["h"] = pd.to_numeric(d["hours"])
     d["rate"] = pd.to_numeric(d["hourly_rate"])
-    d = d.sort_values(["ticket", "reference"]).groupby(["ticket"], as_index=False).head(1)
+    # a ticket's hours are reversed once, however many credit notes name it: one of the quarter's
+    # reversals was reissued weeks later under the credit note reference series
+    cn = d[d["ticket_type"] == "credit note"].sort_values(["reverses_ticket", "ticket"])
+    cn = cn.groupby("reverses_ticket", as_index=False).head(1)
+    work = pd.concat([d[d["ticket_type"] != "credit note"], cn], ignore_index=True)
+    card = {"review": 285.0, "expert testimony": 410.0, "credit note": 285.0}
     out = {}
     for q in sorted(allowed):
-        g = d[d["quarter"] == q]
+        g = work[work["quarter"] == q]
+        off = sum(1 for r in g.itertuples() if r.rate != card.get(r.ticket_type))
         out[q] = {"hours_billed": round(float(g["h"].sum()), 1), "hours_allowed": allowed[q],
-                  "tickets_outside_rate_card": int((g["rate"] != 285.0).sum())}
+                  "tickets_outside_rate_card": off}
     return out
 
 
@@ -144,6 +158,7 @@ def ask_screening(target):
 def ask_queue(target):
     """A3: the card disputes queue by month of 2026, on working days and without the re-sent batch"""
     _, (cases, alerts, lines, xw, backlog, ledger, matches, lists, base) = assess(target)
+    shut = closed_days(target)
     d = alerts.copy()
     d = d[d["queue"].isin(["card disputes", "chargebacks"])]
     d = d[~d["batch_id"].str.endswith("R")]
@@ -154,8 +169,9 @@ def ask_queue(target):
     for m in range(1, 13):
         g = d[[x.month == m for x in d["raised"]]]
         raised = g[g["stage"] == "raised"]
-        tri = g[g["stage"] == "triaged"]
-        inside = sum(1 for r in tri.itertuples() if working_days(r.raised, r.at) <= W.WORKING_STANDARD)
+        tri = g[(g["stage"] == "triaged") & (g["outcome"] == "closed")]
+        inside = sum(1 for r in tri.itertuples()
+                     if working_days(r.raised, r.at, shut) <= W.WORKING_STANDARD)
         esc = int((g["stage"] == "escalated").sum())
         out["2026-%02d" % m] = {"alerts_raised": len(raised), "closed_inside_standard": inside,
                                 "escalated": esc}

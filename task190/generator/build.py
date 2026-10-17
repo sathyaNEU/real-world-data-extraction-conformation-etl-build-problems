@@ -27,6 +27,7 @@ def cut(target):
     PK.write_matches(target, versions)
     PK.write_branches(target)
     PK.write_training(target)
+    PK.write_closed_days(target)
     PK.write_base(target)
     PK.write_manifest(target, case_rows, alert_rows)
     docs.framework(target)
