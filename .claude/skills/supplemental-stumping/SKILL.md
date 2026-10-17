@@ -137,6 +137,26 @@ script that exists in the build, and the gate fails without it. Re-run the scrip
 once at the end: a determinism repair that closes a reading can spend the device that rode on it, which is
 measurable the moment the sentence is filed and invisible in prose.
 
+**A device that rides on an undefined term is a fork, not a device, and determinism will collect it.**
+task182 carried an ask whose device was that the plant records the same facts at two grains, and the
+device worked only while "the minutes of its assessment period" and "runs reached into it" were
+undefined. Its judge failed Gate A, C and E on exactly those terms, defining them was the only repair
+available, and defining them put every figure in those asks inside a filed rule: the measured pair
+went from a claimed 39.1 to 75.2 with the cracker keeping 70 of 70. Nothing was lost in the repair,
+because there was nothing legal there to lose. The test at design time: write each ask's terms out
+fully defined, as a judge will force you to, and ask whether the device still bites. A device that
+survives every term being defined rides on the data; one that does not was the ambiguity, and shipping
+it buys a determinism return and an ask layer at once.
+
+**The honest number goes in the gated field.** Where two crackers are measured, the one that counts is
+the one Part 1.1 defines, which executed every filed rule it points at; a weaker response's score is
+not the ceiling. task182 measured 39.1 for a response that skipped the filed rules and 75.2 for the
+cracker, and wrote 39.1 into `Pair ceiling:` so `precut.py` would stay green while the real figure sat
+in prose below. task190, the same day, measured 67.8 and left the gate failing. The second is the
+practice: the gated field carries the worst honest measurement, the gate fails until it is true, and a
+green gate bought with the favourable of two numbers is the same defect as the prose sheet the gate was
+written to catch.
+
 **Two ways the ceiling script fakes its second column, and they look identical in the output.** The
 first is task190's: the two responses were meant to take different ask readings and the script passed
 one response's stops to both rows, so the ask band, 0.60 of the rubric, was one reading counted twice.
