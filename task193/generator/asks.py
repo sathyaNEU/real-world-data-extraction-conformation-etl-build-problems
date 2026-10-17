@@ -55,7 +55,11 @@ def write_submission_log(tgt, kept, rejected):
     rng = np.random.default_rng(W.SEED + 71)
     acc = collections.Counter()
     rej = collections.Counter()
+    raw = collections.Counter()
     for r in kept:
+        raw[(r["chain"], month_key(r["submitted"]))] += 1
+    for r in distinct(kept):
+        # the register accepted one dispensing however many times it was transmitted
         acc[(r["chain"], month_key(r["submitted"]))] += 1
     for r in rejected:
         rej[(r["chain"], month_key(r["submitted"]))] += 1
@@ -64,12 +68,12 @@ def write_submission_log(tgt, kept, rejected):
         months = sorted(set(m for (c, m) in acc) | set(m for (c, m) in rej))
         months = sorted(set(m for (c, m) in list(acc) + list(rej) if c == ci))
         for m in months:
-            a, t = acc[(ci, m)], rej[(ci, m)]
+            a, t, w = acc[(ci, m)], rej[(ci, m)], raw[(ci, m)]
             if a + t == 0:
                 continue                 # the chain filed nothing that month, so it reported none
             cancelled = int(rng.poisson(0.0021 * max(a, 1) + 0.6))
             cutoff = int(rng.integers(-3, 4))      # lines the two sides place in adjacent months
-            rows.append([code, m, a + t + cancelled + cutoff, a, t, cancelled])
+            rows.append([code, m, w + t + cancelled + cutoff, a, t, cancelled])
     return write_csv(os.path.join(tgt, "pharmacy_submission_log.csv"),
                      ["chain_code", "submission_month", "lines_submitted", "lines_accepted",
                       "lines_turned_back", "lines_withdrawn_by_chain"], rows)

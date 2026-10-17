@@ -10,9 +10,9 @@ mobilisation that follows the surge has no audited reports in it.
 """
 import datetime as dt
 
-SEED = 248                                 # the action layer, measured in the design note
+SEED = 10461                               # the action layer, measured in the design note
 SEED_PACK = 599                             # a separate stream for reports, mess and the asks
-SEED_DESK = 1                               # the coding desk's own stream: its calendar and its draw
+SEED_DESK = 4                               # the coding desk's own stream: its calendar and its draw
 
 ASSOCIATION = "Observatorio de Acao Coletiva"
 REGISTER = "Vigilancia Nacional"
@@ -48,6 +48,7 @@ EXTRACT = dt.date(2026, 11, 6)
 TRUSTEES = dt.date(2026, 11, 19)
 SURGE_FROM = dt.date(2026, 9, 5)
 DST_BACK = dt.date(2026, 10, 25)            # summer time ends at 01:00 UTC
+INTAKE_FROM, INTAKE_TO = 6, 23              # the association's own intake hours, local
 FORTNIGHT_DAYS = 14
 
 # the mainland and Madeira keep one clock, the Azores run an hour behind it
@@ -145,13 +146,13 @@ SAMPLE_ROUNDS = [("R1", dt.date(2026, 6, 20), dt.date(2026, 5, 1), dt.date(2026,
                   dt.date(2026, 6, 22))]
 
 PARTNERS = [
-    ("P01", "Nucleo de Estudos do Trabalho do Minho", "Norte", 6.35),
+    ("P01", "Nucleo de Estudos do Trabalho do Minho", "Norte", 6.30),
     ("P02", "Associacao Civica do Mondego", "Centro", 5.95),
-    ("P03", "Plataforma de Bairros da Margem Sul", "A.M. Lisboa", 7.20),
+    ("P03", "Plataforma de Bairros da Margem Sul", "A.M. Lisboa", 7.30),
     ("P04", "Observatorio Rural do Alentejo Central", "Alentejo", 5.45),
     ("P05", "Liga dos Direitos do Barlavento", "Algarve", 6.90),
-    ("P06", "Centro de Estudos Insulares", "Acores e Madeira", 8.10),
-    ("P07", "Nucleo de Acompanhamento do Douro", "Norte", 6.10),
+    ("P06", "Centro de Estudos Insulares", "Acores e Madeira", 8.05),
+    ("P07", "Nucleo de Acompanhamento do Douro", "Norte", 6.15),
 ]
 AMENDED = ("P04", dt.date(2026, 8, 1), 6.30)
 MERGED = ("P07", "P12", dt.date(2026, 9, 10))

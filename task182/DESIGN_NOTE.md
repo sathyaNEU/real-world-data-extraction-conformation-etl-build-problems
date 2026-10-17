@@ -648,7 +648,7 @@ whatever the wording, because an interface that holds a value writes rows that a
 - Final run: `checks.py` **1,537 assertions passed**; `verify.py` **282,104 independent checks passed**
   (the per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
   consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
-  e01ae8011479bb82); about 25 seconds.
+  38c1498f20627a18); about 25 seconds.
 - `verify.py` reads only the bundle (standard library, numpy-free, pyarrow for the parquet), encodes the
   plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
   residuals, valid, excluded and stop minutes, each level's distance to its rounding edge, the slate, its

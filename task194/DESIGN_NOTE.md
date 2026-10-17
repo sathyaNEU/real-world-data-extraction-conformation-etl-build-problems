@@ -584,3 +584,15 @@ family A3 and A4 do not use, and until it has one this sheet says so.
   rather than adjacency fixed the first; regrouping the one episode in the record that was readmitted
   under its own group fixed the second. The rule now reproduces the activity summary's separations exactly
   in all ten quarters, which is law 6, and that is what makes the device fair rather than merely hard.
+- **This pass, two consistency defects in the fiction's own history, found by reading the register against
+  the charter it is governed by.** The register placed the team with Alderbrook Aged Care twice, in
+  2023-24 Q4 and again in 2026-27 Q1, and nine closed quarters apart is inside charter 4.2's twelve, so the
+  partnership's own record breached its own rule. No unit in the register can legally be reused, because
+  twelve closed quarters after the earliest row is the quarter being decided, so the earliest cycle was
+  moved to a unit that appears nowhere else: the Stonecreek sub-acute unit, placed with under charter
+  version 2.0 before clause 2.3 put sub-acute units outside the indicator and before 4.2 limited
+  eligibility to acute units. It adds texture rather than losing it, because the register now carries a
+  cycle the current rules would not allow, and it cannot move the eligible twelve because a non-acute unit
+  is excluded by service type anyway. The second defect: the register's in-progress cycle is IP-10, and the
+  deliverables called the cycle being decided IP-10 as well. The placement for the quarter from 1 April
+  2027 is IP-11.

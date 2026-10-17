@@ -103,7 +103,7 @@ def workbook(path, g):
         rows.append([d["unit"], "%s %s" % (short(d["hospital"]), d["name"]), d["plan"],
                      round(d["expected_plan"], 1), round(d["ratio"], 2), round(d["ratio_net"], 2),
                      round(d["avoidable"])])
-    _sheet(ws, "Cycle IP-10 placement: avoidable complications by unit",
+    _sheet(ws, "Cycle IP-11 placement: avoidable complications by unit",
            "Quarter from 1 April 2027. Eligible units under charter clause 4.2. Prepared by Clinical "
            "Improvement, 18 March 2027.",
            ["Cost centre", "Unit", "Planned separations", "Expected complications",
@@ -149,7 +149,7 @@ def workbook(path, g):
     for line in [["Item", "Note"],
                  ["Eligible units", "Charter clause 4.2: acute inpatient units with four or more closed "
                   "quarters on specification 4.0 and no placement in the previous twelve closed quarters. "
-                  "Twelve units qualify for cycle IP-10."],
+                  "Twelve units qualify for cycle IP-11."],
                  ["Expected complications", "Specification 3.4: planned separations times the unit's "
                   "expected complications per separation over the specification period to date."],
                  ["Standardised ratio", "Specification 3.2 and 3.3, over every closed quarter from "
@@ -203,7 +203,7 @@ def _page(canvas, doc):
     canvas.saveState()
     canvas.setFont("Helvetica", 7.4)
     canvas.setFillColor(colors.HexColor("#6A6A6A"))
-    canvas.drawString(20 * mm, 12 * mm, "Clinical Improvement Partnership, cycle IP-10")
+    canvas.drawString(20 * mm, 12 * mm, "Clinical Improvement Partnership, cycle IP-11")
     canvas.drawRightString(190 * mm, 12 * mm, "Page %d" % doc.page)
     canvas.restoreState()
 
@@ -213,7 +213,7 @@ def brief(path, g, chart_path):
     rung0, rung3 = g["rung0"], g["rung3"]
     f, demo = g["facts"], g["demo"]
     gap = round(a["avoidable"]) - round(r["avoidable"])
-    d = SimpleDocTemplate(path, pagesize=A4, title="Cycle IP-10 placement recommendation", author="",
+    d = SimpleDocTemplate(path, pagesize=A4, title="Cycle IP-11 placement recommendation", author="",
                           subject="", creator="", leftMargin=20 * mm, rightMargin=20 * mm,
                           topMargin=16 * mm, bottomMargin=20 * mm)
     tbl = [["Unit", "Cost centre", "Planned separations", "Expected complications",
@@ -222,9 +222,9 @@ def brief(path, g, chart_path):
         tbl.append(["%s %s" % (short(x["hospital"]), x["name"]), x["unit"], "{:,}".format(x["plan"]),
                     "{:.1f}".format(x["expected_plan"]), "%d" % round(x["avoidable"])])
     flow = [
-        Paragraph("Place the IP-10 team with Alderbrook Orthopaedics: %d avoidable complications, %d more "
+        Paragraph("Place the IP-11 team with Alderbrook Orthopaedics: %d avoidable complications, %d more "
                   "than the closest unit" % (round(a["avoidable"]), gap), TITLE_P),
-        Paragraph("Clinical Improvement Partnership, cycle IP-10 (1 April to 30 June 2027). For the "
+        Paragraph("Clinical Improvement Partnership, cycle IP-11 (1 April to 30 June 2027). For the "
                   "Clinical Quality Committee, 24 March 2027. Prepared by Clinical Improvement.", KICKER),
         Paragraph("The team should embed with <b>Orthopaedics at Alderbrook Hospital, cost centre %s</b>. "
                   "Its own patients had %d complications over the ten closed quarters of specification "

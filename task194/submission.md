@@ -8,7 +8,7 @@ carrying from the excess the measurement system reports).
 
 ## 1. Final Recommendation
 
-**Place the cycle IP-10 improvement team with Alderbrook Orthopaedics, cost centre 41230.**
+**Place the cycle IP-11 improvement team with Alderbrook Orthopaedics, cost centre 41230.**
 
 The unit is carrying **40** avoidable hospital-acquired complications on the **2,305** separations it plans
 for the quarter from 1 April 2027, against **25** at Marrowfield General Medicine, the closest unit, a gap of **15** complications,

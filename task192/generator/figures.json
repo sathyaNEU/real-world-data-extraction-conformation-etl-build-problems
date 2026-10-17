@@ -1,160 +1,161 @@
 {
- "actions_in_period": 4627,
- "actions_with_a_filer_report": 427,
+ "actions_in_period": 4656,
+ "actions_with_a_filer_report": 428,
  "audit_months": [
   5,
   6,
   7,
   8
  ],
- "audit_prevalence_share": 0.15,
+ "audit_prevalence_share": 0.1525,
  "call_actions": 450,
  "candidate_cells": {
-  "audit_prevalence": 650,
+  "audit_prevalence": 700,
   "hand_where_audited": 400,
-  "naive": 350,
+  "naive": 300,
   "pv_pooled": 600,
-  "recall_only": 650,
+  "recall_only": 600,
   "remove_fp_fpr": 250,
   "remove_fp_ppv": 250
  },
  "candidates": {
-  "audit_prevalence": 660.0,
-  "hand_where_audited": 387.0,
-  "naive": 332.0,
-  "pv_pooled": 592.59,
-  "recall_only": 642.16,
-  "remove_fp_fpr": 228.24,
-  "remove_fp_ppv": 265.24
+  "audit_prevalence": 693.61,
+  "hand_where_audited": 386.0,
+  "naive": 320.0,
+  "pv_pooled": 614.53,
+  "recall_only": 615.64,
+  "remove_fp_fpr": 234.97,
+  "remove_fp_ppv": 268.65
  },
- "classifier_false_mark_rate": 0.0247,
- "classifier_recall": 0.4933,
+ "classifier_false_mark_rate": 0.0201,
+ "classifier_recall": 0.4783,
  "fortnight_rows": 13,
  "fortnights": {
   "Q1": {
-   "actions": 289,
-   "marked_actions": 38,
-   "municipalities": 111,
-   "partner_actions": 69
+   "actions": 264,
+   "marked_actions": 28,
+   "municipalities": 70,
+   "partner_actions": 65
   },
   "Q10": {
-   "actions": 581,
-   "marked_actions": 37,
-   "municipalities": 116,
-   "partner_actions": 144
+   "actions": 639,
+   "marked_actions": 39,
+   "municipalities": 112,
+   "partner_actions": 157
   },
   "Q11": {
-   "actions": 565,
-   "marked_actions": 20,
-   "municipalities": 118,
-   "partner_actions": 150
+   "actions": 589,
+   "marked_actions": 30,
+   "municipalities": 112,
+   "partner_actions": 155
   },
   "Q12": {
-   "actions": 554,
-   "marked_actions": 24,
-   "municipalities": 119,
-   "partner_actions": 146
+   "actions": 588,
+   "marked_actions": 23,
+   "municipalities": 111,
+   "partner_actions": 156
   },
   "Q13": {
-   "actions": 657,
-   "marked_actions": 24,
-   "municipalities": 119,
-   "partner_actions": 167
+   "actions": 598,
+   "marked_actions": 25,
+   "municipalities": 111,
+   "partner_actions": 157
   },
   "Q2": {
-   "actions": 257,
-   "marked_actions": 30,
-   "municipalities": 110,
-   "partner_actions": 68
+   "actions": 251,
+   "marked_actions": 21,
+   "municipalities": 63,
+   "partner_actions": 65
   },
   "Q3": {
-   "actions": 234,
-   "marked_actions": 24,
-   "municipalities": 100,
-   "partner_actions": 49
-  },
-  "Q4": {
-   "actions": 257,
-   "marked_actions": 22,
-   "municipalities": 103,
+   "actions": 240,
+   "marked_actions": 26,
+   "municipalities": 68,
    "partner_actions": 52
   },
+  "Q4": {
+   "actions": 263,
+   "marked_actions": 24,
+   "municipalities": 68,
+   "partner_actions": 50
+  },
   "Q5": {
-   "actions": 265,
-   "marked_actions": 26,
-   "municipalities": 104,
-   "partner_actions": 67
-  },
-  "Q6": {
-   "actions": 259,
-   "marked_actions": 23,
-   "municipalities": 103,
-   "partner_actions": 61
-  },
-  "Q7": {
-   "actions": 230,
-   "marked_actions": 16,
-   "municipalities": 100,
-   "partner_actions": 64
-  },
-  "Q8": {
-   "actions": 231,
-   "marked_actions": 26,
-   "municipalities": 105,
+   "actions": 222,
+   "marked_actions": 17,
+   "municipalities": 65,
    "partner_actions": 59
   },
+  "Q6": {
+   "actions": 237,
+   "marked_actions": 23,
+   "municipalities": 66,
+   "partner_actions": 56
+  },
+  "Q7": {
+   "actions": 252,
+   "marked_actions": 28,
+   "municipalities": 66,
+   "partner_actions": 68
+  },
+  "Q8": {
+   "actions": 260,
+   "marked_actions": 17,
+   "municipalities": 66,
+   "partner_actions": 67
+  },
   "Q9": {
-   "actions": 248,
-   "marked_actions": 22,
-   "municipalities": 111,
+   "actions": 253,
+   "marked_actions": 19,
+   "municipalities": 69,
    "partner_actions": 58
   }
  },
+ "gap_positive_share": 0.9988,
  "grain": 50,
- "hand_coded_confrontational": 30,
- "marked_rate_inside_the_audited_window_pct": 9.7,
- "marked_rate_outside_it_pct": 4.9,
- "mean_gap": 136.8,
+ "hand_coded_confrontational": 49,
+ "marked_rate_inside_the_audited_window_pct": 8.8,
+ "marked_rate_outside_it_pct": 4.3,
+ "mean_gap": 156.7,
  "partner_rows": 7,
  "partners": {
   "P01": {
    "after_close": 0,
-   "euros": 851,
-   "filed": 134
+   "euros": 926,
+   "filed": 147
   },
   "P02": {
-   "after_close": 2,
-   "euros": 2493,
-   "filed": 421
+   "after_close": 12,
+   "euros": 2386,
+   "filed": 413
   },
   "P03": {
    "after_close": 1,
-   "euros": 1548,
-   "filed": 216
+   "euros": 2212,
+   "filed": 304
   },
   "P04": {
-   "after_close": 3,
-   "euros": 742,
-   "filed": 127
+   "after_close": 0,
+   "euros": 370,
+   "filed": 61
   },
   "P05": {
-   "after_close": 3,
-   "euros": 559,
-   "filed": 84
+   "after_close": 1,
+   "euros": 545,
+   "filed": 80
   },
   "P06": {
    "after_close": 1,
-   "euros": 413,
-   "filed": 52
+   "euros": 354,
+   "filed": 45
   },
   "P07": {
    "after_close": 1,
-   "euros": 726,
-   "filed": 120
+   "euros": 701,
+   "filed": 115
   }
  },
- "press_marked_confrontational": 302,
- "press_only_actions": 4200,
+ "press_marked_confrontational": 271,
+ "press_only_actions": 4228,
  "protocol_paragraphs": [
   "2.1",
   "2.2",
@@ -175,47 +176,53 @@
   "6.1",
   "6.2"
  ],
- "raw_total": 453.01,
- "record_prevalence_share": 0.0979,
+ "raw_total": 454.91,
+ "record_prevalence_share": 0.0977,
  "route_rows": 3,
  "routes": {
   "IMP": {
    "median_minutes": 115.0,
-   "received": 4346,
-   "unplaceable": 148
+   "received": 4374,
+   "unplaceable": 147
   },
   "LIN": {
-   "median_minutes": 98.0,
-   "received": 945,
-   "unplaceable": 94
+   "median_minutes": 107.0,
+   "received": 947,
+   "unplaceable": 93
   },
   "PAR": {
-   "median_minutes": 1327.0,
-   "received": 1204,
-   "unplaceable": 61
+   "median_minutes": 1385.0,
+   "received": 1207,
+   "unplaceable": 58
   }
  },
  "rung_audited_shares": 600,
- "rung_codes_as_filed": 350,
+ "rung_codes_as_filed": 300,
  "rung_false_marks_out": 250,
  "rung_hand_where_audited": 400,
- "rung_recall_only": 650,
- "sample_fn": 76,
- "sample_fp": 21,
- "sample_rows": 1000,
- "sample_tn": 829,
- "sample_tp": 74,
- "sampling_sd": 57.4,
- "sampling_sd_of_the_gap": 50.2,
+ "rung_recall_only": 600,
+ "sample_comparisons": 1056,
+ "sample_fn": 84,
+ "sample_fp": 18,
+ "sample_rows": 1064,
+ "sample_rows_without_a_manual_code": 8,
+ "sample_tn": 877,
+ "sample_tp": 77,
+ "sampling_sd": 53.5,
+ "sampling_sd_of_the_gap": 47.1,
  "themes_without_an_audited_report": [
   "ENE",
   "FLO"
  ],
- "variant_continuity": 448.47,
- "variant_hybrid": 453.01,
- "variant_matrix_inverse": 453.01,
- "variant_pv_fb_month": 591.65,
- "variant_pv_fb_theme": 598.81,
- "variant_rg_fb_month": 457.84,
- "variant_rg_fb_theme": 470.4
+ "variant_continuity": 450.32,
+ "variant_hybrid": 454.91,
+ "variant_matrix_inverse": 454.91,
+ "variant_pv_fb_month": 590.37,
+ "variant_pv_fb_theme": 615.79,
+ "variant_rg_coded_month": 432.7,
+ "variant_rg_coded_theme": 466.75,
+ "variant_rg_fb_month": 448.7,
+ "variant_rg_fb_theme": 466.08,
+ "variant_rg_r1": 450.21,
+ "variant_rg_r2": 464.98
 }

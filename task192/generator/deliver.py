@@ -34,21 +34,22 @@ def workbook(path, g):
             ("Acoes so com relato de parceiro ou da linha", "%d acoes" % g["filed_by_hand"]),
             ("Codigo de confronto do classificador", "%d acoes" % g["press_marked"]),
             ("Codigo de confronto de quem entregou", "%d acoes" % g["hand_confrontational"]),
-            ("Relatos na amostra de dupla codificacao", "%d relatos" % g["sample_rows"])]
+            ("Relatos na amostra de dupla codificacao", "%d relatos" % g["sample_rows"]),
+            ("Desses, com codificacao manual", "%d relatos" % g["sample_coded"])]
     for i, (k, v) in enumerate(rows, 4):
         a = ws.cell(row=i, column=1, value=k)
         a.font = Font(bold=(i == 4))
         b = ws.cell(row=i, column=2, value=v)
         b.font = Font(bold=(i == 4))
         b.alignment = Alignment(horizontal="right")
-    ws.cell(row=12, column=1, value=("As acoes com relato do monitor de imprensa levam o codigo do "
+    ws.cell(row=13, column=1, value=("As acoes com relato do monitor de imprensa levam o codigo do "
                                      "classificador (protocolo 2.6). As duas rondas de dupla "
                                      "codificacao do periodo fecharam em 20 de junho e em 10 de "
                                      "setembro de 2026 e cobrem os relatos de 1 de maio a 31 de "
                                      "agosto."))
-    ws.cell(row=12, column=1).font = Font(size=9, italic=True)
-    ws.cell(row=13, column=1, value="Preparado para o conselho de curadores de 19 de novembro de 2026.")
     ws.cell(row=13, column=1).font = Font(size=9, italic=True)
+    ws.cell(row=14, column=1, value="Preparado para o conselho de curadores de 19 de novembro de 2026.")
+    ws.cell(row=14, column=1).font = Font(size=9, italic=True)
     ws.column_dimensions["A"].width = 42
     ws.column_dimensions["B"].width = 20
 
@@ -149,7 +150,9 @@ def workbook(path, g):
                      "distrito, e os Acores estao uma hora atras do continente."),
         ("Dupla codificacao", "Duas rondas, fechadas em 20 de junho e em 10 de setembro, sobre "
                               "os relatos aceites do monitor entrados desde o fecho anterior "
-                              "(protocolo 4.5). A ronda de outono e do periodo seguinte."),
+                              "(protocolo 4.5). A ronda de outono e do periodo seguinte. Os "
+                              "relatos que a mesa nao conseguiu codificar ficam na folha sem "
+                              "codigo manual e nao comparam codigos."),
         ("Temas", "Dos catorze temas de disputa do protocolo (2.7), energia e redes e florestas e "
                   "fogos entraram no registo com a mobilizacao de setembro."),
         ("Contador de importacao", "O contador diario por via conta cada chegada, pelo que a carga "

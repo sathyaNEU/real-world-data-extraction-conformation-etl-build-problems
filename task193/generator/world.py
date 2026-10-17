@@ -20,6 +20,10 @@ MIN_PATIENTS = 25
 N_PAT = 17000
 SEED = 193176
 MESS_SEED = 777
+EDITION_DAY = 639                    # 2025-07-01, when the register's statistics took up the
+                                     # edition shipped with this extract: the whole screen window
+                                     # and the whole fee period fall after it, so no day of either
+                                     # is under two editions of the index at once
 PULL_DAY = 1115                      # 2026-10-20, the extract pull
 REFERRAL_QUARTER = "2027 Q1"
 

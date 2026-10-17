@@ -164,19 +164,19 @@ def run(target, g=None):
                                       "sensibilidade", "especificidade", "taxa_de_erro")))
 
     # ---------------------------------------------------------------- the call reproduces
-    ok("call.actions", g["actions_in_period"] == 4627, g["actions_in_period"])
-    ok("call.press_reported", g["press_only"] == 4200, g["press_only"])
-    ok("call.other_actions", g["filed_by_hand"] == 427, g["filed_by_hand"])
-    ok("call.hand_conf", g["hand_confrontational"] == 30, g["hand_confrontational"])
-    ok("call.press_marked", g["press_marked"] == 302, g["press_marked"])
-    ok("call.sample", g["sample_rows"] == 1000, g["sample_rows"])
-    ok("call.matrix", (g["tp"], g["fn"], g["fp"], g["tn"]) == (74, 76, 21, 829),
+    ok("call.actions", g["actions_in_period"] == 4656, g["actions_in_period"])
+    ok("call.press_reported", g["press_only"] == 4228, g["press_only"])
+    ok("call.other_actions", g["filed_by_hand"] == 428, g["filed_by_hand"])
+    ok("call.hand_conf", g["hand_confrontational"] == 49, g["hand_confrontational"])
+    ok("call.press_marked", g["press_marked"] == 271, g["press_marked"])
+    ok("call.sample", g["sample_rows"] == 1064, g["sample_rows"])
+    ok("call.matrix", (g["tp"], g["fn"], g["fp"], g["tn"]) == (77, 84, 18, 877),
        str((g["tp"], g["fn"], g["fp"], g["tn"])))
     ok("call.total", g["total"] == 450, g["total"])
-    ok("call.raw", abs(g["raw_total"] - 453.0126) < 0.01, "%.4f" % g["raw_total"])
+    ok("call.raw", abs(g["raw_total"] - 454.9100) < 0.01, "%.4f" % g["raw_total"])
     ok("call.grain", g["grain"] == 50 and G.GRAIN == 50)
-    ok("call.recall", abs(g["recall"] - 0.4933) < 0.0005, g["recall"])
-    ok("call.false_mark", abs(g["false_mark"] - 0.0247) < 0.0005, g["false_mark"])
+    ok("call.recall", abs(g["recall"] - 0.4783) < 0.0005, g["recall"])
+    ok("call.false_mark", abs(g["false_mark"] - 0.0201) < 0.0005, g["false_mark"])
     ok("call.parts", g["press_only"] + g["filed_by_hand"] == g["actions_in_period"])
 
     # ---------------------------------------------------------------- the candidate set
@@ -382,7 +382,7 @@ def run(target, g=None):
                                     for h in heads), str(heads))
     ok("R1.no_truth_column", not any("verdad" in h.lower() or "real" in h.lower() for h in heads))
     base = counts(acts, b["sample"])
-    ok("R1.register_from_rows", base["n"] == 4627 and G.grain(base["g"]) == 450)
+    ok("R1.register_from_rows", base["n"] == 4656 and G.grain(base["g"]) == 450)
 
     # ---------------------------------------------------------------- R2, mess neutral
     def call_of(reports):
@@ -390,7 +390,7 @@ def run(target, g=None):
 
     ok("R2.base", G.grain(call_of(b["reports"])["g"]) == 450)
     one_load = [r for r in b["reports"] if r.get("load") != "C20260802"]
-    ok("R2.reimport", G.grain(call_of(one_load)["g"]) == 450 and call_of(one_load)["n"] == 4627)
+    ok("R2.reimport", G.grain(call_of(one_load)["g"]) == 450 and call_of(one_load)["n"] == 4656)
     shifted = [dict(r, recv=r["recv"] + dt.timedelta(hours=1)) for r in b["reports"]]
     ok("R2.clocks", G.grain(call_of(shifted)["g"]) == 450)
     cur = {r["codigo_localidade"]: r["nome"] for r in rows_of(target, "gazeteiro_localidades.csv")
@@ -411,9 +411,9 @@ def run(target, g=None):
     ok("R3a.analyst_test", G.grain(base["r3"]) == 600 and G.grain(base["g"]) == 450
        and G.grain(base["r3"]) != G.grain(base["g"]),
        "the default path files %d, the golden is %d" % (G.grain(base["r3"]), G.grain(base["g"])))
-    ok("R3a.codes_as_filed_wrong", G.grain(base["r0"]) == 350)
-    ok("R3b.decisive_only", G.grain(base["r2"]) == 650 and G.grain(base["g"]) == 450)
-    ok("R3b.each_rung_wrong", 450 not in {250, 350, 400, 600, 650})
+    ok("R3a.codes_as_filed_wrong", G.grain(base["r0"]) == 300)
+    ok("R3b.decisive_only", G.grain(base["r2"]) == 600 and G.grain(base["g"]) == 450)
+    ok("R3b.each_rung_wrong", 450 not in {300, 400, 600, 250, 700})
     with open(os.path.join(target, "registo_itens_imprensa.csv"), encoding="utf-8") as fh:
         lines = fh.read().splitlines()[1:]
     blocks = {}
@@ -444,11 +444,15 @@ def run(target, g=None):
     ok("SF9.reimport_neutral", G.grain(call_of(one_load)["g"]) == 450)
     ok("SF10.twin_in_items", any(r["orgao"] == W.TWIN_FEED[1] for r in items))
     ok("SF11.rounding", abs(g["raw_total"] - gold_cell) <= 0.55 * half)
-    ok("SF12.ties", len({250, 350, 400, 450, 600, 650}) == 6)
+    ok("SF12.ties", len({450, 300, 400, 600, 250, 700}) == 6)
     ok("SF13.accepted_only", all(r["estado"] in ("aceite", "rejeitado") for r in items))
     ok("SF14.extract", max(r["day"] for r in b["reports"]) <= W.EXTRACT)
     ok("SF15.outside_period", any(a["day"] > W.PERIOD_TO for a in acts))
-    ok("SF16.hand_coding_present", all(r["codigo_manual"] for r in b["sample"]))
+    ok("SF16.hand_coding_present",
+       sum(1 for r in b["sample"] if r["codigo_manual"]) >= 0.98 * len(b["sample"])
+       and all(r["nota"] for r in b["sample"] if not r["codigo_manual"]),
+       "the hand coding is the standard on every row the desk could code, and the few it could "
+       "not say so")
     ok("SF17.unplaced_not_actions", len(b["exceptions"]) > 0)
     ok("SF18.no_carry_in", min(r["day"] for r in b["reports"]) >= W.OPEN_DAY)
     ok("SF19.fortnight_days", all((bb - a).days + 1 == W.FORTNIGHT_DAYS
@@ -618,10 +622,10 @@ def run(target, g=None):
         ok("real.persona_only_where_filed.%s" % name.split()[0],
            all(f.endswith((".pdf", ".xlsx")) for f in hit), str(hit))
     ok("real.coders_are_initials",
-       {r["codificador"] for r in b["sample"]} <= {c for c, _ in W.CODERS})
+       {r["codificador"] for r in b["sample"]} <= {c for c, _, _, _ in W.CODERS})
     ok("real.coder_loads_differ", len({sum(1 for r in b["sample"] if r["codificador"] == c)
-                                       for c, _ in W.CODERS}) == len(W.CODERS))
-    load = sorted(sum(1 for r in b["sample"] if r["codificador"] == c) for c, _ in W.CODERS)
+                                       for c, _, _, _ in W.CODERS}) == len(W.CODERS))
+    load = sorted(sum(1 for r in b["sample"] if r["codificador"] == c) for c, _, _, _ in W.CODERS)
     ok("real.coder_spread", load[-1] >= 1.5 * load[0], str(load))
     ok("real.sample_two_rounds", {r["ronda"] for r in b["sample"]} == {"R1", "R2"})
     ok("real.adjudication_present",
@@ -761,9 +765,18 @@ def run(target, g=None):
             _shr[label][a["district"]] = _shr[label].get(a["district"], 0) + 1.0 / len(tot)
     _doubled = [d0 for d0 in _shr["post"]
                 if _shr["pre"].get(d0, 0) > 0 and _shr["post"][d0] >= 2.0 * _shr["pre"][d0]]
-    ok("real.surge_concentrates_in_districts", len(_doubled) >= 2,
-       "%d districts at least double their share of the register's actions: %s"
-       % (len(_doubled), str(sorted(_doubled))))
+    _grp = {}
+    for _lab in ("pre", "post"):
+        _grp[_lab] = {}
+        for d0, v0 in _shr[_lab].items():
+            _grp[_lab][W.DISTRICT_GROUP[d0]] = _grp[_lab].get(W.DISTRICT_GROUP[d0], 0.0) + v0
+    ok("real.surge_concentrates_in_districts",
+       _grp["post"]["interior"] >= 1.2 * _grp["pre"]["interior"]
+       and _grp["post"]["metro"] < _grp["pre"]["metro"] and len(_doubled) >= 1,
+       "the interior districts take %.4f of the register's actions before the surge and %.4f after, "
+       "the metro districts %.4f against %.4f, and %s at least doubles"
+       % (_grp["pre"]["interior"], _grp["post"]["interior"], _grp["pre"]["metro"],
+          _grp["post"]["metro"], str(sorted(_doubled))))
     weekday, weekend = [], []
     for day, n in daily.items():
         (weekend if day.weekday() >= 5 else weekday).append(n)
@@ -778,12 +791,13 @@ def run(target, g=None):
     lags = [r["lag"] for r in b["reports"] if r["route"] == "LIN" and r["lag"] is not None]
     ok("real.line_lag_spread", max(lags) / min(max(lags[0], 1), max(1, min(lags))) >= 20,
        "%d to %d minutes" % (min(lags), max(lags)))
-    agree = sum(1 for r in b["sample"] if r["codigo_monitor"] == r["codigo_manual"])
-    ok("real.classifier_is_an_instrument", agree / float(len(b["sample"])) >= 0.45,
-       "%.3f exact code agreement" % (agree / float(len(b["sample"]))))
+    _cmp = [r for r in b["sample"] if r["codigo_manual"]]
+    agree = sum(1 for r in _cmp if r["codigo_monitor"] == r["codigo_manual"])
+    ok("real.classifier_is_an_instrument", agree / float(len(_cmp)) >= 0.45,
+       "%.3f exact code agreement over the %d comparisons" % (agree / float(len(_cmp)), len(_cmp)))
     near = far = 0
     pos = {c: i for i, (c, _, _) in enumerate(W.ACTION_CODES)}
-    for r in b["sample"]:
+    for r in _cmp:
         if r["codigo_monitor"] == r["codigo_manual"]:
             continue
         if abs(pos[r["codigo_monitor"]] - pos[r["codigo_manual"]]) <= 2:

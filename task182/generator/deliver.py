@@ -131,9 +131,9 @@ def note(path, g, chart_png):
          Paragraph("The plant through the survey", H2),
          Paragraph("The blowers ran through every assessment minute of the survey, so no position was "
                    "measured with the plant off load. What moved week to week was the air the lanes took, "
-                   "and the air delivered through each deployment's own assessment hours is in the "
-                   "position table beside the levels. The last column is the part of the plant's record "
-                   "the historian does not hold, which is where the radio link to the PLC dropped.", BODY),
+                   "and the air delivered through each position's own assessment period is in the position "
+                   "table beside its level, with the part of the plant's record the historian does not "
+                   "hold for those hours, which is where the radio link to the PLC dropped.", BODY),
          Table(wrap([["Week beginning", "Blower air delivered, thousand Nm3",
                       "Quarter hours not recorded", "Longest run"]]
                     + [["%d %s" % (W.WEEKS[k].day, W.WEEKS[k].strftime("%B")),

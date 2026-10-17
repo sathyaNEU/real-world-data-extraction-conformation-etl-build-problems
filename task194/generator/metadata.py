@@ -12,7 +12,7 @@ def write(task, g):
         "domain": "Healthcare Delivery & Health Economics, provider quality and risk adjustment",
         "objective": "Anomaly Detection & Diagnostics",
         "as_of": W.AS_OF.isoformat(),
-        "committed_answer": "place the cycle IP-10 improvement team with Alderbrook Orthopaedics (cost "
+        "committed_answer": "place the cycle IP-11 improvement team with Alderbrook Orthopaedics (cost "
                             "centre %s), which is carrying %d avoidable hospital-acquired complications on "
                             "the separations planned for the quarter from 1 April 2027, against %d at "
                             "Marrowfield General Medicine"

@@ -72,6 +72,18 @@ def place_text(loc, rng):
     return loc["name"]
 
 
+def intake_window(local_moment, rng):
+    """The monitor's collection and the public line both run on the association's own intake hours,
+    06:00 to 23:00: whatever lands outside them is written at the next intake."""
+    if local_moment.hour >= W.INTAKE_TO:
+        local_moment = dt.datetime.combine(local_moment.date() + dt.timedelta(days=1),
+                                           dt.time(W.INTAKE_FROM, rng.randrange(0, 56)))
+    elif local_moment.hour < W.INTAKE_FROM:
+        local_moment = dt.datetime.combine(local_moment.date(),
+                                           dt.time(W.INTAKE_FROM, rng.randrange(0, 56)))
+    return local_moment
+
+
 def build_reports(reps, locs, rng):
     """Add the dates, stamps and place text every report file needs."""
     cap = dt.datetime.combine(W.EXTRACT, dt.time(20, 30))   # the record was pulled that evening
@@ -84,6 +96,11 @@ def build_reports(reps, locs, rng):
             own = snap_working(own, rng)
             recv_utc = own - dt.timedelta(hours=local_offset(dist, own.date()))
         recv_lisbon = recv_utc + dt.timedelta(hours=local_offset("Lisboa", recv_utc.date()))
+        if r["route"] != "PAR":
+            own = intake_window(recv_lisbon, rng)
+            if own != recv_lisbon:
+                recv_lisbon = own
+                recv_utc = own - dt.timedelta(hours=local_offset("Lisboa", own.date()))
         if recv_utc > cap:                                 # a report that had not arrived is not in it
             recv_utc = max(start - dt.timedelta(hours=local_offset(dist, start.date()))
                            + dt.timedelta(minutes=12),
@@ -282,7 +299,9 @@ def write_config(target):
     cfg = {
         "versao": "4.2",
         "atualizado_em": "2026-04-28",
-        "janela_de_recolha": {"inicio": "2026-05-01", "cadencia": "horaria"},
+        "janela_de_recolha": {"inicio": "2026-05-01", "cadencia": "horaria",
+                              "horas": "06:00 as 23:00, hora local do servidor; o que chega fora "
+                                       "destas horas e escrito na recolha seguinte"},
         "orgaos": [{"codigo": o[0], "titulo": o[1], "distritos": o[2],
                     "peso_de_circulacao": o[3]} for o in W.OUTLETS],
         "regra_de_aceitacao": ("um item e aceite quando o classificador identifica uma acao coletiva "

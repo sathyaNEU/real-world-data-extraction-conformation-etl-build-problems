@@ -35,6 +35,10 @@ def _referred(tgt, rp, route, firsts=None, **kw):
     return G.screen(tgt, rp, route, firsts, **kw)[0]
 
 
+def _atc_of_vnr(tgt):
+    return {r["vnr"]: r["atc_code"] for r in rd(tgt, "package_index.csv")}
+
+
 def _pdf_text(tgt):
     import pypdf
     r = pypdf.PdfReader(os.path.join(tgt, "screen_standard_7_2024.pdf"))
@@ -616,27 +620,52 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
                          "owned the pharmacy on")),
        "no filed sentence adjudicates the chain a line belongs to")
     # A2: the dose the edition in force assigns, against the figure the package row was written with
+    # Every package row in the pack, not only the screened products: the test a reader can run is
+    # whether the stored figure equals its own documented formula to the precision it is stated
+    # at. Rounding at the second decimal is not a contradiction; being out by a factor is.
     ed = {r["atc_code"]: r["ddd_mg"] for r in rd(tgt, "atc_text.csv")}
-    stale, ties = [], 0
+    prod_atcs = set(x["product_atc"] for x in rd(tgt, "screen_annexes.csv"))
+    stale, ties, not_tenths = [], 0, []
     for r in rd(tgt, "package_index.csv"):
-        if not ed.get(r["atc_code"]) or r["atc_code"] not in set(
-                x["product_atc"] for x in rd(tgt, "screen_annexes.csv")):
+        if not ed.get(r["atc_code"]) or not r["ddd_per_pack"]:
             continue
         per = (DEC(r["pack_size"]) * DEC(r["strength"].split()[0])
                / DEC(ed[r["atc_code"]]))
-        if per != DEC(r["ddd_per_pack"]):
+        if abs(per - DEC(r["ddd_per_pack"])) > DEC("0.005"):
             stale.append(r["vnr"])
         else:
             ties += 1
-        ok_tenths = (per * 10) % 1 == 0
-        if not ok_tenths:
-            stale.append("NOT-TENTHS-" + r["vnr"])
-    ok("dev.a2_stale_rows", 6 <= len(stale) <= 12,
-       "%d package rows carry the earlier edition's dose, %d tie to the edition in force"
-       % (len(stale), ties))
-    ok("dev.a2_both_editions_are_whole_tenths",
-       not any(x.startswith("NOT-TENTHS") for x in stale),
+        if r["atc_code"] in prod_atcs and (per * 10) % 1 != 0:
+            not_tenths.append(r["vnr"])
+
+    ok("dev.a2_both_editions_are_whole_tenths", not not_tenths,
        "both figures are whole tenths, so a payer's total is exact either way")
+    # the stored figure is wrong against its own definition, not merely different from another
+    # source: the column description gives the formula, every input to it is shipped, and the whole
+    # fee period lies inside one edition of the index, so no vintage explains the three
+    atc = rd(tgt, "atc_text.csv")
+    ok("dev.a2_one_edition", len(set(r["edition"] for r in atc)) == 1
+       and len(set(r["in_force_from"] for r in atc)) == 1,
+       "one edition, in force from %s" % atc[0]["in_force_from"])
+    ok("dev.a2_edition_covers_the_fee_period",
+       G.iso(atc[0]["in_force_from"]) < G.WIN_A,
+       "in force from %s, the fee period opens %s, so no day of it is under two editions"
+       % (atc[0]["in_force_from"], G.WIN_A))
+    docp = {(r["file_name"], r["variable"]): r["documentation"]
+            for r in rd(tgt, "register_variable_documentation.csv")}
+    ok("dev.a2_formula_is_documented",
+       "pack size times the strength, divided by the defined daily dose"
+       in docp[("package_index.csv", "ddd_per_pack")]
+       and "atc_text.csv gives" in docp[("package_index.csv", "ddd_per_pack")],
+       "the column's own definition names every input a reader needs to check it")
+    ok("dev.a2_stale_rows_break_their_own_formula", 6 <= len(stale) <= 12 and ties >= 45,
+       "%d of the %d priced package rows contradict the formula their own documentation gives, "
+       "beyond the rounding they are stated at; the other %d satisfy it"
+       % (len(stale), len(stale) + ties, ties))
+    ok("dev.a2_stale_rows_are_only_the_three_codes",
+       len(set(_atc_of_vnr(tgt)[v] for v in stale)) == 3,
+       "the contradiction falls on three codes and no others: %s"
+       % sorted(set(_atc_of_vnr(tgt)[v] for v in stale)))
     ok("dev.a2_no_rule_states_it",
        "edition in force" not in sheet_text.lower()
        and "edition" not in " ".join(r["documentation"] for r in

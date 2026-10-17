@@ -230,7 +230,9 @@ def compute(target):
 
     # ---- the routes the record leaves standing, each one a complete pipeline on the same rows
     pv = predictive(N, O, cells)
-    sid = {r["id_relato"] for r in sample}
+    # the rows the desk actually coded: a row it could not code carries no hand code, so the route
+    # that trusts the hand coding where it exists has nothing to trust on that action
+    sid = {r["id_relato"] for r in sample if r["codigo_manual"]}
     hand_true = sum(1 for r in sample if r["codigo_manual"] in CONF)
     unsampled_marked = sum(1 for a in press if a["coded_conf"] and not (a["idents"] & sid))
     cont, _, _ = rogan_gladen(N, O, cells, continuity=0.5)

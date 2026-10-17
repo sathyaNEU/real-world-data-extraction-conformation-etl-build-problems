@@ -248,7 +248,7 @@ NOTE_SEEN = ["titulo pouco claro", "duas pecas do mesmo dia", "local confirmado 
              "relato sem hora da acao", "peca de agencia, sem detalhe de terreno",
              "a fotografia nao confirma o titulo", "numeros do relato muito acima dos da peca",
              "duvida entre dois codigos vizinhos", "relato encaminhado pela chefe de mesa"]
-NOTE_DONE = ["codificado pelo corpo do texto", "codigo corrigido depois de ler a peca toda",
+NOTE_DONE = ["codificado pelo corpo do texto", "codigo trocado depois de ler a peca toda",
              "mantido o codigo do primeiro codificador", "confirmado com a segunda leitura",
              "prevaleceu a leitura do corpo da peca", "codigo mantido, nota para a proxima ronda"]
 NOTE_NONE = ["sem elementos para fixar o codigo", "texto insuficiente para distinguir a acao",
@@ -260,7 +260,7 @@ def note_for(changed, coded, rng):
     could code."""
     if not coded:
         return "%s; fica sem codificacao manual" % rng.choice(NOTE_NONE)
-    done = [n for n in NOTE_DONE if ("corrig" in n or "prevaleceu" in n or "corpo" in n)
+    done = [n for n in NOTE_DONE if ("trocado" in n or "prevaleceu" in n or "corpo" in n)
             == bool(changed)]
     return "%s; %s" % (rng.choice(NOTE_SEEN), rng.choice(done or NOTE_DONE))
 

@@ -15,7 +15,7 @@ P0, P1 = dt.date(2026, 5, 1), dt.date(2026, 10, 30)
 EXTRACT = dt.date(2026, 11, 6)
 DST = dt.date(2026, 10, 25)
 AZORES = "Acores"
-RATE = {"P01": 6.35, "P02": 5.95, "P03": 7.20, "P04": 5.45, "P05": 6.90, "P06": 8.10, "P07": 6.10}
+RATE = {"P01": 6.30, "P02": 5.95, "P03": 7.30, "P04": 5.45, "P05": 6.90, "P06": 8.05, "P07": 6.15}
 AMENDED = ("P04", dt.date(2026, 8, 1), 6.30)
 GRAIN = 50
 N = 0
@@ -124,8 +124,8 @@ def run(target, figures):
             tn + (not m and not h)
     coded = tp + fn + fp + tn
     ok("sample.rows", len(sample) == f["sample_rows"], "%d" % len(sample))
-    ok("sample.coded", coded == f["sample_coded"], "%d" % coded)
-    ok("sample.uncoded", len(sample) - coded == f["sample_uncoded"],
+    ok("sample.coded", coded == f["sample_comparisons"], "%d" % coded)
+    ok("sample.uncoded", len(sample) - coded == f["sample_rows_without_a_manual_code"],
        "%d rows carry no manual code" % (len(sample) - coded))
     ok("sample.cells", (tp, fn, fp, tn) == (f["sample_tp"], f["sample_fn"], f["sample_fp"],
                                             f["sample_tn"]), str((tp, fn, fp, tn)))
@@ -144,7 +144,7 @@ def run(target, figures):
     # every other route the record leaves standing
     ppv = tp / float(tp + fp)
     npv = fn / float(fn + tn)
-    sid = {r["id_relato"] for r in sample}
+    sid = {r["id_relato"] for r in sample if r["codigo_manual"]}
     hand_true = sum(1 for r in sample if r["codigo_manual"] in CONF)
     unsampled_marked = sum(1 for k in pressed
                            if press_code[k] in CONF and not (idents[k] & sid))

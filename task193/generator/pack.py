@@ -466,11 +466,11 @@ def write_atc_text(tgt):
         ddd[W.PATC[code]] = W.DDD_MG_2026[code]
     for code in W.MCODES:
         ddd[W.MATC[code]] = W.DDD_MG_2026[code]
-    rows = sorted([k, v, "ATC 2026 edition",
+    rows = sorted([k, v, "ATC 2026 edition", W.iso(W.EDITION_DAY),
                    "" if ddd.get(k) is None else _plain(Decimal(str(ddd[k])))]
                   for k, v in text.items())
     return write_csv(os.path.join(tgt, "atc_text.csv"),
-                     ["atc_code", "atc_text", "edition", "ddd_mg"], rows)
+                     ["atc_code", "atc_text", "edition", "in_force_from", "ddd_mg"], rows)
 
 
 def write_crosswalk(tgt, switch_day, keys, new_keys):
@@ -930,9 +930,10 @@ VARIABLE_DOC = [
      "transfer of marketing authorisation keeps its rows, so that lines dispensed before the "
      "transfer still resolve."),
     ("package_index.csv", "ddd_per_pack",
-     "Defined daily doses in the package: pack size times strength divided by the defined daily "
-     "dose the anatomical therapeutic chemical index assigns the substance. Blank where the index "
-     "assigns none, as for topical preparations."),
+     "The number of defined daily doses in one package: the pack size times the strength, divided "
+     "by the defined daily dose the anatomical therapeutic chemical index assigns the code, which "
+     "atc_text.csv gives. Blank where the index assigns none, as for topical preparations. The "
+     "register writes the figure when it creates the package row and does not rewrite it."),
     ("person_register.csv", "region",
      "The region recorded for the patient at the extract date."),
     ("person_register.csv", "previous_region, region_recorded_from",
@@ -1007,12 +1008,13 @@ VARIABLE_DOC = [
     ("person_key_crosswalk.csv", "retired_person_key, current_person_key, replaced_on, reason",
      "A pseudonym the register has replaced, the pseudonym that replaced it, the day of the "
      "replacement and the civil-registration event behind it."),
-    ("atc_text.csv", "atc_code, atc_text, edition",
-     "The text the anatomical therapeutic chemical index gives a code, and the edition of the "
-     "index the entry is taken from."),
+    ("atc_text.csv", "atc_code, atc_text, edition, in_force_from",
+     "The text the anatomical therapeutic chemical index gives a code, the edition of the index "
+     "the entry is taken from, and the date from which the register's package statistics use that "
+     "edition. One edition is shipped with an extract."),
     ("atc_text.csv", "ddd_mg",
-     "The defined daily dose in milligrams that this edition of the index assigns the code. Blank "
-     "where the edition assigns none. The index is revised with each edition."),
+     "The defined daily dose in milligrams the index assigns the code. Blank where it assigns "
+     "none."),
     ("person_register_2025Q4.csv", "person_key, year_of_birth, sex, region",
      "The person extract delivered with the October 2025 run of the screen. It carries the same "
      "person keys as the current extract and the civil registration the register held when it was "

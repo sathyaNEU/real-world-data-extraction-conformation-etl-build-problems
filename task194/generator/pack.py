@@ -229,10 +229,16 @@ def write_catlist(target):
 
 
 def write_placements(target):
-    """The improvement partnership's placement register: what the team did, cycle by cycle."""
+    """The improvement partnership's placement register: what the team did, cycle by cycle.
+
+    The first cycle was decided under charter version 2.0, which placed the team with a sub-acute unit;
+    version 3.0 clause 2.3 of the indicator put sub-acute units outside the measure and clause 4.2 limits
+    eligibility to acute inpatient units, so that cycle is in the register and outside the current rules.
+    No unit in the register is placed with twice inside clause 4.2's twelve closed quarters.
+    """
     out = []
     cycle = 1
-    rows = [("2023-24 Q4", "41360")] + [(W.QLABELS[k], c) for k, c in sorted(W.EMBEDS.items())] + \
+    rows = [("2023-24 Q4", "41610")] + [(W.QLABELS[k], c) for k, c in sorted(W.EMBEDS.items())] + \
            [(W.EMBED_CURRENT[0], W.EMBED_CURRENT[1])]
     for label, code in rows:
         fy, q = label.split(" Q")
@@ -362,13 +368,20 @@ def write_distractors(target):
                  "ortho": 4.4, "gen_surg": 4.7, "colorectal": 4.9, "vasc": 5.2}[u[3]]
         hours += 0.42 * lv.normal()
         agency = float(0.024 + 0.105 * lv.random())
-        for q in sim.quarters_for(u)[-4:]:
+        for q in sim.quarters_for(u)[-6:]:
             for m in W.QUARTERS[q][4]:
                 r = sim.rng("nurse", u[0], m.isoformat())
                 # agency and overtime run with the winter peak and with each other
                 season = 1.0 + 0.30 * (1 if m.month in (6, 7, 8) else (-0.18 if m.month in (1, 2) else 0))
                 ag = max(0.004, agency * season * float(1 + 0.16 * r.normal()))
-                out.append([m.isoformat(), u[0], round(float(hours - 0.9 * ag + 0.11 * r.normal()), 2),
+                hrs = hours
+                # the ward whose theatre was closed carried the hospital's emergency general surgical
+                # admissions instead of its elective list: unplanned patients need more nursing per
+                # patient day, and the roster had been built for the list that stopped
+                if u[0] == W.MIX_SHIFT_UNIT and q in W.MIX_SHIFT_QUARTERS:
+                    hrs += 0.61
+                    ag *= 1.44
+                out.append([m.isoformat(), u[0], round(float(hrs - 0.9 * ag + 0.11 * r.normal()), 2),
                             round(ag, 3), round(max(0.004, 0.42 * ag + 0.012 * r.random()), 3)])
     _csv(os.path.join(target, FILES["nursing"]),
          ["month", "unit_code", "nursing_hours_per_patient_day", "agency_share", "overtime_share"], out)
@@ -506,7 +519,7 @@ MANIFEST = [
      "the last six quarters", "nothing; small response counts are reported as published",
      "Consumer Engagement", "Patient experience survey platform"),
     ("nursing_hours_by_unit_monthly.csv", "Nursing hours per patient day and agency share by unit",
-     "the last four quarters", "medical staffing", "Nursing and Midwifery", "Rostering system"),
+     "the last six quarters", "medical staffing", "Nursing and Midwifery", "Rostering system"),
     ("hand_hygiene_audit_2026.csv", "Hand hygiene audit moments and compliance by unit",
      "the three 2026 audit periods", "audits before 2026", "Infection Prevention",
      "Hand hygiene audit tool"),
