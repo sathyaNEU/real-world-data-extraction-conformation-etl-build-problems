@@ -16,6 +16,7 @@ import heapq
 import json
 import math
 import os
+import statistics
 
 import numpy as np
 from openpyxl import load_workbook
@@ -175,6 +176,21 @@ def home_loc_newest(B, pc, d):
         for f, t, loc in B.cc_raw[no]:
             if f <= d <= t:
                 return loc
+    return B.people[pc]["home_location"]
+
+
+def home_loc_first_row(B, pc, d):
+    """the home store from the first payroll row, in the register's own order, of any of the casual's numbers whose
+    cost-centre dates cover the date (the round-2 judge's read)"""
+    nos = set(B.nos[pc])
+    for r in B.payroll:
+        no = int(r["employee_no"])
+        if no not in nos:
+            continue
+        f = dt.date.fromisoformat(r["cc_effective_from"])
+        t = dt.date.fromisoformat(r["cc_effective_to"]) if r["cc_effective_to"] else dt.date(2099, 1, 1)
+        if f <= d <= t:
+            return B.cc_loc[r["cost_centre"]]
     return B.people[pc]["home_location"]
 
 
@@ -504,6 +520,38 @@ class Forward:
                 x["ptr"] += 1
                 heapq.heappush(heap, (t + 14.0, k))
         return {loc: tot[loc] / runs for loc in self.locs}
+
+
+def pools(B):
+    """each open Christmas shift's pool at posting: the casuals the module would offer it to (the store's own and its
+    cluster's opted-in casuals) whom its checks pass with the published rosters booked, and its own casuals among them"""
+    if not hasattr(B, "avail_idx"):
+        index_availability(B)
+    fw = Forward(B, None)
+    fw.reset()
+    out = collections.defaultdict(list)
+    for ln in fw.open:
+        el = [pc for pc in fw.order[ln["loc"]] if fw.eligible(pc, ln)]
+        own = sum(1 for pc in el if fw.home[pc] == ln["loc"])
+        out[ln["loc"]].append((len(el), own, paid_min(ln["e"] - ln["s"]) / 60.0))
+    return {loc: out[loc] for loc in B.locs}
+
+
+def pool_routes(B, rows):
+    """the pool-size routes: a thinner pool read as more hours unworked (each value is the inverse of the pool measure,
+    so the thinnest store leads), and the hours each store would leave unworked if every casual in a shift's pool said
+    yes at one rate, independently"""
+    P = pools(B)
+    out = collections.OrderedDict()
+    out["P pool per open shift-hour"] = {l: sum(h for _, _, h in P[l]) / max(1e-9, sum(n for n, _, _ in P[l])) for l in P}
+    out["P hours-weighted mean pool"] = {l: sum(h for _, _, h in P[l]) / max(1e-9, sum(n * h for n, _, h in P[l]))
+                                         for l in P}
+    out["P median pool per shift"] = {l: 1.0 / max(0.5, statistics.median(n for n, _, _ in P[l])) for l in P}
+    rate = sum(r["y"] for r in rows) / float(len(rows))
+    dec = [r["y"] for r in rows if r["dec"] and not r["ext"] and not r["split"]]
+    for lab, p in (("the log's take-up", rate), ("December's day-off take-up", sum(dec) / float(len(dec)))):
+        out["R2 static one rate (%s)" % lab] = {l: sum(h * (1 - p) ** n for n, _, h in P[l]) for l in P}
+    return out
 
 
 def open_hours(B):

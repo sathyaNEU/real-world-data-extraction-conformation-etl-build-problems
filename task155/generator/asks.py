@@ -29,17 +29,30 @@ def _reg(B):
     return out
 
 
+def open_lines(B):
+    """each slot's open lines on the published rosters (the legacy export's VACANT lines, the KWS roster's OPEN
+    lines): the shifts put out as OPN, however many call-ins the import raised for them"""
+    if not hasattr(B, "open_lines"):
+        B.open_lines = collections.Counter((loc, day, s, e) for loc, day, s, e, pn, st in B.roster
+                                           if st in ("VACANT", "OPEN"))
+    return B.open_lines
+
+
 def shifts(B, use_utc=False, span_hours=False, dedup=None, drops=True, window=None, opn=True, dayvoid=False,
-           keepfill=False):
+           keepfill=False, gb_opn_only=False):
     """the shifts put out to call-in in the window, each with its final outcome:
     dedup None: postings grouped into shifts (re-raises and re-raises after a drop belong to their shift, an absence
-    reported twice is one vacated line, the identical open lines a roster lists are each a shift);
+    reported twice is one vacated line, an open line is one shift however many call-ins the import raised for it, the
+    identical open lines a roster lists are each a shift);
     dedup 'rows': every register row a shift; dedup 'noninstant': every row a shift but those closed the minute they
     were raised; dedup 'keys': rows collapsed on store, date, times, reason, absent;
-    dedup 'keysdrops': the same collapse with give-backs voided (the cracker's route);
-    dedup 'raise': every call-in not raised as a re-raise at 07:00 a shift (a second report of an absence too);
+    dedup 'keysdrops': the same collapse with give-backs voided (the shift-identity fold);
+    dedup 'raise': every call-in not raised as a re-raise at 07:00 a shift, an absence's two reports one (the 07:00
+    chain once the duplicate reports are filed); dedup 'raise_pre': the same with an absence's second report a shift
+    too (the 07:00 chain before the filing);
     opn False: open lines left out; dayvoid: a fill voided by any absence its casual reported that day;
-    keepfill: a given-back shift counted once but its first fill kept as the cover."""
+    keepfill: a given-back shift counted once but its first fill kept as the cover;
+    gb_opn_only: a give-back looked for only on fills of open-line call-ins."""
     win = window or WINDOW
     rows = [x for x in _reg(B) if win[0] <= (x["utc_d"] if use_utc else x["d"]) <= win[1]]
     hours = (lambda x: x["span"] / 60.0) if span_hours else (lambda x: C.paid_min(x["span"]) / 60.0)
@@ -86,6 +99,8 @@ def shifts(B, use_utc=False, span_hours=False, dedup=None, drops=True, window=No
         continuing = set()
         if drops:
             for f in fills:
+                if gb_opn_only and f["reason"] != "OPN":
+                    continue
                 p = pno(f["by"], f["d"])
                 later = [x for x in lst if x["reason"] == "ABS" and x["absent"] == p and x["raised"] > f["closed"]]
                 if later:
@@ -112,16 +127,19 @@ def shifts(B, use_utc=False, span_hours=False, dedup=None, drops=True, window=No
                 out.append(dict(loc=key[0], hours=hours(lst[0]), covered=bool(own), by=own[0]["by"] if own else "",
                                 d=lst[0]["d"]))
             continue
-        # originals: open lines raised at publication, and each vacated line's first posting
+        # originals: the slot's open lines, and each vacated line's first posting
         units = 0
         seen = set()
+        chain = dedup in ("raise", "raise_pre")
+        if opn and not chain and any(x["reason"] == "OPN" for x in lst):
+            units += open_lines(B).get(key, 0) or sum(1 for x in lst if x["reason"] == "OPN" and not _is_repost(x))
         for x in lst:
             if id(x) in continuing:
                 continue
             if x["reason"] == "OPN":
-                if x["r"]["raised_at"] == PUBLISHED_25 or not _is_repost(x):
+                if chain and not _is_repost(x):
                     units += 1
-            elif dedup == "raise":
+            elif dedup == "raise_pre":
                 if not _is_repost(x):
                     units += 1
             else:
@@ -134,7 +152,16 @@ def shifts(B, use_utc=False, span_hours=False, dedup=None, drops=True, window=No
             good = [f for f in fills if id(f) not in continuing]
         else:
             good = [f for f in fills if id(f) not in dropped]
-        if dedup != "raise":
+        if dedup == "raise":
+            # the filed duplicate reports: an absence's two call-ins closed FILLED with the same casual are one cover;
+            # each open-line call-in's fill stands
+            once = []
+            for f in good:
+                if f["reason"] == "OPN" or all((g["by"], g["absent"]) != (f["by"], f["absent"]) or g["reason"] == "OPN"
+                                               for g in once):
+                    once.append(f)
+            good = once
+        elif dedup != "raise_pre":
             # one casual is booked on a shift once: a second call-in for it closed FILLED with them is the same cover
             once = []
             for f in good:
@@ -182,6 +209,7 @@ def ask_b(B, home_rule="payroll", **kw):
     imp = collections.Counter()
     exp = collections.Counter()
     look = {"payroll": lambda pc, d: C.home_loc(B, pc, d), "newest": lambda pc, d: C.home_loc_newest(B, pc, d),
+            "first_row": lambda pc, d: C.home_loc_first_row(B, pc, d),
             "kws": lambda pc, d: B.people[pc]["home_location"]}[home_rule]
     for x in sh:
         if not x["covered"]:
@@ -201,22 +229,29 @@ def stops(B):
         A_S2_keys=ask_a(B, dedup="keys"),
         A_S3_nodrops=ask_a(B, drops=False),
         A_S1b_noninstant=ask_a(B, dedup="noninstant"),
-        A_S3b_raise=ask_a(B, dedup="raise"),
+        A_S3b_raise=ask_a(B, dedup="raise_pre"),
         A_S3c_keepfill=ask_a(B, keepfill=True),
+        A_S3d_opngb=ask_a(B, gb_opn_only=True),
         A_S4_utc=ask_a(B, use_utc=True),
         A_S5_span=ask_a(B, span_hours=True),
         A_S6_noopn=ask_a(B, opn=False),
         A_S7_dayvoid=ask_a(B, dayvoid=True),
         A_crack=ask_a(B, dedup="keysdrops"),
+        A_chain=ask_a(B, dedup="raise"),
+        A_slot=ask_a(B, dedup="raise", gb_opn_only=True),
         B_golden=ask_b(B),
         B_S1_current=ask_b(B, home_rule="kws"),
         B_S2_nodrops=ask_b(B, drops=False),
         B_S3_rows=ask_b(B, dedup="rows"),
-        B_S3b_raise=ask_b(B, dedup="raise"),
+        B_S3b_raise=ask_b(B, dedup="raise_pre"),
         B_S3c_keepfill=ask_b(B, keepfill=True),
+        B_S3d_opngb=ask_b(B, gb_opn_only=True),
         B_S7_dayvoid=ask_b(B, dayvoid=True),
         B_S8_newest=ask_b(B, home_rule="newest"),
+        B_S9_first_row=ask_b(B, home_rule="first_row"),
         B_crack_payroll=ask_b(B, dedup="keysdrops"),
         B_crack=ask_b(B, dedup="keysdrops", home_rule="newest"),
+        B_chain_payroll=ask_b(B, dedup="raise"),
         B_chain=ask_b(B, dedup="raise", home_rule="newest"),
+        B_slot=ask_b(B, dedup="raise", gb_opn_only=True, home_rule="first_row"),
     )

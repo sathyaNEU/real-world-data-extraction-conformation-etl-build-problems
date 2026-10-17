@@ -1,6 +1,6 @@
 # leak check, task155
 
-**Verdict: REVIEW.** 15 files read, 39 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 40 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 

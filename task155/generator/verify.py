@@ -233,37 +233,40 @@ def main(target, figfile):
     same("other offers", n_oth, F["other_offers"], 0)
     same("of them accepted", a_oth, F["other_accepted"], 0)
 
-    # ask A and ask B, on a path of their own: each line's call-ins walked in the order KWS raised them, a re-raise
-    # at 07:00 taking the next line of its shift still waiting, a second report of an absence joining its line, a
-    # give-back's ABS call-in carrying on the line its casual had filled
+    # ask A and ask B, on a path of their own: each shift is a line, an open line on the 2025 roster export or a line an
+    # absence or leave vacated (named by its payroll number, however many call-ins its reports raised); a fill holds
+    # unless its casual is later named as absent on a call-in for the same shift; a line is covered by the casual who
+    # works it, so one casual covers one line
     win = (dt.date(2025, 11, 28), dt.date(2025, 12, 24))
-    W_ = sorted([x for x in R if win[0] <= x["d"] <= win[1]], key=lambda x: (x["raised"], int(x["id"])))
+    vacant = collections.Counter()
+    for i in range(len(leg["Store"])):
+        if leg["Status"][i] == "VACANT":
+            d = dt.datetime.strptime(leg["Date"][i], "%d/%m/%Y").date()
+            if win[0] <= d <= win[1]:
+                fin = clock(leg["Finish"][i])
+                vacant[(loc_by_name[leg["Store"][i]], d, clock(leg["Start"][i]), fin or 1440)] += 1
+    slots = collections.defaultdict(list)
+    for x in R:
+        if win[0] <= x["d"] <= win[1]:
+            slots[(x["loc"], x["d"], x["s"], x["e"])].append(x)
     walked = []
-    waiting = collections.defaultdict(list)       # (shift, reason, absent) -> lines whose last call-in went unfilled
-    reported = {}                                 # (shift, reason, absent) -> the line an absence or leave vacated
-    taken = {}                                    # (shift, payroll no) -> the line that casual filled
-    for x in W_:
-        key = (x["loc"], x["d"], x["s"], x["e"])
-        tag = (key, x["reason"], x["absent"])
-        at7 = x["raised"].hour == 7 and x["raised"].minute == 0 and x["raised"].second == 0
-        line = None
-        if x["reason"] == "ABS" and (key, x["absent"]) in taken:
-            line = taken.pop((key, x["absent"]))          # given back: the first fill no longer covers it
-            line["fill"] = None
-        elif at7 and waiting[tag]:
-            line = waiting[tag].pop(0)
-        elif x["reason"] != "OPN" and tag in reported:
-            line = reported[tag]                           # the same absence, reported again
-        if line is None:
-            line = dict(loc=x["loc"], d=x["d"], h=paid(x["span"]) / 60, fill=None)
-            walked.append(line)
-            if x["reason"] != "OPN":
-                reported[tag] = line
-        if x["outcome"] == "FILLED":
-            line["fill"] = x["by"]
-            taken[(key, str(number_on(x["by"], x["d"])))] = line
-        elif line["fill"] is None and all(w is not line for w in waiting[tag]):
-            waiting[tag].append(line)
+    for key, xs in slots.items():
+        h = paid(xs[0]["span"]) / 60
+        holders = []
+        gave_back = set()
+        for x in xs:
+            if x["outcome"] != "FILLED":
+                continue
+            no = str(number_on(x["by"], x["d"]))
+            if any(y["reason"] == "ABS" and y["absent"] == no and y["raised"] > x["closed"] for y in xs):
+                gave_back.add(no)
+            elif x["by"] not in holders:
+                holders.append(x["by"])
+        n_open = vacant.get(key, 0) if any(x["reason"] == "OPN" for x in xs) else 0
+        n_vac = len({(x["reason"], x["absent"]) for x in xs if x["reason"] != "OPN" and x["absent"] not in gave_back})
+        n = n_open + n_vac
+        for j in range(n):
+            walked.append(dict(loc=key[0], d=key[1], h=h, fill=holders[j] if j < len(holders) else None))
     put = collections.Counter()
     cov = collections.Counter()
     imp = collections.Counter()

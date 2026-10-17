@@ -84,7 +84,7 @@ def write_plan(path):
         c.font = Font(name="Calibri", size=11, bold=True)
         c.fill = HEAD_FILL
         c.alignment = Alignment(horizontal="center", wrap_text=True)
-    notes = {"W2": "to midnight Mon to Sun from 27/11", "E2": "online picking 10:00 to 16:00 weekdays",
+    notes = {"W2": "to midnight Mon to Sun from 27/11", "E2": "Christmas online picking 9:00 to 15:00 weekdays",
              "RG": "", "W1": "", "W3": "", "W4": "", "E1": "", "E3": ""}
     r = 6
     for s in sorted(W.STORES, key=lambda s: K.STORE_NO[s]):
