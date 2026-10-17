@@ -653,10 +653,12 @@ whatever the wording, because an interface that holds a value writes rows that a
   plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
   residuals, valid, excluded and stop minutes, each level's distance to its rounding edge, the slate, its
   order, the sixth, the margin and its distance to its edge, the default path's own slate, the highest band
-  and tone verdict at every position, the six weeks of plant figures with each week's air measured against
-  the whole-unit edge, the log's one unstopped start, and the per-position runs twice over (minute by
-  minute, and by interval arithmetic against the deployment record's windows), against
-  `generator/figures.json` and against the golden table. It also checks, on every shipped
+  and tone verdict at every position, the log's one unstopped start, and the ask layer's own figures: the
+  air the blowers delivered through every position's assessment period and every survey week off the two
+  counters at the window's own ends, with each week's air measured against the whole-unit edge, and the
+  quarter hours the historian did not record with their longest run, the held rows found by what they are.
+  All of it against `generator/figures.json` and against the golden table. `verify.call_only` runs the
+  call's half alone, which is what the separation assertion uses with the historian deleted. It also checks, on every shipped
   minute, that the four level columns order as an instrument reports them and that a minute with no
   measurement carries no statistics.
 - `figures_check.py` exit 0: 68 figures in blocks 1 to 4, none absent from `figures.json`.
@@ -701,7 +703,7 @@ whatever the wording, because an interface that holds a value writes rows that a
   the calibrator's verification due dates, a forward validity window, which `reduce-house-fixes` H16 puts
   on the allow-list.
 
-`guard.py surface task182`: 220 pairs in scope, **0 promoted**; nearest neighbour task228 at 0.096.
+`guard.py surface task182`: 221 pairs in scope, **0 promoted**; nearest neighbour task228 at 0.096.
 Personas in the cut pack: Aiden Hawthorn and Orla O'Hurley, with the engineer and the operations manager
 by initials on the deployment records. `guard.py heart task182`: **WARN, not BLOCK**; nearest driver 0.07
 (task263), answered in the card's differentiation.
@@ -717,8 +719,10 @@ by initials on the deployment records. `guard.py heart task182`: **WARN, not BLO
    time each week, records that are not a round week and carry the technician's own handling and field
    check at either end, a field check either side of all 28 deployments with 11 of them outside the plan's
    window, a met mast at ten minutes with a mid-survey unit change and a tip counter, minutes the meters
-   recorded nothing for, a repeated download, three names per position, and band levels on three meters of
-   five. Every one of them comes from the survey's own equipment.
+   recorded nothing for, a repeated download, three names per position, band levels on three meters of
+   five, aeration air metered on two meters since the upgrade, and a historian that sometimes wrote
+   nothing and sometimes wrote the last value it had. Every one of them comes from the site's own
+   equipment.
 3. **The flip is a method choice.** What flips the call is where the residual term of the plan's own
    subtraction is measured: the position's own running record, or the minutes inside the plant's weekly
    process stops. The plan files the quantity and no method. The ask layer's own two steps are the same
