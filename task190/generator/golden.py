@@ -6,14 +6,16 @@ import world as W
 
 BAND_LO, BAND_HI = int(W.BAND_LO), int(W.BAND_HI)
 FIT_LO, FIT_HI, STEP = 5000, 16000, 250
+GRAIN = W.GRAIN
 
 
-def excess(amounts, lo=FIT_LO, hi=FIT_HI, step=STEP, family="poisson_log", side="both"):
-    return E.excess(amounts, lo, hi, step, family, side)
+def r50(x):
+    return int(math.floor(x / float(GRAIN) + 0.5) * GRAIN)
 
 
-def r10(x):
-    return int(math.floor(x / 10.0 + 0.5) * 10)
+def canonical(amounts):
+    """The segment's figure: the band's surplus and 10,000 to 11,000's deficit, reconciled."""
+    return E.reconciled(amounts, FIT_LO, FIT_HI, STEP, "poisson", 1)
 
 
 def compute(custs, bycust, rows):
@@ -28,21 +30,24 @@ def compute(custs, bycust, rows):
     for r in pri:
         amt_by_seg_prior.setdefault(seg_of[r["cust"]], []).append(r["amount"])
 
-    # the figure: each segment's own profile, its own band
-    per_seg, per_seg_raw = {}, {}
+    per_seg, per_seg_raw, sides = {}, {}, {}
     for k in W.SEG_KEYS:
-        v = excess(amt_by_seg[k])
+        sides[k] = E.sides(amt_by_seg[k], FIT_LO, FIT_HI, STEP, "poisson", 1)
+        v = canonical(amt_by_seg[k])
         per_seg_raw[k] = v
-        per_seg[k] = r10(v)
+        per_seg[k] = r50(v)
     total = sum(per_seg.values())
 
-    # the band as observed, and the year's deposits, per segment
     band_obs = {k: sum(1 for a in amt_by_seg[k] if BAND_LO <= a < BAND_HI) for k in W.SEG_KEYS}
+    mirror_obs = {k: sum(1 for a in amt_by_seg[k] if BAND_HI <= a < E.MIRROR_HI)
+                  for k in W.SEG_KEYS}
     deposits = {k: len(amt_by_seg[k]) for k in W.SEG_KEYS}
 
     # ---- the rungs -------------------------------------------------------
-    # rung 0, the same-day screen: a band deposit on a day the customer's cash reached
-    # the threshold over two or more deposits, none of them at or above it
+    # rung 0, the band counted as it stands: the near-threshold queue's own size
+    band_all = sum(band_obs.values())
+
+    # rung 1, the same-day screen a solver builds from the alert at handbook 3.2
     def day_map(rs):
         d = {}
         for r in rs:
@@ -50,36 +55,25 @@ def compute(custs, bycust, rows):
         return d
 
     dw = day_map(win)
-    # the screen a solver builds from handbook 3.2: two or more deposits on a customer's day
-    # reaching the threshold between them, none of them reaching it alone
-    screened_days = {key for key, a in dw.items()
-                     if len(a) >= 2 and sum(a) >= W.THRESHOLD and
-                     any(x < W.THRESHOLD for x in a)}
-    rung0_seg = {k: 0 for k in W.SEG_KEYS}
+    screened = {key for key, a in dw.items()
+                if len(a) >= 2 and sum(a) >= W.THRESHOLD and any(x < W.THRESHOLD for x in a)}
+    screen_seg = {k: 0 for k in W.SEG_KEYS}
     for (cust, day), a in dw.items():
-        if (cust, day) in screened_days:
+        if (cust, day) in screened:
             for x in a:
                 if BAND_LO <= x < BAND_HI:
-                    rung0_seg[seg_of[cust]] += 1
-    rung0 = sum(rung0_seg.values())
+                    screen_seg[seg_of[cust]] += 1
+    screen = sum(screen_seg.values())
 
-    # rung 1, the same screen with each customer's own habit netted out
-    days_by_cust, screened_by_cust = {}, {}
-    for (cust, day), a in dw.items():
-        days_by_cust[cust] = days_by_cust.get(cust, 0) + 1
-        if (cust, day) in screened_days:
-            screened_by_cust[cust] = screened_by_cust.get(cust, 0) + 1
-    habit = {c for c in days_by_cust
-             if screened_by_cust.get(c, 0) > 0.5 * days_by_cust[c]}
-    rung1_seg = {k: 0 for k in W.SEG_KEYS}
-    for (cust, day), a in dw.items():
-        if (cust, day) in screened_days and cust not in habit:
-            for x in a:
-                if BAND_LO <= x < BAND_HI:
-                    rung1_seg[seg_of[cust]] += 1
-    rung1 = sum(rung1_seg.values())
+    # rung 2, the band fitted on its own, with the deficit above left in the fit
+    one_seg, one_raw = {}, {}
+    for k in W.SEG_KEYS:
+        v = E.one_sided(amt_by_seg[k], FIT_LO, FIT_HI, STEP)
+        one_raw[k] = v
+        one_seg[k] = r50(v)
+    one_total = sum(one_seg.values())
 
-    # rung 2, each customer against its own prior year
+    # rung 3, each customer's band deposits against its own prior year
     bw_, bp_ = {}, {}
     for r in win:
         if BAND_LO <= r["amount"] < BAND_HI:
@@ -87,43 +81,47 @@ def compute(custs, bycust, rows):
     for r in pri:
         if BAND_LO <= r["amount"] < BAND_HI:
             bp_[r["cust"]] = bp_.get(r["cust"], 0) + 1
-    rung2_seg = {k: 0 for k in W.SEG_KEYS}
+    rise_seg = {k: 0 for k in W.SEG_KEYS}
     for c in set(list(bw_) + list(bp_)):
-        rise = bw_.get(c, 0) - bp_.get(c, 0)
-        if rise > 0:
-            rung2_seg[seg_of[c]] += rise
-    rung2 = sum(rung2_seg.values())
+        d = bw_.get(c, 0) - bp_.get(c, 0)
+        if d > 0:
+            rise_seg[seg_of[c]] += d
+    rise = sum(rise_seg.values())
 
-    # the band count itself, below rung 0
-    band_all = sum(band_obs.values())
+    # the prior year on the same reading, which the report does not state but the pack supports
+    prior_seg = {k: r50(canonical(amt_by_seg_prior[k])) for k in W.SEG_KEYS}
+    prior_total = sum(prior_seg.values())
 
-    # one profile fitted to the whole book: convergent here, kept as a reported figure
-    pooled = excess(all_amt)
-    pooled_seg = {}
-    share = {k: band_obs[k] / float(band_all) for k in W.SEG_KEYS}
-    for k in W.SEG_KEYS:
-        pooled_seg[k] = r10(band_obs[k] - (band_all - pooled) * share[k])
+    largest = max(W.SEG_KEYS, key=lambda k: (per_seg[k], -W.SEG_KEYS.index(k)))
+    largest_band = max(W.SEG_KEYS, key=lambda k: band_obs[k])
+    largest_book = max(W.SEG_KEYS, key=lambda k: deposits[k])
 
-    return dict(per_seg=per_seg, per_seg_raw=per_seg_raw, total=total,
-                band_obs=band_obs, deposits=deposits, band_all=band_all,
-                rung0=rung0, rung0_seg=rung0_seg, rung1=rung1, rung1_seg=rung1_seg,
-                rung2=rung2, rung2_seg=rung2_seg, pooled=pooled, pooled_seg=pooled_seg,
-                pooled_total=r10(pooled),
+    return dict(per_seg=per_seg, per_seg_raw=per_seg_raw, sides=sides, total=total,
+                band_obs=band_obs, mirror_obs=mirror_obs, deposits=deposits, band_all=band_all,
+                screen=screen, screen_seg=screen_seg,
+                one_seg=one_seg, one_raw=one_raw, one_total=one_total,
+                rise=rise, rise_seg=rise_seg,
+                prior_seg=prior_seg, prior_total=prior_total,
+                largest=largest, largest_band=largest_band, largest_book=largest_book,
                 amt_by_seg=amt_by_seg, amt_by_seg_prior=amt_by_seg_prior, all_amt=all_amt,
                 n_win=len(win), n_pri=len(pri), n_rows=len(rows))
 
 
 def convergence(g):
-    """Every estimator in the sweep, per segment, and the book totals they imply."""
-    out = {k: E.sweep(g["amt_by_seg"][k]) for k in W.SEG_KEYS}
-    labels = [lab for lab, _ in out[W.SEG_KEYS[0]]]
-    totals = [sum(out[k][i][1] for k in W.SEG_KEYS) for i in range(len(labels))]
-    return out, totals, labels
+    """Every specification the record leaves standing, and the segment figures each gives."""
+    return E.sweep(g["amt_by_seg"], W.SEG_KEYS)
 
 
-def rounded_sets(out):
-    """The eight rounded segment figures each estimator gives, and their sum."""
-    sets = []
-    for i in range(len(out[W.SEG_KEYS[0]])):
-        sets.append(tuple(r10(out[k][i][1]) for k in W.SEG_KEYS))
-    return sets
+def rounded_sets(sw):
+    """The eight stated segment figures each surviving specification gives, and their sum."""
+    return [tuple(r50(v[k]) for k in W.SEG_KEYS) for _, v in sw]
+
+
+def edges(sw):
+    """How far every segment's figure sits from the nearest rounding edge, over the set."""
+    out = {}
+    for k in W.SEG_KEYS:
+        vs = [v[k] for _, v in sw]
+        cell = r50(sum(vs) / len(vs))
+        out[k] = min(min(vs) - (cell - GRAIN / 2.0), (cell + GRAIN / 2.0) - max(vs))
+    return out

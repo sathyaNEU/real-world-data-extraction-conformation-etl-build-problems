@@ -238,7 +238,7 @@ def write_weather(target):
                      "%d" % SM.MET["tips"][i], "%.1f" % SM.MET["temp_c"][i]])
     return _write_csv(os.path.join(target, FILES["weather"]),
                       ["measured_at_utc", "wind_speed", "wind_direction_deg", "rain_tips_today",
-                       "air_temp_c"], rows)
+                       "air_temperature_c"], rows)
 
 
 def write_bands(target, series):
@@ -311,13 +311,16 @@ def write_complaints(target):
              "drone in the evening, children cannot sleep", "steady hum from the direction of the works"]
     rng = random.Random(W.SEED + 31)
     rows, n = [], 0
-    for code in sorted([c for c in W.CODES if W.COMPLAINTS[c] > 0], key=lambda c: -W.COMPLAINTS[c]):
-        ref = "C%02d" % (1 + sorted([c for c in W.CODES if W.COMPLAINTS[c] > 0],
-                                    key=lambda c: -W.COMPLAINTS[c]).index(code))
+    ordered = sorted([c for c in W.CODES if W.COMPLAINTS[c] > 0], key=lambda c: -W.COMPLAINTS[c])
+    total = sum(W.COMPLAINTS[c] for c in ordered)
+    span = (dt.date(2026, 9, 28) - dt.date(2026, 6, 4)).days
+    for code in ordered:
+        ref = "C%02d" % (1 + ordered.index(code))
         for k in range(W.COMPLAINTS[code]):
-            d = dt.date(2026, 6, 4) + dt.timedelta(days=11 * n + 3 * k)
+            d = dt.date(2026, 6, 4) + dt.timedelta(days=int(round(span * n / float(total))) + k)
+            sent = min(d + dt.timedelta(days=rng.choice([4, 6, 9])), dt.date(2026, 10, 9))
             rows.append([ref, d.isoformat(), W.BY_CODE[code][1], W.PEOPLE["engineer"][1],
-                         texts[(n + k) % len(texts)], (d + dt.timedelta(days=rng.choice([4, 6, 9]))).isoformat()])
+                         texts[(n + k) % len(texts)], sent.isoformat()])
             n += 1
     rows.sort(key=lambda r: (r[1], r[0]))
     for i, r in enumerate(rows):
