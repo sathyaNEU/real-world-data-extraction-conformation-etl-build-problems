@@ -1,6 +1,6 @@
 # leak check, task152
 
-**Verdict: REVIEW.** 23 files read, 31 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 23 files read, 29 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
@@ -15,7 +15,7 @@ Stump terms swept: decline, period, inverters, washes, policy, replacement, repo
 
 ## 4 design-note vocabulary (REVIEW 4)
 - **REVIEW** `README.md`: 9 of 25 stump-paragraph terms appear (inverters, policy, replacement, report, original, schedule); read whether the document names the move
-- **REVIEW** `corvane_fa-2026-114_hadley_ranch_side_by_side.pdf`: 4 of 25 stump-paragraph terms appear (replacement, report, carries, irradiation); read whether the document names the move
+- **REVIEW** `corvane_fa-2026-114_hadley_ranch_side_by_side.pdf`: 5 of 25 stump-paragraph terms appear (period, replacement, report, irradiation, measured); read whether the document names the move
 - **REVIEW** `hadley_ranch_module_replacement_scope_2026-07.docx`: 6 of 25 stump-paragraph terms appear (inverters, replacement, report, original, schedule, replaced); read whether the document names the move
 - **REVIEW** `tresco_om_agreement_2021_schedules_2_and_4.pdf`: 5 of 25 stump-paragraph terms appear (inverters, washes, report, schedule, measured); read whether the document names the move
 

@@ -79,13 +79,16 @@ def _overlaps(t, a, b):
     return t < b and t + dt.timedelta(hours=1) > a
 
 
-def availability(A, gaps="register", exclude="grid+owner", local_events=False, derate_unavailable=False):
+def availability(A, gaps="register", exclude="grid+owner", local_events=False, derate_unavailable=False,
+                 zero_below=0.0, grid_pad=10, window_all=False, denominator="P-X"):
     """Schedule 4 availability per inverter. gaps: 'register' (an hour missing from the export counts as delivered
     when the register advanced across the gap), 'zero' (counts as no AC energy). exclude: which zero-energy hours are
     Excluded Hours: 'grid+owner' (the district's interruptions and the owner's stops), 'none', 'f217+owner' (every
     hour an F-217 alarm was open, plus the owner's stops), 's020' (the district's interruptions and every hour an S-020
     stop was open). local_events: the event log's UTC stamps read as local time. derate_unavailable: hours with a W-410
-    derate open count as unavailable."""
+    derate open count as unavailable. The readings Schedule 4 closes: zero_below (an hour's AC energy at or below it
+    read as none), grid_pad (minutes after the district's restoration still read as its outage), window_all (every
+    Production Hour an outage or owner stop touches excluded, energy or not), denominator 'P' (one less U over P)."""
     import bisect
     off = dt.timedelta(0) if local_events else R.UTC_OFF
     out = {}
@@ -100,7 +103,7 @@ def availability(A, gaps="register", exclude="grid+owner", local_events=False, d
         own = [(a, b) for devs, a, b in A.owner if tag in devs]
         for t in prod:
             if t in rows:
-                delivered = rows[t][0] > 0.0
+                delivered = rows[t][0] > zero_below
             elif gaps == "zero":
                 delivered = False
             else:
@@ -115,12 +118,16 @@ def availability(A, gaps="register", exclude="grid+owner", local_events=False, d
             if derate_unavailable and any(_overlaps(t, a, b) for a, b in w410):
                 U += 1
                 continue
+            if window_all and (any(_overlaps(t, a, b + dt.timedelta(minutes=grid_pad)) for a, b in A.grid) or
+                               any(_overlaps(t, a, b) for a, b in own)):
+                X += 1
+                continue
             if delivered:
                 continue
             if exclude == "none":
                 excl = False
             elif exclude == "grid+owner":
-                excl = any(_overlaps(t, a, b + dt.timedelta(minutes=10)) for a, b in A.grid) or \
+                excl = any(_overlaps(t, a, b + dt.timedelta(minutes=grid_pad)) for a, b in A.grid) or \
                     any(_overlaps(t, a, b) for a, b in own)
             elif exclude == "f217+owner":
                 excl = any(_overlaps(t, a, b) for a, b in f217) or any(_overlaps(t, a, b) for a, b in own)
@@ -133,7 +140,7 @@ def availability(A, gaps="register", exclude="grid+owner", local_events=False, d
                 X += 1
             else:
                 U += 1
-        out[tag] = dict(P=P, U=U, X=X, avail=100.0 * (1.0 - U / (P - X)))
+        out[tag] = dict(P=P, U=U, X=X, avail=100.0 * (1.0 - U / ((P - X) if denominator == "P-X" else P)))
     return out
 
 
@@ -150,6 +157,8 @@ def ask_a(folder):
         "S7 derate hours counted unavailable": availability(A, derate_unavailable=True),
         "S8 the hourly file's hour-ending stamps read as hour-beginning": availability(read_ask_a(folder, "begin")),
         "S9 the hourly file's UTC stamps read as Arizona time": availability(read_ask_a(folder, "utc")),
+        "S10 one less Unavailable over Production Hours, the Excluded Hours left in": availability(A, denominator="P"),
+        "S11 every Production Hour an outage or owner stop touches excluded, energy or not": availability(A, window_all=True),
     }
     return A, gold, stops
 

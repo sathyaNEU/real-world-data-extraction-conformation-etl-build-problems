@@ -249,6 +249,51 @@ def _block_asset(b):
     return "BLK%d" % (b + 1)
 
 
+def _cln_text(rc, n, done, annual):
+    """A wash work order's description as the crews type it into the CMMS: the block in whatever form, a few notes,
+    now and then a typo or a bare entry."""
+    pick = lambda xs: xs[int(rc.integers(0, len(xs)))]
+    blk = pick(["Block %d", "Blk %d", "BLK%d", "B%d", "blk %d", "block %d", "Blk%d"]) % n
+    if rc.random() < 0.06:
+        return pick(["%s wash" % blk, "WASH %s - see crew sheet" % blk, "cleaning %s" % blk, "%s" % blk,
+                     "wash %s, notes on daily log" % blk])
+    head = pick(["Full wash %s" % blk, "%s full module wash" % blk, "Module wash %s" % blk, "Wash %s complete" % blk,
+                 "%s washed, all rows" % blk, "PV module cleaning %s" % blk, "Cleaned %s modules" % blk,
+                 "%s wash - all tables" % blk, "Panel wash %s" % blk, "Washed %s" % blk])
+    notes = []
+    water = ["DI water", "DI trailer + 2 water trucks", "Well 2 water thru DI unit", "DI resin changed mid shift",
+             "TDS at nozzle %d ppm" % int(rc.integers(3, 10)), "brush tractor + DI rinse", "soft brush, no pressure washer",
+             "water truck #2 down, finished w/ #1", "DI unit alarm at 0545, reset", ""]
+    crew = ["crew of %d" % int(rc.integers(4, 9)), "%d techs + %d temp labor" % (int(rc.integers(2, 4)), int(rc.integers(2, 5))),
+            "night crew, started %02d:%02d" % (int(rc.integers(3, 5)), int(rc.integers(0, 4)) * 15),
+            "started 0%d%02d" % (int(rc.integers(3, 5)), int(rc.integers(0, 4)) * 15),
+            "done ~%s" % done.strftime("%H%M"), "finished by %s" % done.strftime("%H:%M"), ""]
+    seen = ["heavy dust on lower edge of modules", "bird droppings rows %d-%d" % (int(rc.integers(10, 40)), int(rc.integers(41, 80))),
+            "2nd pass on rows 1-%d (caked)" % int(rc.integers(8, 25)), "light dust only", "no damage found",
+            "1 module w/ broken glass row %d, tagged" % int(rc.integers(1, 100)),
+            "combiner %d door latch broken, reported" % int(rc.integers(1, 25)), "gate code changed by owner",
+            "wind came up, paused %d min" % int(rc.integers(2, 6) * 10), "access road soft, trucks slow",
+            "fence line weeds noted for VEG", "inverter pads hosed down", "", "", ""]
+    for pool in (water, crew, seen):
+        x = pick(pool)
+        if x:
+            notes.append(x)
+    if annual and rc.random() < 0.25:
+        notes.append(pick(["annual wash per sched 2", "Sched 2 annual", "1 blk/wk per well permit"]))
+    txt = head + (". " if rc.random() < 0.6 else ", ") + ", ".join(notes) if notes else head
+    if rc.random() < 0.08:
+        for a, b in (("wash", "wahs"), ("modules", "modlues"), ("complete", "compelte"), ("Block", "Blcok"),
+                     ("trailer", "trialer"), ("finished", "finsihed"), ("techs", "tecs")):
+            if a in txt:
+                txt = txt.replace(a, b, 1)
+                break
+    if rc.random() < 0.15:
+        txt = txt.upper()
+    elif rc.random() < 0.5:
+        txt = txt + "."
+    return txt
+
+
 def wo_rows(W):
     r = K.rng("work-orders")
     rows = []
@@ -262,14 +307,15 @@ def wo_rows(W):
     by_no = {}
     for no, b, d in W.wash_events:
         by_no.setdefault(no, []).append((b, d))
+    rc = K.rng("work-orders-cln")
     for no in sorted(by_no):
         for b, d in by_no[no]:
-            if no == 1:
-                txt = "Post-construction module wash, Block %d (handover)." % (b + 1)
-            else:
-                txt = wash_texts[int(r.integers(0, len(wash_texts)))].format(b=b + 1)
+            if no != 1:
+                r.integers(0, len(wash_texts))           # the export's first text draw, kept so later fields hold
             done = dt.datetime(d.year, d.month, d.day, int(r.integers(9, 12)), int(r.integers(0, 60)))
             made = done - dt.timedelta(days=int(r.integers(5, 15)), hours=int(r.integers(1, 7)))
+            txt = ("Post-construction module wash, Block %d (handover)." % (b + 1)) if no == 1 else \
+                _cln_text(rc, b + 1, done, d.year >= 2021)
             rows.append(["CLN", _block_asset(b), txt, made, done, round(float(r.uniform(38, 56)), 1),
                          TECHS[int(r.integers(0, 3))]])
     stage_by = {}

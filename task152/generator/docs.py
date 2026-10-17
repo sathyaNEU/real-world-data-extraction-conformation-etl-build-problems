@@ -125,7 +125,8 @@ POLICY = [
         "5.1 The desk brings each hedge year's volume to the treasurer in October with the workbook it rests on. The "
         "treasurer approves the volume or sets a lower one.",
         "5.2 Trades are executed by the energy and commodities manager or the treasurer and confirmed in writing by "
-        "the counterparty."]),
+        "the counterparty. The counterparty's confirmation, with any amendment to it, is the record of a trade's "
+        "quantity."]),
 ]
 
 
@@ -217,8 +218,7 @@ OM_S2 = [
     "2.2 The Contractor shall carry out further washes of one or more blocks at the Owner's written request, at the "
     "rate per block in Schedule 6.",
     "2.3 Washing uses deionized water drawn from the Facility's Well 2 under the Owner's groundwater permit, whose "
-    "weekly limit covers one block's wash. No further washes are requested or carried out while a drought restriction "
-    "on non-essential industrial water use applies to that permit.",
+    "weekly limit covers one block's wash.",
     "2.4 The Contractor shall clean the meteorological station's pyranometer domes and check their level at every "
     "site round, and in any case at least once a week."]
 OM_S4 = [
@@ -226,12 +226,15 @@ OM_S4 = [
     "of the Facility, and any inverter that replaces one of them; Production Hour means each clock hour, in Arizona "
     "time, in which the mean plane-of-array irradiance measured at the Facility's meteorological station is at least "
     "50 W/m2.",
-    "4.2 An Unavailable Hour of an Inverter is a Production Hour in which the Inverter delivers no AC energy, other "
-    "than an Excluded Hour. An Excluded Hour of an Inverter is a Production Hour in which the Inverter delivers no AC "
-    "energy because of (a) an outage, curtailment or instruction of the Utility's system; (b) a stop the Owner has "
-    "requested; or (c) Force Majeure.",
-    "4.3 The Availability of an Inverter for a Contract Year is one less the ratio of its Unavailable Hours to its "
-    "Production Hours less its Excluded Hours, expressed as a percentage to two decimal places.",
+    "4.2 An Inverter delivers no AC energy in a Production Hour when the AC energy recorded by its own energy register "
+    "for that hour is zero. A Production Hour in which the Inverter delivers any AC energy counts as a Production Hour "
+    "of operation, however little of the hour it ran. An Excluded Hour of an Inverter is a Production Hour in which "
+    "the Inverter delivers no AC energy because of (a) an outage, curtailment or instruction of the Utility's system; "
+    "(b) a stop the Owner has requested; or (c) Force Majeure, including a Production Hour that such an event covers "
+    "only in part. Every other Production Hour in which the Inverter delivers no AC energy is an Unavailable Hour.",
+    "4.3 The Availability of an Inverter for a Contract Year, as a percentage to two decimal places, is A = 100 x "
+    "(1 - U / (P - X)), where U is the Inverter's Unavailable Hours, P its Production Hours and X its Excluded Hours "
+    "in the Contract Year.",
     "4.4 The Contractor guarantees an Availability of each Inverter of at least 98.0 per cent in each Contract Year. "
     "For each Inverter below the guarantee the Contractor shall pay the Owner liquidated damages of $1,850 for each "
     "tenth of a percentage point, or part of one, by which its Availability falls short.",
@@ -266,7 +269,8 @@ EXHIBIT = [
         "C.1.1 The Revenue Meter is the District's meter 69R0417A at the 69 kV Point of Interconnection in the Hadley "
         "Ranch substation, service point 0417. It is a bidirectional revenue-class meter (accuracy class 0.2S) with "
         "two energy channels: REC, the energy the District receives from the Facility, and DEL, the energy the "
-        "District delivers to the Facility.",
+        "District delivers to the Facility. The Revenue Meter is the meter of record for all energy delivered and "
+        "received at the Point of Interconnection, for billing and settlement under this Agreement.",
         "C.1.2 The District tests the Revenue Meter every two years and after any repair. The Interconnection Customer "
         "may read the Revenue Meter's registers through its own SCADA by the meter's optical port and pulse "
         "outputs."]),
@@ -303,16 +307,17 @@ def write_exhibit(path):
 F_RIG = "corvane_fa-2026-114_hadley_ranch_side_by_side.pdf"
 RIG_TEXT = {
     "setup": [
-        "Two tables were set up at the north edge of block 3. Table A carries 18 Kellerman KS-315P modules (5.67 kWp) "
-        "taken unopened from the site's spares store, where they had been kept since 2015. Table B carries 12 "
-        "CV-450BHC bifacial modules (5.40 kWp) drawn from the production lot shipped for the replacement. Both tables "
-        "match the plant's tables in tilt (25 degrees), azimuth (south), height and row spacing.",
-        "Each table is one string on its own string inverter, with the DC energy at the inverter input logged every "
-        "five minutes. Both tables were washed every Monday. The plane-of-array irradiation in the table below is "
-        "the plant's meteorological station pyranometer."],
+        "Two test tables at the north edge of block 3, matching the plant's tables in tilt (25 degrees), azimuth "
+        "(south), height and row pitch. Table A: 18 Kellerman KS-315P modules, 5.67 kWp nameplate, from the site's "
+        "spares store, in the maker's sealed cartons since delivery in 2015. Table B: 12 CV-450BHC bifacial modules, "
+        "5.40 kWp front-side nameplate, sampled from the production lot shipped for the replacement.",
+        "Each table is wired as one string to its own string inverter. Tables installed in the week of September 22, "
+        "2025 and energized on September 30, 2025."],
     "modules": [
-        "The CV-450BHC modules were new at the start of the comparison, so its twelve months include their first-year "
-        "stabilization. The KS-315P modules on table A had no field exposure before October 1, 2025."],
+        "Procedure FTP-07. Modules installed as received, with no preconditioning or light soaking, and measured from "
+        "first field exposure. Both tables cleaned weekly (Mondays). DC energy logged at each string inverter's input at "
+        "five-minute intervals; plane-of-array irradiation from the plant's meteorological station pyranometer. "
+        "Measurement period October 1, 2025 to September 30, 2026."],
     "result": [
         "Over the twelve months table B delivered {gain:.1f} per cent more DC energy per kWp of nameplate than table A. "
         "The gain is highest from May to August, when the lower temperature coefficient of the CV-450BHC counts most, "
@@ -346,13 +351,13 @@ def write_rig(path, W):
     rows, tp, ta, tb = rig_figures(W)
     gain = 100.0 * (tb / ta - 1.0)
     s = [Paragraph("Corvane Solar (Americas) &middot; Field Applications &middot; Report FA-2026-114, issue 1", st["sub"]),
-         Paragraph("Side-by-side field comparison at Hadley Ranch Solar: CV-450BHC against unexposed KS-315P", st["h1"]),
+         Paragraph("Side-by-side field comparison at Hadley Ranch Solar: CV-450BHC and KS-315P", st["h1"]),
          Paragraph("October 1, 2025 to September 30, 2026. Issued October 2, 2026 by %s, Field Test Engineer, for "
                    "Marden-Vail Building Products." % K.PEOPLE["test"], st["sub"]),
          Paragraph("1&nbsp;&nbsp;Setup", st["h2"])]
     for p in RIG_TEXT["setup"]:
         s.append(Paragraph(esc(p), st["body"]))
-    s.append(Paragraph("2&nbsp;&nbsp;Modules", st["h2"]))
+    s.append(Paragraph("2&nbsp;&nbsp;Test conditions", st["h2"]))
     for p in RIG_TEXT["modules"]:
         s.append(Paragraph(esc(p), st["body"]))
     s.append(Paragraph("3&nbsp;&nbsp;Monthly results", st["h2"]))
@@ -596,8 +601,9 @@ def readme_text(W):
           "- `%s`: the service points on the account." % R.F_SP,
           "- Channels are named from the district's side: REC is the energy the district received from the service "
           "point, DEL the energy it delivered to it.",
-          "- The district's files are the meter of record (interconnection agreement, Exhibit C). The SCADA's "
-          "`PLANT-RM` points are the control room's own read of the same meter and stop when the SCADA does.", "",
+          "- The district's revenue meter at service point 0417 is the meter of record (interconnection agreement, "
+          "Exhibit C); these files are the district's reads of it. The SCADA's `PLANT-RM` points are the control "
+          "room's own read of the same meter and stop when the SCADA does.", "",
           "## Desk", "",
           "- `%s`: the desk's blotter of Hadley Ranch forward trades, quantities as traded." % R.F_BLOTTER,
           "- `%s`: Westmark's confirmations." % F_CONF,

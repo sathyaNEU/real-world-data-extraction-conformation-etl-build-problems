@@ -288,11 +288,18 @@ def excel_dialect(items, key, app_version="16.0300", company=None):
     return [(nm, parts[nm]) for nm in order]
 
 
+def _saved_at(modified):
+    """The zip entries' stamp: the document's last save in Arizona time (MST, UTC-7), from its modified stamp, so the
+    container dates agree with the properties and two builds of the same content stay byte-identical."""
+    import datetime as _dt
+    t = _dt.datetime.strptime(modified, "%Y-%m-%dT%H:%M:%SZ") - _dt.timedelta(hours=7)
+    return (t.year, t.month, t.day, t.hour, t.minute, t.second - t.second % 2)
+
+
 def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False, company=None):
     """created and modified as ISO stamps (UTC, ending Z). Entries keep their names and order (a workbook's
-    take Excel's, with its strings shared and an XML declaration on every part); every entry gets the 1980
-    stamp Office writes, so two builds of the same content are byte-identical. excel=True also rewrites a
-    workbook's parts in Excel's own dialect (excel_dialect)."""
+    take Excel's, with its strings shared and an XML declaration on every part); every entry carries the document's
+    last save (_saved_at). excel=True also rewrites a workbook's parts in Excel's own dialect (excel_dialect)."""
     ext = path[path.rfind("."):]
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
@@ -321,7 +328,7 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
             out = excel_dialect(out, key=path.replace("\\", "/").rsplit("/", 1)[-1], company=company)
     with zipfile.ZipFile(path, "w") as z:
         for name, data in out:
-            zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            zi = zipfile.ZipInfo(name, date_time=_saved_at(modified))
             zi.compress_type = zipfile.ZIP_DEFLATED
             if excel:
                 zi.create_system = 0
@@ -622,7 +629,7 @@ def normalize_docx(path, creator, last_by, created, modified, revision, total_ti
     assert created.endswith(":00Z") and modified.endswith(":00Z"), (created, modified)
     with zipfile.ZipFile(path, "w") as z:
         for name in parts:
-            zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            zi = zipfile.ZipInfo(name, date_time=_saved_at(modified))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.create_system = 0
             z.writestr(zi, data[name].encode("utf-8") if isinstance(data[name], str) else data[name])

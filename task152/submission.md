@@ -6,7 +6,7 @@
 ## 1. Final Recommendation
 
 **Sell 70,000 MWh of Hadley Ranch Solar's 2027 output forward: the one-year P90 of the plant with its new modules, rounded down to the nearest 1,000 MWh.**
-The P50 is 73,000 MWh with a standard deviation of 1,900 MWh over the 25 weather years. Not the last twelve months carried onto the new modules with the side-by-side gain, which keeps the original modules' wear that the replacement removes and files 60,000 MWh; not the plant's first year carried with the gain, nor its whole DC-side decline restored, which bring back the inverters' losses or the dust carried between washes that the plant keeps and file 76,000 and 73,000 MWh.
+The P50 is 73,000 MWh with a standard deviation of 1,900 MWh over the 25 weather years. Not the last twelve months carried onto the new modules with the side-by-side gain, which keeps the original modules' wear that the replacement removes; not the plant's first year carried with the gain, nor its whole DC-side decline restored, which bring back the inverters' losses or the dust carried between washes that the plant keeps.
 
 ## 2. Critical Components
 

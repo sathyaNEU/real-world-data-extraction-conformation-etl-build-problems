@@ -266,7 +266,10 @@ def run(target, golden, B=None, G=None, meta_path=None):
     g135 = A.p90_of(A.PR_B * (1 + G["gain_pct"] / 100.0) / A.wear)
     ok("SF11 the gain as the report's totals, its stated per cent or its monthly mean: same volume",
        floor_k(g135) == vol and floor_k(pm) == vol)
-    ok("SF12 the report says its twelve months include the new modules' first year", "first-year" in texts[DOC.F_RIG])
+    rig_flat = re.sub(r"\s+", " ", texts[DOC.F_RIG])
+    ok("SF12 the report's test conditions: modules measured from first field exposure (the new modules' first year "
+       "inside the twelve months), table A's from sealed cartons since 2015",
+       "measured from first field exposure" in rig_flat and "sealed cartons since delivery in 2015" in rig_flat)
     ok("SF13 the new nameplate is the scope's (no flash list ships)", not any("flash" in f for f in os.listdir(target)))
     peak, clip_hours, clip_share = 0.0, 0, 0.0
     for y in range(2001, 2026):
@@ -332,8 +335,22 @@ def run(target, golden, B=None, G=None, meta_path=None):
     Aa, ga, sa = G["askA"]
     for k, st in sa.items():
         miss = sum(1 for t in ga if round(st[t]["avail"], 2) != round(ga[t]["avail"], 2))
-        need = {"S1": 16, "S2": 16, "S3": 16, "S4": 14, "S5": 14, "S6": 12, "S7": 1, "S8": 16, "S9": 16}[k[:2]]
+        need = {"S1": 16, "S2": 16, "S3": 16, "S4": 14, "S5": 14, "S6": 12, "S7": 1, "S8": 16, "S9": 16, "S10": 4,
+                "S11": 4}[k.split()[0]]
         ok("ASK A stop %s misses %d of 16" % (k, miss), miss >= need)
+    s4 = re.sub(r"\s+", " ", " ".join(DOC.OM_S4))
+    ok("ASK A Schedule 4 states its readings: the formula with its denominator, zero AC energy, a part-hour of "
+       "operation, a part-covered Excluded Hour (S10 and S11 are the readings it closes)",
+       "A = 100 x (1 - U / (P - X))" in s4 and "is zero" in s4 and "however little of the hour it ran" in s4
+       and "only in part" in s4)
+    same_a = []
+    for kw in (dict(zero_below=1.0), dict(zero_below=5.0), dict(grid_pad=0), dict(grid_pad=30)):
+        st_ = AS.availability(Aa, **kw)
+        same_a.append(all(round(st_[t]["avail"], 2) == round(ga[t]["avail"], 2) for t in ga))
+    small = min(Aa.hours[t][h][0] for t in Aa.hours for h in Aa.prod if h in Aa.hours[t] and Aa.hours[t][h][0] > 0)
+    ok("ASK A the readings that change nothing: an hour under 1 or 5 kWh read as none, the district's restoration "
+       "read with 0 or 30 minutes for the inverters to reconnect (the smallest delivering Production Hour is %.1f kWh)"
+       % small, all(same_a), same_a)
     ok("ASK A every availability clear of its rounding edge", all(abs(((ga[t]["avail"] * 100) % 1) - 0.5) > 0.001 for t in ga))
     lines25 = [e for e in W.events if e["cause"] == "line" and e["start"].year == 2025]
     f217 = [e for e in Aa.events if e["code"] == "F-217"]
@@ -371,7 +388,7 @@ def run(target, golden, B=None, G=None, meta_path=None):
     Bb, gb, sb = G["askB"]
     for k, st in sb.items():
         miss = sum(1 for y in gb if AS.rnd(st[y]) != AS.rnd(gb[y]))
-        need = {"S1": 9, "S2": 9, "S3": 2, "S4": 2, "S5": 2, "S6": 4, "S7": 1, "S8": 1}[k[:2]]
+        need = {"S1": 9, "S2": 9, "S3": 2, "S4": 2, "S5": 2, "S6": 4, "S7": 1, "S8": 1}[k.split()[0]]
         ok("ASK B stop %s misses %d of 10" % (k, miss), miss >= need)
     ok("ASK B every year clear of its rounding edge by more than the data's 0.1 kWh resolution",
        all(abs((abs(gb[y]) % 1) - 0.5) > 0.001 for y in gb), min(abs((abs(gb[y]) % 1) - 0.5) for y in gb))
@@ -382,6 +399,9 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ok("ASK B device B1: service point 0418 carries DEL rows only until April 17, 2024",
        max(d for sp, ch, d, k, rt, v in Bb.mdm if sp == "0418") < K.STATION_SERVICE_END)
     ok("ASK B device B2: the confirmations amend 2021 and 2024", len(Bb.amend) == 2)
+    ok("ASK B the policy makes the confirmation, as amended, the record of a trade's quantity (5.2); the blotter "
+       "as booked is stop S3", "is the record of a trade's quantity" in pol and
+       any(k.startswith("S3 ") for k in sb))
     # the cracker: landed the call, ran the battery (dedup versions, the overlap), executed every filed rule
     crackA = sa["S4 every F-217 hour excluded, gaps read through the register"]
     crackB = sb["S2 the whole account netted"]

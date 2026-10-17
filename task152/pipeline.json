@@ -9,7 +9,7 @@
   "updated": "2026-10-17",
   "stump": "Carrying the plant's last twelve months' performance ratio onto the new modules with the side-by-side gain files 60,000 MWh against the golden 70,000; restoring the plant's whole decline since 2016 (76,000), its whole DC-side decline (73,000) or its decline after washes read at the inverters' AC output (72,000) overshoots; the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on the days after each block's wash at the inverters' DC input and corrected for temperature, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
   "architecture": 1,
-  "loops": 1,
+  "loops": 2,
   "precut": {
     "exit": 0,
     "date": "2026-10-17"
@@ -24,12 +24,12 @@
   },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (round 1, optional pins taken)",
-    "report": "determinism_check_report_round1.md",
-    "round2": "pending: one re-judge of the hardened build"
+    "disposition": "FIX_NOW on the solution (round 2): the Final Recommendation's whole-DC-decline rival figure did not reproduce; fixed by dropping every rival figure from the graded blocks",
+    "report": "determinism_check_report.md (round 2); determinism_check_report_round1.md (round 1, APPROVE)",
+    "round2": "DETERMINISTIC, FIX_NOW solution only; every main and ask figure reproduced"
   },
   "returned": [],
-  "resume": "stage 4: the coordinator's single re-judge of the round-2 build, then stage 5 ship",
+  "resume": "stage 4: the coordinator's targeted re-read of the round-2 documents, then stage 5 ship",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -38,15 +38,16 @@
   "portal_status_date": "",
   "wave": "wave 4 (new), seed FC23 (world, decision and quantity kept; pitfall re-found from the plant's monitoring records)",
   "gates_stage3": {
-    "checks": "198 of 198",
+    "checks": "203 of 203",
     "verify": "green",
     "rebuild": "two builds byte-identical (target, golden, metadata, figures.json, submission.md, target.zip)",
-    "figures_check": "exit 0, 62 figures",
+    "figures_check": "exit 0, 59 figures",
     "container": "clean on target and golden",
     "voice_check": "PASS",
     "precut": "exit 0, 49 checks",
     "guard": "check WARN overuse.objective (task151, task190 and task464 cards from origin read, no BLOCK); validate clean; heart WARN; surface one promoted pair on the differentiated card signature (task232), no surface clone",
-    "input_gates": "23 files, 6 formats, largest 219,144 rows, 2 distractors"
+    "input_gates": "23 files, 6 formats, largest 219,144 rows, 2 distractors",
+    "freeze": "determinism mode: only block 1's three rival figures removed (requested); figures.json 237 keys identical"
   },
   "rule3_audit": "PASS (round 1); its accidental landers moved a bin or more away and asserted (LADDER, SF10b)",
   "hardening_round2": "world laws reset once: six-wash era in the cool months, December wash a block a week from 2021, wear fast phase 3.85%/yr mid-2017 to mid-2020, seasonal wind, spring dust from February, clear-sky year spread 1.33%; corridor of 31 constructions (window, estimator, reference, temperature correction incl. NOCT, regressions and first-order forms) each 284 MWh or more inside the volume's and the P50's bins; every rival 300 MWh or more outside (nearest 443)",
@@ -62,5 +63,6 @@
     "rung1": "76,000 (76,520)",
     "ask_a": "16 availabilities re-drawn, 96.70 to 99.82",
     "ask_b": "10 over/unders re-drawn, -2,923 to +10,084"
-  }
+  },
+  "round2_fixes": "rival figures out of the graded blocks; O&M 2.3 drought clause dropped (well permit kept); Exhibit C C.1.1 states the meter of record; wash work orders as varied CMMS entries (own stream); office zip entries stamped with each document's last save; Corvane method as standard test conditions; policy 5.2 makes the amended confirmation the trade's record; Schedule 4.2 and 4.3 rewritten (zero AC energy, part hours, A = 100 x (1 - U / (P - X))); no graded figure moved (freeze.py: only the three rival numbers left block 1; figures.json identical)"
 }

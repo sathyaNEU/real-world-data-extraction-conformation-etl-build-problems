@@ -342,13 +342,9 @@ def write_submission(path, G):
          "modules, rounded down to the nearest 1,000 MWh.**" % vol,
          "The P50 is %s MWh with a standard deviation of %s MWh over the 25 weather years. Not the last twelve months "
          "carried onto the new modules with the side-by-side gain, which keeps the original modules' wear that the "
-         "replacement removes and files %s MWh; not the plant's first year carried with the gain, nor its whole "
-         "DC-side decline restored, which bring back the inverters' losses or the dust carried between washes that "
-         "the plant keeps and file %s and %s MWh." % (
-             format(G["P50_r"], ","), format(G["SD_r"], ","),
-             format(int(G["routes"]["R0 the last twelve months carried with the gain"] // 1000) * 1000, ","),
-             format(int(G["routes"]["R1 the first year carried with the gain"] // 1000) * 1000, ","),
-             format(int(G["routes"]["R2 the DC-side decline on available days"] // 1000) * 1000, ",")), "",
+         "replacement removes; not the plant's first year carried with the gain, nor its whole DC-side decline "
+         "restored, which bring back the inverters' losses or the dust carried between washes that the plant keeps."
+         % (format(G["P50_r"], ","), format(G["SD_r"], ",")), "",
          "## 2. Critical Components", "",
          "1. The original modules' own wear since 2016: the DC energy per kWp per unit of plane-of-array irradiation at "
          "the inverters' DC input, temperature-corrected, on the days after each block's wash, is **%d%%** lower after "

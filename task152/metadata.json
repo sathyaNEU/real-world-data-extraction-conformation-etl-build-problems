@@ -46,7 +46,7 @@
     {
       "path": "README.md",
       "format": "md",
-      "bytes": 5656,
+      "bytes": 5729,
       "rows": null,
       "source": "Constructed: Marden-Vail Building Products, README for the data pull",
       "date": "2026-10-06",
@@ -64,7 +64,7 @@
     {
       "path": "corvane_fa-2026-114_hadley_ranch_side_by_side.pdf",
       "format": "pdf",
-      "bytes": 42966,
+      "bytes": 42992,
       "rows": null,
       "source": "Constructed: Corvane Solar, field applications report FA-2026-114",
       "date": "2026-10-06",
@@ -118,7 +118,7 @@
     {
       "path": "marden-vail_energy_risk_policy_rev4.pdf",
       "format": "pdf",
-      "bytes": 45288,
+      "bytes": 45343,
       "rows": null,
       "source": "Constructed: Marden-Vail Building Products, treasury energy risk policy, revision 4",
       "date": "2026-10-06",
@@ -172,7 +172,7 @@
     {
       "path": "tresco_om_agreement_2021_schedules_2_and_4.pdf",
       "format": "pdf",
-      "bytes": 42250,
+      "bytes": 42370,
       "rows": null,
       "source": "Constructed: Tresco Field Services and Marden-Vail Building Products, O&M agreement schedules 2 and 4",
       "date": "2026-10-06",
@@ -190,7 +190,7 @@
     {
       "path": "tresco_work_orders_hadley_ranch_2015-2026.xlsx",
       "format": "xlsx",
-      "bytes": 73531,
+      "bytes": 75705,
       "rows": 1396,
       "source": "Constructed: Tresco Field Services, CMMS work order export for Hadley Ranch Solar",
       "date": "2026-10-06",
@@ -235,7 +235,7 @@
     {
       "path": "vsipd_lgia_hadley_ranch_exhibit_c_metering.pdf",
       "format": "pdf",
-      "bytes": 44666,
+      "bytes": 44737,
       "rows": null,
       "source": "Constructed: Vado Seco Irrigation and Power District, interconnection agreement exhibit C (metering)",
       "date": "2026-10-06",
