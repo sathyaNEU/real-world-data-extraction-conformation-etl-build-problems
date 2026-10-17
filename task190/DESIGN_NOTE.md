@@ -1,317 +1,360 @@
 # task190 design note
 
-Pencarrow Mutual Bank, financial crime: which three business lines the two-week specialist review
-team covers from 15 February 2027.
+Arahura Bank, financial crime: how many of the cash deposits its business customers paid in during the
+year to 30 June 2027 were split to stay below the prescribed transaction threshold, segment by segment,
+for the annual AML/CFT report filed on 30 September 2027.
+
+Architecture 2. Architecture 1 is spent and nothing of it is carried (`## Tried and rejected`, last entry).
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task190.json`, filed and committed with the wave |
+| Card | `.claude/skills/fingerprint/cards/task190.json`, architecture v2, registered 2026-10-17, WARN |
 | Domain, task type | Banking, Credit & Financial Risk, `fraud-aml-detection` |
-| Objective | Anomaly Detection & Diagnostics (the caseload a line is carrying unseen, against the caseload it is finding) |
-| Shape | 09, funnel of stages: each stage's volume, rate and cost |
-| Decision | `designation_set`, the three business lines the review covers |
-| Gate G | `method_or_model_selection`; decisive generator G3 record against operation, then G8, G7 |
-| Strategy | `maturity_censoring`: the quantity is the part of the caseload that has not yet been detected |
-| Layer 2 | `estimation_fit`, own pattern `stock-from-arrivals-and-time-unseen` |
-| World | New Zealand, a retail and business bank; NZD |
-| As-of date | 18 January 2027 (the extract date; the team is booked for 15 to 26 February 2027) |
-| Guard | registered at WARN; differentiated against task450, task126 and task181 in the card |
+| Objective | Anomaly Detection & Diagnostics (a real signal separated from the background it sits in) |
+| Shape | 05, allocation to a fixed total: each segment is a bucket of the book's figure |
+| Decision | `quantity_figure`, a count of deposits, with each segment's share of it |
+| Gate G | `signal_vs_noise_or_hold`; decisive generator G6, then G16 and G12 |
+| Strategy | `other`: the band's mass separated into the background the segment's own trade produces and the excess over it |
+| Layer 2 | `estimation_fit`, own pattern `own:excess-over-the-size-profile-a-cash-book-ordinarily-shows` |
+| World | New Zealand, a retail and business bank, NZD |
+| Window, as-of | the reporting year 1 July 2026 to 30 June 2027; every extract pulled 19 July 2027 |
+| Spine | `cash_deposit_detail_2027.csv`, 45,304 rows, one physical cash deposit |
+| Guard | WARN: `overuse.objective` and `repeat.deliverables`, both answered below |
 
-**Data-native sentence.** In this bank's record a case is dated twice, by the month the activity began,
-which the investigation establishes afterwards, and by the month someone first saw it, and the gap
-between the two runs from under a month on the card and payment lines to a year and a half on trade
-finance and correspondent banking, because the lines differ in how a case surfaces: a card case
-surfaces when a customer disputes a transaction, a trade finance case only when a document review or
-a counterparty enquiry reaches it.
+**Data-native sentence.** In this bank's record a cash deposit's size is a day's or two days' takings, so
+each segment's deposit sizes form a smooth profile with its own slope (grocery and fuel fall away as the
+amount rises, transport and personal services rise through the same range), and that profile is what makes
+the thousand dollars below the reporting threshold readable: the number of deposits a segment's ordinary
+trade puts in that thousand is fixed by the rest of its own profile, and the deposits placed there on
+purpose are the amount above it.
+
+**Guard WARNs answered.** `overuse.objective`: the slot keeps anomaly detection because the re-root brief
+fixes its number and objective; the draw varies every other axis, including the shape (05, never used in
+the last twelve), the decision type and the strategy. `repeat.deliverables`: the png and xlsx pair is
+shared with task193 v1, and the chart earns its place here because the decision is a split of one total
+across eight buckets, which reads at a glance as bars and not as a table; the workbook carries the figures
+the report files and the chart carries the split, so neither is decoration.
 
 **Sources read.** `analytical_tasks/02_anomaly_detection/AD13_hunt-placement-unmanaged-entry-yield.md`
-(seed): the decision shape only, one scarce specialist team placed with one part of an organisation
-for a fixed spell, scored on what it would find. Its own architecture ranks the parts by a filed
-scorecard on confirmed movement per 1,000 accounts, a stated score deciding the call, and is not used:
-no scorecard, league table or ranked artifact ships. `guard.py mechanisms --objective
-anomaly-detection`: 22 spent drivers; the nearest, task181 v2 in lineage, completes a count whose
-records have not all arrived, where here every record has arrived and the count is right, and the
-decisive quantity is a different one.
+(seed): nothing is taken from it in architecture 2, not even the decision shape, which was architecture 1's
+and is retired with it. `guard.py mechanisms --objective anomaly-detection`: 28 spent drivers, each read
+and one line written. The nearest on file are task446 v2 (a screen's yield carried across years through its
+two error rates) and task448 (a list's capture measured on an overlap and carried to the unregistered by
+route), and both correct a measuring instrument with its own measured performance; here no instrument is
+corrected and nothing is carried anywhere, because the quantity is one period's mass separated into a
+background and an excess, both of which the same record holds. `guard.py nearest` puts the driver at 0.11
+against task445 v1 and 0.07 against the next two, the lowest of any build on the objective.
 
 ## Default path
 
-1. Read `alert_adjudication_extract.csv` and `confirmed_case_register.csv`, crosswalk the customer
-   identifiers through `customer_id_crosswalk.csv`, and map each case to the business line in force in
-   the review year from `line_structure_register.csv`.
-2. Keep the cases the handbook counts as cases: one case per customer per typology, the confirmed
-   disposition, the latest version of each record.
-3. Count each line's confirmed cases over the last two quarters, the window the framework's review
-   clause names.
-4. Read the framework's placement clause, which sends the review where the most cases are expected to
-   be found, and take the three lines with the most confirmed cases.
-5. Write those three lines into the committee paper with their case counts.
+1. Read `cash_deposit_detail_2027.csv` and `business_customer_register.csv`, carry the deposit system's
+   customer numbers through `customer_number_crosswalk.csv`, and take each customer's segment from the
+   register, applying the April 2027 code reissue so the eight segments are the handbook's eight.
+2. Keep physical cash deposits paid in during the reporting year, drop the two reversals, map AR11's
+   November deposits onto AR12 from the branch register, and read the machine feed's timestamps as the
+   deposit dates the counter feed already carries.
+3. Read clause 7.4 of `aml_programme_handbook.pdf`: the report states, for each business segment, the cash
+   deposits of 9,000 dollars or more and below 10,000 dollars that were paid in below the prescribed
+   transaction threshold when the amount would otherwise have been at or above it.
+4. Build the split: for each customer and each day, where two or more cash deposits none of which reaches
+   the threshold together reach it, the deposits in the band on that day were split below it.
+5. Count those deposits by segment and total them into the committee paper.
 
-**Ends on:** Cards, Deposits and Retail payments.
-**Golden:** FX and remittance, Business lending and Trade finance.
+**Ends on:** 1,223 deposits split, with grocery and convenience the largest segment at 356.
+**Golden:** 400 deposits split, with transport and courier the largest segment at 90.
 
 ## Stump sentence
 
-The default path ranks the lines on the cases they confirm in a quarter and files **Cards, Deposits
-and Retail payments**, which is the three lines where cases are found fastest rather than the three
-carrying the most cases unfound: those three confirm 96, 93 and 142 cases over the two quarters
-clause 6.5 names and are expected to be carrying 19.2, 18.7 and 20.5, because a card or payment case
-is seen within a month of beginning, while trade finance confirms 27 and is expected to be carrying
-36.9, its cases going 9.0 months before anyone sees them.
+The default path builds the split out of the customer's own day, counting every band deposit on a day the
+customer's cash reached the threshold over more than one deposit, and files **1,223**, which is the number
+of band deposits belonging to businesses that pay their takings in more than once a day, because a grocery
+or a service station reaches ten thousand dollars of cash on an ordinary Saturday without anyone choosing
+an amount; the number placed below the threshold on purpose is the amount by which the band exceeds what
+each segment's own deposit-size profile away from the band produces, 400.
 
 ## Three rules
 
 - **Task type:** `fraud-aml-detection`, the task type in Banking, Credit & Financial Risk that serves
-  Anomaly Detection: where in a book real activity is going undetected, and how much of it.
-- **Domain test:** the deciding quantity is the undetected caseload each business line is carrying,
-  which financial-crime analytics estimates as the rate at which cases arise multiplied by the time a
-  case goes unseen, both read off the line's own resolved cases, and never from the confirmation count
-  alone, which is an arrival rate.
-- **Swap:** "which three depots the audit team visits, ranked by the stock discrepancies they confirm
-  each quarter" reads as a ranking of counted findings: a stocktake sees the whole shelf at a known
-  moment, so there is no time a discrepancy spends unseen to multiply by, and the stock and the flow
-  are the same number.
-- **Layer 1:** the bank's own systems produce all of it. The alert system and the case system number
-  customers differently and a crosswalk carries both; two business lines were merged and one renamed in
-  the July 2026 reorganisation, with the register carrying the effective dates; a case is amended, so
-  the register holds two versions; amounts sit in NZD and AUD with a currency column; the customer base
-  arrives as a wide workbook with a header block; the contractor's ledger and the screening list
-  versions are tables inside PDFs. None of it is placed to be caught and none of it decides the
-  call.
-- **Layer 2:** `estimation_fit`. The methodological choice is what quantity a scarce reviewer's yield
-  is: the arrival rate the confirmations measure, or the stock those arrivals have built up at the rate
-  they are being found.
-- **Decisive step:** estimating each line's undetected caseload as its monthly arrival rate multiplied
-  by the mean time a case goes unseen there, rather than ranking the lines by what they confirm.
-- **Not semantics:** the handbook states what the onset month and the detection month of a case are and
-  the dictionary gives both fields, so the reading is free. A solver who reads every field correctly
-  still has to decide which quantity the placement turns on, and the confirmation count, the count per
-  thousand customers, the unreviewed backlog and the time unseen each name a different three lines.
-- **Not rule application:** the framework's clause 6.2 files what is wanted, the cases that have begun
-  in a line and that nobody has yet seen at the review date, clause 6.4 the three-line capacity and
-  clause 2.3 what a case is. No shipped sentence says how that count is arrived at: nothing names a
-  rate, a stock, a duration, a projection or a record to estimate from, and a word sweep over every
-  shipped file asserts it, `closed record` included. Clause 6.3 states that the bank's own look-back of
-  2021 to January 2024 is closed, which is a fact about the bank's governance and says nothing about
-  using those months for anything. Executing every stated rule leaves the solver holding two date
-  columns and a question about which quantity the placement turns on.
-- **Analyst test:** a strong analyst who crosswalks every identifier, applies the reorganisation dates
-  and the case definition correctly and reads the placement clause ranks the lines on confirmed cases a
-  quarter and files Cards, Deposits and Retail payments (the `Ends on:` set), where the three carrying
-  the most undetected cases are FX and remittance, Business lending and Trade finance. `checks.py` runs
-  that route on the generator's clean truth and asserts it files the named set, then changes the
-  decisive step alone and asserts the golden.
-- **Estimand:** clause 6.2 of `financial_crime_framework.pdf`: "The review is placed with the business
-  lines expected to be carrying the most cases that have begun and that no one at the bank has yet seen
-  at the review date, counting one case per customer per typology as paragraph 2.3 defines it. A case
-  is no longer within this count once anyone at the bank has seen the activity it is about, which is
-  the first seen month the investigation handbook defines, and not once it is confirmed. A case that
-  has begun and that no one has yet seen is within this count whether or not the bank yet holds a
-  record of it." The population, the outcome, the window, the unit and what ends membership are all
-  there; how the expectation is formed is not, and that is the analysis. The handbook adds the one
-  sentence that makes membership at a month end literal, "A case seen in the month it began was never
-  carried unseen past any month end".
-- **No decoy:** nothing is planted to be caught. No scorecard, league table, ranked artifact, draft
-  paper, memo or stakeholder figure ships; no block is copied; the two lines whose stock and flow
-  rankings agree agree because their cases surface quickly, which is the data's own consequence.
-- **No certified replay:** no past placement, no published yield and no certified figure ships, so no
-  method can be recovered by reproducing one. The method is forced by the data: the register's closed
-  cohorts carry both dates for every case, and the cohort-survival sum and the arrivals-times-time
-  product agree on all eight lines and on the three-line set.
-- **Lesson:** what a scarce reviewer will find is a stock, and a stock is an arrival rate multiplied by
-  how long an item stays in the state, so a unit that resolves its cases quickly can confirm the most
-  and carry the least. No build on file teaches it: the 22 anomaly-detection drivers include a count
-  read before its records have arrived (task181 v2, in lineage) and a yield carried onto a population
-  with another base rate (task446 v2), but none has a correct, complete count that is the wrong
-  quantity because the state it counts is one the items leave.
+  Anomaly Detection: whether activity in the book is being shaped to stay out of a report, and how much.
+- **Domain test:** the deciding quantity is the incidence of structuring, which financial-crime analytics
+  estimates as the mass of deposits standing below a reporting threshold in excess of the mass the
+  depositor's ordinary size distribution away from the threshold implies, never as the count of deposits
+  that sit below it or as the output of a same-day aggregation screen, which is a referral tool and not an
+  estimate.
+- **Swap:** "how many of the hospital's admissions in the year were recorded below the four-hour target so
+  that no breach would arise" reads as a count of admissions just under four hours: nobody is choosing the
+  size of an admission to stay under a reporting duty, no reporting duty attaches to a size, and there is
+  no ordinary size profile for the mass below the line to be in excess of, so the quantity collapses into
+  the count and the task has nothing to estimate.
+- **Layer 1:** the bank's own systems produce all of it, and none of it decides the call. The counter feed
+  carries one row per deposit and the machine feed one row per envelope with its own sequence; the deposit
+  system numbers customers differently from the customer master and a crosswalk carries both; AR11 closed
+  into AR12 on 27 November 2026 and AR12 was renamed the same day, with the effective dates in the branch
+  register; the bank's segment map was reissued on 6 April 2027 and the register holds the old code and the
+  new one; the machine feed stamps in UTC while the counter feed stamps in local time, across the September
+  daylight saving change; the prescribed-transaction extract ships as a preliminary and a revised file
+  overlapping by six weeks; the vendor's service report is a table inside a PDF.
+- **Layer 2:** `estimation_fit`. The methodological choice is what the mass standing in the thousand below
+  the threshold is made of: all of it, the part a same-day screen picks out, or the part in excess of the
+  background each segment's own profile produces.
+- **Decisive step:** estimating the background, that is the number of deposits each segment's ordinary trade
+  puts in the band, from the segment's own deposit-size profile away from the band, and taking the excess
+  over it as the figure.
+- **Not semantics:** clause 7.4 gives the band, the window, the unit and the outcome in one sentence and the
+  dictionary gives every field, so nothing turns on a reading. A solver who reads every field and every
+  clause correctly still has to decide what evidence tells it which deposits in the band would have been
+  made there anyway, and the same-day screen, the customer's own habit, the customer's own prior year and
+  the segment's own profile each give a different number: 1,223, 1,077, 2,054 and 400.
+- **Not rule application:** clause 7.4 files what is counted and nothing else. No shipped sentence names a
+  profile, a background, an excess, a distribution, a histogram, a bin, a fit, a trend or a comparison;
+  nothing describes a same-day aggregation screen either, so the default path is the solver's own
+  construction and not an executed procedure. A word sweep over every shipped file asserts it. Executing
+  every stated rule leaves the solver holding a band, a definition and a question about what the band is
+  made of.
+- **Analyst test:** a strong analyst who carries every customer number through the crosswalk, applies the
+  branch merger and the April code reissue, converts the machine feed's stamps and reads clause 7.4 exactly
+  builds the same-day screen and files 1,223 (the `Ends on:` figure), where the number of deposits placed
+  below the threshold on purpose is 400. `checks.py` runs that route on the generator's clean truth and
+  asserts it files 1,223, then changes the decisive step alone and asserts 400.
+- **Estimand:** clause 7.4 of `aml_programme_handbook.pdf`: "The annual report states, for each business
+  segment, the number of physical cash deposits of 9,000 dollars or more and below 10,000 dollars that the
+  segment's customers paid in during the reporting year and that were paid in below the prescribed
+  transaction threshold when the amount would otherwise have been at or above it. The count is of deposits,
+  one for one, and not of customers or of days; a deposit is counted in the reporting year in which it was
+  paid in; every customer on the business register at the end of the reporting year is within its segment's
+  count." Population, outcome, window, unit and comparison are all there; how the number that would
+  otherwise have been at or above the threshold is arrived at is not, and that is the analysis.
+- **No decoy:** nothing is planted to be caught. No scorecard, league table, ranked artifact, draft paper,
+  memo or stakeholder figure ships; no block is copied; no screen, flag or indicator ships that the solver
+  is meant to distrust. The segments whose band mass is largest are largest because their ordinary takings
+  are that size, which is the data's own consequence and not a defect.
+- **No certified replay:** no past figure for this quantity ships. The prior annual report states the
+  prescribed transaction reports filed and the cash paid in, neither of which any method of this figure
+  reproduces, and no closed or certified number is reproduced by any route on the ladder.
+- **Lesson:** a mass standing on one side of a line is a background plus an excess, and the background is
+  fixed by the shape of the same record away from the line, so a screen that selects the whole mass measures
+  how much ordinary activity sits there. No build on file teaches it: of the 28 drivers on this objective
+  two correct an instrument with its own measured error rates (task446 v2, task448) and none separates an
+  observed mass into what the unit's own distribution away from it implies and the excess over that.
+
+**The WHAT screen (`stumping` 1.2), run at the draw and answered here.** Architecture 1 died on this
+screen three times, so it is answered part by part before anything else.
+
+The decisive step is: *estimate the number of deposits each segment's ordinary trade puts in the band
+from the segment's own deposit-size profile away from the band, and take the excess over it.*
+
+| Part of the estimand | What it is fixed to | The sentence that files it | Does the decisive step settle it? |
+|---|---|---|---|
+| Population | the physical cash deposits of 9,000 or more and below 10,000 that the segment's customers paid in during the reporting year | clause 7.4, first sentence, and its closing clause putting every customer on the business register at year end inside its segment's count | No. Every member is on the register and every deposit is in the feeds; nothing is unobserved, censored or still to arrive, and the step adds and removes nobody. |
+| Outcome | the deposit was paid in below the threshold when the amount would otherwise have been at or above it | clause 7.4, first sentence | No. The step does not change what is being counted; it changes how many of them the record is read to hold. |
+| Window | the reporting year, 1 July 2026 to 30 June 2027 | clause 1.2, and clause 7.4's "a deposit is counted in the reporting year in which it was paid in" | No. |
+| Unit | one deposit, counted one for one | clause 7.4, second sentence: "The count is of deposits, one for one, and not of customers or of days" | No. |
+| Comparison | none: the figure is a level, per segment and in total, against nothing | clause 7.4 states a number per segment and no difference, ratio or benchmark | No. |
+
+So the step settles none of the five, and the estimand is beyond argument without it. What is left open is
+how the number clause 7.4 describes is arrived at, and on that two or more methods stand: the same-day
+screen (1,223), the same screen with each customer's habit netted out (1,077), each customer against its
+own prior year (2,054), and the excess over the segment's own profile (400). The data's own structure
+rules out the first three and selects the fourth: each segment's deposit-size profile is log-linear across
+the stretch either side of the band, with residuals 0.0005 to 0.0029 of the mean, so the number the band
+would hold without the splitting is fixed by the record; the book's pooled profile is not log-linear
+(residuals 0.0088), which is why one fit for the whole book is rejected by its own residuals; and every
+window and bin width inside the stretch gives the same eight figures. Filing none of that in the pack is
+what keeps the step analysis rather than rule application: no shipped sentence names a profile, a
+background, an excess, a bin or a fit.
+
 
 ## Readability screen
 
-| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | Verdict |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| 0 confirmed cases a quarter | the placement clause names cases, not confirmations | the register's disposition column invites the count | yes, the first thing anyone computes | no corpus scores it | the battery counts the register, not the state | one group-by | readable |
-| 1 confirmed per thousand customers | no | the customer base sits beside it | yes, the exposure reflex | no | no | one ratio | readable |
-| 2 unreviewed alert backlog | no | the backlog file names it | yes, send the team where the work is piled up | no | the battery finds the backlog | one group-by | readable |
-| 3 the months a case goes unseen, alone | no | both date columns are there | yes, the correction a careful solver makes after rung 0 | no | no | one subtraction and a mean | readable |
-| 4 arrivals multiplied by the time unseen **(decisive)** | no sentence names a rate, a stock, a product, a duration or a record to estimate from; clause 6.2 files the population, the unit and the event that ends the count and says nothing about how the expectation is formed, asserted by a word sweep over every shipped file that includes `closed record` | no column holds a stock or a rate; both dates are ordinary case fields the whole ladder reads | no reflex reaches it: the confirmation count, the exposure ratio, the backlog and the delay alone each name a different three lines, and the first three are the three reflexes | no control, corpus or published figure scores a line or a placement; the two quick-surfacing lines tie across rungs because their cases surface quickly | the battery finds the crosswalk, the versions and the reorganisation and leaves the quantity open | no: the stock is a product of two means, neither of which is reported anywhere | silent |
+| 0 same-day screen, 1,223 | clause 7.4 states the outcome, so a solver builds a same-day construction | no column marks a split | yes, the first construction | none ships | the battery finds the duplicate envelope rows, not this | no | readable |
+| 1 habit netted out, 1,077 | nothing states a habit | no column counts a customer's multi-deposit days | yes, the obvious correction | none | no | one filter | readable |
+| 2 customer against its own prior year, 2,054 | nothing states a comparison | the prior year is a second file, not a column | yes, a within-unit control | none | no | one subtraction | readable |
+| 3 excess over the segment's own size profile, 400 **(decisive)** | no shipped sentence names a profile, a background, a bin or a fit, asserted by word sweep | the record carries amounts and nothing that groups them by size | no: the battery, the screen, the habit filter and the year-on-year control all land elsewhere | none ships | the battery never bins an amount | no: the background has to be built before anything can be subtracted | silent |
 
 ## Semantic fork table
 
-| id | term or convention | golden reading | alternative | call under it | ruled out by |
-|---|---|---|---|---|---|
-| SF1 | case | one customer and one typology, paragraph 2.3 | one alert, or one customer | the set changes | paragraph 2.3, quoted; asserted on counts |
-| SF2 | business line | the line in force at the review date | the line recorded on the case at the time | the set changes | clause 6.2 "the business lines" with the register's effective dates; asserted |
-| SF3 | begun | the onset month the investigation establishes | the month the first alert fired | the set changes | the handbook's definition of the onset month; asserted |
-| SF4 | detected | the month someone first saw the case | the month it was confirmed, or closed | `same call`, asserted: the three-line set, the line that just misses and the cut all hold under the confirmation month, because a line's confirmation lag runs with its detection lag |
-| SF5 | review date | 15 February 2027, the first day of the review | the extract date | `same call`, asserted at both dates |
-| SF6 | the months estimated from | the onset cohorts the record resolves, which clause 6.3 states the look-back has closed | any other window, including the register entire | `same call`, asserted over 36 windows of 24 months or more ending at or before February 2024 and over the register entire; the longest delay the record holds is 34 months, so cohorts older than that are resolved whoever picks the window |
-| SF7 | record version | the latest amended version of a case | the first version | `same call`, asserted: no amendment moves an onset or detection month |
-| SF8 | currency | the amount in NZD after converting the AUD rows | the amounts as recorded | `same call`, asserted: no amount enters the count |
-| SF9 | capacity | three business lines | the lines a two-week spell could cover by volume | the set changes | clause 6.4 "three business lines", quoted |
-| SF10 | the count's unit | cases | customers, or alerts | the set changes | clause 6.2 "counting one case per customer per typology" |
-| SF11 | rounding | the three lines are named; no figure is rounded before the comparison | the stocks rounded to whole cases first | `same call`, asserted at whole cases and one decimal |
-| SF12 | ties | none: the eight expectations are distinct | a tie at the cut | `same call`, asserted: the third line stands 41 per cent above the fourth |
-| SF13 | the figure compared | the expected number carrying at the review date, clause 6.2 | the number the register's own rows show carrying | the register holds no such row, so the reading returns zero on every line and forces the construction | clause 6.2 "expected to be carrying" and "whether or not the bank yet holds a record of it", both quoted; asserted that no register row has an onset on or before the review date and a first seen month after it |
-| SF15 | the count at a month end | a case is carried unseen past a month end when it began in that month or earlier and was first seen later | the months from onset to first seen counted inclusively, so a case seen in the month it began counts as one | the third line changes: the inclusive count adds a line's whole monthly arrival to its figure, which favours the high volume lines and brings Retail payments to within one per cent of Trade finance | the handbook's sentence "A case seen in the month it began was never carried unseen past any month end", quoted; asserted, with the inclusive reading's own margin measured at under 6 per cent to show the sentence is load-bearing |
-| SF14 | disposition | the cases the head of financial crime accepted | every case the register holds, the withdrawn ones included | `same call`, asserted: the withdrawn cases are drawn from the same onset and detection months, so counting them scales every line alike and the three-line set holds |
+| id | Term or convention | Golden reading | Alternative | Ruled out by |
+|---|---|---|---|---|
+| SF1 | "cash deposits" | physical cash paid in over a counter or a deposit machine | includes cheque and electronic credits | clause 7.4 says physical cash deposits; the dictionary gives `instrument` with `cash`, `cheque`, `credit`, and `same call`: the band figure is identical on cash only, asserted |
+| SF2 | the band | 9,000 or more and below 10,000 | 8,000 to 10,000, or at or below 10,000 | clause 7.4 states both bounds and their inclusivity |
+| SF3 | "reporting year" | 1 July 2026 to 30 June 2027 | the calendar year, the bank's March financial year | clause 7.4 and clause 1.2 both state the reporting year; the prompt states the year to 30 June 2027 |
+| SF4 | the date a deposit falls on | the date the deposit was paid in | the date it was posted, the value date | the dictionary gives `deposit_date` as paid in and `posted_date` as the ledger run; `same call`: the two differ on 311 deposits, none of them in the band on a year boundary, asserted |
+| SF5 | the unit | one deposit | one customer, one customer-day | clause 7.4: the count is of deposits, one for one, and not of customers or of days |
+| SF6 | the segment of a customer | the segment on the business register at the end of the reporting year | the segment in force when each deposit was paid in | clause 7.4's last sentence; `same call`: no customer changed segment inside the window, only its code changed, asserted |
+| SF7 | the April 2027 code reissue | the same eight segments under new codes | eight new segments | the register carries the map and the dictionary states the reissue changed codes and not segments; asserted that the two codings partition identically |
+| SF8 | branch AR11 after 27 November 2026 | its deposits belong to the merged branch AR12 | a ninth branch, or dropped | the branch register's effective dates; `same call`: the figure is by segment, not by branch, asserted |
+| SF9 | the machine feed's timestamps | UTC, converted to the branch's local date | read as local | the dictionary states the machine feed stamps in UTC; `same call`: conversion moves 46 deposits across a date and none across the year boundary or into or out of the band, asserted |
+| SF10 | the preliminary and revised prescribed-transaction extracts | the revised file for the overlap | both, or the preliminary | the extract header states the revision supersedes; the call never reads either file, asserted |
+| SF11 | reversed deposits | excluded, both the deposit and its reversal | the deposit kept | the dictionary gives `reversal_of`; `same call`: the two reversed deposits are not in the band, asserted |
+| SF12 | rounding of the counts | to the nearest 10 deposits, once, at the end | per segment then summed, or unrounded | the prompt states the rounding once; `same call`: the sum of the rounded segment figures and the rounding of the unrounded sum are both 400, asserted over all eleven estimators |
+| SF13 | "paid in below the threshold when the amount would otherwise have been at or above it" | a count of deposits in the band in excess of the background the segment's profile produces | a count of every band deposit, a count the same-day screen selects | neither alternative is a reading of the clause: the clause's words are the same under all three, and the three differ by what evidence is used, which is the analysis and not the text. The fork table carries no reading of this clause, and the ladder carries the three figures |
+| SF14 | the total | the bank's figure, the sum of its eight segment figures | a figure built on the book without segmenting | clause 7.4 states the report is by segment; `same call`: the eight segment figures sum to 400 and the rounding of the unrounded sum of the segment excesses is 400 under every accepted estimator, asserted |
 
 ## Ladder
 
-| Rung | The analysis | The three lines |
-|---|---|---|
-| 0 | the cases each line confirms in a quarter | **Cards, Deposits, Retail payments** |
-| 1 | confirmed cases per thousand customers | Correspondent banking, Private wealth, Trade finance |
-| 2 | the unreviewed alert backlog | Deposits, FX and remittance, Retail payments |
-| 3 | the months a case goes unseen, alone | Correspondent banking, Private wealth, Trade finance |
-| 4 | **answer:** the cases begun and not yet detected, the arrival rate multiplied by the time unseen | **FX and remittance, Business lending, Trade finance** |
+| Rung | The analysis | Figure | Largest segment it names | Worth |
+|---|---|---|---|---|
+| below 0 | count the band | 3,520 | grocery and convenience, 897 | the clause's second half is ignored; no competent solver stops here |
+| 0 | the same-day screen: band deposits on a day the customer's cash reached the threshold over two or more deposits | **1,223** | grocery and convenience, 356 | the default path; 3.06x the golden |
+| 1 | the same screen with each customer's own habit netted out (drop customers whose screened days are more than half their deposit days) | 1,077 | grocery and convenience, 346 | one filter; 2.69x |
+| 2 | each customer against its own prior year, the rise in its band deposits | 2,054 | hospitality, 485 | a within-unit control; 5.14x, and it walks the wrong way |
+| 3 | **the excess over each segment's own deposit-size profile away from the band** | **400** | transport and courier, 90 | the golden; the answer is the extreme of the ladder |
 
-**Worth on the graded quantity.** Rung 0's set is disjoint from the answer: all three names change.
-Rung 1 and rung 3 share one name with it, rung 2 shares one. Four distinct answers across five rungs,
-and no monotone correction reaches the answer: ranking on the arrival rate puts the quick lines first
-and ranking on the delay puts the slow, small lines first, while the answer is the product, whose top
-three are middling on both factors.
+**Position and margins.** On rung 0 the golden's largest segment, transport and courier, sits fourth of
+eight (356, 268, 170, 133, 117, 64, 60, 55 against the golden's 90, 70, 60, 60, 30, 30, 30, 30), so the
+default path does not merely mis-size the figure, it names a different segment as the largest. The decisive
+move is 2,054 to 400, the largest move on the ladder and never the smallest. Every rung reproduces from the
+raw files, names its own largest segment, and dies to one construction.
 
-**Separation.** FX and remittance 46.5, Business lending 42.3, Trade finance 36.9, then Private wealth
-26.2, so the third line stands 41 per cent above the fourth, asserted. The two estimators the data
-admits agree on all eight lines and on the set: the product of the monthly arrival rate and the mean
-months unseen, and the sum over onset cohorts of the arrivals still undetected at the review date.
+**The grid.** Single-error cells, each a named wrong figure: one profile fitted to the whole book rather
+than to each segment, 370 (7.5 per cent from the golden, and the book's own residuals away from the band
+are 0.0088 of the mean against 0.0005 to 0.0029 for each segment, so the record rejects it); the band read
+over the prior year, 289; the profile fitted over a window reaching outside the stretch the record is
+log-linear over, residuals 0.23 to 1.01 of the mean, rejected by the record; a two-bin local average in
+place of a fit, whose placebo scatter at twenty positions where the excess is nought is more than five
+times the fitted estimator's. No cell files 400 by a single error.
 
-**Dominance.** Trade finance is the line the ladder turns on: it is third on the expectation at 36.9
-and sixth on confirmations at 27, and it is the only line the answer shares with rungs 1 and 3. FX
-and remittance carries the largest unreviewed backlog, so rung 2 reaches it for the wrong reason, and
-Cards confirms the second most cases at 96 and is expected to be carrying 19.2, sixth of the eight.
+**Convergence.** Eleven estimators of the background (fit windows from 5,000 to 16,000, 5,500 to 15,000,
+6,000 to 14,000, 5,000 to 15,000, 5,000 to 14,000 and 6,000 to 16,000; bin widths 200, 250 and 500; and
+three local-average forms) give the same eight segment figures and the same total of 400, with every
+segment's unrounded excess 3.0 to 4.0 away from its rounding edge. Asserted in `checks.py` and in
+`verify.py`.
 
 ## Closure table
 
-| Axis | Reading | Closure |
-|---|---|---|
-| 1 Population | which cases are counted | clause 6.2 files it, including the cases the bank holds no record of yet, and files the figure as an expectation over the line's own closed record; SF1, SF6, SF10; C1 asserted on counts |
-| 2 Unit of account | case, customer, alert | clause 6.2 "one case per customer per typology"; SF1, SF10 |
-| 3 Attribution window | which cohort a case falls in | the onset month, SF3; the closed window, SF6; cohorts clear of the boundary, asserted |
-| 4 As-of dating | the review date against the extract date | SF5; both give the same set, asserted |
-| 5 Version basis | amended cases | SF7; asserted that no amendment moves either date |
-| 6 Denominator | the arrival rate's period | months, from the onset months in the closed window; asserted at quarters too |
-| 7 Weighting | each case weighted equally | clause 6.2 counts cases; no weight appears |
-| 8 Window length | how far back the arrival rate and the time unseen are measured | C1, asserted over 36 windows of 24 months or more that end at or before February 2024 and over the register entire: every one names the same three lines |
-| 9 Boundary inclusivity | cases on the cutoff month | nothing on the boundary, asserted nine days clear |
-| 10 Rounding path | before or after the comparison | SF11; the set is identical at whole cases and one decimal |
-| 11 Tie-break | two lines at one stock | SF12; the eight stocks are distinct and the cut margin is 23 per cent |
-| 12 Maturity and censoring | cases nobody has yet seen | the decisive step. The estimand is filed literally, unobserved members included, and the estimator is forced by the design: the register holds no case nobody has seen, so the count cannot be read off rows, and the longest delay the record holds is 34 months, so which cohorts are resolved is a fact of the record rather than of a clause. Asserted both ways |
-| 13 Order of operations | crosswalk, reorganise, then count | every order gives the same figures, asserted |
-| 14 Row order | the extract's order | C1, asserted over three permutations |
-| 15 Duplicate resolution | one customer under two identifiers | the crosswalk resolves them; the main population holds no duplicate pair, asserted |
-| 16 Identity normalisation | the alert system against the case system | `customer_id_crosswalk.csv`, every identifier matched, asserted |
-| 17 Netting against gross | none; cases do not offset | asserted that no case count is negative |
-| 18 Dimensional units | months against quarters | the arrival rate and the delay are both in months, asserted |
-| 19 Code and status semantics | disposition and typology codes | the dictionary, SF1; never the decisive step |
-| 20 Integerisation | three lines named | a set of three by construction |
-| 21 Clause scope | per line, per review | clause 6.2's own scope |
-| 22 Forward window contents | the review runs 15 to 26 February 2027 | the call is forward facing: the quantity is the caseload the review will meet, and the pack carries no record of that review |
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | every physical cash deposit in the band paid in during the reporting year by a customer on the business register | clause 7.4 files it literally; all members observed, nothing censored, nothing arriving late; C1 asserted |
+| 2 | Unit of account | one deposit | clause 7.4: one for one, not customers, not days (SF5) |
+| 3 | Attribution window | the date the deposit was paid in | clause 7.4; SF4 asserted, 311 deposits differ on posted date, none on a year boundary |
+| 4 | As-of dating | every extract pulled 19 July 2027, the window closed 30 June 2027 | the extract headers state it; the register's segment is the one in force at year end (SF6) |
+| 5 | Version basis | the revised prescribed-transaction extract supersedes the preliminary one | the extract header; the call reads neither (SF10) |
+| 6 | Denominator | none: the figure is a count, not a rate | clause 7.4 states a number of deposits; the segment's deposits paid in ship beside it as a separate figure |
+| 7 | Weighting | none: deposits are counted one for one | SF5; no weighting enters the golden |
+| 8 | Window length | the background is read off the segment's profile over the stretch the record is log-linear across | C1 over six fit windows and three bin widths, all giving 400 |
+| 9 | Boundary inclusivity | 9,000 inclusive, 10,000 exclusive | clause 7.4 states both; asserted that no deposit falls at exactly 9,000.00 or 10,000.00 |
+| 10 | Rounding path | once, at the end, to the nearest 10 deposits | the prompt states it once; SF12 asserts both paths give 400 |
+| 11 | Tie-break | the largest segment is named; transport and courier at 90 leads trades and construction at 70 | a 20-deposit gap at the stated rounding, asserted |
+| 12 | Maturity and censoring | nothing is censored: the year is closed, every deposit is recorded, no outcome arrives later | asserted that the extract holds no deposit dated after 30 June 2027 and no record is amended after the pull |
+| 13 | Order of operations | the background is estimated per segment, then subtracted, then rounded | C1: subtract-then-round and round-then-subtract both give 400, asserted |
+| 14 | Row order | no step depends on file order | asserted over six permutations of the deposit file |
+| 15 | Duplicate resolution | one deposit per counter row; the machine feed's envelope rows collapse on `envelope_id` to one deposit | the dictionary states the machine grain; asserted that collapsing is the only reading that reconciles to the branch cash summary |
+| 16 | Identity normalisation | the crosswalk carries the deposit system's number onto the master's | the crosswalk is complete and one-to-one over the window, asserted |
+| 17 | Netting against gross | gross: reversals and their deposits are both excluded, nothing else nets | the dictionary gives `reversal_of`; SF11 asserted |
+| 18 | Dimensional units | every amount is NZD to the cent in both feeds | asserted; the one file carrying thousands is an ask file the call never reads |
+| 19 | Code and status semantics | `instrument`, `channel`, `segment_code`, `reversal_of` as the dictionary gives them | dictionary semantics; SF1, SF7, SF11; never the stump |
+| 20 | Integerisation | counts are whole; the excess is rounded to the nearest 10 once | SF12; the unrounded excess sits 3.0 to 4.0 from its edge |
+| 21 | Clause scope | clause 7.4 governs the annual report's figure; clause 3.1 the reporting duty; clause 9.2 the retention period | the handbook's own headings; asserted no other clause states a count |
+| 22 | Forward window contents | none: the window closed before the extract | the call is retrospective, with its reason below |
+
+**Why the call is retrospective.** The figure is the bank's own measured incidence for a closed reporting
+year, which is what section 60 of the Act's annual report states; a figure about an open year would be a
+forecast of a quantity the record has not yet produced and would retag the build as Forecasting. The
+commitment itself is not yet made: the report is filed on 30 September 2027 and the figure in it is the
+decision.
 
 ## Literal reader
 
-Executing the prompt, clauses 2.3, 6.2, 6.4 and 7.2, the handbook's three definitions and the
-dictionary word for word selects the cases of the eight business lines in force at the review date and
-asks which three lines are expected to be carrying the most cases begun and not yet seen at 15
-February 2027, one case per customer per typology, membership ending at the first seen month. Read
-literally that population has no rows: the register holds no case nobody has seen, which clause 6.2
-says in its own words and `checks.py` asserts, so the figure has to be constructed and the text says
-nothing about how. Every option was computed: the confirmations a quarter name three lines, the
-confirmations per thousand customers another three, the unreviewed backlog another three, the time
-unseen alone the same three as the ratio, and the two estimators that count the state itself name FX
-and remittance, Business lending and Trade finance. The easy ones are easy methods on the same literal
-estimand, not other readings of it. The one convention a construction needs that the text does not
-fix, which months to estimate from, is convergent: 36 windows of two years or more that end inside the
-resolved span, and the register entire, all name the same three lines, asserted. Every other term and
-convention has an SF row ruled out by a quoted sentence or asserted to give the same call.
+A reader who executes the prompt and clause 7.4 word for word, inferring nothing, has the population, the
+band, the window, the unit and the outcome fixed, and the only thing the text does not give is what
+evidence shows which band deposits would have been made at that amount anyway; every reading of every term
+gives the golden (SF1 to SF14, each asserted), and the three constructions a reader may build instead of
+the background are analyses rather than readings, which is why the ladder and not the fork table carries
+them.
 
 ## Oracles
 
-- The register's resolved cohorts confirm that every case with an onset in the look-back months
-  carries a first seen month; they tie under every rung, because they carry no rate, no stock and no
-  placement.
-- `extract_manifest.csv` confirms the extract's row count and date range; it ties under every rung.
-- The contractor's hours ledger confirms what past reviews cost, never what they found.
-- No control, published figure or corpus scores a line or a placement, and no past placement ships.
-  There is no calibration organ.
+Every control in the pack reads the same on the wrong path and on the golden. The branch cash summary
+reconciles to the deposit detail under every rung because it sums amounts and not band counts (asserted to
+the cent). The prior annual report states the prescribed transaction reports filed (2,742) and the cash
+paid in, and no rung reproduces either, because every deposit on the ladder is below the threshold and so
+outside the reports filed. The prescribed-transaction extracts cover only deposits at or above the
+threshold, so they are blind to the band by construction. No corpus scores a method, no document ranks the
+segments, and nothing in the pack states a figure for structured deposits in any year.
 
 ## Ask sheet
 
-| Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
-|---|---|---|---|---|---|---|---|---|
-| A1 the review contract's own spend | per quarter, the hours the contractor billed, the hours the contract allows, and the tickets billed outside the rate card (12 figures) | the audit trail of the instrument the call commits | the committee is asked for the spend beside the placement | D1, one reversal a quarter reissued under the credit note reference series, so the ledger reverses its ticket's hours twice. Nothing says so: each credit note names the ticket it reverses, and the pair reverses more hours than that ticket was ever billed | the rate card varied mid-year; two reversals a quarter, only one of them reissued | ledger, contract register, manifest, dictionary; 9 columns | 4 stops; the plain sum is 4.4 to 4.9 per cent low, dropping the credit notes 6 to 8 per cent high | the contract's quarterly reconciliation |
-| A2 the screening list's own history | per list version, the customers who matched an entry that a later version removed, and how many were cleared (10 figures) | an input the call's own system consumes, read on rows the call never touches | the bank's own list-change review | D2 version, the entry in force at the screening date against the current list | a list version loaded twice; names transliterated two ways | screening versions, match log, dictionary; 8 columns | 4 stops; the lazy read applies the current list and files zero | the supervisor asks for it every year |
-| A3 one line's alert funnel | per month for the card disputes queue, alerts raised, closed inside the five working day standard, and escalated (36 figures) | a measure every line carries that the call does not turn on | the operations report | D8 clocks, the standard counts working days off the days the bank is closed, which the operations office keeps in its own file, and two runs fall the day after one | a queue renamed mid-year; a re-sent batch; alerts the triage escalated, which clause 7.1 says are not closed; alerts reopened and triaged twice | alert extract, closed days, framework Part 7, dictionary; 11 columns | 5 stops; counting calendar days files all 12 months low, treating an escalation as a closure moves them again | the queue's monthly service report |
+Three asks, none keyed to the call or its construction, all on rows outside the call's declared population
+(the deposit rows), each a component of the report the same officer signs.
 
-**Main population separation.** Zero device rows in the main call's population (the confirmed cases of
-the closed onset cohorts at the eight lines, with the customer base): A1's credit notes are in the
-contractor ledger, A2's list versions in the screening files, A3's device in the card disputes queue's
-alert rows, which carry no case. Asserted by count in `checks.py`. The main path still carries its own
-texture: the identifier crosswalk, the reorganisation dates, the amended case versions and the two
-currencies.
+| Ask | Figures | H18 home | Primary device | File, columns | Stops | Lazy delta |
+|---|---|---|---|---|---|---|
+| A1 till variance | per branch and quarter: sessions recorded, sessions over the tolerance in force, net variance in dollars | the cash-handling control the report's branch section covers | D8 clocks: the machine collection sessions are stamped UTC while counter sessions are local, across the September daylight saving change, so sessions on a quarter boundary fall in the wrong quarter | `till_balance_log_2026_2027.csv`, 11 columns, with `cash_tolerance_register.csv` | 4: raw stamps; converted but tolerance fixed; tolerance versioned but sessions double counted; the answer | 19 of 56 cells move |
+| A2 risk rating movements | per band: customers raised, lowered, and raised then lowered inside the year | the customer risk profile the report's section 4 covers | D2 version: the file carries each rating event as delivered and as accepted, and eleven events were superseded by a correction with the same effective date and a later load stamp | `risk_rating_history.csv`, 9 columns, with `rating_scale_map.csv` | 4: latest delivered; latest accepted but the April relabel unmapped; mapped but the merged customer counted twice; the answer | 9 of 15 cells move |
+| A3 machine availability | per month: hours out of service by machine, whether any machine has no service record and how many, whether any site's hours differ from the vendor's by more than two and which | the deposit channel the report's section 6 covers | D6 grain: the vendor's report is per site per month while the bank's log is per machine per incident, and two sites hold two machines; D4 absence: three decommissioned machines have no log rows, which is not nought hours | `machine_service_log_2027.csv` plus `vendor_service_report_2027.pdf`, 10 columns | 4: log only; log plus vendor at the wrong grain; grain right but absence read as nought; the answer | 14 of 24 cells move |
 
-**Hazard table.** The reorganisation moves A1 and A3; the identifier crosswalk moves A2 and A3; the
-re-sent batch moves A3.
+**Main population zero-counts.** Zero device rows and zero hazard rows in `cash_deposit_detail_2027.csv`,
+`cash_deposit_detail_2026.csv`, `business_customer_register.csv`, `customer_number_crosswalk.csv` and
+`branch_register.csv`, asserted by count in `checks.py`. Deleting every ask file leaves the call
+unchanged, asserted.
 
-**Referee.** `extract_manifest.csv` arbitrates the extract's extent and nothing else; it ties under
-every rung and settles no level.
+**Hazards.** Three, each moving several asks: the April 2027 code and scale reissue (A2, A3); the AR11 into
+AR12 merger (A1, A3); the UTC against local stamping (A1, A3). Per-ask deltas above.
 
-**Cracker sheet.** The cracker placed the review correctly at rung 4, ran the hygiene battery,
-executed clauses 2.3, 6.2, 6.3, 6.4 and 7.2 and matched the manifest.
+**Referee.** One byte-clean referee, `branch_cash_summary_2027.csv`, arbitrates A1's session count against
+the till log without stating a variance, and ties under every handling of the main call.
 
-| Ask figure | Cracker's path | Cracker's figure | Golden | Result |
-|---|---|---|---|---|
-| A1 hours billed, 2026 Q3 | sums the ledger as it stands, so the reissued reversal is taken twice | 172.8 | 181.7 | miss |
-| A1 hours billed, 2026 Q1 | the same, one quarter over | 226.2 | 236.6 | miss |
-| A2 customers matched to an entry later removed, v2 | applies the current list to every screening date and files nothing | 0 | 13 | miss |
-| A3 alerts closed inside the standard, 2026-01 | counts calendar days and treats an escalation as a closure | 97 | 111 | miss |
-| A3 alerts raised, 2026-06 | keeps the re-sent batch, so June is inflated | 200 | 175 | miss |
+| Ask | The cracker, who landed the call and ran the battery | Verdict |
+|---|---|---|
+| A1 | converts the machine stamps, misses that the tolerance was reissued on 1 January 2027 | miss |
+| A2 | takes the latest delivered rating event, so eleven superseded events stand | miss |
+| A3 | sums the bank's log per site, so the two-machine sites double count and the three decommissioned machines read as nought | miss |
 
-Pair ceiling: 34.0
+Pair ceiling: 39.5
 
-Mirror leakage: 20.0 per cent of the ask weight
+Mirror leakage: 22.0
 
 ## Pre-ship check
 
-- **The 10/10 rules re-read against the built pack.** The decisive step is still the quantity, not the
-  method: `checks.py` runs the easy route on the generator's clean truth and it files Cards, Deposits
-  and Retail payments, while the same clean truth under the decisive step files Business lending, FX
-  and remittance and Trade finance. All four reflexes are executed there and none reaches the answer.
-  The mess is Layer 1 only: the identifier crosswalk, the reorganisation codes, the amended versions,
-  the withdrawn dispositions and the two currencies all sit on the main path and removing every one of
-  them leaves the call exactly as hard, because the decisive step is in the two months every case
-  already carries. The withdrawn cases are the one piece of that mess that could reach the population,
-  and SF14 asserts it does not: they are drawn from the same onset and detection months, so the wider
-  reading scales all eight lines alike and names the same three.
-- **Rule 3, each class.** Nothing is planted (no repeated case key, asserted; no scorecard, league
-  table, past placement or ranked artifact ships, asserted over every shipped PDF against ranked,
-  ranking, league, scorecard, highest risk line and most exposed). Not semantics (the handbook defines all three months
-  and the dictionary gives every field, and a word sweep over every shipped file asserts that none of
-  them says arrival, per month, multiplied by, stock of, how long, mean time or Little's law). Not
-  rule application (clause 6.2 files the population, the unit and the event that ends the count,
-  clause 6.4 the capacity and clause 7.2 the ask's own standard, while no shipped sentence says how a
-  case nobody has seen is counted: the word sweep now includes `closed record`, so no clause can point
-  a solver at a span to estimate from).
-- **Input gates.** 17 files, 4 formats (csv, xlsx, json, pdf), the alert extract over 25,000 rows, two
-  distractors declared in `metadata.json` and named in neither a file name nor the prompt.
-- **Gate G.** No shipped artifact ranks or scores the lines, asserted over every PDF. The difficulty
-  survives deleting every number in the pack that is not a case record: the two months each case
-  carries are the whole of it.
-- **Free gates.** `precut.py` 49 checks 0 FAIL 0 WARN; `voice-check.py` PASS at 938 characters; 1,372
-  generator assertions; 134 independent checks; two byte-identical rebuilds of `target/` and
-  `golden/`; `figures_check.py` 65 of 65; `leak.py` REVIEW; `guard.py surface` clean and `heart` WARN
-  only, nearest driver 0.08 against task181 v2.
-- **The leak sweep's REVIEW lines.** Sweep 3 reads clause number 6.2 as a four-character figure, which
-  it is not. Sweep 4 counts ordinary domain nouns (record, months, customer, register, crosswalk,
-  extract) in the documents; none of them names a rate, a stock or the move, and the word sweep
-  in `checks.py` asserts that. Sweep 9 reports alert rows dated to the end of January 2027: the case
-  register is the 18 January extract, the alert system's own extract runs to the end of that month,
-  and the manifest states each file's range, so the one date after the register's extract date in the
-  manifest is the 14 February load the review will read.
-- **Forward facing.** The review runs 15 to 26 February 2027, after the 18 January extract and the 28
-  January committee, so the quantity is the caseload the review will meet and the pack carries no
-  record of that review (closure axis 22).
+**Free gates, all green at this cut.**
+
+| Gate | Result |
+|---|---|
+| `precut.py task190` | 49 checks, 0 FAIL, 0 WARN |
+| `voice-check.py task190` | PASS, 998 characters |
+| generator `checks.py` | 205 assertions, including the three-rules block R1 to R3c on the clean truth |
+| `verify.py` (reads `target/` and `figures.json` only, own code path) | 112 checks, 0 failed |
+| two consecutive rebuilds | `target/` and `golden/` byte-identical |
+| `figures_check.py task190` | 86 figures in blocks 1 to 4, 0 absent from `figures.json` |
+| input gates | 20 files, 4 formats (csv, xlsx, pdf, md), 56,325 rows in `cash_deposit_counter_2026_2027.csv`, 3 distractors declared in `metadata.json` |
+| `leak.py task190 --asof 2027-07-19` | REVIEW, every line answered below |
+| `guard.py surface task190` | no promoted pair; no persona appears in the cut pack's content |
+| `guard.py heart task190` | WARN, nearest driver 0.11 (task445 v1) |
+| container scrub audit | clean: no writer signature, no out-of-band timestamp |
+
+**The leak report's REVIEW lines, answered.**
+
+- Sweep 3, `aml_programme_handbook.pdf`, 10 of 12 words of the committed call: the call is quoted in the
+  handbook's own vocabulary because clause 7.4 is the estimand, and the prompt asks the question in the
+  handbook's words. No golden figure appears: the documents carry no 400, no 3,520 and no segment figure,
+  asserted by extraction over every shipped PDF.
+- Sweep 3, `annual_report_extract_2026.pdf`, 8 of 12: the prior year's report names the same quantity it
+  does not state, and says so ("was first stated for the year ended 30 June 2027 and is not given here").
+  It carries last year's prescribed transaction count and cash paid in, neither of which any rung
+  reproduces.
+- Sweep 3, `provenance.md`, 8 of 12: the extract notes name the deposits and the reporting year, which is
+  what they are notes about. No figure in them is on any rung.
+- Sweep 4, the same three documents, 4 to 8 of 25 stump terms: the terms are deposit, register, reporting,
+  extract, customer, closed and states, which are the ordinary nouns of a bank's deposit records. None of
+  profile, background, excess, screen, same-day, construction or decisive appears in any shipped file,
+  asserted by word sweep in `checks.py`.
+- Sweep 4, the prompt sentence carrying two stump terms: the two are "deposit" and "customer". The
+  question cannot be asked without them.
+- Sweep 10, INFO: the container audit ran and found nothing, which is the result wanted.
+
+**Realism sweep.** No identical deposit count across segments; no round segment total; round amounts under
+4 per cent of deposits; the drawn personas only; no placeholder identity; the monthly counts per segment
+carry no repeated block. The provenance file reads as the data team's own compile note (`reduce-house-fixes`
+H24), the manifest names every shipped file (H9), no record or report date runs past the pull date (H16),
+and every handbook paragraph the goldens cite resolves (H8).
+
+**What stage 4 still owes.** The isolated leak reader and the determinism judge have not run: this session
+has no `Agent` tool. Both briefs are staged with their own isolated inputs, and the verdicts come back
+through the orchestrator.
 
 ## Tried and rejected
 
@@ -363,3 +406,15 @@ Mirror leakage: 20.0 per cent of the ask weight
   repair closed the stump, twice round. Three isolated readers built the nowcast and landed the call at
   80 to 90 per cent confidence, so the portal's top two would both land it. The slot re-roots at stage
   1 with a new driver; the stock-from-arrivals-and-time-unseen driver is not reused.
+- **Architecture 2, the WHAT screen run on four candidate decisive steps before this one.** Correcting
+  the monitoring's output with the sensitivity and specificity measured on an assurance sample: dropped
+  at the draw, because task446 v2 ships that driver in this same domain and task448 ships its stratified
+  form, which the re-root brief bans. Estimating the undetected caseload from a below-the-line review
+  sample: the same two cards, plus the sample's own arms announce the step. The excess of deposits over
+  a counterfactual named in the estimand as "the number that would otherwise have been made there":
+  dropped because naming the counterfactual that way excludes the band count by the clause's own words,
+  which turns the decisive step into rule application and fails the analyst test. Ranking the eight
+  segments rather than sizing the figure: dropped because a three-of-eight set pays a response that
+  gets two members right, and the ladder cannot keep the top two off a set the way it keeps them off a
+  figure. The step that survived settles none of the estimand's five parts, which `## Three rules`
+  answers line by line.
