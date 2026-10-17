@@ -1,39 +1,54 @@
 {
   "task": "task264",
   "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "general-statistics-data-science",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-17",
-  "stump": "The default path averages each item's sales over all the format's stores before comparing weeks, so the value chain that joined the panel in July and shoppers' moves toward cheaper chains read as price falls in the supermarket format and the index publishes too few categories; the careful store-by-store match drops a convenience chain's price in every week one small store sold none of a slow line; following each item at the chain that prices it publishes the golden set.",
-  "architecture": 1,
+  "stump": "The default path turns each member council's expanded visits into residents with its respondents' average 12-month visit count, a visit-weighted average in an exit survey, so the three valley councils' frequent visitors are undercounted and their levy share falls well below the share the survey's weight over each respondent's own visit count gives.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-17"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (sweep 3: the filed 1.5 test; sweep 4: methodology and terms vocabulary; sweep 6: banners beside store counts; sweep 9: the retail calendar's forward weeks)",
-    "reader": "Q1 none, Q6 analytical; Q5: the level at which a line's price is formed is not filed (constrained by methodology section 1 and the partner register's one shelf price); realism and ask-wording notes staged in the generator, not yet rebuilt"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (strategy risk, repeat Gate G vs task235, repeat decision vs task465; nearest driver 0.06)",
-    "nearest": "task463 0.06"
+    "heart": "",
+    "nearest": "task256 0.11 (guard check)"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (first pass)",
-    "disposition": "FIX_NOW: four ask-side forks (gap rounding basis, C2's PC before 2 August 2026, the continuity window, the repeated store totals); main call reproduced, Gate G method_or_model_selection analytical_non_defect, Gate H pass",
-    "report": "task264/determinism_check_report.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "stage 4 after the fix pass (methodology section 7 rounding path, code-list in-use dates, prompt 'the chain was in the panel', store-sales layout wording, reader realism fixes; checks 76, verify 0, rebuild byte-identical): the second leak reader and the one re-judge are running (a fresh determinism-judge brief under /tmp/determinism-check-task264-<runid>/, its thread spawned from the main session). On their reports fix any finding in the generator, rebuild, then ship. If the container was reclaimed, rebuild (python3 task264/generator/build.py) and re-run both from fresh copies.",
+  "resume": "",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "analytical_tasks/03_descriptive_distribution/DA14_index-publication-structure-matched-pair-minimum.md (header and Situation only)"
+  "seed": "none (re-root to a new world; architecture 1 took DA14's world)",
+  "history": [
+    {
+      "architecture": 1,
+      "fate": "spent 2026-10-17 at stage 4: re-judge SEND_BACK (competing_defensible_answer, the unfiled product unit)",
+      "judge": {
+        "verdict": "DETERMINISTIC (first pass)",
+        "disposition": "FIX_NOW: four ask-side forks (gap rounding basis, C2's PC before 2 August 2026, the continuity window, the repeated store totals); main call reproduced, Gate G method_or_model_selection analytical_non_defect, Gate H pass",
+        "report": "task264/determinism_check_report.md"
+      },
+      "leak": {
+        "leak_py": "REVIEW (sweep 3: the filed 1.5 test; sweep 4: methodology and terms vocabulary; sweep 6: banners beside store counts; sweep 9: the retail calendar's forward weeks)",
+        "reader": "Q1 none, Q6 analytical; Q5: the level at which a line's price is formed is not filed (constrained by methodology section 1 and the partner register's one shelf price); realism and ask-wording notes staged in the generator, not yet rebuilt"
+      }
+    }
+  ]
 }

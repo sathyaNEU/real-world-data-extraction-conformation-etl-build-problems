@@ -1,17 +1,18 @@
 {
   "task": "task264",
-  "architecture": "v1",
+  "architecture": "v2 (re-rooted 2026-10-17 after architecture 1's determinism SEND_BACK)",
   "drawn": "2026-10-17",
-  "slot_note": "",
-  "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "niche": "a grocery market-data firm's 2027 price index structure: which of eighteen food categories get a stand-alone sub-index, each needing one national change over the 52 weeks to 28 November 2026 that holds within 1.5 points in every store format, when every chain prices an item alike in all its stores and small stores sell their slow lines in few weeks",
+  "slot_note": "Wave 3, Descriptive lane (sathay3012), re-root of task264 in the same objective and number. Seed DA14's grocery price-index world is spent with architecture 1 (its index-construction choices are definitional), so the slot draws a new world: a joint regional park authority apportioning its levy among member councils by the residents who visit, estimated from its on-site visitor survey.",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "sample-design-allocation-weighting",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a joint regional park authority in England apportioning its 2027-28 levy among its nine member councils by the number of each council's adult residents who visited its parks in the 2025-26 survey year, each counted once, estimated from an on-site exit survey that draws adults as they leave on sampled days",
   "objective": "descriptive-distribution",
-  "shape": "14",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Publish 10 of the 18 food categories as stand-alone sub-indices in 2027: Bread and bakery, Breakfast cereals, Cheese, Yoghurt and desserts, Eggs, Deli and cooked meats, Fresh fruit, Frozen foods, Biscuits and Chips and snacks; the other 8 go into Other food.",
-  "answer_source": "task264/submission.md block 1; task264/golden/gpi_2027_structure.xlsx Structure sheet",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population"
   ],
@@ -19,87 +20,110 @@
     "none"
   ],
   "generators": [
-    "G2",
-    "G12",
-    "G6"
+    "G10",
+    "G14"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "the firm's head of price indices, preparing the index committee's 2027 structure paper",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "index points",
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the Authority's head of finance, who takes the 2027-28 levy apportionment to the Authority's members at the January 2027 budget meeting",
+  "role_family": "finance_controller",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "gpi_movement_ry2026.csv (store x line x week sales, every load)",
-    "rows": 726756,
-    "entity": "one store's sales of one item in one retail week (units and dollars)",
-    "grain": "store x item x week",
+    "file": "visitor_survey_2025-26 (two contractor deliveries)",
+    "rows": 0,
+    "entity": "one interview with one adult leaving one of the Authority's parks on a sampled survey day",
+    "grain": "interview (adult visit)",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "research_or_statistics_office",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "local_government",
   "world": {
-    "geography": "Australia (a fictional grocery market-data firm and its partner chains; states and cities real; personas on the en_AU index)",
-    "currency": "AUD",
-    "org_type": "a grocery market-data firm publishing a weekly scanner price index from its partner chains' data",
+    "geography": "England (an unnamed county; the Authority, its parks, its nine member councils, their towns and villages and the survey contractor are fictional; personas on the en_GB index)",
+    "currency": "GBP",
+    "org_type": "a statutory joint regional park authority funded by a levy on its member councils",
     "invented_names": [
-      "Delvett Retail Data",
-      "Delvett Grocery Price Index",
-      "Haskard Fresh",
-      "Brevane Supermarkets",
-      "Fremett Foods",
-      "Pravard Discount",
-      "Gorvery Warehouse",
-      "Lumbane Local",
-      "Ruskett Grocers",
-      "Skovard Local",
-      "Quorrix",
-      "Treskola",
-      "Jorvery Stop",
-      "Wiskane Online",
-      "Pembard Direct",
-      "Keskary"
+      "Daskbeck Valley Regional Park Authority",
+      "Gorthfield",
+      "Brathden",
+      "Lesvley",
+      "Kirvstead",
+      "Kesvham",
+      "Tarvstead",
+      "Jeskley",
+      "Lorvborne",
+      "Glevby",
+      "Varvcote",
+      "Parvstead",
+      "Foskcote",
+      "Esvden"
     ],
     "people": [
-      "Christy Chambers",
-      "Manuel Zamora"
+      "Claire Foster",
+      "Toby Houghton"
     ]
   },
   "deliverables": [
-    "gpi_2027_structure.xlsx",
-    "gpi_2027_structure_paper.docx"
+    "levy_apportionment_2027-28.xlsx",
+    "levy_report_2027-28.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive unit is the one that sets the value: averaging records across setters lets volume moving between dearer and cheaper setters pass for a change in the value, and splitting one setter's single value across its outlets keeps only the outlet-periods with a transaction, so the comparisons lose the slowly traded items and follow the busy ones.",
-  "driver_concrete": "Every chain prices an item alike in all its stores in a format, so a convenience store that sold none of a slow line in a week still charged the chain's price; matching items store by store drops those weeks and the convenience index follows the fast lines, while pooling an item's sales across the format's chains lets the value chain that joined the panel in July and shoppers' moves between chains read as price falls; following each item at the chain that prices it keeps every comparison and every chain's own price.",
-  "stump": "A strong analyst builds each format's GEKS-Tornqvist index on items matched store by store, the finest like-for-like (or pools each item's sales across the format's stores), so the convenience change of the categories whose slow lines rose most falls more than 1.5 points under their national change (or the supermarket change reads the July value-chain arrival as a price fall) and the 2027 index publishes the wrong set of categories, when following each item at the chain that prices it publishes the golden set.",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is how many different members of each group a population of repeated events contains, seen only through a sample of the events in which each member is drawn in proportion to how many events it makes; reading the sampled members as the members, or dividing each group's estimated events by its sampled members' average event count, gives the groups whose members repeat most too many or too few, and only weighting each sampled member by its design weight over its own event count counts them.",
+  "driver_concrete": "The levy follows each member council's adults who visited the parks at least once in 2025-26, each counted once, but the exit survey draws adults as they leave on sampled days, so a resident who walks the dog in Brathden every morning is about two hundred times as likely to be interviewed as one who came twice; the valley councils' residents are the frequent visitors, so apportioning by expanded visits, or by visits divided by each council's respondents' average 12-month visit count, puts the valley councils' share far off the share the survey's own weights over each respondent's visit count give.",
+  "stump": "A competent solver expands the interviews by the contractor's weights, sums them by home council and turns each council's visits into residents by dividing by its respondents' average 12-month visit count, a visit-weighted average that overstates how often each council's residents come, so the valley councils' residents are undercounted and their levy shares fall well below the shares the design weight over each respondent's own visit count gives.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every rule and field correctly builds each format's GEKS-Tornqvist index on items matched store by store, keeping only the weeks each store sold an item, and finds several categories' convenience change more than 1.5 points from their national change, so the index publishes fewer categories than the chain-level index, which keeps every week a chain sold the item somewhere at the price it set for all its stores.",
-  "domain_test": "The deciding quantity is each category's price change in each store format with every unsold store-week treated as what it is (a week the store sold none at the chain's known price, not a missing price), the missing-data task type's own object; replacing it with the complete-case store-level match, or with a pooled average that ignores who set each price, changes which categories the national figure holds for.",
+  "analyst_test": "A strong analyst who codes every frequency answer, places every respondent in a council through the gazetteer, reads the members' resolution correctly (residents aged 16 and over who visited, each counted once) and expands the interviews by the contractor's weights still divides each council's estimated visits by its respondents' average number of visits and files a levy split that undercharges the three valley councils, because an exit survey draws each resident in proportion to how often they come, so the respondents' average is a visit-weighted average; only each interview's weight over its own visit count counts residents.",
+  "domain_test": "The deciding quantity is a population total (each council's distinct adult residents who visited) estimated from a probability sample of visits by the survey-design estimator that weights every sampled unit by the inverse of its inclusion probability, which an exit survey makes proportional to the person's visits; that is the sample-design task type's own object, and with another field's nouns the intercept design, the expansion strata and the visit-count question that set each person's chance of selection have nothing to attach to.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task48": "48 aggregates transactions to a two-sided pair grain so a population its monitor cannot see shows an absolute gap; here the grain is the chain that sets a shelf price for all its stores, and the move keeps the comparisons a finer store grain throws away, revealing no hidden population.",
-    "task120": "120 v1 builds a percentile unit by a two-hop join of claimed members onto a claiming record; here nothing is joined across units: the move coarsens store rows to the chain that prices them, because a store-level match keeps the chain's price only in the weeks that one store happened to sell the item.",
-    "task263": "263 solves each well's own concentration from entry-point blends, a finer unit recovered from mixtures by mass balance; here nothing is unmixed: store rows are coarsened to the chain that sets one price for all its stores, because a store-level match discards prices the chain still charged in weeks one store sold none."
+    "task264": "architecture 1 decided the unit at which a price is followed, a definitional choice; architecture 2 turns a probability sample of visits into a count of people by inverse inclusion probability, with the unit (residents, each once) filed literally",
+    "task452": "task452 weights reference points by the strata they were drawn from after the map was revised; task264 turns an equal-chance sample of visits into people, each weighted by the inverse of their own visit count, a selection the design makes proportional to frequency",
+    "task253": "task253 counts units past a floor as a sum of probabilities under shrinkage; task264's inverse-frequency weight comes from the sampling design, not from noise in a measurement",
+    "task131": "task131 v1 reads a randomised lift at the parent unit because sub-units share one budget; task264 turns an exit survey's sample of visits, drawn in proportion to each person's visits, into a count of people"
   },
-  "lineage": [],
-  "notes": "Seed DA14 (header and Situation only): kept the world (a grocery scanner price index from partner chains, GEKS-Tornqvist within store formats), the decision (which categories publish as stand-alone 2027 sub-indices, the rest in other food) and the quantity (whether each category's index holds in every store format, filed as its format changes within 1.5 points of its national change). The seed's matched-pair minimum is a filed rule's execution under the 10/10 rules; the decisive step is re-found in the data's structure (central pricing with sparse small-store sales). Housed in General Statistics (missing data): the setting is retail price statistics.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a-store-week-without-a-sale-is-a-known-chain-price",
-  "layer1": [
-    "chains' weekly feeds with their own week ending days and a resubmitted block kept beside the original (latest load wins)",
-    "a partner chain joining the panel in July (its stores enter mid-window)",
-    "item codes in two formats across feeds (13-digit with and without a leading zero)",
-    "stores re-coded after refits and one store moved between formats on a dated effective date",
-    "random-weight fresh lines sold by the kilogram beside packed lines sold by the unit",
-    "promotion codes in each chain's own vocabulary",
-    "a methodology statement and data dictionary that have to be read"
+  "lineage": [
+    {
+      "domain": "general-statistics-data-science",
+      "subdomain": "missing-data-censoring-measurement-error",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G2",
+        "G12",
+        "G6"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "grain_or_unit",
+      "driver": "The decisive unit is the one that sets the value: averaging records across setters lets volume moving between dearer and cheaper setters pass for a change in the value, and splitting one setter's single value across its outlets keeps only the outlet-periods with a transaction, so the comparisons lose the slowly traded items and follow the busy ones.",
+      "architecture": "v1 (a grocery scanner price index's 2027 publication structure: each category's change in four store formats, each line followed at the chain that prices it)",
+      "drawn": "2026-10-17",
+      "fate": "spent 2026-10-17: the first determinism pass found the call deterministic (FIX_NOW on four ask forks); the one re-judge returned SEND_BACK (competing_defensible_answer): the methodology never says what a product is, so a literal reader prices each line store by store (7 categories) and the golden's line at its chain (10) holds only under an unfiled product definition; filing it would make the decisive step rule application"
+    }
   ],
-  "registered": "2026-10-17T04:59:50Z"
+  "notes": "Calibration organ none: the contractor's expansion weights are the survey's own design weights, not a validation sample. stump_strategy population_selection: the sample is selected in proportion to visit frequency (who is in the sample), not a row grain; the unit counted (residents, each once) is filed in the members' resolution.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:visit-intercept-to-person-weights",
+  "layer1": [
+    "two contractor deliveries of the survey (an autumn and winter workbook and a spring and summer CSV) with renamed columns and a recoded age band",
+    "home town or village written as said, with spellings, abbreviations and old names, placed in a council through the Authority's settlement gazetteer",
+    "12-month visit counts given as numbers, mostly round, with a few answers taken as a band from the show card and coded by the codebook",
+    "the contractor's expansion weights in a separate file keyed to interview numbers written differently in the two deliveries",
+    "the survey year April 2025 to March 2026 against the calendar-year counter files",
+    "hourly car-park and trail counters per park with outages, a counter swapped mid-year and a logger clock kept on GMT through British Summer Time"
+  ],
+  "registered": "2026-10-17T07:58:41Z"
 }
