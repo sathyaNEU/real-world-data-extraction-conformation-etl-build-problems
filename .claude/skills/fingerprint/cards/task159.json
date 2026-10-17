@@ -37,7 +37,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "vtc_fare_entries_hourly_2024-06-03_2027-01-10.parquet",
-    "rows": 761596,
+    "rows": 761594,
     "entity": "one station complex's fare-array entries in one hour, by payment type",
     "grain": "complex x hour (UTC)",
     "source": "synthetic (constructed in the layout of a transit agency's open-data hourly ridership export)"
@@ -100,6 +100,6 @@
     "task147": "task147 loses a multi-night request whenever any night of its run is already full, so the nights around a sold-out pair take less than their history; here nothing is lost or blocked: a platform's riders all board eventually, the ones a full train cannot take wait for the next, so the backlog inflates the counted crowd on the heavy days and is absent on the light ones, and the error the decisive step corrects is a heavy-day stock scaled onto lighter days and longer trains"
   },
   "lineage": [],
-  "notes": "Context artifact re-keyed at stage 2 from published_series to register: the ridership dashboard became a distractor and the platform capacity register is the register the call reads.",
+  "notes": "Context artifact re-keyed at stage 2 from published_series to register: the ridership dashboard became a distractor and the platform capacity register is the register the call reads. Round 1 (stage 4 fix pass): the Line 1 and Line 4 branches above Sallow Park ride hybrid weeks and Line 5 westbound boards 3 per cent lighter, so the golden (26, unchanged) holds from 120 to 155 a car; the fare export now has 761,594 rows.",
   "registered": "2026-10-17T19:48:28Z"
 }

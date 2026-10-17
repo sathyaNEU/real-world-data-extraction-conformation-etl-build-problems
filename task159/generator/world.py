@@ -216,19 +216,19 @@ _f('Wharf Street', '4', 'S', 0.0, 55.0, 502, 34)
 _f('Wharf Street', '4', 'N', 11.0, 0.0, 485, 40)
 
 # Line 5
-_f('Ossory', '5', 'W', 42.6, 1.0, 467, 28)
+_f('Ossory', '5', 'W', 41.3, 1.0, 467, 28)
 _f('Ossory', '5', 'E', 2.5, 3.0, 480, 40)
-_f('Linden Park', '5', 'W', 27.7, 1.0, 470, 28)
+_f('Linden Park', '5', 'W', 26.9, 1.0, 470, 28)
 _f('Linden Park', '5', 'E', 2.5, 3.0, 480, 40)
-_f('Coldwater', '5', 'W', 29.9, 1.0, 473, 28)
+_f('Coldwater', '5', 'W', 29.0, 1.0, 473, 28)
 _f('Coldwater', '5', 'E', 2.5, 3.0, 480, 40)
-_f('Marchmont', '5', 'W', 32.0, 1.0, 476, 28)
+_f('Marchmont', '5', 'W', 31.0, 1.0, 476, 28)
 _f('Marchmont', '5', 'E', 2.5, 3.0, 480, 40)
-_f('Easton Heights', '5', 'W', 32.0, 1.0, 479, 28)
+_f('Easton Heights', '5', 'W', 31.0, 1.0, 479, 28)
 _f('Easton Heights', '5', 'E', 2.5, 3.0, 480, 40)
-_f('Brack Road', '5', 'W', 34.1, 1.0, 482, 28)
+_f('Brack Road', '5', 'W', 33.1, 1.0, 482, 28)
 _f('Brack Road', '5', 'E', 2.5, 3.0, 480, 40)
-_f('Corran Junction', '5', 'W', 63.1, 5.0, 488, 28)
+_f('Corran Junction', '5', 'W', 61.2, 5.0, 488, 28)
 _f('Corran Junction', '5', 'E', 9.0, 5.0, 482, 40)
 _f('Ferrier Square', '5', 'W', 20.8, 25.0, 491, 32)
 _f('Ferrier Square', '5', 'E', 10.0, 8.0, 482, 40)
@@ -353,6 +353,14 @@ for _i, _s in enumerate(COMPLEXES):
 WD_OFFSET.update({"Garnett Street": (0.006, -0.004), "Sallow Park": (-0.008, -0.010), "Hesper Avenue": (-0.004, 0.006),
                   "Corran Junction": (0.004, -0.006), "Ferrier Square": (0.010, 0.004), "Albrecht Place": (-0.010, 0.008),
                   "Quarry Road": (0.008, -0.008)})
+# The Line 1 and Line 4 branches north of Sallow Park, the Larch Hill and Tamsin Avenue housing among them, are office
+# commuters on hybrid weeks: their Mondays and Fridays are a good deal lighter than the network's. Sallow Park itself
+# (an interchange with a mixed neighbourhood) rides like the network.
+for _s, _m, _f in (("Kettle Creek", -0.154, -0.136), ("Dorrance", -0.161, -0.141), ("Whitcombe", -0.157, -0.144),
+                   ("Pell Corners", -0.163, -0.139), ("Norland", -0.158, -0.146), ("Larch Hill", -0.168, -0.149),
+                   ("Arbor Mills", -0.152, -0.138), ("Ganton", -0.159, -0.143), ("Brisco Road", -0.155, -0.140),
+                   ("Coyle Street", -0.162, -0.145), ("Tamsin Avenue", -0.170, -0.151)):
+    WD_OFFSET[_s] = (_m, _f)
 
 
 def weekday_factor(station, wd):

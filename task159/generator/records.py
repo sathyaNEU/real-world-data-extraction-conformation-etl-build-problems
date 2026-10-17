@@ -458,6 +458,9 @@ def platform_code(key):
     return "%s-%s" % (LEGACY_CODE[station], rest)
 
 
+RATED_2019 = "2019 survey: 1 person per sq m of usable platform area"
+
+
 def capacity_rows():
     rows = []
     for s in W.COMPLEXES:
@@ -466,15 +469,17 @@ def capacity_rows():
             cap = W.CAPACITY.get(key, _other_capacity(key))
             label = W._plat_label(key)
             if key == "Ferrier Square|4S":
-                rows.append((code, W.COMPLEX_IDS[s], s, label, 330, "2019-07-01", "2026-09-13", "2019 rating"))
+                rows.append((code, W.COMPLEX_IDS[s], s, label, 330, "2019-07-01", "2026-09-13", RATED_2019))
                 rows.append((code, W.COMPLEX_IDS[s], s, label, 300, "2026-09-14", "2027-02-12",
-                             "temporary: stair S5 closed for rebuilding"))
-                rows.append((code, W.COMPLEX_IDS[s], s, label, 330, "2027-02-13", "", "2019 rating restored"))
+                             "temporary while stair S5 is rebuilt: 1 person per sq m of the usable area outside the "
+                             "work site"))
+                rows.append((code, W.COMPLEX_IDS[s], s, label, 330, "2027-02-13", "", RATED_2019 + ", restored"))
                 continue
             if s == "Sallow Park":
-                rows.append((code, W.COMPLEX_IDS[s], s, label, cap, "2019-07-01", "", "2019 rating, confirmed 2026-08"))
+                rows.append((code, W.COMPLEX_IDS[s], s, label, cap, "2019-07-01", "",
+                             RATED_2019 + ", area re-measured 2026-08"))
                 continue
-            rows.append((code, W.COMPLEX_IDS[s], s, label, cap, "2019-07-01", "", "2019 rating"))
+            rows.append((code, W.COMPLEX_IDS[s], s, label, cap, "2019-07-01", "", RATED_2019))
     return rows
 
 

@@ -92,7 +92,7 @@ def write_book(path, g, a, b):
     ws.print_title_rows = "4:4"
 
     ws2 = wb.create_sheet("Escalators AM peak")
-    ws2.append(["Platform escalators at their rated flows between 07:00 and 09:30 on the autumn 2026 pick's weekdays (people a minute, station planning manual 5.3)"])
+    ws2.append(["Escalators between the mezzanines and the platforms at their rated flows, 07:00 to 09:30 local on the autumn 2026 pick's weekday-timetable days (people a minute, station planning manual 5.3)"])
     ws2["A1"].font = Font(name="Calibri", bold=True, size=12)
     ws2.append([])
     ws2.append(["Complex", "Down to the platforms", "Up from the platforms"])
@@ -105,7 +105,7 @@ def write_book(path, g, a, b):
         ws2.column_dimensions[col].width = w
 
     ws3 = wb.create_sheet("Elevators")
-    ws3.append(["Elevator-hours out of service, 07:00 to 09:45 on the autumn 2026 pick's weekday mornings"])
+    ws3.append(["Elevator-hours out of service, every elevator in the complex, 07:00 to 09:45 local on the autumn 2026 pick's weekday-timetable mornings (total)"])
     ws3["A1"].font = Font(name="Calibri", bold=True, size=12)
     ws3.append([])
     ws3.append(["Complex", "Elevator-hours"])
@@ -124,8 +124,8 @@ def write_book(path, g, a, b):
         ["Forecast: each platform's morning peak (the highest quarter-hour mean of the people on the platform as trains arrive, quarter-hours starting 07:00 to 09:30) for an average weekday of the pick, against 85 per cent of its rated capacity on 1 March 2027 (platform capacity register)."],
         ["Crowds: the October 2026 station census's flows onto and off every platform, scaled to an autumn Tuesday-to-Thursday morning and to each spring weekday by the fare export, run through the SPR27 weekday timetable at the fleet register's 150 people a car; a train takes at most the room it has after the riders it brings and those getting off, and the rest wait for the next train."],
         ["Line 5 runs eight-car trains from 1 March 2027 (spring 2027 service plan)."],
-        ["Escalators: the station planning manual's rated flows (40, 60 and 80 people a minute for 600, 800 and 1,000 mm steps at 0.5 m/s, in proportion at other speeds), each escalator in the direction it was set to run and at the speed its controller is set to."],
-        ["Elevators: hours not in normal passenger service between 07:00 and 09:45 on the autumn 2026 pick's weekdays (8 September to 18 December 2026, weekday timetable days), faults from the remote monitoring and planned maintenance from the work orders."],
+        ["Escalators: every escalator between a mezzanine and a platform, at the station planning manual's rated flows (40, 60 and 80 people a minute for 600, 800 and 1,000 mm steps at 0.5 m/s, in proportion at other speeds), each in the direction it was set to run and at the speed its controller is set to, with no allowance for stoppages."],
+        ["Elevators: total hours each elevator in the complex, street and platform, was not in normal passenger service between 07:00 and 09:45 local on the autumn 2026 pick's weekday-timetable days (8 September to 18 December 2026, the Thanksgiving holiday timetable days out): faults from the remote monitoring, from the moment the car stopped, and planned maintenance from the work orders, overlaps counted once."],
         ["Station Planning, January 2027."],
     ]:
         ws4.append(line)
@@ -159,11 +159,12 @@ def write_chart(path, a):
                  fontsize=10.5)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.legend(frameon=False, loc="upper right")
+    ax.legend(frameon=False, loc="upper left")
     ax.set_ylim(0, max(down + up) * 1.18)
-    fig.text(0.01, 0.01, "Station planning manual 5.3 rated flows; directions from the escalator controller log, speeds "
-             "from the asset register. Autumn 2026 pick weekdays.", fontsize=7.5, color="#555555")
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.text(0.01, 0.01, "Station planning manual 5.3 rated flows, every escalator between a mezzanine and a platform.\n"
+             "Directions from the escalator controller log, speeds from the asset register; autumn 2026 pick "
+             "weekday-timetable days, local time.", fontsize=7.5, color="#555555")
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
     fig.savefig(path, metadata={"Software": None})
     plt.close(fig)
 
@@ -227,11 +228,13 @@ def write_submission(path, g, a, b):
     for code, st, lab in C.WATCH:
         p = posts[code]
         L.append("   - %s (%s, %s): %s" % (code, st, lab, _days_text(p) if p else "none"))
-    L.append("3. Platform escalators at their rated flows between 07:00 and 09:30 on the autumn 2026 pick's weekdays, "
-             "people a minute down to the platforms and up from them:")
+    L.append("3. Escalators between the mezzanines and any of the platforms, at their rated flows between 07:00 and "
+             "09:30 local on the autumn 2026 pick's weekday-timetable days, people a minute down to the platforms and "
+             "up from them:")
     for cx in C.WATCH_COMPLEXES:
         L.append("   - %s: %d down, %d up" % (cx, a[cx][0], a[cx][1]))
-    L.append("4. Elevator-hours out of service between 07:00 and 09:45 on the autumn 2026 pick's weekday mornings:")
+    L.append("4. Total elevator-hours out of service between 07:00 and 09:45 local on those mornings, every elevator "
+             "in the complex:")
     for cx in C.WATCH_COMPLEXES:
         L.append("   - %s: %.1f" % (cx, round(b[cx], 1)))
     L.append("")

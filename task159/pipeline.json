@@ -9,26 +9,26 @@
  "updated": "2026-10-17",
  "stump": "A competent solver carries each watch-list platform's mid-week counted peak to each spring weekday in proportion to its complex's morning entries and files 35 shifts a week, posting Monday and Friday conductors on Sallow Park's Line 1 and Line 4 southbound platforms and keeping Corran Junction's Line 5 westbound platform posted every weekday; the step that lands it there is treating a mid-week crowd behind full trains as proportional to arrivals, when on Mondays, Fridays and eight-car Line 5 trains every train takes everyone and the pick needs 26.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-17"
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK), every line answered in the design note",
-  "reader": ""
+  "reader": "no leak, decisive step analytical (stage 4 round 1); the asks' readings it raised closed in the round 1 pass"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.org_family, answered at the draw)",
   "nearest": "0.07 task451 v2; surface: one card-level pair, task147, differentiated"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW on the asks only (round 1); fixed in one generator pass with the call frozen, re-judge pending",
+  "report": "determinism_check_report_round1.md"
  },
  "returned": [],
- "resume": "stage 4: reader and judge",
+ "resume": "stage 4: re-judge once (round 1 fixes in: asks' readings closed, golden holds from 120 to 155 a car, capacity basis stated, contractor renamed)",
  "approved": null,
  "delivered": null,
  "portal": null,
