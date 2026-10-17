@@ -107,6 +107,18 @@
   "41210"
  ],
  "eligible_units": 12,
+ "excluded_by_hospital": {
+  "H1": 4575,
+  "H2": 2535,
+  "H3": 3040,
+  "H4": 227
+ },
+ "excluded_with_a_complication_by_hospital": {
+  "H1": 213,
+  "H2": 124,
+  "H3": 148,
+  "H4": 13
+ },
  "gap_complications": 15,
  "hospital_year": {
   "H1": {

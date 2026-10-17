@@ -20,8 +20,8 @@ def table(path, g):
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = _c.writer(fh, lineterminator="\n")
         w.writerow(["position_code", "dwelling_ref", "specific_sound_level_db_laeq",
-                    "blower_air_knm3_in_assessment_period", "unrecorded_quarter_hours",
-                    "longest_unrecorded_run_quarter_hours"])
+                    "blower_air_knm3_in_assessment_period", "quarter_hours_without_own_reading",
+                    "longest_unbroken_run_quarter_hours"])
         for row in g["rows"]:
             w.writerow([row["position"], row["dwelling"], "%.1f" % row["specific_db"],
                         "%.1f" % row["air_knm3"], row["unrecorded_quarter_hours"],
@@ -132,10 +132,10 @@ def note(path, g, chart_png):
          Paragraph("The blowers ran through every assessment minute of the survey, so no position was "
                    "measured with the plant off load. What moved week to week was the air the lanes took, "
                    "and the air delivered through each position's own assessment period is in the position "
-                   "table beside its level, with the part of the plant's record the historian does not "
-                   "hold for those hours, which is where the radio link to the PLC dropped.", BODY),
+                   "table beside its level, with the quarter hours of those hours the historian holds no "
+                   "reading of its own for, which is where the radio link to the PLC dropped.", BODY),
          Table(wrap([["Week beginning", "Blower air delivered, thousand Nm3",
-                      "Quarter hours not recorded", "Longest run"]]
+                      "Quarter hours with no reading of their own", "Longest run"]]
                     + [["%d %s" % (W.WEEKS[k].day, W.WEEKS[k].strftime("%B")),
                         "{:,}".format(v["blower_air_knm3"]), "%d" % v["unrecorded_quarter_hours"],
                         "%d" % v["longest_unrecorded_run"]]

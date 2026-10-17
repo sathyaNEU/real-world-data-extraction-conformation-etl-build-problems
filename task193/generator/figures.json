@@ -946,5 +946,7 @@
  ],
  "referral_multiple": 1.25,
  "referral_year": 2027,
- "rung2_count": 11
+ "rung2_count": 11,
+ "crude_only_count": 5,
+ "window_only_count": 2
 }

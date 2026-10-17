@@ -1,4 +1,4 @@
-position_code,dwelling_ref,specific_sound_level_db_laeq,blower_air_knm3_in_assessment_period,unrecorded_quarter_hours,longest_unrecorded_run_quarter_hours
+position_code,dwelling_ref,specific_sound_level_db_laeq,blower_air_knm3_in_assessment_period,quarter_hours_without_own_reading,longest_unbroken_run_quarter_hours
 NSL01,DW-114,43.9,516.6,20,14
 NSL02,DW-103,47.3,516.6,20,14
 NSL03,DW-121,43.6,497.4,27,14

@@ -102,12 +102,16 @@ factor of **8.5**; on the complications its own patients would ordinarily have t
 
 ### Also requested
 
-6. By hospital for the year ended 31 December 2026, in-scope episodes, complications and the adjusted
-   rate per 1,000 episodes:
-   - Alderbrook Hospital: 48,617 episodes, 4,909 complications, 102.6
-   - Stonecreek Hospital: 26,848 episodes, 2,738 complications, 103.7
-   - Marrowfield Hospital: 24,522 episodes, 2,294 complications, 103.9
-   - Carrowdean District Hospital: 2,306 episodes, 199 complications, 111.7
+6. By hospital for the year ended 31 December 2026, the separations the complication indicator
+   excludes and how many of those recorded a complication. The separations a hospital's acute units
+   reported come from the activity summary, which is the system that counts separations; the excluded
+   ones are those separations less the episodes the indicator measured under clauses 2.1 to 2.3. The
+   episode extract is one row per record the warehouse received and runs short of the separations
+   reported at three of the four sites:
+   - Alderbrook Hospital: 53,192 separations reported, 48,617 episodes measured, 4,575 excluded, 213 of them with a complication
+   - Stonecreek Hospital: 29,383 separations reported, 26,848 episodes measured, 2,535 excluded, 124 of them with a complication
+   - Marrowfield Hospital: 27,562 separations reported, 24,522 episodes measured, 3,040 excluded, 148 of them with a complication
+   - Carrowdean District Hospital: 2,533 separations reported, 2,306 episodes measured, 227 excluded, 13 of them with a complication
 7. By quarter, the separations the sub-acute and mental health units reported and the episodes among
    them that recorded a complication:
    - 2024-25 Q1: 901 separations, 45 with a complication

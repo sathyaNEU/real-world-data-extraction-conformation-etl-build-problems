@@ -416,17 +416,17 @@ Every figure is scored against the golden within half a unit of the stated round
 
 | Ask | Figures | Cracker keeps | What it misses on | Result |
 |---|---|---|---|---|
-| A1 chain and quarter: accepted, rejected, median days | 48 | 9 | the chain that owned the pharmacy on the day of the dispensing | miss |
+| A1 chain and quarter: accepted, rejected, median days | 48 | 3 | the chain that owned the pharmacy on the day of the dispensing | miss |
 | A2 payer: doses and fee | 14 | 8 | the dose the edition in force assigns, against the figure the package row was written with | miss |
 | A3 region and age band: patients and share | 48 | 0 | the region the October 2025 delivery holds, which the current extract's history columns cannot reconstruct | miss |
 
-**Pair ceiling:** 37.0
-**Mirror leakage:** 15.5
+**Pair ceiling:** 34.0
+**Mirror leakage:** 10.0
 **Measured by:** `generator/cracker.py`, run on the cut pack by `checks.py` at every build
 
 The asks are decoupled from the call, so the mirror walks the cracker's ask path: Ls equals Lc at
-0.155. C is 38 + 7 + 55 x 0.155 = 53.5 and S is 5 + 7 + 55 x 0.155 = 20.5, so the pair ceiling is
-37.0 against a ceiling of 40 and the leakage is 15.5 against 35. A2 is the weakest ask at 8 of its
+0.100. C is 38 + 7 + 55 x 0.100 = 50.5 and S is 5 + 7 + 55 x 0.100 = 17.5, so the pair ceiling is
+34.0 against a ceiling of 40 and the leakage is 10.0 against 35. A2 is the weakest ask at 8 of its
 14 figures kept.
 
 **The three silent primaries, and what each is worth.** Each sits under a pin that stays, and none
@@ -435,9 +435,9 @@ measures what it carries:
 
 | Primary | Family | The pin it sits under | What finds it | Ask weight then kept | Ceiling |
 |---|---|---|---|---|---|
-| the chain that owned the pharmacy on the day | D7 keys, an as-of join | the asking sentence's quarter of dispensing, standard 2.1 and the dictionary | the chains' own monthly log, which is a rollup above its parts for the two chains either side of a transaction | 50.9 per cent | 56.5 |
-| the dose the edition in force assigns | D2 version | the fee workbook's bands, its amendment and its payer rule | `ddd_per_pack` does not equal the package's own pack size times strength over the dose the index names, for three substances and no others | 20.9 per cent | 40.0 |
-| the region the October 2025 delivery holds | D2 version | standard 4.2's region vintage | the current extract claims no region change for the patients whose region differs between the two deliveries, and its own documentation says it began keeping a previous region only from 1 April 2026, so it cannot reconstruct the earlier state | 59.1 per cent | 61.0 |
+| the chain that owned the pharmacy on the day | D7 keys, an as-of join | the asking sentence's quarter of dispensing, standard 2.1 and the dictionary | the chains' own monthly log of what the register accepted: it ties to the extract in all 148 chain-months when a line is read against the chain that owned its pharmacy that day, and fails in 144 of them, by 56,626 lines, when it is read against the chain the register gives now | 50.9 per cent | 56.5 |
+| the dose the edition in force assigns | D2 version | the fee workbook's bands, its amendment and its payer rule | the stored figure contradicts the formula its own column description gives, on nine package rows across three codes and nowhere else, beyond the rounding it is stated at; one edition of the index is in force across the whole fee period, so no vintage explains it | 15.5 per cent | 37.0 |
+| the region the October 2025 delivery holds | D2 version | standard 4.2's region vintage | the current extract has kept a previous region only since 1 April 2026, which its documentation states and no row contradicts, so a blank is not evidence of no change; the two deliveries then disagree for patients the current extract records nothing against, and it cannot reconstruct the earlier state | 53.6 per cent | 58.0 |
 | all three found | - | - | 100 per cent | 83.5 |
 
 The last row is the fairness proof: one handling reproduces the golden exactly, and it is the only
@@ -510,6 +510,38 @@ over the generator's own flag.
   references carried a 2026 prefix on 2023 dispensings and are now numbered in the year the register
   wrote them; and the spontaneous-report series were six monotone ladders out of nine, which is the
   market story told too neatly, and are now four, with the quarter-to-quarter swing widened.
+- Removing the sentence that adjudicated the dose against the golden, without putting anything in
+  its place. The second judge then read it as a competing defensible answer: no shipped file said
+  which source governed, and it named a third reading, the index column for the 2025 quarter and
+  the 2026 edition from 1 January. Removing a pointer to the wrong answer is not the same as
+  forcing the right one. Two things force it now. `ddd_per_pack`'s own column description gives its
+  formula, the pack size times the strength over the dose the index assigns, and names
+  `atc_text.csv` as the index, so every input to the check is shipped; nine package rows across
+  three codes then contradict that formula by a factor, beyond the rounding they are stated at,
+  while the other 49 satisfy it. And `atc_text.csv` now carries the date the register's statistics
+  took up the edition it ships, 1 July 2025, which is before the fee period opens, so no day of
+  that period sits under two editions and the vintage reading has nothing to stand on. Both are
+  facts about a column and a document, not handling rules, and finding the three codes is still the
+  work.
+- Leaving ask 3's basis to be implied rather than forced. "Per pharmacy chain" does not say at the
+  dispensing date, and the current reading moves a chain-quarter from 5,265 to 3,546. The data
+  settles it: the chains' own monthly log of what the register accepted ties to the extract in all
+  148 chain-months under the at-date reading and fails in 144 of them, by 56,626 lines, under the
+  current-chain reading. That required the log's accepted count to be what the register accepted,
+  one line per dispensing however many times a chain transmitted it, so the retransmissions now sit
+  in its submitted count where they belong; before that change the at-date reading left a residue
+  of 1,922 lines and neither reading tied. Both directions are asserted, in the generator and
+  independently in the verifier, so the reconciliation and the rollup the device rides on are the
+  same fact measured from both sides and cannot be confused.
+- Three impossible register rows and a staged transfer history: APK-110, DSA-116 and VST-126 each
+  changed chain after their own closing date, and 32 of 43 transfers fell in one quarter against
+  eleven spread over four years. A pharmacy whose authorisation has ended no longer changes hands,
+  the four transactions are spread across January, March, August and September 2026, and the
+  register's own history is 25 transfers back to 2017, so the inside-window ones are a minority of
+  the column rather than three quarters of it.
+- The Final Recommendation named Ternivast and Oxelumab as pairs dropped from the equal-chance ten
+  when they are the two it hides. Reworded, and reworded a second time so the figure set in that
+  block is unchanged: the first rewrite dropped a repeated 10 and `freeze.py` caught it.
 - **The call is forced, and the judge measured it.** All 23 pair rows and 16,957 person keys
   reproduce from the bundle. The seven referred pairs come out at 1.365 to 1.499 with the nearest
   unreferred at 1.033, and the set holds under three independence constructions, the pair's own

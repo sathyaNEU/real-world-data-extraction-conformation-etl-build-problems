@@ -298,6 +298,18 @@ def _core(target, fig, with_asks):
         n = len(band_acc[code])
         lev = [10.0 * math.log10(sum(10.0 ** (r[j] / 10.0) for r in band_acc[code]) / n)
                for j in range(len(freqs))]
+        # plan 4.3 files the band level as the energy-equivalent level of the period's quarter-hour
+        # records; the arithmetic mean of the same rows gives the same prominent bands here
+        lev_db = [sum(r[k] for r in band_acc[code]) / float(n) for k in range(len(freqs))]
+        for lv2, nm2 in ((lev, "in energy"), (lev_db, "as written")):
+            prom = []
+            for k in range(len(lv2)):
+                nb2 = [lv2[m] for m in (k - 1, k + 1) if 0 <= m < len(lv2)]
+                if lv2[k] - sum(nb2) / float(len(nb2)) >= 5.0:
+                    prom.append(freqs[k])
+            want = ["400"] if fig["tone_prominent"][code] == "yes" else []
+            ok([p2.rstrip("0").rstrip(".") if "." in p2 else p2 for p2 in prom] == want,
+               "%s's prominent bands %s (%s) against %s" % (code, prom, nm2, want))
         j = max(range(len(lev)), key=lambda k: lev[k])
         nb = [lev[k] for k in (j - 1, j + 1) if 0 <= k < len(lev)]
         excess = lev[j] - sum(nb) / float(len(nb))        # plan 4.3: the mean of the two band levels
@@ -397,8 +409,8 @@ def _core(target, fig, with_asks):
                "the golden table's level for %s" % c)
             ok(float(r["blower_air_knm3_in_assessment_period"]) == fig["blower_air_knm3"][c],
                "the golden table's blower air for %s" % c)
-            ok(int(r["unrecorded_quarter_hours"]) == fig["unrecorded_quarter_hours"][c],
-               "the golden table's unrecorded quarter hours for %s" % c)
-            ok(int(r["longest_unrecorded_run_quarter_hours"]) == fig["longest_unrecorded_run"][c],
-               "the golden table's longest unrecorded run for %s" % c)
+            ok(int(r["quarter_hours_without_own_reading"]) == fig["unrecorded_quarter_hours"][c],
+               "the golden table's quarter hours with no reading of their own for %s" % c)
+            ok(int(r["longest_unbroken_run_quarter_hours"]) == fig["longest_unrecorded_run"][c],
+               "the golden table's longest unbroken run for %s" % c)
     return OK

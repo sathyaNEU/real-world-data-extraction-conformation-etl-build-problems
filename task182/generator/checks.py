@@ -575,6 +575,65 @@ def run(target, g):
         A(b2 == rows[c]["band_hz"] and t2 == rows[c]["tone"],
           "SF16 %s gives the same band and tone with the band file read as local" % c)
 
+    # SF23 the band level over the assessment period: filed at 4.3, and the verdicts converge anyway
+    A(has(plan, "the energy-equivalent level of its quarter-hour records in that period, both "
+                "deployments together"),
+      "SF23 plan 4.3 files how a band's level over the assessment period is formed")
+    A(re.sub(r"\s+", "", plan.lower()).count("energy-equivalentlevelofitsquarter-hourrecords") == 1,
+      "SF23 it is filed once")
+    bandacc = {}
+    for sid, ss in g["series"].items():
+        bandacc.setdefault(ss["dep"]["code"], [])
+    import csv as _c2
+    per_dep = {}
+    depmap = {}
+    for d in _csv.DictReader(io_open(target, PK.FILES["deployments"])):
+        depmap.setdefault(d["meter_serial"], []).append(
+            (dt.datetime.strptime(d["deployed_at"], "%Y-%m-%d %H:%M"),
+             dt.datetime.strptime(d["collected_at"], "%Y-%m-%d %H:%M"),
+             d["position_code"], d["deployment_ref"]))
+    with io_open(target, PK.FILES["bands"]) as fh:
+        rd2 = _c2.reader(fh)
+        next(rd2)
+        for row in rd2:
+            st2 = (dt.datetime.strptime(row[1], "%Y-%m-%d %H:%M")
+                   + dt.timedelta(hours=SM.LOCAL_OFFSET))
+            if st2.weekday() > 4 or not (W.DAY_START <= st2.hour < W.DAY_END):
+                continue
+            for a4, b4, c4, ref4 in depmap.get(row[0], []):
+                if a4 <= st2 <= b4:
+                    per_dep.setdefault((c4, ref4), []).append([float(x) for x in row[2:]])
+                    break
+    pos_blocks = {}
+    for (c4, ref4), rws in per_dep.items():
+        pos_blocks.setdefault(c4, []).append(np.array(rws))
+
+    def _verdict(lv):
+        out = []
+        for i4 in range(len(PK.BANDS)):
+            nb4 = [lv[j] for j in (i4 - 1, i4 + 1) if 0 <= j < len(PK.BANDS)]
+            if lv[i4] - float(np.mean(nb4)) >= 5.0:
+                out.append(PK.BANDS[i4])
+        return tuple(out)
+
+    for c4, blocks in pos_blocks.items():
+        allrows = np.concatenate(blocks)
+        energy = 10.0 * np.log10(np.mean(np.power(10.0, allrows / 10.0), axis=0))
+        dbmean = np.mean(allrows, axis=0)
+        perdep = np.mean([10.0 * np.log10(np.mean(np.power(10.0, b4 / 10.0), axis=0)) for b4 in blocks],
+                         axis=0)
+        v1, v2, v3 = _verdict(energy), _verdict(dbmean), _verdict(perdep)
+        A(v1 == v2 == v3,
+          "SF23 %s gives the same prominent bands on the filed aggregation and on either other reading "
+          "(%s, %s, %s)" % (c4, v1, v2, v3))
+        A(v1 == ((400,) if rows[c4]["tone"] else ()),
+          "SF23 %s's prominent bands are %s and the table says %s" % (c4, v1, rows[c4]["tone"]))
+        for i4 in range(len(PK.BANDS)):
+            nb4 = [energy[j] for j in (i4 - 1, i4 + 1) if 0 <= j < len(PK.BANDS)]
+            ex4 = energy[i4] - float(np.mean(nb4))
+            A(abs(ex4 - 5.0) > 0.45,
+              "SF23 %s's %s Hz band sits %.2f dB from the prominence test" % (c4, PK.BANDS[i4], ex4 - 5.0))
+
     # tonality: the mean of the two adjacent band levels, taken as written or in energy
     for c in [x for x in W.CODES if g["bands"].get(x) is not None]:
         lv = g["bands"][c]
@@ -819,10 +878,13 @@ def run(target, g):
           "SF20 %s: the count is the same whether a quarter hour is stamped at its start or its close "
           "(%d, %d)" % (c, opening, rows[c]["unrecorded_quarter_hours"]))
     prompt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
-    A("blower air delivered through its assessment period" in prompt,
-      "the ask names the air it asks for and the period it is read over")
-    A("did not record the plant's state in and the longest unbroken run of them" in prompt,
-      "the ask names the record figures and their unit")
+    A("the air the blowers delivered through its assessment period" in prompt,
+      "the ask names the air it asks for and the period it is read over, and no shipped column is named "
+      "for it")
+    A(not any("blower_air" in c2 or "blowers" in c2 for c2 in scada_rows[0]),
+      "no channel in the historian is named for what the ask asks for: %s" % sorted(scada_rows[0]))
+    A("holds no reading of its own for and the longest unbroken run of them" in prompt,
+      "the ask words the record figures so a row that repeats the one before it fails them")
     # the devices live where the call reads nothing: the call's own figures stand with the historian gone
     import shutil as _sh
     tmpd = os.path.join(os.path.dirname(target), "generator", "_nohist")

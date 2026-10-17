@@ -25,6 +25,8 @@ def write(here, g):
         "referral_multiple": 1.25,
         "referral_year": 2027,
         "rung2_count": g["rung2_count"],
+        "crude_only_count": len(g["crude_only"]),
+        "window_only_count": len(g["window_only"]),
     }
     with open(os.path.join(here, "figures.json"), "w", encoding="utf-8") as fh:
         json.dump(obj, fh, indent=1, ensure_ascii=True)

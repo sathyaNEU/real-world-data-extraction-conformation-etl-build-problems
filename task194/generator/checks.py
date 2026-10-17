@@ -607,7 +607,7 @@ def run(target, g, state):
     cr = CR.run(target)
     # the two responses are scored from their own handling, not from one reading twice: the asks consume
     # nothing the call's construction produces, and the separation count below is what proves it
-    ok(cr["n_ask"] == 48 and cr["n_con"] == 12,
+    ok(cr["n_ask"] == 44 and cr["n_con"] == 12,
        "the rubric's ask figures and construction figures are counted (%d and %d)"
        % (cr["n_ask"], cr["n_con"]))
     ok(cr["cracker_construction_kept"] == cr["n_con"],
@@ -627,11 +627,19 @@ def run(target, g, state):
            "the ask sheet states the measured mirror leakage (%.1f)" % cr["leakage"])
     ok(cr["ceiling"] <= 40.0, "the pair ceiling is at or under 40 (%.1f)" % cr["ceiling"])
     kept = {}
-    for a, _, hit in cr["cracker_rows"]:
+    for row_ in cr["cracker_rows"]:
+        a, hit = row_[0], row_[2]
         kept[a] = kept.get(a, 0) + (1 if hit else 0)
+    # every figure both responses attempt carries a computed value, so a miss is attempted and missed
+    for row_ in cr["cracker_rows"] + cr["mirror_rows"]:
+        ok(isinstance(row_[3], float), "every scored figure carries what the response computed")
+    ok(all(abs(x[3] - x[4]) > 1e-9 for x in cr["mirror_construction"]),
+       "the mirror's twelve construction figures are all attempted and all wrong")
     gap(not any(kept.values()),
-        "supplemental-stumping 1.1: the cracker keeps %d of %d ask figures, on %s. The ask sheet states "
-        "it and the design note's Tried and rejected records why the ask cannot hold a primary as worded."
+        "supplemental-stumping 1.1: the cracker keeps %d of %d ask figures, on %s. Both are Carrowdean's, "
+        "whose only acute units are two of the twelve candidates, so A2's feed gap cannot reach the site "
+        "without changing a candidate's separations. The ask sheet states it and says what buying the last "
+        "two figures would cost."
         % (cr["cracker_ask_kept"], cr["n_ask"],
            ", ".join(a for a, n in sorted(kept.items()) if n)))
 

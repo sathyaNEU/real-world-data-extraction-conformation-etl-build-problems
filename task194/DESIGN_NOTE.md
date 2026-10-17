@@ -58,11 +58,13 @@ of them, the eligible row set and the separation key pinned, the realism work on
 holidays, length of stay and comorbidity, the measured cracker, and the series tying to the extract on all
 215 unit-quarters with no shipped file ranking the candidates.
 
-**Two defects carried forward as stage 3 work, not inherited:** the four hospital-level adjusted rates are
-still edge-fragile, one at 0.019 of a bin and another flipping on a single complication either way; and the
-activity summary equals a de-duplication on one key in all 90 unit-months while the dictionary states
-another, which gives supplementary answer 6 two defensible series. Both are closed before any reader sees
-the pack.
+**Two defects carried forward, both closed at stage 3.** The four hospital-level adjusted rates were
+edge-fragile, one at 0.019 of a bin and another flipping on a single complication either way: the ask they
+belonged to is gone, and the figures that replaced it are whole separations, so no rounding bin exists to
+sit near the edge of. And the activity summary equalled a de-duplication on one key in all 90 unit-months
+while the dictionary stated another, which gave the ask two defensible series: the overlapping load's
+second copy now carries the same patient, dates, stay and group and differs only in the episode
+identifier, so the key the dictionary states collapses it exactly and one series is forced.
 
 ## Default path
 
@@ -345,19 +347,37 @@ Three asks, 48 separately gradable figures, each outside the main call's row pop
 nothing the call's construction produces. The construction layer is the twelve avoidable counts the
 decisive construction produces, which the workbook grades a row at a time.
 
-**A2, each hospital's adjusted complication rate for the year ended 31 December 2026, with the episodes
-and complications behind it.** 12 figures (4 sites x episodes, complications, adjusted rate per 1,000).
-H18 home: a measure every candidate's hospital carries that the call does not turn on. Use: the quality
-committee reports by site and the partnership reports to it by site. Path: `episode_outcomes_extract.csv`,
-`activity_summary_monthly.csv`, `unit_register.csv`, `hospital_sites.csv`, `drg_risk_bands.csv`,
-`hac_stratum_rates.csv`, 11 columns. Primary device: **none, and this is the open defect in the ask
-layer.** The device it carries is the vintage of a unit's site: three cost centres were realigned to
-another hospital during the period, the register carries the alignment at the export date and the activity
-summary carries the site each unit reported under in each month, so the register join mis-assigns 3,918
-episodes away from Alderbrook and 4,958 onto Stonecreek. The dictionary describes both columns, so a
-response that reads it handles the device correctly: it is a mirror device, legitimate and worth having,
-and it is what holds the mirror to 0 of 12, but it cannot be the primary. Realism: a site register carries
-the current alignment and a monthly activity file carries the month's, which is what both systems are for.
+**A2, how many separations the complication indicator excludes at each hospital in the year ended 31
+December 2026, and how many of those recorded a complication.** 8 figures (4 sites x 2), both whole
+separations, so neither carries a rounding bin. H18 home: an input reconciled to another system's total,
+the gap made of devices, on rows the indicator excludes by its own clauses. Use: the quality committee is
+told the indicator measured 102,293 episodes and asks what the rest of the activity is and whether it
+carries complications. Path: `activity_summary_monthly.csv`, `episode_outcomes_extract.csv`,
+`unit_indicator_series.csv`, `unit_register.csv`, `hospital_sites.csv`, `drg_risk_bands.csv`,
+`data_dictionary.csv`, 11 columns. **Primary device (D4 absence, a count that does not sum across two
+grains):** the day-procedure feed did not deliver for two months at three units, one at each of the three
+larger sites, while the theatre management system was migrated. The patient administration system counted
+those separations, so the activity summary carries them and the episode extract never received them. The
+excluded separations are therefore the summary's separations less the episodes the indicator measured, not
+a count of the extract's own out-of-scope rows, and nothing in the pack says the extract is short of a
+separation: the only way to see it is to reconcile the two files across their grains, which no column
+description asks for and no sweep performs. The ask does not name the activity summary, so it does not
+signpost the path. Hazard: the four exclusions themselves, specification 2.1 to 2.3, which a response has
+to apply in full. Stops, measured on the cut pack: counting the extract's out-of-scope rows gives 4,513,
+2,493, 2,850 and 227 against the answer's **4,575, 2,535, 3,040 and 227**, and 211, 123, 138 and 13
+against **213, 124, 148 and 13**. Fair in the sense of law 6: the summary-less-series path reproduces every
+figure exactly, asserted. Realism: a feed migration misses a window, and the system that counts separations
+is not the warehouse.
+
+**Why A2 can be sited here and could not be sited where it was.** The ask it replaces was each hospital's
+adjusted complication rate over in-scope acute episodes, which are exactly the rows the call's own
+comparison reads, so the separation line left nowhere for a device to live and four drafts died in a row.
+The excluded activity is the complement: same-day separations, episodes whose care type is not acute, and
+episodes the grouper could not group, 10,377 rows in the calendar year that the call never reads and that
+A3's three non-acute units do not touch either. The feed gap is further confined to units the improvement
+team has already been placed with, so it cannot reach a candidate's separations, and to same-day records,
+so it cannot reach an in-scope episode: the call is provably untouched and `checks.py` asserts both halves
+by count.
 
 **A3, the separations the sub-acute and mental health units reported each quarter, and the episodes with a
 complication.** 20 figures (10 quarters x 2). H18 home: an input reconciled to another system's total, the
@@ -406,21 +426,40 @@ under every handling of the asks' devices, because none of them touches an in-sc
 
 | Cracker row (the response that landed the call) | Figures | Verdict |
 |---|---|---|
-| A2 each hospital's episodes, complications and adjusted rate | 12 | keeps 12 of 12 |
+| A2 what the indicator excludes at Alderbrook, Stonecreek and Marrowfield | 6 | miss |
+| A2 what the indicator excludes at Carrowdean | 2 | keeps 2 of 2 |
 | A3 the separations outside the indicator, by quarter | 20 | miss |
 | A4 the complication groups, by year | 16 | miss |
 
-**Pair ceiling: 39.5** (cracker 67.0, mirror 12.0, measured on the cut pack).
-**Mirror leakage: 0.0** per cent of ask weight.
+**Pair ceiling: 36.4** (cracker 58.8, mirror 14.0, measured on the cut pack).
+**Mirror leakage: 3.6** per cent of ask weight.
 **Measured by:** `generator/cracker.py`, which scores the two responses from their own handling and prints
 one row per response. The asks consume nothing the call's construction produces, so the two ask readings
 come from the two responses' own care rather than from the call, and the script says so in its output
 instead of printing a duplicate row.
 
-**The open defect, stated rather than dressed.** A2 keeps 12 of 12 against the cracker, so Part 1.1's rule
-that every cracker row misses is not met. The two gated figures are the worst honest measurements and both
-pass, and the ladder and the construction layer are what carry the pair. A2 needs a silent primary of a
-family A3 and A4 do not use, and until it has one this sheet says so.
+**The residue, stated rather than dressed.** Two of the 44 ask figures survive the cracker, both of them
+Carrowdean's, so Part 1.1's rule that every cracker row misses is met on 42 of 44 and not on those two.
+The reason is a fact about the world rather than a missing device: Carrowdean District Hospital's only
+acute units are two of the twelve candidates, so the feed gap cannot reach it without changing a
+candidate's separations, which would be a device moving the call. The three larger sites each have a unit
+the team has already been placed with and each carries the gap. Buying the last two figures would mean
+either inventing a ninth placed unit at Carrowdean, which takes one of the twelve candidates away, or
+moving the amalgamation date so the predecessor wards still report in 2026, which leaves 41510 one closed
+quarter and fails charter 4.2's floor. Both cost more than they buy, and the sheet says so.
+
+**The mirror's leakage is attempted and missed, not unattempted.** `generator/cracker.py` prints every
+figure both responses attempt with what each computed and what the rubric owes, so a figure scored as a
+miss because the response reached for nothing would be visible as a blank rather than hidden in a count.
+Every one of the 44 ask figures carries a computed value in both columns. The mirror's 3.6 per cent is
+Carrowdean's two A2 figures, which it gets right the same way the cracker does.
+
+**Where the two responses differ, and where they agree by construction.** A3 and A4 separate the two
+readings figure by figure: the mirror counts the extract's rows and takes the current revision throughout,
+the cracker de-duplicates on the stated key and reads each code against the revision in force. A2 has one
+natural path, because the ask does not name the activity summary and nothing in the pack says the extract
+is short, so both responses count the extract's out-of-scope rows and both miss the same six figures. The
+script says that in its output instead of printing the row twice and calling it two measurements.
 
 ## Tried and rejected
 

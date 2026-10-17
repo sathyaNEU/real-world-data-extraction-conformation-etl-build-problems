@@ -207,9 +207,18 @@ def report(target, verbose=True):
             print("    %-4s %-28s %12.2f %12.2f %10.2f %6.2f %6s"
                   % ("C", x[1], x[3], m[3], x[4], x[5], v))
     print()
-    print("  the asks consume nothing the call's construction produces, so the two ask readings are")
-    print("  scored from the two responses' own handling, not from the call; the separation assertions")
-    print("  in checks.py are what prove the decoupling, and no row here is a duplicate of another")
+    same, diff = [], []
+    byk2 = {(x[0], x[1]): x for x in r["mirror_rows"]}
+    for a in asks:
+        rows_ = [x for x in r["cracker_rows"] if x[0] == a]
+        (same if all(abs(x[3] - byk2[(x[0], x[1])][3]) < 1e-9 for x in rows_) else diff).append(a)
+    print("  the asks consume nothing the call's construction produces, so neither ask row is derived")
+    print("  from the call; the separation assertions in checks.py are what prove the decoupling.")
+    print("  %s: the two responses take different readings and the columns above differ figure by figure."
+          % (", ".join(diff) or "none"))
+    print("  %s: one natural path and a truth only a reconciliation across two grains reaches, so the"
+          % (", ".join(same) or "none"))
+    print("  two columns agree by construction. That is said here rather than printed as two measurements.")
     print()
     print("  weakest ask by figures the cracker keeps: %s, %d of %d" % weakest)
     print("  cracker  %.1f  (ask weight kept %.3f)" % (r["cracker_score"], r["Lc"]))
