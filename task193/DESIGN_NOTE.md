@@ -383,3 +383,45 @@ The pack as built, read against the gates one last time.
   no measure of how strong a pair's reporting is"; the closed assessments register names no pair that
   meets the criteria on either basis and every row in it closed before the window. Delete every wrong
   number in the pack and the call still turns on what the ratio is taken against.
+
+## Architecture 1, spent at stage 4 on the judge's SEND_BACK
+
+**The verdict.** NOT_DETERMINISTIC, `underspecified_objective`, disposition SEND_BACK. Gate G passes
+(`method_or_model_selection`, `analytical_non_defect`, no surface-read dependency, no sole data
+defect) and Gate H passes on all three rules, with the decisive step read as analytical: the choice
+of comparison group under masking. Every golden figure reproduced from the shipped files, the 15
+pairs with their ratios and chi-squares among them. The call is what failed: paragraph 3.1 names the
+measure and no shipped text says what it is taken against, so the proportional reporting ratio
+against all other reports, which is the textbook default, gives 11 and the golden's 15 appears only
+when the booster is out of the comparison. The leak reader, reading the same pack cold, landed the
+same 11 at moderate to high confidence and named the comparator as the one choice the documents left
+to it.
+
+**Why this is structural and not a missing sentence.** The judge's own fix is to file the comparison
+population in the standard, and that is right: `determinism-check` section 1 counts the comparison
+inside the estimand, the WHAT, which must be filed so that its literal execution is the golden. This
+build put the decisive step in the comparison population, so it put the stump in the WHAT. File it
+either way and the computation follows from the clause, which is rule application; leave it unfiled
+and the call is not determinate. There is no third position, and no hardening reaches one: a general
+criterion on the measure ("the expectation must not turn on the volume of any one product") makes the
+exclusion an executed rule, and a record of past runs that shows which comparator caught the
+confirmed signals is a corpus that refutes the naive read, which the readability screen fails on
+test 4.
+
+**The lesson, which is wider than this build.** Three architectures in this wave have now died the
+same death: task190's population had to say whether members not yet observed are in it, task192's
+decisive count had no parameter-free definition, and this one's comparison population is part of the
+estimand. In each the decisive step sat in the WHAT. The next draw puts the estimand wholly beyond
+argument, every term and population filed, and leaves two or more methods standing on it, with the
+data's own structure ruling out the easy one. `method_or_model_selection` on a filed estimand, not
+`estimand_identification`.
+
+**Worth keeping from the build.** The world and the ask layer are sound and the pack is realistic
+enough to reuse under another decisive step. Three defects the judge and the reader found in it are
+recorded so a re-root does not repeat them:
+- `dictionary_version` in the extract was set from the receipt date while paragraph 2.3 reads the
+  version in force when the case was coded, so 1,388 rows disagree and the serious share forks.
+- 501 licence-holder submissions carry a coded date one to four days before the receipt date, so the
+  mean days to coding forks three ways (raw, clipped at zero, negatives dropped).
+- The agreement schedule does not say whether the quarter's fee covers submissions received after
+  the quarter closed, so the holder fees fork by about 7,300 kroner.

@@ -4,12 +4,12 @@
  "status": "PAUSED",
  "domain": "pharmacology-pharmacoepidemiology-safety/safety-signal-detection",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-17",
  "stump": "A competent solver cleans the extract, builds every product and reaction pair's table against the whole database, applies the standard's three criteria and files 11 signals, five slots inside the desk's capacity, leaving the autumn booster inside the comparison set every other product is measured against when that one product is 40 per cent of the quarter's reports and its own reactogenicity sets the background rate for the four reactions on which the four signals it hides sit.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-17"
@@ -23,12 +23,12 @@
   "nearest": "0.07 task181 v1 (lineage); surface promoted task189, task190 and task191 on card signature, each differentiated"
  },
  "judge": {
-  "verdict": "running",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC, underspecified_objective, SEND_BACK; Gate G and Gate H pass",
+  "disposition": "re-root: the decisive step sat in the comparison population, which is part of the estimand",
+  "report": "/tmp/determinism-check-task193/verdict.md"
  },
  "returned": [],
- "resume": "Stage 4 run 1. The leak reader is back and the judge thread is running. Fixes owed from the reader, all in the generator: (1) set dictionary_version from the coded date, not the receipt date, so the label agrees with paragraph 2.3; (2) pin the fee basis in the agreement schedule to submissions received in the quarter, which closes the 519,954 against 512,639 fork; (3) pin the no-age group in the prompt; (4) realism: couple reporter_type to the channel, give the channel totals a real drift (submissions withdrawn before coding, in neither the extract nor the exceptions), move the seriousness revision off the campaign's own term and make it two terms, widen the authorisation-date spread, skew the distractors' categories and the exceptions' reasons. Then re-run every free gate, re-cut the zip, and read the judge's verdict: if it calls the comparison basis unforced, that is the one finding that needs a design answer, not a data fix.",
+ "resume": "ARCHITECTURE 1 IS SPENT on the judge's SEND_BACK. The decisive step was the measure's comparison population, which determinism-check section 1 counts inside the estimand: file it and the computation follows from the clause, leave it unfiled and the call is not determinate. Re-root at stage 1, architecture 2, loops reset, the old identity already in the card's lineage. The design note's last section records the structural reason, the wider lesson (put the estimand wholly beyond argument and leave two methods standing on it, with the data ruling out the easy one) and the three data defects the judge and reader found, so the re-root does not repeat them. The world, the files and the ask layer are reusable. Do not resume architecture 1.",
  "approved": null,
  "delivered": null,
  "portal": null,

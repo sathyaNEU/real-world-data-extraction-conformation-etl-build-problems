@@ -71,7 +71,24 @@
   "task189": "Shares the surface of a regulator's own standard reducing a quarter's records to a filed criterion. task189's decisive quantity is an average over measurements known only to lie below a limit that differs by laboratory, which is about what to put in place of a censored value; this build's is what the ratio is taken against. One is censoring, the other a comparison set, and neither route reaches the other's answer.",
   "task195": "Shares the Gate G mechanism key on the cards, which is why the guard WARNs. task195 is drawn and not built, and its mechanism is the uncertainty of a paired difference against two separate intervals; its Gate G key is varied at its own draw rather than here, since this build's mechanism is one dominant member of a comparison set and not an interval at all."
  },
- "lineage": [],
+ "lineage": [
+  {
+   "architecture": "v1",
+   "fate": "spent at stage 4 on 2026-10-17: the determinism judge returned NOT_DETERMINISTIC, underspecified_objective, SEND_BACK. Gate G and Gate H passed and every golden figure reproduced, but the decisive step was the measure's comparison population, which is part of the estimand and has to be filed, and filing it either way makes the computation follow from the clause. The leak reader, cold on the same pack, landed the default path's 11 and named the comparator as the one choice left to it.",
+   "domain": "pharmacology-pharmacoepidemiology-safety",
+   "objective": "anomaly-detection",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "signal_vs_noise_or_hold",
+   "decision_type": "designation_set",
+   "driver": "The decisive measure of each candidate is its share of an outcome against every other candidate pooled, so one dominant candidate holds every other candidate's measure down, and only re-measuring with the dominant one out of the comparison set recovers which candidates truly stand out.",
+   "stump": "A competent solver cleans the extract, builds every product and reaction pair's table against the whole database, applies the standard's three criteria and files 11 signals, five slots inside the desk's capacity, leaving the autumn booster inside the comparison set every other product is measured against when that one product is 40 per cent of the quarter's reports and its own reactogenicity sets the background rate for the four reactions on which the four signals it hides sit."
+  }
+ ],
  "notes": "",
  "layer2_family": "estimand_identification",
  "layer2_pattern": "own:comparison-set-holding-the-measure-down",
