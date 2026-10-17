@@ -1,0 +1,70 @@
+# task264 design note
+
+Architecture 1, drawn 2026-10-17 (wave 3, Descriptive lane, sathay3012). Seed DA14: the world (a grocery market-data firm's weekly price index built from its partner chains' scanner data, a GEKS-Tornqvist index within each store format, aggregated across formats), the decision (which of eighteen food categories the 2027 index publishes as stand-alone sub-indices, the rest folding into "other food") and the quantity (whether a category's index holds in every store format) are kept; the seed's mechanism rows were not read, and the pitfall is re-found from the data. The index committee adopts the 2027 structure on Wednesday 9 December 2026 from the 52 retail weeks to Saturday 28 November 2026, the latest the chains have all delivered; every file predates the build and the call (a structure for a year not yet begun) faces forward.
+
+## Draw
+
+1. Card: `.claude/skills/fingerprint/cards/task264.json`, registered 2026-10-17. The firm is a grocery market-data company publishing a weekly scanner price index (`research_or_statistics_office`), its index committee (`committee_or_panel`) adopting the 2027 structure at its December meeting (`vote_or_meeting`); the requester is the firm's head of price indices (`statistical_office_head`); the context artifact is the data team's feed delivery log (`operations_log`); no calibration organ. `guard.py check`: WARN only. `three_rules.strategy_risk` (grain_or_unit) is answered by the analyst test below: every field read correctly, the store-level match is the careful route and still fails. `repeat.gate_g` against task235 (a tracking loss conditioned on a delivery chance; here the elementary unit of a price index) and `repeat.decision` against task465 (counties a reinsurer can write; here categories a price index publishes) are different mechanisms under one label. `test.same_puzzle_older` and `test.same_driver_older` are differentiated on the card against task48 (a population recovered by aggregating up to a pair grain) and task120 v1 (a percentile unit built by a two-hop join); task264 coarsens store rows to the chain that sets the price because a finer match throws away prices the chain's other stores record.
+2. Pairing: General Statistics & Data Science (client domain) / missing-data-censoring-measurement-error / Descriptive & Distribution Analysis, a never-built pairing. The setting is retail price statistics; the task type's own object (how unobserved cells are handled) decides the call.
+3. Niche: the firm's partner chains send weekly store-by-item sales (units and dollars) from every store in four formats: supermarkets, neighbourhood stores, convenience stores and online. Each chain sets one shelf price for an item across all its stores in a format, changed at its weekly price change, and a movement row exists only where a store sold the item that week. The index committee publishes a category on its own in 2027 only where one national figure holds for every format: its change over the 52 weeks to 28 November 2026 in each format within 1.5 points of its national change.
+4. Call and shape: how many of the eighteen categories the 2027 index publishes on their own, and which (`designation_set`, question form how many). Shape 14 (cuts of a distribution, each cut per segment): eighteen categories, each with its change in each of the four formats and nationally, the largest format gap and the verdict.
+5. Gate G `method_or_model_selection`, strategy key `grain_or_unit`, decisive generator G2 (the elementary unit of the index is the item at the chain that prices it), then G12 (a store-week with no sale is not a missing price: the chain's other stores record it) and G6 (pooling an item across chains lets shifts between dearer and cheaper chains move the unit value).
+6. Data-native sentence: grocery chains price an item alike in all their stores, but a movement row exists only where a store sold the item that week, so a small convenience store that sold none of a slow line in a week still charged the chain's price; matching items store by store keeps a chain's price only in the weeks one particular store happened to sell it, which in convenience leaves the fast lines carrying nearly every comparison, while pooling an item's sales across the format's chains turns the value chain that joined the panel in July, and shoppers' moves between dearer and cheaper chains, into price falls.
+7. Sources, one line each:
+   - `analytical_tasks/03_descriptive_distribution/DA14`: world, decision and quantity; its pitfall is not used (the note was not read past its Situation). Its matched-pair minimum, filed literally, is a rule's execution.
+   - The two-layer design reference's Layer 2 family `estimation_fit` (the estimator fitted to the data's real structure): the matched-model comparisons built at the unit that sets the price. The General Statistics library's missing-data patterns (Rubin's rules, attenuation, delta adjustment) teach other moves; the pattern here is `own:a-store-week-without-a-sale-is-a-known-chain-price`.
+   - task463 (a supermarket transaction index whose month-on-month comparisons drift under stockpiling): task264 files a drift-free multilateral comparison; the move here is the unit at which a price is followed, which task463 never turns on.
+   - task259 (pay reports read within employers) and task263 (a mass balance of blends) on file in this lane: task259's pooled-reports rung resembles this build's lowest rung only; neither turns on a store-week that sold nothing at a known price.
+8. People, drawn with `guard.py names --geo Australia --seed 264`: Christy Chambers (the firm's head of price indices), Manuel Zamora (the data team's feed delivery lead). Invented names: the firm, its index, its partner chains and their stores, screened at stage 3.
+
+## Default path
+
+1. Read the committee's terms of reference: a category gets its own 2027 sub-index where its national change over the
+   52 weeks to 28 November 2026 is within 1.5 points of its change in each of the four store formats; and the index
+   methodology: within each format, every pair of weeks compared by a Tornqvist index weighting items by spending,
+   the comparisons combined by GEKS, the change taken from the first four weeks of the window to the last four, the
+   national change combining the four format changes with the committee's format weights.
+2. Load the movement file (store, item, week, units, dollars), join each store's format from the store register and
+   each item's category from the item master.
+3. In each format, add each item's units and dollars over the format's stores each week; the item's price is the
+   dollars over the units.
+4. Run the GEKS-Tornqvist on the items over the 52 weeks; take each category's change in each format.
+5. Combine the formats with the committee's weights for the national change and compare each format with it.
+6. Publish the categories within 1.5 points in all four formats.
+
+Ends on: 6 categories.
+Golden: 11 categories.
+
+Design targets, set by the generator and replaced by the built figures at stage 3.
+
+## Stump sentence
+
+The default path publishes 6 categories because it averages each item's sales over all the format's stores before
+comparing weeks, so the value chain that joined the panel in July and shoppers' moves toward cheaper chains read as
+price falls in the supermarket format, and five categories' other formats land more than 1.5 points from a national
+change pulled down with it; the careful refinement that matches items store by store keeps the supermarkets right
+but drops a convenience chain's price in every week one small store sold none of a slow line, so the convenience
+change follows the fast lines and still misses; following each item at the chain that prices it publishes 11.
+
+## Three rules
+
+Task type: missing-data-censoring-measurement-error (General Statistics & Data Science), which serves Descriptive & Distribution Analysis in the taxonomy; the setting is retail price statistics.
+Domain test: the deciding quantity is each category's price change in each store format computed with every store-week that sold nothing treated as what it is, a week that store sold none of the item at the price its chain set for all its stores, which the chain's other stores record, not a missing price; how such unobserved cells are handled is the missing-data task type's own object, and replacing it with the complete-case match at each store, or with a pooled average that ignores who set each price, changes which categories the national figure holds for.
+Swap: "which procedure groups' national cost index holds in every hospital type" keeps a grid of changes and a 1.5-point test but loses the shelf price a chain sets for all its outlets each week, the movement row that exists only when an outlet sold the item, and the shopper moving between dearer and cheaper chains, so the store-week that sold nothing at a known price, the thing the call turns on, has no counterpart and the call no longer reads the same.
+Layer 1: the chains' weekly feeds through the firm's loader (each chain's own week-ending day, realigned to the firm's Saturday weeks; one chain's resubmitted block kept beside the original, the later load the one to keep); the panel's July partner (its data agreement starts mid-window, so its stores enter at week 31); item codes in two formats (one chain's feed drops the GTIN's leading zero); the store register (stores re-coded after refits and one store moved between formats on a dated effective date); random-weight fresh lines sold by the kilogram beside packed lines sold by the unit (the tills); promotion codes in each chain's own vocabulary (the chains' point-of-sale systems); a methodology statement and data dictionary that have to be read. Nothing is placed to be caught; each converges under the golden method (asserted).
+Layer 2: the estimation_fit family; the matched-model comparisons have to be built at the unit that sets the price, the item at its chain, because a store-level match is a complete-case analysis that drops a known price whenever one store sold nothing, which selects the comparisons on sales activity, while a pooled unit value mixes chains whose prices and shares differ.
+Decisive step: following each item at the chain that prices it (the chain's weekly unit value over all its stores in the format), so a store-week with no sale costs no comparison and no two chains' prices are averaged, instead of matching each item store by store (which keeps a chain's price only in the weeks one store sold it) or pooling each item over the format's stores.
+Not semantics: every field read correctly (store, chain, format, item, units, dollars, week, and the dictionary's statement that a movement row exists only where a store sold the item) still leaves the analyst matching at the store, the file's own grain, or pooling to the format; no field says at what unit an item's price is followed, and the chain column is read correctly by both wrong routes.
+Not rule application: the methodology fixes the estimand (each category's change over the window in each format, every pair of weeks compared by a Tornqvist index weighting items by spending and combined by GEKS, the four-week ends, the national combination and the 1.5-point test) and says nothing about the unit at which an item's price is followed or how a store-week without a sale is treated, so executing every stated rule files the default path's answer.
+Analyst test: a strong analyst who reads every rule and field correctly averages each item over the format's stores each week, runs the GEKS-Tornqvist and publishes 6 categories (Ends on: 6 categories), and the careful refinement that matches items store by store publishes 8; following each item at the chain that prices it publishes 11.
+Estimand: the committee's terms of reference and the index methodology fix the population (the items of the eighteen food categories sold at the panel's stores in each of the four formats), the outcome (the category's price change from the first four weeks to the last four of the 52 weeks to 28 November 2026, each pair of weeks compared by a Tornqvist index weighting items by spending, the comparisons combined by GEKS), the unit (the category in a format, then nationally with the committee's 2026 format weights) and the comparison (each format's change within 1.5 points of the national change).
+No decoy: nothing is planted; no memo, draft, published sub-index or staff note argues a category, a change or a structure, the July partner is the firm's data agreement taking effect, and the chains price centrally because that is how they set prices.
+No certified replay: the method is not recovered by reproducing published or certified figures; no file publishes a category's change, a sub-index or a list.
+Lesson: in store-level transaction data an unsold week at one store is not a missing price when the chain prices all its stores alike, so a price index follows each item at the unit that sets its price: a store-level match drops the slow lines from the comparisons and a pooled average lets shoppers' choice of chain pass for price change; no build on file teaches the price-setter grain (task463 teaches drift in linked month-on-month comparisons).
+
+## Tried and rejected
+
+- The seed's reliability as a matched-pair minimum (every pair of weeks sharing a set share of spending): filed literally it is a rule's execution, and left vague it is a fork; dropped at the draw.
+- Reliability as the sampling error of each format's index (stores or chains resampled): the decisive move would be the resampling unit, the lesson task260 and task261 already teach in this lane; dropped at the draw.
+- Each format's change on items pooled across chains as the decisive step: binary, and its insight (read the change within each seller) is task259's lower rung; kept only as rung 0 and rung 1.
+- Linking relaunched packs (a smaller pack under a new code) to price shrinkflation: the link reads an item master's attributes, an identity resolution the record says never held; dropped at the draw.
