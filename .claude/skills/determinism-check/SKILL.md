@@ -85,6 +85,12 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   **C4 separate** (every cell mapped to the sentence it violates, nearest wrong cell at least 6 per cent).
 - **Pin at authority, once** (Part 6.1). The prompt carries the question and no convention. Sweep for
   sentences quotable against the answer and qualify or remove them.
+- **Measure the edge, not the centre.** For a value `v` printed to a unit `u`, the printed cell is centred
+  on `round(v/u)*u` and the distance to its nearest edge is `u/2 - abs(v - round(v/u)*u)`. The quantity
+  `abs(v - round(v/u)*u)` is the distance to the centre, and the two sum to `u/2`, so computing it reports
+  clearance where it measured proximity: one build read 0.0129 as its tightest share's clearance when the
+  true distance was 0.0371, and the mis-ranking of which figure was tightest followed from the wrong metric
+  rather than from the data. Assert the edge distance, and name the tightest figure from the same number.
 - **Bins:** every graded figure mid-bin on a non-round value, flip condition stated as a number; never
   grade an iteration count, an even-set median, or a percentage near a one-decimal edge (Part 3).
 - No decision metric in the prompt's own voice that a filed policy contradicts.

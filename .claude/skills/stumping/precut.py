@@ -282,6 +282,26 @@ def check_note(task_dir, note_text):
     else:
         v = float(mnum.group(0))
         row("mirror leakage", v < MIRROR_CEILING, "%.1f per cent of ask weight (under %.0f)" % (v, MIRROR_CEILING))
+    # The ceiling and the leakage have to come from code run on the cut pack, not from prose.
+    # Two builds in one wave shipped a sheet whose figure was the complement or the mirror of the
+    # truth (supplemental-stumping Part 7), and this gate reads the sheet, so the sheet has to name
+    # the script that produced the numbers.
+    mb = labelled(ask, "Measured by")
+    script = (mb or "").strip()
+    found = ""
+    if script:
+        for cand in re.findall(r"[\w./-]+\.py", script):
+            for base in (os.path.join(task_dir, cand), os.path.join(task_dir, "generator", os.path.basename(cand)), cand):
+                if os.path.exists(base):
+                    found = base
+                    break
+            if found:
+                break
+    row("ceiling measured by a script", bool(found),
+        ("%s" % found) if found else
+        ("names no existing script: %r" % script if script else
+         "no `Measured by:` line naming the script that ran the cracker on the cut pack"))
+
     cr = [t for t in tables(ask) if any("cracker" in c.lower() for c in t[0])]
     if not cr:
         row("cracker sheet", False, "no table whose header names the cracker")

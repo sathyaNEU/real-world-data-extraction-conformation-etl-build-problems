@@ -324,6 +324,8 @@ path the stage-4 leak reader actually took, which reached all 42 figures of the 
 | A2 | applies the asking sentence's reviewed rule and its one-row-per-specimen grain to the extract as it stands, groups by release month and ties the denominator to the reporting pack, which agrees | 12 | 0 of 12, every month 2.0 to 5.9 per thousand high | miss |
 | A3 | takes the prepared level from the workbook's own prepared-levels sheet, level by level, and the gravimetric column the Notes sheet names | 6 | 3 of 6: all three medians missed, the three within-a-fifth counts coincident because the stock scale moves the window with the level | miss |
 
+**Measured by:** `generator/cracker.py`, run on the cut pack after every change; the figures below are its output and not an estimate.
+
 **Pair ceiling:** 33.1 measured, against a ceiling of 40. The cracker banks 38 + 7 + 55 x 0.083 = 49.6
 and the best response off the call banks 5 + 7 + 55 x 0.083 = 16.6.
 **Mirror leakage:** 8.3 per cent of ask weight measured, 3 of 36 figures, all three in one ask.

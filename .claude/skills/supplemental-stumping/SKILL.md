@@ -127,6 +127,16 @@ trade outside the band", and the second half is the stump.
 
 **Call held, asks scored** (`/fix-rubric`, proved by `freeze.py check --mode rubric`): change the ask paths' data first (devices, their rows, ask goldens and assertions); the card, ladder, main rows and the `target/` documents the call reads stay, bar a field description for a new column in an ask-only file. An ask's wording in the prompt changes only when no device can hold it as worded, every figure, unit and rounding kept; the call sentence never. `checks.py` asserts against the shipped commit that files the call reads and no ask touches are byte-identical, shared files keep the main rows and gain no column, and every main-call figure recomputes unchanged; a device needing more is dropped. Per device: one asserted line (the natural read lands outside the bin), an ask-sheet line, a `## Tried and rejected` line. **Call fell too:** the ladder first (`stumping`), then the asks against the new cracker sheet.
 
+**The cracker sheet is code, run on the cut pack, and the sheet names the script.** A prose sheet
+systematically describes the wrong solver: the cracker is defined by what it *does* execute, so a row
+reasoning about a solver who reads none of the pack's filed sentences is describing the mirror, and the
+sheet then reports the mirror's misses as the cracker's. Two builds in one wave shipped that error and both
+measured a pair ceiling of 83.5 when the code was finally written, against paper figures of 35.1 and 39.4.
+`precut.py` reads the sheet rather than computing it, so the sheet carries a `Measured by:` line naming a
+script that exists in the build, and the gate fails without it. Re-run the script after every change, not
+once at the end: a determinism repair that closes a reading can spend the device that rode on it, which is
+measurable the moment the sentence is filed and invisible in prose.
+
 ## Part 7. The ask sheet
 
 `## Ask sheet` is the device ledger `dataset-generation` builds against and `precut.py` reads. Per ask: figures, H18 home, use, primary device and hazards, file path and column count, stops and lazy delta, realism sentence, any reused device. Then the main population's zero-counts, the hazard table (asks moved, per-ask deltas), the referee, the cracker sheet (a table whose header names the cracker, every row ending `miss`), `Mirror leakage:` under 35 per cent, `Pair ceiling:` at or under 40, rerun from the generated rubric. Reuse is legal re-skinned, measured devices first (references Part 3); a device in consecutive builds or a repeated set is a template finding, and demoting a retired main mechanism is reuse.

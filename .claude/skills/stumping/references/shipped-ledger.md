@@ -531,5 +531,25 @@ One line each, with the builds that paid for it. The techniques behind them are 
   the second half is the method. Name what the sentence may and may not say, and read the wording before the
   pack is cut.
 
+**A gate that reads a number cannot check it** (`supplemental-stumping` Part 7, `determinism-check` §3)
+- Two builds in one wave shipped an ask sheet whose pair ceiling was not the pair ceiling, and both
+  measured **83.5** once the cracker's path was written as code, against paper figures of 35.1 and 39.4. The
+  cause was the same both times and it is not drift: a prose sheet reasons about a solver who reads none of
+  the pack's filed sentences, which is the ask's **mirror**, and reports the mirror's misses as the
+  cracker's. The cracker is defined by what it does execute, so only code can describe it. `precut.py` now
+  fails without a `Measured by:` line naming a script that exists in the build.
+- The second shape, same consequence: `abs(v - round(v,u))` is the distance to the printed cell's **centre**
+  and the edge is `u/2` minus it, so a build measuring the first reports clearance where it measured
+  proximity. One read 0.0129 as its tightest share's clearance when the true distance was 0.0371, and
+  picked the wrong tightest cell because the metric, not the data, was wrong. Its judge found the real one
+  at 0.0013.
+- Both let a gate pass on a figure that was the complement or the mirror of the truth. So the rule is
+  general: where a gate reads a number out of prose, the prose names the code that produced it, and the
+  measurement runs after every change rather than once at the end, because a determinism repair that closes
+  a reading spends the device that rode on it the moment the sentence is filed.
+- The disposition that makes this work is a builder's, not a gate's: "a passing gate resting on a number I
+  know to be false is worth less than a failing gate telling the truth." Two builds in this wave brought a
+  measurement instead of a sheet and both times it changed the decision.
+
 **Unspent, so not mistaken for spent**
 - The ledger's old row 41 (displacement under fixed assessment capacity, four outreach arms) was drawn and never built.
