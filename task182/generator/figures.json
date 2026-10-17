@@ -1,19 +1,19 @@
 {
  "blower_air_knm3": {
-  "NSL01": 516.5,
-  "NSL02": 516.5,
-  "NSL03": 497.6,
-  "NSL04": 516.5,
-  "NSL05": 516.5,
-  "NSL06": 498.4,
-  "NSL07": 498.4,
-  "NSL08": 498.4,
-  "NSL09": 507.5,
-  "NSL10": 507.5,
-  "NSL11": 508.1,
-  "NSL12": 508.1,
-  "NSL13": 499.0,
-  "NSL14": 517.9
+  "NSL01": 520.5,
+  "NSL02": 520.5,
+  "NSL03": 506.3,
+  "NSL04": 520.5,
+  "NSL05": 520.5,
+  "NSL06": 498.0,
+  "NSL07": 498.0,
+  "NSL08": 498.0,
+  "NSL09": 505.7,
+  "NSL10": 505.7,
+  "NSL11": 511.0,
+  "NSL12": 511.0,
+  "NSL13": 503.3,
+  "NSL14": 517.5
  },
  "call": "the October slot covers NSL04, NSL11, NSL07, NSL02, NSL13",
  "cap": 5,
@@ -309,38 +309,38 @@
  },
  "weekly_plant": {
   "0": {
-   "blower_air_knm3": 685,
-   "blower_air_knm3_raw": 685.1,
+   "blower_air_knm3": 689,
+   "blower_air_knm3_raw": 689.2,
    "longest_unrecorded_run": 14,
    "unrecorded_quarter_hours": 20
   },
   "1": {
-   "blower_air_knm3": 678,
-   "blower_air_knm3_raw": 677.6,
+   "blower_air_knm3": 676,
+   "blower_air_knm3_raw": 675.9,
    "longest_unrecorded_run": 11,
    "unrecorded_quarter_hours": 16
   },
   "2": {
-   "blower_air_knm3": 676,
-   "blower_air_knm3_raw": 675.9,
+   "blower_air_knm3": 685,
+   "blower_air_knm3_raw": 684.7,
    "longest_unrecorded_run": 8,
    "unrecorded_quarter_hours": 12
   },
   "3": {
-   "blower_air_knm3": 696,
-   "blower_air_knm3_raw": 696.3,
+   "blower_air_knm3": 687,
+   "blower_air_knm3_raw": 687.2,
    "longest_unrecorded_run": 86,
    "unrecorded_quarter_hours": 92
   },
   "4": {
-   "blower_air_knm3": 660,
-   "blower_air_knm3_raw": 660.3,
+   "blower_air_knm3": 654,
+   "blower_air_knm3_raw": 653.8,
    "longest_unrecorded_run": 13,
    "unrecorded_quarter_hours": 18
   },
   "5": {
-   "blower_air_knm3": 688,
-   "blower_air_knm3_raw": 688.4,
+   "blower_air_knm3": 675,
+   "blower_air_knm3_raw": 674.9,
    "longest_unrecorded_run": 16,
    "unrecorded_quarter_hours": 21
   }

@@ -853,12 +853,14 @@ forks on a rule the pack does not state.
 
 ## Leak sweep answered
 
-`leak.py --asof 2026-10-20` is REVIEW with three lines and no LEAK. Each one, and why it is harmless:
+`leak.py --asof 2026-10-20` is REVIEW with two REVIEW lines and two INFO lines, and no LEAK. Each line
+the sweeps have raised on this pack, and why it is harmless:
 
-- **Sweep 3, the figure 1.25 in `screen_standard_7_2024.pdf`.** It is the referral multiple section 3.2(b)
+- **The figure 1.25 in `screen_standard_7_2024.pdf`, raised by sweep 3 on earlier cuts.** It is the
+  referral multiple section 3.2(b)
   files, which the standard has to state for the run to exist, and it is not a figure the analysis derives:
   no pair's own multiple, patient count or referral appears anywhere in the pack.
-- **Sweep 3, 25 of 27 distinctive words of the committed call in the standard.** The call is written in the
+- **Sweep 3, 23 of 27 distinctive words of the committed call in the standard.** The call is written in the
   standard's own vocabulary (refer, pair, formal signal assessment, the quarter beginning 1 January 2027)
   because the standard is the document that names those things. It states no pair, no count and no figure
   for this run or any other.
@@ -867,9 +869,12 @@ forks on a rule the pack does not state.
   says how the expected number is obtained, and a word sweep over all nineteen shipped csv and json files
   asserts that none of nineteen phrasings of symmetry, equal likelihood, a null ratio, a sequence ratio
   or an incidence distribution appears.
-- **Sweep 6, `holder_register.csv` naming six of six answer-set candidates.** The names the sweep matched
+- **Sweep 6 (INFO), `holder_register.csv` naming seven of seven answer-set candidates.** The names the sweep matched
   are marketing authorisation holders, not pairs. The file carries no marker treatment, no patient and no
   figure about any pair's reporting, asserted by column name.
+- **Sweep 10 (INFO), no writer signature in the container metadata.** The sweep reports that the audit
+  found no authoring tool recorded on any file, which is the state it wants: nothing in the pack names a
+  writer, a tool or a build date later than the extract's own as-of date.
 
 ## Pre-ship check
 
@@ -877,7 +882,7 @@ The pack as built, read against the gates one last time.
 
 - **Free gates.** 183 generator assertions, 267 independent checks in `verify.py` (it reads only `target/`
   and `figures.json`), `precut.py` 50 checks 0 FAIL 0 WARN, `figures_check.py` 205 of 205,
-  `voice-check.py` exit 0 at 997 characters, `leak.py` REVIEW with three answered lines and no LEAK,
+  `voice-check.py` exit 0 at 997 characters, `leak.py` REVIEW with two REVIEW and two INFO lines, every one answered, and no LEAK,
   `guard.py heart` WARN with every line answered in `## Draw`, `guard.py surface` promoting no file name
   and no persona, `freeze.py check --mode rubric` PASS. Two rebuilds byte-identical over 24 files,
   `target.zip` cut from the final rebuild, 21 entries, md5 aa084e2f3354fce6ab82c4f09db87a61.

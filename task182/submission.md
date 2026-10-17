@@ -32,20 +32,20 @@ Not the complaints register, which is a record of what neighbours heard and not 
 ### specific_sound_levels.csv
 
 1. One row for each of the 14 monitoring positions, in schedule order:
-   - NSL01 (DW-114): 43.9 dB LAeq, 516.5 thousand Nm3 of blower air, 20 quarter hours not recorded, longest run 14
-   - NSL02 (DW-103): 47.3 dB LAeq, 516.5 thousand Nm3 of blower air, 20 quarter hours not recorded, longest run 14
-   - NSL03 (DW-121): 43.6 dB LAeq, 497.6 thousand Nm3 of blower air, 27 quarter hours not recorded, longest run 14
-   - NSL04 (DW-101): 53.0 dB LAeq, 516.5 thousand Nm3 of blower air, 20 quarter hours not recorded, longest run 14
-   - NSL05 (DW-130): 38.7 dB LAeq, 516.5 thousand Nm3 of blower air, 20 quarter hours not recorded, longest run 14
-   - NSL06 (DW-107): 44.7 dB LAeq, 498.4 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 13
-   - NSL07 (DW-110): 47.8 dB LAeq, 498.4 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 13
-   - NSL08 (DW-126): 41.4 dB LAeq, 498.4 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 13
-   - NSL09 (DW-112): 44.6 dB LAeq, 507.5 thousand Nm3 of blower air, 27 quarter hours not recorded, longest run 16
-   - NSL10 (DW-134): 37.4 dB LAeq, 507.5 thousand Nm3 of blower air, 27 quarter hours not recorded, longest run 16
-   - NSL11 (DW-104): 49.9 dB LAeq, 508.1 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 16
-   - NSL12 (DW-118): 43.3 dB LAeq, 508.1 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 16
-   - NSL13 (DW-105): 46.0 dB LAeq, 499.0 thousand Nm3 of blower air, 21 quarter hours not recorded, longest run 13
-   - NSL14 (DW-128): 42.0 dB LAeq, 517.9 thousand Nm3 of blower air, 14 quarter hours not recorded, longest run 8
+   - NSL01 (DW-114): 43.9 dB LAeq, 520.5 thousand Nm3 of blower air, 20 quarter hours not recorded, longest run 14
+   - NSL02 (DW-103): 47.3 dB LAeq, 520.5 thousand Nm3 of blower air, 20 quarter hours not recorded, longest run 14
+   - NSL03 (DW-121): 43.6 dB LAeq, 506.3 thousand Nm3 of blower air, 27 quarter hours not recorded, longest run 14
+   - NSL04 (DW-101): 53.0 dB LAeq, 520.5 thousand Nm3 of blower air, 20 quarter hours not recorded, longest run 14
+   - NSL05 (DW-130): 38.7 dB LAeq, 520.5 thousand Nm3 of blower air, 20 quarter hours not recorded, longest run 14
+   - NSL06 (DW-107): 44.7 dB LAeq, 498.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 13
+   - NSL07 (DW-110): 47.8 dB LAeq, 498.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 13
+   - NSL08 (DW-126): 41.4 dB LAeq, 498.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 13
+   - NSL09 (DW-112): 44.6 dB LAeq, 505.7 thousand Nm3 of blower air, 27 quarter hours not recorded, longest run 16
+   - NSL10 (DW-134): 37.4 dB LAeq, 505.7 thousand Nm3 of blower air, 27 quarter hours not recorded, longest run 16
+   - NSL11 (DW-104): 49.9 dB LAeq, 511.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 16
+   - NSL12 (DW-118): 43.3 dB LAeq, 511.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 16
+   - NSL13 (DW-105): 46.0 dB LAeq, 503.3 thousand Nm3 of blower air, 21 quarter hours not recorded, longest run 13
+   - NSL14 (DW-128): 42.0 dB LAeq, 517.5 thousand Nm3 of blower air, 14 quarter hours not recorded, longest run 8
 
 ### mitigation_shortlist.pdf
 
@@ -53,10 +53,10 @@ Not the complaints register, which is a record of what neighbours heard and not 
 2. The first dwelling off the list: NSL06 (DW-107) at 44.7 dB LAeq, 1.3 dB below the fifth
 3. A tone is prominent at 6 of the fourteen positions, NSL02, NSL03, NSL04, NSL07, NSL09, NSL11, and in every case in the 400 Hz band
 4. The plant through the six survey weeks:
-   - Week beginning 31 August: blower air 685 thousand Nm3, 20 quarter hours not recorded, longest run 14
-   - Week beginning 7 September: blower air 678 thousand Nm3, 16 quarter hours not recorded, longest run 11
-   - Week beginning 14 September: blower air 676 thousand Nm3, 12 quarter hours not recorded, longest run 8
-   - Week beginning 21 September: blower air 696 thousand Nm3, 92 quarter hours not recorded, longest run 86
-   - Week beginning 28 September: blower air 660 thousand Nm3, 18 quarter hours not recorded, longest run 13
-   - Week beginning 5 October: blower air 688 thousand Nm3, 21 quarter hours not recorded, longest run 16
+   - Week beginning 31 August: blower air 689 thousand Nm3, 20 quarter hours not recorded, longest run 14
+   - Week beginning 7 September: blower air 676 thousand Nm3, 16 quarter hours not recorded, longest run 11
+   - Week beginning 14 September: blower air 685 thousand Nm3, 12 quarter hours not recorded, longest run 8
+   - Week beginning 21 September: blower air 687 thousand Nm3, 92 quarter hours not recorded, longest run 86
+   - Week beginning 28 September: blower air 654 thousand Nm3, 18 quarter hours not recorded, longest run 13
+   - Week beginning 5 October: blower air 675 thousand Nm3, 21 quarter hours not recorded, longest run 16
 5. Ranked bar chart of all fourteen specific sound levels with the five selected marked and the slot's reach drawn, on page 1

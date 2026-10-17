@@ -30,7 +30,7 @@
   "freeze": "freeze.py check --mode rubric exit 0"
  },
  "leak": {
-  "leak_py": "REVIEW, three lines answered in the design note, no LEAK",
+  "leak_py": "REVIEW, two REVIEW and two INFO lines, every one answered in the design note, no LEAK",
   "reader": "pass 1 back: nothing quoted for the decisive step, no ranking file, question 6 an analytical choice, and it reached the golden seven cold at about 90 per cent confidence. It found three ask-layer forks and eight realism tells, all fixed in the generator in this pass.",
   "reader_pass_2": "question 3 named register_release_notes.json's known_handling block as a solver's checklist, plus four dated contradictions and a realism list. All closed in this pass; leak.py is REVIEW with no release-notes line."
  },

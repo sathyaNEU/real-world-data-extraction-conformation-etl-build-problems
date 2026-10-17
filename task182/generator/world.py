@@ -311,7 +311,7 @@ RAIN_TIP_MM = 0.2
 SEED = 182182
 # The blower trim's own draw. Chosen by the scan in scratch so that every week's delivered air sits clear
 # of the whole-unit rounding edge the note reports it at.
-AIR_SEED = 8
+AIR_SEED = 21
 # How much of the surroundings' own evening and night texture the record carries. Set by the scan in
 # scratch: enough that no position's record is the same shape every day, little enough that the night is
 # the plant's own sound and not the road's.
