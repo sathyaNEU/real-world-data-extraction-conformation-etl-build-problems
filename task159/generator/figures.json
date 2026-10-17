@@ -1,0 +1,89 @@
+{
+ "esc_down_Albrecht Place": 268,
+ "esc_down_Corran Junction": 232,
+ "esc_down_Ferrier Square": 36,
+ "esc_down_Garnett Street": 72,
+ "esc_down_Hesper Avenue": 108,
+ "esc_down_Quarry Road": 132,
+ "esc_down_Sallow Park": 216,
+ "esc_up_Albrecht Place": 36,
+ "esc_up_Corran Junction": 96,
+ "esc_up_Ferrier Square": 248,
+ "esc_up_Garnett Street": 144,
+ "esc_up_Hesper Avenue": 144,
+ "esc_up_Quarry Road": 96,
+ "esc_up_Sallow Park": 72,
+ "lift_hours_Albrecht Place": 37.3,
+ "lift_hours_Corran Junction": 18.0,
+ "lift_hours_Ferrier Square": 45.5,
+ "lift_hours_Garnett Street": 27.9,
+ "lift_hours_Hesper Avenue": 38.6,
+ "lift_hours_Quarry Road": 41.3,
+ "lift_hours_Sallow Park": 53.3,
+ "params": {
+  "max_load_per_car": 150,
+  "threshold_per_cent": 85,
+  "years": [
+   2025,
+   2026,
+   2027
+  ]
+ },
+ "posted_ALB-3N": [],
+ "posted_ALB-3S": [],
+ "posted_ALB-6": [
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri"
+ ],
+ "posted_COR-2": [
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri"
+ ],
+ "posted_COR-5W": [],
+ "posted_FER-4N": [],
+ "posted_FER-4S": [],
+ "posted_FER-5W": [],
+ "posted_GAR-2": [
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri"
+ ],
+ "posted_GAR-3S": [],
+ "posted_HES-1S": [],
+ "posted_HES-3": [],
+ "posted_QUA-1S": [],
+ "posted_QUA-6": [
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri"
+ ],
+ "posted_SAL-1N": [],
+ "posted_SAL-1S": [
+  "Tue",
+  "Wed",
+  "Thu"
+ ],
+ "posted_SAL-4S": [
+  "Tue",
+  "Wed",
+  "Thu"
+ ],
+ "rival_R0": 35,
+ "rival_R1": 20,
+ "shifts_Fri": 4,
+ "shifts_Mon": 4,
+ "shifts_Thu": 6,
+ "shifts_Tue": 6,
+ "shifts_Wed": 6,
+ "shifts_per_week": 26
+}
