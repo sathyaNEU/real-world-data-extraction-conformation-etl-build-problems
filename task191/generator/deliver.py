@@ -25,9 +25,9 @@ def workbook(path, g):
     ws["A5"] = "Comes closest"
     ws["A5"].font = Font(bold=True)
     ws["B5"] = "%s, %d kbps" % (g["closest_port"], int(g["closest_shortfall"]))
-    ws["A6"] = "The call would change at"
+    ws["A6"] = "Evenings left out"
     ws["A6"].font = Font(bold=True)
-    ws["B6"] = "%d kbps" % int(g["record_shortfall"])
+    ws["B6"] = "%d, on which work was booked inside an evening window" % g["evenings_left_out"]
     head = ["Interconnect", "Evening window", "Worst shortfall, kbps", "Evening it fell on"]
     for j, h in enumerate(head):
         c = ws.cell(row=8, column=1 + j, value=h)

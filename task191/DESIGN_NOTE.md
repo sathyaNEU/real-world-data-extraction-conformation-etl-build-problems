@@ -44,28 +44,29 @@ panel carries eight earlier quarters of exactly that cell at exactly that select
 2. Read the quality standard's definition of the delivered-bitrate shortfall and compute it per
    interconnect per evening: the median of the daytime band's minute values less the median of the
    evening window's minute values, in kbps.
-3. Take the worst evening cell of the quarter. It is `STR-01` on 2027-02-08 at 541 kbps.
-4. Test it against that interconnect's own evening-to-evening variation over the quarter. It sits far
+3. Take the worst evening window of the quarter. It is `STR-01` on 2027-02-08 in the 20:00 window at
+   569 kbps.
+4. Test it against that interconnect's own window-to-window variation over the quarter. It sits far
    outside, so the shortfall is not ordinary variation on that path.
-5. Check the register and the maintenance schedule for anything that disqualifies the evening, exclude
-   the nine maintenance evenings the framework names, and recompute. The worst cell is now `RHN-01` on
-   2027-02-19 at 412 kbps, still far outside `RHN-01`'s own spread and above the worst cell `RHN-01`
-   produced in any earlier quarter.
+5. Check the register and the maintenance schedule for anything that disqualifies the evening, leave
+   out the fourteen evenings clause 4.4 names, and recompute. The worst window is now `HVT-01` on
+   2027-02-17 in the 19:00 window at 318 kbps, which stands 29 per cent above `HVT-01`'s own 99th
+   percentile for the quarter at 247 kbps.
 6. Correct for having looked at seven interconnects: the per-path tail probability times seven still
-   clears, because the selection the dashboard made was over cells, not over paths.
-7. Fund the augment on `RHN-01`.
+   clears, because the selection the monitoring made was over windows, not over paths.
+7. Fund the augment on `HVT-01`.
 
-**Ends on:** fund the augment on `RHN-01`, the worst evening shortfall of the quarter at 412 kbps.
-**Golden:** fund no augment this cycle. `RHN-01` comes closest at 412 kbps, and the call would change
-at 489 kbps.
+**Ends on:** fund the augment on `HVT-01`, the worst evening shortfall of the quarter at 318 kbps.
+**Golden:** fund no augment this cycle. `HVT-01` comes closest at 318 kbps, and fourteen evenings are
+left out.
 
 ## Stump sentence
 
-A competent solver cleans the panel, excludes the maintenance evenings, takes the quarter's worst
-evening window at 412 kbps, tests it against that interconnect's own variation and against a
+A competent solver cleans the panel, leaves out the booked evenings, takes the quarter's worst
+evening window at 318 kbps, tests it against that interconnect's own variation and against a
 seven-path multiplicity correction, finds it clears both and files fund the augment on `HVT-01`, where
-412 kbps is the fourth largest of the nine quarterly worst windows the same seven interconnects have
-produced and the call is to fund nothing.
+318 kbps is smaller than the worst window every one of the eight earlier quarters produced at the same
+reach and the call is to fund nothing.
 
 ## Three rules
 
@@ -92,23 +93,23 @@ produced and the call is to fund nothing.
 - **Layer 2:** `forecast_uncertainty`, own pattern `null-of-the-selected-maximum`. The methodological
   choice that flips the call is the breadth of the selection the reference distribution is built at.
 - **Decisive step:** calibrate the statistic at the selection that produced it. The figure put forward
-  is the maximum over seven interconnects and ninety evenings, so its null is the distribution of that
-  maximum, which the eight preceding quarters of the same panel supply as eight draws of the same
-  statistic at the same breadth.
-- **Not semantics:** every field, code, unit and definition read correctly still leaves 412 kbps on the
-  table as a correct figure for a real evening on a real interconnect. The dictionary gives the
+  is the maximum over seven interconnects, ninety evenings and three windows, so what it has to be
+  measured against is what the same measurement produces at that same reach, which the eight
+  preceding quarters of the same panel supply as eight draws of the same statistic.
+- **Not semantics:** every field, code, unit and definition read correctly still leaves 318 kbps on
+  the table as a correct figure for a real evening on a real interconnect. The dictionary gives the
   timezone, the register resolves the rename, the standard defines the shortfall and the framework
-  names the maintenance evenings and the three windows. Reading all of it right is what gets a solver
-  to 412 kbps, which is the wrong answer's input, not its cure.
+  names the booked evenings and the three windows. Reading all of it right is what gets a solver to
+  318 kbps, which is the wrong answer's input, not its cure.
 - **Not rule application:** no filed rule says what a shortfall is compared against. The framework
   files the criterion in general terms, that an augment is funded when the shortfall is larger than the
   network's own record shows the measurement produces without congestion, and files the observable, the
   windows, the maintenance exclusion and the quarter. It never says over how many cells the record is
-  read, and executing every stated rule gives 412 kbps against `RHN-01`'s own record, which funds.
+  read, and executing every stated rule gives 318 kbps against `HVT-01`'s own record, which funds.
 - **Analyst test:** a strong analyst who reads every field correctly and applies every filed rule tests
   the quarter's worst cell against the interconnect it fell on, adds a seven-path multiplicity
   correction because seven interconnects were looked at, clears both and files fund the augment on
-  `RHN-01`, the default path's `Ends on:`.
+  `HVT-01`, the default path's `Ends on:`.
 - **Estimand:** the framework's clause 4.2, which files the quantity as the largest shortfall any
   interconnect in the register shows in any evening window of the reporting quarter, one figure for
   each interconnect and each window, the interconnects being those the register has in service at the
@@ -151,26 +152,34 @@ produced and the call is to fund nothing.
 | SF10 | comes closest | the interconnect with the largest worst-evening shortfall | the one nearest the record on its quarter mean | the named interconnect changes | clause 4.2, which takes the decision on the largest any interconnect shows in any window, quoted; asserted that the mean reading names a different one |
 | SF11 | rounding | to the nearest kbps, once, at the end | per window, or per minute value | `same call`, asserted at the nearest kbps and at one decimal |
 | SF12 | ties | none: the seven worst-evening figures are distinct in every window | a tie at the top | `same call`, asserted |
-| SF13 | the earlier quarters | the eight whole quarters the rollup covers before 2027 Q1 | the trailing eight quarters including the current one | `same call`, asserted: the rank of 412 kbps holds either way |
+| SF13 | the earlier quarters | the eight whole quarters the rollup covers before 2027 Q1 | the trailing eight quarters including the current one | `same call`, asserted: every quarter of the record is above the quarter's own worst window either way |
 | SF14 | the reference band | 12:00 to 14:59 local, the band the standard names | the whole non-evening day | the alternative cannot be computed: the panel retains no minute outside the two bands, asserted | the standard's own sentence, quoted |
 
 ## Ladder
 
 | Rung | Analysis | Names | Figure | Dies to |
 |---|---|---|---|---|
-| 0 | the quarter's worst evening window, tested against its own interconnect's spread | `STR-01` | 544 kbps on 2027-02-08 in the 20:00 window | clause 4.4, which names the nine maintenance evenings that window sits in |
-| 1 | the same test after the maintenance evenings are excluded and the clock is read in local time | `HVT-01` | 412 kbps on 2027-02-17 in the 19:00 window | the window was selected as the maximum over 1,890 windows, so the interconnect's own spread is not its reference |
+| 0 | the quarter's worst evening window, tested against its own interconnect's spread | `STR-01` | 569 kbps on 2027-02-08 in the 20:00 window | clause 4.4, which names the evenings that window sits in |
+| 1 | the same test after the booked evenings are left out and the clock is read in local time | `HVT-01` | 318 kbps on 2027-02-17 in the 19:00 window | the window was selected as the maximum over 1,890 windows, so the interconnect's own spread is not its reference |
 | 2 | the interconnect carrying the largest shortfall across the quarter, not on one evening | `DLF-01` | a quarter mean of 132 kbps, 12.7 per cent above the next interconnect | its own 2026 fourth quarter mean was 136 kbps, so the record shows that level is ordinary for this path |
-| 3 (decisive) | the quarterly worst window against the eight earlier quarterly worst windows of the same seven interconnects | no augment | 412 kbps is the fourth largest of nine; the largest earlier quarterly worst window is 489 kbps | nothing: it is the answer |
+| 3 (decisive) | the quarter's worst window against what the record produces at the same reach | no augment | every one of the eight earlier quarters produced a larger worst window, from 398 kbps to 489 | nothing: it is the answer |
 
 **Position and margins.** On rung 0 the answer is not a candidate at all, which is what a hold build
 gives in place of a position; the blocking quantity is the quarterly worst window's rank, and it is
-asserted. `HVT-01`'s 412 kbps sits 15.8 per cent below the largest earlier quarterly worst window at
-489 kbps and 32.1 per cent above `HVT-01`'s own 99th percentile for the quarter at 312 kbps, so the
-two references are 57 per cent apart on the same number. Rung 0's 544 kbps sits 11.3 per cent above
-489 kbps, so a solver who keeps the maintenance evenings funds confidently and wrongly. Rung 2's
-`DLF-01` stands 12.7 per cent above the next interconnect on the quarter mean and 2.7 per cent below
-its own 2026 fourth quarter, so that rung is a confident pick that the record itself answers.
+asserted. `HVT-01`'s 318 kbps sits 25.2 per cent below the smallest worst window any earlier quarter
+produced and 29 per cent above `HVT-01`'s own 99th percentile for the quarter at 247 kbps, so the two
+references are 54 per cent apart on the same number. Rung 0's 569 kbps sits 16.4 per cent above the
+largest the record holds, so a solver who keeps the booked evenings funds confidently and wrongly.
+Rung 2's `DLF-01` stands 15.3 per cent above the next interconnect on the quarter mean, so that rung
+is a confident pick that the record itself answers.
+
+**The reference is forced by the data, not by the clause.** Clause 4.2 names the record the comparison
+is against and says nothing about which figure of it to take, so `checks.py` sweeps eleven figures a
+planner might take, the largest, smallest, mean and median of the quarterly worst windows, their 90th
+percentile, the pooled windows' 99th, 99.9th and 99.99th percentiles, and the per-port quarterly
+maxima's median, 90th percentile and largest, and asserts every one of them is at least 6 per cent
+above the quarter's own worst window. That is what makes the call forced while leaving the reach to
+the solver.
 
 **The grid.** Two axes, cleaning and reference breadth, every cell a named answer:
 
@@ -230,8 +239,8 @@ Executing the prompt, clauses 4.1 to 4.4, the quality standard's definitions and
 for word selects the seven in-service interconnects, the three evening windows in local time, and every
 evening of 2027 Q1 outside the nine maintenance evenings, and asks for the largest shortfall in each
 path and window and whether an augment is funded. The text is silent on what the largest shortfall is
-compared against, so every option was computed: the interconnect's own evening spread funds `RHN-01`,
-its own ninety cells fund `RHN-01`, its own eight-quarter history with a seven-path correction funds
+compared against, so every option was computed: the interconnect's own evening spread funds `HVT-01`,
+its own two hundred and seventy windows fund `HVT-01`, a seven-path correction funds
 `DLF-01`, and the distribution of the quarterly worst cell funds nothing. The easy ones are easy
 methods on the same literal estimand, not other readings of it, and every other term and convention has
 an SF row ruled out by a quoted sentence or asserted to give the same call.

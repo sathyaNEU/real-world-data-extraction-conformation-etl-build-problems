@@ -34,13 +34,13 @@ MAINTENANCE = ("STR-01", dt.date(2027, 2, 2), dt.date(2027, 2, 10))   # nine eve
 DST_SPRING = dt.date(2027, 3, 28)          # the Netherlands moves to summer time inside the quarter
 # what the maintenance window does to the path it is on: the port runs on one card while the other
 # is replaced, so the evening shortfall there is several times its own
-MAINTENANCE_LIFT = 2.08
+MAINTENANCE_LIFT = 2.62
 # evening load grew through the two prior years and flattened over the winter
 LOAD_TREND = {"2025Q1": 0.93, "2025Q2": 0.95, "2025Q3": 0.97, "2025Q4": 1.00,
               "2026Q1": 1.02, "2026Q2": 1.04, "2026Q3": 1.07, "2026Q4": 1.10,
               "2027Q1": 1.06}
 # the worst evening window each quarter's own record shows, which the calibration solves the
 # quarter's measurement spread to hit
-WORST_WINDOW = {"2025Q1": 392, "2025Q2": 368, "2025Q3": 352, "2025Q4": 441,
-                "2026Q1": 489, "2026Q2": 379, "2026Q3": 361, "2026Q4": 452, "2027Q1": 412}
+WORST_WINDOW = {"2025Q1": 424, "2025Q2": 398, "2025Q3": 411, "2025Q4": 458,
+                "2026Q1": 489, "2026Q2": 436, "2026Q3": 447, "2026Q4": 471, "2027Q1": 318}
 TARGET_ROWS = 25000

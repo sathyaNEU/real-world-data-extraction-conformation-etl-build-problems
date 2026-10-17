@@ -9,26 +9,26 @@
  "updated": "2026-10-17",
  "stump": "A competent solver cleans the panel, excludes the maintenance evenings, takes the quarter's worst evening window at 412 kbps, tests it against that interconnect's own variation and against a seven-path multiplicity correction, finds it clears both and files fund the augment on HVT-01, where 412 kbps is the fourth largest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "REVIEW, 4 lines, all clause numbers or domain nouns",
-  "reader": "r1 running"
+  "leak_py": "REVIEW, clause numbers and domain nouns only",
+  "reader": "r1 found nothing naming the decisive step and answered question 6 analytical, but found the comparison baseline soft; r2 running"
  },
  "duplicate_check": {
   "heart": "PASS after the forum was redrawn",
   "nearest": "0.05 task130 v3"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "r1 NOT_DETERMINISTIC (FIX_NOW), Gate G and Gate H pass; r2 running",
+  "disposition": "three ask findings fixed in the generator",
+  "report": "/tmp/determinism-check-task191-r1/verdict.md"
  },
  "returned": [],
- "resume": "Stage 4, first run. The bundle is cut and every free gate is green: 116 generator assertions, 166 independent checks, precut 0 FAIL 0 WARN, voice-check PASS at 977 characters, figures_check 101 of 101, leak.py REVIEW with four lines that are clause numbers or ordinary domain nouns, guard surface answered in the card's differentiation and heart PASS. Two byte-identical rebuilds; target.zip md5 7b126eae0242e941a19a6827b46cb20c, 22 files, 4.4 MB. The leak reader and the determinism judge are spawned. Resume: read both, fix every finding in one generator pass, re-run the free gates, re-judge once on FIX_NOW, then ship.",
+ "resume": "Stage 4 run 2. The r1 judge returned FIX_NOW on three ask conventions (a tied grid cell, the overage rounding, an incident on a month boundary) and the r1 reader found the real hole: clause 4.2 names the record but not which figure of it, and four of eight defensible figures sat below the quarter's own worst window, so the call was not forced. Fixed by construction rather than by clause: the record was raised and the quarter lowered so the quarter is the quietest of the nine, and checks.py now sweeps eleven figures of the record and asserts every one is at least 6 per cent above it. The prompt's third headline item moved from a threshold figure, which no reading could make determinate, to the count of evenings left out. Also fixed: the billing direction and whole-megabit overage filed in clause 7, the edge clock, the register's in-service dates, settlement-free peers marked, the release log's and dictionary's narration of the build device removed, booked work spread over five ports, per-access-network measurement spread, and the distractors given real series. Free gates green: 149 generator assertions, 168 independent checks, precut 0 FAIL, figures_check 100 of 100, voice-check PASS at 979 characters, two byte-identical rebuilds, target.zip md5 a017551401fe3d5e29e702247e8c2bdb. Resume: read the r2 reader and judge, then ship or fix.",
  "approved": null,
  "delivered": null,
  "portal": null,

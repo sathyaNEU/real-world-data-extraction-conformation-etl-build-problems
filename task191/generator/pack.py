@@ -112,9 +112,10 @@ def write_rollup(target, rollup):
 
 def write_register(target):
     rows = []
-    for code, peer, kind, cap, load, spread in W.PATHS:
-        rows.append([code, peer, kind, cap, "2023-04-01", "", "in service", code])
     old, new, when = W.RENAMED
+    for code, peer, kind, cap, load, spread in W.PATHS:
+        rows.append([code, peer, kind, cap,
+                     when.isoformat() if code == new else "2023-04-01", "", "in service", code])
     rows.append([old, dict((p[0], p[1]) for p in W.PATHS)[new], "cable", 100, "2023-04-01",
                  (when - dt.timedelta(days=1)).isoformat(), "renamed", new])
     rows.append(["BRK-01", "Brakveld Net", "cable", 100, "2023-04-01", "2026-05-31",
@@ -145,11 +146,19 @@ def write_maintenance(target):
                      "line card replacement, port running on one card", "CHG-20412"])
         d += dt.timedelta(days=1)
     # earlier planned work, outside the evening band, which the framework does not reach
-    for i, (c, day, frm, to, what, ref) in enumerate([
+    for c, day, frm, to, what, ref in [
             ("KZD-01", dt.date(2027, 1, 14), "02:00", "05:00", "optics clean", "CHG-20287"),
-            ("VSN-01", dt.date(2027, 1, 28), "03:00", "06:00", "firmware", "CHG-20331"),
-            ("DLF-01", dt.date(2027, 3, 4), "02:30", "04:30", "cross connect move", "CHG-20498"),
-            ("OPL-01", dt.date(2027, 3, 18), "01:00", "04:00", "optics clean", "CHG-20536")]):
+            ("VSN-01", dt.date(2027, 1, 28), "03:00", "06:00", "firmware", "CHG-20319"),
+            ("DLF-01", dt.date(2027, 3, 4), "02:30", "04:30", "cross connect move", "CHG-20506"),
+            ("OPL-01", dt.date(2027, 3, 18), "01:00", "04:00", "optics clean", "CHG-20544"),
+            # work that does reach an evening window, on other ports
+            ("KZD-01", dt.date(2027, 1, 21), "20:30", "22:00", "peering session reset",
+             "CHG-20301"),
+            ("VSN-01", dt.date(2027, 2, 19), "19:15", "21:45", "optics replacement", "CHG-20388"),
+            ("VSN-01", dt.date(2027, 2, 20), "19:15", "21:45", "optics replacement", "CHG-20388"),
+            ("OPL-01", dt.date(2027, 3, 11), "21:00", "23:00", "radio path realignment",
+             "CHG-20521"),
+            ("DLF-01", dt.date(2027, 1, 7), "19:00", "20:30", "cross connect move", "CHG-20272")]:
         rows.append([recorded_port(c, day), day.isoformat(), frm, to, what, ref])
     rows.sort(key=lambda r: (r[1], r[0]))
     return _csv(os.path.join(target, FILES["maint"]),

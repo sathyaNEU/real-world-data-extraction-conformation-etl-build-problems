@@ -73,13 +73,14 @@ def framework(target):
                    "causes sit outside the platform.", BODY),
          Paragraph("Part 7 Peering commitments", H2),
          Paragraph("7.1 A peering or transit agreement is billed on the ninety-fifth percentile of "
-                   "the quarter's five-minute traffic samples for the peer, which is the 1,296th "
-                   "highest sample of the quarter, taken over the peer's traffic and not over one "
-                   "port of it.", BODY),
+                   "the quarter's five-minute samples of the traffic the platform sends the peer, "
+                   "which is the 1,296th highest sample of the quarter, taken over the peer's "
+                   "traffic and not over one port of it.", BODY),
          Paragraph("7.2 The commitment a peer is billed on is the commitment the platform and the "
                    "peer have both accepted, and an amendment the peer has not accepted is not "
                    "billed on. Where the quarter's percentile is above the commitment, the overage "
-                   "is the excess in megabits a second at the agreement's own rate. A peer the "
+                   "is the excess in whole megabits a second, after the percentile is taken to the "
+                   "nearest whole megabit, at the agreement's own rate. A peer the "
                    "platform exchanges traffic with settlement free is billed nothing and carries "
                    "no commitment.", BODY)]
     d.build(f)
@@ -135,8 +136,9 @@ def dictionary(target):
             ["minutes_scheduled, minutes_captured", "what the collector was due to record and what "
                                                     "it did record"],
             ["out_mbps, in_mbps", "the edge's five-minute traffic samples, in megabits a second"],
-            ["build_version, build_ref", "the client version string, and the build the release log "
-                                         "identifies; one version number was issued twice"],
+            ["build_version, build_ref", "the client version string the session reports, and the "
+                                         "build the release log identifies by its own reference and "
+                                         "its rollout dates"],
             ["cause_category", "the recorded cause of an incident. Access network, transit provider, "
                                "customer premises, and power or facility sit outside the platform. "
                                "Origin service, packager, edge cache, client application and "

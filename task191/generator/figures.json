@@ -7,8 +7,8 @@
   },
   "Grensweg Carrier": {
    "commitment_mbps": 326,
-   "overage_eur": 86,
-   "percentile_mbps": 338
+   "overage_eur": 79,
+   "percentile_mbps": 337
   },
   "Kabelnet Zuid": {
    "commitment_mbps": 196,
@@ -17,8 +17,8 @@
   },
   "Noordlijn Transit": {
    "commitment_mbps": 540,
-   "overage_eur": 589,
-   "percentile_mbps": 649
+   "overage_eur": 583,
+   "percentile_mbps": 648
   },
   "Rhenia Telecom": {
    "commitment_mbps": 130,
@@ -40,61 +40,62 @@
   "b-41600": {
    "build_version": "4.16.0",
    "rebuffered_pct": 3.0,
-   "sessions": 7838242
+   "sessions": 9853791
   },
   "b-41700": {
    "build_version": "4.17.0",
    "rebuffered_pct": 2.8,
-   "sessions": 8340125
+   "sessions": 10484730
   },
   "b-41800": {
    "build_version": "4.18.0",
    "rebuffered_pct": 5.8,
-   "sessions": 5807199
+   "sessions": 7300481
   },
   "b-41806": {
    "build_version": "4.18.0",
    "rebuffered_pct": 3.2,
-   "sessions": 5082479
+   "sessions": 6389401
   },
   "b-41810": {
    "build_version": "4.18.1",
    "rebuffered_pct": 3.1,
-   "sessions": 4502318
+   "sessions": 5660060
   },
   "b-41900": {
    "build_version": "4.19.0",
    "rebuffered_pct": 3.2,
-   "sessions": 5876425
+   "sessions": 7387510
   }
  },
  "a3_incidents": {
   "2027-01": {
-   "cause_outside_platform": 30,
-   "opened": 56,
-   "restored_inside_standard": 31
+   "cause_outside_platform": 20,
+   "opened": 47,
+   "restored_inside_standard": 26
   },
   "2027-02": {
-   "cause_outside_platform": 11,
-   "opened": 39,
-   "restored_inside_standard": 22
+   "cause_outside_platform": 13,
+   "opened": 44,
+   "restored_inside_standard": 30
   },
   "2027-03": {
-   "cause_outside_platform": 27,
-   "opened": 51,
+   "cause_outside_platform": 30,
+   "opened": 57,
    "restored_inside_standard": 37
   }
  },
  "call": "none",
- "closest_below_record_pct": 16,
- "closest_over_own_99th_pct": 32,
+ "closest_below_record_pct": 35,
+ "closest_over_own_99th_pct": 28,
  "closest_port": "HVT-01",
- "closest_shortfall_kbps": 412,
+ "closest_shortfall_kbps": 318,
  "decided_evening": "2027-02-17",
  "decided_port": "HVT-01",
- "decided_shortfall_kbps": 412,
+ "decided_shortfall_kbps": 318,
  "decided_window": "19:00",
  "evenings_in_quarter": 90,
+ "evenings_left_out": 14,
  "flip_quarter": "2026Q1",
  "flip_shortfall_kbps": 489,
  "framework_clauses": [
@@ -110,112 +111,113 @@
  "grid": {
   "DLF-01 19:00": {
    "evening": "2027-03-18",
-   "worst_kbps": 301
+   "worst_kbps": 246
   },
   "DLF-01 20:00": {
    "evening": "2027-02-14",
-   "worst_kbps": 371
+   "worst_kbps": 303
   },
   "DLF-01 21:00": {
    "evening": "2027-01-22",
-   "worst_kbps": 298
+   "worst_kbps": 250
   },
   "HVT-01 19:00": {
    "evening": "2027-02-17",
-   "worst_kbps": 412
+   "worst_kbps": 318
   },
   "HVT-01 20:00": {
    "evening": "2027-03-22",
-   "worst_kbps": 311
+   "worst_kbps": 248
   },
   "HVT-01 21:00": {
    "evening": "2027-03-19",
-   "worst_kbps": 345
+   "worst_kbps": 269
   },
   "KZD-01 19:00": {
    "evening": "2027-03-20",
-   "worst_kbps": 368
+   "worst_kbps": 285
   },
   "KZD-01 20:00": {
    "evening": "2027-03-03",
-   "worst_kbps": 350
+   "worst_kbps": 278
   },
   "KZD-01 21:00": {
    "evening": "2027-02-08",
-   "worst_kbps": 306
+   "worst_kbps": 247
   },
   "OPL-01 19:00": {
    "evening": "2027-02-25",
-   "worst_kbps": 397
+   "worst_kbps": 311
   },
   "OPL-01 20:00": {
-   "evening": "2027-03-19",
-   "worst_kbps": 334
+   "evening": "2027-03-21",
+   "worst_kbps": 268
   },
   "OPL-01 21:00": {
    "evening": "2027-01-21",
-   "worst_kbps": 380
+   "worst_kbps": 301
   },
   "RHN-01 19:00": {
    "evening": "2027-02-24",
-   "worst_kbps": 332
+   "worst_kbps": 263
   },
   "RHN-01 20:00": {
    "evening": "2027-01-09",
-   "worst_kbps": 385
+   "worst_kbps": 307
   },
   "RHN-01 21:00": {
    "evening": "2027-01-19",
-   "worst_kbps": 392
+   "worst_kbps": 306
   },
   "STR-01 19:00": {
    "evening": "2027-01-17",
-   "worst_kbps": 370
+   "worst_kbps": 290
   },
   "STR-01 20:00": {
    "evening": "2027-03-31",
-   "worst_kbps": 333
+   "worst_kbps": 265
   },
   "STR-01 21:00": {
    "evening": "2027-03-06",
-   "worst_kbps": 400
+   "worst_kbps": 312
   },
   "VSN-01 19:00": {
    "evening": "2027-02-14",
-   "worst_kbps": 311
+   "worst_kbps": 249
   },
   "VSN-01 20:00": {
    "evening": "2027-01-08",
-   "worst_kbps": 296
+   "worst_kbps": 241
   },
   "VSN-01 21:00": {
    "evening": "2027-01-01",
-   "worst_kbps": 291
+   "worst_kbps": 237
   }
  },
  "own_99th_kbps": {
-  "DLF-01": 304,
-  "HVT-01": 311,
-  "KZD-01": 341,
-  "OPL-01": 334,
-  "RHN-01": 339,
-  "STR-01": 329,
-  "VSN-01": 295
+  "DLF-01": 253,
+  "HVT-01": 248,
+  "KZD-01": 272,
+  "OPL-01": 267,
+  "RHN-01": 268,
+  "STR-01": 262,
+  "VSN-01": 239
  },
  "quarterly_worst_kbps": {
-  "2025Q1": 392,
-  "2025Q2": 368,
-  "2025Q3": 352,
-  "2025Q4": 441,
+  "2025Q1": 424,
+  "2025Q2": 398,
+  "2025Q3": 411,
+  "2025Q4": 458,
   "2026Q1": 489,
-  "2026Q2": 379,
-  "2026Q3": 361,
-  "2026Q4": 452
+  "2026Q2": 436,
+  "2026Q3": 447,
+  "2026Q4": 471
  },
- "rank_of_nine": 4,
+ "rank_of_nine": 9,
  "rung0_port": "STR-01",
- "rung0_shortfall_kbps": 544,
- "rung2_mean_kbps": 131.6,
+ "rung0_shortfall_kbps": 569,
+ "rung2_mean_kbps": 129.1,
+ "rung2_next_kbps": 112.0,
  "rung2_port": "DLF-01",
  "windows_assessed": 1890
 }

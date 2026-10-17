@@ -12,14 +12,16 @@ import world as W
 # (peer, its ports, the commitment in force at the quarter's start, euros per megabit a second for
 # the quarter). The three smallest interconnects peer settlement free and carry no commitment.
 BILLED = [
-    ("Noordlijn Transit", ["TRN-A1", "TRN-A2"], 540, 5.40),
-    ("Grensweg Carrier", ["TRN-B1", "TRN-B2"], 250, 7.20),
-    ("Zandpoort IX", ["TRN-C1"], 72, 9.30),
-    ("Kabelnet Zuid", ["KZD-01"], 196, 5.85),
-    ("Vastnet", ["VSN-01"], 205, 6.15),
-    ("Delfzicht Breedband", ["DLF-01"], 124, 6.75),
-    ("Rhenia Telecom", ["RHN-01"], 130, 7.05),
+    ("Noordlijn Transit", ["TRN-A1", "TRN-A2"], 540, 5.40, "AGR-1203"),
+    ("Grensweg Carrier", ["TRN-B1", "TRN-B2"], 250, 7.20, "AGR-1216"),
+    ("Zandpoort IX", ["TRN-C1"], 72, 9.30, "AGR-1241"),
+    ("Kabelnet Zuid", ["KZD-01"], 196, 5.85, "AGR-1208"),
+    ("Vastnet", ["VSN-01"], 205, 6.15, "AGR-1229"),
+    ("Delfzicht Breedband", ["DLF-01"], 124, 6.75, "AGR-1234"),
+    ("Rhenia Telecom", ["RHN-01"], 130, 7.05, "AGR-1247"),
 ]
+# the three smallest interconnects exchange traffic settlement free
+SETTLEMENT_FREE = ["Stroomnet", "Opaalnet", "Haventrans"]
 SAMPLE_MINUTES = 5
 BUILDS = [
     ("4.16.0", "b-41600", dt.date(2026, 11, 3), dt.date(2027, 1, 19)),
@@ -34,6 +36,8 @@ CAUSES = [("access network", "outside"), ("transit provider", "outside"),
           ("origin service", "inside"), ("packager", "inside"), ("edge cache", "inside"),
           ("client application", "inside"), ("configuration change", "inside")]
 RESTORE_STANDARD_HOURS = 4
+ENGINEERS = ["R. Claassen", "M. Oosterhuis", "P. Veenstra", "S. Bakhuis", "J. de Ruiter",
+             "T. Hendriks"]
 
 
 def write_edge(target):
@@ -53,11 +57,11 @@ def write_edge(target):
                     2 * 3.141592653589793 * ((h - 4) % 24) / 24.0)) ** 1.7
                 if 19 <= h < 23:
                     shape *= 1.18
-                v = base * shape * (0.94 + 0.12 * rng.random())
-                stamp = dt.datetime(day.year, day.month, day.day) + dt.timedelta(minutes=m) \
-                    - dt.timedelta(hours=1 if day < W.DST_SPRING else 2)
+                v = base * shape * (0.94 + 0.12 * rng.random()) + rng.gauss(0.0, 0.37)
+                # the edge stamps its samples in UTC and keeps one row per port per sample
+                stamp = dt.datetime(day.year, day.month, day.day) + dt.timedelta(minutes=m)
                 rows.append([stamp.strftime("%Y-%m-%dT%H:%M:%SZ"), code,
-                             "%.1f" % v, "%.1f" % (v * (0.012 + 0.006 * rng.random()))])
+                             "%.2f" % v, "%.2f" % (v * (0.012 + 0.006 * rng.random()))])
         day += dt.timedelta(days=1)
     rows.sort(key=lambda r: (r[0], r[1]))
     return pack._csv(os.path.join(target, pack.FILES["edge"]),
@@ -66,25 +70,31 @@ def write_edge(target):
 
 def write_commitments(target):
     rows = []
-    for peer, ports, commit, rate in BILLED:
-        rows.append([peer, commit, "%.2f" % rate, "AGR-%04d" % (1200 + len(rows) * 7),
-                     "2026-01-01"])
+    for peer, ports, commit, rate, ref in BILLED:
+        rows.append([peer, commit, "%.2f" % rate, ref, "2026-01-01", "billed"])
+    for peer in SETTLEMENT_FREE:
+        rows.append([peer, "", "", "", "2024-03-01", "settlement free"])
+    rows.sort(key=lambda r: r[0])
     pack._csv(os.path.join(target, pack.FILES["commit"]),
               ["peer", "commitment_mbps", "rate_eur_per_mbps", "agreement_ref",
-               "in_force_from"], rows)
+               "in_force_from", "basis"], rows)
+    ref_of = {p: r for p, _, _, _, r in BILLED}
     # one peer's commitment was amended inside the quarter, and one amendment was never accepted
-    am = [["AGR-1207", "Grensweg Carrier", 250, 326, "2027-02-01", "2027-01-24", "accepted"],
-          ["AGR-1200", "Noordlijn Transit", 540, 672, "2027-03-01", "", "delivered, not accepted"],
-          ["AGR-1221", "Vastnet", 205, 183, "2026-10-01", "2026-09-19", "accepted"]]
+    am = [[ref_of["Grensweg Carrier"], "Grensweg Carrier", 250, 326, "2027-02-01",
+           "2027-01-24", "accepted"],
+          [ref_of["Noordlijn Transit"], "Noordlijn Transit", 540, 672, "2027-03-01", "",
+           "delivered, not accepted"],
+          [ref_of["Vastnet"], "Vastnet", 205, 183, "2026-10-01", "2026-09-19", "accepted"]]
     pack._csv(os.path.join(target, pack.FILES["amend"]),
               ["agreement_ref", "peer", "commitment_mbps_before", "commitment_mbps_after",
                "effective_from", "accepted_on", "status"], am)
     rng = random.Random(W.SEED + 29)
     cr = []
-    for i, (peer, ports, commit, rate) in enumerate(BILLED):
+    for i, (peer, ports, commit, rate, ref) in enumerate(BILLED):
         if i % 3:
             continue
-        cr.append(["CRD-%04d" % (400 + i), peer, "2027-02-%02d" % (4 + i),
+        cr.append(["CRD-%04d" % (401 + rng.randrange(0, 90)), peer,
+                   "2027-02-%02d" % (3 + rng.randrange(0, 22)),
                    "%.2f" % round(180 + rng.random() * 900, 2),
                    "credit for the January service incident"])
     pack._csv(os.path.join(target, pack.FILES["credits"]),
@@ -101,7 +111,7 @@ def write_sessions(target):
         if not live:
             live = [BUILDS[0]]
         for version, ref, frm, to in live:
-            n = int(420000 * (0.9 + 0.2 * rng.random()) / len(live))
+            n = int(528000 * (0.9 + 0.2 * rng.random()) / len(live))
             srows.append([day.isoformat(), version, n])
             share = 0.021 + 0.019 * rng.random()
             if ref == "b-41800":
@@ -113,7 +123,6 @@ def write_sessions(target):
     pack._csv(os.path.join(target, pack.FILES["rebuffer"]),
               ["session_date_local", "build_version", "sessions_with_rebuffer"], rrows)
     out = {"product": "%s client" % W.PLATFORM,
-           "note": "One version number was issued twice. A build is the reference, not the number.",
            "builds": [{"build_ref": r, "build_version": v,
                        "rolled_out_from": f.isoformat(), "rolled_out_to": t.isoformat()}
                       for v, r, f, t in BUILDS]}
@@ -132,20 +141,24 @@ def write_incidents(target):
         for _ in range(rng.randrange(0, 4)):
             n += 1
             ref = "INC-%05d" % (4100 + n)
-            opened = dt.datetime(day.year, day.month, day.day,
-                                 rng.randrange(0, 24), rng.randrange(0, 60))
+            h = rng.randrange(0, 24)
+            if (day.day == 1 and h < 3) or (day.day >= 28 and h >= 21
+                                            and (day + dt.timedelta(days=1)).day == 1):
+                h = 3 + rng.randrange(0, 18)      # the duty desk's own quiet hours, so no incident
+            opened = dt.datetime(day.year, day.month, day.day, h, rng.randrange(0, 60))
             cause, side = CAUSES[rng.randrange(0, len(CAUSES))]
             # the ticket is closed well after service came back
             rest_h = max(0.2, rng.lognormvariate(0.9, 0.8))
-            closed = opened + dt.timedelta(hours=rest_h + max(0.5, rng.lognormvariate(1.5, 0.9)))
+            closed = opened + dt.timedelta(
+                minutes=int(round((rest_h + max(0.5, rng.lognormvariate(1.5, 0.9))) * 60)))
             inc.append([ref, opened.strftime("%Y-%m-%dT%H:%M:%SZ"),
                         closed.strftime("%Y-%m-%dT%H:%M:%SZ"), cause,
                         ["P1", "P2", "P3"][rng.randrange(0, 3)],
                         ["network", "streaming", "platform"][rng.randrange(0, 3)]])
             if rng.random() < 0.82:       # the rest never had a restoration time recorded
-                res.append([ref, (opened + dt.timedelta(hours=rest_h))
+                res.append([ref, (opened + dt.timedelta(minutes=int(round(rest_h * 60))))
                             .strftime("%Y-%m-%dT%H:%M:%SZ"),
-                            W.PEOPLE["ops"] if rng.random() < 0.4 else "duty engineer"])
+                            ENGINEERS[rng.randrange(0, len(ENGINEERS))]])
         day += dt.timedelta(days=1)
     pack._csv(os.path.join(target, pack.FILES["incidents"]),
               ["incident_ref", "opened_at_utc", "ticket_closed_at_utc", "cause_category",
@@ -158,17 +171,20 @@ def write_incidents(target):
 def write_distractors(target):
     rng = random.Random(W.SEED + 41)
     cat = []
-    for genre in ("drama", "comedy", "documentary", "children", "sport", "film", "news"):
+    for genre, base in (("drama", 3840), ("comedy", 2610), ("documentary", 1920),
+                        ("children", 1450), ("sport", 610), ("film", 5230), ("news", 380)):
+        n = base
         for m in ("2027-01", "2027-02", "2027-03"):
-            cat.append([genre, m, int(1200 + rng.random() * 9000),
-                        "%.1f" % round(0.4 + rng.random() * 3.1, 1)])
+            n = int(n * (1.004 + rng.gauss(0.0, 0.008)))
+            cat.append([genre, m, n, "%.1f" % round(base / 1400.0 * (0.9 + 0.2 * rng.random()), 1)])
     pack._csv(os.path.join(target, pack.FILES["catalogue"]),
               ["genre", "month", "titles_available", "hours_added_000"], cat)
     pops = ("Amsterdam", "Rotterdam", "Eindhoven", "Groningen", "Maastricht")
     ch = []
-    for pop in pops:
+    for pop, share in zip(pops, (0.38, 0.24, 0.15, 0.13, 0.10)):
+        hit = 0.941 + rng.random() * 0.044
         for m in ("2027-01", "2027-02", "2027-03"):
-            ch.append([pop, m, "%.3f" % round(0.936 + rng.random() * 0.058, 3),
-                       int(40 + rng.random() * 260)])
+            hit = min(0.994, max(0.90, hit + rng.gauss(0.0015, 0.004)))
+            ch.append([pop, m, "%.3f" % round(hit, 3), int(round(940 * share * (0.96 + 0.08 * rng.random())))])
     pack._csv(os.path.join(target, pack.FILES["cache"]),
               ["point_of_presence", "month", "cache_hit_ratio", "egress_tb"], ch)

@@ -46,10 +46,39 @@ def run(target):
     A(g["record_shortfall"] / g["decided_shortfall"] >= 1.06,
       "the record stands only %.1f per cent above the quarter's worst window"
       % (100 * (g["record_shortfall"] / g["decided_shortfall"] - 1)))
-    A(g["rank_of_nine"] == 4, "the quarter's worst window ranks %d of nine" % g["rank_of_nine"])
     A(len(g["quarterly_worst"]) == 8, "the record holds %d earlier quarters"
       % len(g["quarterly_worst"]))
     A(float(g["decided_shortfall"]).is_integer(), "the decided shortfall is not a whole kbps")
+    # Clause 4.2 names the record the comparison is against and not which figure of it to take, so
+    # every figure of it a careful analyst would take has to give the same call, with margin.
+    prior = kept[kept["reporting_quarter"] != q]
+    qmax = prior.groupby("reporting_quarter")["shortfall"].max()
+    pp = prior.groupby(["reporting_quarter", "line"])["shortfall"].max()
+    dec = g["decided_shortfall"]
+    for lbl, v in (("the largest quarterly worst window", float(qmax.max())),
+                   ("the mean of the quarterly worst windows", float(qmax.mean())),
+                   ("the median of the quarterly worst windows", float(qmax.median())),
+                   ("the smallest quarterly worst window", float(qmax.min())),
+                   ("the 90th percentile of the quarterly worst windows", float(qmax.quantile(0.9))),
+                   ("the pooled windows' 99th percentile", float(prior["shortfall"].quantile(0.99))),
+                   ("the pooled windows' 99.9th percentile",
+                    float(prior["shortfall"].quantile(0.999))),
+                   ("the pooled windows' 99.99th percentile",
+                    float(prior["shortfall"].quantile(0.9999))),
+                   ("the per-port quarterly maxima, 90th percentile", float(pp.quantile(0.9))),
+                   ("the per-port quarterly maxima, median", float(pp.median())),
+                   ("the per-port quarterly maxima, largest", float(pp.max()))):
+        A(v / dec >= 1.06,
+          "the call is not forced: %s is %.0f kbps, only %.1f per cent above the quarter's %.0f"
+          % (lbl, v, 100 * (v / dec - 1), dec))
+    A(g["rank_of_nine"] == 9,
+      "the quarter's worst window ranks %d of nine, not the quietest" % g["rank_of_nine"])
+    # and no grid cell ties, so no tie-break convention can be needed
+    for line, gl in this.groupby("line"):
+        for win, gw in gl.groupby("window_from"):
+            top = gw["shortfall"].max()
+            A(int((gw["shortfall"] == top).sum()) == 1,
+              "a grid cell ties at %s %s, so a tie rule would be needed" % (line, win))
 
     # ---- the three rules, executed ---------------------------------------------------------------
     # R1 the easy route on the pack's own rows files the named wrong answer, and the decisive step
@@ -116,8 +145,16 @@ def run(target):
     # SF7 the booked evenings, filed, and they are the only ones dropped
     A("is not evidence of congestion there, and the planning desk leaves those evenings out" in fw,
       "SF7 clause 4.4 is not filed")
-    A(len(every) - len(kept) == 9 * len(W.WINDOWS),
-      "SF7 %d window rows were dropped, not the nine evenings' worth" % (len(every) - len(kept)))
+    booked = set()
+    for r in maint.itertuples():
+        if int(r.window_to[:2]) > W.EVENING_BAND[0] and int(r.window_from[:2]) < W.EVENING_BAND[1]:
+            booked.add((r.port_code, r.work_date_local))
+    A(len(every) - len(kept) == len(booked) * len(W.WINDOWS),
+      "SF7 %d window rows were dropped against %d booked evenings"
+      % (len(every) - len(kept), len(booked)))
+    A(len({p for p, d in booked}) >= 4,
+      "SF7 the booked evenings sit on %d ports, so the exclusion reads as a pointer"
+      % len({p for p, d in booked}))
     # SF8 the quarter, filed
     A("the reporting quarters are the calendar quarters" in fw, "SF8 clause 4.1 is not filed")
     A(set(this["evening_date_local"].str[:7]) == {"2027-01", "2027-02", "2027-03"},

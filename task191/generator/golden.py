@@ -105,8 +105,9 @@ def ask_peers(target):
             ports.setdefault(r.peer, []).append(r.port_code)
     e = edge.copy()
     e["mbps"] = pd.to_numeric(e["out_mbps"])
+    # a settlement free peer is billed nothing and carries no commitment, so clause 7.2 leaves it out
     billed = {r.peer: (float(r.commitment_mbps), float(r.rate_eur_per_mbps))
-              for r in commit.itertuples()}
+              for r in commit.itertuples() if r.basis == "billed"}
     for a in amend.itertuples():
         if a.status.startswith("accepted") and a.effective_from <= W.Q_TO.isoformat() \
                 and a.peer in billed:
@@ -116,6 +117,7 @@ def ask_peers(target):
         own = e[e["port_code"].isin(ports.get(peer, []))]
         # the peer's traffic, so the ports are added at each sample instant before the percentile
         per = own.groupby("sampled_at_utc")["mbps"].sum().sort_values(ascending=False)
+        # clause 7.2: the percentile is taken to the nearest whole megabit, then the excess
         p95 = int(round(float(per.iloc[PCTL_RANK - 1])))
         over = max(0, p95 - int(round(commitment)))
         out[peer] = {"percentile_mbps": p95, "commitment_mbps": int(round(commitment)),
@@ -168,6 +170,9 @@ def ask_incidents(target):
 def compute(target):
     a, loaded = assess(target)
     a["fund"] = "none" if a["decided_shortfall"] <= a["record_shortfall"] else a["decided_port"]
+    (_p, rollup, register, maint, *_r) = load(target)
+    kept, every = shortfalls(rollup, register, maint)
+    a["evenings_left_out"] = int((len(every) - len(kept)) / len(W.WINDOWS))
     a["evenings_in_quarter"] = (W.Q_TO - W.Q_FROM).days + 1
     a["windows_assessed"] = len(W.PATHS) * a["evenings_in_quarter"] * len(W.WINDOWS)
     own = a["own_99th"][a["closest_port"]]

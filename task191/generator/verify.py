@@ -53,7 +53,7 @@ def run(target, figures):
     for r in maint.itertuples():
         if int(r.window_to[:2]) > BAND[0] and int(r.window_from[:2]) < BAND[1]:
             booked.add((now.get(r.port_code, r.port_code), r.work_date_local))
-    ok(len(booked) == 9, "%d booked evenings reach an evening window" % len(booked))
+    ok(len(booked) >= 9, "%d booked evenings reach an evening window" % len(booked))
 
     d = rollup[rollup["port_code"].isin(now)].copy()
     d["line"] = [now[x] for x in d["port_code"]]
@@ -115,7 +115,10 @@ def run(target, figures):
         if r.status == "in service":
             ports.setdefault(r.peer, []).append(r.port_code)
     billed = {r.peer: (float(r.commitment_mbps), float(r.rate_eur_per_mbps))
-              for r in commit.itertuples()}
+              for r in commit.itertuples() if r.basis == "billed"}
+    ok(len(billed) == 7, "%d peers are billed" % len(billed))
+    ok(any(r.basis == "settlement free" for r in commit.itertuples()),
+       "no peer is marked settlement free")
     for a in amend.itertuples():
         if a.status.startswith("accepted") and a.effective_from <= "2027-03-31" and a.peer in billed:
             billed[a.peer] = (float(a.commitment_mbps_after), billed[a.peer][1])
