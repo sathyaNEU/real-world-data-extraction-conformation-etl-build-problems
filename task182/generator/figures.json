@@ -1,6 +1,8 @@
 {
  "call": "the October slot covers NSL04, NSL11, NSL07, NSL02, NSL13",
  "cap": 5,
+ "deployments": 28,
+ "deployments_corrected": 11,
  "excluded_minutes": {
   "NSL01": 1070,
   "NSL02": 1070,
@@ -104,7 +106,7 @@
    ]
   },
   "rung2_la90": {
-   "margin_db": 0.099,
+   "margin_db": 0.106,
    "next": "NSL07",
    "slate": [
     "NSL03",
@@ -115,7 +117,7 @@
    ]
   },
   "rung2_p10": {
-   "margin_db": 0.332,
+   "margin_db": 0.339,
    "next": "NSL02",
    "slate": [
     "NSL03",
@@ -126,7 +128,7 @@
    ]
   },
   "rung2b_min15": {
-   "margin_db": 1.223,
+   "margin_db": 1.505,
    "next": "NSL13",
    "slate": [
     "NSL02",
@@ -137,7 +139,7 @@
    ]
   },
   "rung2c_arith": {
-   "margin_db": 0.374,
+   "margin_db": 0.366,
    "next": "NSL02",
    "slate": [
     "NSL03",

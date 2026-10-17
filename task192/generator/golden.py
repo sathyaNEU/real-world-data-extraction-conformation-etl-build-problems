@@ -280,6 +280,12 @@ def compute(target):
                                        recall=c[0] / float(c[0] + c[1]) if (c[0] + c[1]) else None,
                                        false_mark=c[2] / float(c[2] + c[3]) if (c[2] + c[3]) else None)
     g["audit_covers"] = sorted(audit_by_month)
+    inside = [m for m in marked_by_month if m in audit_by_month]
+    outside = [m for m in marked_by_month if m not in audit_by_month]
+    g["marked_rate_inside"] = (sum(marked_by_month[m][1] for m in inside)
+                               / float(sum(marked_by_month[m][0] for m in inside)))
+    g["marked_rate_outside"] = (sum(marked_by_month[m][1] for m in outside)
+                                / float(sum(marked_by_month[m][0] for m in outside)))
     g["audit_prevalence"] = (tp + fn) / float(len(sample))
     g["record_prevalence"] = (H + raw) / float(len(inper))
 

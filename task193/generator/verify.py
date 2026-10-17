@@ -21,7 +21,7 @@ QUARTERS = [("2025 Q4", dt.date(2025, 10, 1), dt.date(2025, 12, 31)),
             ("2026 Q1", dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
             ("2026 Q2", dt.date(2026, 4, 1), dt.date(2026, 6, 30)),
             ("2026 Q3", dt.date(2026, 7, 1), dt.date(2026, 9, 30))]
-BANDS = [(0, 39, "18-39"), (40, 59, "40-59"), (60, 74, "60-74"), (75, 200, "75 and over")]
+BANDS = [(0, 34, "18-34"), (35, 54, "35-54"), (55, 69, "55-69"), (70, 200, "70 and over")]
 N = 0
 
 
@@ -36,6 +36,26 @@ def d_iso(s):
 
 def d_dk(s):
     return dt.date(int(s[6:10]), int(s[3:5]), int(s[0:2]))
+
+
+def _fee_bands(tgt):
+    """The statutory rates as the shipped workbook states them: the Schedule sheet for doses
+    dispensed before the amendment, the Amendment sheet for doses dispensed on or after it."""
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(tgt, "data_fee_schedule.xlsx"))
+    out = []
+    for name in ("Schedule", "Amendment 2026-04-01"):
+        ws = wb[name]
+        rows = []
+        for row in ws.iter_rows(values_only=True):
+            cells = [c for c in row if c is not None]
+            if len(cells) == 4 and str(cells[0]).isdigit():
+                lo = float(cells[1])
+                hi = 10 ** 9 if str(cells[2]).strip() == "-" else float(cells[2])
+                rows.append((lo, hi, int(cells[3])))
+        assert rows, name
+        out.append(sorted(rows))
+    return out[0], out[1]
 
 
 def run(tgt, figures_path):
@@ -218,8 +238,8 @@ def run(tgt, figures_path):
            "%.1f against %.1f" % (got[2], r["median_days"]))
 
     # ---- A2
-    BANDS_BEFORE = [(0, 250, 1480), (250, 1000, 1240), (1000, 4000, 1015), (4000, 10 ** 9, 860)]
-    BANDS_AFTER = [(0, 250, 1595), (250, 1000, 1335), (1000, 4000, 1095), (4000, 10 ** 9, 930)]
+    # the statutory rates, read from the shipped workbook rather than carried in this file
+    BANDS_BEFORE, BANDS_AFTER = _fee_bands(tgt)
     tot = collections.Counter()
     before = collections.Counter()
     after_d = collections.Counter()

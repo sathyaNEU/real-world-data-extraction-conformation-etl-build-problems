@@ -1,124 +1,132 @@
 # Determinism verdict, task195
 
-Isolation: read only prompt.txt, submission_blocks.md, judge_brief.md and target/ (19 files). Scratch scripts in scratch/. Nothing outside this directory was opened.
+**Verdict:** DETERMINISTIC. No SOLUTION_WRONG: every figure in blocks 1 to 4 reproduced from target/.
 
-**Verdict:** NOT_DETERMINISTIC (main recommendation is forced and reproduces; supplementary answers 3 and 4 each admit a second licensed handling). Label: competing_defensible_answer. Blocks are not SOLUTION_WRONG: every block figure reproduces under the handling it chose.
+**Disposition:** APPROVE. No model rerun. Two optional wording tightenings (ask 4 amendments, ask 5 "it") are listed under Fix; neither changes a committed number.
 
-**Disposition:** FIX_NOW. Pin the identity of "specimen" for the weekly ask and the numerator/denominator/amendment basis for the monthly ask in validation_extract_dictionary.csv (or the prompt, which is already at 998 of 1,000 characters, so the dictionary is the place). The main call, the ladder and every graded main-call figure stay byte-identical, so no rerun of the main-call side is needed; the two asks are re-keyed.
+**Why:** The comparison is 5,839 specimens (393 MIXED, 5,446 CONCORDANT) under any handling of the pack's aliquots, resends, voids and second read sets. Every paired interval estimator (Wald, Newcombe, score/Tango-MN, exact conditional, Agresti-Min, bootstrap) clears zero at 0.030 and not at 0.050, and 0.010 fails 4.1(b), so the rule returns 0.030. The only route to a different cutoff is an interval that ignores that both screens are scored on the same 393 specimens (0.015), which the parallel-run design (KVAL-07 3.1, 3.2, 3.4) excludes.
 
-**Why:** Main call 0.030 reproduces exactly (5,839 / 393 / 5,446; 292 and 91; 294, 308, 310, 319, 326; 61, 74, 80, 85, 104) and holds under every paired interval estimator and every alternative population. Supplementary 4 (monthly rate) has a pack denominator reading (release_volumes_monthly, "results_released") that gives 14.9 for 2026-03 against the golden 15.6, and the two differ in all twelve months; supplementary 3 (weekly) has an accession-count reading that gives 4,6,5,3,7,4,6,5,5 against the golden 11,14,13,9,16,14,14,26,22. Each fork is closed only by the author's narration, not by a sentence in a shipped file.
+## Evidence: reproduction table
 
-## Evidence: reproduction table (all from target/ at stated grain)
+| Item | Block value | Recomputed | Result |
+|---|---|---|---|
+| Comparison / events / clean | 5,839 / 393 / 5,446 | 5,839 / 393 / 5,446 | reproduced |
+| In service detects / false calls | 292 / 91 (1.67) | 292 / 91 (91/5446 = 1.671) | reproduced |
+| Candidate detections 0.050, 0.030, 0.020, 0.015, 0.010 | 294, 308, 310, 319, 326 | same | reproduced |
+| Increase, points | 2/0.51, 16/4.07, 18/4.58, 27/6.87, 34/8.65 | same (n=393) | reproduced |
+| Candidate false calls | 61, 74, 80, 85, 104 (1.12, 1.36, 1.47, 1.56, 1.91) | same | reproduced |
+| Cutoff | 0.030 | 0.030 | reproduced |
+| Ask 3, nine reports (vials, excess) | 575/14 ... 538/26 | all nine identical | reproduced |
+| Ask 4, twelve monthly rates | 15.6 ... 16.1 | all twelve identical | reproduced only with the release-desk amendments applied (see below) |
+| Ask 5 | L1 0.878/7, L2 0.865/7, L3 1.027/6 | identical | reproduced |
 
-| Block figure | Recomputed | Status |
-|---|---|---|
-| Comparison 5,839 (393 MIXED, 5,446 CONCORDANT) | 5,839 / 393 / 5,446 (cohort codes, accepted QC read, accepted read set mixture fraction, MIXED or CONCORDANT verdict) | reproduced |
-| Screen in service 292 events, 91 false calls, 1.67% | 292, 91, 1.6710 | reproduced |
-| Detected 294/308/310/319/326 | same | reproduced |
-| Increase 2/16/18/27/34, pp 0.51/4.07/4.58/6.87/8.65 | same | reproduced |
-| False-call 1.12/1.36/1.47/1.56/1.91 (61/74/80/85/104) | same | reproduced |
-| Interval at 0.030, 1.37 to 6.77 | paired Wald on discordant specimens (b=23, c=7): 1.369 to 6.773 | reproduced, estimator specific |
-| Cutoff flags (no, yes, yes, yes, yes) and (yes, yes, yes, yes, no) | same under paired estimators | reproduced |
-| Recommended 0.030 | 0.030 | reproduced |
-| Weekly 577,598,600,627,564,552,541,531,529 and diffs 11,14,13,9,16,14,14,26,22 | reproduce only as distinct biobank_ref (accession where no crosswalk row) among all register rows of the report; totals from PDF 588,612,613,636,580,566,555,557,551 | reproduced under one handling; second handling differs (finding) |
-| Monthly 15.6,15.3,13.9,14.9,14.2,15.1,17.6,19.6,19.7,18.8,20.7,16.1 | reproduce only with amendments applied (dates, hetx_call, one review_outcome), RELEASED rows deduplicated to specimens, numerator and denominator both distinct specimens recomputed (pack discarded) | reproduced under one handling; others differ in every month (finding) |
-| Dilution L1/L2/L3 medians 0.878/0.865/1.027; within-a-fifth 6/7/6 | 0.87805/0.86503/1.02703 on NS-27-04 prepared levels 0.0041/0.0163/0.0629 (labels upper-cased, voided row dropped); 6/7/6 | reproduced |
+Population probe (probe 2). The literal 3.1 to 3.3 filter gives 5,839 / 393 / 5,446.
+- Contract receipts (579 accepted QC reads, KT-ALPHA and KT-BORG): none has a re-run row, so they cannot enter.
+- Voided reads: 111 rows (38 specimens have only voided reads). They have no accepted read and fail 3.2.
+- INCONCLUSIVE: 35 specimens that fall outside 3.2.
+- Cohort specimens with no verdict: 194.
+- Second read sets: 139 non-accepted read sets. Using the max or mean of the two sets leaves every count identical (294/308/310/319/326; 61/74/80/85/104).
+- Specimens with two register rows: 45 (resends, second aliquots). The five CONCORDANT/MIXED conflicts are not in the comparison. Verdict handling "any MIXED", "first", "drop conflicting" or "all MIXED" gives an identical 393/5,446.
+- Excluding the 153 REVIEWED-source rows (not licensed by 3.4) gives 366 events and 5,320 clean, with detections 268 for the service and 269/283/285/294/301 for the cutoffs. That is a different table, but 0.030 still carries the largest clear increase of 15, and no sentence supports it.
 
-## Probe 1: the interval
+Direction probe (probe 3). Cutoffs failing (a): 0.050 only. Cutoffs failing (b): 0.010 only (104 > 91). "Highest cutoff value" is numeric, 0.030. The only second reading, "most sensitive passing cutoff", gives 0.015, but 4.1 says "highest cutoff value" and Table 2 lists values, so that reading contradicts a quotable sentence.
 
-File and columns telling how the calls on one specimen came to exist: qc_screen_calls_gsqa/gsqb (specimen_id, read_accepted, hetx_call) and mixture_fraction_rerun_v34.csv (specimen_id, read_set_accepted, mixture_fraction), joined on specimen_id; model card says the estimate is "computed from the read set alone", KVAL-07 3.1 "parallel run", 3.2 same specimens, 3.4 "Detection is counted per specimen". Both calls are therefore on one specimen's own read sets.
+## Probe 1 and answer 2: interval families on the increase (n = 393, discordant b = candidate only, c = service only)
 
-Increase and discordant cells (candidate-only b, service-only c), n=393 events:
+| Cutoff | b / c / both | Paired Wald | Newcombe paired | Score (Tango/MN) | Exact conditional | Boot paired | Unpaired Wald | Unpaired Newcombe | McNemar chi2 (df 1) | Unpaired chi2 (df 1) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0.050 | 14/12/280 | -2.03, 3.05 | -2.06, 3.09 | -2.16, 3.23 | -2.20, 3.10 | -2.04, 3.05 | -5.58, 6.60 | -5.57, 6.59 | 0.154 | 0.027 |
+| 0.030 | 23/7/285 | 1.37, 6.77 | 1.36, 6.84 | 1.43, 7.07 | 1.18, 6.12 | 1.53, 6.87 | -1.86, 10.01 | -1.88, 9.98 | 8.53 | 1.80 |
+| 0.020 | 24/6/286 | 1.89, 7.27 | 1.88, 7.34 | 1.98, 7.59 | 1.75, 6.46 | 2.04, 7.38 | -1.33, 10.49 | -1.34, 10.47 | 10.80 | 2.30 |
+| 0.015 | 32/5/287 | 3.91, 9.83 | 3.93, 9.91 | 4.09, 10.16 | 4.00, 8.56 | 4.07, 9.92 | 1.07, 12.67 | 1.05, 12.64 | 19.70 | 5.36 |
+| 0.010 | 38/4/288 | 5.53, 11.77 | 5.56, 11.86 | 5.75, 12.10 | 5.85, 10.12 | 5.60, 11.96 | 2.95, 14.35 | 2.92, 14.32 | 27.52 | 8.75 |
 
-| cutoff | b | c | increase | paired Wald | Newcombe paired | Tango score | paired bootstrap | McNemar exact p | unpaired Wald | unpaired Newcombe | unpaired bootstrap |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 0.050 | 14 | 12 | 0.51 | -2.03, 3.05 | -2.06, 3.09 | -2.13, 3.25 | -2.04, 3.05 | 0.845 | -5.58, 6.60 | -5.57, 6.59 | -5.60, 6.62 |
-| 0.030 | 23 | 7 | 4.07 | 1.37, 6.77 | 1.36, 6.84 | 1.43, 7.08 | 1.53, 6.87 | 0.0052 | -1.87, 10.01 | -1.88, 9.98 | -2.04, 9.92 |
-| 0.020 | 24 | 6 | 4.58 | 1.89, 7.27 | 1.88, 7.34 | 1.97, 7.60 | 2.04, 7.38 | 0.0014 | -1.33, 10.49 | -1.35, 10.47 | -1.27, 10.43 |
-| 0.015 | 32 | 5 | 6.87 | 3.91, 9.83 | 3.93, 9.91 | 4.08, 10.16 | 4.07, 9.92 | 7e-6 | 1.07, 12.67 | 1.05, 12.64 | 1.02, 12.72 |
-| 0.010 | 38 | 4 | 8.65 | 5.53, 11.77 | 5.56, 11.86 | 5.75, 12.11 | 5.60, 11.96 | 6e-8 | 2.95, 14.35 | 2.92, 14.32 | 2.80, 14.25 |
+(Interval endpoints in percentage points. Agresti-Min paired at 0.030: 1.32 to 6.78. Exact McNemar p at 0.030 is 0.0052, mid-p 0.0043. Exact McNemar p at 0.050 is 0.845. The McNemar chi2 with continuity correction is 7.50 at 0.030.)
 
-(Also checked at 0.030: Agresti-Min corrected lower 1.32, continuity-corrected Wald lower 1.24, Bonferroni 99% over five cutoffs lower 0.52. Zero is crossed only at z = 2.95; the lower bound reaches 0 if service-only events c rise from 7 to 12.)
+What the table says:
+- Paired families: lower bound 1.18 to 1.53 at 0.030, and -2.0 to -2.2 at 0.050. Every paired estimator returns 0.030.
+- Unpaired families: lower bound -1.86 at 0.030, -1.33 at 0.020, +1.05 to +1.07 at 0.015. Unpaired returns 0.015 (false-call 85 <= 91, so (b) holds). A continuity-corrected unpaired Wald still clears at 0.015 (about +0.8).
+- The gap between families at 0.030 is about 3.3 points of lower bound, from the correlation of the two calls (285 of 393 detected by both). It is structural, not sampling noise.
+- Within the paired family, estimators differ by 0.0 to 0.35 points, far below the standard error of about 1.4 points. They agree on the decision because the 0.030 lower bound sits about one standard error above zero (McNemar p about 0.005) and 0.050 sits 1.4 standard errors below.
+- Of your three failure sides: none applies. The data are not too smooth (paired and unpaired return different cutoffs), the candidates that matter are separated by a margin, and the agreement is not an insensitivity artefact, because unpaired disagrees. The one soft side is that paired-family differences sit inside sampling error, but none of them touches the decision.
+- Chi-square per df measured on the record's counts: McNemar 8.53/1 at 0.030 (0.154/1 at 0.050, 10.8 at 0.020, 19.7 at 0.015, 27.5 at 0.010). Independent 2x2 chi2 per df at 0.030: 1.80/1.
+- Which file and columns say how the two calls on a specimen came to exist: qc_screen_calls_gsqa/gsqb (hetx_call, read_accepted, specimen_id) and mixture_fraction_rerun_v34.csv (mixture_fraction, read_set_accepted, specimen_id). The model card says the estimate "is computed from the read set alone" and not from the HETX call. The calls are two per-specimen calls on the same specimen (KVAL-07 3.1, 3.4).
 
-Every paired estimator establishes 0.030, 0.020, 0.015, 0.010 and not 0.050 (z = 0.39), so the committed 0.030 stands. Every unpaired (independent-proportions) estimator establishes only 0.015 and 0.010, so it files 0.015 (false-call 1.56 < 1.67 passes), a different cutoff. A non-overlap of each screen's own Wilson interval gives hold (only 0.010 separates, and it fails 4.1(b)), the "Not holding" route in block 1. Whether the interval estimator moves the cutoff: yes, between paired and unpaired. The shipped files close it to paired by 3.1, 3.2, 3.4 (one set of specimens, per-specimen detection) and by the data: independence of the two calls on the 393 events is rejected at chi2(1) = 248 (phi 0.79) at 0.030, observed discordant 30 against 142 expected under independence. No shipped sentence names the estimator, so the closure is structural, not quoted. I accept it as forced because an unpaired interval contradicts the 3.2 matched comparison, but the quoted block 1 endpoints 1.37 and 6.77 are Wald specific (paired lower bounds run 1.36 to 1.53, upper 6.77 to 7.08); nothing in the asks grades those endpoints except the png.
+Is the pairing forced? No shipped sentence says "paired interval". It is forced by the parallel-run design and by the 5,839-specimen common comparison: an interval that treats the two detection rates as independent samples ignores a correlation that the record's own both-detected cell (285) displays. I count an unpaired interval as the easy route, not a defensible reading. This is the stump, and it is analytical (the estimand's unit of analysis).
 
-## Probe 2: the population
+## Answer 1: supplementary asks, ask by ask
 
-Literal 3.1/3.2: 5,839 comparison specimens, 393 events, 5,446 clean. Alternatives and their effect (all keep 0.030 as highest meeting both rules):
-- Contract receipts (579 KT-ALPHA/KT-BORG, with agreement_ref): none has a re-run mixture fraction (config: not in archive path), so cannot enter; excluded by 3.1 anyway.
-- INCONCLUSIVE (35 in the register, none violate the comparison) as clean: n_clean 5,481, service false-call 1.66, 0.030 1.35.
-- Specimens with no verdict (194 with accepted read and accepted set, no register row) as clean: 5,640, 1.67 vs 1.35.
-- Both: 5,675, 1.66 vs 1.34.
-- Voided reads (111 N rows, 73 later re-read as a Y row on another plate): carry no call, no effect; 3.2 needs an accepted read.
-- Second (non-accepted) read sets (139): using the larger mixture fraction per specimen gives identical counts.
-- Control wells (plate_layout_map control_well Y, 124 in the comparison): not mentioned by KVAL-07; excluding them gives 5,715 / 385 / 5,330, increase 16 (4.16 pp), lower 1.40, 0.030 still chosen; no file licenses the exclusion.
-- Verdict date clause (reported on or before 21 June): inert, register max 2027-06-18.
-- Six specimens carry A1 CONCORDANT and A2 MIXED, but none is in the comparison; four in-comparison specimens have two register rows, all CONCORDANT (resend or A2), so no conflict.
+Ask 1 (per cutoff table, interval test, recommendation).
+- Detections, increases, points and false-call rates are forced by 3.4 and 3.5 counting.
+- The wording "clears the interval test" is defined by 4.1(a).
+- A second value exists only on the unpaired route: 0.030 "no" and 0.020 "no", and the cutoff becomes 0.015. That route is the stump, not a competing defensible answer.
+- Forced.
 
-## Probe 3: the rule's direction
+Ask 3 (vials and excess).
+- Vial = crosswalk biobank_ref, joined on specimen_id. Each register (request_id, specimen_id) pair exists in the crosswalk, so the join is unique.
+- Results = register rows per report_ref, which equal the PDF "Results issued" for all nine reports (589, 608, 613, 641, 577, 554, 570, 542, 564).
+- The PDF footer says "Where a report is re-sent, the week's count includes the results sent again", which closes whether the excess counts resends.
+- Second handling: distinct (specimen, aliquot) as "results" gives 587 instead of 589 at W13 and so a different excess. That contradicts the PDF footer, so it is not licensed.
+- Joining on request_id alone is not possible, because 312 requests map to 2 to 3 specimens and 105 map to 2 to 3 vials.
+- Reports W13 to W21 are the nine issued April or May. The W19 "two working days late" note leaves it in May.
+- Forced.
 
-Failing: 0.050 fails 4.1(a) (interval -2.03 to 3.05); 0.010 fails 4.1(b) (1.91 > 1.67). Passing both: 0.030, 0.020, 0.015. "Highest cutoff value" is quoted from 4.1 and Table 2 lists values, so 0.030. A second reading ("highest" as the last row C5 or the most sensitive) gives 0.010, which fails (b) and so cannot be reached; the most-sensitive-that-passes reading gives 0.015, but violates "highest cutoff value". Not open. Note 4.1(b) is a point comparison, and the false-call differences are not themselves distinguishable from noise (paired exact p for candidate against service: 0.16 at 0.030, 0.33 at 0.010), but because the rule says "not higher" and 0.030 is above 0.010 whatever treatment of (b), the call does not move.
+Ask 4 (monthly flagged rates). Reproduces exactly (all twelve months) when four rules hold:
+- (i) only RELEASED rows, bucketed by released_date, with SUPERSEDED and WITHHELD excluded;
+- (ii) flagged = AUTO with hetx_call FLAG, or REVIEWED with review_outcome FLAGGED, which is the asking sentence's "reviewed ones by their review outcome";
+- (iii) the release-desk amendments applied (hetx_call 121, released_date 245, review_outcome 1);
+- (iv) specimens counted once, which is the asking sentence's "each counted once", for numerator and denominator.
+After the amendments there is no specimen in two months and no flag conflict between its released rows. First, last and any dedupe give identical rates, whether the amendment is applied to every row of the specimen or only to the row matching value_before.
+Competing handlings:
+- Denominator from release_volumes_monthly (2,342 for March, "as booked", rows with duplicates) gives 14.9 in March against 15.6. This is excluded by "each counted once".
+- Counting the REVIEWED FLAG calls (hetx_call) instead of the review outcome contradicts "by their review outcome".
+- Not applying amendments gives about 18.3, 20.8, 17.4, 16.9, 17.0, 18.2, 20.0, 22.6, 24.6, 24.0, 26.4, 21.6, so all twelve are wrong by 1 or more. The quotable sentence is the dictionary's value_after, "the value the record carries after the amendment", together with the manifest's "amendments to released records". No sentence says outright that the warehouse values are superseded. This is the weakest closure in the pack and it closes by the dictionary line plus the pack's purpose for the amendment file. It does not reach a second value with a sentence behind it, because the volume file's "as booked at month end" is for the row-count denominator it excludes.
+- Forced, with that one residual.
 
-## Probe 4: the three non-recommendation answers
+Ask 5 (dilution).
+- The Replicate results sheet carries Stock NS-27-04 only, and the prepared level is joined by Stock and Level (0.0041, 0.0163, 0.0629).
+- Lower-case level labels (l1, l2, l3, six rows) are normalised, and the voided row is excluded.
+- "A fifth of it" can only coherently mean the prepared level, since the results and the prepared level are both fractions around 0.004 to 0.06. A median recovery is a share near 1, and a result of 0.0045 can never be within 0.2 of it.
+- The second reading is within 20 per cent of the median recovery: L1 8 and L3 7 (L2 stays 7). It does not survive the unit check, and it contradicts the quotable "recovery as a share of the prepared level".
+- Alternative stock NS-27-07 (prepared 18 March): 0.923/0.898/1.066, contradicts the Stock column of the results sheet. Using the nominal label (0.4, 1.6, 6.4 per cent): L3 1.009, contradicts the sheet note that the prepared level column is the gravimetric fraction.
+- Forced.
 
-**Weekly (ask: "the specimens with any verdict against the total of each weekly report issued in April and May").** Identifier used: identity_panel_register_2027.csv report_ref grouped, specimen identity from specimen_request_crosswalk.tsv biobank_ref (fallback specimen_id where there is no crosswalk row: 354 rows in W13 to W17 have none). Totals from identity_panel_weekly_reports_2027.pdf; they equal the register row counts exactly (resends included). Nine reports W13 to W21 issued 2 April to 28 May (W19 "two working days late" stays in May).
-Two handlings survive, each with a quotable sentence. Dictionary: "specimen_id ... The laboratory accession, one per specimen received" gives distinct accession counts 584,606,608,633,573,562,549,552,546 and differences 4,6,5,3,7,4,6,5,5. Dictionary: biobank_ref "A specimen re-accessioned for a repeat request carries one reference across its accessions" gives the golden 577,598,600,627,564,552,541,531,529 and 11,14,13,9,16,14,14,26,22. Accession plus aliquot gives 586,608,610,635,575,564,551,554,548. The sign of the difference is also not given by the asking sentence. FINDING (Gate C/E on supplementary 3). Where a re-accessioned specimen has no crosswalk row (the 354 rows) the golden silently treats it as one specimen.
+PNG. The block states no endpoints, only the form and the markings. Any paired estimator draws a bar that agrees with the description. The 0.010 mark (above the service's false-call rate) is true.
 
-**Monthly (ask: "the screen in service's flagged specimens, reviewed ones by their review outcome, per thousand released by release month for the twelve to February 2027").** Identifiers: qc_screen_history specimen_id, hetx_call, call_source, review_outcome, release_status, released_date; release_amendments (specimen_id, field, value_after); release_volumes_monthly results_released. Flagged = hetx_call FLAG for AUTO, review_outcome FLAGGED for REVIEWED (single reading, quoted from the ask). Forks, each licensed by a quotable sentence:
-- Amendments (dictionary: value_after is "the value the record carries after the amendment"; manifest: raised after the month closed) applied or not.
-- Duplicates: 1,449 specimens have two RELEASED rows (two plates). Counting rows or specimens.
-- Denominator: the pack's results_released (matches the raw extract row counts by original release month exactly, 2,342 ... 2,281, so it is pre-amendment and counts duplicate rows) or specimens recomputed after amendments (2,243 ... 2,173).
-2026-03 to 2027-02 under the main variants:
-| variant | 2026-03 | 04 | 05 | 06 | 07 | 08 | 09 | 10 | 11 | 12 | 2027-01 | 02 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| golden: amended, specimens, recomputed specimens | 15.6 | 15.3 | 13.9 | 14.9 | 14.2 | 15.1 | 17.6 | 19.6 | 19.7 | 18.8 | 20.7 | 16.1 |
-| amended, distinct flagged specimens, pack denominator | 14.9 | 14.6 | 13.2 | 14.2 | 13.5 | 14.5 | 16.7 | 18.8 | 18.8 | 17.8 | 19.8 | 15.3 |
-| amended, rows, pack | 15.8 | 15.0 | 13.7 | 16.0 | 14.3 | 14.8 | 16.7 | 20.4 | 19.6 | 19.9 | 21.0 | 15.8 |
-| raw extract, rows, pack | 18.4 | 20.7 | 17.4 | 17.9 | 17.0 | 17.8 | 19.1 | 23.7 | 24.7 | 24.8 | 26.5 | 21.0 |
-| raw, distinct specimens, recomputed | 18.3 | 21.2 | 17.8 | 16.9 | 17.0 | 18.2 | 20.1 | 23.0 | 25.0 | 24.0 | 26.4 | 21.6 |
-The ask says "flagged specimens" and "per thousand released"; the only shipped denominator is the pack's "results_released", whose literal use gives the second row. The golden requires discarding the pack because it is pre-amendment and counts duplicate results; no shipped sentence says so. FINDING (Gate C/E on supplementary 4): every month differs between the golden and the pack-literal handling by 0.6 to 0.9 per thousand, far outside the one-decimal rounding.
+## Answer 3: is every figure in block 1 true of every estimator the records admit
 
-**Dilution (ask: median recovery as a share of the prepared level and how many results fall within a fifth).** Level = Level (case-normalised from l1/l2/l3), prepared value = "Prepared level (fraction)" joined on Stock+Level, value = "Recovered fraction". Replicates exist only for stock NS-27-04, so the prepared levels 0.0041/0.0163/0.0629 are forced by the Stock column (NS-27-07 has none). Voided row (L3 rep 10, no result) dropped. Medians 0.878, 0.865, 1.027; within 20% inclusive or strict: 6/7/6 (no tie; closest values are relative deviations 0.1951 in L1 and 0.2258 in L3). Alternatives not licensed: nominal label (0.4%) gives 0.900, average of the two stocks gives 0.900; the sheet's "Prepared level (fraction)" is the gravimetric value and the Stock key selects it. One determinate answer.
+- 16 more events, 4.07 points, 393, 5,839: estimator-free.
+- "Clear of zero on every paired estimator" at 0.030: true for all seven I built (smallest lower bound 1.18, exact conditional).
+- "0.050 ... established by no reading": true for every estimator including unpaired (all lower bounds negative; Fisher p 0.93, McNemar exact p 0.845).
+- "0.020 or 0.015 ... clear both tests": true of paired estimators only. Unpaired 0.020 fails (lower -1.33). Inside block 1 the paired frame is stated just before, so it is not misleading, but it is true of one family only.
+- 1.36, 1.67, 1.91 per cent: counts, estimator-free.
+- "Not holding ... follows only if each screen's detection rate is judged against its own interval": the Wilson non-overlap rule does give a hold (0.010 clears the non-overlap at 78.9 vs 78.4 but fails (b); 0.015 overlaps, 77.0 vs 78.4). The unpaired difference interval does not give a hold (0.015). So the sentence is true of the overlap rule only.
 
-## Question 1: is the method forced, or forced only by data that cannot separate the candidates?
+## Answer 4: margins (would a replicate or specimen moving a hair change a graded count)
 
-Neither failure side. (a) The paired family is not agreement through absence of noise: the data are real binomial counts (b+c = 30 discordant specimens at 0.030, SD of the increase 1.38 pp, z 2.95), and the estimators do disagree in the second decimal (paired lower bounds 1.36 to 1.53, uppers 6.77 to 7.08). But their differences (about 0.17 pp on the lower bound) are 0.12 of one standard error and cannot reach a decision line: the nearest line is the 0.030 lower bound at 1.4 pp (z 2.95 from zero) and the 0.050 lower bound at -2.0 pp (z 0.39 from zero). All defensible paired estimators therefore agree on every cutoff's pass or fail. (b) The paired and unpaired families do differ in outcome, by far more than their sampling error (lower bound 1.37 against -1.87 at 0.030, a 3.2 pp gap against a 1.38 pp SE), and the data separate them: independence of the two calls is rejected at chi2 = 248 (1 dof) at 0.030, 268 at 0.050, 198 at 0.010, so the unpaired variance (SE 3.03 pp) is 2.2 times the real SE. The method is forced by the matched structure, not by the data being unable to speak. (c) Sampling-noise plausibility, chi-square per degree of freedom measured: weekly MIXED rate by receipt ISO-week over the 14 weeks, 15.9 / 13 = 1.23 (p 0.25), plausible binomial; monthly MIXED rate, 0.32 / 2; dilution replicates, Bartlett over log recoveries 2.35 / 2 = 1.18 (p 0.31), CVs 23%, 14%, 18% (L1 SD 0.00079 against the model card's "within about 0.002" for repeats, implied sigma about 0.0007, chi2/dof about 1.2 on 8 dof); candidate detection against panel share, Hosmer-Lemeshow chi2/dof 0.0 to 0.7 for the five cutoffs (near step functions of the typed share, as a threshold on a monotone estimator should be: log ratio of mixture fraction to typed share has SD 0.29 and only events within that band of a cutoff can flip); HETX flag against typed share, chi2/dof 19.1 / 8 = 2.39 (p 0.014), overdispersed, as expected since HETX is driven by heterozygosity excess, not by share; weekly false-call (service flag among clean) 31.7 / 13 = 2.44 (p 0.003), mild overdispersion that does not touch the rule because 4.1(b) is a point comparison. So the record carries the noise a real validation would, not none, and the stated two-decimal rounding on counts-derived percentages is exact arithmetic on integers, not a precision claim. The one place two decimals claim more than the data carry is the interval endpoints in block 1 and the png (estimator-dependent to 0.2 pp, and the 0.030 uncertainty itself is 2.8 pp wide).
+- Mixture-fraction hair. Values are stored to four decimals and the cutoff test is on the stored value, with no ties at any cutoff. Nearest stored values and what a one-unit (0.0001) move does:
+  - 0.050: MIXED 0.0502 (294, 2, 0.51 move by one) and a CONCORDANT 0.0498 (61).
+  - 0.015: MIXED at 0.0148 and 0.0147 (319, 27, 6.87 move by one to two).
+  - 0.010: three CONCORDANT at 0.0099 and one MIXED at 0.0101 (104, 326, 34 move by up to three or one).
+  - 0.030: nearest MIXED 0.0314 and CONCORDANT 0.0293, so two specimens within 0.0015 (0.0007 and 0.0014 away); a 0.0001 to 0.0005 move changes neither 308 nor 74, and even both crossing moves the increase by at most 1 net.
+  - 0.020: nearest MIXED at 0.0193 and 0.0192.
+  So the tightest graded counts are the 0.015 detection (319) and the 0.010 false-call count (104), each one 0.0001 unit from the cutoff. They are not decision-bearing: 0.010 stays far above 91 (needs 13 fewer) and 0.015 stays far above the interval threshold.
+- Decision margin at 0.030: the interval stops clearing zero when the net increase drops from 16 to 10 (Wald lower -0.18; 11 gives +0.08, i.e. 5 specimens) with b+c held at 30; exact conditional also flips at about the same point. One specimen moves it by 0.26 points. False-call margins: 0.030 has 74 vs 91 (17), 0.015 has 85 (6), 0.010 has 104 (13). At 0.050 the increase would need about +10 net more detections (Wald) to clear.
+- Ask 5: the tightest margin in the pack's block 4 is L1 (boundary 0.8 x 0.0041 = 0.00328): a replicate at 0.0034 (inside, 0.00012 above) and one at 0.0031 (outside, 0.00018 below). At the stored four decimals (half-unit 0.00005) neither crosses, but one replicate shifting by 0.0002 changes L1 from 7 to 6 (or 7 to 8). L2 margin 0.00066, L3 0.0016 (0.0771 vs 0.07548).
+- Ask 4: each month's rate moves by about 0.4 per thousand if any single specimen's flag status changes. That is the count itself, not a hair, and the rates sit at 0.00 to 0.17 flagged-specimen distance from the rounding edge, so the decimal given is the rounding of an exact count.
+- Ask 3: counts of rows and distinct keys; no hair.
 
-## Question 2: rounding edges
+## Gates, short
 
-Distance of each figure from the nearest rounding flip, as a fraction of the half-unit (a value at the centre of its rounded cell scores 1, a figure on the edge scores 0), computed on 0.01 pp or 0.001 units.
-
-- Increase (pp): 0.51 (0.5089), 4.07 (4.0712), 4.58 (4.5802), 6.87 (6.8702), 8.65 (8.6514). Distance to the nearest rounding edge 0.0039, 0.0038, 0.0048, 0.0048, 0.0036 against a half-unit of 0.005, so none is within 0.0036 of a flip, but one event moves the increase by 0.254 pp, so one more row moves each figure across about 25 rounding cells (it changes the figure, not just the rounding).
-- False-call rates: 1.6710, 1.1199, 1.3589, 1.4688, 1.5607, 1.9096; edge distances 0.0040 to 0.0049 of 0.005. One more false call moves a rate by 0.018 pp (0.030 would read 1.38, the service 1.69), so 0.030 stays below the service until 17 more false calls (74 to 91) and 0.010 stays above until 13 fewer.
-- Interval bounds (block 1 and png only): 1.369 is 0.0045 from an edge, 6.773 is 0.0020 from 6.775; elsewhere the paired Wald bounds at 0.010 (lower 5.5354, 0.0004 from 5.535), 0.020 (lower 1.886, 0.0014) and 0.015 (lower 3.914, 0.0013) sit closest to edges. Estimator choice moves these by 0.1 to 0.3 pp, so two-decimal endpoints are not graded-safe.
-- Monthly per thousand (golden basis): 15.604, 15.300, 13.901, 14.908, 14.182, 15.105, 17.595, 19.591, 19.696, 18.794, 20.696, 16.107. Smallest distance to an edge is 2026-07 (14.1815, 0.0315 of 0.05); none is within 0.03 of a flip. One more flagged specimen adds 0.37 to 0.46 per thousand (it moves the one-decimal figure by 4 cells); one more clear specimen changes none of the twelve.
-- Dilution medians: 0.87805, 0.86503, 1.02703; edge distances 0.00045, 0.00047, 0.00047 of 0.0005. Each is a single replicate (n=9). A tenth replicate would make the median the mean of two middle replicates and move it by about half the gap to its neighbour (L1 neighbours 0.0036 and 0.0037 or 0.0033, L2 0.0141 and 0.0142 or 0.0137, L3 0.0646 and 0.0675 or 0.0615): a change of 0.01 to 0.04 in the ratio, beyond rounding.
-- Within-a-fifth counts: L1's 0.0033 replicate is 19.51% from the prepared level, 0.49 points inside the 20% line; four-decimal storage (half-unit 0.00005 = 1.2% of 0.0041) is larger than that margin, but the shipped number is the number, so 6 stands. L3's 0.0435 and 0.0771 sit at 30.8% and 22.6%; L2's 0.0102 at 37.4% and 0.0173 at 6.1%.
-
-So no graded figure is within 0.0035 of its rounding edge on the shipped arithmetic; the nearest boundary of any graded answer is the L1 within-a-fifth count (0.1951 against 0.2000), and the nearest rounding edges are the unasked interval bounds (0.0004 to 0.0014).
-
-## Gates
-
-A: main call and critical components reproduce (table). Pass for the main side; supplementary answers 3 and 4 reproduce only under the author's handling (Gate A on the arithmetic passes, the fork is Gate C).
-B: every decisive fact present in the shipped files. Pass. KVAL-07 gives population, definition and rule; Table 2 the cutoffs.
-C: main call passes (paired estimators agree, population alternatives agree, direction closed by "highest cutoff value"). Fail on supplementary 3 (accession vs biobank_ref) and 4 (pack vs recomputed; amended vs raw; rows vs specimens). Label competing_defensible_answer.
-D: the main difficulty (paired vs independent comparison) is analytical, not a word. Pass. The asks' forks are semantics, which asks may carry, but they must still close.
-E: main ask unambiguous. Fail on supplementary 3 and 4 as above: key terms ("specimens", "released") have readings giving different numbers.
-F (stump power): a strong model that sees both screens' calls per specimen will usually pair, and McNemar-type reasoning is common; the wrong routes are unpaired interval difference (files 0.015) or own-interval non-overlap (files hold); 0.050 and 0.010 each fail on the stated rules. Moderate stump power on the main call; most grading difficulty sits in the asks 3 and 4, where the forks above would stump careful solvers for a semantics reason, which is not stump power the build can claim.
-G: see line. H: see line.
-
-## Files/Hygiene
-
-PASS with notes. 19 files; formats csv (12), tsv (1), json (1), xlsx (1), pdf (4, two carrying tables), so five formats; qc_screen_history has 32,647 rows (>= 25,000); distractors present (extraction_platform_validation_2025.pdf, assay_unit_costs_2027.csv, plate_layout_map, lims_run_log, release_volumes_monthly for the main call). export_manifest gives source and pull date for each file but no license column; licence and provenance cannot be judged from the bundle (metadata.json is out of bounds), so I do not call it a finding. No temporal leak found: latest pull 2027-06-21, setting 1 July 2027. Nothing reads as LLM generated in file names; the dictionary and the validation extract do not narrate the answer. Exclusion-level finding: none.
-
-## Stumping type
-
-`mechanism: statistical_rigor`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. The difficulty is judging the increase with its uncertainty on the matched specimens (and rejecting 0.050 as not established), on honest data with no reported number being wrong; on clean data it would still stump the same way.
-
-## Three rules
-
-`domain: pass`, `layers: pass`, `decisive_step: analytical`. Domain: validating a replacement contamination screen against a reference standard (paired detection gain with a confidence interval, false-call rate) is the method-comparison work a genomics QC laboratory does; swapping the nouns would not leave it unchanged because the typed second-contributor share, the estimator's limit of detection and the paired calls are what decide. Layer 1: decimal-comma semicolon exports from two instruments, voided and re-read plates, contract receipts, resent reports, amendments, a stale pack. Layer 2: paired interval on the discordant specimens. The easy route (interval from each screen's own proportion, or independent two-sample difference) files hold or 0.015 on the same cleaned data.
+- A: reproduced (table). B: every decisive fact is in the pack (Table 2, 3.1 to 3.5, 4.1, PDF footer, dictionary). C, D: no objective or margin dispute. E: no competing defensible value found for asks 1, 3, 5 and, for ask 4, only the unamended series, which a shipped sentence excludes (weakly).
+- Files/Hygiene: PASS. 19 files, formats csv, tsv, xlsx, pdf, json. One file at 32,647 rows (history) and QC exports at 3,590 and 3,344. Licences and sources are in export_manifest.csv, and the manifest row counts match every file (3,590; 3,344; 6,245; 7,838; 32,647; 367; 7,987; 6,934; 6,861). Distractors: assay_unit_costs, extraction_platform_validation, plate_layout_map (control_well), lims_run_log (control_threshold_het_pct), release_volumes_monthly, plus the contract receipts and the second read sets. One non-stump finding, not exclusion-level: the manifest says the history was pulled 2027-03-04, yet 823 rows carry a released_date after that (to 2027-04-02). The months asked (to 2027-02) are unaffected, but a careful reader would notice.
+- Stump power (Gate F): the easy route (independent two-proportion interval) gives 0.015, a recommendable but wrong cutoff, and it is reached by a capable analyst who cleaned everything correctly. The difficulty survives deleting every wrong number from the pack.
+- Stumping type (Gate G): `mechanism: method_selection (paired against independent interval on shared specimens)`, `stumping_family: statistical_method_choice`, `surface_read_dependency: no`, `sole_data_defect: no`. The pack ships no ranking of cutoffs on the decision question; the shipped pack and protocol give no wrong answer.
+- Three rules (Gate H): `domain: pass`, `layers: pass`, `decisive_step: analytical`. Swap test: the quantity is the increase in sensitivity of a contamination screen on specimens that carry both screens' calls, with a paired interval, which is a diagnostic accuracy comparison that does not read the same with another field's nouns. Layer 1 is the decimal-comma exports, two instruments, voided and resent reads, aliquots, contract receipts, amendments and a late weekly report; Layer 2 is the paired comparison. The strong analyst who cleans everything and reads every rule correctly takes independent proportions and files 0.015.
 
 ## Fix
 
-Fix location: input_files (dictionary pin). 1) Supplementary 3: add to validation_extract_dictionary.csv that a "specimen" for report counting is one biobank_ref where the crosswalk has one, otherwise one specimen_id, and the sign (total minus specimens), or rekey the golden to the accession count 584... and 4,6,5,3,7,4,6,5,5. 2) Supplementary 4: add a row stating the pack's results_released is as booked at 2027-03-06 (before amendments, one per result) and that the rate is flagged specimens per thousand specimens released, each counted once, on the amended record; or key the golden to the pack basis (14.9, 14.6, ...). 3) Optionally state in the protocol or the dictionary that detection and false-call are per-specimen indicators on the same specimens (the WHAT), so the paired closure is quotable; keep the method open. Main call, ladder and graded main figures stay frozen.
+none required. Optional, no number moves:
+1. Ask 5: replace "within a fifth of it" with "within a fifth of that level" (prompt is already 996 characters, so something else must lose at least 4 characters).
+2. Ask 4: a clause such as "after the release desk's amendments" would close the one residual (weakest closure in the pack). The same length constraint applies.
+3. Block 1's "which clear both tests" for 0.020 and 0.015 could read "on the paired interval".

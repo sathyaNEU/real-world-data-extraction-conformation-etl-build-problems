@@ -519,9 +519,15 @@ def centre_plans(plans, per_separation, thetas, pick, graded):
             e = epl * plan
             if 0.05 - abs(e * 10 - round(e * 10)) / 10.0 < 0.0055:
                 continue
+            # the brief carries a unit's own excess to one decimal, so that sits clear of its edge too
+            if 0.05 - abs(x * 10 - round(x * 10)) / 10.0 < 0.0085:
+                continue
             if code == pick and 0.5 - abs(e - round(e)) < 0.08:
                 continue
-            score = (abs(plan - plans[code]),)
+            # the share that reproduces the count has to clear the floor and the ceiling of its own
+            # window by the same margin, so the count is put as near the whole complication as the
+            # planned volume can put it
+            score = (round(abs(mid * x - n), 4), abs(plan - plans[code]))
             if best is None or score < best[0]:
                 best = (score, plan)
         if best is None:

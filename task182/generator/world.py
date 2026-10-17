@@ -217,20 +217,20 @@ SLOW = {
 # printed level sits on a rounding edge or on the printed value itself. Fixed by the per-position scan in
 # scratch; they move no slate.
 SHIFT = {
-    "NSL01": -0.08070,
-    "NSL02": -0.14789,
-    "NSL03": -0.34837,
-    "NSL04": -0.07830,
-    "NSL05": +0.00652,
-    "NSL06": -0.81239,
-    "NSL07": -0.01810,
-    "NSL08": -0.70074,
-    "NSL09": -0.23995,
-    "NSL10": -0.74449,
-    "NSL11": -0.07560,
-    "NSL12": -0.25115,
-    "NSL13": +0.04794,
-    "NSL14": -0.01856,
+    "NSL01": -0.08097,
+    "NSL02": -0.14936,
+    "NSL03": -0.34727,
+    "NSL04": -0.07768,
+    "NSL05": +0.00612,
+    "NSL06": -0.81240,
+    "NSL07": -0.01784,
+    "NSL08": -0.69980,
+    "NSL09": -0.24069,
+    "NSL10": -0.74640,
+    "NSL11": -0.07583,
+    "NSL12": -0.25151,
+    "NSL13": +0.04792,
+    "NSL14": -0.01882,
 }
 
 

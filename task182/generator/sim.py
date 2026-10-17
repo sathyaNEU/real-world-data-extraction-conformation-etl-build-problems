@@ -107,7 +107,7 @@ def _plant_jitter():
     """Minute-to-minute swing of the source itself, one series for the whole survey: the blowers' load
     valves and the engine's governor never hold a level to the tenth of a decibel."""
     rng = np.random.default_rng(W.SEED + 97)
-    a, sd = 0.93, 0.26
+    a, sd = 0.70, 0.38
     out = np.zeros(_PJ_N)
     wn = rng.normal(0.0, sd * math.sqrt(1 - a * a), _PJ_N)
     for i in range(_PJ_N):

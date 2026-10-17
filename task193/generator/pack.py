@@ -19,9 +19,29 @@ def write_csv(path, head, rows):
 
 
 # ---------------------------------------------------------------- dispensing lines
+# the mean days a chain takes to transmit a line, by quarter of the window. The chains overlap and
+# their order changes between quarters, as their own transfer schedules and backlogs do.
+SUB_LAG = [[1.8, 2.4, 3.1, 2.2],
+           [4.4, 3.7, 4.1, 5.2],
+           [3.1, 4.9, 5.6, 4.2],
+           [6.2, 5.1, 6.8, 5.9]]
 # how a pharmacy week falls: busiest on a Monday and a Friday, short hours on a Saturday, and
 # only the duty pharmacies open on a Sunday
 WEEK_SHAPE = [0.1845, 0.1705, 0.1655, 0.1680, 0.1965, 0.1065, 0.0085]
+
+
+def transmit_day(d, lag, rng):
+    """The day a chain's batch reaches the register. A chain transmits on working days, so a lag
+    that lands on a weekend carries to the Monday, and about one line in fifty is held back by a
+    failed transfer or a re-key and arrives weeks late."""
+    if rng.random() < 0.019 and d < W.NDAY - 46:
+        lag += 11 + int(rng.poisson(16))
+    t = d + lag
+    while W.day(t).weekday() >= 5:
+        if W.day(t).weekday() == 5 and rng.random() < 0.14:
+            break                      # a Saturday transfer, which the smaller chains still run
+        t += 1
+    return min(t, W.PULL_DAY)
 
 
 def open_day(d, rng):
@@ -34,6 +54,7 @@ def open_day(d, rng):
 def dispensings(first):
     """Every dispensing line in the clean truth, plus the patient attributes behind them."""
     rng = np.random.default_rng(W.SEED + 11)
+    sub_rng = np.random.default_rng(W.SEED + 29)      # the chains' transmission, its own stream
     n = W.N_PAT
     chain_of = rng.choice(len(W.CHAINS), size=n, p=[0.37, 0.28, 0.21, 0.14])
     region_of = W.regions(n)
@@ -73,13 +94,13 @@ def dispensings(first):
                 ph = pharm_of[ci][int(rng.integers(0, len(pharm_of[ci])))]
                 npk = int(rng.choice([1, 2, 3], p=[0.615, 0.265, 0.120]))
                 q = 0 if d < 823 else (1 if d < 913 else (2 if d < 1004 else 3))
-                mu = [[1.4, 1.9, 2.6, 2.2], [3.3, 2.8, 3.9, 4.5],
-                      [4.6, 5.4, 6.3, 5.7], [6.1, 7.2, 6.6, 8.0]][ci][q]
-                lag = int(rng.poisson(mu))
+                mu = SUB_LAG[ci][q]
+                lag = int(sub_rng.poisson(mu))
                 lid += 1
                 lines.append({"line": lid, "pid": int(pid), "code": code, "vnr": vnr, "day": d,
                               "pharmacy": ph, "chain": ci, "packs": npk,
-                              "submitted": min(d + lag, W.NDAY + 20), "prescriber": pres,
+                              "submitted": transmit_day(d, lag, sub_rng),
+                              "prescriber": pres,
                               "is_first": j == 0})
     # patients already on a medicine when the extract opens: their earliest line in the extract is
     # in its first weeks, so the register's volume is in steady state from the first month and none
@@ -110,8 +131,7 @@ def dispensings(first):
                 ci = int(chain_of[pid])
                 ph = pharm_of[ci][int(prev_rng.integers(0, len(pharm_of[ci])))]
                 q2 = 0 if d < 823 else (1 if d < 913 else (2 if d < 1004 else 3))
-                mu = [[1.4, 1.9, 2.6, 2.2], [3.3, 2.8, 3.9, 4.5],
-                      [4.6, 5.4, 6.3, 5.7], [6.1, 7.2, 6.6, 8.0]][ci][q2]
+                mu = SUB_LAG[ci][q2]
                 dd = open_day(d, prev_rng)
                 if (mt0 is not None and dd > mt0) or (mf0 is not None and dd < mf0):
                     continue
@@ -119,7 +139,8 @@ def dispensings(first):
                 lines.append({"line": base, "pid": int(pid), "code": code, "vnr": vnr, "day": dd,
                               "pharmacy": ph, "chain": ci, "packs": int(prev_rng.choice(
                                   [1, 2, 3], p=[0.615, 0.265, 0.120])),
-                              "submitted": dd + int(prev_rng.poisson(mu)), "prescriber": pres,
+                              "submitted": transmit_day(dd, int(sub_rng.poisson(mu)),
+                                                        sub_rng), "prescriber": pres,
                               "is_first": False, "prevalent": True})
     for r in lines:
         r.setdefault("prevalent", False)

@@ -128,6 +128,8 @@ def compute(target, series, dup):
         "margin_db": round(ordered[CAP - 1]["specific_raw"] - ordered[CAP]["specific_raw"], 1),
         "rows": rows, "ordered": ordered, "routes": r, "bands": bands, "tones": tones,
         "weekly": weekly, "cap": CAP,
+        "deployment_count": len(SM.deployments()),
+        "corrected_count": len([d for d in SM.deployments() if d["correction"] != 0.0]),
     }
     g["slates"] = AN.all_slates(r)
     g["series"] = series

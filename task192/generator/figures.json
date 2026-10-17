@@ -112,6 +112,8 @@
  },
  "grain": 50,
  "hand_coded_confrontational": 30,
+ "marked_rate_inside_the_audited_window_pct": 9.7,
+ "marked_rate_outside_it_pct": 4.9,
  "mean_gap": 136.8,
  "partner_rows": 7,
  "partners": {

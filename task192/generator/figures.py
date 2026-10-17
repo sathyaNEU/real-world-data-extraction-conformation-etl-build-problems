@@ -36,6 +36,8 @@ def write(gendir, g):
         "audit_months": g["audit_covers"],
         "themes_without_an_audited_report": sorted(g["dead"]["rg_by_theme"]["broken"]),
         "audit_prevalence_share": round(g["audit_prevalence"], 4),
+        "marked_rate_inside_the_audited_window_pct": round(100 * g["marked_rate_inside"], 1),
+        "marked_rate_outside_it_pct": round(100 * g["marked_rate_outside"], 1),
         "record_prevalence_share": round(g["record_prevalence"], 4),
         "variant_continuity": round(g["variant_continuity"], 2),
         "variant_matrix_inverse": round(g["variant_matrix_inverse"], 2),

@@ -25,6 +25,8 @@ def write(gendir, g):
         "tone_prominent": {c: ("none" if rows[c]["tone"] is None else ("yes" if rows[c]["tone"] else "no"))
                            for c in sorted(rows)},
         "weekly_plant": {str(k): v for k, v in sorted(g["weekly"].items())},
+        "deployments": g["deployment_count"],
+        "deployments_corrected": g["corrected_count"],
         "rungs": {k: {"slate": v[0], "margin_db": v[1], "next": v[2]} for k, v in g["slates"].items()},
         "plan_clauses": ["2.1", "2.2", "3.1", "3.2", "3.3", "4.1", "4.2", "4.3", "5.1",
                          "5.2", "6.1", "7.1"],

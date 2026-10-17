@@ -18,9 +18,9 @@ Not the complaints register, which is a record of what neighbours heard and not 
 
 ## 3. Step-by-Step Solution
 
-1. Paired each of the 28 deployments in meter_deployments_2026.csv with its position, and applied the field-check correction plan 4.1 calls for to the two deployments that need one.
+1. Paired each of the 28 deployments in meter_deployments_2026.csv with its position, and took each deployment's field-check deviation off its levels where plan 4.1 calls for it, which is 11 of them.
 2. Read sound_levels_1min_2026.parquet, kept one copy of the repeated download, and took the meters' UTC stamps to local time as survey_notes.md states.
-3. Dropped the minutes whose met record in weather_10min_2026.csv exceeds the plan's rain or wind limits, reading the replacement anemometer in km an hour from 20 September, per plan 4.2.
+3. Dropped the minutes whose ten-minute record in weather_10min_2026.csv counted rain or ran above the plan's wind limit, reading the replacement anemometer in km an hour from 20 September, and the minutes the meter recorded no measurement for, per plan 4.2.
 4. Energetically averaged each position's assessment-period minutes for its measured sound level, per plan 3.1 and 3.2.
 5. Took each position's residual sound from the minutes inside the intervals in plant_equipment_events_2026.csv where the blowers, the centrifuges and the gas engine are all recorded down.
 6. Subtracted residual from measured level in energy for the specific sound level at each position, per plan 3.1.
