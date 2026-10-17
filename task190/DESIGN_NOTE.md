@@ -233,6 +233,18 @@ the log and the count families fit the record equally well (chi-square per degre
 each), which is the point: the figure does not depend on which of them a reader picks. A placebo run of the
 same estimator at twelve positions where no deposits were split reads nought, scatter 0.39, bias -0.04.
 
+**The forced parameter, stated.** The convergence is bought with a deposit-size record that is smooth by
+construction: each 500-dollar block of each segment's profile holds exactly the number the law gives, with
+the deposits placed along the law's own slope inside the block and the pile on round figures spread evenly
+across the block's multiples of fifty. The cost is that the profile away from the band is under-dispersed,
+chi-square per degree of freedom about 0.001 against the 1.0 a Poisson record would give. The arithmetic
+is why: a segment's band background runs 103 to 626 deposits, so Poisson scatter alone would be 10 to 25,
+five times the 5 the stated rounding allows, and no estimator could then agree with another. The mitigation
+is that the smoothness lives only in the amount marginal, which nothing in the pack reports and no ask
+touches: the monthly, branch, customer and channel counts all carry their own variation, the amounts
+themselves are ragged to the cent outside the round pile, and the band's own excess is a fifth of its
+mass, which is what a reader sees.
+
 ## Closure table
 
 | # | Axis | Reading | Closure |

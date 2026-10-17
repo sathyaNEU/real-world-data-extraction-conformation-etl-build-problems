@@ -36,7 +36,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "cash_deposit_counter_2026_2027.csv",
-    "rows": 56325,
+    "rows": 56080,
     "entity": "one deposit paid in over a branch counter, cash, cheque or electronic credit",
     "grain": "deposit",
     "source": "synthetic"
@@ -65,9 +65,9 @@
   "question_form": "how-many",
   "driver": "The decisive quantity is how many items were placed just under a threshold in order to stay under it, which is the amount by which the items observed just under it exceed the number each unit's own size profile away from the threshold produces, so counting the items in that range measures how much ordinary activity a unit has at that size rather than how much was moved there.",
   "driver_concrete": "Each business segment's cash deposits just below the ten thousand dollar reporting threshold include the ones its ordinary takings would put there anyway, and the segments differ by more than three times in how much of their ordinary cash sits at that size, so the count of deposits in the range and the number actually split to stay under the threshold are different quantities with different segment shares and a total three times apart.",
-  "stump": "A competent solver conforms the deposit detail to the customer register, reads the handbook's definition of structuring and the ten thousand dollar reporting threshold, builds the split out of the customer's own day and files 1,223, which is the number of band deposits belonging to businesses that pay their takings in more than once a day, when the number placed there to stay under the threshold is the amount by which that range exceeds what each segment's own deposit-size profile away from it produces, 832.",
+  "stump": "A competent solver conforms the two deposit feeds to the customer register, reads the handbook's definition of structuring and the ten thousand dollar reporting threshold, builds the split out of the customer's own day and files 1,287, which is the number of band deposits belonging to businesses that pay their takings in more than once a day, when the number placed below the threshold on purpose is the amount by which the band exceeds what each segment's own deposit-size profile away from it produces, 400.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who carries every customer number through the crosswalk, applies the branch merger and the April code reissue, converts the machine feed's UTC stamps and reads clause 7.4 exactly builds the same-day screen, counting every band deposit on a day the customer's cash reached the threshold over more than one deposit, and files 1,223, where the number placed below the threshold on purpose is 400.",
+  "analyst_test": "A strong analyst who carries every customer number through the crosswalk, applies the branch merger and the April code reissue, converts the machine feed's UTC stamps and reads clause 7.4 exactly builds the same-day screen, counting every band deposit on a day the customer's cash reached the threshold over more than one deposit, and files 1,287, where the number placed below the threshold on purpose is 400.",
   "domain_test": "The deciding quantity is the incidence of structuring, which financial-crime analytics estimates as the excess of deposits massed below a reporting threshold over the number the segment's own deposit-size profile away from the threshold implies; swap the deposits for hospital admissions and the threshold for a ward's bed count and nobody is choosing a size in order to stay under a reporting duty, so there is no excess to measure and the count of admissions at that size is the whole of the quantity.",
   "mechanism_source": "design_note",
   "differentiation": {
