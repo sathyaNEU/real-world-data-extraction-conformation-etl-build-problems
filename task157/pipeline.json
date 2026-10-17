@@ -1,0 +1,39 @@
+{
+  "task": "task157",
+  "owner": "sathya8571",
+  "status": "DESIGN",
+  "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: a Twin Cities ride-hail operator's winter guarantee)",
+  "objective": "forecasting",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-17",
+  "stump": "Carrying December's roster at last January's qualification rates, adding the onboarding pipeline's approved drivers and the drivers away at last January's return rate files about $1.55 million; the step that lands it there is pricing last winter's seasonal drivers who are not yet back as a pool at last year's return rate, when they are the rest of a wave whose size is the group's own and whose timing every earlier winter kept, so the part already back on 3 January gives the part still to come (design targets).",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task116 (v1, lineage), task143, task264 at 0.05"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: readability screen, semantic fork table, ladder with built margins, closure table, literal reader, oracles, ask sheet, prompt.txt; then precut.py task157 to exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "wave": "wave 5 (new), seed FC28 (world, decision and quantity kept; the insurer-roster hiding place and any filed payout method not shipped; pitfall re-found from how last winter's seasonal recruits come back)"
+}

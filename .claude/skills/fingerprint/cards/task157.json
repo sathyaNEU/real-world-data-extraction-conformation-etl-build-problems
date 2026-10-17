@@ -1,0 +1,97 @@
+{
+  "task": "task157",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 5 (new), seed FC28: the world (a Midwestern ride-hail operator's January winter guarantee, $350 to every driver completing 40 trips in four weeks, pre-funded as one figure), the decision and the quantity kept; the insurer-roster hiding place and any filed payout method not shipped; the pitfall re-found from how last winter's seasonal recruits come back",
+  "domain": "product-analytics",
+  "subdomain": "retention-cohort-lifetime-value-modeling",
+  "client_domain": "product-analytics",
+  "niche": "a Twin Cities ride-hail operator pre-funding its January 2027 winter guarantee ($350 to every driver who completes 40 trips in the four weeks from Monday 4 January) on the window's first morning, when last winter's recruitment campaign put about 2,100 drivers on the road in February 2026, most of them workers laid off for the winter who went back to their trades in April, and they are coming back in a wave that began in mid-November and peaks as the guarantee opens",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G13",
+    "G16"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "prior_period_close_out",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the operator's head of driver supply, who sends finance the one figure it pre-funds the guarantee account with on the morning the window opens",
+  "role_family": "operations_director",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "driver_month_activity (the warehouse's monthly driver activity extract, legacy and new layouts across the July 2024 dispatch migration)",
+    "rows": 0,
+    "entity": "one driver's completed trips and online time in one calendar month",
+    "grain": "driver x month",
+    "source": "synthetic (constructed in the layout of a ride-hail warehouse's monthly driver activity extract, two layouts across a dispatch platform migration)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "United States, Minnesota (the Twin Cities)",
+    "currency": "USD",
+    "org_type": "regional ride-hail operator",
+    "invented_names": [
+      "Larch Rides"
+    ],
+    "people": [
+      "Gary Mathews",
+      "Kathy Sherman",
+      "Jesse Velasquez",
+      "Melvin Harrell"
+    ]
+  },
+  "layer1": [
+    "a dispatch platform migration in July 2024: monthly driver activity in the legacy layout (driver numbers, online hours) through July 2024 and in the new layout (driver ids, online minutes) from July 2024, with July split across both exports",
+    "legacy driver numbers mapped to new driver ids through the migration crosswalk, with two-account drivers merged onto one id",
+    "the guarantee window counted on local time over four Monday-to-Sunday weeks in the payments system's files against calendar months in the warehouse extract",
+    "the payout files of two years exported by the payments system in two layouts",
+    "a warehouse extract run on the Sunday before the window, so its last month (January 2027) holds three days",
+    "the monthly supply KPI report published through November (the December edition not yet out), counting on its own definitions",
+    "onboarding stage timestamps in UTC against local dates elsewhere"
+  ],
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:returning-seasonal-wave-sized-from-its-leading-edge",
+  "deliverables": [
+    "guarantee_fund_jan2027.xlsx",
+    "guarantee_fund_jan2027.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "Members of a group that stopped together come back in a wave that begins before the forecast date and peaks inside the forward window; how many of the group come back is the group's own, while when each comes back follows a calendar every earlier wave kept, so the members still to come are the members already back times the ratio earlier waves showed between the window and the same date, and a rate on the members still away, the group's size at an earlier group's rate, a rate by when each stopped, a propensity fitted on last year's returners, or one ratio over every member who came back after a gap each misstates it.",
+  "driver_concrete": "Larch's 2026 winter recruitment campaign put about 2,100 drivers on the road from February, most of them workers laid off for the winter who went back to their trades in April, and they come back as their trades shut down, a wave that began in mid-November and peaks when the guarantee opens on 4 January; by the funding date about 1,200 of last winter's seasonal drivers are back, and every earlier winter brought about nine more inside the window for every ten back by the same date, so about 1,100 more return inside the window, where a return rate on the drivers away, the campaign recruits at the organic recruits' rate, a rate by the month each stopped, a fitted propensity or one ratio over every driver back after a break each leaves the fund $70,000 to $160,000 short.",
+  "stump": "Carrying December's roster at last January's qualification rates, adding the onboarding pipeline's new drivers and the drivers away at last January's return rate files about $1.55 million; the step that lands it there is pricing last winter's seasonal drivers who are not yet back as a pool at last year's return rate, when they are the rest of a wave whose size is its own and whose timing every earlier winter kept, so the ones already back give it: about 1,100 more inside the window and a fund of about $1.70 million.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stitches the two activity layouts, maps the legacy driver numbers, reads the guarantee terms and finance's request correctly, carries December's roster at last January's qualification rates by December trips, adds the onboarding pipeline's approved drivers at last year's start rate and the drivers away at last January's return rate files about $1.55 million; only sizing the returning seasonal wave from the part already back, at the ratio of window returns to returns by the funding date that earlier winters showed, files about $1.70 million (executed in checks.py on the clean truth and the pack).",
+  "domain_test": "The deciding quantity is how many of last winter's seasonal drivers come back inside the window, forecast the way product analytics forecasts a resurrecting cohort: the cohort's own early returns developed at the return-timing ratio of earlier cohorts, rather than a churn or reactivation rate on the users away; with a hospital's patients or a utility's megawatt-hours there is no supply-side user cohort recruited one winter, away through the summer and returning on its trades' calendar, so the quantity that decides the call has nothing to stand on.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task146": "task146 weighs a pool built in the closing quarter by the month each claimant was refused, at each region's own refiling share; here the pool's timing is common to every wave and carries no rate, the returning share is the group's own and unknowable from when each left (bonus drivers and seasonal workers both stopped in April), and the decisive move is reading the group's size off the part of its wave already back",
+    "task151": "task151 sums a unit's chances of clearing stepped lines from a resampled distribution of comparable seasons; here the line is one and is priced at last year's observed rates, and the decisive quantity is how many members of a returning cohort enter the window at all",
+    "task156": "task156 projects a volunteer pool's capacity from its own exits and near-zero arrivals against arrivals of work; here the cohort is not shrinking toward a crossing but coming back, and the forecast reads its size from the leading edge of its return",
+    "task133": "task133 counts taken-over loans only from their age at the takeover (delayed entry); here nothing is truncated, the cohort's churn is right-censored by a winter not yet over, and its remainder is developed from its own early returns",
+    "task134": "task134's round-1 architecture converted a pool by months since admission (a hazard by time since entry); here no hazard is fitted, and the pool rate is the rival the out-of-sample check rejects",
+    "task231": "task231 reads the exited share of a round's silent units from rounds old enough for a lagging exit register to have caught up; here no record lags (every driver's absence is complete in the trip record), the group's return lies ahead of the forecast date, and its size is read off the part of its own wave already back, at a timing ratio every earlier wave kept"
+  },
+  "lineage": [],
+  "notes": "Domain: the seed's house label was economics (platform labour supply); the client taxonomy files platform analytics under product-analytics ('a platform selling into a sector is Product Analytics') and the decisive analysis here is a supply-side user cohort's reactivation forecast, so the honest home is product-analytics/retention-cohort-lifetime-value-modeling, not economics-econometrics. Forcing event: the 2027 guarantee goes live in the drivers' app at 00:00 on Monday 4 January and finance funds its account in full at go-live (launch_or_rollout); season_or_peak was the other honest key and was banned by task155 at the draw.",
+  "registered": "2026-10-17T11:55:39Z"
+}
