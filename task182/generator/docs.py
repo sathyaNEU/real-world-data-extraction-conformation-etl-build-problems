@@ -118,9 +118,8 @@ A-weighted equivalent level for the minute and the statistical levels LA90, LAma
 minute. **The meters stamp in UTC**; the field sheets and everything the plant logs are in local time, which
 was Irish Standard Time for the whole survey. The download of one deployment was repeated after the card
 threw a read error on collection, so part of that day appears twice in the file; the remarks column in the
-deployment table names it. Where the measurement channel dropped out or the logger reset, the meter writes
-**-120.2 dB in every level column** for those minutes rather than leaving the row out; the deployment
-remarks give each spell.
+deployment table names it. The meters write **-120.2 dB in every level column** for a minute whose
+measurement channel was down; the deployment remarks give each spell.
 
 `%(bands)s` holds the one-third-octave band levels, one row a quarter hour, from the three meters that
 carry the band module (%(band_serials)s), stamped UTC like the minute file. The band levels are unweighted.

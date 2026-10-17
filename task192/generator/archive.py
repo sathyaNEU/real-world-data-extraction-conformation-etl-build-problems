@@ -1,4 +1,5 @@
-"""Cut target.zip from the tree, with entry timestamps the rebuild cannot move."""
+"""Cut target.zip from the tree: every file at the archive root, with entry timestamps
+the rebuild cannot move."""
 import os
 import sys
 import zipfile
@@ -9,7 +10,7 @@ def cut(target, out):
     for root, _, files in os.walk(target):
         for f in files:
             p = os.path.join(root, f)
-            names.append((os.path.relpath(p, os.path.dirname(target)), p))
+            names.append((os.path.relpath(p, target), p))
     names.sort()
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for arc, p in names:
