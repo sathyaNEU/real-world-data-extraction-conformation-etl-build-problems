@@ -236,15 +236,18 @@ def main():
     pair = (out["the cracker"] + out["the mirror"]) / 2.0
     leak = 100.0 * rs["the mirror"]["asks"][0] / float(rs["the mirror"]["asks"][1])
     crack = 100.0 * rs["the cracker"]["asks"][0] / float(rs["the cracker"]["asks"][1])
-    print("CRACKER ASK WEIGHT KEPT %.1f per cent" % crack)
+    print("CRACKER ASK WEIGHT KEPT %.1f per cent  (bar: every figure misses, so 0.0)"
+          % crack)
     print("MIRROR LEAKAGE %.1f per cent of ask weight  (bar: under %.0f)" % (leak, LEAK_BAR))
     print("PAIR CEILING %.1f  (bar: at or under %.0f)" % (pair, PAIR_BAR))
-    # the skill's bar is that the cracker gets NO ASK WHOLE, not that it scores nothing: Part 1.1
-    # scores each figure and requires every row of the cracker sheet to miss
-    whole = [nm for nm, (h, nn) in zip(("A1", "A2", "A3"), rs["the cracker"]["per_ask"])
+    # Part 1.1's rows are the ask figures and chart criteria, so the cracker's bar is that EVERY
+    # ASK FIGURE MISSES. "No ask whole" is the mirror's extra constraint, not the cracker's, and
+    # moving it onto the cracker is the weaker of the two bars.
+    whole = [nm for nm, (h, nn) in zip(("A1", "A2", "A3"), rs["the mirror"]["per_ask"])
              if h == nn]
-    print("CRACKER ASKS TAKEN WHOLE %s  (bar: none)" % (", ".join(whole) or "none"))
-    bad = [n for n, ok in (("cracker takes an ask whole", not whole),
+    print("MIRROR ASKS TAKEN WHOLE %s  (bar: none)" % (", ".join(whole) or "none"))
+    bad = [n for n, ok in (("cracker keeps ask figures", crack == 0.0),
+                           ("mirror takes an ask whole", not whole),
                            ("mirror leakage", leak < LEAK_BAR),
                            ("pair ceiling", pair <= PAIR_BAR)) if not ok]
     if bad:
@@ -254,4 +257,4 @@ def main():
 
 if __name__ == "__main__":
     p, l, c = main()
-    sys.exit(0 if (p <= PAIR_BAR and l < LEAK_BAR) else 1)
+    sys.exit(0 if (p <= PAIR_BAR and l < LEAK_BAR and c == 0.0) else 1)
