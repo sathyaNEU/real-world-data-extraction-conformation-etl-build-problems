@@ -27,9 +27,9 @@ def dictionary_sheets():
           ("orgao", "texto", "codigo do orgao de imprensa; os titulos estao em config_monitor.json"),
           ("estado", "texto", "aceite ou rejeitado pelo classificador"),
           ("motivo_rejeicao", "texto", "motivo da rejeicao; vazio nos itens aceites"),
-          ("id_relato", "texto", "identificador do relato que o item aceite produz; vazio nos rejeitados"),
+          ("id_relato", "texto", "relato que o monitor filou com os itens da mesma acao; vazio nos itens rejeitados"),
           ("tema", "texto", "tema de disputa do protocolo; vazio nos rejeitados"),
-          ("codigo_acao", "texto", "codigo de acao do protocolo 2.2; vazio nos rejeitados"),
+          ("codigo_acao", "texto", "codigo de acao que o classificador atribuiu ao relato (protocolo 4.2); igual em todos os itens do mesmo relato"),
           ("local_texto", "texto", "localidade tal como o relato a da, com o nome atual ou o nome anterior do gazeteiro"),
           ("data_ocorrencia", "data", "dia de calendario local da acao, tal como o registo o fixa"),
           ("inicio_acao", "data e hora", "hora local a que a acao comecou"),
@@ -54,6 +54,17 @@ def dictionary_sheets():
           ("data_ocorrencia", "data", "dia de calendario local da acao"),
           ("inicio_acao", "data e hora", "hora local a que a acao comecou"),
           ("carimbo_recepcao", "data e hora", "momento da recepcao, na hora local")]),
+        ("amostra_dupla_codificacao", "Uma linha por relato do monitor de imprensa que a mesa de "
+         "codificacao tirou para a amostra e codificou a mao (protocolo 4.5). Nao ha linhas de "
+         "outras vias.",
+         [("id_relato", "texto", "relato do monitor de imprensa que foi codificado a mao"),
+          ("data_ocorrencia", "data", "dia de calendario local da acao do relato"),
+          ("tema", "texto", "tema de disputa do relato"),
+          ("codigo_monitor", "texto", "codigo de acao que o classificador do monitor atribuiu ao relato"),
+          ("codigo_manual", "texto", "codigo de acao que a mesa de codificacao atribuiu a mao"),
+          ("codificador", "texto", "iniciais de quem codificou a mao"),
+          ("data_codificacao", "data", "dia em que a codificacao manual foi feita"),
+          ("ronda", "texto", "ronda de codificacao: R1 em julho, R2 em novembro")]),
         ("gazeteiro_localidades", "Uma linha por nome de localidade. Uma localidade com nome novo "
          "fica com duas linhas, a atual e a anterior, ambas com o mesmo codigo_localidade.",
          [("codigo_localidade", "texto", "codigo da localidade no gazeteiro de 2024"),
@@ -121,17 +132,17 @@ def cut(target):
     if os.path.isdir(target):
         shutil.rmtree(target)
     os.makedirs(target)
-    eps = sim.episodes()
     rng = random.Random(W.SEED_PACK)
     muni, locs = sim.geography(rng)
-    sim.plan(eps, rng)
-    sim.assign(eps, muni, rng)
-    acts = sim.actions(eps, locs, rng)
+    acts = sim.actions(muni, locs)
+    sim.routes(acts, rng)
     reps = sim.reports(acts, rng)
+    dc = sim.double_coding(acts, reps, rng)
     PK.build_reports(reps, locs, rng)
     exc = PK.exceptions(rng)
 
-    n_items, n_acc = PK.write_item_log(target, reps, rng)
+    n_items, n_press = PK.write_item_log(target, reps, rng)
+    n_dc = PK.write_double_coding(target, dc)
     n_par, n_dup = PK.write_partner_reports(target, reps)
     n_lin = PK.write_public_line(target, reps, rng)
     n_gaz = PK.write_gazetteer(target, muni, locs)
@@ -178,6 +189,7 @@ def cut(target):
         else:
             n, first, last = "", "", ""
         note = {"registo_itens_imprensa.csv": "itens do monitor de imprensa, por item",
+                "amostra_dupla_codificacao.csv": "relatos do monitor codificados a mao pela mesa",
                 "relatos_rede_parceiros.csv": "relatos das organizacoes parceiras, por linha de carga",
                 "relatos_linha_publica.csv": "relatos da linha de participacao publica",
                 "gazeteiro_localidades.csv": "gazeteiro de 2024, uma linha por nome",
@@ -195,8 +207,8 @@ def cut(target):
                 "dicionario_dados.xlsx": "dicionario de dados"}.get(name, "")
         rows.append((name, n, first, last, note))
     PK.write_manifest(target, rows)
-    return dict(items=n_items, accepted=n_acc, par=n_par, dup=n_dup, lin=n_lin, gaz=n_gaz,
-                imports=n_imp, exceptions=n_exc, totals=n_tot, notifications=n_not,
+    return dict(items=n_items, press_reports=n_press, sample=n_dc, par=n_par, dup=n_dup, lin=n_lin,
+                gaz=n_gaz, imports=n_imp, exceptions=n_exc, totals=n_tot, notifications=n_not,
                 coverage=n_cov, tension=n_ten)
 
 

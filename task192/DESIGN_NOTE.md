@@ -1,310 +1,312 @@
 # task192 design note
 
-How much of a monitoring register's dispute episodes will have turned confrontational by the time they
-close. Architecture 2.
+How many of a protest register's recorded actions were confrontational, when most of the record's labels
+come from a classifier the association measures against hand coding. Architecture 3.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task192.json`, architecture v2, registered 2026-10-17T14:59:48Z |
+| Card | `.claude/skills/fingerprint/cards/task192.json`, architecture v3, registered 2026-10-17T15:52:44Z |
 | Domain, task type | political-science-public-policy, `conflict-protest-event-data-analysis` |
 | Objective | Anomaly Detection & Diagnostics |
-| Shape | 17, periods around a change point, one workbook and one chart |
-| Decision | quantity_figure, a share with the number of episodes it stands for |
-| Gap | time, then population |
-| Gate G | `method_or_model_selection`; decisive generator G12, then G7 |
-| Strategy | `other`: no vocab strategy names a competing exit |
-| Layer 2 | `estimation_fit`, own pattern `own:competing-exit-not-censoring-in-an-episode-register` |
+| Shape | 17, periods around a change point, one workbook and one bulletin page |
+| Decision | quantity_figure, a count of actions |
+| Gap | objective, then population |
+| Gate G | `method_or_model_selection`; decisive generator G12, then G3 |
+| Strategy | `other`: no vocab strategy names a measurement-error correction |
+| Layer 2 | `field_method`, own pattern `own:machine-coded-record-corrected-in-both-directions` |
+| Calibration | `gold_standard_subsample`, the association's own double-coding sample |
 | World | Portugal, a conflict monitoring association, EUR |
 | Register opened | 1 May 2026; reporting period 1 May to 30 October 2026 |
-| As-of date | 2026-11-06 (the record extract); the trustees vote the 2027 field budget on 19 November |
-| Guard | PASS at WARN; three WARNs answered below |
+| As-of date | 2026-11-06 (the record extract); the trustees meet on 19 November |
+| Guard | PASS at WARN; two WARNs answered below |
 
-**Data-native sentence.** A dispute episode in this register ends one of two ways and the register records
-both: it reaches a confrontational action, or it goes quiet and the protocol's twenty-one clear days close
-it; at the extract 312 of the period's 635 episodes have closed quietly, 89 have already recorded a
-confrontational action and 234 are still open, so the one number the bulletin owes is a number about
-episodes whose lives are not all over, and an episode already closed is out of the population that can
-still produce one while an episode still running is not.
+**Data-native sentence.** Two actions in three reach this register only through the press monitor, whose
+classifier reads news text and assigns the action code, and the association's own double-coding sample
+shows what that classifier does with a rare class: it puts a confrontational code on about half the
+actions that carry one and on about one ordinary action in a hundred, and because the ordinary actions
+outnumber the confrontational ones twenty to one, the actions it labels are neither all of them nor a
+subset of them.
 
-**The three WARNs the guard raised.**
-- `overuse.objective` (anomaly-detection in 5 of the last 12): the lane owns the objective for this slot
-  and the re-root keeps it; the draw varies every other axis.
-- `repeat.gate_g` and `overuse.gate_g` (`method_or_model_selection`, 7 of the last 12, repeating task193):
-  the four other builds in the window select a model by back-test (task154), by a reviewer's reach
-  (task190), by a conversion sized at its value (task185) and by a maturity correction (task445). None
-  selects between estimators that differ only in whether a unit that has reached its other terminal state
-  is still in the population at risk, which is what separates the four candidates here.
-- `test.same_driver_older` against task445 v1 (differentiated on the card): task445 completes a period for
-  reporters whose reports have not arrived, so every unit's outcome has already happened and the gap is in
-  the recording. Here every report has arrived and the gap is in the outcome.
+**The two WARNs the guard raised.**
+- `repeat.gate_g` and `overuse.gate_g` (`method_or_model_selection`, 5 of the last 12, repeating task193):
+  the other builds in the window select a model by back-test, by a reviewer's reach, by a conversion
+  sized at its value and by a maturity correction. None selects between estimators that differ in which
+  of an instrument's two error rates they carry, which is what separates the four candidates here.
+- The driver sits at 0.10 against task189's left-censored averages and below that against every other
+  card on file; no card and no lineage entry corrects a count for an instrument's sensitivity and its
+  specificity together.
 
 **Sources read.**
 - `analytical_tasks/02_anomaly_detection/` seed AD15: the decision shape only, one figure committed at a
-  date to a standing body about coordinated contention. Its own architecture turns on a stated definition
-  plus a verification subsample that blesses one reading, which is rule application with a certified
-  replay, so nothing but the shape is kept.
-- `stumping/references/client/layer2-rigor-patterns.md`: this task type's three filed patterns are media
-  reach, onset against ongoing episodes, and overdispersion. Pattern 2's episode-with-a-peace-interval is
-  the unit this build uses; the rigor is written here as its own pattern, because the client's
-  competing-exit pattern is filed for three other domains and for none of them on an event register whose
-  episodes are built from reports by a filed peace interval.
-- `guard.py mechanisms --objective anomaly-detection`: the spent drivers are a stock from arrivals and
-  time unseen (task190), a selected maximum against its own null (task191), a dominant candidate holding
-  every other down (task193), regression to the mean (task194), a paired difference's own interval
-  (task195), left-censored measurements with several limits (task189) and an aoristic weight (task184).
-  None turns on a unit leaving the population at risk.
-- `guard.py check`: nearest driver 0.06 (task142), every other under 0.06.
+  date to a standing body about coordinated contention.
+- `stumping/references/client/layer2-rigor-patterns.md`: this task type's filed pattern 1 is that
+  reported events track media reach and the analysis must condition on the reporting proxy. This build
+  takes the other half of the same instrument, not how far the press reaches but what its coder makes of
+  what it reaches, which is the validation literature protest event analysis runs on.
+- `guard.py mechanisms --objective anomaly-detection`, re-read after the remote merge: the spent drivers
+  are a stock from arrivals and time unseen, a selected maximum against its own null, a dominant
+  candidate holding the others down, regression to the mean, a paired difference's own interval,
+  left-censored measurements, an aoristic weight, a pooled-test density, a conversion sized at its value,
+  a measurement that suppresses what it measures and a threshold-avoidance excess. None corrects a count
+  for a classifier's measured error.
+- `guard.py check` over the whole corpus after the merge, including task266 and task157, which took
+  architecture 2's mechanism and its structural triple.
+- `guard.py nearest` and the batch's own reach, answered on the card's `differentiation`: **task446 v2**'s
+  decisive quantity is a forward count for a population whose base rate has moved, and its error is
+  carrying a yield measured on earlier populations onto that one; here nothing is carried anywhere, the
+  double-coding sample and the record are the same items at the same time, and the error is that a
+  correction built on one of the instrument's two arms is wrong whichever arm it takes, so neither route
+  reaches the other's answer: there is no second population here for a yield to be carried to, and there
+  is no recorded label set there to rebuild, its count being of outcomes that have not happened yet.
+- **task448** completes a register that misses whole producers by estimating a second list's capture on
+  the producers both lists hold and carrying it within route strata to the producers the register never
+  saw; here nothing is missing from the record, every action is in it and the question is which class it
+  belongs to, so the correction takes wrongly marked actions out as well as putting missed ones in,
+  which a completeness estimate never does and cannot do.
 
 ## Default path
 
-1. Read `registo_itens_imprensa.csv`, `relatos_rede_parceiros.csv` and `relatos_linha_publica.csv`, keep
-   the accepted items, and resolve the three routes, the two language feeds of one media group and the
-   re-imported month so each action is counted once.
-2. Resolve each reported place through `gazeteiro_localidades.csv`, including the superseded names, to a
-   settlement and its municipality.
-3. Build actions on the protocol's §2.1 grain, one dispute theme at one locality on one calendar day, and
-   read the protocol's §2.2 codes so that `CF`, `RF` and `DP` are the confrontational ones.
-4. Build the register's dispute episodes on §3.1: one municipality and one theme, opening on the day of the
-   first action and closing when twenty-one clear days have passed with no action, and keep the 635
-   episodes whose opening day falls between 1 May and 30 October 2026.
-5. Count the episodes that record a confrontational action, divide by the 635 and file the share.
+1. Read the accepted items of `registo_itens_imprensa.csv` with `relatos_rede_parceiros.csv` and
+   `relatos_linha_publica.csv`, and resolve every reported place through `gazeteiro_localidades.csv`,
+   current and former names alike.
+2. Resolve the three routes, the two language editions of the Atlantic group and the reposted August
+   month so that each action is counted once on the protocol's 2.1 grain, one theme at one locality on
+   one calendar day.
+3. Read the protocol's 2.2 codes and keep the actions the register carries under `CF`, `RF` or `DP`.
+4. Count them for 1 May to 30 October 2026 and file that number.
 
-**Ends on:** 14 per cent, 89 episodes.
-**Golden:** 17 per cent, 108 episodes.
+**Ends on:** 182 confrontational actions.
+**Golden:** 225 confrontational actions.
 
 ## Stump sentence
 
-A competent solver cleans the three routes, applies the protocol's episode rule to the letter, counts the
-89 episodes in the period's cohort that have recorded a confrontational action and files **14 per cent, 89
-episodes**, which is the confrontation the record has already seen rather than the confrontation the
-cohort will have recorded by the time its episodes close, because 234 of the 635 episodes are still open
-and the 312 that have already closed quietly can never produce one.
+A competent solver resolves the three routes, builds the actions on the protocol's grain, applies the
+protocol's confrontational codes and files **182 confrontational actions**, which counts the labels the
+press classifier assigned rather than the confrontational actions the period held, because the
+classifier reaches about half of them and marks about one ordinary action in a hundred.
 
 ## Three rules
 
-- **Task type:** `conflict-protest-event-data-analysis`, the task type in Political Science & Public Policy
-  that serves Anomaly Detection: building contentious episodes out of multi-source reports and separating
-  what the record has seen from what the period's contention actually did.
-- **Domain test:** the deciding quantity is the share of contentious episodes that turn confrontational,
-  which event-data analysis estimates over the life of an episode from a register in which an episode ends
-  either in a confrontation or in demobilisation under a filed peace interval, so a demobilised episode is
-  out of the population at risk while an episode still mobilised is not. The field's own estimate of that
-  share takes both ends of an episode as outcomes and the open episodes as episodes whose end is still to
-  come; a generalist reads the recorded confrontations as the answer.
-- **Swap:** "how many of the shops in the register had a break-in before they closed" counts rows against
-  rows, because a shop is a standing unit with one state, not a run of actions by contending parties at a
-  place that the protocol's twenty-one clear days turn into an episode. What breaks is the unit itself: no
-  episode can be built, demobilisation has no meaning to compete with the outcome, and nothing is left to
-  estimate.
-- **Layer 1:** the association's own pipeline makes all of it. The media monitor's item log carries every
-  item it matched, accepted or rejected, at item grain; the same action arrives from up to three access
-  routes and from two language feeds of one media group; one month of partner reports was loaded twice and
-  the import log carries both loads; report filing stamps are in the publisher's zone while the register's
-  action dates are local, and the clocks go back an hour on 25 October inside the window; the partner
-  organisations' monthly tables arrive inside PDFs; the gazetteer carries superseded settlement names.
-  None of it is placed to be caught and none of it decides the share.
-- **Layer 2:** `estimation_fit`. The methodological choice is what an episode that has already closed
-  quietly is in the estimate: a unit whose observation stopped, or a unit that has left the population at
-  risk.
-- **Decisive step:** estimate the cohort's confrontation share over the whole life of its episodes with
-  demobilisation treated as the other way an episode ends, so that a closed quiet episode is out of the
-  at-risk population and only the open episodes carry a confrontation still to come.
-- **Not semantics:** every field, code, zone and place name read correctly still leaves 89 recorded
-  confrontational episodes, 312 quiet closures and 234 open episodes, all three correct. The dictionary
-  gives every field, the protocol defines the action grain, the codes, the episode and the indicator, and
-  the calendar note gives the clock change. Reading all of it right is what produces the 89, which is the
-  wrong answer's input.
-- **Not rule application:** the protocol files the action grain, the confrontational codes, the twenty-one
-  clear days, the reporting period and the indicator's population, and states that the figure for a period
-  whose episodes have not all ended is an estimate. No shipped sentence says how that estimate is made:
-  nothing names a risk set, a survival or hazard quantity, a competing or terminal event, a cumulative
-  incidence, a censoring rule or a projection, and a word sweep over every shipped file asserts it.
-- **Analyst test:** a strong analyst who resolves the three routes and the two feeds, drops the re-imported
-  month, resolves the superseded place names and applies §2.1, §2.2 and §3.1 exactly counts the cohort's
-  recorded confrontational episodes and files 14 per cent, 89 episodes, the default path's `Ends on:`,
-  where the cohort's own record gives 17 per cent, 108 episodes.
-- **Estimand:** the protocol's §3.3: "Indicator 3, the confrontation rate: of the dispute episodes opened
-  in the reporting period, the share that record at least one confrontational action before the episode
-  closes, as a whole percentage, with the number of episodes it stands for. Episodes still open when the
-  record is extracted belong to the period's cohort, and the indicator covers the whole life of each
-  episode, so for a period whose episodes have not all ended the figure is an estimate." Population, the
-  not-yet-ended members included, outcome, window, unit and comparison are all there; how the estimate is
-  made is not.
-- **No decoy:** nothing is planted to be caught. No block of reports is copied, no memo argues a share, no
-  stakeholder figure carries one, and the association has never published a confrontation rate: the Watch
-  register opened on 1 May 2026 and this is its first full reporting period. The re-imported month is an
-  ordinary pipeline fact, visible in the import log, and the share is invariant to how it is resolved.
-- **No certified replay:** no published confrontation rate or episode count ships. The earlier monthly
-  bulletins report actions recorded and municipalities touched and never episodes, so no method can be
+- **Task type:** `conflict-protest-event-data-analysis`, the task type in Political Science & Public
+  Policy that serves Anomaly Detection: turning multi-source reports into an event record and separating
+  what happened from what the record's own instruments made of it.
+- **Domain test:** the deciding quantity is the count of confrontational actions in a contentious event
+  record, which protest event analysis estimates from a machine-coded corpus read against a hand-coded
+  double-coding sample, because an automatic coder of news text misses a large share of a rare event type
+  and marks a small share of the many ordinary ones. The field's own method carries both error rates into
+  the count; a generalist counts the labels, or takes the wrong marks out, or divides by the recall.
+- **Swap:** "how many of the parcels the belt recorded were damaged" counts a physical property a scanner
+  reads directly. What breaks is that there is no coder reading news text, no hand-coding standard for it
+  to be measured against and no protocol definition of the class being counted: the quantity becomes a
+  physical count, the double-coding sample has nothing to double code, and nothing is left to estimate.
+- **Layer 1:** the association's own pipeline makes all of it. The press monitor's item log carries every
+  item the keyword list caught, accepted or rejected, at item grain; the same action arrives from up to
+  three access routes and from two language editions of one media group; one month of partner reports was
+  loaded twice and the import log carries both loads; the monitor's reception stamps are the collection
+  server's UTC clock while the action times are local, and the clocks go back an hour on 25 October; the
+  partner organisations' monthly returns arrive inside a PDF; the gazetteer carries superseded settlement
+  names. None of it is placed to be caught and none of it decides the count.
+- **Layer 2:** `field_method`. The methodological choice is what the classifier's labels are evidence of,
+  and which of its two measured error rates the count has to carry.
+- **Decisive step:** rebuild the count of confrontational actions among the actions the press monitor
+  alone carries from the classifier's measured sensitivity and specificity together, so that the actions
+  it missed are added and the ordinary actions it marked are taken out, and add the actions a filer coded
+  by hand.
+- **Not semantics:** every field, code, zone and place name read correctly still leaves 182 actions
+  carrying a confrontational code, which is the correct count of the codes. The dictionary gives every
+  field, the protocol defines the action grain and lists the confrontational codes, and the double-coding
+  sample is a plain table of two codings. Reading all of it right is what produces the 182.
+- **Not rule application:** the protocol files the action grain, the confrontational codes, the reporting
+  period, which route's code the register keeps for an action, and that the count the bulletin states is
+  of the actions that were confrontational and not of the codes the classifier assigned. No shipped
+  sentence says how the classifier's labels are to be turned into that count: nothing names sensitivity,
+  specificity, recall, precision, a correction, a false positive or a false negative, and a word sweep
+  over every shipped file asserts it. The double-coding sample states two codings per sampled item and no
+  rate at all.
+- **Analyst test:** a strong analyst who resolves the three routes and the two editions, drops the
+  reposted month, resolves the superseded place names and applies 2.1 and 2.2 exactly counts the actions
+  the register carries under the confrontational codes and files 182 confrontational actions, the default
+  path's `Ends on:`, where the period's record gives 225.
+- **Estimand:** the protocol's 3.3, "Indicador 2, acoes de confronto: o numero das acoes registadas no
+  periodo de relato que foram acoes de confronto na acepcao de 2.2. O codigo que o classificador do
+  monitor de imprensa atribui e a leitura do classificador, que a amostra de dupla codificacao da
+  associacao mede contra a codificacao manual. O numero que o boletim fixa e o das acoes que foram de
+  confronto e nao o dos codigos atribuidos." Population, outcome, window and unit are all there; how the
+  count is rebuilt is not.
+- **No decoy:** nothing is planted to be caught. No block of items is copied, no memo argues a count, no
+  stakeholder figure carries one, and no shipped file states a confrontational count, a rate, a
+  sensitivity or a specificity. The double-coding sample is the association's own standing quality
+  record, published with its methodology as every machine-coded event dataset publishes one.
+- **No certified replay:** no published confrontational count ships. The earlier monthly bulletins report
+  actions recorded and municipalities touched and never the confrontational ones, so no method can be
   recovered by reproducing a figure.
-- **Lesson:** in a register where a unit can reach the outcome or leave for good, the share that will
-  reach the outcome is neither what the record has already seen, nor the share among the units whose story
-  has finished, nor what a survival curve gives when leaving for good is treated as an observation cut
-  short: the units that have left for good are out of the population at risk and the ones still running
-  are the only ones with the outcome still to come. No build on file teaches it.
+- **Lesson:** when most of a record's labels come from an instrument that both misses and over-marks, the
+  count of the labelled units is not the count of the units: the misses and the false marks cancel only
+  if the two error rates happen to balance at that prevalence, and only carrying both of them together
+  rebuilds the count. No build on file teaches it.
 
 ## WHAT screen
 
-The decisive step is the one above: estimate the cohort's share with demobilisation treated as the other
-end of an episode rather than as an observation cut short. It settles no part of the estimand.
+The decisive step is the one above: carry the classifier's two measured error rates into the count. It
+settles no part of the estimand.
 
 | Part of the estimand | Settled by | The sentence that files it |
 |---|---|---|
-| Population | the protocol, not the decisive step | §3.3 "of the dispute episodes opened in the reporting period", with §3.2's 1 May to 30 October 2026 and "episodes still open when the record is extracted belong to the period's cohort" |
-| Outcome | the protocol | §3.3 "record at least one confrontational action before the episode closes", with §2.2's codes `CF`, `RF`, `DP` |
-| Window | the protocol | §3.2 for the opening window; §3.3 "covers the whole life of each episode" for the outcome window |
-| Unit | the protocol | §3.1, one municipality and one dispute theme, opened by its first action and closed by twenty-one clear days |
-| Comparison | none; the indicator is a level | §3.3 states a share of the cohort, against nothing |
+| Population | the protocol, not the decisive step | 3.2 files the reporting period and 2.1 the actions the register holds |
+| Outcome | the protocol | 2.2 lists `CF`, `RF` and `DP` as the confrontational actions, and 3.3 says the count is of the actions that were confrontational |
+| Window | the protocol | 3.2, 1 May to 30 October 2026 inclusive |
+| Unit | the protocol | 2.1, one theme at one locality on one calendar day, however many reports |
+| Comparison | none; the indicator is a level | 3.3 states a count, against nothing |
 
-Two or more estimators of that one filed quantity stand after it is filed: the recorded share, the share
-among the episodes whose outcome is known, a product-limit survival of the time to a confrontational
-action, and the cumulative share with demobilisation as the competing end. The register's own structure
-separates them, because 312 of 635 episodes have demobilised and 234 are open, and only the last estimator
-keeps a demobilised episode out of the at-risk population while leaving the open ones in it.
+Two or more estimators of that one filed quantity stand after it is filed: the coded count, the coded
+count with the classifier's false marks removed, the coded count scaled by its recall, and the count
+rebuilt from both error rates. The record's own structure separates them, because the double-coding
+sample shows a recall near one half against a false-mark rate near one in a hundred over a negative pool
+twenty times the size of the positive one.
 
 ## Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| 0 the episodes that have already recorded a confrontational action | §3.3 names the share, and the count of episodes that have recorded one is the first thing anyone computes | the register the solver builds carries the confrontational action date | yes, the first group-by anyone writes | none | the battery finds the duplicate feeds, not this | one division | readable |
-| 1 the share among the episodes whose outcome is known | no sentence names a known outcome | the open episodes are visible once the register is built | yes, the complete-case reflex | none | no | one filter and one division | readable |
-| 2 a product-limit survival of the time to a confrontational action, the quiet closures carried as observations that stop | no | the episode's last action date is in the register the solver builds | yes, the survival reflex for data that is not fully observed | none | no | no | readable |
-| 3 the cumulative share with demobilisation as the other end of an episode (decisive) | no shipped sentence names a risk set, a competing or terminal event, a cumulative incidence, a censoring rule, a survival, a hazard or a projection, asserted by a word sweep over every shipped file; §3.3 says the figure is an estimate and says nothing about how | no column marks an episode's state, at risk or out of it: the register is built by the solver from reports, and the protocol gives only the action grain and the peace interval | no reflex: of the three groupings a solver reaches for, two ignore the open episodes and the third gives the quiet closures a confrontation each | nothing scores a share; the earlier bulletins report actions and municipalities, never episodes | the battery finds the two feeds, the re-import and the zones and leaves the share open | no: the four candidates are 89, 141, 178 and 108 episodes from the same rows | silent |
+| 0 the actions the register carries under the confrontational codes | 2.2 lists the codes and 3.3 names the count | `codigo_acao` is a column of every report file | yes, the first group-by anyone writes | none | the battery finds the duplicate feeds, not this | one filter and one count | readable |
+| 1 the coded count with the classifier's false marks taken out | no sentence names a false mark | the sample's two coding columns invite the comparison | yes, the precision reflex: of the ones it marked, this share were right | none | no | one ratio | readable |
+| 2 the coded count scaled by the classifier's recall | no | the sample's two coding columns again | yes, the recall reflex: it finds this share, so divide by it | none | no | one ratio | readable |
+| 3 the count rebuilt from both error rates together (decisive) | no shipped sentence names sensitivity, specificity, recall, precision, a correction, a false positive or a false negative, asserted by a word sweep over every shipped file; 3.3 says only that the count is of the actions and not of the codes | no column holds an error rate: the sample is two codings per item and the rates are built from it | no reflex: the two reflexes above each carry one error rate and file a different number | nothing scores a count; the earlier bulletins report actions and municipalities, never confrontational actions | the battery finds the two editions, the reposted month and the clocks and leaves the count open | no: the four candidates are 152, 182, 225 and 285 from the same rows | silent |
 
 ## Semantic fork table
 
 | id | term or convention | golden reading | alternative | call under it | ruled out by |
 |---|---|---|---|---|---|
-| SF1 | dispute episode | one municipality and one theme, opened by its first action, closed when twenty-one clear days pass with no action, §3.1 | a run of actions at one locality, or one municipality whatever the theme | the cohort size and every count change | §3.1 quoted, which names the municipality and the theme; asserted |
-| SF2 | action | one theme at one locality on one calendar day, however many reports, §2.1 | one report, so a double-reported action counts twice | the action counts change, the episode set does not | §2.1 quoted; asserted that the share and the episode set are invariant to report-level duplication |
-| SF3 | confrontational action | an action coded `CF`, `RF` or `DP`, §2.2 | any action the report text calls violent, or `CF` alone | the share changes | §2.2 quoted, which lists the three codes; asserted |
-| SF4 | the reporting period | openings from 1 May to 30 October 2026 inclusive, §3.2 | the calendar half year, or openings to the extract date | the cohort changes | §3.2 quoted and the prompt's period; asserted |
-| SF5 | the cohort | every episode opened in the period, the open ones included, §3.3 | the episodes that have ended | the share is rung 1, 22 per cent | §3.3 quoted, "episodes still open ... belong to the period's cohort"; asserted |
-| SF6 | before the episode closes | at any time in the episode's life, including after the period's close, §3.3 | only actions dated inside the reporting period | the count is 110 of 635 and the share is still 17 per cent | §3.3 quoted, "covers the whole life of each episode", and the manifest's extract date; asserted both ways on the share |
-| SF7 | the episode's own dates | the opening day is the first action's day and the closing day the last action's, §3.1 | the closing day is the day the twenty-one clear days complete | every episode's length moves by 21 days | §3.1 quoted, "the episode's last day is the day of its last recorded action"; asserted |
-| SF8 | twenty-one clear days | twenty-one calendar days with no action at that municipality for that theme, §3.1 | working days, or twenty-one days inclusive of the action day | the episode set changes | §3.1 quoted, "twenty-one consecutive calendar days"; asserted |
-| SF9 | a locality | the gazetteer's settlement, with superseded names resolved | the free-text place name as reported | localities split and episodes split | §2.3 and the gazetteer's superseded-name column; asserted that every reported name resolves to one settlement |
-| SF10 | the municipality | the gazetteer's municipality for the settlement | the district, or the reported municipality text | the episode unit changes | §2.3 quoted; asserted |
-| SF11 | the action date | the local calendar day the register files, which no report clock overrides | the report's filing stamp converted from the publisher's zone | up to two actions move day | the dictionary's two sentences, one for the register's action date and one for the filing stamp; asserted that no action's date moves |
-| SF12 | the re-imported month | each action counted once however many loads carry its reports | the month's reports counted twice, or the month dropped | the report counts change, the share does not | the import log's two entries for one month and the repeated report identifiers; asserted both ways |
-| SF13 | the two language feeds | one action however many feeds report it | one action per feed | the report counts change, the share does not | the dictionary's report-identifier sentence; asserted |
-| SF14 | rounding | the share as a whole percentage and the episodes as a whole number | one decimal on the share | `same call`, asserted: 17.03 per cent rounds to 17 either way and the episode figure is 108 |
-| SF15 | ties | none: the four candidate shares are 14, 17, 22 and 28 per cent | two candidates on one share, which could not be separated | `same call`, asserted pairwise distinct |
-| SF16 | the accepted items | the items the media monitor accepted, which the register carries | every matched item, rejected ones included | rejected items are not actions and the action set would grow | the dictionary's acceptance column and §4.2; asserted |
-| SF17 | the extract | the record as extracted on 6 November 2026 | the record as at the period's close | SF6's reading; the share is 17 per cent either way | the manifest's extract date, quoted; asserted |
-| SF18 | episodes carried in from before the register opened | none: the register opened on 1 May 2026 and carries no episode from before it, §3.2 | the first action in May continues an April episode | the cohort would be unknowable | §3.2 quoted; asserted that no action predates 1 May 2026 |
+| SF1 | action | one theme at one locality on one calendar day, however many reports, 2.1 | one report, so a double-reported action counts twice | the count changes | 2.1 quoted; asserted |
+| SF2 | confrontational action | an action that was of a kind 2.2 lists, whatever code the record carries | an action whose recorded code is `CF`, `RF` or `DP` | the count is rung 0, 182 | 3.3 quoted, the count is of the actions and not of the codes assigned; asserted |
+| SF3 | the confrontational codes | `CF`, `RF` and `DP` | `CF` alone, or any code a report's text calls violent | the count changes | 2.2 quoted, which lists the three; asserted |
+| SF4 | the reporting period | actions dated 1 May to 30 October 2026 inclusive | the calendar half year, or to the extract date | the count changes | 3.2 quoted and the prompt's period; asserted |
+| SF5 | which code an action carries | the code of the report the register keeps: a filer's code where one exists, the classifier's otherwise, 2.6 | the classifier's code wherever one exists | the corrected population changes | 2.6 quoted; asserted |
+| SF6 | the double-coding sample | the association's sample of items the classifier coded, with the hand coding beside it | a sample of all actions, or a sample of confrontational actions | the error rates change | 4.5 quoted and the dictionary's scope line; asserted that every sampled item is a press-monitor item |
+| SF7 | the action date | the local calendar day the register fixes, which no reception stamp overrides | the reception stamp's date | up to two actions move day | the dictionary's two sentences; asserted that no action's date moves |
+| SF8 | a locality | the gazetteer's settlement, with superseded names resolved | the free-text place name as reported | localities split, actions do not | 2.3 and the gazetteer's name-state column; asserted |
+| SF9 | the reposted month | each action counted once however many loads carry its reports | the month's reports counted twice, or the month dropped | the report counts change, the action count does not | the import log's two entries and the repeated report identifiers; asserted both ways |
+| SF10 | the two language editions | one action however many editions report it | one action per edition | the report counts change, the action count does not | the dictionary's report-identifier sentence; asserted |
+| SF11 | rounding | the count as a whole number of actions | the count to the nearest ten | `same call`, asserted: the estimate is 224.99 and no reading of the rounding moves it off 225 |
+| SF12 | ties | none: the four candidate counts are 152, 182, 225 and 285 | two candidates on one count | `same call`, asserted pairwise distinct |
+| SF13 | the accepted items | the items the press monitor accepted, which the register carries | every matched item, rejected ones included | rejected items are not actions | 4.2 quoted and the dictionary's acceptance column; asserted |
+| SF14 | the extract | the record as extracted on 6 November 2026 | the record as at the period's close | `same call`, asserted: no action dated inside the period is reported after the period's close |
+| SF15 | actions outside the period | excluded from the count | included because their reports arrived inside it | the count changes | 3.2 quoted, which fixes the period on the action's date; asserted |
+| SF16 | the hand coding | the standard the sample measures the classifier against | one more opinion to be averaged with the classifier's | the error rates change | 4.5 quoted, which names the hand coding as the association's own standard; asserted |
+| SF17 | a report the gazetteer does not place | not an action, so outside every count | an action at an unknown locality | the count changes | 2.5 quoted; asserted |
+| SF18 | the register's opening | 1 May 2026, with no action carried in | an action before the register opened | nothing to count before it | 3.2 quoted; asserted that no action predates 1 May 2026 |
 
 ## Ladder
 
-| Rung | The estimate | Share | Episodes |
-|---|---|---|---|
-| 0 | the episodes that have already recorded a confrontational action | **14 per cent** | **89** |
-| 1 | the share among the episodes whose outcome is known, the 234 open ones dropped | 22 per cent | 141 |
-| 2 | a product-limit survival of the time to a confrontational action with the quiet closures carried as observations that stop | 28 per cent | 178 |
-| 3 | **answer:** the cumulative share with demobilisation as the other end of an episode | **17 per cent** | **108** |
+| Rung | The estimate | Confrontational actions |
+|---|---|---|
+| 1 | the coded count with the classifier's false marks taken out, the precision read | 152 |
+| 0 | **default:** the actions the register carries under the confrontational codes | **182** |
+| 3 | **answer:** the count rebuilt from both of the classifier's measured error rates | **225** |
+| 2 | the coded count scaled by the classifier's recall | 285 |
 
-Measured on the world model at `scratchpad/t192/m7.py`, seed 293: 635 episodes opened in the period, 89
-with a confrontational action recorded by the extract, 312 closed quietly, 234 open. Rung 3's raw figure is
-108.12 episodes and 17.03 per cent.
+Measured on the world model at `scratchpad/t192/m8.py`, seed 41, with 4,400 actions, two in three known
+only from the press monitor, a true confrontational share near one action in twenty, and a double-coding
+sample of 1,500 press items: the sample returns 46 agreed confrontational, 40 the classifier missed, 16
+it marked wrongly and 1,398 agreed ordinary, which is a recall of 0.5349 and a false-mark rate of 0.0113
+over the ordinary pool. Rung 3's raw figure is 224.994 actions.
 
-**Separation.** 14, 17, 22 and 28 per cent are four distinct whole percentages, each at least 21 per cent
-from the next (14 to 17 is 21 per cent, 17 to 22 is 30 per cent, 22 to 28 is 26 per cent), and in episodes
-89, 108, 141 and 178. Each is the complete output of a competent pipeline on the same rows. The answer is
-bracketed, second lowest of the four, so no solver reaches it by stopping early and none by correcting
-hardest: the two corrections that handle the open episodes both overshoot, and the decisive move is the
-largest single move on the ladder, 178 down to 108.
+**Separation.** 152, 182, 225 and 285 are four distinct counts, each at least 20 per cent from the next
+(152 to 182 is 20 per cent, 182 to 225 is 24 per cent, 225 to 285 is 26 per cent). Each is the complete
+output of a competent pipeline on the same rows. The answer is third of the four and bracketed, so no
+solver reaches it by stopping early and none by correcting hardest: the two corrections that carry one
+error rate land either side of it, and the decisive move, 285 down to 225, is the largest on the ladder.
 
-**Robustness of the decisive rung.** The same estimate computed on weekly intervals gives 108.27 and on
-fortnightly intervals 107.89 episodes, 17.05 and 16.99 per cent, so every nonparametric reading of the
-decisive step files 108 episodes and 17 per cent. Summing each open episode's own remaining chance instead
-of taking the cohort share gives 108.12 exactly, the estimator's self-consistency, asserted.
+**Robustness of the decisive rung.** The correction is the ratio the sample's own four cells fix, so
+every arithmetic of it (the two rates applied to the observed share, or the sample's confusion matrix
+inverted over the observed counts) gives the same 224.99, asserted both ways at build. The figure sits
+0.006 from the centre of its bin, and the truth behind the simulated record is 219 actions, 2.7 per cent
+from the estimate, so the estimator is fair as well as determinate.
 
-**The grid.** Two axes, how far the record is read and what is estimated:
+**The grid.** Two axes, how the routes are resolved and which error rates the count carries:
 
-| | already recorded | known outcomes only | survival, closures stopped | demobilisation as an end |
+| | false marks out | labels as they stand | both rates | recall only |
 |---|---|---|---|---|
-| the record to the 6 November extract | 89, 14 per cent | 141, 22 per cent | 178, 28 per cent | **108, 17 per cent** |
-| the record cut at the period's close | 84, 13 per cent | 143, 23 per cent | 180, 28 per cent | 110, **17 per cent** |
+| the three routes resolved to actions | 152 | 182 | **225** | 285 |
+| each report counted as an action | to be measured at build | to be measured at build | to be measured at build | to be measured at build |
 
-Every cell is a named figure. The decisive column is the only one whose share holds across the rows, which
-is the fairness the ladder needs: a solver who reads the record only to 30 October still files 17 per cent
-if the estimate is built the right way, while every easy route moves and none of them lands on 17.
+Every cell is a named figure. The decisive column is the only one that answers the protocol's question,
+and it is the column least moved by a solver who fails to resolve the routes, because the correction is a
+ratio of the sample's own cells and not of the record's volume.
 
-**Dominance.** The episodes the ladder turns on are the 144 standing disputes, which act every week or two
-for months without a confrontational action: 73 of them are open at the extract with more than eight weeks
-behind them, so rung 1 drops a block of episodes that will never produce a confrontation and rung 2 hands
-each of them a share of one.
+**Dominance.** The ordinary actions outnumber the confrontational ones about twenty to one, so the
+classifier's one-in-a-hundred false-mark rate puts 16 wrong marks in the sample against 40 misses: the
+two errors are of the same order and neither cancels the other, which is what makes all three easy routes
+land on different wrong numbers.
 
-**Worth of each rung, on the graded quantity.** Rung 0 to rung 1 is +52 episodes, rung 1 to rung 2 is +37,
-and the decisive move is -70. Nothing between the rungs is worth less than 19 episodes, and every rung is
+**Worth of each rung, on the graded quantity.** Rung 1 to rung 0 is 30 actions, rung 0 to rung 3 is 43,
+and rung 2 to rung 3 is 60. Nothing between the rungs is worth less than 30 actions, and every rung is
 satisfying to stop at: each is the whole output of a pipeline whose every input figure is correct.
 
 ## Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
-| 1 | Population | which episodes are in the cohort | §3.2 and §3.3 file the opening window and that open episodes belong to the cohort; asserted |
-| 2 | Unit of account | the report, the action, the episode | §2.1 files the action and §3.1 the episode; asserted |
-| 3 | Attribution window | which day an action falls on | the register's local action date, which no report clock overrides; SF11, asserted |
-| 4 | As-of dating | the record at the extract | the manifest files 6 November 2026; §3.3 covers each episode's whole life; asserted |
-| 5 | Version basis | the re-imported month and the superseded place names | the import log and the gazetteer; SF12, SF9, asserted |
-| 6 | Denominator | the 635 episodes opened in the period | §3.3; asserted |
-| 7 | Weighting | none: episodes are counted, not weighted | stated |
-| 8 | Window length | the reporting period for the openings, the episode's life for the outcome | §3.2 and §3.3; asserted |
-| 9 | Boundary inclusivity | 1 May and 30 October | §3.2 states both inclusive; asserted that episodes open on both days |
-| 10 | Rounding path | the share to a whole percentage, episodes to a whole number, rounded once at the end | SF14; asserted that 17.03 and 108.12 are at least 0.35 from their bin edges |
-| 11 | Tie-break | two candidates on one share | none: 14, 17, 22 and 28 are pairwise distinct, asserted |
-| 12 | Maturity and censoring | the episodes still open at the extract | §3.3 keeps them in the cohort and calls the figure an estimate; the method is open, the register's structure separates the candidates, asserted |
-| 13 | Order of operations | resolve routes then build actions, or build then resolve | C1: a duplicate report carries the same identifier, theme, locality and day, so either order gives the same actions, asserted |
+| 1 | Population | which actions are in the count | 3.2 files the period and 2.1 the action; asserted |
+| 2 | Unit of account | the item, the report, the action | 2.1 files the action; asserted |
+| 3 | Attribution window | which day an action falls on | the register's local action date, which no reception stamp overrides; SF7, asserted |
+| 4 | As-of dating | the record at the extract | the manifest files 6 November 2026; SF14, asserted |
+| 5 | Version basis | the reposted month and the superseded place names | the import log and the gazetteer; SF9, SF8, asserted |
+| 6 | Denominator | none: the answer is a count | nothing to close, stated |
+| 7 | Weighting | the double-coding sample is drawn simple at random from the press monitor's items, so no weights | 4.5 states the draw; asserted that every sampled item is a press item and that the sample is not stratified |
+| 8 | Window length | the reporting period | 3.2; asserted |
+| 9 | Boundary inclusivity | 1 May and 30 October | 3.2 states both inclusive; asserted that actions fall on both days |
+| 10 | Rounding path | the count to a whole action, rounded once at the end | SF11; asserted that the raw 224.99 is 0.49 from its bin edge |
+| 11 | Tie-break | two candidates on one count | none: 152, 182, 225 and 285 are pairwise distinct, asserted |
+| 12 | Maturity and censoring | reports still arriving | the period closed a week before the extract; asserted that no action dated in the period is reported after the extract |
+| 13 | Order of operations | resolve the routes then read the codes, or read then resolve | C1: a duplicate report carries the same identifier, theme, locality and day, so either order gives the same actions, asserted |
 | 14 | Row order | the item log's own order | C1, asserted over three permutations |
-| 15 | Duplicate resolution | the three routes, the two feeds, the re-imported month | C1: duplicates share the report identifier and resolve to one action under any handling, asserted both ways |
+| 15 | Duplicate resolution | the three routes, the two editions, the reposted month | C1: duplicates resolve to one action under any handling, asserted |
 | 16 | Identity normalisation | place names, partner organisation codes | the gazetteer's superseded names; the partner codes are read only by the asks; asserted |
 | 17 | Netting against gross | nothing is netted | stated |
-| 18 | Dimensional units | items, reports, actions, episodes | the dictionary names each; the indicator reads episodes only, asserted |
-| 19 | Code and status semantics | the route codes, the action codes, the acceptance column | the protocol and the dictionary; never the decisive step |
-| 20 | Integerisation | the episode figure is a whole number of episodes | §3.3; the raw 108.12 rounds to 108, 0.38 from the bin edge, asserted |
-| 21 | Clause scope | §2.1 per theme per locality per day; §3.1 per municipality per theme | both paragraphs state their scope; asserted |
-| 22 | Forward window contents | the episodes whose outcome has not happened | the call is the cohort's own figure, which the record cannot yet show in full: 234 episodes are open at the extract and the protocol files the figure as an estimate, so the quantity is about a window not yet closed |
+| 18 | Dimensional units | items, reports, actions | the dictionary names each; the indicator reads actions only, asserted |
+| 19 | Code and status semantics | the route codes, the action codes, the acceptance column, the sample's two coding columns | the protocol and the dictionary; the codes are read correctly on every rung |
+| 20 | Integerisation | the count is a whole number of actions | 3.3; the raw 224.994 rounds to 225, asserted |
+| 21 | Clause scope | 2.1 per theme per locality per day; 2.6 per action | both paragraphs state their scope; asserted |
+| 22 | Forward window contents | none: the count is for the closed period | the call is retrospective with its reason, that the bulletin reports the period that closed and the trustees' vote of 19 November sets the next year's field budget on it |
 
 ## Literal reader
 
-Executing the prompt, §2.1, §2.2, §2.3, §3.1, §3.2 and §3.3 of the protocol, the dictionary, the gazetteer
-and the manifest word for word selects the accepted reports between 1 May and 6 November 2026, resolves
-them to actions at gazetteer settlements, builds the register's dispute episodes on the municipality and
-theme with twenty-one clear days closing each one, keeps the 635 whose opening day falls in the reporting
-period, and asks for the share of them that record an action coded `CF`, `RF` or `DP` before the episode
-closes, as a whole percentage with the number of episodes it stands for, the open episodes inside the
-cohort and the figure stated as an estimate because their lives are not over. The text is silent on how the
-estimate is made, so every option was computed on the same rows: the episodes that have already recorded
-one give 89 and 14 per cent, the share among those whose outcome is known gives 141 and 22 per cent, a
-product-limit survival with the quiet closures carried as observations that stop gives 178 and 28 per cent,
-and the cumulative share with demobilisation as the other end of an episode gives 108 and 17 per cent,
-which the register's own 312 quiet closures and 234 open episodes select. The easy three are easy
-estimators of the same literal estimand, not other readings of it, and every other term and convention has
-an SF row ruled out by a quoted sentence or asserted to give the same call.
+Executing the prompt, paragraphs 2.1 to 2.6, 3.2, 3.3, 4.2 and 4.5 of the protocol, the dictionary, the
+gazetteer and the manifest word for word selects the accepted reports of the three routes between 1 May
+and 6 November 2026, resolves them to actions at gazetteer settlements on the protocol's grain, keeps the
+actions dated inside the reporting period, and asks how many of them were confrontational actions on
+2.2's list, the count being of the actions and not of the codes the classifier assigned. The text is
+silent on how the classifier's labels become that count, so every option was computed on the same rows:
+the coded count gives 182, the coded count with the classifier's false marks taken out gives 152, the
+coded count scaled by its recall gives 285, and the count rebuilt from both measured error rates gives
+225, which the double-coding sample's own four cells fix. The easy three are easy estimators of the same
+literal estimand, not other readings of it, and every other term and convention has an SF row ruled out
+by a quoted sentence or asserted to give the same call.
 
 ## Oracles
 
-- The earlier monthly bulletins (`boletins_anteriores_2026.pdf`) report actions recorded and
-  municipalities touched by month and never episodes or confrontation rates, so they tie under every rung.
-- `registo_importacoes.csv` confirms which month was loaded twice and when each load completed; it ties
-  under every rung, and the share is asserted invariant to the resolution.
-- `gazeteiro_localidades.csv` confirms the settlements, their municipalities and their superseded names; it
-  ties under every rung.
-- `totais_por_via.csv` and `excecoes_geocodificacao.csv` are route-level control totals and the reports the
-  association could not place; neither carries an episode and both tie under every rung.
+- `amostra_dupla_codificacao.csv`, the association's own double-coding sample, carries two codings per
+  sampled press item and no rate, no count and no method; it is the raw material the decisive step reads
+  and it ties under every rung, because each rung reads a different pair of its four cells.
+- The earlier monthly bulletins report actions recorded and municipalities touched and never
+  confrontational actions, so they tie under every rung.
+- `registo_importacoes.csv` confirms which month was loaded twice; it ties under every rung and the count
+  is asserted invariant to the resolution.
+- `gazeteiro_localidades.csv` confirms the settlements and their municipalities; it ties under every rung.
+- `totais_por_via.csv` and `excecoes_geocodificacao.csv` are route control totals and the reports the
+  association could not place; neither carries an action code and both tie under every rung.
 - `manifesto_extracao.csv` states each file's rows, range and extract date and settles the one designed
   disagreement in the ask layer without naming a level.
-- No control, published figure or corpus states a confrontation rate, an episode count or an episode's
-  state, and no earlier rate ships. There is no calibration organ.
+- No control, published figure or corpus states a confrontational count, a rate or an error rate.
 
 ## Ask sheet
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A1 per fortnight, the actions recorded, the municipalities touched and the share of those actions the partner network reported | 3 per fortnight, 13 fortnights | the construction's own output on the segment the trustees want anyway | the bulletin's standing table | D5 scope: the protocol's fortnights run from 1 May and the last one ends with the period, so it has fifteen days, while fixed fourteen-day blocks make a fourteenth fortnight holding 30 October alone and leave 52 actions out of the thirteenth | D6 the partner share is per action, not per report; D1 the re-imported month doubles reports and no actions | item log, partner reports, public line, gazetteer, protocol, dictionary, manifest, import log; 12 columns | 4 stops, lazy delta 9 of 13 fortnights | the bulletin's own standing table |
+| A1 per fortnight, the actions recorded, the municipalities touched and the share of those actions the partner network reported | 3 per fortnight, 13 fortnights | the construction's own output on the segment the trustees want anyway, the actions the count is taken from | the bulletin's standing table | D5 scope: the protocol's fortnights run from 1 May and the last one ends with the period, so it has fifteen days, while fixed fourteen-day blocks make a fourteenth fortnight holding 30 October alone and leave 52 actions out of the thirteenth | D6 the partner share is per action, not per report; D1 the re-imported month doubles reports and no actions | item log, partner reports, public line, gazetteer, protocol, dictionary, manifest, import log; 12 columns | 4 stops, lazy delta 9 of 13 fortnights | the bulletin's own standing table |
 | A2 per access route, the reports received, those the association could not place and the median minutes from action to report | 3 per route, 3 routes | the audit trail from an input the call consumes, through rows it never reads, to the route's own control total | the pipeline review the data manager runs each period | D4 absence as the signal: the reports that could not be placed are held in a separate exceptions file no habitual join reaches | D8 the filing stamp is the publisher's zone and the clocks go back on 25 October; D6 the exceptions file is per report and the route totals per day | exceptions file, route totals, item log, partner reports, public line, dictionary, manifest; 11 columns | 4 stops, lazy delta 2 of 3 routes | an ingest pipeline's own period review |
 | A3 per partner organisation, the reports it filed, those filed after the period closed and the euros paid under its data agreement | 3 per partner, 7 partners | an input reconciled to another system's total, the gap made of devices | the finance office settles the data agreements | D2 version: one agreement was amended mid-period and the rate paid is the amended one, which the superseded schedule does not carry | D7 one partner filed under two organisation codes after a merger; D8 the filing stamp against the period close | partner monthly tables in PDF, agreement schedule, amendment, route totals, manifest, dictionary; 13 columns | 5 stops, lazy delta 3 of 7 partners | the finance office's quarterly settlement |
 
@@ -324,65 +326,21 @@ hard, asserted by count.
 **The referee.** `manifesto_extracao.csv` states each file's rows, range and extract date and settles the
 one designed disagreement, the exceptions file's extent, without naming a level.
 
-**The cracker sheet.** The cracker filed 17 per cent and 108 episodes, ran the hygiene battery, executed
-every filed paragraph and matched every control total.
+**The cracker sheet.** The cracker filed 225 confrontational actions, ran the hygiene battery,
+executed every filed paragraph and matched every control total.
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
-| A1 actions recorded, fortnight 13 | fixed fourteen-day blocks, so the thirteenth ends on 29 October and a fourteenth holds 30 October | 626 | 678 | miss |
-| A1 share the partner network reported, fortnight 7 | counts reports, not actions | 32.8 per cent | 46.3 per cent | miss |
-| A2 reports received, the partner network | counts the rows of the partner file, so the reposted August month counts twice and the unplaceable reports are missing | 2,329 | 1,947 | miss |
-| A2 reports that could not be placed, the press monitor | the item log alone, which holds only the items it placed | 0 | 149 | miss |
-| A2 median minutes from the action to the report, the press monitor | reads the monitor's reception stamp as local time | 49.0 | 109.0 | miss |
-| A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | 1,024 | 1,154 | miss |
-| A3 reports filed, the merged partner | one delivery code | 191 | 262 | miss |
+| A1 actions recorded, the last fortnight | fixed fourteen-day blocks, so the last one ends on 29 October and a fourteenth holds 30 October | to be measured at build | to be measured at build | miss |
+| A1 share the partner network reported, fortnight 7 | counts reports, not actions | to be measured at build | to be measured at build | miss |
+| A2 reports received, the partner network | counts the rows of the partner file, so the reposted August month counts twice and the unplaceable reports are missing | to be measured at build | to be measured at build | miss |
+| A2 reports that could not be placed, the press monitor | the item log alone, which holds only the items it placed | to be measured at build | to be measured at build | miss |
+| A2 median minutes from the action to the report, the press monitor | reads the monitor's reception stamp as local time | to be measured at build | to be measured at build | miss |
+| A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | to be measured at build | to be measured at build | miss |
+| A3 reports filed, the merged partner | one delivery code | to be measured at build | to be measured at build | miss |
 
 **Pair ceiling:** 39.5
 **Mirror leakage:** 20.0
-
-## Build and the free gates
-
-Cut from `generator/`, seed 293 for the episode layer and 2930 for the pack. The bundle carries 17 files
-in four formats, the press monitor's item log 25,688 rows, and three distractors declared in
-`metadata.json`. The build's own figures are the note's: 635 episodes in the cohort, 89 with a
-confrontational action recorded at the extract, 312 closed quietly, 234 open, and 108.123 episodes,
-17.027 per cent, on the decisive estimate. 108 generator assertions and 99 independent checks in
-`verify.py`, which reads only the bundle and walks the timeline day by day instead of event by event,
-both green; two consecutive rebuilds byte-identical across `target/` and `golden/`; `figures_check.py`
-exit 0 on 101 figures.
-
-**The pre-ship check.** 17 files in four formats (csv, pdf, xlsx, json), the press monitor's item log
-25,688 rows, three distractors declared in `metadata.json` and named in no file name; 108 generator
-assertions and 99 independent checks green, two rebuilds byte-identical over `target/` and `golden/`,
-`target.zip` 17 members with no content mismatch against the tree, `figures_check.py` exit 0,
-`precut.py` 49 checks with 0 FAIL and 0 WARN, `leak.py` REVIEW with every line answered above,
-`guard.py heart` and `guard.py surface` at WARN with no BLOCK, the container audit clean on `target/`
-and on `golden/`, one `submission.md` and one `prompt.txt` in the tree. The two deliverables carry the
-call in the workbook's first sheet and the period's actions in the chart; every figure they state is in
-`generator/figures.json` and recomputes from the bundle.
-
-**Stage 4 is staged, not run.** This session has no agent tool, so the leak reader and the determinism
-judge are prepared for the orchestrating session to spawn, each with its own isolated inputs:
-`<scratch>/t192/stage4/judge/` (judge_brief.md with the isolation rules, the literal-reading-first
-method, the recompute requirement, three probes for this build, a request for the Gate G and Gate H
-lines, the reviewer's system prompt inlined verbatim, prompt.txt, the graded blocks and a fresh unzip in
-`target/`; the verdict goes to verdict.md) and `<scratch>/t192/stage4/reader/` (reader_brief.md with the
-six solver's-eye questions and the three working-analyst questions, prompt.txt and a fresh unzip in
-`bundle/`; the answers go to reader_answers.md).
-
-**The leak sweep's REVIEW lines, answered.** Sweep 4 twice: the prompt's sentences carry the protocol's
-own nouns (dispute episode, confrontational action, the fortnights, the partner network) because the
-question cannot be asked without them; none of them names the decisive step, and the word sweep in
-`checks.py` asserts that no shipped file carries a risk, censoring, survival, incidence or estimation
-word. Sweep 9 twice: `notificacoes_reuniao_publica.csv` holds notified gatherings whose planned dates run
-past the extract, which is what a notification register is, and the manifest reports that file's last
-planned date; no record of an action, a report or a load is dated after 6 November 2026, asserted.
-
-**The surface screen's promoted pairs, answered.** task191 shares only the context-artifact type (a
-published series, here five monthly bulletins that report actions and municipalities and never episodes);
-task189 shares only the decision type (a quantity); task193 is back to back in the batch at 0.100, the
-corpus's own median neighbourhood. The drivers sit 0.06 and below against every card on file, and the
-spine, world, unit, estimand and decisive step differ in all three.
 
 ## Tried and rejected
 
@@ -411,6 +369,43 @@ spine, world, unit, estimand and decisive step differ in all three.
 - (architecture 2) A ranked watch list of the live episodes by remaining confrontation risk: the remaining
   risk is a monotone function of an episode's age alone, so the ranking degenerates to the youngest
   episodes first and a solver lands it without the insight. Dropped for the cohort share.
+- (architecture 2) The whole competing-exit architecture, designed, built and gated: on the remote merge
+  of 2026-10-17 task266 arrived with the same mechanism in other nouns (the share of spells that end one
+  way when the others end another, a cumulative incidence against a product-limit survival), and task157
+  arrived with the same gap, decisive pattern and decision type (time, G12, quantity_figure) while
+  task190 v2 took the stakeholder role. Re-rooted at the draw rather than shipped into a clone finding.
+- (architecture 3) Correcting the count by the classifier's precision alone, or by its recall alone: each
+  carries one of the two measured error rates and lands on 152 and 285, which is why both are rungs
+  rather than the answer.
+- (architecture 3) A double-coding sample that verifies every classifier positive and a sample of its
+  negatives, which is what a real quality desk draws: it forces a weighted estimator and leaves two
+  defensible weightings of the same cells, so the sample is drawn simple at random from the press
+  monitor's items and paragraph 4.5 says so.
+
+## Architecture 2, blocked at the draw by the remote merge
+
+Architecture 2 asked what share of the register's dispute episodes would have recorded a confrontational
+action by the time they closed, with a quiet close treated as the other way an episode ends rather than
+as an observation that stopped. It was drawn, designed, built and gated: 635 episodes in the cohort, 89
+with a confrontational action at the extract, 312 closed quietly, 234 still open, and 108 episodes, 17
+per cent, on the decisive estimate, against 89 on the recorded count, 141 on the known outcomes and 178
+on a product-limit survival. The pack carried 17 files in four formats and a 25,688-row item log, with
+108 generator assertions, 99 independent checks in a verifier that read only the bundle, two
+byte-identical rebuilds, `figures_check.py` exit 0 and `precut.py` at 0 FAIL and 0 WARN.
+
+It is spent for one reason outside the build. The remote merge of 2026-10-17 brought in task266, drawn
+the same day in sociology-demography, whose driver is that mechanism in other nouns, and the clone check
+reads mechanisms rather than nouns; the same merge brought in task157, which took the structural triple,
+and task190 v2, which took the stakeholder role. Competing risks against censoring is therefore on this
+slot's banned list with the rest.
+
+What architecture 3 keeps: the world, the three access routes, the settlement gazetteer, the partner
+organisations and their agreements, the ask layer with its devices, and every pack writer that is not
+about the decisive quantity. What it discards: the episode construction and its peace interval, the
+whole-life cohort estimand, the four survival estimators, the ladder, the prompt, the goldens and the
+submission. Its pack, zip, goldens, submission and metadata were removed from the task tree when the
+draw was blocked, so that nothing a consumer discovers by name can be graded as this build's
+(`reduce-house-fixes` H11); the architecture is on the slot's banned list and will not be rebuilt.
 
 ## Architecture 1, spent at stage 3 on measurement
 

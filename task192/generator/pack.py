@@ -73,39 +73,39 @@ def exceptions(rng, n_imp=151, n_par=63, n_lin=94):
             recv = dt.datetime.combine(sim.d(off), dt.time(rng.randrange(7, 22),
                                                                rng.choice([5, 15, 25, 40, 55])))
             out.append(dict(route=route, ident="%s-2026-%06d" % (route, base + i + 1),
-                            recv=recv, place=rng.choice(bogus), theme=rng.choice([t for t, _ in W.THEMES]),
+                            recv=recv, place=rng.choice(bogus), theme=rng.choice([t for t, _, _ in W.THEMES]),
                             reason=rng.choices(reasons, weights=[62, 23, 15])[0]))
     out.sort(key=lambda e: (e["recv"], e["ident"]))
     return out
 
 
 def write_item_log(target, reps, rng):
-    """One row per item the press monitor matched, accepted or rejected."""
-    rows, n_acc = [], 0
-    items = []
+    """One row per item the press monitor matched. The items of one action share the report the
+    monitor filed and the code its classifier put on that report."""
+    items, n_rep = [], 0
     for r in reps:
         if r["route"] != "IMP":
             continue
-        n_acc += 1
+        n_rep += 1
         a = r["action"]
-        items.append((r["recv_utc"], dict(
-            estado="aceite", motivo="", ident=r["ident"], orgao=r["src"], tema=a["theme"],
-            codigo=a["code"], place=r["place"], ocorr=sim.d(a["day"]), start=r["start"],
-            recv=r["recv_utc"])))
-    # the crawler's rejected matches: a keyword list catches far more than it keeps
+        for k, title in enumerate(r["titles"]):
+            drift = dt.timedelta(minutes=rng.choice([0, 7, 19, 34, 56, 88, 121]) * (1 if k else 0))
+            items.append((r["recv_utc"] + drift, dict(
+                estado="aceite", motivo="", ident=r["ident"], orgao=title, tema=a["theme"],
+                codigo=r["code"], place=r["place"], ocorr=sim.d(a["day"]), start=r["start"],
+                recv=r["recv_utc"] + drift)))
     titles = [o[0] for o in W.OUTLETS]
-    weights = [o[4] for o in W.OUTLETS]
-    target_rej = 20764
-    for i in range(target_rej):
+    weights = [o[3] for o in W.OUTLETS]
+    for i in range(16820):
         off = rng.randrange(0, (W.EXTRACT - W.PERIOD_FROM).days + 1)
-        recv = dt.datetime.combine(sim.d(off), dt.time(rng.randrange(6, 23),
-                                                       rng.randrange(0, 60)))
+        recv = dt.datetime.combine(sim.d(off), dt.time(rng.randrange(6, 23), rng.randrange(0, 60)))
         items.append((recv, dict(
             estado="rejeitado", motivo=rng.choices([r for r, _ in REJECT],
                                                    weights=[w for _, w in REJECT])[0],
             ident="", orgao=rng.choices(titles, weights=weights)[0], tema="", codigo="",
             place="", ocorr=None, start=None, recv=recv)))
     items.sort(key=lambda t: (t[0], t[1]["orgao"], t[1]["ident"]))
+    rows = []
     for i, (_, it) in enumerate(items, 1):
         rows.append(["IT-2026-%07d" % i, it["recv"].date().isoformat(), it["orgao"], it["estado"],
                      it["motivo"], it["ident"], it["tema"], it["codigo"], it["place"],
@@ -114,7 +114,21 @@ def write_item_log(target, reps, rng):
                      it["recv"].strftime("%Y-%m-%d %H:%M")])
     head = ["id_item", "data_recolha", "orgao", "estado", "motivo_rejeicao", "id_relato", "tema",
             "codigo_acao", "local_texto", "data_ocorrencia", "inicio_acao", "carimbo_recepcao"]
-    return write_csv(os.path.join(target, "registo_itens_imprensa.csv"), head, rows), n_acc
+    return write_csv(os.path.join(target, "registo_itens_imprensa.csv"), head, rows), n_rep
+
+
+def write_double_coding(target, dc):
+    """The coding desk's hand-coding rounds, one row per press report drawn."""
+    rows = []
+    for x in dc:
+        r = x["report"]
+        a = r["action"]
+        rows.append([r["ident"], sim.d(a["day"]).isoformat(), a["theme"], x["machine"], x["hand"],
+                     x["coder"], x["coded_day"].isoformat(),
+                     "R%d" % (1 if x["round_day"].month == 7 else 2)])
+    head = ["id_relato", "data_ocorrencia", "tema", "codigo_monitor", "codigo_manual",
+            "codificador", "data_codificacao", "ronda"]
+    return write_csv(os.path.join(target, "amostra_dupla_codificacao.csv"), head, rows)
 
 
 def write_partner_reports(target, reps):
@@ -126,7 +140,7 @@ def write_partner_reports(target, reps):
         a = r["action"]
         recv_utc = r["recv_utc"]
         load = "C2026%02d01" % sim.d(a["day"]).month
-        rows.append([r["ident"], load, r["src"], a["theme"], a["code"], r["place"],
+        rows.append([r["ident"], load, r["src"], a["theme"], r["code"], r["place"],
                      sim.d(a["day"]).isoformat(), r["start"].strftime("%Y-%m-%d %H:%M"),
                      recv_utc.strftime("%Y-%m-%dT%H:%MZ")])
     extra = [list(x) for x in rows if x[6][:7] == "2026-08"]
@@ -146,7 +160,7 @@ def write_public_line(target, reps, rng):
             continue
         a = r["action"]
         rows.append([r["ident"], rng.choices(["web", "telefone"], weights=[68, 32])[0], a["theme"],
-                     a["code"], r["place"], sim.d(a["day"]).isoformat(),
+                     r["code"], r["place"], sim.d(a["day"]).isoformat(),
                      r["start"].strftime("%Y-%m-%d %H:%M"),
                      r["recv_local"].strftime("%Y-%m-%d %H:%M")])
     rows.sort(key=lambda x: (x[7], x[0]))
@@ -219,8 +233,8 @@ def write_config(target):
         "versao": "4.2",
         "atualizado_em": "2026-04-28",
         "janela_de_recolha": {"inicio": "2026-05-01", "cadencia": "horaria"},
-        "orgaos": [{"codigo": o[0], "titulo": o[1], "distritos": o[3],
-                    "peso_de_circulacao": o[4]} for o in W.OUTLETS],
+        "orgaos": [{"codigo": o[0], "titulo": o[1], "distritos": o[2],
+                    "peso_de_circulacao": o[3]} for o in W.OUTLETS],
         "regra_de_aceitacao": ("um item e aceite quando o classificador identifica uma acao coletiva "
                                "com local e data; os restantes ficam no registo com o motivo da rejeicao"),
         "palavras_chave": ["manifestacao", "concentracao", "bloqueio", "greve", "paralisacao",
@@ -257,10 +271,10 @@ def write_notifications(target, muni, rng):
 def write_coverage(target):
     rows = []
     for o in W.OUTLETS:
-        for dist in (list(W.DISTRICTS) if "*" in o[3] else o[3]):
-            rows.append([o[0], o[1], dist, o[2], "%.2f" % o[4]])
+        for dist in (list(W.DISTRICTS) if "*" in o[2] else o[2]):
+            rows.append([o[0], o[1], dist, "%.2f" % o[3]])
     rows.sort(key=lambda r: (r[0], r[2]))
-    head = ["orgao", "titulo", "distrito", "fuso_de_publicacao", "peso_de_circulacao"]
+    head = ["orgao", "titulo", "distrito", "peso_de_circulacao"]
     return write_csv(os.path.join(target, "cobertura_meios.csv"), head, rows)
 
 

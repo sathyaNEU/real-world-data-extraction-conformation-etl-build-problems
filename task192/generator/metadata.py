@@ -11,18 +11,17 @@ def write(task, g):
         "domain": "Political Science & Public Policy, conflict and protest event data analysis",
         "objective": "Anomaly Detection & Diagnostics",
         "as_of": W.EXTRACT.isoformat(),
-        "committed_answer": ("%d per cent of the dispute episodes opened between 1 May and 30 "
-                             "October 2026 will have recorded a confrontational action by the time "
-                             "they close, %d of the %d episodes"
-                             % (g["rate_pct"], g["episodes"], g["cohort"])),
-        "deliverables": ["boletim_vigilancia_2026S2.xlsx", "acoes_por_quinzena.png"],
+        "committed_answer": ("%d of the actions the register recorded between 1 May and 30 October "
+                             "2026 were confrontational actions, against %d carrying a "
+                             "confrontational code" % (g["total"], g["rung0"])),
+        "deliverables": ["boletim_vigilancia_2026S2.xlsx", "boletim_confrontos_2026S2.pdf"],
         "distractor_files": [
             {"file": "notificacoes_reuniao_publica.csv",
              "why_relevant": "the notifications filed with the municipal authorities look like a "
                              "complete frame of planned gatherings against which the register's "
                              "own coverage could be judged",
-             "why_unused": "the protocol's indicator is built from recorded actions, and a "
-                           "notification is a declared intention that no graded figure reads"},
+             "why_unused": "the indicator is built from recorded actions, and a notification is a "
+                           "declared intention that no graded figure reads"},
             {"file": "cobertura_meios.csv",
              "why_relevant": "the declared coverage of each title by district invites a correction "
                              "of the register for how much press reach each district has",
@@ -35,7 +34,7 @@ def write(task, g):
              "why_unused": "the index is a monthly district composite outside the protocol's "
                            "indicators and enters no graded figure"},
         ],
-        "stated_inputs": ["2026-05-01", "2026-10-30", "2026-11-06", "2026-11-19", "21",
+        "stated_inputs": ["2026-05-01", "2026-10-30", "2026-11-06", "2026-11-19",
                           "CF", "RF", "DP"],
         "declared_wrong_basis_distractor": None,
         "sources": [{"file": "all files under target/",

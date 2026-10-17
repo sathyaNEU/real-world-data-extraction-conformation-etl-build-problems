@@ -1,78 +1,74 @@
-# task190 submission
-
-## Tags
-
-**Domain:** Banking, Credit & Financial Risk, fraud and AML detection (placing a scarce specialist review against the financial crime caseload each business line is carrying unseen).
-**Analytical objective:** Anomaly Detection & Diagnostics (which lines are carrying undetected cases, against which lines are finding them).
+**Domain:** Banking, Credit & Financial Risk (fraud and AML detection).
+**Analytical objective:** Anomaly detection and diagnostics.
 
 ## 1. Final Recommendation
 
-**The specialist review should cover Business lending, FX and remittance and Trade finance in its two weeks from 15 February 2027.**
-
-Those three are expected to be carrying the most cases that have begun and that no one at the bank has yet seen, which is what framework clause 6.2 places the review on. They are not the three lines that confirm the most cases: Retail payments, Cards and Deposits confirm 142, 96 and 93 cases in the two complete quarters and are expected to be carrying 20.5, 19.2 and 18.7, because a card or payment case is seen within a month of beginning. Trade finance confirms 27 and is expected to be carrying 36.9, its cases going 9.0 months before anyone sees them.
+**The annual report should state that 400 cash deposits were split below the prescribed transaction threshold in the year ended 30 June 2027.**
+Transport and courier is the largest segment at 90, ahead of trades and construction at 70. Not the 1,223 the same-day screen gives, which counts the band deposits of every business that pays its takings in more than once a day. Not the 3,520 deposits the band holds, which is mostly ordinary takings of that size. Not the 370 one profile fitted to the whole book gives, which the book's own residuals away from the band reject.
 
 ## 2. Critical Components
 
-1. The register holds **2,935** cases whose activity began in the months of the bank's completed look-back, each with both the month the activity began and the month anyone first saw it.
-2. A case goes unseen for **0.8** months on Retail payments and **12.5** on Correspondent banking, against **9.0** on Trade finance and **6.6** on FX and remittance.
-3. The three lines the review covers are expected to be carrying **46.5**, **42.3** and **36.9** cases.
-4. **Private wealth** just misses, at 26.2, so the third line stands **41** per cent above the fourth.
-5. Ranking the lines on the cases they confirm instead names Cards, Deposits and Retail payments, and shares no line with the placement.
+1. Cash deposits of 9,000 or more and below 10,000 paid in during the year: **3,520**
+2. Deposits split, by segment: transport and courier **90**, trades and construction **70**, grocery and convenience **60**, hospitality **60**, clubs and community **30**, fuel and automotive **30**, personal services **30**, rural supply and horticulture **30**
+3. Cash deposits paid in during the year, all amounts: **45,302**
 
 ## 3. Step-by-Step Solution
 
-1. Read confirmed_case_register.csv, kept the latest version of each case and the cases the head of financial crime accepted, and resolved each record's line code to the line in force at the review date through line_structure_register.csv, which carries the lines merged and renamed on 1 July 2026.
-2. Took one case per customer per typology as paragraph 2.3 defines it, crosswalking the case system's customer references to the alert system's through customer_id_crosswalk.csv.
-3. Clause 6.2's count holds the cases nobody has yet seen whether or not the bank holds a record of them, and the register holds no such case, so the count has to be built rather than read: took the cases whose activity began in the months clause 6.3 states the bank's look-back has closed, 1 January 2021 to 31 January 2024, and confirmed every one of them has a first seen month on or before the extract date.
-4. For each line, took how often a case begins there and how long one goes before anyone sees it, both from those months, the second as clause 6.2's first seen month rather than the confirmed month, and on the handbook's count of the month ends a case is carried past.
-5. Put the two together into the cases each line is expected to be carrying unseen at 15 February 2027, and checked the same figure against those cohorts' own cases still unseen month by month.
-6. Took the three highest, FX and remittance, Business lending and Trade finance, under clause 6.4's three-line capacity, with Private wealth fourth.
-7. For the contract, took each quarter's hours from contractor_hours_ledger.csv against the hours contract_register.pdf allows, and the tickets billed at a rate the rate card does not carry.
-8. For the screening lists, took each version in force at the screening date and counted the customers who matched an entry a later version removed; for the card disputes queue, counted alerts by month against clause 7.2's standard on the days bank_closed_days.csv leaves open, excluding the re-sent June batch.
+1. Joined both deposit feeds to the customer register through `customer_number_crosswalk.csv` and took each customer's segment from `business_customer_register.xlsx`, reading the April 2027 code reissue as the same eight segments per handbook paragraph 7.5.
+2. Kept physical cash deposits paid in between 1 July 2026 and 30 June 2027, excluding the two reversed deposits and their reversing rows, converting the machine feed's UTC stamps to branch local dates and collapsing its re-sent rows: 45,302 deposits.
+3. Counted the deposits paragraph 7.4 asks about, at 9,000 or more and below 10,000: 3,520.
+4. Read each segment's own deposit-size profile either side of the band, in equal steps across the range the segment's record is log-linear over.
+5. Fitted the profile on the steps either side of the band and took the deposits the band holds over the number the profile puts there: 400 for the bank, 90 for transport and courier.
+6. Checked the reading against every other window and step width inside that range: each gives the same eight segment figures.
+7. The report states 400 deposits split, transport and courier the largest segment at 90.
 
 ## 4. Deliverable Answers
 
-### review_placement_2027.xlsx
+### structured_cash_deposits_2027.xlsx
 
-1. Business lines the review covers: **Business lending, FX and remittance, Trade finance**.
-2. Cases confirmed in the two complete quarters, and whether the review covers the line:
-   - Retail payments: 142, no
-   - Cards: 96, no
-   - Deposits: 93, no
-   - Business lending: 57, yes
-   - FX and remittance: 50, yes
-   - Trade finance: 27, yes
-   - Private wealth: 12, no
-   - Correspondent banking: 5, no
-3. Line that just misses: **Private wealth**.
+1. Deposits split, the bank: 400
+2. Largest segment: Transport and courier, 90
+3. One row per business segment, cash deposits paid in and deposits split, deposits split to the nearest 10:
+   - Transport and courier: 3,223 paid in, 90 split
+   - Trades and construction: 4,755 paid in, 70 split
+   - Grocery and convenience: 12,138 paid in, 60 split
+   - Hospitality: 10,592 paid in, 60 split
+   - Clubs and community: 2,301 paid in, 30 split
+   - Fuel and automotive: 5,995 paid in, 30 split
+   - Personal services: 3,094 paid in, 30 split
+   - Rural supply and horticulture: 3,204 paid in, 30 split
+   - Total: 45,302 paid in, 400 split
 
-### placement_overview.png
+### structured_deposits_by_segment.png
 
-4. One bar for each line of the cases it confirmed in the two complete quarters, the three covered lines marked: Retail payments stands highest at 142 and is not covered; the covered lines stand at 57, 50 and 27.
+1. One bar per segment of the deposits split, in descending order, each labelled with its figure: Transport and courier 90, Trades and construction 70, Grocery and convenience 60, Hospitality 60, Clubs and community 30, Fuel and automotive 30, Personal services 30, Rural supply and horticulture 30.
+2. The largest bar, Transport and courier, is marked in the darker colour.
 
-### Also requested
+### Also asked
 
-5. Contractor hours by quarter:
-   - 2026-Q1: 314.4 billed, 420.0 allowed, 1 outside the rate card
-   - 2026-Q2: 335.0 billed, 420.0 allowed, 2 outside the rate card
-   - 2026-Q3: 348.2 billed, 480.0 allowed, 2 outside the rate card
-   - 2026-Q4: 340.2 billed, 480.0 allowed, 3 outside the rate card
-6. Screening list versions, the customers who matched an entry a later version removed and how many of those were cleared:
-   - v1: 12, 9
-   - v2: 20, 15
-   - v3: 13, 7
-   - v4: 4, 3
-   - v5: 0, 0
-7. Card disputes queue by month of 2026, alerts raised, closed inside the five working day standard, and escalated:
-   - 2026-01: 146, 121, 5
-   - 2026-02: 128, 107, 7
-   - 2026-03: 156, 124, 14
-   - 2026-04: 134, 106, 6
-   - 2026-05: 169, 137, 9
-   - 2026-06: 143, 116, 12
-   - 2026-07: 133, 107, 6
-   - 2026-08: 151, 117, 18
-   - 2026-09: 136, 113, 10
-   - 2026-10: 174, 141, 13
-   - 2026-11: 151, 127, 8
-   - 2026-12: 171, 139, 11
+1. Cash count sessions, sessions over the tolerance in force and net variance, by quarter, dollars to the cent:
+   - 2026Q3: 1,061 sessions, 125 over tolerance, net variance -354.67
+   - 2026Q4: 1,052 sessions, 116 over tolerance, net variance -554.18
+   - 2027Q1: 998 sessions, 205 over tolerance, net variance -511.41
+   - 2027Q2: 1,005 sessions, 210 over tolerance, net variance -80.38
+2. Customers raised into the band, lowered into it, and raised into it then moved off it, by risk band:
+   - Band 1 (A): 0 raised in, 261 lowered in, 0 raised then off
+   - Band 2 (B): 462 raised in, 225 lowered in, 105 raised then off
+   - Band 3 (C): 345 raised in, 236 lowered in, 62 raised then off
+   - Band 4 (D): 322 raised in, 251 lowered in, 59 raised then off
+   - Band 5 (E): 336 raised in, 0 lowered in, 69 raised then off
+3. Hours the machine estate was out of service, by month, to one decimal:
+   - 2026-07: 56.3
+   - 2026-08: 47.5
+   - 2026-09: 68.4
+   - 2026-10: 44.5
+   - 2026-11: 44.2
+   - 2026-12: 59.4
+   - 2027-01: 61.2
+   - 2027-02: 52.7
+   - 2027-03: 52.4
+   - 2027-04: 54.2
+   - 2027-05: 56.5
+   - 2027-06: 67.6
+4. Machines with no service record: 3, being SDM-09-1, SDM-25-1 and SDM-28-1.
+5. Sites whose hours differ from the vendor's by more than two: 2, being AR04 and AR18.

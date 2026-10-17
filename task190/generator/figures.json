@@ -1,208 +1,183 @@
 {
- "a1_contract": {
-  "2026-Q1": {
-   "hours_allowed": 420.0,
-   "hours_billed": 314.4,
-   "tickets_outside_rate_card": 1
+ "asks": {
+  "machine_hours_by_month": {
+   "2026-07": 58.6,
+   "2026-08": 87.1,
+   "2026-09": 74.0,
+   "2026-10": 75.3,
+   "2026-11": 64.7,
+   "2026-12": 116.4,
+   "2027-01": 54.1,
+   "2027-02": 103.0,
+   "2027-03": 64.8,
+   "2027-04": 92.8,
+   "2027-05": 53.2,
+   "2027-06": 66.3
   },
-  "2026-Q2": {
-   "hours_allowed": 420.0,
-   "hours_billed": 335.0,
-   "tickets_outside_rate_card": 2
+  "machines_with_no_service_record": 3,
+  "machines_with_no_service_record_names": [
+   "SDM-1455",
+   "SDM-1509",
+   "SDM-1562"
+  ],
+  "rating_moves_by_band": {
+   "1": [
+    0,
+    276,
+    0
+   ],
+   "2": [
+    470,
+    243,
+    153
+   ],
+   "3": [
+    338,
+    270,
+    92
+   ],
+   "4": [
+    291,
+    492,
+    89
+   ],
+   "5": [
+    370,
+    0,
+    96
+   ]
   },
-  "2026-Q3": {
-   "hours_allowed": 480.0,
-   "hours_billed": 348.2,
-   "tickets_outside_rate_card": 2
-  },
-  "2026-Q4": {
-   "hours_allowed": 480.0,
-   "hours_billed": 340.2,
-   "tickets_outside_rate_card": 3
+  "sites_differing_from_vendor": [
+   "AR15",
+   "AR19"
+  ],
+  "till_sessions_by_quarter": {
+   "2026Q3": [
+    1145,
+    117,
+    17.0
+   ],
+   "2026Q4": [
+    1126,
+    119,
+    100.28
+   ],
+   "2027Q1": [
+    1081,
+    223,
+    -784.53
+   ],
+   "2027Q2": [
+    1101,
+    240,
+    869.81
+   ]
   }
  },
- "a2_screening": {
-  "v1": {
-   "matched_an_entry_later_removed": 12,
-   "of_those_cleared": 9
+ "call": {
+  "deposits_split": 400,
+  "largest_segment": "Transport and courier",
+  "largest_segment_deposits_split": 90
+ },
+ "constants": {
+  "band_lower_bound": 9000,
+  "band_upper_bound": 10000,
+  "handbook_clause": 7.4,
+  "handbook_segment_clause": 7.5
+ },
+ "critical_components": {
+  "band_deposits_observed": 2196,
+  "band_deposits_observed_by_segment": {
+   "Clubs and community": 103,
+   "Fuel and automotive": 298,
+   "Grocery and convenience": 626,
+   "Hospitality": 512,
+   "Personal services": 111,
+   "Rural supply and horticulture": 151,
+   "Trades and construction": 216,
+   "Transport and courier": 179
   },
-  "v2": {
-   "matched_an_entry_later_removed": 20,
-   "of_those_cleared": 15
+  "cash_deposits_paid_in_total": 44964,
+  "segment_cash_deposits_paid_in": {
+   "Clubs and community": 1836,
+   "Fuel and automotive": 6658,
+   "Grocery and convenience": 14111,
+   "Hospitality": 11297,
+   "Personal services": 2036,
+   "Rural supply and horticulture": 3042,
+   "Trades and construction": 3684,
+   "Transport and courier": 2300
   },
-  "v3": {
-   "matched_an_entry_later_removed": 13,
-   "of_those_cleared": 7
-  },
-  "v4": {
-   "matched_an_entry_later_removed": 4,
-   "of_those_cleared": 3
-  },
-  "v5": {
-   "matched_an_entry_later_removed": 0,
-   "of_those_cleared": 0
+  "segment_deposits_split": {
+   "Clubs and community": 30,
+   "Fuel and automotive": 30,
+   "Grocery and convenience": 60,
+   "Hospitality": 60,
+   "Personal services": 30,
+   "Rural supply and horticulture": 30,
+   "Trades and construction": 70,
+   "Transport and courier": 90
   }
  },
- "a3_queue": {
-  "2026-01": {
-   "alerts_raised": 146,
-   "closed_inside_standard": 121,
-   "escalated": 5
+ "deliverables": {
+  "structured_cash_deposits_2027.xlsx": {
+   "deposits_split_total": 400,
+   "largest_segment": "Transport and courier",
+   "rows": {
+    "Clubs and community": [
+     1836,
+     30
+    ],
+    "Fuel and automotive": [
+     6658,
+     30
+    ],
+    "Grocery and convenience": [
+     14111,
+     60
+    ],
+    "Hospitality": [
+     11297,
+     60
+    ],
+    "Personal services": [
+     2036,
+     30
+    ],
+    "Rural supply and horticulture": [
+     3042,
+     30
+    ],
+    "Trades and construction": [
+     3684,
+     70
+    ],
+    "Transport and courier": [
+     2300,
+     90
+    ]
+   }
   },
-  "2026-02": {
-   "alerts_raised": 128,
-   "closed_inside_standard": 107,
-   "escalated": 7
-  },
-  "2026-03": {
-   "alerts_raised": 156,
-   "closed_inside_standard": 124,
-   "escalated": 14
-  },
-  "2026-04": {
-   "alerts_raised": 134,
-   "closed_inside_standard": 106,
-   "escalated": 6
-  },
-  "2026-05": {
-   "alerts_raised": 169,
-   "closed_inside_standard": 137,
-   "escalated": 9
-  },
-  "2026-06": {
-   "alerts_raised": 143,
-   "closed_inside_standard": 116,
-   "escalated": 12
-  },
-  "2026-07": {
-   "alerts_raised": 133,
-   "closed_inside_standard": 107,
-   "escalated": 6
-  },
-  "2026-08": {
-   "alerts_raised": 151,
-   "closed_inside_standard": 117,
-   "escalated": 18
-  },
-  "2026-09": {
-   "alerts_raised": 136,
-   "closed_inside_standard": 113,
-   "escalated": 10
-  },
-  "2026-10": {
-   "alerts_raised": 174,
-   "closed_inside_standard": 141,
-   "escalated": 13
-  },
-  "2026-11": {
-   "alerts_raised": 151,
-   "closed_inside_standard": 127,
-   "escalated": 8
-  },
-  "2026-12": {
-   "alerts_raised": 171,
-   "closed_inside_standard": 139,
-   "escalated": 11
+  "structured_deposits_by_segment.png": {
+   "bars": {
+    "Clubs and community": 30,
+    "Fuel and automotive": 30,
+    "Grocery and convenience": 60,
+    "Hospitality": 60,
+    "Personal services": 30,
+    "Rural supply and horticulture": 30,
+    "Trades and construction": 70,
+    "Transport and courier": 90
+   },
+   "marked": "Transport and courier"
   }
  },
- "capacity": 3,
- "closed_cases": {
-  "Business lending": 318,
-  "Cards": 709,
-  "Correspondent banking": 35,
-  "Deposits": 432,
-  "FX and remittance": 262,
-  "Private wealth": 85,
-  "Retail payments": 942,
-  "Trade finance": 152
- },
- "closed_record_cases": 2935,
- "cohort_estimate": {
-  "Business lending": 42.3,
-  "Cards": 19.2,
-  "Correspondent banking": 11.8,
-  "Deposits": 18.7,
-  "FX and remittance": 46.5,
-  "Private wealth": 26.2,
-  "Retail payments": 20.5,
-  "Trade finance": 36.9
- },
- "confirmed_two_quarters": {
-  "Business lending": 57,
-  "Cards": 96,
-  "Correspondent banking": 5,
-  "Deposits": 93,
-  "FX and remittance": 50,
-  "Private wealth": 12,
-  "Retail payments": 142,
-  "Trade finance": 27
- },
- "covered": [
-  "Business lending",
-  "FX and remittance",
-  "Trade finance"
- ],
- "cut_margin_pct": 41,
- "expected_carrying": {
-  "Business lending": 42.3,
-  "Cards": 19.2,
-  "Correspondent banking": 11.8,
-  "Deposits": 18.7,
-  "FX and remittance": 46.5,
-  "Private wealth": 26.2,
-  "Retail payments": 20.5,
-  "Trade finance": 36.9
- },
- "framework_clauses": [
-  "2.3",
-  "6.2",
-  "6.3",
-  "6.4",
-  "6.5",
-  "7.2"
- ],
- "just_misses": "Private wealth",
- "lines_assessed": 8,
- "months_unseen": {
-  "Business lending": 4.9,
-  "Cards": 1.0,
-  "Correspondent banking": 12.5,
-  "Deposits": 1.6,
-  "FX and remittance": 6.6,
-  "Private wealth": 11.4,
-  "Retail payments": 0.8,
-  "Trade finance": 9.0
- },
- "rungs": {
-  "answer_cohort_estimate": [
-   "Business lending",
-   "FX and remittance",
-   "Trade finance"
-  ],
-  "answer_expected_carrying": [
-   "Business lending",
-   "FX and remittance",
-   "Trade finance"
-  ],
-  "rung0_confirmed_two_quarters": [
-   "Cards",
-   "Deposits",
-   "Retail payments"
-  ],
-  "rung1_confirmed_per_thousand": [
-   "Correspondent banking",
-   "Private wealth",
-   "Trade finance"
-  ],
-  "rung2_alert_backlog": [
-   "Deposits",
-   "FX and remittance",
-   "Retail payments"
-  ],
-  "rung3_months_unseen": [
-   "Correspondent banking",
-   "Private wealth",
-   "Trade finance"
-  ]
+ "steps": {
+  "counter_rows": 56080,
+  "customer_against_prior_year": 1406,
+  "machine_rows": 38605,
+  "one_profile_for_the_book": 400,
+  "same_day_screen": 1287,
+  "same_day_screen_habit_netted": 1088
  }
 }

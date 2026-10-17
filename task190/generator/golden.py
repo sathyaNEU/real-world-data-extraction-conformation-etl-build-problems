@@ -1,187 +1,129 @@
-"""Everything the submission states, recomputed from the shipped bundle alone."""
-import datetime as dt
-import json
-import os
+"""The figure the annual report carries, and every rung below it."""
+import math
 
-import pandas as pd
-
-import pack as PK
+import estimators as E
 import world as W
 
-Q_FROM, Q_TO = "2026-07", "2026-12"          # the two complete quarters before the extract date
+BAND_LO, BAND_HI = int(W.BAND_LO), int(W.BAND_HI)
+FIT_LO, FIT_HI, STEP = 5000, 16000, 250
 
 
-def load(target):
-    rd = lambda k: pd.read_csv(os.path.join(target, PK.FILES[k]), dtype=str, keep_default_na=False)
-    cases = rd("cases")
-    alerts = rd("alerts")
-    lines = rd("lines")
-    xw = rd("crosswalk")
-    backlog = rd("backlog")
-    ledger = rd("ledger")
-    matches = rd("matches")
-    lists = json.load(open(os.path.join(target, PK.FILES["lists"]), encoding="utf-8"))
-    base = pd.read_excel(os.path.join(target, PK.FILES["base"]), sheet_name="Customers by line",
-                         header=None, dtype=object)
-    return cases, alerts, lines, xw, backlog, ledger, matches, lists, base
+def excess(amounts, lo=FIT_LO, hi=FIT_HI, step=STEP, family="poisson_log", side="both"):
+    return E.excess(amounts, lo, hi, step, family, side)
 
 
-def line_now(lines):
-    """code as recorded -> the business line in force at the review date"""
-    cur = {r.line_code: r.line_name for r in lines.itertuples() if r.status == "current"}
-    return {r.line_code: cur[r.current_line_code] for r in lines.itertuples()}
+def r10(x):
+    return int(math.floor(x / 10.0 + 0.5) * 10)
 
 
-def months(a, b):
-    return (int(b[:4]) - int(a[:4])) * 12 + (int(b[5:7]) - int(a[5:7])) + 1
+def compute(custs, bycust, rows):
+    seg_of = {c["cust"]: c["seg"] for c in custs}
+    win = [r for r in rows if r["year"] == "2027"]
+    pri = [r for r in rows if r["year"] == "2026"]
+
+    amt_by_seg, amt_by_seg_prior, all_amt = {}, {}, []
+    for r in win:
+        amt_by_seg.setdefault(seg_of[r["cust"]], []).append(r["amount"])
+        all_amt.append(r["amount"])
+    for r in pri:
+        amt_by_seg_prior.setdefault(seg_of[r["cust"]], []).append(r["amount"])
+
+    # the figure: each segment's own profile, its own band
+    per_seg, per_seg_raw = {}, {}
+    for k in W.SEG_KEYS:
+        v = excess(amt_by_seg[k])
+        per_seg_raw[k] = v
+        per_seg[k] = r10(v)
+    total = sum(per_seg.values())
+
+    # the band as observed, and the year's deposits, per segment
+    band_obs = {k: sum(1 for a in amt_by_seg[k] if BAND_LO <= a < BAND_HI) for k in W.SEG_KEYS}
+    deposits = {k: len(amt_by_seg[k]) for k in W.SEG_KEYS}
+
+    # ---- the rungs -------------------------------------------------------
+    # rung 0, the same-day screen: a band deposit on a day the customer's cash reached
+    # the threshold over two or more deposits, none of them at or above it
+    def day_map(rs):
+        d = {}
+        for r in rs:
+            d.setdefault((r["cust"], r["date"]), []).append(r["amount"])
+        return d
+
+    dw = day_map(win)
+    # the screen a solver builds from handbook 3.2: two or more deposits on a customer's day
+    # reaching the threshold between them, none of them reaching it alone
+    screened_days = {key for key, a in dw.items()
+                     if len(a) >= 2 and sum(a) >= W.THRESHOLD and
+                     any(x < W.THRESHOLD for x in a)}
+    rung0_seg = {k: 0 for k in W.SEG_KEYS}
+    for (cust, day), a in dw.items():
+        if (cust, day) in screened_days:
+            for x in a:
+                if BAND_LO <= x < BAND_HI:
+                    rung0_seg[seg_of[cust]] += 1
+    rung0 = sum(rung0_seg.values())
+
+    # rung 1, the same screen with each customer's own habit netted out
+    days_by_cust, screened_by_cust = {}, {}
+    for (cust, day), a in dw.items():
+        days_by_cust[cust] = days_by_cust.get(cust, 0) + 1
+        if (cust, day) in screened_days:
+            screened_by_cust[cust] = screened_by_cust.get(cust, 0) + 1
+    habit = {c for c in days_by_cust
+             if screened_by_cust.get(c, 0) > 0.5 * days_by_cust[c]}
+    rung1_seg = {k: 0 for k in W.SEG_KEYS}
+    for (cust, day), a in dw.items():
+        if (cust, day) in screened_days and cust not in habit:
+            for x in a:
+                if BAND_LO <= x < BAND_HI:
+                    rung1_seg[seg_of[cust]] += 1
+    rung1 = sum(rung1_seg.values())
+
+    # rung 2, each customer against its own prior year
+    bw_, bp_ = {}, {}
+    for r in win:
+        if BAND_LO <= r["amount"] < BAND_HI:
+            bw_[r["cust"]] = bw_.get(r["cust"], 0) + 1
+    for r in pri:
+        if BAND_LO <= r["amount"] < BAND_HI:
+            bp_[r["cust"]] = bp_.get(r["cust"], 0) + 1
+    rung2_seg = {k: 0 for k in W.SEG_KEYS}
+    for c in set(list(bw_) + list(bp_)):
+        rise = bw_.get(c, 0) - bp_.get(c, 0)
+        if rise > 0:
+            rung2_seg[seg_of[c]] += rise
+    rung2 = sum(rung2_seg.values())
+
+    # the band count itself, below rung 0
+    band_all = sum(band_obs.values())
+
+    # one profile fitted to the whole book: convergent here, kept as a reported figure
+    pooled = excess(all_amt)
+    pooled_seg = {}
+    share = {k: band_obs[k] / float(band_all) for k in W.SEG_KEYS}
+    for k in W.SEG_KEYS:
+        pooled_seg[k] = r10(band_obs[k] - (band_all - pooled) * share[k])
+
+    return dict(per_seg=per_seg, per_seg_raw=per_seg_raw, total=total,
+                band_obs=band_obs, deposits=deposits, band_all=band_all,
+                rung0=rung0, rung0_seg=rung0_seg, rung1=rung1, rung1_seg=rung1_seg,
+                rung2=rung2, rung2_seg=rung2_seg, pooled=pooled, pooled_seg=pooled_seg,
+                pooled_total=r10(pooled),
+                amt_by_seg=amt_by_seg, amt_by_seg_prior=amt_by_seg_prior, all_amt=all_amt,
+                n_win=len(win), n_pri=len(pri), n_rows=len(rows))
 
 
-def governing_cases(cases, lines):
-    """clause 2.3 and the handbook: one confirmed case per customer and typology, latest version"""
-    d = cases.copy()
-    d["ver"] = pd.to_numeric(d["record_version"], errors="coerce")
-    d = d.sort_values(["case_id", "ver"]).groupby("case_id", as_index=False).tail(1)
-    d = d[d["disposition"] == "confirmed"]
-    nm = line_now(lines)
-    d["line"] = [nm.get(x, x) for x in d["line_code"]]
-    d["delay"] = [months(o, f) - 1 for o, f in zip(d["onset_month"], d["first_seen_month"])]
-    return d.drop_duplicates(subset=["customer_ref", "typology", "line"])
+def convergence(g):
+    """Every estimator in the sweep, per segment, and the book totals they imply."""
+    out = {k: E.sweep(g["amt_by_seg"][k]) for k in W.SEG_KEYS}
+    labels = [lab for lab, _ in out[W.SEG_KEYS[0]]]
+    totals = [sum(out[k][i][1] for k in W.SEG_KEYS) for i in range(len(labels))]
+    return out, totals, labels
 
 
-def assess(target):
-    cases, alerts, lines, xw, backlog, ledger, matches, lists, base = load(target)
-    d = governing_cases(cases, lines)
-    cf, ct = W.CLOSED_FROM.strftime("%Y-%m"), W.CLOSED_TO.strftime("%Y-%m")
-    nmonths = months(cf, ct)
-    out = {}
-    for name in [l[0] for l in W.LINES]:
-        g = d[d["line"] == name]
-        closed = g[(g["onset_month"] >= cf) & (g["onset_month"] <= ct)]
-        lam_m = len(closed) / nmonths
-        w_hat = float(closed["delay"].mean())
-        cohort = sum(int((closed["delay"] > k).sum()) for k in range(0, 72)) / nmonths
-        conf2q = len(g[(g["confirmed_month"] >= Q_FROM) & (g["confirmed_month"] <= Q_TO)])
-        out[name] = {"closed_cases": len(closed), "arrivals_a_month": lam_m, "months_unseen": w_hat,
-                     "expected_carrying": lam_m * w_hat, "cohort_estimate": cohort,
-                     "confirmed_two_quarters": conf2q}
-    return out, (cases, alerts, lines, xw, backlog, ledger, matches, lists, base)
-
-
-def ladder(target):
-    a, _ = assess(target)
-    cust = {l[0]: l[3] for l in W.LINES}
-    bl = {l[0]: l[5] for l in W.LINES}
-    pick = lambda key: sorted(sorted(a, key=lambda n: -key(n))[:W.CAPACITY])
-    return {
-        "rung0_confirmed_two_quarters": pick(lambda n: a[n]["confirmed_two_quarters"]),
-        "rung1_confirmed_per_thousand": pick(lambda n: a[n]["confirmed_two_quarters"] / cust[n]),
-        "rung2_alert_backlog": pick(lambda n: bl[n]),
-        "rung3_months_unseen": pick(lambda n: a[n]["months_unseen"]),
-        "answer_expected_carrying": pick(lambda n: a[n]["expected_carrying"]),
-        "answer_cohort_estimate": pick(lambda n: a[n]["cohort_estimate"]),
-    }
-
-
-def closed_days(target):
-    """the days the bank is closed, as the pack ships them"""
-    with open(os.path.join(target, "bank_closed_days.csv"), encoding="utf-8") as fh:
-        import csv as _c
-        return {dt.date.fromisoformat(r["closed_on"]) for r in _c.DictReader(fh)}
-
-
-def working_days(a, b, shut):
-    """business days after the day an alert was raised, up to and including the day given"""
-    n, d = 0, a
-    while d < b:
-        d += dt.timedelta(days=1)
-        if d.weekday() < 5 and d not in shut:
-            n += 1
-    return n
-
-
-def ask_contract(target):
-    """A1: the contractor's quarters, with the reissued credit notes counted once"""
-    _, (cases, alerts, lines, xw, backlog, ledger, matches, lists, base) = assess(target)
-    allowed = {"2026-Q1": 420.0, "2026-Q2": 420.0, "2026-Q3": 480.0, "2026-Q4": 480.0}
-    d = ledger.copy()
-    d["h"] = pd.to_numeric(d["hours"])
-    d["rate"] = pd.to_numeric(d["hourly_rate"])
-    # a ticket's hours are reversed once, however many credit notes name it: one of the quarter's
-    # reversals was reissued weeks later under the credit note reference series
-    cn = d[d["ticket_type"] == "credit note"].sort_values(["reverses_ticket", "ticket"])
-    cn = cn.groupby("reverses_ticket", as_index=False).head(1)
-    work = pd.concat([d[d["ticket_type"] != "credit note"], cn], ignore_index=True)
-    card = {"review": 285.0, "expert testimony": 410.0, "credit note": 285.0}
-    out = {}
-    for q in sorted(allowed):
-        g = work[work["quarter"] == q]
-        off = sum(1 for r in g.itertuples() if r.rate != card.get(r.ticket_type))
-        out[q] = {"hours_billed": round(float(g["h"].sum()), 1), "hours_allowed": allowed[q],
-                  "tickets_outside_rate_card": off}
-    return out
-
-
-def ask_screening(target):
-    """A2: per list version, the customers who matched an entry a later version removed"""
-    _, (cases, alerts, lines, xw, backlog, ledger, matches, lists, base) = assess(target)
-    vers = lists["versions"]
-    removed_later = {}
-    for i, v in enumerate(vers):
-        later = set()
-        for w in vers[i + 1:]:
-            later |= set(w["entries_removed"])
-        removed_later[v["version"]] = later
-    inforce = []
-    for v in vers:
-        inforce.append((v["in_force_from"], v["version"]))
-    inforce.sort()
-
-    def version_at(day):
-        cur = None
-        for frm, name in inforce:
-            if frm <= day:
-                cur = name
-        return cur
-
-    out = {v["version"]: {"matched_an_entry_later_removed": 0, "of_those_cleared": 0} for v in vers}
-    for r in matches.itertuples():
-        v = version_at(r.screened_on)
-        if v is None:
-            continue
-        if r.list_entry in removed_later[v]:
-            out[v]["matched_an_entry_later_removed"] += 1
-            if r.outcome == "cleared":
-                out[v]["of_those_cleared"] += 1
-    return out
-
-
-def ask_queue(target):
-    """A3: the card disputes queue by month of 2026, on working days and without the re-sent batch"""
-    _, (cases, alerts, lines, xw, backlog, ledger, matches, lists, base) = assess(target)
-    shut = closed_days(target)
-    d = alerts.copy()
-    d = d[d["queue"].isin(["card disputes", "chargebacks"])]
-    d = d[~d["batch_id"].str.endswith("R")]
-    d["raised"] = pd.to_datetime(d["raised_at"]).dt.date
-    d["at"] = pd.to_datetime(d["stage_at"]).dt.date
-    d = d[(d["raised"] >= dt.date(2026, 1, 1)) & (d["raised"] <= dt.date(2026, 12, 31))]
-    out = {}
-    for m in range(1, 13):
-        g = d[[x.month == m for x in d["raised"]]]
-        raised = g[g["stage"] == "raised"]
-        tri = g[(g["stage"] == "triaged") & (g["outcome"] == "closed")]
-        inside = sum(1 for r in tri.itertuples()
-                     if working_days(r.raised, r.at, shut) <= W.WORKING_STANDARD)
-        esc = int((g["stage"] == "escalated").sum())
-        out["2026-%02d" % m] = {"alerts_raised": len(raised), "closed_inside_standard": inside,
-                                "escalated": esc}
-    return out
-
-
-def compute(target):
-    a, _ = assess(target)
-    L = ladder(target)
-    picked = L["answer_expected_carrying"]
-    rest = sorted(((a[n]["expected_carrying"], n) for n in a if n not in picked), reverse=True)
-    return {"covered": picked, "just_misses": rest[0][1], "assess": a, "rungs": L,
-            "a1": ask_contract(target), "a2": ask_screening(target), "a3": ask_queue(target)}
+def rounded_sets(out):
+    """The eight rounded segment figures each estimator gives, and their sum."""
+    sets = []
+    for i in range(len(out[W.SEG_KEYS[0]])):
+        sets.append(tuple(r10(out[k][i][1]) for k in W.SEG_KEYS))
+    return sets

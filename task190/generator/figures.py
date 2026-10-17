@@ -1,29 +1,59 @@
-"""figures.json: every number the submission states."""
+"""Every figure the write-up states, so figures_check.py can hold it to the data."""
 import json
-import os
 
 import world as W
 
 
-def write(gen_dir, g):
-    a = g["assess"]
-    fig = {"framework_clauses": ["2.3", "6.2", "6.3", "6.4", "6.5", "7.2"],
-           "closed_record_cases": sum(a[n]["closed_cases"] for n in a),
-           "covered": g["covered"], "just_misses": g["just_misses"],
-           "capacity": W.CAPACITY, "lines_assessed": len(a),
-           "confirmed_two_quarters": {n: a[n]["confirmed_two_quarters"] for n in a},
-           "expected_carrying": {n: round(a[n]["expected_carrying"], 1) for n in a},
-           "cohort_estimate": {n: round(a[n]["cohort_estimate"], 1) for n in a},
-           "months_unseen": {n: round(a[n]["months_unseen"], 1) for n in a},
-           "closed_cases": {n: a[n]["closed_cases"] for n in a},
-           "rungs": g["rungs"],
-           "cut_margin_pct": int(round(100 * (sorted((a[n]["expected_carrying"] for n in a),
-                                                     reverse=True)[W.CAPACITY - 1] /
-                                              sorted((a[n]["expected_carrying"] for n in a),
-                                                     reverse=True)[W.CAPACITY] - 1))),
-           "a1_contract": g["a1"], "a2_screening": g["a2"], "a3_queue": g["a3"]}
-    path = os.path.join(gen_dir, "figures.json")
+def write(g, path):
+    a3_month, a3_norec, a3_norec_names, a3_differ = g["a3"]
+    out = {
+        "constants": {
+            "band_lower_bound": 9000,
+            "band_upper_bound": 10000,
+            "handbook_clause": 7.4,
+            "handbook_segment_clause": 7.5,
+        },
+        "call": {
+            "deposits_split": g["total"],
+            "largest_segment": W.SEG_NAME[g["largest"]],
+            "largest_segment_deposits_split": g["per_seg"][g["largest"]],
+        },
+        "critical_components": {
+            "segment_deposits_split": {W.SEG_NAME[k]: g["per_seg"][k] for k in W.SEG_KEYS},
+            "segment_cash_deposits_paid_in": {W.SEG_NAME[k]: g["deposits"][k] for k in W.SEG_KEYS},
+            "cash_deposits_paid_in_total": sum(g["deposits"].values()),
+            "band_deposits_observed": g["band_all"],
+            "band_deposits_observed_by_segment": {W.SEG_NAME[k]: g["band_obs"][k] for k in W.SEG_KEYS},
+        },
+        "steps": {
+            "same_day_screen": g["rung0"],
+            "same_day_screen_habit_netted": g["rung1"],
+            "customer_against_prior_year": g["rung2"],
+            "one_profile_for_the_book": g["pooled_total"],
+            "counter_rows": g["stats"]["counter"],
+            "machine_rows": g["stats"]["machine"],
+        },
+        "deliverables": {
+            "structured_cash_deposits_2027.xlsx": {
+                "deposits_split_total": g["total"],
+                "largest_segment": W.SEG_NAME[g["largest"]],
+                "rows": {W.SEG_NAME[k]: [g["deposits"][k], g["per_seg"][k]] for k in W.SEG_KEYS},
+            },
+            "structured_deposits_by_segment.png": {
+                "bars": {W.SEG_NAME[k]: g["per_seg"][k] for k in W.SEG_KEYS},
+                "marked": W.SEG_NAME[g["largest"]],
+            },
+        },
+        "asks": {
+            "till_sessions_by_quarter": {q: list(v) for q, v in g["a1"].items()},
+            "rating_moves_by_band": {b: list(v) for b, v in g["a2"].items()},
+            "machine_hours_by_month": a3_month,
+            "machines_with_no_service_record": a3_norec,
+            "machines_with_no_service_record_names": a3_norec_names,
+            "sites_differing_from_vendor": a3_differ,
+        },
+    }
     with open(path, "w", encoding="utf-8") as fh:
-        json.dump(fig, fh, indent=1, sort_keys=True)
+        json.dump(out, fh, indent=1, sort_keys=True)
         fh.write("\n")
-    return path
+    return out

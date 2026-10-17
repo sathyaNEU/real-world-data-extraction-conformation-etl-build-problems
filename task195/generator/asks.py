@@ -28,8 +28,10 @@ def history(target):
     specimen belongs to in the laboratory's reporting pack is the month its result was released.
     """
     rng = random.Random(W.SEED + 21)
+    trng = random.Random(W.SEED + 81)        # accessions, intake hours and heterozygosity texture
     days = [(W.HIST_FROM + dt.timedelta(days=i)) for i in range((W.HIST_TO - W.HIST_FROM).days + 1)]
     days = [d for d in days if d.weekday() < 5]
+    serial = [10007]
     rows = []
     per_day = W.HIST_ROWS / len(days)
     k = 0
@@ -39,21 +41,32 @@ def history(target):
             if k >= W.HIST_ROWS:
                 break
             k += 1
+            serial[0] += trng.randint(2, 11)
             lag = rng.randint(4, 26)
             rel = d + dt.timedelta(days=lag)
             while rel.weekday() > 4:
                 rel += dt.timedelta(days=1)
             r = rng.random()
             status = "WITHHELD" if r < 0.023 else ("SUPERSEDED" if r < 0.044 else "RELEASED")
-            hour, minute = rng.randint(7, 22), rng.randint(0, 59)
-            local = dt.datetime(d.year, d.month, d.day, hour, minute)
-            offset = 2 if dt.date(d.year, 3, 29) <= d < dt.date(d.year, 10, 25) else 1
-            rows.append({"sid": "NFG%s-%06d" % (str(d.year)[2:], 10000 + k * 5 + (k % 11)),
+            rng.randint(7, 22)                   # the warehouse's own intake draw
+            minute = rng.randint(0, 59)
+            hour = min(21, max(6, int(trng.gauss(10.8, 2.9)) if trng.random() < 0.74
+                               else int(trng.gauss(15.2, 1.9))))
+            # the laboratory is closed on a holiday, so the receipt is logged on a nearby open day
+            rec = d
+            if rec in W.HOLIDAYS:
+                near = [d + dt.timedelta(days=delta) for delta in (-1, -2, 1, 2, -3, 3)]
+                near = [c for c in near if c.weekday() < 5 and c not in W.HOLIDAYS
+                        and W.HIST_FROM <= c <= rel]
+                rec = near[k % len(near)] if near else rel - dt.timedelta(days=1)
+            local = dt.datetime(rec.year, rec.month, rec.day, hour, minute)
+            offset = 2 if dt.date(rec.year, 3, 29) <= rec < dt.date(rec.year, 10, 25) else 1
+            rows.append({"sid": "NFG%s-%06d" % (str(d.year)[2:], serial[0]),
                          "project": rng.choice([p[0] for p in W.PROJECTS]),
                          "extraction": rng.choices(W.EXTRACTION, [0.6, 0.28, 0.12])[0],
                          "instrument": W.INSTRUMENTS[0] if rng.random() < 0.52 else W.INSTRUMENTS[1],
                          "plate": "GKP-%s%02d-%s%02d" % (str(d.year)[2:], d.month, "ABCD"[k % 4], (k % 23) + 1),
-                         "received": d, "utc": local - dt.timedelta(hours=offset),
+                         "received": rec, "utc": local - dt.timedelta(hours=offset),
                          "depth": rng.uniform(24.0, 73.0), "status": status,
                          "released": rel if status == "RELEASED" else None,
                          "month": "%04d-%02d" % (rel.year, rel.month) if status == "RELEASED" else "",
@@ -87,7 +100,15 @@ def history(target):
 
     out = []
     for r in rows:
-        het = rng.gauss(37.8, 0.8) if r["flag"] else rng.gauss(34.0, 1.05)
+        # heterozygosity carries a plate effect and a right tail, and the flagged specimens sit in it
+        plate_shift = (int(r["plate"][-2:]) % 11 - 5) * 0.042
+        if r["flag"]:
+            het = 36.9 + abs(trng.gauss(0.0, 1.25)) + plate_shift
+        else:
+            het = trng.gauss(33.86, 0.93) + plate_shift
+            if trng.random() < 0.09:
+                het += abs(trng.gauss(0.0, 1.5))
+            het = min(het, 36.44)
         out.append([r["sid"], r["project"], r["extraction"], r["instrument"], r["plate"],
                     r["received"].isoformat(), r["utc"].strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "%.1f" % r["depth"], "%.2f" % het,
@@ -199,13 +220,16 @@ def run_log(target, specimens):
     rows = []
     for s in specimens:
         aliquots = ["A1", "A2"] if s["replated"] else ["A1"]
+        batch = "B27%03d" % (100 + (s["received"].toordinal() % 7) * 3 + s["instrument"].count("B"))
+        # the control threshold is set for the instrument and held; it was lowered after the March
+        # control review
+        threshold = 36.50 if s["received"] >= dt.date(2027, 4, 12) else 36.60
         for al in aliquots:
-            hour = rng.randint(7, 17)
-            rows.append([s["specimen_id"], al, "REQ-2027-%05d" % (41000 + rng.randint(0, 9999)),
+            hour = min(17, max(7, int(rng.gauss(11.4, 2.6))))
+            rows.append([s["specimen_id"], al, s["request_id"],
                          "%sT%02d:%02d" % (s["received"].isoformat(), hour, rng.randint(0, 59)),
                          "Reception %s" % ("1" if rng.random() < 0.72 else "2"), s["project"],
-                         s["agreement"], "B27%03d" % (rng.randint(100, 940)),
-                         PK.nb(rng.uniform(36.3, 36.7), 2),
+                         s["agreement"], batch, PK.nb(threshold, 2),
                          W.PEOPLE["lead"].split()[1][:2].upper() if rng.random() < 0.3 else "TK"])
     rows.sort(key=lambda r: (r[3], r[0], r[1]))
     PK._write(os.path.join(target, W.FILES["runlog"]),

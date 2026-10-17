@@ -4,6 +4,7 @@ Nothing here knows about mess, documents or the write-up. The roles and the band
 world.py, and every figure the build grades is computed forward from the records this module writes.
 """
 import datetime as dt
+import math
 import random
 
 import world as W
@@ -36,12 +37,39 @@ def _band_counts(only_service, only_candidate, detect):
 def _estimate(rng, band):
     lo, hi = LIMITS[band]
     if band == "lt010":
-        v = min(hi, max(lo, rng.gauss(0.0024, 0.0016)))
+        # ordinary allele-balance noise: a long right tail, no floor
+        v = min(hi, max(0.0001, math.exp(rng.gauss(math.log(0.0021), 0.62))))
     elif band == "ge050":
         v = min(hi, max(lo, 0.0501 + abs(rng.gauss(0.0, 0.085))))
     else:
         v = rng.uniform(lo, hi)
     return round(v, 4)
+
+
+def receipt_days(first, last, n, seed):
+    """One receipt day per specimen, in order: working days only, the laboratory's own weekday
+    profile, and a catch-up on the first day back after a closure."""
+    drng = random.Random(seed)
+    days = [first + dt.timedelta(days=i) for i in range((last - first).days + 1)]
+    days = [d for d in days if d.weekday() < 5 and d not in W.HOLIDAYS]
+    weights, closed = [], False
+    for d in days:
+        prev = d - dt.timedelta(days=1)
+        while prev.weekday() > 4 or prev in W.HOLIDAYS:
+            closed = closed or prev in W.HOLIDAYS
+            prev -= dt.timedelta(days=1)
+        w = W.DAY_WEIGHT[d.weekday()] * (1.24 if closed else 1.0) * (0.93 + 0.14 * drng.random())
+        closed = False
+        weights.append(w)
+    total = sum(weights)
+    out, carry = [], 0.0
+    for d, w in zip(days, weights):
+        carry += w * n / total
+        while len(out) < min(n, int(round(carry))):
+            out.append(d)
+    while len(out) < n:
+        out.append(days[-1])
+    return out
 
 
 def build():
@@ -95,18 +123,21 @@ def build():
     false_set = set(false_slots)
 
     specimens = []
+    arrivals = receipt_days(W.RUN_FROM, W.RUN_TO, n, W.SEED + 61)
     mi = ci = 0
     projects = [p[0] for p in W.PROJECTS]
     weights = [p[2] for p in W.PROJECTS]
     for i, role in enumerate(roles):
-        received = weekdays[int(i * len(weekdays) / n)]
+        received = arrivals[i]
+        # the day the panel's turnaround is counted from, as the register recorded it
+        panel_from = weekdays[int(i * len(weekdays) / n)]
         sid = "NFG27-%06d" % (104000 + i * 3 + (i % 7))
         if role == "scope":
             project, agreement = W.CONTRACT[i % len(W.CONTRACT)]
         else:
             project, agreement = rng.choices(projects, weights)[0], ""
         rec = {"specimen_id": sid, "role": role, "project": project, "agreement": agreement,
-               "received": received, "extraction": rng.choices(W.EXTRACTION, [0.62, 0.27, 0.11])[0],
+               "received": received, "panel_from": panel_from, "extraction": rng.choices(W.EXTRACTION, [0.62, 0.27, 0.11])[0],
                "instrument": W.INSTRUMENTS[0] if rng.random() < 0.54 else W.INSTRUMENTS[1],
                "depth": round(rng.uniform(26.0, 71.0), 1)}
         if role == "mixed":
@@ -182,6 +213,17 @@ def build():
         s["read_sets"].append({"read_set": s["read_sets"][0]["read_set"].replace("RS27-", "RS27-9"),
                                "accepted": False, "estimate": second,
                                "depth": round(s["depth"] * 0.41, 1)})
+    # the biobank's request register: one request per specimen, a few covering a family group
+    qrng = random.Random(W.SEED + 91)
+    serial, last = 40231, None
+    for s in sorted(specimens, key=lambda r: (r["received"], r["specimen_id"])):
+        if last is not None and qrng.random() < 0.014:
+            s["request_id"] = last
+        else:
+            serial += qrng.randint(1, 3)
+            s["request_id"] = "REQ-2027-%05d" % serial
+            last = s["request_id"]
+
     for s in specimens:
         s["replated"] = False
     for s in comparison[W.TWO_READ_SETS:W.TWO_READ_SETS + W.REPLATED]:

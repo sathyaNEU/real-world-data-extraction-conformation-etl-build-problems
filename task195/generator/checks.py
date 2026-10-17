@@ -320,11 +320,24 @@ def run(target, g=None):
         naive.setdefault(month, [0, 0])
         naive[month][0] += 1
         naive[month][1] += 1 if r["hetx_call"] == "FLAG" else 0
+    auto = {}
+    for r in hist:
+        if r["release_status"] != "RELEASED" or not r["released_date"]:
+            continue
+        d = auto.setdefault(r["released_date"][:7], [0, 0])
+        d[0] += 1
+        d[1] += 1 if r["hetx_call"] == "FLAG" else 0
+    wide = 0
     for b in g["baseline"]:
         lazy = 1000.0 * naive[b["month"]][1] / naive[b["month"]][0]
-        ok("ask 2 the receipt-month read misses %s" % b["month"], abs(lazy - b["per_thousand"]) > 0.6,
-           "%.2f against %.2f" % (lazy, b["per_thousand"]))
+        ok("ask 2 the lazy read is outside the bin in %s" % b["month"],
+           round(lazy, 1) != round(b["per_thousand"], 1), "%.2f against %.2f" % (lazy, b["per_thousand"]))
+        wide += 1 if abs(lazy - b["per_thousand"]) > 0.6 else 0
+        only = 1000.0 * auto[b["month"]][1] / auto[b["month"]][0]
+        ok("ask 2 the automatic column alone misses %s" % b["month"],
+           b["per_thousand"] - only > 1.2, "%.2f against %.2f" % (only, b["per_thousand"]))
         ok("ask 2 %s sits mid-bin" % b["month"], _slack(b["per_thousand"], 1) > 0.02)
+    ok("ask 2 the lazy read misses widely in most months", wide >= 10, str(wide))
     vol = {r["reporting_month"]: int(r["specimens_released"].replace(" ", ""))
            for r in rows_of(os.path.join(target, W.FILES["volumes"]))}
     ok("ask 2 ties to the reporting pack", all(vol[b["month"]] == b["released"] for b in g["baseline"]))

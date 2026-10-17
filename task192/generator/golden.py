@@ -1,14 +1,12 @@
 """Everything the bulletin owes, computed from the shipped bundle and nothing else.
 
-The register is rebuilt from the three access routes the way the protocol says, the period's cohort
-of dispute episodes is taken off it, and the confrontation rate is estimated four ways: the episodes
-that have already recorded a confrontational action, the share among the episodes whose outcome is
-known, a product-limit survival of the time to a confrontational action, and the cumulative share
-with a quiet close treated as the other way an episode ends.
+The actions are rebuilt from the three access routes the way the protocol says, the code the register
+keeps for each action is taken on 2.6, and the period's confrontational actions are counted four ways:
+the codes as they stand, the codes with the classifier's false marks taken out, the codes scaled by the
+classifier's recall, and the count rebuilt from both of the classifier's measured error rates.
 """
 import csv
 import datetime as dt
-import json
 import os
 import statistics
 
@@ -33,7 +31,6 @@ def pts(s):
 
 
 def lisbon(utc_moment):
-    """UTC to local: Lisbon keeps summer time until 25 October 2026."""
     off = 1 if (utc_moment + dt.timedelta(hours=1)).date() < W.DST_BACK else 0
     return utc_moment + dt.timedelta(hours=off)
 
@@ -44,10 +41,11 @@ def load(target):
         gaz[r["nome"]] = r["codigo_localidade"]
         muni_of[r["codigo_localidade"]] = (r["codigo_municipio"], r["municipio"], r["distrito"],
                                            r["regiao"])
-    reports = []
+    reports, seen = [], set()
     for r in read(target, "registo_itens_imprensa.csv"):
-        if r["estado"] != "aceite":
+        if r["estado"] != "aceite" or r["id_relato"] in seen:
             continue
+        seen.add(r["id_relato"])
         reports.append(dict(route="IMP", ident=r["id_relato"], src=r["orgao"], theme=r["tema"],
                             code=r["codigo_acao"], place=r["local_texto"],
                             day=pdate(r["data_ocorrencia"]), start=pts(r["inicio_acao"]),
@@ -67,143 +65,122 @@ def load(target):
         r["muni"] = muni_of.get(r["loc"], ("", "", "", ""))[0]
     exc = [dict(route=r["via"], ident=r["id_relato"], recv=pts(r["carimbo_recepcao"]),
                 reason=r["motivo"]) for r in read(target, "excecoes_geocodificacao.csv")]
-    totals = read(target, "totais_por_via.csv")
-    return dict(gaz=gaz, muni_of=muni_of, reports=reports, exceptions=exc, totals=totals)
+    sample = read(target, "amostra_dupla_codificacao.csv")
+    return dict(reports=reports, exceptions=exc, sample=sample,
+                totals=read(target, "totais_por_via.csv"))
 
 
 def actions(reports):
-    """The protocol's action grain: one theme at one locality on one calendar day, however many
-    reports or routes recorded it."""
+    """The protocol's 2.1 grain, with the code 2.6 keeps: a filer's where one exists, the press
+    monitor's otherwise."""
     acts = {}
     for r in reports:
         if not r["loc"]:
             continue
         k = (r["theme"], r["loc"], r["day"])
-        a = acts.setdefault(k, dict(theme=r["theme"], loc=r["loc"], day=r["day"],
-                                    muni=r["muni"], codes=set(), routes=set(), reports=[]))
-        a["codes"].add(r["code"])
+        a = acts.setdefault(k, dict(theme=r["theme"], loc=r["loc"], day=r["day"], muni=r["muni"],
+                                    routes=set(), press_code="", filer_code="", reports=[]))
         a["routes"].add(r["route"])
         a["reports"].append(r)
-    return sorted(acts.values(), key=lambda a: (a["day"], a["loc"], a["theme"]))
+        if r["route"] == "IMP":
+            a["press_code"] = r["code"]
+        elif not a["filer_code"]:
+            a["filer_code"] = r["code"]
+    out = []
+    for a in acts.values():
+        a["press_only"] = a["routes"] == {"IMP"}
+        a["code"] = a["press_code"] if a["press_only"] else (a["filer_code"] or a["press_code"])
+        a["coded_conf"] = a["code"] in CONF
+        out.append(a)
+    return sorted(out, key=lambda a: (a["day"], a["loc"], a["theme"]))
 
 
-def register(acts):
-    """The dispute episodes the protocol's peace interval builds, one municipality and one theme."""
-    by = {}
-    for a in acts:
-        by.setdefault((a["muni"], a["theme"]), []).append(a)
-    eps = []
-    for (muni, theme), aa in sorted(by.items()):
-        aa.sort(key=lambda a: a["day"])
-        cur = None
-        for a in aa:
-            if cur is None or (a["day"] - cur["last"]).days > W.QUIET_DAYS:
-                cur = dict(muni=muni, theme=theme, open=a["day"], last=a["day"], conf=None,
-                           actions=0)
-                eps.append(cur)
-            cur["last"] = a["day"]
-            cur["actions"] += 1
-            if a["codes"] & CONF and cur["conf"] is None:
-                cur["conf"] = a["day"]
-    for e in eps:
-        e["closed"] = (W.EXTRACT - e["last"]).days >= W.QUIET_DAYS
-        if e["conf"] is not None:
-            e["t"], e["cause"] = (e["conf"] - e["open"]).days, 1
-        elif e["closed"]:
-            e["t"], e["cause"] = (e["last"] - e["open"]).days, 2
+def matrix(sample, restrict=None):
+    """The classifier's two error rates, from the desk's hand coding."""
+    tp = fn = fp = tn = 0
+    for r in sample:
+        if restrict and r["id_relato"] not in restrict:
+            continue
+        m, h = r["codigo_monitor"] in CONF, r["codigo_manual"] in CONF
+        if h and m:
+            tp += 1
+        elif h and not m:
+            fn += 1
+        elif m:
+            fp += 1
         else:
-            e["t"], e["cause"] = (W.EXTRACT - e["open"]).days, 0
-    return sorted(eps, key=lambda e: (e["open"], e["muni"], e["theme"]))
+            tn += 1
+    return tp, fn, fp, tn
 
 
-def curves(rows):
-    """One pass over the ordered event times: the cumulative share with a quiet close as the other
-    end of an episode, the event-free share, and the product-limit survival that carries a quiet
-    close as an observation that stops."""
-    times = sorted({t for t, c in rows if c in (1, 2)})
-    S, cif, km = 1.0, 0.0, 1.0
-    cifc, sc, kmc = [(-1, 0.0)], [(-1, 1.0)], [(-1, 0.0)]
-    for t in times:
-        n = sum(1 for tt, c in rows if tt >= t)
-        d1 = sum(1 for tt, c in rows if tt == t and c == 1)
-        d2 = sum(1 for tt, c in rows if tt == t and c == 2)
-        if n:
-            cif += S * d1 / n
-            km *= 1 - d1 / n
-            S *= 1 - (d1 + d2) / n
-        cifc.append((t, cif))
-        sc.append((t, S))
-        kmc.append((t, 1 - km))
-    return cifc, sc, kmc
-
-
-def at(curve, t):
-    v = curve[0][1]
-    for tt, vv in curve:
-        if tt <= t:
-            v = vv
-        else:
-            break
-    return v
-
-
-def weekly_cif(rows, width):
-    """The same estimate read on intervals instead of day by day."""
-    mx = max(t for t, c in rows)
-    S, cif = 1.0, 0.0
-    for lo in range(0, ((mx // width) + 1) * width, width):
-        hi = lo + width
-        at_risk = sum(1 for t, c in rows if t >= hi)
-        d1 = sum(1 for t, c in rows if lo <= t < hi and c == 1)
-        d2 = sum(1 for t, c in rows if lo <= t < hi and c == 2)
-        cen = sum(1 for t, c in rows if lo <= t < hi and c == 0)
-        n = at_risk + d1 + d2 + cen - 0.5 * cen
-        if n > 0:
-            cif += S * d1 / n
-            S *= 1 - (d1 + d2) / n
-    return cif
-
-
-def fortnight_of(day):
-    for label, a, b in W.fortnights():
-        if a <= day <= b:
-            return label
-    return None
+def corrected(n, observed, tp, fn, fp, tn, continuity=0.0):
+    """The count rebuilt from both error rates: the observed share less what the classifier marks
+    wrongly, over the width its two rates leave."""
+    se = (tp + continuity) / (tp + fn + 2 * continuity)
+    sp = (tn + continuity) / (tn + fp + 2 * continuity)
+    return n * (observed / n + sp - 1) / (se + sp - 1), se, sp
 
 
 def compute(target):
     b = load(target)
     acts = actions(b["reports"])
-    eps = register(acts)
-    cohort = [e for e in eps if PERIOD[0] <= e["open"] <= PERIOD[1]]
-    rows = [(e["t"], e["cause"]) for e in cohort]
-    n = len(rows)
-    E = sum(1 for t, c in rows if c == 1)
-    C = sum(1 for t, c in rows if c == 2)
-    Z = n - E - C
-    cifc, sc, kmc = curves(rows)
-    cif, kmf = cifc[-1][1], kmc[-1][1]
-    g = dict(cohort=n, recorded=E, closed_quiet=C, still_open=Z,
-             rate_pct=round(100 * cif), episodes=round(cif * n),
-             raw_episodes=cif * n, raw_rate=100 * cif,
-             rung0_episodes=E, rung0_pct=round(100 * E / n),
-             rung1_episodes=round(E / (E + C) * n), rung1_pct=round(100 * E / (E + C)),
-             rung2_episodes=round(kmf * n), rung2_pct=round(100 * kmf),
-             raw_rung1=E / (E + C) * n, raw_rung2=kmf * n,
-             weekly_episodes=weekly_cif(rows, 7) * n,
-             fortnightly_episodes=weekly_cif(rows, 14) * n,
-             actions_total=len(acts), reports_total=len(b["reports"]),
-             last_conf_day=max((t for t, c in rows if c == 1), default=0),
-             at_risk_at_last=sum(1 for t, c in rows if t >= max((tt for tt, cc in rows if cc == 1),
-                                                                default=0)))
-    # the same estimate taken episode by episode: each open episode's own remaining chance
-    proj = float(E)
-    for t, c in rows:
-        if c != 0:
-            continue
-        s = at(sc, t)
-        proj += (cif - at(cifc, t)) / s if s > 1e-12 else 0.0
-    g["projected_episodes"] = proj
+    inper = [a for a in acts if PERIOD[0] <= a["day"] <= PERIOD[1]]
+    press = [a for a in inper if a["press_only"]]
+    human = [a for a in inper if not a["press_only"]]
+    H = sum(1 for a in human if a["coded_conf"])
+    N = len(press)
+    O = sum(1 for a in press if a["coded_conf"])
+    tp, fn, fp, tn = matrix(b["sample"])
+    raw, se, sp = corrected(N, O, tp, fn, fp, tn)
+    g = dict(actions_in_period=len(inper), press_only=N, filed_by_hand=len(human),
+             hand_confrontational=H, press_marked=O,
+             sample_rows=len(b["sample"]), tp=tp, fn=fn, fp=fp, tn=tn,
+             recall=round(se, 4), false_mark=round(1 - sp, 4),
+             raw_total=H + raw, total=round(H + raw),
+             rung0=H + O, rung1=round(H + O * tp / (tp + fp)), raw_rung1=H + O * tp / (tp + fp),
+             rung2=round(H + O / se), raw_rung2=H + O / se)
+    # the variants a careful analyst tries on a correction of this kind
+    cont, _, _ = corrected(N, O, tp, fn, fp, tn, continuity=0.5)
+    g["variant_continuity"] = H + cont
+    rounds = {}
+    for r in b["sample"]:
+        rounds.setdefault(r["ronda"], []).append(r["id_relato"])
+    per_round, shares = 0.0, {}
+    first_round = min(rounds)
+    for name, ids in sorted(rounds.items()):
+        t2 = matrix(b["sample"], set(ids))
+        share = len(ids) / len(b["sample"])
+        part, _, _ = corrected(N * share, O * share, *t2)
+        per_round += part
+        shares[name] = part
+    g["variant_by_round"] = H + per_round
+    themes = {}
+    for a in press:
+        themes.setdefault(a["theme"], [0, 0])
+        themes[a["theme"]][0] += 1
+        themes[a["theme"]][1] += 1 if a["coded_conf"] else 0
+    by_theme = 0.0
+    for th, (n_th, o_th) in themes.items():
+        ids = {r["id_relato"] for r in b["sample"] if r["tema"] == th}
+        t2 = matrix(b["sample"], ids)
+        if min(t2[0] + t2[1], t2[2] + t2[3]) == 0 or (t2[0] / max(t2[0] + t2[1], 1)) + \
+                (t2[3] / max(t2[3] + t2[2], 1)) <= 1:
+            part = n_th * (o_th / n_th + sp - 1) / (se + sp - 1)
+        else:
+            part, _, _ = corrected(n_th, o_th, *t2)
+        by_theme += part
+    g["variant_by_theme"] = H + by_theme
+    press_ids = {a["reports"][0]["ident"] for a in press for r in a["reports"]
+                 if r["route"] == "IMP"}
+    t3 = matrix(b["sample"], press_ids)
+    if t3[0] and t3[1] and t3[3]:
+        part, _, _ = corrected(N, O, *t3)
+        g["variant_press_only_sample"] = H + part
+    else:
+        g["variant_press_only_sample"] = H + raw
+    # the same correction written as the inverted confusion matrix over the observed counts
+    denom = se - (1 - sp)
+    g["variant_matrix_inverse"] = H + (O - N * (1 - sp)) / denom
 
     # ---- A1, per fortnight
     a1 = {}
@@ -213,7 +190,7 @@ def compute(target):
         a1[label] = dict(start=a.isoformat(), end=bb.isoformat(), actions=len(inside),
                          municipalities=len({x["muni"] for x in inside}),
                          partner_share=round(100.0 * len(par) / len(inside), 1) if inside else 0.0,
-                         confrontational=len([x for x in inside if x["codes"] & CONF]))
+                         marked=len([x for x in inside if x["coded_conf"]]))
     g["a1"] = a1
 
     # ---- A2, per access route
@@ -230,54 +207,38 @@ def compute(target):
                if e["route"] == route and PERIOD[0] <= e["recv"].date() <= PERIOD[1]]
         mins = sorted((r["recv"] - r["start"]).total_seconds() / 60.0 for r in in_period)
         k = len(mins) // 2
-        pair_equal = bool(mins) and (len(mins) % 2 == 1 or mins[k - 1] == mins[k])
         a2[route] = dict(received=len(in_period) + len(exc), unplaceable=len(exc),
                          median_minutes=round(statistics.median(mins), 1) if mins else 0.0,
-                         placed=len(in_period), median_pair_equal=pair_equal)
-        g.setdefault("a2_debug", {})[route] = len(placed)
+                         placed=len(in_period),
+                         median_pair_equal=bool(mins) and (len(mins) % 2 == 1 or mins[k - 1] == mins[k]))
     g["a2"] = a2
 
     # ---- A3, per partner organisation
-    rate_of = {p[0]: p[3] for p in W.PARTNERS}
-    code_to_partner = {p[0]: p[0] for p in W.PARTNERS}
-    code_to_partner[W.MERGED[1]] = W.MERGED[0]
-    a3 = {}
+    code_to = {p[0]: p[0] for p in W.PARTNERS}
+    code_to[W.MERGED[1]] = W.MERGED[0]
     par_seen = {}
     for r in b["reports"]:
-        if r["route"] != "PAR":
-            continue
-        par_seen.setdefault(r["ident"], r)            # the re-imported month carries each one twice
+        if r["route"] == "PAR":
+            par_seen.setdefault(r["ident"], r)
+    a3 = {}
     for code, name, region, rate in W.PARTNERS:
-        mine = [r for r in par_seen.values() if code_to_partner.get(r["src"]) == code
+        mine = [r for r in par_seen.values() if code_to.get(r["src"]) == code
                 and PERIOD[0] <= r["day"] <= PERIOD[1]]
         late = [r for r in mine if r["recv"].date() > PERIOD[1]]
         paid = 0.0
         for r in mine:
             if r["recv"].date() > PERIOD[1]:
                 continue
-            use = rate
-            if code == W.AMENDED[0] and r["recv"].date() >= W.AMENDED[1]:
-                use = W.AMENDED[2]
+            use = W.AMENDED[2] if (code == W.AMENDED[0] and r["recv"].date() >= W.AMENDED[1]) else rate
             paid += use
-        a3[code] = dict(name=name, filed=len(mine), after_close=len(late),
-                        euros=round(paid), raw_euros=paid)
+        a3[code] = dict(name=name, filed=len(mine), after_close=len(late), euros=round(paid),
+                        raw_euros=paid)
     g["a3"] = a3
 
-    # ---- the monthly series the earlier bulletins published
-    series, months = [], ["maio", "junho", "julho", "agosto", "setembro"]
-    for i, label in enumerate(months, 5):
+    series = []
+    for i, label in enumerate(["maio", "junho", "julho", "agosto", "setembro"], 5):
         inside = [x for x in acts if x["day"].month == i and x["day"].year == 2026]
         series.append((label, len(inside), len({x["muni"] for x in inside}),
                        len({x["loc"] for x in inside})))
     g["monthly"] = series
     return g
-
-
-def partner_returns_table(g):
-    """What each partner's own monthly return states: the reports it filed, by the month of the
-    action they are about. The merged partner's return counts both delivery codes."""
-    table = {}
-    for code, name, region, rate in W.PARTNERS:
-        for m in range(5, 12):
-            table[(code, m)] = (0, "")
-    return table

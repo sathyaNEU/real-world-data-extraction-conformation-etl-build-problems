@@ -1,517 +1,423 @@
-"""Write the bundle the bank would hand over."""
+"""The bundle: the two deposit feeds, the registers, the dictionary and the context files."""
 import csv
 import datetime as dt
-import json
 import os
-import random
 
 import sim
 import world as W
 
-SHUT = {d for d, _ in W.HOLIDAYS}
+PULL = W.EXTRACT
+DST = (dt.date(2026, 9, 27), dt.date(2027, 4, 4))     # NZDT in the reporting year
 
 
-def open_day(d):
-    """the first day from d on which the bank is open"""
-    while d.weekday() >= 5 or d in SHUT:
-        d += dt.timedelta(days=1)
-    return d
+def write_csv(target, name, header, rows, nl="\r\n"):
+    path = os.path.join(target, name)
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        wr = csv.writer(fh, lineterminator=nl)
+        wr.writerow(header)
+        for r in rows:
+            wr.writerow(r)
+    return path
 
 
-FILES = {
-    "alerts": "alert_adjudication_extract.csv",
-    "cases": "confirmed_case_register.csv",
-    "base": "customer_base_by_line.xlsx",
-    "backlog": "alert_backlog_weekly.csv",
-    "lines": "line_structure_register.csv",
-    "crosswalk": "customer_id_crosswalk.csv",
-    "ledger": "contractor_hours_ledger.csv",
-    "lists": "screening_list_versions.json",
-    "matches": "screening_match_log.csv",
-    "manifest": "extract_manifest.csv",
-    "branches": "branch_footprint.csv",
-    "training": "aml_training_completion.csv",
-    "closed": "bank_closed_days.csv",
-}
-CASE_COLS = ["case_id", "customer_ref", "line_code", "typology", "onset_month", "first_seen_month",
-             "confirmed_month", "disposition", "record_version", "amount", "currency"]
-ALERT_COLS = ["alert_id", "queue", "customer_ref", "line_code", "raised_at", "stage", "stage_at",
-              "outcome", "analyst", "batch_id"]
-CODE = {l[0]: l[1] for l in W.LINES}
-OLD_BY_CURRENT = {}
-for _oc, _on, _cur, _note in W.OLD_LINES:
-    OLD_BY_CURRENT.setdefault(_cur, []).append(_oc)
+def offset(day):
+    return 13 if DST[0] <= day < DST[1] else 12
 
 
-def recorded_line(name, when):
-    """the line code the record carries, which the July 2026 reorganisation changed.
-
-    Some feeds went on writing the retired code for a while after the merger, which is why the line
-    structure register carries the mapping rather than a cut-over date alone.
-    """
-    cur = CODE[name]
-    if cur not in OLD_BY_CURRENT:
-        return cur
-    olds = OLD_BY_CURRENT[cur]
-    if when >= W.REORG:
-        late = (when - W.REORG).days
-        if late < 150 and (when.day * 7 + when.month) % 11 < (4 if late < 60 else 2):
-            return olds[(when.month + when.day) % len(olds)]
-        return cur
-    return olds[(when.month + when.day) % len(olds)]
+def utc_stamp(day, hhmm, sec=0):
+    local = dt.datetime(day.year, day.month, day.day, hhmm // 60, hhmm % 60, sec)
+    return (local - dt.timedelta(hours=offset(day))).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def all_cases():
-    """every line's cases, with the line's delay mean calibrated to its target"""
+def shash_local(text):
+    h = 2166136261
+    for ch in text:
+        h = ((h ^ ord(ch)) * 16777619) & 0xFFFFFFFF
+    return h
+
+
+def machines_on(day):
+    """The machines in service at each site on a day."""
     out = {}
-    for line in W.LINES:
-        wbar = sim.calibrate(line, line[2], line[4])
-        out[line[0]] = sim.cases((line[0], line[1], line[2], line[3], wbar, line[5]))
+    for mid, site, inst, wdr in W.MACHINES:
+        a = dt.date(*[int(v) for v in inst.split("-")])
+        b = dt.date(*[int(v) for v in wdr.split("-")]) if wdr else None
+        if a <= day and (b is None or day < b):
+            out.setdefault(site, []).append(mid)
     return out
 
 
-def write_cases(target, cases):
-    rng = random.Random(W.SEED + 11)
-    rows = []
-    cid = 41200
-    earlier = {}
-    for name in [l[0] for l in W.LINES]:
-        earlier.setdefault(name, [])
-        for c in cases[name]:
-            if c["detected"] > W.AS_OF:
-                continue                      # the bank holds no record of a case nobody has seen
-            cid += 1
-            lag = W.CONFIRM_LAG[[l[1] for l in W.LINES if l[0] == name][0]]
-            conf = sim.add_months(c["detected"], int(rng.expovariate(1.0 / max(0.25, lag))))
-            if conf > W.AS_OF:
-                conf = W.AS_OF
-            cur = "AUD" if (cid % 23 == 0) else "NZD"
-            amt = round(8000 + rng.lognormvariate(10.4, 0.9), 2)
-            ref = "CU%07d" % (100000 + (cid * 7919) % 850000)
-            if earlier[name] and rng.random() < 0.062:
-                ref = earlier[name][rng.randrange(0, len(earlier[name]))]
-            else:
-                earlier[name].append(ref)
-            rows.append({"seq": cid, "case_id": "", "customer_ref": ref,
-                         "line_code": recorded_line(name, c["onset"]),
-                         "typology": c["typology"],
-                         "onset_month": c["onset"].strftime("%Y-%m"),
-                         "first_seen_month": c["detected"].strftime("%Y-%m"),
-                         "confirmed_month": conf.strftime("%Y-%m"),
-                         "disposition": "confirmed", "record_version": "1",
-                         "amount": "%.2f" % amt, "currency": cur, "line": name})
-    # cases amended after confirmation, a few of them twice: every version is kept
-    amended = []
+def enrich(custs, rows):
+    """Give every deposit its reference, branch, clock and instrument."""
+    rng = sim.Rng(880517)
+    bycust = {c["cust"]: c for c in custs}
+    # the deposit system's own customer number, which is not the master's
+    acct = {}
+    for i, c in enumerate(sorted(custs, key=lambda x: x["cust"])):
+        acct[c["cust"]] = "%s-%05d" % (c["branch"][2:], 1301 + i * 3 + rng.below(3))
+    seq = {"counter": 0, "machine": 0}
+    tellers = {}
+    for code, _n, _r, _o, _c in W.BRANCHES:
+        tellers[code] = 6 + (shash_local(code) % 13)
+    out = []
     for r in rows:
-        if rng.random() > 0.011:
+        c = bycust[r["cust"]]
+        day = r["date"]
+        br = c["branch"]
+        if br == "AR11" and day >= dt.date(2026, 11, 27):
+            br = "AR12"
+        if rng.u() < 0.035:                       # paid in at another branch
+            br = rng.pick([b[0] for b in W.BRANCHES if b[0] != br and
+                            (b[4] == "" or day < dt.date(*[int(v) for v in b[4].split("-")]))])
+        # counters are busiest mid morning and again at close; machines run later
+        u = rng.u()
+        if u < 0.34:
+            hhmm = 9 * 60 + rng.below(100)
+        elif u < 0.62:
+            hhmm = 11 * 60 + rng.below(150)
+        elif u < 0.86:
+            hhmm = 14 * 60 + rng.below(140)
+        else:
+            hhmm = 16 * 60 + 20 + rng.below(110)
+        here = machines_on(day).get(br, [])
+        if r["channel"] == "machine" and not here:
+            r = dict(r, channel="counter")
+        if r["channel"] == "counter":
+            seq["counter"] += 1
+            out.append(dict(kind="counter",
+                            ref="CD%07d" % (4100000 + seq["counter"] * 3 + rng.below(3)),
+                            branch=br, teller="T%s%02d" % (br[2:], 1 + rng.below(tellers[br])),
+                            acct=acct[r["cust"]], instrument="cash", amount=r["amount"],
+                            day=day, hhmm=hhmm, sec=rng.below(60), cust=r["cust"], year=r["year"],
+                            planted=r["planted"], resent=0))
+        else:
+            seq["machine"] += 1
+            if rng.u() < 0.22:
+                hhmm = min(19 * 60, hhmm + 120 + rng.below(90))
+            out.append(dict(kind="machine",
+                            ref="MD%07d" % (6200000 + seq["machine"] * 7 + rng.below(5)),
+                            branch=br, machine=rng.pick(here),
+                            acct=acct[r["cust"]], instrument="cash", amount=r["amount"],
+                            day=day, hhmm=hhmm, sec=rng.below(60), cust=r["cust"], year=r["year"],
+                            planted=r["planted"], resent=0))
+    # no machine deposit in the band sits on a year boundary, so reading the UTC stamp as the
+    # deposit date never moves the figure (SF9)
+    for d in out:
+        if d["kind"] == "machine" and W.BAND_LO <= d["amount"] < W.BAND_HI and \
+                d["day"] in (dt.date(2026, 7, 1), dt.date(2027, 6, 30), dt.date(2025, 7, 1),
+                             dt.date(2026, 6, 30)):
+            d["day"] = d["day"] + dt.timedelta(days=2 if d["day"].day == 1 else -2)
+        if d["kind"] == "machine" and d["hhmm"] < 8 * 60 + 30:
+            d["hhmm"] = 8 * 60 + 30 + rng.below(120)
+    return out, acct
+
+
+def other_instruments(deposits, rng):
+    """Cheque and electronic credits, which clause 7.4's count is not of."""
+    extra = []
+    n = 0
+    for d in deposits:
+        if d["kind"] != "counter":
             continue
-        v2 = dict(r)
-        v2["record_version"] = "2"
-        v2["amount"] = "%.2f" % round(float(r["amount"]) * (0.74 + rng.random() * 0.62), 2)
-        amended.append(v2)
-        if rng.random() < 0.17:
-            v3 = dict(v2)
-            v3["record_version"] = "3"
-            v3["amount"] = "%.2f" % round(float(v2["amount"]) * (0.81 + rng.random() * 0.45), 2)
-            amended.append(v3)
-    # the cases put to the head of financial crime and not accepted: no confirmed month
-    withdrawn = []
-    for name in [l[0] for l in W.LINES]:
-        own = [r for r in rows if r["line"] == name]
-        for _ in range(int(round(0.068 * len(own)))):
-            src = own[rng.randrange(0, len(own))]
-            cid += 1
-            onset = dt.date(int(src["onset_month"][:4]), int(src["onset_month"][5:7]), 1)
-            withdrawn.append({"seq": cid, "case_id": "",
-                              "customer_ref": "CU%07d" % (100000 + (cid * 7919) % 850000),
-                              "line_code": recorded_line(name, onset),
-                              "typology": src["typology"],
-                              "onset_month": src["onset_month"],
-                              "first_seen_month": src["first_seen_month"],
-                              "confirmed_month": "",
-                              "disposition": "withdrawn", "record_version": "1",
-                              "amount": "%.2f" % round(8000 + rng.lognormvariate(10.4, 0.9), 2),
-                              "currency": "AUD" if (cid % 23 == 0) else "NZD", "line": name})
-    rows.extend(withdrawn)
-    # the register numbers a case when it is opened: mostly the next number, now and then a jump
-    # where numbers were taken by cases that were never registered
-    nxt = 41207
-    ident = {}
-    for r in sorted(rows, key=lambda z: (z["first_seen_month"], (z["seq"] * 48611) % 99991)):
-        u = rng.random()
-        nxt += 1 if u < 0.86 else (2 if u < 0.95 else 2 + int(rng.expovariate(0.35)))
-        ident[r["seq"]] = "CAS-%06d" % nxt
-    for r in rows + amended:
-        r["case_id"] = ident[r["seq"]]
-    rows.extend(amended)
-    path = os.path.join(target, FILES["cases"])
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=CASE_COLS, lineterminator="\n", extrasaction="ignore")
-        w.writeheader()
-        for r in sorted(rows, key=lambda z: (z["case_id"], z["record_version"])):
-            w.writerow(r)
-    return rows
+        if rng.u() < 0.145:
+            n += 1
+            inst = "cheque" if rng.u() < 0.56 else "credit"
+            amt = round(400 + rng.u() ** 1.6 * 26000, 2)
+            extra.append(dict(d, ref="CD%07d" % (4800000 + n * 3), instrument=inst,
+                              amount=amt, planted=0, resent=0))
+    return extra
 
 
-def write_alerts(target, case_rows):
-    """the alert system's own record: one row per alert per adjudication stage"""
-    rng = random.Random(W.SEED + 23)
+def write_feeds(target, deposits):
+    rng = sim.Rng(20260714)
+    counter = [d for d in deposits if d["kind"] == "counter"]
+    machine = [d for d in deposits if d["kind"] == "machine"]
+    counter = counter + other_instruments(deposits, rng)
+    counter.sort(key=lambda d: (d["day"], d["hhmm"], d["ref"]))
+    machine.sort(key=lambda d: (d["day"], d["hhmm"], d["ref"]))
+
+    # two reversals, neither in the band, each with its own reversing row
+    rev = []
+    for d in counter:
+        if len(rev) < 2 and d["instrument"] == "cash" and d["amount"] > 16000 and \
+                d["year"] == "2027":
+            rev.append(d)
+    rev_rows = []
+    for d in rev:
+        rev_rows.append(dict(d, ref="CD%07d" % (4900000 + len(rev_rows) * 3),
+                             amount=-d["amount"], reversal_of=d["ref"]))
+    hdr = ["deposit_ref", "branch_code", "teller_id", "acct_customer_no", "instrument",
+           "amount_nzd", "deposit_date", "deposit_time_local", "posted_date", "reversal_of",
+           "pull_date"]
     rows = []
-    aid = 880000
-    start = dt.date(2025, 1, 1)
-    months = sim.months_between(start, W.AS_OF) + 1
-    for m in range(months):
-        mon = sim.add_months(start, m)
-        for q in W.ALERT_QUEUES:
-            base = {"card disputes": 150, "payment screening": 120, "trade documents": 35,
-                    "onboarding": 60, "transaction monitoring": 95, "sanctions screening": 45}[q]
-            n = int(base * (0.82 + 0.36 * rng.random()))
-            for _ in range(n):
-                aid += 1
-                day = 1 + rng.randrange(0, 27)
-                raised = dt.date(mon.year, mon.month, day)
-                qname = ("chargebacks" if q == "card disputes" and raised < dt.date(2026, 4, 1) else q)
-                serves = {"card disputes": [("Cards", 1.0)],
-                          "payment screening": [("Retail payments", 0.82),
-                                                ("FX and remittance", 1.0)],
-                          "trade documents": [("Trade finance", 0.88),
-                                              ("Correspondent banking", 1.0)],
-                          "onboarding": [("Deposits", 0.76), ("Private wealth", 1.0)],
-                          "transaction monitoring": [("Business lending", 0.71),
-                                                     ("Retail payments", 1.0)],
-                          "sanctions screening": [("FX and remittance", 0.64),
-                                                  ("Correspondent banking", 1.0)]}[q]
-                u = rng.random()
-                line = next(nm for nm, cut in serves if u <= cut)
-                ref = "A%08d" % (200000 + (aid * 104729) % 700000)
-                batch = "%s-%s-%02d" % (q[:3].upper(), raised.strftime("%Y%m"), 1 + (aid % 7))
-                an = "AN%03d" % (1 + aid % 40)
+    posted_shift = 0
+    for d in counter + rev_rows:
+        day = d["day"]
+        posted = day
+        if rng.u() < 0.0068 and not (W.BAND_LO <= d["amount"] < W.BAND_HI):
+            posted = day + dt.timedelta(days=1)
+            posted_shift += 1
+        rows.append([d["ref"], d["branch"], d["teller"], d["acct"], d["instrument"],
+                     "%.2f" % d["amount"], day.isoformat(),
+                     "%02d:%02d:%02d" % (d["hhmm"] // 60, d["hhmm"] % 60, d.get("sec", 0)),
+                     posted.isoformat(),
+                     d.get("reversal_of", ""), PULL])
+    write_csv(target, "cash_deposit_counter_2026_2027.csv", hdr, rows)
 
-                def put(stage, at, outcome="", analyst="", _a=aid, _q=qname, _r=ref, _ra=raised,
-                        _b=batch):
-                    if at > W.AS_OF:
-                        return                 # the extract holds nothing after the day it was pulled
-                    rows.append({"alert_id": "AL-%07d" % _a, "queue": _q, "customer_ref": _r,
-                                 "line_code": recorded_line(line, _ra),
-                                 "raised_at": _ra.isoformat(), "stage": stage,
-                                 "stage_at": at.isoformat(), "outcome": outcome,
-                                 "analyst": analyst, "batch_id": _b})
-
-                put("raised", raised)
-                if rng.random() < 0.019:
-                    continue                   # still in the queue at the pull, no triage row yet
-                closed = open_day(raised + dt.timedelta(days=1 + int(rng.lognormvariate(0.9, 0.85))))
-                esc = rng.random() < 0.06
-                put("triaged", closed, "escalated" if esc else "closed", an)
-                if esc:
-                    put("escalated", open_day(closed + dt.timedelta(days=2 + rng.randrange(0, 9))),
-                        "with investigations", an)
-                elif rng.random() < 0.014:     # reopened on new information, then closed again
-                    ro = open_day(closed + dt.timedelta(days=5 + rng.randrange(0, 50)))
-                    an2 = "AN%03d" % (1 + (aid * 3) % 40)
-                    put("reopened", ro, "", an2)
-                    put("triaged", open_day(ro + dt.timedelta(days=1 + rng.randrange(0, 9))),
-                        "closed", an2)
-    # one re-sent batch: the card disputes queue's June 2026 batch 3 was loaded twice
-    resent = [dict(r) for r in rows if r["batch_id"] == "CAR-202606-03"]
-    for r in resent:
-        r["batch_id"] = "CAR-202606-03R"
-    rows.extend(resent)
-    path = os.path.join(target, FILES["alerts"])
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=ALERT_COLS, lineterminator="\n")
-        w.writeheader()
-        for r in sorted(rows, key=lambda z: (z["alert_id"], z["stage"])):
-            w.writerow(r)
-    return rows
+    # the machine feed: UTC stamps, its own sequence, and a few re-sent rows outside the
+    # amount range any profile is read over, so a kept duplicate moves no figure
+    hdr2 = ["machine_deposit_ref", "machine_id", "site_code", "acct_customer_no", "amount_nzd",
+            "deposit_ts_utc", "envelope_count", "pull_sequence", "pull_date"]
+    rows2 = []
+    resent = 0
+    for d in machine:
+        base = [d["ref"], d["machine"], d["branch"], d["acct"], "%.2f" % d["amount"],
+                utc_stamp(d["day"], d["hhmm"], d.get("sec", 0)),
+                1 + (1 if rng.u() < 0.21 else 0) + (1 if rng.u() < 0.06 else 0)]
+        rows2.append(base + [1, PULL])
+        if (d["amount"] < 4600 or d["amount"] > 17000) and rng.u() < 0.004:
+            rows2.append(base + [2, PULL])
+            resent += 1
+    write_csv(target, "cash_deposit_machine_2026_2027.csv", hdr2, rows2)
+    return dict(counter=len(rows), machine=len(rows2), resent=resent,
+                posted_shift=posted_shift, reversals=[r["reversal_of"] for r in rev_rows],
+                reversed_keys=[(d["cust"], d["day"], round(d["amount"], 2)) for d in rev],
+                other=len(counter) - len([d for d in deposits if d["kind"] == "counter"]))
 
 
-def _csv(path, header, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(header)
-        for r in rows:
-            w.writerow(r)
-    return path
-
-
-def write_lines(target):
+def write_register(target, custs, acct):
+    """The business banking register as the relationship team keeps it: a wide workbook."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Business register"
+    ws["A1"] = "%s: business banking customer register" % W.BANK
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = "Extract %s. One row per customer on the register at 30 June 2027." % PULL
+    ws["A2"].font = Font(size=9, italic=True)
+    ws["A3"] = "Segment codes were reissued on %s; both codings are shown." % W.RECODE_DATE
+    ws["A3"].font = Font(size=9, italic=True)
+    head = ["master_customer_no", "trading_name", "segment_code_current",
+            "segment_code_to_2027_04_05", "segment_name", "home_branch_code",
+            "relationship_opened", "anzsic_code"]
+    for j, h in enumerate(head):
+        c = ws.cell(row=5, column=1 + j, value=h)
+        c.font = Font(bold=True)
+        c.alignment = Alignment(horizontal="left")
+    rng = sim.Rng(771103)
+    FIRST = ["Kowhai", "Rimu", "Totara", "Waiata", "Harbourside", "Clearwater", "Northvale",
+             "Sunnybank", "Riverton", "Fernhill", "Tussock", "Kererū", "Oakfield", "Mataī",
+             "Springvale", "Eastgate", "Westbrook", "Pukeko", "Highfield", "Karaka"]
+    SECOND = {"GRO": ["Food Market", "Superette", "Grocers", "Convenience", "Fresh Mart"],
+              "HOS": ["Cafe", "Bistro", "Tavern", "Eatery", "Dining Rooms"],
+              "TRA": ["Couriers", "Transport", "Freight", "Cabs", "Haulage"],
+              "CON": ["Builders", "Plumbing", "Roofing", "Electrical", "Contracting"],
+              "RUR": ["Rural Supplies", "Orchards", "Produce", "Farm Services", "Growers"],
+              "FUE": ["Service Station", "Autos", "Motors", "Fuel Stop", "Tyres"],
+              "PER": ["Hair Studio", "Barbers", "Beauty Rooms", "Laundry", "Clinic"],
+              "CLB": ["Bowling Club", "Rugby Club", "Community Trust", "Social Club", "Hall"]}
     rows = []
-    for (name, code, lam, cust, wbar, backlog) in W.LINES:
-        rows.append([code, name, W.SPAN_FROM.isoformat(), "", "current", code, ""])
-    for (oc, on, cur, note) in W.OLD_LINES:
-        rows.append([oc, on, W.SPAN_FROM.isoformat(), (W.REORG - dt.timedelta(days=1)).isoformat(),
-                     "superseded", cur, note.split(" on ")[0]])
-    return _csv(os.path.join(target, FILES["lines"]),
-                ["line_code", "line_name", "effective_from", "effective_to", "status",
-                 "current_line_code", "note"], rows)
+    for c in sorted(custs, key=lambda x: x["cust"]):
+        nm = "%s %s" % (rng.pick(FIRST), rng.pick(SECOND[c["seg"]]))
+        if rng.u() < 0.22:
+            nm += " Limited"
+        rows.append([c["cust"], nm, W.NEW_CODE[c["seg"]], W.OLD_CODE[c["seg"]],
+                     W.SEG_NAME[c["seg"]], c["branch"], c["opened"],
+                     rng.pick(W.ANZSIC[c["seg"]])])
+    for i, r in enumerate(rows):
+        for j, v in enumerate(r):
+            ws.cell(row=6 + i, column=1 + j, value=v)
+    for col, wd in (("A", 18), ("B", 30), ("C", 20), ("D", 24), ("E", 30), ("F", 18),
+                    ("G", 20), ("H", 14)):
+        ws.column_dimensions[col].width = wd
+    ws.freeze_panes = "A6"
+    path = os.path.join(target, "business_customer_register.xlsx")
+    wb.save(path)
+    return path, len(rows)
 
 
-def write_crosswalk(target, case_rows, alert_rows):
-    rng = random.Random(W.SEED + 31)
-    seen = {}
-    for r in alert_rows:
-        seen.setdefault(r["customer_ref"], None)
-    cases = sorted({r["customer_ref"] for r in case_rows})
-    alerts = sorted(seen)
+def write_crosswalk(target, custs, acct):
     rows = []
-    for i, cu in enumerate(cases):
-        a = alerts[(i * 7919) % len(alerts)]
-        rows.append([cu, a, "matched on account number" if rng.random() < 0.23 else
-                     "matched on name, date of birth and account", "single"])
-        if rng.random() < 0.009:            # two candidates the data office could not separate
-            rows.append([cu, alerts[(i * 104729 + 17) % len(alerts)],
-                         "matched on name and date of birth", "one of two candidates"])
-    return _csv(os.path.join(target, FILES["crosswalk"]),
-                ["case_customer_ref", "alert_customer_ref", "match_basis", "resolution"], rows)
-
-
-def write_backlog(target):
-    rng = random.Random(W.SEED + 41)
-    rows = []
-    d = dt.date(2026, 1, 5)
-    while d <= W.AS_OF:
-        for (name, code, lam, cust, wbar, backlog) in W.LINES:
-            v = int(backlog / 52.0 * (0.7 + 0.6 * rng.random()) * 52 / 52)
-            weekly = max(0, int(backlog * (0.85 + 0.3 * rng.random()) / 52.0 * 52 / 52))
-            rows.append([d.isoformat(), code, name, max(0, int(backlog * (0.88 + 0.24 * rng.random())))])
-        d += dt.timedelta(days=7)
-    return _csv(os.path.join(target, FILES["backlog"]),
-                ["week_ending", "line_code", "line_name", "alerts_awaiting_review"], rows)
-
-
-def write_ledger(target):
-    """the contractor's hours.
-
-    One reversal a quarter was reissued weeks later under the credit note reference series, so the
-    ledger reverses that ticket's hours twice. Nothing says so: each credit note names the ticket it
-    reverses, and the pair reverses more hours than that ticket was ever billed.
-    """
-    rng = random.Random(W.SEED + 53)
-    rows = []
-    tid = 7100
-    for (y, q) in ((2026, 1), (2026, 2), (2026, 3), (2026, 4)):
-        start = dt.date(y, 1 + 3 * (q - 1), 1)
-        billed = []
-        for i in range(int((39 if q <= 2 else 46) + rng.randrange(0, 8))):
-            d = start + dt.timedelta(days=rng.randrange(0, 88))
-            hours = round(2.8 + rng.lognormvariate(1.42, 0.5), 1)
-            kind = "review"
-            rate = 285.0
-            u = rng.random()
-            if u < 0.055:                         # the expert's own rate, which the card carries
-                kind, rate = "expert testimony", 410.0
-            elif u < 0.105:                       # a rate agreed outside the schedule
-                rate = rng.choice([312.5, 325.0, 340.0, 298.0])
-            billed.append((d, hours, kind, rate))
-        billed.sort(key=lambda z: z[0])           # the ticket system numbers in date order
-        out = []
-        for (d, hours, kind, rate) in billed:
-            tid += 1 + (1 if rng.random() < 0.18 else 0)
-            tk = "TKT-%05d" % tid
-            out.append([tk, d.isoformat(), "%d-Q%d" % (y, q), "%.1f" % hours, "%.2f" % rate, kind,
-                        "REF-%06d" % (500000 + tid), ""])
-        rows += out
-        # two reversals a quarter, one of them reissued weeks later under the credit note series
-        top = sorted(range(len(out)), key=lambda i: -float(out[i][3]))[:7]
-        first = top[rng.randrange(0, len(top))]
-        other = (tid * 7 + 29) % len(out)
-        while other == first:
-            other = (other + 13) % len(out)
-        pick = [first, other]
-        qend = dt.date(y, 1 + 3 * (q - 1), 1) + dt.timedelta(days=88)
-        qend = min(qend, dt.date(y, 12, 31) if q == 4 else dt.date(y, 3 * q, 28))
-        for j, ix in enumerate(pick):
-            tk, td, th = out[ix][0], dt.date.fromisoformat(out[ix][1]), float(out[ix][3])
-            tid += 1
-            d = min(qend, td + dt.timedelta(days=11 + rng.randrange(0, 40)))
-            rows.append(["TKT-%05d" % tid, d.isoformat(), "%d-Q%d" % (y, q), "%.1f" % (-th),
-                         "285.00", "credit note", "REF-%06d" % (500000 + tid), tk])
-            if j == 0:
-                again = min(qend, d + dt.timedelta(days=17 + rng.randrange(0, 30)))
-                tid += 1
-                rows.append(["TKT-%05d" % tid, again.isoformat(), "%d-Q%d" % (y, q), "%.1f" % (-th),
-                             "285.00", "credit note", "CRN-%06d" % (900000 + tid), tk])
-    return _csv(os.path.join(target, FILES["ledger"]),
-                ["ticket", "ticket_date", "quarter", "hours", "hourly_rate", "ticket_type",
-                 "reference", "reverses_ticket"], rows)
-
-
-def write_lists(target):
-    """the screening list's versions: entries added and removed over the year"""
-    rng = random.Random(W.SEED + 59)
-    versions = []
-    entries = {}
-    gone = set()
-    eid = 3100
-    for v, d in enumerate(["2026-01-22", "2026-03-06", "2026-06-11", "2026-09-30", "2026-12-17"], 1):
-        added, removed = [], []
-        for _ in range(int(14 + rng.expovariate(1.0 / 46))):
-            eid += 1
-            added.append("ENT-%05d" % eid)
-            entries["ENT-%05d" % eid] = v
-        if v > 1:
-            live = sorted(e for e, fv in entries.items() if fv < v and e not in gone)
-            rng.shuffle(live)
-            for e in live[: 5 + int(rng.expovariate(1.0 / 11))]:
-                removed.append(e)
-                gone.add(e)
-        versions.append({"version": "v%d" % v, "in_force_from": d,
-                         "entries_added": sorted(added), "entries_removed": sorted(removed)})
-    out = {"list": "consolidated sanctions and politically exposed persons list",
-           "maintained_by": W.SUPERVISOR, "compiled": W.AS_OF.isoformat(), "versions": versions}
-    path = os.path.join(target, FILES["lists"])
-    with open(path, "w", encoding="utf-8") as fh:
-        json.dump(out, fh, indent=1)
-        fh.write("\n")
-    return versions
-
-
-def write_matches(target, versions):
-    rng = random.Random(W.SEED + 61)
-    rows = []
-    mid = 60500
-    alive, gone = {}, {}
-    for v in versions:
-        for e in v["entries_added"]:
-            alive[e] = v["in_force_from"]
-        for e in v["entries_removed"]:
-            gone[e] = v["in_force_from"]
-    ents = sorted(alive)
-    d = dt.date(2026, 1, 20)
-    while d <= W.AS_OF:
-        for _ in range(6 + rng.randrange(0, 9)):
-            mid += 1
-            e = ents[(mid * 7919) % len(ents)]
-            if alive[e] > d.isoformat() or gone.get(e, "9999") <= d.isoformat():
-                continue                       # the entry was not on the list that day
-            cleared = rng.random() < 0.62
-            rows.append(["MCH-%06d" % mid, d.isoformat(), "CU%07d" % (100000 + (mid * 104729) % 850000),
-                         e, "cleared" if cleared else "escalated",
-                         "AN%03d" % (1 + mid % 40)])
-        d += dt.timedelta(days=4)
-    return _csv(os.path.join(target, FILES["matches"]),
-                ["match_id", "screened_on", "customer_ref", "list_entry", "outcome", "analyst"], rows)
-
-
-def write_closed_days(target):
-    """the days the bank is closed, as the operations office keeps them"""
-    rows = [[d.isoformat(), nm, "national" if nm not in ("Wellington Anniversary",) else "regional"]
-            for d, nm in W.HOLIDAYS]
-    return _csv(os.path.join(target, FILES["closed"]),
-                ["closed_on", "occasion", "scope"], rows)
+    for c in sorted(custs, key=lambda x: x["cust"]):
+        rows.append([acct[c["cust"]], c["cust"], "active", PULL])
+    return write_csv(target, "customer_number_crosswalk.csv",
+                     ["acct_customer_no", "master_customer_no", "link_status", "pull_date"], rows)
 
 
 def write_branches(target):
-    """branch and staff footprint: context the bank holds, no part of the placement"""
-    rng = random.Random(W.SEED + 67)
     rows = []
-    share = (("Northland", 0.06), ("Auckland", 0.34), ("Waikato", 0.11), ("Wellington", 0.19),
-             ("Canterbury", 0.21), ("Otago", 0.09))
-    for (name, code, lam, cust, wbar, backlog) in W.LINES:
-        sites = max(3, int(round(2.0 + cust / 26.0)))
-        for region, sh in share:
-            b = max(0, int(round(sites * sh * (0.75 + 0.5 * rng.random()))))
-            if b == 0 and rng.random() < 0.45:
-                b = 1
-            if b == 0:
+    for code, name, region, opened, closed in W.BRANCHES:
+        nm, newreg, when = W.RENAMED.get(code, (name, region, ""))
+        rows.append([code, name, region, opened, closed,
+                     W.MERGED_INTO.get(code, ""), nm if when else "", when])
+    return write_csv(target, "branch_register.csv",
+                     ["branch_code", "branch_name", "region", "opened", "closed",
+                      "deposits_transferred_to", "renamed_to", "renamed_on"], rows)
+
+
+def write_machine_register(target):
+    """The property team's register of the smart deposit machine estate."""
+    rows = []
+    for mid, site, inst, wdr in W.MACHINES:
+        rows.append([mid, site, inst, wdr, "NoteSafe 6200" if mid < "SDM-1100" else "NoteSafe 7100"])
+    return write_csv(target, "deposit_machine_register.csv",
+                     ["machine_id", "site_code", "installed_on", "withdrawn_on", "model"], rows)
+
+
+def write_summary(target, deposits):
+    """The branch cash summary the operations desk reconciles to: amounts, never band counts."""
+    agg = {}
+    for d in deposits:
+        if d["instrument"] != "cash" or d["year"] != "2027":
+            continue
+        key = (d["branch"], d["day"].strftime("%Y-%m"))
+        a = agg.setdefault(key, [0, 0.0])
+        a[0] += 1
+        a[1] += d["amount"]
+    rows = [[b, m, n, "%.2f" % v] for (b, m), (n, v) in sorted(agg.items())]
+    return write_csv(target, "branch_cash_summary_2027.csv",
+                     ["branch_code", "month", "cash_deposits", "cash_paid_in_nzd"], rows)
+
+
+def write_ptr(target, deposits):
+    """Prescribed transaction reports: cash at or above the threshold. Never read by the figure."""
+    rng = sim.Rng(50312)
+    at_or_over = [d for d in deposits
+                  if d["instrument"] == "cash" and d["amount"] >= W.THRESHOLD and
+                  d["year"] == "2027"]
+    at_or_over.sort(key=lambda d: (d["day"], d["ref"]))
+    hdr = ["ptr_reference", "deposit_ref", "acct_customer_no", "amount_nzd", "transaction_date",
+           "reported_on", "extract_status"]
+    pre, rev = [], []
+    for i, d in enumerate(at_or_over):
+        rep = d["day"] + dt.timedelta(days=3 + rng.below(8))
+        row = ["PTR2027%05d" % (i * 2 + 11), d["ref"], d["acct"], "%.2f" % d["amount"],
+               d["day"].isoformat(), rep.isoformat()]
+        if d["day"] <= dt.date(2027, 5, 16):
+            pre.append(row + ["preliminary"])
+        if d["day"] >= dt.date(2027, 4, 6):
+            rev.append(row + ["revised"])
+    write_csv(target, "prescribed_transaction_extract_preliminary.csv", hdr, pre)
+    write_csv(target, "prescribed_transaction_extract_revised.csv", hdr, rev)
+    return len(pre), len(rev), len(at_or_over)
+
+
+def write_card(target, custs):
+    """Merchant card settlements: the obvious way to judge a cash take, and never read."""
+    rng = sim.Rng(66109)
+    rows = []
+    for c in sorted(custs, key=lambda x: x["cust"]):
+        if rng.u() > 0.46:
+            continue
+        start = rng.below(3) if rng.u() < 0.18 else 0
+        stop = 12 - (rng.below(3) if rng.u() < 0.12 else 0)
+        term = 1 + rng.below(3)
+        for m in range(start, stop):
+            if rng.u() < 0.05:
                 continue
-            staff = int(round(b * (5.2 + 3.1 * rng.random())))
-            rows.append([code, name, region, b, staff, round(b * (0.19 + 0.08 * rng.random()), 1)])
-    return _csv(os.path.join(target, FILES["branches"]),
-                ["line_code", "line_name", "region", "branches", "staff", "floor_area_000_sqm"], rows)
+            y, mm = (2026, 7 + m) if 7 + m <= 12 else (2027, 7 + m - 12)
+            rows.append([c["cust"], "%04d-%02d" % (y, mm),
+                         "%.2f" % round(c["weight"] * (2400 + rng.u() * 9000), 2), term])
+    return write_csv(target, "card_settlement_summary_2027.csv",
+                     ["master_customer_no", "month", "card_settled_nzd", "terminals"], rows)
 
 
-def write_training(target):
-    rng = random.Random(W.SEED + 71)
-    rows = []
-    for (name, code, lam, cust, wbar, backlog) in W.LINES:
-        n = max(18, int(round(28 + cust * 1.35)))
-        rate = 0.74 + rng.random() * 0.14
-        for m in range(1, 13):
-            n = max(12, n + int(round(rng.gauss(0, max(1.0, n * 0.016)))))
-            rate = min(0.999, max(0.6, rate + rng.gauss(0.013, 0.012)))
-            rows.append([code, name, "2026-%02d" % m, n, round(rate, 3)])
-    return _csv(os.path.join(target, FILES["training"]),
-                ["line_code", "line_name", "month", "staff_in_scope", "completion_rate"], rows)
+DICT = [
+    ("cash_deposit_counter_2026_2027.csv", "deposit_ref", "The teller system's reference for one deposit. Unique."),
+    ("cash_deposit_counter_2026_2027.csv", "instrument", "cash, cheque or credit. Cash is notes and coin counted at the counter."),
+    ("cash_deposit_counter_2026_2027.csv", "amount_nzd", "New Zealand dollars and cents as counted. Negative on a reversing row."),
+    ("cash_deposit_counter_2026_2027.csv", "deposit_date", "The date the deposit was paid in, in branch local time."),
+    ("cash_deposit_counter_2026_2027.csv", "deposit_time_local", "Branch local time, 24 hour."),
+    ("cash_deposit_counter_2026_2027.csv", "posted_date", "The date the ledger run picked the deposit up. Later than the deposit date where a run was missed."),
+    ("cash_deposit_counter_2026_2027.csv", "reversal_of", "The deposit_ref this row reverses. Blank on an ordinary row."),
+    ("cash_deposit_counter_2026_2027.csv", "acct_customer_no", "The deposit system's customer number, branch prefixed. Not the master number."),
+    ("cash_deposit_machine_2026_2027.csv", "machine_deposit_ref", "The smart deposit machine's reference for one deposit."),
+    ("cash_deposit_machine_2026_2027.csv", "amount_nzd", "Dollars and cents as counted by the machine. Cash only; the machines take no other instrument."),
+    ("cash_deposit_machine_2026_2027.csv", "deposit_ts_utc", "Coordinated Universal Time, as the machine estate stamps it. New Zealand local time is twelve hours ahead, thirteen in daylight saving."),
+    ("cash_deposit_machine_2026_2027.csv", "envelope_count", "How many envelopes the customer fed in for this deposit. One deposit, whatever the count."),
+    ("cash_deposit_machine_2026_2027.csv", "pull_sequence", "1 on the first delivery of a row, 2 where the estate re-sent it. A row is one deposit however many times it was delivered."),
+    ("business_customer_register.xlsx", "segment_code_current", "The segment code in force at the extract date. Codes were reissued on 6 April 2027; the segments themselves did not change."),
+    ("business_customer_register.xlsx", "segment_code_to_2027_04_05", "The code the same segment carried until 5 April 2027."),
+    ("business_customer_register.xlsx", "master_customer_no", "The customer master's number. Deposits carry the deposit system's number; customer_number_crosswalk.csv links them."),
+    ("branch_register.csv", "deposits_transferred_to", "Where a closed branch's deposits are taken up from the closing date."),
+    ("till_balance_log_2026_2027.csv", "session_opened_ts", "Counter sessions are stamped in branch local time; machine collection sessions are stamped in UTC. collection_source says which."),
+    ("till_balance_log_2026_2027.csv", "variance_nzd", "Counted cash less the system's expected balance. Negative is a shortage."),
+    ("risk_rating_history.csv", "load_ts", "When the rating event reached the register. Two events may share an effective date; the later load is the one the register accepted."),
+    ("risk_rating_history.csv", "event_status", "accepted or superseded. A superseded event was replaced by a correction carrying the same effective date."),
+    ("machine_service_log_2027.csv", "machine_id", "One machine, as deposit_machine_register.csv names it. The vendor reports by site, summing the machines a site runs."),
+    ("deposit_machine_register.csv", "installed_on", "The day the machine went into service at the site."),
+    ("deposit_machine_register.csv", "withdrawn_on", "The day the machine came out of service. Blank where it is still in service at the extract date."),
+    ("machine_service_log_2027.csv", "out_of_service_minutes", "Minutes unavailable in this incident. A machine with no row in a month had no incident recorded; a decommissioned machine has no rows at all."),
+]
 
 
-def write_base(target):
-    """the customer base, in the bank's own wide monthly layout"""
-    from openpyxl import Workbook
-    from openpyxl.styles import Alignment, Font
-    rng = random.Random(W.SEED + 79)
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Customers by line"
-    ws["A1"] = "%s: customers by business line" % W.BANK
-    ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = "Month end counts, thousands of customers. Management information pack."
-    ws["A3"] = "Prepared by the finance data office, %s." % W.AS_OF.strftime("%d %B %Y")
-    months = [sim.add_months(dt.date(2026, 1, 1), m) for m in range(13)]
-    ws.cell(row=5, column=1, value="Line code").font = Font(bold=True)
-    ws.cell(row=5, column=2, value="Business line").font = Font(bold=True)
-    for j, mo in enumerate(months):
-        c = ws.cell(row=5, column=3 + j, value=mo.strftime("%b %Y"))
-        c.font = Font(bold=True)
-        c.alignment = Alignment(horizontal="center")
-    for i, (name, code, lam, cust, wbar, backlog) in enumerate(W.LINES):
-        ws.cell(row=6 + i, column=1, value=code)
-        ws.cell(row=6 + i, column=2, value=name)
-        drift = 1.0
-        trend = 1.0 + rng.gauss(0.004, 0.006)
-        for j, mo in enumerate(months):
-            drift *= trend * (1.0 + rng.gauss(0, 0.004))
-            ws.cell(row=6 + i, column=3 + j,
-                    value=round(cust * drift, 1 if cust >= 10 else 2))
-    ws.cell(row=6 + len(W.LINES) + 1, column=2, value="Counts are thousands of customers with an open "
-            "account at month end and exclude closed accounts.").font = Font(size=9, italic=True)
-    for col, wd in (("A", 11), ("B", 24)):
-        ws.column_dimensions[col].width = wd
-    path = os.path.join(target, FILES["base"])
-    wb.save(path)
+def write_dictionary(target):
+    return write_csv(target, "field_dictionary.csv", ["file", "field", "definition"],
+                     [[a, b, c] for a, b, c in DICT])
+
+
+def write_manifest(target, stats):
+    rows = [
+        ["cash_deposit_counter_2026_2027.csv", "Teller cash and non-cash deposits, both reporting years",
+         "1 July 2025 to 30 June 2027", "Machine deposits; deposits at closed branches after closure", "Teller system extract, pulled %s" % PULL],
+        ["cash_deposit_machine_2026_2027.csv", "Smart deposit machine deposits, both reporting years",
+         "1 July 2025 to 30 June 2027", "Counter deposits; non-cash instruments", "Machine estate extract, pulled %s" % PULL],
+        ["business_customer_register.xlsx", "Business banking customers on the register at 30 June 2027",
+         "At 30 June 2027", "Closed relationships", "Relationship management extract"],
+        ["customer_number_crosswalk.csv", "Deposit system number to master number",
+         "Active links at the pull date", "Links closed before July 2025", "Customer master extract"],
+        ["branch_register.csv", "Branch estate with effective dates", "All branches", "Agencies and mobile units", "Property and estate register"],
+        ["branch_cash_summary_2027.csv", "Cash paid in by branch and month", "Reporting year 2026/27", "Non-cash instruments", "Operations desk reconciliation pack"],
+        ["prescribed_transaction_extract_preliminary.csv", "Cash transactions at or above the threshold, first extract",
+         "1 July 2026 to 16 May 2027", "Transactions below the threshold", "Reporting engine, preliminary run"],
+        ["prescribed_transaction_extract_revised.csv", "Cash transactions at or above the threshold, revised extract",
+         "6 April 2027 to 30 June 2027", "Transactions below the threshold", "Reporting engine, revised run; supersedes the preliminary for the overlap"],
+        ["card_settlement_summary_2027.csv", "Merchant card settlements by customer and month", "Reporting year 2026/27", "Customers without a merchant facility", "Merchant acquiring extract"],
+        ["till_balance_log_2026_2027.csv", "Cash count sessions by branch", "1 July 2025 to 30 June 2027", "Sessions voided before completion", "Branch operations log"],
+        ["cash_tolerance_register.xlsx", "Variance tolerances with effective dates", "All branches", "", "Branch operations standards"],
+        ["risk_rating_history.csv", "Customer risk rating events", "Reporting year 2026/27", "Customers never rated", "Financial crime register"],
+        ["rating_scale_map.csv", "Rating scale before and after the April 2027 relabel", "All bands", "", "Financial crime register"],
+        ["machine_service_log_2027.csv", "Deposit machine service incidents", "Reporting year 2026/27", "Calls closed without an engineer attending", "Machine estate service log"],
+        ["deposit_machine_register.csv", "The smart deposit machine estate with service dates", "At 19 July 2027", "Branch counters", "Property and estate register"],
+        ["field_dictionary.csv", "Field definitions across the extracts", "All files", "", "Data management"],
+        ["aml_programme_handbook.pdf", "Programme handbook part 7, reporting", "Version 9.2, approved 14 May 2026", "Parts 1 to 6 and 8", "Financial crime policy"],
+        ["annual_report_extract_2026.pdf", "Extract of last year's filed annual report", "Year ended 30 June 2026", "Sections other than 2 and 5", "Filed copy held by the financial crime team"],
+        ["vendor_service_report_2027.pdf", "Machine estate service report by site", "Reporting year 2026/27", "Machines withdrawn under the estate refresh", "Kaituna Cash Systems, contract ACS-4471"],
+        ["provenance.md", "Extract notes for this cut", "All files", "", "Financial crime data team"],
+    ]
+    return write_csv(target, "export_manifest.csv",
+                     ["file", "what_it_is", "covers", "omits", "how_it_was_made"], rows)
+
+
+def write_provenance(target, stats):
+    txt = """# Extract notes, financial crime data team
+
+These files were pulled on %(pull)s for the annual report for the year ended 30 June 2027 and cover the
+reporting years ended 30 June 2026 and 30 June 2027 unless `export_manifest.csv` says otherwise. They are
+the bank's own records and are held under the retention rule at paragraph 9.1 of the programme handbook.
+Nothing here may leave the financial crime team without the reporting officer's approval.
+
+The teller feed carries %(counter)d rows and the machine feed %(machine)d. The two are joined on
+`acct_customer_no` through `customer_number_crosswalk.csv`; neither feed carries a segment, which sits on
+the customer register.
+
+Known limits of this cut:
+
+- The machine estate re-sent %(resent)d rows during the year. A re-sent row carries `pull_sequence` 2 and
+  repeats the reference of the row already delivered.
+- %(posted)d counter deposits have a posted date one day later than the deposit date, which is the
+  overnight ledger run being missed.
+- The branch at Hastings Heretaunga (AR11) closed on 27 November 2026 and its deposits are taken up at
+  AR12 from that date. AR12 was renamed on the same day.
+- Segment codes were reissued on %(recode)s. The register carries the current code and the one in force
+  to 5 April 2027.
+- The prescribed transaction extract was re-run on 18 May 2027 after a reporting engine upgrade. The two
+  extracts overlap from 6 April to 16 May 2027; the revised run supersedes the preliminary one.
+- The machine estate stamps in Coordinated Universal Time and the teller system in branch local time.
+""" % dict(pull=PULL, counter=stats["counter"], machine=stats["machine"],
+           resent=stats["resent"], posted=stats["posted_shift"], recode=W.RECODE_DATE)
+    path = os.path.join(target, "provenance.md")
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(txt)
     return path
-
-
-def write_manifest(target, case_rows, alert_rows):
-    """what the data office handed over, each file with its own row count and range"""
-    def span(name, col_lo, col_hi):
-        import csv as _csv_mod
-        with open(os.path.join(target, name), encoding="utf-8") as fh:
-            rd = list(_csv_mod.DictReader(fh))
-        lo = min(r[col_lo] for r in rd if r[col_lo])
-        hi = max(r[col_hi] for r in rd if r[col_hi])
-        return str(len(rd)), lo, hi
-
-    scope = {
-        FILES["alerts"]: "every adjudication stage recorded for every alert raised since January 2025",
-        FILES["cases"]: "every case put to the head of financial crime, each version as it was written",
-        FILES["backlog"]: "the alerts awaiting a first review in each queue at each week ending",
-        FILES["crosswalk"]: "the case system's customer reference against the alert system's",
-        FILES["ledger"]: "every ticket the specialist review contractor has billed",
-        FILES["matches"]: "every screening match recorded against a list entry",
-        FILES["branches"]: "the branch and staff footprint by business line and region",
-        FILES["training"]: "financial crime training completion by business line and month",
-        FILES["closed"]: "the days the bank is closed",
-    }
-    cols = {
-        FILES["alerts"]: ("raised_at", "stage_at"),
-        FILES["cases"]: ("onset_month", "first_seen_month"),
-        FILES["backlog"]: ("week_ending", "week_ending"),
-        FILES["ledger"]: ("ticket_date", "ticket_date"),
-        FILES["matches"]: ("screened_on", "screened_on"),
-        FILES["training"]: ("month", "month"),
-        FILES["closed"]: ("closed_on", "closed_on"),
-    }
-    rows = []
-    for name in (FILES["alerts"], FILES["cases"], FILES["backlog"], FILES["crosswalk"],
-                 FILES["ledger"], FILES["matches"], FILES["branches"], FILES["training"],
-                 FILES["closed"]):
-        if name in cols:
-            n, lo, hi = span(name, *cols[name])
-        else:
-            with open(os.path.join(target, name), encoding="utf-8") as fh:
-                n, lo, hi = str(sum(1 for _ in fh) - 1), "", ""
-        rows.append([name, n, lo, hi, W.AS_OF.isoformat(), scope[name]])
-    return _csv(os.path.join(target, FILES["manifest"]),
-                ["file_name", "row_count", "earliest", "latest", "extracted", "scope"], rows)

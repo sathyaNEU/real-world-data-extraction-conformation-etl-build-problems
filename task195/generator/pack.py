@@ -3,8 +3,10 @@ identity panel register, the lookups the laboratory keeps and the export manifes
 import csv
 import datetime as dt
 import json
+import math
 import os
 import random
+import re
 
 import world as W
 
@@ -64,44 +66,67 @@ def write_mf(target, specimens):
     header = ["specimen_id", "read_set_id", "read_set_accepted", "mixture_fraction",
               "markers_assessed", "mean_depth", "pipeline_version", "completed_date"]
     rng = random.Random(W.SEED + 3)
+    batch_days = [dt.date(2027, 6, d) for d in (9, 10, 11, 14, 15, 16, 17)]
     rows = []
     for s in specimens:
         for rs in s["read_sets"]:
-            done = s["received"] + dt.timedelta(days=rng.randint(26, 44))
+            done = batch_days[(int(s["plate"][-2:]) + ord(s["plate"][9])) % len(batch_days)]
             rows.append([s["specimen_id"], rs["read_set"], "Y" if rs["accepted"] else "N",
                          "%.4f" % rs["estimate"], 148250 + rng.randint(0, 9400),
-                         "%.1f" % rs["depth"], "3.4.1", min(done, W.AS_OF).isoformat()])
+                         "%.1f" % rs["depth"], "3.4.1", done.isoformat()])
     rows.sort(key=lambda r: (r[0], r[1]))
     _write(os.path.join(target, W.FILES["mf"]), header, rows)
     return len(rows)
 
 
+def panel_share(base, z):
+    """What the panel types for the second contributor: the same mixture the re-run estimates, read on
+    96 targeted markers, which hold up at shares where the re-run's depth does not."""
+    return round(max(W.PANEL_LOD + 0.0008, (0.0075 + 0.95 * base) * math.exp(0.30 * z)), 4)
+
+
 def panel_rows(specimens):
     """The partner laboratory's issued results, with the re-sends and repeat panels it issued."""
     rng = random.Random(W.SEED + 5)
+    trng = random.Random(W.SEED + 23)        # the panel's typing record, off the turnaround stream
     rows = []
 
-    def row(sid, aliquot, request, day, seq, verdict, share):
+    def typed(verdict, draw):
+        """Markers of the panel's %d that were typed. An INCONCLUSIVE result is one the panel could
+        not type enough markers for.""" % W.PANEL_MARKERS
+        if verdict == "INCONCLUSIVE":
+            return 26 + int(46 * draw)
+        return W.PANEL_MARKERS - (0 if draw < 0.55 else int(1 + 8 * draw))
+
+    def row(sid, aliquot, request, day, seq, verdict, share, draw):
         ref, friday = week_ref(day)
         return [sid, aliquot, request, ref, friday.isoformat(), seq, verdict,
-                "" if share is None else "%.4f" % share, W.PANEL_MARKERS]
+                "" if share is None else "%.4f" % share, typed(verdict, draw)]
 
     for s in specimens:
         if s["verdict"] is None:
             continue
-        day = s["received"] + dt.timedelta(days=rng.randint(12, 18))
+        day = s["panel_from"] + dt.timedelta(days=rng.randint(12, 18))
         share = None
         if s["verdict"] == "MIXED":
-            share = round(max(W.PANEL_LOD + 0.0004, rng.gauss(0.072, 0.045)), 4)
-        rows.append(row(s["specimen_id"], "A1", "REQ-2027-%05d" % (41000 + rng.randint(0, 9999)),
-                        day, 1, s["verdict"], share))
+            noise = rng.gauss(0.072, 0.045)
+            base = (s["estimate"] if s["estimate"] is not None
+                    else math.exp(trng.gauss(math.log(0.03), 0.9)))
+            share = panel_share(base, (noise - 0.072) / 0.045)
+        rng.randint(0, 9999)                 # the register's own request sequence, now taken from
+        #                                      the biobank's register and kept here so the panel's
+        #                                      turnaround clock does not move
+        rows.append(row(s["specimen_id"], "A1", s["request_id"], day, 1, s["verdict"], share,
+                        trng.random()))
     # verdicts the register also holds for receipts before the run window
     for k in range(912):
         sid = "NFG27-%06d" % (96000 + k * 4)
         day = dt.date(2027, 2, 2) + dt.timedelta(days=int(k * 0.093))
         verdict = "MIXED" if rng.random() < 0.064 else "CONCORDANT"
-        share = round(max(W.PANEL_LOD + 0.0004, rng.gauss(0.069, 0.041)), 4) if verdict == "MIXED" else None
-        rows.append(row(sid, "A1", "REQ-2027-%05d" % (30500 + k), day, 1, verdict, share))
+        share = (panel_share(math.exp(trng.gauss(math.log(0.028), 0.95)), rng.gauss(0.0, 1.0))
+                 if verdict == "MIXED" else None)
+        rows.append(row(sid, "A1", "REQ-2027-%05d" % (30500 + k), day, 1, verdict, share,
+                        trng.random()))
     return rows
 
 
@@ -130,8 +155,10 @@ def devices(rows, specimens):
             extra.append(r[:5] + [2] + r[6:])
         for r in repeat:                       # a second aliquot of the same specimen typed again
             verdict = r[6] if rng.random() < 0.72 else ("MIXED" if r[6] == "CONCORDANT" else "CONCORDANT")
-            share = "%.4f" % round(max(W.PANEL_LOD + 0.0006, rng.gauss(0.058, 0.03)), 4) if verdict == "MIXED" else ""
-            extra.append([r[0], "A2", r[2], r[3], r[4], 1, verdict, share, W.PANEL_MARKERS])
+            share = ("%.4f" % round(max(W.PANEL_LOD + 0.0009, math.exp(rng.gauss(math.log(0.04), 0.8))), 4)
+                     if verdict == "MIXED" else "")
+            extra.append([r[0], "A2", r[2], r[3], r[4], 1, verdict, share,
+                          W.PANEL_MARKERS - (0 if rng.random() < 0.6 else rng.randint(1, 7))])
     return extra
 
 
@@ -155,9 +182,10 @@ def write_crosswalk(target, specimens):
         barcode = "PB%07d" % (2710000 + rng.randint(0, 89999))
         if rng.random() < 0.004:               # a barcode reissued after a printer batch was voided
             barcode = "PB%07d" % (2700000 + rng.randint(0, 999))
-        rows.append(["REQ-2027-%05d" % (41000 + rng.randint(0, 9999)), s["specimen_id"], barcode,
-                     s["project"], (s["received"] - dt.timedelta(days=rng.randint(1, 9))).isoformat(),
-                     "BB-%s-%04d" % (s["project"][:3], rng.randint(100, 9999))])
+        stem = re.sub(r"[^A-Z0-9]", "", s["project"])[:3]
+        rows.append([s["request_id"], s["specimen_id"], barcode, s["project"],
+                     (s["received"] - dt.timedelta(days=rng.randint(1, 9))).isoformat(),
+                     "BB-%s-%04d" % (stem, rng.randint(100, 9999))])
     rows.sort(key=lambda r: r[1])
     _write(os.path.join(target, W.FILES["crosswalk"]), header, rows, delim="\t")
 

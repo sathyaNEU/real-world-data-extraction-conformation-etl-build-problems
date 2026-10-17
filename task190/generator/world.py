@@ -1,77 +1,104 @@
-"""Pencarrow Mutual Bank: the fixed world behind the February 2027 review placement."""
-import datetime as dt
+"""Arahura Bank: the world the pack is cut from."""
 
-SEED = 190
-AS_OF = dt.date(2027, 1, 18)              # the extract date
-COMMITTEE = dt.date(2027, 1, 28)
-REVIEW_FROM = dt.date(2027, 2, 15)        # the review date clause 6.2 names
-REVIEW_TO = dt.date(2027, 2, 26)
-CLOSED_FROM = dt.date(2021, 1, 1)         # the resolved onset cohorts the longest observed delay implies
-CLOSED_TO = dt.date(2024, 1, 31)
-SPAN_FROM = dt.date(2020, 7, 1)           # the register's own earliest onset
-DELAY_CAP = 34                            # months: no case in the bank's record has gone longer unseen
-CAPACITY = 3                              # clause 6.4
+BANK = "Arahura Bank"
+GEO = "New Zealand"
+CCY = "NZD"
 
-BANK = "Pencarrow Mutual Bank"
-SUPERVISOR = "the Financial Transactions Supervisor"
-CONTRACTOR = "Haldane Reid Forensic"
-PEOPLE = {"head": "Bruce Wheeler",            # head of financial crime
-          "review_lead": "Kayla Burr"}        # the contractor's review lead
+# The AML/CFT Act 2009 threshold for a domestic physical cash transaction report.
+THRESHOLD = 10000.00
+BAND_LO, BAND_HI = 9000.00, 10000.00
 
-# (line, cases per quarter by onset, customers in thousands, mean months unseen, unreviewed alerts)
-LINES = [
-    ("Retail payments",       "RP", 72, 240.0, 0.8, 4100),
-    ("Cards",                 "CD", 55, 180.0, 1.0, 2800),
-    ("Deposits",              "DP", 38,  95.0, 1.6, 5600),
-    ("Business lending",      "BL", 26,  18.4, 5.0,  310),
-    ("FX and remittance",     "FX", 21,  31.0, 6.6, 7900),
-    ("Trade finance",         "TF", 13,   2.1, 9.0,   95),
-    ("Private wealth",        "PW",  7,   1.2, 11.5,  60),
-    ("Correspondent banking", "CB",  3,   0.3, 12.5,  20),
+YEAR_LO, YEAR_HI = "2026-07-01", "2027-06-30"          # the reporting year the figure is for
+PRIOR_LO, PRIOR_HI = "2025-07-01", "2026-06-30"
+EXTRACT = "2027-07-19"                                  # the as-of date of every extract
+REPORT_DUE = "2027-09-30"                               # the annual report to the supervisor
+
+MLRO = "Manaaki Little"                                 # money laundering reporting officer
+ASSURANCE = "Emma Gullery"                              # the bank's assurance lead
+
+# segment: key, name, level at 5,000 of the fit region, per-bin ratio, customers,
+#          structured deposits planted in the reporting year, planted in the prior year
+SEGMENTS = [
+    ("GRO", "Grocery and convenience", 333.2, 0.9835, 1163, 60, 42),
+    ("HOS", "Hospitality", 266.6, 0.9890, 2247, 60, 42),
+    ("TRA", "Transport and courier", 52.4, 1.0115, 857, 90, 63),
+    ("CON", "Trades and construction", 85.7, 1.0070, 1538, 71, 50),
+    ("RUR", "Rural supply and horticulture", 71.4, 0.9960, 971, 30, 21),
+    ("FUE", "Fuel and automotive", 157.1, 0.9865, 418, 31, 22),
+    ("PER", "Personal services", 47.6, 1.0150, 1764, 30, 21),
+    ("CLB", "Clubs and community", 42.8, 1.0055, 643, 30, 21),
 ]
-TYPOLOGIES = ["structuring", "third party layering", "trade mispricing", "mule network",
-              "sanctions evasion", "unexplained wealth", "invoice fraud", "account takeover"]
-# what each line actually sees: a payments line is mules and takeovers, a trade line is mispricing
-TYPOLOGY_MIX = {
-    "RP": [22, 9, 1, 34, 3, 2, 5, 24],
-    "CD": [11, 6, 1, 28, 2, 1, 6, 45],
-    "DP": [31, 14, 1, 22, 4, 9, 3, 16],
-    "BL": [12, 17, 14, 4, 5, 13, 33, 2],
-    "FX": [19, 28, 9, 14, 21, 6, 2, 1],
-    "TF": [4, 13, 46, 2, 17, 5, 12, 1],
-    "PW": [9, 31, 6, 2, 11, 38, 2, 1],
-    "CB": [7, 29, 18, 3, 36, 5, 2, 0],
-}
-# the year each line had, against its own normal: volumes move with the business, not evenly
-YEAR_FACTOR = {
-    "RP": {2020: 0.86, 2021: 0.94, 2022: 1.03, 2023: 1.09, 2024: 1.14, 2025: 1.07, 2026: 0.98, 2027: 0.95},
-    "CD": {2020: 0.79, 2021: 0.88, 2022: 1.11, 2023: 1.18, 2024: 1.04, 2025: 0.93, 2026: 0.91, 2027: 0.9},
-    "DP": {2020: 1.14, 2021: 1.08, 2022: 0.96, 2023: 0.89, 2024: 0.93, 2025: 1.02, 2026: 1.12, 2027: 1.16},
-    "BL": {2020: 0.91, 2021: 0.97, 2022: 1.12, 2023: 1.06, 2024: 0.94, 2025: 0.98, 2026: 1.09, 2027: 1.11},
-    "FX": {2020: 1.08, 2021: 1.13, 2022: 0.92, 2023: 0.87, 2024: 1.04, 2025: 1.11, 2026: 1.06, 2027: 1.02},
-    "TF": {2020: 0.88, 2021: 0.93, 2022: 1.07, 2023: 1.14, 2024: 1.09, 2025: 0.96, 2026: 0.89, 2027: 0.87},
-    "PW": {2020: 1.16, 2021: 1.04, 2022: 0.91, 2023: 0.95, 2024: 1.08, 2025: 1.13, 2026: 0.97, 2027: 0.94},
-    "CB": {2020: 0.93, 2021: 1.11, 2022: 1.06, 2023: 0.9, 2024: 0.97, 2025: 1.09, 2026: 1.04, 2027: 1.0},
-}
-# the months a confirmed case waits between being seen and being accepted, by line
-CONFIRM_LAG = {"RP": 0.4, "CD": 0.5, "DP": 0.7, "BL": 1.6, "FX": 1.3, "TF": 2.1, "PW": 2.4, "CB": 2.6}
 
-# the July 2026 reorganisation: two lines merged into one and one renamed, with effective dates
-REORG = dt.date(2026, 7, 1)
-# the codes the records carried before the reorganisation, and the line each now maps to
-OLD_LINES = [("FXL", "Foreign exchange", "FX", "merged into FX and remittance on 1 July 2026"),
-             ("RMT", "Remittance services", "FX", "merged into FX and remittance on 1 July 2026"),
-             ("TXB", "Transaction banking", "CB", "renamed Correspondent banking on 1 July 2026")]
+SEG_NAME = {k: n for k, n, *_ in SEGMENTS}
+SEG_KEYS = [k for k, *_ in SEGMENTS]
 
-ALERT_QUEUES = ["card disputes", "payment screening", "trade documents", "onboarding",
-                "transaction monitoring", "sanctions screening"]
-WORKING_STANDARD = 5                       # business days clause 7.2 measures an alert against
-# the days the bank is closed, shipped as bank_closed_days.csv and read by the golden from the pack
-HOLIDAYS = [(dt.date(2026, 1, 1), "New Year's Day"), (dt.date(2026, 1, 2), "day after New Year's Day"),
-            (dt.date(2026, 1, 19), "Wellington Anniversary"), (dt.date(2026, 2, 6), "Waitangi Day"),
-            (dt.date(2026, 4, 3), "Good Friday"), (dt.date(2026, 4, 6), "Easter Monday"),
-            (dt.date(2026, 4, 27), "Anzac Day observed"), (dt.date(2026, 6, 1), "King's Birthday"),
-            (dt.date(2026, 6, 29), "Matariki"), (dt.date(2026, 10, 26), "Labour Day"),
-            (dt.date(2026, 12, 25), "Christmas Day"), (dt.date(2026, 12, 28), "Boxing Day observed"),
-            (dt.date(2027, 1, 1), "New Year's Day"), (dt.date(2027, 1, 4), "day after New Year's Day observed")]
-TARGET_ROWS = 25000
+# The bank's own segment map was reissued in April 2027: the codes changed, the segments did not.
+OLD_CODE = {"GRO": "B12", "HOS": "B14", "TRA": "B21", "CON": "B23",
+            "RUR": "B31", "FUE": "B17", "PER": "B41", "CLB": "B52"}
+NEW_CODE = {"GRO": "BB-RET-02", "HOS": "BB-HOS-01", "TRA": "BB-TRN-03", "CON": "BB-CON-01",
+            "RUR": "BB-RUR-02", "FUE": "BB-RET-05", "PER": "BB-SRV-04", "CLB": "BB-COM-01"}
+RECODE_DATE = "2027-04-06"
+
+# branches: code, name, region, opened, closed (the Hastings pair merged in the window)
+BRANCHES = [
+    ("AR01", "Queen Street", "Auckland", "2009-03-02", ""),
+    ("AR02", "Newmarket", "Auckland", "2011-08-15", ""),
+    ("AR04", "Manukau", "Auckland", "2013-02-04", ""),
+    ("AR07", "Hamilton Central", "Waikato", "2010-06-21", ""),
+    ("AR09", "Tauranga", "Bay of Plenty", "2012-11-05", ""),
+    ("AR11", "Hastings Heretaunga", "Hawke's Bay", "2008-04-07", "2026-11-27"),
+    ("AR12", "Hastings Karamu", "Hawke's Bay", "2014-09-01", ""),
+    ("AR15", "Palmerston North", "Manawatu", "2009-10-12", ""),
+    ("AR18", "Wellington Lambton", "Wellington", "2007-02-05", ""),
+    ("AR19", "Porirua", "Wellington", "2015-03-30", ""),
+    ("AR23", "Christchurch Riccarton", "Canterbury", "2010-01-18", ""),
+    ("AR25", "Timaru", "Canterbury", "2013-07-08", ""),
+    ("AR28", "Dunedin Octagon", "Otago", "2011-04-11", ""),
+    ("AR31", "Invercargill", "Southland", "2016-02-15", ""),
+]
+# AR11 closed into AR12 on 27 November 2026; AR12 was renamed on the same day.
+MERGED_INTO = {"AR11": "AR12"}
+RENAMED = {"AR12": ("Hastings Karamu", "Hastings", "2026-11-27")}
+
+CHANNELS = ["counter", "machine"]
+
+# The smart deposit machine estate, as the property register keeps it: machine, site, the day it
+# went in and the day it came out. Deposits are taken only by a machine in service that day.
+MACHINES = [
+    ("SDM-0412", "AR01", "2019-03-18", ""),
+    ("SDM-0413", "AR01", "2019-03-18", ""),
+    ("SDM-0518", "AR02", "2020-07-06", ""),
+    ("SDM-0641", "AR04", "2021-02-15", ""),
+    ("SDM-0642", "AR04", "2021-02-15", ""),
+    ("SDM-0703", "AR07", "2021-09-13", ""),
+    ("SDM-0811", "AR09", "2022-05-09", ""),
+    ("SDM-0907", "AR11", "2022-11-21", "2026-11-27"),
+    ("SDM-1044", "AR12", "2023-04-03", ""),
+    ("SDM-1045", "AR12", "2026-11-30", ""),
+    ("SDM-1162", "AR15", "2023-10-16", ""),
+    ("SDM-1208", "AR18", "2024-02-26", ""),
+    ("SDM-1209", "AR18", "2024-02-26", ""),
+    ("SDM-1317", "AR19", "2024-08-12", ""),
+    ("SDM-1402", "AR23", "2025-01-20", ""),
+    ("SDM-1403", "AR23", "2025-01-20", ""),
+    ("SDM-1455", "AR25", "2025-06-02", ""),
+    ("SDM-1509", "AR28", "2025-11-10", ""),
+    ("SDM-1562", "AR31", "2026-09-07", ""),
+    ("SDM-1577", "AR02", "2027-02-01", ""),
+]
+# Two sites run two machines and the vendor reports by site; these two sign off after restoring.
+TWO_MACHINE_SITES = ["AR01", "AR04", "AR12", "AR18", "AR23"]
+SIGNOFF_SITES = ["AR15", "AR19"]
+# Machines in service through the year that raised no service call at all.
+NO_INCIDENT = ["SDM-1455", "SDM-1562", "SDM-1509"]
+
+ANZSIC = {
+    "GRO": ["4110", "4121", "4129", "4123"],
+    "HOS": ["4511", "4512", "4513", "4520"],
+    "TRA": ["4610", "4621", "5101", "5102"],
+    "CON": ["3231", "3232", "3234", "3242", "3099"],
+    "RUR": ["0121", "0132", "0149", "3323"],
+    "FUE": ["4000", "3912", "9411", "9412"],
+    "PER": ["9511", "9512", "9520", "9531"],
+    "CLB": ["9112", "9113", "9139", "9559"],
+}

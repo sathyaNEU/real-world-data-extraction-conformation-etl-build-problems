@@ -1,14 +1,14 @@
 {
  "task": "task192",
  "owner": "oviya13ya",
- "status": "BUILD",
+ "status": "DESIGN",
  "domain": "political-science-public-policy/conflict-protest-event-data-analysis",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-17",
- "stump": "A competent solver cleans the three routes, applies the protocol's episode rule to the letter, counts the 89 episodes in the period's cohort that have recorded a confrontational action and files 14 per cent, 89 episodes, which is the confrontation the record has already seen rather than the confrontation the cohort will have recorded by the time its episodes close.",
- "architecture": 2,
+ "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, applies the protocol's confrontational codes and files 182 confrontational actions, which counts the labels the press classifier assigned rather than the confrontational actions the period held.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
@@ -18,20 +18,20 @@
   "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17, every line answered in the design note",
-  "reader": "staged, not run"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK, nearest driver 0.06 (task142)",
-  "nearest": "task191 0.102 surface, same context-artifact type only"
+  "heart": "",
+  "nearest": "0.10 task189 on the driver; task446 v2 and task448 differentiated on the card"
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": "staged, not run"
+  "report": ""
  },
  "returned": [],
- "resume": "Architecture 2 built and gated. Free gates green: 108 generator assertions, 99 independent checks in verify.py, two byte-identical rebuilds, target.zip 17 members matching the tree, figures_check.py exit 0, precut.py 49 checks 0 FAIL 0 WARN, leak.py REVIEW with every line answered, guard.py heart and surface WARN with no BLOCK. Stage 4 is staged, not run: this session has no agent tool, so the two threads are prepared for the orchestrating session to spawn as general-purpose sonnet agents at medium effort, in the background. Judge: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/judge/judge_brief.md (verdict to verdict.md beside it). Reader: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/reader/reader_brief.md (answers to reader_answers.md beside it). Relay both sets of findings back for one generator pass, then rebuild, re-run the free gates, re-cut target.zip and ship.",
+ "resume": "Architecture 3 drawn and designed; card registered 2026-10-17T15:52:44Z with v1 and v2 in lineage and differentiation lines for task445, task446 and task448; precut 49 checks 0 FAIL 0 WARN. Architecture 2's pack, goldens, submission and zip were removed from the tree (house fix H11: a superseded write-up must not sit where a consumer can grade it); the stage-4 briefs under /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192/stage4/ hold the architecture-2 bundle and are stale. Next: stage 3, rebuild generator/ for architecture 3 from the measured model at scratchpad/t192/m8.py seed 41 (4,400 actions, two in three press-only, a double-coding sample of 1,500 items returning 46/40/16/1398, ladder 152, 182, 225 golden, 285). world.py, sim.py and golden.py are rewritten; pack.py, docs.py, deliver.py, archive.py and postprocess.py are reused, and the second deliverable becomes a bulletin PDF carrying the chart.",
  "approved": null,
  "delivered": null,
  "portal": null,

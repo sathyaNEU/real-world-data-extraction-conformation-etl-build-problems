@@ -1,106 +1,36 @@
-"""The register's own world: dispute episodes, the actions inside them, and the reports that record
-each action on each access route.
+"""The register's own world: the actions, the reports that record each of them on each access route,
+the press classifier's reading of its own reports, and the coding desk's hand-coding rounds.
 
-The episode layer is drawn first, from its own stream, so its figures are the ones the design note
-measured: 635 episodes opened in the reporting period, 89 with a confrontational action recorded by
-the extract, 312 closed quietly, 234 still open.
+The action layer is drawn first, from its own stream, so its figures are the ones the design note
+measured.
 """
 import datetime as dt
 import math
 import random
-import unicodedata
 
 import world as W
 
 DAY0 = W.OPEN_DAY
-NWIN = (W.PERIOD_TO - DAY0).days            # last day an episode may open, as an offset
-XDAY = (W.EXTRACT - DAY0).days              # the extract, as an offset
+NWIN = (W.PERIOD_TO - DAY0).days
+XDAY = (W.EXTRACT - DAY0).days
 
 
 def d(off):
     return DAY0 + dt.timedelta(days=int(off))
 
 
-def ascii_fold(s):
-    return "".join(c for c in unicodedata.normalize("NFKD", s) if not unicodedata.combining(c))
-
-
-# ---------------------------------------------------------------- the episode layer
-
-def _h1(t, em):
-    if t < 2 or t > W.H1TMAX:
-        return 0.0
-    x = (t - 2) / W.H1PEAK
-    return W.H1MAX * em * x * math.exp(1 - x)
-
-
-def _phase(t):
-    return 0 if t <= 10 else (1 if t <= 30 else 2)
-
-
-def episodes():
-    """Every episode the register opens in the reporting period: opening day, class, fate and the day
-    the fate falls on. fate 1 is a first confrontational action, fate 2 a quiet close."""
-    rng = random.Random(W.SEED)
-    opens = []
-    for off in range(NWIN + 1):
-        lam = W.OPEN_BASE * (W.OPEN_SURGE if d(off) >= W.SURGE_FROM else 1.0)
-        limit, k, q = math.exp(-lam), 0, rng.random()
-        while q > limit:
-            k += 1
-            q *= rng.random()
-        opens.extend([off] * k)
-    names = list(W.CLASSES)
-    out = []
-    for off in opens:
-        u, acc, cls = rng.random(), 0.0, names[-1]
-        for n in names:
-            acc += W.CLASSES[n]["w"]
-            if u < acc:
-                cls = n
-                break
-        c = W.CLASSES[cls]
-        fate, T = None, None
-        for t in range(1, 400):
-            a1, a2 = _h1(t, c["em"]), c["h2"][_phase(t)]
-            u = rng.random()
-            if u < a1:
-                fate, T = 1, t
-                break
-            if u < a1 + a2:
-                fate, T = 2, t
-                break
-        if fate is None:
-            fate, T = 2, 400
-        out.append(dict(open=off, cls=cls, fate=fate, T=T))
-    return out
-
-
-def observed(ep):
-    """(time, cause) as the record at the extract shows the episode. cause 1 a confrontational
-    action, 2 closed with none, 0 still open."""
-    age = XDAY - ep["open"]
-    if ep["fate"] == 1 and ep["T"] <= age:
-        return ep["T"], 1
-    if ep["fate"] == 2 and ep["T"] + W.QUIET_DAYS <= age:
-        return ep["T"], 2
-    return age, 0
-
-
 # ---------------------------------------------------------------- geography
 
 def geography(rng):
-    """Settlements with their municipality, district and region, plus the 2024 renames kept on file."""
     locs, muni = [], []
     n = 0
     for dist, ms in W.DISTRICTS.items():
         for m in ms:
-            mcode = "%s%03d" % (ascii_fold(dist)[:2].upper(), len(muni) + 1)
+            mcode = "%s%03d" % (dist[:2].upper(), len(muni) + 1)
             muni.append(dict(code=mcode, name=m, district=dist, region=W.REGION_OF[dist],
                              coastal=dist in W.COASTAL))
             k = rng.choice([3, 4, 4, 5, 5, 6])
-            picks = rng.sample(W.LOC_PREFIX, k)
-            for p in picks:
+            for p in rng.sample(W.LOC_PREFIX, k):
                 n += 1
                 locs.append(dict(code="L%05d" % n, name="%s (%s)" % (p, m), muni=mcode,
                                  district=dist, former=""))
@@ -111,117 +41,76 @@ def geography(rng):
     return muni, locs
 
 
-# ---------------------------------------------------------------- assignment, actions, reports
+# ---------------------------------------------------------------- the action layer
 
-GAP_MEAN = {"flare": 2.6, "campaign": 4.2, "standing": 8.5}
-
-
-def plan(eps, rng):
-    """Draw every episode's action days before the municipalities are handed out, so the peace
-    interval between two episodes of one municipality and theme is measured on the real last day."""
-    for ep in sorted(eps, key=lambda e: (e["open"], e["T"], e["cls"])):
-        days, conf = act_days(ep, rng)
-        ep["days"] = [o for o in days if ep["open"] + o <= XDAY]
-        ep["conf_day"] = conf if (conf is not None and ep["open"] + conf <= XDAY) else None
-        ep["last_seen"] = ep["open"] + max(ep["days"])
-    return eps
-
-
-def assign(eps, muni, rng):
-    """Give every episode a municipality and a dispute theme, so that no two episodes of one
-    municipality and theme are close enough in time for the protocol's peace interval to join them."""
-    last = {}
-    by_code = {m["code"]: m for m in muni}
-    themes = [t for t, _ in W.THEMES]
-    for ep in sorted(eps, key=lambda e: e["open"]):
-        surge = d(ep["open"]) >= W.SURGE_FROM
-        chosen = None
-        for _ in range(400):
-            m = rng.choice(muni)
-            theme = rng.choice(W.SURGE_THEMES) if (surge and rng.random() < 0.55) \
-                else rng.choice(themes)
-            if theme == "PES" and not m["coastal"]:
-                continue
-            prev = last.get((m["code"], theme))
-            if prev is not None and ep["open"] - prev <= W.QUIET_DAYS + 1:
-                continue
-            chosen = (m, theme)
-            break
-        if chosen is None:                       # fall back to the first slot the interval allows
-            for m in muni:
-                for theme in themes:
-                    if theme == "PES" and not m["coastal"]:
-                        continue
-                    prev = last.get((m["code"], theme))
-                    if prev is None or ep["open"] - prev > W.QUIET_DAYS + 1:
-                        chosen = (m, theme)
-                        break
-                if chosen:
-                    break
-        m, theme = chosen
-        ep["muni"], ep["theme"] = m["code"], theme
-        ep["region"], ep["district"] = m["region"], m["district"]
-        last[(m["code"], theme)] = ep["last_seen"]
-    return eps
-
-
-def act_days(ep, rng):
-    """The days the episode acts on, as offsets from its opening day, and which of them is the first
-    confrontational action. The last day is the day the fate falls on, so the register reproduces the
-    episode layer exactly."""
-    mean = GAP_MEAN[ep["cls"]]
-    horizon = XDAY - ep["open"] + 30            # a month past the extract, then the rest is unseen
-    stop = min(ep["T"], horizon)
-    days = [0]
-    while True:
-        g = min(20, 1 + int(rng.expovariate(1.0 / mean)))
-        nxt = days[-1] + g
-        if nxt >= stop:
-            break
-        days.append(nxt)
-    if stop > 0:
-        days.append(stop)
-    conf = ep["T"] if ep["fate"] == 1 else None
-    if ep["fate"] == 1:                         # the episode goes on past the confrontation
-        t = stop
-        while True:
-            g = min(20, 1 + int(rng.expovariate(1.0 / mean)))
-            t += g
-            if t > horizon or rng.random() < 0.22:
-                break
-            days.append(t)
-    return sorted(set(days)), conf
-
-
-def actions(eps, locs, rng):
-    """One row per action: the protocol's grain, one theme at one locality on one calendar day."""
+def actions(muni, locs):
+    """Every action the register holds: one dispute theme at one locality on one calendar day, with
+    the kind of action it was and whether the press classifier read it as a confrontation."""
+    rng = random.Random(W.SEED)
     by_muni = {}
     for l in locs:
         by_muni.setdefault(l["muni"], []).append(l)
+    themes = [(t, w) for t, _, w in W.THEMES]
     out = []
-    for ep in sorted(eps, key=lambda e: (e["open"], e["muni"], e["theme"])):
-        pool = by_muni[ep["muni"]]
-        home = rng.choice(pool)
-        days, conf = ep["days"], ep["conf_day"]
-        for off in days:
-            loc = home if rng.random() < 0.72 else rng.choice(pool)
-            if off == conf:
-                code = rng.choice(W.CONFRONTATIONAL)
-            elif conf is not None and off > conf and rng.random() < 0.18:
-                code = rng.choice(W.CONFRONTATIONAL)
+    for off in range(XDAY + 1):
+        lam = W.ACTIONS_BASE * (W.ACTIONS_SURGE if d(off) >= W.SURGE_FROM else 1.0)
+        limit, k, q = math.exp(-lam), 0, rng.random()
+        while q > limit:
+            k += 1
+            q *= rng.random()
+        for _ in range(k):
+            m = rng.choice(muni)
+            surge = d(off) >= W.SURGE_FROM
+            theme = rng.choice(W.SURGE_THEMES) if (surge and rng.random() < 0.5) \
+                else rng.choices([t for t, _ in themes], weights=[w for _, w in themes])[0]
+            if theme == "PES" and not m["coastal"]:
+                theme = "SMU"
+            loc = rng.choice(by_muni[m["code"]])
+            weight = dict((t, w) for t, _, w in W.THEMES)[theme]
+            conf = rng.random() < W.CONF_RATE * weight
+            code = rng.choice(W.CONFRONTATIONAL) if conf else \
+                rng.choices(W.ORDINARY, weights=[26, 18, 24, 12, 20])[0]
+            # the press classifier reads its own report of the action
+            if conf:
+                seen = rng.random() < W.CLS_RECALL
             else:
-                code = rng.choices(W.ORDINARY, weights=[26, 18, 24, 12, 20])[0]
-            out.append(dict(ep=ep, day=ep["open"] + off, loc=loc, code=code, theme=ep["theme"],
-                            muni=ep["muni"], region=ep["region"], district=ep["district"]))
+                seen = rng.random() < W.CLS_FALSE_MARK
+            cls_code = rng.choice(W.CONFRONTATIONAL) if seen else \
+                rng.choices(W.ORDINARY, weights=[30, 20, 22, 10, 18])[0]
+            out.append(dict(day=off, muni=m["code"], region=m["region"], district=m["district"],
+                            theme=theme, loc=loc, conf=conf, code=code, cls_conf=seen,
+                            cls_code=cls_code))
     out.sort(key=lambda a: (a["day"], a["loc"]["code"], a["theme"]))
     for i, a in enumerate(out, 1):
         a["ref"] = "A%06d" % i
     return out
 
 
+def routes(acts, rng):
+    """Which access routes recorded each action. An action no route recorded is not in the register,
+    so every action keeps at least one."""
+    for a in acts:
+        got = []
+        if rng.random() < W.P_PRESS:
+            got.append("IMP")
+        if rng.random() < W.P_PARTNER:
+            got.append("PAR")
+        if rng.random() < W.P_LINE:
+            got.append("LIN")
+        if not got:
+            got.append("IMP")
+        a["routes"] = got
+        # the protocol keeps a filer's code where one exists, the classifier's otherwise
+        a["press_only"] = got == ["IMP"]
+        a["register_code"] = a["cls_code"] if a["press_only"] else a["code"]
+    return acts
+
+
+# ---------------------------------------------------------------- reports
+
 def outlets_for(district):
-    out = [o for o in W.OUTLETS if district in o[3] or "*" in o[3]]
-    return out or [o for o in W.OUTLETS if "*" in o[3]]
+    out = [o for o in W.OUTLETS if district in o[2] or "*" in o[2]]
+    return out or [o for o in W.OUTLETS if "*" in o[2]]
 
 
 def partner_for(region, rng):
@@ -230,47 +119,58 @@ def partner_for(region, rng):
 
 
 def reports(acts, rng):
-    """Every report of every action, on each access route. Each action is reported at least once, so
-    the register's action set is the world's action set."""
-    rows = []
-    seq = {"IMP": 0, "PAR": 0, "LIN": 0}
+    """One report per route per action, and for the press monitor the items behind its report."""
+    rows, seq = [], {"IMP": 0, "PAR": 0, "LIN": 0}
     for a in acts:
-        got = []
-        pool = outlets_for(a["district"])
-        # the press monitor: one to three titles, with the Atlantic group's two language editions
-        if rng.random() < 0.78:
-            k = rng.choices([1, 2, 3], weights=[58, 31, 11])[0]
-            pick = [o for o in pool if o[0] != W.TWIN_FEED[1]]   # the second edition never stands alone
-            w = [o[4] for o in pick]
-            titles = []
-            for _ in range(k):
-                o = rng.choices(pick, weights=w)[0]
-                if o[0] not in titles:
-                    titles.append(o[0])
-            if W.TWIN_FEED[0] in titles and W.TWIN_FEED[1] not in titles:
-                titles.append(W.TWIN_FEED[1])
-            for t in titles:
-                got.append(("IMP", t))
-        # the partner network, inside its own region
-        p = partner_for(a["region"], rng)
-        if p and rng.random() < 0.46:
-            code = p[0]
-            if p[0] == W.MERGED[0] and d(a["day"]) >= dt.date(2026, 9, 8) and rng.random() < 0.5:
-                code = W.MERGED[1]
-            got.append(("PAR", code))
-        # the public line
-        if rng.random() < 0.3:
-            got.append(("LIN", "LIN"))
-        if not got:
-            got.append(("IMP", rng.choice([o for o in pool if o[0] != W.TWIN_FEED[1]])[0]))
-        for route, src in got:
+        for route in a["routes"]:
             seq[route] += 1
+            ident = "%s-2026-%06d" % (route, seq[route])
             start_h = rng.choices([8, 9, 10, 11, 14, 15, 16, 17, 18, 19],
                                   weights=[6, 9, 12, 10, 11, 12, 10, 9, 7, 4])[0]
             start_m = rng.choice([0, 5, 10, 15, 20, 30, 35, 40, 45, 50])
-            base = W.LAG_BASE[route]
-            lag = int(base * (0.42 + 1.75 * rng.random() ** 1.7)) + 3
-            rows.append(dict(route=route, src=src, action=a,
-                             ident="%s-2026-%06d" % (route, seq[route]),
-                             start_h=start_h, start_m=start_m, lag_min=lag))
+            lag = int(W.LAG_BASE[route] * (0.42 + 1.75 * rng.random() ** 1.7)) + 3
+            src = "LIN"
+            titles = []
+            if route == "IMP":
+                pool = [o for o in outlets_for(a["district"]) if o[0] != W.TWIN_FEED[1]]
+                k = rng.choices([1, 2, 3], weights=[55, 32, 13])[0]
+                w = [o[3] for o in pool]
+                for _ in range(k):
+                    o = rng.choices(pool, weights=w)[0]
+                    if o[0] not in titles:
+                        titles.append(o[0])
+                if W.TWIN_FEED[0] in titles:
+                    titles.append(W.TWIN_FEED[1])
+                src = titles[0]
+            elif route == "PAR":
+                p = partner_for(a["region"], rng)
+                src = p[0] if p else "P02"
+                if src == W.MERGED[0] and d(a["day"]) >= dt.date(2026, 9, 8) and rng.random() < 0.5:
+                    src = W.MERGED[1]
+            rows.append(dict(route=route, src=src, titles=titles, action=a, ident=ident,
+                             start_h=start_h, start_m=start_m, lag_min=lag,
+                             code=a["cls_code"] if route == "IMP" else a["code"]))
+    return rows
+
+
+def double_coding(acts, reps, rng):
+    """The coding desk's hand-coding rounds: a simple random sample of the press monitor's reports
+    for the period, each one coded again by hand without the classifier's code in view."""
+    press = [r for r in reps if r["route"] == "IMP"
+             and W.PERIOD_FROM <= d(r["action"]["day"]) <= W.PERIOD_TO]
+    press.sort(key=lambda r: r["ident"])
+    rows = []
+    taken = set()
+    for round_day, size in W.SAMPLE_ROUNDS:
+        pool = [r for r in press
+                if d(r["action"]["day"]) < round_day and r["ident"] not in taken]
+        pick = rng.sample(pool, min(size, len(pool)))
+        for r in pick:
+            taken.add(r["ident"])
+            a = r["action"]
+            rows.append(dict(report=r, round_day=round_day,
+                             coder=rng.choice(W.CODERS),
+                             coded_day=round_day + dt.timedelta(days=rng.randrange(0, 9)),
+                             machine=a["cls_code"], hand=a["code"]))
+    rows.sort(key=lambda x: (x["round_day"], x["report"]["ident"]))
     return rows

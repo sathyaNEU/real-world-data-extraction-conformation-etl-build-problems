@@ -1,197 +1,225 @@
-"""Independent verification: reads only the shipped bundle and figures.json, by its own code path."""
+"""Recompute every figure from the shipped bundle alone, on its own code path.
+
+Reads target/ and generator/figures.json. Imports nothing from the generator.
+    python3 verify.py [target_dir] [figures.json]
+"""
+import csv
 import datetime as dt
 import json
+import math
 import os
-import re
 import sys
 
-import pandas as pd
-import pdfplumber
-
-CAP = 3
-CLOSED = ("2021-01", "2024-01")
-TWO_Q = ("2026-07", "2026-12")
-STANDARD = 5
-K = [0]
-
-
-def ok(cond, msg):
-    K[0] += 1
-    if not cond:
-        raise AssertionError("verify: " + msg)
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+BAND_LO, BAND_HI = 9000.0, 10000.0
+THRESHOLD = 10000.0
+YEAR_LO, YEAR_HI = dt.date(2026, 7, 1), dt.date(2027, 6, 30)
+DST_LO, DST_HI = dt.date(2026, 9, 27), dt.date(2027, 4, 4)
+FAILS = []
+N = [0]
 
 
-def mon(a, b):
-    return (int(b[:4]) - int(a[:4])) * 12 + int(b[5:7]) - int(a[5:7])
+def chk(label, got, want, tol=0):
+    N[0] += 1
+    good = (abs(got - want) <= tol) if isinstance(want, (int, float)) and \
+        isinstance(got, (int, float)) else got == want
+    if not good:
+        FAILS.append("%s: got %r want %r" % (label, got, want))
+    return good
 
 
-def wdays(a, b, shut):
-    n, d = 0, a
-    while d < b:
-        d += dt.timedelta(days=1)
-        if d.weekday() < 5 and d not in shut:
-            n += 1
-    return n
+def rows(target, name):
+    with open(os.path.join(target, name), newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
 
 
-def run(target, figures):
-    fig = json.load(open(figures, encoding="utf-8"))
-    files = sorted(os.listdir(target))
-    ok(len(files) >= 10, "fewer than ten files")
-    ok(len({os.path.splitext(f)[1] for f in files}) >= 3, "fewer than three formats")
-    rd = lambda n: pd.read_csv(os.path.join(target, n), dtype=str, keep_default_na=False)
-    cases = rd("confirmed_case_register.csv")
-    alerts = rd("alert_adjudication_extract.csv")
-    lines = rd("line_structure_register.csv")
-    xw = rd("customer_id_crosswalk.csv")
-    ledger = rd("contractor_hours_ledger.csv")
-    matches = rd("screening_match_log.csv")
-    lists = json.load(open(os.path.join(target, "screening_list_versions.json"), encoding="utf-8"))
-    man = rd("extract_manifest.csv")
-    ok(len(alerts) >= 25000, "the alert extract holds %d rows" % len(alerts))
-    ok(int(man.loc[man["file_name"] == "alert_adjudication_extract.csv", "row_count"].iloc[0])
-       == len(alerts), "the manifest disagrees on the alert extract")
+def xlsx_rows(path, sheet=0):
+    from openpyxl import load_workbook
+    wb = load_workbook(path, data_only=True)
+    ws = wb[wb.sheetnames[sheet]]
+    return [[c.value for c in r] for r in ws.iter_rows()]
 
-    # the business line in force now, for every code the records carry
-    cur = {r.line_code: r.line_name for r in lines.itertuples() if r.status == "current"}
-    now = {r.line_code: cur[r.current_line_code] for r in lines.itertuples()}
 
-    c = cases.copy()
-    c["v"] = pd.to_numeric(c["record_version"])
-    c = c.sort_values(["case_id", "v"]).groupby("case_id", as_index=False).tail(1)
-    c = c[c["disposition"] == "confirmed"]
-    c["line"] = [now[x] for x in c["line_code"]]
-    c = c.drop_duplicates(subset=["customer_ref", "typology", "line"])
-    c["delay"] = [mon(o, f) for o, f in zip(c["onset_month"], c["first_seen_month"])]
+def local_date(ts):
+    u = dt.datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ")
+    off = 13 if DST_LO <= u.date() < DST_HI else 12
+    return (u + dt.timedelta(hours=off)).date()
 
-    nmon = mon(CLOSED[0], CLOSED[1]) + 1
-    exp, flow, coh, wbar, closedn = {}, {}, {}, {}, {}
-    for name, g in c.groupby("line"):
-        cl = g[(g["onset_month"] >= CLOSED[0]) & (g["onset_month"] <= CLOSED[1])]
-        lam = len(cl) / nmon
-        w = float(cl["delay"].mean())
-        exp[name] = lam * w
-        coh[name] = sum(int((cl["delay"] > k).sum()) for k in range(0, 72)) / nmon
-        wbar[name] = w
-        closedn[name] = len(cl)
-        flow[name] = len(g[(g["confirmed_month"] >= TWO_Q[0]) & (g["confirmed_month"] <= TWO_Q[1])])
-    ok(len(exp) == fig["lines_assessed"], "assessed %d lines" % len(exp))
-    covered = sorted(sorted(exp, key=lambda n: -exp[n])[:CAP])
-    ok(covered == fig["covered"], "the call is %s" % covered)
-    rest = sorted(((exp[n], n) for n in exp if n not in covered), reverse=True)
-    ok(rest[0][1] == fig["just_misses"], "the line that just misses is %s" % rest[0][1])
-    ok(sorted(sorted(coh, key=lambda n: -coh[n])[:CAP]) == covered,
-       "the cohort estimator disagrees with the product")
-    ok(sorted(sorted(flow, key=lambda n: -flow[n])[:CAP]) == fig["rungs"]["rung0_confirmed_two_quarters"],
-       "rung 0 does not reproduce")
-    for n in exp:
-        ok(flow[n] == fig["confirmed_two_quarters"][n], "confirmed cases at %s" % n)
-        ok(abs(round(exp[n], 1) - fig["expected_carrying"][n]) < 1e-9, "expectation at %s" % n)
-        ok(abs(round(wbar[n], 1) - fig["months_unseen"][n]) < 1e-9, "months unseen at %s" % n)
-        ok(closedn[n] == fig["closed_cases"][n], "closed cases at %s" % n)
-    v = sorted(exp.values(), reverse=True)
-    ok(int(round(100 * (v[CAP - 1] / v[CAP] - 1))) == fig["cut_margin_pct"], "the cut margin")
 
-    # A1: the reissued credit notes are owed once
-    allowed = {"2026-Q1": 420.0, "2026-Q2": 420.0, "2026-Q3": 480.0, "2026-Q4": 480.0}
-    l = ledger.copy()
-    l["h"] = pd.to_numeric(l["hours"])
-    l["rate"] = pd.to_numeric(l["hourly_rate"])
-    # a ticket's hours are reversed once, however many credit notes name it
-    notes = l[l["ticket_type"] == "credit note"].sort_values(["reverses_ticket", "ticket"])
-    ok(len(notes) > len(notes.drop_duplicates(subset=["reverses_ticket"])),
-       "A1 no reversal is recorded twice, so the ask has no device")
-    notes = notes.groupby("reverses_ticket", as_index=False).head(1)
-    l = pd.concat([l[l["ticket_type"] != "credit note"], notes], ignore_index=True)
-    card = {"review": 285.0, "expert testimony": 410.0, "credit note": 285.0}
-    for r in notes.itertuples():
-        billed = l[(l["ticket"] == r.reverses_ticket) & (l["ticket_type"] != "credit note")]
-        ok(len(billed) == 1 and abs(float(billed["h"].iloc[0]) + float(r.h)) < 0.05,
-           "A1 credit note %s does not reverse its ticket exactly" % r.ticket)
-    for q, want in fig["a1_contract"].items():
-        gq = l[l["quarter"] == q]
-        ok(round(float(gq["h"].sum()), 1) == want["hours_billed"], "A1 hours at %s" % q)
-        ok(allowed[q] == want["hours_allowed"], "A1 allowed at %s" % q)
-        off = sum(1 for r in gq.itertuples() if r.rate != card.get(r.ticket_type))
-        ok(off == want["tickets_outside_rate_card"], "A1 rate card at %s" % q)
-        ok(0.6 < want["hours_billed"] / want["hours_allowed"] < 1.0,
-           "A1 the contractor bills only %.0f per cent of %s" %
-           (100 * want["hours_billed"] / want["hours_allowed"], q))
+def load(target):
+    """Every physical cash deposit of the reporting year, with its customer's segment."""
+    # the register: master number to segment
+    reg = xlsx_rows(os.path.join(target, "business_customer_register.xlsx"))
+    head = None
+    seg = {}
+    for r in reg:
+        if r and r[0] == "master_customer_no":
+            head = {v: i for i, v in enumerate(r) if v}
+            continue
+        if head and r and r[0]:
+            seg[r[head["master_customer_no"]]] = r[head["segment_name"]]
+    cross = {r["acct_customer_no"]: r["master_customer_no"]
+             for r in rows(target, "customer_number_crosswalk.csv")}
+    out = []
+    reversed_refs = set()
+    for r in rows(target, "cash_deposit_counter_2026_2027.csv"):
+        if r["reversal_of"]:
+            reversed_refs.add(r["reversal_of"])
+            reversed_refs.add(r["deposit_ref"])
+    for r in rows(target, "cash_deposit_counter_2026_2027.csv"):
+        if r["instrument"] != "cash" or r["deposit_ref"] in reversed_refs:
+            continue
+        day = dt.date(*[int(v) for v in r["deposit_date"].split("-")])
+        out.append((seg[cross[r["acct_customer_no"]]], float(r["amount_nzd"]), day))
+    seen = set()
+    for r in rows(target, "cash_deposit_machine_2026_2027.csv"):
+        if r["machine_deposit_ref"] in seen:
+            continue
+        seen.add(r["machine_deposit_ref"])
+        out.append((seg[cross[r["acct_customer_no"]]], float(r["amount_nzd"]),
+                    local_date(r["deposit_ts_utc"])))
+    return out, seg, cross
 
-    # A2: the list version in force at the screening date
-    vers = lists["versions"]
-    later = {}
-    for i, vv in enumerate(vers):
-        s = set()
-        for w in vers[i + 1:]:
-            s |= set(w["entries_removed"])
-        later[vv["version"]] = s
-    inforce = sorted((vv["in_force_from"], vv["version"]) for vv in vers)
-    got = {vv["version"]: [0, 0] for vv in vers}
-    for r in matches.itertuples():
-        v = None
-        for frm, nm in inforce:
-            if frm <= r.screened_on:
-                v = nm
-        if v and r.list_entry in later[v]:
-            got[v][0] += 1
-            if r.outcome == "cleared":
-                got[v][1] += 1
-    for v, want in fig["a2_screening"].items():
-        ok(got[v][0] == want["matched_an_entry_later_removed"], "A2 matches at %s" % v)
-        ok(got[v][1] == want["of_those_cleared"], "A2 cleared at %s" % v)
 
-    # A3: business days off the shipped calendar, and the re-sent batch counted once
-    shut = {dt.date.fromisoformat(x) for x in rd("bank_closed_days.csv")["closed_on"]}
-    ok(len(shut) >= 12, "the pack ships %d closed days" % len(shut))
-    al = alerts[alerts["queue"].isin(["card disputes", "chargebacks"])].copy()
-    al = al[~al["batch_id"].str.endswith("R")]
-    al["raised"] = pd.to_datetime(al["raised_at"]).dt.date
-    al["at"] = pd.to_datetime(al["stage_at"]).dt.date
-    al = al[(al["raised"] >= dt.date(2026, 1, 1)) & (al["raised"] <= dt.date(2026, 12, 31))]
-    for m in range(1, 13):
-        gm = al[[x.month == m for x in al["raised"]]]
-        want = fig["a3_queue"]["2026-%02d" % m]
-        ok(int((gm["stage"] == "raised").sum()) == want["alerts_raised"], "A3 raised in month %d" % m)
-        tri = gm[(gm["stage"] == "triaged") & (gm["outcome"] == "closed")]
-        ok(sum(1 for r in tri.itertuples() if wdays(r.raised, r.at, shut) <= STANDARD)
-           == want["closed_inside_standard"], "A3 inside the standard in month %d" % m)
-        ok(int((gm["stage"] == "escalated").sum()) == want["escalated"], "A3 escalated in month %d" % m)
+def excess(amounts, lo=5000, hi=16000, bw=250):
+    n = (hi - lo) // bw
+    bins = [0] * n
+    for a in amounts:
+        if lo <= a < hi:
+            bins[int((a - lo) // bw)] += 1
+    band = [k for k in range(n) if BAND_LO <= lo + k * bw < BAND_HI]
+    keep = [k for k in range(n) if k not in band and bins[k] > 0]
+    xs = [float(k) for k in keep]
+    ys = [math.log(bins[k]) for k in keep]
+    mx = sum(xs) / len(xs)
+    my = sum(ys) / len(ys)
+    sl = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sum((x - mx) ** 2 for x in xs)
+    ic = my - sl * mx
+    pred = sum(math.exp(ic + sl * k) for k in band)
+    return sum(bins[k] for k in band) - pred
 
-    # no shipped document names the decisive step, and the clauses the call rests on are present
-    blob = ""
-    for f in files:
-        if f.endswith(".pdf"):
-            with pdfplumber.open(os.path.join(target, f)) as pdf:
-                blob += " " + " ".join(p.extract_text() or "" for p in pdf.pages)
-        elif f.endswith((".csv", ".json")):
-            blob += " " + open(os.path.join(target, f), encoding="utf-8", errors="ignore").read()
-    low = re.sub(r"\s+", " ", blob).lower()
-    for banned in ("multiplied by", "arrival", "per month", "stock of", "little's law", "mean time",
-                   "closed record", "ranking", "ranked", "scorecard", "league"):
-        ok(banned not in low, "a shipped file says '%s'" % banned)
-    for needed in ("a case is one customer and one typology", "the review covers three business lines",
-                   "expected to be carrying",
-                   "between 1 january 2021 and 31 january 2024 is complete",
-                   "whether or not the bank yet holds a record of it",
-                   "a case seen in the month it began was never carried unseen past any month end",
-                   "the five working day standard",
-                   "which is the first seen month the investigation handbook defines"):
-        ok(needed in low, "a shipped file no longer says '%s'" % needed)
 
-    # the deliverables agree with figures.json
-    task = os.path.dirname(os.path.abspath(target.rstrip("/")))
-    xl = os.path.join(task, "golden", "review_placement_2027.xlsx")
-    if os.path.exists(xl):
-        rows = pd.read_excel(xl, sheet_name="Placement 2027", header=4, dtype=object)
-        rows = rows[rows["Business line"].notna()]
-        cov = [str(r[1]) for r in rows.itertuples() if str(r[3]) == "yes"]
-        ok(sorted(cov) == fig["covered"], "the workbook covers %s" % sorted(cov))
-    return K[0]
+def r10(x):
+    return int(math.floor(x / 10.0 + 0.5) * 10)
+
+
+def main(target, figpath):
+    fig = json.load(open(figpath, encoding="utf-8"))
+    dep, seg, cross = load(target)
+    win = [d for d in dep if YEAR_LO <= d[2] <= YEAR_HI]
+
+    by_seg = {}
+    for s, a, day in win:
+        by_seg.setdefault(s, []).append(a)
+
+    # the figure
+    per = {s: r10(excess(v)) for s, v in by_seg.items()}
+    want = fig["critical_components"]["segment_deposits_split"]
+    for s in sorted(want):
+        chk("segment %s" % s, per.get(s), want[s])
+    chk("the bank's figure", sum(per.values()), fig["call"]["deposits_split"])
+    chk("the largest segment", max(per, key=lambda s: (per[s], s)),
+        fig["call"]["largest_segment"])
+    chk("the largest segment's figure", per[fig["call"]["largest_segment"]],
+        fig["call"]["largest_segment_deposits_split"])
+
+    # the deposits paid in
+    paid = {s: len(v) for s, v in by_seg.items()}
+    for s, v in fig["critical_components"]["segment_cash_deposits_paid_in"].items():
+        chk("deposits paid in %s" % s, paid.get(s), v)
+    chk("deposits paid in total", sum(paid.values()),
+        fig["critical_components"]["cash_deposits_paid_in_total"])
+
+    # the band as observed
+    band = {s: sum(1 for a in v if BAND_LO <= a < BAND_HI) for s, v in by_seg.items()}
+    chk("band deposits observed", sum(band.values()),
+        fig["critical_components"]["band_deposits_observed"])
+    for s, v in fig["critical_components"]["band_deposits_observed_by_segment"].items():
+        chk("band observed %s" % s, band.get(s), v)
+
+    # the steps on the ladder, rebuilt from the bundle
+    days = {}
+    for r in rows(target, "cash_deposit_counter_2026_2027.csv"):
+        if r["instrument"] != "cash" or r["reversal_of"]:
+            continue
+        day = dt.date(*[int(v) for v in r["deposit_date"].split("-")])
+        if not (YEAR_LO <= day <= YEAR_HI):
+            continue
+        days.setdefault((cross[r["acct_customer_no"]], day), []).append(float(r["amount_nzd"]))
+    seen = set()
+    for r in rows(target, "cash_deposit_machine_2026_2027.csv"):
+        if r["machine_deposit_ref"] in seen:
+            continue
+        seen.add(r["machine_deposit_ref"])
+        day = local_date(r["deposit_ts_utc"])
+        if not (YEAR_LO <= day <= YEAR_HI):
+            continue
+        days.setdefault((cross[r["acct_customer_no"]], day), []).append(float(r["amount_nzd"]))
+    screen = 0
+    for (cust, day), a in days.items():
+        if len(a) >= 2 and all(x < THRESHOLD for x in a) and sum(a) >= THRESHOLD:
+            screen += sum(1 for x in a if BAND_LO <= x < BAND_HI)
+    chk("the same-day screen", screen, fig["steps"]["same_day_screen"])
+    chk("one profile for the book", r10(excess([a for s, a, d in win])),
+        fig["steps"]["one_profile_for_the_book"])
+
+    # convergence: every accepted estimator gives the same segment figures
+    for lo, hi, bw in ((5000, 16000, 250), (5000, 16000, 500), (6000, 14000, 250),
+                       (5500, 15000, 250), (5000, 15000, 250), (5000, 14000, 500)):
+        for s, v in by_seg.items():
+            chk("convergence %s %d-%d/%d" % (s, lo, hi, bw), r10(excess(v, lo, hi, bw)), per[s])
+
+    # the deliverables
+    wb = xlsx_rows(os.path.join(TASK, "golden", "structured_cash_deposits_2027.xlsx"))
+    flat = [r for r in wb if r and r[0]]
+    gotrows = {r[0]: [r[1], r[2]] for r in flat if r[0] in per}
+    for s, v in fig["deliverables"]["structured_cash_deposits_2027.xlsx"]["rows"].items():
+        chk("workbook row %s" % s, gotrows.get(s), v)
+    tot = [r for r in flat if r[0] == "Total"]
+    chk("workbook total", tot[0][2] if tot else None,
+        fig["deliverables"]["structured_cash_deposits_2027.xlsx"]["deposits_split_total"])
+
+    # the asks
+    tol = {}
+    for r in xlsx_rows(os.path.join(target, "cash_tolerance_register.xlsx")):
+        if r and r[0] and r[0] not in ("effective_from",) and isinstance(r[2], (int, float)):
+            tol[r[0]] = float(r[2])
+    quarters = [("2026Q3", dt.date(2026, 7, 1), dt.date(2026, 9, 30)),
+                ("2026Q4", dt.date(2026, 10, 1), dt.date(2026, 12, 31)),
+                ("2027Q1", dt.date(2027, 1, 1), dt.date(2027, 3, 31)),
+                ("2027Q2", dt.date(2027, 4, 1), dt.date(2027, 6, 30))]
+    agg = {q: [0, 0, 0.0] for q, _, _ in quarters}
+    for r in rows(target, "till_balance_log_2026_2027.csv"):
+        ts = r["session_opened_ts"]
+        day = local_date(ts) if ts.endswith("Z") else dt.date(*[int(v) for v in ts[:10].split("-")])
+        v = float(r["variance_nzd"])
+        for q, lo, hi in quarters:
+            if lo <= day <= hi:
+                t = 25.0 if day < dt.date(2027, 1, 1) else 15.0
+                agg[q][0] += 1
+                agg[q][1] += 1 if abs(v) > t else 0
+                agg[q][2] += v
+    for q, v in fig["asks"]["till_sessions_by_quarter"].items():
+        chk("A1 %s sessions" % q, agg[q][0], v[0])
+        chk("A1 %s over tolerance" % q, agg[q][1], v[1])
+        chk("A1 %s net variance" % q, round(agg[q][2], 2), v[2], tol=0.005)
+
+    svc = rows(target, "machine_service_log_2027.csv")
+    per_month = {}
+    for r in svc:
+        mo = r["reported_ts"][:7]
+        per_month[mo] = per_month.get(mo, 0) + int(r["out_of_service_minutes"])
+    for mo, v in fig["asks"]["machine_hours_by_month"].items():
+        chk("A3 %s hours" % mo, round(per_month.get(mo, 0) / 60.0, 1), v, tol=0.051)
+
+    print("verify: %d checks, %d failed" % (N[0], len(FAILS)))
+    for f in FAILS[:30]:
+        print("  FAIL", f)
+    return 1 if FAILS else 0
 
 
 if __name__ == "__main__":
-    tgt = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "target")
-    figs = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")
-    print("independent checks passed:", run(tgt, figs))
+    t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")
+    f = sys.argv[2] if len(sys.argv) > 2 else os.path.join(HERE, "figures.json")
+    sys.exit(main(t, f))

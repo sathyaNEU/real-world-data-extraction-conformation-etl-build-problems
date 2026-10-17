@@ -55,6 +55,14 @@ DEPTH_FLOOR = 20                          # the pipeline's minimum mean depth
 PANEL_MARKERS = 96
 PANEL_LOD = 0.005                         # the panel calls MIXED above this second-contributor share
 
+# the laboratory is closed on these days, so nothing is received on them
+HOLIDAYS = {dt.date(2026, 4, 2), dt.date(2026, 4, 3), dt.date(2026, 4, 6), dt.date(2026, 5, 1),
+            dt.date(2026, 5, 14), dt.date(2026, 5, 25), dt.date(2026, 12, 24), dt.date(2026, 12, 25),
+            dt.date(2027, 1, 1), dt.date(2027, 3, 25), dt.date(2027, 3, 26), dt.date(2027, 3, 29),
+            dt.date(2027, 5, 6), dt.date(2027, 5, 17)}
+# receipts by weekday: the courier runs are heaviest early in the week
+DAY_WEIGHT = [1.12, 1.07, 1.01, 0.95, 0.85]
+
 HIST_ROWS = 31200                         # rows in the warehouse extract
 REVIEWED_SHARE = 0.031                    # specimens whose call the duty bioinformatician reviewed
 

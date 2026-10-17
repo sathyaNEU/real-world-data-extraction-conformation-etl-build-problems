@@ -53,7 +53,7 @@ def protocol(target):
                    "relatos da mesma acao, da mesma via de acesso ou de vias diferentes, sao uma acao.",
                    BODY),
          Paragraph("2.2 Os codigos de acao sao os da tabela seguinte. Sao acoes de confronto, e so "
-                   "elas, as acoes registadas com os codigos CF, RF e DP.", BODY),
+                   "elas, as acoes dos codigos CF, RF e DP.", BODY),
          Table(wrap(codes), colWidths=[18 * mm, 95 * mm, 32 * mm], style=TBL, hAlign="LEFT"),
          Spacer(1, 5),
          Paragraph("2.3 A localidade de uma acao e a localidade do gazeteiro nacional, que pode vir "
@@ -62,36 +62,41 @@ def protocol(target):
          Paragraph("2.4 A data de uma acao e o dia de calendario local em que a acao comecou, tal "
                    "como o registo o fixa, e nao a data de nenhum relato.", BODY),
          Paragraph("2.5 Um relato cuja localidade o gazeteiro nao fixa nao produz acao.", BODY),
-         Paragraph("Parte 3 Episodios de disputa e indicadores", H2),
-         Paragraph("3.1 Um episodio de disputa corre num municipio e num tema. Abre no dia da sua "
-                   "primeira acao e mantem-se aberto ate decorrerem vinte e um dias de calendario "
-                   "consecutivos sem qualquer acao desse municipio e desse tema; a acao seguinte abre "
-                   "um episodio novo. O ultimo dia de um episodio e o dia da sua ultima acao "
-                   "registada.", BODY),
+         Paragraph("2.6 O codigo que o registo guarda para uma acao e o do relato de uma organizacao "
+                   "parceira ou da linha de participacao publica quando existe um, e o do monitor de "
+                   "imprensa nas restantes acoes.", BODY),
+         Paragraph("Parte 3 Periodo e indicadores", H2),
          Paragraph("3.2 O periodo de relato e de 1 de maio a 30 de outubro de 2026, inclusive. O "
-                   "registo abriu em 1 de maio de 2026 e nao traz nenhum episodio anterior a essa "
-                   "data.", BODY),
-         Paragraph("3.3 Indicador 3, taxa de confronto: dos episodios de disputa abertos no periodo "
-                   "de relato, a proporcao que registra pelo menos uma acao de confronto antes de o "
-                   "episodio encerrar, em percentagem inteira, com o numero de episodios a que "
-                   "corresponde. Os episodios ainda abertos na data em que o registo foi extraido "
-                   "pertencem a coorte do periodo, e o indicador cobre toda a vida de cada episodio, "
-                   "pelo que num periodo cujos episodios nao terminaram todos a figura e uma "
-                   "estimativa.", BODY),
+                   "registo abriu em 1 de maio de 2026 e nao traz nenhuma acao anterior a essa data.",
+                   BODY),
+         Paragraph("3.3 Indicador 2, acoes de confronto: o numero das acoes registadas no periodo de "
+                   "relato que foram acoes de confronto na acepcao de 2.2, em numero inteiro de "
+                   "acoes. O codigo que o classificador do monitor de imprensa atribui e a leitura do "
+                   "classificador, que a amostra de dupla codificacao da associacao mede contra a "
+                   "codificacao manual. O numero que o boletim fixa e o das acoes que foram de "
+                   "confronto e nao o dos codigos atribuidos.", BODY),
          Paragraph("3.4 As quinzenas de relato contam-se a partir de 1 de maio e a ultima quinzena "
                    "do periodo termina com o periodo.", BODY),
          Paragraph("3.5 O boletim do periodo e levado ao conselho de curadores, que fixa com ele a "
                    "dotacao de terreno do ano seguinte.", BODY),
-         Paragraph("Parte 4 Vias de acesso", H2),
+         Paragraph("Parte 4 Vias de acesso e codificacao", H2),
          Paragraph("4.1 As vias de acesso ao registo sao o monitor de imprensa, a rede de parceiros "
                    "e a linha de participacao publica.", BODY),
          Paragraph("4.2 O monitor de imprensa guarda todos os itens que a lista de palavras-chave "
-                   "apanha e aceita os que o classificador fixa como acao coletiva com local e data; "
-                   "os restantes ficam no registo de itens com o motivo da rejeicao.", BODY),
+                   "apanha, reune num unico relato os itens que respeitam a mesma acao e aceita os "
+                   "relatos que o classificador fixa como acao coletiva com local e data; o "
+                   "classificador atribui a cada relato aceite o seu codigo de acao, e os itens "
+                   "rejeitados ficam no registo de itens com o motivo da rejeicao.", BODY),
          Paragraph("4.3 Cada parceiro entrega relatos ao abrigo do seu acordo de dados e e pago por "
-                   "relato aceite, a tabela em vigor no dia em que o relato foi entregue.", BODY),
+                   "relato aceite, a tabela em vigor no dia em que o relato foi entregue. Os relatos "
+                   "da rede de parceiros e da linha de participacao publica sao codificados por quem "
+                   "os entrega e revistos pela mesa de codificacao.", BODY),
          Paragraph("4.4 O registo e extraido para o boletim de cada periodo; a extracao deste periodo "
-                   "e de 6 de novembro de 2026.", BODY)]
+                   "e de 6 de novembro de 2026.", BODY),
+         Paragraph("4.5 Duas vezes por periodo a mesa de codificacao tira uma amostra aleatoria "
+                   "simples dos relatos aceites do monitor de imprensa e codifica-os a mao, sem ver o "
+                   "codigo do classificador; a codificacao manual e a referencia da associacao e a "
+                   "amostra fica no ficheiro de dupla codificacao, com o codigo de cada lado.", BODY)]
     d.build(f)
     return path
 
