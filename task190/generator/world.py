@@ -31,18 +31,18 @@ GRAIN = 50_000                           # the misstatement is stated to the nea
 
 # programme: code, name, recorded value, payment lines, the contractor certificates it paid
 PROGRAMMES = [
-    ("CP-11", "Deepwater berth renewal", 13_900_000,
-     [1_940_000, 1_210_000, 760_000, 455_000, 310_000, 224_000]),
-    ("CP-14", "Quay 3 reconstruction", 10_600_000,
-     [1_480_000, 905_000, 612_000, 388_000, 241_000]),
-    ("CP-21", "Terminal roof and cladding", 8_400_000,
-     [690_000, 402_000, 265_000, 196_000]),
-    ("CP-23", "Rail siding and yard", 6_300_000, [540_000, 318_000, 207_000]),
-    ("CP-31", "Dredging programme", 5_600_000, [1_120_000, 660_000, 395_000, 212_000]),
-    ("CP-34", "Shore power installation", 4_700_000, [430_000, 254_000, 183_000]),
-    ("CP-41", "Security and access systems", 3_500_000, [296_000, 188_000]),
-    ("CP-44", "Pavement and surfacing", 3_300_000, [315_000, 201_000]),
-    ("CP-47", "Welfare and offices fit-out", 3_200_000, [268_000, 181_000]),
+    ("CP-11", "Deepwater berth renewal", 13_874_318,
+     [1_936_142, 1_207_885, 758_430, 454_216, 309_077, 223_461]),
+    ("CP-14", "Quay 3 reconstruction", 10_612_744,
+     [1_482_963, 903_117, 611_488, 387_204, 240_355]),
+    ("CP-21", "Terminal roof and cladding", 8_386_509,
+     [688_741, 401_326, 264_518, 195_882]),
+    ("CP-23", "Rail siding and yard", 6_311_872, [541_093, 317_462, 206_735]),
+    ("CP-31", "Dredging programme", 5_588_431, [1_117_406, 658_914, 394_208, 211_573]),
+    ("CP-34", "Shore power installation", 4_713_286, [431_278, 253_641, 182_594]),
+    ("CP-41", "Security and access systems", 3_492_617, [295_384, 187_619]),
+    ("CP-44", "Pavement and surfacing", 3_307_958, [314_726, 200_843]),
+    ("CP-47", "Welfare and offices fit-out", 3_192_683, [267_518, 180_726]),
 ]
 PROG_CODES = [p[0] for p in PROGRAMMES]
 PROG_NAME = {p[0]: p[1] for p in PROGRAMMES}

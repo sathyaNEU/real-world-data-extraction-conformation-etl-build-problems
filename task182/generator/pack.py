@@ -179,6 +179,10 @@ def write_events(target):
             rows.append([start, eq, "STOP", who, reason])
             rows.append([start + dt.timedelta(minutes=mins), eq, "START", who,
                          "returned to service after %s" % reason])
+    for start, mins, reason in W.ENGINE_STOPS:
+        rows.append([start, W.ENGINE, "STOP", W.PEOPLE["operator"][1], reason])
+        rows.append([start + dt.timedelta(minutes=mins), W.ENGINE, "START", W.PEOPLE["operator"][1],
+                     "returned to service after %s" % reason.split(", ")[0]])
     for eq in W.BLOWERS + [W.ENGINE]:
         rows.append([dt.datetime(2026, 8, 24, 6, 12), eq, "START", W.PEOPLE["operator"][1],
                      "returned to service after oil change"])
@@ -218,10 +222,15 @@ def write_scada(target):
     gas_rate = np.where(stopped, 0.0, (212 + 9.5 * np.sin(2 * math.pi * hours / 24.0 + 0.4)
                                        + rng.normal(0, 4.0, n)) * wkf)   # m3 an hour to the engine
     counter = (18640.0 + np.cumsum(gas_rate * 0.25)) % 100000.0
-    kw = np.where(stopped, 0.0, 268 + 7.0 * np.sin(2 * math.pi * hours / 24.0 + 0.4) + rng.normal(0, 3.1, n))
+    eng_off = stopped.copy()
+    for start, mins, _ in W.ENGINE_STOPS:
+        end = start + dt.timedelta(minutes=mins)
+        eng_off |= np.array([(s >= start - dt.timedelta(minutes=14)) and (s < end) for s in stamps])
+    kw = np.where(eng_off, 0.0,
+                  268 + 7.0 * np.sin(2 * math.pi * hours / 24.0 + 0.4) + rng.normal(0, 3.1, n))
     inflow = (96 + 34 * np.exp(-((hours - 10.5) ** 2) / 9.0) + 26 * np.exp(-((hours - 19.0) ** 2) / 7.0)
               + rng.normal(0, 4.5, n))
-    eng_hours = np.cumsum(np.where(stopped, 0.0, 0.25))
+    eng_hours = np.cumsum(np.where(eng_off, 0.0, 0.25))
     replaced = np.array([s >= W.HOUR_COUNTER_SWAP for s in stamps])
     base = eng_hours[np.argmax(replaced)] if replaced.any() else 0.0
     eng_hours = np.where(replaced, eng_hours - base, 41820.0 + eng_hours)

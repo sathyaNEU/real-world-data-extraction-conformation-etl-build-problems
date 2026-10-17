@@ -165,6 +165,13 @@ def a3_golden(tgt, firsts, pairs):
     Annex B marker treatment inside it. Read from the shipped bundle, per standard section 4.2."""
     import csv as _csv
     import golden as G
+    # the region recorded for the patient at the start of the screen window, which is what the
+    # person extract delivered with the October 2025 run holds
+    prior = {}
+    with open(os.path.join(tgt, "person_register_2025Q4.csv"), newline="",
+              encoding="utf-8") as fh:
+        for r in _csv.DictReader(fh):
+            prior[r["person_key"]] = r["region"] or "not stated"
     reg = {}
     with open(os.path.join(tgt, "person_register.csv"), newline="", encoding="utf-8") as fh:
         for r in _csv.DictReader(fh):
@@ -172,7 +179,8 @@ def a3_golden(tgt, firsts, pairs):
             if r["previous_region"] and r["region_recorded_from"] \
                     and G.iso(r["region_recorded_from"]) > G.WIN_A:
                 region = r["previous_region"]
-            reg[r["person_key"]] = (region, int(r["year_of_birth"]))
+            reg[r["person_key"]] = (prior.get(r["person_key"], region),
+                                    int(r["year_of_birth"]))
     pset = set(p for p, m in pairs)
     mset = set(m for p, m in pairs)
     byp = collections.defaultdict(dict)

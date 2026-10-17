@@ -54,56 +54,56 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Kirunelle and antipsychotic: 13 patients, 7 after, 6 before, below the 25-patient minimum
    - Admirabin and loop diuretic: 210 patients, 159 after, 51 before, referred no
    - Admirabin and antidepressant: 268 patients, 215 after, 53 before, referred no
-   - Sovraxil and topical corticosteroid: 631 patients, 496 after, 135 before, referred yes
+   - Sovraxil and topical corticosteroid: 632 patients, 497 after, 135 before, referred yes
    - Sovraxil and antipsychotic: 17 patients, 11 after, 6 before, below the 25-patient minimum
 2. Pairs referred: 7.
 3. Nearest pair on the wrong side of the referral line: Dalvextin and acid-suppressant.
 4. Lines accepted, lines rejected and median days from dispensing to submission, by chain and quarter of dispensing, whole counts and days to one decimal:
-   - APK, 2025 Q4: 5985 accepted, 66 rejected, 3.0 days
-   - APK, 2026 Q1: 5476 accepted, 67 rejected, 5.0 days
-   - APK, 2026 Q2: 5554 accepted, 42 rejected, 4.0 days
-   - APK, 2026 Q3: 5732 accepted, 58 rejected, 5.0 days
-   - DSA, 2025 Q4: 4673 accepted, 66 rejected, 3.0 days
-   - DSA, 2026 Q1: 4119 accepted, 71 rejected, 4.0 days
-   - DSA, 2026 Q2: 4082 accepted, 39 rejected, 4.0 days
-   - DSA, 2026 Q3: 4344 accepted, 62 rejected, 6.0 days
-   - NOR, 2025 Q4: 3386 accepted, 73 rejected, 5.0 days
-   - NOR, 2026 Q1: 3064 accepted, 64 rejected, 4.0 days
-   - NOR, 2026 Q2: 2875 accepted, 82 rejected, 6.0 days
-   - NOR, 2026 Q3: 3203 accepted, 35 rejected, 6.0 days
-   - VST, 2025 Q4: 2260 accepted, 28 rejected, 7.0 days
-   - VST, 2026 Q1: 2002 accepted, 18 rejected, 7.0 days
-   - VST, 2026 Q2: 1933 accepted, 22 rejected, 7.0 days
-   - VST, 2026 Q3: 1997 accepted, 18 rejected, 8.0 days
+   - APK, 2025 Q4: 6801 accepted, 72 rejected, 4.0 days
+   - APK, 2026 Q1: 6182 accepted, 72 rejected, 5.0 days
+   - APK, 2026 Q2: 6303 accepted, 43 rejected, 4.0 days
+   - APK, 2026 Q3: 6380 accepted, 61 rejected, 6.0 days
+   - DSA, 2025 Q4: 3758 accepted, 57 rejected, 3.0 days
+   - DSA, 2026 Q1: 3268 accepted, 49 rejected, 4.0 days
+   - DSA, 2026 Q2: 3233 accepted, 35 rejected, 4.0 days
+   - DSA, 2026 Q3: 3477 accepted, 49 rejected, 6.0 days
+   - NOR, 2025 Q4: 3474 accepted, 76 rejected, 4.0 days
+   - NOR, 2026 Q1: 3187 accepted, 69 rejected, 4.0 days
+   - NOR, 2026 Q2: 2982 accepted, 81 rejected, 5.0 days
+   - NOR, 2026 Q3: 3376 accepted, 46 rejected, 5.0 days
+   - VST, 2025 Q4: 2272 accepted, 27 rejected, 7.0 days
+   - VST, 2026 Q1: 2035 accepted, 19 rejected, 7.0 days
+   - VST, 2026 Q2: 1928 accepted, 24 rejected, 7.0 days
+   - VST, 2026 Q3: 2039 accepted, 21 rejected, 7.0 days
 5. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
-   - Nordlys Pharma A/S (H1): 265159.0 DDD, 342547 kroner
-   - Bregnholt Laegemidler A/S (H2): 402993.0 DDD, 530098 kroner
-   - Vindeby Therapeutics ApS (H3): 407656.0 DDD, 544754 kroner
-   - Soegaard Medica A/S (H4): 383410.0 DDD, 476809 kroner
-   - Kastholm Pharma A/S (H5): 595520.0 DDD, 747311 kroner
-   - Ellevang Biosciences A/S (H6): 1027098.0 DDD, 1067868 kroner
-   - Strandby Farma ApS (H7): 227031.0 DDD, 332600 kroner
+   - Nordlys Pharma A/S (H1): 265803.0 DDD, 343410 kroner
+   - Bregnholt Laegemidler A/S (H2): 402972.0 DDD, 530069 kroner
+   - Vindeby Therapeutics ApS (H3): 407628.0 DDD, 544717 kroner
+   - Soegaard Medica A/S (H4): 383670.0 DDD, 477132 kroner
+   - Kastholm Pharma A/S (H5): 595422.0 DDD, 747180 kroner
+   - Ellevang Biosciences A/S (H6): 1027964.0 DDD, 1068764 kroner
+   - Strandby Farma ApS (H7): 227367.0 DDD, 333093 kroner
 6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
-   - Hovedstaden, 18-34: 679 patients, 69.5 per cent
-   - Hovedstaden, 35-44: 385 patients, 70.4 per cent
-   - Hovedstaden, 45-64: 779 patients, 79.1 per cent
-   - Hovedstaden, 65 and over: 1099 patients, 80.6 per cent
-   - Midtjylland, 18-34: 512 patients, 67.2 per cent
-   - Midtjylland, 35-44: 321 patients, 74.1 per cent
-   - Midtjylland, 45-64: 603 patients, 77.9 per cent
-   - Midtjylland, 65 and over: 835 patients, 78.0 per cent
-   - Nordjylland, 18-34: 232 patients, 66.8 per cent
-   - Nordjylland, 35-44: 137 patients, 73.7 per cent
-   - Nordjylland, 45-64: 277 patients, 72.9 per cent
-   - Nordjylland, 65 and over: 340 patients, 81.5 per cent
-   - Sjaelland, 18-34: 297 patients, 72.7 per cent
-   - Sjaelland, 35-44: 196 patients, 76.5 per cent
-   - Sjaelland, 45-64: 415 patients, 75.4 per cent
-   - Sjaelland, 65 and over: 538 patients, 80.7 per cent
-   - Syddanmark, 18-34: 480 patients, 69.6 per cent
-   - Syddanmark, 35-44: 258 patients, 74.0 per cent
-   - Syddanmark, 45-64: 584 patients, 75.2 per cent
-   - Syddanmark, 65 and over: 691 patients, 79.9 per cent
+   - Hovedstaden, 18-34: 638 patients, 69.1 per cent
+   - Hovedstaden, 35-44: 367 patients, 69.5 per cent
+   - Hovedstaden, 45-64: 734 patients, 78.3 per cent
+   - Hovedstaden, 65 and over: 1035 patients, 81.2 per cent
+   - Midtjylland, 18-34: 501 patients, 67.1 per cent
+   - Midtjylland, 35-44: 311 patients, 73.6 per cent
+   - Midtjylland, 45-64: 587 patients, 77.7 per cent
+   - Midtjylland, 65 and over: 804 patients, 77.7 per cent
+   - Nordjylland, 18-34: 249 patients, 68.3 per cent
+   - Nordjylland, 35-44: 144 patients, 71.5 per cent
+   - Nordjylland, 45-64: 310 patients, 75.2 per cent
+   - Nordjylland, 65 and over: 378 patients, 81.0 per cent
+   - Sjaelland, 18-34: 316 patients, 72.2 per cent
+   - Sjaelland, 35-44: 205 patients, 77.6 per cent
+   - Sjaelland, 45-64: 441 patients, 75.5 per cent
+   - Sjaelland, 65 and over: 579 patients, 79.6 per cent
+   - Syddanmark, 18-34: 496 patients, 69.8 per cent
+   - Syddanmark, 35-44: 270 patients, 75.9 per cent
+   - Syddanmark, 45-64: 586 patients, 75.8 per cent
+   - Syddanmark, 65 and over: 707 patients, 80.3 per cent
    - not stated, 18-34: 61 patients, 70.5 per cent
    - not stated, 35-44: 32 patients, 87.5 per cent
    - not stated, 45-64: 69 patients, 72.5 per cent

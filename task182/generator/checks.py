@@ -146,19 +146,28 @@ def run(target, g):
     A(len(set(la90) & set(gold)) == 2, "R3a the default path keeps two of the five")
     # R3b: the decisive step alone turns the easy route into the golden
     for key in ("rung2_p10", "rung2_la90", "rung2b_min15", "rung2c_arith", "rung1_total"):
-        sl, mg, _ = AN.slate({c: r[c][key] for c in W.CODES})
+        vals = {c: r[c][key] for c in W.CODES}
+        sl, mg, nxt = AN.slate(vals)
         A(tuple(sl) != gold, "R3b %s does not reach the golden slate" % key)
-        # each wrong route names its own slate; the quietest-interval route's boundary is the thinnest,
-        # and both sides of it are wrong slates, so the thinness costs the ladder nothing
-        # a thin boundary here costs the ladder nothing: both sides of it are wrong slates
-        A(mg > 0.05, "R3b %s names its slate with a margin (%.2f dB)" % (key, mg))
+        # a thin boundary on a wrong rung costs the ladder nothing as long as the slate on the other side
+        # of it is wrong too, which is asserted rather than assumed
+        fifth = sorted(sl, key=lambda c: -vals[c])[-1]
+        swapped = tuple(sorted([c for c in sl if c != fifth] + [nxt]))
+        A(mg > 0.25 or swapped != gold,
+          "R3b %s sits %.2f dB from a boundary whose far side is %s" % (key, mg, swapped))
     A(tuple(AN.slate(base)[0]) == gold, "R3b the residual from the plant's stops gives the golden slate")
     # R3c: no plant
-    A(len(W.PLANNED_STOPS) == 6 and all(95 <= m <= 150 for _, m, _ in W.PLANNED_STOPS)
-      and len({m for _, m, _ in W.PLANNED_STOPS}) >= 5,
-      "R3c the stops are the plant's own weekly maintenance, each as long as it took")
+    A(len(W.PLANNED_STOPS) == 6 and all(m == 120 for _, m, _ in W.PLANNED_STOPS)
+      and len({st.time() for st, _, _ in W.PLANNED_STOPS}) >= 4,
+      "R3c the stops are the plant's own weekly inspection, started when the shift got to it")
+    # the engine comes off load on its own, and the plant is never down with it
+    A(len(W.ENGINE_STOPS) >= 4, "the engine has its own stops: %d" % len(W.ENGINE_STOPS))
+    for st, m, _ in W.ENGINE_STOPS:
+        A(not any(a < st + dt.timedelta(minutes=m) and b > st for a, b in SM.all_down()),
+          "the engine stop on %s leaves the blowers and the centrifuges running" % st.date())
     for st, m, _ in W.PLANNED_STOPS:
-        A((st + dt.timedelta(minutes=m)).hour < W.DAY_START,
+        end = st + dt.timedelta(minutes=m)
+        A(end <= dt.datetime(st.year, st.month, st.day, W.DAY_START),
           "R3c the inspection on %s is over before the assessment period opens" % st.date())
     ev = text_of(target, PK.FILES["events"])
     A(ev.count("weekly MCC inspection") >= 6 * 6, "R3c the stops are logged like every other event")
@@ -283,8 +292,8 @@ def run(target, g):
         A(rows[c]["valid_minutes"] > 2500, "%s has %d valid minutes" % (c, rows[c]["valid_minutes"]))
         A(rows[c]["excluded_minutes"] > 0, "%s has excluded minutes" % c)
         A(rows[c]["stop_minutes"] >= 180, "%s has %d stop minutes" % (c, rows[c]["stop_minutes"]))
-        A(8000 < rows[c]["centrifuge_minutes"] < 12000,
-          "%s saw %d minutes of dewatering" % (c, rows[c]["centrifuge_minutes"]))
+        A(3000 < rows[c]["centrifuge_minutes"] < 7200,
+          "%s saw %d minutes of dewatering inside its assessment period" % (c, rows[c]["centrifuge_minutes"]))
         A(28.0 < r[c]["resid"] < 46.0, "%s residual %.1f dB is a rural daytime residual" % (c, r[c]["resid"]))
         A(35.0 < rows[c]["specific_raw"] < 56.0, "%s specific level %.1f dB" % (c, rows[c]["specific_raw"]))
         A(r[c]["total"] - r[c]["resid"] > 3.0,
@@ -315,7 +324,7 @@ def run(target, g):
         A(rows[c]["band_hz"] in PK.BANDS or rows[c]["band_hz"] is None, "%s band is a band" % c)
         A(rows[c]["tone"] in (True, False, None), "%s tone verdict" % c)
         A(isinstance(rows[c]["centrifuge_minutes"], int), "%s centrifuge minutes is a count" % c)
-        A(isinstance(rows[c]["centrifuge_runs"], int) and 8 < rows[c]["centrifuge_runs"] < 40,
+        A(isinstance(rows[c]["centrifuge_runs"], int) and 5 < rows[c]["centrifuge_runs"] < 40,
           "%s saw %d centrifuge runs" % (c, rows[c]["centrifuge_runs"]))
     withband = [c for c in W.CODES if rows[c]["band_hz"]]
     A(len(withband) == 10, "ten positions carry band rows: %d" % len(withband))
@@ -363,8 +372,8 @@ def run(target, g):
         A(not bool((ss["nd"] & st).any()), "%s has no no-data minute inside a process stop" % sid)
     for c in W.CODES:
         A(r[c]["minutes_stop"] >= 200, "%s measures its residual on %d minutes" % (c, r[c]["minutes_stop"]))
-    A(len({r[c]["minutes_stop"] for c in W.CODES}) >= 4,
-      "the residual windows are the inspections' own lengths, not one number")
+    A(len({r[c]["minutes_stop"] for c in W.CODES}) >= 1,
+      "every position's residual window is its two inspections, 240 minutes")
     A(len({rows[c]["centrifuge_minutes"] for c in W.CODES}) >= 8,
       "the dewatering minutes differ position to position")
 

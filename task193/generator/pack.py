@@ -19,6 +19,38 @@ def write_csv(path, head, rows):
 
 
 # ---------------------------------------------------------------- dispensing lines
+# A pharmacy's authorisation can pass from one chain to another. The chain that owns it on the day
+# of a dispensing is the chain that transmits that line, and the pharmacy register holds the chain
+# that owns it at the extract date. Most of the transfers in the register are years old.
+def pharmacy_moves(pharm_of):
+    """pharmacy id -> (previous chain, new chain, the day the transfer took effect)."""
+    rng = np.random.default_rng(W.SEED + 83)
+    moves = {}
+    # the four transfers inside the extract period: one out of each chain, late in the window
+    cycle = [(0, 1, 1047), (1, 2, 1021), (2, 3, 1063), (3, 0, 1035)]
+    for a, b, day in cycle:
+        pool = [p for p in pharm_of[a] if p not in moves]
+        moves[pool[int(rng.integers(0, len(pool)))]] = (a, b, day)
+    # and the benign twins: transfers settled long before the extract opens
+    for _ in range(11):
+        a = int(rng.integers(0, len(W.CHAINS)))
+        b = (a + 1 + int(rng.integers(0, len(W.CHAINS) - 1))) % len(W.CHAINS)
+        pool = [p for p in pharm_of[a] if p not in moves]
+        if not pool:
+            continue
+        moves[pool[int(rng.integers(0, len(pool)))]] = (
+            a, b, -int(rng.integers(120, 1600)))
+    return moves
+
+
+def owner_at(moves, ph, day, fallback):
+    mv = moves.get(ph)
+    if mv is None:
+        return fallback
+    prev, new, d0 = mv
+    return new if day >= d0 else prev
+
+
 # the mean days a chain takes to transmit a line, by quarter of the window. The chains overlap and
 # their order changes between quarters, as their own transfer schedules and backlogs do.
 SUB_LAG = [[1.4, 1.9, 2.6, 2.2],
@@ -76,6 +108,7 @@ def dispensings(first):
     pharm_of = {}
     for ci, (code, name) in enumerate(W.CHAINS):
         pharm_of[ci] = ["%s-%03d" % (code, 101 + j) for j in range(14 + 4 * ci)]
+    moves = pharmacy_moves(pharm_of)
     lines = []
     lid = 0
     for code in W.PCODES + W.MCODES:
@@ -108,10 +141,11 @@ def dispensings(first):
                 q = 0 if d < 823 else (1 if d < 913 else (2 if d < 1004 else 3))
                 mu = SUB_LAG[ci][q]
                 lag = int(rng.poisson(mu))
+                owner = owner_at(moves, ph, d, ci)
                 lid += 1
                 lines.append({"line": lid, "pid": int(pid), "code": code, "vnr": vnr, "day": d,
-                              "pharmacy": ph, "chain": ci, "packs": npk,
-                              "submitted": transmit_day(d, lag, ci, q, sub_rng),
+                              "pharmacy": ph, "chain": owner, "packs": npk,
+                              "submitted": transmit_day(d, lag, owner, q, sub_rng),
                               "prescriber": pres,
                               "is_first": j == 0})
     # patients already on a medicine when the extract opens: their earliest line in the extract is
@@ -147,12 +181,13 @@ def dispensings(first):
                 dd = open_day(d, prev_rng)
                 if (mt0 is not None and dd > mt0) or (mf0 is not None and dd < mf0):
                     continue
+                owner = owner_at(moves, ph, dd, ci)
                 base += 1
                 lines.append({"line": base, "pid": int(pid), "code": code, "vnr": vnr, "day": dd,
-                              "pharmacy": ph, "chain": ci, "packs": int(prev_rng.choice(
+                              "pharmacy": ph, "chain": owner, "packs": int(prev_rng.choice(
                                   [1, 2, 3], p=[0.615, 0.265, 0.120])),
                               "submitted": transmit_day(dd, int(prev_rng.poisson(mu)),
-                                                        ci, q2, sub_rng), "prescriber": pres,
+                                                        owner, q2, sub_rng), "prescriber": pres,
                               "is_first": False, "prevalent": True})
     for r in lines:
         r.setdefault("prevalent", False)
@@ -402,19 +437,31 @@ def write_person_register(tgt, people, keys, new_keys, switch_day, kept, rejecte
     seen = set(r["pid"] for r in kept) | set(r["pid"] for r in rejected)
     rows = []
     moved = set(rng.choice(sorted(seen), size=int(0.021 * len(seen)), replace=False).tolist())
+    # Municipalities also correct a registration without the register recording when: the current
+    # extract holds the corrected region and nothing beside it, and the extract delivered with the
+    # October 2025 run holds what was recorded then.
+    rest = sorted(set(seen) - moved)
+    silent = set(rng.choice(rest, size=int(0.082 * len(rest)), replace=False).tolist())
     died = set(rng.choice(sorted(seen), size=int(0.016 * len(seen)), replace=False).tolist())
     gone = set(rng.choice(sorted(seen), size=int(0.007 * len(seen)), replace=False).tolist())
     last = {}
     for r in kept:
         last[r["pid"]] = max(last.get(r["pid"], -1), r["day"])
+    at_window_start = {}
     for pid in sorted(seen):
         key = new_keys.get(pid, keys[pid])
         reg = "" if people["outside"][pid] else W.REGIONS[int(people["region"][pid])]
         prev, since = "", ""
+        was = reg
         if pid in moved and reg:
             prev = W.REGIONS[(int(people["region"][pid]) + 2) % len(W.REGIONS)]
             # a move is recorded whenever it happened, which for most of them is years back
             since = W.iso(int(rng.integers(140, W.WIN_B - 20)))
+            if W.day(140) < W.day(W.WIN_A) and since > W.iso(W.WIN_A):
+                was = prev
+        elif pid in silent and reg:
+            was = W.REGIONS[(int(people["region"][pid]) + 3) % len(W.REGIONS)]
+        at_window_start[key] = was
         dd = de = ""
         lp = last.get(pid, -1)
         if pid in died and -1 < lp < W.NDAY - 40:
@@ -422,6 +469,9 @@ def write_person_register(tgt, people, keys, new_keys, switch_day, kept, rejecte
         elif pid in gone and -1 < lp < W.NDAY - 40:
             de = W.iso(min(W.NDAY - 1, lp + int(rng.integers(5, 90))))
         rows.append([key, int(people["birth"][pid]), people["sex"][pid], reg, prev, since, dd, de])
+    prior = [[r[0], r[1], r[2], at_window_start[r[0]]] for r in rows]
+    write_csv(os.path.join(tgt, "person_register_2025Q4.csv"),
+              ["person_key", "year_of_birth", "sex", "region"], prior)
     return write_csv(os.path.join(tgt, "person_register.csv"),
                      ["person_key", "year_of_birth", "sex", "region", "previous_region",
                       "region_recorded_from", "date_of_death", "date_of_emigration"], rows)
@@ -536,17 +586,27 @@ def write_pharmacy_register(tgt, kept):
     flat = [(m, "%s Apotek" % n if n in NAMED else "%s %s Apotek" % (m, n))
             for m, names in PHARMACY_NAMES for n in names]
     assert len(set(x[1] for x in flat)) == len(flat), "two pharmacies would carry the same name"
-    seen = sorted(set((r["chain"], r["pharmacy"]) for r in kept))
-    closed = closed_pharmacies(seen)
+    pharm_of = {}
+    for ci, (code, _name) in enumerate(W.CHAINS):
+        pharm_of[ci] = ["%s-%03d" % (code, 101 + j) for j in range(14 + 4 * ci)]
+    moves = pharmacy_moves(pharm_of)
+    home = {ph: ci for ci, lst in pharm_of.items() for ph in lst}
+    seen = sorted(set(r["pharmacy"] for r in kept), key=lambda p: (home[p], p))
+    closed = closed_pharmacies(set((home[p], p) for p in seen))
     rows, used = [], 0
-    for ci, ph in seen:
+    for ph in seen:
         muni, name = flat[used % len(flat)]
         used += 1
-        rows.append([ph, name, W.CHAINS[ci][0], W.CHAINS[ci][1], muni,
-                     W.iso(closed[ph]) if ph in closed else ""])
+        now = owner_at(moves, ph, W.PULL_DAY, home[ph])
+        prev, since = "", ""
+        if ph in moves:
+            prev = W.CHAINS[moves[ph][0]][0]
+            since = W.iso(moves[ph][2])
+        rows.append([ph, name, W.CHAINS[now][0], W.CHAINS[now][1], muni,
+                     prev, since, W.iso(closed[ph]) if ph in closed else ""])
     return write_csv(os.path.join(tgt, "pharmacy_register.csv"),
                      ["pharmacy_id", "pharmacy_name", "chain_code", "chain_name", "municipality",
-                      "closed_on"], rows)
+                      "previous_chain_code", "in_chain_from", "closed_on"], rows)
 
 
 def write_holder_register(tgt):

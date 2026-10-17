@@ -198,7 +198,9 @@ def all_down():
 
 
 def plant_state(stamps_local):
-    """Energy factor of the plant's own sound: 0 in a stop, 1 running, more while a centrifuge runs."""
+    """Energy factor of the plant's own sound, source by source: the blowers run through everything but
+    the weekly inspection, the gas engine comes off load on its own, and the centrifuges run their
+    dewatering shifts."""
     cf = np.zeros(len(stamps_local), dtype=bool)
     days = sorted({s.date() for s in stamps_local})
     runs = {d: centrifuge_runs(d) for d in days}
@@ -207,7 +209,12 @@ def plant_state(stamps_local):
             if a <= s < b:
                 cf[i] = True
                 break
-    k = plant_load(stamps_local) * np.where(cf, 1.22, 1.0)
+    eng = np.ones(len(stamps_local), dtype=bool)
+    for start, mins, _ in W.ENGINE_STOPS:
+        end = start + dt.timedelta(minutes=mins)
+        eng &= ~np.array([(s >= start) and (s < end) for s in stamps_local])
+    sh = W.SOURCE_SHARE
+    k = plant_load(stamps_local) * (sh["blowers"] + sh["engine"] * eng + sh["centrifuges"] * cf)
     for start, end in all_down():
         inside = np.array([(s >= start) and (s < end) for s in stamps_local])
         k = np.where(inside, 0.0, k)

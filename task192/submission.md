@@ -55,21 +55,21 @@ recall, and not 250, the coded count with its false marks taken out.
 2. Actions recorded in the period: 4,627; with a press monitor report: 4,200; only from a filer: 427;
    carrying a confrontational code under the classifier: 302; under a filer: 30; reports hand coded:
    1,000.
-3. Per fortnight, actions recorded, municipalities touched and the share of those actions the partner
-   network reported, 13 rows in the file's order, counts as whole numbers and shares to one decimal:
-   - Q1, 1 to 14 May: 289 actions, 111 municipalities, 23.9 per cent
-   - Q2, 15 to 28 May: 257 actions, 110 municipalities, 26.5 per cent
-   - Q3, 29 May to 11 June: 234 actions, 100 municipalities, 20.9 per cent
-   - Q4, 12 to 25 June: 257 actions, 103 municipalities, 20.2 per cent
-   - Q5, 26 June to 9 July: 265 actions, 104 municipalities, 25.3 per cent
-   - Q6, 10 to 23 July: 259 actions, 103 municipalities, 23.6 per cent
-   - Q7, 24 July to 6 August: 230 actions, 100 municipalities, 27.8 per cent
-   - Q8, 7 to 20 August: 231 actions, 105 municipalities, 25.5 per cent
-   - Q9, 21 August to 3 September: 248 actions, 111 municipalities, 23.4 per cent
-   - Q10, 4 to 17 September: 581 actions, 116 municipalities, 24.8 per cent
-   - Q11, 18 September to 1 October: 565 actions, 118 municipalities, 26.5 per cent
-   - Q12, 2 to 15 October: 554 actions, 119 municipalities, 26.4 per cent
-   - Q13, 16 to 30 October: 657 actions, 119 municipalities, 25.4 per cent
+3. Per fortnight, actions recorded, municipalities touched and how many of those actions the partner
+   network reported, 13 rows in the file's order, all three as whole numbers:
+   - Q1, 1 to 14 May: 289 actions, 111 municipalities, 69 reported by the network
+   - Q2, 15 to 28 May: 257 actions, 110 municipalities, 68 reported by the network
+   - Q3, 29 May to 11 June: 234 actions, 100 municipalities, 49 reported by the network
+   - Q4, 12 to 25 June: 257 actions, 103 municipalities, 52 reported by the network
+   - Q5, 26 June to 9 July: 265 actions, 104 municipalities, 67 reported by the network
+   - Q6, 10 to 23 July: 259 actions, 103 municipalities, 61 reported by the network
+   - Q7, 24 July to 6 August: 230 actions, 100 municipalities, 64 reported by the network
+   - Q8, 7 to 20 August: 231 actions, 105 municipalities, 59 reported by the network
+   - Q9, 21 August to 3 September: 248 actions, 111 municipalities, 58 reported by the network
+   - Q10, 4 to 17 September: 581 actions, 116 municipalities, 144 reported by the network
+   - Q11, 18 September to 1 October: 565 actions, 118 municipalities, 150 reported by the network
+   - Q12, 2 to 15 October: 554 actions, 119 municipalities, 146 reported by the network
+   - Q13, 16 to 30 October: 657 actions, 119 municipalities, 167 reported by the network
 4. Per access route, the reports received in the period, those the association could not place and the
    median minutes from the start of the action to the report, 3 rows, counts as whole numbers and
    minutes to one decimal:

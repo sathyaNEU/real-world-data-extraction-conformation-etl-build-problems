@@ -34,13 +34,26 @@ WEEKS = [dt.date(2026, 8, 31) + dt.timedelta(days=7 * i) for i in range(6)]
 # opens at 07:00.
 PLANNED_STOPS = [
     (dt.datetime(2026, 9, 1, 4, 45), 120, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 8, 5, 0), 115, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 15, 4, 30), 145, "weekly MCC inspection, blower strainer clean and hour "
+    (dt.datetime(2026, 9, 8, 5, 0), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 15, 4, 30), 120, "weekly MCC inspection, blower strainer clean and hour "
                                            "counter change on CHP-01"),
-    (dt.datetime(2026, 9, 22, 5, 10), 105, "weekly MCC inspection and belt check"),
-    (dt.datetime(2026, 9, 29, 4, 40), 135, "weekly MCC inspection, centrifuge scroll check"),
-    (dt.datetime(2026, 10, 6, 5, 0), 110, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 22, 4, 50), 120, "weekly MCC inspection and belt check"),
+    (dt.datetime(2026, 9, 29, 4, 40), 120, "weekly MCC inspection, centrifuge scroll check"),
+    (dt.datetime(2026, 10, 6, 5, 0), 120, "weekly MCC inspection and belt check"),
 ]
+
+# The gas engine comes off load on its own from time to time: a gas quality trip, an oil change, a
+# service. The blowers and the centrifuges carry on through these, so the plant is never down.
+ENGINE_STOPS = [
+    (dt.datetime(2026, 9, 3, 13, 20), 95, "CHP-01 tripped on gas quality, flare in service"),
+    (dt.datetime(2026, 9, 11, 9, 5), 225, "CHP-01 oil and filter change"),
+    (dt.datetime(2026, 9, 23, 20, 40), 140, "CHP-01 tripped on gas quality, flare in service"),
+    (dt.datetime(2026, 10, 2, 8, 15), 310, "CHP-01 500 hour service"),
+    (dt.datetime(2026, 10, 9, 14, 50), 70, "CHP-01 tripped on jacket water temperature"),
+]
+
+# What each source contributes to the plant's sound at a position, as a share of the running plant.
+SOURCE_SHARE = {"blowers": 0.55, "engine": 0.20, "centrifuges": 0.25}
 UNPLANNED_STOPS = [
     # the only unplanned stop the log holds falls before the survey's first deployment
     (dt.datetime(2026, 8, 26, 2, 10), 22, "ESB supply dip, all drives tripped"),
@@ -236,20 +249,20 @@ SLOW = {
 # printed level sits on a rounding edge or on the printed value itself. Fixed by the per-position scan in
 # scratch; they move no slate.
 SHIFT = {
-    "NSL01": -0.06669,
-    "NSL02": -0.14614,
-    "NSL03": -0.27226,
-    "NSL04": -0.07547,
-    "NSL05": -0.31365,
-    "NSL06": -0.83881,
-    "NSL07": -0.02377,
-    "NSL08": -0.70789,
-    "NSL09": -0.24012,
-    "NSL10": -1.19479,
-    "NSL11": -0.12031,
-    "NSL12": -0.34761,
-    "NSL13": +0.03919,
-    "NSL14": +0.09857,
+    "NSL01": -0.08051,
+    "NSL02": -0.14792,
+    "NSL03": -0.28131,
+    "NSL04": -0.09112,
+    "NSL05": +0.36613,
+    "NSL06": -0.88346,
+    "NSL07": -0.02562,
+    "NSL08": -0.69449,
+    "NSL09": -0.24050,
+    "NSL10": -0.74610,
+    "NSL11": -0.07719,
+    "NSL12": -0.29204,
+    "NSL13": +0.05014,
+    "NSL14": +0.11207,
 }
 
 

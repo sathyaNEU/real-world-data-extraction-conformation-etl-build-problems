@@ -392,10 +392,18 @@ what a correct estimator usually looks like. Written out, it does not fire. **Ve
 
 **Measured on a real selection, not modelled.**
 
-A synthetic population in four classes (contractor certificates, subcontractor interim payments, day-work
-variation invoices, sundries) and a real monetary-unit selection at 180,000 from a random start. The
-defect is a wrong day-work labour rate applied across small variation invoices in six programmes; eleven
-of them fall in the sample, and one certificate carries a separate 24,000 error.
+A population of over 26,000 payment lines in four classes (contractor certificates, subcontractor
+interim payments, day-work variation invoices, sundries) and a real monetary-unit selection at 180,000
+from a random start. The defect is a wrong day-work labour rate applied across small variation invoices in
+seven of the nine programmes; the two largest, which are paid almost entirely on contractor certificates,
+carry none of it, and **no certificate is overstated: every line certain of selection was found sound**,
+which is what makes the recorded-value ratio fail. A first draft put an error on one certificate and it
+inverted two rungs, because the ratio route scales that error by the whole-population factor while the
+stratum route takes it at face: the line is in `## Tried and rejected`.
+
+The figures in the table below are the measured ones at the design point the generator carries. Every one
+is asserted in `checks.py` against the clean truth, and `verify.py` recomputes each from the bundle alone
+on its own code path, recovering the interval itself rather than being told it.
 
 | Rung | The analysis | Figure | Upper limit | Decision | Step |
 |---|---|---|---|---|---|
@@ -502,6 +510,8 @@ Pair ceiling: 38
 
 Mirror leakage: 21.0 per cent of ask weight
 
+Measured by: `generator/checks.py`, whose `_blind` function runs the five blind families on the cut pack and whose A1, A2 and A3 blocks run each cracker reading against the golden
+
 | Ask | The cracker, a response that answers the call correctly and takes each ask's obvious reading | What it never reaches | Verdict |
 |---|---|---|---|
 | A1 | one cut-off applied to the whole year | the cut-off moved on 1 July and the register carries both effective dates, so the second half is counted against the wrong one, and a run sitting exactly on the cut-off is within it | miss |
@@ -512,11 +522,59 @@ Mirror leakage: 21.0 per cent of ask weight
 
 ## Pre-ship check
 
-To be completed at stage 3. The free gates owed: generator `checks.py` including the three-rules block and
-the analyst test on the clean truth, `verify.py` on the cut pack alone, two byte-identical rebuilds,
-`figures_check.py`, the realism sweep, `golden-realism`, `reduce-house-fixes`, `leak.py`, `guard.py`
-surface and heart, and the input gates. The two tuning targets in `## Draw` are asserted in `checks.py`
-before the bundle is declared ready, together with the ten-route table and the lattice's feasible set.
+**The pack.** 18 files, four formats (11 csv, 2 xlsx, 3 pdf, 1 md), the spine
+`capital_payment_lines_2026.csv` at over 26,000 payment lines, two declared distractors (the funder's
+grant claim on a claim year to 31 March, and the revenue expenditure summary, which is the other
+population the plan tests) plus the prior year's lines, which the two-year testing extract needs and whose
+own misstatement is stated nowhere.
+
+**Layer 1, every item produced by the authority's own systems and none of it deciding the call.** The
+ledger carries one row per payment line and several lines per invoice; two payments were reversed inside
+the year and the credit notes that reverse them ship beside them; the bank feed delivered one payment run
+twice with its own delivery sequence; the supplier master numbers suppliers differently from the ledger
+and a crosswalk carries both, which the testing schedule's references need; the schedule is a table inside
+a PDF; the prior year's tested lines and the current year's sit in one overlapping extract; the capital
+programme register states approved budgets in thousands where every other file is in euro to the cent; the
+authority's financial year is the calendar year while the funder's claim runs to 31 March; one line was
+queried and re-tested, so the schedule carries it twice, and it carries no exception, so no figure the
+report states turns on it.
+
+**What is filed at authority, and nothing more.** Plan 4.2 (tolerable misstatement and the confidence),
+plan 4.3 (the conclusion, as a confidence statement that only a bound satisfies), manual 9.1 (the
+estimand) and manual 9.2 (that no record holds the answer). Asserted by word sweep over every shipped
+file: no selection interval, no selection count, no inclusion probability, no reliability or expansion
+factor, no basic precision, no incremental allowance, no upper limit, no expected-misstatement allowance,
+and nothing about projecting, scaling, weighting, extrapolating or monetary units.
+
+**The free gates.**
+
+| Gate | Result |
+|---|---|
+| `precut.py task190` | 49 checks, 0 FAIL, 0 WARN |
+| `voice-check.py task190` | PASS, 991 characters |
+| generator `checks.py` | the three-rules block R1 to R3c on the clean truth, the analyst test executed, the ladder's conclusions at 4.3, the determinism block including the whole route table and the lattice, SF1 to SF13, the five blind families, the input gates and the asks |
+| `verify.py` (reads `target/` and `figures.json` only, own code path, recovers the interval itself) | 0 failed |
+| two consecutive rebuilds | `target/` and `golden/` byte-identical |
+| `figures_check.py task190` | every figure in blocks 1 to 4 present in `figures.json` |
+| `leak.py task190 --asof 2027-02-26` | REVIEW, every line answered below |
+| `guard.py check` / `heart` | no BLOCK; WARN on the two answered gate_g repeats |
+| `guard.py surface` | personas are the card's own; one promoted pair reported to the author |
+
+**The leak report's lines, answered.** Tolerable misstatement is in the plan by design and approved, and
+the write-up no longer repeats the figure in its graded blocks, so the sweep that first flagged it as a
+golden figure now passes. The plan and the provenance note share the call's vocabulary because 9.1 is the
+estimand and the question is asked in the manual's words; the shared terms are payment, population,
+misstatement, programme and tested, which the question cannot be asked without. No golden figure appears
+in any shipped file, asserted.
+
+**Golden realism.** The schedule is sorted by the misstatement indicated and then by programme name, the
+order the chart uses; recorded value to the cent as the ledger holds it, the misstatement whole because
+9.1 states it to the nearest fifty thousand, the share to one decimal; the authority row carries its own
+certain share rather than a blank. The chart's title is the finding, the axis names its unit and its
+grain, the three nil programmes are explained in a footer from the pack's own facts, and the source strip
+carries the testing completion date. Every programme's recorded value is a non-round figure: nine totals
+each within a euro of a round million was the first draft's clearest tell and the contractor certificates
+were round too, so both were redrawn.
 
 
 ## Tried and rejected
@@ -658,3 +716,26 @@ before the bundle is declared ready, together with the ten-route table and the l
   outside the band", told the solver where to build the counterfactual. A sentence filed to close one thing
   closes more than it was asked to, so any sentence filed at authority now goes to the author in its exact
   wording before it ships.
+- **An error on one contractor certificate.** It was put there so the Dredging programme would not read
+  nil, and it inverted two rungs: the recorded-value ratio scales a certainty line's error by the whole
+  population factor (2.8x) while the stratum route takes it at face, so at an error of 62,400 the ratio
+  route filed 216,123 against the stratum route's 182,462 and the ladder ran backwards. The arithmetic is
+  that the inversion happens whenever the certainty error exceeds about 2.9 times the proportional
+  findings, and keeping it below that left too little room to also hold the rungs 1.15x apart. Replaced by
+  putting the defect in a seventh programme's day-work instead, so no certainty line carries an error at
+  all. That is better in three ways: the ladder is monotone by construction, the story is cleaner (the big
+  certificates get the most scrutiny and were sound, which is exactly why the recorded-value ratio fails),
+  and the two largest programmes reading nil is a fact a reader can check rather than a coincidence.
+- **Computing the golden from the designer's exact tainting fractions.** The schedule ships the amount
+  recorded and the amount properly payable, both to the cent, so a solver's fraction is theirs and not the
+  designer's. The generator and the independent verifier disagreed by up to 34 cents until the fraction
+  was recomputed from the rounded payable, which is now what the population carries.
+- **Shipping the ledger extract sorted by payment date.** The selection cumulates the population in the
+  ledger's own sequence, and sorting the extract by date destroyed that order, so the interval was no
+  longer recoverable and the verifier could not reproduce the figure at all. The extract now ships in the
+  ledger's posting sequence with a `ledger_sequence` column, which is how a ledger extract comes out and
+  which survives a solver re-sorting the file.
+- **Nine programme totals each within a euro of a round million.** The first draft scaled each programme
+  to a round target and the contractor certificates were round too, which is the clearest realism tell in
+  the pack and would have been the first thing a reader quoted. Both were redrawn off round numbers, which
+  moved the cumulative values and forced the design point to be re-tuned from scratch.

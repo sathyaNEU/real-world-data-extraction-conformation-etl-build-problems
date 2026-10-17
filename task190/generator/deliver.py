@@ -10,14 +10,23 @@ import world as W
 
 
 def table(path, g):
+    """The schedule the committee paper carries: one row per work programme, the authority last.
+
+    Sorted by the misstatement indicated, descending, then by programme name, which is the order
+    the chart uses too. Recorded value to the cent as the ledger holds it, the misstatement whole
+    because 9.1 states it to the nearest fifty thousand, the share to one decimal.
+    """
+    cert_total = sum(g["recorded"][c] * g["certain_share"][c] / 100.0 for c in W.PROG_CODES)
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh, lineterminator="\n")
-        w.writerow(["work_programme", "payments_recorded_eur", "misstatement_indicated_eur",
+        w.writerow(["work_programme", "programme_code", "payments_recorded_eur",
+                    "misstatement_indicated_eur",
                     "share_of_recorded_value_certain_of_selection_pct"])
         for c in sorted(W.PROG_CODES, key=lambda c: (-g["per"][c], W.PROG_NAME[c])):
-            w.writerow([W.PROG_NAME[c], "%.2f" % g["recorded"][c], g["per"][c],
+            w.writerow([W.PROG_NAME[c], c, "%.2f" % g["recorded"][c], g["per"][c],
                         "%.1f" % g["certain_share"][c]])
-        w.writerow(["Authority", "%.2f" % g["recorded_total"], g["total"], ""])
+        w.writerow(["Authority", "", "%.2f" % g["recorded_total"], g["total"],
+                    "%.1f" % (100.0 * cert_total / g["recorded_total"])])
     return path
 
 
@@ -30,11 +39,11 @@ def chart(path, g):
     bars = ax.barh(range(len(order))[::-1], vals, color=cols, height=0.64)
     ax.set_yticks(range(len(order))[::-1])
     ax.set_yticklabels(names, fontsize=9)
-    ax.set_xlabel("Misstatement indicated, thousands of euro", fontsize=9)
-    ax.set_title("Capital programme payments 2026: misstatement indicated by work programme,\n"
-                 "authority total %s euro against tolerable misstatement of %s euro"
-                 % (format(g["total"], ","), format(int(W.TOLERABLE), ",")), fontsize=10,
-                 loc="left")
+    ax.set_xlabel("Misstatement indicated, thousands of euro, to the nearest fifty", fontsize=9)
+    ax.set_title("The capital programme payments population is referred for extended testing:\n"
+                 "%s euro indicated for the year to 31 December 2026, %s of it in %s"
+                 % (format(g["total"], ","), format(g["per"][g["largest"]], ","),
+                    W.PROG_NAME[g["largest"]]), fontsize=10, loc="left")
     for i, (b, v) in enumerate(zip(bars, vals)):
         ax.text(b.get_width() + max(vals) * 0.012, b.get_y() + b.get_height() / 2,
                 "%s" % format(int(v * 1000), ","), va="center", fontsize=8.5)
@@ -42,8 +51,10 @@ def chart(path, g):
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
     ax.tick_params(axis="x", labelsize=8.5)
-    fig.text(0.985, 0.022, "%s marked: the programme carrying most of the misstatement"
-             % W.PROG_NAME[g["largest"]], ha="right", fontsize=8, color="#44546a")
+    fig.text(0.012, 0.022, "Three programmes show no misstatement: none of the lines tested in "
+             "them carried an exception.", ha="left", fontsize=8, color="#44546a")
+    fig.text(0.988, 0.022, "Internal audit, testing completed %s" % W.TESTING_DONE,
+             ha="right", fontsize=8, color="#44546a")
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(path, format="png", metadata={"Software": None})
     plt.close(fig)

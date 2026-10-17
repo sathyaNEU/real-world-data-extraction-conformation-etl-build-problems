@@ -110,44 +110,21 @@ def log_runs(target):
     return sorted(runs)
 
 
-def assessment_days(target):
-    """Per position, the weekday assessment windows its deployments cover, in local time."""
-    import csv as _c
-    out = {}
-    for d in _c.DictReader(open(os.path.join(target, PK.FILES["deployments"]), encoding="utf-8")):
-        a = dt.date.fromisoformat(d["start_date"])
-        b = dt.date.fromisoformat(d["end_date"])
-        for k in range((b - a).days + 1):
-            day = a + dt.timedelta(days=k)
-            if day.weekday() > 4:
-                continue
-            out.setdefault(d["position_code"], []).append(
-                (dt.datetime(day.year, day.month, day.day, W.DAY_START),
-                 dt.datetime(day.year, day.month, day.day, W.DAY_END)))
-    return out
-
-
-def plant_state_per_position(target):
-    """A2: the minutes of each position's assessment period a centrifuge was running, and the number of
-    runs that reached into it."""
+def plant_state_per_position(target, frames):
+    """A2: of the minutes behind each position's level, how many fell in a dewatering run and how many
+    runs those minutes span. Plan 5.2 says what a run is and how long it lasts."""
     runs = log_runs(target)
     out = {}
-    for code, wins in assessment_days(target).items():
-        mins = 0
-        for lo, hi in wins:
-            iv = sorted((max(a, lo), min(b, hi)) for a, b in runs if a < hi and b > lo)
-            cur = None
-            for a, b in iv:
-                if cur and a <= cur[1]:
-                    cur = (cur[0], max(cur[1], b))
-                else:
-                    if cur:
-                        mins += int((cur[1] - cur[0]).total_seconds() // 60)
-                    cur = (a, b)
-            if cur:
-                mins += int((cur[1] - cur[0]).total_seconds() // 60)
-        n = sum(1 for a, b in runs if any(a < hi and b > lo for lo, hi in wins))
-        out[code] = {"centrifuge_minutes": mins, "centrifuge_runs": n}
+    for code, d in frames.items():
+        stamps = d["stamps"][d["keep"]]
+        mins, hit = 0, set()
+        for t in stamps:
+            for i, (a, b) in enumerate(runs):
+                if a <= t < b:
+                    mins += 1
+                    hit.add(i)
+                    break
+        out[code] = {"centrifuge_minutes": mins, "centrifuge_runs": len(hit)}
     return out
 
 
@@ -191,7 +168,7 @@ def compute(target, series, dup):
     eng = engine_hours(target)
     for k in weekly:
         weekly[k]["engine_hours"] = eng[k]
-    plant = plant_state_per_position(target)
+    plant = plant_state_per_position(target, frames)
     rows = []
     for c in W.CODES:
         rows.append({

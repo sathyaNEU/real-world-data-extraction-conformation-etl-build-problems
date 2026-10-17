@@ -1,14 +1,14 @@
 # leak check, task192
 
-**Verdict: REVIEW.** 18 files read, 60 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 18 files read, 52 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: asserted, classifier, record, quoted, carries, sentence, coding, worksheet, measured, audited, protocol, decisive, change, nothing, monitor, dictionary, population, method, correction, window, changes, instrument, validation, sensitivity, district
+Stump terms swept: asserted, classifier, record, quoted, carries, sentence, coding, worksheet, measured, audited, protocol, decisive, change, nothing, monitor, dictionary, population, method, correction, window, shares, changes, instrument, validation, different
 
 ## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `boletins_anteriores_2026.pdf`: golden figure 118 appears: ...s Municipios tocados Localidades tocadas maio 592 118 349 junho 528 117 333 julho 576 117 340 agosto 50...
 - **REVIEW** `boletins_anteriores_2026.pdf`: golden figure 119 appears: ...ulho 576 117 340 agosto 504 117 335 setembro 1174 119 482 Notas Uma acao e contada uma vez, qualquer qu...
+- **REVIEW** `boletins_anteriores_2026.pdf`: golden figure 118 appears: ...s Municipios tocados Localidades tocadas maio 592 118 349 junho 528 117 333 julho 576 117 340 agosto 50...
 - **REVIEW** `relatorios_mensais_parceiros_2026.pdf`: golden figure 103 appears: ...r avaria no portal agosto 46 setembro 117 outubro 103 novembro 31 Plataforma de Bairros da Margem Sul (...
 
 ## 9 dates after the setting (REVIEW 2)

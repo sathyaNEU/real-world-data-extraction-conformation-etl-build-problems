@@ -225,6 +225,7 @@ window is twice what it is outside it.
 | SF22 | a district's clock | the offset the monitor's configuration gives the district, the Azores an hour behind | the mainland clock everywhere | one route's median moves by a minute | `config_monitor.json` quoted and the gazetteer's district column; asserted that the two island districts are separate |
 | SF23 | the reception moment of a press report | the first of its items, the dictionary's sentence | the last item, or every item | one route's median changes | the dictionary's `carimbo_recepcao` line; asserted |
 | SF24 | an Azores action | an action in the Azores district, on the Azores clock | none in the record | the median would not move | asserted that the record holds actions in the Azores district |
+| SF25 | an action a route reported | an action that route delivered a report of, however many other routes also did | an action only that route reported | the fortnight's partner count falls by three quarters | the `convencoes` sheet quoted; asserted that the two readings give different counts |
 
 ## Ladder
 
@@ -356,30 +357,42 @@ and 6.10 where it read 6.40, 7.25, 6.75, 8.15 and 6.40, and the July adenda rais
 than 6.20. P07's rate moved from 6.15 to 6.10 after its total came in at 0.35 of a euro from its edge,
 the tightest of the seven. The three medians
 are whole minutes and each route's two middle values are equal, so neither the rounding nor the
-even-set convention can move them. **The thirteen partner shares, measured to the printed edge.** A
-share is printed to one decimal, so its edge is at x.x5 and the distance to it is half a tenth less the
-distance to the nearest printed value; the earlier reading of this note measured the distance to the
-printed value instead and so named the wrong share and the wrong distance. Measured correctly on the
-shipped pack:
+even-set convention can move them. **The build grades no percentage at all.** The fortnight's partner
+column is a count of the fortnight's actions the network reported, not a share of them, so thirteen
+graded cells have no rounding in them and axis 10 carries no percentage anywhere: the graded set is
+the count to the nearest fifty, 39 fortnight counts, 6 route counts, 3 medians in whole minutes and 7
+euro totals. `bin.no_graded_percentage` asserts the deliverable answers state no percentage and
+`bin.prompt_rounds_no_share` that the prompt asks for none. The bulletin's own rounding rule for a
+percentage is filed in the dictionary anyway, which closes the axis for anything later:
+`convencoes` carries "uma percentagem e arredondada uma vez, a uma decimal, a partir do valor exato, e
+nao truncada nem arredondada por etapas", asserted by `bin.share_rounding_filed`.
+
+**The measurement that sent the column to a count, kept as a record.** A share is printed to one
+decimal, so its edge is at x.x5 and the distance to that edge is half a tenth **less** the distance to
+the nearest printed value; the first reading of this note measured the distance to the printed value
+instead, which is the complement, and so reported clearance where it had measured proximity and named
+the wrong tightest cell as a necessary consequence. Measured correctly on the shipped pack, had the
+column stayed a share:
 
 | | Q1 | Q2 | Q3 | Q4 | Q5 | Q6 | Q7 | Q8 | Q9 | Q10 | Q11 | Q12 | Q13 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | points to the printed edge | 0.0254 | 0.0091 | 0.0098 | 0.0165 | 0.0330 | **0.0021** | 0.0239 | 0.0089 | 0.0371 | 0.0349 | **0.0013** | 0.0038 | 0.0314 |
 
-The tightest is Q11, 18 September to 1 October, 150 of 565, exact 26.548673 per cent, printing 26.5
-and sitting 0.0013 points from the 26.55 edge; Q6 at 0.0021 is next. **What that can and cannot do.**
-Every share is an exact ratio of two integers, so no convention, order of operations or floating-point
-path moves its value, and the generator asserts none of them is an exact x.x5: the data cannot move
-Q11 either, since one more partner-reported action gives 26.73 and one more other action 26.50. The one
-path that misprints it is a two-step rounding, 26.548673 to 26.55 to 26.6, and **Q11 is the only one of
-the thirteen a two-step path would move**, which the generator measures and reports. That path is
-closed at authority rather than by distance: the dictionary's `convencoes` sheet now files "uma
-percentagem e arredondada uma vez, a uma decimal, a partir do valor exato, e nao truncada nem
-arredondada por etapas", which is the rounding path of axis 10 and holds for all thirteen at any
-distance from an edge, and the generator asserts that sentence is in the shipped workbook. The
-distances are reported rather than relied on, with a floating-point floor of 0.001 points asserted per
-share. All of it is asserted (`bin.total`, `bin.cand.*`, `bin.euros.*`, `bin.share.*`,
-`bin.share_exact.*`, `bin.share_rounding_filed`, `bin.share_two_step_reported`, `bin.median.*`).
+The tightest would have been Q11, 18 September to 1 October, 150 of 565, exact 26.548673 per cent,
+printing 26.5 and sitting 0.0013 points from the 26.55 edge, with Q6 at 0.0021 next; and Q11 is the
+only one of the thirteen a two-step rounding path would have moved, 26.548673 to 26.55 to 26.6. Every
+share is an exact ratio of two integers, so no convention, order of operations or floating-point path
+moves its value, and the data cannot move Q11 either, since one more partner-reported action gives
+26.73 and one more other action 26.50. Filing the rounding path closed the one misprinting route, but
+`determinism-check` §3 says never grade a percentage near a one-decimal edge and says it flatly, so
+the column was moved to a count instead: that removes the hazard class rather than managing one
+instance of it, and it costs nothing, because the fortnight's total actions are already graded and the
+count and the share are each derivable from the other given what the write-up states either way. One
+independent quantity, presented the way that has no rounding edge in it. The generator keeps the
+measurement as a record (`g["share_edges"]`, `g["share_two_step"]`) so the arithmetic is on file. All
+of the graded set is asserted (`bin.total`, `bin.cand.*`, `bin.euros.*`, `bin.partner_count.*`,
+`bin.median.*`, `bin.no_graded_percentage`, `bin.prompt_rounds_no_share`,
+`bin.share_rounding_filed`).
 
 **The grid.** Two axes, how the reports are resolved and which measured quantity the count carries:
 
@@ -509,7 +522,14 @@ one INFO on container metadata. Each is answered here.
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A1 per fortnight, the actions recorded, the municipalities touched and the share of those actions the partner network reported | 3 per fortnight, 13 fortnights | the construction's own output on the segment the trustees want anyway, the actions the count is taken from | the bulletin's standing table | D6 grain: the share is the part of the fortnight's actions the network reported, not the part of the fortnight's reports the network filed, which moves nine of the thirteen rows and the last one by 6.5 points | D1 the re-imported month doubles reports and no actions; D5 scope: the last fortnight has fifteen days, so a solver who stops the thirteenth at 29 October loses 52 actions | item log, partner reports, public line, gazetteer, protocol, dictionary, manifest, import log; 12 columns | 4 stops, lazy delta 11 of 13 fortnights | the bulletin's own standing table |
+| A1 per fortnight, the actions recorded, the municipalities touched and how many of those actions the partner network reported | 3 per fortnight, 13 fortnights | the construction's own output on the segment the trustees want anyway, the actions the count is taken from | the bulletin's standing table | D5 scope: the partner column counts the fortnight's actions by the day of the action, and the network's deliveries lag the action by a median 1,327 minutes, so dating the column by the delivery moves eleven of the thirteen rows | D1 the re-imported month doubles the network's rows and no actions, which moves three rows hard (Q7 88 against 64, Q8 118 against 59, Q9 101 against 58); D6 grain: an action the network reported is one the network delivered a report of, however many routes also did, and the stricter reading drops every row by about three quarters; D5 again: the last fortnight has fifteen days, so a solver who stops the thirteenth at 29 October loses 52 actions | item log, partner reports, public line, gazetteer, protocol, dictionary, manifest, import log; 12 columns | 4 stops, lazy delta 11 of 13 fortnights | the bulletin's own standing table |
+
+**On the partner column being a count and not a share.** It is not a different quantity and it is not
+fewer graded cells: thirteen cells stay thirteen, and because the fortnight's total actions are graded
+beside it, the count and the share are each derivable from the other from what the write-up states
+either way. One independent quantity, presented the way that carries no rounding edge, which is why
+the conversion loses no difficulty: getting it right still means resolving the action grain, the
+reposted load, the delivery lag against the action's own day and the gazetteer.
 | A2 per access route, the reports received, those the association could not place and the median minutes from the action to the report | 3 per route, 3 routes | the audit trail from an input the call consumes, through rows it never reads, to the route's own control total | the pipeline review the data manager runs each period | D4 absence as the signal: the reports that could not be placed are held in a separate exceptions file no habitual join reaches, and the ingest counter counts the reposted load's second arrival again | D8 the reception stamps are UTC, the action times are the local clock of the action's district, the clocks go back on 25 October and the Azores run an hour behind; D6 a press report entered the monitor with the first of its items | exceptions file, ingest counter, item log, partner reports, public line, monitor configuration, gazetteer, dictionary, manifest; 12 columns | 5 stops, lazy delta 3 of 3 routes | an ingest pipeline's own period review |
 | A3 per partner organisation, the reports it filed on actions in the period, those filed after the period closed and the euros its data agreement pays for the ones filed by the close | 3 per partner, 7 partners | an input reconciled to another system's total, the gap made of devices | the finance office settles the data agreements | D2 version: one agreement was amended mid-period and the rate paid is the amended one, which the superseded schedule does not carry | D7 one partner's deliveries change code after a merger, under a second addendum; D8 the delivery stamp is UTC against the period close; D1 the reposted load is paid once; D3 basis: each organisation's own monthly return counts its reports by the month of the action while the portal stamps the delivery, so the returns and the delivered rows differ at a month boundary | partner monthly tables in PDF, agreement schedule, two addenda, ingest counter, manifest, dictionary; 13 columns | 5 stops, lazy delta 4 of 7 partners | the finance office's quarterly settlement |
 
@@ -523,9 +543,9 @@ Deleting every device leaves the share exactly as hard, asserted by count.
 | Hazard | Asks moved | Per-ask delta |
 |---|---|---|
 | D8 the clocks: UTC against the district's local time, the 25 October change and the Azores hour | A2, A3 | A2 one route's median by 56 minutes and another by one; A3 the late-filing counts |
-| D6 grain | A1, A2 | A1 the partner share in nine fortnights; A2 one route's median by 12 minutes |
-| D1 the re-imported month | A2, A3 | A2 the partner route's received count by 126; A3 the euros of every partner |
-| D5 scope | A1 | the thirteenth fortnight's three figures |
+| D6 grain | A1, A2 | A1 the partner count, every row, under the stricter reading of a reported action; A2 one route's median by 12 minutes |
+| D1 the re-imported month | A1, A2, A3 | A1 three fortnight partner counts (Q7, Q8, Q9); A2 the partner route's received count by 126; A3 the euros of every partner |
+| D5 scope | A1 | eleven partner counts when the column is dated by the delivery, and the thirteenth fortnight's three figures when the last fortnight is cut at fourteen days |
 | D7 the second delivery code | A3 | one partner's filings by 28 and its euros by 165 |
 | D3 the returns' own basis | A3 | each organisation's declared month totals against its delivered rows at a month boundary, P01's May reading 18 against 17 delivered |
 
@@ -533,20 +553,27 @@ Deleting every device leaves the share exactly as hard, asserted by count.
 the one designed disagreement, the exceptions file's extent, without naming a level.
 
 **The cracker sheet.** The cracker filed 450 confrontational actions, ran the hygiene battery,
-executed every filed paragraph and matched every control total.
+executed every filed paragraph and matched every control total. Every row below is computed on the cut
+pack rather than read off by hand, because two builds in this wave shipped a sheet whose figure was the
+complement or the mirror of the truth.
+
+**Measured by:** `generator/cracker.py`, which runs each named wrong path through `golden.py`'s own
+readers on the shipped bundle, prints this table and exits non-zero if any row's cracker figure equals
+the golden.
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
-| A1 share the partner network reported, fortnight 13 | counts reports, not actions | 18.9 per cent | 25.4 per cent | miss |
-| A1 share the partner network reported, fortnight 9 | counts reports, not actions | 26.9 per cent | 23.4 per cent | miss |
-| A2 reports received, the partner network | sums the ingest counter, which counts the reposted load again | 1,330 | 1,204 | miss |
+| A1 actions the partner network reported, fortnight 8 | counts the network's rows, so the reposted August load counts twice | 118 | 59 | miss |
+| A1 actions the partner network reported, fortnight 10 | dates the column by the delivery rather than the action | 133 | 144 | miss |
+| A1 actions the partner network reported, fortnight 11 | counts only the actions no other route reported | 31 | 150 | miss |
+| A2 reports received, the partner network | sums the ingest counter, which counts the reposted load again | 1330 | 1204 | miss |
 | A2 reports that could not be placed, the press monitor | the item log alone, which holds only the items it placed | 0 | 148 | miss |
 | A2 median minutes from the action to the report, the press monitor | reads the monitor's reception stamp as local time | 59.0 | 115.0 | miss |
 | A2 median minutes, the press monitor, every item | takes every item of a report rather than the first | 127.0 | 115.0 | miss |
 | A3 euros paid, the amended partner | the schedule's rate for the whole period, without the July adenda | 676 | 742 | miss |
 | A3 reports filed, the merged partner | one delivery code, without the September addendum | 92 | 120 | miss |
 | A3 euros paid, the merged partner | one delivery code, without the September addendum | 561 | 726 | miss |
-| A3 reports filed, all seven partners | every row of the partner file rather than the period's actions | 1,250 | 1,154 | miss |
+| A3 reports filed, all seven partners | every row of the partner file rather than the period's actions | 1250 | 1154 | miss |
 
 **Pair ceiling:** 39.0
 **Mirror leakage:** 20.0
@@ -557,18 +584,19 @@ executed every filed paragraph and matched every control total.
 
 | Gate | Result |
 |---|---|
-| generator assertions | 256, 0 failures |
+| generator assertions | 246, 0 failures |
 | `verify.py`, own code path, bundle only | 123 independent checks, 0 failures |
-| rebuilds | three byte-identical over `target/` and `golden/`, `5b92bc359c23f51a3f335c6268621918423c2083ed4a9416abefbb7035dffaed` |
+| `cracker.py` | 11 rows, 0 kept by the cracker, exit 0 |
+| rebuilds | three byte-identical over `target/` and `golden/`, `1c98de7a022b9d4da33a642396013921ffa4bade68ce8452c55b1e8b78b98290` |
 | `figures_check.py` | exit 0, 114 figures in blocks 1 to 4, 0 absent |
-| `precut.py` | exit 0, 49 checks, 0 FAIL, 0 WARN |
-| `voice-check.py` | exit 0, 995 characters |
+| `precut.py` | exit 0, 50 checks, 0 FAIL, 0 WARN |
+| `voice-check.py` | exit 0, 983 characters |
 | `leak.py --asof 2026-11-06` | REVIEW, no LEAK, five lines each answered above |
 | `guard.py surface` | 0 BLOCK lines |
 | `guard.py heart` | WARN, no BLOCK, nearest driver 0.09 |
 | container audit | `target/` and `golden/` clean, no producer signature, no out-of-band stamp |
 | input gates | 18 files, 4 formats, 26,055-row item log, 4 distractors |
-| `target.zip` | 18 members at the archive root, content byte-identical to the tree, `9f0d54cf622370c93172eed20c9806dc8acadd526dd705be28b265d24904f566` |
+| `target.zip` | 18 members at the archive root, content byte-identical to the tree, `fccd5f32f0f2cfba5070587e3a08b74dbd80afca4a0cce4778d5003f010ddd4e` |
 
 **The client's three rules, re-read against the built pack and not against the design.**
 
@@ -697,6 +725,22 @@ generator executes it (`R3a.analyst_test`).
   Replaced by start times from 07:00 to 21:59 with 82 per cent of minutes on a multiple of five, a
   working week in the daily counts, partner deliveries inside each organisation's working day, and
   lognormal lags, all asserted.
+- **(architecture 3) Grading the fortnight's partner column as a share of the fortnight's actions.**
+  The share put a one-decimal percentage in thirteen graded cells, and `determinism-check` §3 says
+  never grade a percentage near a one-decimal edge, flatly, without an exception for a filed rounding
+  path. Filing the path closed the one route that misprinted Q11, but managing one instance of a hazard
+  class is not removing the class, and a judge reading the rule as written costs a determinism return.
+  The column is now a count of the fortnight's actions the network reported. No data moved, so the
+  call, the candidate table, the 2.8-sigma family gap and the audit's own draw are untouched; thirteen
+  cells stay thirteen cells; and the difficulty is unchanged, because the count still turns on the
+  action grain, the reposted load, the delivery lag against the action's own day and the gazetteer,
+  measured at three misses on the cracker sheet. Exactly fourteen graded figures moved, the thirteen
+  converted cells and P07's euro total, confirmed by diffing `figures.json`.
+- **(architecture 3) A cracker sheet measured by hand.** Two builds in this wave shipped a sheet whose
+  figure was the complement or the mirror of the truth, and the gate that reads the sheet cannot tell.
+  The sheet is now the printed output of `generator/cracker.py`, which runs each named wrong path
+  through `golden.py`'s own readers on the shipped bundle and exits non-zero if any row's cracker
+  figure equals the golden.
 - **(architecture 3, the author's pre-ship pass of 2026-10-17) Measuring a share's distance to its
   rounding edge as the distance to its printed value.** `checks.py` computed `abs(t - round(t))` on the
   share in tenths of a point, which is the distance to the middle of the printed cell and not to its

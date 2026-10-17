@@ -245,8 +245,8 @@ Six tests per rung: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hyg
 | SF11 | the amalgamated unit's record | 41510 from 1 October 2025, its predecessors 41511 and 41512 under their own codes | the three pooled into one ten-quarter record | specification 3.6; `same call` and the same figure either way, which the generator makes exact by setting the two wards' pooled position to the amalgamated unit's own, asserted |
 | SF12 | the period an episode falls in | the period of its separation date, specification 2.5 | admission date; the complication's onset date | specification 2.5; and `same call` on the admission period, computed and asserted (7.1 per cent of in-scope episodes span a quarter boundary) |
 | SF13 | the stratum rates | the rates published with specification 4.0 in `hac_stratum_rates.csv` | rates re-estimated from the extract | specification 3.1 names the published rates; `same call`, asserted |
-| SF14 | rounding of the avoided complications | whole complications, as the prompt asks | one decimal | the prompt's closing sentence; every figure sits at least 0.14 of a complication inside its bin under every reading of the register, and the register's reading would have to move by 4.1 complications of fall before any of them changed |
-| SF15 | ties on the recommendation | none arises: 24 against 15 | - | `same call`; the margin is 1.62x, asserted |
+| SF14 | rounding of the avoided complications | whole complications, as the prompt asks | one decimal | the prompt's closing sentence; every figure sits at least 0.15 of a complication inside its bin under every one of the eight routes through the register, and the register would have to move by 6.6 complications of fall before any of them changed |
+| SF15 | ties on the recommendation | none arises: 21 against 13 | - | `same call`; the margin is 1.59x, asserted |
 
 ## Ladder
 
@@ -397,8 +397,8 @@ No shipped control, corpus or document scores a method or ranks the units.
 
 | Gate | Result |
 |---|---|
-| `generator/build.py` | 657 generator assertions, 177 independent checks, both green |
-| Three-rules block on the clean truth | R1 raw material, R2 per Layer 1 item, R3a the easy route files 41220 at 35 and the lower route 41210 at 23, R3b changing only the shape of the fall files 41230, R3c no plant: all green |
+| `generator/build.py` | 690 generator assertions, 204 independent checks, both green |
+| Three-rules block on the clean truth | R1 raw material, R2 per Layer 1 item, R3a the easy route files 41220 at 53 and the lower route 41210 at 22, R3b changing only the shape of the fall files 41230, R3c no plant: all green |
 | Independent verifier | `generator/verify.py` reads only `target/` and `figures.json`, recomputes every stated figure on pandas against the generator's csv path |
 | Two byte-identical rebuilds | pack and both goldens identical across two fresh builds; `target/` equals the rebuild |
 | Input gates | 20 files, 4 formats (csv, pdf, xlsx, txt), `episode_outcomes_extract.csv` at 290,787 rows, 3 distractors declared in `metadata.json` and named in no file name |
@@ -408,8 +408,8 @@ No shipped control, corpus or document scores a method or ranks the units.
 | `guard.py surface task194` | exit 0, five pairs promoted on relative surface similarity in the corpus top 1 per cent, no hard tell, only the two drawn personas in the cut pack |
 | `guard.py heart task194` | WARN, no BLOCK |
 | `precut.py task194` | 49 checks, 0 FAIL, 0 WARN |
-| `target.zip` | 20 entries at the archive root under their own names, md5 84f68fedbfb1b8eec10f7dd925333841, every entry asserted byte-identical to the file of the same name in `target/` and no entry carrying a directory |
-| Register readings | the six ways of pooling the register span 0.52792 to 0.52999 (0.39 per cent) and give all twelve units the same whole complication and the same gap of 9; the four shapes the fall could take leave chi-square 2.68, 35.57, 22.50 and 22.54 on seven degrees of freedom, likelihood ratios of 1.4e7, 2.0e4 and 2.1e4 to one against the register's own fit; every one asserted by name with its measured value in `checks.py` and again in `verify.py` |
+| `target.zip` | 20 entries at the archive root under their own names, md5 a1985ee1649f92a3ff69ccbfb6d03a1f, every entry asserted byte-identical to the file of the same name in `target/` and no entry carrying a directory |
+| Register routes | the eight routes through the register span 0.672126 to 0.679434 (1.087 per cent) and give all twelve units the same whole complication and the same gap of 8; the four shapes the fall could take leave chi-square 2.67, 47.35, 27.71 and 25.51 on seven degrees of freedom, likelihood ratios of 5.0e9, 2.7e5 and 9.2e4 to one against the register's own fit; every one asserted by name with its measured value in `checks.py` and again in `verify.py` |
 | House fixes | H1 containers scrubbed and audited, H4 the shipped set equals the manifest, H8 every cited clause and file resolves, H9 manifest set equality asserted, H11 one `submission.md` and one `prompt.txt`, H16 the only date past the as-of is the in-progress placement's planned end, H24 the manifest is the organisation's own compile note |
 
 **Stage 4 is staged, not spawned.** This session has no Agent tool, so the leak reader and the determinism
@@ -456,10 +456,10 @@ and the activity summary's `facility`, A3 only non-acute units' rows, A4 only `h
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, measured on the built pack |
 |---|---|---|---|---|---|---|---|
-| A1 construction | 12 per-unit avoided complications, whole | the call's own construction on every candidate | the committee sees what each unit would gain | none (the ladder carries it) | - | 6 files, 11 columns | rung 0 files 23, 15, 14, 11 at the top and 11 at the answer; rung 2 files the expected-complication vector, 304, 235, 178, 128; the golden 24, 15, 12, 9, 9, 6, 4, 4, 4, 3, 3, 2 |
+| A1 construction | 12 per-unit avoided complications, whole | the call's own construction on every candidate | the committee sees what each unit would gain | none (the ladder carries it) | - | 6 files, 11 columns | rung 0 files 22, 14, 12, 11 at the top and 11 at the answer; rung 2 files 53, 37, 34, 23 at the top; the golden 21, 13, 11, 10, 8, 5, 4, 3, 3, 3, 2, 1 |
 | A2 hospital year | 4 hospitals x (adjusted rate to one decimal, in-scope episodes, complications) = 12 | the audit trail of the indicator the call rests on, at the hospital cut the network reports on | the quality committee's own annual table | D2 attribute at the wrong vintage: three cost centres were realigned to another hospital site on 1 July 2026 and `unit_register.csv` is the master at the export date, so the site each unit reported under when an episode separated lives only in `activity_summary_monthly.csv`'s `facility` column, which the asking sentence points at without naming | the calendar year against fiscal quarters; the amalgamation; the specification's four exclusions | 5 files, 12 columns | the register's alignment moves every one of the twelve figures: episodes by 3,918, 4,960, 112 and 930 at the four hospitals, and the rates with them; a fiscal-year read moves all twelve |
 | A3 activity outside the indicator | 10 quarters x (separations, episodes with a complication) = 20 | the audit trail of the indicator's scope, which the call's denominator consumes | the committee asks every cycle what sits outside the indicator | D1 replay under fresh identifiers: the sub-acute and mental health feed loads on an overlapping window, so the episodes separated in the last three days of a month arrive again in the next batch under new episode identifiers with the patient, the admission date and the DRG kept, beside genuine same-day pairs that differ in DRG; `activity_summary_monthly.csv` is the network's separations record and reconciles only on the de-duplicated count | the three non-acute service types; care type against service type | 4 files, 10 columns | the row count runs 7.7 to 10.1 per cent high in every one of the ten quarters; a de-duplication on unit, patient and admission date alone runs low in every quarter and loses an affected episode in 2025-26 Q3; the golden reconciles to the summary |
-| A4 complication groups | 8 groups x 2 fiscal years = 16 | the audit trail of the numerator the call consumes, grouped as the specification groups it | the work plan for whichever unit is chosen | D5 silently partial extract: `hac_detail_extract.csv` is the clinical information system's feed and does not reach the wards that are not on that system, whose complications arrive only through the extract's own category column, one to an episode; `unit_register.csv`'s `clinical_information_system` column says which units those are and the manifest says what the feed omits | the 1 July 2026 list revision, where HAC04 and HAC05 name different categories either side of the date and HAC13 was folded into HAC03; episodes with two complications | 4 files, 9 columns | the detail extract alone runs 0.9 to 3.3 per cent low in every group and both years; a raw code join that ignores the revision column moves G1 by +30, G2 by -12, G3 by -47 and G4 by -50 per cent in 2025-26 |
+| A4 complication groups | 8 groups x 2 fiscal years = 16 | the audit trail of the numerator the call consumes, grouped as the specification groups it | the work plan for whichever unit is chosen | D5 silently partial extract: `hac_detail_extract.csv` is the clinical information system's feed and does not reach the wards that are not on that system, whose complications arrive only through the extract's own category column, one to an episode; `unit_register.csv`'s `clinical_information_system` column says which units those are and the manifest says what the feed omits | the 1 July 2026 list revision, where HAC04 and HAC05 name different categories either side of the date and HAC13 was folded into HAC03; episodes with two complications | 4 files, 9 columns | the detail extract alone runs 0.9 to 3.1 per cent low in every group and both years; a raw code join that ignores the revision column moves G1 by +30, G2 by -12, G3 by -47 and G4 by -50 per cent in 2025-26 |
 
 **Hazard table.** The 2026 list revision moves A4's sixteen figures and nothing else. The amalgamation moves
 A2's Carrowdean figures and nothing in A3. The fiscal-against-calendar boundary moves A2's twelve figures.
@@ -483,18 +483,20 @@ reconciliation.
 | A4 eight 2025-26 group counts | groups `hac_detail_extract.csv` on the code as recorded | miss |
 | A4 eight 2026-27 group counts | same source, so the units off the clinical information system are absent | miss |
 
-**Pair ceiling:** 36.2. The landed call banks 38 + 7 + 55 x (12 of 60 ask criteria) = 56.0 if it keeps the
-construction layer whole and misses every device ask; the best response off the call keeps 5 + 7 + 55 x 0.08
-= 16.4, since rung 2's response matches none of the twelve avoided counts and carries the same devices. A2's
-basis is now pinned in the asking sentence, so a response that reads the register's current alignment is
-wrong against a quotable sentence rather than on a second reading; the device survives because the
-historical alignment is not in the register at all.
-Average 36.2. The sensitivity worth naming: if the cracker also reads `unit_register.csv` as the master at
-the export date and takes A2 whole, the pair rises to 41.7, which is why A2's device is the one measured
+**Measured by:** `generator/cracker.py`, run on the cut pack; `checks.py` asserts both figures against it.
+
+**Pair ceiling:** 34.5. The landed call banks 38 + 7 + 55 x (12 construction criteria of 60) = 56.0, keeping
+the construction layer whole and missing every device ask: the cracker's hospital figures all miss on the
+register join, its ten quarters outside the indicator all miss on the row count, and its sixteen group
+counts all miss on the code as recorded. The best response off the call banks 5 + 7 + 55 x (1 of 60) = 12.9,
+because rung 2's vector matches one of the twelve avoided counts and it carries the same devices. Average
+34.5. The sensitivity worth naming: if the cracker reads `activity_summary_monthly.csv` for the site each
+unit reported under and takes A2 whole, the pair rises to 39.2, which is why A2's device is the one measured
 against the hygiene battery, where the register has one row per unit so no key check, fan-out check or
 unmatched join reaches it.
-**Mirror leakage:** 8.0 per cent of ask weight. The mirror stops at rung 2, files none of the twelve avoided
-counts (its vector is the expected-complication one, 304, 235, 178, 128), and carries the same devices.
+
+**Mirror leakage:** 1.7 per cent of ask weight. The mirror stops at rung 2, matches one of the twelve
+avoided counts and carries the same devices.
 
 ## Tried and rejected
 
@@ -556,3 +558,18 @@ counts (its vector is the expected-complication one, 304, 235, 178, 128), and ca
   comparison units flat). With placed units an order of magnitude apart in size, the slope it needs pushes
   small units down and large units up by 0.1 of a ratio across the panel. One pooled constraint, and one
   difference-in-differences reading rather than two, leaves every unit's own record where it was.
+
+- **This pass, the two routes the coordinator found.** A solver who meets an undefined per-placement share
+  drops that placement and averages the rest, and that route is formable. Measured on the previous pack it
+  gave 0.50719 against a pooled 0.52947 and the expected-weighted version gave 0.55306, both outside the
+  window the twelve counts allow (0.51834 to 0.53955), moving six of the twelve. Rather than narrow the
+  route set, the placement that was running at its expected number was raised to a tenth above it, so every
+  share can be formed and all eight routes are asserted. The price was paid on the fit, as offered: the
+  constant-percent shape went from 2.7e5 to one down and back up to 2.7e5 to one once the register was
+  re-searched, and the headroom improved rather than fell, from 4.5 complications to 6.6.
+- **Rejected: keeping a negative per-placement share alongside the two mean routes.** A placement that shows
+  a rise is the right texture, but on a placement carrying 16 complications of standing excess it moves the
+  unweighted mean of the shares by about 0.011, which is a third of a bin on the answer against the slack the
+  eight routes leave. The register keeps the scatter in the form the window allows: one placement at 0.022
+  that took off almost none of the excess it was carrying, one at 1.232 that took off more than all of it,
+  and standardised residuals from -0.92 to +0.84.

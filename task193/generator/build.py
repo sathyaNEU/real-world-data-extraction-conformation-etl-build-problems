@@ -41,6 +41,7 @@ def main():
     counts["person_key_crosswalk.csv"] = pack.write_crosswalk(TGT, switch_day, keys, new_keys)
     counts["person_register.csv"] = pack.write_person_register(TGT, people, keys, new_keys,
                                                                switch_day, kept, rejected)
+    counts["person_register_2025Q4.csv"] = counts["person_register.csv"]
     counts["pharmacy_register.csv"] = pack.write_pharmacy_register(TGT, kept)
     counts["holder_register.csv"] = pack.write_holder_register(TGT)
     counts["signal_tracker_export.csv"] = pack.write_tracker(TGT, first)

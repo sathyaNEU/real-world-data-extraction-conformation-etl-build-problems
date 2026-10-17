@@ -124,6 +124,9 @@ def dictionary_sheets():
                                 "quinze dias (protocolo 3.4)"),
           ("acao", "regra", "uma acao e um tema numa localidade num dia (protocolo 2.1), qualquer "
                             "que seja o numero de relatos"),
+          ("acao relatada por uma via", "regra", "uma acao e relatada por uma via quando essa via "
+                                                 "entregou relato dela, ainda que outras vias "
+                                                 "tambem o tenham feito, e conta uma vez"),
           ("relato recebido", "regra", "um relato conta uma vez na via que o recebeu, qualquer que "
                                        "seja o numero de cargas de importacao que o trouxeram"),
           ("minutos do inicio ao relato", "regra", "a diferenca entre o momento do relato e o "

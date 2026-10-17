@@ -38,6 +38,19 @@ def d_dk(s):
     return dt.date(int(s[6:10]), int(s[3:5]), int(s[0:2]))
 
 
+def chain_at(tgt):
+    """pharmacy -> a function of the day giving the chain that owned it then."""
+    reg = {}
+    for r in tab(tgt, "pharmacy_register.csv"):
+        reg[r["pharmacy_id"]] = (r["chain_code"], r["previous_chain_code"],
+                                 d_iso(r["in_chain_from"]) if r["in_chain_from"] else None)
+
+    def at(ph, day):
+        now, prev, since = reg[ph]
+        return prev if (prev and since and day < since) else now
+    return at
+
+
 def _fee_bands(tgt):
     """The statutory rates as the shipped workbook states them: the Schedule sheet for doses
     dispensed before the amendment, the Amendment sheet for doses dispensed on or after it."""
@@ -219,11 +232,13 @@ def run(tgt, figures_path):
 
     # ---- A1
     rej = tab(tgt, "submission_exceptions.csv")
+    owner = chain_at(tgt)          # the chain that owned the pharmacy on the day of the dispensing
     a1 = {}
     for label, a, b in QUARTERS:
         for ch in sorted(set(chain_of.values())):
-            acc = [r for r in lines if chain_of[r["ph"]] == ch and a <= r["day"] <= b]
-            rr = [r for r in rej if chain_of[r["pharmacy"]] == ch
+            acc = [r for r in lines if owner(r["ph"], r["day"]) == ch and a <= r["day"] <= b]
+            rr = [r for r in rej
+                  if owner(r["pharmacy"], d_iso(r["date_of_dispensing"])) == ch
                   and a <= d_iso(r["date_of_dispensing"]) <= b]
             days = sorted((r["sub"] - r["day"]).days for r in acc)
             a1[(ch, label)] = (len(acc), len(rr),
@@ -278,13 +293,17 @@ def run(tgt, figures_path):
         ck("v.a2_ddd_exact_" + h, Decimal(tot[h]) % 1 == 0,
            "tenths are whole: %s" % tot[h])
 
-    # ---- A3
+    # ---- A3. The region recorded at the start of the screen window is what the person extract
+    # delivered with the October 2025 run holds; the current extract's own history columns explain
+    # some of the differences between the two and not all of them.
+    prior = {r["person_key"]: (r["region"] or "not stated")
+             for r in tab(tgt, "person_register_2025Q4.csv")}
     reg = {}
     for r in tab(tgt, "person_register.csv"):
         region = r["region"] or "not stated"
         if r["previous_region"] and r["region_recorded_from"] and d_iso(r["region_recorded_from"]) > WIN_A:
             region = r["previous_region"]
-        reg[r["person_key"]] = (region, int(r["year_of_birth"]))
+        reg[r["person_key"]] = (prior.get(r["person_key"], region), int(r["year_of_birth"]))
     pset = set(prod.values())
     mset = set(mark.values())
     cells = collections.defaultdict(lambda: [0, 0])

@@ -130,6 +130,19 @@ def run(target, figures_path):
                 return True
         return False
 
+    # ---- plan 5.2: every centrifuge run the equipment log carries
+    cf_open, cf_runs = {}, []
+    for r in ev:
+        if not r["equipment"].startswith("CF-"):
+            continue
+        t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+        if r["event"] == "START":
+            cf_open[r["equipment"]] = t
+        elif r["equipment"] in cf_open:
+            cf_runs.append((cf_open.pop(r["equipment"]), t))
+    cf_runs.sort()
+    ok(len(cf_runs) > 50, "the log carries %d centrifuge runs" % len(cf_runs))
+
     # ---- the meters
     import pyarrow.parquet as pq
     tbl = pq.read_table(os.path.join(target, "sound_levels_1min_2026.parquet"))
@@ -163,7 +176,7 @@ def run(target, figures_path):
                "the minute's levels order as an instrument reports them (%s %s)" % (serial, stamp))
         laeq = raw - adj[ref]
         la90 = float(cols["la90_db"][i]) - adj[ref]
-        d = acc.setdefault(code, {"on": [], "off": [], "excl": 0, "la90": []})
+        d = acc.setdefault(code, {"on": [], "off": [], "excl": 0, "la90": [], "cf": 0, "runs": set()})
         day = local.weekday() <= 4 and DAY_START <= local.hour < DAY_END
         v = valid(stamp) and not nodata
         if in_down(local):
@@ -173,6 +186,11 @@ def run(target, figures_path):
             if v:
                 d["on"].append(laeq)
                 d["la90"].append(la90)
+                for j, (ra, rb) in enumerate(cf_runs):
+                    if ra <= local < rb:
+                        d["cf"] += 1
+                        d["runs"].add(j)
+                        break
             else:
                 d["excl"] += 1
     ok(len(acc) == 14, "fourteen positions carry minutes: %d" % len(acc))
@@ -194,6 +212,11 @@ def run(target, figures_path):
            "%s excluded minutes %d against %s" % (code, d["excl"], fig["excluded_minutes"][code]))
         ok(len(d["off"]) == fig["stop_minutes"][code],
            "%s stop minutes %d against %s" % (code, len(d["off"]), fig["stop_minutes"][code]))
+        ok(d["cf"] == fig["centrifuge_minutes"][code],
+           "%s dewatering minutes %d against %s" % (code, d["cf"], fig["centrifuge_minutes"][code]))
+        ok(len(d["runs"]) == fig["centrifuge_runs_position"][code],
+           "%s runs behind its level %d against %s" % (code, len(d["runs"]),
+                                                       fig["centrifuge_runs_position"][code]))
 
     order = sorted(spec, key=lambda c: -spec[c])
     ok(sorted(order[:CAP]) == sorted(fig["slate"]), "the slate is %s" % order[:CAP])
@@ -285,8 +308,6 @@ def run(target, figures_path):
            "week %d blower air %d against %d" % (i, round(air), w["blower_air_knm3"]))
         ok(runs == w["centrifuge_runs"],
            "week %d runs %d against %d" % (i, runs, w["centrifuge_runs"]))
-
-    plant_state(target, fig, spans)
 
     # ---- the goldens carry the same figures
     gold = os.path.join(os.path.dirname(target), "golden", "specific_sound_levels.csv")

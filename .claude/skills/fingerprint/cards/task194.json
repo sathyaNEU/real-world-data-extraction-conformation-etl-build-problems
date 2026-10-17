@@ -1,6 +1,6 @@
 {
-  "analyst_test": "A strong analyst who risk-adjusts every unit correctly, applies the charter's eligibility, baseline and activity clauses and prices the programme off the closed register states the effect the way a quality team states it, as the drop in the standardised ratio a placement produced, and places the team with the largest unit for 35 complications avoided; the same register read as a share of standing excess gives that unit 15 and names another unit at 24.",
-  "answer": "Alderbrook Orthopaedics, cost centre 41230: the cycle IP-10 placement avoids 24 hospital-acquired complications over the quarter from 1 April 2027, against 15 at Alderbrook General Surgery",
+  "analyst_test": "A strong analyst who risk-adjusts every unit correctly, applies the charter's eligibility, baseline and activity clauses and prices the programme off the closed register states the effect the way a quality team states it, as the drop in the standardised ratio a placement produced, and places the team with the largest unit for 53 complications avoided; the same register fitted as a share of standing excess gives that unit 13 and names another unit at 21.",
+  "answer": "Alderbrook Orthopaedics, cost centre 41230: the cycle IP-10 placement avoids 21 hospital-acquired complications over the quarter from 1 April 2027, against 13 at Alderbrook General Surgery",
   "answer_source": "golden/embed_placement_2027q4.xlsx and golden/embed_placement_brief.pdf, computed from target/ by generator/golden.py and asserted in checks.py and verify.py",
   "answer_unit": "named_option",
   "architecture": "v1",
@@ -61,7 +61,7 @@
     "none"
   ],
   "question_form": "where",
-  "registered": "2026-10-17T18:24:44Z",
+  "registered": "2026-10-17T18:58:34Z",
   "role_family": "operations_director",
   "scoring_unit": "per covered member",
   "shape": "11",
@@ -74,7 +74,7 @@
     "source": "synthetic"
   },
   "stakeholder_role": "the network's director of clinical improvement",
-  "stump": "A competent solver takes each unit's standing exactly as charter 4.3 files it, prices the programme off the closed register as the average drop in the standardised ratio a placement produced, applies that drop to the complications the quarter's planned activity carries, and places the team with Alderbrook General Surgery for 35 complications avoided, which is the unit with the most activity rather than the unit with the most excess for an embed to work on.",
+  "stump": "A competent solver takes each unit's standing exactly as charter 4.3 files it, prices the programme off the closed register as the average drop in the standardised ratio a placement produced, applies that drop to the complications the quarter's planned activity carries, and places the team with Alderbrook General Surgery for 53 complications avoided.",
   "stump_class": "analytical",
   "stump_strategy": "causal_design",
   "subdomain": "provider-quality-risk-adjustment",

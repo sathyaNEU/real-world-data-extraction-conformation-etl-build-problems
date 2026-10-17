@@ -662,6 +662,17 @@ def run(target, g, state):
         ok(os.path.getmtime(os.path.join(target, f)) ==
            os.path.getmtime(os.path.join(target, files[0])), "every file carries the export stamp")
 
+    # ---------- the cracker and the mirror, measured on the cut pack ----------
+    import cracker as CR
+    cr_rows, cr_landed, cr_mirror, cr_ceiling, cr_leak = CR.run(target)
+    ok(not any(hit for _, hit in cr_rows),
+       "the cracker misses every ask device (%d of %d hit)"
+       % (sum(1 for _, h in cr_rows if h), len(cr_rows)))
+    ok(abs(cr_ceiling - 34.5) < 0.6, "the pair ceiling is 34.5 (%.1f)" % cr_ceiling)
+    ok(cr_ceiling < 40.0, "the pair ceiling is under 40 (%.1f)" % cr_ceiling)
+    ok(abs(cr_leak - 1.7) < 0.6, "the mirror leaks 1.7 per cent of ask weight (%.1f)" % cr_leak)
+    ok(cr_leak < 35.0, "the mirror leaks under 35 per cent of ask weight (%.1f)" % cr_leak)
+
     # ---------- figures.json agrees with the bundle ----------
     fp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")
     if os.path.exists(fp):

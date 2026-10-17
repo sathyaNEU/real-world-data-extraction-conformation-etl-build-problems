@@ -7,9 +7,9 @@
  "stage": 4,
  "stage_name": "check",
  "updated": "2026-10-17",
- "stump": "A competent solver takes each unit's standing exactly as charter 4.3 files it, prices the programme off the closed register as the average drop in the standardised ratio a placement produced, applies that drop to the complications the quarter's planned activity carries, and places the team with Alderbrook General Surgery for 35 complications avoided.",
+ "stump": "A competent solver takes each unit's standing exactly as charter 4.3 files it, prices the programme off the closed register as the average drop in the standardised ratio a placement produced, applies that drop to the complications the quarter's planned activity carries, and places the team with Alderbrook General Surgery for 53 complications avoided.",
  "architecture": 1,
- "loops": 1,
+ "loops": 2,
  "precut": {
   "exit": 0,
   "date": "2026-10-17"
@@ -28,7 +28,7 @@
   "report": "re-judge staged, awaiting the orchestrator's spawn"
  },
  "returned": [],
- "resume": "Stage 4, third pass, after the judge's SEND_BACK on competing pricings of the embed. The register now separates the shapes of the fall: chi-square 2.68 on seven degrees of freedom for a share of standing excess against 35.57, 22.50 and 22.54, likelihood ratios 1.4e7, 2.0e4 and 2.1e4 to one, on a record carrying honest scatter. Charter 4.3 files the baseline's population and window and nothing about the shape. Every free gate is green: 656 generator assertions, 177 independent verify checks, two byte-identical rebuilds, figures_check 100/0, precut 49/0/0, voice-check PASS, leak.py REVIEW (no LEAK), guard surface clean and heart WARN. target.zip is cut at the archive root, md5 84f68fedbfb1b8eec10f7dd925333841, 20 entries. Both isolated briefs are re-staged for the orchestrator to spawn: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_judge/judge_brief.md (verdict to verdict.md) and /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_reader/reader_brief.md (answers to reader_answers.md). Next: collect both reports, fix any finding in the generator in one pass, then stage 5.",
+ "resume": "Stage 4, fourth pass. Every route through the register is now formable and all eight converge: they span 0.672126 to 0.679434 (1.087 per cent) and give all twelve units the same whole complication and the same gap of 8. The four shapes the fall could take leave chi-square 2.67, 47.35, 27.71 and 25.51 on seven degrees of freedom, likelihood ratios of 5.0e9, 2.7e5 and 9.2e4 to one. Headroom 6.6 complications to the floor and 7.3 to the ceiling. Every free gate green: 690 generator assertions, 204 independent verify checks, two byte-identical rebuilds, figures_check 100/0, precut 50/0/0, voice-check PASS, leak.py REVIEW (no LEAK), guard surface clean and heart WARN. target.zip md5 a1985ee1649f92a3ff69ccbfb6d03a1f, 20 entries at the archive root. Both briefs re-staged at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task194_judge/judge_brief.md and .../task194_reader/reader_brief.md. Next: collect both reports, fix any finding in the generator in one pass, then stage 5.",
  "approved": null,
  "delivered": null,
  "portal": null,
