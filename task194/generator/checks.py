@@ -362,6 +362,7 @@ def run(target, g, state):
         ok(wrong[h["hospital"]][0] != h["episodes"],
            "A2 the register's alignment moves %s's episode count" % h["hospital"])
     ok(len(W.REALIGNED) == 3, "A2 three cost centres were realigned")
+    detail = read(target, "hac_detail_extract.csv")
     # A4: the detail extract alone runs low in every group, and a raw code join mis-sorts
     detail_units = {r["unit_code"] for r in detail}
     ok(detail_units and detail_units < acute_units | {"41610", "41620"},
