@@ -710,3 +710,11 @@ from the judge-approved set on 45 keys, 27 under `panel_weeks` and 18 under `dil
 - Keeping the warehouse extract's 2027-03-04 pull date and truncating its releases instead: dropped,
   because the releases run to 2027-03-31 by the extract's own four-to-twenty-six-day lag and truncating
   them would move A2's twelve monthly figures, which the judge has approved twice.
+- Leaving the dilution panel's lowest level at 0.4 per cent and tightening only the draw, so that the
+  judge's approved Ask 5 row would stand untouched: dropped. Four hundred draws at that level were
+  searched and only two cleared the one-fifth line by three stored steps, both at a median recovery of
+  1.098, outside the band a sensitivity panel reports. The quantisation, not the draw, was the cause, so
+  the level moved. The consequence is on the record: the shipped L1 row reads 0.963/7 against the 0.878/7
+  in `determinism_check_report.md`, which is the judge's own artifact and is not edited. The count the
+  judge graded is unchanged, the clearance is 4.2 stored steps instead of 1.2, and the level now sits at
+  the estimator's stated limit of detection, where a sensitivity panel belongs.
