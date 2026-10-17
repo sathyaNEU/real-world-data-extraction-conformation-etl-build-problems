@@ -121,11 +121,15 @@ def stays(rows):
     for key, eps in rec.items():
         eps.sort(key=lambda r: (r["adm"], r["sep"]))
         chains = []
+        ends = {}
         for r in eps:
-            if chains and chains[-1][-1]["sep"] == r["adm"] and chains[-1][-1]["drg"] == r["drg"]:
-                chains[-1].append(r)      # the care type changed inside the stay
-            else:
+            j = ends.pop((r["adm"], r["drg"]), None)
+            if j is None:                 # a stay of this patient's begins here
                 chains.append([r])
+                j = len(chains) - 1
+            else:                         # the care type changed inside a stay already open
+                chains[j].append(r)
+            ends[(r["sep"], r["drg"])] = j
         for chain in chains:
             q = fiscal(chain[-1]["sep"])[1]
             out[q]["seps"] += 1
