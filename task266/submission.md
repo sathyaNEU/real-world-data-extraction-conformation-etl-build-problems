@@ -6,7 +6,7 @@
 ## 1. Final Recommendation
 
 **Six of the nine programs go into review in June 2027: General Studies, Biological Sciences, Business Administration, Psychology, Medical Assisting and Early Childhood Education.**
-Their three-year completion shares are 20.9, 24.9, 22.2, 25.9, 26.2 and 19.5 per cent, below the policy's 30 per cent floor, while Criminal Justice (32.5), HVAC-R Technology (44.4) and Nursing (36.7) are above it. Not one program, Early Childhood Education alone, from one minus a Kaplan-Meier curve of the time to the degree, which censors students who transferred out or withdrew as if they could still earn it and puts the transfer-oriented programs at 35 to 41 per cent. Not seven with Criminal Justice (26.8 per cent), from the fall 2023 class alone, which leaves out the two classes the policy includes. Not eight, from degrees so far over all entrants, which counts the students still enrolled as non-completers.
+Their three-year completion shares are 20.9, 24.9, 22.2, 25.9, 26.2 and 19.5 per cent, below the policy's 30 per cent floor, while Criminal Justice (32.5), HVAC-R Technology (44.4) and Nursing (36.7) are above it. Not one program, Early Childhood Education alone, from one minus a Kaplan-Meier curve of the time to the degree, which censors students who transferred out or withdrew as if they could still earn it and puts the transfer-oriented programs at 35 to 41 per cent. Not seven with Criminal Justice (26.8 per cent), from the fall 2023 class alone, which leaves out the two classes the policy includes. Not eight, from the degrees earned within nine terms so far over all entrants, which counts the students still enrolled as non-completers.
 
 ## 2. Critical Components
 

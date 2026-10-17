@@ -309,8 +309,8 @@ def run(target, T):
             ok(len({owner.get(s["Subj"]) for s in lst}) == 1, "no class combines two programs' courses")
             if len({s["Room"] for s in lst}) > 1 and any(n_c[str(s["CRN"])] < K.SMALL for s in lst):
                 video[owner.get(lst[0]["Subj"])] += 1
-            if len({s["Room"] for s in lst}) == 1:
-                ok(len({s["Room"] for s in lst}) == 1, "a stacked class shares its room")
+            ok(all(str(s["Room"]).endswith("V") for s in lst),
+               "sections meeting together are the video-room sections (no stacked class)")
     ok(all(video[p] >= 1 for p in progs), "every program has a video class with a section under ten")
     rooms = defaultdict(list)
     for s in secs:
