@@ -77,6 +77,7 @@ def write(g, path):
             "risk_moves_by_category": {b: list(v) for b, v in g["a2"].items()},
             "schedule_rows": len(g["paper"]),
             "schedule_rows_resolving_to_the_capital_ledger": len(g["tested"]),
+            "capital_ledger_lines_the_paper_covers": sum(g["a3"][0].values()),
             "schedule_lines_by_month": month,
             "schedule_lines_absent_from_the_ledger": nabs,
             "ledger_lines_on_the_schedule_twice": ntwice,

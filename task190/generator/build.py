@@ -110,7 +110,35 @@ def cut(target, golden_dir):
     # payment lines, are in no capital extract, and no figure the capital conclusion states
     # touches them.
     revenue = PK.revenue_sample(cross)
-    paper = tested + revenue
+    # Five of the tested items are certified valuations the paper records at invoice level, as a
+    # working paper does when the valuation rather than the payment line was the thing examined:
+    # one row, the invoice's reference, the invoice's recorded total and the total the testing
+    # found properly payable. The row therefore covers every payment line on that invoice, which
+    # is more lines than the selection chose. Every line on these five invoices was found sound,
+    # so the projection is identical whether the item is read at line or at invoice level, and
+    # the selection itself is untouched: the same 275 lines were selected either way.
+    byinv = {}
+    for r in rows:
+        byinv.setdefault(r["inv"], []).append(r)
+    selidx = {i for i, _ in hits}
+    cands = sorted({r["inv"] for r in rows
+                    if r["idx"] in selidx and r["taint"] == 0 and len(byinv[r["inv"]]) >= 2
+                    and all(y["taint"] == 0 for y in byinv[r["inv"]])})
+    at_invoice = cands[:5]
+    invrows, drop = [], set()
+    for iv in at_invoice:
+        ls = sorted(byinv[iv], key=lambda r: r["line"])
+        for r in ls:
+            drop.add(r["line"])
+        first = ls[0]
+        invrows.append(dict(first, line=iv, invoice_level=True,
+                            covers=[r["line"] for r in ls],
+                            amount=round(sum(r["amount"] for r in ls), 2),
+                            payable=round(sum(r["amount"] for r in ls), 2),
+                            schedule_ref="%s/%s" % (cross[first["sup"]], iv),
+                            finding="agreed to the certified valuation, no exception"))
+    tested_paper = [x for x in tested if x["line"] not in drop]
+    paper = tested_paper + invrows + revenue
     paper.sort(key=lambda t: (t["day"], t["schedule_ref"], t["finding"]))
     cert_n = len([x for x in lines if x[1] >= W.INTERVAL])
     docs.schedule(target, paper, nsel=nsel, ntested=len(set(i for i, _ in hits)),
@@ -171,7 +199,11 @@ def cut(target, golden_dir):
     g["a2"] = A.a2_golden(events)
     g["a2_all"] = A.a2_golden(events, "all")
     g["a2_events"] = A.a2_golden(events, "events")
-    g["a3"] = A.a3_golden(paper, [r for r in shipped if r["delivery"] == 1])
+    g["a3"] = A.a3_golden(paper, [r for r in shipped if r["delivery"] == 1],
+                          invoices={r["inv"]: [x["line"] for x in byinv[r["inv"]]]
+                                    for r in rows})
+    g["at_invoice"] = at_invoice
+    g["invrows"] = invrows
     g["paper"] = paper
     g["revenue"] = revenue
     g["lines"] = lines

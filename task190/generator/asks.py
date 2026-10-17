@@ -301,7 +301,7 @@ def a2_golden(events, mode="answer"):
 MONTHS = ["2026-%02d" % m for m in range(1, 13)]
 
 
-def a3_golden(tested_rows, ledger_lines):
+def a3_golden(tested_rows, ledger_lines, invoices=None):
     """Per month: lines the schedule covers; schedule lines absent from the ledger; doubles."""
     ledger = {}
     for r in ledger_lines:
@@ -312,14 +312,23 @@ def a3_golden(tested_rows, ledger_lines):
     bymonth = {m: set() for m in MONTHS}
     absent, twice = [], []
     seen = {}
+    inv = invoices or {}
     for t in tested_rows:
-        if t["line"] not in ledger:
-            # a row on the paper that resolves to no line in this ledger is not a line of this
-            # population, so it is counted as absent and counted in no month
+        ref = t["line"]
+        if ref in inv:
+            # the row is recorded at invoice level, so it covers every payment line on that
+            # invoice, which is more lines than the selection chose
+            for line in inv[ref]:
+                bymonth[t["day"].isoformat()[:7]].add(line)
+                seen[line] = seen.get(line, 0) + 1
+            continue
+        if ref not in ledger:
+            # a row that resolves to neither a payment line nor an invoice in this ledger is no
+            # part of this population, so it is counted as absent and counted in no month
             absent.append(t["schedule_ref"])
             continue
-        bymonth[t["day"].isoformat()[:7]].add(t["line"])
-        seen[t["line"]] = seen.get(t["line"], 0) + 1
+        bymonth[t["day"].isoformat()[:7]].add(ref)
+        seen[ref] = seen.get(ref, 0) + 1
     bymonth = {m: len(v) for m, v in bymonth.items()}
     for line, n in sorted(seen.items()):
         if n > 1:

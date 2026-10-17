@@ -225,7 +225,7 @@ DISTRICT_INTENSITY = {
     "Lisboa": 2.00, "Porto": 1.90, "Setubal": 1.60, "Braga": 1.20, "Aveiro": 1.10,
     "Leiria": 0.95, "Faro": 0.90, "Coimbra": 0.85, "Santarem": 0.80, "Viana do Castelo": 0.50,
     "Viseu": 0.34, "Evora": 0.30, "Beja": 0.27, "Vila Real": 0.26, "Castelo Branco": 0.24,
-    "Guarda": 0.19, "Portalegre": 0.19, "Braganca": 0.14, "Acores": 0.28, "Madeira": 0.24,
+    "Guarda": 0.19, "Portalegre": 0.19, "Braganca": 0.14, "Acores": 0.45, "Madeira": 0.38,
 }
 DISTRICT_GROUP = {
     "Lisboa": "metro", "Setubal": "metro", "Porto": "metro", "Braga": "metro",
@@ -254,10 +254,15 @@ THEME_GROUND = {
     "ENE": {"metro": 0.35, "litoral": 0.85, "interior": 2.80, "ilhas": 0.55},
     "FLO": {"metro": 0.18, "litoral": 0.95, "interior": 3.20, "ilhas": 0.45},
 }
-# how much of a district's contention each of its municipalities carries: the district capital most,
-# a long tail of small ones that the register reaches only when the volume rises
-MUNI_SIZE = [1.00, 0.42, 0.68, 0.22, 1.35, 0.30, 0.85, 0.16, 0.55, 0.25, 1.10, 0.36]
-CAPITAL_SIZE = 2.30
+# how much of a district's contention each of its municipalities carries: the district capital and
+# the two island capitals most, then a long tail of small ones the register reaches only when the
+# volume rises. The autumn's own disputes are about the transmission network and the fire season, so
+# they fall the other way round, on the small municipalities the standing disputes never reach.
+MUNI_SIZE = [1.00, 0.20, 0.55, 0.035, 1.55, 0.09, 0.72, 0.022, 0.38, 0.065, 1.30, 0.15]
+CAPITAL_SIZE = 2.70
+REGIONAL_CAPITALS = {"Funchal", "Ponta Delgada", "Angra do Heroismo"}
+THEME_SIZE_POWER = {"ENE": -0.6, "FLO": -0.7}
+SIZE_FLOOR = 0.05
 
 LOC_PREFIX = ["Sao Martinho", "Santa Marta", "Sao Miguel", "Santa Luzia", "Sao Bartolomeu",
               "Nossa Senhora da Graca", "Vila Nova", "Vila Cha", "Quinta do Lago", "Casal Novo",

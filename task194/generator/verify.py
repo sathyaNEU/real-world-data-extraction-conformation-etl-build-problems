@@ -86,150 +86,196 @@ def run(target, figures_path):
     elig = sorted(c for c in open_units if counts.get(c, 0) >= 4 and c not in placed)
     ok(len(elig) == fig["eligible_units"], "twelve eligible units")
 
-    # the share a placement removes, from the closed placements
-    closed = placements[placements.status == "closed"]
-    carried = removed = 0.0
-    n_closed = 0
-    for _, p in closed.iterrows():
-        u, q = p.unit_code, p.assessment_quarter
-        own = grp[grp.unit_code == u]
-        if q not in set(own.quarter):
-            continue
-        pre = own[own.quarter < q]
-        ratio = pre.observed.sum() / pre.expected.sum()
-        row = own[own.quarter == q].iloc[0]
-        carried += (ratio - 1) * row.expected
-        removed += (ratio - 1) * row.expected - (row.observed - row.expected)
-        n_closed += 1
-    share = removed / carried
-    ok(n_closed == fig["closed_placements"], "eight closed placements inside the specification period")
+    # ---- the comparison frequency charter 4.3 asks for, measured from the record itself ----
+    # no file carries it: this is the frequency the acute record's own in-scope episodes show, by stratum
+    def freq(df):
+        t = df.groupby(["risk_band", "age_band"]).agg(
+            n=("episode_id", "size"), o=("hac_recorded", "sum")).reset_index()
+        t["r_net"] = t.o / t.n
+        return t[["risk_band", "age_band", "r_net"]]
 
-    # the register read every way it pools, and the shapes the fall could take scored against it
     allq = sorted(grp.quarter.unique())
-    treated = set()
-    for _, p2 in closed.iterrows():
-        if p2.assessment_quarter not in allq:
-            continue
-        j = allq.index(p2.assessment_quarter)
-        treated.update((p2.unit_code, allq[m]) for m in range(j, min(j + 3, len(allq))))
-    rec = []
-    for _, p in closed.iterrows():
-        u, q = p.unit_code, p.assessment_quarter
-        own = grp[grp.unit_code == u]
-        if q not in set(own.quarter):
-            continue
-        prev = allq[allq.index(q) - 1]
-        pre = own[own.quarter < q]
-        row = own[own.quarter == q].iloc[0]
-        oth = grp[(grp.unit_code != u) & (grp.quarter.isin([prev, q]))]
-        oth = oth[[(r.unit_code, r.quarter) not in treated for r in oth.itertuples()]]
-        wide = oth.pivot_table(index="unit_code", columns="quarter",
-                               values=["observed", "expected"], aggfunc="sum").dropna()
-        pm = (wide[("observed", prev)].sum() / wide[("expected", prev)].sum()
-              - wide[("observed", q)].sum() / wide[("expected", q)].sum())
-        before = pre.observed.sum() / pre.expected.sum()
-        rec.append(dict(expected=row.expected, realised=row.observed - row.expected,
-                        carried=(before - 1) * row.expected, counterfactual=before * row.expected,
-                        concurrent_pooled=float(pm) * row.expected))
-    nr = len(rec)
-    P = [r["carried"] for r in rec]
-    fl = [r["carried"] - r["realised"] for r in rec]
-    V = [max(1.0, r["counterfactual"]) for r in rec]
-    sh = [f / p for f, p in zip(fl, P)]
-    Ex = [r["expected"] for r in rec]
-    pbar, fbar = sum(P) / nr, sum(fl) / nr
-    pvar = sum((p - pbar) ** 2 for p in P) / nr
-    readings = {
-        "pooled sums": sum(fl) / sum(P),
-        "the mean of the placements' shares": sum(sh) / nr,
-        "the expected-weighted mean of the placements' shares":
-            sum(e * s for e, s in zip(Ex, sh)) / sum(Ex),
-        "the median of the placements' shares": sorted(sh)[nr // 2],
-        "least squares through the origin":
-            sum(p * f for p, f in zip(P, fl)) / sum(p * p for p in P),
-        "least squares with an intercept":
-            sum((p - pbar) * (f - fbar) for p, f in zip(P, fl)) / (pvar * nr),
-        "the variance-weighted fit":
-            sum(p * f / v for p, f, v in zip(P, fl, V)) / sum(p * p / v for p, v in zip(P, V)),
-        "against what the other units did over the same quarters":
-            sum(c - r - cp for c, r, cp in
-                zip(P, [x["realised"] for x in rec], [x["concurrent_pooled"] for x in rec])) / sum(P),
-    }
-    models = {}
-    for label, x in (("a share of the unit's standing excess", P),
-                     ("a constant drop in the standardised ratio", [r["expected"] for r in rec]),
-                     ("a constant percent of the counterfactual", [r["counterfactual"] for r in rec]),
-                     ("a constant number of complications", [1.0] * nr)):
-        den = sum(xi * xi / v for xi, v in zip(x, V))
-        c = sum(xi * f / v for xi, f, v in zip(x, fl, V)) / den
-        models[label] = sum((f - c * xi) ** 2 / v for xi, f, v in zip(x, fl, V))
-    bestchi = models["a share of the unit's standing excess"]
-    for label, want in fig["effect_models"].items():
-        ok(abs(models[label] - want["chi_square"]) < 5e-3,
-           "the %s leaves chi-square %.3f (%.3f)" % (label, models[label], want["chi_square"]))
-        lr = math.exp(min(600.0, (models[label] - bestchi) / 2.0))
-        ok(abs(math.log10(max(lr, 1e-12)) - math.log10(max(want["likelihood_ratio"], 1e-12))) < 1e-3,
-           "the likelihood ratio against the %s is %.4g (%.4g)" % (label, lr, want["likelihood_ratio"]))
-    ok(min(models[k] for k in models if k != "a share of the unit's standing excess") - bestchi > 12.0,
-       "every competing shape is at least 12 chi-square from the register's own fit")
-    ok(abs(readings["pooled sums"] - share) < 1e-9, "the golden share is the register's pooled sums")
-    for label, want in fig["register_readings"].items():
-        ok(abs(readings[label] - want) < 5e-5,
-           "the register read as %s is %.5f (%.5f)" % (label, readings[label], want))
-    ok(len(readings) == 8, "eight routes through the register (%d)" % len(readings))
-    ok(max(readings.values()) / min(readings.values()) - 1 < 0.015,
-       "the register's routes sit within 1.5 per cent (%.2f%%)"
-       % ((max(readings.values()) / min(readings.values()) - 1) * 100))
+    ok(len(allq) == 10, "the record carries ten closed quarters (%d)" % len(allq))
+    net = freq(scope)
+    ok(len(net) == 24, "twenty-four strata carry a comparison frequency (%d)" % len(net))
 
-    tot = grp.groupby("unit_code").agg(observed=("observed", "sum"), expected=("expected", "sum"),
-                                       separations=("separations", "sum"))
-    plan_map = dict(zip(plan.unit_code, plan.planned_separations))
-    avoided = {}
-    for u in elig:
-        t = tot.loc[u]
-        ratio = t.observed / t.expected
-        e_plan = plan_map[u] * t.expected / t.separations
-        avoided[u] = share * (ratio - 1) * e_plan
-        if u == fig["call_unit_code"]:
-            ok(round(ratio, 2) == fig["pick_standardised_ratio"], "the pick's standardised ratio")
-            ok(round(e_plan) == fig["pick_expected_complications"], "the pick's expected complications")
-            ok(round((ratio - 1) * e_plan, 1) == fig["pick_excess_complications"], "the pick's excess")
-            ok(plan_map[u] == fig["pick_planned_separations"], "the pick's planned separations")
-    order = sorted(avoided, key=lambda u: -avoided[u])
-    ok(order[0] == fig["call_unit_code"], "the call is %s" % fig["call_unit_code"])
-    ok(order[1] == fig["runner_unit_code"], "the closest unit is %s" % fig["runner_unit_code"])
-    ok(round(avoided[order[0]]) == fig["avoided_at_pick"], "the call's avoided complications")
-    ok(round(avoided[order[1]]) == fig["avoided_at_runner"], "the closest unit's avoided complications")
-    ok(round(avoided[order[0]]) - round(avoided[order[1]]) == fig["gap_complications"], "the gap")
-    for u, v in avoided.items():
-        ok(round(v) == fig["avoided_by_unit"][u], "the avoided count at %s" % u)
-    # every reading of the register leaves every unit on the same whole complication
-    for label, th in readings.items():
+    def avoidable(window=None, freq_window=None, denom="separations", leave_out=False,
+                  restrict=None):
+        """Charter 4.3 carried onto the planned separations under specification 3.4, one reading."""
+        f_src = scope if freq_window is None else scope[scope.quarter.isin(freq_window)]
+        rows = {}
         for u in elig:
-            t = tot.loc[u]
-            alt = th * (t.observed / t.expected - 1) * plan_map[u] * t.expected / t.separations
-            ok(round(alt) == fig["avoided_by_unit"][u],
-               "%s leaves %s at %d avoided (%.3f)" % (label, u, fig["avoided_by_unit"][u], alt))
+            w = scope[(scope.unit_code == u) & (scope.quarter.isin(window or allq))]
+            if restrict == "hospital":
+                src = f_src[f_src.hospital_code == units.set_index("unit_code").hospital_code[u]]
+            elif restrict == "peer":
+                peer = pd.read_csv(os.path.join(target, "hospital_sites.csv"), dtype=str)
+                pmap = peer.set_index("hospital_code").peer_group
+                mine = pmap[units.set_index("unit_code").hospital_code[u]]
+                keep = set(pmap[pmap == mine].index)
+                src = f_src[f_src.hospital_code.isin(keep)]
+            elif leave_out:
+                src = f_src[f_src.unit_code != u]
+            else:
+                src = f_src
+            r = freq(src)
+            if restrict:                       # a thin stratum falls back to the whole record
+                wide = freq(f_src).set_index(["risk_band", "age_band"]).r_net
+                cnt = src.groupby(["risk_band", "age_band"]).size()
+                r = r.set_index(["risk_band", "age_band"]).r_net
+                r = pd.Series({k: (r[k] if cnt.get(k, 0) >= 30 else wide[k]) for k in wide.index})
+                r = r.rename("r_net").reset_index()
+                r.columns = ["risk_band", "age_band", "r_net"]
+            m = w.merge(r, on=["risk_band", "age_band"], how="left")
+            o = m.hac_recorded.sum()
+            en = m.r_net.sum()
+            sp = len(acute[(acute.unit_code == u) & (acute.quarter.isin(window or allq))])
+            d = sp if denom == "separations" else len(m)
+            rows[u] = (o - en) * int(plan.set_index("unit_code").planned_separations[u]) / d
+        return rows
 
-    # the rungs the brief names
-    last_q = sorted(grp.quarter.unique())[-1]
-    lastq = grp[grp.quarter == last_q].set_index("unit_code")
-    r0 = fig["rung0_unit_code"]
-    ok(round((lastq.loc[r0].observed / lastq.loc[r0].expected - 1) * lastq.loc[r0].expected)
-       == fig["rung0_excess_now"], "the quarter's excess at the rung 0 unit")
-    ok(round(tot.loc[r0].observed / tot.loc[r0].expected, 2) == fig["rung0_ratio_record"],
-       "the rung 0 unit's standing")
-    ok(round(lastq.loc[r0].observed / lastq.loc[r0].expected, 2) == fig["rung0_ratio_quarter"],
-       "the rung 0 unit's quarter")
-    ok(round(avoided[r0]) == fig["rung0_avoided"], "the rung 0 unit's avoided count")
-    r1 = fig["rung1_unit_code"]
-    ok(round(tot.loc[r1].observed / tot.loc[r1].expected, 2) == fig["rung1_ratio"], "the worst standing")
-    ok(round(tot.loc[r1].observed / tot.loc[r1].expected * ref, 1) == fig["rung1_adjusted_rate"],
-       "the worst standing's adjusted rate")
-    r2 = fig["rung2_unit_code"]
-    e2 = plan_map[r2] * tot.loc[r2].expected / tot.loc[r2].separations
-    ok(round(tot.loc[r2].observed / tot.loc[r2].expected * e2) == fig["rung2_expected_next"],
-       "the complications the harm route counts")
+    base = avoidable()
+    order = sorted(base, key=lambda u: -base[u])
+    ok(order[0] == fig["call_unit_code"], "the call is the unit charter 4.3 puts first")
+    ok(round(base[order[0]]) == fig["avoidable_at_pick"], "the call's avoidable complications")
+    ok(round(base[order[1]]) == fig["avoidable_at_runner"], "the closest unit's avoidable complications")
+    ok(order[1] == fig["runner_unit_code"], "the closest unit")
+    ok(round(base[order[0]]) - round(base[order[1]]) == fig["gap_complications"], "the gap")
+    for u, v in base.items():
+        ok(round(v) == fig["avoidable_by_unit"][u], "the avoidable count at %s" % u)
+
+    # ---- each unit's own sampling error, and the lead measured against it ----
+    se = {}
+    for u in elig:
+        w = scope[scope.unit_code == u]
+        sp = len(acute[acute.unit_code == u])
+        se[u] = math.sqrt(w.hac_recorded.sum()) * int(
+            plan.set_index("unit_code").planned_separations[u]) / sp
+    se_gap = math.sqrt(se[order[0]] ** 2 + se[order[1]] ** 2)
+    lead = (base[order[0]] - base[order[1]]) / se_gap
+    ok(abs(se_gap - fig["standard_error_of_gap"]) < 0.05, "the standard error of the gap (%.2f)" % se_gap)
+    ok(abs(lead - fig["standard_error_lead"]) < 0.05, "the lead in standard errors (%.2f)" % lead)
+    ok(lead > 1.0, "the top two are not inside a standard error of each other (%.2f)" % lead)
+    ok(abs(base[order[0]] / base[order[1]] - fig["margin"]) < 0.01, "the margin")
+
+    # ---- C1 every reading of charter 4.3 the text leaves open, recomputed independently ----
+    w8, w4, w1 = allq[2:], allq[6:], allq[-1:]
+    readings = {
+        "the comparison frequency measured over the ten closed quarters of the specification period":
+            avoidable(),
+        "the comparison frequency measured over the eight most recent closed quarters":
+            avoidable(freq_window=w8),
+        "the comparison frequency measured over the four most recent closed quarters":
+            avoidable(freq_window=w4),
+        "the comparison frequency measured over the latest closed quarter alone":
+            avoidable(freq_window=w1),
+        "the unit's own patients left out of the comparison, frequency over the ten closed quarters "
+        "of the specification period": avoidable(leave_out=True),
+        "the unit's own patients left out of the comparison, frequency over the four most recent "
+        "closed quarters": avoidable(freq_window=w4, leave_out=True),
+        "the unit's rate taken per all separations in the record": avoidable(denom="separations"),
+        "the unit's rate taken per in-scope episodes in the record": avoidable(denom="episodes"),
+        "the unit's own record taken over the ten closed quarters of the specification period":
+            avoidable(window=allq),
+        "the unit's own record taken over the eight most recent closed quarters": avoidable(window=w8),
+        "the unit's own record taken over the four most recent closed quarters": avoidable(window=w4),
+        "the unit's own record taken over the latest closed quarter alone": avoidable(window=w1),
+    }
+    ok(len(readings) == fig["readings_of_clause_43"],
+       "every reading of charter 4.3 is formed (%d)" % len(readings))
+    named = 0
+    for label, vec in readings.items():
+        o2 = sorted(vec, key=lambda u: -vec[u])
+        named += 1 if o2[0] == fig["call_unit_code"] else 0
+        ok(o2[0] == fig["call_unit_code"], "C1 %s names the call (%s)" % (label, o2[0]))
+        m = vec[o2[0]] / vec[o2[1]]
+        ok(abs(m - fig["reading_margins"][label]) < 0.02,
+           "C1 %s separates at %.2fx" % (label, m))
+    ok(named == fig["readings_naming_the_call"], "every reading names the call (%d)" % named)
+
+    # ---- the readings that do move the call, and the clause that rules each out ----
+    moved = {"the comparison restricted to the unit's own hospital": avoidable(restrict="hospital"),
+             "the comparison restricted to the hospital's peer group": avoidable(restrict="peer")}
+    for label, vec in moved.items():
+        o2 = sorted(vec, key=lambda u: -vec[u])
+        ok(o2[0] != fig["call_unit_code"], "%s does move the call (to %s)" % (label, o2[0]))
+
+    # ---- the three facts that force the comparison frequency ----
+    bb = scope.groupby("risk_band").agg(o=("hac_recorded", "sum"), e=("expected_rate", "sum"))
+    drift = (bb.o / bb.e)
+    for band, v in drift.items():
+        ok(abs(v - fig["band_drift"][band]) < 0.002, "the record's own frequency in %s (%.3f)" % (band, v))
+    ok(abs(drift.min() - fig["band_drift_low"]) < 0.002
+       and abs(drift.max() - fig["band_drift_high"]) < 0.002, "the frequency's span across the bands")
+    ok(drift.min() < 0.95 and drift.max() > 1.05, "it crosses 1.00 in both directions")
+    ok(abs(drift.max() / drift.min() - fig["band_drift_spread"]) < 0.02, "the span as a factor")
+    sh = {}
+    for u in elig:
+        w = scope[scope.unit_code == u]
+        sh[u] = float(w.risk_band.str.startswith("SURG").sum()) / len(w)
+    nz = [v for v in sh.values() if v > 0.01]
+    ok(abs(min(nz) - fig["surgical_share_low"]) < 0.002
+       and abs(max(sh.values()) - fig["surgical_share_high"]) < 0.002,
+       "the candidates' surgical share spans %.3f to %.3f" % (min(nz), max(sh.values())))
+    ok(sum(1 for v in sh.values() if v <= 0.01) == fig["candidates_with_no_surgical_work"],
+       "the candidates carrying no surgical work at all")
+
+    # ---- the demonstration: a mix shift with the unit's own practice flat ----
+    du = fig["demonstration_unit_code"]
+    net_i = net.set_index(["risk_band", "age_band"]).r_net
+    pub_q, net_q, sh_q = {}, {}, {}
+    for q in allq:
+        w = scope[(scope.unit_code == du) & (scope.quarter == q)]
+        pub_q[q] = w.hac_recorded.sum() - w.expected_rate.sum()
+        net_q[q] = w.hac_recorded.sum() - sum(
+            net_i[(rb, ab)] for rb, ab in zip(w.risk_band, w.age_band))
+        sh_q[q] = float(w.risk_band.str.startswith("SURG").sum()) / len(w)
+    shifted = [q for q in allq if sh_q[q] > 0.25]
+    ok(len(shifted) == 2, "the shift covers two closed quarters (%d)" % len(shifted))
+    ok(abs(min(pub_q.values()) - fig["demonstration_published_low"]) < 0.05
+       and abs(max(pub_q.values()) - fig["demonstration_published_high"]) < 0.05,
+       "on the published basis its avoidable count runs %.1f to %.1f"
+       % (min(pub_q.values()), max(pub_q.values())))
+    ok(abs(max(pub_q.values()) / min(pub_q.values()) - fig["demonstration_published_multiple"]) < 0.2,
+       "the published basis moves it by a factor of %.1f"
+       % (max(pub_q.values()) / min(pub_q.values())))
+    ok(abs(min(net_q.values()) - fig["demonstration_comparison_low"]) < 0.05
+       and abs(max(net_q.values()) - fig["demonstration_comparison_high"]) < 0.05,
+       "on the record's own frequency it runs %.1f to %.1f"
+       % (min(net_q.values()), max(net_q.values())))
+    ok(max(net_q.values()) - min(net_q.values()) <= 1.5,
+       "the record's own frequency holds it inside %.2f of a complication"
+       % (max(net_q.values()) - min(net_q.values())))
+    ok(max(pub_q[q] for q in shifted) / max(pub_q[q] for q in allq if q not in shifted) > 3.0,
+       "the shifted quarters stand well above the rest on the published basis only")
+
+    # ---- the rungs the brief names ----
+    pub_x, per_1000 = {}, {}
+    for u in elig:
+        w = scope[scope.unit_code == u]
+        sp = len(acute[acute.unit_code == u])
+        pl = int(plan.set_index("unit_code").planned_separations[u])
+        pub_x[u] = (w.hac_recorded.sum() - w.expected_rate.sum()) * pl / sp
+        per_1000[u] = base[u] / pl * 1000.0
+    r0 = max(pub_x, key=lambda u: pub_x[u])
+    r3 = max(per_1000, key=lambda u: per_1000[u])
+    ok(r0 == fig["rung0_unit_code"], "rung 0 names %s" % r0)
+    ok(r3 == fig["rung3_unit_code"], "rung 3 names %s" % r3)
+    ok(r0 != fig["call_unit_code"] and r3 != fig["call_unit_code"], "neither rung names the call")
+    ok(abs(pub_x[r0] - fig["rung0_published_excess"]) < 0.05, "the rung 0 unit's published excess")
+    ok(round(base[r0]) == fig["rung0_avoidable"], "the rung 0 unit's own avoidable count")
+    ok(base[r0] < 0, "the easy route files a unit carrying a negative avoidable count (%.1f)" % base[r0])
+    ok(sorted(pub_x, key=lambda u: -pub_x[u]).index(fig["call_unit_code"]) + 1
+       == fig["published_rank_of_call"], "the call's rank on the published excess")
+    for u, v in pub_x.items():
+        ok(abs(v - fig["published_excess_by_unit"][u]) < 0.05, "the published excess at %s" % u)
+
+    # ---- every graded figure sits clear of its printed cell's edge ----
+    def edge(v, unit):
+        sc = round(1.0 / unit)
+        return unit / 2.0 - abs(v - round(v * sc) / float(sc))
+    for u, v in base.items():
+        ok(edge(v, 1.0) >= 0.15, "%s's avoidable count sits %.3f from the edge" % (u, edge(v, 1.0)))
 
     # ask 2: the hospital year, on the site each unit reported under in the month
     summary["month_key"] = summary.month.dt.strftime("%Y-%m-%d")

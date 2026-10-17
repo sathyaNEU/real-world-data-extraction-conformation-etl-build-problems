@@ -492,14 +492,31 @@ def run(target, g, state):
 
     # ---------- the cracker and the mirror, measured on the cut pack ----------
     import cracker as CR
-    cr_rows, cr_landed, cr_mirror, cr_ceiling, cr_leak = CR.run(target)
-    ok(not any(hit for _, hit in cr_rows),
-       "the cracker misses every ask device (%d of %d hit)"
-       % (sum(1 for _, h in cr_rows if h), len(cr_rows)))
-    ok(abs(cr_ceiling - 34.5) < 0.6, "the pair ceiling is 34.5 (%.1f)" % cr_ceiling)
-    ok(cr_ceiling < 40.0, "the pair ceiling is under 40 (%.1f)" % cr_ceiling)
-    ok(abs(cr_leak - 1.7) < 0.6, "the mirror leaks 1.7 per cent of ask weight (%.1f)" % cr_leak)
-    ok(cr_leak < 35.0, "the mirror leaks under 35 per cent of ask weight (%.1f)" % cr_leak)
+    cr = CR.run(target)
+    # the two responses are scored from their own handling, not from one reading twice: the asks consume
+    # nothing the call's construction produces, and the separation count below is what proves it
+    ok(cr["n_ask"] == 48 and cr["n_con"] == 12,
+       "the rubric's ask figures and construction figures are counted (%d and %d)"
+       % (cr["n_ask"], cr["n_con"]))
+    ok(cr["cracker_construction_kept"] == cr["n_con"],
+       "the cracker holds the construction layer, so it never stands alone")
+    ok(cr["mirror_construction_kept"] <= 2,
+       "the mirror holds at most two of the twelve construction figures (%d)"
+       % cr["mirror_construction_kept"])
+    ok(cr["leakage"] < 35.0, "the mirror leaks under 35 per cent of ask weight (%.1f)" % cr["leakage"])
+    # the ask sheet's gated fields carry the worst honest measurement, and this asserts the sheet against
+    # the script rather than the other way round
+    sheet = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "DESIGN_NOTE.md")
+    if os.path.exists(sheet):
+        note = open(sheet, encoding="utf-8").read()
+        ok("Pair ceiling: %.1f" % cr["ceiling"] in note,
+           "the ask sheet states the measured pair ceiling (%.1f)" % cr["ceiling"])
+        ok("Mirror leakage: %.1f" % cr["leakage"] in note,
+           "the ask sheet states the measured mirror leakage (%.1f)" % cr["leakage"])
+    ok(cr["ceiling"] <= 40.0, "the pair ceiling is at or under 40 (%.1f)" % cr["ceiling"])
+    ok(not any(hit for _, _, hit in cr["cracker_rows"]),
+       "the cracker misses every ask figure (%d of %d kept)"
+       % (cr["cracker_ask_kept"], cr["n_ask"]))
 
     # ---------- figures.json agrees with the bundle ----------
     fp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")

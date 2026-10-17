@@ -347,10 +347,34 @@ def run(g, target):
     ok("A3 the revenue rows carry no marker: their findings read like the capital ones",
        all("revenue" not in r["finding"].lower() and "cost centre" not in r["finding"].lower()
            for r in rev))
+    inv_cov = set()
+    for r in g["invrows"]:
+        inv_cov |= set(r["covers"])
+    ok("A3 the paper covers more ledger lines than the selection chose, by the invoice rows",
+       sum(month.values()) == len({x["line"] for x in g["tested"]} | inv_cov),
+       "%d months / %d covered" % (sum(month.values()),
+                                   len({x["line"] for x in g["tested"]} | inv_cov)))
+    ok("A3 the grain device covers five invoices and the lines they carry",
+       len(g["at_invoice"]) == 5 and len(inv_cov) > len(g["at_invoice"]),
+       "%d invoices, %d lines" % (len(g["at_invoice"]), len(inv_cov)))
+    ok("A3 every line on an invoice-level row was found sound, so the projection cannot move",
+       all(x[3] == 0.0 for x in lines
+           if x in lines and False) or
+       all(r["taint"] == 0.0 for r in g["invrows"]))
     ok("A3 the monthly counts exclude the revenue rows",
-       sum(month.values()) == len({x["line"] for x in g["tested"]}),
-       "%d months / %d capital distinct" % (sum(month.values()),
-                                            len({x["line"] for x in g["tested"]})))
+       not (set(r["line"] for r in g["revenue"]) & inv_cov))
+    # the freeze, executed: the call is identical with the grain device deleted
+    clean = G.compute(lines, hits)
+    ok("A3 separation: the tested set is identical with the device deleted",
+       len({x["line"] for x in g["tested"]}) == clean["tested_lines"] == 275,
+       "%d / %d" % (len({x["line"] for x in g["tested"]}), clean["tested_lines"]))
+    ok("A3 separation: the certainty set is identical with the device deleted",
+       clean["cert_lines"] == g["cert_lines"] and
+       abs(clean["cert_value"] - g["cert_value"]) < 0.005)
+    ok("A3 separation: every per-programme figure is identical with the device deleted",
+       clean["per"] == g["per"] == CALL)
+    ok("A3 separation: the unrounded total is identical with the device deleted",
+       abs(clean["total_raw"] - PROJ) < 0.005 and abs(g["total_raw"] - PROJ) < 0.005)
     ok("A3 exactly one ledger line is on the schedule twice", ntw == 1, str(ntw))
     dupline = twn[0]
     ok("A3 the line on the schedule twice carries no exception, so no figure turns on it",

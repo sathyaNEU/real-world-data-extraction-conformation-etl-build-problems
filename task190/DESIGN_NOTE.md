@@ -555,9 +555,9 @@ device against the careful solver's path.
 
 Every A3 ask is worded so that "none" is a grammatical answer, per H23.
 
-Pair ceiling: 62.0
+Pair ceiling: 56.8
 
-Mirror leakage: 26.8 per cent of ask weight
+Mirror leakage: 24.4 per cent of ask weight
 
 Measured by: `generator/ceiling.py`, which builds both responses as code, scores each on its OWN ask
 readings against the graded figures in `figures.json` on the cut pack, and exits non-zero unless the
@@ -573,8 +573,8 @@ third ask actually scored:
 
 | The cracker, and the mirror beside it | call | components | instruction | A1 | A2 | A3 | score |
 |---|---|---|---|---|---|---|---|
-| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/19 | 2/2 | 12/12 | 15/15 | 14/14 | **100.0** |
-| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/19 | 1/2 | 5/12 | 3/15 | 3/14 | **23.9** |
+| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/19 | 2/2 | 12/12 | 15/15 | **8/14** | **91.2** |
+| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/19 | 1/2 | 5/12 | 3/15 | 2/14 | **22.5** |
 
 **Why the cracker keeps everything, which is the diagnosis and not a wording problem.** Every device on
 every ask is adjudicated by a filed sentence or found by the hygiene battery, so a careful solver executes
@@ -882,7 +882,19 @@ were round too, so both were redrawn.
   by reading two honest date definitions. Both are legitimate mirror devices and neither is a primary in
   the sense the cracker test means. What suppresses the cracker has to be discoverable only from an
   internal inconsistency that nothing invites, and the candidate designed for it is below.
-- **The grain device designed for the cracker and not built, with the reason.** The paper would identify
+- **The grain device, built, and the two figures it cost to build it safely.** Five tested items are
+  certified valuations the paper records at invoice level, so each row covers every payment line on its
+  invoice rather than one line. It is the first device in this build that costs the cracker anything:
+  A3 fell from 14 of 14 to **8 of 14**, because the unmatched-join sweep reports the five invoice rows as
+  missing from the ledger, which is wrong, and the monthly counts are short by the lines those invoices
+  carry. Every line on the five invoices was found sound, so the projection is identical read at line or
+  at invoice level, and `checks.py` asserts the tested set, the certainty set, every per-programme figure
+  and the unrounded total identical with the device deleted. What it cost: the lines tested and the value
+  tested are read off the paper, and the invoice rows make both ambiguous, so neither is stated as a
+  figure any more and the three wrong rungs are no longer quoted to the cent in the recommendation. That
+  is the right trade, because a graded figure a judge cannot rebuild is the commonest finding in the
+  record, but it is a trade and it is recorded as one.
+- **The earlier draft of that device, which would have moved the call.** The paper would identify
   a handful of tested items by their invoice reference rather than their line reference, in the same
   shape, so those rows resolve to the ledger's `invoice_ref` and cover two or three payment lines each.
   A response that reports every unresolved row as missing is then wrong on the absent count, and one that

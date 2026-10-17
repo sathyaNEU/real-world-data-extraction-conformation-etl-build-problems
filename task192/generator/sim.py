@@ -56,10 +56,10 @@ def geography(rng):
 # ---------------------------------------------------------------- the action layer
 
 def muni_weight(m):
-    """How much of its district's contention a municipality carries: the district capital most, and
-    a long tail of small ones. Fixed by the municipality's own code, so it does not move with a
-    draw."""
-    if m["name"] == m["district"]:
+    """How much of its district's contention a municipality carries: the district capital and the
+    two island capitals most, and a long tail of small ones. Fixed by the municipality's own code,
+    so it does not move with a draw."""
+    if m["name"] == m["district"] or m["name"] in W.REGIONAL_CAPITALS:
         return W.CAPITAL_SIZE
     h = int(hashlib.md5(m["code"].encode()).hexdigest()[:8], 16)
     return W.MUNI_SIZE[h % len(W.MUNI_SIZE)]
@@ -67,12 +67,16 @@ def muni_weight(m):
 
 def ground(muni):
     """Each theme's weight over the municipalities: its district's standing contention, the
-    municipality's own size and the territory the dispute falls on."""
+    municipality's own size and the territory the dispute falls on. A dispute over the transmission
+    network or over the fire season runs the size the other way, because the lines and the burnt
+    ground are where the people are not."""
     out = {}
     for theme in W.THEME_GROUND:
+        power = W.THEME_SIZE_POWER.get(theme, 1.0)
         w = []
         for m in muni:
-            w.append(W.DISTRICT_INTENSITY[m["district"]] * muni_weight(m)
+            size = max(muni_weight(m), W.SIZE_FLOOR) ** power
+            w.append(W.DISTRICT_INTENSITY[m["district"]] * size
                      * W.THEME_GROUND[theme][W.DISTRICT_GROUP[m["district"]]])
         out[theme] = w
     return out

@@ -75,13 +75,13 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - VST, 2026 Q2: 2419 accepted, 22 rejected, 7.0 days
    - VST, 2026 Q3: 2633 accepted, 30 rejected, 6.0 days
 4. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
-   - Nordlys Pharma A/S (H1): 281932.0 DDD, 353483 kroner
-   - Bregnholt Laegemidler A/S (H2): 504333.5 DDD, 634199 kroner
-   - Vindeby Therapeutics ApS (H3): 434434.0 DDD, 557585 kroner
-   - Soegaard Medica A/S (H4): 204690.0 DDD, 304182 kroner
-   - Kastholm Pharma A/S (H5): 626840.0 DDD, 770394 kroner
-   - Ellevang Biosciences A/S (H6): 1088808.0 DDD, 1131025 kroner
-   - Strandby Farma ApS (H7): 120991.5 DDD, 178946 kroner
+   - Nordlys Pharma A/S (H1): 281932.0 DDD, 355787 kroner
+   - Bregnholt Laegemidler A/S (H2): 504333.5 DDD, 640752 kroner
+   - Vindeby Therapeutics ApS (H3): 434434.0 DDD, 577881 kroner
+   - Soegaard Medica A/S (H4): 204690.0 DDD, 314750 kroner
+   - Kastholm Pharma A/S (H5): 626840.0 DDD, 755350 kroner
+   - Ellevang Biosciences A/S (H6): 1088808.0 DDD, 1139857 kroner
+   - Strandby Farma ApS (H7): 120991.5 DDD, 185601 kroner
 5. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
    - Hovedstaden, 18-24: 250 patients, 70.4 per cent
    - Hovedstaden, 25-44: 751 patients, 68.7 per cent

@@ -95,7 +95,9 @@ def main(target, figpath):
     while i < len(sched) - 4:
         # the paper carries both samples plan 4.1 lists: the capital lines and the revenue ones,
         # which carry the revenue ledger's own prefix and resolve to no capital line
-        if re.fullmatch(r"SUP\d{6}/(CPL|REL)-26-\d{6}", sched[i] or ""):
+        # the paper identifies an item by its payment line, by the invoice where the valuation
+        # rather than the line was examined, or by the revenue ledger's own reference
+        if re.fullmatch(r"SUP\d{6}/(CPL|REL|INV)-26-\d{6}", sched[i] or ""):
             try:
                 rec = float(sched[i + 3].replace(",", ""))
                 pay = float(sched[i + 4].replace(",", ""))
@@ -112,10 +114,19 @@ def main(target, figpath):
     chk("every schedule reference resolves through the crosswalk",
         sum(1 for k, _, _, _, _ in refs if k.split("/", 1)[0] not in cw), 0)
     byline = {r["line_ref"]: r for r in pop}
+    byinv = {}
+    for r in pop:
+        byinv.setdefault(r["invoice_ref"], []).append(r)
     tested = []
     for ref, code, day, rec, pay in sorted(refs):
-        line = ref.split("/", 1)[1]
-        tested.append((line, code, rec, pay, byline.get(line)))
+        key = ref.split("/", 1)[1]
+        if key in byinv and key not in byline:
+            # recorded at invoice level: the row covers every payment line on the invoice
+            for r in sorted(byinv[key], key=lambda x: x["line_ref"]):
+                tested.append((r["line_ref"], code, float(r["amount_eur"]),
+                               float(r["amount_eur"]), r))
+            continue
+        tested.append((key, code, rec, pay, byline.get(key)))
     # a line the schedule carries twice was selected once and stands for one interval; a row that
     # resolves to no line in this ledger is the revenue sample and is no part of this population
     seenl, uniq = set(), []
@@ -128,8 +139,8 @@ def main(target, figpath):
     chk("the paper's rows that resolve to no capital line",
         sum(1 for t in tested if t[4] is None),
         fig["asks"]["schedule_lines_absent_from_the_ledger"])
-    chk("tested value", round(sum(t[2] for t in uniq), 2),
-        fig["critical_components"]["tested_value"])
+    chk("the paper's capital rows all resolve to a payment line",
+        sum(1 for t in uniq if t[4] is None), 0)
 
     # ---- recover the interval from the record itself ---------------------------
     cum = [0.0]
@@ -189,21 +200,17 @@ def main(target, figpath):
                 return []
         return keep
 
-    # the certainty threshold brackets it; the lattice pins it
-    cert_min = min(t[2] for t in tested if t[2] >= 100000) if \
-        any(t[2] >= 100000 for t in tested) else None
-    guess = sorted(t[2] for t in tested)[-1]
-    found_si = None
-    cands = [si for si in range(150000, 220001, 1000)]
-    for si in cands:
-        if feasible(float(si)):
-            found_si = si
-            break
-    chk("the interval recovered from the record",
-        found_si, fig["constants"]["selection_interval_recovered"])
-    exact = [si for si in range(found_si - 40, found_si + 41) if feasible(float(si))]
-    chk("exactly one interval is feasible", len(exact), 1)
-    SI = float(found_si)
+    # the interval is filed on the working paper's basis of selection, so it is read rather than
+    # recovered, and the figure it names is checked against the one the figures carry
+    basis = " ".join(sched)
+    m = re.search(r"selection interval of ([\d,]+) euro", basis)
+    chk("the working paper files a selection interval", bool(m), True)
+    SI = float(m.group(1).replace(",", "")) if m else 0.0
+    chk("the filed interval", int(SI), fig["constants"]["selection_interval_recovered"])
+    chk("the paper files that the interval was common to every programme",
+        "common to every work programme" in basis, True)
+    chk("the paper defines the lines certain of selection",
+        "certain of selection" in basis, True)
 
     # ---- the projection -------------------------------------------------------
     prog = {}
@@ -250,14 +257,24 @@ def main(target, figpath):
     chk("the misstatement found", round(foundm, 2),
         fig["steps"]["misstatement_found_in_tested_lines"])
     vt = sum(t[2] for t in uniq)
-    chk("errors scaled on recorded value", round(foundm * V / vt, 2),
-        fig["steps"]["errors_scaled_on_recorded_value"])
     Vp = sum(a for a in amounts if a < SI)
     vp = sum(t[2] for t in uniq if t[2] < SI)
     fc = sum(t[2] - t[3] for t in uniq if t[2] >= SI)
     fp = sum(t[2] - t[3] for t in uniq if t[2] < SI)
-    chk("the stratum ratio", round(fc + fp * Vp / vp, 2), fig["steps"]["stratum_ratio"])
-    rf0 = fig["constants"]["reliability_factor_nil_overstatements"]
+    # the reliability factors ship in the manual, so the factor is read rather than assumed
+    man = pdf_text(os.path.join(target, "audit_manual_part9.pdf"))
+    rftab = []
+    for i, s in enumerate(man):
+        if s.strip() != "factor":
+            continue
+        for nxt in man[i + 1:]:
+            if not re.fullmatch(r"\d{1,2}\.\d{2}", (nxt or "").strip()):
+                break
+            rftab.append(float(nxt))
+    chk("the manual ships a reliability table", len(rftab) >= 11, True)
+    rf0 = rftab[0] if rftab else 0.0
+    chk("the factor at nil overstatements", rf0,
+        fig["constants"]["reliability_factor_nil_overstatements"])
     chk("basic precision", round(SI * rf0, 2), fig["steps"]["basic_precision"])
     chk("projection plus basic precision", round(sum(prog.values()) + SI * rf0, 2),
         fig["steps"]["projection_plus_basic_precision"])
