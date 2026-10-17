@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Six of the nine programs go into review in June 2027: General Studies, Biological Sciences, Business Administration, Psychology, Medical Assisting and Early Childhood Education.",
+  "answer_source": "submission.md block 1; generator/figures.json call",
   "gap": [
     "population"
   ],
@@ -35,10 +35,10 @@
   "role_family": "research_desk",
   "scoring_unit": "per accepted item",
   "spine": {
-    "file": "student term-enrollment and outcome record (one row per student per term) with the award and transfer files",
-    "rows": 0,
-    "entity": "one entering student in one associate-degree program",
-    "grain": "student x term",
+    "file": "sis_admissions_exits_202410-202720.csv with ir_fall_entering_students_2023-2025.xlsx",
+    "rows": 13796,
+    "entity": "one admission (a student's time at the college from one admit term)",
+    "grain": "admission: student and admit term, with its exit term and reason",
     "source": "synthetic"
   },
   "forum": "trustees_or_governors",
@@ -48,7 +48,13 @@
     "geography": "United States (Pennsylvania; the college, its programs and the state transfer exchange are fictional; personas on the en_US index)",
     "currency": "USD",
     "org_type": "a public community college with three campuses",
-    "invented_names": [],
+    "invented_names": [
+      "Quenlow County Community College",
+      "Quenlow",
+      "Tarvelly",
+      "Hollenby",
+      "Pennsylvania Enrollment Exchange"
+    ],
     "people": [
       "Tammy Weaver",
       "Derek Collier",
@@ -63,7 +69,7 @@
   "question_form": "how-many",
   "driver": "The decisive quantity is the share of units whose spell ends one particular way within a fixed time of its start, estimated from a record in which many spells are still open and the others end in several ways; counting the spells that ended another way as if they were still open and could yet end the counted way spreads their chance over the counted ending, so the share has to be built from each ending's own hazard among the units still in their spell.",
   "driver_concrete": "The board reviews any program whose share of entering students earning the award within three years is below 30 per cent, but the fall 2024 and 2025 entrants are still enrolled, so the share must be estimated; a Kaplan-Meier curve of time to award that treats students who transferred out or withdrew as censored counts them as if they could still graduate and puts programs with heavy transfer above the floor, while the cumulative incidence of the award with transfer and withdrawal as competing endings puts them below it.",
-  "stump": "A competent solver fits a Kaplan-Meier curve of time to the award for each program's 2023 to 2025 entrants, censoring the students still enrolled and also those who transferred out or withdrew, and keeps the transfer-heavy programs above the 30 per cent floor; the step that lands it there is treating a transfer or withdrawal as loss to follow-up, when it ends the student's chance of the college's award, so the three-year completion share has to be the cumulative incidence of the award with transfer and withdrawal as competing endings.",
+  "stump": "A competent solver fits a Kaplan-Meier curve of the terms to the degree for each program's fall 2023 to 2025 entrants, censoring the admissions still open and also those that ended in a transfer out or a withdrawal, and sends only Early Childhood Education into review (22.2 per cent), the transfer-oriented programs at 34.8 to 41.4 per cent and Medical Assisting at 38.1; the step that lands it there is treating a transfer or a withdrawal as loss to follow-up, when it ends the admission's chance of the college's degree, so the share has to be the cumulative incidence of the degree with transfer and withdrawal as competing endings, which sends six programs into review.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who stacks the two student-system exports, places each student in the program entered, reads every status code correctly and censors students still enrolled at the census runs Kaplan-Meier on time to the award with transfers out and withdrawals censored as students the college lost sight of, and files the transfer-heavy programs as above the floor, because a censored transfer keeps a share of the award probability the student can no longer earn.",
   "domain_test": "The deciding quantity is each program's three-year completion share estimated by the cumulative incidence of the award with transfer out and withdrawal as competing endings and students still enrolled censored, the event-history estimator for a life-course transition with several exits; with a warehouse's pallets or a hospital's admissions in place of students the endings, the census and the program floor lose their meaning and the task no longer reads the same.",
@@ -71,14 +77,17 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:competing-endings-cumulative-incidence",
   "layer1": [
-    "the student record in two exports from two student information systems (a 2024 migration), with different term codes",
-    "program changes after entry, the entering program kept as the student's program by the review standard",
-    "transfers out found by the state transfer exchange's quarterly match, with the transfer term only",
-    "withdrawal coded by the registrar after two consecutive terms with no enrolment",
-    "awards conferred at term end with conferral dates in a separate graduation file",
-    "students who returned after a gap re-admitted under a new student number"
+    "the student record held in two student systems (a 2024 conversion): IR's fall 2023 entering file under the legacy system's student numbers and term codes, everything else under the new system's, joined through the conversion map",
+    "program changes after entry, the entering program kept as the student's program by the review policy",
+    "transfers out found by the state transfer exchange's quarterly match, an admission first closed as a withdrawal and recoded when the match arrives",
+    "a withdrawal recorded at the census of the first fall or spring term without enrolment",
+    "associate degrees conferred at term ends in a separate conferral file",
+    "returning students readmitted under a new admission"
   ],
-  "differentiation": {},
+  "differentiation": {
+    "task265": "back to back with the same gap key and decision type, a different driver: task265 admits hips the registry entered late into the risk set (left truncation of a survival curve); task266 splits one ending's probability from the endings that compete with it (a cumulative incidence, nothing truncated), on admissions with three recorded endings, decisive generator G17 against task265's",
+    "task448": "shares only the gap key and a register as context: task448 completes a mortgage-lending register from a vendor feed (composition mix, ranked slate under a cap); task266 estimates program completion with competing endings on a college's student record"
+  },
   "lineage": [
     {
       "architecture": "v0",

@@ -1,26 +1,27 @@
 {
   "task": "task266",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "sociology-demography",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-17",
-  "stump": "The default path sends one program into review, keeping the four transfer-oriented programs at about 34 to 39 per cent, because it treats a student who transferred out or withdrew as censored, so each keeps a share of an award they can no longer earn; the cumulative incidence of the award with transfer and withdrawal as competing endings puts those programs at about 18 to 24 per cent and sends six programs into review.",
+  "stump": "The default path sends one program into review (Early Childhood Education) and keeps the four transfer-oriented programs and Medical Assisting above the floor, because it censors an admission that ended in a transfer out or a withdrawal as if the student could still earn the award; the cumulative incidence of the award with transfer and withdrawal as competing endings, open admissions alone censored, sends six programs into review.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (2027-05-28): sweeps 4, 6 and 9, each harmless, answered in the design note",
+    "reader": "round 1 (2026-10-17): Q5 and Q6 find a main-call fork: Policy 3.3 read literally (still-enrolled students included, record as it stands) gives degrees to date over entrants (R0), so the estimand must say the open classes' share is an estimate of the share by their ninth term; realism: the policy names the June 2027 review, reason_changed_on labels the recoded transfers, one conversion date on every map row, the manifest's IR date and '1 pages'; asks: credit hours of linked sections, the registration program's vintage and whether linked sections are classes need filed definitions"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task265 (v1) 0.13"
+    "heart": "PASS (nearest 0.09)",
+    "nearest": "task134 ledger 0.09; task265 0.08",
+    "surface": "task265 and task448 promoted, answered on the card"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +29,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: readability screen, semantic fork table, ladder with built margins, closure table, literal reader, oracles, ask sheet, prompt.txt; then precut.py task266 to exit 0",
+  "resume": "stage 4: the isolated determinism-judge thread (brief at /tmp/determinism-check-task266-1792249181/judge_brief.md) is running; when it returns, re-invoke the determinism-judge agent with its verdict.md for the report, then fix the reader's and the judge's findings in one pass: Policy 3.3 general and filing the open classes' share as an estimate of the share by the ninth term (SF5, literal reader), 3.2 a degree under a readmission not counted, 4.2 linked sections are classes, the notes' Cr Hrs and program_code vintage sentences, reason_changed_on dropped (exit_recorded_on carries the current reason's date), conversion dates by batch, manifest dates and grammar; rebuild, stage 3 gates, re-run the reader and the judge; then ship with the wave 4 row in the author file",
   "approved": null,
   "delivered": null,
   "portal": null,

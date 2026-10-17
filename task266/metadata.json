@@ -1,0 +1,19 @@
+{
+ "distractor_files": [
+  "target/course_success_rates_fa2021-sp2026.xlsx",
+  "target/service_area_occupational_outlook_2024-2034.csv"
+ ],
+ "deliverables": [
+  "program_completion_review_2027.xlsx",
+  "completion_review_board_paper_2027.pdf"
+ ],
+ "stated_inputs": [
+  "30",
+  "2023",
+  "2024",
+  "2025",
+  "2026",
+  "2027"
+ ],
+ "as_of": "2027-05-28"
+}
