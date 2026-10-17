@@ -173,6 +173,20 @@ fully defined, as a judge will force you to, and ask whether the device still bi
 survives every term being defined rides on the data; one that does not was the ambiguity, and shipping
 it buys a determinism return and an ask layer at once.
 
+**Cutting a free figure is a correctness check as well as a ceiling lever.** A figure no device can
+reach is banked by every strong response and dilutes every criterion beside it, so cutting it raises
+the share the devices hold: task190 cut a plain quarterly run count and folded twelve monthly counts
+into four quarters of payment, and the pair fell 51.0 to 47.6 while the mirror fell too, which moved
+its own target from ten of 41 to twelve of 29. The cut also pays a second way. A redundant figure
+sitting beside a device-touched breakdown of the same rows means the breakdown's basis is never
+exercised on its own, so a bug there can pass for as long as the plain figure absorbs it. With the
+plain count gone, that build's quarter-basis assertion began failing and exposed a real defect: a run
+released at 01:30 the day after its run date was compared against the following morning's clock, so
+the quarter's latest run scored as its earliest and every overnight release counted as inside the
+cut-off. It would have been a Gate A finding. Sort the figures the cracker keeps into those a drafted
+device reaches and those free by construction, cut or fold the second group, and re-run the assertions
+afterwards rather than before: what fails is what the cut figure was hiding.
+
 **The ceiling is computed on Part 0's weights, not on a legal point inside the permitted bands.**
 `CLAUDE.md` allows 30 to 40 per cent for the recommendation and critical components, 5 to 10 for
 instruction-following and 55 to 60 for the asks, so a script can sit anywhere in those ranges and
