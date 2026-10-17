@@ -41,7 +41,7 @@
     "grain": "device session",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
+  "forum": "line_manager_or_team",
   "forcing_event": "launch_or_rollout",
   "org_family": "software_or_platform",
   "world": {
@@ -78,7 +78,7 @@
     "task459": "task459 reads each unit's rate at a committed operating level from interval records instead of its period average; this build has no operating level or rate curve: it decides, item by item, whether a missing record is due yet from its sender's next contact and measures loss only over the items that are"
   },
   "lineage": [],
-  "notes": "Decisive G12 (a missing purchase event is a non-answer until the phone that made the purchase has opened the game again), G14 supporting (the loss rate conditioned on that delivery chance, pattern E's form), G2 (the chance belongs to the device, not the account). The metrics catalogue files the WHAT (a build's tracking loss: the share of its purchases in the four weeks whose purchase_completed event never reaches the warehouse, purchases whose event can still arrive included; the 2 per cent line) and no method; the SDK notes say the on-device queue survives restarts and name no trigger, which the data show (every late event arrives within a minute of a later session start of its phone). Re-domained from the seed's disease surveillance: Epidemiology x Data Quality is banned against task234.",
+  "notes": "Decisive G12 (a missing purchase event is a non-answer until the phone that made the purchase has opened the game again), G14 supporting (the loss rate conditioned on that delivery chance, pattern E's form), G2 (the chance belongs to the device, not the account). The metrics catalogue files the WHAT (a build's tracking loss: the share of its purchases in the four weeks whose purchase_completed event never reaches the warehouse, purchases whose event can still arrive included; the 2 per cent line) and no method; the SDK notes say the on-device queue survives restarts and name no trigger, which the data show (every late event arrives within a minute of a later session start of its phone). Re-domained from the seed's disease surveillance: Epidemiology x Data Quality is banned against task234. Forum redrawn at the draw from operations_desk to line_manager_or_team after the pull brought task154's redrawn forum.",
   "client_domain": "product-analytics",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:loss-conditioned-on-the-delivery-chance",

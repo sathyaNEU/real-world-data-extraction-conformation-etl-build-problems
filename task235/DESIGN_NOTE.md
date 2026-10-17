@@ -38,7 +38,8 @@ is due yet.
   G2 (the chance belongs to the phone, not the account); Gate G method_or_model_selection (which way of telling a lost
   event from a late one the data support); calibration none; context artifact register (the metrics catalogue); layer
   2 family estimation_fit, pattern own:loss-conditioned-on-the-delivery-chance.
-- **Forum, event, organisation.** operations_desk (the data quality lead's Monday run for the analytics team),
+- **Forum, event, organisation.** line_manager_or_team (the data quality lead raises the alerts in the analytics team's
+  Monday run; no committee; redrawn from operations_desk after the pull brought task154's redrawn forum),
   launch_or_rollout (7.42.0's staged rollout goes to 100 per cent on Wednesday 11 November unless held),
   software_or_platform (a game studio).
 - **People** (`guard.py names --geo "Ireland" --seed 235`): Amelia Seery, data quality lead, who runs the check and
