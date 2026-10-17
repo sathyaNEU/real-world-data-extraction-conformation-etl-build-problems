@@ -1,0 +1,93 @@
+{
+  "task": "task158",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 5, new; seed FC29 (world, decision and quantity only)",
+  "domain": "general-statistics-data-science",
+  "subdomain": "regression-classification-model-diagnostics",
+  "client_domain": "general-statistics-data-science",
+  "niche": "an Amsterdam model provider's fleet capacity planner assigning a leased 240-GPU stopgap for the first quarter of 2027 to the one of six product pools with the largest peak-week GPU shortfall, when the document Q&A pool takes on eleven bulk report contracts whose every call opens its own session and computes its whole source pack, while the pool's own requests re-send documents its session prefix cache already holds",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G1",
+    "G14",
+    "G16"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "the fleet capacity planner who assigns the stopgap cluster under the capacity policy",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "pool_hourly_2026-01-01_2026-12-06.csv",
+    "rows": 49000,
+    "entity": "one GPU pool's serving totals for one UTC hour: GPUs in service, busy GPU-seconds, requests, new sessions, prompt and completion tokens, time to first token",
+    "grain": "pool x hour",
+    "source": "synthetic (constructed in the layout of a fleet capacity rollup that joins GPU busy time to gateway counters)"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "other",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "Netherlands (Amsterdam; the fleet in two colocation halls in North Holland; the company, its products, models, customers, people, systems and data are fictional)",
+    "currency": "EUR",
+    "org_type": "AI model company serving its own models through six products from its own GPU fleet",
+    "invented_names": [
+      "Slenk"
+    ],
+    "people": [
+      "Janne Muijs",
+      "Casper Heijmans",
+      "Louise Hekker",
+      "Mart Bosch"
+    ]
+  },
+  "deliverables": [
+    "stopgap_q1_2027.xlsx",
+    "pool_busiest_hours_nov2026.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The work each new call does is priced at the rates the resource shows on traffic that brings nothing it has seen before, because the host traffic's per-call and per-unit rates are earned by calls that re-send input the resource still holds from earlier in their own exchange, while every new call opens its own exchange and computes all of its input; the one earlier arrival of such calls, which every host-based rate and the shared-input assumption under-predict, confirms the price out of sample.",
+  "driver_concrete": "Docs' interactive turns re-send a document lc2 already holds in the session's prefix cache, so Docs' GPU-seconds per request and per token price almost no prefill, while every report-service call is its own session and computes its whole source pack; priced at lc2's GPU-seconds per computed prompt token and per completion token, read from the batch pool's single-call traffic and confirmed on the early-access tenant's October and November reports (which Docs' rates, per-session costing and a pack shared across a report's sections all under-predict), the eleven contracts' peak reports need about 250 GPUs and Docs, not Code, has the largest Q1 peak-week shortfall.",
+  "stump": "A competent solver costs every pool's busiest-hour requests at the Q3 close-out's GPU-seconds per request, adds Docs' contracted report calls at Docs' own rate per request, per token or per session (or with each report's sections sharing the pack) and sends the stopgap to Code at 300 GPUs short; the step that lands it there is pricing report calls at rates earned by turns that re-send a cached document, when each report call computes its whole source pack and leaves Docs 340 GPUs short.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every rule correctly and costs each pool's planned busiest hour at its Q3 GPU-seconds per request, with Docs' report calls at Docs' own rate per request, per token or per session, files Code at 300 GPUs; only pricing each report call on the prompt tokens lc2 must compute for it, at rates from traffic that reuses nothing, gives Docs at 340.",
+  "domain_test": "The deciding quantity is a fitted cost model's prediction for a traffic class outside its fit: GPU busy time regressed on the prompt tokens the model computes and the tokens it generates, the specification chosen because it alone predicts the early-access tenant's realised GPU time out of sample; replace that model with a generic summary (the close-out's mean GPU-seconds per request, a blended rate per token) and the call moves to Code, and in another field with no prefix reuse the per-request mean would be right.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:gpu-work-priced-on-computed-prompt-tokens-validated-on-an-early-access-onboarding",
+  "layer1": [
+    "model upgrade mid-year changes the pool's model tag and its costs",
+    "UTC telemetry hours against CET billing days across the October clock change",
+    "billing meter by organisation and channel against pool totals",
+    "contract ledger with tier codes resolved through a tier sheet and staggered go-live weeks",
+    "fleet plan with a mid-quarter node move"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task140": "task140 solves a residual guarantee jointly with a dependent storage reservation whose load rises with the tier being promised; here nothing is solved jointly: one product's new traffic is priced on the prompt tokens the model must compute for it, which the host product's per-request and per-token rates understate because its requests reuse a cached prefix",
+    "task67": "task67 recovers a fixed-plus-variable loop exactly from per-drop shares that sum to it; here no share sums to anything: the cost driver (prompt tokens the model computes) is estimated from pool telemetry against traffic that reuses nothing, and the new calls' reuse is settled out of sample on an early-access tenant, the shared-input reading being the rival it rejects",
+    "task155": "task155 conditions a take-up rate on whether an open shift adjoins a rostered one; here the conditioning is on the serving side: a call's GPU work depends on whether its prompt was already computed in its session, and the rival is rejected on a past onboarding's realised GPU time",
+    "task151": "task151 prices a stepped payout from the spread of appearances that units planned alike make, read at the new position's rate; here the rate is what is wrong for the new traffic: a call's GPU work depends on how much of its prompt the model must compute, which the host product's in-session reuse hides, and the rival rates are rejected on an early-access tenant's realised GPU time"
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-17T16:46:25Z"
+}
