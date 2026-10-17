@@ -66,7 +66,8 @@ def write(fig_path, out_path):
         "6. Ranked the qualifying routes by average weekday boardings in %s (guidance 5.1): Routes %s, with Route %s "
         "the first qualifying route left out." % (W.FILES["ridership"], routes(c["five"]), c["first_left_out"]),
         "7. Timed each departure tied to a trip against the trip's scheduled departure from the designated stop in "
-        "the feed in effect that day (%s to April 4, %s from April 5; guidance 4.2), not the minute-rounded schedule "
+        "the feed in effect that day (%s to April 4, %s from April 5; the published timetable, guidance 4.1 and 4.2), "
+        "not the minute-rounded schedule "
         "time in Arbor's export, for the on-time shares." % (W.FILES["gtfs_jan"], W.FILES["gtfs_apr"]),
         "8. Recommended nominating Routes %s." % routes(c["five"]),
         "",

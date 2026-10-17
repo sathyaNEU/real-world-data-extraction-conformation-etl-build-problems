@@ -67,7 +67,6 @@ def build(out, x=None, quiet=False):
     DC.write_equity(f("equity"))
     DC.write_ridership(f("ridership"), P.ridership_table())
     DC.write_farebox(f("farebox"), P.farebox_table())
-    DC.write_index(f("index"), n)
     for k, stamp in PDF_STAMPS.items():
         PP.normalize_pdf(f(k), stamp, stamp)
     PP.normalize_ooxml(f("ridership"), "Service Planning", "Service Planning", "2026-07-20T15:02:00Z",
@@ -76,7 +75,7 @@ def build(out, x=None, quiet=False):
                        excel=True, company=W.DEPARTMENT)
     asof = {k: d for k, src, d, desc in __import__("docs").INDEX}
     for i, k in enumerate(W.FILES):
-        y, m, d = (int(v) for v in asof.get(k, W.INDEX_DATE).split("-"))
+        y, m, d = (int(v) for v in asof[k].split("-"))
         ts = dt.datetime(y, m, d, 9 + (i * 7) % 8, (i * 13) % 60, tzinfo=CENTRAL).timestamp()
         os.utime(f(k), (ts, ts))
     if not quiet:

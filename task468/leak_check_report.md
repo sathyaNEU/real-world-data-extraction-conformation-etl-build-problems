@@ -1,18 +1,18 @@
 # leak check, task468
 
-**Verdict: REVIEW.** 14 files read, 2 golden figures and 13 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 2 golden figures and 13 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: review, service, events, decisive, unmatched, design, timetable, riverside, weighted, weighting, bus-day, weights, departure, sample, counts, guidance, lowest, silent, records, agency, delivered, matchers, average, missed, clerical
+Stump terms swept: review, service, events, decisive, guidance, timetable, unmatched, departure, design, riverside, sample, weighted, bus-day, on-time, sentence, lowest, weighting, silent, device, records, agency, counts, schedule, weights, repeats
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `dot_ftc_program_guidance_fy2027.pdf`: carries 6 of 6 distinctive words of the committed call: 'Nominate Routes 2, 4, 6, 17 and 22 to the Frequent Transit Corridors Program for FY2027.'
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `dot_ftc_program_guidance_fy2027.pdf`: 10 of 25 stump-paragraph terms appear (service, design, departure, counts, guidance, lowest); read whether the document names the move
-- **REVIEW** `quinnell_cutover_export_notes.pdf`: 8 of 25 stump-paragraph terms appear (review, service, events, unmatched, design, timetable); read whether the document names the move
-- **REVIEW** `service_quality_trip_matching_review_2026.pdf`: 7 of 25 stump-paragraph terms appear (review, service, events, timetable, bus-day, sample); read whether the document names the move
+- **REVIEW** `dot_ftc_program_guidance_fy2027.pdf`: 11 of 25 stump-paragraph terms appear (service, guidance, timetable, departure, design, on-time); read whether the document names the move
+- **REVIEW** `quinnell_cutover_export_notes.pdf`: 9 of 25 stump-paragraph terms appear (review, service, events, timetable, unmatched, departure); read whether the document names the move
+- **REVIEW** `service_quality_trip_matching_review_2026.pdf`: 7 of 25 stump-paragraph terms appear (review, service, events, timetable, sample, bus-day); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Which of Larkhaven Transit's eleven candidate routes should the City nominate to the state's Frequent Transit Corridors Program for FY2027, at most five, on its buses' departures from each route's designated stop from Ja"
 
 ## 6 ranking artifacts (REVIEW 3, INFO 1)

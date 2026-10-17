@@ -23,7 +23,7 @@ Seven candidates meet the standard once each stop's departures without a trip ar
 4. Shared each stop's departures without a trip in each hour among its routes by the weighted mix, buses out of service left out, added the departures tied to each route's trips, and averaged over the counting days.
 5. Took each candidate's lowest hour: Routes 2, 4, 6, 11, 17, 22 and 40 meet four in every hour; Routes 9, 14, 31 and 51 do not.
 6. Ranked the qualifying routes by average weekday boardings in ridership_by_route_2026h1.xlsx (guidance 5.1): Routes 2, 4, 6, 17 and 22, with Route 11 the first qualifying route left out.
-7. Timed each departure tied to a trip against the trip's scheduled departure from the designated stop in the feed in effect that day (larkhaven_gtfs_20260101.zip to April 4, larkhaven_gtfs_20260405.zip from April 5; guidance 4.2), not the minute-rounded schedule time in Arbor's export, for the on-time shares.
+7. Timed each departure tied to a trip against the trip's scheduled departure from the designated stop in the feed in effect that day (larkhaven_gtfs_20260101.zip to April 4, larkhaven_gtfs_20260405.zip from April 5; the published timetable, guidance 4.1 and 4.2), not the minute-rounded schedule time in Arbor's export, for the on-time shares.
 8. Recommended nominating Routes 2, 4, 6, 17 and 22.
 
 ## 4. Deliverable Answers

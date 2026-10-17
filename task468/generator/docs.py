@@ -1,6 +1,6 @@
 """The pack's documents: the State Department of Transportation's program guidance, the ITS administrator's notes on
 the Quinnell cutover and its export, Service Quality's trip-matching review memo, the department's ridership report,
-its farebox workbook and its 2025 Title VI monitoring report (the last two distractors), and the folder's contents."""
+its farebox workbook and its 2025 Title VI monitoring report (the last two distractors), and each file's date."""
 import datetime as dt
 
 from reportlab import rl_config
@@ -123,12 +123,14 @@ def write_guidance(path):
                    "estimate of each route's departures and keeps its working for audit.", BODY),
          Paragraph("4. The application", h2),
          Paragraph("4.1 The application is made by the agency and accompanied by a resolution of its governing body "
-                   "authorizing the nominations.", BODY),
+                   "authorizing the nominations and by the GTFS feeds of its published timetable for the qualifying "
+                   "period.", BODY),
          Paragraph("4.2 For each nominated route the application gives the designated stop; the lowest of its thirteen "
                    "hourly averages under section 3.3; its average weekday boardings over the qualifying period; its "
                    "on-time performance (of the route's departures from 6:00 a.m. to 7:00 p.m. on the counting days "
                    "that the agency's AVL records tie to a trip, the share that left the designated stop no more than "
-                   "one minute before and no more than five minutes after the trip's scheduled departure); and "
+                   "one minute before and no more than five minutes after the trip's scheduled departure in the "
+                   "published timetable); and "
                    "the average scheduled wait at the designated stop (the average time a rider arriving at a random "
                    "moment between 6:00 a.m. and 7:00 p.m. on a weekday of the agency's current service would wait "
                    "for the route's next scheduled departure).", BODY),
@@ -331,7 +333,7 @@ def write_farebox(path, table):
     wb.save(path)
 
 
-# ---------------------------------------------------------------- the folder's contents
+# ---------------------------------------------------------------- each file's date in the folder
 INDEX = [
     ("avl_q1", "Larkhaven Transit (Arbor Fleetware CAD/AVL export)", "2026-04-02",
      "AVL stop events at the five transfer points, January 1 to March 31, 2026."),
@@ -350,11 +352,3 @@ INDEX = [
     ("candidates", "Larkhaven Transit, Planning", "2026-07-24",
      "Candidate routes for the FY2027 nominations, with the designated stop each would name."),
 ]
-
-
-def write_index(path, counts):
-    import pack as P
-    rows = []
-    for k, src, asof, desc in INDEX:
-        rows.append([W.FILES[k], src, asof, desc, counts.get(k, "")])
-    return P.write_csv(path, ["file", "from", "dated", "what_it_is", "records"], rows)

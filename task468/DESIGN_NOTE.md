@@ -168,7 +168,7 @@ Lesson: a clerical review that samples clusters (bus-days) and takes a fixed num
 | SF12 | the review's frame | bus-days by service day with at least one event with no trip at the five stops, any hour | counting days and hours only | same call (asserted) | the review memo's procedure |
 | SF13 | on time | no more than one minute before and no more than five minutes after the scheduled departure, bounds included | strict bounds | same call; six on-time shares move (asserted) | guidance 4.2 and the prompt, "no more than" |
 | SF14 | the on-time window | departures that left from 6:00 to 6:59 p.m. by the clock hour the bus left | windowed by the scheduled time | same call; no share moves (asserted) | guidance 3.2 "counted in the clock hour in which the bus left the stop" |
-| SF15 | the trip's scheduled departure | the trip's departure from the designated stop in the feed in effect that day (winter to 4 April, spring from 5 April) | the schedule field each export carries | same call; every on-time share moves (Arbor's held to the minute) | guidance 4.2 "the trip's scheduled departure"; the change note: Quinnell's ScheduledDeparture is the feed's |
+| SF15 | the trip's scheduled departure | the trip's departure from the designated stop in the feed in effect that day (winter to 4 April, spring from 5 April) | the schedule field each export carries | same call; every on-time share moves (Arbor's held to the minute) | guidance 4.1 (the application carries "the GTFS feeds of its published timetable") and 4.2 ("the trip's scheduled departure in the published timetable"); the change note: Quinnell's ScheduledDeparture is the feed's |
 | SF16 | Quinnell's DeviationSec | the departure against ScheduledDeparture, seconds | an adherence at arrival | same call; same shares (asserted) | the change note's field table |
 
 ## Ladder
@@ -293,16 +293,18 @@ the feeds, with its bounds included.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| On-time departures by candidate | times each departure against the schedule field its export carries, Arbor's held to the minute; every identity check ties | miss |
+| On-time departures by candidate | times each departure against the published timetable that guidance 4.1 and 4.2 now name, the two feeds by date with route 11's frequency blocks (reader round 3 did, 11 of 11) | hit |
 
-- Mirror leakage: 0 per cent of ask weight (a response on R2 takes the same schedule fields and misses the same eleven
-  shares).
-- Pair ceiling: 36.5 (planning weights 38 / 7 / 55, the main block split as the call 10, the five 8, the first route
-  left out 4 and the eleven verdicts 16, the ask weight over the eleven shares; the cracker keeps the main block and
-  instruction-following, 38 + 7 = 45.0, and no share; the mirror on R2 keeps ten verdicts (14.5), four of the five
-  (6.4) and instruction-following (7.0), 27.9, and no share; average 36.5), rerun from the generated rubric at ship.
-- Measured by: generator/ceiling.py, run on the cut pack after the final rebuild: the cracker 45.0 with 0 of 11 shares,
-  the mirror 27.9 with 0 of 11, pair ceiling 36.5, mirror leakage 0.0 per cent; every share scored in both rows.
+- Mirror leakage: 100 per cent of ask weight after the guidance pin (a response on R2 that reads 4.2 times against the
+  feeds too and hits the same eleven shares); 0 per cent before it.
+- Pair ceiling: 91.5 after the guidance pin (planning weights 38 / 7 / 55, the main block split as the call 10, the
+  five 8, the first route left out 4 and the eleven verdicts 16, the ask weight over the eleven shares; the cracker
+  keeps everything, 100.0; the mirror on R2 keeps ten verdicts (14.5), four of the five (6.4), instruction-following
+  (7.0) and the eleven shares (55.0), 82.9). Before the pin, with each export's own schedule field as the careful path,
+  it was 36.5 (the cracker 45.0, the mirror 27.9). The ask is rebuilt before this build ships (pipeline.json resume).
+- Measured by: generator/ceiling.py on the cut pack measures the pre-pin rows (the cracker 45.0 with 0 of 11 shares,
+  the mirror 27.9 with 0 of 11, pair ceiling 36.5, mirror leakage 0.0 per cent); reader round 3 on the pinned pack is
+  the measurement after the pin, 11 of 11 shares.
 
 ## Tried and rejected
 
@@ -347,6 +349,11 @@ the feeds, with its bounds included.
   filed 48): the half-minute bands, set per transfer point, put every share at least 0.19 from its edge.
 - 2026-10-17, stage 4: the eleven candidates named only by route colour in routes.txt (the judge's Gate B and E
   finding): Planning's candidate list now ships with each route's designated stop.
+- 2026-10-17, stage 4: the on-time device as Arbor's minute-held schedule against the feeds' half minute: judge pass 2
+  read the two schedule sources as an open fork (FIX_NOW), the pin naming the published timetable in guidance 4.1 and
+  4.2 closed it, and reader round 3 then timed all eleven shares against the feeds. A device whose basis a filed
+  sentence must name dies with the pin, and every other column the ask reads (the departure, the trip tie, the window,
+  the days) is the call's own population, so no device on this ask can stay off the call's rows.
 
 ## Leak check
 
@@ -367,6 +374,24 @@ the feeds, with its bounds included.
   empty "early beyond window" column (three analysts; the column is gone); route 11's explicit schedule times beside
   frequencies.txt (exact_times 1, each block ending between two trips). Harmless: Good Friday and the snow day as
   counting days (the guidance's literal reading, SF5); Arbor's one-decimal adherence (the device's lazy path).
+- Reader round 2 (the rebuilt pack, the same brief): nothing quoted for question 1, no ranking file, no answer-like
+  figure, the question-5 sentences executing to the golden's estimand, the decisive step "an estimand and sampling
+  choice, not a field reading or a planted item". It filed the golden five and timed the on-time shares against the
+  exports' own adherence fields: every share in a different whole per cent from the golden's (the device held on all
+  eleven). Fixed: the folder list read as a build artefact (question 3), so it no longer ships; its dates stay as each
+  file's saved date. Harmless: the file-head repeats and the cutover overlap (outside the window, explained by the
+  daily files), the review's 250 a month (the memo's design), route 11's ten-minute headway, stop-by-hour shares
+  (Route 17 still qualifies).
+- Reader round 3 (the pinned pack, target.zip 2c828983, the same brief): question 1 quotes guidance 3.4 and 5.2 and
+  the memo's procedure and finds nothing saying to weight; no ranking file, no helper file, no answer-like figure; the
+  question-5 sentences execute to the golden's estimand; the decisive step "estimand and estimator choice, not
+  semantics". It filed the golden five and all eleven on-time shares, timing against the feeds as guidance 4.1 and 4.2
+  now name them: the ask's device died with the pin (Ask sheet, Tried and rejected). Open finding on the call, an H14
+  grain fork: the review's weighted mix applied per stop and clock hour (thin cells, Stop D holding one to seven
+  reviewed events an hour) files Routes 4, 6, 22, 11 and 40, Route 2 at 3.94 and Route 17 at 3.86; per stop over the
+  half year (the golden), per stop and time band and per stop and month all give Routes 2, 4, 6, 17 and 22. Harmless:
+  Arbor's minute-held schedule and route 11's trip ids (the Layer 1 the ask reads), the night-time file-head repeats
+  (outside the window), Route 17's stark numbers (its late buses are the story).
 
 ## Pre-ship check
 
@@ -386,14 +411,31 @@ the feeds, with its bounds included.
   raw; the seven qualifiers and the five under every allocation it tried); Gate F good; Gate G statistical_rigor,
   analytical_non_defect, no surface read, no sole defect; Gate H domain pass, layers pass, decisive step analytical.
   The four ask-side findings closed in the generator: the candidate list; the record ask dropped; the on-time basis
-  (the trip's scheduled departure, bounds included, DeviationSec coherent); the waits ask dropped. The one re-judge
-  follows the rebuild.
-- **Gates.** 14 files in 4 formats (csv, pdf, xlsx, zip); avl_stop_events_2026q2_quinnell.csv at 83,843 rows; two
+  (the trip's scheduled departure, bounds included, DeviationSec coherent); the waits ask dropped.
+- **Judge pass 2** (the one re-judge, `determinism_check_report_pass2.md`): DETERMINISTIC, FIX_NOW. Every figure
+  reproduced from the bundle (125 days, 106,687 departures, 17,112 without a trip, Route 17 at 57 per cent weighted and
+  35 unweighted, its lowest hour 4.81, the seven qualifiers, the five and Route 11, all eleven on-time shares against
+  the feeds); a bootstrap of the review keeps every qualifier at or above four (Route 17's low end 4.56); Gate G
+  statistical_rigor, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical. The one finding:
+  only the write-up named the feeds as the on-time basis, and Arbor's minute-held schedule moves every share. Closed at
+  authority rather than in the prompt (which carries the question and no convention): guidance 4.1 now has the
+  application carry "the GTFS feeds of its published timetable" and 4.2 times each departure against "the trip's
+  scheduled departure in the published timetable" (SF15, asserted). The pin was taken to leave the device silent for a
+  solver who trusts the export's schedule; reader round 3 timed every share against the feeds instead, so it does not
+  (Ask sheet). The judged bundle and the pinned one differ in that sentence and in the folder list's removal; no third
+  judge (the pipeline licenses one re-judge).
+- **Gates.** 13 files in 4 formats (csv, pdf, xlsx, zip); avl_stop_events_2026q2_quinnell.csv at 83,843 rows; two
   distractors (the farebox workbook and the Title VI report) the solution never reads, each deletion asserted; 53
   generator checks; `verify.py` from the bundle alone (its own readers for the exports, the feeds, the candidate list
   and the workbooks, its own conformance, weights, estimate and on-time shares against the feeds); two builds
-  byte-identical; `figures_check.py` (47 figures), `precut.py` and `voice-check.py` exit 0; `leak.py` REVIEW (no
+  byte-identical; `figures_check.py` (48 figures), `precut.py` and `voice-check.py` exit 0; `leak.py` REVIEW (no
   LEAK); guard heart WARN (answered in the draw); the surface screen's three promotions are card-level and go to the
   author; the containers clean (H1 audit, pack and golden); the golden workbook prints on one landscape page with the
   chart under the table.
-
+- **Paused at stage 4** (2026-10-17), not shipped. Reader round 3 left two findings the gates cannot pass: the on-time
+  ask's device died with the guidance pin (a cracker on the pinned text hits all eleven shares, pair ceiling 91.5
+  against the bar of 40), and the call carries an H14 grain fork at the stop-hour grain (Routes 4, 6, 22, 11 and 40).
+  The repair order is in pipeline.json: the review's draw first (each sampled bus-day's reviewed event drawn so every
+  stop-hour's weighted mix tracks its stop's, the raw mix still failing Route 17 at every grain, the stop-hour
+  estimator asserted in checks.py and verify.py), then a new ask on a measure the call does not read, carrying a
+  device a GTFS-literate cracker misses.

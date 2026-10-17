@@ -64,7 +64,7 @@ def figures(g):
         "on_time_k": {r: int(g["ot_k"][r]) for r in W.CANDIDATES},
         "review": {"bus_days_drawn_month": 250, "events_reviewed": int(len(g["rvw"]))},
         "routes": list(W.CANDIDATES),
-        "stated": {"guidance_sections": ["3.3", "3.4", "5.1"]},
+        "stated": {"guidance_sections": ["3.3", "3.4", "4.1", "4.2", "5.1"]},
     }
     sh_b = g["c"][~g["c"]["attributed"] & (g["c"]["stop"] == "B")]
     att_b = g["c"][g["c"]["attributed"] & (g["c"]["stop"] == "B")]
@@ -198,7 +198,7 @@ def write_workbook(path, f):
     ot["A1"].font = Font(name="Calibri", bold=True, size=12)
     ot.append(["Departures 6 a.m. to 7 p.m. on the counting days that the AVL records tie to a trip; on time is no more "
                "than one minute before and no more than five minutes after the trip's scheduled departure from the "
-               "designated stop in the GTFS feed in effect that day (guidance 4.2)."])
+               "designated stop in the GTFS feed in effect that day (the published timetable, guidance 4.1 and 4.2)."])
     ot.append([])
     ot.append(["Route", "Name", "Departures tied to a trip", "On time", "Share on time"])
     for c in ot[4]:
