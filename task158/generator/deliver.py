@@ -250,9 +250,11 @@ def submission(F, hb):
     L.append("Docs' eleven signed report-service contracts need about %d GPUs at their contracted peaks once all are "
              "live, because each report call is its own session and lc2 computes its whole prompt. Not %s (%s, %d GPUs "
              "short), which leads only when report calls are priced at Docs' GPU-seconds per request, a rate set by "
-             "follow-up turns that re-send a document their session already holds. Not a costing per token, per "
-             "session or per new session, at the early-access tenant's cost per call or per report, or with a report's "
-             "source pack computed once for all its calls: each under-prices the report prompts and leaves %s first."
+             "follow-up turns that re-send a document their session already holds. Not a costing at Docs' own rates "
+             "per token, per session or per new session, or at the early-access tenant's cost per call or per report: "
+             "each under-prices the report prompts and leaves %s first. Not a source pack shared across a report's "
+             "calls either: each call opens its own session, and the tenant's busy time matches every call computing "
+             "its whole prompt."
              % (F["reports_full"], F["runner_up"], K.PRODUCT[F["runner_up"]], F["runner_up_shortfall"],
                 K.PRODUCT[F["runner_up"]]))
     L.append("")
@@ -278,10 +280,10 @@ def submission(F, hb):
              "%.3f and %.2f GPU-milliseconds." % (F["a_ms"], F["b_ms"]))
     L.append("4. Checked those rates on the early-access tenant's %s report calls in "
              "docs_usage_by_org_daily_2026-09-01_2026-12-06.csv (5 October to 4 December; on those days the rollup's "
-             "sessions_new exceeds billing's app and API sessions by one per call): they come within %d per cent of the "
-             "busy GPU-seconds docs-prod ran on those days above its other requests at %.4f each, where Docs' rate per "
-             "request predicts about a fifth and a source pack computed once per report under half."
-             % (K.fmt_int(F["pilot_calls"]), F["pilot_within_pct"], F["docs_gpr"]))
+             "sessions_new exceeds billing's app and API sessions by one per call): on Amsterdam or UTC days, at the "
+             "close-out's %.4f or the exact Q3 rate, they come within %d per cent of the busy GPU-seconds docs-prod ran "
+             "on those days above its other requests, where Docs' rate per request predicts about a fifth."
+             % (K.fmt_int(F["pilot_calls"]), F["docs_gpr"], F["pilot_within_pct"]))
     L.append("5. Priced each signed contract in report_service_commitments_2026-12-04.xlsx at its tier's calls per "
              "report times its prompt and completion limits per call at those rates, from its go-live week: about %d "
              "GPUs once all eleven are live." % F["reports_full"])

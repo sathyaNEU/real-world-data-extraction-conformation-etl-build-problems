@@ -514,6 +514,13 @@ Rerun from the generated rubric at stage 4.
   one-scalar rescale to the tenant files 339.6 to 340.4, the 340 bin (O8, V14b); Docs' rate per request still predicts
   0.219 and Docs' own two-rate fit 0.543 (O9). The tenant's calls (894,042), its excess and the write-up's bound (2 per
   cent) moved; the call, every critical component, both asks' answers and every rung's pool did not.
+- **Ship, 2026-10-17.** The targeted re-check of the tenant figures HOLDS (`determinism_check_report_tenant_recheck.md`:
+  Docs 338.8 against Code 299.3, ratio 0.9967, rescale 339.6, the bin holding for rescales of about 0.985 to 1.025).
+  Write-up only, then one plain ledger note: step 4 states its bound with the bases it holds on (Amsterdam or UTC
+  days, the close-out's or the exact rate, 2 per cent against a worst 0.65), block 1 argues the shared-pack rival from
+  the gateway's sessions and the tenant's busy time, not from a share of the prompt nothing files, and the commitments
+  ledger's Notes sheet says Q1 committed reports are each contract's minimum (the tenant's 149,007 pilot reports
+  against RC-2026-031's 148,700). checks 113, verify 30, three builds with one target.zip hash (bfa825af).
 - **Leak REVIEW lines, each harmless.** `capacity_desk_notes.md` "the model": the rollup's column note (the model
   build a pool served). `capacity_closeout_2026Q3.pdf` 57.4: Batch's September busy GPU-hours in thousands, a
   coincidence with Chat's longest stay in hours, another quantity in another unit; 57.1 likewise (Batch's August busy
@@ -590,3 +597,5 @@ Rerun from the generated rubric at stage 4.
 - The tenant at its early-access size (a busiest hour near 130 reports): a residual of 0.3 per cent of Docs' busy time,
   5 per cent off at the close-out's three-decimal rate, so a calibrating analyst filed 330 (re-judge soft spot); the
   close-out now prints four decimals and the tenant ran at its contract's 400 reports an hour, the size chosen by rule.
+- Step 4's "a source pack computed once per report predicts under half": true only when the whole prompt is the pack,
+  a share nothing files (0.45 at all of it, 0.72 at half); the rival is argued from sessions and the tenant's busy time.

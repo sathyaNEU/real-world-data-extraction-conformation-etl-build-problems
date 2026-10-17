@@ -518,6 +518,8 @@ def main(target):
     check("F5 the golden workbook states the pool and its shortfall", st["A5"].value == "docs-prod" and
           st["C5"].value == 340)
     check("F6 no em dash in the write-up", "\u2014" not in sub and "\u2013" not in sub)
+    check("F7 no write-up figure rests on an unfiled share of a report's prompt (the shared-pack rival is argued from "
+          "sessions and the tenant's busy time)", "under half" not in sub and "each call opens its own session" in sub)
 
     n_fail = sum(1 for _, ok, _ in RESULTS if not ok)
     print("%d checks, %d FAIL" % (len(RESULTS), n_fail))
