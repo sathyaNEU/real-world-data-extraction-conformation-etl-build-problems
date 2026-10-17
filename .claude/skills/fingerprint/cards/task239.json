@@ -1,0 +1,92 @@
+{
+  "task": "task239",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 3, seed DQ12 (which items leave a dashboard index after the structure check)",
+  "domain": "psychology-behavioral-science",
+  "subdomain": "psychometric-measurement-scale-validation",
+  "niche": "a regional health board's annual structure check on the team climate index its staff survey reports per team, deciding which items stay for the next survey from each item's loading on the factor the items share at team level, separated from how members of one team differ",
+  "objective": "data-quality-monitoring",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G16",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the board's head of workforce insight, who owns the staff survey",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "index points",
+  "spine": {
+    "file": "mhb_staff_voice_2027_online_answers.csv",
+    "rows": 0,
+    "entity": "one answer by one online respondent to one question of the 2027 staff survey",
+    "grain": "submission x question",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "Scotland (an unnamed health board region; the board, its sites, teams and people are fictional; personas on the en_GB index)",
+    "currency": "GBP",
+    "org_type": "regional health board (staff survey programme in its workforce insight unit)",
+    "invented_names": [
+      "Mid Coast Health Board",
+      "Staff Voice survey",
+      "Team Climate Index"
+    ],
+    "people": [
+      "Carolyn Burrows",
+      "George Haynes",
+      "Laura Miles"
+    ]
+  },
+  "deliverables": [
+    "mhb_tci_structure_check_2027.xlsx",
+    "mhb_tci_items_2028.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is how strongly each component's group-level part goes with the factor the components share at group level, when every record holds one member's answers to all the components and a group is seen only through the few members who answered; one member's answers to different components go together, so the covariance of the group averages carries the members' own covariance divided by the group's size, and reading it as the groups' covariance credits components that follow the members' common disposition and discredits components on which whole groups differ while one member's answers barely go with the rest; only the group-level covariance net of the pooled within-group covariance places every component.",
+  "driver_concrete": "The Team Climate Index keeps an item for the 2028 survey when its loading on the factor the twelve items share at team level is 0.75 or more; staff who rate their team well on one item rate it well on the others, so with about eight returns a team the covariance of 2027 team means carries the members' covariance divided by team size, and a factor analysis of those means withdraws the two team-practice items (regular reviews, time for new starters), whose team levels follow the climate closely but whose members' answers barely go with their other answers, beside the two items whose team levels follow workload rather than climate; the between-team covariance net of the pooled within-team covariance keeps the practice items and withdraws only the workload pair.",
+  "stump": "A competent analyst factor-analyses the 2027 team means of teams with five or more returns and withdraws four items for 2028, both team-practice items and both workload-tracking items, keeping eight; the step that lands it there is reading the covariance of team means, which carries the members' own covariance divided by team size, as the covariance of the teams' levels, when the between-team covariance net of the pooled within-team covariance keeps the practice items well above 0.75 and withdraws only the workload pair, so ten items stay.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who builds the 2027 returns under the standard's rules from both channels, scores the negatively worded items reversed, keeps the teams with five or more returns and fits one factor to the team means withdraws four items and keeps eight; one who first corrects the team means for their unreliability keeps the workload pair and still withdraws the practice items; the golden ten come from the between-team covariance net of the members' pooled within-team covariance.",
+  "domain_test": "The deciding quantity is each item's loading on the team-level factor of a two-level factor model of the index's Likert items, the multilevel scale validation a psychometrician runs before an index is reported per team; with megawatt-hours or hospital visits in place of the staff's answers there is no respondent whose answers to several items share one disposition, no team level distinct from a member's, and nothing for the structure check to separate.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task264": "task264 v1 chose which unit sets a price before averaging records across outlets; here the unit (the team) is filed on every return and the step is estimating the team-level covariance net of the members' own covariance that team means carry.",
+    "task48": "task48 recovered a population visible only at a two-sided pair grain by aggregating transactions to it; here aggregating to the team is the default path itself and the step is taking the members' covariance back out of the aggregated means.",
+    "task120": "task120 v1 formed an unstored household unit through a two-hop join before cutting percentiles; here the team is stored on every return and the step is the between-team covariance net of the within-team covariance."
+  },
+  "lineage": [],
+  "notes": "Seed DQ12: the world (a dashboard index built from survey items), the decision (which items stay for the next cycle) and the quantity (each item's loading in the index's structure check) kept; the seed's pitfall (factor retention by eigenvalue over one) is not used. G2 decisive (team means sit at the team grain but carry the member grain's covariance), G16 (the estimator of the between-team covariance the standard's team level entitles), G17 (the members' covariance carried into the team means). The psychometric drivers on file are task450 (anchor items screened for drift before a link), task257 (Pearson correlations on lopsided categories) and task237 (a wording method factor inflating reliability); none separates a team-level structure from the members' structure.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:between-team-structure-net-of-the-members-covariance",
+  "layer1": [
+    "an online survey platform export in long format (one row per answer, UTC submission stamps, item codes) beside a paper-form scan file in wide format (one row per form, questionnaire numbers, answer scale printed in the opposite order)",
+    "paper forms carrying the respondent's pre-reorganisation team code, resolved through the HR team crosswalk",
+    "online sessions submitted twice from one invitation and sessions abandoned before submission, kept in the export",
+    "don't-know and not-answered codes that differ between the channels",
+    "negatively worded items stored as answered and scored reversed per the codebook",
+    "teams below the dashboard's five-return reporting floor"
+  ],
+  "registered": "2026-10-17T16:36:58Z"
+}
