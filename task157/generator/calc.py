@@ -112,9 +112,16 @@ def anyin(D, ms):
     return D.A[:, cols].any(1)
 
 
-def wave(D, y, active=(1, 2, 3), blank=(5, 6, 7, 8, 9, 10), back_months=(11, 12), on_rows=False):
+def wave(D, y, active=(1, 2, 3), blank=(5, 6, 7, 8, 9, 10), back_months=(11, 12), on_rows=False, break_months=None):
     """Last winter's drivers for guarantee year y: a trip in the winter months of y-1 and none through the summer;
-    those back in November or December of y-1; the rest back in January of y."""
+    those back in November or December of y-1; the rest back in January of y. With break_months=k, the rival pool:
+    every driver with no trip in the k months to October of y-1 and a trip before them."""
+    if break_months:
+        gap = [K.add_months((y - 1, 10), -j) for j in range(break_months)]
+        S = (D.first_m < D.mi[gap[-1]]) & ~anyin(D, gap)
+        back = S & anyin(D, [(y - 1, m) for m in back_months])
+        jan = S & ~back & D.A[:, D.mi[(y, 1)]]
+        return S, back, jan
     act = [(y - 1, m) if m <= 6 else (y - 2, m) for m in active]
     S = anyin(D, act)
     if on_rows:
@@ -138,11 +145,22 @@ def band(x, bands=BANDS):
     return np.digitize(x, bands + [10 ** 9]) - 1
 
 
-def qualified(D, y, drop_dups=False, main_only=False):
+def qualified(D, y, drop_dups=False, main_only=False, kept=False):
     """Accounts the guarantee paid (main run and late credits), less those whose payout was recovered for refunded
-    fraudulent trips."""
+    fraudulent trips. kept=True is the rival basis: only accounts that kept a payment (Ask A's drivers paid, a payout
+    returned and never paid out again or recovered for any reason left out)."""
     if getattr(D, "qual_override", None) is not None:
         return D.qual_override[y].copy()
+    if kept:
+        last = {}
+        for e in sorted(D.events, key=lambda e: (e["payout_id"], e["event_at_utc"])):
+            last[e["payout_id"]] = e["event"]
+        rec = {r["reverses_payout_id"] for r in D.recoveries}
+        q = np.zeros(len(D.ids), dtype=bool)
+        for pid, yy in D.payout_year.items():
+            if yy == y and last.get(pid) != "returned" and pid not in rec:
+                q[D.idx[D.payout_driver[pid]]] = True
+        return q
     q = np.zeros(len(D.ids), dtype=bool)
     for pid, (d, a) in D.run[y].items():
         q[D.idx[d]] = True
@@ -206,8 +224,8 @@ class Fund:
     pass
 
 
-def band_rates(D, y_ref, exclude_back=True, bands=BANDS, wave_kw=None):
-    q = qualified(D, y_ref)
+def band_rates(D, y_ref, exclude_back=True, bands=BANDS, wave_kw=None, kept=False):
+    q = qualified(D, y_ref, kept=kept)
     dec = roster(D, y_ref)
     S, back, jan = wave(D, y_ref, **(wave_kw or {}))
     pool = dec & ~back if exclude_back else dec
@@ -220,7 +238,7 @@ def band_rates(D, y_ref, exclude_back=True, bands=BANDS, wave_kw=None):
 
 
 def fund(D, g_years=(2024, 2025, 2026), q_years=(2026,), bands=BANDS, exclude_back=True, wave_kw=None,
-         other_as_rate=False, new_mode="pool", drop_dups=False, back_in_bands=False, g_mean=False):
+         other_as_rate=False, new_mode="pool", drop_dups=False, back_in_bands=False, g_mean=False, kept=False):
     """The golden: December's roster less last winter's drivers already back, at last January's rates by December
     trips; last winter's drivers already back at their own January qualification last year; the rest of their wave at
     the ratio of January returns to November and December returns the earlier waves kept, at the wave's own January
@@ -231,7 +249,7 @@ def fund(D, g_years=(2024, 2025, 2026), q_years=(2026,), bands=BANDS, exclude_ba
     S, back, jan = wave(D, y, **wk)
     dec = roster(D, y)
     nonwave = dec & ~back
-    rates = band_rates(D, 2026, exclude_back=exclude_back and not back_in_bands, bands=bands, wave_kw=wk)
+    rates = band_rates(D, 2026, exclude_back=exclude_back and not back_in_bands, bands=bands, wave_kw=wk, kept=kept)
     b = band(dec_trips(D, y), bands)
     pool = nonwave if not back_in_bands else dec
     F.nonwave = sum(rates[k] * (pool & (b == k)).sum() for k in range(len(bands)))
@@ -240,7 +258,7 @@ def fund(D, g_years=(2024, 2025, 2026), q_years=(2026,), bands=BANDS, exclude_ba
     F.g = sum(waves[k][2].sum() for k in g_years) / sum(waves[k][1].sum() for k in g_years)
     if g_mean:
         F.g = float(np.mean([F.g_by_year[k] for k in g_years]))
-    qs = {k: qualified(D, k, drop_dups=drop_dups) for k in q_years}
+    qs = {k: qualified(D, k, drop_dups=drop_dups, kept=kept) for k in q_years}
     F.qD = sum((qs[k] & waves[k][1]).sum() for k in q_years) / sum(waves[k][1].sum() for k in q_years)
     F.qJ = sum((qs[k] & waves[k][2]).sum() for k in q_years) / sum(waves[k][2].sum() for k in q_years)
     F.n_back = int(back.sum())
@@ -248,7 +266,7 @@ def fund(D, g_years=(2024, 2025, 2026), q_years=(2026,), bands=BANDS, exclude_ba
     F.back = 0.0 if back_in_bands else F.n_back * F.qD
     F.rest = F.n_rest * F.qJ
     # other returners and new drivers, from last year
-    q26 = qualified(D, 2026, drop_dups=drop_dups)
+    q26 = qualified(D, 2026, drop_dups=drop_dups, kept=kept)
     S26, back26, jan26 = waves[2026]
     new26 = first_trip_after(D, FUNDING_DATE[2026])
     other26 = ~roster(D, 2026) & ~S26 & ~new26 & (D.first_m < D.mi[(2026, 1)])
@@ -396,7 +414,7 @@ def backtest(D):
 
 
 # ------------------------------------------------------------------------------------------------- Ask A
-def ask_a(D, net_every_return=False, book_by_run=False, by_account=False):
+def ask_a(D, net_every_return=False, book_by_run=False, by_account=False, later_subtracted=False):
     """Each guarantee from its main run to its net cost: what later runs added, what the bank returned and was never
     paid out again, what was recovered (each booked to the guarantee of the payout it reverses), and the people it
     paid."""
@@ -431,13 +449,13 @@ def ask_a(D, net_every_return=False, book_by_run=False, by_account=False):
             people = {D.payout_driver[p] for p in kept}
         else:
             people = {merged.get(D.payout_driver[p], D.payout_driver[p]) for p in kept}
-        out[y] = dict(main=main, later=later, never=never, recovered=recovered,
-                      net=main + later - never - recovered, drivers=len(people))
+        net = (main - later if later_subtracted else main + later) - never - recovered
+        out[y] = dict(main=main, later=later, never=never, recovered=recovered, net=net, drivers=len(people))
     return out
 
 
 # ------------------------------------------------------------------------------------------------- Ask B
-def ask_b(D, month_from="order", tz="central", persons="candidate"):
+def ask_b(D, month_from="order", tz="central", persons="candidate", approved=("approved", "approval_lapsed")):
     """For each month from June to October 2026, the people who first applied in it (Central time), how many of them
     were approved on any of their applications, and how many of them had taken a first trip by the extract's run."""
     app = {a["application_id"]: a for a in D.apps}
@@ -458,7 +476,7 @@ def ask_b(D, month_from="order", tz="central", persons="candidate"):
         appr = trip = 0
         for who in ppl:
             aids = [aid for _, aid in first[who]]
-            if any(app[a]["status"] in ("approved", "approval_lapsed") for a in aids):
+            if any(app[a]["status"] in approved for a in aids):
                 appr += 1
             ids = [app[a]["driver_id"] for a in aids if app[a]["driver_id"]]
             if any(D.A[D.idx[d]].any() for d in ids if d in D.idx):

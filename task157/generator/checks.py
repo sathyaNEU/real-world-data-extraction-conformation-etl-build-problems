@@ -224,6 +224,34 @@ def run():
        "January 2025's returns by %+.0f per cent and held January 2026's within %.0f per cent: its rate moves with "
        "who sits in it" % (100 * (p25 / a25 - 1), abs(100 * (p26 / a26 - 1))),
        p25 / a25 - 1 < -0.15 and abs(p26 / a26 - 1) < 0.03)
+    brk = {}
+    for kk in (2, 3, 4, 6):
+        brk[kk] = C.fund(D, wave_kw=dict(break_months=kk))
+    ok("OOS a generic pool of drivers back after a k-month break: k = 2 and 3 file %s and %s (%d and %d drivers), k = 4 "
+       "and 6 the golden; the winter pool's ratio holds 1.07 to 1.10 in every winter while the k = 2 and 3 pools' run "
+       "%.2f to %.2f" % (K.money(brk[2].fund), K.money(brk[3].fund), brk[2].drivers_rounded, brk[3].drivers_rounded,
+                         min(min(brk[k].g_by_year.values()) for k in (2, 3)),
+                         max(max(brk[k].g_by_year.values()) for k in (2, 3))),
+       brk[2].fund < GOLD_FUND and brk[3].fund < GOLD_FUND and brk[4].fund == GOLD_FUND and brk[6].fund == GOLD_FUND
+       and all(1.07 <= v <= 1.10 for v in F.g_by_year.values()) and
+       all(v < 1.03 for k in (2, 3) for v in brk[k].g_by_year.values()))
+    mix = {}
+    for kk in (2, 3):
+        rows_ = []
+        for y in (2024, 2025, 2026, 2027):
+            S_, b_, j_ = C.wave(D, y, break_months=kk)
+            Sw_, bw_, jw_ = C.wave(D, y)
+            r_in = (j_ & jw_).sum() / max(1, (b_ & bw_).sum())
+            r_out = (j_ & ~jw_).sum() / max(1, (b_ & ~bw_).sum())
+            rows_.append((y, (b_ & bw_).sum() / b_.sum(), r_in, r_out))
+        mix[kk] = rows_
+    ok("OOS the break pools mix two timings: inside them last winter's drivers return about 1.1 in January for each one "
+       "back by December and the rest under 0.25, and last winter's share of the pool's December returns is higher in "
+       "2027 (%s) than in any earlier winter (%s), so the pooled ratio carried forward under-sizes the window" % (
+           ", ".join("%.2f" % mix[k][-1][1] for k in (2, 3)),
+           ", ".join("%.2f to %.2f" % (min(r[1] for r in mix[k][:3]), max(r[1] for r in mix[k][:3])) for k in (2, 3))),
+       all(1.07 <= r[2] <= 1.10 and r[3] < 0.25 for k in (2, 3) for r in mix[k][:3]) and
+       all(mix[k][-1][1] > max(r[1] for r in mix[k][:3]) for k in (2, 3)))
     ok("OOS the one ratio over every driver back after a break missed by %s, unstable from year to year" % (
         ", ".join("%+.1f%%" % (100 * v) for v in bt_all.values())), max(abs(v) for v in bt_all.values()) > 0.08)
     S25, b25, j25 = C.wave(D, 2025)
@@ -427,6 +455,32 @@ def run():
     f11 = C.fund(D11)
     ok("SF8 last year's qualifiers read as the main run alone files the same fund and drivers", f11.fund == GOLD_FUND
        and f11.drivers_rounded == GOLD_DRIVERS, "%.1f" % f11.drivers)
+    fk = C.fund(D, kept=True)
+    s_trips = ("Larch pays $350 to every eligible driver who completes 40 trips between 00:00 on Monday 4 January 2027 "
+               "and 23:59 on Sunday 31 January 2027, Central time.")
+    s_leave = "Returned payouts and recoveries come back to the account afterwards, so leave them out."
+    ok("SF13 last year's qualifiers read as the drivers who kept a payment (Ask A's basis, returned-and-never-resent "
+       "payees dropped) files %s and %d drivers; ruled out because a driver qualifies by completing 40 trips whatever "
+       "happened to the payment (the terms) and finance leaves returns out (the email), and the payout notes count "
+       "accounts at 40 completed trips" % (K.money(fk.fund), fk.drivers_rounded),
+       fk.fund == GOLD_FUND - 50000 and fk.drivers_rounded == GOLD_DRIVERS - 100 and s_trips in flat1 and
+       s_leave in flat1 and how["count"] in flat1, "%.1f" % fk.drivers)
+    end26 = dt.datetime(2026, 1, 4, 23, 59, 59)
+    appr = [a for a in D.apps if a["status"] in ("approved", "approval_lapsed") and a["decision_at_utc"] and
+            C.central(a["decision_at_utc"]) <= end26 and
+            (dt.date(2026, 1, 4) - C.central(a["decision_at_utc"]).date()).days <= 90]
+    no_dec = [a for a in appr if not a["first_trip_at_utc"] or C.central(a["first_trip_at_utc"]) >= dt.datetime(2026, 1, 1)]
+    no_jan4 = [a for a in no_dec if not a["first_trip_at_utc"] or C.central(a["first_trip_at_utc"]) > end26]
+    paid_n = sum(1 for a in no_jan4 if q26[D.idx[a["driver_id"]]])
+    ok("NEW the 2026 base for the approved drivers without a trip is the %d accounts approved in the 90 days to 4 January "
+       "2026 with no first trip by the end of that day (%d paid); the %d with no trip through December include %d that "
+       "first drove on 1 to 4 January, and both bases file the same fund and drivers" % (
+           len(no_jan4), paid_n, len(no_dec), len(no_dec) - len(no_jan4)),
+       len(no_jan4) == F.apn26 and paid_n == F.new26_from_pool and
+       K.round_to((F.drivers - F.new + F.apn27 * paid_n / len(no_dec)) * K.AMOUNT, 50000) == GOLD_FUND and
+       K.round_to(F.drivers - F.new + F.apn27 * paid_n / len(no_dec), 100) == GOLD_DRIVERS and
+       "An approval lapses 90 days after it is given if the driver has not taken a trip" in flat1 and
+       "first_trip_at_utc is that account's first completed trip" in flat1)
     amounts = {r["amount_usd"] for r in rows(target, R.F_RUN26)} | {r["amount_usd"] for r in rows(target, R.F_ADJ)}
     ok("SF10 every payout in both years is $350 and the terms say the guarantee has run on these terms since 2025",
        {abs(float(a)) for a in amounts} == {350.0} and "The guarantee has run on these terms each January since 2025"
@@ -460,6 +514,13 @@ def run():
     s3 = C.ask_a(D, book_by_run=True)
     ok("ASK A S3 recoveries booked by run date move both nets (HA2: a 2025 recovery in the March 2026 run)",
        s3[2025]["net"] != A[2025]["net"] and s3[2026]["net"] != A[2026]["net"])
+    s5 = C.ask_a(D, later_subtracted=True)
+    ok("ASK A 'net of later runs' read as later runs subtracted moves both nets ($%s, $%s); the payout notes add them: "
+       "a guarantee's cost is what its runs paid, less returns never paid out again and recoveries" % (
+           "{:,.0f}".format(s5[2025]["net"]), "{:,.0f}".format(s5[2026]["net"])),
+       s5[2025]["net"] != A[2025]["net"] and s5[2026]["net"] != A[2026]["net"] and
+       "A guarantee's cost is what its runs paid, less payouts the bank returned that were never paid out again and "
+       "less what was recovered" in flat1)
     s4 = C.ask_a(D, by_account=True)
     ok("ASK A HA3 accounts counted for people: the 2026 drivers paid move (a merged second account not yet recovered)",
        s4[2026]["drivers"] != A[2026]["drivers"])
@@ -474,6 +535,12 @@ def run():
     ok("ASK B the golden: %s" % "; ".join("%d %d/%d/%d" % (m, B[m]["applied"], B[m]["approved"], B[m]["first_trip"])
                                           for m in range(6, 11)),
        all((B[m]["applied"], B[m]["approved"], B[m]["first_trip"]) == EXPECT_B[m] for m in range(6, 11)))
+    sb3 = C.ask_b(D, approved=("approved",))
+    moved = [m for m in range(6, 11) if sb3[m]["approved"] != B[m]["approved"]]
+    ok("ASK B 'approved' read as the approved status alone (lapsed approvals left out) moves the approvals of %d months; "
+       "the counting notes count approval on any application and the data notes define approval_lapsed as approved" %
+       len(moved), len(moved) >= 3 and "approved means approved on any of their applications" in flat1 and
+       "approval_lapsed (approved, the approval lapsed 90 days after it was given without a trip)" in flat1)
     sb1 = C.ask_b(D, month_from="submitted", tz="utc", persons="application")
     sb2 = C.ask_b(D, month_from="submitted")
     keysb = [(m, k) for m in range(6, 11) for k in ("applied", "approved", "first_trip")]

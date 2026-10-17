@@ -192,6 +192,7 @@ Every term in the main ask and every convention the main computation needs. Ever
 | SF10 | the guarantee's terms across years | $350 at 40 completed trips over the four weeks from the first Monday of January, unchanged in 2025, 2026 and 2027 | a change between years | none on file | the 2025 and 2026 payout files and the 2027 terms |
 | SF11 | last winter's drivers | drivers with a trip in January to March 2026 and none from May to October 2026 | trips in December to March; trips in January to April; no trip June to October; a row rather than a trip | same call (asserted: the definitions select the same wave within eight drivers and file the same fund and drivers) | C1, asserted |
 | SF12 | the drivers the guarantee can pay | accounts approved by 23:59 on Sunday 3 January 2027 (the terms, as in 2025 and 2026; 73 drivers who completed 40 trips in the 2026 window on accounts approved later were not paid) | every driver who completes 40 trips, however late approved | about 80 more drivers, 4,800 to the nearest 100 | the terms ("Accounts approved from Monday 4 January take part in the next guarantee.") and the prompt's "every eligible driver" |
+| SF13 | who qualified last year, as the rate basis | every account the payments system counted at 40 completed trips (main run and late credits), less fraud recoveries: a driver qualifies by completing 40 trips, whatever happened to the payment | the drivers who kept a payment (Ask A's drivers paid: returned-and-never-resent payees dropped) | $1,600,000 and 4,600 drivers (4,625; the judge's 4,619) | the terms ("Larch pays $350 to every eligible driver who completes 40 trips between 00:00 on Monday 4 January 2027 and 23:59 on Sunday 31 January 2027, Central time."), the email ("Returned payouts and recoveries come back to the account afterwards, so leave them out.") and the payout notes ("It pays $350 to every account the payments system counts at 40 completed trips"); asserted |
 
 ## Ladder
 Built figures from `generator/calc.py`, every row asserted in `generator/checks.py` (LADDER, OOS, R3b). Each fund is
@@ -381,6 +382,48 @@ Mirror leakage: 8 per cent of ask weight (design: the chart's parts, about 2 of 
 Pair ceiling: 32.0 (design: the cracker at 38 + 7 + about 4 of 55 ask points; the mirror at about 5 + 7 + 3). Rerun
 from the generated rubric at stage 4.
 
+## Residual
+
+What the stage-4 judge and the rule 3 audit left standing, recorded as measured (every figure asserted in checks.py):
+- The driver count's lower edge is thin. The golden files 4,699.6 drivers and the fund needs 4,643 to 4,785; the
+  drivers' 100-step needs 4,650 to 4,749. My fourteen constructions run 4,688 to 4,703; the judge's reasonable variants
+  (ratio years, band sets from 2 to 20 wide, main-run-only and paid-less-recovered payees, winter pools from Feb or Jan
+  to Apr and Jun to Oct gaps) run 4,658 to 4,728, the lowest 8 drivers above the 4,650 line. Every one files $1,650,000
+  and 4,700; the margin is not widened by nudging the world.
+- Two weaker routes round one step down. The drivers who kept a payment as last year's qualifiers (Ask A's basis) file
+  4,625 (the judge's 4,619), 4,600 and $1,600,000: ruled out by the terms (a driver qualifies by completing 40 trips) and
+  the email (returns and recoveries left out), SF13. A generic pool of drivers back after a k-month break files 4,637
+  for k = 3 (the judge's 4,617) and 4,548 for k = 2 (4,527), $1,600,000 both, while k = 4 and 6 file the golden: inside
+  those pools last winter's drivers return 1.07 to 1.10 in January for each one back by December and the rest 0.05 to
+  0.20, and last winter's share of the pool's December returns rises to 0.92 (k = 2) and 0.97 (k = 3) in 2027 from 0.82
+  to 0.85 and 0.91 to 0.94 before, so a pooled ratio carried forward under-sizes the window; the winter pool's own
+  ratio holds 1.074 to 1.098 in every winter.
+- R2e, the near rival: the wave developed but the drivers already back priced by their December bands, 4,556 to 4,609
+  drivers, $1,600,000, one bin under; separated from the golden by one back-test year (the back-by-December drivers of
+  2026 priced by December 2025's bands at 295 against 350 paid, by their own 2025 share at 354).
+- The demand plan's dilution argument: the plan grows January's completed trips 11.8 per cent while the golden's
+  qualifiers rise 56 per cent on 2026's 3,019; the KPI report answers it, since trips followed supply when the campaign
+  added drivers (active drivers 5,965 in January 2026 to 8,464 in March, trips up 37 and 52 per cent on February and
+  March 2025, trips per active driver 47.1 to 54.4 against 49.5 to 52.6 a year earlier).
+- The 2026 base for the approved drivers without a trip is 174 accounts (approved in the 90 days to 4 January 2026, no
+  first trip by the end of that day); the judge's 183 counted no trip through December and so kept 9 that first drove
+  on 1 to 4 January. The write-up and the workbook now name the rows; both bases file the same fund and drivers.
+
+## Pre-ship check
+
+- Rule 1, the domain: the deciding quantity is a supply-side cohort's resurrection, how many of last winter's drivers
+  come back inside the window, read the way product analytics reads a resurrecting cohort (its own early returns at the
+  timing earlier cohorts kept); the swap test holds (the judge: with hospital or visits nouns the return-pool dynamics
+  stop reading the same).
+- Rule 2, two layers: Layer 1 is the migration crosswalk and its double registrations, July 2024 in both layouts, the
+  2025 run in cents, UTC against Central time, the partial January 2027, the bank's report covering every payout and the
+  resubmitted applications, each asserted neutral on the call (R2); Layer 2 decides (the judge's Three rules: domain
+  pass, layers pass, decisive step analytical).
+- Rule 3: no plant, no filed method, no field carries the wave (the rule 3 audit: PASS, P(one) about 0.10, P(both)
+  about 0.02 to 0.04); the easy route on the clean truth files $1,450,000 (R3a).
+- Determinism: the judge DETERMINISTIC, APPROVE (determinism_check_report.md); the leak reader clean, the decisive step
+  analytical; the residual above recorded as measured.
+
 ## Surface screen
 
 `guard.py surface task157` promotes two pairs for adjudication; neither carries a hard tell (no shared file name,
@@ -411,11 +454,11 @@ who alone runs the adjudicated `/clone-check`:
 
 ## Build record
 
-Stage 3, 2026-10-17. `build.py`: checks 73 run, 0 failed (the three-rules block R1 to R3c on the generator's clean truth,
+Stage 3, 2026-10-17; ship pass after stage 4 the same day. `build.py`: checks 79 run, 0 failed (the three-rules block R1 to R3c on the generator's clean truth,
 every SF row SF1 to SF12, the closure axes that can move, the ladder and its back-tests, both asks with stops and
 devices, the realism sweep, the input gates and the distractors' deletion test); `verify.py` (pandas, no generator
-import) 18 passed, 0 failed; two consecutive builds byte-identical (target, golden, figures.json, submission.md);
-`figures_check.py` 0 absent; `voice-check.py` PASS (955 characters); H1 audit clean on the pack and the goldens;
+import) 19 passed, 0 failed; two consecutive builds byte-identical (target, golden, figures.json, submission.md);
+`figures_check.py` 0 absent (71 figures); `voice-check.py` PASS (955 characters); H1 audit clean on the pack and the goldens;
 `leak.py` REVIEW, no LEAK; `guard.py validate` clean, `heart` PASS, `surface` two card-level promotions (above);
 20 files in 7 formats, the largest the warehouse activity extract at 165,826 rows; distractors
 `rider_demand_plan_q1_2027.xlsx` and `driver_referral_bonuses_2026.csv` in `metadata.json`. Invented names checked:

@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "$1,650,000 in the winter guarantee account at go-live, 4,700 drivers expected to complete 40 trips between 4 and 31 January 2027 (expected total $1,644,850; the default path files $1,450,000)",
+  "answer_source": "task157/generator/calc.py fund() on the shipped bundle, reproduced by task157/generator/verify.py",
   "gap": [
     "time",
     "population"
@@ -36,8 +36,8 @@
   "role_family": "operations_director",
   "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "driver_month_activity (the warehouse's monthly driver activity extract, legacy and new layouts across the July 2024 dispatch migration)",
-    "rows": 0,
+    "file": "driver_activity_monthly_2024-07_2027-01.csv (the warehouse's monthly driver activity extract) beside dispatch_legacy_driver_months_2021-05_2024-07.csv (the old platform's export, 91,426 rows) through the migration crosswalk",
+    "rows": 165826,
     "entity": "one driver's completed trips and online time in one calendar month",
     "grain": "driver x month",
     "source": "synthetic (constructed in the layout of a ride-hail warehouse's monthly driver activity extract, two layouts across a dispatch platform migration)"

@@ -77,6 +77,14 @@ def compute(target):
     q26 = C.qualified(D, 2026)
     X.q26 = int(q26.sum())
     X.new_rate = F.new26_from_pool / F.apn26
+    import datetime as dt
+    end26 = dt.datetime(2026, 1, 4, 23, 59, 59)
+    appr = [a for a in D.apps if a["status"] in ("approved", "approval_lapsed") and a["decision_at_utc"] and
+            C.central(a["decision_at_utc"]) <= end26 and
+            (dt.date(2026, 1, 4) - C.central(a["decision_at_utc"]).date()).days <= 90]
+    X.apn26_nodec = len([a for a in appr if not a["first_trip_at_utc"] or
+                         C.central(a["first_trip_at_utc"]) >= dt.datetime(2026, 1, 1)])
+    X.first_drove_jan = X.apn26_nodec - F.apn26
     # the sigma bands
     X.sigma_drivers = F.n_back * F.g_sigma * F.qJ
     gy = np.array([F.g_by_year[y] for y in (2024, 2025, 2026)])
@@ -202,8 +210,10 @@ def write_xlsx(path, X):
             fmt(X.S_campaign), fmt(X.waves[2027][0]), fmt(X.back_campaign), fmt(F.n_back)),
         "Due back: each of the last three winters brought back more of its drivers in January than in November and "
         "December (Earlier winters sheet); the ratio over the three, %.3f, applied to the drivers back by 3 January." % F.g,
-        "Approved, first trip not yet taken: approvals in the onboarding app within their 90 days; 2026 share: %d of "
-        "the %d approved by 4 January 2026 without a trip were paid by the 2026 guarantee." % (F.new26_from_pool, F.apn26),
+        "Approved, first trip not yet taken: the onboarding app's approvals within their 90 days with no first trip. "
+        "2026 share: %d of the %d accounts approved in the 90 days to 4 January 2026 that had taken no trip by the end "
+        "of that day were paid by the 2026 guarantee (the %d that first drove on 1 to 4 January are not among them)." % (
+            F.new26_from_pool, F.apn26, X.first_drove_jan),
     ]:
         _wrapped(ws, r, t, "D")
         r += 1
@@ -572,10 +582,12 @@ def submission(X):
       "2026's returners it paid." % (about(F.nonwave, 100), int(K.round_half_up(100 * F.qD)), fmt(F.n_rest),
                                      int(K.round_half_up(100 * F.qJ))))
     a("5. Added the %d drivers who came back after other breaks and qualified in January 2026, and the %d accounts "
-      "approved by 3 January without a trip (%s) at the %d of %d such accounts the 2026 guarantee paid: %s drivers "
-      "expected to qualify, %s at $350 each to the nearest $50,000 (%s)." % (
-          int(round(F.other)), F.apn27, R.F_APPS, F.new26_from_pool, F.apn26, fmt(X.drivers_round), money(X.fund),
-          DOC.F_EMAIL))
+      "approved in the 90 days to 3 January without a first trip (%s; an approval lapses after 90 days) at the %d of "
+      "%d accounts approved in the 90 days to 4 January 2026 with no first trip by the end of that day that the 2026 "
+      "guarantee paid (the %d that first drove on 1 to 4 January are not among them): %s drivers expected to qualify, "
+      "%s at $350 each to the nearest $50,000 (%s)." % (
+          int(round(F.other)), F.apn27, R.F_APPS, F.new26_from_pool, F.apn26, X.first_drove_jan, fmt(X.drivers_round),
+          money(X.fund), DOC.F_EMAIL))
     a("6. For each guarantee, a returned payout that %s shows sent again and settled reached its driver; only payouts "
       "whose last event is a return never did. Recoveries go to the guarantee of the payout they reverse, the 2025 "
       "run read in cents and people through merged_into in %s (%s)." % (R.F_EVENTS, R.F_ACCOUNTS, DOC.F_PAYNOTES))
@@ -615,7 +627,7 @@ def figures(X):
     return {
         "call": {"fund": money(X.fund), "drivers": fmt(X.drivers_round)},
         "terms": {"amount": "$350", "trips": "40", "step": "$50,000", "driver_step": "100", "go_live_day": "4",
-                  "window_last_day": "31"},
+                  "window_last_day": "31", "asof_day": "3"},
         "components": {"back_by_asof": about(F.n_back, 100), "ratio": "%.1f" % K.round_half_up(F.g, 1),
                        "due_back": about(F.n_rest, 100), "wave_qualifiers": about(F.back + F.rest, 100)},
         "steps": {
@@ -628,6 +640,7 @@ def figures(X):
             "due_back_exact": fmt(F.n_rest), "qJ_pct": str(int(K.round_half_up(100 * F.qJ))),
             "other_returns": str(int(round(F.other))), "approved_not_started": str(F.apn27),
             "new_paid_2026": str(F.new26_from_pool), "approved_not_started_2026": str(F.apn26),
+            "lapse_days": "90", "first_drove_jan_1_to_4": str(X.first_drove_jan),
         },
         "answers": {
             "fund": money(X.fund), "drivers": fmt(X.drivers_round),
