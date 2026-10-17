@@ -603,6 +603,32 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     ok("dev.a1_benign_twins", len(movers) - len(inside) >= 8,
        "%d of the register's transfers predate the extract, so the column marks nothing"
        % (len(movers) - len(inside)))
+    # The data forces the basis: the chains' own monthly log of what the register accepted ties to
+    # the extract line for line when a line is read against the chain that owned its pharmacy that
+    # day, and fails almost everywhere when it is read against the chain the register gives now.
+    import asks as AS2
+    phr = {r["pharmacy_id"]: (r["chain_code"], r["previous_chain_code"],
+                              G.iso(r["in_chain_from"]) if r["in_chain_from"] else None)
+           for r in rd(tgt, "pharmacy_register.csv")}
+
+    def _owner(ph, d):
+        now, prv, since = phr[ph]
+        return prv if (prv and since and d < since) else now
+
+    log = {(r["chain_code"], r["submission_month"]): int(r["lines_accepted"])
+           for r in rd(tgt, "pharmacy_submission_log.csv")}
+    at_date, as_now = collections.Counter(), collections.Counter()
+    for r in AS2.distinct(kept):
+        m = AS2.month_key(r["submitted"])
+        at_date[(_owner(r["pharmacy"], W.day(r["day"])), m)] += 1
+        as_now[(phr[r["pharmacy"]][0], m)] += 1
+    off_at = sum(1 for k, v in log.items() if at_date.get(k, 0) != v)
+    off_now = sum(1 for k, v in log.items() if as_now.get(k, 0) != v)
+    gap_now = sum(abs(as_now.get(k, 0) - v) for k, v in log.items())
+    ok("dev.a1_log_ties_at_the_dispensing_date", off_at == 0,
+       "%d of %d chain-months differ" % (off_at, len(log)))
+    ok("dev.a1_log_breaks_on_the_current_chain", off_now >= 100 and gap_now > 20000,
+       "%d of %d chain-months differ, %d lines in all" % (off_now, len(log), gap_now))
     ok("dev.a1_every_line_joins",
        all(r["pharmacy"] in set(x["pharmacy_id"] for x in phreg) for r in kept),
        "the device leaves no unmatched join for the battery to find")

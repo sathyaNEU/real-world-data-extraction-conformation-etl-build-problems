@@ -23,27 +23,31 @@ def write_csv(path, head, rows):
 # of a dispensing is the chain that transmits that line, and the pharmacy register holds the chain
 # that owns it at the extract date. Most of the transfers in the register are years old.
 def pharmacy_moves(pharm_of):
-    """pharmacy id -> (previous chain, new chain, the day the transfer took effect)."""
+    """pharmacy id -> (previous chain, new chain, the day the transfer took effect).
+
+    Four transactions fall inside the extract period, spread across the screen window, and each
+    chain is on both sides of one: that is what puts a chain's own lines on two sides of a date.
+    A pharmacy whose authorisation has already ended does not change hands. Most of the register's
+    transfers are older than the extract, so the columns mark nothing.
+    """
     rng = np.random.default_rng(W.SEED + 83)
+    shut = closed_pharmacies(pharm_of)
     moves = {}
-    # the four transactions inside the extract period: each chain sells a cluster of its pharmacies
-    # to another, late in the window, so the lines dispensed before the transfer belong to the
-    # chain that then owned them
-    cycle = [(0, 2, 1047, 6), (2, 0, 1021, 8), (1, 3, 1063, 8), (3, 1, 1035, 10)]
+    cycle = [(0, 2, 1047, 5), (2, 0, 836, 6), (1, 3, 1063, 6), (3, 1, 892, 7)]
     for a, b, day, k in cycle:
-        pool = [p for p in pharm_of[a] if p not in moves]
+        pool = [p for p in pharm_of[a] if p not in moves and p not in shut]
         take = rng.choice(len(pool), size=min(k, len(pool)), replace=False)
         for j in take:
             moves[pool[int(j)]] = (a, b, day + int(rng.integers(-4, 9)))
-    # and the benign twins: transfers settled long before the extract opens
-    for _ in range(11):
+    # and the register's own history: transfers settled over the years before the extract opens
+    for _ in range(26):
         a = int(rng.integers(0, len(W.CHAINS)))
         b = (a + 1 + int(rng.integers(0, len(W.CHAINS) - 1))) % len(W.CHAINS)
-        pool = [p for p in pharm_of[a] if p not in moves]
+        pool = [p for p in pharm_of[a] if p not in moves and p not in shut]
         if not pool:
             continue
         moves[pool[int(rng.integers(0, len(pool)))]] = (
-            a, b, -int(rng.integers(120, 1600)))
+            a, b, -int(rng.integers(90, 2400)))
     return moves
 
 

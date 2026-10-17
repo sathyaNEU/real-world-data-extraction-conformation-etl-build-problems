@@ -249,6 +249,22 @@ def run(tgt, figures_path):
             days = sorted((r["sub"] - r["day"]).days for r in acc)
             a1[(ch, label)] = (len(acc), len(rr),
                                round(float(statistics.median(days)), 1) if days else 0.0)
+    # the basis is forced by the chains' own log, which ties only on the at-date reading
+    lg = {(r["chain_code"], r["submission_month"]): int(r["lines_accepted"])
+          for r in tab(tgt, "pharmacy_submission_log.csv")}
+    at_d, as_n = collections.Counter(), collections.Counter()
+    for r in lines:
+        m = "%04d-%02d" % (r["sub"].year, r["sub"].month)
+        at_d[(owner(r["ph"], r["day"]), m)] += 1
+        as_n[(chain_of[r["ph"]], m)] += 1
+    ck("v.a1_log_ties_at_the_dispensing_date",
+       all(at_d.get(k, 0) == v for k, v in lg.items()),
+       "%d of %d chain-months differ"
+       % (sum(1 for k, v in lg.items() if at_d.get(k, 0) != v), len(lg)))
+    ck("v.a1_log_breaks_on_the_current_chain",
+       sum(1 for k, v in lg.items() if as_n.get(k, 0) != v) >= 100,
+       "%d of %d chain-months differ"
+       % (sum(1 for k, v in lg.items() if as_n.get(k, 0) != v), len(lg)))
     for r in fg["a1"]:
         got = a1[(r["chain"], r["quarter"])]
         ck("v.a1_acc_%s_%s" % (r["chain"], r["quarter"]), got[0] == r["accepted"],
