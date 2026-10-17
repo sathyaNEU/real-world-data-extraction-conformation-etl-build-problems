@@ -111,6 +111,17 @@ plus a realism list.
 6. **The Gate H caveat** ("3.1 and 7.1 give most of the recipe, so the step is close to rule application")
    is answered in the `Not rule application:` line of `## Three rules`, which names the step no filed clause
    performs.
+7. **The ask layer, re-cut.** The band and tone table (28 criteria) became a three-criterion summary, the
+   excluded-minute column went, and the weight moved to two quantities the decision needs that run through
+   the plant's own records: the minutes behind each level that a centrifuge was running and the runs they
+   span (28 criteria), and the blower air, centrifuge runs and engine hours per survey week (18). Both sit
+   on a device the pack already had and nothing filed adjudicates on the solver's path: the plant records
+   the same facts twice, as an event log to the minute and as a fifteen-minute channel that cannot resolve
+   a start, and the historian holds no rows at all for six spells. Biogas was dropped from the ask, because
+   its two reading paths differ by only a few cubic metres. The plant's own pattern was opened up to carry
+   it: the dewatering shift's hours now move day to day, two days have no dewatering at all, and the gas
+   engine comes off load on its own five times, which the equipment log, the process channels and the sound
+   record all show together (a 1 dB dip at the positions while the blowers carry on).
 
 **What this pass cost, and the pass that paid it.** Four of the five fork closures removed a way for a
 careful solver to miss a supplementary figure: measured, the ask layer fell to a pair ceiling of 69.2
@@ -642,3 +653,26 @@ by initials on the deployment records. `guard.py heart task182`: **WARN, not BLO
   band block (both surfaced by the hygiene battery's join and duplicate checks). The band world as built is
   a robust physical measurement; a device aimed at it either breaks a clearance the judge asked for or is
   caught by the battery, so the ask sheet records the cracker's hit instead of claiming a miss.
+
+- The ask layer as it stood after the determinism closures: measured at a pair ceiling of 69.2 against a bar
+  of 40, because 28 criteria of band and tone and 28 of minute counts were forced and device-free once every
+  convention behind them was filed. Re-cut onto the process records rather than defended on paper.
+- A device aimed at the band and tone world, searched and abandoned: an A-weighted reading (closed by the
+  column names and the notes, and it moves only 2 of 10 answers), a band export in local time (converges), a
+  wider window (moves nothing), a module serial needing a crosswalk and a repeated band block (both caught
+  by the hygiene battery). The band world is a robust physical measurement; the ask was cut to three
+  criteria instead of being propped up.
+- The biogas figure as an ask: the single-pass increment path and the boundary reading differ by 0 to 3 m3,
+  so five of six weeks missed and one hit by luck. Dropped from the prompt rather than tuned.
+- The union of the two centrifuges' run intervals as the device for the per-position ask: summing the
+  machines' durations instead gives nearly twice the window, which is impossible on its face and so loud,
+  not silent. The device is the channel's quarter-hour grain and the historian's gaps, which are both quiet
+  and bite every row.
+- Stops of different lengths (105 to 145 minutes) to vary the residual windows: the two deployments of a
+  position then held different numbers of minutes, and the pooled residual stopped agreeing with the mean of
+  the two at one decimal, reopening SF11. The inspections are 120 minutes again, started when the shift got
+  to them, and the engine's own stops carry the weekly variation instead.
+- The engine's stops modelled only in the log and the channel: the sound record would have shown nothing
+  when a fifth of the plant came off load, which is the kind of contradiction between shipped records a
+  judge is right to call. The plant's sound is now built source by source, so an engine stop shows as a 1 dB
+  dip while the blowers carry on.

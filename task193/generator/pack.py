@@ -29,7 +29,7 @@ def pharmacy_moves(pharm_of):
     # the four transactions inside the extract period: each chain sells a cluster of its pharmacies
     # to another, late in the window, so the lines dispensed before the transfer belong to the
     # chain that then owned them
-    cycle = [(0, 1, 1047, 5), (1, 2, 1021, 7), (2, 3, 1063, 8), (3, 0, 1035, 9)]
+    cycle = [(0, 2, 1047, 6), (2, 0, 1021, 8), (1, 3, 1063, 8), (3, 1, 1035, 10)]
     for a, b, day, k in cycle:
         pool = [p for p in pharm_of[a] if p not in moves]
         take = rng.choice(len(pool), size=min(k, len(pool)), replace=False)

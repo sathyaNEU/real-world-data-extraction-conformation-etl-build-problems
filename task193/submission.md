@@ -54,35 +54,35 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Kirunelle and antipsychotic: 13 patients, 7 after, 6 before, below the 25-patient minimum
    - Admirabin and loop diuretic: 210 patients, 159 after, 51 before, referred no
    - Admirabin and antidepressant: 268 patients, 215 after, 53 before, referred no
-   - Sovraxil and topical corticosteroid: 632 patients, 497 after, 135 before, referred yes
+   - Sovraxil and topical corticosteroid: 631 patients, 496 after, 135 before, referred yes
    - Sovraxil and antipsychotic: 17 patients, 11 after, 6 before, below the 25-patient minimum
 2. Pairs referred: 7.
 3. Nearest pair on the wrong side of the referral line: Dalvextin and acid-suppressant.
 4. Lines accepted, lines rejected and median days from dispensing to submission, by chain and quarter of dispensing, whole counts and days to one decimal:
-   - APK, 2025 Q4: 5253 accepted, 56 rejected, 4.0 days
-   - APK, 2026 Q1: 4801 accepted, 56 rejected, 5.0 days
-   - APK, 2026 Q2: 4848 accepted, 34 rejected, 4.0 days
-   - APK, 2026 Q3: 4329 accepted, 48 rejected, 6.0 days
-   - DSA, 2025 Q4: 3364 accepted, 48 rejected, 3.0 days
-   - DSA, 2026 Q1: 2949 accepted, 56 rejected, 4.0 days
-   - DSA, 2026 Q2: 2940 accepted, 28 rejected, 4.0 days
-   - DSA, 2026 Q3: 2923 accepted, 37 rejected, 5.0 days
-   - NOR, 2025 Q4: 4687 accepted, 96 rejected, 4.0 days
-   - NOR, 2026 Q1: 4281 accepted, 91 rejected, 4.0 days
-   - NOR, 2026 Q2: 4101 accepted, 116 rejected, 4.0 days
-   - NOR, 2026 Q3: 5325 accepted, 86 rejected, 5.0 days
-   - VST, 2025 Q4: 2995 accepted, 38 rejected, 6.0 days
-   - VST, 2026 Q1: 2620 accepted, 27 rejected, 6.0 days
-   - VST, 2026 Q2: 2536 accepted, 26 rejected, 7.0 days
-   - VST, 2026 Q3: 2677 accepted, 24 rejected, 6.0 days
+   - APK, 2025 Q4: 6265 accepted, 75 rejected, 4.0 days
+   - APK, 2026 Q1: 5675 accepted, 67 rejected, 5.0 days
+   - APK, 2026 Q2: 5731 accepted, 44 rejected, 4.0 days
+   - APK, 2026 Q3: 5665 accepted, 50 rejected, 6.0 days
+   - DSA, 2025 Q4: 3330 accepted, 42 rejected, 3.0 days
+   - DSA, 2026 Q1: 2990 accepted, 53 rejected, 4.0 days
+   - DSA, 2026 Q2: 2975 accepted, 24 rejected, 4.0 days
+   - DSA, 2026 Q3: 2990 accepted, 45 rejected, 6.0 days
+   - NOR, 2025 Q4: 3604 accepted, 71 rejected, 4.0 days
+   - NOR, 2026 Q1: 3271 accepted, 67 rejected, 4.0 days
+   - NOR, 2026 Q2: 3077 accepted, 81 rejected, 5.0 days
+   - NOR, 2026 Q3: 3690 accepted, 58 rejected, 4.0 days
+   - VST, 2025 Q4: 3109 accepted, 41 rejected, 6.0 days
+   - VST, 2026 Q1: 2729 accepted, 29 rejected, 6.0 days
+   - VST, 2026 Q2: 2665 accepted, 32 rejected, 7.0 days
+   - VST, 2026 Q3: 2922 accepted, 29 rejected, 6.0 days
 5. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
-   - Nordlys Pharma A/S (H1): 265024.0 DDD, 342367 kroner
-   - Bregnholt Laegemidler A/S (H2): 402906.0 DDD, 529981 kroner
-   - Vindeby Therapeutics ApS (H3): 407428.0 DDD, 544449 kroner
-   - Soegaard Medica A/S (H4): 383410.0 DDD, 476809 kroner
-   - Kastholm Pharma A/S (H5): 594748.0 DDD, 746325 kroner
-   - Ellevang Biosciences A/S (H6): 1023684.0 DDD, 1064159 kroner
-   - Strandby Farma ApS (H7): 227031.0 DDD, 332600 kroner
+   - Nordlys Pharma A/S (H1): 265203.0 DDD, 342608 kroner
+   - Bregnholt Laegemidler A/S (H2): 403788.0 DDD, 531163 kroner
+   - Vindeby Therapeutics ApS (H3): 407642.0 DDD, 544736 kroner
+   - Soegaard Medica A/S (H4): 383500.0 DDD, 476921 kroner
+   - Kastholm Pharma A/S (H5): 595146.0 DDD, 746846 kroner
+   - Ellevang Biosciences A/S (H6): 1027312.0 DDD, 1068056 kroner
+   - Strandby Farma ApS (H7): 227010.0 DDD, 332570 kroner
 6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
    - Hovedstaden, 18-34: 638 patients, 69.1 per cent
    - Hovedstaden, 35-44: 366 patients, 69.4 per cent
@@ -102,7 +102,7 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Sjaelland, 65 and over: 576 patients, 79.9 per cent
    - Syddanmark, 18-34: 495 patients, 69.9 per cent
    - Syddanmark, 35-44: 267 patients, 76.0 per cent
-   - Syddanmark, 45-64: 585 patients, 75.7 per cent
+   - Syddanmark, 45-64: 585 patients, 75.6 per cent
    - Syddanmark, 65 and over: 705 patients, 80.4 per cent
    - not stated, 18-34: 71 patients, 70.4 per cent
    - not stated, 35-44: 40 patients, 85.0 per cent

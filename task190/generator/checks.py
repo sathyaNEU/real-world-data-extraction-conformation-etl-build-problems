@@ -216,6 +216,8 @@ def run(g, target):
     # ---------------------------------------------------------------- the asks
     a1 = g["a1"]
     ok("A1 four quarters", len(a1) == 4)
+    ok("A1 the value past the cut-off is non-nil in every quarter",
+       all(a1[q][2] > 0 for q in a1), str({q: a1[q][2] for q in a1}))
     ok("A1 using one cut-off for the whole year undercounts the second half",
        g["a1_stops"]["cutoff_1500_only"]["2026Q3"][1] < a1["2026Q3"][1] and
        g["a1_stops"]["cutoff_1500_only"]["2026Q4"][1] < a1["2026Q4"][1])

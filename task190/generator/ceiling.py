@@ -19,7 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 
 # the rubric's weights: recommendation and critical components, instruction-following, asks
-W_CALL, W_COMP, W_INSTR, W_ASKS = 0.17, 0.18, 0.07, 0.58
+W_CALL, W_COMP, W_INSTR, W_ASKS = 0.12, 0.18, 0.10, 0.60
 
 
 def load(path=None):
@@ -57,14 +57,15 @@ def responses(fig):
             fig["call"]["referred_for_extended_testing"] else 0
         return n, per
 
-    def comp_hits(per):
-        """Recorded value is in the pack, so every response takes those nine; the misstatement
-        cells and the authority total are the response's own."""
-        n = len(rec)
-        for k in rec:
+    def comp_hits(per, got_interval):
+        """Both graded figures per programme need the recovered interval, so neither is free:
+        the misstatement and the share of recorded value certain of selection."""
+        n = 0
+        for k in prog:
             n += 1 if per.get(k) == prog[k] else 0
+            n += 1 if got_interval else 0
         n += 1 if sum(per.values()) == fig["call"]["misstatement_indicated"] else 0
-        return n, 2 * len(rec) + 1
+        return n, 2 * len(prog) + 1
 
     tmp = tempfile.mkdtemp()
     rt = A.run_log(tmp, allrows + extra + dup, runs)
@@ -87,8 +88,8 @@ def responses(fig):
 
     cr_call, cr_per = call_hits(g["ratio"])
     mi_call, mi_per = call_hits(g["total_raw"])
-    cr_comp, comp_n = comp_hits(cr_per)
-    mi_comp, _ = comp_hits(mi_per)
+    cr_comp, comp_n = comp_hits(cr_per, False)
+    mi_comp, _ = comp_hits(mi_per, True)
     cr_a1, a1_n = a1_hits(stops["the_cracker"])
     mi_a1, _ = a1_hits(stops["the_cracker"])
     cr_a2, a2_n = a2_hits(a2_cracker)

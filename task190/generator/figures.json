@@ -35,22 +35,22 @@
    "2026Q1": [
     25,
     9,
-    0.0
+    5303327.24
    ],
    "2026Q2": [
     26,
     8,
-    -10678.6
+    5217457.85
    ],
    "2026Q3": [
     27,
     5,
-    0.0
+    3433308.73
    ],
    "2026Q4": [
     26,
     6,
-    0.0
+    3470389.62
    ]
   },
   "schedule_lines_absent_from_the_ledger": 0,
@@ -150,47 +150,38 @@
    "misstatement_indicated_total": 800000,
    "rows": {
     "Deepwater berth renewal": [
-     13874317.9,
      0,
      35.2
     ],
     "Dredging programme": [
-     5588431.19,
      0,
      42.6
     ],
     "Pavement and surfacing": [
-     3307958.25,
      150000,
      15.6
     ],
     "Quay 3 reconstruction": [
-     10602065.41,
      0,
      34.2
     ],
     "Rail siding and yard": [
-     6311872.03,
      250000,
      16.9
     ],
     "Security and access systems": [
-     3492617.16,
      200000,
      13.8
     ],
     "Shore power installation": [
-     4713285.68,
      50000,
      18.4
     ],
     "Terminal roof and cladding": [
-     8386509.34,
      50000,
      18.5
     ],
     "Welfare and offices fit-out": [
-     3192682.96,
      100000,
      14.0
     ]

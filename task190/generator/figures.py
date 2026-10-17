@@ -58,8 +58,8 @@ def write(g, path):
             "projected_misstatement_2026.csv": {
                 "misstatement_indicated_total": g["total"],
                 "largest_programme": W.PROG_NAME[g["largest"]],
-                "rows": {W.PROG_NAME[c]: [round(g["recorded"][c], 2), g["per"][c],
-                                          g["certain_share"][c]] for c in W.PROG_CODES},
+                "rows": {W.PROG_NAME[c]: [g["per"][c], g["certain_share"][c]]
+                         for c in W.PROG_CODES},
             },
             "misstatement_by_population_2026.png": {
                 "bars": {W.PROG_NAME[c]: g["per"][c] for c in W.PROG_CODES},

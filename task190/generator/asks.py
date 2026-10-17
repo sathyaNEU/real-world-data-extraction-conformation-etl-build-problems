@@ -101,10 +101,10 @@ def cutoff_register(target):
 
 
 def a1_golden(truth):
-    """Per quarter: runs released, those past the cut-off in force, net value reversed."""
+    """Per quarter: runs released, those past the cut-off in force, and the value they carried."""
     out = {}
     for name, lo, hi in QUARTERS:
-        n, past, rev = 0, 0, 0.0
+        n, past, val = 0, 0, 0.0
         for run, (day, mins, nl, value, r, cut, opened) in truth.items():
             if not (lo <= day.isoformat() <= hi):
                 continue
@@ -112,8 +112,8 @@ def a1_golden(truth):
             ch, cm = [int(v) for v in cut.split(":")]
             if mins > ch * 60 + cm:
                 past += 1
-            rev += r
-        out[name] = (n, past, round(rev, 2))
+                val += value
+        out[name] = (n, past, round(val, 2))
     return out
 
 
@@ -124,7 +124,7 @@ def a1_stops(truth):
                  "grouped_on_the_opening_date", "the_cracker", "answer"):
         agg = {}
         for q, lo, hi in QUARTERS:
-            n, past, rev = 0, 0, 0.0
+            n, past, val = 0, 0, 0.0
             for run, (day, mins, nl, value, r, cut, opened) in truth.items():
                 d = opened if name in ("grouped_on_the_opening_date", "the_cracker") else day
                 if not (lo <= d.isoformat() <= hi):
@@ -136,10 +136,10 @@ def a1_stops(truth):
                 if mins > ch * 60 + cm or (name == "on_the_cutoff_counted"
                                            and mins == ch * 60 + cm):
                     past += 1
-                rev += r
+                    val += value
             if name == "the_cracker":                 # the re-released run counted twice
                 n += 1 if lo <= "2026-05-01" <= hi else 0
-            agg[q] = (n, past, round(rev, 2))
+            agg[q] = (n, past, round(val, 2))
         stops[name] = agg
     return stops
 

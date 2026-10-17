@@ -19,13 +19,11 @@ def table(path, g):
     cert_total = sum(g["recorded"][c] * g["certain_share"][c] / 100.0 for c in W.PROG_CODES)
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh, lineterminator="\n")
-        w.writerow(["work_programme", "programme_code", "payments_recorded_eur",
-                    "misstatement_indicated_eur",
+        w.writerow(["work_programme", "programme_code", "misstatement_indicated_eur",
                     "share_of_recorded_value_certain_of_selection_pct"])
         for c in sorted(W.PROG_CODES, key=lambda c: (-g["per"][c], W.PROG_NAME[c])):
-            w.writerow([W.PROG_NAME[c], c, "%.2f" % g["recorded"][c], g["per"][c],
-                        "%.1f" % g["certain_share"][c]])
-        w.writerow(["Authority", "", "%.2f" % g["recorded_total"], g["total"],
+            w.writerow([W.PROG_NAME[c], c, g["per"][c], "%.1f" % g["certain_share"][c]])
+        w.writerow(["Authority", "", g["total"],
                     "%.1f" % (100.0 * cert_total / g["recorded_total"])])
     return path
 

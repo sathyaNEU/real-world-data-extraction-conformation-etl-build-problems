@@ -277,12 +277,10 @@ def main(target, figpath):
                 ["misstatement_indicated_total"])
         else:
             w = fig["deliverables"]["projected_misstatement_2026.csv"]["rows"][r["work_programme"]]
-            chk("deliverable row %s recorded" % r["work_programme"],
-                round(float(r["payments_recorded_eur"]), 2), w[0])
             chk("deliverable row %s misstatement" % r["work_programme"],
-                int(r["misstatement_indicated_eur"]), w[1])
+                int(r["misstatement_indicated_eur"]), w[0])
             chk("deliverable row %s certain share" % r["work_programme"],
-                round(float(r["share_of_recorded_value_certain_of_selection_pct"]), 1), w[2])
+                round(float(r["share_of_recorded_value_certain_of_selection_pct"]), 1), w[1])
 
     # ---- the asks -------------------------------------------------------------
     cut = []
@@ -308,17 +306,19 @@ def main(target, figpath):
 
     q = {}
     for r in rows(target, "payment_run_log_2026.csv"):
-        day = r["run_date"]
+        if r["run_status"] != "released":          # the re-released row is the same run
+            continue
+        day = r["released_ts"][:10]
         qq = "%sQ%d" % (day[:4], (int(day[5:7]) - 1) // 3 + 1)
         a = q.setdefault(qq, [0, 0, 0.0])
         a[0] += 1
         if r["released_ts"][11:16] > cutoff(day):
             a[1] += 1
-        a[2] += float(r["reversed_value_eur"])
+            a[2] += float(r["run_value_eur"])
     for k, v in fig["asks"]["runs_by_quarter"].items():
         chk("A1 %s runs" % k, q[k][0], v[0])
         chk("A1 %s past the cut-off" % k, q[k][1], v[1])
-        chk("A1 %s net reversed" % k, round(q[k][2], 2), v[2])
+        chk("A1 %s value past the cut-off" % k, round(q[k][2], 2), v[2])
 
     ev = rows(target, "supplier_risk_approval_history.csv")
     cmap = {r["label_from_2026_10_01"]: r["label_to_2026_09_30"]
