@@ -1,13 +1,38 @@
-{"task": "task240", "owner": "perssathya", "status": "DESIGN",
- "domain": "survey-research-official-statistics/nonresponse-calibration-measurement-error-adjustment", "objective": "data-quality-monitoring",
- "stage": 2, "stage_name": "design", "updated": "2026-10-17",
- "stump": "A competent analyst takes each published total's standard error by Taylor linearisation over the strata and PSUs with the final weights treated as fixed and warns the pension and full-time-education counts of the smallest regions; the post-stratified estimator's variance, from the residuals within the region, age group and sex cells, clears them.",
- "architecture": 1, "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+{
+ "task": "task240",
+ "owner": "perssathya",
+ "status": "SHIPPED",
+ "domain": "survey-research-official-statistics/nonresponse-calibration-measurement-error-adjustment",
+ "objective": "data-quality-monitoring",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-17",
+ "stump": "A competent analyst takes each published total's standard error by Taylor linearisation over the strata and PSUs with the final weights treated as fixed and files 15 of the 48 estimates warned, the public pension estimates of all four northern regions and the private renting estimates of R01 and R03 among them; the post-stratified estimator's variance, from the residuals within the region, age group and sex cells, warns 9.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK)",
+  "reader": "two reads: question 1 none each time, question 6 analytical; letters' mailing-run times and the households entry fixed"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form)",
+  "nearest": "task194 driver 0.07; surface promotes task238 (same pairing two apart, differentiated), task239, task233"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW on step 7's wording, fixed)",
+  "report": "task240/determinism_check_report.md, task240/determinism_check_report_pass2.md"
+ },
  "returned": [],
- "resume": "stage 2: simulator tuned to the ladder (fixed-weight Taylor warns the age-driven counts of the small regions, the post-stratified variance clears them, every cell 1.5 points or more off the line), ask layer, fork table, closure, prompt, precut",
- "approved": null, "delivered": null, "portal": null,
- "portal_id": "", "portal_status": "", "portal_status_date": ""}
+ "resume": "",
+ "approved": null,
+ "delivered": "2026-10-17",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
