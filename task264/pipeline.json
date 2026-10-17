@@ -1,34 +1,34 @@
 {
   "task": "task264",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-17",
   "stump": "The default path turns each member council's expanded visits into residents with its respondents' average 12-month visit count, a visit-weighted average in an exit survey, so the three valley councils' frequent visitors are undercounted and their levy share falls well below the share the survey's weight over each respondent's own visit count gives.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK: the levy requirement declared a stated input; sweep 3 the council names in the levy papers; sweep 4 the field note's and the resolution's survey vocabulary; sweep 6 registers, invoices, the 2026-27 schedule and the population distractor beside numbers; sweep 9 the permits' validity dates)",
+    "reader": "reader 1: Q1 none, Q6 analytical, realism notes fixed (park totals, names, remittance senders, weight table); reader 2: Q1 none, Q6 analytical, permits' single price fixed; reader 3 running on the judge-fix pack"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task256 0.11 (guard check)"
+    "heart": "WARN (repeat.gate_g, overuse.gate_g; ban.artifact cleared by correcting the card's context artifact to close_out_summary)",
+    "nearest": "task256 (v1) 0.11 driver; surface promotes task136 at 0.102 on card axes alone"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (r1)",
+    "disposition": "FIX_NOW: the cut-off basis of ask 5 (closed by the manifest's definitions of the cash book's dates), optional pins (VAT rate, apportionment arithmetic) taken in the files, write-up wording; re-judge running",
+    "report": "task264/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "",
+  "resume": "stage 4: the one re-judge thread is running on the judge-fix pack (brief /tmp/determinism-check-task264-r2-1792231383/judge_brief.md, verdict to that folder's verdict.md); then re-invoke the determinism-judge agent for determinism_check_report_pass2.md, read the third leak reader's answers, fix any finding in the generator, rebuild (build.py), rerun leak.py, figures_check, heart, and ship (target.zip and golden/ with git add -f, ledger row, card answer)",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -50,5 +50,14 @@
         "reader": "Q1 none, Q6 analytical; Q5: the level at which a line's price is formed is not filed (constrained by methodology section 1 and the partner register's one shelf price); realism and ask-wording notes staged in the generator, not yet rebuilt"
       }
     }
-  ]
+  ],
+  "gates": {
+    "checks": 104,
+    "verify": "PASS",
+    "rebuild": "byte-identical",
+    "figures_check": "78 of 78",
+    "precut": "49 of 49",
+    "voice_check": "PASS",
+    "producer_metadata": "clean"
+  }
 }

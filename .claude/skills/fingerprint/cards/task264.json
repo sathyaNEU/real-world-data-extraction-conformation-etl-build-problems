@@ -1,129 +1,135 @@
 {
-  "task": "task264",
-  "architecture": "v2 (re-rooted 2026-10-17 after architecture 1's determinism SEND_BACK)",
-  "drawn": "2026-10-17",
-  "slot_note": "Wave 3, Descriptive lane (sathay3012), re-root of task264 in the same objective and number. Seed DA14's grocery price-index world is spent with architecture 1 (its index-construction choices are definitional), so the slot draws a new world: a joint regional park authority apportioning its levy among member councils by the residents who visit, estimated from its on-site visitor survey.",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "sample-design-allocation-weighting",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a joint regional park authority in England apportioning its 2027-28 levy among its nine member councils by the number of each council's adult residents who visited its parks in the 2025-26 survey year, each counted once, estimated from an on-site exit survey that draws adults as they leave on sampled days",
-  "objective": "descriptive-distribution",
-  "shape": "05",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
+ "task": "task264",
+ "architecture": "v2 (re-rooted 2026-10-17 after architecture 1's determinism SEND_BACK)",
+ "drawn": "2026-10-17",
+ "slot_note": "Wave 3, Descriptive lane (sathay3012), re-root of task264 in the same objective and number. Seed DA14's grocery price-index world is spent with architecture 1 (its index-construction choices are definitional), so the slot draws a new world: a joint regional park authority apportioning its levy among member councils by the residents who visit, estimated from its on-site visitor survey.",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "sample-design-allocation-weighting",
+ "client_domain": "survey-research-official-statistics",
+ "niche": "a joint regional park authority in England apportioning its 2027-28 levy among its nine member councils by the number of each council's adult residents who visited its parks in the 2025-26 survey year, each counted once, estimated from an on-site exit survey that draws adults as they leave on sampled days",
+ "objective": "descriptive-distribution",
+ "shape": "05",
+ "decision_type": "allocation_to_total",
+ "answer_unit": "currency",
+ "answer": "Charge the 2027-28 levy of £7,416,300 as Keldmere District Council £1,250,310, Ravenwick Borough Council £1,525,314, Snelgarth District Council £977,169, Larkstead Borough Council £717,236, Grinbury District Council £743,901, Hornmere District Council £650,135, Chaldale District Council £549,836, Wendstow District Council £513,321 and Ferncote Borough Council £489,078, resting on 271,900 adult residents who visited in 2025-26 (the valley councils 50.6 per cent)",
+ "answer_source": "task264/submission.md block 1; golden/levy_apportionment_2027-28.xlsx",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G10",
+  "G14"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "close_out_summary",
+ "stakeholder_role": "the Authority's head of finance, who takes the 2027-28 levy apportionment to the Authority's members at the January 2027 budget meeting",
+ "role_family": "finance_controller",
+ "scoring_unit": "per covered member",
+ "spine": {
+  "file": "dvrpa_visitor_survey_2025-26_wave1.xlsx and dvrpa_visitor_survey_2025-26_wave2.csv (two contractor deliveries) with survey_weights_2025-26.csv",
+  "rows": 4470,
+  "entity": "one interview with one adult leaving one of the Authority's parks on a sampled survey day",
+  "grain": "interview (adult visit)",
+  "source": "synthetic"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "local_government",
+ "world": {
+  "geography": "England (an unnamed county; the Authority, its parks, its nine member councils, their towns and villages and the survey contractor are fictional; personas on the en_GB index)",
+  "currency": "GBP",
+  "org_type": "a statutory joint regional park authority funded by a levy on its member councils",
+  "invented_names": [
+   "Daskbeck Valley Regional Park Authority",
+   "Brathden Woods",
+   "Crowside Common",
+   "Gorthfield Country Park",
+   "Daskbeck Water Park",
+   "Lockshaw Moor",
+   "Thruscote Hall",
+   "Keldmere",
+   "Ravenwick",
+   "Snelgarth",
+   "Larkstead",
+   "Grinbury",
+   "Hornmere",
+   "Chaldale",
+   "Wendstow",
+   "Ferncote",
+   "Ellshaw Research",
+   "Quorvant Parking",
+   "Askvane Merchant Services"
+  ],
+  "people": [
+   "Claire Foster",
+   "Toby Houghton"
+  ]
+ },
+ "deliverables": [
+  "levy_apportionment_2027-28.xlsx",
+  "levy_report_2027-28.docx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-much",
+ "driver": "The decisive quantity is how many different members of each group a population of repeated events contains, seen only through a sample of the events in which each member is drawn in proportion to how many events it makes; reading the sampled members as the members, or dividing each group's estimated events by its sampled members' average event count, gives the groups whose members repeat most too many or too few, and only weighting each sampled member by its design weight over its own event count counts them.",
+ "driver_concrete": "The levy follows each member council's adults who visited the parks at least once in 2025-26, each counted once, but the exit survey draws adults as they leave on sampled days, so a resident who walks the dog in Brathden every morning is about two hundred times as likely to be interviewed as one who came twice; the valley councils' residents are the frequent visitors, so apportioning by expanded visits, or by visits divided by each council's respondents' average 12-month visit count, puts the valley councils' share far off the share the survey's own weights over each respondent's visit count give.",
+ "stump": "A competent solver expands the interviews by the contractor's weights, sums them by home council and turns each council's visits into residents by dividing by its respondents' average 12-month visit count, a visit-weighted average that overstates how often each council's residents come, so the valley councils' residents are undercounted and their levy shares fall well below the shares the design weight over each respondent's own visit count gives.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who codes every frequency answer, places every respondent in a council through the gazetteer, reads the members' resolution correctly (residents aged 16 and over who visited, each counted once) and expands the interviews by the contractor's weights still divides each council's estimated visits by its respondents' average number of visits and files a levy split that undercharges the three valley councils, because an exit survey draws each resident in proportion to how often they come, so the respondents' average is a visit-weighted average; only each interview's weight over its own visit count counts residents.",
+ "domain_test": "The deciding quantity is a population total (each council's distinct adult residents who visited) estimated from a probability sample of visits by the survey-design estimator that weights every sampled unit by the inverse of its inclusion probability, which an exit survey makes proportional to the person's visits; that is the sample-design task type's own object, and with another field's nouns the intercept design, the expansion strata and the visit-count question that set each person's chance of selection have nothing to attach to.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task264": "architecture 1 decided the unit at which a price is followed, a definitional choice; architecture 2 turns a probability sample of visits into a count of people by inverse inclusion probability, with the unit (residents, each once) filed literally",
+  "task452": "task452 weights reference points by the strata they were drawn from after the map was revised; task264 turns an equal-chance sample of visits into people, each weighted by the inverse of their own visit count, a selection the design makes proportional to frequency",
+  "task253": "task253 counts units past a floor as a sum of probabilities under shrinkage; task264's inverse-frequency weight comes from the sampling design, not from noise in a measurement",
+  "task131": "task131 v1 reads a randomised lift at the parent unit because sub-units share one budget; task264 turns an exit survey's sample of visits, drawn in proportion to each person's visits, into a count of people",
+  "task136": "task136 forecasts a bulk-buy's net addition of rooftop PV against suburbs whose campaign had not yet run; task264 estimates a count of people from an exit survey's sample of visits, each interview weighted by the inverse of its own visit count; guard surface pairs them only on card axes (population_selection, method_or_model_selection, a council)"
+ },
+ "lineage": [
+  {
+   "domain": "general-statistics-data-science",
+   "subdomain": "missing-data-censoring-measurement-error",
+   "objective": "descriptive-distribution",
+   "shape": "14",
+   "decision_type": "designation_set",
+   "answer_unit": "set_of_items",
+   "gap": [
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G10",
-    "G14"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "the Authority's head of finance, who takes the 2027-28 levy apportionment to the Authority's members at the January 2027 budget meeting",
-  "role_family": "finance_controller",
-  "scoring_unit": "per covered member",
-  "spine": {
-    "file": "visitor_survey_2025-26 (two contractor deliveries)",
-    "rows": 0,
-    "entity": "one interview with one adult leaving one of the Authority's parks on a sampled survey day",
-    "grain": "interview (adult visit)",
-    "source": "synthetic"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "local_government",
-  "world": {
-    "geography": "England (an unnamed county; the Authority, its parks, its nine member councils, their towns and villages and the survey contractor are fictional; personas on the en_GB index)",
-    "currency": "GBP",
-    "org_type": "a statutory joint regional park authority funded by a levy on its member councils",
-    "invented_names": [
-      "Daskbeck Valley Regional Park Authority",
-      "Gorthfield",
-      "Brathden",
-      "Lesvley",
-      "Kirvstead",
-      "Kesvham",
-      "Tarvstead",
-      "Jeskley",
-      "Lorvborne",
-      "Glevby",
-      "Varvcote",
-      "Parvstead",
-      "Foskcote",
-      "Esvden"
-    ],
-    "people": [
-      "Claire Foster",
-      "Toby Houghton"
-    ]
-  },
-  "deliverables": [
-    "levy_apportionment_2027-28.xlsx",
-    "levy_report_2027-28.docx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The decisive quantity is how many different members of each group a population of repeated events contains, seen only through a sample of the events in which each member is drawn in proportion to how many events it makes; reading the sampled members as the members, or dividing each group's estimated events by its sampled members' average event count, gives the groups whose members repeat most too many or too few, and only weighting each sampled member by its design weight over its own event count counts them.",
-  "driver_concrete": "The levy follows each member council's adults who visited the parks at least once in 2025-26, each counted once, but the exit survey draws adults as they leave on sampled days, so a resident who walks the dog in Brathden every morning is about two hundred times as likely to be interviewed as one who came twice; the valley councils' residents are the frequent visitors, so apportioning by expanded visits, or by visits divided by each council's respondents' average 12-month visit count, puts the valley councils' share far off the share the survey's own weights over each respondent's visit count give.",
-  "stump": "A competent solver expands the interviews by the contractor's weights, sums them by home council and turns each council's visits into residents by dividing by its respondents' average 12-month visit count, a visit-weighted average that overstates how often each council's residents come, so the valley councils' residents are undercounted and their levy shares fall well below the shares the design weight over each respondent's own visit count gives.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who codes every frequency answer, places every respondent in a council through the gazetteer, reads the members' resolution correctly (residents aged 16 and over who visited, each counted once) and expands the interviews by the contractor's weights still divides each council's estimated visits by its respondents' average number of visits and files a levy split that undercharges the three valley councils, because an exit survey draws each resident in proportion to how often they come, so the respondents' average is a visit-weighted average; only each interview's weight over its own visit count counts residents.",
-  "domain_test": "The deciding quantity is a population total (each council's distinct adult residents who visited) estimated from a probability sample of visits by the survey-design estimator that weights every sampled unit by the inverse of its inclusion probability, which an exit survey makes proportional to the person's visits; that is the sample-design task type's own object, and with another field's nouns the intercept design, the expansion strata and the visit-count question that set each person's chance of selection have nothing to attach to.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task264": "architecture 1 decided the unit at which a price is followed, a definitional choice; architecture 2 turns a probability sample of visits into a count of people by inverse inclusion probability, with the unit (residents, each once) filed literally",
-    "task452": "task452 weights reference points by the strata they were drawn from after the map was revised; task264 turns an equal-chance sample of visits into people, each weighted by the inverse of their own visit count, a selection the design makes proportional to frequency",
-    "task253": "task253 counts units past a floor as a sum of probabilities under shrinkage; task264's inverse-frequency weight comes from the sampling design, not from noise in a measurement",
-    "task131": "task131 v1 reads a randomised lift at the parent unit because sub-units share one budget; task264 turns an exit survey's sample of visits, drawn in proportion to each person's visits, into a count of people"
-  },
-  "lineage": [
-    {
-      "domain": "general-statistics-data-science",
-      "subdomain": "missing-data-censoring-measurement-error",
-      "objective": "descriptive-distribution",
-      "shape": "14",
-      "decision_type": "designation_set",
-      "answer_unit": "set_of_items",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G2",
-        "G12",
-        "G6"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "grain_or_unit",
-      "driver": "The decisive unit is the one that sets the value: averaging records across setters lets volume moving between dearer and cheaper setters pass for a change in the value, and splitting one setter's single value across its outlets keeps only the outlet-periods with a transaction, so the comparisons lose the slowly traded items and follow the busy ones.",
-      "architecture": "v1 (a grocery scanner price index's 2027 publication structure: each category's change in four store formats, each line followed at the chain that prices it)",
-      "drawn": "2026-10-17",
-      "fate": "spent 2026-10-17: the first determinism pass found the call deterministic (FIX_NOW on four ask forks); the one re-judge returned SEND_BACK (competing_defensible_answer): the methodology never says what a product is, so a literal reader prices each line store by store (7 categories) and the golden's line at its chain (10) holds only under an unfiled product definition; filing it would make the decisive step rule application"
-    }
-  ],
-  "notes": "Calibration organ none: the contractor's expansion weights are the survey's own design weights, not a validation sample. stump_strategy population_selection: the sample is selected in proportion to visit frequency (who is in the sample), not a row grain; the unit counted (residents, each once) is filed in the members' resolution.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:visit-intercept-to-person-weights",
-  "layer1": [
-    "two contractor deliveries of the survey (an autumn and winter workbook and a spring and summer CSV) with renamed columns and a recoded age band",
-    "home town or village written as said, with spellings, abbreviations and old names, placed in a council through the Authority's settlement gazetteer",
-    "12-month visit counts given as numbers, mostly round, with a few answers taken as a band from the show card and coded by the codebook",
-    "the contractor's expansion weights in a separate file keyed to interview numbers written differently in the two deliveries",
-    "the survey year April 2025 to March 2026 against the calendar-year counter files",
-    "hourly car-park and trail counters per park with outages, a counter swapped mid-year and a logger clock kept on GMT through British Summer Time"
-  ],
-  "registered": "2026-10-17T07:58:41Z"
+   ],
+   "generators": [
+    "G2",
+    "G12",
+    "G6"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "grain_or_unit",
+   "driver": "The decisive unit is the one that sets the value: averaging records across setters lets volume moving between dearer and cheaper setters pass for a change in the value, and splitting one setter's single value across its outlets keeps only the outlet-periods with a transaction, so the comparisons lose the slowly traded items and follow the busy ones.",
+   "architecture": "v1 (a grocery scanner price index's 2027 publication structure: each category's change in four store formats, each line followed at the chain that prices it)",
+   "drawn": "2026-10-17",
+   "fate": "spent 2026-10-17: the first determinism pass found the call deterministic (FIX_NOW on four ask forks); the one re-judge returned SEND_BACK (competing_defensible_answer): the methodology never says what a product is, so a literal reader prices each line store by store (7 categories) and the golden's line at its chain (10) holds only under an unfiled product definition; filing it would make the decisive step rule application"
+  }
+ ],
+ "notes": "Calibration organ none: the contractor's expansion weights are the survey's own design weights, not a validation sample. stump_strategy population_selection: the sample is selected in proportion to visit frequency (who is in the sample), not a row grain; the unit counted (residents, each once) is filed in the members' resolution. Context artifact: Appendix B of the levy papers, the 2026-27 levy as apportioned by population under resolution 6/1998, a prior-year summary that answers the old basis's question correctly; the members' resolution 14/2026 is the governing document (the pin), which the draw first filed here as the context artifact (filed_standard), corrected at stage 3 when task236, filed 54 minutes earlier, was found to carry filed_standard.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:visit-intercept-to-person-weights",
+ "layer1": [
+  "the survey in two contractor deliveries (a spring and summer workbook and an autumn and winter CSV from a new tablet system) with renamed columns, parks as names and as site codes, Excel dates and DD/MM/YYYY text, recoded age bands",
+  "interview numbers written three ways across the two deliveries and the separate weights file (DV25-1-0001, DV25/2/0001, 1-0001)",
+  "home areas coded by the contractor with NK where no home was given or could be placed, and visitors from outside the member councils coded OUT",
+  "12-month visit counts heaped at round numbers as people give them",
+  "pay-machine payments and counter hours stamped in UTC across British Summer Time; the parking app's statements by month and tariff",
+  "the finance system's cash book carrying its own posting date beside the bank's value date"
+ ],
+ "registered": "2026-10-17T07:58:41Z"
 }
