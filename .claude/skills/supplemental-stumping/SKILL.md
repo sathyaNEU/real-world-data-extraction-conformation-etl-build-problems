@@ -173,6 +173,21 @@ fully defined, as a judge will force you to, and ask whether the device still bi
 survives every term being defined rides on the data; one that does not was the ambiguity, and shipping
 it buys a determinism return and an ask layer at once.
 
+**The ceiling is computed on Part 0's weights, not on a legal point inside the permitted bands.**
+`CLAUDE.md` allows 30 to 40 per cent for the recommendation and critical components, 5 to 10 for
+instruction-following and 55 to 60 for the asks, so a script can sit anywhere in those ranges and
+still be legal. Part 0's arithmetic is the one the 40 bar was calibrated on, and a script that takes
+the bottom of the recommendation band with the top of the ask band minimises what landing the call
+banks and maximises what the asks give back: task190's `ceiling.py` did exactly that, at 0.12 and
+0.18 against 38 and 7, giving a landed call a floor of 40.0 instead of 45.0 and flattering the pair
+by 2.5 points in the field the gate reads. Nobody chose that; it drifted, which is not better than
+choosing it. Compute on 38, 7 and 55 so builds are comparable, and where a build wants other weights
+it shows both numbers and says which the gate takes. **Solve the target count with the script rather
+than on paper**, by sweeping the cracker's keep count and printing the pair at each: changing the
+weights moves the mirror's score too, so an analytic recomputation that holds the old mirror while
+substituting new weights mixes the two and lands wrong, which is how a target of 10 was argued as 8
+and as 12 in the same afternoon.
+
 **The honest number goes in the gated field.** Where two crackers are measured, the one that counts is
 the one Part 1.1 defines, which executed every filed rule it points at; a weaker response's score is
 not the ceiling. task182 measured 39.1 for a response that skipped the filed rules and 75.2 for the
