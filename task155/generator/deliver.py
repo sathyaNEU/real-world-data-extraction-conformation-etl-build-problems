@@ -342,8 +342,11 @@ def write_xlsx(path, B, G, S, ab, ex, figs, order, names, n_open):
         c = ws4.cell(row=4 + len(srt), column=2 + j, value=round(v, 1))
         c.number_format, c.font = "#,##0.0", bold
     ws4.cell(row=6 + len(srt), column=1, value="A casual's own store is their home store on the shift date, from the "
-                                               "payroll cost-centre history; Ballarat offers to no other store's "
-                                               "casuals.")
+                                               "payroll cost-centre history, each cost centre counted from the start "
+                                               "of its engagement: a move between stores before April 2026 was "
+                                               "recorded as a re-engagement under a new employee number, its cost "
+                                               "centre dated from the day the move was keyed. Ballarat offers to no "
+                                               "other store's casuals.")
     ws4.freeze_panes = "B4"
     ws5 = wb.create_sheet("Notes")
     notes = [

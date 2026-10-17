@@ -27,7 +27,7 @@
       "xlsx"
     ],
     "largest_file": "callin_offers_20250829_20261112.csv",
-    "largest_file_rows": 139549
+    "largest_file_rows": 141999
   },
   "sources": [
     {
@@ -52,8 +52,8 @@
     {
       "path": "callin_offers_20250829_20261112.csv",
       "format": "csv",
-      "bytes": 14262550,
-      "rows": 139549,
+      "bytes": 14509415,
+      "rows": 141999,
       "source": "Constructed: Kellaway's Workforce Systems, KWS offer history report, shifts 29/08/2025 to 12/11/2026",
       "date": "2026-11-13",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -61,8 +61,8 @@
     {
       "path": "callin_register_20250829_20261112.csv",
       "format": "csv",
-      "bytes": 4735783,
-      "rows": 41313,
+      "bytes": 4835454,
+      "rows": 42180,
       "source": "Constructed: Kellaway's Workforce Systems, KWS call-in register, shifts 29/08/2025 to 12/11/2026",
       "date": "2026-11-13",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -70,7 +70,7 @@
     {
       "path": "christmas_roster_2026_published.xlsx",
       "format": "xlsx",
-      "bytes": 620560,
+      "bytes": 620610,
       "rows": 17624,
       "source": "Constructed: Kellaway's Workforce Systems, KWS roster report, Christmas 2026 rosters as published 12/11/2026",
       "date": "2026-11-13",
@@ -106,7 +106,7 @@
     {
       "path": "kws_callin_module_notes.pdf",
       "format": "pdf",
-      "bytes": 42889,
+      "bytes": 42886,
       "rows": null,
       "source": "Constructed: Kellaway's Workforce Systems, KWS Call-in module notes version 2.3, 04/08/2026",
       "date": "2026-11-13",
@@ -124,7 +124,7 @@
     {
       "path": "payroll_casual_register_20261112.csv",
       "format": "csv",
-      "bytes": 51508,
+      "bytes": 51876,
       "rows": 895,
       "source": "Constructed: Kellaway's People and Payroll, payroll casual register, 12/11/2026",
       "date": "2026-11-13",

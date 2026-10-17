@@ -14,6 +14,13 @@ import common as K
 import world as W
 
 HIST_DAYS = list(range(0, W.dnum(W.HIST_END) + 1))
+# payroll's practice before its April 2026 transfer screen: a casual moving stores resigns at one and is re-engaged at
+# the other under a new employee number, the re-engagement form defaulting the new cost centre's effective date to the
+# day it is keyed. The moves agreed at the November 2025 roster review were keyed together on the review's date; the
+# Ballarat school leavers' moves to Melbourne were keyed together on the Monday after the VCE results came out.
+REENG_BEFORE = dt.date(2026, 4, 1)
+REVIEW_KEYED = dt.date(2025, 11, 20)
+RESULTS_KEYED = dt.date(2025, 12, 15)
 XMAS_DAYS = list(range(W.dnum(W.PEAK26[0]), W.dnum(W.PEAK26[1]) + 1))
 LEGACY_LAST = W.KWS_ROSTERS_FROM - dt.timedelta(days=1)
 
@@ -70,6 +77,20 @@ def keys(Wd):
     for c in first + later:
         code += int(rng.integers(1, 4))
         Wd.code[c.idx] = "K%05d" % code
+    # the re-engagements of the moves before April 2026: each numbered at its start, in the first number free after
+    # the last one issued by then (the person code carries over)
+    Wd.reeng = {}
+    used = set(Wd.pay.values())
+    issued = sorted((d, Wd.pay[(kind, i, eng)]) for d, kind, i, eng in starts)
+    for c in sorted((c for c in Wd.cas if c.moves and c.moves[0][0] < REENG_BEFORE), key=lambda c: (c.moves[0][0], c.idx)):
+        when, to, _ = c.moves[0]
+        no = max(num for d, num in issued if d <= when) + 1
+        while no in used:
+            no += 1
+        used.add(no)
+        keyed = RESULTS_KEYED if c.store0 == "RG" else REVIEW_KEYED
+        Wd.pay[("C", c.idx, "R")] = no
+        Wd.reeng[c.idx] = dict(when=when, keyed=keyed, to=to, no=no)
     Wd.dob = {}
     for c in Wd.cas:
         lo, hi = {"school": (15.1, 17.9), "uni": (18.2, 23.5), "parent": (31.0, 48.0), "flex": (19.5, 63.0)}[c.typ0]
@@ -83,6 +104,9 @@ def payroll_no(Wd, who, d):
     kind, i = who
     if kind == "C":
         c = Wd.cas[i]
+        r = Wd.reeng.get(i)
+        if r and d >= r["when"]:
+            return Wd.pay[("C", i, "R")]
         return Wd.pay[("C", i, 1 if (c.gap and d >= c.gap[1]) else 0)]
     return Wd.pay[(kind, i, 0)]
 
@@ -198,12 +222,17 @@ def write_payroll(path, Wd):
     far = ""
     for c in Wd.cas:
         engs = []
+        r = Wd.reeng.get(c.idx)
         if c.gap:
-            engs.append((Wd.pay[("C", c.idx, 0)], c.start, c.gap[0], ""))
-            engs.append((Wd.pay[("C", c.idx, 1)], c.gap[1], c.end, str(Wd.pay[("C", c.idx, 0)])))
+            engs.append((Wd.pay[("C", c.idx, 0)], c.start, c.gap[0], "", None))
+            engs.append((Wd.pay[("C", c.idx, 1)], c.gap[1], c.end, str(Wd.pay[("C", c.idx, 0)]), None))
+        elif r:
+            # a move recorded as a resignation and a re-engagement: the new cost centre from the day it was keyed
+            engs.append((Wd.pay[("C", c.idx, 0)], c.start, r["when"] - dt.timedelta(days=1), "", None))
+            engs.append((r["no"], r["when"], c.end, str(Wd.pay[("C", c.idx, 0)]), r["keyed"]))
         else:
-            engs.append((Wd.pay[("C", c.idx, 0)], c.start, c.end, ""))
-        for no, a, b, prev in engs:
+            engs.append((Wd.pay[("C", c.idx, 0)], c.start, c.end, "", None))
+        for no, a, b, prev, keyed in engs:
             end = "" if b > W.HIST_END else b.isoformat()
             # cost-centre periods inside the engagement
             cuts = [(a, c.store0)]
@@ -212,6 +241,8 @@ def write_payroll(path, Wd):
                     cuts.append((when, to))
                 elif when <= a:
                     cuts = [(a, to)]
+            if keyed is not None:
+                cuts[0] = (keyed, cuts[0][1])
             for k, (f, st) in enumerate(cuts):
                 t = (cuts[k + 1][0] - dt.timedelta(days=1)).isoformat() if k + 1 < len(cuts) else end
                 rows.append([no, Wd.dob[c.idx].isoformat(), "CASUAL", a.isoformat(), end, K.CC[st], f.isoformat(),

@@ -98,8 +98,14 @@ def main(target, figfile):
     pay = tab(target, "payroll_casual_register_20261112.csv")
     prev = {int(n): int(p) for n, p in zip(pay["employee_no"], pay["previous_employee_no"]) if p}
     periods = collections.defaultdict(list)
-    for n, f, t, cc in zip(pay["employee_no"], pay["cc_effective_from"], pay["cc_effective_to"], pay["cost_centre"]):
-        periods[int(n)].append((dt.date.fromisoformat(f), dt.date.fromisoformat(t) if t else dt.date(2100, 1, 1), cc_loc[cc]))
+    far = dt.date(2100, 1, 1)
+    for n, f, t, cc, a, b in zip(pay["employee_no"], pay["cc_effective_from"], pay["cc_effective_to"], pay["cost_centre"],
+                                 pay["engagement_start"], pay["engagement_end"]):
+        # a cost-centre row counts only while its engagement runs
+        lo = max(dt.date.fromisoformat(f), dt.date.fromisoformat(a))
+        hi = min(dt.date.fromisoformat(t) if t else far, dt.date.fromisoformat(b) if b else far)
+        if lo <= hi:
+            periods[int(n)].append((lo, hi, cc_loc[cc]))
     chain = {}
     for pc, n in zip(ppl["person_code"], ppl["payroll_no"]):
         c = [int(n)]

@@ -134,6 +134,13 @@ def shifts(B, use_utc=False, span_hours=False, dedup=None, drops=True, window=No
             good = [f for f in fills if id(f) not in continuing]
         else:
             good = [f for f in fills if id(f) not in dropped]
+        if dedup != "raise":
+            # one casual is booked on a shift once: a second call-in for it closed FILLED with them is the same cover
+            once = []
+            for f in good:
+                if all(g["by"] != f["by"] for g in once):
+                    once.append(f)
+            good = once
         for f in good:
             out.append(dict(loc=key[0], hours=hours(lst[0]), covered=True, by=f["by"], d=f["d"]))
         for _ in range(units - len(good)):
@@ -174,10 +181,12 @@ def ask_b(B, home_rule="payroll", **kw):
     sh = shifts(B, **kw)
     imp = collections.Counter()
     exp = collections.Counter()
+    look = {"payroll": lambda pc, d: C.home_loc(B, pc, d), "newest": lambda pc, d: C.home_loc_newest(B, pc, d),
+            "kws": lambda pc, d: B.people[pc]["home_location"]}[home_rule]
     for x in sh:
         if not x["covered"]:
             continue
-        home = C.home_loc(B, x["by"], x["d"]) if home_rule == "payroll" else B.people[x["by"]]["home_location"]
+        home = look(x["by"], x["d"])
         if home != x["loc"]:
             imp[x["loc"]] += x["hours"]
             exp[home] += x["hours"]
@@ -206,5 +215,8 @@ def stops(B):
         B_S3b_raise=ask_b(B, dedup="raise"),
         B_S3c_keepfill=ask_b(B, keepfill=True),
         B_S7_dayvoid=ask_b(B, dayvoid=True),
-        B_crack=ask_b(B, dedup="keysdrops"),
+        B_S8_newest=ask_b(B, home_rule="newest"),
+        B_crack_payroll=ask_b(B, dedup="keysdrops"),
+        B_crack=ask_b(B, dedup="keysdrops", home_rule="newest"),
+        B_chain=ask_b(B, dedup="raise", home_rule="newest"),
     )
