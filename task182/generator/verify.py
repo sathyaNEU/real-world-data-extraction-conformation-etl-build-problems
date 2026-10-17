@@ -221,8 +221,9 @@ def run(target, figures_path):
         head = next(rd)
         freqs = [h.replace("lzeq_", "").replace("_hz", "").replace("p", ".") for h in head[2:]]
         band_acc = {}
+        ok(head[1] == "measured_at_utc", "the band export is stamped UTC: %s" % head[1])
         for row in rd:
-            t = dt.datetime.strptime(row[1], "%Y-%m-%d %H:%M")
+            t = (dt.datetime.strptime(row[1], "%Y-%m-%d %H:%M") + dt.timedelta(hours=OFFSET))
             if t.weekday() > 4 or not (DAY_START <= t.hour < DAY_END):
                 continue
             code = None
@@ -244,48 +245,39 @@ def run(target, figures_path):
                for j in range(len(freqs))]
         j = max(range(len(lev)), key=lambda k: lev[k])
         nb = [lev[k] for k in (j - 1, j + 1) if 0 <= k < len(lev)]
-        excess = lev[j] - 10.0 * math.log10(sum(10.0 ** (x / 10.0) for x in nb) / len(nb))
+        excess = lev[j] - sum(nb) / float(len(nb))        # plan 4.3: the mean of the two band levels
+        en = lev[j] - 10.0 * math.log10(sum(10.0 ** (x / 10.0) for x in nb) / len(nb))
+        ok((excess >= 5.0) == (en >= 5.0),
+           "%s gives the same verdict on either mean of the neighbours (%.2f, %.2f)" % (code, excess, en))
         got_band = freqs[j].rstrip("0").rstrip(".") if "." in freqs[j] else freqs[j]
         ok(str(want_band) == got_band, "%s highest band %s against %s" % (code, got_band, want_band))
         ok(want_tone == ("yes" if excess >= 5.0 else "no"),
            "%s tone %s at %.2f dB excess" % (code, want_tone, excess))
 
-    # ---- the plant's week: the counter's wrap, the gap and the runs
-    sc = rows(os.path.join(target, "scada_15min_2026.csv"))
-    weeks = sorted({str(k): v for k, v in fig["weekly_plant"].items()})
+    # ---- the plant's week: the counters at the week boundaries (5.1) and the log's runs (5.2)
+    sc = {}
+    for r in rows(os.path.join(target, "scada_15min_2026.csv")):
+        sc[dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")] = r
     starts = [dt.date(2026, 8, 31) + dt.timedelta(days=7 * i) for i in range(6)]
-    gas = {i: 0.0 for i in range(6)}
-    air = {i: 0.0 for i in range(6)}
-    runs = {i: 0 for i in range(6)}
-    prev_c = prev_f = None
-    for r in sc:
-        t = dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
-        wk = None
-        for i, s in enumerate(starts):
-            if s <= t.date() <= s + dt.timedelta(days=6):
-                wk = i
-                break
-        c = float(r["biogas_meter_m3"])
-        f = float(r["centrifuge_feed_m3_h"])
-        if wk is not None:
-            if prev_c is not None:
-                step = c - prev_c
-                if step < -50000:
-                    step += 100000.0
-                if step >= 0:
-                    gas[wk] += step
-            air[wk] += float(r["blower_air_nm3_h"]) * 0.25
-            if f > 0 and (prev_f == 0 or prev_f is None):
-                runs[wk] += 1
-        prev_c, prev_f = c, f
-    for i in range(6):
+    log_starts = [dt.datetime.strptime(r["logged_at"], "%Y-%m-%d %H:%M")
+                  for r in rows(os.path.join(target, "plant_equipment_events_2026.csv"))
+                  if r["equipment"].startswith("CF-") and r["event"] == "START"]
+    for i, d0 in enumerate(starts):
+        a = dt.datetime(d0.year, d0.month, d0.day)
+        b = a + dt.timedelta(days=7)
+        ok(a in sc and b in sc, "week %d has a reading at both boundaries" % i)
+        gas = float(sc[b]["biogas_meter_m3"]) - float(sc[a]["biogas_meter_m3"])
+        while gas < 0:
+            gas += 100000.0
+        air = float(sc[b]["blower_air_total_knm3"]) - float(sc[a]["blower_air_total_knm3"])
+        runs = sum(1 for t in log_starts if a <= t < b)
         w = fig["weekly_plant"][str(i)]
-        ok(int(round(gas[i])) == w["biogas_m3"], "week %d biogas %d against %d" % (i, round(gas[i]),
-                                                                                  w["biogas_m3"]))
-        ok(int(round(air[i] / 1000.0)) == w["blower_air_knm3"],
-           "week %d blower air %d against %d" % (i, round(air[i] / 1000.0), w["blower_air_knm3"]))
-        ok(runs[i] == w["centrifuge_runs"], "week %d runs %d against %d" % (i, runs[i],
-                                                                            w["centrifuge_runs"]))
+        ok(int(round(gas)) == w["biogas_m3"],
+           "week %d biogas %d against %d" % (i, round(gas), w["biogas_m3"]))
+        ok(int(round(air)) == w["blower_air_knm3"],
+           "week %d blower air %d against %d" % (i, round(air), w["blower_air_knm3"]))
+        ok(runs == w["centrifuge_runs"],
+           "week %d runs %d against %d" % (i, runs, w["centrifuge_runs"]))
 
     # ---- the goldens carry the same figures
     gold = os.path.join(os.path.dirname(target), "golden", "specific_sound_levels.csv")
