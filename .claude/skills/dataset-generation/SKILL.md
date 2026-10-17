@@ -248,6 +248,16 @@ each distractor's deletion test.
 code path, and recomputes every rung, rival-killer, calibration outcome and graded figure. The generator
 writes `generator/figures.json` for `figures_check.py` (`determinism-check` §5).
 
+**The verifier reads back every format the pack ships.** One assertion per format, and one per document
+that carries a filed sentence, a graded figure or a convention the call leans on, through the verifier's
+own extractor with the positive control on the same code path. A format only `checks.py` can read is
+asserted by the hand that wrote it: the writer and the check share a variable, so a later edit to the
+document's text leaves every gate green. Fourteen shipped builds in one lane were surveyed and six ship
+PDFs their verifier never opens; one ships four PDFs that no script in its generator reads back at all,
+so every authority clause in them rests on the writer's own string. The judge recomputes from the pack
+and is the stronger check, but it runs once, after the pack is cut, and it is not a gate the build can
+re-run on its own.
+
 **Byte-identical rebuilds:** two consecutive runs give identical `target/` bytes (fixed seeds, one RNG
 stream per period, fixed mtimes, scrubbed metadata). A pack that does not rebuild has a broken generator.
 
