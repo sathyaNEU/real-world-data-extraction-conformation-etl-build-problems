@@ -675,11 +675,11 @@
    "ddd": 282746.0,
    "ddd_before": 136482.0,
    "ddd_after": 146264.0,
-   "rate_before": 1182,
-   "rate_after": 1336,
-   "fee_dkk": 356730,
-   "fee_exact": "356730.428",
-   "fee_distance": 0.072
+   "rate_before": 1175,
+   "rate_after": 1275,
+   "fee_dkk": 346853,
+   "fee_exact": "346852.95",
+   "fee_distance": 0.45
   },
   {
    "holder": "H2",
@@ -687,11 +687,11 @@
    "ddd": 502994.5,
    "ddd_before": 214050.0,
    "ddd_after": 288944.5,
-   "rate_before": 1182,
-   "rate_after": 1336,
-   "fee_dkk": 639037,
-   "fee_exact": "639036.952",
-   "fee_distance": 0.452
+   "rate_before": 1175,
+   "rate_after": 1275,
+   "fee_dkk": 619913,
+   "fee_exact": "619912.9875",
+   "fee_distance": 0.4875
   },
   {
    "holder": "H3",
@@ -699,11 +699,11 @@
    "ddd": 434430.0,
    "ddd_before": 16382.0,
    "ddd_after": 418048.0,
-   "rate_before": 1182,
-   "rate_after": 1336,
-   "fee_dkk": 577876,
-   "fee_exact": "577875.652",
-   "fee_distance": 0.152
+   "rate_before": 1175,
+   "rate_after": 1275,
+   "fee_dkk": 552260,
+   "fee_exact": "552260.05",
+   "fee_distance": 0.45
   },
   {
    "holder": "H4",
@@ -711,11 +711,11 @@
    "ddd": 204660.0,
    "ddd_before": 197205.0,
    "ddd_after": 7455.0,
-   "rate_before": 1534,
-   "rate_after": 1637,
-   "fee_dkk": 314716,
-   "fee_exact": "314716.305",
-   "fee_distance": 0.195
+   "rate_before": 1546,
+   "rate_after": 1609,
+   "fee_dkk": 316874,
+   "fee_exact": "316874.025",
+   "fee_distance": 0.475
   },
   {
    "holder": "H5",
@@ -723,11 +723,11 @@
    "ddd": 626952.0,
    "ddd_before": 533128.0,
    "ddd_after": 93824.0,
-   "rate_before": 1182,
-   "rate_after": 1336,
-   "fee_dkk": 755506,
-   "fee_exact": "755506.16",
-   "fee_distance": 0.34
+   "rate_before": 1175,
+   "rate_after": 1275,
+   "fee_dkk": 746051,
+   "fee_exact": "746051",
+   "fee_distance": 0.5
   },
   {
    "holder": "H6",
@@ -735,11 +735,11 @@
    "ddd": 1090310.0,
    "ddd_before": 547080.0,
    "ddd_after": 543230.0,
-   "rate_before": 1006,
-   "rate_after": 1088,
-   "fee_dkk": 1141397,
-   "fee_exact": "1141396.72",
-   "fee_distance": 0.22
+   "rate_before": 935,
+   "rate_after": 1101,
+   "fee_dkk": 1109616,
+   "fee_exact": "1109616.03",
+   "fee_distance": 0.47
   },
   {
    "holder": "H7",
@@ -747,11 +747,11 @@
    "ddd": 121180.5,
    "ddd_before": 121180.5,
    "ddd_after": 0.0,
-   "rate_before": 1534,
-   "rate_after": 1637,
-   "fee_dkk": 185891,
-   "fee_exact": "185890.887",
-   "fee_distance": 0.387
+   "rate_before": 1546,
+   "rate_after": 1609,
+   "fee_dkk": 187345,
+   "fee_exact": "187345.053",
+   "fee_distance": 0.447
   }
  ],
  "a3": [

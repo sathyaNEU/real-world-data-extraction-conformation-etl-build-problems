@@ -1,3 +1,19 @@
+# Determinism verdict, task194: SUPERSEDED, DO NOT READ AS CURRENT
+
+The verdict below judged **architecture 1**, whose decisive step was a choice between two functional
+forms for the counterfactual. That architecture is spent and the design it describes does not exist
+in this folder any more: the judge measured its two forms at a likelihood ratio of 1.02 to 1 on data
+under-dispersed about three and a half times, which is a collinear pair no register could separate.
+
+Architecture 2 rests on internal against external standardisation, with every graded figure a sum
+over the record and no functional form anywhere. It has not been judged yet. Nothing below applies
+to it, and a reader taking the verdict below for current would be badly misled about what this build
+is.
+
+The superseded text follows unchanged, as the evidence for why architecture 1 was re-rooted.
+
+---
+
 # task194 determinism verdict
 
 **Verdict:** NOT_DETERMINISTIC (competing_defensible_answer, with margin_or_boundary_fragility on the graded integers)

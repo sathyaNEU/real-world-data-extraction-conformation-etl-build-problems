@@ -55,6 +55,19 @@ not its wording.
 
 **2.1 Legality.** An ask is free of the main call's rules: it needs no filed rule, its golden may go against the procedure where records support it, and its device may turn on data semantics or rule application (banned only as the call's decisive step). Realism binds (`dataset-generation/references/layer1-messiness.md`): no corruption, truncation, decoy figure or planted defect. Would the real export look exactly like this with no task in mind?
 
+**The corollary, and it is a draw-time screen: an ask computed over the call's own population can
+carry no primary.** The separation line puts zero device and hazard rows inside the main call's
+declared population, so if an ask's quantity is computed over exactly the rows the call's own
+comparison is computed over, every device for it is dead before it is drafted. task194 proved it by
+exhaustion: a cross-source duplication on a candidate sits in the main population; the same on an
+embedded unit still shifts the network's own stratum frequencies and so moves the call; a partial
+extract or an unresolvable attribution makes the truth unrecoverable, which law 6 forbids. Four
+drafts, one conclusion, and the conclusion was about the ask's population rather than about any
+device. So screen each ask at the draw by asking which rows its quantity reads and whether the call
+reads them too. Where it does, re-site the ask before building anything: the fix is a quantity over a
+wider or adjacent population, the care types, periods or entity classes the call never touches, where
+the rows a device needs are rows the call does not see.
+
 **The separation line.** Zero device and hazard rows in the main call's declared row population (files, columns, window, entities), asserted by count; the main path mess-neutral, never pristine. No document the call reads carries an ask's organ. Delete every device and the call stays hard. On an ETL build, primaries avoid the ladder's families. A device that moves the call is the gravest finding.
 
 **2.2 Two layers.** Construction: the decisive construction's output on a segment the stakeholder wants anyway (region, tier, period, runner-up and gap), so a wrong unit, population or method fails every figure; the cracker has it, so it never stands alone. Device: one primary on rows outside the main population plus at least one shared hazard.

@@ -190,10 +190,10 @@ REGION_W = [0.316, 0.230, 0.102, 0.147, 0.205]
 # share lands within 0.012 of a point of a one-decimal rounding boundary.
 AGE_BANDS = [(0, 24, "18-24"), (25, 44, "25-44"), (45, 54, "45-54"), (55, 200, "55 and over")]
 # The statutory rates. Chosen against the realised dose totals so that every payer's fee falls at
-# least 0.43 krone from the half krone that would make its rounding a convention: the exact figure
+# least 0.44 krone from the half krone that would make its rounding a convention: the exact figure
 # lands within a tenth of a whole krone for all seven, and half-up and half-even agree.
-FEE_BANDS = [(0, 250, 1534), (250, 1000, 1182), (1000, 4000, 1006), (4000, 10 ** 9, 860)]
-FEE_BANDS_AMENDED = [(0, 250, 1637), (250, 1000, 1336), (1000, 4000, 1088), (4000, 10 ** 9, 930)]
+FEE_BANDS = [(0, 250, 1546), (250, 1000, 1175), (1000, 4000, 935), (4000, 10 ** 9, 860)]
+FEE_BANDS_AMENDED = [(0, 250, 1609), (250, 1000, 1275), (1000, 4000, 1101), (4000, 10 ** 9, 930)]
 FEE_AMENDMENT_DAY = 913               # 2026-04-01
 
 
