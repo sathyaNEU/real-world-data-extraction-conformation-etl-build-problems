@@ -1,7 +1,7 @@
 {
   "task": "task154",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "economics-econometrics/forecasting-forecast-evaluation",
   "objective": "forecasting",
   "stage": 4,
@@ -17,20 +17,21 @@
   },
   "leak": {
     "leak_py": "REVIEW (no LEAK): the user guide carries the call's vocabulary but no figure; design-note terms in the guide, notice and bulletin name no move",
-    "reader": ""
+    "reader": "no leak; decisive step analytical"
   },
   "duplicate_check": {
-    "heart": "WARN three_rules.strategy_risk (time_semantics), answered on the card; the stage 3 BLOCK ban.strategy (decomposition_attribution against task234 v2 and task152) cleared by relabelling the strategy time_semantics and Gate G method_or_model_selection to the built mechanism",
+    "heart": "BLOCK ban.strategy: decomposition_attribution (the drawn and honest label, restored at stage 4) repeats task234 v2 among the last three draws; the stage 3 relabel to time_semantics was reverted; the hardened move's honest key, forecast_method_backtest, is banned against task464",
     "surface": "promoted task152 vs task154 (two apart, gap time and quantity_figure), answered on the card's differentiation",
     "nearest": "nearest drivers 0.08 (task463), 0.07 (task45 lineage, task100 lineage)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task154/determinism_check_report_round1.md",
+    "soft_spots": "coal and LNG on the loading-month basis, the lag unfiled (entry-month reading: Japan coal +205.7, coal +393.0, LNG +902.3); latest estimate read as the 21 July accounts against the 25 June download"
   },
   "returned": [],
-  "resume": "stage 4: reader and judge",
+  "resume": "stopped at the stage 4 hardening loop's step 1 (card honesty): the honest stump strategy is banned by ban.strategy against the last three draws, so the draw needs a different decisive move (re-root from stage 1) or the author's ruling on the ban; awaiting the coordinator",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -47,5 +48,6 @@
     "golden_realism": "pass done: findings as titles, source lines, rounding note, pack-true texture only",
     "house_fixes": "H1, H9, H11, H16, H21, H24 asserted in checks.py; scrub audit clean on target and golden",
     "call": "2.8 per cent (2.793), default path 2.2 (2.179)"
-  }
+  },
+  "rule3_audit": "AT_RISK, data semantics, moderate: the holding period is read off Table 7's ratio in months; P(one) about 0.30, P(both) about 0.10; a common window tuned to the March quarter's $534m lands 2.777; half-month ratios 2.717 and a common 1.4-month window 2.690 fall below the bin; the time_semantics relabel called dishonest"
 }

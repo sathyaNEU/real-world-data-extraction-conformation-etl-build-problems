@@ -20,7 +20,7 @@ on hand on any date were bought over the weeks the business takes to turn its st
 | Objective | Forecasting & Predictive Modeling: the June-quarter 2026 advance estimate is released on Thursday 30 July 2026, the day after the call is filed; nothing in the pack contains it |
 | Shape | `single-figure`: the call, with two row-set asks in the tables workbook and the note's chart; criteria counted in `## Ask sheet` |
 | Decision | `quantity_figure`, answer unit `rate_or_share` (per cent at a compound annual rate, one decimal) |
-| Mechanism | gap time (decisive: a book value is priced at the weeks its goods were bought in, the volume the estimate needs is priced at 2025's average prices and measured at the quarter end); pattern none; generators G1 (the stock's unit of value is cost at purchase, not the period's prices), G13, G16; Gate G `method_or_model_selection` (several defensible revaluations of a book value, the right one pinned by validation against the Office's past estimates and by the 2008 SNA the user guide cites); strategy `time_semantics` (the effective dating of the prices a book value carries: each industry's purchases over its own holding period, not the reporting month's prices). Both relabelled at stage 3 from `decomposition_attribution`, see Guard |
+| Mechanism | gap time (decisive: a book value is priced at the weeks its goods were bought in, the volume the estimate needs is priced at 2025's average prices and measured at the quarter end); pattern none; generators G1 (the stock's unit of value is cost at purchase, not the period's prices), G13, G16; Gate G `method_or_model_selection` (several defensible revaluations of a book value, the right one separated by validation against the Office's past estimates and by the 2008 SNA the user guide cites; relabelled at stage 3 from `decomposition_attribution`); strategy `decomposition_attribution` (the nominal stock movement split into volume and holding gain, each industry's purchase prices over its own holding period deciding the split), banned by `ban.strategy` against task234 v2, see Guard |
 | Layer 2 family / pattern | `field_method` (the turnover method behind the national accounts' inventory valuation adjustment: book values revalued at the prices of the weeks the stock was bought in, over each industry's stockholding period, at both ends of the quarter); `own:book-value-stocks-revalued-over-each-industry-turnover-period-at-both-ends` |
 | Calibration | `realised_outcome_roster`: the Office's real-time database, every release's estimates of the recent quarters by component; the latest estimate of each past quarter's change in non-farm business inventories (the download's 25 June release, which the 21 July update left as it was) stands as a realised outcome against which a revaluation method, run on TBS's history as the desk pulled it, is compared out of sample; nothing in it states a volume of stocks or a method |
 | Furniture | forum `operations_desk` (at 18:00 the call goes to Tarbert's markets floor, whose rates and currency desks position for the release on it, and to clients in the evening preview), forcing event `other` (the office's scheduled advance release, Thursday 30 July 2026, 10:45), organisation family `financial_institution`, role family `research_desk`, context artifact `monitoring_export` (the desk's GDP tracker as at 08:00 on Tuesday 28 July, before the bulletin), opening `question-first`, question form `what` |
@@ -37,21 +37,14 @@ and task152 shares no other axis with this build. Same world type as task146 (a 
 release): different release, different driver, line on the card.
 
 At stage 3, `guard.py heart` BLOCKed `ban.strategy`: `decomposition_attribution` repeats task234's v2 card (re-registered
-at 02:26, before this draw) and task152 among the last three draws, with a WARN on the same Gate G label. The labels were
-re-read against the built mechanism, not redrawn: the step a solver misses is the effective dating of the prices a book
-value carries (each industry's purchases over its own holding period, not the reporting month's prices), which the
-strategy list files under `time_semantics`; once the dating is right the volume-price split follows mechanically, so the
-decomposition label described the field's statement of the result rather than the step. Gate G is
-`method_or_model_selection`: several defensible revaluations, the right one pinned by validation against the Office's
-past estimates and by the 2008 SNA the user guide cites. Heart and check now WARN only, `three_rules.strategy_risk` (time
-semantics often decides on a field read or a stated rule), answered on the card: no field, code or filed rule dates the
-purchases, the default path reads "Stocks are at cost" correctly and still files 2.2, and R3a and R3b execute the analyst
-test on the clean truth. `guard.py surface` promotes task152 against this build (two apart: gap time and
-`quantity_figure` on both cards), answered on the card's differentiation: task152 forecasts a plant's output after a part
-is replaced by splitting a decline into wear and soiling at a device boundary in SCADA readings, a count; this build calls
-a national accounts growth rate from the prices a book-value stock is made of, validated against the office's past
-estimates; no file type, method, default path or correction is shared, and gap time with a figure is the forecasting
-objective's own ground.
+at 02:26, before this card's 03:13) among the last three draws (task464, task153, task234). A relabel to `time_semantics`
+cleared it at stage 3 and was reverted at stage 4: it was chosen to pass the guard and named the move in the word the
+client bans, which is the card written to pass that the fingerprint skill names. The honest keys are
+`decomposition_attribution` for the move as built and `forecast_method_backtest` for the hardened move (the holding period
+estimated against the Office's history instead of read off Table 7), and both are banned against the last three draws
+(task234 v2 and task464). The build stops here for a different decisive move; it is not relabelled and not forced. Gate G
+stays `method_or_model_selection`, the label the rule 3 audit names as honest. `guard.py surface` promotes task152 against
+this build (two apart: gap time and `quantity_figure` on both cards), answered on the card's differentiation.
 
 **Same-puzzle and same-driver tests.** Gap time, decisive G1, decision `quantity_figure`, Gate G
 `method_or_model_selection`: no card on file carries either triple, lineage included (the guard's structural tests are
@@ -512,3 +505,6 @@ from the generated rubric.
 - Thailand in the coal and LNG table: its coal change sat a hundredth of a bin from a rounding edge; dropped, five markets.
 - The two means of the revision record at one decimal: the 26 June download's mean absolute revision rounded to the
   golden's; two decimals, with the rounded-headline reading (three figures moved) closed by the user guide's sentence.
+- Relabelling the stump strategy `time_semantics` to clear `ban.strategy` (stage 3): a card written to pass, naming the
+  move in the client's banned word (rule 3 audit); reverted to the drawn `decomposition_attribution`, which the guard bans
+  against task234 v2, and the build stopped for a different decisive move.
