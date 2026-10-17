@@ -31,7 +31,7 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "operations_log",
   "stakeholder_role": "the energy and commodities manager on the treasury team, who sets the hedge volume the risk committee approves",
   "role_family": "procurement_lead",
   "scoring_unit": "other",
@@ -109,6 +109,6 @@
     "task187": "task187 ranks turbines on a power-curve shortfall read at matched turbulence, a capped curve averaged over a spread; here a single plant's forward level is rebuilt after a part swap, the kept losses read off at the inverter boundary and the wear on the days a wash has just reset the dust"
   },
   "lineage": [],
-  "notes": "Kinship cards read at the draw: task136, task460, task185, task260, task30, task68, task132, task79. Forum redrawn at stage 3 from committee_or_panel to executive_team (the treasurer approves the volume): task233, registered before this card but pulled only at the DRAWN push, holds committee_or_panel.",
+  "notes": "Kinship cards read at the draw: task136, task460, task185, task260, task30, task68, task132, task79. Forum redrawn at stage 3 from committee_or_panel to executive_team (the treasurer approves the volume): task233, registered before this card but pulled only at the DRAWN push, holds committee_or_panel. Context artifact redrawn at stage 3 from monitoring_export to operations_log (Tresco's work orders, which carry the washes the decisive step reads, and the inverter event log): task189, registered before this card, reached this worktree only with the PAUSED pull and holds monitoring_export; the SCADA exports remain the spine.",
   "registered": "2026-10-16T22:18:16Z"
 }
