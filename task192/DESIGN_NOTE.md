@@ -271,3 +271,48 @@ filed paragraph and matched every control.
 - Letting the institute's flag file group the location-days into episodes: that ships an artifact that
   answers the decision question wrongly, which Gate G forbids. The flag file flags days and groups
   nothing.
+
+## Architecture 1, spent at stage 3 on measurement
+
+The generator was written far enough to measure the ladder on the record itself, before any file was
+cut. Two findings kill the architecture, and neither is a tuning problem.
+
+**1. The default path has no parameter-free answer, and its parameter range covers the golden.**
+"Group the flagged location-days that touch in time and place" is a single-linkage clustering, and its
+one free parameter is the gap in days it tolerates. Measured on the record (748 location-days, nine
+operations, reach 0.70):
+
+| Gap tolerated | Components, no same-day link | Components, same-day link |
+|---|---|---|
+| 1 day | 673 | 65 |
+| 2 days | 598 | 22 |
+| 3 days | 562 | **9** |
+| 5 days | 310 | 1 |
+
+The count falls monotonically from 673 to 1 and passes through 9, so a solver who tunes the gap to a
+sensible-looking cluster count can land the answer without the insight, and no parameter-free reading
+of "contiguous" lands on a plausible count: the two parameter-free readings give 65 and 673, which
+nobody files as a count of coordinated operations. The design note's 23 was never reproducible. A
+ladder whose rung 0 is one live degree of freedom in the graded quantity holds nothing
+(`stumping` Part 3), and the sweep over flag rules (seven variants, 196 to 602 flagged cells) moved
+the component counts by two or three and never separated them from 9.
+
+**2. The decisive quantity is not one the field estimates, so rule 1 fails on measurement.** The step
+is recovering the number of arithmetic progressions in a union of them: per-settlement gcds of the
+observed gaps return exactly `[4, 5, 6, 9, 11, 13, 17, 23, 29]` on the 20 settlements one operation
+reaches, and nine distinct interval-and-phase pairs. That is signal processing, not conflict event
+analysis: no monitoring institute estimates how many periodic processes generated its record, and the
+swap reads unchanged with machines on fixed maintenance cycles in place of coordinated operations.
+Exact lattices over six months is also the kind of structure a realism read calls constructed.
+
+The architecture is spent. Re-root at stage 1 in the same number and objective. The world (a
+Portuguese conflict monitoring institute, three access routes, a settlement gazetteer, partner
+organisations under data agreements) is sound and can be kept; the decisive step cannot.
+
+**Ruled out for the re-root, with the reason, so the new draw does not walk into one:**
+- capture of one list measured on the overlap with another: task448's driver, spent;
+- the selected extreme judged against the record of extremes at the same reach: task191, one build ago;
+- a shared external driver with unit-specific lagged response: task182;
+- composition against rate: task183, task125, task188;
+- a count read before its records have arrived: task190, task457;
+- an event entering the record only above a detection threshold that moves on a cycle: task180.

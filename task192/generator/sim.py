@@ -5,6 +5,7 @@ locations, so a run of flagged location-days merges two of them wherever they co
 wherever its own interval skips a beat.
 """
 import datetime as dt
+import hashlib
 import random
 
 import world as W
@@ -31,13 +32,17 @@ def assign_places():
     rest = pool[i:]
     for name, interval, start, n, k in W.OPERATIONS:
         extra = n - k
-        shared[name] = [rest[(hash(name + str(j)) + j * 7) % len(rest)] for j in range(extra)]
-        shared[name] = sorted(set(shared[name]))
-        while len(shared[name]) < extra:
+        picked = []
+        for j in range(extra):
+            h = int.from_bytes(hashlib.blake2b((name + str(j)).encode(), digest_size=8).digest(), "big")
+            cand = rest[(h + j * 7) % len(rest)]
+            if cand not in picked:
+                picked.append(cand)
+        while len(picked) < extra:
             cand = rest[rng.randrange(0, len(rest))]
-            if cand not in shared[name]:
-                shared[name].append(cand)
-        shared[name] = sorted(shared[name])
+            if cand not in picked:
+                picked.append(cand)
+        shared[name] = sorted(picked)
     return {n: sorted(set(sole[n] + shared[n])) for n, _, _, _, _ in W.OPERATIONS}, sole
 
 

@@ -1,15 +1,15 @@
 {
  "task": "task192",
  "owner": "oviya13ya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "political-science-public-policy/conflict-protest-event-data-analysis",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-17",
  "stump": "A competent solver takes the flagged location-days, groups the ones that touch in time and place, counts the groups and files that number, which counts the overlaps of the operations rather than the operations.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-17"
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 2 complete: precut.py exit 0, voice-check PASS at 978 characters. Resume at stage 3, the generator: the minute event file across two routes and two language feeds, the coordination flags at location-day grain, the gazetteer, the import log, the protocol and the partner tables, then the three asks' files.",
+ "resume": "ARCHITECTURE 1 IS SPENT, measured at stage 3 before any file was cut. Two findings, both in the design note under '## Architecture 1, spent at stage 3 on measurement'. (a) The default path, grouping flagged location-days that touch in time and place, is a single-linkage clustering whose one free parameter takes the count from 673 through 65, 22 and 9 to 1, so no parameter-free reading gives a plausible count and the parameter range covers the golden: a solver can land 9 by tuning. The note's 23 was never reproducible. (b) The decisive quantity, the number of arithmetic progressions in a union of them, is not one conflict event analysis estimates, and the swap reads unchanged with machines on fixed maintenance cycles, so rule 1 fails on measurement. Re-root at stage 1: new draw, architecture 2, loops reset, the old identity into the card's lineage. Keep the world (a Portuguese conflict monitoring institute, three access routes, the settlement gazetteer, the partner data agreements) and the ask layer's shape; replace the decisive step. The note lists the six mechanisms ruled out for the re-root with their reasons, task448's capture-from-overlap and task191's record-of-extremes among them. Do not resume architecture 1.",
  "approved": null,
  "delivered": null,
  "portal": null,
