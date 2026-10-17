@@ -560,30 +560,38 @@ clause-executing cracker is scored in the same script and reported under the pai
 | A3 the centrifuge runs, six weeks | blocks of feed in the channel | wrong in all six: 6 or fewer against 8 to 13 | the starts the log carries in the week, per plan 5.2 | miss |
 | A3 the engine's hours, six weeks | the quarter hours whose export reading is above zero | wrong in all six, by 1 to 20 hours, for the same gaps | the engine's own hour counter at the week boundaries, with the counter changed at the inspection on 15 September | miss |
 
-**Pair ceiling:** 39.1 (ask weight 55 over 70 criteria, 0.786 a criterion: the cracker banks A1's 21 and
-A4's 3 and misses every one of the 46 device criteria, so 24 of 70, 18.9 points, and 38 + 7 + 18.9 = 63.9;
-the mirror, which stops at the statistical-background rung, keeps A4's 3 alone, 2.4 points, and 5 + 7 + 2.4
-= 14.4; the pair averages 39.1)
-**Mirror leakage:** 4.3
+**Pair ceiling:** 75.2 (ask weight 55 over 70 criteria, 0.786 a criterion: the cracker executes plan 5.2
+on the log, plan 5.1 on the counters and the ask's own two stated bases over the validity mask it already
+holds, and keeps all 70, 55 points, so 38 + 7 + 55 = 100.0; the mirror, which stops at the
+statistical-background rung, loses A1's 21 and keeps the other 49, 38.5 points, so 5 + 7 + 38.5 = 50.5;
+the pair averages 75.2). **Over the ceiling, and the gate fails on it.**
+**Mirror leakage:** 70.0
 **Measured by:** `generator/cracker.py`, run on the cut pack after every change and asserted figure by
 figure in `generator/checks.py`
 
-**The clause-executing cracker, measured as code, and the open finding it leaves.** The same script scores
-a second cracker, and this one is computed rather than described: it executes plan 5.2 on the shipped log
-(a start and the first stop after it, an unstopped start counting for nothing), plan 5.1 on the counters at
-the week boundaries, and the ask's own two stated bases, over the validity mask the call already gave it.
-It keeps **70 of 70** ask criteria; the pair is **75.2** and the mirror keeps **70.0 per cent**.
+**Why these are the figures and not the 39.1 this sheet carried.** Part 1.1 defines the cracker as the
+response that landed the call, ran the hygiene battery **and executed every filed rule it points at**. Once
+plan 5.2 was reworded, the minutes basis stated and the overlap defined, the rules the A2 and A3 quantities
+point at are filed rules that a cracker executes, so the clause-executing reader *is* the cracker and 75.2
+is the ceiling. The 39.1 belongs to a weaker response that stops short of section 5; it is not a second
+reading of the same measurement and it is not a ceiling. The ask layer is being re-cut (below).
 
-That is the finding the determinism rulings leave behind, and it is not a sensitivity. Closing the run
-definition (5.2 reworded), stating the minutes basis and defining the overlap put every A2 and A3 figure
-inside a filed rule, so the device the ask layer rode on, the plant recording the same facts twice at two
-grains, no longer bites a solver who reads section 5: the filed rule now adjudicates it, which
-`supplemental-stumping` ban 1 forbids of a device. The two numbers at the head of this sheet are the Part
-1.1 cracker's, which is what both stage-4 threads behaved like and what the bar is defined against; the
-clause-executing reader is now the realistic top response for these asks, because the plan points at the
-log in so many words. Bringing the pair to 40 against it needs an ask-layer re-cut onto quantities with a
-silent second step (`/fix-rubric`, Part 6), which moves every ask figure and is outside the rulings this
-pass executed. It is reported, not papered over.
+**The weaker reader, for the record.** The same script also scores a response that stops short of section
+5 and takes the plant's records at face value, which means the process channel the historian writes: it
+keeps 24 of 70 and its pair is 39.1 with 4.3 per cent mirror leakage. That is the sheet this build shipped
+with, and it was the wrong measurement: a response that reads none of the filed sentences its own
+quantities name is the mirror, not the cracker.
+
+**What the measurement says about the design, which is the finding.** There was no legal device in the A2
+and A3 figures to lose. The judge failed Gate A on a runs column that reproduced under no reading, Gate C
+on the minutes basis and Gate E on both terms, and the only repair for an undefined term is to define it,
+so rulings 1 to 3 were forced. But the device rode on exactly those terms being undefined, and a device
+that evaporates when the definitions are forced was the ambiguity wearing a device's clothes: ban 1 forbids
+a device a filed rule adjudicates, and once the rule is filed, it does. A device that survives every term
+being written out fully defined rides on the data. The ask layer is therefore re-cut onto quantities whose
+correct computation needs a step no filed sentence performs, found by an internal inconsistency only, on
+rows outside the call's declared population; the call, the stump, the ladder and every graded call figure
+stay exactly as they are.
 
 ## Pack
 

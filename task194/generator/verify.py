@@ -345,12 +345,40 @@ def run(target, figures_path):
     seen = {}
     for row in ws.iter_rows(min_row=5, values_only=True):
         if row[0] and str(row[0]).isdigit():
-            seen[str(row[0])] = row[5]
-    ok(seen == fig["avoided_by_unit"], "the workbook carries every unit's avoided count")
+            seen[str(row[0])] = row[6]
+    ok(seen == fig["avoidable_by_unit"], "the workbook carries every unit's avoidable count")
+    ratios = {}
+    for row in ws.iter_rows(min_row=5, values_only=True):
+        if row[0] and str(row[0]).isdigit():
+            ratios[str(row[0])] = (row[4], row[5])
+    ok(ratios[fig["call_unit_code"]] == (fig["pick_published_ratio"], fig["pick_comparison_ratio"]),
+       "the workbook carries the call's two standardised ratios")
     hs = wb["Hospital year"]
     rates = {r[0]: r[3] for r in hs.iter_rows(min_row=5, values_only=True) if r[0]}
     ok(sorted(rates.values()) == sorted(v["adjusted_rate_per_1000"] for v in fig["hospital_year"].values()),
        "the workbook carries the hospital rates")
+    gi = wb["Outside the indicator"]
+    outside = {r[0]: (r[1], r[2]) for r in gi.iter_rows(min_row=5, values_only=True) if r[0]}
+    ok(outside == {k: (v["separations"], v["with_complication"])
+                   for k, v in fig["outside_indicator"].items()},
+       "the workbook carries the activity outside the indicator")
+    cg = wb["Complication groups"]
+    groups = {r[0]: (r[2], r[3]) for r in cg.iter_rows(min_row=5, values_only=True) if r[0]}
+    ok(groups == {k: (v["fy2025_26"], v["fy2026_27"]) for k, v in fig["complication_groups"].items()},
+       "the workbook carries the complication groups")
+    try:
+        import pypdf
+        txt = " ".join(" ".join(pg.extract_text() for pg in pypdf.PdfReader(
+            os.path.join(task, "golden", "embed_placement_brief.pdf")).pages).split())
+        ok(str(fig["avoidable_at_pick"]) in txt and fig["call_unit_code"] in txt,
+           "the brief states the call and its figure")
+        ok("%.2f" % fig["margin"] in txt and "%.1f" % fig["standard_error_lead"] in txt,
+           "the brief states the margin and the lead in standard errors")
+        ok(fig["rung0_unit_code"] in txt and fig["demonstration_unit_code"] in txt,
+           "the brief names the unit the indicator points at and the demonstration unit")
+        ok("ordinarily have" in txt, "the brief uses the charter's own words for the comparison")
+    except ImportError:
+        pass
     return K
 
 

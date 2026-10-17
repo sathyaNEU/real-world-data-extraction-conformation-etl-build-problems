@@ -84,16 +84,17 @@ def write(g, path, target=None):
         "answer_unit": "euro of misstatement",
         "licence": "Synthetic records generated for this task; no third party licence attached.",
         "files": file_records(target or os.path.join(os.path.dirname(path), "target")),
-        "distractor_files": ["grant_claim_2026.csv", "revenue_expenditure_summary_2026.csv",
-                             "capital_payment_lines_2025.csv"],
-        "distractor_note": ("The funder's grant claim covers a claim year to 31 March and a share of "
-                            "eligible expenditure, so it holds no payment line the figure counts and "
-                            "reconciles to nothing on the decision question. The revenue expenditure "
-                            "summary is the other population the plan tests and the figure never "
-                            "reads it. The prior year's payment lines ship because the testing "
-                            "schedule extract covers two years, and the prior year's own "
-                            "misstatement is stated nowhere. None of the three states or ranks "
-                            "anything on the decision question."),
+        "distractor_files": ["grant_claim_2026.csv", "capital_payment_lines_2025.csv"],
+        "distractor_note": ("The funder's grant claim covers a claim year to 31 March and a "
+                            "share of eligible expenditure, so it holds no payment line the "
+                            "figure counts and reconciles to nothing on the decision question. "
+                            "The prior year's payment lines ship because the two-year testing "
+                            "extract needs them, and the prior year's own misstatement is stated "
+                            "nowhere. Neither states or ranks anything on the decision question. "
+                            "The revenue expenditure summary is NOT a distractor: a payment run "
+                            "pays the whole authority and the capital extract holds only its "
+                            "capital part, so the summary is the control the run log's excess "
+                            "ties to month by month, and one of the supplemental asks reads it."),
         "wrong_basis_distractor": None,
     }
     with open(path, "w", encoding="utf-8") as fh:

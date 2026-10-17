@@ -183,8 +183,8 @@ CHAINS = [("APK", "Apotekerkaeden"), ("DSA", "Danmarks Sundhedsapotek"),
 REGIONS = ["Hovedstaden", "Midtjylland", "Nordjylland", "Sjaelland", "Syddanmark"]
 REGION_W = [0.316, 0.230, 0.102, 0.147, 0.205]
 # the age bands the division's standing utilisation table reports. Chosen so that no cell's
-# share lands within 0.014 of a point of a one-decimal rounding boundary.
-AGE_BANDS = [(0, 24, "18-24"), (25, 44, "25-44"), (45, 74, "45-74"), (75, 200, "75 and over")]
+# share lands within 0.012 of a point of a one-decimal rounding boundary.
+AGE_BANDS = [(0, 24, "18-24"), (25, 44, "25-44"), (45, 54, "45-54"), (55, 200, "55 and over")]
 # The statutory rates. Chosen against the realised dose totals so that every payer's fee falls at
 # least 0.43 krone from the half krone that would make its rounding a convention: the exact figure
 # lands within a tenth of a whole krone for all seven, and half-up and half-even agree.

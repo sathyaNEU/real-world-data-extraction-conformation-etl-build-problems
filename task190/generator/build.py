@@ -179,10 +179,21 @@ def cut(target, golden_dir):
     PK.write_csv(target, "grant_claim_2026.csv",
                  ["programme_code", "claim_period", "eligible_expenditure_eur",
                   "grant_claimed_eur", "claim_status"], claim)
+    # The revenue expenditure summary is the control the run log's excess ties to: a run pays the
+    # whole authority, the capital extract holds only its capital part, and the rest of each run is
+    # revenue expenditure. The summary states it by month, which is where the excess goes.
+    bym_rev, bym_n = {}, {}
+    for run, tup in run_truth.items():
+        rel, mins, nl, value, r, cut, opened, cv, cl, rv, rl = tup
+        key = opened.isoformat()[:7]
+        bym_rev[key] = round(bym_rev.get(key, 0.0) + rv, 2)
+        bym_n[key] = bym_n.get(key, 0) + rl
     rev = []
     for m in range(1, 13):
-        rev.append(["2026-%02d" % m, "%.2f" % round(1_850_000 + rng2.u() * 420_000, 2),
-                    "%.2f" % round(96_000 + rng2.u() * 31_000, 2), 1240 + rng2.below(260)])
+        key = "2026-%02d" % m
+        v = bym_rev.get(key, 0.0)
+        rev.append([key, "%.2f" % v,
+                    "%.2f" % round(v * (0.048 + rng2.u() * 0.021), 2), bym_n.get(key, 0)])
     PK.write_csv(target, "revenue_expenditure_summary_2026.csv",
                  ["month", "revenue_expenditure_eur", "of_which_maintenance_eur",
                   "invoices_paid"], rev)

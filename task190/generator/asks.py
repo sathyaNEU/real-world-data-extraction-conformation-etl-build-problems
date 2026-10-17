@@ -48,7 +48,18 @@ def run_log(target, rows, runs):
         else:
             mins = ch * 60 + cm
         mins = max(8 * 60 + 5, min(20 * 60 + 55, mins))
-        value = sum(x["amount"] for x in rs)
+        # A payment run pays the whole authority, not one population: plan 4.1 names three and the
+        # capital programme payments are one of them. The log records the run as it went out, so
+        # its value and its line count are the whole run, and the capital extract holds only the
+        # capital part of it. Nothing says so: the excess shows only by summing the extract for a
+        # run and comparing it with the run's own total, and it ties to the revenue expenditure
+        # summary's monthly figures.
+        cap_value = sum(x["amount"] for x in rs)
+        cap_lines = len(rs)
+        h = sim.shash("rev/%s" % run)
+        rev_lines = 38 + h % 71
+        rev_value = round(cap_value * (0.21 + (h % 997) / 997.0 * 0.26), 2)
+        value = round(cap_value + rev_value, 2)
         rev = sum(x["amount"] for x in rs if x["status"] == "reversed")
         # a run is opened on one day and released on it, except where the release ran past
         # midnight: four of them in the year, and the quarter is the quarter it was released in
@@ -59,15 +70,17 @@ def run_log(target, rows, runs):
             mins = (1 + rng.below(3)) * 60 + rng.below(60)
         out.append([run, day.isoformat(),
                     "%s %02d:%02d:00" % (rel.isoformat(), mins // 60, mins % 60),
-                    len(rs), "%.2f" % value, "%.2f" % (-rev), "released",
+                    cap_lines + rev_lines, "%.2f" % value, "%.2f" % (-rev), "released",
                     "FO%03d" % (11 + rng.below(14))])
-        truth[run] = (rel, mins, len(rs), value, -rev, cut, day)
+        truth[run] = (rel, mins, cap_lines + rev_lines, value, -rev, cut, day,
+                      cap_value, cap_lines, rev_value, rev_lines)
         # one run was rejected by the bank and re-released, so the log carries it twice
         if run.endswith("017"):
             out.append([run, day.isoformat(),
                         "%s %02d:%02d:00" % ((day + dt.timedelta(days=3)).isoformat(),
                                              14, 12),
-                        len(rs), "%.2f" % value, "%.2f" % (-rev), "re-released",
+                        cap_lines + rev_lines, "%.2f" % value, "%.2f" % (-rev),
+                        "re-released",
                         "FO%03d" % (11 + rng.below(14))])
     PK.write_csv(target, "payment_run_log_2026.csv",
                  ["run_id", "run_date", "released_ts", "lines_in_run", "run_value_eur",
@@ -110,7 +123,7 @@ def a1_golden(truth):
     out = {}
     for name, lo, hi in QUARTERS:
         n, past, val = 0, 0, 0.0
-        for run, (day, mins, nl, value, r, cut, opened) in truth.items():
+        for run, (day, mins, nl, value, r, cut, opened, cv, cl, rv, rl) in truth.items():
             if not (lo <= day.isoformat() <= hi):
                 continue
             n += 1
@@ -136,7 +149,7 @@ def a1_stops(truth):
         agg = {}
         for q, lo, hi in QUARTERS:
             n, past, val = 0, 0, 0.0
-            for run, (day, mins, nl, value, r, cut, opened) in truth.items():
+            for run, (day, mins, nl, value, r, cut, opened, cv, cl, rv, rl) in truth.items():
                 d = opened if name in ("grouped_on_the_opening_date", "the_mirror") else day
                 if not (lo <= d.isoformat() <= hi):
                     continue

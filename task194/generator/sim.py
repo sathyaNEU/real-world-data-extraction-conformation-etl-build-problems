@@ -19,9 +19,10 @@ MONTH_SHAPE = {  # seasonal shape by calendar month for medical-weighted and sur
     "med": [0.96, 0.94, 0.97, 1.02, 1.06, 1.09, 1.08, 1.05, 1.01, 0.98, 0.95, 0.89],
     "surg": [1.02, 0.93, 1.05, 1.04, 1.03, 1.00, 1.01, 1.02, 1.03, 1.02, 1.04, 0.81],
 }
-MED_MIXES = {"gen_med", "resp", "renal", "aged", "neuro", "subacute"}
+MED_MIXES = {"gen_med", "gen_med_district", "resp", "renal", "aged", "neuro", "subacute"}
 # how long a unit's multi-day episodes run, against the network's own shape
 LOS_SCALE = {"aged": 1.92, "subacute": 2.35, "neuro": 1.34, "renal": 1.02, "gen_med": 0.94,
+             "gen_med_district": 0.88,
              "resp": 1.12, "ortho": 1.44, "gen_surg": 0.97, "colorectal": 1.26, "vasc": 1.18}
 SAME_DAY_SHARE = 0.071          # episodes separated the day they were admitted
 UNGROUPABLE_SHARE = 0.0118      # episodes the grouper could not assign a valid DRG
@@ -37,8 +38,8 @@ WEEKDAY_SHAPE = {"med": [1.10, 1.07, 1.05, 1.08, 1.21, 0.76, 0.69],
 ADMIT_WEEKDAY = {m: ([0.97, 0.99, 0.97, 0.93, 0.74, 0.40, 0.36] if m in ("ortho", "gen_surg",
                                                                          "colorectal", "vasc")
                      else [0.95, 0.95, 0.94, 0.93, 0.90, 0.80, 0.78])
-                 for m in ("ortho", "gen_surg", "colorectal", "vasc", "gen_med", "resp", "renal",
-                           "aged", "neuro", "subacute")}
+                 for m in ("ortho", "gen_surg", "colorectal", "vasc", "gen_med", "gen_med_district",
+                           "resp", "renal", "aged", "neuro", "subacute")}
 # the patient master index was issued in blocks as each site came onto it
 MRN_BLOCK = {"H1": (1000000, 1399999), "H2": (1400000, 1649999),
              "H3": (1650000, 1849999), "H4": (1850000, 1899999)}
@@ -288,7 +289,7 @@ def episodes(units):
                                      adm_date=adm_date,
                                      comorbidity=None if r.random() < prof["blank"] * blank_season else
                                      int(min(9, max(0, round(r.gamma(COMORBID_SHAPE[age], 1.15))))),
-                                     hac=False, rstream=float(r.random())))
+                                     hac=False, stay=None, rstream=float(r.random())))
             expected[(code, q)] = exp_sum
             expected_net[(code, q)] = exp_net
             inscope[(code, q)] = n_scope
@@ -335,6 +336,58 @@ def centre_plans(plans, per_separation, graded, pick, expected_per_sep,
             raise AssertionError("no planned volume centres %s's avoidable complications" % code)
         plans[code] = best[1]
     return plans
+
+
+def quarter_index(day):
+    """The index into W.QUARTERS of the quarter a date falls in, or None if it is outside the extract."""
+    for i, (_, _, start, last, _) in enumerate(W.QUARTERS):
+        if start <= day <= last:
+            return i
+    return None
+
+
+def statistical_discharges(rows, units):
+    """A care type changing inside a stay ends one episode and begins another on the same day.
+
+    The sub-acute and mental health units see this constantly: a patient admitted for rehabilitation whose
+    care type is reclassified is statistically discharged and readmitted the same day, so one stay reaches
+    the warehouse as two episode records. The patient administration system counts one separation and the
+    episode feed carries two, which is why the activity summary's separations for those units sit below the
+    extract's rows however the rows are de-duplicated: the two episodes are two episodes. Acute units carry
+    none of it, asserted.
+    """
+    by_code = {u[0]: u for u in units}
+    out = []
+    for i, row in enumerate(rows):
+        row.setdefault("stay", None)
+        if row["stay"] is None:
+            row["stay"] = "S%06d" % i
+        u = by_code[row["unit"]]
+        if u[4] == "acute" or row["los"] < 3:
+            out.append(row)
+            continue
+        rr = rng("statdis", row["unit"], row["sep_date"].isoformat(), i)
+        if rr.random() >= 0.071:
+            out.append(row)
+            continue
+        split = int(rr.integers(1, row["los"]))          # nights on the first care type
+        first = dict(row)
+        first["sep_date"] = row["adm_date"] + dt.timedelta(days=split)
+        first["los"] = split
+        first["month"] = first["sep_date"].replace(day=1)
+        first["hac"] = False
+        qi = quarter_index(first["sep_date"])
+        if qi is None:
+            out.append(row)                              # the split would fall outside the extract
+            continue
+        first["q"], first["qlabel"] = qi, W.QUARTERS[qi][0]
+        second = dict(row)
+        second["adm_date"] = first["sep_date"]
+        second["los"] = row["los"] - split
+        out.append(first)
+        out.append(second)
+    rows[:] = out
+    return sum(1 for r in rows if r["stay"] is not None)
 
 
 def assign_complications(rows, expected, design, units, targets=None):

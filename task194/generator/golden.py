@@ -46,7 +46,7 @@ def load(target):
     panel = defaultdict(lambda: dict(episodes=0, observed=0.0, expected=0.0, separations=0))
     sc = defaultdict(lambda: defaultdict(lambda: [0, 0]))   # (unit, q) -> stratum -> [episodes, with HAC]
     year2026 = defaultdict(lambda: dict(episodes=0, observed=0, expected=0.0))
-    nonacute = defaultdict(lambda: dict(seps=set(), hac=set()))
+    nonacute_rows = []
     groups_by_year = defaultdict(lambda: defaultdict(set))
     seen = set()
     inscope_episode = {}
@@ -62,10 +62,12 @@ def load(target):
                         and u["service_type"] == "Acute inpatient")
             hac = row["hac_recorded"] == "1"
             if u["service_type"] != "Acute inpatient":
-                # the sub-acute feed re-sends a block of records, so a separation is counted once
-                nonacute[q]["seps"].add(key)
-                if hac:
-                    nonacute[q]["hac"].add(key)
+                # the sub-acute feed re-sends a block of records on an overlapping window, so a record is
+                # counted once on the separation key the dictionary states; and a stay whose care type
+                # changed inside it reaches the feed as two episode records, which that key cannot see,
+                # so the episodes are chained into stays below
+                nonacute_rows.append(dict(unit=unit, pid=row["patient_uid"], adm=_d(row["admission_date"]),
+                                          sep=sep, drg=row["drg_code"], hac=hac))
                 continue
             if key in seen:
                 raise AssertionError("repeated separation key in an acute unit: %s" % (key,))
@@ -90,9 +92,44 @@ def load(target):
                     groups_by_year[fy]["principal:" + row["hac_category_code"]].add(row["episode_id"])
     return dict(units=units, bands=bands, strata=strata, plan=plan, placements=placements, peer=peer,
                 sc={k: dict(v) for k, v in sc.items()},
-                panel=dict(panel), year2026=dict(year2026), nonacute=dict(nonacute),
+                panel=dict(panel), year2026=dict(year2026), nonacute=stays(nonacute_rows),
                 principal=dict(groups_by_year), facility=facility, summary=summary,
                 inscope_episode=inscope_episode)
+
+
+def stays(rows):
+    """The separations the sub-acute and mental health units reported, by quarter.
+
+    Two steps, and the second is the one the stated key cannot do. First, the feed's overlapping monthly
+    load re-sends a record under a fresh episode identifier, so records are counted once on the separation
+    key the dictionary states: unit, patient, admission date and diagnosis related group. Second, a stay
+    whose care type changed inside it reaches the feed as two episode records, one ending and one beginning
+    on the same day, and the patient left the hospital once: those episodes are chained into one stay,
+    which is what the activity summary counts and what the question asks for. The stay falls in the quarter
+    its last episode separated in.
+    """
+    seen = set()
+    rec = defaultdict(list)
+    for r in rows:
+        key = (r["unit"], r["pid"], r["adm"], r["drg"])
+        if key in seen:
+            continue                      # the overlapping load's second copy
+        seen.add(key)
+        rec[(r["unit"], r["pid"])].append(r)
+    out = defaultdict(lambda: dict(seps=0, hac=0))
+    for key, eps in rec.items():
+        eps.sort(key=lambda r: (r["adm"], r["sep"]))
+        chains = []
+        for r in eps:
+            if chains and chains[-1][-1]["sep"] == r["adm"]:
+                chains[-1].append(r)      # the care type changed inside the stay
+            else:
+                chains.append([r])
+        for chain in chains:
+            q = fiscal(chain[-1]["sep"])[1]
+            out[q]["seps"] += 1
+            out[q]["hac"] += 1 if any(x["hac"] for x in chain) else 0
+    return dict(out)
 
 
 def quarters(panel, unit):
@@ -470,8 +507,8 @@ def compute(target):
     # ask 3: the units outside the indicator, by quarter
     outside = []
     for q in sorted(b["nonacute"]):
-        seps = len(b["nonacute"][q]["seps"])
-        hac = len(b["nonacute"][q]["hac"])
+        seps = b["nonacute"][q]["seps"]
+        hac = b["nonacute"][q]["hac"]
         outside.append(dict(quarter=q, separations=seps, with_complication=hac,
                             per_1000=hac / seps * 1000))
 

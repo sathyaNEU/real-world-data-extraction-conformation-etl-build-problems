@@ -23,6 +23,7 @@ def cut(target):
         shutil.rmtree(target)
     os.makedirs(target)
     rows, expected, expected_net, inscope = sim.episodes(W.UNITS)
+    sim.statistical_discharges(rows, W.UNITS)
     design = sim.design_ratios(W.UNITS, expected, expected_net, inscope)
     sim.assign_complications(rows, expected, design, W.UNITS)
     observed = sim.settle_additive(rows, expected, design, W.UNITS)

@@ -147,7 +147,14 @@ MIX = {
     "resp": {"MED-COMPLEX": (0.74, [0.06, 0.16, 0.38, 0.40]), "MED-GEN": (0.26, [0.10, 0.20, 0.36, 0.34])},
     "vasc": {"SURG-MAJ": (0.44, [0.05, 0.21, 0.43, 0.31]), "SURG-MIN": (0.33, [0.09, 0.24, 0.39, 0.28]),
              "MED-COMPLEX": (0.23, [0.06, 0.18, 0.40, 0.36])},
-    "renal": {"MED-COMPLEX": (0.63, [0.12, 0.24, 0.37, 0.27]), "MED-GEN": (0.37, [0.15, 0.26, 0.34, 0.25])},
+    # a renal medicine unit's own theatre work: vascular access for the dialysis population
+    "renal": {"MED-COMPLEX": (0.57, [0.12, 0.24, 0.37, 0.27]), "MED-GEN": (0.31, [0.15, 0.26, 0.34, 0.25]),
+              "SURG-MIN": (0.12, [0.14, 0.27, 0.36, 0.23])},
+    # the Carrowdean medical wards: a district hospital's general medicine, less complex than a principal
+    # referral hospital's and carrying its own minor surgical list
+    "gen_med_district": {"MED-GEN": (0.58, [0.13, 0.23, 0.34, 0.30]),
+                         "MED-COMPLEX": (0.30, [0.08, 0.19, 0.36, 0.37]),
+                         "SURG-MIN": (0.12, [0.17, 0.26, 0.34, 0.23])},
     "aged": {"MED-COMPLEX": (0.49, [0.00, 0.03, 0.31, 0.66]), "MED-GEN": (0.44, [0.00, 0.04, 0.33, 0.63]),
              "SURG-MIN": (0.07, [0.00, 0.05, 0.35, 0.60])},
     "colorectal": {"SURG-MAJ": (0.61, [0.11, 0.25, 0.39, 0.25]), "SURG-MIN": (0.28, [0.18, 0.27, 0.34, 0.21]),
@@ -172,7 +179,7 @@ UNITS = [
     ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.00000, 620, 735, None, "hot1", "eligible"),
     ("41420", "General Medicine", "H3", "gen_med", "acute", 1.34500, 980, 1090, 1.10000, "mid", "eligible"),
     ("41430", "Renal Medicine", "H3", "renal", "acute", 1.02200, 560, 652, 1.13000, "mid", "eligible"),
-    ("41510", "General Medicine", "H4", "gen_med", "acute", 1.05800, 390, 466, 1.05000, "merged", "eligible"),
+    ("41510", "General Medicine", "H4", "gen_med_district", "acute", 1.05800, 390, 466, 1.05000, "merged", "eligible"),
     ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.01900, 500, 779, 1.09000, "rising", "eligible"),
     # units the programme has already been placed with inside the twelve closed quarters. Earlier cycles
     # were decided on the quarter closed at the time, so the register holds units that were standing badly
@@ -192,8 +199,8 @@ UNITS = [
     ("41620", "Older Persons Mental Health", "H3", "subacute", "psychiatric", 1.0, 290, 300, None, "scope", "nonacute"),
     ("41630", "Sub-acute Rehabilitation", "H4", "subacute", "rehabilitation", 1.0, 240, 250, None, "scope", "nonacute"),
     # predecessor units amalgamated into 41510 on 1 October 2025
-    ("41511", "Medical Ward 1", "H4", "gen_med", "acute", 1.05800, 205, None, None, "pred", "merged_into"),
-    ("41512", "Medical Ward 2", "H4", "gen_med", "acute", 1.05800, 185, None, None, "pred", "merged_into"),
+    ("41511", "Medical Ward 1", "H4", "gen_med_district", "acute", 1.05800, 205, None, None, "pred", "merged_into"),
+    ("41512", "Medical Ward 2", "H4", "gen_med_district", "acute", 1.05800, 185, None, None, "pred", "merged_into"),
 ]
 
 MERGE_DATE = dt.date(2025, 10, 1)
@@ -266,11 +273,12 @@ GROUP_MIX = {
 # unplanned readmissions within 28 days per 100, on the dashboard beside the complication indicator
 OTHER_INDICATORS = {
     "aged": (26.0, 9.0, 13.2, 3.0), "gen_med": (17.5, 6.0, 11.8, 2.6), "resp": (14.0, 5.0, 12.6, 2.4),
+    "gen_med_district": (15.0, 5.5, 10.9, 2.5),
     "renal": (11.0, 4.0, 14.1, 2.8), "neuro": (19.0, 7.5, 9.4, 2.2), "subacute": (6.0, 3.0, 7.2, 1.8),
     "ortho": (2.1, 1.2, 5.6, 1.5), "gen_surg": (5.4, 2.4, 6.9, 1.7),
     "colorectal": (6.8, 2.8, 8.3, 2.0), "vasc": (12.5, 4.5, 9.8, 2.5),
 }
-MIX_FAMILY = {"gen_med": "medical", "resp": "medical", "renal": "medical", "aged": "medical",
+MIX_FAMILY = {"gen_med": "medical", "gen_med_district": "medical", "resp": "medical", "renal": "medical", "aged": "medical",
               "neuro": "medical", "subacute": "medical", "gen_surg": "surgical", "vasc": "surgical",
               "colorectal": "surgical", "ortho": "ortho"}
 SECOND_COMPLICATION = 0.268     # share of affected episodes recording a second complication

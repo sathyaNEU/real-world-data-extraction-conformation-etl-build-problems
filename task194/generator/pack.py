@@ -123,13 +123,25 @@ def write_series(target, expected, observed, inscope):
 
 def write_summary(target, rows):
     """Separations and affected episodes by unit and month, as the activity reporting system publishes them:
-    every care type, every unit, one row per unit and month, counted on distinct separations."""
-    agg = {}
+    every care type, every unit, one row per unit and month, counted on distinct separations.
+
+    The patient administration system counts a separation when the patient leaves, so a stay whose care
+    type changed inside it is one separation here and two episode records in the warehouse feed."""
+    stays = {}
     for r in rows:
-        key = (r["sep_date"].replace(day=1), r["unit"])
+        key = (r["unit"], r["stay"])
+        cur = stays.get(key)
+        if cur is None or r["sep_date"] > cur[0]:
+            stays[key] = [r["sep_date"], False]
+    for r in rows:
+        if r["hac"]:
+            stays[(r["unit"], r["stay"])][1] = True
+    agg = {}
+    for (unit, _), (sep, hac) in stays.items():
+        key = (sep.replace(day=1), unit)
         cur = agg.setdefault(key, [0, 0])
         cur[0] += 1
-        cur[1] += 1 if r["hac"] else 0
+        cur[1] += 1 if hac else 0
     out = []
     for (month, unit), (seps, hac) in sorted(agg.items()):
         out.append([month.isoformat(), unit, facility(unit, month), seps, hac])
@@ -156,7 +168,7 @@ def write_plan(target, plans):
                 ["unit_code", "quarter", "planned_separations", "planning_note"], out)
 
 
-DIVISION = {"gen_med": "Medicine", "resp": "Medicine", "renal": "Medicine", "aged": "Aged Care and Rehabilitation",
+DIVISION = {"gen_med": "Medicine", "gen_med_district": "Medicine", "resp": "Medicine", "renal": "Medicine", "aged": "Aged Care and Rehabilitation",
             "neuro": "Medicine", "subacute": "Aged Care and Rehabilitation", "gen_surg": "Surgery",
             "vasc": "Surgery", "colorectal": "Surgery", "ortho": "Surgery"}
 SERVICE_LABEL = {"acute": "Acute inpatient", "rehabilitation": "Sub-acute rehabilitation",
@@ -346,7 +358,7 @@ def write_distractors(target):
     out = []
     for u in W.UNITS:
         lv = sim.rng("nurselevel", u[0])
-        hours = {"aged": 5.9, "subacute": 4.6, "gen_med": 5.1, "resp": 5.0, "renal": 5.3, "neuro": 5.6,
+        hours = {"aged": 5.9, "subacute": 4.6, "gen_med": 5.1, "gen_med_district": 4.8, "resp": 5.0, "renal": 5.3, "neuro": 5.6,
                  "ortho": 4.4, "gen_surg": 4.7, "colorectal": 4.9, "vasc": 5.2}[u[3]]
         hours += 0.42 * lv.normal()
         agency = float(0.024 + 0.105 * lv.random())

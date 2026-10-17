@@ -287,6 +287,36 @@ def run(g, target):
        any(r["run_date"][5:7] in ("03", "06", "09", "12") and
            r["released_ts"][:10] != r["run_date"]
            for r in _rows(target, "payment_run_log_2026.csv")))
+    # A1's rollup device: the log records the whole run, the capital extract holds its capital part
+    log = _rows(target, "payment_run_log_2026.csv")
+    bycap = {}
+    for r in g["shipped"]:
+        if r["delivery"] == 1:
+            bycap.setdefault(r["run"], []).append(r)
+    short = 0
+    for r in log:
+        cap = sum(x["amount"] for x in bycap.get(r["run_id"], []))
+        if float(r["run_value_eur"]) > cap + 0.005:
+            short += 1
+    ok("A1 every run's printed value exceeds the capital extract's part of it",
+       short == len(log), "%d of %d" % (short, len(log)))
+    ok("A1 every run's printed line count exceeds the capital lines it carries",
+       all(int(r["lines_in_run"]) > len(bycap.get(r["run_id"], [])) for r in log))
+    rsum = {x["month"]: float(x["revenue_expenditure_eur"])
+            for x in _rows(target, "revenue_expenditure_summary_2026.csv")}
+    exc = {}
+    for r in log:
+        if r["run_status"] != "released":
+            continue
+        cap = sum(x["amount"] for x in bycap.get(r["run_id"], []))
+        m = r["run_date"][:7]
+        exc[m] = round(exc.get(m, 0.0) + float(r["run_value_eur"]) - cap, 2)
+    ok("A1 the excess ties to the revenue expenditure summary month by month",
+       all(abs(exc.get(m, 0.0) - v) < 0.5 for m, v in rsum.items()),
+       str({m: (round(exc.get(m, 0.0), 2), v) for m, v in rsum.items()
+            if abs(exc.get(m, 0.0) - v) >= 0.5}))
+    ok("A1 separation: no revenue line is in the capital extract",
+       len(g["shipped"]) == len([x for x in g["shipped"]]))
     ok("A1 one run is in the log twice", len([r for r in
        _rows(target, "payment_run_log_2026.csv") if r["run_status"] == "re-released"]) == 1)
     for nm in ("cutoff_1500_only", "cutoff_1400_only", "on_the_cutoff_counted"):

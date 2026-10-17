@@ -362,8 +362,8 @@ distance is a number the generator asserts rather than a hope.
 | Figure | Rounding | Construction | Measured distance | What would flip it |
 |---|---|---|---|---|
 | a payer's defined daily doses | one decimal | every screened product's strengths are whole or half doses per unit, so a package holds a whole number of tenths of a dose and a payer's window total is exact at one decimal | 0.05 of a tenth, the maximum: the figure needs no rounding at all | nothing: there is no fractional part to round |
-| a payer's data fee | nearest krone | the rates in the executive order were chosen against the realised dose totals | 0.38 krone at the tightest of the seven, half-up and half-even agreeing for all seven | one more half-dose package on that payer, worth 0.55 krone |
-| a region and age cell's share | one decimal | the reporting bands were chosen against the realised cells | 0.00638 of a point at the tightest of the 24, against 0.00011 in the judged pass | one patient either way in that cell, worth 0.17 of a point, which no filed reading of the population produces |
+| a payer's data fee | nearest krone | the rates in the executive order were chosen against the realised dose totals, measured as the distance to the half krone that decides the rounding | 0.432 krone at the tightest of the seven, so the exact figure is within a tenth of a whole krone, and half-up and half-even agree for all seven | one more half-dose package on that payer, worth 0.56 krone |
+| a region and age cell's share | one decimal | the reporting bands were chosen on two criteria at once, every cell mid bin and the cracker's natural reading missing every cell | 0.0127 of a point at the tightest of the 24, against 0.00011 in the judged pass | one patient either way in that cell, which no filed reading of the population produces |
 | a chain-quarter's median days | one decimal | every even cell's two middle values are equal | exact: every median convention gives the same figure | nothing |
 | a pair's referral multiple | two decimals against 1.25 | the effects and the product lifecycles | 8.5 per cent of the multiple over 20 candidates by 5 arithmetics | a sixth arithmetic 8.5 per cent away from all four window-aware ones |
 | the chart's bar order | one decimal on the share | all 23 pairs carry a share | 0.1 of a point between the closest two bars | a share tie, which the generator refuses |
@@ -416,17 +416,18 @@ Every figure is scored against the golden within half a unit of the stated round
 
 | Ask | Figures | Cracker keeps | What it misses on | Result |
 |---|---|---|---|---|
-| A1 chain and quarter: accepted, rejected, median days | 48 | 7 | the chain that owned the pharmacy on the day of the dispensing | miss |
+| A1 chain and quarter: accepted, rejected, median days | 48 | 9 | the chain that owned the pharmacy on the day of the dispensing | miss |
 | A2 payer: doses and fee | 14 | 8 | the dose the edition in force assigns, against the figure the package row was written with | miss |
-| A3 region and age band: patients and share | 48 | 1 | the region the October 2025 delivery holds, where the current extract's own history columns are silent | miss |
+| A3 region and age band: patients and share | 48 | 0 | the region the October 2025 delivery holds, which the current extract's history columns cannot reconstruct | miss |
 
-**Pair ceiling:** 36.5
-**Mirror leakage:** 14.5
+**Pair ceiling:** 37.0
+**Mirror leakage:** 15.5
 **Measured by:** `generator/cracker.py`, run on the cut pack by `checks.py` at every build
 
 The asks are decoupled from the call, so the mirror walks the cracker's ask path: Ls equals Lc at
-0.145. C is 38 + 7 + 55 x 0.145 = 53.0 and S is 5 + 7 + 55 x 0.145 = 20.0, so the pair ceiling is
-36.5 against a ceiling of 40 and the leakage is 14.5 against 35.
+0.155. C is 38 + 7 + 55 x 0.155 = 53.5 and S is 5 + 7 + 55 x 0.155 = 20.5, so the pair ceiling is
+37.0 against a ceiling of 40 and the leakage is 15.5 against 35. A2 is the weakest ask at 8 of its
+14 figures kept.
 
 **The three silent primaries, and what each is worth.** Each sits under a pin that stays, and none
 of them is adjudicated by any filed sentence. Running the cracker again with one of them found
@@ -435,8 +436,8 @@ measures what it carries:
 | Primary | Family | The pin it sits under | What finds it | Ask weight then kept | Ceiling |
 |---|---|---|---|---|---|
 | the chain that owned the pharmacy on the day | D7 keys, an as-of join | the asking sentence's quarter of dispensing, standard 2.1 and the dictionary | the chains' own monthly log, which is a rollup above its parts for the two chains either side of a transaction | 50.9 per cent | 56.5 |
-| the dose the edition in force assigns | D2 version | the fee workbook's bands, its amendment and its payer rule | `ddd_per_pack` does not equal the package's own pack size times strength over the dose the index names, for three substances and no others | 19.1 per cent | 39.0 |
-| the region the October 2025 delivery holds | D2 version | standard 4.2's region vintage and the dictionary's `region` entry | the two deliveries disagree for about seven hundred patients, and the current extract's history columns explain only a tenth of them | 57.3 per cent | 60.0 |
+| the dose the edition in force assigns | D2 version | the fee workbook's bands, its amendment and its payer rule | `ddd_per_pack` does not equal the package's own pack size times strength over the dose the index names, for three substances and no others | 20.9 per cent | 40.0 |
+| the region the October 2025 delivery holds | D2 version | standard 4.2's region vintage | the current extract claims no region change for the patients whose region differs between the two deliveries, and its own documentation says it began keeping a previous region only from 1 April 2026, so it cannot reconstruct the earlier state | 59.1 per cent | 61.0 |
 | all three found | - | - | 100 per cent | 83.5 |
 
 The last row is the fairness proof: one handling reproduces the golden exactly, and it is the only
@@ -464,20 +465,65 @@ never a patient's earliest observed receipt of a treatment, asserted over every 
 over the generator's own flag.
 
 ## Tried and rejected
-- The cold reader after the ask rebuild landed the main call at 85 per cent on the golden's seven
-  pairs, having considered the 0.5 shortcut and rejected it at 8 per cent. I read that as a Gate F
-  problem and hypothesised that standard 7-2024 s3.2(b) was handing over the timing adjustment,
-  because "the number that would be expected if receiving the product had no bearing on when the
-  marker treatment is first received" names the timing the null must be adjusted for. **The judge
-  recomputed and that hypothesis was wrong.** The call is forced and margin-robust: all 23 pair rows
-  and 16,957 person keys reproduce, the seven referred pairs come out at 1.36 to 1.50 with the nearest
-  unreferred at 1.03, and the set holds under three independence constructions, the pair's own dates,
-  marginals from all window first-receivers, and a monthly grain, as well as under skipping the
-  crosswalk and the clearance rule. Three constructions converging on one answer is C1 convergence,
-  the strongest closure available, not a leak. Only section 1.1 gives a partial hint, and the
-  equal-chance route files 10 pairs against the golden's 7. The reader landing it was a strong reader
-  doing the field's own analysis correctly, which is what the top of the portal does; the ask layer is
-  what holds the pair, and that is what the arithmetic was built for.
+- Two of the three silent primaries adjudicated by the register's own documentation, and pointing
+  the wrong way. The variable dictionary said the defined daily dose is `n_packages` times
+  `ddd_per_pack`, while the golden strikes it on the dose the edition in force assigns; and it
+  defined the register's chain as the owner at the extract date, while the golden uses the owner on
+  the day of the dispensing. A filed rule may not adjudicate a device, and these adjudicated against
+  the golden, which is `answer_contradicts_files` rather than a hard ask. Both sentences are gone.
+  The dictionary now says what `n_packages` holds and nothing about the basis for a quantity an ask
+  grades, and names the pharmacy's chain without dating it; the standard's own definition of
+  `ddd_per_pack`, pack size times strength over the dose the index assigns, stands and is what makes
+  the three stale rows an internal inconsistency. Neither reading is pinned in the prompt, because
+  pinning the source is what kills a device.
+- The third primary was a bare contradiction between two shipped files with nothing adjudicating
+  either way, which is a competing defensible answer and not a device. The data forces it now: the
+  current extract claims no region change for the patients whose region differs between the two
+  deliveries, and the register's own documentation of `previous_region` and `region_recorded_from`
+  states that it began keeping a previous region on 1 April 2026 and holds none for a change
+  recorded earlier. That is a fact about the column, not a handling rule, and it turns the
+  disagreement from a contradiction into evidence that the current extract cannot reconstruct the
+  earlier state.
+- Grading the nearest unreferred pair, which the prompt never asks for. A graded figure with no
+  asking sentence has nothing to fix its basis or its population, so a judge reads it as Gate E and
+  Gate C at once. It is out of the graded blocks, and the prompt is at 997 characters so adding an
+  ask was not available.
+- 6,590 accepted lines dispensed at six pharmacies after their own recorded closing date, which the
+  register's own rejection rule would have turned back. That is a defect, not mess. A closed
+  pharmacy now dispenses nothing after its closing date: its customers' prescriptions are filled at
+  the next branch of the same chain, and the handful still transmitted under its identifier are
+  turned back with the reason the register holds for it. No accepted line survives its pharmacy's
+  closing date, and the exceptions file carries 89 rows that now have a record behind them.
+- A register whose dates were clipped rather than recorded: seven deaths and nine emigrations
+  landing exactly on the window's last day. The civil registration system now records the event on
+  the day it happened, and a patient whose last dispensing is too close to the pull simply has no
+  recorded exit, because the register had none to give. The seven referred pairs were re-measured
+  after this and are unchanged at 1.365 to 1.499 with the nearest unreferred at 1.033.
+- The rest of the reader's realism list: the screening log ran to exactly 96 rows with references
+  stepping by one and its last eight rows screened on a single day, so it now runs in numbered
+  weekly batches and stops where the desk had got to when the extract was drawn, at 74 rows over 58
+  days; the crosswalk's three reasons were exactly 140 each and are now drawn unevenly; the chains'
+  log was a complete four-by-thirty-seven grid and now omits a chain-month it filed nothing in;
+  packs were only ever 1, 2 or 3 and now reach 4 and 6 for a repeat filled a quarter at a time; the
+  four authorisation transfers arrived on four identical dates and now take effect per pharmacy
+  within a few days of each transaction, as the authorisations are reissued one at a time; exception
+  references carried a 2026 prefix on 2023 dispensings and are now numbered in the year the register
+  wrote them; and the spontaneous-report series were six monotone ladders out of nine, which is the
+  market story told too neatly, and are now four, with the quarter-to-quarter swing widened.
+- **The call is forced, and the judge measured it.** All 23 pair rows and 16,957 person keys
+  reproduce from the bundle. The seven referred pairs come out at 1.365 to 1.499 with the nearest
+  unreferred at 1.033, and the set holds under three independence constructions, the pair's own
+  dates, marginals from all window first-receivers, and a monthly grain, as well as under skipping
+  the crosswalk and under skipping the clearance rule. Three constructions converging on one answer
+  is C1 convergence, the strongest closure there is. Gate G and Gate H pass, the decisive step is
+  analytical, and the equal-chance route files 10 pairs against the golden's 7. The multiples above
+  were re-measured after this pass moved the register's own dates, and the seven are unchanged.
+  I had hypothesised the opposite from the cold reader landing the call at 85 per cent, reading
+  section 3.2(b)'s "the number that would be expected if receiving the product had no bearing on
+  when the marker treatment is first received" as naming the timing the null must be adjusted for,
+  and therefore as readability test 1 on the decisive rung. That was wrong: only section 1.1 gives a
+  partial hint, and a strong reader doing the field's own analysis correctly is what the top of the
+  portal does. The ask layer is what holds the pair, and that is what its arithmetic is built for.
 - The reader found one of the three silent primaries, the chain that owned the pharmacy on the day of
   the dispensing, and reported that reading the chain at the extract date instead changes every cell.
   It missed the prior person extract, saying in terms that using `person_register_2025Q4.csv` changes
@@ -626,8 +672,9 @@ over the generator's own flag.
 - Reporting the utilisation table on 18 to 39, 40 to 59, 60 to 74 and 75 and over: four of the 24 cells
   then sat within 0.07 of a point of a tenth, the tightest 0.00011 from 79.65. The reporting bands are a
   filed convention and re-partition the same patients without touching the draw, so they were searched
-  instead: 18 to 34, 35 to 44, 45 to 64 and 65 and over puts the tightest cell 0.00638 of a point from a
-  boundary, asserted, with no cell on an exact half.
+  instead: 18 to 24, 25 to 44, 45 to 54 and 55 and over puts the tightest cell 0.0127 of a point from a
+  boundary, asserted, with no cell on an exact half, and the cracker's natural reading misses all
+  24 cells.
 - Marking each pair's referral threshold on the chart: the marker's position is 1.25 times the pair's
   expected share, and the expected share is the one quantity the standard leaves to the division's own
   epidemiology, so two constructions put the Ternivast gout marker at 0.451, 0.291 or 0.404. A graded

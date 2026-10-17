@@ -26,8 +26,14 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 
-# the rubric's weights: recommendation, critical components, instruction-following, asks
-W_CALL, W_COMP, W_INSTR, W_ASKS = 0.12, 0.18, 0.10, 0.60
+# The rubric's weights, taken from `supplemental-stumping` Part 0's own arithmetic rather than
+# chosen inside the band CLAUDE.md allows: the landed call scores 38 for the recommendation and the
+# critical components, 7 for instruction-following, and the asks carry 55. Both weightings are
+# legal, but the earlier 0.12/0.18/0.10/0.60 put the recommendation side at the bottom of its range
+# and the asks at the top, which gave the landed call a floor of 40.0 against Part 0's 45.0 and so
+# flattered the pair by 2.5 points. The bar of 40 was derived on Part 0's numbers, so the gate is
+# computed on Part 0's numbers.
+W_CALL, W_COMP, W_INSTR, W_ASKS = 0.152, 0.228, 0.07, 0.55
 PAIR_BAR, LEAK_BAR = 40.0, 35.0
 
 
@@ -76,6 +82,15 @@ def responses(fig):
         n += 1 if sum(per.values()) == fig["call"]["misstatement_indicated"] else 0
         return n, 2 * len(prog) + 1
 
+    def covered_hits(resolved_the_invoice_rows):
+        """The ledger lines the testing covered and their recorded value, both named in the asking
+        sentence. A response that counts the paper's rows instead gets both wrong, because five of
+        those rows cover every payment line on their invoice."""
+        n = 0
+        n += 1 if resolved_the_invoice_rows else 0
+        n += 1 if resolved_the_invoice_rows else 0
+        return n, 2
+
     tmp = tempfile.mkdtemp()
     rt = A.run_log(tmp, shipped, runs)
     a1 = A.a1_golden(rt)
@@ -84,8 +99,18 @@ def responses(fig):
     a2 = A.a2_golden(ev)
 
     # ---- A1, four quarters x three figures
-    def a1_hits(agg):
-        return sum(1 for q in a1 for i in range(3) if agg[q][i] == a1[q][i]), 3 * len(a1)
+    def a1_hits(agg, rebuilt_the_value_from_the_capital_extract=False):
+        """A run pays the whole authority and the log records it as it went out, so the value and
+        the line count are the whole run. A response that rebuilds either from the capital extract
+        is short by the revenue part, which is every value figure and nothing else."""
+        n = 0
+        for q in a1:
+            for i in range(3):
+                got = agg[q][i]
+                if i == 2 and rebuilt_the_value_from_the_capital_extract:
+                    got = None
+                n += 1 if got == a1[q][i] else 0
+        return n, 3 * len(a1)
 
     # ---- A2, five categories x three figures
     def a2_hits(agg):
@@ -154,23 +179,29 @@ def responses(fig):
     # the cracker: lands the call, and every filed rule and battery sweep executed
     cr_call, cr_per = call_hits(g["total_raw"])
     cr_comp, comp_n = comp_hits(cr_per, True)
-    cr_a1, a1_n = a1_hits(stops["answer"])
+    # the cracker runs the unmatched-join sweep, which reports the five invoice rows as missing, so
+    # it counts the paper's resolving rows and misses the lines those invoices carry
+    cr_cov, cov_n = covered_hits(False)
+    # the cracker reconciles the log to the ledger it was given, which is the capital extract,
+    # and rebuilds the value it can tie rather than the value the log prints
+    cr_a1, a1_n = a1_hits(stops["answer"], rebuilt_the_value_from_the_capital_extract=True)
     cr_a2, a2_n = a2_hits(A.a2_golden(ev))
     cr_a3, a3_n = a3_hits(False)
 
     # the mirror: stops at the recorded-value ratio, and every obvious ask reading
     mi_call, mi_per = call_hits(g["ratio"])
     mi_comp, _ = comp_hits(mi_per, False)
-    mi_a1, _ = a1_hits(stops["the_mirror"])
+    mi_cov, _ = covered_hits(False)
+    mi_a1, _ = a1_hits(stops["the_mirror"], rebuilt_the_value_from_the_capital_extract=True)
     mi_a2, _ = a2_hits(A.a2_unmapped(ev))
     mi_a3, _ = a3_hits(True)
 
     asks_n = a1_n + a2_n + a3_n
     return {
-        "the cracker": {"call": (cr_call, 4), "components": (cr_comp, comp_n),
+        "the cracker": {"call": (cr_call, 4), "components": (cr_comp + cr_cov, comp_n + cov_n),
                         "instruction": (2, 2), "asks": (cr_a1 + cr_a2 + cr_a3, asks_n),
                         "per_ask": [(cr_a1, a1_n), (cr_a2, a2_n), (cr_a3, a3_n)]},
-        "the mirror": {"call": (mi_call, 4), "components": (mi_comp, comp_n),
+        "the mirror": {"call": (mi_call, 4), "components": (mi_comp + mi_cov, comp_n + cov_n),
                        "instruction": (1, 2), "asks": (mi_a1 + mi_a2 + mi_a3, asks_n),
                        "per_ask": [(mi_a1, a1_n), (mi_a2, a2_n), (mi_a3, a3_n)]},
     }

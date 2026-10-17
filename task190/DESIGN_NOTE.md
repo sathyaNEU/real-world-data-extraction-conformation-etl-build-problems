@@ -555,9 +555,9 @@ device against the careful solver's path.
 
 Every A3 ask is worded so that "none" is a grammatical answer, per H23.
 
-Pair ceiling: 56.8
+Pair ceiling: 51.0
 
-Mirror leakage: 24.4 per cent of ask weight
+Mirror leakage: 19.5 per cent of ask weight
 
 Measured by: `generator/ceiling.py`, which builds both responses as code, scores each on its OWN ask
 readings against the graded figures in `figures.json` on the cut pack, and exits non-zero unless the
@@ -573,8 +573,8 @@ third ask actually scored:
 
 | The cracker, and the mirror beside it | call | components | instruction | A1 | A2 | A3 | score |
 |---|---|---|---|---|---|---|---|
-| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | 19/19 | 2/2 | 12/12 | 15/15 | **8/14** | **91.2** |
-| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/19 | 1/2 | 5/12 | 3/15 | 2/14 | **22.5** |
+| the cracker, which lands the call, runs the hygiene battery and executes every filed rule | 4/4 | **19/21** | 2/2 | **8/12** | 15/15 | **8/14** | **82.5** |
+| the mirror, which stops at the recorded-value ratio and takes each obvious reading | 0/4 | 3/21 | 1/2 | 3/12 | 3/15 | 2/14 | **19.5** |
 
 **Why the cracker keeps everything, which is the diagnosis and not a wording problem.** Every device on
 every ask is adjudicated by a filed sentence or found by the hygiene battery, so a careful solver executes
@@ -904,3 +904,18 @@ were round too, so both were redrawn.
   separation rule and the author's standing instruction both say a device that moves the call is the
   gravest finding. Building it needs the invoice-level rows to cover lines that are already in the tested
   set, so the tested set is unchanged, and that construction has to be measured before it is cut.
+- **The band weights at the favourable end of every permitted range.** `ceiling.py` weighed the call at
+  0.12, the critical components at 0.18, instruction-following at 0.10 and the asks at 0.60. Every one is
+  legal under the house spec, but the recommendation side sat at the bottom of its range and the asks at
+  the top, which gave a response that lands the call a floor of **40.0** against `supplemental-stumping`
+  Part 0's **45.0**, and so flattered the pair by 2.5 points in the field the gate reads. The bar of 40
+  was derived on Part 0's numbers, so the gate now computes on Part 0's numbers: 38 for the recommendation
+  and the components, 7 for instruction-following, 55 for the asks. Measured with the script rather than
+  argued on paper, the cracker may keep at most **10** of the 41 ask figures for the pair to reach 40; on
+  the old weights it was 11.
+- **Dropping the figures the grain device made ambiguous, rejected for naming the quantity instead.** The
+  invoice-level rows made the lines tested and the value tested ambiguous, and the first fix was to stop
+  stating them. The better fix is to name the quantity in the asking sentence, the ledger lines the
+  testing covered and their recorded value, which is one determinate answer that a response counting the
+  paper's rows gets wrong. The device then bites on a graded figure instead of costing one, and the three
+  wrong rungs are quoted to the cent again. Measured: the cracker loses 2 of the 21 component cells.

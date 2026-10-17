@@ -1,21 +1,21 @@
 # leak check, task190
 
-**Verdict: REVIEW.** 18 files read, 24 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 18 files read, 28 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: tested, sample, interval, decisive, projection, amount, carries, tainting, nothing, stratum, shipped, decision, stands, quantity, estimator, sentence, projects, sampled, inclusion, stated, asserts, probability, arithmetic, follows, subtraction
+Stump terms swept: sample, interval, decisive, projection, amount, carries, tainting, nothing, stratum, shipped, decision, stands, quantity, estimator, sentence, projects, sampled, inclusion, stated, asserts, probability, arithmetic, follows, subtraction, factor
 
 ## 3 answer figures in the pack (REVIEW 5)
-- **REVIEW** `audit_plan_2026.pdf`: golden figure 4.3 appears: ...ulation is tested to a confidence of 95 per cent. 4.3 Conclusion on a tested population A population is...
 - **REVIEW** `audit_plan_2026.pdf`: golden figure 4.4 appears: ...ogramme payments population; the other two are at 4.4 and 4.5 and are not reproduced here. 4.2 Capital...
+- **REVIEW** `audit_plan_2026.pdf`: golden figure 4.3 appears: ...ulation is tested to a confidence of 95 per cent. 4.3 Conclusion on a tested population A population is...
 - **REVIEW** `audit_plan_2026.pdf`: carries 14 of 14 distinctive words of the committed call: 'The misstatement in the capital programme payments population for the year to 31 December 2026 is 850,000 euro, and the '
 - **REVIEW** `internal_audit_testing_schedule_2026.pdf`: carries 11 of 14 distinctive words of the committed call: 'The misstatement in the capital programme payments population for the year to 31 December 2026 is 850,000 euro, and the '
 - **REVIEW** `provenance.md`: carries 9 of 14 distinctive words of the committed call: 'The misstatement in the capital programme payments population for the year to 31 December 2026 is 850,000 euro, and the '
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `audit_manual_part9.pdf`: 8 of 25 stump-paragraph terms appear (tested, sample, interval, amount, carries, tainting); read whether the document names the move
-- **REVIEW** `internal_audit_testing_schedule_2026.pdf`: 6 of 25 stump-paragraph terms appear (tested, interval, amount, nothing, quantity, probability); read whether the document names the move
+- **REVIEW** `audit_manual_part9.pdf`: 8 of 25 stump-paragraph terms appear (sample, interval, amount, carries, tainting, nothing); read whether the document names the move
+- **REVIEW** `internal_audit_testing_schedule_2026.pdf`: 5 of 25 stump-paragraph terms appear (interval, amount, nothing, quantity, probability); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `capital_programme_register.csv`: 9 ISO dates after 2027-02-26, e.g. 2027-05-31, 2027-08-31, 2027-11-30, 2027-12-17, 2028-02-29

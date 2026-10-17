@@ -9,7 +9,7 @@
  "updated": "2026-10-17",
  "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window.",
  "architecture": 2,
- "loops": 4,
+ "loops": 5,
  "precut": {
   "exit": 0,
   "checks": 50,
@@ -20,14 +20,14 @@
  "build": {
   "generator_assertions": 175,
   "verifier_checks": 265,
-  "figures_check": "197 of 197",
+  "figures_check": "198 of 198",
   "voice_check": "exit 0 at 997 characters",
-  "rebuilds": "two byte-identical over 24 files; target.zip md5 a89d08a6a052cb28c08108cb37de42da, 21 entries",
-  "input_gates": "21 files, 4 formats, 113,828 and 62,795 row extracts, two distractors and one neutral rule input in metadata.json",
+  "rebuilds": "two byte-identical over 24 files; target.zip md5 bdc7ece95e5ea4ba8edd1e5258980eb1, 21 entries",
+  "input_gates": "21 files, 4 formats, two distractors and one neutral rule input in metadata.json",
   "ladder": "rung0 9, crude 10, rung2 11, answer 7; all four window-aware arithmetics refer the same 7",
-  "separation": "tightest margin 8.5 per cent of the 1.25 multiple; lowest referred 1.365, highest refused 1.033",
-  "mid_bin": "payer doses exact at one decimal; tightest fee 0.425 krone from the half krone that decides its rounding, measured from the right edge this time, with half-up and half-even agreeing for all seven; tightest region and age share 0.0146 of a point from a tenth; closest two chart bars 0.1 of a point apart",
-  "freeze": "freeze.py check --mode rubric exit 0: the main call, the stump and every frozen figure unchanged"
+  "call_after_the_date_changes": "the seven referred pairs re-measured at 1.365, 1.366, 1.398, 1.451, 1.477, 1.490 and 1.499, nearest unreferred 1.033, crude set unchanged at 10",
+  "mid_bin": "payer doses exact at one decimal; tightest fee 0.432 krone from the half krone that decides its rounding; tightest region and age share 0.0127 of a point from a tenth; closest two chart bars 0.1 of a point apart",
+  "freeze": "freeze.py check --mode rubric exit 0"
  },
  "leak": {
   "leak_py": "REVIEW, three lines answered in the design note, no LEAK",
@@ -53,10 +53,11 @@
    "eight realism tells fixed in the generator: dose per pack constant per medicine, a skewed package count, a submission lag that drifts by quarter, skewed rejection reasons, per-chain municipalities, an irregular literature log, a varied serious share, and the extract's stated adult scope"
   ],
   "verdict_pass_2": "DETERMINISTIC, APPROVE, no repair, no rerun. It named six sentences as carrying the determinism; each still has a shipped home, asserted by the home.* block in checks.py.",
-  "verdict_pass_3": "DETERMINISTIC, SOLUTION_WRONG, FIX_NOW. The main call was forced and named the strongest result in the wave. One golden figure (H4's doses, 159766.95 shipped as 159766.9) was unreachable by any convention, three payer totals sat on exact halves, four figures sat near their edges, the fee ask's unit carried a semantic fork, the chart had two open points, and the dictionary contradicted the person register."
+  "verdict_pass_3": "DETERMINISTIC, SOLUTION_WRONG, FIX_NOW. The main call was forced and named the strongest result in the wave. One golden figure (H4's doses, 159766.95 shipped as 159766.9) was unreachable by any convention, three payer totals sat on exact halves, four figures sat near their edges, the fee ask's unit carried a semantic fork, the chart had two open points, and the dictionary contradicted the person register.",
+  "verdict_pass_4": "NOT_DETERMINISTIC, SEND_BACK, governing label answer_contradicts_files, and every reason in the ask layer. The call came back forced and margin-robust: 23 pair rows and 16,957 person keys reproduce, the seven referred pairs at 1.36 to 1.50 with the nearest unreferred at 1.03, the set holding under three independence constructions and under skipping the crosswalk and the clearance rule. Gate G and Gate H pass. Treated as a FIX_NOW on the ask layer by the author, not as a spent architecture."
  },
  "returned": [],
- "resume": "ASK LAYER REBUILT AND MEASURED, READY FOR THE THREADS. Pair ceiling 36.5 (ceiling 40) and mirror leakage 14.5 per cent (under 35), measured by generator/cracker.py on the cut pack and asserted by checks.py at every build. Every gate is green: 175 generator assertions, 265 independent checks, precut 50 checks 0 FAIL 0 WARN, figures_check 197 of 197, voice-check exit 0, leak REVIEW with no LEAK, guard surface clean and heart WARN as drawn, two byte-identical rebuilds, freeze --mode rubric exit 0, target.zip md5 a89d08a6a052cb28c08108cb37de42da with 21 entries. Both briefs are staged and verified file by file against that zip. Spawn the judge at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_judge/judge_brief.md and the leak reader at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t193_reader/reader_brief.md, both general-purpose sonnet at medium effort.",
+ "resume": "ASK LAYER REPAIRED AFTER THE SEND_BACK, READY FOR ONE RE-JUDGE. Pair ceiling 37.0 (ceiling 40), mirror leakage 15.5 per cent (under 35), measured by generator/cracker.py on the cut pack and asserted by checks.py at every build. The call is untouched and freeze.py check --mode rubric is at exit 0; the seven pairs re-measured at 1.365 to 1.499 after the register's dates moved. Every gate green: 175 generator assertions, 265 independent checks, precut 50 checks 0 FAIL 0 WARN, figures_check 198 of 198, voice-check exit 0, leak REVIEW with no LEAK, guard surface clean and heart WARN as drawn, two byte-identical rebuilds, target.zip md5 bdc7ece95e5ea4ba8edd1e5258980eb1 with 21 entries. Both briefs staged and verified file by file against that zip; the judge brief keeps the author's neutral intro.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -89,15 +90,15 @@
   "code": "generator/cracker.py, run on the cut pack by checks.py at every build",
   "measured": {
    "ask_figures": 110,
-   "cracker_keeps": "14.5 per cent",
-   "pair_ceiling": 36.5,
-   "mirror_leakage": 14.5,
+   "cracker_keeps": "15.5 per cent",
+   "pair_ceiling": 37.0,
+   "mirror_leakage": 15.5,
    "bar": "ceiling 40, leakage under 35"
   },
   "per_ask": {
-   "A1 chain and quarter": "48 figures, keeps 7, MISS",
-   "A2 payer doses and fee": "14 figures, keeps 8, MISS",
-   "A3 region and age band": "48 figures, keeps 1, MISS"
+   "A1 chain and quarter": "48 figures, keeps 9, MISS",
+   "A2 payer doses and fee": "14 figures, keeps 8, MISS (weakest ask)",
+   "A3 region and age band": "48 figures, keeps 0, MISS"
   },
   "history": "83.5 declared 39.4 -> 50.0 -> 41.5 -> 40.0 -> 36.5, measured after each change",
   "primaries": {
@@ -122,5 +123,15 @@
   "the chart's 23 bar positions were a second grading of the workbook's own after and patients columns; the block is back to its named parts, 197 graded figures against 221",
   "atc_text.csv is no longer declared a distractor: the fee is struck on the dose it carries",
   "the reporting bands moved to 18-24, 25-44, 45-74 and 75 and over, chosen on two criteria at once: every cell mid bin (tightest 0.0146 of a point) and the cracker's natural reading missing every cell"
+ ],
+ "fix_pass_5": [
+  "the variable dictionary no longer assigns the basis for a quantity an ask grades: the n_packages entry says what the column holds and nothing about defined daily doses, and the pharmacy register entry names the chain without dating it. Neither source is pinned in the prompt, because pinning the source kills the device",
+  "the standard's own definition of ddd_per_pack stands, which is what makes the three stale package rows an internal inconsistency rather than a contradiction",
+  "the region device is forced by the data: the register's documentation of previous_region and region_recorded_from states that it began keeping a previous region on 1 April 2026 and holds none for a change recorded earlier, which is a fact about the column and not a handling rule",
+  "the nearest unreferred pair is out of the graded blocks: the prompt asks for no such figure, and a graded figure with no asking sentence has nothing to fix its basis or its population",
+  "6,590 accepted lines dispensed after their pharmacy's recorded closing date are gone: a closed pharmacy now dispenses nothing after that day, its customers' prescriptions are filled at the next branch of the same chain, and the few still transmitted under its identifier are turned back",
+  "the register's dates are recorded rather than clipped: no death or emigration lands on the window's last day, and the seven referred pairs were re-measured afterwards and are unchanged",
+  "the reader's realism list worked: the screening log runs in numbered weekly batches and stops where the desk had got to, the crosswalk's reasons are drawn unevenly, the chains' log omits a month a chain filed nothing in, packs reach 4 and 6, the four authorisation transfers take effect per pharmacy within days of each transaction, exception references are numbered in the year the register wrote them, and the spontaneous-report series are no longer six monotone ladders out of nine",
+  "the reporting bands moved to 18-24, 25-44, 45-54 and 55 and over and the statutory rates were re-struck, both chosen against the realised data"
  ]
 }

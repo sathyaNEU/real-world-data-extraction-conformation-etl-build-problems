@@ -11,10 +11,10 @@
   "architecture": 2,
   "loops": 2,
   "precut": {
-    "exit": 0,
+    "exit": 1,
     "date": "2026-10-17",
-    "checks": "50 checks, 0 FAIL, 0 WARN",
-    "pair_ceiling": "39.1 against the Part 1.1 cracker (mirror leakage 4.3 per cent), measured by generator/cracker.py on the cut pack; the clause-executing cracker, now written as code in the same script, keeps 70 of 70 and measures 75.2 with 70.0 per cent mirror leakage, which is the open rubric finding stated in the design note's Ask sheet"
+    "checks": "50 checks, 2 FAIL (pair ceiling 75.2, mirror leakage 70.0), 0 WARN",
+    "pair_ceiling": "75.2 with 70.0 per cent mirror leakage against the cracker Part 1.1 defines (the response that landed the call, ran the hygiene battery and executed every filed rule it points at), measured as code by generator/cracker.py on the cut pack. The gate fails on it and stays failing until the ask layer is re-cut."
   },
   "build": {
     "answer": "the October slot covers NSL04, NSL11, NSL07, NSL02 and NSL13; NSL06 is first off the list at 44.7 dB, 1.3 dB behind the fifth (1.2877 unrounded, 0.038 from its rounding edge)",

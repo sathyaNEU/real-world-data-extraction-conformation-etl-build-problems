@@ -4,11 +4,11 @@
 ## 1. Final Recommendation
 
 **The misstatement in the capital programme payments population for the year to 31 December 2026 is 850,000 euro, and the population is referred for extended testing before the statements are certified.**
-Security and access systems carries most of it at 250,000. Not the misstatement the testing found in the lines it tested, which projects nothing. Not those findings scaled on recorded value, the obvious projection, which understates by a factor of fifteen because the 31 lines certain of selection hold 15,826,540.07 of the value tested and were all found sound. Not the figure from taking those 31 at their own error and scaling the rest on their own stratum. Each of those three accepts the population at plan 4.3; only the projection the selection design entitles refers it.
+Security and access systems carries most of it at 250,000. Not the 21,004.93 the testing found in the lines it tested, which projects nothing. Not the 57,577.47 those findings give when scaled on recorded value, the obvious projection, which understates by a factor of fifteen because the 31 lines certain of selection hold 15,826,540.07 of the 21,696,549.77 tested and were all found sound. Not the 156,183.24 from taking those 31 at their own error and scaling the rest on their own stratum. Each of those three accepts the population at plan 4.3; only the projection the selection design entitles refers it.
 
 ## 2. Critical Components
 
-1. Capital programme payment lines in the population: **26,651**, recorded at **59,473,299.73** euro. Of the lines the selection chose, **31** were certain of selection and hold **15,826,540.07**.
+1. Capital programme payment lines in the population: **26,651**, recorded at **59,473,299.73** euro. Ledger lines the testing covered: **275**, recorded at **21,696,549.77**. Of those, **31** were certain of selection and hold **15,826,540.07**.
 2. Misstatement by work programme, to the nearest 50,000: Security and access systems **250,000**, Rail siding and yard **200,000**, Pavement and surfacing **150,000**, Shore power installation **150,000**, Terminal roof and cladding **50,000**, Welfare and offices fit-out **50,000**, Deepwater berth renewal **0**, Dredging programme **0**, Quay 3 reconstruction **0**
 3. The projection before rounding: **840,096.72**. Basic precision **540,000.00**, the incremental allowance **227,684.83** over **26** taintings, and the upper limit **1,607,781.54**, which exceeds the tolerable misstatement plan 4.2 sets.
 
@@ -47,11 +47,11 @@ Security and access systems carries most of it at 250,000. Not the misstatement 
 
 ### Also asked
 
-1. Payment runs released, those past the cut-off in force on the run's own date and the value those carried, by quarter of release, values to the cent:
-   - 2026Q1: 24 runs, 9 past the cut-off, 6,974,178.95 released past it
-   - 2026Q2: 24 runs, 9 past the cut-off, 4,480,460.44 released past it
-   - 2026Q3: 26 runs, 7 past the cut-off, 4,397,928.34 released past it
-   - 2026Q4: 24 runs, 7 past the cut-off, 4,650,297.66 released past it
+1. Payment runs released, those past the cut-off then in force and the value those carried, by quarter of release, values to the cent. A run pays the whole authority, so the value is the run's own as the log records it and not the capital extract's part of it:
+   - 2026Q1: 24 runs, 9 past the cut-off, 9,243,842.36 released past it
+   - 2026Q2: 24 runs, 9 past the cut-off, 5,911,811.17 released past it
+   - 2026Q3: 26 runs, 7 past the cut-off, 5,603,125.12 released past it
+   - 2026Q4: 24 runs, 7 past the cut-off, 6,124,569.07 released past it
 2. Suppliers raised into the category, removed from it, and raised in then removed, by supplier risk category:
    - Category 1 (R-A): 0 raised into it, 31 removed from it, 0 raised in then removed
    - Category 2 (R-B): 29 raised into it, 69 removed from it, 16 raised in then removed

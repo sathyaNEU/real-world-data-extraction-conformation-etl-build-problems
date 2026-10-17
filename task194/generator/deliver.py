@@ -25,14 +25,14 @@ GRID = "#E3E3E3"
 
 def chart(path, g):
     """One bar for each eligible unit of the complications a placement there would avoid."""
-    rows = sorted(g["units"], key=lambda d: d["avoided"])
+    rows = sorted(g["units"], key=lambda d: d["avoidable"])
     labels = ["%s %s" % (short(d["hospital"]), d["name"]) for d in rows]
-    values = [round(d["avoided"]) for d in rows]
+    values = [round(d["avoidable"]) for d in rows]
     pick = g["answer"]["unit"]
     colours = [BAR if d["unit"] == pick else BAR_OTHER for d in rows]
     fig, ax = plt.subplots(figsize=(6.9, 3.9), dpi=200)
     bars = ax.barh(labels, values, height=0.62, color=colours, linewidth=0)
-    ax.set_xlabel("Complications avoided over the quarter from 1 April 2027", fontsize=8.5, color=INK)
+    ax.set_xlabel("Avoidable complications on the separations planned for the quarter from 1 April 2027", fontsize=8.5, color=INK)
     ax.xaxis.grid(True, color=GRID, linewidth=0.7)
     ax.set_axisbelow(True)
     for side in ("top", "right", "left"):
@@ -44,7 +44,7 @@ def chart(path, g):
     ax.set_xticks(range(0, max(values) + 6, 5))
     for d, bar in zip(rows, bars):
         if d["unit"] in (pick, g["runner"]["unit"]):
-            ax.annotate("%d" % round(d["avoided"]), (bar.get_width(), bar.get_y() + bar.get_height() / 2),
+            ax.annotate("%d" % round(d["avoidable"]), (bar.get_width(), bar.get_y() + bar.get_height() / 2),
                         xytext=(4, 0), textcoords="offset points", va="center", fontsize=8.5,
                         color=BAR if d["unit"] == pick else INK,
                         fontweight="bold" if d["unit"] == pick else "normal")
@@ -53,7 +53,7 @@ def chart(path, g):
     fig.tight_layout(pad=0.6, rect=(0, 0, 1, 0.918))
     # the finding runs across the figure, not the axes, so a long title is never clipped
     fig.text(0.011, 0.985, "Alderbrook Orthopaedics avoids %d complications, %d more than the closest unit"
-             % (round(g["answer"]["avoided"]), g["gap"]), ha="left", va="top", fontsize=9.8, color=INK)
+             % (round(g["answer"]["avoidable"]), round(g["gap"])), ha="left", va="top", fontsize=9.8, color=INK)
     fig.savefig(path, facecolor="white", metadata={"Software": None, "Creation Time": None})
     plt.close(fig)
     return path
@@ -99,26 +99,28 @@ def workbook(path, g):
     ws.title = "Placement"
     a, r = g["answer"], g["runner"]
     rows = []
-    for d in sorted(g["units"], key=lambda x: -x["avoided"]):
+    for d in sorted(g["units"], key=lambda x: -x["avoidable"]):
         rows.append([d["unit"], "%s %s" % (short(d["hospital"]), d["name"]), d["plan"],
-                     round(d["expected_plan"], 1), round(d["ratio"], 2), round(d["avoided"])])
-    _sheet(ws, "Cycle IP-10 placement: complications a placement would avoid, by unit",
+                     round(d["expected_plan"], 1), round(d["ratio"], 2), round(d["ratio_net"], 2),
+                     round(d["avoidable"])])
+    _sheet(ws, "Cycle IP-10 placement: avoidable complications by unit",
            "Quarter from 1 April 2027. Eligible units under charter clause 4.2. Prepared by Clinical "
            "Improvement, 18 March 2027.",
            ["Cost centre", "Unit", "Planned separations", "Expected complications",
-            "Standardised ratio, specification period", "Complications avoided"],
-           rows, [12, 30, 13, 13, 15, 13],
-           {3: "#,##0", 4: "0.0", 5: "0.00", 6: "#,##0"})
+            "Standardised ratio, published rates", "Standardised ratio, the network's own rates",
+            "Avoidable complications"],
+           rows, [12, 30, 13, 13, 15, 17, 14],
+           {3: "#,##0", 4: "0.0", 5: "0.00", 6: "0.00", 7: "#,##0"})
     n = len(rows)
     ws.append([])
     ws.append(["Recommendation", "%s %s (%s)" % (short(a["hospital"]), a["name"], a["unit"])])
-    ws.append(["Complications avoided", round(a["avoided"])])
+    ws.append(["Avoidable complications", round(a["avoidable"])])
     ws.append(["Closest unit", "%s %s (%s)" % (short(r["hospital"]), r["name"], r["unit"])])
-    ws.append(["Complications avoided there", round(r["avoided"])])
-    ws.append(["Gap", g["gap"]])
+    ws.append(["Avoidable complications there", round(r["avoidable"])])
+    ws.append(["Gap", round(a["avoidable"]) - round(r["avoidable"])])
     for i in range(n + 6, n + 11):
         ws.cell(row=i, column=1).font = HEAD
-    ws.print_area = "A1:F%d" % (n + 10)
+    ws.print_area = "A1:G%d" % (n + 10)
 
     hs = wb.create_sheet("Hospital year")
     _sheet(hs, "Adjusted complication rate by hospital, year ended 31 December 2026",
@@ -152,7 +154,15 @@ def workbook(path, g):
                   "expected complications per separation over the specification period to date."],
                  ["Standardised ratio", "Specification 3.2 and 3.3, over every closed quarter from "
                   "1 July 2024."],
-                 ["Complications avoided", "Charter clause 4.3, over the assessment quarter."],
+                 ["Avoidable complications", "Charter clause 4.3: the complications the unit's own "
+                  "patients had, less the complications that patients of the same risk band and age band "
+                  "ordinarily have, counted patient by patient and summed, then carried onto the "
+                  "separations planned for the assessment quarter."],
+                 ["The network's own rates", "Complications per in-scope episode by risk band and age "
+                  "band, from the episode extract over the ten closed quarters of specification 4.0. The "
+                  "rates published with the specification were derived from activity in the year ended "
+                  "30 June 2024 and clause 3.1 does not re-estimate them; the network's own rates now run "
+                  "from 0.89 to 1.32 of them, band by band."],
                  ["Cost centre 41510", "Reported under its own code since the Carrowdean medical wards were "
                   "amalgamated on 1 October 2025: five closed quarters."],
                  ["Data", "Episode extract and complication detail to 31 December 2026, exported "
@@ -200,71 +210,97 @@ def _page(canvas, doc):
 
 def brief(path, g, chart_path):
     a, r = g["answer"], g["runner"]
-    rung0, rung1, rung2 = g["rung0"], g["rung1"], g["rung2"]
+    rung0, rung3 = g["rung0"], g["rung3"]
+    f, demo = g["facts"], g["demo"]
+    gap = round(a["avoidable"]) - round(r["avoidable"])
     d = SimpleDocTemplate(path, pagesize=A4, title="Cycle IP-10 placement recommendation", author="",
                           subject="", creator="", leftMargin=20 * mm, rightMargin=20 * mm,
                           topMargin=16 * mm, bottomMargin=20 * mm)
     tbl = [["Unit", "Cost centre", "Planned separations", "Expected complications",
-            "Complications avoided"]]
-    for x in sorted(g["units"], key=lambda u: -u["avoided"])[:5]:
+            "Avoidable complications"]]
+    for x in sorted(g["units"], key=lambda u: -u["avoidable"])[:5]:
         tbl.append(["%s %s" % (short(x["hospital"]), x["name"]), x["unit"], "{:,}".format(x["plan"]),
-                    "{:.1f}".format(x["expected_plan"]), "%d" % round(x["avoided"])])
+                    "{:.1f}".format(x["expected_plan"]), "%d" % round(x["avoidable"])])
     flow = [
-        Paragraph("Place the IP-10 team with Alderbrook Orthopaedics: %d complications avoided, %d more "
-                  "than the closest unit" % (round(a["avoided"]), g["gap"]), TITLE_P),
+        Paragraph("Place the IP-10 team with Alderbrook Orthopaedics: %d avoidable complications, %d more "
+                  "than the closest unit" % (round(a["avoidable"]), gap), TITLE_P),
         Paragraph("Clinical Improvement Partnership, cycle IP-10 (1 April to 30 June 2027). For the "
                   "Clinical Quality Committee, 24 March 2027. Prepared by Clinical Improvement.", KICKER),
         Paragraph("The team should embed with <b>Orthopaedics at Alderbrook Hospital, cost centre %s</b>. "
-                  "The unit's planned %s separations for the quarter carry %.0f expected complications, it "
-                  "has stood at %.2f times its expected complications across the ten closed quarters of "
-                  "specification 4.0, and the %.1f complications that standing puts above expectation are the "
-                  "largest avoidable number in the network. On what the partnership's eight closed "
-                  "placements have taken off a unit's standing excess, the placement avoids <b>%d "
-                  "complications</b> over the quarter, against %d at %s %s, the closest unit."
-                  % (a["unit"], "{:,}".format(a["plan"]), a["expected_plan"], a["ratio"],
-                     a["excess"], round(a["avoided"]), round(r["avoided"]),
-                     short(r["hospital"]), r["name"]), LEAD),
+                  "Its own patients had %d complications over the ten closed quarters of specification "
+                  "4.0. Patients in the same risk bands and age bands, across the network's own record "
+                  "over the same quarters, had %.1f. On the %s separations the unit plans for the quarter "
+                  "that difference is <b>%d avoidable complications</b>, against %d at %s %s, the closest "
+                  "unit. The gap is %d complications, %.2f times, and %.1f standard errors of its own "
+                  "sampling error, so it is not a difference the record could have produced by chance."
+                  % (a["unit"], int(a["observed"]), a["expected_net"], "{:,}".format(a["plan"]),
+                     round(a["avoidable"]), round(r["avoidable"]), short(r["hospital"]), r["name"],
+                     gap, g["margin"], g["se_lead"]), LEAD),
         Spacer(1, 2),
         Image(chart_path, width=165 * mm, height=93.3 * mm),
         Spacer(1, 4),
-        Paragraph("Every eligible unit, its planned activity for the quarter and what a placement there "
-                  "would take off it, is in the placement workbook.", FOOT),
-        Paragraph("The three units the committee asked about", H2),
-        Paragraph("<b>%s %s</b> is carrying the most complications above expectation right now, %d of them "
-                  "in the December quarter, and that is the placement the quarter in hand points to. Its own "
-                  "ten quarters put %.1f above expectation on the quarter's planned activity, so most of what "
-                  "it is carrying now is its own quarter-to-quarter movement rather than a position a "
-                  "placement can work on: there, a placement avoids %d."
-                  % (short(rung0["hospital"]), rung0["name"], round(rung0["last_excess"]),
-                     rung0["excess"], round(rung0["avoided"])), BODY),
-        Paragraph("<b>%s %s</b> stands worst of the twelve on its own record, but it is a small unit: its "
-                  "planned %s separations for the quarter carry %.1f complications above expectation, so a "
-                  "placement there avoids %d."
-                  % (short(rung1["hospital"]), rung1["name"], "{:,}".format(rung1["plan"]),
-                     rung1["excess"], round(rung1["avoided"])), BODY),
-        Paragraph("<b>%s %s</b> will record more complications than any other unit next quarter on the "
-                  "elective catch-up volume in the plan, and most of them are the complications its case "
-                  "mix is expected to produce: %.1f sit above expectation, and a placement there avoids %d."
-                  % (short(rung2["hospital"]), rung2["name"], rung2["excess"],
-                     round(rung2["avoided"])), BODY),
+        Paragraph("Every eligible unit, its planned activity for the quarter and the avoidable "
+                  "complications it is carrying, is in the placement workbook.", FOOT),
+        Paragraph("Why this is not the unit the quarterly indicator points at", H2),
+        Paragraph("<b>%s %s</b>, cost centre %s, records %.1f complications above the published "
+                  "expectation on the "
+                  "quarter's planned activity, more than twice any other unit, and it is where the "
+                  "indicator report points. Measured against the complications its own patients would "
+                  "ordinarily have, it is carrying %d. The difference is its case mix. The stratum rates "
+                  "published with specification 4.0 were derived from activity in the year ended 30 June "
+                  "2024 and clause 3.1 does not re-estimate them; the network's own rates now run from "
+                  "%.2f to %.2f of them, band by band, and the twelve units' surgical share of in-scope "
+                  "episodes runs from %.0f per cent to %.0f per cent. A unit whose patients sit where the "
+                  "published table has gone furthest out of date carries that gap as if it were its own "
+                  "practice."
+                  % (short(rung0["hospital"]), rung0["name"], rung0["unit"], rung0["published_excess"],
+                     round(rung0["avoidable"]), f["drift_low"], f["drift_high"],
+                     100 * f["surgical_low"], 100 * f["surgical_high"]), BODY),
+        Paragraph("The clearest case is <b>%s %s</b>, cost centre %s, which treated the same number of "
+                  "patients in every one of the ten quarters and changed nothing it does. For two of them "
+                  "its orthopaedic theatre was closed and its beds carried the hospital's emergency "
+                  "general surgical admissions instead. On the published expectation its complications "
+                  "above expectation jump from between %.1f and %.1f a quarter to %.1f and %.1f. Measured "
+                  "against what its own patients would ordinarily have, the figure holds between %.1f and "
+                  "%.1f in every quarter, including those two."
+                  % ("Marrowfield", demo["name"], demo["unit"], demo["published_low"],
+                     sorted(r2["published"] for r2 in demo["rows"])[-3], demo["published_high"],
+                     sorted(r2["published"] for r2 in demo["rows"])[-2], demo["internal_low"],
+                     demo["internal_high"]), BODY),
+        Paragraph("<b>%s %s</b>, cost centre %s, is the unit with the worst avoidable rate, %.1f "
+                  "avoidable complications "
+                  "per 1,000 separations against %.1f here. It is the smaller unit: on the separations "
+                  "each plans for the quarter it is carrying %d avoidable complications against %d, so "
+                  "the team avoids more here. The placement is a quarter of one team's time, and what it "
+                  "buys is complications, not a rate."
+                  % (short(rung3["hospital"]), rung3["name"], rung3["unit"], rung3["per_1000"],
+                     a["per_1000"],
+                     round(rung3["avoidable"]), round(a["avoidable"])), BODY),
         PageBreak(),
         Paragraph("How the figures were put together", H2),
-        Paragraph(("Observed and expected complications are specification 4.0's, from the episode extract to "
-                  "31 December 2026, and tie to the quarterly indicator series. Each unit's expected "
-                  "complications for the quarter are clause 3.4's: the separations the activity plan carries "
-                  "times the unit's expected complications per separation over the specification period. "
-                  "What a placement takes off a unit's standing excess comes from the eight closed "
-                  "placements in the register, each measured against what the unit stood at over its own "
-                  "closed quarters before the team arrived."), BODY),
+        Paragraph(("Observed complications and the published expectation are specification 4.0's, from the "
+                   "episode extract to 31 December 2026, and tie to the quarterly indicator series on all "
+                   "215 unit-quarters. The complications patients of a risk band and age band ordinarily "
+                   "have are the network's own: complications per in-scope episode in each of the 24 "
+                   "strata, over every closed quarter of the specification period, from the same extract. "
+                   "Each unit's avoidable complications are its own patients' complications less that "
+                   "expectation, taken patient by patient and summed, then carried onto the separations "
+                   "the activity plan plans for the quarter at the unit's own rate per separation, which "
+                   "is clause 3.4's basis. The twelve eligible units are charter clause 4.2's."), BODY),
+        Paragraph(("The ranking does not depend on how the comparison is drawn. Taking the network's own "
+                   "rates over the last eight quarters, the last four, or the latest quarter alone; "
+                   "leaving the unit's own patients out of the comparison; taking the unit's record over "
+                   "any of those windows; and carrying the rate on in-scope episodes rather than on all "
+                   "separations all put this unit first, by between 1.07 and 2.85 times."), BODY),
         Table([[Paragraph(c, CELLB if i == 0 else CELL) for c in row] for i, row in enumerate(tbl)],
               colWidths=[56 * mm, 20 * mm, 30 * mm, 30 * mm, 28 * mm], style=TBL),
         Spacer(1, 6),
         Paragraph("Cost centre 41510 has reported under its own code since the Carrowdean medical wards "
                   "were amalgamated on 1 October 2025, and its five closed quarters meet clause 4.2. "
                   "Rehabilitation and Aged Care at Marrowfield, where the team is until 31 March, is not "
-                  "eligible this cycle. Complications avoided are whole complications over the assessment "
-                  "quarter; expected complications and complications above a standing are carried to one "
-                  "decimal.", FOOT),
+                  "eligible this cycle. Avoidable complications are whole complications on the quarter's "
+                  "planned separations; expected complications and complications above the published "
+                  "expectation are carried to one decimal.", FOOT),
     ]
     d.build(flow, onFirstPage=_page, onLaterPages=_page)
     return path
