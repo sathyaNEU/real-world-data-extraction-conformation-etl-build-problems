@@ -1,21 +1,34 @@
 {
  "task": "task469",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-17",
  "stump": "The default path counts as needing longer than each relationship's filed 2027 ground time only the summer 2026 turns that visibly overran by more than it, reading every on-time pushback as ready in time, so the shortened filings read well under the authority's 20 per cent and are accepted; the share observed on the turns whose available time was already shorter than the filing sends some of them back.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": "", "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "task155 0.09 (guard check at the draw, WARN only; differentiated against task101, task126 and task450 v1)"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-17: the guideline's example relationship and world nouns; registers naming the relationships; no LEAK",
+  "reader": "round 1 pending"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-17 after the context artifact was re-keyed operations_log (task240 filed_standard entered the last three); Gate G overuse answered in the draw",
+  "surface": "3 promoted for the author: task468 (back to back pairing), task101, task126 (differentiated on the card)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: prototype the turns (need by relationship and type, the 2026 allowances, inbound lateness, non-turn holds, delay codes) and calibrate the ladder (observed ground time, overruns among all turns, turns scheduled at the new ground time in 2026, pooled operator, golden); then the design note's sections, the asks and prompt.txt to precut exit 0",
+ "resume": "stage 4 in flight at this checkpoint: the leak reader (round 1, isolated copy of prompt.txt and target.zip) and the determinism judge (pass 1, brief written by the determinism-judge agent, one isolated thread) were running; read their answers, fix every finding in the generator in one pass, re-judge once on FIX_NOW, then ship (ledger row, card, board, target.zip and golden added with -f)",
  "approved": null,
  "delivered": null,
  "portal": null,

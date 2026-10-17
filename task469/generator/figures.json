@@ -1,0 +1,124 @@
+{
+ "call": {
+  "send_back": [
+   "Norvale Connect flown by Pellmont Aviation, Embraer 175",
+   "Tellura Express flown by Pellmont Aviation, Embraer 175",
+   "Tellura Express flown by Sable Coast Air, Dash 8-400"
+  ],
+  "accept": [
+   "Norvale Connect flown by Grayling Air, ATR 72-600",
+   "Norvale Connect flown by Sable Coast Air, Dash 8-400",
+   "Grayling Air, ATR 72-600"
+  ]
+ },
+ "relationships": {
+  "S1": {
+   "name": "Norvale Connect flown by Pellmont Aviation, Embraer 175",
+   "filed": "35",
+   "verdict": "send back",
+   "shortest": "40",
+   "share_at_filed": "27",
+   "share_at_shortest": "8",
+   "share_5_below_shortest": "27",
+   "turns_2026": "2,731",
+   "exact_2026": "401",
+   "week_turns": "213",
+   "week_short": "42"
+  },
+  "S2": {
+   "name": "Norvale Connect flown by Grayling Air, ATR 72-600",
+   "filed": "40",
+   "verdict": "accept",
+   "shortest": "40",
+   "share_at_filed": "6",
+   "share_at_shortest": "6",
+   "share_5_below_shortest": "31",
+   "turns_2026": "1,114",
+   "exact_2026": "140",
+   "week_turns": "84",
+   "week_short": "21"
+  },
+  "S3": {
+   "name": "Norvale Connect flown by Sable Coast Air, Dash 8-400",
+   "filed": "30",
+   "verdict": "accept",
+   "shortest": "30",
+   "share_at_filed": "7",
+   "share_at_shortest": "7",
+   "share_5_below_shortest": "29",
+   "turns_2026": "2,398",
+   "exact_2026": "277",
+   "week_turns": "189",
+   "week_short": "42"
+  },
+  "S4": {
+   "name": "Tellura Express flown by Pellmont Aviation, Embraer 175",
+   "filed": "40",
+   "verdict": "send back",
+   "shortest": "45",
+   "share_at_filed": "26",
+   "share_at_shortest": "6",
+   "share_5_below_shortest": "26",
+   "turns_2026": "1,023",
+   "exact_2026": "195",
+   "week_turns": "105",
+   "week_short": "28"
+  },
+  "S5": {
+   "name": "Tellura Express flown by Sable Coast Air, Dash 8-400",
+   "filed": "30",
+   "verdict": "send back",
+   "shortest": "35",
+   "share_at_filed": "31",
+   "share_at_shortest": "5",
+   "share_5_below_shortest": "31",
+   "turns_2026": "930",
+   "exact_2026": "114",
+   "week_turns": "91",
+   "week_short": "28"
+  },
+  "S6": {
+   "name": "Grayling Air, ATR 72-600",
+   "filed": "35",
+   "verdict": "accept",
+   "shortest": "30",
+   "share_at_filed": "1",
+   "share_at_shortest": "8",
+   "share_5_below_shortest": "30",
+   "turns_2026": "1,016",
+   "exact_2026": "104",
+   "week_turns": "77",
+   "week_short": "21"
+  }
+ },
+ "standard_pct": "20",
+ "rivals": {
+  "visible_overruns_max_pct": "9",
+  "ground_time_min_pct": "74"
+ },
+ "peak": [
+  "2026-06-15",
+  "2026-09-15"
+ ],
+ "week": [
+  "2027-07-12",
+  "2027-07-18"
+ ],
+ "stated": {
+  "clauses": [
+   "SFG-3 2.2",
+   "SFG-3 2.4",
+   "SFG-3 3.1",
+   "SFG-3 3.3"
+  ],
+  "operating_day": [
+   "03:00",
+   "02:59"
+  ],
+  "duplicate_leg_record": "DEI 050",
+  "chart_minutes": [
+   "20",
+   "60"
+  ]
+ }
+}
