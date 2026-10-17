@@ -15,7 +15,9 @@ import term26 as T26
 import world as W
 
 R_SEED = 26613
+CONVERTED_HISTORY = dt.date(2024, 6, 22)
 CONVERTED_ON = dt.date(2024, 7, 13)
+CONVERTED_RELOAD = dt.date(2024, 8, 3)
 
 
 def rng_for(*keys):
@@ -114,13 +116,12 @@ def write_admissions(path, T):
         if not ("202410" <= a["admit"] <= K.LAST):
             continue
         prog = K.SIS[a["prog"]] if a["prog"] in K.SIS else a["prog"]
+        when = a.get("changed") or a.get("recorded")
         rows.append([a["sid"], a["admit"], a["type"], prog, a["campus"] if a["campus"] in K.CAMPUS else "QNL",
-                     a["exit"] or "", a["reason"] or "",
-                     a["recorded"].isoformat() if a.get("recorded") else "",
-                     a["changed"].isoformat() if a.get("changed") else ""])
+                     a["exit"] or "", a["reason"] or "", when.isoformat() if when else ""])
     rows.sort(key=lambda r: (r[1], r[0]))
     return _csv(path, ["student_id", "admit_term", "admit_type", "program_code", "campus", "exit_term", "exit_reason",
-                       "exit_recorded_on", "reason_changed_on"], rows)
+                       "exit_recorded_on"], rows)
 
 
 def conferrals(T):
@@ -157,10 +158,16 @@ def write_idmap(path, T):
     for sid, lid in T["converted_only"]:
         rows.append((lid, sid, early[int(rng.integers(len(early)))]))
     rows.sort()
+    order = [c["legacy"] for c in K.TERMS if c["legacy"]]
     with open(path, "w", encoding="utf-8", newline="") as fh:
         fh.write("LEGACY_ID|NEW_ID|CONVERTED_ON|LAST_LEGACY_TERM\r\n")
         for lid, sid, t in rows:
-            fh.write("%s|%s|%s|%s\r\n" % (lid, sid, CONVERTED_ON.strftime("%Y%m%d"), t))
+            # records last active before fall 2022 went across in the June history load, active students at the July
+            # cutover, and a few were reloaded in August after the reconciliation
+            on = CONVERTED_HISTORY if order.index(t) < order.index("2022FA") else CONVERTED_ON
+            if rng.random() < .014:
+                on = CONVERTED_RELOAD
+            fh.write("%s|%s|%s|%s\r\n" % (lid, sid, on.strftime("%Y%m%d"), t))
     return len(rows)
 
 
@@ -336,12 +343,38 @@ OUTLOOK = [("29-1141", "Registered Nurses", "AAS.NURS", 3480, 3712, 214, 49.10),
            ("43-1011", "First-Line Supervisors of Office and Administrative Support Workers", "AS.BUSA", 1034, 1027,
             104, 29.60),
            ("51-4121", "Welders, Cutters, Solderers, and Brazers", "CERT.WELD", 571, 598, 66, 23.15),
-           ("43-6013", "Medical Secretaries and Administrative Assistants", "AAS.MEDA", 830, 902, 103, 19.02)]
+           ("43-6013", "Medical Secretaries and Administrative Assistants", "AAS.MEDA", 830, 902, 103, 19.02),
+           ("29-2061", "Licensed Practical and Licensed Vocational Nurses", "", 1186, 1214, 118, 28.43),
+           ("31-1131", "Nursing Assistants", "", 2954, 3087, 412, 18.06),
+           ("29-2042", "Emergency Medical Technicians", "", 402, 431, 47, 19.88),
+           ("29-2034", "Radiologic Technologists and Technicians", "", 318, 337, 22, 33.12),
+           ("29-2052", "Pharmacy Technicians", "", 611, 640, 71, 18.47),
+           ("31-9091", "Dental Assistants", "", 447, 471, 61, 21.36),
+           ("53-3032", "Heavy and Tractor-Trailer Truck Drivers", "", 3315, 3398, 402, 25.71),
+           ("47-2111", "Electricians", "", 1044, 1101, 119, 29.95),
+           ("47-2152", "Plumbers, Pipefitters, and Steamfitters", "", 812, 840, 88, 30.12),
+           ("49-3023", "Automotive Service Technicians and Mechanics", "", 1158, 1139, 117, 22.40),
+           ("51-4041", "Machinists", "", 734, 705, 79, 23.18),
+           ("51-2090", "Miscellaneous Assemblers and Fabricators", "", 2205, 2136, 271, 18.64),
+           ("15-1232", "Computer User Support Specialists", "", 628, 667, 54, 26.05),
+           ("15-1244", "Network and Computer Systems Administrators", "", 263, 271, 18, 41.27),
+           ("43-4051", "Customer Service Representatives", "", 2876, 2701, 384, 18.22),
+           ("41-2031", "Retail Salespersons", "", 4512, 4398, 662, 14.86),
+           ("43-9061", "Office Clerks, General", "", 3020, 2911, 336, 17.95),
+           ("11-9111", "Medical and Health Services Managers", "", 389, 451, 39, 50.86),
+           ("21-1018", "Substance Abuse, Behavioral Disorder, and Mental Health Counselors", "", 431, 487, 52, 23.94),
+           ("25-9045", "Teaching Assistants, Except Postsecondary", "", 1356, 1372, 157, 15.73),
+           ("33-9032", "Security Guards", "", 1092, 1110, 155, 16.21),
+           ("35-1012", "First-Line Supervisors of Food Preparation and Serving Workers", "", 1381, 1426, 197, 18.12),
+           ("37-2011", "Janitors and Cleaners, Except Maids and Housekeeping Cleaners", "", 2649, 2721, 331, 15.48),
+           ("39-9021", "Personal Care Aides", "", 3907, 4413, 610, 14.32),
+           ("13-2011", "Accountants and Auditors", "", 1214, 1262, 104, 36.80),
+           ("23-2011", "Paralegals and Legal Assistants", "", 296, 314, 33, 25.62)]
 
 
 def write_outlook(path):
     rows = []
-    for soc, title, progs, e24, e34, openings, wage in OUTLOOK:
+    for soc, title, progs, e24, e34, openings, wage in sorted(OUTLOOK):
         rows.append([soc, title, progs, e24, e34, e34 - e24, "%.1f" % (100 * (e34 - e24) / e24), openings,
                      "%.2f" % wage])
     return _csv(path, ["soc_code", "occupation", "related_programs", "employment_2024", "employment_2034", "change",

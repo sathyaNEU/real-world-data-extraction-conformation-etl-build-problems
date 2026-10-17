@@ -4,11 +4,11 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: student, transfer, admission, entering, admissions, competing, withdrawal, recorded, extract, censored, college, window, survival, endings, spring, asserted, ending, decisive, nothing, conversion, reason, enrolled, cumulative, incidence, estimator
+Stump terms swept: student, admission, entering, transfer, competing, admissions, withdrawal, recorded, extract, college, censored, endings, window, spring, asserted, survival, decisive, estimator, estimate, ending, degree, record, nothing, conversion, reason
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `policy_3-12_program_review.pdf`: 9 of 25 stump-paragraph terms appear (student, transfer, admission, entering, recorded, extract); read whether the document names the move
-- **REVIEW** `registrar_extract_notes_2027-05.pdf`: 11 of 25 stump-paragraph terms appear (student, transfer, admission, admissions, recorded, extract); read whether the document names the move
+- **REVIEW** `policy_3-12_program_review.pdf`: 11 of 25 stump-paragraph terms appear (student, admission, entering, transfer, recorded, extract); read whether the document names the move
+- **REVIEW** `registrar_extract_notes_2027-05.pdf`: 12 of 25 stump-paragraph terms appear (student, admission, transfer, admissions, recorded, extract); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2)
 - **REVIEW** `fall2026_section_schedule.xlsx`: names 4 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question

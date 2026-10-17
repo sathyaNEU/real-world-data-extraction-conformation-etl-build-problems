@@ -85,11 +85,11 @@ def manifest(n):
     reg, ir = "Office of the Registrar", "Office of Institutional Research"
     return [
         (F["policy"], "Board Policy 3.12, Academic Program Review, revised 10 June 2025", "Academic Affairs",
-         "2025-06-11", "%d pages" % n["policy_pages"]),
+         "2025-06-11", "%d page%s" % (n["policy_pages"], "" if n["policy_pages"] == 1 else "s")),
         (F["notes"], "Notes on the registrar's extracts for the June 2027 review", reg, "2027-05-28",
-         "%d pages" % n["notes_pages"]),
-        (F["cohorts"], "Fall entering-student files, fall 2023, fall 2024 and fall 2025, each frozen at its census", ir,
-         "2025-09-19", "%d rows, 3 sheets" % n["cohorts"]),
+         "%d page%s" % (n["notes_pages"], "" if n["notes_pages"] == 1 else "s")),
+        (F["cohorts"], "Fall entering-student files for fall 2023, fall 2024 and fall 2025, each frozen at its census "
+         "(21 September 2023, 18 September 2024, 19 September 2025)", ir, "2025-09-19", "%d rows, 3 sheets" % n["cohorts"]),
         (F["admissions"], "Admissions with an admit term from fall 2023 to spring 2027, with exits", reg, "2027-05-28",
          "%d rows" % n["admissions"]),
         (F["conferrals"], "Associate degrees conferred, December 2023 to May 2027", reg, "2027-05-28",

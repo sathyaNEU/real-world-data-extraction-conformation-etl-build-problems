@@ -237,10 +237,16 @@ def run(target, T):
             if (t <= K.WINDOW) != ok_in:
                 ok(False, "SF4: thirty-six months and nine terms select different degrees (%s)" % e["sid"])
     N[0] += 1
-    ok("those still enrolled included" in pol, "SF5 filed")
+    ok("Students whose ninth term is still to come are counted in full" in pol and
+       "an estimate, made from that record, of how many of them will have earned the degree by the end of their ninth "
+       "term" in pol, "SF5 the open classes' share filed as an estimate of the share by the ninth term")
+    ok("second, third and fourth fall terms before the review" in pol and
+       "at the end of the spring term before the review" in pol, "the policy's classes and record, general wording")
+    ok("June 2027" not in pol and "fall 2026" not in pol, "the standing policy names no particular review")
     ok("Pennsylvania Enrollment Exchange" in notes and "enrolled at another institution" in notes, "SF6 filed")
     ok("first fall or spring term in which the student is not enrolled" in notes, "SF7 exit dating filed")
-    ok("not followed under the new admission" in pol, "SF8 readmission filed")
+    ok("not followed under the new admission, and a degree earned under it does not count for the class" in pol,
+       "SF8 readmission filed")
     ok(all(abs(gold[p] - K.FLOOR) >= 1.5 for p in progs), "SF9 no program within 1.5 of the floor")
     ok(len(pk.by_adm) == len(pk.adm), "SF10 one exit row per admission")
     types = Counter(pk.by_adm[(e["sid"], e["admit"])]["admit_type"] for e in ent)
@@ -251,7 +257,7 @@ def run(target, T):
     ok(all(abs(gold[p] * 10 - round(gold[p] * 10)) <= .35 for p in progs), "SF14 no share within 0.015 of a rounding "
        "edge")
     ok("for each program" not in pol.lower().split("3.4")[0][-10:], "SF15 one share per program")
-    ok("the three classes taken together" in pol, "SF16 pooled classes filed")
+    ok("before the review, taken together" in pol, "SF16 pooled classes filed")
     for p in progs:
         ok(abs(R[p]["strat"] - gold[p]) < 1e-9, "SF16 %s: class by class equals the pooled estimate (C1)" % p)
 
@@ -261,8 +267,8 @@ def run(target, T):
        "axis 18: every transfer and withdrawal at a fall or spring census")
     ok(all(a["exit_term"] >= a["admit_term"] for a in adm if a["exit_term"]), "no exit before its admission")
     ok(not any(a["exit_term"] > K.LAST for a in adm if a["exit_term"]), "axis 4: no exit after spring 2027")
-    lids = [l.split("|")[0] for l in open(P("idmap"), encoding="utf-8").read().split("\r\n")[1:] if l]
-    sids = [l.split("|")[1] for l in open(P("idmap"), encoding="utf-8").read().split("\r\n")[1:] if l]
+    lids = [l.split("|")[0] for l in open(P("idmap"), encoding="utf-8").read().splitlines()[1:] if l]
+    sids = [l.split("|")[1] for l in open(P("idmap"), encoding="utf-8").read().splitlines()[1:] if l]
     ok(len(set(lids)) == len(lids) and len(set(sids)) == len(sids), "axis 16: the conversion map is one to one")
     shuffled = list(ent)
     random.Random(7).shuffle(shuffled)
@@ -319,6 +325,20 @@ def run(target, T):
                         a["Instructor"] != b["Instructor"]:
                     clash += 1
     ok(clash == 0, "no room holds two classes at once (%d)" % clash)
+    ok(all(n_c[str(s["CRN"])] >= 1 for s in secs if s["Status"] == "A"), "every section that ran had a student at the "
+       "census")
+    pairs = Counter((r["student_id"], r["crn"]) for r in regs)
+    ok(max(pairs.values()) == 1, "one registration row per student and section")
+    ok("laboratory, shop and clinical sections are classes of their own" in pol, "Ask B: linked sections are classes")
+    ok("from which one class is taught to students on more than one campus at once" in notes,
+       "Ask B: what a video classroom is for, filed")
+    ok("a laboratory, shop or clinical section carries none" in notes, "Ask A: the schedule's section credit hours "
+       "defined")
+    ok("program of record when the file was extracted" in notes, "Ask A: the registration program's vintage filed")
+    adm_head = next(csv.reader(open(P("admissions"), encoding="utf-8")))
+    ok("reason_changed_on" not in adm_head, "no column labels the recoded transfers")
+    conv = Counter(l.split("|")[2] for l in open(P("idmap"), encoding="utf-8").read().splitlines()[1:] if l)
+    ok(len(conv) == 3 and min(conv.values()) >= 100, "the conversion map carries its three load dates")
     secno = Counter((s["Subj"], s["Crse"], s["Sec"]) for s in secs)
     ok(max(secno.values()) == 1, "section numbers are unique within a course")
     cr_sec = {str(s["CRN"]): s["Cr Hrs"] for s in secs}

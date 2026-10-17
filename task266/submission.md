@@ -50,7 +50,7 @@ Their three-year completion shares are 20.9, 24.9, 22.2, 25.9, 26.2 and 19.5 per
    - Nursing: 538.3
 3. Each program's classes of its own courses that ran in fall 2026 with fewer than ten students at the census:
    - General Studies: 1
-   - Biological Sciences: 14
+   - Biological Sciences: 13
    - Business Administration: 5
    - Psychology: 5
    - Medical Assisting: 9

@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (2027-05-28): sweeps 4, 6 and 9, each harmless, answered in the design note",
-    "reader": "round 1 (2026-10-17): Q5 and Q6 find a main-call fork: Policy 3.3 read literally (still-enrolled students included, record as it stands) gives degrees to date over entrants (R0), so the estimand must say the open classes' share is an estimate of the share by their ninth term; realism: the policy names the June 2027 review, reason_changed_on labels the recoded transfers, one conversion date on every map row, the manifest's IR date and '1 pages'; asks: credit hours of linked sections, the registration program's vintage and whether linked sections are classes need filed definitions"
+    "reader": "round 2 (2026-10-17): Q1 none (the policy states the estimand, no method), Q2 none, Q4 none; Q5 the open classes counted in full with an estimate, transfers and withdrawals non-completers, the estimator open; Q6 an analytical choice (the estimate for students whose ninth term is still to come); realism: the outlook file read as a tidy distractor (widened to 41 occupations, not yet rebuilt); the two exits recorded in 2023 are a death and a quick second degree, harmless"
   },
   "duplicate_check": {
     "heart": "PASS (nearest 0.09)",
@@ -24,12 +24,12 @@
     "surface": "task265 and task448 promoted, answered on the card"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "pass 1 NOT_DETERMINISTIC (agent override of a DETERMINISTIC thread)",
+    "disposition": "FIX_NOW",
+    "report": "task266/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: the isolated determinism-judge thread (brief at /tmp/determinism-check-task266-1792249181/judge_brief.md) is running; when it returns, re-invoke the determinism-judge agent with its verdict.md for the report, then fix the reader's and the judge's findings in one pass: Policy 3.3 general and filing the open classes' share as an estimate of the share by the ninth term (SF5, literal reader), 3.2 a degree under a readmission not counted, 4.2 linked sections are classes, the notes' Cr Hrs and program_code vintage sentences, reason_changed_on dropped (exit_recorded_on carries the current reason's date), conversion dates by batch, manifest dates and grammar; rebuild, stage 3 gates, re-run the reader and the judge; then ship with the wave 4 row in the author file",
+  "resume": "stage 4, round 2: the re-judge thread (brief /tmp/determinism-check-task266-1792249757/judge_brief.md) is running; when its verdict.md lands, re-invoke the determinism-judge agent for task266/determinism_check_report_pass2.md, fix any finding with the outlook widening in one pass, rebuild and re-run the free gates, then ship with the wave 4 row in the author file",
   "approved": null,
   "delivered": null,
   "portal": null,

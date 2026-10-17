@@ -68,7 +68,7 @@
   "Psychology": 404.0
  },
  "ask_b": {
-  "Biological Sciences": 14,
+  "Biological Sciences": 13,
   "Business Administration": 5,
   "Criminal Justice": 3,
   "Early Childhood Education": 3,
@@ -80,7 +80,7 @@
  },
  "ask_b_stops": {
   "census_uncombined": {
-   "Biological Sciences": 15,
+   "Biological Sciences": 14,
    "Business Administration": 8,
    "Criminal Justice": 5,
    "Early Childhood Education": 5,
@@ -91,7 +91,7 @@
    "Psychology": 6
   },
   "natural": {
-   "Biological Sciences": 19,
+   "Biological Sciences": 18,
    "Business Administration": 9,
    "Criminal Justice": 6,
    "Early Childhood Education": 6,
@@ -102,7 +102,7 @@
    "Psychology": 7
   },
   "room": {
-   "Biological Sciences": 15,
+   "Biological Sciences": 14,
    "Business Administration": 8,
    "Criminal Justice": 5,
    "Early Childhood Education": 5,
@@ -113,7 +113,7 @@
    "Psychology": 6
   },
   "text": {
-   "Biological Sciences": 14,
+   "Biological Sciences": 13,
    "Business Administration": 1,
    "Criminal Justice": 1,
    "Early Childhood Education": 1,

@@ -430,6 +430,11 @@ def schedule(regs, seed):
                     members[l["crn"]].append(sid)
                     busy.append(l["slot"])
     stack(sections, members, book, rng)
+    # a linked section no student was placed in is not offered
+    empty = {s["crn"] for s in sections if not members[s["crn"]]}
+    sections[:] = [s for s in sections if s["crn"] not in empty]
+    for c in empty:
+        del members[c]
     number(sections, rng)
     for s in sections:
         s["cap"] = {"LEC": 32 if s["subj"] not in ("ENG", "MAT") else 26, "ONL": 30, "LAB": 24, "SHP": 16,
