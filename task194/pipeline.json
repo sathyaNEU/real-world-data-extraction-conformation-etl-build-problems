@@ -1,7 +1,7 @@
 {
   "task": "task194",
   "owner": "oviya13ya",
-  "status": "DRAWING",
+  "status": "PAUSED",
   "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
   "objective": "anomaly-detection",
   "stage": 1,
@@ -68,6 +68,19 @@
       "ban.forcing_event: period_close repeats task241, now audit_or_inspection",
       "test.same_driver_older: differentiation lines written against task157, task231 and task469"
     ],
-    "decision_for_the_author": "override the strategy ban, hold the slot until the window frees, or name a different decisive step; the WHAT screen result for each candidate is in the handback"
-  }
+    "decision_for_the_author": "taken: hold the slot, see author_decision",
+    "author_decision": "No override and no redraw of the decisive step. task469 is the single most recent draw before task194, so the strategy repeat sits in the worst position the ban exists to catch rather than a marginal one, and maturity_censoring already stands at 2 uses in the last twelve. An author override is for a BLOCK whose purpose is met some other way; this one's purpose is exactly engaged, and overriding would put two adjacent draws on the same strategy label, which is what the clone screen reads. Redrawing the decisive step was declined too: the maturity draw passes the WHAT screen with the comparison filed, so trading it for an unbanned label on this number's last architecture is the wrong trade. A novelty window is a window. Holding costs this lane nothing, because task182 and task193 are both live and the lane is at its throughput either way."
+  },
+  "paused": {
+    "at": "stage 1, the draw, with every axis drawn and the card deliberately unregistered",
+    "resume_condition": "the draw registers and the build proceeds when guard.py check's ban.strategy clears, which takes three further draws anywhere in the corpus after task469. Re-run `python3 .claude/skills/fingerprint/guard.py check task194`; the strategy ban is now the only line it returns, the question-form WARN having lapsed as the corpus drew on, so when it returns no BLOCK the card registers and stage 2 begins.",
+    "resume_step": "guard.py check task194, then register, then stage 2 design from the note's `## Architecture 3 draw, held` section. Nothing about the design changes while it waits.",
+    "nothing_else_blocks": "the other five blocks were cleared at the draw and are recorded under draw_blocked.cleared_on_the_way"
+  },
+  "lessons": [
+    "Before a decisive step is accepted, name which of the five parts of the estimand it could be mistaken for, and if the answer is any of them it is a WHAT and must be filed. The five are population, outcome, window, unit and comparison, and the comparison includes both whose rates and which pool. This is what spent architecture 2.",
+    "Look a strategy label's ban window up before spending design time on a direction, in the same breath as guard.py mechanisms and coverage. The ban is deliberately not escapable by argument, so a direction's availability is a fact to look up, not a judgement to argue.",
+    "Forecasting is not a legal objective for provider-quality-risk-adjustment: guard.py blocks it on the task type, because under forecasting the domain would be a backdrop.",
+    "Never relabel a mechanism to pass a ban. The card guards every other build and the clone screen reads it, so a false label is worse than a blocked draw."
+  ]
 }

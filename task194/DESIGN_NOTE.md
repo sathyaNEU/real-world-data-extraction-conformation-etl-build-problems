@@ -1,6 +1,90 @@
 # task194 design note
 
-> **Status: architecture 2 is spent and every section below this line describes it.** The judge returned NOT_DETERMINISTIC, underspecified_objective on Gates C and E, and the cause is in the card's `lineage` and the last entries under `## Tried and rejected`. Architecture 3 has been drawn but not designed, and the draw is blocked on one axis (see `pipeline.json`). A reader taking the ladder, fork table, closure table, oracles or ask sheet below as current would be reading a design that no longer exists.
+> **Status: PAUSED at stage 1.** Architecture 3 is drawn and held. Its draw is the section immediately
+> below, `## Architecture 3 draw, held`. **Every section after that one describes architecture 2, which is
+> spent**: the judge returned NOT_DETERMINISTIC, underspecified_objective on Gates C and E, and the cause
+> is in the card's `lineage` and under `## Tried and rejected`. A reader taking the default path, stump
+> sentence, three rules, readability screen, ladder, fork table, closure table, literal reader, oracles or
+> ask sheet below as current would be reading a design that no longer exists. Architectures 1 and 2 are
+> both in the card's `lineage`; architecture 3 is this number's last.
+
+## Architecture 3 draw, held
+
+**Why it is held and not building.** `guard.py check` returns one BLOCK: `ban.strategy`, the stump strategy
+`maturity_censoring` repeats a recent build, against task469. The ban measures the last three draws, and
+task469 is the single most recent draw before this one, so the repeat sits in the worst position the ban
+exists to catch rather than a marginal one; the strategy also stands at 2 uses in the last twelve, so the
+corpus is already leaning that way. The author declined to override, because an override is for a BLOCK
+whose purpose is met some other way and this one's purpose is exactly engaged, and declined to redraw the
+decisive step, because trading a design that passes the WHAT screen for an unbanned label on this number's
+last architecture is the wrong trade. The card is therefore written and **deliberately not registered**.
+**Resume condition:** the draw registers and the build proceeds when `ban.strategy` clears, which takes
+three further draws anywhere in the corpus after task469. That ban is now the only line `guard.py check`
+returns, the question-form WARN having lapsed as the corpus drew on, so when the check comes back with no
+BLOCK the card registers and stage 2 begins. Nothing about the design changes while it waits.
+
+**The decisive step.** A count of events that crystallise after the period they belong to, so the record's
+most recent quarters are short by a coding lag the record itself measures through two vintages of the same
+series, and ranking the candidates on the counts as reported names a different unit from ranking them on
+the counts developed to what the period's patients actually had.
+
+**The estimand, filed in all five parts, the comparison included.** Population: the twelve eligible units
+of charter 4.2, and for the forward count the unit's patients in the placement quarter. Outcome: episodes
+recording a complication under specification 2.1 to 2.4, and filed as the complications the unit's patients
+**had**, not the complications coded by the pull date. Window: the closed quarters of specification 3.3.
+Unit: a count of complications, carried onto the planned separations under 3.4. Comparison: **the published
+stratum table of Appendix A, as specification 3.1 defines it**, which is the part architecture 2 withheld.
+What stays open is the observation process, which is none of the five parts: the record shows the
+complications coded so far and the most recent quarters are short.
+
+**Card axes, each drawn independently through `guard.py check`.** Objective `anomaly-detection`, gap
+`time`, Gate G `confirm_surface_read`, strategy `maturity_censoring`, Layer 2 family
+`forecast_uncertainty`, Layer 2 pattern `own:immature-quarters-developed-from-the-series-own-vintages`,
+calibration form `censored_or_lagged_release`, context artifact `close_out_summary`, forum
+`board_of_directors`, forcing event `audit_or_inspection`, shape 17, question form `which`, decision
+`pick_one_of_n`, role family `programme_officer`, generators G12, G13, G3, G11. `architecture` 3, `loops`
+0, people and world unchanged.
+
+**Five blocks cleared on the way, and one of them governs the objective.** `three_rules.task_type`:
+forecasting is **not** a legal objective for provider-quality-risk-adjustment, because the guard blocks it
+on the task type and under forecasting the domain would be a backdrop, so the objective stays
+anomaly-detection at 4 of 12 with the overuse WARN answered. `ban.artifact`: `published_series` repeats
+task159, now `close_out_summary`, which is the quarterly coding close-out and is what produces the lag.
+`ban.forum`: `committee_or_panel` repeats task469 and `line_manager_or_team` repeats task241, now
+`board_of_directors`, which charter 6.1 already reports to annually. `ban.forcing_event`: `period_close`
+repeats task241, now `audit_or_inspection`. `test.same_driver_older`: differentiation written against
+task157, task231 and task469.
+
+**The WHAT screen, answered.** It passes. Axis 12, maturity and censoring, is closed by the outcome's own
+filed sentence, that the quantity is the complications the patients had rather than the complications coded
+by the pull date, so the as-of is filed without saying how to recover the ultimate. The step that stays
+open is estimation under incomplete observation, which the client's own Layer 2 list names, and it is not
+population, outcome, window, unit or comparison.
+
+**The one thing it lives or dies on.** The development must be measurable from the shipped record and from
+nothing else, through two vintages of the same series. A shipped sentence saying how to develop makes the
+step rule application; no shipped evidence that the recent quarters are short makes the call indeterminate,
+which is exactly how architecture 2 died. Both halves get asserted in `checks.py` and again in `verify.py`
+before any ladder is measured.
+
+**The residual risk, named at the draw.** Gate C will ask whether "the complications its patients had" is
+satisfiable by the extract's own flags. The defence is the two vintages, which show every quarter growing
+after its close. If a judge reads the extract's flag as the definitive record of what the patients had,
+architecture 3 fails the same way and the number retires. It is rated materially lower than architecture
+2's, because there the two candidate answers aimed at two different quantities and here they aim at one
+filed quantity with one biased estimator.
+
+**Rejected at this draw: judging each unit's excess against its own sampling error**, or predicting the
+placement quarter's excess from a short noisy record. It fails the WHAT screen for a different reason:
+specification 3.4 already files how the record is carried onto the planned quarter, planned separations
+times the unit's expected complications per separation over the period to date. The easy route would
+therefore be the filed procedure and the golden a departure from it, which is an official decoy, and
+narrowing 3.4 to make room is the move that killed architecture 2.
+
+**Kept for the build whenever it starts.** The placement register and the charter's twelve-quarter bar, the
+eligible row set, the twelve-reading convergence machinery, the per-device assertion pattern, the measured
+cracker with its attempted-value diagnostic, the realism work on casemix, weekday, holidays, rostering and
+the theatre closure, and both fixes to the fiction's own history.
 
 Placing a scarce improvement team when the unit standing worst is partly standing worst by chance.
 
@@ -717,3 +801,15 @@ script says that in its output instead of printing the row twice and calling it 
   used, a risk band of `drg_risk_bands.csv` whose name begins SURG, and stated as running from exactly
   0.000, with two units carrying none, to 0.851, and from 0.075 among the ten that carry any. A range whose
   foot silently excludes the zeros is not reproducible however correct its arithmetic.
+- **Held, not rejected: the maturity direction, and the habit the hold teaches.** `maturity_censoring` is
+  banned against the last three draws and task469 is the immediate neighbour, so the direction is
+  unavailable rather than unsound and the slot waits for the window to lapse. **The habit: look a strategy
+  label's ban window up before spending design time on the direction, in the same breath as `guard.py
+  mechanisms` and `coverage`, because the ban is deliberately not escapable by argument and a direction's
+  availability is a fact rather than a judgement.** The design time here was spent after the direction was
+  named and before the label was checked, which is the wrong order whoever names it.
+- **Rejected: relabelling the mechanism to get past the ban.** The guard bans the strategy label, so a
+  different label would have passed it silently. The mechanism is maturity: a count for a fully observed
+  population is still accumulating and the development is an observed ratio between two vintages. Any other
+  label would be a false entry in the card, which is worse than a blocked draw, because the card is what
+  guards every other build and what the clone screen reads.

@@ -9,7 +9,9 @@ The rules this file encodes are the ones the shipped noise management plan state
        where that deviation is more than 0.3 dB from zero it is taken off every level the deployment
        recorded
   4.2  a minute is not valid where the met record for its ten minutes counted rain on the gauge or shows
-       wind above 5 m a second, or where the meter recorded no measurement for that minute
+       wind above 5 m a second, or where the meter recorded no measurement for that minute; the mast's
+       own conventions (the stamp, the gauge's tips in the record, the anemometer's units) are in the
+       export manifest's description of that file
   4.3  a tone is prominent where a band exceeds the mean of its two neighbours by 5 dB or more, on the
        unweighted band levels over the assessment period
   5.1  a week's process figure is the counter reading at 00:00 on its Monday taken from the reading at
@@ -92,21 +94,13 @@ def _core(target, fig, with_asks):
 
     # ---- the met mast, and the validity rule
     met = rows(os.path.join(target, "weather_10min_2026.csv"))
-    wind, rain10, stamps10 = {}, {}, []
-    prev_tips, prev_day = None, None
-    inc = []
+    wind, stamps10, inc = {}, [], []
     for r in met:
         t = dt.datetime.strptime(r["measured_at_utc"], "%Y-%m-%d %H:%M")
         v = float(r["wind_speed"])
         eff = round(v / 3.6, 6) if t.date() >= SWAP else v
         wind[t] = eff
-        tips = int(r["rain_tips_today"])
-        if prev_day is None or t.date() != prev_day:
-            step = tips
-        else:
-            step = tips - prev_tips
-        inc.append((t, max(step, 0) * TIP_MM))
-        prev_tips, prev_day = tips, t.date()
+        inc.append((t, int(r["rain_tips"]) * TIP_MM))     # the gauge's tips in those ten minutes
         stamps10.append(t)
     rained = {t: mm > 0.0 for t, mm in inc}
     ok(len(wind) > 5000, "the met record covers the survey (%d records)" % len(wind))

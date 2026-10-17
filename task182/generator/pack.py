@@ -340,15 +340,16 @@ def _run_minutes(stamps, down):
 
 def write_weather(target):
     """The met mast, UTC, ten-minute means. The anemometer was swapped and reports in km an hour after it;
-    the rain gauge reports its tip count since midnight."""
+    the rain gauge reports the tips it counted in the ten minutes the record covers."""
     rows = []
     for i in range(SM.MET["n"]):
         stamp = SM.MET["t0"] + dt.timedelta(minutes=10 * i)
         rows.append([stamp.strftime("%Y-%m-%d %H:%M"), "%.1f" % SM.MET["wind_shipped"][i],
                      "%d" % SM.MET["wind_dir"][i],
-                     "%d" % SM.MET["tips"][i], "%.1f" % SM.MET["temp_c"][i]])
+                     "%d" % int(round(SM.MET["rain_mm_shipped"][i] / W.RAIN_TIP_MM)),
+                     "%.1f" % SM.MET["temp_c"][i]])
     return _write_csv(os.path.join(target, FILES["weather"]),
-                      ["measured_at_utc", "wind_speed", "wind_direction_deg", "rain_tips_today",
+                      ["measured_at_utc", "wind_speed", "wind_direction_deg", "rain_tips",
                        "air_temperature_c"], rows)
 
 
@@ -586,7 +587,9 @@ def write_manifest(target, counts):
          "fifteen-minute process channels, counters as the meters read them"],
         [FILES["weather"], "csv", counts["weather"], "30/08/2026 to 16/10/2026",
          "met mast on the blower house roof, UTC", "2026-10-16", OWN,
-         "ten-minute means, wind, direction, rain gauge count and air temperature"],
+         "ten-minute means stamped at the start of the ten minutes they cover: wind speed, in metres a "
+         "second to 20/09/2026 and in kilometres an hour after the anemometer was replaced that day, "
+         "wind direction, the rain gauge's tips in the ten minutes at 0.2 mm a tip, and air temperature"],
         [FILES["bands"], "csv", counts["bands"], "31/08/2026 to 12/10/2026",
          "meter download software, band module", "2026-10-13", OWN,
          "one-third-octave band levels from the three meters that carry the module"],

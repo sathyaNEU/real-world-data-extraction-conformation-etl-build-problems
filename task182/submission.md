@@ -40,7 +40,7 @@ Not the complaints register, which is a record of what neighbours heard and not 
    - NSL06 (DW-107): 44.7 dB LAeq, 498.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 13
    - NSL07 (DW-110): 47.8 dB LAeq, 498.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 13
    - NSL08 (DW-126): 41.4 dB LAeq, 498.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 13
-   - NSL09 (DW-112): 44.6 dB LAeq, 505.7 thousand Nm3 of blower air, 27 quarter hours not recorded, longest run 16
+   - NSL09 (DW-112): 44.0 dB LAeq, 505.7 thousand Nm3 of blower air, 27 quarter hours not recorded, longest run 16
    - NSL10 (DW-134): 37.4 dB LAeq, 505.7 thousand Nm3 of blower air, 27 quarter hours not recorded, longest run 16
    - NSL11 (DW-104): 49.9 dB LAeq, 511.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 16
    - NSL12 (DW-118): 43.3 dB LAeq, 511.0 thousand Nm3 of blower air, 24 quarter hours not recorded, longest run 16
