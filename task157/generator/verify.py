@@ -117,6 +117,11 @@ def main(target):
         ap = ap[ap["ft_c"].isna() | (ap["ft_c"] > end)]
         return set(ap["driver_id"])
     a26, a27 = apn(end26), apn(end27)
+    ap_dec = apps[apps["status"].isin(["approved", "approval_lapsed"]) & (apps["dec_c"] <= end26)]
+    ap_dec = ap_dec[(end26.normalize() - ap_dec["dec_c"].dt.normalize()).dt.days <= 90]
+    ap_dec = ap_dec[ap_dec["ft_c"].isna() | (ap_dec["ft_c"] >= pd.Timestamp("2026-01-01"))]
+    ok("V4b the 2026 base leaves out the %d accounts that first drove on 1 to 4 January 2026" % (len(ap_dec) - len(a26)),
+       str(len(set(ap_dec["driver_id"])) - len(a26)) == figs["steps"]["first_drove_jan_1_to_4"])
     new_paid = len(a26 & paid[2026])
     new_part = len(a27) * new_paid / len(a26)
     drivers = roster_part + n_back * qD + rest * qJ + other + new_part

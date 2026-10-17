@@ -1,0 +1,20 @@
+open hours                               Werribee    x1.25 | Werribee 3254 Box Hill 2602 Altona 1770 Sunshine 1378 Ringwood 1140 Camberwell 1092 Ballarat 876 Williamstown 642
+R0 ordinary-week register fill           Werribee    x2.12 | Werribee 2256 Box Hill 1065 Altona 774 Sunshine 688 Ringwood 655 Camberwell 589 Ballarat 485 Williamstown 303
+R1 last Christmas register fill          Werribee    x1.25 | Werribee 3039 Box Hill 2430 Altona 1665 Sunshine 1318 Ringwood 1074 Camberwell 957 Ballarat 846 Williamstown 619
+R0 ordinary-week fill by shift           Werribee    x1.56 | Werribee 1383 Box Hill 888 Altona 659 Ringwood 392 Sunshine 353 Camberwell 285 Ballarat 236 Williamstown 167
+R1 last Christmas fill by shift          Werribee    x2.51 | Werribee 2514 Box Hill 1000 Altona 758 Sunshine 668 Ringwood 510 Ballarat 473 Williamstown 365 Camberwell 298
+R2 static noext                          Werribee    x1.52 | Werribee 1047 Camberwell 688 Box Hill 580 Altona 395 Sunshine 388 Williamstown 368 Ballarat 338 Ringwood 326
+R2 static noext_age                      Werribee    x1.48 | Werribee 1015 Camberwell 684 Box Hill 554 Sunshine 373 Altona 370 Williamstown 365 Ballarat 331 Ringwood 312
+R2 static noext_age_store                Werribee    x2.25 | Werribee 1456 Camberwell 647 Box Hill 513 Altona 452 Sunshine 395 Williamstown 367 Ringwood 361 Ballarat 347
+R2 static sameday                        Werribee    x1.25 | Werribee 863 Camberwell 689 Box Hill 505 Sunshine 386 Williamstown 364 Altona 363 Ballarat 335 Ringwood 311
+R2 static sameday_store                  Werribee    x1.99 | Werribee 1302 Camberwell 653 Box Hill 475 Altona 444 Sunshine 404 Williamstown 366 Ringwood 359 Ballarat 349
+R2 cascade noext_age                     Werribee    x1.70 | Werribee 1344 Box Hill 788 Camberwell 712 Altona 469 Sunshine 425 Williamstown 391 Ringwood 365 Ballarat 353
+R2 cascade sameday                       Werribee    x1.53 | Werribee 1209 Box Hill 790 Camberwell 709 Altona 480 Sunshine 479 Ringwood 385 Williamstown 384 Ballarat 359
+R3 static golden                         Camberwell  x1.89 | Camberwell 667 Sunshine 353 Williamstown 305 Ballarat 305 Ringwood 299 Altona 178 Box Hill 27 Werribee 18
+R3 static ext_only                       Camberwell  x2.03 | Camberwell 714 Sunshine 351 Ballarat 309 Williamstown 305 Ringwood 272 Altona 156 Box Hill 28 Werribee 4
+R3 static ext_age                        Camberwell  x2.07 | Camberwell 705 Sunshine 341 Williamstown 304 Ballarat 302 Ringwood 265 Altona 148 Box Hill 25 Werribee 4
+R3 static ext_dec                        Camberwell  x1.90 | Camberwell 671 Sunshine 353 Ballarat 302 Williamstown 298 Ringwood 292 Altona 170 Box Hill 27 Werribee 11
+R3 cascade ext_only                      Camberwell  x1.61 | Camberwell 736 Sunshine 456 Ringwood 419 Ballarat 391 Box Hill 371 Altona 361 Williamstown 344 Werribee 243
+R3 cascade ext_dec                       Camberwell  x1.55 | Camberwell 703 Sunshine 453 Ringwood 437 Altona 400 Ballarat 371 Box Hill 367 Williamstown 350 Werribee 294
+world truth (32 runs)                    Camberwell  x1.51 | Camberwell 687 Sunshine 456 Ballarat 368 Ringwood 361 Altona 317 Williamstown 258 Werribee 242 Box Hill 229
+golden cascade (24 runs)                 Camberwell  x1.59 | Camberwell 691 Sunshine 434 Ringwood 409 Altona 377 Box Hill 374 Ballarat 372 Williamstown 340 Werribee 332
