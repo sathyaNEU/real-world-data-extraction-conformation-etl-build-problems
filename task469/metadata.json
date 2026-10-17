@@ -1,0 +1,41 @@
+{
+ "task": "task469",
+ "architecture": 1,
+ "title": "Which of the minimum ground times the carriers filed for summer 2027 at Kelderby's E gates the Kelderby Airport Authority should send back, and the shortest it would accept from each carrier relationship; with the share of 2026 peak turns needing longer at each ground time in a chart, and each relationship's turns in the summer 2027 initial submissions' peak week",
+ "domain": "General Statistics & Data Science",
+ "subdomain": "data-integration-record-linkage-entity-resolution (the authority's stand log linked to three operators' flight logs, the affiliate register and the aircraft register into turns; the carriers' SSIM submissions conformed to operating flights and turns)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "14: cuts of a distribution per segment: for each of six carrier relationships, the share of turns needing longer than each ground time, the verdict on its filing and the shortest ground time accepted, beside each relationship's turns and short turns in the 2027 peak week",
+ "as_of": "2026-10-30",
+ "deliverables": [
+  "kelderby_summer2027_ground_time_review.xlsx"
+ ],
+ "distractor_files": [
+  "kdy_monthly_punctuality_by_carrier_2026.xlsx",
+  "e_gates_ground_handling_staffing_s26.csv"
+ ],
+ "stated_inputs": [
+  "2027",
+  "12 to 18 July 2027",
+  "2026"
+ ],
+ "input_gates": {
+  "files": 16,
+  "formats": [
+   "csv",
+   "pdf",
+   "ssim",
+   "xlsx"
+  ],
+  "largest_file": "kelderby_aodb_stand_events_jun_sep_2026.csv",
+  "largest_file_rows": 28392
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task469/generator/build.py (seeded, deterministic) in the layouts of an airport authority's stand log (AODB events), regional operators' flight logs, IATA SSIM Chapter 7 schedule files, an authority's schedule facilitation guideline and file layout note, carrier filings, affiliate and aircraft registers, a fleet plan, IATA delay codes grouped by the authority, and a punctuality workbook and handling staffing file the review does not use; the province is unnamed and the airport, authority, airlines, operators and people are fictional",
+   "date": "2026-10-30",
+   "license": "original work for this task; no third-party data"
+  }
+ ]
+}

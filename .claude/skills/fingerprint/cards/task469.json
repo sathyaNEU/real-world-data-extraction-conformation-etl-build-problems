@@ -1,102 +1,104 @@
 {
-  "task": "task469",
-  "architecture": "v1",
-  "drawn": "2026-10-17",
-  "slot_note": "wave 5, fourth of six, seed ET26 (a hub's arrival on-time fall, marketing brand against operating carrier): the world (a hub, its brands, the regional operators flying for them, the authority's performance team) and the carrier relationships kept; the call made forward facing (the 2027 summer ground times the airlines filed); the seed's mix-against-rate move not used (composition_mix is banned against the last three)",
-  "domain": "general-statistics-data-science",
-  "subdomain": "data-integration-record-linkage-entity-resolution",
-  "client_domain": "general-statistics-data-science",
-  "niche": "an airport authority's schedule facilitation review of the summer ground times each carrier relationship filed for its regional gates, built by linking stand events to filed schedules, operators' flight logs and delay codes into turns, where a turn shows how long it needed only when it overran its allowance",
-  "objective": "etl",
-  "shape": "14",
-  "decision_type": "dial_setting",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "population",
-    "time"
+ "task": "task469",
+ "architecture": "v1",
+ "drawn": "2026-10-17",
+ "slot_note": "wave 5, fourth of six, seed ET26 (a hub's arrival on-time fall, marketing brand against operating carrier): the world (a hub, its brands, the regional operators flying for them, the authority's performance team) and the carrier relationships kept; the call made forward facing (the 2027 summer ground times the airlines filed); the seed's mix-against-rate move not used (composition_mix is banned against the last three)",
+ "domain": "general-statistics-data-science",
+ "subdomain": "data-integration-record-linkage-entity-resolution",
+ "client_domain": "general-statistics-data-science",
+ "niche": "an airport authority's schedule facilitation review of the summer ground times each carrier relationship filed for its regional gates, built by linking stand events to filed schedules, operators' flight logs and delay codes into turns, where a turn shows how long it needed only when it overran its allowance",
+ "objective": "etl",
+ "shape": "14",
+ "decision_type": "dial_setting",
+ "answer_unit": "set_of_items",
+ "answer": "Send back the summer 2027 minimum ground times filed for Norvale Connect flown by Pellmont Aviation's Embraer 175s (35 minutes; shortest acceptable 40), Tellura Express flown by Pellmont Aviation's Embraer 175s (40; 45) and Tellura Express flown by Sable Coast Air's Dash 8-400s (30; 35); accept Norvale Connect flown by Grayling Air's ATR 72s (40; 40), Norvale Connect flown by Sable Coast Air's Dash 8-400s (30; 30) and Grayling Air's ATR 72s (35; 30).",
+ "answer_source": "task469/submission.md block 1; golden kelderby_summer2027_ground_time_review.xlsx, Review sheet",
+ "gap": [
+  "population",
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G3",
+  "G17",
+  "G13"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "maturity_censoring",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stakeholder_role": "Director, Airside Operations",
+ "role_family": "operations_director",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "kelderby_aodb_stand_events_jun_sep_2026.csv",
+  "rows": 28392,
+  "entity": "one aircraft arriving on or leaving a stand, as the airport operational database recorded it",
+  "grain": "stand event",
+  "source": "synthetic (constructed in the layout of an airport operational database's stand-event export)",
+  "row_meaning": "an on-block or off-block event at one of the regional concourse's stands, with registration, callsign and stand",
+  "source_dataset": "constructed (seeded generator)"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "season_or_peak",
+ "org_family": "utility_or_infrastructure",
+ "world": {
+  "geography": "Canada, an unnamed province (Kelderby International Airport, its authority, the airlines and operators flying there and the people are fictional)",
+  "currency": "CAD",
+  "org_type": "an airport authority",
+  "invented_names": [
+   "Kelderby",
+   "Kelderby Airport Authority",
+   "Norvale Air",
+   "Norvale Connect",
+   "Tellura Airways",
+   "Tellura Express",
+   "Pellmont Aviation",
+   "Sable Coast Air",
+   "Grayling Air"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G3",
-    "G17",
-    "G13"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "maturity_censoring",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "Director, Airside Operations",
-  "role_family": "operations_director",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "kelderby_aodb_stand_events_summer2026.csv",
-    "rows": 0,
-    "entity": "one aircraft arriving on or leaving a stand, as the airport operational database recorded it",
-    "grain": "stand event",
-    "source": "synthetic (constructed in the layout of an airport operational database's stand-event export)",
-    "row_meaning": "an on-block or off-block event at one of the regional concourse's stands, with registration, callsign and stand",
-    "source_dataset": "constructed (seeded generator)"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "season_or_peak",
-  "org_family": "utility_or_infrastructure",
-  "world": {
-    "geography": "Canada, an unnamed province (Kelderby International Airport, its authority, the airlines and operators flying there and the people are fictional)",
-    "currency": "CAD",
-    "org_type": "an airport authority",
-    "invented_names": [
-      "Kelderby",
-      "Kelderby Airport Authority",
-      "Norvale Air",
-      "Norvale Connect",
-      "Tellura Airways",
-      "Tellura Express",
-      "Pellmont Aviation",
-      "Sable Coast Air",
-      "Grayling Air"
-    ],
-    "people": [
-      "Joanne Gilbert",
-      "Gabriela Armstrong",
-      "Arthur Bryant"
-    ]
-  },
-  "deliverables": [
-    "kelderby_summer2027_ground_time_review.xlsx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is the share of future tasks that will need longer than a new, shorter allowance, where each past task shows how long it needed only when it ran past its own allowance and every task that finished within its allowance shows only that it needed no more; the share is observed in full only on the past tasks whose allowance was already shorter than the new one, so it is read there (or by a product-limit estimate treating the hidden ones as censored), not from all observed durations or from the overruns alone.",
-  "driver_concrete": "Each carrier relationship's share of 2027 turns that will need longer than its filed ground time is read from the summer 2026 turns whose available time (scheduled departure less on-block) was already shorter than that ground time, where readiness is fully observed, or equivalently from a reverse-time product-limit estimate; a turn that pushed back on time only shows it needed no more than the time it had.",
-  "stump": "The default path counts as needing longer than the filed 2027 ground time only the 2026 turns that visibly overran by more than it (every on-time pushback read as ready in time), so the shortened proposals read well under the authority's 20 per cent and are accepted, where the turns that had less time than the proposal show more than 20 per cent needing longer for some relationships.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the stand log, the filed schedules, the operators' flight logs and their delay codes correctly reads each turn's need from its overrun, counting every on-time pushback as ready within the new ground time (or takes every observed ground time as the need), and so accepts every shortened proposal (or sends every one back), where the share observed on the turns that had less time than the proposal sends back only some.",
-  "domain_test": "The deciding quantity is a tail probability of a duration left-censored by a schedule allowance, estimated the way statistics treats censored durations (the indicator is complete only where the allowance fell below the threshold, and a reverse-time product-limit estimate agrees); replacing it with the share of observed ground times or of overruns, a generic summary, changes which relationships are sent back.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:allowance-censored-durations",
-  "layer1": [
-    "an airport operational database's stand events in local time beside operators' flight logs in UTC",
-    "ATC callsigns on the stand log against the brands' commercial flight numbers in the filed schedules",
-    "IATA SSIM schedule files (fixed-width Record 3 lines, local times with UTC variations)",
-    "two delay-code versions (two-digit codes and lettered sub-codes) from two operators",
-    "tows between stands splitting one turn into two stand visits",
-    "registrations written with and without the hyphen, and an aircraft moving between operators mid-summer",
-    "an affiliate register whose flight-number blocks change hands mid-summer"
-  ],
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task450": "450 v1 read durations from scheduled visits that sample time in proportion to length (an inspection-paradox weighting); this build reads a duration's upper tail that an allowance hides (left-censoring), complete only where the old allowance was shorter than the threshold.",
-    "task126": "126 split units a succession link had joined (an identity question on the unit); this build has no identity question: every turn is one unit, and the decisive move is estimating its needed time under censoring by the schedule.",
-    "task101": "101 cut a threshold from a distribution the decision's own earlier payments had entered, so the population to cut from was a published total less a component; this build cuts a duration distribution whose values an allowance hid, so the cut is estimated under censoring, with no component to remove."
-  },
-  "lineage": [],
-  "notes": "",
-  "registered": "2026-10-17T20:59:15Z"
+  "people": [
+   "Joanne Gilbert",
+   "Gabriela Armstrong",
+   "Arthur Bryant"
+  ]
+ },
+ "deliverables": [
+  "kelderby_summer2027_ground_time_review.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is the share of future tasks that will need longer than a new, shorter allowance, where each past task shows how long it needed only when it ran past its own allowance and every task that finished within its allowance shows only that it needed no more; the share is observed in full only on the past tasks whose allowance was already shorter than the new one, so it is read there (or by a product-limit estimate treating the hidden ones as censored), not from all observed durations or from the overruns alone.",
+ "driver_concrete": "Each carrier relationship's share of 2027 turns that will need longer than its filed ground time is read from the summer 2026 turns whose available time (scheduled departure less on-block) was already shorter than that ground time, where readiness is fully observed, or equivalently from a reverse-time product-limit estimate; a turn that pushed back on time only shows it needed no more than the time it had.",
+ "stump": "The default path counts as needing longer than the filed 2027 ground time only the 2026 turns that visibly overran by more than it (every on-time pushback read as ready in time), so the shortened proposals read well under the authority's 20 per cent and are accepted, where the turns that had less time than the proposal show more than 20 per cent needing longer for some relationships.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms the stand log, the filed schedules, the operators' flight logs and their delay codes correctly reads each turn's need from its overrun, counting every on-time pushback as ready within the new ground time (or takes every observed ground time as the need), and so accepts every shortened proposal (or sends every one back), where the share observed on the turns that had less time than the proposal sends back only some.",
+ "domain_test": "The deciding quantity is a tail probability of a duration left-censored by a schedule allowance, estimated the way statistics treats censored durations (the indicator is complete only where the allowance fell below the threshold, and a reverse-time product-limit estimate agrees); replacing it with the share of observed ground times or of overruns, a generic summary, changes which relationships are sent back.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:allowance-censored-durations",
+ "layer1": [
+  "a stand log in local time whose docking-system events write registrations without the hyphen and ramp control's with it",
+  "tows splitting one turn across an E stand and a remote stand",
+  "ATC callsigns (operator designator and number) on the stand log against the brands' commercial flight numbers",
+  "one operator's flight log in UTC, another's workbook in station local time with AHM 731 lettered delay sub-codes, a third's delays packed into one field",
+  "a minute's difference on some block times between the operators' ACARS and the stand log",
+  "late evening arrivals on-block after midnight that night-stop",
+  "IATA SSIM Chapter 7 schedule files with period splits at mid-season retimings",
+  "a flight number block transferred between operators mid-summer",
+  "merged initial submissions keeping each carrier's time mode (two files in UTC), marketing duplicates cross-referenced by DEI 050, through stops as leg sequences and night stops by rotation layover"
+ ],
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task450": "450 v1 read durations from scheduled visits that sample time in proportion to length (an inspection-paradox weighting); this build reads a duration's upper tail that an allowance hides (left-censoring), complete only where the old allowance was shorter than the threshold.",
+  "task126": "126 split units a succession link had joined (an identity question on the unit); this build has no identity question: every turn is one unit, and the decisive move is estimating its needed time under censoring by the schedule.",
+  "task101": "101 cut a threshold from a distribution the decision's own earlier payments had entered, so the population to cut from was a published total less a component; this build cuts a duration distribution whose values an allowance hid, so the cut is estimated under censoring, with no component to remove."
+ },
+ "lineage": [],
+ "notes": "Context artifact keyed operations_log at stage 3 (was filed_standard): the review works from the authority's stand log (the spine) and the operators' flight logs; SFG-3 is the filed estimand. Re-keyed when task240 (filed_standard, registered 18:42 but pushed after this draw) entered the last three.",
+ "registered": "2026-10-17T20:59:15Z"
 }
