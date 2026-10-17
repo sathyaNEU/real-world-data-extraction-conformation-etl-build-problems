@@ -40,7 +40,7 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   purchase agreements and turned by Norvale Ground Services; Tellura Airways sells Tellura Express flights flown by
   Pellmont (E175) and Sable Coast (Q400) and turned by Aerocrest Handling; Grayling Air flies and turns its own ATR 72s.
   Six relationships, each sharing its operator and aircraft type with one other (the operator's flying for the other
-  brand), which is what lets the 2027 submissions carry each brand's numbers on its partner's flights. The authority's schedule facilitation
+  brand), which is what lets the 2027 submissions carry each brand's numbers on its partner's rotations. The authority's schedule facilitation
   guideline accepts a filed minimum ground time at the E gates when no more than 20 per cent of the relationship's
   turns of that aircraft type would need longer, judged on the turns of the most recent summer peak (15 June to 15
   September 2026); a turn needs the time from on-block until the aircraft is ready to push back. For summer 2027 the
@@ -259,26 +259,28 @@ formula reads to another set.
   to 18 July 2027 and how many are scheduled shorter than the ground time it filed (whole turns).** H18 home: the audit
   trail of the input the call is about: each filing's peak-week exposure in the submissions it governs, and the turns
   the carrier already schedules below its own filing. Use: the committee's response to each carrier quotes the turns
-  its decision touches. Path: kdy_initial_submissions_s27.ssim (records 2, 3 and 4: time mode, airline, flight, leg
-  sequence, period, days, stations, times, UTC variations, equipment, onward airline, flight and layover, date
-  variation, segment data), kdy_schedule_file_layout.pdf, the affiliate register's blocks, the filings, SFG-3 2.1 and
-  2.2, with the fleet plan as corroboration: six files, fifteen columns. Primary device: D1, the same records under two
-  key schemes: each brand files the legs it sells on its partner's flights under its own numbers, inside its own block
-  for the same operator, so the affiliate register maps every such leg to the brand's own relationship with that
-  operator and type (Tellura's numbers on Norvale/Pellmont flights read as Tellura/Pellmont, and so on for every pair);
-  the only link to the operating flight is the leg's DEI 050 segment data record, whose meaning the layout note does not
-  give. Every relationship carries such legs and has turns shorter than its filing, so all twelve figures move
-  (asserted). Hazards: two brands' files in UTC (their rotation layover counts UTC days, so a turn across 20:00 local
-  reads as a night stop and a night stop after 20:00 as a turn), through stops as a leg sequence with no onward link
-  (each through stop is also the turn the carriers schedule short), night stops by rotation layover, and genuine
-  same-minute departures of two relationships' aircraft beside the duplicates. Stops (asserted, generator/ceiling.py
-  and checks.py): every leg counted (the cracker: key checks pass, no exact duplicate, every join maps) misses all 12;
-  schedule fields deduplicated on Kelderby time, first in file order kept (the over-cleaner) misses all 12, deleting
-  the same-minute pairs and keeping a partner's leg for the operating one; the through stops missed misses all 12; the
-  rotation layover as the day test misses one; the golden leaves each DEI 050 leg to its operating flight and equals
-  the operating lines' truth.
-  Realism: a merged initial-submissions file is what a facilitated airport receives, each carrier's file kept as sent,
-  marketing duplicates and their cross-reference records included.
+  its decision touches. Path: kdy_initial_submissions_s27.ssim (records 2 and 3: time mode, airline, flight, leg
+  sequence, period, days, stations, aircraft times, UTC variations, equipment, onward airline, flight and layover, date
+  variation), kdy_schedule_file_layout.pdf, the affiliate register's blocks, the filings, SFG-3 2.1 and 2.2, the fleet
+  plan and the 2026 season schedule: seven files, fifteen columns. Primary device: D1, the same records under two key
+  schemes: each brand files the rotations it sells on its partner's aircraft again under its own numbers, inside its
+  own block for the same operator, so the affiliate register maps every such leg to the brand's own relationship with
+  that operator and type (Tellura's numbers on a Norvale/Pellmont rotation read as Tellura/Pellmont, and so for every
+  pair). The authority's schedule database holds record types 1, 2, 3 and 5, so no segment data record ties a leg to
+  its operating flight; the evidence is split: the rotation repeated leg for leg (stations, times, type) in the 2027
+  file, numbers the 2026 season schedule never carried, and a fleet plan that gives each operator one aircraft per
+  operating rotation and a spare (Pellmont would need 19 E175s for its filed rotations against 13, Sable Coast 17 Q400s
+  against 12, Grayling 11 ATR 72s against 7). Every relationship carries such rotations and has turns shorter than its
+  filing, so all twelve figures move (asserted). Hazards: two brands' files in UTC (their rotation layover counts UTC
+  days), through stops as a leg sequence with no onward link (each is also the turn the carriers schedule short), night
+  stops by rotation layover, and genuine same-minute trips of two relationships' aircraft beside the repeated
+  rotations. Stops (asserted, generator/ceiling.py and checks.py): every leg counted (the cracker: key checks pass, no
+  exact duplicate, every join maps) misses all 12; schedule fields deduplicated on Kelderby time (the over-cleaner)
+  misses all 12; each repeated rotation kept once under the first file's numbers misses all 12; the through stops
+  missed misses all 12; the rotation layover as the day test misses 2; the golden keeps each repeated rotation once,
+  under the numbers that operated in 2026, and equals the operating lines' truth.
+  Realism: a facilitated airport merges the brands' files as received, and a stand-planning database that keeps leg
+  records drops the carriers' marketing cross-references.
 - **The construction layer:** the six decisions, the six shortest times and the chart; the cracker has them.
 - **Main population zero-counts (asserted):** the call reads the stand log, the three operators' logs, the delay code
   groups, the registers and the filings; no 2026 file carries a DEI 050 record or a partner's number, and deleting the
@@ -286,11 +288,11 @@ formula reads to another set.
 - **Hazard table (asserted):** D1 moves all 12 figures; the through stops all 12 for a response that follows onward
   links only; the layover read as the day one (Tellura/Pellmont's turns); a schedule-field deduplication all 12.
 - **Referee:** none; no total in the ask's files ties under one handling only (the fleet plan gives aircraft by
-  operator and month, which the duplicated rotations exceed, a cross-file cut nothing invites).
+  operator and month, which the repeated rotations exceed, a cross-file cut nothing invites).
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, each relationship's peak-week turns and turns shorter than its filing, 2027 submissions | parses the merged file by the layout note, converts the UTC files, follows onward links and leg sequences, maps every leg through the register's blocks; the partners' legs pass every key check and land in the other brand's relationship | miss |
+| A, each relationship's peak-week turns and turns shorter than its filing, 2027 submissions | parses the merged file by the layout note, converts the UTC files, follows onward links and leg sequences, maps every leg through the register's blocks; the partners' rotations pass every key check, carry no cross-reference and land in the other brand's relationship | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (the best mirror, on R5, keeps no Ask A figure: generator/ceiling.py).
 - Pair ceiling: 37.2 (weights 38 / 7 / 55: the call 8, each relationship's decision and shortest time 2.5; the
@@ -321,6 +323,34 @@ formula reads to another set.
 - **Surface screen, for the author (not adjudicated here):** three promoted pairs: task468 (back to back, the same
   domain and objective pairing, gap and context artifact; task468 is paused), task101 (gap, pattern and decision
   family, differentiated on the card) and task126 (gap, pattern and Gate G, differentiated on the card).
+
+## Leak check
+
+`leak.py --asof 2026-10-30`: REVIEW, no LEAK. Each REVIEW line answered: the guideline's example relationship
+(Norvale Connect flown by Pellmont's Embraer 175s) is the definition's example, naming no share, estimator or decision;
+its world nouns (Pellmont, Norvale, aircraft, filing, operator, departure) describe its subject; the registers and the
+fleet plan name the relationships beside counts, numbers and dates and rank nothing on the turns' needs. Harmless.
+
+Reader, round 1 (answers in `leak_check_report.md`): nothing quoted as the decisive step beyond SFG-3 2.4, 3.1 and
+3.2, which define need, the standard and the window; no ranking or answer-shaped file; its own answer sent all six
+filings back (shortest 55, 55, 50, 60, 45 and 50 minutes) on each turn's stand time less the minutes a ready aircraft
+was held, the R1 rung exactly, and its question 6 described that path as rules applied to data read correctly, which
+is what R1 is: it never asked what an on-time turn's record hides. On the schedule ask it dropped the DEI 050 legs as
+marketing duplicates and filed all twelve figures: the device was dead and was rebuilt (`## Tried and rejected`). Its
+realism findings were fixed in the generator in one pass: spare aircraft carried Embraer serials on Dash 8s and ATRs
+and place names for a home base (serials now in each type's series, bases as station codes); a number block passed to
+Sable Coast that no flight used (removed); the stations file repeated the schedule's block minutes (now the summer and
+winter UTC offsets); a ready aircraft always pushed back on the scheduled minute (now within a couple of minutes, the
+late minute coded as a start-up hold); an added 2027 line kept its template's first arrival number (renumbered); 2027
+ground times now include the longer midday turns. Every graded figure is unchanged (figures.json differs only in its
+stated-reference block).
+
+Judge, pass 1 (`determinism_check_report.md`): DETERMINISTIC, APPROVE. Every graded figure reproduced from a fresh
+unzip (the six peak turn counts, the shares, the six decisions and shortest times, the twelve week figures); the
+nearest decision edge 6 points; a second estimator, uncoded minutes as not ready, other windows and remote-stand turns
+all give the same decisions. Gate G statistical_rigor, analytical_non_defect, no surface-read dependency; Gate H
+domain pass, layers pass, decisive step analytical. Optional: whether an accepted relationship's shortest time is the
+standard's step or its filing (the literal reading already gives Grayling's 30); left as it is.
 
 ## Tried and rejected
 
@@ -353,3 +383,8 @@ formula reads to another set.
   as transit stops with passengers on board are scheduled.
 - 2026-10-17, at design: a turn as an arrival and departure on the same calendar date: a late arrival after midnight
   paired with the next morning's first departure (nine visits); SFG-3 2.2 now files the operating day, 03:00 to 02:59.
+- 2026-10-17, at stage 4: the partners' legs tied to their operating flights by DEI 050 segment data records: reader
+  round 1 knew the record (a marketing duplicate's cross-reference), dropped those legs and filed all twelve figures,
+  so the device was free to any schedule-literate solver; the merged file now holds record types 1, 2, 3 and 5, as the
+  authority's schedule database keeps them, and a partner's rotation is found only as a rotation repeated leg for leg,
+  the fleet plan and the 2026 season schedule corroborating.

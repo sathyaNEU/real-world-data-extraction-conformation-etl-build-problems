@@ -163,6 +163,8 @@ def _new_line(template, line_no, start_shift, st_shift, used):
         for k in ("std", "sta_out", "std_out", "sta"):
             if lg.get(k) is not None:
                 lg[k] += start_shift
+        lg["out_num"] = None if lg["out_num"] is None else -1
+        lg["back_num"] = None if lg["back_num"] is None else -1
         if lg["std"] is None:
             lg["std_out"] = lg["sta"] - block
             continue
@@ -170,8 +172,6 @@ def _new_line(template, line_no, start_shift, st_shift, used):
         if lg["std_out"] is not None:
             lg["std_out"] += d_block
             lg["sta"] += 2 * d_block
-        lg["out_num"] = None if lg["out_num"] is None else -1
-        lg["back_num"] = None if lg["back_num"] is None else -1
     for i, lg in enumerate(ln["legs"]):
         if lg["out_num"] == -1:
             if i > 0 and ln["legs"][i - 1].get("through"):
@@ -184,9 +184,9 @@ def _new_line(template, line_no, start_shift, st_shift, used):
 
 
 def _retime(ln, rng):
-    """Re-time a line on its 2027 ground times: each turn at the filed minimum (five minutes more on about one turn in
-    four), the through stop at the carrier's shorter through time; legs away from Kelderby keep their blocks and
-    outstation turns."""
+    """Re-time a line on its 2027 ground times: each turn at the filed minimum or five to fifteen minutes more, the
+    through stop at the carrier's shorter through time; legs away from Kelderby keep their blocks and outstation
+    turns."""
     seg = ln["seg"]
     g = W.SEGMENTS[seg]["filed"]
     shift = 0
@@ -194,7 +194,8 @@ def _retime(ln, rng):
     for lg in ln["legs"]:
         if lg["std"] is not None and prev is not None:
             u = rng.random()
-            gt = THROUGH27[seg] if prev_through else g + (5 if u < 0.25 else 0)
+            extra = 5 if u < 0.25 else 10 if u < 0.31 else 15 if u < 0.34 else 0
+            gt = THROUGH27[seg] if prev_through else g + extra
             shift = prev + gt - lg["std"]
         for k in ("std", "sta_out", "std_out", "sta"):
             if lg.get(k) is not None:

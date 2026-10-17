@@ -54,6 +54,10 @@ def write_csv(path, cols, rows):
 # ---------------------------------------------------------------- what happened, once
 def everything():
     x = S.everything()
+    push = _rng(8)
+    for r in x["rows"]:
+        if r["kind"] == "DEP" and r["turn_min"] == 0 and r["hold_min"] == 0 and r["actual"] == r["sched"]:
+            r["actual"] = r["sched"] + float(push.choice([-1, 0, 0, 0, 0, 1, 1, 2]))
     rng = _rng(1)
     for r in x["rows"]:
         r["t"] = mround(r["actual"])
@@ -194,7 +198,7 @@ def grayling_rows(x):
 
 # ---------------------------------------------------------------- schedules
 def write_ssim26(path, x):
-    car = [(k, x["legs26"][k], {}, dt.date(2026, 3, 2), False, ets(x["legs26"][k])) for k in ("NV", "TQ", "GY")]
+    car = [(k, x["legs26"][k], {}, dt.date(2026, 3, 2), False, {}) for k in ("NV", "TQ", "GY")]
     return SS.write(path, car, "S26", SC.S26[0], SC.S26[1])
 
 
@@ -202,14 +206,10 @@ SUBMITTED = {"NV": dt.date(2026, 10, 1), "TQ": dt.date(2026, 10, 6), "GY": dt.da
 
 
 def write_ssim27(path, x):
-    car = [(k, x["legs27"][k], x["refs27"][k], SUBMITTED[k], k in SC.UTC_CARRIERS, ets(x["legs27"][k]))
-           for k in ("NV", "TQ", "GY")]
+    """The authority's merge of the brands' files: carrier, flight leg and trailer records as received; the carriers'
+    segment data records (codeshare cross-references among them) are not carried into the merged file."""
+    car = [(k, x["legs27"][k], {}, SUBMITTED[k], k in SC.UTC_CARRIERS, {}) for k in ("NV", "TQ", "GY")]
     return SS.write(path, car, "S27", SC.S27[0], SC.S27[1])
-
-
-def ets(legs):
-    """Every leg's electronic ticketing record (DEI 505), as the carriers file it."""
-    return {(lg["airline"], lg["flight"], lg["leg"]): [(505, "ET")] for lg in legs}
 
 
 # ---------------------------------------------------------------- registers and filings
@@ -227,6 +227,12 @@ def filing_rows():
     return out
 
 
+def serial(rng, typ):
+    """Manufacturer serial numbers in each type's own series."""
+    lo, hi = {"E75": (17000310, 17000960), "DH4": (4310, 4620), "AT7": (1160, 1480)}[typ]
+    return str(int(rng.integers(lo, hi)))
+
+
 AIRCRAFT_COLS = ["registration", "operator", "aircraft_type", "seats", "serial_number", "in_service_from",
                  "kdy_lines_from", "kdy_lines_to", "home_base"]
 
@@ -240,14 +246,12 @@ def aircraft_rows(x):
         seen.add(reg)
         line = next(lv for lv in x["lines"] if lv["seg"] == seg and lv["line"] == ln)
         base = "KDY" if line["based"] else line["legs"][-1]["station"]
-        out.append([reg, W.OPERATORS[s["op"]][0], W.TYPES[s["type"]], W.SEATS[s["type"]],
-                    str(int(rng.integers(17000, 17999)) if s["type"] == "E75" else
-                        int(rng.integers(4300, 4700)) if s["type"] == "DH4" else int(rng.integers(1100, 1500))),
+        out.append([reg, W.OPERATORS[s["op"]][0], W.TYPES[s["type"]], W.SEATS[s["type"]], serial(rng, s["type"]),
                     dt.date(int(rng.integers(2009, 2022)), int(rng.integers(1, 13)), 1).isoformat(),
                     "2026-03-29", "", base])
     # aircraft on the register that flew no Kelderby lines this summer (other bases, maintenance spares)
     pref = {"PMV": ("C-GP", "E75"), "SBC": ("C-FS", "DH4"), "GYA": ("C-GG", "AT7")}
-    for op, n in (("PMV", 3), ("SBC", 2), ("GYA", 1)):
+    for op, n, bases in (("PMV", 3, ["KDY", "VCT", "BNH"]), ("SBC", 2, ["KDY", "OLF"]), ("GYA", 1, ["KDY"])):
         for j in range(n):
             while True:
                 reg = pref[op][0] + "".join(rng.choice(list("ABCDEFGHJKLMNPRSTUVWXYZ"), 2))
@@ -255,9 +259,9 @@ def aircraft_rows(x):
                     break
             seen.add(reg)
             t = pref[op][1]
-            out.append([reg, W.OPERATORS[op][0], W.TYPES[t], W.SEATS[t], str(int(rng.integers(17000, 17999))),
+            out.append([reg, W.OPERATORS[op][0], W.TYPES[t], W.SEATS[t], serial(rng, t),
                         dt.date(int(rng.integers(2009, 2022)), int(rng.integers(1, 13)), 1).isoformat(), "", "",
-                        "spare" if j == 0 else ["Vellacott", "Brannoch", "Orlen Falls"][j % 3]])
+                        bases[j]])
     out.sort(key=lambda r: r[0])
     return out
 
@@ -296,13 +300,13 @@ def delay_rows():
     return out
 
 
-STATION_COLS = ["iata", "name", "utc_offset_summer", "scheduled_block_min_from_kdy"]
+STATION_COLS = ["iata", "name", "utc_offset_summer", "utc_offset_winter"]
 
 
 def station_rows():
-    out = [[W.KDY, "Kelderby", "-04:00", ""]]
+    out = [[W.KDY, "Kelderby", "-04:00", "-05:00"]]
     for c, n, b, z in W.STATIONS:
-        out.append([c, n, "-%02d:00" % (4 + z), b])
+        out.append([c, n, "-%02d:00" % (4 + z), "-%02d:00" % (5 + z)])
     return sorted(out, key=lambda r: r[0])
 
 

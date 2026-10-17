@@ -15,20 +15,20 @@
   "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-17: the guideline's example relationship and world nouns; registers naming the relationships; no LEAK",
-  "reader": "round 1 pending"
+  "leak_py": "REVIEW 2026-10-17 on the fix-pass build: the guideline's example relationship and world nouns; registers naming the relationships; no LEAK",
+  "reader": "round 1: main call on R1 (stand time less held, all six sent back); schedule ask hit 12 of 12 through DEI 050, device rebuilt; realism findings fixed. Round 2 in flight"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-17 after the context artifact was re-keyed operations_log (task240 filed_standard entered the last three); Gate G overuse answered in the draw",
   "surface": "3 promoted for the author: task468 (back to back pairing), task101, task126 (differentiated on the card)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "pass 1 DETERMINISTIC",
+  "disposition": "pass 1 APPROVE",
+  "report": "task469/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4 in flight at this checkpoint: the leak reader (round 1, isolated copy of prompt.txt and target.zip) and the determinism judge (pass 1, brief written by the determinism-judge agent, one isolated thread) were running; read their answers, fix every finding in the generator in one pass, re-judge once on FIX_NOW, then ship (ledger row, card, board, target.zip and golden added with -f)",
+ "resume": "stage 4: reader round 2 and the one re-judge (pass 2) in flight on the fix-pass build (the schedule ask's evidence rebuilt: no segment data records, repeated rotations); then append both reader rounds to leak_check_report.md, fix anything new, and ship",
  "approved": null,
  "delivered": null,
  "portal": null,

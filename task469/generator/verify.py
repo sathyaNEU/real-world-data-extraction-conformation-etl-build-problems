@@ -115,21 +115,26 @@ def recompute(target):
     return out, filings, rel
 
 
-def ssim_week(target, rel, filings, types_of):
-    """The week's operating turns from the 2027 submissions, read position by position."""
-    legs, dups, mode = [], set(), "L"
-    for raw in open(os.path.join(target, W.FILES["ssim27"]), encoding="ascii"):
+def read_ssim(path):
+    legs, mode = [], "L"
+    for raw in open(path, encoding="ascii"):
         s = raw.rstrip("\r\n")
         if s[:1] == "2":
             mode = s[1]
         elif s[:1] == "3":
             legs.append(dict(al=s[2:5].strip(), fl=int(s[5:9]), leg=int(s[11:13]), frm=s[14:21], to=s[21:28],
-                             dow=s[28:35], dep=s[36:39], std=s[39:43], arr=s[54:57], sta=s[57:61], eqp=s[72:75],
+                             dow=s[28:35], dep=s[36:39], std=s[43:47], arr=s[54:57], sta=s[57:61], eqp=s[72:75],
+                             dvar=int(s[47:50]), avar=int(s[65:68]),
                              on=(s[137:140].strip(), int(s[140:144]), int(s[144])) if s[137:140].strip() else None,
                              dv=int(s[193]), mode=mode))
-        elif s[:1] == "4" and s[30:33] == "050":
-            dups.add((s[2:5].strip(), int(s[5:9]), int(s[11:13])))
-    legs = [x for x in legs if (x["al"], x["fl"], x["leg"]) not in dups]
+    return legs
+
+
+def ssim_week(target, rel, filings, types_of):
+    """The week's turns from the 2027 submissions, read position by position (aircraft times): each aircraft's chain of
+    legs within an operating day, a chain filed twice kept once under the numbers the 2026 season schedule carried."""
+    legs = read_ssim(os.path.join(target, W.FILES["ssim27"]))
+    op26 = {(x["al"], x["fl"]) for x in read_ssim(os.path.join(target, W.FILES["ssim26"]))}
     lo, hi = dt.date(2027, 7, 10), dt.date(2027, 7, 20)
     D = []
     for x in legs:
@@ -139,28 +144,50 @@ def ssim_week(target, rel, filings, types_of):
         while d <= min(t, hi):
             if x["dow"][d.isoweekday() - 1] != " ":
                 base = dt.datetime(d.year, d.month, d.day)
-                kd = base + dt.timedelta(minutes=hm(x["std"]))
-                ka = base + dt.timedelta(days=x["dv"], minutes=hm(x["sta"]))
-                if x["mode"] == "U":
-                    kd, ka = kd - dt.timedelta(hours=4), ka - dt.timedelta(hours=4)
+                # each end on Kelderby's clock (UTC-4): the record's own UTC variation back to UTC first
+                kd = base + dt.timedelta(minutes=hm(x["std"]) - 60 * (x["dvar"] + 4))
+                ka = base + dt.timedelta(days=x["dv"], minutes=hm(x["sta"]) - 60 * (x["avar"] + 4))
                 D.append(dict(x, date=d, kd=kd, ka=ka))
             d += dt.timedelta(days=1)
-    deps = {}
-    for y in D:
-        if y["dep"] == "KDY":
-            deps[(y["al"], y["fl"], y["date"], y["leg"])] = y
-    count = {}
-    for y in D:
-        if y["arr"] != "KDY":
-            continue
+    od = lambda t: (t - dt.timedelta(hours=3)).date()
+    idx = {}
+    for i, y in enumerate(D):
+        idx.setdefault((y["al"], y["fl"], y["date"]), []).append(i)
+
+    def nxt(i):
+        y = D[i]
         if y["on"]:
             oa, of, lay = y["on"]
-            n = next((v for (al, fl, dd, lg), v in deps.items() if al == oa and fl == of
-                      and dd == y["date"] + dt.timedelta(days=y["dv"] + lay)), None)
+            c = [j for j in idx.get((oa, of, y["date"] + dt.timedelta(days=y["dv"] + lay)), []) if D[j]["dep"] == y["arr"]]
         else:
-            n = deps.get((y["al"], y["fl"], y["date"], y["leg"] + 1))
-        if n is None or (n["kd"] - dt.timedelta(hours=3)).date() != (y["ka"] - dt.timedelta(hours=3)).date():
+            c = [j for j in idx.get((y["al"], y["fl"], y["date"]), []) if D[j]["leg"] == y["leg"] + 1]
+        return c[0] if c else None
+    succ = {}
+    for i in range(len(D)):
+        j = nxt(i)
+        if j is not None and od(D[j]["kd"]) == od(D[i]["kd"]):
+            succ[i] = j
+    starts = set(range(len(D))) - set(succ.values())
+    sigs = {}
+    for i in starts:
+        chain = [i]
+        while chain[-1] in succ:
+            chain.append(succ[chain[-1]])
+        sig = tuple((D[j]["dep"], D[j]["arr"], D[j]["kd"], D[j]["ka"], D[j]["eqp"]) for j in chain)
+        sigs.setdefault(sig, []).append(chain)
+    keep = set()
+    for chains in sigs.values():
+        if len(chains) > 1:
+            op = [c for c in chains if all((D[j]["al"], D[j]["fl"]) in op26 for j in c)]
+            chains = op if len(op) == 1 else chains
+        for c in chains:
+            keep.update(c)
+    count = {}
+    for i in keep:
+        y = D[i]
+        if y["arr"] != "KDY" or i not in succ or succ[i] not in keep:
             continue
+        n = D[succ[i]]
         if not (dt.date(2027, 7, 12) <= y["ka"].date() <= dt.date(2027, 7, 18)):
             continue
         brand, op = rel(n["fl"], y["ka"].date())
