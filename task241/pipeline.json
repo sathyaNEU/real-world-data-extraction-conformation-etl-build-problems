@@ -1,0 +1,21 @@
+{
+ "task": "task241",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences/sensor-calibration-measurement",
+ "objective": "data-quality-monitoring",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-17",
+ "stump": "A competent analyst interpolates each float's 2027 salinity and the reference casts' mean salinity onto common pressure levels across the 1,400 to 1,900 dbar layer and files 17 of the 24 floats adjusted, one of the four drifting floats among those missed; the offset on temperature levels against reference water at each float's own position adjusts six.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {"exit": null, "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": ""},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "returned": [],
+ "resume": "stage 2: simulator (profiles with heave and the basin gradient, sensor offsets and drift), records and devices, the release thread and documents, ladder and margins, fork table, closure, asks, prompt, precut",
+ "approved": null, "delivered": null, "portal": null,
+ "portal_id": "", "portal_status": "", "portal_status_date": ""
+}
