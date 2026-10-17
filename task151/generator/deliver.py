@@ -431,14 +431,12 @@ def write_memo(R, path, fig):
     d.add_paragraph(
         "Basis for the probabilities (FIN-14 4.4 and working paper CF-14.4). We scored each basis on the %s "
         "hitter-seasons of 2023 to 2026 the working paper names, each basis given only what was published before the "
-        "season. The lowest score went to the share of the %s seasons of the non-catcher regulars in the vendor's January 31 depth charts, 2021 to 2026, whose "
-        "starts, times the plate appearances per start of the player's 2027 slot, reach the threshold; plate "
+        "season. The lowest score went to the share of the %s seasons of the non-catcher regulars in the vendor's "
+        "January 31 depth charts, 2021 to 2026, whose starts, times the plate appearances per start of the player's "
+        "2027 slot, reach the threshold; plate "
         "appearances per start fall from %s batting first to %s batting ninth. The vendor's projection with a band "
-        "from its past misses scored %s worse and would have accrued %s; the players' own last three seasons scored %s "
-        "worse." % (lb["hitter_seasons"], fig["steps"]["planned_seasons"], fig["steps"]["rate_first"],
-                    fig["steps"]["rate_ninth"], lb["above_chosen"][LB_LABEL["default: vendor projection with a normal band"]],
-                    lb["accrual_each"][LB_LABEL["default: vendor projection with a normal band"]],
-                    lb["above_chosen"][LB_LABEL["own three seasons as the draws"]]))
+        "from its past misses and the players' own last three seasons both scored worse." % (
+            lb["hitter_seasons"], fig["steps"]["planned_seasons"], fig["steps"]["rate_first"], fig["steps"]["rate_ninth"]))
     d.add_paragraph(
         "The five come to us off full seasons batting higher for their old clubs; each will bat lower here, and in the "
         "look-back the regulars' seasons at the new slot forecast better than each hitter's own recent seasons. Player "
@@ -474,12 +472,10 @@ def submission(R, fig, path):
                  "January 31 depth charts, %s to %s, whose starts, read at the plate appearances per start of the "
                  "player's 2027 lineup slot, reach its threshold: the basis with the lowest score in FIN-14 4.4's "
                  "look-back over the %s hitter-seasons of 2023 to 2026. Not the vendor's 2027 projections with a band "
-                 "from their past misses (%s worse in the look-back), which carry each player's full recent seasons at "
-                 "a higher slot for his old club; not the players' own seasons; and not the starting nines' seasons "
-                 "taken whole (%s worse), which keep the catchers in and ignore where each hitter bats." % (
-                     S["planned_seasons"], S["first_season"], S["last_season"], LBk["hitter_seasons"],
-                     LBk["above_chosen"][LB_LABEL["default: vendor projection with a normal band"]],
-                     LBk["above_chosen"][LB_LABEL["the full nine's own plate appearances"]]))
+                 "from their past misses, which carry each player's full recent seasons at a higher slot for his old "
+                 "club; not the players' own seasons; and not the starting nines' seasons taken whole, which keep the "
+                 "catchers in and ignore where each hitter bats; each scores higher in the look-back." % (
+                     S["planned_seasons"], S["first_season"], S["last_season"], LBk["hitter_seasons"]))
     lines.append("")
     lines.append("## 2. Critical Components\n")
     lines.append("1. Accrual by player: %s." % "; ".join("%s **%s**" % (f_["name"], per[f_["name"]]) for f_ in F))
@@ -503,16 +499,13 @@ def submission(R, fig, path):
                      S["first_season"], S["last_season"], S["rate_first"], S["rate_ninth"],
                      ", ".join("%s batting %s" % (v, k) for k, v in S["rates"].items())))
     sc = LBk["scores"]
-    lines.append("4. Ran the look-back of FIN-14 4.4 (working paper CF-14.4) on the %s hitter-seasons of 2023 to 2026 (a starting lineup of the "
-                 "January 31 depth charts and 100 plate appearances in each of the two seasons before), each basis "
-                 "built from what was published before the season and each tested hitter priced from the seasons of "
-                 "his own group (a catcher from the catcher regulars' seasons, every other hitter from the non-catcher "
-                 "regulars'): the regulars' seasons at the slot scored %s; the "
-                 "vendor's projection with a band from its misses %s; the players' own last three seasons %s; the "
-                 "starting nines' plate appearances taken whole %s." % (
-                     LBk["hitter_seasons"], sc[LB_LABEL["golden"]],
-                     sc[LB_LABEL["default: vendor projection with a normal band"]],
-                     sc[LB_LABEL["own three seasons as the draws"]], sc[LB_LABEL["the full nine's own plate appearances"]]))
+    lines.append("4. Ran the look-back of FIN-14 4.4 (working paper CF-14.4) on the %s hitter-seasons of 2023 to 2026 (a "
+                 "starting lineup of the January 31 depth charts and 100 plate appearances in each of the two seasons "
+                 "before), each basis built from what was published before the season: the regulars' seasons of starts "
+                 "at the slot, a tested catcher priced from the catcher regulars' seasons and every other hitter from "
+                 "the non-catcher regulars', scored %s, the lowest; the vendor's projection with a band, the players' "
+                 "own seasons and the starting nines' seasons taken whole each scored higher." % (
+                     LBk["hitter_seasons"], sc[LB_LABEL["golden"]]))
     lines.append("5. For each bonus line in term_sheets_2027_free_agent_hitters.pdf, the probability under FIN-14 4.2 and "
                  "4.3 is the share of those seasons whose starts times the player's 2027 slot rate reach the threshold, "
                  "and the expected amount is the bonus times that share.")

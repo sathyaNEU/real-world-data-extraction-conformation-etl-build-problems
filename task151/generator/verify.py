@@ -213,13 +213,15 @@ def paid(target, D):
 
 def lookback(target, D):
     """FIN-14 4.4 for four bases, on this path: the regulars' seasons of starts at the slot, the vendor's projection
-    with a normal band from its misses, the player's own last three seasons, every lineup regular's plate appearances."""
+    with a normal band from its misses, the player's own last three seasons, every lineup regular's plate appearances;
+    and the near rival that reads the slot's rate with its substitutes' plate appearances, per start."""
     bl = batting(target)
     st = bl[bl.starter]
     starts = st.groupby(["season", "pid"]).size()
     pa = bl.groupby(["season", "pid"]).pa.sum()
     sp = st.groupby(["season", "slot"]).pa.sum()
     sn = st.groupby(["season", "slot"]).size()
+    sp_all = bl.groupby(["season", "slot"]).pa.sum()
     pr = pd.read_csv(os.path.join(target, "hvbd_hitter_projections_2022_2027.csv"))
     proj = {(a, b): c for a, b, c in zip(pr.season, pr.lg_id, pr.pa)}
     lu = D["pl"][D["pl"].role == "Lineup"].copy()
@@ -227,11 +229,13 @@ def lookback(target, D):
     lu["st"] = [starts.get((a, b), 0) for a, b in zip(lu.season, lu.pid)]
     lu["pa"] = [pa.get((a, b), 0) for a, b in zip(lu.season, lu.pid)]
     thr = np.array([450, 500, 550, 600, 650], float)
-    sq = {k: [] for k in ("golden", "vendor", "own", "nine")}
+    sq = {k: [] for k in ("golden", "vendor", "own", "nine", "thin")}
     for Y in (2023, 2024, 2025, 2026):
         past = lu[lu.season < Y]
         rate = {s: sp[[(y, s) for y in range(2021, Y)]].sum() / sn[[(y, s) for y in range(2021, Y)]].sum()
                 for s in range(1, 10)}
+        rate_sub = {s: sp_all[[(y, s) for y in range(2021, Y)]].sum() / sn[[(y, s) for y in range(2021, Y)]].sum()
+                    for s in range(1, 10)}
         est = np.array([pa.get((Y - 1, p), 0) >= 100 and pa.get((Y - 2, p), 0) >= 100 for p in lu.pid])
         tests = lu[(lu.season == Y).values & est]
         for _, t in tests.iterrows():
@@ -245,7 +249,8 @@ def lookback(target, D):
             own = own[own > 0]
             o = np.array([(own >= x).mean() for x in thr])
             n9 = np.array([(past.pa.values >= x).mean() for x in thr])
-            for k, p in (("golden", g), ("vendor", v), ("own", o), ("nine", n9)):
+            th = np.array([(pool.st.values * rate_sub[int(t.ord)] >= x).mean() for x in thr])
+            for k, p in (("golden", g), ("vendor", v), ("own", o), ("nine", n9), ("thin", th)):
                 sq[k].append((p - out) ** 2)
     return {k: float(np.mean(v)) for k, v in sq.items()}, len(sq["golden"])
 
@@ -306,7 +311,7 @@ def main(target, golden, fig_path):
            "own": "The player's own last three seasons",
            "nine": "Every lineup regular's plate appearances, catchers in, any slot"}
     for k, v in LB.items():
-        if "%.4f" % v != fig["lookback"]["scores"][lab[k]]:
+        if k in lab and "%.4f" % v != fig["lookback"]["scores"][lab[k]]:
             bad.append(("look-back", k, v))
     if "{:,}".format(n) != fig["lookback"]["hitter_seasons"] or min(LB, key=LB.get) != "golden":
         bad.append(("look-back hitters or ranking", n, LB))
@@ -318,10 +323,10 @@ def main(target, golden, fig_path):
         print("verify.py: FAIL", bad)
         raise SystemExit(1)
     print("verify.py: the accrual %s (unrounded %.0f), five player figures, the vendor's band %s, the look-back's pick "
-          "among the bases at hand %s, the step figures, the FIN-14 4.4 look-back for four bases (%s hitter-seasons), "
-          "nine stints and the bonuses paid reproduce from the bundle on an independent path" % (
-              fig["call"]["total"], tot, fig["rivals"]["default"], fig["rivals"]["default_at_hand"],
-              fig["lookback"]["hitter_seasons"]))
+          "among the bases at hand %s, the step figures, the FIN-14 4.4 look-back for four bases (%s hitter-seasons; the "
+          "substitutes' slot rate loses, %.5f against %.5f), nine stints and the bonuses paid reproduce from the bundle "
+          "on an independent path" % (fig["call"]["total"], tot, fig["rivals"]["default"], fig["rivals"]["default_at_hand"],
+                                      fig["lookback"]["hitter_seasons"], LB["thin"], LB["golden"]))
 
 
 if __name__ == "__main__":

@@ -65,7 +65,8 @@ The seed is kept whatever the look-back and the accrual then show. If no basis w
 winner file different rounded figures, or if the vendor's band or the player's own seasons land, the loop stops and the
 5a71a64 world ships with the record fixes (coordinator, loop 2).
 
-Outcome: stopped. Seed 1601 is the first from 1601 to pass W1 to W4 (W1 0.30 for plate appearances and 0.29 for starts,
+Outcome: stopped (measured with scratch scripts on the reverted generator, so not reproducible from the shipped one).
+Seed 1601 is the first from 1601 to pass W1 to W4 (W1 0.30 for plate appearances and 0.29 for starts,
 W2 0.31, W3 10.2 placements a club-season and 16.8 per cent missing game one, W4 clean). Its look-back ranks the
 player's own starts blended in at 30 per cent first (0.16837, $5,250,000; players $600,000, $1,400,000, $600,000,
 $1,500,000, $1,200,000). The regulars matched on last season's starts within 10 to 25 tie it (z 0.10 to 0.38 by hitter
@@ -305,7 +306,7 @@ Every row is asserted in `generator/checks.py` under its id.
 | SF8 | rounding path | each player's unrounded expected amount; the total from the unrounded amounts, rounded once | the total as the sum of the rounded player figures | $4,200,000 against $4,250,000, ruled out | FIN-14 6 ("a total is the sum of the unrounded amounts, rounded only where it is reported") |
 | SF9 | the memo's figures | the accrual and each player's amount as in the workbook | other figures | same figures (asserted) | the prompt |
 | SF10 | the as-of | December 11, 2026, every file pulled that day | a later pull | same call | the close-file index; every file stamped with the pull |
-| SF11 | CF-14.4's "four championship seasons before the contract is signed" | 2023 to 2026 (the 2026 season ended September 27, before the first signing) | 2024 to 2026, or 2023 to 2025 | same call (a construction of the golden ranks first either way, asserted) | working paper CF-14.4 (FIN-14 4.4) |
+| SF11 | CF-14.4's "four championship seasons before the contract is signed" | 2023 to 2026 (the 2026 season ended September 27, before the first signing) | 2024 to 2026, 2023 to 2025, or 2022 to 2025 (no 2022 hitter has two earlier seasons in the box scores, so it adds none) | same call (a construction of the golden ranks first every way, asserted) | working paper CF-14.4 (FIN-14 4.4) |
 | SF12 | CF-14.4's "every hitter in a starting lineup" | the lineup rows of each January 31 depth chart, catchers in | the non-catchers only | same call (asserted) | CF-14.4; the depth charts' legend |
 | SF13 | CF-14.4's "100 plate appearances in each of the two seasons before" | as the League counts them, every club | with the planning club only | same call (asserted) | CF-14.4 ("counting his plate appearances for every club") |
 | SF14 | CF-14.4's "reached the threshold" | plate appearances at or above it | above it only | same call (asserted) | CF-14.4; the term sheets ("when the Player reaches its threshold") |
@@ -335,6 +336,7 @@ Brock seventh (third), Medina eighth (first), Meeks ninth (first).
 | R2b | the opening-day starters; the planned regulars who opened the season | $4,000,000; $4,750,000 | -1.22; +1.65 | +2.1%; +1.2% | drops the regulars hurt in spring training and keeps the fill-ins (16.5 per cent of planned regulars missed the first game) |
 | R2c | the club's own regulars only | $4,000,000 | -1.22 | +7.3% | thirty-odd seasons, the look-back |
 | R2d | appearances read as starts (substitute lines counted) | $3,500,000 | -3.10 | +3.2% | a substitute's line is not a start |
+| R2e | the slot's rate with its substitutes' plate appearances, per start (the round 3 judge's near rival) | $4,500,000 | +1.11 | +0.38% | a substitute's plate appearances are not the starter's; the look-back on every reading, 0.30 to 0.61 per cent (LB9) |
 | near | a regression on the projection, the slot and catching, or on the slot and catching; a 2 per cent weight on the record or the projection; 5 per cent of the record blended in | $4,250,000 to $4,500,000 | +0.13 to +0.71 | +0.20% to +1.07% | they lose the look-back (LB6); four of the five file the golden's figure anyway |
 | golden (R3) | the winter-planned non-catcher regulars' whole seasons at the new slot's rate per start | $4,250,000 | 0 | 0 | (the golden; the last three seasons alone tie it, 0.00 per cent, and the plate appearances rescaled to the slot, 0.08) |
 
@@ -541,6 +543,43 @@ Pair ceiling: 34 (on a rubric of about 35 for the call, the five player accruals
 instructions and 58 for the asks: the cracker lands the call, 35 plus 7 plus about 5 of structure, 47; the mirror keeps
 about 5 of the recommendation's weight plus 7 and 9 of structure, 21; neither keeps an ask figure).
 
+## Residual
+
+What the shipped build still carries, each item measured and none moving a committed figure.
+- **The thin rival.** The round 3 judge's near tie: the slot's rate read with its substitutes' plate appearances, per
+  start (0.17367 on this build's construction, 0.17359 on the judge's, against 0.17301), files $4,500,000 (+1.11 bins;
+  Rivas, Medina and Meeks a step higher). It loses the look-back on every reading, by 0.30 to 0.61 per cent
+  (hitter-paired z 1.17 to 2.19), asserted in `checks.py` (LB9, LB3, L5) and in `verify.py`; it counts a substitute's
+  plate appearances against the starter's start.
+- **The candidate set is not enumerated** (4.4 and CF-14.4 name no basis; the round 2 judge's fork 1): a pooled
+  at-slot basis without catchers apart files $3,750,000 and the look-back separates it (0.1940 against 0.1730). The
+  exact-position variant sits $16,000 inside the $4,125,000 boundary and still rounds to $4,250,000.
+- **Realism.** Player records carry little signal in this world: among the look-back's non-catcher hitters the
+  vendor's projection correlates 0.005 with realised plate appearances and last season's plate appearances -0.04. Honest
+  persistence was tried at loop 2 under a seed rule written first and made the total indeterminate (World seed rule,
+  Outcome); the world keeps seed 1539, which a search over seeds chose.
+- **Strength.** P(one strong solver lands) about 0.2 to 0.25 and P(both of two land) about 0.07 to 0.11 (the rule 3
+  re-audit's outside read, Ladder).
+
+## Pre-ship check
+
+- **The 10/10 rules against the built pack.** The decisive step is still analytical: FIN-14 4.2 to 4.4 and CF-14.4
+  file the estimand and the look-back and name no basis, distribution, comparison set, rate per start, slot or catcher
+  (R3s, asserted over both texts); 4.4 run on the bases at hand files $4,500,000 and its own hitters' seasons
+  $4,500,000 (R3a, LB7); only the planned non-catcher regulars' starts at the new slot's rate win the look-back on every
+  reading (LB1, SF11 to SF14, LB9). Layer 1 (two layouts and the crosswalk, catcher's interference, substitute lines,
+  doubleheaders, suspended games, accents, traded regulars) is neutral: every mishandled reading leaves the call (R2).
+- **Free gates on the final rebuild.** `checks.py` 282 assertions, 0 failed; `verify.py` agrees on its own path
+  (the near rival included); two builds byte-identical, target.zip sha256 83bf068f (the pack untouched since loop 2);
+  `figures_check.py` 82 figures, 0 absent; `precut.py` exit 0; `voice-check.py` PASS (779 characters); container audit clean on
+  the pack and the goldens; `guard.py validate` clean, `heart` WARN (answered under Draw), `surface` promotes nothing.
+- **Stage 4.** Judge round 3 DETERMINISTIC, APPROVE (`determinism_check_report.md`), every figure reproduced; its
+  optional wording finding taken (step 4 states the golden's grouping, rival scores out of blocks 1 and 3, the memo's
+  rival figures out); the leak reader clean and its targeted re-read of 4.4 and CF-14.4 clean (an ordinary estimate
+  review; the names read as a realistic league).
+- **Personas in the pack.** Harry Barnes, Steven Armstrong and Matthew Wallace (drawn with `guard.py names`); the
+  players from the generator's ranked pools, the designed names on the card.
+
 ## Tried and rejected
 
 - The seed's mechanism (a filed projection method, playing time from the last two seasons regressed toward a part-time
@@ -625,6 +664,10 @@ Stage 3, built 2026-10-16 (world seed 1511), PAUSED at 5e385a0. Stage 4 repair, 
 PAUSED at 5a71a64. Stage 4 loop 2, built 2026-10-17 from `task151/generator/build.py` on the same world (seed 1539; the
 platform batting file byte-identical to 5a71a64's, every other change a name, CF-14.4, FIN-14 4.4's wording or the
 club's pitching staffs).
+
+Ship, 2026-10-17: judge round 3 DETERMINISTIC, APPROVE; the write-up and the record only (step 4's grouping stated,
+rival scores dropped from blocks 1 and 3 and from the memo, LB9 and the 2022 to 2025 window asserted, the residual
+recorded); the pack unchanged (target.zip 83bf068f).
 
 - Pack: 21 files, 5 formats (csv, json, pdf, txt, xlsx); the spine 276,378 batting lines (`lsf_batting_2021_2024.txt`
   184,271 rows, `lsf_batting_2025_2026.csv` 92,107); distractors `hvbd_hitter_projections_2022_2027.csv` and

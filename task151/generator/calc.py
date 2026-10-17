@@ -341,6 +341,8 @@ def context(P, T, Y):
     C.res0 = C.vpa - X[:, [0, 2, 3]] @ C.beta0
     app, ap, an = appearances(P, T)
     C.rta = {s: sum(ap[(y, s)] for y in C.years) / sum(an[(y, s)] for y in C.years) for s in SLOTS}
+    # the slot's plate appearances with its substitutes' lines, per start (the round 3 judge's near rival)
+    C.rts = {s: sum(ap[(y, s)] for y in C.years) / sum(T.slot_n[(y, s)] for y in C.years) for s in SLOTS}
     C.app = np.array([app[(r["season"], r["lg"])] for r in rows], float)
     return C
 
@@ -398,6 +400,8 @@ BASES = {
     "hitters with 502 or more plate appearances": lambda C, t, x: emp(_hs(C, t, 1, 502) * C.rt[t["slot"]], x),
     "planned regulars' own plate appearances": lambda C, t, x: emp(C.pa[_g(C, t)], x),
     "plate appearances per appearance, appearances for starts": lambda C, t, x: emp(C.app[_g(C, t)] * C.rta[t["slot"]], x),
+    "the slot's plate appearances with its substitutes', per start": lambda C, t, x: emp(
+        C.st[_g(C, t)] * C.rts[t["slot"]], x),
     "the full nine's own plate appearances": lambda C, t, x: emp(C.pa, x),
     "the full nine at the slot, own plate appearances": lambda C, t, x: emp(C.pa[C.ord == t["slot"]], x),
     "the look-back's own hitters' seasons": lambda C, t, x: emp(C.pa[C.est], x),
@@ -484,13 +488,15 @@ def lookback(P, T=None, names=None, seasons_=None, tests_nc=False, est_club=Fals
         inv = {v: k for k, v in {"LVS": "LV", "SAT": "SA", "NOL": "NO", "SLC": "SL", "HRD": "HR", "JAX": "JAC",
                                  "SAC": "SCR"}.items()}
     for Y in seasons_ or LB_SEASONS:
-        C = context(P, T, Y)
         if est_club:
             ok = lambda r: all(club_pa[(Y - j, r["lg"], inv.get(r["team"], r["team"]))] >= LB_MIN_PA for j in (1, 2))
         else:
             ok = lambda r: all(T.pa[(Y - j, r["lg"])] >= LB_MIN_PA for j in (1, 2))
         tests = [test_row(T, proj, r, Y) for r in T.planned if r["season"] == Y and ok(r) and
                  not (tests_nc and r["pos"] == "C")]
+        if not tests:           # a season whose hitters have no two earlier seasons in the box scores (2022)
+            continue
+        C = context(P, T, Y)
         n_tests += len(tests)
         for t in tests:
             out = ((T.pa[(Y, t["lg"])] > LB_THRESHOLDS) if strict else (T.pa[(Y, t["lg"])] >= LB_THRESHOLDS)).astype(float)

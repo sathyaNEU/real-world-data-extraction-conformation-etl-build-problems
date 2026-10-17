@@ -338,6 +338,24 @@ def run(target, golden, W, R, meta_path):
     for nm, v in sorted(R["NEAR"].items()):
         C("LB6 near route '%s' (%+.2f bins, %s) loses the look-back by %.2f per cent" % (
             nm, bins(v, G["total"]), K.money(calc.r250(v)), 100 * (LB[nm] - gb) / gb), LB[nm] > gb * 1.001, (v, LB[nm]))
+    thin = "the slot's plate appearances with its substitutes', per start"
+    tv = RV[thin]
+    readings = [("the seasons 2023 to 2026", {}), ("2024 to 2026", dict(seasons_=(2024, 2025, 2026))),
+                ("2023 to 2025", dict(seasons_=(2023, 2024, 2025))), ("2022 to 2025", dict(seasons_=(2022, 2023, 2024, 2025))),
+                ("the lineups without catchers", dict(tests_nc=True)), ("the planning club's 100", dict(est_club=True)),
+                ("a threshold passed", dict(strict=True))]
+    lost = []
+    for what, kw in readings:
+        LBt, _, pr = calc.lookback(P, T, names=list(calc.FAMILY) + [thin], **kw)
+        best = min(calc.FAMILY, key=LBt.get)
+        dd = pr[thin] - pr[best]
+        lost.append((what, 100 * (LBt[thin] / LBt[best] - 1), dd.mean() / (dd.std(ddof=1) / np.sqrt(len(dd)))))
+    C("LB9 the round 3 judge's near rival '%s' files %s (%+.2f bins, players %s) and loses the look-back on every "
+      "reading, by %.2f to %.2f per cent (hitter-paired z %.2f to %.2f; %.2f per cent on the filed reading): it counts a "
+      "substitute's plate appearances against the starter's start" % (
+          thin, K.money(calc.r250(tv)), bins(tv, G["total"]), [calc.r100(v) // 1000 for v in acc[thin].values()],
+          min(x[1] for x in lost), max(x[1] for x in lost), min(x[2] for x in lost), max(x[2] for x in lost),
+          lost[0][1]), calc.r250(tv) != GOLD_TOTAL and all(x[1] > 0.1 for x in lost) and LB[thin] > gb * 1.001, lost)
     lit = RV["the look-back's own hitters' seasons"]
     C("LB7 FIN-14 4.4 executed word for word as a basis (its own hitters' seasons) files %s, %.2f bins away: the "
       "criterion ranks bases, it is not one" % (K.money(calc.r250(lit)), bins(lit, G["total"])),
@@ -436,9 +454,12 @@ def run(target, golden, W, R, meta_path):
     pool = list(calc.FAMILY) + ["default: vendor projection with a normal band", "own three seasons as the draws",
                                 "the full nine's own plate appearances", "catchers kept in",
                                 "planned regulars' own plate appearances", "opening-day lineups",
-                                "own record given a weight of 5 per cent", "regression on the projection, the slot and catching"]
+                                "own record given a weight of 5 per cent", "regression on the projection, the slot and catching",
+                                "the slot's plate appearances with its substitutes', per start"]
     for sid, what, kw in (("SF11", "the seasons read as 2024 to 2026 only", dict(seasons_=(2024, 2025, 2026))),
                           ("SF11", "the seasons read as 2023 to 2025 only", dict(seasons_=(2023, 2024, 2025))),
+                          ("SF11", "the seasons read as 2022 to 2025 (no 2022 hitter has two earlier seasons)",
+                           dict(seasons_=(2022, 2023, 2024, 2025))),
                           ("SF12", "the starting lineups without their catchers", dict(tests_nc=True)),
                           ("SF13", "the 100 plate appearances counted with the planning club only", dict(est_club=True)),
                           ("SF14", "a threshold reached only when passed", dict(strict=True))):
