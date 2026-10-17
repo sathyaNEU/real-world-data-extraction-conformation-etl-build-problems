@@ -7,17 +7,30 @@
   "stage": 2,
   "stage_name": "design",
   "updated": "2026-10-17",
-  "stump": "The default path rebuilds each dormant season of a county gauge from its airport station at the regression's fitted index and replays the cover on it, so Corvin's two dormant dry seasons rebuild just above the trigger and pay nothing and Tresham's dormant drought season rebuilds below the exit and pays the full limit, writing Corvin's cover and declining Tresham's; the golden averages each rebuilt season's payout over the rebuilding's error and declines Corvin's and writes Tresham's.",
+  "stump": "The default path prices each county's area-yield cover by burn analysis over the years its official dryland yield is published, treating the withheld years as missing, so Elster's and Tresham's drought years (withheld because too few farms harvested) drop out and it declines both covers as dear against their expected loss; recovered from the district totals less the published counties, those years carry the covers' largest losses and both covers clear the board's rule.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: calibrate the five counties (dormant seasons, triggers, exits, offers) so the golden writes Ardley, Pallard and Tresham and declines Corvin and Elster while every naive estimator files another set; then the screen, fork table, ladder, closure, asks and prompt to precut exit 0",
+  "resume": "stage 2 (re-drawn 2026-10-17 before any data was cut): calibrate the five counties (withheld drought years, trend, triggers, quotes) so the golden buys Corvin, Elster, Pallard and Tresham and declines Ardley while the published-years burn and the district fill file other sets; then the screen, fork table, ladder, closure, asks and prompt to precut exit 0",
   "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "seed ET22 (analytical_tasks/07_data_extraction_conformation): a reinsurer pricing a parametric June to August drought cover for a farmers' cooperative from GHCN-Daily station data with a 40 mm daily cap and burn analysis; the seed's own trap (tenths of millimetres, quality flags, weekend totals) is Layer 1 here"
+  "source_note": "seed ET22 (analytical_tasks/07_data_extraction_conformation): a reinsurer pricing a farmers' cooperative's index drought cover by burn analysis; kept as a cooperative buying area-yield covers on its counties' official dryland yields; the seed's rainfall index and its trap (tenths of millimetres, quality flags, weekend totals) are not used"
 }

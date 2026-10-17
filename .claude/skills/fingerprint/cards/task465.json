@@ -2,11 +2,11 @@
   "task": "task465",
   "architecture": "v1",
   "drawn": "2026-10-17",
-  "slot_note": "seed ET22 (analytical_tasks/07_data_extraction_conformation): a reinsurer pricing a parametric June to August drought cover for a farmers' cooperative from GHCN-Daily station data, a 40 mm daily cap, burn analysis over 1991 onward; the seed's own trap (tenths of millimetres, quality flags, weekend totals) is Layer 1 here and decides nothing",
+  "slot_note": "seed ET22 (analytical_tasks/07_data_extraction_conformation): world, decision and quantity kept (a reinsurer pricing a farmers' cooperative's index drought cover by burn analysis over the seasons since 1991); the index is the county's official dryland yield (an area-yield cover) rather than a gauge's rainfall, and the seed's own trap (tenths of millimetres, quality flags, weekend totals) is not used",
   "domain": "general-statistics-data-science",
   "subdomain": "data-integration-record-linkage-entity-resolution",
   "client_domain": "general-statistics-data-science",
-  "niche": "a reinsurer's county drought covers for a High Plains growers' cooperative, priced on each county's cooperative-observer rain gauge, whose record has whole seasons missing when the volunteer observer left, rebuilt from the county's airport station",
+  "niche": "a growers' cooperative's 2027 purchase of area-yield drought covers for its five counties at a reinsurer's quoted premiums, each judged on its expected loss by burn analysis on the county's official dryland sorghum yields since 1991, where the statistics service withholds a county's figures in the years too few farms harvest, which are the drought years",
   "objective": "etl",
   "shape": "07",
   "decision_type": "designation_set",
@@ -14,40 +14,40 @@
   "answer": "",
   "answer_source": "",
   "gap": [
-    "objective",
-    "population"
+    "population",
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
+    "G6",
     "G12"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "the reinsurer's head of agricultural reinsurance",
-  "role_family": "portfolio_manager",
+  "context_artifact": "published_series",
+  "stakeholder_role": "the cooperative's risk manager, who tells its board which county covers to buy for 2027 at the reinsurer's quoted premiums",
+  "role_family": "finance_controller",
   "scoring_unit": "per accepted item",
   "spine": {
-    "file": "ghcnd_ardley_plains_1991_2026.csv",
+    "file": "nass_county_sorghum_estimates_1991_2025.csv",
     "rows": 0,
-    "entity": "one station's value of one element on one day, as the climate data centre publishes it (precipitation in tenths of a millimetre, with multi-day totals after unread days)",
-    "grain": "station x element x day",
+    "entity": "one published estimate (a county's, a district's or the state's harvested acres, production or yield for one crop, practice and year), or a withheld mark",
+    "grain": "geography x data item x practice x year",
     "source": "synthetic"
   },
-  "forum": "customer_or_counterparty",
+  "forum": "board_of_directors",
   "forcing_event": "season_or_peak",
-  "org_family": "financial_institution",
+  "org_family": "cooperative_or_member_body",
   "world": {
     "geography": "an invented High Plains region of the United States: five invented counties, their cooperative-observer stations and two airport stations",
     "currency": "USD",
-    "org_type": "a reinsurer's agricultural parametric desk and a growers' cooperative",
+    "org_type": "a High Plains growers' cooperative buying area-yield drought covers from a reinsurer",
     "invented_names": [
       "Quillfield Re",
       "Ardley Plains Growers' Cooperative",
@@ -55,9 +55,7 @@
       "Corvin County",
       "Elster County",
       "Pallard County",
-      "Tresham County",
-      "Corvin Regional Airport",
-      "Pallard Municipal Airport"
+      "Tresham County"
     ],
     "people": [
       "Brent Little",
@@ -65,34 +63,66 @@
     ]
   },
   "deliverables": [
-    "county_drought_quotes_2027.xlsx",
-    "conformed_county_rainfall_jja_1991_2025.csv"
+    "county_area_yield_quotes_2027.xlsx",
+    "conformed_county_dryland_sorghum_1991_2025.csv"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is the long-run average of a payoff that is zero on one side of a threshold and rises to a cap on the other, and in the periods the target series was not observed its value is known only through a correlated series; a prediction is the conditional mean, so the payoff of the prediction is not the expected payoff, which has to be averaged over the prediction's error: predictions just short of the threshold pay nothing while their expectation pays, and predictions near the cap pay more than their expectation.",
-  "driver_concrete": "Each county's cover pays between its trigger and exit on the June to August rainfall at the county's cooperative-observer gauge, each day capped at 40 mm; several gauges went dormant for whole seasons when their observers left, among them two of the region's dry seasons; rebuilding those seasons from the airport station and replaying the cover on the rebuilt totals pays almost nothing for them, while the expected payout given the airport's record, averaged over the rebuilding's error, pays a material share of the limit, and the technical premium of some counties' covers then exceeds the cooperative's offer.",
-  "stump": "The default path rebuilds each dormant season from the airport station through the regression their shared seasons show and replays the cover on the rebuilt totals, so the dry seasons rebuild just above the triggers and pay nothing, and it writes covers whose technical premium, with each rebuilt season's payout averaged over the rebuilding's error, exceeds the cooperative's offer.",
+  "driver": "The decisive quantity is the long-run average loss of a cover paid on a unit's annual value, and the published history withholds the unit's value in the years too few contributors report, which are the years the value collapses; each withheld value is fixed by the published total of the group it sits in less the group's published members, so a burn over the published years, or with the withheld years filled from the group's average, misstates the loss the cover must be priced on.",
+  "driver_concrete": "Each county cover pays on the county's official dryland sorghum yield against a trigger at a share of its trend yield for 2027; the statistics service withholds a county's harvested acres and production when fewer than three farms harvest, which in the region's drought years (abandoned fields) is exactly when small counties' yields collapse; the agricultural district's published totals less its published counties give each withheld county's acres and production, so the burn over the published years leaves out the covers' worst losses and a district-yield fill dilutes them.",
+  "stump": "The default path prices each county's cover by burn analysis over the years its yield is published, treating withheld years as missing, so the counties whose drought years were withheld look safe, their quoted premiums look dear against their expected loss, and it buys the wrong set; with each withheld year recovered from the district's totals less its published counties, those covers' expected losses rise and the board's rule buys them.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly and applies every filed rule rebuilds the dormant seasons from the airport station by regression (or by the ratio of the stations' means) and replays the contract on the rebuilt totals, writing the wrong set of covers; averaging each rebuilt season's payout over the rebuilding's error writes the right set.",
-  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, the expected payout over seasons the county gauge never observed, carried from the airport station through their relationship together with its error; replacing the carried distribution by its point prediction (or by the gauge's observed seasons alone, or the airport's seasons as they are) changes which covers clear their premiums, and without a payout that bends at the trigger the point prediction would do.",
+  "analyst_test": "A strong analyst who reads the statistics service's export correctly (a withheld mark is not a zero), applies every filed rule and detrends as the board's rule says judges each quote on the county's published years (or fills withheld years with the district's yield), buying the wrong set of covers; recovering each withheld year from the district's totals less its published counties buys the right set.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a data-integration estimate, each county's yield history completed from the county, district and state tables of the same statistics by their additive structure, which withholding hides cell by cell; replacing it with the published years alone, or a fill from the district, changes which covers clear their premiums, and the withheld years are not missing at random but the drought years.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:payout-averaged-over-reconstruction-error",
+  "layer2_pattern": "own:area-yield burn on a history whose withheld years are recovered from the district totals",
   "layer1": [
-    "several sources for one picture: the climate data centre's daily file for five cooperative-observer gauges and two airport stations, the airports' hourly observations, the station histories, the cooperative's request, the term sheet and the underwriting guidelines",
-    "precipitation in tenths of a millimetre, trace kept as a flag on a zero value, values that failed a quality check flagged in place",
-    "multi-day totals after days the observer did not read (weekends and holidays), the unread days left blank and the total carried in its own element with its day count",
-    "cooperative observers reading at 7 am against the airports' midnight days; the airports' hourly precipitation in UTC",
-    "a gauge renumbered by the data centre without moving, mapped through the station history",
-    "the cooperative's limits written as insured acres and dollars an acre"
+    "several sources for one picture: the statistics service's county, district and state estimates export, its revision notes, the cooperative's request, the term sheet and the underwriting guidelines",
+    "values written with thousands separators and withheld or not-published marks in the value column, and a coefficient of variation column on some rows",
+    "data items as long text strings naming crop, practice, statistic and unit; dryland and irrigated rows beside all-practice rows, some years published only for all practices",
+    "district codes and county codes with leading zeros, one district renumbered in a redefinition",
+    "preliminary estimates beside the revised ones for the latest years",
+    "the cooperative's liability written as insured acres times an expected yield and a price"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task461": "task461 carried a short record to a long one through the overlap's ratio and read a quantile off the carried record; here the carried values are the default path, and the decisive move is averaging a payout that bends at the trigger over the carrying's error, which the carried values do not carry",
     "task182": "task182 separates an effect from each unit's own lagged response to a shared driver fitted before the effect; here nothing is separated from a driver: the move is averaging a payout that bends at its trigger and exit over a reconstruction's error in seasons the series never observed",
-    "task228": "task228 builds a ratio's variance at the randomised unit and separates three comparators' errors to rank units; here no variance is tested and nothing is ranked: the reconstruction's error enters the expected value of a kinked payout"
+    "task228": "task228 builds a ratio's variance at the randomised unit and separates three comparators' errors to rank units; here no variance is tested and nothing is ranked: the reconstruction's error enters the expected value of a kinked payout",
+    "task461": "task461 carried a short record through an overlap ratio; here no relationship is carried: each withheld value is pinned exactly by the published group totals less the published members",
+    "task448": "task448 completed a register from a second incomplete list through capture rates; here the withheld cells are recovered exactly from the same statistics' group totals, and their absence is concentrated in the decisive years",
+    "task180": "task180 restores small events that a detection threshold hides in the noisy hours; here nothing went undetected: the service measured every withheld value and published the totals that fix it, so the move is exact recovery from the tables' additive structure, not a detection model",
+    "task456": "task456 estimates prevalence from three imperfect records; here the withheld values are exact and recovered from published group totals of the same statistics",
+    "task462": "task462 weights snapshot detections by a size-dependent detection probability; here no detection is probabilistic: each withheld cell is pinned by the published totals",
+    "task133": "task133 corrects outcome rates for units present only from a takeover (time the record never watched); here the missing years are withheld cells whose values the published totals give exactly",
+    "task230": "task230 v1 reads a staggered switch against a not-yet-switched pool whose mix differs; here there is no comparison pool: the published years are a sample of years selected on the outcome, and the withheld ones are recovered exactly from totals",
+    "task124": "task124 infers an unexamined unit's kind from the surviving records of the group laid down with it; here nothing is inferred from group members: the group's published total less its published members is the withheld value itself",
+    "task132": "task132 resets a wear-out curve at each replacement; here no rate is carried forward: the decision turns on which past years enter a burn and on recovering the ones the publisher withheld",
+    "task144": "task144 grows an intervention's yield through a branching process; here there is no propagation: a loss average over years is biased by the publisher withholding exactly the bad years"
   },
-  "lineage": [],
-  "notes": "stump_strategy other: the move is the expectation of a kinked payout over a reconstruction's error (Jensen at the trigger and the exit), which no strategy key names",
-  "registered": "2026-10-17T03:46:03Z"
+  "lineage": [
+    {
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G12"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "designation_set",
+      "stump_strategy": "other",
+      "layer2_pattern": "own:payout-averaged-over-reconstruction-error",
+      "driver": "The decisive quantity is the long-run average of a payoff that is zero on one side of a threshold and rises to a cap on the other, and in the periods the target series was not observed its value is known only through a correlated series; a prediction is the conditional mean, so the payoff of the prediction is not the expected payoff, which has to be averaged over the prediction's error: predictions just short of the threshold pay nothing while their expectation pays, and predictions near the cap pay more than their expectation.",
+      "driver_concrete": "Each county's cover pays between its trigger and exit on the June to August rainfall at the county's cooperative-observer gauge, each day capped at 40 mm; several gauges went dormant for whole seasons when their observers left, among them two of the region's dry seasons; rebuilding those seasons from the airport station and replaying the cover on the rebuilt totals pays almost nothing for them, while the expected payout given the airport's record, averaged over the rebuilding's error, pays a material share of the limit, and the technical premium of some counties' covers then exceeds the cooperative's offer.",
+      "stump": "The default path rebuilds each dormant season from the airport station through the regression their shared seasons show and replays the cover on the rebuilt totals, so the dry seasons rebuild just above the triggers and pay nothing, and it writes covers whose technical premium, with each rebuilt season's payout averaged over the rebuilding's error, exceeds the cooperative's offer.",
+      "architecture": "v1 draft (rainfall index, dormant gauge seasons)",
+      "fate": "superseded 2026-10-17 before any data was cut: the decisive move (a kinked payout averaged over a reconstruction's error instead of paid on the reconstructed value) is the expectation-of-a-nonlinear-payout lesson task151, task187 and task229 already carry, and the rainfall world's other cruxes (a short gauge carried through an airport's overlap, a gauge's own change, a network's averaging) are task461's, task464 v1's and too small; redrawn on an area-yield index whose published history withholds the bad years"
+    }
+  ],
+  "notes": "Gap population first (the published years are not the population of years the expected loss runs over: the withheld years are the drought years), objective behind it (each quote is judged on the cover's expected loss). Pattern none. Generators: G6 (the published years' composition shifts away from the bad years; recovering the withheld ones restores it) and G12 (a withheld mark is a non-answer whose value the totals hold, neither a zero nor an ordinary missing year). Gate G forecasting (each cover's expected 2027 loss). Strategy population_selection.",
+  "registered": "2026-10-17T04:15:04Z"
 }
