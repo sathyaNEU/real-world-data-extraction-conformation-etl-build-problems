@@ -454,6 +454,56 @@ Pair ceiling: 32 (C = 38 + 7 + 55 x 0.04 = 47.2 with the cracker keeping 1 of 26
 with the best miss keeping the chart's form). If the cracker also resolves A1 and B1, C rises
 to about 100 and the pair to about 60: the devices are the margin, and the ceiling is rerun from the generated rubric.
 
+## Leak review
+
+leak.py (as of 2026-10-06, on the final rebuild): REVIEW, 10 lines, no LEAK; sweeps 1, 5, 6, 7, 9, 10 and 11 clean.
+- Sweep 2, Exhibit C, "generator": the agreement's own name (Large Generator Interconnection Agreement), a field term
+  declared in `metadata.json`.
+- Sweep 3, the legacy billing file, 534: a station-service day's 534.1 kWh (April 29, 2016) that matches 2021's
+  over-under by chance; no answer figure.
+- Sweep 3, the policy, 10 of 12 words of the call: the policy is where the estimand is filed (P90, rounding, base
+  period) and carries no figure.
+- Sweep 4, README (9 of 25 terms): file and field descriptions; it names no split, boundary or wash reading.
+- Sweep 4, Corvane report (5 of 25): the test's conditions and result; nothing about the plant's own decline.
+- Sweep 4, scope (6 of 25): what is replaced and what stays, a WHAT about the plant in 2027.
+- Sweep 4, O&M schedules (5 of 25): the cleaning and availability terms; Schedule 4 feeds Ask A only.
+- Sweep 8, `device` in the replacement SCADA, the event log and the hourly AC file: the systems' own column name.
+
+The final targeted re-read (on 053554f): clean on the main call, analytical, no ranking file, no answer figure, nothing
+planted. Its notes, each kept and accepted as a mild realism tell or a closed residual:
+- The scope's clipping sentence and its restatement of the December wash: kept, both WHATs about the plant in 2027.
+- The README's orienting lines: kept, Layer 1 help that names no part of the decisive step.
+- The O&M's explicit part-hour language: kept, it closes Ask A's Schedule 4 readings (S10, S11).
+- The Corvane setup's conditions: kept as the test's standard conditions; the analyst needs them (an unexposed table A,
+  the new modules' first year inside the twelve months).
+- The amendments' true-up (the year's sold quantity is the whole amended Contract Quantity): asserted, the January to
+  March blend missing 2 of 10, beside S3 for the blotter as booked.
+- The volume from the rounded P50 and standard deviation: SF21, the same volume.
+- The weather years by local or UTC calendar year: asserted (R2d), the volume, the P50 and the standard deviation
+  unmoved by the year's boundary.
+
+## Pre-ship check
+
+- **The 10/10 rules against the built pack.** The decisive step is still analytical: the policy files the estimand
+  (3.1, 4.1, 4.2, 4.4) and no shipped sentence says which part of the decline the replacement removes or where to read
+  it; the filed sentences executed alone give 60,000 (R3c); the base period carried with the gain files 60,000 on the
+  clean truth too (R3a); only the wear read on the days after each block's wash at the inverters' DC input and corrected
+  for temperature lands, in every one of the 31 constructions of C3. Layer 1 (two SCADA layouts, inverter 07's new tag,
+  the lost 2018 days, UTC and Arizona time, the legacy and MDM district files, the station service, the free-text work
+  orders) is neutral: each mishandled reading leaves the call (R2a to R2g).
+- **Free gates on the final rebuild.** `checks.py` 205 assertions, 0 failed; `verify.py` agrees on its own path; two
+  builds byte-identical, target.zip sha256 c893250a; `figures_check.py` 59 figures, 0 absent; `freeze.py` (determinism)
+  moves only block 1's three rival figures, removed on the round 2 finding, and the design note's duplicated half, and
+  figures.json is identical to the stage 4 round 1 cut; `precut.py` exit 0; `voice-check.py` PASS (852 characters);
+  container audit clean on the pack and the goldens; `guard.py` check WARN (overuse.objective), validate clean, heart
+  WARN, surface one promoted pair on the differentiated card signature (task232).
+- **Stage 4.** Judge round 1 DETERMINISTIC, APPROVE (`determinism_check_report_round1.md`); the hardening pass on its
+  and the rule 3 audit's notes; judge round 2 DETERMINISTIC, FIX_NOW on the solution (`determinism_check_report.md`),
+  every main and ask figure reproduced, its finding fixed by taking the rival figures out of the graded blocks; the leak
+  reader clean in round 1; the targeted re-read of the round 2 documents clean.
+- **Personas in the pack.** Kristopher Lara, Selena Sloan, Caroline Barnett, John Davila, Laurie Howell, Felicia
+  Powers, Ruben Yang, Howard Stout and Sonia Whitehead (drawn with `guard.py names`), all on the card.
+
 ## Build record
 
 - Generator: `world.py` (weather, plant, washes, outages, meters, hedges), `records.py`, `docs.py`, `calc.py`, `asks.py`,
@@ -469,13 +519,8 @@ to about 100 and the pair to about 60: the devices are the margin, and the ceili
   February, the year-to-year spread of clear-sky transmittance (1.33 per cent) and the scope's December 2026 wash.
 - Pack: 23 files in six formats (csv, txt, xlsx, pdf, docx, md); the largest 219,144 rows; distractors Tresco's
   repowering summary and the Palo Verde forward marks, named in `metadata.json`.
-- Gates at the PAUSED commit (stage 4, round 2 fixes): checks 203/203; verify green; two builds byte-identical;
-  `freeze.py check --mode determinism` moves only block 1's three rival figures (removed on the judge's finding) and
-  figures.json is identical key for key; `figures_check.py` exit 0 (59 figures); container audit clean on target and
-  golden; `leak.py` REVIEW, no LEAK (a station-service day's 534.1 kWh in the legacy file matches 2021's over-under by
-  chance); `guard.py check` WARN (overuse.objective), validate clean; `guard.py surface` one pair promoted on the
-  differentiated card signature (task232), no surface clone; `guard.py heart` WARN; `precut.py` exit 0;
-  `voice-check.py` PASS.
+- Gates at ship: checks 205/205; verify green; two builds byte-identical, target.zip sha256 c893250a; the rest under
+  `## Pre-ship check`.
 - Stage 4, round 1: the determinism judge DETERMINISTIC, APPROVE (`determinism_check_report_round1.md`); the leak reader
   clean; the rule-3 audit PASS. Its notes and the reader's readings are answered in the generator: the corridor and the
   landers above, the pins (the district's meter of record; the scope keeps the December 2026 wash, a WHAT about the plant in
@@ -571,3 +616,5 @@ to about 100 and the pair to about 60: the devices are the margin, and the ceili
   be grouped as one less U over P (S10, 6 inverters move); it now states A = 100 x (1 - U / (P - X)). "Delivers no AC
   energy" and a part-covered hour are defined in 4.2 (S11, every touched hour excluded, 4 move). Policy 5.2 now makes
   the confirmation, as amended, the record of a trade's quantity (the blotter as booked is S3).
+- Round 2 stamped each Office file's zip entries with its last save on the re-read's note; reverted at ship to the
+  1980 stamp Word and Excel themselves write, which the house audit accepts, with core.xml's dates kept.

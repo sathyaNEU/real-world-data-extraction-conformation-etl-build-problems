@@ -109,6 +109,22 @@ def run(target, golden, B=None, G=None, meta_path=None):
     Hu = np.array([tot[y] / 1000.0 for y in range(2001, 2026)])
     pu = A.PR_new * K.DC_NEW_KWP * (Hu.mean() - 1.2816 * Hu.std(ddof=1)) / 1000.0
     ok("R2d the long-term record grouped by UTC year: same volume", floor_k(pu) == vol, "%.0f" % pu)
+    # the calendar-year boundary: UTC by the period's end, Arizona time by its end, Arizona time by its start (golden)
+    tl = {}
+    with open(os.path.join(target, R.F_LT), encoding="utf-8") as fh:
+        for line in fh:
+            if line[0] in "#p":
+                continue
+            st, g_, d_, poa = line.rstrip("\n").split(",")
+            yl = (dt.datetime.strptime(st, "%Y-%m-%d %H:%M") - R.UTC_OFF).year
+            tl[yl] = tl.get(yl, 0.0) + float(poa)
+    Hl = np.array([tl[y] / 1000.0 for y in range(2001, 2026)])
+    bnd = []
+    for Hx in (Hu, Hl, A.H):
+        e = A.PR_new * K.DC_NEW_KWP * Hx / 1000.0
+        bnd.append((floor_k(e.mean() - 1.2816 * e.std(ddof=1)), nearest(e.mean(), 1000), nearest(e.std(ddof=1), 100)))
+    ok("R2d the calendar-year boundary (UTC or Arizona time, by the hour's end or its start) moves none of the volume, "
+       "the P50 or the standard deviation", all(b_ == (vol, G["P50_r"], G["SD_r"]) for b_ in bnd), bnd)
     rep = CA.read_report(target)
     gm = float(np.mean([m[5] for m in rep["months"]]))
     pm = A.p90_of(A.PR_B * gm / A.wear)
@@ -402,6 +418,17 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ok("ASK B the policy makes the confirmation, as amended, the record of a trade's quantity (5.2); the blotter "
        "as booked is stop S3", "is the record of a trade's quantity" in pol and
        any(k.startswith("S3 ") for k in sb))
+    blend = {}
+    for t in Bb.trades:
+        q = 0.25 * t["qty"] + 0.75 * Bb.amend[t["id"]] if t["id"] in Bb.amend else t["qty"]
+        blend[t["year"]] = blend.get(t["year"], 0.0) + (1.0 if t["side"] == "S" else -1.0) * q
+    ob = AS.over_under(AS.net_by_year(Bb), blend)
+    miss_b = sum(1 for y in gb if AS.rnd(ob[y]) != AS.rnd(gb[y]))
+    conf_flat = re.sub(r"\s+", " ", texts[DOC.F_CONF])
+    ok("ASK B the amendments' true-up makes each year's sold quantity the whole amended Contract Quantity: keeping the "
+       "original quantity for the months settled before the amendment (January to March) misses %d of 10, and the "
+       "confirmations' true-up sentence closes it" % miss_b,
+       miss_b == 2 and "by a true-up in the next monthly settlement for the months already settled" in conf_flat)
     # the cracker: landed the call, ran the battery (dedup versions, the overlap), executed every filed rule
     crackA = sa["S4 every F-217 hour excluded, gaps read through the register"]
     crackB = sb["S2 the whole account netted"]

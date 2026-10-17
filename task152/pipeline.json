@@ -1,11 +1,11 @@
 {
   "task": "task152",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "energy-systems-utilities/asset-condition-maintenance",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-17",
   "stump": "Carrying the plant's last twelve months' performance ratio onto the new modules with the side-by-side gain files 60,000 MWh against the golden 70,000; restoring the plant's whole decline since 2016 (76,000), its whole DC-side decline (73,000) or its decline after washes read at the inverters' AC output (72,000) overshoots; the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on the days after each block's wash at the inverters' DC input and corrected for temperature, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
   "architecture": 1,
@@ -15,8 +15,8 @@
     "date": "2026-10-17"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-17, after the round-2 hardening; leak_check_report.md)",
-    "reader": "clean (round 1, 2026-10-17); its four readings asserted in checks.py (SF21, Ask B S3 and S8, Ask A S8 and S9)"
+    "leak_py": "REVIEW, no LEAK (2026-10-17, final rebuild, --asof 2026-10-06; every REVIEW line answered in the design note's Leak review)",
+    "reader": "round 1 clean; the targeted re-read of the round 2 documents (053554f) clean on the main call, its realism notes accepted and its residual forks asserted (the true-up blend, SF21, R2d)"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective); nearest 0.06, task132's ledger row",
@@ -24,30 +24,31 @@
   },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW on the solution (round 2): the Final Recommendation's whole-DC-decline rival figure did not reproduce; fixed by dropping every rival figure from the graded blocks",
-    "report": "determinism_check_report.md (round 2); determinism_check_report_round1.md (round 1, APPROVE)",
-    "round2": "DETERMINISTIC, FIX_NOW solution only; every main and ask figure reproduced"
+    "disposition": "FIX_NOW on the solution at round 2 (the Final Recommendation's whole-DC-decline rival figure did not reproduce), fixed by taking every rival figure out of the graded blocks; every main and ask figure reproduced",
+    "report": "determinism_check_report.md",
+    "earlier": "round 1 DETERMINISTIC, APPROVE (determinism_check_report_round1.md); its and the rule 3 audit's notes hardened in one world pass"
   },
   "returned": [],
-  "resume": "stage 4: the coordinator's targeted re-read of the round-2 documents, then stage 5 ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-17",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
   "wave": "wave 4 (new), seed FC23 (world, decision and quantity kept; pitfall re-found from the plant's monitoring records)",
   "gates_stage3": {
-    "checks": "203 of 203",
+    "checks": "205 of 205",
     "verify": "green",
     "rebuild": "two builds byte-identical (target, golden, metadata, figures.json, submission.md, target.zip)",
+    "target_zip_sha256": "c893250a491a40aa0b1af67955803f81a3945270d67e46893dcc021539833001",
     "figures_check": "exit 0, 59 figures",
-    "container": "clean on target and golden",
+    "freeze": "determinism mode: only block 1's three rival figures removed (the round 2 finding) and the design note's duplicated half; figures.json identical to the round 1 cut",
+    "container": "clean on target and golden (Office zip entries at the 1980 stamp Word and Excel write)",
     "voice_check": "PASS",
     "precut": "exit 0, 49 checks",
-    "guard": "check WARN overuse.objective (task151, task190 and task464 cards from origin read, no BLOCK); validate clean; heart WARN; surface one promoted pair on the differentiated card signature (task232), no surface clone",
-    "input_gates": "23 files, 6 formats, largest 219,144 rows, 2 distractors",
-    "freeze": "determinism mode: only block 1's three rival figures removed (requested); figures.json 237 keys identical"
+    "guard": "check WARN overuse.objective; validate clean; heart WARN; surface one promoted pair on the differentiated card signature (task232), no surface clone",
+    "input_gates": "23 files, 6 formats, largest 219,144 rows, 2 distractors"
   },
   "rule3_audit": "PASS (round 1); its accidental landers moved a bin or more away and asserted (LADDER, SF10b)",
   "hardening_round2": "world laws reset once: six-wash era in the cool months, December wash a block a week from 2021, wear fast phase 3.85%/yr mid-2017 to mid-2020, seasonal wind, spring dust from February, clear-sky year spread 1.33%; corridor of 31 constructions (window, estimator, reference, temperature correction incl. NOCT, regressions and first-order forms) each 284 MWh or more inside the volume's and the P50's bins; every rival 300 MWh or more outside (nearest 443)",
