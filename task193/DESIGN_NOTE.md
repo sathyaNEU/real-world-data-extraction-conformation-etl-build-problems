@@ -465,16 +465,19 @@ over the generator's own flag.
 
 ## Tried and rejected
 - The cold reader after the ask rebuild landed the main call at 85 per cent on the golden's seven
-  pairs, having considered the 0.5 shortcut and rejected it at 8 per cent because it wrongly refers
-  P05 and P08 whose base timing is skewed. That is the Gate F question this build now turns on, and it
-  is the judge's to settle, not mine: if the top responses land the call, the pair arithmetic is about
-  53 rather than 36.5, because the ceiling assumes one of the two misses it. My own reading of why it
-  was findable, for the judge to confirm or refute: standard 7-2024 s3.2(b) says "at least 1.25 times
-  the number that would be expected if receiving the product had no bearing on when the marker
-  treatment is first received", and the words "when ... is first received" name the timing the null
-  has to be adjusted for. A clause that names the decisive quantity's own null is readability screen
-  test 1, and a readable decisive rung is dead. Nothing is being changed on that argument until the
-  judge has recomputed it.
+  pairs, having considered the 0.5 shortcut and rejected it at 8 per cent. I read that as a Gate F
+  problem and hypothesised that standard 7-2024 s3.2(b) was handing over the timing adjustment,
+  because "the number that would be expected if receiving the product had no bearing on when the
+  marker treatment is first received" names the timing the null must be adjusted for. **The judge
+  recomputed and that hypothesis was wrong.** The call is forced and margin-robust: all 23 pair rows
+  and 16,957 person keys reproduce, the seven referred pairs come out at 1.36 to 1.50 with the nearest
+  unreferred at 1.03, and the set holds under three independence constructions, the pair's own dates,
+  marginals from all window first-receivers, and a monthly grain, as well as under skipping the
+  crosswalk and the clearance rule. Three constructions converging on one answer is C1 convergence,
+  the strongest closure available, not a leak. Only section 1.1 gives a partial hint, and the
+  equal-chance route files 10 pairs against the golden's 7. The reader landing it was a strong reader
+  doing the field's own analysis correctly, which is what the top of the portal does; the ask layer is
+  what holds the pair, and that is what the arithmetic was built for.
 - The reader found one of the three silent primaries, the chain that owned the pharmacy on the day of
   the dispensing, and reported that reading the chain at the extract date instead changes every cell.
   It missed the prior person extract, saying in terms that using `person_register_2025Q4.csv` changes
