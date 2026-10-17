@@ -445,10 +445,15 @@ def record_targets(expected, allsep, design, units, plans, bins=True, fixed=None
         clear = 1.0
         for v in top:
             n0 = round(rd["pooled sums"] * v)
-            clear = min(clear, 0.5 - max(abs(lo * v - n0), abs(hi * v - n0)))
+            clear = min(clear, (0.5 - max(abs(lo * v - n0), abs(hi * v - n0))) / abs(v))
+        count_clear = 1.0
+        for v in excess.values():
+            n0 = round(rd["pooled sums"] * v)
+            count_clear = min(count_clear, 0.5 - max(abs(lo * v - n0), abs(hi * v - n0)))
         band = (hi - lo) * max(abs(v) for v in top)       # what the planned volumes have to fit in a bin
         if fixed is not None:
-            pen += 300.0 * max(0.0, 0.14 - clear)
+            pen += 30000.0 * max(0.0, 0.9 * SHARE_CLEARANCE - clear)
+            pen += 300.0 * max(0.0, 0.13 - count_clear)
         else:
             pen += 300.0 * max(0.0, band - 0.62)
         soft = pen + 0.02 * sum(abs(cand[c] - base[c]) for c in cand) + 4.0 * band
@@ -514,7 +519,10 @@ def centre_plans(plans, per_separation, thetas, pick, graded):
             n = round(mid * x)
             if round(v_lo) != n or round(v_hi) != n:
                 continue
-            if 0.5 - max(abs(v_lo - n), abs(v_hi - n)) < 0.175:
+            # what has to clear is the share that reproduces the count, not the count itself: the
+            # window of shares this unit allows must hold the whole register's reading with room
+            room = 0.5 - max(abs(v_lo - n), abs(v_hi - n))
+            if room < 0.14 or room / abs(x) < SHARE_CLEARANCE:
                 continue
             e = epl * plan
             if 0.05 - abs(e * 10 - round(e * 10)) / 10.0 < 0.0055:
@@ -527,7 +535,7 @@ def centre_plans(plans, per_separation, thetas, pick, graded):
             # the share that reproduces the count has to clear the floor and the ceiling of its own
             # window by the same margin, so the count is put as near the whole complication as the
             # planned volume can put it
-            score = (round(abs(mid * x - n), 4), abs(plan - plans[code]))
+            score = (abs(plan - plans[code]),)
             if best is None or score < best[0]:
                 best = (score, plan)
         if best is None:
@@ -536,6 +544,7 @@ def centre_plans(plans, per_separation, thetas, pick, graded):
     return plans
 
 
+SHARE_CLEARANCE = 0.0094      # of a share, between the count's bin edge and the register's reading
 EXPECTED_PER_SEP = {}
 
 

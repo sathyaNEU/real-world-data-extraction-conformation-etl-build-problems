@@ -44,11 +44,16 @@ def transmit_day(d, lag, ci, q, rng):
     if rng.random() < 0.019 and d < W.NDAY - 46:
         lag += 11 + int(rng.poisson(16))
     t = d + lag
-    while W.day(t).weekday() >= 5:
+    if W.day(t).weekday() >= 5:
         if W.day(t).weekday() == 5 and rng.random() < 0.14:
-            break                      # a Saturday transfer, which the smaller chains still run
-        t += 1
-    return min(t, W.PULL_DAY)
+            pass                       # a Saturday transfer, which the smaller chains still run
+        else:
+            # a batch held over the weekend is swept before it or worked through after it
+            back = 1 if W.day(t).weekday() == 5 else 2
+            fwd = 2 if W.day(t).weekday() == 5 else 1
+            u = rng.random()
+            t = t - back if u < 0.38 else (t + fwd if u < 0.75 else t + fwd + 1)
+    return min(max(t, d), W.PULL_DAY)
 
 
 def open_day(d, rng):
@@ -196,12 +201,25 @@ def apply_mess(lines, people):
                "reimbursement code missing",
                "pharmacy identifier closed before the date of dispensing",
                "reimbursed price missing for the package on that date"]
+    # the reason a line was turned back has to agree with what the registers hold: a line is
+    # refused for a closed pharmacy only after that pharmacy's closing date, and for an invalid
+    # package code only where the code has a validity period that the date of dispensing is
+    # outside of
+    closed = closed_pharmacies(set((r["chain"], r["pharmacy"]) for r in lines))
+    dated = set(v for v, c, k, vf, vt in
+                (p for lst in W.PACKAGES.values() for p in lst) if vf is not None or vt is not None)
     for i, r in enumerate(lines):
         if i in rej_idx:
+            can = [0, 1, 2, 3, 4]
+            if not (r["pharmacy"] in closed and r["day"] > closed[r["pharmacy"]]):
+                can.remove(3)
+            if r["vnr"] not in dated:
+                can.remove(1)
+            w = np.array([[0.407, 0.231, 0.168, 0.117, 0.077][j] for j in can], dtype=float)
             if r["chain"] == 2 and 913 <= r["day"] <= 943 and rng.random() < 0.74:
                 r["reason"] = reasons[4]          # the month the chain's price records were missing
             else:
-                r["reason"] = str(rng.choice(reasons, p=[0.407, 0.231, 0.168, 0.117, 0.077]))
+                r["reason"] = reasons[int(rng.choice(can, p=w / w.sum()))]
             rejected.append(r)
         else:
             kept.append(r)
@@ -358,9 +376,12 @@ def write_crosswalk(tgt, switch_day, keys, new_keys):
                      ["retired_person_key", "current_person_key", "replaced_on", "reason"], rows)
 
 
-def write_person_register(tgt, people, keys, new_keys, switch_day, kept):
+def write_person_register(tgt, people, keys, new_keys, switch_day, kept, rejected=()):
+    """One row per current person key the register holds a civil-registration record for among
+    the patients in this extract. A patient whose only lines were turned back at validation has a
+    record here and no dispensing in either extract."""
     rng = np.random.default_rng(W.SEED + 29)
-    seen = set(r["pid"] for r in kept)
+    seen = set(r["pid"] for r in kept) | set(r["pid"] for r in rejected)
     rows = []
     moved = set(rng.choice(sorted(seen), size=int(0.021 * len(seen)), replace=False).tolist())
     died = set(rng.choice(sorted(seen), size=int(0.016 * len(seen)), replace=False).tolist())
@@ -374,12 +395,14 @@ def write_person_register(tgt, people, keys, new_keys, switch_day, kept):
         prev, since = "", ""
         if pid in moved and reg:
             prev = W.REGIONS[(int(people["region"][pid]) + 2) % len(W.REGIONS)]
-            since = W.iso(int(rng.integers(W.WIN_A + 20, W.WIN_B - 20)))
+            # a move is recorded whenever it happened, which for most of them is years back
+            since = W.iso(int(rng.integers(140, W.WIN_B - 20)))
         dd = de = ""
-        if pid in died and last[pid] < W.NDAY - 40:
-            dd = W.iso(min(W.NDAY - 1, last[pid] + int(rng.integers(5, 60))))
-        elif pid in gone and last[pid] < W.NDAY - 40:
-            de = W.iso(min(W.NDAY - 1, last[pid] + int(rng.integers(5, 90))))
+        lp = last.get(pid, -1)
+        if pid in died and -1 < lp < W.NDAY - 40:
+            dd = W.iso(min(W.NDAY - 1, lp + int(rng.integers(5, 60))))
+        elif pid in gone and -1 < lp < W.NDAY - 40:
+            de = W.iso(min(W.NDAY - 1, lp + int(rng.integers(5, 90))))
         rows.append([key, int(people["birth"][pid]), people["sex"][pid], reg, prev, since, dd, de])
     return write_csv(os.path.join(tgt, "person_register.csv"),
                      ["person_key", "year_of_birth", "sex", "region", "previous_region",
@@ -481,6 +504,14 @@ PHARMACY_NAMES = [
 ]
 
 
+def closed_pharmacies(seen):
+    """The pharmacies that closed inside the extract period, and the day each closed."""
+    rng = np.random.default_rng(W.SEED + 61)
+    ids = sorted(set(ph for _ci, ph in seen))
+    pick = rng.choice(len(ids), size=6, replace=False)
+    return {ids[int(i)]: int(d) for i, d in zip(pick, rng.integers(300, W.NDAY - 60, size=6))}
+
+
 def write_pharmacy_register(tgt, kept):
     # the old named pharmacies carry their own name; the rest are named for their street or quarter
     NAMED = ("Svanen", "Stjerne", "Budolfi", "Dom", "Loeveapoteket", "Metropol", "Posthuset")
@@ -488,13 +519,16 @@ def write_pharmacy_register(tgt, kept):
             for m, names in PHARMACY_NAMES for n in names]
     assert len(set(x[1] for x in flat)) == len(flat), "two pharmacies would carry the same name"
     seen = sorted(set((r["chain"], r["pharmacy"]) for r in kept))
+    closed = closed_pharmacies(seen)
     rows, used = [], 0
     for ci, ph in seen:
         muni, name = flat[used % len(flat)]
         used += 1
-        rows.append([ph, name, W.CHAINS[ci][0], W.CHAINS[ci][1], muni])
+        rows.append([ph, name, W.CHAINS[ci][0], W.CHAINS[ci][1], muni,
+                     W.iso(closed[ph]) if ph in closed else ""])
     return write_csv(os.path.join(tgt, "pharmacy_register.csv"),
-                     ["pharmacy_id", "pharmacy_name", "chain_code", "chain_name", "municipality"], rows)
+                     ["pharmacy_id", "pharmacy_name", "chain_code", "chain_name", "municipality",
+                      "closed_on"], rows)
 
 
 def write_holder_register(tgt):
@@ -631,7 +665,7 @@ def write_manifest(tgt, counts):
         "submission_exceptions.csv": "validation outcomes for the lines the register turned back",
         "pharmacy_submission_log.csv": "the chains' own monthly totals, counted by month of submission",
         "package_index.csv": "package codes with the dates each was valid for dispensing",
-        "person_register.csv": "one row per person key in either extract, as recorded at the pull",
+        "person_register.csv": "one row per current person key, as the civil registration system recorded it at the pull",
         "register_variable_documentation.csv": "the register's documentation of the variables in this extract",
     }
     for name in sorted(counts):
@@ -744,8 +778,9 @@ VARIABLE_DOC = [
     ("person_register.csv", "year_of_birth",
      "Year of birth as the civil registration system holds it."),
     ("person_register.csv", "person_key",
-     "The pseudonym the register holds for the patient. A patient whose pseudonym was replaced "
-     "appears once under each, and person_key_crosswalk.csv gives the pair."),
+     "The pseudonym the register holds for the patient at the extract date. A patient whose "
+     "pseudonym was replaced appears here under the current one only, and "
+     "person_key_crosswalk.csv gives the retired one."),
     ("person_register.csv", "sex",
      "Sex as the civil registration system holds it: K for a woman, M for a man."),
     ("person_register.csv", "region_recorded_from",

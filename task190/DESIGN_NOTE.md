@@ -77,34 +77,88 @@ the tested set is visibly a size-biased draw: every line above a definite amount
 amount the share of lines tested rises exactly in proportion to amount. That is a property of the shipped
 record, not a rule in a file.
 
-**The ladder's arithmetic, on paper.** Materiality 750,000 EUR on a population of about 62,400,000 EUR in
-about 26,000 payment lines; k about 520,000; about 18 certainty lines holding about 16,000,000; about 107
-tested lines below k.
+**The field's own evaluation, measured before the ladder was fixed.** A monetary-unit sample is not
+evaluated by the projection alone: the standard evaluation is the projected misstatement plus basic
+precision plus an incremental allowance for the taintings found, compared against tolerable misstatement
+as an upper limit. Basic precision is the interval times the reliability factor at the stated confidence
+and is computed before any tainting is looked at, so a draw whose basic precision already exceeds
+materiality is escalated by step one of a textbook evaluation with no projection and no insight at all.
+The draw as first sketched did exactly that, and the sizing was the cause.
 
-| Rung | The analysis | Figure | Decision it files | Worth |
-|---|---|---|---|---|
-| below 0 | report the misstatement actually found in the tested lines | about 165,000 | certify | no projection at all; no competent analyst stops here |
-| 0 | scale the errors found on the population's book value over the tested book value | **about 320,000** | certify | the default path; the tested book value is dominated by the certainty lines, which are sound |
-| 1 | band the tested lines by size and scale each band on its own book-value ratio | about 620,000 | certify | the right instinct about size bias, applied with the wrong weight; within the lowest band the inclusion chance still rises with amount |
-| 2 | take the certainty lines at their own error and scale only the rest by book value | about 700,000 | certify | the certainty stratum handled correctly and the rest still wrong |
-| 3 | **recover k and project each tainting at it, certainty lines at their own error** | **about 1,160,000** | extended testing | the golden; the extreme of the ladder, and the only rung that crosses materiality |
+| | |
+|---|---|
+| Reliability factors | Poisson, one-sided upper bound, 95 per cent: RF(0) 3.00, then 4.75, 6.30, 7.76 and so on, the table every audit text carries. Expansion factor 1.60. |
+| Tolerable misstatement | 1,500,000 EUR, 2.5 per cent of the population |
+| Expected misstatement allowed in planning | 600,000 EUR |
+| Interval | (1,500,000 less 600,000 x 1.60) / 3.00 = **180,000**, the textbook sizing |
+| Selections | 331 over 59,500,000 EUR, 273 distinct tested lines holding 19,639,766 (33.0 per cent of the population), of which 31 certainty lines hold 15,846,000, which is 81 per cent of the tested book value |
+| Basic precision | 180,000 x 3.00 = **540,000, which is 0.36 of materiality**, so step one escalates nothing |
 
-Every rung walks one way, each is defensible and reproducible from the raw files, and only the decisive
-move reverses the decision. The decisive move is +460,000, the largest single step; the default path is
-3.6x away from the golden. The figures above are design targets and are pinned in `figures.json` at stage
-3, mid-cell on non-round values with each flip condition stated as a number.
+The first sketch had an interval of 520,000 against materiality of 750,000, so basic precision alone was
+1,560,000, **2.08 times materiality**. That is both a realism failure, because the usual sizing would have
+put the interval near 250,000, and the source of a shortcut that reaches the right decision with none of
+the analysis. Sizing with no allowance for expected misstatement is what creates it: the interval is then
+materiality over the reliability factor, so basic precision equals materiality exactly and any tainting at
+all escalates. Planning for expected misstatement is what opens the headroom the decision needs, and it is
+what a real auditor does.
 
-**The blind-response test, measured at the draw.** The widest graded component is the nine programmes
-times two figures. The blind move is one rate on one size column, the programme's book value. It is
-designed to fail: four of the nine programmes carry no tainting at all, so their projected misstatement is
-nil and any non-zero rate misses them; among the five that do, the taintings are placed so the projected
-misstatement is not monotone in book value, with the largest misstatement in a programme that is seventh
-of nine by size. The second figure per programme is the share of the programme's book value that was
-certain of selection, which depends on the programme's own size distribution and is not any rate times
-anything. **The target to assert in `checks.py`: at the best single rate on book value, a blind response
-matches at most 2 of the 18 cells, and at most 0 of the 9 misstatement cells without also missing every
-nil.** This is measured on the cut pack before the bundle is declared ready, and if it fails the asks' shape
-changes rather than the data.
+**The ladder, measured on a real selection rather than modelled.** A synthetic population of 24,700 lines
+in three classes (contractor certificates, subcontractor interims, day-work variation invoices and
+sundries), a real monetary-unit selection at 180,000 from a random start, and the systematic defect a
+wrong day-work labour rate applied across 519 small invoices in six of the nine programmes, 12 of which
+the selection caught. One certificate carries a separate 24,000 error.
+
+| Rung | The analysis | Figure | +BP | +BP+allowance | Decision |
+|---|---|---|---|---|---|
+| below 0 | the misstatement actually found in the tested lines | 54,063 | 594,063 | 606,088 | certify |
+| 0 | the errors found scaled on the population's book value over the tested book value | **159,241** | 699,241 | 753,338 | certify |
+| 1 | certainty lines at their own error, the rest scaled on their stratum's book value | 325,381 | 865,381 | 985,933 | certify |
+| 2 | **each tainting at the recovered interval, certainty lines at their own error** | **1,043,412** | 1,583,412 | **1,997,810** | **extended testing** |
+
+Spacing x2.95, x2.04, x3.21: every rung walks one way, the decisive move is the largest, and the golden is
+the extreme. **No wrong rung reaches extended testing even with basic precision and the field's own
+allowance added**: the nearest wrong rung's upper limit is 985,933, which is 66 per cent of materiality, a
+34 per cent margin, and the golden clears materiality by 33 per cent. The allowance on a wrong rung is
+modelled at 0.40 of its own sample part, which is what the incremental allowance comes to on the golden
+(0.41 of its sample projection), so the test is run at the golden's own conservatism.
+
+**How the interval is recovered, and the correction to the draw.** The certainty threshold does **not** pin
+it. The largest untested line is 82,852 and the smallest certainty line is 181,000, so that route gives
+only the bracket (82,852, 181,000], a 53 per cent spread in the figure, and the card has been corrected.
+What pins it uniquely is the lattice: 180,000 is the only interval on a ten-euro grid for which every one
+of the 273 tested lines contains a step of cumulated book value under one common start and none of the
+24,427 untested lines does. The projection over the whole feasible set has a spread of nought. A practical
+route reaches the same place: the median cumulated-value gap between consecutive proportional selections
+measures 180,764, which rounds to the working figure a plan would use, and the lattice confirms it. The
+certainty threshold is a check on the answer, not an independent pin.
+
+**The blind-response test, widened and measured on the pair of figures.** The nine programmes carry the
+projected misstatement and the share of the programme's book value that was certain of selection. Three
+programmes carry no tainting; **no programme has a nil certainty share**, which is what protects the pair
+against the all-nil response.
+
+| Blind response | Cells matched of 18 |
+|---|---|
+| the best single rate on book value | 3 (17 per cent) |
+| the best single rate on the number of tested lines | 3 (17 per cent) |
+| the best single rate on the misstatement actually found | 3 (17 per cent) |
+| the best constant in every cell | 3 (17 per cent) |
+| nil in every cell | 3 (17 per cent) |
+
+All five sit under the quarter the author set and under a fifth. The largest misstatement is in Rail siding
+and yard, fourth of nine by book value, and the second largest in Security and access systems, seventh of
+nine, so the column is not monotone in size. Both paths to the headline agree: the rounded programme
+figures sum to 1,040,000 and the unrounded total of 1,043,412 rounds to 1,040,000, which is asserted rather
+than claimed.
+
+**What may be filed at authority, and what may not.** The evaluation needs tolerable misstatement and the
+confidence, so the audit plan states those two and the expected misstatement it allowed in planning, and
+nothing else. **It does not state the interval, the number of selections, the reliability factors, or any
+instruction about how to project**, because the interval is the whole of the analysis and a reliability
+table is half the method. The exact wording of every sentence in that plan goes to the author before it
+ships, and that undertaking covers the audit manual and anything stating materiality, the confidence or
+the sampling method.
+
 
 ## Tried and rejected
 

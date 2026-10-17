@@ -32,18 +32,18 @@ Not the complaints register, which is a record of what neighbours heard and not 
 ### specific_sound_levels.csv
 
 1. One row for each of the 14 monitoring positions, in schedule order:
-   - NSL01 (DW-114): 43.9 dB LAeq, 6130 valid minutes, 1070 excluded, highest band 100 Hz, tone no
+   - NSL01 (DW-114): 43.9 dB LAeq, 6130 valid minutes, 1070 excluded, highest band 400 Hz, tone no
    - NSL02 (DW-103): 47.3 dB LAeq, 6130 valid minutes, 1070 excluded, highest band 400 Hz, tone yes
-   - NSL03 (DW-121): 43.6 dB LAeq, 5950 valid minutes, 1250 excluded, highest band 100 Hz, tone no
+   - NSL03 (DW-121): 43.6 dB LAeq, 5950 valid minutes, 1250 excluded, highest band 400 Hz, tone yes
    - NSL04 (DW-101): 53.0 dB LAeq, 6130 valid minutes, 1070 excluded, highest band 400 Hz, tone yes
    - NSL05 (DW-130): 38.7 dB LAeq, 6092 valid minutes, 1108 excluded, no band rows, so no highest band and no tone
    - NSL06 (DW-107): 44.7 dB LAeq, 5860 valid minutes, 1340 excluded, highest band 100 Hz, tone no
    - NSL07 (DW-110): 47.8 dB LAeq, 5860 valid minutes, 1340 excluded, highest band 400 Hz, tone yes
    - NSL08 (DW-126): 41.4 dB LAeq, 5860 valid minutes, 1340 excluded, no band rows, so no highest band and no tone
-   - NSL09 (DW-112): 44.6 dB LAeq, 5463 valid minutes, 1737 excluded, highest band 100 Hz, tone yes
+   - NSL09 (DW-112): 44.6 dB LAeq, 5463 valid minutes, 1737 excluded, highest band 400 Hz, tone yes
    - NSL10 (DW-134): 37.4 dB LAeq, 5480 valid minutes, 1720 excluded, no band rows, so no highest band and no tone
    - NSL11 (DW-104): 49.9 dB LAeq, 5550 valid minutes, 1650 excluded, highest band 400 Hz, tone yes
-   - NSL12 (DW-118): 43.3 dB LAeq, 5520 valid minutes, 1680 excluded, highest band 100 Hz, tone no
+   - NSL12 (DW-118): 43.3 dB LAeq, 5520 valid minutes, 1680 excluded, highest band 400 Hz, tone no
    - NSL13 (DW-105): 46.0 dB LAeq, 5930 valid minutes, 1270 excluded, highest band 400 Hz, tone no
    - NSL14 (DW-128): 42.0 dB LAeq, 6110 valid minutes, 1090 excluded, no band rows, so no highest band and no tone
 

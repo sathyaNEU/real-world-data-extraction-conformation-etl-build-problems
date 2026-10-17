@@ -127,6 +127,8 @@ def build():
     # the accession counter is shared with every other project the laboratory books in, so the
     # cohort service's accessions step irregularly. Drawn on its own stream: no other draw moves.
     srng = random.Random(W.SEED + 907)
+    hrng = random.Random(W.SEED + 923)       # het excess, DNA input and depth: measurement shapes
+    rsrng = random.Random(W.SEED + 929)      # the read-set counter's own stride
     serials, serial = [], 104000
     for _ in range(n):
         serials.append(serial)
@@ -146,7 +148,7 @@ def build():
         rec = {"specimen_id": sid, "role": role, "project": project, "agreement": agreement,
                "received": received, "panel_from": panel_from, "extraction": rng.choices(W.EXTRACTION, [0.62, 0.27, 0.11])[0],
                "instrument": None if rng.random() < 0.54 else None,
-               "depth": round(rng.uniform(26.0, 71.0), 1)}
+               "depth": round(rng.uniform(26.0, 71.0), 1)}      # reshaped below, draw kept in place
         if role == "mixed":
             side, band = mixed_plan[mi]
             mi += 1
@@ -169,13 +171,27 @@ def build():
             rec["service_flag"] = None          # every read voided, so no call was ever recorded
         if role in ("scope", "noest"):
             rec["estimate"] = None if role == "noest" else None
-        # the screen in service's het-excess value: the signal its threshold rule reads, which the
-        # recorded call follows except where the duty bioinformatician reviewed the specimen
+        # the screen in service's het-excess value: the signal its threshold rule reads, against the
+        # control threshold the specimen's own batch held, which the run log records. The recorded
+        # call follows the rule except where the duty bioinformatician reviewed the specimen.
+        thr = 36.50 if rec["received"] >= dt.date(2027, 4, 12) else 36.60
         if rec["service_flag"]:
-            rec["het"] = round(max(36.62, rng.gauss(37.70, 0.84)), 2)
+            rng.gauss(37.70, 0.84)           # the old draw, kept so the stream does not move
+            rec["het"] = round(thr + 0.01 + abs(hrng.gauss(0.0, 0.62)), 2)
         else:
-            rec["het"] = round(min(36.38, rng.gauss(34.05 + (0.9 if rec["verdict"] == "MIXED" else 0.0), 1.05)), 2)
-        rec["conc"] = round(rng.uniform(11.5, 184.0), 1)
+            rng.gauss(34.05 + (0.9 if rec["verdict"] == "MIXED" else 0.0), 1.05)
+            spread = abs(hrng.gauss(0.0, 1.15)) * (0.72 if rec["verdict"] == "MIXED" else 1.0)
+            rec["het"] = round(thr - 0.01 - spread, 2)
+        # DNA input is an extraction yield, so it is right-skewed, and the depth a run reaches
+        # follows the input it was given
+        rng.uniform(11.5, 184.0)             # the old draw, kept so the stream does not move
+        conc = min(184.0, max(6.2, math.exp(hrng.gauss(math.log(62.0), 0.52))))
+        rec["conc"] = round(conc, 1)
+        lift = 1.0 + 0.26 * (math.log(conc) - math.log(62.0))
+        if rec["role"] == "noest":           # the read set the pipeline could not estimate on
+            rec["depth"] = round(max(5.4, min(19.6, 13.5 * lift + hrng.gauss(0.0, 2.6))), 1)
+        else:
+            rec["depth"] = round(max(24.2, 47.5 * lift + hrng.gauss(0.0, 7.4)), 1)
         specimens.append(rec)
 
     # which sequencer a specimen ran on. GSQ-A is the older instrument and carries a higher
@@ -195,13 +211,24 @@ def build():
     cleared = [s for s in specimens if s["service_flag"] is False]
     rng.shuffle(flagged)
     rng.shuffle(cleared)
-    for s in flagged[:11]:                  # reviewed and flagged on a mixture signal the rule misses
+    # the overturned calls are taken from receipts the comparison does not hold, so no override can
+    # move the screen in service's detections or its false calls
+    out = lambda s: s["role"] not in ("mixed", "clean")
+    over_f = [s for s in flagged if out(s)][:11]
+    over_c = [s for s in cleared if out(s)][:4]
+    for s in over_f:                        # reviewed and flagged on a mixture signal the rule misses
+        rng.uniform(34.9, 36.3)             # the old draw, kept so the stream does not move
+        thr = 36.50 if s["received"] >= dt.date(2027, 4, 12) else 36.60
         s["call_source"] = "REVIEWED"
-        s["het"] = round(rng.uniform(34.9, 36.3), 2)
-    for s in cleared[:4]:                   # reviewed and cleared, the het excess explained by ancestry
+        s["het"] = round(thr - 0.02 - abs(hrng.gauss(0.0, 0.17)), 2)
+    for s in over_c:                        # reviewed and cleared, the het excess explained by ancestry
+        rng.uniform(36.7, 37.4)             # the old draw, kept so the stream does not move
+        thr = 36.50 if s["received"] >= dt.date(2027, 4, 12) else 36.60
         s["call_source"] = "REVIEWED"
-        s["het"] = round(rng.uniform(36.7, 37.4), 2)
-    for s in flagged[11:11 + 24] + cleared[4:4 + 138]:
+        s["het"] = round(thr + 0.02 + abs(hrng.gauss(0.0, 0.17)), 2)
+    done = {id(s) for s in over_f + over_c}
+    agree = [s for s in flagged if id(s) not in done][:24] + [s for s in cleared if id(s) not in done][:138]
+    for s in agree:
         s["call_source"] = "REVIEWED"       # reviewed, the recorded call agrees with the rule
 
     # plates and wells, in receipt order
@@ -216,10 +243,12 @@ def build():
     rng.shuffle(comparison)
     for s in specimens:
         s["read_sets"] = []
+    rs_serial = [210000]
     for k, s in enumerate(sorted(specimens, key=lambda r: r["specimen_id"])):
         if s["estimate"] is None:
             continue
-        rid = "RS27-%06d" % (210000 + k * 2)
+        rs_serial[0] += rsrng.choice([1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 7, 11])
+        rid = "RS27-%06d" % rs_serial[0]
         s["read_sets"].append({"read_set": rid, "accepted": True, "estimate": s["estimate"],
                                "depth": s["depth"]})
     for s in comparison[:W.TWO_READ_SETS]:

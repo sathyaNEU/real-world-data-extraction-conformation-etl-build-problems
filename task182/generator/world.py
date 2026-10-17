@@ -235,16 +235,16 @@ SHIFT = {
 
 
 # How much of each tone survives to a position: the blower's 400 Hz blade tone falls away faster with
-# distance than the engine's 100 Hz firing tone, and a solid barrier in the line of sight takes more of
-# both than a hedge or open ground does. Ordinary air absorption and barrier attenuation.
+# distance than the engine's 100 Hz firing tone, and screening takes far more of the higher tone than of
+# the lower one, which is how a barrier works. Ordinary air absorption and barrier attenuation.
 BARRIER = {}
 for _p in POSITIONS:
     _s = SCREEN[_p[0]]
     BARRIER[_p[0]] = (0.55 if ("buildings" in _s or "embankment" in _s or "shed" in _s)
-                      else (0.78 if ("hedge" in _s or "trees" in _s or "hedgerow" in _s or "ground and" in _s)
+                      else (0.72 if ("hedge" in _s or "trees" in _s or "hedgerow" in _s or "ground and" in _s)
                             else 1.0))
 TONE_K = {}
 for _p in POSITIONS:
     _d, _b = _p[3], BARRIER[_p[0]]
-    TONE_K[_p[0]] = (round(_b * math.exp(-(_d - 98) / 420.0), 4),
-                     round(_b * math.exp(-(_d - 98) / 900.0), 4))
+    TONE_K[_p[0]] = (round(_b ** 3.0 * math.exp(-(_d - 98) / 420.0), 4),
+                     round(_b ** 0.8 * math.exp(-(_d - 98) / 1200.0), 4))

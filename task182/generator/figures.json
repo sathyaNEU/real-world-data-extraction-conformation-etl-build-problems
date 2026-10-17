@@ -20,18 +20,18 @@
   "NSL14": 1090
  },
  "highest_band_hz": {
-  "NSL01": 100,
+  "NSL01": 400,
   "NSL02": 400,
-  "NSL03": 100,
+  "NSL03": 400,
   "NSL04": 400,
   "NSL05": "none",
   "NSL06": 100,
   "NSL07": 400,
   "NSL08": "none",
-  "NSL09": 100,
+  "NSL09": 400,
   "NSL10": "none",
   "NSL11": 400,
-  "NSL12": 100,
+  "NSL12": 400,
   "NSL13": 400,
   "NSL14": "none"
  },
@@ -220,7 +220,7 @@
  "tone_prominent": {
   "NSL01": "no",
   "NSL02": "yes",
-  "NSL03": "no",
+  "NSL03": "yes",
   "NSL04": "yes",
   "NSL05": "none",
   "NSL06": "no",

@@ -40,7 +40,7 @@ def main():
     counts["register_variable_documentation.csv"] = pack.write_variable_documentation(TGT)
     counts["person_key_crosswalk.csv"] = pack.write_crosswalk(TGT, switch_day, keys, new_keys)
     counts["person_register.csv"] = pack.write_person_register(TGT, people, keys, new_keys,
-                                                               switch_day, kept)
+                                                               switch_day, kept, rejected)
     counts["pharmacy_register.csv"] = pack.write_pharmacy_register(TGT, kept)
     counts["holder_register.csv"] = pack.write_holder_register(TGT)
     counts["signal_tracker_export.csv"] = pack.write_tracker(TGT, first)

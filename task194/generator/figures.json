@@ -1,16 +1,16 @@
 {
- "avoided_at_pick": 23,
+ "avoided_at_pick": 24,
  "avoided_at_runner": 15,
  "avoided_by_unit": {
   "41210": 4,
   "41220": 15,
-  "41230": 23,
+  "41230": 24,
   "41240": 6,
   "41310": 9,
   "41320": 3,
-  "41330": 9,
+  "41330": 8,
   "41410": 3,
-  "41420": 13,
+  "41420": 12,
   "41430": 2,
   "41510": 4,
   "41520": 4
@@ -105,7 +105,7 @@
   "41430"
  ],
  "eligible_units": 12,
- "gap_complications": 8,
+ "gap_complications": 9,
  "hospital_year": {
   "H1": {
    "adjusted_rate_per_1000": 116.0,
@@ -174,9 +174,9 @@
    "with_complication": 47
   }
  },
- "pick_excess_complications": 43.5,
- "pick_expected_complications": 182,
- "pick_planned_separations": 2103,
+ "pick_excess_complications": 45.4,
+ "pick_expected_complications": 190,
+ "pick_planned_separations": 2196,
  "pick_standardised_ratio": 1.24,
  "rate_denominator": 1000,
  "register_readings": {
@@ -188,20 +188,20 @@
   "the variance-weighted fit": 0.529857
  },
  "rung0_avoided": 4,
- "rung0_excess": 7.3,
+ "rung0_excess": 6.9,
  "rung0_excess_now": 42,
  "rung0_ratio_quarter": 1.23,
  "rung0_ratio_record": 1.04,
  "rung0_unit_code": "41210",
  "rung1_adjusted_rate": 126.7,
- "rung1_avoided": 9,
- "rung1_excess": 17.0,
- "rung1_planned_separations": 544,
+ "rung1_avoided": 8,
+ "rung1_excess": 15.7,
+ "rung1_planned_separations": 503,
  "rung1_ratio": 1.31,
  "rung1_unit_code": "41330",
  "rung2_avoided": 15,
- "rung2_excess": 28.4,
- "rung2_expected_next": 297,
+ "rung2_excess": 28.7,
+ "rung2_expected_next": 301,
  "rung2_unit_code": "41220",
  "runner_unit": "Alderbrook General Surgery",
  "runner_unit_code": "41220",

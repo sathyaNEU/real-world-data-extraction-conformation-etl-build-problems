@@ -94,7 +94,7 @@ def run(target, g, state):
 
     # ---------- the ladder ----------
     ok(answer["unit"] == "41230", "the answer is 41230, %s" % answer["unit"])
-    ok(round(answer["avoided"]) == 23, "the answer avoids 23, got %.3f" % answer["avoided"])
+    ok(round(answer["avoided"]) == 24, "the answer avoids 24, got %.3f" % answer["avoided"])
     ok(runner["unit"] == "41220" and round(runner["avoided"]) == 15, "the closest unit is 41220 at 15")
     ok(g["margin"] >= 1.2, "final margin %.3fx is at least 1.2x" % g["margin"])
     ok(g["rung0"]["unit"] == "41210" and round(share * g["rung0"]["last_excess"]) == 22,

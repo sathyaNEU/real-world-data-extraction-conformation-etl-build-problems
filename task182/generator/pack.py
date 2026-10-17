@@ -269,16 +269,14 @@ def _spectra(code, wobble):
     pl, rs = [], []
     for i, b in enumerate(BANDS):
         f = float(b)
-        p = -8.5 - 6.2 * abs(math.log10(f / 200.0)) ** 1.85 + wobble[i]
+        p = -8.5 - 11.0 * abs(math.log10(f / 315.0)) ** 1.85 + wobble[i]
         if abs(f - 400.0) < 1.0:
-            p += 9.6 * k400
+            p += 16.0 * k400
         elif abs(f - 100.0) < 1.0:
-            p += 7.4 * k100
+            p += 6.5 * k100
         elif abs(f - 800.0) < 1.0:
-            p += 2.2 * k400 * k400
-        elif abs(f - 200.0) < 1.0:
-            p += 1.1 * k400
-        r = -7.0 - 7.4 * abs(math.log10(f / 125.0)) ** 1.62 + 0.6 * wobble[i]
+            p += 4.0 * k400 * k400
+        r = -7.0 - 8.0 * abs(math.log10(f / 100.0)) ** 1.62 + 0.6 * wobble[i]
         pl.append(10.0 ** (p / 10.0))
         rs.append(10.0 ** (r / 10.0))
     pl = np.array(pl) / sum(pl)
