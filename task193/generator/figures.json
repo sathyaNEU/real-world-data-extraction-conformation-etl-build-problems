@@ -558,57 +558,57 @@
   {
    "chain": "APK",
    "quarter": "2025 Q4",
-   "accepted": 6287,
-   "rejected": 53,
+   "accepted": 6283,
+   "rejected": 57,
    "median_days": 4.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q1",
-   "accepted": 5669,
-   "rejected": 73,
+   "accepted": 5657,
+   "rejected": 85,
    "median_days": 5.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q2",
-   "accepted": 5739,
-   "rejected": 36,
+   "accepted": 5724,
+   "rejected": 51,
    "median_days": 4.0
   },
   {
    "chain": "APK",
    "quarter": "2026 Q3",
-   "accepted": 5666,
-   "rejected": 49,
+   "accepted": 5639,
+   "rejected": 54,
    "median_days": 6.0
   },
   {
    "chain": "DSA",
    "quarter": "2025 Q4",
-   "accepted": 3331,
-   "rejected": 41,
+   "accepted": 3330,
+   "rejected": 42,
    "median_days": 3.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q1",
-   "accepted": 2982,
-   "rejected": 61,
+   "accepted": 2981,
+   "rejected": 62,
    "median_days": 4.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q2",
-   "accepted": 2965,
-   "rejected": 34,
+   "accepted": 3025,
+   "rejected": 37,
    "median_days": 4.0
   },
   {
    "chain": "DSA",
    "quarter": "2026 Q3",
-   "accepted": 3010,
-   "rejected": 25,
+   "accepted": 3159,
+   "rejected": 27,
    "median_days": 6.0
   },
   {
@@ -628,29 +628,29 @@
   {
    "chain": "NOR",
    "quarter": "2026 Q2",
-   "accepted": 3083,
-   "rejected": 75,
+   "accepted": 3019,
+   "rejected": 76,
    "median_days": 5.0
   },
   {
    "chain": "NOR",
    "quarter": "2026 Q3",
-   "accepted": 3683,
-   "rejected": 65,
+   "accepted": 3473,
+   "rejected": 63,
    "median_days": 4.0
   },
   {
    "chain": "VST",
    "quarter": "2025 Q4",
-   "accepted": 3114,
-   "rejected": 36,
+   "accepted": 3113,
+   "rejected": 37,
    "median_days": 6.0
   },
   {
    "chain": "VST",
    "quarter": "2026 Q1",
-   "accepted": 2716,
-   "rejected": 42,
+   "accepted": 2715,
+   "rejected": 43,
    "median_days": 6.0
   },
   {
@@ -663,8 +663,8 @@
   {
    "chain": "VST",
    "quarter": "2026 Q3",
-   "accepted": 2924,
-   "rejected": 27,
+   "accepted": 3005,
+   "rejected": 29,
    "median_days": 6.0
   }
  ],
@@ -672,86 +672,86 @@
   {
    "holder": "H1",
    "name": "Nordlys Pharma A/S",
-   "ddd": 263773.0,
-   "ddd_before": 126837.0,
-   "ddd_after": 136936.0,
+   "ddd": 282252.0,
+   "ddd_before": 135988.0,
+   "ddd_after": 146264.0,
    "rate_before": 1219,
    "rate_after": 1286,
-   "fee_dkk": 330714,
-   "fee_exact": "330713.999",
-   "fee_distance": 0.499
+   "fee_dkk": 353865,
+   "fee_exact": "353864.876",
+   "fee_distance": 0.376
   },
   {
    "holder": "H2",
    "name": "Bregnholt Laegemidler A/S",
-   "ddd": 472215.0,
-   "ddd_before": 197680.0,
-   "ddd_after": 274535.0,
+   "ddd": 503166.5,
+   "ddd_before": 213570.0,
+   "ddd_after": 289596.5,
    "rate_before": 1219,
    "rate_after": 1286,
-   "fee_dkk": 594024,
-   "fee_exact": "594023.93",
-   "fee_distance": 0.43
+   "fee_dkk": 632763,
+   "fee_exact": "632762.929",
+   "fee_distance": 0.429
   },
   {
    "holder": "H3",
    "name": "Vindeby Therapeutics ApS",
-   "ddd": 407056.0,
-   "ddd_before": 15046.0,
-   "ddd_after": 392010.0,
+   "ddd": 434820.0,
+   "ddd_before": 16382.0,
+   "ddd_after": 418438.0,
    "rate_before": 1219,
    "rate_after": 1286,
-   "fee_dkk": 522466,
-   "fee_exact": "522465.934",
-   "fee_distance": 0.434
+   "fee_dkk": 558081,
+   "fee_exact": "558080.926",
+   "fee_distance": 0.426
   },
   {
    "holder": "H4",
    "name": "Soegaard Medica A/S",
-   "ddd": 192160.0,
-   "ddd_before": 185305.0,
-   "ddd_after": 6855.0,
+   "ddd": 204605.0,
+   "ddd_before": 197190.0,
+   "ddd_after": 7415.0,
    "rate_before": 1479,
    "rate_after": 1676,
-   "fee_dkk": 285555,
-   "fee_exact": "285555.075",
-   "fee_distance": 0.425
+   "fee_dkk": 304072,
+   "fee_exact": "304071.55",
+   "fee_distance": 0.05
   },
   {
    "holder": "H5",
    "name": "Kastholm Pharma A/S",
-   "ddd": 592862.0,
-   "ddd_before": 503634.0,
-   "ddd_after": 89228.0,
+   "ddd": 627178.0,
+   "ddd_before": 533424.0,
+   "ddd_after": 93754.0,
    "rate_before": 1219,
    "rate_after": 1286,
-   "fee_dkk": 728677,
-   "fee_exact": "728677.054",
-   "fee_distance": 0.446
+   "fee_dkk": 770812,
+   "fee_exact": "770811.5",
+   "fee_distance": 0.0
   },
   {
    "holder": "H6",
    "name": "Ellevang Biosciences A/S",
-   "ddd": 1027258.0,
-   "ddd_before": 515000.0,
-   "ddd_after": 512258.0,
+   "ddd": 1090114.0,
+   "ddd_before": 546524.0,
+   "ddd_after": 543590.0,
    "rate_before": 958,
    "rate_after": 1120,
-   "fee_dkk": 1067099,
-   "fee_exact": "1067098.96",
-   "fee_distance": 0.46
+   "fee_dkk": 1132391,
+   "fee_exact": "1132390.792",
+   "fee_distance": 0.292
   },
   {
    "holder": "H7",
    "name": "Strandby Farma ApS",
-   "ddd": 114082.5,
-   "ddd_before": 114082.5,
+   "ddd": 121348.5,
+   "ddd_before": 121348.5,
    "ddd_after": 0.0,
    "rate_before": 1479,
    "rate_after": 1676,
-   "fee_dkk": 168728,
-   "fee_exact": "168728.0175",
-   "fee_distance": 0.4825
+   "fee_dkk": 179474,
+   "fee_exact": "179474.4315",
+   "fee_distance": 0.0685
   }
  ],
  "a3": [

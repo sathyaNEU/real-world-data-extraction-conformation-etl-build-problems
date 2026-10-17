@@ -34,7 +34,7 @@ def pharmacy_moves(pharm_of):
         pool = [p for p in pharm_of[a] if p not in moves]
         take = rng.choice(len(pool), size=min(k, len(pool)), replace=False)
         for j in take:
-            moves[pool[int(j)]] = (a, b, day)
+            moves[pool[int(j)]] = (a, b, day + int(rng.integers(-4, 9)))
     # and the benign twins: transfers settled long before the extract opens
     for _ in range(11):
         a = int(rng.integers(0, len(W.CHAINS)))
@@ -53,6 +53,12 @@ def owner_at(moves, ph, day, fallback):
         return fallback
     prev, new, d0 = mv
     return new if day >= d0 else prev
+
+
+# packages handed out on a line: a month's supply is one pack, and a repeat prescription is
+# sometimes filled two or three months at a time
+PACK_COUNTS = [1, 2, 3, 4, 6]
+PACK_COUNT_P = [0.598, 0.258, 0.108, 0.025, 0.011]
 
 
 # the mean days a chain takes to transmit a line, by quarter of the window. The chains overlap and
@@ -113,6 +119,20 @@ def dispensings(first):
     for ci, (code, name) in enumerate(W.CHAINS):
         pharm_of[ci] = ["%s-%03d" % (code, 101 + j) for j in range(14 + 4 * ci)]
     moves = pharmacy_moves(pharm_of)
+    shut = closed_pharmacies(pharm_of)
+
+    def open_pharmacy(ci, idx, d, still_there):
+        pool = pharm_of[ci]
+        ph = pool[idx % len(pool)]
+        if ph in shut and d > shut[ph]:
+            if still_there:
+                return ph, True
+            for k in range(1, len(pool) + 1):
+                alt = pool[(idx + k) % len(pool)]
+                if alt not in shut or d <= shut[alt]:
+                    return alt, False
+        return ph, False
+
     lines = []
     lid = 0
     for code in W.PCODES + W.MCODES:
@@ -140,8 +160,9 @@ def dispensings(first):
                          if (p[3] is None or d >= p[3]) and (p[4] is None or d <= p[4])]
                 vnr = valid[int(rng.integers(0, len(valid)))][0]
                 ci = int(chain_of[pid])
-                ph = pharm_of[ci][int(rng.integers(0, len(pharm_of[ci])))]
-                npk = int(rng.choice([1, 2, 3], p=[0.615, 0.265, 0.120]))
+                ph, after_close = open_pharmacy(ci, int(rng.integers(0, len(pharm_of[ci]))), d,
+                                                j > 0 and (d * 7 + int(pid)) % 29 == 0)
+                npk = int(rng.choice(PACK_COUNTS, p=PACK_COUNT_P))
                 q = 0 if d < 823 else (1 if d < 913 else (2 if d < 1004 else 3))
                 mu = SUB_LAG[ci][q]
                 lag = int(rng.poisson(mu))
@@ -150,7 +171,7 @@ def dispensings(first):
                 lines.append({"line": lid, "pid": int(pid), "code": code, "vnr": vnr, "day": d,
                               "pharmacy": ph, "chain": owner, "packs": npk,
                               "submitted": transmit_day(d, lag, owner, q, sub_rng),
-                              "prescriber": pres,
+                              "prescriber": pres, "after_close": after_close,
                               "is_first": j == 0})
     # patients already on a medicine when the extract opens: their earliest line in the extract is
     # in its first weeks, so the register's volume is in steady state from the first month and none
@@ -179,7 +200,8 @@ def dispensings(first):
                     break
                 vnr = valid[int(prev_rng.integers(0, len(valid)))][0]
                 ci = int(chain_of[pid])
-                ph = pharm_of[ci][int(prev_rng.integers(0, len(pharm_of[ci])))]
+                ph, _ac = open_pharmacy(ci, int(prev_rng.integers(0, len(pharm_of[ci]))), d,
+                                        False)
                 q2 = 0 if d < 823 else (1 if d < 913 else (2 if d < 1004 else 3))
                 mu = SUB_LAG[ci][q2]
                 dd = open_day(d, prev_rng)
@@ -189,12 +211,13 @@ def dispensings(first):
                 base += 1
                 lines.append({"line": base, "pid": int(pid), "code": code, "vnr": vnr, "day": dd,
                               "pharmacy": ph, "chain": owner, "packs": int(prev_rng.choice(
-                                  [1, 2, 3], p=[0.615, 0.265, 0.120])),
+                                  PACK_COUNTS, p=PACK_COUNT_P)),
                               "submitted": transmit_day(dd, int(prev_rng.poisson(mu)),
                                                         owner, q2, sub_rng), "prescriber": pres,
                               "is_first": False, "prevalent": True})
     for r in lines:
         r.setdefault("prevalent", False)
+        r.setdefault("after_close", False)
     lines.sort(key=lambda r: (r["day"], r["line"]))
     people = {"chain": chain_of, "region": region_of, "outside": outside, "birth": birth, "sex": sex}
     return lines, people
@@ -245,6 +268,8 @@ def apply_mess(lines, people):
             rate *= 2.4
         pr[j] = rate
     rej_idx = set(int(i) for i, u, rate in zip(repeats, rng.random(len(repeats)), pr) if u < rate)
+    rej_idx |= set(i for i, r in enumerate(lines)
+                   if r.get("after_close") and i not in protected)
     # a handful of patients whose single dispensing was turned back: the register holds the
     # civil-registration record it was asked for and no dispensing for them in either extract.
     # Their one line falls in the clearance period, so no first receipt inside the screen window
@@ -268,12 +293,19 @@ def apply_mess(lines, people):
     # refused for a closed pharmacy only after that pharmacy's closing date, and for an invalid
     # package code only where the code has a validity period that the date of dispensing is
     # outside of
-    closed = closed_pharmacies(set((r["chain"], r["pharmacy"]) for r in lines))
+    pharm_of_m = {}
+    for ci, (code, _nm) in enumerate(W.CHAINS):
+        pharm_of_m[ci] = ["%s-%03d" % (code, 101 + j) for j in range(14 + 4 * ci)]
+    closed = closed_pharmacies(pharm_of_m)
     dated = set(v for v, c, k, vf, vt in
                 (p for lst in W.PACKAGES.values() for p in lst) if vf is not None or vt is not None)
     for i, r in enumerate(lines):
         if i in rej_idx:
             can = [0, 1, 2, 3, 4]
+            if r.get("after_close"):
+                r["reason"] = reasons[3]           # dispensed under a closed authorisation
+                rejected.append(r)
+                continue
             if not (r["pharmacy"] in closed and r["day"] > closed[r["pharmacy"]]):
                 can.remove(3)
             if r["vnr"] not in dated:
@@ -444,9 +476,11 @@ def write_atc_text(tgt):
 def write_crosswalk(tgt, switch_day, keys, new_keys):
     reasons = ["civil registration number corrected", "duplicate registration resolved",
                "pseudonymisation key regenerated after a data correction"]
+    rng = np.random.default_rng(W.SEED + 97)
     rows = []
-    for i, pid in enumerate(sorted(switch_day)):
-        rows.append([keys[pid], new_keys[pid], W.iso(switch_day[pid]), reasons[i % 3]])
+    for pid in sorted(switch_day):
+        rows.append([keys[pid], new_keys[pid], W.iso(switch_day[pid]),
+                     str(rng.choice(reasons, p=[0.616, 0.247, 0.137]))])
     rows.sort(key=lambda r: r[2])
     return write_csv(os.path.join(tgt, "person_key_crosswalk.csv"),
                      ["retired_person_key", "current_person_key", "replaced_on", "reason"], rows)
@@ -494,10 +528,15 @@ def write_person_register(tgt, people, keys, new_keys, switch_day, kept, rejecte
         at_window_start[key] = was
         dd = de = ""
         lp = last.get(pid, -1)
-        if pid in died and -1 < lp < W.NDAY - 40:
-            dd = W.iso(min(W.NDAY - 1, lp + int(rng.integers(5, 60))))
-        elif pid in gone and -1 < lp < W.NDAY - 40:
-            de = W.iso(min(W.NDAY - 1, lp + int(rng.integers(5, 90))))
+        # the civil registration system records the event on the day it happened, and the extract
+        # carries it where it falls before the pull; a patient whose last dispensing is too close
+        # to the pull has no recorded exit here, as the register had none to give
+        if pid in died and -1 < lp:
+            d_exit = lp + int(rng.integers(5, 60))
+            dd = W.iso(d_exit) if d_exit <= W.PULL_DAY - 3 else ""
+        elif pid in gone and -1 < lp:
+            d_exit = lp + int(rng.integers(5, 90))
+            de = W.iso(d_exit) if d_exit <= W.PULL_DAY - 3 else ""
         rows.append([key, int(people["birth"][pid]), people["sex"][pid], reg, prev, since, dd, de])
     prior = [[r[0], r[1], r[2], at_window_start[r[0]]] for r in rows]
     write_csv(os.path.join(tgt, "person_register_2025Q4.csv"),
@@ -602,10 +641,13 @@ PHARMACY_NAMES = [
 ]
 
 
-def closed_pharmacies(seen):
-    """The pharmacies that closed inside the extract period, and the day each closed."""
+def closed_pharmacies(pharm_of):
+    """The pharmacies whose authorisation to dispense ended inside the extract period, and the day
+    each ended. A closed pharmacy dispenses nothing after that day: the lines its customers would
+    have filled there are filled at the next branch of the same chain, and the handful still
+    transmitted under its own identifier are what the register turns back."""
     rng = np.random.default_rng(W.SEED + 61)
-    ids = sorted(set(ph for _ci, ph in seen))
+    ids = sorted(ph for lst in pharm_of.values() for ph in lst)
     pick = rng.choice(len(ids), size=6, replace=False)
     return {ids[int(i)]: int(d) for i, d in zip(pick, rng.integers(300, W.NDAY - 60, size=6))}
 
@@ -622,7 +664,7 @@ def write_pharmacy_register(tgt, kept):
     moves = pharmacy_moves(pharm_of)
     home = {ph: ci for ci, lst in pharm_of.items() for ph in lst}
     seen = sorted(set(r["pharmacy"] for r in kept), key=lambda p: (home[p], p))
-    closed = closed_pharmacies(set((home[p], p) for p in seen))
+    closed = closed_pharmacies(pharm_of)
     rows, used = [], 0
     for ph in seen:
         muni, name = flat[used % len(flat)]
@@ -919,8 +961,8 @@ VARIABLE_DOC = [
      "line: a chain counts lines it withdrew before the register wrote them, and a batch sent "
      "after a month's cut-off is counted by the chain in the month it sent it."),
     ("pharmacy_register.csv", "pharmacy_id, pharmacy_name, chain_code, chain_name",
-     "The dispensing pharmacy, the name it trades under and the chain it belongs to. A pharmacy "
-     "keeps its identifier for as long as it holds its authorisation to dispense."),
+     "The dispensing pharmacy, the name it trades under and its chain. A pharmacy keeps its "
+     "identifier for as long as it holds its authorisation to dispense."),
     ("pharmacy_register.csv", "previous_chain_code, in_chain_from",
      "Where the pharmacy's authorisation has passed from one chain to another, the chain that "
      "held it before and the date the transfer took effect. Both are blank for a pharmacy that "

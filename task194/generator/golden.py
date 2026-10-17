@@ -42,7 +42,9 @@ def load(target):
     summary = _read(target, "activity_summary_monthly.csv")
     facility = {(r["unit_code"], r["month"]): r["facility"] for r in summary}
 
+    peer = {r["hospital_code"]: r["peer_group"] for r in _read(target, "hospital_sites.csv")}
     panel = defaultdict(lambda: dict(episodes=0, observed=0.0, expected=0.0, separations=0))
+    sc = defaultdict(lambda: defaultdict(lambda: [0, 0]))   # (unit, q) -> stratum -> [episodes, with HAC]
     year2026 = defaultdict(lambda: dict(episodes=0, observed=0, expected=0.0))
     nonacute = defaultdict(lambda: dict(seps=set(), hac=set()))
     groups_by_year = defaultdict(lambda: defaultdict(set))
@@ -74,6 +76,9 @@ def load(target):
                 p["episodes"] += 1
                 p["expected"] += strata[(band, row["age_band"])]
                 p["observed"] += 1 if hac else 0
+                cell = sc[(unit, q)][(band, row["age_band"])]
+                cell[0] += 1
+                cell[1] += 1 if hac else 0
                 inscope_episode[row["episode_id"]] = (unit, sep, fy)
                 if dt.date(2026, 1, 1) <= sep <= dt.date(2026, 12, 31):
                     site = facility[(unit, sep.replace(day=1).isoformat())]
@@ -83,7 +88,8 @@ def load(target):
                     y["observed"] += 1 if hac else 0
                 if hac and row["hac_category_code"] and fy in ("2025-26", "2026-27"):
                     groups_by_year[fy]["principal:" + row["hac_category_code"]].add(row["episode_id"])
-    return dict(units=units, bands=bands, strata=strata, plan=plan, placements=placements,
+    return dict(units=units, bands=bands, strata=strata, plan=plan, placements=placements, peer=peer,
+                sc={k: dict(v) for k, v in sc.items()},
                 panel=dict(panel), year2026=dict(year2026), nonacute=dict(nonacute),
                 principal=dict(groups_by_year), facility=facility, summary=summary,
                 inscope_episode=inscope_episode)

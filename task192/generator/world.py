@@ -126,8 +126,8 @@ P_LINE = 0.17           # the public line receives one
 
 # the press classifier. its two error rates are properties of the model, which was trained before
 # the register opened and not retrained inside the period.
-CLS_RECALL = 0.495      # confrontational actions it codes as confrontational
-CLS_FALSE_MARK = 0.0255  # ordinary actions it codes as confrontational
+CLS_RECALL = 0.46       # confrontational actions it codes as confrontational
+CLS_FALSE_MARK = 0.023   # ordinary actions it codes as confrontational
 CLS_DIAGONAL = 7.0      # weight on the code itself against its neighbours
 CLS_DECAY = 1.95        # how fast the confusion falls away with distance in the code order
 CLS_TRAINED = dt.date(2026, 3, 18)
@@ -135,8 +135,8 @@ CLS_TRAINED = dt.date(2026, 3, 18)
 # the share of actions that were confrontational falls across the period: the spring and summer
 # disputes over evictions and road haulage were confrontational, the autumn mobilisation that
 # trebles the volume is overwhelmingly peaceful
-CONF_RATE_HI = 0.156
-CONF_RATE_LO = CONF_RATE_HI / 3.1
+CONF_RATE_HI = 0.158
+CONF_RATE_LO = CONF_RATE_HI / 2.6
 CONF_RAMP_FROM = dt.date(2026, 8, 9)
 CONF_RAMP_TO = dt.date(2026, 9, 18)
 

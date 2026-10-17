@@ -32,8 +32,11 @@ def write_exceptions(tgt, rejected):
     rows = []
     # the register numbers an exception when it writes it, so the references run in the order the
     # lines were submitted, not the order they were dispensed in
-    for i, r in enumerate(sorted(rejected, key=lambda r: (r["submitted"], r["line"]))):
-        rows.append(["EX-2026-%05d" % (1041 + i), r["key"], r["vnr"], W.iso(r["day"]),
+    seq = collections.Counter()
+    for r in sorted(rejected, key=lambda r: (r["submitted"], r["line"])):
+        year = W.day(r["submitted"]).year
+        seq[year] += 1
+        rows.append(["EX-%d-%05d" % (year, 1040 + seq[year]), r["key"], r["vnr"], W.iso(r["day"]),
                      r["pharmacy"], W.iso(r["submitted"]), r["reason"]])
     rows.sort(key=lambda x: (x[3], x[0]))
     return write_csv(os.path.join(tgt, "submission_exceptions.csv"),
@@ -62,6 +65,8 @@ def write_submission_log(tgt, kept, rejected):
         months = sorted(set(m for (c, m) in list(acc) + list(rej) if c == ci))
         for m in months:
             a, t = acc[(ci, m)], rej[(ci, m)]
+            if a + t == 0:
+                continue                 # the chain filed nothing that month, so it reported none
             cancelled = int(rng.poisson(0.0021 * max(a, 1) + 0.6))
             cutoff = int(rng.integers(-3, 4))      # lines the two sides place in adjacent months
             rows.append([code, m, a + t + cancelled + cutoff, a, t, cancelled])

@@ -57,33 +57,32 @@ The expected after-count comes from the window's own first-receipt dates, so the
    - Sovraxil and topical corticosteroid: 629 patients, 494 after, 135 before, referred yes
    - Sovraxil and antipsychotic: 17 patients, 11 after, 6 before, below the 25-patient minimum
 2. Pairs referred: 7.
-3. Nearest pair on the wrong side of the referral line: Dalvextin and acid-suppressant.
-4. Lines accepted, lines rejected and median days from dispensing to submission, by chain and quarter of dispensing, whole counts and days to one decimal:
-   - APK, 2025 Q4: 6287 accepted, 53 rejected, 4.0 days
-   - APK, 2026 Q1: 5669 accepted, 73 rejected, 5.0 days
-   - APK, 2026 Q2: 5739 accepted, 36 rejected, 4.0 days
-   - APK, 2026 Q3: 5666 accepted, 49 rejected, 6.0 days
-   - DSA, 2025 Q4: 3331 accepted, 41 rejected, 3.0 days
-   - DSA, 2026 Q1: 2982 accepted, 61 rejected, 4.0 days
-   - DSA, 2026 Q2: 2965 accepted, 34 rejected, 4.0 days
-   - DSA, 2026 Q3: 3010 accepted, 25 rejected, 6.0 days
+3. Lines accepted, lines rejected and median days from dispensing to submission, by chain and quarter of dispensing, whole counts and days to one decimal:
+   - APK, 2025 Q4: 6283 accepted, 57 rejected, 4.0 days
+   - APK, 2026 Q1: 5657 accepted, 85 rejected, 5.0 days
+   - APK, 2026 Q2: 5724 accepted, 51 rejected, 4.0 days
+   - APK, 2026 Q3: 5639 accepted, 54 rejected, 6.0 days
+   - DSA, 2025 Q4: 3330 accepted, 42 rejected, 3.0 days
+   - DSA, 2026 Q1: 2981 accepted, 62 rejected, 4.0 days
+   - DSA, 2026 Q2: 3025 accepted, 37 rejected, 4.0 days
+   - DSA, 2026 Q3: 3159 accepted, 27 rejected, 6.0 days
    - NOR, 2025 Q4: 3597 accepted, 78 rejected, 4.0 days
    - NOR, 2026 Q1: 3258 accepted, 80 rejected, 4.0 days
-   - NOR, 2026 Q2: 3083 accepted, 75 rejected, 5.0 days
-   - NOR, 2026 Q3: 3683 accepted, 65 rejected, 4.0 days
-   - VST, 2025 Q4: 3114 accepted, 36 rejected, 6.0 days
-   - VST, 2026 Q1: 2716 accepted, 42 rejected, 6.0 days
+   - NOR, 2026 Q2: 3019 accepted, 76 rejected, 5.0 days
+   - NOR, 2026 Q3: 3473 accepted, 63 rejected, 4.0 days
+   - VST, 2025 Q4: 3113 accepted, 37 rejected, 6.0 days
+   - VST, 2026 Q1: 2715 accepted, 43 rejected, 6.0 days
    - VST, 2026 Q2: 2673 accepted, 24 rejected, 7.0 days
-   - VST, 2026 Q3: 2924 accepted, 27 rejected, 6.0 days
-5. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
-   - Nordlys Pharma A/S (H1): 263773.0 DDD, 330714 kroner
-   - Bregnholt Laegemidler A/S (H2): 472215.0 DDD, 594024 kroner
-   - Vindeby Therapeutics ApS (H3): 407056.0 DDD, 522466 kroner
-   - Soegaard Medica A/S (H4): 192160.0 DDD, 285555 kroner
-   - Kastholm Pharma A/S (H5): 592862.0 DDD, 728677 kroner
-   - Ellevang Biosciences A/S (H6): 1027258.0 DDD, 1067099 kroner
-   - Strandby Farma ApS (H7): 114082.5 DDD, 168728 kroner
-6. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
+   - VST, 2026 Q3: 3005 accepted, 29 rejected, 6.0 days
+4. Defined daily doses dispensed in the screen window and the data fee due, by fee payer, doses to one decimal and fees to the nearest krone:
+   - Nordlys Pharma A/S (H1): 282252.0 DDD, 353865 kroner
+   - Bregnholt Laegemidler A/S (H2): 503166.5 DDD, 632763 kroner
+   - Vindeby Therapeutics ApS (H3): 434820.0 DDD, 558081 kroner
+   - Soegaard Medica A/S (H4): 204605.0 DDD, 304072 kroner
+   - Kastholm Pharma A/S (H5): 627178.0 DDD, 770812 kroner
+   - Ellevang Biosciences A/S (H6): 1090114.0 DDD, 1132391 kroner
+   - Strandby Farma ApS (H7): 121348.5 DDD, 179474 kroner
+5. Patients with a first receipt of a screened product in the window and the share of them with a first marker-treatment receipt in it, by region and age band at 1 October 2025, shares to one decimal:
    - Hovedstaden, 18-24: 251 patients, 70.5 per cent
    - Hovedstaden, 25-44: 753 patients, 68.9 per cent
    - Hovedstaden, 45-74: 1089 patients, 79.8 per cent

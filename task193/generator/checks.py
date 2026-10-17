@@ -355,7 +355,8 @@ def run(tgt, g, first, lines, kept, rejected, people, keys, new_keys, switch_day
     ok("pin.package_validity_is_documented",
        "at the date of the dispensing" in doc[("dispensings_2025_2026.csv", "package_code")])
     ok("pin.region_vintage_documented",
-       "previous_region is the region recorded before" in doc[("person_register.csv", "region")])
+       "The region recorded before the current one"
+       in doc[("person_register.csv", "previous_region, region_recorded_from")])
     man = {r["file_name"]: r["note"] for r in rd(tgt, "extract_manifest.csv")}
     ok("pin.extract_scope_is_adults", "aged 18 and over" in man["(extract scope)"])
     ok("pin.extract_scope_names_the_window",
