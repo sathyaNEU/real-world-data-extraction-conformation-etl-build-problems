@@ -105,7 +105,8 @@
   },
   "rivals": {
     "card_gallons": 29,
-    "share_2025": 26,
+    "share_2025_low": 26,
+    "share_2025_high": 28,
     "overnight_cut": 19
   },
   "answers": {

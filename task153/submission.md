@@ -1,12 +1,12 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (resampling and simulation methods: a fleet's yard-island fuel draw replayed from each vehicle's recent duty, stretch by stretch between yard visits, each stretch capped at a tankful).
+**Domain:** General Statistics & Data Science (resampling and simulation methods: a trace-driven simulation of six yard islands, each vehicle's recorded duty replayed visit by visit through the island's one-tankful-a-visit limit).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Contract 23 of Overton's discounted loads for 14 September to 8 November (Memphis 2, Jackson 5, Nashville 8, Cookeville 1, Knoxville 4, Blountville 3), saving $17,408 against the same gallons on the card accounts.**
-An island fuels a vehicle only at its yard visits, at most the tankful above the reserve its driver keeps, so each yard's draw is built from the fuel each vehicle burns between visits. Not the 29 loads the vehicles' card gallons fill, which count the fuel Blountville's four-night sleepers and Cookeville's lot-based vans have to buy on the road; not 26 from the 2025 islands' share of the same vehicles' fuel, measured on Jackson and Knoxville fleets mostly back every day or between one-night loops; and not 19 from capping each run between nights at the yard, which misses Nashville's midweek reload.
+**Contract 23 of Overton's loads for 14 September to 8 November (Memphis 2, Jackson 5, Nashville 8, Cookeville 1, Knoxville 4, Blountville 3), saving $17,408 against the same gallons on the card accounts.**
+An island fuels a vehicle only at its yard visits, at most the tankful above the reserve its driver keeps, so each yard's draw is built from the fuel each vehicle burns between visits. Not the 29 loads the vehicles' card gallons fill, which count the fuel Blountville's four-night sleepers and Cookeville's lot-based vans have to buy on the road; not the 26 to 28 that the 2025 islands' share of the same vehicles' fuel gives, measured on Jackson and Knoxville fleets mostly back every day or between one-night loops; and not 19 from capping each run between nights at the yard, which misses Nashville's midweek reload.
 
 ## 2. Critical Components
 
@@ -21,7 +21,7 @@ An island fuels a vehicle only at its yard visits, at most the tankful above the
 3. In fms_island_transactions_2025.csv (each resent row once), the 48 fills over 225 gallons, every one a T680 sleeper coming back off the road, averaged 269.3 of 300 gallons: each vehicle's fill is capped at its tank less 10.2%.
 4. For every yard visit from 29 June to 23 August, took the smaller of the fuel burned since the unit's previous yard visit and its capped tankful, summed by yard and scaled from those weeks' 39 working days to the window's 40: Memphis 21,303, Jackson 44,695, Nashville 69,402, Cookeville 12,898, Knoxville 37,575, Blountville 27,835 gallons.
 5. Took each yard's whole 8,000-gallon loads: Memphis 2, Jackson 5, Nashville 8, Cookeville 1, Knoxville 4, Blountville 3, 23 in all.
-6. Priced each load at its account's charge over the TriState average in card_programmes_pricing_schedules.pdf less Overton's $0.019 in overton_offer_2026-08-26.pdf, on its 8,000 gallons: 23 loads save $17,408, so contract 23.
+6. Both prices sit on the TriState average, so each of a load's 8,000 gallons saves its account's charge over that average in card_programmes_pricing_schedules.pdf (Crossroads' network fee is part of its diesel price) less Overton's $0.019 in overton_offer_2026-08-26.pdf: 23 loads save $17,408, so contract 23.
 
 ## 4. Deliverable Answers
 
@@ -34,7 +34,7 @@ An island fuels a vehicle only at its yard visits, at most the tankful above the
    - Delta, Riverbend direct bill: May 33,472 gallons, June 36,732 gallons, July 37,170 gallons
    - Keeble, Crossroads Fleet Card: May 46,569 gallons, June 54,781 gallons, July 52,821 gallons
    - Holston, SMPM fleet card: May 46,391 gallons, June 51,215 gallons, July 53,258 gallons
-5. Overton's 2025 island programmes, net gallons delivered and dollars billed above its posted rack, taxes aside:
+5. Overton's 2025 island programmes, net gallons delivered and the dollars billed over the posted rack value of those gallons after credits, taxes aside:
    - Jackson, March 2025: 31,911 gallons, $891
    - Jackson, April 2025: 24,004 gallons, $811
    - Jackson, May 2025: 7,986 gallons, $254

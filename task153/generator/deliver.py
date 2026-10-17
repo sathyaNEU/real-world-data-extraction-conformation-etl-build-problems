@@ -23,6 +23,7 @@ ACCT_SHORT = {"West": "Riverbend", "Central": "Crossroads", "East": "SMPM"}
 CHARGE = {"West": 0.119, "Central": 0.084 + 0.015, "East": 0.127}     # the schedules' charge over the average
 ADDER = 0.019
 MONTH = {5: "May", 6: "June", 7: "July", 3: "March", 4: "April", 8: "August"}
+MONTH_FULL = {4: "April", 5: "May", 6: "June", 7: "July"}
 PROG = {"JXN": "Jackson", "KNX": "Knoxville"}
 
 
@@ -37,6 +38,13 @@ def compute(target):
     out = dict(P=P, G=G, R=R, S=S)
     out["A"] = A.ask_a(P)
     out["B"] = A.ask_b(target)
+    dup_days = collections.defaultdict(set)
+    for f in P.cards:
+        if f["role"] == "dup":                # the day the site posted twice: its local day, or its business day
+            dup_days[f["acct"]].add(A.pump_date(f) if f["acct"] == "West" else f["t"].date())
+    out["dup_text"] = ", ".join("%s %s" % (ACCT_SHORT[a], " and ".join("%d %s" % (d.day, MONTH_FULL[d.month])
+                                                                          for d in sorted(dup_days[a])))
+                                for a in ("West", "Central", "East"))
     # the build behind each yard's draw
     tz_units = collections.defaultdict(list)
     for u, info in P.units.items():
@@ -158,9 +166,10 @@ def write_xlsx(path, X):
     w2 = wb.create_sheet("Card gallons")
     w2["A1"] = "Diesel gallons bought on the card accounts, by the local day of the fill"
     w2["A1"].font = Font(bold=True, size=12)
-    w2["A2"] = ("Riverbend's file times are UTC and are put on Central time; Crossroads and SMPM date a truck-stop fill "
-                "after 10 pm with the next business day, so those fills are put back on the evening they were pumped. "
-                "DEF is excluded; the SMPM batch for 6 to 12 July received twice is counted once.")
+    w2["A2"] = ("Riverbend's file times are UTC (Schedule A, A5) and are put on Central time; Crossroads and SMPM date a "
+                "sale made at 10 pm or later with the next day (Addendum 4 clause 5; the SMPM layout), so those fills "
+                "are put back on the evening they were pumped. A posting sent twice is left out with the credit that "
+                "reverses it. DEF is excluded; the SMPM batch for 6 to 12 July received twice is counted once.")
     w2["A2"].alignment = Alignment(wrap_text=True, vertical="top")
     w2.row_dimensions[2].height = 45
     _head(w2, 4, ["Card account", "May 2026", "June 2026", "July 2026"], [34, 13, 13, 13])
@@ -172,14 +181,15 @@ def write_xlsx(path, X):
     w2.merge_cells("A2:D2")
 
     w3 = wb.create_sheet("2025 programmes")
-    w3["A1"] = "Overton's 2025 island programmes: net gallons delivered and billed above its posted rack, by month"
+    w3["A1"] = "Overton's 2025 island programmes: net gallons delivered and dollars billed over the posted rack, by month"
     w3["A1"].font = Font(bold=True, size=12)
-    w3["A2"] = ("Each load once, in the month of its first drop. Billed above the rack: the invoices' product, freight "
-                "and service lines, net of the July credit memos, less each load's net gallons at Overton's posting "
-                "in effect when it was lifted (posted 6 pm Central for the next day). Taxes aside.")
+    w3["A2"] = ("Each bill of lading once, in the month it was delivered. Billed over the rack: the invoices' product "
+                "and delivery service lines, the two July invoices credited in full and their rebills in their place, "
+                "less each load's net gallons at Overton's posting in effect when it was lifted (posted at 6 pm Central "
+                "with the next day's date). Taxes aside.")
     w3["A2"].alignment = Alignment(wrap_text=True, vertical="top")
     w3.row_dimensions[2].height = 45
-    _head(w3, 4, ["Programme", "Month", "Loads", "Net gallons delivered", "Billed above posted rack ($)"],
+    _head(w3, 4, ["Programme", "Month", "Loads", "Net gallons delivered", "Billed over posted rack ($)"],
           [13, 11, 8, 15, 16])
     rr = 5
     for y in ("JXN", "KNX"):
@@ -231,22 +241,24 @@ def write_xlsx(path, X):
         ("Reserve", "%.1f per cent of the tank: the %d fills over 225 gallons in the 2025 island transactions, every "
                     "one a T680 coming back off the road, averaged %.1f of 300 gallons." % (
                         100 * G["reserve"], G["n_reserve"], 300 * (1 - G["reserve"]))),
-        ("Base and window", "The eight weeks 29 June to 23 August 2026 (39 working days, Friday 3 July off) scaled "
-                            "to the window's 40 working days. No route, fleet or yard change is planned before "
-                            "December (yard notes)."),
-        ("Saving", "Per Overton's offer, each gallon saves the card programme's charge over the TriState average "
-                   "less Overton's 1.9 cents: Riverbend $0.119; Crossroads $0.084 and its $0.015 network fee; SMPM "
-                   "$0.127 (the programmes' pricing schedules). Fuel taxes are paid either way and are left out."),
-        ("Card gallons", "Diesel only, DEF left out. Riverbend's download stamps fills in UTC, put on Central time. "
-                         "Crossroads and SMPM give a truck-stop fill after 10 pm the next business day; every such "
-                         "fill with a readable odometer shows one at or below that day's starting odometer, so these "
-                         "fills are put back on the evening they were pumped. SMPM's batch for 6 to 12 July came in "
-                         "twice and is counted once."),
-        ("2025 programmes", "Each terminal bill of lading once, in the month of its first drop: a load dropped in "
-                            "two visits shows the bill's net gallons on both delivery rows. The two July Knoxville "
-                            "invoices credited on 21 July (a freight-zone charge billed in error) are replaced by "
-                            "their rebills. Above the rack is against Overton's posting in effect at lifting, posted "
-                            "at 6 pm Central for the next day."),
+        ("Base and window", "The eight weeks to 23 August 2026 (29 June to 23 August, 39 working days, Friday 3 July "
+                            "off), replayed for the window and scaled to its 40 working days."),
+        ("Saving", "Overton bills each load at the TriState average plus $0.019 (the offer); the card schedules bill "
+                   "diesel at the same average plus Riverbend $0.119, Crossroads $0.084 and its $0.015 network fee "
+                   "(part of the diesel price, Addendum 4 clause 2), SMPM $0.127. Each of the loads' 8,000 gallons "
+                   "saves the card charge less $0.019. Fuel taxes are paid either way and are left out."),
+        ("Card gallons", "Diesel only, DEF left out. Riverbend's download stamps fills in UTC (Schedule A, A5), put "
+                         "on Central time. Crossroads and SMPM date a sale made at 10 pm or later with the next day "
+                         "(Addendum 4 clause 5; the SMPM layout), so those fills are put back on the evening they were "
+                         "pumped. A day a site posted twice (%s) is counted once: each duplicate and the credit that "
+                         "reverses it in a later week are left out (A6; clause 6; the layout's C records). SMPM's "
+                         "batch for 6 to 12 July came in twice and is counted once." % X["dup_text"]),
+        ("2025 programmes", "Each terminal bill of lading once, in the month it was delivered: a load dropped in two "
+                            "visits shows the bill's net gallons on both delivery rows. Billed: the product line and "
+                            "the delivery service lines (split drops, wait time); the two July Knoxville invoices "
+                            "credited in full on 21 July (a freight-zone charge billed in error) are replaced by "
+                            "their rebills. The rack value is each load's net gallons at Overton's posting in effect "
+                            "when it was lifted: posted at 6 pm Central with the next day's date (the 2025 letters)."),
     ]
     _head(w5, 1, ["Item", "Note"])
     for i, (k, v) in enumerate(notes, 2):
@@ -319,24 +331,26 @@ def submission(X):
     L = G["loads"]
     yard_list = ", ".join("%s %d" % (y, L[y]) for y in C.YARDS)
     r0 = sum(C.floor_loads(v) for v in R["R0 card gallons, trailing eight weeks"].values())
-    r1 = sum(C.floor_loads(v) for v in R["R1a pooled 2025 share"].values())
+    r1s = [sum(C.floor_loads(v) for v in R[k].values()) for k in R if k.startswith("R1")]
+    r1, r1_hi = min(r1s), max(r1s)
     r2 = sum(C.floor_loads(v) for v in R["R2a tankful per run between nights at the yard"].values())
-    X["rivals"] = dict(card_gallons=r0, share_2025=r1, overnight_cut=r2)
+    X["rivals"] = dict(card_gallons=r0, share_2025_low=r1, share_2025_high=r1_hi, overnight_cut=r2)
     s = []
     s += ["## Tags", "",
-          "**Domain:** General Statistics & Data Science (resampling and simulation methods: a fleet's yard-island fuel "
-          "draw replayed from each vehicle's recent duty, stretch by stretch between yard visits, each stretch capped "
-          "at a tankful).",
+          "**Domain:** General Statistics & Data Science (resampling and simulation methods: a trace-driven "
+          "simulation of six yard islands, each vehicle's recorded duty replayed visit by visit through the island's "
+          "one-tankful-a-visit limit).",
           "**Analytical objective:** Forecasting & Predictive Modeling.", ""]
     s += ["## 1. Final Recommendation", "",
-          "**Contract %d of Overton's discounted loads for 14 September to 8 November (%s), saving $%s against the "
-          "same gallons on the card accounts.**" % (G["total"], yard_list, fmt(X["saving"])),
+          "**Contract %d of Overton's loads for 14 September to 8 November (%s), saving $%s against the same "
+          "gallons on the card accounts.**" % (G["total"], yard_list, fmt(X["saving"])),
           "An island fuels a vehicle only at its yard visits, at most the tankful above the reserve its driver keeps, "
           "so each yard's draw is built from the fuel each vehicle burns between visits. Not the %d loads the "
           "vehicles' card gallons fill, which count the fuel Blountville's four-night sleepers and Cookeville's "
-          "lot-based vans have to buy on the road; not %d from the 2025 islands' share of the same vehicles' fuel, "
-          "measured on Jackson and Knoxville fleets mostly back every day or between one-night loops; and not %d from "
-          "capping each run between nights at the yard, which misses Nashville's midweek reload." % (r0, r1, r2), ""]
+          "lot-based vans have to buy on the road; not the %d to %d that the 2025 islands' share of the same "
+          "vehicles' fuel gives, measured on Jackson and Knoxville fleets mostly back every day or between one-night "
+          "loops; and not %d from capping each run between nights at the yard, which misses Nashville's midweek "
+          "reload." % (r0, r1, r1_hi, r2), ""]
     wk = X["weekly"]
     s += ["## 2. Critical Components", "",
           "1. Nashville's **%d** sleepers are in the yard at midday every Wednesday, so each takes two island fills a "
@@ -363,9 +377,10 @@ def submission(X):
           "previous yard visit and its capped tankful, summed by yard and scaled from those weeks' 39 working days "
           "to the window's 40: %s gallons." % draws,
           "5. Took each yard's whole 8,000-gallon loads: %s, %d in all." % (yard_list, G["total"]),
-          "6. Priced each load at its account's charge over the TriState average in "
-          "card_programmes_pricing_schedules.pdf less Overton's $0.019 in overton_offer_2026-08-26.pdf, on its 8,000 "
-          "gallons: %d loads save $%s, so contract %d." % (G["total"], fmt(X["saving"]), G["total"]), ""]
+          "6. Both prices sit on the TriState average, so each of a load's 8,000 gallons saves its account's charge "
+          "over that average in card_programmes_pricing_schedules.pdf (Crossroads' network fee is part of its diesel "
+          "price) less Overton's $0.019 in overton_offer_2026-08-26.pdf: %d loads save $%s, so contract %d." % (
+              G["total"], fmt(X["saving"]), G["total"]), ""]
     s += ["## 4. Deliverable Answers", "", "### %s" % XLSX, "",
           "1. Loads to contract for 14 September to 8 November, by yard: %s." % yard_list,
           "2. Total: %d loads." % G["total"],
@@ -374,8 +389,8 @@ def submission(X):
     for a in ("West", "Central", "East"):
         s.append("   - %s: May %s gallons, June %s gallons, July %s gallons" % (
             ACCT_NAME[a], fmt(Aa[(a, (2026, 5))]), fmt(Aa[(a, (2026, 6))]), fmt(Aa[(a, (2026, 7))])))
-    s.append("5. Overton's 2025 island programmes, net gallons delivered and dollars billed above its posted rack, "
-             "taxes aside:")
+    s.append("5. Overton's 2025 island programmes, net gallons delivered and the dollars billed over the posted rack "
+             "value of those gallons after credits, taxes aside:")
     for y in ("JXN", "KNX"):
         for m in A.PROG_MONTHS[y]:
             g, d = B[(y, m)]

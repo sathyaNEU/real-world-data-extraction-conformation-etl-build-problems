@@ -184,6 +184,7 @@ class Unit:
     tz: object
     habit: dict
     status: str = "Active"
+    sold: object = None
     card: str = ""
     driver: str = ""
     year: int = 2021
@@ -214,6 +215,23 @@ def make_units():
                 u = _unit(y, seq, model, "spare", 0.0, k)
                 u.status = "Spare"
                 units.append(u)
+        for (n, model, duty, base, sold) in K.SOLD.get(y, []):
+            for k in range(n):
+                seq += 1
+                u = _unit(y, seq, model, duty, base, k)
+                u.status, u.sold = "Sold", sold
+                u.year = min(u.year, 2018)
+                u.in_service = dt.date(u.year, u.in_service.month, u.in_service.day)
+                units.append(u)
+    for u in units:
+        # a unit on the road from the start of the telematics history was in service before it; the paperwork is
+        # dated a working day
+        d = u.in_service
+        if u.status == "Active" and d > dt.date(2024, 8, 23):
+            d = dt.date(2024, 1 + d.month % 8, d.day)
+        while not K.working(d):
+            d += dt.timedelta(days=1)
+        u.in_service = d
     return units
 
 
@@ -431,7 +449,8 @@ def run_unit(u):
     raw = []
     for m in mondays(K.HIST_START, K.HIST_END):
         for leg in week_plan(u, m, g):
-            if leg[0].date() >= K.HIST_START and leg[2].date() <= K.HIST_END:
+            if leg[0].date() >= K.HIST_START and leg[2].date() <= K.HIST_END and (u.sold is None or
+                                                                                 leg[2].date() < u.sold):
                 raw.append(leg)
     raw.sort(key=lambda x: x[0])
     legs = []

@@ -1,14 +1,15 @@
 """The two asks, computed from the shipped files only, with the stops a natural pipeline lands on.
 
-Ask A: the diesel gallons each card account's vehicles bought in May, June and July 2026, by the local day the fuel was
-pumped. Delta's direct-bill file stamps each fill in UTC; the Crossroads export and the SMPM file date a fill by the
-merchant's business day, which the truck stops close at 10 pm (the odometer on the fill and the vehicle day show which
-evening it was pumped).
+Ask A: the diesel gallons each card account's vehicles bought in May, June and July 2026, by the local day of each
+purchase. Riverbend stamps each transaction in UTC (Schedule A, A5); Crossroads and SMPM date a sale made at 10 pm or
+later with the next day (Pricing Addendum 4, clause 5; the SMPM layout, positions 15-22); a duplicate posting and the
+later credit that reverses it are no purchase (A6; clause 6; the layout's C record).
 
 Ask B: for each month of the 2025 Jackson and Knoxville programmes, the net gallons Overton delivered and the dollars it
-billed above its posted rack, taxes aside: each load (terminal bill) once, in the month of its delivery; its billed fuel,
-freight and service lines net of credit memos, less its net gallons at the posting in effect when it was lifted (a
-posting takes effect at 6 pm the day before its effective date)."""
+billed over the posted rack value of those gallons after credits, taxes aside: each load (terminal bill) once, in the
+month of its delivery (one invoice per bill, dated the day of delivery); its billed fuel and delivery service lines net
+of the credit memos (a credited invoice out, its rebill in), less its net gallons at Overton's posting in effect when it
+was lifted (posted at 6 pm Central with the next day's date, the 2025 letters)."""
 from __future__ import annotations
 
 import collections
@@ -29,28 +30,31 @@ F_RACK = "overton_rack_postings_2024-09_2026-08.csv"
 
 
 # ------------------------------------------------------------------------------------------------- Ask A
-def pump_dates(P):
-    """Each diesel or DEF fill with the local date it was pumped."""
-    out = []
-    for f in P.cards:
-        t = f["t"]
-        if f["acct"] == "West":
-            d = t.replace(tzinfo=UTC).astimezone(CT).date()
-        elif t.hour >= 22:
-            d = t.date() - dt.timedelta(days=1)
-        else:
-            d = t.date()
-        out.append((f, d))
-    return out
+def pump_date(f):
+    """The local day a card line was made: Riverbend's stamps are UTC (Schedule A, A5); Crossroads and SMPM date a sale
+    made at 10 pm or later with the next day (Pricing Addendum 4, clause 5; the SMPM layout)."""
+    t = f["t"]
+    if f["acct"] == "West":
+        return t.replace(tzinfo=UTC).astimezone(CT).date()
+    if t.hour >= 22:
+        return t.date() - dt.timedelta(days=1)
+    return t.date()
 
 
-def ask_a(P, mode="golden"):
-    """mode: golden; asrecorded (diesel, every date as the file gives it); utc_only (West corrected, business dates
-    kept); business_only (business dates corrected, West's UTC read as local); allproducts (DEF in, golden dates)."""
+def ask_a(P, mode="golden", credits="excluded"):
+    """mode: golden (each line on the day it was made); asrecorded (every date as the file gives it); utc_only
+    (Riverbend corrected, business dates kept); business_only (business dates corrected, Riverbend's UTC read as
+    local); allproducts (DEF in). credits: excluded (a duplicate posting and the credit that reverses it are no
+    purchase), netted (every line summed on its own date) or kept (the credits dropped, the duplicates kept)."""
     tot = collections.defaultdict(float)
-    for f, d in pump_dates(P):
+    for f in P.cards:
         if mode != "allproducts" and not f["diesel"]:
             continue
+        if credits == "excluded" and f["role"] != "sale":
+            continue
+        if credits == "kept" and f["role"] == "credit":
+            continue
+        d = pump_date(f)
         rec = f["t"].date()
         if mode == "asrecorded":
             d = rec
@@ -63,11 +67,12 @@ def ask_a(P, mode="golden"):
 
 
 def ask_a_resent(P):
-    """East with the re-sent week counted twice (the batch numbers differ, every detail line repeats)."""
+    """Holston's diesel with the week received twice kept twice (the two transmissions differ only in batch number)."""
     out = collections.defaultdict(float)
+    credited = {f["key"][1] for f in P.cards if f["acct"] == "East" and f["role"] == "dup"}
     with open(os.path.join(P.folder, C.F_EAST), encoding="utf-8") as fh:
         for ln in fh:
-            if ln.startswith("D") and ln[55:59] == "DSL2":
+            if ln.startswith("D") and ln[55:59] == "DSL2" and ln[1:14] not in credited:
                 t = dt.datetime.strptime(ln[14:22] + ln[22:26], "%Y%m%d%H%M")
                 d = t.date() - dt.timedelta(days=1) if t.hour >= 22 else t.date()
                 out[(d.year, d.month)] += int(ln[59:68]) / 1000.0
@@ -75,11 +80,11 @@ def ask_a_resent(P):
 
 
 def odometer_check(P):
-    """For the Crossroads and SMPM fills timed 10 pm or later: how many carry an odometer below the starting odometer
-    of the vehicle day on their recorded date (pumped the evening before), and how many above it."""
+    """For the Crossroads and SMPM sales timed 10 pm or later: how many carry an odometer at or below the starting
+    odometer of the vehicle day on their recorded date (pumped the evening before), and how many above it."""
     before = after = unknown = 0
     for f in P.cards:
-        if f["acct"] == "West" or not f["diesel"] or f["t"].hour < 22:
+        if f["acct"] == "West" or not f["diesel"] or f["role"] != "sale" or f["t"].hour < 22:
             continue
         r = P.days.get(f["unit"], {}).get(f["t"].date())
         if r is None or f["odo"] < 1000:
@@ -102,8 +107,8 @@ def read_overton(folder):
     with open(os.path.join(folder, F_DELIV), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
             drops.append(dict(ticket=r["Ticket"], bol=r["Terminal BOL"], terminal=r["Terminal"],
-                              lifted=dt.datetime.strptime(r["Lifted"], "%m/%d/%Y %H:%M"),
-                              delivered=dt.datetime.strptime(r["Delivered"], "%m/%d/%Y %H:%M"),
+                              lifted=dt.datetime.strptime(r["Lifted (CT)"], "%m/%d/%Y %H:%M"),
+                              delivered=dt.datetime.strptime(r["Delivered (CT)"], "%m/%d/%Y %H:%M"),
                               ship=r["Ship To"], net=float(r["BOL Net Gal"]), gross=float(r["Drop Gross Gal"])))
     inv = []
     with open(os.path.join(folder, F_INV), encoding="utf-8") as fh:
@@ -125,7 +130,8 @@ def yard_of(ship):
 def ask_b(folder, mode="golden"):
     """mode: golden; per_drop (net summed over the delivery rows, each row priced at the rack); lift_date (the posting
     dated the lifting day); delivery_date (the posting dated the delivery day); no_credits (every invoice counted, the
-    credit memos not read); by_lifting_month (loads dated by lifting)."""
+    credit memos not read); no_rebills (a credited invoice and its rebill both left out); fuel_only (the delivery
+    service lines left out); by_lifting_month (loads dated by lifting); by_invoice_month (dollars by invoice date)."""
     rack, drops, inv, cred = read_overton(folder)
     loads = {}
     for d in sorted(drops, key=lambda x: x["delivered"]):
@@ -144,13 +150,23 @@ def ask_b(folder, mode="golden"):
         for bol, d in loads.items():
             gal[month_of[bol]] += d["net"]
     credited = {c["ref"] for c in cred}
+    credited_bols = {line["bol"] for line in inv if line["inv"] in credited}
     for line in inv:
         if line["cls"] == "TAX":
             continue
+        if mode == "fuel_only" and line["cls"] != "PRODUCT":
+            continue
         if mode != "no_credits" and line["inv"] in credited:
             continue                                     # reversed in full by its credit memo
-        usd[month_of[line["bol"]]] += line["amt"]
+        if mode == "no_rebills" and line["bol"] in credited_bols:
+            continue
+        m = month_of[line["bol"]]
+        if mode == "by_invoice_month":
+            m = (m[0], (line["date"].year, line["date"].month))
+        usd[m] += line["amt"]
     for d in (drops if mode == "per_drop" else loads.values()):
+        if mode == "no_rebills" and d["bol"] in credited_bols:
+            continue
         lifted = d["lifted"]                             # Overton's dispatch clock (Central)
         eff = lifted.date() + dt.timedelta(days=1) if (lifted.hour >= 18 and mode != "lift_date") else lifted.date()
         if mode == "delivery_date":

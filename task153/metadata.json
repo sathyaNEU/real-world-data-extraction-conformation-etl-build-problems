@@ -28,7 +28,7 @@
       "xlsx"
     ],
     "largest_file": "vehicle_days_2024-09-01_2026-08-27.csv",
-    "largest_file_rows": 78789
+    "largest_file_rows": 79042
   },
   "sources": [
     {
@@ -44,7 +44,7 @@
     {
       "path": "card_programmes_pricing_schedules.pdf",
       "format": "pdf",
-      "bytes": 63079,
+      "bytes": 63569,
       "rows": null,
       "source": "Constructed: Riverbend, Crossroads and SMPM pricing schedules (copies held by Keeble Supply Co.)",
       "date": "2026-08-28",
@@ -53,8 +53,8 @@
     {
       "path": "crossroads_transactions_2024-09_2026-08.xlsx",
       "format": "xlsx",
-      "bytes": 2967077,
-      "rows": 33025,
+      "bytes": 3262981,
+      "rows": 33093,
       "source": "Constructed: Crossroads Fleet Card, portal transaction export for Keeble Supply Co.",
       "date": "2026-08-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -62,8 +62,8 @@
     {
       "path": "fleet_units_2026-08.xlsx",
       "format": "xlsx",
-      "bytes": 15465,
-      "rows": 164,
+      "bytes": 16403,
+      "rows": 169,
       "source": "Constructed: Keeble Supply Co., maintenance system unit list and model specifications",
       "date": "2026-08-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -116,7 +116,7 @@
     {
       "path": "overton_deliveries_2025.csv",
       "format": "csv",
-      "bytes": 2903,
+      "bytes": 2913,
       "rows": 24,
       "source": "Constructed: Overton Petroleum Co., customer portal delivery tickets, 2025",
       "date": "2026-08-28",
@@ -134,7 +134,7 @@
     {
       "path": "overton_jackson_tank_programme_2025-03-03.pdf",
       "format": "pdf",
-      "bytes": 41581,
+      "bytes": 41813,
       "rows": null,
       "source": "Constructed: Overton Petroleum Co., Jackson yard tank programme letter, 2025",
       "date": "2026-08-28",
@@ -143,7 +143,7 @@
     {
       "path": "overton_knoxville_tank_programme_2025-06-02.pdf",
       "format": "pdf",
-      "bytes": 41555,
+      "bytes": 41722,
       "rows": null,
       "source": "Constructed: Overton Petroleum Co., Knoxville yard tank programme letter, 2025",
       "date": "2026-08-28",
@@ -152,7 +152,7 @@
     {
       "path": "overton_offer_2026-08-26.pdf",
       "format": "pdf",
-      "bytes": 42165,
+      "bytes": 42085,
       "rows": null,
       "source": "Constructed: Overton Petroleum Co., transport load offer of August 26, 2026",
       "date": "2026-08-28",
@@ -179,8 +179,8 @@
     {
       "path": "riverbend_direct_bill_2024-09_2026-08.csv",
       "format": "csv",
-      "bytes": 3014695,
-      "rows": 21213,
+      "bytes": 3055706,
+      "rows": 21351,
       "source": "Constructed: Riverbend Travel Plazas, direct-bill transaction download for Delta Paper & Chemical",
       "date": "2026-08-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -188,8 +188,8 @@
     {
       "path": "smpm_card_activity_2024-09_2026-08.txt",
       "format": "txt",
-      "bytes": 1435974,
-      "rows": 13181,
+      "bytes": 1443105,
+      "rows": 13245,
       "source": "Constructed: Smoky Mountain Petroleum Marketers, member transaction files for Holston Sanitary Supply",
       "date": "2026-08-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -197,7 +197,7 @@
     {
       "path": "smpm_member_transaction_file_layout_v3.pdf",
       "format": "pdf",
-      "bytes": 42503,
+      "bytes": 44143,
       "rows": null,
       "source": "Constructed: Smoky Mountain Petroleum Marketers, member transaction file layout v3",
       "date": "2026-08-28",
@@ -206,8 +206,8 @@
     {
       "path": "telematics_device_assignments.csv",
       "format": "csv",
-      "bytes": 5905,
-      "rows": 167,
+      "bytes": 6135,
+      "rows": 172,
       "source": "Constructed: Keeble Supply Co., telematics device assignments",
       "date": "2026-08-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -215,8 +215,8 @@
     {
       "path": "vehicle_days_2024-09-01_2026-08-27.csv",
       "format": "csv",
-      "bytes": 9775904,
-      "rows": 78789,
+      "bytes": 9807233,
+      "rows": 79042,
       "source": "Constructed: Keeble Supply Co., telematics service vehicle-day export",
       "date": "2026-08-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -224,7 +224,7 @@
     {
       "path": "yard_notes_2026-08.md",
       "format": "md",
-      "bytes": 1867,
+      "bytes": 1821,
       "rows": null,
       "source": "Constructed: Keeble Supply Co., fleet services yard notes, August 2026",
       "date": "2026-08-28",
@@ -233,7 +233,7 @@
     {
       "path": "yard_tank_register.xlsx",
       "format": "xlsx",
-      "bytes": 6968,
+      "bytes": 7039,
       "rows": 6,
       "source": "Constructed: Keeble Supply Co., yard tank register",
       "date": "2026-08-28",

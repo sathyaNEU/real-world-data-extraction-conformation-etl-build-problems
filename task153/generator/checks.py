@@ -287,16 +287,21 @@ def run(target, golden, B=None, G=None, meta_path=None):
         "offer: count": "Up to 32 in all, for any of the six yards.",
         "offer: commitment": "Every confirmed load is billed at the price above whether or not it has been called off "
                              "by November 8.",
-        "offer: saving": "every gallon taken on this offer saves the card programme's charge over the average less our "
-                         "1.9 cents",
+        "offer: price": "The TriState Rack Report contract average for ULSD No. 2 at the supplying terminal on the day "
+                        "of lifting, the same average your three card programmes bill from, plus $0.019 per net "
+                        "gallon, delivered.",
         "notes: days": "Every yard runs Monday to Friday",
-        "notes: plans": "No route, fleet or yard changes are planned before December.",
         "notes: fuel": "Each account's vehicles carry that account's cards and buy wherever the route takes them.",
     }
     flat = re.sub(r"\s+", " ", src)
     missing = [k for k, v in how.items() if re.sub(r"\s+", " ", v) not in flat]
-    ok("HOW the seven shipped sentences on how loads, gallons and tanks are counted are quoted from the pack", not missing,
-       missing)
+    ok("HOW the six shipped sentences on how loads, gallons and prices are counted are quoted from the pack",
+       not missing, missing)
+    ptxt = open(os.path.join(os.path.dirname(os.path.abspath(target)), "prompt.txt"), encoding="utf-8").read()
+    ok("HOW the prompt files the scenario and both chart windows: our own vehicles running as in the eight weeks to 23 "
+       "August, the draw for the contract weeks, the cards' diesel of those eight weeks",
+       ptxt.count("the eight weeks to 23 August") == 2 and "if they run as in the eight weeks to 23 August" in ptxt and
+       "island draw for the contract weeks" in ptxt and CA.BASE == (dt.date(2026, 6, 29), dt.date(2026, 8, 23)))
     lit = {y: min(Rg["R0 card gallons, trailing eight weeks"][y], 32 * CA.LOAD) for y in CA.YARDS}
     ok("HOW executed word for word on the gallons the files record as bought (whole loads per yard tank, 32 at most, "
        "Monday-to-Friday weeks replayed with no change) they file 29, never the golden",
@@ -314,8 +319,11 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ok("LADDER R0's family (scaled, 13 weeks, the same weeks of 2025) files 29 on every base",
        all(tot(Rg[k]) == 29 for k in fam), str([tot(Rg[k]) for k in fam]))
     r1 = ["R1a pooled 2025 share", "R1a' 2025 share by account", "R1b 2025 share by model"]
-    ok("LADDER R1 the 2025 islands' share carried onto the card gallons, pooled, by account or by model, files 26",
-       all(tot(Rg[k]) == 26 for k in r1), str([counts(Rg[k]) for k in r1]))
+    r1s = [k + " x 40/39" for k in r1]
+    ok("LADDER R1 the 2025 islands' share carried onto the card gallons, pooled, by account or by model, files 26 on "
+       "the eight weeks as bought and 26 to 28 scaled to the window's working days (pooled 28, by account 27, by "
+       "model 26)", all(tot(Rg[k]) == 26 for k in r1) and [tot(Rg[k]) for k in r1s] == [28, 27, 26],
+       str([tot(Rg[k]) for k in r1 + r1s]))
     R2a = Rg["R2a tankful per run between nights at the yard"]
     ok("LADDER R2a a tankful per run between nights at the yard files 19 (2, 5, 5, 0, 4, 3)",
        tot(R2a) == 19 and counts(R2a) == {"Memphis": 2, "Jackson": 5, "Nashville": 5, "Cookeville": 0,
@@ -384,7 +392,7 @@ def run(target, golden, B=None, G=None, meta_path=None):
     gross = {y: draw[y] / 1.0055 for y in CA.YARDS}
     ok("SF1 a load read as 8,000 gallons at the island meter (gross, 0.55 per cent over net): same call",
        counts(gross) == GOLD)
-    room = {y: draw[y] + (K.TANK_FILL_LIMIT - K.TANK_HEEL) for y in CA.YARDS}
+    room = {y: draw[y] + (K.TANKS[CA.CODE[y]][1] - K.TANKS[CA.CODE[y]][2]) for y in CA.YARDS}
     ok("SF2 loads delivered into the tank by 8 November (not handed out) would file 30 or more", min(32, tot(room)) >= 30)
     near = sum(int(math.floor(draw[y] / CA.LOAD + 0.5)) for y in CA.YARDS)
     ok("SF3 the nearest whole load instead of the whole loads within the draw files %d" % EXPECT["SF3"],
@@ -415,8 +423,11 @@ def run(target, golden, B=None, G=None, meta_path=None):
            variants["each 2025 sleeper's own largest island fill as its tankful"]) == GOLD)
     nofee = X["loads_acct"]["West"] * 8000 * 0.100 + X["loads_acct"]["Central"] * 8000 * (0.084 - 0.019) + \
         X["loads_acct"]["East"] * 8000 * 0.108
-    ok("SF10 the saving with the Crossroads network fee left out ($%s) is not the agreement terms' saving" % format(
-        round(nofee), ","), round(nofee) != round(X["saving"]))
+    ok("SF10 the Crossroads network fee is part of its diesel price (Addendum 4 clause 2): $0.080 a gallon saved, not "
+       "the $0.065 without it ($%s in all, not the agreement terms' saving)" % format(round(nofee), ","),
+       round(nofee) == 16328 and round(nofee) != round(X["saving"]) and X["per_gal"]["Central"] == 0.08 and
+       "is part of the diesel price under this addendum" in flat)
+
     rack = {}
     import csv as _csv
     with open(os.path.join(target, R.F_RACK), encoding="utf-8") as fh:
@@ -425,18 +436,45 @@ def run(target, golden, B=None, G=None, meta_path=None):
     devs = []
     with open(os.path.join(target, R.F_WEST), encoding="utf-8") as fh:
         for r in _csv.DictReader(fh):
-            if r["PROD_CD"] != "01":
+            if r["PROD_CD"] != "01" or r["REF_TRAN_ID"]:
                 continue
             t = dt.datetime.strptime(r["TRAN_DATE_TIME"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=CA.UTC).astimezone(CA.CT)
             term = WD.station_terminal(r["SITE_NO"])
             devs.append(abs(float(r["PPG"]) - rack[(term, t.date())] - 0.119))
     ok("SF10 every Riverbend diesel price is the TriState average for its pumping day plus the schedule's $0.119",
        max(devs) < 0.00006, "%d fills" % len(devs))
+    aug = [v for (t_, d_), v in rack.items() if dt.date(2026, 8, 1) <= d_ <= dt.date(2026, 8, 27)]
+    avg = sum(aug) / len(aug)
+    gross_alt = sum(X["loads_acct"][a] * 8000 * (1.0055 * (DL.CHARGE[a] + avg) - (DL.ADDER + avg)) for a in DL.CHARGE)
+    ok("SF15 the saving on the same number of gallons: reading the card side as the loads' gross gallons at the meter "
+       "(0.55 per cent over net, at August's TriState average) moves the saving by $1,000 or more, so the prompt's "
+       "'same number of gallons' closes it", abs(gross_alt - X["saving"]) > 1000 and "the same number of gallons" in
+       ptxt, "%.0f at %.4f" % (gross_alt, avg))
+    span_days = collections.Counter()
+    for f in P.cards:
+        if f["diesel"] and f["role"] == "sale" and f["unit"] in P.units and CA.BASE[0] <= f["t"].date() <= CA.BASE[1]:
+            span_days[(f["acct"], WD.station_terminal(f["site"]) if f["site"] in WD.ST else "?")] += 1
+    ok("SF16 the saving's price basis: the offer prices off the same TriState average the three card programmes bill "
+       "from, so each gallon saves the card margin less $0.019 (the terminal and day spreads are not on the agreement "
+       "terms)", "the same average your three card programmes bill from" in flat and
+       X["per_gal"] == {"West": 0.1, "Central": 0.08, "East": 0.108}, str(dict(span_days)))
     tanks = openpyxl.load_workbook(os.path.join(target, R.F_TANKS), read_only=True).worksheets[0]
     usable = {row[0]: max(0, row[13] - row[6]) for row in list(tanks.iter_rows(values_only=True))[1:]}
     ok("SF12 the stock already in each tank (the 24 August dips over the unpumpable bottom) added to the draw: same call",
        max(usable.values()) <= 250 and counts({y: draw[y] + usable[y] for y in CA.YARDS}) == GOLD, str(usable))
-    ptxt = open(os.path.join(os.path.dirname(os.path.abspath(target)), "prompt.txt"), encoding="utf-8").read()
+    trow = {row[0]: row for row in list(tanks.iter_rows(values_only=True))[1:]}
+    short = {y: max(0, trow[y][6] - trow[y][13]) for y in CA.YARDS}
+    room_ok = all(trow[y][5] - max(trow[y][6], trow[y][13]) >= CA.LOAD + 2000 for y in CA.YARDS)
+    alts = {"the old stock handed out first": {y: draw[y] - usable[y] for y in CA.YARDS},
+            "a tank below its unpumpable bottom topped up from the first load": {y: draw[y] - short[y]
+                                                                                 for y in CA.YARDS},
+            "the heel kept under the last load": {y: draw[y] - trow[y][6] for y in CA.YARDS}}
+    ok("SF14 the heel and the alarm: every tank takes a whole load over its unpumpable bottom with 2,000 gallons to "
+       "spare under its overfill alarm, so room never binds; the dips' old stock handed out first, a bottom topped up "
+       "from the first load, or the heel kept under the last load: same call",
+       room_ok and all(counts(v) == GOLD for v in alts.values()) and
+       len({(r[4], r[5], r[6]) for r in trow.values()}) >= 5,
+       ", ".join("%s %s" % (k, tot(v)) for k, v in alts.items()))
     ok("SF13 the prompt marks only the 2025 programmes as last year's: Ask A's May, June and July are 2026's",
        ptxt.count("last year's") == 1 and "last year's Jackson and Knoxville" in ptxt and "May, June and July" in ptxt)
     ok("SF11 the as-of: the README's pull date and the offer's date agree (28 and 26 August 2026)",
@@ -446,8 +484,16 @@ def run(target, golden, B=None, G=None, meta_path=None):
     swaps = [r for r in W.rename.values()]
     ok("AXIS 16 every device swap falls before the base (March and April 2026)",
        all(r[1] < CA.BASE[0] for r in swaps) and len(swaps) == 8)
-    spare_days = sum(1 for u, i in P.units.items() if i["status"] != "Active" for d in P.days.get(u, {}))
-    ok("AXIS 19 the two spare trucks have no vehicle days", spare_days == 0)
+    spares = [u for u, i in P.units.items() if i["status"] == "Spare"]
+    spare_days = sum(len(P.days.get(u, {})) for u in spares)
+    gone = {u.unit: u.sold for u in W.units if u.status == "Sold"}
+    after = sum(1 for u, d0 in gone.items() for d in P.days.get(u, {}) if d >= d0)
+    sold_geo = sum(len(P.stays.get(u, [])) for u in gone)
+    ok("AXIS 19 the two spare trucks have no vehicle days, and the %d units sold in the autumn of 2024 none after "
+       "their disposal and no yard visit in 2026: 'our own vehicles' has one reading" % len(gone),
+       len(spares) == 2 and spare_days == 0 and len(gone) == 5 and after == 0 and sold_geo == 0 and
+       all(P.units[u]["status"] == "Sold" for u in gone) and
+       {i["status"] for i in P.units.values()} == {"Active", "Spare", "Sold"})
     open_ = 0
     for u, Sx in P.stays.items():
         for (a, b, g) in Sx:
@@ -471,14 +517,66 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ok("ASK A every figure is 0.03 gallon or more from its rounding edge (each an exact sum of three-decimal gallons)",
        all(K.bin_clearance(v, 1) >= 0.03 for v in A.values()), str(["%.3f" % v for v in A.values()]))
     stops = {m: AS.ask_a(P, m) for m in ("asrecorded", "utc_only", "business_only", "allproducts")}
+    natural = AS.ask_a(P, "asrecorded", "netted")
+    netted = AS.ask_a(P, "golden", "netted")
+    kept = AS.ask_a(P, "golden", "kept")
     miss = lambda st, keys: all(round(st[k]) != round(A[k]) for k in keys)
+    hit = lambda st, keys: all(round(st[k]) == round(A[k]) for k in keys)
     allk = list(A)
     west = [k for k in allk if k[0] == "West"]
     rest = [k for k in allk if k[0] != "West"]
-    ok("ASK A the natural read (every date as the files give it, DEF out) misses all nine", miss(stops["asrecorded"], allk))
-    ok("ASK A Riverbend's UTC corrected but the business dates kept misses the six Crossroads and SMPM figures",
-       miss(stops["utc_only"], rest) and not miss(stops["utc_only"], west))
-    ok("ASK A the business dates corrected but Riverbend's UTC read as local misses Delta's three",
+    # the truth: the world's diesel card fills by the local day they were pumped
+    truth = collections.defaultdict(float)
+    for u in W.units:
+        for f in u.fills:
+            if f["kind"] == "card":
+                m_ = (f["t"].year, f["t"].month)
+                truth[(R.ACCT_OF[u.yard], m_)] += round(f["gal"], 3)
+    ok("ASK A the nine figures are the world's diesel bought by the local day it was pumped",
+       all(abs(truth[k] - A[k]) < 0.01 for k in allk), str({k: round(truth[k]) for k in allk}))
+    ok("ASK A each convention is filed in the programme's own document: Riverbend's UTC stamps (A5), its credits by "
+       "transaction number (A6); Crossroads' Central-time business day closing at 10 pm (clause 5) and its reversals "
+       "(clause 6); SMPM's business-day dates, site times and credit records (the layout)",
+       all(x in flat for x in ("its date and time given in Coordinated Universal Time",
+                               "the credit carries the transaction number of the duplicate it reverses",
+                               "Dates and times on statements and in the portal are Central time",
+                               "a purchase made at 10:00 pm or later carries the next day's date with the time it was "
+                               "made", "carries the reference of the purchase it reverses",
+                               "a sale made at 10:00 pm or later carries the next day's date",
+                               "Transaction time at the member site, when the sale was made",
+                               "A credit record reverses a detail record a member site sent twice")))
+    # Crossroads states its clock (Central); four of its merchants sit on Eastern time
+    eastern = {"CR42047", "CR42089", "CR42103", "CR42173"}
+    alt_e = collections.defaultdict(float)
+    n_e = 0
+    for f in P.cards:
+        if not f["diesel"] or f["role"] != "sale":
+            continue
+        d = AS.pump_date(f)
+        if f["acct"] == "Central" and f["site"] in eastern:
+            n_e += 1
+            t_ct = dt.datetime.combine(d, f["t"].time())
+            d = (t_ct + dt.timedelta(hours=1)).date()
+        alt_e[(f["acct"], (d.year, d.month))] += f["gal"]
+    ok("ASK A the %d Crossroads sales at merchants on Eastern time dated by the merchant's own clock: the same nine "
+       "figures" % n_e, n_e > 500 and all(round(alt_e[k]) == round(A[k]) for k in A))
+    late22 = sum(1 for f in P.cards if f["acct"] != "West" and f["t"].hour == 22 and f["t"].minute == 0)
+    ok("ASK A the 10 pm boundary is filed as 'at 10:00 pm or later', so the %d sales stamped 22:00 have one reading"
+       % late22, late22 > 0 and "after 10:00 pm" not in flat)
+    ok("ASK A the natural read (every line summed on the date the files give it, DEF out) misses all nine",
+       miss(natural, allk))
+    ok("ASK A the dates as the files give them, the duplicates and credits handled, misses all nine",
+       miss(stops["asrecorded"], allk))
+    ok("ASK A every filed date convention applied but each credit netted on its own later date misses all nine (a "
+       "duplicate day's gallons in one month, its credit in the next)", miss(netted, allk))
+    dupm = sorted({(f["acct"], (AS.pump_date(f).year, AS.pump_date(f).month)) for f in P.cards
+                   if f["role"] == "dup" and f["diesel"]} & set(allk))
+    ok("ASK A the credits dropped and the duplicates kept misses each account-month with a duplicate day (%d)" %
+       len(dupm), len(dupm) == 5 and miss(kept, dupm) and hit(kept, [k for k in allk if k not in dupm]),
+       str(dupm))
+    ok("ASK A Riverbend's UTC corrected but the 10 pm dates kept misses the six Crossroads and SMPM figures",
+       miss(stops["utc_only"], rest) and hit(stops["utc_only"], west))
+    ok("ASK A the 10 pm dates corrected but Riverbend's UTC read as local misses Delta's three",
        miss(stops["business_only"], west))
     ok("ASK A DEF counted as diesel misses all nine", miss(stops["allproducts"], allk))
     rs = AS.ask_a_resent(P)
@@ -507,7 +605,7 @@ def run(target, golden, B=None, G=None, meta_path=None):
     # ------------------------------------------------------------------ Ask B
     Bb = X["B"]
     gB = EXPECT["B"]
-    ok("ASK B the six programme months' net gallons and dollars billed above the posted rack",
+    ok("ASK B the six programme months' net gallons and the dollars billed over the posted rack value of those gallons",
        all((round(Bb[k][0]), round(Bb[k][1])) == v for k, v in gB.items()),
        str({k: (round(v[0]), round(v[1])) for k, v in Bb.items()}))
     ok("ASK B every dollar figure is 3 cents or more from its rounding edge",
@@ -524,7 +622,33 @@ def run(target, golden, B=None, G=None, meta_path=None):
             straddle += len({x["delivered"].month for x in v}) > 1
     ok("ASK B every programme month has a load dropped in two visits under one bill of lading, none across a month end",
        all(split_m[k] >= 1 for k in gB) and straddle == 0, str(dict(split_m)))
-    bst = {m: AS.ask_b(target, m) for m in ("per_drop", "lift_date", "delivery_date", "no_credits", "by_lifting_month")}
+    bst = {m: AS.ask_b(target, m) for m in ("per_drop", "lift_date", "delivery_date", "no_credits", "by_lifting_month",
+                                            "fuel_only", "no_rebills", "by_invoice_month")}
+    ok("ASK B each convention is filed: the prompt's dollars billed over the posted rack value of the gallons after "
+       "credits, taxes aside; the letters' posting at 6 pm Central with the next day's date, in effect when the load is "
+       "lifted; the delivery export's times in Central (its headers); one invoice per bill of lading dated the day of "
+       "delivery, its delivery service charges on it, a billing error credited in full and invoiced anew",
+       "the dollars it billed over the posted rack value of those gallons after credits, taxes aside" in ptxt and
+       all(x in flat for x in ("Overton posts its rack at 6:00 pm Central each day; each posting carries the next "
+                               "day's date and prices every load lifted from then until 6:00 pm that day.",
+                               "in effect when the load is lifted",
+                               "One invoice for each bill of lading, dated the day of delivery: the load's net gallons "
+                               "at the price above, any delivery service charges, and taxes and fees.",
+                               "A billing error is corrected by a credit memo for the whole invoice and a new "
+                               "invoice.")) and
+       open(os.path.join(target, AS.F_DELIV), encoding="utf-8").readline().startswith(
+           "Ticket,Terminal BOL,Terminal,Lifted (CT),Delivered (CT),"))
+    ok("ASK B the delivery service charges (split drops, wait time) left out misses all six dollar figures",
+       all(round(bst["fuel_only"][k][1]) != v[1] for k, v in gB.items()))
+    ok("ASK B the credited invoices and their rebills both left out misses Knoxville July",
+       round(bst["no_rebills"][("KNX", (2025, 7))][1]) != gB[("KNX", (2025, 7))][1])
+    ok("ASK B dollars dated by invoice instead of by delivery: same twelve figures (each invoice dated its delivery, "
+       "the rebills in the month of their loads)",
+       all((round(bst["by_invoice_month"][k][0]), round(bst["by_invoice_month"][k][1])) == v for k, v in gB.items()))
+    credited_inv = {c["ref"] for c in AS.read_overton(target)[3]}
+    fr = [l for l in AS.read_overton(target)[2] if l["cls"] == "FREIGHT"]
+    ok("ASK B every freight line is on an invoice credited in full: after credits no freight is billed", fr and
+       all(l["inv"] in credited_inv for l in fr), "%d freight lines" % len(fr))
     ok("ASK B net summed over the delivery rows misses all six gallon figures and all six dollar figures",
        all(round(bst["per_drop"][k][0]) != v[0] and round(bst["per_drop"][k][1]) != v[1] for k, v in gB.items()))
     m_lift = [k for k, v in gB.items() if round(bst["lift_date"][k][1]) != v[1]]
@@ -550,11 +674,12 @@ def run(target, golden, B=None, G=None, meta_path=None):
         fair.append(abs(line["amt"] / line["qty"] - rack_o[(d["terminal"], eff)] - promo[AS.yard_of(d["ship"])]))
     ok("ASK B fair: every billed fuel price is Overton's posting in effect at lifting (6 pm Central for the next day) "
        "plus the programme margin", max(fair) < 0.0001, "%d loads" % len(fair))
-    # the cracker: the call landed, the battery run, every filed rule executed
+    # the cracker: the call landed, every filed convention applied, each line summed where the files date it
     crack_b = bst["per_drop"]
-    ok("CRACKER the careful route (stack, dedupe, DEF out, dates as filed; delivery rows as listed) misses every ask "
-       "figure", miss(stops["asrecorded"], allk) and all(round(crack_b[k][0]) != v[0] and round(crack_b[k][1]) != v[1]
-                                                          for k, v in gB.items()))
+    ok("CRACKER the careful route (stack, dedupe the resent week, DEF out, every filed date convention applied, each "
+       "credit summed on its own date; delivery rows as listed) misses every ask figure",
+       miss(netted, allk) and all(round(crack_b[k][0]) != v[0] and round(crack_b[k][1]) != v[1]
+                                  for k, v in gB.items()))
 
     # ------------------------------------------------------------------ separation
     ok("SEPARATION the main call's rows carry no device: the golden reads no card export, no Overton file and no rack",
@@ -572,6 +697,9 @@ def run(target, golden, B=None, G=None, meta_path=None):
         mpg[row[0]].add((row[2], row[6]))
     ok("REALISM the IFTA returns' fleet MPG differs between the licences in each quarter",
        all(len({m for _, m in v}) == len({a for a, _ in v}) for v in mpg.values()))
+    ins_bad = [u.unit for u in W.units if not K.working(u.in_service) or
+               (P.days.get(u.unit) and min(P.days[u.unit]) < u.in_service)]
+    ok("REALISM every unit's in-service date is a working day before its first vehicle day", not ins_bad, ins_bad)
     names_ = set(K.PEOPLE.values())
     firsts = {n.split()[0] for n in names_}
     found = set(re.findall(r"\b([A-Z][a-z]+ [A-Z][a-z]+)\b", alltext))

@@ -117,6 +117,13 @@ FLEET = {
     "TRI": [(4, "M2B26", "metro", 22.0), (11, "T68SL", "loop4", 112.0)],
 }
 SPARES = {"NSH": [(2, "M2B26")]}              # spare box trucks, on the list, no runs in 2026
+# units sold in the autumn of 2024, still on the maintenance list with their disposal date
+SOLD = {"MEM": [(2, "NRR19", "metro", 22.0, dt.date(2024, 11, 22))],
+        "NSH": [(1, "M2B26", "metro", 24.0, dt.date(2024, 12, 13))],
+        "KNX": [(2, "SPR25", "metro", 12.5, dt.date(2024, 10, 18))]}
+# the yard tanks: capacity, overfill alarm and unpumpable bottom (gallons); Jackson's and Knoxville's as in 2025
+TANKS = {"MEM": (15000, 13500, 450), "JXN": (20000, 18000, 600), "NSH": (25000, 22500, 750),
+         "CKV": (12000, 10800, 400), "KNX": (20000, 18000, 600), "TRI": (15000, 13500, 500)}
 
 # company holidays (no runs)
 HOLIDAYS = {

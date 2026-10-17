@@ -155,34 +155,45 @@ def golden(target):
 
 
 def ask_a(target):
+    """Each account's diesel purchases by the local day they were made; duplicate postings and their credits out."""
     out = collections.defaultdict(float)
     with open(os.path.join(target, "riverbend_direct_bill_2024-09_2026-08.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            if r["PROD_CD"] == "01":
-                t = dt.datetime.strptime(r["TRAN_DATE_TIME"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=Z).astimezone(CHI)
-                out[("West", t.year, t.month)] += float(r["QTY"])
+        rb = list(csv.DictReader(fh))
+    gone = {r["REF_TRAN_ID"] for r in rb if r["REF_TRAN_ID"]}
+    for r in rb:
+        if r["PROD_CD"] == "01" and not r["REF_TRAN_ID"] and r["TRAN_ID"] not in gone:
+            t = dt.datetime.strptime(r["TRAN_DATE_TIME"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=Z).astimezone(CHI)
+            out[("West", t.year, t.month)] += float(r["QTY"])
     rows = xlsx_rows(os.path.join(target, "crossroads_transactions_2024-09_2026-08.xlsx"), "Transactions")
-    for r in rows[1:]:
-        if r[11] != "Diesel":
+    head = rows[0]
+    ix = {h: k for k, h in enumerate(head)}
+    body = [r + [None] * (len(head) - len(r)) for r in rows[1:]]
+    gone = {r[ix["Reverses"]] for r in body if r[ix["Reverses"]]}
+    for r in body:
+        if r[ix["Product"]] != "Diesel" or r[ix["Reverses"]] or r[ix["Reference"]] in gone:
             continue
-        d = excel_date(r[0])
-        if int(r[1][:2]) >= 22:
+        d = excel_date(r[ix["Transaction Date"]])
+        if int(r[ix["Transaction Time"]][:2]) >= 22:
             d -= dt.timedelta(days=1)
-        out[("Central", d.year, d.month)] += float(r[12])
-    weeks = set()
+        out[("Central", d.year, d.month)] += float(r[ix["Quantity"]])
+    weeks, recs = set(), []
     with open(os.path.join(target, "smpm_card_activity_2024-09_2026-08.txt"), encoding="utf-8") as fh:
-        wk = None
         skip = False
         for ln in fh:
+            ln = ln.rstrip("\r\n")
             if ln[0] == "H":
-                wk = ln[8:16]
-                skip = wk in weeks
-                weeks.add(wk)
-            elif ln[0] == "D" and not skip and ln[55:59] == "DSL2":
-                d = dt.datetime.strptime(ln[14:22], "%Y%m%d").date()
-                if int(ln[22:24]) >= 22:
-                    d -= dt.timedelta(days=1)
-                out[("East", d.year, d.month)] += int(ln[59:68]) / 1000.0
+                skip = ln[8:16] in weeks           # the same week received again
+                weeks.add(ln[8:16])
+            elif ln[0] in "DC" and not skip:
+                recs.append(ln)
+    gone = {ln[108:121] for ln in recs if ln[0] == "C"}
+    for ln in recs:
+        if ln[0] != "D" or ln[55:59] != "DSL2" or ln[1:14] in gone:
+            continue
+        d = dt.datetime.strptime(ln[14:22], "%Y%m%d").date()
+        if int(ln[22:24]) >= 22:
+            d -= dt.timedelta(days=1)
+        out[("East", d.year, d.month)] += int(ln[59:68]) / 1000.0
     return out
 
 
@@ -193,7 +204,7 @@ def ask_b(target):
             post[(r["Terminal"].upper(), r["Effective Date"])] = float(r["Overton Posted"])
     load = {}
     with open(os.path.join(target, "overton_deliveries_2025.csv"), encoding="utf-8") as fh:
-        for r in sorted(csv.DictReader(fh), key=lambda r: dt.datetime.strptime(r["Delivered"], "%m/%d/%Y %H:%M")):
+        for r in sorted(csv.DictReader(fh), key=lambda r: dt.datetime.strptime(r["Delivered (CT)"], "%m/%d/%Y %H:%M")):
             if r["Terminal BOL"] not in load:
                 load[r["Terminal BOL"]] = r
     credited = set()
@@ -203,10 +214,10 @@ def ask_b(target):
     out = collections.defaultdict(lambda: [0.0, 0.0])
 
     def month(r):
-        d = dt.datetime.strptime(r["Delivered"], "%m/%d/%Y %H:%M")
+        d = dt.datetime.strptime(r["Delivered (CT)"], "%m/%d/%Y %H:%M")
         return (r["Ship To"].split()[1], d.year, d.month)
     for b, r in load.items():
-        lifted = dt.datetime.strptime(r["Lifted"], "%m/%d/%Y %H:%M")
+        lifted = dt.datetime.strptime(r["Lifted (CT)"], "%m/%d/%Y %H:%M")
         eff = (lifted + dt.timedelta(hours=6)).date()          # 6 pm Central posts the next day's rack
         out[month(r)][0] += float(r["BOL Net Gal"])
         out[month(r)][1] -= float(r["BOL Net Gal"]) * post[(r["Terminal"], eff.isoformat())]

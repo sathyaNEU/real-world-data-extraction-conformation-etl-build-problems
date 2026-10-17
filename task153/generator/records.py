@@ -33,12 +33,20 @@ GEO_COLS = ["Event Time", "Device Serial", "Vehicle", "Geofence", "Event"]
 DEV_COLS = ["Device Serial", "Vehicle", "Installed", "Removed"]
 FMS_COLS = ["Txn", "Site", "Pump", "Fob", "Unit", "Date", "Time", "Gallons", "Odometer", "Product"]
 WEST_COLS = ["TRAN_ID", "TRAN_DATE_TIME", "SITE_NO", "SITE_NAME", "SITE_CITY", "SITE_ST", "CARD_NO", "UNIT_NO",
-             "DRIVER_NO", "ODOMETER", "PROD_CD", "PROD_DESC", "QTY", "PPG", "FET", "SET", "NET_AMT", "TOTAL"]
-CENTRAL_COLS = ["Transaction Date", "Transaction Time", "Post Date", "Card Number", "Vehicle ID", "Driver ID",
-                "Odometer", "Merchant ID", "Merchant Name", "City", "State", "Product", "Quantity", "Unit Price", "Fuel Amount",
-                "Federal Tax", "State Tax", "Network Fee", "Total"]
-DELIV_COLS = ["Ticket", "Terminal BOL", "Terminal", "Lifted", "Delivered", "Ship To", "Product", "BOL Net Gal",
-              "Drop Gross Gal", "Temp F", "Truck", "Driver"]
+             "DRIVER_NO", "ODOMETER", "PROD_CD", "PROD_DESC", "QTY", "PPG", "FET", "SET", "NET_AMT", "TOTAL",
+             "REF_TRAN_ID"]
+CENTRAL_COLS = ["Reference", "Transaction Date", "Transaction Time", "Post Date", "Card Number", "Vehicle ID",
+                "Driver ID", "Odometer", "Merchant ID", "Merchant Name", "City", "State", "Product", "Quantity",
+                "Unit Price", "Fuel Amount", "Federal Tax", "State Tax", "Network Fee", "Total", "Reverses"]
+# a site or merchant posts a day's sales twice; the programme credits the duplicates later (date of the sales, date of
+# the credit): Riverbend by credit rows, Crossroads by reversals, SMPM by credit records in a later batch
+DUP_EVENTS = {
+    "West": [(dt.date(2026, 4, 30), (dt.date(2026, 5, 5), 10.23)), (dt.date(2026, 6, 30), (dt.date(2026, 7, 7), 9.87))],
+    "Central": [(dt.date(2026, 5, 29), (dt.date(2026, 6, 2), 9.24)), (dt.date(2026, 6, 30), (dt.date(2026, 7, 2), 14.6))],
+    "East": [(dt.date(2026, 5, 29), (dt.date(2026, 6, 9), 11.08)), (dt.date(2026, 6, 30), (dt.date(2026, 7, 14), 10.4))],
+}
+DELIV_COLS = ["Ticket", "Terminal BOL", "Terminal", "Lifted (CT)", "Delivered (CT)", "Ship To", "Product",
+              "BOL Net Gal", "Drop Gross Gal", "Temp F", "Truck", "Driver"]
 INV_COLS = ["Invoice", "Invoice Date", "Ship To", "Terminal BOL", "Line", "Item", "Class", "Qty", "Unit Price",
             "Amount"]
 CRED_COLS = ["Credit Memo", "Credit Date", "Ref Invoice", "Ship To", "Terminal BOL", "Line", "Item", "Class", "Qty",
@@ -74,7 +82,9 @@ def devices(W):
     for i, u in enumerate(W.units):
         s1 = K.token("dev", u.unit, n=10).upper()
         inst = dt.date(2023, int(g.integers(2, 6)), int(g.integers(1, 28)))
-        if u in pool and pool.index(u) in swap_idx:
+        if u.status == "Sold":
+            out[u.unit] = [(s1, inst, u.sold)]
+        elif u in pool and pool.index(u) in swap_idx:
             sw = dt.date(2026, int(g.integers(3, 5)), int(g.integers(2, 27)))
             s2 = K.token("dev2", u.unit, n=10).upper()
             out[u.unit] = [(s1, inst, sw), (s2, sw, None)]
@@ -167,17 +177,28 @@ def geo_rows(W):
 
 
 # ------------------------------------------------------------------------------------------------- the unit list
+# how each company's fleet administrator wrote the make and model (the model code is the maintenance system's)
+MAKE_MODEL = {
+    "West": {"SPR25": "MERCEDES SPRINTER 2500 170WB", "NRR19": "ISUZU NRR 19.5K BOX", "M2B26": "FREIGHTLINER M2-106 26FT",
+             "CAS1D": "FREIGHTLINER CASCADIA 116 DAY", "T68SL": "KENWORTH T680 76IN SLPR"},
+    "Central": {k: v[0] for k, v in K.MODELS.items()},
+    "East": {"SPR25": "Sprinter 2500 Cargo (MB)", "NRR19": "Isuzu NRR", "M2B26": "M2 106 Box 26'",
+             "CAS1D": "Cascadia Day Cab", "T68SL": "KW T680 Sleeper 76\""},
+}
+
+
 def unit_rows(W):
     out = []
     for u in W.units:
-        out.append([u.unit, K.YARD[u.yard]["branch"], K.YARD[u.yard]["name"], u.year, K.MODELS[u.model][0], u.model,
+        out.append([u.unit, K.YARD[u.yard]["branch"], K.YARD[u.yard]["name"], u.year,
+                    MAKE_MODEL[ACCT_OF[u.yard]][u.model], u.model,
                     {"van": "Cargo van", "box": "Straight truck", "daycab": "Tractor", "sleeper": "Tractor"}[u.body],
-                    u.vin8, u.status, u.in_service])
+                    u.vin8, u.status, u.in_service, u.sold])
     return out
 
 
 UNIT_COLS = ["Unit", "Branch", "Location", "Year", "Make/Model", "Model Code", "Class", "VIN (last 8)", "Status",
-             "In Service"]
+             "In Service", "Disposed"]
 SPEC_COLS = ["Model Code", "Description", "Fuel Tank (gal)", "Tank Config", "DEF Tank (gal)", "GVWR (lb)"]
 
 
@@ -248,9 +269,9 @@ def card_fills(W, acct):
 
 
 def business_date(station, t_local):
-    """Truck stops close their business day at 10 pm; a fill after it carries the next day's date."""
-    s = WD.ST[station]
-    if s["truckstop"] and t_local.hour >= 22:
+    """The networks close their business day at 10 pm (Crossroads on Central time, SMPM's sites on their own Eastern
+    clock); a sale made at 10 pm or later carries the next day's date."""
+    if t_local.hour >= 22:
         return t_local.date() + dt.timedelta(days=1)
     return t_local.date()
 
@@ -287,7 +308,36 @@ def west_rows(W):
         rows.append([tid, utc.strftime("%Y-%m-%d %H:%M:%S"), f["station"], "RIVERBEND #%s" % f["station"],
                      s["city"].upper(), s["st"], "XXXXXXXXXXX%s" % u.card, unit_prompt(u, g), u.driver, odo, cd, desc,
                      "%.3f" % qty, "%.4f" % ppg, "%.2f" % round(qty * fet, 2), "%.2f" % round(qty * sett, 2),
-                     "%.2f" % net, "%.2f" % tot])
+                     "%.2f" % net, "%.2f" % tot, ""])
+    # a site that re-sent a day's sales: the duplicates, and the credits that reverse them on a later invoice
+    gd = K.rng("west-dups")
+    W.dups = getattr(W, "dups", {})
+    local = lambda r: dt.datetime.strptime(r[1], "%Y-%m-%d %H:%M:%S").replace(tzinfo=K.UTC).astimezone(K.CENTRAL)
+    top = max(r[0] for r in rows)
+    extra = []
+    for (day, (cday, chour)) in DUP_EVENTS["West"]:
+        day_rows = [r for r in rows if local(r).date() == day and r[10] == "01"]
+        gal = {}
+        for r in day_rows:
+            gal[r[2]] = gal.get(r[2], 0.0) + float(r[12])
+        site = max(sorted(gal), key=lambda k: gal[k])
+        dups = [r for r in rows if local(r).date() == day and r[2] == site]
+        t_cr = K.to_utc(K.local_dt(cday, chour, K.CENTRAL))
+        for i, r in enumerate(dups):
+            top += int(gd.integers(3, 29))
+            d = list(r)
+            d[0] = top
+            extra.append(d)
+            top += int(gd.integers(3, 29))
+            c = list(d)
+            c[0] = top
+            c[1] = (t_cr + dt.timedelta(seconds=int(37 * i + gd.integers(0, 30)))).strftime("%Y-%m-%d %H:%M:%S")
+            for k in (12, 14, 15, 16, 17):
+                c[k] = "-" + c[k]
+            c[18] = d[0]
+            extra.append(c)
+        W.dups[("West", day)] = (site, sum(float(r[12]) for r in dups if r[10] == "01"))
+    rows = sorted(rows + extra, key=lambda r: (r[1], r[0]))
     return rows
 
 
@@ -311,9 +361,42 @@ def central_rows(W):
         qty = round(f["gal"], 3)
         amt = round(qty * ppg, 2)
         odo = int(f["odo"]) if g.random() > 0.04 else int(g.choice([0, 1, int(f["odo"]) // 10]))
-        rows.append([bd, t.strftime("%H:%M"), post, "**** **** **** %s" % u.card[-4:], str(u.unit), u.driver, odo,
-                     f["station"], s["name"], s["city"], s["st"], prod, qty, ppg, amt, round(qty * fet, 2),
-                     round(qty * sett, 2), round(qty * fee, 2), round(amt + qty * (fet + sett + fee), 2)])
+        rows.append([None, bd, t.strftime("%H:%M"), post, "**** **** **** %s" % u.card[-4:], str(u.unit), u.driver,
+                     odo, f["station"], s["name"], s["city"], s["st"], prod, qty, ppg, amt, round(qty * fet, 2),
+                     round(qty * sett, 2), round(qty * fee, 2), round(amt + qty * (fet + sett + fee), 2), None])
+    gr = K.rng("central-ref")
+    ref = 40817200
+    for r in rows:
+        ref += int(gr.integers(1, 9))
+        r[0] = "XF%d" % ref
+    # a merchant whose day's sales were posted twice: the duplicates, and the reversals that cancel them
+    W.dups = getattr(W, "dups", {})
+    extra = []
+    for (day, (rday, rhour)) in DUP_EVENTS["Central"]:
+        gal = {}
+        for r in rows:
+            if r[1] == day and r[12] == "Diesel":
+                gal[r[8]] = gal.get(r[8], 0.0) + r[13]
+        merchant = max(sorted(gal), key=lambda k: gal[k])
+        dups = [r for r in rows if r[1] == day and r[8] == merchant]
+        for i, r in enumerate(dups):
+            ref += int(gr.integers(1, 9))
+            d = list(r)
+            d[0] = "XF%d" % ref
+            extra.append(d)
+        for i, d in enumerate(list(extra[-len(dups):])):
+            ref += int(gr.integers(1, 9))
+            c = list(d)
+            c[0] = "XF%d" % ref
+            c[1] = rday
+            c[2] = "%02d:%02d" % divmod(int(rhour * 60) + 3 * i, 60)
+            c[3] = rday + dt.timedelta(days=1)
+            for k in (13, 15, 16, 17, 18, 19):
+                c[k] = -c[k]
+            c[20] = d[0]
+            extra.append(c)
+        W.dups[("Central", day)] = (merchant, sum(r[13] for r in dups if r[12] == "Diesel"))
+    rows = sorted(rows + extra, key=lambda r: (r[1], r[2], r[0]))
     return rows
 
 
@@ -329,12 +412,38 @@ def east_lines(W):
     lines = []
     batch = 88104
     resend = dt.date(2026, 7, 6)
+    # a member site whose day's sales went out twice in its week's batch; the group credits the duplicates in a later
+    # week's batch with C records carrying the date the credit was made
+    dup_day = {e[0]: e[1] for e in DUP_EVENTS["East"]}
+    credit_week = {}
+    W.dups = getattr(W, "dups", {})
+    for day, (cday, chour) in dup_day.items():
+        gal = {}
+        for (bd, t, u, f) in weeks.get(day - dt.timedelta(days=day.weekday()), []):
+            if bd == day and f["kind"] != "def":
+                gal[f["station"]] = gal.get(f["station"], 0.0) + f["gal"]
+        site = max(sorted(gal), key=lambda k: gal[k])
+        dup_day[day] = (site, cday, chour)
+        credit_week.setdefault(cday - dt.timedelta(days=cday.weekday()), []).append(day)
+    sent = {}
     for monday in sorted(weeks):
         if monday + dt.timedelta(days=7) > K.EXPORT_DATE:
             continue                         # this week's batch goes out the Monday after the pull
         batch += 1
         recs = sorted(weeks[monday], key=lambda x: (x[0], x[1], x[2].unit))
-        block = east_block(W, batch, monday, recs, g)
+        dups = []
+        for day, (site, cday, chour) in dup_day.items():
+            if day - dt.timedelta(days=day.weekday()) == monday:
+                dups += [x for x in recs if x[0] == day and x[3]["station"] == site]
+        credits = []
+        for day in credit_week.get(monday, []):
+            site, cday, chour = dup_day[day]
+            credits += [(cday, chour, x) for x in sent[day]]
+        block = east_block(W, batch, monday, recs, g, dups=dups, credits=credits)
+        for day, (site, cday, chour) in dup_day.items():
+            if day - dt.timedelta(days=day.weekday()) == monday:
+                sent[day] = W.east_dup_lines
+                W.dups[("East", day)] = (site, sum(int(l[59:68]) / 1000.0 for l in W.east_dup_lines if l[55:59] == "DSL2"))
         lines.extend(block)
         if monday == resend:
             # the week's file was transmitted again the following Monday after an acknowledgement time-out
@@ -346,11 +455,14 @@ def east_lines(W):
     return lines
 
 
-def east_block(W, batch, monday, recs, g):
+def east_block(W, batch, monday, recs, g, dups=(), credits=()):
     out = []
     out.append("H%07d%s%-10s%-30s" % (batch, monday.strftime("%Y%m%d"), "HSS0417", "HOLSTON SANITARY SUPPLY"))
     tot_g = 0
     n = 0
+    dup_keys = {id(x[3]) for x in dups}
+    W.east_dup_lines = []
+    originals = []
     for (bd, t, u, f) in recs:
         s = WD.ST[f["station"]]
         if f["kind"] == "def":
@@ -367,6 +479,20 @@ def east_block(W, batch, monday, recs, g):
         out.append("D%07d%06d%s%s%-6s%-8s%-8s%07d%-4s%09d%07d%07d%-24s%-2s" % (
             batch, n, bd.strftime("%Y%m%d"), t.strftime("%H%M"), f["station"], unit[:8], u.card + "0", odo % 10000000,
             prod, gal, int(round(ppg * 10000)), int(round(tax * 10000)), s["name"][:24].upper(), s["st"]))
+        if id(f) in dup_keys:
+            originals.append(out[-1])
+    for line in originals:                     # the site's day sent again, after the week's own records
+        n += 1
+        d = "D%07d%06d" % (batch, n) + line[14:]
+        tot_g += int(line[59:68])
+        out.append(d)
+        W.east_dup_lines.append(d)
+    for i, (cday, chour, line) in enumerate(credits):
+        n += 1
+        t_cr = K.local_dt(cday, chour + i * 0.04, K.EASTERN)
+        c = "C%07d%06d%s%s" % (batch, n, cday.strftime("%Y%m%d"), t_cr.strftime("%H%M")) + line[26:108] + line[1:14]
+        tot_g -= int(line[59:68])
+        out.append(c)
     out.append("T%07d%06d%012d" % (batch, n, tot_g))
     return out
 
@@ -506,16 +632,17 @@ def write_book(path, sheets):
 
 def write_units(path, W):
     return write_book(path, [
-        ("Units", UNIT_COLS, unit_rows(W), [7, 7, 12, 6, 38, 11, 14, 12, 8, 11], {10: "mm/dd/yyyy"}),
+        ("Units", UNIT_COLS, unit_rows(W), [7, 7, 12, 6, 38, 11, 14, 12, 8, 11, 11],
+         {10: "mm/dd/yyyy", 11: "mm/dd/yyyy"}),
         ("Model Specs", SPEC_COLS, spec_rows(), [11, 50, 14, 11, 13, 11], {})])
 
 
 def write_central(path, W):
     rows = central_rows(W)
     return write_book(path, [("Transactions", CENTRAL_COLS, rows,
-                              [12, 10, 11, 20, 10, 9, 10, 11, 30, 14, 6, 9, 10, 10, 11, 10, 10, 10, 11],
-                              {1: "mm/dd/yyyy", 3: "mm/dd/yyyy", 13: "0.000", 14: "0.0000", 15: "#,##0.00",
-                               16: "#,##0.00", 17: "#,##0.00", 18: "#,##0.00", 19: "#,##0.00"})])
+                              [12, 12, 10, 11, 20, 10, 9, 10, 11, 30, 14, 6, 9, 10, 10, 11, 10, 10, 10, 11, 12],
+                              {2: "mm/dd/yyyy", 4: "mm/dd/yyyy", 14: "0.000", 15: "0.0000", 16: "#,##0.00",
+                               17: "#,##0.00", 18: "#,##0.00", 19: "#,##0.00", 20: "#,##0.00"})])
 
 
 TANK_COLS = ["Yard", "Branch", "Tank", "Product", "Capacity (gal)", "Overfill Alarm (gal)", "Unpumpable (gal)",
@@ -530,11 +657,15 @@ def tank_rows(W):
            "CKV": dt.date(2023, 3, 10), "KNX": dt.date(2025, 5, 28), "TRI": dt.date(2023, 3, 14)}
     since = {"MEM": dt.date(2023, 4, 3), "JXN": W.run_out["JXN"] + dt.timedelta(days=1), "NSH": dt.date(2023, 4, 3),
              "CKV": dt.date(2023, 4, 3), "KNX": W.run_out["KNX"] + dt.timedelta(days=1), "TRI": dt.date(2023, 4, 17)}
+    tank_id = {"MEM": "T1", "JXN": "T1", "NSH": "AST-31", "CKV": "AST-35", "KNX": "41-1", "TRI": "46-1"}
+    island = {"MEM": "1 hose", "JXN": "1 hose, 2 nozzles", "NSH": "2 hoses", "CKV": "1 hose", "KNX": "1 hose, 2 nozzles",
+              "TRI": "1 hose"}
     out = []
     for y in K.YARDS:
-        dip = W.tank_end[y] if y in W.tank_end else K.TANK_HEEL + float(g.uniform(-70.0, 95.0))
-        out.append([K.YARD[y]["name"], K.YARD[y]["branch"], "T1", "ULSD", 20000, 18000, 600, inst[y],
-                    "1 hose, 2 nozzles", cal[y], "Standby", since[y], dt.date(2026, 8, 24), int(round(dip))])
+        cap, alarm, bottom = K.TANKS[y]
+        dip = W.tank_end[y] if y in W.tank_end else bottom + float(g.uniform(-60.0, 90.0))
+        out.append([K.YARD[y]["name"], K.YARD[y]["branch"], tank_id[y], "ULSD", cap, alarm, bottom, inst[y],
+                    island[y], cal[y], "Standby", since[y], dt.date(2026, 8, 24), int(round(dip))])
     return out
 
 

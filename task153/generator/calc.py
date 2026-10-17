@@ -154,39 +154,50 @@ def norm_unit(s):
 
 
 def read_cards(folder):
-    """Every card fill as the three files give it: account, date and time as recorded, unit, product, gallons."""
+    """Every card line as the three files give it: account, date and time as recorded, unit, product, gallons, and its
+    role: a sale, a duplicate posting a later credit reverses ('dup'), or that credit ('credit')."""
     out = []
     with open(os.path.join(folder, F_WEST), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            t = dt.datetime.strptime(r["TRAN_DATE_TIME"], "%Y-%m-%d %H:%M:%S")
-            out.append(dict(acct="West", t=t, unit=norm_unit(r["UNIT_NO"]), diesel=r["PROD_CD"] == "01",
-                            gal=float(r["QTY"]), site=r["SITE_NO"], city=r["SITE_CITY"].title(), st=r["SITE_ST"],
-                            odo=int(r["ODOMETER"]), key=("W", r["TRAN_ID"])))
+        rows = list(csv.DictReader(fh))
+    reversed_ = {r["REF_TRAN_ID"] for r in rows if r["REF_TRAN_ID"]}
+    for r in rows:
+        t = dt.datetime.strptime(r["TRAN_DATE_TIME"], "%Y-%m-%d %H:%M:%S")
+        role = "credit" if r["REF_TRAN_ID"] else ("dup" if r["TRAN_ID"] in reversed_ else "sale")
+        out.append(dict(acct="West", t=t, unit=norm_unit(r["UNIT_NO"]), diesel=r["PROD_CD"] == "01",
+                        gal=float(r["QTY"]), site=r["SITE_NO"], city=r["SITE_CITY"].title(), st=r["SITE_ST"],
+                        odo=int(r["ODOMETER"]), key=("W", r["TRAN_ID"]), role=role))
     wb = openpyxl.load_workbook(os.path.join(folder, F_CENTRAL), read_only=True)
-    rows = wb["Transactions"].iter_rows(values_only=True)
-    next(rows)
-    for k, r in enumerate(rows):
-        hh, mm = (int(x) for x in r[1].split(":"))
-        t = dt.datetime.combine(r[0].date(), dt.time(hh, mm))
-        out.append(dict(acct="Central", t=t, unit=norm_unit(r[4]), diesel=r[11] == "Diesel", gal=float(r[12]),
-                        site=r[7], city=r[9], st=r[10], odo=int(r[6]), key=("C", k)))
+    rows = list(wb["Transactions"].iter_rows(values_only=True))[1:]
+    reversed_ = {r[20] for r in rows if r[20]}
+    for r in rows:
+        hh, mm = (int(x) for x in r[2].split(":"))
+        t = dt.datetime.combine(r[1].date(), dt.time(hh, mm))
+        role = "credit" if r[20] else ("dup" if r[0] in reversed_ else "sale")
+        out.append(dict(acct="Central", t=t, unit=norm_unit(r[5]), diesel=r[12] == "Diesel", gal=float(r[13]),
+                        site=r[8], city=r[10], st=r[11], odo=int(r[7]), key=("C", r[0]), role=role))
     seen = {}
+    east = []
     with open(os.path.join(folder, F_EAST), encoding="utf-8") as fh:
         batch_week = None
         for ln in fh:
             ln = ln.rstrip("\r\n")
             if ln.startswith("H"):
                 batch_week = ln[8:16]
-            elif ln.startswith("D"):
+            elif ln[:1] in ("D", "C"):
                 body = ln[8:]                      # the record less its batch number
                 sig = (batch_week, body)
                 if sig in seen:                    # a week's batch transmitted again under the next batch number
                     continue
                 seen[sig] = 1
-                t = dt.datetime.strptime(ln[14:22] + ln[22:26], "%Y%m%d%H%M")
-                out.append(dict(acct="East", t=t, unit=norm_unit(ln[32:40]), diesel=ln[55:59] == "DSL2",
-                                gal=int(ln[59:68]) / 1000.0, site=ln[26:32].strip(), city=ln[82:106].strip().title(),
-                                st=ln[106:108], odo=int(ln[48:55]), key=("E", ln[1:14])))
+                east.append(ln)
+    credited = {ln[108:121] for ln in east if ln[0] == "C"}
+    for ln in east:
+        t = dt.datetime.strptime(ln[14:22] + ln[22:26], "%Y%m%d%H%M")
+        sign = -1.0 if ln[0] == "C" else 1.0
+        role = "credit" if ln[0] == "C" else ("dup" if ln[1:14] in credited else "sale")
+        out.append(dict(acct="East", t=t, unit=norm_unit(ln[32:40]), diesel=ln[55:59] == "DSL2",
+                        gal=sign * int(ln[59:68]) / 1000.0, site=ln[26:32].strip(), city=ln[82:106].strip().title(),
+                        st=ln[106:108], odo=int(ln[48:55]), key=("E", ln[1:14]), role=role))
     return out
 
 
@@ -298,6 +309,8 @@ def card_by_yard(P, a, b, diesel=True):
     for f in P.cards:
         if diesel and not f["diesel"]:
             continue
+        if f["role"] != "sale":
+            continue
         if f["unit"] not in P.units or not (a <= f["t"].date() <= b):
             continue
         out[P.units[f["unit"]]["yard"]] += f["gal"]
@@ -337,7 +350,7 @@ def share_2025(P):
 def card_by_unit(P, a, b):
     out = collections.defaultdict(float)
     for f in P.cards:
-        if f["diesel"] and f["unit"] in P.units and a <= f["t"].date() <= b:
+        if f["diesel"] and f["role"] == "sale" and f["unit"] in P.units and a <= f["t"].date() <= b:
             out[f["unit"]] += f["gal"]
     return out
 
@@ -390,6 +403,8 @@ def rungs(P, G=None):
         m = P.units[u]["model"]
         r1b[P.units[u]["yard"]] += g * S["model"].get(m, 1.0)
     R["R1b 2025 share by model"] = {y: r1b[y] for y in YARDS}
+    for k in ("R1a pooled 2025 share", "R1a' 2025 share by account", "R1b 2025 share by model"):
+        R[k + " x 40/39"] = {y: R[k][y] * wk for y in YARDS}
     R["R2a tankful per run between nights at the yard"] = draw_by_yard(P, cut="overnight")
     r2b = collections.defaultdict(float)
     for u, g in cu.items():
@@ -397,7 +412,7 @@ def rungs(P, G=None):
     R["R2b card gallons x share of nights at the yard"] = {y: r2b[y] for y in YARDS}
     city = collections.defaultdict(float)
     for f in P.cards:
-        if f["diesel"] and f["unit"] in P.units and BASE[0] <= f["t"].date() <= BASE[1]:
+        if f["diesel"] and f["role"] == "sale" and f["unit"] in P.units and BASE[0] <= f["t"].date() <= BASE[1]:
             if f["city"] == P.units[f["unit"]]["yard"]:
                 city[P.units[f["unit"]]["yard"]] += f["gal"]
     R["Reflex card fills in the yard's own city"] = {y: city[y] for y in YARDS}

@@ -120,7 +120,8 @@ OFFER_TERMS = [
     ("Delivery period", "Monday, September 14 to Sunday, November 8, 2026. Deliveries Monday to Friday, 6:00 am to "
                         "2:00 pm, on 24 hours' call-off by the yard."),
     ("Price", "The TriState Rack Report contract average for ULSD No. 2 at the supplying terminal on the day of "
-              "lifting, plus $0.019 per net gallon, delivered. Memphis supplies Memphis and Jackson, Nashville supplies "
+              "lifting, the same average your three card programmes bill from, plus $0.019 per net gallon, "
+              "delivered. Memphis supplies Memphis and Jackson, Nashville supplies "
               "Nashville and Cookeville, and Knoxville supplies Knoxville and Blountville. Federal and state taxes and "
               "fees are billed at cost."),
     ("Commitment", "Keeble confirms the number of loads for each yard in writing by Friday, September 4, 2026. Every "
@@ -128,8 +129,6 @@ OFFER_TERMS = [
     ("Payment", "Net 10 days from invoice."),
 ]
 OFFER_CLOSE = [
-    "Against fleet card pricing off the same TriState average, every gallon taken on this offer saves the card "
-    "programme's charge over the average less our 1.9 cents.",
     "The offer holds until 5:00 pm Central on September 4. I will need the name of a call-off contact at each yard "
     "with the confirmation.",
     "Regards,",
@@ -154,6 +153,9 @@ def write_offer(path):
 # ---------------------------------------------------------------------------------------------------- 2025 letters
 F_JXN25 = "overton_jackson_tank_programme_2025-03-03.pdf"
 F_KNX25 = "overton_knoxville_tank_programme_2025-06-02.pdf"
+INVOICING = ("One invoice for each bill of lading, dated the day of delivery: the load's net gallons at the price "
+             "above, any delivery service charges, and taxes and fees. A billing error is corrected by a credit memo "
+             "for the whole invoice and a new invoice. Net 10 days.")
 PROG_LETTERS = {
     "JXN": dict(file=F_JXN25, date="March 3, 2025", re="Jackson yard tank, spring 2025", terminal="Memphis",
                 body=["Gabriel,",
@@ -163,9 +165,11 @@ PROG_LETTERS = {
                        ("Loads", "8,000 net gallons by transport from our Memphis terminal, scheduled by our dispatch "
                                  "from the tank reading the yard sends at 3:00 pm each working day. The first two "
                                  "loads will be delivered on March 10 and 11."),
-                       ("Price", "Overton's posted rack for ULSD No. 2 at Memphis in effect at the time of lifting, "
-                                 "plus $0.024 per net gallon, delivered. Taxes and fees at cost."),
-                       ("Invoicing", "One invoice for each bill of lading, dated the day of delivery. Net 10 days.")],
+                       ("Price", "Overton's posted rack for ULSD No. 2 at Memphis in effect when the load is "
+                                 "lifted, plus $0.024 per net gallon, delivered. Overton posts its rack at 6:00 pm "
+                                 "Central each day; each posting carries the next day's date and prices every load "
+                                 "lifted from then until 6:00 pm that day. Taxes and fees at cost."),
+                       ("Invoicing", INVOICING)],
                 close=["Thank you for the chance to show what yard fueling can do for the Jackson fleet."]),
     "KNX": dict(file=F_KNX25, date="June 2, 2025", re="Knoxville yard tank, summer 2025", terminal="Knoxville",
                 body=["Gabriel,",
@@ -175,9 +179,10 @@ PROG_LETTERS = {
                        ("Loads", "8,000 net gallons by transport from our Knoxville terminal, scheduled by our "
                                  "dispatch from the tank reading the yard sends at 3:00 pm each working day. The first "
                                  "two loads will be delivered on June 9 and 10."),
-                       ("Price", "Overton's posted rack for ULSD No. 2 at Knoxville in effect at the time of lifting, "
-                                 "plus $0.016 per net gallon, delivered. Taxes and fees at cost."),
-                       ("Invoicing", "One invoice for each bill of lading, dated the day of delivery. Net 10 days.")],
+                       ("Price", "Overton's posted rack for ULSD No. 2 at Knoxville in effect when the load is "
+                                 "lifted, plus $0.016 per net gallon, delivered, the rack posted and dated as for "
+                                 "Jackson this spring. Taxes and fees at cost."),
+                       ("Invoicing", INVOICING)],
                 close=["We will send the Knoxville tank's first reading sheet with the June 9 delivery."]),
 }
 
@@ -213,7 +218,10 @@ CARD_SCHEDULES = [
              "A3. Federal excise tax and state fuel taxes are billed at the rates in effect at the site.",
              "A4. Diesel exhaust fluid and all other products are billed at the site's posted price.",
              "A5. Riverbend invoices the account weekly, Monday through Sunday. Each transaction appears in the "
-             "fleet portal the day after the fill, and the account's full history may be downloaded there."],
+             "fleet portal the day after the fill, its date and time given in Coordinated Universal Time, and the "
+             "account's full history may be downloaded there.",
+             "A6. A transaction a site transmits twice is credited on a later invoice; the credit carries the "
+             "transaction number of the duplicate it reverses."],
          signed="For Riverbend Travel Plazas: Director, Fleet Accounts. For Delta Paper & Chemical LLC: %s, "
                 "Controller, Keeble Supply Co." % K.PEOPLE["controller"]),
     dict(acct="Central", accent=CROSSROADS, issuer="Crossroads Fleet Card",
@@ -222,11 +230,17 @@ CARD_SCHEDULES = [
          clauses=[
              "1. Diesel purchased with Crossroads cards at participating merchants is billed per gallon at the "
              "TriState Rack Report contract average for ULSD No. 2 at the merchant's serving terminal, for the day "
-             "of the purchase, plus $0.084.",
-             "2. A network fee of $0.015 per gallon applies to every diesel gallon billed.",
+             "of the purchase, plus $0.084 and the network fee in clause 2.",
+             "2. The network fee is $0.015 per gallon on every diesel gallon billed. It is shown on its own line of "
+             "each transaction and is part of the diesel price under this addendum.",
              "3. Taxes are billed as charged by the merchant.",
              "4. Diesel exhaust fluid and other products are billed at the merchant's price, with no network fee.",
-             "5. Crossroads issues one statement a month. Transactions are available in the Crossroads portal, "
+             "5. Dates and times on statements and in the portal are Central time. A transaction is dated by the "
+             "Crossroads business day, which closes at 10:00 pm, so a purchase made at 10:00 pm or later carries the "
+             "next day's date with the time it was made.",
+             "6. A purchase a merchant posts twice is reversed in full. The reversal is dated the day it is processed "
+             "and carries the reference of the purchase it reverses.",
+             "7. Crossroads issues one statement a month. Transactions are available in the Crossroads portal, "
              "where the customer may export them in any date range."],
          signed="For Crossroads Fleet Card: Vice President, Commercial Fleet. For Keeble Supply Co.: %s, "
                 "Controller." % K.PEOPLE["controller"]),
@@ -269,8 +283,11 @@ LAYOUT = {
           ("9-16", "8", "Batch week start", "CCYYMMDD"), ("17-26", "10", "Member account", "alphanumeric"),
           ("27-56", "30", "Member name", "alphanumeric")],
     "D": [("1", "1", "Record type", "D"), ("2-8", "7", "Batch number", "numeric"),
-          ("9-14", "6", "Sequence in batch", "numeric"), ("15-22", "8", "Transaction date", "CCYYMMDD"),
-          ("23-26", "4", "Transaction time", "HHMM"), ("27-32", "6", "Site number", "alphanumeric"),
+          ("9-14", "6", "Sequence in batch", "numeric"),
+          ("15-22", "8", "Transaction date: the member site's business day; sites close the day at 10:00 pm, and "
+                         "a sale made at 10:00 pm or later carries the next day's date", "CCYYMMDD"),
+          ("23-26", "4", "Transaction time at the member site, when the sale was made", "HHMM"),
+          ("27-32", "6", "Site number", "alphanumeric"),
           ("33-40", "8", "Unit (as entered at the pump)", "alphanumeric"),
           ("41-48", "8", "Card number (last digits)", "alphanumeric"),
           ("49-55", "7", "Odometer (as entered)", "numeric"), ("56-59", "4", "Product code", "DSL2, DEF"),
@@ -278,12 +295,19 @@ LAYOUT = {
           ("69-75", "7", "Price per gallon before tax", "numeric, 4 implied decimals"),
           ("76-82", "7", "Tax per gallon", "numeric, 4 implied decimals"),
           ("83-106", "24", "Site name", "alphanumeric"), ("107-108", "2", "Site state", "alphanumeric")],
+    "C": [("1", "1", "Record type", "C"), ("2-14", "13", "Batch number and sequence in batch", "numeric"),
+          ("15-26", "12", "Date and time the credit was made", "CCYYMMDDHHMM"),
+          ("27-108", "82", "The credited sale's site, unit, card, odometer, product, quantity, price, tax and site "
+                           "name, as in its detail record", "as in the detail record"),
+          ("109-121", "13", "Batch number and sequence of the detail credited", "numeric")],
     "T": [("1", "1", "Record type", "T"), ("2-8", "7", "Batch number", "numeric"),
-          ("9-14", "6", "Detail records in batch", "numeric"),
-          ("15-26", "12", "Total quantity, gallons", "numeric, 3 implied decimals")],
+          ("9-14", "6", "Detail and credit records in batch", "numeric"),
+          ("15-26", "12", "Total quantity, gallons: details less credits", "numeric, 3 implied decimals")],
 }
 LAYOUT_NOTES = [
     "Numeric fields are right-justified and zero-filled; alphanumeric fields are left-justified and space-filled.",
+    "A credit record reverses a detail record a member site sent twice. It travels in the batch of the week the credit "
+    "was made.",
     "Each weekly batch carries the transactions dated Monday through Sunday of its batch week and is transmitted on "
     "the following Monday.",
     "Product codes: DSL2 diesel No. 2; DEF diesel exhaust fluid.",
@@ -295,8 +319,8 @@ def write_layout(path):
     s = [Paragraph("Smoky Mountain Petroleum Marketers &middot; Fleet Program", st["sub"]),
          Paragraph("Member transaction file: record layout, version 3", st["h1"]),
          Paragraph("Effective with the batch of October 2, 2023. Fixed-width text, one record per line.", st["sub"])]
-    names = {"H": "Batch header (H)", "D": "Transaction detail (D)", "T": "Batch trailer (T)"}
-    for k in ("H", "D", "T"):
+    names = {"H": "Batch header (H)", "D": "Transaction detail (D)", "C": "Credit (C)", "T": "Batch trailer (T)"}
+    for k in ("H", "D", "C", "T"):
         s.append(Paragraph(names[k], st["h2"]))
         s.append(grid([["Positions", "Length", "Field", "Format"]] + [list(r) for r in LAYOUT[k]],
                       [0.85, 0.65, 2.75, 2.15], st))
@@ -344,9 +368,9 @@ def notes_text(W):
     L = ["# Yard notes, August 2026", "",
          "Gabriel Wyatt, Fleet Services. For the fuel review; the unit list is the maintenance system's as of today.", "",
          "Every yard runs Monday to Friday and is closed on weekends and company holidays (Labor Day, September 7; "
-         "Thanksgiving, November 26 and 27). No route, fleet or yard changes are planned before December.", "",
-         "Each yard has one 20,000-gallon above-ground diesel tank and a self-serve island on the fuel management "
-         "system. The islands have been on standby since the fleet moved to fuel cards in 2023, apart from the Jackson "
+         "Thanksgiving, November 26 and 27).", "",
+         "Each yard has one above-ground diesel tank (sizes on the tank register) and a self-serve island on the "
+         "fuel management system. The islands have been on standby since the fleet moved to fuel cards in 2023, apart from the Jackson "
          "and Knoxville programmes in 2025. The fobs issued for those programmes still work at every island, and new "
          "units get a fob at delivery.", "",
          "## West (Delta's direct-bill account)", "",
