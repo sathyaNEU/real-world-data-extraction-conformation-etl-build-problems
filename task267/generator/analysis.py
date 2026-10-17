@@ -217,15 +217,16 @@ def ask_a_stops(target):
 
 
 # ---------------------------------------------------------------------------------------------- Ask B
-def ask_b(target, month_of="service", credits="applied", program="extract", dedupe=False):
+def ask_b(target, month_of="test", credits="applied", program="extract", dedupe=False):
     """For each month of the season, in cents: what the laboratory billed net of its credits for the tests done that
-    month, and the part for tests of screened adults (accessions in the program's OGTT results). credits: 'applied'
-    (each credit memo line reverses the one line it applies to), 'as_exported' (the memo line's amount as the export
-    carries it), 'none'. month_of: 'service' or 'document' (the month before the document's date)."""
+    month, and the part for tests of screened adults (accessions in the program's OGTT results). month_of: 'test' (a
+    charge by its service date, a credit by the service date of the invoice line it applies to), 'row' (every row by
+    its own service_date column, a credit memo line falling on the memo's date), 'document' (the month before the
+    document's date). credits: 'applied' or 'none'."""
     P = lambda k: os.path.join(target, K.FILES[k])
     lines = _csv(P("invoices"))
     prog = {t["ACCESSION"] for t in _csv(P("ogtt"), delimiter="|")}
-    amount = {(l["document_number"], l["line"]): int(round(float(l["amount_usd"]) * 100)) for l in lines}
+    by_line = {(l["document_number"], l["line"]): l for l in lines}
     out = {m: [0, 0] for m in K.MONTHS}
     seen = set()
     for l in lines:
@@ -236,14 +237,11 @@ def ask_b(target, month_of="service", credits="applied", program="extract", dedu
             if l["accession"] in seen:
                 continue
             seen.add(l["accession"])
-        if not credit:
-            v = amount[(l["document_number"], l["line"])]
-        elif credits == "applied":
-            doc, _, ln = l["applies_to"].rpartition(" line ")
-            v = -amount[(doc, ln)]
-        else:
-            v = amount[(l["document_number"], l["line"])]
-        if month_of == "service":
+        v = int(round(float(l["amount_usd"]) * 100))
+        if month_of == "test":
+            src = by_line[tuple(l["applies_to"].rsplit(" line ", 1))] if credit else l
+            d = dt.date.fromisoformat(src["service_date"])
+        elif month_of == "row":
             d = dt.date.fromisoformat(l["service_date"])
         else:
             d = dt.date.fromisoformat(l["document_date"]).replace(day=1) - dt.timedelta(days=1)
@@ -256,9 +254,8 @@ def ask_b(target, month_of="service", credits="applied", program="extract", dedu
 def ask_b_stops(target):
     return {"charges by the month billed": ask_b(target, month_of="document", credits="none"),
             "charges by the month done, credits left out": ask_b(target, credits="none"),
-            "credit memo lines at the amounts exported": ask_b(target, credits="as_exported"),
-            "credits at the amounts exported, by the month billed": ask_b(target, month_of="document",
-                                                                           credits="as_exported"),
+            "every row by its own date column, credits on the memo's date": ask_b(target, month_of="row"),
+            "every row by the month billed": ask_b(target, month_of="document"),
             "one charge per accession, credits applied": ask_b(target, dedupe=True),
             "every billed test counted as the program's": ask_b(target, program="all"),
             "answer": ask_b(target)}

@@ -155,8 +155,8 @@ def workbook(path, o):
     ws3.column_dimensions["C"].width = 24
     ws3.append([])
     for line in ["%s account export, invoices and credit memos to 6 January 2027, by the service date of each test." % LABP,
-                 "A credit memo line carries the memo's whole amount; each line is taken at the amount of the invoice "
-                 "line it applies to.",
+                 "A credit memo line carries the memo's date; each credit is netted in the month of the test it "
+                 "reverses, the invoice line it applies to.",
                  "Tests of adults we screened are the accessions in the program's OGTT results; the rest were billed to "
                  "the program's account for other patients."]:
         _note(ws3, line, 3, 30)

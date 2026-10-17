@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: program, protocol, random, tested, sensitivity, everyone, asserted, verification, weighting, decisive, design, reference, result, estimator, director, population, extract, health, sentence, accuracy, correction, verified, sample, default, reading
+Stump terms swept: program, protocol, random, tested, sensitivity, everyone, asserted, verification, weighting, decisive, design, reference, result, estimator, director, population, sentence, extract, health, accuracy, correction, verified, sample, default, shipped
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `ogtt_results_2026.txt`: golden figure 120 appears: ...ION|PROGRAM_ID|COLLECTED|PSC|GLU_FASTING_MGDL|GLU_120MIN_MGDL|STATUS TL40213502|SF-0100207|03/09/2026|P...
@@ -60,4 +60,3 @@ Round 2 (2026-10-17, the rebuilt pack on seed 694 and the prompt's new rounding 
 6. An analytical choice: handling the verification-biased sample; cleaning (re-sent rows, ID formats, credit memos) is Layer 1; no decoy.
 
 The rounding sentence gives precision only and hints at no computation. Realism: the notes slightly explainer-like and the close-out tidy, both plausible; otherwise none. REVIEW lines: all three harmless (a column name; the protocol's filed estimand and design, not the method; the notes' file descriptions).
-

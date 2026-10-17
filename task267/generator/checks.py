@@ -334,31 +334,32 @@ def run(target, T):
             ok(len(miss) == 9 and all(i == 1 for _, i in miss), "Ask B: counting every test as ours moves each month")
         else:
             ok(len(miss) == 18, "Ask B: the stop '%s' misses all eighteen (%d)" % (name, len(miss)))
-    crb = bstops["credit memo lines at the amounts exported"]
-    ok(all(b_gold[m][i] - crb[m][i] >= 3850 for m in K.MONTHS for i in (0, 1)),
-       "Ask B cracker: every figure at least one test's price too low")
+    crb = bstops["every row by its own date column, credits on the memo's date"]
+    ok(all(abs(b_gold[m][i] - crb[m][i]) >= 3850 for m in K.MONTHS for i in (0, 1)),
+       "Ask B cracker: every figure at least one test's price away")
     inv = A._csv(P("invoices"))
     ok(len({tuple(sorted(r.items())) for r in inv}) == len(inv), "Ask B: no exact duplicate row")
     lines = {(r["document_number"], r["line"]): r for r in inv}
     memos = defaultdict(list)
+    moved = 0
     for r in inv:
         if r["document_type"] != "Invoice":
             doc, _, ln = r["applies_to"].rpartition(" line ")
-            ok((doc, ln) in lines and lines[(doc, ln)]["accession"] == r["accession"], "Ask B: a credit applies to a "
-               "line of its accession")
+            hit = lines.get((doc, ln))
+            ok(hit is not None and hit["accession"] == r["accession"] and hit["document_type"] == "Invoice",
+               "Ask B: a credit applies to an invoice line of its accession")
+            ok(float(r["amount_usd"]) == -float(hit["amount_usd"]), "Ask B: a credit line reverses its line's amount")
+            ok(r["service_date"] == r["document_date"], "Ask B: a credit memo line carries the memo's date")
+            moved += r["service_date"][:7] != hit["service_date"][:7]
             memos[r["document_number"]].append(r)
-    ok(all(len({r["amount_usd"] for r in v}) == 1 and abs(float(v[0]["amount_usd"]) + 38.5 * len(v)) < .001
-           for v in memos.values()), "Ask B: every memo line carries the memo's whole amount")
+    ok(moved >= .9 * sum(len(v) for v in memos.values()), "Ask B: credits fall in another month than their tests "
+       "(%d of %d)" % (moved, sum(len(v) for v in memos.values())))
     ok(sum(1 for v in memos.values() if len(v) >= 2) >= 30, "Ask B: multi-line memos throughout")
-    net = defaultdict(float)
-    for r in inv:
-        net[r["accession"]] += float(r["amount_usd"])
-    ok(sum(1 for v in net.values() if v < -.001) >= 30, "Ask B: summed as exported, accessions go below zero (the "
-       "inconsistency that finds the memo amounts)")
     prog_res = {t["ACCESSION"] for t in pk.tests}
     collected = {t["ACCESSION"]: dt.datetime.strptime(t["COLLECTED"], "%m/%d/%Y").date().isoformat() for t in pk.tests}
-    ok(all(r["service_date"] == collected[r["accession"]] for r in inv if r["accession"] in collected),
-       "Ask B: the invoice's service date is the OGTT's collection date on every program line (one month reading)")
+    ok(all(r["service_date"] == collected[r["accession"]] for r in inv
+           if r["accession"] in collected and r["document_type"] == "Invoice"),
+       "Ask B: an invoice line's service date is the OGTT's collection date on every program test (one month reading)")
     screened = {r["program_id"] for r in pk.adults}
     ok(all(A.pid_key(t["PROGRAM_ID"]) in screened for t in pk.tests),
        "Ask B: every OGTT in the program's results is a test of an adult screened, once normalised")

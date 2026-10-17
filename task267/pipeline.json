@@ -23,12 +23,12 @@
     "nearest": "task257 0.07; task57 (v20, lineage) 0.07"
   },
   "judge": {
-    "verdict": "round 1 DETERMINISTIC, FIX_NOW (the twin copies' four or five hours, the memo grain unfiled, the last digit across weightings); fixed; round 2 running",
+    "verdict": "pass 1 DETERMINISTIC, FIX_NOW; pass 2 NOT_DETERMINISTIC on the billing ask's credit grain, FIX_NOW by the gate table; fixed; pass 3 running",
     "disposition": "",
-    "report": ""
+    "report": "determinism_check_report.md, determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 4 round 2: the re-judge (once) and the reader's re-read after the prompt's rounding change; then ship",
+  "resume": "stage 4: pass 3 (the re-judge of pass 2's FIX_NOW) running; on APPROVE ship, otherwise the billing ask's device is dropped to hazards only",
   "approved": null,
   "delivered": null,
   "portal": null,
