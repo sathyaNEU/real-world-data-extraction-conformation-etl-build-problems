@@ -48,7 +48,7 @@
     {
       "path": "capacity_closeout_2026Q3.pdf",
       "format": "pdf",
-      "bytes": 36468,
+      "bytes": 36471,
       "rows": null,
       "source": "Constructed: Slenk fleet capacity, Q3 2026 capacity close-out (16 October 2026)",
       "date": "2026-12-07",
@@ -75,7 +75,7 @@
     {
       "path": "docs_usage_by_org_daily_2026-09-01_2026-12-06.csv",
       "format": "csv",
-      "bytes": 2849059,
+      "bytes": 2849117,
       "rows": 30903,
       "source": "Constructed: Slenk billing, Docs usage by organisation, channel and Amsterdam business day, 1 September to 6 December 2026",
       "date": "2026-12-07",
@@ -102,7 +102,7 @@
     {
       "path": "fleet_rollup_hourly_2026-01-01_2026-12-06.csv",
       "format": "csv",
-      "bytes": 4774868,
+      "bytes": 4774877,
       "rows": 48956,
       "source": "Constructed: Slenk fleet capacity rollup, GPU busy time and gateway counters by pool and UTC hour, 1 January to 6 December 2026",
       "date": "2026-12-07",
@@ -183,7 +183,7 @@
     {
       "path": "report_service_commitments_2026-12-04.xlsx",
       "format": "xlsx",
-      "bytes": 9720,
+      "bytes": 9719,
       "rows": 18,
       "source": "Constructed: Slenk report service, commitments ledger export (4 December 2026)",
       "date": "2026-12-07",

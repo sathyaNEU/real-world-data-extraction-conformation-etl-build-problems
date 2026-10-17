@@ -178,7 +178,7 @@ def simulate():
         wk = (d - K.PILOT_START).days // 7
         ramp = 0.24 if wk == 0 else (0.62 if wk == 1 else 1.0)
         shape = [0.70, 0.92, 1.08, 1.18, 1.16, 0.96, 1.02, 1.12, 1.10, 1.00, 0.86, 0.66][l.hour - 7]
-        rep[i] = 112.0 * ramp * shape * math.exp(pr.normal(0.0, 0.05))
+        rep[i] = K.PILOT_BASE * ramp * shape * math.exp(pr.normal(0.0, 0.05))
     reports = np.floor(rep + pr.random(H))
     calls = reports * 6
     # each call's prompt is its own source pack plus the section brief; completion grows a little with the pack
@@ -280,7 +280,7 @@ def contracts():
         ("RC-2026-021", 7, "RS-6", 2000, dt.date(2027, 1, 11), "Signed", dt.date(2026, 10, 14)),
         ("RC-2026-030", 8, "RS-6", 1200, dt.date(2027, 2, 15), "Signed", dt.date(2026, 11, 18)),
         ("RC-2026-031", 10, "RS-6", 400, dt.date(2027, 1, 4), "Signed", dt.date(2026, 11, 24)),
-        ("EA-2026-007", 10, "RS-6", 150, dt.date(2026, 10, 5), "Early access, ends 18 Dec 2026", dt.date(2026, 9, 9)),
+        ("EA-2026-007", 10, "RS-6", 400, dt.date(2026, 10, 5), "Early access, ends 18 Dec 2026", dt.date(2026, 9, 9)),
         ("RP-2026-033", 9, "RM-8", 300, dt.date(2027, 3, 1), "Proposal sent", None),
     ]
     out = []

@@ -111,9 +111,9 @@ def main(target):
     g3 = q3_rate(roll)
     exact = (g3["gpu_busy_s"] / g3["requests"]).to_dict()
     rate = closeout_rates(target)          # policy s3: the latest close-out's GPU-seconds per request, as printed
-    ok("V0 the close-out prints each pool's Q3 rate from the rollup, to three decimals",
-       sorted(rate) == sorted(POOLS) and all(abs(rate[p] - round(exact[p], 3)) < 1e-9 for p in POOLS),
-       " ".join("%.3f" % rate[p] for p in POOLS))
+    ok("V0 the close-out prints each pool's Q3 rate from the rollup, to four decimals",
+       sorted(rate) == sorted(POOLS) and all(abs(rate[p] - round(exact[p], 4)) < 1e-9 for p in POOLS),
+       " ".join("%.4f" % rate[p] for p in POOLS))
     a, b = lc2_rates(roll)
     calls, pmax, qmax = "Calls per report", "Prompt tokens per call (limit)", "Completion tokens per call (limit)"
     gold_cost = lambda r: r[calls] * (a * r[pmax] + b * r[qmax])
@@ -129,7 +129,7 @@ def main(target):
     ok("V6 component: the eleven contracts at contracted peak, GPUs", str(to10(full)) == G["components"]["reports_full"],
        "%.2f" % full)
     ok("V7 component: docs-prod's W13 allocation", str(int(plan.loc["docs-prod", "W13"])) == G["components"]["alloc_w13"])
-    ok("V8 the step: Docs' Q3 GPU-seconds per request", "%.3f" % rate["docs-prod"] == G["steps"]["docs_gpr"])
+    ok("V8 the step: Docs' Q3 GPU-seconds per request", "%.4f" % rate["docs-prod"] == G["steps"]["docs_gpr"])
     others = sorted(((v, p) for p, v in peaks.items() if p != pick), reverse=True)
     ok("V9 the runner-up and its shortfall, more than 30 GPUs behind", others[0][1] == G["call"]["runner_up"] and
        str(to10(others[0][0])) == G["call"]["runner_up_shortfall"] and peaks[pick] - others[0][0] > 30,
@@ -169,6 +169,10 @@ def main(target):
     ok("V14 lc2's rates predict the tenant's excess busy time within the write-up's bound, at the printed and the exact "
        "Docs rate", max(abs(pred / excess - 1), abs(pred / excess_x - 1)) * 100 <= int(G["steps"]["pilot_within_pct"]),
        "%.4f %.4f" % (pred / excess, pred / excess_x))
+    for k_, lab in ((excess / pred, "printed"), (excess_x / pred, "exact")):
+        rs = shortfall_table(req, plan, rate, con, tiers, lambda r, k_=k_: r[calls] * k_ * (a * r[pmax] + b * r[qmax]))
+        ok("V14b lc2's rates rescaled to the tenant's whole-period excess (%s Docs rate) keep the call and its bin" % lab,
+           rs[2] == pick and to10(rs[1][pick]) == to10(peaks[pick]), "%.2f" % rs[1][pick])
     ok("V15 Docs' rate per request predicts under a third of it", per_req / excess < 0.33, "%.3f" % (per_req / excess))
     ok("V16 the tenant's report calls in billing", "{:,}".format(int(ten["requests"].sum())) == G["steps"]["pilot_calls"])
     gw = docs.groupby("day")["sessions_new"].sum()

@@ -37,7 +37,7 @@ def figures(target):
     F["reports_full"] = K.nearest(M["reports_full"], 10)
     F["reports_full_exact"] = M["reports_full"]
     F["alloc_w13"] = M["plan"]["docs-prod"][12]
-    F["docs_gpr"] = round(M["gpr_exact"]["docs-prod"], 3)
+    F["docs_gpr"] = M["gpr"]["docs-prod"]
     devs = [abs(1 - C.pilot_ratio(M, target, u, g)[0]) for u in (False, True) for g in (None, M["gpr"]["docs-prod"])]
     F["pilot_within_pct"] = int(math.ceil(max(devs) * 100 + 0.5))       # the bound holds on every day and rate basis
     F["runner_up"] = sorted((p for p in K.POOLS if p != M["pick"]), key=lambda p: -M["sf"][p]["peak"])[0]
@@ -157,7 +157,7 @@ def write_xlsx(path, F, hb):
     a.merge_cells("A2:C2")
     a["A2"].alignment = Alignment(wrap_text=True, vertical="top")
     a.row_dimensions[2].height = 30
-    a.append(["Rack", "GPUs accepted", "Nodes held back"])
+    a.append(["Rack", "GPUs accepted", "Nodes held back (node ids)"])
     _head(a, 3)
     for r in ("R11", "R12", "R13", "R14"):
         a.append([r, F["accepted"][r], ", ".join(hb[r]) if hb[r] else "none"])
@@ -218,7 +218,7 @@ def figures_json(F, hb):
                  "runner_up": F["runner_up"], "runner_up_shortfall": "%d" % F["runner_up_shortfall"]},
         "components": {"a_ms": "%.3f" % F["a_ms"], "b_ms": "%.2f" % F["b_ms"], "reports_full": "%d" % F["reports_full"],
                        "alloc_w13": "%d" % F["alloc_w13"]},
-        "steps": {"carry": "2,520", "busy": "70", "rps": "3,600", "docs_gpr": "%.3f" % F["docs_gpr"],
+        "steps": {"carry": "2,520", "busy": "70", "rps": "3,600", "docs_gpr": "%.4f" % F["docs_gpr"],
                   "pilot_within_pct": "%d" % F["pilot_within_pct"], "pilot_calls": K.fmt_int(F["pilot_calls"]),
                   "gbit": "8", "bw_floor": "360", "eleven": "11", "six": "6", "review_local": "14:00",
                   "review_utc": "13:00"},
@@ -272,14 +272,14 @@ def submission(F, hb):
              "tier's calls and limits, and the cluster goes to the largest Q1 peak-week shortfall against the fleet plan.")
     L.append("2. Costed every pool's busiest-hour requests in q1_2027_capacity_intake.xlsx (Voice's requests per second "
              "times 3,600) at its Q3 GPU-seconds per request in capacity_closeout_2026Q3.pdf, as the policy files "
-             "(Docs %.3f)." % F["docs_gpr"])
+             "(Docs %.4f)." % F["docs_gpr"])
     L.append("3. Fitted gpu_busy_s on prompt_tokens and completion_tokens over the batch-prod hours tagged lc2-2026.05 "
              "in fleet_rollup_hourly_2026-01-01_2026-12-06.csv, where every request is one call and nothing is reused: "
              "%.3f and %.2f GPU-milliseconds." % (F["a_ms"], F["b_ms"]))
     L.append("4. Checked those rates on the early-access tenant's %s report calls in "
              "docs_usage_by_org_daily_2026-09-01_2026-12-06.csv (5 October to 4 December; on those days the rollup's "
              "sessions_new exceeds billing's app and API sessions by one per call): they come within %d per cent of the "
-             "busy GPU-seconds docs-prod ran on those days above its other requests at %.3f each, where Docs' rate per "
+             "busy GPU-seconds docs-prod ran on those days above its other requests at %.4f each, where Docs' rate per "
              "request predicts about a fifth and a source pack computed once per report under half."
              % (K.fmt_int(F["pilot_calls"]), F["pilot_within_pct"], F["docs_gpr"]))
     L.append("5. Priced each signed contract in report_service_commitments_2026-12-04.xlsx at its tier's calls per "
@@ -305,9 +305,10 @@ def submission(F, hb):
     L.append("2. Out of service in November 2026, GPU-hours to the nearest 10 and the longest stay in hours:")
     for p in K.POOLS:
         L.append("   - %s: %s GPU-hours, longest %.1f hours" % (p, K.fmt_int(F["gh"][p]), F["longest"][p]))
-    L.append("3. Accepted at the 4 December review, whole GPUs, with any nodes held back:")
+    L.append("3. Accepted at the 4 December review, whole GPUs, with the node ids of any nodes held back:")
     for r in ("R11", "R12", "R13", "R14"):
-        L.append("   - %s: %d GPUs accepted, held back %s" % (r, F["accepted"][r], ", ".join(hb[r]) if hb[r] else "none"))
+        L.append("   - %s: %d GPUs accepted; nodes held back: %s" % (r, F["accepted"][r],
+                                                                    ", ".join(hb[r]) if hb[r] else "none"))
     L.append("")
     L.append("### pool_out_of_service_nov2026.png")
     L.append("")

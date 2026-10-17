@@ -125,12 +125,12 @@ Figures from `generator/calc.py` on the shipped files, asserted in `generator/ch
 3. Add Docs' report-service contracts: each contract's contracted peak reports per hour times its tier's calls per
    report, from its go-live week, costed at Docs' GPU-seconds per request, the basis the policy files for the product
    team's requests (35.0 GPUs at full volume).
-4. Take each pool's largest weekly shortfall and pick the largest: Code 299.4 (W13), Agents 151.5, Docs 124.5, Voice
-   20.8, Chat and Batch in surplus (77.6 and 80.2 GPUs over).
+4. Take each pool's largest weekly shortfall and pick the largest: Code 299.3 (W13), Agents 151.0, Docs 124.3, Voice
+   21.5, Chat and Batch in surplus (78.0 and 80.2 GPUs over).
 
 Ends on: Code, 300 GPUs.
 
-Golden: Docs, 340 GPUs (339.0: Docs' interactive requirement 745.5 GPUs in W13 at the close-out's 1.630 and the eleven
+Golden: Docs, 340 GPUs (338.8: Docs' interactive requirement 745.4 GPUs in W13 at the close-out's 1.6297 and the eleven
 contracts 249.4 GPUs at lc2's 0.248 GPU-milliseconds per computed prompt token and 1.85 per completion token, against
 the 656 GPUs the fleet plan allocates Docs from 15 February).
 
@@ -163,9 +163,9 @@ source pack, which at lc2's cost per computed prompt token and per completion to
   Voice's intake in requests per second (read as thousands: no change to the call); the staggered go-lives (every
   contract from W01: Docs still first, 340 bin); the collector gaps (outside docs-prod and batch-prod); the close-out's
   three-decimal rates in a PDF (the exact Q3 rates from the rollup instead: 338.8); the ledger's early-access agreement
-  beside the signed contracts (ruled out by policy s3; counted, 342.1); billing's one session per report beside the
+  beside the signed contracts (ruled out by policy s3; counted, 347.3); billing's one session per report beside the
   gateway's one serving session per call. The lc1 to lc2 change is not Layer 1: pooling across it is the over-rung R5c
-  (371.2, or 353.9 with an intercept), rejected by the fit's residuals by build.
+  (371.0, or 353.8 with an intercept), rejected by the fit's residuals by build.
 - **Layer 2:** `forecast_uncertainty`: the cost model's specification (GPU work on computed prompt tokens and on
   completion tokens, the rates read where nothing is reused) chosen because it alone predicts the early-access
   tenant's realised GPU time out of sample, against per-request, per-token, per-session, per-new-session and
@@ -232,51 +232,52 @@ Every term in the main ask and every convention the main computation needs. Each
 | SF9 | weeks | ISO weeks 2027-W01 (Monday 4 January) to 2027-W13 (to Sunday 4 April), UTC | calendar months, or March 31 as the quarter's end | same call | policy section 1 ("ISO weeks 2027-W01 to 2027-W13") and the fleet plan's week columns (Mondays 4 January to 29 March) |
 | SF10 | "GPUs" | the fleet's H100 80GB GPUs; the stopgap's are the same part | GPU-equivalents of another part | same call | policy section 1 (30 nodes of eight H100 SXM5 80GB GPUs) and the fleet inventory's gpu_model |
 | SF11 | rounding | the shortfall to the nearest 10 GPUs, once, at the end | per week or per contract | same call, same bin, asserted | the prompt's last sentence; policy section 5 compares unrounded figures |
-| SF12 | Docs' interactive GPU-seconds per request | the close-out's Q3 figure (1.630), as policy s3 files it | October and November's pool figure with the tenant's calls left in | same call, same bin (340.4 against 339.0) | policy s3 ("at the pool's GPU-seconds per request in the latest quarterly capacity close-out") |
+| SF12 | Docs' interactive GPU-seconds per request | the close-out's Q3 figure (1.6297), as policy s3 files it | October and November's pool figure with the tenant's calls left in | same call, same bin (343.7 against 338.8) | policy s3 ("at the pool's GPU-seconds per request in the latest quarterly capacity close-out") |
 | SF13 | which model's costs | lc2, the build docs-prod and batch-prod serve from 12 May 2026 to the pull | the year's data pooled across lc1 and lc2 | Docs at 370 (371.2) or, with an intercept, 350 (353.9): another bin; a fit across a model change is not a reading but a misspecification | the rollup's model column, and the data: lc1's own rates sit 45 and 51 per cent above lc2's and a pooled fit under-predicts lc1 hours by 22 per cent and over-predicts lc2 hours by 15 (D5) |
 | SF14 | Docs includes its report service | yes: report calls run on docs-prod | a separate pool | same call | policy section 3 ("counts on the pool of the product that sold it") |
-| SF15 | the rate for the product teams' requests | each pool's GPU-seconds per request for Q3 as the close-out prints it (0.442, 0.589, 0.734, 1.630, 2.609, 0.120) | the rate in each pool's single busiest Q3 hour; the exact rollup rate | busiest hour: Code 344.5 against Docs 341.8 (a tie at the nearest 10, Code ahead); exact rate: same call, same bin (338.8) | policy s3 ("The product team's figure is converted to busy GPU-seconds at the pool's GPU-seconds per request in the latest quarterly capacity close-out"), which names no report call |
+| SF15 | the rate for the product teams' requests | each pool's GPU-seconds per request for Q3 as the close-out prints it (0.4419, 0.5889, 0.7335, 1.6297, 2.6095, 0.1203) | the rate in each pool's single busiest Q3 hour; the exact rollup rate | busiest hour: Code 344.5 against Docs 341.8 (a tie at the nearest 10, Code ahead); exact rate: same call, same bin (338.8, the printed rates agreeing to four decimals) | policy s3 ("The product team's figure is converted to busy GPU-seconds at the pool's GPU-seconds per request in the latest quarterly capacity close-out"), which names no report call |
 
 ## Ladder
 
 Figures from `generator/calc.py` on the shipped files (`rungs()`, the product teams' requests at the close-out's printed
 rates as policy s3 files), each asserted in `generator/checks.py` (L1 to L6, R3b), the default and three more rungs
-recomputed by `generator/verify.py`. W13 is every pool's peak week on every rung. Code's shortfall is 299.4 on every
+recomputed by `generator/verify.py`. W13 is every pool's peak week on every rung. Code's shortfall is 299.3 on every
 rung (no rung touches it).
 
 | Rung | Docs' report contracts at full volume (GPUs) | Docs' Q1 peak-week shortfall | Pool filed | Dies to |
 |---|---|---|---|---|
-| R0 Docs' GPU-seconds per request (the default, the filed per-request basis carried over) | 35.0 | 124.5 | Code 300 | the tenant: Docs' rate prices its calls at about a fifth of their GPU time (0.216 at the exact rate, 0.231 at 1.630) |
-| R1a Docs' blended rate per token | 66.3 | 155.9 | Code 300 | the tenant, and lc2's prompt cost on the Batch pool, several times Docs' per token |
-| R1b two rates fitted on Docs' raw tokens | 92.3 | 181.9 | Code 300 | the same; the prompt rate is diluted by tokens the session cache holds |
-| R2a Batch's GPU-seconds per request | 56.0 | 145.5 | Code 300 | report calls carry three to eight times Batch's prompt |
-| R2b per new session (Docs' session-start cost) | 148.1 | 237.7 | Code 300 | report packs are larger than a Docs document |
-| R2c per session (Docs' GPU-seconds per session) | 172.9 | 262.5 | Code 300 | a session's several turns are not a report call |
-| R3a the tenant's cost per report (per billed session) | 129.8 | 219.3 | Code 300 | the contracts' tiers have more and longer calls |
-| R3b the tenant's cost per call | 161.9 | 251.4 | Code 300 | the contracts' calls carry larger packs |
-| R3c the pack shared across a report's calls (billing's six calls a session read as one served session) | 72.0 | 161.6 | Code 300 | the tenant's excess is its full prompts, not one pack a report (predicts 0.446 of it); the gateway counted a session per call |
-| R4 (decisive) computed prompt tokens and completion tokens at lc2's rates, every call its own session | 249.4 | 339.0 | Docs 340 | (the golden) |
-| R5a Batch's blended rate per token | 277.5 | 367.0 | Docs 370 | the blend carries Batch's prompt-to-completion mix onto calls with a larger share of prompt |
-| R5b the tenant's blended rate per token | 301.7 | 391.3 | Docs 390 | the blend carries the RS-6 mix onto RL-12 and RM-8 calls |
-| R5c lc2 and lc1 hours pooled in the Batch fit | 281.6 | 371.2 | Docs 370 | the model column and the fit's residuals by build (D5) |
-| R5d the same with an intercept | 264.4 | 353.9 | Docs 350 | the same |
+| R0 Docs' GPU-seconds per request (the default, the filed per-request basis carried over) | 34.9 | 124.3 | Code 300 | the tenant: Docs' rate prices its calls at about a fifth of their GPU time (0.219) |
+| R1a Docs' blended rate per token | 66.3 | 155.7 | Code 300 | the tenant, and lc2's prompt cost on the Batch pool, several times Docs' per token |
+| R1b two rates fitted on Docs' raw tokens | 92.3 | 181.7 | Code 300 | the same; the prompt rate is diluted by tokens the session cache holds (predicts 0.543 of the tenant's excess) |
+| R2a Batch's GPU-seconds per request | 56.0 | 145.4 | Code 300 | report calls carry three to eight times Batch's prompt |
+| R2b per new session (Docs' session-start cost) | 148.1 | 237.5 | Code 300 | report packs are larger than a Docs document |
+| R2c per session (Docs' GPU-seconds per session) | 172.9 | 262.3 | Code 300 | a session's several turns are not a report call |
+| R3a the tenant's cost per report (per billed session) | 128.1 | 217.5 | Code 300 | the contracts' tiers have more and longer calls |
+| R3b the tenant's cost per call | 159.8 | 249.2 | Code 300 | the contracts' calls carry larger packs |
+| R3c the pack shared across a report's calls (billing's six calls a session read as one served session) | 72.0 | 161.4 | Code 300 | the tenant's excess is its full prompts, not one pack a report (predicts 0.452 of it); the gateway counted a session per call |
+| R4 (decisive) computed prompt tokens and completion tokens at lc2's rates, every call its own session | 249.4 | 338.8 | Docs 340 | (the golden) |
+| R5a Batch's blended rate per token | 277.5 | 366.9 | Docs 370 | the blend carries Batch's prompt-to-completion mix onto calls with a larger share of prompt |
+| R5b the tenant's blended rate per token | 297.9 | 387.3 | Docs 390 | the blend carries the RS-6 mix onto RL-12 and RM-8 calls |
+| R5c lc2 and lc1 hours pooled in the Batch fit | 281.6 | 371.0 | Docs 370 | the model column and the fit's residuals by build (D5) |
+| R5d the same with an intercept | 264.4 | 353.8 | Docs 350 | the same |
 
-- **Position:** the default ranks Docs third (124.5, behind Code 299.4 and Agents 151.5); the golden ranks it first.
+- **Position:** the default ranks Docs third (124.3, behind Code 299.3 and Agents 151.0); the golden ranks it first.
   `dataset-generation` §6.2 asks for fourth or fifth at rung 0: Docs' interactive traffic alone is the third-largest
   shortfall in this fleet, and moving it lower would mean shrinking Docs' own growth, which the intake files; recorded
   as a deviation, harmless to stump power since rung 0 lands on Code by 175 GPUs.
 - **Margins:** golden over Code 39.5 GPUs (1.13x, under §6.2's 1.2x): Code's figure depends on no costing of report
   calls, so no defensible construction moves it (asserted, M7 and D1), and the margin is four bins. The nearest
-  under-rung (R2c, 262.5) sits 37 under Code; the nearest over-rung (R5d, 353.9) is one bin above the golden.
+  under-rung (R2c, 262.3) sits 37 under Code; the nearest over-rung (R5d, 353.8) is one bin above the golden.
   **Dominance:** only R4 and the over-rungs put Docs first, and each over-rung files another bin.
-- **Determinism variants (D1, D2, D4):** the exact Q3 rates 338.79; an intercept 338.96; windows June to November
-  338.95, September to November 338.93, Q3 338.98; weighted fit 340.53; the rollout hours kept 341.07; a daily fit
-  341.69; one standard error on both rates 337.84 to 340.07. Every one keeps at least 2.84 GPUs inside 335 to 345
-  (worst 3.31 among the fits).
+- **Determinism variants (D1, D2, D4, O8):** the exact Q3 rates 338.79; an intercept 338.83; windows June to November
+  338.82, September to November 338.79, Q3 338.84; weighted fit 340.39; the rollout hours kept 340.93; a daily fit
+  341.55; one standard error on both rates 337.70 to 339.93; lc2's rates rescaled to the tenant's whole-period excess
+  339.64 (Amsterdam days), 339.68 (UTC days), 340.41 (the exact rate). Every one keeps at least 2.70 GPUs inside 335
+  to 345 (worst 3.45 among the fits).
 - **Ruled out by a filed sentence or by the data (D3, D3b, D5, D6, SF7, SF12, SF15):** the busiest-hour rates (Code
-  344.5 against Docs 341.8) and October and November's Docs rate with the tenant (340.4), both by policy s3's pin; the
-  early-access agreement counted (342.1) by policy s3's "ended agreements do not count"; lc1 and lc2 hours pooled
-  (371.2, 353.9 with an intercept) by the build change the data show.
+  344.5 against Docs 341.8) and October and November's Docs rate with the tenant (343.7), both by policy s3's pin; the
+  early-access agreement counted (347.3) by policy s3's "ended agreements do not count"; lc1 and lc2 hours pooled
+  (371.0, 353.8 with an intercept) by the build change the data show.
 - **Grid:** the routes multiply by allocation (week or opening) and the early-access agreement (in or out): under R4
   every cell with the week's allocation and the agreement out lands in the 340 bin; the opening allocation files 386.8,
   so SF8 is filed, not left to the grid.
@@ -339,11 +340,11 @@ its own days (R4) is the golden, and the easy answer (Code) comes from an easy c
   must be built from billing and the rollup across the October clock change.
 - Billing totals: reconcile with the rollup's docs-prod requests on Amsterdam days (asserted, X2); arbitrate nothing.
 - **The tenant check's precision, stated honestly.** The tenant's excess is a residual: Docs' busy time on its days
-  less Docs' own requests at the Q3 rate. Day by day it is 0.1 to 0.5 per cent of Docs' busy time and noise-dominated
-  (Docs' daily GPU-seconds per request moves about 0.2 per cent); over the 43 days lc2's rates predict 0.981 of it at
-  the exact Q3 rate (0.980 on UTC days) and 1.050 at the close-out's printed 1.630, Docs' rate per request 0.216 (0.231),
-  a pack shared per report 0.446. The level is known to about 5 per cent, the specification is separated by roughly
-  ten times that, and the write-up states only the bound that holds on every basis (6 per cent, F1b, V14).
+  less Docs' own requests at the Q3 rate, about 1 per cent of Docs' busy time a day since the tenant runs at its
+  contract's size. Over the 43 days lc2's rates predict 0.994 of it at the exact Q3 rate, 0.997 at the close-out's
+  four-decimal 1.6297 (0.996 on UTC days); Docs' rate per request predicts 0.219, Docs' own two-rate fit 0.543, a pack
+  shared per report 0.452. A one-scalar rescale of lc2's rates to the tenant files 339.6 to 340.4 (O8). The write-up
+  states the bound that holds on every basis (2 per cent, F1b, V14).
 - **Sessions.** Billing bills the report service one session per report (six calls); the gateway's `sessions_new` in
   the rollup counts one serving session per call, so on the tenant's days the rollup's Docs sessions exceed billing's
   app and API sessions by the tenant's calls (O6, V17). The shared-pack reading of billing (R3c) is refuted two ways:
@@ -463,8 +464,8 @@ Rerun from the generated rubric at stage 4.
 
 ## Build record
 
-- **Stage 3, round 2, 2026-10-17.** `generator/build.py`: 109 checks, 0 FAIL; `verify.py` (pandas, its own code path,
-  the close-out's rates read from the PDF) 28 checks, 0 FAIL; two consecutive builds byte-identical (target, golden,
+- **Stage 3, round 3, 2026-10-17.** `generator/build.py`: 112 checks, 0 FAIL; `verify.py` (pandas, its own code path,
+  the close-out's rates read from the PDF) 30 checks, 0 FAIL; two consecutive builds byte-identical (target, golden,
   figures, submission); `figures_check.py` 0 absent; `leak.py --asof 2026-12-07` REVIEW (answered below);
   `guard.py surface` and `heart` WARN only; `precut.py` exit 0; `voice-check.py` PASS; container audit clean.
 - **Stage 4, round 1 (the coordinator's run).** Judge: DETERMINISTIC, FIX_NOW (`determinism_check_report_round1.md`):
@@ -475,7 +476,7 @@ Rerun from the generated rubric at stage 4.
   Leak reader: no leak.
 - **Round 2 fixes, one generator pass.** Policy s3 files the conversion of the product teams' requests (the latest
   close-out's GPU-seconds per request) and nothing about report calls (D3, SF15); the golden now costs the intake at the
-  close-out's printed rates (339.0, was 338.8; no graded figure moved). Billing bills the report service one session per
+  close-out's printed rates (four decimals from round 3, 338.8; no graded figure moved). Billing bills the report service one session per
   report; the gateway's sessions show one per call (O5, O6). The close-out's sentence on Docs and Batch serving lc2 is
   gone; the build shows only in the rollup's model column. lc1's rates now sit 45 and 51 per cent above lc2's, so the
   all-year fits land at 371.2 and 353.9 and the residuals by build reject them (D5, D6). The fabric export states its
@@ -497,6 +498,22 @@ Rerun from the generated rubric at stage 4.
   criteria): about 34 for a pair both on Code, about 50 in a draw where one of the two lands the call, about 38.5
   averaged over the draws (one of two landing about 0.3). Making
   the Gbit/s runs determinate cost Ask B its strongest silent device; the spread devices win most of it back.
+- **Round 3, the tenant check (rule written before the ratio was read).** The judge's soft spot: priced at the
+  close-out's printed 1.630, the tenant's whole-period excess sits 5 per cent under lc2's prediction, and a one-scalar
+  rescale (0.952) files 327. Diagnosis: the excess is a residual of about 0.3 per cent of Docs' busy time on the
+  tenant's days, so (a) the three-decimal rounding of Docs' rate (1.630 against 1.6297) removes about 7 per cent of it,
+  and (b) Docs' hourly busy-time noise gives the summed excess a standard error of about 90 thousand GPU-seconds, 4 per
+  cent of a 2.2 million GPU-second signal. Neither is structural to the cost model. Rule, fixed before any ratio is
+  computed: the close-out prints GPU-seconds per request to four decimals, as an analyst prints a rate near one; and
+  the early-access tenant ran at the size of the contract it converted to, its busiest hour in a full week at
+  RC-2026-031's contracted 400 reports an hour (base 339 reports an hour against the hour shape's 1.18 peak), the
+  ramp, hours, pause, call sizes and every random draw unchanged, its early-access agreement contracted at 400. The
+  ratio that rule produces is the one shipped, inside or outside 1.5 per cent; no seed is searched.
+- **Round 3, what the rule produced.** lc2's rates predict 0.997 of the tenant's whole-period excess at the
+  close-out's 1.6297 (0.996 on UTC days, 0.994 at the exact rate): inside 1.5 per cent on every basis (O7). A
+  one-scalar rescale to the tenant files 339.6 to 340.4, the 340 bin (O8, V14b); Docs' rate per request still predicts
+  0.219 and Docs' own two-rate fit 0.543 (O9). The tenant's calls (894,042), its excess and the write-up's bound (2 per
+  cent) moved; the call, every critical component, both asks' answers and every rung's pool did not.
 - **Leak REVIEW lines, each harmless.** `capacity_desk_notes.md` "the model": the rollup's column note (the model
   build a pool served). `capacity_closeout_2026Q3.pdf` 57.4: Batch's September busy GPU-hours in thousands, a
   coincidence with Chat's longest stay in hours, another quantity in another unit; 57.1 likewise (Batch's August busy
@@ -570,3 +587,6 @@ Rerun from the generated rubric at stage 4.
   the ask; the renumbering spread to R12 and a review-day cutoff added for R11 and R13.
 - Ask A with three pools' longest stays plain hardware or weekday stays: the hand-completion and console-time devices
   moved only three of six longest figures; weekend failures added for Code, Batch and Voice.
+- The tenant at its early-access size (a busiest hour near 130 reports): a residual of 0.3 per cent of Docs' busy time,
+  5 per cent off at the close-out's three-decimal rate, so a calibrating analyst filed 330 (re-judge soft spot); the
+  close-out now prints four decimals and the tenant ran at its contract's 400 reports an hour, the size chosen by rule.

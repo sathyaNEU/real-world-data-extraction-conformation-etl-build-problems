@@ -155,7 +155,7 @@ def write_closeout(out, C):
         r = C["pools"][p]
         data.append([Paragraph(p, st["cell"])] + [Paragraph(x, st["cellr"]) for x in (
             K.fmt_int(r["alloc"]), "%.1f" % (r["busy_h"] / 1000.0), "%.1f%%" % r["share"], "%.1f" % (r["req"] / 1e6),
-            "%.2f" % (r["sess"] / 1e6), "%.1f" % (r["ptok"] / 1e9), "%.2f" % (r["ctok"] / 1e9), "%.3f" % r["gpr"],
+            "%.2f" % (r["sess"] / 1e6), "%.1f" % (r["ptok"] / 1e9), "%.2f" % (r["ctok"] / 1e9), "%.4f" % r["gpr"],
             r["peak_hour"], K.fmt_int(r["peak_gpus"]))])
     t = Table(data, colWidths=[24 * mm, 17 * mm, 20 * mm, 16 * mm, 19 * mm, 19 * mm, 21 * mm, 23 * mm, 22 * mm,
                                26 * mm, 22 * mm], repeatRows=1)

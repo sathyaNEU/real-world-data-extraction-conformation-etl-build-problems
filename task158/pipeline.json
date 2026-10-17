@@ -9,14 +9,14 @@
   "updated": "2026-10-17",
   "stump": "A competent solver costs every pool's busiest-hour requests at the Q3 close-out's GPU-seconds per request, adds Docs' contracted report calls at Docs' own rate per request, per token or per session (or with each report's sections sharing the pack) and sends the stopgap to Code at 300 GPUs short; the step that lands it there is pricing report calls at rates earned by turns that re-send a cached document, when each report call computes its whole source pack and leaves Docs 340 GPUs short.",
   "architecture": 1,
-  "loops": 1,
+  "loops": 2,
   "precut": {
     "exit": 0,
     "date": "2026-10-17"
   },
   "leak": {
     "leak_py": "REVIEW 2026-10-17 (10 lines, each answered in the design note's Build record)",
-    "reader": "round 1: no leak"
+    "reader": "round 1: no leak; round 2 re-read: clean"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-17 (repeat.question_form; same_driver_older differentiated against task151)",
@@ -24,12 +24,12 @@
     "surface": "task151 promoted on card axes only, text surface 0.075"
   },
   "judge": {
-    "verdict": "round 1: DETERMINISTIC",
-    "disposition": "round 1: FIX_NOW, fixed in round 2 (ordinary-traffic rate pinned in policy s3; Gbit/s stated by the export's unit and harness columns)",
-    "report": "task158/determinism_check_report_round1.md"
+    "verdict": "round 2: DETERMINISTIC",
+    "disposition": "round 2: APPROVE; soft spot (a tenant-calibrated rescale filing 330) closed in round 3 by the rule-sized pilot and four-decimal close-out rates",
+    "report": "task158/determinism_check_report.md (round 1: task158/determinism_check_report_round1.md)"
   },
   "returned": [],
-  "resume": "stage 4: re-judge once (round 2), then ship",
+  "resume": "stage 5: ship after the coordinator's targeted re-check of the tenant figures",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -37,12 +37,12 @@
   "portal_status": "",
   "portal_status_date": "",
   "build": {
-    "checks": "109, 0 FAIL",
-    "verify": "28, 0 FAIL",
+    "checks": "112, 0 FAIL",
+    "verify": "30, 0 FAIL",
     "rebuild": "byte-identical",
     "figures_check": "36 figures, 0 absent",
-    "answer": "docs-prod, 340 GPUs (339.0, 2027-W13)",
-    "default_path": "code-prod, 300 GPUs (299.4)",
-    "moved_round2": "Ask A figures only (devices spread to every row); call, components and Ask B unchanged"
+    "answer": "docs-prod, 340 GPUs (338.8, 2027-W13)",
+    "default_path": "code-prod, 300 GPUs (299.3)",
+    "moved_round3": "tenant figures only (894,042 calls, ratio 0.997, write-up bound 2 per cent, Docs rate printed 1.6297); every graded answer unchanged"
   }
 }

@@ -50,6 +50,9 @@ LEDGER_DATE = dt.date(2026, 12, 4)
 HARNESS_CHANGE = dt.datetime(2026, 12, 1, 0, 0)         # UTC, the provider's fabric harness release
 HARNESS_OLD, HARNESS_NEW = "nm-fabcheck 3.8.4", "nm-fabcheck 4.0.1"
 REVIEW_LOCAL = dt.datetime(2026, 12, 4, 14, 0)            # the acceptance review, Amsterdam time (Schedule 3.3)
+# the early-access tenant ran at the size of the contract it converted to: its busiest hour in a full week at
+# RC-2026-031's contracted 400 reports an hour, against the hour shape's 1.18 peak
+PILOT_BASE = round(400 / 1.18)
 REVIEW_DATE = dt.date(2026, 12, 4)
 HANDOVER = dt.date(2027, 1, 4)
 Q1_WEEKS = [dt.date(2027, 1, 4) + dt.timedelta(weeks=i) for i in range(13)]   # Mondays of 2027-W01 .. W13

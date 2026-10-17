@@ -161,9 +161,9 @@ def closeout(target):
 
 
 def closeout_gpr(target):
-    """GPU-seconds per request as the close-out prints them (three decimals), read back from the rollup."""
+    """GPU-seconds per request as the close-out prints them (four decimals), read back from the rollup."""
     C = closeout(target)
-    return {p: round(C["pools"][p]["gpr"], 3) for p in K.POOLS}, C
+    return {p: round(C["pools"][p]["gpr"], 4) for p in K.POOLS}, C
 
 
 def busiest_hour_gpr(target):

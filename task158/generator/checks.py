@@ -98,6 +98,7 @@ def main(target):
           max(RG[k]["docs"] for k in under) < gold - 60, "nearest under-rung %.0f" % max(RG[k]["docs"] for k in under))
 
     # ------------------------------------------------------------------ the out-of-sample check
+    intake_, plan_ = M["intake"], M["plan"]
     P = C.pilot(M, target)
     rr = P["ratio"]
     check("O1 lc2's rates predict the tenant's excess within 3 per cent",
@@ -111,6 +112,27 @@ def main(target):
     check("O4 a two-rate fit on the tenant's own days is ill-conditioned (no answer key)",
           abs(a_own / K.A_LC2 - 1) > 0.5 or abs(b_own / K.B_LC2 - 1) > 0.5, "%.6f %.5f corr %.5f" %
           (a_own, b_own, P["corr_daily_tokens"]))
+    # the rescale route: lc2's rates scaled by the tenant's whole-period excess over their prediction
+    resc = {}
+    for nm, (u, g) in {"Amsterdam days, the close-out's rate": (False, M["gpr"]["docs-prod"]),
+                       "UTC days, the close-out's rate": (True, M["gpr"]["docs-prod"]),
+                       "Amsterdam days, the exact rate": (False, M["gpr_exact"]["docs-prod"])}.items():
+        r_ = C.pilot_ratio(M, target, u, g)[0]
+        kk = 1.0 / r_
+        cost_k = lambda c, kk=kk: c["calls"] * kk * (M["a"] * c["pmax"] + M["b"] * c["qmax"])
+        resc[nm] = (r_, C.shortfalls(intake_, plan_, M["gpr"], M["live"], cost_k)[0]["docs-prod"]["peak"])
+    check("O7 the tenant's whole-period excess sits within 1.5 per cent of lc2's prediction on every day and rate basis",
+          all(abs(v[0] - 1) <= 0.015 for v in resc.values()), "; ".join("%s %.4f" % (k, v[0]) for k, v in resc.items()))
+    check("O8 a one-scalar rescale of lc2's rates to the tenant keeps Docs in the 340 bin",
+          all(K.nearest(v[1], 10) == 340 for v in resc.values()), "; ".join("%s %.2f" % (k, v[1]) for k, v in resc.items()))
+    d_q3 = M["R"]["docs-prod"]
+    q3m = np.array([dt.datetime(2026, 7, 1) <= t < dt.datetime(2026, 10, 1) for t in d_q3["t"]])
+    Xq = np.c_[d_q3["prompt_tokens"][q3m], d_q3["completion_tokens"][q3m]].astype(float)
+    fa, fb = np.linalg.lstsq(Xq, d_q3["gpu_busy_s"][q3m].astype(float), rcond=None)[0]
+    own = (fa * P["ptk"] + fb * P["ctk"]) / P["excess"]
+    check("O9 the rivals still miss the tenant by the same margins: Docs' rate per request about a fifth, Docs' own "
+          "two-rate fit well under two thirds", 0.15 < rr["Docs GPU-seconds per request"] < 0.27 and own < 0.65,
+          "%.3f %.3f" % (rr["Docs GPU-seconds per request"], own))
     bill_ = C.read_billing(target)
     check("O5 billing bills the report channel one session per report (six calls each)",
           all(x["requests"] == 6 * x["sessions"] for x in bill_ if x["channel"] == "report"))
@@ -175,7 +197,10 @@ def main(target):
     bh = C.busiest_hour_gpr(target)
     sbh, pbh = C.shortfalls(intake, plan, bh, live, M["cost"])
     ruled["busiest-hour rates (policy s3 pin)"] = (sbh["docs-prod"]["peak"], pbh)
-    ea = dict(ref="EA", tier="RS-6", peak=150, golive=dt.date(2026, 10, 5), calls=6, pmax=24000, qmax=1600)
+    ea_row = [x for x in M["rows"] if x["Contract"].startswith("EA")][0]
+    t_ = M["tiers"][ea_row["Tier"]]
+    ea = dict(ref=ea_row["Contract"], tier=ea_row["Tier"], peak=int(ea_row["Contracted peak (reports/hour)"]),
+              golive=dt.date.fromisoformat(ea_row["Go-live"]), calls=t_["calls"], pmax=t_["pmax"], qmax=t_["qmax"])
     ruled["early-access agreement counted (policy s3)"] = golden_with(M["a"], M["b"], live_=live + [ea])
     pa, pb = C.fit_pooled_models(R_)
     ruled["lc1 and lc2 hours pooled (the model column)"] = golden_with(pa, pb)
@@ -250,7 +275,7 @@ def main(target):
           all(K.nearest(v[0], 10) != 340 for k, v in ruled.items() if "pooled" in k))
     check("SF14 report calls count on docs-prod", "on the pool of the product that sold it" in " ".join(DOC.POLICY[2][1]))
     check("SF15 the intake is costed at the close-out's printed rates, which file the golden exactly",
-          all(abs(M["gpr"][p] - round(M["gpr_exact"][p], 3)) < 1e-12 for p in K.POOLS))
+          all(abs(M["gpr"][p] - round(M["gpr_exact"][p], 4)) < 1e-12 for p in K.POOLS))
 
     # ------------------------------------------------------------------ the three rules
     cols = set()
