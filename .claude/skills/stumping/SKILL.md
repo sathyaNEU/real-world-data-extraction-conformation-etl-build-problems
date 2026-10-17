@@ -100,10 +100,13 @@ reproducing:
 | 193 | leave the one dominant product out of the comparison | the comparison population |
 
 A step that survives the screen settles none of them: the estimand is beyond argument and two or more
-methods still stand on it, with the data's own structure ruling out the easy one. That is
-`method_or_model_selection` on a filed estimand, and the card's `layer2_family` says so;
-`estimand_identification` is the family these three carried, and a draw that names it answers the screen
-in writing before the default path is written.
+methods of estimating that one filed quantity still stand, with the data's own structure ruling out the
+easy one. Regression to the mean in a unit chosen for standing worst, the wrong counterfactual under
+staggered adoption and a ratio of totals against a mean of ratios all survive it, because each is a way
+of estimating a quantity the records already fix. The family label does not decide this:
+`estimand_identification` holds both the survivors and the three deaths above, so a draw in it writes the
+screen's answer into the note, naming the estimand's five parts and the sentence that files each, before
+the default path is written.
 
 ### 1.3 Couple the pitfall to the domain
 
