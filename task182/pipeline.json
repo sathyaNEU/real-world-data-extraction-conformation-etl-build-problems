@@ -18,9 +18,9 @@
   },
   "build": {
     "answer": "the October slot covers NSL04, NSL11, NSL07, NSL02 and NSL13; NSL06 is first off the list at 44.7 dB LAeq, 1.3 dB behind the fifth",
-    "checks": "614 assertions passed",
+    "checks": "622 assertions passed",
     "verify": "OK, 282,493 independent checks from the bundle alone (the per-minute instrument-ordering check runs on every shipped row)",
-    "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 069208833e6db276)",
+    "byte_identical": "two consecutive builds identical over target/, golden/ and metadata.json (combined sha256 e649511bd624c542)",
     "figures_check": "exit 0, 90 figures in blocks 1 to 4, none absent",
     "gates": "13 files, 5 formats (csv, md, parquet, pdf, xlsx), sound_levels_1min_2026.parquet 282,360 rows, distractors complaints_register_2026.xlsx and effluent_quality_2026.csv declared in metadata.json",
     "rungs": "complaints NSL01/03/06/09/12; measured total NSL02/04/06/07/11 (0.55 dB); LA90 background NSL03/04/06/11/12 (0.11); tenth percentile NSL03/04/06/07/11 (0.34); quietest quarter hour NSL02/04/06/07/11 (1.50); arithmetic means NSL03/04/06/07/11 (0.37); answer NSL04/11/07/02/13 (1.26)",

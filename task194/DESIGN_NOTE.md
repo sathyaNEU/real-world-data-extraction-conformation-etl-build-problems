@@ -382,7 +382,7 @@ No shipped control, corpus or document scores a method or ranks the units.
 
 | Gate | Result |
 |---|---|
-| `generator/build.py` | 656 generator assertions, 177 independent checks, both green |
+| `generator/build.py` | 657 generator assertions, 177 independent checks, both green |
 | Three-rules block on the clean truth | R1 raw material, R2 per Layer 1 item, R3a the easy route files 41220 at 35 and the lower route 41210 at 23, R3b changing only the shape of the fall files 41230, R3c no plant: all green |
 | Independent verifier | `generator/verify.py` reads only `target/` and `figures.json`, recomputes every stated figure on pandas against the generator's csv path |
 | Two byte-identical rebuilds | pack and both goldens identical across two fresh builds; `target/` equals the rebuild |

@@ -515,10 +515,10 @@ new ask-only rows, and neither belongs in a determinism repair that holds the ca
 - `generator/build.py` runs everything: the survey (`world.py`, `sim.py`), the pack (`pack.py`, `docs.py`,
   `postprocess.py`), the golden (`golden.py` over `analysis.py`, `deliver.py`), `metadata.py`,
   `figures.py`, `submission.py`, then `checks.py` and `verify.py`.
-- Final run: `checks.py` **614 assertions passed**; `verify.py` **282,493 independent checks passed** (the
+- Final run: `checks.py` **622 assertions passed**; `verify.py` **282,493 independent checks passed** (the
   per-minute instrument-ordering check runs on every shipped row, which is most of that count); two
   consecutive builds byte-identical over `target/`, `golden/` and `metadata.json` (combined sha256
-  069208833e6db276); about 70 seconds.
+  e649511bd624c542); about 70 seconds.
 - `verify.py` reads only the bundle (standard library, numpy-free, pyarrow for the parquet), encodes the
   plan's clauses as its own code and rebuilds every figure: the fourteen specific levels, totals,
   residuals, valid, excluded and stop minutes, the slate, its order, the sixth and the margin, the default
