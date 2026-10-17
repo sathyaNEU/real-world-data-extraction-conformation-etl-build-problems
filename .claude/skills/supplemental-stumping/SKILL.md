@@ -11,6 +11,25 @@ Three to five wide, criteria-dense, decoupled asks on silent realistic mess, har
 
 The landed call scores `C = 38 + 7 + 55 Lc`, the best miss `S = r + 7 + 55 Ls`, so `(C + S) / 2 <= 40` when `55 (Lc + Ls) <= 28 - r`. `L` is the ask weight kept, `r` the recommendation weight a wrong call keeps (about 5, from the generated rubric). The pair keeps about 23 of 110 ask points, **a fifth each**. Build for one response on the call (the cracker): only devices hold it. With none on it the construction layer costs the pair everything and devices are margin; two on it is a ladder failure. The ten points under 50 are bought here, since the ladder's margin goes to determinism. Levers: references A1, A2.
 
+**The pair ceiling cannot validate the ladder it assumes, so check the premise before believing the
+number.** The arithmetic above takes one response onto the call and one off it. A script that
+constructs the mirror as a response stopping at a wrong rung is therefore structurally incapable of
+reporting that the second-best real response lands the call: every figure in it can be honest and the
+number still mean nothing. And the failure is not recoverable by ask work, because a response on the
+call banks about 45 before any ask, so if both top responses land it the pair cannot reach 40 however
+strong the devices are. task190 was retired on exactly this. Its measured pair of 38.1 was
+`(56.0 + 20.1) / 2` with the 20.1 a response that misses the call, while its cold reader had already
+landed the call at 80 to 90 per cent and its judge's blind enumeration matched the golden on every
+graded figure. Four passes went into driving that number down, and the premise had been falsified
+before the first of them.
+
+**So the cold thread checks the ladder and the script checks the asks, in that order.** Read the
+reader's committed answer and the judge's Gate F line before the pair is believed: where a cold
+thread lands the call, the pair ceiling is not evidence, the finding is in the ladder, and no ask
+measurement is worth running until the ladder holds. Where both of them miss the call, the pair is
+evidence and the ask work is the work. A build whose cold readers both land the call needs a
+redesigned decisive step, not a fourth device.
+
 ## Part 1. Design against the careful solver's path
 
 **1.1 The cracker and mirror sheets**, on paper before any device. The **cracker** landed the call, ran the hygiene battery (key uniqueness, exact duplicates, unmatched joins, fan-out, count ties), executed every filed rule it points at and matched every control and published figure. Score each ask figure and chart criterion, a hit within half a unit of the stated rounding: **every row misses** or the ask is rebuilt. The **mirror** stops at the most attractive wrong rung and keeps **under 35 per cent of ask weight** (target a fifth), no ask whole. A figure differing between sheets is coupled: re-route or drop it.
