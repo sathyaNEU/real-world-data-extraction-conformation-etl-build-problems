@@ -1,34 +1,34 @@
 {
  "task": "task193",
  "owner": "oviya13ya",
- "status": "DRAWING",
+ "status": "PAUSED",
  "domain": "pharmacology-pharmacoepidemiology-safety/safety-signal-detection",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-16",
- "stump": "A competent solver computes each product's proportional reporting ratio against the whole database, takes the ones above the filed threshold within the hours the contract allows, and leaves out the products whose measure is depressed by the one product that dominates the reaction's reports.",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-17",
+ "stump": "A competent solver cleans the extract, builds every product and reaction pair's table against the whole database, applies the standard's three criteria and files 11 signals, five slots inside the desk's capacity, leaving the autumn booster inside the comparison set every other product is measured against when that one product is 40 per cent of the quarter's reports and its own reactogenicity sets the background rate for the four reactions on which the four signals it hides sit.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-17"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, thirteen lines answered in the design note, no LEAK",
+  "reader": "r1 back: nothing quoted for the decisive step, no ranking file, question 6 an analytical choice (the comparator). It landed 11, the default path's answer, which is the stump working, and it flagged a real defect: the extract's dictionary_version is set from the receipt date while the standard reads the version in force when the case was coded, so about 1,300 rows disagree and the third ask forks. Also two ask forks (the fee over late filings, the no-age group) and a list of realism tells."
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (overuse.org_family, overuse.objective, repeat.gate_g vs task195), all three answered",
+  "nearest": "0.07 task181 v1 (lineage); surface promoted task189, task190 and task191 on card signature, each differentiated"
  },
  "judge": {
-  "verdict": "",
+  "verdict": "running",
   "disposition": "",
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "Stage 4 run 1. The leak reader is back and the judge thread is running. Fixes owed from the reader, all in the generator: (1) set dictionary_version from the coded date, not the receipt date, so the label agrees with paragraph 2.3; (2) pin the fee basis in the agreement schedule to submissions received in the quarter, which closes the 519,954 against 512,639 fork; (3) pin the no-age group in the prompt; (4) realism: couple reporter_type to the channel, give the channel totals a real drift (submissions withdrawn before coding, in neither the extract nor the exceptions), move the seriousness revision off the campaign's own term and make it two terms, widen the authorisation-date spread, skew the distractors' categories and the exceptions' reasons. Then re-run every free gate, re-cut the zip, and read the judge's verdict: if it calls the comparison basis unforced, that is the one finding that needs a design answer, not a data fix.",
  "approved": null,
  "delivered": null,
  "portal": null,

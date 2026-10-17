@@ -1,79 +1,87 @@
 {
-  "task": "task193",
-  "architecture": "v1",
-  "drawn": "2026-10-16",
-  "slot_note": "seed AD16 kept its decision shape only: which alarms a scarce paid reviewer is given, under a cap on reviewer hours, judged on the real faults the routing escalates. The seed's own architecture turns on a channel attribute that explains every alarm on it, which is a field read deciding the call, so the build is re-rooted on the field's own disproportionality measure and what one dominant member does to it.",
-  "domain": "pharmacology-pharmacoepidemiology-safety",
-  "subdomain": "safety-signal-detection",
-  "niche": "triaging which signals a capped assessment team takes, when one member of the comparison set dominates it",
-  "objective": "anomaly-detection",
-  "shape": "16",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "objective"
-  ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G5",
-    "G8"
-  ],
-  "gate_g": "signal_vs_noise_or_hold",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "capacity_report",
-  "stakeholder_role": "the agency's signal assessment coordinator",
-  "role_family": "policy_adviser",
-  "scoring_unit": "per resolved case",
-  "spine": {
-    "file": "spontaneous_reports_extract.csv",
-    "rows": 0,
-    "entity": "one reported reaction on one report, as coded",
-    "grain": "report x drug x reaction",
-    "source": "synthetic"
-  },
-  "forum": "operations_desk",
-  "forcing_event": "shift_or_daily_cycle",
-  "org_family": "government_agency",
-  "world": {
-    "geography": "Denmark",
-    "currency": "DKK",
-    "org_type": "national medicines agency",
-    "invented_names": [],
-    "people": [
-      "Cirkeline Gregersen",
-      "Malthe Danielsen"
-    ]
-  },
-  "deliverables": [],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive measure of each candidate is its share of an outcome against every other candidate pooled, so one dominant candidate holds every other candidate's measure down, and only re-measuring with the dominant one out of the comparison set recovers which candidates truly stand out.",
-  "driver_concrete": "Every candidate's measure is computed against the rest of the database, and one product accounts for most of the reports of the reaction in question, so it sits inside the comparison every other product is judged against and holds their measures below the threshold until it is taken out of it.",
-  "stump": "A competent solver computes each product's proportional reporting ratio against the whole database, takes the ones above the filed threshold within the hours the contract allows, and leaves out the products whose measure is depressed by the one product that dominates the reaction's reports.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who codes every report correctly and applies the filed threshold and the hours cap computes each measure against the full database and files a set that omits the signals the dominant product masks.",
-  "domain_test": "The deciding quantity is a disproportionality measure whose comparison set is the rest of the database, and pharmacovigilance treats masking by one dominant member as part of computing it; swap the products for warehouses and the reactions for delivery delays and nothing is measured against a shared background, so there is nothing to unmask.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:comparison-set-holding-the-measure-down",
-  "layer1": [
-    "free-text reaction terms mapped to a dictionary",
-    "duplicate reports from two channels",
-    "report dates against receipt dates",
-    "a product renamed after a licence transfer",
-    "a coding dictionary revised mid-year",
-    "tables inside PDFs"
-  ],
-  "registered": "2026-10-16T23:56:38Z"
+ "task": "task193",
+ "architecture": "v1",
+ "drawn": "2026-10-16",
+ "slot_note": "seed AD16 kept its decision shape only: which alarms a scarce paid reviewer is given, under a cap on reviewer hours, judged on the real faults the routing escalates. The seed's own architecture turns on a channel attribute that explains every alarm on it, which is a field read deciding the call, so the build is re-rooted on the field's own disproportionality measure and what one dominant member does to it.",
+ "domain": "pharmacology-pharmacoepidemiology-safety",
+ "subdomain": "safety-signal-detection",
+ "niche": "triaging which signals a capped assessment team takes, when one member of the comparison set dominates it",
+ "objective": "anomaly-detection",
+ "shape": "16",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "Take 15 signals forward to the assessment desk, which fills 15 of its 16 slots for the quarter.",
+ "answer_source": "submission.md block 1; generator/figures.json taken_forward. The four the autumn booster holds below the threshold are Keltaprin on headache, Serovane on fatigue, Noralvex on pyrexia and Ravistan on myalgia, at crude ratios of 1.39 to 1.55 and corrected ratios of 2.70 to 3.09.",
+ "gap": [
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G5",
+  "G8"
+ ],
+ "gate_g": "signal_vs_noise_or_hold",
+ "calibration_form": "none",
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "capacity_report",
+ "stakeholder_role": "the agency's signal assessment coordinator",
+ "role_family": "policy_adviser",
+ "scoring_unit": "per resolved case",
+ "spine": {
+  "file": "spontaneous_reports_extract.csv",
+  "rows": 25660,
+  "entity": "one reaction as the reporter wrote it on one submission",
+  "grain": "submission x reaction",
+  "source": "synthetic"
+ },
+ "forum": "operations_desk",
+ "forcing_event": "shift_or_daily_cycle",
+ "org_family": "government_agency",
+ "world": {
+  "geography": "Denmark",
+  "currency": "DKK",
+  "org_type": "national medicines agency",
+  "invented_names": [],
+  "people": [
+   "Cirkeline Gregersen",
+   "Malthe Danielsen"
+  ]
+ },
+ "deliverables": [
+  "signal_list_2026Q3.xlsx",
+  "signal_overview.png"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive measure of each candidate is its share of an outcome against every other candidate pooled, so one dominant candidate holds every other candidate's measure down, and only re-measuring with the dominant one out of the comparison set recovers which candidates truly stand out.",
+ "driver_concrete": "Every candidate's measure is computed against the rest of the database, and one product accounts for most of the reports of the reaction in question, so it sits inside the comparison every other product is judged against and holds their measures below the threshold until it is taken out of it.",
+ "stump": "A competent solver cleans the extract, builds every product and reaction pair's table against the whole database, applies the standard's three criteria and files 11 signals, five slots inside the desk's capacity, leaving the autumn booster inside the comparison set every other product is measured against when that one product is 40 per cent of the quarter's reports and its own reactogenicity sets the background rate for the four reactions on which the four signals it hides sit.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who collapses the duplicate cases, maps every verbatim term at the right dictionary version, carries the renamed product onto one code, reads the window on receipt date and applies the three criteria exactly computes every pair against the whole database and files 11 signals, where 15 meet the criteria once the booster is out of the comparison set.",
+ "domain_test": "The deciding quantity is a disproportionality measure whose comparison set is the rest of the database, and pharmacovigilance treats masking by one dominant member as part of computing it; swap the products for warehouses and the reactions for delivery delays and nothing is measured against a shared background, so there is nothing to unmask.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task191": "Shares the decisive gap (objective) and the Gate G mechanism, and nothing else. task191's decisive quantity is the largest of many monitored windows judged against the record of the same maximum at the same reach, a question about extreme-value reach; this build's is a ratio each candidate is measured against a shared background, where one member of the comparison set holds every other member's measure down. The first is about how many draws the maximum came from, the second about what the denominator is made of, and neither mechanism reaches the other's answer.",
+  "task190": "Shares the decision type (designation_set) on the cards. task190's architecture 1 is spent and its decisive quantity was a stock read from arrivals and time unseen; this build's is a disproportionality ratio's comparison set. No file name, forum, forcing event or persona is shared after the run inventory was renamed.",
+  "task189": "Shares the surface of a regulator's own standard reducing a quarter's records to a filed criterion. task189's decisive quantity is an average over measurements known only to lie below a limit that differs by laboratory, which is about what to put in place of a censored value; this build's is what the ratio is taken against. One is censoring, the other a comparison set, and neither route reaches the other's answer.",
+  "task195": "Shares the Gate G mechanism key on the cards, which is why the guard WARNs. task195 is drawn and not built, and its mechanism is the uncertainty of a paired difference against two separate intervals; its Gate G key is varied at its own draw rather than here, since this build's mechanism is one dominant member of a comparison set and not an interval at all."
+ },
+ "lineage": [],
+ "notes": "",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:comparison-set-holding-the-measure-down",
+ "layer1": [
+  "verbatim reaction terms mapped to a dictionary at the version the case was coded at",
+  "one case submitted through two channels, linked by case number",
+  "report dates against receipt dates, the window on receipt",
+  "a product renamed when its licence transferred mid-quarter",
+  "a dictionary revision that moved one term's seriousness",
+  "tables inside PDFs and a workbook amendment on its own sheet"
+ ],
+ "registered": "2026-10-16T23:56:38Z"
 }
