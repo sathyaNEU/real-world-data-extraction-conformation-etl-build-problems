@@ -62,20 +62,22 @@ named, no measured hold, the three deaths 107 v2, 118/124 and 230 read first) an
 
 ## WHAT screen (`stumping` 1.2)
 
-**Decisive step.** Estimate the counterfactual the charter names (what the unit would have recorded over the
-assessment quarter without the team) from the unit's own standing over the specification period rather than
-from the quarter it is standing in now, and price the team's effect from the closed placement record as a
-share of that persistent excess rather than as the fall that followed a placement.
+**Decisive step.** Read off the closed placement register what the fall an embed produces is proportional
+to. The charter files the baseline, so a unit's position without the team is settled; what is not settled is
+whether an embed removes a share of the standing excess the unit is carrying, a constant number of ratio
+points, a constant percent of what the unit would have recorded, or a flat number of complications. All four
+are models of the same filed quantity, they rank the twelve units differently, and the register is the only
+evidence in the pack that chooses between them.
 
 Which part of the estimand does it settle? **None of the five.**
 
 | Part | Filed by | Sentence |
 |---|---|---|
-| Population | charter clause 4.2 | every acute inpatient unit with four or more closed quarters of reported indicator data on specification 4.0, except a unit the team has been placed with in the previous twelve closed quarters and except the unit the team is placed with when the placement is decided (12 units; the unit register and the placement register make the set computable, the in-progress placement at 41460 is excluded by name of its condition rather than by its quarter being unclosed, and no unit is near the four-quarter edge except the amalgamated 41510 at five) |
+| Population | charter clause 4.2 | every acute inpatient unit still reporting under its own cost centre at the decision date, with four or more closed quarters of reported indicator data on specification 4.0, except a unit the team has been placed with in the previous twelve closed quarters and except the unit the team is placed with when the placement is decided (12 units; the three conditions take out the two wards closed into 41510, the eight units in the register and the unit the team is with now, and no unit is near the four-quarter edge except the amalgamated 41510 at five) |
 | Outcome | specification 4.0 clauses 2.1 to 2.4 | episodes with one or more hospital-acquired complications, against the published stratum rates by risk band and age band, observed over expected |
 | Window | charter clause 4.1 and the prompt | the assessment quarter, being the quarter the team is embedded: 1 April to 30 June 2027. The window of a unit's standing is specification 3.3's: every closed quarter from 1 July 2024, and no other period is reported for a unit |
 | Unit | charter clause 4.3 | complications, counted at the unit that hosts the team, over the assessment quarter |
-| Comparison | charter clause 4.3 | the complications the unit would have recorded over the assessment quarter without the embedded team, less the complications it records over that quarter with the team there: a difference between two counts over one quarter, not a movement between periods |
+| Comparison | charter clause 4.3 | the complications the unit would have recorded over the assessment quarter without the embedded team, less the complications it records over that quarter with the team there: a difference between two counts over one quarter, not a movement between periods. The position the unit would have held without the team is its position over its own closed quarters before the team arrived, and not its position in any one of them, so the baseline's population and window are filed and only the shape of the fall is left open |
 
 What stays open is the shape of the fall, and the design forces it. The eight closed placements spread
 from a unit running at its expected number (standing 1.000) to one running at nearly twice it (1.979), and
