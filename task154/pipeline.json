@@ -4,12 +4,25 @@
   "status": "PAUSED",
   "domain": "economics-econometrics/forecasting-forecast-evaluation",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-17",
   "stump": "Taking the desk's track for every line the late bulletin does not feed, building goods trade from the bulletin section by section and deflating each industry's end-March and end-June book-value stocks by that month's price index, the textbook removal of holding gains, files 2.2 per cent against the golden 2.8, because each industry's stock was bought over its own stockholding period, partly before the March and June legs of the import price rise; only revaluing each stock at its industry's prices over the months its stock-to-sales ratio covers, at both quarter ends, files the golden.",
   "architecture": 1,
   "loops": 0,
+  "spent_architectures": [
+    {
+      "architecture": 1,
+      "fate": "spent: honest strategy decomposition_attribution banned against the last three; rule 3 AT_RISK (holding period read off a column); P(both) about 0.10"
+    }
+  ],
+  "resume": "architecture 2 drafted (card and prototype in scratchpad/b154/a2/); register once task236 leaves the last three; then design and build",
+  "drafts": {
+    "card": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/b154/a2/card_v2.json",
+    "card_builder": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/b154/a2/make_card.py",
+    "prototype": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/b154/a2/proto_vint.py",
+    "note": "draft card kept out of the task folder (no draft card may sit there); on resume refresh its registered stamp, decide the forum on the merits in the card notes, run guard.py check, register, then commit DRAWN with architecture 2 and loops 0"
+  },
   "precut": {
     "exit": 0,
     "date": "2026-10-17",
@@ -31,7 +44,6 @@
     "soft_spots": "coal and LNG on the loading-month basis, the lag unfiled (entry-month reading: Japan coal +205.7, coal +393.0, LNG +902.3); latest estimate read as the 21 July accounts against the 25 June download"
   },
   "returned": [],
-  "resume": "stopped at the stage 4 hardening loop's step 1 (card honesty): the honest stump strategy is banned by ban.strategy against the last three draws, so the draw needs a different decisive move (re-root from stage 1) or the author's ruling on the ban; awaiting the coordinator",
   "approved": null,
   "delivered": null,
   "portal": null,
