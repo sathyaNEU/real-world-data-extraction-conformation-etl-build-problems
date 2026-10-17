@@ -490,7 +490,7 @@ def record_targets(expected, allsep, design, units, plans, bins=True, fixed=None
         # the register keeps the scatter a count of complications produces: one placement that shows a rise
         # and one that takes off more than the standing excess it was carrying
         shares = [(r["carried"] - r["realised"]) / r["carried"] for r in rows]
-        scatter = 8.0 * (max(0.0, min(shares) + 0.05) + max(0.0, 1.00 - max(shares)))
+        scatter = 60.0 * (max(0.0, min(shares) + 0.04) + max(0.0, 0.95 - max(shares)))
         soft = (pen + scatter + 0.02 * sum(abs(cand[c] - base[c]) for c in cand) + 4.0 * band)
         return pen, soft, clear, rd, md
 
@@ -507,15 +507,15 @@ def record_targets(expected, allsep, design, units, plans, bins=True, fixed=None
     best_pen = evaluate(best)[1]
     codes = sorted(base)
     r = np.random.default_rng(W.SEED ^ 0x5EED)
-    for start in range(14):
-        cand = dict(best) if start == 0 else {c: int(base[c] + r.integers(-14, 15)) for c in codes}
+    for start in range(26):
+        cand = dict(best) if start == 0 else {c: int(base[c] + r.integers(-22, 23)) for c in codes}
         pen = evaluate(cand)[1]
         improved = True
         while improved:
             improved = False
             for c in codes:
                 here = cand[c]
-                for step in (-4, -3, -2, -1, 1, 2, 3, 4):
+                for step in (-9, -7, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 7, 9):
                     cand[c] = here + step
                     p = evaluate(cand)[1]
                     if p < pen - 1e-12:
