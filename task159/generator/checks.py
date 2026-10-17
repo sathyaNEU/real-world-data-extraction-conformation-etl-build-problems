@@ -131,6 +131,7 @@ def main():
     # ------------------------------------------------------------------------------------------ R2 mess neutrality
     r2 = {"the fare export's UTC hours read as local": C.Model(TARGET, tz_mode="utc_as_local"),
           "the fare export converted at four hours all year": C.Model(TARGET, tz_mode="fixed4"),
+          "the fare export converted at five hours all year": C.Model(TARGET, tz_mode="fixed5"),
           "the census's quarter-hours read as ending at their label": C.Model(TARGET, quarter_shift=-1)}
     for name, Mx in r2.items():
         t = C.tally(Mx.forecast())
@@ -369,6 +370,47 @@ def main():
         n = moved_a(route) if ask == "A" else moved_b(route)
         check("ASK %s %s moves %d figures, closed by filed text" % (ask, what, n), n >= 1 and filed,
               "; ".join(MOVED[(ask, route)]) if n <= 5 else "")
+    # the clock: the dictionary names the zone and the 2026 change; a fixed offset all autumn moves both asks
+    dict_notes = " ".join(str(x) for x in pd.read_excel(os.path.join(TARGET, PK.F_DICT), sheet_name="Notes",
+                                                        header=None)[0])
+    tz_filed = "UTC-4 before 1 November 2026 and UTC-5 after" in dict_notes and "US Eastern" in dict_notes
+    for ask, route, what in (("A", "fixed4", "the log at UTC-4 all autumn"), ("A", "fixed5", "the log at UTC-5 all autumn"),
+                             ("B", "fixed4", "the logs at UTC-4 all autumn"), ("B", "fixed5", "the logs at UTC-5 all autumn")):
+        n = moved_a(route) if ask == "A" else moved_b(route)
+        check("ASK %s %s moves %d figures, closed by the dictionary's clock line" % (ask, what, n), n >= 1 and tz_filed,
+              "; ".join(MOVED[(ask, route)]) if n <= 5 else "")
+
+    # the escalator readings a cold reader raised, each closed by filed text or immaterial
+    W_ = C.unit_day_windows(TARGET)
+    one_dir = all(len({d for (d, _run) in sh}) == 1 and None not in {d for (d, _run) in sh} and
+                  abs(sum(sh.values()) - 1.0) < 1e-9 for sh, _ev, _st in W_.values())
+    check("ASK A time-weighting equals the dominant direction on every unit-day (one direction, all of the window)",
+          one_dir, "%d unit-days" % len(W_))
+    stops_in = [k for k, (_sh, ev, st) in W_.items() if any(x == "STOP" for x in ev) or st == "STOP"]
+    fault_days = [k for k, (_sh, ev, st) in W_.items() if "FAULT" in ev or st == "FAULT"]
+    resets_same = all(len({x.split()[1] for x in ev if x.startswith("RUN")} |
+                          ({st.split()[1]} if st and st.startswith("RUN") else set())) <= 1 for _sh, ev, st in W_.values())
+    check("ASK A the only stoppages inside the window are faults, each back to the direction set (manual: no allowance)",
+          not stops_in and fault_days and resets_same and "make no allowance for stoppages" in manual,
+          "%d unit-days with a fault, %d with a stop" % (len(fault_days), len(stops_in)))
+    inv = pd.read_csv(os.path.join(TARGET, PK.F_INV))
+    pe = C._platform_escalators(TARGET)
+    set_dir = {u: next(iter(v)) for u, v in C.escalator_directions_peak(TARGET).items()}
+    differ = sorted(u for u, d in zip(pe.unit, pe.direction) if set_dir[u] != d)
+    dict_fields = pd.read_excel(os.path.join(TARGET, PK.F_DICT), sheet_name="Fields")
+    inv_dir_text = " ".join(dict_fields[(dict_fields.File == PK.F_INV) & (dict_fields.Field == "direction")].Description)
+    check("ASK A the inventory's direction against the log: closed by the survey date and the manual's set direction",
+          differ and "condition survey" in inv_dir_text and "in the direction it is set to run" in manual,
+          "%d of %d units differ in the window" % (len(differ), len(pe)))
+    asset = pd.read_csv(os.path.join(TARGET, PK.F_ASSET)).set_index("unit")
+    cls = {}
+    for r in pe.itertuples():
+        mm_ = float(r.width) * (25.4 if r.width_unit == "in" else 1.0)
+        cls[r.unit] = max(b for b in C.RATED if b <= mm_ + 1e-9)
+    check("ASK A widths: inches at 25.4 mm fall in the asset register's own step class on every unit",
+          set(asset.step_width_mm) <= set(C.RATED) and all(int(asset.loc[u, "step_width_mm"]) == c for u, c in cls.items()),
+          "%d units, %d in inches" % (len(cls), int((pe.width_unit == "in").sum())))
+
     gb = C.ask_b(TARGET, "with_holidays")
     check("ASK B holiday days in: Garnett Street %.1f against %.1f" % (gb["Garnett Street"], B["Garnett Street"]),
           round(gb["Garnett Street"], 1) != round(B["Garnett Street"], 1), "")
@@ -443,6 +485,14 @@ def main():
     capreg = pd.read_csv(os.path.join(TARGET, PK.F_CAP))
     check("REALISM the capacity register states its rating basis on every row",
           capreg.basis.str.contains("1 person per sq m of").all(), "")
+    sal = capreg[capreg.complex == "Sallow Park"]
+    ok_sal = True
+    for code, g in sal.groupby("platform_code"):
+        g = g.sort_values("effective_from")
+        ok_sal &= (list(g.effective_from) == ["2019-07-01", "2026-09-01"] and g.effective_to.iloc[0] == "2026-08-31" and
+                   g.rated_capacity.nunique() == 1 and g.basis.iloc[1].startswith("re-measured 2026-08"))
+    check("REALISM Sallow Park's 2026 re-measure has its own effective row, the rating unchanged", ok_sal,
+          "%d platforms" % sal.platform_code.nunique())
     cnt_text = " ".join(str(x) for x in pd.read_excel(os.path.join(TARGET, PK.F_COUNTS), sheet_name="Method",
                                                       header=None)[0])
     check("REALISM the count contractor is Tollison Field Data", "Tollison Field Data" in cnt_text and

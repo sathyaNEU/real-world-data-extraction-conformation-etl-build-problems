@@ -127,12 +127,13 @@ def fare_local(P):
 
 def morning_entries(P, hours=(6, 7, 8, 9), tz_mode="ok"):
     """{(complex_id, local date): entries in the local hours given}. tz_mode, for the mess-neutrality checks:
-    'utc_as_local' reads the UTC hours as local, 'fixed4' converts at four hours all year."""
+    'utc_as_local' reads the UTC hours as local, 'fixed4' and 'fixed5' convert at four or five hours all year."""
     if tz_mode == "ok":
         f = fare_local(P)
     else:
         f = P.fare.copy()
-        t = f.hour_utc.dt.tz_localize(None) if tz_mode == "utc_as_local" else f.hour_utc.dt.tz_localize(None) - pd.Timedelta(hours=4)
+        off = {"utc_as_local": 0, "fixed4": 4, "fixed5": 5}[tz_mode]
+        t = f.hour_utc.dt.tz_localize(None) - pd.Timedelta(hours=off)
         f["ldate"] = t.dt.date
         f["lhour"] = t.dt.hour
     m = f[f.lhour.isin(hours)]
@@ -714,15 +715,37 @@ def _window_shares(tl, a, b):
     return out
 
 
-def _peak_windows(days, utc=False, start=(7, 0), end=(9, 30)):
+def _peak_windows(days, utc=False, start=(7, 0), end=(9, 30), fixed=None):
     out = []
     for d in days:
-        if utc:
+        if fixed is not None:
+            out.append((pd.Timestamp(dt.datetime.combine(d, dt.time(*start)), tz="UTC") + pd.Timedelta(hours=fixed),
+                        pd.Timestamp(dt.datetime.combine(d, dt.time(*end)), tz="UTC") + pd.Timedelta(hours=fixed)))
+        elif utc:
             out.append((pd.Timestamp(dt.datetime.combine(d, dt.time(*start)), tz="UTC"),
                         pd.Timestamp(dt.datetime.combine(d, dt.time(*end)), tz="UTC")))
         else:
             out.append((pd.Timestamp(dt.datetime.combine(d, dt.time(*start)), tz="America/New_York").tz_convert("UTC"),
                         pd.Timestamp(dt.datetime.combine(d, dt.time(*end)), tz="America/New_York").tz_convert("UTC")))
+    return out
+
+
+def unit_day_windows(folder):
+    """{(unit, day): (shares, events, state at 07:00)} for every escalator between a mezzanine and a platform on every
+    weekday-timetable day of the autumn pick: its shares of 07:00 to 09:30 local by (set direction, running), the log
+    events inside the window and the last event before it."""
+    e = _platform_escalators(folder)
+    tls = _timelines(folder)
+    days = autumn_weekdays()
+    wins = _peak_windows(days)
+    out = {}
+    for u in e.unit:
+        ts, ev = tls[u]
+        for d, (a, b) in zip(days, wins):
+            a_, b_ = a.as_unit("ns").value, b.as_unit("ns").value
+            i0 = int(np.searchsorted(ts, a_, side="right"))
+            i1 = int(np.searchsorted(ts, b_, side="left"))
+            out[(u, d)] = (dict(_window_shares(tls[u], a, b)), ev[i0:i1], ev[i0 - 1] if i0 > 0 else None)
     return out
 
 
@@ -735,17 +758,18 @@ def ask_a(folder, route="golden", unrounded=False):
     window: the golden's own figure when every escalator keeps one direction), fault_deducted (weighted by the share
     of the window it was running), watch_only (only the escalators to watch-list platforms), with_holidays (the mean
     over every Monday to Friday of the pick, the holiday-timetable days in), utc_window (07:00 to 09:30 read in the
-    log's UTC)."""
+    log's UTC), fixed4 and fixed5 (the log converted at four or five hours all autumn, the clock change missed)."""
     e = _platform_escalators(folder)
     asset = pd.read_csv(os.path.join(folder, F_ASSET)).set_index("unit")
     if route == "watch_only":
         watch = {(w[1], w[2]) for w in WATCH}
         e = e[[(st, lab) in watch for st, lab in zip(e.complex, e.to_area)]]
     res = {}
-    if route in ("time_weighted", "fault_deducted", "with_holidays", "utc_window"):
+    if route in ("time_weighted", "fault_deducted", "with_holidays", "utc_window", "fixed4", "fixed5"):
         tls = _timelines(folder)
         days = [d for d in daterange(*AUTUMN) if d.weekday() < 5] if route == "with_holidays" else autumn_weekdays()
-        wins = _peak_windows(days, utc=(route == "utc_window"))
+        wins = _peak_windows(days, utc=(route == "utc_window"),
+                             fixed={"fixed4": 4, "fixed5": 5}.get(route))
         for cx in WATCH_COMPLEXES:
             down = up = 0.0
             for r in e[e.complex == cx].itertuples():
@@ -784,10 +808,13 @@ def autumn_weekdays():
     return [d for d in daterange(*AUTUMN) if d.weekday() < 5 and d not in HOLIDAY_TT]
 
 
-def _windows(days=None, utc=False):
+def _windows(days=None, utc=False, fixed=None):
     out = []
     for d in (autumn_weekdays() if days is None else days):
-        if utc:
+        if fixed is not None:
+            a = pd.Timestamp(dt.datetime.combine(d, dt.time(7, 0)), tz="UTC") + pd.Timedelta(hours=fixed)
+            b = pd.Timestamp(dt.datetime.combine(d, dt.time(9, 45)), tz="UTC") + pd.Timedelta(hours=fixed)
+        elif utc:
             a = pd.Timestamp(dt.datetime.combine(d, dt.time(7, 0)), tz="UTC")
             b = pd.Timestamp(dt.datetime.combine(d, dt.time(9, 45)), tz="UTC")
         else:
@@ -824,11 +851,12 @@ def ask_b(folder, route="golden"):
     work_orders (every work order's times), monitoring (the monitoring's modes alone); and the readings the filed
     text rules out: with_holidays (every Monday to Friday of the pick, the holiday-timetable days included),
     mean_per_day (the total over the mornings divided by their number), platform_only (the street elevators left
-    out), utc_window (07:00 to 09:45 read in the logs' UTC), summed (overlapping intervals counted twice)."""
+    out), utc_window (07:00 to 09:45 read in the logs' UTC), summed (overlapping intervals counted twice), fixed4
+    and fixed5 (the logs converted at four or five hours all autumn)."""
     days = None
     if route == "with_holidays":
         days = [d for d in daterange(*AUTUMN) if d.weekday() < 5]
-    wins = _windows(days, utc=(route == "utc_window"))
+    wins = _windows(days, utc=(route == "utc_window"), fixed={"fixed4": 4, "fixed5": 5}.get(route))
     wo = pd.read_csv(os.path.join(folder, F_WO))
     mon = pd.read_csv(os.path.join(folder, F_MON))
     mon["t"] = pd.to_datetime(mon.event_utc).dt.tz_localize("UTC")

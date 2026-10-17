@@ -476,8 +476,9 @@ def capacity_rows():
                 rows.append((code, W.COMPLEX_IDS[s], s, label, 330, "2027-02-13", "", RATED_2019 + ", restored"))
                 continue
             if s == "Sallow Park":
-                rows.append((code, W.COMPLEX_IDS[s], s, label, cap, "2019-07-01", "",
-                             RATED_2019 + ", area re-measured 2026-08"))
+                rows.append((code, W.COMPLEX_IDS[s], s, label, cap, "2019-07-01", "2026-08-31", RATED_2019))
+                rows.append((code, W.COMPLEX_IDS[s], s, label, cap, "2026-09-01", "",
+                             "re-measured 2026-08: 1 person per sq m of usable platform area"))
                 continue
             rows.append((code, W.COMPLEX_IDS[s], s, label, cap, "2019-07-01", "", RATED_2019))
     return rows

@@ -344,6 +344,15 @@ the autumn 2026 pick that ran the weekday timetable, all times local** (14 figur
   standard's own weekday); the log's UTC read as local (all fourteen move; "all times local" and the dictionary's
   "UTC"). Weighted over the window with no allowance for stoppages the figures are the golden's (asserted), so minutes
   and days aggregate to the same people a minute.
+- Readings closed at ship (the re-judge's advisory and the targeted re-read, each asserted): the clock, now one line
+  in the dictionary's Notes sheet (US Eastern, UTC-4 before 1 November 2026 and UTC-5 after; the log at a fixed UTC-4
+  or UTC-5 all autumn moves all fourteen); time-weighted against dominant direction (every one of the 2,736 unit-days
+  holds one direction for all of the window, so the two agree); a stopped unit's direction (the only stoppages inside
+  the window are faults, on 25 unit-days, each reset to the direction set, and the manual makes no allowance for
+  them); the inventory's direction against the log (17 of 38 units differ in the window; the dictionary dates the
+  inventory's direction to the condition survey and the manual counts an escalator in the direction it is set to
+  run); widths in inches (every inch width at 25.4 mm falls in the asset register's own step class, 600 or 1,000 mm,
+  on all 38 units).
 - Primary A1 (D2, an attribute at the wrong vintage): the engineering inventory records each escalator's running
   direction as surveyed at midday; in the morning peak station operations turn the pair at a boarding platform both
   down and at an alighting platform both up; the escalator controllers' log carries every direction change. Fair: the
@@ -377,7 +386,8 @@ the autumn 2026 pick that ran the weekday timetable, all times local** (14 figur
   27.9, the other six unchanged; the prompt's weekday-timetable days); a mean per morning (every figure; "the total
   elevator-hours"); the street elevators left out (every figure; "all its elevators"); the logs' UTC read as local
   (every figure; "all times local"); overlapping work-order and monitoring intervals counted twice (every figure; the
-  manual's "counts once").
+  manual's "counts once"). At ship: the logs at a fixed UTC-4 or UTC-5 all autumn (every figure; the dictionary's clock
+  line).
 - Primary B1 (D8, an anchor on the record, not the event): the control centre opens a work order when the station
   reports the fault, so its out-of-service time runs after the car stopped; the remote monitoring logs the stop.
   Fair: the monitoring gives each fault's stop and its return to normal service. Silent: every work order is complete
@@ -433,12 +443,14 @@ the call with no device cracked 46.8). Rerun from the generated rubric at stage 
 ## Surface screen
 
 `guard.py surface task159` promotes one pair, at the card level only: task147 against task159 (gap objective, pattern
-G8, Gate G `binding_constraint`, the same-driver signature), differentiated on the card at the draw: there a multi-night
-request is lost when any night of its run is sold out; here nobody is lost, the riders a full train cannot take wait
-for the next one, so the backlog inflates the heavy days' counted crowds and is absent on the light days. No hard tell
-(no shared file name, schema, invented name or same-seed table). `guard.py heart` WARN (`overuse.org_family`, answered
-at the draw), nearest driver 0.07 (task451 v2). The persona sweep reads "Line Early" off the service plans' headway
-table, where the column heading "Early" follows the row heading "Line"; it is not a person.
+G8, Gate G `binding_constraint`, the same-driver signature), differentiated on the card at the draw: there a
+multi-night request is lost when any night of its run is sold out; here nobody is lost, the riders a full train cannot
+take wait for the next one, so the backlog inflates the heavy days' counted crowds and is absent on the light days. No
+hard tell (no shared file name, schema, invented name or same-seed table). `guard.py heart` was WARN through stage 4
+(`overuse.org_family`, answered at the draw; nearest driver 0.07, task451 v2) and BLOCKs at ship on furniture against
+task158 (forum and role family), raised after the draw by two re-roots' re-registration; the pre-ship check records it
+for the author. The persona sweep reads "Line Early" off the service plans' headway table, where the column heading
+"Early" follows the row heading "Line"; it is not a person.
 
 ## Leak sweep
 
@@ -461,7 +473,8 @@ table, where the column heading "Early" follows the row heading "Line"; it is no
 
 ## Build record
 
-Stage 3, 2026-10-17; rebuilt after the stage 4 round 1 findings the same day. `build.py`: checks 119 run, 0 failed (the
+Stage 3, 2026-10-17; rebuilt after the stage 4 round 1 findings and again at ship the same day. `build.py`: checks 129
+run, 0 failed (the
 three-rules block R1 to R3c on the generator's clean truth, the R2 mess-neutrality variants, every SF row SF1 to SF12,
 the ladder's fifteen rungs and rivals, the out-of-sample test, thirteen family constructions and the one-sigma
 corridor, the car-load sweep, both asks with their routes, edges and every closed reading, the separation line, the
@@ -476,9 +489,59 @@ Invented names checked: Vellmouth (no real city or transit agency), the count co
 at round 1 from a name echoing task148's Halvorsen Township; no firm of the name in a web search, and no other build
 uses it); station names are ordinary street and place names; the car and escalator builders are real manufacturers
 named descriptively; personas from `guard.py names`. The platform capacity register states its rating basis on every
-row (one person per square metre of usable platform area, from the 2019 survey). The seed was fixed by rule
+row (one person per square metre of usable platform area, from the 2019 survey; Sallow Park's August 2026 re-measure on
+its own row from 1 September 2026, the rating unchanged). The seed was fixed by rule
 (1590111) before any data was generated and never searched. The pack's files share the pull's modification time, the
 house convention (`dataset-generation` section 9).
+
+## Pre-ship check
+
+- **Three rules, re-read against the built pack.** Domain: the deciding quantity is each watch-list platform's forecast
+  peak quarter-hour accumulation by spring weekday, built the way transit capacity analysis builds platform loading
+  (arrivals over each headway against each arriving train's room, the riders a full train leaves waiting), on the clean
+  truth and on the pack (R1 to R3c). Two layers: the Layer 1 inventory in `## Three rules`, each item asserted neutral
+  on the call (R2: the export's UTC read as local, converted at four hours and at five hours all year, the census
+  quarter-hours read as ending at their label, a spring ratio off the legacy reads; SF1 to SF12); the asks' devices
+  confined to the ask files (SEPARATION); Layer 2 the backlog behind full trains, chosen on the hybrid-day counts it was
+  not fitted to (OOS). The decisive step is none of the three banned kinds: not a plant (R3c: no document names a
+  backlog, a train's room or riders left behind, and the counts, census and entries are what each system records);
+  not data semantics (every term read right still carries the counts by entries to 35); not rule application (every
+  filed rule executed with the proportional carry files 35, with one headway's arrivals 20; only the queue files 26).
+- **Gates.** 20 files in 4 formats (csv, parquet, pdf, xlsx); the fare export at 761,594 rows; two distractors (the
+  legacy register reads and the ridership dashboard), each deletion asserted; `checks.py` 129 run, 0 failed;
+  `verify.py` (pandas, no generator import) 6 passed; two builds byte-identical (target, golden, figures.json,
+  submission); `figures_check.py` 40 of 40; `precut.py` exit 0; `voice-check.py` PASS at 950 characters; `leak.py`
+  REVIEW, no LEAK, every line answered; the H1 audit clean on the pack and the goldens; `guard.py validate` clean,
+  `surface` one card-level pair (task147, differentiated at the draw), `heart` BLOCK at ship on furniture (below);
+  `generator/cracker.py` pair ceiling 29.3, mirror leakage 8.3 per cent. `target.zip` cut from the final rebuild, 20
+  entries equal to `target/` byte for byte, sha256 150f8fc2.
+- **Heart at ship, for the author.** `guard.py heart` now BLOCKs `ban.role` (capacity_planner) and `ban.forum`
+  (operations_desk) against task158, with `repeat.deliverables` (png and xlsx) a WARN. The ban was raised after the
+  draw: at the DRAWN commit (8ec573e) the last three draws before this one were task190, task240 and task194 and the
+  check passed; task190 (architecture 4) and task194 (architecture 3) have since re-rooted and re-registered after this
+  card, which brings task158, drawn at 16:46 and the same lane's previous build, into the window. Both keys are this
+  build's honest ones (the station planning desk acts on the count; the stakeholder plans staffing), so they are kept,
+  not relabelled; no shipped file or prompt sentence names either. Whether the pair reads as a batch repeat is the
+  author's call before upload.
+- **Stage 4.** Round 1: judge DETERMINISTIC, FIX_NOW on the asks only; leak reader clean, the decisive step analytical;
+  rule 3 audit PASS (P(one) about 0.20, P(both) about 0.06 to 0.08). Every finding fixed in one generator pass with the
+  call frozen (`## Tried and rejected`, the ask sheet's closed readings, the car-load sweep). Re-judge DETERMINISTIC,
+  APPROVE: its own train-capacity queue model filed 26 (4, 6, 6, 6, 4) with the same postings and reproduced every
+  escalator and elevator figure; its one advisory (the clock) filed at ship. The targeted re-read was clean on the main
+  call.
+- **Gate G.** No shipped artifact ranks the platforms on the posting question, and `metadata.json` declares no
+  wrong-basis distractor. Delete every wrong number in the pack and the call still turns on reading the mid-week crowds
+  as a backlog behind full trains.
+
+## Residual
+
+- The capacity register repeats one basis text on most rows, as a register rated in one survey reads; kept.
+- Sallow Park's August 2026 re-measure kept its 2019 effective date when the re-judge read the pack; it now has its own
+  row from 1 September 2026 with the rating unchanged, so no graded figure moved.
+- The clock was derivable but unnamed (the first trains and escalator starts near 05:00 local); the dictionary now
+  names the zone and the 2026 change at no cost to Layer 1, since the main call is the same at either fixed offset.
+- At 150 a car the back-cast reads the mid-week crowds 22 to 38 per cent low (the census-scaled model runs lighter than
+  the counts); the counts' best fit, about 145 a car, sits inside the landing range, and the golden holds at both.
 
 ## Tried and rejected
 

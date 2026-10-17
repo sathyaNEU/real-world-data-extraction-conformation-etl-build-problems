@@ -106,8 +106,8 @@
     {
       "path": "platform_capacity_register.csv",
       "format": "csv",
-      "bytes": 11466,
-      "rows": 93,
+      "bytes": 11910,
+      "rows": 97,
       "source": "Constructed: Vellmouth Transit Commission Station Planning, platform capacity register (11 January 2027)",
       "date": "2027-01-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -196,7 +196,7 @@
     {
       "path": "vtc_data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 9439,
+      "bytes": 10221,
       "rows": 54,
       "source": "Constructed: Vellmouth Transit Commission Ridership Data, data dictionary for the 11 January 2027 pull",
       "date": "2027-01-11",

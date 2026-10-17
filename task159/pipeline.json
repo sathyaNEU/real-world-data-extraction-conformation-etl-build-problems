@@ -1,38 +1,51 @@
 {
  "task": "task159",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "urban-regional-science/forecasting",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
  "stump": "A competent solver carries each watch-list platform's mid-week counted peak to each spring weekday in proportion to its complex's morning entries and files 35 shifts a week, posting Monday and Friday conductors on Sallow Park's Line 1 and Line 4 southbound platforms and keeping Corran Junction's Line 5 westbound platform posted every weekday; the step that lands it there is treating a mid-week crowd behind full trains as proportional to arrivals, when on Mondays, Fridays and eight-car Line 5 trains every train takes everyone and the pick needs 26.",
  "architecture": 1,
  "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17"
+  "date": "2026-10-17",
+  "checks": "50 checks, 0 FAIL, 0 WARN (built figures)"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), every line answered in the design note",
-  "reader": "no leak, decisive step analytical (stage 4 round 1); the asks' readings it raised closed in the round 1 pass"
+  "leak_py": "REVIEW, no LEAK (2026-10-17 at ship, --asof 2027-01-11; every REVIEW line answered in the design note's Leak sweep)",
+  "reader": "clean, decisive step analytical (round 1); the targeted re-read on the round 1 pack clean on the main call"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.org_family, answered at the draw)",
-  "nearest": "0.07 task451 v2; surface: one card-level pair, task147, differentiated"
+  "heart": "BLOCK at ship 2026-10-17: ban.role (capacity_planner) and ban.forum (operations_desk) against task158, raised after the draw when task190 and task194 re-rooted and re-registered after this card (the draw-time check at 8ec573e passed against task190, task240, task194); keys honest and kept, for the author; WARN overuse.org_family and repeat.deliverables",
+  "nearest": "0.05 task147 (card stump)",
+  "surface": "task147 promoted on card axes only (surface 0.080), differentiated at the draw"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW on the asks only (round 1); fixed in one generator pass with the call frozen, re-judge pending",
-  "report": "determinism_check_report_round1.md"
+  "disposition": "APPROVE (round 2); round 1 FIX_NOW on the asks only, fixed in one generator pass with the call frozen; the round 2 clock advisory filed at ship",
+  "report": "task159/determinism_check_report.md (round 1: determinism_check_report_round1.md)"
  },
  "returned": [],
- "resume": "stage 4: re-judge once (round 1 fixes in: asks' readings closed, golden holds from 120 to 155 a car, capacity basis stated, contractor renamed)",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "build": {
+  "checks": "129, 0 FAIL",
+  "verify": "6, 0 FAIL",
+  "rebuild": "byte-identical (two builds, the second cutting the zip)",
+  "figures_check": "40 figures, 0 absent",
+  "answer": "26 shifts a week (Mon 4, Tue 6, Wed 6, Thu 6, Fri 4): GAR-2, COR-2, ALB-6, QUA-6 every weekday; SAL-1S, SAL-4S Tue to Thu; COR-5W none",
+  "default_path": "35 (mid-week counts carried by entries)",
+  "car_load_landing": "120 to 155 a car (counts' best fit 145)",
+  "pair_ceiling": "29.3 (cracker.py), mirror leakage 8.3 per cent",
+  "target_zip_sha256": "150f8fc20af2b1b3cf5ebae70eabe9eaacb4b6f8e31fac3ec55e7b81294c90bf"
+ }
 }
