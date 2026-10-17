@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 2: task235 shipped on architecture 2 after the judge's SEND_BACK of architecture 1; task236 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 2 fully shipped with task236; wave 3, task237 to task242, cut into the author file and next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task235 shipped; task236 next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3 (task237 to task242) is next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,25 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task236: SHIPPED 2026-10-17 (wave 2, sixth build; architecture 1); waiting on the portal.**
+- A state health department's Communicable Diseases Branch and its weekly influenza report (Epidemiology & Public
+  Health, disease-surveillance-outbreak-anomaly-detection x Data Quality Monitoring). Call: flag the notified influenza
+  series of Far North, Metropolitan South, Metropolitan West and South Coast from their testing changes in the week 36
+  report of 2027, and not those of North Coast, Tablelands, Central West or Metropolitan North. Against the sentinel
+  general practice network's influenza activity (ILI rate times the protocol swabs' influenza positivity), the share of
+  infections notified rose 1.87, 1.53 and 1.53 times where point-of-care testing came in and fell to 0.45 when
+  Metropolitan South's drive-through clinics closed; the other four stay within 0.99 to 1.01. Positivity flags seven
+  regions (5 of 8 wrong); raw counts and the unchanged regions as controls 5 wrong; ILI rate or swab positivity alone
+  flag all eight. Asks: each region's season-to-date notified cases (the 28 June boundary review) and week 36 rate per
+  100,000 (preliminary reports notify; the Monday 09:00 cut-off in UTC).
+- Gates: 125 generator checks with the realism sweep, verify green, byte-identical rebuilds, figures_check 93 of 93,
+  precut 49, leak.py REVIEW only; three leak reads (question 1 none each time, question 6 analytical; the register's
+  repeated wording, a merger clause close to a verdict, overlapping point-of-care codes and a quarter readable as
+  absolute were fixed); judge DETERMINISTIC, APPROVE in one pass (stump power strong; its low-risk note, the index is
+  no filed formula, stays by design). At stage 3 the shape moved from 07 to 11 (task465's re-draw holds 07) and the
+  metropolitan regions were renamed (the people screen read "Metro" as a first name). Surface screen promotes task234,
+  task235 and task233 (the same author's Data Quality builds) and task81, task95, task73 for the author's read.
 
 **task235: SHIPPED 2026-10-17 (wave 2, fifth build; architecture 2); waiting on the portal.**
 - Fogbell Games, a Dublin game studio, and its match-3 game Kittiwake Cove (Product Analytics,

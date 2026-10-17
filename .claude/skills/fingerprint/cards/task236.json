@@ -8,11 +8,11 @@
   "client_domain": "epidemiology-public-health",
   "niche": "a state communicable diseases branch's weekly influenza report deciding which health regions' notified influenza series carry a testing-change break flag, judged on how far each region's testing change moved the share of its influenza infections that get notified, read against the sentinel general practices' influenza-like-illness consultations and the share of their protocol swabs positive for influenza, in a winter when point-of-care testing reached some regions' general practices, others moved emergency departments to multiplex panels, one closed its drive-through clinics and RSV peaked in the north",
   "objective": "data-quality-monitoring",
-  "shape": "07",
+  "shape": "11",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Flag the notified influenza series of Far North, Metropolitan South, Metropolitan West and South Coast from the report weeks of their testing changes in the week 36 report, and not those of North Coast, Tablelands, Central West and Metropolitan North.",
+  "answer_source": "submission.md block 1",
   "gap": [
     "population",
     "time"
@@ -36,10 +36,10 @@
   "role_family": "research_desk",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "influenza_laboratory_results_2027-04-05_to_2027-09-13.csv",
-    "rows": 0,
-    "entity": "one influenza test result a laboratory or a point-of-care service reported, positive or negative",
-    "grain": "test result",
+    "file": "gateway_influenza_results_2027-04-05_to_2027-09-12.csv",
+    "rows": 229848,
+    "entity": "one influenza result a laboratory or a point-of-care service reported to the notification gateway, positive or negative, preliminary or final",
+    "grain": "result report",
     "source": "synthetic"
   },
   "forum": "operations_desk",
@@ -58,15 +58,15 @@
   },
   "deliverables": [
     "influenza_testing_break_flags_week36_2027.xlsx",
-    "notifications_against_sentinel_activity_week36_2027.png"
+    "testing_change_breaks_week36_2027.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A change in how a source captures cases changes which cases it reaches as well as how many, so the capture rate read against the source's own attempts moves with the change itself; the share captured is read instead against an independent fixed-protocol sample's volume times the share of that sample carrying the condition, which no change in capture reaches, while the raw count confounds the change with the season's rise and a ratio to the sample's unattributed volume confounds it with other causes of the same signal.",
   "driver_concrete": "A region's testing change (point-of-care tests in general practice, multiplex panels in emergency departments, a drive-through clinic closing) moves who gets an influenza test as well as how many, so each region's positivity moves with the change itself; the sentinel practices swab a fixed protocol sample of their influenza-like-illness patients that no regional testing change reaches, so their consultations times their swab positivity track the region's influenza infections, and notifications against that index give the change in the share notified, while raw notifications confound the change with the season's rise and notifications per influenza-like-illness consultation confound it with RSV, which fills the same consultations.",
-  "stump": "A competent solver adjusts for testing by comparing each region's positivity in the four weeks after its testing change with the four weeks before and files 4 of the 8 regions wrong (two point-of-care regions and the clinic closure missed or kept, two unchanged regions flagged as their season rose); the step that lands it there is reading the share of infections notified off the tests the region's own laboratories ran, which the testing change itself moved, instead of off the sentinel practices' influenza-attributable consultations, which no testing change reaches.",
+  "stump": "A competent solver adjusts for testing by comparing each region's positivity in the four weeks from its testing change with the four weeks before and files 5 of the 8 regions wrong (North Coast, Tablelands, Central West and Metropolitan North flagged, Far North missed); the step that lands it there is reading the share of infections notified off the tests the region's own services ran, which the testing change itself moved, instead of off the sentinel practices' influenza-like-illness consultations attributed to influenza by their protocol swabs, which no testing change reaches.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who collapses repeat specimens into episodes, assigns regions by residential postcode, reads the week in the report's own week definition and reads every protocol clause, then judges each region's testing change on the change in its positivity (notifications per test) over the four weeks either side, files 4 of the 8 regions wrong; raw notifications flag every region as the season rises, and notifications per influenza-like-illness consultation flag every region too, missing that RSV filled the northern regions' consultations.",
+  "analyst_test": "A strong analyst who builds the cases from the gateway's results under the protocol (episodes, regions by residential postcode, weeks by collection date, panel rows and preliminary reports one specimen) and reads every clause, then judges each region's testing change on the change in its positivity over the four weeks either side, files 5 of the 8 regions wrong (North Coast, Tablelands, Central West and Metropolitan North flagged, Far North missed); raw notifications and the unchanged regions as controls file 5 wrong each, and notifications per influenza-like-illness consultation or per swab positivity flag all eight.",
   "domain_test": "The deciding quantity is the change in a region's influenza ascertainment, the share of its infections that are notified, estimated against the sentinel general practice network's influenza-like-illness consultations attributed to influenza by its protocol swabs, the surveillance field's own syndromic and virological index; with tills, meters or wards for regions there is no syndrome that several viruses fill, no protocol swab that attributes it, and no testing change that moves who gets tested, and the task stops making sense.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -79,11 +79,12 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:ascertainment-against-a-sentinel-syndromic-virological-index",
   "layer1": [
-    "repeat specimens from the same person within an episode, and a point-of-care result later confirmed by a laboratory",
-    "residential postcode against the testing laboratory's region",
-    "the report week (Monday to Sunday by specimen collection date) against received timestamps in UTC",
-    "sentinel practices that miss a week's return, and list sizes that change",
-    "result text varying by laboratory and multiplex panels reporting each virus on its own row"
+    "a preliminary and a final report for one positive specimen",
+    "inpatients re-swabbed while they shed, positives past 14 days starting a new case",
+    "multiplex panels reporting influenza A and B on their own rows, and result wording that differs by service and changes with a laboratory merger",
+    "residential postcode blank or 0000, residents of other states, and a boundary review on 28 June",
+    "receipt times in UTC against a local Monday 09:00 cut-off",
+    "sentinel returns not received, list sizes revised for the July quarter, and protocol swabs not tested"
   ],
   "registered": "2026-10-17T07:04:20Z"
 }
