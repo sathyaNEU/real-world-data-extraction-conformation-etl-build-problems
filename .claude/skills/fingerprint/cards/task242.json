@@ -1,0 +1,103 @@
+{
+  "task": "task242",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 3, seed DQ15 (whether an item's published prevalence carries a misclassification flag); the seed's decision (which published prevalences carry the flag) and quantity (a prevalence corrected for the test's sensitivity and specificity) kept, the world moved to a district's post-season dengue IgM household serosurvey; the seed's pitfall (false positives ignored) is not the stump",
+  "domain": "epidemiology-public-health",
+  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+  "niche": "a city corporation's quality flags on the zone-level dengue infection shares it publishes from its post-season IgM household serosurvey, each zone's share read through an assay whose detection fades with the weeks since onset",
+  "objective": "data-quality-monitoring",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G6",
+    "G14"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the city health officer's epidemiologist, who sets the quality flags on the indicators the corporation publishes",
+  "role_family": "research_desk",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "dengue_case_line_list_2026_2027.csv",
+    "rows": 30000,
+    "entity": "one notified dengue case (confirmed or probable)",
+    "grain": "case",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "local_government",
+  "world": {
+    "geography": "India, an unnamed municipal corporation in a southern state (a fictional city corporation, its 12 zones and the medical college laboratory that tests for it; real country and national surveillance programme)",
+    "currency": "INR",
+    "org_type": "municipal corporation public health department (city epidemiology cell)",
+    "invented_names": [
+      "Kadalur",
+      "Thenkarai",
+      "Puthanpalli",
+      "Melmangalam",
+      "Vadakkupatti",
+      "Kizhakkoor",
+      "Velliyanur",
+      "Chinnakulam",
+      "Periyamalai",
+      "Kottaivayal",
+      "Sengalur",
+      "Aranmanai",
+      "City Dengue Serosurvey 2027"
+    ],
+    "people": [
+      "Vedika Varghese",
+      "Shaurya Issac",
+      "Gauri Kant"
+    ]
+  },
+  "deliverables": [
+    "dengue_igm_flag_review_2027.xlsx",
+    "dengue_igm_flags_health_committee.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the share of units that experienced an event during a period, read through a detector whose chance of registering the event fades with the time since it happened, so each unit's detection rate is the detector's curve averaged over that unit's own spread of event times up to its reading date; correcting with the detector's rate measured on a validation set with another spread of times misstates the share unit by unit.",
+  "driver_concrete": "Each zone's published IgM-positive share is meant to stand for the share of its residents infected with dengue since 1 January, but the assay detects nearly every infection in the weeks after onset and few after three months, so a zone's chance of testing positive is the assay's sensitivity curve by days since onset averaged over the zone's own epidemic curve up to each specimen's collection, which in zones surveyed months after their epidemic is a fraction of the sensitivity the laboratory's panel measures.",
+  "stump": "A competent analyst corrects each zone's published IgM share by the Rogan-Gladen estimator with the laboratory panel's sensitivity in the assay's 5 to 60 day window and its specificity, finds every zone's corrected share within 1.5 times its published figure and flags no zone; the step that lands it there is taking the panel's sensitivity as the assay's sensitivity in each zone, when the zones surveyed months after their epidemic had most of their infections outside the days the panel's figure describes.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly and applies the flag rule as filed corrects each zone's IgM share by the Rogan-Gladen estimator with the panel's sensitivity in the assay's 5 to 60 day window (about 0.88) or pooled over the panel (about 0.67) and the panel's specificity, finds every corrected share between 0.8 and 1.35 times the published figure and flags no zone, where the golden flags six.",
+  "domain_test": "The deciding quantity is each zone's dengue attack rate since January estimated from IgM serology the way serosurvey epidemiology estimates incidence from a recent-infection marker, through the marker's detection curve by days since onset convolved with the zone's own epidemic curve up to each specimen's collection; with hospital beds or megawatt-hours in place of residents, IgM and epidemic curves there is no marker kinetics and no transmission season for the effective sensitivity to come from, so the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:igm-serosurvey-attack-rate-through-the-detection-window",
+  "layer1": [
+    "the notification line list's dates written day-month-year, onset and notification dates days apart",
+    "block names spelt differently in the line list and the survey files",
+    "the line list carrying the 2026 season's tail and cases resident outside the district",
+    "the panel's specimens with onset and collection dates, days since onset to be worked out",
+    "participants' specimens collected across each block's fieldwork window"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task229": "task229 (v2, lineage) reads a state share through checks whose timing is set by the state itself; task242 reads an infection share through a marker whose detection fades with the time since infection, carried through each zone's own epidemic curve: no selection of when units are seen, no shared quantity or file",
+    "task461": "task461 sets a dial from a low quantile carried to a short record through a correlated auxiliary series; task242 corrects a share for a detection rate that varies with time since the event: no quantile, no auxiliary series, no dial",
+    "task501": "task501 (v4) picks the group that keeps a reproduction eigenvalue above one under the season's contact regime; task242 estimates each zone's attack rate through IgM kinetics and the zone's epidemic timing: same field, a different quantity, no contact matrix",
+    "task230": "task230 (v2, lineage) has a detector's hit rate falling as targets thin in a shared pool; task242's detection falls with the time since each event and is averaged over each zone's own event times: no pool, no prevalence-dependence"
+  },
+  "lineage": [],
+  "notes": "Seed DQ15: the decision (which published prevalences carry the misclassification flag) and the quantity (a prevalence corrected for the assay's accuracy) kept; the seed's survey world and its pitfall (false positives ignored) are not used. The decisive step is the field's own: an IgM serosurvey's attack rate since January needs the assay's detection curve by days since onset carried through each zone's own epidemic timing, which the panel's single sensitivity does not describe.",
+  "registered": "2026-10-17T22:32:36Z"
+}
