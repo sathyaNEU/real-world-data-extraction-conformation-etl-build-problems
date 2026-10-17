@@ -325,9 +325,15 @@ until each total sits at least 0.25 of a euro from its edge (850.90, 2,493.05, 1
 are whole minutes and each route's two middle values are equal, so neither the rounding nor the
 even-set convention can move them. The thirteen partner shares are exact ratios of two integers, so no
 convention and no order of operations can move which side of an edge they fall: the generator asserts
-that none of them is an exact x.x5 and that the tightest, Q9 at 23.3871 per cent, clears its edge by
-0.0129 percentage points, with every other share at 0.0151 or more. All of it is asserted
-(`bin.total`, `bin.cand.*`, `bin.euros.*`, `bin.share.*`, `bin.share_exact.*`, `bin.median.*`).
+that none of them is an exact x.x5 and that the tightest, Q9 at 23.3871 per cent (58 of 248), clears
+its edge by 0.0129 percentage points, with every other share at 0.0151 or more. **Why that clearance
+is enough, in the units that matter:** a share here is one integer over another, so its value does not
+drift with a convention, an order of operations or a floating-point path, and the only way it moves at
+all is for the numerator or the denominator to change by a whole action, which moves Q9 by 0.40
+percentage points, thirty-one times the clearance. The clearance is therefore a margin against the
+author's own rounding, where a hundredth of a point is already generous, and not a margin against any
+movement the data can make. All of it is asserted (`bin.total`, `bin.cand.*`, `bin.euros.*`,
+`bin.share.*`, `bin.share_exact.*`, `bin.median.*`).
 
 **The grid.** Two axes, how the reports are resolved and which measured quantity the count carries:
 
@@ -587,6 +593,14 @@ executed every filed paragraph and matched every control total.
   Replaced by start times from 07:00 to 21:59 with 82 per cent of minutes on a multiple of five, a
   working week in the daily counts, partner deliveries inside each organisation's working day, and
   lognormal lags, all asserted.
+- (architecture 3) Paragraph 4.5 closing on the desk's schedule, that the round the calendar puts in
+  the autumn is done in the next reporting period: of the whole pack it was the one line nearest the
+  signpost boundary, because its only function was to tell a reader that the autumn holds no audited
+  report. Cut. The frame stays, which is the sentence saying what each round drew its batch from and
+  over which period, and that is the WHAT the estimand owes; the coverage gap is visible in the
+  worksheet's own dates and the uncomputability of every stratified route is asserted on the data
+  rather than on that line. Dropping it moved no figure: `figures.json` is byte-identical across the
+  rebuild and only the protocol's own bytes changed.
 - (architecture 3) Three Azores municipalities in the gazetteer's "Ilhas" district beside the Madeira
   ones, with the clock offsets in no shipped file: a geography error of the pack's own making that
   left the medians open four ways. The gazetteer now carries "Acores" and "Madeira" as separate

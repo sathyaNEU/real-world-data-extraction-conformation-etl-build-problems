@@ -279,17 +279,17 @@ def dilution(target):
         level = round(level, 4)
         # the run itself, with the level's recovery stepped until the median the panel reports sits
         # mid-bin at the three decimals the validation file states it to
-        for attempt in range(60):
+        for attempt in range(220):
             lrng = random.Random(W.SEED + 31 + li * 7 + attempt)
             rec = W.DILUTION_RECOVERY[lv] + 0.0009 * attempt
             vals = [round(max(0.0002, level * rec * (1.0 + lrng.gauss(0.0, spread))), 4)
                     for _ in range(W.DILUTION_REPLICATES)]
             median = sorted(vals)[W.DILUTION_REPLICATES // 2]
             # every replicate has to sit clear of the one-fifth line as well, so the count the ask
-            # grades cannot turn on a hair: the nearest replicate is at least 2 points of the level
-            # away from 20 per cent of it
-            edge = min(abs(abs(v - level) / level - 0.20) for v in vals)
-            if _slack3(median / level) >= 0.00042 and edge >= 0.020:
+            # grades cannot turn on a hair. The margin is measured where it bites, in the stored
+            # four decimals: the nearest replicate is at least 4 stored steps from the line.
+            edge = min(abs(abs(v - level) - 0.20 * level) for v in vals)
+            if _slack3(median / level) >= 0.00042 and edge >= 0.0004:
                 break
         for i, v in enumerate(vals):
             dser[0] += rng.choice([1, 1, 2, 2, 3, 4, 6, 9])

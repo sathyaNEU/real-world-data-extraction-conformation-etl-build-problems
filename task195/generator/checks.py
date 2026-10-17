@@ -430,9 +430,9 @@ def run(target, g=None):
             _vals.setdefault(str(row[0]).strip().upper(), []).append(float(row[4]))
     for d in g["dilution"]:
         lv = d["level"]
-        edge = min(abs(abs(v - d["prepared"]) / d["prepared"] - 0.20) for v in _vals[lv])
-        ok("ask 3 %s's replicates are clear of the one-fifth line" % lv, edge >= 0.020,
-           "nearest replicate %.4f of the level from 20 per cent" % edge)
+        edge = min(abs(abs(v - d["prepared"]) - 0.20 * d["prepared"]) for v in _vals[lv])
+        ok("ask 3 %s's replicates are clear of the one-fifth line" % lv, edge >= 0.0004,
+           "nearest replicate %.5f from the line, %.1f stored steps" % (edge, edge / 0.0001))
     _covered = {r["specimen_id"] for r in cross_all}
     ok("ask 1 the biobank's register covers every accession the panel register holds",
        not ({r["specimen_id"] for r in panel_rows} - _covered),

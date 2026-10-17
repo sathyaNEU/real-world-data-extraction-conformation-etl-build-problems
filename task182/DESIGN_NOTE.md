@@ -390,30 +390,45 @@ residual level or a corrected level for any position).
 | Ask | Figures | Home (H18) | Primary device | Shared hazards | Files on the path |
 |---|---|---|---|---|---|
 | A1 the 14 specific levels, dB to 1 dp, and the slate, the sixth and its margin | 17 | the call's own construction | none (construction) | the Layer 1 set | plan, register, deployments, parquet, met, event log |
-| A2 valid and excluded assessment minutes per position | 28 | the audit trail of the input the call consumes | D3, the met channels' unit swap and the rain gauge's cumulative tips | D8 time base, D1 the repeated block | met, parquet, deployments, notes |
-| A3 the hours the blower house ran, the biogas burned and the centrifuge runs, per survey week | 18 | the plant's load through each position's week, the qualifier that makes the levels comparable | D2, the engine hour counter replaced mid-survey and the SCADA counter rollover | D8 time base, D4 the comms gap | SCADA, notes, event log |
-| A4 the highest one-third-octave band and the tone verdict per position | 28 | a component of the mitigation case: a tonal source needs different treatment | D6, bands reported as LZeq with two bands missing on one meter and no band file for the last week | D8 time base | third-octave file, plan, deployments |
+| A2 valid and excluded assessment minutes per position | 28 | the audit trail of the input the call consumes | D4, the minutes the meter wrote its no-data value for, which are a number and not a blank | D3 the met unit swap and the gauge's cumulative tips, D8 time base, D1 the repeated block | met, parquet, deployments, notes, plan |
+| A3 the biogas burned, the blower air delivered and the centrifuge runs, per survey week | 18 | the plant's load through each position's week, the qualifier that makes the levels comparable | D6, a quantity that exists both as a rate channel and as a counter, and an event the process channel and the equipment log count differently | D4 the historian's gap, D2 the counter roll-over and the replaced hour counter | SCADA, event log, plan, notes |
+| A4 the highest one-third-octave band and the tone verdict per position | 28 | a component of the mitigation case: a tonal source needs different treatment | none that survives the determinism bar (see below) | D4 the four positions whose meters carry no band module, D8 time base | third-octave file, plan, deployments |
 
-**Separation.** Zero device rows sit in the main call's declared population (the 14 positions' assessment
-minutes, the event log's stop rows and the register's position rows), asserted by count. A2's and A3's
-devices move counts and hours, not levels: every printed specific level is identical to one decimal with the
-met exclusions skipped, the unit swap misread, the repeated block kept, the hour counter read as continuous
-and the SCADA gap filled (asserted, six assertions). A4's devices touch no file the call reads except the
-plan.
+**Separation.** Zero device rows sit in the main call's declared population (the 14 positions' valid
+assessment minutes, the event log's stop rows and the register's position rows), asserted by count. A3's
+devices are in files the call reads only for the stop intervals. A2's device moves counts, not levels: every
+printed specific level is identical to one decimal with the met exclusions skipped, the unit swap misread,
+the repeated block kept and the no-data minutes read as levels (asserted). A4's hazards touch no file the
+call reads except the plan.
 
-**The cracker sheet.** The cracker landed the call, ran the hygiene battery, executed every filed rule and
-reconciled every total.
+**The cracker sheet.** The cracker landed the call, ran the hygiene battery (key uniqueness, exact
+duplicates, unmatched joins, fan-out, count ties) and executed the filed rules that battery points at.
+Scored on the built pack.
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
-| A2 valid and excluded minutes | the met record joined on the nearest ten-minute stamp in UTC, wind read in one unit throughout | 11 of 14 positions' excluded counts too low, two too high | the enclosing met record in local time, km an hour converted after the swap date | miss |
-| A3 blower hours, biogas, centrifuge runs | the SCADA counters differenced end to start | three weeks' biogas short by the rollover and the engine's replaced counter | the counter's resets and the replacement read from the maintenance rows, the comms gap from the daily log | miss |
-| A4 highest band and tone | the A-weighted band levels, missing bands read as zero | the wrong band at nine positions and the tone verdict wrong at four | the unweighted band levels, the missing bands absent and the last week's positions answered none | miss |
+| A2 valid and excluded minutes | the battery reports no nulls, because the no-data minutes carry a number; they stay in the count | the valid and excluded counts at 3 of the 14 positions, 6 of the 28 figures, by up to 38 minutes | plan 4.2's last sentence: a minute the meter recorded no measurement for is not valid | partial, 6 of 28 |
+| A3 biogas, blower air, centrifuge runs | the process channel read as the plant's record: the counter differenced row by row inside each week, the blower's rate column summed, a run counted as a block of feed | all six biogas figures about 55 m3 low, the gap week's air 617 against 700, all six run counts 6 against 10 to 13 | plan 5.1's two counter readings at the week boundaries and 5.2's start in the equipment log | miss, 13 of 18 |
+| A4 highest band and tone | the band rows paired to positions through the deployment windows, pooled energetically over the assessment period, unweighted as the column names and the notes state | every figure | the same | hit |
 
-**Pair ceiling:** 39.5 (ask weight 57 over 95 criteria: construction 14 criteria = 8.4 points, devices 81 =
-48.6; the cracker takes 38 + 7 + 8.4 + 15 per cent of the devices = 60.6, the best miss takes 5 + 7 + 12 per
-cent = 17.8, and the pair averages 39.2, which the regrade margin rounds to 39.5)
-**Mirror leakage:** 12.0
+**Pair ceiling:** 69.2, over the bar, and the reason is written out here rather than smoothed. Ask weight 57
+points over 91 ask criteria is 0.6264 a criterion. The cracker banks A1 (17, it landed the call), A4 (28,
+forced and device-free) and 22 of A2, and loses 13 of A3: 72 of 91 criteria, 45.1 points, so 38 + 7 + 45.1 =
+90.1. The mirror, which stops at the statistical-background rung, banks 3 of A1 and the same ask layer: 5 +
+7 + 36.3 = 48.3. The pair averages 69.2.
+**Mirror leakage:** 64.0
+
+**Why it moved, and what it needs.** The determinism judge found five supplementary answers unforced (the
+rain test, the no-data minutes, the gap week's blower air, the definition of a run, the week boundary), and
+closing each of them at authority is what this pass did. Four of the five closures removed a way for a
+careful solver to miss: the previous sheet's A2 and A4 rows rested on the met join, the unit swap and an
+A-weighted reading of the band levels, and all three are now either filed or convergent by construction. The
+ask layer therefore carries device mass on A3 only. The build is determinate and the call is stumped; the
+rubric side needs ask-layer device work, which is `/fix-rubric`'s lane: A4 has to be re-cut around a device
+that no filed rule adjudicates (the band world as built is a robust physical measurement, and every device
+aimed at it either breaks a clearance the judge asked for or is caught by the hygiene battery), and A2 needs
+a second silent hazard beside the no-data minutes. Neither can be done without moving ask wording or cutting
+new ask-only rows, and neither belongs in a determinism repair that holds the call frozen.
 
 ## Pack
 

@@ -146,10 +146,10 @@
  },
  "dilution": {
   "L1": {
-   "median_recovery": 0.878,
+   "median_recovery": 1.0,
    "prepared": 0.0041,
    "replicates": 9,
-   "within_fifth": 7
+   "within_fifth": 5
   },
   "L2": {
    "median_recovery": 0.865,
