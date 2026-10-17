@@ -1,0 +1,92 @@
+{
+  "task": "task266",
+  "architecture": "v1",
+  "drawn": "2026-10-17",
+  "slot_note": "wave 3, Descriptive lane, sathay3012; seed DA16 (a building society's forced-sale discount for one city) worked at the draw and set aside, see lineage",
+  "domain": "sociology-demography",
+  "subdomain": "event-history-life-course-analysis",
+  "client_domain": "sociology-demography",
+  "niche": "a community college's program review: each associate-degree program's three-year completion share for its fall 2023 to fall 2025 entering students, estimated from the student record while the later entrants are still enrolled, with transfers out and withdrawals as other ways a student's time at the college ends",
+  "objective": "descriptive-distribution",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G17",
+    "G4",
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "the college's director of institutional research, preparing the program review for the board of trustees",
+  "role_family": "research_desk",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "student term-enrollment and outcome record (one row per student per term) with the award and transfer files",
+    "rows": 0,
+    "entity": "one entering student in one associate-degree program",
+    "grain": "student x term",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "United States (Pennsylvania; the college, its programs and the state transfer exchange are fictional; personas on the en_US index)",
+    "currency": "USD",
+    "org_type": "a public community college with three campuses",
+    "invented_names": [],
+    "people": [
+      "Tammy Weaver",
+      "Derek Collier",
+      "Colleen Fisher"
+    ]
+  },
+  "deliverables": [
+    "program_completion_review_2027.xlsx",
+    "completion_review_board_paper_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is the share of units whose spell ends one particular way within a fixed time of its start, estimated from a record in which many spells are still open and the others end in several ways; counting the spells that ended another way as if they were still open and could yet end the counted way spreads their chance over the counted ending, so the share has to be built from each ending's own hazard among the units still in their spell.",
+  "driver_concrete": "The board reviews any program whose share of entering students earning the award within three years is below 30 per cent, but the fall 2024 and 2025 entrants are still enrolled, so the share must be estimated; a Kaplan-Meier curve of time to award that treats students who transferred out or withdrew as censored counts them as if they could still graduate and puts programs with heavy transfer above the floor, while the cumulative incidence of the award with transfer and withdrawal as competing endings puts them below it.",
+  "stump": "A competent solver fits a Kaplan-Meier curve of time to the award for each program's 2023 to 2025 entrants, censoring the students still enrolled and also those who transferred out or withdrew, and keeps the transfer-heavy programs above the 30 per cent floor; the step that lands it there is treating a transfer or withdrawal as loss to follow-up, when it ends the student's chance of the college's award, so the three-year completion share has to be the cumulative incidence of the award with transfer and withdrawal as competing endings.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stacks the two student-system exports, places each student in the program entered, reads every status code correctly and censors students still enrolled at the census runs Kaplan-Meier on time to the award with transfers out and withdrawals censored as students the college lost sight of, and files the transfer-heavy programs as above the floor, because a censored transfer keeps a share of the award probability the student can no longer earn.",
+  "domain_test": "The deciding quantity is each program's three-year completion share estimated by the cumulative incidence of the award with transfer out and withdrawal as competing endings and students still enrolled censored, the event-history estimator for a life-course transition with several exits; with a warehouse's pallets or a hospital's admissions in place of students the endings, the census and the program floor lose their meaning and the task no longer reads the same.",
+  "mechanism_source": "design_note",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:competing-endings-cumulative-incidence",
+  "layer1": [
+    "the student record in two exports from two student information systems (a 2024 migration), with different term codes",
+    "program changes after entry, the entering program kept as the student's program by the review standard",
+    "transfers out found by the state transfer exchange's quarterly match, with the transfer term only",
+    "withdrawal coded by the registrar after two consecutive terms with no enrolment",
+    "awards conferred at term end with conferral dates in a separate graduation file",
+    "students who returned after a gap re-admitted under a new student number"
+  ],
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v0",
+      "fate": "set aside at the draw 2026-10-17, never registered",
+      "driver": "The decisive quantity is the discount at which forced sales fall below the market value of the same units, where the record's own value for each unit is an error-prone proxy whose error grows with the unit's chance of being forced to sale; measuring the discount against that proxy counts the proxy's error as part of the discount.",
+      "note": "seed DA16, a building society's forced-sale discount for one city: lending sits in Banking, whose task types serve no Descriptive objective; the exit-route mix is composition_mix and the open defaults maturity_censoring (both spent or banned now); measuring the discount against the same property's indexed last ordinary sale works only with the comparison filed, which makes the step rule application"
+    }
+  ],
+  "notes": "WARNs answered in the design note.",
+  "registered": "2026-10-17T13:44:45Z"
+}

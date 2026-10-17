@@ -1,0 +1,39 @@
+{
+  "task": "task266",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "sociology-demography",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-17",
+  "stump": "The default path sends one program into review, keeping the four transfer-oriented programs at about 34 to 39 per cent, because it treats a student who transferred out or withdrew as censored, so each keeps a share of an award they can no longer earn; the cumulative incidence of the award with transfer and withdrawal as competing endings puts those programs at about 18 to 24 per cent and sends six programs into review.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task265 (v1) 0.13"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: readability screen, semantic fork table, ladder with built margins, closure table, literal reader, oracles, ask sheet, prompt.txt; then precut.py task266 to exit 0",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "DA16 worked at the draw and set aside (lending serves no Descriptive task type; its stumps composition_mix or maturity_censoring); the slot draws a new world, a community college's program review"
+}
