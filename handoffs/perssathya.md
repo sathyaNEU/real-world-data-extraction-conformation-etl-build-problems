@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 3 under way: task237 to task240 shipped; task241 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 3 under way: task237 to task241 shipped; task242 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task240 shipped; task241 and task242 next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task241 shipped; task242 next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,24 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task241: SHIPPED 2026-10-17 (wave 3, fifth build; architecture 1); waiting on the portal.**
+- The Instituto Oceânico do Atlântico's Iberian Basin Float Array and its 2027 delayed-mode salinity release (Physical &
+  Environmental Sciences, sensor-calibration-measurement x Data Quality Monitoring). Call: adjust six of the 24 floats,
+  1990001, 1990004, 1990005 and 1990008 reading fresh (drift from late 2026) and 1990007 and 1990012 reading salty (off
+  from deployment); the other 18 go out as measured. Each float's offset is its salinity against the reference water
+  of the same potential temperature at the profile's own position: the deep layer sat 17 dbar deeper in 2027 than in
+  the reference years and heaves with eddies, and on every temperature level the water freshens westward, so the
+  fixed-pressure comparison against the casts files 13 to 17 floats (seven or more of them clean), the pooled
+  temperature-level reference 10 to 14, and drift from each float's own first profiles only the four drifting floats.
+  Asks: reference casts reaching 2,000 dbar by year (the institute's casts again in the international extract under its
+  ids, depth in metres, stations worked twice) and complete deliveries within 24 hours of surfacing by month (model K's
+  profile time at the start of the ascent, the Lisbon clock, resent first files, descending profiles, a partner float).
+- Gates: 172 generator checks, verify green (its own nearest-cast route, both asks), byte-identical rebuilds,
+  figures_check 135 of 135, precut 50, leak.py REVIEW only; two leak reads (question 1 none, question 6 analytical;
+  realism fixes taken, among them extract casts at 1,980 m that a rule-of-thumb conversion would have read short of
+  2,000 dbar); judge pass 1 FIX_NOW on the write-up (the 0.003 acceptance, measured rung ranges), pass 2
+  DETERMINISTIC, APPROVE. Heart WARN; surface promotes task148 (differentiated on the card).
 
 **task240: SHIPPED 2026-10-17 (wave 3, fourth build; architecture 1); waiting on the portal.**
 - Larchmere Social Research's 2027 Household Resources Survey for a province's Statistics and Surveys Branch (Survey
