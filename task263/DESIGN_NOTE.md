@@ -90,7 +90,7 @@ Lesson: a sample taken where sources mix measures the mixture, and a source's ow
 | SF13 | left | $36 million less the grants made | none | same call | the plan |
 | SF14 | non-detects | half the reporting limit | zero; the reporting limit | same call | asserted: same call and same wells at every substitution |
 | SF15 | quality-control samples and reissued reports | blanks and duplicates set aside, the latest revision | duplicates kept; blanks kept as zero; both revisions kept | same call | the guide's sample types and revision rule; asserted: same call |
-| SF16 | the mixing proportions | each pumping well's rated capacity over the sum | the entry-point flow shared by capacity; equal shares | same call | asserted: same wells under each |
+| SF16 | the mixing proportions | each pumping well's rated capacity over the sum | the entry-point flow shared by capacity; equal shares; each well's 2025 monthly pumped volume | same call; same call; 11 systems | asserted: same wells under the first two; the monthly volumes are ruled out by the inventory's note that a well delivers its rated discharge whenever it runs (the entry-point flow on every record matches the running wells' capacities) |
 | SF17 | sources not recorded | those samples left out | the wells inferred from the entry-point flow | same call | asserted: same call |
 
 ## Ladder
@@ -189,6 +189,68 @@ Mirror leakage: 0 per cent of the ask weight: the mirror (R0) takes A and B the 
 keeps only the chart's format parts where it draws the chart.
 Pair ceiling: 31 (the cracker at about 50 with the call, its components and the chart; the mirror at about 12).
 
+## Build record
+
+- **World.** The twenty listed systems keep the draw's wells, entry points and own levels (Halvorsen's two wells over
+  the line lowered to 18.5 and 9.8 ng/L and its Well 3 widened to 750 gpm so the clean well's estimate stays clear of
+  the line under every handling); 88 other well systems, two surface-water systems, 17 wholesale buyers and two
+  systems with their own wells beside a tie to a listed system; every quarter's sample at every entry point is the
+  flow-weighted blend of the wells the month's rotation and the day's demand put in service (world.py); the 2025
+  operating reports come from the same rotation, each sampling day's wells running that day.
+- **Names.** Every invented place and organisation was screened against US places (every ZIP-code place, every
+  county, every city over 15,000): none within one edit of a distinctive real word, none containing one; the first
+  draft's names that sat on real Midwest towns were retired (checks.py H21 keeps the near-miss register).
+- **Pack.** 13 files: the statewide results export (36,414 rows), the field collection records (1,519), the source
+  facility inventory, section 6 of the draft 2027 plan, the sampling guide, the department's notes, the 2025
+  operating reports (2,652), the meter register, the system register, the wholesale connections, the laboratory
+  list; two distractors (the 2023 national survey in micrograms per litre, the private well program's results).
+- **Gates.** checks.py 96 assertions (golden against the truth, the three rules, the ladder and its cells, every SF
+  row, convergence, both asks and their stops, separation, distractors, input gates, realism, H21); verify.py PASS on
+  its own code path (pandas, pypdf, normal equations); two builds byte-identical; figures_check 61 of 61; precut 49
+  of 49; voice-check PASS; leak.py REVIEW (no LEAK); producer metadata clean; guard heart WARN; guard surface
+  promotes task187 and task48 on the card axes alone (surface 0.09 and 0.07, no shared names or text), the two
+  builds the draw differentiated (the card's differentiation lines).
+- **Stage 4.** Leak reader loop 1: no decisive-step sentence (it names the plan's own-water definition and the
+  record's sources in service as what a solver would have to work from), no ranking file, nothing reading as the
+  answer, Q6 analytical (unmixing each entry point's blends decides); its realism notes fixed in one pass (names of
+  one style, six counties statewide, priority points falling one or two at a time, a percentage in the plan implying
+  an unexplained base). Judge r1 DETERMINISTIC, APPROVE (Gate G method_or_model_selection, analytical_non_defect;
+  Gate H domain pass, layers pass, decisive step analytical); every graded figure reproduced and the call held under
+  every variant tried; its one finding, block 1's rival clause for the samples a well ran alone (no fallback named,
+  the thread got 20), reworded to name the fallback (11, asserted); its optional prompt pins ("all wells in the
+  inventory", "as of 1 September 2026") declined, the literal readings already giving the goldens. Found in the same
+  pass by the main thread: weighting each 2025 blend by the wells' monthly pumped volumes files 11 systems, now ruled
+  out by a filed pump fact in the inventory's notes (SF16, asserted). The fix pass leaves every listed system's
+  results and records byte-identical to the judged pack and every graded figure unchanged. Leak reader loop 2 on
+  the fixed pack: the same answers (no decisive-step sentence, no ranking, Q6 analytical); its texture notes fixed
+  (varied field notes, six closed systems in the register, connection dates off the first of the month), the
+  listed systems' rows again unchanged.
+
+## Pre-ship check
+
+- **Rule 1, the domain, on the built pack.** The call is decided by each listed well's own PFOA and PFOS, recovered
+  from 302 entry-point samples at 24 entry points by solving each entry point's samples as a mass balance of the
+  wells pumping at collection (the field's source apportionment with known mixing proportions). No shipped column
+  holds a well's level, a mixing share, an eligibility or a grant (asserted, R1). With another field's nouns the
+  flow-weighted mixing of sources with recorded proportions is gone and the call no longer reads the same.
+- **Rule 2, two layers.** Layer 1 on the call's path is what the state's systems write: a statewide export, a
+  contract laboratory on another method, non-detects at each laboratory's limit, blanks and duplicates among the
+  field samples, reissued reports kept beside the first, the samplers' free text (three records left blank),
+  month-first dates on the records, 2026 samples past the plan's years; each mishandled leaves the same 23 wells
+  and the same walk (asserted, R2). Layer 2 is the inversion of the mixtures: on the generator's clean truth the
+  average of the samples a well ran in files 7 systems and the mass balance alone files the golden 16 (R3a, R3b).
+- **Rule 3, the decisive step.** No shipped sentence names a mixture, a balance, a share or a solve (asserted on
+  every document); the plan defines a well's own water as the water the well itself pumps, and the guide says
+  where entry-point samples are drawn and what the collection record holds. Executing every filed rule with the
+  natural per-well measure (the average of the samples it ran in) files 7 systems; nothing planted, copied or
+  withheld carries the answer (R3c).
+- **Determinism.** Least squares, non-negative least squares and chained subtraction, rated or metered or equal
+  shares, every non-detect substitution, routine samples alone, duplicates or blanks kept, both report revisions
+  kept, 2026 added and blank records inferred from the entry-point flow all flag the same 23 wells (the nearest
+  1.61 ng/L from the line) and the same walk; skipping Nordvold changes nothing (no later grant fits $451,200);
+  every grant is exact to the dollar; each county's water sits at least 0.13 of a rounding step from an edge and
+  people are counted whole; the cracker's path misses all eight county figures (asserted).
+
 ## Tried and rejected
 
 - 2026-10-16, at the draw: censored PFAS results at two reporting limits as the decisive step (Kaplan-Meier or a censored likelihood against substitution): the censoring family is task255's in this lane; censored results stay Layer 1 and converge.
@@ -198,3 +260,7 @@ Pair ceiling: 31 (the cracker at about 50 with the call, its components and the 
 - 2026-10-16, at design: a 2025 to 2026 window with a 2027 board date (files dated after the build); the window moved to 2024 and 2025 and the board to 18 November 2026.
 - 2026-10-16, at design: asks on the 2026 design grants' payments (a payee changed after a consolidation, a cancelled warrant): the cracker joins payments to draws by voucher and lands; replaced by the shared-meter pumpage and the buyers-of-buyers reach.
 - 2026-10-16, at design: a Hazard Index ask on the listed entry points: every device on its rows was executed by a filed rule or caught by the battery; dropped.
+- 2026-10-16, at build: the first names (Tillerton, Halloway, Ivanhoe Ridge, Paxton Creek, Kettering Bluff, Sedgwick, Fenwick, Ellery and others) sat on or one edit from real US places; all invented names re-drawn and screened.
+- 2026-10-16, at build: field reagent blanks carrying the visit's sources in service let a careless mass balance pull Halvorsen's Well 3 over the line; blanks' records now carry no sources (the sampler's habit), and Halvorsen's levels were lowered so every handling keeps the same wells.
+- 2026-10-16, at build: a fixed daily run-time cap repeated monthly volumes across systems; the cap now varies by day and small systems' wells are sized to their demand.
+- 2026-10-17, at stage 4: rounding the unlisted systems' pump ratings to 5 gpm changed their blends and confirmation samples, which renumbered the statewide samples and moved the listed systems' blank records and revisions; reverted to 25 gpm so every listed row stays as judged.

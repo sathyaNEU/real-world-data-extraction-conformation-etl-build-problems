@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "The $36 million reaches 16 of the 20 systems on the 2027 PFAS priority list, Torvik Water Utility through Valdahl Sanitary District; the Village of Nordvold is the first it cannot reach, and $451,200 is left.",
+  "answer_source": "task263/submission.md (block 1), from generator/figures.json",
   "gap": [
     "population"
   ],
@@ -34,7 +34,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "pfas_entry_point_results_2024-2026.csv",
-    "rows": 0,
+    "rows": 36414,
     "entity": "one analyte result of one compliance or confirmation sample at one entry point",
     "grain": "sample x analyte",
     "source": "synthetic (constructed in the layout of a state PFAS compliance-monitoring export under EPA Method 533)"
@@ -46,7 +46,17 @@
     "geography": "United States, an unnamed Upper Midwest state (invented state drinking water program, revolving fund and twenty water systems)",
     "currency": "USD",
     "org_type": "a state water infrastructure finance authority administering the drinking water revolving fund with the state's environmental department",
-    "invented_names": [],
+    "invented_names": [
+      "Water Infrastructure Finance Authority",
+      "Granlund, Engvall, Hedstrom, Sandholm, Mittelfeld and Brunnfeld counties",
+      "Torvik Water Utility",
+      "City of Halvorsen Water Department",
+      "Lindvik Lake Municipal Water",
+      "Village of Nordvold",
+      "Valdahl Sanitary District",
+      "Tolvanen Analytical, Inc.",
+      "Kestrel Environmental Testing"
+    ],
     "people": [
       "Judy Carey",
       "Lynn Whitaker"

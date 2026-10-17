@@ -1,13 +1,13 @@
 {
   "task": "task263",
   "owner": "sathay3012",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences",
   "objective": "descriptive-distribution",
-  "stage": 3,
-  "stage_name": "build",
-  "updated": "2026-10-16",
-  "stump": "The default path funds 7 systems and stops at Lindell with $672,000 left because it gives each well the average of the entry-point samples taken while it pumped, so a clean well that runs beside a well over the line takes on that well's water; solving every entry point's samples as a mass balance of its wells' own water leaves only the wells whose own water is over 4.0 ng/L, and the $36 million reaches 16 systems, stopping at Norrell with $451,200 left.",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-17",
+  "stump": "The default path funds 7 systems and stops at Nesvold with $672,000 left because it gives each well the average of the entry-point samples taken while it pumped, so a clean well that runs beside a well over the line takes on that well's water; solving every entry point's samples as a mass balance of its wells' own water leaves only the wells whose own water is over 4.0 ng/L, and the $36 million reaches 16 systems, stopping at Nordvold with $451,200 left.",
   "architecture": 1,
   "loops": 0,
   "precut": {
@@ -15,22 +15,24 @@
     "date": "2026-10-16"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK; every REVIEW line answered in leak_check_report.md)",
+    "reader": "loop 1 and loop 2 clean on the call (no decisive-step sentence, no ranking, Q6 analytical); realism notes fixed"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task181 v1 lineage 0.08"
+    "heart": "WARN (repeat.gate_g vs task152 answered; repeat.deliverables vs task189 answered)",
+    "nearest": "task234 0.08, task181 v1 lineage 0.08"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task263/determinism_check_report.md",
+    "gate_g": "method_or_model_selection, analytical_non_defect",
+    "gate_h": "domain pass, layers pass, decisive step analytical"
   },
   "returned": [],
-  "resume": "stage 3: generator (world, records written; docs, deliver, checks, verify, build next)",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-17",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

@@ -1,0 +1,6 @@
+{
+  "distractor_files": [
+    "target/national_pfas_survey_2023.csv",
+    "target/private_well_pfas_2024-2026.csv"
+  ]
+}

@@ -1,0 +1,361 @@
+{
+ "ask_a": {
+  "Engvall": 1318.4,
+  "Granlund": 1342.9,
+  "Hedstrom": 913.5,
+  "Sandholm": 714.6
+ },
+ "ask_b": {
+  "Engvall": 29442,
+  "Granlund": 30167,
+  "Hedstrom": 21518,
+  "Sandholm": 17614
+ },
+ "call": {
+  "first_not_reached": "Village of Nordvold",
+  "grants_made": 35548800,
+  "left": 451200,
+  "stop_grant": 691200,
+  "systems_reached": 16
+ },
+ "counts": {
+  "blank": 3,
+  "entry_points": 24,
+  "samples": 302,
+  "wells_active": 53,
+  "wells_over": 23
+ },
+ "funded": [
+  "Torvik Water Utility",
+  "City of Halvorsen Water Department",
+  "Lindvik Lake Municipal Water",
+  "Village of Wikstrom",
+  "Brekken Prairie Water Utility",
+  "Fjelstad Water and Light",
+  "Kesselring Waterworks",
+  "Village of Nesvold",
+  "Elvholm Falls Water Utility",
+  "Ackerholt Creek Sanitary District",
+  "Village of Dalrud",
+  "Skogen Municipal Water",
+  "Kjelland Bluff Water Utility",
+  "Isaksen Ridge Sanitary District No. 1",
+  "Village of Felsbach",
+  "Valdahl Sanitary District"
+ ],
+ "grants": {
+  "Ackerholt Creek Sanitary District": 1555200,
+  "Brekken Prairie Water Utility": 2419200,
+  "City of Halvorsen Water Department": 6000000,
+  "Elvholm Falls Water Utility": 3283200,
+  "Fjelstad Water and Light": 2592000,
+  "Glomstad Water Utility": 691200,
+  "Isaksen Ridge Sanitary District No. 1": 864000,
+  "Kesselring Waterworks": 2764800,
+  "Kjelland Bluff Water Utility": 1036800,
+  "Lindvik Lake Municipal Water": 3456000,
+  "Opsahl Falls Water Utility": 1209600,
+  "Skogen Municipal Water": 3801600,
+  "Torvik Water Utility": 1728000,
+  "Town of Ekholm Sanitary District No. 2": 518400,
+  "Valdahl Sanitary District": 518400,
+  "Village of Dalrud": 1209600,
+  "Village of Felsbach": 1036800,
+  "Village of Nesvold": 1900800,
+  "Village of Nordvold": 691200,
+  "Village of Wikstrom": 1382400
+ },
+ "levels": {
+  "Ackerholt Creek Sanitary District EP01 Well 1": [
+   12.3,
+   6.2
+  ],
+  "Ackerholt Creek Sanitary District EP01 Well 2": [
+   1.8,
+   0.6
+  ],
+  "Ackerholt Creek Sanitary District EP02 Well 3": [
+   0.5,
+   0.5
+  ],
+  "Brekken Prairie Water Utility EP01 Well 1": [
+   2.0,
+   1.2
+  ],
+  "Brekken Prairie Water Utility EP01 Well 2": [
+   9.8,
+   21.7
+  ],
+  "Brekken Prairie Water Utility EP02 Well 3": [
+   0.5,
+   0.5
+  ],
+  "Brekken Prairie Water Utility EP02 Well 4": [
+   1.2,
+   0.5
+  ],
+  "City of Halvorsen Water Department EP01 Well 1": [
+   18.8,
+   5.3
+  ],
+  "City of Halvorsen Water Department EP01 Well 2": [
+   6.2,
+   9.8
+  ],
+  "City of Halvorsen Water Department EP01 Well 3": [
+   1.4,
+   2.4
+  ],
+  "Elvholm Falls Water Utility EP01 Well 1": [
+   1.1,
+   1.0
+  ],
+  "Elvholm Falls Water Utility EP01 Well 2": [
+   14.0,
+   5.3
+  ],
+  "Elvholm Falls Water Utility EP01 Well 3": [
+   2.0,
+   1.3
+  ],
+  "Elvholm Falls Water Utility EP02 Well 4": [
+   6.8,
+   9.6
+  ],
+  "Fjelstad Water and Light EP01 Well 1": [
+   9.5,
+   17.7
+  ],
+  "Fjelstad Water and Light EP01 Well 2": [
+   1.8,
+   1.7
+  ],
+  "Glomstad Water Utility EP01 Well 1": [
+   7.8,
+   5.0
+  ],
+  "Glomstad Water Utility EP01 Well 2": [
+   1.2,
+   0.7
+  ],
+  "Isaksen Ridge Sanitary District No. 1 EP01 Well 1": [
+   8.5,
+   5.7
+  ],
+  "Isaksen Ridge Sanitary District No. 1 EP01 Well 2": [
+   1.7,
+   0.9
+  ],
+  "Kesselring Waterworks EP01 Well 1": [
+   8.5,
+   13.9
+  ],
+  "Kesselring Waterworks EP01 Well 2": [
+   1.7,
+   1.5
+  ],
+  "Kjelland Bluff Water Utility EP01 Well 1": [
+   1.7,
+   1.5
+  ],
+  "Kjelland Bluff Water Utility EP01 Well 2": [
+   6.9,
+   9.2
+  ],
+  "Lindvik Lake Municipal Water EP01 Well 1": [
+   23.9,
+   5.7
+  ],
+  "Lindvik Lake Municipal Water EP01 Well 2": [
+   1.9,
+   0.6
+  ],
+  "Lindvik Lake Municipal Water EP01 Well 3": [
+   1.8,
+   0.7
+  ],
+  "Lindvik Lake Municipal Water EP02 Well 4": [
+   0.6,
+   0.5
+  ],
+  "Opsahl Falls Water Utility EP01 Well 1": [
+   1.2,
+   0.5
+  ],
+  "Opsahl Falls Water Utility EP01 Well 2": [
+   10.7,
+   7.4
+  ],
+  "Opsahl Falls Water Utility EP01 Well 3": [
+   1.8,
+   1.2
+  ],
+  "Skogen Municipal Water EP01 Well 1": [
+   10.5,
+   6.5
+  ],
+  "Skogen Municipal Water EP01 Well 2": [
+   7.0,
+   9.6
+  ],
+  "Torvik Water Utility EP01 Well 1": [
+   20.6,
+   6.6
+  ],
+  "Torvik Water Utility EP01 Well 2": [
+   1.5,
+   0.5
+  ],
+  "Torvik Water Utility EP01 Well 3": [
+   1.7,
+   0.6
+  ],
+  "Torvik Water Utility EP01 Well 4": [
+   0.7,
+   0.5
+  ],
+  "Town of Ekholm Sanitary District No. 2 EP01 Well 1": [
+   0.5,
+   0.4
+  ],
+  "Town of Ekholm Sanitary District No. 2 EP01 Well 2": [
+   6.0,
+   7.5
+  ],
+  "Valdahl Sanitary District EP01 Well 1": [
+   7.2,
+   6.5
+  ],
+  "Village of Dalrud EP01 Well 1": [
+   8.8,
+   6.3
+  ],
+  "Village of Dalrud EP01 Well 2": [
+   1.5,
+   0.6
+  ],
+  "Village of Dalrud EP01 Well 3": [
+   2.3,
+   1.3
+  ],
+  "Village of Felsbach EP01 Well 1": [
+   0.7,
+   0.7
+  ],
+  "Village of Felsbach EP01 Well 2": [
+   6.2,
+   8.2
+  ],
+  "Village of Nesvold EP01 Well 1": [
+   12.9,
+   7.3
+  ],
+  "Village of Nesvold EP01 Well 2": [
+   1.9,
+   1.5
+  ],
+  "Village of Nesvold EP01 Well 3": [
+   1.1,
+   0.7
+  ],
+  "Village of Nordvold EP01 Well 1": [
+   1.3,
+   0.5
+  ],
+  "Village of Nordvold EP01 Well 2": [
+   6.0,
+   7.6
+  ],
+  "Village of Wikstrom EP01 Well 1": [
+   0.9,
+   0.0
+  ],
+  "Village of Wikstrom EP01 Well 2": [
+   1.6,
+   1.2
+  ],
+  "Village of Wikstrom EP01 Well 3": [
+   12.7,
+   5.3
+  ]
+ },
+ "mgd_rule": [
+  1440,
+  1000000
+ ],
+ "plan": {
+  "cap_millions": 6,
+  "fund_millions": 36,
+  "line": 4.0,
+  "rate_millions": 2.4,
+  "sections": [
+   "6.3",
+   "6.4"
+  ]
+ },
+ "wells_over": {
+  "Ackerholt Creek Sanitary District": [
+   "Well 1"
+  ],
+  "Brekken Prairie Water Utility": [
+   "Well 2"
+  ],
+  "City of Halvorsen Water Department": [
+   "Well 1",
+   "Well 2"
+  ],
+  "Elvholm Falls Water Utility": [
+   "Well 2",
+   "Well 4"
+  ],
+  "Fjelstad Water and Light": [
+   "Well 1"
+  ],
+  "Glomstad Water Utility": [
+   "Well 1"
+  ],
+  "Isaksen Ridge Sanitary District No. 1": [
+   "Well 1"
+  ],
+  "Kesselring Waterworks": [
+   "Well 1"
+  ],
+  "Kjelland Bluff Water Utility": [
+   "Well 2"
+  ],
+  "Lindvik Lake Municipal Water": [
+   "Well 1"
+  ],
+  "Opsahl Falls Water Utility": [
+   "Well 2"
+  ],
+  "Skogen Municipal Water": [
+   "Well 1",
+   "Well 2"
+  ],
+  "Torvik Water Utility": [
+   "Well 1"
+  ],
+  "Town of Ekholm Sanitary District No. 2": [
+   "Well 2"
+  ],
+  "Valdahl Sanitary District": [
+   "Well 1"
+  ],
+  "Village of Dalrud": [
+   "Well 1"
+  ],
+  "Village of Felsbach": [
+   "Well 2"
+  ],
+  "Village of Nesvold": [
+   "Well 1"
+  ],
+  "Village of Nordvold": [
+   "Well 2"
+  ],
+  "Village of Wikstrom": [
+   "Well 3"
+  ]
+ }
+}
