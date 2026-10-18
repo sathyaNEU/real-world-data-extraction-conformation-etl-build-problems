@@ -1,36 +1,37 @@
 {
   "task": "task248",
   "owner": "perssathya",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "epidemiology-public-health",
   "objective": "data-quality-monitoring",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-18",
-  "stump": "Restoring each sample's shed load with the paired study's single decay rate over the plant's travel time (or reading levels on PMMoV-normalized concentrations) files the dashboard's published count of winter 2027 alert episodes, because a correction constant over the year cancels against each plant's own baseline; only the decay rate as a function of the water's temperature, applied over each plant's travel time, removes the episodes the colder water alone raised at the long trunk sewers.",
+  "stump": "Restoring each sample's shed load with the paired study's single decay rate over the plant's travel time (or reading the samples on PMMoV-normalised concentrations) files the published 30 alert episodes, every plant as published, because a restoration constant over the year cancels against each plant's own baseline; only the decay rate as a function of the water's temperature, at each composite's own inlet temperature over the travel time, files 26 (Ardenmouth South, Ardenmouth East, Tarnbrook, Cleaveland Flat and Saltmarsh Point one fewer, Ardenmouth West one more).",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-18"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (sweeps 3, 4 and 6; every line answered in the design note; no LEAK)",
+    "reader": "three reads (on 4733488b, then after the historian note's span sentence and its rewording): Q1 to Q4 none, Q6 analytical; each read the step as a decay fit against travel time and none named the water's temperature"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task170, task99 v1 lineage, task234 v1 lineage at 0.06"
+    "heart": "WARN (overuse.org_family, repeat.deliverables; same_puzzle_older NOTE differentiated against task133; no BLOCK)",
+    "nearest": "task170, task99 v1 lineage, task234 v1 lineage at 0.06",
+    "surface": "no promoted pair; the pack's personas are the card's four"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (pass 1, on target.zip 4733488b)",
+    "disposition": "APPROVE",
+    "report": "task248/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 2: tune the simulator (24 plants, travel times, inlet temperatures, the shedding waves, the paired study) so each plant's winter episode count is robust on both bases and across the decay model's forms; then the default path, ladder, fork table, closure, asks and prompt to precut exit 0.",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-18",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

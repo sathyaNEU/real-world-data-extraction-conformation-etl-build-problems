@@ -1,0 +1,1168 @@
+{
+ "ask_a_total": 1083,
+ "ask_b_total": 71,
+ "call": 26,
+ "contract_factor": 10000.0,
+ "contract_method": {
+  "aliquot_ul": 200,
+  "eluted_ul": 100,
+  "resuspended_ml": 2,
+  "sample_ml": 100
+ },
+ "conventions": {
+  "ask_a": [
+   "2027-04-01",
+   "2028-03-31"
+  ],
+  "ask_b": [
+   "2027-10-04",
+   "2028-03-30"
+  ],
+  "check_log10": 0.5,
+  "high": 1.0,
+  "hold_run": 4,
+  "load_factor": 1000,
+  "lookback_days": 365,
+  "low": 0.5,
+  "methods_sections": [
+   3,
+   4,
+   5,
+   6.1,
+   6.2,
+   6.3
+  ],
+  "percentile": 10,
+  "real_hours": 8784,
+  "reference": [
+   "2026-04-06",
+   "2027-03-29"
+  ],
+  "winter": [
+   "2027-05-03",
+   "2027-09-27"
+  ]
+ },
+ "decay": {
+  "k20": "0.050",
+  "k20_exact": 0.0503,
+  "theta": "1.09",
+  "theta_exact": 1.0875,
+  "theta_pct": 9,
+  "visits": 101
+ },
+ "moves": {
+  "ADE": -1,
+  "ADS": -1,
+  "ADW": 1,
+  "CLF": -1,
+  "SLT": -1,
+  "TRN": -1
+ },
+ "plants": [
+  {
+   "change": 0,
+   "code": "ASD",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "flagged": [],
+   "flags": 0,
+   "hours": 60,
+   "hours_detail": {
+    "blank": 0,
+    "held": 10,
+    "no_row": 47,
+    "zero_or_below": 3
+   },
+   "name": "Ashgrove Downs WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 38
+  },
+  {
+   "change": 0,
+   "code": "BRK",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-08-02"
+    ],
+    [
+     "2027-08-30",
+     "2027-09-27"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ],
+    [
+     "2027-08-30",
+     "2027-09-27"
+    ]
+   ],
+   "flagged": [
+    [
+     "2028-02-17",
+     -1.03
+    ]
+   ],
+   "flags": 1,
+   "hours": 36,
+   "hours_detail": {
+    "blank": 2,
+    "held": 0,
+    "no_row": 31,
+    "zero_or_below": 3
+   },
+   "name": "Brackenridge WWTP",
+   "published": 2,
+   "shed": 2,
+   "tt": 95
+  },
+  {
+   "change": 0,
+   "code": "CRF",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-07-19"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-19"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-12-09",
+     -0.97
+    ],
+    [
+     "2027-12-13",
+     -1.194
+    ],
+    [
+     "2028-01-06",
+     -0.786
+    ]
+   ],
+   "flags": 3,
+   "hours": 56,
+   "hours_detail": {
+    "blank": 4,
+    "held": 29,
+    "no_row": 22,
+    "zero_or_below": 1
+   },
+   "name": "Carrisford WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 52
+  },
+  {
+   "change": 0,
+   "code": "DNK",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "flagged": [],
+   "flags": 0,
+   "hours": 36,
+   "hours_detail": {
+    "blank": 0,
+    "held": 0,
+    "no_row": 34,
+    "zero_or_below": 2
+   },
+   "name": "Dunkerley WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 140
+  },
+  {
+   "change": 0,
+   "code": "FNK",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-08-02"
+    ],
+    [
+     "2027-08-30",
+     "2027-09-20"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-08-02"
+    ],
+    [
+     "2027-08-30",
+     "2027-09-20"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-10-28",
+     -0.955
+    ],
+    [
+     "2027-11-22",
+     -1.007
+    ],
+    [
+     "2028-02-03",
+     -0.869
+    ],
+    [
+     "2028-03-13",
+     -0.724
+    ]
+   ],
+   "flags": 4,
+   "hours": 33,
+   "hours_detail": {
+    "blank": 2,
+    "held": 0,
+    "no_row": 31,
+    "zero_or_below": 0
+   },
+   "name": "Fennick WWTP",
+   "published": 2,
+   "shed": 2,
+   "tt": 27
+  },
+  {
+   "change": 0,
+   "code": "GLO",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-10-25",
+     -0.939
+    ],
+    [
+     "2028-02-07",
+     -1.049
+    ],
+    [
+     "2028-03-09",
+     -1.054
+    ]
+   ],
+   "flags": 3,
+   "hours": 65,
+   "hours_detail": {
+    "blank": 4,
+    "held": 32,
+    "no_row": 28,
+    "zero_or_below": 1
+   },
+   "name": "Glenorrin WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 118
+  },
+  {
+   "change": 0,
+   "code": "HOL",
+   "episodes_published": [
+    [
+     "2027-06-07",
+     "2027-07-19"
+    ],
+    [
+     "2027-09-06",
+     "2027-09-27"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-07",
+     "2027-07-19"
+    ],
+    [
+     "2027-09-06",
+     "2027-09-27"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-10-21",
+     -0.999
+    ],
+    [
+     "2027-12-23",
+     -0.97
+    ],
+    [
+     "2027-12-27",
+     -0.942
+    ],
+    [
+     "2028-02-03",
+     -1.015
+    ],
+    [
+     "2028-02-17",
+     -1.203
+    ]
+   ],
+   "flags": 5,
+   "hours": 30,
+   "hours_detail": {
+    "blank": 2,
+    "held": 11,
+    "no_row": 17,
+    "zero_or_below": 0
+   },
+   "name": "Hollinsbury WWTP",
+   "published": 2,
+   "shed": 2,
+   "tt": 205
+  },
+  {
+   "change": 0,
+   "code": "INB",
+   "episodes_published": [
+    [
+     "2027-06-21",
+     "2027-07-26"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-21",
+     "2027-07-26"
+    ]
+   ],
+   "flagged": [
+    [
+     "2028-02-03",
+     -0.851
+    ],
+    [
+     "2028-03-02",
+     -0.995
+    ]
+   ],
+   "flags": 2,
+   "hours": 46,
+   "hours_detail": {
+    "blank": 3,
+    "held": 10,
+    "no_row": 29,
+    "zero_or_below": 4
+   },
+   "name": "Inverbrack WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 74
+  },
+  {
+   "change": 0,
+   "code": "KSB",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-08-02"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-19"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-12-02",
+     -0.945
+    ],
+    [
+     "2027-12-06",
+     -0.903
+    ],
+    [
+     "2028-01-03",
+     -0.936
+    ],
+    [
+     "2028-01-24",
+     -0.932
+    ]
+   ],
+   "flags": 4,
+   "hours": 64,
+   "hours_detail": {
+    "blank": 2,
+    "held": 29,
+    "no_row": 30,
+    "zero_or_below": 3
+   },
+   "name": "Kestrel Bay WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 318
+  },
+  {
+   "change": 0,
+   "code": "LRF",
+   "episodes_published": [
+    [
+     "2027-06-07",
+     "2027-07-26"
+    ],
+    [
+     "2027-08-30",
+     "2027-09-27"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-07",
+     "2027-07-19"
+    ],
+    [
+     "2027-08-30",
+     "2027-09-27"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-10-18",
+     -0.843
+    ]
+   ],
+   "flags": 1,
+   "hours": 29,
+   "hours_detail": {
+    "blank": 1,
+    "held": 4,
+    "no_row": 24,
+    "zero_or_below": 0
+   },
+   "name": "Larchfield WWTP",
+   "published": 2,
+   "shed": 2,
+   "tt": 455
+  },
+  {
+   "change": 0,
+   "code": "MRB",
+   "episodes_published": [
+    [
+     "2027-06-07",
+     "2027-07-26"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-07",
+     "2027-07-26"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-11-25",
+     -0.859
+    ],
+    [
+     "2028-02-03",
+     -1.188
+    ],
+    [
+     "2028-03-09",
+     -0.889
+    ],
+    [
+     "2028-03-20",
+     -0.812
+    ]
+   ],
+   "flags": 4,
+   "hours": 45,
+   "hours_detail": {
+    "blank": 4,
+    "held": 25,
+    "no_row": 14,
+    "zero_or_below": 2
+   },
+   "name": "Marrowby WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 362
+  },
+  {
+   "change": 0,
+   "code": "NTL",
+   "episodes_published": [
+    [
+     "2027-06-07",
+     "2027-08-02"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-11-15",
+     -0.98
+    ],
+    [
+     "2027-11-29",
+     -0.69
+    ],
+    [
+     "2027-12-20",
+     -0.917
+    ],
+    [
+     "2028-01-24",
+     -1.021
+    ]
+   ],
+   "flags": 4,
+   "hours": 36,
+   "hours_detail": {
+    "blank": 0,
+    "held": 0,
+    "no_row": 35,
+    "zero_or_below": 1
+   },
+   "name": "Netherleigh WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 610
+  },
+  {
+   "change": 0,
+   "code": "ORB",
+   "episodes_published": [
+    [
+     "2027-06-07",
+     "2027-07-26"
+    ],
+    [
+     "2027-08-30",
+     "2027-09-27"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-19"
+    ],
+    [
+     "2027-08-30",
+     "2027-09-20"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-11-29",
+     -0.965
+    ],
+    [
+     "2028-02-03",
+     -1.004
+    ]
+   ],
+   "flags": 2,
+   "hours": 39,
+   "hours_detail": {
+    "blank": 1,
+    "held": 22,
+    "no_row": 16,
+    "zero_or_below": 0
+   },
+   "name": "Orrin Bay WWTP",
+   "published": 2,
+   "shed": 2,
+   "tt": 404
+  },
+  {
+   "change": 0,
+   "code": "PLH",
+   "episodes_published": [
+    [
+     "2027-06-07",
+     "2027-07-26"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-07",
+     "2027-07-19"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-12-02",
+     -1.006
+    ],
+    [
+     "2027-12-13",
+     -0.873
+    ],
+    [
+     "2028-03-23",
+     -1.181
+    ]
+   ],
+   "flags": 3,
+   "hours": 70,
+   "hours_detail": {
+    "blank": 0,
+    "held": 32,
+    "no_row": 35,
+    "zero_or_below": 3
+   },
+   "name": "Pellingham WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 688
+  },
+  {
+   "change": 0,
+   "code": "QRM",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-08-02"
+    ],
+    [
+     "2027-08-23",
+     "2027-09-20"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-21",
+     "2027-07-26"
+    ],
+    [
+     "2027-08-30",
+     "2027-09-20"
+    ]
+   ],
+   "flagged": [
+    [
+     "2028-02-21",
+     -0.878
+    ]
+   ],
+   "flags": 1,
+   "hours": 42,
+   "hours_detail": {
+    "blank": 1,
+    "held": 8,
+    "no_row": 33,
+    "zero_or_below": 0
+   },
+   "name": "Quarrymoor WWTP",
+   "published": 2,
+   "shed": 2,
+   "tt": 525
+  },
+  {
+   "change": 0,
+   "code": "RVG",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "flagged": [
+    [
+     "2028-03-02",
+     -0.969
+    ]
+   ],
+   "flags": 1,
+   "hours": 52,
+   "hours_detail": {
+    "blank": 2,
+    "held": 15,
+    "no_row": 34,
+    "zero_or_below": 1
+   },
+   "name": "Ravensgill WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 578
+  },
+  {
+   "change": 0,
+   "code": "ADN",
+   "episodes_published": [
+    [
+     "2027-06-07",
+     "2027-08-02"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-14",
+     "2027-07-26"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-10-28",
+     -0.806
+    ],
+    [
+     "2027-12-16",
+     -0.844
+    ],
+    [
+     "2027-12-20",
+     -0.922
+    ],
+    [
+     "2028-01-31",
+     -1.053
+    ],
+    [
+     "2028-03-02",
+     -0.935
+    ],
+    [
+     "2028-03-09",
+     -0.913
+    ],
+    [
+     "2028-03-23",
+     -0.899
+    ]
+   ],
+   "flags": 7,
+   "hours": 67,
+   "hours_detail": {
+    "blank": 1,
+    "held": 26,
+    "no_row": 38,
+    "zero_or_below": 2
+   },
+   "name": "Ardenmouth North WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 1065
+  },
+  {
+   "change": -1,
+   "code": "ADS",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-08-02"
+    ]
+   ],
+   "episodes_shed": [],
+   "flagged": [
+    [
+     "2027-12-30",
+     -0.931
+    ],
+    [
+     "2028-02-17",
+     -1.111
+    ]
+   ],
+   "flags": 2,
+   "hours": 13,
+   "hours_detail": {
+    "blank": 0,
+    "held": 0,
+    "no_row": 12,
+    "zero_or_below": 1
+   },
+   "name": "Ardenmouth South WWTP",
+   "published": 1,
+   "shed": 0,
+   "tt": 1310
+  },
+  {
+   "change": -1,
+   "code": "ADE",
+   "episodes_published": [
+    [
+     "2027-09-06",
+     "2027-09-27"
+    ]
+   ],
+   "episodes_shed": [],
+   "flagged": [
+    [
+     "2027-12-13",
+     -0.926
+    ],
+    [
+     "2028-02-10",
+     -0.846
+    ]
+   ],
+   "flags": 2,
+   "hours": 50,
+   "hours_detail": {
+    "blank": 0,
+    "held": 12,
+    "no_row": 35,
+    "zero_or_below": 3
+   },
+   "name": "Ardenmouth East WWTP",
+   "published": 1,
+   "shed": 0,
+   "tt": 1495
+  },
+  {
+   "change": 1,
+   "code": "ADW",
+   "episodes_published": [
+    [
+     "2027-05-31",
+     "2027-09-13"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-07",
+     "2027-07-19"
+    ],
+    [
+     "2027-08-16",
+     "2027-09-06"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-12-13",
+     -0.876
+    ],
+    [
+     "2027-12-27",
+     -0.967
+    ],
+    [
+     "2028-01-17",
+     -1.198
+    ],
+    [
+     "2028-01-27",
+     -0.936
+    ],
+    [
+     "2028-03-16",
+     -0.937
+    ]
+   ],
+   "flags": 5,
+   "hours": 34,
+   "hours_detail": {
+    "blank": 0,
+    "held": 0,
+    "no_row": 34,
+    "zero_or_below": 0
+   },
+   "name": "Ardenmouth West WWTP",
+   "published": 1,
+   "shed": 2,
+   "tt": 905
+  },
+  {
+   "change": -1,
+   "code": "TRN",
+   "episodes_published": [
+    [
+     "2027-08-23",
+     "2027-09-27"
+    ]
+   ],
+   "episodes_shed": [],
+   "flagged": [
+    [
+     "2027-11-08",
+     -0.9
+    ],
+    [
+     "2027-11-29",
+     -0.887
+    ],
+    [
+     "2028-02-28",
+     -0.931
+    ]
+   ],
+   "flags": 3,
+   "hours": 44,
+   "hours_detail": {
+    "blank": 3,
+    "held": 23,
+    "no_row": 17,
+    "zero_or_below": 1
+   },
+   "name": "Tarnbrook WWTP",
+   "published": 1,
+   "shed": 0,
+   "tt": 1180
+  },
+  {
+   "change": 0,
+   "code": "UWD",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-08-02"
+    ]
+   ],
+   "episodes_shed": [
+    [
+     "2027-06-21",
+     "2027-07-26"
+    ]
+   ],
+   "flagged": [
+    [
+     "2027-12-20",
+     -0.877
+    ],
+    [
+     "2028-01-10",
+     -1.105
+    ],
+    [
+     "2028-01-13",
+     -0.641
+    ],
+    [
+     "2028-03-02",
+     -0.911
+    ],
+    [
+     "2028-03-06",
+     -1.133
+    ]
+   ],
+   "flags": 5,
+   "hours": 52,
+   "hours_detail": {
+    "blank": 1,
+    "held": 12,
+    "no_row": 33,
+    "zero_or_below": 6
+   },
+   "name": "Upper Waldon WWTP",
+   "published": 1,
+   "shed": 1,
+   "tt": 960
+  },
+  {
+   "change": -1,
+   "code": "CLF",
+   "episodes_published": [
+    [
+     "2027-06-14",
+     "2027-09-27"
+    ]
+   ],
+   "episodes_shed": [],
+   "flagged": [
+    [
+     "2027-10-21",
+     -0.88
+    ],
+    [
+     "2027-11-01",
+     -0.83
+    ],
+    [
+     "2027-11-04",
+     -0.94
+    ],
+    [
+     "2027-12-09",
+     -0.883
+    ],
+    [
+     "2027-12-13",
+     -0.855
+    ],
+    [
+     "2028-02-07",
+     -1.158
+    ],
+    [
+     "2028-03-09",
+     -0.757
+    ]
+   ],
+   "flags": 7,
+   "hours": 44,
+   "hours_detail": {
+    "blank": 3,
+    "held": 6,
+    "no_row": 34,
+    "zero_or_below": 1
+   },
+   "name": "Cleaveland Flat WWTP",
+   "published": 1,
+   "shed": 0,
+   "tt": 1615
+  },
+  {
+   "change": -1,
+   "code": "SLT",
+   "episodes_published": [
+    [
+     "2027-08-30",
+     "2027-09-27"
+    ]
+   ],
+   "episodes_shed": [],
+   "flagged": [
+    [
+     "2027-11-25",
+     -1.161
+    ],
+    [
+     "2028-01-10",
+     -0.679
+    ]
+   ],
+   "flags": 2,
+   "hours": 40,
+   "hours_detail": {
+    "blank": 3,
+    "held": 0,
+    "no_row": 34,
+    "zero_or_below": 3
+   },
+   "name": "Saltmarsh Point WWTP",
+   "published": 1,
+   "shed": 0,
+   "tt": 1420
+  }
+ ],
+ "rung_moves": {
+  "additive": {
+   "ADE": -1,
+   "ADS": -1,
+   "ADW": 1,
+   "CLF": -1,
+   "CRF": -1,
+   "FNK": -1,
+   "GLO": -1,
+   "INB": -1,
+   "SLT": -1,
+   "TRN": -1
+  },
+  "constant": {},
+  "pmmov": {},
+  "published": {},
+  "shed": {
+   "ADE": -1,
+   "ADS": -1,
+   "ADW": 1,
+   "CLF": -1,
+   "SLT": -1,
+   "TRN": -1
+  },
+  "study plants only": {
+   "ADS": -1,
+   "CLF": -1
+  }
+ },
+ "rungs": {
+  "additive": 22,
+  "constant": 30,
+  "pmmov": 30,
+  "published": 30,
+  "shed": 26,
+  "study plants only": 28
+ },
+ "seasonal": {
+  "ADS": {
+   "December to February": 0.52,
+   "June to August": 0.24,
+   "visits": {
+    "December to February": 6,
+    "June to August": 7
+   }
+  },
+  "CLF": {
+   "December to February": 0.69,
+   "June to August": 0.31,
+   "visits": {
+    "December to February": 6,
+    "June to August": 7
+   }
+  },
+  "DNK": {
+   "December to February": 0.06,
+   "June to August": 0.04,
+   "visits": {
+    "December to February": 5,
+    "June to August": 7
+   }
+  },
+  "NTL": {
+   "December to February": 0.29,
+   "June to August": 0.12,
+   "visits": {
+    "December to February": 6,
+    "June to August": 6
+   }
+  }
+ },
+ "totals": {
+  "published": 30,
+  "shed": 26
+ }
+}

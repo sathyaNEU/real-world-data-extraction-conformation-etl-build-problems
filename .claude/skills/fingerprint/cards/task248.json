@@ -10,8 +10,8 @@
   "shape": "03",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Plan the verification desk for 26 alert episodes this winter: last winter's samples raise 26 on the shed load against the 30 the dashboard published (Ardenmouth South, Ardenmouth East, Tarnbrook, Cleaveland Flat and Saltmarsh Point one fewer each, Ardenmouth West one more).",
+  "answer_source": "task248/submission.md, Final Recommendation",
   "gap": [
     "time",
     "population"
@@ -35,8 +35,8 @@
   "role_family": "capacity_planner",
   "scoring_unit": "per episode",
   "spine": {
-    "file": "the molecular laboratory's sample results for the 24 plants and the paired upstream study, one row per sample, target and analysis, January 2026 to March 2028",
-    "rows": 0,
+    "file": "phl_wastewater_results_2026-01_2028-04.csv: the Public Health Laboratory's results export for the 24 plants, one row per sample, target and analysis run, January 2026 to April 2028 (with the 475,268-row inlet historian beside it)",
+    "rows": 11511,
     "entity": "one composite sample, target and analysis run (SARS-CoV-2 N1 or PMMoV, gene copies per litre)",
     "grain": "site x sample x target x analysis",
     "source": "synthetic"
@@ -78,12 +78,12 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:temperature-dependent-in-sewer-decay-over-travel-time-against-own-baseline",
   "layer1": [
-    "the molecular laboratory's results kept by analysis run, a sample re-analysed after a failed run appearing twice",
-    "the paired upstream study reported by the field team in gene copies per millilitre, the laboratory in gene copies per litre",
-    "the water services company's hourly SCADA export of flow and inlet temperature in local time across the daylight saving changes, with a probe replaced mid-record",
-    "two plants merged under one site code in 2027, the register keeping the old codes",
-    "the hydraulic model's population-weighted travel times in minutes in the plant register",
-    "composite samples labelled by the date the composite ended against the dashboard's Monday weeks"
+    "the laboratory's results kept by analysis run, rejected and check runs beside the accepted run",
+    "the composite's flow written on the chain-of-custody form from the autosampler's controller, one inlet channel where a plant has two",
+    "the paired upstream study reported by the field team in gene copies per millilitre in triplicate, the laboratory in gene copies per litre",
+    "the water company's hourly inlet historian in New Zealand local time across both daylight saving changes, with drop-outs, blank and held readings, meter faults and re-sent duplicate rows since its outstations changed network",
+    "the population-weighted travel times in minutes in the network modeller's memo table",
+    "the contract laboratory's January results in gene copies per microlitre of extract under its own site names"
   ],
   "registered": "2026-10-18T16:32:19Z"
 }
