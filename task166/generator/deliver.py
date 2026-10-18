@@ -34,8 +34,9 @@ def r10(x):
     return int(10 * round(x / 10.0))
 
 
-SHARE_WORDS = [(0.5, "half"), (0.6, "three-fifths"), (2 / 3, "two-thirds"), (0.75, "three-quarters"),
-               (0.8, "four-fifths"), (0.9, "nine-tenths"), (0.97, "nearly all")]
+SHARE_WORDS = [(0.5, "about half"), (0.6, "about three-fifths"), (2 / 3, "about two-thirds"),
+               (0.75, "about three-quarters"), (0.8, "about four-fifths"), (0.9, "about nine-tenths"),
+               (0.94, "over nine-tenths"), (0.98, "nearly all")]
 
 
 def share_words(x):
@@ -117,7 +118,7 @@ def write_book(path, G, prog, f):
     lines = [
         ("Fixed-rate commercial real estate",
          "%s of balloons fall due from December 2026 to December 2027 (%d loans, mostly the push of December 2021 to "
-         "April 2022). At the planning cycle's %.2f per cent five-year rate about %s of that principal is expected to "
+         "April 2022). At the planning cycle's %.2f per cent five-year rate %s of that principal is expected to "
          "take the bank's 36-month extension (a tenth paid down, the rest at the posted rate on 25 years): the "
          "extension share each loan's refinance cover carries in the maturity log since 2015. Loans already extended "
          "repay at their extended maturity."
@@ -256,11 +257,12 @@ def write_deck(path, G, f):
     text(s1, 0.6, 2.25, 6.6, 4.4, [
         "About $%.1f billion of the pool's balloons fall due from December 2026 to December 2027, most of them "
         "written in the early-2022 push on pro forma rents. At the planning cycle's %.2f per cent few of those "
-        "properties' incomes can carry a new loan of their balance; about %s of that principal is expected to take "
+        "properties' incomes can carry a new loan of their balance; %s of that principal is expected to take "
         "the bank's 36-month extension." % (f["wall_balloon_busd"], f["planning_cre_rate_pct"], f["wall_share_words"]),
         "Agency MBS is next, at about $%d million." % f["runner_up_loss_musd_nearest10"],
-        "The 2023-24 mortgages lose most at last year's prepayment speed, but at %.2f per cent they are expected to "
-        "prepay about %d per cent a year in 2027." % (f["planning_mortgage_rate_pct"], f["m_cpr_2027_pct"]),
+        "The 2023-24 mortgages would lose more than agency MBS only at last year's prepayment speed; at %.2f per "
+        "cent they are expected to prepay about %d per cent a year in 2027." % (f["planning_mortgage_rate_pct"],
+                                                                                f["m_cpr_2027_pct"]),
     ], size=17, after=12)
     rows, cols = 6, 3
     tbl = s1.shapes.add_table(rows, cols, Inches(7.6), Inches(2.35), Inches(5.1), Inches(2.6)).table

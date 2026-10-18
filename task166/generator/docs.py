@@ -69,7 +69,7 @@ def _sheet(ws, header, rows, widths=None, fmt=None):
 LOG_A = ["Obligation", "Property", "Prop Type", "Orig Amt", "Rate", "Maturity", "Balance", "Disposition", "New Maturity"]
 LOG_B = ["Obligation No.", "Property No.", "Property Type", "Original Principal", "Note Rate", "Maturity Date",
          "Principal at Maturity", "Outcome", "Extended To"]
-PT_A = {"MF": "MF", "OFF": "OFF", "RET": "RTL", "IND": "IND", "MIX": "MXD"}
+PT_A = {"MF": "MF", "OFF": "OFF", "RET": "RTL", "IND": "IND", "MIX": "MXD", "HOT": "HTL"}
 OUT_B = {"PO": "Paid at maturity", "EXT": "Extended", "EXT-S": "Extended, sale pending",
          "PO-EXT": "Paid at extended maturity", "SA": "Transferred to special assets"}
 
@@ -136,7 +136,7 @@ def write_plan(path):
 # ------------------------------------------------------------------------------------------------- swap register
 REG_COLS = ["Trade No.", "Book", "Strategy", "Hedged item", "Counterparty", "Cleared", "Clearing ref", "Bank pays",
             "Notional (USD)", "Fixed rate (%)", "Floating index", "Trade date", "Effective date", "Maturity date",
-            "Amortizing", "Status"]
+            "Amortizing", "Status", "Terminated on"]
 
 
 def register_rows(S):
@@ -147,7 +147,8 @@ def register_rows(S):
             cur = [n for a, b, n in S["sched"][t["key"]] if a <= K.AS_OF < b][0]
         rows.append([t["id"], t["book"], t["strategy"], t["item"], t["cpty"], "Y" if t["cleared"] else "N",
                      t["ccp_id"] or "", "FIXED" if t["dir"] == "PAY" else "FLOAT", float(cur), t["rate"],
-                     "USD-SOFR-OIS COMPOUND", t["trade"], t["eff"], t["mat"], "Y" if t["amort"] else "N", t["status"]])
+                     "USD-SOFR-OIS COMPOUND", t["trade"], t["eff"], t["mat"], "Y" if t["amort"] else "N", t["status"],
+                     t.get("terminated")])
     rows.sort(key=lambda r: r[0])
     return rows
 
@@ -157,8 +158,9 @@ def write_register(path, S):
     ws = wb.active
     ws.title = "Trades"
     rows = register_rows(S)
-    _sheet(ws, REG_COLS, rows, widths=[11, 10, 17, 52, 26, 8, 12, 10, 17, 13, 24, 12, 13, 13, 11, 12],
-           fmt={"I": "#,##0.00", "J": "0.000", "L": "yyyy-mm-dd", "M": "yyyy-mm-dd", "N": "yyyy-mm-dd"})
+    _sheet(ws, REG_COLS, rows, widths=[11, 10, 17, 52, 26, 8, 12, 10, 17, 13, 24, 12, 13, 13, 11, 12, 14],
+           fmt={"I": "#,##0.00", "J": "0.000", "L": "yyyy-mm-dd", "M": "yyyy-mm-dd", "N": "yyyy-mm-dd",
+                "Q": "yyyy-mm-dd"})
     wb.save(path)
     return len(rows)
 
@@ -200,8 +202,8 @@ POLICY = [
         "against a fixed-rate asset pool; funding hedges are pay-fixed swaps on the interest the bank pays on its "
         "funding; loan hedges are receive-fixed swaps on the interest it earns on floating-rate loans. Swaps the bank "
         "writes for its customers, and the swaps that offset them, are not part of the programme.",
-        "A swap is in effect on a date when its effective date is on or before that date and its maturity date is "
-        "after it.",
+        "A swap is in effect on a date when its effective date is on or before that date and its maturity date, and the "
+        "date it was terminated where it has been terminated early, are after it.",
         "The notional of pay-fixed swaps in effect may not exceed 15 per cent of total assets at any quarter-end.",
     ]),
     ("3. Designating an overlay", [
@@ -431,7 +433,10 @@ def notes_text(n):
     w("  the extended maturity; SA, transferred to special assets at the extended maturity. The bank grants a")
     w("  maturing term loan one extension, of 36 months, on a paydown of 10 per cent of the principal due, at the")
     w("  bank's posted five-year fixed rate on the maturity date, the payment amortizing the rest over 25 years. An")
-    w("  extended loan is not extended again: at its extended maturity it is paid or goes to special assets.")
+    w("  extended loan is not extended again: at its extended maturity it is paid or goes to special assets. Where")
+    w("  the property's net operating income falls short of the extension's payments, the extension is granted on the")
+    w("  guarantor's support agreement with an interest reserve funded at the extension, and the payments are made")
+    w("  as scheduled.")
     w("")
     w("cre_operating_statements.csv (%s rows)" % format(n[R.F_STMT], ","))
     w("  Borrowers' annual operating statements as reviewed, one row per property and fiscal year from 2013, with the")
@@ -462,6 +467,7 @@ def notes_text(n):
     w("  The treasury system's register of the bank's interest-rate swaps at the close on 30 November 2026, both")
     w("  books, one row per trade. Notional is the trade's notional on 30 November (an amortizing swap's current")
     w("  period). Hedged item is what the swap is designated against. Clearing ref is the clearing house's trade id.")
+    w("  Terminated on is the date an early termination took effect, on a trade with Status TERMINATED.")
     w("")
     w("swap_amortisation_schedules.csv (%s rows)" % format(n[R.F_SCHED], ","))
     w("  Notional by calculation period of the amortizing swaps.")
@@ -470,7 +476,7 @@ def notes_text(n):
     w("  The clearing broker's statement of the bank's cleared swaps at the close on 30 November 2026.")
     w("  client_trade_ref is the bank's reference the broker holds for the trade: the treasury system trade number the")
     w("  bank gave the broker when it submitted the trade for clearing. cleared_on is the date the clearing house")
-    w("  accepted it; client_pays is the bank's side.")
+    w("  accepted it; termination_date is the swap's scheduled end; client_pays is the bank's side.")
     w("")
     w("mortgage_lock_pipeline_20261130.csv (%s rows)" % format(n[R.F_LOCKS], ","))
     w("  Rate locks outstanding at the close on 30 November 2026.")

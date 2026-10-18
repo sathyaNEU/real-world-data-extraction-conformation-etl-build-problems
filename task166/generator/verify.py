@@ -381,6 +381,8 @@ for d in QE:
     for _, r in alm_.iterrows():
         if not (pd.Timestamp(r["Effective date"]) <= d < pd.Timestamp(r["Maturity date"])):
             continue
+        if pd.notna(r["Terminated on"]) and d >= pd.Timestamp(r["Terminated on"]):
+            continue
         s = sc[sc.trade_number == r["Trade No."]]
         if len(s):
             s = s[(pd.to_datetime(s.period_start) <= d) & (d < pd.to_datetime(s.period_end))]

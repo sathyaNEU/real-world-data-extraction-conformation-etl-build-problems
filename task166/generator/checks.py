@@ -1,6 +1,6 @@
 """task166 checks: the three rules executed on the clean truth (R1 to R3c), the ladder and its grid, the golden family,
-the out-of-sample choice, every semantic fork row (SF1 to SF19), the ask and its devices, the separation line, the
-distractors, the input gates and the realism sweep. Exit 1 on any failure.
+the out-of-sample choice, the hard rules and constant shares that land, every semantic fork row (SF1 to SF23), the ask
+and its devices, the separation line, the distractors, the input gates and the realism sweep. Exit 1 on any failure.
 
     python3 checks.py            reads task166/target, the generator's world and generator/figures.json"""
 from __future__ import annotations
@@ -45,6 +45,14 @@ def edge10(x):
 
 
 PROMPT = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
+# the constant shares (every balloon, the 2027 balloons alone) and the hard rules that land the bin, as measured and
+# counted in the note's Strength line
+LANDING_SHARES = (["four-fifths", "0.85"], [])
+LANDING_RULES = ["a cover test at 1.10 on 30-year amortization", "a cover test at 1.15 on 30-year amortization",
+                 "a cover test at 1.20 on 30-year amortization", "a cover test at 1.25 on 30-year amortization",
+                 "a cover test at 1.10 on 25-year amortization", "a cover test at 1.15 on 25-year amortization",
+                 "a cover test at 1.20 on 25-year amortization", "a debt yield hurdle of 9.0 per cent",
+                 "a debt yield hurdle of 9.5 per cent", "a debt yield hurdle of 10.0 per cent"]
 
 
 # ------------------------------------------------------------------------------------------------- the golden
@@ -313,9 +321,19 @@ def t_cover_now(L):
     return s["noi"] / (L["bal_mat"] * float(WD.dc(K.PLAN_CRE, 300)))
 
 
+def t_q(L):
+    return WD.CRE_SALE if t_cover_now(L) >= WD.SALE_MIN else 0.0
+
+
+def t_p(L):
+    c = t_cover_now(L)
+    conv = WD.CRE_CONV if WD.CONV_BAND[0] <= c < WD.CONV_BAND[1] else 0.0
+    return (1 - t_q(L)) * (conv + (1 - conv) * float(WD.cre_p_ext(c)))
+
+
 t_C0 = t_cre(lambda L: 0.0)
 t_Crec = t_cre(lambda L: t_recent)
-t_Ccov = t_cre(lambda L: (1 - WD.CRE_SALE) * float(WD.cre_p_ext(t_cover_now(L))), lambda L: WD.CRE_SALE)
+t_Ccov = t_cre(t_p, t_q)
 tv = {"Treasury ladder": t_T, "Agency MBS": t_MBS, "2023-24 residential mortgages": t_M, "Indirect auto loans": t_A}
 r3a = ranking({**tv, "Fixed-rate commercial real estate": t_Crec})[0]
 check("R3a analyst test on the clean truth", r3a == "Agency MBS",
@@ -450,22 +468,26 @@ NAMED_OUT = ("the 1.25 cover convention", "note-rate DSCR, every maturity", "not
              "the 1.00 cover rule", "every 2027 balloon extended")
 for k in ("in-place cover below 1.20", "in-place cover below 1.25", "the watch list (grade 6 or worse)"):
     v = OUT[k]
-    check("OUT %s, a full bin away" % k, abs(v - CRE) >= 10.0, "%.2f (%+.1f)" % (v, v - CRE))
+    check("OUT %s, a full bin away" % k, abs(v - CRE) >= 10.0 and v < POOLS["Agency MBS"],
+          "%.2f (%+.1f), Agency MBS still first" % (v, v - CRE))
 for k in NAMED_OUT:
     v = OUT[k]
     check("OUT %s" % k, v < 145.0 or v >= 155.0,
           "%.2f (%s the bin by %.1f)%s" % (v, "below" if v < 145 else "above", (145.0 - v) if v < 145 else (v - 155.0),
                                           (", hold-out %.4f" % SC[k]) if k in SC else ""))
-# ------------------------------------------------------------------------------------------------- the constant-share bypass
+# ------------------------------------------------------------------------------------------------- the routes that land
+# the constant shares and the hard rules that land the bin, as the note's Strength line counts them
 GU = RT["guesses"]
 land_all = [nm for nm, (a, w) in GU.items() if 145.0 <= a < 155.0]
 land_wall = [nm for nm, (a, w) in GU.items() if 145.0 <= w < 155.0]
-listed = ("two-thirds", "0.7", "three-quarters", "four-fifths")
-check("BYPASS no listed share lands, every balloon or the 2027 balloons alone",
-      not any(nm in land_all or nm in land_wall for nm in listed + ("one half", "all")),
+check("BYPASS the listed shares that land are the note's", land_all == LANDING_SHARES[0] and land_wall == LANDING_SHARES[1],
       "every balloon: band %.3f to %.3f, lands %s; the 2027 balloons alone: band %.3f to %.3f, lands %s" % (
           (145 - RT["M0"]) / RT["S_all"], (155 - RT["M0"]) / RT["S_all"], ", ".join(land_all) or "none",
           (145 - RT["M0"]) / RT["S_wall"], (155 - RT["M0"]) / RT["S_wall"], ", ".join(land_wall) or "none"))
+RU = RT["rules"]
+land_rules = [k for k, v in RU.items() if 145.0 <= v < 155.0]
+check("RULES the hard rules that land are the note's", land_rules == LANDING_RULES,
+      "; ".join("%s %.1f" % (k, v) for k, v in RU.items()))
 # ------------------------------------------------------------------------------------------------- out of sample
 oos = C.oos_table(G)
 check("OOS cover beats every rival by half", all(oos["cover"] <= 0.5 * oos[k] for k in ("gap", "cur", "dy",
@@ -481,6 +503,34 @@ check("REAL the history carries its exceptions", low and sum(h["y"] for h in low
       0 < sum(h["y"] for h in mid) < len(mid) and outs.get("SALE", 0) >= 3 and outs.get("SPECIAL", 0) >= 1,
       "below a cover of 1.0 %d of %d extended; 1.12 to 1.25 %d of %d; codes %s" % (
           sum(h["y"] for h in low), len(low), sum(h["y"] for h in mid), len(mid), outs))
+ext_y = {}
+for h in H:
+    if h["out"] == "EXTENDED":
+        ext_y[h["date"].year] = ext_y.get(h["date"].year, 0) + 1
+covid = [h for h in H if h["out"] == "EXTENDED" and h["date"].year == 2021 and h["ptype"] in ("Hotel", "Retail")]
+check("REAL extensions before the wall", sum(v for y_, v in ext_y.items() if y_ <= 2021) >= 6 and ext_y.get(2020, 0) >= 1
+      and len(covid) >= 3, "by year %s; 2021 hotel and retail %d" % (
+          ", ".join("%d: %d" % kv for kv in sorted(ext_y.items())), len(covid)))
+sale_cov = [h["cover"] for h in H if h["out"] == "SALE"]
+check("REAL a sale extension only with equity", sale_cov and min(sale_cov) >= 1.0 and
+      not any(e["out"] == "SPECIAL" and e["date"] == h_["date"] for e in G.cre.log for h_ in H if e["ob"] == h_["ob"]),
+      "lowest cover at a sale-pending extension %.2f; no loan to special assets at its original maturity" % min(sale_cov))
+bym = {}
+for h in H:
+    if h["date"] >= dt.date(2026, 6, 1):
+        bym.setdefault((h["date"].year, h["date"].month), []).append(h["cover"])
+for L_ in fut_:
+    if L_["omat"] <= dt.date(2027, 9, 30):
+        bym.setdefault((L_["omat"].year, L_["omat"].month), []).append(G.cre_cover[id(L_)])
+med = [(k, float(np.median(v))) for k, v in sorted(bym.items())]
+jump = max(abs(b_[1] - a_[1]) for a_, b_ in zip(med[:-1], med[1:]))
+check("REAL the push came in and went out", jump <= 0.20, "largest month-to-month move %.2f; %s" % (
+    jump, " ".join("%d-%02d %.2f" % (k[0], k[1], v) for k, v in med)))
+iop = [L_ for L_ in G.cre_loans if L_["io"] and not L_["extended"] and dt.date(2021, 12, 1) <= L_["orig"] <= dt.date(2022, 4, 30)]
+g23 = sum(1 for L_ in iop if L_["grade"] <= 3) / len(iop)
+check("REAL the grades see the maturity", g23 <= 0.5 and sum(1 for L_ in iop if L_["grade"] >= 6) >= 5,
+      "the push's interest-only loans: %.0f per cent graded 2 or 3, %d graded 6 or worse of %d" % (
+          100 * g23, sum(1 for L_ in iop if L_["grade"] >= 6), len(iop)))
 
 # ------------------------------------------------------------------------------------------------- semantic forks
 pol = " ".join(DOC.policy_sentences())
@@ -556,6 +606,9 @@ check("SF15 the hedge programme is the ALM book", "are not part of the programme
 qe = set(C.QUARTER_ENDS)
 on_qe = [t for t in reg if t["Book"] == "ALM" and t["Maturity date"] in qe]
 check("SF16 no maturity on a quarter-end", not on_qe, "%d" % len(on_qe))
+lit = C.programme(PACK, any_status=True)
+check("SF16 in effect to the termination", "terminated early, are after it" in pol and lit == prog,
+      "a date-only reading of every ALM trade gives the golden: the terminated swap's own date ends it")
 by_code = C.programme(PACK, by="strategy")
 mv = [round((a - b) / 1e6, 1) for a, b in zip(prog["overlay"], by_code["overlay"])]
 check("SF17 parts by what each swap is designated against", "Overlays are pay-fixed swaps designated against a fixed-rate "
@@ -614,6 +667,10 @@ check("SF22 the sale-pending six months", "EXT-S, extended six months on the not
       NOTES, "filed; dropped %.1f, carried forward %.1f, read as the extension %.1f" % (
           RT["family"]["sale-pending outcomes dropped from the fit"],
           RT["family"]["sale-pending six months carried forward"], misread))
+
+check("SF23 the extension's payments are made", "guarantor's support agreement" in NOTES and
+      "the payments are made as scheduled" in NOTES, "filed: below a cover of 1.0 on the extension's terms the "
+      "payments are made from the interest reserve")
 
 # ------------------------------------------------------------------------------------------------- the ask
 gold_fig = {k: [round(v / 1e6, 1) for v in prog[k]] for k in prog}

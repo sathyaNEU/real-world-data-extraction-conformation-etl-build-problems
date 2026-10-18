@@ -116,7 +116,8 @@ def build():
         trades.append(dict(key=key, id=nums[k], dir=dirn, notional=notl, trade=td, eff=eff, mat=mat, rate=rate,
                            cpty=CCP if cleared else DEALERS[cp], exec_dealer=DEALERS[cp], cleared=cleared, amort=amort,
                            strategy=strat, item=item, book="ALM", status="TERMINATED" if key in TERMINATED else "LIVE",
-                           ccp_id=None, client_ref=None, cleared_on=td if cleared else None))
+                           terminated=TERMINATED.get(key), ccp_id=None, client_ref=None,
+                           cleared_on=td if cleared else None))
         k += 1
     # the backload: a cleared trade booked for each of Ostrander's three, the bilateral originals still live
     for key in BACKLOADED:
@@ -144,7 +145,8 @@ def build():
                              (CCP if cleared else DEALERS[dealer]), exec_dealer=DEALERS[dealer],
                              cleared=side == "OFFSET" and cleared, amort=False,
                              strategy="CUSTOMER" if side == "CUST" else "CUSTOMER OFFSET", item="", book="CUSTOMER",
-                             status="LIVE" if mat > K.AS_OF else "MATURED", ccp_id=None, client_ref=None,
+                             status="LIVE" if mat > K.AS_OF else "MATURED", terminated=None, ccp_id=None,
+                             client_ref=None,
                              cleared_on=td if (side == "OFFSET" and cleared) else None))
             k += 1
     trades += cust
@@ -165,10 +167,10 @@ def build():
 
 
 def notional_on(t, d, S):
-    """the notional of trade t in effect on date d (effective on or before d, maturity after d)"""
+    """the notional of trade t in effect on date d (effective on or before d, maturity and any termination after d)"""
     if t["status"] != "LIVE":
         return 0.0
-    if not (t["eff"] <= d < t["mat"]):
+    if not (t["eff"] <= d < t["mat"]) or (t.get("terminated") and d >= t["terminated"]):
         return 0.0
     if t["key"] in S["sched"]:
         for a, b, n in S["sched"][t["key"]]:
