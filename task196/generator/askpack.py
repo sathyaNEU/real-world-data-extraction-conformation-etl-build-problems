@@ -34,6 +34,23 @@ def _d(d):
     return d.isoformat() if d else ""
 
 
+def _run_days(yy, mm):
+    """The mutual's monthly settlement run and the working days after it that are still inside the
+    month. The run is dated the 25th and moves back to the preceding working day when the 25th falls at
+    a weekend, because the run cannot settle on a day the payment system is shut; a member whose
+    reconciliation comes in late is settled a working day or two behind the run."""
+    d = dt.date(yy, mm, 25)
+    while d.weekday() >= 5:
+        d -= dt.timedelta(days=1)
+    last = (dt.date(yy, mm, 1) + dt.timedelta(days=31)).replace(day=1) - dt.timedelta(days=1)
+    out = []
+    while d <= last:
+        if d.weekday() < 5:
+            out.append(d)
+        d += dt.timedelta(days=1)
+    return out
+
+
 def _months(y):
     a = int(y.split("/")[0])
     out = []
@@ -86,9 +103,12 @@ def settlement_advices(target, w):
                 for a in adj.get((m["code"], (yy, mm), cover), []):
                     rows_out.append(("%d-%02d" % a["own_month"], a["ref"], a["amount"]))
                 tot = round(sum(amt for _, _, amt in rows_out), 2)
+                _rd = _run_days(yy, mm)
+                _r = W.rng("advdate", m["code"], yy, mm, cover)
+                _i = 0 if _r.random() < 0.72 else min(len(_rd) - 1, _r.randint(1, 3))
                 advice.append([advice_no, m["code"], m["tier"], "%d-%02d" % (yy, mm), cover,
                                len(rows_out), "%.2f" % tot,
-                               _d(dt.date(yy, mm, 25))])
+                               _d(_rd[_i])])
                 for mth, ref, amt in rows_out:
                     detail.append([advice_no, m["code"], mth, cover, ref, "%.2f" % amt])
     advice.sort(key=lambda r: (r[3], r[1], r[4]))
@@ -132,11 +152,15 @@ def recovery_statements(target, w):
 def q1_notifications(target, w):
     """Scam cases notified in the quarter to 30 June 2027, from the mutual's notification feed. The main
     extract was cut on 20 June and the rest of the quarter sits in the supplementary file the feed sends
-    at quarter end."""
-    CUT = dt.date(2027, 6, 20)
+    at quarter end. Each file knows only what its own cut date knew, so a case the main extract carries
+    is closed in it only where it closed on or before 20 June."""
+    QSTART, CUT, QEND = dt.date(2027, 4, 1), dt.date(2027, 6, 20), dt.date(2027, 6, 30)
     main, supp = [], []
     for m in w["members"]:
         r = W.rng("q1", m["code"])
+        # the calendar stream is its own, so moving a notification onto the working day the desk
+        # logged it moves no amount, no lag and no reference
+        rc = W.rng("q1cal", m["code"])
         used = set()
         n = max(8, int(round(m["volume"] / 1e6 * 4.4 * r.uniform(0.78, 1.26))))
         days = [r.randrange(91) for _ in range(n)]
@@ -144,13 +168,14 @@ def q1_notifications(target, w):
         # more over ninety days, a member with nothing in that span would be the odd one out
         if not any(x > 80 for x in days):
             days[days.index(max(days))] = 81 + r.randrange(10)
+        drawn = []
         for i in range(n):
-            nd = dt.date(2027, 4, 1) + dt.timedelta(days=days[i])
-            pay = nd - dt.timedelta(days=r.randint(1, 40))
+            nd = QSTART + dt.timedelta(days=days[i])
+            lag = r.randint(1, 40)
             amt = round(min(r.lognormvariate(7.1, 1.2), 210000.0), 2)
             # a case notified late in the quarter can still be closed inside it: the simple purchase
             # scams close in days, the investment cases take months
-            closed = nd + dt.timedelta(days=r.randint(12, 60) if r.random() < 0.62 else r.randint(1, 6))
+            clag = r.randint(12, 60) if r.random() < 0.62 else r.randint(1, 6)
             # A reference identifies one case, so the member's own Q1 block is drawn without
             # replacement: two notifications sharing a reference would be one case carrying two
             # notified dates and two payment legs, which no notification run produces, and the count
@@ -160,10 +185,25 @@ def q1_notifications(target, w):
             while k in used:
                 k = k + 1 if k < 9999 else 1000
             used.add(k)
+            drawn.append([nd, lag, amt, clag, k])
+        # the fraud desk takes the notification on a working day
+        for d in drawn:
+            d[0] = W.on_a_working_day(d[0], rc, lo=QSTART, hi=QEND, keep_month=False)
+        if not any(d[0] > CUT for d in drawn):
+            d = max(drawn, key=lambda x: x[0])
+            d[0] = W.on_a_working_day(CUT + dt.timedelta(days=5), rc,
+                                      lo=CUT + dt.timedelta(days=1), hi=QEND, keep_month=False)
+        for nd, lag, amt, clag, k in drawn:
+            asof = CUT if nd <= CUT else QEND
+            pay = nd - dt.timedelta(days=lag)
+            closed = nd + dt.timedelta(days=clag)
+            if closed <= asof:
+                closed = W.on_a_working_day(closed, rc, lo=nd + dt.timedelta(days=1), hi=asof,
+                                            keep_month=False)
             ref = "%s-Q1%s-%04d" % (m["code"].split("-")[1], "2728", k)
             row = [ref, m["code"], m["name"], _d(pay), _d(nd), "%.2f" % amt,
-                   _d(closed) if closed <= dt.date(2027, 6, 30) else "",
-                   "closed" if closed <= dt.date(2027, 6, 30) else "open"]
+                   _d(closed) if closed <= asof else "",
+                   "closed" if closed <= asof else "open"]
             (main if nd <= CUT else supp).append(row)
     hdr = ["case_reference", "member_code", "member_name", "payment_date", "notified_date",
            "payment_amount_gbp", "closed_date", "case_status"]
@@ -190,7 +230,8 @@ def q1_return_sheet(target, w, main, supp):
         n = sum(1 for r in main + supp if r[1] == m["code"])
         r2 = W.rng("q1u", m["code"])
         ws.append([m["code"], m["name"], "2027/28", "Q1",
-                   int(round(w["volumes"][(m["code"], W.MEASURED)] * 0.262 / 10.0) * 10),
+                   int(round(w["volumes"][(m["code"], W.MEASURED)]
+                             * W.member_shape(m["code"])[0] * 1.064)),
                    n, int(round(m["volume"] / 1e6 * 4.6)), "revised"])
     for i, wd in enumerate([14, 24, 12, 9, 14, 18, 22, 11], start=1):
         ws.column_dimensions[get_column_letter(i)].width = wd

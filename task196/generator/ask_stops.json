@@ -16,10 +16,10 @@
   "device": "the quarter's tail in a supplementary extract",
   "figures": 24,
   "figures_moved": 24,
-  "gap": 54377,
+  "gap": 59655,
   "golden": 460362,
   "mirror_hits": false,
-  "natural_read": 405985,
+  "natural_read": 400707,
   "rounding": 1.0,
   "worst_figure": "KM-101 value"
  },

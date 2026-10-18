@@ -396,9 +396,20 @@ def main():
     reasons = {r["report_reason"] for r in register}
     ok("the register's report reasons vary as a real register's do", len(reasons) >= 3,
        "%d distinct reasons" % len(reasons))
-    wren = [m for m in members if m["member_code"] == "KM-103"][0]
-    ok("the tier a member is carried at names the review that set it",
-       "held from the 2024 review" in wren["tier_basis"], wren["tier_basis"])
+    def _in_band(t, v):
+        return {"A": v > 25000000, "B": 10000000 <= v <= 25000000, "C": v < 10000000}[t]
+    _off = sorted(m["member_code"] for m in members
+                  if not _in_band(m["contribution_tier"], volumes[m["member_code"]]))
+    _held = sorted(m["member_code"] for m in members if "held from the" in m["tier_basis"])
+    _years = [int(m["tier_basis"].split("held from the ")[1].split()[0])
+              for m in members if "held from the" in m["tier_basis"]]
+    ok("a tier the member's own volume no longer supports names the review that set it",
+       _off == _held and _off
+       and all(y < 2027 for y in _years)
+       and all(m["triennial_review_this_cycle"] == "no"
+               for m in members if "held from the" in m["tier_basis"]),
+       "%d carried off their own band, %s; each names a review before this cycle, %s"
+       % (len(_off), ", ".join(_off), ", ".join(str(y) for y in sorted(_years))))
 
     print("\n-- the asks")
     det = sheet("settlement_advices_2026_27.xlsx", "advice detail")
@@ -709,6 +720,55 @@ def main():
            "%d" % unrounded)
     ok("ask 4's rounding basis changes at least one quarter total, so the ask pins it", diff,
        "; ".join(diff) or "no quarter differs")
+
+    print("\n-- the payments-sent series and the working calendar, from the bundle")
+    YEARS = ["2023/24", "2024/25", "2025/26", "2026/27"]
+    ann = {}
+    for r in qr:
+        if r["vintage"] == "revised":
+            k = (r["member_code"], r["scheme_year"])
+            ann[k] = ann.get(k, 0) + int(r["payments_sent"])
+    for r in sheet("member_quarterly_returns.xlsx", "returns to 2023-24"):
+        k = (r["member_code"], r["scheme_year"])
+        ann[k] = ann.get(k, 0.0) + float(r["payments_sent_thousands"]) * 1000.0
+    mcodes = sorted({k[0] for k in ann})
+    steps = {c: [round((ann[(c, YEARS[i + 1])] / ann[(c, YEARS[i])] - 1) * 100, 3) for i in range(3)]
+             for c in mcodes}
+    ok("no two members share a payments-sent growth rate to three decimals",
+       len(mcodes) == 12 and all(len({steps[c][i] for c in mcodes}) == 12 for i in range(3)),
+       "%d distinct rates over 36 member-years" % len({x for c in mcodes for x in steps[c]}))
+    ok("Castlegate's three annual payments-sent totals are the ones the call rests on",
+       [ann[(SUBJECT, y)] for y in YEARS[1:]] == [19120600, 20677000, 22233300],
+       ", ".join("%d" % ann[(SUBJECT, y)] for y in YEARS[1:]))
+    ok("no member's annual payments sent is a round total",
+       not [k for k, v in ann.items() if k[1] != "2023/24" and int(v) % 10000 == 0],
+       "%d member-years, none a multiple of ten thousand"
+       % len([k for k in ann if k[1] != "2023/24"]))
+    wk = lambda ds: 100.0 * sum(1 for x in ds if x.weekday() >= 5) / max(1, len(ds))
+    ok("the notification feed is taken on working days and its closures fall on them",
+       wk([d(r["notified_date"]) for r in q1 + supp]) < 6.0
+       and wk([d(r["closed_date"]) for r in q1 + supp if r["closed_date"]]) < 6.0,
+       "%.2f per cent of notifications and %.2f per cent of closures at a weekend"
+       % (wk([d(r["notified_date"]) for r in q1 + supp]),
+          wk([d(r["closed_date"]) for r in q1 + supp if r["closed_date"]])))
+    ok("the register's closures fall on working days",
+       wk([d(r["closed_date"]) for r in reg if r["closed_date"]]) < 6.0,
+       "%.2f per cent of %d closures at a weekend"
+       % (wk([d(r["closed_date"]) for r in reg if r["closed_date"]]),
+          len([r for r in reg if r["closed_date"]])))
+    ok("no settlement advice is dated at a weekend and the run is not one date a month",
+       wk([d(str(a["advice_date"])[:10]) for a in wbk]) == 0.0
+       and len({str(a["advice_date"])[:10] for a in wbk}) > 12
+       and not [a for a in wbk if str(a["advice_date"])[:7] != str(a["settlement_month"])[:7]],
+       "%d advices over %d dates, every one inside its own settlement month"
+       % (len(wbk), len({str(a["advice_date"])[:10] for a in wbk})))
+    ok("the main notification extract carries nothing its own cut date could not know",
+       not [r for r in q1 if r["closed_date"] and d(r["closed_date"]) > dt.date(2027, 6, 20)]
+       and max(d(r["notified_date"]) for r in q1) <= dt.date(2027, 6, 20)
+       and not [r for r in supp if r["closed_date"] and d(r["closed_date"]) > dt.date(2027, 6, 30)],
+       "latest closure %s on a 20 June cut, latest notification %s"
+       % (max((r["closed_date"] for r in q1 if r["closed_date"]), default=""),
+          max(r["notified_date"] for r in q1)))
 
     print("\n-- the gates")
     files = sorted(os.listdir(TARGET))

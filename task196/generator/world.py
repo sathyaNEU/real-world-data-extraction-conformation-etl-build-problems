@@ -81,9 +81,38 @@ MEMBERS = [
 ]
 
 # A contribution tier is set at a member's triennial review and holds until the next one, so a member
-# whose volumes have fallen since is carried at the tier its last review set. The register's own
-# triennial-review field says whose review falls this cycle.
-TIER_HELD_FROM = {"KM-103": "2024"}
+# whose volumes have moved since is carried at the tier its last review set, in either direction:
+# Wrenhall's book has fallen out of Tier A and Netherby's has grown past the Tier C ceiling, and both
+# are carried where their last review put them. The register's own triennial-review field says whose
+# review falls this cycle, so a held tier names a review year from an earlier cycle year.
+TIER_HELD_FROM = {"KM-103": "2025", "KM-118": "2026"}
+
+# Payments sent, as a factor on the member's base volume, year by year. Each member's book moves on its
+# own terms: Wrenhall has been losing a corporate corridor for three years, Trentmoor and Pelbury each
+# gave a year back, Garnock joined part way through 2023/24 and is still scaling, and Thrimby's growth
+# has stopped on a repricing. The four review-group members end on 1.000 because their base volume is
+# solved back from the index their review is read at (build_members, world), so the measured year is the
+# anchor and the earlier years are the member's own path to it.
+VOLUME_PATH = {
+    "KM-101": (0.845, 0.898, 0.951, 1.000),
+    "KM-102": (1.021, 0.994, 0.978, 1.013),
+    "KM-103": (1.286, 1.174, 1.062, 0.973),
+    "KM-104": (0.780, 0.860, 0.930, 1.000),
+    "KM-106": (0.871, 0.916, 0.958, 1.006),
+    "KM-108": (0.905, 0.962, 0.934, 1.000),
+    "KM-110": (0.688, 0.809, 0.896, 1.019),
+    "KM-112": (0.642, 0.751, 0.884, 1.000),
+    "KM-115": (0.734, 0.952, 0.911, 1.034),
+    "KM-118": (0.766, 0.842, 0.931, 0.994),
+    "KM-121": (0.613, 0.785, 0.968, 0.991),
+    "KM-124": (0.690, 0.869, 0.942, 1.011),
+}
+
+# The quarter a payment institution sends most of its volume in. The industry shape is the same for
+# everybody (the run-up to Christmas is the peak), but a member's own mix moves it: a payroll-heavy
+# book is flat, a marketplace book is steeper. Each member's shape is drawn once around the industry
+# one and holds across the four years, so no two members report the same quarterly pattern.
+INDUSTRY_SHAPE = (0.238, 0.244, 0.263, 0.255)
 
 TIER_NAMES = {"A": "Tier A, over 25 million payments a year",
               "B": "Tier B, 10 to 25 million payments a year",
@@ -380,13 +409,73 @@ def build_adjustments(members, unauth):
     return out
 
 
+# Closures, notifications and settlement runs are things people do at a desk, so they fall on working
+# days: an out-of-hours rota closes a handful at a weekend and nothing else does. A date drawn with no
+# regard to the calendar is moved inside a one-week window to the day of the week the work lands on,
+# which leaves the month and the quarter it falls in exactly where they were.
+WEEKDAY_WEIGHT = (1.00, 1.05, 1.02, 1.00, 1.12, 0.07, 0.05)   # Monday to Sunday
+
+
+def month_bounds(d):
+    first = d.replace(day=1)
+    return first, (first + dt.timedelta(days=31)).replace(day=1) - dt.timedelta(days=1)
+
+
+def on_a_working_day(d, r, lo=None, hi=None, span=3, keep_month=True):
+    """Move d to the day of the week the work lands on, inside plus or minus span days, inside [lo, hi]
+    and, where keep_month is set, inside d's own calendar month so nothing attributed by month or
+    quarter moves. The window spans a whole week, so the weekday profile the move returns is
+    WEEKDAY_WEIGHT itself rather than the flat one a bare date draw gives."""
+    if keep_month:
+        a, b = month_bounds(d)
+    else:
+        a, b = d - dt.timedelta(days=span), d + dt.timedelta(days=span)
+    a, b = max(a, d - dt.timedelta(days=span)), min(b, d + dt.timedelta(days=span))
+    if lo is not None:
+        a = max(a, lo)
+    if hi is not None:
+        b = min(b, hi)
+    if b < a:
+        return d
+    days = [a + dt.timedelta(days=i) for i in range((b - a).days + 1)]
+    return r.choices(days, weights=[WEEKDAY_WEIGHT[x.weekday()] for x in days])[0]
+
+
+def settle_closures(cases, unauth):
+    """Put every case closure on the working day the handler closed it, without moving the month. The
+    ask layer attributes a settled line by the month and the quarter its case closed in, so nothing it
+    computes moves; the recovery credit still values strictly after the closure it belongs to, and the
+    unauthorised credit stays on the same side of the pull date as it was, so no credit row appears or
+    disappears. The nudge runs on its own RNG streams, so no other draw in the build shifts."""
+    for c in cases:
+        if c.closed_date is None:
+            continue
+        hi = PULL - dt.timedelta(days=1)
+        if c.recovery_date is not None:
+            hi = min(hi, c.recovery_date - dt.timedelta(days=1))
+        c.closed_date = on_a_working_day(c.closed_date, rng("close", c.member, c.year, c.idx),
+                                         lo=c.open_date + dt.timedelta(days=1), hi=hi)
+    for u in unauth:
+        before = u["closed_date"]
+        posts = (bool(u["recovery_route"])
+                 and before + dt.timedelta(days=u["recovery_offset"]) <= PULL)
+        d = on_a_working_day(before, rng("uclose", u["member"], u["year"], u["idx"]),
+                             lo=u["open_date"] + dt.timedelta(days=1),
+                             hi=PULL - dt.timedelta(days=1))
+        if (bool(u["recovery_route"])
+                and (d + dt.timedelta(days=u["recovery_offset"]) <= PULL) != posts):
+            d = before
+        u["closed_date"] = d
+
+
 def volumes(members):
-    """Payments sent per member per scheme year, in whole payments."""
+    """Payments sent per member per scheme year, in whole payments, each member on its own growth
+    path (VOLUME_PATH)."""
     out = {}
     for m in members:
-        for y in SCHEME_YEARS:
-            growth = {"2023/24": 0.78, "2024/25": 0.86, "2025/26": 0.93, "2026/27": 1.00}[y]
-            v = m["volume"] * growth
+        path = VOLUME_PATH[m["code"]]
+        for i, y in enumerate(SCHEME_YEARS):
+            v = m["volume"] * path[i]
             if m["joined"] > year_bounds(y)[0]:
                 lo, hi = year_bounds(y)
                 v *= (hi - m["joined"]).days / (hi - lo).days
@@ -394,18 +483,28 @@ def volumes(members):
     return out
 
 
+def member_shape(code):
+    """The member's own quarterly shape, drawn once around the industry one and held across the years."""
+    r = rng("shape", code)
+    raw = [s * (1.0 + (r.random() - 0.5) * 0.17) for s in INDUSTRY_SHAPE]
+    tot = sum(raw)
+    return [s / tot for s in raw]
+
+
 def quarter_volumes(members, vols):
-    """The quarterly split the member returns report, with a real seasonal shape."""
-    shape = [0.238, 0.244, 0.263, 0.255]
+    """The quarterly split the member returns report, on the member's own seasonal shape. The parts are
+    whole payments, not a rounded-off multiple, and the fourth quarter carries the residual so the four
+    always sum to the year the return states."""
     out = {}
     for m in members:
+        shape = member_shape(m["code"])
         for y in SCHEME_YEARS:
             tot = vols[(m["code"], y)]
             r = rng("qv", m["code"], y)
             parts = []
             for i, s in enumerate(shape):
                 jitter = 1.0 + (r.random() - 0.5) * 0.04
-                parts.append(int(round(tot * s * jitter / 10.0) * 10))
+                parts.append(int(round(tot * s * jitter)))
             parts[-1] = tot - sum(parts[:-1])
             for i, (a, b) in enumerate(_quarters(y)):
                 out[(m["code"], y, i + 1)] = parts[i]
@@ -445,6 +544,9 @@ def world():
     vols = volumes(members)
     qvols = quarter_volumes(members, vols)
     unauth = pack.unauthorised_cases(members)
+    # closures land on the working day the handler closed them, inside their own month, before the
+    # prior-period adjustments are keyed off the closure months
+    settle_closures(cases, unauth)
     adjustments = build_adjustments(members, unauth)
     return dict(members=members, cases=cases, volumes=vols, quarter_volumes=qvols, unauth=unauth,
                 adjustments=adjustments,

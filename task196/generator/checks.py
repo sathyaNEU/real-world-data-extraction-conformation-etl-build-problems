@@ -833,6 +833,100 @@ def main():
        round(G.member_index(w, code)["rate"]) == gold_index,
        "the index reads no amount, no notification and no statement")
 
+    print("\n-- the payments-sent series, member by member")
+    _ann = {}
+    for _r in qr_new:
+        if _r["vintage"] == "revised":
+            _k = (_r["member_code"], _r["scheme_year"])
+            _ann[_k] = _ann.get(_k, 0) + int(_r["payments_sent"])
+    for _r in qr_old:
+        _k = (_r["member_code"], _r["scheme_year"])
+        _ann[_k] = _ann.get(_k, 0.0) + float(_r["payments_sent_thousands"]) * 1000.0
+    _codes = sorted({k[0] for k in _ann})
+    _steps = {c: [round((_ann[(c, W.SCHEME_YEARS[i + 1])] / _ann[(c, W.SCHEME_YEARS[i])] - 1) * 100, 3)
+                  for i in range(3)] for c in _codes}
+    ok("no two members share a payments-sent growth rate to three decimals",
+       len(_codes) == 12 and all(len({_steps[c][i] for c in _codes}) == 12 for i in range(3))
+       and len({x for c in _codes for x in _steps[c]}) == 36,
+       "%d members, %d distinct rates over 36 member-years"
+       % (len(_codes), len({x for c in _codes for x in _steps[c]})))
+    ok("every member's growth path has its own shape, not one path scaled twelve times",
+       len({tuple(sorted(_steps[c])) for c in _codes}) == 12
+       and len([c for c in _codes if min(_steps[c]) < 0]) >= 3,
+       "%d distinct shapes, %d members giving a year back"
+       % (len({tuple(sorted(_steps[c])) for c in _codes}),
+          len([c for c in _codes if min(_steps[c]) < 0])))
+    ok("Castlegate's three annual payments-sent totals are the ones the call rests on",
+       [_ann[(code, y)] for y in ("2024/25", "2025/26", "2026/27")]
+       == [19120600, 20677000, 22233300],
+       ", ".join("%d" % _ann[(code, y)] for y in ("2024/25", "2025/26", "2026/27")))
+    ok("every graded review-group index is the figure the deliverables print",
+       {c: G.member_index(w, c)["index"] for c in ("KM-104", "KM-112", "KM-108", "KM-101")}
+       == {"KM-104": 31, "KM-112": 22, "KM-108": 15, "KM-101": 12},
+       ", ".join("%s %d" % (c, G.member_index(w, c)["index"])
+                 for c in ("KM-104", "KM-112", "KM-108", "KM-101")))
+    _round = [k for k, v in _ann.items() if k[1] != "2023/24" and int(v) % 10000 == 0]
+    ok("no member's annual payments sent is a round total", not _round,
+       "%d of %d member-years land on a multiple of ten thousand"
+       % (len(_round), len([k for k in _ann if k[1] != "2023/24"])))
+    _q10 = [r for r in qr_new if int(r["payments_sent"]) % 10 == 0]
+    ok("the quarterly payments-sent figures are whole payments, not a rounded multiple",
+       len(_q10) < len(qr_new) * 0.25,
+       "%d of %d quarters land on a multiple of ten" % (len(_q10), len(qr_new)))
+
+    print("\n-- the working calendar")
+    _wk = lambda ds: 100.0 * sum(1 for x in ds if x.weekday() >= 5) / max(1, len(ds))
+    _spread = lambda ds: max(100.0 * sum(1 for x in ds if x.weekday() == i) / max(1, len(ds))
+                             for i in range(5))
+    _notif = [dt.date.fromisoformat(r["notified_date"]) for r in q1 + supp]
+    _nclose = [dt.date.fromisoformat(r["closed_date"]) for r in q1 + supp if r["closed_date"]]
+    _rclose = [dt.date.fromisoformat(r["closed_date"]) for r in reg if r["closed_date"]]
+    ok("the notification feed is taken on working days", _wk(_notif) < 6.0,
+       "%.2f per cent of %d notifications at a weekend, busiest weekday %.1f per cent"
+       % (_wk(_notif), len(_notif), _spread(_notif)))
+    ok("the feed's closures fall on working days", _wk(_nclose) < 6.0,
+       "%.2f per cent of %d closures at a weekend" % (_wk(_nclose), len(_nclose)))
+    ok("the register's closures fall on working days", _wk(_rclose) < 6.0,
+       "%.2f per cent of %d closures at a weekend, busiest weekday %.1f per cent"
+       % (_wk(_rclose), len(_rclose), _spread(_rclose)))
+    _advd = [dt.date.fromisoformat(str(a["advice_date"])[:10]) for a in _adv]
+    ok("no settlement advice is dated at a weekend and the run is not one date a month",
+       _wk(_advd) == 0.0 and len(set(_advd)) > 12 and len({d.day for d in _advd}) > 1,
+       "%d advices over %d dates on %d days of the month, none at a weekend"
+       % (len(_advd), len(set(_advd)), len({d.day for d in _advd})))
+    _outside = [a for a in _adv
+                if str(a["advice_date"])[:7] != str(a["settlement_month"])[:7]]
+    ok("every advice is dated inside the month it settles", not _outside,
+       "%d advices, %d dated outside their own settlement month" % (len(_adv), len(_outside)))
+    _cut = dt.date(2027, 6, 20)
+    ok("the main notification extract carries no closure after its own cut date",
+       not [r for r in q1 if r["closed_date"]
+            and dt.date.fromisoformat(r["closed_date"]) > _cut]
+       and max(dt.date.fromisoformat(r["notified_date"]) for r in q1) <= _cut,
+       "%d closed of %d rows, latest closure %s, latest notification %s"
+       % (len([r for r in q1 if r["closed_date"]]), len(q1),
+          max((r["closed_date"] for r in q1 if r["closed_date"]), default=""),
+          max(r["notified_date"] for r in q1)))
+    _early = [r for r in reg if r["closed_date"]
+              and dt.date.fromisoformat(r["closed_date"])
+              <= dt.date.fromisoformat(r["notified_date"])]
+    ok("no case closes on or before the day it was notified", not _early,
+       "%d of %d closed register rows close on or before notification, gap 3 to 153 days"
+       % (len(_early), len([r for r in reg if r["closed_date"]])))
+    _cl = {r["case_reference"]: r["closed_date"] for r in reg}
+    _cr = [r for r in read_csv("case_payments.csv")
+           if r["credit_amount_gbp"] and float(r["credit_amount_gbp"]) > 0]
+    _pre = [r for r in _cr if _cl.get(r["case_reference"])
+            and dt.date.fromisoformat(r["value_date"])
+            <= dt.date.fromisoformat(_cl[r["case_reference"]])]
+    ok("no recovery credit values on or before the closure it belongs to", not _pre,
+       "%d credit rows, %d valued on or before their case's closure" % (len(_cr), len(_pre)))
+    ok("the quarter-end supplement carries no closure after the quarter end",
+       not [r for r in supp if r["closed_date"]
+            and dt.date.fromisoformat(r["closed_date"]) > dt.date(2027, 6, 30)],
+       "%d rows, latest closure %s"
+       % (len(supp), max((r["closed_date"] for r in supp if r["closed_date"]), default="")))
+
     print("\n-- realism and document control")
     ok("no round headline", abs(gold_rate - round(gold_rate)) > 0.02,
        "%.3f is not a round number" % gold_rate)

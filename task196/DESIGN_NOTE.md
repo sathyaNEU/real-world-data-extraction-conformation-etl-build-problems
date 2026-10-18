@@ -206,7 +206,7 @@ value before rounding, every one is more than 6 per cent from the golden, and no
 | SF17 | "the indemnity the advices settled" (ask 4) | `indemnity_paid_gbp` on the advice detail lines, which the dictionary defines as the amount the advice settled for that case | the register's `reimbursed_amount_gbp` on the same cases; the same net of the recovery credits the ledger posts later | the register column differs on 12 of 16 figures and the netting on 16 of 16 | the asking sentence names what the advices settled, and standard clause 5.2 credits a recovery against its case at the date the funds arrive rather than in an advice; both alternatives computed and asserted as different quantities, the register short by the 486,513.00 of top-up it does not carry |
 | SF11 | "preceded" | the recall request's date is strictly earlier than the registration date | same-day counts as preceding | same call | C1: no matched payment has a recall request dated the same day as the registration, asserted at zero |
 | SF18 | the population of the recovery share (ask 6) | scam reimbursement cases whose payment fell in the 2025/26 scheme year, by the quarter of that year each closed in, the reimbursement the register holds for them as the denominator and every case-level credit as the numerator, which the asking sentence pins: "the share of scam reimbursement recovered by route on cases from 2025/26 payments closed in each 2025/26 quarter, from every case-level credit" | both covers; any scheme year; both at once; the unauthorised cover alone; calendar quarters; the payment amount as the denominator; credits dated inside 2025/26 only; the statement's own stated recoveries | each gives another grid, 9 to 15 of the 15 figures off, worst 10.3 points on Q2 beneficiary recall | the enumeration below: 48 readings computed on the shipped rows and one returns the committed fifteen figures; the pinned reading and one rival per axis are asserted in `checks.py` and again in `verify.py` on the shipped bytes. "Scam reimbursement" is the register's own cover class and "from 2025/26 payments" is its own scheme year, which C1 makes one basis: the scheme_year column is the scheme year of the payment on all 18,280 rows, and the 2023/24 extract holds no case closing inside the four quarters |
-| SF19 | the count basis of the notified cases (ask 5) | the case, pinned by "the distinct cases each member notified in 2027/28 Q1" and by the dictionary's "a case is one case however many legs it covers" | the feed's rows | same call: 956 rows over 956 distinct references, so both readings select the same cases for every one of the 12 members | C1 asserted in `checks.py` and `verify.py` on the shipped bytes, at 0 references repeated and the row count equal to the case count member by member. The five colliding references the judge counted were a generator defect, not legs, and are gone (see below); the register, which also carries a notified date, is not a second source for the ask, because 747 of the 956 cases sit on a 2027/28 payment its stated scope excludes and all 12 members' own returns state the feed's count and none states the register's |
+| SF19 | the count basis of the notified cases (ask 5) | the case, pinned by "the distinct cases each member notified in 2027/28 Q1" and by the dictionary's "a case is one case however many legs it covers" | the feed's rows | same call: 956 rows over 956 distinct references, so both readings select the same cases for every one of the 12 members | C1 asserted in `checks.py` and `verify.py` on the shipped bytes, at 0 references repeated and the row count equal to the case count member by member. The five colliding references the judge counted were a generator defect, not legs, and are gone (see below); the register, which also carries a notified date, is not a second source for the ask, because 743 of the 956 cases sit on a 2027/28 payment its stated scope excludes and all 12 members' own returns state the feed's count and none states the register's |
 
 ## Ask 4's basis and grain, enumerated
 
@@ -389,7 +389,7 @@ at 13.2 per cent.
 and 30 June 2027, 417 scam and 40 unauthorised, Castlegate 62 scam and 7 unauthorised. They stay, for two
 reasons. First, they are the call's own data: the 400 recorded cases include the 62 Castlegate notified
 after 31 March, which is exactly why the returns' 338 is not the register's 400, so cutting them would move
-the main call. Second, the register is not a licensed source for the ask, measured three ways: 747 of the
+the main call. Second, the register is not a licensed source for the ask, measured three ways: 743 of the
 956 cases the feed carries sit on a payment dated 1 April 2027 or later, which the register extract's own
 stated scope in the manifest ("scheme years 2024/25 to 2026/27") cannot hold; not one reference is shared
 between the feed and the register; and every one of the twelve members' own Q1 returns states the feed's
@@ -616,7 +616,7 @@ monetary quantity in the pack is outside its path.
 | id | Ask | Figures | Primary device (silent) | Hazards shared | File and columns | Forcing figure (designed; measured at stage 3) |
 |---|---|---|---|---|---|---|
 | A | the indemnity the advices settled on unauthorised fraud, for each of the four quarters of 2026/27 by the quarter each case closed in and each of the three member tiers, to the nearest pound, plus each quarter's total taken from the unrounded tier amounts | 16 | D6 grain, a rollup above its own parts: the mutual settles monthly by advice and a third of the unauthorised advices pay a prior-period top-up on a case that closed in an earlier quarter, so the advice's own month is not its cases' closure month and only a reconciliation of the advice total against its own lines, case by case, finds it. The asking sentence pins the basis (the quarter the case closed in) and the grain (the case), so the closure quarter is not a column of the workbook the natural read works in | amounts in pence on the 2023/24 extract, recoveries as later credit rows, the 2024/25 template change | `settlement_advices_2026_27.xlsx` (advices and advice detail) plus `case_register_2024_27.csv` for the closure dates and `case_payments.csv`, 11 columns on the path | measured on the cut pack by `ceiling.py --forcing` and `ask_stops_build.py`: the advice grain reads 664,378.52 against the golden 984,521.08 on the Q1 total, a gap of 320,142.56 against a rounding of 1, and 16 of 16 figures print differently, the narrowest of them by 5,278.73 |
-| B | for each of the twelve members, the scam cases notified in the quarter to 30 June 2027 and the value they reported, to the nearest pound | 24 | D5 scope, a silently partial extract: the Q1 notification file was cut on 20 June and the 21 to 30 June notifications sit in the quarter-end supplementary file, while each member's own Q1 return states a case count the main extract's rows do not reach, so only a return-against-extract reconciliation finds the gap | case references allocated per member and scheme year, a quarter that straddles the mutual's own year end, the returns workbook's own vintage column | `notifications_2027_28_q1.csv`, `notifications_2027_28_q1_supplementary.csv` and the returns workbook's Q1 sheet, 9 columns | measured on the cut pack: the main extract alone reads 405,985 against the golden 460,362 on Brindlemere's reported value, the widest of the twenty-four, a gap of 54,377 against a rounding of 1, and 24 of 24 figures move, the narrowest of them by a whole case (Pelbury's 14 against 15) |
+| B | for each of the twelve members, the scam cases notified in the quarter to 30 June 2027 and the value they reported, to the nearest pound | 24 | D5 scope, a silently partial extract: the Q1 notification file was cut on 20 June and the 21 to 30 June notifications sit in the quarter-end supplementary file, while each member's own Q1 return states a case count the main extract's rows do not reach, so only a return-against-extract reconciliation finds the gap | case references allocated per member and scheme year, a quarter that straddles the mutual's own year end, the returns workbook's own vintage column | `notifications_2027_28_q1.csv`, `notifications_2027_28_q1_supplementary.csv` and the returns workbook's Q1 sheet, 9 columns | measured on the cut pack: the main extract alone reads 400,707 against the golden 460,362 on Brindlemere's reported value, the widest of the twenty-four, a gap of 59,655 against a rounding of 1, and 24 of 24 figures move, the narrowest of them by a whole case (Pelbury's 14 against 15) |
 | C | for each of the three recovery routes and each quarter of 2025/26, the share of the reimbursed amount recovered on cases closed in that quarter, from the case-level credits, to one decimal, plus each route's total over the same four quarters | 15 | D9 a control total true only in its own scope: the statement counts a recovery in the quarter the money arrived rather than the quarter the case closed in, and states the repatriation route net of that route's own agent charge, so its route shares sum to its own stated total while disagreeing with the case-level credits | recoveries posted as later credit rows with their own value dates, cases closing across a quarter boundary, the 2023/24 extract's pence amounts | `recovery_statement_2025_26.csv` plus `case_payments.csv`, 10 columns | measured on the cut pack: the statement reads 2.3 against the golden 15.1 per cent on the Q2 beneficiary recall figure, a gap of 12.8 against a rounding of 0.1, and 15 of 15 figures move, the narrowest of them by 0.5 of a point |
 
 **Separation line.** Zero device rows and zero hazard rows inside the main call's declared population,
@@ -736,6 +736,141 @@ of the four. The two documents and the two register defects the reader found are
 **`target.zip` is cut by the house cutter**, `generator/archive.py` copied from task192, so every entry
 carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
 
+## The reader's realism pass: the growth paths and the working calendar
+
+The stage-4 reader's second pass confirmed three realism defects and the author measured them. All three are
+repaired in the generator and the pack is rebuilt. **The binding constraint was that no graded figure moves**,
+because the determinism judge had already returned DETERMINISTIC and APPROVE on this pack with a blind
+derivation filing 25 per million before it opened the answers, and under `determinism-check` that approve
+survives a change that moves no graded figure and alters no clause a gate turned on. It is held literally:
+`generator/figures.json`, `golden/member_incidence_review.xlsx` and `golden/incidence_index_2027_28.csv` are
+byte-identical before and after the pass (same md5), and `submission.md` and `prompt.txt` were not touched.
+
+**Defect 1, twelve members on one growth path.** Every member's payments sent came off one factor dict
+(0.78, 0.86, 0.93, 1.00) applied to its own base volume, so all twelve grew 10.256 per cent, then 8.140, then
+7.527, with KM-108 differing only in the third decimal in one year, and the eight members outside the review
+group carried a measured-year total rounded to the hundred thousand (26,800,000, 11,900,000, 11,800,000,
+21,400,000, 4,200,000, 4,900,000, 10,100,000 and 27,600,000 all exact). Twelve independent payment
+institutions cannot share a growth path, it is a one-query find, and it sat in `payments_sent`, the
+denominator of the headline index.
+
+Each member now has its own path, `world.VOLUME_PATH`, a factor per scheme year on its base volume. **The
+measured year is the anchor and the earlier years are the walk back to it**, which is what holds every graded
+figure without spending any of the index's edge distance: the four review-group members end on a factor of
+exactly 1.000, so their 2026/27 payments sent, and therefore their indices, cannot move at all. Castlegate
+keeps (0.780, 0.860, 0.930, 1.000) because 19,120,600 and 20,677,000 are the two annual totals beside the
+call's own 22,233,300 on the revised sheet. The eight members outside the review group end on their own
+factor near one rather than on 1.000, which is what takes the round totals out; their base volume is
+untouched, so the ask-layer quantities drawn off it (the Q1 notification volume per member, the unauthorised
+case counts behind ask A) do not move either.
+
+Measured on the cut pack, before and after, annual payments sent on the revised return and the three
+year-on-year steps:
+
+| Member | 2023/24 | 2024/25 | 2025/26 | 2026/27 | g1 | g2 | g3 |
+|---|---|---|---|---|---|---|---|
+| all twelve, before | member's own level | | | | 10.256 (10.253 to 10.258) | 8.140 (one at 8.139) | 7.527 |
+| KM-101 Brindlemere | 36,100,700 | 38,365,000 | 40,629,300 | 42,722,700 | 6.272 | 5.902 | 5.152 |
+| KM-102 Oakhanger | 27,362,800 | 26,639,200 | 26,210,400 | 27,148,400 | -2.644 | -1.610 | 3.579 |
+| KM-103 Wrenhall | 15,303,400 | 13,970,600 | 12,637,800 | 11,578,700 | -8.709 | -9.540 | -8.380 |
+| KM-104 Castlegate | 17,342,000 | 19,120,600 | 20,677,000 | 22,233,300 | 10.256 | 8.140 | 7.527 |
+| KM-106 Quayfield | 10,277,800 | 10,808,800 | 11,304,400 | 11,870,800 | 5.166 | 4.585 | 5.010 |
+| KM-108 Trentmoor | 18,102,200 | 19,242,300 | 18,682,200 | 20,002,400 | 6.298 | -2.911 | 7.067 |
+| KM-110 Vellowe | 14,723,100 | 17,312,600 | 19,174,400 | 21,806,600 | 17.588 | 10.754 | 13.728 |
+| KM-112 Saltmarch | 4,086,700 | 4,780,500 | 5,627,100 | 6,365,500 | 16.977 | 17.709 | 13.122 |
+| KM-115 Pelbury | 3,082,700 | 3,998,400 | 3,826,200 | 4,342,800 | 29.704 | -4.307 | 13.502 |
+| KM-118 Netherby | 7,736,600 | 8,504,200 | 9,403,100 | 10,039,400 | 9.922 | 10.570 | 6.767 |
+| KM-121 Thrimby | 3,003,700 | 3,846,500 | 4,743,200 | 4,855,900 | 28.059 | 23.312 | 2.376 |
+| KM-124 Garnock | 8,661,200 | 23,984,400 | 25,999,200 | 27,903,600 | 176.918 | 8.400 | 7.325 |
+
+Thirty-six distinct rates over thirty-six member-years, twelve distinct at every step, twelve distinct path
+shapes, and four members giving a year back. The assertion that no annual total is a multiple of ten
+thousand runs on the three years the units sheet carries, and the 2023/24 column reconstructed from the
+thousands sheet is not round either; the table's 2023/24 figures are that reconstruction, so they can sit up
+to 100 payments off the generator's own number, which is the thousands column rounding and is the Layer 1
+item the design already names. Garnock's first step is its part-year as a joiner (17 October 2023)
+annualising. The quarterly split is now
+the member's own seasonal shape around the industry one rather than one shape for everybody, and the parts
+are whole payments rather than multiples of ten, with the fourth quarter carrying the residual so the four
+still sum to the year the return states (18 of 144 quarters land on a multiple of ten, which is what chance
+gives). The 2027/28 Q1 sheet takes the member's own first-quarter share rather than a flat 0.262 rounded to
+the ten.
+
+**The edge distances, verified rather than taken on trust.** The index must print the same under every own
+member form of the estimator, not only under Petersen, so the room a review-group volume has is set by the
+widest form, not by the printed rate: on the judge's own table Saltmarch spans 138.5 to 140.4 indexed cases,
+so its volume may sit in (6,240,000, 6,441,860], which is minus 1.97 to plus 1.20 per cent of 6,365,500, not
+the minus 2.8 to plus 1.7 that the Petersen rate alone suggests; Trentmoor minus 2.66 to plus 3.68 and
+Brindlemere minus 3.02 to plus 5.19 on the same basis. None of that room is spent: the anchor construction
+leaves all four measured-year volumes byte-identical, so every index holds exactly and the edge distances
+stay where the judge measured them (Castlegate 0.440, Saltmarch 0.380, Trentmoor 0.430, Brindlemere 0.390).
+
+**Defect 2, an extract holding what its cut date could not know.** `export_manifest.csv` declares
+`notifications_2027_28_q1.csv` as cut on 20 June 2027 holding cases notified to that date. The notified dates
+did stop there, but 75 of its 658 closed cases carried a closure dated up to 30 June, which an extract cut on
+20 June cannot hold. No graded figure reads a closed date from either notification file (ask 5 grades the
+distinct cases notified and the value reported, and the register dates the closures ask 4 and ask 6
+attribute by), so the data is fixed rather than the sentence: each file now knows only what its own cut date
+knew, and a case the main extract carries is closed in it only where it closed on or before 20 June. The main
+extract's latest closure is now 18 June and its latest notification 19 June, 20 June 2027 being a Sunday; the
+quarter-end supplement still closes cases to 30 June. Asserted from both sides in `checks.py` and `verify.py`.
+
+**Defect 3, a calendar nobody works to.** Notified dates in the feed spread 13.18 to 15.79 per cent across
+all seven days with 27.51 per cent at a weekend, 31.43 per cent of the feed's closures fell at a weekend, the
+register's own closures 28.66 per cent and the legacy extract's 26.87, and all 288 settlement advices were
+dated the 25th of their month, on twelve distinct dates, 72 of them at a weekend. Notifications, closures and settlement runs are desk work. One helper,
+`world.on_a_working_day`, moves a date inside a one-week window to the day of the week the work lands on,
+weighted (Monday 1.00, Tuesday 1.05, Wednesday 1.02, Thursday 1.00, Friday 1.12, Saturday 0.07, Sunday 0.05);
+because the window spans a whole week the profile it returns is that weight vector rather than the flat one a
+bare date draw gives, and an out-of-hours rota keeps a thin weekend tail instead of none. Measured after:
+
+| Series | weekend share before | weekend share after | busiest weekday after |
+|---|---|---|---|
+| notified dates, both feed files (956) | 27.51 | 1.57 | Monday 21.2 |
+| the feed's closures (612) | 31.43 | 2.45 | Friday 21.6 |
+| the register's closures (18,246) | 28.66 | 2.38 | Friday 21.0 |
+| the legacy 2023/24 extract's closures (5,068) | 26.87 | 2.57 | Friday |
+| settlement advice dates (288) | 25.00 (the 25th, 12 dates, 72 of them at a weekend) | 0.00, 42 dates on 8 days of the month | Friday 95 of 288 |
+
+The register's closure is a leaf: the nudge is held inside the case's own calendar month, so the month and
+the quarter every ask attributes by are untouched, and it is clamped so the closure stays after the
+notification (gap 3 to 153 days, 0 rows closing on or before notification), before the pull, before the
+recovery credit it belongs to (0 of 8,654 credits valued on or before their case's closure) and on the same
+side of the pull as the unauthorised credit's own value date, so no credit row appears or disappears. Every
+nudge runs on its own RNG stream, so no amount, lag, reference or count in the build shifts: ask 4's sixteen
+figures, ask 5's twenty-four and ask 6's fifteen are byte-identical, 288 advices still tie to their own
+detail lines with 0 untied, 6,416 detail lines still carry the month their case closed in with 0 disagreeing,
+the 35 prior-period lines are the same 35 on the same 486,513.00, and the two grains still hold the same
+2,984,362.84. The settlement run is the 25th moved back to the preceding working day when the 25th falls at a
+weekend, with a late-reconciling member settled a working day or two behind it, every advice still inside its
+own settlement month.
+
+**Payment dates and registration dates, looked at and held.** The same sweep was run on every other date
+column and the finding is recorded rather than repaired. Payment dates are near-flat across the week by
+design and stay that way: the register's 28.93 per cent at a weekend, the payment ledger's value dates 28.68,
+the match extract's payment dates 28.52 and the feed's 30.33. A victim sends a faster payment on any day of
+the week, the schemes clear 24/7, and the scam mix that drives this book (purchase, romance, investment) is
+weekend-heavy rather than weekday-heavy, so a flat payment calendar is the right shape and the two files that
+carry it agree. Registration dates in `mule_account_register.csv` (28.69 per cent at a weekend) and in the
+match extract (28.82), and the fund-return request dates (29.84), are desk work and would be weekday-skewed
+in life; they are held, and the reason is in `## Tried and rejected`: they carry rung 1 and rung 2 and the
+whole-day window sweep, so moving them moves the ladder, which is the one thing a realism pass must not buy
+its realism with. The register's own notified dates (28.54) are held for the same reason: `report_lag`
+drives the request date, the registration dates and the closure, so a nudge there reaches the request gap.
+
+**Netherby's tier, fixed.** `member_register.csv` carried Netherby at Tier C, under 10 million payments a
+year, against a 2026/27 return of 10,100,000 and a next-year notified volume of 10,504,000, with no
+explanation of the kind Wrenhall's row carries. A contribution tier is set at a member's triennial review and
+holds until the next one, in either direction, so Netherby's row now reads "held from the 2026 review" as
+Wrenhall's reads "held from the 2025 review": both are carried where their last review put them, Wrenhall on
+a book that has fallen out of Tier A (now 11,578,700 on a path that gives back about 9 per cent a year) and
+Netherby on one that has grown past the Tier C ceiling (10,039,400). Wrenhall's year moved from 2024 to 2025
+because a triennial cycle reviews a third of the membership a year and a 2024 review would fall due in this
+cycle, which the register's own `triennial_review_this_cycle` column says it does not. `verify.py` no longer
+pins the year as a string: it recomputes each member's tier band from the member's own revised return and
+asserts that the members carried off their band are exactly the members whose basis names an earlier
+review, and that each of them sits outside this cycle.
+
 ## Tried and rejected
 
 - **Architecture 1, an insurance experience rating** (frequency repeats for a member, severity does not, so
@@ -805,7 +940,7 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   reported value, a gap of 64,474): the figures were carried over from the cut before the design point moved
   to 22.23 million payments, and re-measuring the device on the shipped bundle gives a different widest cell.
   The device itself is unchanged and still moves 24 of 24 figures; the cell now reads Brindlemere's value,
-  405,985 against 460,362, a gap of 54,377, with the narrowest moved figure a single whole case. Asks A and C
+  400,707 against 460,362, a gap of 59,655, with the narrowest moved figure a single whole case. Asks A and C
   were re-measured in the same pass and their cells were already right (A 16 of 16, widest 256,440 on the Q1
   total; C 15 of 15, widest 7.8 points on Q2 beneficiary recall).
 - **`register` as the context-artifact key**: `guard.py heart` returned BLOCK on `ban.artifact` once task197
@@ -880,7 +1015,7 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   zero-padding convention, which is a legitimate antidote, and loses the sentence explaining what a blank
   case reference means, which was the ask device's own mechanics.
 - **Wrenhall Pay at tier A on a volume that does not support it, and one report reason for the whole
-  register** (judge finding 8, from the reader): the tier now states that it is held from the 2024 review,
+  register** (judge finding 8, from the reader): the tier now states that it is held from the 2025 review,
   which is what a triennial cycle does and what the register's own review field already implied, and the
   member rows of the mule register draw their report reason the way the industry rows always did, so the
   column carries three reasons rather than one.
@@ -989,7 +1124,7 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
 - **Repairing the register's 457 cases notified in the quarter to 30 June 2027**: they look like a second
   source for ask 5 and they are not touchable, because 62 of Castlegate's are inside the 400 recorded cases
   the call rests on, which is why its revised returns state 338. Rejected as a data change and answered by
-  measurement instead: the register's stated scope cannot hold the 747 of 956 notified cases whose payment
+  measurement instead: the register's stated scope cannot hold the 743 of 956 notified cases whose payment
   falls in 2027/28, no reference is shared, and all twelve members' returns state the feed's count and none
   the register's. Asserted rather than argued.
 - **Cutting the indexed case count out of the call sentence, or forcing one estimator form in the prompt**:
@@ -1015,4 +1150,43 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   beside the count; rubric mode adds that no ask file and no ask figure moved and that the ten `count_band`
   keys are the only values `figures.json` gained. `--allow` reaches only `figures.json` keys, so it cannot
   cover a block 1 wording change, and retaking the snapshot would manufacture a pass on the author's own
-  control. The snapshot was taken before the first edit and left alone.
+  control. The snapshot was taken before the first edit and left alone. **Re-run after the realism pass,
+  both modes report the same single item and nothing else**, and the figure-key diff against the snapshot
+  shows 0 of 133 values moved with 10 keys added, the `count_band` keys the earlier repair added; the
+  realism pass itself moved no figure at all, which is why `generator/figures.json` and both goldens are
+  byte-identical across it. The snapshot was not retaken for this pass either.
+- **Spending the review group's index edge distance to give its three members their own growth** (the
+  obvious reading of the reader's finding, that moving the other eleven members moves three graded
+  indices and so needs a judge pass): rejected once the margins were measured against the whole own-member
+  estimator family rather than against the Petersen rate alone, which leaves Saltmarch only minus 1.97 to
+  plus 1.20 per cent of room. Anchoring every member's path on its measured year instead gives all twelve
+  their own growth, their own shape and their own quarterly seasonality while leaving all four measured-year
+  volumes byte-identical, so no index moves and no edge distance is spent. Nothing was gained by moving them.
+- **Pushing Netherby's reported 2026/27 under the 10 million Tier C ceiling instead of filing a held tier**:
+  measured and dropped. A factor low enough to clear the ceiling (0.9516 or less) would also have to carry
+  the register's own next-year notified volume, which is the return grossed up 4 per cent, so the member
+  would have to shrink 5 per cent in the measured year to make one reference column read tidily, and the
+  mechanism that already explains Wrenhall's row explains Netherby's for nothing.
+- **Giving the mule register's and the match extract's registration dates a working-week profile**: measured
+  at 28.69 and 28.82 per cent at a weekend, which is a real defect of the same kind as the closures, and
+  held. A registration date is one side of every comparison the ladder's two date-only rungs make, so a
+  nudge of a day or two reclassifies rows across the "inside a fortnight" and "after the case" boundaries and
+  moves rung 1 (26.642) and rung 2 (35.669), and it narrows the 22-day request gap the judge's eight findings
+  were closed on, which is what makes a 1, 2, 3, 5, 7, 14 or 21-day window print the golden exactly. The
+  nudge is also not neutral where it is blocked: the rows it could not move are the rows whose request or
+  registration sits within three days of the case, which is the decisive partition itself, so a partial skew
+  would correlate the weekday profile with the answer. Recorded as an open realism item for the author rather
+  than repaired inside a pass whose constraint is that no graded figure moves.
+- **Giving the register's own notified dates a working-week profile**: held for the same reason one step
+  back. `report_lag` is what dates the notification, and the request date, every independent registration on
+  the never-asked branch and the closure are all computed from it, so a nudge there reaches the request gap
+  and the ladder rather than stopping at the column being fixed.
+- **Making the 288 settlement advices non-rectangular** (the reader's "a real run has months where a member
+  settles nothing"): rejected. The rectangle is emergent rather than forced, every member-month-cover simply
+  has at least one closed case, and dropping an advice drops its detail lines, which is ask 4's graded grid.
+  Only the dates were varied, which is what the finding asks for and what costs nothing.
+- **Moving the notification feed's cut off Sunday 20 June**: left alone. The reader's finding is that the
+  extract holds closures its cut date could not know, not that the date is wrong, and the manifest's "cut 20
+  June 2027" is the sentence the repair makes true rather than the sentence it rewrites. A quarterly feed cut
+  on a stated day of the month rather than a working day is what an automated feed does, and the main
+  extract's own content now stops where that date stops.
