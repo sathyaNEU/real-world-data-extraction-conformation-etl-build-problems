@@ -6,7 +6,7 @@ import records as RC
 import sim
 
 FILES = {
-    "portal": "hrg_partner_claim_portal_awards_2025-01_2027-03.csv",
+    "portal": "portal_awards_2025-01_2027-03.csv",
     "ret2425": "hrg_claim_returns_fy2024-25.xlsx",
     "ret2526": "hrg_claim_returns_fy2025-26.xlsx",
     "ret2627": "hrg_claim_returns_fy2026-27.xlsx",

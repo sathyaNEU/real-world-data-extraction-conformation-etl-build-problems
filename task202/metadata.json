@@ -34,7 +34,7 @@
       "pdf",
       "xlsx"
     ],
-    "largest_file": "hrg_partner_claim_portal_awards_2025-01_2027-03.csv",
+    "largest_file": "portal_awards_2025-01_2027-03.csv",
     "largest_file_rows": 26195
   },
   "sources": [
@@ -53,7 +53,7 @@
   },
   "files": [
     {
-      "path": "hrg_partner_claim_portal_awards_2025-01_2027-03.csv",
+      "path": "portal_awards_2025-01_2027-03.csv",
       "format": "csv",
       "bytes": 2625352,
       "rows": 26195,
@@ -91,7 +91,7 @@
     {
       "path": "hrg_operating_policy_2027_edition.pdf",
       "format": "pdf",
-      "bytes": 6225,
+      "bytes": 6233,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -136,7 +136,7 @@
     {
       "path": "DATA_DICTIONARY.md",
       "format": "md",
-      "bytes": 4527,
+      "bytes": 4509,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -145,7 +145,7 @@
     {
       "path": "export_manifest.csv",
       "format": "csv",
-      "bytes": 4409,
+      "bytes": 4466,
       "rows": 15,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -154,7 +154,7 @@
     {
       "path": "referral_ceiling_request.eml",
       "format": "eml",
-      "bytes": 1387,
+      "bytes": 1363,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -163,7 +163,7 @@
     {
       "path": "hrg_annual_report_partner_summary_fy2025-26.pdf",
       "format": "pdf",
-      "bytes": 3993,
+      "bytes": 4005,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",

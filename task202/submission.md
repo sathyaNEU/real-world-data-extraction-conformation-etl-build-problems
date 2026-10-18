@@ -19,12 +19,12 @@ The schedule it generates refers 5.94 per cent of the awards the scheme resolved
 
 ## 3. Step-by-Step Solution
 
-1. Took the claim returns for April 2026 to March 2027 from the 2025/26 and 2026/27 workbooks, the revised return superseding the preliminary one for the two reopened months as the policy requires, and recoveries excluded because the policy counts awards gross: 49,265 awards in 528 partner-band cells.
+1. Took the claim returns for April 2026 to March 2027 from hrg_claim_returns_fy2025-26.xlsx and hrg_claim_returns_fy2026-27.xlsx, the revised return superseding the preliminary one for the two reopened months as the policy requires, and recoveries excluded because the policy counts awards gross: 49,265 awards in 528 partner-band cells.
 2. Divided each cell's claimed total by its award count: each partner-band's own average award, the only award-level figure the returns state.
-3. Resolved the portal export's partner reference to the grants ledger through the identifier crosswalk and kept the awards claimed in those twelve months: 11,788 award rows for 22 partners.
+3. Resolved portal_awards_2025-01_2027-03.csv's partner reference to the grants ledger through partner_identifier_crosswalk.csv and kept the awards claimed in those twelve months: 11,788 award rows for 22 partners.
 4. Expressed each of those awards as a multiple of its own partner-band average award: the award shape, coefficient of variation 0.72, which a single lognormal and a single gamma at that coefficient of variation fit at 16 and 19 times the five per cent Kolmogorov-Smirnov critical value.
 5. Rebuilt each cell's award distribution as the cell's own average award times that shape and weighted each cell by its award count, which is the policy's share of the scheme's awards.
-6. Generated each band's ceiling from a candidate reference ceiling by schedule B.2's factor rounded up to the nearest PHP 100 under B.3, and took the lowest candidate whose referred share is at or below 6.0 per cent: PHP 7,800 refers 5.94 per cent and PHP 7,700 refers 6.04 per cent.
+6. Generated each band's ceiling from a candidate reference ceiling by schedule B.2's factor in hrg_operating_policy_2027_edition.pdf, rounded up to the nearest PHP 100 under B.3, and took the lowest candidate whose referred share is at or below 6.0 per cent: PHP 7,800 refers 5.94 per cent and PHP 7,700 refers 6.04 per cent.
 7. Cut instead on the distribution of the 528 partner-band averages, the ceiling is PHP 5,800 and the schedule refers 9.82 per cent of the window's awards.
 8. Set the 2027/28 referral ceiling for a four-person household at PHP 7,800.
 

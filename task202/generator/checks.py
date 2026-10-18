@@ -421,6 +421,25 @@ def _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv):
     ok("leak.no_method_in_the_pack",
        not re.search(r"rebuild|reconstruct the distribution|per[- ]award distribution", pol, re.I))
 
+    # ---------------------------------------------------------- H9: the registers know every file
+    man = [r["file_name"] for r in csv.DictReader(
+        open(os.path.join(target, B.FILES["manifest"]), encoding="utf-8"))]
+    shipped = set(os.listdir(target))
+    ok("register.manifest_is_the_shipped_set", set(man) == shipped,
+       "manifest %d vs shipped %d: %s" % (len(man), len(shipped),
+                                          sorted(shipped.symmetric_difference(man))))
+    dct = txt[B.FILES["dict"]]
+    for k in B.PACK:
+        if k in ("dict", "policy", "summary", "request"):
+            continue
+        ok("register.dictionary_names_%s" % k, B.FILES[k] in dct, B.FILES[k])
+    # H4: the golden folder is exactly the deliverables
+    import golden as _G
+    ok("ship.golden_is_the_deliverables", sorted(os.listdir(golden_dir)) == sorted([_G.XLSX, _G.PDF]),
+       sorted(os.listdir(golden_dir)))
+    # the archive is cut after these checks run, so its freshness is asserted in make.py where it
+    # is cut (H7: a freshness assertion rather than build order)
+
     # ---------------------------------------------------------- the goldens
     import golden as GD
     for f in (GD.XLSX, GD.PDF):

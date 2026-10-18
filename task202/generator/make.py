@@ -102,6 +102,14 @@ def cut_zip():
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(TARGET, f), "rb").read())
+    # the archive is what ships, so it is checked against the tree it was cut from by content
+    with zipfile.ZipFile(zp) as z:
+        names = z.namelist()
+        assert sorted(names) == sorted(os.listdir(TARGET)), sorted(
+            set(names).symmetric_difference(os.listdir(TARGET)))
+        assert not any("/" in n for n in names), "the archive carries a folder"
+        for f in names:
+            assert z.read(f) == open(os.path.join(TARGET, f), "rb").read(), f
     return zp
 
 
@@ -149,8 +157,11 @@ def main(second=True, checks=True):
         assert digest(GOLDEN) == digest(g2), "golden differs between builds"
         shutil.rmtree(tmp)
         zp = cut_zip()
-        print("byte-identical rebuild; target.zip sha256 %s"
-              % hashlib.sha256(open(zp, "rb").read()).hexdigest())
+        with zipfile.ZipFile(zp) as z:
+            n_members = len(z.namelist())
+        print("byte-identical rebuild; target.zip %d members, %d bytes, sha256 %s"
+              % (n_members, os.path.getsize(zp),
+                 hashlib.sha256(open(zp, "rb").read()).hexdigest()))
     return fig
 
 

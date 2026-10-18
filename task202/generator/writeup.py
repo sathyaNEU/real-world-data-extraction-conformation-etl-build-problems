@@ -147,8 +147,8 @@ def figures(target, F):
 def _test_block(fig, mean, cnt, shape, C):
     """What the goldens need beyond the graded figures: the reference band's own histogram."""
     shp = np.sort(shape)
-    hi = 4.1 * fig["bands"][str(P.REF_BAND)]["ceiling"]
-    edges = np.linspace(0.0, hi, 49)
+    hi = 2500.0 * np.ceil(2.7 * fig["bands"][str(P.REF_BAND)]["ceiling"] / 2500.0)
+    edges = np.linspace(0.0, hi, 46)
     counts = np.zeros(len(edges) - 1)
     for k in sorted(cnt):
         if k[1] != P.REF_BAND:
@@ -156,6 +156,7 @@ def _test_block(fig, mean, cnt, shape, C):
         m = mean[k]
         cdf = np.searchsorted(shp, edges / m, side="right") / len(shp)
         counts += cnt[k] * np.diff(cdf)
+        counts[-1] += cnt[k] * (1.0 - cdf[-1])        # the last bin is open, so nothing is dropped
     return {"hist_edges": [float(x) for x in edges], "hist_counts": [float(x) for x in counts],
             "default_call": fig["default_call"], "default_share_pct": fig["default_share_pct"]}
 
@@ -213,15 +214,16 @@ def submission(fig):
     A("")
     A("## 3. Step-by-Step Solution")
     A("")
-    A("1. Took the claim returns for April 2026 to March 2027 from the 2025/26 and 2026/27 workbooks, "
-      "the revised return superseding the preliminary one for the two reopened months as the policy "
-      "requires, and recoveries excluded because the policy counts awards gross: %s awards in %d "
-      "partner-band cells." %
+    A("1. Took the claim returns for April 2026 to March 2027 from hrg_claim_returns_fy2025-26.xlsx and "
+      "hrg_claim_returns_fy2026-27.xlsx, the revised return superseding the preliminary one for the two "
+      "reopened months as the policy requires, and recoveries excluded because the policy counts awards "
+      "gross: %s awards in %d partner-band cells." %
       ("{:,}".format(fig["awards"]), fig["cells"]))
     A("2. Divided each cell's claimed total by its award count: each partner-band's own average award, "
       "the only award-level figure the returns state.")
-    A("3. Resolved the portal export's partner reference to the grants ledger through the identifier "
-      "crosswalk and kept the awards claimed in those twelve months: %s award rows for %d partners." %
+    A("3. Resolved portal_awards_2025-01_2027-03.csv's partner reference to the grants ledger through "
+      "partner_identifier_crosswalk.csv and kept the awards claimed in those twelve months: %s award "
+      "rows for %d partners." %
       ("{:,}".format(fig["portal_window_rows"]), fig["portal_partners"]))
     A("4. Expressed each of those awards as a multiple of its own partner-band average award: the "
       "award shape, coefficient of variation %.2f, which a single lognormal and a single gamma at that "
@@ -229,8 +231,8 @@ def submission(fig):
       "value." % (fig["cv"], fig["ks_lognormal"], fig["ks_gamma"]))
     A("5. Rebuilt each cell's award distribution as the cell's own average award times that shape and "
       "weighted each cell by its award count, which is the policy's share of the scheme's awards.")
-    A("6. Generated each band's ceiling from a candidate reference ceiling by schedule B.2's factor "
-      "rounded up to the nearest PHP 100 under B.3, and took the lowest candidate whose referred share "
+    A("6. Generated each band's ceiling from a candidate reference ceiling by schedule B.2's factor in "
+      "hrg_operating_policy_2027_edition.pdf, rounded up to the nearest PHP 100 under B.3, and took the lowest candidate whose referred share "
       "is at or below %.1f per cent: PHP %s refers %.2f per cent and PHP %s refers %.2f per cent." %
       (fig["committed_pct"], "{:,}".format(fig["call"]), fig["share_pct"],
        "{:,}".format(fig["call"] - 100), fig["share_down_pct"]))

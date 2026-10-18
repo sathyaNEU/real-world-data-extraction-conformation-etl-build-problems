@@ -127,7 +127,12 @@ def chart(path, fig, test):
     ax[0].set_title("Four-person household awards, twelve months to 31 March 2027", fontsize=9.5)
     ax[0].set_xlabel("Award amount (PHP)", fontsize=8.5)
     ax[0].set_ylabel("Awards", fontsize=8.5)
+    top = edges[-1]
+    ax[0].set_xlim(0, top)
+    ax[0].set_xticks([x for x in range(0, int(top), 5000)])
     ax[0].xaxis.set_major_formatter(FuncFormatter(lambda v, p: "{:,.0f}".format(v)))
+    ax[0].annotate("and above", xy=(0.5 * (edges[-2] + top), counts[-1]), xytext=(-2, 9),
+                   textcoords="offset points", ha="center", fontsize=7.2, color="#c0392b")
     ax[0].yaxis.set_major_formatter(FuncFormatter(lambda v, p: "{:,.0f}".format(v)))
     bands = [int(b) for b in sorted(fig["bands"], key=int)]
     cl = [fig["bands"][str(b)]["ceiling"] for b in bands]

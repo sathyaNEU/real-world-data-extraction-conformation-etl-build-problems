@@ -9,18 +9,18 @@ import datetime as dt
 SEED = 274
 
 # ------------------------------------------------------------------ the foundation
-FOUNDATION = "Lakandula Foundation"
-FOUNDATION_LEGAL = "Lakandula Foundation, Inc."
+FOUNDATION = "Banahaw Relief Foundation"
+FOUNDATION_LEGAL = "Banahaw Relief Foundation, Inc."
 SCHEME = "Household Relief Grant"
 SCHEME_SHORT = "HRG"
 DESK = "Relief Desk"
 OFFICE = "Grants and Assurance Office"
-DOMAIN = "lakandulafoundation.org"
+DOMAIN = "banahawrelief.org"
 # personas: guard.py names --geo PH --seed 202 (never typed by hand)
 PEOPLE = {
     "assurance": ("Erica Costa", "e.costa", "Assurance and Standards Lead, Household Relief Grant"),
     "systems": ("Steven Espinoza", "s.espinoza", "Claims and Partner Systems Officer"),
-    "director": ("Robert Gonzalez", "r.gonzalez", "Executive Director"),
+    "director": ("Cheryl Chase", "c.chase", "Executive Director"),
 }
 
 # ------------------------------------------------------------------ the policy
