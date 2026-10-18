@@ -249,6 +249,41 @@ def main():
         want = figures["estimator_family"][k]
         ok("the estimator family's %s reproduces" % k, abs(v - want["cases"]) < 5e-3,
            "%.3f cases" % v)
+    # the index is one figure under every form, the whole-case count is not, so each count the
+    # deliverables state is read inside the band figures.json carries
+    def closed_forms(i2):
+        a1, a2, am = i2["recorded"], i2["independent"], i2["both"]
+        return [a1 * a2 / am, (a1 + 1) * (a2 + 1) / (am + 1) - 1, a1 * (a2 + 1) / (am + 1),
+                (a1 + 0.5) * (a2 + 0.5) / (am + 0.5) - 0.5, float(int(a1 * a2 / am))]
+    for code in review:
+        i2 = index_for(code, reg, matches, requests, volumes)
+        band = figures["count_band"][code]
+        got = sorted(round(v) for v in closed_forms(i2))
+        ok("the count band holds every closed form for %s" % code,
+           band["low"] <= got[0] and got[-1] <= band["high"]
+           and band["low"] <= round(i2["estimate"]) <= band["high"],
+           "band %d to %d, golden %d, closed forms %d to %d"
+           % (band["low"], band["high"], round(i2["estimate"]), got[0], got[-1]))
+    band = figures["count_band"]["KM-104 not held"]
+    nh = sorted(round(v) - ix["recorded"] for v in closed_forms(ix))
+    ok("the not-held band holds every closed form",
+       band["low"] <= nh[0] and nh[-1] <= band["high"]
+       and band["low"] <= round(ix["estimate"]) - ix["recorded"] <= band["high"],
+       "band %d to %d, golden %d, closed forms %d to %d"
+       % (band["low"], band["high"], round(ix["estimate"]) - ix["recorded"], nh[0], nh[-1]))
+    i_tr = index_for("KM-108", reg, matches, requests, volumes)
+    ok("the widened band is the count sitting on a printing edge",
+       0.5 - abs(i_tr["estimate"] - round(i_tr["estimate"])) < 0.1,
+       "Trentmoor %.3f cases, %.3f of a case from the edge"
+       % (i_tr["estimate"], 0.5 - abs(i_tr["estimate"] - round(i_tr["estimate"]))))
+    g_note = " ".join(str(r.get("member_code") or "")
+                      for r in sheet("member_incidence_review.xlsx", "index", GOLDEN))
+    ok("the golden states the estimator form beside the counts",
+       ("%d x %d / %d = %d" % (ix["recorded"], ix["independent"], ix["both"],
+                               round(ix["estimate"]))) in g_note
+       and ("%d to %d" % (figures["count_band"]["KM-104"]["low"],
+                          figures["count_band"]["KM-104"]["high"])) in g_note,
+       "the index sheet's basis line carries the two-source form and the band")
     ok("the observed union is not the golden",
        round((n1 + n2 - m2) / ix["volume"] * 1e6) != ix["index"],
        "%d cases" % (n1 + n2 - m2))
@@ -440,6 +475,34 @@ def main():
     ok("ask A's device moves the natural read outside the asking sentence's rounding",
        len(moved) == 16, "the advice grain differs on %d of 16 figures, worst %.2f on %s"
        % (len(moved), abs(adv_basis[worst] - figures["ask_a_indemnity_unauthorised"][worst]), worst))
+    # the prior-period lines are in because the advices' own arithmetic puts them in: dropping them
+    # leaves advices whose stated total no longer equals the sum of their lines and whose case_lines
+    # no longer equals their row count, and the total it leaves is the register's reimbursement
+    # column to the penny, the other quantity the asking sentence excludes
+    adv_m = {a["advice_no"]: str(a["settlement_month"]) for a in wbk}
+    repeats = [r for r in det if str(r["settlement_month"]) != adv_m[r["advice_no"]]]
+    drop_t = round(sum(float(r["indemnity_paid_gbp"]) for r in unauth_lines
+                       if str(r["settlement_month"]) == adv_m[r["advice_no"]]), 2)
+    brk_t, brk_l = 0, 0
+    for a in wbk:
+        lines = [r for r in det if r["advice_no"] == a["advice_no"]]
+        kept = [r for r in lines if str(r["settlement_month"]) == adv_m[a["advice_no"]]]
+        if len(kept) == len(lines):
+            continue
+        if abs(round(sum(float(r["indemnity_paid_gbp"]) for r in kept), 2)
+               - float(a["advice_total_gbp"])) > 0.011:
+            brk_t += 1
+        if int(a["case_lines"]) != len(kept):
+            brk_l += 1
+    ok("dropping the prior-period lines breaks the advices' own arithmetic",
+       brk_t == len(repeats) and brk_l == len(repeats),
+       "%d advices stop tying to their own total and %d case_lines counts stop matching, on %.2f "
+       "dropped from %.2f" % (brk_t, brk_l, round(sum(percase.values()) - drop_t, 2),
+                              round(sum(percase.values()), 2)))
+    ok("the drop reading is the register's reimbursement column the sentence excludes",
+       abs(drop_t - sum(reimb[k] for k in percase)) < 0.011,
+       "%.2f against the register's %.2f on the same cases"
+       % (drop_t, round(sum(reimb[k] for k in percase), 2)))
     q1 = rows("notifications_2027_28_q1.csv")
     supp = rows("notifications_2027_28_q1_supplementary.csv")
     b_fig = {}
@@ -463,6 +526,48 @@ def main():
             if int(r["scam_cases_notified"]) != main_only["%s notified" % r["member_code"]]]
     ok("ask B's inconsistency is findable against the member return", len(mism) >= 8,
        "%d members' returns exceed the main extract's rows" % len(mism))
+    # SF19: the asking sentence pins the count basis ("the distinct cases each member notified in
+    # 2027/28 Q1") and the feed makes the two readings one, because a reference is one case and no
+    # reference repeats
+    feed_refs = [r["case_reference"] for r in q1 + supp]
+    ok("SF19 no notification reference repeats, so a row is one case",
+       len(set(feed_refs)) == len(feed_refs),
+       "%d rows, %d distinct references" % (len(feed_refs), len(set(feed_refs))))
+    cases_by, rows_by = {}, {}
+    for m in members:
+        mine = [r for r in q1 + supp if r["member_code"] == m["member_code"]]
+        rows_by[m["member_code"]] = len(mine)
+        cases_by[m["member_code"]] = len({r["case_reference"] for r in mine})
+    ok("SF19 the pinned reading returns the committed count for every member",
+       all(cases_by[c] == figures["ask_b_q1_notifications"]["%s notified" % c] for c in cases_by),
+       "12 members on the distinct-case count")
+    ok("SF19 counting rows returns the same twelve counts", rows_by == cases_by,
+       "both readings select the same cases")
+    # the register carries a notified date too, and two shipped facts separate it from the feed: its
+    # own stated scope cannot hold a case from a 2027/28 payment, and every member's return states the
+    # feed's count and no member's register count
+    q1a, q1b = dt.date(2027, 4, 1), dt.date(2027, 6, 30)
+    reg_q1 = [r for r in reg if r["notified_date"]
+              and q1a <= d(r["notified_date"]) <= q1b]
+    reg_scam = {}
+    for r in reg_q1:
+        if r["cover_class"] == "scam reimbursement":
+            reg_scam[r["member_code"]] = reg_scam.get(r["member_code"], 0) + 1
+    late = [r for r in q1 + supp if d(r["payment_date"]) >= q1a]
+    man = {r["file"]: r for r in rows("export_manifest.csv")}
+    ok("the register cannot be the quarter's notification extract",
+       len(late) > len(q1 + supp) * 0.5
+       and man["case_register_2024_27.csv"]["what_it_covers"]
+       and "2024/25 to 2026/27" in man["case_register_2024_27.csv"]["what_it_is"]
+       and all(r["scheme_year"] != "2027/28" for r in reg_q1),
+       "%d of %d notified cases sit on a 2027/28 payment, outside the register's stated scope"
+       % (len(late), len(q1 + supp)))
+    ok("every member's own return states the feed's count and never the register's",
+       all(int(r["scam_cases_notified"]) == cases_by[r["member_code"]] for r in q1_ret)
+       and not [r for r in q1_ret
+                if int(r["scam_cases_notified"]) == reg_scam.get(r["member_code"], 0)],
+       "12 of 12 returns equal the feed, 0 of 12 the register's %d rows notified in the quarter"
+       % len(reg_q1))
     closed_by = {}
     for r in reg:
         closed_by[r["case_reference"]] = r
@@ -489,6 +594,77 @@ def main():
         c_fig["year %s" % route] = round(got / reimb * 100.0, 1)
     badc = [k for k, v in figures["ask_c_recovery_share"].items() if abs(c_fig.get(k, -1) - v) > 0.051]
     ok("ask C reproduces from the case-level credits", not badc, "%d figures" % len(c_fig))
+    # SF18: ask 6's population is pinned in the asking sentence ("the share of scam reimbursement
+    # recovered by route on cases from 2025/26 payments closed in each 2025/26 quarter, from every
+    # case-level credit"). Each reading the pack makes plausible is recomputed from the shipped rows
+    # and has to give another grid, and the register's own scheme-year column is the payment's year,
+    # so the pinned population has one value however it is reached.
+    credit = {}
+    for l in legs:
+        if l["entry_type"] == "recovery credit":
+            credit.setdefault(l["case_reference"], []).append(l)
+    CALQ = {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 2, 7: 3, 8: 3, 9: 3, 10: 4, 11: 4, 12: 4}
+
+    def c_grid(cover="scam reimbursement", year="2025/26", cal=False,
+               denom="reimbursed_amount_gbp", in_year=False):
+        src = [r for r in reg if r["closed_date"]]
+        if cover:
+            src = [r for r in src if r["cover_class"] == cover]
+        if year:
+            src = [r for r in src if r["scheme_year"] == year]
+
+        def num(keys, route):
+            tot = 0.0
+            for k in keys:
+                for l2 in credit.get(k, []):
+                    if l2["recovery_route"] != route:
+                        continue
+                    if in_year and not (dt.date(2025, 4, 1) <= d(l2["value_date"])
+                                        <= dt.date(2026, 3, 31)):
+                        continue
+                    tot += float(l2["credit_amount_gbp"])
+            return tot
+
+        out, every = {}, []
+        for q2 in (1, 2, 3, 4):
+            if cal:
+                sel = [r for r in src if d(r["closed_date"]).year == 2025
+                       and CALQ[int(r["closed_date"][5:7])] == q2]
+            else:
+                sel = [r for r in src if _q(d(r["closed_date"]), "2025/26") == q2]
+            every += sel
+            den = sum(float(r[denom]) for r in sel)
+            keys = {r["case_reference"] for r in sel}
+            for route in ROUTES:
+                out["Q%d %s" % (q2, route)] = round(num(keys, route) / den * 100.0, 1) if den else 0.0
+        den = sum(float(r[denom]) for r in every)
+        keys = {r["case_reference"] for r in every}
+        for route in ROUTES:
+            out["year %s" % route] = round(num(keys, route) / den * 100.0, 1) if den else 0.0
+        return out
+
+    gold_c = figures["ask_c_recovery_share"]
+    ok("SF18 the pinned population returns the committed fifteen figures",
+       not [k for k in gold_c if abs(c_grid()[k] - gold_c[k]) > 0.051], "15 figures, 0 off")
+    for label, alt in (("both covers", c_grid(cover=None)),
+                       ("any scheme year", c_grid(year=None)),
+                       ("both covers and any scheme year", c_grid(cover=None, year=None)),
+                       ("the unauthorised cover", c_grid(cover="unauthorised fraud")),
+                       ("calendar quarters", c_grid(cal=True)),
+                       ("the payment amount as the denominator", c_grid(denom="payment_amount_gbp")),
+                       ("credits dated inside 2025/26 only", c_grid(in_year=True))):
+        offc = [k for k in gold_c if abs(alt[k] - gold_c[k]) > 0.051]
+        wk = max(gold_c, key=lambda k: abs(alt[k] - gold_c[k]))
+        ok("SF18 a population the wording excludes gives another grid: %s" % label, len(offc) >= 9,
+           "%d of 15 off, worst %.1f points on %s" % (len(offc), abs(alt[wk] - gold_c[wk]), wk))
+
+    def scheme_year_of(iso):
+        d0 = d(iso)
+        y0 = d0.year if d0 >= dt.date(d0.year, 4, 1) else d0.year - 1
+        return "%d/%s" % (y0, str(y0 + 1)[2:])
+    ok("SF18 the register's scheme year is the scheme year of the payment it holds",
+       not [r for r in reg if scheme_year_of(r["payment_date"]) != r["scheme_year"]],
+       "%d rows, 0 where the pinned payment year and the register's own column part" % len(reg))
     stmt = rows("recovery_statement_2025_26.csv")
     stated = {}
     for r in stmt:

@@ -1,15 +1,15 @@
 {
   "task": "task197",
   "owner": "oviya13ya",
-  "status": "BUILD",
-  "stage": 4,
+  "status": "SHIPPED",
+  "stage": 5,
   "architecture": "v1",
   "objective": "anomaly-detection",
   "domain": "energy-systems-utilities",
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "Stage 4. Judge APPROVE in hand and the one confirmed reader defect is fixed: the September availability statement's capacity column no longer derives from the review window. It read 4.67, 9.73, 11.90, 3.00, 13.68, 2.10, which is the shipped commitments per block over 30 on all six, so a September statement carried eleven October dates and omitted 1 to 20 September. It now carries September's own contracted mean, 5.12, 9.08, 12.41, 3.47, 12.95, 2.63, not reconstructible from anything shipped, which is realistic because the pack ships only the review window. Gates after the fix: checks 84 of 84, verify 144 of 144, figures_check 91 figures none absent, precut 51 clean, voice PASS, leak REVIEW with no LEAK, heart WARN, rebuild byte-identical by diff -rq, zip fa5f18fd82ec50801231f4d763352d55 at 18 members matching the tree member for member. One confirming reader pass is running on the fixed statement; ship on a clean return. The extreme-second concentration stays as designed and is the one carried realism question: 511 of 515 deepest seconds 60 to 90 s into the period, flagged by two readers as generated-looking, neither of whom used it and both of whom fell short of the call, with the physics argument in the note and no shipped document stating the cause.",
+  "resume": "SHIPPED. Four findings from the confirming reader were weighed and declined, with the reasoning here so they are not reopened as oversights. Two are authentic mess rather than defects, on the same ground that carried task199: the performance standard and the technical conditions disagree on whether remaining out-of-tolerance sites are carried at contracted capacity or at zero, which is what real governing documents do and which the reader itself noted does not change which site is withdrawn; and the prequalification note cites clause 3 for a declaration route that clause does not provide, which is how people really cite clauses. Two are cosmetic patterns inside declared distractors: the availability statement's percentage column steps 0.26, 0.26, 0.59, 0.26, 0.26, a near-linear ramp, and the imbalance price file has its mid outside the band in 11.5 per cent of periods. None moves a graded figure and none is worth a sixth judge pass. The carried realism question is unchanged and is the first thing to look at if the portal returns this build: 511 of 515 qualifying episodes put their deepest second 67 to 90 seconds after a period boundary, flagged by both readers as generated-looking, with the physics argument in the note and no shipped document stating the cause. The candidate fix is one sentence in the technical conditions describing the recurring post-boundary deviation, which explains the Layer 1 timing without naming the baseline, at the risk of pointing attention where the traverse lives.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
     "checks.py": "84 checks, 0 failed (floor 40)",
@@ -26,7 +26,7 @@
     "md5": "target tree 7df50bb24a0535ecdbbff6f4b69dd317, golden tree 8249fd0fcac403ea786bb9ea8a53c0e7, target.zip 90cfc57e0096c24532325439066403d2"
   },
   "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
-  "stage_name": "check",
+  "stage_name": "ship",
   "updated": "2026-10-18",
   "ask_layer": {
     "figures": 50,
@@ -36,8 +36,8 @@
     "measured_by": "generator/ceiling.py"
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK",
-    "reader": "Owed again on the repaired pack. Pass 3 landed the call at KPV 72, RDL 83, gap 11 and then reported the recorded-series realism defect that this repair answers: the archive's deviation recordings were bounded by the operator's published extract, two sites held identical bound sets, per-site durations ran at sd 11.5 to 18.5 s, the per-episode gain barely varied, and 32 minute-summary rows read minimum, mean and maximum alike with six of them contradicting the extract. All five are fixed in the generator and measured on the cut pack (see the design note's last block). The reader also reported the 512-of-515 concentration of the qualifying episodes' extreme second 67 to 90 s after a period start, which is load-bearing physics and is left as designed; that is the one open question for the next reader, and the physics argument is in the design note."
+    "leak_py": "REVIEW, 0 LEAK",
+    "reader": "three passes. The two on the repaired pack each filed the rung 1 answer, Reiderland at 57 per cent, at about 85 per cent confidence, which is Gate F evidence rather than a finding. Note that the second called the decisive step rule application: that is what a solver concludes after executing the stated rules and getting an answer, and it is the stump working rather than a Gate H problem, since the judge that did find the traverse ruled it analytical."
   },
   "judge": {
     "verdict": "DETERMINISTIC",
@@ -78,5 +78,6 @@
     "measured_and_dismissed": "its withdrawal-placement claim is wrong and the error is instructive. It reported that the 27 live reserve_unavailable windows never overlap a qualifying episode and inferred they were placed to avoid them. Measured: 7 of the 27 do overlap. Its stated expectation, that with roughly a quarter of periods carrying an episode many overlaps would be expected, was wrong by a factor near 20, because qualifying episodes cover 1.22 per cent of the extract span by duration, not a quarter. 7 of 27 against 1.22 per cent coverage is high, which is consistent with the generator deliberately placing some windows to cover an over-frequency extreme second for the ask device. Third reader structural claim tonight to fail on an implicit model inside it.",
     "open": "the extreme-second concentration, now flagged by a second independent reader as the most generated-looking feature of the pack: 511 of 515 deepest seconds fall 60 to 90 seconds into the period, median 80, interquartile range 6 seconds. Its sharpest point is new and is the one that matters: no shipped document gives a cause that would pin the deviation to one 30-second window. The design note argues real physics, deterministic frequency deviation as schedules step at period boundaries, but the pack never says so, so a solver sees an unexplained concentration. Neither reader used it to find the answer and both fell short of the call, so it is not a leak. The candidate fix is a sentence in the technical conditions describing the recurring post-boundary deviation, which explains the Layer 1 timing without naming the baseline; the risk is that it points attention at the boundary where the traverse lives. Judge first, then decide.",
     "also_reported": "the asset register ships no old metering point for OOS so the pre-October EAN is matchable only by elimination; the metered file carries one point in kWh with no sentence saying so; and the interval labels are interval-end with no sentence saying so. All three are designed Layer 1."
-  }
+  },
+  "delivered": "2026-10-18"
 }

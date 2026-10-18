@@ -36,7 +36,7 @@
  "scoring_unit": "per episode",
  "spine": {
   "file": "target/platform/vkf_highres_archive.sqlite",
-  "rows": 540017,
+  "rows": 1194352,
   "entity": "one one-second record of one contracted site's net active power inside one recording",
   "grain": "site x recording x second",
   "source": "synthetic"

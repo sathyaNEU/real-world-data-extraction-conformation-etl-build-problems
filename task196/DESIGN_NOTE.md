@@ -205,6 +205,8 @@ value before rounding, every one is more than 6 per cent from the golden, and no
 | SF16 | "member tier" (ask 4) | the contribution tier in `member_register.csv` | the tier the advice itself carries | same figures | C1: all 288 advices carry the tier the register carries, 0 disagreeing, asserted in `checks.py` and `verify.py` |
 | SF17 | "the indemnity the advices settled" (ask 4) | `indemnity_paid_gbp` on the advice detail lines, which the dictionary defines as the amount the advice settled for that case | the register's `reimbursed_amount_gbp` on the same cases; the same net of the recovery credits the ledger posts later | the register column differs on 12 of 16 figures and the netting on 16 of 16 | the asking sentence names what the advices settled, and standard clause 5.2 credits a recovery against its case at the date the funds arrive rather than in an advice; both alternatives computed and asserted as different quantities, the register short by the 486,513.00 of top-up it does not carry |
 | SF11 | "preceded" | the recall request's date is strictly earlier than the registration date | same-day counts as preceding | same call | C1: no matched payment has a recall request dated the same day as the registration, asserted at zero |
+| SF18 | the population of the recovery share (ask 6) | scam reimbursement cases whose payment fell in the 2025/26 scheme year, by the quarter of that year each closed in, the reimbursement the register holds for them as the denominator and every case-level credit as the numerator, which the asking sentence pins: "the share of scam reimbursement recovered by route on cases from 2025/26 payments closed in each 2025/26 quarter, from every case-level credit" | both covers; any scheme year; both at once; the unauthorised cover alone; calendar quarters; the payment amount as the denominator; credits dated inside 2025/26 only; the statement's own stated recoveries | each gives another grid, 9 to 15 of the 15 figures off, worst 10.3 points on Q2 beneficiary recall | the enumeration below: 48 readings computed on the shipped rows and one returns the committed fifteen figures, asserted in `checks.py` and again in `verify.py`, the rivals row by row. "Scam reimbursement" is the register's own cover class and "from 2025/26 payments" is its own scheme year, which C1 makes one basis: the scheme_year column is the scheme year of the payment on all 18,280 rows, and the 2023/24 extract holds no case closing inside the four quarters |
+| SF19 | the count basis of the notified cases (ask 5) | the case, pinned by "the distinct cases each member notified in 2027/28 Q1" and by the dictionary's "a case is one case however many legs it covers" | the feed's rows | same call: 956 rows over 956 distinct references, so both readings select the same cases for every one of the 12 members | C1 asserted in `checks.py` and `verify.py` on the shipped bytes, at 0 references repeated and the row count equal to the case count member by member. The five colliding references the judge counted were a generator defect, not legs, and are gone (see below); the register, which also carries a notified date, is not a second source for the ask, because 747 of the 956 cases sit on a 2027/28 payment its stated scope excludes and all 12 members' own returns state the feed's count and none states the register's |
 
 ## Ask 4's basis and grain, enumerated
 
@@ -299,6 +301,155 @@ quarter off. Changing them would have moved sixteen graded figures to repair a s
 is one clause of the prompt, one line of the write-up's block 4, the basis line on the golden's indemnity
 sheet, and the assertions. `target.zip` is byte-identical to the pack the judge read, md5
 58fea759d25de0f25cd583ff70449695 over 19 members, which is the scope proof.
+
+## Asks 5 and 6's population and count basis, enumerated
+
+The judge's third pass read Gate G PASS, Gate H PASS, Gate F STRONG with no hardening lever needed, Gates
+A, B and D PASS and the main call forced with every critical component reproducing, and failed Gates C and
+E on **asks 5 and 6 alone**. `determinism-check` sends an architecture back on Gate G or Gate H, the two
+gates that say the build is the wrong build, so a Gate C and E failure confined to supplementary asks is an
+ask-layer repair and spends no architecture. This section is that repair, and it moved no graded figure: the
+committed fifteen recovery shares, the twelve notification counts and the twelve reported values are the
+figures the judge recomputed, to the penny and to the case.
+
+**Both findings were reproduced before anything was repaired.** The judge's ask 6 grids reproduce to the
+decimal on a reader written from the shipped rows alone (both covers and any scheme year 8.6 / 10.0 / 7.2 /
+5.4 with totals 7.7, 3.5, 4.6; scam cover and any scheme year 9.9 / 11.7 / 8.1 / 5.6 with totals 8.6, 3.4,
+4.8; the payment-amount denominator on both covers 7.2, 3.3, 4.4; credits dated inside 2025/26 only 6.7,
+2.9, 4.3). The judge's ask 5 counts reproduce exactly on the pack it read, md5
+58fea759d25de0f25cd583ff70449695: 956 feed rows over 951 distinct references, five references repeated, and
+KM-101, KM-102, KM-104 and KM-110 reading 191, 120, 108 and 92 on distinct references against 193, 121, 109
+and 93 on rows. The judge's own report says both that distinct references give that series and that the
+values are the same either way, and both halves are true of that pack: the count forked and the value did
+not, because a distinct-case reading still sums every leg a case carries, so KM-101 holds 460,362 on either
+reading. A re-measurement taken after this repair finds rows and distinct references equal, which is the
+repair working and not the finding dissolving.
+
+**Ask 6, every reading the pack makes plausible.** Forty-eight readings were computed on the shipped rows,
+three covers against two scheme-year filters against two quarter conventions against two denominators
+against two credit-date filters, and the statement's own stated recoveries beside them. Exactly one returns
+the committed figures. Beneficiary recall by quarter, then the three route totals:
+
+| Reading | Q1 to Q4 recall | Route totals | Figures off the golden |
+|---|---|---|---|
+| scam reimbursement cover, 2025/26 payments, scheme-year quarters, the register's reimbursement, every credit | 6.5 / 15.1 / 8.5 / 5.4 | 8.5, 2.7, 6.0 | **0 of 15, this is the golden** |
+| both covers, 2025/26 payments | 4.5 / 11.7 / 7.5 / 5.3 | 7.5, 2.9, 5.5 | 14 of 15 |
+| scam cover, any scheme year | 9.9 / 11.7 / 8.1 / 5.6 | 8.6, 3.4, 4.8 | 15 of 15 |
+| both covers, any scheme year | 8.6 / 10.0 / 7.2 / 5.4 | 7.7, 3.5, 4.6 | 14 of 15 |
+| the unauthorised cover alone | 2.3 / 4.8 / 3.4 / 4.6 | 4.1, 3.6, 4.1 | 14 of 15 |
+| calendar quarters on the closure date | 0.0 / 6.5 / 15.1 / 8.5 | 10.8, 2.8, 4.9 | 14 of 15 |
+| the payment amount as the denominator | 6.3 / 14.0 / 8.2 / 5.1 | 8.0, 2.5, 5.6 | 14 of 15 |
+| credits dated inside 2025/26 only | 6.5 / 15.1 / 8.2 / 2.2 | 7.0, 1.9, 5.5 | 9 of 15 |
+| the recovery statement's own stated recoveries | 2.3 on Q2 recall against 15.1 | 6.7, 3.4, 5.1 | 15 of 15, the device's natural read |
+
+**The wording.** Before: `and the share of reimbursement recovered by route on cases closed in each 2025/26
+quarter, from case-level credits, route totals over the four.` After: `and the share of scam reimbursement
+recovered by route on cases from 2025/26 payments closed in each 2025/26 quarter, from every case-level
+credit, route totals over the four.` Three pins, each closing one axis the judge measured: "scam
+reimbursement" is the register's own cover class, "from 2025/26 payments" is its own scheme year, and
+"every case-level credit" closes the credit-date reading that the old wording left open at 9 of 15 figures.
+The quarter convention and the denominator were already pinned and stay as they were. The prompt is 991
+characters and its call sentence is byte-identical.
+
+**What the pins cost and why the population is now recoverable without the statement.** The judge's second
+objection to ask 6 was that the golden population could only be recovered by reconciling to the recovery
+statement's `reimbursed_in_quarter`, which the sentence tells the solver not to use. It is now stated:
+cover, payment year and closure quarter are three columns of the register, and C1 closes the only route
+question, because the register's `scheme_year` is the scheme year of its own `payment_date` on all 18,280
+rows and the 2023/24 extract holds no case closing inside the four quarters. The device is untouched,
+because it never lived in the population: it is the statement counting a recovery in the quarter the money
+arrived and stating repatriation net of the agent's charge, measured again on the cut pack at 15 of 15
+figures moved and 12.8 points on Q2 beneficiary recall.
+
+**Ask 5, the count basis, and the five references behind it.** The feed's four-digit reference suffix was
+drawn with replacement, which is the defect this build already fixed once in the case register, so five
+references repeated inside a member: `101-Q12728-1538`, `101-Q12728-4920`, `102-Q12728-2123`,
+`104-Q12728-8279` and `110-Q12728-6550`. They were not legs. Each carried two notified dates, two payment
+dates and two statuses for one reference, which no notification run produces, and the dictionary's own
+sentence ("a case is one case however many legs it covers") makes a repeated reference one case, so rows and
+cases parted on four members. That is a generator defect in the costume of mess, and the repair is in the
+generator: the draw stays in the same stream position and a collision is walked on by one digit, so the
+stream behind every date, amount and count is untouched. `diff -rq` against the judged pack shows the two
+notification files differing on five lines, each of them a reference string, and the other seventeen files
+byte-identical. The feed now holds 956 rows over 956 distinct references, 0 repeated, and the row count
+equals the case count for all twelve members.
+
+**The wording, and why it pins the case and not the row.** Before: `the cases each member notified in the
+quarter to 30 June 2027 and the value reported;` After: `the distinct cases each member notified in 2027/28
+Q1 and the value reported;` Pinning rows would have pinned against the data dictionary, which defines a
+case as one case however many legs it covers, and against the standard's clause 4.2, which counts a case
+once; pinning the case agrees with both and, now that the feed carries one reference per case, returns the
+committed 193, 121, 60, 109, 64, 111, 93, 28, 15, 37, 24 and 101. The quarter is named the way the pack
+names it, which is also what separates the feed from the register (below). The pin costs nothing, measured:
+ask B's device is the quarter's tail sitting in the supplementary extract, not the count basis, and
+`ceiling.py --forcing` still reads 24 of 24 figures moved with the pair ceiling at 37.4 and mirror leakage
+at 13.2 per cent.
+
+**The register's 457 rows, weighed and not fixed.** The register holds 457 cases notified between 1 April
+and 30 June 2027, 417 scam and 40 unauthorised, Castlegate 62 scam and 7 unauthorised. They stay, for two
+reasons. First, they are the call's own data: the 400 recorded cases include the 62 Castlegate notified
+after 31 March, which is exactly why the returns' 338 is not the register's 400, so cutting them would move
+the main call. Second, the register is not a licensed source for the ask, measured three ways: 747 of the
+956 cases the feed carries sit on a payment dated 1 April 2027 or later, which the register extract's own
+stated scope in the manifest ("scheme years 2024/25 to 2026/27") cannot hold; not one reference is shared
+between the feed and the register; and every one of the twelve members' own Q1 returns states the feed's
+count, 12 of 12, and none states its register count, 0 of 12. The control the ask's own device rides on is
+therefore the control that picks the source out, which is asserted in `checks.py` and in `verify.py` rather
+than argued here.
+
+**The indexed case counts, qualified rather than cut.** The judge ruled that the shipped text does not force
+one estimator form, so the count is not determinate to the case while the index is: eight forms give 686 to
+689 indexed cases and every one prints 31 per million. It is not a Gate A failure, because 688 reproduces
+under the form the golden names, and not a Gate C failure on the call, because the prompt asks for the index
+and a per-million walk and never for a count. So the count stays and carries its form. The Final
+Recommendation now reads "688 indexed cases on the two-source estimate, 400 x 270 / 157", block 4's index
+item names the form in words, and the golden workbook's index sheet carries the same basis line in the
+mutual's own voice. The bands the rubric grades counts inside are in `figures.json` as `count_band` and are
+stated once in step 7:
+
+| Figure | Closed forms | Band | Why the band |
+|---|---|---|---|
+| Castlegate indexed | 686.08 to 687.90 | 686 to 689 | the judge's own wider family reaches 688.56, which prints 689 |
+| Castlegate not held | 286.08 to 287.90 | 286 to 289 | the same family, less the 400 recorded |
+| Saltmarch | 138.46 to 139.28 | 138 to 139 | the forms print 138 and 139 |
+| Trentmoor | 300.67 to 301.44 | 300 to 302 | every form prints 301 and 301.437 sits 0.063 of a case from the 301.5 edge, so a case either side |
+| Brindlemere | 516.83 to 517.37 | 516 to 517 | the forms print 517 and 516.83 is a case below it |
+
+`checks.py` and `verify.py` assert that each band holds the golden count and every closed form's count for
+that member, that the index does not move anywhere in the family, and that Trentmoor's is the count sitting
+on a printing edge. Measured and reported rather than published: the three capture-probability readings,
+which are one number for Castlegate by construction, spread on the smaller members because the stratified
+assignment rounds (Saltmarch 138.00 to 139.92, Trentmoor 300.29 to 302.33, Brindlemere 515.12 to 520.73).
+Every one of them prints that member's committed index, 22, 15 and 12, so the index is exact under the whole
+family, but the published bands are the judge's and are narrower than that spread on Saltmarch's upper end
+and on both of Brindlemere's. Widening them to 138 to 140 and 515 to 521 is the author's call at the portal;
+nothing in the build turns on it.
+
+**The 35 prior-period lines: keeping them is forced, and the advices' own arithmetic is the measurement.**
+The 35 lines hold 486,513.00 across 33 cases, all unauthorised fraud. Keeping them gives 2,984,362.84, which
+equals the sum of the 144 unauthorised advices' own stated totals to the penny, with all 288 advices tying
+to the sum of their own detail lines and all 288 `case_lines` equal to their row counts. Dropping them gives
+2,497,849.84, which equals the register's `reimbursed_amount` on the same cases to the penny, and that is
+SF17's other, named quantity, the one the asking sentence excludes by naming what the advices settled.
+Dropping them also breaks the workbook: 35 advices stop tying to their own stated total and 35 `case_lines`
+counts stop matching their row count. So the judge's rating is confirmed by the data rather than accepted on
+its word, and both measurements are asserted. Measured and not acted on: a repeat line runs 1.8 to 430.2
+times its case's register reimbursement, median 43.8 times, which is the shape that invites a solver to read
+the lines as errors. Re-cutting that split would move the advice grain's forcing cells (the device's measured
+664,378.52 against 984,521.08) and no graded figure, so it buys nothing for determinism and the lines are
+left as the recoveries team's own late closures.
+
+**What this repair governs and what it leaves alone.** It governs two asking sentences, three lines of the
+write-up, three basis lines in the golden workbook, five reference strings in the feed and the assertions.
+It leaves alone the main call's decisive path, the ladder, the rungs, every file the call reads and every
+graded figure: `checks.py` 154 of 154, `verify.py` 136 of 136 on the shipped bytes, `figures_check.py` 102
+figures with none absent, and `ceiling.py --forcing` 55 of 55. `freeze.py` was snapshotted before the first
+edit and run in both modes afterwards; both report exactly one moved item, the Final Recommendation's number
+set gaining 157, 270 and a second 400 from the estimator form the judge's fix put beside the count, and
+rubric mode adds that no ask figure moved and that the ten new `count_band` keys are the only values
+`figures.json` gained. No mode's contract covers a repair whose ordered fix writes an already-committed
+component into block 1, `--allow` reaches only `figures.json` keys, and the snapshot was neither retaken nor
+suppressed, so both outputs stand as the record.
 
 ## Ladder
 
@@ -808,3 +959,60 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   exit 0 with its own WARN, "nothing on the ask side moved", which is the correct reading of a repair that
   changed an asking sentence's basis and grain while every figure it governs stayed where it was. The
   snapshot was taken before the first edit, and was neither retaken nor suppressed.
+- **Pinning ask 5's count basis on the feed's rows, which is what the committed figures count**: rejected
+  because the data dictionary defines a case as one case however many legs it covers and clause 4.2 counts a
+  case once, so a row pin would have been the one reading in the build that the pack's own documents
+  contradict. The case was pinned instead and the feed was repaired so that a row is a case, which is the
+  same twelve counts with both readings selecting the same rows.
+- **Closing ask 5 by convergence alone, leaving the asking sentence as it was**: the five colliding
+  references are the whole of the fork, so repairing them closes Gate C by itself and `checks.py` proves it.
+  Rejected because Gate E reads the sentence rather than the data, and the judge failed it on the sentence
+  not saying whether a case or a row is counted. The sentence now says it, at a measured cost of nothing.
+- **Redrawing the colliding references from a fresh stream**: the obvious repair, and it moves the stream
+  behind every later row, so the notified dates, the payment dates, the amounts and the twelve reported
+  values all shift. Rejected for that. The draw stays where it was in the stream and a collision walks on by
+  one digit, which changes five reference strings and nothing else in nineteen files.
+- **Pinning ask 6's population in a shipped document instead of the asking sentence**: a data-dictionary row
+  defining the recovery share would carry the same force, and it is the move `supplemental-stumping` Part 5
+  records being named by a leak reader as a sentence that exists only to help the analyst. Rejected: the
+  population is the ask's own scope, so it belongs in the ask, and the dictionary gained nothing.
+- **"On the 2025/26 scam cases closed in each quarter" for ask 6**: twenty-two characters cheaper than the
+  pinned wording and it fails, because "2025/26 cases" reads either as the register's scheme year or as the
+  year of closure, and the second reading is the one the judge measured at 15 of 15 figures off. The payment
+  year is named in terms the register dates once, "cases from 2025/26 payments".
+- **Paying for the two pins out of the prompt's figures**: the prompt had two characters of headroom at 997
+  and the pins cost thirty-six, so something had to go. Nothing graded went: the second sentence lost "the
+  pull" after a date the pack carries on every extract, the walk clause lost one "its", the rounding
+  sentence reads "to the nearest case" and "to the pound" for "to the nearest whole case" and "to the
+  nearest pound", the same instruction in fewer characters and the first of them stated in full by clause
+  4.4, and ask 5's quarter is named the way the pack names it. 991 characters, twelve rules PASS, and the call sentence byte-identical.
+- **Repairing the register's 457 cases notified in the quarter to 30 June 2027**: they look like a second
+  source for ask 5 and they are not touchable, because 62 of Castlegate's are inside the 400 recorded cases
+  the call rests on, which is why its revised returns state 338. Rejected as a data change and answered by
+  measurement instead: the register's stated scope cannot hold the 747 of 956 notified cases whose payment
+  falls in 2027/28, no reference is shared, and all twelve members' returns state the feed's count and none
+  the register's. Asserted rather than argued.
+- **Cutting the indexed case count out of the call sentence, or forcing one estimator form in the prompt**:
+  both were on the table before the judge ruled. Cutting the count loses the recommendation's working, and
+  filing the form in the prompt files the HOW, which is the decisive step. The judge's ruling is better than
+  either: the count is a precision claim the files do not force, so it carries the form it was computed on
+  and the rubric reads it inside a band, while the index stays exact under all eight forms.
+- **Publishing the count bands at the capture-probability readings' full spread**: Saltmarch would read 138
+  to 140 and Brindlemere 515 to 521, because those three readings are one number for Castlegate by
+  construction and spread on the smaller members where the stratified assignment rounds. Held rather than
+  taken: the published bands are the ones the judge measured and asked for, the spread is written into the
+  section above, and widening them is a rubric setting the author can make at the portal without touching
+  the build.
+- **Re-cutting the 35 prior-period lines so the top-up is nearer its case's first line**: measured at 1.8 to
+  430.2 times the case's register reimbursement, which is the shape that invites a solver to read them as
+  errors. Rejected because the split moves the advice grain's forcing cells, 664,378.52 against 984,521.08
+  on the Q1 total, and no graded figure, so it weakens the device and buys no determinism. The lines stay and
+  the measurement that forces them is asserted: dropping them breaks 35 advices' own totals and 35
+  `case_lines` counts and lands exactly on the register column the sentence excludes.
+- **Freeze mode for this repair**: neither mode's contract fits, and both are recorded rather than
+  manufactured. `--mode determinism` and `--mode rubric` each report one moved item, the Final
+  Recommendation's number set gaining 157, 270 and a second 400 from the estimator form the judge ordered
+  beside the count; rubric mode adds that no ask file and no ask figure moved and that the ten `count_band`
+  keys are the only values `figures.json` gained. `--allow` reaches only `figures.json` keys, so it cannot
+  cover a block 1 wording change, and retaking the snapshot would manufacture a pass on the author's own
+  control. The snapshot was taken before the first edit and left alone.
