@@ -50,14 +50,64 @@ def loc(d, sec):
     base = dt.datetime(d.year, d.month, d.day) + dt.timedelta(seconds=int(sec))
     return base.strftime("%Y-%m-%dT%H:%M:%S+02:00")
 
+_PLACED = {}
+
+
+def _episode_seconds(d):
+    """Every second inside a qualifying episode of either sign on local date d, padded."""
+    if d in _PLACED:
+        return _PLACED[d]
+    f = sim.frequency_day(d)
+    marked = np.zeros(sim.DAY, dtype=bool)
+    for (t0, t1, tstar, fx) in sim.qualifying_episodes(d, f) + core.over_episodes(f):
+        marked[max(0, t0 - 120):min(sim.DAY, t1 + 121)] = True
+    _PLACED[d] = marked
+    return marked
+
+
+def place_outage(site, d, hhmm, minutes):
+    """The start second of the logged outage: the first window of that length inside a contracted
+    block of that day holding no qualifying episode of either sign, searched from the stated time.
+    Keeping every outage clear of both measured populations is what separates the ask devices from
+    the main call; checks.py asserts the overlap count is zero."""
+    marked = _episode_seconds(d)
+    need = minutes * 60
+    h, m = [int(x) for x in hhmm.split(":")]
+    pref = h * 3600 + m * 60
+    cand = sorted(range(0, sim.DAY - need, 60), key=lambda t: (abs(t - pref), t))
+    for t in cand:
+        rng = np.arange(t - 60, t + need + 60)
+        if rng[0] < 0 or rng[-1] >= sim.DAY:
+            continue
+        if not sim.contracted(site, np.arange(t, t + need), d).all():
+            continue
+        if marked[t - 60:t + need + 60].any():
+            continue
+        return t
+    return None
+
+
 def unavail_windows(site_id):
     out = []
     for i, (sid, d, hhmm, mins, reason, code) in enumerate(UNAVAIL):
         if sid != site_id or i in SUPERSEDED:
             continue
-        h, m = [int(x) for x in hhmm.split(":")]
-        s0 = h * 3600 + m * 60
-        out.append((d, s0, s0 + mins * 60))
+        t0 = place_outage(sim.SITE_BY_ID[sid], d, hhmm, mins)
+        if t0 is None:
+            continue
+        out.append((d, t0, t0 + mins * 60))
+    return out
+
+
+def unavail_rows():
+    """Every logged reserve-unavailability event, placed, including the superseded ones."""
+    out = []
+    for i, (sid, d, hhmm, mins, reason, code) in enumerate(UNAVAIL):
+        t0 = place_outage(sim.SITE_BY_ID[sid], d, hhmm, mins)
+        if t0 is None:
+            continue
+        out.append(dict(idx=i, site=sid, date=d, start=t0, minutes=mins, reason=reason,
+                        code=code, superseded=(i in SUPERSEDED)))
     return out
 
 def fcr_active(site, d, t):

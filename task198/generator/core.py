@@ -255,3 +255,58 @@ def register_and_trustee():
         tru.append(dict(scheme_code=code, scheme_name=names[code],
                         active_members_31mar2026=true_mem[code]))
     return reg, tru
+
+
+def april_tail(seed=77310441):
+    """Cases received 1 to 30 April 2026: inside the 30 April 2026 extract, outside the FY2026
+    window and outside the FY2023-FY2025 comparison pool. Drawn on its own stream so the
+    sixteen fiscal quarters of build() are byte-identical with or without it."""
+    rng = np.random.default_rng(seed)
+    out = []
+    wdays = [d for d in WD if date(2026, 4, 1) <= d <= date(2026, 4, 30)]
+    for code, q in QUEUES.items():
+        m = q["mpc"] / (MINS_PER_DAY * AVAIL)
+        pos = q["pos"][3]
+        occ = q["occ"] + q["amp"] * (q["k26"] + P26[3])
+        n = int(round(occ * pos * len(wdays) / m))
+        w_mean = wq(pos, occ, m, q["cv2"])
+        idx = rng.integers(0, len(wdays), n)
+        wait = rng.gamma(0.9, w_mean / 0.9, n)
+        hand = q["hmed"] * np.exp(HSIG * rng.standard_normal(n))
+        extra = np.where(rng.random(n) < ANOM["share"],
+                         ANOM["extra_med"] * np.exp(0.6 * rng.standard_normal(n)), 0.0) \
+            if code == ANOM["code"] else np.zeros(n)
+        am = np.where(rng.random(n) < q["p_am"],
+                      q["am_med"] * np.exp(0.7 * rng.standard_normal(n)), 0.0)
+        net = wait + hand + extra
+        for k in range(n):
+            rec = wdays[idx[k]]
+            ans = add_wd(rec, net[k] + am[k])
+            op = ans > EXTRACT
+            clock = (EX_IX - WD_IX[rec] - am[k]) if op else net[k]
+            out.append(dict(code=code, qi=16, rec=rec, net=net[k], am=am[k],
+                            gross=net[k] + am[k], ans=None if op else ans,
+                            tgt=q["tgt"], open=op, late=bool(clock > q["tgt"])))
+    return out
+
+
+MIGRATION = date(2024, 4, 1)      # Gemini to Orbit cutover
+EXPORT_STAMP = (2026, 4, 30, 18, 0, 0)
+
+
+def integerise(cases):
+    """Re-express each case on the quantities the pack actually ships: whole working days from
+    receipt to answer, and whole clock-stop days. `late` is then recomputed from those, so every
+    graded figure is reproducible from the shipped dates and columns rather than from a float the
+    generator holds. Mutates and returns `cases`."""
+    for c in cases:
+        c["stop"] = int(round(c["am"]))
+        if c["ans"] is None:
+            c["elapsed_wd"] = None
+            clock = (EX_IX - WD_IX[c["rec"]]) - c["stop"]
+        else:
+            c["elapsed_wd"] = WD_IX[c["ans"]] - WD_IX[c["rec"]]
+            clock = c["elapsed_wd"] - c["stop"]
+        c["clock_wd"] = max(0, clock)
+        c["late"] = bool(c["clock_wd"] > c["tgt"])
+    return cases

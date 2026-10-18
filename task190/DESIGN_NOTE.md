@@ -74,7 +74,9 @@ ladder, not the pack.
 
 ## Architecture 3's record below this line
 
-## Author override of the judge's disposition
+Every heading from here to `## Tried and rejected` is architecture 3's, demoted so the design-stage gate cannot read a spent architecture's ladder, closure table or ask sheet as the live design. Architecture 4's own sections replace them when its decisive step is fixed.
+
+### Architecture 3: Author override of the judge's disposition
 
 Architecture 3's first determinism judge returned **NOT_DETERMINISTIC, SEND_BACK**. By the letter of
 `build-pipeline` that spends the architecture and retires the number, because a SEND_BACK spends an
@@ -102,7 +104,7 @@ allowance and the upper limit made to reproduce from the shipped table; tolerabl
 judgement with the derivation deleted; the four ask forks pinned in the asking sentences; the whole-euro
 marker taken off the certainty lines; and the payment-run realism done with the run pins in one pass.
 
-## What is filed and what is open, after the override
+### Architecture 3: What is filed and what is open, after the override
 
 **Filed, as facts about the sample and not as a method.** The testing schedule's basis of selection states
 that the lines tested were selected with probability proportional to recorded value by stepping one
@@ -131,7 +133,7 @@ quarter again as large and which nothing in the earlier pack refuted, is closed 
 interval was common to every programme. `checks.py` computes that route and asserts it lands on a
 different stated figure, so the closure is executed rather than claimed.
 
-## Draw
+### Architecture 3: Draw
 
 | | |
 |---|---|
@@ -352,7 +354,7 @@ finding. 4.2's two figures bound the interval below 386,667 and no further. 9.1 
 window, unit, segmentation and grain, and 9.2 says no column holds the answer.
 
 
-## Default path
+### Architecture 3: Default path
 
 1. Read `capital_payment_lines_2026.csv` and `supplier_master.xlsx`, carry the ledger's supplier numbers
    onto the master's through `supplier_number_crosswalk.csv`, and take each payment line's work programme
@@ -378,7 +380,7 @@ The default path cleans every key correctly, reads every clause correctly and us
 arithmetically sound. It files a figure nineteen times too small because it treats the tested lines as a
 sample of lines when they are a sample of euro.
 
-## Stump sentence
+### Architecture 3: Stump sentence
 
 The default path scales the misstatement it found on the ratio of the population's recorded value to the
 tested recorded value and files **43,648.52** euro, which certifies the population, because the 31 lines at
@@ -387,7 +389,7 @@ while every defect sits in a small day-work invoice that was selected with a pro
 amount over that interval and therefore stands for a whole interval of untested euro; the misstatement the
 selection entitles is 800,000, which refers the population for extended testing.
 
-## Three rules
+### Architecture 3: Three rules
 
 - **Task type:** anomaly-detection, the client task type in Survey Research and Official Statistics
   that serves Anomaly Detection, worked as the house domain's `audit-testing-sampling`: whether an
@@ -456,7 +458,7 @@ selection entitles is 800,000, which refers the population for extended testing.
   join, grain against a decided unit and conditioned yield, but no build turns on the inclusion
   probabilities of a designed sample recovered from the sample itself.
 
-## Readability screen
+### Architecture 3: Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -472,7 +474,7 @@ interval of untested euro. That is a reconceptualisation of what one tested row 
 subtraction, a ratio or half of a reported figure, and the multiplication that follows being trivial is
 what a correct estimator usually looks like. Written out, it does not fire. **Verdict: silent.**
 
-## Semantic fork table
+### Architecture 3: Semantic fork table
 
 | id | Term or convention | Golden reading | Alternative | Ruled out by |
 |---|---|---|---|---|
@@ -490,7 +492,7 @@ what a correct estimator usually looks like. Written out, it does not fire. **Ve
 | SF12 | "shows, to the confidence at 4.2" | a bound on the misstatement at that confidence | the projection itself compared with tolerable misstatement | 4.3 says the testing must show that the misstatement does not exceed tolerable misstatement, which a point estimate does not show; and the crudest bound at that confidence already exceeds it, asserted |
 | SF13 | "the programme carrying most of it" | the programme with the largest stated misstatement | the largest by recorded value, or by the misstatement found | the deliverable asks for the misstatement; the three rankings name different programmes, asserted |
 
-## Ladder
+### Architecture 3: Ladder
 
 **Measured on a real selection, not modelled.**
 
@@ -549,7 +551,7 @@ Four of the refused intervals round into the golden's stated cell, which is the 
 rather than a leak: they are the approximate recoveries of the same interval. The five that do not land at
 400,000, 600,000, 1,000,000 and 1,100,000, none of them the golden.
 
-## Closure table
+### Architecture 3: Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -581,7 +583,7 @@ authority's own for a closed year, which is what an audit conclusion is about; t
 whether the population goes to extended testing before the statements are certified, is work not yet done.
 A figure about an open year would be a projection of a projection and no audit states one.
 
-## Literal reader
+### Architecture 3: Literal reader
 
 A reader who executes the prompt, plan 4.2, plan 4.3 and manual 9.1 word for word, inferring nothing, has
 the population, the outcome, the window, the unit, the segmentation, the grain, the comparison and the
@@ -591,7 +593,7 @@ stand for, which is the analysis. Three constructions a reader may build instead
 readings, which is why the ladder and not the fork table carries them, and the nine recovery routes the
 record refuses are measured in `## Draw` and asserted rather than argued.
 
-## Oracles
+### Architecture 3: Oracles
 
 Every control in the pack reads the same on the wrong path and on the golden. The capital programme
 register's values in thousands reconcile to the ledger under every rung because they are sums of recorded
@@ -602,7 +604,7 @@ ties under every rung. The supplier master carries approval categories and no fi
 projection, no document ranks the programmes, and nothing in the pack states a misstatement for any
 population in any year.
 
-## Ask sheet
+### Architecture 3: Ask sheet
 
 Three families, each multi-dimensional, each decoupled from the call and each carrying its own silent
 device against the careful solver's path.
@@ -659,7 +661,7 @@ hygiene battery and executes every filed rule and column description. Measured b
 Measured: the cracker gets **no ask whole**, keeping 4 of 8 on A1, 5 of 15 on A2 and 1 of 6 on A3, which
 is 10 of the 29 ask figures against a measured ceiling of 12, and the pair reads 38.1.
 
-## Pre-ship check
+### Architecture 3: Pre-ship check
 
 **The pack.** 18 files, four formats (11 csv, 2 xlsx, 3 pdf, 1 md), the spine
 `capital_payment_lines_2026.csv` at 26,874 rows (26,648 population lines plus the two credit notes and the
@@ -1052,3 +1054,38 @@ were round too, so both were redrawn.
   3, spent` holds the measurement. Architecture 4 re-roots on a decisive step that needs no filed constant
   or factor table; the monetary-unit sampling world, the probability-proportional projection driver and
   the port authority pack are not reused.
+- **Architecture 4's first decisive step, the window dial valued in cases ahead of the alert, is dead on
+  measurement, before any file was cut.** The step was: value each allowed accumulation window of the
+  unit's aberration detector by the outbreak cases with onset after the alert that window itself produces,
+  against the reflex of multiplying the clusters a window flags by the unit's published preventable share.
+  The algebra is sound and was written first: a cluster crosses a `k`-sigma Poisson threshold only once it
+  has put `k*sqrt(lambda*W)` cases into the window, so every already-detected cluster loses
+  `k*sqrt(lambda)*(sqrt(W2) - sqrt(W1))` cases to a longer window, a loss that grows as the square root of
+  the window and is independent of the cluster's size, while a cluster that becomes detectable only at
+  window `W` is flagged about `W` days into its notification run and so contributes only about
+  `mu*(D - L - W)`. Four parameterisations were simulated end to end on the generating process rather than
+  on the algebra, each with the detector, the seasonal baseline, the reporting lag and the register's own
+  flag rule: short point-source outbreaks (margins 1.6 to 7.7 per cent, the plug-in naming the same window
+  as the truth in two of three seeds); persistent dispersed clusters (0.2 to 2.0 per cent, sensitivity
+  saturated at the shortest window); campylobacteriosis volumes with a three-sigma rule and a weekly
+  review, which is the realistic artifact (1.5 to 4.1 per cent); and the mean of per-cluster preventable
+  shares against the case total, which disagreed on one seed of two and agreed on the other, so the
+  disagreement is sampling noise rather than structure. **The obstruction is structural, not a tuning
+  problem:** in outbreak detection the cases still ahead of a signal are dominated by whether a cluster is
+  detected at all, which is 60 to 80 per cent of its cases, and only weakly by when, which costs
+  `k*sqrt(lambda*W)` cases, a few per cluster. Any route that ranks configurations by detections, the
+  published-share plug-in included, therefore ranks them almost exactly as the preventable-case total does,
+  and the two routes agree by the structure of the domain at every parameterisation a district could
+  plausibly record. Re-drawing the decisive step, not the mix: a mix that reverses would need cluster
+  intensities concentrated in the narrow band where the window decides, which spans a factor of 2.8 in
+  intensity against the factor of 20 real registers carry.
+- **The general lesson this slot now owns, worth more than the architecture: a dial on a closed record is a
+  replay.** Every per-setting figure a dial build grades is exactly computable from the record, so the
+  decisive step cannot live in the computation and has to live in the step from the record to the coming
+  window. On this ground every such step is either banned for this slot (population selection, maturity
+  censoring, composition mix), or blocked by the house rules (a baseline the clusters themselves
+  contaminate, so a back-test blesses the wrong setting until the forward window breaks it, which is the
+  validated-decoy shape), or a fractional effect the data cannot separate, which is what was measured
+  above. The two dial shapes that have held in this corpus make the replay impossible for a structural
+  reason (task104's self-adapting scorer withholds its own flagged observations) or put the decision on an
+  interval (task195's paired difference), and both are spent against the last two builds.

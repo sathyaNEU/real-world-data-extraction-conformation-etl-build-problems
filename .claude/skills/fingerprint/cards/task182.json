@@ -29,7 +29,7 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "close_out_summary",
   "stakeholder_role": "the publisher's head of editorial operations, who sets the quarter's editorial process review slate",
   "role_family": "operations_director",
   "scoring_unit": "per resolved case",
@@ -40,7 +40,7 @@
     "grain": "manuscript x snapshot week",
     "source": "synthetic"
   },
-  "forum": "executive_team",
+  "forum": "line_manager_or_team",
   "forcing_event": "period_close",
   "org_family": "media_or_publishing",
   "world": {
@@ -137,6 +137,6 @@
       "driver": "The decisive quantity is one continuously running source's own share of a measured total at each receptor, and the nuisance term it is netted against is directly observable only in a window outside the one the estimand names, where the nuisance is a different mixture of its own constituents; that mixture's shift has opposite sign at different receptors, so the directly observable estimate inflates some and deflates others and mis-ranks them, while the term that holds is identified inside the named window from the source's own recorded output."
     }
   ],
-  "notes": "Architecture 4 draw. The two rules this slot earned are carried into it: a supplemental device may never touch the call's own construction, and every graded figure's determinacy is checked against the printed unit across every route the data does not close, before any data is cut.",
+  "notes": "Architecture 4 draw. The two rules this slot earned are carried into it: a supplemental device may never touch the call's own construction, and every graded figure's determinacy is checked against the printed unit across every route the data does not close, before any data is cut. Two axes redrawn at the guard after registration: context_artifact filed_standard to close_out_summary and forum executive_team to line_manager_or_team, both BLOCKed by axis bans against task161. The close-out pack carries submission volumes and editor headcount and no turnaround figure, so it frames the quarter-close decision without ranking the desks on the question (Gate G).",
   "registered": "2026-10-18T01:32:03Z"
 }
