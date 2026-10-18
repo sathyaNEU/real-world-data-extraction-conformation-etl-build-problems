@@ -8,9 +8,8 @@ payments sent for the indemnity year beginning 1 October 2027.**
 The index rests on 688 indexed cases on the two-source estimate, 400 x 270 / 157, on 22,233,300
 payments sent, against the 400 cases Castlegate's own register holds. Not the two-source estimate run
 on every one of its 395 register matches, which counts its own fund-return requests coming back to it
-as second sightings of its own cases. Not a rule on the
-registration date, which cannot tell a sighting another firm's victim produced from one Castlegate's own
-request produced.
+as second sightings of its own cases. Not a rule on the registration date, which cannot tell a sighting
+another firm's victim produced from one Castlegate's own request produced.
 
 ## 2. Critical Components
 
@@ -40,8 +39,8 @@ request produced.
 7. Walked its register to the index in index units, which every licensed form of the estimate gives
    alike: 18 recorded, 13 its own record did not hold, 31 indexed, per million payments sent. The
    whole-case counts behind them move with the form, so a count is read inside 686 to 689 indexed and
-   286 to 289 not held for Castlegate, 138 to 139 for Saltmarch, 300 to 302 for Trentmoor and 516 to
-   517 for Brindlemere, while the index is exact.
+   286 to 289 not held for Castlegate, 138 to 140 for Saltmarch, 300 to 302 for Trentmoor and 515 to
+   521 for Brindlemere, while the index is exact.
 8. Set the index at 31 scam cases per million payments sent, and indexed the other three members of the
    review group on the same basis.
 

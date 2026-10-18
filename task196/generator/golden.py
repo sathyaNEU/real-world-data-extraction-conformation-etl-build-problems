@@ -31,12 +31,17 @@ TIERS = ["A", "B", "C"]
 # counts and not a claim about the family: checks.py and verify.py assert that each band holds the
 # golden count and every closed-form estimator's count for that member, and that the index itself does
 # not move across the whole family.
+# Each band accepts every count the licensed estimator family prints, which is wider on the smaller
+# members because the stratified assignment rounds there: Saltmarch's family runs to 139.92 and
+# Brindlemere's spans 515.12 to 520.73, so bands of 138 to 139 and 516 to 517 would have marked a
+# correct response wrong. The index is exact under the whole family at every member, so only the
+# count needs the room.
 COUNT_BAND = {
     "KM-104": (686, 689),
     "KM-104 not held": (286, 289),
-    "KM-112": (138, 139),
+    "KM-112": (138, 140),
     "KM-108": (300, 302),
-    "KM-101": (516, 517),
+    "KM-101": (515, 521),
 }
 
 
