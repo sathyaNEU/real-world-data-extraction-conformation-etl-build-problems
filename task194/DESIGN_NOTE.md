@@ -1674,3 +1674,108 @@ confound strength the world makes plausible, not only at the one the generator h
 Per the stop rule, the pass stops here: the four remaining screens (the dichotomy, the unit's own history,
 move available against move needed in the tolerance's units, and the standard error of what the
 construction estimates), the silent-row readability screen and the full enumerated sweep were not run.
+
+- **Architecture 7 pass, 2026-10-18: five structurally distinct Layer 2 mechanisms screened on this
+  cell, all five dead, nothing drawn and no card registered.** The pass was opened on the brief that an
+  overdispersion-adjusted funnel was unspent. It is not: this note already carries it under
+  `Rejected at the draw: judging each unit's excess against its own sampling error`, which names the
+  over-dispersion-adjusted funnel by name. Screens were run as code on a 14-unit provider world
+  (volumes 410 to 11,200 episodes, one real outlier of 1.62x at middling volume) and on a four-directorate
+  28,000-episode hospital world. Scripts and output in the builder's scratch directory, `screen.py` and
+  `screen2.py`.
+- **Rejected, measured: overdispersion-adjusted funnel limits as the decisive step.** The flagged set is
+  not invariant to the overdispersion estimator. Across five standard variants (exact Poisson, multiplicative
+  by sqrt of raw phi, multiplicative by sqrt of winsorised phi, additive random effects on a
+  DerSimonian-Laird tau2, empirical Bayes shrunk ratio) the measurements are phi raw 1.373, phi winsorised
+  0.484, Q 15.66 on 13 df, tau2 0.00271, and the five variants return **three distinct flagged sets**,
+  with the real outlier flagged by **four of five** and empirical Bayes flagging **nobody**. Pinning phi
+  files the method; leaving it open forks the decisive object. Architecture 1's disease in another dress,
+  exactly as the earlier draw-stage rejection predicted.
+- **Rejected, measured: the expectation fitted on the same data the outlier is judged in (leave-one-out
+  standardisation).** Move available against move needed, which is the skill's first pricing step. The
+  national pooled ratio is 1.0260 over 1,126 expected harms. Taking a unit out of its own reference moves
+  its ratio by 0.0391 on the largest unit (11,200 episodes), 0.0028 on an average one and 0.0021 on the
+  smallest, against **0.1219 needed** to cross the tolerance: available over needed is **0.320**, so the
+  step cannot decide a threshold crossing at any volume a hospital carries. It also settles whose rates
+  each episode is compared to, which is the comparison, so the WHAT screen kills it independently.
+- **Rejected, measured: the exposure window and the competing exit (per-episode against per-patient-day,
+  with discharge as a competing risk).** On simulated stays the same hazard prints, per 1,000, a
+  per-episode 21.042 against a per-bed-day 4.931 on the short-stay unit and 27.297 against 3.195 on the
+  long-stay unit, and the two bases **reverse the ordering of the two units**. The three bases are three
+  different filed units of analysis, which closure axis 9 and the WHAT screen require pinned anyway, and
+  once pinned the computation follows from the clause. task192's architecture 2 also already holds the
+  competing-exit insight, so the driver is on file.
+- **Rejected, and this is the finding of the pass: `uncertainty_hold` is closed on provider-quality ground
+  in both directions, because the domain's two documented reflexes are monotone.** If the golden is a hold,
+  the reflexes that reach it are shrinkage toward the pooled value and overdispersion-inflated limits, which
+  are rigor patterns 3 and 4 of the client's own library for this subdomain: measured, empirical Bayes
+  declines to flag the loudest raw ratio (O/E 1.356) with no analysis at all, so a hold is reflex-reachable.
+  If the golden is an act, the easy route has to overstate the expectation, so **every** under-adjustment
+  reaches the golden: measured on the four-directorate world, the golden ratio is 1.661 and the
+  no-comorbidity-adjustment route gives 2.273, both over the 1.20 tolerance, so the laziest route on the
+  pack files the golden verdict. There is no third direction, so no uncertainty object on this ground can
+  be silent.
+- **Rejected: over-adjustment of the risk model by conditions acquired during the stay (the client's own
+  rigor pattern 1 for this subdomain), the strongest candidate of the pass and dead on the WHAT screen.**
+  Built and measured: a directorate of low pre-existing risk that harms its patients accumulates coded
+  conditions during the stay, so its index-coded expectation is inflated and hides a real breach. On the
+  28,000-episode world the ratio is **1.248 on the index-coded band against 1.661 on the pre-existing band**
+  with a 1.20 tolerance, the two separations are financed by different quantities (the acquired-code
+  inflation and the true harm multiplier, so they do not trade off, which is what architecture 3 lacked),
+  the crude rate passes at 16.1 per 1,000 against a 32 tolerance, and every conservative reflex lands wrong.
+  It still dies: the decisive step settles which reference rate each episode is compared to, which is the
+  comparison, and the pipeline's own lesson from architecture 2 records that the comparison includes both
+  whose rates and which pool. The three devices that could close the fork each fail a different screen, and
+  that pincer is the reason to re-root rather than tune: filing the band's source in the framework names the
+  decisive quantity (readability test 1), closing it with the reference table's provenance note makes the
+  stump a reading of that sentence (rule 3, data semantics), and closing it with the reference table's
+  published band distribution, which only the pre-existing construction reproduces, refutes the naive read
+  (readability test 4). Announce it, make it a reading, or leave it open: there is no fourth device.
+- **The structural rule this cell now carries, and it explains all six earlier architectures as well as
+  these five.** On `provider-quality-risk-adjustment` a decisive step has to be one of three things and each
+  is closed. A per-unit rate carries a free weighting or shrinkage choice, which forked the graded figure in
+  architecture 3 (36.6 to 49.0), architecture 4 candidate 1 (16.9, 18.0, 18.3) and architecture 5 candidate A
+  (10.1, 10.2, 10.5). An uncertainty object is reflex-monotone in both directions, measured above. Anything
+  else available here settles a part of the estimand: the window (rejected at the draw), the unit
+  (architecture 5, candidate C, and the exposure screen above), the population or the comparison
+  (architecture 2, architecture 6 and the over-adjustment candidate). Risk adjustment is what this domain
+  publishes most, so its decisive quantities are nearly all comparisons, and a comparison is a WHAT. **The
+  next pass on this number should change the cell rather than the mechanism**, because what is spent is not
+  one driver family but the WHAT-screen residue of this one, and the skill's own note that a cell is
+  redrawable does not reach a cell whose every decisive step is a filed part of the estimand.
+
+- **The funnel candidate re-screened properly, on the coordinator's test, and dead across 60 seeds.** The
+  first screen of the architecture 7 pass built a world with phi raw 1.373, too little between-provider
+  dispersion for rigor pattern 4's trap to exist at all, so it measured determinism and not stump power.
+  Rebuilt to the candidate's own specification (16 providers, 300 to 15,000 episodes, between-provider
+  sigma 0.18, one real 1.65x outlier at 4,300 episodes, phi raw mean **5.726** over 60 seeds, range 2.662
+  to 10.444, tau2 mean 0.04601), it dies on three measurements at once.
+  **One, there is no stump on a named outlier.** The plain exact Poisson limits the pattern names as the
+  shortcut flag the real outlier in **60 of 60 seeds**, and so does the worst-decile shortcut in 40 of 60.
+  A genuine 1.65x effect at 4,300 episodes sits far outside plain limits whatever the dispersion is, so
+  the overdispersion correction changes which OTHER units are flagged, never whether the real one is. The
+  decisive object therefore has to be the flagged set, not a name.
+  **Two, the flagged set is not determinate.** Four defensible members of the golden's own family
+  (multiplicative on winsorised phi, multiplicative on raw phi, additive on a DerSimonian-Laird tau2,
+  additive centred on the pooled ratio) return **a mean of 1.83 distinct sets and disagree in 40 of 60
+  seeds**. This is Gate C in the same words that sent architectures 1 and 3 back, and the coordinator's own
+  constraint closes the only exit: pinning the dispersion treatment anywhere in the pack files the decisive
+  step and removes it.
+  **Three, the reflex reaches it.** The empirical Bayes posterior flags the real outlier in **60 of 60**
+  seeds and reproduces the golden set exactly in **33 of 60**; the hierarchical predicted-over-expected
+  reflex also flags it 60 of 60 and matches the set 33 of 60; James-Stein flags it 48 of 60. Shrinkage is
+  rigor pattern 3 of the same block, which is to say the opponent's first reflex on this ground, and it
+  reaches the answer while taking no overdispersion step at all. That is the repo's own measured precedent
+  (empirical Bayes beating a designed step better than three to one) reproduced on this cell.
+- **Conceded, and worth recording precisely because it is not the reason the candidate dies: the funnel
+  candidate PASSES the estimand test.** Its decisive quantity is the between-provider dispersion, phi or
+  tau2, which is estimated rather than defined, and it is none of the five parts: not the population (every
+  provider in the framework), not the outcome (the coded harm), not the window (the review period), not the
+  unit (the provider), not the comparison (the published reference rates). So filing the estimand does not
+  file the method here, which is exactly why the candidate is tempting and why it survived six architectures
+  of screening. **Passing that test is necessary and not sufficient.** It dies on the three measurements
+  above, and the general form is worth carrying: a decisive step whose quantity is a dispersion can pass
+  the estimand test and still fail, because the estimator family for a dispersion is open (horn two) and
+  shrinkage reaches the same ranking without estimating it (horn three). Its `layer2_pattern` is
+  `healthcare-delivery-health-economics/provider-quality-risk-adjustment/4`, the client's own pattern, not
+  an own-named one.
