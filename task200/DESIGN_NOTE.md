@@ -79,7 +79,8 @@ Assigned ground for the second pass: card `domain` `supply-chain-logistics` (a h
 `client_domain` `general-statistics-data-science`), objective Anomaly Detection & Diagnostics, client
 task type `general-statistics-data-science/multiple-testing-selective-inference`, reserved `shape` 07.
 Six mechanisms were screened with measurements and all six are dead. The harness is
-`scratchpad/wave5/task200b/screens.py`, six screens, reproducible with `python3 -I screens.py`.
+`scratchpad/wave5/task200b/screens.py`, seven screens (the sixth and seventh of `stumping` 1.2 included),
+reproducible with `python3 -I screens.py`.
 
 **The structural law the six kills share, which is worth more than any one of them.** A multiple-testing
 analysis has exactly four places a decisive step can sit, and two of them are closed by the pincer while
@@ -166,7 +167,7 @@ which is the lexical blind spot the skill names, measured once more on this grou
   short distance from home) and it still cannot be drawn, which is the clearest single statement of why
   the cell is closed rather than merely picked over.
 
-### Second pass, supply-chain-logistics x multiple-testing-selective-inference (2026-10-18, all six measured)
+### Second pass, supply-chain-logistics x multiple-testing-selective-inference (2026-10-18, six mechanisms dead over seven screens, every kill measured)
 
 - The latent count of genuinely short units behind a screen, with a filed trigger count deciding a
   network-wide remedy (screen 1, measured): dead on the one-live-degree-of-freedom law. On a 54-pairing
@@ -182,9 +183,9 @@ which is the lexical blind spot the skill names, measured once more on this grou
   the family, and filing the estimator files the method.
 - Certification under a simultaneous bound, the audit covering every pairing whose own evidence does not
   rule out a material shortfall (screen 3, measured): dead on nesting. The slates are
-  **8, 19, 27 and 27** pairings for the naive flag set, the per-pairing 95 per cent bound, the Sidak
+  **8, 22, 27 and 27** pairings for the naive flag set, the per-pairing 95 per cent bound, the Sidak
   simultaneous bound and the Bonferroni simultaneous bound, and containment is **total at every step
-  (8/8, 19/19, 27/27)**, so every rung is the same statistic at another level and the decisive rung adds
+  (8/8, 22/22, 27/27)**, so every rung is the same statistic at another level and the decisive rung adds
   no reordering at all. The level is a convention besides, so the pincer closes it independently.
 - Dense and weak evidence combined across a unit's whole measured family rather than corrected within it
   (screen 4, measured): dead on the reflex sweep and on readability. With 40 of 54 pairings 1.2 points
@@ -194,12 +195,14 @@ which is the lexical blind spot the skill names, measured once more on this grou
   A determinism objection stands behind both: a Bonferroni test of the global null is a valid test at
   the stated level, so "not established" is defensible and the fork is a competing defensible answer.
 - The slate of k under a filed materiality, ranked by the chance a pairing is materially short rather
-  than by its measured shortfall (screen 5, measured): dead twice. The decisive step is **worth nothing**
-  (ranking by z against the agreed level and by z against the material level name the identical slate,
-  (1, 12, 36)), and the family is **not closed** (the four material-aware routes split two to two,
-  (1, 12, 36) against (1, 36, 48), as the lower-bound and empirical-Bayes routes disagree with the
-  z and likelihood-ratio routes). A slate that forks across the corrected routes is the task182
-  architecture-4 death.
+  than by its measured shortfall (screens 5 and 7, measured): dead twice over. First, the decisive step
+  is **worth nothing on the graded slate**: all six corrected routes name the identical slate
+  (1, 12, 36), so plain significance against the agreed level already lands it and the materiality
+  construction, the lower bound, the empirical-Bayes posterior mean, the posterior probability and the
+  likelihood ratio at a point mass add no reordering whatever. Only the crude ranking by measured
+  shortfall differs, at (36, 40, 44), which makes the whole mechanism one rung rather than a ladder.
+  Second, that agreement is a single draw's luck: over 20 redraws **the golden's own family returns 2.05
+  distinct slates of 4 (min 1, max 3)**, so the designation is not determinate either (screen 7).
 - The confirming review that re-reads the weeks which triggered it, read conditional on the trigger
   (screen 6, measured): dead on the single dial. Across overlap shares 0.15 to 1.00 the bias removed
   rises 0.185 to 0.461 points while the corrected estimator's standard error rises 0.302 to infinity, so
@@ -207,6 +210,34 @@ which is the lexical blind spot the skill names, measured once more on this grou
   estimate is **worse than doing nothing above half overlap** (mean absolute error 0.409 against 0.402 at
   0.69, and 0.554 against 0.434 at 0.85). The overlap share that creates the bias is the share that
   removes the evidence, one dial at both ends.
+- **The designation determinacy screen (`stumping` 1.2, sixth screen), run on both candidates whose
+  graded object is a set, counted on the golden's own estimator family over 20 redraws** (screen 7,
+  measured): both fail, and they fail on opposite halves of the screen, which is what makes the cell's
+  shape clear. The audit slate under a simultaneous bound returns **2.90 distinct designated sets of 6
+  forms per redraw (min 2, max 3)** across two simultaneous levels and three interval bases, so the call
+  is not determinate; and the crude route lands inside that family in **0 of 20** redraws, so the
+  mechanism is not crude-reachable, only indeterminate. The slate of three under a filed materiality
+  returns **2.05 distinct slates of 4 per redraw**, and the crude ranking lands inside the golden family
+  in **2 of 20**, so it fails both halves. Neither can be rescued by discretising against a filed
+  tolerance, because the family's spread is what crosses the line: the sets differ by which pairings sit
+  at the boundary, not by a figure a band could absorb.
+
+**What the sixth screen settles, and it is the positive statement this ground owes.** The screen's own
+shape, a quantity whose construction the data forces with the designation following from it rather than
+being the graded object, is exactly the reference-or-statistic row of the table above. On this task type
+those two slots are the whole of what is data-forced, and task191 holds the reference while task195 holds
+the statistic. So a build here must grade the designation itself, and the sixth screen measures that as
+either indeterminate (2.90 and 2.05 distinct answers) or crude-reachable. That is the cell's closure
+stated from the client's side rather than ours, and it is why no seventh candidate was screened.
+
+**One defect in the harness, found and repaired, because it moved a measured result.** The first pass of
+screens 3, 5 and 7 took each pairing's standard error from the Wald formula, which is exactly zero where
+a pairing's audited consignments are all compliant, so a perfect pairing took an infinite z and captured
+a ranking. The harness now uses the Agresti-Coull (add-two) standard error, which cannot degenerate.
+Repairing it moved the per-pairing bound's slate from 19 to 22 pairings and, in screen 5, moved the
+material-aware routes from two slates to one, which strengthened that kill rather than weakening it.
+Screens 1, 2, 4 and 6 are unchanged. The seven-screen harness reproduces byte-identically run to run,
+stderr included (6,913 bytes).
 
 ## Resume
 

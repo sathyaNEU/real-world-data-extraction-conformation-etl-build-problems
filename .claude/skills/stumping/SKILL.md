@@ -255,8 +255,12 @@ Each is cheap, each is run as code before any separation is measured, and each c
   distinct answers the wrong routes return. Measured: a latent-propensity concentration gave 3.0 distinct
   designated sets out of 4 (truth, empirical Bayes, negative-binomial MLE, moment-matched mixture); a
   discriminability statistic gave 1.64 (equal-variance, unequal-variance, logit ROC, non-parametric); a
-  thinned escape rate gave 2.32; ten forms of an exposure denominator gave five sets and four distinct
-  leaders. Above one, the call is not determinate, and **discretising against a filed tolerance rescues it
+  thinned escape rate gave 2.32; an audit slate under a simultaneous bound gave 2.90 of 6 forms and a
+  slate under a filed materiality 2.05 of 4; ten forms of an exposure denominator gave five sets and four
+  distinct leaders. A set can be indeterminate without being crude-reachable (that audit slate had the
+  crude route inside the golden family in 0 of 20), which fails the screen just the same: and neither
+  discretises out where the family differs by which units sit at the boundary rather than by a figure a
+  band absorbs. Above one, the call is not determinate, and **discretising against a filed tolerance rescues it
   only where the family's spread does not cross the line**, which a concentration's and a denominator's
   spreads do. The other half is measured too: where the designation *is* determinate, the crude route
   reaches it (a slate identical under all six licensed bandings and all eight conditioning forms in 20 of
@@ -265,6 +269,15 @@ Each is cheap, each is run as code before any separation is measured, and each c
   grade an incidence recovered from two dependent capture channels, a response magnitude against a
   scheduled trajectory, and a rate read against the observation effort that produced it, and each names
   its unit as a consequence rather than as the graded object.
+
+**The screening harness is evidence, so it is checked like evidence.** A screen's number decides whether an
+architecture lives, and a defect in it is a false verdict either way. The one measured here: a Wald standard
+error on a proportion is exactly zero where a cell is perfectly compliant, so a screen that ranks units by a
+z hands the ranking to the smallest perfect cell on an infinite z. Repairing it to an Agresti-Coull interval
+moved a per-unit bound from 19 to 22 units and collapsed a material-aware family from two slates to one,
+which strengthened the kill it was testing rather than reversing it. Run every screen twice and require
+byte-identical output, compute on the generator's clean truth, and where a verdict turns on a tail or a
+degenerate cell, name the estimator the harness used.
 
 ### 1.3 Couple the pitfall to the domain
 
