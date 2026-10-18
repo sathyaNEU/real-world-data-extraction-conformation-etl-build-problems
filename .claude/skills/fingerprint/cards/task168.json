@@ -1,0 +1,89 @@
+{
+  "task": "task168",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 7, new; seed FC39 (world, decision and quantity kept; the seed's planning standard, demand as carried plus denied bookings, is not shipped)",
+  "domain": "supply-chain-logistics",
+  "subdomain": "transportation-network",
+  "niche": "an Italian domestic airline's network planning team forecasting, for the summer 2026 budget and the outstation handling tender, how many more passengers its nine Milan Linate routes to the South and the islands will carry when their A319s give way to A321neos, routes on which every summer departure sells out, so last summer's carried passengers measure the seats and not the demand",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G6",
+    "G12"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "prior_period_close_out",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the airline's head of network planning",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per boarded entity",
+  "spine": {
+    "file": "the new revenue management system's departure booking build export for summer 2025 (one row per departure)",
+    "rows": 0,
+    "entity": "one departure (one flight on one date) with its bookings on hand at each data collection point, its sell-out time and its sold seats",
+    "grain": "flight x departure date",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "other",
+  "world": {
+    "geography": "Italy (Milan Linate and the airline's other northern bases, Turin, Verona, Venice and Bologna, and the airports of the South and the islands; the airline, its lessor, its people, systems and data are fictional)",
+    "currency": "EUR",
+    "org_type": "domestic passenger airline",
+    "invented_names": [],
+    "people": [
+      "Ugo Pacomio",
+      "Concetta Gaito",
+      "Piero Turchetta",
+      "Vincenza Passalacqua"
+    ]
+  },
+  "deliverables": [
+    "summer2026_upgauge_forecast.xlsx",
+    "summer2025_upgauges.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "A unit that reached its cap is observed only up to the moment it reached it, so its full demand is completed from the build of units that never reached the cap; but the units that never reach it are the slow-season ones, whose demand arrives late, so completing the capped units from them, or from a build pooled over the season, places every fast-season unit far further from its final count than it was, and the past instances that could test the completion never exercised the fast-season units, which stayed at their cap, while the forward plan lifts the cap above them; only the build of units from the same season completes them.",
+  "driver_concrete": "Each sold-out summer 2025 departure's demand is its seats over the share of final bookings a departure of its own month holds on the day it sold out, read from the departures that never sold out in that month on the airline's other domestic routes; the nine routes' own open departures are April, May and October ones whose passengers book a few weeks out while July and August passengers book two to three months out, so a build taken from them, or pooled over the summer, reads every peak departure as further from its final count than it was and adds tens of thousands of passengers, and the 2025 upgauges, a quarter larger on routes whose peaks stayed full, never tested the peak months.",
+  "stump": "A strong solver who sees the routes are full takes the passengers each 2025 upgauge added per added seat (about 0.85) times this summer's 620,000 added seats and files about 530,000 against the golden of about 180,000; the step that lands it there is carrying a response measured on quarter-size upgauges of routes whose peaks stayed full onto upgauges three-fifths larger, when each sold-out departure's demand has to be completed from its own month's booking build.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file and rule correctly and completes each sold-out departure from a booking build taken from the departures that never sold out, pooled over the summer or from the nine routes' own, files about 240,000 or more against about 180,000; the default path, the 2025 upgauges' passengers per added seat, files about 530,000; only completing each departure from the build of its own month, read from the network's open departures in that month, files about 180,000.",
+  "domain_test": "The deciding quantity is each sold-out departure's unconstrained demand, which a revenue management analyst recovers by projection detruncation (bookings at sell-out over the booking-curve share that comparable unconstrained departures of the same departure season hold at that day) and sets against the new gauge; swap in hospital wards enlarged after a winter of full beds and the task stops reading, because admissions have no advance booking build, no sell-out day and no season-specific booking curve to complete them from.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task70": "task70 rebuilds a per-record date from an event log under a filed clause barring one class from a late slot, so the class-free construction overstates a threshold hinge; here nothing is filed and no date is rebuilt: a capped unit's demand is completed from a reference build, and the decisive choice is which units' build may serve as the reference (those of the same season, not the ones that never reached the cap)"
+  },
+  "lineage": [],
+  "notes": "org_family other: a passenger airline (no airline family in vocab.json). Redrawn before registration after task198 v4 and task199 entered the window: context_artifact capacity_report (banned against task198 v4) to filed_standard, the summer 2026 planning basis that files the estimand and is the stakeholder's own document (the capacity plan stays in the pack as a workbook); forcing_event budget_or_appropriation (banned against task198 v4) to season_or_peak, since what forces the figure is the summer season the handling tender and the budget both have to be in place for.",
+  "client_domain": "urban-regional-science",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:sold-out-departures-completed-from-their-own-month-booking-build",
+  "layer1": [
+    "the revenue management system replaced between seasons: summer 2024 builds in the old system's long layout (one row per departure and snapshot, 18 snapshots, local dates), summer 2025 in the new system's wide layout (34 snapshots, sell-out stamped in UTC)",
+    "flown passengers from the departure control close-out, keyed on the operated flight, with lap infants in their own column and a different flight numbering in summer 2024",
+    "the turned-away request log from the booking engines, one row per request on the web and app and one per passenger on the travel-agency feed, UTC stamps, retries within a session",
+    "summer close-out summaries as PDF tables (load factor on seats sold)",
+    "the capacity plan workbook with the summer 2026 aircraft by route and the two routes switching on 1 June",
+    "fleet register with tail configurations, retirements and deliveries"
+  ],
+  "registered": "2026-10-18T06:47:15Z"
+}
