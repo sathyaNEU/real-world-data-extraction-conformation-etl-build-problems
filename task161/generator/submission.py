@@ -28,19 +28,20 @@ def text(F):
                "book's excess at the earlier rushes' half-life of about a month, which takes no block: five seasonal "
                "accounts hold most of the excess and ship at their first-half low, and after the April 2025 step, the "
                "one earlier rush in that season, their stock left at the pace of their shipments, not of a half-life. "
-               "Not today's stock held flat (three blocks), nor a burn at the book's share of its shipments or each "
-               "account's own monthly fall from the earlier rushes (one block or none), nor the whole excess held "
-               "through June (three blocks)." % st["hurdle_pct"])
+               "Not today's stock held flat (three blocks), nor each account's own monthly fall from the earlier "
+               "rushes (one block), nor the whole excess held through June (three blocks)." % st["hurdle_pct"])
     out.append("")
     out.append("## 2. Critical Components\n")
     out.append("1. Pallets on hand at the close of 6 December for the 14 accounts under contract: **%s**."
                % n(k["on_hand_6dec"]))
     out.append("2. The five seasonal accounts (housewares, toys, mobile accessories, seasonal decor, small appliances) "
                "shipped **%s** pallets in January 2026: their bought-ahead stock leaves only on their own shipments, "
-               "which run near that in January 2027, far short of the half of their excess a one-month half-life "
-               "would take out in January." % n(k["five_jan2026_shipments"]))
-    out.append("3. Under every burn share the earlier rushes support, the second block is in use in every month of the "
-               "term and the third stays well below three quarters of its position-months.")
+               "which run near that in January 2027, far short of the half of their excess over normal stock, as the "
+               "space policy defines it, that a one-month half-life would take out in January."
+               % n(k["five_jan2026_shipments"]))
+    out.append("3. With normal stock as the space policy defines it and under every burn share the earlier rushes "
+               "support, the second block is in use in every month of the term and the third stays well below three "
+               "quarters of its position-months.")
     out.append("")
     out.append("## 3. Step-by-Step Solution\n")
     out.append("1. Stacked wms1_inv_daily_20190401-20220930.txt to the close of 11 September 2022 (Sundays carrying "
@@ -48,9 +49,10 @@ def text(F):
                "PD2063) with wms_inventory_nightly_20220913_20261207.csv summed over sites (each run holding the close "
                "of the day before it, per wms_export_dictionary_v3.pdf) and wms_outbound_daily_20220912_20261206.csv: "
                "%s pallets on hand at the close of 6 December." % n(k["on_hand_6dec"]))
-    out.append("2. Took each account's normal stock as its median cover (pallets on hand over the mean of that and the "
-               "next month's shipments) over its months from July 2023 clear of each duty step's month, the three "
-               "before it and the five after, applied at mid-month and interpolated by day, and its excess over normal "
+    out.append("2. Took each account's normal stock as the space policy defines it, its cover times the mean of its "
+               "shipments in the month and the month after, the cover being its median over its months from July 2023 "
+               "clear of each duty step's month, the three before it and the five after, applied at mid-month and "
+               "interpolated by day, and its excess over normal "
                "stock after each step in yv_client_advisories_2019-2026.pdf (1 September 2019, 5 April 2025, 7 August "
                "2025): each excess fell in step with its own account's cumulative shipments, the five seasonal "
                "accounts' slowest after the April 2025 step, in their low season.")

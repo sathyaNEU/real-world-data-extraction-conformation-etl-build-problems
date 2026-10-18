@@ -112,6 +112,8 @@ POLICY = [
         "3.2 Overflow is the part of a month's forecast above the 40,000 rack positions of the four buildings.",
         "3.3 Capacity planning prepares the forecast. It is approved with the commitment it supports and kept with "
         "the commitment's papers in the capacity log.",
+        "3.4 An account's normal stock for a month is its cover times the mean of its shipments in that month and the "
+        "month after; its cover is the months of those shipments it holds in its ordinary months.",
     ]),
     ("4. Overflow blocks", [
         "4.1 Space at a third-party facility is taken in the blocks the facility offers, whole, and for the whole "
@@ -131,7 +133,8 @@ POLICY = [
 ]
 POLICY_HISTORY = [("1", "March 2019", "First issue"), ("2", "August 2020", "Subleased space added to section 2"),
                   ("3", "June 2023", "Rack positions recounted after the Anaheim Street re-rack"),
-                  ("4", "March 2026", "Section 4 on overflow blocks; floor lane limit in 2.3")]
+                  ("4", "March 2026", "Section 4 on overflow blocks; normal stock defined in 3.4; floor lane limit "
+                                      "in 2.3")]
 
 
 def write_policy(path):
@@ -287,7 +290,9 @@ DICT = [
         ("site_id, client_id", "receiving building and client"),
         ("equipment_id", "container number (ISO 6346) or trailer number"),
         ("equipment_type", "ISO 6346 size-type code for a container (22G1 20ft, 42G1 40ft, 45G1 40ft high cube, L5G1 "
-                           "45ft high cube) or 53DV for a 53ft dry van trailer. TEU: 22G1 1, 42G1 and 45G1 2, L5G1 2.25."),
+                           "45ft high cube) or 53DV for a 53ft dry van trailer. TEU: 22G1 1, 42G1 and 45G1 2, L5G1 2.25. "
+                           "A container received in several pieces is counted once, in the month of its first receipt "
+                           "(WMS) or delivery (Avila)."),
         ("pallets", "pallets received on the receipt"),
     ]),
     ("wms_lpn_inventory_20261207T0800Z.csv", [
