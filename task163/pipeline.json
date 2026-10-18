@@ -1,0 +1,13 @@
+{"task": "task163", "owner": "sathya8571", "status": "DESIGN",
+ "domain": "economics-econometrics", "objective": "forecasting",
+ "stage": 2, "stage_name": "design", "updated": "2026-10-18",
+ "stump": "Carrying each state's formations within four quarters per application over its latest four closed quarters onto the twelve months of applications to September 2026 at the plan's share files the default figure; the reform states' latest closed rate mixes ordinary and added applications whose added share has since more than doubled, and only the added applications' own yield, read against the nine other states before and after and carried per added application, gives the golden figure.",
+ "architecture": 1, "loops": 0,
+ "precut": {"exit": null, "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": ""},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "returned": [],
+ "resume": "stage 2: finish the design note (ladder, screen, fork table, closure, asks), prototype generator and cracker, then precut",
+ "approved": null, "delivered": null, "portal": null,
+ "portal_id": "", "portal_status": "", "portal_status_date": ""}
