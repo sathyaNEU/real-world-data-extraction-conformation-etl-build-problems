@@ -1,50 +1,47 @@
 {
  "as_of": "2026-10-13",
- "avail_available_total": 5378.6,
- "avail_committed_total": 5410.0,
- "avail_shortfall_total": 31.4,
  "availability": [
   {
-   "available": 560.0,
+   "available": 541.8,
    "block": 1,
    "committed": 560.0,
    "hours": "00:00-04:00",
-   "shortfall": 0.0
+   "shortfall": 18.2
   },
   {
-   "available": 1159.8,
+   "available": 1157.0,
    "block": 2,
    "committed": 1168.0,
    "hours": "04:00-08:00",
-   "shortfall": 8.2
+   "shortfall": 11.0
   },
   {
-   "available": 1419.0,
+   "available": 1414.7,
    "block": 3,
    "committed": 1428.0,
    "hours": "08:00-12:00",
-   "shortfall": 9.0
+   "shortfall": 13.3
   },
   {
-   "available": 360.0,
+   "available": 352.9,
    "block": 4,
    "committed": 360.0,
    "hours": "12:00-16:00",
-   "shortfall": 0.0
+   "shortfall": 7.1
   },
   {
-   "available": 1631.5,
+   "available": 1632.5,
    "block": 5,
    "committed": 1642.0,
    "hours": "16:00-20:00",
-   "shortfall": 10.5
+   "shortfall": 9.5
   },
   {
-   "available": 248.3,
+   "available": 247.0,
    "block": 6,
    "committed": 252.0,
    "hours": "20:00-24:00",
-   "shortfall": 3.7
+   "shortfall": 5.0
   }
  ],
  "call_episodes": 137,
@@ -57,7 +54,7 @@
   "auction_results": 126,
   "commitments": 256,
   "dictionary": 15,
-  "event_log": 32,
+  "event_log": 43,
   "freq_1s": 97730,
   "freq_min": 30240,
   "imbalance_prices": 2016,
@@ -76,13 +73,13 @@
    "site": "VKF-DLK"
   },
   {
-   "episodes": 153,
+   "episodes": 152,
    "gain_pct": 87.0,
    "name": "Hoogezand",
    "site": "VKF-HGZ"
   },
   {
-   "episodes": 21,
+   "episodes": 20,
    "gain_pct": 73.0,
    "name": "Kampvliet",
    "site": "VKF-KPV"
@@ -100,8 +97,8 @@
    "site": "VKF-NWV"
   },
   {
-   "episodes": 16,
-   "gain_pct": 96.0,
+   "episodes": 15,
+   "gain_pct": 95.9,
    "name": "Oosterhout",
    "site": "VKF-OOS"
   },
@@ -112,13 +109,13 @@
    "site": "VKF-RDL"
   },
   {
-   "episodes": 72,
+   "episodes": 71,
    "gain_pct": 98.0,
    "name": "Terborgh",
    "site": "VKF-TRB"
   },
   {
-   "episodes": 72,
+   "episodes": 71,
    "gain_pct": 94.0,
    "name": "Zwartewater",
    "site": "VKF-ZWT"
@@ -140,19 +137,129 @@
  },
  "exact_down": {
   "VKF-DLK": 92.000259,
-  "VKF-HGZ": 87.00279,
-  "VKF-KPV": 72.996729,
+  "VKF-HGZ": 87.036437,
+  "VKF-KPV": 73.040455,
   "VKF-NWV": 89.001126,
-  "VKF-OOS": 95.998051,
+  "VKF-OOS": 95.865389,
   "VKF-RDL": 80.994731,
-  "VKF-TRB": 98.001729,
-  "VKF-ZWT": 93.999624
+  "VKF-TRB": 98.0033,
+  "VKF-ZWT": 93.998108
  },
+ "exposure": [
+  {
+   "above": 20.2,
+   "below": 50.7,
+   "name": "Dollardkust",
+   "site": "VKF-DLK"
+  },
+  {
+   "above": 8.9,
+   "below": 17.8,
+   "name": "Hoogezand",
+   "site": "VKF-HGZ"
+  },
+  {
+   "above": 10.8,
+   "below": 22.5,
+   "name": "Kampvliet",
+   "site": "VKF-KPV"
+  },
+  {
+   "above": 10.2,
+   "below": 15.8,
+   "name": "Meppelerdiep",
+   "site": "VKF-MPD"
+  },
+  {
+   "above": 11.3,
+   "below": 28.0,
+   "name": "Nieuwveen",
+   "site": "VKF-NWV"
+  },
+  {
+   "above": 9.0,
+   "below": 24.2,
+   "name": "Oosterhout",
+   "site": "VKF-OOS"
+  },
+  {
+   "above": 11.2,
+   "below": 18.1,
+   "name": "Reiderland",
+   "site": "VKF-RDL"
+  },
+  {
+   "above": 15.6,
+   "below": 22.1,
+   "name": "Terborgh",
+   "site": "VKF-TRB"
+  },
+  {
+   "above": 16.5,
+   "below": 48.6,
+   "name": "Zwartewater",
+   "site": "VKF-ZWT"
+  }
+ ],
+ "exposure_above_total": 113.7,
+ "exposure_below_total": 247.8,
  "filing_due": "2026-10-23",
  "forcing": {
-  "ean_lost_mwh": 38.2,
+  "adh_above_natural": 940.2,
+  "adh_below_natural": 1056.0,
+  "adh_natural_site": {
+   "VKF-DLK": [
+    213.8,
+    242.3
+   ],
+   "VKF-HGZ": [
+    58.1,
+    67.0
+   ],
+   "VKF-KPV": [
+    111.7,
+    84.9
+   ],
+   "VKF-MPD": [
+    78.1,
+    62.0
+   ],
+   "VKF-NWV": [
+    97.9,
+    127.5
+   ],
+   "VKF-OOS": [
+    97.8,
+    83.6
+   ],
+   "VKF-RDL": [
+    89.4,
+    64.1
+   ],
+   "VKF-TRB": [
+    80.0,
+    61.2
+   ],
+   "VKF-ZWT": [
+    113.3,
+    263.5
+   ]
+  },
+  "clock_blocks": {
+   "1": 7.7,
+   "2": 2.8,
+   "3": 4.3,
+   "4": 2.4,
+   "5": 0.4,
+   "6": 1.3
+  },
+  "clock_moved_mwh": 18.9,
+  "clock_rows": 8,
+  "ean_lost_mwh": 26.8,
+  "held_minutes": 26,
   "kwh_site": "VKF-DLK",
-  "prelim_gap_mwh": 4.438,
+  "over_withdrawn": 5,
+  "prelim_gap_mwh": 2.974,
   "superseded_mwh": 12.3
  },
  "gap_pp": 11.0,
@@ -209,74 +316,6 @@
   "traj": "VKF-KPV"
  },
  "org": "Veerkracht Flex",
- "rec_difference_total": -2.4,
- "rec_metered_total": 2624.3,
- "rec_settled_total": 2621.9,
- "reconciliation": [
-  {
-   "difference": -6.4,
-   "metered": -1533.6,
-   "name": "Dollardkust",
-   "settled": -1540.0,
-   "site": "VKF-DLK"
-  },
-  {
-   "difference": -0.0,
-   "metered": 1570.8,
-   "name": "Hoogezand",
-   "settled": 1570.8,
-   "site": "VKF-HGZ"
-  },
-  {
-   "difference": 0.0,
-   "metered": 428.4,
-   "name": "Kampvliet",
-   "settled": 428.4,
-   "site": "VKF-KPV"
-  },
-  {
-   "difference": 0.0,
-   "metered": 1319.6,
-   "name": "Meppelerdiep",
-   "settled": 1319.6,
-   "site": "VKF-MPD"
-  },
-  {
-   "difference": -0.0,
-   "metered": 96.8,
-   "name": "Nieuwveen",
-   "settled": 96.8,
-   "site": "VKF-NWV"
-  },
-  {
-   "difference": -0.0,
-   "metered": 78.1,
-   "name": "Oosterhout",
-   "settled": 78.1,
-   "site": "VKF-OOS"
-  },
-  {
-   "difference": 0.0,
-   "metered": 1542.1,
-   "name": "Reiderland",
-   "settled": 1542.1,
-   "site": "VKF-RDL"
-  },
-  {
-   "difference": -0.0,
-   "metered": -1827.7,
-   "name": "Terborgh",
-   "settled": -1827.7,
-   "site": "VKF-TRB"
-  },
-  {
-   "difference": 4.0,
-   "metered": 949.8,
-   "name": "Zwartewater",
-   "settled": 953.8,
-   "site": "VKF-ZWT"
-  }
- ],
  "rung0_name": "Zwartewater",
  "rung0_pre": 76.8,
  "rung0_site": "VKF-ZWT",

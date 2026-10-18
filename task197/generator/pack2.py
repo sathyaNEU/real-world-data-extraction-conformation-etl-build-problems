@@ -57,7 +57,10 @@ def event_log(path, placed):
         add(logged, site, typ, code, detail)
     for r in placed:
         d, t0 = r["date"], r["start"]
-        start_local = build.loc(d, t0)
+        # the alarm handler stamps the field from the local clock; the operator interface stamps it
+        # from the UTC clock and the export appends the house offset either way
+        sd, ss = build.norm(d, r["stamp_start"])
+        start_local = build.loc(sd, ss)
         logged = build.utc(d, t0 + 90)
         i = add(logged, r["site"], "reserve_unavailable", r["code"], r["reason"], start_local, r["minutes"])
         ids[r["idx"]] = i
@@ -150,24 +153,87 @@ def settlement_files(tgt, W):
     return dict(rows=(n1, n2, n3), statement=stmt, ean_lost_mwh=lost, prelim_gap_mwh=gapv)
 
 
-def availability(W, placed):
-    """Reserve capacity hours committed and held available, per delivery block."""
-    committed = {b: 0.0 for b in range(6)}
+def _block_of(sec):
+    return int(sec // 14400) + 1
+
+
+def availability(W, placed, read="golden"):
+    """Reserve capacity hours committed and held available, per delivery block.
+
+    read "golden"  : every live window at the place it actually ran.
+    read "cracker" : clause 4 executed on the start_local field as it stands, so the rows the
+                     operator interface wrote are charged to the block two hours earlier, and
+                     only where the site was committed to that block on that date.
+    read "mirror"  : the cracker's reading with the correction rows not applied.
+    """
+    committed = {b: 0.0 for b in range(1, 7)}
     for d in sim.dates():
         for s in sim.SITES:
             for b in sim.commitments(s, d):
-                committed[b] += s["cap"] * 4.0
-    live = {b: 0.0 for b in range(6)}
-    allrows = {b: 0.0 for b in range(6)}
+                committed[b + 1] += s["cap"] * 4.0
+    lost = {b: 0.0 for b in range(1, 7)}
     for r in placed:
+        if r["superseded"] and read != "mirror":
+            continue
         s = sim.SITE_BY_ID[r["site"]]
-        b = int((r["start"] / 3600.0) // 4)
         mwh = s["cap"] * r["minutes"] / 60.0
-        allrows[b] += mwh
-        if not r["superseded"]:
-            live[b] += mwh
-    return dict(committed=committed, lost=live, lost_with_superseded=allrows,
-                available={b: committed[b] - live[b] for b in range(6)})
+        if read == "golden":
+            lost[_block_of(r["start"])] += mwh
+        else:
+            d, ss = build.norm(r["date"], r["stamp_start"])
+            if not (sim.WINDOW_START <= d <= sim.WINDOW_END):
+                continue
+            b = _block_of(ss)
+            if (b - 1) in sim.commitments(s, d):
+                lost[b] += mwh
+    return dict(committed=committed, lost=lost,
+                available={b: committed[b] - lost[b] for b in range(1, 7)})
+
+
+def adherence(W, read="golden"):
+    """Energy delivered above and below programme, per site, over the settlement periods of the
+    window the site held no delivery-block commitment for.
+
+    read "golden"  : each metered interval paired with the programme period it actually covers,
+                     which is the period before the one its row is indexed with.
+    read "natural" : each row paired with the programme period its own settlement_period names.
+    """
+    dates = sim.dates()
+    met = {}
+    for d in dates:
+        for s in sim.SITES:
+            met[(d, s["id"])] = core.metered(W, d, s["id"])
+    above = {s["id"]: 0.0 for s in sim.SITES}
+    below = {s["id"]: 0.0 for s in sim.SITES}
+    for i, d in enumerate(dates):
+        for s in sim.SITES:
+            sid = s["id"]
+            prog = W[d]["prog"][sid]
+            comm = np.zeros(96, dtype=bool)
+            for b in sim.commitments(s, d):
+                lo, hi = sim.BLOCK_HOURS[b]
+                comm[lo * 4:hi * 4] = True
+            for p in range(96):
+                if comm[p]:
+                    continue
+                if read == "golden":
+                    e = met[(d, sid)][p]
+                else:
+                    # the row indexed with this period carries the interval that closed when it
+                    # opened, which is the period before it
+                    if p == 0:
+                        if i == 0:
+                            continue            # no row is published for it
+                        e = met[(dates[i - 1], sid)][95]
+                    else:
+                        e = met[(d, sid)][p - 1]
+                dv = float(e) - float(prog[p]) * 0.25
+                if dv >= 0:
+                    above[sid] += dv
+                else:
+                    below[sid] += -dv
+    return dict(above=above, below=below,
+                above_total=sum(above.values()), below_total=sum(below.values()))
 
 
 def distractors(tgt):
@@ -231,8 +297,8 @@ def dictionary(tgt, counts):
          "extract_id, ts_utc, frequency_hz"),
         ("operator/system_frequency_minute_summary.csv", "", "published minute summary of system frequency for the window",
          "minute_utc, frequency_min_hz, frequency_mean_hz, frequency_max_hz"),
-        ("settlement/metered_volumes_15min.csv", "", "the desk's own settlement meter volumes, net at the connection point",
-         "metering_point, period_start_local, settlement_period, net_volume, unit"),
+        ("settlement/metered_volumes_15min.csv", "", "one interval of one metering point as the desk's meter data platform registered it, net at the connection point",
+         "metering_point, interval_ts_local, settlement_period, net_volume, unit"),
         ("operator/settlement_statement_daily_2026-09.csv", "", "the operator's settled volumes per metering point and delivery date",
          "metering_point, delivery_date, settled_volume_mwh"),
         ("operator/settlement_statement_daily_2026-10_preliminary.csv", "", "as above, preliminary issue for October",

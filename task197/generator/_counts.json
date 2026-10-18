@@ -4,7 +4,7 @@
  "auction_results": 126,
  "commitments": 256,
  "dictionary": 15,
- "event_log": 32,
+ "event_log": 43,
  "freq_1s": 97730,
  "freq_min": 30240,
  "imbalance_prices": 2016,

@@ -28,33 +28,34 @@ TSO = "Rijksnet"
 # No window, read either way, may hold a qualifying under-frequency second: that is what keeps
 # every ask device out of the main call's population, and checks.py asserts the count is zero.
 UNAVAIL = [
-    ("VKF-OOS", dt.date(2026, 9, 23), "05:12", 38, "droop controller alarm, reserve withdrawn", "ALM-DRP", "local", False),
-    ("VKF-HGZ", dt.date(2026, 9, 30), "20:35", 74, "engine 3 trip, reserve capacity reduced", "ENG-TRP", "local", False),
-    ("VKF-NWV", dt.date(2026, 10, 3), "06:22", 29, "communications loss to control platform", "COM-LOS", "local", False),
-    ("VKF-MPD", dt.date(2026, 9, 22), "06:35", 44, "engine 1 lube oil alarm", "ENG-LUB", "local", False),
-    ("VKF-ZWT", dt.date(2026, 10, 1), "10:20", 52, "state of charge outside reserve band", "SOC-OUT", "local", False),
-    ("VKF-TRB", dt.date(2026, 9, 25), "09:30", 41, "process load locked out of reserve", "LOA-LCK", "local", False),
-    ("VKF-DLK", dt.date(2026, 9, 27), "01:30", 63, "inverter bank 2 isolated", "INV-ISO", "local", False),
-    ("VKF-OOS", dt.date(2026, 10, 7), "13:40", 47, "inverter bank 1 derated on cooling fault", "INV-DER", "local", False),
-    ("VKF-KPV", dt.date(2026, 10, 5), "17:25", 36, "cell string isolated on insulation alarm", "ISO-INS", "local", False),
-    ("VKF-RDL", dt.date(2026, 9, 23), "18:10", 55, "gas train isolation valve fault", "GAS-VLV", "local", False),
-    # the operator-interface handler's rows
-    ("VKF-HGZ", dt.date(2026, 10, 7), "20:40", 58, "engine 2 governor hunting", "ENG-GOV", "utc", True),
-    ("VKF-KPV", dt.date(2026, 9, 28), "16:35", 42, "inverter bank 2 fan failure", "INV-FAN", "utc", True),
-    ("VKF-ZWT", dt.date(2026, 10, 9), "08:30", 49, "transformer cooling alarm", "TRF-COO", "utc", True),
-    ("VKF-NWV", dt.date(2026, 9, 26), "04:35", 33, "control platform link degraded", "COM-DEG", "utc", True),
-    ("VKF-TRB", dt.date(2026, 10, 2), "08:50", 37, "process line interlock raised", "LOA-INT", "utc", True),
-    ("VKF-DLK", dt.date(2026, 10, 8), "16:20", 51, "inverter bank 3 isolated", "INV-IS3", "utc", True),
-    ("VKF-RDL", dt.date(2026, 9, 30), "16:45", 44, "engine 2 knock sensor fault", "ENG-KNK", "utc", True),
-    ("VKF-OOS", dt.date(2026, 10, 8), "12:30", 39, "state of charge outside reserve band", "SOC-OUT", "utc", True),
-    ("VKF-DLK", dt.date(2026, 10, 9), "01:10", 46, "inverter bank 1 isolated", "INV-IS1", "utc", False),
-    # three entries a later correction row cancels: the window was logged against a site that had
-    # not in fact been withdrawn
-    ("VKF-OOS", dt.date(2026, 9, 28), "13:20", 56, "reserve withdrawn, pending investigation", "ALM-DRP", "local", False),
-    ("VKF-HGZ", dt.date(2026, 10, 2), "21:10", 68, "reserve withdrawn, pending investigation", "ENG-TRP", "local", False),
-    ("VKF-NWV", dt.date(2026, 10, 10), "09:05", 33, "reserve withdrawn, pending investigation", "COM-LOS", "local", False),
+    # (site, local date, delivery block, preferred local start, minutes, reason, code,
+    #  stamp, want_over, cross)
+    # --- rows the alarm handler wrote: start_local is the local wall clock ---------------------
+    ("VKF-OOS", dt.date(2026, 9, 23), 2, "05:12", 38, "droop controller alarm, reserve withdrawn", "ALM-DRP", "local", False, False),
+    ("VKF-HGZ", dt.date(2026, 9, 30), 6, "20:35", 74, "engine 3 trip, reserve capacity reduced", "ENG-TRP", "local", False, False),
+    ("VKF-NWV", dt.date(2026, 10, 3), 2, "06:22", 29, "communications loss to control platform", "COM-LOS", "local", False, False),
+    ("VKF-MPD", dt.date(2026, 9, 22), 2, "06:35", 44, "engine 1 lube oil alarm", "ENG-LUB", "local", False, False),
+    ("VKF-ZWT", dt.date(2026, 10, 1), 3, "10:20", 52, "state of charge outside reserve band", "SOC-OUT", "local", False, False),
+    ("VKF-TRB", dt.date(2026, 9, 25), 3, "09:30", 41, "process load locked out of reserve", "LOA-LCK", "local", False, False),
+    ("VKF-DLK", dt.date(2026, 9, 27), 1, "01:30", 63, "inverter bank 2 isolated", "INV-ISO", "local", False, False),
+    ("VKF-OOS", dt.date(2026, 10, 7), 4, "13:40", 47, "inverter bank 1 derated on cooling fault", "INV-DER", "local", False, False),
+    ("VKF-KPV", dt.date(2026, 10, 5), 5, "17:25", 36, "cell string isolated on insulation alarm", "ISO-INS", "local", False, False),
+    ("VKF-RDL", dt.date(2026, 9, 28), 5, "18:10", 55, "gas train isolation valve fault", "GAS-VLV", "local", False, False),
+    # --- rows the operator interface wrote: start_local carries the UTC instant ---------------
+    ("VKF-HGZ", dt.date(2026, 9, 26), 6, "20:00", 26, "engine 2 governor hunting", "ENG-GOV", "utc", True, True),
+    ("VKF-OOS", dt.date(2026, 10, 2), 4, "12:00", 24, "state of charge outside reserve band", "SOC-OUT", "utc", True, True),
+    ("VKF-ZWT", dt.date(2026, 10, 8), 3, "09:35", 22, "transformer cooling alarm", "TRF-COO", "utc", True, True),
+    ("VKF-TRB", dt.date(2026, 10, 9), 3, "09:04", 28, "process line interlock raised", "LOA-INT", "utc", True, True),
+    ("VKF-KPV", dt.date(2026, 10, 3), 5, "19:20", 31, "inverter bank 2 fan failure", "INV-FAN", "utc", True, False),
+    ("VKF-NWV", dt.date(2026, 9, 24), 2, "04:00", 28, "control platform link degraded", "COM-DEG", "utc", False, True),
+    ("VKF-DLK", dt.date(2026, 9, 30), 1, "00:01", 46, "inverter bank 1 isolated", "INV-IS1", "utc", False, True),
+    ("VKF-RDL", dt.date(2026, 9, 23), 5, "16:00", 40, "engine 2 knock sensor fault", "ENG-KNK", "utc", False, True),
+    # --- three windows a later correction row cancels: the reserve was not withdrawn ----------
+    ("VKF-OOS", dt.date(2026, 9, 28), 4, "13:20", 56, "reserve withdrawn, pending investigation", "ALM-DRP", "local", False, False),
+    ("VKF-HGZ", dt.date(2026, 10, 2), 6, "21:10", 68, "reserve withdrawn, pending investigation", "ENG-TRP", "local", False, False),
+    ("VKF-NWV", dt.date(2026, 10, 10), 3, "09:05", 33, "reserve withdrawn, pending investigation", "COM-LOS", "local", False, False),
 ]
-SUPERSEDED = {19, 20, 21}       # indexes into UNAVAIL whose event a correction row cancels
+SUPERSEDED = {18, 19, 20}       # indexes into UNAVAIL whose event a correction row cancels
 STAMP_SHIFT = 7200              # seconds the operator-interface handler's rows read early
 
 # The operator's minute summary ran on the SCADA chain's own one-minute average for a few short
@@ -71,6 +72,12 @@ SUMMARY_HELD = [
     (dt.date(2026, 10, 10), 1186, 4),
 ]
 
+# The settlement metering point in force for each site: (code, replacement code, effective date).
+METER_EAN = {"VKF-OOS": ("871687140000312447", "871687140000398201", dt.date(2026, 10, 1)),
+             "VKF-ZWT": ("871687140000207718", None, None), "VKF-HGZ": ("871687140000255143", None, None),
+             "VKF-KPV": ("871687140000266509", None, None), "VKF-MPD": ("871687140000271882", None, None),
+             "VKF-NWV": ("871687140000289064", None, None), "VKF-TRB": ("871687140000294337", None, None),
+             "VKF-DLK": ("871687140000301776", None, None), "VKF-RDL": ("871687140000318095", None, None)}
 KWH_SITE = "VKF-DLK"            # this meter reports in kWh, as its unit column says
 
 
@@ -133,49 +140,61 @@ def _over_hits(site, d, lo, hi):
     return out
 
 
-def place_outage(site, d, hhmm, minutes, stamp, want_over):
-    key = (site["id"], d, hhmm, minutes, stamp, want_over)
+def place_outage(site, d, block, hhmm, minutes, stamp, want_over, cross):
+    key = (site["id"], d, block, hhmm, minutes, stamp, want_over, cross)
     if key not in _PLACE_CACHE:
-        _PLACE_CACHE[key] = _place_outage(site, d, hhmm, minutes, stamp, want_over)
+        _PLACE_CACHE[key] = _place_outage(site, d, block, hhmm, minutes, stamp, want_over, cross)
     return _PLACE_CACHE[key]
 
 
-def _place_outage(site, d, hhmm, minutes, stamp, want_over):
-    """The start second of the logged window, searched outward from the stated time. Every
-    candidate must sit wholly inside a contracted block, and neither the true window nor its
-    two-hour-early reading may come within two minutes of a qualifying under-frequency episode:
-    that is the separation between the ask devices and the main call. A row the operator-interface
-    handler wrote must also cross a block boundary when read two hours early, or the device moves
-    no block figure, and must cover an over-frequency obligation at its true place and none at the
-    place it reads."""
-    under = _mask(d, "under")
+def _under_clear(d, lo, hi):
+    """True when no second of [lo - 60, hi + 60) lies in a qualifying under-frequency episode,
+    rolling across local dates. This is the separation between the ask devices and the main call:
+    neither a window's true place nor the place its own row reads may touch the call's population."""
+    lo, hi = lo - 60, hi + 60
+    while lo < hi:
+        dd, ss = norm(d, lo)
+        n = min(hi - lo, sim.DAY - ss)
+        if sim.WINDOW_START <= dd <= sim.WINDOW_END and _mask(dd, "under")[ss:ss + n].any():
+            return False
+        lo += n
+    return True
+
+
+def _place_outage(site, d, block, hhmm, minutes, stamp, want_over, cross):
+    """The start second of the logged window, searched inside the stated delivery block outward
+    from the stated time. A row the operator interface wrote must change delivery block when it is
+    read two hours early, or the device moves no block figure, and a row that carries an
+    over-frequency obligation must cover one at its true place and none at the place it reads."""
     need = minutes * 60
     shift = STAMP_SHIFT if stamp == "utc" else 0
+    lo_b, hi_b = sim.BLOCK_HOURS[block - 1]
     h, m = [int(x) for x in hhmm.split(":")]
     pref = h * 3600 + m * 60
-    cand = sorted(range(0, sim.DAY - need, 60), key=lambda t: (abs(t - pref), t))
+    cand = sorted(range(lo_b * 3600, hi_b * 3600 - need + 1, 60), key=lambda t: (abs(t - pref), t))
     for t in cand:
         if t - 60 < 0 or t + need + 60 >= sim.DAY:
             continue
         if not sim.contracted(site, np.arange(t, t + need), d).all():
             continue
-        if under[t - 60:t + need + 60].any():
+        if not _under_clear(d, t, t + need):
             continue
-        st0, st1 = t - shift, t + need - shift
+        st0 = t - shift
         if shift:
-            if st0 - 60 < 0:
+            if not _under_clear(d, st0, st0 + need):
                 continue
-            if under[st0 - 60:st1 + 60].any():
+            if cross and st0 >= 0 and st0 // 14400 == t // 14400:
                 continue
-            if st0 // 14400 == t // 14400:          # the shifted row must change delivery block
-                continue
+            sd, ss = norm(d, st0)
+            n_stamp = len(_over_hits(site, sd, ss, ss + need))
+        else:
+            n_stamp = None
         n_true = len(_over_hits(site, d, t, t + need))
-        n_stamp = len(_over_hits(site, d, st0, st1)) if shift else n_true
         if want_over:
             if n_true < 1 or n_stamp != 0:
                 continue
         else:
-            if n_true != 0 or n_stamp != 0:
+            if n_true != 0 or (shift and n_stamp != 0):
                 continue
         return t
     return None
@@ -200,11 +219,22 @@ def unavail_rows():
     if "rows" in _WIN_CACHE:
         return _WIN_CACHE["rows"]
     out = []
-    for i, (sid, d, hhmm, mins, reason, code, stamp, want_over) in enumerate(UNAVAIL):
-        t0 = place_outage(sim.SITE_BY_ID[sid], d, hhmm, mins, stamp, want_over)
+    for i, (sid, d0, blk, hhmm, mins, reason, code, stamp, want_over, cross) in enumerate(UNAVAIL):
+        # the stated delivery date, then the nearest dates either side: the window has to sit in a
+        # block the site is committed to and clear of the call's population, which not every date
+        # allows. The order is fixed, so the pack rebuilds byte for byte.
+        d, t0 = None, None
+        for k in [0] + [v for j in range(1, 11) for v in (j, -j)]:
+            cd = d0 + dt.timedelta(days=k)
+            if not (sim.WINDOW_START <= cd <= sim.WINDOW_END):
+                continue
+            t = place_outage(sim.SITE_BY_ID[sid], cd, blk, hhmm, mins, stamp, want_over, cross)
+            if t is not None:
+                d, t0 = cd, t
+                break
         if t0 is None:
-            raise AssertionError("no placement for %s %s %s" % (sid, d, hhmm))
-        out.append(dict(idx=i, site=sid, date=d, start=t0, minutes=mins, reason=reason,
+            raise AssertionError("no placement for %s %s block %d %s" % (sid, d0, blk, hhmm))
+        out.append(dict(idx=i, site=sid, date=d, block=blk, start=t0, minutes=mins, reason=reason,
                         code=code, stamp=stamp, want_over=want_over,
                         stamp_start=t0 - (STAMP_SHIFT if stamp == "utc" else 0),
                         superseded=(i in SUPERSEDED)))
@@ -395,8 +425,11 @@ def main():
     under = core.episode_table(W, recs, cache, "under")
     over = core.episode_table(W, recs, cache, "over")
     su, so = core.site_scores(under), core.site_scores(over)
-    av = pack2.availability(W, placed)
-    met = pack2.metered_totals(W)
+    av = pack2.availability(W, placed, "golden")
+    av_c = pack2.availability(W, placed, "cracker")
+    av_m = pack2.availability(W, placed, "mirror")
+    adh = pack2.adherence(W, "golden")
+    adh_n = pack2.adherence(W, "natural")
     name = {s["id"]: s["name"] for s in sim.SITES}
     cap = {s["id"]: s["cap"] for s in sim.SITES}
     order = [sid for sid, _ in core.ranked(su, "traj")]
@@ -410,46 +443,57 @@ def main():
                  episodes=(so[sid]["n"] if sid in so else 0)) for sid in sorted(name)]
     dn_low = min([d for d in down if d["gain_pct"] is not None], key=lambda d: d["gain_pct"])
     dn_none = [d for d in down if d["gain_pct"] is None]
-    blocks = [dict(block=b + 1, hours="%02d:00-%02d:00" % sim.BLOCK_HOURS[b],
+    blocks = [dict(block=b, hours="%02d:00-%02d:00" % sim.BLOCK_HOURS[b - 1],
                    committed=round(av["committed"][b], 1), available=round(av["available"][b], 1),
-                   shortfall=round(av["lost"][b], 1)) for b in range(6)]
-    rec = [dict(site=sid, name=name[sid], metered=round(met[sid], 1),
-                settled=round(st["statement"][sid], 1),
-                difference=round(st["statement"][sid] - met[sid], 1)) for sid in sorted(name)]
+                   shortfall=round(av["lost"][b], 1)) for b in range(1, 7)]
+    exposure = [dict(site=sid, name=name[sid], above=round(adh["above"][sid], 1),
+                     below=round(adh["below"][sid], 1)) for sid in sorted(name)]
     rung0_site = core.ranked(su, "pre")[0][0]
     F = dict(window_from=sim.WINDOW_START.isoformat(), window_to=sim.WINDOW_END.isoformat(),
              as_of=AS_OF.isoformat(), filing_due=FILING_DUE.isoformat(),
              delivery_month=DELIVERY_MONTH, delivery_start="2026-11-01", tso=TSO, org=ORG,
              tolerance=core.TOLERANCE_PCT, scorecard=sc, down=down, availability=blocks,
-             reconciliation=rec, call_site=call, call_name=name[call],
+             exposure=exposure, call_site=call, call_name=name[call],
              call_gain=round(su[call]["traj"], 1), runner_site=runner, runner_name=name[runner],
              runner_gain=round(su[runner]["traj"], 1),
              gap_pp=round(round(su[runner]["traj"], 1) - round(su[call]["traj"], 1), 1),
              call_episodes=su[call]["n"],
              down_low_name=dn_low["name"], down_low_gain=dn_low["gain_pct"],
              down_none_name=(dn_none[0]["name"] if dn_none else "none"),
-             avail_committed_total=round(sum(b["committed"] for b in blocks), 1),
-             avail_available_total=round(sum(b["available"] for b in blocks), 1),
-             avail_shortfall_total=round(sum(b["shortfall"] for b in blocks), 1),
-             rec_metered_total=round(sum(r["metered"] for r in rec), 1),
-             rec_settled_total=round(sum(r["settled"] for r in rec), 1),
-             rec_difference_total=round(sum(r["difference"] for r in rec), 1),
+             exposure_above_total=round(adh["above_total"], 1),
+             exposure_below_total=round(adh["below_total"], 1),
              rung0_site=rung0_site, rung0_name=name[rung0_site],
              rung0_pre=round(su[rung0_site]["pre"], 1), rung0_traj=round(su[rung0_site]["traj"], 1),
              ladder={k: {sid: round(v[k], 4) for sid, v in su.items()} for k in ("traj", "pre", "sp", "lin")},
              ladder_names={k: core.ranked(su, k)[0][0] for k in ("traj", "pre", "sp", "lin")},
              exact={sid: round(v["traj"], 6) for sid, v in su.items()},
              exact_down={sid: round(v["traj"], 6) for sid, v in so.items()},
-             forcing=dict(ean_lost_mwh=round(st["ean_lost_mwh"], 1),
-                          prelim_gap_mwh=round(st["prelim_gap_mwh"], 3),
-                          superseded_mwh=round(sum(av["lost_with_superseded"][b] - av["lost"][b]
-                                                   for b in range(6)), 1),
-                          kwh_site=KWH_SITE),
+             forcing=dict(
+                 # ask B, the clock device: the block shortfall the natural read misplaces
+                 clock_blocks={b: round(av["lost"][b] - av_c["lost"][b], 1) for b in range(1, 7)},
+                 clock_moved_mwh=round(sum(abs(av["lost"][b] - av_c["lost"][b])
+                                           for b in range(1, 7)), 1),
+                 clock_rows=sum(1 for r in placed if r["stamp"] == "utc"),
+                 # ask C, the interval-index device
+                 adh_above_natural=round(adh_n["above_total"], 1),
+                 adh_below_natural=round(adh_n["below_total"], 1),
+                 adh_natural_site={sid: [round(adh_n["above"][sid], 1), round(adh_n["below"][sid], 1)]
+                                   for sid in sorted(name)},
+                 # ask A, the held summary rows and the over-frequency obligations withdrawn
+                 held_minutes=len(held_minutes()),
+                 over_withdrawn=sum(1 for r in placed if r["want_over"]),
+                 # the documented mess that moves the mirror and not the cracker
+                 superseded_mwh=round(sum(av_m["lost"][b] - av_c["lost"][b]
+                                          for b in range(1, 7)), 1),
+                 ean_lost_mwh=round(st["ean_lost_mwh"], 1),
+                 prelim_gap_mwh=round(st["prelim_gap_mwh"], 3),
+                 kwh_site=KWH_SITE),
              counts=counts)
     print("[stage] dictionary and goldens", flush=True)
     counts["dictionary"] = pack2.dictionary(TGT, counts)
-    blk = [("Block %d (%02d:00-%02d:00)" % (b + 1, sim.BLOCK_HOURS[b][0], sim.BLOCK_HOURS[b][1]),
-            av["committed"][b] / (4.0 * 30), 99.14 - 0.37 * b + 0.11 * (b % 3)) for b in range(6)]
+    blk = [("Block %d (%02d:00-%02d:00)" % (b, sim.BLOCK_HOURS[b - 1][0], sim.BLOCK_HOURS[b - 1][1]),
+            av["committed"][b] / (4.0 * 30), 99.14 - 0.37 * (b - 1) + 0.11 * ((b - 1) % 3))
+           for b in range(1, 7)]
     docs.availability_report(os.path.join(TGT, "operator", "fcr_group_availability_2026-09.pdf"),
                              TSO, ORG, "2026-09", blk, "RPG-0417")
     goldens.workbook(os.path.join(GOLD, "site_response_scorecard.xlsx"), F)

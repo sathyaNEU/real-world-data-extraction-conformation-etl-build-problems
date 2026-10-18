@@ -82,26 +82,26 @@ def workbook(path, F):
         wa.append([r["block"], r["hours"], r["committed"], r["available"], r["shortfall"]])
         for col in ("C", "D", "E"):
             wa["%s%d" % (col, wa.max_row)].number_format = "0.0"
-    wa.append([])
-    wa.append(["Portfolio", "", F["avail_committed_total"], F["avail_available_total"], F["avail_shortfall_total"]])
-    wa.cell(row=wa.max_row, column=1).font = Font(bold=True)
     for col, w in zip("ABCDE", (10, 14, 17, 18, 16)):
         wa.column_dimensions[col].width = w
 
-    wr = wb.create_sheet("Settlement reconciliation")
-    wr["A1"] = "Net metered volume against the operator's settled volumes, review window"
-    wr["A1"].font = Font(bold=True, size=11)
-    wr.append([]); wr.append([])
-    _head(wr, 3, ["Site", "Name", "Metered net (MWh)", "Settled net (MWh)", "Difference (MWh)"])
-    for r in F["reconciliation"]:
-        wr.append([r["site"], r["name"], r["metered"], r["settled"], r["difference"]])
-        for col in ("C", "D", "E"):
-            wr["%s%d" % (col, wr.max_row)].number_format = "0.0"
-    wr.append([])
-    wr.append(["Portfolio", "", F["rec_metered_total"], F["rec_settled_total"], F["rec_difference_total"]])
-    wr.cell(row=wr.max_row, column=1).font = Font(bold=True)
-    for col, w in zip("ABCDE", (12, 15, 17, 17, 16)):
-        wr.column_dimensions[col].width = w
+    we = wb.create_sheet("Imbalance exposure")
+    we["A1"] = "Energy delivered against programme outside reserve commitment, review window"
+    we["A1"].font = Font(bold=True, size=11)
+    we["A2"] = ("Settlement periods for which the site held no delivery-block commitment. "
+                "Clause 5 of the performance standard.")
+    we["A2"].font = Font(size=9, italic=True)
+    we.append([])
+    _head(we, 4, ["Site", "Name", "Above programme (MWh)", "Below programme (MWh)"])
+    for r in F["exposure"]:
+        we.append([r["site"], r["name"], r["above"], r["below"]])
+        for col in ("C", "D"):
+            we["%s%d" % (col, we.max_row)].number_format = "0.0"
+    we.append([])
+    we.append(["Portfolio", "", F["exposure_above_total"], F["exposure_below_total"]])
+    we.cell(row=we.max_row, column=1).font = Font(bold=True)
+    for col, w in zip("ABCD", (12, 15, 22, 22)):
+        we.column_dimensions[col].width = w
 
     wb.properties.creator = "Veerkracht Flex"; wb.properties.lastModifiedBy = "Veerkracht Flex"
     wb.properties.created = dt.datetime(2026, 10, 13, 7, 12, 0)
@@ -156,17 +156,17 @@ def memo(path, F):
       "each site with whatever its programme did during the episode, which is why %s reads %.0f per cent on "
       "that basis against %.0f per cent here." % (F["rung0_name"], F["rung0_pre"], F["rung0_traj"]))
     w("")
-    w("## Down regulation, availability and settlement")
+    w("## Down regulation, availability and imbalance")
     w("")
     w("Down-regulation gains are on the same characteristic and are reported in the workbook; %s is the "
       "lowest there too at %.0f per cent, and %s had no qualifying over-frequency episode in the window. "
-      "Reserve capacity held available came to %.1f MWh against %.1f MWh committed, a shortfall of %.1f MWh, "
-      "all of it in logged withdrawals that no correction cancels. Metered net volume for the window was "
-      "%.1f MWh against %.1f MWh settled, the difference sitting with the two connections above 110 kV where "
-      "the operator applies its loss adjustment." % (
-          F["down_low_name"], F["down_low_gain"], F["down_none_name"], F["avail_available_total"],
-          F["avail_committed_total"], F["avail_shortfall_total"], F["rec_metered_total"],
-          F["rec_settled_total"]))
+      "Reserve capacity held available and the shortfall against commitment are per block in the workbook; "
+      "the withdrawn hours are the hours the sites were in fact out of reserve, which is not the same set as "
+      "the rows read off their logged start fields. Outside the blocks they were committed to, the sites "
+      "delivered %.1f MWh above programme and %.1f MWh below it, which is the imbalance position the desk "
+      "carried and is dominated by the traverse lag rather than by any site missing dispatch." % (
+          F["down_low_name"], F["down_low_gain"], F["down_none_name"],
+          F["exposure_above_total"], F["exposure_below_total"]))
     w("")
     w("## Next steps")
     w("")

@@ -164,17 +164,26 @@ def performance_standard(path, org, tol, window_from, window_to, as_of):
               "furthest below the gain its contract requires, and carries the remaining sites that are outside "
               "tolerance at their contracted capacity until a further slot is available." % tol),
         ("h2", "4. Reserve capacity held available"),
-        ("p", "The reserve capacity hours the portfolio held available in a delivery block are the contracted "
-              "capacity of each site committed to that block multiplied by the hours of the block, less the "
-              "capacity of any site for the part of the block in which it was withdrawn from reserve. Events "
-              "logged against the control platform are the record of withdrawal; an event a later correction "
-              "cancels is not a withdrawal."),
-        ("h2", "5. Settlement reconciliation"),
-        ("p", "The desk reconciles the net volume its own meters record for each site over the window against "
-              "the volumes the system operator's settlement statements carry for that site's metering points, "
-              "taking the latest statement issued for each delivery month. The operator applies a grid loss "
-              "adjustment at connections above 110 kilovolts, so a difference at those sites is expected and is "
-              "reported rather than corrected."),
+        ("p", "The reserve capacity hours the portfolio held available in a delivery block over a review window "
+              "are the contracted capacity of each site committed to that block multiplied by the hours of the "
+              "block, less, for each site, its contracted capacity multiplied by the hours of that block in "
+              "which the site was not holding reserve; the shortfall is the difference between the two. The "
+              "hours counted are the hours in which the site was in fact not holding reserve, and the control "
+              "platform's event log is the desk's record of them. Capacity hours are summed over the window's "
+              "delivery dates and reported in megawatt hours to one decimal place."),
+        ("h2", "5. Imbalance exposure outside reserve"),
+        ("p", "In a settlement period for which a site holds no delivery-block commitment the whole difference "
+              "between the energy the site delivers and the energy its market programme sets for that period "
+              "falls to the desk's own imbalance position, and upward and downward exposure are priced "
+              "separately. The desk therefore reports, for each site and for the portfolio, the energy "
+              "delivered above programme and the energy delivered below programme over the review window, "
+              "each as a positive quantity in megawatt hours, summed over those periods and rounded once at "
+              "the end. A site's delivered energy for a period is the net volume its own settlement meters "
+              "register for that site over the period; its programme energy is the setpoint the control "
+              "platform held for that period taken over the quarter hour."),
+        ("p", "The system operator's settlement statements carry the volumes it settles for each metering "
+              "point, with a grid loss adjustment at connections above 110 kilovolts, and the desk reconciles "
+              "them to its own meters on the monthly settlement run."),
         ("small", "Document reference VKF-STD-RP-004. Review annually or on a change to the system operator's "
                   "technical conditions."),
     ], author=org, subject="Reserve performance standard")

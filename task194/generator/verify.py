@@ -86,71 +86,176 @@ def run(target, figures_path):
     elig = sorted(c for c in open_units if counts.get(c, 0) >= 4 and c not in placed)
     ok(len(elig) == fig["eligible_units"], "twelve eligible units")
 
-    # ---- the comparison frequency charter 4.3 asks for, measured from the record itself ----
-    # no file carries it: this is the frequency the acute record's own in-scope episodes show, by stratum
-    def freq(df):
-        t = df.groupby(["risk_band", "age_band"]).agg(
-            n=("episode_id", "size"), o=("hac_recorded", "sum")).reset_index()
-        t["r_net"] = t.o / t.n
-        return t[["risk_band", "age_band", "r_net"]]
+    # ---- the observation process, recomputed from the close-out register's own shipped bytes ----
+    # The register publishes each quarter when its coding closes and restates it at every close after
+    # that. A quarter whose last two publications agree has stopped moving and carries its own ultimate,
+    # so the growth from each earlier publication to that ultimate is an observed ratio. Nothing is
+    # fitted here and no parameter is chosen.
+    reg = pd.read_csv(os.path.join(target, "coding_close_out_register.csv"), dtype={"unit_code": str})
+    ok(len(reg) > 200, "the close-out register ships %d rows" % len(reg))
+    ok(set(reg.columns) == {"quarter", "published_date", "unit_code", "separations_with_complication"},
+       "the register's columns are the four it declares (%s)" % sorted(reg.columns))
+    reg = reg.sort_values(["quarter", "unit_code", "published_date"])
+    cells = {}
+    for (q, u), d in reg.groupby(["quarter", "unit_code"]):
+        cells[(q, u)] = list(zip(d.published_date, d.separations_with_complication.astype(int)))
+    finished = {k: v for k, v in cells.items() if len(v) >= 2 and v[-1][1] == v[-2][1]}
+    ok(len(finished) > 50, "%d of the register's %d cells have stopped moving" % (len(finished), len(cells)))
+
+    def factors(weighting="volume", quarters_from=None):
+        num, den, rat = {}, {}, {}
+        for (q, u), s_ in finished.items():
+            if quarters_from is not None and q < quarters_from:
+                continue
+            final = s_[-1][1]
+            for lag, (_, n) in enumerate(s_):
+                if n <= 0:
+                    continue
+                num[(u, lag)] = num.get((u, lag), 0.0) + final
+                den[(u, lag)] = den.get((u, lag), 0.0) + n
+                rat.setdefault((u, lag), []).append(final / n)
+        if weighting == "simple":
+            return {k: sum(v) / len(v) for k, v in rat.items() if v}
+        return {k: num[k] / den[k] for k in den if den[k]}
+
+    # which quarters are still filling, and how many closes each has had, from the register alone
+    pubs = reg.groupby("quarter").published_date.nunique()
+    moving = sorted({q for (q, u), v in cells.items() if (q, u) not in finished})
+    lags = {q: int(pubs[q]) - 1 for q in moving}
+    ok(sorted(lags.values()) == [0, 1, 2, 3, 4],
+       "the register shows five quarters at five stages of settling (%s)" % lags)
+    ok(sorted(q for q, v in lags.items() if v > 0) == sorted(fig["quarters_still_moving"]),
+       "the four quarters still filling are the ones figures.json names")
+
+    F = factors()
+    ok(abs(F[(fig["call_unit_code"], 0)] - fig["pick_factor_at_lag_0"]) < 5e-4,
+       "the call's own development factor at lag 0 recomputes (%.4f)" % F[(fig["call_unit_code"], 0)])
+    ok(abs(F[(fig["runner_unit_code"], 0)] - fig["runner_factor_at_lag_0"]) < 5e-4,
+       "the runner-up's development factor at lag 0 recomputes (%.4f)"
+       % F[(fig["runner_unit_code"], 0)])
+    ok(F[(fig["call_unit_code"], 0)] > F[(fig["runner_unit_code"], 0)],
+       "the call's quarters are further from settled than the runner-up's")
+    for (u, l), v in F.items():
+        ok(v >= 1.0, "no cost centre's quarter shrinks after its own close (%s lag %d)" % (u, l))
 
     allq = sorted(grp.quarter.unique())
     ok(len(allq) == 10, "the record carries ten closed quarters (%d)" % len(allq))
-    net = freq(scope)
-    ok(len(net) == 24, "twenty-four strata carry a comparison frequency (%d)" % len(net))
+    gi = grp.set_index(["unit_code", "quarter"])
+    pl = plan.set_index("unit_code").planned_separations
 
-    def avoidable(window=None, freq_window=None, denom="separations", leave_out=False,
-                  restrict=None):
-        """Charter 4.3 carried onto the planned separations under specification 3.4, one reading."""
-        f_src = scope if freq_window is None else scope[scope.quarter.isin(freq_window)]
+    def avoidable(develop=True, window=None, denom="separations", fac=None, netwide=False, fill_own=False):
+        """Charter 4.3 carried onto the planned separations under specification 3.4, one reading.
+
+        The expectation is the published stratum table of Appendix A, which specification 3.1 files and
+        which every reading here shares; what the readings differ on is how the observed count of a
+        quarter that is still filling is carried to what that quarter's patients had.
+        """
+        fac = F if fac is None else fac
+        qs_ = list(window or allq)
         rows = {}
         for u in elig:
-            w = scope[(scope.unit_code == u) & (scope.quarter.isin(window or allq))]
-            if restrict == "hospital":
-                src = f_src[f_src.hospital_code == units.set_index("unit_code").hospital_code[u]]
-            elif restrict == "peer":
-                peer = pd.read_csv(os.path.join(target, "hospital_sites.csv"), dtype=str)
-                pmap = peer.set_index("hospital_code").peer_group
-                mine = pmap[units.set_index("unit_code").hospital_code[u]]
-                keep = set(pmap[pmap == mine].index)
-                src = f_src[f_src.hospital_code.isin(keep)]
-            elif leave_out:
-                src = f_src[f_src.unit_code != u]
-            else:
-                src = f_src
-            r = freq(src)
-            if restrict:                       # a thin stratum falls back to the whole record
-                wide = freq(f_src).set_index(["risk_band", "age_band"]).r_net
-                cnt = src.groupby(["risk_band", "age_band"]).size()
-                r = r.set_index(["risk_band", "age_band"]).r_net
-                r = pd.Series({k: (r[k] if cnt.get(k, 0) >= 30 else wide[k]) for k in wide.index})
-                r = r.rename("r_net").reset_index()
-                r.columns = ["risk_band", "age_band", "r_net"]
-            m = w.merge(r, on=["risk_band", "age_band"], how="left")
-            o = m.hac_recorded.sum()
-            en = m.r_net.sum()
-            sp = len(acute[(acute.unit_code == u) & (acute.quarter.isin(window or allq))])
-            d = sp if denom == "separations" else len(m)
-            rows[u] = (o - en) * int(plan.set_index("unit_code").planned_separations[u]) / d
+            o = e = sp = 0.0
+            for q in qs_:
+                if (u, q) not in gi.index:
+                    continue
+                row = gi.loc[(u, q)]
+                e += float(row.expected)
+                sp += float(row.separations)
+                n = float(row.observed)
+                if not develop or q not in lags:
+                    o += n
+                elif netwide:
+                    o += n * netblend[lags[q]]
+                elif fill_own:
+                    o += n * own_ratio[u]
+                else:
+                    o += n * fac.get((u, lags[q]), 1.0)
+            if not sp:
+                continue
+            d = sp if denom == "separations" else float(
+                sum(gi.loc[(u, q)].episodes for q in qs_ if (u, q) in gi.index))
+            rows[u] = (o - e) * int(pl[u]) / d
         return rows
+
+    # one factor for the whole network at a lag, ignoring which cost centre the complications sat in
+    netblend = {}
+    for lag in range(5):
+        a_ = b_ = 0.0
+        for (q, u), s_ in finished.items():
+            if lag >= len(s_) or s_[lag][1] <= 0:
+                continue
+            a_ += s_[-1][1]
+            b_ += s_[lag][1]
+        netblend[lag] = a_ / b_ if b_ else 1.0
+    # each unit's own ratio over the quarters that have finished, applied to the short ones
+    own_ratio = {}
+    for u in elig:
+        done = [q for q in allq if q not in lags and (u, q) in gi.index]
+        shrt = [q for q in allq if q in lags and (u, q) in gi.index]
+        o_done = sum(float(gi.loc[(u, q)].observed) for q in done)
+        e_done = sum(float(gi.loc[(u, q)].expected) for q in done)
+        own_ratio[u] = (o_done / e_done) if e_done else 1.0
+        if shrt:
+            o_s = sum(float(gi.loc[(u, q)].observed) for q in shrt)
+            e_s = sum(float(gi.loc[(u, q)].expected) for q in shrt)
+            own_ratio[u] = (own_ratio[u] * e_s / o_s) if o_s else 1.0
 
     base = avoidable()
     order = sorted(base, key=lambda u: -base[u])
     ok(order[0] == fig["call_unit_code"], "the call is the unit charter 4.3 puts first")
-    ok(round(base[order[0]]) == fig["avoidable_at_pick"], "the call's avoidable complications")
-    ok(round(base[order[1]]) == fig["avoidable_at_runner"], "the closest unit's avoidable complications")
+    ok(round(base[order[0]], 1) == fig["avoidable_at_pick"], "the call's avoidable complications")
+    ok(round(base[order[1]], 1) == fig["avoidable_at_runner"], "the closest unit's avoidable complications")
     ok(order[1] == fig["runner_unit_code"], "the closest unit")
-    ok(round(base[order[0]]) - round(base[order[1]]) == fig["gap_complications"], "the gap")
+    ok(order[2] == fig["third_unit_code"], "the third unit")
+    ok(round(round(base[order[0]], 1) - round(base[order[1]], 1), 1) == fig["gap_complications"],
+       "the gap")
     for u, v in base.items():
-        ok(round(v) == fig["avoidable_by_unit"][u], "the avoidable count at %s" % u)
+        ok(round(v, 1) == fig["avoidable_by_unit"][u], "the avoidable count at %s" % u)
+        ok(round(float(sum(gi.loc[(u, q)].expected for q in allq if (u, q) in gi.index))
+                 / float(sum(gi.loc[(u, q)].separations for q in allq if (u, q) in gi.index))
+                 * int(pl[u]), 1) == fig["expected_on_plan_by_unit"][u],
+           "the expected count on the plan at %s" % u)
+
+    # ---- rung 0: the record as it stands, which is what the series and the dashboard invite ----
+    rec = avoidable(develop=False)
+    r0 = max(rec, key=lambda u: rec[u])
+    ok(r0 == fig["rung0_unit_code"], "rung 0 names %s" % r0)
+    ok(r0 != fig["call_unit_code"], "rung 0 does not name the call")
+    ok(round(rec[r0], 1) == fig["rung0_as_recorded"], "the rung 0 unit's figure as recorded")
+    ok(sorted(rec, key=lambda u: -rec[u]).index(fig["call_unit_code"]) + 1
+       == fig["recorded_rank_of_call"], "the call's rank on the record as it stands")
+    for u, v in rec.items():
+        ok(round(v, 1) == fig["as_recorded_by_unit"][u], "the recorded figure at %s" % u)
+
+    # ---- the other rungs, each recomputed and each naming another unit ----
+    rungs = {
+        "R1": avoidable(develop=False, window=allq[-4:]),
+        "R2": avoidable(develop=True, window=[q for q in allq if q not in lags]),
+        "R3": avoidable(netwide=True),
+        "R4": avoidable(fill_own=True),
+    }
+    for lab, r_ in rungs.items():
+        w = max(r_, key=lambda u: r_[u])
+        ok(w == fig["route_winners"][lab], "rung %s names %s" % (lab[1:], w))
+        ok(w != fig["call_unit_code"], "rung %s does not name the call" % lab[1:])
+        srt = sorted(r_, key=lambda u: -r_[u])
+        ok(srt[1] != fig["call_unit_code"], "the call is not second on rung %s" % lab[1:])
+        ok(r_[srt[0]] / r_[srt[1]] >= 1.15,
+           "rung %s separates its own first two (%.3fx)" % (lab[1:], r_[srt[0]] / r_[srt[1]]))
+    ok(sorted(rungs["R1"], key=lambda u: -rungs["R1"][u]).index(fig["call_unit_code"]) + 1 == len(elig),
+       "the recency rung puts the call last of %d" % len(elig))
 
     # ---- each unit's own sampling error, and the lead measured against it ----
     se = {}
     for u in elig:
-        w = scope[scope.unit_code == u]
-        sp = len(acute[acute.unit_code == u])
-        se[u] = math.sqrt(w.hac_recorded.sum()) * int(
-            plan.set_index("unit_code").planned_separations[u]) / sp
+        dev = 0.0
+        for q in allq:
+            if (u, q) not in gi.index:
+                continue
+            n = float(gi.loc[(u, q)].observed)
+            dev += n * F.get((u, lags[q]), 1.0) if q in lags else n
+        sp = float(sum(gi.loc[(u, q)].separations for q in allq if (u, q) in gi.index))
+        se[u] = math.sqrt(dev) * int(pl[u]) / sp
     se_gap = math.sqrt(se[order[0]] ** 2 + se[order[1]] ** 2)
     lead = (base[order[0]] - base[order[1]]) / se_gap
     ok(abs(se_gap - fig["standard_error_of_gap"]) < 0.05, "the standard error of the gap (%.2f)" % se_gap)
@@ -158,138 +263,108 @@ def run(target, figures_path):
     ok(lead > 1.0, "the top two are not inside a standard error of each other (%.2f)" % lead)
     ok(abs(base[order[0]] / base[order[1]] - fig["margin"]) < 0.01, "the margin")
 
-    # ---- C1 every reading of charter 4.3 the text leaves open, recomputed independently ----
-    w8, w4, w1 = allq[2:], allq[6:], allq[-1:]
+    # ---- C1 every reading of the development the register leaves open, recomputed independently ----
     readings = {
-        "the comparison frequency measured over the ten closed quarters of the specification period":
-            avoidable(),
-        "the comparison frequency measured over the eight most recent closed quarters":
-            avoidable(freq_window=w8),
-        "the comparison frequency measured over the four most recent closed quarters":
-            avoidable(freq_window=w4),
-        "the comparison frequency measured over the latest closed quarter alone":
-            avoidable(freq_window=w1),
-        "the unit's own patients left out of the comparison, frequency over the ten closed quarters "
-        "of the specification period": avoidable(leave_out=True),
-        "the unit's own patients left out of the comparison, frequency over the four most recent "
-        "closed quarters": avoidable(freq_window=w4, leave_out=True),
-        "the unit's rate taken per all separations in the record": avoidable(denom="separations"),
-        "the unit's rate taken per in-scope episodes in the record": avoidable(denom="episodes"),
-        "the unit's own record taken over the ten closed quarters of the specification period":
-            avoidable(window=allq),
-        "the unit's own record taken over the eight most recent closed quarters": avoidable(window=w8),
-        "the unit's own record taken over the four most recent closed quarters": avoidable(window=w4),
-        "the unit's own record taken over the latest closed quarter alone": avoidable(window=w1),
+        "the finished quarters' ratios pooled over their counts": avoidable(),
+        "the finished quarters' ratios averaged across the quarters": avoidable(fac=factors("simple")),
+        "only the finished quarters from 2025-26 on": avoidable(fac=factors(quarters_from="2025-26")),
+        "only the finished quarters from 2025-26 on, averaged":
+            avoidable(fac=factors("simple", quarters_from="2025-26")),
     }
-    ok(len(readings) == fig["readings_of_clause_43"],
-       "every reading of charter 4.3 is formed (%d)" % len(readings))
-    named = 0
-    for label, vec in readings.items():
-        o2 = sorted(vec, key=lambda u: -vec[u])
-        named += 1 if o2[0] == fig["call_unit_code"] else 0
-        ok(o2[0] == fig["call_unit_code"], "C1 %s names the call (%s)" % (label, o2[0]))
-        m = vec[o2[0]] / vec[o2[1]]
-        ok(abs(m - fig["reading_margins"][label]) < 0.02,
-           "C1 %s separates at %.2fx" % (label, m))
-    ok(named == fig["readings_naming_the_call"], "every reading names the call (%d)" % named)
+    for lab, r_ in readings.items():
+        w = max(r_, key=lambda u: r_[u])
+        srt = sorted(r_, key=lambda u: -r_[u])
+        ok(w == fig["call_unit_code"], "C1 %s names the call (%s)" % (lab, w))
+        ok(r_[srt[0]] / r_[srt[1]] >= 1.5,
+           "C1 %s separates its first two (%.3fx)" % (lab, r_[srt[0]] / r_[srt[1]]))
+    ok(len(readings) >= 4, "four or more readings of the development recomputed (%d)" % len(readings))
+    spread = max(max(r_.values()) / sorted(r_.values())[-2] for r_ in readings.values()) \
+        - min(max(r_.values()) / sorted(r_.values())[-2] for r_ in readings.values())
+    ok(spread <= 0.15, "the readings' margins agree to within %.3f" % spread)
 
-    # ---- the readings that do move the call, and the clause that rules each out ----
-    moved = {"the comparison restricted to the unit's own hospital": avoidable(restrict="hospital"),
-             "the comparison restricted to the hospital's peer group": avoidable(restrict="peer")}
-    for label, vec in moved.items():
-        o2 = sorted(vec, key=lambda u: -vec[u])
-        ok(o2[0] != fig["call_unit_code"], "%s does move the call (to %s)" % (label, o2[0]))
+    # ---- the exposure the excess is carried on: both alternatives name the same unit ----
+    per_ep = avoidable(denom="episodes")
+    ok(max(per_ep, key=lambda u: per_ep[u]) == fig["call_unit_code"],
+       "SF3 carrying on in-scope episodes names the same unit")
 
-    # ---- the three facts that force the comparison frequency ----
-    bb = scope.groupby("risk_band").agg(o=("hac_recorded", "sum"), e=("expected_rate", "sum"))
-    drift = (bb.o / bb.e)
-    for band, v in drift.items():
-        ok(abs(v - fig["band_drift"][band]) < 0.002, "the record's own frequency in %s (%.3f)" % (band, v))
-    ok(abs(drift.min() - fig["band_drift_low"]) < 0.002
-       and abs(drift.max() - fig["band_drift_high"]) < 0.002, "the frequency's span across the bands")
-    ok(drift.min() < 0.95 and drift.max() > 1.05, "it crosses 1.00 in both directions")
-    ok(abs(drift.max() / drift.min() - fig["band_drift_spread"]) < 0.02, "the span as a factor")
-    sh = {}
-    for u in elig:
-        w = scope[scope.unit_code == u]
-        sh[u] = float(w.risk_band.str.startswith("SURG").sum()) / len(w)
-    nz = [v for v in sh.values() if v > 0.01]
-    ok(abs(min(nz) - fig["surgical_share_low"]) < 0.002
-       and abs(max(sh.values()) - fig["surgical_share_high"]) < 0.002,
-       "the candidates' surgical share spans %.3f to %.3f" % (min(nz), max(sh.values())))
-    ok(sum(1 for v in sh.values() if v <= 0.01) == fig["candidates_with_no_surgical_work"],
-       "the candidates carrying no surgical work at all")
-
-    # ---- the demonstration: a mix shift with the unit's own practice flat ----
-    du = fig["demonstration_unit_code"]
-    net_i = net.set_index(["risk_band", "age_band"]).r_net
-    pub_q, net_q, sh_q = {}, {}, {}
-    for q in allq:
-        w = scope[(scope.unit_code == du) & (scope.quarter == q)]
-        pub_q[q] = w.hac_recorded.sum() - w.expected_rate.sum()
-        net_q[q] = w.hac_recorded.sum() - sum(
-            net_i[(rb, ab)] for rb, ab in zip(w.risk_band, w.age_band))
-        sh_q[q] = float(w.risk_band.str.startswith("SURG").sum()) / len(w)
-    shifted = [q for q in allq if sh_q[q] > 0.25]
-    ok(len(shifted) == 2, "the shift covers two closed quarters (%d)" % len(shifted))
-    ok(abs(min(pub_q.values()) - fig["demonstration_published_low"]) < 0.05
-       and abs(max(pub_q.values()) - fig["demonstration_published_high"]) < 0.05,
-       "on the published basis its avoidable count runs %.1f to %.1f"
-       % (min(pub_q.values()), max(pub_q.values())))
-    ok(abs(max(pub_q.values()) / min(pub_q.values()) - fig["demonstration_published_multiple"]) < 0.2,
-       "the published basis moves it by a factor of %.1f"
-       % (max(pub_q.values()) / min(pub_q.values())))
-    ok(abs(min(net_q.values()) - fig["demonstration_comparison_low"]) < 0.05
-       and abs(max(net_q.values()) - fig["demonstration_comparison_high"]) < 0.05,
-       "on the record's own frequency it runs %.1f to %.1f"
-       % (min(net_q.values()), max(net_q.values())))
-    ok(max(net_q.values()) - min(net_q.values()) <= 1.5,
-       "the record's own frequency holds it inside %.2f of a complication"
-       % (max(net_q.values()) - min(net_q.values())))
-    ok(max(pub_q[q] for q in shifted) / max(pub_q[q] for q in allq if q not in shifted) > 3.0,
-       "the shifted quarters stand well above the rest on the published basis only")
-
-    # ---- the rungs the brief names ----
-    pub_x, per_1000 = {}, {}
-    for u in elig:
-        w = scope[scope.unit_code == u]
-        sp = len(acute[acute.unit_code == u])
-        pl = int(plan.set_index("unit_code").planned_separations[u])
-        pub_x[u] = (w.hac_recorded.sum() - w.expected_rate.sum()) * pl / sp
-        per_1000[u] = base[u] / pl * 1000.0
-    r0 = max(pub_x, key=lambda u: pub_x[u])
-    r3 = max(per_1000, key=lambda u: per_1000[u])
-    ok(r0 == fig["rung0_unit_code"], "rung 0 names %s" % r0)
-    ok(r3 == fig["rung3_unit_code"], "rung 3 names %s" % r3)
-    ok(r0 != fig["call_unit_code"] and r3 != fig["call_unit_code"], "neither rung names the call")
-    ok(abs(pub_x[r0] - fig["rung0_published_excess"]) < 0.05, "the rung 0 unit's published excess")
-    ok(round(base[r0]) == fig["rung0_avoidable"], "the rung 0 unit's own avoidable count")
-    ok(base[r0] < 0, "the easy route files a unit carrying a negative avoidable count (%.1f)" % base[r0])
-    ok(sorted(pub_x, key=lambda u: -pub_x[u]).index(fig["call_unit_code"]) + 1
-       == fig["published_rank_of_call"], "the call's rank on the published excess")
-    for u, v in pub_x.items():
-        ok(abs(v - fig["published_excess_by_unit"][u]) < 0.05, "the published excess at %s" % u)
-
-    # ---- every graded figure sits clear of its printed cell's edge ----
+    # ---- every graded figure sits clear of its printed cell's edge, at the stated unit ----
+    # the asking sentence states avoidable complications to one decimal, so the cell is 0.1 wide and the
+    # distance to the nearest edge is 0.05 less the distance to the cell's centre. The distance is
+    # recomputed from the shipped figure here rather than read out of figures.json.
     def edge(v, unit):
         sc = round(1.0 / unit)
         return unit / 2.0 - abs(v - round(v * sc) / float(sc))
     for u, v in base.items():
-        ok(edge(v, 1.0) >= 0.15, "%s's avoidable count sits %.3f from the edge" % (u, edge(v, 1.0)))
+        ok(edge(v, 0.1) >= 0.03,
+           "%s's avoidable count sits %.4f from the one-decimal edge" % (u, edge(v, 0.1)))
+    av = sorted(base.values())
+    ok(min(av[i + 1] - av[i] for i in range(len(av) - 1)) > 0.1,
+       "the closest pair of adjacent graded units is %.4f apart, above the printed unit"
+       % min(av[i + 1] - av[i] for i in range(len(av) - 1)))
+
+    # ---- one readback assertion per shipped format, each with its own positive control ----
+    # A search that cannot find what is there has not shown that anything is absent, so every absence
+    # claim below runs after a control through the same extractor and the same parse.
+    def pdf_text(name):
+        import pypdf
+        return " ".join(" ".join(p.extract_text() for p in
+                                 pypdf.PdfReader(os.path.join(target, name)).pages).split())
+    for name, control in (("hac_indicator_specification_v4.pdf",
+                           "every closed quarter from 1 July 2024"),
+                          ("improvement_partnership_charter_v3.pdf",
+                           "counted patient by patient")):
+        t = pdf_text(name)
+        ok(len(t) > 1200, "%s extracts %d characters of text" % (name, len(t)))
+        ok(control in t, "positive control: %s contains %r" % (name, control))
+        for w in ("development factor", "completion factor", "incomplete", "provisional",
+                  "coding backlog", "reports late", "not yet complete", "immature"):
+            ok(w not in t.lower(), "%s does not name the decisive step (%s)" % (name, w))
+    import openpyxl
+    dash = openpyxl.load_workbook(os.path.join(target, "quality_dashboard_2026q2.xlsx"), data_only=True)
+    ws = dash[dash.sheetnames[0]]
+    cellvals = [[c for c in row] for row in ws.iter_rows(values_only=True)]
+    flat = [str(c) for row in cellvals for c in row if c is not None]
+    ok(len(flat) > 100, "the shipped dashboard reads back %d populated cells" % len(flat))
+    ok(any("Standardised ratio" in s or "standardised_ratio" in s for s in flat),
+       "positive control: the dashboard carries its standardised ratio column")
+    ok(dash.sheetnames == ["Quarter position", "Notes"],
+       "the dashboard ships the two sheets it declares (%s)" % dash.sheetnames)
+    ok(all(dash[n].sheet_state == "visible" for n in dash.sheetnames),
+       "no sheet of the dashboard is hidden")
+    notes_ws = dash["Notes"]
+    notes_flat = [str(c) for row in notes_ws.iter_rows(values_only=True) for c in row if c is not None]
+    ok(len(notes_flat) >= 3, "the dashboard's Notes sheet reads back %d cells" % len(notes_flat))
+    ok(any("quarter" in s.lower() for s in notes_flat),
+       "positive control: the Notes sheet names the quarter it reports")
+    for w in ("development", "incomplete", "provisional", "backlog", "restate", "still being coded"):
+        ok(not any(w in s.lower() for s in flat + notes_flat),
+           "the dashboard does not name the decisive step (%s)" % w)
+    # Gate G: the dashboard must not rank the candidates on the decision question
+    codes_in_order = [s for s in flat if s in set(elig)]
+    ok(codes_in_order != [u for u in sorted(base, key=lambda x: -base[x]) if u in codes_in_order],
+       "the dashboard does not carry the candidates in the decision's own order")
+    ok(codes_in_order != [u for u in sorted(rec, key=lambda x: -rec[x]) if u in codes_in_order],
+       "the dashboard does not carry the candidates in the record's own order either")
+    notes = open(os.path.join(target, "placement_cycle_notes.txt"), encoding="utf-8").read()
+    ok(len(notes) > 400, "the placement notes read back %d characters" % len(notes))
+    ok("cycle" in notes.lower(), "positive control: the placement notes mention a cycle")
+    for w in ("develop", "backlog", "incomplete", "still coding", "restate"):
+        ok(w not in notes.lower(), "the placement notes do not name the decisive step (%s)" % w)
 
     # ask 2: the hospital year, on the site each unit reported under in the month
     summary["month_key"] = summary.month.dt.strftime("%Y-%m-%d")
     fac = dict(zip(zip(summary.unit_code, summary.month_key), summary.facility))
-    # ask 2: what the indicator excludes at each hospital. The separations come from the system that
-    # counts them, the activity summary, and the excluded ones are those separations less the episodes the
-    # indicator measured. The episode extract is one row per record the warehouse received and is not the
-    # authority on separations, which is what the day-procedure feed's missing months demonstrate.
+    # ask 2: what the indicator does not measure at each hospital, over every unit at the site. The
+    # separations come from the system that counts them, the activity summary, and the ones the indicator
+    # does not measure are those separations less the in-scope episodes it measured. The episode extract
+    # is one row per record the warehouse received and is not the authority on separations: it runs short
+    # where the day-procedure feed missed a window and long where one separation reached it as two
+    # episode records.
     y = scope[(scope.separation_date >= "2026-01-01") & (scope.separation_date <= "2026-12-31")].copy()
     y["month"] = y.separation_date.values.astype("datetime64[M]")
     meas = y.groupby(["unit_code", "month"]).agg(
         episodes=("episode_id", "size"), observed=("hac_recorded", "sum")).reset_index()
-    sa = summary.merge(units[["unit_code", "service_type"]], on="unit_code", how="left")
-    sa = sa[(sa.service_type == "Acute inpatient") & (sa.month.dt.year == 2026)].copy()
+    sa = summary[summary.month.dt.year == 2026].copy()
     sa = sa.merge(meas, left_on=["unit_code", "month"], right_on=["unit_code", "month"], how="left")
     sa[["episodes", "observed"]] = sa[["episodes", "observed"]].fillna(0)
     hy = sa.groupby("facility").apply(lambda d: pd.Series({
@@ -298,28 +373,42 @@ def run(target, figures_path):
         "excluded": int(d.separations.sum() - d.episodes.sum()),
         "excluded_hac": int(d.episodes_with_complication.sum() - d.observed.sum())}),
         include_groups=False)
+    ok(len(hy) == 4, "the ask covers the four hospitals (%d)" % len(hy))
     for site, row in hy.iterrows():
         f = fig["hospital_year"][site]
         ok(int(row.reported) == f["separations_reported"],
            "the separations reported at %s (%d)" % (site, int(row.reported)))
         ok(int(row.measured) == f["episodes_measured"], "the episodes measured at %s" % site)
-        ok(int(row.excluded) == f["separations_excluded"], "the separations excluded at %s" % site)
-        ok(int(row.excluded_hac) == f["excluded_with_a_complication"],
-           "the excluded separations with a complication at %s" % site)
+        ok(int(row.excluded) == f["separations_not_measured"],
+           "the separations the indicator does not measure at %s" % site)
+        ok(int(row.excluded_hac) == f["not_measured_with_a_complication"],
+           "those separations with a complication at %s" % site)
         ok(int(row.reported) == int(row.measured) + int(row.excluded),
            "the three figures reconcile at %s" % site)
-    # the day-procedure feed's missing months: counting the extract's own rows runs short at three sites
-    ex = ep[ep.service_type == "Acute inpatient"].copy()
-    ex = ex[(ex.separation_date >= "2026-01-01") & (ex.separation_date <= "2026-12-31")]
+    # the two devices, measured: counting the extract's own rows is wrong at every site, and in both
+    # directions, so neither device's absence would leave a figure reachable by the ordinary read
+    ex = ep.copy()
+    ex = ex[(ex.separation_date >= "2026-01-01") & (ex.separation_date <= "2026-12-31")].copy()
     ex["month"] = ex.separation_date.values.astype("datetime64[M]")
     ex["site"] = [fac[(u, d.strftime("%Y-%m-%d"))] for u, d in zip(ex.unit_code, ex.month)]
-    rowcount = ex.groupby("site").size()
-    shortfall = {s: int(hy.loc[s].reported) - int(rowcount.get(s, 0)) for s in hy.index}
-    ok(all(v >= 0 for v in shortfall.values()),
-       "the extract never carries more records than the summary reports")
-    ok(sum(1 for v in shortfall.values() if v > 0) == 3,
-       "counting the extract's rows runs short at three of the four sites (%s)"
-       % ", ".join(s for s, v in shortfall.items() if v > 0))
+    inscope_ids = set(scope.episode_id)
+    exo = ex[~ex.episode_id.isin(inscope_ids)]
+    rowcount = exo.groupby("site").size()
+    haccount = exo[exo.hac_recorded == 1].groupby("site").size()
+    worst = []
+    for s_ in hy.index:
+        d_sep = int(rowcount.get(s_, 0)) - int(hy.loc[s_].excluded)
+        d_hac = int(haccount.get(s_, 0)) - int(hy.loc[s_].excluded_hac)
+        ok(abs(d_sep) >= 3,
+           "counting the extract's own rows misses %s's separations by %d" % (s_, d_sep))
+        ok(abs(d_hac) >= 3,
+           "counting the extract's own rows misses %s's complications by %d" % (s_, d_hac))
+        worst += [abs(d_sep), abs(d_hac)]
+    ok(min(worst) >= 3,
+       "the smallest gap between the ordinary read and the truth over the eight figures is %d, on a bin "
+       "of half a separation" % min(worst))
+    ok(len({1 if int(rowcount.get(s_, 0)) > int(hy.loc[s_].excluded) else 0 for s_ in hy.index}) == 2,
+       "the ordinary read runs long at some sites and short at others, so one correction cannot fix it")
 
     # ask 3: the units outside the indicator, on distinct separations. Two steps: the overlapping monthly
     # load is collapsed on the separation key the dictionary states, then the episodes of a stay whose care
