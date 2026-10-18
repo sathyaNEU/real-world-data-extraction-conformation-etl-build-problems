@@ -119,7 +119,8 @@ def write_method(path):
             "24-bit address. The FAA aircraft register gives each aircraft's engine type and number of engines.",
             "4.2 At the six fields with a control tower, the operations the network did not record are the tower's "
             "count of civil operations in the tower's hours of operation less the civil operations the network "
-            "recorded at the field in those hours.",
+            "recorded at the field in those hours; the inventory takes them as operations by piston-engine "
+            "aircraft.",
             "4.3 At the four fields where the District commissioned a count of every operation through 2026 (Fennick "
             "Airpark, Lanthorne Field, Graylow Municipal and Dunmarsh Airport), they are the count's piston-engine "
             "operations less those the network recorded.",

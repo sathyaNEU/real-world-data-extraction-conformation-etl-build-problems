@@ -67,8 +67,9 @@ def write(fig_path, out_path):
         "and 4.4) and added the recorded lead." % (c["per_airplane"], f["unrecorded_g"]),
         "6. Compared each field's 2026 lead with the %s kg of the round's guidelines (section 2.2): %s qualify." % (
             f["threshold_kg"], f["count_word"].lower()),
-        "7. Built the towered fields' piston operations and lead the same way, each operation assigned to the "
-        "aircraft that held its address that day.",
+        "7. Built the towered fields' piston operations and lead the same way, each recorded operation assigned to "
+        "the aircraft that held its address that day and each tower's unrecorded civil operations taken as "
+        "piston-engine operations (method 4.2).",
         "8. Recommended the %s fields for the 2027 round." % f["count_word"].lower(),
         "",
         "## 4. Deliverable Answers",

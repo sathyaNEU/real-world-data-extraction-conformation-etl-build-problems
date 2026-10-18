@@ -69,7 +69,7 @@ FIELDS = [
     ("Saltry Field", "S27", "Ostrey", "school", False, False, 38, 0, 11.08, 7, 0, 0),
     ("Umber Creek Airport", "U44", "Varnell", "vint", False, False, 224, 65, 7.51, 0, 1, 0),
     ("Orrin Flats Airport", "O16", "Ostrey", "vint", False, False, 180, 62, 7.14, 0, 0, 0),
-    ("Wickrow Airfield", "W33", "Halwick", "vint", False, False, 138, 58, 7.24, 0, 1, 0),
+    ("Wickrow Airfield", "W33", "Halwick", "vint", False, False, 138, 58, 7.62, 0, 1, 0),
     ("Yarrow Bend Strip", "Y02", "Varnell", "vint", False, False, 60, 22, 3.66, 0, 0, 0),
     ("Ambrell County Airport", "A71", "Corrisan", "ord", False, False, 210, 26, 17.92, 0, 5, 1),
     ("Norwick Field", "N26", "Ostrey", "ord", False, False, 95, 9, 8.95, 0, 0, 0),

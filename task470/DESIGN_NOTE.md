@@ -1,6 +1,35 @@
 # task470 design note: Corrisan Valley's 2027 unleaded avgas grants
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
+Status lives in `pipeline.json`; this note holds the design. Read `## Leak check
+
+`leak.py --asof 2027-02-12`: REVIEW, no LEAK. Each REVIEW line answered: the guidelines carry 12.5 kg, the round's
+threshold, which every literal reading uses; the method, the network and register notes and the two count reports
+share the inventory's own words (operation, network, register, recorded, counts) and name no estimator, rate per
+airplane or never-recorded set; the 5010 records (the declared wrong-basis distractor), the directory and the based
+list name the fields beside counts, elevations and N-numbers and rank nothing on the call. Harmless.
+
+Reader, round 1 (answers appended to `leak_check_report.md`): nothing quoted for question 1 beyond method 4.4, which
+names no estimator; no file ranks the fields; question 6 an analytical choice. Its own answer qualified four fields
+(A71 F37 L08 T13): it read only the first county sheet of the based validation, estimated the never-recorded share of
+based airplanes there (R4b's route, checked against F37) and a median share elsewhere; on the towered fields it read
+today's register for the 198 addresses MASTER and DEREG share and missed all twelve figures (16,900 and 20 kg at HWK
+and so on, today's-register stop exactly). Fixed in the generator in one pass with the judge's note: MASTER now
+carries pending registrations (status R) among the county's other aircraft and no current registration expires before
+the download; the export's event ids take the network database's irregular share of keys; trips over more than a day
+are commoner (odd daily counts at D19 on about three days in ten); method 4.2 says the towers' unrecorded operations are
+taken as piston-engine operations; W33's recorded lead raised so R4b clears the line by 5.2 per cent. Harmless as
+the systems' own: no air carrier operations at the towers (general aviation towers), the lead monitors at two towered
+fields, a flight ID left at a cancelled number after an owner's N-number change, the 5010 records' stale and rounded
+estimates (their own notes say so).
+
+Judge, pass 1 (`determinism_check_report.md`): DETERMINISTIC, APPROVE. Every figure reproduced (23,376 over 338,
+69.16; the 20 never-recorded counts; the 24 leads; the towers' operations and lead); the seven hold for any rate from
+56 to 923 operations an airplane. Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no;
+Gate H domain, layers, decisive step analytical. Advisory notes: method 4.4 names no estimator (closed by the data:
+the per-airplane rate's coefficient of variation is 4 per cent at the counted fields against 42 to 50 for the others);
+the towers' unrecorded operations taken whole as piston (now pinned in method 4.2 and write-up step 7).
+
+## Tried and rejected` first.
 
 ## Draw
 
@@ -176,6 +205,7 @@ completes an undercounted record from the units that never registered.
 | R2, operations per based airplane at the counted fields (nine fields) | none | the based list beside the counts: fires | operations per based aircraft is the planner's textbook ratio: fires | none | none | one ratio: fires | readable |
 | R3, unrecorded operations per based airplane (eight fields) | none | the based list: fires | none | none | none | one ratio: fires | readable |
 | R4, never-recorded airplanes flying like the recorded ones (five fields) | the network notes' mechanism sentence: fires | none | none | none | none | none | readable |
+| R4b, the never-recorded share of a field's based airplanes as its unrecorded share (five fields) | the network notes' mechanism sentence: fires | the based list beside the export: fires | none | it matches the unrecorded share at F37, G42 and D19: fires | none | one share per field: fires | readable |
 | G (decisive), unrecorded operations per never-recorded airplane measured at the counted fields (seven fields) | no clause names never-recorded airplanes, a rate per airplane or an auxiliary; 4.4 says only "from the fields with a count": silent | no column flags an airplane as broadcasting or not; the never-recorded set is built by joining the based list through the register to the export: silent | the reflexes are the capture share and its splits; testing which auxiliary the misses scale with is no battery step: silent | the counted fields score the candidates only by a leave-one-out nobody asks for: silent | every file reconciles; nothing is anomalous: silent | a join across three files and a ratio over ten fields: silent | silent |
 
 ## Semantic fork table
@@ -214,17 +244,21 @@ completes an undercounted record from the units that never registered.
   the never-recorded airplanes but gives them the field's recorded airplanes' operations; keeps W33, drops O16 and U44.
   Dies to the counted fields: the never-recorded airplanes fly 65 to 73 operations a year there, the recorded ones
   28 to 76 at the vintage fields (31 per cent mean error).
+- **R4b, R4's variant: each field's recorded lead scaled up by the share of its based piston airplanes the network
+  never recorded (five fields, the same as R4).** The route reader round 1 took. It validates at three count fields
+  (F37 19.5 per cent never recorded against 20.2 per cent of operations unrecorded) and fails where the recorded
+  airplanes fly less than the never-recorded ones: W33 in at 5.2 per cent over the line, O16 and U44 out.
 - **R5, the network's record alone (four fields).**
 - **G, the decisive move (seven fields).** 23,376 unrecorded operations over 338 never-recorded airplanes at the
   counted fields, 69.2 each, 65 to 73 field by field (4 per cent mean leave-one-out error, worst CRV +7).
-- **Margins:** the golden's nearest field is W33 at 10.2 per cent above the line (P05 11.1 below); every wrong rung's
-  nearest field is at least 3.8 per cent from it (R3's T61 and S27), R0's 7.4. Every lead is at least 0.26 kg from its
+- **Margins:** the golden's nearest field is P05 at 11.1 per cent below the line (W33 13.0 above); every wrong rung's
+  nearest field is at least 3.8 per cent from it (R3's T61 and S27), R0's 7.5. Every lead is at least 0.28 kg from its
   whole-kilogram edge; five other rate estimators give the same call and every lead in the same kilogram.
 - **Position, separation and dominance:** every rung names its own set (eight, nine, nine, eight, five, four against
   seven); the corrections from R0 move fields in both directions and only the rate per never-recorded airplane takes
   out the four training and park fields and brings in the three vintage ones together.
-- **Worth on the graded quantities:** the call (8) and the 24 leads (1.25 each): R0 keeps 11 leads, R1 5, R2 10, R3 8,
-  R4 20, R5 9; none lands the call (generator/ceiling.py).
+- **Worth on the graded quantities:** the call (8) and the 24 leads (1.25 each): R0 keeps 11 leads, R0b 12, R1 5, R2
+  10, R3 8, R4 21, R4b 19, R5 9; none lands the call (generator/ceiling.py).
 - **Grid:** the Layer 1 items mishandled one at a time and the rate estimators swapped leave the call and every lead
   in place (checks.py); the capture share, its split and the per-based rates each land on a named wrong set.
 
@@ -296,8 +330,8 @@ distractor). The lead monitors sit at two towered fields and rank no candidate.
   filter (moves all six towers' figures when ignored), the winter hours and closed days at VNL and DMR, the military
   columns (HWK, CRV), a touch-and-go two operations, turboprops on TYPE AIRCRAFT 4 with TYPE ENGINE 2.
   Stops (asserted, checks.py and generator/ceiling.py): today's register misses all 12; the moved addresses' events
-  dropped misses 10; the moved addresses read as the piston airplane all year misses at least 8; the register's
-  history read by date gives all 12. The device moves every tower by at least 1.1 kg and 600 operations.
+  dropped misses 10; the moved addresses read as the piston airplane all year misses 8; the register's history read
+  by date gives all 12. The device moves every tower by at least 1.1 kg and 600 operations.
   Realism: owners keep a personalised number across aircraft, the FAA reassigns it on the change date, and the address
   follows the number.
 - **The construction layer:** the seven qualifying fields, the 24 leads and the chart; the cracker has them.
@@ -312,8 +346,8 @@ distractor). The lead monitors sit at two towered fields and rank no candidate.
 | A, each towered field's 2026 piston-engine operations and lead | converts UTC with daylight time, keeps tower hours with the winter hours and closed days and the civil columns, counts a touch-and-go twice, prices by TYPE ENGINE and NO-ENG, resolves every address in MASTER and the few it no longer lists in DEREG; the moved addresses resolve in MASTER to turbine aircraft and their piston months price at nothing | miss |
 
 - Mirror leakage: 0.0 per cent of ask weight (every rung computes the towers as the cracker does: generator/ceiling.py).
-- Pair ceiling: 38.5 (weights 38 / 7 / 55: the call 8, each of the 24 leads 1.25; the cracker keeps the main block and
-  instructions, 45.0; the best mirror, R4, keeps 20 of the 24 leads, 32.0; average 38.5), rerun from the generated
+- Pair ceiling: 39.1 (weights 38 / 7 / 55: the call 8, each of the 24 leads 1.25; the cracker keeps the main block and
+  instructions, 45.0; the best mirror, R4, keeps 21 of the 24 leads, 33.2; average 39.1), rerun from the generated
   rubric at ship.
 - Measured by: generator/ceiling.py on the cut pack.
 
@@ -337,3 +371,6 @@ distractor). The lead monitors sit at two towered fields and rank no candidate.
   the valley's helicopters are turbine.
 - 2026-10-18, at design: field targets on whole kilograms gave leads of exactly 22.00 and 3.00; offsets added so no lead
   sits within 0.02 kg of a whole kilogram and no tower's operations on a hundred.
+- 2026-10-18, at stage 4: W33 under R4b (the never-recorded share of based airplanes as the unrecorded share, reader
+  round 1's route) sat 0.1 per cent under the line, so that rung named no set; W33's recorded lead raised 0.38 kg, R4b
+  now 5.2 per cent over, the golden W33 at 14.1 kg.

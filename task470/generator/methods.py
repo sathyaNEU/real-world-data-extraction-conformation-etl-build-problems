@@ -57,6 +57,9 @@ def rungs(P, inv=None):
     out["R3 unrecorded per based airplane"] = fill(lambda l: kb * pb[l])
     act = P.based_activity(inv)
     out["R4 never-heard airplanes fly like the heard ones"] = fill(lambda l: act[l] * nd[l])
+    out["R4b never-recorded share of based airplanes as the unrecorded share"] = {
+        l: (inv["lead"][l] if l in W.STUDIED else heard.loc[l, "lead"] / (1.0 - nd[l] / pb[l]) / 1000.0)
+        for l in W.UNTOWERED}
     out["R5 the network's record alone"] = fill(lambda l: 0.0)
     out["G unrecorded per never-heard airplane"] = {l: inv["lead"][l] for l in W.UNTOWERED}
     sets = {k: B.qualifying(v) for k, v in out.items()}

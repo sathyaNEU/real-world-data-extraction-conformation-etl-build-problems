@@ -78,9 +78,13 @@ def event_rows(x):
         out.append([None, r["lid"], u, EVENT_WORD[r["kind"]], hex_at(a, d).lower(), fid, FL.emitter(a["model"]),
                     RUNWAYS[r["lid"]][wind[key]]])
     out.sort(key=lambda z: (z[2], z[1], z[4]))
-    base = 48211037
-    for i, z in enumerate(out):
-        z[0] = base + i * 3 + (i * 7919) % 3
+    # the network database's key runs across every receiver and record type it stores (taxi tracks, overflights,
+    # surface movements), so the field events take a share of its numbers
+    step = np.random.default_rng(4744).geometric(0.22, len(out))
+    key = 48211037
+    for z, s in zip(out, step):
+        key += int(s)
+        z[0] = key
         z[2] = z[2].strftime("%Y-%m-%dT%H:%M:%SZ")
     return out
 
@@ -118,7 +122,8 @@ def master_rows(x):
         exp = r["issued"].replace(year=r["issued"].year + 7) if not (r["issued"].month == 2 and r["issued"].day == 29) \
             else dt.date(r["issued"].year + 7, 3, 1)
         out.append([r["n"][1:], a["serial"], a["model"], m[8] or "", str(a["year"]), a["kind_code"], "7",
-                    _ymd(r["last"]), _ymd(r["issued"]), a["cert"], str(m[3]), str(m[4]), "V", "%08o" % int(hx, 16),
+                    _ymd(r["last"]), _ymd(r["issued"]), a["cert"], str(m[3]), str(m[4]), r["status"],
+                    "%08o" % int(hx, 16),
                     a["fract"], _ymd(a["air_worth"]), _ymd(exp), a["uid"], kit[0], kit[1], hx])
     out.sort(key=lambda z: z[0])
     return out

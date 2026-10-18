@@ -360,7 +360,7 @@ class Year:
             kinds = [o[3] for o in ops]
             home = a["home"]
             if kinds == ["departure", "arrival"] and ops[0][4] and ops[0][1] == home and ops[1][1] == home:
-                if r.random() >= 0.18:
+                if r.random() >= 0.30:
                     continue
                 nights = int(r.integers(1, 4))
                 d = ops[0][2].date() + dt.timedelta(days=nights)
@@ -368,7 +368,7 @@ class Year:
                 cut = 1
             elif kinds == ["arrival", "departure"] or (len(ops) == 4 and kinds == ["departure", "arrival",
                                                                                    "departure", "arrival"]):
-                if r.random() >= (0.2 if kinds[0] == "arrival" else 0.1):
+                if r.random() >= (0.35 if kinds[0] == "arrival" else 0.2):
                     continue
                 i = 1 if kinds[0] == "arrival" else 2
                 d = ops[i - 1][2].date() + dt.timedelta(days=1)

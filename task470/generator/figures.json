@@ -23,6 +23,11 @@
    "lead_kg": 15
   },
   {
+   "lid": "W33",
+   "name": "Wickrow Airfield",
+   "lead_kg": 14
+  },
+  {
    "lid": "O16",
    "name": "Orrin Flats Airport",
    "lead_kg": 14
@@ -30,11 +35,6 @@
   {
    "lid": "F37",
    "name": "Fennick Airpark",
-   "lead_kg": 14
-  },
-  {
-   "lid": "W33",
-   "name": "Wickrow Airfield",
    "lead_kg": 14
   }
  ],
@@ -70,6 +70,12 @@
    "lead_kg": 15
   },
   {
+   "lid": "W33",
+   "name": "Wickrow Airfield",
+   "county": "Halwick",
+   "lead_kg": 14
+  },
+  {
    "lid": "O16",
    "name": "Orrin Flats Airport",
    "county": "Ostrey",
@@ -79,12 +85,6 @@
    "lid": "F37",
    "name": "Fennick Airpark",
    "county": "Corrisan",
-   "lead_kg": 14
-  },
-  {
-   "lid": "W33",
-   "name": "Wickrow Airfield",
-   "county": "Halwick",
    "lead_kg": 14
   },
   {
@@ -199,8 +199,8 @@
   "T13": "33",
   "A71": "26",
   "U44": "65",
-  "O16": "62",
   "W33": "58",
+  "O16": "62",
   "P05": "1",
   "S27": "0",
   "K58": "2",

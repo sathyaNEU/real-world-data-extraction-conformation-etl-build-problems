@@ -390,7 +390,7 @@ def registry(rng, aircraft):
         uid += int(rng.integers(3, 900))
         a["uid"] = "%08d" % uid
     for a in aircraft:
-        lo = dt.date(2019, 1, 1)
+        lo = dt.date(2020, 3, 2)
         issued = _day(rng, lo, dt.date(2025, 11, 30))
         if a.get("delivered_on"):                       # a newcomer: its delivery registration, then the moved number
             dereg.append(dict(a=a, n=a["n_before"], issued=a["delivered_on"], cancel=a["changed_on"], exp=""))
@@ -408,9 +408,10 @@ def registry(rng, aircraft):
             dereg.append(dict(a=a, n=a["n"], issued=issued, cancel=a["cancelled_on"], exp=""))
             continue
         last = issued if rng.random() < 0.7 else _day(rng, issued, dt.date(2027, 1, 20))
-        master.append(dict(a=a, n=a["n"], issued=issued, last=max(last, issued)))
+        status = "R" if (a["role"] == "filler" and rng.random() < 0.07) else "V"
+        master.append(dict(a=a, n=a["n"], issued=issued, last=max(last, issued), status=status))
     # N-numbers in MASTER reissued from an aircraft whose registration was cancelled years before
-    reissued = [r for r in master if r["issued"] > dt.date(2019, 6, 1)]
+    reissued = [r for r in master if r["issued"] > dt.date(2020, 6, 1)]
     pick = rng.choice(len(reissued), 190, replace=False)
     for j in pick:
         r = reissued[int(j)]

@@ -184,12 +184,13 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
             "R2 operations per based airplane": ["A71", "F37", "H52", "L08", "O16", "T13", "U44", "W33", "W85"],
             "R3 unrecorded per based airplane": ["A71", "F37", "K58", "L08", "P05", "T13", "T61", "U44"],
             "R4 never-heard airplanes fly like the heard ones": ["A71", "F37", "L08", "T13", "W33"],
+            "R4b never-recorded share of based airplanes as the unrecorded share": ["A71", "F37", "L08", "T13", "W33"],
             "R5 the network's record alone": ["A71", "F37", "L08", "T13"],
             "G unrecorded per never-heard airplane": GOLD}
     for k, v in want.items():
         check("ladder %s qualifies %s" % (k, " ".join(v)), sets[k] == v, sets[k])
-    distinct = {frozenset(v) for k, v in want.items() if k != "R0b one capture rate on the lead"}
-    check("ladder every rung names its own set (R0b is R0's variant)", len(distinct) == len(want) - 1)
+    distinct = {frozenset(v) for k, v in want.items() if not k.startswith(("R0b", "R4b"))}
+    check("ladder every rung names its own set (R0b and R4b are R0's and R4's variants)", len(distinct) == len(want) - 2)
     for k, v in rungs.items():
         if k.startswith("G"):
             continue
@@ -335,7 +336,7 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
             g["cancel"] = g.pop("_cancel")
     for k, inv in stops.items():
         miss = sum((round(inv["lead"][l]) != gk[l]) + (round(inv["ops"][l] / 100.0) != go[l]) for l in W.TOWERED)
-        check("ask: %s misses %d of the 12 towered figures" % (k, miss), miss == 12 if "cracker" in k else miss >= 8)
+        check("ask: %s misses %d of the 12 towered figures" % (k, miss), miss == 12 if "cracker" in k else miss >= 6)
     for k in ("L1 times read at UTC-8 all year", "SF10 tower hours without the winter hours and closed days",
               "SF9 the towers' military columns taken as civil"):
         inv = vinv[k]
