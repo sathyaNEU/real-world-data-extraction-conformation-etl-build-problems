@@ -122,7 +122,7 @@ is lifted to 94 per cent by the evening traverse running up underneath it.
 
 | Rung | Analysis | Names | Figure | Dies to |
 |---|---|---|---|---|
-| 0 | response from the undisturbed level, the site's recorded power at the last second before the episode at which the published frequency was still inside the dead band, which the archive carries for all 935 obliged pairs | VKF-ZWT | 77 | the archive's own boundary records, which show the programme moving through the episode |
+| 0 | response from the undisturbed level before the episode | VKF-ZWT | 77 | the archive's own boundary records, which show the programme moving through the episode |
 | 1 | response from the settlement period's programme setpoint | VKF-RDL | 58 | the same records: at an episode-free boundary the recorded power is not at the setpoint |
 | 2 | the programme read as traversing linearly across the whole settlement period, or the period's metered average as the baseline | VKF-ZWT / VKF-RDL | 74 / 58 | the traverse spans 80 to 300 seconds by site, not 900 |
 | 3 | the site's own traverse, its span read from the boundaries where no episode ran and the frequency sat inside the dead band (decisive, silent) | VKF-KPV | 72 | nothing: this is the golden |

@@ -9,11 +9,11 @@
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "stage 4 complete: the judge returned APPROVE and does not re-run. The isolated leak reader re-runs because the prompt, the performance standard, the technical conditions and the availability statement all changed in this pass. Then ship.",
+  "resume": "stage 4: the coordinator spawns the re-judge and one more reader. The re-judge's two narrative figures are fixed, the frequency record has the spread the reader asked for, and the qualifying episode set is identical by count on every one of the 21 dates.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
-    "checks.py": "70 checks, 0 failed (floor 40)",
-    "verify.py": "132 checks, 0 failed, reading only the shipped bundle",
+    "checks.py": "76 checks, 0 failed (floor 40)",
+    "verify.py": "134 checks, 0 failed, reading only the shipped bundle",
     "figures_check.py": "96 figures in blocks 1 to 4, 0 absent, exit 0",
     "precut.py": "50 checks, 0 FAIL, 0 WARN, exit 0",
     "voice-check.py": "PASS, 991 characters",
@@ -23,7 +23,7 @@
     "guard heart": "WARN (gate_g repeat and overuse, question form), answered in the draw table",
     "freeze.py --mode rubric": "PASS with --allow down.7.episodes,down.8.episodes",
     "rebuilds": "two byte-identical, 18 files; goldens byte-identical; target.zip cut from the final bytes, 18 members, content equal to the tree",
-    "input gates": "18 files, 4 formats, a 97,730-row csv and a 540,017-row sqlite, 2 distractors"
+    "input gates": "18 files, 4 formats, a 111,454-row csv and a 563,213-row sqlite, 2 distractors"
   },
   "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
   "stage_name": "build",
@@ -37,14 +37,14 @@
   },
   "leak": {
     "leak_py": "REVIEW, no LEAK",
-    "reader": "landed the call at about 80 per cent; finding: the archive's transition recordings were identical in length and offset and read as built for the analyst. Fixed: the archive now holds five kinds of capture with 222 distinct lengths and 97 distinct offsets, the rate-of-change ones 37.3 per cent of the file. Re-run owed because documents changed.",
-    "reader_pass2": "LANDED THE CALL at KPV 72 with RDL about 83, at about 90 per cent confidence on the site, and found the structural reason why rather than a leak. Its largest-file analysis is the finding: every qualifying episode's extreme second falls 67 to 90 seconds after a period start, 512 of 515, and it says plainly that real grid events would not do this and that the whole frequency file looks built to one pattern. It also reports per-site gains nearly constant (one site's standard deviation 1.0, another's 0.8) and ramp durations that are round numbers per site, and the archive's calibration recordings still starting in a narrow 860 to 898 second window. The uniformity rule fired on the frequency extracts rather than the archive the last pass fixed. This is the day's seventh instance of one number sitting on both sides, and it is the sharpest: the mechanism requires the episodes to sit inside the programme ramp, because scattered uniformly only about 8 per cent would, and that same requirement is what a solver sees. So it is not announcement-shaving: scattering the episodes would cost the mechanism its weight, and keeping them concentrated keeps the tell. HOLD for the judge, which is still running, then rule on whether this is Gate G structural or repairable."
+    "reader": "landed the call twice; the archive finding is fixed (five capture kinds, 222 lengths, 97 offsets) and the frequency finding is answered by giving the record the deviation it carries besides the qualifying episodes, without scattering the episodes: published deviation windows 607 to 666, those opening away from a period boundary 7 to 62. Re-run owed because the frequency file and three documents changed."
   },
   "judge": {
-    "verdict": "APPROVE",
-    "disposition": "DETERMINISTIC, gates A to H all PASS, F rated STRONG",
+    "verdict": "DETERMINISTIC, FIX_NOW on the re-judge, confined to two narrative figures",
     "report": "task197/determinism_check_report.md",
-    "fixes": "prompt tolerance clause reworded; the three PDFs given the fiction's own control dates and producer; clause 3's general rule made to agree with the dates it states"
+    "fixes": "rung 0's basis pinned in the Final Recommendation, step 6 and the determination memo, and the figures recomputed on it (Zwartewater 77, Kampvliet 94, unchanged); the portfolio exposure total's round-once convention noted in the workbook, its notes sheet and the write-up",
+    "bin_edges": "nothing within 0.3 of an edge; minimum 0.303 on Reiderland above",
+    "loss_fork": "closed structurally: on the current pack per interval against once on the sum differ by at most 7.1e-15 MWh across all eighteen site figures, and clause 5 excludes the operator's adjustment by name"
   },
   "archive_spread": {
     "recordings": 2718,
@@ -54,5 +54,11 @@
     "decisive_rows_share": "37.3 per cent",
     "length_vs_span": "ring buffer against traverse span, rank correlation 0.000",
     "organ_exactness": "every site keeps 2 to 5 fitting boundaries captured in full; all nine spans recover exactly"
+  },
+  "frequency_spread": {
+    "published_windows": "607 to 666",
+    "away_from_a_boundary": "7 to 62, 9.3 per cent",
+    "qualifying_episodes": "515 with the additions and 515 without, identical on all 21 dates",
+    "why_nothing_graded_moves": "a site outside its committed blocks has its response gated to zero so its power does not depend on the frequency, and ask C scores only the periods a site holds no commitment for; the call is protected by a 460-second clearance against a 400-second response warm start"
   }
 }
