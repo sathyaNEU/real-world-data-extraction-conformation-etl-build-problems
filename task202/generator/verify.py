@@ -22,6 +22,7 @@ BANDS = (1, 2, 3, 4, 5, 6)
 RET = ("hrg_claim_returns_fy2025-26.xlsx", "hrg_claim_returns_fy2026-27.xlsx")
 CLOSED_RET = ("hrg_claim_returns_fy2024-25.xlsx", "hrg_claim_returns_fy2025-26.xlsx")
 CHECKS = "hrg_claim_check_register_2024_2025.csv"
+ACCRED = "hrg_partner_accreditation_register.csv"
 ARCHIVE = "treasury_disbursement_runs_2024_2025.csv"
 ANNEX = "claims_annex.xlsx"
 CLOSED = [(2024, m) for m in range(7, 13)] + [(2025, m) for m in range(1, 13)]
@@ -212,8 +213,9 @@ def closed_annex(target):
 
     Two readings the records force. The check register holds a second check where a partner answered
     a hold, and the later check stands. Its two currency columns state the partner's position in the
-    scheme year, not the month: an amount passed above what the month was claimed for cannot be, the
-    July rows reset, and the difference inside the scheme year restores the month. And a run line can
+    accreditation year, not the month: an amount passed above what the month was claimed for cannot
+    be, and the difference inside the year that turns over on the partner's own accreditation
+    anniversary restores the month, where the scheme year does not. And a run line can
     carry a payment instruction that settled both of a claim month's halves, so the lines of such a
     month state the same amounts and together exceed the claim; the instruction counts once.
     """
@@ -236,12 +238,19 @@ def closed_annex(target):
     months = {}
     for (code, mo) in live:
         months.setdefault(code, []).append(mo)
+    acc = {}
+    with open(os.path.join(target, ACCRED), newline="", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            d = r["accredited_from"].strip()
+            if d:
+                acc[pkey(r["partner_code"])] = (int(d[:4]), int(d[5:7]))
     own = {}
     for code, ms in months.items():
         ms.sort()
         base = {}
+        a = acc[code]
         for mo in ms:
-            sy = mo[0] if mo[1] >= 7 else mo[0] - 1
+            sy = ((mo[0] * 12 + mo[1]) - (a[0] * 12 + a[1])) // 12
             b = base.get(sy, (0.0, 0.0))
             r = live[(code, mo)]
             own[(code, mo)] = (round(r[3] - b[0], 2), round(r[4] - b[1], 2), r[5], r[6])

@@ -40,6 +40,23 @@ def scheme_year(mo):
     return mo[0] if mo[1] >= P.SCHEME_YEAR_START else mo[0] - 1
 
 
+def accredited_from(pt):
+    """The date the partner's accreditation runs from, which is what the accreditation register
+    states. Shared with records.register so the shipped date and the claims system's own period
+    are the same date."""
+    if pt["first_month"] != P.RETURNS_FROM:
+        return dt.date(pt["first_month"][0], pt["first_month"][1], 1)
+    i = pt["idx"]
+    return dt.date(2016 + (i % 8), 1 + (i * 5) % 12, 1 + (i * 11) % 27)
+
+
+def accreditation_year(acc, mo):
+    """The accreditation year a claim month falls in, counted from the partner's own accreditation
+    anniversary. The claims system carries a partner's running totals on the accreditation term it
+    bills against, not on the scheme year the return workbooks label."""
+    return ((mo[0] * 12 + mo[1]) - (acc.year * 12 + acc.month)) // 12
+
+
 def quarter(mo):
     """(scheme year, quarter) with the scheme year opening in July, as the workbooks label it."""
     return scheme_year(mo), (mo[1] - P.SCHEME_YEAR_START) % 12 // 3 + 1
@@ -72,6 +89,7 @@ class Closed:
         self.W = W
         self.parts = parts
         self.ledger = ledger
+        self.acc = {pt["idx"]: accredited_from(pt) for pt in parts}
         self.cells = {}          # (partner, claim month) -> dict of the month's truth
         self._build()
 
@@ -159,13 +177,14 @@ class Closed:
                     reason=c["reason"])
 
     def ytd(self):
-        """The position each row states: the partner's scheme-year running total at that check."""
+        """The position each row states: the partner's running total at that check, carried on the
+        partner's own accreditation year rather than on the scheme year."""
         out = {}
         run = {}
         for mo in MONTHS:
             for pi in sorted({k[0] for k in self.cells if k[1] == mo}):
                 key = (pi, mo)
-                sy = scheme_year(mo)
+                sy = accreditation_year(self.acc[pi], mo)
                 base = run.get((pi, sy), (0.0, 0.0))
                 m = self.monthly(key)
                 cur = (round(base[0] + m["passed"], 2), round(base[1] + m["held"], 2))
@@ -184,8 +203,6 @@ class Closed:
         rows = []
         for key in sorted(self.cells):
             c = self.cells[key]
-            if c["deferred"]:
-                continue
             pi, mo = key
             heldset = {id(a) for a in c["held"]}
             gross = {1: 0.0, 2: 0.0}
@@ -195,6 +212,8 @@ class Closed:
                 gross[half(a["paid"].day)] = round(gross[half(a["paid"].day)] + a["amount"], 2)
             rec = {1: round(c["recovery"], 2), 2: 0.0}
             lines = [h for h in (1, 2) if gross[h] > 0 or rec[h] > 0]
+            if c["deferred"]:
+                continue
             if c["consolidated"]:
                 g = round(gross[1] + gross[2], 2)
                 v = round(rec[1] + rec[2], 2)

@@ -27,8 +27,12 @@ def _band(lab):
     return int(str(lab).strip()[-1])
 
 
-def read_returns(paths):
-    """Every claim return row in the window, the revised return superseding the preliminary."""
+def read_returns(paths, by_month=False):
+    """Every claim return row in the window, the revised return superseding the preliminary.
+
+    `by_month` keys each cell by its claim month as well, which is the partner-band-month grain
+    clause 9.2 now rules out.
+    """
     rows = {}
     for path in paths:
         ws = load_workbook(path, read_only=True, data_only=True).active
@@ -60,7 +64,8 @@ def read_returns(paths):
             rows[k] = (n, float(r[tc]), st)
     cells = {}
     for (mo, code, b), (n, tot, st) in rows.items():
-        c = cells.setdefault((code, b), [0, 0.0])
+        k = (code, b, mo) if by_month else (code, b)
+        c = cells.setdefault(k, [0, 0.0])
         c[0] += n
         c[1] = round(c[1] + tot, 2)
     return cells
@@ -74,15 +79,17 @@ def read_crosswalk(path):
     return out
 
 
-def read_portal(path, xwalk):
+def read_portal(path, xwalk, with_month=False):
     """The portal's awards inside the window, keyed to the grants ledger's partner code."""
     out = []
     with open(path, newline="", encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            if _month(r["claim_return_month"]) not in WINDOW:
+            mo = _month(r["claim_return_month"])
+            if mo not in WINDOW:
                 continue
-            out.append((xwalk[r["partner_ref_portal"]], _band(r["size_band"]),
-                        float(r["award_amount_php"])))
+            row = (xwalk[r["partner_ref_portal"]], _band(r["size_band"]),
+                   float(r["award_amount_php"]))
+            out.append(row + (mo,) if with_month else row)
     return out
 
 
@@ -94,6 +101,11 @@ REASONS = ["Receipts incomplete", "Household record incomplete", "Duplicate appl
 
 def _scheme_year(mo):
     return mo[0] if mo[1] >= 7 else mo[0] - 1
+
+
+def _accreditation_year(acc, mo):
+    """The year a claim month falls in on the partner's own accreditation anniversary."""
+    return ((mo[0] * 12 + mo[1]) - (acc[0] * 12 + acc[1])) // 12
 
 
 def _quarter(mo):
@@ -176,15 +188,30 @@ def _claimed_counts(target, F):
     return out
 
 
-def read_check_register(path):
+def read_accreditation(path):
+    """Each partner's accreditation date, which is the year the claims system's running totals are
+    carried on."""
+    out = {}
+    with open(path, newline="", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            d = r["accredited_from"].strip()
+            if d:
+                out[_norm(r["partner_code"])] = (int(d[:4]), int(d[5:7]))
+    return out
+
+
+def read_check_register(path, acc):
     """Each closed claim month's own passed and held amounts, per partner.
 
-    Two readings have to be made before the figures mean anything, and the records force both. The
-    register holds more than one check for a partner claim-month where the year-end reconciliation
-    looked at it again, and the later check is the one that stands. And the two currency columns
-    state the partner's position in the scheme year rather than the month's own figure: an amount
-    passed above the month's own claim is impossible, the July rows reset, and differencing inside
-    the scheme year restores the month's own claim less what was passed as what was held.
+    Three readings have to be made before the figures mean anything, and the records force all
+    three. The register holds more than one check for a partner claim-month where the partner
+    answered the hold, and the later check is the one that stands. The two currency columns state
+    the partner's running position rather than the month's own figure: an amount passed above the
+    month's own claim is impossible. And the year those totals run on is the partner's own
+    accreditation year, not the scheme year the return workbooks label, so the month the series
+    restarts in is the partner's accreditation anniversary and differs partner by partner;
+    differencing inside that year restores the month's own claim less what was passed as what was
+    held, in every partner claim-month, and differencing inside the scheme year does not.
     """
     rows = []
     with open(path, newline="", encoding="utf-8") as fh:
@@ -208,7 +235,7 @@ def read_check_register(path):
         ms.sort()
         prev = {}
         for mo in ms:
-            sy = _scheme_year(mo)
+            sy = _accreditation_year(acc[code], mo)
             base = prev.get(sy, (0.0, 0.0))
             r = live[(code, mo)]
             out[(code, mo)] = {"passed": round(r["passed"] - base[0], 2),
@@ -218,11 +245,18 @@ def read_check_register(path):
     return out, len(rows)
 
 
-def read_archive(path):
-    """The archived payment runs, grouped by the claim month each line covers."""
+def read_archive(path, run_year_in=None):
+    """The archived payment runs, grouped by the claim month each line covers.
+
+    `run_year_in` keeps only the lines whose run date falls in those calendar years, which is the
+    reading that drops the catch-up run; the archive covers claim months, not run dates.
+    """
     out = {}
     with open(path, newline="", encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
+            d = r["run_date"].strip()               # dd/mm/yyyy, as the Treasury writes it
+            if run_year_in is not None and int(d[6:10]) not in run_year_in:
+                continue
             k = (_norm(r["partner_code"]), _month(r["claim_months_covered"]))
             out.setdefault(k, []).append((float(r["gross_php"]), float(r["recoveries_php"]),
                                           float(r["net_php"])))
@@ -257,7 +291,8 @@ def transferred(archive, claimed):
 
 def ask_figures(target, F):
     """The closed-period annex: what the runs transferred, what the checks held and why."""
-    check, raw_rows = read_check_register(os.path.join(target, F["checks"]))
+    acc = read_accreditation(os.path.join(target, F["register"]))
+    check, raw_rows = read_check_register(os.path.join(target, F["checks"]), acc)
     archive = read_archive(os.path.join(target, F["archive"]))
     claimed, _ = read_closed_returns([os.path.join(target, F[k]) for k in ("ret2425", "ret2526")])
     trans, repeats = transferred(archive, claimed)
@@ -323,7 +358,8 @@ def ask_stops(target, F):
     the generator's; nothing here ships.
     """
     reg = _raw_register(os.path.join(target, F["checks"]))
-    check, _ = read_check_register(os.path.join(target, F["checks"]))
+    acc = read_accreditation(os.path.join(target, F["register"]))
+    check, _ = read_check_register(os.path.join(target, F["checks"]), acc)
     archive = read_archive(os.path.join(target, F["archive"]))
     claimed, _ = read_closed_returns([os.path.join(target, F[k]) for k in ("ret2425", "ret2526")])
     trans, _ = transferred(archive, claimed)
@@ -349,7 +385,23 @@ def ask_stops(target, F):
     A["A3 the over-stated claim-months dropped"] = byq(
         {k: (0.0 if len(set(v)) < len(v) else round(sum(n for _, _, n in v), 2))
          for k, v in archive.items()})
-    A["A4 one instruction counted once (the answer)"] = byq(trans)
+    # the reading the asking sentence closes: the instruction counted once, but attributed to the
+    # quarter the run fell in rather than the quarter of the claim month it settles
+    byrun = {}
+    with open(os.path.join(target, F["archive"]), newline="", encoding="utf-8") as fh:
+        seen = {}
+        for r in csv.DictReader(fh):
+            k = (_norm(r["partner_code"]), _month(r["claim_months_covered"]))
+            trip = (float(r["gross_php"]), float(r["recoveries_php"]), float(r["net_php"]))
+            if k in trans and trip in seen.get(k, set()):
+                continue                              # the same instruction a second time
+            seen.setdefault(k, set()).add(trip)
+            d = r["run_date"].strip()
+            q = _qlabel(_quarter((int(d[6:10]), int(d[3:5]))))
+            byrun[q] = round(byrun.get(q, 0.0) + trip[2], 2)
+    A["A4 one instruction once, by the quarter of the run date"] = {
+        q: int(round(byrun.get(q, 0.0))) for q in QL}
+    A["A5 one instruction once, by the quarter of the claim month (the answer)"] = byq(trans)
 
     # ---- B, what the check held back
     B = {}
@@ -367,21 +419,26 @@ def ask_stops(target, F):
                 first[k] = r
             flat[k] = round(r["held"] - (prev["held"] if prev is not None else 0.0), 2)
             prev = r
-    B["B2 differenced without the July reset"] = byq(flat)
-    early = {}
-    for code, rs in seq.items():
-        prevsy, base = None, 0.0
-        for r in rs:
-            k = (code, r["month"])
-            if r is not first[k]:
-                continue
-            sy = _scheme_year(r["month"])
-            if sy != prevsy:
-                base, prevsy = 0.0, sy
-            early[k] = round(r["held"] - base, 2)
-            base = r["held"]
-    B["B3 differenced from the first check of each claim-month"] = byq(early)
-    B["B4 the later check, differenced inside the scheme year (the answer)"] = byq(
+    B["B2 differenced with no period reset at all"] = byq(flat)
+
+    def diff(pick_first, year):
+        out, prev = {}, {}
+        for code, rs in seq.items():
+            for r in rs:
+                k = (code, r["month"])
+                if pick_first and r is not first[k]:
+                    continue
+                sy = year(code, r["month"])
+                base = prev.get((code, sy), 0.0)
+                out[k] = round(r["held"] - base, 2)
+                prev[(code, sy)] = r["held"]
+        return out
+
+    B["B3 the later check, differenced inside the scheme year"] = byq(
+        diff(False, lambda c, mo: _scheme_year(mo)))
+    B["B4 the first check of each claim-month, accreditation year"] = byq(
+        diff(True, lambda c, mo: _accreditation_year(acc[c], mo)))
+    B["B5 the later check, differenced inside the accreditation year (the answer)"] = byq(
         {k: v["held"] for k, v in check.items()})
 
     # ---- C, the claim-months held, by reason

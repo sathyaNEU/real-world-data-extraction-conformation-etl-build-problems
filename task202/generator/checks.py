@@ -24,6 +24,16 @@ import writeup as WU
 N = 0
 FAIL = []
 
+# clause 9's margin, in percentage points of the committed share: how far the preceding multiple of
+# PHP 100 fails the commitment, and how far the committed multiple clears it. Both floors are what
+# the architecture supports, measured rather than wished for: the separation between cutting the
+# partner-band averages and cutting the awards is produced by the within-cell award spread, and that
+# same spread is what makes the share curve shallow at the boundary. The frontier is in the design
+# note's `## Tried and rejected` with the numbers; the short version is that every setting reaching
+# a 0.30-point failure margin puts a wrong rung within PHP 100 of the golden.
+MARGIN_FLOOR = 0.04
+CLEARANCE_FLOOR = 0.05
+
 
 def ok(label, cond, note=""):
     global N
@@ -163,11 +173,86 @@ def run(target, world, fig, golden_dir):
     ok("fit.spread_scales_with_level", np.corrcoef(pl, ps)[0, 1] > 0.9,
        "corr %.3f" % np.corrcoef(pl, ps)[0, 1])
 
+    # ---------------------------------------------------------- the pdfs parse, strictly as well
+    # the decisive rule is inside a pdf, so the commonest python routes have to be able to open it:
+    # a malformed /Info string once made both pdfs unreadable to pdfminer.six and pdfplumber while
+    # pypdf's lenient reader still returned the text, so the shipped bytes are read four ways here
+    nw = lambda s: re.sub(r"\s+", " ", s)
+    DECISIVE = [
+        "the share of the scheme's awards that would be referred under clause 7 is at or below 6.0",
+        "The share is tested as it is computed and not as it is rounded for reporting",
+        "the awards of all accredited partners at the award volumes and award levels of the twelve "
+        "months to 31 March 2027",
+        "A partner's household-size band has one award level for those twelve months",
+        "the square root of the ratio of the band's household size to the reference household size",
+        "rounded up to the nearest one hundred pesos",
+    ]
+    for key in ("policy", "summary"):
+        p = os.path.join(target, B.FILES[key])
+        texts = {}
+        for lib in ("pypdf_lenient", "pypdf_strict", "pdfminer", "pdfplumber"):
+            try:
+                if lib.startswith("pypdf"):
+                    from pypdf import PdfReader
+                    rd = PdfReader(p, strict=lib.endswith("strict"))
+                    texts[lib] = "\n".join((pg.extract_text() or "") for pg in rd.pages)
+                elif lib == "pdfminer":
+                    from pdfminer.high_level import extract_text as _pmt
+                    texts[lib] = _pmt(p)
+                else:
+                    import pdfplumber
+                    with pdfplumber.open(p) as _pl:
+                        texts[lib] = "\n".join((pg.extract_text() or "") for pg in _pl.pages)
+            except Exception as exc:
+                texts[lib] = None
+                ok("pdf.%s_opens_under_%s" % (key, lib), False,
+                   "%s: %s" % (type(exc).__name__, exc))
+            if texts[lib] is not None:
+                ok("pdf.%s_opens_under_%s" % (key, lib), len(texts[lib]) > 400,
+                   "%d characters" % len(texts[lib]))
+        raw = open(p, "rb").read()
+        ok("pdf.%s_info_producer_is_a_balanced_string" % key,
+           re.search(rb"/Producer \((?:[^()\\]|\\.)*\)", raw) is not None,
+           (re.search(rb"/Producer[^\n]{0,70}", raw) or [b"-"])[0])
+        for sig in (b"ReportLab", b"pypdf"):
+            ok("pdf.%s_no_%s_signature" % (key, sig.decode().lower()), sig not in raw)
+        if key == "policy":
+            for cl in DECISIVE:
+                hits = [lib for lib, t in texts.items() if t is not None and nw(cl) in nw(t)]
+                eq("pdf.clause_readable_in_every_reader[%s]" % cl[:42], len(hits), 4, 0,
+                   "read by %s" % sorted(hits))
+
     # ---------------------------------------------------------- clause 9's own margin
     s0 = solve.share_cells(G, mean, cnt, shape)
     s1 = solve.share_cells(G - 100, mean, cnt, shape)
     ok("clause9.at_or_below", s0 <= P.COMMITTED_SHARE, "%.6f" % s0)
     ok("clause9.one_step_down_above", s1 > P.COMMITTED_SHARE, "%.6f" % s1)
+    # the margin in the units the judge reads it in: the preceding multiple has to fail by enough
+    # that the shape's own sampling error cannot reach the line
+    ok("clause9.preceding_multiple_fails_by",
+       100 * (s1 - P.COMMITTED_SHARE) >= MARGIN_FLOOR,
+       "%.4f points, floor %.2f" % (100 * (s1 - P.COMMITTED_SHARE), MARGIN_FLOOR))
+    ok("clause9.committed_share_clearance",
+       100 * (P.COMMITTED_SHARE - s0) >= CLEARANCE_FLOOR,
+       "%.4f points, floor %.2f" % (100 * (P.COMMITTED_SHARE - s0), CLEARANCE_FLOOR))
+    # the rounding sentence in 9.1 is load-bearing, not decoration: the prompt orders shares to one
+    # decimal place, and at the preceding multiple the reported share is exactly the commitment, so
+    # without the sentence a literal reader could quote 9.1 and file the preceding multiple
+    ok("clause9.the_rounding_sentence_is_load_bearing",
+       round(100 * s1, 1) <= 100 * P.COMMITTED_SHARE + 1e-9
+       and "tested as it is computed and not as it is rounded" in txt[B.FILES["policy"]],
+       "the preceding multiple reports %.1f per cent against a commitment of %.1f"
+       % (round(100 * s1, 1), 100 * P.COMMITTED_SHARE))
+    # the flip condition, as a number rather than as an adjective
+    ok("clause9.flip_condition_down",
+       abs(100 * (s1 - P.COMMITTED_SHARE) - 0.0432) < 0.0005,
+       "7,700 is filed only if its share falls by more than %.4f points, %.2f per cent of itself"
+       % (100 * (s1 - P.COMMITTED_SHARE), 100 * (s1 - P.COMMITTED_SHARE) / (100 * s1)))
+    ok("clause9.flip_condition_up",
+       abs(100 * (P.COMMITTED_SHARE - s0) - 0.0571) < 0.0005,
+       "7,900 is filed only if the share at 7,800 rises by more than %.4f points, %.2f per cent "
+       "of itself" % (100 * (P.COMMITTED_SHARE - s0),
+                      100 * (P.COMMITTED_SHARE - s0) / (100 * s0)))
     ok("clause9.clearance", (P.COMMITTED_SHARE - s0) / (s1 - s0) > 0.15, "%.2f of the step" % ((P.COMMITTED_SHARE - s0) / (s1 - s0)))
     ok("clause9.excess", (s1 - P.COMMITTED_SHARE) / (s1 - s0) > 0.15, "%.2f of the step" % ((s1 - P.COMMITTED_SHARE) / (s1 - s0)))
     mono = [solve.share_cells(c, mean, cnt, shape) for c in range(5000, 11001, 100)]
@@ -259,6 +344,36 @@ def run(target, world, fig, golden_dir):
     # SF12 the published summary is in thousands
     ok("SF12.units_stated", "thousands of pesos" in txt[B.FILES["summary"]])
     ok("SF12.summary_not_in_the_solve_path", B.FILES["summary"] in [B.FILES[k] for k in B.DISTRACTORS])
+
+    # SF13 the grain an award level is taken at. Clause 9.2 files it: a partner's band has one award
+    # level for the twelve months. The two finer readings are measured here, so the clause is shown
+    # to be load-bearing rather than decorative, and the closure is the sentence and not the data.
+    ok("SF13.grain_filed",
+       "has one award level for those twelve months" in txt[B.FILES["policy"]]
+       and "not taken claim month by claim month" in txt[B.FILES["policy"]])
+    mcells = WU.read_returns([os.path.join(target, B.FILES[k]) for k in ("ret2526", "ret2627")],
+                             by_month=True)
+    xw = WU.read_crosswalk(os.path.join(target, B.FILES["xwalk"]))
+    pm = WU.read_portal(os.path.join(target, B.FILES["portal"]), xw, with_month=True)
+    mmean = {k: v[1] / v[0] for k, v in mcells.items()}
+    mcnt = {(k[0], k[1], k[2]): v[0] for k, v in mcells.items()}
+    msh = np.array([amt / mmean[(c, b, mo)] for c, b, amt, mo in pm
+                    if (c, b, mo) in mmean], float)
+    msh = msh / msh.mean()
+    # the band of a monthly cell is its second element, which is what share_cells reads
+    mkeyed_mean = {(k[0] + "|" + str(k[2]), k[1]): v for k, v in mmean.items()}
+    mkeyed_cnt = {(k[0] + "|" + str(k[2]), k[1]): v for k, v in mcnt.items()}
+    sf13a = solve.lowest(lambda c: solve.share_cells(c, mkeyed_mean, mkeyed_cnt, msh))
+    sf13b = solve.lowest(lambda c: solve.share_cells(c, mkeyed_mean, mkeyed_cnt, shape))
+    ok("SF13.partner_band_month_grain_measured", True, "%d" % sf13a)
+    ok("SF13.monthly_cells_with_the_filed_shape_measured", True, "%d" % sf13b)
+    ok("SF13.the_clause_and_not_the_data_closes_it",
+       "award level" in txt[B.FILES["policy"]],
+       "finer grains print %d and %d against the filed %d" % (sf13a, sf13b, G))
+
+    # SF14 the share is tested before the rounding the prompt orders
+    ok("SF14.tested_before_rounding_filed",
+       "tested as it is computed and not as it is rounded" in txt[B.FILES["policy"]])
     return _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv)
 
 
@@ -371,17 +486,47 @@ def _ask_checks(target, world, fig):
     ok("deviceA.the_repeat_is_not_an_exact_duplicate_row",
        len(exact) >= 0 and all(len({x[0] for x in archive[k]}) == 1 for k in over))
 
-    # ---- device B, the register's two currency columns run on inside the scheme year
+    # ---- device B, the running totals turn over on the partner's own accreditation year
     rows = WU._raw_register(os.path.join(target, B.FILES["checks"]))
-    check, _ = WU.read_check_register(os.path.join(target, B.FILES["checks"]))
+    acc = WU.read_accreditation(os.path.join(target, B.FILES["register"]))
+    check, _ = WU.read_check_register(os.path.join(target, B.FILES["checks"]), acc)
     impossible = sum(1 for r in rows if r["passed"] > claimed.get((r["code"], r["month"]), 0.0) + 0.005)
-    july = sum(1 for r in rows if r["month"][1] == P.SCHEME_YEAR_START)
     ok("deviceB.rows_stating_more_passed_than_the_month_was_claimed_for",
        impossible > 0.8 * len(rows), "%d of %d" % (impossible, len(rows)))
-    ok("deviceB.the_scheme_year_opening_rows_reset", july > 0, july)
+    anniv = {WU._accreditation_year(acc[r["code"]], r["month"]) for r in rows}
+    ok("deviceB.the_running_total_turns_over_more_than_once", len(anniv) > 1, sorted(anniv))
+    months = {}
+    for r in rows:
+        months.setdefault(r["code"], set()).add(r["month"])
+    turns = {c: {m for m in ms
+                 if WU._accreditation_year(acc[c], m)
+                 != WU._accreditation_year(acc[c], (m[0] - (m[1] == 1), (m[1] - 2) % 12 + 1))}
+             for c, ms in months.items()}
+    ok("deviceB.the_turnover_month_is_the_partners_own_and_not_july",
+       sum(1 for c, ms in turns.items() if any(m[1] != P.SCHEME_YEAR_START for m in ms))
+       > 0.7 * len(turns),
+       "%d of %d partners turn over in a month other than July"
+       % (sum(1 for c, ms in turns.items() if any(m[1] != P.SCHEME_YEAR_START for m in ms)),
+          len(turns)))
     bad = [k for k, v in check.items()
            if abs(round(claimed.get(k, 0.0) - v["passed"] - v["held"], 2)) > 0.005]
     eq("deviceB.differencing_restores_claimed_less_passed_as_held", len(bad), 0)
+    # and the scheme year, which is the year the return workbooks label, does not: the forcing
+    # figure for the device, computed on the pack rather than argued
+    live = {}
+    for r in sorted(rows, key=lambda r: r["checked"]):
+        live[(r["code"], r["month"])] = r
+    bysy, prev = {}, {}
+    for (code, mo) in sorted(live):
+        sy = WU._scheme_year(mo)
+        base = prev.get((code, sy), (0.0, 0.0))
+        r = live[(code, mo)]
+        bysy[(code, mo)] = (round(r["passed"] - base[0], 2), round(r["held"] - base[1], 2))
+        prev[(code, sy)] = (r["passed"], r["held"])
+    wrong = sum(1 for k, v in bysy.items()
+                if abs(round(claimed.get(k, 0.0) - v[0] - v[1], 2)) > 0.005)
+    ok("deviceB.the_scheme_year_reading_fails_the_same_reconciliation", wrong > 0,
+       "%d of %d partner claim-months do not reconcile on the scheme year" % (wrong, len(bysy)))
     ties = {}
     for r in rows:
         ties.setdefault((r["code"], r["month"]), set()).add(r["checked"])
@@ -409,7 +554,7 @@ def _ask_checks(target, world, fig):
     gold = {"A": [a["transferred"][q] for q in a["quarters"]],
             "B": [a["held"][q] for q in a["quarters"]],
             "C": [a["holds_by_reason"][r] for r in WU.REASONS]}
-    expect = {"A": [0, 0, 0, 6], "B": [0, 0, 0, 6], "C": [0, 0, 5, 6]}
+    expect = {"A": [0, 0, 0, 0, 6], "B": [0, 0, 0, 0, 6], "C": [0, 0, 5, 6]}
     for grp in ("A", "B", "C"):
         keys = a["quarters"] if grp != "C" else WU.REASONS
         for i, (label, vals) in enumerate(st[grp].items()):
@@ -430,7 +575,7 @@ def _ask_checks(target, world, fig):
     eq("prose.claim_months_checked_twice", sum(1 for v in months_seen.values() if v > 1), 38)
     eq("prose.rows_with_the_old_separator",
        sum(1 for r in raw_rows if "/" in r["claims_partner_ref"]), 536)
-    eq("prose.rows_stating_an_impossible_amount_passed", impossible, 1424)
+    eq("prose.rows_stating_an_impossible_amount_passed", impossible, 1387)
     eq("prose.free_text_reason_entries", len(free), 74)
     eq("prose.free_text_spellings", len(set(free)), 21)
     eq("prose.blank_reason_with_no_hold", blank_none, 1288)

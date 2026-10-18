@@ -93,7 +93,7 @@
     {
       "path": "hrg_operating_policy_2027_edition.pdf",
       "format": "pdf",
-      "bytes": 6233,
+      "bytes": 6286,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -138,7 +138,7 @@
     {
       "path": "DATA_DICTIONARY.md",
       "format": "md",
-      "bytes": 5658,
+      "bytes": 6595,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -165,7 +165,7 @@
     {
       "path": "hrg_annual_report_partner_summary_fy2025-26.pdf",
       "format": "pdf",
-      "bytes": 4005,
+      "bytes": 3951,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -192,7 +192,7 @@
     {
       "path": "hrg_claim_check_register_2024_2025.csv",
       "format": "csv",
-      "bytes": 142091,
+      "bytes": 141864,
       "rows": 1604,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",

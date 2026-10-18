@@ -45,32 +45,43 @@ def org_canvas():
 
 
 def finalise_pdf(path, producer=None):
-    """Put the organisation's name where the writing library signed the file, in place and at the
-    same byte length so every cross-reference offset stays valid. reportlab writes its own name into
-    the header comment, the trailer digest comment and the producer slot whatever the document's
-    properties say."""
+    """Put the organisation's name in the document's /Info and drop the writing library's header and
+    trailer comments, by re-serialising the file so the string is escaped by the writer and the
+    cross-reference table is rebuilt around it.
+
+    The producer slot may not be patched in place. reportlab writes its own name there as
+    `ReportLab PDF Library - \\(opensource\\)`, with the parentheses escaped inside the literal
+    string; a byte substitution sized by a paren-unaware match ends one byte short, overwrites the
+    escaping backslash and leaves a bare `)` in the /Info dictionary. The file still opens under a
+    lenient reader, so the defect is invisible to pypdf and to the text assertion below, but
+    pdfminer.six and pdfplumber both refuse the whole document on `Invalid dictionary construct`,
+    and the governing clause 9 and Schedule B are inside it."""
+    from pypdf import PdfReader, PdfWriter
     producer = producer or PRODUCER
-    raw = open(path, "rb").read()
     before = _pdf_text(path)
-    out = raw
-    for tok in (b"ReportLab Generated PDF document (opensource)",
-                b"% ReportLab generated PDF document -- digest (opensource)"):
-        if tok in out:
-            lead = b"% " if tok.startswith(b"% ") else b""
-            name = (lead + ("%s filed document" % P.FOUNDATION_LEGAL).encode())[:len(tok)]
-            out = out.replace(tok, name.ljust(len(tok), b" "))
-    m = re.search(rb"/Producer \(([^)]*)\)", out)
-    if m:
-        slot = len(m.group(1))
-        out = out[:m.start(1)] + producer.encode()[:slot].ljust(slot, b" ") + out[m.end(1):]
-    assert len(out) == len(raw), (len(out), len(raw))
-    open(path, "wb").write(out)
-    assert _pdf_text(path) == before, "the substitution changed the document's own text"
+    reader = PdfReader(path)
+    writer = PdfWriter(clone_from=reader)
+    meta = dict(reader.metadata or {})
+    meta["/Producer"] = producer
+    writer.add_metadata(meta)
+    with open(path, "wb") as fh:
+        writer.write(fh)
+    raw = open(path, "rb").read()
+    for sig in (b"ReportLab", b"reportlab", b"pypdf"):
+        assert sig not in raw, "%s carries the writing library's signature %r" % (path, sig)
+    assert _pdf_text(path) == before, "the re-serialisation changed the document's own text"
+    assert strict_pdf_text(path) == before, "%s does not parse under a strict reader" % path
 
 
 def _pdf_text(path):
     from pypdf import PdfReader
     return "\n".join((pg.extract_text() or "") for pg in PdfReader(path).pages)
+
+
+def strict_pdf_text(path):
+    """The document's text as a reader that refuses a malformed object graph sees it."""
+    from pypdf import PdfReader
+    return "\n".join((pg.extract_text() or "") for pg in PdfReader(path, strict=True).pages)
 
 
 @contextlib.contextmanager
@@ -284,11 +295,13 @@ def policy(path, R):
         "multiple of one hundred pesos, such that when the ceiling for each other band is generated "
         "from it by the factor in Schedule B and rounded up to the nearest one hundred pesos, the "
         "share of the scheme's awards that would be referred under clause 7 is at or below 6.0 per "
-        "cent.", body))
+        "cent. The share is tested as it is computed and not as it is rounded for reporting.", body))
     s.append(Paragraph(
         "9.2 For 9.1 the scheme's awards are the awards of all accredited partners at the award "
         "volumes and award levels of the twelve months to 31 March 2027. An award is counted in the "
-        "month in which it was paid.", body))
+        "month in which it was paid. A partner's household-size band has one award level for those "
+        "twelve months, being the average award the partner claimed in that band across them; an "
+        "award level is not taken claim month by claim month.", body))
     s.append(Paragraph(
         "9.3 An award is referred if it exceeds the ceiling for its band. Awards are counted gross.", body))
     s.append(Paragraph(
@@ -509,9 +522,11 @@ partners in the portal provinces.
 
 ## %(register)s
 
-One row per partner the Foundation has accredited. `accreditation_status` is `ACTIVE`, `WITHDRAWN`
-where the partner has given up its accreditation, or `LAPSED` where a term ended and was not
-renewed; `status_date` carries the date of a withdrawal or a lapse.
+One row per partner the Foundation has accredited. `accredited_from` is the date the partner's
+current accreditation term runs from, and a term runs for three years from it.
+`accreditation_status` is `ACTIVE`, `WITHDRAWN` where the partner has given up its accreditation, or
+`LAPSED` where a term ended and was not renewed; `status_date` carries the date of a withdrawal or a
+lapse.
 
 ## %(xwalk)s
 
@@ -550,10 +565,22 @@ January 2026 a return is paid in full and reviewed after payment.
 | `amount_held_php` | the amount held back, in pesos |
 | `hold_reason` | the reason recorded against a hold |
 
+A claim month may be checked more than once, where the partner answered a hold and the Office
+checked the return again. Where the register holds more than one check for the same partner and
+claim month, the later check supersedes the earlier one.
+
 ## %(archive)s
 
-The Treasury's archived payment runs, retrieved for the reconciliation of the closed claim months.
-The columns are those of %(treasury)s.
+The Treasury's archived payment runs for the closed claim months, retrieved for the reconciliation.
+The columns are those of %(treasury)s, and `claim_months_covered` is the claim month the line
+settles.
+
+The archive is an export of payment instructions against the run lines they settle. Where one
+instruction settled both halves of a partner's claim month, because the first half's release was
+held for a mandate re-validation, the instruction's own `gross_php`, `recoveries_php` and `net_php`
+stand on each of the two lines it covers; a line that repeats all three amounts of another line for
+the same partner and claim month is that one instruction a second time, and the instruction is
+counted once.
 
 ## %(followup)s
 

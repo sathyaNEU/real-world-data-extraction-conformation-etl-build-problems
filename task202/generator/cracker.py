@@ -40,6 +40,22 @@ ASKS = [("A the pesos the payment runs transferred, by scheme quarter", "A", 1),
 CRACKER_STOP = {"A": 0, "B": 0, "C": 1}
 SCHEDULE_CRITERIA = 24          # six ceilings, six referred shares, six value shares, six factors
 
+# The reader-calibrated response, which is the measurement that matters. The cracker's stops are the
+# author's guesses at the opponent's routes, and the stage 4 reader beat all three of them: it kept
+# 0 of 6 on A, 6 of 6 on B and 6 of 6 on C where the cracker said nought of eighteen. So this row is
+# not a guess. It is the stop each ask's ladder reaches for a response that
+#   * reads the data dictionary and applies every convention filed in it,
+#   * reconciles each closed-period file against the claim returns, which is what found the
+#     register's running totals, and
+#   * takes the ordinary hygiene moves (key uniqueness, folding a free-text field onto its list,
+#     cross-tabulating a blank against the movement that produced it).
+# A is at its answer because the re-issue convention is now filed, which is what makes the device
+# fair and is what it costs. B is at the scheme-year stop, because the year the return workbooks
+# label is the year such a response assumes and the accreditation year is in no sentence. C is at its
+# answer, because the blank-reason device is the one the reader cracked and the rewording did not
+# replace it.
+READER_STOP = {"A": "A5", "B": "B3", "C": "C4"}
+
 
 def rows_of(group, stops, gold, keys):
     labels = list(stops[group])
@@ -87,6 +103,26 @@ def main():
     print("   separation.checks_rows_in_the_window and separation.archive_rows_in_the_window are 0,")
     print("   and separation.device_partner_months_in_the_window is 0. Printing a second scored row")
     print("   would be comparing a list with itself, so the mirror's ask weight is the cracker's.")
+
+    print("\nREADER-CALIBRATED: applies every filed convention and the ordinary hygiene moves")
+    rkept = 0
+    for label, grp, _ in ASKS:
+        ladder = rows_of(grp, stops, gold[grp], keys[grp])
+        pick = next(r for r in ladder if r[0].startswith(READER_STOP[grp]))
+        rkept += pick[1]
+        print("   %-58s keeps %d of %d   (%s)" % (label, pick[1], pick[2], pick[0][:46]))
+    Lr = rkept / float(n_ask)
+    rpair = (W_REC + R_KEEP) / 2.0 + W_INSTR + W_ASK * Lr
+    print("   keeps %d of %d ask figures, %.3f of the ask weight" % (rkept, n_ask, Lr))
+    print("   PAIR AT THE READER'S KEEP %.1f   (bar 50, build to 40)" % rpair)
+    if rpair > 50:
+        print("   OVER THE BAR. The ask band cannot absorb a fair Ask A at %d graded figures: filing"
+              % n_ask)
+        print("   the re-issue convention hands back 6 of %d, and Ask C's blank-reason device is the"
+              % n_ask)
+        print("   one the reader already cracked. Holding the pair under 50 at this keep rate needs")
+        print("   more graded figures, which needs prompt room, which is a rubric pass and not a")
+        print("   determinism one. Reported rather than papered over.")
 
     Lc = kept / float(n_ask)
     Lm = Lc

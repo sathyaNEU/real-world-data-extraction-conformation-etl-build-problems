@@ -154,9 +154,7 @@ class Records:
         rows = []
         for pt in self.parts:
             st, sd = "ACTIVE", ""
-            first = dt.date(pt["first_month"][0], pt["first_month"][1], 1)
-            acc = first if pt["first_month"] != P.RETURNS_FROM else dt.date(
-                2016 + (pt["idx"] % 8), 1 + (pt["idx"] * 5) % 12, 1 + (pt["idx"] * 11) % 27)
+            acc = AL.accredited_from(pt)
             if pt["last_month"] != (2027, 3):
                 st = "WITHDRAWN"
                 sd = P.EXIT_PARTNER["withdrawn"].isoformat()
@@ -281,11 +279,14 @@ class Records:
             pos = ytd[key]
             out = []
             sup = C.superseded(key)
-            if sup is not None:
-                out.append((c["checked"] - dt.timedelta(days=11 + (pi % 5)), sup["passed_n"],
-                            pos["superseded"], sup["reason"]))
             m = C.monthly(key)
-            out.append((c["checked"], m["passed_n"], pos["current"], m["reason"]))
+            if sup is not None:
+                # the partner answered the hold, so the month was checked again after the answer
+                out.append((c["checked"], sup["passed_n"], pos["superseded"], sup["reason"]))
+                out.append((c["checked"] + dt.timedelta(days=9 + (pi % 12)), m["passed_n"],
+                            pos["current"], m["reason"]))
+            else:
+                out.append((c["checked"], m["passed_n"], pos["current"], m["reason"]))
             for checked, passed_n, amounts, reason in out:
                 seq[mo] = seq.get(mo, 0) + 1
                 rows.append({
