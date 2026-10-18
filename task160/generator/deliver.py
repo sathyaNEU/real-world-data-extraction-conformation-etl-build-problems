@@ -28,7 +28,7 @@ F_BOOK = "winter_pool_block_jan2027.xlsx"
 F_CHART = "pool_shifts_winter_2025-26.png"
 WEEK0 = D(2025, 11, 3)
 N_WEEKS = 21
-REGIONS = ("Southeast", "West and Central", "North")
+REGIONS = ("Southeast", "Central", "North")
 
 
 def r50(x):
@@ -39,19 +39,22 @@ def compute(target):
     P = PR.Pack(target)
     a27, _ = C.season_bounds(2027)
     b0, b1 = C.BLOCK_2027
-    words = {3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"}
     # the closed winters: each member's longest spell, each region's wave centre and the North's lags
     longest = {fid: max((P.spells(fid, *C.season_bounds(w))[0][1] - P.spells(fid, *C.season_bounds(w))[0][0]).days + 1
                         for w in C.CLOSED) for fid in P.fids()}
-    lag_wc = [P.region_centre("North", w) - P.region_centre("West and Central", w) for w in C.CLOSED]
+    lag_ce = [P.region_centre("North", w) - P.region_centre("Central", w) for w in C.CLOSED]
     lag_se = [P.region_centre("North", w) - P.region_centre("Southeast", w) for w in C.CLOSED]
+    lag_ce_f = [PR.anchor(P, "NOfirst", w) - PR.anchor(P, "CEfirst", w) for w in C.CLOSED]
+    lag_se_f = [PR.anchor(P, "NOfirst", w) - PR.anchor(P, "SEfirst", w) for w in C.CLOSED]
     off = [P.region_centre("Southeast", w) - C.season_bounds(w)[0].toordinal() for w in C.CLOSED]
+    off_f = [PR.anchor(P, "SEfirst", w) - C.season_bounds(w)[0].toordinal() for w in C.CLOSED]
     se_move = max(off) - min(off)
     jan = [P.block_draw(P.fids(), w) for w in C.CLOSED]
     north_jan = [P.block_draw(P.fids("North"), w) for w in C.CLOSED]
     carry = [abs(jan[i] - jan[i + 1]) / jan[i + 1] for i in range(len(jan) - 1)]
+    carry_f = [abs(jan[i] - jan[i + 1]) / jan[i] for i in range(len(jan) - 1)]
     # this winter: the south's spells and when each stands down at its own longest closed-winter spell
-    south = P.fids("Southeast") + P.fids("West and Central")
+    south = P.fids("Southeast") + P.fids("Central")
     starts, ends = {}, {}
     for fid in south:
         sp = P.spells(fid, a27, C.CENSUS_END)
@@ -60,14 +63,17 @@ def compute(target):
         ends[fid] = sp[0][0] + dt.timedelta(days=longest[fid] - 1)
     south_block = 0                                   # no southern spell reaches the block weeks
     assert max(ends.values()) < b0
-    wc_starts = [starts[f] for f in P.fids("West and Central")]
-    # the North placed this winter from West and Central by every construction the closed winters support
-    routes = [PR.aligned(P, "WC"), PR.aligned(P, "WCfirst"), PR.placed(P, "WC"), PR.placed(P, "WC", onset=True),
-              PR.placed(P, "WC", agg="median"), PR.ww_route(P, "WC")]
+    ce_starts = [starts[f] for f in P.fids("Central")]
+    # the North placed this winter from Central by every construction the closed winters support
+    routes = [PR.aligned(P, "CE"), PR.aligned(P, "CEfirst"), PR.placed(P, "CE"), PR.placed(P, "CE", onset=True),
+              PR.placed(P, "CE", agg="median"), PR.ww_route(P, "CE"), PR.analog(P, "SE")[0], PR.analog(P, "CE")[0],
+              PR.regression(P, ("CEfirst",), "NOfirst"), PR.regression(P, ("CE",), "NO"),
+              PR.regression(P, ("SE", "CE"), "NO")]
     waves = P.north_waves()
     g = st.mean(waves)
     assert all(r50(x) == r50(g) for x in routes)
-    se_routes = [PR.placed(P, "SE"), PR.placed(P, "SE", onset=True), PR.placed(P, "SE", agg="median")]
+    se_routes = [PR.placed(P, "SE"), PR.placed(P, "SE", onset=True), PR.placed(P, "SE", agg="median"),
+                 PR.aligned(P, "SE"), PR.aligned(P, "SEfirst")]
     # the asks
     fA, fB, wk = PR.ask_figures(P, PR.ask_lines(P))
     weeks = []
@@ -79,20 +85,33 @@ def compute(target):
     assert busiest[3] == ft
     r0_shift = st.mean(sum(P.draw_shifts(f, *C.block_weeks(w)) for f in P.fids()) for w in C.CLOSED)
     s0, s1, e1 = min(starts.values()), max(starts.values()), max(ends.values())
+
+    def span(a, b):
+        if a.month == b.month:
+            return "%d to %d %s" % (a.day, b.day, b.strftime("%B"))
+        return "%d %s to %d %s" % (a.day, a.strftime("%B"), b.day, b.strftime("%B"))
     txt = {
-        "began": "%d to %d %s" % (s0.day, s1.day, s1.strftime("%B")),
-        "wc_began": "%d to %d %s" % (min(wc_starts).day, max(wc_starts).day, max(wc_starts).strftime("%B")),
+        "began": span(s0, s1),
+        "ce_began": span(min(ce_starts), max(ce_starts)),
         "down_by": "%d %s" % (e1.day, e1.strftime("%B")),
-        "moved": "%s weeks" % words[int(round(se_move / 7.0))],
-        "se_lead_moved": "%s weeks" % words[int(round((max(lag_se) - min(lag_se)) / 7.0))],
         "r0": "about {:,}".format(r50(st.mean(jan))),
     }
-    assert s0.month == s1.month == 12 and r50(st.mean(jan)) == r50(r0_shift)
-    assert max(se_routes) < 0.25 * g                    # timed from the Southeast, the block holds a few shifts
+    # every phrase the write-up states holds under the centres and the first surge nights alike
+    assert min(se_move, max(off_f) - min(off_f)) > 21                       # the Southeast moved by more than three weeks
+    assert min(max(lag_se) - min(lag_se), max(lag_se_f) - min(lag_se_f)) >= 14     # its lead moved by two weeks or more
+    assert max(lag_ce) - min(lag_ce) < 0.6 * (max(lag_se) - min(lag_se))
+    assert max(lag_ce_f) - min(lag_ce_f) < 0.6 * (max(lag_se_f) - min(lag_se_f))
+    assert min(carry + carry_f) >= 0.4                                      # each carried January missed by 40 per cent
+    def loo(v):
+        return st.mean(abs(st.mean(v[:i] + v[i + 1:]) - v[i]) for i in range(len(v)))
+    for a_, b_ in ((lag_ce, lag_se), (lag_ce_f, lag_se_f)):   # left out one winter at a time, the lag behind Central
+        assert loo(a_) < 0.65 * loo(b_)                        # misses by about half as much as the Southeast's
+    assert r50(st.mean(jan)) == r50(r0_shift)
+    assert max(se_routes) <= 525                       # timed from the Southeast, the block misses by a full bin or more
     return {
         "txt": txt,
         "P": P, "golden": g, "block": r50(g), "waves": waves, "south": south, "starts": starts, "ends": ends,
-        "south_block": south_block, "north_block": r50(g), "lag_wc": lag_wc, "lag_se": lag_se, "se_move": se_move,
+        "south_block": south_block, "north_block": r50(g), "lag_ce": lag_ce, "lag_se": lag_se, "se_move": se_move,
         "jan": jan, "north_jan": north_jan, "carry": carry, "r0": st.mean(jan), "r0_shift": r0_shift,
         "routes": routes, "se_routes": se_routes, "fA": fA, "fB": fB, "weeks": weeks, "busiest": busiest,
         "busiest_billed": bt,
@@ -113,10 +132,12 @@ def figures(R):
         "rival_north_timed_from_the_southeast": [round(x, 1) for x in R["se_routes"]],
         "members": 24, "southern_members": 16, "north_members": 8,
         "closed_winters": 5,
-        "carry_min_miss_a_quarter_or_more": round(min(R["carry"]), 3),
+        "carry_min_miss_two_fifths_or_more": round(min(R["carry"]), 3),
         "southeast_centre_moved_days": R["se_move"],
         "south_spells_began": R["txt"]["began"] + " 2026",
-        "west_and_central_spells_began": R["txt"]["wc_began"] + " 2026",
+        "north_lag_behind_central_days": [round(x, 2) for x in R["lag_ce"]],
+        "north_lag_behind_southeast_days": [round(x, 2) for x in R["lag_se"]],
+        "central_spells_began": R["txt"]["ce_began"] + " 2026",
         "south_all_stand_down_by": R["txt"]["down_by"] + " 2026",
         "busiest_week_total": R["busiest"][3],
         "busiest_week_billed_to_pool": R["busiest_billed"],
@@ -155,17 +176,17 @@ def write_book(path, R):
     ws.cell(row=5, column=1).font = BOLD
     ws.cell(row=5, column=2).font = BOLD
     ws.cell(row=5, column=2).fill = BLOCK_FILL
-    ws.append(["Expected draw, the 16 Southeast and West and Central members", R["south_block"]])
+    ws.append(["Expected draw, the 16 Southeast and Central members", R["south_block"]])
     ws.append(["Expected draw, the 8 North members (members from 1 November 2026)", R["north_block"]])
     ws.append([])
     tx = R["txt"]
     for line in (
-        "Southeast and West and Central: surge plans activated %s 2026; at each member's longest surge "
+        "Southeast and Central: surge plans activated %s 2026; at each member's longest surge "
         "spell in the five closed winters, every one stands down by %s, before the block weeks." % (tx["began"], tx["down_by"]),
-        "North: in each closed winter (2021-22 to 2025-26) the North's surge spells followed West and Central's by a "
-        "steady lag, while the Southeast's lead over the North moved by %s. West and Central's spells this winter "
-        "began %s, which puts the North's whole wave inside the block weeks, in mid-January." % (
-            tx["se_lead_moved"], tx["wc_began"]),
+        "North: in each closed winter (2021-22 to 2025-26) the North's surge spells followed Central's by about four "
+        "weeks, a lag that varied about half as much as the North's lag behind the Southeast, which moved by two weeks "
+        "or more. Central's spells this winter began %s, which puts the North's whole wave inside the block weeks, "
+        "in mid-January." % tx["ce_began"],
         "North draw: each North member's surge nights at its surge plan's agency staffing per level (surge plan "
         "register, 2 November 2026), the eight members' waves averaged over the five closed winters, about 600 shifts.",
         "Capacity census nights from the capacity system, both layouts, to 20 December 2026; declarations from the "
@@ -242,8 +263,8 @@ def write_chart(path, R):
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _p: "{:,.0f}".format(v)))
     ax.legend(frameon=False, loc="upper right", fontsize=8.5)
     fig.text(0.01, 0.012, "Funded: shifts staffing a member's surge unit that started while its surge plan was active "
-             "(agreement clause 3.1), 16 members.\nBilled to the pool: every agency shift at a member starting that week "
-             "with the pool as bill-to. The 21 weeks of 3 November 2025 to 29 March 2026. TPHA pool office.",
+             "(agreement clause 3.1), 16 members.\nBilled to the pool: every shift an agency nurse started at a member "
+             "that week with the pool as bill-to. The 21 weeks of 3 November 2025 to 29 March 2026. TRHC pool office.",
              fontsize=7.3, color="#555555")
     fig.tight_layout(rect=(0, 0.06, 1, 1))
     fig.savefig(path, metadata={"Software": None})
@@ -257,7 +278,7 @@ def write_submission(path, R):
     L.append("## Tags")
     L.append("")
     L.append("**Domain:** Healthcare Delivery & Health Economics (patient flow, beds and workforce optimization: a "
-             "hospital association's winter agency nurse pool, each region's respiratory surge timed from the region "
+             "hospital cooperative's winter agency nurse pool, each region's respiratory surge timed from the region "
              "it follows).")
     L.append("**Analytical objective:** Forecasting & Predictive Modeling.")
     L.append("")
@@ -265,16 +286,16 @@ def write_submission(path, R):
     L.append("")
     L.append("**The pool should block-book %s agency RN shifts for the four weeks from Monday 4 January to Sunday 31 "
              "January 2027.** All of it is the eight North members' surge wave. In every closed winter the North's wave "
-             "followed West and Central's by a steady lag; this winter West and Central's surge spells began %s, which "
-             "puts the North's whole wave inside the block weeks, and the sixteen southern members' waves end before "
-             "them. Not the five closed Januaries' average draw of %s shifts, which reads January by the calendar "
-             "while the Southeast's surge moved by %s between winters. Not a block timed from the Southeast, whose "
-             "lead over the North moved by %s between winters."
-             % ("{:,}".format(R["block"]), tx["wc_began"], tx["r0"], tx["moved"], tx["se_lead_moved"]))
+             "followed Central's by about four weeks; this winter Central's surge spells began %s, which puts the "
+             "North's whole wave inside the block weeks, and the sixteen southern members' waves end before them. Not "
+             "the five closed Januaries' average draw of %s shifts, which reads January by the calendar while the "
+             "Southeast's surge moved by more than three weeks between winters. Not a block timed from the Southeast, "
+             "whose lead over the North moved by two weeks or more between winters."
+             % ("{:,}".format(R["block"]), tx["ce_began"], tx["r0"]))
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
-    L.append("1. Expected draw of the sixteen Southeast and West and Central members over the block weeks: **none**.")
+    L.append("1. Expected draw of the sixteen Southeast and Central members over the block weeks: **none**.")
     L.append("2. The North's wave falls **wholly inside** the block weeks, in mid-January.")
     L.append("3. Expected draw of the eight North members over the block weeks: **about %s** shifts." % "{:,}".format(
         R["north_block"]))
@@ -283,23 +304,23 @@ def write_submission(path, R):
     L.append("")
     L.append("1. Joined capacity_reports_legacy_2021-07-02_2024-07-01.csv (each row dated by the next morning's report, a "
              "resubmission replacing its original) and capacity_daily_2024-07-01_2026-12-20.csv through "
-             "tpha_members_2026-27.xlsx into one series of census nights for each of the 24 members, 1 July 2021 to "
+             "trhc_members_2026-27.xlsx into one series of census nights for each of the 24 members, 1 July 2021 to "
              "20 December 2026.")
     L.append("2. Read each member's surge spells off that series and priced every surge night at its level's agency "
              "staffing in surge_plan_register_2026-27.pdf, the shifts the pool funds under clause 3.1 of "
              "winter_pool_agreement_2026-27.pdf.")
     L.append("3. Back-tested the calendar on the five closed winters, 2021-22 to 2025-26: each winter's draw over its "
-             "January block weeks, carried to the next winter, missed that winter's by a quarter or more every time, "
-             "the Southeast's surge moving by %s between winters." % tx["moved"])
-    L.append("4. Timed each region's wave in each closed winter by its members' surge spells: the North's followed West "
-             "and Central's by a steady lag every winter while the Southeast's lead over it moved by %s, so the lag "
-             "behind West and Central, carried from the other four winters, put each closed winter's North wave in its "
-             "weeks and the Southeast's did not." % tx["se_lead_moved"])
+             "January block weeks, carried to the next winter, missed that winter's by two-fifths or more every time, "
+             "the Southeast's surge moving by more than three weeks between winters.")
+    L.append("4. Timed each region's wave in each closed winter by its members' surge spells: the North's followed "
+             "Central's by about four weeks, a lag that varied about half as much as its lag behind the Southeast; "
+             "carried from the other four winters, the lag behind Central missed the North's wave by about half as much "
+             "on average as the lag behind the Southeast.")
     L.append("5. This winter the southern members' surge spells began %s and, at each member's longest spell in the "
              "closed winters, all stand down by %s: the sixteen southern members draw none of the block weeks."
              % (tx["began"], tx["down_by"]))
-    L.append("6. Carried the closed winters' lag behind West and Central from this winter's West and Central spells, "
-             "begun %s: the North's wave falls in mid-January, wholly inside the four block weeks." % tx["wc_began"])
+    L.append("6. Carried the closed winters' lag behind Central from this winter's Central spells, "
+             "begun %s: the North's wave falls in mid-January, wholly inside the four block weeks." % tx["ce_began"])
     L.append("7. Averaged the North's five closed winters' waves at its members' staffing per level: about %s shifts, "
              "the pool's expected draw over the block weeks (clause 5.2), so the block is %s shifts to the nearest 50."
              % ("{:,}".format(R["north_block"]), "{:,}".format(R["block"])))
@@ -321,7 +342,7 @@ def write_submission(path, R):
     L.append("1. Busiest week, %s to %s: %s shifts funded, labelled on its bar." % (
         b.strftime("%d %B").lstrip("0"), (b + dt.timedelta(days=6)).strftime("%d %B %Y").lstrip("0"),
         "{:,}".format(R["busiest"][3])))
-    L.append("2. Agency shifts starting that week billed to the pool: %s, labelled beside it." % "{:,}".format(
+    L.append("2. Shifts agency nurses started that week billed to the pool: %s, labelled beside it." % "{:,}".format(
         R["busiest_billed"]))
     L.append("")
     open(path, "w", encoding="utf-8").write("\n".join(L))

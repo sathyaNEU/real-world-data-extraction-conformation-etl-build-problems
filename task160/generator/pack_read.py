@@ -52,7 +52,7 @@ def utc_to_local(t):
 class Pack:
     def __init__(self, pack=None):
         self.dir = pack or PACK
-        self.roster = pd.read_excel(find(r"tpha_members_2026-27\.xlsx", self.dir), sheet_name="Members", dtype=str)
+        self.roster = pd.read_excel(find(r"trhc_members_2026-27\.xlsx", self.dir), sheet_name="Members", dtype=str)
         self.by_member = dict(zip(self.roster["member_no"], self.roster["facility_id"]))
         self.region = dict(zip(self.roster["facility_id"], self.roster["region"]))
         self.name = dict(zip(self.roster["facility_id"], self.roster["hospital"]))
@@ -132,6 +132,11 @@ class Pack:
         x = self.cap[(self.cap["facility_id"] == fid) & (self.cap["census_date"] >= a) & (self.cap["census_date"] <= b)]
         return int(sum(g[lv - 1] for lv in x["level"] if lv))
 
+    def levels(self, fid, a, b):
+        """(census night, level) for the member's surge nights in [a, b]."""
+        x = self.cap[(self.cap["facility_id"] == fid) & (self.cap["census_date"] >= a) & (self.cap["census_date"] <= b)]
+        return [(d, int(lv)) for d, lv in zip(x["census_date"], x["level"]) if lv]
+
     def draw_shifts(self, fid, a, b):
         g = self.grid[fid]
         n = 0
@@ -187,8 +192,11 @@ class Pack:
         x = pd.read_csv(find(r"crestfield_member_shifts_.*\.csv", self.dir), dtype=str)
         x["fid"] = x["client_site"].map(self.crs_site)
         x["start_utc"] = pd.to_datetime(x["shift_start_utc"].str.replace("Z", ""))
+        x["end_utc"] = pd.to_datetime(x["shift_end_utc"].str.replace("Z", ""))
         x["start_local"] = [utc_to_local(t.to_pydatetime()) for t in x["start_utc"]]
         x["hours"] = x["hours"].astype(float)
+        # a line that bills fewer hours than it spans is a late cancellation's four hours, no nurse on the unit
+        x["cancelled"] = x["hours"] < (x["end_utc"] - x["start_utc"]).dt.total_seconds() / 3600.0 - 0.01
         return x
 
     def inland_seas(self, fname):
@@ -213,18 +221,21 @@ class Pack:
         return df, pd.DataFrame(detail)
 
 
-def ask_lines(P, split="timesheet", isn_date="end", utc="convert"):
+def ask_lines(P, split="timesheet", isn_date="end", utc="convert", cxl="drop"):
     """Last winter's agency shifts as a response counts them: (fid, agency, start, on surge unit, bill-to pool).
     split: 'timesheet' counts a Crestfield night once, 'line' counts each billing line; isn_date: 'end' reads a night's
     payroll date as the day it ends, 'start' as the day it starts; utc: 'convert' puts Crestfield on Eastern Time,
-    'raw' reads its UTC stamps as local."""
+    'raw' reads its UTC stamps as local; cxl: 'drop' leaves out Crestfield's late-cancellation lines (four hours billed,
+    no nurse on the unit), 'keep' counts them as shifts."""
     out = []
     cr = P.crestfield()
+    if cxl == "drop":
+        cr = cr[~cr["cancelled"]]
     if split == "timesheet":
         cr = cr.sort_values(["timesheet_no", "start_utc"]).drop_duplicates("timesheet_no", keep="first")
     for _, x in cr.iterrows():
         t = x["start_local"] if utc == "convert" else x["start_utc"].to_pydatetime()
-        out.append((x["fid"], "C", t, x["unit"] == P.unit[x["fid"]], x["bill_to"] == "TPHA POOL"))
+        out.append((x["fid"], "C", t, x["unit"] == P.unit[x["fid"]], x["bill_to"] == "TRHC POOL"))
     for fname in (r"inland_seas_member_shifts_2025-26\.xlsx", r"inland_seas_member_shifts_2026-27\.xlsx"):
         df, _ = P.inland_seas(fname)
         for _, x in df.iterrows():
@@ -234,7 +245,7 @@ def ask_lines(P, split="timesheet", isn_date="end", utc="convert"):
                 t = dt.datetime.combine(d0, dt.time(19))
             else:
                 t = dt.datetime.combine(day, dt.time(7))
-            out.append((x["fid"], "I", t, x["Unit"] == P.unit[x["fid"]], x["Bill to"] == "TPHA Pool"))
+            out.append((x["fid"], "I", t, x["Unit"] == P.unit[x["fid"]], x["Bill to"] == "TRHC Pool"))
     return out
 
 
@@ -284,15 +295,16 @@ def chart_figures(P, lines, by_census=False):
 
 
 PATHS = (("golden", dict(), False),
-         ("cracker", dict(split="line", isn_date="end"), False),
-         ("cracker, A2 cracked", dict(split="timesheet", isn_date="end"), False),
-         ("cracker without the dictionary", dict(split="line", isn_date="start"), False),
-         ("mirror", dict(split="line", isn_date="start"), True))
+         ("cracker", dict(split="line", isn_date="end", cxl="keep"), False),
+         ("cracker, A2 cracked", dict(split="timesheet", isn_date="end", cxl="keep"), False),
+         ("cracker, D3 cracked", dict(split="line", isn_date="end", cxl="drop"), False),
+         ("cracker without the dictionary", dict(split="line", isn_date="start", cxl="keep"), False),
+         ("mirror", dict(split="line", isn_date="start", cxl="keep"), True))
 
 
 def cracker_report(report, pack=None, quiet=False):
     P = Pack(pack)
-    south = P.fids("Southeast") + P.fids("West and Central")
+    south = P.fids("Southeast") + P.fids("Central")
     rows = {}
     for name, kw, cen in PATHS:
         lines = ask_lines(P, **kw)
@@ -304,7 +316,7 @@ def cracker_report(report, pack=None, quiet=False):
 
 
 # ---------------------------------------------------------------------------------------------------- timing routes
-REG_NAME = {"SE": "Southeast", "WC": "West and Central", "NO": "North"}
+REG_NAME = {"SE": "Southeast", "CE": "Central", "NO": "North"}
 
 
 def anchor(P, kind, w, upto=None):
@@ -312,17 +324,26 @@ def anchor(P, kind, w, upto=None):
     surge night ('first'), or the statewide first surge night or median midpoint over the 16 southern members."""
     a, b = C.season_bounds(w)
     b = min(b, upto) if upto else b
-    if kind in ("SE", "WC", "NO"):
+    if kind in ("SE", "CE", "NO"):
         return P.region_centre(REG_NAME[kind], w, upto)
     if kind.endswith("first"):
-        fids = P.fids(REG_NAME[kind[:2]]) if kind[:2] in REG_NAME else P.fids("Southeast") + P.fids("West and Central")
+        fids = P.fids(REG_NAME[kind[:2]]) if kind[:2] in REG_NAME else P.fids("Southeast") + P.fids("Central")
         return min(P.spells(f, a, b)[0][0].toordinal() for f in fids)
     if kind == "state":
         mids = []
-        for f in P.fids("Southeast") + P.fids("West and Central"):
+        for f in P.fids("Southeast") + P.fids("Central"):
             s0, s1 = P.spells(f, a, b)[0]
             mids.append(s0.toordinal() + (s1 - s0).days / 2.0)
         return float(np.median(mids))
+    if kind == "dw":
+        # the season's draw-weighted centre: every member's surge nights weighted by its staffing at the level
+        num = den = 0.0
+        for f in P.fids():
+            g = P.grid[f]
+            for d, lv in P.levels(f, a, b):
+                num += g[lv - 1] * d.toordinal()
+                den += g[lv - 1]
+        return num / den
     raise ValueError(kind)
 
 
@@ -331,11 +352,52 @@ def window(P, fids, delta):
     return sum(P.draw_nights(f, a - dt.timedelta(days=delta), b - dt.timedelta(days=delta)) for f in fids)
 
 
-def aligned(P, kind):
-    """Every member's closed-winter census moved so the anchor sits where it sits this winter at the pull, read over the
-    block weeks and averaged over the five closed winters."""
-    a27 = anchor(P, kind, 2027, C.CENSUS_END)
+def aligned(P, kind, shift=0):
+    """Every member's closed-winter census moved so the anchor sits where it sits this winter at the pull (moved a few
+    days more with shift), read over the block weeks and averaged over the five closed winters."""
+    a27 = anchor(P, kind, 2027, C.CENSUS_END) + shift
     return st.mean(window(P, P.fids(), int(round(a27 - anchor(P, kind, w)))) for w in C.CLOSED)
+
+
+def _days(P, k, w, upto=None):
+    return anchor(P, k, w, upto) - C.season_bounds(w)[0].toordinal()
+
+
+def regression(P, kinds, kn):
+    """The North's anchor (kn) regressed on the southern regions' anchors (kinds) over the five closed winters, each in
+    days from the season's start, predicted for this winter and the North's closed waves placed there."""
+    X = np.array([[1.0] + [_days(P, k, w) for k in kinds] for w in C.CLOSED])
+    y = np.array([_days(P, kn, w) for w in C.CLOSED], float)
+    beta = np.linalg.lstsq(X, y, rcond=None)[0]
+    pred = C.season_bounds(2027)[0].toordinal() + float(np.array([1.0] + [_days(P, k, 2027, C.CENSUS_END)
+                                                                          for k in kinds]) @ beta)
+    return st.mean(window(P, P.fids("North"), int(round(pred - anchor(P, kn, w)))) for w in C.CLOSED)
+
+
+def loo_mae(P, kn, kinds=None, lag_of=None):
+    """Left out one closed winter at a time, the mean absolute error in days of the North's anchor (kn) forecast from
+    the other four: by a regression on the southern anchors (kinds), or by an upstream anchor plus the other winters'
+    mean lag (lag_of)."""
+    y = np.array([_days(P, kn, w) for w in C.CLOSED], float)
+    errs = []
+    if lag_of:
+        u = np.array([_days(P, lag_of, w) for w in C.CLOSED], float)
+        for i in range(len(y)):
+            errs.append(u[i] + np.mean(np.delete(y - u, i)) - y[i])
+    else:
+        X = np.array([[1.0] + [_days(P, k, w) for k in kinds] for w in C.CLOSED])
+        for i in range(len(y)):
+            b = np.linalg.lstsq(np.delete(X, i, 0), np.delete(y, i), rcond=None)[0]
+            errs.append(X[i] @ b - y[i])
+    return float(np.mean(np.abs(errs)))
+
+
+def analog(P, up):
+    """The closed winter whose gap between Central's and the Southeast's waves comes nearest this winter's, taken whole:
+    every member's census moved so the anchor region sits where it sits this winter, read over the block weeks."""
+    g27 = anchor(P, "CE", 2027, C.CENSUS_END) - anchor(P, "SE", 2027, C.CENSUS_END)
+    wa = min(C.CLOSED, key=lambda w: abs(anchor(P, "CE", w) - anchor(P, "SE", w) - g27))
+    return window(P, P.fids(), int(round(anchor(P, up, 2027, C.CENSUS_END) - anchor(P, up, wa)))), wa
 
 
 def placed(P, up, onset=False, agg="mean"):
@@ -365,7 +427,7 @@ def ww_peaks(P):
     for (shed, day), r in latest.items():
         by[(shed[3:5], D.fromisoformat(day))].append(math.log(r["concentration_copies_per_l"] / r["pmmov_copies_per_l"]))
     out = {}
-    for reg in ("SE", "WC", "NO"):
+    for reg in ("SE", "CE", "NO"):
         for w in C.WINTERS:
             a, b = C.season_bounds(w)
             a = a - dt.timedelta(days=30)
@@ -387,10 +449,12 @@ def ww_route(P, up):
 
 
 def reflex_sweep(P):
-    """Every cheap route a strong analyst might file without timing the regions' waves, measured on the cut pack:
+    """Every cheap route a strong analyst might file without timing the North from Central, measured on the cut pack:
     flat rates over the season, transfers from the south by bed, the Januaries by every summary, the pool's own order
-    book, the season's remainder and the peak-four-weeks shortcut. Returns {route: block before rounding}."""
-    allf, south, north = P.fids(), P.fids("Southeast") + P.fids("West and Central"), P.fids("North")
+    book, the season's remainder and the peak-four-weeks shortcut, then the timing routes anchored on the Southeast,
+    the state or the season's draw, and the regressions the closed winters reject out of sample. Returns {route: block
+    before rounding}."""
+    allf, south, north = P.fids(), P.fids("Southeast") + P.fids("Central"), P.fids("North")
     beds = dict(zip(P.roster["facility_id"], P.roster["staffed_med_surg_beds"].astype(int)))
     seas = {w: sum(P.draw_nights(f, *C.season_bounds(w)) for f in allf) for w in C.CLOSED}
     seas_s = {w: sum(P.draw_nights(f, *C.season_bounds(w)) for f in south) for w in C.CLOSED}
@@ -440,5 +504,12 @@ def reflex_sweep(P):
         "eyeballed: the North's first night at the Southeast's first plus the mean lag": placed(P, "SE", onset=True),
         "eyeballed: the North's first night at the Southeast's first plus the median lag": placed(P, "SE", onset=True, agg="median"),
         "wastewater only: the North from the Southeast's peak": ww_route(P, "SE"),
+        "aligned: every member moved onto this winter's draw-weighted centre": aligned(P, "dw"),
+        "aligned: the same, the anchor three days earlier": aligned(P, "dw", -3),
+        "aligned: the same, the anchor three days later": aligned(P, "dw", 3),
+        "regression: the North's first night on the Southeast's and Central's first nights":
+            regression(P, ("SEfirst", "CEfirst"), "NOfirst"),
+        "regression: the North's centre on the Southeast's centre": regression(P, ("SE",), "NO"),
+        "regression: the North's first night on the Southeast's first night": regression(P, ("SEfirst",), "NOfirst"),
     }
     return out

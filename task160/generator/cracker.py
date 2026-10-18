@@ -3,11 +3,13 @@
 The cracker lands the call, runs the hygiene battery (key uniqueness, exact duplicates, unmatched joins, fan-out),
 executes every filed rule and documented convention (the funding clause with the declared times, Crestfield's UTC
 converted, Inland Seas' payroll date read as the day a shift ends, the roster's keys) and counts Crestfield's billing
-lines as shifts. The mirror stops at the most attractive wrong rung of the asks: the census night's level for the whole
-day, the payroll date read as the date a shift started, the billing lines counted. Each is scored figure by figure
-against the golden (a hit is an exact whole shift) on the house weights: 38 for the call and its components, 7 for
-instruction-following, 55 for the asks. The chart is graded on its two labelled figures; the chart file itself is an
-instruction-following point, so no chart part is free.
+lines as shifts, its late-cancellation lines among them. Two silent devices hold the asks: A2, Crestfield's nights on
+two lines, and D3, Crestfield's late-cancellation lines (four hours billed against a booked shift no nurse worked).
+Each single crack is scored on its own. The mirror stops at the most attractive wrong rung of the asks: the census
+night's level for the whole day, the payroll date read as the date a shift started, the billing lines counted. Each
+is scored figure by figure against the golden (a hit is an exact whole shift) on the house weights: 38 for the call
+and its components, 7 for instruction-following, 55 for the asks. The chart is graded on its two labelled figures; the
+chart file itself is an instruction-following point, so no chart part is free.
 
     python3 cracker.py [pack]     score on the cut pack (target/ by default)"""
 from __future__ import annotations
@@ -41,14 +43,14 @@ def report(rows, gold_f, gold_b, gold_chart, south, quiet=False):
             print("%-34s funded %2d/%d  billed-not-funded %2d/%d  chart %d/%d  kept %2d of %d" % (
                 name, hf, len(south), hb, len(south), hc, CHART_FIGURES, hf + hb + hc + FREE_PARTS, n_ask))
     c, s, p = pair(out["cracker"][3], out["mirror"][3], n_ask)
-    c2, s2, p2 = pair(out["cracker, A2 cracked"][3], out["mirror"][3], n_ask)
+    singles = {k: pair(out["cracker, %s cracked" % k][3], out["mirror"][3], n_ask)[2] for k in ("A2", "D3")}
     both = c
     leak = 100.0 * out["mirror"][3] / n_ask
     if not quiet:
-        print("pair ceiling %.1f (cracker %.1f, mirror %.1f); both top responses on the call %.1f; with A2 cracked %.1f"
-              % (p, c, s, both, p2))
+        print("pair ceiling %.1f (cracker %.1f, mirror %.1f); both top responses on the call %.1f; with A2 cracked "
+              "alone %.1f; with D3 cracked alone %.1f" % (p, c, s, both, singles["A2"], singles["D3"]))
         print("mirror leakage %.1f per cent of ask weight" % leak)
-    return out, p, p2, both, leak
+    return out, p, singles, both, leak
 
 
 def pack_mode(pack=None, quiet=False):

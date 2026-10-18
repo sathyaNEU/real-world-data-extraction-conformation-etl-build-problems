@@ -76,7 +76,7 @@ class Truth:
     def region_mid(self, reg, w, upto=None):
         return float(np.median([self.mid(h["facility_id"], w) for h in self.region(reg)]))
 
-    def lags(self, up="WC"):
+    def lags(self, up="CE"):
         """The North's wave centre behind an upstream region's, each closed winter."""
         return {w: self.region_mid("NO", w) - self.region_mid(up, w) for w in C.CLOSED}
 
@@ -167,15 +167,15 @@ def rungs(T):
         "middle three waves": st.mean(srt[1:4]),
         "hospital by hospital medians": sum(st.median([T.season_draw([h], w) for w in C.CLOSED]) for h in north),
         "scaled by this winter's southern draw": st.mean(nw) * T.season_draw(south, 2027) / st.mean([T.season_draw(south, w) for w in C.CLOSED]),
-        "every member aligned on West and Central's centre": aligned(T, "WC"),
-        "the North placed by West and Central's first surge night": placed(T, "WC", onset=True),
+        "every member aligned on Central's centre": aligned(T, "CE"),
+        "the North placed by Central's first surge night": placed(T, "CE", onset=True),
     }
     out["family"] = fam
     out["north_waves"] = nw
     out["lags"] = T.lags()
     out["lags_se"] = T.lags("SE")
     out["jan"] = jan
-    # timing the North from the Southeast instead of West and Central: the North placed by the Southeast's centre or
+    # timing the North from the Southeast instead of Central: the North placed by the Southeast's centre or
     # first surge night and the closed winters' mean lag, and the whole state aligned on the Southeast
     out["R1c"] = placed(T, "SE")
     out["R1c_onset"] = placed(T, "SE", onset=True)
@@ -228,7 +228,7 @@ if __name__ == "__main__":
 # -------------------------------------------------------------------------------------------------- out of sample
 def out_of_sample(T):
     """Each closed January forecast from the winter before it by the calendar (last January carried); the North's
-    per-wave draw and its lag behind West and Central (and, for the rival, behind the Southeast) each left out one
+    per-wave draw and its lag behind Central (and, for the rival, behind the Southeast) each left out one
     winter at a time and forecast from the other four."""
     jan = {w: T.block_draw(T.hs, w) for w in C.CLOSED}
     carry = {w: (jan[w - 1] - jan[w]) / jan[w] for w in C.CLOSED[1:]}

@@ -1,23 +1,24 @@
 # leak check, task160
 
-**Verdict: REVIEW.** 16 files read, 34 golden figures and 17 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 35 golden figures and 17 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: region, closed, southeast, census, hospital, winters, window, member, forecast, timing, central, staffing, behind, members, capacity, association, asserted, forecasting, december, method, schedule, centre, register, decisive, calendar
+Stump terms swept: region, southeast, closed, census, timing, winters, member, hospital, window, central, forecast, members, behind, cooperative, staffing, capacity, nights, season, asserted, decisive, register, schedule, forecasting, method, agreement
 
-## 3 answer figures in the pack (REVIEW 1)
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `agency_rate_schedule_2026-27.pdf`: golden figure 112 appears: ...per hour ($) Crestfield Medical Staffing 88.50 112.00 53.10 Inland Seas Nursing 84.00 107.50 50....
 - **REVIEW** `winter_pool_agreement_2026-27.pdf`: carries 10 of 11 distinctive words of the committed call: 'The pool should block-book 600 agency RN shifts for the four weeks from Monday 4 January to Sunday 31 January 2027.'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `agency_rate_schedule_2026-27.pdf`: 7 of 25 stump-paragraph terms appear (hospital, member, staffing, members, association, schedule); read whether the document names the move
-- **REVIEW** `surge_plan_register_2026-27.pdf`: 7 of 25 stump-paragraph terms appear (census, hospital, member, staffing, capacity, association); read whether the document names the move
-- **REVIEW** `winter_pool_agreement_2026-27.pdf`: 12 of 25 stump-paragraph terms appear (region, southeast, hospital, member, central, staffing); read whether the document names the move
+- **REVIEW** `agency_rate_schedule_2026-27.pdf`: 9 of 25 stump-paragraph terms appear (region, member, hospital, members, cooperative, staffing); read whether the document names the move
+- **REVIEW** `surge_plan_register_2026-27.pdf`: 9 of 25 stump-paragraph terms appear (region, census, member, hospital, cooperative, staffing); read whether the document names the move
+- **REVIEW** `winter_pool_agreement_2026-27.pdf`: 13 of 25 stump-paragraph terms appear (region, southeast, member, hospital, central, members); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 4)
 - **REVIEW** `rn_workforce_survey_2025q1_2026q3.xlsx`: names 16 of 17 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `surge_plan_register_2026-27.pdf`: names 17 of 17 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `tpha_members_2026-27.xlsx`: names 16 of 17 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `trhc_members_2026-27.xlsx`: names 16 of 17 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `winter_pool_agreement_2026-27.pdf`: names 16 of 17 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 
 ## 9 dates after the setting (REVIEW 2)
