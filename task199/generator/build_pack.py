@@ -24,6 +24,7 @@ import core  # noqa: E402
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 
+PANEL_NAMES_SRC = core.PANEL
 SEED = 230875        # the first seed of a 40-seed scan to clear every stage-3 floor (3 of 40 did)
 STEP = date(2026, 4, 1)              # every presence shift and the activity rise take effect here
 WIN = (date(2026, 4, 1), date(2026, 9, 30))
@@ -226,9 +227,11 @@ def draw(seed=SEED):
                 if rng.random() < 0.22:                     # radio transcript coding
                     lo = int(real * (0.72 + rng.random() * 0.1))
                     hi = int(real * (1.18 + rng.random() * 0.12))
+                    if (lo + hi) % 2:                       # keep the midpoint a whole participant
+                        hi += 1
                     rng_lo, rng_hi = lo, hi
                     note = "RANGE"                          # rendered below, per coder
-                    numeric = lo
+                    numeric = None                          # the coder has no central estimate
                     real = (lo + hi) // 2
                 elif rng.random() < 0.09:
                     numeric, real, note = 0, None, "no reportado"
@@ -267,6 +270,7 @@ def draw(seed=SEED):
                                            city=city, delivered=give))
                     if left <= 0:
                         break
+    nudge_participants(actions)
     # retained items: the items that reported an action, plus near misses the filter kept
     by_key = {}
     for c in citations:
@@ -278,6 +282,49 @@ def draw(seed=SEED):
         share = min(row["delivered"], int(round(cited * 0.45)) + pois(rng, 0.25))
         row["retained"] = max(0, min(row["delivered"], share))
     return dict(actions=actions, citations=citations, deliveries=deliveries, truth=t)
+
+
+def sector_means(actions, panel):
+    """The ask's own reading: one entry per gathering-day of 2025 outside the panel, a reported range
+    read at its midpoint, an unreported figure excluded."""
+    tot, n = {}, {}
+    for x in actions:
+        if x["city"] in panel:
+            continue
+        v = x["truth_participants"]
+        if v is None:
+            continue
+        for k in range(x["days"]):
+            if (x["date"] + timedelta(days=k)).year != 2025:
+                continue
+            tot[x["sector"]] = tot.get(x["sector"], 0) + v
+            n[x["sector"]] = n.get(x["sector"], 0) + 1
+    return {s: (tot[s] / n[s], tot[s], n[s]) for s in tot}
+
+
+def nudge_participants(actions, unit=0.1, floor=0.3):
+    """Hold every graded sector mean clear of its printed bin's edge. A mean sitting on a tie prints
+    two ways depending on the rounding rule, which returns a build, so the pass adjusts one plain
+    entry per sector, never a row whose note states a range, until the mean clears. Deterministic:
+    the rows are taken in id order and the step is always one participant."""
+    panel = {m[0] for m in PANEL_NAMES_SRC}
+    for _ in range(400):
+        means = sector_means(actions, panel)
+        bad = [s for s, (m, _t, _n) in means.items()
+               if unit / 2 - abs(m - round(m / unit) * unit) < floor * unit - 1e-12]
+        if not bad:
+            return
+        for s in sorted(bad):
+            pool = [x for x in actions
+                    if x["sector"] == s and x["city"] not in panel and not x["rango"][0]
+                    and x["truth_participants"] is not None
+                    and any((x["date"] + timedelta(days=k)).year == 2025 for k in range(x["days"]))]
+            if not pool:
+                continue
+            pick = sorted(pool, key=lambda x: x["action_id"])[0]
+            pick["participantes"] += 1
+            pick["truth_participants"] += 1
+    raise AssertionError("sector means did not reach mid-bin")
 
 
 def action_days(actions, city, lo, hi):
@@ -793,7 +840,8 @@ def write_manual():
                "fila. La plantilla de 2026 incorpora el campo dias: la fila describe la accion y el "
                "campo indica cuantos dias corrio."),
          ("p", "2.2 El campo participantes_est registra una estimacion central. Cuando la fuente "
-               "reporta un rango, el codificador transcribe el rango en la nota."),
+               "reporta un rango y no una cifra, el codificador transcribe el rango en la nota y "
+               "deja el campo numerico vacio."),
          ("p", "2.3 El campo sector_actor toma su valor de la lista vigente. La lista se amplio en "
                "2025 con dos sectores."),
          ("h", "3. Revision"),
@@ -832,11 +880,7 @@ def write_bulletin(d):
          ("h", "2. Composicion del trimestre por tipo de accion"),
          ("t", tipo_rows),
          ("h", "3. Nota metodologica"),
-         ("p", "Las cifras cuentan acciones-dia segun el manual de codificacion. El boletin no "
-               "compara municipios entre si ni anticipa la designacion semestral, que se publica en "
-               "la nota de vigilancia."),
-         ("p", "El Observatorio recuerda que un registro construido a partir de prensa depende de lo "
-               "que las fuentes remitan y que su cobertura no es uniforme entre municipios.")])
+         ("p", "Las cifras cuentan acciones-dia segun el manual de codificacion.")])
 
 
 def write_invoices(d):
@@ -887,7 +931,7 @@ corrio. La exportacion de 2025 renombro las columnas y escribe las fechas en for
 | divipola, cod_divipola | codigo del municipio vigente a la fecha de la accion |
 | tipo_accion, tipo | tipo de accion segun el manual |
 | sector_actor, sector | sector de la organizacion convocante, lista vigente |
-| participantes_est, participantes | estimacion central de participantes; vacio o cero cuando la fuente no reporta |
+| participantes_est, participantes | estimacion central de participantes; cero cuando la fuente no reporta cifra, vacio cuando la fuente reporta un rango que queda transcrito en la nota |
 | nota_registro, nota | transcripcion del codificador, incluye el rango cuando la fuente reporta uno |
 | dias | dias que corrio la accion (solo plantilla 2026) |
 | extracto | preliminar o definitivo (solo plantilla 2026) |
@@ -922,11 +966,10 @@ Codigos DIVIPOLA con sus fechas de vigencia. Tres municipios recibieron codigo n
 Panel de medios vigente al cierre, una hoja por tipo. Proyecciones municipales de poblacion en
 unidades y en miles, mas la serie anterior al censo.
 
-## Archivos de contexto
+## Otros archivos del extracto
 
-`indice_menciones_redes.csv` es un indice departamental de menciones en redes contratado en 2026.
-`incidencias_viales.csv` recoge incidentes de la autoridad de transporte. Ninguno de los dos entra
-en el registro.
+`indice_menciones_redes.csv`, indice departamental de menciones en redes, contratado en 2026.
+`incidencias_viales.csv`, incidentes de la autoridad de transporte.
 """)
     return p
 
@@ -1032,8 +1075,9 @@ def write_pack(d, pops):
     print("wrote %d files to target/" % len(os.listdir(TARGET)))
     for name in sorted(os.listdir(TARGET)):
         path = os.path.join(TARGET, name)
+        n = counts.get(name)
         print("   %-34s %9d bytes %s" % (name, os.path.getsize(path),
-                                         ("%d rows" % counts[name]) if name in counts else ""))
+                                         ("%d rows" % n) if isinstance(n, int) else ""))
 
 
 if __name__ == "__main__":
