@@ -87,7 +87,7 @@ class Book:
     """Kelvane's clients as the register, the pension extract, the nominations and the annuity listing hold them, with
     each household's members and older partner at 31 December 2026."""
 
-    def __init__(self, crm, ria, noms):
+    def __init__(self, crm, ria, noms, ann):
         self.c = crm.set_index("client_id")
         self.merged = self.c["merged_into"].dropna()
         live = crm[crm["status"] != "Merged"]
@@ -96,12 +96,17 @@ class Book:
         self.rev = noms[noms["nomination_type"] == "Reversionary"].set_index("account_no")
         self.spouse = noms[noms["relationship"].isin(["Spouse", "De facto partner"])]
         self.owner = {a: self.resolve(m) for a, m in zip(ria["account_no"], ria["member_id"])}
+        # a death the annuity system recorded when it stopped a life's payments, whether or not the register has it
+        dead = ann[ann["life_status"] == "Deceased"]
+        self.died = dict(zip(dead["client_id"], dead["date_of_death"]))
 
     def resolve(self, cid):
         return self.merged.get(cid, cid)
 
     def alive(self, cid):
         d = self.c.at[cid, "date_of_death"]
+        if pd.isna(d) and cid in self.died:
+            d = self.died[cid]
         return pd.isna(d) or d > AS_AT
 
     def age(self, cid):
@@ -123,7 +128,18 @@ class Book:
 
 def ask_a(bk):
     out = {g: dict(hh=set(), bal=0.0, pay=0.0) for g in range(6)}
+    rows = {}
     for a in bk.ria.itertuples():
+        rows.setdefault(bk.owner[a.account_no], []).append(a)
+    take = []
+    for cid, accs in rows.items():
+        # a member's rows carrying one balance and one annual payment between them hold the member's totals, which the
+        # period-end run takes from the member's summary: once
+        if len(accs) > 1 and len({a.balance_31_12_2026 for a in accs}) == 1 and \
+                len({a.annual_payment_2026_27 for a in accs}) == 1:
+            accs = accs[:1]
+        take += accs
+    for a in take:
         cid = bk.owner[a.account_no]
         if bk.alive(cid):
             hh, ms = bk.household(cid)
@@ -175,12 +191,9 @@ def ask_b(bk, ann):
         cid = pay["client_id"]
         hh, ms = bk.household(cid)
         ages = [bk.age(m) for m in ms if bk.alive(m)]
-        if other is not None:
-            ages.append(K.AS_AT.year - other["date_of_birth"].year)
-        else:
-            npa = bk.nominated_partner_age(cid)
-            if npa is not None:
-                ages.append(npa)
+        npa = bk.nominated_partner_age(cid)
+        if npa is not None:
+            ages.append(npa)
         g = int(K.band_of(max(ages)))
         out[g]["hh"].add(hh)
         out[g]["income"] += amt
@@ -197,7 +210,7 @@ def compute(folder):
     band = K.band_of(s["older"])
     groups, pairs, segs = main_call(sv, band)
     crm, ria, noms, ann = load_book(folder)
-    bk = Book(crm, ria, noms)
+    bk = Book(crm, ria, noms, ann)
     A = ask_a(bk)
     Bk = ask_b(bk, ann)
     names = [seg_name(x) for x in segs]
@@ -340,7 +353,10 @@ def write_paper(path, res):
         "Placed the same way, by the older partner's age at 31 December 2026, our Retirement Income Account and lifetime "
         "annuity customers sit as below. A pension whose member died before 31 December with a reversionary "
         "beneficiary nominated is counted with the survivor, to whom it continued; a partner who is not our client is "
-        "placed from the date of birth on the member's nomination.")
+        "placed from the date of birth on the member's nomination; a partner whose death in 2026 the annuity system "
+        "recorded is not counted, though the register still holds them; and a member with two pensions is counted "
+        "once, the extract printing the member's balance and payment on each of them. A former partner still named "
+        "on an annuity is not paid while the annuitant lives.")
     tb = doc.add_table(rows=1, cols=6)
     tb.style = "Light List Accent 1"
     for i, txt in enumerate(["Age group", "Households with a pension", "Pension balances", "Payments set for 2026-27",
@@ -414,8 +430,9 @@ def write_xlsx(path, res):
              "than 1.96 times its standard error.",
              "Our book: client register and annuity listing pulled 12 January 2027; pension extract and nominations at "
              "31 December 2026. A pension whose member died before 31 December with a reversionary nominated is counted "
-             "with the survivor; annuity income is the annual rate at 31 December 2026, deferred annuities not yet "
-             "paying left out.",
+             "with the survivor; a partner whose 2026 death the annuity listing records is not counted, though the "
+             "register still holds them; a member's pensions that repeat one balance and payment count once; "
+             "annuity income is the annual rate at 31 December 2026, deferred annuities not yet paying left out.",
              "Dollar figures rounded to the nearest thousand."]
     for t in notes:
         s.append([t])

@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: replicate, errors, weights, person, medians, bulletin, implicates, design, quadrature, asserted, estimate, reference, committee, standard, variance, decisive, estimates, client, clusters, replicates, insurer, recomputed, domain, together, implicate
+Stump terms swept: replicate, errors, weights, person, medians, bulletin, implicates, design, asserted, quadrature, estimate, reference, committee, standard, variance, decisive, estimates, client, clusters, replicates, insurer, recomputed, domain, together, implicate
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `retirement_range_2027_brief.docx`: golden figure 1.96 appears: ...een their median household net worth is more than 1.96 times the standard error of that difference. Wher...
@@ -14,8 +14,8 @@ Stump terms swept: replicate, errors, weights, person, medians, bulletin, implic
 - **REVIEW** `nhws2025_user_guide.pdf`: 12 of 25 stump-paragraph terms appear (replicate, errors, weights, person, implicates, estimate); read whether the document names the move
 - **REVIEW** `retirement_range_2027_brief.docx`: 9 of 25 stump-paragraph terms appear (errors, person, medians, bulletin, estimate, reference); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `lifetime_annuity_lives_20270112.csv`: 107 ISO dates after 2027-01-13, e.g. 2030-04-01, 2030-12-01, 2032-01-01, 2032-05-01, 2032-07-01
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -150,3 +150,5 @@ Isolated reader (sonnet, medium) on fresh copies of prompt.txt and target/ only.
 Realism tells: none strong (the bulletin's bands differing from the brief's read as the survey's own tabulation).
 
 Ruling: no fix. The stage 4 reads end here: nothing names the decisive step, no file ranks the boundaries, every question-5 sentence executes to the golden.
+
+**Reader (wave 3 audit, after the asks' re-cut).** Q1 none (the brief's rule and the guide's section 7 give the standard and the error of an estimate, never the error of a difference or the groups' covariance); Q2 none (the bulletin's ten-year bands from 30 by the reference person, context); Q3 the user guide, the dictionary and the brief as ordinary supporting files; Q4 none; Q5 the guide's variance formula applied to the difference, the combination left open; Q6 an analytical choice (the unit and the error of the difference). Q7 on the book: the partner known only from nominations, stale nominations, deaths after 31 December, deferred annuities, the January increases, the reversionary life's status; each settled by the dictionary, the PDS or the fact sheet, and none of the cut's two silent devices named. Q8 none planted; the dictionary's partner notes read careful rather than placed. Every REVIEW line harmless.

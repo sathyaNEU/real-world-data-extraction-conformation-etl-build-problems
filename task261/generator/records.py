@@ -77,7 +77,8 @@ def write_crm(path, B):
     for p in B.P:
         if not p["client"] or (p["since"] is not None and p["since"] > K.PULL):
             continue
-        dead = p["dod"] is not None and p["notified"] is not None and p["notified"] <= K.PULL
+        dead = p["dod"] is not None and p["notified"] is not None and p["notified"] <= K.PULL \
+            and not p.get("register_unaware")
         rows.append([p["client_id"], p["hh"], p["dob"].isoformat(), p["sex"], states[p["pid"]], p.get("marital", ""),
                      (p["since"] or dt.date(2010, 1, 1)).isoformat(), "Deceased" if dead else "Active",
                      p["dod"].isoformat() if dead else "", ""])
@@ -100,9 +101,16 @@ def write_ria(path, B):
     fh, w = _writer(path)
     w.writerow(["account_no", "member_id", "pension_type", "commenced", "investment_option", "payment_frequency",
                 "annual_payment_2026_27", "balance_31_12_2026"])
+    # the period-end run takes a member's balance and annual payment from the member's summary
+    total = {}
+    for a in accs:
+        t = total.setdefault(a["owner"], [0.0, 0.0])
+        t[0] += a["payment"]
+        t[1] += a["balance"]
     for a, opt in zip(accs, opts):
+        pay, bal = total[a["owner"]] if a.get("member_total") else (a["payment"], a["balance"])
         w.writerow([a["account"], a["owner_id"], a["type"], a["commenced"].isoformat(), opt, a["freq"],
-                    "%.2f" % a["payment"], "%.2f" % a["balance"]])
+                    "%.2f" % pay, "%.2f" % bal])
     fh.close()
     return len(accs)
 

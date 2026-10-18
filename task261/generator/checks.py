@@ -270,6 +270,9 @@ def run(target, golden, st, meta_path):
     for g in K.OLDER:
         ck("bin: Ask B income %s at least $150 from a rounding edge" % K.BAND_SHORT[g],
            abs(res["B"][g]["income"] % 1000 - 500) >= 150, res["B"][g]["income"])
+        for key in ("balance", "payments"):
+            ck("bin: Ask A %s %s at least $150 from a rounding edge" % (key, K.BAND_SHORT[g]),
+               abs(res["A"][g][key] % 1000 - 500) >= 150, res["A"][g][key])
 
     # ------------------------------------------------------------------ the asks: stops and the cracker sheet
     F = T.Files(target)
@@ -310,6 +313,11 @@ def run(target, golden, st, meta_path):
         ck("cracker sheet: Ask B households %s missed" % K.BAND_SHORT[g], cb[g]["households"] != res["B"][g]["households"], "")
         ck("cracker sheet: Ask B income %s missed" % K.BAND_SHORT[g], G.thousands(cb[g]["income"]) !=
            G.thousands(res["B"][g]["income"]), "")
+    import cracker as CR
+    rows_cr = CR.score(target, res)
+    _, lc, ls, pair = CR.ceiling(rows_cr, rows_cr)
+    ck("cracker.py on the cut pack: the cracker keeps no ask figure (%s), pair ceiling %.1f" % (
+        ", ".join("%s %d of %d" % (a, h, n) for a, n, h in rows_cr), pair), lc == 0 and pair <= 40, rows_cr)
     # each device has rows in every group it is ledgered to move
     pend = B.pending
     grp_rnc = {_group_of_survivor(B, k) for k in pend["rnc"]}
@@ -323,6 +331,45 @@ def run(target, golden, st, meta_path):
                                                                             c["index"] != "Level") >= 15, "")
     ck("device D6: reversionary contracts with both lives alive", sum(1 for c in B.ann if c["life2"] is not None and
                                                                        I.alive(B, c["life1"]) and I.alive(B, c["life2"])) >= 100, "")
+    # the cracker's rows: a member's totals on each of the member's rows, partners the register files apart, former
+    # partners still on a reversionary annuity
+    ria = pd.read_csv(os.path.join(target, K.RIA), dtype=str)
+    ria["member"] = ria["member_id"].map(F.resolve)
+    tied = ria.groupby("member").filter(lambda x: len(x) > 1)
+    same = tied.groupby("member").agg(b=("balance_31_12_2026", "nunique"), p=("annual_payment_2026_27", "nunique"))
+    two = {g: 0 for g in K.OLDER}
+    for o in B.second:
+        q = B.hh_true.get(o)
+        two[I.placed(B, [o] + ([q] if q is not None and I.alive(B, q) else []))] += 1
+    tie = set(same.index[(same.b == 1) & (same.p == 1)])
+    ck("device D6 (A): members with a second pension whose rows both carry the member's balance and annual payment, "
+       "in every group (%s), beside %d members whose rows differ" % (two, len(same) - len(tie)),
+       all(two[g] >= 10 for g in K.OLDER) and tie == {F.resolve(B.P[o]["client_id"]) for o in B.second} and
+       len(same) - len(tie) >= 10, (two, len(same), len(tie)))
+    ck("device D6 (A): no file describes the balance or the payment as an account's", "Account balance" not in texts[K.DICT]
+       and not re.search(r"member'?s (total|summary)", texts[K.DICT], re.I), "")
+    moves = {}
+    for P in B.register_lag:
+        M = B.hh_true[P]
+        key = (I.placed(B, [P, M]), I.placed(B, [M]))
+        moves[key] = moves.get(key, 0) + 1
+    crm = pd.read_csv(os.path.join(target, K.CRM), dtype=str).set_index("client_id")
+    ann = pd.read_csv(os.path.join(target, K.ANN), dtype=str)
+    lag = [B.P[P]["client_id"] for P in B.register_lag]
+    ck("device D2 (A): partners whose 2026 death the annuity listing records and the register does not, each in a "
+       "pension member's household, moving every group (%s)" % moves,
+       moves == {(5, 4): 3, (4, 3): 2, (5, 3): 1} and all(crm.at[x, "status"] == "Active" and pd.isna(
+           crm.at[x, "date_of_death"]) for x in lag) and all(((ann.client_id == x) & (ann.life_status == "Deceased"))
+                                                             .sum() == 1 for x in lag), moves)
+    ck("device D2 (A): the survivors' marital status as the register last knew it", all(
+        crm.at[B.P[B.hh_true[P]]["client_id"], "marital_status"] in ("Married", "De facto") for P in B.register_lag), "")
+    sep = {g: 0 for g in K.OLDER}
+    for cn in B.separated:
+        sep[I.placed(B, [cn["life2"]])] += 1
+    ck("device D6 (B): former partners still on a reversionary annuity, in households of their own, two in every "
+       "group (%s)" % sep, all(sep[g] == 2 for g in K.OLDER) and all(
+           F.by.at[B.P[x]["client_id"], "marital_status"] == "Divorced" for cn in B.separated
+           for x in (cn["life1"], cn["life2"])), sep)
     # the ask's conventions closed (judge r2): the partner a nomination names, a nominee who has died, the pull date
     dct = texts[K.DICT]
     ck("ask fork: the dictionary defines a Spouse or De facto partner nominee as the member's partner",

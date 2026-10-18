@@ -78,6 +78,11 @@ def book(folder):
     noms["nborn"] = pd.to_datetime(noms["nominee_date_of_birth"]).dt.year
     partner_noms = noms[noms.relationship.isin(["Spouse", "De facto partner"])]
     rev = noms[noms.nomination_type == "Reversionary"].set_index("account_no")
+    # a death the annuity listing records counts, whether or not the register has it
+    lives = pd.read_csv(os.path.join(folder, FILES["ann"]), dtype=str)
+    gone = lives[(lives.life_status == "Deceased") & (pd.to_datetime(lives.date_of_death) <= asat)]
+    for cid in gone.client_id:
+        alive[cid] = False
 
     def known_partner(cid):
         ms = hh_members.get(hh_of[cid], [cid])
@@ -95,6 +100,11 @@ def book(folder):
         return group(2026 - min(years))
 
     A = {k: [set(), 0.0, 0.0] for k in range(6)}
+    # a member whose rows repeat one balance and one payment: the member's totals, counted once
+    same = ria.groupby("member").agg(n=("account_no", "size"), b=("balance_31_12_2026", "nunique"),
+                                     p=("annual_payment_2026_27", "nunique"))
+    repeat = set(same.index[(same.n > 1) & (same.b == 1) & (same.p == 1)])
+    ria = ria[~(ria.member.isin(repeat) & ria.duplicated("member"))]
     for row in ria.itertuples():
         cid = row.member
         if alive[cid]:
@@ -134,8 +144,7 @@ def book(folder):
             anniv = pd.Timestamp(2027, 1, start.day)
             if payee.life_no == "2" or pd.isna(payee.date_of_death) or payee.date_of_death > anniv:
                 amount /= rate[payee.indexation]
-        extra = int(pd.Timestamp(partner.date_of_birth).year) if partner is not None else None
-        k = placement(payee.client_id, extra)
+        k = placement(payee.client_id)
         Bk[k][0].add(hh_of[payee.client_id])
         Bk[k][1] += amount
     return A, Bk
