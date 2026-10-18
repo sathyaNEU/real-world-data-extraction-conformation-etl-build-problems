@@ -23,5 +23,5 @@ architecture), new. A task from an objective no developer owns says so.
 |---|---|
 | 1 | task183 (resume 4) · task182 (redesign: shipped, not stumped) · task181 (re-root: architecture 4) · task180 (re-root) · task125 (re-root: retired) |
 | 2 | task184 (new) · task185 (new) · task186 (new) · task187 (new) · task188 (new) · task189 (new) |
-| 3 | task190 (re-root: architecture 4) · task191 (new) · task192 (new) · task193 (new) · task194 (new) · task195 (new) |
+| 3 | task190 (PAUSED: five attempts, the ground method-exhausted for this slot; resume from its axis map) · task191 (new) · task192 (new) · task193 (new) · task194 (new) · task195 (new) |
 | 4 | task196 (new) · task197 (new) · task198 (new) · task199 (new) · task200 (new) · task201 (new) |

@@ -1182,6 +1182,33 @@ were round too, so both were redrawn.
   of 1.03x to 1.13x, which is seed noise rather than the computable blindness L1 requires, and it
   contradicts the domain's own mechanism. Not resumed, and not re-found: the near-repeat latent structure is
   now spent in this lane twice, at task181 v3 on the background rate and here on the repeat-address reflex.
+- **The search's own tooling and draw, kept so the next session on this slot starts from it rather than
+  re-deriving it.** Three scripts were written in a session scratchpad that does not survive the session, so
+  what they do and what they need is recorded here. **The axis prober** fills `guard.py new task190`'s
+  template with a probe card on this pairing and runs `guard.py check` once per value of one axis, grepping
+  for the axis rules; it is the cheapest way to get the map in the entry above, and it is worth re-running
+  rather than trusting that map, because the three builds the bans reach move as the wave ships. Two BLOCKs
+  fire on every probe until a real draw exists and should be ignored while probing: `card world.people is
+  empty` and `two_layer.fields`. **The reflex sweep** generates, per area, background burglaries uniform in
+  a square of the area's own side and uniform over 730 days, then with probability `boost` attaches
+  `1 + Poisson(mfo)` follow-ons at a uniform radius out to 260 m and 1 to 12 days later, an offence taking
+  the triggering offence's address with probability `samefrac`; it then computes all within-area pairs and
+  ranks the areas on ten measures (count, count per 1,000 dwellings, count per km squared, close pairs,
+  close pairs per burglary, close pairs over all pairs, share with a close neighbour, share of addresses
+  burgled more than once, the Knox ratio, and the Knox ratio excluding same-address pairs) with the close
+  bands at 400 m and 14 days. The eight areas were (side m, dwellings, background, boost, mean follow-ons):
+  Kingsley 900/3000/860/0.04/0.5, Rotherglen 1300/2600/610/0.08/0.5, Marsden 1050/1500/480/0.06/0.5, Totara
+  Flat 2100/2200/300/0.34/1.1 as the designed winner, Awakino 1700/1800/360/0.10/0.5, Hillsborough
+  800/1200/300/0.05/0.5, Pencarrow 2400/3100/430/0.07/0.5, Bexley 1150/900/210/0.12/0.5, seed 190.
+  **The dial sweep** is the same generator run over `boost` in (0.15, 0.25, 0.34, 0.45, 0.60) crossed with
+  `samefrac` in (0.30, 0.12), reporting which area each of the two measures tops and by what margin; it is
+  what turns "the reflex reaches the golden" from an argument into the measurement in the entry above, and
+  any later candidate on this ground gets the same treatment before a card is registered.
+- **The persona draw, made and unspent.** `guard.py names --geo "New Zealand" --seed 190` returned Bruce
+  Wheeler, Rachael Wood, Ryder Reader, Dylan Burrell, Kayla Burr, Brian Simonsen, Benjamin Jefferies, Emma
+  Gullery, Manaaki Little, Thomas Hughes. No pack was cut, so none of them is spent and none is on the card;
+  a session that draws this slot on a New Zealand world can take them, and one that draws another geography
+  redraws rather than translating these.
 
 ## Architecture 4, abandoned on a model constraint rather than a design finding
 
