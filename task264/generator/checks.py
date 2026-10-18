@@ -76,16 +76,16 @@ def clean(T):
     """The world before any record is written: who each interview was (home, true visits), and each stratum's true
     adult visits over its interviews as the weight."""
     m = T["m"]
-    rows = [(o["code"] if o["code"] != "NK" else T["P"][o["person"]][0], o["f_true"], T["S"]["V"][o["stratum"]] / m[o["stratum"]])
-            for o in T["recs"]]
+    rows = [(o["code"] if o["code"] != "NK" else T["P"][o["person"]][0], o["f_true"], T["S"]["V"][o["stratum"]] / m[o["stratum"]],
+             o["f_here"]) for o in T["recs"]]
     est = {}
-    for how in ("raw", "visits", "mean", "unweighted", "golden"):
+    for how in ("raw", "visits", "mean", "unweighted", "golden", "here"):
         s = collections.defaultdict(float)
         wf = collections.defaultdict(float)
-        for code, f, w in rows:
+        for code, f, w, fh in rows:
             if code not in K.CODES:
                 continue
-            s[code] += {"raw": 1, "visits": w, "unweighted": 1 / f, "golden": w / f, "mean": w}[how]
+            s[code] += {"raw": 1, "visits": w, "unweighted": 1 / f, "golden": w / f, "mean": w, "here": w / fh}[how]
             wf[code] += w * f
         if how == "mean":
             s = {c: s[c] / (wf[c] / s[c]) for c in K.CODES}
@@ -107,7 +107,7 @@ def copy_without(target, drop):
 def all_figures(target):
     o = G.compute(target)
     return (G.rounded(o["levy"]), {p: round(v, 2) for p, v in o["income"].items()},
-            {c: (v["paid"], v["owed"]) for c, v in o["collection"].items()}, o["vehicles"])
+            {c: (v["on_time"], v["late"]) for c, v in o["collection"].items()}, o["vehicles"])
 
 
 def miss(a, b, tol=0.5):
@@ -138,8 +138,9 @@ def run(target, T):
 
     # ------------------------------------------------------------------------------------------ the three rules
     wt = pd.read_csv(G.f(target, "weights"))
-    check("R1 the field's raw material ships: one row per interview with its home area, its own 12-month visit count "
-          "and its expansion weight (%d interviews)" % len(d), len(d) == len(T["recs"]) and d["visits"].notna().all())
+    check("R1 the field's raw material ships: one row per interview with its home area, its 12-month visits to each "
+          "of the six parks and its expansion weight (%d interviews)" % len(d), len(d) == len(T["recs"]) and
+          d[["v_" + q for q in K.PARK_CODES]].notna().all().all() and (d["here"] >= 1).all())
     check("R1 no shipped column holds the deciding quantity: the weights file carries visits only (weight = stratum "
           "adult visits over its interviews, to six places)", list(wt.columns) == ["case_id", "stratum", "adult_visits_est",
                                                                                     "interviews_in_stratum", "weight"]
@@ -171,14 +172,18 @@ def run(target, T):
           "valley share %.1f against the truth's %.1f" % (share(E["mean"]), share(E["truth"])),
           abs(share(E["mean"]) - share(E["truth"])) > 18)
     check("R3a executing every filed rule (the resolution, the note's weights) lands the default path's split on the "
-          "shipped pack: %.1f per cent" % o["valley"]["mean"], round(o["valley"]["mean"], 1) == 24.9)
+          "shipped pack: %.1f per cent" % o["valley"]["mean"], round(o["valley"]["mean"], 1) == 25.0)
+    check("R3a the frequency-aware route that counts only the visits to the park of interview lands a wrong split on "
+          "the clean truth too (%.1f against the truth's %.1f): a resident who visits two parks can be met at either"
+          % (share(E["here"]), share(E["truth"])), abs(share(E["here"]) - share(E["truth"])) > 3)
     check("R3b the decisive step alone (weight over own visit count) moves the default path to the golden, which sits "
           "within 2 points of the truth on the clean world (%.1f against %.1f)" % (share(E["golden"]), share(E["truth"])),
           abs(share(E["golden"]) - share(E["truth"])) < 2)
     check("R3b each lower rung's single correction leaves a wrong split: raw to weighted (R1) %.1f, raw to inverse "
-          "visits unweighted (R3) %.1f, visits to visits over the average (R2) %.1f; golden %.1f" % (
-              o["valley"]["visits"], o["valley"]["unweighted"], o["valley"]["mean"], o["valley"]["golden"]),
-          min(abs(o["valley"][k] - o["valley"]["golden"]) for k in ("visits", "unweighted", "mean")) > 2.0)
+          "visits unweighted (R3) %.1f, visits to visits over the average (R2) %.1f, weight over the visits to the park "
+          "of interview (R4) %.1f; golden %.1f" % (o["valley"]["visits"], o["valley"]["unweighted"], o["valley"]["mean"],
+                                                   o["valley"]["here"], o["valley"]["golden"]),
+          min(abs(o["valley"][k] - o["valley"]["golden"]) for k in ("visits", "unweighted", "mean", "here")) > 2.0)
     check("R3c no plant: no memo, draft, briefing or stakeholder figure argues a split (no document but the levy "
           "papers mentions the levy's apportionment)",
           [f for f, t in tx.items() if re.search(r"apportion", t, re.I)] == [K.FILES["levypapers"]])
@@ -187,15 +192,19 @@ def run(target, T):
 
     # ------------------------------------------------------------------------------------------ ladder
     v = o["valley"]
-    check("ladder: R0 %.1f, R1 %.1f, R2 %.1f, R3 %.1f, golden %.1f (valley share)" % (
-        v["raw"], v["visits"], v["mean"], v["unweighted"], v["golden"]),
-        (round(v["raw"], 1), round(v["visits"], 1), round(v["mean"], 1), round(v["unweighted"], 1), round(v["golden"], 1))
-        == (86.3, 85.1, 24.9, 53.4, 50.6))
+    check("ladder: R0 %.1f, R1 %.1f, R2 %.1f, R3 %.1f, R4 %.1f, golden %.1f (valley share)" % (
+        v["raw"], v["visits"], v["mean"], v["unweighted"], v["here"], v["golden"]),
+        (round(v["raw"], 1), round(v["visits"], 1), round(v["mean"], 1), round(v["unweighted"], 1), round(v["here"], 1),
+         round(v["golden"], 1)) == (86.3, 85.1, 25.0, 53.4, 55.5, 50.7))
+    R4 = levies(o["rungs"]["here"]["N"])
+    gap4 = min(abs(R4[c] - L[c]) for c in K.CODES)
+    check("separation: the frequency-aware rung that divides by the visits to the park of interview (R4) is %d pounds "
+          "or more from the golden for every council" % gap4, gap4 >= 20000)
     R3 = levies(o["rungs"]["unweighted"]["N"])
     R2 = levies(o["rungs"]["mean"]["N"])
     gap3 = min(abs(R3[c] - L[c]) for c in K.CODES)
     check("separation: the nearest wrong rung (R3) is %d pounds or more from the golden for every council" % gap3,
-          gap3 >= 8000)
+          gap3 >= 7000)
     gap2 = min(abs(R2[c] - L[c]) for c in K.VALLEY)
     check("separation: the default path is %d pounds or more from the golden for each valley council" % gap2,
           gap2 >= 300000)
@@ -203,7 +212,7 @@ def run(target, T):
           abs(v["mean"] - v["golden"]) >= 8 * abs(v["unweighted"] - v["golden"]))
     check("no rung names the golden split: every rung differs from the golden for every council by 1,000 pounds or more",
           all(min(abs(levies(o["rungs"][k]["N"])[c] - L[c]) for c in K.CODES) >= 1000
-              for k in ("raw", "visits", "mean", "unweighted")))
+              for k in ("raw", "visits", "mean", "unweighted", "here")))
     check("the levies add to the requirement: %d" % sum(L.values()), sum(L.values()) == K.LEVY_2027)
     check("no two councils' estimates tie (axis 11)", len({round(x, 3) for x in N.values()}) == 9)
 
@@ -218,14 +227,18 @@ def run(target, T):
     check("SF4 survey year: every interview between 1 April 2025 and 31 March 2026 (%s to %s)" % (d["date"].min(),
                                                                                                   d["date"].max()),
           d["date"].min() >= K.YEAR0 and d["date"].max() <= K.YEAR1 and "1 April 2025 to 31 March 2026" in papers)
-    check("SF5 one person across the six parks: Q9 asks about any of the six parks and the resolution counts a "
-          "resident once however many of the parks they visited", "any of the Authority's six parks" in note and
+    check("SF5 one person across the six parks: Q9 asks for the visits to each park and the resolution counts a "
+          "resident once however many of the parks they visited", "visited each of these parks" in note and
           "however many of the parks they visited" in papers)
     check("SF6 the delivered weights are the survey's: the note says they are the weights to use",
           "are the weights to use with this survey" in note)
     w1 = pd.read_excel(G.f(target, "wave1"), sheet_name="Interviews")
-    check("SF7 Q9 is the survey's only measure of visits (one visit field in each wave)",
-          sum("visit" in c.lower() for c in w1.columns) == 1 and sum("visit" in c.lower() for c in w2.columns) == 1)
+    check("SF7 Q9 is the survey's only measure of visits (one field per park in each wave, six in all)",
+          sum("visit" in c.lower() for c in w1.columns) == 6 and sum(c.startswith("q9_") for c in w2.columns) == 6)
+    check("SF7 every respondent gives at least one visit to the park they were leaving, and most of the valley's "
+          "regular walkers name a second park (%d of %d interviews name two or more)" % (
+              int((d[["v_" + q for q in K.PARK_CODES]].gt(0).sum(axis=1) >= 2).sum()), len(d)),
+          (d["here"] >= 1).all() and (d[["v_" + q for q in K.PARK_CODES]].gt(0).sum(axis=1) >= 2).mean() > .3)
     nk = float((d["code"] == "NK").sum())
     check("SF8 home not placed: not counted or shared pro rata, same levies (%d NK interviews)" % nk,
           levies({c: N[c] * (1 + nk / len(d)) for c in K.CODES}) == L)
@@ -264,14 +277,14 @@ def run(target, T):
     tr = E["truth"]
     tt = sum(tr.values())
     mae = {}
-    for k in ("golden", "raw", "visits", "mean", "unweighted"):
+    for k in ("golden", "raw", "visits", "mean", "unweighted", "here"):
         n = N if k == "golden" else o["rungs"][k]["N"]
         mae[k] = sum(abs(n[c] / sum(n.values()) - tr[c] / tt) for c in K.CODES) / 9 * 100
     check("estimate against the truth: the golden's councils' shares sit closest to the true shares (mean error %.2f "
           "points against %.2f for the nearest rung)" % (mae["golden"], min(v for k, v in mae.items() if k != "golden")),
           mae["golden"] == min(mae.values()))
     check("estimate against the truth: the golden's valley share is the nearest to the truth's (%.1f against %.1f)" % (
-        v["golden"], share(tr)), min(("raw", "visits", "mean", "unweighted", "golden"),
+        v["golden"], share(tr)), min(("raw", "visits", "mean", "unweighted", "here", "golden"),
                                      key=lambda k: abs(v[k] - share(tr))) == "golden")
 
     # ------------------------------------------------------------------------------------------ Ask A
@@ -315,52 +328,120 @@ def run(target, T):
         check("Ask A stop, %s: misses %d of four by 50 pounds or more" % (lab, n), n == k)
 
     # ------------------------------------------------------------------------------------------ Ask B
-    owner = {i["no"]: i["code"] for i in T["inv"]}
-    paidT = collections.defaultdict(float)
+    levy_inv = [i for i in T["inv"] if i["kind"] == "levy"]
+    sales = {i["no"]: i for i in T["inv"]}
+    owner = {i["no"]: i["code"] for i in levy_inv}
+    due = {i["no"]: i["due"] for i in levy_inv}
+    truthB = {c: dict(on_time=0.0, late=0.0) for c in K.CODES}
     for p in T["pays"]:
-        if p["value"] <= dt.date(2026, 3, 31):
-            for no, amt in p["covers"]:
-                if no in owner:
-                    paidT[owner[no]] += amt
+        for no, amt in p["covers"]:
+            if no in owner and p["value"] <= K.YEAR1:
+                truthB[owner[no]]["on_time" if p["value"] <= due[no] else "late"] += amt
     B = o["collection"]
-    check("Ask B golden equals the payments as made for every council", all(abs(B[c]["paid"] - paidT[c]) < .005
-                                                                              for c in K.CODES))
+    check("Ask B golden equals the payments as made for every council (on time and late by the day the bank credited "
+          "them)", all(abs(B[c][k] - truthB[c][k]) < .005 for c in K.CODES for k in ("on_time", "late")))
+    levy25 = {c: sum(i["amount"] for i in levy_inv if i["code"] == c) for c in K.CODES}
     _, i24 = W.levy_2024()
-    check("Ask B Chaldale owes the difference between its 2025-26 and 2024-25 third instalments (%d)" % B["CHD"]["owed"],
-          B["CHD"]["owed"] == [i["amount"] for i in T["inv"] if i["code"] == "CHD" and i["q"] == 3][0] - i24["CHD"][2] > 0)
-    rc = pd.read_csv(G.f(target, "receipts"), dtype=str)
-    post = pd.to_datetime(rc["Date"], format="%d/%m/%Y").dt.date
-    val = pd.to_datetime(rc["Value date"], format="%d/%m/%Y").dt.date
-    check("Ask B D8: the manifest says what each of the cash book's dates is (posting from the morning's statement, "
-          "the bank's credit), in that file only", "Value date the day the bank credited the funds" in tx[K.FILES["manifest"]]
-          and sum("bank credited the funds" in flat(t) for t in tx.values()) == 1)
+    short = [i["amount"] for i in levy_inv if i["code"] == "CHD" and i["q"] == 3][0] - i24["CHD"][2]
+    check("Ask B Chaldale's third instalment at the 2024-25 amount leaves %d pounds unpaid at 31 March" % short,
+          short > 0 and abs(levy25["CHD"] - B["CHD"]["on_time"] - B["CHD"]["late"] - short) < .005)
+    grb4 = [p for p in T["pays"] if p["payer"] == "GRB" and p["q"] == 4][0]
+    check("Ask B Grinbury's fourth instalment reached the bank on %s, after the year and the exports" % grb4["value"],
+          grb4["value"] > dt.date(2026, 4, 7))
+    cb = pd.read_csv(G.f(target, "cashbook"), dtype=str)
+    bk = pd.read_csv(G.f(target, "bank"), dtype=str)
+    rows_all = T["rows"]
+    inb = [x for x in rows_all if O.EXPORT_FROM <= x["value"] <= O.EXPORT_TO and O.EXPORT_FROM <= x["post"] <= O.CASHBOOK_TO]
+    check("Ask B D8: every credit both files hold is posted the working day after the bank credited it (%d credits, one "
+          "mechanism, the whole year)" % len(inb), len(inb) > 500 and all(O.next_working(x["value"]) == x["post"]
+                                                                          for x in inb))
+    key = collections.Counter(zip(bk["Reference"], bk["Amount"]))
+    check("Ask B D8: the cash book carries no bank reference; each council's credit is found in the bank's report by "
+          "its reference and amount, which no two credits share", "Bank ref" not in cb.columns and
+          all(key[(x["ref"], "%.2f" % x["amount"])] == 1 for x in inb if "pay" in x))
+    check("Ask B D8: the manifest defines each file's date flatly (the day the finance system booked the receipt, the "
+          "day the bank credited the funds) and no file says how one follows the other",
+          "the day the finance system booked the receipt" in tx[K.FILES["manifest"]] and
+          "the day the bank credited the funds" in tx[K.FILES["manifest"]] and
+          not any(re.search(r"morning|next working day|day after|a day later", flat(t), re.I) for t in tx.values()))
+    on_due = collections.defaultdict(int)
+    for p in T["pays"]:
+        for no, _ in p["covers"]:
+            if no in owner and p["value"] == due[no]:
+                on_due[owner[no]] += 1
+    check("Ask B D8: every council has a payment credited on its due date, which the posting date makes late or moves "
+          "past the year (%s)" % dict(on_due), all(on_due[c] >= 1 for c in K.CODES))
+    council = cb[cb["Invoice"].fillna("") != ""]
+    multi = [g for _, g in council.groupby("Receipt no") if len(g) > 1]
+    check("Ask B D6: a council's payment run that paid an instalment and a sundry invoice together is one receipt on two "
+          "lines with the receipt's amount on each, the two invoices adding to it (%d receipts)" % len(multi),
+          len(multi) >= 15 and all(g["Amount"].nunique() == 1 and abs(float(g["Amount"].iloc[0]) - sum(
+              sales[n]["amount"] for n in g["Invoice"])) < .005 for g in multi))
+    two = collections.defaultdict(set)
+    for p in T["pays"]:
+        if len(p["covers"]) > 1 and p["post"] <= O.CASHBOOK_TO:
+            for no, _ in p["covers"]:
+                if no in owner and p["value"] <= K.YEAR1:
+                    two[owner[no]].add("on_time" if p["value"] <= due[no] else "late")
+    check("Ask B D6: every council's on-time figure, and every late figure above nil, carries a receipt that paid a "
+          "sundry invoice too (%s)" % {c: sorted(v) for c, v in two.items()},
+          all(two[c] >= {k for k in ("on_time", "late") if B[c][k] > 0} for c in K.CODES))
+    check("Ask B D6: no file says what a receipt line's amount is",
+          not any(re.search(r"receipt'?s amount|amount of the receipt|amount on (each|every) line", flat(t), re.I)
+                  for t in tx.values()))
+    ye = [p for p in T["pays"] if p["value"] <= K.YEAR1 and p["post"] > O.CASHBOOK_TO
+          and any(no in owner for no, _ in p["covers"])]
+    ye_inst = sorted(owner[no] for p in ye for no, _ in p["covers"] if no in owner)
+    check("Ask B D5: the cash book's year ends on 31 March by posting date, so the %d credits of 31 March paying eight "
+          "councils' fourth instalments (%s) are in the bank's report only" % (len(ye), ", ".join(ye_inst)),
+          len(ye) == 7 and len(ye_inst) == 8 and all(p["value"] == K.YEAR1 for p in ye)
+          and not set(cb["Narrative"]) & {p["ref"] for p in ye} and all(key[(p["ref"], "%.2f" % p["amount"])] == 1
+                                                                        for p in ye))
+    levy_cb = cb[cb["Account"] == O.LEVY_ACCOUNT]
+    prior = levy_cb[~levy_cb["Invoice"].isin(sales)]
+    check("Ask B D5: the cash book's first levy postings are the 2024-25 fourth instalments under invoices the 2025-26 "
+          "list does not hold, and the bank's report starts after them (%d)" % len(prior),
+          len(prior) == len(O.PRIOR_Q4_ON_DUE) and not set(prior["Narrative"]) & set(bk["Reference"]))
+    joint = bk[bk["Remitter"] == O.JOINT_PAYER]
+    hnm4, wds4 = [[i for i in levy_inv if i["code"] == c and i["q"] == 4][0] for c in O.JOINT]
+    check("Ask B D7: the shared finance service's one transfer, on 31 March, quotes Hornmere's fourth invoice only, at "
+          "the two councils' fourth instalments together", len(joint) == 1 and
+          joint["Reference"].item().startswith(hnm4["no"]) and
+          abs(float(joint["Amount"].item()) - hnm4["amount"] - wds4["amount"]) < .005)
+    fnc = bk[(bk["Remitter"] == O.BANK_NAME["FNC"]) & bk["Reference"].str.contains("INV26")]
+    fnc_inv = [i for i in levy_inv if i["code"] == "FNC" and i["q"] == 4][0]
+    grb_inv = [i for i in levy_inv if i["code"] == "GRB" and i["q"] == 4][0]
+    check("Ask B D7: Ferncote's fourth payment quotes Grinbury's fourth invoice at Ferncote's own amount, in the bank's "
+          "report only", len(fnc) == 1 and fnc["Reference"].item().startswith(grb_inv["no"]) and
+          abs(float(fnc["Amount"].item()) - fnc_inv["amount"]) < .005 and fnc_inv["amount"] != grb_inv["amount"] and
+          fnc["Reference"].item() not in set(cb["Narrative"]))
+    own = bk[bk["Remitter"].isin([O.BANK_NAME[c] for c in O.REF_STYLE])]
+    check("Ask B D7: Keldmere, Ravenwick and Chaldale quote their own references, never an invoice (%d credits)" % len(own),
+          len(own) >= 11 and not own["Reference"].str.contains("INV2").any())
+    hits = lambda val_: sum(not miss(val_[c][x], B[c][x]) for c in K.CODES for x in ("on_time", "late"))
+    stopsB = {"natural (the cash book's posting dates, its lines added up)":
+              (dict(dates="posted", lines="line", yearend="none"), 0),
+              "the cracker (the bank's value dates, the cash book's lines added up, the year end's credits against the "
+              "payers' open invoices)": (dict(dates="bank", lines="line", yearend="payer"), 2),
+              "the bank's value dates, the cash book's lines added up, nothing past the cash book":
+              (dict(dates="bank", lines="line", yearend="none"), 2),
+              "each receipt once, nothing past the cash book": (dict(dates="bank", lines="receipt", yearend="none"), 10),
+              "each receipt once, the year end's credits on the invoice each quotes":
+              (dict(dates="bank", lines="receipt", yearend="reference"), 11),
+              "the posting dates, everything else right": (dict(dates="posted", lines="receipt", yearend="payer"), 0)}
+    for lab, (kw, k) in stopsB.items():
+        h = hits(G.levy_timeliness(target, **kw))
+        check("Ask B stop, %s: hits %d of eighteen" % (lab, h), h <= k)
+    blind = sum(not miss(levy25[c], B[c]["on_time"]) + (not miss(0, B[c]["late"])) for c in K.CODES)
+    check("Ask B blind response (every council paid every instalment on time) recovers %d of eighteen, under a quarter"
+          % blind, blind <= 4)
     check("Ask A: the tariff notes state the VAT rate, in that file only", "standard rate of 20 per cent" in
           tx[K.FILES["tariffs"]] and sum("20 per cent" in flat(t) for t in tx.values()) == 1)
     check("SF11: the resolution states the apportionment on each council's number, rounded once at the end",
           "multiplied by its number and divided by the nine councils' numbers added together, rounded to the nearest "
           "pound" in papers)
-    check("Ask B D8: every receipt is posted the working day after its value date (one mechanism, the whole year)",
-          all(O.next_working(b) == a for a, b in zip(post, val)))
-    q4 = rc[rc["Reference"].str.contains("INV26-01")]
-    check("Ask B D8: the nine councils' fourth instalments (eight transfers) were credited on 31 March 2026 and posted "
-          "on 1 April", len(q4) == 8 and set(q4["Value date"]) == {"31/03/2026"} and set(q4["Date"]) == {"01/04/2026"})
-    prior = rc[rc["Reference"].str.contains(r"INV25-01[23]\d")]
-    check("Ask B the 2024-25 fourth instalments credited 31 March 2025 sit at the export's start under invoices the "
-          "2025-26 invoice list does not hold (%d)" % len(prior), len(prior) == len(O.PRIOR_Q4_ON_DUE) and
-          not set(prior["Reference"].str[:10]) & set(owner))
-    ra = pd.read_csv(G.f(target, "remittances"), dtype=str)
-    joint = rc[rc["Description"] == O.JOINT_PAYER]
-    check("Ask B D7: the shared service's three transfers quote Hornmere's invoice only; its advices list both councils'",
-          len(joint) == 3 and all(owner[r[:10]] == "HNM" for r in joint["Reference"]) and
-          set(ra.loc[ra["payer"].str.startswith("Hornmere and"), "invoice_no"].map(owner)) == {"HNM", "WDS"})
-    natB = G.levy_collection(target, date_col="Date", split="reference")
-    stopsB = {"natural (posting date, reference)": (natB, 18),
-              "posting date, split by the advices": (G.levy_collection(target, date_col="Date"), 18),
-              "value date, reference": (G.levy_collection(target, split="reference"), 4),
-              "value date, split evenly": (G.levy_collection(target, split="even"), 4)}
-    for lab, (val_, k) in stopsB.items():
-        n = sum(miss(val_[c][x], B[c][x], 50) for c in K.CODES for x in ("paid", "owed"))
-        check("Ask B stop, %s: misses %d of eighteen by 50 pounds or more" % (lab, n), n == k)
+    check("Ask B no figure is a multiple of 100 pounds or a share of the levy that reads as placed (every on-time figure "
+          "differs from its council's levy but two)", sum(abs(B[c]["on_time"] - levy25[c]) < .005 for c in K.CODES) <= 2)
 
     # ------------------------------------------------------------------------------------------ Ask C
     truthC = collections.Counter()
@@ -410,12 +491,14 @@ def run(target, T):
         check("Ask C stop, %s: misses %d of four by 100 vehicles or more" % (lab, n), n == k)
 
     # ------------------------------------------------------------------------------------------ cracker sheet
-    cr_a = sum(not miss(nat[p], inc[p]) for p in K.CHARGING)
-    cr_b = sum(not miss(natB[c][x], B[c][x]) for c in K.CODES for x in ("paid", "owed"))
-    natC = G.vehicles(target, False, False, False)
-    cr_c = sum(not miss(natC[p], V[p]) for p in K.CHARGING)
-    check("cracker sheet: the cracker (lands the call, runs the battery, executes the tariff note) hits no ask figure "
-          "(A %d, B %d, C %d)" % (cr_a, cr_b, cr_c), cr_a == cr_b == cr_c == 0)
+    import cracker as CR
+    rows_cr = CR.score(target, o)
+    _, lc, ls, pair = CR.ceiling(rows_cr, rows_cr)
+    kept = {a: h for a, _n, h in rows_cr}
+    nil = [c for c in K.CODES if B[c]["late"] == 0]
+    check("cracker.py on the cut pack: the cracker keeps only the nil late figures every response files (%s; nil late: "
+          "%s), pair ceiling %.1f" % (", ".join("%s %d of %d" % (a, h, n) for a, n, h in rows_cr), ", ".join(nil), pair),
+          kept["A"] == 0 and kept["C"] == 0 and kept["B"] == len(nil) == 2 and pair <= 40)
 
     # ------------------------------------------------------------------------------------------ separation
     main = [K.FILES[k] for k in ("wave1", "wave2", "weights")]
@@ -484,14 +567,14 @@ def run(target, T):
     perpark = d.groupby("park").size()
     check("realism: every park's interview total differs (%s)" % ", ".join("%s %d" % kv for kv in perpark.items()),
           perpark.nunique() == len(perpark))
-    q9 = d["visits"]
+    q9 = pd.concat([d["v_" + q] for q in K.PARK_CODES])
     check("realism: visit counts heap at round numbers as people give them (10, 20, 50, 100 more common than their "
           "neighbours)", all(int((q9 == k).sum()) > 2 * int((q9 == k + 1).sum()) for k in (10, 20, 50, 100)))
     check("realism: the residents' estimates are not round and differ from the populations' ordering",
           not any(x % 100 == 0 for x in [int(v) for v in N.values()]) and
           sorted(K.CODES, key=lambda c: -N[c]) != sorted(K.CODES, key=lambda c: -W.POP[c][2]))
     check("realism: every date in the pack is on or before the export (6 January 2027) and the levy papers'",
-          max(pd.to_datetime(rc["Date"], format="%d/%m/%Y")).date() <= dt.date(2026, 4, 7) and
+          max(pd.to_datetime(cb["Posting date"], format="%d/%m/%Y")).date() <= dt.date(2026, 4, 7) and
           pd.to_datetime(mt["paid_at_utc"]).max().date() <= dt.date(2026, 3, 31))
     for f in files:
         if f.endswith((".xlsx", ".docx")):

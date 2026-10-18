@@ -24,49 +24,58 @@
  "ask_a_total": 1832957,
  "ask_b": {
   "Chaldale District Council": {
+   "late": 128596,
    "levy": 514387,
-   "owed": 3455,
-   "paid": 510932
+   "on_time": 382336,
+   "unpaid": 3455
   },
   "Ferncote Borough Council": {
+   "late": 174806,
    "levy": 699227,
-   "owed": 0,
-   "paid": 699227
+   "on_time": 524421,
+   "unpaid": 0
   },
   "Grinbury District Council": {
+   "late": 381638,
    "levy": 763277,
-   "owed": 0,
-   "paid": 763277
+   "on_time": 190819,
+   "unpaid": 190820
   },
   "Hornmere District Council": {
+   "late": 241197,
    "levy": 964788,
-   "owed": 0,
-   "paid": 964788
+   "on_time": 723591,
+   "unpaid": 0
   },
   "Keldmere District Council": {
+   "late": 166071,
    "levy": 664285,
-   "owed": 0,
-   "paid": 664285
+   "on_time": 498214,
+   "unpaid": 0
   },
   "Larkstead Borough Council": {
+   "late": 0,
    "levy": 1097888,
-   "owed": 0,
-   "paid": 1097888
+   "on_time": 1097888,
+   "unpaid": 0
   },
   "Ravenwick Borough Council": {
+   "late": 222587,
    "levy": 890351,
-   "owed": 0,
-   "paid": 890351
+   "on_time": 667764,
+   "unpaid": 0
   },
   "Snelgarth District Council": {
+   "late": 0,
    "levy": 566832,
-   "owed": 0,
-   "paid": 566832
+   "on_time": 566832,
+   "unpaid": 0
   },
   "Wendstow District Council": {
+   "late": 205341,
    "levy": 821365,
-   "owed": 0,
-   "paid": 821365
+   "on_time": 616024,
+   "unpaid": 0
   }
  },
  "ask_c": {
@@ -78,44 +87,44 @@
  "ask_c_total": 598533,
  "call": {
   "levy": {
-   "Chaldale District Council": 549836,
-   "Ferncote Borough Council": 489078,
-   "Grinbury District Council": 743901,
-   "Hornmere District Council": 650135,
-   "Keldmere District Council": 1250310,
-   "Larkstead Borough Council": 717236,
-   "Ravenwick Borough Council": 1525314,
-   "Snelgarth District Council": 977169,
-   "Wendstow District Council": 513321
+   "Chaldale District Council": 547403,
+   "Ferncote Borough Council": 480746,
+   "Grinbury District Council": 741438,
+   "Hornmere District Council": 675709,
+   "Keldmere District Council": 1252070,
+   "Larkstead Borough Council": 716993,
+   "Ravenwick Borough Council": 1540108,
+   "Snelgarth District Council": 968963,
+   "Wendstow District Council": 492870
   },
   "levy_total": 7416300,
   "requirement": 7416300,
   "residents": {
-   "Chaldale District Council": 20200,
-   "Ferncote Borough Council": 17900,
-   "Grinbury District Council": 27300,
-   "Hornmere District Council": 23800,
-   "Keldmere District Council": 45800,
-   "Larkstead Borough Council": 26300,
+   "Chaldale District Council": 19900,
+   "Ferncote Borough Council": 17500,
+   "Grinbury District Council": 26900,
+   "Hornmere District Council": 24500,
+   "Keldmere District Council": 45500,
+   "Larkstead Borough Council": 26000,
    "Ravenwick Borough Council": 55900,
-   "Snelgarth District Council": 35800,
-   "Wendstow District Council": 18800
+   "Snelgarth District Council": 35200,
+   "Wendstow District Council": 17900
   },
   "share_pct": {
    "Chaldale District Council": 7.4,
-   "Ferncote Borough Council": 6.6,
+   "Ferncote Borough Council": 6.5,
    "Grinbury District Council": 10.0,
-   "Hornmere District Council": 8.8,
+   "Hornmere District Council": 9.1,
    "Keldmere District Council": 16.9,
    "Larkstead Borough Council": 9.7,
-   "Ravenwick Borough Council": 20.6,
-   "Snelgarth District Council": 13.2,
-   "Wendstow District Council": 6.9
+   "Ravenwick Borough Council": 20.8,
+   "Snelgarth District Council": 13.1,
+   "Wendstow District Council": 6.6
   },
-  "total_residents": 271900,
-  "valley_levy": 3752793,
-  "valley_residents": 137600,
-  "valley_share": 50.6
+  "total_residents": 269300,
+  "valley_levy": 3761141,
+  "valley_residents": 136600,
+  "valley_share": 50.7
  },
  "counts": {
   "interviews": 4470,
@@ -127,15 +136,15 @@
  },
  "old": {
   "change": {
-   "Chaldale District Council": 21143,
-   "Ferncote Borough Council": -230606,
-   "Grinbury District Council": -42010,
-   "Hornmere District Council": -344112,
-   "Keldmere District Council": 566235,
-   "Larkstead Borough Council": -415311,
-   "Ravenwick Borough Council": 608528,
-   "Snelgarth District Council": 393813,
-   "Wendstow District Council": -332180
+   "Chaldale District Council": 18710,
+   "Ferncote Borough Council": -238938,
+   "Grinbury District Council": -44473,
+   "Hornmere District Council": -318538,
+   "Keldmere District Council": 567995,
+   "Larkstead Borough Council": -415554,
+   "Ravenwick Borough Council": 623322,
+   "Snelgarth District Council": 385607,
+   "Wendstow District Council": -352631
   },
   "levy": {
    "Chaldale District Council": 528693,
@@ -157,8 +166,9 @@
   "vat": 1.2
  },
  "rungs": {
-  "golden": 50.6,
-  "mean": 24.9,
+  "golden": 50.7,
+  "here": 55.5,
+  "mean": 25.0,
   "raw": 86.3,
   "unweighted": 53.4,
   "visits": 85.1

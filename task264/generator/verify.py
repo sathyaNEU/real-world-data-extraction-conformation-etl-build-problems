@@ -4,6 +4,7 @@ finds the asks' devices from the data rather than from what the generator knows,
 generator/figures.json. Exit 0 when every figure agrees."""
 import csv
 import datetime as dt
+import itertools
 import json
 import os
 import re
@@ -61,18 +62,22 @@ def main(target):
     recs = []
     for r in rows_xlsx(P(find(r"wave1\.xlsx")), "Interviews"):
         wave, serial = r["Interview No"].split("-")[1:]
-        recs.append((r["Home area"], int(r["Visits to Authority parks, last 12 months (incl. today)"]),
-                     wt["%s-%s" % (wave, serial)]))
+        grid = {k: int(v) for k, v in r.items() if k.startswith("Visits, last 12 months")}
+        here = grid["Visits, last 12 months (incl. today): %s" % r["Park"]]
+        recs.append((r["Home area"], sum(grid.values()), here, wt["%s-%s" % (wave, serial)]))
     for r in rows_csv(P(find(r"wave2\.csv"))):
         _, wave, serial = r["case_ref"].split("/")
-        recs.append((r["home_area_code"], int(r["q9_visits_12m"]), wt["%s-%s" % (wave, serial)]))
+        grid = {k: int(v) for k, v in r.items() if k.startswith("q9_")}
+        recs.append((r["home_area_code"], sum(grid.values()), grid["q9_" + r["site_code"].lower()],
+                     wt["%s-%s" % (wave, serial)]))
     assert len(recs) == len(wt), "interviews and weights differ"
     members = sorted(council)
-    est = {k: defaultdict(float) for k in ("golden", "raw", "visits", "unweighted", "wf")}
-    for code, f, w in recs:
+    est = {k: defaultdict(float) for k in ("golden", "raw", "visits", "unweighted", "here", "wf")}
+    for code, f, fh, w in recs:
         if code not in council:
             continue
-        est["golden"][code] += w / f
+        est["golden"][code] += w / f        # a person met at any of the six parks: their visits to all six
+        est["here"][code] += w / fh
         est["raw"][code] += 1
         est["visits"][code] += w
         est["unweighted"][code] += 1 / f
@@ -85,7 +90,7 @@ def main(target):
     same("levy", levy, F["call"]["levy"])
     same("levy total", sum(levy.values()), req)
     same("residents", {council[c]: int(round(est["golden"][c], -2)) for c in members}, F["call"]["residents"])
-    for k in ("raw", "visits", "mean", "unweighted", "golden"):
+    for k in ("raw", "visits", "mean", "unweighted", "here", "golden"):
         s = 100 * sum(est[k][c] for c in valley) / sum(est[k][c] for c in members)
         same("rung %s valley share" % k, round(s, 1), F["rungs"][k], 1e-9)
 
@@ -136,36 +141,61 @@ def main(target):
         same("Ask A %s app" % nm, half_up(a), F["ask_a"][nm]["app"])
 
     # ---------------------------------------------------------------------------- Ask B
-    inv = rows_csv(P(find(r"levy_invoices")))
-    owner = {i["invoice_no"]: i["customer"] for i in inv}
-    due = defaultdict(float)
-    for i in inv:
-        due[i["customer"]] += float(i["amount_gbp"])
-    advice = defaultdict(list)
-    for r in rows_csv(P(find(r"remittance"))):
-        advice[r["advice_ref"]].append(r)
-    by_inv_date = {}
-    for ref, lines in advice.items():
-        for ln in lines:
-            by_inv_date[(ln["invoice_no"], ln["payment_date"])] = lines
-    paid = defaultdict(float)
-    for r in rows_csv(P(find(r"bank_receipts"))):
-        m = re.search(r"INV2\d-\d{4}", r["Reference"])
-        if not m or m.group(0) not in owner:
+    inv = rows_csv(P(find(r"member_council_invoices")))
+    price = {i["invoice_no"]: float(i["amount_gbp"]) for i in inv}
+    whose = {i["invoice_no"]: i["customer"] for i in inv}
+    levy = {i["invoice_no"]: i for i in inv if i["description"].startswith("Levy 2025-26")}
+    due = {n: dt.date.fromisoformat(i["due_date"]) for n, i in levy.items()}
+    day = lambda v: dt.datetime.strptime(v, "%d/%m/%Y").date()
+    last = dt.date(2026, 3, 31)
+    bank = rows_csv(P(find(r"bank_credits")))
+    by_ref = defaultdict(list)
+    for j, b in enumerate(bank):
+        by_ref[b["Reference"]].append(j)
+    lines = defaultdict(list)
+    for r in rows_csv(P(find(r"cash_book"))):
+        lines[r["Receipt no"]].append(r)
+    taken, paid = set(), []                                  # paid: (invoice, value date, amount)
+    for rno in sorted(lines):
+        rs = lines[rno]
+        narr, amt, posted = rs[0]["Narrative"], float(rs[0]["Amount"]), day(rs[0]["Posting date"])
+        # one receipt, its amount printed on each of its lines; its credit is the bank's with that reference and
+        # amount, the latest on or before the posting
+        hit = sorted((day(bank[j]["Value date"]), j) for j in by_ref[narr]
+                     if abs(float(bank[j]["Amount"]) - amt) < .005 and day(bank[j]["Value date"]) <= posted)
+        if not hit:
             continue
-        vd = dt.datetime.strptime(r["Value date"], "%d/%m/%Y").date()
-        if vd > dt.date(2026, 3, 31):
+        value, j = hit[-1]
+        taken.add(j)
+        nos = [r["Invoice"] for r in rs if r["Invoice"] in price]
+        if len(nos) == 1:
+            paid.append((nos[0], value, amt))
+        elif nos:
+            assert abs(sum(price[n] for n in nos) - amt) < .005, rno
+            paid += [(n, value, price[n]) for n in nos]
+    # the credits of 31 March, posted after the cash book's year: each pays its payer's open invoices that add to it
+    for j, b in enumerate(bank):
+        value = day(b["Value date"])
+        if j in taken or not dt.date(2025, 4, 1) <= value <= last:
             continue
-        amt = float(r["Amount"])
-        lines = by_inv_date.get((m.group(0), vd.isoformat()))
-        if lines and len(lines) > 1 and abs(sum(float(x["amount_gbp"]) for x in lines) - amt) < .005:
-            for x in lines:
-                paid[owner[x["invoice_no"]]] += float(x["amount_gbp"])
-        else:
-            paid[owner[m.group(0)]] += amt
-    for c in due:
-        same("Ask B %s paid" % c, half_up(paid[c]), F["ask_b"][c]["paid"])
-        same("Ask B %s owed" % c, half_up(due[c] - paid[c]), F["ask_b"][c]["owed"])
+        who = {c for c in whose.values() if c.split()[0].upper() in b["Remitter"].upper()}
+        if not who:
+            continue
+        got = defaultdict(float)
+        for n, _v, a in paid:
+            got[n] += a
+        left = {n: price[n] - got[n] for n in price if whose[n] in who and price[n] - got[n] > .005}
+        fit = [s for k in (1, 2, 3) for s in itertools.combinations(sorted(left), k)
+               if abs(sum(left[n] for n in s) - float(b["Amount"])) < .005]
+        assert len(fit) == 1, b
+        paid += [(n, value, left[n]) for n in fit[0]]
+    on_time, late = defaultdict(float), defaultdict(float)
+    for n, value, a in paid:
+        if n in levy and value <= last:
+            (on_time if value <= due[n] else late)[levy[n]["customer"]] += a
+    for c in sorted({i["customer"] for i in levy.values()}):
+        same("Ask B %s on time" % c, half_up(on_time[c]), F["ask_b"][c]["on_time"])
+        same("Ask B %s late" % c, half_up(late[c]), F["ask_b"][c]["late"])
 
     # ---------------------------------------------------------------------------- Ask C, devices found in the data
     counts = defaultdict(dict)
