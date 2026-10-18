@@ -178,12 +178,12 @@ def _fill(ws, r0, header, rows, widths):
     ws.freeze_panes = ws.cell(row=r0 + 1, column=1)
 
 
-def claim_returns(path, R, months, new_layout, fy, recovery=None):
+def claim_returns(path, R, months, new_layout, fy, recovery=None, recoveries=()):
     wb = Workbook()
     ws = wb.active
     rows = R.returns_rows(months)
-    if recovery is not None:
-        mo, code, b, n, tot, _ = recovery
+    for rec in ([recovery] if recovery is not None else []) + list(recoveries):
+        mo, code, b, n, tot, _ = rec
         rows = rows + [(mo, code, b, n, round(tot, 2), "FINAL")]
     if new_layout:
         ws.title = "ClaimReturns"
@@ -523,6 +523,30 @@ The Treasury's fortnightly payment runs. `gross_php` is what was paid out to the
 `recoveries_php` what was recovered from it, and `net_php` the amount transferred. A run covers the
 awards a partner paid in one half of a claim month and is dated in the following month.
 
+## %(checks)s
+
+The Office's pre-payment claim check register. Until 31 December 2025 a return was checked before
+the claim was passed for payment and an amount the check could not pass was held back; from 1
+January 2026 a return is paid in full and reviewed after payment.
+
+| field | meaning |
+|---|---|
+| `check_ref` | the register's reference for the check |
+| `claim_month` | the claim month of the return that was checked |
+| `claims_partner_ref` | the partner's reference in the claims system |
+| `received_date` | the date the Office received the return |
+| `checked_date` | the date of the check |
+| `checker_ref` | the officer who checked the return |
+| `awards_passed` | the number of awards the check passed for payment |
+| `amount_passed_php` | the amount passed for payment, in pesos |
+| `amount_held_php` | the amount held back, in pesos |
+| `hold_reason` | the reason recorded against a hold |
+
+## %(archive)s
+
+The Treasury's archived payment runs, retrieved for the reconciliation of the closed claim months.
+The columns are those of %(treasury)s.
+
 ## %(followup)s
 
 The 2026 household follow-up survey, a sample of households whose awards were paid in 2026.
@@ -561,6 +585,13 @@ def manifest(path, F, pack):
                     "fiscal year 2025/26 as published", "later revisions to a claim month"),
         "treasury": ("Treasury fortnightly payment runs", "runs dated February 2026 to April 2027",
                      "runs before February 2026, held in the Treasury's own archive"),
+        "checks": ("the Office's pre-payment claim check register",
+                   "claim months July 2024 to December 2025",
+                   "claim months from January 2026, when the pre-payment check was withdrawn"),
+        "archive": ("Treasury payment runs, archive extract",
+                    "runs dated August 2024 to January 2026, against claim months July 2024 to "
+                    "December 2025",
+                    "runs dated after 31 January 2026"),
         "followup": ("household follow-up survey 2026", "a sample of awards paid in 2026",
                      "amounts, which the survey does not collect"),
         "dict": ("the data dictionary for this folder", "every file in the folder", ""),
@@ -583,7 +614,8 @@ def manifest(path, F, pack):
 def write_all(target, F, R, W, pack):
     import os
     p = lambda k: os.path.join(target, F[k])
-    claim_returns(p("ret2425"), R, [t for t in sim.MONTHS if (2024, 7) <= t <= (2025, 6)], False, "2024/25")
+    claim_returns(p("ret2425"), R, [t for t in sim.MONTHS if (2024, 7) <= t <= (2025, 6)], False,
+                  "2024/25", recoveries=R.ask_recovery_rows())
     claim_returns(p("ret2526"), R, [t for t in sim.MONTHS if (2025, 7) <= t <= (2026, 6)], False, "2025/26",
                   recovery=R.recovery_row())
     claim_returns(p("ret2627"), R, [t for t in sim.MONTHS if (2026, 7) <= t <= (2027, 3)], True, "2026/27")

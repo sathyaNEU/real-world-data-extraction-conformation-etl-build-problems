@@ -86,6 +86,295 @@ def read_portal(path, xwalk):
     return out
 
 
+# ------------------------------------------------------------------ the closed period (the asks)
+CHECK_FROM, CHECK_TO = (2024, 7), (2025, 12)
+REASONS = ["Receipts incomplete", "Household record incomplete", "Duplicate application",
+           "Component not eligible", "Arithmetic error on return", "Not recorded"]
+
+
+def _scheme_year(mo):
+    return mo[0] if mo[1] >= 7 else mo[0] - 1
+
+
+def _quarter(mo):
+    return _scheme_year(mo), (mo[1] - 7) % 12 // 3 + 1
+
+
+def _qlabel(q):
+    return "%d/%s Q%d" % (q[0], str(q[0] + 1)[2:], q[1])
+
+
+def _norm(code):
+    """The partner's reference, whichever separator the claims system wrote it with."""
+    return str(code).strip().replace("/", "-").replace("_", "-").upper()
+
+
+def _reason(x):
+    """The reason as the list records it. The field was free text until the April 2025 release, so
+    the earlier entries are the same five reasons in whatever case and punctuation was typed."""
+    t = " ".join(str(x or "").split()).rstrip(".").strip()
+    if not t:
+        return ""
+    for r in REASONS:
+        if t.lower() == r.lower():
+            return r
+    return t
+
+
+def read_closed_returns(paths):
+    """What partners claimed in each closed claim month, and the recoveries claimed back in it."""
+    claimed, recov = {}, {}
+    for path in paths:
+        ws = load_workbook(path, read_only=True, data_only=True).active
+        grid = [[c for c in r] for r in ws.iter_rows(values_only=True)]
+        hdr = next(i for i, r in enumerate(grid)
+                   if r and any(str(c).strip() in ("return_month", "claim_month") for c in r if c))
+        cols = {str(c).strip(): j for j, c in enumerate(grid[hdr]) if c}
+        mc = cols.get("return_month", cols.get("claim_month"))
+        nc = cols.get("award_count", cols.get("awards"))
+        tc = cols.get("claim_total_php", cols.get("total_claimed_php"))
+        pc = cols["partner_code"]
+        for r in grid[hdr + 1:]:
+            if not r or r[mc] is None:
+                continue
+            mo = _month(r[mc])
+            if not (CHECK_FROM <= mo <= CHECK_TO):
+                continue
+            k = (_norm(r[pc]), mo)
+            d = recov if int(r[nc]) < 0 else claimed
+            d[k] = round(d.get(k, 0.0) + float(r[tc]), 2)
+    return claimed, recov
+
+
+def read_check_register(path):
+    """Each closed claim month's own passed and held amounts, per partner.
+
+    Two readings have to be made before the figures mean anything, and the records force both. The
+    register holds more than one check for a partner claim-month where the year-end reconciliation
+    looked at it again, and the later check is the one that stands. And the two currency columns
+    state the partner's position in the scheme year rather than the month's own figure: an amount
+    passed above the month's own claim is impossible, the July rows reset, and differencing inside
+    the scheme year restores the month's own claim less what was passed as what was held.
+    """
+    rows = []
+    with open(path, newline="", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            rows.append({"code": _norm(r["claims_partner_ref"]), "month": _month(r["claim_month"]),
+                         "checked": r["checked_date"].strip(),
+                         "passed": float(r["amount_passed_php"]),
+                         "held": float(r["amount_held_php"]),
+                         "passed_n": int(r["awards_passed"]),
+                         "reason": _reason(r["hold_reason"])})
+    live = {}
+    for r in rows:
+        k = (r["code"], r["month"])
+        if k not in live or r["checked"] > live[k]["checked"]:
+            live[k] = r
+    months = {}
+    for (code, mo) in live:
+        months.setdefault(code, []).append(mo)
+    out = {}
+    for code, ms in months.items():
+        ms.sort()
+        prev = {}
+        for mo in ms:
+            sy = _scheme_year(mo)
+            base = prev.get(sy, (0.0, 0.0))
+            r = live[(code, mo)]
+            out[(code, mo)] = {"passed": round(r["passed"] - base[0], 2),
+                               "held": round(r["held"] - base[1], 2),
+                               "passed_n": r["passed_n"], "reason": r["reason"]}
+            prev[sy] = (r["passed"], r["held"])
+    return out, len(rows)
+
+
+def read_archive(path):
+    """The archived payment runs, grouped by the claim month each line covers."""
+    out = {}
+    with open(path, newline="", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            k = (_norm(r["partner_code"]), _month(r["claim_months_covered"]))
+            out.setdefault(k, []).append((float(r["gross_php"]), float(r["recoveries_php"]),
+                                          float(r["net_php"])))
+    return out
+
+
+def transferred(archive, check):
+    """What the runs transferred against each closed claim month.
+
+    The archive is an export of payment instructions against run lines, so where one instruction
+    settled both of a partner's half-month runs its amounts sit on both lines. The lines of such a
+    month state the same amounts and together come to more than the check passed for that month,
+    which is impossible, so they are one instruction and count once.
+    """
+    out, repeats = {}, 0
+    for k, lines in archive.items():
+        passed = check.get(k, {}).get("passed")
+        if passed is not None and round(sum(g for g, _, _ in lines), 2) > passed + 0.005:
+            seen, tot = set(), 0.0
+            for ln in lines:
+                if ln in seen:
+                    continue
+                seen.add(ln)
+                tot = round(tot + ln[2], 2)
+            out[k] = tot
+            repeats += 1
+        else:
+            out[k] = round(sum(n for _, _, n in lines), 2)
+    return out, repeats
+
+
+def ask_figures(target, F):
+    """The closed-period annex: what the runs transferred, what the checks held and why."""
+    check, raw_rows = read_check_register(os.path.join(target, F["checks"]))
+    archive = read_archive(os.path.join(target, F["archive"]))
+    trans, repeats = transferred(archive, check)
+    quarters = []
+    for mo in sorted({k[1] for k in check}):
+        if _quarter(mo) not in quarters:
+            quarters.append(_quarter(mo))
+    tq = {_qlabel(q): 0.0 for q in quarters}
+    hq = {_qlabel(q): 0.0 for q in quarters}
+    rc = {r: 0 for r in REASONS}
+    for k, v in check.items():
+        q = _qlabel(_quarter(k[1]))
+        hq[q] = round(hq[q] + v["held"], 2)
+        if v["held"] > 0.005:
+            rc[v["reason"] if v["reason"] in REASONS else "Not recorded"] += 1
+    for k, v in trans.items():
+        tq[_qlabel(_quarter(k[1]))] = round(tq[_qlabel(_quarter(k[1]))] + v, 2)
+    claimed, _ = read_closed_returns([os.path.join(target, F[k]) for k in ("ret2425", "ret2526")])
+    cq = {_qlabel(q): 0.0 for q in quarters}
+    for k, v in claimed.items():
+        cq[_qlabel(_quarter(k[1]))] = round(cq[_qlabel(_quarter(k[1]))] + v, 2)
+    rq = {_qlabel(q): 0.0 for q in quarters}
+    for k, lines in archive.items():
+        seen, tot = set(), 0.0
+        for ln in lines:
+            if ln in seen:
+                continue
+            seen.add(ln)
+            tot = round(tot + ln[1], 2)
+        v = tot if k in trans and len(set(lines)) < len(lines) else round(
+            sum(x[1] for x in lines), 2)
+        rq[_qlabel(_quarter(k[1]))] = round(rq[_qlabel(_quarter(k[1]))] + v, 2)
+    uq = {q: round(cq[q] - hq[q] - rq[q] - tq[q], 2) for q in cq}
+    return {"quarters": [_qlabel(q) for q in quarters],
+            "transferred": {k: int(round(v)) for k, v in tq.items()},
+            "held": {k: int(round(v)) for k, v in hq.items()},
+            "claimed": {k: int(round(v)) for k, v in cq.items()},
+            "recovered": {k: int(round(v)) for k, v in rq.items()},
+            "unsettled": {k: int(round(v)) for k, v in uq.items()},
+            "holds_by_reason": rc,
+            "check_rows": raw_rows, "check_months": len(check),
+            "instruction_repeats": repeats, "run_months": len(archive)}
+
+
+def _raw_register(path):
+    """The register as it stands, every row, with no reading applied."""
+    rows = []
+    with open(path, newline="", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            rows.append({"code": _norm(r["claims_partner_ref"]), "month": _month(r["claim_month"]),
+                         "checked": r["checked_date"].strip(),
+                         "passed": float(r["amount_passed_php"]),
+                         "held": float(r["amount_held_php"]),
+                         "reason": r["hold_reason"].strip()})
+    return rows
+
+
+def ask_stops(target, F):
+    """Every complete competent pipeline for the three annex asks, at its own value.
+
+    Each stop is a response that did the work and stopped at a different reading. The ladder file is
+    the generator's; nothing here ships.
+    """
+    reg = _raw_register(os.path.join(target, F["checks"]))
+    check, _ = read_check_register(os.path.join(target, F["checks"]))
+    archive = read_archive(os.path.join(target, F["archive"]))
+    trans, _ = transferred(archive, check)
+    quarters = []
+    for mo in sorted({k[1] for k in check}):
+        if _quarter(mo) not in quarters:
+            quarters.append(_quarter(mo))
+    QL = [_qlabel(q) for q in quarters]
+    blank = lambda: {q: 0.0 for q in QL}
+
+    def byq(d):
+        out = blank()
+        for k, v in d.items():
+            out[_qlabel(_quarter(k[1]))] = round(out[_qlabel(_quarter(k[1]))] + v, 2)
+        return {k: int(round(v)) for k, v in out.items()}
+
+    # ---- A, what the runs transferred
+    A = {}
+    A["A1 every run line summed as it stands"] = byq(
+        {k: round(sum(n for _, _, n in v), 2) for k, v in archive.items()})
+    A["A2 the gross column summed, recoveries left in"] = byq(
+        {k: round(sum(g for g, _, _ in v), 2) for k, v in archive.items()})
+    A["A3 the over-stated claim-months dropped"] = byq(
+        {k: (0.0 if len(set(v)) < len(v) else round(sum(n for _, _, n in v), 2))
+         for k, v in archive.items()})
+    A["A4 one instruction counted once (the answer)"] = byq(trans)
+
+    # ---- B, what the check held back
+    B = {}
+    B["B1 the held column summed as it stands"] = byq(
+        {(r["code"], r["month"]): r["held"] for r in sorted(reg, key=lambda r: r["checked"])})
+    seq = {}
+    for r in sorted(reg, key=lambda r: (r["code"], r["month"], r["checked"])):
+        seq.setdefault(r["code"], []).append(r)
+    flat, first = {}, {}
+    for code, rs in seq.items():
+        prev = None
+        for r in rs:
+            k = (code, r["month"])
+            if k not in first:
+                first[k] = r
+            flat[k] = round(r["held"] - (prev["held"] if prev is not None else 0.0), 2)
+            prev = r
+    B["B2 differenced without the July reset"] = byq(flat)
+    early = {}
+    for code, rs in seq.items():
+        prevsy, base = None, 0.0
+        for r in rs:
+            k = (code, r["month"])
+            if r is not first[k]:
+                continue
+            sy = _scheme_year(r["month"])
+            if sy != prevsy:
+                base, prevsy = 0.0, sy
+            early[k] = round(r["held"] - base, 2)
+            base = r["held"]
+    B["B3 differenced from the first check of each claim-month"] = byq(early)
+    B["B4 the later check, differenced inside the scheme year (the answer)"] = byq(
+        {k: v["held"] for k, v in check.items()})
+
+    # ---- C, the claim-months held, by reason
+    C = {}
+    raw = {r: 0 for r in REASONS}
+    for r in reg:
+        if r["held"] > 0.005 and r["reason"] in REASONS:
+            raw[r["reason"]] += 1
+    C["C1 rows with a held amount, by the reason column"] = dict(raw)
+    raw2 = {r: 0 for r in REASONS}
+    for r in reg:
+        if r["held"] > 0.005:
+            raw2[r["reason"] if r["reason"] in REASONS else "Not recorded"] += 1
+    C["C2 the same, blanks counted as a reason of their own"] = raw2
+    raw3 = {r: 0 for r in REASONS}
+    for k, v in check.items():
+        if v["held"] > 0.005 and v["reason"] in REASONS:
+            raw3[v["reason"]] += 1
+    C["C3 each month's own hold, blanks dropped"] = raw3
+    raw4 = {r: 0 for r in REASONS}
+    for k, v in check.items():
+        if v["held"] > 0.005:
+            raw4[v["reason"] if v["reason"] in REASONS else "Not recorded"] += 1
+    C["C4 each month's own hold, a hold with no reason recorded counted (the answer)"] = raw4
+    return {"quarters": QL, "A": A, "B": B, "C": C}
+
+
 def figures(target, F):
     cells = read_returns([os.path.join(target, F[k]) for k in ("ret2526", "ret2627")])
     xwalk = read_crosswalk(os.path.join(target, F["xwalk"]))
@@ -140,6 +429,7 @@ def figures(target, F):
     kk = 1.0 / cv ** 2
     fig["ks_lognormal"] = int(round(float(np.abs(_n.cdf((np.log(xs) + 0.5 * v) / np.sqrt(v)) - ecdf).max()) / crit))
     fig["ks_gamma"] = int(round(float(np.abs(_g.cdf(xs * kk, kk) - ecdf).max()) / crit))
+    fig["asks"] = ask_figures(target, F)
     fig["_test"] = _test_block(fig, mean, cnt, shape, C)
     return fig
 
@@ -266,5 +556,20 @@ def submission(fig):
       "four-person band's award amounts with the PHP %s ceiling marked and the referred tail shaded, "
       "beside the six ceilings stepped across the household-size bands with each band's referred share "
       "labelled, on page 1." % "{:,}".format(fig["call"]))
+    A("")
+    a = fig["asks"]
+    A("### claims_annex.xlsx")
+    A("")
+    A("1. The pesos the archived payment runs transferred against each closed scheme quarter's claim "
+      "months, one payment instruction counted once:")
+    for q in a["quarters"]:
+        A("   - %s: PHP %s" % (q, "{:,}".format(a["transferred"][q])))
+    A("2. The pesos the pre-payment claim check held back in each closed scheme quarter, from each "
+      "month's own hold:")
+    for q in a["quarters"]:
+        A("   - %s: PHP %s" % (q, "{:,}".format(a["held"][q])))
+    A("3. The partner claim-months the check held an amount back in, by reason recorded:")
+    for r in REASONS:
+        A("   - %s: %s" % (r, "{:,}".format(a["holds_by_reason"][r])))
     A("")
     return "\n".join(lines)

@@ -354,13 +354,39 @@ def main():
     ok("H6 Table 1 of the 2025 release yields all eight rows", len(pub) == 8, "%d rows" % len(pub))
     gaps = {k: (a2[k] - pub[k][1]) / float(a2[k]) for k in pub}
     lazy = {k: (a2_lazy[k] - pub[k][1]) / float(a2_lazy[k]) for k in pub}
-    ok("H7 the published 2025 recovered column is nobody's answer: it sits well below the register "
-       "recompute, with the release stating the extract it came from",
-       all(0.025 <= g <= 0.06 for g in gaps.values()) and all(v > 0.02 for v in lazy.values())
+    cut25 = B.recovered_at_cut(ch25, kind_of, code2stream, facility_permits, 2025, W.PRIOR_EXTRACT)
+    tail25 = {k: a2[k] - cut25[k] for k in pub}
+    last25 = max(r[3] for c in ch25 for r in ch25[c])
+    ok("H7 the published 2025 recovered column is nobody's answer: it sits below every recompute on "
+       "the shipped extract, and the register's own confirmations after the stated extract are most "
+       "of the distance",
+       all(g > 0.004 for g in gaps.values()) and all(v > 0.004 for v in lazy.values())
+       and all(tail25[k] > 0 for k in pub)
+       and 0.5 < sum(tail25.values()) / (sum(a2.values()) - sum(v[1] for v in pub.values())) < 1.0
        and "as extracted on 30 June 2026" in rel and "not revised for them" in rel,
        "below the filed 2025 figure by %.1f to %.1f per cent and below the undeduplicated figure by "
-       "%.1f to %.1f per cent" % (100 * min(gaps.values()), 100 * max(gaps.values()),
-                                  100 * min(lazy.values()), 100 * max(lazy.values())))
+       "%.1f to %.1f per cent; %s t of the %s t distance is tonnage the register confirmed after "
+       "30 June 2026, on every one of the eight streams"
+       % (100 * min(gaps.values()), 100 * max(gaps.values()), 100 * min(lazy.values()),
+          100 * max(lazy.values()), "{:,}".format(int(round(sum(tail25.values())))),
+          "{:,}".format(int(round(sum(a2.values()) - sum(v[1] for v in pub.values()))))))
+    disc = sorted((a2_lazy[k] - a2[k]) / float(a2[k]) for k in pub)
+    med = disc[len(disc) // 2]
+    spread = max(gaps.values()) - min(gaps.values())
+    near = {k: abs(cut25[k] - pub[k][1]) / float(pub[k][1]) for k in pub}
+    ok("H7b no basis reproduces the published column, and it cannot settle the choice the 2025 ask "
+       "turns on: the nearest basis is a recompute at the extract the release names and it is off "
+       "on every stream, and the distance varies across streams by far more than deduplication is "
+       "worth on one",
+       all(v > 0.0015 for v in near.values()) and spread > 5 * med
+       and last25 > W.PRIOR_EXTRACT,
+       "the recompute at the stated cut is off by %.2f to %.2f per cent a stream (%d to %d t); the "
+       "distance to the published column runs %.1f to %.1f per cent across the eight streams while "
+       "deduplication moves the median stream by %.2f per cent; the last leg in the 2025 file is %s"
+       % (100 * min(near.values()), 100 * max(near.values()),
+          int(round(min(abs(cut25[k] - pub[k][1]) for k in pub))),
+          int(round(max(abs(cut25[k] - pub[k][1]) for k in pub))),
+          100 * min(gaps.values()), 100 * max(gaps.values()), 100 * med, last25))
     no_r1 = _a2_variant(ch25, kind_of, code2stream, facility_permits, drop_r1=True)
     first_op = _a2_variant(ch25, kind_of, code2stream, facility_permits, first_op=True)
     ok("H8 Table 1 still pins R1 as a recovery operation: excluding it would publish nothing for "
@@ -407,12 +433,42 @@ def main():
        % (100.0 * len(we) / len(desp), 100.0 * 2 / 7))
     cents = [int(round(float(r[8]) * 100)) % 100 for c in ch26 for r in ch26[c]
              if r[2] == "PRODUCER_DESPATCH"]
-    ok("J4 tonnages carry the precision a weighbridge records, and still sum to the whole tonnes "
-       "the deliverables state",
-       sum(1 for v in cents if v) / float(len(cents)) > 0.9 and len(set(cents)) >= 40,
-       "%.1f per cent of consignments carry a fractional tonnage over %d distinct hundredths, and "
-       "every stream and stage total is a whole tonne (asserted in build.exact)"
-       % (100.0 * sum(1 for v in cents if v) / len(cents), len(set(cents))))
+    # the stage totals as the register itself adds them up, recomputed here rather than taken from
+    # the build, so what is checked is the tonnage a solver's own sum would land on
+    raw_chain = {k: {"despatched": 0.0, "confirmed": 0.0, "recovered": 0.0} for k, *_ in W.STREAMS}
+    kids = {}
+    for c, rs in ch26.items():
+        if rs[0][10]:
+            kids.setdefault(rs[0][10], c)
+    porig = {c for c, rs in ch26.items()
+             if [x for x in rs if x[2] == "PRODUCER_DESPATCH"][0][4] not in facility_permits}
+    for c in porig:
+        dl = [x for x in ch26[c] if x[2] == "PRODUCER_DESPATCH"][0]
+        if not dl[3].startswith(str(W.REF_YEAR)):
+            continue
+        st, tn = code2stream[dl[7]], float(dl[8])
+        raw_chain[st]["despatched"] += tn
+        opc = B.terminal_op(ch26, c, kind_of, kids)
+        if kind_of.get(opc) in ("recovery", "disposal"):
+            raw_chain[st]["confirmed"] += tn
+            if kind_of[opc] == "recovery":
+                raw_chain[st]["recovered"] += tn
+    chain_raw = []
+    for k, *_ in W.STREAMS:
+        for stage in ("despatched", "confirmed", "recovered"):
+            chain_raw.append(raw_chain[k][stage])
+    offs = [abs(v - round(v)) for v in chain_raw]
+    ok("J4 tonnages carry the precision a weighbridge records, and no stream or stage total is a "
+       "whole number: each lands inside the tonne the deliverables print, on neither of its edges",
+       sum(1 for v in cents if v) / float(len(cents)) > 0.9 and len(set(cents)) >= 40
+       and min(offs) > 0.01 and max(offs) < 0.45,
+       "%.1f per cent of consignments carry a fractional tonnage over %d distinct hundredths; the "
+       "%d stream and stage totals sit %.2f to %.2f of a tonne off the whole number (asserted in "
+       "build.cell), and the eight 2026 rates recompute to %s"
+       % (100.0 * sum(1 for v in cents if v) / len(cents), len(set(cents)), len(chain_raw),
+          min(offs), max(offs),
+          ", ".join("%.4f" % (100.0 * raw_chain[k]["recovered"] / att[k]["arisings"])
+                    for k, *_ in W.STREAMS)))
     fr = B.rows(P["fac"])
     pl_ok = all(any(nm.endswith(" de " + pl) for pl in pack.PLACES[reg])
                 for _p, nm, reg, _role, _o, _l in fr)
@@ -437,6 +493,38 @@ def main():
        "latest leg %s against the extract of %s, %d legs on the extract date itself"
        % (max(r[3] for r in allrows), W.EXTRACT_REGISTER,
           sum(1 for r in allrows if r[3] == W.EXTRACT_REGISTER)))
+    unc_m, unc25_m = collections.Counter(), collections.Counter()
+    for ch, bag, yr in ((ch26, unc_m, W.REF_YEAR), (ch25, unc25_m, 2025)):
+        for c, rs in ch.items():
+            dl = [x for x in rs if x[2] == "PRODUCER_DESPATCH"][0]
+            if dl[4] in facility_permits or not dl[3].startswith(str(yr)):
+                continue
+            if not [x for x in rs if x[2] == "TREATMENT_CONFIRMED"]:
+                bag[dl[3][:7]] += 1
+    mv = [unc_m["%d-%02d" % (W.REF_YEAR, m)] for m in range(1, 13)]
+    ok("J9 what the extract leaves unconfirmed is the register's own right censoring and not "
+       "missingness scattered over the year: it rises towards the extract date",
+       mv[-1] > 2.5 * (sum(mv[:3]) / 3.0) and sum(mv[9:]) > 2.0 * sum(mv[:3]),
+       "%d unconfirmed 2026 despatches by month: %s; the last quarter carries %.1f times the first"
+       % (sum(mv), ", ".join(str(v) for v in mv), sum(mv[9:]) / float(sum(mv[:3]))))
+    lag25 = []
+    for c, rs in ch25.items():
+        dl = [x for x in rs if x[2] == "PRODUCER_DESPATCH"][0]
+        if dl[4] in facility_permits or not dl[3].startswith("2025"):
+            continue
+        op = B.terminal_op(ch25, c, kind_of, {rs2[0][10]: c2 for c2, rs2 in ch25.items() if rs2[0][10]})
+        cf = [x for x in rs if x[2] == "TREATMENT_CONFIRMED"]
+        if cf:
+            lag25.append((dt.date.fromisoformat(cf[-1][3]) - dt.date.fromisoformat(dl[3])).days)
+    after = sum(1 for c, rs in ch25.items()
+                for x in rs if x[2] == "TREATMENT_CONFIRMED" and x[3] > W.PRIOR_EXTRACT)
+    ok("J10 the register goes on confirming consignments of an earlier reference year, so the "
+       "extract the 2025 release was compiled from could not have held them",
+       after > 200 and max(lag25) > 180,
+       "%d confirmation legs in the 2025 file fall after %s, and the longest despatch-to-"
+       "confirmation lag on a 2025 consignment is %d days against the %d days the release's own "
+       "extract was ahead of the earliest of them"
+       % (after, W.PRIOR_EXTRACT, max(lag25), 181))
 
     print("\nG. Input gates")
     files = sorted(os.listdir(os.path.join(TASK, "target")))

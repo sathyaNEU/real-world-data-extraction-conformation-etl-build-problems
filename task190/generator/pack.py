@@ -10,6 +10,10 @@ import sim
 import world as W
 
 # of the tonnage a final facility confirms, the share confirmed at a recovery operation
+# the tonnage a confirmation-counting response double counts in 2025, the window that holds the
+# printed figure given the 2025 recovery class residues (world.CLASS_RESID)
+DUP_WINDOW = (906.68, 907.68)
+
 REC_OF_CONFIRMED = {"metal": 0.93, "mixed_ci": 0.66, "paper": 0.95, "wood": 0.90,
                     "cd_rubble": 0.97, "glass": 0.96, "plastic": 0.72, "textile": 0.55}
 VIA_INTERIM = 0.30                      # share of producer consignments routed through a transfer station
@@ -158,12 +162,81 @@ def _then(rl, prev, median, sigma, cap, limit):
     return max(d, prev)
 
 
-def _kg_noise(rl, n):
+def _clock(rl):
+    """Which clock a treatment confirmation runs on. Most loads are confirmed within days of
+    receipt; a minority waits on a treatment slot or a queried ticket, and a few are held for
+    aggregation, disputed, or re-keyed months later after the agency's system move."""
+    u = float(rl.random())
+    if u < W.CONF_LONG_P:
+        return W.CONF_LONG
+    if u < W.CONF_LONG_P + W.CONF_MID_P:
+        return W.CONF_MID
+    return None
+
+
+def _conf_lag(rl, median, sigma, cap, start, limit):
+    """The confirmation lag on whichever clock this load runs on, truncated to the window the
+    extract can observe: a load whose confirmation has not arrived by the extract is not confirmed
+    in the register at all, and the class it belongs to decides that, not this draw."""
+    room = (limit - start).days - 1
+    if room <= 1:
+        return max(1, room)
+    cl = _clock(rl)
+    med, sg, cp = cl if cl else (median, sigma, cap)
+    for _ in range(6):
+        v = max(1, min(cp, int(round(float(rl.lognormal(math.log(med), sg))))))
+        if v <= room:
+            return v
+    return int(rl.integers(1, room + 1))
+
+
+def _then_conf(rl, prev, median, sigma, cap, limit):
+    """The next leg's date where that leg is a treatment confirmation or the forwarding of a held
+    load, so the long clocks apply. Same truncation as _then."""
+    d = _bump(prev + dt.timedelta(days=_conf_lag(rl, median, sigma, cap, prev, limit)), rl)
+    if d >= limit:
+        room = (limit - prev).days
+        d = prev + dt.timedelta(days=int(rl.integers(1, room))) if room >= 2 else prev
+    return max(d, prev)
+
+
+def _survival(x):
+    """The share of loads whose confirmation is still outstanding x days after despatch, over the
+    three clocks. Used to place the despatch dates of the consignments an extract leaves
+    unconfirmed: the chance of being caught by the cut is this function of the distance to it."""
+    def lg(med, sg, cap):
+        if x >= cap:
+            return 0.0
+        return 0.5 * math.erfc(math.log(x / float(med)) / (sg * math.sqrt(2.0)))
+    short = lg(3.0, 0.80, 46)
+    mid = lg(*W.CONF_MID)
+    long_ = lg(*W.CONF_LONG)
+    return ((1.0 - W.CONF_MID_P - W.CONF_LONG_P) * short
+            + W.CONF_MID_P * mid + W.CONF_LONG_P * long_)
+
+
+def _censored_dates(rl, n, year, limit):
+    """Despatch dates for the consignments the extract catches unconfirmed. A consignment is caught
+    when its confirmation is still outstanding at the cut, so a day's share of them is the chance a
+    confirmation outlives the distance from that day to the extract: the days just before the cut
+    carry most of them and the long clock reaches back through the year."""
+    base = dt.date(year, 1, 1)
+    days = (dt.date(year, 12, 31) - base).days + 1
+    w = [_survival(max(1, (limit - (base + dt.timedelta(days=i))).days)) for i in range(days)]
+    tot = sum(w)
+    w = [v / tot for v in w]
+    return [base + dt.timedelta(days=int(i))
+            for i in rl.choice(days, size=n, replace=True, p=w)]
+
+
+def _kg_noise(rl, n, resid=0):
     """Net weights come off a weighbridge in 20 kg steps, so a consignment's recorded tonnage is
-    not a whole number. The offsets are in hundredths of a tonne and sum to exactly zero over the
-    group, so every tonnage total the deliverables state is the one the design fixed."""
+    not a whole number. The offsets are in hundredths of a tonne and sum over the group to the
+    residue the design hands in, which is a fraction of a tonne and never zero: a class total is a
+    tonnage the register adds up to, landing inside the tonne the deliverables print rather than on
+    a whole number."""
     o = (rl.integers(-25, 26, size=n) * 2).astype(int)
-    s = int(o.sum())
+    s = int(o.sum()) - int(resid)
     i = 0
     while s != 0:
         j = i % n
@@ -292,11 +365,14 @@ def build_facilities(rng, path):
 
 def _consignments(rng, rl, key, target_rec, confirmed, despatched, year):
     """Consignments for one stream in one year, each tonnage as a weighbridge records it (whole
-    hundredths of a tonne), summing exactly to the three class totals: confirmed at a recovery
-    operation, confirmed at disposal, despatched but unconfirmed."""
+    hundredths of a tonne), over the three classes: confirmed at a recovery operation, confirmed at
+    disposal, despatched but unconfirmed. A class sums to the tonnage the design fixed plus the
+    weighbridge residue world.CLASS_RESID carries for it, so the total lands inside the printed
+    tonne instead of on it."""
     out = []
-    for cls, total in (("rec", target_rec), ("dis", confirmed - target_rec),
-                       ("unc", despatched - confirmed)):
+    resid = W.CLASS_RESID[year][key]
+    for ci, (cls, total) in enumerate((("rec", target_rec), ("dis", confirmed - target_rec),
+                                       ("unc", despatched - confirmed))):
         if total <= 0:
             continue
         mean = 19.0
@@ -313,7 +389,7 @@ def _consignments(rng, rl, key, target_rec, confirmed, despatched, year):
                 t[j] -= 1
                 diff += 1
             i += 1
-        for v in (t.astype(int) * 100 + _kg_noise(rl, n)):
+        for v in (t.astype(int) * 100 + _kg_noise(rl, n, resid[ci])):
             out.append((cls, int(v)))
     rng.shuffle(out)
     return out
@@ -360,7 +436,11 @@ def build_register(samp, ents, permit_of, fac, rng, paths, pop=None):
                                             (2025, rec25, conf25, desp25, legs25)):
             cons = _consignments(rng, rl, key, rec, conf, desp, year)
             dates = _dates(rng, len(cons), year)
+            n_unc = sum(1 for c, _v in cons if c == "unc")
+            cens = iter(_censored_dates(rl, n_unc, year, limit) if year == W.REF_YEAR else [])
             for (cls, cents), d in zip(cons, dates):
+                if cls == "unc" and year == W.REF_YEAR and rl.random() >= W.UNC_NEVER_SHARE:
+                    d = next(cens)                 # caught unconfirmed by the cut, not never closed
                 cno += 1
                 parent_is_producer = ""
                 hh = int(rng.choice(4, p=strat_share[key]))
@@ -385,14 +465,14 @@ def build_register(samp, ents, permit_of, fac, rng, paths, pop=None):
                     rows.append([pnum, seq, "FACILITY_RECEIPT", recv.isoformat(),
                                  permit_of[prod["ent"]], carrier, f["permit"], code, tonnes, "", ""])
                     seq += 1
-                    held = _then(rl, recv, 2.4, 0.75, 30, limit)
+                    held = _then(rl, recv, 2.4, 0.75, 30, limit)   # the holding site's own R13
                     rows.append([pnum, seq, "TREATMENT_CONFIRMED", held.isoformat(),
                                  permit_of[prod["ent"]], carrier, f["permit"], code, tonnes, "R13", ""])
                     cno += 1
                     child = "NW%08d" % cno
                     g = finals[int(rng.integers(0, len(finals)))]
                     op = REC_OPS[key] if cls == "rec" else (DIS_OPS[key] if cls == "dis" else "")
-                    fwd = _then(rl, held, 11.0, 0.70, 120, limit)
+                    fwd = _then_conf(rl, held, 11.0, 0.70, 120, limit)
                     frecv = _then(rl, fwd, 1.3, 0.55, 14, limit)
                     rows.append([child, 1, "PRODUCER_DESPATCH", fwd.isoformat(),
                                  f["permit"], carrier, "", code, tonnes, "", pnum])
@@ -411,7 +491,7 @@ def build_register(samp, ents, permit_of, fac, rng, paths, pop=None):
                         op = REC_OPS[key] if cls == "rec" else DIS_OPS[key]
                         seq += 1
                         rows.append([pnum, seq, "TREATMENT_CONFIRMED",
-                                     _then(rl, recv, 3.0, 0.80, 45, limit).isoformat(),
+                                     _then_conf(rl, recv, 3.0, 0.80, 45, limit).isoformat(),
                                      permit_of[prod["ent"]], carrier, g["permit"], code, tonnes, op, ""])
                 for r in rows:
                     sink.append((chain_date, r))
@@ -467,6 +547,29 @@ def _renotify(y25, rng, cno):
         take = min(want[k], len(pool))
         sel = rng.choice(len(pool), size=take, replace=False)
         picks.extend(pool[int(i)] for i in sel)
+    # The tonnage a confirmation-counting response double counts is the sum of the re-notified
+    # consignments' own tonnages, and the deliverables print it to the tonne. The draw above fixes
+    # how many each stream carries; this lands the sum inside the printed tonne by exchanging one
+    # pick for another consignment of the same stream, nearest first, and takes no random draw.
+    def dup_of(sel):
+        return sum(float([x for x in chains[c] if x[2] == "PRODUCER_DESPATCH"][0][8]) for c in sel)
+
+    lo, hi = DUP_WINDOW
+    if not lo <= dup_of(picks) < hi:
+        want = (lo + hi) / 2.0
+        best = None
+        for i, c in enumerate(sorted(picks)):
+            k = code2s[[x for x in chains[c] if x[2] == "PRODUCER_DESPATCH"][0][7]]
+            tc = float([x for x in chains[c] if x[2] == "PRODUCER_DESPATCH"][0][8])
+            for alt in by_stream[k]:
+                if alt in picks:
+                    continue
+                ta = float([x for x in chains[alt] if x[2] == "PRODUCER_DESPATCH"][0][8])
+                tot = dup_of(picks) - tc + ta
+                if lo <= tot < hi and (best is None or abs(tot - want) < best[0]):
+                    best = (abs(tot - want), c, alt)
+        assert best is not None, ("no single exchange lands the duplicated tonnage", dup_of(picks))
+        picks = [best[2] if c == best[1] else c for c in picks]
     extra, pairs = [], []
     for c in sorted(picks):
         cno += 1

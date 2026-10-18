@@ -21,6 +21,8 @@ FILES = {
     "summary": "hrg_annual_report_partner_summary_fy2025-26.pdf",
     "treasury": "treasury_disbursement_runs_2026_2027.csv",
     "followup": "hrg_household_followup_survey_2026.csv",
+    "checks": "hrg_claim_check_register_2024_2025.csv",
+    "archive": "treasury_disbursement_runs_2024_2025.csv",
 }
 PACK = list(FILES)
 DISTRACTORS = ["summary", "treasury", "followup"]
@@ -39,6 +41,8 @@ def run(target, documents=True):
     out(R.provinces(), "prov")
     out(R.treasury(), "treasury")
     out(R.followup(), "followup")
+    out(R.check_register(), "checks")
+    out(R.treasury_archive(), "archive")
     if documents:
         docs.write_all(target, FILES, R, W, PACK)
     return dict(W=W, R=R)

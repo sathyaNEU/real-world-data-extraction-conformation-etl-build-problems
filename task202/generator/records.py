@@ -9,6 +9,7 @@ import datetime as dt
 import numpy as np
 import pandas as pd
 
+import asklayer as AL
 import params as P
 import sim
 
@@ -51,6 +52,7 @@ class Records:
                 ref = code.lower().replace("-", "_")
             self.portal_ref[pt["idx"]] = ref
         self._prelim = None
+        self.closed = AL.Closed(W, self.parts, self.ledger)
 
     # ---------------------------------------------------------------- the spine
     def portal_awards(self):
@@ -253,4 +255,64 @@ class Records:
                          "adequacy_rating": int(r.integers(1, 6)),
                          "repeat_application": "Y" if r.random() < 0.18 else "N",
                          "interviewer": "FS-%02d" % (1 + int(r.integers(0, 14)))})
+        return pd.DataFrame(rows)
+
+    # ---------------------------------------------------------------- the closed period's records
+    def ask_recovery_rows(self):
+        """The 2024/25 recoveries, each a negative claim line in the month it was claimed back."""
+        return [(mo, code, b, -1, round(-amt, 2), paid)
+                for mo, code, b, amt, paid in self.closed.recovery_lines]
+
+    def claims_ref(self, pi, mo):
+        """The partner's reference in the claims system. The January 2025 release moved the
+        separator, and the register was not reloaded, so the earlier months keep the old style."""
+        code = self.ledger[pi]
+        return code.replace("-", "/") if mo < (2025, 1) else code
+
+    def check_register(self):
+        """The Office's pre-payment claim check register for the closed claim months."""
+        C = self.closed
+        ytd = C.ytd()
+        rows = []
+        seq = {}
+        for key in sorted(C.cells, key=lambda k: (k[1], self.ledger[k[0]])):
+            pi, mo = key
+            c = C.cells[key]
+            pos = ytd[key]
+            out = []
+            sup = C.superseded(key)
+            if sup is not None:
+                out.append((c["checked"] - dt.timedelta(days=11 + (pi % 5)), sup["passed_n"],
+                            pos["superseded"], sup["reason"]))
+            m = C.monthly(key)
+            out.append((c["checked"], m["passed_n"], pos["current"], m["reason"]))
+            for checked, passed_n, amounts, reason in out:
+                seq[mo] = seq.get(mo, 0) + 1
+                rows.append({
+                    "check_ref": "CK-%04d%02d-%04d" % (mo[0], mo[1], 100 + seq[mo]),
+                    "claim_month": mlabel(mo),
+                    "claims_partner_ref": self.claims_ref(pi, mo),
+                    "received_date": c["received"].isoformat(),
+                    "checked_date": checked.isoformat(),
+                    "checker_ref": c["checker"],
+                    "awards_passed": passed_n,
+                    "amount_passed_php": "%.2f" % amounts[0],
+                    "amount_held_php": "%.2f" % amounts[1],
+                    "hold_reason": reason,
+                })
+        return pd.DataFrame(rows)
+
+    def treasury_archive(self):
+        """The Treasury's archived payment runs for the closed claim months."""
+        rows = []
+        for r in sorted(self.closed.run_lines(),
+                        key=lambda r: (r["run_date"], self.ledger[r["partner"]], r["half"])):
+            rows.append({"run_ref": r["run_ref"],
+                         "run_date": r["run_date"].strftime("%d/%m/%Y"),
+                         "value_date": r["value_date"].strftime("%d/%m/%Y"),
+                         "partner_code": self.ledger[r["partner"]],
+                         "claim_months_covered": mlabel(r["month"]),
+                         "gross_php": "%.2f" % r["gross"],
+                         "recoveries_php": "%.2f" % r["recovered"],
+                         "net_php": "%.2f" % r["net"]})
         return pd.DataFrame(rows)

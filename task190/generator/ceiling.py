@@ -2,7 +2,8 @@
 
 Two responses are scored, from DIFFERENT readings, one row each:
   cracker  landed the call, ran the hygiene battery (key uniqueness, exact duplicates, unmatched
-           joins, fan-out, count ties) and executed every filed rule the pack points at.
+           joins, fan-out, count ties) and executed every filed rule the pack points at, which
+           since the collection documentation states the visit grain includes ask A1's grain.
   mirror   stopped at the most attractive wrong rung on the call (rung 1, a bar built from the
            published national coefficient of variation), and takes each ask's lazy stop.
 
@@ -35,14 +36,16 @@ for region in ("Norte", "Centro", "Lisboa", "Alentejo", "Algarve"):
 
 # What each response resolves. The cracker runs the battery and executes every filed rule, so it
 # resolves every documented handling and everything the five sweeps find: the unit column the
-# dictionary describes (H1), the code revision the crosswalk dates (H2), the re-sent batch (H3) and
-# the permit supersessions the crosswalk lists where a join fails (H4). It resolves no primary,
-# because each primary is an inconsistency across grains that no column description asks for and no
-# sweep performs: A1's response log is at case grain against an enterprise-grain frame and no count
-# in the pack exceeds any published total, A2's re-notified consignments are distinct consignment
-# numbers, and A3's authority return is a valid distinct return.
+# dictionary describes (H1), the code revision the crosswalk dates (H2), the re-sent batch (H3),
+# the permit supersessions the crosswalk lists where a join fails (H4), and ask A1's visit grain,
+# which the survey's collection documentation states outright. It resolves neither of the other two
+# primaries, because each is an inconsistency across grains that no column description asks for and
+# no sweep performs: A2's re-notified consignments are distinct consignment numbers, and A3's
+# authority return is a valid distinct return. The mirror takes each ask's lazy stop, which on A1 is
+# the row sum whatever the documentation says.
 RESOLVES = {
-    "cracker": {"H1_units", "H2_code_revision", "H3_resent_batch", "H4_permit_supersession"},
+    "cracker": {"H1_units", "H2_code_revision", "H3_resent_batch", "H4_permit_supersession",
+                "A1_visit_grain"},
     "mirror": {"H2_code_revision"},
 }
 

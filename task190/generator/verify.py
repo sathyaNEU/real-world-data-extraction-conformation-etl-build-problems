@@ -124,14 +124,15 @@ def main():
             if kinds[op] == "recovery":
                 rec[s] += t
 
-    for c in (rec, desp, conf_t):
-        for k, v in c.items():
-            assert abs(v - round(v)) < 1e-6, (k, v)
+    offs = [abs(v - round(v)) for c in (rec, desp, conf_t) for v in c.values()]
     rec = {k: int(round(v)) for k, v in rec.items()}
     desp = {k: int(round(v)) for k, v in desp.items()}
     conf_t = {k: int(round(v)) for k, v in conf_t.items()}
-    ok("every stream's register total is a whole tonne once the weighbridge noise is summed",
-       True, "net tonnes are recorded to 20 kg and sum to whole tonnes by stream and stage")
+    ok("every stream and stage total lands inside the tonne the workbook prints, and none of them "
+       "is a whole number",
+       max(offs) < 0.45 and min(offs) > 0.01,
+       "net tonnes are recorded to 20 kg and the %d stream and stage totals sit %.2f to %.2f of a "
+       "tonne off the whole number" % (len(offs), min(offs), max(offs)))
 
     # ---- the plan targets, read out of the plan PDF
     txt = pdf_text("national_waste_management_plan_targets.pdf")
@@ -275,6 +276,25 @@ def main():
         if kinds.get(op) == "recovery":
             a2[code2stream[d[7]]] += float(d[8])
     a2 = {k: int(round(v)) for k, v in a2.items()}
+    # the same construction restricted to the confirmations that had arrived by the extract the
+    # 2025 release says its register column came from, recomputed here from the shipped legs alone
+    cut25 = collections.Counter()
+    for c in po2:
+        d = [x for x in ch2[c] if x[2] == "PRODUCER_DESPATCH"][0]
+        if not d[3].startswith("2025") or (d[10] and d[10] in po2):
+            continue
+        conf = [x for x in ch2[c] if x[2] == "TREATMENT_CONFIRMED"]
+        if not conf:
+            continue
+        op, cd = conf[0][9], conf[0][3]
+        if kinds.get(op) == "interim":
+            k2 = co2.get(c)
+            cc = [x for x in ch2[k2] if x[2] == "TREATMENT_CONFIRMED"] if k2 else []
+            if not cc:
+                continue
+            op, cd = cc[0][9], cc[0][3]
+        if kinds.get(op) == "recovery" and cd <= "2026-06-30":
+            cut25[code2stream[d[7]]] += float(d[8])
     ws = wb["Recovery 2025"]
     for row in ws.iter_rows(min_row=4, max_row=11, values_only=True):
         if not row[0]:
@@ -366,9 +386,24 @@ def main():
                 pub[name2key[l]] = (int(lines[i + 1]), int(lines[i + 2]), float(m.group(1)))
     ok("Table 1 of the 2025 release yields all eight rows", len(pub) == 8, "%d rows read" % len(pub))
     gaps = [(a2[k] - pub[k][1]) / float(a2[k]) for k in pub]
-    ok("every published 2025 recovered tonnage sits below the register recompute by 2.5 to 6 per cent",
-       all(0.025 <= g <= 0.06 for g in gaps),
-       "gaps %s" % ", ".join("%.1f" % (100 * g) for g in sorted(gaps)))
+    ok("every published 2025 recovered tonnage sits below the register recompute, by more than "
+       "deduplicating the re-notified consignments is worth",
+       all(0.004 <= g <= 0.08 for g in gaps),
+       "gaps %s per cent" % ", ".join("%.1f" % (100 * g) for g in sorted(gaps)))
+    late = {k: a2[k] - cut25[k] for k in pub}
+    ok("the register's own confirmations after the extract the release names account for most of "
+       "that distance, on every stream, which is what the release says explains it",
+       all(late[k] > 0 for k in pub)
+       and 0.5 < sum(late.values()) / float(sum(a2[k] - pub[k][1] for k in pub)) < 1.0,
+       "%d t confirmed after 30 June 2026 against a %d t distance, and %d to %d t a stream"
+       % (round(sum(late.values())), sum(a2[k] - pub[k][1] for k in pub),
+          round(min(late.values())), round(max(late.values()))))
+    nearest = {k: abs(cut25[k] - pub[k][1]) / float(pub[k][1]) for k in pub}
+    ok("and no basis reproduces the published column: a recompute at the extract it names is the "
+       "nearest and is off on every stream",
+       all(v > 0.0015 for v in nearest.values()),
+       "off by %.2f to %.2f per cent a stream" % (100 * min(nearest.values()),
+                                                  100 * max(nearest.values())))
     ok("every published 2025 rate is the published tonnages' own ratio",
        all(abs(round(100.0 * pub[k][1] / pub[k][0], 1) - pub[k][2]) < 0.05 for k in pub),
        "eight rows internally consistent")

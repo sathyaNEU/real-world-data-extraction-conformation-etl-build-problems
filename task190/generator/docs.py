@@ -108,11 +108,13 @@ def sample_design(path, issued, resp):
                     "named enterprise.", BODY),
           Paragraph("5. Collection operations", H2),
           Paragraph("bws_2026_response_log.csv records the division's contacts with each issued "
-                    "enterprise under the collection case opened for it, with the field days "
-                    "attributed to the contact. Field work is organised by regional team. The "
-                    "division books field work in field days of %s hours, and a team records the "
-                    "time a contact took in the unit shown in the log's time_unit column."
-                    % NUMWORD[W.FIELD_DAY_HOURS], BODY),
+                    "enterprise under the collection case opened for it. Field work is organised "
+                    "by regional team and booked as field visits: a visit covers several "
+                    "enterprises in one region on one trip, and the visit's field days are "
+                    "recorded on each case the visit covered, under the visit reference the log "
+                    "carries. The division books field work in field days of %s hours, and a team "
+                    "records the time a contact took in the unit shown in the log's time_unit "
+                    "column." % NUMWORD[W.FIELD_DAY_HOURS], BODY),
           Spacer(1, 10),
           Paragraph("%s, Business and Environment Statistics Division. Issued %s."
                     % (W.INSTITUTE, _long(W.EXTRACT_SURVEY)), SMALL)]
@@ -147,9 +149,11 @@ def release_2025(path, cv_2025, nat_total, prior):
                     "waste only. Waste treated on the producer's own site does not appear in the "
                     "register and is estimated from the survey alone. The register column in "
                     "Table 1 is as extracted on %s, the extract this release was compiled from. "
-                    "The register goes on receiving treatment confirmations for consignments "
-                    "despatched in earlier reference years, and the published series is not "
-                    "revised for them." % (W.REGISTER, _long(W.PRIOR_EXTRACT)), BODY),
+                    "The register goes on receiving treatment confirmations, late notifications "
+                    "and re-certified weights for consignments despatched in earlier reference "
+                    "years, and the published series is not revised for them, so a later extract "
+                    "of the same reference year stands above this column."
+                    % (W.REGISTER, _long(W.PRIOR_EXTRACT)), BODY),
           Spacer(1, 10),
           Paragraph("%s. Reproduced under the open licence for public-sector information."
                     % W.INSTITUTE, SMALL)]

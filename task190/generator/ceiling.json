@@ -1,12 +1,12 @@
 {
   "cracker": {
     "lands_call": true,
-    "ask_figures_kept": 0,
-    "ask_weight_kept": 0.0,
+    "ask_figures_kept": 10,
+    "ask_weight_kept": 0.3571,
     "recommendation_weight": 38.0,
-    "total": 45.0,
+    "total": 64.64,
     "per_ask": {
-      "A1": "0 of 10",
+      "A1": "10 of 10",
       "A2": "0 of 8",
       "A3": "0 of 10"
     }
@@ -23,6 +23,6 @@
       "A3": "0 of 10"
     }
   },
-  "pair_ceiling": 28.5,
+  "pair_ceiling": 38.32,
   "mirror_leakage_pct": 0.0
 }

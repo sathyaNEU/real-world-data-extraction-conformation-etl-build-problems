@@ -84,6 +84,49 @@ DESPATCH_SHARE = {"metal": 0.93, "mixed_ci": 0.96, "paper": 0.90, "wood": 0.88,
 CONFIRMED_SHARE = {"metal": 0.978, "mixed_ci": 0.964, "paper": 0.971, "wood": 0.969,
                    "cd_rubble": 0.958, "glass": 0.974, "plastic": 0.967, "textile": 0.962}
 
+# The register's own clock. A treatment confirmation usually follows the receipt within days, but
+# a load held for aggregation, a disputed weighbridge ticket or a record re-keyed after the
+# agency's July 2026 system move is confirmed long after the despatch, so a share of consignments
+# runs on a second, much longer clock. Nothing here is set from a published figure: the tail falls
+# where these parameters put it, and the 2025 release's recovered column is then taken off the
+# register at the extract date the release states.
+# a load waiting on a treatment slot or a queried ticket: weeks to months
+CONF_MID_P = 0.110
+CONF_MID = (55, 0.50, 150)        # median days, sigma, cap
+# a load held for aggregation, a disputed weight, a record re-keyed after the system move: months
+CONF_LONG_P = 0.040
+CONF_LONG = (250, 0.60, 620)
+
+# What is unconfirmed at an extract is two different things: records that never close (the facility
+# never filed) and the register's own right censoring, a load despatched too close to the extract
+# for its confirmation to have arrived. The first is spread over the year, the second concentrates
+# towards the extract date; a year on, only the first is left, which is what the 2025 file shows.
+UNC_NEVER_SHARE = 0.42            # of the unconfirmed class, the share that never closes
+
+# The weighbridge offsets on a class of consignments sum to this many hundredths of a tonne rather
+# than to zero, so a stream and stage total is a tonnage the register adds up to and not a whole
+# number: each one lands inside the tonne the deliverables print and on neither of its edges. Every
+# partial sum (recovered, recovered plus disposal, all three) stays inside half a tonne, which is
+# what holds the printed cell, and none of them is zero.
+CLASS_RESID = {
+    2026: {"metal":     (-24,  32, -18), "mixed_ci":  ( 16, -28,  22),
+           "paper":     ( 28, -14, -10), "wood":      (-12,  26,  18),
+           "cd_rubble": ( 20,  14, -36), "glass":     (-30,  -8,  26),
+           "plastic":   ( 14,  18, -24), "textile":   (-26,  22,  12)},
+    2025: {"metal":     ( 10, -24,  18), "mixed_ci":  ( -6,  28, -20),
+           "paper":     ( 22,  12, -28), "wood":      (-16, -12,  30),
+           "cd_rubble": (  8,  26, -18), "glass":     ( 14, -22,  26),
+           "plastic":   (-12,  16,  24), "textile":   ( 12, -26, -14)},
+}
+
+# The 2025 release was compiled from the register extract of 30 June 2026, and the register has
+# taken more than confirmations since that cut: consignments notified late by their producer and
+# tonnages re-certified at the weighbridge audit, neither of which the published series is revised
+# for. So a recompute at the stated cut lands near the published column, above it on every stream
+# and on no stream reproducing it, by a share that carries no constant ratio.
+PRIOR_DRIFT = {"metal": -0.0036, "mixed_ci": -0.0052, "paper": -0.0024, "wood": -0.0061,
+               "cd_rubble": -0.0043, "glass": -0.0075, "plastic": -0.0031, "textile": -0.0068}
+
 BAR = 1.959963985          # two-sided 95 per cent normal bar
 GOLDEN_STREAM = "metal"
 LOUD_STREAM = "mixed_ci"

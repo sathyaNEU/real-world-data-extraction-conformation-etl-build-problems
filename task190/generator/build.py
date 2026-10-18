@@ -45,12 +45,14 @@ F = {
 P = {k: os.path.join(TARGET, v) for k, v in F.items()}
 
 
-def exact(v, what=""):
-    """A tonnage total the design fixed. The weighbridge noise on the individual consignments sums
-    to zero over each class of each stream, so every total the deliverables state is a whole tonne
-    and is the one the design fixed; this is where that is checked rather than assumed."""
+def cell(v, what=""):
+    """A tonnage total the design fixed, as the register itself adds it up. The weighbridge offsets
+    on each class of each stream sum to the residue world.CLASS_RESID hands in rather than to zero,
+    so a stream and stage total lands inside the tonne the deliverables print and on neither of its
+    edges, and is never a whole number; this is where that is checked rather than assumed."""
     n = int(round(v))
-    assert abs(v - n) < 1e-6, (what, v)
+    assert abs(v - n) < 0.45, (what, "outside the printed tonne", v)
+    assert abs(v - n) > 1e-9, (what, "a whole tonne, so the register was solved backwards", v)
     return n
 
 
@@ -105,6 +107,37 @@ def recovered_by_stream(ch, kind_of, code2stream, facility_permits, year, drop_r
     return out
 
 
+def recovered_at_cut(ch, kind_of, code2stream, facility_permits, year, cut):
+    """The register's recovered tonnage for a reference year as it stood at an earlier extract: the
+    same chain construction, over the consignments whose terminal confirmation had arrived by the
+    cut. What a release compiled at that extract could have published, and the only basis on which
+    the column it did publish makes sense."""
+    child_of = {}
+    for c, rs in ch.items():
+        if rs[0][10]:
+            child_of.setdefault(rs[0][10], c)
+    po = {c for c, rs in ch.items()
+          if [x for x in rs if x[2] == "PRODUCER_DESPATCH"][0][4] not in facility_permits}
+    out = collections.Counter()
+    for c in po:
+        d = [x for x in ch[c] if x[2] == "PRODUCER_DESPATCH"][0]
+        if not d[3].startswith(str(year)) or (d[10] and d[10] in po):
+            continue
+        conf = [x for x in ch[c] if x[2] == "TREATMENT_CONFIRMED"]
+        if not conf:
+            continue
+        op, cd = conf[0][9], conf[0][3]
+        if kind_of.get(op) == "interim":
+            k = child_of.get(c)
+            cc = [x for x in ch[k] if x[2] == "TREATMENT_CONFIRMED"] if k else []
+            if not cc:
+                continue
+            op, cd = cc[0][9], cc[0][3]
+        if kind_of.get(op) == "recovery" and cd <= cut:
+            out[code2stream[d[7]]] += float(d[8])
+    return out
+
+
 def stage_chain(ch, kind_of, code2stream, facility_permits, year, arisings):
     child_of = {}
     for c, rs in ch.items():
@@ -126,9 +159,9 @@ def stage_chain(ch, kind_of, code2stream, facility_permits, year, arisings):
             conf[s] += t
             if kind_of[op] == "recovery":
                 rec[s] += t
-    return {k: {"arisings": arisings[k], "despatched": exact(desp[k], "despatched " + k),
-                "confirmed": exact(conf[k], "confirmed " + k),
-                "recovered": exact(rec[k], "recovered " + k)} for k, *_ in W.STREAMS}
+    return {k: {"arisings": arisings[k], "despatched": cell(desp[k], "despatched " + k),
+                "confirmed": cell(conf[k], "confirmed " + k),
+                "recovered": cell(rec[k], "recovered " + k)} for k, *_ in W.STREAMS}
 
 
 def ask_a1(log_rows, region_of):
@@ -182,8 +215,9 @@ def ask_a3(mret, mrec, authorities):
 def ceiling_deltas(path, P, a1, a2, a3, region_of, kind_of, code2stream, facility_permits, ch25):
     """Per ask figure, whether each response's own reading lands within half the stated rounding unit
     of the golden. The cracker resolves every documented handling and everything the battery finds
-    (the unit columns, the dated code revision, the re-sent batch, the permit supersessions) and no
-    primary; the mirror resolves the code revision only."""
+    (the unit columns, the dated code revision, the re-sent batch, the permit supersessions), which
+    since the collection documentation states the visit grain includes ask A1's grain; the mirror
+    takes each ask's lazy stop and resolves the code revision only."""
     log = rows(P["log"])
     out = {"cracker": {}, "mirror": {}}
 
@@ -194,11 +228,16 @@ def ceiling_deltas(path, P, a1, a2, a3, region_of, kind_of, code2stream, facilit
         resp = "cracker" if resolve_units else "mirror"
         days, ret = collections.Counter(), collections.Counter()
         seen_case = set()
-        for r in log:                                  # the device unresolved: every row counted
+        seen_visit = set()
+        for r in log:
             reg = region_of[r[1]]
             fd = float(r[7])
             if r[8] == "h" and resolve_units:
                 fd = fd / float(W.FIELD_DAY_HOURS)
+            if resolve_units and r[5]:             # the grain the design document now states
+                if r[5] in seen_visit:
+                    continue
+                seen_visit.add(r[5])
             days[reg] += fd
             if r[9] == "usable return":
                 # the cracker runs the battery, so it counts a case once; the mirror counts rows
@@ -260,13 +299,13 @@ def main():
     ch26 = chains([P["h1"], P["h2"]])
     rec26 = recovered_by_stream(ch26, kind_of, code2stream, facility_permits, 2026)
     for k, *_ in W.STREAMS:
-        assert exact(rec26[k], "recovered " + k) == att[k]["recovered_t"], \
+        assert cell(rec26[k], "recovered " + k) == att[k]["recovered_t"], \
             (k, rec26[k], att[k]["recovered_t"])
     arisings = {k: att[k]["arisings"] for k, *_ in W.STREAMS}
     chain = stage_chain(ch26, kind_of, code2stream, facility_permits, 2026, arisings)
     ch25 = chains([P["y25"]])
     a2raw = recovered_by_stream(ch25, kind_of, code2stream, facility_permits, 2025, drop_renotified=True)
-    a2 = {k: exact(a2raw[k], "2025 recovery " + k) for k, *_ in W.STREAMS}
+    a2 = {k: cell(a2raw[k], "2025 recovery " + k) for k, *_ in W.STREAMS}
     a2_lazy = recovered_by_stream(ch25, kind_of, code2stream, facility_permits, 2025)
     a1 = ask_a1(rows(P["log"]), region_of)
     authorities = set(pack.AUTHORITY.values())
@@ -276,14 +315,16 @@ def main():
     nat_cv, nat_tot = sim.national_cv(samp)          # the 2026 round's own precision, published nowhere
     cv25, tot25, est25 = sim.round_2025(pop, idx)    # the 2025 round, which the release reports
     # The 2025 release's Table 1. Arisings are the 2025 round's own estimate. Recovered tonnage is
-    # the register as it stood at the extract the release was compiled from, so it sits below a
-    # recompute on the 2027-01-31 extract by the confirmations the register took in between; the
-    # release states the extract date and that the series is not revised for late confirmations.
-    prng = np.random.default_rng(W.SEED + 31)
+    # the register as it stood at the 30 June 2026 extract the release was compiled from: the
+    # consignments whose treatment confirmation had arrived by then. It therefore sits below a
+    # recompute on the shipped 2027-01-31 extract by exactly the confirmations the register took in
+    # between, which is what the release says explains it, and the register has been amended in the
+    # ordinary way since that cut (world.PRIOR_DRIFT), so no recompute reproduces the column.
+    cut25 = recovered_at_cut(ch25, kind_of, code2stream, facility_permits, 2025, W.PRIOR_EXTRACT)
     prior = {}
     for k, *_ in W.STREAMS:
-        late = float(prng.uniform(0.028, 0.052))       # still unconfirmed at the June 2026 extract
-        prior[k] = (int(round(est25[k])), int(round(a2[k] * (1.0 - late))))
+        prior[k] = (int(round(est25[k])),
+                    int(round(cut25[k] * (1.0 + W.PRIOR_DRIFT[k]))))
     docs.plan_targets(P["plan"], targets)
     docs.sample_design(P["design"], W.ISSUED, {c: r for c, _l, _N, r in W.STRATA})
     docs.release_2025(P["release"], cv25, tot25, prior)

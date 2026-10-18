@@ -49,7 +49,7 @@ One isolated reader, Sonnet at medium effort, on a fresh unzip of the pack and t
 ## Solver route and answer
 Answer: Metal and metal-bearing wastes. 2026 rate 56.6% (SE about 0.63 pts, 95% interval about 55.4 to 57.8) against 59.5%, shortfall 2.9 points. The module goes to metal. Confidence about 75%.
 Route:
-- Stacked the three legs into one table. The h2 file has renamed columns, handled positionally; no consignment overlaps between files, and the 2025 file holds early-2026 despatches, so I filtered on leg_date.
+- Stacked the three legs into one table. The h2 file has renamed columns, handled positionally; no consignments overlap between files, and the 2025 file holds early-2026 despatches, so I filtered on leg_date.
 - Mapped waste codes via the crosswalk, which covers the 2026-07-01 starred codes.
 - Took enterprise-origin despatches (producer APA-3...) dated in 2026 and dropped any with a parent (re-submissions of the same load; none in 2026).
 - Recovery means R1/R3/R4/R5 on the treatment-confirmed leg. R13 follows the forwarded consignment (parent_consignment, producer APA-F...) to its later operation. 730 despatches have no confirmation and count as not recovered.
@@ -164,3 +164,24 @@ What I would need to be told to be sure: whether the E1 census and fpc are the i
   one stream qualifies. And the reader reads the design document's two variance-pinning sentences, the
   column rename, the starred codes, the single hours team and the repeated visit days as one clean
   switch each, which is the pack reading as constructed rather than exported.
+
+### What the pins pass of 2026-10-18 changed under these two reports
+
+The judge's second pass closed the Gate C fork (both estimators of the denominator's design variance are
+forced by the records, and the published 3.4 per cent confirms nothing), and its three pins are made here.
+Two of them change what a reader sees, so **both reader rounds above are now stale on those points and a
+fresh reader round is owed**:
+
+- `bws_2026_design_and_weighting.pdf` section 5 now states the visit grain outright ("a visit covers several
+  enterprises in one region on one trip, and the visit's field days are recorded on each case the visit
+  covered, under the visit reference the log carries"), so ask A1's grain is a filed rule and no longer a
+  silent device. Measured cost: the pair ceiling moves from 28.5 to 38.3 against a gate of 40.
+- `prompt.txt` now names the four chain stages, so the stage sheet cannot be decomposed another way.
+- The 2025 release's recovered column is now the register at the 30 June 2026 extract it names, the register
+  carries 230 confirmation legs of 2025 consignments after that cut (longest lag 626 days), and no basis
+  reproduces the column (the nearest, a recompute at that cut, is off by 0.24 to 0.76 per cent a stream).
+  The round-2 reader's "metal 65,074" and the round-1 reader's "3.9 per cent" both describe earlier packs.
+- The register's stream and stage totals are no longer whole numbers and the unconfirmed despatches now rise
+  towards the extract (33 in January against 139 in December). The round-2 reader's "the 2026 rates land on
+  exact tenths" survives at the fourth decimal and cannot be cleared without moving a graded tonnage: with
+  70,384 t and 124,354 t both frozen and printed, the rate is pinned to 56.5991 to 56.6004.
