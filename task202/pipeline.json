@@ -9,7 +9,7 @@
  "architecture": 1,
  "loops": 0,
  "card_registered": true,
- "resume": "Stage 4, both threads spawned on the reworked pack at target.zip md5 e94477d262f6e89ba9a163defe719fe0. The ask layer was re-sited onto a claim period that closed before the recommendation's window opens, and the gates are verified here rather than taken on the report: precut 51 checks with 0 FAIL and 0 WARN, pair ceiling 28.5 against a gate of 40 where it was 65.5, mirror leakage 0.0 where it was 34.6 with no headroom, all three asks keeping 0 of 6 against the cracker, verify 2,161 independent checks from the bundle alone with the call PHP 7,800, and freeze.py --mode rubric PASS with 46 ask figures and one ask file moved, which is what a rubric repair is allowed to move. The pair arithmetic is the house model exactly: cracker 45.0 as 38 plus 7 plus no ask points, mirror 12.0, so 28.5. The reclassification that made that possible is sound and is visible rather than silent: the band ceilings, the referred shares and the scale factors follow from the committed ceiling by the policy's own schedule, so they are the recommendation's critical components, which is where the house arithmetic already banks them for a landed call, and the cracker prints the old accounting at 49.5 as an audit line. Sensitivity recorded by the builder rather than presented as margin: the deepest measured stop keeps 5 of 18 figures for a pair of 43.8, and a response cracking one whole ask keeps 6 of 18 for 46.8, both inside the bar of 50 and above the target of 40.",
+ "resume": "Stage 4 round 1 is in and one repair pass is running. The judge returned SEND_BACK by label, but Gate G, Gate H and Gate F all pass and every finding is a pin, a margin or a device, so the disposition is read against the gate table rather than its label and the architecture stands. Five repairs in flight. Both PDFs are unopenable by pdfminer and pdfplumber from a malformed Producer string, verified here as the foundation's name truncated mid-word and then closed twice, and clause 9 and Schedule B live in that file, so the commonest Python route cannot read the decisive rule. The call's margin is 0.043 points where bootstrapping puts 47 per cent of resamples on the wrong side, so the bin is being widened past 0.3 points with the answer held at PHP 7,800. The grain is unpinned and three readings give 7,800, 7,700 and 8,100, so clause 9.2 is being pinned at the estimand and 9.1 told to test the share before rounding. Supplementary 1 is forked with no antidote in the pack, the word instruction returning zero hits across all 17 files, so the re-issue convention is being filed in the dictionary, which is legal because asks may turn on rule application. Supplementary 3 is forked on its unit and is being reworded with the supersession stated. And supplementary 2 needs a new primary from the silent list, because the reader kept 6 of 6 on it and 6 of 6 on supplementary 3 while ask A's grain device held at 0 of 6.",
  "designation_set_screen": {
   "assigned": "carry task194 architecture 6's designation-set device onto human-factors-ergonomics / safety-incident-error-analysis, screening against task181 first",
   "method": "guard.py nearest on each candidate driver, then the abstraction test on latent structure, default path and correction",
@@ -85,5 +85,14 @@
  "leak": {
   "leak_py": "REVIEW, 0 LEAK, sweep 11 clean",
   "reader": "running"
+ },
+ "judge": {
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK by label, read as a repair against the gate table",
+  "report": "task202/determinism_check_report.md",
+  "gates": "A PASS with one qualification, B PASS with two gaps, C FAIL, D PASS, E FAIL on the supplementaries and the 6.0 test, F strong, G PASS, H PASS",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "taxonomy": "margin_or_boundary_fragility on the call, competing_defensible_answer on supplementaries 1 and 3",
+  "order": "derivation written before the graded blocks; every main-path figure reproduced"
  }
 }
