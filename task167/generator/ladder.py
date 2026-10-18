@@ -23,8 +23,12 @@ def family(book):
         for rate in (False, True):
             out["class schedule, %s ages, %s" % (nm, "rate on the undrawn balance" if rate else "share of commitment")] = \
                 K.golden_call(book, step, rate)
-    for thr in (0.04, 0.09, 0.12):
+    for thr in (0.08, 0.09, 0.10, 0.11):
         out["class schedule, first-year threshold %.0f per cent" % (thr * 100)] = K.golden_call(book, thr=thr)
+    for step in (1, 3, 12):
+        for rate in (False, True):
+            out["class schedule, %s ages, %s, funds equally weighted" % ({1: "monthly", 3: "quarterly", 12: "annual"}[step],
+                "rate" if rate else "share")] = K.golden_call(book, step, rate, weight="equal")
     for v0 in (2012, 2014, 2016, 2018):
         out["class schedule, line funds of vintages %d on" % v0] = K.golden_call(book, line_from=v0)
     out["class schedule, funds equally weighted"] = K.golden_call(book, weight="equal")
@@ -38,6 +42,81 @@ def family(book):
     cbs = {s: K.curve(book, lambda f, s=s: K.hist(f) and K.is_line(f) and f["strategy"] == s) for s in STRATS}
     cas = {s: K.curve(book, lambda f, s=s: K.hist(f) and not K.is_line(f) and f["strategy"] == s) for s in STRATS}
     out["class schedule by strategy"] = K.forecast(book, lambda f: cbs[f["strategy"]] if K.is_line(f) else cas[f["strategy"]])
+    rbs = {(s, c): K.curve(book, lambda f, s=s, c=c: K.hist(f) and K.is_line(f) == c and f["strategy"] == s, rate=True)
+           for s in STRATS for c in (True, False)}
+    out["class schedule by strategy, rate on the undrawn balance"] = K.forecast(book, lambda f: rbs[(f["strategy"], K.is_line(f))],
+                                                                                rate=True)
+    # nearest neighbours in first-year share (annualised, or as observed for the programme's younger funds)
+    for k in (5, 7, 10, 15, 20, 30):
+        for annual in (True, False):
+            out["the %d earlier funds nearest in first-year share%s" % (k, "" if annual else ", as observed")] = \
+                nearest(book, k, annual)
+    return out
+
+
+def nearest(book, k, annual=True):
+    hy = [f for f in book.funds.values() if K.hist(f) and f["y1"] is not None and f["obs"] >= 24]
+    out = {}
+    for fid, f in book.funds.items():
+        if f["status"] != "Active" or f["y1"] is None:
+            out[fid] = 0.0
+            continue
+        y = f["y1"] if annual else sum(f["h"][:min(12, f["obs"])]) / f["commitment"]
+        ids = set(h["fid"] for h in sorted(hy, key=lambda h: (abs(h["y1"] - y), h["fid"]))[:k])
+        cv = K.curve(book, lambda h, ids=ids: h["fid"] in ids)
+        out[fid] = K.forecast(book, lambda h, cv=cv: cv)[fid]
+    return out
+
+
+def kmeans_cut(book):
+    """two clusters of the earlier funds' first-year shares, one dimension"""
+    x = sorted(f["y1"] for f in book.funds.values() if K.hist(f) and f["y1"] is not None)
+    c1, c2 = x[0], x[-1]
+    for _ in range(100):
+        cut = (c1 + c2) / 2
+        lo = [v for v in x if v < cut]
+        hi = [v for v in x if v >= cut]
+        c1, c2 = sum(lo) / len(lo), sum(hi) / len(hi)
+    return (c1 + c2) / 2
+
+
+def routes(book):
+    """the routes that skip the class or misplace it, and the rules of thumb, as the rule-3 audit names them"""
+    import numpy as np
+    out = {}
+    hist = [f for f in book.funds.values() if K.hist(f)]
+    prog = [f for f in book.funds.values() if f["programme"]]
+    for thr in (0.05, 0.15, 0.20):
+        out["first-year threshold %d per cent" % round(thr * 100)] = tot(K.golden_call(book, thr=thr))
+    cut = kmeans_cut(book)
+    out["two clusters of first-year share (cut at %.1f per cent)" % (100 * cut)] = tot(K.golden_call(book, thr=cut))
+    cpr = K.curve(book, K.hist, rate=True)
+    cps = K.curve(book, K.hist)
+    fr = K.forecast(book, lambda f: cpr, rate=True)
+    fs = K.forecast(book, lambda f: cps)
+    er = sum(v for fid, v in fr.items() if not book.funds[fid]["programme"])
+    es = sum(v for fid, v in fs.items() if not book.funds[fid]["programme"])
+    g = K.golden_call(book)
+    eg = sum(v for fid, v in g.items() if not book.funds[fid]["programme"])
+    hy = [f for f in hist if f["y1"] is not None and f["obs"] >= 24]
+    X = np.array([f["y1"] for f in hy])
+    Y = np.array([sum(f["h"][12:24]) / f["commitment"] for f in hy])
+    for wname, w in (("", None), (", commitment-weighted", np.sqrt([f["commitment"] for f in hy]))):
+        b, a = np.polyfit(X, Y, 1, w=w)
+        pr = sum(min((a + b * f["y1"]) * f["commitment"], f["commitment"] - f["paid"]) * book.fx_of(f) for f in prog)
+        out["second-year share regressed on first-year share%s, earlier funds pooled" % wname] = pr + er
+        out["second-year share regressed on first-year share%s, earlier funds by class" % wname] = pr + eg
+    cum = np.cumsum(cps)
+    cu = sum(max(0.0, min(cum[min(f["obs"] + 11, len(cum) - 1)] * f["commitment"] - f["paid"], f["commitment"] - f["paid"]))
+             * book.fx_of(f) for f in prog)
+    out["the programme caught up to the pooled cumulative schedule"] = cu + er
+    out["average of the pooled rates and that catch-up"] = (tot(fr) + cu + er) / 2
+    pc = sum(f["commitment"] * book.fx_of(f) for f in prog)
+    pu = sum((f["commitment"] - f["paid"]) * book.fx_of(f) for f in prog)
+    for r, nm in ((1 / 3, "one third"), (0.35, "35 per cent"), (0.40, "40 per cent")):
+        for base, bn in ((pc, "commitment"), (pu, "undrawn balance")):
+            for e, en in ((er, "pooled rates"), (es, "pooled shares")):
+                out["rule of thumb: %s of the programme's %s, earlier funds on %s" % (nm, bn, en)] = r * base + e
     return out
 
 

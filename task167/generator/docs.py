@@ -49,7 +49,7 @@ POLICY = [
         "with them, and are measured before any distribution a fund sets against a call. Commitments the Foundation "
         "makes during the year are provided for from the endowment when they are made and are not part of the call "
         "reserve.",
-        "2.4 A fund's expected calls are projected from its age, counted in months from its first close.",
+        "2.4 For the call reserve, a fund's age is counted in months from its first close.",
         "2.5 Amounts in euros are converted at the custodian's reference rate for the last business day of the prior "
         "year.",
     ]),

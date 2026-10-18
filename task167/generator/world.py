@@ -32,12 +32,19 @@ ORG_RATE = 0.0035                # organisational expenses, called with the firs
 # deal volume by year of age, share of commitment, for every fund whatever its financing (the seed deal inside year 1)
 DEAL_YEARS = (0.32, 0.15, 0.13, 0.10, 0.06, 0.03, 0.02, 0.01)
 SEED_DEAL = 0.10                 # the warehoused deal(s) a fund takes over at its first close
-DEALS_PER_YEAR = 12.0
+DEALS_PER_YEAR = 24.0           # capital-call events for portfolio investments a year, add-ons included
 DEAL_CV = 0.35
-PACE_SD = 0.08                   # a fund's own pace, persistent through its life
+PACE_SD = 0.05                   # a fund's own pace, persistent through its life
 CALL_CAP = 0.97                  # no fund calls more than this share of its commitment
 LINE_YEAR1_DELAY = 12            # months a line-bridged fund carries a first-year deal before calling it
 LINE_LATER_DELAY = 3             # months it carries later deals
+# a line-bridged fund still calls equity for part of its first deal in its first months (share of commitment)
+LINE_FIRST_CALL = (0.035, 0.050)
+# some ordinary funds start slowly: no warehoused deal and a thin first year of deals (investment calls in the first
+# twelve months as a share of commitment); the deals they did not make in year one are not made up
+SLOW_P = 0.10
+SLOW_Y1 = (0.085, 0.160)
+SLOW_CATCHUP = 0.0               # share of the year-one shortfall made up in year two
 
 # the share of funds by vintage that bridge their first-year deals on a subscription line
 P_LINE_EARLY = 0.05              # vintages 2006 to 2013
@@ -46,7 +53,7 @@ FUNDS_EARLY = 8                  # commitments a vintage year, 2006 to 2013
 FUNDS_LATE = 12                  # 2014 to 2022
 PROG_N = 14
 PROG_LINE = 12                   # the 2026 programme's funds that bridge their first year
-PROG_TOTAL_USD = 1000.0          # $ million committed in the 2026 programme (euro funds at the approval rate)
+PROG_TOTAL_USD = 1150.0          # $ million committed in the 2026 programme (euro funds at the approval rate)
 
 EUR_SHARE = {"Buyout": 0.22, "Growth equity": 0.15, "Venture capital": 0.0, "Private credit": 0.25}
 PARALLEL_N = 8                   # funds held through a main vehicle and a parallel vehicle
@@ -189,6 +196,13 @@ def build_world():
             amt = amt / eur_rate
         amt = round(amt * 2) / 2.0
         make_fund(m, 2026, d0, amt, c, True)
+    # the first-year draw traits, on their own stream so the world above is unchanged by them
+    rng_t = np.random.default_rng([SEED, 31])
+    for f in funds:
+        u = rng_t.random(3)
+        f.slow = f.cls == "steady" and u[0] < SLOW_P
+        f.first_call = LINE_FIRST_CALL[0] + (LINE_FIRST_CALL[1] - LINE_FIRST_CALL[0]) * u[1] if f.cls == "line" else 0.0
+        f.slow_y1 = SLOW_Y1[0] + (SLOW_Y1[1] - SLOW_Y1[0]) * u[2] if f.slow else None
     # vehicles: most funds one, a few a main and a parallel vehicle
     # parallel vehicles, chosen by rule: per strategy one fund from each of two vintage bands, the latest-vintage and
     # then largest commitment in the band (a euro fund where the band has one, for buyout and credit)

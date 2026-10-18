@@ -55,22 +55,46 @@ def simulate_fund(f, market):
             if n > 0:
                 vol = float((mu / lam) * rng.gamma(shape, 1.0 / shape, n).sum())
         if a == 0:
-            vol += C * W.SEED_DEAL * f.pace * float(rng.lognormal(-0.02, 0.2))
+            seed = C * W.SEED_DEAL * f.pace * float(rng.lognormal(-0.02, 0.2))
+            if not f.slow:              # a slow starter took over no warehoused deal at its first close
+                vol += seed
         if vol <= 0:
             continue
         hold = _hold_years(rng, f.strategy)
         deals.append([m, vol, m + int(round(hold * 12)), _multiple(rng, f.strategy)])
-    # calls: steady funds call each deal in the month it closes; line-bridged funds carry first-year deals about a year
+    rng2 = np.random.default_rng([W.SEED, 33, f.id])
+    if f.slow:
+        # a thin first year: the year-one deals scaled to the fund's first-year share, part of the shortfall made up in
+        # year two
+        y1 = [d for d in deals if d[0] - m0 < 12]
+        y2 = [d for d in deals if 12 <= d[0] - m0 < 24]
+        v1 = sum(d[1] for d in y1)
+        target = f.slow_y1 * C
+        if v1 > 0:
+            short = v1 + C * W.SEED_DEAL * f.pace - target
+            for d in y1:
+                d[1] *= target / v1
+            v2 = sum(d[1] for d in y2)
+            if v2 > 0 and W.SLOW_CATCHUP > 0:
+                for d in y2:
+                    d[1] *= (v2 + W.SLOW_CATCHUP * short) / v2
+    # calls: ordinary funds call each deal in the month it closes; line-bridged funds call equity for part of their
+    # first deal in their first months and carry the rest of the first year's deals about a year
     called_inv = {}
     for d in deals:
         a = d[0] - m0
+        early, ce = 0.0, d[0]
         if f.cls == "line":
             delay = (W.LINE_YEAR1_DELAY + int(rng.integers(0, 2))) if a < 12 else W.LINE_LATER_DELAY
+            if a == 0:
+                early = min(d[1], f.first_call * C)
+                ce = d[0] + int(rng2.integers(0, 3))
+                called_inv[ce] = called_inv.get(ce, 0.0) + early
         else:
             delay = 0
         cm = d[0] + delay
-        d.append(cm)
-        called_inv[cm] = called_inv.get(cm, 0.0) + d[1]
+        d.extend([cm, early, ce])
+        called_inv[cm] = called_inv.get(cm, 0.0) + d[1] - early
     flows = []
     cum = 0.0
     cap = W.CALL_CAP * C
@@ -129,12 +153,14 @@ def simulate_fund(f, market):
     nav = {}
     for me in range(m0, END_M + 24):
         v = 0.0
-        for dm, cost, em, mult, cm in deals:
+        for dm, cost, em, mult, cm, early, ce in deals:
             if dm <= me < em:
                 frac = (me - dm) / max(1, em - dm)
                 v += cost * math.exp(math.log(max(mult, 0.05)) * frac * 0.85 + 0.6 * market.get(me, 0.0))
             if dm <= me < cm:
-                v -= cost
+                v -= cost - early
+            if dm <= me < ce:
+                v -= early
         nav[me] = v
     return flows, nav, deals
 

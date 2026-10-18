@@ -25,7 +25,7 @@
    "xlsx"
   ],
   "largest_file": "investor_capital_activity_2016-04_2026-12.csv",
-  "largest_file_rows": 26726
+  "largest_file_rows": 32112
  },
  "sources": [
   {
@@ -41,7 +41,7 @@
   {
    "path": "capital_account_summary_2026-12-31.xlsx",
    "format": "xlsx",
-   "bytes": 17704,
+   "bytes": 17711,
    "rows": 157,
    "source": "Constructed for this task (seeded, deterministic): the Foundation's current fund administrator, capital account summary at 31 December 2026",
    "date": "2027-01-13",
@@ -77,7 +77,7 @@
   {
    "path": "fund_commitments_register.xlsx",
    "format": "xlsx",
-   "bytes": 20499,
+   "bytes": 20514,
    "rows": 194,
    "source": "Constructed for this task (seeded, deterministic): Brandvold Foundation investment office, fund commitments register, one row per vehicle",
    "date": "2027-01-11",
@@ -86,7 +86,7 @@
   {
    "path": "gp_reported_performance_2026q3.csv",
    "format": "csv",
-   "bytes": 10578,
+   "bytes": 10624,
    "rows": 132,
    "source": "Constructed for this task (seeded, deterministic): general partners' quarterly reports at 30 September 2026, compiled by the investment office",
    "date": "2026-12-18",
@@ -104,8 +104,8 @@
   {
    "path": "investor_capital_activity_2016-04_2026-12.csv",
    "format": "csv",
-   "bytes": 2888987,
-   "rows": 26726,
+   "bytes": 3462835,
+   "rows": 32112,
    "source": "Constructed for this task (seeded, deterministic): the Foundation's current fund administrator, investor capital activity extract, notice lines with value dates 1 April 2016 to 31 December 2026",
    "date": "2027-01-13",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -113,8 +113,8 @@
   {
    "path": "legacy_administrator_notices_2006-2016.xlsx",
    "format": "xlsx",
-   "bytes": 335945,
-   "rows": 4927,
+   "bytes": 403754,
+   "rows": 5982,
    "source": "Constructed for this task (seeded, deterministic): the Foundation's former fund administrator, notice history, payment dates 3 January 2006 to 30 June 2016",
    "date": "2016-07-08",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -122,7 +122,7 @@
   {
    "path": "liquidity_and_reserve_policy_2025.pdf",
    "format": "pdf",
-   "bytes": 61184,
+   "bytes": 61174,
    "rows": null,
    "source": "Constructed for this task (seeded, deterministic): Brandvold Foundation board of directors, liquidity and reserve policy adopted 12 June 2025",
    "date": "2025-06-16",
@@ -131,8 +131,8 @@
   {
    "path": "reserve_custody_activity_2026.csv",
    "format": "csv",
-   "bytes": 69129,
-   "rows": 621,
+   "bytes": 86208,
+   "rows": 778,
    "source": "Constructed for this task (seeded, deterministic): the Foundation's custodian, settled activity report for account 6011-2207, 2026",
    "date": "2027-01-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
