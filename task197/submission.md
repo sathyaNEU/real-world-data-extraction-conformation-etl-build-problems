@@ -5,23 +5,23 @@
 
 ## 1. Final Recommendation
 
-**Kampvliet (VKF-KPV) comes out of the frequency containment reserve portfolio for the November 2026 delivery month and takes the month's re-prequalification slot.** Its realised response gain is 72 per cent of the gain its contract requires, 11 percentage points below Reiderland at 83 per cent. Not Zwartewater, whose 77 per cent on the undisturbed level, its recorded power at the last second before each episode at which the published frequency was still inside the dead band, is its own programme unwinding a morning discharge through the deviation. Not Reiderland, which leads at 58 per cent on the period setpoint because its programme traverse is still running at the second the response is read.
+**Kampvliet (VKF-KPV) comes out of the frequency containment reserve portfolio for the November 2026 delivery month and takes the month's re-prequalification slot.** Its realised response gain is 72 per cent of the gain its contract requires, 11 percentage points below Reiderland at 83 per cent. Not Zwartewater, which the undisturbed level puts furthest below contract, its recorded power at the last second before each episode at which the published frequency was still inside the dead band being its own programme unwinding a morning discharge through the deviation. Not Reiderland, which the period setpoint puts furthest below contract because its programme traverse is still running at the second the response is read.
 
 ## 2. Critical Components
 
 1. Kampvliet's realised response gain is **72** per cent of contracted gain over **137** qualifying under-frequency episodes
 2. The runner-up Reiderland is **83** per cent, a gap of **11** percentage points
-3. Each site's programme traverse runs for a fixed span from the settlement period boundary, recovered from the boundaries where no qualifying episode ran: **90** seconds at Kampvliet and **300** seconds at Terborgh
+3. Each site's programme traverse runs for a fixed span from the settlement period boundary, recovered from the settlement period boundaries at which the site held no reserve commitment: **90** seconds at Kampvliet and **300** seconds at Terborgh
 4. **3** sites sit below the standard's 90 per cent tolerance
 
 ## 3. Step-by-Step Solution
 
 1. Took every qualifying under-frequency episode from the published one-second frequency in system_frequency_1s_extracts.csv, at or below 49.920 Hz for 15 or more consecutive seconds per clause 2 of the reserve performance standard.
 2. Scoped each episode to the sites contracted for that settlement period in fcr_block_commitments.csv and dropped the block parts the control platform event log records as withdrawn from reserve, leaving 935 obliged site-episode pairs.
-3. Recovered each site's programme traverse from vkf_highres_archive.sqlite at the settlement period boundaries holding no qualifying episode: the span from the boundary to the new setpoint in site_programme_15min.csv is a constant of the site's controller, 90 seconds at Kampvliet.
+3. Recovered each site's programme traverse from vkf_highres_archive.sqlite at the settlement period boundaries at which the site held no reserve commitment: the span from the boundary to the new setpoint in site_programme_15min.csv is a constant of the site's controller, 90 seconds at Kampvliet.
 4. Took each site's delivered response at an episode's extreme second as its recorded power less its programme traverse at that second, over the deviation beyond the 10 mHz dead band and over its contracted gain, which is its contracted FCR capacity in asset_register.xlsx divided by 0.190 Hz per clause 2 of the technical conditions.
 5. Averaged the per-episode ratios with equal weight for each site: Kampvliet 72 per cent, Reiderland 83 per cent, Hoogezand 88 per cent, Nieuwveen 91 per cent.
-6. Ran the same episodes against the undisturbed level, each site's recorded power at the last second before the episode at which the published frequency was still inside the 10 mHz dead band, which puts Zwartewater at 77 per cent and Kampvliet at 94, and against the period setpoint, which puts Reiderland at 58: both bases credit each site with whatever its own programme did during the deviation.
+6. Ran the same episodes against the undisturbed level, each site's recorded power at the last second before the episode at which the published frequency was still inside the 10 mHz dead band, and against the period setpoint: the undisturbed level puts Zwartewater furthest below contract and the period setpoint puts Reiderland, so neither basis names Kampvliet for the slot, because each credits a site with whatever its own programme did during the deviation.
 7. Applied clause 3 of the standard: 3 sites are outside the 90.0 per cent tolerance and the single monthly test slot goes to the site furthest below contract.
 8. Recommended withdrawing Kampvliet for the November 2026 delivery month.
 

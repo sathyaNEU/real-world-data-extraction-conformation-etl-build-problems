@@ -27,6 +27,13 @@
       "path": "target/market/fcr_capacity_auction_results.csv",
       "why_it_looks_relevant": "daily capacity auction clearing prices and the group's awarded volume, which look like the contracted capacity the gain is measured against",
       "why_the_solution_never_reads_it": "the contracted capacity per site is in the asset register and the commitment file; the auction file carries group volumes only"
+    },
+    {
+      "path": "target/prequalification/prequalification_records.csv",
+      "why_it_looks_relevant": "it carries a measured gain beside a contracted gain for every site, which reads as the realised response gain against contract that the determination turns on, and dividing one by the other ranks all nine sites and puts a site outside tolerance nowhere",
+      "why_the_solution_never_reads_it": "clause 2 of the reserve performance standard defines the measure as the active power the site delivered in excess of the output it would have produced had the frequency stayed inside the dead band, taken at the extreme second of each qualifying episode in the review window, and clause 3 fixes that window as 21 September to 11 October 2026; the rows here are witnessed step tests from 2022 and 2023 and one 2026 controller-change declaration with no measured figure, so none of them is a realised response gain in the window",
+      "declared_wrong_basis": true,
+      "ranks_the_candidates_wrongly": "measured over contracted gain puts Reiderland lowest at 98.5 per cent and no site outside the 90 per cent tolerance, so it names no withdrawal; it is ruled out by clauses 2 and 3 above and is never the decisive step"
     }
   ],
   "files": [
@@ -111,6 +118,6 @@
       "one_row_is": "one shipped file or table"
     }
   ],
-  "gate_g": "The difficulty survives deleting every wrong number: no shipped artifact ranks the nine sites on the decision question, the system operator's statement is at group level by design, and the two distractors carry no per-site response figure.",
+  "gate_g": "The difficulty survives deleting every wrong number: no shipped artifact ranks the nine sites on the decision question on the standard's own basis, the system operator's statement is at group level by design, and the two market distractors carry no per-site response figure. One declared wrong-basis distractor exists and is named above, prequalification_records.csv: measured over contracted step-test gain ranks all nine sites and gets the decision wrong, naming no withdrawal, and it is ruled out by clause 2 of the reserve performance standard, which measures realised response at the extreme second of each qualifying episode, and clause 3, which fixes the review window as 21 September to 11 October 2026. It is never the stump.",
   "notes": "The call is forward facing: the withdrawal applies to the November delivery month, which is not yet open, and the quantity is measured on the reserve quarter to the as-of date. The three supplemental quantities are computed over rows the determination never reads: the over-frequency episodes, the control platform's withdrawal rows, and the settlement periods each site held no delivery-block commitment for."
 }

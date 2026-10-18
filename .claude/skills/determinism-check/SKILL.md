@@ -183,6 +183,20 @@ python3 .claude/skills/determinism-check/figures_check.py taskNN   # 0 every num
 Typed figures were the commonest judge finding (12 of 16 in one window). Each step names the file and
 rule in the verifier's words.
 
+**`figures.json` may be written more than once, so a partial rebuild fails the gate on figures
+nothing is wrong with.** task197's pack builder writes it and the write-up emitter then reads it,
+adds the five figures only the write-up needs (the traverse spans, the obliged-pair count, the
+count outside tolerance, the episode total and the standard's thresholds) and writes it back.
+Running the pack builder alone left those five absent and the gate failed on four figures the
+write-up had always stated correctly. Before reading a gate failure as a typed figure, check which
+scripts assign the key and whether every one of them ran: the rebuild is the whole chain, not the
+first script in it.
+
+**A constant typed as a literal in the write-up emitter is still a typed figure, and the gate
+cannot see it.** It compares the write-up against `figures.json`, so a threshold hard-coded in both
+agrees with itself while disagreeing with the pack the moment the generator's parameter changes.
+Every constant in `figures.json` is read from the generator's own parameters.
+
 **Every graded figure is printed at the precision its asking sentence states.** A figure printed coarser
 than the prompt asked for is a wrong figure, not a rounding preference: task182's prompt said to give the
 air to one decimal and its write-up printed the six weekly figures whole, 689 for 689.2, so eighteen asked
@@ -239,6 +253,13 @@ The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
   an earlier report or anything its orchestrator read. The `determinism-judge` agent prepares and spawns
   it; without an `Agent` tool it returns the brief's path and the main session spawns from it. An
   orchestrator that has read beyond the bundle never judges in its own thread.
+- **The graded blocks never sit in the brief.** They go in their own file the brief names and tells the
+  thread not to open until its own derivation is written to disk. A brief that ends with the answers
+  relies on the thread choosing to stop reading a file it was told to read, which it will not do:
+  task199's re-judge read the committed answers before deriving and said so, and a verdict from a
+  broken order is weaker evidence on Gate C, because a judge that cannot be surprised cannot tell you
+  the answer was forced. The thread reports whether it kept the order, and a pass that broke it does
+  not spend the architecture's one re-judge: the breach is the orchestrator's, so the cost is.
 - **The thread reads literally first** (§2), then the gates, and counts a fork closed only by inference or
   by the write-up as open. Our judge is the floor: a fork it settles "by the plain reading" is a FIX_NOW.
 - **An APPROVE is scoped to the pack the judge saw.** It ships that pack, not the folder's future. Any

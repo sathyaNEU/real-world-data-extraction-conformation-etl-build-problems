@@ -1,13 +1,24 @@
 {
-  "task": "task202",
-  "owner": "oviya13ya",
-  "objective": "anomaly-detection",
-  "status": "PAUSED",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-18",
-  "architecture": 0,
-  "loops": 0,
-  "card_registered": false,
-  "resume": "PAUSED at stage 1, two grounds screened, no card ever registered. Not retired. Human-factors ground: the thinned-count family died on measured curvature, the graded figure held only to 0.46x to 4.50x the truth at an exponential process and still 0.86x to 1.06x at inter-arrival shape 8 with 600 events, the width falling as the square root of the process regularity; and the time-on-task hazard died on the reflex test because scheduled shift length is a visible attribute. Selective-inference ground: a construction over the selection event died on three independent measured screens, its own spread 13.152 exceeding the 10.499 bias it removes, its mean absolute error 9.248 against the naive estimator 6.160, the boundary distance 0.47 standard errors, empirical Bayes beating it more than three to one on accuracy at 2.751, and James-Stein filing the golden verdict in 40 of 40 seeds. The ground-level finding worth reading before any re-draw there: multiple-testing-selective-inference cannot carry a decisive step whose graded object is a level at a selected unit, because every such level is a shrinkage target and shrinkage is both the opponent reflex and the more accurate estimator. task191 took the one obvious non-level object the ground affords. The remaining non-level objects, with the reason each was not taken in one pass, are rank verification (most promising, since shrinkage preserves order, but needs the abstraction test against task191 run properly), selective coverage (grading an interval runs into form spread) and optional-stopping bias (negligible unless the stopping count is tiny)."
+ "task": "task202",
+ "owner": "oviya13ya",
+ "objective": "anomaly-detection",
+ "status": "PAUSED",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-18",
+ "architecture": 0,
+ "loops": 0,
+ "card_registered": false,
+ "resume": "PAUSED at stage 1, three grounds screened, no card ever registered, nothing cut. Not retired. Human-factors ground: the thinned-count family died on measured curvature (0.46x to 4.50x the truth at an exponential process, still 0.86x to 1.06x at inter-arrival shape 8 with 600 events), the time-on-task hazard died on the reflex test because scheduled shift length is a visible attribute, and on 2026-10-18 the designation-set device died on driver uniqueness there: six candidate drivers, six already on file, three of them inside task181's own slot. Selective-inference ground: a construction over the selection event died on three independent measured screens, its own spread 13.152 against the 10.499 bias it removes, mean absolute error 9.248 against the naive 6.160, boundary distance 0.47 standard errors, empirical Bayes beating it more than three to one and James-Stein filing the golden verdict in 40 of 40 seeds; the ground-level finding is that multiple-testing-selective-inference cannot carry a decisive step whose graded object is a level at a selected unit. The live question for the next pass is the cell, not the device: human-factors-ergonomics has six never-built pairings and four never-drawn subdomains, and the designation set's densest home in the corpus is data-quality-monitoring.",
+ "designation_set_screen": {
+  "assigned": "carry task194 architecture 6's designation-set device onto human-factors-ergonomics / safety-incident-error-analysis, screening against task181 first",
+  "method": "guard.py nearest on each candidate driver, then the abstraction test on latent structure, default path and correction",
+  "result": "six candidate drivers, six kills, all at the first screen. C1 unpublished exposure driver = task181 v4 (guard 0.11). C2 peak set by within-period clustering = dichotomy, a peak is records-fixed, plus task181 v3's data structure. C3 joint miss of two checks = readability test 6, escaped over committed is one group-by. C4 practice curve over staff experience = task183, plus tenure is a visible attribute. C5 classification lag = guard 0.36 against task181 v2, a driver.text BLOCK on a recorded death. C6 marginal contribution under overlap = task106 (guard 0.06).",
+  "guard_blind_spot": "two of the six clones score under the 0.12 WARN line (0.11 against task181, 0.06 against task106) and are the same driver on all three abstraction elements. The lexical score cannot see a mechanism told in other nouns.",
+  "device_verdict": "the designation set still discretises a free weighting away, which is intact and portable. It does not supply a driver. On this cell every driver a tolerance-exceedance call can carry is on file, three inside task181's own slot.",
+  "corpus_check": "my forming claim that a designation set must decide a forward rate was refused by the corpus before reporting: 32 designation_set builds, only 4 on anomaly-detection, 13 on data-quality-monitoring and 8 on ETL, mostly designating a property rather than a rate.",
+  "cell_finding": "the assigned cell is the one spent pairing in this domain. human-factors-ergonomics has 2 builds in total and 6 never-built pairings (forecasting, root-cause, experiment-causal, etl, opportunity-sizing-decision, data-quality-monitoring) plus 4 never-drawn subdomains (usability-task-performance-studies, workload-fatigue-shift-analysis, human-reliability-assessment, alarm-interface-evaluation). The compatibility proof and the clone risk are the same fact.",
+  "proposed_redirect": "keep the device and the domain, move the cell off task181's. The device's densest home is data-quality-monitoring (13 of 32) and human-factors-ergonomics x data-quality-monitoring is a never-built pairing; alarm-interface-evaluation is a never-drawn subdomain whose call (is the alarm stream fit for the operator to use) is a monitoring decision about a signal stream's health by the objective's own definition, and whose furniture is counts and timestamps with no standardisation. Needs the coordinator's call because it moves the objective.",
+  "not_run": "the published-adjustment sweep, the sixth screen and the four unspent screens, all of which take a candidate that survives the first screen."
+ }
 }

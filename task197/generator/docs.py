@@ -141,8 +141,9 @@ def technical_conditions(path, tso):
         ("p", "Capacity is settled per delivery block on the contracted capacity held available. Energy "
               "delivered under clause 2 is not separately settled. Metered volumes at the connection point are "
               "settled against the provider's nominated programme under the imbalance settlement rules."),
-        ("small", "Rijksnet publishes system frequency at one-second resolution for every deviation beyond 75 "
-                  "millihertz, and a minute summary for every day. Document reference RN-TC-FCR-2026-07."),
+        ("small", "Rijksnet publishes system frequency at one-second resolution for sustained deviations "
+                  "beyond 75 millihertz where the high-resolution record is available, and a minute "
+                  "summary for every day. Document reference RN-TC-FCR-2026-07."),
     ], author=tso, subject="FCR technical conditions", issued="2026-01-05 11:20")
 
 

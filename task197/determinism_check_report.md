@@ -1,94 +1,221 @@
 # Determinism review, task197 (isolated judge)
 
-File universe: fresh unzip at `/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task197_judge_pack` (18 files) plus the graded blocks in the brief. No design note, generator, pipeline.json, earlier report, skill or guidelines file was opened. No git command run, no agent spawned.
+Universe: fresh unzip at `/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task197_judge_pack`
+(18 members). No design note, generator, pipeline file, earlier report, skill or guideline folder was opened; no
+git command was run and no agent was spawned. Every figure below was recomputed from the shipped files with
+pandas / sqlite3 / pdftotext / openpyxl, not checked against arithmetic shown to me. The committed blocks were
+read only after the derivation below was written.
 
-Procedural note: the judge system prompt and the graded blocks sit in one file (`task197_judge_brief.md`), so the single Read that supplied the system prompt also carried the blocks. I nonetheless derived every figure from the bundle before comparing, and each enumeration below was computed on its own merits; where a committed figure does not reproduce I say so.
+---
 
-- **Verdict:** DETERMINISTIC (+ SOLUTION_WRONG, confined to two narrative figures in the Final Recommendation / Step 6)
-- **Disposition:** FIX_NOW. Regenerate the one sentence in the Final Recommendation and Step 6 that states the rejected "undisturbed level" basis as 77 per cent at Zwartewater and 94 at Kampvliet; those two numbers do not reproduce under any definition of that basis I could construct. Solution-block edit only, analytic surface untouched, no model rerun.
+## Part 1: the answer the prompt and the bundle lead to (derived before reading the blocks)
 
-## What I derived before reading the blocks
+**Governing text.** `standards/reserve_performance_standard_v4.pdf` clause 2 defines realised response gain as
+"the active power the site delivered **in excess of the output it would have produced at that second had the
+system frequency stayed inside the dead band**", divided by the deviation beyond the dead band, at the extreme
+second of each qualifying episode in a settlement period the site was contracted for, averaged with equal weight,
+as a percentage of contracted FCR capacity / 190 mHz. Clause 2 also fixes the qualifying tests (<= 49.920 Hz or
+>= 50.080 Hz for >= 15 consecutive seconds, extreme second = lowest/highest published second, earliest on a tie)
+and the two scope exclusions (periods not contracted; parts of a block withdrawn from reserve). Clause 3 fixes the
+window (2026-09-21 to 2026-10-11 inclusive for the 13 Oct 2026 determination), the 90 per cent tolerance, and the
+rule that the single monthly slot goes to the site furthest below contract. `operator/fcr_technical_conditions_2026.pdf`
+clause 2 gives the 10 mHz dead band and the 190 mHz slope; clause 5 states the response is **additional to the
+programme** and that nothing in a programme reduces it.
 
-Governing text, all shipped: `standards/reserve_performance_standard_v4.pdf` cl.2 (the measure, the two episode definitions, the extreme-second tie-break, denominator = contracted FCR / 190 mHz, nearest whole per cent), cl.3 (window 2026-09-21 to 2026-10-11, 90 per cent tolerance, one slot to the site furthest below contract), cl.4 (capacity hours held available and shortfall), cl.5 (above/below programme in uncommitted periods, own meters before operator adjustment, rounded once at the end); `operator/fcr_technical_conditions_2026.pdf` cl.2 (dead band 10 mHz, full capacity at 200 mHz), cl.3 (one re-prequalification slot per month), cl.5 (reserve response is additional to programme and nothing in the programme reduces it).
+**Derived episode set.** `operator/system_frequency_1s_extracts.csv` (111,454 rows, 666 extracts, 2026-09-21
+05:15:06Z to 2026-10-11 19:32:32Z) yields **274** qualifying under-frequency and **241** qualifying over-frequency
+episodes. No episode crosses a settlement-period boundary or a four-hour block boundary (checked: 0 of 274 and
+0 of 241), so episode-to-period assignment is not a live fork. Extreme seconds sit 67 to 549 s (median 80 s) after
+the period boundary.
 
-My independent result: **withdraw Kampvliet (VKF-KPV), realised gain 72 per cent of contracted gain, runner-up Reiderland 83 per cent, gap 11 percentage points, 3 sites below the 90 per cent tolerance.** Reached before comparison; identical to the committed call.
+**The decisive construction.** Because the extreme second falls ~80 s after a settlement-period boundary, the
+site's programme is still mid-traverse at that second. The traverse is a linear ramp from the previous period's
+setpoint to the new one over a span fixed per controller, recoverable from `platform/vkf_highres_archive.sqlite`
+at boundaries where the site held no reserve commitment (so no FCR response contaminates the trace). Fitting every
+such boundary with |delta| > 2 MW gives a **unanimous** span per site:
 
-### Episode construction
-274 qualifying under-frequency and 241 qualifying over-frequency episodes from `operator/system_frequency_1s_extracts.csv` (97,730 rows, 607 extracts, no one-second gaps). Every episode lies wholly inside one settlement period and one delivery block, so no period/block assignment fork exists. Scoping to `platform/fcr_block_commitments.csv` and dropping withdrawn block parts gives **935 obliged under-frequency site-episode pairs** and 443 over-frequency pairs.
-
-### Forks I had to enumerate because the shipped text is silent, and what each computes to
-
-| # | Fork | Options and figures | Closed by |
-|---|---|---|---|
-| 1 | **The counterfactual baseline** (the decisive one) | (a) programme traverse at that second: KPV 72, RDL 83, HGZ 88, NWV 91, DLK 93, OOS 95, MPD 97, ZWT 99, TRB 101 -> withdraw KPV, gap 11. (b) settlement-period setpoint: RDL 58, KPV 68, HGZ 75, TRB 77, MPD 78, DLK 91, NWV 92, OOS 96, ZWT 100 -> withdraw **RDL**. (c) undisturbed pre-episode level: ZWT 72, OOS 81, NWV 88, HGZ 98, KPV 98, RDL 100, DLK 100, MPD 109, TRB 110 -> withdraw **ZWT** | Standard cl.2 ("the output it would have produced at that second had the system frequency stayed inside the dead band") plus technical conditions cl.5. Only (a) is the counterfactual; (b) and (c) credit the site's own programme movement to its reserve response |
-| 2 | **Programme traverse span**, stated nowhere | Recovered per site by least squares on DPDT recordings at boundaries carrying no qualifying episode: ZWT 80, OOS 85, KPV 90, NWV 95, DLK 100, HGZ 185, RDL 190, MPD 200, TRB 300 seconds. Sharp: 97 per cent of fully-covered KPV fits give exactly 90, no fit exceeds it, no correlation with step size (r = 0.06), so fixed span not rate limit | Forced by the archive. Sensitivity: +/-5 s moves KPV to 70 or 73 and +/-10 s to 69 or 75, but the ranking, the runner-up and the 3-below-tolerance count hold at every perturbation I tried (+/-10 s, +/-10 per cent) |
-| 3 | **Event-log start times**, local vs UTC | 9 of 30 `reserve_unavailable` rows carry `start_local` with a `+02:00` offset whose clock reading is actually UTC. Reading the offset literally: over-frequency HGZ 86/153, KPV 70/21, OOS 90/16, TRB 96/72, ZWT 93/72, and **all six** capacity-hour blocks move (held 549.5/1153.8/1410.5/355.3/1623.2/245.5, shortfall 10.5/14.2/17.5/4.7/18.8/6.5). Repaired reading: the committed figures | Triangulated in-package: `logged_utc` minus start is 1.5 min for all 30 rows only under the repair; the archive's ALARM recordings start at the repaired instant (e.g. event 4130 "18:00:00+02:00", ALARM recording 470 at 17:59:12Z); and the literal reading retains five over-frequency pairs at 0.0 per cent response (HGZ 2026-09-26 18:16:15Z, OOS 10-02 10:01:23Z, KPV 10-03 17:31:20Z, ZWT 10-08 07:46:18Z, TRB 10-09 07:31:21Z) where the archive shows the unit flat on programme. Standard cl.4 ("the hours in which the site was in fact not holding reserve") licenses the archive as arbiter. **Under-frequency figures and the main call are identical either way** |
-| 4 | **Meter interval stamp** | `settlement/metered_volumes_15min.csv` `interval_ts_local` as period START (which is what its own `settlement_period` column asserts): portfolio above 944.2 / below 1054.2 MWh, every site wrong. As period END (shift one interval): portfolio above 114.4 / below 242.6, the committed values | Forced by fit and coverage: joined against the programme, RMSE 0.040 MWh and r = 0.9996 end-stamped against RMSE 0.325 and r = 0.9688 start-stamped; the file holds exactly 2,016 intervals per point ending 2026-10-12T00:00, i.e. exactly the 21-day window only under end-stamping |
-| 5 | **Denominator** | Contracted FCR / 0.190 Hz (cl.2): the committed figures. `prequalification_records.contracted_gain_mw_per_hz` (2 dp): shifts every gain by at most 0.034 pp, flips nothing. `measured_gain_mw_per_hz`: KPV 71, RDL 84, NWV 89, TRB 100, OOS 96 -> KPV still withdrawn, gap 13 | cl.2 names contracted capacity / 190 mHz. All three readings keep the same winner |
-| 6 | **Episode threshold inclusivity** | "at or below 49.920" vs strictly below: 274 vs 274 under, 241 vs 241 over. No figure moves (47 seconds sit exactly at 49.9200, 73 at 50.0800, none at a run edge) | Immaterial |
-| 7 | **Extreme-second tie-break** | 33 under and 24 over episodes have a tied extreme. Earliest (cl.2) vs latest: no rounded figure changes anywhere (largest drift 0.40 pp, MPD under) | Immaterial |
-| 8 | **Uncommitted-period definition** | Periods whose block carries no commitment (cl.5) gives the committed figures. Adding periods merely withdrawn from reserve is not licensed: cl.5 keys on holding "no delivery-block commitment" | Closed by cl.5 |
-| 9 | **Which volume source** | Own meters (cl.5, "before any adjustment the system operator applies at settlement"). The three `settlement_statement_daily_*` files are daily per metering point and carry a grid-loss adjustment above 110 kV, so they cannot even support a per-period above/below split | Closed by cl.5 and structurally unusable |
-| 10 | **Portfolio total** | Rounded once: above 114.4. Sum of the nine rounded site rows: 114.3. (Below is 242.6 either way) | cl.5 "rounded once at the end"; the committed 114.4 is right, but it is the one graded figure that disagrees with the printed rows |
-
-### Adjustment-factor application points (asked for explicitly)
-The only multiplicative adjustments in any graded quantity are kWh -> MWh (1/1000, Dollardkust `871687140000301776` is the whole series in kWh) and MW -> MWh (x 0.25 h on the programme), plus MW x hours in clause 4. Applied per interval against once on the summed quantity, **no site's figure differs**: maximum absolute difference across all 18 site/direction figures is 7.1e-15 MWh, because a positive constant commutes with the above/below clip. Leaving the kWh series unconverted gives Dollardkust above 638,011.2 / below 1,984,850.2 MWh and portfolio 638,103.6 / 1,985,046.0, i.e. visibly absurd rather than a silent fork. The system operator's grid-loss factor is the one factor that would move figures, and clause 5 excludes it by name.
-
-### Rounding path (asked for explicitly)
-Ask 4, round each interval to 0.1 then sum: above 56.2 / below 129.3 portfolio (sites DLK 16.7/43.2, HGZ 2.3/6.0, KPV 3.0/4.4, MPD 4.5/2.0, NWV 4.2/17.4, OOS 1.2/8.7, RDL 6.1/1.6, TRB 8.7/6.0, ZWT 9.5/40.0). Sum unrounded and round once: the committed 114.4 / 242.6. Closed explicitly by cl.5 ("summed over those periods and rounded once at the end"). Ask 3 is insensitive: rounding each commitment row to 0.1 and rounding once give byte-identical block figures, because durations are whole minutes against whole or half megawatts.
-
-### Distance from the printed bin edge, every graded figure
-Rounding units from the asking sentence: gains 1 per cent, energies 0.1 MWh, counts whole.
-
-- Under-frequency gains (edge distance in rounding units): RDL 0.486, DLK 0.467, KPV 0.461, ZWT 0.458, TRB 0.450, NWV 0.440, OOS 0.439, HGZ 0.418, MPD 0.362. **None within 0.3.**
-- Over-frequency gains: HGZ 0.493, KPV 0.474, DLK 0.457, ZWT 0.434, RDL 0.434, NWV 0.418, OOS 0.369, TRB 0.340. **None within 0.3**; TRB (97.840) is the closest in the pack.
-- Capacity hours and shortfalls, all twelve: distance 0.500, the maximum possible (every value lands exactly on a tenth).
-- Energies above/below, twenty figures: minimum 0.303 (RDL above, 11.61970) then KPV above 0.311, KPV below 0.337, HGZ above 0.379, portfolio above 0.383; all others >= 0.388. **None within 0.3**, but RDL above and KPV above clear it only just, and they are the two figures a different float path could in principle disturb.
-- Gap: 11.025 points, 0.475 from the 10.5 edge. Counts: exact integers.
-- Tolerance line: the nearest site to the 90.0 line is Nieuwveen at 90.940, a 0.94 pp margin, and it holds under every span perturbation and both tie-breaks.
-
-## Reproduction of the committed blocks
-
-Everything below I recomputed from the files, not from the blocks.
-
-| Committed figure | Mine | Status |
+| site | span (s) | unanimity |
 |---|---|---|
-| Withdraw Kampvliet, 72 per cent, runner-up Reiderland 83, gap 11 | identical | reproduced |
-| 137 qualifying under-frequency episodes at Kampvliet; 935 obliged pairs | 137; 935 | reproduced |
-| 3 sites below the 90 per cent tolerance (KPV, RDL, HGZ) | identical | reproduced |
-| Traverse span 90 s at Kampvliet, 300 s at Terborgh | 90; 300 | reproduced |
-| Scorecard 1, nine under-frequency gains and counts | 72/137, 83/156, 88/157, 91/113, 93/145, 95/40, 97/33, 99/77, 101/77 | all 18 reproduced |
-| Scorecard 2, over-frequency gains and counts | DLK 92/20, HGZ 87/152, KPV 73/20, MPD none/0, NWV 89/72, OOS 96/15, RDL 81/22, TRB 98/71, ZWT 94/71 | all reproduced |
-| Scorecard 3, six blocks held available and shortfall | 542.0/18.0, 1151.0/17.0, 1407.1/20.9, 352.9/7.1, 1615.5/26.5, 244.2/7.8 | all 12 reproduced |
-| Scorecard 4, nine sites above/below plus portfolio | 22.0/46.8, 8.2/18.6, 10.9/21.9, 9.8/16.1, 10.9/28.0, 9.3/22.2, 11.6/17.4, 15.3/22.1, 16.3/49.5, portfolio 114.4/242.6 | all 20 reproduced |
-| Step 6 / Final Recommendation: Reiderland 58 per cent on the period setpoint | 57.63 -> 58 | reproduced |
-| Step 6 / Final Recommendation: Zwartewater 77 per cent and Kampvliet 94 on the undisturbed pre-episode level | **not reproduced.** Recording-start level: ZWT 72, KPV 98. First 10 s mean: 73/97. 15 s: 74/96. 20 s: 75/95. 30 s: 73/91. 45 s: 65/82. Level one second before the episode: 21/28. No definition I built returns 77 and 94 together | **SOLUTION_WRONG**, non-decisive: Zwartewater is lowest on that basis under every variant, so the rejection stands; only the two printed percentages are wrong |
+| VKF-ZWT | 80 | 85/85 |
+| VKF-OOS | 85 | 47/47 |
+| VKF-KPV | 90 | 24/24 |
+| VKF-NWV | 95 | 48/48 |
+| VKF-DLK | 100 | 132/132 |
+| VKF-HGZ | 185 | 13/13 |
+| VKF-RDL | 190 | 20/20 |
+| VKF-MPD | 200 | 15/15 |
+| VKF-TRB | 300 | 36/38 (2 at 299) |
 
-## Gate table
+**Scope.** 256 block commitments in `platform/fcr_block_commitments.csv`; committed_mw equals contracted FCR
+capacity in `register/asset_register.xlsx` for all 256 rows. Withdrawals: `platform/control_platform_event_log.csv`
+holds 30 `reserve_unavailable` rows, 3 of which (4147, 4148, 4149) are cancelled by `COR-CANC` corrections,
+leaving **27**. Every `reserve_unavailable` row is logged exactly 1.5 min after its start; on **9** rows
+(4130, 4131, 4132, 4133, 4134, 4135, 4136, 4137, 4138) the `+02:00` offset on `start_local` is wrong and the stamp
+is really UTC (the lag is 121.5 min if the offset is honoured, 1.5 min if it is not). Resolving by `logged_utc`
+drops **5** over-frequency site-episode pairs in which the site delivered ~0 response while nominally obliged
+(HGZ 2026-09-26 18:16:15Z, KPV 2026-10-03 17:31:20Z, OOS 2026-10-02 10:01:23Z, TRB 2026-10-09 07:31:21Z,
+ZWT 2026-10-08 07:46:18Z); the data corroborates the correction. No under-frequency pair is withdrawn either way.
+Obliged pairs: **935** under, **443** over.
 
-| Gate | Line |
-|---|---|
-| A, solution correct | **PASS** on every graded figure: 9+9 under, 8+9 over, 12 capacity-hour, 20 energy figures, the call, runner-up, gap, below-tolerance count and both span constants all reproduce from the files. One defect, confined to the solution blocks: the 77 and 94 in Step 6 / Final Recommendation do not reproduce under any construction of "the undisturbed level before each episode" (nearest 74/96 at a 15 s pre-mean). File grain honoured: the meter file is an interval series end-stamped, the event log a change log with corrections, the archive an event-triggered recording store, not a continuous panel |
-| B, decisive facts shipped | **PASS.** Measure, dead band, 190 mHz, thresholds, 15-second rule, tie-break, window, 90 per cent tolerance, one-slot rule, capacity-hour and imbalance definitions all in the two PDFs; capacities in `asset_register.xlsx`; commitments, programme, withdrawals, frequency, power and meters all shipped. Nothing turns on outside knowledge. No invented action vocabulary: "withdraw", "re-prequalification", "reserve", "tolerance", "programme", "delivery block" are all shipped terms. The only decisive quantity stated nowhere is the traverse span, and it is recoverable to the second from the shipped archive (fork 2) |
-| C, uniquely forced | **PASS**, with the forks above each closed by a shipped sentence or by the data. The two that would move graded figures if left open, the event-log timestamps (fork 3) and the meter interval stamp (fork 4), are closed by triangulation inside the pack (1.5-minute log regularity + ALARM recording timing + five 0.0 per cent response pairs; RMSE 0.040 against 0.325 plus exact window coverage). Margin: the decision is thin-but-clean, 11.0 pp of lead, and survives every span perturbation, both tie-breaks, both inclusivity readings and all three denominators |
-| D, hardness is analytical | **PASS.** The split among good answers is the counterfactual baseline, a measurement-model choice, not a reading of a prompt word. No objective is planted in the requester's voice; the prompt names no metric the standard does not |
-| E, prompt unambiguous on the decision | **PASS.** One site, one gain, one runner-up, one gap, hedge impossible; every ask carries its unit and rounding in the asking sentence; "or none where a site had none" pins the Meppelerdiep case. 991 characters, one paragraph, question first |
-| F, stump power | **STRONG.** `site_programme_15min.csv` is documented as "the programme setpoint the platform held for each settlement period", and almost every qualifying episode begins 50 to 90 seconds after a settlement-period boundary, i.e. inside the traverse. A capable solver takes the period setpoint, never asks what the unit was doing between setpoints, never mines the DPDT recordings in a 23 MB sqlite file for a ramp span, and files Reiderland at 58 per cent. The asks carry four further independent devices (end-stamped meters against a contradicting `settlement_period` column, one metering point entirely in kWh, a replaced EAN splitting one site's meter history, nine UTC-clock event starts labelled `+02:00`) |
-| G, stumping type | **PASS**, see line below |
-| H, three rules | **PASS**, see line below |
+**My derived answer, before reading the blocks.**
 
-**Gate G line:** `mechanism: method_or_model_selection`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. Every reported number in the pack is fine: the programme file, the meters, the archive and the frequency publication are all correct and are all used as given; the difficulty is constructing the right counterfactual (the output the unit would have produced had frequency stayed inside the dead band) rather than catching that any reported read is misleading, and on perfectly clean data the traverse problem is unchanged because a programme ramp is physics, not a defect. No banned-type finding.
+Realised gain on the programme-traverse baseline, under-frequency (raw, then to the nearest whole per cent):
 
-**Gate H line:** `domain: pass`, `layers: pass`, `decisive_step: analytical`. The deciding quantity is a realised droop gain in MW per Hz beyond a dead band, measured at each episode's extreme second net of the unit's own programme trajectory and expressed against the contracted characteristic, which is exactly FCR performance verification (swap test: put "hospital" and "visits" in and the measure has no meaning, because the gain, the dead band and the 190 mHz characteristic are power-system objects); Layer 1 is the organisation's own mess (one metering point in kWh, meter intervals end-stamped against a start-stamped programme with a `settlement_period` column that contradicts the stamp, a replaced EAN splitting a site's meter history, nine event starts whose `+02:00` label hides a UTC clock, superseded withdrawal events, preliminary and amended October statements, rate cards inside PDFs); Layer 2 is the counterfactual baseline and the reconstruction of each controller's traverse span from undisturbed period boundaries. The easy route a strong analyst who cleaned everything and read every clause correctly still takes is the settlement-period setpoint from `site_programme_15min.csv`, which gives Reiderland 58 per cent as the worst performer and withdraws Reiderland instead of Kampvliet; the pre-episode undisturbed level, the other natural shortcut, gives Zwartewater.
+| site | n | raw % | reported | below 90 |
+|---|---|---|---|---|
+| VKF-KPV Kampvliet | 137 | 71.961 | 72 | yes |
+| VKF-RDL Reiderland | 156 | 82.986 | 83 | yes |
+| VKF-HGZ Hoogezand | 157 | 87.918 | 88 | yes |
+| VKF-NWV Nieuwveen | 113 | 90.940 | 91 | no |
+| VKF-DLK Dollardkust | 145 | 92.967 | 93 | no |
+| VKF-OOS Oosterhout | 40 | 94.939 | 95 | no |
+| VKF-MPD Meppelerdiep | 33 | 96.862 | 97 | no |
+| VKF-ZWT Zwartewater | 77 | 98.958 | 99 | no |
+| VKF-TRB Terborgh | 77 | 100.950 | 101 | no |
 
-## Files and hygiene: PASS
+**Withdraw Kampvliet (VKF-KPV) for the November 2026 delivery month at 72 per cent of contracted gain; runner-up
+Reiderland (VKF-RDL) at 83 per cent; gap 11 percentage points; 3 sites outside the 90 per cent tolerance.**
 
-18 files, 4 formats (11 csv, 1 xlsx, 3 pdf, 1 sqlite). Scale gates met: `power_1s` 540,017 rows in a 23 MB sqlite, `system_frequency_1s_extracts.csv` 97,730 rows, `metered_volumes_15min.csv` 18,144 rows. Distractors present and relevant but unused: `market/imbalance_prices_15min.csv`, `market/fcr_capacity_auction_results.csv`, the three `settlement_statement_daily_*` issues, `operator/system_frequency_minute_summary.csv`, `operator/fcr_group_availability_2026-09.pdf` (group-level availability that clause 4 of the technical conditions forbids attributing to units), and the `measured_gain_mw_per_hz` column. No README or how-generated artifact, no "synthetic"/"benchmark"/"generated" string in any extracted text, no solver-facing language; PDF and xlsx metadata are in-fiction (`Rijksnet document control`, `Veerkracht Flex reserve reporting 4.2`). Temporally coherent: determination 2026-10-13, window 2026-09-21 to 2026-10-11 (13 Oct less two days), asset register pulled 2026-10-12, November delivery month notified before 1 November per technical conditions cl.3. Nothing reads as LLM-authored; the mess is the right kind. **No exclusion-level finding.**
+Over-frequency: KPV 73.026/20, RDL 80.934/22, HGZ 86.993/152, NWV 88.918/72, DLK 91.957/20, ZWT 93.934/71,
+OOS 95.869/15, TRB 97.840/71, MPD none/0.
 
-Two minor, non-decisional notes, neither worth a send-back:
-1. Eight minutes in `system_frequency_minute_summary.csv` show an excursion beyond 75 mHz (min 49.9186 to 49.9195, max 50.0802 to 50.0814) with no corresponding one-second extract, which the technical conditions' publication promise implies there should be. It cannot change an answer: a qualifying episode needs per-second data to establish 15 consecutive seconds and an extreme second, and the only per-second publication is the extracts file. Cosmetic coherence only.
-2. The portfolio "above" total (114.4) does not equal the sum of its own nine printed rows (114.3). This is what clause 5's "rounded once at the end" requires, and the committed figure is right, but it is the one place a grader may read an internal inconsistency; a one-line footnote on the Scorecard sheet would remove the doubt without touching a figure.
+Capacity hours (clause 4), raw: block 1 held 542.000 / short 18.000; block 2 1151.000 / 17.000; block 3
+1407.100 / 20.900; block 4 352.900 / 7.100; block 5 1615.500 / 26.500; block 6 244.200 / 7.800. Every withdrawal
+falls wholly inside a committed block (no unallocated withdrawal hours).
 
-## Fix
+Imbalance energies (clause 5), raw MWh: OOS 9.3071 / 22.1866; ZWT 16.3023 / 49.4891; HGZ 8.2121 / 18.6087;
+KPV 10.9189 / 21.9163; MPD 9.8023 / 16.0957; NWV 10.9074 / 27.9912; TRB 15.3073 / 22.1026; DLK 22.0112 / 46.7990;
+RDL 11.6197 / 17.4036. Portfolio raw 114.3883 / 242.5927 -> **114.4 / 242.6** rounded once.
 
-**Location: solution.** Rewrite the single clause in the Final Recommendation and in Step 6 that prices the rejected pre-episode basis, either dropping the two percentages or pinning the basis ("the level recorded at the start of the deviation recording") and restating them as Zwartewater 72 and Kampvliet 98, which is what that definition computes to. No change to the prompt, the input files, the main call, the ladder or any graded figure; no model rerun.
+## Part 2: every option I had to enumerate where the shipped text is silent, and what each computes to
+
+| # | silence | options enumerated | what each gives | closed by |
+|---|---|---|---|---|
+| 1 | clause 2's counterfactual "output it would have produced had the frequency stayed inside the dead band" | (a) programme traverse trajectory; (b) undisturbed level (power at the last pre-episode second inside the dead band); (c) period setpoint; (d) previous period's setpoint held flat; (e) ramp spread over the whole 900 s period | (a) KPV 71.96 lowest; (b) ZWT 76.84 lowest, KPV 93.45; (c) RDL 57.63 lowest, KPV 68.37; (d) ZWT 71.08 lowest; (e) ZWT 73.79 lowest | clause 2 ("at that second") plus technical conditions clause 5 ("additional to the programme ... nothing in a unit's programme reduces the response owed"): only (a) removes the site's own programme movement. (b)-(e) each credit or debit a site with its own traverse. **This is the decisive step and it changes the answer: Zwartewater or Reiderland instead of Kampvliet.** |
+| 2 | how the traverse span is recovered | boundaries with no *qualifying* episode (the submission's own wording) vs boundaries where the site held **no reserve commitment** | the looser rule is contaminated by sub-threshold droop response and returns ~70-72 s for NWV (NWV under 91.52 -> 92, over 81.0); the commitment-free rule returns 95 s unanimously (NWV 90.94 -> 91, over 88.9 -> 89) | the contaminated fits are self-rejecting (modelled ramp fraction exceeds 1.000, which a linear traverse cannot), and the commitment-free boundaries are unanimous for all nine sites. Forced, but the submission's step 3 wording understates it. |
+| 3 | `start_local` offsets in the event log | honour `+02:00` on all rows vs resolve by the uniform 1.5-min `logged_utc` lag | honouring the offset keeps 5 extra over pairs: HGZ 153 @ 86.43, KPV 21 @ 69.51, OOS 16 @ 89.92, TRB 72 @ 96.47, ZWT 72 @ 92.63 (under-frequency unchanged) | `logged_utc` partitions cleanly (21 rows at 1.5 min, 9 at 121.5 min) and the five disputed seconds show ~0 delivered response, which only the withdrawal explains. Forced. |
+| 4 | which interval a `metered_volumes_15min` stamp belongs to | interval-**end** stamping vs interval-**start** stamping (the file's own `settlement_period` column says start: 00:15 is labelled period 2) | end-stamp: 114.4 / 242.6 portfolio, residual rms vs programme 0.021-0.067 MWh, coverage exactly 2016 periods = 09-21 P1 .. 10-11 P96; start-stamp: 944.5 / 1054.1 portfolio, rms 0.154-0.514, coverage shifted by one period | the data: end-stamping cuts the residual ~10x for all nine sites (corr 0.9957-0.9996 vs 0.874-0.970) and aligns the file exactly to the clause 3 window. The `settlement_period` column is off by one, which is Layer-1 mess, not a fork the answer can rest on. `market/imbalance_prices_15min.csv` is start-stamped, which is what makes the trap live. |
+| 5 | the kWh row block (DLK, 2016 of 18,144 rows) | convert per interval; convert the metered sum only; convert the above/below totals; no conversion | per interval: DLK 22.0 / 46.8; totals-converted: 638.0 / 1984.9; unconverted: 638,011 / 1,984,850 | only the per-interval conversion is dimensionally coherent against a programme in MW, and it is the only one that matches the site's 10 MW contract / 25 MW connection. Forced. |
+| 6 | the grid-loss factor (settled volumes are 1.0042x own meters at the two 150 kV sites) | not applied; applied to the metered series; applied to the totals | not applied: ZWT 16.3 / 49.5, DLK 22.0 / 46.8, portfolio 114.4 / 242.6; applied: ZWT 17.9 / 47.8, DLK 20.4 / 50.8, portfolio 114.4 / 245.0 | clause 5 names "the net volume its own settlement meters register ... **before any adjustment the system operator applies at settlement**". Forced; the three settlement statements are a distractor. |
+| 7 | the rounding path on clause 4 and clause 5 quantities | round each interval/segment to 1 dp then sum, vs sum unrounded and round once | per-interval rounding: portfolio 56.2 / 129.3 (vs 114.4 / 242.6); capacity hours unaffected (every block total is an exact tenth) | clause 5 says "summed over those periods and **rounded once at the end**"; clause 4 says "summed over the window's delivery dates and reported ... to one decimal place". Forced. |
+| 8 | which frequency file defines episodes | 1 s extracts vs `system_frequency_minute_summary.csv` | the minute summary carries only a per-minute minimum and cannot establish 15 consecutive seconds; it also shows 17 minutes at or below 49.920 Hz with no 1 s extract and disagrees with the 1 s data by up to 0.0355 Hz on the overlapping minutes | clause 2 needs second resolution, so the 1 s file is the only admissible source. The 17 uncovered minutes are a coherence wrinkle (technical conditions say 1 s is published for every deviation beyond 75 mHz) but no episode can be built from them, so nothing is actionable. |
+| 9 | the metering-point switch at Oosterhout | register EAN only (…398201, data from 2026-10-01 02:15 local) vs stitching the retired EAN (…312447, to 2026-10-01 02:00 local) | register-only: OOS covers 1,048 of 2,016 periods and its energies are understated; stitched: 9.3 / 22.2 | the register's own Notes sheet ("shows the code in force at the pull date; replaced codes are kept in the metering history") plus event 4112 `MET-CHG`. Forced. |
+| 10 | the duplicated high-resolution recording after the HGZ archive restore (event 4114) | dedupe vs count rows | recording 2820 duplicates 1611 byte-for-byte (156 duplicate (site, second) rows, 0 with a differing value); naive row counting gives HGZ 153 over pairs instead of 152 | values identical, so no figure forks; only the count does, and `recording` shows one duplicated `start_utc`. |
+
+## Part 3: gate table
+
+| gate | call | one line |
+|---|---|---|
+| A, solution correct | **PASS**, with one SOLUTION_WRONG figure | 38 of 39 committed figures reproduced exactly; step 6's "Kampvliet at 94" on the undisturbed-level basis reproduces as 93.454 under every construction of that basis I could build (4 dead-band variants plus an any-recording variant: all 93.454). |
+| B, decisive facts present | **PASS** | Measure, thresholds, dead band, slope, window, tolerance, decision rule, capacity-hours formula and imbalance-energy formula all in the two PDFs; contracted capacities in the xlsx `Sites` sheet; the action vocabulary ("withdraw", "re-prequalification", "tolerance", "realised response gain") is in the shipped standard and technical conditions; "Kampvliet" is in the register. "Traverse" and "undisturbed" appear in no shipped file, but they label derived quantities, not the committed action. |
+| C, uniquely forced | **PASS** | Ten silences enumerated above; each closed by shipped text or decisively by the data. Main margin is 11.03 pp (71.96 vs 82.99) and survives a +/-10 per cent error in every traverse span (KPV 69.30 to 74.40, RDL 80.95 to 84.66, order and "3 below tolerance" unchanged). |
+| D, difficulty analytical not semantic | **PASS** | The split among good answers is the counterfactual baseline, i.e. the estimand, not the reading of a prompt word; the standard states the counterfactual in substantive terms and the easy route is a recognised industry proxy, not a misreading. |
+| E, prompt unambiguous on the decision | **PASS** | 991 characters, one paragraph, one site demanded, every graded figure carries unit and rounding in the asking sentence, no hedge available, no method prescribed, no leak of the baseline question. |
+| F, stump power | **STRONG** | Nothing in the prompt mentions programme, ramp or baseline. The natural route (pre-episode power as the undisturbed level) is a real FCR prequalification convention and files **Zwartewater at 77**; the period-setpoint route files **Reiderland at 58**. Both are specific wrong answers, not coin flips. Secondary devices (event-log offset, interval-end stamping, the kWh block, the retired EAN) bite the asks. |
+| G, stumping type | **PASS** | `mechanism: method_or_model_selection`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. Every reported number in the pack is correct: the frequency, the power, the programme and the step-test records are all fine. Nothing has to be caught as wrong; the difficulty is selecting the baseline the standard's counterfactual actually names and reconstructing it. On perfectly clean data the task still stumps, so the clean-data test passes. |
+| H, three rules | **PASS** | `domain: pass`, `layers: pass`, `decisive_step: analytical`. |
+
+### Gate G line, in full
+
+`mechanism: method_or_model_selection` | `stumping_family: analytical_non_defect` |
+`surface_read_dependency: no` | `sole_data_defect: no`. The FINE-numbers method carrying the difficulty is
+baseline/estimand selection on honest data: the realised gain must be measured against the programme traverse the
+controller was executing at the extreme second, and the two plausible-but-wrong baselines (the undisturbed level,
+the period setpoint) are each internally consistent, each computable from correct reported inputs, and each names a
+different site. No reported figure in the pack is misleading and no planted defect decides anything.
+
+### Gate H line, in full
+
+`domain: pass`, `layers: pass`, `decisive_step: analytical`. H1: the deciding quantity is a droop gain against a
+contracted frequency-response characteristic, measured on 1 s telemetry with the market programme removed, which
+is the reserve desk's own core calculation; the swap test fails immediately (substitute "hospital" or "visits" and
+the 190 mHz slope, the 10 mHz dead band and the 15-consecutive-second episode test have nothing to attach to).
+H2, layer 1: interval-end stamping against a `settlement_period` column that is off by one, one meter reporting
+kWh among eight in MWh, a metering point replaced mid-window with only the new EAN in the register, nine event-log
+start stamps carrying a wrong `+02:00` offset, a cancelled-withdrawal correction chain, a duplicated recording
+after an archive restore, preliminary and amended October settlement issues carrying a 0.42 per cent grid-loss
+adjustment, and a minute summary that disagrees with the 1 s extracts. H2, layer 2: which counterfactual the
+realised gain is measured against. H3, the easy route: a strong analyst who cleaned all of that and read every
+clause correctly takes each site's recorded power at the last pre-episode second inside the dead band as "the
+output it would have produced", averages the ratios, and files **Zwartewater at 77 per cent** (Kampvliet reads 93
+and sits inside tolerance on that basis); taking the period setpoint instead files **Reiderland at 58 per cent**.
+Both are wrong answers reached without misreading a field or a rule, so H3 is analytical.
+
+## Part 4: figures I could not reproduce
+
+| block | figure as submitted | what I got | load-bearing? |
+|---|---|---|---|
+| Step 6 | "the undisturbed level ... puts Zwartewater at 77 per cent and **Kampvliet at 94**" | Zwartewater 76.840 -> 77 (agrees); Kampvliet **93.454 -> 93** under all five constructions of the undisturbed level I built | No. It is narrative support for a rejected route, appears in no graded deliverable, and the rejection holds under every construction (Kampvliet stays above tolerance and Zwartewater remains the furthest below on that basis). |
+
+Everything else reproduced: all 9 under-frequency gains and counts, all 9 over-frequency gains and counts
+(including Meppelerdiep "none"), the 935 obliged pairs, the 90 s and 300 s traverse spans, the "3 sites below
+tolerance" count, all 12 capacity-hour figures, all 18 site energies and both portfolio totals.
+
+## Part 5: bin-edge distances for every graded figure
+
+Distances are expressed in units of the rounding unit its asking sentence states (1 per cent for gains,
+0.1 MWh for energies); 0.500 means the raw value sits dead centre in its bin. **Nothing is within 0.3.**
+
+Under-frequency gains: KPV 0.461, RDL 0.486, HGZ 0.418, NWV 0.440, DLK 0.467, OOS 0.439, MPD 0.362, ZWT 0.458,
+TRB 0.450. Over-frequency gains: KPV 0.474, RDL 0.434, HGZ 0.493, NWV 0.418, DLK 0.457, ZWT 0.434, OOS 0.369,
+TRB 0.340. Gap: 11.025 pp, and 83 - 72 = 11, so the gap is 11 whether taken as the rounded difference or the
+rounded raw difference. Tolerance line: the nearest site to 90.0 is Nieuwveen at 90.940, clear by 0.94 pp.
+Capacity hours: all twelve figures are exact tenths (0.500). Energies, tightest first: RDL above 11.6197 (0.303),
+KPV above 10.9189 (0.311), KPV below 21.9163 (0.337), OOS below 22.1866 (0.366), HGZ above 8.2121 (0.379),
+portfolio above 114.3883 (0.383), DLK above 22.0112 (0.388), ZWT below 49.4891 (0.391), NWV below 27.9912 (0.412),
+HGZ below 18.6087 (0.413), NWV above 10.9074 (0.426), portfolio below 242.5927 (0.427), TRB above 15.3073 (0.427),
+OOS above 9.3071 (0.429), MPD below 16.0957 (0.457), RDL below 17.4036 (0.464), TRB below 22.1026 (0.474),
+ZWT above 16.3023 (0.477), MPD above 9.8023 (0.477), DLK below 46.7990 (0.490). The two tightest, Reiderland's and
+Kampvliet's above-programme energies, clear the 0.3 trip wire by 0.003 and 0.011 of a rounding unit respectively:
+worth noting, not a finding.
+
+## Part 6: the reported total that is not the sum of its printed rows
+
+Portfolio above programme is **114.4** MWh while the nine printed rows sum to **114.3**. The shipped text forces
+this: clause 5 requires the portfolio quantity to be "summed over those periods and rounded once at the end", so
+it is 114.3883 rounded once, not a sum of nine already-rounded rows. The below-programme column is 242.6 either
+way (raw 242.5927; rounded rows sum to 242.6). The submission states the reason in the deliverable, correctly.
+
+## Part 7: files and hygiene
+
+**PASS.** 18 files, 4 formats (13 csv, 3 pdf, 1 xlsx, 1 sqlite), csv-leaning but not a monoculture; the 24 MB
+sqlite (2,820 recordings, 563,213 one-second rows) and the 111,454-row frequency extract clear the volume bar.
+Every file reads as a system export or a signed governing document: a daily commitment file, a platform event log
+with corrections and a superseded-event pointer, an asset-register extract with a Notes sheet about retired
+metering codes, two overlapping October settlement issues, a group availability statement that explicitly declines
+to attribute performance to units. No README, no "synthetic"/"generated"/"benchmark" disclosure, no tool banner, no
+solver-facing language (checked by grep across all plain files and by `pdftotext` on all three PDFs). Temporal
+coherence holds: register pulled 2026-10-12, last event 2026-10-11, meters end at period 96 of 2026-10-11, the
+standard names the 13 Oct 2026 determination, nothing postdates the snapshot. Distractors present and relevant but
+unused: imbalance prices, the capacity auction results, the three settlement statements (grid-loss adjusted and
+daily, both disqualifying under clause 5), the minute summary, the group availability PDF, and
+`prequalification_records.csv`. No finding is exclusion-level.
+
+Two notes, neither exclusion-level, neither a send-back:
+1. `prequalification_records.csv` is a wrong-basis route that ranks the sites and gets the decision wrong
+   (measured/contracted step-test gain puts Reiderland lowest at 98.5 per cent and nobody outside tolerance). It is
+   ruled out by shipped fact (the tests are witnessed step tests from 2017-2025; technical conditions clause 4 and
+   standard clause 1 put the review on delivered response over the window, and four sites carry post-test
+   controller-change declarations with no measured gain). No `metadata.json` is in the pack, so I could not confirm
+   the distractor is declared there; if it is not, declare it.
+2. The minute summary shows 17 minutes at or below 49.920 Hz and 13 at or above 50.080 Hz with no corresponding
+   1 s extract, and disagrees with the 1 s data by up to 0.0355 Hz where they overlap, while the technical
+   conditions promise 1 s publication for every deviation beyond 75 mHz. Nothing is computable from those minutes,
+   so no figure moves; it is a coherence wrinkle in a distractor file.
+
+## Part 8: verdict
+
+- **Verdict: DETERMINISTIC (SOLUTION_WRONG)**
+- **Disposition: FIX_NOW.** Regenerate step 6's Kampvliet figure on the undisturbed-level basis from 94 to 93, and
+  restate step 3's recovery criterion as "at the settlement-period boundaries where the site held no reserve
+  commitment" rather than "holding no qualifying episode", because the looser wording selects boundaries
+  contaminated by sub-threshold droop response and returns ~72 s for Nieuwveen instead of 95 s. Both edits are
+  solution-block text; the analytic surface solvers work against stays byte-identical, so **no model rerun is
+  required**.
+- **Fix location: solution.**
+- **Why:** the decision is forced. Clause 2's counterfactual plus technical conditions clause 5 admit only the
+  programme-traverse baseline; the traverse span is recovered unanimously per site from commitment-free boundaries;
+  on that baseline Kampvliet is 71.96 per cent against Reiderland's 82.99, a lead of 11.03 pp that survives a
+  +/-10 per cent span error, and clause 3 sends the single slot to the site furthest below contract. The only
+  defect is one narrative figure attached to a route the solution rejects, which the Gate A carve-out keeps inside
+  a DETERMINISTIC verdict.
