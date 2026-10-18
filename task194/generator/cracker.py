@@ -3,14 +3,15 @@
 Part 1.1 of `supplemental-stumping` defines the two responses, and they are scored here from different
 readings rather than one reading twice.
 
-The **cracker** landed the call: it rebuilt the comparison frequency from the record, so it holds all twelve
-avoidable counts. On the asks it is the careful response: it runs the hygiene battery (key uniqueness,
-unmatched joins, fan-out, count ties across grains) and executes every handling the dictionary and the
-specification describe. A device a column description resolves is therefore free to it, and only an
-inconsistency nothing in the pack invites costs it a figure.
+The **cracker** landed the call: it developed each cost centre's immature quarters on that cost centre's own
+vintages in the close-out register, so it holds all twelve avoidable counts. On the asks it is the careful
+response: it runs the hygiene battery (key uniqueness, unmatched joins, fan-out, count ties across grains)
+and executes every handling the dictionary and the specification describe. A device a column description
+resolves is therefore free to it, and only an inconsistency nothing in the pack invites costs it a figure.
 
-The **mirror** stopped at the most attractive wrong rung, which is the published excess carried onto the
-planned separations, so its twelve figures are published excesses and none of them is an avoidable count.
+The **mirror** stopped at the most attractive wrong rung, which is rung 0: the complications the record
+carries over the ten closed quarters, carried onto the planned separations. Its twelve figures are
+therefore undeveloped counts and none of them is an avoidable count.
 On the asks it is the ordinary response: it takes each ask the way its own file's grain leads, without the
 cross-grain reconciliation or the dictionary's handling notes.
 
@@ -62,17 +63,17 @@ def ask_rows(target, g, careful):
     units_reg = b["units"]
     acute = {c for c, u in units_reg.items() if u["service_type"] == "Acute inpatient"}
     exc = collections.defaultdict(int)
+    # every unit of the site, because the indicator leaves a whole unit out as well as rows inside one
     exh = collections.defaultdict(int)
     bands = b["bands"]
     with open(os.path.join(target, "episode_outcomes_extract.csv"), newline="", encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            if r["unit_code"] not in acute:
-                continue
             sep = dt.date.fromisoformat(r["separation_date"])
             if not (dt.date(2026, 1, 1) <= sep <= dt.date(2026, 12, 31)):
                 continue
             band = bands.get(r["drg_code"], "")
-            if r["care_type"] == "Acute" and int(r["los_days"]) >= 1 and band not in ("", "SAME-DAY"):
+            if (r["unit_code"] in acute and r["care_type"] == "Acute" and int(r["los_days"]) >= 1
+                    and band not in ("", "SAME-DAY")):
                 continue                       # the indicator measures this one
             site = b["facility"][(r["unit_code"], sep.replace(day=1).isoformat())]
             exc[site] += 1
@@ -129,7 +130,7 @@ def ask_rows(target, g, careful):
         gid = cat.get((rev, r["complication_code"]))
         if gid:
             found[fy][gid].add(eid)
-    for x in g["groups"]:
+    for x in g["groups_by_year"]:
         rows.append(_row("A4", "%s 2025-26" % x["group"], len(found["2025-26"][x["group"]]), x["fy2025"]))
         rows.append(_row("A4", "%s 2026-27" % x["group"], len(found["2026-27"][x["group"]]), x["fy2026"]))
     return rows
@@ -144,7 +145,7 @@ def run(target):
 
     # the construction layer: the twelve avoidable counts the decisive construction produces
     construction = [_row("C", d["unit"], d["avoidable"], d["avoidable"]) for d in units]
-    mirror_construction = [_row("C", d["unit"], d["published_excess"], d["avoidable"]) for d in units]
+    mirror_construction = [_row("C", d["unit"], d["as_recorded"], d["avoidable"]) for d in units]
     n_con = len(construction)
 
     cr_keep = sum(1 for r in cr if r[2])
@@ -170,7 +171,7 @@ def run(target):
 def report(target, verbose=True):
     r = run(target)
     asks = sorted({x[0] for x in r["cracker_rows"]})
-    print("the cracker landed the call; the mirror stopped at the published excess carried onto the plan")
+    print("the cracker landed the call; the mirror stopped at the record as it stands, carried onto the plan")
     print()
     print("  %-4s %6s  %-16s %-16s" % ("ask", "figs", "cracker keeps", "mirror keeps"))
     weakest = None

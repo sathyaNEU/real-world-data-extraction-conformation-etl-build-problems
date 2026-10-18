@@ -113,8 +113,10 @@ def excluded_activity(b, year=2026):
 
     Specification 2.1 to 2.3 keep an acute inpatient episode of one night or more whose diagnosis related
     group the risk band map assigns to a band. A hospital's separations therefore divide into the episodes
-    the indicator measures and the rest: same-day separations, episodes whose care type is not acute, and
-    episodes the grouper could not group.
+    the indicator measures and the rest: same-day separations, episodes whose care type is not acute,
+    episodes the grouper could not group, and every separation of a unit the indicator does not cover at
+    all. The rest is counted over all of a site's activity, because the question is what the indicator
+    leaves out of a hospital rather than what it leaves out of the units it reports on.
 
     The rest is not counted off the episode extract. The extract is one row per episode record the
     warehouse received, and the warehouse is not the system that counts separations: the activity summary
@@ -131,8 +133,6 @@ def excluded_activity(b, year=2026):
         if int(month[:4]) != year:
             continue
         unit = r["unit_code"]
-        if b["units"][unit]["service_type"] != "Acute inpatient":
-            continue                      # the units outside the indicator are a question of their own
         n, o = inscope.get((unit, month), [0, 0])
         site = r["facility"]
         cell = out[site]

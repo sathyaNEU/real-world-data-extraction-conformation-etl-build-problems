@@ -363,7 +363,7 @@ monetary quantity in the pack is outside its path.
 | id | Ask | Figures | Primary device (silent) | Hazards shared | File and columns | Forcing figure (designed; measured at stage 3) |
 |---|---|---|---|---|---|---|
 | A | for each of the four quarters of 2026/27 and each of the three member tiers, the indemnity the mutual paid on unauthorised fraud, to the nearest pound, plus each quarter's total | 16 | D9 self-validation at a grain nothing names: a settlement advice's total covers its own case lines plus a prior-period adjustment belonging to cases settled in an earlier quarter, so the advice is a rollup above its own parts on about a third of the unauthorised advices, and only a detail-against-total reconciliation per advice finds it | amounts in pence on the 2023/24 extract, recoveries as later credit rows, the 2024/25 template change | `settlement_advices_2026_27.xlsx` (advices and advice detail) plus `case_payments.csv`, 11 columns on the path | measured on the cut pack: the advice totals read 921,924 against the golden 665,484 on the Q1 total, a gap of 256,440 against a rounding of 1, and 16 of 16 figures move |
-| B | for each of the twelve members, the scam cases notified in the quarter to 30 June 2027 and the value they reported, to the nearest pound | 24 | D5 scope, a silently partial extract: the Q1 notification file was cut on 20 June and the 21 to 30 June notifications sit in the quarter-end supplementary file, while each member's own Q1 return states a case count the main extract's rows do not reach, so only a return-against-extract reconciliation finds the gap | case references allocated per member and scheme year, a quarter that straddles the mutual's own year end, the returns workbook's own vintage column | `notifications_2027_28_q1.csv`, `notifications_2027_28_q1_supplementary.csv` and the returns workbook's Q1 sheet, 9 columns | measured: the main extract alone reads 271,508 against the golden 335,982 on Garnock's reported value, a gap of 64,474 against a rounding of 1, and 24 of 24 figures move |
+| B | for each of the twelve members, the scam cases notified in the quarter to 30 June 2027 and the value they reported, to the nearest pound | 24 | D5 scope, a silently partial extract: the Q1 notification file was cut on 20 June and the 21 to 30 June notifications sit in the quarter-end supplementary file, while each member's own Q1 return states a case count the main extract's rows do not reach, so only a return-against-extract reconciliation finds the gap | case references allocated per member and scheme year, a quarter that straddles the mutual's own year end, the returns workbook's own vintage column | `notifications_2027_28_q1.csv`, `notifications_2027_28_q1_supplementary.csv` and the returns workbook's Q1 sheet, 9 columns | measured on the cut pack: the main extract alone reads 405,985 against the golden 460,362 on Brindlemere's reported value, the widest of the twenty-four, a gap of 54,377 against a rounding of 1, and 24 of 24 figures move, the narrowest of them by a whole case (Pelbury's 14 against 15) |
 | C | for each of the three recovery routes and each quarter of 2025/26, the share of the reimbursed amount recovered on cases closed in that quarter, to one decimal, plus each route's year total | 15 | D9 a control total true only in its own scope: the statement counts a recovery in the quarter the money arrived rather than the quarter the case closed in, and states the repatriation route net of that route's own agent charge, so its route shares sum to its own stated total while disagreeing with the case-level credits | recoveries posted as later credit rows with their own value dates, cases closing across a quarter boundary, the 2023/24 extract's pence amounts | `recovery_statement_2025_26.csv` plus `case_payments.csv`, 10 columns | measured: the statement reads 5.1 against the golden 12.9 per cent on the Q2 beneficiary recall figure, a gap of 7.8 against a rounding of 0.1, and 15 of 15 figures move |
 
 **Separation line.** Zero device rows and zero hazard rows inside the main call's declared population,
@@ -441,7 +441,12 @@ overlap of two channels, and the two drivers score 0.06. The other promoted pair
 no shared persona and no shared mechanism; they are the corpus's ordinary top-percentile surface noise.
 
 **`guard.py heart`: WARN, no BLOCK.** The two WARNs are the Gate G mechanism's overuse across the batch and
-the objective's, both answered in `## Draw`.
+the objective's, both answered in `## Draw`. The one BLOCK the batch produced, `ban.artifact` against
+task197's `register`, was a wrong key rather than a repeated organ and is re-keyed `planning_thread` in
+`## Tried and rejected`; `guard.py check` and `heart` both return WARN at exit 0 on the re-keyed card.
+
+**`target.zip` is cut by the house cutter**, `generator/archive.py` copied from task192, so every entry
+carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
 
 ## Tried and rejected
 
@@ -508,6 +513,25 @@ the objective's, both answered in `## Draw`.
 - **A prior-period adjustment on three named advices**: measured at three of sixteen figures moved, which
   left thirteen free to any response. The adjustment now falls where the recoveries team closes an earlier
   quarter off, about a third of the unauthorised advices across every month and tier, and all sixteen move.
+- **Ask B's forcing figure as first written** (the main extract reads 271,508 against 335,982 on Garnock's
+  reported value, a gap of 64,474): the figures were carried over from the cut before the design point moved
+  to 22.30 million payments, and re-measuring the device on the shipped bundle gives a different widest cell.
+  The device itself is unchanged and still moves 24 of 24 figures; the cell now reads Brindlemere's value,
+  405,985 against 460,362, a gap of 54,377, with the narrowest moved figure a single whole case. Asks A and C
+  were re-measured in the same pass and their cells were already right (A 16 of 16, widest 256,440 on the Q1
+  total; C 15 of 15, widest 7.8 points on Q2 beneficiary recall).
+- **`register` as the context-artifact key**: `guard.py heart` returned BLOCK on `ban.artifact` once task197
+  registered `register` eight minutes before this card, and the key was wrong anyway. The pack's context
+  artifact is the trustees' meeting pack (an agenda, a minutes reference and the membership position at
+  31 March 2027, issued by the secretariat on 2 July 2027, proposing no index), which is `planning_thread`;
+  `register` described only the membership table printed inside it. The pack's actual registers are not
+  context artifacts, since `mule_account_register.csv` is the second capture channel the call reads and
+  `member_register.csv` is a lookup. Re-keyed, and heart returns WARN with no BLOCK.
+- **A prompt at 994 characters**: six characters of headroom under the 1,000 gate would not survive any
+  stage-3 edit. Trimmed to 971 with no figure, unit, deliverable or rounding requirement dropped, by
+  shortening five phrases ("one decimal place" to "one decimal", "a title stating the finding" to "titled on
+  the finding", two redundant articles, and a semicolon for "and" in the second sentence). The prompt gate
+  passes on all twelve checks.
 - **`causal_design` as the strategy label**: the honest key for capture interference, taken by task197 five
   minutes before this card filed, so the card carries `other` with the mechanism named in its notes rather
   than a negotiated axis.
