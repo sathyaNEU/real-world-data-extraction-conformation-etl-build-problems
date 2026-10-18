@@ -132,6 +132,40 @@ def national_cv(samp):
     return math.sqrt(V) / tot, tot
 
 
+def round_2025(pop, idx):
+    """The 2025 round: the same frame a year earlier, with the stream's own year-on-year movement
+    and an enterprise-level shock, and its own realised sample, larger in the voluntary strata than
+    the 2026 round. The 2025 release reports the precision of this round's estimated national total
+    and its estimated arisings per stream. Nothing of the round ships (no micro-data, no sample
+    count, no weight), so no shipped file reproduces either figure under any estimator, and the
+    published precision measure cannot confirm or refute a variance method for the 2026 round."""
+    rng = np.random.default_rng(W.SEED + 2025)
+    yoy = {k: float(rng.uniform(0.957, 1.014)) for k, *_n in W.STREAMS}
+    samp = {k: [] for k, *_n in W.STREAMS}
+    for h, (_code, N, r) in enumerate(W.STRATA_2025):
+        # the survey is a rotating panel: most of the 2026 round's enterprises were in the 2025
+        # round too, and the rest of the 2025 sample rotated out
+        keep = idx[h][rng.random(len(idx[h])) < 0.93]
+        rest = np.setdiff1d(np.arange(N), keep)
+        extra = rng.choice(rest, size=max(0, r - len(keep)), replace=False)
+        take = np.sort(np.concatenate([keep, extra]))
+        for k, *_n in W.STREAMS:
+            x = pop[k][h] * yoy[k] * rng.lognormal(0.0, 0.05, size=N)
+            samp[k].append(np.round(x, 3)[take])
+    w = [N / float(len(samp[W.GOLDEN_STREAM][h])) for h, (_c, N, _r) in enumerate(W.STRATA_2025)]
+    est = {k: float(sum(w[h] * samp[k][h].sum() for h in range(len(W.STRATA_2025))))
+           for k, *_n in W.STREAMS}
+    tot = sum(est.values())
+    V = 0.0
+    for h, (_c, N, _r) in enumerate(W.STRATA_2025):
+        r = len(samp[W.GOLDEN_STREAM][h])
+        if r >= N:
+            continue
+        rows = np.sum([samp[k][h] for k, *_n in W.STREAMS], axis=0)
+        V += N * N * (1.0 - r / float(N)) * float(rows.var(ddof=1)) / r
+    return math.sqrt(V) / tot, float(tot), est
+
+
 def attainment(samp):
     """Everything the call needs, per stream: the estimate, the register total, the rate, its
     standard error under every route, the plan target and the verdict."""

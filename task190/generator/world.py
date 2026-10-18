@@ -13,6 +13,8 @@ EXTRACT_SURVEY = "2027-01-16"
 COMPLAINT_DATE = "2027-01-14"
 RESPONSE_DUE = "2027-02-28"
 CODE_REVISION = "2026-07-01"
+PRIOR_EXTRACT = "2026-06-30"       # the register extract the 2025 release's Table 1 was taken at
+FIELD_DAY_HOURS = 8                # the division books field effort in field days of this length
 
 INSTITUTE = "National Institute for Environment Statistics"
 AGENCY = "Environment Permit Agency"
@@ -41,6 +43,12 @@ STRATA = [
 ]
 ISSUED = {"E1": 155, "E2": 210, "E3": 580, "E4": 880}   # questionnaires issued before nonresponse
 OUT_OF_SCOPE = {"E1": 0, "E2": 4, "E3": 14, "E4": 24}   # found ceased or out of activity scope
+
+# The 2025 round: the same frame and strata, a larger issued sample before the 2026 budget cut, so
+# more usable returns in the voluntary strata. Only its published precision measure leaves it: no
+# 2025 micro-data, sample count or weight ships, so nothing in the bundle reproduces the figure the
+# 2025 release publishes, and it cannot confirm or refute any estimator of the 2026 round's.
+STRATA_2025 = [("E1", 155, 155), ("E2", 780, 232), ("E3", 4300, 604), ("E4", 31500, 902)]
 
 # the eight statistical waste streams of the plan's target table, with the arisings process:
 # participation probability, mean tonnes and coefficient of variation per stratum.
