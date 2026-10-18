@@ -558,6 +558,226 @@ So a seventh draw on this cell should be built from the capitation encounter fil
 inward. The quantity to look for is one the paid record cannot price and the encounter record cannot value,
 with the construction forced by reading the two against each other.
 
+## ARCHITECTURE 7 ENCOUNTER-CHANNEL SCREEN (run before a card was registered, and it fails)
+
+Drawn on the same wave-6 cell, `healthcare-delivery-health-economics` / `payment-claims-health-plan-analytics`, starting where architecture 6's section 8 said to start:
+the capitation encounter file, carrying no payment. The reserved axes are kept (shape `06`,
+`decision_type` `schedule_or_sequence`, gap `time`, `calibration_form` `settled_transaction_ledger`,
+`context_artifact` `close_out_summary`, forum `auditor`, forcing event `audit_or_inspection`, role family
+`finance_controller`), with `org_family` taken as `cooperative_or_member_body` because the world drawn is a
+member-owned Medicaid plan and the vocabulary holds no insurer value. `gate_g` `binding_constraint` and
+`stump_strategy` `population_selection` were refused as the previous pass instructed; the replacements are
+in section 11. Work in `scratchpad/w6_182b/screen.py` and `screen1b.py`, each run twice with
+byte-identical output.
+
+### 1. The file, and what it forces
+
+The encounter file pins the volume of care delivered where no price exists, which the paid-claims file
+cannot state at any grain. Read as an affordance list rather than as a quantity, the file offers exactly
+three things, and every candidate decisive step on this cell is built from one of them:
+
+| affordance | the quantity it forces | screened |
+|---|---|---|
+| its volume (contacts, units, members touched) | how much care a delegated group delivered | candidate 1, screens 1 and 1b |
+| its timing (service date against receipt date, with no terminus) | when a service period's record is fit to settle | candidate 2, screen 2 |
+| its missing price | what the delivered care is worth to the plan | candidate 3, screen 3 |
+
+There is no fourth. Completeness is not a fourth affordance: it is volume read against one of the other
+two, which is why it collapses into candidate 1 or candidate 2 every time.
+
+### 2. Clearing task196 before any screen, and the route that was taken
+
+task196 recovers how many events of a kind actually happened from the overlap of two capture channels. An
+encounter feed beside a paid-claims feed is two views of the same care, so the lazy draw here is that
+driver re-skinned. The route taken, as instructed, forces the quantity from the two channels' different
+economics rather than from their overlap: an encounter record exists because a contract obliges the group
+to file it, a paid claim exists because money moved, and the completeness of the first therefore varies
+with how much of its care a group buys rather than delivers (purchased care never reaches the group's own
+practice-management feed), which is an economic property of the group and not an overlap statistic. No
+candidate below estimates a capture rate from a two-source intersection, and candidate 1 is built so the
+correcting input (the carve-out claims the plan paid directly) is a different event from the encounter it
+corrects, not a second sighting of it. So the collision is cleared. **It is cleared and it does not help:**
+all three candidates die for reasons that have nothing to do with task196, and the reasons are below.
+
+### 3. The one-column proxy screen, run first and before any separation measurement
+
+The forcing file publishes a scalar summary of the construction it forces, which has now killed candidates
+on three cells. For an encounter file the plainest column is the encounter count, and an encounter count is
+a one-column proxy for delivered volume. Measured on candidate 1 over twenty world draws:
+corr(construction output, filed encounters per member) is **+0.8776** (0.7615 to 0.9568). On candidate 2 the
+same screen fires on a second column, because an encounter file publishes its own receipt date per row, so
+its lateness is one group-by: corr(completed volume, the published-lag route) is **+0.9947** (0.9911 to
+0.9984). The screen fires on both of the file's first two affordances, and it fires for the same reason
+each time: whatever the obligation feed under-reports, it under-reports in a column it also prints.
+
+### 4. The draw, as screened (candidate 1, the construction from the two channels' economics)
+
+**The world.** Harrowgate Community Health Cooperative, a member-owned Medicaid managed-care plan in Ohio.
+A state agency inspection of its delegated-risk oversight forces the controller to set the close-out
+sequence for its fourteen delegated capitation contracts across the coming six quarters, two or three
+close-outs a quarter against the settlement team's capacity.
+
+**The deciding quantity.** Each delegated group's delivered professional contacts per attributed member
+over the contract year. It is unobserved: the encounter feed states filed contacts, not delivered ones.
+
+**The mechanism.** The encounter feed is filed because the contract obliges it, so its completeness is a
+property of the group's own make-or-buy structure: care the group delivers itself flows from its practice
+system into the feed, care it purchases from outside providers is billed to the group and never reaches the
+plan's feed at all. The paid-claims feed is generated by money, so it is complete, and the plan pays
+directly for the carve-out services (lab, imaging, pharmacy) that every delivered visit generates. The
+construction reads the second feed against the first to recover delivered volume. Both drivers are
+residualised against the truth at draw time, so the maximum absolute correlation between the completeness
+share and the true care intensity is 0.000 and no measured kill below is an artifact of a planted
+association.
+
+### 5. Default path (as screened)
+
+1. Load `claim_detail.csv`, keep the final payable version of each claim line, net the denials and reversals.
+2. Load `encounter_detail.csv`, drop the void-and-replace cycles, keep one row per delivered service line.
+3. Attribute each member to a delegated group from the attribution file and the capitation register.
+4. Count each group's filed professional contacts over the contract year; divide by its attributed members.
+5. Rank the fourteen groups on that figure.
+6. Fill the six quarters' close-out slots in rank order, three, three, two, two, two, two.
+
+**Ends on:** the fourteen contracts sequenced by filed encounter contacts per attributed member, which puts
+the groups that purchase most of their care into the latest quarters.
+**Golden (as designed):** the sequence on delivered contacts per attributed member, each group's filed
+count conformed against the carve-out footprint its own delivered care generates.
+
+### 6. Stump sentence (as screened)
+
+A solver who nets the claim versions, removes the encounter void-and-replace cycles, attributes every
+member correctly and ranks the groups on filed encounter contacts per attributed member files the fourteen
+contracts sequenced by filed contacts, because a feed a group files only because its contract obliges it is
+short by the care that group bought rather than delivered.
+
+### 7. Three rules (as screened)
+
+- **Task type:** `payment-claims-health-plan-analytics`, which the client taxonomy lists under ETL and Anomaly Detection, so the objective is legal on the cell.
+- **Domain test:** the deciding quantity is delivered care volume under capitation, which the field reaches by conforming an unpriced encounter feed against the plan's own paid footprint, the encounter-completeness work a risk-bearing plan does before any delegated settlement. The line passes on the quantity and not on the method, because the method it names is the one section 8 falsifies.
+- **Swap:** put a franchisor's unaudited store returns in for a delegated group's encounters and a franchise fee in for the capitation, and the call reads the same, because any two-feed records system where one feed is produced by a payment and the other by a reporting obligation has this property. **This line does not pass**, and it fails in the same place architecture 6's swap line failed, which is the second independent reason to stop drawing volumetric quantities on this file pair.
+- **Layer 1:** claim versions with one final payable; denials and reversals netting at a grain the detail file does not show; service date against paid date with the recent months' run-out incomplete; encounters carrying no allowed amount; a group's billing identifier changing on acquisition; eligibility starting and stopping mid-month. Each is produced by the plan's own adjudication and enrolment systems and nothing is placed to be caught.
+- **Layer 2:** `estimation_fit`, `own:channel-of-record-completeness`: the completeness of a feed filed under an obligation varies by unit for an economic reason, so a count taken off it is not comparable across units.
+- **Decisive step:** correct each group's filed encounter volume for its own feed completeness, recovered from the carve-out claims the plan paid directly for care that group delivered.
+- **Not semantics:** every field can be read correctly, every claim version netted and every encounter parsed, and the filed contact count still files the wrong sequence; the error is in which feed states the quantity, not in what any column means. This line passes.
+- **Not rule application:** **this line does not pass.** The difference between the two feeds is produced by the payment rules that decide which claims are payable and by the contract clause that obliges an encounter, so every conversion between them executes one of those two instruments; and the one part of the difference that is not rule-produced, each feed's completeness, is a capture or a completion estimate, which is task196 or maturity. There is no third position, which is section 9's general finding reached from the inside of one candidate.
+- **Analyst test:** as section 5, ending on the fourteen contracts sequenced by filed encounter contacts per attributed member.
+- **Estimand:** delivered professional contacts per attributed member over the contract year for each delegated group, and the finish quarter each contract is sequenced into under the close-out capacity.
+- **No decoy:** nothing is copied, withheld or written to carry the wrong answer; the filed encounter count is attractive because it is how the feed reports, not because it was planted.
+- **No certified replay:** the settled-settlement ledger confirms closed amounts, never a method.
+- **Lesson:** that a feed filed under an obligation and a feed produced by a payment are not two measurements of one thing. The screen shows the lesson is not teachable here, because the paid feed alone already carries it in one divide.
+
+### 8. What was measured, twenty world draws a screen, each run twice with identical output
+
+**Screen 1, the volumetric construction with a plan-wide carve-out rate.** Fourteen groups, five carrying a
+real effect, the golden object the elevated five.
+
+| route | names the elevated five |
+|---|---|
+| filed encounters per member (the easy route) | 10 of 20 |
+| the designed construction | 19 of 20 |
+| **the paid carve-out footprint alone, one divide, no construction** | **19 of 20** |
+| the ratio of the two feeds, one divide | 0 of 20 |
+
+corr(designed, paid footprint) **+1.0000** at every draw, and corr(truth, paid footprint) **+0.9977**
+(0.9942 to 0.9993). The equality of the first and third rows is not a coincidence and it is the finding: a
+construction whose only non-encounter input is the paid column divided by a plan-wide rate is a **monotone
+rescaling of a published column**, so it cannot reorder the groups at all, and the money-backed feed
+publishes the answer in one divide because money is what made it complete.
+
+**Screen 1b, the same construction made non-degenerate.** The carve-out generation rate is now per group
+(different referral patterns, different carve-out scope), so the construction genuinely needs a per-group
+input and is a rescaling of nothing. The only place that input is identified is the groups whose encounter
+filing is already complete, which is the attaining subset.
+
+| route | names the elevated five | boundary margin |
+|---|---|---|
+| filed encounters per member (the easy route) | **6 of 20** | |
+| the designed construction | **3 of 20** | 1.0755 |
+| the attaining subset, filter and divide | 3 of 20 | 1.0755 |
+| the paid footprint alone, one divide | 3 of 20 | |
+| one pooled carve-out rate over every group | 3 of 20 | |
+
+Attaining subset size **0.6 of 14 groups, minimum 0, maximum 2**: the input the construction needs is not
+identified anywhere in the record. corr(designed, paid footprint) is still **+1.0000**, because dividing a
+column by any scalar leaves its order untouched whatever the scalar is. So the ladder is **inverted**: the
+designed construction reaches the truth 3 of 20 against the easy route's 6 of 20, at a margin of 1.0755
+against the 1.15 floor. **Both horns are now measured.** With a plan-wide rate the construction is order
+identical to a published column; with a per-group rate the record does not identify it. There is no third
+form, because the carve-out rate is either one number or fourteen.
+
+**Screen 2, the timing route (the contract clock against the money clock).** The paid feed arrives on a
+money clock (prompt pay, timely filing, cash need); the encounter feed arrives on the contract's compliance
+clock with its own per-group lateness and no terminus. The per-group lateness is residualised against the
+truth, measured at corr **+0.0067** (-0.0227 to +0.0420), so again no planted association.
+
+| route | names the elevated five |
+|---|---|
+| encounters received to date per member (the easy route) | 3 of 20 |
+| the designed route, each month completed on the group's own profile | 20 of 20 |
+| **the published receipt date, one group-by and one divide** | **20 of 20** |
+| **the three oldest service months only, filter and divide, no model** | **14 of 20** |
+
+corr(designed, the published-lag route) **+0.9947**. The designed route separates from the easy route
+beautifully, 20 of 20 against 3 of 20, and it is still worthless: the receipt date is a column, so the
+correction is one group-by, and the attaining subset (the oldest months, where every group is effectively
+complete) reaches the truth 14 of 20 with no model at all. That second row is the common-exposure subset
+screen firing on the time axis rather than the population axis, which is a form this repo had not measured
+before.
+
+**Screen 3, the valuation route (unpriced volume at an estimated unit price).** Five estimators of the unit
+price a competent analyst would use (the mean of line prices, the plan's FFS volume-weighted average, the
+median line price, the encounter-mix-weighted average, and the honest site-stratified form), the graded
+object the close-out sequence and the per-contract exposure.
+
+| measured | value |
+|---|---|
+| distinct close-out schedules across the five estimator forms | mean **1.80**, minimum 1, maximum 2 |
+| mean per-group spread of the graded dollar figure | **$63.25 per member** |
+| printed precision if the figure is stated to the cent | $0.01 |
+
+So the **schedule itself** forks in most draws, which fails the designation determinacy screen outright
+(above one and the call is not determinate, and the discretisation to a quarter does not rescue it because
+the family's spread crosses the quarter boundaries), and the figure forks by about **6,300 times** the
+printed unit. The alternative, filing the fee schedule, makes the valuation rule application.
+
+### 9. Why each candidate is dead, in the skill's own terms
+
+- **Candidate 1, volume.** The one-column proxy screen at +0.8776 on the encounter column; then the exact arithmetic, which is worse than the correlation: with a plan-wide correcting rate the construction is order identical to a published column (+1.0000, 19 of 20 against the one-divide route's 19 of 20), and with a per-group rate it is unidentified (attaining subset 0.6 of 14) and the ladder inverts (3 of 20 against the easy route's 6 of 20 at a margin of 1.0755). Independently dead on the swap line of section 7 and on `Not rule application:`.
+- **Candidate 2, timing.** The one-column proxy screen again, on the receipt date, at +0.9947, with the one-divide route matching the designed route 20 of 20 to 20 of 20; and the attaining-subset screen on the time axis at 14 of 20 with no model. Independently dead by label: completing a period on its own arrival profile is `maturity_censoring`, blocked by task471, held by task194 and task201 in this lane and spent on this cell by task451.
+- **Candidate 3, valuation.** The designation determinacy screen at 1.80 distinct schedules of five estimator forms, with the graded figure spreading 6,300 times its printed unit; and the only closure available (filing the fee schedule) is rule application.
+- **The WHAT screen and the observed-quantity dichotomy, run on all three and recorded because two of them
+  pass.** This is the informative part of the kill and the difference from architecture 6. Candidate 1's
+  filed quantity is delivered contacts per attributed member over the contract year, which is unobserved
+  (the feed states filed contacts, not delivered ones), so it clears `stumping` 1.2a's first horn; and its
+  decisive step settles none of the estimand's five parts, since population, outcome, window, unit and
+  comparison are all filed and the step only estimates that one filed quantity better. **Candidate 1
+  therefore PASSES the WHAT screen**, where architecture 6 failed it, and it dies on the proxy and
+  rescaling screens instead. Candidate 2 passes it on the same reading, a completed period being an
+  estimate of the filed delivered volume, and dies on the published receipt date and on its label.
+  **Candidate 3 fails it**: choosing the unit price form (volume-weighted against mix-weighted against
+  site-stratified) settles what one contact is worth, which is the estimand's unit, so filing it is rule
+  application and leaving it unfiled is the fork screen 3 measured at 1.80 schedules. So the WHAT screen is
+  not the wall on this file pair; the wall is that the correcting input is either a scalar, which cannot
+  reorder, or per unit, which the record does not identify.
+- **The general finding, which is what the pass is worth.** On the capitation-encounter and paid-claims pair every decisive step decomposes into exactly one of four things, and each is independently shut: a conversion between the feeds, which executes either the payment rules or the contract clause and so is rule application; a completeness or capture estimate, which is task196 (overlap), task199 (filing volume) or maturity (blocked); a valuation of unpriced volume, which is a filed fee schedule (rule application) or an estimated unit price (an open estimator family that forks the graded schedule); or a restriction of the at-risk population, which architecture 6 measured dead at 20 of 20 on the filter-and-divide screen. **The two feeds' difference in economics is real and it reaches the records only through a rule or through completeness**, which is why the route around task196 is sound in form and arrives at (1) and (2) rather than at a new family.
+
+### 10. What is settled for the next draw on this cell, so it is not paid for twice
+
+- **The cell and the axis set are open for the third consecutive architecture and the guard is still not the thing to argue with.** `guard.py check` on the architecture 7 probe card returns **PASS**, nearest driver **0.06** (task86 lineage), no BLOCK and no WARN. Architecture 6 reported PASS at 0.06 and architecture 7 reports PASS at 0.06 on a different axis set, so the reservation is sound twice over and what is spent is the file pair, not the ground.
+- **The encounter file is now spent across all three of its affordances, measured.** Volume (screens 1 and 1b), timing (screen 2) and the missing price (screen 3). A fourth draw starting from this file is re-screening ground this repo has paid for, and the reason is structural rather than a run of bad luck: an obligation-filed feed prints the column that summarises whatever it under-reports.
+- **The one-column proxy screen now has a second mechanism behind it, worth carrying off this cell.** It is not only that a forcing file publishes a scalar summary of its own construction. It is that where the correcting input is a single scalar, the construction is a **monotone rescaling** of the column it is applied to, so it cannot reorder anything, whatever the scalar is and however it was obtained. That is arithmetic rather than a correlation, it holds at +1.0000 by construction, and it means a ranking or a schedule can never be decided by a construction of the form "a published column divided by one rate". The test is one line: ask whether the correcting input is one number or one per unit, and if it is one number the candidate is dead before any world is drawn.
+- **The common-exposure subset screen has a time-axis form.** "Use the periods old enough that every unit is complete" is a filter and a divide, it estimates the same quantity with no model, and it reached the truth 14 of 20 here. Any completion or arrival-profile candidate should be screened against it, not only against the cross-sectional attaining subset.
+- **What an eighth draw on this cell would have to do**, now that the encounter file is spent too: leave both the claims and the encounter feed as Layer 1 and take the decisive quantity from a file whose plainest column is **not** a summary of the construction. On this cell that leaves the settlement ledger (a closed corpus of realised outcomes, whose plainest column is a settled amount and not an estimate of anything), and the honest reading is that the cell has one affordance left and it is a corpus-fit family, which carries its own WARN. The cheaper alternative, and the one this slot has now earned three times, is to move the ground rather than the architecture.
+- **Not registered, deliberately.** The probe card sits at `scratchpad/w6_182b/task182_card.json` as evidence, for the reason architecture 6 gives: registering a mechanism measured dead would pollute the axis bans every other draw in this wave reads.
+
+### 11. The two axes the previous pass handed over, answered
+
+- **`gate_g`.** `binding_constraint` was refused by the previous pass and stays refused: the binding quantity on this cell (the settlement team's capacity) is a filed integer and is not estimated, so the mechanism cannot carry a decisive step here. `signal_vs_noise_or_hold`, `confirm_surface_read` and `decomposition_attribution` are reserved elsewhere this wave; `statistical_rigor` alone and `legacy_surface_read` are refused by the guard's legality rule; `forecasting` is not honest for any of the three candidates, since none of them files a predicted value. The value taken is **`etl_conformance`**, read against the vocabulary rather than banked: it is honest for a stump carried by conforming two feeds with different generating processes into one measure of delivered care, on a task type the taxonomy serves for ETL as well as for Anomaly Detection. It PASSed with no WARN. It also did not save the draw, which is the point of reading the entry against the design.
+- **`stump_strategy`.** `population_selection` stays refused (both families shut on this cell, and the WHAT screen takes any selection the records do not force). `causal_design` and `decomposition_attribution` are reserved this wave, `uncertainty_hold` is withdrawn on this objective, and `maturity_censoring` is blocked by task471 and is exactly what candidate 2 turned out to be. The value taken is **`other`**, named `channel-of-record completeness` in the card's notes, because none of the fifteen named strategies is the honest family for two feeds that differ by the economics that produced them: it is not a mix shift, not a grain mismatch, not a calendar convention and not an identity problem. It PASSed with no WARN, and taking `other` avoided the `three_rules.strategy_risk` WARN rather than answering one.
+- **`org_family`.** `cooperative_or_member_body` was taken rather than the reserved `financial_institution`, because the world drawn is a member-owned Medicaid plan and the vocabulary holds no insurer value, which is the previous pass's own reading.
+- **Personas**, drawn with `guard.py names --geo "United States" --seed 182` and never typed: Eileen Pratt (the controller), Katherine Young (the inspection's lead), Noah Carrillo (delegated oversight). `Justin Mueller` came up first in the draw and was skipped, because this slot's own architecture 4 guard record already shows `people.first` firing on Justin against task105.
+
 ## ARCHITECTURE 3 RE-ROOT (archived: spent at the feasibility check, 2026-10-18)
 
 **Why architecture 2 died, in one line.** Clause 3.1 obliged every solver to produce a residual and the
@@ -1679,6 +1899,41 @@ figures.json keys only, so a section hash cannot be allow-listed, and the snapsh
 the check pass: the move is reported and accepted on that basis.
 
 ## Tried and rejected
+- **Architecture 7, drawn from the capitation encounter file outward as architecture 6's section 8
+  instructed, and killed on three measured screens before a card was registered.** Candidate 1, the
+  volumetric construction: filed encounter volume corrected for each group's own feed completeness,
+  recovered from the carve-out claims the plan paid directly. Dead twice by arithmetic rather than by
+  separation. With a plan-wide correcting rate the construction is a monotone rescaling of a published
+  column (corr +1.0000, 19 of 20 against the one-divide paid route's 19 of 20, and corr(truth, paid
+  footprint) +0.9977), so it cannot reorder the groups at all; with a per-group rate the record does not
+  identify the input (attaining subset 0.6 of 14 groups, minimum 0) and the ladder inverts, 3 of 20 against
+  the easy route's 6 of 20 at a margin of 1.0755 against the 1.15 floor. The one-column proxy screen fired
+  first at corr +0.8776 on the encounter column, as the coordinator predicted it would. Numbers in
+  `## ARCHITECTURE 7 ENCOUNTER-CHANNEL SCREEN` sections 3 and 8.
+- **Architecture 7 candidate 2, the timing route: completing each service month on the group's own encounter
+  arrival profile, the contract's compliance clock read against the money clock.** The designed route
+  separates cleanly (20 of 20 against the easy route's 3 of 20) and is worthless anyway. The encounter file
+  publishes its own receipt date per row, so the correction is one group-by and one divide, and that
+  one-line route also reached the truth 20 of 20 at corr +0.9947 with the designed route. The attaining
+  subset on the time axis (the three oldest service months only, where every group is effectively complete)
+  reached it 14 of 20 with no model. Independently dead by label, since completing a period on its own
+  arrival profile is `maturity_censoring`, blocked by task471 and spent on this cell by task451.
+- **Architecture 7 candidate 3, valuing the unpriced encounter volume at a unit price estimated from the
+  plan's own paid claims.** Five estimator forms a competent analyst would use gave a mean of 1.80 distinct
+  close-out schedules (minimum 1, maximum 2), so the graded schedule itself is indeterminate and the
+  discretisation to a quarter does not rescue it because the family's spread crosses the quarter
+  boundaries; the per-group dollar figure spread $63.25 per member against a printed precision of $0.01,
+  about 6,300 times. The only closure available, filing the fee schedule, makes the valuation rule
+  application.
+- **The encounter file as a whole, which is the finding worth more than the three candidates.** It offers
+  exactly three affordances, its volume, its timing and its missing price, and all three are now screened
+  dead with measurements. The reason is structural: an obligation-filed feed prints the column that
+  summarises whatever it under-reports, so the correction is always one group-by on a column the file
+  already publishes. Stated generally, on this file pair every decisive step decomposes into a conversion
+  between the feeds (which executes the payment rules or the contract clause, so rule application), a
+  completeness or capture estimate (task196, task199 or maturity), a valuation (a filed schedule or an open
+  estimator family), or a restriction of the at-risk population (measured dead at 20 of 20 by architecture
+  6), and the two feeds' difference in economics reaches the records only through the first two.
 - **Architecture 6, drawn on the wave-6 claims cell and killed as code before a card was registered: the
   mechanism separates strongly and the decisive step is still the estimand's population.** The draw is a
   Medicaid plan's program-integrity review calendar over six quarters, the groups ranked on new starts of a
