@@ -140,18 +140,66 @@ LOCALE_FOR_GEO = [
     (r"\b(finland)\b", "fi_FI"),
     (r"\b(poland)\b", "pl_PL"),
     (r"\b(czech)\b", "cs_CZ"),
-    (r"\b(south africa)\b", "en_US"),
     (r"\b(philippines)\b", "en_PH"),
+    # Locales the installed Faker carries that the map was silently falling through.
+    # Four geographies this corpus had drawn personas for (Chile, Kenya, Georgia, South Africa)
+    # all resolved to en_US, so at one seed they returned the same people and the people.* bans
+    # then blocked a build for a collision this function had created.
+    (r"\b(chile)\b", "es_CL"),
+    (r"\b(argentina)\b", "es_AR"),
+    (r"\b(colombia)\b", "es_CO"),
+    (r"\b(kenya)\b", "en_KE"),
+    (r"\b(nigeria)\b", "en_NG"),
+    (r"\b(georgia)\b(?!.*\b(usa|united states|atlanta)\b)", "ka_GE"),
+    (r"\b(armenia)\b", "hy_AM"),
+    (r"\b(azerbaijan)\b", "az_AZ"),
+    (r"\b(turkey|turkiye)\b", "tr_TR"),
+    (r"\b(greece)\b", "el_GR"),
+    (r"\b(romania)\b", "ro_RO"),
+    (r"\b(hungary)\b", "hu_HU"),
+    (r"\b(bulgaria)\b", "bg_BG"),
+    (r"\b(croatia)\b", "hr_HR"),
+    (r"\b(slovakia)\b", "sk_SK"),
+    (r"\b(slovenia)\b", "sl_SI"),
+    (r"\b(estonia)\b", "et_EE"),
+    (r"\b(latvia)\b", "lv_LV"),
+    (r"\b(lithuania)\b", "lt_LT"),
+    (r"\b(ukraine)\b", "uk_UA"),
+    (r"\b(iceland)\b", "is_IS"),
+    (r"\b(albania)\b", "sq_AL"),
+    (r"\b(north macedonia|macedonia)\b", "mk_MK"),
+    (r"\b(bosnia)\b", "bs_BA"),
+    (r"\b(indonesia)\b", "id_ID"),
+    (r"\b(thailand)\b", "th_TH"),
+    (r"\b(vietnam|viet nam)\b", "vi_VN"),
+    (r"\b(japan)\b", "ja_JP"),
+    (r"\b(south korea|korea)\b", "ko_KR"),
+    (r"\b(taiwan)\b", "zh_TW"),
+    (r"\b(china)\b", "zh_CN"),
+    (r"\b(israel)\b", "he_IL"),
+    (r"\b(iran)\b", "fa_IR"),
+    (r"\b(egypt)\b", "ar_EG"),
+    (r"\b(saudi)\b", "ar_SA"),
+    (r"\b(nepal)\b", "ne_NP"),
+    (r"\b(bangladesh)\b", "bn_BD"),
+    (r"\b(south africa)\b", "en_US"),   # Faker carries no en_ZA; the fallback here is deliberate
     (r"\b(united states|usa|us)\b", "en_US"),
 ]
 
 
-def locale_for(geography):
+def locale_for(geography, strict=False):
+    """The Faker locale for a geography. With strict, say whether the map actually matched.
+
+    An unmapped geography falls back to en_US, which is a real hazard rather than a nicety: two
+    builds set in different unmapped countries draw the same people at the same seed, and the
+    people.* bans then block the second for a collision this function created. Callers that draw
+    personas pass strict=True and report the fallback.
+    """
     g = (geography or "").lower()
     for pat, loc in LOCALE_FOR_GEO:
         if re.search(pat, g):
-            return loc
-    return "en_US"
+            return ("en_US", True) if strict and loc == "en_US" else ((loc, True) if strict else loc)
+    return ("en_US", False) if strict else "en_US"
 
 
 # ------------------------------------------------------------------ first-name dictionary

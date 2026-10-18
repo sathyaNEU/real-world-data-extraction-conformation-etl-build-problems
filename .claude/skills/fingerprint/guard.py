@@ -1110,6 +1110,12 @@ def cmd_new(args):
         "official_decoy": "<true when a filed, official-looking rule, basis or metric gives the wrong answer>",
         "validated_decoy": "<true when the wrong method reproduces every closed, published or certified figure in the pack and only a forward condition breaks it>",
         "context_artifact": "<vocab context_artifacts key>",
+        "stump_class": "<analytical; only analytical passes>",
+        "analyst_test": "<the easy route a strong analyst takes with every field read and every rule applied, and the wrong answer it files>",
+        "domain_test": "<the field's own analysis that decides, and why a noun swap breaks the task>",
+        "layer2_family": "<vocab layer2_families key>",
+        "layer2_pattern": "<<domain>/<task-type>/<n> from layer2-rigor-patterns.md, or own:<name>>",
+        "layer1": ["<the Layer 1 techniques the pack carries>"],
         "stakeholder_role": "<as the prompt will state it>", "role_family": "<vocab role_families key>",
         "scoring_unit": "<vocab scoring_units item>",
         "spine": {"file": "", "rows": 0, "entity": "<one row is one ...>", "grain": "<e.g. member x month>",
@@ -1339,10 +1345,20 @@ def cmd_names(args):
     load_vocab()
     cards = sorted(load_cards(), key=draw_key)
     idx = business.load_index(REPO, PEOPLE_CACHE)
-    loc = args.locale or business.locale_for(args.geo)
+    matched = True
+    if args.locale:
+        loc = args.locale
+    else:
+        loc, matched = business.locale_for(args.geo, strict=True)
     recent = [c.get("task") for c in cards][-WINDOW:]
     names = business.suggest_people(idx, recent, loc, args.n, args.seed)
     print("locale %s, seed %d. Paste the ones you use into world.people.\n" % (loc, args.seed))
+    if args.geo and not matched:
+        print("  WARN  no locale is mapped for %r, so this is the en_US pool and the names are not"
+              % args.geo)
+        print("        this geography's. Every unmapped geography shares that pool, so two builds in")
+        print("        different unmapped countries draw the same people at one seed and people.* then")
+        print("        blocks the second. Pass --locale, or add the geography to business.LOCALE_FOR_GEO.\n")
     for nm in names:
         print("  " + nm)
     return 0
