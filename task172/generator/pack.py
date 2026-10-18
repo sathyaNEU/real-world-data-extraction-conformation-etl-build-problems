@@ -184,6 +184,8 @@ def records():
     Rm.people(W, R)
     Rm.h1b_calendar(W, R)
     Rm.posted_times(R)
+    Rm.dual_roles(W, R)
+    Rm.entity_transfers(W, R)
     return W, R
 
 

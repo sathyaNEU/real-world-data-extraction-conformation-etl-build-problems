@@ -9,15 +9,15 @@
  "updated": "2026-10-18",
  "stump": "A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the thirteen extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases censored, give 4.0); about nine in ten of the quarter's renewals that need an appointment will reach the filer's card expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a week after the expedite request the team files around the day the card expires, so the quarter's 80th percentile is 5.5 months.",
  "architecture": 1,
- "loops": 3,
+ "loops": 4,
  "precut": {
   "exit": 0,
   "date": "2026-10-18"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-18, round 3 rework): the standard shares the call's vocabulary; future dates only in forward-looking columns",
-  "reader": "round 3: clean, as a solver near 4.0 (leak-task172c/reader_answers.md); round 2: clean; the revision note naming 1.3, 1.4 and 2.4 softened (round 1 readings closed by GM-07 2.4 and SF15)",
-  "score_reader": "exit 0 on the round 3 reader (leak-task172c, figures keyed as figures.json in the build's scratch): call 0 of 1 hit (the reader's 4.0 against 5.5), no ask figure committed, so this reader leaves the ask layer unmeasured"
+  "leak_py": "REVIEW, no LEAK (2026-10-18, round 4 ask repair): the standard shares the call's vocabulary; future dates only in forward-looking columns",
+  "reader": "round 4: scored reader missed the call (6.5) and kept 14 of 14 ask figures, score_reader exit 1 (leak-task172d); round 3: clean, as a solver near 4.0; round 2: clean",
+  "score_reader": "round 4 reader on the round 3 pack: call 0 of 1, asks 14 of 14 (100 per cent), exit 1, Gate F failed on the asks; re-sited, the cracker (that reader's path) keeps 0 of 20 ask cells on the cut pack; a fresh scored reader is the bar (exit 0)"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective)",
@@ -25,12 +25,12 @@
   "nearest": "task127 v2 0.13 (driver, differentiated)"
  },
  "judge": {
-  "verdict": "round 3 DETERMINISTIC with SOLUTION_WRONG on one graded cell (September 2027 (c)(26), golden 771, judge 769); round 2 NOT_DETERMINISTIC on the supplementary tables only (main call reproduced, P80 163 days); round 1 NOT_DETERMINISTIC on table 1 only",
-  "disposition": "FIX_NOW (round 3): 771 stands. The two are the spouses of employees 723523 (MP-75243, D8711081) and 425305 (MP-28124, D7713094), whose latest cards (to 30 September 2027) the benefits portal filed under the Benefits ID alone; one spouse per household makes each Benefits ID the person Global Mobility took into its care. GM-07 1.3 now files the spouse as the one person Global Mobility took into its care with the household, however Benefits covers her, and no other dependant; submission step 5 names the people counted and left out; SF25 and H25 asserted",
-  "report": "coordinator's scratchpad: judge-task172c/verdict.md, leak-task172c/reader_answers.md (round 2: judge-task172b, rule3/task172b.md, leak-task172b; round 1: judge-task172, rule3/task172.md, leak-task172)"
+  "verdict": "round 4 targeted check: September 2027 (c)(26) 771 confirmed, table 1 determinate (judge-task172d/cell_check.md); round 3 DETERMINISTIC with SOLUTION_WRONG on that cell (settled at 771); round 2 NOT_DETERMINISTIC on the supplementary tables only; round 1 on table 1 only",
+  "disposition": "round 4: the ask layer re-sited under supplemental-stumping 1.1c after the scored reader kept 14 of 14 ask figures; the asks, roundings, pins and every golden figure unchanged, the call side byte-identical to the round 3 commit; a re-judge of both tables follows the fresh scored reader",
+  "report": "coordinator's scratchpad: judge-task172d/cell_check.md, leak-task172d/reader.json and reader_method.md (round 3: judge-task172c, leak-task172c; round 2: judge-task172b, rule3/task172b.md, leak-task172b; round 1: judge-task172, rule3/task172.md, leak-task172)"
  },
  "returned": [],
- "resume": "stage 4 round 4: a targeted check of the September 2027 (c)(26) cell, then ship",
+ "resume": "stage 4 round 5: a fresh scored reader on the re-sited ask layer (score_reader exit 0, under a fifth of ask figures) and a re-judge of both tables, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -39,7 +39,7 @@
  "portal_status_date": "",
  "answer": "5.5 months",
  "stage3": {
-  "checks": "110 of 110",
+  "checks": "116 of 116",
   "verify": "0 failed",
   "rebuild": "19 files byte-identical",
   "figures_check": "exit 0, 37 figures",
@@ -54,9 +54,12 @@
   "mirror_leakage": 0.0,
   "target_zip": {
    "members": 14,
-   "bytes": 5819313,
-   "sha256": "bf400e1054f6e1615826627d3d0b5c21fdb9bbd90744f984c9703fd8ed1d9a0f"
+   "bytes": 5864813,
+   "sha256": "af7bc4eff351ec944f5b55ffd6c1cf763eafbadf438dd2708577bbf24b6f3ab3"
   },
-  "house_fixes": "H25 asserted in checks.py: the standard opens in pypdf (lenient and strict), pdfminer.six, pdfplumber and pdftotext with every paragraph, and the strict text equals the lenient"
+  "house_fixes": "H25 asserted in checks.py: the standard opens in pypdf (lenient and strict), pdfminer.six, pdfplumber and pdftotext with every paragraph, and the strict text equals the lenient",
+  "freeze": "freeze.py check --mode rubric PASS (the main call, the stump and every frozen figure unchanged; WARN that no ask figure moved, since the goldens are the same world and only where its evidence lives changed)",
+  "call_side": "byte-identical to the round 3 commit: every renewal row, component, route, the margin family and the quarter's mix (674 and 562) recomputed equal (sha256 26cd0f92); counsel's notices, the dispatch log, the dependants, the tracker and the standard byte-identical files; the case log's expedite and stop rows and the register's receipted renewals identical",
+  "cracker": "the round 4 reader's path keeps 0 of 20 ask cells; with one device found at most 4 (the rejected counts, once the other filings' rejections are found)"
  }
 }

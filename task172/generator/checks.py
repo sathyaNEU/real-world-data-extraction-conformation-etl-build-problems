@@ -283,53 +283,36 @@ def main(target):
           "however Benefits covers her" in pol and "no other dependant is tracked" in pol)
     # SF25: one spouse per household forces a spouse's two IDs into one person; the per-ID reading that leaves out the
     # Benefits ID no Global Mobility record carries drops the current cards those IDs alone hold
+    # households keyed by the employee's benefits enrollment (one employee, whichever ID HR gives him)
+    hh_of = {e["employee_id"]: e["benefits_enrollment_id"] for e in T["employees"]}
     gmh = defaultdict(set)
     for p_ in T["permits"]:
         if p_.get("household_employee_id"):
-            gmh[p_["household_employee_id"]].add(p_["holder_id"])
+            gmh[hh_of.get(p_["household_employee_id"], p_["household_employee_id"])].add(p_["holder_id"])
     for c in cases.values():
         if c["ptype"] == "spouse" and c["sponsor"]:
-            gmh[c["sponsor"]].add(c["person"])
+            gmh[hh_of.get(c["sponsor"], c["sponsor"])].add(c["person"])
     for t in T["tracker"]:
         if t["relationship"] == "Spouse":
-            gmh[t["principal_employee_id"]].add(t["applicant_id"])
-    enr_ = {e["benefits_enrollment_id"]: e["employee_id"] for e in T["employees"]}
+            gmh[hh_of.get(t["principal_employee_id"], t["principal_employee_id"])].add(t["applicant_id"])
+    enr_ = set(hh_of.values())
     benh = defaultdict(set)
     for d in T["dependants"]:
         if d["relationship"] in ("Spouse", "Domestic partner") and d["benefits_enrollment_id"] in enr_:
-            benh[enr_[d["benefits_enrollment_id"]]].add(d["dependant_id"])
+            benh[d["benefits_enrollment_id"]].add(d["dependant_id"])
     extra = {e: ids - gmh[e] for e, ids in benh.items() if e in gmh and ids - gmh[e]}
     one = all(len(ids) <= 1 for ids in gmh.values()) and all(len(ids) <= 1 for ids in benh.values()) and \
         all(len(gmh[e]) == 1 for e in extra)
-    act_ = {e["employee_id"] for e in T["employees"] if e["status"] == "Active"}
-    best_ = {}
-    for c in K.cards_held(T, cases, ref):
-        h = c["holder"]
-        if h in {e["employee_id"] for e in T["employees"]}:
-            cur = h in act_
-        else:
-            cur = any(h in ids for e, ids in gmh.items() if e in act_)
-        if cur and (h not in best_ or c["vf"] > best_[h]["vf"]):
-            best_[h] = c
-    A_ = K.ask_a(T, cases, ref)
-    by_id_gm = {k: 0 for k in A_}
-    for c in best_.values():
-        k = (c["vt"].year, c["vt"].month, c["cat"])
-        if k in by_id_gm:
-            by_id_gm[k] += 1
-    moved = {k: by_id_gm[k] - A_[k] for k in A_ if by_id_gm[k] != A_[k]}
     only_b = {k: v for k, v in K.benefits_id_only(T, cases, ref).items() if v}
     never = set().union(*[ids for e, ids in benh.items() if e not in gmh])
     never_cards = [c for c in K.cards_held(T, cases, ref) if c["holder"] in never]
     check("SF25 one spouse per household: every household whose Benefits spouse ID no Global Mobility record carries "
-          "has exactly one Global Mobility spouse ID, so the two are one person; leaving the Benefits ID out drops the "
-          "current cards only it carries (the cards submission step 5 names), and the spouses Benefits covers in "
-          "households Global Mobility never took in hold no card",
-          one and len(extra) > 500 and moved == {(2027, 9, "(c)(26)"): -2} and
-          only_b == {k: -v for k, v in moved.items()} and never and not never_cards,
-          "%d households, persons by ID with Global Mobility's links only %s, latest card only under the Benefits ID "
-          "%s; %d spouses in households never taken in, %d cards" % (len(extra), moved, only_b, len(never),
-                                                                     len(never_cards)))
+          "has exactly one Global Mobility spouse ID, so the two are one person; two September (c)(26) cards sit only "
+          "under the Benefits ID (the cards submission step 5 names), and the spouses Benefits covers in households "
+          "Global Mobility never took in hold no card",
+          one and len(extra) > 500 and only_b == {(2027, 9, "(c)(26)"): 2} and never and not never_cards,
+          "%d households; latest card only under the Benefits ID %s; %d spouses in households never taken in, %d "
+          "cards" % (len(extra), only_b, len(never), len(never_cards)))
     gm_spouse = {p_["holder_id"] for p_ in T["permits"] if p_["holder_type"] == "Spouse"}
     gm_spouse |= {c["person"] for c in cases.values() if c["ptype"] == "spouse"}
     gm_spouse |= {t["applicant_id"] for t in T["tracker"] if t["relationship"] == "Spouse"}
@@ -526,59 +509,108 @@ def main(target):
     A = K.ask_a(T, cases, ref)
     check("ask A: the pack's literal execution of GM-07 1.3 and 1.4 equals the clean truth, cell by cell", A == ta,
           str(sorted(A.items())))
-    check("ask A: silent device A1 (the person's latest card never reached HR's roster) moves every cell",
-          all(a1[k] >= 1 for k in ta), str(dict(a1)))
-    check("ask A: silent device A2 (a spouse Benefits does not link to a current employee) moves every cell",
-          all(a2[k] >= 1 for k in ta), str(dict(a2)))
     check("ask A: seen device A5 (the roster's category is not the approval's; GM-07 1.4) and hazard A3 (permanent "
           "residents' last cards, GM-07 1.4 keeps them) are present", sum(a5.values()) >= 3 and sum(a3.values()) >= 1,
           "A5 %s; A3 %s" % (dict(a5), dict(a3)))
-    # A6: a spouse who joined the plan after intake carries her MP- ID on Global Mobility's records and a dependant ID
-    # in Benefits and on the portal's uploads; an employee has one spouse, so the two IDs are one person
-    by_id = K.ask_a(T, cases, ref, merge=False)
-    moved6 = [k for k in A if by_id[k] != A[k]]
-    _, spons = K.holders_current(T, cases)
-    inv = defaultdict(set)
-    for sid, eid in spons.items():
-        inv[eid].add(sid)
-    pairs = {eid: ids for eid, ids in inv.items() if len(ids) > 1}
-    world_pair = {s.principal.id: {s.id, s.dep_id} for s in W.spouses if s.late_enroll}
-    held = defaultdict(set)
-    for c in K.cards_held(T, cases, ref):
-        held[c["holder"]].add((c["vf"], c["vt"]))
-    shared = sum(1 for eid, ids in pairs.items() if len(set.intersection(*[held[i] for i in ids])) > 0)
-    one_each = all(sum(1 for x in W.spouses if x.principal is e) <= 1 for e in W.emps if e.spouse is not None)
-    check("ask A: silent device A6 (one spouse under two IDs) moves every (c)(26) cell and a (c)(9) one, and every "
-          "household the pack shows with two spouse IDs is one spouse's two IDs (an employee has one spouse; most "
-          "pairs share a card to the day)",
-          all((y, m, "(c)(26)") in moved6 for (y, m) in C.ASK_A_MONTHS) and len(moved6) >= 4 and one_each and
-          all(world_pair.get(eid) == ids for eid, ids in pairs.items()) and shared >= 0.5 * len(pairs),
-          "%d cells moved %s; %d households with two IDs, %d sharing a card" % (
-              len(moved6), {k: by_id[k] - A[k] for k in moved6}, len(pairs), shared))
-    # the call through ask A's devices un-cracked: roster cards and labels only, spouses linked through Benefits only
-    enroll = {e["benefits_enrollment_id"]: e["employee_id"] for e in T["employees"]}
-    dlink = {d["dependant_id"]: enroll[d["benefits_enrollment_id"]] for d in T["dependants"]
-             if d["relationship"] != "Child" and d["benefits_enrollment_id"] in enroll}
-    act_e = {e["employee_id"] for e in T["employees"] if e["status"] == "Active"}
-    emp_ids = {e["employee_id"] for e in T["employees"]}
-    best = {}
+    best_g = K.latest_cards(T, cases, ref)
+    in_win = {p_: c for p_, c in best_g.items() if (c["vt"].year, c["vt"].month, c["cat"]) in A}
+
+    def moved_a(**kw):
+        got = K.ask_a(T, cases, ref, **kw)
+        return {k: got[k] - A[k] for k in A if got[k] != A[k]}
+    CAREFUL_A = dict(sources=("roster", "counsel", "register"), dual=False, moves=False)
+    ALL_SRC = ("roster", "register", "counsel", "tracker")
+    # A1, re-sited: the first (c)(9) card comes in the adjustment package the green-card counsel files; the register
+    # closes the case once USCIS has it and records no decision, counsel's export never holds it, so its approval is
+    # on record only in the green-card tracker (the roster, for most, under the category of the holder's first entry)
+    lab = {(p_["holder_id"], K._d(p_["valid_from"])): p_["category"] for p_ in T["permits"]}
+    t_only = [c for c in in_win.values() if c["cat"] == "(c)(9)" and "tracker" in c["srcs"] and
+              not c["srcs"] & {"counsel", "register"}]
+    t_stale = [c for c in t_only if lab.get((c["holder"], c["vf"])) == "(c)(26)"]
+    t_none = [c for c in t_only if (c["holder"], c["vf"]) not in lab]
+    pkg = [c for c in cases.values() if c["type"] == "initial" and c["cat"] == "(c)(9)"]
+    pkg_dec = [c for c in pkg if c["decided"] or c["new_exp"]]
+    m1 = moved_a(sources=("roster", "counsel", "register"))
+    check("SF27 ask A's (c)(9) permit is the card the tracker's approval records (GM-07 1.4): the register closes the "
+          "adjustment package's (c)(9) cases with no decision and counsel's export never holds them, so without the "
+          "tracker every cell moves",
+          all(k in m1 for k in A) and len(t_only) >= 20 and t_stale and t_none and pkg and not pkg_dec,
+          "%d current (c)(9) cards in the window approved on the tracker's record only (%d on the roster as (c)(26), "
+          "%d not on it); %d package cases, %d with a decision; without the tracker %s" % (
+              len(t_only), len(t_stale), len(t_none), len(pkg), len(pkg_dec), m1))
+    # A6, re-sited: a spouse in the team's care who took a job at Sallowmere is a current employee of her own; HR's I-9
+    # at hire records the card she presented and she uploads it on the spouse side too: one card, two IDs, one person
+    nums = defaultdict(set)
     for p_ in T["permits"]:
-        h, vf, vt = p_["holder_id"], K._d(p_["valid_from"]), K._d(p_["valid_to"])
-        cur = (h in act_e) if h in emp_ids else (dlink.get(h) in act_e)
-        if cur and vf <= exp and (h not in best or vf > best[h][0]):
-            best[h] = (vf, vt, p_["category"])
-    lpr = {t["applicant_id"] for t in T["tracker"] if t["i485_status"] == "Approved"}
-    g50 = int(round(Q["d_median"]))
-    nm = Counter()
-    for h, (vf, vt, cat) in best.items():
-        if not (cat == "(c)(9)" and h in lpr) and C.Q_START <= vt - dt.timedelta(days=g50) <= C.Q_END:
-            nm[cat] += 1
-    mix_bad = {c: nm[c] / sum(nm.values()) for c in C.CATS}
-    v_bad = float(np.quantile(K.simulate(comp, mix=mix_bad)[0], 0.8)) / M
-    check("separation line: the call through ask A's devices un-cracked is the same call within a day",
-          C.half_month(v_bad) == gold and abs(v_bad - Q["months"]) * M <= 1.0 + 1e-9,
-          "%.3f against %.3f; the quarter's (c)(9) share %.3f against %.3f" % (v_bad, Q["months"], mix_bad["(c)(9)"],
-                                                                           Q["mix"]["(c)(9)"]))
+        nums[p_["card_number"]].add((p_["holder_id"], p_["holder_type"], K._d(p_["valid_from"]), K._d(p_["valid_to"])))
+    twice = {n: v for n, v in nums.items() if len({h for h, _, _, _ in v}) > 1}
+    pair_ok = all(len(v) == 2 and {t for _, t, _, _ in v} == {"Employee", "Spouse"} and
+                  len({(f, t_) for _, _, f, t_ in v}) == 1 for v in twice.values())
+    world_dual = {eid for _, eid, _, _ in R.dual}
+    emp_twice = {h for v in twice.values() for h, t, _, _ in v if t == "Employee"}
+    m6 = moved_a(dual=False)
+    check("SF26 ask A counts permits: a spouse who is also a current employee holds one card, the one number HR's "
+          "roster carries under her employee ID and her spouse ID, so counting her twice moves every cell",
+          all(k in m6 and m6[k] > 0 for k in A) and pair_ok and emp_twice == world_dual and len(twice) > 300,
+          "%d card numbers under two IDs, each an employee's I-9 entry and a spouse's with the same validity; "
+          "counted twice %s" % (len(twice), m6))
+    # A2, re-sited: an H-1B employee moved to another Sallowmere entity has a new employee ID from the move; HR's
+    # program roster ends the old one the day before, the benefits enrollment carried over, and the team's records,
+    # all made before the move, name the old ID as the spouse's household
+    by_en = defaultdict(list)
+    for e in T["employees"]:
+        by_en[e["benefits_enrollment_id"]].append(e)
+    rep = {en: es for en, es in by_en.items() if len(es) > 1}
+    move_ok = all(len(es) == 2 and sorted(x["status"] for x in es) == ["Active", "Terminated"] and
+                  C.prev_busday(K._d([x for x in es if x["status"] == "Active"][0]["hire_date"]) - dt.timedelta(days=1))
+                  == K._d([x for x in es if x["status"] == "Terminated"][0]["termination_date"]) and
+                  len({(x["work_state"], x["job_family"], x["immigration_basis"]) for x in es}) == 1
+                  for es in rep.values())
+    m2 = moved_a(moves=False)
+    check("SF28 ask A's current employee is the person under every ID HR's program roster gives him: each benefits "
+          "enrollment two employee IDs share is one employee moved between Sallowmere's entities (one ID ended the "
+          "day before the other began), so keying the household by the ID the team knew moves every (c)(26) cell",
+          all((y, m, "(c)(26)") in m2 and m2[(y, m, "(c)(26)")] < 0 for (y, m) in C.ASK_A_MONTHS) and move_ok and
+          len(rep) == len(R.moves) and len(rep) > 200,
+          "%d enrollments under two IDs; keyed by the ID the team knew %s" % (len(rep), m2))
+    # the reader's careful path (every pin executed, every spouse link, a spouse's two household IDs merged; the
+    # roster, counsel's approvals and the register's approvals): every cell misses, alone or with one device found
+    mc = moved_a(**CAREFUL_A)
+    one = {name: moved_a(**dict(CAREFUL_A, **kw)) for name, kw in (
+        ("tracker", dict(sources=ALL_SRC)), ("card numbers", dict(dual=True)),
+        ("enrollments", dict(moves=True)))}
+    two = {name: moved_a(**dict(CAREFUL_A, **kw)) for name, kw in (
+        ("tracker + card numbers", dict(sources=ALL_SRC, dual=True)),
+        ("tracker + enrollments", dict(sources=ALL_SRC, moves=True)),
+        ("card numbers + enrollments", dict(dual=True, moves=True)))}
+    check("ask A: the careful path misses every cell, and so does it with any one device found; with two found it lands "
+          "at most the three (c)(9) cells",
+          len(mc) == 6 and all(len(v) == 6 for v in one.values()) and all(len(v) >= 3 for v in two.values()),
+          "careful %s; one device %s; two %s" % (mc, {k: len(v) for k, v in one.items()},
+                                                {k: 6 - len(v) for k, v in two.items()}))
+    m_id = moved_a(merge=False)
+    check("ask A: hazard (texture), a spouse's MP- and Benefits IDs: keyed by ID she moves cells; GM-07 1.3's one "
+          "spouse per household resolves it", len(m_id) >= 3, str(m_id))
+
+    def mix_under(**kw):
+        held, root, current = K.persons(T, cases, ref, **kw)
+        lpr = {root.get(t["applicant_id"]) for t in T["tracker"] if t["i485_status"] == "Approved"}
+        g50 = int(round(Q["d_median"]))
+        nm = Counter()
+        for p_, c in K.latest_cards(T, cases, ref, **kw).items():
+            if not (c["cat"] == "(c)(9)" and p_ in lpr) and C.Q_START <= c["vt"] - dt.timedelta(days=g50) <= C.Q_END:
+                nm[c["cat"]] += 1
+        return {c: nm[c] / sum(nm.values()) for c in C.CATS}
+    for name, kw in (("the careful path", CAREFUL_A),
+                     ("the roster's cards and labels, spouses through Benefits, by ID",
+                      dict(sources=("roster",), links="benefits", merge=False, dual=False, moves=False))):
+        mix_bad = mix_under(**kw)
+        v_bad = float(np.quantile(K.simulate(comp, mix=mix_bad)[0], 0.8)) / M
+        check("separation line: the call through ask A's devices un-cracked (%s) is the same call, inside the "
+              "construction family with one sigma" % name,
+              C.half_month(v_bad) == gold and mg["lo"] - 1e-9 <= v_bad <= mg["hi"] + 1e-9,
+              "%.3f against %.3f; the quarter's (c)(9) share %.3f against %.3f" % (
+                  v_bad, Q["months"], mix_bad["(c)(9)"], Q["mix"]["(c)(9)"]))
     tb = {}
     appl = Counter()
     selfref = Counter()
@@ -599,6 +631,66 @@ def main(target):
         tb[lab] = (nr, nf)
     B = K.ask_b(T, cases, ref)
     check("ask B: the pack's answer equals the clean truth, quarter by quarter", B == tb, str(B))
+
+    def moved_b(**kw):
+        got = K.ask_b(T, cases, ref, **kw)
+        return {(q, j): got[q][j] - B[q][j] for q in B for j in (0, 1) if got[q][j] != B[q][j]}
+    # B6, re-sited: since April 2025 the register holds a renewal the applicant filed herself as a case of its own and
+    # closes the team's case as Rejected - not refiled (true of the team's packet); the two cases renew one card
+    ren = K.renewal_of(cases)
+    grp = defaultdict(set)
+    for k, c in cases.items():
+        if c["type"] == "renewal" and ref.get(k) == k:
+            grp[ren[k]].add(k)
+    multi = {r: ks for r, ks in grp.items() if len(ks) > 1}
+    pairs_ok = all(len(ks) == 2 and sorted(cases[k]["filed_by"] for k in ks) == ["Applicant", "Marrowby Teale"] and
+                   any(cases[k]["status"] == "Rejected - not refiled" for k in ks) for ks in multi.values())
+    abandoned = [k for k, c in cases.items() if c["status"] == "Rejected - not refiled" and ref.get(k) == k and
+                 len(grp.get(ren[k], ())) == 1]
+    m_b6 = moved_b(by_renewal=False)
+    check("SF29 ask B's filed again is USCIS's receipt of the renewal, the card it renews for the person (GM-07 2.4): "
+          "every renewal two current cases share is the team's case closed Rejected - not refiled and the applicant's "
+          "own filing, so keying receipts by the case misses a refile in every quarter",
+          all((q, 1) in m_b6 and m_b6[(q, 1)] < 0 for q in B) and not any(j == 0 for _, j in m_b6) and pairs_ok and
+          len(multi) == len(R.own_case) and abandoned,
+          "%d renewals under two cases (the team's and the applicant's); %d team cases closed not refiled with no "
+          "other case; by case %s" % (len(multi), len(abandoned), m_b6))
+    # B4, re-sited: applicants forward the lockbox's rejections of their own other filings too, and the coordinator logs
+    # them on the case the applicant is in the team's care for; a rejection dated before the renewal's first packet
+    # left the mailroom, or after USCIS already received the renewal, rejected no packet of it
+    rcpt = defaultdict(list)
+    for n in T["notices"]:
+        if n["notice_type"] == "Receipt notice":
+            rcpt[ren.get(ref.get(n["client_ref"]))].append(K._d(n["received_date"]))
+    for c in cases.values():
+        if c["type"] == "renewal" and c["received"]:
+            rcpt[ren[c["id"]]].append(c["received"])
+    sent0 = {}
+    for c in cases.values():
+        if c["type"] == "renewal" and c["sent"]:
+            sent0[ren[c["id"]]] = min(sent0.get(ren[c["id"]], c["sent"]), c["sent"])
+
+    def outside(k, nd):
+        r = ren.get(k)
+        return (r in sent0 and nd < sent0[r]) or any(x < nd for x in rcpt.get(r, ()))
+    fw_out = [(a["case_id"], a["notice_date"]) for a in T["actions"] if a["action"] == "Notice forwarded by applicant"
+              and a["detail"] == "Rejection notice" and outside(ref.get(a["case_id"]), K._d(a["notice_date"]))]
+    cn_out = [n["notice_id"] for n in T["notices"] if n["notice_type"] == "Rejection notice" and
+              outside(ref.get(n["client_ref"]), K._d(n["notice_date"]))]
+    m_b4 = moved_b(scope=False)
+    check("SF30 ask B counts the lockbox's rejections of renewal packets: a forwarded rejection dated before the "
+          "renewal's first packet left the mailroom or after USCIS received the renewal rejected no packet of it (none "
+          "of counsel's rejection notices is so dated), so counting every forwarded rejection moves every cell",
+          all((q, 0) in m_b4 and m_b4[(q, 0)] > 0 for q in B) and all((q, 1) in m_b4 for q in B) and not cn_out and
+          len(fw_out) >= 40,
+          "%d forwarded rejections outside their renewal's packets, %d of counsel's; counted %s" % (
+              len(fw_out), len(cn_out), m_b4))
+    mcb = moved_b(by_renewal=False, scope=False)
+    oneb = {"renewal": moved_b(scope=False), "scope": moved_b(by_renewal=False)}
+    check("ask B: the careful path (counsel's and the forwarded rejections, receipts by case) misses every cell; with "
+          "the renewal found it still misses every cell, with the scope found it misses every refiled cell",
+          len(mcb) == 8 and len(oneb["renewal"]) == 8 and all((q, 1) in oneb["scope"] for q in B),
+          "careful %s; renewal found %s; scope found %s" % (mcb, oneb["renewal"], oneb["scope"]))
     stops = {}
     for a in T["actions"]:
         if a["action"] == "Stop work":

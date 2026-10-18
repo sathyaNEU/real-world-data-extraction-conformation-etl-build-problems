@@ -217,6 +217,11 @@ week after the expedite request the team files around the day the card expires, 
 | SF23 | ask A, a domestic partner Benefits covers | the household's spouse | not a spouse (180 / 184 / 755) | pinned | GM-07 1.3 (the one person Global Mobility took into its care with the employee's household, however Benefits covers her; no other dependant is tracked) |
 | SF24 | ask A, the household a spouse belongs to where records disagree | Global Mobility's records | Benefits | pinned, and no record disagrees: a child's ID that matched a spouse's was a generator fault, now repaired (asserted) | GM-07 1.3 |
 | SF25 | ask A, a card the benefits portal files under a spouse's Benefits ID where Global Mobility's records carry her under another | her card: the household has one spouse, so the two IDs are one person, counted once by her latest card (September (c)(26) 771) | a Benefits-only spouse never taken into care, left out (769, the round 3 judge), or a second person (202 / 200 / 803) | pinned | GM-07 1.3 (the one person Global Mobility took into its care with the employee's household, however Benefits covers her); each of the 897 households with a Benefits spouse ID no Global Mobility record carries has exactly one Global Mobility spouse ID, and the 97 spouses Benefits covers in households Global Mobility never took in hold no card on any record (asserted) |
+| SF26 | ask A, a spouse who is also a current employee | one person and one permit, the one card number HR's roster carries under her employee ID and her spouse ID | two permits, one per role (every cell up: 12 and 10, 6 and 9, 4 and 34) | pinned by the ask's unit | "work permits held by" counts cards; 605 card numbers sit under an employee ID and a spouse ID with the same validity, and no other number repeats (asserted) |
+| SF27 | ask A, a (c)(9) card no approval notice or register approval holds | the card the tracker's approval records, in (c)(9) | an older card, or the roster's (c)(26) label | pinned | GM-07 1.4 (the card USCIS approved most recently, in its approval's category; the tracker records the approval); every adjustment-package case in the register closed with no decision (asserted) |
+| SF28 | ask A, a household employee under two employee IDs | one employee, current under the ID HR's program roster shows as Active | not current (the ID the team knew has ended) | pinned | GM-07 1.3 (current while HR's program roster shows the employee as Active); 352 benefits enrollments under two IDs, one ending the day before the other began, same work state, job family and basis (asserted) |
+| SF29 | ask B, a renewal the applicant filed herself, registered as a case of its own | filed again: USCIS received the renewal, the card it renews for the person | not refiled (the team's case is closed Rejected - not refiled) | pinned | GM-07 2.4 (filed again when USCIS receives it, the rejected renewal, not the team's case); 16 renewals under two current cases, each the team's closed case and the applicant's (asserted) |
+| SF30 | ask B, a forwarded rejection dated outside its renewal's packets | not a lockbox rejection of a renewal packet | counted with the renewal's rejections | pinned | GM-07 2.3 and 2.4 (a packet the lockbox rejects is not filed: before the renewal's first packet left the mailroom, or once USCIS has the renewal, no packet of it is rejected); 95 forwarded rejections so dated, none of counsel's (asserted) |
 
 ## Ladder
 
@@ -293,58 +298,82 @@ Criteria: the quote (1), three critical components (the appointment lead now set
 response, about a week), ask A's six cells (three months by two categories), the chart's six labelled bars, ask B's
 eight cells (four quarters by rejected and refiled within 30 days) and the two files: 26.
 
+The stage 4 round 4 reader, scored with `score_reader.py`, kept 14 of 14 ask figures on the round 3 pack while missing
+the call (6.5): three rounds of pins had put every device on the careful path (the register's approvals carried the
+cards the roster lacks, Benefits and GM-07 1.3 joined a spouse's two IDs, the case log's forwarded rejections and the
+register's receipts carried the applicants' own notices and filings). The layer below is that layer re-sited under
+supplemental-stumping 1.1c: each device sits on another file, grain or join, no ask or rounding is reworded, every pin
+stands, and the call side is byte-identical to the round 3 commit (every renewal row, component, route and the
+quarter's mix, 674 and 562, recomputed and compared).
+
 - Ask A, permits expiring July to September 2027 by category, each current person's permit as GM-07 1.3 and 1.4 pin it
   (the card USCIS approved for the person most recently, in its approval's category, held to its last day; current
   while HR's program roster shows the employee, or the spouse's household employee, as Active). Rows: HR's roster,
-  counsel's approval notices, the register's approved filings, the tracker's (c)(9) cards, HR's program roster,
-  Benefits' dependants. The call reads the same card records only for the quarter's category mix, and with every ask A
-  device left uncracked it moves one day inside its half month (5.43 against 5.39, asserted). Silent devices: A1 (D5, a
-  silently partial extract: a fifth of the spouses' renewed cards and a quarter of the derivatives' first (c)(9) cards
-  never reach the roster; the renewals are in counsel's approvals, but the first (c)(9) cards, filed with the
-  adjustment, are held only by the register's initial filings and the tracker), A6 (a grain of identity: a spouse who
-  joined Sallowmere benefits after the household came into Global Mobility's care keeps her MP- person ID on the
-  register, the tracker, counsel's matters and her onboarding entry, and the benefits portal files her later uploads
-  under the dependant ID Benefits gave her, so one card sits under two IDs; 897 households carry two spouse IDs and
-  560 of them share a card to the day, and an employee has one spouse; it moves every (c)(26) cell and July's
-  (c)(9)). Documented and pinned: A2 (the household link, Benefits covering only spouses on the plan today, the
-  roster's onboarding entry, the register and the tracker carrying the rest; GM-07 1.3 files the spouse as the
-  one person Global Mobility took into its care with the household, however Benefits covers her (238 Benefits rows name a domestic partner), and no other dependant), A5 (GM-07 1.4
-  names the roster's category as not always the approval's; a spouse who moved from (c)(26) to (c)(9) uploads her new
-  card under the category of her first entry), A3 (GM-07 1.4 keeps a permanent resident's last card to its last
-  day). Benefits gives every dependant an ID of her own (a child's ID once repeated a spouse's, a generator fault, now
-  repaired and asserted).
+  counsel's approval notices, the register's approvals, the green-card tracker, HR's program roster, Benefits'
+  dependants. The call reads the same card records only for the quarter's category mix: through the careful path's
+  handling it reads 5.461 and through the roster-only handling 5.428, both inside the construction family with one
+  sigma (asserted). Silent devices, each a join the careful path does not make:
+  A1 (D5, re-sited to the tracker): the first (c)(9) card comes in the adjustment package the green-card counsel
+  files; the register closes those cases once USCIS has them, with no decision, and counsel's export never holds them,
+  so the approval is on record only in the green-card tracker (467 current (c)(9) cards in the window), the roster
+  holding 105 of the spouses' under the (c)(26) label of their first entry and lacking 27; without the tracker every
+  cell moves (the roster's label puts the switchers' cards in (c)(26)).
+  A6 (D1, re-sited to the employee population): a spouse in the team's care who took a job at Sallowmere during the
+  life of her current card is a current employee of her own; her I-9 at hire records the card she presented and she
+  uploads it on the spouse side too, so 605 card numbers sit on HR's roster under an employee ID and a spouse ID with
+  the same validity (no other number repeats); counted twice, every cell moves up (12 and 10 in July, 6 and 9 in
+  August, 4 and 34 in September, (c)(9) and (c)(26)).
+  A2 (D7, re-sited to HR's IDs): an H-1B employee of an H-4 household moved to another Sallowmere entity in 2026 has a
+  new employee ID from the move, the old one ending the day before, the benefits enrollment carried over (352
+  enrollments under two IDs, same work state, job family and basis); the team's records, all made before the move,
+  name the old ID as the spouse's household, so keying the household by that ID drops 6, 9 and 39 from the (c)(26)
+  cells.
+  The careful path misses all six cells (82, 34 and 8 under in (c)(9), 84, 35 and 18 over in (c)(26)), and so does it
+  with any one device found; with two found it lands at most the three (c)(9) cells (the tracker and the card
+  numbers). Hazards the careful path resolves (texture): a spouse's MP- and Benefits IDs (GM-07 1.3, one spouse per
+  household; two September (c)(26) cards sit only under the Benefits ID, SF25), A5 (GM-07 1.4 names the roster's
+  category as not always the approval's), A3 (GM-07 1.4 keeps a permanent resident's last card to its last day), the
+  household link from any record (SF19, SF24).
 - Ask B, lockbox rejections October 2025 to September 2026, filed again as GM-07 2.3 and 2.4 pin it (USCIS's receipt
-  no later than the 30th day after the notice's date). Rows: counsel's rejection notices, the case log's forwarded
-  notices, counsel's receipt notices, the register's receipts, the mailroom's dispatch log; the call reads no rejection
-  notice and no dispatch row. Devices: B4 (D4, absence: a fifth of the rejection notices went to the applicant alone,
-  since the lockbox did not accept the G-28 on those packets, and reach the team only as a forwarded notice in the case
-  log), B6 (D5: about a third of those applicants refiled online themselves, a filing only the register holds), B1 (D2,
-  a field overwritten later: from 2 March 2026 the new dispatch system writes a resend over the packet's row), B3 (D5:
-  the earlier dispatch system's Returned holds courier returns beside lockbox rejections), B7 (hazard: applicants'
-  copies of rejections counsel also holds, under the case reference in use that day). A matter the team closed on an
-  employee's departure is never filed again: a packet already with the mailroom when the employee left still went
-  out (its rejection stands), but the team sends nothing after Stop work, and the mailroom marks a packet Receipted
-  only where USCIS's receipt is on record (both asserted), so the mailroom log adds no refiling to any quarter.
+  no later than the 30th day after the notice's date). Rows: counsel's rejection and receipt notices, the case log's
+  forwarded notices, the register's cases and receipts, the mailroom's dispatch log; the call reads no rejection notice
+  and no dispatch row. Devices:
+  B6 (D7 and D9, re-sited to another case): since April 2025 the register holds a renewal the applicant filed herself
+  as a case of its own, filed by the applicant, and closes the team's case as Rejected - not refiled, true of the
+  team's packet; 16 renewals sit under two current cases (2, 2, 3 and 1 in the asked quarters, beside 11 team cases
+  closed not refiled with no other case), so receipts keyed by the case miss a refile in every quarter.
+  B4 (D5, re-sited into the case log's scope): applicants forward the lockbox's rejections of their own other filings
+  too (an I-539 or I-131 they sent themselves), and the coordinator logs them on the case they are in the team's care
+  for: the ones that came with a receipt notice predate the renewal's first packet, the ones with an appointment
+  letter postdate USCIS's receipt of it; 95 forwarded rejections fall outside their renewal's packets and none of
+  counsel's does, so counting every forwarded rejection puts 8, 8, 15 and 4 too many in the quarters and, through
+  the earlier ones, too many refiles as well.
+  The careful path (counsel's and the forwarded rejections, one per case and notice date, receipts by case) misses all
+  eight cells; with the applicant's own case found it still misses all eight, with the other filings found it lands
+  the four rejected cells only. Hazards: applicant-only rejections reach the team only as a forwarded notice (the
+  careful path unions them), B1 (D2: from 2 March 2026 the new dispatch system writes a resend over the packet's row),
+  B3 (D5: the earlier dispatch system's Returned holds courier returns beside lockbox rejections), B7 (applicants'
+  copies of rejections counsel also holds). A matter the team closed on an employee's departure is never filed again
+  and the mailroom marks a packet Receipted only where USCIS's receipt is on record (both asserted).
 
 How each ask enters the call (H18): ask A is the population behind the quote's quarter, the permits whose renewals
 Global Mobility opens from January to March 2027 under GM-07 2.1 (cards expiring July to September 2027), the
 page's recurring chart; ask B is the audit trail of the filing date the quote counts from, the renewal packets the
 lockbox returned before USCIS received them (GM-07 2.3) and how fast they were filed again.
 
-Pair ceiling: 33.1 (the strongest response on the call, executing GM-07 1.3, 1.4 and 2.4, joining the roster to
-counsel's approvals, linking every spouse and credited with any one more device, keeps at most 4 of 20 ask cells, 20.0
-per cent, with the forwarded rejection notices or with the register's filings and the tracker; with a spouse's two
-IDs merged 0; the best response off the call keeps none; with both top responses on the call and no device cracked,
-44.0)
+Pair ceiling: 33.1 (the cracker, the round 4 reader's measured path on the cut pack, keeps 0 of 20 ask cells; credited
+with any one more device it keeps at most 4, the rejected counts once the other filings' rejections are found, 20.0
+per cent of ask weight; the best response off the call keeps none; with both top responses on the call and no device
+found, 44.0)
 Mirror leakage: 0.0 per cent of ask weight
 Measured by: generator/cracker.py
 
-| Ask | Cracker sheet (executes every pin, runs the battery, links every spouse) | Hits | Verdict |
+| Ask | Cracker sheet (the round 4 reader's path: every pin, every spouse link, the roster with counsel's and the register's approvals) | Hits | Verdict |
 |---|---|---|---|
-| Ask A, six cells | the roster's cards with counsel's approvals and their categories, current persons by ID through every link | 0 of 6 | miss |
+| Ask A, six cells | each current person's card approved most recently in the roster, counsel's notices and the register | 0 of 6 | miss |
 | Chart, six labelled bars | the same counts | 0 of 6 | miss |
-| Ask B, rejected, four quarters | counsel's rejection notices by notice date | 0 of 4 | miss |
-| Ask B, refiled within 30 days, four quarters | counsel's receipt notices within 30 days of each notice date | 0 of 4 | miss |
+| Ask B, rejected, four quarters | counsel's and the forwarded rejection notices, one per case and notice date | 0 of 4 | miss |
+| Ask B, refiled within 30 days, four quarters | each case's next receipt within 30 days of the notice date | 0 of 4 | miss |
 
 ## Residual
 
@@ -395,12 +424,24 @@ What stays open after the rework, and why each is accepted:
 - The long-lead analogs since the rule are thin: 6 decided renewals with appointments 70 days or more out, 1 at the
   forward exposure (96 days or more). Reschedules after the rule are rare because a reschedule past the card's expiry
   now costs the employee leave.
-- Ask A's identity device (A6) is a grain the pin forces: GM-07 1.4 counts a person's permit, and an employee has one
-  spouse; the 897 households the pack shows with two spouse IDs each carry them for one spouse (asserted against the
-  world), and 560 of them share a card to the day across the two IDs, which is the figure that makes per-ID counting
-  wrong. A same-day pair of approvals exists for one current person; neither card ends from June to September 2027.
-  GM-07 1.3 files the spouse as the one person Global Mobility took into its care with the household, however
-  Benefits covers her, and no other dependant (SF23, SF24, SF25).
+- A spouse's MP- and Benefits IDs are texture now, not a device: GM-07 1.3's one spouse per household resolves them on
+  the careful path (the round 4 reader did), the 897 households the pack shows with two spouse IDs each carry them for
+  one spouse (asserted against the world), and 560 share a card to the day. A same-day pair of approvals exists for
+  one current person; neither card ends from June to September 2027. GM-07 1.3 files the spouse as the one person
+  Global Mobility took into its care with the household, however Benefits covers her, and no other dependant (SF23,
+  SF24, SF25).
+- The ask layer re-sited in round 4 (supplemental-stumping 1.1c), each device forced by a figure on the cut pack:
+  the tracker's approvals (467 current (c)(9) cards in the window no approval notice or register approval holds, the
+  register's adjustment-package cases all closed with no decision), one card under two IDs (605 card numbers on HR's
+  roster under an employee ID and a spouse ID, the same validity, no other repeat), an employee's two IDs (352
+  enrollments under two employee IDs, one ending the day before the other began), the applicant's own case (16
+  renewals under two current cases, each the team's case closed Rejected - not refiled and the applicant's filing),
+  the other filings' rejections (95 forwarded rejections outside their renewal's packets, none of counsel's). No
+  shipped sentence adjudicates any of them: each turns on GM-07 1.3, 1.4, 2.3 or 2.4 as filed and a join the records
+  force. The goldens did not move (the world is the same; only where its evidence lives and how it must be joined
+  changed), and the call side is byte-identical to the round 3 commit. No subset of the careful path's mishandlings
+  composes back to a golden cell: in the refiled cells the other filings' rejections add refiles that the
+  applicant's own case takes away, and the net misses in every quarter, alone and together (asserted).
 - Ask A's September 2027 (c)(26) cell is 771 (round 3 judge 769, settled). The two are the spouses of employees
   723523 (MP-75243 on Global Mobility's records, D8711081 in Benefits) and 425305 (MP-28124, D7713094). Each joined
   Benefits after her household came into Global Mobility's care, and the benefits portal filed her latest card
@@ -518,3 +559,9 @@ clearly under it, and the asks carry the bar (pair ceiling 33.1, both on the cal
   latest card the portal filed under that ID, and "whether Benefits covers her" could be read as taking in Benefits
   spouses never in Global Mobility's care; 1.3 now files the spouse as the one person Global Mobility took into its
   care with the household, however Benefits covers her, and no other dependant, and the golden stands at 771.
+- v1 ask devices on the careful path (stage 4 round 4, scored reader 14 of 14 ask figures, `score_reader.py` exit 1):
+  the roster's missing first (c)(9) cards sat in the register's approvals, a spouse's two IDs were joined by Benefits
+  and GM-07 1.3's one spouse, the applicant-only rejections by the case log's forwarded notices and the applicants'
+  own refilings by the register's receipts, every one on the path a careful reader takes once the pins are read;
+  re-sited (the tracker's approvals, an employee's I-9 card under a spouse's, an employee's two HR IDs, the
+  applicant's own case, the other filings' rejections), the asks, roundings and pins unchanged.

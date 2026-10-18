@@ -272,24 +272,28 @@ def holders_current(T, cases):
 
 def cards_held(T, cases, ref, sources=("roster", "register", "counsel", "tracker")):
     """every work permit card on record, one per holder and approval date: the roster's entries, the register's approved
-    filings (renewals and initial filings), counsel's approval notices and the tracker's (c)(9) cards; the category is
-    the one USCIS approved, from a filing record wherever one holds the card, the roster's entry only where none does"""
+    filings, counsel's approval notices and the tracker's (c)(9) cards; the category is the one USCIS approved, from a
+    filing record wherever one holds the card, the roster's entry only where none does; the roster's entries carry the
+    card's number"""
     cards = {}
 
-    def put(holder, vf, vt, cat, src, filing):
+    def put(holder, vf, vt, cat, src, filing, number=None):
         if not (holder and vf and vt):
             return
         key = (holder, vf)
         cur = cards.get(key)
         if cur is None:
-            cards[key] = dict(holder=holder, vf=vf, vt=vt, cat=cat, src=src, filing=filing, srcs={src})
-            return
-        cur["srcs"].add(src)
-        if filing and not cur["filing"]:
-            cur.update(cat=cat, filing=True)
+            cur = cards[key] = dict(holder=holder, vf=vf, vt=vt, cat=cat, src=src, filing=filing, srcs={src},
+                                    numbers=set())
+        else:
+            cur["srcs"].add(src)
+            if filing and not cur["filing"]:
+                cur.update(cat=cat, filing=True)
+        if number:
+            cur["numbers"].add(number)
     if "roster" in sources:
         for p in T["permits"]:
-            put(p["holder_id"], _d(p["valid_from"]), _d(p["valid_to"]), p["category"], "roster", False)
+            put(p["holder_id"], _d(p["valid_from"]), _d(p["valid_to"]), p["category"], "roster", False, p["card_number"])
     if "register" in sources:
         for c in cases.values():
             if c["status"] == "Approved" and c["decided"] and c["new_exp"]:
@@ -307,33 +311,90 @@ def cards_held(T, cases, ref, sources=("roster", "register", "counsel", "tracker
     return [c for c in cards.values() if c["vf"] <= C.EXPORT]
 
 
-def latest_cards(T, cases, ref, sources=("roster", "register", "counsel", "tracker"), links="all", merge=True):
-    """GM-07 1.3 and 1.4: each current person's work permit, the card USCIS approved for the person most recently; a
-    person is current while HR's program roster shows the employee (or, for a spouse, the employee whose household she
-    belongs to) as Active. One person may carry two IDs: a spouse keeps her Global Mobility person ID (MP-) on the
-    team's records and is known to Benefits, and so to the benefits portal, by a dependant ID once she joins the plan;
-    an employee has one spouse, so a spouse is the household she belongs to (merge=False keys persons by ID instead)"""
-    active, sponsor = holders_current(T, cases)
+def employee_persons(T, moves=True):
+    """an employee is one person under every ID HR's program roster gives him: IDs that share a benefits enrollment are
+    one employee (moved between Sallowmere's entities), current while any of them is Active (moves=False keys each
+    employee ID as a person of its own)"""
+    person, active = {}, set()
+    for e in T["employees"]:
+        p = ("employee", e["benefits_enrollment_id"] if moves else e["employee_id"])
+        person[e["employee_id"]] = p
+        if e["status"] == "Active":
+            active.add(p)
+    return person, active
+
+
+def persons(T, cases, ref, sources=("roster", "register", "counsel", "tracker"), links="all", merge=True, dual=True,
+            moves=True):
+    """GM-07 1.3: who holds each card on record, and whether that person is current. An employee is current while HR's
+    program roster shows him as Active, under any of his IDs; a spouse while the employee whose household she belongs
+    to is. One person may carry several IDs: a spouse is her household's one spouse whichever ID a record files her card
+    under (merge=False keys spouses by ID), and a spouse who is also an employee is one person, the card both of her
+    records carry (one card number, one holder; dual=False keeps the two apart). Returns the cards, each holder ID's
+    person and each person's currency."""
+    _, sponsor = holders_current(T, cases)
     if links == "benefits":
         enroll = {e["benefits_enrollment_id"]: e["employee_id"] for e in T["employees"]}
         sponsor = {d["dependant_id"]: enroll[d["benefits_enrollment_id"]] for d in T["dependants"]
                    if d["relationship"] != "Child" and d["benefits_enrollment_id"] in enroll}
-    emp_ids = {e["employee_id"] for e in T["employees"]}
-    best = {}
-    for c in cards_held(T, cases, ref, sources):
+    eperson, eactive = employee_persons(T, moves)
+    held = cards_held(T, cases, ref, sources)
+    of, cur = {}, {}
+
+    def person_of(h):
+        if h in eperson:
+            return eperson[h], eperson[h] in eactive
+        ep = eperson.get(sponsor.get(h))
+        p = ("spouse of", ep) if merge else ("spouse id", h)
+        return (p if ep is not None else ("unlinked", h)), ep in eactive
+    for c in held:
         h = c["holder"]
-        if h in emp_ids:
-            person, cur = h, h in active
-        else:
-            e = sponsor.get(h)
-            person, cur = (("spouse of", e) if merge else h), e in active
-        if not cur:
+        if h not in of:
+            of[h], cur[of[h]] = person_of(h)
+    for t in T["tracker"]:
+        for h in (t["applicant_id"], t["principal_employee_id"]):
+            if h not in of:
+                of[h], cur[of[h]] = person_of(h)
+    parent = {}
+
+    def find(p):
+        while parent.get(p, p) != p:
+            p = parent[p]
+        return p
+    if dual:
+        by_num = defaultdict(set)
+        for c in held:
+            for num in c["numbers"]:
+                by_num[num].add(of[c["holder"]])
+        for ps in by_num.values():
+            ps = sorted(ps, key=repr)
+            for p in ps[1:]:
+                a, b = find(ps[0]), find(p)
+                if a != b:
+                    parent[max(a, b, key=repr)] = min(a, b, key=repr)
+    root = {h: find(p) for h, p in of.items()}
+    current = defaultdict(bool)
+    for p, v in cur.items():
+        current[find(p)] |= v
+    return held, root, current
+
+
+def latest_cards(T, cases, ref, **kw):
+    """GM-07 1.3 and 1.4: each current person's work permit, the card USCIS approved for the person most recently"""
+    held, root, current = persons(T, cases, ref, **kw)
+    best = {}
+    for c in held:
+        p = root[c["holder"]]
+        if not current[p]:
             continue
-        b = best.get(person)
+        b = best.get(p)
         if b is None or c["vf"] > b["vf"]:
-            best[person] = dict(c)
-        elif c["vf"] == b["vf"] and c["filing"] and not b["filing"]:
-            b.update(cat=c["cat"], filing=True)      # one card under two IDs: the approval's category stands
+            best[p] = dict(c, ids={c["holder"]})
+        elif c["vf"] == b["vf"]:
+            b["ids"].add(c["holder"])
+            b["numbers"] = b["numbers"] | c["numbers"]
+            if c["filing"] and not b["filing"]:
+                b.update(cat=c["cat"], filing=True)      # one card under two IDs: the approval's category stands
     return best
 
 
@@ -346,27 +407,24 @@ def ask_a(T, cases, ref, **kw):
     return out
 
 
+def gm_ids(T, cases):
+    """the IDs Global Mobility's own records carry: the roster's onboarding entries, the register's cases and the
+    green-card tracker"""
+    gm = {p["holder_id"] for p in T["permits"] if p.get("household_employee_id")}
+    gm |= {c["person"] for c in cases.values()}
+    gm |= {t["applicant_id"] for t in T["tracker"]}
+    return gm
+
+
 def benefits_id_only(T, cases, ref):
     """ask A's cells counting the current spouses whose card approved most recently is on record only under the
     dependant ID Benefits gave her, an ID no Global Mobility record carries for her"""
-    gm = {p["holder_id"] for p in T["permits"] if p.get("household_employee_id")}
-    gm |= {c["person"] for c in cases.values() if c["ptype"] == "spouse"}
-    gm |= {t["applicant_id"] for t in T["tracker"] if t["relationship"] == "Spouse"}
-    _, sponsor = holders_current(T, cases)
-    emp_ids = {e["employee_id"] for e in T["employees"]}
-    best = latest_cards(T, cases, ref)
-    ids_at = defaultdict(set)
-    for c in cards_held(T, cases, ref):
-        if c["holder"] in emp_ids:
-            continue
-        person = ("spouse of", sponsor.get(c["holder"]))
-        if person in best and c["vf"] == best[person]["vf"]:
-            ids_at[person].add(c["holder"])
+    gm = gm_ids(T, cases)
+    deps = {d["dependant_id"] for d in T["dependants"]}
     out = {(y, m, cat): 0 for (y, m) in C.ASK_A_MONTHS for cat in C.CATS}
-    for person, ids in ids_at.items():
-        c = best[person]
+    for p, c in latest_cards(T, cases, ref).items():
         key = (c["vt"].year, c["vt"].month, c["cat"])
-        if key in out and not ids & gm:
+        if key in out and c["ids"] <= deps and not c["ids"] & gm:
             out[key] += 1
     return out
 
@@ -375,10 +433,8 @@ def forward_mix(T, cases, ref, d_median, keep_approved=False):
     """the quarter's renewals by category: the current work permits whose renewal reaches USCIS in the quarter (the
     card's last day less the record's median card gap falls from 1 January to 31 March 2027), leaving out the (c)(9)
     cards of applicants whose adjustment the tracker shows approved"""
-    lpr = set()
-    for t in T["tracker"]:
-        if t["i485_status"] == "Approved":
-            lpr.add(t["applicant_id"] if t["relationship"] == "Principal" else ("spouse of", t["principal_employee_id"]))
+    held, root, current = persons(T, cases, ref)
+    lpr = {root[t["applicant_id"]] for t in T["tracker"] if t["i485_status"] == "Approved"}
     n = {cat: 0 for cat in C.CATS}
     for person, c in latest_cards(T, cases, ref).items():
         if c["cat"] == "(c)(9)" and person in lpr and not keep_approved:
@@ -405,25 +461,46 @@ def rejections(T, cases, ref):
     return rej
 
 
-def ask_b(T, cases, ref):
+def renewal_of(cases):
+    """each case's renewal: the card it renews for the person it renews it for (a renewal the applicant filed herself
+    and registered as a case of its own renews the same card as the team's case it follows)"""
+    return {k: ((c["person"], c["card_exp"]) if c["type"] == "renewal" and c["card_exp"] else ("case", k))
+            for k, c in cases.items()}
+
+
+def ask_b(T, cases, ref, forwarded=True, by_renewal=True, scope=True):
+    """GM-07 2.3 and 2.4: the lockbox's rejections of renewal packets by notice date, and those USCIS received again no
+    later than the 30th day after it. A renewal is the card it renews (by_renewal=False keys it by the case), and a
+    rejection dated before the renewal's first packet left the mailroom or after USCIS already received the renewal
+    rejected no packet of it (scope=False counts it)"""
     rej = rejections(T, cases, ref)
-    receipts = {}
+    if not forwarded:
+        rej = {k: v for k, v in rej.items() if v == "counsel"}
+    ren = renewal_of(cases) if by_renewal else {k: ("case", k) for k in cases}
+    receipts = defaultdict(list)
     for n in T["notices"]:
         if n["notice_type"] == "Receipt notice":
             k = ref.get(n["client_ref"])
-            d = _d(n["received_date"])
-            receipts.setdefault(k, []).append(d)
+            receipts[ren.get(k, ("case", k))].append(_d(n["received_date"]))
+    sent = {}
     for c in cases.values():
         if c["type"] == "renewal" and c["received"]:
-            receipts.setdefault(c["id"], []).append(c["received"])
+            receipts[ren[c["id"]]].append(c["received"])
+        if c["type"] == "renewal" and c["sent"]:
+            r = ren[c["id"]]
+            sent[r] = min(sent.get(r, c["sent"]), c["sent"])
     out = {}
     for label, a, b in C.ASK_B_QUARTERS:
         n_rej, n_ref = 0, 0
         for (k, nd), _src in rej.items():
             if not (a <= nd <= b):
                 continue
+            r = ren.get(k, ("case", k))
+            got = receipts.get(r, [])
+            if scope and (any(x and x < nd for x in got) or (r in sent and nd < sent[r])):
+                continue
             n_rej += 1
-            later = sorted(x for x in receipts.get(k, []) if x and x > nd)
+            later = sorted(x for x in got if x and x > nd)
             if later and (later[0] - nd).days <= C.REFILE_DAYS:
                 n_ref += 1
         out[label] = (n_rej, n_ref)
