@@ -841,3 +841,53 @@ move available, the move needed, and the standard error of the quantity the deci
 all in the graded figure's own units. A decisive step whose estimator's standard error exceeds the
 ladder's margin cannot rank, however large the bias it is chasing. This is the sufficient condition the
 pensions screen and this draw together point at, and it is cheap, because it is one square root.
+
+### Architecture 2 repair (the interviewer design effect), spent at its own pricing (2026-10-18)
+
+The repair was approved with three conditions, all to be met before design time. **Two passed and the
+third failed, and the third's failure is exact rather than tunable.**
+
+- **Condition 2, the driver check against task186: PASSED.** Driver similarity **0.05 against task186**,
+  0.07 against task191 (the nearest on file), 0.06 against task58 v6, all far under the 0.12 bar. The
+  distinction holds as the author framed it: task186 and task191 ask whether an effect clears noise at all
+  (task191's cure is a multiplicity correction, the same for every candidate), while this asks which
+  variance component belongs in the comparison, a named published quantity the design standard error
+  omits, whose size per unit is an exact function of that unit's workload concentration. One BLOCK,
+  `test.same_driver_older` against task191, was differentiable rather than a redraw.
+- **Condition 3, the estimator family: PASSED.** The between-interviewer SD comes out at **6.73 points by
+  one-way random-effects ANOVA, 6.74 by REML and 6.73 by method of moments** on 774 interviewer-cells, and
+  the name is identical under all three. The family is closed in effect, and every graded figure
+  (the concentration index, the counts, the printed rates) is records-fixed.
+- **The repair did fix what it was meant to fix.** The variance component's relative standard error is
+  **4.1 per cent** over 14 seeds (mean 7.12 points, SD 0.29), against about 100 per cent for the dead
+  per-interviewer differential, a factor of **24**. A quantity the whole workforce estimates does beat one
+  estimated per unit from that unit's own thin slice, exactly as the filed rule now says.
+- **Condition 1, the full pricing: FAILED on name stability.** Over 14 seeds the decisive route named the
+  golden region in **2 of 14**, scattering across eight regions, and the easy route named the intended loud
+  region in only **4 of 14**. The intended rises were 0.4 to 5.5 points and the realised changes ran from
+  +17.1 to -17.2.
+
+**Why it is exact, and the general result.** The ranking is `change / spread`. The lever is entirely in the
+denominator: a region's interviewer-induced spread is `sigma_b x sqrt(HHI_cur + HHI_cmp)`, so the
+two-interviewer region at HHI 0.642 carries 1.13 `sigma_b` against the fourteen-interviewer region's 0.38,
+a ratio of three whatever `sigma_b` is, and that is what flips the ranking between the design standard
+error and the full spread. **But that same quantity is the random swing in the numerator.** The spread that
+makes a concentrated region's movement flip is the spread that makes its measured movement noise, because
+they are one variance. Large enough to flip means large enough to randomise, so the easy route cannot be
+relied on to name any particular region and the designed roles do not survive the draw. Shrinking
+`sigma_b` stabilises the numerator and removes the lever in the same stroke; this is the dial failing at
+both ends again, and the two ends are not merely opposed, they are the same number.
+
+**What this is and is not.** It is not a Gate C failure: on any one cut pack the analysis gives one answer,
+and the estimator family is closed. It is a failure to be buildable to specification. The ladder's rungs,
+margins, Gate G story and the loud and golden roles would all be hostage to the seed, so the build would
+be a tuned seed rather than a designed mechanism, and `dataset-generation`'s rung exactness could not be
+asserted.
+
+**The rule it earns, and it rules out a family rather than a build.** A decisive step that moves a
+*variance* cannot carry a *ranking*, because the variance that reorders the candidates is the variance
+that randomises the quantity they are ranked on. Judge-against-noise mechanisms are sound where the answer
+is a verdict on one named candidate, or a flag against a stated threshold on a given pack; they cannot
+decide which of N is largest. Price this before drawing any such step: compute the lever's size in the
+denominator and the same quantity's contribution to the numerator's spread, and if they are the same
+variance the step cannot rank.
