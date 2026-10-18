@@ -1,0 +1,68 @@
+{
+  "answers": {
+    "ask_a": [
+      {
+        "closed": 319,
+        "no_action": 109,
+        "week": "2 to 8 Nov"
+      },
+      {
+        "closed": 262,
+        "no_action": 101,
+        "week": "9 to 15 Nov"
+      },
+      {
+        "closed": 119,
+        "no_action": 45,
+        "week": "16 to 22 Nov"
+      },
+      {
+        "closed": 76,
+        "no_action": 85,
+        "week": "23 to 29 Nov"
+      }
+    ],
+    "ask_b": {
+      "Browser Interface": 468,
+      "Developer Tools": 70,
+      "Extensions": 75,
+      "Graphics and Media": 136,
+      "Networking": 109,
+      "Platform and Updates": 55,
+      "Rendering and Layout": 451,
+      "Script and Web APIs": 169
+    },
+    "busiest_week": "900",
+    "triagers": 8
+  },
+  "call": {
+    "busiest_week": "900",
+    "default_triagers": 6,
+    "rounding_step": 100,
+    "standard": 120,
+    "triagers": 8
+  },
+  "components": {
+    "record_max_reach_pct": "48",
+    "release_week_reach_pct": "75",
+    "windows_thu_pct": "46",
+    "windows_two_day_pct": "79",
+    "windows_wed_pct": "60",
+    "windows_weekday_pct": "12"
+  },
+  "steps": {
+    "default_busiest": "700",
+    "early_releases": 13,
+    "first_use_per_10000": "1.1",
+    "growth_pct": "3.9",
+    "last_year_busiest": "674",
+    "late_releases": 2,
+    "per": "10,000",
+    "profile_share_pct": "40",
+    "restart_within_pct": "15"
+  },
+  "unrounded": {
+    "busiest": 912.38,
+    "sigma": 9.82
+  }
+}

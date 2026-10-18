@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "8 triagers for the first quarter of 2027 (the busiest week, a release week, forecast at about 900 triage items)",
+  "answer_source": "task162/generator/calc.py forecast on the cut pack (the restart model: each release's adoption from ordinary restarts plus the Windows restart wave after Patch Tuesday, carried through first-use reports per install); figures.json",
   "gap": [
     "time",
     "population"
@@ -35,9 +35,9 @@
   "role_family": "field_unit_lead",
   "scoring_unit": "per accepted item",
   "spine": {
-    "file": "the old tracker's bug export (one row per report filed, duplicates included, January 2023 to the as-of)",
-    "rows": 0,
-    "entity": "one report filed on the old tracker, with its product area, component, reporter's version and platform, resolution and duplicate-of link",
+    "file": "old_tracker_export_20251001_20261217.csv (the old tracker's bug export, one row per report filed through the form, duplicates included, 1 October 2025 to 17 December 2026)",
+    "rows": 29275,
+    "entity": "one report filed on the old tracker, with its product and component, reporter's version and platform, severity, status, resolution, duplicate-of link and security group",
     "grain": "report",
     "source": "synthetic (constructed in the layout of a Bugzilla-style CSV bug export)"
   },
@@ -47,36 +47,53 @@
   "world": {
     "geography": "Finland, Tampere (the vendor and its triage team; the browser's users are worldwide; the vendor, its browser, trackers, people and data are fictional)",
     "currency": "EUR",
-    "org_type": "independent desktop and Android browser vendor with a bug-triage team",
-    "invented_names": [],
+    "org_type": "independent desktop browser vendor with a bug-triage team",
+    "invented_names": [
+      "Usva Software Oy",
+      "Usva (the browser)",
+      "usvasoftware.fi",
+      "tracker-bridge",
+      "Browser intake (BRW)",
+      "Web compatibility (WEBC)"
+    ],
     "people": [
       "Ulla Kauppinen",
+      "Juhani Immonen",
       "Timo Huttunen",
       "Ritva Grönroos",
-      "Simo Kinnunen"
+      "Simo Kinnunen",
+      "Helena Pakarinen",
+      "Linnea Kärki",
+      "Johannes Laukkanen",
+      "Saara Väisänen",
+      "Tapio Kallio",
+      "Arja Turunen",
+      "Sakari Puhakka",
+      "Milla Ojanen",
+      "Antero Järvinen"
     ]
   },
   "layer1": [
-    "a tracker migration: the old tracker's Bugzilla-style CSV export (product and component as two columns, Helsinki local timestamps, resolution codes, a dupe_of column) against the new tracker's Jira-style JSON export (component paths, UTC timestamps, a duplicate link type)",
-    "the triage dashboard's weekly totals per product area on the old counting basis (duplicates not counted, Monday-to-Sunday weeks in Helsinki time) against the new tracker's basis (every report a triage item, duplicates included)",
-    "the four-week November parallel run in both trackers, with the old dashboard and the new tracker counting the same reports differently",
-    "the public bug statistics, which leave out security-restricted reports, beside the internal export, which holds them",
-    "a product-area reorganisation in 2025 (one area split in two, components moved) mapped by the area register",
-    "the public statistics' daily version adoption by platform in its own layout (shares of daily active installs, not counts)"
+    "the old tracker's Bugzilla-style CSV export (Helsinki local timestamps, product and component as two columns, the security group in its own column, beta and nightly builds beside release builds, the parallel run's reports closed MOVED and put in an Archive product)",
+    "the public data portal's daily shares of each platform's active installs by major version and its daily active installs in thousands",
+    "the release calendar as a table inside a PDF, point releases listed",
+    "the old triage dashboard's weekly new defects on its own basis (duplicates, invalid and MOVED reports out, the run's weeks empty)",
+    "the record's partial first and last weeks and the year-end lull",
+    "the new tracker's Jira-style REST export of the parallel run (UTC times, component paths, multi-valued components, a changelog, two projects, the bridge's service account, catch-up writes carrying the old number in a label, a move dropping Legacy bug, the pilot project's own Old tracker ID, a Close transition without a resolution, re-sent copies, the team's tasks, restricted issues)"
   ],
   "layer2_family": "field_method",
   "layer2_pattern": "own:release-week-reach-set-by-the-monthly-restart-burst",
   "deliverables": [
     "triage_staffing_q1_2027.xlsx",
-    "q1_2027_triage_forecast.svg"
+    "parallel_run_triage.svg"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "A unit takes up each new version only at its next restart, and on the dominant platform most restarts come in a two-day burst once a month on a fixed day, so the share of units that reach a version in its first week, and the reports that follow their first use, are set by whether the burst falls inside that week; every version in the forward window ships on the burst's eve, which no version in the last year did, so the record's first-week profile, its busiest weeks or a ratio taken from the last version all understate each forward release week, and only the version-by-version restart model the record supports, ordinary restarts plus the monthly burst, sets them.",
   "driver_concrete": "The browser's update is applied when the browser restarts, and most Windows machines restart in the two days after Microsoft's Patch Tuesday, so a release that ships a week or two before or after Patch Tuesday reaches users through ordinary restarts first and meets the Windows burst later, while a release shipped on Patch Tuesday meets the burst in its own first week; every release since autumn 2025 shipped off Patch Tuesday, and all three of the first quarter's releases ship on it, so their release weeks reach about one and a half times the usual share of users and carry the first-use reports and duplicates that follow, putting the busiest week at about 900 triage items.",
-  "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying the record's release-week profile, or the busiest week of the past year scaled for growth, onto the first quarter files 7 triagers; the step that lands it there is treating each first-quarter release week as typical, when all three releases ship on Patch Tuesday, so the Windows restart burst that the past year's releases met a week or two after release falls inside each release week, and the busiest week (8 to 14 March) carries about 900 items and needs 8.",
+  "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying last year's busiest first-quarter week, scaled for the growth in active installs (or the record's release-week profile, or an uplift from the last release), onto the quarter files 6 triagers; the step that lands it there is treating each first-quarter release week like the record's, when every release since October 2025 shipped a week or two before Patch Tuesday and met the Windows restart burst only in its second or third week, while all three first-quarter releases ship on Patch Tuesday itself, so about three in four active installs reach each new version in its release week against at most about half in any recorded week, and the busiest week carries about 900 items and needs 8.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who rebuilds the new tracker's items from the old export (every report, duplicates included), reads the counting basis, the 120-item standard and the release calendar correctly, and forecasts the quarter with trend, seasonality and the record's release-week profile, or scales the past year's busiest week for growth, files 7 triagers; only modelling each release's adoption as ordinary restarts plus the monthly Windows restart burst after Patch Tuesday, which the public adoption series shows month after month, and placing all three first-quarter releases on Patch Tuesday files 8.",
+  "analyst_test": "A strong analyst who rebuilds the new tracker's items from the old export (every report, duplicates included), reads the counting basis, the 120-item standard and the release calendar correctly, and scales last year's busiest first-quarter week for growth, or forecasts with the record's release-week profile, a last-release uplift or the record's typical first-month reach, files 6 triagers; only modelling each release's adoption as ordinary restarts plus the monthly Windows restart burst after Patch Tuesday, which the public adoption series shows month after month, and placing all three first-quarter releases on Patch Tuesday files 8.",
   "domain_test": "The deciding quantity is each release week's first-use report wave, forecast the way product analytics forecasts version-driven activity: from the version's adoption curve (the update applies at the next browser restart, and on Windows most restarts come in the two days after Patch Tuesday) carried through the reports users file in their first days on the version; with a hospital's patients or a utility's megawatt-hours there is no update applied at restart and no operating-system restart cycle deciding when users reach a new version, so the quantity that decides the call has nothing to stand on.",
   "mechanism_source": "design_note",
   "differentiation": {

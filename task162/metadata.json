@@ -1,0 +1,182 @@
+{
+  "task": "task162",
+  "title": "How many bug triagers a browser vendor needs for the first quarter of 2027, its first on a new tracker, when every one of the quarter's releases ships on Patch Tuesday and meets the Windows restart wave in its own release week",
+  "domain": "Product Analytics",
+  "client_domain": "Product Analytics",
+  "house_domain": "product-analytics",
+  "subdomain": "feature-adoption-diffusion-modeling (a desktop browser's releases reaching its installs: each install takes an update at its next restart and most Windows installs restart in the two days after Patch Tuesday, so a release's first-week reach and the first-use reports that follow are set by where it sits in the monthly restart cycle)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a committed headcount (triagers, rounded up from the busiest week's forecast at 120 items per triager-week) with the busiest week's forecast to the nearest 100, a table of the parallel run's four weeks (triage items with no triage action within 24 hours of filing, triage items closed by the run's end), a table of the eight component groups (triage items that arrived in each group's components), and a chart of the weekly figures",
+  "as_of": "2026-12-18",
+  "deliverables": [
+    "triage_staffing_q1_2027.xlsx",
+    "parallel_run_triage.svg"
+  ],
+  "distractor_files": [
+    "public_bug_statistics_monthly.csv",
+    "stability_monthly.csv"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 15,
+    "formats": [
+      "csv",
+      "docx",
+      "eml",
+      "json",
+      "pdf",
+      "txt",
+      "xlsx"
+    ],
+    "largest_file": "old_tracker_export_20251001_20261217.csv",
+    "largest_file_rows": 29275
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task162/generator/build.py (seeded, deterministic) around a fictional Tampere browser vendor, in the layouts of a Bugzilla-style CSV bug export, a Jira-style REST search export with changelogs, a public data portal's daily series, office workbooks and documents, a release calendar PDF and a mail thread; no real organisation's records or person is depicted.",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-18",
+  "generator": "task162/generator/build.py",
+  "files": [
+    {
+      "path": "active_installs_daily.csv",
+      "format": "csv",
+      "bytes": 29629,
+      "rows": 1329,
+      "source": "Constructed: Usva public data portal, daily active installs by platform",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "component_groups.xlsx",
+      "format": "xlsx",
+      "bytes": 7264,
+      "rows": 36,
+      "source": "Constructed: Usva triage team, component register of the Browser intake project (26 October 2026)",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 1611,
+      "rows": 14,
+      "source": "Constructed: Usva triage team, manifest of the files taken for the first-quarter plan",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "newtracker_parallel_run_export.json",
+      "format": "json",
+      "bytes": 5599085,
+      "rows": 1948,
+      "source": "Constructed: Usva new tracker, REST search export of the parallel run (projects BRW and WEBC), 4 December 2026",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "old_tracker_export_20251001_20261217.csv",
+      "format": "csv",
+      "bytes": 3233435,
+      "rows": 29275,
+      "source": "Constructed: Usva bug tracker (old tracker), saved search triage-weekly-export, reports filed 1 October 2025 to 17 December 2026",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "old_tracker_export_fields.txt",
+      "format": "txt",
+      "bytes": 1516,
+      "rows": null,
+      "source": "Constructed: Usva bug tracker, field notes of the saved search",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "public_bug_statistics_monthly.csv",
+      "format": "csv",
+      "bytes": 1070,
+      "rows": 42,
+      "source": "Constructed: Usva bug statistics page, monthly reports filed by platform",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "release_calendar_2025_2027.pdf",
+      "format": "pdf",
+      "bytes": 42188,
+      "rows": null,
+      "source": "Constructed: Usva release management, release calendar 2025 to 2027 (3 December 2026)",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "stability_monthly.csv",
+      "format": "csv",
+      "bytes": 3965,
+      "rows": 114,
+      "source": "Constructed: Usva crash reporter, monthly stability by version and platform",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "staffing_plan_q1_2027.eml",
+      "format": "eml",
+      "bytes": 1627,
+      "rows": null,
+      "source": "Constructed: Usva engineering, mail thread on first-quarter headcount (7 and 17 December 2026)",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tracker_cutover_runbook.docx",
+      "format": "docx",
+      "bytes": 11667,
+      "rows": null,
+      "source": "Constructed: Usva tracker migration, cutover runbook version 1.5 (7 December 2026)",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "triage_dashboard_weekly.xlsx",
+      "format": "xlsx",
+      "bytes": 9479,
+      "rows": 70,
+      "source": "Constructed: Usva triage dashboard, weekly new defects by product (old tracker)",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "triage_rota_2026-11.xlsx",
+      "format": "xlsx",
+      "bytes": 7080,
+      "rows": 31,
+      "source": "Constructed: Usva triage team, rota for the parallel run and the follow-up week",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "triage_working_agreement.docx",
+      "format": "docx",
+      "bytes": 10543,
+      "rows": null,
+      "source": "Constructed: Usva triage team, working agreement for the new tracker (28 October 2026)",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "version_share_daily.csv",
+      "format": "csv",
+      "bytes": 140005,
+      "rows": 5281,
+      "source": "Constructed: Usva public data portal, daily release-channel version shares by platform",
+      "date": "2026-12-18",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}
