@@ -292,9 +292,10 @@ def ask_a(target, credits="section", program="census", census="date"):
 def ask_b(target, enrol="census", group="dated"):
     """Each program's classes with fewer than ten students at the census. enrol: 'census' (registrations in place on
     the census date), 'status' (RE, RW and WC whatever the date) or 'export' (the schedule's Enrl); group: 'dated'
-    (sections sharing an instructor and a scheduled meeting in the same weeks, whatever the room), 'meeting' (sharing
-    an instructor, days and begin time, whatever the weeks), 'none', 'room' (sharing a room, days and begin time) or
-    'text' (instructor, days and begin time as written, TBA included)."""
+    (sections sharing an instructor and a scheduled meeting in weeks they have in common, whatever the room), 'meeting'
+    (sharing an instructor, days and begin time, whatever the weeks), 'exact' (sharing an instructor, days, begin time
+    and both dates), 'first' (sharing an instructor, days, begin time and first day), 'none', 'room' (sharing a room,
+    days and begin time) or 'text' (instructor, days and begin time as written, TBA included)."""
     pk, regs, secs, hist = fall26(target)
     cen = day(pk.census[K.FALL26])
     n = Counter(r["crn"] for r in census_rows(regs, cen, "date" if enrol == "census" else "status"))
@@ -311,6 +312,10 @@ def ask_b(target, enrol="census", group="dated"):
             return (s["Instructor"], s["Days"], s["Begin"])
         if s["Days"] == "TBA":
             return str(s["CRN"])
+        if group == "exact":
+            return (s["Instructor"], s["Days"], s["Begin"], day(s["Start Date"]), day(s["End Date"]))
+        if group == "first":
+            return (s["Instructor"], s["Days"], s["Begin"], day(s["Start Date"]))
         return (s["Instructor"], s["Days"], s["Begin"])
 
     groups = defaultdict(list)

@@ -4,11 +4,11 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: student, admission, transfer, entering, competing, admissions, withdrawal, recorded, estimate, extract, decisive, spring, college, record, degree, censored, asserted, endings, window, estimator, reason, register, survival, conversion, ending
+Stump terms swept: student, admission, transfer, entering, sections, competing, admissions, withdrawal, extract, recorded, estimate, decisive, record, spring, college, degree, window, censored, second, asserted, endings, estimator, reason, register, survival
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `policy_3-12_program_review.pdf`: 12 of 25 stump-paragraph terms appear (student, admission, transfer, entering, recorded, estimate); read whether the document names the move
-- **REVIEW** `registrar_extract_notes_2027-05.pdf`: 13 of 25 stump-paragraph terms appear (student, admission, transfer, admissions, recorded, extract); read whether the document names the move
+- **REVIEW** `policy_3-12_program_review.pdf`: 14 of 25 stump-paragraph terms appear (student, admission, transfer, entering, sections, extract); read whether the document names the move
+- **REVIEW** `registrar_extract_notes_2027-05.pdf`: 14 of 25 stump-paragraph terms appear (student, admission, transfer, sections, admissions, extract); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2)
 - **REVIEW** `fall2026_section_schedule.xlsx`: names 4 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -71,3 +71,10 @@ Third read (2026-10-18, the asks re-cut in the wave 3 audit, the call frozen; so
 7. Asks: FTE, minor: the program at the census against the extract's program_code (the notes describe the file "as it stood when the file was extracted", and 4.1 asks for the program of record at the census, held in the history), and statuses dated after the census (4.3: in place on the census date). Classes: "meet together" inferred from days, times, room and instructor (no combination field); cancelled and online sections; the schedule's enrolment at export against the census registrations (the policy says census). The reader did not find the course record's credit hours on the extract or the eight-week sections' dates.
 8. Realism: none.
 Rulings: the policy (names the estimate requirement, not the method), the notes (field definitions; the WD to TO relabel stated as a definition), the schedule (no program mapping or ranking), the register (codes and the subject map) and the term calendar's summer 2027 rows (a forward calendar) are each harmless.
+
+### Wave 3 audit, second pass (2026-10-18)
+
+A data-only change (ten receiving video sections' start and end dates in the schedule), checked by leak.py alone. The
+same two REVIEW lines, now with "sections" among the swept terms: policy 4.2's own definition of a class and the
+notes' field list for the schedule. Neither says how sections meeting together are found or why any section's dates
+differ. Harmless.

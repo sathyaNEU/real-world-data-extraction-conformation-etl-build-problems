@@ -22,7 +22,7 @@ Their three-year completion shares are 20.9, 24.9, 22.2, 25.9, 26.2 and 19.5 per
 4. Estimated each program's cumulative incidence of the degree to the ninth term, term by term the degrees over the admissions still open times the share still open, with TO and WD as competing endings and open admissions censored after spring 2027: General Studies 20.9, Biological Sciences 24.9, Business Administration 22.2, Psychology 25.9, Medical Assisting 26.2, Early Childhood Education 19.5, Criminal Justice 32.5, HVAC-R Technology 44.4 and Nursing 36.7 per cent.
 5. Sent the programs below 30 per cent into review (the policy, section 3): six.
 6. Summed each fall2026_census_registrations.csv row in place at the census (RE and RW dated on or before the 8 September 2026 census in term_calendar_2018-2027.xlsx, and WC) at its section's Cr Hrs in fall2026_section_schedule.xlsx, by the student's program in effect for fall 2026 in program_of_record_history.csv, and divided by 15 (the policy, section 4).
-7. Counted each program's classes from the active sections of the subjects the register's Subjects sheet gives it, sections with one instructor, days and start time over the same weeks taken as one class with their census registrations added, and kept those under ten (the policy, section 4).
+7. Counted each program's classes from the active sections of the subjects the register's Subjects sheet gives it, sections with one instructor, days and start time in weeks they have in common taken as one class with their census registrations added, and kept those under ten (the policy, section 4).
 
 ## 4. Deliverable Answers
 

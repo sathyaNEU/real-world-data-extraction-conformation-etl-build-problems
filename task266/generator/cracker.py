@@ -21,8 +21,13 @@ def cracker(target):
     """Each ask as the cracker reads it. A: Policy 4.1 and 4.3 executed, the credit hours registered at the census
     (registrations in place on the census date, later withdrawals kept) by the program of record in effect for fall
     2026 in the history, each registration at the credit hours its row carries. B: Policy 4.2's sections scheduled to
-    meet together taken as sections sharing an instructor, days and begin time (online sections apart), census
-    registrations as in A."""
+    meet together taken as sections sharing an instructor, days, begin time and the schedule's start and end dates
+    (online sections apart), so the eight-week halves stay apart; census registrations as in A."""
+    return dict(A=A.ask_a(target, credits="row"), B=A.ask_b(target, group="exact"))
+
+
+def without_dates(target):
+    """The same cracker with the meeting key that leaves the section dates out (instructor, days and begin time)."""
     return dict(A=A.ask_a(target, credits="row"), B=A.ask_b(target, group="meeting"))
 
 
@@ -56,3 +61,4 @@ if __name__ == "__main__":
     total, lc, ls, pair = ceiling(cr, mi)
     print("total %d figures, cracker keeps %.1f per cent, mirror leakage %.1f per cent, pair ceiling %.1f"
           % (total, 100 * lc, 100 * ls, pair))
+    print("without the dates in the meeting key: Ask B %d of %d" % score(tgt, without_dates(tgt))[1][2:0:-1])

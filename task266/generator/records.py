@@ -259,7 +259,7 @@ def write_schedule(path, T):
         begin = None if online else s["slot"][1]
         end = None if online else s["slot"][2]
         kind = "LEC" if s["kind"] in ("LEC", "ONL") else s["kind"]
-        first, last = T26.PART[s["part"]]
+        first, last = s.get("dates") or T26.PART[s["part"]]
         ws.append([int(s["crn"]), s["subj"], s["num"], s["sec"], s["title"], kind, int(s["link"]) if s["link"] else None,
                    s["campus"], first, last, s["room"] if s["status"] == "A" else None, days, begin, end,
                    s["inst"] if s["status"] == "A" else None, s["credits"], s["cap"],

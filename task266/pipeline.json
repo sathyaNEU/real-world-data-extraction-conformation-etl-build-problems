@@ -1,11 +1,11 @@
 {
   "task": "task266",
   "owner": "sathay3012",
-  "status": "SHIPPED",
+  "status": "PAUSED",
   "domain": "sociology-demography",
   "objective": "descriptive-distribution",
-  "stage": 5,
-  "stage_name": "ship",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-18",
   "stump": "The default path sends one program into review (Early Childhood Education) and keeps the four transfer-oriented programs and Medical Assisting above the floor, because it censors an admission that ended in a transfer out or a withdrawal as if the student could still earn the award; the cumulative incidence of the award with transfer and withdrawal as competing endings, open admissions alone censored, sends six programs into review.",
   "architecture": 1,
@@ -29,7 +29,7 @@
     "report": "task266/determinism_check_report_pass3.md"
   },
   "returned": [],
-  "resume": "",
+  "resume": "Wave 3 audit, second pass on Ask B (the receiving video sections' dates): stage 3 green (checks 392, verify, two builds byte-identical, figures_check 54 of 54, precut 50 of 50, leak.py REVIEW answered, the cracker 0 of 18 with or without dates in its meeting key). Waiting on judge pass 4: the brief is /tmp/determinism-check-task266-p4/judge_brief.md (rewrite it with the determinism-judge agent if the folder is gone), its verdict goes back to the agent for task266/determinism_check_report_pass4.md; then the card, the ledger row, status SHIPPED and the RESHIPPED commit.",
   "approved": null,
   "delivered": "2026-10-17",
   "portal": null,

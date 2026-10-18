@@ -290,7 +290,9 @@ def run(target, T):
     b_gold = A.ask_b(target)
     b_stops = {"natural": A.ask_b(target, enrol="export", group="none"), "census uncombined": A.ask_b(target, group="none"),
                "meeting key": A.ask_b(target, group="meeting"), "meeting text, TBA included": A.ask_b(target, group="text"),
-               "meeting key, late adds kept": A.ask_b(target, enrol="status", group="meeting")}
+               "meeting key, late adds kept": A.ask_b(target, enrol="status", group="meeting"),
+               "meeting key with both dates": A.ask_b(target, group="exact"),
+               "meeting key with the first day": A.ask_b(target, group="first")}
     for name, v in b_stops.items():
         ok(all(v[p] != b_gold[p] for p in progs), "Ask B: the %s read misses all nine" % name)
     room = A.ask_b(target, group="room")
@@ -301,7 +303,9 @@ def run(target, T):
     ok(all(abs(a_stops["row credits at the census"][p] - a_gold[p]) >= .05 for p in progs) and
        all(abs(a_stops["row credits once per course"][p] - a_gold[p]) >= .05 for p in progs),
        "cracker misses every Ask A figure, the linked rows found by the load check or not")
-    ok(all(b_stops["meeting key"][p] != b_gold[p] for p in progs), "cracker misses every Ask B figure")
+    ok(all(b_stops["meeting key with both dates"][p] != b_gold[p] for p in progs) and
+       all(b_stops["meeting key"][p] != b_gold[p] for p in progs),
+       "cracker misses every Ask B figure, with the section dates in its meeting key or without them")
     import cracker as CR
     cr_rows, mi_rows = CR.score(target, CR.cracker(target)), CR.score(target, CR.mirror(target))
     _, lc, ls, pair = CR.ceiling(cr_rows, mi_rows)
@@ -311,6 +315,7 @@ def run(target, T):
     regs = A.rows_csv(P("registrations"))
     owner = pk.owner
     census = A.day(pk.census[K.FALL26])
+    term = K.TERM[K.FALL26]
     at_census = A.census_rows(regs, census, "date")
     n_c = Counter(r["crn"] for r in at_census)
     by_meet = defaultdict(list)
@@ -322,9 +327,12 @@ def run(target, T):
         if len(lst) > 1:
             ok(len({owner.get(s["Subj"]) for s in lst}) == 1, "no class combines two programs' courses")
             dates = {(A.day(s["Start Date"]), A.day(s["End Date"])) for s in lst}
-            if len(dates) == 1:
+            if max(d[0] for d in dates) <= min(d[1] for d in dates):
                 ok(all(str(s["Room"]).endswith("V") for s in lst) and len({s["Camp"] for s in lst}) == len(lst),
                    "sections meeting together are video-room sections at different campuses")
+                ok(len(lst) == 2 and dates == {(term["start"], term["end"]), (term["start"] + dt.timedelta(days=7),
+                                                                               term["end"] - dt.timedelta(days=7))},
+                   "Ask B device: a video class's second campus meets from the second week to the last day of classes")
                 if any(n_c[str(s["CRN"])] < K.SMALL for s in lst):
                     video[owner.get(lst[0]["Subj"])] += 1
             else:

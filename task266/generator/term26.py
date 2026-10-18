@@ -72,6 +72,9 @@ WEEKEND = [("F", "17:30", "20:15"), ("S", "08:30", "11:15"), ("S", "12:00", "14:
 WEEKEND_LAB = [("S", "08:30", "11:20"), ("S", "12:00", "14:50"), ("S", "15:00", "17:50")]
 PART = {"1": (TERM["start"], TERM["end"]), "A": (TERM["start"], TERM["start"] + dt.timedelta(days=53)),
         "B": (TERM["start"] + dt.timedelta(days=56), TERM["end"])}
+# a class taught over interactive video meets at the instructor's campus in the first week and for its final
+# examination; the other campus's section meets from the second week to the last day of classes
+RECEIVING = (TERM["start"] + dt.timedelta(days=7), TERM["end"] - dt.timedelta(days=7))
 GENED = ({"ENG 101": 10, "ENG 102": 1, "MAT 095": 3, "MAT 110": 4, "MAT 120": 1.5, "HIS 101": 1.5, "SOC 101": 1.5,
           "COM 101": 1.5, "CIS 101": 2, "ART 101": 1, "SPA 101": .8, "PSY 101": 2.5, "BIO 105": 1},
          {"ENG 101": .6, "ENG 102": 6, "MAT 110": 2, "MAT 120": 3, "HIS 101": 2, "SOC 101": 2, "COM 101": 2.5,
@@ -460,6 +463,8 @@ def schedule(regs, seed):
                     made[c] = [s]
                 for s in group:
                     s["combined"] = "ITV:" + group[0]["crn"]
+                for s in group[1:]:
+                    s["dates"] = RECEIVING
         for where in sorted(by):
             if where in made:
                 continue
