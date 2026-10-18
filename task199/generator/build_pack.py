@@ -280,8 +280,18 @@ def draw(seed=SEED):
 
 
 def action_days(actions, city, lo, hi):
-    return sum(a["days"] for a in actions
-               if a["city"] == city and lo <= a["date"] <= hi)
+    """Gathering-days counted on their own dates, which is what the manual's unit says and what the
+    exports hold: before 2026 each day of a prolonged action has its own row and its own date, and
+    from 2026 the day count expands the same way. An action that starts inside the window and runs
+    past its end contributes only the days inside."""
+    n = 0
+    for a in actions:
+        if a["city"] != city:
+            continue
+        for k in range(a["days"]):
+            if lo <= a["date"] + timedelta(days=k) <= hi:
+                n += 1
+    return n
 
 
 def delivered(deliveries, city, lo, hi):
@@ -593,11 +603,13 @@ def write_summary(d):
     a = d["actions"]
     agg = {}
     for x in a:
-        if x["date"].year != 2025:
-            continue
         seat = desk_seat(x["city"])
-        key = (seat, x["date"].month)
-        agg[key] = agg.get(key, 0) + x["days"]
+        for k in range(x["days"]):
+            dt = x["date"] + timedelta(days=k)      # a gathering-day falls in its own month
+            if dt.year != 2025:
+                continue
+            key = (seat, dt.month)
+            agg[key] = agg.get(key, 0) + 1
     rows = [[seat, DIVIPOLA[seat], 2025, m, n] for (seat, m), n in
             sorted(agg.items(), key=lambda kv: (kv[0][0], kv[0][1]))]
     w_csv(os.path.join(TARGET, "resumen_mensual_rac_2025.csv"),
@@ -917,8 +929,27 @@ en el registro.
 
 
 def write_manifest(rowcounts):
-    rows = [[k, v, "derivado del extracto definitivo del 5 de noviembre de 2026", "sintetico",
-             "2026-11-05", "uso interno del Observatorio"] for k, v in sorted(rowcounts.items())]
+    DESC = {
+        "rac_acciones_2024.csv": "entradas del registro, plantilla 2024, una fila por dia de accion",
+        "rac_acciones_2025.csv": "entradas del registro, plantilla 2025, columnas renombradas",
+        "rac_acciones_2026.csv": "entradas del registro, plantilla 2026, con dias y extracto",
+        "envios_resena_andina.csv": "remisiones del servicio de prensa por medio, municipio y dia",
+        "citas_rac.csv": "citas que vinculan items a entradas",
+        "resumen_mensual_rac_2025.csv": "resumen mensual publicado, armado por mesas",
+        "tabla_municipios.csv": "codigos DIVIPOLA con vigencias",
+        "panel_fuentes.xlsx": "panel de medios al cierre",
+        "proyecciones_poblacion.xlsx": "proyecciones de poblacion en unidades y miles",
+        "protocolo_designacion.pdf": "protocolo de designacion semestral, version 4",
+        "manual_codificacion.pdf": "manual de codificacion, edicion 7",
+        "boletin_2026T1.pdf": "boletin trimestral publicado del primer trimestre de 2026",
+        "facturas_resena_andina_2025.pdf": "resumen de facturacion 2025 de las mesas de lote",
+        "diccionario_datos.md": "diccionario de campos y grano",
+        "indice_menciones_redes.csv": "indice departamental de menciones en redes, contratado 2026",
+        "incidencias_viales.csv": "incidentes de la autoridad de transporte",
+        "manifiesto_exportacion.csv": "este manifiesto",
+    }
+    rows = [[k, v, DESC.get(k, "archivo del extracto"), "sintetico", "2026-11-05",
+             "uso interno del Observatorio"] for k, v in sorted(rowcounts.items())]
     w_csv(os.path.join(TARGET, "manifiesto_exportacion.csv"),
           ["archivo", "filas", "descripcion", "origen", "fecha_extracto", "licencia"], rows)
 
@@ -943,9 +974,12 @@ def write_pack(d, pops):
     write_invoices(d)
     write_dictionary(counts)
     for name in sorted(os.listdir(TARGET)):
+        path = os.path.join(TARGET, name)
         if name.endswith(".csv"):
-            with open(os.path.join(TARGET, name), encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 counts[name] = sum(1 for _ in f) - 1
+        else:
+            counts[name] = ""                      # a document's extent is its pages, not its rows
     write_manifest(counts)
 
     stamp = "D:20261105091500+00'00'"

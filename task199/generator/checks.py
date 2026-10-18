@@ -256,8 +256,10 @@ def main():
     # panel, so the summary's panel rows agree with the detail row for row.
     detail25 = {}
     for x in acts:
-        if x["date"].year == 2025:
-            detail25[(x["city"], x["date"].month)] = detail25.get((x["city"], x["date"].month), 0) + x["days"]
+        for k in range(x["days"]):
+            dt = x["date"] + timedelta(days=k)    # a gathering-day falls in its own month
+            if dt.year == 2025:
+                detail25[(x["city"], dt.month)] = detail25.get((x["city"], dt.month), 0) + 1
     disagree = [x["municipio_sede"] for x in summ
                 if int(x["acciones_dia"]) != detail25.get((x["municipio_sede"], int(x["mes"])), 0)]
     ok(all(c in nonpanel for c in disagree), "ask.B_device_rows_are_all_outside_the_panel",

@@ -188,20 +188,28 @@ def main():
     ok(all((c, "b") in deliv and (c, "w") in deliv for c in PANEL), "exposure.every_panel_city_span")
 
     # ---- the citations, the volume the actions themselves produce
-    cits = {}
+    cit_rows = []
     for r in rows("citas_rac.csv"):
         dt = d_iso(r["fecha_item"])
         for span, (lo, hi) in (("b", BASE), ("w", WIN)):
             if lo <= dt <= hi:
-                cits[(r["id_accion"], span)] = span
+                cit_rows.append((r["id_accion"], span))   # one entry per citation, not per action
     reg = register()
-    city_of = {aid: c for c, _, _, aid in reg}
+    city_of = {}
+    for c, _, _, aid in reg:
+        city_of[aid] = c
+        parts = aid.split("-")
+        if len(parts) == 5:                          # a prolonged action's row carries a day suffix
+            city_of["-".join(parts[:4])] = c
     cit_n = {}
-    for (aid, span) in cits:
-        base_id = aid.split("-")[0:4]
-        c = city_of.get(aid) or city_of.get("-".join(base_id))
+    unresolved = 0
+    for (aid, span) in cit_rows:
+        c = city_of.get(aid)
         if c:
             cit_n[(c, span)] = cit_n.get((c, span), 0) + 1
+        else:
+            unresolved += 1
+    ok(unresolved == 0, "citations.every_citation_resolves_to_a_city", str(unresolved))
 
     # ---- the designation
     ad = {(c, s): action_days(reg, c, *(BASE if s == "b" else WIN)) for c in PANEL for s in "bw"}
@@ -220,8 +228,8 @@ def main():
     ok(o_rise.index("Tibu") + 1 in (4, 5), "ladder.golden_position_on_the_default_path",
        str(o_rise.index("Tibu") + 1))
     ok(o_cit[0] == "Teorama", "ladder.citation_route_names_Teorama", o_cit[0])
-    ok(abs(round(rate["Tibu"], 1) - 91.6) < 1e-9, "call.graded_rate", "%.4f" % rate["Tibu"])
-    ok(ad[("Tibu", "w")] == 138, "call.window_action_days", str(ad[("Tibu", "w")]))
+    ok(abs(round(rate["Tibu"], 1) - 92.2) < 1e-9, "call.graded_rate", "%.4f" % rate["Tibu"])
+    ok(ad[("Tibu", "w")] == 137, "call.window_action_days", str(ad[("Tibu", "w")]))
     for c in PANEL:
         v = rate[c]
         edge = 0.05 - abs(v - round(v, 1))
@@ -236,7 +244,7 @@ def main():
     raw26 = {}
     for r in rows("rac_acciones_2026.csv"):
         dt = d_iso(r["fecha_accion"])
-        if WIN[0] <= dt <= WIN[1]:
+        if WIN[0] <= dt <= WIN[1] and r["municipio"] in PANEL:
             raw26[r["municipio"]] = raw26.get(r["municipio"], 0) + 1
     o_raw = sorted(raw26, key=lambda c: -(raw26[c] / max(ad[(c, "b")], 1)))
     ok(o_raw[0] != "Tibu", "ladder.uncleaned_export_is_not_the_golden", o_raw[0])
