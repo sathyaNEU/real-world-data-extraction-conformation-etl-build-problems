@@ -124,6 +124,14 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   rather than from the data. Assert the edge distance, and name the tightest figure from the same number.
 - **Bins:** every graded figure mid-bin on a non-round value, flip condition stated as a number; never
   grade an iteration count, an even-set median, or a percentage near a one-decimal edge (Part 3).
+- **The call's robustness is not the figures' determinacy, and both are checked before data is cut.**
+  Where the method stays open, run every candidate the data does not close and compare two things
+  separately: which candidate it names, and what each graded figure prints. task182's architecture 3 had
+  every fit form naming the same five dwellings and the same sixth while the fourteen graded levels
+  differed by 0.9 to 1.8 dB, nine to eighteen times the printed unit, so the call was robust and every
+  graded figure was forked. A design can pass the ranking test and fail Gate C on the figures the same
+  ranking produces. Measure each figure's spread across the surviving candidates against its own printed
+  unit, at the design stage, because the cure is a different decisive step rather than a repair.
   **The cell width comes from the asking sentence's stated rounding, never from the quantity's natural
   unit.** For a value `v` printed to unit `u` the cell centres on `round(v/u)*u` and the distance to
   the nearest edge is `u/2 - abs(v - round(v/u)*u)`; the second term alone is the distance to the

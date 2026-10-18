@@ -205,6 +205,17 @@ lists (500 v1). **Measure the decisive rung on the graded name and the graded fi
 only changes who is blamed, while the counterfactual figure is the same whoever is blamed, is worth nothing on
 the figure, and a response skipping it files the golden figure (500 v1).
 
+**Two separations financed by one quantity are priced together, before the design is accepted.** A ladder
+usually needs two inequalities to hold at once: the easy route must lose on the record as it stands, and the
+answer must win once the decisive step is taken. When one quantity pays for both (the uplift a correction
+carries, the drift a restatement carries, the lag a vintage carries), they trade off directly, and buying
+one spends the other. Compute the budget in the graded figure's own units, compute what each separation
+costs, and check the sum before any data is cut: task194's architecture 3 had a 27.25-complication budget,
+spent 18.38 of it on a 2.35 flip and a 16.03 margin, and clearing both comfortably would have taken 33.14,
+so the point that cleared the margin left the flip at a third of a standard error. Scale is rarely the
+answer, because the budget grows with the count while its noise grows with the square root, so closing a
+shortfall of that size means an entity several times the size of the one the decision is about.
+
 **The arithmetic, on paper before any row.** Position, margin, separation and dominance as
 `dataset-generation` §6 asserts them (4th or 5th on rung 0, no margin under 1.15x). Then: one live degree
 of freedom in the graded quantity holds no ladder (49); the decisive move is never the smallest (37);
