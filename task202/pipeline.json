@@ -1,0 +1,13 @@
+{
+  "task": "task202",
+  "owner": "oviya13ya",
+  "objective": "anomaly-detection",
+  "status": "PAUSED",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-18",
+  "architecture": 0,
+  "loops": 0,
+  "card_registered": false,
+  "resume": "PAUSED at stage 1, two grounds screened, no card ever registered. Not retired. Human-factors ground: the thinned-count family died on measured curvature, the graded figure held only to 0.46x to 4.50x the truth at an exponential process and still 0.86x to 1.06x at inter-arrival shape 8 with 600 events, the width falling as the square root of the process regularity; and the time-on-task hazard died on the reflex test because scheduled shift length is a visible attribute. Selective-inference ground: a construction over the selection event died on three independent measured screens, its own spread 13.152 exceeding the 10.499 bias it removes, its mean absolute error 9.248 against the naive estimator 6.160, the boundary distance 0.47 standard errors, empirical Bayes beating it more than three to one on accuracy at 2.751, and James-Stein filing the golden verdict in 40 of 40 seeds. The ground-level finding worth reading before any re-draw there: multiple-testing-selective-inference cannot carry a decisive step whose graded object is a level at a selected unit, because every such level is a shrinkage target and shrinkage is both the opponent reflex and the more accurate estimator. task191 took the one obvious non-level object the ground affords. The remaining non-level objects, with the reason each was not taken in one pass, are rank verification (most promising, since shrinkage preserves order, but needs the abstraction test against task191 run properly), selective coverage (grading an interval runs into form spread) and optional-stopping bias (negligible unless the stopping count is tiny)."
+}

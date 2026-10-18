@@ -441,6 +441,18 @@ share of rows the mechanic bound is itself a ranking signal, and there six group
 cent censored while only the two dearest contracts sat near 38, so sorting on "whose rule binds least
 often" flagged the answer set outright.
 
+**A construction over a selection event is not an escape from the identification problem, because it is
+the same single dial:** the conditional likelihood's curvature falls as the selection becomes more extreme,
+and the bias the construction removes grows as it becomes more extreme, so the dial that buys the lever
+spends the identification. task202 measured one: the construction's own spread was 13.152 against the
+10.499 bias it removed, its mean absolute error 9.248 against the naive estimator's 6.160, so it was worse
+than doing nothing, and the boundary sat 0.47 standard errors away. **And on that ground the reflex wins
+twice over**, empirical Bayes beating the designed step more than three to one on accuracy and James-Stein
+filing the golden verdict in 40 of 40 seeds. The ground-level rule it earns: a decisive step whose graded
+object is **a level at a selected unit** cannot hold, because every such level is a shrinkage target and
+shrinkage is both the opponent's reflex and the better estimator. Draw a non-level object there instead
+(a rank verified, an extremum judged against a null extremum) or draw elsewhere.
+
 **The pricing sequence, run in this order before a word of design:** name the residue the filed WHAT leaves
 (a knob fails at once, only a method survives); price the move available against the move needed; price the
 standard error of whatever the step must estimate; check whether the lever and the ranked quantity's noise

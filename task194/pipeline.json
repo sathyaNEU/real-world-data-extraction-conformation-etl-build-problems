@@ -1,7 +1,7 @@
 {
   "task": "task194",
   "owner": "oviya13ya",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
   "objective": "anomaly-detection",
   "stage": 4,
@@ -25,12 +25,14 @@
     "nearest": "0.07"
   },
   "judge": {
-    "verdict": "DETERMINISTIC, SOLUTION_WRONG",
-    "disposition": "FIX_NOW repaired in one generator pass; re-judge owed once",
-    "report": "Gates A to H all pass, F rated STRONG, G passes with no surface-read dependency, H passes on domain, layers and decisive step. The judge rebuilt all 215 unit-quarters with zero mismatches and reproduced every graded figure and all 36 supplementary figures exactly; eight development variants all name 41210. Five defects, all in the solution blocks, all repaired: the quarter count and set (four named, five true, and the named set omitted the quarter carrying 166.33 of 311.55), the margin range, two inverted directions, and the ungrounded cycle label. No input file changed a graded figure, asserted by diffing the emitted figures.json across the pass."
+    "verdict": "NOT_DETERMINISTIC (pass 2)",
+    "disposition": "SEND_BACK",
+    "taxonomy": "underspecified_objective, with margin_or_boundary_fragility and a separate solution_incorrect",
+    "gates": "A FAIL narrow, B PASS, C FAIL on the figures and PASS on the decision, D PASS, E FAIL minor, F STRONG, G PASS, H PASS",
+    "report": "task194/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "FIX_NOW repaired in one generator pass and every stage-3 gate re-run green. The parent owes one re-judge and, because both the documents and the pack changed, one more isolated reader read. Rebuild with one command: python3 generator/build.py. The one open item for the author is guard.py heart, still BLOCK ban.pattern on the G12 label against task196. NOTE a fragility found this pass: guard.py reads the decisive pattern from generators[0], so the order of that list is load-bearing; a card rewrite that does not preserve it silently moves the build's ban status. The order was restored to G12 first and re-verified.",
+  "resume": "PAUSED, architecture 3 spent on the judge's SEND_BACK, re-root at stage 1 when ground is available. The same rule was applied to task196 in the same sitting and the orchestrator applied it here too rather than reading it differently for a build it wanted to ship. What held, and it is most of the design: the decision is forced and very robust, 41210 winning under all twelve estimator variants and also against the nine ineligible units, so eligibility is not decisive; Gate F STRONG with no hardening lever needed, Gate G and Gate H both pass, and three rival periods are shut by shipped text. What failed is the graded figures. The development estimator is unpinned and the asked-for number is one of 36.6, 44.6, 44.7, 45.1, 45.2 or 49.0, with second place moving between 27.8 and 28.0 so the gap moves too. One committed cell is simply wrong: 41320 reads 14.9 where both standard estimators give 14.785 and 14.826, each printing 14.8, and no single estimator reproduces the committed twelve. Three cells sit inside the 0.03 bin-edge flag (41240 at 0.0086, 41310 at 0.0188, 41320 at 0.0236 on one estimator) and the narrative factor 1.0368 sits 0.15 of its stated unit from an edge. Critical Component 1's publication labels are off by one and mix restatements with publications. The judge's own prescription for a re-root to start from: pin the completion method in one sentence (each unfinished quarter carried to its settled count on the cost centre's own settled quarters, weighted by the complications published at each step) and say whether the expected side is carried for episodes still awaiting coding, then re-cut so no graded cell is within 0.03 of an edge. The call, the ladder and the stump need no change.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -145,5 +147,6 @@
     "floors": "Rung 0 position 5 of 12 (floor: 4th or 5th). First on no intermediate rung and second on none. Lowest rung margin 1.44x (floor 1.15x). Final margin 1.604x (floor 1.2x, target 1.5 to 2x). Dominance 34.47 against 17.65, ratio 1.95 (floor 1.20x). C4 nearest wrong cell 60.4 per cent away. Convergence holds on all five readings of the development, 1.53x to 1.61x.",
     "bound_loosened": "Yes. The patient-driven lag paid the flip and the margin out of one uplift budget and could only reach 2nd on rung 0. The documentation-driven lag pays them separately: the golden's uplift is 311.5 complications because its wards are the ones still on paper, while the shape of its record inside the window is carried by RATIO_PATH, a level for the first six closed quarters and another for the last four. Its rate rose through 2026, which is the part of its record the pull date cuts short, so the record shows it improving while it was deteriorating.",
     "open": "The graded figure 44.6597 sits 0.0097 from a bin edge at one decimal and 0.1597 at whole complications against a bar of 0.3 of the rounding unit, so centre_plans has to re-centre it once the asking sentence fixes the unit. That is the one arithmetic item left before precut.py."
-  }
+  },
+  "architecture_spent": true
 }
