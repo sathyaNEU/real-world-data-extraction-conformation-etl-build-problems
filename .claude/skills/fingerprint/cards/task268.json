@@ -1,110 +1,132 @@
 {
   "task": "task268",
-  "architecture": "v1",
+  "architecture": "v2 (re-rooted 2026-10-18 after architecture 1's stage-4 reader landed the call)",
   "drawn": "2026-10-18",
-  "slot_note": "wave 4, Descriptive lane; seed DA18 keeps the world (a quick-commerce grocer's one weekday dark-store pilot among six candidate metros), the decision and the quantity (each core's delivery-weighted density of the people present in service hours); the pitfall is re-found from the data",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "small-area-estimation",
-  "niche": "a quick-commerce grocer choosing the metro for its 2027 weekday dark-store pilot by each core's delivery-weighted density, the people present in each core tract on a weekday estimated by carrying a national working-arrangements survey's days on the employer's premises onto the regional commuting table's tract-to-tract primary jobs",
+  "slot_note": "",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a fishing producer organisation choosing the one ground its members close for the 2027 season by how far each ground's haddock stock has fallen since its 2019 to 2021 base, readable from the members' tow logbooks or from the organisation's fixed-station autumn survey",
   "objective": "descriptive-distribution",
-  "shape": "14",
+  "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Tessavon",
-  "answer_source": "design_note",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population"
   ],
   "pattern": [
-    "E"
+    "none"
   ],
   "generators": [
-    "G14",
-    "G6",
-    "G2"
+    "G12",
+    "G3",
+    "G16"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "none",
-  "stakeholder_role": "the grocer's vice president of network expansion, who takes the pilot metro to the board",
-  "role_family": "operations_director",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every logbook field and the plan correctly standardises the members' catch per hour towed by year, cell, vessel and month, the field's own commercial index, and closes the ground whose catch rate fell furthest, while on the ground whose stock fell furthest the rate holds because the boats followed the shrinking stock into the deep cells it still fills; the fixed-station survey, each depth stratum weighted by its share of the ground's stock area, closes that ground instead.",
+  "domain_test": "The deciding quantity is a population mean over a whole area estimated from a sample whose locations the collectors choose by what they find there (preferential sampling) set against a probability sample of the same area; replacing the probability-sample estimator with the generic summary of the records (catch per unit of effort, raw or standardised) changes the call, and in another field's nouns there is no collector that follows the quantity it measures, so the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:whole-area-probability-sample-against-a-preferential-record",
+  "layer1": [
+    "the members' logbooks change from paper trip forms (2019 to 2022, one line per trip and rectangle) to electronic tow records (2023 on, one line per tow)",
+    "catch on the paper forms in round weight, on the e-logbook in gutted weight with the conversion factor printed on the form",
+    "effort on paper as hours fished, on the e-logbook as haul start and end times in UTC",
+    "grid cells written as ICES-style rectangle plus sub-square on paper and as a single cell code on the e-logbook",
+    "survey stations moved within their stratum after net damage, a missed station in 2020 for weather",
+    "a vessel's registration changed in 2024 (new port letters, same hull) across the logbooks and the vessel list"
+  ],
+  "stakeholder_role": "the producer organisation's science and sustainability officer, who puts the 2027 closure to the management committee",
+  "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "commuting_od_tract_2022.csv",
-    "rows": 60000,
-    "entity": "one tract-of-residence to tract-of-work pair's primary jobs, by industry group",
-    "grain": "home tract x work tract",
+    "file": "member_logbook_2019_2026.csv",
+    "rows": 0,
+    "entity": "one tow (one paper trip's fishing in one cell before 2023) with its effort and haddock catch",
+    "grain": "vessel x tow (vessel x trip x cell before 2023)",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "retailer_or_ecommerce",
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United States, six metros in six states (the grocer, the metros, their counties and tracts are fictional; personas on the en_US index)",
-    "currency": "USD",
-    "org_type": "quick-commerce grocer",
+    "geography": "United Kingdom, Scottish waters (the producer organisation, its grounds and its people are fictional; personas on the en_GB index)",
+    "currency": "GBP",
+    "org_type": "fishing producer organisation",
     "invented_names": [
-      "Larderline",
-      "Quillmere",
-      "Tessavon",
-      "Halberdine",
-      "Corrisford",
-      "Dunnaway",
-      "Ashcombe"
+      "Dunvarra Fish Producers' Organisation",
+      "Skiravie Bank",
+      "Halmorie Deep",
+      "Moraskie Ground",
+      "Brettach Bank",
+      "Vallaskie Hole",
+      "Cullardy Patch"
     ],
     "people": [
-      "Megan Swanson",
-      "Carolyn Cook"
+      "Carol Thorpe",
+      "Iain Ali"
     ]
   },
   "deliverables": [
-    "pilot_metro_2027.xlsx",
-    "pilot_metro_board_2027.pptx"
+    "ground_closure_2027.xlsx",
+    "closure_committee_2027.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "The decisive quantity is how many people are at each small area on a typical day, known completely only as the members attached to each area and observed day by day only in a broad sample whose on-site rate falls with how far a member lives from the area; carrying the sample's rate for each kind of member onto the complete attachments credits the areas that draw their members from far away with too many present, so the rate has to be carried within the groups it varies across.",
-  "driver_concrete": "Each candidate core tract's weekday presence, built from the commuting table's tract-to-tract primary jobs with each flow's share of days on the employer's premises taken from the national working-arrangements survey for the flow's industry group and the type of county the worker lives in (the metro's central county, an outlying county, or outside the metro), not the survey's single share for the industry group.",
-  "stump": "A competent solver builds each core tract's weekday presence from the commuting table and the residents, scales each job flow by the survey's share of weekdays on the employer's premises for its industry group, and sends the pilot to Corrisford, whose port and logistics jobs the pooled trade and transport share keeps nearly whole; the step that lands it there is carrying one share per industry group onto flows whose workers live mostly in outlying counties and beyond, where the survey shows far fewer weekdays on the premises, while the default path counts every job as present every weekday and sends it to Halberdine.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the commuting table as primary jobs by home and work tract and the survey's days on premises correctly carries the survey's on-premises share for each industry group onto every flow and picks Corrisford; carried at the share for the flow's industry group and the type of county its workers live in, the same flows pick Tessavon.",
-  "domain_test": "The deciding quantity is each core tract's weekday presence, a small-area estimate made by carrying a rate from a national survey onto complete administrative counts (a synthetic estimator) within the strata where the rate holds; with another field's nouns in (megawatt-hours for people present) there is no sample of members, no register of attachments and no synthetic rate whose strata must match the counts' composition, so the task stops reading the same.",
+  "driver": "The decisive quantity is how far each area's stock has fallen, observable either through the records of collectors who choose where to sample by how much they find there or through a fixed probability sample of the whole area; as a stock shrinks it retreats into the best part of its area and the collectors follow it, so their catch per unit of effort holds up while the stock falls and the parts they abandon drop out of their record, and only the fixed sample, weighted over the whole area, shows the fall.",
+  "driver_concrete": "Each ground's haddock stock in 2026 against its 2019 to 2021 average, read from the organisation's autumn survey (fixed stations in depth strata, each stratum weighted by its share of the ground's stock area), not from the members' catch per hour towed, which holds up on the ground whose stock retreated into its deep core because the boats followed it there and stopped working the shallow cells.",
+  "stump": "A competent solver standardises the members' catch per hour towed by year, cell, vessel and month and closes the ground whose catch rate fell furthest; the step that lands it there is reading each stock from where the fleet chose to fish, which on the ground whose stock fell furthest stayed in the deep cells the shrinking stock still fills, while the survey's stations in the abandoned shallows show the stock gone.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task228": "shares the gap, pattern E and a pick: task228 builds a ratio's variance at the randomised units of a labelled corpus; task268 carries a survey's on-premises share onto a complete commuting table within the residence strata the share varies across, with no test and no corpus",
-    "task28": "shares the gap, pattern E and a pick: task28 reaches a flagged excess through batch events and a closed outcome set; task268 has no closed outcomes and no reach rule, only a synthetic estimate of weekday presence",
-    "task30": "shares the gap, pattern E, Gate G and a pick: task30 carries a component across from closed parallel cases on an unstated transmission variable; task268 states nothing to recover and carries a measured on-premises share within residence strata",
-    "task32": "shares the gap, pattern E and a pick: task32 is a binding constraint seen only at a finer time resolution; task268 has no constraint and no forecast",
-    "task53": "shares the gap, pattern E, Gate G and a pick: task53 pools eligible volume against a scale break a closed log draws; task268 has no break and no log, only a rate carried within strata",
-    "task31": "shares the gap, pattern E and Gate G: task31 splits a lag on a prior-approval property behind a join with censored closed cases; task268 carries an on-premises share measured in a survey to administrative flows within residence strata",
-    "task448": "shares the domain, gap, pattern E and Gate G: task448 completes a register from a second list whose capture depends on filing route (coverage of producers); task268 converts a complete register of attachments into daily presence with a rate that depends on where each member lives, and the target is a density, not a count",
-    "task500": "shares the gap, pattern E and Gate G: task500 recovers a matched-reference method pinned by certified statements; task268 recovers nothing and has no certified figure",
-    "task57": "shares the gap, pattern E and Gate G: task57 unions two archives with different field names; task268's decisive step is estimation on clean data, the mess only Layer 1",
-    "task69": "shares the gap, pattern E and Gate G: task69 values a capped set of overlapping contributions; task268 has no set and no cap",
-    "task76": "shares the gap, pattern E and Gate G: task76 reduces a forward count by a class seen only through a look-back; task268 carries a survey rate onto flows by strata",
-    "task256": "shares the lane, the gap, G14 and composition_mix: task256 carries a reference group's multivariate distribution through two recorded measurements to size a fit box; task268 carries a one-dimensional on-premises share from a survey to tract-to-tract flows within residence strata (a synthetic small-area estimator), and the deciding figure is a presence-weighted density"
+    "task199": "task199 reads a rise in event frequency against the volume of accounts its watchers filed, effort measures the events themselves produce; task268 v2 reads a stock's fall from a fixed probability sample of the whole stock area because the commercial effort moved into the cells the shrinking stock still fills, a spatial selection with no event-produced effort measure",
+    "task196": "task196 recovers an uncounted total from two capture channels whose second is produced by follow-up on the first; task268 v2 has one preferentially located record and one probability sample of the same area, no capture overlap and no total to recover, only a change read where the record stopped covering the stock",
+    "task255": "task255 fits a size distribution's upper tail through item floors as truncation and a moving ceiling as censoring; task268 v2 has no size distribution, no truncation and no censoring, only an area mean whose record covers the cells the collectors chose",
+    "task456": "task456 counts a latent state from three error-prone records with a latent class model; task268 v2 has no misclassification and no latent class, a probability sample against a record located by what the collectors find",
+    "task462": "task462 corrects intermittent sources' detections by a size-dependent detection probability measured on blind trials; task268 v2 has no detection model, the survey's tows catch what is there and the record's bias is where the boats chose to tow"
   },
-  "lineage": [],
-  "notes": "WARN overuse.gate_g answered in the design note: the decisive step chooses the strata of a synthetic estimator, a method choice, and no other mechanism describes it honestly. Personas drawn with guard.py names --geo 'United States' --seed 268; Nathan Watkins and Elizabeth Walton set aside (first names on file). Architecture 1 spent at stage 4 on 2026-10-18: the isolated reader carried the survey's share by industry group and HOMEREL onto every flow by reflex and committed the golden call (score_reader.py exit 1); the stratum is a classifier both sources share, so it was the careful analyst's default, not a stump. The identity moves into lineage when the re-root is registered.",
-  "client_domain": "survey-research-official-statistics",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "survey-research-official-statistics/small-area-estimation/3",
-  "layer1": [
-    "the commuting table's main and auxiliary files (workers living in the same state, and in another state)",
-    "the census population table's GEO_ID with its summary-level prefix against the gazetteer's eleven-digit GEOID",
-    "the gazetteer's land area in square metres and square miles, water-only tracts with no land",
-    "the survey's industry as two-digit NAICS sectors, ranges such as 31-33 and 44-45, against the commuting table's three industry groups",
-    "the survey's twelve monthly waves, each weighted to its own month",
-    "the OMB delineation file's header rows and footnotes, county codes as text"
+  "lineage": [
+    {
+      "domain": "survey-research-official-statistics",
+      "subdomain": "small-area-estimation",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G6",
+        "G2"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "composition_mix",
+      "role_family": "operations_director",
+      "forum": "board_of_directors",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "retailer_or_ecommerce",
+      "driver": "The decisive quantity is how many people are at each small area on a typical day, known completely only as the members attached to each area and observed day by day only in a broad sample whose on-site rate falls with how far a member lives from the area; carrying the sample's rate for each kind of member onto the complete attachments credits the areas that draw their members from far away with too many present, so the rate has to be carried within the groups it varies across.",
+      "architecture": "v1 (a quick-commerce grocer's 2027 weekday dark-store pilot among six metros, by each core's delivery-weighted density of people present, the commuting table's flows carried at a national survey's days on the premises)",
+      "drawn": "2026-10-18",
+      "fate": "spent 2026-10-18 at stage 4: the isolated reader carried the survey's share by industry group and HOMEREL onto every flow by reflex and committed the golden call, Tessavon at 28,805 against Corrisford's 21,709 (score_reader.py exit 1); the stratum was a classifier both sources share, so the careful analyst's first group-by; the judge found the call forced, Gate H passing, and two ask forks"
+    }
   ],
+  "notes": "Re-rooted 2026-10-18: the seed DA18's world (siting by weekday presence) offers no lever beyond carrying a survey rate within strata both sources share, which the stage-4 reader took by reflex; architecture 2 is a new world drawn from the escape the record names, a forcing input in a different file at a different grain (the fixed-station survey over the whole stock area) whose variety no stratification of the decision file (the logbooks) reproduces. stump_strategy population_selection: the record's population of cells is selected on the outcome (the boats go where the fish are). Personas drawn with guard.py names --geo 'United Kingdom' --seed 268. WARNs answered: repeat.gate_g and overuse.gate_g (method_or_model_selection): the decisive step chooses the estimator of each stock (the probability sample over the whole area against the record the fleet's choices located), a method choice no other mechanism describes; the batch varies elsewhere (general statistics in a fisheries setting, a member body, a committee, shape 01, a where question, a pptx deck).",
   "people": [
-    "Megan Swanson",
-    "Carolyn Cook"
+    "Carol Thorpe",
+    "Iain Ali"
   ],
-  "registered": "2026-10-18T16:11:12Z",
-  "architecture_spent": true
+  "registered": "2026-10-18T20:48:59Z"
 }
