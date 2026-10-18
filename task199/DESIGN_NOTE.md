@@ -16,7 +16,19 @@ Stage 2. Every number below is printed by `generator/core.py` or `generator/ceil
 | Gate G | decomposition_attribution: every city's recorded rise is correctly reported, and the call turns on assigning it to press presence or to activity |
 | Strategy / Layer 2 | causal_design (the exposure must not be caused by the outcome) / estimand_identification, client pattern political-science-public-policy/conflict-protest-event-data-analysis/1 |
 | Decision-type WARN | pick_one_of_n repeats whichever build is filed immediately before this one (task198 v4 at filing, task166 earlier the same day): answered, because the call is a mission allocation among eleven recorded candidates, the records-fixed shape this wave's rules prefer over an estimator output, and task166 differs in domain, objective, gap, pattern, Gate G and driver at 0.05 similarity |
-| Calibration organ | none, by design (see `## Tried and rejected`) |
+| Calibration organ | none, by design (see `## Stage 3 findings answered
+
+| Finding | Where it came from | What was done |
+|---|---|---|
+| The generator attributed a multi-day action's days to its start date while the shipped rows carry each gathering-day on its own date | `verify.py`, on its own code path | The generator was changed to the shipped rows' convention, which is the manual's unit; the designation and every rung held, and the populations were re-tuned against the corrected counts |
+| The published monthly summary and one assertion still used the old convention | the same verifier run | Both were moved to gathering-days on their own dates |
+| The export manifest declared every file "sintetico", a statement inside the bundle that the world was built | `reduce-house-fixes` H24 | Rewritten as the area of the Observatorio that delivers each file; `verify.py` now asserts the manifest stays inside the fiction and covers the shipped set |
+| `leak.py` returned LEAK on two documents | sweep 2, author vocabulary | Both were the sweep's English TODO marker matching the Spanish word "todo" in ordinary prose. The four sentences were reworded without it; the clauses' force is unchanged and the verifier's controls were re-pointed. The sweep cannot tell the two apart, which is worth knowing for any Spanish-language pack |
+| `guard.py surface` found a persona "Campo Plantilla" | the surface screen | The manual's table header read as a name; the column was renamed and the screen now finds only the two carded personas, who sign the protocol and the manual |
+| The eligibility condition excluded nobody once the thin cities were thickened, leaving a graded column with eleven identical values | the golden's own figures | The protocol's floor was raised to seventy actions, which removes Hacari at 56 and nobody else, with the nearest other city 16 actions clear of it; the condition stays inert for the call, asserted |
+| Nine ask-A cells and six ask-B rows in the write-up were typed rather than read | `figures_check.py` | Every line in block 4 is now emitted from `figures.json`, and the units and clause numbers the write-up names are emitted with them |
+
+## Tried and rejected`) |
 | World | Colombia; Observatorio Territorial del Nororiente keeps the Registro de Acciones Colectivas from material delivered by the Resena Andina clipping service; personas drawn with `guard.py names --locale es_CO --seed 199` |
 | Spine | `envios_resena_andina.csv`, one row per outlet x city x delivery day, about 31,000 rows, 2024-01-01 to 2026-09-30 |
 | Forum / forcing event / org | line_manager_or_team / period_close (the half year closed on 30 September and the definitive extract on 5 November) / university_or_school |
@@ -262,6 +274,14 @@ lands on the golden and every differing reading either violates a quoted sentenc
 | the delivery log's own monthly totals | tie to the sum of their rows under every handling | not an oracle |
 | a completeness audit, gold standard or certified rate | none ships | by design |
 
+**The leak sweeps' REVIEW lines, answered.** Sweep 4 reads three design-note terms in the protocol: two are
+the words protocol and extract, and the third is Sardinata, which appears there only in clause 2.1's list of
+the eleven panel cities. Sweep 6 reads the three register exports, the delivery log, the city table, the road
+incidents and the published summary as naming every candidate beside numbers, which is what a register and a
+delivery log are: none of them ranks the cities on whether activity rose, the only aggregate among them
+covers 2025 at desk grain, and the one published artifact that does aggregate by city, the bulletin, stops at
+2026 Q1 and designates nobody.
+
 ## Ask sheet
 
 Three asks, 64 graded figures, every device outside the call's declared population.
@@ -368,6 +388,18 @@ Of every file and every sentence added to force a convention: what else does the
 | the invoice PDFs | the coordinator signs them; ask A's control total | not single-use, and they cover 2025 only, so they bear on no window figure |
 | the published monthly summary | the bulletin is built from it and the register's own returns process produces it | not single-use; it is ask B's primary and agrees with the detail for every panel city |
 
+## Stage 3 findings answered
+
+| Finding | Where it came from | What was done |
+|---|---|---|
+| The generator attributed a multi-day action's days to its start date while the shipped rows carry each gathering-day on its own date | `verify.py`, on its own code path | The generator was changed to the shipped rows' convention, which is the manual's unit; the designation and every rung held, and the populations were re-tuned against the corrected counts |
+| The published monthly summary and one assertion still used the old convention | the same verifier run | Both were moved to gathering-days on their own dates |
+| The export manifest declared every file "sintetico", a statement inside the bundle that the world was built | `reduce-house-fixes` H24 | Rewritten as the area of the Observatorio that delivers each file; `verify.py` now asserts the manifest stays inside the fiction and covers the shipped set |
+| `leak.py` returned LEAK on two documents | sweep 2, author vocabulary | Both were the sweep's English TODO marker matching the Spanish word "todo" in ordinary prose. The four sentences were reworded without it; the clauses' force is unchanged and the verifier's controls were re-pointed. The sweep cannot tell the two apart, which is worth knowing for any Spanish-language pack |
+| `guard.py surface` found a persona "Campo Plantilla" | the surface screen | The manual's table header read as a name; the column was renamed and the screen now finds only the two carded personas, who sign the protocol and the manual |
+| The eligibility condition excluded nobody once the thin cities were thickened, leaving a graded column with eleven identical values | the golden's own figures | The protocol's floor was raised to seventy actions, which removes Hacari at 56 and nobody else, with the nearest other city 16 actions clear of it; the condition stays inert for the call, asserted |
+| Nine ask-A cells and six ask-B rows in the write-up were typed rather than read | `figures_check.py` | Every line in block 4 is now emitted from `figures.json`, and the units and clause numbers the write-up names are emitted with them |
+
 ## Tried and rejected
 
 - Multi-source deduplication against the coding manual: the decisive step would be executing the manual,
@@ -417,6 +449,20 @@ Of every file and every sentence added to force a convention: what else does the
   the mission is a maximum rather than a cap that runs out mid-list, and 10's hard seam is different
   denominators per metric. The protocol's eligibility condition supplies the threshold column and is
   asserted to remove no city any route names, so no stated check decides the call.
+- The sixth pricing screen, run on this pack before a row was cut: a short pre-window baseline isolates the
+  golden with no denominator at all, but only where press presence has already moved and activity has not.
+  Measured in `core.screen6`: with presence stepping first the raw comparison against the quarter before the
+  window names Tibu at position 1, with both stepping together it names Sardinata and puts the golden fourth.
+  Every presence shift and the activity rise therefore step on 2026-04-01, every pre-window and sub-window
+  month carries the baseline's own levels, and the invariant is asserted. The screen's other two subsets do
+  not fire: the highest retained-over-delivered ratio anywhere is 0.059, so the wrong denominator never meets
+  the right one, and the thinnest panel city-month holds hundreds of delivered items, so presence is never
+  readable off an absence.
+- The generator seed: 40 seeds were scanned against the stage-3 floors (the golden fourth or fifth on the
+  default path, a decisive margin of at least 1.30x, a default-path leader at least 1.20x ahead, four
+  distinct rung winners, the citation route on Teorama). Three cleared them and the first, 230875, was taken.
+  The decisive route named the golden in 80 of 80 seeds before the search, so the search chose among seeds
+  that all carry the same answer rather than searching for one that produces it.
 - A per-sector action count in ask C and an agency column free of ask A's primary: both were figures free to
   every response by construction, diluting the criteria beside them. The action count is not asked for at all
   and the re-push was re-sited as the contract's monthly completeness run, which reaches every batch.

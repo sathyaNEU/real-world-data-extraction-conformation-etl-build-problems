@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Kampvliet (VKF-KPV) comes out of the frequency containment reserve portfolio for the November 2026 delivery month and takes the month's re-prequalification slot.** Its realised response gain is 72 per cent of the gain its contract requires, 11 percentage points below Reiderland at 83 per cent. Not Zwartewater, whose 77 per cent on the undisturbed level before each episode is its own programme unwinding a morning discharge through the deviation. Not Reiderland, which leads at 58 per cent on the period setpoint because its programme traverse is still running at the second the response is read.
+**Kampvliet (VKF-KPV) comes out of the frequency containment reserve portfolio for the November 2026 delivery month and takes the month's re-prequalification slot.** Its realised response gain is 72 per cent of the gain its contract requires, 11 percentage points below Reiderland at 83 per cent. Not Zwartewater, whose 77 per cent on the undisturbed level, its recorded power at the last second before each episode at which the published frequency was still inside the dead band, is its own programme unwinding a morning discharge through the deviation. Not Reiderland, which leads at 58 per cent on the period setpoint because its programme traverse is still running at the second the response is read.
 
 ## 2. Critical Components
 
@@ -21,7 +21,7 @@
 3. Recovered each site's programme traverse from vkf_highres_archive.sqlite at the settlement period boundaries holding no qualifying episode: the span from the boundary to the new setpoint in site_programme_15min.csv is a constant of the site's controller, 90 seconds at Kampvliet.
 4. Took each site's delivered response at an episode's extreme second as its recorded power less its programme traverse at that second, over the deviation beyond the 10 mHz dead band and over its contracted gain, which is its contracted FCR capacity in asset_register.xlsx divided by 0.190 Hz per clause 2 of the technical conditions.
 5. Averaged the per-episode ratios with equal weight for each site: Kampvliet 72 per cent, Reiderland 83 per cent, Hoogezand 88 per cent, Nieuwveen 91 per cent.
-6. Ran the same episodes against the undisturbed level before each episode, which puts Zwartewater at 77 per cent and Kampvliet at 94, and against the period setpoint, which puts Reiderland at 58: both bases credit each site with whatever its own programme did during the deviation.
+6. Ran the same episodes against the undisturbed level, each site's recorded power at the last second before the episode at which the published frequency was still inside the 10 mHz dead band, which puts Zwartewater at 77 per cent and Kampvliet at 94, and against the period setpoint, which puts Reiderland at 58: both bases credit each site with whatever its own programme did during the deviation.
 7. Applied clause 3 of the standard: 3 sites are outside the 90.0 per cent tolerance and the single monthly test slot goes to the site furthest below contract.
 8. Recommended withdrawing Kampvliet for the November 2026 delivery month.
 
@@ -73,5 +73,5 @@
    - Reiderland (VKF-RDL): above 11.6, below 17.4
    - Terborgh (VKF-TRB): above 15.3, below 22.1
    - Zwartewater (VKF-ZWT): above 16.3, below 49.5
-   - Portfolio: above 114.4, below 242.6
+   - Portfolio: above 114.4, below 242.6 (each rounded once from the unrounded period sums per clause 5, so not the sum of the rounded rows)
 5. Bar chart of the under-frequency realised gains by site on the Scorecard sheet, one bar per site in gain order, with the tolerance line drawn across at 90 per cent and the axis titled in per cent of contracted gain.

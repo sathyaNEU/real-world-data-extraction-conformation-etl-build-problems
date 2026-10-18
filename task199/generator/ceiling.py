@@ -164,5 +164,83 @@ def main():
                   % ("%.0f/%.0f/%.0f" % w, rr["c"], rr["s"], rr["pair"]))
 
 
+
+
+# ------------------------------------------------- forcing, measured on the cut pack
+
+def forcing():
+    """Per ask figure, the natural read's value against the golden's, read from the shipped bundle.
+    A figure counts as moved when the two differ by more than the rounding its asking sentence
+    states: whole items and whole actions, participants and rates to one decimal.
+
+        python3 task199/generator/ceiling.py --forcing
+    """
+    import csv
+    import json as _json
+    import os as _os
+    from datetime import date as _date
+    here = _os.path.dirname(_os.path.abspath(__file__))
+    target = _os.path.join(_os.path.dirname(here), "target")
+    fig = _json.load(open(_os.path.join(here, "figures.json"), encoding="utf-8"))
+
+    def rows(name):
+        with open(_os.path.join(target, name), encoding="utf-8") as f:
+            return list(csv.DictReader(f))
+
+    PANEL = {w["city"] for w in fig["watch_note"]}
+    moved = []
+
+    # Ask A. The natural read takes each quarter's delivery rows as that quarter's billing, so the
+    # billed column equals the delivered column and every difference line is zero.
+    for q in (1, 2, 3, 4):
+        nat = fig["ask_a_totals"]["T%d" % q]
+        gold = fig["ask_a_billed"]["T%d" % q]
+        moved.append(("A billed T%d" % q, nat, gold, abs(nat - gold) >= 1))
+    for k, v in fig["ask_a_differences"].items():
+        moved.append(("A difference %s" % k, 0, v, v >= 1))
+
+    # Ask B. The natural read takes the published monthly summary, which is seated by desk.
+    summ = {}
+    for r in rows("resumen_mensual_rac_2025.csv"):
+        summ[r["municipio_sede"]] = summ.get(r["municipio_sede"], 0) + int(r["acciones_dia"])
+    for x in fig["ask_b"]:
+        nat = summ.get(x["city"], 0)
+        moved.append(("B held %s" % x["city"], nat, x["held"], abs(nat - x["held"]) >= 1))
+
+    # Ask C. The natural read takes the numeric participants column as it stands: a reported range
+    # enters at its lower bound and an unreported figure enters as zero.
+    tot, n, mx = {}, {}, {}
+    for name, dcol, scol, pcol in (("rac_acciones_2025.csv", "fecha_de_accion", "sector",
+                                    "participantes"),):
+        for r in rows(name):
+            if r["municipio"] in PANEL:
+                continue
+            v = r[pcol]
+            v = int(v) if v not in ("", None) else 0
+            s = r[scol]
+            tot[s] = tot.get(s, 0) + v
+            n[s] = n.get(s, 0) + 1
+            mx[s] = max(mx.get(s, 0), v)
+    for x in fig["ask_c"]:
+        nat = round(tot.get(x["sector"], 0) / max(n.get(x["sector"], 1), 1), 1)
+        moved.append(("C per action %s" % x["sector"], nat, x["per_action"],
+                      abs(nat - x["per_action"]) > 0.05))
+        natm = mx.get(x["sector"], 0)
+        moved.append(("C largest %s" % x["sector"], natm, x["largest"],
+                      abs(natm - x["largest"]) >= 1))
+
+    print("=" * 96)
+    print("ASK FORCING, measured on the cut pack: the natural read against the golden")
+    print("=" * 96)
+    print("  %-34s %12s %12s %8s" % ("figure", "natural", "golden", "moved"))
+    for label, nat, gold, ok_ in moved:
+        print("  %-34s %12s %12s %8s" % (label, nat, gold, "yes" if ok_ else "NO"))
+    hit = sum(1 for _, _, _, o in moved if o)
+    print("\n  %d of %d sampled figures move beyond their stated rounding" % (hit, len(moved)))
+    return 0 if hit == len(moved) else 1
+
+
 if __name__ == "__main__":
+    if "--forcing" in sys.argv:
+        sys.exit(forcing())
     main()

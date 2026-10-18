@@ -100,6 +100,10 @@ def workbook(path, F):
     we.append([])
     we.append(["Portfolio", "", F["exposure_above_total"], F["exposure_below_total"]])
     we.cell(row=we.max_row, column=1).font = Font(bold=True)
+    we.append([])
+    we.append(["Portfolio totals are rounded once from the unrounded period sums, per clause 5, so "
+               "they need not equal the sum of the rounded rows above."])
+    we.cell(row=we.max_row, column=1).font = Font(size=8, italic=True)
     for col, w in zip("ABCD", (12, 15, 22, 22)):
         we.column_dimensions[col].width = w
 
@@ -121,7 +125,9 @@ def workbook(path, F):
             ["response are reported separately and are never averaged together."],
             [""],
             ["Capacity hours and energies are in MWh to one decimal place, summed over the window's"],
-            ["delivery dates and rounded once. Episode counts are whole."],
+            ["delivery dates and rounded once. A portfolio total is rounded once from the unrounded"],
+            ["period sums, so it need not equal the sum of the rounded rows it sits under. Episode"],
+            ["counts are whole."],
             [""],
             ["Meppelerdiep had no qualifying over-frequency episode in the window, so its"],
             ["down-regulation gain is reported as none rather than as zero."],
@@ -180,9 +186,10 @@ def memo(path, F):
       "response credited to a site is its recorded power at that second less the power its own programme was "
       "taking it to at that second, and the programme is moving: every site traverses between settlement "
       "period setpoints over a span its controller fixes, which the archive shows at the boundaries where no "
-      "episode ran. Taking the undisturbed level before the episode instead of the moving programme credits "
-      "each site with whatever its programme did during the episode, which is why %s reads %.0f per cent on "
-      "that basis against %.0f per cent here." % (F["rung0_name"], F["rung0_pre"], F["rung0_traj"]))
+      "episode ran. Taking the undisturbed level instead of the moving programme, which is the site's "
+      "recorded power at the last second before the episode at which the published frequency was still "
+      "inside the dead band, credits each site with whatever its programme did during the episode, and is "
+      "why %s reads %.0f per cent on that basis against %.0f per cent here." % (F["rung0_name"], F["rung0_pre"], F["rung0_traj"]))
     w("")
     w("## Down regulation, availability and imbalance")
     w("")

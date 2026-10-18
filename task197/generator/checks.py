@@ -449,6 +449,54 @@ def main():
     ck("R2 the archive's added captures change no deviation window the call reads",
        want == got, "%d wanted, %d present, %d differ" % (len(want), len(got), len(want ^ got)))
 
+    # ---- the frequency record's own spread, and that it changes nothing the call measures -----
+    # The deterministic deviation at a programme change is why the stump works, so the qualifying
+    # episodes stay exactly where they are. What the record gains is the deviation a real one
+    # carries besides them: excursions away from the period boundaries that cross the operator's
+    # extract trigger and never reach the qualifying threshold, ones carrying a transient that
+    # reaches it for too few seconds, and shallow ones no extract is published for.
+    diff_dates, qb_tot, qq_tot, ew_b, ew_q = 0, 0, 0, 0, 0
+    for d in sim.dates():
+        fb = sim.frequency_day(d, quiet=False)
+        fq = sim.frequency_day(d, quiet=True)
+        qb = sorted(sim.qualifying_episodes(d, fb) + core.over_episodes(fb))
+        qq = sorted(sim.qualifying_episodes(d, fq) + core.over_episodes(fq))
+        if qb != qq:
+            diff_dates += 1
+        qb_tot += len(qb)
+        qq_tot += len(qq)
+        ew_b += len(core.extract_windows(fb))
+        ew_q += len(core.extract_windows(fq))
+    ck("R2 the added excursions leave the qualifying episode set identical",
+       diff_dates == 0 and qb_tot == qq_tot,
+       "%d dates differ; %d qualifying episodes without them, %d with" % (diff_dates, qb_tot, qq_tot))
+    ck("the added excursions do reach the operator's extract publisher", ew_q - ew_b >= 30,
+       "%d published deviation windows without them, %d with" % (ew_b, ew_q))
+    wins = [(d, a) for d in sim.dates() for (a, b) in core.extract_windows(W[d]["f"])]
+    away = [x for x in wins if 2 <= (x[1] % 900) // 60 <= 13]
+    ck("the record's deviation is not a boundary law with three exceptions",
+       len(away) >= 40, "%d of %d published deviation windows open away from a period boundary, "
+       "%.1f per cent" % (len(away), len(wins), 100.0 * len(away) / len(wins)))
+    bad_w = 0
+    for d in sim.dates():
+        base = {a for (a, b) in core.extract_windows(sim.frequency_day(d, quiet=False))}
+        for (a, b) in core.extract_windows(W[d]["f"]):
+            if a in base:
+                continue
+            if any(a <= tstar <= b for (t0, t1, tstar, fx) in W[d]["under"] + W[d]["over"]):
+                bad_w += 1
+    ck("no added deviation window holds a qualifying episode", bad_w == 0,
+       "%d added windows hold one" % bad_w)
+
+    # the rung 0 basis the write-up prints is defined for every episode in the population
+    nopre = sum(1 for r in under if r["resp_pre"] is None)
+    ck("the undisturbed level is in the archive for every episode in the population", nopre == 0,
+       "%d of %d rows have no second inside the dead band in their recording" % (nopre, len(under)))
+    ck("the rung 0 figures the write-up prints recompute on that basis",
+       round(su[F["rung0_site"]]["pre"], 1) == F["rung0_pre"]
+       and round(su[call]["pre"]) == round(F["ladder"]["pre"][call]),
+       "%s %.1f and %s %.2f" % (F["rung0_site"], su[F["rung0_site"]]["pre"], call, su[call]["pre"]))
+
     # printed precision: every graded figure at the precision its asking sentence states
     sub = os.path.join(TASK, "submission.md")
     ck("submission.md is present for the precision check", os.path.exists(sub), sub)

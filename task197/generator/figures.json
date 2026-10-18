@@ -58,13 +58,13 @@
   "tolerance_pct": 90.0
  },
  "counts": {
-  "archive_recordings": 2718,
-  "archive_rows": 540017,
+  "archive_recordings": 2806,
+  "archive_rows": 560352,
   "auction_results": 126,
   "commitments": 256,
   "dictionary": 15,
   "event_log": 52,
-  "freq_1s": 97730,
+  "freq_1s": 109443,
   "freq_min": 30240,
   "imbalance_prices": 2016,
   "metered": 18144,
@@ -216,11 +216,11 @@
  "filing_due": "2026-10-23",
  "forcing": {
   "adh_above_natural": 944.2,
-  "adh_below_natural": 1054.2,
+  "adh_below_natural": 1054.1,
   "adh_natural_site": {
    "VKF-DLK": [
     217.6,
-    240.3
+    240.2
    ],
    "VKF-HGZ": [
     57.3,
@@ -295,11 +295,11 @@
    "VKF-TRB": 97,
    "VKF-ZWT": 93
   },
-  "ean_lost_mwh": 29.1,
+  "ean_lost_mwh": 28.8,
   "held_minutes": 32,
   "kwh_site": "VKF-DLK",
   "over_withdrawn": 5,
-  "prelim_gap_mwh": 2.926,
+  "prelim_gap_mwh": 2.953,
   "superseded_mwh": 12.3
  },
  "gap_pp": 11,

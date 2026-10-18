@@ -26,7 +26,7 @@ Two further sites sit under tolerance: Reiderland at 83 per cent, Hoogezand at 8
 
 ## How the figure is built
 
-Each qualifying episode is read at its extreme second on the published one-second frequency. The response credited to a site is its recorded power at that second less the power its own programme was taking it to at that second, and the programme is moving: every site traverses between settlement period setpoints over a span its controller fixes, which the archive shows at the boundaries where no episode ran. Taking the undisturbed level before the episode instead of the moving programme credits each site with whatever its programme did during the episode, which is why Zwartewater reads 77 per cent on that basis against 99 per cent here.
+Each qualifying episode is read at its extreme second on the published one-second frequency. The response credited to a site is its recorded power at that second less the power its own programme was taking it to at that second, and the programme is moving: every site traverses between settlement period setpoints over a span its controller fixes, which the archive shows at the boundaries where no episode ran. Taking the undisturbed level instead of the moving programme, which is the site's recorded power at the last second before the episode at which the published frequency was still inside the dead band, credits each site with whatever its programme did during the episode, and is why Zwartewater reads 77 per cent on that basis against 99 per cent here.
 
 ## Down regulation, availability and imbalance
 

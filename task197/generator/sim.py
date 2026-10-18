@@ -144,7 +144,63 @@ INCIDENTS = {           # unplanned infeed losses: date -> (local hour decimal, 
     dt.date(2026, 10, 8): (11.15, 0.151, 480),
 }
 
-def frequency_day(d):
+# --- the deviation the record carries that no qualifying episode comes out of -------------------
+# A real frequency record is not a law with three exceptions. Besides the deterministic deviation at
+# each programme change it carries excursions away from the period boundaries: ones that cross the
+# operator's extract trigger and never reach the qualifying threshold, ones that reach it for too
+# few seconds to count, and shallow ones the extract publisher never triggers on at all. None of
+# them creates a qualifying episode of either sign, so none of them changes what the determination
+# measures; checks.py asserts the qualifying sets are identical with and without them.
+QUIET_PER_DAY = 15
+QUIET_CLEAR = 460          # seconds an added excursion keeps clear of a published deviation window
+
+
+def _quiet_excursions(d, base):
+    """(start second, length, signed peak, spike) for each added excursion on local date d.
+
+    Three kinds, all away from the period boundaries. A sustained one that crosses the operator's
+    extract trigger and never reaches the qualifying threshold, so the extract is published and no
+    episode comes out of it. A sustained one carrying a short transient that does reach the
+    threshold, for fewer than the fifteen consecutive seconds a qualifying episode needs. And a
+    shallow one the extract publisher never triggers on, which shows only in the minute summary.
+    """
+    r = _rng("quiet", d.isoformat())
+    keep = [(a - QUIET_CLEAR, b + QUIET_CLEAR) for (a, b) in excursions(base, EXC_TRIGGER, 20)]
+    out = []
+    for k in range(QUIET_PER_DAY):
+        p = int(r.randint(0, 96))
+        t0 = p * 900 + int(r.randint(170, 760))      # away from the period boundary
+        kind = int(r.randint(0, 3))
+        sgn = 1.0 if r.random_sample() < 0.5 else -1.0
+        spike = 0.0
+        if kind == 0:
+            peak, length = 0.0778 + 0.0014 * r.random_sample(), int(r.randint(190, 330))
+        elif kind == 1:
+            peak, length = 0.0776 + 0.0012 * r.random_sample(), int(r.randint(200, 340))
+            spike = 0.0105 + 0.0045 * r.random_sample()
+        else:
+            peak, length = 0.0260 + 0.0330 * r.random_sample(), int(r.randint(90, 420))
+        if t0 - 50 < 0 or t0 + length + 50 >= DAY:
+            continue
+        if any(not (t0 + length <= x or t0 >= y) for (x, y) in keep):
+            continue
+        out.append((t0, length, sgn * peak, sgn * spike))
+    return out
+
+
+EXC_TRIGGER = 0.075        # |f - 50| at or beyond which the operator publishes a deviation extract
+_FREQ_CACHE = {}
+ADD_QUIET = True           # checks.py flips this to compare the qualifying sets both ways
+
+
+def frequency_day(d, quiet=None):
+    key = (d, ADD_QUIET if quiet is None else bool(quiet))
+    if key not in _FREQ_CACHE:
+        _FREQ_CACHE[key] = _frequency_day(d, key[1])
+    return _FREQ_CACHE[key]
+
+
+def _frequency_day(d, add_quiet=True):
     """1 Hz system frequency for one local day, as a numpy array of 86400 samples (index = second
     of the local day). Deterministic in (SEED, date)."""
     r = _rng("freq", d.isoformat())
@@ -172,7 +228,37 @@ def frequency_day(d):
         k = np.arange(n - t0)
         bump = depth * np.minimum(1.0, k / 8.0) * np.exp(-k / decay)
         f[t0:] -= bump
+    if add_quiet:
+        for (t0, length, peak, spike) in _quiet_excursions(d, f):
+            k = np.arange(length)
+            # a raised cosine, so the span above any threshold is a fraction of the whole, with a
+            # short transient on top where the excursion carries one
+            bump = peak * (0.5 - 0.5 * np.cos(2.0 * np.pi * k / length))
+            if spike:
+                c, w = length // 2, 7
+                lo_s, hi_s = max(0, c - w), min(length, c + w)
+                kk = np.arange(hi_s - lo_s)
+                bump[lo_s:hi_s] += spike * (0.5 - 0.5 * np.cos(2.0 * np.pi * kk / (hi_s - lo_s)))
+            lo, hi = max(0, t0 - 40), min(n, t0 + length + 40)
+            before = f[lo:hi].copy()
+            f[t0:t0 + length] += bump
+            # an added excursion that would qualify is not added: the determination's population is
+            # fixed by the record it was measured on and nothing here may move it
+            if _longest_run(f[lo:hi]) >= QUALIFY_SECS:
+                f[lo:hi] = before
     return f
+
+
+def _longest_run(seg):
+    """The longest run of consecutive seconds at or beyond the qualifying threshold, either sign."""
+    best = 0
+    for mask in (seg <= QUALIFY_HZ, seg >= 100.0 - QUALIFY_HZ):
+        run = 0
+        for v in mask:
+            run = run + 1 if v else 0
+            if run > best:
+                best = run
+    return best
 
 # --- programmes --------------------------------------------------------------------------------
 def programme(site, d):

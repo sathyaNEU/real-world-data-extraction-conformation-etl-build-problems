@@ -76,6 +76,16 @@ def main():
         under += episodes_from(seq, QUAL_UNDER)
         over += episodes_from(seq, QUAL_OVER, over=True)
     ck("frequency extracts read", len(rows) > 25000, "%d one-second rows" % len(rows))
+    # where the published deviation opens, relative to a settlement period start, read off the
+    # shipped extract file alone
+    starts = {}
+    for r in rows:
+        starts.setdefault(r["extract_id"], []).append(ts(r["ts_utc"]))
+    opens = [min(v) + OFFSET for v in starts.values()]
+    away = [t for t in opens if 2 <= ((t.minute % 15) * 60 + t.second) // 60 <= 13]
+    ck("the shipped record's deviation opens away from a period boundary as well as on one",
+       len(away) >= 40, "%d of %d published extracts open 2 to 13 minutes into a period, %.1f per "
+       "cent" % (len(away), len(opens), 100.0 * len(away) / len(opens)))
     ck("qualifying episodes found", len(under) > 50 and len(over) > 20,
        "%d under-frequency, %d over-frequency" % (len(under), len(over)))
 
@@ -271,6 +281,9 @@ def main():
         ck("down gain %s" % d["site"], abs(got - d["gain_pct"]) < 1e-9,
            "verifier %.2f, golden %.0f" % (so[d["site"]]["traj"], d["gain_pct"]))
     # the naive baselines each land on a site that is not the call
+    ck("the rung 0 figure the write-up prints reproduces from the bundle",
+       abs(su[F["rung0_site"]]["pre"] - F["rung0_pre"]) < 0.05,
+       "verifier %.2f, write-up %.1f" % (su[F["rung0_site"]]["pre"], F["rung0_pre"]))
     for key, who in (("pre", F["ladder_names"]["pre"]), ("sp", F["ladder_names"]["sp"]),
                      ("lin", F["ladder_names"]["lin"])):
         o = sorted([s for s in su if key in su[s]], key=lambda s: round(su[s][key], 1))

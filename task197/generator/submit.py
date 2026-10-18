@@ -35,8 +35,9 @@ def main():
     w("**%s (%s) comes out of the frequency containment reserve portfolio for the %s delivery month "
       "and takes the month's re-prequalification slot.** Its realised response gain is %.0f per cent of "
       "the gain its contract requires, %.0f percentage points below %s at %.0f per cent. Not %s, whose "
-      "%.0f per cent on the undisturbed level before each episode is its own programme unwinding a "
-      "morning discharge through the deviation. Not %s, which leads at %.0f per cent on the period "
+      "%.0f per cent on the undisturbed level, its recorded power at the last second before each "
+      "episode at which the published frequency was still inside the dead band, is its own "
+      "programme unwinding a morning discharge through the deviation. Not %s, which leads at %.0f per cent on the period "
       "setpoint because its programme traverse is still running at the second the response is read."
       % (F["call_name"], F["call_site"], F["delivery_month"], F["call_gain"], F["gap_pp"],
          F["runner_name"], F["runner_gain"], F["rung0_name"], F["rung0_pre"],
@@ -73,9 +74,11 @@ def main():
       "0.190 Hz per clause 2 of the technical conditions.")
     w("5. Averaged the per-episode ratios with equal weight for each site: %s."
       % ", ".join("%s %.0f per cent" % (r["name"], r["gain_pct"]) for r in sc[:4]))
-    w("6. Ran the same episodes against the undisturbed level before each episode, which puts %s at "
-      "%.0f per cent and %s at %.0f, and against the period setpoint, which puts %s at %.0f: both "
-      "bases credit each site with whatever its own programme did during the deviation."
+    w("6. Ran the same episodes against the undisturbed level, each site's recorded power at the "
+      "last second before the episode at which the published frequency was still inside the 10 mHz "
+      "dead band, which puts %s at %.0f per cent and %s at %.0f, and against the period setpoint, "
+      "which puts %s at %.0f: both bases credit each site with whatever its own programme did "
+      "during the deviation."
       % (F["rung0_name"], F["rung0_pre"], F["call_name"], F["ladder"]["pre"][F["call_site"]],
          [r["name"] for r in sc if r["site"] == F["ladder_names"]["sp"]][0],
          F["ladder"]["sp"][F["ladder_names"]["sp"]]))
@@ -117,7 +120,8 @@ def main():
       "no delivery-block commitment for, nine sites in site order, MWh to one decimal place:")
     for r in F["exposure"]:
         w("   - %s (%s): above %.1f, below %.1f" % (r["name"], r["site"], r["above"], r["below"]))
-    w("   - Portfolio: above %.1f, below %.1f"
+    w("   - Portfolio: above %.1f, below %.1f (each rounded once from the unrounded period sums "
+      "per clause 5, so not the sum of the rounded rows)"
       % (F["exposure_above_total"], F["exposure_below_total"]))
     w("5. Bar chart of the under-frequency realised gains by site on the Scorecard sheet, one bar per "
       "site in gain order, with the tolerance line drawn across at %.0f per cent and the axis titled in "
