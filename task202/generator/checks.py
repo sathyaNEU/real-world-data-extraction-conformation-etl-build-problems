@@ -406,6 +406,13 @@ def _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv):
     ok("control.returns_readable", "partner_code" in txt[B.FILES["ret2627"]])
     ok("control.clause9_present", "9.1 For each scheme year" in pol)
     ok("control.scheduleB_present", "B.2 The factor for a band" in pol)
+    ok("control.scheduleB_tabulates_no_factor",
+       not re.search(r"0\.500|0\.707|0\.866|1\.118|1\.225", pol),
+       "a tabulated factor is a graded answer printed in the pack")
+    for b in P.BANDS:
+        ok("leak.factor_band_%d_absent_from_the_pack" % b,
+           not any(("%.3f" % (P.SCALE3[b] / 1000.0)) in t for t in txt.values()),
+           "%.3f" % (P.SCALE3[b] / 1000.0))
 
     # ---------------------------------------------------------- no leak of the decisive step
     for f, t in txt.items():

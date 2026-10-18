@@ -105,6 +105,7 @@ def schedule_workbook(path, fig):
     wb.properties.created = dt.datetime(2027, 5, 21, 16, 5)
     wb.properties.modified = dt.datetime(2027, 5, 21, 16, 5)
     wb.save(path)
+    docs.finalise_xlsx(path, (2027, 5, 21, 16, 5, 0))
 
 
 def chart(path, fig, test):
@@ -205,8 +206,10 @@ def board_paper(path, fig, test, png):
         "components carry far more value than count." % fig["referred_value_share"], body))
     d = docs.doc(path, "Referral ceiling schedule 2027/28", P.PEOPLE["assurance"][0],
                  "%s referral ceiling schedule for 2027/28" % P.SCHEME_SHORT)
-    d.build(s, onFirstPage=docs.footer("%s - board paper, June 2027" % P.FOUNDATION),
-            onLaterPages=docs.footer("%s - board paper, June 2027" % P.FOUNDATION))
+    foot = docs.footer("%s - board paper, June 2027" % P.FOUNDATION)
+    with docs.stamped(docs.epoch(2027, 5, 21, 16, 5)):
+        d.build(s, onFirstPage=foot, onLaterPages=foot, canvasmaker=docs.org_canvas())
+    docs.finalise_pdf(path)
 
 
 def write(folder, fig, test):

@@ -1,7 +1,13 @@
 """task202 documents: the three monthly claim return workbooks (the band columns renamed and a header
 block added from the 2026/27 year), the scheme's operating policy (pdf), the prior year's published
 partner summary (pdf), the data dictionary (md), the export manifest (csv) and the request (eml)."""
+import calendar
+import contextlib
 import datetime as dt
+import os
+import re
+import shutil
+import zipfile
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
@@ -15,6 +21,95 @@ from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Space
 import params as P
 import records as RC
 import sim
+
+
+PRODUCER = "%s document services" % P.FOUNDATION_LEGAL
+APPNAME = "Microsoft Excel"
+
+
+def epoch(y, m, d, hh=9, mm=0):
+    return calendar.timegm((y, m, d, hh, mm, 0, 0, 0, 0))
+
+
+def org_canvas():
+    """The organisation's own document stamp, so no shipped file carries the writing library's
+    signature."""
+    from reportlab.pdfgen import canvas as _c
+
+    class OrgCanvas(_c.Canvas):
+        def __init__(self, *a, **k):
+            super().__init__(*a, **k)
+            self.setProducer(PRODUCER)
+
+    return OrgCanvas
+
+
+def finalise_pdf(path, producer=None):
+    """Put the organisation's name where the writing library signed the file, in place and at the
+    same byte length so every cross-reference offset stays valid. reportlab writes its own name into
+    the header comment, the trailer digest comment and the producer slot whatever the document's
+    properties say."""
+    producer = producer or PRODUCER
+    raw = open(path, "rb").read()
+    before = _pdf_text(path)
+    out = raw
+    for tok in (b"ReportLab Generated PDF document (opensource)",
+                b"% ReportLab generated PDF document -- digest (opensource)"):
+        if tok in out:
+            lead = b"% " if tok.startswith(b"% ") else b""
+            name = (lead + ("%s filed document" % P.FOUNDATION_LEGAL).encode())[:len(tok)]
+            out = out.replace(tok, name.ljust(len(tok), b" "))
+    m = re.search(rb"/Producer \(([^)]*)\)", out)
+    if m:
+        slot = len(m.group(1))
+        out = out[:m.start(1)] + producer.encode()[:slot].ljust(slot, b" ") + out[m.end(1):]
+    assert len(out) == len(raw), (len(out), len(raw))
+    open(path, "wb").write(out)
+    assert _pdf_text(path) == before, "the substitution changed the document's own text"
+
+
+def _pdf_text(path):
+    from pypdf import PdfReader
+    return "\n".join((pg.extract_text() or "") for pg in PdfReader(path).pages)
+
+
+@contextlib.contextmanager
+def stamped(ts):
+    """The date the document states about itself, which is the date the organisation filed it and
+    never the build clock."""
+    old = os.environ.get("SOURCE_DATE_EPOCH")
+    os.environ["SOURCE_DATE_EPOCH"] = str(int(ts))
+    try:
+        yield
+    finally:
+        if old is None:
+            os.environ.pop("SOURCE_DATE_EPOCH", None)
+        else:
+            os.environ["SOURCE_DATE_EPOCH"] = old
+
+
+def finalise_xlsx(path, stamp):
+    """Repack the workbook with the export's own date on every entry and the spreadsheet
+    application in docProps, entry names and order untouched. openpyxl stamps each zip entry with
+    the build clock, which is both an anachronism and a byte difference between two builds."""
+    tmp = path + ".tmp"
+    with zipfile.ZipFile(path) as z:
+        items = [(i, z.read(i.filename)) for i in z.infolist()]
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as out:
+        iso = ("%04d-%02d-%02dT%02d:%02d:%02dZ" % stamp).encode()
+        for i, data in items:
+            if i.filename == "docProps/app.xml":
+                data = re.sub(rb"<Application>[^<]*</Application>",
+                              b"<Application>" + APPNAME.encode() + b"</Application>", data)
+            if i.filename == "docProps/core.xml":
+                # openpyxl writes the build clock into dcterms:modified whatever the workbook's own
+                # properties say, which is both an anachronism and a byte difference between builds
+                data = re.sub(rb"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ", iso, data)
+            zi = zipfile.ZipInfo(i.filename, date_time=stamp)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = i.external_attr
+            out.writestr(zi, data)
+    shutil.move(tmp, path)
 
 
 def addr(k):
@@ -117,6 +212,7 @@ def claim_returns(path, R, months, new_layout, fy, recovery=None):
     wb.properties.created = dt.datetime(2027, 4, 30, 9, 15)
     wb.properties.modified = dt.datetime(2027, 4, 30, 9, 15)
     wb.save(path)
+    finalise_xlsx(path, (2027, 4, 30, 9, 15, 0))
 
 
 _MON = {dt.date(2000, m, 1).strftime("%b"): m for m in range(1, 13)}
@@ -214,16 +310,14 @@ def policy(path, R):
         "B.1 The ceiling for a household-size band is generated from the reference-size ceiling by "
         "the factor for that band.", body))
     s.append(Paragraph(
-        "B.2 The factor for a band is the square root of the band's household size divided by the "
-        "reference household size of four, taken to three decimal places. The band's household size "
-        "is the lower bound of the band.", body))
+        "B.2 The factor for a band is the square root of the ratio of the band's household size to "
+        "the reference household size of four persons, taken to three decimal places. The band's "
+        "household size is the lower bound of the band.", body))
     s.append(Paragraph(
         "B.3 A ceiling generated under B.1 is rounded up to the nearest one hundred pesos.", body))
-    s.append(grid([["Band", "Factor under B.2"]] +
-                  [[RC.legacy_band(b), "%.3f" % (P.SCALE3[b] / 1000.0)] for b in P.SCALE_TABULATED],
-                  [60, 120], cell))
-    s.append(Paragraph("The table sets out the factor for the principal bands. For every band the "
-                       "factor is as computed under B.2.", small))
+    s.append(Paragraph(
+        "B.4 The factor is applied to the reference-size ceiling before the rounding in B.3, and the "
+        "rounding is applied once.", body))
 
     s.append(Paragraph("Schedule C: partner claim portal", h2))
     s.append(Paragraph(
@@ -246,8 +340,10 @@ def policy(path, R):
                   [80, 390], cell))
     d = doc(path, "%s Operating Policy 2027" % P.SCHEME, P.OFFICE,
             "%s operating policy, 2027 edition" % P.SCHEME_SHORT)
-    d.build(s, onFirstPage=footer("%s - %s operating policy, 2027 edition" % (P.FOUNDATION, P.SCHEME_SHORT)),
-            onLaterPages=footer("%s - %s operating policy, 2027 edition" % (P.FOUNDATION, P.SCHEME_SHORT)))
+    foot = footer("%s - %s operating policy, 2027 edition" % (P.FOUNDATION, P.SCHEME_SHORT))
+    with stamped(epoch(2027, 2, 16, 11, 20)):
+        d.build(s, onFirstPage=foot, onLaterPages=foot, canvasmaker=org_canvas())
+    finalise_pdf(path)
 
 
 # ------------------------------------------------------------------ the published summary (prior year)
@@ -309,8 +405,10 @@ def published_summary(path, R, W):
                        "are not restated for later revisions to a claim month.", small))
     d = doc(path, "%s annual report 2025/26 partner summary" % P.SCHEME_SHORT, "%s" % P.FOUNDATION,
             "published partner summary, fiscal year 2025/26")
-    d.build(s, onFirstPage=footer("%s - annual report 2025/26 extract" % P.FOUNDATION),
-            onLaterPages=footer("%s - annual report 2025/26 extract" % P.FOUNDATION))
+    foot = footer("%s - annual report 2025/26 extract" % P.FOUNDATION)
+    with stamped(epoch(2026, 9, 30, 15, 45)):
+        d.build(s, onFirstPage=foot, onLaterPages=foot, canvasmaker=org_canvas())
+    finalise_pdf(path)
 
 
 # ------------------------------------------------------------------ the request

@@ -103,6 +103,8 @@ def figures(target, F):
     fig = {
         "call": int(C),
         "call_php": "PHP %s" % "{:,}".format(int(C)),
+        "call_down": int(C - P.ROUND_TO),
+        "round_to": P.ROUND_TO,
         "share_pct": round(100 * s0, 2),
         "share_down_pct": round(100 * s1, 2),
         "committed_pct": round(100 * P.COMMITTED_SHARE, 1),
@@ -187,7 +189,7 @@ def submission(fig):
     A("")
     A("**Set the 2027/28 referral ceiling for a four-person household at PHP %s.**" % "{:,}".format(fig["call"]))
     A("The schedule it generates refers %.2f per cent of the awards the scheme resolved in the twelve "
-      "months to 31 March 2027, inside clause 9's %.1f per cent, and PHP %s refers %.2f per cent. Not "
+      "months to end-March 2027, inside clause 9's %.1f per cent, and PHP %s refers %.2f per cent. Not "
       "the distribution of the %d partner-band average awards, which carries no spread within a "
       "partner and files PHP %s, a schedule that would refer %.2f per cent. Not the portal's awards "
       "pooled or rescaled to the portfolio, which do not reproduce the average award the returns state "
@@ -199,7 +201,7 @@ def submission(fig):
     A("")
     A("## 2. Critical Components")
     A("")
-    A("1. The twelve months to 31 March 2027 hold **%s** awards in **%d** partner-band cells across "
+    A("1. The twelve months to end-March 2027 hold **%s** awards in **%d** partner-band cells across "
       "**%d** accredited partners" % ("{:,}".format(fig["awards"]), fig["cells"], fig["partners"]))
     A("2. The award shape measured on the window's portal claims has a coefficient of variation of "
       "**%.2f**" % fig["cv"])
@@ -212,8 +214,9 @@ def submission(fig):
     A("## 3. Step-by-Step Solution")
     A("")
     A("1. Took the claim returns for April 2026 to March 2027 from the 2025/26 and 2026/27 workbooks, "
-      "the revised return superseding the preliminary one for the two reopened months under clause "
-      "4.2, and recoveries excluded as gross under clause 9.3: %s awards in %d partner-band cells." %
+      "the revised return superseding the preliminary one for the two reopened months as the policy "
+      "requires, and recoveries excluded because the policy counts awards gross: %s awards in %d "
+      "partner-band cells." %
       ("{:,}".format(fig["awards"]), fig["cells"]))
     A("2. Divided each cell's claimed total by its award count: each partner-band's own average award, "
       "the only award-level figure the returns state.")
@@ -225,7 +228,7 @@ def submission(fig):
       "coefficient of variation fit at %d and %d times the five per cent Kolmogorov-Smirnov critical "
       "value." % (fig["cv"], fig["ks_lognormal"], fig["ks_gamma"]))
     A("5. Rebuilt each cell's award distribution as the cell's own average award times that shape and "
-      "weighted each cell by its award count, which is clause 9.1's share of the scheme's awards.")
+      "weighted each cell by its award count, which is the policy's share of the scheme's awards.")
     A("6. Generated each band's ceiling from a candidate reference ceiling by schedule B.2's factor "
       "rounded up to the nearest PHP 100 under B.3, and took the lowest candidate whose referred share "
       "is at or below %.1f per cent: PHP %s refers %.2f per cent and PHP %s refers %.2f per cent." %

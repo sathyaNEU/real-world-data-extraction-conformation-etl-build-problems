@@ -62,17 +62,14 @@ def ceiling(C, b, scale):
 
 
 def read_scale(policy_text):
-    """The factors schedule B tabulates, and B.2's rule for the rest."""
-    tab = {}
-    for b, m in ((1, r"HH1\s+0\.(\d{3})"), (2, r"HH2\s+0\.(\d{3})"), (3, r"HH3\s+0\.(\d{3})"),
-                 (4, r"HH4\s+1\.(\d{3})")):
-        g = re.search(m, policy_text)
-        if g:
-            tab[b] = float(("1." if b == 4 else "0.") + g.group(1))
-    out = {}
-    for b in BANDS:
-        out[b] = tab.get(b, round(math.sqrt(b / 4.0), 3))
-    return out, tab
+    """Schedule B files the scale as a rule and tabulates no factor, so every band's factor is
+    computed from B.2: the square root of the ratio of the band's size to the reference size of four,
+    to three decimals, the band's size being its lower bound."""
+    need("square root of the ratio" in policy_text, "B.2 states the scale as a ratio under a root")
+    need("lower bound of the band" in policy_text, "B.2 fixes the open band's size")
+    need(not re.search(r"0\.707|0\.866|1\.118|1\.225", policy_text),
+         "no factor is tabulated in the policy")
+    return {b: round(math.sqrt(b / 4.0), 3) for b in BANDS}, {}
 
 
 def read_returns(target):
@@ -169,7 +166,7 @@ def main(target, golden, figures_path, submission_path):
     need("thousands of pesos" in smy, "the published summary states its units")
 
     scale, tabulated = read_scale(pol)
-    need(len(tabulated) == 4, "schedule B tabulates four bands", sorted(tabulated))
+    need(not tabulated, "schedule B tabulates no factor, so each one is computed from B.2")
     for b in BANDS:
         need(abs(scale[b] - round(math.sqrt(b / 4.0), 3)) < 1e-9, "factor for band %d" % b, scale[b])
     with open(os.path.join(target, BANDS_CSV), newline="", encoding="utf-8") as fh:

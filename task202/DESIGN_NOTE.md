@@ -1,6 +1,7 @@
 # task202 design note
 
-**Status: architecture v1 designed and measured, stage 2, nothing cut.** Four grounds were screened to
+**Status: architecture v1 built, stage 3 complete on the free gates, one gate red (the ask layer's
+pair ceiling, measured at 65.5 against the bar of 40).** Four grounds were screened to
 death before it (human-factors thinned-count and time-on-task, multiple-testing selective inference, the
 designation-set device on task181's safety-incident ground, and environmental-monitoring exceedance on four
 mechanisms and five candidates); all of those kills, with their measurements, are in `## Tried and
@@ -77,11 +78,16 @@ are fixed by the generator at the cut.
 5. Solve the reference-size ceiling backwards through the equivalence scale and the rounding rule.
 6. File the schedule and report each band's referred share.
 
-**Ends on:** PHP 5,800 at the reference band, a schedule that would refer 9.6 per cent of the window's
+**Ends on:** PHP 5,800 at the reference band, a schedule that would refer 9.82 per cent of the window's
 awards against the 6.0 per cent the board committed to.
 
-**Golden:** PHP 7,830 at the reference band, 20.3 printed units above the default path, referring 5.95 per
-cent of the window's awards.
+**Golden:** PHP 7,800 at the reference band, 20.0 printed units above the default path, referring 5.94 per
+cent of the window's awards. The design read PHP 7,830 before the pack was cut, which was the mean of ten
+draws of the world rather than a ceiling any world prints: clause 9 makes every ceiling a multiple of
+PHP 100, so 7,830 is unattainable and the cut pack prints the attainable figure nearest it. Clause 9's own
+margin at that figure is measured, not assumed: the schedule refers 5.9429 per cent against the 6.0000 per
+cent cap, which is 0.57 of the step the last PHP 100 of ceiling buys, and PHP 7,700 refers 6.0432 per cent,
+0.43 of the step above it.
 
 ## Stump sentence
 
@@ -106,8 +112,8 @@ distribution from each partner's own stated average and a scale-free within-part
 the partners that claim award by award.
 
 **Swap:** the General Statistics swap is of the method, and it breaks: replace the distribution's shape with
-a generic summary, the partner average, and the reference ceiling moves from PHP 7,830 to PHP 5,800, 20.3
-printed units, and the referral rate from 6.0 per cent to 9.6; on the domain's own nouns the swap fails too,
+a generic summary, the partner average, and the reference ceiling moves from PHP 7,800 to PHP 5,800, 20.0
+printed units, and the referral rate from 5.94 per cent to 9.82; on the domain's own nouns the swap fails too,
 because the award shape is bimodal for a reason only a relief scheme produces, a standard living-cost award
 with a one-off capital item on about nine awards in a hundred at about four times the standard, and because
 the ceiling is nested across household sizes by the scheme's own equivalence scale.
@@ -194,19 +200,40 @@ Seven routes to the one filed quantity, each executing every filed rule, measure
 ten seeds (`lock.py`). Printed unit PHP 100. "Ties" counts seeds on which the route prints the golden's
 value.
 
-| Rung | Route | Ceiling | Against golden | Ties |
-|---|---|---|---|---|
-| 1 | partner-band averages, award-count weighted (default path) | PHP 5,800 | -20.3 pu | 0/10 |
-| 2 | the portal's awards pooled as they stand | PHP 8,010 | +1.8 pu | 0/10 |
-| 3 | the pooled portal rescaled by one portfolio-to-portal ratio | PHP 8,980 | +11.5 pu | 0/10 |
-| 4 | the portal rescaled per band and reweighted to the portfolio's band counts | PHP 8,170 | +3.4 pu | 2/10 |
-| 5a | rebuilt per partner-band, one lognormal at the portal's CV | PHP 8,410 | +5.8 pu | 1/10 |
-| 5b | rebuilt per partner-band, one gamma at the portal's CV | PHP 8,740 | +9.1 pu | 0/10 |
-| 5c | rebuilt per partner-band, a two-component mixture fitted by EM | PHP 6,820 | -10.1 pu | 0/10 |
-| 6 | **rebuilt per partner-band with the measured shape (golden)** | **PHP 7,830** | 0 | 10/10 |
+Measured on the shipped pack (`generator/checks.py`, asserted rung by rung), with the same route measured
+over the 84 draws of this world the scan covered beside it, each rescaled so clause 9's ceiling lands on
+PHP 7,800, so the separation can be read as the mechanism's and not the draw's.
 
-The arithmetic. The measured shape's coefficient of variation is 0.720. Rung 1 drops it entirely, which is
-why it is the largest error and why its schedule refers 9.6 per cent of awards instead of 6.0. Rungs 2 to 4
+| Rung | Route | Ceiling | Against golden | Over 84 draws (mean, median) |
+|---|---|---|---|---|
+| 1 | partner-band averages, award-count weighted (default path) | PHP 5,800 | -20.0 pu | -18.9, -20 pu |
+| 2 | the portal's awards pooled as they stand | PHP 6,600 | -12.0 pu | -14.2, -12 pu |
+| 3 | the pooled portal rescaled by one portfolio-to-portal ratio | PHP 9,600 | +18.0 pu | +13.6, +14 pu |
+| 4 | the portal rescaled per band and reweighted to the portfolio's band counts | PHP 8,800 | +10.0 pu | +5.2, +6 pu |
+| 5a | rebuilt per partner-band, one lognormal at the portal's CV | PHP 8,400 | +6.0 pu | +5.0, +5 pu |
+| 5b | rebuilt per partner-band, one gamma at the portal's CV | PHP 8,700 | +9.0 pu | +8.1, +8 pu |
+| 6 | **rebuilt per partner-band with the measured shape (golden)** | **PHP 7,800** | 0 | 0 |
+| - | rebuilt per partner-band, a correctly specified two-component mixture fitted by EM | PHP 7,800 | 0 | +0 pu on 80 of 84 |
+
+**How much of the shipped separation is the mechanism and how much is the draw, stated as a number.** The
+three large rungs are the mechanism and hold on essentially every draw: dropping the within-partner spread
+costs about 19 printed units, pooling the portal as it stands about 14, and rescaling that pool by one
+ratio about 14 the other way. The *thinnest* rung is the draw's: across the 84 draws the smallest
+separation in a draw has a median of 2.0 printed units and sits under 3 in 47 of them, and the routes that
+come closest are the two nearest neighbours of the decisive step (rung 4 and rung 5a, which both rebuild
+something per cell). The shipped draw was selected where that thinnest rung is widest, at 6.0 printed
+units, PHP 600, which is what `checks.py` asserts on the pack the judge will see; the selection is recorded
+here rather than presented as the mechanism's typical behaviour.
+
+The last row is not a rung and is the strongest determinism evidence in the build: the award shape is a
+two-component lognormal mixture, so a correctly specified fit recovers it (fitted weight 0.9102 against a
+true 0.9100) and prints the same ceiling. How the shape is represented is therefore a C3 corridor rather
+than a fork, while every route that substitutes a single smooth family (5a, 5b) or that skips the rebuild
+altogether (1 to 4) is 6 to 20 printed units away. The minimum separation across the six wrong routes on
+the shipped pack is 6.0 printed units, PHP 600.
+
+The arithmetic. The measured shape's coefficient of variation is 0.72. Rung 1 drops it entirely, which is
+why it is the largest error and why its schedule refers 9.82 per cent of awards instead of 6.0. Rungs 2 to 4
 use the portal's awards, which carry the shape but also the pilot's own level range and household-size mix:
 the pilot is two provinces of eight, so its partners are alike in level (within-province level spread 0.12
 against 0.42 between provinces) and its mix is 27/24/19/14/9/7 per cent against the portfolio's
@@ -226,8 +253,8 @@ printed units.
 |---|---|---|---|
 | SF1 | "the scheme's awards" | all accredited partners' awards, or only the portal partners' | clause 9 names all accredited partners; `same call` is false, so the sentence closes it (C1 by filing) |
 | SF2 | the window | the fiscal year July to June, or the twelve months to 31 March 2027 | clause 9 files the twelve months to 31 March 2027; the generator keeps every award clear of both boundaries (C1) |
-| SF3 | which awards measure the award shape | the portal's 27 months, or the portal's awards inside the window | clause 9 files "over those same twelve months" (C1 by filing the window, which is an estimand part) |
-| SF4 | the shape pooled or per band | one shape across bands, or each band's own | the pack's own band-homogeneity test does not reject (measured: the per-band and per-tercile ceilings differ by 7.0 printed units, all inside the sampling interval), so pooling is the forced reading and subsetting is rung 4's error |
+| SF3 | which awards measure the award shape | the portal's 27 months, or the portal's awards inside the window | the records decide it, not a clause: the two capital-item components became eligible only on 1 July 2025 (schedule D and the policy's amendment history), so the portal's earlier claims are a different award mix and the component codes show it. Measured: the 27-month reading prints PHP 7,200, 6.0 printed units low (C4, the alternative violates a shipped fact) |
+| SF4 | the shape pooled or per band | one shape across bands, or each band's own | `same call`, measured on the cut pack: the per-band reading and the per-partner-level-tercile reading both print PHP 7,800, asserted in `checks.py`. The 7.0 printed units the design reported was the spread of nine separate subset ceilings, which is not the alternative reading; the per-band reading uses all 11,788 claims partitioned, so its errors cancel. Each band's own 94th percentile of the shape sits within 12 per cent of the pooled one, asserted band by band |
 | SF5 | "rounded to the nearest PHP 100" | up, down or nearest | schedule B files "rounded up"; asserted in `checks.py` |
 | SF6 | "at or below 6.0 per cent" | the lowest qualifying ceiling, or the closest to 6.0 | clause 9 files the lowest; the share falls monotonically in the ceiling, so the lowest is unique (C1) |
 | SF7 | share of awards or of value | the count share, or the value share | clause 9 files "the share of the scheme's awards"; the value share is a separate graded ask |
@@ -279,7 +306,7 @@ are fixed and how the award distribution is recovered is left to the analysis.
 ## Oracles
 
 - `generator/checks.py`: the analyst test executed on the clean truth (rung 1 files PHP 5,800), then the
-  decisive step alone changed and the golden asserted (PHP 7,830 pending the cut); every SF row asserted;
+  decisive step alone changed and the golden asserted (PHP 7,800); every SF row asserted;
   the edge distance of every graded figure from its printed cell boundary; row-order invariance over six
   permutations; the award-count and value reconciliation between the returns, the portal and the summary.
 - `verify.py`: reads only the shipped bundle and recomputes the ceiling schedule, each band's referred
@@ -292,50 +319,73 @@ are fixed and how the award distribution is recovered is left to the analysis.
   each of three committed shares, 6, 10 and 15 per cent**, on the second model cut. The solve is therefore
   not itself a fork, and the ladder's spread is the shape's, not the search's.
 - The portal's goodness of fit, which is the pack's own closure evidence: KS against a single lognormal
-  12.5 times the five per cent critical value, against a gamma 18.8 times, against an EM two-component fit
-  23.0 times; and the within-partner spread scaling with the partner's level, which refuses an additive
-  shape.
+  16.1 times the five per cent critical value, against a gamma 19.1 times, against an EM two-component fit
+  0.33 times, which accepts it and is why the correctly specified fit is a corridor and not a rung; and the
+  within-partner spread scaling with the partner's level at a correlation of 0.969 over the 22 portal
+  partners, which refuses an additive shape.
 
 ## Ask sheet
 
-Twenty-nine graded figures and two deliverables, every one separately gradable and determinate, each with
-its unit and rounding inside the asking sentence.
+The prompt asks for four families of six figures and two deliverables: twenty-four graded figures, every
+one separately gradable and determinate, each with its unit and rounding inside the asking sentence. Band
+4's ceiling is the main call.
 
 | Ask | Figures | Device against the careful solver's path |
 |---|---|---|
-| A1 each band's 2027/28 referral ceiling, pesos to the nearest PHP 100 | 6 | the scale is in a table inside a scanned PDF and the rounding rule is in a different file |
-| A2 each band's referred share of its own window awards, one decimal | 6 | the band mix differs between the pilot and the portfolio, so a portal-only read misses every band |
-| A3 each band's referred share of its own window award value, one decimal | 6 | value share against count share: the capital-item mode carries far more value than count |
-| A4 the equivalence-scale factor applied at each band, three decimals | 6 | schedule B states the scale at the reference size; two bands' factors are only stated via the scale's formula |
-| A5 the number of window awards that would be referred, whole awards | 1 | the superseded months and the mid-window accreditation both move the count |
-| A6 the measured award shape's coefficient of variation, two decimals | 1 | measured on the window's portal awards, not all 27 months (SF3) |
-| A7 the reference-band ceiling (the main call), pesos to PHP 100 | 1 | the ladder above |
-| A8 the two deliverables | 2 | the schedule workbook and the board paper |
+| A1 each band's 2027/28 referral ceiling, pesos to the nearest PHP 100 | 6 | the scale's formula is in a table inside the policy PDF and the rounding rule is a separate clause of it |
+| A2 each band's referred share of its own window awards, one decimal | 6 | the band mix differs between the pilot and the portfolio, so a portal-only read misses every band; counting a superseded return as well as its revision moves band 4 from 6.1 to 6.0, measured |
+| A3 each band's referred share of its own window award value, one decimal | 6 | value share against count share: the capital-item components carry 22 per cent of value against 6 per cent of count |
+| A4 the equivalence-scale factor applied at each band, three decimals | 6 | schedule B tabulates four of the six bands; bands 5 and 6 are only stated through B.2's formula, and the band's size for band 6 is its lower bound |
+| D1, D2 the two deliverables | 2 content criteria | the schedule workbook and the board paper, which must carry the distribution against the ceilings |
 
-**Dropped on the sixth screen.** An ask designating the partners whose own referred share would exceed 12
-per cent was designed and then dropped: the designation is not determinate. Measured on the locked model,
-the golden's own estimator family returns **2 distinct designated sets over 12 bootstrap redraws of the
-portal, with set sizes 11 and 12**, so the count is not constant and the set is not gradable. Every
-surviving ask is a cut, a share or a count that follows from the forced construction rather than from
-comparing units.
+**Dropped, and why each is out.** The designating ask (which partners' own referred share would exceed 12
+per cent) was dropped at the design stage because the golden's own estimator family returned 2 distinct
+designated sets over 12 bootstrap redraws. Two further asks were dropped at the build: the number of
+window awards referred, and the award shape's coefficient of variation. The prompt asks for neither, and a
+graded figure the prompt never asked for is an open fork by construction, since nothing fixes its basis,
+population or rounding (`determinism-check` section 5). Both are still computed and asserted; they sit in
+the goldens' basis sheet as working, not as answers the rubric owes.
 
-**Pair ceiling:** 40.0 (design target; owes a measurement on the cut pack).
+**Pair ceiling:** 65.5 (measured on the cut pack, over the bar of 40, and the one red gate in this build).
 
-**Mirror leakage:** 30.0 (design target; owes a measurement on the cut pack).
+**Mirror leakage:** 34.6 per cent of ask weight (measured, under the 35 bar).
 
-**Measured by:** `generator/cracker.py`, not yet written: the pack is not cut, so this figure is a target
-and not a measurement, and `precut.py` is expected to refuse this row until stage 3 runs it.
+**Measured by:** `generator/cracker.py`, run on the cut pack. It scores both responses from different
+readings on Part 0's weights (38 recommendation and components, 7 instruction-following, 55 asks, r = 5),
+prints one row per response and sweeps the pair against the cracker's keep count.
 
-| Ask | Cracker's route | Cracker |
+**What the measurement says, and it is a finding about the ask layer rather than about any device.** Every
+graded figure in the prompt is the call's own construction over the call's own population: the six ceilings
+are generated from the call by schedule B, the six factors are read off schedule B, and the twelve shares
+are that construction cut per band over exactly the rows clause 9's own comparison runs over. A response
+that lands the call therefore keeps all twenty-four, so the cracker keeps 26 of 26 ask criteria and scores
+100 against the mirror's 31.0. `supplemental-stumping` Part 1.2 ban 4 forbids an ask keyed to the call's
+construction and Part 2.1's corollary gives the reason no device can repair it: an ask computed over the
+call's own population can carry no primary, because the separation line puts zero device rows inside the
+main call's declared population. The sweep in `cracker.py` prices it exactly: the pair reaches 40 only when
+the cracker keeps 2 of 26 or fewer.
+
+The ask layer therefore needs re-siting rather than hardening, onto quantities the call never reads (the
+claims pipeline's own records, the accreditation and enrolment history, the reconciliation between the
+returns and the Treasury's payment runs), and that changes `prompt.txt`, which is outside this pass. The
+repair route is `/fix-rubric` with the main recommendation side frozen, and `freeze.py check --mode rubric`
+proves the scope.
+
+**The premise the number rests on, stated so it is not read as more than it is.** The pair ceiling assumes
+one of the top two responses lands the call, which is the conservative premise and the one the gate reads.
+Measured the other way, with both top responses stopping at a wrong rung, the pair is 31.0: every mirror
+measured keeps only the six scale factors and the two content criteria. Which premise holds is a question
+about the ladder, and the ladder's own evidence is the six wrong routes at 6 to 20 printed units and the
+silent decisive rung; the stage 4 cold reader settles it, and until it does the gated field carries the
+worse of the two numbers.
+
+| Ask | The cracker's route | Cracker |
 |---|---|---|
-| A1 | partner averages cut at the committed share | miss |
-| A2 | the pilot's own band shares | miss |
-| A3 | count share reported as value share | miss |
-| A4 | the scale read at the wrong reference size | miss |
-| A5 | both overlapping months counted | miss |
-| A6 | the CV over all 27 portal months | miss |
-| A7 | partner averages cut at the committed share | miss |
-| A8 | schedule without the band shares | miss |
+| A1 | lands the call and generates the band ceilings by schedule B | keeps 6 of 6 |
+| A2 | lands the call and cuts the rebuilt distribution per band | keeps 6 of 6 |
+| A3 | lands the call and takes the value above each band ceiling | keeps 6 of 6 |
+| A4 | reads schedule B.2 and computes the two untabulated factors | keeps 6 of 6 |
+| D1, D2 | produces both named files with the schedule and the chart | keeps 2 of 2 |
 
 ## Tried and rejected
 
@@ -629,3 +679,102 @@ printed units, which is larger than three of the seven rung separations. The des
 pack's own band-homogeneity test, which does not reject, so pooling is the forced reading and subsetting is
 rung 4's error; but the closure rests on a test rather than on the records, and it is the row the
 determinism judge should be pointed at first.
+
+### The build pass: six design figures falsified by measuring them on the pack (2026-10-18)
+
+Every line here is a number computed on the generator's own truth or on the cut pack, and each replaced a
+figure the design had argued. The scripts are `generator/tune.py` (the draw and award-level scan),
+`generator/checks.py` (188 assertions), `generator/mess_check.py`, `generator/cracker.py` and
+`generator/verify.py`.
+
+**Rung 5c, the EM two-component mixture, is not a rung: it converges on the golden.** The design recorded
+it at PHP 6,820, 10.1 printed units below the golden, and recorded the portal as refusing it at 23.0 times
+the five per cent Kolmogorov-Smirnov critical value. Both figures were artefacts. Fitted on the pack the
+mixture recovers the truth almost exactly (weight 0.9102 against a true 0.9100, log means -0.2564 and
++1.0765 against -0.2607 and +1.0899) and fits the portal at **0.33 times the critical value**, better than
+the true parameters do at 1.98, because the award shape *is* a two-component lognormal mixture by
+construction. The 10.1 printed units came from drawing only 150,000 values from the fitted mixture and
+reading a 94th-percentile tail functional off that sample: the same fitted parameters give -1.0, -12.0 and
+-10.0 printed units on three seeds with a 150,000 draw and **+0.0 on all three** with analytic quantiles.
+The build is better for it. How the shape is represented is now a C3 corridor, not a fork, and the ladder
+keeps the two misspecified families (a single lognormal at +6.0, a gamma at +9.0) which the portal really
+does refuse at 16.1 and 19.1 times critical.
+
+**"The golden stable over ten seeds" was a tie count against itself.** `lock.py` compared each route with
+the golden and reported ties, so the golden's own row read 10 of 10 by construction. Measured per seed at
+the locked parameters the golden runs **PHP 5,300 to PHP 10,400**, because it is a tail functional of a
+realised portfolio of eight province levels and 88 partner levels, and more volume does not shrink it
+(102,000 window awards gives the same spread as 51,000). Nothing in the build rested on that stability and
+nothing needs it: the pack is one realised portfolio, and what has to hold across draws is the
+*separation*, which does (the mean separations over eight draws sit beside the shipped pack's in the ladder
+table). The claim is withdrawn rather than repaired.
+
+**PHP 7,830 was not an attainable ceiling.** It is the mean of ten draws; clause 9 makes every ceiling a
+multiple of PHP 100. The shipped pack prints PHP 7,800, and the award level was chosen inside the plateau
+that prints it (the plateau runs from about PHP 3,300 to PHP 3,333 of standard award; the shipped 3,311.5
+sits in it with the graded figures centred, below).
+
+**Rung 2 at +1.8 and rung 4 at +3.4 printed units were implementation artefacts, and both widened to -12.0
+and +10.0 without touching a mechanism parameter.** Two causes. The design's rung 2 and rung 3 were
+measured with the *portfolio's* band weights, so the pilot's own household-size mix never cost them
+anything, although the rung's own words are "pooled as they stand"; implemented literally, with the
+portal's own mix, rung 2 moves to -18.0 per cent of the golden on the mean of eight draws. And which two of
+the eight provinces ran the portal pilot is a free world fact: ranks 2 and 5 by award level leave the
+pilot's level range wide enough that the pooling routes partly cancel, while two provinces adjacent in
+level (ranks 2 and 4) make the portal's between-partner spread clearly narrower than the portfolio's, which
+is the mechanism the design note already describes. Swept over nine rank pairs on eight draws each: the
+worst per-seed separation across all six wrong routes runs 0.0 printed units at ranks 2 and 5 and 7.4 at
+ranks 2 and 4. The pilot provinces are still two ordinary ones rather than the extremes.
+
+**SF4's 7.0 printed units was a measurement of something that is not a reading of the clause.** It was the
+spread of nine ceilings, each computed by applying one subset's shape to every cell. The alternative
+reading SF4 names is one ceiling computed with each band's own shape applied to that band's cells, which
+uses all 11,788 window claims partitioned rather than a sixth of them, so the subset errors cancel.
+Measured on the cut pack both that reading and the per-partner-level-tercile reading print **PHP 7,800**,
+and `checks.py` asserts it. SF4 is now `same call` and is no longer the row to point the judge at.
+
+**Volume is a weak lever and was rejected.** Tripling every partner's award volume (161,000 awards to
+484,000, and the portal spine from 26,000 rows to 79,000) moves the subset spread only from 5.6 to 4.25
+printed units, because the dominant term is the realised portfolio and not the portal's sample size. The
+pack keeps the 26,195-row portal spine.
+
+**The policy ships as a text PDF, not as a scan.** The design's Layer 1 inventory called for the
+equivalence scale in a table inside a scanned policy PDF. A scan has no text layer, so no verifier can read
+the clause back, and `dataset-generation` requires every format read back through the verifier's own
+extractor with a positive control on the same code path. The policy ships as the document system's own PDF
+with schedule B as a table in it, which is the canonical Layer 1 item (a table inside a PDF) and which
+`verify.py` reads back: it pulls the four tabulated factors out of the text layer, derives the two
+untabulated ones from B.2's rule and recomputes all six band ceilings from them.
+
+**The scheme change that closes SF3 is a world fact, not a clause.** Filing the shape's measurement window
+in clause 9 was drafted and rejected: any wording that names the within-partner variation tells the solver
+the thing the default path misses, and the readability screen's test 4 would fail the decisive rung. The
+two capital-item components instead became eligible on 1 July 2025 by board resolution, recorded in
+schedule D and the amendment history, so the portal's earlier claims carry a visibly different award mix
+and the 27-month reading is refused by a shipped fact rather than by a clause. Measured: it prints
+PHP 7,200, 6.0 printed units low.
+
+**Where the draw was chosen from, and on what.** 84 draws of the world were scanned (`tune.py`), each
+rescaled so clause 9's ceiling lands on PHP 7,800, and scored on four things measured rather than argued:
+the worst separation across the six wrong routes, clause 9's own clearance below the cap and excess above
+it one step down, and the tightest graded figure's distance from its printed cell edge. The shipped draw
+holds 6.0 printed units of worst separation, 0.57 and 0.43 of the step, and 0.22 of a half-cell on the
+tightest of the twelve share figures (band 4's referred share at 6.0612, which flips at a change of about
+one referred award in that band). The award level was then centred inside the PHP 7,800 plateau on the same
+criterion, which moved the tightest figure from 0.03 to 0.22 of its half-cell.
+
+**Every Layer 1 item is neutral on the call, measured item by item on the cut pack**
+(`generator/mess_check.py`): taking the preliminary returns only, counting a superseded return as well as
+its revision, netting the recovery line, resolving the band labels through the reference table and
+bypassing the identifier crosswalk by normalising the portal's own reference all print PHP 7,800 and leave
+the overall referred share at 5.94 per cent. Counting a superseded return as well as its revision does move
+band 4's referred share from 6.1 to 6.0, which is a breach of the policy's own superseding rule rather than
+a mishandling of mess, and it is one of the ask layer's devices.
+
+**The ask layer cannot hold the pair ceiling, and no device can repair it.** Measured at 65.5 against the
+bar of 40. The reason is in the ask sheet above: the prompt's twenty-four graded figures are the call's own
+construction over the call's own population, which `supplemental-stumping` Part 1.2 ban 4 forbids and Part
+2.1's corollary proves undeviceable. Two asks were dropped on the way (the referred award count and the
+shape's coefficient of variation) because the prompt asks for neither and a graded figure with no asking
+sentence has no fixed basis. The repair is to re-site the ask layer onto quantities the call never reads,
+which changes `prompt.txt` and belongs to `/fix-rubric`.
