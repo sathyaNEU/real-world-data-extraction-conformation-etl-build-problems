@@ -103,6 +103,34 @@ def workbook(path, F):
     for col, w in zip("ABCD", (12, 15, 22, 22)):
         we.column_dimensions[col].width = w
 
+    wn = wb.create_sheet("Notes")
+    for line in [
+            ["Reserve performance scorecard, November 2026 determination"],
+            ["Prepared by the reserve portfolio desk on 2026-10-13. Review window 2026-09-21 to"],
+            ["2026-10-11 inclusive, which is the reserve quarter to the last delivery date before"],
+            ["the determination."],
+            [""],
+            ["Realised response gain is clause 2 of the performance standard: power delivered in"],
+            ["excess of the output the site would have produced at that second had the frequency"],
+            ["stayed inside the dead band, per hertz beyond the dead band, taken at the extreme"],
+            ["second of each qualifying episode, averaged with equal weight, as a percentage of the"],
+            ["site's contracted capacity divided by 190 mHz. Reported to the nearest whole per cent."],
+            [""],
+            ["Out of scope: episodes in a settlement period the site was not committed to, and the"],
+            ["parts of a block in which the site was not holding reserve. Upward and downward"],
+            ["response are reported separately and are never averaged together."],
+            [""],
+            ["Capacity hours and energies are in MWh to one decimal place, summed over the window's"],
+            ["delivery dates and rounded once. Episode counts are whole."],
+            [""],
+            ["Meppelerdiep had no qualifying over-frequency episode in the window, so its"],
+            ["down-regulation gain is reported as none rather than as zero."],
+            [""],
+            ["The Oosterhout metering point was replaced at the connection with effect from"],
+            ["2026-10-01; both codes are its own and both are included."],
+        ]:
+        wn.append(line)
+    wn.column_dimensions["A"].width = 92
     wb.properties.creator = "Veerkracht Flex"; wb.properties.lastModifiedBy = "Veerkracht Flex"
     wb.properties.created = dt.datetime(2026, 10, 13, 7, 12, 0)
     wb.properties.modified = dt.datetime(2026, 10, 13, 9, 38, 0)
@@ -161,8 +189,10 @@ def memo(path, F):
     w("Down-regulation gains are on the same characteristic and are reported in the workbook; %s is the "
       "lowest there too at %.0f per cent, and %s had no qualifying over-frequency episode in the window. "
       "Reserve capacity held available and the shortfall against commitment are per block in the workbook; "
-      "the withdrawn hours are taken from the platform's own event timestamps, which the start field on the "
-      "operator-interface rows does not agree with. Outside the blocks they were committed to, the sites "
+      "the withdrawn hours are taken from the platform's own log timestamps, which sit ninety seconds after "
+      "each window opens throughout the file; the start field agrees with that on the rows the alarm "
+      "handler wrote and reads two hours early on the rest. Outside the blocks they were committed to, "
+      "the sites "
       "delivered %.1f MWh above programme and %.1f MWh below it, which is the imbalance position the desk "
       "carried and is dominated by the traverse lag rather than by any site missing dispatch." % (
           F["down_low_name"], F["down_low_gain"], F["down_none_name"],

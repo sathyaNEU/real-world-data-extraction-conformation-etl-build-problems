@@ -288,6 +288,72 @@ def main():
         ok("no shipped document names the decisive step (%s)" % name, not hits,
            ", ".join(hits) or "clean")
 
+    # --- the readings a judge reaches for, each closed on the shipped bytes -----------
+    print("\n-- the request gap, the standing register and the evidence date")
+    mine = [m for m in matches if m["member_code"] == SUBJECT and m["scheme_year"] == MEASURED]
+    req = {}
+    for r in requests:
+        if r["member_code"] == SUBJECT and r["case_reference"]:
+            req.setdefault(r["case_reference"], []).append(r["request_sent_date"])
+    def first_request(m):
+        ds = [s for s in req.get(m["case_reference"], []) if s]
+        return min(ds) if ds else None
+    def produced(m):
+        return any(s and s <= m["registered_date"] for s in req.get(m["case_reference"], []))
+    def est_of(keep):
+        kr = [m for m in keep if m["case_reference"]]
+        return len(recorded_rows) * len(keep) / len(kr) / ix["volume"] * 1e6
+    recorded_rows = [r for r in reg if r["member_code"] == SUBJECT and r["scheme_year"] == MEASURED
+                     and r["cover_class"] == "scam reimbursement"]
+    leads = []
+    for m in mine:
+        rq = first_request(m)
+        if rq and m["registered_date"] < rq:
+            leads.append((d(rq) - d(m["registered_date"])).days)
+    ok("no independent registration sits inside the request gap", leads and min(leads) >= 22,
+       "closest is %d days ahead of the request" % (min(leads) if leads else -1))
+    ok("the one-to-five-day band ahead of a request is empty",
+       not [x for x in leads if x <= 5], "%d in the band" % len([x for x in leads if x <= 5]))
+    for lead in (1, 2, 3, 5, 7, 14, 21):
+        keep = [m for m in mine if not (first_request(m) and m["registered_date"]
+                                        >= (d(first_request(m)) - dt.timedelta(days=lead)).isoformat())]
+        r_ = est_of(keep)
+        ok("a %d-day request window is the same call" % lead, round(r_) == ix["index"],
+           "%.3f prints %d" % (r_, round(r_)))
+    prepay = [m for m in mine if m["registered_date"] < m["payment_date"]]
+    ok("registrations that predate their payment are a real body", len(prepay) >= 60,
+       "%d rows" % len(prepay))
+    indep = [m for m in mine if not produced(m)]
+    pre_rec = len([m for m in prepay if m["case_reference"] and not produced(m)])
+    pre_un = len([m for m in prepay if not m["case_reference"] and not produced(m)])
+    b_ = len([m for m in indep if m["case_reference"]])
+    sh_rec, sh_un = pre_rec / b_, pre_un / (len(indep) - b_)
+    ok("the pre-payment share is the same on both sides of the overlap", abs(sh_rec - sh_un) < 0.03,
+       "%.3f against %.3f" % (sh_rec, sh_un))
+    keep = [m for m in indep if m["registered_date"] >= m["payment_date"]]
+    r_ = est_of(keep)
+    ok("SF13 dropping every pre-payment registration is the same call", round(r_) == ix["index"],
+       "%.3f prints %d" % (r_, round(r_)))
+    keep = [m for m in indep if m["registered_date"] <= AS_OF.isoformat()]
+    r_ = est_of(keep)
+    ok("cutting the register at the scheme year end gives another figure", round(r_) != ix["index"],
+       "%.3f prints %d" % (r_, round(r_)))
+    ok("the standard dates the evidence base to the review", 
+       "as it stands when the review is prepared" in std, "clause 4.2")
+    ok("the pack dates the evidence base to the pull and names no feed change",
+       "as pulled for this meeting on 2 July 2027" in pack_txt
+       and "register feed change of February" not in pack_txt, "the pack agrees")
+    ok("the feed note keeps the padding convention and drops the mechanics",
+       "Pad the account number back to eight digits" in notes
+       and "An account stays on the register once it is reported" in notes
+       and "the field is blank" not in notes, "the note reads as an operations note")
+    reasons = {r["report_reason"] for r in register}
+    ok("the register's report reasons vary as a real register's do", len(reasons) >= 3,
+       "%d distinct reasons" % len(reasons))
+    wren = [m for m in members if m["member_code"] == "KM-103"][0]
+    ok("the tier a member is carried at names the review that set it",
+       "held from the 2024 review" in wren["tier_basis"], wren["tier_basis"])
+
     print("\n-- the asks")
     det = sheet("settlement_advices_2026_27.xlsx", "advice detail")
     tier = {m["member_code"]: m["contribution_tier"] for m in members}
@@ -357,8 +423,9 @@ def main():
                       if l["entry_type"] == "recovery credit" and l["recovery_route"] == route
                       and l["case_reference"] in refs)
             c_fig["Q%d %s" % (q, route)] = round(got / reimb * 100.0, 1) if reimb else 0.0
+    # the route total covers the same four quarters the rows cover, which is what the ask pins
     sel = [r for r in reg if r["cover_class"] == "scam reimbursement" and r["scheme_year"] == "2025/26"
-           and r["closed_date"]]
+           and r["closed_date"] and _q(d(r["closed_date"]), "2025/26") is not None]
     reimb = sum(float(r["reimbursed_amount_gbp"]) for r in sel)
     refs = {r["case_reference"] for r in sel}
     for route in ROUTES:
@@ -379,6 +446,39 @@ def main():
        all(v > 0.1 for v in gaps.values()),
        "repatriation understated by %s percentage points" % ", ".join("%.1f" % v
                                                                       for v in gaps.values()))
+
+    # --- the two asks the judge could not reconcile ----------------------------------
+    print("\n-- the asks reconcile on the basis their own sentence pins")
+    # ask 6: the route total covers the same four quarters as the rows, so the quarters' own
+    # numerators over the quarters' own denominators is the stated total
+    num = {r: 0.0 for r in ROUTES}
+    den = 0.0
+    for q in (1, 2, 3, 4):
+        sel = [r for r in reg if r["cover_class"] == "scam reimbursement"
+               and r["scheme_year"] == "2025/26" and r["closed_date"]
+               and _q(d(r["closed_date"]), "2025/26") == q]
+        den += sum(float(r["reimbursed_amount_gbp"]) for r in sel)
+        refs = {r["case_reference"] for r in sel}
+        for route in ROUTES:
+            num[route] += sum(float(l["credit_amount_gbp"]) for l in legs
+                              if l["entry_type"] == "recovery credit" and l["recovery_route"] == route
+                              and l["case_reference"] in refs)
+    bad = [r for r in ROUTES if abs(round(num[r] / den * 100.0, 1) - c_fig["year %s" % r]) > 0.051]
+    ok("ask 6's route totals reconcile with its own four quarters", not bad,
+       "; ".join("%s %.1f" % (r, num[r] / den * 100.0) for r in ROUTES))
+    # ask 4: the quarter total is taken from the unrounded tier amounts, which the ask pins, and on at
+    # least one quarter that differs from adding the rounded tier figures, so the pin is load bearing
+    diff = []
+    for q in (1, 2, 3, 4):
+        unrounded = round(sum(a_fig["Q%d %s" % (q, t)] for t in "ABC"))
+        rounded = sum(round(a_fig["Q%d %s" % (q, t)]) for t in "ABC")
+        if unrounded != rounded:
+            diff.append("Q%d %d against %d" % (q, unrounded, rounded))
+        ok("ask 4's Q%d total is the unrounded tier amounts rounded once" % q,
+           round(a_fig["Q%d total" % q]) == unrounded,
+           "%d" % unrounded)
+    ok("ask 4's rounding basis changes at least one quarter total, so the ask pins it", diff,
+       "; ".join(diff) or "no quarter differs")
 
     print("\n-- the gates")
     files = sorted(os.listdir(TARGET))

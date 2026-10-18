@@ -23,7 +23,7 @@ Kelverstone Mutual sets Castlegate Payments' scam incidence index for the indemn
 
 **Data-native sentence.** In this pack a scam case can be sighted twice, once by the member that sent the
 payment and once by the scheme's register of beneficiary accounts other firms have reported, and the second
-sighting exists for 205 of Castlegate's 325 doubly-sighted cases only because Castlegate itself asked the
+sighting exists for 125 of Castlegate's 282 doubly-sighted cases only because Castlegate itself asked the
 receiving firm to return the money after it had already opened the case, so the overlap the two-source
 estimator divides by is mostly Castlegate's own work coming back to it.
 
@@ -56,31 +56,32 @@ The pipeline a competent analyst builds from the question's words and the files'
    scheme year: 400 cases.
 3. Take Castlegate's payments sent from the revised quarterly returns in
    `returns/member_quarterly_returns.xlsx`, converting the thousands column on the pre-2024/25 layout:
-   22.30 million payments.
+   22.23 million payments.
 4. Read the population clause again, see that unrecorded cases are in it, and reach for the pack's second
    sighting of the same cases: `member_payment_matches.csv`, Castlegate's payments that match an account on
-   `mule_account_register.csv`, 412 matched payments, of which 325 are also in the case register and 87 are
+   `mule_account_register.csv`, 395 matched payments, of which 282 are also in the case register and 113 are
    not.
-5. Run the two-source estimate on those three counts: 400 x 412 / 325 = 507.1 cases.
-6. Divide by the volume and round as the question asks: 507.1 / 22.3012 = 22.74, so 23 cases per million
+5. Run the two-source estimate on those three counts: 400 x 395 / 282 = 560.3 cases.
+6. Divide by the volume and round as the question asks: 507.1 / 22.2333 = 22.74, so 23 cases per million
    payments.
 7. Build the bridge and the chart from the same two numbers for the other three review-group members, and
    file the index.
 
-**Ends on:** 23 cases per million payments (507.1 cases, 22.738 per million before rounding), and a bridge whose reconciling line reads as the
+**Ends on:** 25 cases per million payments (560.3 cases, 25.200 per million before rounding), and a bridge whose reconciling line reads as the
 unrecorded cases the matches imply.
 
-**Golden:** 31 cases per million payments (690.0 cases, 30.940 per million before rounding), the
-two-source estimate run against the 207 registrations that no fund-return request of Castlegate's
-preceded, of which 120 are also in its own case register.
+**Golden:** 31 cases per million payments (687.9 cases, 30.940 per million before rounding), the
+two-source estimate run against the 270 registrations that no fund-return request of Castlegate's
+preceded, of which 157 are also in its own case register.
 
 ## Stump sentence
 
-The solver files 23 cases per million payments for Castlegate because it treats every one of the 412
+The solver files 25 cases per million payments for Castlegate because it treats every one of the 395
 matches between Castlegate's payments and the scheme's mule register as a second, independent sighting of
-the case, when 205 of the 325 matches that are also its own cases exist only because Castlegate asked the
-receiving firm to return the money after opening the case, so the overlap it divides by is mostly its own
-work and what neither channel saw comes out at about a tenth of its true size, 20.1 cases against 203 on the same observed union of 487.
+the case, when 125 of the 282 matches that are also its own cases exist only because Castlegate asked the
+receiving firm to return the money after opening the case, so the overlap it divides by is partly its own
+work and what neither channel saw comes out at about a third of its true size, 60.3 cases against 175 on
+the same observed union of 513.
 
 ## Three rules
 
@@ -113,11 +114,11 @@ member's own detection cannot have produced, and the choice of what counts as th
 answer.
 
 **Decisive step:** a capture is only a capture if the firm's own detection cannot have caused it, so the
-independent channel is the 207 mule registrations that no recall request of Castlegate's preceded, found by
+independent channel is the 270 mule registrations that no recall request of Castlegate's preceded, found by
 attributing each registration through `members/recall_requests.csv`, not by any rule about registration
 dates.
 
-**Not semantics:** every field read correctly still leaves the easy route on 23. The class code, the cover
+**Not semantics:** every field read correctly still leaves the easy route on 25. The class code, the cover
 definition, the payment date, the volume units and the register's status codes are all read right in the
 default path; nothing in the mule register says who caused a registration, the registering party is the
 receiving firm on both the independent and the self-produced rows, and no column separates them.
@@ -125,11 +126,11 @@ receiving firm on both the independent and the self-produced rows, and no column
 **Not rule application:** no filed rule or procedure names a channel pairing, an independence test, an
 estimator or the recall log's role. The standard files the estimand and the evidence base and stops. A solver
 that executes every stated rule in the pack, including the standard's own definitions and the scheme's
-reimbursement rules, files 23.
+reimbursement rules, files 25.
 
 **Analyst test:** a strong analyst reads the standard, matches every Castlegate payment to the mule register,
-counts 400 cases, 412 matched payments and 325 in both, runs the two-source estimate and files 23 cases
-per million payments, which is wrong because 205 of those 325 registrations were raised by receiving firms
+counts 400 cases, 395 matched payments and 282 in both, runs the two-source estimate and files 25 cases
+per million payments, which is wrong because 125 of those 282 registrations were raised by receiving firms
 only after Castlegate's own fund-return request, so the two sightings are not independent.
 
 **Estimand:** filed in `governance/indemnity_standard.pdf` clause 4.2: "the incidence of scam cases arising
@@ -164,10 +165,10 @@ Six tests per rung: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hyg
 | 0 the two-source estimate on every match (23) | the population clause sends the solver looking for a second sighting | the match extract is a header-found join on the payment reference | yes, the first move once unrecorded cases are in scope | none | ties everywhere | one ratio | readable |
 | 1 exclude registrations dated inside a fortnight of the case (26) | nothing | two date columns, one per file | yes, a lag histogram is the independence check | none | no | no | readable |
 | 2 exclude every registration dated after the case (40) | nothing | the same two date columns | yes, the thorough version of rung 1 | none | no | no | readable |
-| 3 (decisive) attribute each registration through the member's own fund-return request log (31) | no clause names the log, independence, a channel pairing or an estimator | no column marks a self-produced registration; the registering party is the receiving firm on both kinds, and the log is a third file joined on the payment reference, then compared on dates | no: every reflex on the obvious chain lands on 23, 26 or 40 | none shipped | the battery's sweeps pass on every rung | no | silent |
+| 3 (decisive) attribute each registration through the member's own fund-return request log (31) | no clause names the log, independence, a channel pairing or an estimator | no column marks a self-produced registration; the registering party is the receiving firm on both kinds, and the log is a third file joined on the payment reference, then compared on dates | no: every reflex on the obvious chain lands on 25, 26 or 40 | none shipped | the battery's sweeps pass on every rung | no | silent |
 
 **Why rung 3 is silent when rungs 1 and 2 are not.** The registration-lag spike is meant to be found: 114
-of Castlegate's 412 matches register within six days of its own case opening, against 6.9 expected if the
+of Castlegate's 395 matches register within six days of its own case opening, against 6.9 expected if the
 register were independent of the case, and that pattern is visible from the two date columns alone. It
 tells a solver the captures are dependent, and it does not tell it the estimate: the two constructions it
 supports land at 26 and 40, and nothing in the pack selects a window between them. Only the recall log
@@ -180,7 +181,7 @@ register without naming it.
 per million. Take the book's rung 0: 14.56. Stratify rung 0 on every visible attribute of the matched
 payments, by payment channel: 22.79, by destination firm type: 22.73. Trend its recorded rate across the
 four scheme years: 18.16. Shrink its rung 0 toward the book's at a credibility of 0.8: 21.10, at 0.5:
-18.65. Run the hygiene battery and repair everything it finds: 22.738, unchanged. Every figure here is the
+18.65. Run the hygiene battery and repair everything it finds: 25.200, unchanged. Every figure here is the
 value before rounding, every one is more than 6 per cent from the golden, and none of them prints 31.
 
 ## Semantic fork table
@@ -189,52 +190,55 @@ value before rounding, every one is more than 6 per cent from the golden, and no
 |---|---|---|---|---|---|
 | SF1 | "scam case" | cover class APP scam only | both cover classes, scam and unauthorised | a different index, asserted in `checks.py` | standard clause 2.1 defines the cover as authorised push payment reimbursements; the register's class code is in the dictionary |
 | SF2 | "its customers" | cases on payments the member's own customers sent | cases where the member received the funds | a different index, asserted | standard clause 4.2 says "its own customers sent"; the register holds a sending-side flag and the dictionary defines it |
-| SF3 | window attribution | the payment date falls in the scheme year | the case open date, or the notification date | a different index, asserted | standard clause 4.2, "arising from payments its own customers sent in the scheme year" |
+| SF3 | window attribution | the payment date falls in the scheme year | the case open date, or the notification date | same call | standard clause 4.2, "arising from payments its own customers sent in the scheme year", and C1 as well: the open-date window selects 397 cases against the filed 400 and prints the same 31 (30.708), asserted in `checks.py`, so no reading of the window moves the call |
 | SF4 | "payments sent" | the revised quarterly return's payments-sent field | faster payments only; payments to new payees only | a different index; the basis is filed | standard clause 4.2 names the return field; the return's own header defines it |
-| SF5 | "whether or not recorded" | the population includes cases no system holds | only recorded cases | 18 (17.936) | standard clause 4.2's own words; a recorded-only reading answers a different question |
+| SF5 | "whether or not recorded" | the population includes cases no system holds | only recorded cases | 18 (17.991) | standard clause 4.2's own words; a recorded-only reading answers a different question |
 | SF6 | the index year | the indemnity year beginning 1 October 2027 takes the scheme year ended 31 March 2027 | re-measure on the current part-year | not computable, the base is filed as at 31 March 2027 | standard clause 4.3 |
 | SF7 | rounding | the index to the nearest whole case per million payments, the shares to one decimal, once at the end | rounded per member then averaged; the index carried to one decimal | 31 either way; 30.9 at one decimal | the asking sentence states each rounding once and names the figures it governs, and C1: the index is one ratio per member, so no averaging path exists |
 | SF8 | "a case" | counted once however many payments it covers | counted per payment | a different index, asserted | standard clause 4.2, "counted once a case however many payments it covers" |
 | SF9 | matched payment | the account reference normalised as the feed note files it, digits with the account number padded back to eight | the raw string, which drops the accounts whose number starts with a zero | same call: the call reads the match extract's own registration date and case reference and never joins to the register | C1 asserted in `checks.py` and `verify.py`: the filed normalisation selects all 8,588 match rows, a raw join selects fewer, and the index is identical either way |
 | SF10 | register status | registered and expired registrations count | exclude expired | same call | C1: no matched payment's account carries status expired or withdrawn, asserted at zero |
-| SF12 | the two-source estimate | plain Petersen, 400 x 207 / 120 = 690.0 cases, 30.940 per million | Chapman 688.3 (30.865); Bailey 687.6 (30.833); continuity-corrected Petersen 689.2 (30.902); the conditional maximum likelihood estimate 690 (30.940); and the observed union 487 (21.838) quoted as a lower bound | 31 under every estimator; 22 under the union bound | C1 asserted in `checks.py` and again in `verify.py` on the shipped bytes: the five estimator forms span 0.35 per cent and all print 31, which is why the index is stated to the nearest whole case and not to one decimal, where they would print 30.8 to 30.9; the union is not an estimator of the filed population but the count of cases the two channels did record, which clause 4.2's own words exclude |
+| SF12 | the two-source estimate | plain Petersen, 400 x 270 / 157 = 687.9 cases, 30.940 per million | Chapman 686.8 (30.890); Bailey 686.1 (30.858); continuity-corrected Petersen 687.3 (30.915); the conditional maximum likelihood estimate 687 (30.900); and the same estimate written as the independent channel over a capture probability read off the member's own cases, which can be taken off every own case (30.940), off the cases it asked the receiving firm about (30.935) or off the cases it never asked about (30.947); the observed union 513 (23.073) quoted as a lower bound | 31 under all eight forms; 23 under the union bound | C1 asserted in `checks.py` and again in `verify.py` on the shipped bytes: the eight forms span 0.29 per cent of the figure and every one prints 31, and the three capture-probability readings agree to four decimal places (0.392405, 0.392500, 0.392562) because the independent capture is assigned at the same rate inside every subset an analyst can cut, so no choice of subset crosses the printed bin; the union is not an estimator of the filed population but the count of cases the two channels did record, which clause 4.2's own words exclude |
+| SF13 | a registration that predates its own payment | counts: the register is a standing list and the account was already on it | drop them, on the reading that a second sighting must postdate the event | same call | C1 asserted in `checks.py` and `verify.py`: 167 of the 270 independent registrations predate their payment, and the share is the same on both sides of the overlap (0.618 of the member's own cases against 0.619 of the rest), so dropping every one of them divides a smaller numerator by a proportionally smaller overlap and prints 31 (30.885); the feed note states that an account stays on the register once it is reported |
 | SF11 | "preceded" | the recall request's date is strictly earlier than the registration date | same-day counts as preceding | same call | C1: no matched payment has a recall request dated the same day as the registration, asserted at zero |
 
 ## Ladder
 
 | Rung | Analysis | Figure | Dies to |
 |---|---|---|---|
-| none | the recorded register count, the question not answered | 18 (17.936) | the population clause in the standard |
-| 0 | two-source estimate on all 412 matches | 23 (22.738) | the registration-lag spike |
-| 1 | exclude registrations inside a fortnight of the case | 26 (25.661) | the receiving firms' own cadences: the e-money and correspondent registrations fall outside a fortnight, so 136 of the 205 self-produced rows survive the cut |
-| 2 | exclude every registration dated after the case | 40 (39.914) | the recall log: 60 of the independent registrations also post-date the case, and the log says no request of Castlegate's preceded them |
-| 3 | attribute through the fund-return request log: 207 independent registrations, 120 of them cases | **31** (30.940) | nothing |
+| none | the recorded register count, the question not answered | 18 (17.991) | the population clause in the standard |
+| 0 | two-source estimate on all 395 matches | 25 (25.200) | the registration-lag spike |
+| 1 | exclude registrations inside a fortnight of the case | 27 (26.642) | the receiving firms' own cadences: the e-money and correspondent registrations fall outside a fortnight, so 83 of the 125 self-produced rows survive the cut |
+| 2 | exclude every registration dated after the case | 36 (35.669) | the recall log: 42 of the independent registrations also post-date the case, every one of them on a case the member never asked about, and the log says no request of Castlegate's preceded them |
+| 3 | attribute through the fund-return request log: 270 independent registrations, 157 of them cases | **31** (30.940) | nothing |
 
-**Position and dominance.** The golden is bracketed: 18, 23 and 26 below, 40 above, so no half-applied
-correction lands on it (L5). On the values before rounding the nearest wrong cell is 25.661, 17.1 per cent
-away, well above the 6 per cent floor, and the next is 39.914 at 29.0 per cent. Every correction below the
-decisive rung walks one way, 17.936 to 22.738 to 25.661 to 39.914 at 1.268x, 1.129x and 1.555x, and the
-decisive move is the only one that reverses, coming back from 39.914 to 30.940 at 0.775x. It is not the
-smallest move on the ladder (1.206x from rung 1 against rung 1's own 1.129x, 37's law), and because it is
-the only reversal no pair of half-applied corrections cancels onto it; the partial applications of rung 2
-are the date-window family, swept below. The golden's printed cell is mid-bin: 30.940 against a bin centre
-of 31 and a width of 1, so the distance to the nearest edge is 0.440 against the 0.3 floor, and every
-licensed estimator form prints the same 31 (SF12).
+**Position and dominance.** The golden is bracketed: 18, 25 and 27 below, 36 above, so no half-applied
+correction lands on it (L5). On the values before rounding the nearest wrong cell is 26.642, 13.9 per cent
+away, well above the 6 per cent floor, and the next is 35.669 at 15.3 per cent. Every correction below the
+decisive rung walks one way, 17.991 to 25.200 to 26.642 to 35.669 at 1.401x, 1.057x and 1.339x, and the
+decisive move is the only one that reverses, coming back from 35.669 to 30.940 at 0.867x. Because it is the
+only reversal no pair of half-applied corrections cancels onto it; the partial applications of rung 2 are
+the date-window family, swept below. The golden's printed cell is mid-bin: 30.940 against a bin centre of
+31 and a width of 1, so the distance to the nearest edge is 0.440 against the 0.3 floor, and all eight
+licensed forms print the same 31 (SF12).
 
 **Grid.** Four channel constructions x three window attributions (SF3) x two volume readings (SF4) = 24
 cells, every cell computed in `generator/checks.py`, each distinct and each mapped to the sentence it
 violates. The date-only family is a one-parameter family: as the exclusion window widens from nothing to
-unbounded the estimate rises monotonically from 22.9 to 45, and the receiving firms' three registration
+unbounded the estimate rises monotonically from 25.2 to 34.5, and the receiving firms' three registration
 cadences (same day for a clearing bank, a fortnightly batch for an e-money institution, about six weeks
 for a correspondent) make it step across the golden's printed bin instead of resting in it. Every whole-day
 window from 0 to 120 is swept in `generator/checks.py` and again in `verify.py`, and the measured result is
 stronger than the assertion the design needed: **no whole-day window at all prints the golden's integer
-except 19**, and no window a shipped word names or a person would reach for comes near it, the named set
-printing 23, 23, 24, 24, 25, 26, 26, 26, 32, 33, 33, 42, 43, 44 and 45 at 0, 1, 2, 3, 5, 7, 10, 14, 21, 28,
-30, 45, 60, 90 and 120 days. Nineteen days is named by no clause, column or convention in the pack, so the
-golden is reachable through the attribution and not through a date parameter anybody files.
+except 42**, and no window a shipped word names or a person would reach for comes near it, the named set
+printing 25, 25, 25, 26, 26, 27, 27, 27, 30, 30, 30, 32, 33, 34 and 35 at 0, 1, 2, 3, 5, 7, 10, 14, 21, 28,
+30, 45, 60, 90 and 120 days. Forty-two days is named by no clause, column or convention in the pack, so the
+golden is reachable through the attribution and not through a date parameter anybody files. The family is
+also bounded away from the golden at its near end: because the request gap holds every independent
+registration at least 22 days ahead of the request that follows it, a window of 1, 2, 3, 5, 7, 14 or 21
+days reclassifies no row at all and prints the golden exactly, which is asserted window by window.
 
-**Worth, on the graded figure.** The decisive rung moves the graded figure from 26 to 31 and the graded
+**Worth, on the graded figure.** The decisive rung moves the graded figure from 27 to 31 and the graded
 name is not an entity but the figure itself, so there is no name-without-figure escape (500 v1's finding).
 
 ## Closure table
@@ -244,13 +248,13 @@ name is not an entity but the figure itself, so there is no name-without-figure 
 | 1 | Population | filed in clause 4.2, unrecorded cases stated as in scope; C1 on class and side selection, row counts asserted |
 | 2 | Unit of account | the case, filed as counted once however many payments it covers (SF8); the denominator's unit is a payment |
 | 3 | Attribution window | the payment date, filed (SF3); C4, the two rivals computed at 20.9 and 20.4 and each mapped to clause 4.2 |
-| 4 | As-of dating | the evidence base is as at 31 March 2027, filed in clause 4.2; every file carries its own extract date in `metadata.json` |
+| 4 | As-of dating | the case population is the scheme year ended 31 March 2027 and the evidence base is as it stands when the review is prepared, both filed in clause 4.2; the trustees' pack says the same, that the reviews are prepared from the evidence base as pulled for the meeting on 2 July 2027, and the prompt's own second sentence says the scheme year closed on 31 March while the register feed runs to that pull. C4: cutting the register at the scheme year end is computed at 32.522 and prints 33, and clause 4.2's own words bar it |
 | 5 | Version basis | the revised quarterly return supersedes the preliminary one, filed in the return's own cover sheet; C1, the two vintages differ only for two quarters of one member outside the review group |
 | 6 | Denominator | payments sent, the return's named field, filed (SF4); C4 at 25.6 and 34.1 |
 | 7 | Weighting | none: a count over a count, no pooling across members in the index |
 | 8 | Window length | one scheme year, filed in clause 4.2; the mule register's history is used only to date registrations |
 | 9 | Boundary inclusivity | "preceded" strictly earlier (SF11); C1, nothing on the boundary, asserted at zero same-day pairs |
-| 10 | Rounding path | once at the end, the index to the nearest whole case per million payments and the shares to one decimal, both in the asking sentence; the case estimate stays an exact ratio of integers until the division, and the printed unit is set from the estimator family's own spread (SF12) rather than from the quantity's natural precision |
+| 10 | Rounding path | once at the end, the index to the nearest whole case per million payments and the shares to one decimal, both in the asking sentence; the case estimate stays an exact ratio of integers until the division, and the printed unit is filed by clause 4.4 and restated in the asking sentence, and all eight licensed forms agree to one decimal as well (30.9), so the figure is determinate at the stated unit and at the finer one (SF12) |
 | 11 | Tie-break | none: one figure per member, no ranking in the call |
 | 12 | Maturity and censoring | the base is as at 31 March 2027 and the index year mapping is filed, so late notification cannot move it; asserted that no row in the quarter-to-30-June file arises from a payment inside the call's window |
 | 13 | Order of operations | the bridge's presentation order is filed in the mutual's reporting template; the index is one ratio, order-free |
@@ -362,9 +366,9 @@ monetary quantity in the pack is outside its path.
 
 | id | Ask | Figures | Primary device (silent) | Hazards shared | File and columns | Forcing figure (designed; measured at stage 3) |
 |---|---|---|---|---|---|---|
-| A | for each of the four quarters of 2026/27 and each of the three member tiers, the indemnity the mutual paid on unauthorised fraud, to the nearest pound, plus each quarter's total | 16 | D9 self-validation at a grain nothing names: a settlement advice's total covers its own case lines plus a prior-period adjustment belonging to cases settled in an earlier quarter, so the advice is a rollup above its own parts on about a third of the unauthorised advices, and only a detail-against-total reconciliation per advice finds it | amounts in pence on the 2023/24 extract, recoveries as later credit rows, the 2024/25 template change | `settlement_advices_2026_27.xlsx` (advices and advice detail) plus `case_payments.csv`, 11 columns on the path | measured on the cut pack: the advice totals read 921,924 against the golden 665,484 on the Q1 total, a gap of 256,440 against a rounding of 1, and 16 of 16 figures move |
+| A | for each of the four quarters of 2026/27 and each of the three member tiers, the indemnity the mutual paid on unauthorised fraud, to the nearest pound, plus each quarter's total taken from the unrounded tier amounts | 16 | D9 self-validation at a grain nothing names: a settlement advice's total covers its own case lines plus a prior-period adjustment belonging to cases settled in an earlier quarter, so the advice is a rollup above its own parts on about a third of the unauthorised advices, and only a detail-against-total reconciliation per advice finds it | amounts in pence on the 2023/24 extract, recoveries as later credit rows, the 2024/25 template change | `settlement_advices_2026_27.xlsx` (advices and advice detail) plus `case_payments.csv`, 11 columns on the path | measured on the cut pack: the advice totals read 920,819 against the golden 664,379 on the Q1 total, a gap of 256,440 against a rounding of 1, and 16 of 16 figures move, the narrowest of them by 13,559 |
 | B | for each of the twelve members, the scam cases notified in the quarter to 30 June 2027 and the value they reported, to the nearest pound | 24 | D5 scope, a silently partial extract: the Q1 notification file was cut on 20 June and the 21 to 30 June notifications sit in the quarter-end supplementary file, while each member's own Q1 return states a case count the main extract's rows do not reach, so only a return-against-extract reconciliation finds the gap | case references allocated per member and scheme year, a quarter that straddles the mutual's own year end, the returns workbook's own vintage column | `notifications_2027_28_q1.csv`, `notifications_2027_28_q1_supplementary.csv` and the returns workbook's Q1 sheet, 9 columns | measured on the cut pack: the main extract alone reads 405,985 against the golden 460,362 on Brindlemere's reported value, the widest of the twenty-four, a gap of 54,377 against a rounding of 1, and 24 of 24 figures move, the narrowest of them by a whole case (Pelbury's 14 against 15) |
-| C | for each of the three recovery routes and each quarter of 2025/26, the share of the reimbursed amount recovered on cases closed in that quarter, to one decimal, plus each route's year total | 15 | D9 a control total true only in its own scope: the statement counts a recovery in the quarter the money arrived rather than the quarter the case closed in, and states the repatriation route net of that route's own agent charge, so its route shares sum to its own stated total while disagreeing with the case-level credits | recoveries posted as later credit rows with their own value dates, cases closing across a quarter boundary, the 2023/24 extract's pence amounts | `recovery_statement_2025_26.csv` plus `case_payments.csv`, 10 columns | measured: the statement reads 5.1 against the golden 12.9 per cent on the Q2 beneficiary recall figure, a gap of 7.8 against a rounding of 0.1, and 15 of 15 figures move |
+| C | for each of the three recovery routes and each quarter of 2025/26, the share of the reimbursed amount recovered on cases closed in that quarter, from the case-level credits, to one decimal, plus each route's total over the same four quarters | 15 | D9 a control total true only in its own scope: the statement counts a recovery in the quarter the money arrived rather than the quarter the case closed in, and states the repatriation route net of that route's own agent charge, so its route shares sum to its own stated total while disagreeing with the case-level credits | recoveries posted as later credit rows with their own value dates, cases closing across a quarter boundary, the 2023/24 extract's pence amounts | `recovery_statement_2025_26.csv` plus `case_payments.csv`, 10 columns | measured on the cut pack: the statement reads 2.3 against the golden 15.1 per cent on the Q2 beneficiary recall figure, a gap of 12.8 against a rounding of 0.1, and 15 of 15 figures move, the narrowest of them by 0.5 of a point |
 
 **Separation line.** Zero device rows and zero hazard rows inside the main call's declared population,
 asserted by count in `generator/checks.py`: no device touches an APP-scam case-register row inside the scheme
@@ -464,6 +468,20 @@ and asserts those three sentences as its positive control on that same reader, w
 length and the decisive-step sweep run on the same extracted text. An empty extraction fails the assertion
 rather than satisfying it.
 
+**The judge's readings, each closed in the data rather than by a sentence.** The determinism judge
+returned NOT_DETERMINISTIC on eight findings and the author held the architecture, because every one of
+them closes by fixing data or by making a stated sentence true rather than by filing the estimator or the
+attribution. What changed: the request gap now holds every independent registration at least 22 days ahead
+of the request that follows it, so the band the judge reclassified is empty and a 1, 2, 3, 5, 7, 14 or
+21-day window prints the golden exactly; the pre-payment registrations are a real body of 167 rows whose
+share is equal on both sides of the overlap, so dropping them prints 31 (SF13); the independent capture is
+assigned at the same rate inside every subset of the member's own cases, so the capture probability read off
+the cases it never asked about agrees with the one read off all of them to four decimals and the sixth form
+prints 31 (SF12); the overlap itself is up from 120 to 157; the prompt's own second sentence, clause 4.2 and
+the trustees' pack now say the same thing about the evidence date; ask 6's route totals cover the same four
+quarters as its rows; and ask 4's quarter totals are pinned to the unrounded tier amounts, which changes two
+of the four. The two documents and the two register defects the reader found are fixed in the writers.
+
 **`target.zip` is cut by the house cutter**, `generator/archive.py` copied from task192, so every entry
 carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
 
@@ -502,7 +520,7 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   into the bridge's opening line.
 - **A headline printing exactly 30 per million**: the first whole-case design point put the golden on a
   round integer, which `determinism-check` section 3 and the dataset checks both refuse because a round
-  graded figure reads as a constructed one. The design point moved to 22.30 million payments, which prints
+  graded figure reads as a constructed one. The design point moved to 22.23 million payments, which prints
   31 on a value of 30.94, 0.44 from the bin edge. Nothing was cut when it moved.
 - **Asserting one estimator pair rather than the family**: Chapman against plain Petersen caught the
   one-decimal straddle, but a two-source capture estimate has more licensed forms than two. All five that the
@@ -534,7 +552,7 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   quarter off, about a third of the unauthorised advices across every month and tier, and all sixteen move.
 - **Ask B's forcing figure as first written** (the main extract reads 271,508 against 335,982 on Garnock's
   reported value, a gap of 64,474): the figures were carried over from the cut before the design point moved
-  to 22.30 million payments, and re-measuring the device on the shipped bundle gives a different widest cell.
+  to 22.23 million payments, and re-measuring the device on the shipped bundle gives a different widest cell.
   The device itself is unchanged and still moves 24 of 24 figures; the cell now reads Brindlemere's value,
   405,985 against 460,362, a gap of 54,377, with the narrowest moved figure a single whole case. Asks A and C
   were re-measured in the same pass and their cells were already right (A 16 of 16, widest 256,440 on the Q1
@@ -565,6 +583,56 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   working rather than an answer the rubric owes, and the deliverable file keeps the column as ungraded
   context. `figures_check.py` falls from 98 figures to 94 and the pair ceiling does not move, because those
   counts were never rubric criteria: C1 is the four indices.
+- **"Our data stops at 31 March 2027" in the prompt** (judge finding 1): the extracts run to the 2 July
+  pull and the trustees' pack dated the evidence base to 31 March, so the prompt's own sentence was false
+  and cutting the register at the year end was a defensible reading worth a different figure. The window is
+  one of the five parts of the WHAT, so it is filed rather than argued: the prompt now says the scheme year
+  closed 31 March 2027 and the register feed runs to the 2 July pull, the pack says the reviews are prepared
+  from the evidence base as pulled for the meeting, and clause 4.2's "as it stands when the review is
+  prepared" was already there. Cutting at the year end is computed at 32.522, prints 33 and is barred by the
+  clause, asserted both ways.
+- **The near-miss cluster one to five days ahead of each request** (judge finding 2): the first cut put 45
+  per cent of a requested case's independent registration in the days between the case opening and the
+  request going out, which made "treat a registration up to two days before the request as request-linked" a
+  defensible reading. The cluster is gone from the generator rather than ruled out by a sentence: an
+  independent registration either follows no request at all or precedes one by at least 22 days, measured at
+  a minimum lead of exactly 22 and an empty one-to-five-day band, and the seven window readings from 1 to 21
+  days now print the golden exactly.
+- **Removing the pre-payment registrations** (judge finding 3): the honest reading is that they count, since
+  the register is a standing industry list and an account stays on it, so they were kept and made
+  unambiguous instead. The feed note states the persistence fact, and the share that predates its payment is
+  held equal on both sides of the overlap (0.618 against 0.619) so that dropping all 167 of them divides a
+  smaller numerator by a proportionally smaller overlap and prints the same 31. Removing them was rejected
+  because it would have forced the independent capture to correlate with the report lag, which breaks the
+  capture-rate agreement the sixth estimator form turns on.
+- **Closing the sixth estimator form by widening the overlap alone** (judge finding 4): the overlap was
+  widened, 120 to 157, but the measured cause of the crossing was that the capture probability read off the own
+  cases the member never asked about (34 of 109 on the judged pack) differed from the one read off all 400
+  by sampling noise, and volume alone only shrinks that. The capture is now assigned at the same rate inside every subset an
+  analyst can cut, so the three readings, now on 158, 242 and all 400 own cases, agree to four decimal places by construction and all eight licensed
+  forms print 31 with a span of 0.29 per cent. **Widening the overlap further was rejected on measurement:**
+  the ladder's spread comes from the overlap being small against the channel, and at an overlap of 180 rung 2
+  fell to 32.5, inside 5 per cent of the golden and in the neighbouring printed bin. The request share was
+  cut from 0.72 to 0.60 in the same pass to hold rung 2 out at 35.669.
+- **Ask 6's route total over every closed case** (judge finding 5): the total was taken over all 2025/26
+  cases with a closed date while the rows were taken over the four quarters, so 921 cases closed after
+  31 March 2026 sat in the total and in no row and the two could not be reconciled. The total now covers the
+  same four quarters as the rows, the asking sentence pins the population, the credit basis and what the
+  total covers, and the reconciliation is asserted from the quarters' own numerators and denominators.
+- **Ask 4's unstated rounding order** (judge finding 6): the rounded tier figures did not sum to the rounded
+  quarter total on two of the four quarters. The asking sentence now pins the total to the unrounded tier
+  amounts, and the pin is load bearing rather than decorative: Q1 reads 664,379 on that basis against 664,378
+  on the other, and Q3 614,872 against 614,873, both asserted.
+- **The trustees' pack's February 2027 register feed change** (judge finding 7): nothing in the pack
+  described it and the judge found no discontinuity in volumes, in the request-induced share or in the lags
+  by month, so the sentence was a stated fact the data contradicted. Taken out. The feed note keeps the
+  zero-padding convention, which is a legitimate antidote, and loses the sentence explaining what a blank
+  case reference means, which was the ask device's own mechanics.
+- **Wrenhall Pay at tier A on a volume that does not support it, and one report reason for the whole
+  register** (judge finding 8, from the reader): the tier now states that it is held from the 2024 review,
+  which is what a triennial cycle does and what the register's own review field already implied, and the
+  member rows of the mule register draw their report reason the way the industry rows always did, so the
+  column carries three reasons rather than one.
 - **`causal_design` as the strategy label**: the honest key for capture interference, taken by task197 five
   minutes before this card filed, so the card carries `other` with the mechanism named in its notes rather
   than a negotiated axis.

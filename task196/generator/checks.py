@@ -158,7 +158,7 @@ def main():
     naive_cases, naive_rate = G.naive_index(w, code)
     rec_rate = ix["recorded"] / ix["volume"] * 1e6
     ok("R3a the default path files the named wrong answer",
-       round(naive_rate) != gold_index and round(naive_rate) == 23,
+       round(naive_rate) != gold_index and round(naive_rate) == 25,
        "%.3f prints %d against the golden %d" % (naive_rate, round(naive_rate), gold_index))
     eq("R3b the decisive step alone files the golden", round(gold_rate), 31)
     w14 = G.window_index(w, code, 14)[1]
@@ -273,6 +273,67 @@ def main():
     ok("the window family is monotone in the window",
        all(sweep[d] <= sweep[d + 1] + 1e-9 for d in range(0, 120)), "rises with the window")
 
+    # --- the readings the judge reached for, each closed in the data ------------------
+    print("\n-- the request gap, the standing register and the evidence date")
+    cs_all = [c for c in w["cases"] if c.member == code and c.year == W.MEASURED]
+    # 1. no band of independent registrations sitting just ahead of a request: either the request
+    #    precedes the registration, or the registration precedes it by REQUEST_GAP_DAYS or more
+    leads = [(c.request_date - c.independent_reg_date).days for c in cs_all
+             if c.independent_reg and c.request_date is not None
+             and c.independent_reg_date < c.request_date]
+    ok("no independent registration sits inside the request gap",
+       leads and min(leads) >= W.REQUEST_GAP_DAYS,
+       "closest independent registration is %d days ahead of the request, floor %d"
+       % (min(leads) if leads else -1, W.REQUEST_GAP_DAYS))
+    band = [d for d in leads if d <= 5]
+    ok("the one-to-five-day band ahead of a request is empty", not band,
+       "%d registrations in the band" % len(band))
+    for lead in (1, 2, 3, 5, 7, 14, 21):
+        keep = [c for c in cs_all if c.matched and not (
+            c.registration_date is not None and c.request_date is not None
+            and c.request_date - dt.timedelta(days=lead) <= c.registration_date)]
+        kr = [c for c in keep if c.recorded]
+        rate = G.petersen(ix["recorded"], len(keep), len(kr)) / ix["volume"] * 1e6
+        ok("treating a registration up to %d day(s) before a request as request-linked is the "
+           "same call" % lead, round(rate) == gold_index, "%.3f prints %d" % (rate, round(rate)))
+    # 2. the register is a standing list: the share of independent registrations that predate their
+    #    own payment is the same among the member's own cases and the cases it never recorded, so an
+    #    analyst who drops those rows divides a smaller numerator by a proportionally smaller overlap
+    pre = [c for c in cs_all if c.independent_reg and c.independent_reg_date < c.payment_date]
+    ok("registrations that predate their payment are a real body, not a handful",
+       len(pre) >= 60, "%d of %d independent registrations" % (len(pre), ix["independent"]))
+    sh_rec = len([c for c in pre if c.recorded]) / ix["both"]
+    sh_un = len([c for c in pre if not c.recorded]) / (ix["independent"] - ix["both"])
+    ok("the pre-payment share is the same on both sides of the overlap", abs(sh_rec - sh_un) < 0.03,
+       "%.3f of the recorded against %.3f of the rest" % (sh_rec, sh_un))
+    keep = [c for c in cs_all if c.matched and not G._self_produced(c)
+            and c.registration_date >= c.payment_date]
+    kr = [c for c in keep if c.recorded]
+    drop_rate = G.petersen(ix["recorded"], len(keep), len(kr)) / ix["volume"] * 1e6
+    ok("SF13 dropping every registration that predates its payment is the same call",
+       round(drop_rate) == gold_index, "%.3f prints %d" % (drop_rate, round(drop_rate)))
+    ok("SF13 the standing-list fact is filed in the feed note",
+       "An account stays on the register once it is reported" in notes,
+       "the register's own note")
+    # 3. the evidence date: the register feed runs to the pull, which the standard and the pack say,
+    #    and cutting it at the scheme year end is a different figure rather than a reading
+    cut = [c for c in cs_all if c.matched and not G._self_produced(c)
+           and c.registration_date <= W.AS_OF]
+    cutr = [c for c in cut if c.recorded]
+    cut_rate = G.petersen(ix["recorded"], len(cut), len(cutr)) / ix["volume"] * 1e6
+    ok("cutting the register at the scheme year end gives another figure",
+       round(cut_rate) != gold_index, "%.3f prints %d" % (cut_rate, round(cut_rate)))
+    ok("the standard dates the evidence base to the review, not to the year end",
+       "as it stands when the review is prepared" in std, "clause 4.2")
+    ok("the trustees' pack dates the evidence base the same way",
+       "as pulled for this meeting on 2 July 2027" in squash(pdf_text("trustee_pack_2027_07.pdf"))
+       and "register feed change of February" not in squash(pdf_text("trustee_pack_2027_07.pdf")),
+       "the pack carries the pull date and names no feed change")
+    ok("the feed note no longer explains what a blank case reference means",
+       "the field is blank" not in notes
+       and "Pad the account number back to eight digits" in notes,
+       "the padding convention kept, the mechanics gone")
+
     # the attribution is exact on the shipped bytes
     print("\n-- the attribution, recomputed from the shipped bytes")
     req_by_case = {}
@@ -322,8 +383,15 @@ def main():
         alt = sum(1 for r in reg if r["member_code"] == code and r["cover_class"] == "scam reimbursement"
                   and r[key][:4] in ("2026", "2027")
                   and dt.date(2026, 4, 1) <= dt.date.fromisoformat(r[key]) <= dt.date(2027, 3, 31))
-        ok("%s gives another figure" % label,
-           round(alt * len(indep) / len(both_b) / vol * 1e6) != gold_index, "%d cases" % alt)
+        alt_rate = alt * len(indep) / len(both_b) / vol * 1e6
+        # closed twice over: clause 4.2 files the payment-date window in its own words, and the cases
+        # the other reading selects carry the same printed index anyway, so no reading of the window
+        # moves the call
+        ok("%s is barred by the clause and converges on the same call" % label,
+           "arising from payments its own customers sent in the scheme year ended 31 March" in std
+           and round(alt_rate) == gold_index,
+           "%d cases against the filed %d, %.3f prints %d"
+           % (alt, len(rec_cases) if "rec_cases" in dir() else rec_b, alt_rate, round(alt_rate)))
     ok("SF4 the volume basis is filed and the alternatives differ",
        "payments sent as reported on the member's revised quarterly returns" in std
        and pre != rev, "clause 4.2 names the return field")

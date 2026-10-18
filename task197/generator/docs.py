@@ -58,6 +58,12 @@ def normalise_zip(path, when=(2026, 10, 13, 9, 0, 0)):
                 # openpyxl stamps the save time on every save; fix it so rebuilds match
                 data = _re.sub(rb"<dcterms:modified([^>]*)>[^<]*</dcterms:modified>",
                                rb"<dcterms:modified\1>2026-10-13T09:00:00Z</dcterms:modified>", data)
+            if i.filename == "docProps/app.xml":
+                # the writing library names itself in the extended properties, which no workbook the
+                # desk exports would carry; the application is the desk's own reporting tool
+                data = _re.sub(rb"<Application>[^<]*</Application>",
+                               rb"<Application>Veerkracht Flex reserve reporting</Application>", data)
+                data = _re.sub(rb"<AppVersion>[^<]*</AppVersion>", rb"<AppVersion>4.2</AppVersion>", data)
             items.append((i.filename, data))
     tmp = path + ".tmp"
     with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:

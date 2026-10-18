@@ -1,16 +1,16 @@
 {
   "task": "task198",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-18",
-  "slot_note": "Architecture 2, a new world on assigned ground (survey-research-official-statistics / anomaly-detection), drawn under the pincer filed as stumping 1.2b: the decisive step is a quantity the records measure about their own production (case two), not a fact about how they were produced (cases one and three). Architecture 1, the pensions answer-time build, is spent at stage 4; see lineage. The rotation-group family was ruled out before design against task125 and the validation-subsample family against task192.",
+  "slot_note": "Architecture 3, assigned 2026-10-18: same world, same pack, same variance component as v2, with the decision moved from a pick of one region to a characterisation of one named region's move, which is the positive clause of the rule v2's death filed in stumping Part 3. Case two of the pincer. Axes probed clear by the author before assignment.",
   "domain": "survey-research-official-statistics",
   "subdomain": "anomaly-detection",
   "client_domain": "survey-research-official-statistics",
-  "niche": "the field interviewer workforce of a national statistics office's face-to-face household survey: which region's rise in a probed prevalence item is the population's own and which is carried by the handful of interviewers who collected it there",
+  "niche": "the replicate weights a national household survey ships with its microdata: whether one named region's quarter-on-quarter rise in a probed item is a real population change, when the supplied replication is formed on sampling units and the error source that produced the move acts on the field workload instead",
   "objective": "anomaly-detection",
-  "shape": "07",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
+  "shape": "18",
+  "decision_type": "structural_verdict",
+  "answer_unit": "rate_or_share",
   "answer": "",
   "answer_source": "",
   "gap": [
@@ -22,11 +22,11 @@
   ],
   "generators": [
     "G3",
-    "G14"
+    "G17"
   ],
-  "gate_g": "decomposition_attribution",
+  "gate_g": "signal_vs_noise_or_hold",
   "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "other",
+  "stump_strategy": "uncertainty_hold",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
@@ -57,13 +57,13 @@
   },
   "deliverables": [],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A measured difference between places is produced by the few people who did the measuring there rather than by the places themselves, and because most measurers work one place only the measurer and the place are collinear, so holding the comparison to the measurer absorbs the place as well; the difference is attributed only through the minority of measurers whose workload crosses places, where the same measurer's own differential reproduces away from the place that looks worst.",
-  "driver_concrete": "The rise in a region's probed prevalence item is read as the region's own, but a small region's quarter is collected by a handful of interviewers whose workloads the sample management log records, so the region that rises most is the one whose dominant interviewer carries a high differential, and only that interviewer's own records in the other regions she worked separate her differential from the region's population.",
-  "stump": "A competent solver weights the person records to the design, reads every classification and filed rule correctly, ranks the regions on their quarter-on-quarter change in the probed prevalence item and files the region whose rise is largest, because that rise is a correct measurement of what its own interviewers collected and most of it is one interviewer's differential that reproduces in the other regions she worked.",
+  "question_form": "whether",
+  "driver": "The uncertainty a record ships with is computed over replication groups formed on the sampling structure, and the error source that produced the move being judged acts on groups the record never replicates over, so every interval the pack supplies understates that move's spread by a factor set by how concentrated the work was; the move clears the supplied interval and fails the one whose groups span the source, which the record identifies only through a workload log kept for operations.",
+  "driver_concrete": "The survey ships replicate weights formed on its primary sampling units, so no replicate ever varies the interviewer composition of a region's quarter and the supplied interval cannot see the interviewer component; re-forming the replication over the workload the field log records, which groups the sampling units that share an interviewer, widens the interval by about three and the rise no longer clears it.",
+  "stump": "A competent solver rebuilds the named region's two quarters correctly across both questionnaire layouts, rules out every rival explanation the pack carries, applies the survey's own supplied replicate weights as the design documentation directs, finds the rise clears that interval by a wide margin and files the rise as a real population change, because every replicate the pack supplies is formed on primary sampling units and no replicate ever varies the interviewer composition of the quarter, so the supplied interval cannot see the source that produced the move.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who weights the microdata to the design, reads every classification correctly and applies every filed rule ranks the regions on their quarter-on-quarter change in the probed prevalence item and files the region whose rise is largest, because that rise is a correct measurement of what its interviewers collected.",
-  "domain_test": "The quantity that decides is the interviewer component of a survey's measurement error, which survey research estimates from the random allocation of issued addresses among the interviewers working an area (the interpenetrated assignment behind every published interviewer design effect); swap the nouns to megawatt-hours or hospital visits and there is no workforce collecting the measurement, no allocation to randomise and no workload that crosses units, so nothing can make a measured difference travel with a person rather than a place.",
+  "analyst_test": "A strong analyst who stacks both questionnaire layouts, rebases across the amalgamation, reads every field and code correctly and rules out each rival explanation on a shipped fact then judges the rise against the survey's own supplied replicate weights, the most rigorous instrument the pack offers, and files the rise as real because it clears that interval comfortably.",
+  "domain_test": "The quantity that decides is what a complex survey's replication-based variance estimator spans, which survey research settles by asking whether the replication groups contain the error source: replicate weights formed on primary sampling units estimate sampling error and omit the interviewer component, so the correct interval groups the sampling units that share an interviewer, inflating the standard error by a factor set by the workload concentration; swap the nouns to megawatt-hours or hospital visits and there is no sample design, no replicate weights and no field workforce whose groups could differ from the sampling units, so there is nothing for a replication group to miss and the task stops existing.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task107": "task107's architecture 2, spent on the portal, shares the shape of a property of who handled each unit, but there the handler delivered an intervention and crossed from the treated arm into the comparison arm, so the quantity is a treatment effect scaled by receipt and the mechanism is contamination reached by joining a timetable to a staff directory to a certification register. Here nobody delivers anything: the interviewer records the respondent, the quantity is a prevalence difference between places with no arms and no intervention, and the identification is the recorder's portability, her own differential reproducing in the other places she worked.",
@@ -94,11 +94,30 @@
       "answer": "Contribution queries (MS-CQ) takes the one process re-engineering review in the first half of 2027; its FY2026 breach share is 12.4 per cent, on the 6,480 cases it received between 1 April 2025 and 31 March 2026.",
       "world": "Ireland, a third-party pensions administrator's nine member-service case queues",
       "replaced_by": "architecture 2 moves to a new world because the pensions pack cannot carry a different mechanism: every mechanism inside 'which of nine queues stands furthest above what its own conditions imply' is either the comparison, a convention the closure table must close, or architecture 1's own driver. Fourteen screened mechanisms are recorded in the design note."
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-18",
+      "fate": "spent at stage 2 measurement on 2026-10-18, twice, with no data cut. The drawn decisive step (attribute a region's change to its interviewers through a measurer's portability across regions) died on Gate C: the golden was named in 2 of 12 seeds, because a per-interviewer differential carries a 6.96-point standard error at a realistic 33-dwelling out-of-region workload against a 3.0-point golden rise, and both ends of the persistence dial fail for opposite reasons. The approved repair (the interviewer design effect, a variance component the whole workforce estimates) fixed the precision problem, 4.1 per cent relative standard error against about 100 per cent, a factor of 24, with the estimator family closed to one name at 6.73 ANOVA / 6.74 REML / 6.73 MoM, and died on name stability: the golden named in 2 of 14 seeds and the intended loud region in 4 of 14, with intended rises of 0.4 to 5.5 points against realised changes of +17.1 to -17.2, because the interviewer-induced spread that flips the ranking in the denominator (HHI 0.642 giving 1.13 sigma_b against 0.38, a ratio of three whatever sigma_b is) is the same variance that randomises the measured change in the numerator. corr(decisive measure, region size) -0.076 did hold.",
+      "why": "A decisive step that moves a variance cannot carry a ranking: the lever and the ranked quantity's noise are one number, so the dial fails at both ends and the two ends are the same end. Filed in stumping Part 3. Architecture 3 keeps the world, the pack and the variance component and moves the decision from a pick of one region to a characterisation of one named region's move, which puts the lever on a threshold.",
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "other",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:measurer-portability-across-units",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "shape": "07",
+      "decision_type": "pick_one_of_n",
+      "driver": "A measured difference between places is produced by the few people who did the measuring there rather than by the places themselves, and because most measurers work one place only the measurer and the place are collinear, so holding the comparison to the measurer absorbs the place as well; the difference is attributed only through the minority of measurers whose workload crosses places, where the same measurer's own differential reproduces away from the place that looks worst.",
+      "stump": "A competent solver weights the person records to the design, reads every classification and filed rule correctly, ranks the regions on their quarter-on-quarter change in the probed prevalence item and files the region whose rise is largest, because that rise is a correct measurement of what its own interviewers collected and most of it is one interviewer's differential that reproduces in the other regions she worked.",
+      "world": "New Zealand, a survey research institute's continuous household survey, nine to twelve regions"
     }
   ],
   "notes": "stump_strategy other: the decisive move is the attribution of a measured difference between units to the person who collected it rather than to the unit, identified by that person's portability across units. Not composition_mix (no stratum reweighting; the interviewer differentials are set orthogonal to everything that predicts the item, asserted near zero), not population_selection or maturity_censoring (both banned and both untrue here: the population is filed and complete and no period is open), not causal_design (banned; there is no intervention, no arms and no counterfactual), not uncertainty_hold (the decisive move shifts a point estimate, not an interval). Gate G decomposition_attribution is a WARN-level repeat only. G3 record versus operation is decisive: the region's record reflects who recorded it rather than the region's own population. Objective is fixed by the task number's lane block (task180 to task227), so overuse.objective cannot be varied; question form follows the decision, which is a pick of one region for one scarce follow-up.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:measurer-portability-across-units",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:replication-groups-miss-the-error-source",
   "layer1": [
     "a continuous survey whose quarterly person file changes layout at a questionnaire revision, so two layouts span the comparison period",
     "face-to-face and telephone collection running side by side with different field periods inside the quarter",
@@ -109,5 +128,5 @@
     "management system stamps in UTC against New Zealand local time across a daylight saving change",
     "the quarterly release carrying a provisional and a revised figure for the same quarter"
   ],
-  "registered": "2026-10-18T05:25:01Z"
+  "registered": "2026-10-18T05:52:30Z"
 }

@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, registered, golden, quarters, architecture, driver, strategy, pattern, mechanism, recent, decisive, coding, nothing, measured, screen, written, closed, twelve, returns, maturity, repeats, measures, already, author, exactly
+Stump terms swept: record, registered, golden, architecture, decisive, quarters, mechanism, strategy, driver, recent, pattern, written, coding, horizon, nothing, maturity, already, closed, measured, twelve, returns, censoring, measures, author, exactly
 
 ## 3 answer figures in the pack (REVIEW 24)
 - **REVIEW** `activity_plan_2027q4.csv`: golden figure 41320 appears: ...refurbishment, four beds closed for the quarter" 41320,2026-27 Q4,2100, 41330,2026-27 Q4,834, 41340,2026...

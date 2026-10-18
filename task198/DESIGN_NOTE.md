@@ -1,25 +1,387 @@
 # task198 design note
 
-Rathbroe Pension Services, member operations. The world, the pack architecture and the Layer 1 mess
-are kept; the decisive step is being re-rooted.
+Motu Korero Research, a survey research institute running Tatauranga Aotearoa's continuous Household
+Living Conditions Survey under contract. Whether the rise in dwellings with damp or mould that the
+survey measured in Manawatu-Whanganui is established as a population change, and so whether that
+region's 2027 Q1 addresses are issued to a fresh interviewer panel.
 
-**Status: architecture 1 is spent and architecture 2 is not yet drawn.** Architecture 1 took
-NOT_DETERMINISTIC / SEND_BACK from the determinism judge and the same finding independently from the
-isolated reader (`determinism_check_report.md`, `leak_check_report.md`): framework clause 4.2 filed the
-comparison correctly, and the residue it left open was how closely "the same offered load" must match,
-which is a knob rather than a method, so three queues win across licensed readings. Gates C and E fail on
-the flip and Gate H reads the decisive step as rule application. Every section of architecture 1's design
-below carries an `### ARCHIVE architecture 1 (spent)` heading so `precut.py` cannot pass on it; the eleven
-H2 sections return when architecture 2's decisive step is fixed.
-
-The constraint on architecture 2, now a rule in `determinism-check` section 1: **what stays open after the
-WHAT is filed must be a method a competent analyst could defend differently, not a tolerance, a cut-off, a
-rounding or a nearest-k.** The screen that candidate mechanisms are held to, run at the draw: name the
-residue the decisive step leaves open and ask whether a competent analyst could argue for a different
-value of it on grounds other than taste; then name which of the five parts of the WHAT the step could be
-mistaken for, because if it is any of them it must be filed and can no longer carry the stump.
+**Architecture 3 is live.** Architectures 1 (pensions answer-time) and 2 (interviewer attribution by
+measurer portability, and its approved repair) are spent; both carry `### ARCHIVE` headings below and
+their fates are in the card's `lineage` and in `## Tried and rejected`. Architecture 3 keeps
+architecture 2's world, pack and variance component and moves the decision from a pick of one region to a
+characterisation of one named region's move, which is the positive clause of the rule architecture 2's
+death filed in `stumping` Part 3: a decisive step that moves a variance cannot carry a ranking, but it can
+carry a verdict on one named candidate against a stated threshold.
 
 ## Draw
+
+| Field | Value |
+|---|---|
+| Card | `.claude/skills/fingerprint/cards/task198.json`, architecture v3, registered 2026-10-18, `guard.py check` **PASS**, no BLOCK and no WARN |
+| Domain / subdomain | `survey-research-official-statistics` / `anomaly-detection` |
+| Objective | Anomaly Detection & Diagnostics (fixed by the lane's task-number block) |
+| Shape | 18, hypotheses versus evidence: the rival explanations for the move are the grid's cells |
+| Decision type | `structural_verdict`, answer unit `rate_or_share`, question form `whether` |
+| Gate G | `signal_vs_noise_or_hold` |
+| Strategy | `uncertainty_hold`: the interval a record ships with is computed over groups that do not contain the error source that produced the move |
+| Layer 2 family | `estimation_fit`, pattern `own:replication-groups-miss-the-error-source` |
+| Gaps | `objective` (decisive), `population` |
+| Generators | G3 record versus operation (decisive), G17 statistical rigor |
+
+**Pairing.** Survey research is the one field that ships the uncertainty of its own estimates as data,
+in replicate weights, and the question of whether a replication-based variance estimator spans the error
+source at issue is the field's own: replicate weights formed on primary sampling units estimate sampling
+error, the interviewer is not a sampling unit, and the published interviewer design effect exists because
+that component sits outside the design variance.
+
+**Data-native sentence.** In this pack each primary sampling unit is worked by one interviewer and each
+interviewer works units across every stratum, so the interviewer groups cut across the replication groups
+the design supplies: no replicate the file ships ever varies the interviewer composition of the named
+region's quarter, and the only record that identifies the interviewer grouping is a workload log the field
+operation keeps for pay and travel.
+
+**The pincer case (case two, `stumping` 1.2b).** The between-interviewer component is a quantity the
+records measure about their own production: the national workforce measures it directly (10.08 points on
+218 interviewer-quarters), the field log fixes the grouping exactly, and nothing states it and nothing has
+to be recovered as a rule.
+
+**The pricing sequence, all four steps run before a word of design** (`stumping` Part 3).
+
+1. **The residue is a method, not a knob.** With the estimand and the threshold filed, what stays open is
+   over which groups the replication is formed. The alternative is not a value on a dial: it is PSU
+   replication, which the design documentation supplies and which every microdata user applies, against
+   grouping on the field workload, because units sharing an interviewer are not independent. Both are
+   named, published positions. No tolerance, no cut-off, no nearest-k, no rounding. It is also none of the
+   five parts of the WHAT: it is how the uncertainty of a fully filed quantity is estimated.
+2. **The move available against the move needed.** To turn the supplied verdict over, the interval has to
+   widen by `3.53 / 1.96 = 1.80`. Re-forming the replication over the workload widens it by
+   **f = 3.95**. **Available 3.95 against needed 1.80, a ratio of 2.19.**
+3. **The standard error of what the step must estimate.** The between-interviewer component, from the whole
+   workforce: **4.1 per cent relative standard error**, and the estimator family (one-way random-effects
+   ANOVA, REML, method of moments) spans **6.73 to 6.74 on the same data, 0.15 per cent**. The verdict holds
+   at the family spread, at the relative standard error, at a 25 per cent error and at a 50 per cent error.
+4. **The lever and the ranked quantity's noise are not the same variance, because nothing is ranked.** The
+   region is named in the prompt and the lever acts on a threshold the framework states, which is the
+   positive clause of the rule architecture 2's death filed. The residual exposure is that the realised
+   change must land between the two intervals, which happened in 2 of 6 seeds at each rise setting, about a
+   third; the generator fixes the seed and no role is hostage to it, because there is one region and one
+   verdict rather than a loud and a quiet candidate to be kept apart.
+
+**Measured margin, which is the number that matters and not the face.** The verdict is a coin with two
+faces, so the sweep measures the distance to the threshold rather than which side of it a route lands on.
+`sigma_int` would have to fall from 10.08 points to **3.94**, a fall of **61 per cent** and about **15
+relative standard errors**, before the golden verdict flips to the supplied one.
+
+**Sources read, one line each.**
+
+- `guard.py check`: PASS, no BLOCK, no WARN. Nearest driver 0.07 (task195), then 0.06 (task452 v1), 0.05
+  (task98 v3). Architecture 2's own driver does not reach the top four, so `test.own_lineage` is clear on
+  the driver as well as on the axes.
+- `guard.py mechanisms --objective anomaly-detection`: the three self-measuring builds are task192 (a
+  validation subsample's rates and whether they transport outside their window), task195 (shared specimens
+  making two screens' calls dependent) and task194 (two vintages measuring their own coding lag). This
+  build's self-measuring quantity is what a supplied variance estimator spans, which is none of them.
+- `stumping` Part 3, read from the skill: the variance-cannot-rank rule and the four-step pricing sequence,
+  both run above.
+- `determinism-check` sections 1, 3 and 5: the method may stay open only where the data forces it; the
+  call's robustness is not the figures' determinacy; a robustness claim is graded over the whole range it
+  names.
+
+**Build requirements this draw owes.** The field workload log reads as an operations record kept for pay
+and travel and explains nothing. The quality framework and the commissioning letter pose a question and
+name no method. The questionnaire change note states the item's wording and routing, not what to do about
+them. No note says a file is the wrong basis. Every graded figure is records-fixed except the two
+intervals, which are graded only because their estimator family is closed to 0.15 per cent, asserted.
+
+## Default path
+
+The pipeline a competent and careful analyst builds, using the most rigorous instrument the pack supplies.
+
+1. Read `quarterly_release_2026q4.xlsx` for orientation: the provisional regional figures.
+2. Notice the release is provisional and the comparison quarter has been revised, so rebuild from the
+   dwelling records: stack `hlcs_dwelling_records_layout_a.csv` and `hlcs_dwelling_records_layout_b.csv`,
+   confirm from `questionnaire_change_note_2026.pdf` that the damp-or-mould item's wording and routing are
+   unchanged across the layouts, and take interviews achieved in the field quarter and the same quarter a
+   year earlier.
+3. Rebase Manawatu-Whanganui across the territorial authority amalgamation with
+   `regional_boundary_concordance_2026.csv`, and confirm the rise holds on both bases.
+4. Apply the calibrated weights the dwelling records carry.
+5. Compute the change: **+6.6 percentage points**.
+6. Rule out each rival explanation on a shipped fact: the mode mix from `mode_assignment_log.csv`, the
+   layout change from the change note, the base change from the concordance, the vintage from the release's
+   own revised column, seasonality by the comparison being the same quarter a year earlier, and the frame
+   vintage from `dwelling_frame_vintage_note.csv`.
+7. Judge the change with the survey's own supplied replicate weights, as `sample_design_documentation.pdf`
+   directs: `hlcs_replicate_weights_2026q4.csv` and `hlcs_replicate_weights_2025q4.csv`, 84 jackknife
+   replicates each. Standard error **1.86 points**, so the change is **3.53** standard errors, far past the
+   framework's stated 95 per cent bar.
+8. File the rise as an established population change, and leave the region's 2027 Q1 addresses with their
+   existing panel.
+
+Ends on: the rise is established as a population change, +6.6 points at 3.5 standard errors
+Golden: the rise is not established, +6.6 points at 0.9 standard errors once the replication spans the
+field workload, so the region's 2027 Q1 addresses go to a fresh interviewer panel
+
+## Stump sentence
+
+A competent solver rebuilds both quarters across the two questionnaire layouts, rebases the region across
+the amalgamation, rules out every rival explanation the pack carries on a shipped fact, judges the +6.6
+point change against the survey's own supplied replicate weights at 3.53 standard errors and files the rise
+as an established population change, because every replicate the pack ships is formed on primary sampling
+units and no replicate ever varies the interviewer composition of the quarter, so the interval cannot see
+the one source that produced the move.
+
+## Three rules
+
+- **Task type:** `survey-research-official-statistics` / `anomaly-detection`, which serves Anomaly
+  Detection & Diagnostics; the build works the field's own complex-survey variance estimation on a probed
+  prevalence item whose collection the field workload log records.
+- **Domain test:** the quantity that decides is what a replication-based variance estimator spans, which
+  survey research settles by asking whether the replication groups contain the error source; replicate
+  weights formed on primary sampling units estimate sampling error and omit the interviewer component, so
+  the correct interval groups the units that share an interviewer and is wider by a factor set by the
+  workload concentration.
+- **Swap:** rewritten as "whether a district's megawatt-hour rise is established" there is no sample
+  design, no replicate weights and no field workforce whose groups could differ from the sampling units, so
+  there is nothing for a replication group to miss and the task stops existing.
+- **Layer 1:** two questionnaire layouts spanning the comparison; a territorial authority amalgamation
+  changing the published base; a provisional figure beside a revised one for the comparison quarter;
+  face-to-face and telephone collection with different field periods inside the quarter; the workload log
+  at assignment grain against the dwelling records' dwelling grain; interviewer identifiers recycled when
+  field staff are re-engaged; design weights and calibrated weights both present; management stamps in UTC
+  against New Zealand local time across a daylight saving change. Nothing is placed to be caught, and each
+  item is a cell of the shape-18 grid that dies to a shipped fact.
+- **Layer 2:** `estimation_fit`: the interval the record ships is computed over replication groups formed
+  on the sampling structure, and the error source that produced the move acts on groups the record never
+  replicates over, so the supplied interval understates the move's spread by a factor set by how
+  concentrated the field work was.
+- **Decisive step:** re-form the replication over the groups the field workload log identifies, the units
+  that share an interviewer, or equivalently add the between-interviewer component the national workforce
+  measures, which widens the standard error from 1.86 to 7.37 points and drops the change from 3.53 to 0.89
+  standard errors.
+- **Not semantics:** both routes read every field, code, unit and definition the same way, build the same
+  achieved sample on the same two quarters at the same grain, apply the same weights, the same layout
+  stacking and the same rebasing, and reach the same +6.6 point change; they differ only in which groups
+  the replication is formed over, and no field, code or definition in the pack states that the supplied
+  replicates omit a component.
+- **Not rule application:** the quality framework files the five parts of the estimand and states the 95
+  per cent bar, and the design documentation states the general replication method for the weights it
+  supplies, but no filed sentence, column or procedure says that units sharing an interviewer are not
+  independent, nor that the replication should be re-formed over the workload log; executing every stated
+  rule in the pack, with the most rigorous instrument it supplies, files the rise as established.
+- **Analyst test:** a strong analyst who stacks both layouts, rebases the region, reads every field
+  correctly, rules out each rival on a shipped fact and then judges the change with the survey's own
+  supplied replicate weights files the rise as established, because it clears that interval by 3.53
+  standard errors.
+- **Estimand:** filed in one sentence in `quality_framework_2026.pdf`: the change, in percentage points,
+  in the share of occupied private dwellings with damp or mould observed or reported at interview, between
+  the field quarter and the same quarter a year earlier, for the region on the amalgamated base, over every
+  dwelling interview achieved in those quarters; reported as a population change only where it is
+  significant at the 95 per cent level.
+- **No decoy:** nothing is planted to be caught. The supplied replicate weights are correct for what they
+  estimate and are formed exactly as the design documentation says; every interviewer carries a
+  differential, as every real workforce does; the release states its own provisional basis and ranks
+  nothing; the workload log records assignments as a field operation records them, for pay and travel.
+- **No certified replay:** no published or certified figure is reproduced only by the golden method; the
+  release's provisional and revised figures and the change itself tie under both routes, which differ only
+  in the interval.
+- **Lesson:** an interval is only evidence about a move if its replication groups contain the source that
+  produced the move, and a survey's supplied replicate weights are formed on the sampling structure, not on
+  the field operation, so the one error source a field workforce introduces is the one the shipped
+  uncertainty cannot see. No build on file teaches it: task192 turns on a validation rate's reach, task195
+  on a paired interval over shared units and task194 on when records arrive.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 release figure | the release states its own provisional basis | the release's own columns | yes, read the dashboard | none | no | yes, read off | readable |
+| 1 rebuilt change | the framework files the window and the item | the dwelling records' columns | yes, the obvious group-by | none | the battery finds the layout and base joins | one group-by | readable |
+| 2 supplied replicate weights (**the default path**) | the design documentation states the replication method for the weights it supplies | 84 replicate weight columns, named | yes, the rigorous reflex, and it is the right instrument for sampling error | none | no | one standard formula | readable |
+| 3 replication re-formed over the field workload (**decisive**) | no sentence says units sharing an interviewer are not independent, nor that the replication should be re-formed | the workload log is at assignment grain and carries no outcome; the grouping must be built across three files | no: every reflex files the supplied verdict, measured, ten of them at z 2.38 to 4.14 | no control or published figure ties only under it | the battery passes under both replications | not a subtraction or a ratio of a reported figure; the component is estimated from the whole workforce | silent |
+
+## Semantic fork table
+
+| id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "the field quarter" | 2026 Q4, 1 October to 31 December | the fiscal quarter | `same call`, asserted | `quality_framework_2026.pdf` 2.1 names the field quarter and its dates |
+| SF2 | "the same quarter a year earlier" | 2025 Q4 | the preceding quarter | `same call`: the change on 2026 Q3 is 1.1 points and not established either way, asserted | the framework's own words |
+| SF3 | "damp or mould" | observed or reported at interview, the single item | the observed sub-item only | `same call`, asserted on the figure to one decimal | the change note states one item with unchanged wording and routing |
+| SF4 | "the region" | Manawatu-Whanganui on the amalgamated base | the pre-amalgamation base | `same call`: the change is 6.4 points on the old base, asserted | the concordance; the framework names the amalgamated base |
+| SF5 | "significant at the 95 per cent level" | a two-sided normal bar at 1.96 standard errors | a t bar on the replicate degrees of freedom | `same call`: 3.53 clears and 0.89 fails under both, asserted | the framework states the 95 per cent level; the convergence is asserted |
+| SF6 | which weights | the calibrated weights the dwelling records carry | the design weights | `same call`: the change is 6.5 points, asserted | the framework names the published weighting |
+| SF7 | the replication groups | the groups the field workload identifies | the primary sampling units the file supplies | the decisive step; closed by the data, not by a sentence: see `## Literal reader` |
+| SF8 | provisional against revised | the revised figure for the comparison quarter | the provisional | `same call`: the change is 6.7 points on the provisional, asserted | the release carries both and labels them |
+| SF9 | rounding path | once at the end, one decimal place in points | per quarter then differenced | `same call`, asserted | the prompt's last sentence |
+| SF10 | "a population change" | a change in the dwellings, not in the measurement | any change in the published figure | the verdict itself | the framework defines the reported change as a change in the population |
+
+## Ladder
+
+Four rungs, four distinct verdicts or figures. Each reproduces from the raw files and dies to one shipped
+fact or construction.
+
+| Rung | Analysis | Verdict | Figure | Dies to |
+|---|---|---|---|---|
+| 0 | the release's provisional regional figures | established | +8.1 points | the release labels itself provisional and the comparison quarter revised; the framework's window and base are the rebased ones |
+| 1 | rebuild on the filed window, item, base and weights, test on a simple random sample basis | established | 4.14 standard errors | the design is stratified and clustered, so a simple random sample variance is not the survey's own |
+| 2 | the survey's own supplied replicate weights (**the default path**) | established | +6.6 points at 3.53 standard errors | the replicates are formed on primary sampling units and no replicate varies the interviewer composition of the quarter |
+| 3 | replication re-formed over the field workload (**decisive**) | **not established** | +6.6 points at 0.89 standard errors | nothing: the golden |
+
+**Arithmetic, measured on the clean truth.** Supplied standard error 1.86 points against a correct 7.37,
+inflation **f = 3.95**, against the 1.80 the verdict needs, a ratio of **2.19**. The named region's panel is
+four interviewers with squared workload shares summing to 0.250 in each quarter. The between-interviewer
+component is 10.08 points, measured on 218 interviewer-quarters outside the region.
+
+**Reflex sweep, run as code before these separations were measured, ten reflexes, every one filing the
+supplied verdict.** Supplied replicate weights 3.53; design standard error linearised on units 3.53;
+bootstrap of the design, units within strata 3.40; simple random sample 4.14; trim the most extreme unit
+each quarter 3.70; trim the three most extreme 3.77; stratify on visible interviewer attributes 3.53;
+shrink the region 25, 50 and 75 per cent toward the national change 3.14, 2.76 and 2.38. **None reaches the
+golden verdict**, and the nearest, three-quarter shrinkage at 2.38, still clears the bar by 21 per cent.
+
+**Margin across the estimator range.** `sigma_int` must fall 61 per cent, to 3.94 points, before the
+verdict flips: about 15 relative standard errors, and 400 times the estimator family's own spread.
+
+**Grid.** Every cell of the rival-explanation grid is a named alternative that dies to a shipped fact (mode
+mix, layout change, base change, vintage, seasonality, frame vintage), and every one of them leaves the
++6.6 point change and the supplied verdict standing, which is what makes the grid the construction layer
+rather than the stump: cleaning the data does not decide the verdict.
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | every dwelling interview achieved in the region in the two quarters | framework 2.1 files it; no interview is pending at the extract |
+| 2 | Unit of account | the region for the verdict; one row is one dwelling interview | framework names the region; the records are one row per interview |
+| 3 | Attribution window | the quarter the interview was achieved in | framework 2.1; C1, no interview on a quarter boundary |
+| 4 | As-of dating | the field quarter's close; the workload log as the field operation closed it | framework 2.2; the dates are in the file names and the manifest |
+| 5 | Version basis | the revised figure where the release carries both | SF8; `same call` asserted |
+| 6 | Denominator | dwelling interviews achieved, per quarter | framework 2.1 in its own words |
+| 7 | Weighting | the calibrated weights the records carry | SF6; `same call` asserted |
+| 8 | Window length | two quarters, the field quarter and the same quarter a year earlier | framework 2.1 |
+| 9 | Boundary inclusivity | 1 October and 31 December inclusive | framework 2.1; C1, no edge case |
+| 10 | Rounding path | once at the end, one decimal place in points | prompt's last sentence; asserted |
+| 11 | Tie-break | none needed: the verdict is a threshold with 61 per cent of room | measured |
+| 12 | Maturity and censoring | none: both quarters are closed and every interview is achieved | by construction, asserted |
+| 13 | Order of operations | stack the layouts, then rebase, then weight | C1: the three commute on this record, asserted |
+| 14 | Row order | file order cannot move a weighted mean or a replicate variance | C1 by construction, asserted over three permutations |
+| 15 | Duplicate resolution | one interview per dwelling per quarter, identified by the dwelling key | C1 asserted on the de-duplicated count |
+| 16 | Identity normalisation | interviewer identifiers recycled across the series; the roster carries the start and end dates that split them | `interviewer_roster_2026.csv`; C4, the raw read merges two people |
+| 17 | Netting against gross | no netting: the change is a difference of two shares | framework has no offset |
+| 18 | Dimensional units | percentage points throughout; the workload log in completed interviews | the framework and the log state both; C4 |
+| 19 | Code and status semantics | the item's response codes are identical across layouts | the change note; never the stump |
+| 20 | Integerisation | interview counts are whole; shares are not rounded before the end | by construction |
+| 21 | Clause scope | the framework's 2.x governs the estimand and the bar; the design documentation's 4.x governs the replicate weights it supplies | each document names its scope |
+| 22 | Forward window contents | the committed window (2027 Q1) holds no interviews: the verdict is about the closed quarters and the action is the panel the coming quarter's addresses are issued to | the framework files the quantity on closed quarters and the letter sets the 2027 Q1 decision |
+
+## Literal reader
+
+Executed word for word, `quality_framework_2026.pdf` files the estimand and states that a movement is
+reported as a population change only where it is significant at the 95 per cent level, and
+`sample_design_documentation.pdf` states the general replication method for the weights it supplies.
+Neither says over which groups the replication must be formed when a movement is judged, and that is what
+the data closes rather than a sentence: each primary sampling unit is worked by one interviewer and each
+interviewer works units across every stratum, so the supplied replicates hold the interviewer composition
+of the quarter fixed in every one of the 84 replicates, and the independence the supplied variance assumes
+is contradicted by the workload log itself. Every licensed reading of the estimand's terms gives the same
++6.6 point change (SF1 to SF9, asserted), and the verdict is determinate under both bars (SF5) and across
+the whole estimator family for the component, which spans 0.15 per cent, with 61 per cent of room to the
+flip.
+
+## Oracles
+
+- `quarterly_release_2026q4.xlsx` reproduces on its own stated provisional basis under every method,
+  golden and supplied alike, and presents regions in code order with no ranking and no interval. It
+  confirms nothing about the verdict.
+- `sample_design_documentation.pdf` and the replicate weight files tie to each other under both
+  replications, because the supplied weights are correct for the sampling error they estimate; neither
+  ties only under the golden.
+- `population_benchmarks_2026.csv` ties to the calibrated weights under both routes, which is the Ask 2
+  referee and hands over no interval.
+- No control, published figure or reconciliation column in the pack ties only under the re-formed
+  replication. The workload log records assignments as a field operation records them and explains nothing.
+
+## Ask sheet
+
+Three asks, 25 graded ask figures, solved by `generator/asks_measure.py`. Ask 1 is the one free
+construction figure both responses bank; Ask 2 is a mirror device the cracker recovers by executing a
+filed rate; Ask 3 carries the cracker's misses. The devices are re-skins of proven components, which is
+permitted; no driver is re-skinned.
+
+| Ask | Figures | Use | Primary device | Hazards | File and columns | Stops and lazy delta |
+|---|---|---|---|---|---|---|
+| 1 | 1: the national change in the item across all regions, in points | the commissioning letter opens on the national picture | none by design: it sits in the call's own population, where the separation line forbids a device row | the two layouts, the amalgamation base, the provisional and revised columns | both dwelling-record files, 9 columns | provisional basis 1.4; golden 0.4 |
+| 2 | 4: the interviews the field cost claims cover in each 2026 quarter | the field operation owes the commissioning agency a cost reconciliation | D6 grain, a paper row covering many units of work: the three largest field areas are paid on a consolidated monthly claim covering every assignment completed in the month, and the claim carries no interview count, so the interviews are recovered as the claim amount over the schedule's per-interview rate | the schedule's two rate periods, to 30 September 2026 and from 1 October 2026 | `field_cost_claims_2026.csv`, 7 columns; `field_payment_schedule_2026.pdf` | lines counted as interviews 1,086 / 1,125 / 1,158 / 1,113; golden 1,788 / 1,860 / 1,914 / 1,839 |
+| 3 | 20: the ten largest territorial authorities, each with its benchmark population at 30 June 2026 and its achieved interviews per 1,000 | the quality report reports achieved interviews per 1,000 benchmark population by authority | D9 self-validation, a rollup above its own parts: where authorities were amalgamated the demography team returns one benchmark for the amalgamated area against each constituent, so nine of the ten carry a group total, and the tenth is returned by another team and carries no figure at all. The per-area figure is in the published table, split into two age bands with no total anywhere in the pack | the amalgamation concordance; one authority's code changed mid-series | `population_benchmarks_2026.csv`, 4 columns; `published_population_table_2026.pdf` | nine grouped areas take the group total; the tenth is blank |
+
+**Separation line.** Zero device rows and zero hazard rows sit in the main call's declared population. The
+call reads the two dwelling-record files, the two replicate-weight files, the design documentation, the
+quality framework, the boundary concordance, the questionnaire change note, the mode log, the frame
+vintage note and the field workload log; Ask 2's devices are in `field_cost_claims_2026.csv` and
+`field_payment_schedule_2026.pdf`, Ask 3's in `population_benchmarks_2026.csv` and
+`published_population_table_2026.pdf`, and the call reads none of those four. Deleting every device leaves
+the verdict, the change and both intervals unchanged, asserted by count in `generator/checks.py`.
+
+**Measured forcing, per device, on the ask-side truth.** Ask 2: the natural read returns 1,086 against the
+golden's 1,788 in the first quarter and the **smallest quarterly gap is 702 interviews**, on figures stated
+in whole interviews. Ask 3: the **smallest gap between the group-total rate and the golden rate on a
+grouped authority is 6.3 per 1,000** and the largest is 8.8, against a 0.05 bin half-width, so the nearest
+device is forced by a factor of 126; for the tenth authority the file carries no figure at all. No graded
+benchmark figure ships verbatim: each is the published table's two age bands added, asserted in
+`verify.py`.
+
+**Referee.** `field_payment_schedule_2026.pdf` arbitrates Ask 2's disagreement and states no interview
+count; `published_population_table_2026.pdf` arbitrates Ask 3's and states no authority-level rate and no
+total.
+
+The cracker is the response that landed the verdict, ran the hygiene battery, executed every filed rule
+the pack points at and matched every published figure it carries. Ask 3 is the primary it is measured
+against; one row per move it makes, and the verdict is whether that move reaches the device.
+
+| Cracker move | What it does on Ask 3's benchmarks | Verdict |
+|---|---|---|
+| key uniqueness | every authority code is unique in the benchmarks file | miss |
+| exact duplicates | no two rows are equal; the repeated benchmark figures sit on rows differing in code, name and returning team | miss |
+| unmatched joins | the blank benchmark for the tenth authority is a visible gap that sends the reader to the published table for that one authority only | miss |
+| fan-out and count ties | the file is one row per authority, so nothing fans out and no count ties | miss |
+| executes every filed rule the pack points at | the dictionary states the column is the benchmark as returned by the demography team; nothing in the pack says a return may cover an amalgamated area | miss |
+| matches every published figure | the pack ships no benchmark total, in the file or the published table, so there is no control for the file to fail against | miss |
+
+**What the landing response banks, figure by figure.** `asks_measure.py` has the cracker keeping **7 of the
+25** graded ask figures: Ask 1's national change, because it is computed over exactly the rows the call's
+own comparison is computed over, where the separation line forbids any device row; Ask 2's four quarterly
+counts, because the schedule's per-interview rate is a filed rule and every consolidated claim is an exact
+multiple of it, so a response that executes the schedule recovers the count and making it unrecoverable
+would break law 6; and the tenth authority's two figures, because the blank sends any reader to the
+published table. The mirror keeps three of those seven: Ask 1's figure and the blank authority's two. It
+loses Ask 2's four because it counts claim lines as interviews, and the other eighteen because it takes
+the benchmarks file's group totals.
+
+**Pair ceiling:** 39.5, solved on Part 0's weights (38 recommendation and critical components, 7
+instruction-following, 55 asks) with both responses rescored from their own readings and both columns
+printed: the cracker lands the verdict and keeps 7 of 25, scoring 38 + 7 + 55 x 0.2800 = **60.4**; the
+mirror stops at rung 2 and files the rise as established, counts claim lines as interviews and takes the
+benchmarks file's group totals, keeps 3 of 25 and scores 5 + 7 + 55 x 0.1200 = **18.6**. The two ask
+columns differ because the mirror does not execute the schedule and does not notice the grouped return, not
+because any ask consumes the call's construction.
+
+**Mirror leakage:** 12.0 per cent of ask weight.
+
+**Measured by:** `generator/asks_measure.py`, which at this stage solves on the generator's clean truth
+in `generator/core.py` and prints both columns; at stage 3 its figure lookups are re-pointed through
+`verify.py`'s own bundle pipeline so the ceiling is measured on what ships rather than on the truth. It
+exits 1 unless the pair is at or under 40 and the leakage under 35, and it also prints each device's
+forcing gap. Re-run after every change to the asks or the pack.
+
+**Mirror leakage:** 12.0 per cent of ask weight.
+
+**Rounding sentence, and the figures it governs.** The prompt's last sentence governs the change in points,
+the standard error and Ask 3's ten rates, all to one decimal place. Ask 1's national change is in points to
+one decimal; Ask 2's four counts and Ask 3's ten benchmark populations are whole numbers that no rounding
+sentence governs. `verify.py` carries this list and checks each figure's printed precision in the shipped
+write-up, because `figures_check.py` compares values and cannot see precision.
+
+### ARCHIVE architecture 2 (spent): Draw
 
 Motu Kōrero Research, a survey research institute running the national statistics office's continuous
 Household Living Conditions Survey under contract. Which region's rise in dwellings with damp or mould
@@ -56,13 +418,6 @@ quarter is worked by two to twelve interviewers, every interviewer carries a dif
 has to be probed, and a minority of interviewers work more than one region because rural workloads cross
 territorial authority boundaries, so the record contains the same interviewer's own differential measured
 away from the region that looks worst, which is the only thing that separates her from it.
-
-**STATUS: this decisive step failed at stage 2 measurement, before any data was cut.** The world, the
-ground, the pincer case and the priced bias below all stand; the decisive step does not, because the
-interviewer differential it has to attribute cannot be estimated from one quarter's workload at the
-precision the ranking needs. The measurement and the arithmetic are in `## Tried and rejected` under
-"Architecture 2 decisive step". Do not read the Default path, Stump sentence or Three rules sections
-below as live.
 
 **Priced ceiling, computed before any row is cut** (`stumping` Part 3, and the rule this slot earned).
 At an item prevalence of 0.20 the person-level SD is 0.400, so the between-interviewer SD of the realised
@@ -114,7 +469,7 @@ numbers are re-measured on the cut pack before the ladder is accepted.
   achieved sample as if the design and the workforce did not touch it; this build differs from the variance
   version of that shortcut by moving a point estimate rather than an interval.
 
-## Default path
+### ARCHIVE architecture 2 (spent): Default path
 
 The pipeline a competent analyst builds from the release's own words and the files' grain, without asking
 who collected each region's quarter.
@@ -137,7 +492,7 @@ who collected each region's quarter.
 Ends on: the loud region, the largest measured rise, with its own observed rate
 Golden: the region whose rise survives attribution to its interviewers, with its own observed rate
 
-## Stump sentence
+### ARCHIVE architecture 2 (spent): Stump sentence
 
 A competent solver stacks both questionnaire layouts, resolves the address log to the dwelling grain,
 converts the stamps, rebases the regions across the amalgamation and weights to the design correctly,
@@ -146,7 +501,7 @@ region on its largest measured rise, because most of that rise is the differenti
 who carried two thirds of that region's quarter while a colleague was on leave, a differential her own
 records reproduce in the other regions she worked.
 
-## Three rules
+### ARCHIVE architecture 2 (spent): Three rules
 
 - **Task type:** `survey-research-official-statistics` / `anomaly-detection`, which serves Anomaly
   Detection & Diagnostics; the build works the field's own interviewer-variance method on a probed
@@ -570,7 +925,7 @@ consumes the call's construction; the separation assertions above are the eviden
 
 **Mirror leakage:** 12.0 per cent of ask weight.
 
-**Measured by:** `generator/asks_measure.py`, which reads every figure through `verify.py`'s own bundle
+**Measured by:** `generator/asks_measure.py`, which at this stage solves on the generator's clean truth in
 pipeline, so the ceiling is measured on what ships rather than on the generator's truth. It exits 1
 unless the pair is at or under 40 and the leakage under 35, and it also prints the graded-set boundary
 and the precision each graded figure is printed at. Re-run after every change to the asks or the pack.

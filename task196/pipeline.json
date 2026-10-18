@@ -7,25 +7,31 @@
  "objective": "anomaly-detection",
  "wave": 4,
  "card": "banking-credit-financial-risk/fraud-aml-detection, shape 03, gap population, decisive generator G12, gate_g method_or_model_selection, decision quantity_figure, strategy other (capture interference), layer2 estimand_identification / own:contaminated-second-capture",
- "call": "Kelverstone Mutual sets Castlegate Payments' scam incidence index for the indemnity year beginning 1 October 2027 at 31 scam cases per million payments sent, being 690 indexed cases on 22,301,200 payments against the 400 its own register holds.",
- "resume_step": "stage 3 green and handed back on 2026-10-18. The parent runs stage 4 (the isolated leak reader and the determinism judge) from target.zip, prompt.txt and the submission's graded blocks; findings come back here for one generator pass.",
+ "call": "Kelverstone Mutual sets Castlegate Payments' scam incidence index for the indemnity year beginning 1 October 2027 at 31 scam cases per million payments sent, being 688 indexed cases on 22,233,300 payments against the 400 its own register holds.",
+ "resume_step": "stage 3 green again after the judge's eight findings were repaired in one generator pass on 2026-10-18. The parent runs the single re-judge from target.zip, prompt.txt and the submission's graded blocks.",
  "gates": {
-  "checks": "exit 0, 83 checks, 83 PASS, 0 FAIL",
-  "verify": "exit 0, 82 checks, 82 PASS, 0 FAIL, reading only the shipped bundle",
+  "checks": "exit 0, 102 checks, 102 PASS, 0 FAIL",
+  "verify": "exit 0, 106 checks, 106 PASS, 0 FAIL, reading only the shipped bundle",
   "figures_check": "exit 0, 94 figures in blocks 1 to 4, 0 absent from figures.json",
   "precut": "exit 0, 50 checks, 0 FAIL, 0 WARN",
-  "voice_check": "exit 0, 13 checks PASS, prompt.txt 971 characters (29 of headroom)",
-  "leak": "REVIEW, no LEAK finding; sweeps 1, 2, 5, 7, 8, 9 and 11 clean; three REVIEW classes answered in the design note",
-  "guard_surface": "exit 0, 11 promoted pairs (was 14), identical-column-set findings 0 after the dictionary header was re-cut; pairs answered in the design note",
-  "guard_heart": "WARN, exit 0, 0 BLOCK; ban.artifact cleared by re-keying context_artifact to planning_thread",
-  "guard_check": "WARN, exit 0, no BLOCK",
-  "ceiling": "PASS, pair 37.4 against 40, cracker 55.5 keeping 13 of 68, mirror 19.3 keeping 9 of 68, leakage 13.2 per cent; unchanged by the block 4 trim because those counts were never rubric criteria",
-  "rebuild": "two consecutive builds byte identical; tree digest is md5 over sorted 'relpath md5' lines: target ab5bd5b7ae0013c734471e9269950b87, golden 38b60dd5e4983f8e61dcda7d573dc16c, target.zip md5 72c2b367aa54077806c3183825940d2b, 19 members, cut by generator/archive.py",
-  "input_gates": "19 files, four formats (csv, xlsx, pdf, txt), case_payments.csv at 33,865 rows, three declared distractors",
-  "ask_forcing": "measured on the cut pack: ask A 16 of 16 figures move, widest 256,440.34 on the Q1 total (921,923.96 against 665,483.62); ask B 24 of 24, widest 54,377 on Brindlemere's value (405,985 against 460,362), narrowest one whole case; ask C 15 of 15, widest 7.8 points on Q2 beneficiary recall (5.1 against 12.9), narrowest 0.2 against a rounding of 0.1",
-  "precision": "all 59 graded figures print at the precision their asking sentence states, checked by hand; none finer",
-  "block4_scope": "every figure in Deliverable Answers maps to a prompt sentence: the four payments-sent counts were removed on the coordinator's ruling (the index's denominator, which the prompt does not ask for); Castlegate's stays in the Final Recommendation and step 3 as the recommendation's working, and the deliverable file keeps the column as ungraded context"
+  "voice_check": "exit 0, 13 checks PASS, prompt.txt 982 characters",
+  "leak": "REVIEW, 0 LEAK findings; three REVIEW classes answered in the design note",
+  "guard_surface": "exit 0, 11 promoted pairs, 0 identical-column-set; task194 answered on the card",
+  "guard_heart": "WARN, exit 0, 0 BLOCK",
+  "guard_check": "WARN, exit 0, 0 BLOCK",
+  "ceiling": "PASS, pair 37.4 against 40, cracker 55.5 keeping 13 of 68, mirror 19.3 keeping 9 of 68, leakage 13.2 per cent, N unchanged by the repair",
+  "rebuild": "two consecutive builds byte identical; tree digest is md5 over sorted 'relpath md5' lines: target f3b8810360b96898de3bc32a3d18dc56, golden 93477ac2f76cb95787e9f44bd613b2ac, target.zip md5 425d1977131b092e33ef9afbc22e095a, 19 members, cut by generator/archive.py",
+  "input_gates": "19 files, four formats (csv, xlsx, pdf, txt), case_payments.csv at 33,852 rows, three declared distractors",
+  "estimator_family": "eight licensed forms, span 0.29 per cent, every one prints 31: petersen 30.940, chapman 30.890, bailey 30.858, continuity corrected 30.915, conditional MLE 30.900, and the capture probability read off every own case 30.940, off the cases asked about 30.935, off the cases never asked about 30.947; the three capture readings agree to four decimals",
+  "ladder": "17.991 recorded-only, 25.200 rung 0, 26.642 rung 1, 35.669 rung 2, golden 30.940; gaps from the golden 18.6, 13.9 and 15.3 per cent; edge 0.440",
+  "ask_forcing": "measured on the cut pack: ask A 16 of 16 move, widest 256,440.34 on the Q1 total (920,818.86 against 664,378.52), narrowest 13,559.15; ask B 24 of 24, widest 54,377 on Brindlemere's value (405,985 against 460,362), narrowest one whole case; ask C 15 of 15, widest 12.8 points on Q2 beneficiary recall (2.3 against 15.1), narrowest 0.5",
+  "precision": "all 59 graded figures print at the precision their asking sentence states, checked by hand; none finer"
  },
  "notes": "Architecture v1 (insurance experience rating) was redrawn at stage 1 on a 10/10 rule 1 finding; v1 sits in the card's lineage. The index is stated to the nearest whole case per million payments because the five licensed two-source estimator forms print 30.83 to 30.94 at two decimals and all print 31 at the whole case. Resumed after a container restart: the four stage-3 conditions were measured on the cut pack, the card's stale stump and analyst_test numbers were corrected to the shipped 412/325/205/23, the context_artifact re-keyed planning_thread to clear a ban.artifact BLOCK that task197 raised, the prompt trimmed 994 to 971, ask B's forcing cell re-measured, and the dictionary given a verifier read-back. Coordinator round 2: a task194 differentiation entry added to the card (both cards carry G12, but task194's gap is a coding lag the series' own vintages recover while this build's events never enter any record), and block 4 trimmed of the four payments-sent counts. The pack was not touched in that round, so the rebuild digests stand.",
- "updated": "2026-10-18"
+ "updated": "2026-10-18",
+ "judge": {
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK overridden to FIX_NOW by the author",
+  "report": "eight findings, all eight repaired in one generator pass; one re-judge owed, and if it is not APPROVE the architecture is spent and the slot re-roots without a second override"
+ }
 }
