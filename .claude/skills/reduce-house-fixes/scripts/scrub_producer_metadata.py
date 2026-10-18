@@ -118,6 +118,21 @@ def scrub_ooxml(path, producer, stamp, floor=None, ceiling=None):
     os.replace(tmp, path)
 
 
+def lines_holding(b, tok):
+    """each line of b (split on newline) that holds tok, once, in order: what re.findall of [^\\n]*tok[^\\n]* returns,
+    found without the regex's backtracking, which is quadratic on a long binary line such as an image stream"""
+    out, start = [], 0
+    while True:
+        i = b.find(tok, start)
+        if i < 0:
+            return out
+        ls = b.rfind(b"\n", 0, i) + 1
+        le = b.find(b"\n", i)
+        le = len(b) if le < 0 else le
+        out.append(b[ls:le])
+        start = le
+
+
 def scrub_pdf(path, producer, stamp, floor=None, ceiling=None):
     b = open(path, "rb").read()
     n0 = len(b)
@@ -161,7 +176,7 @@ def scrub_pdf(path, producer, stamp, floor=None, ceiling=None):
     # there. Substitute only the text AFTER the comment marker: swallowing the leading "%" turns
     # the comment into loose tokens and corrupts the file.
     for tok in SIG:
-        for line in re.findall(rb"[^\n]*" + tok.encode() + rb"[^\n]*", b):
+        for line in lines_holding(b, tok.encode()):
             mark = re.match(rb"(\s*%+\s*)(.*)", line, re.S)
             if not mark:
                 continue
