@@ -1,0 +1,49 @@
+{
+ "task": "task174",
+ "owner": "sathya8571",
+ "status": "PAUSED",
+ "domain": "",
+ "objective": "forecasting",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-18",
+ "stump": "",
+ "architecture": 1,
+ "loops": 0,
+ "card_registered": false,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "wave": "wave 8 (new), seed FC45: the world, the decision and the quantity kept; the seed's planning clause, type curve and drilled-but-uncompleted flag never used",
+ "screen": {
+  "assigned": "new draw in the seed's world (a north-east Pennsylvania gas producer's 2027 incremental firm sale to an LNG feedgas buyer, gas from wells first turned in line in 2027 delivered in calendar 2027), the decisive step a forecasting judgment inferred from the data with the rival rejected out of sample",
+  "spacing": "eight-well pads at 660 ft against the 1,000-ft type curve: lever and common-exposure subset are one dial; with S(4) of 0.98 or more the 1,000-ft over 660-ft calendar-2027 volume is 1.01 to 1.065, and a lever of 1.08 to 1.17 needs S(4) of 0.72 to 0.92, where the 2026 pads' own months, filtered and divided, land at 1.024 to 1.072 (four months observed) and 0.995 to 1.016 (six); golden over default 0.88 to 0.93 where buildable, so the flat 10 per cent haircut lands; older pilots with another completion design change the subset, not the lever; parent-child 3 to 10 per cent at pad level",
+  "vintage": "turn-in-line date from the plan with its error read as issued at each pad's lead (economics-econometrics forecasting-forecast-evaluation): repeat, method and estimand screens pass (variants within 0.3 to 1.1 per cent; expected against mean-slip volume 0.1 to 0.3 per cent); strength fails on noise against margins, flat two-month slip +3.7 to +9.0 per cent, flat three-month -6 to -11, pooled slip +6.8 to +17, sigma over pads 1.3 to 2.3 per cent, equivalent flat slip 69 to 80 days across seeds 174 to 176",
+  "taxonomy": "energy-systems-utilities has no production-forecasting task type (load-forecasting is demand, asset-condition is equipment health, generation-capacity serves only opportunity sizing); economics-econometrics forecasting-forecast-evaluation fits only a forecast-evaluation decisive step, and the domains README keeps Economics to macro, labour, trade and fiscal reads",
+  "repeat_screen": "guard.py nearest on the vintage driver at most 0.05; guard.py slots on spacing, decline, interference, pilot, lateral, parent, type curve, onset, vintage, as issued, real-time, revision, slip, look-ahead and schedule: no slot spent either mechanism (task123 rejected a bitemporal look-ahead rung as too small); cards task138, task144, task149, task154, task180, task182 and task189 carry vintages only as Layer 1 or calibration",
+  "forcing_event": "purchase_order_or_contract (the term sheet) was this world's honest key, banned by task170 and held for task165 at the time of the screen",
+  "prototypes": "scratchpad b174/proto: physics.py, calib.py to calib3.py, lever.py, screen_common_exposure.py, slip_lever.py, vintage_proto.py to vintage_proto5.py"
+ },
+ "resume": "PAUSED at stage 1, no card registered, nothing cut, not retired. The upstream-gas world's spacing and vintage mechanisms are spent, with measurements in the design note's ## Tried and rejected, and the number needs a new world, which the coordinator picks. Read the structural sentence first: calendar-year gas from that year's new wells is their first months, so a usable difference has to be large there, invisible in the young wells' own months and measured in full elsewhere in the record.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
