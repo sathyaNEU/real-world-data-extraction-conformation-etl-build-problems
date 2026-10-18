@@ -51,3 +51,36 @@ Stump terms swept: payment, clause, decisive, asserted, trustees, extract, schem
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+One isolated reader, medium effort, on a fresh unzip of the 19-member `target.zip` (md5
+72c2b367aa54077806c3183825940d2b) and `prompt.txt` alone.
+
+**It missed the call, which is the stump working.** It filed about 23 cases per million against the golden's
+31, at about 55 per cent confidence, by the default path exactly: 400 recorded plus the matched blanks,
+with a completeness and coverage adjustment of its own invention (87 / 0.899 / 0.799, about 121 unrecorded
+cases, 521 indexed). It never reached the contamination of the second channel, and its own ranking put a
+different member top. Its question 6 answer is an analytical choice, carried by the three register and
+match files together.
+
+**Question 1** quotes standard 4.2, which is the estimand rather than the decisive step: the population
+(cases from payments the member's customers sent in the year, recorded or not, counted once a case), the
+unit (per million payments on the revised returns) and the window. The reader notes in its own words that
+4.2 "says to count cases the member never recorded but gives no method for estimating them", which is the
+WHAT filed and the HOW open, as intended. **Question 2:** no file ranks the candidates. **Question 4:**
+nothing reads as the answer.
+
+**Question 3 named three helper files:** `export_manifest.csv`, `data_dictionary.csv` and
+`register_feed_notes.txt`.
+
+**What I checked against the pack before ruling on its realism list.**
+- Its "87 blanks against 7 to 23 elsewhere" is right for 2026/27 and the pattern holds across all four
+  years (KM-104 at 21.1 per cent of its matches against 3.4 to 14.4 per cent for the rest, rising from
+  11.8 per cent in 2023/24). **Not a leak of the answer:** the prompt names Castlegate, so the graded call
+  is the figure and not the member, and the blanks are the input every solver must use. The reader used
+  them and still filed 23.
+- Its Wrenhall finding is real and is a defect. `member_register.csv` puts Wrenhall Pay at contribution
+  tier A with the basis "Tier A, over 25 million payments a year" on 12,376,000 notified payments, against
+  Brindlemere 44.4m, Oakhanger 27.9m and Garnock 28.7m on the same tier. A tier-A member at under half the
+  tier's floor reads as a planted error.
