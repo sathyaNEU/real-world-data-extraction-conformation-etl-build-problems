@@ -3,7 +3,7 @@ import sys, os, json, csv, sqlite3, shutil, datetime as dt
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import sim, core
+import sim, core, time
 TASK = os.path.dirname(HERE)
 TGT = os.path.join(TASK, "target")
 GOLD = os.path.join(TASK, "golden")
@@ -19,21 +19,19 @@ TSO = "Rijksnet"
 # asserts the count is zero.
 UNAVAIL = [
     ("VKF-OOS", dt.date(2026, 9, 23), "05:12", 38, "droop controller alarm, reserve withdrawn", "ALM-DRP"),
-    ("VKF-ZWT", dt.date(2026, 9, 26), "10:41", 52, "state of charge outside reserve band", "SOC-OUT"),
     ("VKF-HGZ", dt.date(2026, 9, 30), "20:35", 74, "engine 3 trip, reserve capacity reduced", "ENG-TRP"),
-    ("VKF-TRB", dt.date(2026, 10, 1), "09:14", 41, "process load locked out of reserve", "LOA-LCK"),
     ("VKF-NWV", dt.date(2026, 10, 3), "06:22", 29, "communications loss to control platform", "COM-LOS"),
-    ("VKF-DLK", dt.date(2026, 10, 5), "17:48", 63, "inverter bank 2 isolated", "INV-ISO"),
-    ("VKF-RDL", dt.date(2026, 10, 7), "18:05", 47, "gas supply pressure low", "GAS-LOW"),
-    ("VKF-KPV", dt.date(2026, 10, 9), "16:08", 35, "auxiliary transformer inspection", "AUX-INS"),
     ("VKF-MPD", dt.date(2026, 9, 22), "06:35", 44, "engine 1 lube oil alarm", "ENG-LUB"),
+    ("VKF-ZWT", dt.date(2026, 10, 1), "10:20", 52, "state of charge outside reserve band", "SOC-OUT"),
+    ("VKF-TRB", dt.date(2026, 9, 25), "09:30", 41, "process load locked out of reserve", "LOA-LCK"),
+    ("VKF-DLK", dt.date(2026, 9, 27), "01:30", 63, "inverter bank 2 isolated", "INV-ISO"),
     # three entries a later correction row supersedes (the outage was logged against the wrong site
     # or cancelled); a naive sum of outage minutes counts them twice
     ("VKF-OOS", dt.date(2026, 9, 28), "13:20", 56, "reserve withdrawn, pending investigation", "ALM-DRP"),
     ("VKF-HGZ", dt.date(2026, 10, 2), "21:10", 68, "reserve withdrawn, pending investigation", "ENG-TRP"),
     ("VKF-NWV", dt.date(2026, 10, 10), "09:05", 33, "reserve withdrawn, pending investigation", "COM-LOS"),
 ]
-SUPERSEDED = {9, 10, 11}        # indexes into UNAVAIL whose event a correction row cancels
+SUPERSEDED = {7, 8, 9}        # indexes into UNAVAIL whose event a correction row cancels
 
 METER_EAN = {"VKF-OOS": ("871687140000312447", "871687140000398201", dt.date(2026, 10, 1)),
              "VKF-ZWT": ("871687140000207718", None, None), "VKF-HGZ": ("871687140000255143", None, None),
@@ -51,6 +49,8 @@ def loc(d, sec):
     return base.strftime("%Y-%m-%dT%H:%M:%S+02:00")
 
 _PLACED = {}
+_PLACE_CACHE = {}
+_WIN_CACHE = {}
 
 
 def _episode_seconds(d):
@@ -66,6 +66,13 @@ def _episode_seconds(d):
 
 
 def place_outage(site, d, hhmm, minutes):
+    key = (site["id"], d, hhmm, minutes)
+    if key not in _PLACE_CACHE:
+        _PLACE_CACHE[key] = _place_outage(site, d, hhmm, minutes)
+    return _PLACE_CACHE[key]
+
+
+def _place_outage(site, d, hhmm, minutes):
     """The start second of the logged outage: the first window of that length inside a contracted
     block of that day holding no qualifying episode of either sign, searched from the stated time.
     Keeping every outage clear of both measured populations is what separates the ask devices from
@@ -88,6 +95,8 @@ def place_outage(site, d, hhmm, minutes):
 
 
 def unavail_windows(site_id):
+    if site_id in _WIN_CACHE:
+        return _WIN_CACHE[site_id]
     out = []
     for i, (sid, d, hhmm, mins, reason, code) in enumerate(UNAVAIL):
         if sid != site_id or i in SUPERSEDED:
@@ -96,6 +105,7 @@ def unavail_windows(site_id):
         if t0 is None:
             continue
         out.append((d, t0, t0 + mins * 60))
+    _WIN_CACHE[site_id] = out
     return out
 
 
@@ -137,11 +147,15 @@ def main():
 
     # patch sim's FCR gate so unavailability removes the obligation, before anything is computed
     sim._fcr_gate = fcr_active
+    print("[stage] window", flush=True)
     W = core.window()
+    print("[stage] recordings", flush=True)
     recs = core.recordings(W)
+    print("[stage] power cache", flush=True)
     cache = core.power_cache(W, recs)
 
     # ---------- the 1 Hz archive -------------------------------------------------------------
+    print("[stage] archive", flush=True)
     dbp = os.path.join(TGT, "platform", "vkf_highres_archive.sqlite")
     os.makedirs(os.path.dirname(dbp), exist_ok=True)
     con = sqlite3.connect(dbp)
@@ -168,8 +182,12 @@ def main():
         con.executemany("INSERT INTO power_1s VALUES (?,?,?,?)", samples)
         rows_written += len(samples)
         # the replayed recording: one over-frequency extract restored twice under a fresh id
+        # the storage-fault restore of 2026-10-04 put one over-frequency recording back under a
+        # fresh id; it holds no qualifying under-frequency episode, so the main call cannot see it
         if dup_src is None and trig == "frequency_excursion" and sid == "VKF-HGZ" \
-                and d == dt.date(2026, 10, 4) and any(a <= lo <= b for (a, b, _, _) in W[d]["over"]):
+                and d == dt.date(2026, 10, 4) \
+                and any(lo <= x < hi for (_, _, x, _) in W[d]["over"]) \
+                and not any(lo <= x < hi for (_, _, x, _) in W[d]["under"]):
             dup_src = (rid, sid, trig, lo, hi, d, samples)
     if dup_src:
         (src_id, sid, trig, lo, hi, d, samples) = dup_src
@@ -186,6 +204,7 @@ def main():
     counts["archive_rows"] = rows_written
 
     # ---------- the operator's frequency files ----------------------------------------------
+    print("[stage] frequency files", flush=True)
     rows, mins = [], []
     for d in sim.dates():
         f = W[d]["f"]
@@ -203,6 +222,7 @@ def main():
                                    ["minute_utc", "frequency_min_hz", "frequency_mean_hz", "frequency_max_hz"], mins)
 
     # ---------- programme, commitments, metered volumes --------------------------------------
+    print("[stage] programme and metered", flush=True)
     prog_rows, met_rows, com_rows = [], [], []
     for d in sim.dates():
         for s in sim.SITES:
@@ -230,8 +250,90 @@ def main():
     counts["commitments"] = write_csv(os.path.join(TGT, "platform", "fcr_block_commitments.csv"),
                                       ["delivery_date", "block", "block_start_local", "block_end_local",
                                        "site_id", "committed_mw"], com_rows)
+    # ---------- documents, register, settlement, distractors --------------------------------
+    print("[stage] documents", flush=True)
+    import docs, pack2, goldens
+    placed = unavail_rows()
+    counts["event_log"] = pack2.event_log(os.path.join(TGT, "platform", "control_platform_event_log.csv"), placed)
+    pack2.register(os.path.join(TGT, "register", "asset_register.xlsx"))
+    docs.technical_conditions(os.path.join(TGT, "operator", "fcr_technical_conditions_2026.pdf"), TSO)
+    docs.performance_standard(os.path.join(TGT, "standards", "reserve_performance_standard_v4.pdf"),
+                              ORG, core.TOLERANCE_PCT, sim.WINDOW_START, sim.WINDOW_END, AS_OF)
+    st = pack2.settlement_files(TGT, W)
+    counts["settlement_statements"] = sum(st["rows"])
+    counts["imbalance_prices"], counts["auction_results"] = pack2.distractors(TGT)
+    counts["prequalification"] = pack2.prequal(TGT)
+
+    # ---------- the figures -------------------------------------------------------------------
+    print("[stage] figures", flush=True)
+    under = core.episode_table(W, recs, cache, "under")
+    over = core.episode_table(W, recs, cache, "over")
+    su, so = core.site_scores(under), core.site_scores(over)
+    av = pack2.availability(W, placed)
+    met = pack2.metered_totals(W)
+    name = {s["id"]: s["name"] for s in sim.SITES}
+    cap = {s["id"]: s["cap"] for s in sim.SITES}
+    order = [sid for sid, _ in core.ranked(su, "traj")]
+    sc = [dict(site=sid, name=name[sid], cap=round(cap[sid], 2),
+               contract_gain=round(cap[sid] / sim.SPAN, 2), gain_pct=round(su[sid]["traj"], 1),
+               episodes=su[sid]["n"], under=round(su[sid]["traj"], 1) < core.TOLERANCE_PCT)
+          for sid in order]
+    call, runner = order[0], order[1]
+    down = [dict(site=sid, name=name[sid],
+                 gain_pct=(round(so[sid]["traj"], 1) if sid in so else None),
+                 episodes=(so[sid]["n"] if sid in so else 0)) for sid in sorted(name)]
+    dn_low = min([d for d in down if d["gain_pct"] is not None], key=lambda d: d["gain_pct"])
+    dn_none = [d for d in down if d["gain_pct"] is None]
+    blocks = [dict(block=b + 1, hours="%02d:00-%02d:00" % sim.BLOCK_HOURS[b],
+                   committed=round(av["committed"][b], 1), available=round(av["available"][b], 1),
+                   shortfall=round(av["lost"][b], 1)) for b in range(6)]
+    rec = [dict(site=sid, name=name[sid], metered=round(met[sid], 1),
+                settled=round(st["statement"][sid], 1),
+                difference=round(st["statement"][sid] - met[sid], 1)) for sid in sorted(name)]
+    rung0_site = core.ranked(su, "pre")[0][0]
+    F = dict(window_from=sim.WINDOW_START.isoformat(), window_to=sim.WINDOW_END.isoformat(),
+             as_of=AS_OF.isoformat(), filing_due=FILING_DUE.isoformat(),
+             delivery_month=DELIVERY_MONTH, delivery_start="2026-11-01", tso=TSO, org=ORG,
+             tolerance=core.TOLERANCE_PCT, scorecard=sc, down=down, availability=blocks,
+             reconciliation=rec, call_site=call, call_name=name[call],
+             call_gain=round(su[call]["traj"], 1), runner_site=runner, runner_name=name[runner],
+             runner_gain=round(su[runner]["traj"], 1),
+             gap_pp=round(round(su[runner]["traj"], 1) - round(su[call]["traj"], 1), 1),
+             call_episodes=su[call]["n"],
+             down_low_name=dn_low["name"], down_low_gain=dn_low["gain_pct"],
+             down_none_name=(dn_none[0]["name"] if dn_none else "none"),
+             avail_committed_total=round(sum(b["committed"] for b in blocks), 1),
+             avail_available_total=round(sum(b["available"] for b in blocks), 1),
+             avail_shortfall_total=round(sum(b["shortfall"] for b in blocks), 1),
+             rec_metered_total=round(sum(r["metered"] for r in rec), 1),
+             rec_settled_total=round(sum(r["settled"] for r in rec), 1),
+             rec_difference_total=round(sum(r["difference"] for r in rec), 1),
+             rung0_site=rung0_site, rung0_name=name[rung0_site],
+             rung0_pre=round(su[rung0_site]["pre"], 1), rung0_traj=round(su[rung0_site]["traj"], 1),
+             ladder={k: {sid: round(v[k], 4) for sid, v in su.items()} for k in ("traj", "pre", "sp", "lin")},
+             ladder_names={k: core.ranked(su, k)[0][0] for k in ("traj", "pre", "sp", "lin")},
+             exact={sid: round(v["traj"], 6) for sid, v in su.items()},
+             exact_down={sid: round(v["traj"], 6) for sid, v in so.items()},
+             forcing=dict(ean_lost_mwh=round(st["ean_lost_mwh"], 1),
+                          prelim_gap_mwh=round(st["prelim_gap_mwh"], 3),
+                          superseded_mwh=round(sum(av["lost_with_superseded"][b] - av["lost"][b]
+                                                   for b in range(6)), 1),
+                          kwh_site=KWH_SITE),
+             counts=counts)
+    print("[stage] dictionary and goldens", flush=True)
+    counts["dictionary"] = pack2.dictionary(TGT, counts)
+    blk = [("Block %d (%02d:00-%02d:00)" % (b + 1, sim.BLOCK_HOURS[b][0], sim.BLOCK_HOURS[b][1]),
+            av["committed"][b] / (4.0 * 30), 99.14 - 0.37 * b + 0.11 * (b % 3)) for b in range(6)]
+    docs.availability_report(os.path.join(TGT, "operator", "fcr_group_availability_2026-09.pdf"),
+                             TSO, ORG, "2026-09", blk, "RPG-0417")
+    goldens.workbook(os.path.join(GOLD, "site_response_scorecard.xlsx"), F)
+    goldens.memo(os.path.join(GOLD, "response_determination.md"), F)
+    json.dump(F, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
     json.dump(counts, open(os.path.join(HERE, "_counts.json"), "w"), indent=1, sort_keys=True)
-    print(json.dumps(counts, indent=1, sort_keys=True))
+    print(json.dumps({k: counts[k] for k in sorted(counts)}, indent=1))
+    print("call %s %.1f | runner %s %.1f | gap %.1f" % (F["call_name"], F["call_gain"],
+                                                        F["runner_name"], F["runner_gain"], F["gap_pp"]))
+    print("rungs:", F["ladder_names"])
     return W, recs, cache, archive_index
 
 

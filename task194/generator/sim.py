@@ -108,6 +108,28 @@ def window_devs(sd, n, fixed_last, seedparts, level_at=(), cap=0.0075, tail4_cap
     return dev
 
 
+def path_mult(units, expected_net):
+    """Each unit's designed level by quarter, normalised against its own expected numbers.
+
+    A unit in `RATIO_PATH` runs at one level over the first part of the window and another over the last;
+    the pair is scaled so the expected-weighted mean is one, which leaves the unit's pooled ratio over the
+    ten closed quarters at its persistent ratio.
+    """
+    out = {}
+    for u in units:
+        code = u[0]
+        if code not in W.RATIO_PATH:
+            continue
+        m1, m2 = W.RATIO_PATH[code]
+        qs = [q for q in quarters_for(u) if (code, q) in expected_net]
+        w = {q: expected_net[(code, q)] for q in qs}
+        raw = {q: (m1 if q < W.PATH_SPLIT else m2) for q in qs}
+        mean = sum(w[q] * raw[q] for q in qs) / sum(w[q] for q in qs)
+        for q in qs:
+            out[(code, q)] = raw[q] / mean
+    return out
+
+
 def unit_base(units, expected, expected_net, inscope):
     """The published standardised ratio each unit-quarter sits at before its own quarterly shock.
 
@@ -118,6 +140,7 @@ def unit_base(units, expected, expected_net, inscope):
     same practice report different published ratios when their patients sit in different bands.
     """
     base = {}
+    mult = path_mult(units, expected_net)
     for u in units:
         code, psi = u[0], u[5]
         for q in quarters_for(u):
@@ -128,7 +151,7 @@ def unit_base(units, expected, expected_net, inscope):
                 # its excess over the network is the same whatever mix of patients it is sent
                 target = expected_net[(code, q)] + W.ADDITIVE_C * inscope[(code, q)]
             else:
-                target = expected_net[(code, q)] * psi
+                target = expected_net[(code, q)] * psi * mult.get((code, q), 1.0)
             base[(code, q)] = target / expected[(code, q)]
     return base
 
@@ -547,15 +570,20 @@ def complications(rows, units):
 
 
 def electronic_share(unit, sep_date):
-    """How much of a ward's recording sits on the clinical information system on a given day."""
+    """How much of a ward's recording sits on the clinical information system on a given day.
+
+    Nothing before its wards were registered, then its own adoption, reached over the three quarters after
+    registration as the devices and the practice catch up with each other.
+    """
     reg = W.CIS_MIGRATION.get(unit)
     if reg is None or sep_date < reg:
         return 0.0
+    settled = W.CIS_ADOPTION.get(unit, W.CIS_SETTLED)
     days = (sep_date - reg).days
     for cut, share in W.CIS_RAMP:
         if days < cut:
-            return share
-    return W.CIS_SETTLED
+            return settled * share
+    return settled
 
 
 def maturity(q):

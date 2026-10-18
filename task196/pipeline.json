@@ -1,18 +1,26 @@
 {
   "task": "task196",
   "owner": "oviya13ya",
-  "status": "DESIGN",
-  "stage": 2,
+  "status": "BUILD",
+  "stage": 3,
   "architecture": 2,
   "objective": "anomaly-detection",
   "wave": 4,
   "card": "banking-credit-financial-risk/fraud-aml-detection, shape 03, gap population, decisive generator G12, gate_g method_or_model_selection, decision quantity_figure, strategy other (capture interference), layer2 estimand_identification / own:contaminated-second-capture",
-  "call": "Kelverstone Mutual puts 30 scam cases per million payments on Castlegate Payments for the indemnity year from 1 October 2027, against the 17 its own case register holds and the 22 a two-source estimate on every mule-register match gives.",
-  "resume_step": "stage 2 complete: precut.py exits 0 (50 checks, 0 FAIL, 0 WARN), voice-check.py exits 0 on a 994-character prompt, ceiling.py PASS at 37.4. Next: stage 3 build, starting with the generator (dataset-generation), the pack, the goldens and submission.md.",
+  "call": "Kelverstone Mutual sets Castlegate Payments' scam incidence index for the indemnity year beginning 1 October 2027 at 31 scam cases per million payments sent, being 690 indexed cases on 22,301,200 payments against the 400 its own register holds.",
+  "resume_step": "stage 3 green and handed back. The parent runs stage 4 (the isolated leak reader and the determinism judge) from target.zip, prompt.txt and the submission's graded blocks; findings come back here for one generator pass.",
   "gates": {
-    "precut": "PASS 50 checks 0 FAIL 0 WARN",
-    "voice_check": "PASS 994 characters",
-    "pair_ceiling": "37.4 (cracker 55.5 keeping 13 of 68, mirror 19.3 keeping 9 of 68), mirror leakage 13.2 per cent, measured by generator/ceiling.py"
+    "checks": "83 checks, 83 PASS, 0 FAIL",
+    "verify": "80 checks, 80 PASS, 0 FAIL, reading only the bundle",
+    "figures_check": "exit 0, 98 figures in blocks 1 to 4, 0 absent from figures.json",
+    "precut": "exit 0, 50 checks, 0 FAIL, 0 WARN",
+    "voice_check": "exit 0, prompt.txt 994 characters",
+    "leak": "REVIEW, no LEAK, sweep 11 clean; three REVIEW classes answered in the design note",
+    "guard_surface": "one named tell fixed (a rare phrase shared with task231); promoted pairs answered in the design note",
+    "guard_heart": "WARN, exit 0, no BLOCK",
+    "ceiling": "PASS, pair 37.4, cracker 55.5 keeping 13 of 68, mirror 19.3 keeping 9 of 68, leakage 13.2 per cent",
+    "rebuild": "two consecutive builds byte identical; target md5 62687adceb240b6d11bbbfb3738819df, golden md5 6e0b1234a866aa4a0b03172ddfaa4a8e, target.zip md5 edc76655299ee87f759c49706d9d5488",
+    "input_gates": "19 files, four formats (csv, xlsx, pdf, txt), case_payments.csv at 33,865 rows, three declared distractors"
   },
-  "notes": "Architecture v1 (insurance experience rating) was redrawn at stage 1 on a 10/10 rule 1 finding before any file was cut; v1 sits in the card's lineage. The index is printed to the nearest whole case per million payments because the plain and Chapman two-source forms print 29.8 and 29.7 at one decimal and converge on 30 at the whole case (SF12)."
+  "notes": "Architecture v1 (insurance experience rating) was redrawn at stage 1 on a 10/10 rule 1 finding; v1 sits in the card's lineage. The index is stated to the nearest whole case per million payments because the five licensed two-source estimator forms print 29.7 to 30.9 at one decimal and all print 31 at the whole case."
 }

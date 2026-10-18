@@ -24,13 +24,13 @@
     "G14",
     "G4"
   ],
-  "gate_g": "decomposition_attribution",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "none",
   "stump_strategy": "causal_design",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
+  "context_artifact": "register",
   "stakeholder_role": "the reserve portfolio desk of an independent flexibility aggregator",
   "role_family": "capacity_planner",
   "scoring_unit": "per episode",
@@ -75,7 +75,10 @@
   "mechanism_source": "design_note",
   "differentiation": {
     "task155": "task155 forecasts a forward take-up rate for open tasks whose chance of being taken depends on adjacency to already-scheduled work; this build measures a physical response slope (megawatts per hertz) confounded within each episode by a scheduled trajectory running in the same seconds, with no take-up probability and no forward rate.",
-    "task467": "task467 separates a temporary from a permanent change across a treated and a comparison series whose component mixes differ; this build has no comparison series and no series decomposition, and recovers the confounding trajectory from the same unit's own boundaries where no qualifying deviation occurred."
+    "task467": "task467 separates a temporary from a permanent change across a treated and a comparison series whose component mixes differ; this build has no comparison series and no series decomposition, and recovers the confounding trajectory from the same unit's own boundaries where no qualifying deviation occurred.",
+    "task235": "task235 reads a loss over the items whose sending device has had a further chance to send, a completeness question about a feed; this build has no feed and no completeness question, and measures a unit's response slope against the scheduled trajectory running through the same seconds.",
+    "task445": "task445 completes a holder class whose amount moves with a unit's size because it holds a fixed fraction, an ownership-composition identity; this build has no holder, no fraction and no identity to complete, and its decisive move removes a programme trajectory from a measured response.",
+    "task459": "task459 turns on a ratio of input to output that varies with the operating level across a closed period; this build's ratio is a response per hertz whose contamination is a scheduled movement inside each measured second, not a level-dependent efficiency."
   },
   "lineage": [],
   "notes": "stump_strategy causal_design: the decisive move identifies a unit's own response against a confounder that runs in the same seconds and is correlated with the shared signal by market design, which is the estimand_identification family's confounding case; gate_g decomposition_attribution because the mechanism splits one observed output movement between two causes where their coincidence decides the split. forum and org_family are 'other': no vocabulary key names an asset-light flexibility aggregator (utility_or_infrastructure is both inaccurate and banned against the last three), and no committee or board decides, the determination being signed inside the performance desk and filed with the system operator.",

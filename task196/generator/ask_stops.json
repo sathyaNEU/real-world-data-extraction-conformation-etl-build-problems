@@ -1,0 +1,53 @@
+{
+ "A": {
+  "cracker_hits": false,
+  "device": "a prior-period line inside a third of the advice totals",
+  "figures": 16,
+  "figures_moved": 16,
+  "gap": 256440.34,
+  "golden": 665483.62,
+  "mirror_hits": false,
+  "natural_read": 921923.96,
+  "rounding": 1.0,
+  "worst_figure": "Q1 total"
+ },
+ "B": {
+  "cracker_hits": false,
+  "device": "the quarter's tail in a supplementary extract",
+  "figures": 24,
+  "figures_moved": 24,
+  "gap": 54377,
+  "golden": 460362,
+  "mirror_hits": false,
+  "natural_read": 405985,
+  "rounding": 1.0,
+  "worst_figure": "KM-101 value"
+ },
+ "C": {
+  "cracker_hits": false,
+  "device": "one route stated net of its own agent charge",
+  "figures": 15,
+  "figures_moved": 15,
+  "gap": 7.8,
+  "golden": 12.9,
+  "mirror_hits": false,
+  "natural_read": 5.1,
+  "rounding": 0.1,
+  "worst_figure": "Q2 beneficiary recall"
+ },
+ "C1": {
+  "cracker_hits": true,
+  "mirror_hits": false,
+  "note": "the four review-group indices: the construction layer, free to a response that lands the call"
+ },
+ "C3": {
+  "cracker_hits": true,
+  "mirror_hits": true,
+  "note": "the named member's bridge; its opening line is the recorded count, which a rung 2 response has right"
+ },
+ "C4": {
+  "cracker_hits": true,
+  "mirror_hits": true,
+  "note": "the chart's six named parts; three survive a wrong estimate"
+ }
+}

@@ -11,8 +11,8 @@
   "shape": "03",
   "decision_type": "quantity_figure",
   "answer_unit": "rate_or_share",
-  "answer": "30.0 scam cases per million payments sent (provisional, fixed at submission)",
-  "answer_source": "",
+  "answer": "31 scam cases per million payments sent (690 indexed cases on 22,301,200 payments, against the 400 Castlegate's own register holds)",
+  "answer_source": "generator/figures.json, call.index_per_million; recomputed from the bundle alone in generator/verify.py",
   "gap": [
     "population",
     "time"
@@ -36,9 +36,9 @@
   "role_family": "portfolio_manager",
   "scoring_unit": "per settled transaction",
   "spine": {
-    "file": "claims/case_register.csv",
-    "rows": 13000,
-    "entity": "one row is one scam case a member firm raised and the mutual indemnified",
+    "file": "case_register_2024_27.csv",
+    "rows": 18283,
+    "entity": "one row is one case a member firm recorded, scam reimbursement or unauthorised fraud",
     "grain": "member x scheme year x case",
     "source": "synthetic"
   },
@@ -84,14 +84,14 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:contaminated-second-capture",
   "layer1": [
-    "the quarterly member return changes layout at the 2024/25 scheme year",
-    "payment volumes filed in thousands on one return and in units on another",
-    "scheme year to 31 March against the calendar-year regulatory return",
-    "mule account references padded and cased differently in the register and the match extract",
-    "a member joining part way through a scheme year",
-    "a preliminary and a revised quarterly return overlapping",
-    "case tables inside the trustees' PDF pack",
-    "recoveries posted as later credit rows against the original case"
+    "the case register changes layout at the 2024/25 scheme year and holds its old amounts in pence",
+    "payment volumes filed in thousands on the pre-2024/25 return sheet and in units after it",
+    "the scheme year to 31 March against the indemnity year to 30 September and a calendar-year national series",
+    "mule account references zero padded in the scheme register and unpadded in the mutual's match extract",
+    "Garnock Exchange joins part way through the 2023/24 scheme year",
+    "a preliminary and a revised vintage of the 2026/27 quarterly return",
+    "the trustees' membership table inside a PDF",
+    "recoveries posted as later credit rows against the original case, at the date the money arrived"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

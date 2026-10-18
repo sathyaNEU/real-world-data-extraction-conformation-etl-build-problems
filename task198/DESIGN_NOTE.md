@@ -83,7 +83,7 @@ to ask what a queue of a given size can reach.
    `public_holidays_ie_2022_2026.csv`; count a case unanswered at the 30 April 2026 extract late once its
    clock has passed its target.
 4. Rank the nine queues on that FY2026 breach share. Investment switches is worst at 24.4 per cent,
-   Member data corrections next at 23.0 per cent.
+   Member data corrections next at 25.8 per cent.
 5. Build each queue's offered load: cases received times the standard minutes per case from
    `work_measurement_standard_2022.pdf`, over rostered positions times productive minutes, with the 0.88
    net productive factor; take the rostered positions per quarter from
@@ -92,22 +92,22 @@ to ask what a queue of a given size can reach.
    history: divide the offered load by the staffed positions to get each quarter's occupancy, the field's
    workload measure.
 7. For each queue take its FY2023 to FY2025 quarters at the same occupancy and read off the breach share
-   they reached, then subtract: Member data corrections ran at 0.931 occupancy in FY2026 and its own
-   quarters at that occupancy reached 11.6 per cent, so it stands 11.4 points above its own history, twice
-   the next queue's gap.
-8. Commit Member data corrections, FY2026 breach share 23.0 per cent.
+   they reached, then subtract: Member data corrections carried 4.7 positions-equivalents on five positions in
+   FY2026, an occupancy of 0.93, and its own quarters at that occupancy reached 9.8 per cent, so it
+   stands 16.0 points above its own history, half again the next queue's gap.
+8. Commit Member data corrections, FY2026 breach share 25.8 per cent.
 
-Ends on: Member data corrections, FY2026 breach share 23.0 per cent
-Golden: Contribution queries, FY2026 breach share 9.2 per cent
+Ends on: Member data corrections, FY2026 breach share 25.8 per cent
+Golden: Contribution queries, FY2026 breach share 12.4 per cent
 
 ## Stump sentence
 
 A competent solver rebuilds every queue's FY2026 breach share correctly across both case systems on the
 financial year with the clock rules and the unanswered cases applied, compares each queue with its own
 FY2023 to FY2025 quarters at the same load per staffed position, and commits Member data corrections at
-23.0 per cent, because that queue carried eleven positions through the two years its own history is read
+25.8 per cent, because that queue carried eleven positions through the two years its own history is read
 from and five in FY2026, and at the same work per head a five-position queue cannot reach the service
-level an eleven-position queue reaches.
+level a fourteen-position queue reaches.
 
 ## Three rules
 
@@ -129,7 +129,9 @@ level an eleven-position queue reaches.
   against the monitoring export's calendar quarters (a dashboard built for the client-reporting pack);
   working-day clocks needing Irish public holidays, St Brigid's Day present only from 2023 (the statute);
   rostered capacity in a workbook whose sheets change from monthly hours to quarterly FTE at the FY2025
-  planning change; standard minutes in a PDF table (the 2022 work-measurement study); the monitoring export
+  planning change; the trustee statement reporting active membership split by contribution status while
+  the participating scheme register carries one figure as returned, and none at all for the master trust,
+  whose trustees return their own; standard minutes in a PDF table (the 2022 work-measurement study); the monitoring export
   missing 2024 Q2 (the migration quarter) and marking 2026 Q1 provisional. Nothing is placed to be caught.
 - **Layer 2:** `allocation_constraints`, capacity and queueing: the expectation a queue is judged against
   has to be read off the quarters that carried the same work, not the same work per head, because the
@@ -150,7 +152,7 @@ level an eleven-position queue reaches.
 - **Analyst test:** a strong analyst who has stacked both case systems, de-duplicated the migration,
   converted the stamps, applied the clock and the exclusions and counted the unanswered cases divides each
   quarter's offered load by its staffed positions, reads each queue's own history at that occupancy, and
-  commits Member data corrections at 23.0 per cent, because occupancy is the field's workload measure and
+  commits Member data corrections at 25.8 per cent, because occupancy is the field's workload measure and
   the record offers it a clean within-queue comparison on it.
 - **Estimand:** `service_assurance_framework_2026.pdf` section 4.2 files it in one sentence: the review
   candidate is the queue whose share of cases received in the financial year answered later than its
@@ -192,6 +194,7 @@ level an eleven-position queue reaches.
 | SF8 | "breach share" | late cases over cases received, pooled over the year's four quarters | the mean of the four quarterly shares | `same call`, asserted on the figure to one decimal | framework 4.2 states the share over the year's cases |
 | SF9 | rounding path | once at the end, to one decimal place in percentage points | per quarter then averaged | `same call`, asserted | prompt's last sentence; SF8 fixes the path |
 | SF10 | "the ten largest participating schemes by FY2026 cases received" | participating schemes as the register lists them, the master trust's five sub-codes rolled up to one scheme | the case record's scheme codes as they stand, so the trust counts as five schemes | a different ten and different rates | `schemes_register_2026.csv` header note states one row per participating scheme and names the trust's five administrative sub-codes; the tenth and eleventh sit 117 cases apart, asserted |
+| SF10b | "the runner-up" | not asked and not graded | the queue second on the decisive read | varies with the number of matched quarters: Death benefits, Transfers in or Member data corrections | removed from the prompt and from framework clause 4.4 once measured; `checks.py` and `verify.py` assert that second place varies while the call leads every reading by 1.2x or more |
 | SF11 | "the chargeable cases our scheme charging covers" | the cases the charges cover, recovered as each line's charge over the schedule's per-case fee | the charge lines counted as cases | the ask's four figures, 4,584 against 7,582 | a line is a charge, not a case: `fee_schedule_2025.pdf` states the per-case fee for each chargeable case type and the two rate periods, and every consolidated line's charge is an exact multiple of it |
 | SF12 | "its active members at 31 March 2026" | the per-scheme figure in the trustee membership statement | the register's `active_members` as returned by the sponsor, which is the group total where the sponsor returns for several schemes | the ask's eighteen grouped figures, register rates 41.9 to 151.0 against golden 158.0 to 182.1 | the asking sentence's own words: the register's note states the column is active members as returned by the sponsor, not a per-scheme figure at 31 March 2026, and the trustee statement is headed active members at 31 March 2026 by scheme |
 
@@ -202,33 +205,44 @@ to one shipped fact or construction.
 
 | Rung | Analysis | Winner | Figure | Dies to |
 |---|---|---|---|---|
-| 0 | the monitoring export's own per-queue breach rates | Transfers in | 46.4 per cent | the export states it measures cases closed in the calendar quarter on elapsed working days; the framework's window is the financial year and its clock excludes days with the member |
-| 1 | rebuild the share on the filed window, population and clock | Investment switches | 24.4 per cent | the framework compares each queue with its own history, so a level ranking is not the quantity |
-| 2 | each queue against its own history at the same load per staffed position (**the default path**) | Member data corrections | +11.4 points | the queue's own record carries five positions in FY2023 and FY2026 and eleven in FY2024 and FY2025 at the same occupancy, with breach shares a factor of 2.0 apart |
-| 3 | each queue against its own history at the same offered load (**decisive**) | Contribution queries | +6.9 points, 9.2 against 2.3 per cent | nothing: the golden |
+| 0 | the monitoring export's own per-queue figures | Transfers in | 46.4 per cent | the export states it measures cases closed in the calendar quarter on elapsed working days; the framework's window is the financial year and the standard's clock excludes days the case stood with the member |
+| 1 | rebuild the share on the filed window, population and clock | Investment switches | 29.8 per cent | the framework compares each queue with its own history, so a level ranking is not the quantity clause 4.2 names |
+| 2 | each queue against its own history at the same load per staffed position (**the default path**) | Member data corrections | +16.0 points | the queue's own record carries five positions in FY2023 and FY2026 and fourteen in FY2024 and FY2025 at the same occupancy, with breach shares of 22.9 and 2.1 per cent |
+| 3 | each queue against its own history at the same offered load (**decisive**) | Contribution queries | +10.2 points, 12.4 against 2.2 per cent | nothing: the golden |
 
-**Arithmetic.** Golden position on rung 0: Contribution queries is 4th of 9 on the rung-1 level ranking
-(24.4, 23.0, 13.5, 9.2) and 4th on the export basis. Decisive margin: +6.90 points against Death
-benefits' +2.60, a factor of 2.65; on the ratio basis 4.00 against 2.66. Rung-2 margin for the default
-path: +11.40 against +6.90, a factor of 1.65, so stopping at rung 2 is satisfying. Dominance: under the
-decisive read seven of the nine queues sit between -1.71 and +2.60 points, so the golden is extreme, not
-bracketed. Graded figure: 9.1975 per cent prints 9.2 at one decimal, edge distance 0.048 of a point
-against the 0.03 floor.
+**Arithmetic, measured on the cut pack.** Golden position on rung 1: Contribution queries is 4th of 9 on
+the level ranking (29.8, 25.8, 13.4, 12.4) and 4th on the export basis. Decisive margin: +10.23 points
+against the next queue, a factor of 3.71 at three matched quarters and 4.53, 3.75, 3.71, 2.82 and 1.46 at
+one through five, so the call leads every reading by more than 1.2x. Rung-2 margin for the default path:
++16.00 against +10.23, a factor of 1.56, so stopping at rung 2 is satisfying. Dominance: the winner's
+edge on the decisive axis is 7.47 points against the decoy's 5.77-point advantage on the carried axis,
+which clears the 1.2x bar. Graded figure: 12.4074 per cent prints 12.4 at one decimal, edge distance
+0.0426 of a point against the 0.03 floor.
+
+**Second place is not graded, and that is a finding the build acted on.** The queue in second on the
+decisive read changes with the number of matched quarters (Death benefits at one and three, Transfers in
+at four, Member data corrections at five), because every queue other than the call sits between -1.0 and
++2.8 points, which is the noise floor of a nearest-quarters match on cells of 100 to 400 cases. An open
+method pins the queue that leads by 3.7x; it does not pin the ordering inside the floor. The prompt and
+clause 4.4 therefore ask for the call and its own observed figures, and nothing asks for a runner-up.
+`checks.py` and `verify.py` both assert that second place varies and that the call does not.
 
 **Grid.** Every cell of the four-way grid (window basis, clock basis, matching quantity, population) is a
 named wrong answer: export basis Transfers in; fiscal window with elapsed clock Transfers in; fiscal
 window, netted clock, level ranking Investment switches; occupancy match Member data corrections; load
-match Contribution queries. No cell is saturated and no partial application reaches the golden: the
-reflex sweep below was run on the generator's clean truth.
+match Contribution queries. No cell is saturated and no partial application reaches the golden.
 
-**Reflex sweep, measured.** Pooled cross-queue fit on occupancy: Investment switches. Cross-queue fit on
-occupancy plus staffed positions as an additive control: Investment switches. Cross-queue fit on cases per
-staffed position: Investment switches. Own-history average with no load conditioning: Member data
-corrections, +15.07. Occupancy match: Member data corrections, +11.40. Every reflex lands wrong.
+**Reflex sweep, measured on the cut pack.** Pooled cross-queue fit on occupancy: Investment switches.
+Cross-queue fit on occupancy plus staffed positions as an additive control: Investment switches.
+Cross-queue fit on cases per staffed position: Investment switches. Own-history average with no load
+conditioning: Member data corrections. Occupancy match: Member data corrections, +16.00. Every reflex
+lands wrong.
 
 **Decisive-route robustness.** Seven estimators of "the share its own quarters at the same offered load
 reached" all name Contribution queries: nearest one, two, three, four and five quarters by load, a fitted
-logit of the queue's own breach share on log load, and the ratio rather than the difference basis.
+logit of the queue's own breach share on log load, and the ratio rather than the difference basis. The
+three licensed readings of offered load (positions-equivalents, standard minutes, cases received) also
+all name it, at margins of 3.71x, 1.43x and 1.43x.
 
 ## Closure table
 
@@ -264,12 +278,12 @@ the same queue reached in those of its FY2023 to FY2025 quarters that carried th
 to rank on the difference in percentage points; every licensed reading of "offered load" (positions-
 equivalents, standard minutes, or cases received) selects the same pool quarters within a queue because
 the standard minutes per case are constant inside a queue, so the literal reading lands Contribution
-queries at 9.2 per cent under all three (SF5, asserted). The one quantity the sentence does not name is
+queries at 12.4 per cent under all three (SF5, asserted). The one quantity the sentence does not name is
 how to read a value "at the same offered load" off twelve quarters, and the data closes it rather than a
 sentence: a match on load per staffed position does not reproduce the record it is read from, because
-Member data corrections' own quarters at 0.931 occupancy carry five positions in four of them and eleven
-in eight, with breach shares of 23.4 and 11.6 per cent, so the load-per-head match reads a five-position
-quarter against eleven-position quarters and reports a gap the queue's own five-position history denies.
+Member data corrections' own quarters at 0.93 occupancy carry five positions in four of them and fourteen
+in eight, with breach shares of 22.9 and 2.1 per cent, so the load-per-head match reads a five-position
+quarter against fourteen-position quarters and reports a gap the queue's own five-position history denies.
 Seven estimators of the load match agree on the name and the graded figure is the observed share, which
 is determinate under all of them.
 
@@ -288,30 +302,32 @@ is determinate under all of them.
 
 ## Ask sheet
 
-Three asks, 25 graded ask figures, solved rather than asserted by
-`generator/asks_measure.py`. Ask 1 is the one free construction figure both responses bank; Ask 2 is a
-mirror device the cracker recovers; Ask 3 carries the cracker's misses.
+Three asks, 25 graded ask figures, solved on the cut pack by `generator/asks_measure.py`. Ask 1 is the
+one free construction figure both responses bank; Ask 2 is a mirror device the cracker recovers; Ask 3
+carries the cracker's misses.
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | File and columns | Stops and lazy delta |
 |---|---|---|---|---|---|---|---|
-| 1 | 1: the FY2026 breach share for the member-service operation as a whole | the call's own working at the operation level | the Authority response opens on the operation's own year | none by design: the call's population carries no device row | the migration de-duplication, the UTC conversion, the holiday calendar, the clock exclusions | both case files, 11 columns | elapsed-clock read 13.9; export basis 11.6; golden 7.7 |
-| 2 | 4: the chargeable cases the scheme charging covers in each FY2026 quarter | an input reconciled to another system's total, the gap made of devices | member operations bills schemes per chargeable case and owes the Authority a charge reconciliation | D6 grain, a paper row covering several ledger lines: the three largest participating schemes are billed on a consolidated monthly statement, so one charge line covers every chargeable case of one type completed for that scheme in the month, and the line does not say how many; the count is recovered as the line's charge over the schedule's per-case fee | the schedule's two rate periods, 1 April to 30 September 2025 and from 1 October 2025; cases answered in late March charged in April | `scheme_charges_fy2026.csv`, 8 columns; `fee_schedule_2025.pdf` | lines counted as cases 4,584; cases the charges cover 7,582; per quarter 1,139 against 1,869, 1,176 against 1,982, 1,181 against 1,923, 1,088 against 1,808 |
-| 3 | 20: the ten largest participating schemes by FY2026 cases received, each with its active members at 31 March 2026 and its FY2026 cases received per 1,000 active members | a measure every candidate carries that the call does not turn on | the trustee reporting pack reports case load per 1,000 members by scheme | D9 self-validation, a rollup above its own parts: where one sponsoring employer returns for more than one of its schemes, the members register carries the group's total against each of that sponsor's schemes, and nine of the ten largest participating schemes sit in such a group; the per-scheme figure at 31 March 2026 is in the trustee membership statement, which the register's own rows contradict without any total in the pack to reconcile them against | the master trust's five administrative sub-codes rolling up to one participating scheme; one scheme renamed mid-history | `schemes_register_2026.csv`, 4 columns; `trustee_report_membership_2026.pdf` | register rates 113.4, 126.2, 108.6, 131.4, 143.2, 151.0, 41.9, 139.3, 46.9 against golden 182.1, 179.6, 178.1, 174.4, 176.1, 178.0, 171.1, 161.5, 158.0 |
+| 1 | 1: the cases received in FY2026 that were answered later than target, across the operation | the call's own working at the operation level | the Authority response opens on the operation's own year | none by design: the call's population carries no device row | the cutover de-duplication, the UTC conversion, the holiday calendar, the clock exclusions | both case files, 11 columns | elapsed-clock read 3,312; export basis 1,186; golden 1,799 |
+| 2 | 4: the chargeable cases the scheme charging covers in each FY2026 quarter | an input reconciled to another system's total, the gap made of devices | member operations charges schemes per chargeable case and owes the Authority a charge reconciliation | D6 grain, a paper row covering several ledger lines: the three largest participating schemes are charged on a consolidated monthly statement, so one line covers every chargeable case of one type whose response issued for that scheme in the month, and the line carries no count; the cases are recovered as the line's charge over the schedule's per case rate | the schedule's two rate periods, to 30 September 2025 and from 1 October 2025; responses late in a month charged in the month following | `scheme_charges_fy2026.csv`, 8 columns; `fee_schedule_2025.pdf` | lines counted as cases 4,364; cases the charges cover 7,291; per quarter 944 against 1,593, 1,168 against 1,967, 1,169 against 1,920, 1,083 against 1,811 |
+| 3 | 20: the ten largest participating schemes by FY2026 cases received, each with its active members at 31 March 2026 and its FY2026 cases received per 1,000 active members | a measure every candidate carries that the call does not turn on | the trustee reporting pack reports case load per 1,000 members by scheme | D9 self-validation, a rollup above its own parts: where one sponsoring employer returns membership for more than one of its schemes, the participating scheme register carries the group's total against each of that sponsor's schemes, and nine of the ten largest sit in such a group; the master trust's trustees return their own membership, so the register carries no figure for it at all. The per-scheme figure is in the trustee statement, split by contribution status, and the register's rows contradict it with no total anywhere in the pack to reconcile them against | the master trust's five administrative sub-codes rolling up to one participating scheme; one queue renamed mid-history | `schemes_register_2026.csv`, 4 columns; `trustee_report_membership_2026.pdf` | register rates 113.6, 130.6, 111.6, 126.3, 142.6, 143.4, 42.5, 137.6, 50.8 against golden 182.4, 185.6, 183.1, 167.6, 175.3, 169.1, 173.6, 159.5, 171.4 |
 
 **Separation line.** Zero device rows and zero hazard rows sit in the main call's declared population.
 The call reads the two case files, the roster workbook, the work-measurement study, the service standard,
-the assurance framework, the queue reference and the holiday calendar; Ask 2's devices are in
-`scheme_charges_fy2026.csv` and `fee_schedule_2025.pdf`, Ask 3's in `schemes_register_2026.csv` and
-`trustee_report_membership_2026.pdf`, and the call reads none of those four. The scheme code the case
-record carries is read by no ask device and by the call not at all. Deleting every device leaves the call
-byte-identical, asserted by count in `generator/checks.py`.
+the assurance framework, the queue reference, the status reference and the holiday calendar; Ask 2's
+devices are in `scheme_charges_fy2026.csv` and `fee_schedule_2025.pdf`, Ask 3's in
+`schemes_register_2026.csv` and `trustee_report_membership_2026.pdf`, and the call reads none of those
+four. The scheme code the case record carries is read by no ask device and by the call not at all.
+Deleting every device leaves the call unchanged, asserted by count in `generator/checks.py`.
 
-**Measured forcing, per device.** Ask 2: the natural read returns 4,584 against the golden's 7,582 cases
-covered, and the smallest quarterly gap is 720 cases on a figure stated in whole cases. Ask 3: the
-smallest gap between the register rate and the golden rate on a grouped scheme is 22.0 per 1,000 against
-a 0.05 bin half-width, and the largest is 129.2. Graded-set boundary: the tenth largest participating
-scheme has 514 FY2026 cases against the eleventh's 397, a gap of 117 cases, so the membership of the
-graded set holds under every licensed reading.
+**Measured forcing, per device, on the cut pack.** Ask 2: the natural read returns 4,364 against the
+golden's 7,291 cases covered, and the smallest quarterly gap is 649 cases on a figure stated in whole
+cases. Ask 3: the smallest gap between the register rate and the golden rate on a grouped scheme is 21.9
+per 1,000 against a 0.05 bin half-width, and the largest is 131.1; for the master trust the register
+carries no figure at all. Graded-set boundary: the tenth largest participating scheme has 513 FY2026
+cases against the eleventh's 411, a gap of 102 cases, so the membership of the graded set holds under
+every licensed reading. No graded membership figure ships verbatim: each is the trustee statement's two
+status parts added, asserted in `verify.py`.
 
 **Referee.** `fee_schedule_2025.pdf` arbitrates Ask 2's disagreement and states no case count;
 `trustee_report_membership_2026.pdf` arbitrates Ask 3's and states no scheme-level rate and no total.
@@ -323,52 +339,50 @@ measured against; one row per move it makes, and the verdict is whether that mov
 | Cracker move | What it does on Ask 3's register | Verdict |
 |---|---|---|
 | key uniqueness | every participating-scheme code is unique in the register | miss |
-| exact duplicates | no two register rows are equal; the repeated membership figures sit on rows that differ in code, name and sponsor | miss |
-| unmatched joins | every participating-scheme code in the case record matches a register row once the master trust's five sub-codes are rolled up, which the register's own note states | miss |
+| exact duplicates | no two register rows are equal; the repeated membership figures sit on rows differing in code, name and sponsor | miss |
+| unmatched joins | the master trust's five sub-codes resolve through the dictionary's own note, and the register's blank membership for the trust is a visible gap that sends the reader to the trustee statement for that one scheme only | miss |
 | fan-out and count ties | the register is one row per participating scheme, so nothing fans out and no count ties | miss |
-| executes every filed rule the pack points at | the register's note states the column is active members as returned by the sponsor; nothing in the pack says a sponsor return may cover more than one of its schemes | miss |
+| executes every filed rule the pack points at | the register's dictionary entry states the column is active members as returned by the sponsor; nothing in the pack says a sponsor return may cover more than one of its schemes | miss |
 | matches every control and published figure | the pack ships no membership total, in the register or the trustee statement, so there is no control for the register to fail against | miss |
 
-**What the landing response banks, named figure by figure.** The table above is the cracker sheet proper,
-its moves against Ask 3,
-the primary; it is not the whole measurement. `asks_measure.py` has the cracker keeping **7 of the 25
-graded ask figures**, and these are the seven, with the reason beside each.
+**What the landing response banks, named figure by figure.** The table above is the cracker sheet proper.
+`asks_measure.py` has the cracker keeping **7 of the 25 graded ask figures**, and these are the seven.
 
 | Figure banked by the response that lands the call | Golden | Why it is not a device's to take |
 |---|---|---|
-| the FY2026 breach share for the operation as a whole | 7.7 per cent | Ask 1 is the construction layer. It is computed over exactly the rows the call's own comparison is computed over, where the separation line forbids any device row, so it is free by design (`supplemental-stumping` 2.2: the cracker has it, so it never stands alone). |
-| FY2026 Q1 chargeable cases covered | 1,869 | Ask 2 is a mirror device. The schedule's per-case fee is a filed rule and every consolidated line's charge is an exact multiple of it, so a response that executes the schedule recovers the count. Making the count unrecoverable instead would break law 6 (one handling reproduces truth exactly). |
-| FY2026 Q2 chargeable cases covered | 1,982 | as above |
-| FY2026 Q3 chargeable cases covered | 1,923 | as above |
-| FY2026 Q4 chargeable cases covered | 1,808 | as above |
-| RMT-000 active members | 41,800 | the master trust is the one participating scheme in the graded ten whose register figure is a single-scheme return, so the grouped-return device does not touch it |
-| RMT-000 cases per 1,000 active members | 122.7 | as above |
+| FY2026 cases answered later than target, across the operation | 1,799 | Ask 1 is the construction layer. It is computed over exactly the rows the call's own comparison is computed over, where the separation line forbids any device row, so it is free by design (`supplemental-stumping` 2.2: the cracker has it, so it never stands alone). |
+| FY2026 Q1 chargeable cases covered | 1,593 | Ask 2 is a mirror device. The schedule's per case rate is a filed rule and every consolidated line's charge is an exact multiple of it, so a response that executes the schedule recovers the count. Making the count unrecoverable instead would break law 6. |
+| FY2026 Q2 chargeable cases covered | 1,967 | as above |
+| FY2026 Q3 chargeable cases covered | 1,920 | as above |
+| FY2026 Q4 chargeable cases covered | 1,811 | as above |
+| RMT-000 active members | 41,789 | the register carries no figure for the master trust, so its blank sends any reader to the trustee statement for this one scheme, where the two status parts add to the answer |
+| RMT-000 cases per 1,000 active members | 125.4 | as above |
 
 The mirror keeps three of those seven: Ask 1's figure and the master trust's two. It loses Ask 2's four
 because it counts charge lines as cases, and the other eighteen Ask 3 figures because it takes the
-register's membership. Nothing else in the 25 is kept by either response.
+register's membership.
 
-**Pair ceiling:** 39.5, solved on Part 0's weights (38 recommendation and critical components, 7
-instruction-following, 55 asks) with both responses rescored from their own readings and both columns
-printed: the cracker lands the call and keeps 7 of 25 ask figures, scoring 38 + 7 + 55 x 0.2800 = 60.4;
-the mirror stops at rung 2, counts charge lines as cases and takes the register's membership, keeps 3 of
-25 and scores 5 + 7 + 55 x 0.1200 = 18.6. The two ask columns differ because the mirror does not run the
-battery and does not execute the schedule, not because any ask consumes the call's construction; the
-separation assertions above are the evidence that it does not.
+**Pair ceiling:** 39.5, solved on the cut pack on Part 0's weights (38 recommendation and critical
+components, 7 instruction-following, 55 asks) with both responses rescored from their own readings and
+both columns printed: the cracker lands the call and keeps 7 of 25 ask figures, scoring
+38 + 7 + 55 x 0.2800 = 60.4; the mirror stops at rung 2, counts charge lines as cases and takes the
+register's membership, keeps 3 of 25 and scores 5 + 7 + 55 x 0.1200 = 18.6. The two ask columns differ
+because the mirror does not run the battery and does not execute the schedule, not because any ask
+consumes the call's construction; the separation assertions above are the evidence that it does not.
 
 **Mirror leakage:** 12.0 per cent of ask weight.
 
-**Measured by:** `generator/asks_measure.py`, solved on the generator's clean truth before the pack was
-cut and to be re-run on the cut pack after every change. It exits 1 unless the pair is at or under 40 and
-the leakage under 35, and it also prints the graded-set boundary and the precision each graded figure is
-printed at.
+**Measured by:** `generator/asks_measure.py`, which reads every figure through `verify.py`'s own bundle
+pipeline, so the ceiling is measured on what ships rather than on the generator's truth. It exits 1
+unless the pair is at or under 40 and the leakage under 35, and it also prints the graded-set boundary
+and the precision each graded figure is printed at. Re-run after every change to the asks or the pack.
 
-**Rounding sentence, and the figures it governs.** The prompt's last sentence governs the breach shares
-and the rates per 1,000, both to one decimal place: the committed call's 9.2 per cent, Ask 1's 7.7 per
-cent and Ask 3's ten rates. Ask 2's four quarterly case counts and Ask 3's ten membership figures are
-whole counts that no rounding sentence governs. `verify.py` checks each of those figures' printed
-precision against this list from the shipped write-up, because `figures_check.py` compares values and
-cannot see precision.
+**Rounding sentence, and the figures it governs.** The prompt's last sentence governs the breach share
+and the rates per 1,000, both to one decimal place: the committed call's 12.4 per cent and Ask 3's ten
+rates. Ask 1's count, Ask 2's four quarterly counts, Ask 3's ten membership figures and the call's 6,480
+cases received are whole counts that no rounding sentence governs. `verify.py` checks each figure's
+printed precision against this list, because `figures_check.py` compares values and cannot see
+precision.
 
 ## Build rules carried forward
 
@@ -431,3 +445,30 @@ Three rules filed during this build, each binding on stage 3, plus the one the a
   any licensed reading. The tail weights were widened to a 117-case gap and the ceiling re-solved.
 - A telephony export as a fourth ask. Dropped for span rather than legality: it adds a third file set for
   eight more figures and the pair arithmetic is already met. It stays in the pack as a distractor.
+- Grading the runner-up and the gap, which the prompt and framework clause 4.4 asked for at first. Died on
+  measurement: the queue second on the decisive read changes with the number of matched quarters, because
+  every queue but the call sits inside a noise floor of about three points. An open method pins the leader
+  by 3.7x and does not pin the ordering below it, so a graded runner-up was a Gate C finding waiting to
+  happen. Both the prompt and clause 4.4 now ask for the call and its own observed figures, and the
+  instability is asserted rather than hidden.
+- A second process drift, first on Transfers out and then on Member data corrections, to make the runner-up
+  a designed figure instead of noise. Died on the arithmetic: every share that lifted second place far
+  enough to be stable also shrank the call's own margin or moved it off fourth on the level ranking, and
+  one setting put the committed figure 0.002 of a point from its bin edge. Not grading second place costs
+  nothing and fixes it.
+- Grading the ten schemes' active members as the register states them. Died on `leak.py` sweep 3: ten
+  golden figures appeared verbatim in the trustee statement, which is their source. The statement now
+  reports active membership split by contribution status, as a scheme return does, so every graded
+  membership figure is the two parts added and none ships verbatim; the register carries no figure at all
+  for the master trust, whose trustees return their own.
+- Grading each scheme's FY2026 cases received instead of its membership, tried as the fix for that leak.
+  Died on the solved ceiling: the sub-code roll-up moves only the master trust's count, so nine of the ten
+  figures were free and the pair came out at 54.9.
+- Nine per-queue breach shares as graded chart figures. Died on the same arithmetic: free determinate
+  figures are the most expensive thing in an ask layer, and nine of them put the pair over 50. The chart is
+  graded as a content requirement, which is what `submission-writeup` provides for, and the per-queue
+  shares ride in the workbook as context the write-up does not grade.
+- A pure utilisation story for the roster swing, with Member data corrections at eleven temporary positions
+  and 2.2 times the caseload. Died on the dominance test: the winner's edge on the decisive axis has to
+  clear 1.2 times the decoy's advantage on the carried axis, and at eleven positions it did not. Fourteen
+  positions and 2.8 times the caseload clears it at 7.47 points against 5.77.

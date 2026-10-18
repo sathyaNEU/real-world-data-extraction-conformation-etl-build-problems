@@ -1,0 +1,163 @@
+{
+ "ask_a_indemnity_unauthorised": {
+  "Q1 A": 311087.84,
+  "Q1 B": 272896.45,
+  "Q1 C": 81499.33,
+  "Q1 total": 665483.62,
+  "Q2 A": 309881.88,
+  "Q2 B": 230898.82,
+  "Q2 C": 83191.04,
+  "Q2 total": 623971.74,
+  "Q3 A": 317028.59,
+  "Q3 B": 220954.03,
+  "Q3 C": 75170.67,
+  "Q3 total": 613153.29,
+  "Q4 A": 339633.35,
+  "Q4 B": 182147.39,
+  "Q4 C": 75823.3,
+  "Q4 total": 597604.04
+ },
+ "ask_b_q1_notifications": {
+  "KM-101 notified": 193,
+  "KM-101 value": 460362,
+  "KM-102 notified": 121,
+  "KM-102 value": 285422,
+  "KM-103 notified": 60,
+  "KM-103 value": 153760,
+  "KM-104 notified": 110,
+  "KM-104 value": 322554,
+  "KM-106 notified": 64,
+  "KM-106 value": 135016,
+  "KM-108 notified": 111,
+  "KM-108 value": 243325,
+  "KM-110 notified": 93,
+  "KM-110 value": 301939,
+  "KM-112 notified": 28,
+  "KM-112 value": 72566,
+  "KM-115 notified": 15,
+  "KM-115 value": 26336,
+  "KM-118 notified": 37,
+  "KM-118 value": 94158,
+  "KM-121 notified": 24,
+  "KM-121 value": 53735,
+  "KM-124 notified": 101,
+  "KM-124 value": 231542
+ },
+ "ask_c_recovery_share": {
+  "Q1 beneficiary recall": 5.7,
+  "Q1 insurer contribution": 2.3,
+  "Q1 repatriation": 4.4,
+  "Q2 beneficiary recall": 12.9,
+  "Q2 insurer contribution": 2.0,
+  "Q2 repatriation": 3.8,
+  "Q3 beneficiary recall": 5.8,
+  "Q3 insurer contribution": 0.9,
+  "Q3 repatriation": 7.4,
+  "Q4 beneficiary recall": 8.7,
+  "Q4 insurer contribution": 3.7,
+  "Q4 repatriation": 5.1,
+  "year beneficiary recall": 7.9,
+  "year insurer contribution": 2.3,
+  "year repatriation": 5.4
+ },
+ "bridge": [
+  {
+   "cases": 400,
+   "line": "Cases Castlegate's own register holds"
+  },
+  {
+   "cases": 290,
+   "line": "Cases its own record did not hold"
+  },
+  {
+   "cases": 690,
+   "line": "Indexed cases"
+  }
+ ],
+ "call": {
+  "index_per_million": 31,
+  "index_unrounded": 30.94,
+  "indexed_cases": 690,
+  "payments_sent": 22301200,
+  "recorded_cases": 400,
+  "sentence": "Kelverstone Mutual sets Castlegate Payments' scam incidence index for the indemnity year beginning 1 October 2027 at 31 scam cases per million payments sent"
+ },
+ "critical_components": {
+  "cases_its_record_did_not_hold": 290,
+  "independent_sightings": 207,
+  "independent_sightings_also_recorded": 120,
+  "matches_in_total": 412,
+  "matches_its_own_requests_produced": 205,
+  "own_detection_coverage_per_cent": 58.0
+ },
+ "deliverables": [
+  "member_incidence_review.xlsx",
+  "incidence_index_2027_28.csv"
+ ],
+ "estimator_family": {
+  "bailey": {
+   "cases": 687.603305785124,
+   "index": 31,
+   "rate": 30.83256980723566
+  },
+  "chapman": {
+   "cases": 688.3223140495868,
+   "index": 31,
+   "rate": 30.864810595375445
+  },
+  "conditional maximum likelihood": {
+   "cases": 690.0,
+   "index": 31,
+   "rate": 30.940039101034923
+  },
+  "continuity corrected": {
+   "cases": 689.1576763485477,
+   "index": 31,
+   "rate": 30.9022687724673
+  },
+  "petersen": {
+   "cases": 690.0,
+   "index": 31,
+   "rate": 30.940039101034923
+  }
+ },
+ "ladder": {
+  "golden": 30.94,
+  "recorded_register_rate": 17.936,
+  "rung0_all_matches": 22.738,
+  "rung1_fortnight_window": 25.661,
+  "rung2_all_post_case": 39.914
+ },
+ "review_group_detail": {
+  "KM-101": {
+   "index": 12,
+   "indexed": 517,
+   "payments_sent": 42722700,
+   "recorded": 443
+  },
+  "KM-104": {
+   "index": 31,
+   "indexed": 690,
+   "payments_sent": 22301200,
+   "recorded": 400
+  },
+  "KM-108": {
+   "index": 15,
+   "indexed": 301,
+   "payments_sent": 20002400,
+   "recorded": 246
+  },
+  "KM-112": {
+   "index": 22,
+   "indexed": 139,
+   "payments_sent": 6365500,
+   "recorded": 109
+  }
+ },
+ "review_group_index": {
+  "KM-101": 12,
+  "KM-104": 31,
+  "KM-108": 15,
+  "KM-112": 22
+ }
+}

@@ -24,50 +24,52 @@ DAY = 86400
 # site's own intraday position adds through that span, held until h_reset. ramp_s: the realised ramp
 # duration of the site's controller; no shipped document states it.
 SITES = [
-    dict(id="VKF-OOS", name="Oosterhout", kind="battery", pmax=12.0, cap=6.0, gain=1.005699, gain_dn=0.995487,
+    dict(id="VKF-OOS", name="Oosterhout", kind="battery", pmax=12.0, cap=6.0, gain=0.982386, gain_dn=0.987837,
          tau=4.0, ramp_s=85, blocks=[1, 3],
          pts=[(0, 0), (5.0, 0), (5.5, 4.8), (9.5, 4.8), (9.75, 0), (10.5, -6.4), (14.5, -6.4),
               (15.5, 0), (17.0, 8.4), (19.5, 8.4), (20.5, 0), (24, 0)],
          stair=[(5.5, 7.75, -0.46, 9.75)]),
-    dict(id="VKF-ZWT", name="Zwartewater", kind="battery", pmax=20.0, cap=8.0, gain=0.984600, gain_dn=0.979666,
+    dict(id="VKF-ZWT", name="Zwartewater", kind="battery", pmax=20.0, cap=8.0, gain=1.008993, gain_dn=0.957413,
          tau=3.0, ramp_s=80, blocks=[2],
          pts=[(0, 0), (5.25, 0), (5.75, 13.2), (11.25, 13.2), (11.5, -9.6), (15.0, -9.6),
               (16.0, 0), (17.5, 14.0), (20.0, 14.0), (21.0, 0), (24, 0)],
          stair=[(8.0, 11.25, -1.52, 11.5)]),
-    dict(id="VKF-HGZ", name="Hoogezand", kind="gas_engine", pmax=9.0, cap=3.0, gain=0.949044, gain_dn=0.953950,
+    dict(id="VKF-HGZ", name="Hoogezand", kind="gas_engine", pmax=9.0, cap=3.0, gain=0.919577, gain_dn=0.910017,
          tau=6.0, ramp_s=185, blocks=[4, 5],
-         pts=[(0, 1.2), (6.0, 1.2), (6.75, 6.4), (9.5, 6.4), (10.25, 1.2), (16.25, 1.2),
-              (17.0, 3.6), (21.75, 3.6), (22.0, 1.2), (24, 1.2)],
+         pts=[(0, 1.2), (6.0, 1.2), (6.75, 6.4), (9.5, 6.4), (10.25, 1.2), (11.0, 4.2),
+              (13.75, 4.2), (14.0, 1.2), (16.25, 1.2), (17.0, 3.6), (21.75, 3.6), (22.0, 1.2),
+              (24, 1.2)],
          stair=[(17.0, 19.75, 0.20, 22.0)]),
-    dict(id="VKF-KPV", name="Kampvliet", kind="battery", pmax=10.0, cap=5.0, gain=0.759776, gain_dn=0.766838,
+    dict(id="VKF-KPV", name="Kampvliet", kind="battery", pmax=10.0, cap=5.0, gain=0.737286, gain_dn=0.750940,
          tau=4.0, ramp_s=90, blocks=[4],
          pts=[(0, 0), (6.75, 0), (7.25, 4.4), (9.25, 4.4), (10.0, 0), (11.0, -5.2), (14.0, -5.2),
               (15.0, 0), (16.0, 0.6), (20.0, 0.6), (20.75, 0), (24, 0)],
          stair=[(16.0, 18.75, 0.76, 20.75)]),
-    dict(id="VKF-MPD", name="Meppelerdiep", kind="gas_engine", pmax=6.0, cap=2.0, gain=1.044489, gain_dn=1.001239,
+    dict(id="VKF-MPD", name="Meppelerdiep", kind="gas_engine", pmax=6.0, cap=2.0, gain=1.022230, gain_dn=1.001239,
          tau=7.0, ramp_s=200, blocks=[1],
-         pts=[(0, 0.8), (5.5, 0.8), (6.25, 3.2), (10.0, 3.2), (10.75, 0.8), (17.0, 0.8),
-              (17.75, 5.1), (21.5, 5.1), (22.25, 0.8), (24, 0.8)],
+         pts=[(0, 0.8), (5.5, 0.8), (6.25, 3.2), (10.0, 3.2), (10.75, 0.8), (11.5, 3.4),
+              (14.0, 3.4), (14.25, 0.8), (17.0, 0.8), (17.75, 5.1), (21.5, 5.1), (22.25, 0.8),
+              (24, 0.8)],
          stair=[(6.25, 7.75, 0.34, 10.75)]),
-    dict(id="VKF-NWV", name="Nieuwveen", kind="battery", pmax=15.0, cap=6.0, gain=0.941029, gain_dn=0.945317,
+    dict(id="VKF-NWV", name="Nieuwveen", kind="battery", pmax=15.0, cap=6.0, gain=0.930253, gain_dn=0.909233,
          tau=3.5, ramp_s=95, blocks=[1, 2],
          pts=[(0, 0), (1.0, -4.8), (4.0, -4.8), (5.0, 0), (6.0, 5.4), (9.5, 5.4), (10.0, 0),
               (11.5, -7.2), (14.5, -7.2), (15.5, 0), (17.5, 9.6), (20.0, 9.6), (21.0, 0), (24, 0)],
          stair=[(6.0, 9.25, -0.11, 10.0)]),
-    dict(id="VKF-TRB", name="Terborgh", kind="industrial_load", pmax=8.0, cap=3.0, gain=1.014436, gain_dn=1.029916,
+    dict(id="VKF-TRB", name="Terborgh", kind="industrial_load", pmax=8.0, cap=3.0, gain=1.047016, gain_dn=1.013484,
          tau=5.0, ramp_s=300, blocks=[2],
          pts=[(0, -2.1), (5.75, -2.1), (6.0, -7.4), (13.75, -7.4), (14.0, -4.6), (21.75, -4.6),
               (22.0, -2.1), (24, -2.1)],
          stair=[(8.0, 10.0, 0.63, 13.75)]),
-    dict(id="VKF-DLK", name="Dollardkust", kind="battery", pmax=25.0, cap=10.0, gain=0.965506, gain_dn=0.958673,
+    dict(id="VKF-DLK", name="Dollardkust", kind="battery", pmax=25.0, cap=10.0, gain=0.945685, gain_dn=0.937169,
          tau=3.0, ramp_s=100, blocks=[4, 0],
          pts=[(0, 0), (0.5, -12.0), (4.5, -12.0), (5.5, 0), (7.0, 9.0), (9.0, 9.0), (10.0, 0),
               (11.0, -14.0), (15.0, -14.0), (16.0, 2.5), (20.0, 2.5), (21.0, 0), (24, 0)],
          stair=[(16.0, 19.75, 0.34, 21.0)]),
-    dict(id="VKF-RDL", name="Reiderland", kind="gas_engine", pmax=7.0, cap=2.5, gain=0.901159, gain_dn=0.904686,
+    dict(id="VKF-RDL", name="Reiderland", kind="gas_engine", pmax=7.0, cap=2.5, gain=0.871397, gain_dn=0.855481,
          tau=6.5, ramp_s=190, blocks=[4],
-         pts=[(0, 1.0), (6.25, 1.0), (7.0, 5.1), (9.75, 5.1), (10.5, 1.0), (16.0, 0.8),
-              (21.25, 0.8), (22.25, 0.8), (24, 1.0)],
+         pts=[(0, 1.0), (6.25, 1.0), (7.0, 5.1), (9.75, 5.1), (10.5, 1.0), (11.25, 4.0),
+              (14.25, 4.0), (14.5, 0.8), (16.0, 0.8), (21.25, 0.8), (22.25, 0.8), (24, 1.0)],
          stair=[(16.5, 19.0, 0.70, 22.25)]),
 ]
 SITE_BY_ID = {s["id"]: s for s in SITES}
@@ -149,7 +151,7 @@ def frequency_day(d):
     n = DAY
     # mean-reverting background
     noise = np.zeros(n)
-    phi, sd = np.exp(-1.0 / 45.0), 0.0125
+    phi, sd = np.exp(-1.0 / 45.0), 0.0040
     e = r.normal(0, sd * np.sqrt(1 - phi**2), n)
     v = 0.0
     for i in range(n):

@@ -208,35 +208,44 @@ def eligible_units(b):
     return sorted(out)
 
 
-def development_factors(rows, weighting="volume"):
-    """What a quarter's complication count grows to after its own close, measured per reporting group.
+def _closeout_series(rows):
+    """Each cost centre's quarter as the register published and restated it, oldest publication first."""
+    series = defaultdict(list)
+    for r in rows:
+        series[(r["quarter"], r["unit_code"])].append(
+            (r["published_date"], int(r["separations_with_complication"])))
+    for k in series:
+        series[k].sort()
+    return series
+
+
+def development_factors(rows, weighting="volume", quarters_from=None):
+    """What a quarter's complication count grows to after its own close, measured per cost centre.
 
     The close-out register publishes each quarter when its coding closes and restates it at every close
-    after that, counted on the episodes whose first recorded complication falls in each group. A quarter
+    after that, counted on the separations that carried a complication against the cost centre. A quarter
     that has stopped moving, its last two publications agreeing, carries its own ultimate, so the growth
     from each earlier publication to that ultimate is an observed ratio. Nothing is fitted and no parameter
     is chosen: `weighting` only says whether the ratios are pooled over the finished quarters or averaged
-    across them, and the readings are asserted to agree.
+    across them, `quarters_from` only says whether the finished quarters are all of them or the later ones,
+    and the readings are asserted to agree.
     """
-    series = defaultdict(list)
-    for r in rows:
-        series[(r["quarter"], r["group_id"])].append(
-            (r["published_date"], int(r["episodes_with_first_complication_in_group"])))
-    for k in series:
-        series[k].sort()
+    series = _closeout_series(rows)
     num = defaultdict(float)
     den = defaultdict(float)
     ratios = defaultdict(list)
-    for (q, g), s_ in series.items():
+    for (q, unit), s_ in series.items():
         if len(s_) < 2 or s_[-1][1] != s_[-2][1]:
             continue                       # the quarter is still moving, so it cannot measure its own
+        if quarters_from is not None and q < quarters_from:
+            continue
         final = s_[-1][1]
         for lag, (_, n) in enumerate(s_):
             if n <= 0:
                 continue
-            num[(g, lag)] += final
-            den[(g, lag)] += n
-            ratios[(g, lag)].append(final / n)
+            num[(unit, lag)] += final
+            den[(unit, lag)] += n
+            ratios[(unit, lag)].append(final / n)
     if weighting == "simple":
         return {k: sum(v) / len(v) for k, v in ratios.items() if v}
     return {k: num[k] / den[k] for k in den if den[k]}
@@ -246,30 +255,23 @@ def immature_lags(rows):
     """Which quarters are still short, and how many closes each has had, from the register alone."""
     pubs = defaultdict(set)
     moving = defaultdict(bool)
-    series = defaultdict(list)
+    series = _closeout_series(rows)
     for r in rows:
         pubs[r["quarter"]].add(r["published_date"])
-        series[(r["quarter"], r["group_id"])].append(
-            (r["published_date"], int(r["episodes_with_first_complication_in_group"])))
-    for k in series:
-        series[k].sort()
-    for (q, g), s_ in series.items():
+    for (q, unit), s_ in series.items():
         if len(s_) < 2 or s_[-1][1] != s_[-2][1]:
             moving[q] = True
     return {q: len(pubs[q]) - 1 for q in pubs if moving.get(q)}
 
 
 def blended_factor(rows, lag):
-    """One factor for the whole network at a lag, ignoring which groups a unit's patients produced."""
-    series = defaultdict(list)
-    for r in rows:
-        series[(r["quarter"], r["group_id"])].append(
-            (r["published_date"], int(r["episodes_with_first_complication_in_group"])))
-    for k in series:
-        series[k].sort()
+    """One factor for the whole network at a lag, ignoring which cost centre the complications sat in."""
+    series = _closeout_series(rows)
     num = den = 0.0
-    for (q, g), s_ in series.items():
-        if len(s_) < 2 or s_[-1][1] != s_[-2][1] or lag >= len(s_):
+    for (q, unit), s_ in series.items():
+        if len(s_) < 2 or s_[-1][1] != s_[-2][1]:
+            continue
+        if lag >= len(s_) or s_[lag][1] <= 0:
             continue
         num += s_[-1][1]
         den += s_[lag][1]
@@ -291,7 +293,7 @@ def unit_groups(b):
     return dict(out)
 
 
-def developed(b, code, qs, factors, lags, groups):
+def developed(b, code, qs, factors, lags, groups=None):
     """A unit's complications over `qs`, developed to what those quarters' patients had."""
     total = 0.0
     for q in qs:
@@ -301,17 +303,11 @@ def developed(b, code, qs, factors, lags, groups):
         if q not in lags:
             total += p["observed"]
             continue
-        lag = lags[q]
-        seen = 0
-        for g in b["groups_order"]:
-            n = groups.get((code, q, g), 0)
-            seen += n
-            total += n * factors.get((g, lag), 1.0)
-        total += (p["observed"] - seen)        # every affected episode carries a category, asserted
+        total += p["observed"] * factors.get((code, lags[q]), 1.0)
     return total
 
 
-def avoidable(b, code, qs, factors, lags, groups, develop=True):
+def avoidable(b, code, qs, factors, lags, groups=None, develop=True):
     """Charter 4.3 carried onto the planned separations under specification 3.4.
 
     The complications the unit's patients had, less the complications the published stratum rates of
@@ -464,11 +460,29 @@ def net_rates(b, qs=None, exclude_unit=None, hospital=None, peer=None, floor=30)
     return rates, dict(den)
 
 
-def routes(b, factors, lags, groups):
+def _own_ratio_fill(b, code, qs, lags):
+    """The short quarters filled at the unit's own standardised ratio over the quarters that have finished.
+
+    A reading that takes the unit's position as settled: whatever ratio its finished quarters ran at, its
+    short quarters ran at too, so the missing complications are the ones that ratio implies.
+    """
+    fin = [q for q in qs if q not in lags]
+    o_f = sum(b["panel"][(code, q)]["observed"] for q in fin)
+    e_f = sum(b["panel"][(code, q)]["expected"] for q in fin)
+    r = (o_f / e_f) if e_f else 1.0
+    o = o_f + sum(b["panel"][(code, q)]["expected"] * r for q in qs if q in lags)
+    e = sum(b["panel"][(code, q)]["expected"] for q in qs)
+    sp = sum(b["panel"][(code, q)]["separations"] for q in qs)
+    return (o - e) * b["plan"][code] / sp if sp else 0.0
+
+
+def routes(b, factors, lags, groups=None):
     """The route a response takes to the ranking, and the unit each one names.
 
     Every figure is a count the record carries or a count developed by a ratio the register prints. No
-    functional form is chosen anywhere and there is no free parameter to estimate.
+    functional form is chosen anywhere and there is no free parameter to estimate. Each rung is the same
+    quantity in the same unit, complications on the quarter's planned separations, so the rungs' margins
+    are comparable.
     """
     elig = eligible_units(b)
     allq = set(all_quarters(b))
@@ -485,21 +499,20 @@ def routes(b, factors, lags, groups):
     def qs(c):
         return {q for q in allq if (c, q) in b["panel"]}
 
-    add("R0 the complications the record carries, carried onto the planned separations",
-        lambda c: avoidable(b, c, qs(c), factors, lags, groups, develop=False))
-    add("R1 the published standardised ratio on the record as it stands",
-        lambda c: b["panel"] and sum(b["panel"][(c, q)]["observed"] for q in qs(c))
-        / sum(b["panel"][(c, q)]["expected"] for q in qs(c)))
-    add("R2 the record as it stands, dropping the two quarters that are still short",
-        lambda c: avoidable(b, c, {q for q in qs(c) if q not in lags}, factors, lags, groups,
-                            develop=False))
+    add("R0 the complications the record carries over the ten closed quarters",
+        lambda c: avoidable(b, c, qs(c), factors, lags, develop=False))
+    last4 = sorted(allq)[-4:]
+    add("R1 the record as it stands over the four most recent closed quarters",
+        lambda c: avoidable(b, c, {q for q in qs(c) if q in last4}, factors, lags, develop=False))
+    add("R2 only the quarters whose coding has stopped moving",
+        lambda c: avoidable(b, c, {q for q in qs(c) if q not in lags}, factors, lags, develop=False))
     one = {k: blended_factor(rows, v) for k, v in lags.items()}
-    add("R3 one network factor at each lag, ignoring which groups the unit's patients produced",
+    add("R3 one network factor at each lag, ignoring which cost centre the complications sat in",
         lambda c: _blended_avoidable(b, c, qs(c), one, lags))
-    add("R4 only the newest quarter developed, the one before it taken as final",
-        lambda c: avoidable(b, c, qs(c), factors, {max(lags): lags[max(lags)]}, groups))
-    add("R5 the complications the quarters' patients had, developed group by group",
-        lambda c: avoidable(b, c, qs(c), factors, lags, groups))
+    add("R4 the short quarters filled at the unit's own ratio over the quarters that have finished",
+        lambda c: _own_ratio_fill(b, c, qs(c), lags))
+    add("R5 the complications the quarters' patients had, developed on each cost centre's own record",
+        lambda c: avoidable(b, c, qs(c), factors, lags))
     return out
 
 
@@ -537,14 +550,41 @@ def convergence(b, groups):
 
     add("the finished quarters' ratios pooled over their counts", development_factors(rows, "volume"))
     add("the finished quarters' ratios averaged across the quarters", development_factors(rows, "simple"))
-    recent = [r for r in rows if r["quarter"] >= "2025-26"]
-    add("only the finished quarters from 2025-26 on", development_factors(recent, "volume"))
+    add("only the finished quarters from 2025-26 on",
+        development_factors(rows, "volume", quarters_from="2025-26"))
     add("only the finished quarters from 2025-26 on, averaged",
-        development_factors(recent, "simple"))
-    older = [r for r in rows if r["quarter"] < "2026-27"]
-    add("only the quarters that had finished before the current fiscal year",
-        development_factors(older, "volume"))
+        development_factors(rows, "simple", quarters_from="2025-26"))
+    add("the growth read through the intervening publication rather than in one step",
+        _chained_factors(rows))
     return readings
+
+
+def _chained_factors(rows):
+    """Each cost centre's development read step by step: the growth from one publication to the next,
+    multiplied out to the ultimate, rather than read from a publication to the ultimate in one step."""
+    series = _closeout_series(rows)
+    num = defaultdict(float)
+    den = defaultdict(float)
+    for (q, unit), s_ in series.items():
+        if len(s_) < 2 or s_[-1][1] != s_[-2][1]:
+            continue
+        for lag in range(len(s_) - 1):
+            if s_[lag][1] <= 0:
+                continue
+            num[(unit, lag)] += s_[lag + 1][1]
+            den[(unit, lag)] += s_[lag][1]
+    step = {k: num[k] / den[k] for k in den if den[k]}
+    out = {}
+    units = {u for (u, _) in step}
+    for u in units:
+        lags = sorted(l for (uu, l) in step if uu == u)
+        for l in lags:
+            f = 1.0
+            for m in lags:
+                if m >= l:
+                    f *= step[(u, m)]
+            out[(u, l)] = f
+    return out
 
 
 def compute(target):
@@ -556,8 +596,8 @@ def compute(target):
     conv = convergence(b, groups)
     elig = eligible_units(b)
     by = {d["unit"]: d for d in units}
-    rung0 = by[rts["R0 the complications the record carries, carried onto the planned separations"]["first"]]
-    rung1 = by[rts["R3 one network factor at each lag, ignoring which groups the unit's patients produced"]
+    rung0 = by[rts["R0 the complications the record carries over the ten closed quarters"]["first"]]
+    rung1 = by[rts["R3 one network factor at each lag, ignoring which cost centre the complications sat in"]
                ["first"]]
     se_gap = math.sqrt(answer["se"] ** 2 + runner["se"] ** 2)
     se_gap3 = math.sqrt(answer["se"] ** 2 + third["se"] ** 2)

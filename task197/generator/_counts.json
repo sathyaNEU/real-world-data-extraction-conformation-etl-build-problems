@@ -1,9 +1,15 @@
 {
- "archive_recordings": 2256,
- "archive_rows": 427600,
+ "archive_recordings": 2348,
+ "archive_rows": 432028,
+ "auction_results": 126,
  "commitments": 256,
- "freq_1s": 97894,
+ "dictionary": 15,
+ "event_log": 32,
+ "freq_1s": 97730,
  "freq_min": 30240,
+ "imbalance_prices": 2016,
  "metered": 18144,
- "programme": 18144
+ "prequalification": 13,
+ "programme": 18144,
+ "settlement_statements": 287
 }

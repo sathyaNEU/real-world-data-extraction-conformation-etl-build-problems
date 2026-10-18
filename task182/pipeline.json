@@ -2,21 +2,22 @@
   "task": "task182",
   "owner": "oviya13ya",
   "status": "DRAWING",
-  "domain": "physical-environmental-sciences",
+  "domain": "general-statistics-data-science",
   "objective": "anomaly-detection",
   "stage": 1,
-  "stage_name": "draw: architecture 3 registered and its feasibility measured before any row was cut. Stage 2 is blocked on the finding below and no design section, ladder or file exists; precut.py fails on architecture 3 by design, eleven sections missing, because architecture 2's copies were demoted to H3 so no mechanical gate can pass on a dead design",
+  "stage_name": "draw: architecture 4 registered (general statistics and data science, exploratory data analysis and distribution assessment, length-biased observation of a duration distribution), two axis BLOCKs cleared, and the estimator screen run before a ladder number was written. The screen fails, so stage 2 has not started and nothing is cut",
   "updated": "2026-10-18",
-  "architecture": 3,
+  "architecture": 4,
   "loops": 0,
-  "stump": "A competent solver pairs every deployment with its position, takes each deployment's field-check deviation off its levels, excludes exactly the minutes the plan excludes, energetically averages each position's weekday daytime LAeq and then needs the residual term of the plan's subtraction; the step that lands it on the wrong slate is taking that residual from the only minutes the pack records the plant shut down, the weekly process stops between 04:30 and 06:45, which lie outside the 07:00 to 19:00 assessment period the plan files, so at the roadside positions the empty road understates the residual and at the hedgerow and woodland positions the dawn chorus overstates it, the specific levels move in opposite directions by position and the slate's fourth to sixth places change. The exact wrong set and the margins are filed at stage 2 when the ladder is measured.",
+  "stump": "Architecture 4 as drawn: the wrong committed answer is the slate filed from the tail shares of the weekly snapshot record as it stands, the record holding each desk's duration distribution weighted by duration. The estimator screen falsifies it at the realistic interval: see the blocked record",
   "guard": {
-    "verdict": "WARN, no BLOCK (guard.py check on the registered card)",
-    "warns": "the last-twelve window moves while other builds register, so the design note answers every WARN this draw has raised, not only those standing at the last run: repeat.gate_g against task197, repeat.question_form against task197 and task242, overuse.strategy (population_selection in three of the last twelve) and overuse.objective (anomaly detection in four)",
-    "notes": "two structural NOTEs, test.same_puzzle_older and test.same_driver_older, both differentiated on the card against task451's architecture 1",
-    "nearest_driver": "0.11, this slot's own architecture 2, under the guard's 0.12 near threshold; then task263 and task49 at 0.06. task192, the build the brief warned the draw might repeat, does not reach the list",
-    "registered": "cards/task182.json filed as architecture v3 at 2026-10-17T22:53:50Z; guard.py validate 231 cards, 0 invalid",
-    "abandoned_at_the_guard": "three, before any design time: stump_strategy composition_mix (ban.strategy against task467), gate_g method_or_model_selection (test.same_driver, the signature spent in five earlier builds and clashing in batch with task265) and context_artifact register (ban.artifact against task196). All three are axis bans or spent signatures, so none was argued round; each is in the design note's ## Tried and rejected"
+    "verdict": "WARN, no BLOCK (guard.py check on the registered card, after two axis redraws)",
+    "blocks_cleared": "two, both axis bans against task161 and neither clearable by differentiation: context_artifact filed_standard to close_out_summary (the quarter-end editorial close-out pack, which carries submission volumes and editor headcount and no turnaround figure, so it frames the decision without ranking the desks on the question) and forum executive_team to line_manager_or_team (the editorial directors' standing meeting)",
+    "warns": "three: repeat.gate_g and overuse.gate_g on method_or_model_selection, against task161 and six of the last twelve, and overuse.objective, anomaly detection in five of the last twelve. All answered in the design note's Draw section",
+    "notes": "one: test.same_driver_older, differentiated on the card against task139, task265's architecture 1 and task452's architecture 2",
+    "nearest_driver": "0.07, task255. None of this slot's own three earlier drivers reaches the list, which is what moving the world was for",
+    "registered": "cards/task182.json filed as architecture v4; guard.py validate 235 cards, 0 invalid",
+    "redrawn_before_registration": "geography United Kingdom to the Netherlands on repeat.geography against task196, one persona twice on people.first (Victor against task459, Justin against task105), and scoring_unit, which the card had as free text the vocabulary does not hold"
   },
   "three_rules": {
     "domain": "pass at the draw: the specific sound level by energetic subtraction, with the residual recovered by regression on the source's own recorded output, which is the field's own instrument when the plant cannot be shut down; the noun swap breaks it",
@@ -52,7 +53,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 2 is blocked: see the `blocked` record and the design note's ## ARCHITECTURE 3 FEASIBILITY section. The architecture 3 card stands as registered (WARN, no BLOCK) and the decisive step it carries is measured and sound; what is missing is a determinate estimator for the in-window residual. precut.py fails on architecture 3 with eleven sections missing, which is the honest state, because architecture 2's design sections were demoted to H3 so the gate can no longer pass on dead content. Architecture 2's pack, goldens and generator are untouched on disk.",
+  "resume": "stage 2 is blocked on the estimator screen; see the `blocked` record and the design note's ## ARCHITECTURE 4 ESTIMATOR SCREEN. The card stands registered at architecture 4 with the WARN verdict and both axis BLOCKs cleared. Architecture 2's pack, generator, goldens, prompt, submission, metadata and zip were removed when this draw registered, as instructed; the two evidence reports, the design note, pipeline.json, START_HERE.md and solver_rounds/ remain. precut.py cannot run on architecture 4: there is no prompt.txt and no design section but the Draw",
   "approved": false,
   "delivered": null,
   "portal": null,
@@ -82,9 +83,10 @@
     }
   ],
   "blocked": {
-    "on": "architecture 3's right route has no determinate estimator. The decisive step separates: the stop-window residual swaps NSL01 in for NSL13 and moves the sixth from NSL06 to NSL14 at every modelled design, the wrong route's fifth-to-sixth margin reading 2.12 dB against the right route's 0.65. But the candidate fits (energy-linear, decibel-linear, lowest-decile, log-log, lowest-output-quarter) all file the same five and the same sixth, so the fit cannot be a rung, while moving every graded level by 0.9 to 1.8 dB, nine to eighteen printed units, so the fourteen levels and the margin are not determinate. The tension is structural: the intercept is identifiable only through the curvature that makes the forms disagree",
-    "measured": "output spread inside weekday 07:00 to 19:00 at each position on the shipped historian, p90/p10 1.18 to 1.21 and max/min 1.39 to 1.49, so zero output is about five observed spans away; four campaign designs from 0.80-1.00 to 0.20-1.00 modelled; per-position fit table and the ranking comparison in the design note's ## ARCHITECTURE 3 FEASIBILITY section; work in scratchpad/r182v3/feas.py, close.py and table.py",
-    "decision_owed": "the author's, and not to be taken here: either the graded recommendation side is cut back to what every form agrees on, the set of five and the name of the sixth but not the fourteen levels nor the margin, or the slot is re-rooted at architecture 4. Three architectures have gone on this number and the author's file forbids retiring it, so the next draw is chosen rather than reached for. Nothing is cut and no file written, so either costs only the note",
-    "not_started": "architecture 4. No draw, no card change and no guard run beyond architecture 3's own registration"
+    "on": "architecture 4's mechanism does not survive its own estimator screen. At the realistic weekly snapshot interval the easy route files the truth's three desks with a mean error of 2.9 percentage points, because a weekly snapshot against five-to-nine-week durations misses almost nothing, so the mechanism is row duplication that deduplication removes rather than an analytical selection effect. At the eight-week interval where the bias moves the slate, the four licensed corrected estimators disagree with each other on the call, and the printed shares spread by 9.8 to 13.0 percentage points against a printed unit of a tenth of a point",
+    "measured": "five snapshot intervals from one to thirteen weeks, five routes (the snapshot set as it stands, reciprocal duration, reciprocal appearances, reciprocal duration without the half-interval midpoint, and a weighted lognormal fit), twelve desks; tables in the design note's ## ARCHITECTURE 4 ESTIMATOR SCREEN; work in scratchpad/r182v3/est.py and est2.py",
+    "card_clause_falsified": "the registered driver's clause 'while deduplicating the record to distinct items leaves the weighting untouched' holds only where the observation interval is long against the durations, and the realistic design is the opposite. The card is left as filed rather than quietly amended, because the amendment differs between re-tuning architecture 4 on a long observation interval and replacing it, and that choice is the author's",
+    "decision_owed": "the author's: re-tune architecture 4 on an observation interval long against the durations and find a way to close the parametric and reciprocal-appearance estimators with the records, or replace the mechanism. The design note's screen section states the shape architectures 3 and 4 share and what a fifth draw would have to do: a call that turns on a correction while every printed figure is a quantity the records fix exactly, so no graded number is an estimator's output",
+    "not_started": "stage 2. No ladder, no prompt, no generator and no file"
   }
 }

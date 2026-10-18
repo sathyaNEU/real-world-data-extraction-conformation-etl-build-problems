@@ -11,8 +11,8 @@
   "shape": "08",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Contribution queries (MS-CQ) takes the one process re-engineering review in the first half of 2027; its FY2026 breach share is 12.4 per cent, on the 6,480 cases it received between 1 April 2025 and 31 March 2026.",
+  "answer_source": "task198/submission.md block 1; task198/generator/figures.json (call.queue, call.fy2026_breach_share_pct, call.fy2026_cases_received)",
   "gap": [
     "objective",
     "time"
@@ -47,9 +47,9 @@
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "member_cases_orbit_fy2024_fy2026.csv",
-    "rows": 40000,
-    "entity": "one member service case received by one queue",
+    "file": "member_cases_orbit_fy2025_fy2026.csv",
+    "rows": 42481,
+    "entity": "one member service case held on the Orbit platform",
     "grain": "case x queue x receipt timestamp",
     "source": "synthetic"
   },
@@ -73,15 +73,15 @@
   "deliverables": [
     "fy2026_service_level_replay.xlsx",
     "queue_review_recommendation.docx",
-    "queue_shortfall_fy2026.png"
+    "queue_breach_shares_fy2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The outcome a unit is judged on falls steeply with the number of parallel servers it runs at an unchanged load per server, so an expectation built on that ratio alone sits above every small unit and below every large one, and the unit whose outcome genuinely exceeds what its own load and server count imply sits mid-pack on any ratio-based residual while the smallest unit tops it.",
-  "driver_concrete": "The share of member-service cases answered outside target that a queue's own offered load and staffed positions imply drops sharply as the positions grow at the same occupancy, so an expectation indexed on cases per staffed position over-predicts the large queues and under-predicts the small ones, and Contribution queries, whose 9.6 per cent breach share is more than three times what a 29-position queue at its occupancy produces, ranks fourth on the raw share and third on the occupancy residual behind Investment switches and Death benefits.",
-  "stump": "A competent solver rebuilds every queue's FY2026 breach share correctly across both case systems on the fiscal year with the clock rules and the unanswered cases applied, indexes it on cases per staffed position, and commits Investment switches at 13.4 per cent, because an expectation built on load per staffed position sits below every small queue and well above every large one.",
+  "driver_concrete": "The share of member-service cases answered outside target that a queue's own offered load and staffed positions imply is read off the queue's own earlier quarters, and matching those quarters on the load divided by the staffed positions instead of on the load itself reads Member data corrections' five-position FY2026 quarters against the fourteen-position quarters it ran at the same occupancy while a remediation programme carried nearly three times the caseload, so it reports a 16.0 point gap there and only 10.2 for Contribution queries, whose load and roster never moved.",
+  "stump": "A competent solver rebuilds every queue's FY2026 breach share correctly across both case systems on the financial year with the clock rules and the unanswered cases applied, compares each queue with its own FY2023 to FY2025 quarters at the same load per staffed position, and commits Member data corrections at 25.8 per cent, because that queue carried fourteen positions through the two years its own history is read from and five in FY2026.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who has cleaned both case systems, applied every clock rule and counted the unanswered cases computes each queue's FY2026 breach share against its cases per staffed position and names the queue with the largest positive residual, Investment switches at 13.4 per cent, because the expectation it is measured against ignores that a queue of 11 positions cannot reach the service level a queue of 29 reaches at the same occupancy.",
+  "analyst_test": "A strong analyst who has stacked both case systems, de-duplicated the cutover, converted the stamps, applied the clock and the exclusions and counted the unanswered cases divides each quarter's offered load by its staffed positions, reads each queue's own history at that occupancy, and commits Member data corrections at 25.8 per cent, because occupancy is the field's workload measure and the record offers a clean within-queue comparison on it.",
   "domain_test": "The quantity that decides is the share of cases answered outside target that a queue's own offered load and staffed positions imply, which is the service-operations estimate of an achieved service level and falls with the number of positions at fixed occupancy (the square-root staffing relation behind every contact-centre and back-office capacity model); swap the nouns to megawatt-hours or school places and there is no pooled arrival stream served by a counted number of parallel servers, so nothing makes the expectation depend on the server count as well as on the load per server and the task stops being about anything.",
   "mechanism_source": "design_note",
   "differentiation": {

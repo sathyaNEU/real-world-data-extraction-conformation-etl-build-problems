@@ -140,6 +140,82 @@ the drawn list gave a clean set. And `scoring_unit`, which the card had as free 
 not hold.
 
 
+## ARCHITECTURE 4 ESTIMATOR SCREEN (run before a ladder number was written, and it fails)
+
+The rule filed this hour is to enumerate every estimator the data does not close, compute the graded
+summary under each, and compare the spread against the figure's own printed unit. Run on the design's own
+numbers, twelve desks with medians of 4.8 to 9.0 weeks and log-spreads of 0.28 to 1.05, submissions over
+104 weeks and snapshots on a fixed interval. Work in `scratchpad/r182v3/est.py` and `est2.py`. **The draw
+does not survive it, and the screen also falsifies a clause of the registered card.**
+
+**1. What the screen measures.** The graded summary is each desk's share of manuscripts whose first
+decision passes the house standard of nine weeks. Routes: E0, the snapshot set summarised as it stands;
+E1, reciprocal-duration weights; E2, reciprocal-appearance weights, which is the weight the snapshot grain
+itself licenses; E3, reciprocal duration without the half-interval midpoint; E4, a weighted lognormal fit
+with the corrected share read off it. Nothing in the pack would close any of E1 to E4.
+
+**2. At the realistic interval the easy route is right, so there is no stump.** With weekly snapshots the
+mean error of E0 against the truth is 2.9 percentage points and the slate it files is the same three desks
+as the truth. The same holds at two and four weeks. The reason is structural: a manuscript is missed only
+if it is decided inside one inter-snapshot gap, so with a one-week interval against five-to-nine-week
+durations essentially every manuscript is caught, the set of distinct manuscripts in the snapshots is the
+cohort, and there is no selection left to correct. What the snapshots do carry is one row per week per
+manuscript, and that is row duplication, which deduplication removes completely. **So at a weekly interval
+the mechanism is Layer 1 hygiene and not an analytical selection effect**, which is the opposite of what
+the card's driver says.
+
+| snapshot interval | missed share | E0 error, mean and max, pp | slate: truth against E0 | same set | E1 to E4 spread, pp |
+|---|---|---|---|---|---|
+| 1 week | 32.8% | 2.9 / 9.0 | D10,D05,D03 vs D10,D03,D05 | yes | 11.1 |
+| 2 weeks | 34.1% | 2.6 / 7.4 | D10,D05,D03 vs D10,D03,D05 | yes | 10.4 |
+| 4 weeks | 36.8% | 2.9 / 8.6 | D10,D05,D03 vs D10,D03,D05 | yes | 9.8 |
+| 8 weeks | 47.0% | 14.3 / 22.3 | D10,D05,D03 vs D10,D03,D01 | no | 13.0 |
+| 13 weeks | 56.2% | 38.0 / 46.7 | D10,D05,D03 vs D03,D05,D10 | yes | 12.4 |
+
+(The missed share is dominated by manuscripts submitted near the window's end whose reviews are still
+open, which is right-truncation and not the length-bias selection the draw is about.)
+
+**3. Where the mechanism does bite, the estimators disagree on the call itself.** The bias only moves the
+slate once the interval is comparable to the durations. At eight weeks E1, E2 and E3 file the truth's three
+desks and E4 files D03, D10 and D01, a different set; at ten weeks E1 and E2 file the truth's set, E3 files
+D12 for D03 and E4 files a different set again; at six weeks all four corrected estimators file D12 in
+place of D05, so every one of them gets the set wrong. There is no interval at which the corrected routes
+agree with each other on the call.
+
+**4. And the printed shares are nowhere near determinate.** The spread across E1 to E4 is 9.8 to 13.0
+percentage points at every interval, and per desk 5.6 to 11.1 points at the weekly interval. Against a
+printed unit of 0.1 of a point that is a hundred times over; against a whole point it is ten times over.
+The true third-to-fourth margin is also 0.10 to 0.34 of a point, which is a tie no estimator could be
+asked to resolve.
+
+**5. Both ways out were tested and neither holds.** Grading a quantity the correction is insensitive to
+fails for a reason that is logical before it is numerical: if the graded quantity is insensitive to the
+correction then the correction cannot decide the call, and the table shows exactly that, the slate being
+identical under the easy route and the truth at every interval short enough for the mechanism to be
+realistic. Letting the data close the unstable estimators is only partly available: the snapshot interval
+does bound the shortest observable duration, which closes the estimators that need sub-interval durations,
+but E2 is the estimator the snapshot grain itself licenses and E4 is closed by nothing, and at eight weeks
+those two file different sets.
+
+**6. The shape this shares with architecture 3, which is the finding.** A corrected summary is an
+estimator's output, and the property that makes the correction big enough to decide the call is the same
+property that makes the licensed estimators disagree. Architecture 3 met this as curvature against
+identifiability; architecture 4 meets it as interval against selection. **A decisive step that is a
+correction to a summary cannot carry a call whose graded figures are that summary.** The way through, if
+this slot goes a fifth time, is a call that turns on a correction while every printed figure is a quantity
+the records fix exactly, so that no graded number is an estimator's output at all.
+
+**7. What this costs and what it saves.** One turn, no files. The screen the author filed an hour before
+has now stopped two architectures before any data was cut, which is two builds' work it did not cost.
+
+**8. The card.** `cards/task182.json` stands registered as architecture 4 with the WARN verdict, and one
+clause of its `driver` is now false: "while deduplicating the record to distinct items leaves the weighting
+untouched" holds only where the observation interval is long against the durations, and the realistic
+design is the opposite. The card is left as filed rather than quietly amended, because the author owns
+whether architecture 4 is re-tuned on a long observation interval or replaced, and the amendment differs
+between those two.
+
+
 ## ARCHITECTURE 3 RE-ROOT (archived: spent at the feasibility check, 2026-10-18)
 
 **Why architecture 2 died, in one line.** Clause 3.1 obliged every solver to produce a residual and the
@@ -1569,3 +1645,24 @@ the check pass: the move is reported and accepted on that basis.
 - **The source on-and-off step at the window's own boundary** (differencing 06:45 against 07:00): fit-free
   and aimed at the one place the residual is changing fastest, because 07:00 is when the road wakes up, so
   the step is contaminated by exactly the diurnal shape the architecture is about.
+- **Architecture 3's world, and with it any fourth route to the plant's own share of the sound.** Spent by
+  diagnosis rather than by measurement: all three architectures made the decisive quantity an unobserved
+  component of an observed total, and that component is readable when a window supplies it and
+  indeterminate when a fit supplies it, with no third source in that world. Physical and environmental
+  sciences against this objective is also the lane's most crowded ground, task180, task189 and this slot
+  all on environmental monitoring exceedance.
+- **Architecture 4's own mechanism, length-biased observation of a duration distribution.** Killed by its
+  own estimator screen before a ladder number was written. At the realistic weekly snapshot interval the
+  easy route files the truth's three desks with a mean error of 2.9 percentage points, because a weekly
+  snapshot against five-to-nine-week durations misses almost nothing and the duplication it does create is
+  removed by deduplication, so the mechanism is Layer 1 hygiene rather than an analytical selection effect.
+  At the eight-week interval where the bias does move the slate, the four licensed corrected estimators
+  disagree with each other on the call, and the printed shares spread by 9.8 to 13.0 percentage points
+  against a printed unit of a tenth of a point. Numbers in `## ARCHITECTURE 4 ESTIMATOR SCREEN`.
+- **Grading a correction-insensitive summary as the way out of that.** It fails logically before it fails
+  numerically: a quantity insensitive to the correction cannot be decided by the correction. Measured, the
+  slate is identical under the easy route and the truth at every interval short enough to be realistic.
+- **Letting the records close the unstable estimators as the other way out.** Only partly available. The
+  snapshot interval does bound the shortest observable duration, closing the estimators that need
+  sub-interval durations, but reciprocal-appearance weighting is the estimator the snapshot grain itself
+  licenses and the parametric fit is closed by nothing, and at eight weeks those two file different sets.

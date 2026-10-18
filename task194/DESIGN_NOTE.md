@@ -1,7 +1,16 @@
 # task194 design note
 
-> **Status: PAUSED at stage 1.** Architecture 3 is drawn and held. Its draw is the section immediately
-> below, `## Architecture 3 draw, held`. **Every section after that one describes architecture 2, which is
+> **Status: PAUSED at stage 2.** Architecture 3 is registered and its mechanism is built and measured. The
+> two current sections are `## Architecture 3 draw, held` (the draw, whose hold is over) and
+> `## Architecture 3 mechanism, built and measured` (the driver, the three conditions and the ladder).
+> **Every section from `## Draw` onward describes architecture 2, which is spent**: the judge returned
+> NOT_DETERMINISTIC, underspecified_objective on Gates C and E, and the cause is in the card's `lineage`
+> and under `## Tried and rejected`. A reader taking the default path, stump sentence, three rules,
+> readability screen, ladder, fork table, closure table, literal reader, oracles or ask sheet below as
+> current would be reading a design that no longer exists. Architectures 1 and 2 are both in the card's
+> `lineage`; architecture 3 is this number's last.
+
+## Architecture 3 draw, held`. **Every section after that one describes architecture 2, which is
 > spent**: the judge returned NOT_DETERMINISTIC, underspecified_objective on Gates C and E, and the cause
 > is in the card's `lineage` and under `## Tried and rejected`. A reader taking the default path, stump
 > sentence, three rules, readability screen, ladder, fork table, closure table, literal reader, oracles or
@@ -92,6 +101,175 @@ cracker with its attempted-value diagnostic, the realism work on casemix, weekda
 the theatre closure, and both fixes to the fiction's own history.
 
 Placing a scarce improvement team when the unit standing worst is partly standing worst by chance.
+
+## Architecture 3 mechanism, built and measured
+
+**A second guard block, recorded and not acted on.** `guard.py check` now returns `BLOCK ban.pattern`: the
+decisive pattern `G12` repeats a recent build, against task196 (v2). task194's card was registered at
+2026-10-17T22:50:54Z and task196's at 2026-10-17T23:00:35Z, so this build drew `G12` first and task196 drew
+into a card already registered; `guard.py` measures the ban window without regard to order, so it reports
+against the live build. Nothing here is redrawn and no card is edited: the pattern label does not touch the
+mechanism, and the driver, the three conditions and the ladder below are measured and stand whatever the
+label resolves to. The author takes this decision, as they did on the earlier `ban.strategy` hold.
+
+The approved change is in: the coding lag's driver is the documentation path, not the patients. A
+complication written at the point of care on the clinical information system travels with the episode and
+is coded in the same cycle; one written in the paper notes is coded whenever the coder reaches that chart,
+so a quarter keeps growing after its own coding close. Two world constants carry it. `CIS_MIGRATION` is
+when each cost centre's wards were registered on the system, a rollout that ran from July 2022 and was
+still running at the export date; `CIS_ADOPTION` is how much of a ward's recording actually moved once it
+was registered, which is a property of the ward (its device count, its establishment, whether the building
+has bedside terminals) and not of the date. The share of an episode's recording that is electronic is the
+unit's adoption, reached over the three quarters after registration, and nothing before it. The coding lag
+is then drawn from the electronic or the paper completeness curve accordingly, and an episode stays in the
+extract when its lag is no deeper than the maturity its quarter has reached by the pull date.
+
+The register ships the dates. It does not ship adoption, and nothing in the pack states it: a coding
+department's own close-out register shows which cost centres settle late without explaining why, and the
+measurement is the step.
+
+**Where the shortfall sits.** The ten-quarter record's shortfall runs 0.42 per cent to 9.14 per cent across
+the twelve candidates, a continuum rather than two groups: 41210 9.14, 41520 8.69, 41410 5.24, 41330 4.48,
+41430 4.45, 41510 1.39, 41420 0.96, 41240 0.82, 41310 0.73, 41320 0.71, 41230 0.45, 41220 0.42.
+
+### Condition 1: the driver against every visible attribute
+
+Measured on the generator's clean truth, over the 7,763 affected in-scope episodes of the twelve candidates
+in the four quarters the pull date cuts short. The quantity is the share coded after the pull date, 0.0656
+overall. `chi2/df` is the mean squared z of each cell's share against its base, so an attribute that says
+nothing about the shortfall sits at or below 1.
+
+| attribute | within unit-quarter, mean abs deviation | within unit-quarter, chi2/df | pooled, spread | pooled, chi2/df |
+|---|---|---|---|---|
+| risk band | 0.0056 | 0.21 | 0.049 | 10.21 |
+| age band | 0.0107 | 0.54 | 0.043 | 6.24 |
+| length of stay band | 0.0086 | 0.47 | 0.005 | 0.12 |
+| comorbidity band | 0.0144 | 0.69 | 0.044 | 5.92 |
+| care type | 0.0000 | 0.00 | n/a | n/a |
+| hospital site | 0.0000 | 0.00 | 0.090 | 14.66 |
+| specialty | 0.0000 | 0.00 | 0.096 | 28.12 |
+| diagnosis related group | 0.0075 | 0.42 | 0.100 | 4.84 |
+| month of separation | 0.0129 | 0.62 | 0.151 | 25.53 |
+
+At constant recording mode the shortfall is independent of every attribute the pack ships: every chi2/df is
+below 1 and no attribute moves the share by more than 1.4 percentage points on a 6.6 per cent base. That is
+the engineered property. The signal lives in the time structure, in which quarter an episode separated in
+and how far its own cost centre's coding had settled, so no cross-sectional control can remove it. The
+pooled columns are not zero and cannot be: pooling across the twelve mixes the units' own case mixes, and
+the twelve units that are short are not a random sample of the network's patients. What matters is whether
+an opponent's control can ride that residue to the answer, and condition 3 answers it by measurement.
+
+### Condition 2: no single visible grouping isolates the short records
+
+F1 of the best cell of each grouping against the four shortest records, over the twelve candidates. A
+grouping that isolated them would score 1.00.
+
+| grouping | cells | best cell | of which short | F1 |
+|---|---|---|---|---|
+| `hospital_code` | 4 | H3, 3 units | 2 | 0.57 |
+| `division` | 2 | Surgery, 6 units | 3 | 0.60 |
+| `service_type` | 1 | Acute inpatient, 12 units | 4 | 0.50 |
+| specialty (not a shipped column) | 7 | vasc, 1 unit | 1 | 0.40 |
+| `cis_registered_date` blank | 1 | none is blank | 4 | 0.50 |
+| `cis_registered_date` year | 4 | 2027, 2 units | 2 | 0.67 |
+| covered by the detail extract | 2 | covered, 10 units | 3 | 0.43 |
+| `opened_date` before 2019 | 1 | none | 4 | 0.50 |
+
+The four shortest records sit at three hospitals and in four specialties, and their registration dates are
+2022-10, 2024-01, 2027-01 and 2027-03, spread across the whole programme. 41430, registered in October 2022,
+is 4.45 per cent short and 41320, registered in January 2024, is 0.71 per cent short, so the date explains
+only part of it and no cut on the date separates the short from the rest. The pattern is visible by joining
+the register to the close-out register's own vintages, cost centre by cost centre, and not otherwise.
+
+**Readability screen, test 1, on every document that carries the migration fact.** Swept the dictionary, the
+manifest, the unit register, the two PDFs, the placement notes and the dashboard for any sentence naming a
+backlog, a delay, a restatement, completeness, development, paper records or late coding. Four hits, all
+flat definitions of what a column holds: `cis_registered_date` is "Date the unit's wards were registered on
+the clinical information system under the network's rollout programme"; `published_date` is "Publication
+date of the figure on the row"; `separations_with_complication` is the count "as the figure stood on the
+publication date"; the detail extract's manifest row omits "the Carrowdean campus, whose detail stays in the
+campus module". No sentence says a cost centre reports late, that a quarter is short, or that anything needs
+developing. The explanatory clause that was on `published_date` ("or for a quarter after it") is cut: the
+grain statement carries it.
+
+### Condition 3: all 23 reflexes, on the cut pack
+
+| family | reflex | names | 2nd | golden's place |
+|---|---|---|---|---|
+| shrink | shrunk ratio (O+50)/(E+50), carried | 41220 25.77 | 41230 17.05 | |
+| shrink | (O+200)/(E+200) | 41220 24.64 | 41230 16.14 | |
+| shrink | (O+500)/(E+500) | 41220 22.66 | 41230 14.59 | |
+| shrink | (O+1000)/(E+1000) | 41220 19.98 | 41230 12.57 | |
+| shrink | empirical Bayes, expected-weighted moments, tau2 0.00014 | 41220 20.29 | 41210 14.29 | 2nd |
+| shrink | empirical Bayes, unweighted moments, tau2 collapses to 0 | 41220 17.59 | 41210 16.77 | 2nd |
+| shrink | the shrunk ratio itself, not carried | 41220 1.048 | 41320 1.048 | |
+| pool | the mean of the quarterly ratios | 41320 1.082 | 41410 1.079 | |
+| pool | the mean of the quarterly excesses, carried | 41220 26.17 | 41230 17.38 | |
+| scale | the pooled excess, not carried | 41220 229.6 | 41230 168.2 | |
+| stratify | risk band, age band and comorbidity band | 41230 9.12 | 41220 8.88 | |
+| stratify | risk band, age band and length of stay band | 41220 18.49 | 41210 15.53 | 2nd |
+| stratify | comorbidity band alone | 41240 14.04 | 41330 11.78 | |
+| stratify | length of stay band alone | 41240 20.45 | 41330 12.76 | |
+| stratify | risk band, age band and site | 41410 7.39 | 41220 3.70 | |
+| control | the excess net of its own site's mean | 41220 10.59 | 41320 8.81 | |
+| control | the excess per 1,000 separations | 41410 7.09 | 41320 6.50 | |
+| control | the excess per 1,000 in-scope episodes | 41410 7.84 | 41320 6.97 | |
+| trend | the last four closed quarters' excess, carried | 41320 11.09 | 41240 6.63 | |
+| trend | the slope of the quarterly excess | 41510 3.27 | 41320 2.59 | |
+| scale | the published standardised ratio | 41410 1.092 | 41320 1.083 | |
+| scale | the adjusted rate, ratio times the reference rate | 41410 105.5 | 41320 104.6 | |
+| scale | the crude rate per 1,000 in-scope episodes | 41330 114.2 | 41240 107.5 | |
+
+**0 of 23 reach the golden.** It is first on none and in the top three of four. The reflexes land on 41220
+eleven times, 41410 six, 41240 twice, and once each on 41320, 41230, 41330 and 41510. 41310, 41420, 41430
+and 41520 are named by none, as is the golden.
+
+Two reflexes reached the golden on the first cut of this mechanism and both were closed at the root, not by
+tuning the driver. The fine internal standardisation on risk band, age band and length of stay band named
+41210 at 1.18x. A leave-one-out recomputation of the internal rates put the gap at 162 complications against
+127 with the unit left in, so it was not the unit deflating the rate of its own cells: a fine internal key
+becomes a peer comparison, and the golden's peers were good. The medical and aged care units the programme
+has already been placed with set the network's own rate in the medical strata, and they were sitting at 1.00
+to 1.04 while the golden sat at 1.12. Raising them to 1.06 to 1.11, which is why the programme was placed
+with them in the first place, puts that reflex on 41220 at 1.19x with the golden second. The unweighted
+empirical Bayes estimator collapsed, because `var - Poisson` over twelve units of wildly unequal size goes
+negative on the smallest, and full shrinkage then ranks by expected volume alone, where the two largest
+units sat 1.002x apart. The dispersion itself is healthy (Pearson 4.55 per df on 11 df) and the
+expected-weighted estimator gives tau2 0.00014 and names 41220 at 1.46x; raising 41220's planned
+separations to 4,760 puts its expected volume 1.05x above the golden's, so the collapsed version names it
+too.
+
+### The ladder, measured
+
+| rung | reading | names | margin | golden's place |
+|---|---|---|---|---|
+| 0 | the complications the record carries over the ten closed quarters | 41220 26.17 | 1.51x | 5 of 12 |
+| 1 | the record as it stands over the four most recent closed quarters | 41320 27.59 | 1.68x | 12 |
+| 2 | only the quarters whose coding has stopped moving | 41220 50.68 | 1.84x | 3 |
+| 3 | one network factor at each lag, ignoring which cost centre the complications sat in | 41220 38.43 | 1.44x | 4 |
+| 4 | the short quarters filled at the unit's own ratio over the quarters that have finished | 41220 50.66 | 1.85x | 3 |
+| 5 | the complications the quarters' patients had, developed on each cost centre's own record | 41210 44.66 | 1.60x | 1 |
+
+Against the filed floors of `dataset-generation` section 6.2 and 6.3: the answer is **5th on rung 0**, which
+is where the floor asks it to be and where the previous mechanism could not put it; it is first on no
+intermediate rung and second on none of them; no rung margin is under 1.15x, the lowest being 1.44x; and
+the final margin is **1.604x**, inside the 1.5 to 2x target with the 1.2x floor well clear. Dominance: the
+golden's edge on the decisive axis is 34.47 complications against the decoy's carried advantage of 17.65,
+a ratio of 1.95 against the 1.20x floor. C4: the nearest wrong cell is 60.4 per cent away.
+
+**The bound loosened, as expected.** Under the patient-driven lag the two separations had to be paid out of
+one uplift budget and the answer could only be forced to 2nd on rung 0 (`## Tried and rejected`). The
+documentation-driven lag pays them from different purses: the golden's own uplift is 311.5 complications,
+because its wards are the ones still writing in the notes, while the shape of its record inside the window
+is carried by `RATIO_PATH`, a level for the first six closed quarters and another for the last four. The
+golden's rate rose through 2026, which is exactly the part of its record the pull date cuts short, so the
+record shows it improving while it was deteriorating. That is also why rung 1, the most recent year as the
+record carries it, puts it 12th of 12.
+
+**Open at this point.** The graded figure 44.6597 is 0.0097 from a bin edge at one decimal and 0.1597 at
+whole complications, against a bar of 0.3 of the rounding unit, so `centre_plans` has to re-centre it once
+the asking sentence fixes the unit. That is the one arithmetic item left before `precut.py`.
+
 
 ## Draw
 
@@ -894,3 +1072,23 @@ script says that in its output instead of printing the row twice and calling it 
   standardisation on patient attributes no longer touches the signal, and the site control, which an
   opponent reaches for, nulls it and lands elsewhere. The pack already carries the organ, one hospital's
   wards being off the clinical information system.
+- **Superseded, and recorded because the earlier line overstated it.** The line above saying that within
+  the patient-driven mechanism "no other choice of golden escapes it" was true of that driver and is not a
+  statement about the strategy. With the driver moved onto the documentation path the same golden, 41210,
+  is reached by none of the 23 reflexes, and the deep-lag units are no longer all medical: they are
+  general medicine, general surgery, orthopaedics and renal medicine at three hospitals.
+- **Rejected: making the registration date carry the depth.** The first cut of the approved mechanism gave
+  the four deep-lag cost centres registration dates in 2027 and everyone else dates in 2022 to 2024, so
+  each unit's recording mode was constant across the window and its development factors were cleanly
+  identified. Grouping the register on the year of registration then isolated the four exactly, F1 1.00,
+  which is the marker condition 2 forbids. Spreading the dates across the window instead would have put a
+  mode change inside the graded window for several units, whose own finished quarters would then measure a
+  factor that over-develops their short ones by up to 12 complications: a defensible pooling and a
+  different number, which is a fork on the supplemental figures. Both were dropped in favour of
+  `CIS_ADOPTION`, a ward-level property that is constant across the window, so the factors stay identified
+  while the depth and the date come apart.
+- **Rejected: arguing the two surviving reflexes rather than closing them.** The length-of-stay
+  standardisation conditions on a consequence of the complication and the collapsed empirical Bayes
+  estimator is not an estimator anybody would file, so both could have been written up as not real
+  routes. A measurement that fires is not answered on paper; both were closed in the generator instead,
+  by crowding the golden's peer group and by separating the two largest units' expected volumes.

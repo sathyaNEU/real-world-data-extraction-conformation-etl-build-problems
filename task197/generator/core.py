@@ -19,13 +19,25 @@ def local_to_utc(d, sec):
     return dt.datetime(d.year, d.month, d.day) + dt.timedelta(seconds=int(sec) - sim.LOCAL_OFFSET_H * 3600)
 
 def window():
+    """The window's arrays. Episodes are detected inside the published extract windows, which is the
+    only frequency series at one second the pack carries, so the generator's population and a
+    solver's are the same set by construction."""
     out = {}
     for d in sim.dates():
         f = sim.frequency_day(d)
-        out[d] = dict(f=f,
-                      under=sim.qualifying_episodes(d, f),
-                      over=over_episodes(f),
-                      exc=extract_windows(f),
+        exc = extract_windows(f)
+        under, over = [], []
+        for (a, b) in exc:
+            seg = np.full(len(f), np.nan)
+            seg[a:b + 1] = f[a:b + 1]
+            masked = np.where(np.isnan(seg), 50.0, seg)
+            for (t0, t1, tstar, fx) in sim.qualifying_episodes(d, masked):
+                if a <= tstar <= b:
+                    under.append((t0, t1, tstar, fx))
+            for (t0, t1, tstar, fx) in over_episodes(masked):
+                if a <= tstar <= b:
+                    over.append((t0, t1, tstar, fx))
+        out[d] = dict(f=f, under=sorted(set(under)), over=sorted(set(over)), exc=exc,
                       prog={s["id"]: sim.programme(s, d) for s in sim.SITES})
     return out
 
@@ -61,8 +73,10 @@ def extract_windows(f):
 
 
 def over_episodes(f):
-    """Qualifying over-frequency episodes: f at or above 50.080 Hz for at least 15 seconds."""
-    above = f >= 50.060
+    """Qualifying over-frequency episodes: f at or above 50.080 Hz for at least 15 seconds. The
+    threshold sits above the operator's extract trigger, so every qualifying episode of either sign
+    has published one-second frequency and recorded power behind it."""
+    above = f >= 50.080
     out, i, n = [], 0, len(f)
     while i < n:
         if not above[i]:
@@ -118,12 +132,21 @@ def _find(recs_by_site, d, sid, t):
             return (lo, hi)
     return None
 
+def covered(recs):
+    """Every (date, site, second) the archive carries power for."""
+    out = {}
+    for (d, sid, trig, lo, hi) in recs:
+        out.setdefault((d, sid), set()).update(range(lo, hi))
+    return out
+
+
 def episode_table(W, recs, cache, kind="under"):
     """One row per (site, qualifying episode the site was contracted for), with the response on each
     baseline. All of it reads the recorded 1 Hz power, exactly as the shipped archive carries it."""
     by_site = {}
     for r in recs:
         by_site.setdefault((r[0], r[1]), []).append(r)
+    cov = covered(recs)
     rows = []
     for d in sim.dates():
         f = W[d]["f"]
@@ -137,12 +160,12 @@ def episode_table(W, recs, cache, kind="under"):
                 sid = s["id"]
                 if not sim.contracted(s, np.array([float(tstar)]), d)[0]:
                     continue
+                if tstar not in cov.get((d, sid), ()):
+                    continue
                 w = _find(by_site, d, sid, tstar)
                 if w is None:
                     continue
                 lo, hi = w
-                if not (lo <= k < hi):
-                    continue
                 P = cache[(d, sid, lo)]
                 prog = W[d]["prog"][sid]
                 p = min(95, tstar // 900)
@@ -155,17 +178,28 @@ def episode_table(W, recs, cache, kind="under"):
                 frac = min(1.0, max(0.0, (tstar - p * 900) / float(s["ramp_s"])))
                 base_traj = prev + (cur - prev) * frac
                 base_lin = prev + (cur - prev) * ((tstar - p * 900) / 900.0)
+                has_pre = lo <= k < hi
                 rows.append(dict(date=d, site=sid, t0=t0, tstar=tstar, fext=fext, dev=dev,
                                  period=int(p), prev=float(prev), cur=float(cur), p_at=float(v),
-                                 p_pre=float(P[k - lo]),
+                                 p_pre=(float(P[k - lo]) if has_pre else None),
                                  resp_traj=sgn * (v - base_traj) / dev / cg,
-                                 resp_pre=sgn * (v - P[k - lo]) / dev / cg,
+                                 resp_pre=(sgn * (v - P[k - lo]) / dev / cg if has_pre else None),
                                  resp_sp=sgn * (v - cur) / dev / cg,
                                  resp_lin=sgn * (v - base_lin) / dev / cg,
                                  base_traj=float(base_traj)))
     return rows
 
+_MET_CACHE = {}
+
+
 def metered(W, d, sid):
+    key = (d, sid)
+    if key not in _MET_CACHE:
+        _MET_CACHE[key] = _metered(W, d, sid)
+    return _MET_CACHE[key]
+
+
+def _metered(W, d, sid):
     """Settlement meter: net MWh per quarter hour for one site and local date."""
     s = sim.SITE_BY_ID[sid]
     prog = W[d]["prog"][sid]
@@ -183,11 +217,14 @@ def site_scores(rows):
     for r in rows:
         a = agg.setdefault(r["site"], dict(n=0, traj=[], pre=[], sp=[], lin=[]))
         a["n"] += 1
-        a["traj"].append(r["resp_traj"]); a["pre"].append(r["resp_pre"])
+        a["traj"].append(r["resp_traj"])
+        if r["resp_pre"] is not None:
+            a["pre"].append(r["resp_pre"])
         a["sp"].append(r["resp_sp"]); a["lin"].append(r["resp_lin"])
     out = {}
     for sid, a in agg.items():
-        out[sid] = dict(n=a["n"], traj=100 * float(np.mean(a["traj"])), pre=100 * float(np.mean(a["pre"])),
+        out[sid] = dict(n=a["n"], traj=100 * float(np.mean(a["traj"])),
+                        pre=100 * float(np.mean(a["pre"])) if a["pre"] else float("nan"),
                         sp=100 * float(np.mean(a["sp"])), lin=100 * float(np.mean(a["lin"])))
     return out
 

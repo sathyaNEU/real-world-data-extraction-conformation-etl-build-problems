@@ -1,0 +1,19 @@
+file,what_it_is,covers,omits,source_and_pull,licence
+member_cases_gemini_fy2023_fy2024.csv,Gemini case extract,cases received 1 Apr 2022 to 31 Mar 2024,cases first received on Orbit,"Gemini decommissioned extract, pulled 2026-04-30",internal
+member_cases_orbit_fy2025_fy2026.csv,Orbit case extract,"cases received 1 Apr 2024 to 30 Apr 2026, and cases carried over at the cutover",cases closed on Gemini before the cutover,"Orbit, pulled 2026-04-30",internal
+queue_reference.csv,queue master,the nine member-service queues,closed queues,Orbit reference data,internal
+case_status_reference.json,status reference,case statuses on both platforms,workflow sub-states,Orbit reference data,internal
+public_holidays_ie_2022_2026.csv,public holiday calendar,2022 to 2026,company closure days,Workplace Relations Commission listings,public
+rostered_capacity_by_queue.xlsx,rostered capacity record,FY2023 to FY2026,overtime and agency cover,Resource Planning,internal
+service_monitoring_export.xlsx,performance export,2023Q1 to 2026Q1,2024Q2; cases not yet closed,Management Information,internal
+scheme_charges_fy2026.csv,scheme charging extract,charges raised in FY2026,credit notes and disbursements,Billing,internal
+schemes_register_2026.csv,participating scheme register,schemes administered at 31 Mar 2026,schemes that left before 1 Apr 2025,Scheme Secretariat,internal
+telephony_statistics_fy2026.csv,telephony statistics,FY2026 by month,web and email contact,Contact Centre,internal
+member_satisfaction_survey_fy2026.xlsx,satisfaction survey,FY2026 by quarter,non-respondents,Member Experience,internal
+data_dictionary.csv,data dictionary,fields of the extracts,derived fields,Data Services,internal
+service_assurance_framework_2026.pdf,"assurance framework, issue 3",member service monitoring and process review,complaints handling,"Member Operations Board, 12 Jan 2026",internal
+member_service_standard_2025.pdf,"service standard, issue 6",targets and the service clock from 1 Apr 2025,telephony and web service levels,"Member Operations, 1 Apr 2025",internal
+work_measurement_standard_2022.pdf,work measurement standard,standard minutes by case type,project and bulk work,"Resource Planning, 3 Oct 2022",internal
+fee_schedule_2025.pdf,fee schedule 2025-26,per case charges and statement terms,project work and disbursements,"Billing, 1 Apr 2025",internal
+trustee_report_membership_2026.pdf,trustee membership statement,active membership by scheme at 31 Mar 2026,deferred and pensioner members,"Scheme Secretariat, 24 Apr 2026",internal
+pensions_authority_letter_2026.pdf,supervisory correspondence,service improvement response required by 31 Jul 2026,the individual complaint files,"The Pensions Authority, 17 Apr 2026",received

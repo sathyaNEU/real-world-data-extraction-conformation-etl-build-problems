@@ -1,0 +1,10 @@
+orbit_queue_code,gemini_queue_code,queue_name,former_queue_name,operations_centre
+MS-RQ,RQ,Retirement quotations,,Dublin
+MS-RS,RS,Retirement settlements,,Dublin
+MS-TO,TO,Transfers out,,Athlone
+MS-TI,TI,Transfers in,,Athlone
+MS-DB,DB,Death benefits,,Athlone
+MS-LO,LO,Leaver options,,Dublin
+MS-DC,RA,Member data corrections,Record amendments,Athlone
+MS-IS,IS,Investment switches,,Athlone
+MS-CQ,CQ,Contribution queries,,Dublin

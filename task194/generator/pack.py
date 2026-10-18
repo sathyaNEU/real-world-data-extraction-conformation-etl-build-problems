@@ -202,12 +202,13 @@ def write_units(target):
             opened = "2014-07-01"
         if code == W.MERGE_INTO:
             opened = W.MERGE_DATE.isoformat()
-        cis = "N" if code in W.DETAIL_EXCLUDED else "Y"
-        out.append([code, name, site, SERVICE_LABEL[service], DIVISION[mix], cis, opened, closed, into])
+        reg = W.CIS_MIGRATION.get(code)
+        out.append([code, name, site, SERVICE_LABEL[service], DIVISION[mix],
+                    reg.isoformat() if reg else "", opened, closed, into])
     out.sort()
     return _csv(os.path.join(target, FILES["units"]),
                 ["unit_code", "unit_name", "hospital_code", "service_type", "division",
-                 "clinical_information_system", "opened_date", "closed_date", "amalgamated_into"], out)
+                 "cis_registered_date", "opened_date", "closed_date", "amalgamated_into"], out)
 
 
 def write_sites(target):
@@ -358,47 +359,32 @@ def close_out_date(q):
     return W.QUARTERS[q][3] + dt.timedelta(days=56)
 
 
-def write_close_out(target, ultimate, coded_group):
+def write_close_out(target, vintage):
     """Clinical Information and Coding's close-out register: what each quarter carried at each publication.
 
     A quarter is published when its coding closes and restated at every close after it, counted on the
-    episodes whose first recorded complication falls in each reporting group. A quarter stops moving two
-    closes after its own. The register runs to the last close before the export, so the two most recent
-    quarters have fewer publications than the rest.
+    separations that carried at least one complication against the cost centre. The register runs to the
+    last close before the export, so the most recent quarters have fewer publications than the rest.
     """
-    groups = [g for g, _ in W.HAC_GROUPS]
     last_close = max(close_out_date(q) for q in range(len(W.QUARTERS))
                      if close_out_date(q) <= W.PULL_DATE)
     out = []
     for q in range(len(W.QUARTERS)):
-        own = close_out_date(q)
-        if own > W.PULL_DATE:
+        if close_out_date(q) > W.PULL_DATE:
             continue
         lags = [k for k in range(len(W.QUARTERS) - q)
                 if close_out_date(q + k) <= last_close]
         for k in lags:
             pub = close_out_date(q + k)
-            for g in groups:
-                if q in W.IMMATURE:
-                    # the quarter's coded count at the lag it has reached is what the extract carries, and
-                    # the publications before it are that count back at the earlier completeness
-                    here = W.IMMATURE[q]
-                    base = coded_group.get((q, g), 0)
-                    if k == here:
-                        n = base
-                    else:
-                        c_here = W.GROUP_COMPLETENESS[g][min(here, W.LAG_COMPLETE - 1)] \
-                            if here < W.LAG_COMPLETE else 1.0
-                        c_k = W.GROUP_COMPLETENESS[g][k] if k < W.LAG_COMPLETE else 1.0
-                        n = int(round(base * c_k / c_here))
-                else:
-                    tot = ultimate.get((q, g), 0)
-                    c_k = W.GROUP_COMPLETENESS[g][k] if k < W.LAG_COMPLETE else 1.0
-                    n = tot if k >= W.LAG_COMPLETE else int(round(tot * c_k))
-                out.append([W.QUARTERS[q][0], pub.isoformat(), g, W.GROUP_NAME[g], n])
+            for x in W.UNITS:
+                code = x[0]
+                n = vintage.get((code, q, min(k, W.LAG_COMPLETE)), 0)
+                if n == 0 and vintage.get((code, q, W.LAG_COMPLETE), 0) == 0:
+                    continue                    # the cost centre reported no activity that quarter
+                out.append([W.QUARTERS[q][0], pub.isoformat(), code, n])
+    out.sort(key=lambda r: (r[0], r[1], r[2]))
     return _csv(os.path.join(target, FILES["closeout"]),
-                ["quarter", "published_date", "group_id", "group_name",
-                 "episodes_with_first_complication_in_group"], out)
+                ["quarter", "published_date", "unit_code", "separations_with_complication"], out)
 
 
 def write_distractors(target):
@@ -502,9 +488,12 @@ DICTIONARY = [
     ("activity_plan_2027q4.csv", "planned_separations", "Separations planned for the unit for the quarter, "
      "all care types", "count"),
     ("unit_register.csv", "hospital_code", "Hospital site the unit is aligned to at the export date", "code"),
-    ("unit_register.csv", "clinical_information_system", "Y where the unit's wards are on the clinical "
-     "information system, which is the source of the complication level detail; N where a complication "
-     "reaches the warehouse only as the episode record's own category", "indicator"),
+    ("unit_register.csv", "cis_registered_date", "Date the unit's wards were registered on the clinical "
+     "information system under the network's rollout programme", "date"),
+    ("coding_close_out_register.csv", "published_date", "Publication date of the figure on the row", "date"),
+    ("coding_close_out_register.csv", "separations_with_complication", "Separations the cost centre "
+     "reported for the quarter that carried at least one complication, as the figure stood on the "
+     "publication date", "count"),
     ("unit_register.csv", "service_type", "Service type of the unit", "code"),
     ("unit_register.csv", "amalgamated_into", "Cost centre the unit's activity transferred to on closure",
      "code"),
@@ -523,6 +512,8 @@ GRAINS = [
     ("unit_indicator_series.csv", "Grain", "One row per in-scope unit and closed quarter.", "-"),
     ("activity_summary_monthly.csv", "Grain", "One row per unit and month, all care types.", "-"),
     ("improvement_placements.csv", "Grain", "One row per placement cycle.", "-"),
+    ("coding_close_out_register.csv", "Grain", "One row per reporting quarter, cost centre and "
+     "publication date.", "-"),
 ]
 
 
@@ -539,7 +530,7 @@ MANIFEST = [
      "1 July 2024 to 31 December 2026", "uncoded episodes", "Clinical Information and Coding",
      "Patient administration system via the clinical data warehouse"),
     ("hac_detail_extract.csv", "Complication level detail",
-     "1 July 2024 to 31 December 2026", "units off the clinical information system",
+     "1 July 2024 to 31 December 2026", "the Carrowdean campus, whose detail stays in the campus module",
      "Clinical Information and Coding", "Clinical information system"),
     ("unit_indicator_series.csv", "Quarterly complication indicator series as reported",
      "specification 4.0 period", "quarters before 1 July 2024", "Clinical Governance",

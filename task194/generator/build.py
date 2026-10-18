@@ -21,9 +21,9 @@ EXPORT_STAMP = dt.datetime(2027, 3, 5, 17, 40, 0)
 def golden_factors(target):
     """The development factors, read back from the close-out register's own shipped bytes.
 
-    For each reporting group, what a quarter's count at its own close and at the close after it grew to by
-    the time the quarter stopped moving, pooled over the quarters that have finished moving. Nothing is
-    fitted: each factor is a ratio of two sums the register prints.
+    For each cost centre, what a quarter's count at its own close and at each close after it grew to by the
+    time the quarter stopped moving, pooled over the quarters that have finished moving. Nothing is fitted:
+    each factor is a ratio of two sums the register prints.
     """
     import golden as G
     return G.development_factors(G._read(target, PK.FILES["closeout"]))
@@ -74,15 +74,12 @@ def cut(target):
     detail = sim.complications(rows, W.UNITS)
     # only the complications coded by the pull date stay in the record, and the two most recent quarters
     # are short by their own patients' mix of reporting groups
-    observed, ultimate, coded_group = sim.apply_coding_lag(rows, W.UNITS)
+    observed, ultimate, vintage = sim.apply_coding_lag(rows, W.UNITS)
     detail = [d for d in detail if rows[d["row"]]["hac"]]
-    PK.write_close_out(target, ultimate, coded_group)
+    PK.write_close_out(target, vintage)
     factors = golden_factors(target)
     # each unit's avoidable complications per separation, on the counts developed to what the quarters'
     # patients had, which is the figure the charter asks for and the one that is graded
-    first_group = {}
-    for code, _, g in W.LIST_2022 + W.LIST_2026:
-        first_group[code] = g
     by_unit = {}
     for r in rows:
         if not r["in_scope"]:
@@ -90,8 +87,8 @@ def cut(target):
         cell = by_unit.setdefault(r["unit"], {"obs": 0.0, "dev": 0.0})
         if r["hac"]:
             cell["obs"] += 1
-            g = first_group[r["hac_codes"][0]]
-            cell["dev"] += factors.get((g, W.IMMATURE[r["q"]]), 1.0) if r["q"] in W.IMMATURE else 1.0
+            cell["dev"] += factors.get((r["unit"], W.IMMATURE[r["q"]]), 1.0) \
+                if r["q"] in W.IMMATURE else 1.0
     dev_per_sep = {}
     for x in W.UNITS:
         code = x[0]

@@ -1,0 +1,44 @@
+{
+  "platform": "Orbit",
+  "export_date": "2026-04-30",
+  "statuses": [
+    {
+      "code": "ANSWERED",
+      "platform": "Orbit",
+      "answered": true,
+      "clock": "stopped",
+      "note": "substantive response issued"
+    },
+    {
+      "code": "IN_PROGRESS",
+      "platform": "Orbit",
+      "answered": false,
+      "clock": "running"
+    },
+    {
+      "code": "AWAITING_MEMBER",
+      "platform": "Orbit",
+      "answered": false,
+      "clock": "suspended",
+      "note": "days suspended are carried in clock_stop_days"
+    },
+    {
+      "code": "CLSD",
+      "platform": "Gemini",
+      "answered": true,
+      "clock": "stopped"
+    },
+    {
+      "code": "TRF",
+      "platform": "Gemini",
+      "answered": false,
+      "clock": "running",
+      "note": "case open at the 1 April 2024 platform cutover and carried to Orbit; the Orbit record holds the case from that date and quotes the Gemini case number"
+    }
+  ],
+  "clock_stop_field": {
+    "Gemini": "member_days",
+    "Orbit": "clock_stop_days",
+    "unit": "whole working days"
+  }
+}

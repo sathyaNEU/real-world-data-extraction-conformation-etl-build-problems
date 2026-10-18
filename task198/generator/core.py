@@ -4,6 +4,7 @@ One row per member-service case.
 Waits come from the standard G/G/s heavy-traffic delay formula at each queue-quarter's own
 offered load and staffed positions, so the pack's service levels are what a queue of that size
 at that load produces."""
+import hashlib
 import math
 from datetime import date, timedelta
 import numpy as np
@@ -44,14 +45,17 @@ QUEUES = {
            occ=.9070,amp=.014,k26=.25,p_am=.46,am_med=11.0),
  "LO":dict(nm="Leaver options",          tgt=10,mpc=300,hmed=2.2,cv2=3.6,pos=[13,13,13,13],vol=[1,1,1,1],
            occ=.9160,amp=.013,k26=.30,p_am=.15,am_med=2.5),
- "DC":dict(nm="Member data corrections", tgt=8, mpc=360,hmed=1.9,cv2=3.2,pos=[5,11,11,5],vol=[1.0,2.2,2.2,1.0],
+ "DC":dict(nm="Member data corrections", tgt=8, mpc=360,hmed=1.9,cv2=3.2,pos=[5,14,14,5],vol=[1.0,2.8,2.8,1.0],
            occ=.9295,amp=.011,k26=.10,p_am=.12,am_med=2.0),
  "IS":dict(nm="Investment switches",     tgt=6, mpc=240,hmed=1.3,cv2=3.2,pos=[4,4,4,4],vol=[1,1,1,1],
-           occ=.8985,amp=.028,k26=.95,p_am=.08,am_med=1.5),
+           occ=.9110,amp=.028,k26=.95,p_am=.08,am_med=1.5),
  "CQ":dict(nm="Contribution queries",    tgt=6, mpc=215,hmed=1.4,cv2=4.0,pos=[16,16,16,16],vol=[1,1,1,1],
            occ=.9275,amp=.012,k26=.92,p_am=.10,am_med=2.0),
 }
-ANOM = dict(code="CQ", from_q=12, extra_med=2.05, share=0.32)
+# Process drift from FY2026 Q1: elapsed days the queue's cases spend that its own offered load
+# and staffed positions do not account for.
+ANOM = dict(code="CQ", from_q=12, extra_med=2.05, share=0.44)
+ANOM2 = None
 PAT = [0.10,-0.95,-0.40,0.98, 0.18,-0.88,-0.30,1.00, 0.14,-0.92,-0.34,0.96]
 P26 = [0.04,-0.06,0.00,0.05]
 
@@ -85,9 +89,10 @@ def build(seed=19980417):
             wait = rng.gamma(0.9, w_mean / 0.9, n)
             hand = q["hmed"] * np.exp(HSIG * rng.standard_normal(n))
             extra = np.zeros(n)
-            if code == ANOM["code"] and qi >= ANOM["from_q"]:
-                extra = np.where(rng.random(n) < ANOM["share"],
-                                 ANOM["extra_med"] * np.exp(0.6 * rng.standard_normal(n)), 0.0)
+            for A in (A_ for A_ in (ANOM, ANOM2) if A_):
+                if code == A["code"] and qi >= A["from_q"]:
+                    extra = np.where(rng.random(n) < A["share"],
+                                     A["extra_med"] * np.exp(0.6 * rng.standard_normal(n)), 0.0)
             am = np.where(rng.random(n) < q["p_am"],
                           q["am_med"] * np.exp(0.7 * rng.standard_normal(n)), 0.0)
             net = wait + hand + extra
@@ -119,7 +124,7 @@ FEE = {           # per chargeable case, EUR: (to 2025-09-30, from 2025-10-01)
 RATE_SWITCH = date(2025, 10, 1)
 TRUST = "RMT-000"
 TRUST_SUBS = ["MT-CEN", "MT-S01", "MT-S02", "MT-S03", "MT-S04"]
-TRUST_MEMBERS = 41800          # active members of the whole trust at 31 March 2026
+TRUST_MEMBERS = 41789          # active members of the whole trust at 31 March 2026
 CONSOLIDATED = 3               # the participating schemes billed on one consolidated statement
 
 
@@ -145,7 +150,7 @@ def schemes():
              "Kinnegad Ropes", "Lackamore Boards", "Mullinahone Tanks", "Newtowncashel Pipes",
              "Oylegate Blinds", "Pollagh Castings", "Raheenagh Linens", "Stradbally Gears",
              "Taghmon Lifts", "Upperchurch Doors", "Villierstown Frames", "Whitegate Looms"]
-    mem = [9400, 7100, 5900, 5200, 4600, 4100, 3700, 3300, 3000, 2700, 2450, 2200, 2000, 1850,
+    mem = [9402, 7101, 5904, 5197, 4598, 4098, 3698, 3298, 2993, 2700, 2450, 2200, 2000, 1850,
            1700, 1560, 1440, 1330, 1230, 1140, 1055, 980, 910, 845, 790, 735, 685, 640, 600, 560,
            525, 495, 465, 435, 410, 385, 365, 345, 325, 305, 290, 275, 260, 245]
     w = [0.071, 0.055, 0.045, 0.038, 0.033, 0.029, 0.026, 0.023, 0.021, 0.0163, 0.0152, 0.014,
@@ -248,11 +253,22 @@ def register_and_trustee():
     reg, tru = [], []
     for code in sorted(true_mem):
         g = grp_of.get(code)
+        # the master trust's membership is returned by its own trustees rather than by a
+        # sponsoring employer, so the participating scheme register carries no figure for it
         reg.append(dict(scheme_code=code, scheme_name=names[code],
-                        sponsor=g or names[code].replace(" Pension Scheme", ""),
-                        active_members=grp_total[g] if g else true_mem[code],
-                        return_basis="group return" if g else "scheme return"))
+                        sponsor=g or ("Rathbroe Master Trust, trustee return" if code == TRUST
+                                      else names[code].replace(" Pension Scheme", "")),
+                        active_members=("" if code == TRUST
+                                        else (grp_total[g] if g else true_mem[code])),
+                        return_basis=("trustee return" if code == TRUST
+                                      else ("group return" if g else "scheme return"))))
+        # the trustee statement reports active membership split by contribution status, as a
+        # scheme return does; the active total is the two parts together
+        h = int(hashlib.sha1(code.encode()).hexdigest()[:8], 16)
+        susp = int(round(true_mem[code] * (0.07 + (h % 90) / 1000.0)))
         tru.append(dict(scheme_code=code, scheme_name=names[code],
+                        active_contributing=true_mem[code] - susp,
+                        active_suspended=susp,
                         active_members_31mar2026=true_mem[code]))
     return reg, tru
 
@@ -273,9 +289,11 @@ def april_tail(seed=77310441):
         idx = rng.integers(0, len(wdays), n)
         wait = rng.gamma(0.9, w_mean / 0.9, n)
         hand = q["hmed"] * np.exp(HSIG * rng.standard_normal(n))
-        extra = np.where(rng.random(n) < ANOM["share"],
-                         ANOM["extra_med"] * np.exp(0.6 * rng.standard_normal(n)), 0.0) \
-            if code == ANOM["code"] else np.zeros(n)
+        extra = np.zeros(n)
+        for A in (A_ for A_ in (ANOM, ANOM2) if A_):
+            if code == A["code"]:
+                extra = np.where(rng.random(n) < A["share"],
+                                 A["extra_med"] * np.exp(0.6 * rng.standard_normal(n)), 0.0)
         am = np.where(rng.random(n) < q["p_am"],
                       q["am_med"] * np.exp(0.7 * rng.standard_normal(n)), 0.0)
         net = wait + hand + extra

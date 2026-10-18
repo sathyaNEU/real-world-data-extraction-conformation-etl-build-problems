@@ -112,7 +112,7 @@ MIX_SHIFT_UNIT = "41410"
 MIX_SHIFT_QUARTERS = (5, 6)
 MIX_SHIFT_PROFILE = "ortho_backfill"
 ADDITIVE_UNIT = "41410"       # its rate is the network's rate in each band plus a constant per episode
-ADDITIVE_C = 0.0121
+ADDITIVE_C = 0.0091
 
 # The day-procedure feed did not deliver for two months at three units while the theatre management system
 # was migrated, one unit at each of the three larger sites. The patient administration system counted those
@@ -179,31 +179,31 @@ MIX = {
 # status: "eligible" (a candidate), "embedded" (placed within twelve closed quarters), "nonacute", "merged_into".
 UNITS = [
     # code, name, hospital, mix, service, psi, sep, plan, ylast, role, status
-    ("41210", "General Medicine", "H1", "gen_med", "acute", 1.07800, 3680, 4259, 1.21000, "largest", "eligible"),
-    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.00990, 4160, 4510, 1.02000, "runner_up", "eligible"),
-    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.01500, 3040, 3100, 1.14000, "answer", "eligible"),
-    ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.02500, 1680, 1700, 1.28000, "hot2", "eligible"),
-    ("41310", "General Medicine", "H2", "gen_med", "acute", 1.02000, 2150, 2000, 1.09000, "mid", "eligible"),
-    ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.03000, 1920, 2100, 1.12000, "hot3", "eligible"),
-    ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.05000, 688, 760, 1.17000, "worst_level", "eligible"),
-    ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.04500, 992, 1100, None, "hot1", "eligible"),
-    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.02500, 1568, 1600, 1.10000, "mid", "eligible"),
-    ("41430", "Renal Medicine", "H3", "renal", "acute", 1.02000, 896, 950, 1.13000, "mid", "eligible"),
-    ("41510", "General Medicine", "H4", "gen_med_district", "acute", 1.03000, 624, 700, 1.05000, "merged", "eligible"),
-    ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.04000, 800, 1100, 1.09000, "rising", "eligible"),
+    ("41210", "General Medicine", "H1", "gen_med", "acute", 1.11656, 3680, 4259, None, "largest", "eligible"),
+    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.03850, 4160, 4760, None, "runner_up", "eligible"),
+    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.10461, 3040, 3100, None, "answer", "eligible"),
+    ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.07756, 1680, 1700, 1.34562, "hot2", "eligible"),
+    ("41310", "General Medicine", "H2", "gen_med", "acute", 1.03335, 2150, 2000, 1.10427, "mid", "eligible"),
+    ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.04986, 1920, 2100, 1.14160, "hot3", "eligible"),
+    ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.04915, 688, 760, 1.16906, "worst_level", "eligible"),
+    ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.04301, 992, 1100, None, "hot1", "eligible"),
+    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.03471, 1568, 1600, 1.11042, "mid", "eligible"),
+    ("41430", "Renal Medicine", "H3", "renal", "acute", 1.03488, 896, 950, 1.14649, "mid", "eligible"),
+    ("41510", "General Medicine", "H4", "gen_med_district", "acute", 1.03565, 624, 700, 1.05577, "merged", "eligible"),
+    ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.02896, 800, 1100, 1.07843, "rising", "eligible"),
     # units the programme has already been placed with inside the twelve closed quarters. Earlier cycles
     # were decided on the quarter closed at the time, so the register holds units that were standing badly
     # over their own record beside units that were having one bad quarter on an ordinary record.
     ("41250", "Colorectal Surgery", "H1", "colorectal", "acute", 1.01100, 3520, 3584, None, "embed", "embedded"),
-    ("41260", "Aged Care", "H2", "aged", "acute", 1.03400, 2672, 2720, None, "embed", "embedded"),
-    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.00600, 3520, 3600, None, "embed", "embedded"),
+    ("41260", "Aged Care", "H2", "aged", "acute", 1.09800, 2672, 2720, None, "embed", "embedded"),
+    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.06100, 3520, 3600, None, "embed", "embedded"),
     ("41340", "Orthopaedics", "H3", "ortho", "acute", 1.02100, 2000, 2064, None, "embed", "embedded"),
-    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.02700, 2128, 2176, None, "embed", "embedded"),
-    ("41360", "Aged Care", "H1", "aged", "acute", 0.99800, 1784, 1824, None, "embed", "embedded"),
+    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.08300, 2128, 2176, None, "embed", "embedded"),
+    ("41360", "Aged Care", "H1", "aged", "acute", 1.06200, 1784, 1824, None, "embed", "embedded"),
     ("41440", "General Surgery", "H3", "gen_surg", "acute", 0.99100, 4832, 4928, None, "embed", "embedded"),
-    ("41450", "Geriatric Evaluation and Management", "H1", "aged", "acute", 1.04100, 1731, 1776, None, "embed", "embedded"),
+    ("41450", "Geriatric Evaluation and Management", "H1", "aged", "acute", 1.10600, 1731, 1776, None, "embed", "embedded"),
     # the unit the team is with now, for the quarter in progress: no closed data for the placement
-    ("41460", "Rehabilitation and Aged Care", "H3", "aged", "acute", 1.01600, 752, 800, None, "current", "embedded"),
+    ("41460", "Rehabilitation and Aged Care", "H3", "aged", "acute", 1.07400, 752, 800, None, "current", "embedded"),
     # non-acute units: outside the indicator's scope (specification 4.0 clause 2.3)
     ("41610", "Sub-acute Rehabilitation", "H2", "subacute", "rehabilitation", 1.0, 528, 560, None, "scope", "nonacute"),
     ("41620", "Older Persons Mental Health", "H3", "subacute", "psychiatric", 1.0, 464, 480, None, "scope", "nonacute"),
@@ -224,6 +224,19 @@ EMBED_CURRENT = ("2026-27 Q3", "41460")   # in progress, outside the extract
 EMBED_EFFECT = 0.50                      # share of a unit's persistent excess an embed removes in its quarter
 EMBED_RETAIN = [0.68, 0.85]              # the gain fades: excess back to these shares of persistent in later quarters
 EMBED_Q = {v: k for k, v in EMBEDS.items()}
+# Three units whose practice did not hold still across the specification period. A level for the first six
+# closed quarters and another for the last four, rather than one level for all ten: a unit whose nursing
+# establishment, its patient profile or its own practice changed partway through the period reports two
+# levels, not one. The pair is normalised against the unit's own expected numbers, so the unit's pooled
+# ratio over the ten closed quarters is still its persistent ratio and only the shape inside the window
+# changes. Every other unit sits at one level and swings around it.
+RATIO_PATH = {
+    "41210": (0.9630, 1.0554),   # a general medicine unit whose complication rate rose through 2026
+    "41220": (1.0278, 0.9584),   # a general surgical unit whose rate came down over the same quarters
+    "41230": (1.0448, 0.9328),   # and an orthopaedic unit that had its bad quarters early
+}
+PATH_SPLIT = 6                   # the quarter index the second level starts at
+
 OVERDISPERSION = 1.45                    # Pearson residual of a unit-quarter count against its expected number
 TEAM_FTE = 2.4
 
@@ -306,26 +319,36 @@ PAPER_COMPLETENESS = (0.558, 0.762, 0.888, 0.962)
 LAG_COMPLETE = 4            # a quarter stops moving four closes after its own
 
 # When each cost centre's wards were registered on the clinical information system. The programme ran ward
-# by ward from July 2024 to October 2026 in the order the vendor's implementation partner and the network's
-# own cabling and device procurement allowed, so it runs across sites and across specialties rather than
-# with either: each hospital has one of the four cost centres registered last, and those four sit in four
-# different specialties. The register carries the date and nothing else.
+# by ward from July 2022 and was still running at the export date, in the order the vendor's implementation
+# partner and the network's own cabling and device procurement allowed, so it runs across sites and across
+# specialties rather than with either.
 CIS_MIGRATION = {
-    "41210": dt.date(2026, 7, 1), "41220": dt.date(2024, 7, 1), "41230": dt.date(2024, 10, 1),
-    "41240": dt.date(2025, 10, 1), "41310": dt.date(2025, 1, 1), "41320": dt.date(2024, 7, 1),
-    "41330": dt.date(2026, 4, 1), "41410": dt.date(2026, 10, 1), "41420": dt.date(2025, 7, 1),
-    "41430": dt.date(2025, 4, 1), "41510": dt.date(2025, 1, 1), "41520": dt.date(2026, 1, 1),
-    "41250": dt.date(2024, 10, 1), "41260": dt.date(2025, 7, 1), "41270": dt.date(2025, 4, 1),
-    "41340": dt.date(2026, 1, 1), "41350": dt.date(2025, 1, 1), "41360": dt.date(2024, 7, 1),
-    "41440": dt.date(2026, 4, 1), "41450": dt.date(2025, 10, 1), "41460": dt.date(2026, 7, 1),
-    "41610": dt.date(2025, 4, 1), "41620": dt.date(2026, 1, 1), "41630": dt.date(2026, 10, 1),
-    "41511": dt.date(2025, 1, 1), "41512": dt.date(2025, 1, 1),
+    "41210": dt.date(2027, 3, 1), "41220": dt.date(2022, 10, 1), "41230": dt.date(2023, 4, 1),
+    "41240": dt.date(2023, 10, 1), "41310": dt.date(2022, 7, 1), "41320": dt.date(2024, 1, 1),
+    "41330": dt.date(2023, 7, 1), "41410": dt.date(2024, 1, 1), "41420": dt.date(2023, 1, 1),
+    "41430": dt.date(2022, 10, 1), "41510": dt.date(2023, 4, 1), "41520": dt.date(2027, 1, 4),
+    "41250": dt.date(2024, 7, 1), "41260": dt.date(2025, 1, 1), "41270": dt.date(2024, 4, 1),
+    "41340": dt.date(2025, 7, 1), "41350": dt.date(2024, 10, 1), "41360": dt.date(2023, 7, 1),
+    "41440": dt.date(2025, 4, 1), "41450": dt.date(2025, 10, 1), "41460": dt.date(2026, 7, 1),
+    "41610": dt.date(2025, 10, 1), "41620": dt.date(2026, 4, 1), "41630": dt.date(2026, 10, 1),
+    "41511": dt.date(2023, 4, 1), "41512": dt.date(2023, 4, 1),
 }
-# How much of a ward's recording has moved onto the system, by how long the ward has been registered: the
-# devices land before the practice does, and the wards that take longest are the oldest buildings, so for
-# two quarters after registration a share of the complications is still written in the notes first.
+# How much of a ward's recording actually moved onto the system once its wards were registered. A ward is
+# registered for orders and results long before the clinical team stops writing in the notes, and how far
+# it gets depends on the ward: its device count, its establishment, how its nurse unit manager runs the
+# round, whether its building has bedside terminals. Two cost centres registered in the same quarter sit
+# years apart on this, which is why the registration date explains only part of how fast a cost centre's
+# coding settles.
+CIS_ADOPTION = {
+    "41210": 0.000, "41220": 0.995, "41230": 0.985, "41240": 0.960, "41310": 0.975, "41320": 0.990,
+    "41330": 0.460, "41410": 0.380, "41420": 0.930, "41430": 0.550, "41510": 0.900, "41520": 0.000,
+    "41250": 0.970, "41260": 0.900, "41270": 0.955, "41340": 0.880, "41350": 0.945, "41360": 0.860,
+    "41440": 0.965, "41450": 0.915, "41460": 0.890, "41610": 0.930, "41620": 0.905, "41630": 0.870,
+    "41511": 0.700, "41512": 0.700,
+}
+# how far through its own adoption a ward is in each of the first three quarters after registration
 CIS_RAMP = ((91, 0.55), (182, 0.82), (273, 0.94))
-CIS_SETTLED = 0.985
+CIS_SETTLED = 0.985         # where a cost centre with no adoption of its own sits
 
 IMMATURE = {9: 0, 8: 1, 7: 2, 6: 3}   # quarter index -> how many closes have passed since its own
 # where each unit type's other quarterly indicators sit: deaths in hospital per 1,000 separations and
