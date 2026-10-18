@@ -155,7 +155,13 @@ at 40 to 70 per cent of retained and **no municipality exceeds it at all**. The 
 exist, and acting on it would have repaired data that was correct. The check costs one computation:
 before reporting that two files cannot both be true, aggregate both to the coarsest grain the claim
 still has meaning at, usually the entity over the whole window, and see whether the contradiction
-survives. A reader's or a judge's structural finding is a hypothesis with a join inside it.
+survives. A reader's or a judge's structural finding is a hypothesis with a join or a base rate inside it, and the
+assumption is the part most likely to be wrong. Four fell this way in one night, and the fourth came from
+a judge rather than a reader, so seniority is no exemption: a withdrawal-window placement claim rested on
+a quarter of periods carrying an episode when the episodes cover 1.22 per cent of the span by duration, 20
+times out, and a count-basis claim gave two series for rows against distinct references when the pack has
+no duplicate reference at all and the two coincide exactly. Reproduce the finding before repairing
+anything, and when it does not reproduce, record that it did not rather than building for it.
 
 **Two files that observe the same events need two detection logics, and matching bounds are a
 causal impossibility rather than a realism nit.** Where a pack carries the same real-world events as
