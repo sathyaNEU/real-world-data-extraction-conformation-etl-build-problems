@@ -252,7 +252,11 @@ Each is cheap, each is run as code before any separation is measured, and each c
   filter-and-divide subset named the elevated set **20 of 20 at a margin of 1.179 against the designed
   route's 17 of 20 at 1.116**, and in a neighbouring dial cell the ladder inverted outright, a one-line
   reflex reaching 18 of 20 against the designed route's 10. **A lever of 1.8 to 2.3x is not evidence the
-  screen does not fire**: measure the attaining subset, not the easy route.
+  screen does not fire**: measure the attaining subset, not the easy route. **The screen also has a
+  time-axis form**, which any completion or arrival-profile candidate must be screened against and not only
+  against the cross-sectional subset: "use the periods old enough that every unit is complete" is a filter
+  and a divide with no model, and it reached the truth **14 of 20**, while the file's own published receipt
+  date, one group-by and one divide, reached **20 of 20**, the same as the designed completion route.
 
 - **`population_selection` needs the data to force the selection.** The WHAT screen kills any decisive step
   that settles which rows are the population, because filing that settlement is rule application and
@@ -437,6 +441,18 @@ voluntary notification register publishes its own take-up, so a one-divide take-
 **-0.9681**; a shipped occasion calendar publishes its own cardinality, so counting occasions touched
 reached the truth 13 of 20 against the decisive route's 12 of 20, at **+0.9407**; and a family-breadth
 quantity on other ground measured **+0.9986** against the plainest column of its own family definition.
+**And one case of it is arithmetic rather than a correlation, so run this first: ask whether the correcting
+input is one number or one per unit.** Where the correcting input is a single scalar, the construction is a
+**monotone rescaling** of the column it is applied to, so it cannot reorder anything, whatever the scalar
+is and however cleverly it was obtained. Measured at corr **+1.0000** at every draw with identical hit
+rates, 19 of 20 against 19 of 20, the designed construction and a one-divide route on the plain column
+scoring the same. There is no third form: one number is dead by arithmetic before any world is drawn, and
+one per unit means the record has to identify one for every unit, which is its own screen. On the ground
+that earned this the attaining subset was **0.6 of 14 units**, minimum 0 and maximum 2, so the input was
+identified nowhere, the designed route scored **3 of 20 against the easy route's 6**, and the ladder was
+inverted: the construction was worse than the route it corrects. This test costs one line of reasoning and
+fires with certainty rather than with a magnitude, so it belongs ahead of the correlation.
+
 **The test:** correlate the construction's output with the plainest column of its own forcing file across
 world draws, and separately score the one-line route (take that column, divide, rank) for how often it
 reaches the truth. Run it before any separation measurement, because **a wrong easy route is no
