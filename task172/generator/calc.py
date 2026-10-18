@@ -346,6 +346,31 @@ def ask_a(T, cases, ref, **kw):
     return out
 
 
+def benefits_id_only(T, cases, ref):
+    """ask A's cells counting the current spouses whose card approved most recently is on record only under the
+    dependant ID Benefits gave her, an ID no Global Mobility record carries for her"""
+    gm = {p["holder_id"] for p in T["permits"] if p.get("household_employee_id")}
+    gm |= {c["person"] for c in cases.values() if c["ptype"] == "spouse"}
+    gm |= {t["applicant_id"] for t in T["tracker"] if t["relationship"] == "Spouse"}
+    _, sponsor = holders_current(T, cases)
+    emp_ids = {e["employee_id"] for e in T["employees"]}
+    best = latest_cards(T, cases, ref)
+    ids_at = defaultdict(set)
+    for c in cards_held(T, cases, ref):
+        if c["holder"] in emp_ids:
+            continue
+        person = ("spouse of", sponsor.get(c["holder"]))
+        if person in best and c["vf"] == best[person]["vf"]:
+            ids_at[person].add(c["holder"])
+    out = {(y, m, cat): 0 for (y, m) in C.ASK_A_MONTHS for cat in C.CATS}
+    for person, ids in ids_at.items():
+        c = best[person]
+        key = (c["vt"].year, c["vt"].month, c["cat"])
+        if key in out and not ids & gm:
+            out[key] += 1
+    return out
+
+
 def forward_mix(T, cases, ref, d_median, keep_approved=False):
     """the quarter's renewals by category: the current work permits whose renewal reaches USCIS in the quarter (the
     card's last day less the record's median card gap falls from 1 January to 31 March 2027), leaving out the (c)(9)

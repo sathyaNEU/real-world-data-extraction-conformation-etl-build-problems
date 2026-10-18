@@ -15,6 +15,7 @@ import ladder as L         # noqa: E402
 import postprocess as PP   # noqa: E402
 
 MONTHS = {7: "July", 8: "August", 9: "September"}
+WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"}
 QLABEL = {"2025 Q4": "October to December 2025", "2026 Q1": "January to March 2026", "2026 Q2": "April to June 2026",
           "2026 Q3": "July to September 2026"}
 
@@ -27,6 +28,7 @@ def figures(target):
            r["received"] < dt.date(2026, 1, 1)]
     R = L.routes(Q)
     F = dict(
+        call_quote_months=C.half_month(Q["months"]),
         quote_months=C.half_month(Q["months"]),
         quote_unrounded=round(Q["months"], 3),
         lead_weeks_now=int(round(Q["lead_weeks"])),
@@ -45,8 +47,10 @@ def figures(target):
         rival_default_months_mix=C.half_month(R["default path reweighted to the quarter's categories"]),
         refile_days=C.REFILE_DAYS,
         month_days=C.MONTH_DAYS,
-        standard_sections=["2.3", "3.1", "4.2", "4.3"],
+        standard_sections=["1.3", "1.4", "2.3", "3.1", "4.2", "4.3"],
         ask_a={"%d-%02d %s" % (y, m, cat): A[(y, m, cat)] for (y, m) in C.ASK_A_MONTHS for cat in C.CATS},
+        ask_a_benefits_id_only={"%d-%02d %s" % k: v for k, v in
+                                sorted(K.benefits_id_only(Q["T"], Q["cases"], Q["ref"]).items()) if v},
         ask_b={k: dict(rejected=v[0], refiled_30=v[1]) for k, v in B.items()},
     )
     return F, Q, A, B
@@ -257,6 +261,10 @@ def write_chart(path, F):
 
 def write_submission(path, F):
     A, B = F["ask_a"], F["ask_b"]
+    bo = F["ask_a_benefits_id_only"]
+    if list(bo) != ["2027-09 (c)(26)"] or not 2 <= bo["2027-09 (c)(26)"] <= 9:
+        raise SystemExit("step 5 names the September (c)(26) cards held only under a Benefits ID; the record now "
+                         "has %s, so the step must be rewritten" % bo)
     lines = [
         "## Tags", "",
         "**Domain:** General Statistics & Data Science (regression, classification and model diagnostics: a software "
@@ -301,13 +309,20 @@ def write_submission(path, F):
         "after it); USCIS accepted most of the requests and decided those renewals a median of about a week later, in "
         "the busiest request months as in the quiet ones and after the appointment queue tripled, where the stage "
         "model fitted on the earlier renewals puts their typical remaining wait at more than two weeks.",
-        "5. Read the quarter's mix from the work permits whose renewals reach USCIS in it: about half are (c)(9), whose "
-        "renewals mostly reuse fingerprints (fewer than three in ten went to an appointment, against seven in ten of "
-        "the (c)(26) renewals).",
-        "6. Simulated the quarter's renewals with that mix, the new appointment lead, the review, the card-expiry gaps "
+        "5. Took each current person's work permit (standard 1.3 and 1.4) from %s, the register, counsel's approval "
+        "notices and %s: the card approved most recently for every employee Active in %s and for the one spouse of "
+        "each such household Global Mobility took into its care, counted once whether a record files her card under "
+        "Global Mobility's ID for her or under her Benefits ID in %s (%s of September 2027's (c)(26) cards are on "
+        "record only under the Benefits ID), leaving out employees not Active, their spouses, children, and the "
+        "spouses Benefits covers in households Global Mobility never took in." % (
+            C.F_PERMITS, C.F_TRACKER, C.F_EMPLOYEES, C.F_DEPENDANTS, WORDS[bo["2027-09 (c)(26)"]]),
+        "6. Read the quarter's mix from those work permits whose renewals reach USCIS in it: about half are (c)(9), "
+        "whose renewals mostly reuse fingerprints (fewer than three in ten went to an appointment, against seven in "
+        "ten of the (c)(26) renewals).",
+        "7. Simulated the quarter's renewals with that mix, the new appointment lead, the review, the card-expiry gaps "
         "of the renewals filed since 30 October 2025, the request timing and the expedite response: about nine in ten "
         "of those sent to an appointment reach their card's expiry undecided.",
-        "7. Took the 80th percentile of the simulated waits in months of %.1f days, to the nearest half month (standard "
+        "8. Took the 80th percentile of the simulated waits in months of %.1f days, to the nearest half month (standard "
         "4.3): %.1f months." % (F["month_days"], F["quote_months"]), "",
         "## 4. Deliverable Answers", "",
         "### q1_2027_renewal_quote.xlsx", "",

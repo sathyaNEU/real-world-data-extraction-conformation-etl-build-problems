@@ -9,6 +9,9 @@
   "2027-09 (c)(26)": 771,
   "2027-09 (c)(9)": 63
  },
+ "ask_a_benefits_id_only": {
+  "2027-09 (c)(26)": 2
+ },
  "ask_b": {
   "2025 Q4": {
    "refiled_30": 19,
@@ -27,6 +30,7 @@
    "rejected": 18
   }
  },
+ "call_quote_months": 5.5,
  "expedite_accepted": 0.862,
  "expedite_response": "about a week",
  "expedite_response_weeks": 1,
@@ -44,6 +48,8 @@
  "rival_default_months_mix": 6.5,
  "rival_record_months": 4.0,
  "standard_sections": [
+  "1.3",
+  "1.4",
   "2.3",
   "3.1",
   "4.2",

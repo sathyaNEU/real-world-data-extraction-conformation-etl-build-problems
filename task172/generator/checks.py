@@ -35,6 +35,27 @@ def check(label, ok, detail=""):
     ROWS.append((label, bool(ok), detail))
 
 
+def norm_ws(s):
+    return re.sub(r"\s+", " ", s.replace("’", "'")).strip()
+
+
+def pdf_reads(path):
+    """the shipped PDF's text as each reader a solver would reach for extracts it, whitespace collapsed"""
+    import shutil
+    import subprocess
+    import pdfplumber
+    from pdfminer.high_level import extract_text
+    from pypdf import PdfReader
+    out = {"pypdf": " ".join(p.extract_text() or "" for p in PdfReader(path).pages),
+           "pypdf strict": " ".join(p.extract_text() or "" for p in PdfReader(path, strict=True).pages),
+           "pdfminer.six": extract_text(path)}
+    with pdfplumber.open(path) as doc:
+        out["pdfplumber"] = " ".join(p.extract_text() or "" for p in doc.pages)
+    if shutil.which("pdftotext"):
+        out["pdftotext"] = subprocess.run(["pdftotext", path, "-"], capture_output=True, text=True, check=True).stdout
+    return {k: norm_ws(v) for k, v in out.items()}
+
+
 def qm(rens, comp_kw=None, sim_kw=None):
     comp = K.components(rens, **(comp_kw or {}))
     w, info = K.simulate(comp, **dict(dict(mix=MIX or None), **(sim_kw or {})))
@@ -215,6 +236,13 @@ def main(target):
     check("SF15 the register's decided_on is the decision notice's date on every case both hold", len(both) > 3000 and
           all(d in ds and len(ds) == 1 for d, ds in both), "%d cases" % len(both))
     pol = " ".join(D.policy_text())
+    reads = pdf_reads(os.path.join(target, C.F_POLICY))
+    paras = [norm_ws(x) for x in D.policy_text()]
+    lost = {k: sum(1 for x in paras if x not in t) for k, t in reads.items()}
+    check("H25 the standard opens in every reader a solver would use (pypdf lenient and strict, pdfminer.six, "
+          "pdfplumber, pdftotext) with every paragraph, GM-07 1.3 and 1.4 included, and the strict text equals the "
+          "lenient", len(reads) >= 4 and not any(lost.values()) and reads["pypdf strict"] == reads["pypdf"],
+          "; ".join("%s %d lost" % kv for kv in lost.items()))
     v, _ = qm(rens, sim_kw=dict(mix=None))
     check("SF16 the record's own category mix in place of the quarter's gives the same call", C.half_month(v) == gold,
           "%.3f" % v)
@@ -249,9 +277,59 @@ def main(target):
     check("SF22 the appointment queue is the support centre's, not a category's: the October and November lead stands "
           "at about four times the 2025 lead in every state the receipts reached", len(ratio) >= 5 and
           max(ratio.values()) / min(ratio.values()) < 1.35, ", ".join("%s %.2f" % kv for kv in ratio.items()))
-    check("SF23 GM-07 1.3 files a domestic partner Benefits covers as the household's spouse, and Global Mobility's "
-          "records as the household that governs", "whether Benefits covers her as a spouse or as a" in pol and
-          "took into its care with the employee's household" in pol)
+    check("SF23 GM-07 1.3 files the spouse as the one person Global Mobility took into its care with the household, "
+          "however Benefits covers her (a domestic partner included), and no other dependant",
+          "the one person Global Mobility took into its care with the employee's household" in pol and
+          "however Benefits covers her" in pol and "no other dependant is tracked" in pol)
+    # SF25: one spouse per household forces a spouse's two IDs into one person; the per-ID reading that leaves out the
+    # Benefits ID no Global Mobility record carries drops the current cards those IDs alone hold
+    gmh = defaultdict(set)
+    for p_ in T["permits"]:
+        if p_.get("household_employee_id"):
+            gmh[p_["household_employee_id"]].add(p_["holder_id"])
+    for c in cases.values():
+        if c["ptype"] == "spouse" and c["sponsor"]:
+            gmh[c["sponsor"]].add(c["person"])
+    for t in T["tracker"]:
+        if t["relationship"] == "Spouse":
+            gmh[t["principal_employee_id"]].add(t["applicant_id"])
+    enr_ = {e["benefits_enrollment_id"]: e["employee_id"] for e in T["employees"]}
+    benh = defaultdict(set)
+    for d in T["dependants"]:
+        if d["relationship"] in ("Spouse", "Domestic partner") and d["benefits_enrollment_id"] in enr_:
+            benh[enr_[d["benefits_enrollment_id"]]].add(d["dependant_id"])
+    extra = {e: ids - gmh[e] for e, ids in benh.items() if e in gmh and ids - gmh[e]}
+    one = all(len(ids) <= 1 for ids in gmh.values()) and all(len(ids) <= 1 for ids in benh.values()) and \
+        all(len(gmh[e]) == 1 for e in extra)
+    act_ = {e["employee_id"] for e in T["employees"] if e["status"] == "Active"}
+    best_ = {}
+    for c in K.cards_held(T, cases, ref):
+        h = c["holder"]
+        if h in {e["employee_id"] for e in T["employees"]}:
+            cur = h in act_
+        else:
+            cur = any(h in ids for e, ids in gmh.items() if e in act_)
+        if cur and (h not in best_ or c["vf"] > best_[h]["vf"]):
+            best_[h] = c
+    A_ = K.ask_a(T, cases, ref)
+    by_id_gm = {k: 0 for k in A_}
+    for c in best_.values():
+        k = (c["vt"].year, c["vt"].month, c["cat"])
+        if k in by_id_gm:
+            by_id_gm[k] += 1
+    moved = {k: by_id_gm[k] - A_[k] for k in A_ if by_id_gm[k] != A_[k]}
+    only_b = {k: v for k, v in K.benefits_id_only(T, cases, ref).items() if v}
+    never = set().union(*[ids for e, ids in benh.items() if e not in gmh])
+    never_cards = [c for c in K.cards_held(T, cases, ref) if c["holder"] in never]
+    check("SF25 one spouse per household: every household whose Benefits spouse ID no Global Mobility record carries "
+          "has exactly one Global Mobility spouse ID, so the two are one person; leaving the Benefits ID out drops the "
+          "current cards only it carries (the cards submission step 5 names), and the spouses Benefits covers in "
+          "households Global Mobility never took in hold no card",
+          one and len(extra) > 500 and moved == {(2027, 9, "(c)(26)"): -2} and
+          only_b == {k: -v for k, v in moved.items()} and never and not never_cards,
+          "%d households, persons by ID with Global Mobility's links only %s, latest card only under the Benefits ID "
+          "%s; %d spouses in households never taken in, %d cards" % (len(extra), moved, only_b, len(never),
+                                                                     len(never_cards)))
     gm_spouse = {p_["holder_id"] for p_ in T["permits"] if p_["holder_type"] == "Spouse"}
     gm_spouse |= {c["person"] for c in cases.values() if c["ptype"] == "spouse"}
     gm_spouse |= {t["applicant_id"] for t in T["tracker"] if t["relationship"] == "Spouse"}
