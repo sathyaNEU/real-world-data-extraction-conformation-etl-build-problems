@@ -1,40 +1,58 @@
-# task197 determinism review (re-judge after repair)
+# task197 determinism review (isolated judge thread)
 
-**Order kept:** yes. The derivation was written to disk (`/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task197_derivation.md`) before the graded blocks were opened. Nothing else outside the brief and the pack was read.
+**Order kept.** I derived from the prompt and the pack first and wrote the derivation to disk (task197_derivation.md) before opening task197_graded_blocks.md. I did not open any forbidden path, run no git command and spawned nothing.
+**Disclosure.** The scratchpad folder `w/` already held many working files from earlier passes. I listed it once by accident (ls) and opened none of them, but my first script was written to `w/ep.py` and `w/eps.pkl` and overwrote two earlier files of those names (an earlier pass's scratch only, not part of the task folder). All later work is in my own folder `j197/`. Nothing from an earlier pass was used.
 
 **Verdict:** DETERMINISTIC
-**Disposition:** APPROVE. All 39 committed figures reproduce (nothing left to repair), and the four repair items check out as stated. No model rerun.
+**Disposition:** APPROVE (advisories below, none needs a rerun)
 
-## Gates
+## Why
+Every committed figure reproduced from the shipped files with an independent rebuild: Kampvliet 72 per cent over 134 episodes, Reiderland 83 per cent, gap 11 points, three sites outside tolerance, all nine under and eight over-frequency gains, the six capacity-hour blocks and the nine-site energy table. The call is forced because the baseline is identified by the data (the quiet-minute power follows a per-site traverse, the step and undisturbed-level baselines do not), and the gap to the runner-up is 10.7 points.
 
+## Gate table
 | Gate | Result | Line |
 |---|---|---|
-| A | PASS | Every graded figure reproduced independently: 17 gains and 17 counts (nine under, eight over, MPD none), 12 capacity figures, 20 energy figures; Kampvliet 72 per cent (137), Reiderland 83, gap 11 (unrounded 11.03); 3 sites below 90; 935 under-frequency site-episode pairs. |
-| B | PASS | Every decisive fact is in a shipped file. Three items are recovered from data, not from text: the per-site ramp span (DPDT recordings in the sqlite), the meter stamp being interval END (lag +15 min correlation 0.9995 against 0.970 at lag 0), and nine event-log start_local clocks that are really UTC (logged_utc minus clock = 90 s, against 7,290 s on the label). Each has a data check that closes it. |
-| C | PASS | Two surviving alternatives were stress-tested and neither is defensible: setpoint baseline (RDL 57.6 lowest) and last-in-band baseline (ZWT 76.8 lowest). Both are named and ruled out in the write-up, and the literal "output it would have produced at that second" plus the shipped DPDT recordings contradict them. Within the ramp-aware route the call is stable (tie-break, ratio of means, fitted against round spans, UTC against label reading of events: same whole-per-cent values; margin 11 points). |
-| D | PASS | Difficulty is the counterfactual baseline, not a word. |
-| E | PASS | One site, its gain, runner-up and gap are pinned; rounding stated once. |
-| F | STRONG | The easy route (period setpoint) files RDL, the undisturbed-level route files ZWT; the right answer needs the ramp-aware counterfactual from the DPDT recordings. |
-| G | PASS | See line below. |
-| H | PASS | See line below. |
+| A correct | PASS | All load-bearing and supplementary figures recompute; 911 pairs, 134 episodes, spans 90 s (KPV) and 300 s (TRB) all reproduce |
+| B facts in files | PASS | Everything is in the pack. The old OOS meter code is not in the register but is the only unmatched meter, ends where the new one starts and matches event 4112 |
+| C uniquely forced | PASS with advisories | Main call forced (see recomputations). Forks that exist: step vs ramp programme energy (literal text gives step), face-value vs UTC clock on 9 withdrawal events (logged_utc forces UTC), cancelled events (stated). None moves the main call |
+| D hard for right reason | PASS | Splits come from the counterfactual baseline, not from wording |
+| E prompt unambiguous | PASS | One site, one gain, one runner-up, units and rounding in the sentence |
+| F stump power | PASS, strong | Step setpoint files RDL 57 per cent, undisturbed level files ZWT 72 per cent, ramp files KPV 72 per cent |
+| G stumping type | PASS | line below |
+| H three rules | PASS | line below |
 
-**Gate G:** `mechanism: method_or_model_selection` (choice of counterfactual baseline on honest data), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. No reported number is overturned; the setpoint and last-in-band readings are both arithmetically correct on their own basis and wrong as the counterfactual; the ramp physics is present on clean data, so the task still stumps with the Layer 1 mess (UTC clocks, kWh file, end stamps, EAN change) removed.
+**Gate G:** `mechanism: other (counterfactual baseline identification, with a binding tolerance rule)`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. No reported figure is wrong: the programme, frequency and power are all correct as published, and the difficulty is estimating the output the site would have produced, which survives on perfectly clean data.
 
-**Gate H:** `domain: pass`, `layers: pass`, `decisive_step: analytical`. Swap test fails to preserve the task (a response gain against a linear droop characteristic at the extreme second, a ramp-aware counterfactual output and a re-prequalification slot are reserve-provider work). Layer 1: UTC clocks labelled +02:00, interval-end stamps, kWh against MWh, replaced metering point, preliminary and amended statements; Layer 2: estimating what the unit would have produced mid-programme-ramp. A strong analyst who cleaned everything and read every rule can still file RDL (57.6 per cent, setpoint basis) or ZWT (76.8 per cent, last-in-band basis) by taking the easy baseline.
+**Gate H:** `domain: pass`, `layers: pass`, `decisive_step: analytical`. Swap test: the deciding quantity is a primary-response gain measured against the characteristic of a frequency reserve standard, which no other field estimates in this form. Layer 1: end-stamped meters with a misleading period column, kWh at one meter, a meter replaced mid window, UTC clock written as local on 9 log events, duplicate recording, corrections that cancel log entries. Layer 2: the counterfactual output (traverse recovered at uncommitted boundaries). Easy route for an analyst who read everything right: take the period setpoint as the undisturbed output (RDL 57 per cent, files Reiderland) or the last pre-deviation power (ZWT 72 per cent, files Zwartewater).
 
-## The four repair items, literal results
+## Recomputation 1: traverse span
+Fitted at boundaries where the site held no commitment, measured samples, linear ramp from previous to new setpoint, start at the boundary:
+DLK 100 s, HGZ 185, KPV 90, MPD 200, NWV 95, OOS 85, RDL 190, TRB 300, ZWT 80. Unique to about 1 s: a span 1 s away has an error only 3 to 37 per cent larger; 5 s away it is 2.0x (OOS, KPV) to 10x (TRB) larger, so the runner-up on the 5 s grid is the neighbour (KPV 85 or 95 s). Fractional fit lands on the same integers (KPV 90.0 to 90.25). Competing readings of the criterion (new period uncommitted, both periods, previous period, either, all boundaries, with or without a quiet-frequency filter) all give the same nine spans. The one reading that differs is boundaries where the site WAS committed: the archive has no samples in the first two minutes after those boundaries for DLK, KPV and ZWT, so the fit collapses to 1 s (unidentified); for the other six it agrees. The criterion therefore recovers each span uniquely and is the only one that identifies KPV.
 
-1. **Rejected bases (blocks 1 and 3): true.** Recomputed over 935 under-frequency pairs. Period setpoint basis: lowest is Reiderland at 57.6 per cent (next Kampvliet 68.4, Terborgh 76.7, Hoogezand 74.8, Meppelerdiep 78.3). Undisturbed level (recorded power at the last second inside the 10 mHz dead band before the episode): lowest is Zwartewater at 76.8 per cent (next Oosterhout 83.4). The lowest site is unchanged under the withdrawal reading (UTC clocks, label clocks, no exclusion) and under inclusive and strict dead-band tests. Kampvliet is not lowest on either basis (second lowest on setpoint at 68.4; 93.5 per cent on last-in-band, well above the lowest), so "neither basis names Kampvliet" is correct. Narrative checks: Reiderland's traverse is 190 s and the extreme second falls on average 42 per cent through it; Zwartewater's block 3 programme falls from about 12.8 MW (06 to 08) to about -9.4 MW (12) and 83 per cent of its episode periods have a falling setpoint, so "unwinding a morning discharge" holds. No percentage for either basis is printed anywhere in the blocks, nothing is said about Kampvliet's own figure on them.
-2. **Traverse spans: unique.** Criterion "boundary at which the site held no reserve commitment" read as the period beginning at the boundary uncommitted: 40 to 156 boundaries per site, spans 99.97 (DLK), 185.04 (HGZ), 89.99 (KPV), 200.04 (MPD), 95.04 (NWV), 84.99 (OOS), 189.97 (RDL), 299.97 (TRB), 80.04 (ZWT) seconds, spread under 2.5 s. KPV 90 and TRB 300 reproduce. Competing readings: previous period uncommitted gives the same medians but admits one disturbed DLK recording (43.3 s); all boundaries at once gives medians within 0.3 s of these (NWV 94.79, OOS 84.85) but individual disturbed values (NWV 3.6 s, KPV 40.4 s); none changes a rounded span or any whole-per-cent gain. Only the wording "boundaries at which the site held no reserve commitment" is slightly loose about which of the two periods at the boundary is meant.
-3. **One-second sentence: literally true, one soft spot.** Minute summary covers all 30,240 minutes (every day). Of 1,217 minutes beyond 75 mHz, 896 have full one-second cover, 167 partial, 154 none; of 926 beyond 80 mHz, 30 have none. All 515 qualifying episodes sit in extracts and none touches an extract edge. The 154 uncovered minutes are not covered by "sustained" (only 1 has a minute mean beyond 75 mHz; 14 sit next to another uncovered beyond-75 minute), so the sentence is conditional and not false. The summary alone cannot exclude a 15 s run inside any of those 30 minutes (all 30 are arithmetically feasible), but no site FREQ-DEV recording lies outside an extract (1,756 of 1,756 overlap one) and only 1 of the 30 minutes has any site recording at all (a DPDT), so nothing in the files points at a missing episode. No change needed. Also noted: 6 full-cover minutes where the summary min or max disagrees with the extract (over-frequency side, up to 0.04 Hz), not used by any figure.
-4. **Rounding edges (distance of the unrounded value to the nearest tie, in units of the stated rounding; 0 is on a tie, 0.5 is centred):** gains 0.34 to 0.49 (tightest: TRB over 97.84 at 0.34, MPD under 96.86 at 0.36, OOS over 95.87 at 0.37); energies 0.30 to 0.49 (tightest: RDL above 11.6197 at 0.30, KPV above 10.9189 at 0.31, KPV below 21.9164 at 0.34); capacity figures are exact multiples of 0.1. No figure sits on a tie; none prints as a rounded whole number except the capacity values that are exact (542.0, 18.0, 17.0, 1151.0). The only non-obvious convention is the portfolio energy row: unrounded sums 114.388 and 242.593, the column of rounded rows sums to 114.3 and 242.6, which the write-up already says.
+## Recomputation 2: realised gain and counterfactual baselines (under-frequency, per cent)
+Ramp with fitted span (answer): DLK 93.1, HGZ 88.0, KPV 72.1, MPD 97.1, NWV 90.9, OOS 94.8, RDL 82.8, TRB 101.1, ZWT 98.8. Below 90: KPV, RDL, HGZ.
+| baseline left open by the text | furthest below |
+|---|---|
+| ramp, fitted span | KPV 72.1 |
+| period setpoint (step) | RDL 57.4 (below: RDL, KPV, HGZ, TRB 76.8, MPD 78.7) |
+| previous setpoint or last pre-deviation power | ZWT 71.7 (below: ZWT, OOS 80.7, NWV 87.6) |
+| common span 120 s | RDL 72.1 |
+| common span 300 s | ZWT 79.3 |
+Only the ramp reproduces quiet-minute power to the noise floor (residual sd 0.013 MW). The other baselines leave several MW of residual after every boundary, so exactly one is defensible once the power is compared with it. Almost every extreme second falls 60 to 100 s after a boundary, so the baseline decides every gain. Margin KPV to RDL 10.7 points; plus or minus 5 s on every span moves KPV 70.6 to 73.5 and RDL 82.3 to 83.3, ranking unchanged.
+
+## Recomputation 3: counts and missing recordings
+Contracted pairs 1383 (935 under, 448 over). Valid withdrawals remove 5 over-frequency pairs, leaving 1378 (935 under, 443 over). Archive carries a recording of the extreme second for 911 of the 935 under-frequency pairs (the write-up's 911), 431 of 443 over-frequency, 1342 of 1378 in total (1346 of 1383 before withdrawals). Missing pairs are all obliged by construction (24 under, 13 over before withdrawals): HGZ 7, TRB 7, RDL 6, ZWT 6, KPV 3, MPD 3, NWV 3, DLK 1, OOS 1. The pattern is the reverse of "only unobliged missing": the archive holds 97 per cent of obliged pairs but only about 7 per cent (228 of 3252) of unobliged ones. Missing pairs are scattered over days and blocks, with the same deviation depth as recorded ones (median 0.082 against 0.086 Hz); two are a recording that ends seconds before the extreme second. Nothing in the pattern tells a solver the direction of a gain.
+
+## Recomputation 4: distance from rounding edge
+Under-frequency gains, in whole per cent from the nearest x.5 edge: DLK 0.403, HGZ 0.470, KPV 0.417, MPD 0.446, NWV 0.381, OOS 0.283, RDL 0.277, TRB 0.434, ZWT 0.349. Over-frequency: DLK 0.499, HGZ 0.353, KPV 0.462, NWV 0.466, OOS 0.342, RDL 0.350, TRB 0.486, ZWT 0.326. Capacity hours are exact at one decimal (18.0, 17.0, 20.9, 7.1, 26.5, 7.8; no rounding at all). Energy (step programme, units of 0.1 MWh): closest are RDL above 0.303, KPV above 0.311, KPV below 0.337, ZWT below 0.391, all others 0.36 to 0.49. No figure prints on a tie; nothing prints within 0.27 of a unit of its edge. The 90 per cent line is cleared by NWV under-frequency at 90.88 (0.88 above) and HGZ at 88.03 (1.97 below).
 
 ## Figures that did not reproduce
+None. Every graded figure in the three blocks reproduced to its stated rounding. The one difference is not a failing: my first energy reading used the ramp for programme energy (portfolio 80.5 above, 216.4 below), the submission uses the period setpoint (114.4, 242.6), and the step figures reproduce exactly.
 
-None. (A discrepancy in my own notes, 925 against 935 under-frequency pairs, was my arithmetic slip; 145+157+137+33+113+40+156+77+77 = 935.)
+## Advisories (none needs a rerun)
+1. Energy against programme: the standard says programme energy is "the setpoint the control platform held for that period", and clause 6 settles against the nominated programme, so the step is the literal reading, but a solver who has just found the traverse could carry it into this ask and file 80.5 / 216.4 (site rows move by 3 to 7 MWh). Closing it would need a pin in the standard or the prompt, which changes what solvers see.
+2. Nine log events have start_local written in UTC clock time under a +02:00 label (logged_utc minus the label is 7290 s instead of 90 s). Read at face value, no over-frequency pair is withdrawn: OOS over-frequency becomes 89.9 per cent (below tolerance instead of 96), KPV 69.5, ZWT 92.5, HGZ 86.3, and the capacity shortfalls become 10.5, 14.2, 17.5, 4.7, 18.8, 6.5. The UTC reading is forced (an event cannot be logged two hours before it starts; every event then lies in a block the site holds; four recorded seconds show no response). Main call and under-frequency table are unaffected.
+3. Settled-statement files, the group availability statement, auction and price files are unused and are fair distractors.
 
-## Other
-
-- Tolerance flags: Nieuwveen 90.94 per cent is above 90 by 0.94 points and holds under every variant tried (ratio of means 90.85).
-- Hygiene not assessed beyond what the checks above touched (18 members, csv, pdf, xlsx, sqlite).
-- Fix location: none.
+## Hygiene
+18 files, formats csv, sqlite, pdf, xlsx (4); one sqlite of 1,194,352 power rows and 4,617 recordings; no authoring language seen in the files read. PASS. Not a cross-batch check (no other task folder may be read).

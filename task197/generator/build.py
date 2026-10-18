@@ -565,8 +565,14 @@ def main():
              counts=counts)
     print("[stage] dictionary and goldens", flush=True)
     counts["dictionary"] = pack2.dictionary(TGT, counts)
+    # September's own contracted mean per block. These are NOT derived from the review window: the
+    # window's commitments averaged over a notional 30 days gave a column that included eleven October
+    # dates and omitted 1 to 20 September, and a reader recovered the arithmetic exactly from the
+    # shipped commitments file (140/30 = 4.67 and so on). The pack ships only the review window, so a
+    # September statement legitimately carries figures this pack cannot reconstruct.
+    SEP_MEAN_MW = {1: 5.12, 2: 9.08, 3: 12.41, 4: 3.47, 5: 12.95, 6: 2.63}
     blk = [("Block %d (%02d:00-%02d:00)" % (b, sim.BLOCK_HOURS[b - 1][0], sim.BLOCK_HOURS[b - 1][1]),
-            av["committed"][b] / (4.0 * 30), 99.14 - 0.37 * (b - 1) + 0.11 * ((b - 1) % 3))
+            SEP_MEAN_MW[b], 99.14 - 0.37 * (b - 1) + 0.11 * ((b - 1) % 3))
            for b in range(1, 7)]
     docs.availability_report(os.path.join(TGT, "operator", "fcr_group_availability_2026-09.pdf"),
                              TSO, ORG, "2026-09", blk, "RPG-0417")

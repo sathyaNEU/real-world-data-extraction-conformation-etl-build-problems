@@ -2,14 +2,14 @@
   "task": "task197",
   "owner": "oviya13ya",
   "status": "BUILD",
-  "stage": 3,
+  "stage": 4,
   "architecture": "v1",
   "objective": "anomaly-detection",
   "domain": "energy-systems-utilities",
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "Stage 4, reader back and judge still running on the repaired pack. Hold every fix until the judge reports, then one pass. One confirmed fix is owed, the September availability statement's capacity column, and one open question, the extreme-second concentration, both detailed in reader_findings. The reader's third claim was measured and dismissed. Gate F is strong on the reader's own evidence: it filed the rung 1 answer at 85 per cent confidence.",
+  "resume": "Stage 4. Judge APPROVE in hand and the one confirmed reader defect is fixed: the September availability statement's capacity column no longer derives from the review window. It read 4.67, 9.73, 11.90, 3.00, 13.68, 2.10, which is the shipped commitments per block over 30 on all six, so a September statement carried eleven October dates and omitted 1 to 20 September. It now carries September's own contracted mean, 5.12, 9.08, 12.41, 3.47, 12.95, 2.63, not reconstructible from anything shipped, which is realistic because the pack ships only the review window. Gates after the fix: checks 84 of 84, verify 144 of 144, figures_check 91 figures none absent, precut 51 clean, voice PASS, leak REVIEW with no LEAK, heart WARN, rebuild byte-identical by diff -rq, zip fa5f18fd82ec50801231f4d763352d55 at 18 members matching the tree member for member. One confirming reader pass is running on the fixed statement; ship on a clean return. The extreme-second concentration stays as designed and is the one carried realism question: 511 of 515 deepest seconds 60 to 90 s into the period, flagged by two readers as generated-looking, neither of whom used it and both of whom fell short of the call, with the physics argument in the note and no shipped document stating the cause.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
     "checks.py": "84 checks, 0 failed (floor 40)",
@@ -26,7 +26,7 @@
     "md5": "target tree 7df50bb24a0535ecdbbff6f4b69dd317, golden tree 8249fd0fcac403ea786bb9ea8a53c0e7, target.zip 90cfc57e0096c24532325439066403d2"
   },
   "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
-  "stage_name": "build",
+  "stage_name": "check",
   "updated": "2026-10-18",
   "ask_layer": {
     "figures": 50,
@@ -40,13 +40,16 @@
     "reader": "Owed again on the repaired pack. Pass 3 landed the call at KPV 72, RDL 83, gap 11 and then reported the recorded-series realism defect that this repair answers: the archive's deviation recordings were bounded by the operator's published extract, two sites held identical bound sets, per-site durations ran at sd 11.5 to 18.5 s, the per-episode gain barely varied, and 32 minute-summary rows read minimum, mean and maximum alike with six of them contradicting the extract. All five are fixed in the generator and measured on the cut pack (see the design note's last block). The reader also reported the 512-of-515 concentration of the qualifying episodes' extreme second 67 to 90 s after a period start, which is load-bearing physics and is left as designed; that is the one open question for the next reader, and the physics argument is in the design note."
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "taxonomy": "",
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "taxonomy": "none; three advisories, none needing a rerun",
     "report": "task197/determinism_check_report.md",
-    "gates": "",
-    "pass": "",
-    "note": "The pass 4 APPROVE (DETERMINISTIC, gates A to H passing, F STRONG, 39 figures reproduced) is void: the stage 4 reader found a stage 3 realism defect in the recorded series, the repair moved every graded figure, and an APPROVE is scoped to the pack the judge saw (determinism-check, Running the judge). This is a fresh stage 3 defect rather than a re-litigation of the verdict, so re-entering stage 4 is in scope and the one-re-judge rule, which governs a FIX_NOW loop, is not spent by it. The judge and the reader are to be run again on this pack."
+    "gates": "A PASS every graded figure recomputes, B PASS, C PASS with advisories, D PASS, E PASS, F PASS strong, G PASS, H PASS",
+    "pass": "5; derive-before-read order kept and confirmed",
+    "scope": "the approve covers the pack at target.zip 90cfc57e0096c24532325439066403d2. The only change since is the September availability statement capacity column, which moves no graded figure (figures.json and submission.md byte-identical) and alters no clause a gate turned on, so under the filed rule the approve stands. Current zip fa5f18fd82ec50801231f4d763352d55.",
+    "key_closures": "two the judge established independently and that the design rests on. First, the traverse span criterion recovers each span uniquely to about a second, and every competing reading of it gives identical spans for all nine sites; the one reading that differs, committed boundaries, collapses for DLK, KPV and ZWT because the archive has no samples in the first two minutes there, so the uncommitted criterion is the only reading that identifies the call site. Second, only the ramp baseline reproduces quiet-minute power to the noise floor at a residual sd of 0.013 MW, while the rivals leave several MW after every boundary, so exactly one baseline is defensible once the power is compared against it. Rejected bases: period setpoint RDL 57.4, last pre-deviation power ZWT 71.7, common 120 s span RDL 72.1, common 300 s span ZWT 79.3.",
+    "advisories": "1, the energy-against-programme ask: the standard says programme energy is the setpoint the platform held for the period, so the step is the literal reading and the committed 114.4 and 242.6 reproduce, but a solver who has just found the traverse could carry it in and file 80.5 and 216.4. Closing it needs a pin that changes what solvers see, so it stays open and the judge did not treat it as blocking. 2, the nine events carrying start_local in UTC under a +02:00 label: the UTC reading is forced because an event cannot be logged before it starts, and the main call and the under-frequency table are unaffected. 3, the settled statements, availability statement, auction results and price file are fair distractors.",
+    "disclosure": "the thread disclosed an isolation near-miss honestly: it listed a shared scratch folder once by accident and overwrote two scratch files of its own naming, opening none of them and reading nothing from an earlier pass. That is my tooling fault rather than its breach, and later briefs now name a per-thread scratch directory."
   },
   "archive_spread": {
     "recordings": 4617,
