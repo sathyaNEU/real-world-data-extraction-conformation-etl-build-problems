@@ -221,6 +221,136 @@ def main():
     # the lens swap: the naive answer and the golden are different sites, not one site twice
     ck("lens swap", call != naive, "")
 
+    # ---- the ask layer: mess neutrality, device forcing, bins and printed precision ----------
+    import ceiling, pack2
+
+    # R2 per device: the main call does not move when the device is switched off
+    su_nodev = core.site_scores(core.episode_table(W, recs, cache, "under"))
+    gate = core._scope_gate
+    try:
+        core._scope_gate = lambda a, b, c: True
+        su_open = core.site_scores(core.episode_table(W, recs, cache, "under"))
+    finally:
+        core._scope_gate = gate
+    ck("R2 the clock device moves no main-call figure",
+       all(round(su_open[k]["traj"]) == round(su[k]["traj"]) for k in su),
+       "under-frequency gains identical with the withdrawal scope open")
+    hits = {"n": 0}
+    real_met = core.metered
+    try:
+        core.metered = lambda *a, **k: (hits.__setitem__("n", hits["n"] + 1), real_met(*a, **k))[1]
+        core.episode_table(W, recs, cache, "under")
+    finally:
+        core.metered = real_met
+    ck("R2 the main call never reads the settlement meter file", hits["n"] == 0,
+       "%d reads of the metered series on the call's path" % hits["n"])
+    located_true = sum(1 for d in sim.dates() for m in range(1440)
+                       if W[d]["f"][m * 60:(m + 1) * 60].min() <= sim.QUALIFY_HZ)
+    mins = list(csv.DictReader(open(os.path.join(
+        TGT, "operator", "system_frequency_minute_summary.csv"), encoding="utf-8")))
+    located_pack = sum(1 for r in mins if float(r["frequency_min_hz"]) <= sim.QUALIFY_HZ)
+    ck("R2 the held summary rows change no minute the call locates",
+       located_true == located_pack, "%d true, %d in the shipped summary" % (located_true, located_pack))
+
+    # the devices' forcing, measured on the cut pack by ceiling.py's own reader
+    P = ceiling.load()
+    lag = {}
+    for e in P["ev"]:
+        if e["event_type"] != "reserve_unavailable":
+            continue
+        g = (ceiling._utc(e["logged_utc"]) + ceiling.OFFSET
+             - ceiling._local(e["start_local"])).total_seconds()
+        lag[g] = lag.get(g, 0) + 1
+    ck("device B is forced by the log's own two columns",
+       set(lag) == {90.0, 7290.0} and lag[7290.0] >= 8,
+       "logged_utc less start_local: " + ", ".join("%.0f s on %d rows" % (k, v)
+                                                   for k, v in sorted(lag.items())))
+    gb_true, gb_stamp = ceiling.ask_b(P, "true"), ceiling.ask_b(P, "stamped")
+    gaps_b = [abs(gb_true[b][1] - gb_stamp[b][1]) for b in range(1, 7)]
+    ck("device B moves every block's shortfall by more than the stated rounding",
+       min(gaps_b) > 0.1, "smallest block gap %.1f MWh, largest %.1f MWh" % (min(gaps_b), max(gaps_b)))
+    ck("device B moves every block's held-available figure too",
+       all(abs(gb_true[b][0] - gb_stamp[b][0]) > 0.1 for b in range(1, 7)), "")
+    gc_g, gc_n = ceiling.ask_c(P, "golden"), ceiling.ask_c(P, "natural")
+    gaps_c = ([abs(gc_g[0][k] - gc_n[0][k]) for k in gc_g[0]]
+              + [abs(gc_g[1][k] - gc_n[1][k]) for k in gc_g[1]])
+    ck("device C moves every site's exposure figure by more than the stated rounding",
+       min(gaps_c) > 0.05, "smallest site gap %.1f MWh, largest %.1f MWh" % (min(gaps_c), max(gaps_c)))
+    inb_own = inb_prev = nbig = 0
+    for d in sim.dates():
+        for s_site in sim.SITES:
+            prog = W[d]["prog"][s_site["id"]]
+            E = core.metered(W, d, s_site["id"])
+            for pp in range(1, 96):
+                if abs(prog[pp] - prog[pp - 1]) < 1.0:
+                    continue
+                nbig += 1
+                lo_e, hi_e = sorted((prog[pp - 1] * 0.25, prog[pp] * 0.25))
+                if lo_e < E[pp - 1] < hi_e:
+                    inb_own += 1
+                if lo_e < E[pp] < hi_e:
+                    inb_prev += 1
+    ck("device C is forced by the programme's own steps",
+       inb_prev > 2 * inb_own and nbig > 500,
+       "over %d periods whose setpoint steps by more than 1 MW, the energy the row's own index "
+       "names lies inside the step in %d, the energy one period earlier in %d"
+       % (nbig, inb_own, inb_prev))
+    ca = ceiling.ask_a(P, ("true", "extracts"))
+    cs = ceiling.ask_a(P, ("stamped", "summary"))
+    cx = ceiling.ask_a(P, ("stamped", "extracts"))
+    ck("device A moves the episode count a summary-first read reaches",
+       sum(1 for k in ca if ca[k] != cs[k]) >= 6,
+       "%d of 9 counts move" % sum(1 for k in ca if ca[k] != cs[k]))
+    ck("the clock hazard moves the episode count on either route",
+       sum(1 for k in ca if ca[k] != cx[k]) >= 5,
+       "%d of 9 counts move without device A" % sum(1 for k in ca if ca[k] != cx[k]))
+
+    # the independent reader reproduces the generator's ask goldens
+    ck("ceiling.py reproduces the ask B golden from the shipped bytes",
+       all(abs(gb_true[b][0] - dict((x["block"], x["available"]) for x in F["availability"])[b]) < 0.05
+           and abs(gb_true[b][1] - dict((x["block"], x["shortfall"]) for x in F["availability"])[b]) < 0.05
+           for b in range(1, 7)), "")
+    ck("ceiling.py reproduces the ask C golden from the shipped bytes",
+       abs(sum(gc_g[0].values()) - F["exposure_above_total"]) < 0.05
+       and abs(sum(gc_g[1].values()) - F["exposure_below_total"]) < 0.05, "")
+
+    # bins: every graded ask figure mid-bin at the unit its asking sentence states
+    adh = pack2.adherence(W, "golden")
+    av = pack2.availability(W, placed, "golden")
+    bins = []
+    for sid, v in so.items():
+        bins.append(("down gain %s" % sid, edge(v["traj"], 1.0), 1.0))
+    for b in range(1, 7):
+        bins.append(("available block %d" % b, edge(av["available"][b], 0.1), 0.1))
+        bins.append(("shortfall block %d" % b, edge(av["lost"][b], 0.1), 0.1))
+    for sid in adh["above"]:
+        bins.append(("above %s" % sid, edge(adh["above"][sid], 0.1), 0.1))
+        bins.append(("below %s" % sid, edge(adh["below"][sid], 0.1), 0.1))
+    bins.append(("above portfolio", edge(adh["above_total"], 0.1), 0.1))
+    bins.append(("below portfolio", edge(adh["below_total"], 0.1), 0.1))
+    tight = min(bins, key=lambda x: x[1] / x[2])
+    ck("every graded ask figure sits at least 0.3 of its unit from a bin edge",
+       all(e >= 0.3 * u for (_, e, u) in bins),
+       "tightest %s at %.4f of a unit of %.1f" % (tight[0], tight[1] / tight[2], tight[2]))
+
+    # printed precision: every graded figure at the precision its asking sentence states
+    sub = os.path.join(TASK, "submission.md")
+    ck("submission.md is present for the precision check", os.path.exists(sub), sub)
+    if os.path.exists(sub):
+        import re
+        body = open(sub, encoding="utf-8").read()
+        blk = body[body.index("## 4. Deliverable Answers"):]
+        wrong = []
+        for line in blk.splitlines():
+            if "per cent" in line:
+                for m in re.finditer(r"([0-9]+\.[0-9]+) per cent", line):
+                    wrong.append("gain %s not whole" % m.group(1))
+            if "above " in line or "below " in line or "held available" in line or "shortfall " in line:
+                for m in re.finditer(r"(?:above|below|held available|shortfall) (-?[0-9]+)(?![0-9.])", line):
+                    wrong.append("energy %s not to one decimal" % m.group(1))
+        ck("every graded figure is printed at the precision its asking sentence states",
+           not wrong, "; ".join(wrong[:6]))
+
     print("%d checks, %d failed" % (N, len(FAILS)))
     return 1 if FAILS else 0
 
