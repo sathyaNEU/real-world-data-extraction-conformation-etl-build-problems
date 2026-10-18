@@ -1,11 +1,11 @@
 {
   "task": "task161",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "supply-chain-logistics",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-18",
   "stump": "A strong solver who stacks the two WMS exports, projects December from the booking notices and fades the book's excess at the 0.87-month half-life the 2019 and 2025 rushes showed leaves overflow only in January and takes no block (zero); the excess is stock each account burns at a steady share of its own shipments, five seasonal accounts hold most of it and ship at their first-half low through June, so the first two blocks stay full through June (two blocks).",
   "architecture": 1,
@@ -16,23 +16,23 @@
     "checks": 50
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK): the offer carries the call's words; the policy and advisories carry stump terms but name no method; dates after the as-of only in forward-looking records; each answered in ## Leak sweep",
-    "reader": "round 1 on 594bac98: no leak (Q1 nothing quoted, no ranking file, Q6 an analytical choice); forks found on the asks (ports unnamed, the TEU numerator's source and month, outside the racks), closed in round 1 fixes; round 2 on 302b69d3: no leak"
+    "leak_py": "REVIEW 2026-10-18 (no LEAK): the offer carries the call's words; the policy (eight stump terms with 3.4) and the advisories carry stump terms but name no method; dates after the as-of only in forward-looking records; each answered in ## Leak sweep",
+    "reader": "round 1 on 594bac98: no leak (Q1 nothing quoted, no ranking file, Q6 an analytical choice); forks found on the asks (ports unnamed, the TEU numerator's source and month, outside the racks), closed in round 1 fixes; round 2 on 302b69d3: no leak; the targeted re-read of 7eb676e6 clean (Q1 none: 3.4 gives only the level of normal stock; Q6 analytical; its one moderate tell, 3.4 reading as written for the analysis, left)"
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.gate_g, repeat.decision, repeat.question_form against task160); the people.first BLOCK on Nicole (task243) cleared by drawing Frederick James",
-    "surface": "ten pairs promoted, no hard tell: four on surface 0.102 sharing only export_manifest.csv; five on the card signature differentiated at registration; task160 back to back on gap and decision type, its pattern, strategy and Gate G differing (for the author's clone-check)",
+    "heart": "WARN 2026-10-18 (overuse.gate_g, repeat.decision, repeat.question_form against task160, answered in the Draw); the people.first BLOCK on Nicole (task243) cleared at round 1 by drawing Frederick James",
+    "surface": "eleven pairs promoted, no hard tell: four on surface 0.102 sharing only export_manifest.csv; five on the card signature differentiated at registration; task160 and task162 back to back on gap and decision type, their strategy, Gate G, domain and world differing (for the author's clone-check)",
     "nearest": "driver 0.06 (task120 v3)"
   },
   "judge": {
-    "verdict": "round 2 on 302b69d3: DETERMINISTIC (round 1 on 594bac98: DETERMINISTIC)",
-    "disposition": "FIX_NOW (round 2 text and pin edits in; the main session's targeted re-read due)",
-    "report": "relayed by the main session: round 2, the normal-stock cover convention filed nowhere and moving the call (same month 1, centred three months 1, flat median 1, next month 3, a daily forward window of 21 to 30 days 0.73 on block 2), the TEU split-receipt month open (the last receipt moves 7 of 10 cells), the write-up's book-burn clause (one block or none) not reproducing (2 at per-episode shares 0.125 to 0.147); round 1, J1 to J4 (closed)"
+    "verdict": "DETERMINISTIC (round 1 on 594bac98, round 2 on 302b69d3)",
+    "disposition": "FIX_NOW twice, closed: round 1 (J1 to J4) in one generator pass, round 2's pins (normal stock in space policy 3.4, the split-receipt month in the dictionary, the book-burn clause dropped) on 7eb676e6 with every graded figure byte-identical, the targeted re-read clean; rule 3 recheck PASS, P(both) about 0.045, separation PASS",
+    "report": "relayed by the main session (round 1: write-up figures on episode-fit conventions, the off-rack ask's two readings, hygiene, the 2019 back-test; round 2: the cover convention, the split-receipt month, the book-burn clause)"
   },
   "returned": [],
-  "resume": "stage 4: the main session's targeted re-read of the round 2 pins, then ship",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-18",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
