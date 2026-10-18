@@ -130,3 +130,24 @@ PRIOR_DRIFT = {"metal": -0.0036, "mixed_ci": -0.0052, "paper": -0.0024, "wood": 
 BAR = 1.959963985          # two-sided 95 per cent normal bar
 GOLDEN_STREAM = "metal"
 LOUD_STREAM = "mixed_ci"
+
+# ---------------------------------------------------------------- the ask layer's own structures
+# Ask A1's primary (D7 keys). A waste permit lapses when its holder stops the permitted activity,
+# and the agency's January 2027 licensing batch drew on the numbers freed at the end of 2026, so a
+# number the division's 2026 collection cases were opened under is now held by another enterprise,
+# usually in another region. Every contact in the log predates the reissue, so the holder at the
+# contact date is the enterprise the case was opened for; the crosswalk's current row is not.
+PERMIT_REISSUE_N = 150            # cases of the round whose permit number has since been reissued
+PERMIT_REISSUE_FROM = "2027-01-05"
+PERMIT_REISSUE_SAME_REGION = 24   # of those, reissued inside the same region: the benign twin
+
+# Field cases are allocated by workload, so a team near a boundary works some of the neighbouring
+# region's cases and the team identifier is not the region of the enterprise contacted.
+CROSS_TEAM_P = 0.14
+NEIGHBOURS = {"Norte": ["Centro"], "Centro": ["Norte", "Lisboa"], "Lisboa": ["Centro", "Alentejo"],
+              "Alentejo": ["Lisboa", "Algarve"], "Algarve": ["Alentejo"]}
+
+# Ask A3's primary (D9 self-validation). Five municipalities on the same returns software file the
+# year's own confirmation in the December slot of the monthly return, so that row is the year and
+# not the month: it does not sum with its own eleven.
+ANNUAL_IN_DECEMBER = ("Valongo", "Pombal", "Alenquer", "Moura", "Olhao")

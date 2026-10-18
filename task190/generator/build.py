@@ -164,43 +164,76 @@ def stage_chain(ch, kind_of, code2stream, facility_permits, year, arisings):
                 "recovered": cell(rec[k], "recovered " + k)} for k, *_ in W.STREAMS}
 
 
-def ask_a1(log_rows, region_of):
-    """Field days once per field visit; a visit covers several enterprises in one region."""
-    days = collections.Counter()
-    seen = set()
-    ret = collections.Counter()
+def region_asof(cw_rows):
+    """The region of the enterprise a permit number belonged to on a given date. The crosswalk is
+    an effective-dated register: a number freed when its holder's permit lapsed carries a second
+    row from the date the agency reissued it, so the holder of record depends on the date asked
+    for and the row marked current is the holder now."""
+    by = collections.defaultdict(list)
+    for r in cw_rows:
+        by[r[0]].append((r[6], r[2]))
+    for p in by:
+        by[p].sort()
+    def at(permit, on):
+        rs = [x for x in by[permit] if x[0] <= on]
+        return (rs[-1] if rs else by[permit][0])[1]
+    return at
+
+
+def case_first_contact(log_rows):
+    first = {}
     for r in log_rows:
-        reg = region_of[r[1]]
-        fd = float(r[7])
-        if r[8] == "h":
-            fd = fd / float(W.FIELD_DAY_HOURS)
-        if r[5]:
-            if r[5] in seen:
-                continue
-            seen.add(r[5])
-        days[reg] += fd
-        if r[9] == "usable return":
-            ret[reg] += 1
-    # the usable-return count is a per-case outcome and carries no visit grain, so it is counted
-    # once per collection case: the log holds a re-sent operations batch of exact duplicate rows,
-    # and a case that returned is one usable return however many times its row was loaded
+        if r[0] not in first or r[3] < first[r[0]]:
+            first[r[0]] = r[3]
+    return first
+
+
+def ask_a1(log_rows, region_at):
+    """The contacts the round made, and the contacts behind each usable return, by the region of
+    the enterprise contacted. A contact is a contact however many times the operations batch
+    loaded its row, and a case that returned is one usable return."""
+    first = case_first_contact(log_rows)
+    con = collections.Counter()
+    seen_rows = set()
+    for r in log_rows:
+        t = tuple(r)
+        if t in seen_rows:
+            continue
+        seen_rows.add(t)
+        con[region_at(r[1], first[r[0]])] += 1
     ret = collections.Counter()
     cases = set()
     for r in log_rows:
         if r[9] == "usable return" and r[0] not in cases:
             cases.add(r[0])
-            ret[region_of[r[1]]] += 1
-    return {reg: {"days": days[reg], "returns": ret[reg], "per_day": ret[reg] / days[reg]}
+            ret[region_at(r[1], first[r[0]])] += 1
+    return {reg: {"contacts": con[reg], "returns": ret[reg], "per_return": con[reg] / ret[reg]}
             for reg in W.REGIONS}
 
 
-def ask_a3(mret, mrec, authorities):
-    col = collections.Counter()
+def municipal_year(mret, authorities):
+    """Each municipality's own collected tonnage for the year, in tonnes. A return month whose
+    tonnage stands beside its own eleven as a year rather than a month is the year: it is taken
+    once, at that row, and not added to the eleven it already contains."""
+    by = collections.defaultdict(dict)
     for r in mret:
         if r[0] in authorities:
             continue
         v = float(r[3])
-        col[r[1]] += v / 10.0 if r[4] == "100kg" else v
+        by[(r[0], r[1])][r[2]] = v / 10.0 if r[4] == "100kg" else v
+    out = {}
+    for (ent, reg), s in by.items():
+        mths = sorted(s)
+        last, rest = s[mths[-1]], [s[m] for m in mths[:-1]]
+        mean = sum(rest) / float(len(rest))
+        out[(ent, reg)] = last if last > 5.0 * mean else last + sum(rest)
+    return out
+
+
+def ask_a3(mret, mrec, authorities):
+    col = collections.Counter()
+    for (_ent, reg), v in municipal_year(mret, authorities).items():
+        col[reg] += v
     rcv = collections.Counter()
     for r in mrec:
         rcv[r[3]] += float(r[4])
@@ -212,52 +245,79 @@ def ask_a3(mret, mrec, authorities):
     return out
 
 
-def ceiling_deltas(path, P, a1, a2, a3, region_of, kind_of, code2stream, facility_permits, ch25):
-    """Per ask figure, whether each response's own reading lands within half the stated rounding unit
-    of the golden. The cracker resolves every documented handling and everything the battery finds
-    (the unit columns, the dated code revision, the re-sent batch, the permit supersessions), which
-    since the collection documentation states the visit grain includes ask A1's grain; the mirror
-    takes each ask's lazy stop and resolves the code revision only."""
+def ceiling_deltas(path, P, a1, a2, a3, kind_of, code2stream, facility_permits, ch25):
+    """Per ask figure, whether each response's own reading lands within half the stated rounding
+    unit of the golden, computed on the cut pack.
+
+    cracker  landed the call, ran the hygiene battery (key uniqueness, exact duplicates, unmatched
+             joins, fan-out, count ties) and executed every filed rule the pack points at: the
+             documented unit columns, the dated code revision, the re-sent operations batch, the
+             permit supersessions a failing join exposes, the visit grain the collection
+             documentation states, and the memo's municipal counting convention. Its permit join
+             takes the crosswalk row marked current, which is what the battery's fan-out repair
+             leaves, and it sums a municipality's twelve return months.
+    mirror   stopped at the most attractive wrong rung on the call (rung 1, a bar built from the
+             published national coefficient of variation) and takes each ask's lazy stop: the log's
+             rows as contacts, every return as a return, the undated code list, every confirmed
+             leg once.
+    """
     log = rows(P["log"])
+    cw = rows(P["cw"])
     out = {"cracker": {}, "mirror": {}}
 
     def mark(resp, name, got, want, unit):
         out[resp][name] = 0.0 if abs(got - want) < unit / 2.0 else 1.0
 
-    for resolve_units in (True, False):
-        resp = "cracker" if resolve_units else "mirror"
-        days, ret = collections.Counter(), collections.Counter()
-        seen_case = set()
-        seen_visit = set()
+    current_code2stream = collections.defaultdict(str)
+    for r in rows(P["codes"]):
+        if not r[4]:                               # no valid_to: the code is current
+            current_code2stream[r[0]] = r[1]
+    current_region = {}
+    for r in cw:
+        if r[4] == "current" or r[0] not in current_region:
+            current_region[r[0]] = r[2]
+    first = case_first_contact(log)
+    authorities = set(pack.AUTHORITY.values())
+
+    for battery in (True, False):
+        resp = "cracker" if battery else "mirror"
+        # ---- A1: the contacts and the contacts per usable return, by region
+        con, ret = collections.Counter(), collections.Counter()
+        seen_rows, seen_case = set(), set()
         for r in log:
-            reg = region_of[r[1]]
-            fd = float(r[7])
-            if r[8] == "h" and resolve_units:
-                fd = fd / float(W.FIELD_DAY_HOURS)
-            if resolve_units and r[5]:             # the grain the design document now states
-                if r[5] in seen_visit:
+            reg = current_region[r[1]]             # neither response does the as-of join
+            if battery:                            # the battery finds the re-sent batch
+                t = tuple(r)
+                if t in seen_rows:
                     continue
-                seen_visit.add(r[5])
-            days[reg] += fd
+                seen_rows.add(t)
+            con[reg] += 1
             if r[9] == "usable return":
-                # the cracker runs the battery, so it counts a case once; the mirror counts rows
-                if resolve_units and r[0] in seen_case:
+                if battery and r[0] in seen_case:
                     continue
                 seen_case.add(r[0])
                 ret[reg] += 1
         for reg in W.REGIONS:
-            mark(resp, "field days consumed %s" % reg, days[reg], a1[reg]["days"], 0.01)
-            mark(resp, "usable returns per field day %s" % reg,
-                 ret[reg] / days[reg], a1[reg]["per_day"], 0.01)
-        lazy25 = recovered_by_stream(ch25, kind_of, code2stream, facility_permits, 2025)
+            mark(resp, "contacts made %s" % reg, con[reg], a1[reg]["contacts"], 1.0)
+            mark(resp, "contacts per usable return %s" % reg,
+                 con[reg] / ret[reg], a1[reg]["per_return"], 0.01)
+        # ---- A2: the 2025 tonnage confirmed at a recovery operation, by stream. Neither response
+        # reconciles a child consignment against its parent's rejection leg, so both sum every
+        # confirmed recovery leg; they differ on the code revision, which the cracker's unmatched
+        # join exposes and the mirror leaves as the crosswalk's currently valid codes.
+        c2s = code2stream if battery else current_code2stream
+        lazy25 = recovered_by_stream(ch25, kind_of, c2s, facility_permits, 2025)
         for k, *_ in W.STREAMS:
             mark(resp, "2025 confirmed recovery tonnage %s" % k, lazy25[k], a2[k], 1.0)
+        # ---- A3: the municipal gap and its share, by origin region
         col, rcv = collections.Counter(), collections.Counter()
-        for r in rows(P["mret"]):                      # the authority returns left in
+        for r in rows(P["mret"]):
+            if battery and r[0] in authorities:    # the convention the memo files
+                continue
             v = float(r[3])
-            if r[4] == "100kg" and resolve_units:
+            if r[4] == "100kg" and battery:        # the unit the file's own column gives
                 v = v / 10.0
-            col[r[1]] += v
+            col[r[1]] += v                         # twelve months summed, the December row with them
         for r in rows(P["mrec"]):
             rcv[r[3]] += float(r[4])
         for reg in W.REGIONS:
@@ -282,7 +342,7 @@ def main():
 
     ents, per = pack.build_entities(rng)
     n_md = pack.build_microdata(samp, idx, ents, per, P["md"])
-    permit_of, sup_pairs, n_cw = pack.build_crosswalk(ents, rng, P["cw"])
+    permit_of, sup_pairs, n_cw, reissued = pack.build_crosswalk(ents, per, rng, P["cw"])
     fac = pack.build_facilities(rng, P["fac"])
     n_h1, n_h2, n_25, att2, renot = pack.build_register(
         samp, ents, permit_of, fac, rng, {"h1": P["h1"], "h2": P["h2"], "y25": P["y25"]}, pop=pop)
@@ -295,7 +355,7 @@ def main():
     kind_of = {c: k for c, k, _d in pack.OPS}
     code2stream = {r[0]: r[1] for r in rows(P["codes"])}
     facility_permits = {r[0] for r in rows(P["fac"])}
-    region_of = {r[0]: r[2] for r in rows(P["cw"])}
+    region_at = region_asof(rows(P["cw"]))
     ch26 = chains([P["h1"], P["h2"]])
     rec26 = recovered_by_stream(ch26, kind_of, code2stream, facility_permits, 2026)
     for k, *_ in W.STREAMS:
@@ -307,7 +367,7 @@ def main():
     a2raw = recovered_by_stream(ch25, kind_of, code2stream, facility_permits, 2025, drop_renotified=True)
     a2 = {k: cell(a2raw[k], "2025 recovery " + k) for k, *_ in W.STREAMS}
     a2_lazy = recovered_by_stream(ch25, kind_of, code2stream, facility_permits, 2025)
-    a1 = ask_a1(rows(P["log"]), region_of)
+    a1 = ask_a1(rows(P["log"]), region_at)
     authorities = set(pack.AUTHORITY.values())
     a3 = ask_a3(rows(P["mret"]), rows(P["mrec"]), authorities)
 
@@ -345,12 +405,13 @@ def main():
         "a2_total_t": int(sum(a2.values())),
         "renotified_pairs": len(renot),
         "visits_2026": len(visits),
+        "reissued_permits": len(reissued),
         "golden_take_all_share_pct": round(100.0 * samp[W.GOLDEN_STREAM][0].sum()
                                            / att[W.GOLDEN_STREAM]["arisings"], 1),
         "streams_examined": len(W.STREAMS),
     }
     figs = G.figures(os.path.join(HERE, "figures.json"), att, chain, a1, a2, a3, extra)
-    ceiling_deltas(os.path.join(HERE, "ceiling_deltas.json"), P, a1, a2, a3, region_of,
+    ceiling_deltas(os.path.join(HERE, "ceiling_deltas.json"), P, a1, a2, a3,
                    kind_of, code2stream, facility_permits, ch25)
     stated = []
     for k, *_ in W.STREAMS:

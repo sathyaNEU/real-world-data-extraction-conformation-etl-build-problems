@@ -102,22 +102,23 @@ def workbook(path, att, chain, a1, a2, a3, prior):
     ws.freeze_panes = "B4"
 
     ws = wb.create_sheet("Collection effort")
-    ws["A1"] = "Collection round 2026: field effort by regional team"
+    ws["A1"] = "Collection round 2026: contacts by region of the enterprise contacted"
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = ("Field days are counted once per field visit; a visit covers several enterprises. "
-                "Usable returns are counted once per collection case.")
-    _head(ws, 4, ["Region", "Field days consumed", "Usable returns", "Usable returns per field day"],
-          [18, 18, 14, 24])
+    ws["A2"] = ("A case sits in the region of the enterprise it was opened for, which is the holder "
+                "of its permit number over the round and not always the holder of record now. "
+                "Contacts and usable returns are counted once.")
+    _head(ws, 4, ["Region", "Contacts made", "Usable returns", "Contacts per usable return"],
+          [18, 16, 14, 26])
     row = 5
     for r in W.REGIONS:
-        for j, v in enumerate([r, round(a1[r]["days"], 2), a1[r]["returns"],
-                               round(a1[r]["per_day"], 2)], start=1):
+        for j, v in enumerate([r, a1[r]["contacts"], a1[r]["returns"],
+                               round(a1[r]["per_return"], 2)], start=1):
             c = ws.cell(row=row, column=j, value=v)
             c.border = BOX
             if j > 1:
                 c.alignment = Alignment(horizontal="right")
         row += 1
-    _fmt(ws, 5, row - 1, {"B": "0.00", "C": "#,##0", "D": "0.00"})
+    _fmt(ws, 5, row - 1, {"B": "#,##0", "C": "#,##0", "D": "0.00"})
     ws.freeze_panes = "B5"
 
     ws = wb.create_sheet("Recovery 2025")
@@ -138,7 +139,8 @@ def workbook(path, att, chain, a1, a2, a3, prior):
     ws = wb.create_sheet("Municipal reconciliation")
     ws["A1"] = "Municipal waste 2026: reported collections against licensed facility receipts"
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Receipts are on a receipt-date basis and attributed to the region of collection."
+    ws["A2"] = ("Receipts are on a receipt-date basis and attributed to the region of collection. "
+                "A municipality's collections are its own return for the year, taken once.")
     _head(ws, 4, ["Region", "Reported collections (t)", "Facility receipts (t)", "Gap (t)",
                   "Gap as a share of collections (%)"], [18, 20, 18, 14, 22])
     row = 5
@@ -170,10 +172,13 @@ def workbook(path, att, chain, a1, a2, a3, prior):
         ("Interim operations", "a holding site's confirmation under an interim code is not a "
                                "recovery operation; the operation confirmed on the consignment the "
                                "holding site forwards is the one that counts"),
-        ("Field day", "eight hours, as the survey's collection documentation books it; the "
-                      "response log's time_unit column gives the unit each row is recorded in"),
+        ("Collection case", "one per enterprise issued, in the region of the enterprise the case "
+                            "was opened for; the response log carries the permit number the case "
+                            "was opened under and the crosswalk is effective dated"),
+        ("Municipal collections", "each municipality's own return, counted once; the "
+                                  "inter-municipal associations report for their members"),
         ("Rounding", "rates, shortfalls and shares to one decimal, tonnages to the nearest tonne, "
-                     "field days and returns per day to two decimals"),
+                     "contacts to the nearest whole and contacts per usable return to two decimals"),
         ("Standard error", "of the recovery rate, shown for working; the plan reports attainment "
                            "without a precision measure"),
         ("Source", "%s and the %s" % (W.SURVEY, W.REGISTER)),
@@ -275,9 +280,9 @@ def figures(path, att, chain, a1, a2, a3, extra):
             "pass_2_3_pct": round(100.0 * c["confirmed"] / c["despatched"], 1),
             "pass_3_4_pct": round(100.0 * c["recovered"] / c["confirmed"], 1)}
     for r in W.REGIONS:
-        out["a1_%s" % r] = {"field_days": round(a1[r]["days"], 2),
+        out["a1_%s" % r] = {"contacts": a1[r]["contacts"],
                             "usable_returns": a1[r]["returns"],
-                            "returns_per_day": round(a1[r]["per_day"], 2)}
+                            "contacts_per_return": round(a1[r]["per_return"], 2)}
         out["a3_%s" % r] = {"collections_t": int(round(a3[r]["collections"])),
                             "receipts_t": int(round(a3[r]["receipts"])),
                             "gap_t": int(round(a3[r]["gap"])), "gap_share_pct": round(a3[r]["share"], 1)}

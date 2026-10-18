@@ -1,27 +1,27 @@
 {
   "a1_Alentejo": {
-    "field_days": 10.11,
-    "returns_per_day": 16.42,
+    "contacts": 641,
+    "contacts_per_return": 3.86,
     "usable_returns": 166
   },
   "a1_Algarve": {
-    "field_days": 7.66,
-    "returns_per_day": 15.01,
+    "contacts": 434,
+    "contacts_per_return": 3.77,
     "usable_returns": 115
   },
   "a1_Centro": {
-    "field_days": 25.69,
-    "returns_per_day": 14.83,
+    "contacts": 1387,
+    "contacts_per_return": 3.64,
     "usable_returns": 381
   },
   "a1_Lisboa": {
-    "field_days": 29.8,
-    "returns_per_day": 14.43,
+    "contacts": 1652,
+    "contacts_per_return": 3.84,
     "usable_returns": 430
   },
   "a1_Norte": {
-    "field_days": 32.54,
-    "returns_per_day": 16.53,
+    "contacts": 1965,
+    "contacts_per_return": 3.65,
     "usable_returns": 538
   },
   "a2_cd_rubble": 91788,
@@ -153,6 +153,7 @@
   "national_arisings_cv_pct_2026": 3.9,
   "published_national_cv_pct_2025": 3.4,
   "register_legs_2026": 82835,
+  "reissued_permits": 150,
   "renotified_pairs": 43,
   "runner_up": "Mixed commercial and industrial wastes",
   "runner_up_rate_pct": 59.6,

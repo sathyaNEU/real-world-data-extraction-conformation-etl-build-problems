@@ -282,9 +282,21 @@ def build_entities(rng):
     return ents, per_stratum
 
 
-def build_crosswalk(ents, rng, path):
+def issued_cases(per_stratum):
+    """The enterprises the 2026 round issued a questionnaire to, in the order the division worked
+    them. The response log opens one collection case for each."""
+    out = []
+    for code, _label, _N, _r in W.STRATA:
+        out.extend(per_stratum[code][:W.ISSUED[code]])
+    return out
+
+
+def build_crosswalk(ents, per_stratum, rng, path):
     """agency permit number against business register enterprise number. A handful of permits were
-    superseded when an enterprise re-registered; one duplicate row survives from a 2019 migration."""
+    superseded when an enterprise re-registered; one duplicate row survives from a 2019 migration;
+    and the agency's January 2027 licensing batch took numbers freed when their holder's permit
+    lapsed at the end of 2026, so a number can be held by one enterprise over the 2026 round and by
+    another from January 2027."""
     rows, permit_of, super_pairs = [], {}, []
     dr = np.random.default_rng(W.SEED + 43)      # permit valid-from dates
     pid = 310000
@@ -308,12 +320,41 @@ def build_crosswalk(ents, rng, path):
         rows.append([newp, e["ent"], e["region"], e["nace"], "current", "",
                      (dt.date(2024, 1, 8) + dt.timedelta(days=int(dr.integers(0, 330)))).isoformat()])
         super_pairs.append((old, newp, e["ent"], e["region"]))
+    # The numbers freed at the end of 2026 and reissued in January 2027. A permit lapses when its
+    # holder stops the permitted activity, so the enterprises that gave one up are the ones the
+    # round found hardest to collect from: most of them never returned the questionnaire or turned
+    # out to be out of the survey's activity scope. Nothing about the reissue is drawn from the
+    # shared stream: the register and the response log are cut from that and do not move.
+    rr = np.random.default_rng(W.SEED + 47)
+    issued = issued_cases(per_stratum)
+    superseded = {o for o, _n, _e, _r in super_pairs}
+    nonresp = [e for e in issued if e["sample_idx"] is None and permit_of[e["ent"]] not in superseded]
+    resp = [e for e in issued if e["sample_idx"] is not None and permit_of[e["ent"]] not in superseded]
+    n_non = min(len(nonresp), int(round(W.PERMIT_REISSUE_N * 0.62)))
+    take = [nonresp[int(i)] for i in rr.choice(len(nonresp), size=n_non, replace=False)]
+    take += [resp[int(i)] for i in rr.choice(len(resp), size=W.PERMIT_REISSUE_N - n_non, replace=False)]
+    eid, reissued = 520000, []
+    same = set(rr.choice(len(take), size=W.PERMIT_REISSUE_SAME_REGION, replace=False).tolist())
+    for i, e in enumerate(take):
+        p = permit_of[e["ent"]]
+        for r in rows:
+            if r[0] == p:
+                r[4] = "withdrawn"
+        if i in same:
+            reg = e["region"]
+        else:
+            other = [x for x in W.REGIONS if x != e["region"]]
+            reg = other[int(rr.integers(0, len(other)))]
+        eid += 1
+        rows.append([p, "PT%07d" % eid, reg, NACE[int(rr.integers(0, len(NACE)))], "current", "",
+                     W.PERMIT_REISSUE_FROM])
+        reissued.append((p, e["ent"], e["region"], reg))
     # one duplicated crosswalk row from the 2019 migration, same permit and enterprise
     rows.append(list(rows[411]))
     rows.sort(key=lambda r: r[0])
     _writecsv(path, ["agency_permit_no", "enterprise_number", "region", "nace_division",
                      "permit_status", "superseded_by", "valid_from"], rows)
-    return permit_of, super_pairs, len(rows)
+    return permit_of, super_pairs, len(rows), reissued
 
 
 def build_microdata(samp, idx, ents, per_stratum, path):
@@ -607,51 +648,61 @@ def build_response_log(ents, per_stratum, permit_of, rng, path):
     """One row per collection contact. A field trip covers several enterprises in one region and the
     trip's own field days sit on every row it covers, the grain unstated."""
     teams = {r: "EQ-%s" % r[:3].upper() for r in W.REGIONS}
-    issued = []
-    for code, _label, N, r in W.STRATA:
-        pool = per_stratum[code]
-        want = W.ISSUED[code]
-        issued.extend(pool[:want])
+    issued = issued_cases(per_stratum)
     responders = {e["ent"] for e in issued if e["sample_idx"] is not None}
+    # Case and visit references are the operational system's own counters, issued as the work was
+    # set up rather than region by region, and the team that worked a case is the team the case was
+    # allocated to. Drawn from their own stream so the register and the municipal files do not move.
+    lr = np.random.default_rng(W.SEED + 49)
+    case_ids = ["C2026-%06d" % (900001 + i) for i in range(len(issued))]
+    lr.shuffle(case_ids)
+    visit_ids = ["V-2026-%04d" % (101 + i) for i in range(600)]
+    lr.shuffle(visit_ids)
+    worked_by = {}
+    for e in issued:
+        nb = W.NEIGHBOURS[e["region"]]
+        worked_by[e["ent"]] = teams[nb[int(lr.integers(0, len(nb)))]] \
+            if lr.random() < W.CROSS_TEAM_P else teams[e["region"]]
     oos = set()
     for code in W.OUT_OF_SCOPE:
         pool = [e for e in per_stratum[code] if e["sample_idx"] is None][:W.OUT_OF_SCOPE[code]]
         oos |= {e["ent"] for e in pool}
     rows, visits = [], {}
     by_region = {r: [e for e in issued if e["region"] == r] for r in W.REGIONS}
-    cid = 900000
+    cid, vno = 0, 0
     for region in W.REGIONS:
         pool = by_region[region]
         # group the enterprises that take a field visit into trips of 2 to 7 in this region
         visit_pool = [e for e in pool if rng.random() < 0.34]
-        i, vno = 0, 0
+        i = 0
         while i < len(visit_pool):
             size = int(rng.integers(2, 8))
             trip = visit_pool[i:i + size]
             i += size
+            vref = visit_ids[vno]
             vno += 1
-            vref = "V-%s-%04d" % (region[:3].upper(), vno)
             day = dt.date(2026, 3, 1) + dt.timedelta(days=int(rng.integers(0, 210)))
             days = round(float(rng.uniform(0.6, 1.0)), 2)
             visits[vref] = (region, days, day)
             for e in trip:
                 e["_visit"] = (vref, days, day)
         for e in pool:
+            case = case_ids[cid]
             cid += 1
-            case = "C2026-%06d" % cid
+            team = worked_by[e["ent"]]
             seq = 0
             ncon = int(rng.integers(1, 4))
             for j in range(ncon):
                 seq += 1
                 d = dt.date(2026, 2, 1) + dt.timedelta(days=int(rng.integers(0, 250)))
-                rows.append([case, permit_of[e["ent"]], seq, d.isoformat(), teams[region],
+                rows.append([case, permit_of[e["ent"]], seq, d.isoformat(), team,
                              "", "telephone" if j == 0 else "reminder", "0.00", "d",
                              "contact made" if j < ncon - 1 else "return received"])
             if "_visit" in e:
                 vref, days, day = e["_visit"]
                 seq += 1
                 val = days * 8.0 if region == "Alentejo" else days
-                rows.append([case, permit_of[e["ent"]], seq, day.isoformat(), teams[region], vref,
+                rows.append([case, permit_of[e["ent"]], seq, day.isoformat(), team, vref,
                              "field visit", ("%.2f" % val), "h" if region == "Alentejo" else "d",
                              "return received"])
             seq += 1
@@ -662,7 +713,7 @@ def build_response_log(ents, per_stratum, permit_of, rng, path):
             else:
                 out = "no return"
             d = dt.date(2026, 11, 1) + dt.timedelta(days=int(rng.integers(0, 60)))
-            rows.append([case, permit_of[e["ent"]], seq, d.isoformat(), teams[region], "",
+            rows.append([case, permit_of[e["ent"]], seq, d.isoformat(), team, "",
                          "edit check", "0.00", "d", out])
     # hazard H3: one re-sent operations batch, exact duplicate rows
     dup = [list(r) for r in rows[1200:1215]]
@@ -675,7 +726,9 @@ def build_response_log(ents, per_stratum, permit_of, rng, path):
 
 def build_municipal(rng, fac, path_ret, path_rec):
     """Municipal collections and the licensed facilities' receipts of municipal waste. Five
-    inter-municipal authorities file a return covering their member municipalities, which file too."""
+    inter-municipal authorities file a return covering their member municipalities, which file too;
+    and on five municipalities' returns software the December slot carries the year's own
+    confirmation rather than the month, so that row does not sum with its eleven."""
     ret, base = [], {}
     for region in W.REGIONS:
         for m in MUNI[region]:
@@ -687,6 +740,8 @@ def build_municipal(rng, fac, path_ret, path_rec):
             base[m] = monthly
             for mth in range(1, 13):
                 v = monthly[mth - 1]
+                if mth == 12 and m in W.ANNUAL_IN_DECEMBER:
+                    v = round(sum(monthly), 1)
                 if m in HUNDREDKG:
                     ret.append([m, region, "2026-%02d" % mth, "%.1f" % round(v * 10.0, 1), "100kg"])
                 else:
