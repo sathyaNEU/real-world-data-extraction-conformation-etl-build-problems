@@ -23,7 +23,7 @@ TASK = os.path.dirname(HERE)
 EXPORT_STAMP = dt.datetime(2026, 11, 12, 18, 52, 0)      # the extract folder as Workforce Systems sent it
 GOLDEN_STAMP = dt.datetime(2026, 11, 13, 16, 20, 0)
 OFFICE = {
-    K.F_XMAS: ("Meredith Stevens", "Meredith Stevens", "2026-11-11T23:05:00Z", "2026-11-12T07:44:00Z",
+    K.F_XMAS: ("Meredith Stevens", "Meredith Stevens", "2026-11-11T22:52:00Z", "2026-11-11T23:00:00Z",
                "Christmas roster 2026", "Kellaway's"),
     K.F_PLAN: ("Store Operations", "Store Operations", "2026-10-21T03:12:00Z", "2026-10-30T05:47:00Z",
                "Christmas trading plan 2026", "Kellaway's"),

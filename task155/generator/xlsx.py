@@ -85,7 +85,9 @@ def write_plan(path):
         c.fill = HEAD_FILL
         c.alignment = Alignment(horizontal="center", wrap_text=True)
     notes = {"W2": "to midnight Mon to Sun from 27/11", "E2": "Christmas online picking 9:00 to 15:00 weekdays",
-             "RG": "", "W1": "", "W3": "", "W4": "", "E1": "", "E3": ""}
+             "RG": "Boxing Day stocktake from 6:00 26/12, doors 10:00", "W1": "car park line-marking 2/12 to 4/12",
+             "W3": "", "W4": "", "E1": "Boxing Day stocktake from 6:00 26/12",
+             "E3": "centre car park works from 1/12, Maroondah Hwy entry closed"}
     r = 6
     for s in sorted(W.STORES, key=lambda s: K.STORE_NO[s]):
         base = PLAN_SALES[s]

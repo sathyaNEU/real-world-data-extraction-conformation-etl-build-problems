@@ -70,7 +70,7 @@
     {
       "path": "christmas_roster_2026_published.xlsx",
       "format": "xlsx",
-      "bytes": 620926,
+      "bytes": 620922,
       "rows": 17624,
       "source": "Constructed: Kellaway's Workforce Systems, KWS roster report, Christmas 2026 rosters as published 12/11/2026",
       "date": "2026-11-13",
@@ -79,7 +79,7 @@
     {
       "path": "christmas_trading_plan_2026.xlsx",
       "format": "xlsx",
-      "bytes": 7258,
+      "bytes": 7367,
       "rows": 8,
       "source": "Constructed: Kellaway's Store Operations, Christmas trading plan 2026 version 2, 30/10/2026",
       "date": "2026-11-13",

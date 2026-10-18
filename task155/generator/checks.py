@@ -515,6 +515,17 @@ def main(task, F):
     used = open(os.path.join(os.path.dirname(__file__), "calc.py")).read() + open(
         os.path.join(os.path.dirname(__file__), "asks.py")).read()
     check("D1 the golden and the asks read neither distractor", "F_PLAN" not in used and "F_CAL" not in used)
+    import openpyxl as _ox
+    wsp = _ox.load_workbook(os.path.join(target, K.F_PLAN), read_only=True).worksheets[0]
+    pnotes = [row[-1] for row in wsp.iter_rows(min_row=6, values_only=True) if row[0]]
+    staffing = re.compile(r"casual|staff|roster|call-in|crew|shift|team|hire|labour|labor", re.I)
+    check("D2 the trading plan's notes are trading notes, several stores', none on staffing or call-ins",
+          sum(1 for n in pnotes if n) >= 5 and not any(staffing.search(n or "") for n in pnotes),
+          "; ".join(n for n in pnotes if n))
+    xcore = __import__("zipfile").ZipFile(os.path.join(target, K.F_XMAS)).read("docProps/core.xml").decode()
+    stamps = re.findall(r"<dcterms:(created|modified)[^>]*>([^<]+)<", xcore)
+    check("RZ12 the published roster workbook was saved by its 10:00 publication", all(
+        v <= "2026-11-11T23:00:00Z" for _, v in stamps) and len(stamps) == 2, ", ".join("%s %s" % kv for kv in stamps))
 
     fails = [r for r in RESULTS if not r[1]]
     print("checks: %d, failed %d" % (len(RESULTS), len(fails)))

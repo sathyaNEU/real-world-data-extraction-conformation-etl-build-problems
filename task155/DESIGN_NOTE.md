@@ -451,8 +451,10 @@ the author, who alone runs the adjudicated `/clone-check`:
   offered a shift, never how a casual answers, and no sentence on acceptance mentions a casual's own shifts. The
   round-2 sentences (an absence reported both ways raises one ABS call-in for each report; a shift is covered by the
   casual who works it, a casual who gives a shift back has not covered it) are records and a definition for the
-  asks, and say nothing of who takes a shift. The trading plan's Camberwell note gives the Christmas picking hours
-  (9:00 to 15:00), as a trading plan would.
+  asks, and say nothing of who takes a shift. The trading plan's hours-note column gives six stores' ordinary
+  trading notes (Werribee's midnight trading, Camberwell's Christmas picking hours 9:00 to 15:00, Boxing Day
+  stocktakes at Ballarat and Box Hill, car-park works at Altona and Ringwood), none about staffing or call-ins (D2):
+  the final judge's reader noted that with only Camberwell's and Werribee's filled the column read as a nudge.
 - Sweep 9 (dates after the as-of): the Christmas roster lists the shifts of 27 November to 24 December 2026 as
   published on 12 November, the forward window the call is about; the school-terms calendar is the state calendar with
   the term's end and the Christmas public holidays (a distractor). No extract column runs past 12 November (RZ3).
@@ -469,12 +471,18 @@ the author, who alone runs the adjudicated `/clone-check`:
   rehires, the layout change, 24:00 ends, the effective-dated home store, the meal break, re-raises, give-backs,
   absences reported twice, the 2025 import's second raises and the re-engagement records) is neutral for the call:
   each mishandled reading leaves Camberwell first (R2.1 to R2.9), and the register's records move only the asks.
-- **Free gates on the final rebuild.** `checks.py` 86 assertions, 0 failed; `verify.py` 0 failed on its own path;
+- **Free gates on the final rebuild.** `checks.py` 88 assertions, 0 failed; `verify.py` 0 failed on its own path;
   two builds byte-identical (15 files) and `target.zip` cut from the final build; `figures_check.py` 62 figures,
   0 absent; `cracker.py` both paths at or under 40 (35.4 on the 07:00 chain, 32.6 on the fold; 39.5 on the round-2
   judge's route, for the record); `precut.py` exit 0 (50 checks); `voice-check.py` PASS (895 characters); the
   container audit clean on the pack and the goldens; `guard.py heart` WARN on a persona's first name only, which task240
   drew after this build (nearest text 0.05); `guard.py surface` six promotions, no hard tell (## Surface screen); `leak.py` REVIEW, no LEAK (## Leak sweep).
+- **Stage 4, final.** Judge round 3: DETERMINISTIC, APPROVE. Its own simulation, a logit fitted on the offer history
+  run 12 times through the module's rules, puts Camberwell first in 12 of 12 (about 605 against 391 at Sunshine), the
+  carry-on coefficient at 2.73 (SE 0.06), and both of last year's tables reproduce exactly; the reader's targeted
+  re-read is clean (nothing points at the decisive step, the legacy duplicates read as ordinary system mess). Its one
+  steer, the trading plan's hours notes filled only for Camberwell and Werribee, and the roster workbook's creation
+  stamp five minutes after its 10:00 publication are fixed at ship (D2, RZ12), no graded figure moved.
 - **Residual, accepted and recorded.**
   - A pool count of a store's own casuals only, against the module's offer order that reaches the cluster, still
     files Camberwell (own casuals only, a median of 4 a shift across its open shifts, Williamstown's 6); every count
@@ -489,6 +497,11 @@ the author, who alone runs the adjudicated `/clone-check`:
   - Under the natural read of the re-engagement rows Ballarat shows 28.5 hours of imports though it is in no cluster,
     a tell a careful reader can follow to device B2.
   - Table 2 holds three true zeros (Ballarat's two, Werribee's imports), which an all-nil response recovers (3 of 16).
+  - The final judge's finding: 601 FILLED register rows carry no accepted offer and duplicate another fill (the same
+    casual at the same close time): 223 are the second call-ins of absences reported twice, which the module notes
+    document, and 378 are the 2025 import's second raises of open lines, which no document names; those resolve from
+    the 2025 roster export's vacant lines and the accepted offers, and a reader who counts register rows gets Table 1's
+    covered hours wrong. Recorded as Layer 1 mess the shipped files recover, the device A4 is meant to be.
 - **House-fix pass (H1 to H24).** H1 the containers clean. H2 every figure in the write-up and the goldens recomputes
   (`figures_check.py`, `verify.py`), and the note's figures come from `routes.txt` and the checks. H3 the brief read
   figure by figure; its statements about Werribee's February intake and Camberwell's 9-to-3 pool are asserted (RZ9,
@@ -519,9 +532,9 @@ the author, who alone runs the adjudicated `/clone-check`:
   roster workbook, the trading plan), `postprocess.py` (container normalisation), `common.py`, `calc.py` (the bundle
   reader, the offer features, the logit, the forward cascade, the register and pool routes), `asks.py` (both asks and
   their stops), `deliver.py` (the brief, the workbook, `figures.json`), `submission.py`, `metadata.py`, `checks.py`
-  (86 assertions: the three-rules block, the ladder and routes, SF1 to SF11, the closure axes, both asks with
+  (88 assertions: the three-rules block, the ladder and routes, SF1 to SF11, the closure axes, both asks with
   their filed readings, devices, stops and both measured cracker paths, the separation line, the realism sweep, the
-  input gates and the distractors), `cracker.py` (both cracker paths, the round-2 judge's route and the blind
+  input gates and the distractors, the trading plan's notes among them), `cracker.py` (both cracker paths, the round-2 judge's route and the blind
   responses run on the cut pack), `verify.py` (its own path), `build.py` (two byte-identical builds, the zip).
 - Pack: 15 files in five formats (csv, json, pdf, txt, xlsx); the largest the offer history at 156,070 rows;
   distractors the Christmas trading plan and the school terms and public holidays calendar, named in `metadata.json`.
