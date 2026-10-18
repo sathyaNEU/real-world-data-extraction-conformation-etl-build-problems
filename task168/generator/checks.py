@@ -140,7 +140,7 @@ def main(target):
     r0_truth = ps_truth * rg["added_seats"]
     check("R3a easy route on the clean truth files the named wrong answer", rnd(r0_truth) != call and rnd(r0_truth) == rnd(rg["rung0_per_seat"]),
           "per seat %.4f x %d = %.0f -> %d (golden %d)" % (ps_truth, rg["added_seats"], r0_truth, rnd(r0_truth), call))
-    check("R3a' the easy route on the pack files the same", rnd(rg["rung0_per_seat"]) == 475000,
+    check("R3a' the easy route on the pack files the same", rnd(rg["rung0_per_seat"]) == 500000,
           "%.0f" % rg["rung0_per_seat"])
     # R3b: the completion pooled over the summer with only the reference changed to the departure's month is the golden
     cp, _ = C.curves(rows, lambda r: 0, keep=nn)
@@ -207,13 +207,15 @@ def main(target):
     check("L2 every rung misses the golden by at least one full bin",
           all(abs(rnd(v) - call) >= UNIT for k, v in lad.items() if k != "rung3 golden"),
           "nearest %d" % min(abs(rnd(v) - call) for k, v in lad.items() if k != "rung3 golden"))
-    check("L3 the default path is rung 0", rnd(rg["rung0_per_seat"]) == 475000, "%.0f" % rg["rung0_per_seat"])
+    check("L3 the default path is rung 0", rnd(rg["rung0_per_seat"]) == 500000, "%.0f" % rg["rung0_per_seat"])
     check("L4 side errors on the golden construction: no-shows left in miss by a bin",
           abs(rnd(rg["side_noshows_ignored"]) - call) >= UNIT, "%.0f" % rg["side_noshows_ignored"])
     check("L5 added seats at the summer 2025 load factor misses", abs(rnd(rg["side_added_seats_at_s25_load"]) - call) >= UNIT,
           "%.0f" % rg["side_added_seats_at_s25_load"])
+    loc = R.local_members(target, g)
     members = {k: v for k, v in fam.items() if not k.startswith("_")}
-    check("L6 every season-matched construction files the golden's figure",
+    members.update({k: v for k, v in loc.items() if not re.match(r"same flight within (28|35) days", k)})
+    check("L6 every month-matched construction files the golden's figure",
           all(rnd(v) == call for v in members.values()),
           "%.0f to %.0f over %d constructions" % (min(members.values()), max(members.values()), len(members)))
     check("L7 every construction stays inside the bin under one bootstrap sigma",
@@ -222,8 +224,12 @@ def main(target):
     check("L8 the golden is at least a quarter bin from either edge", edge(gain) >= UNIT / 4, "%.0f" % edge(gain))
     check("L9 the deciding quantity rests on enough departures: golden +- sigma keeps the figure",
           rnd(gain - sd) == call and rnd(gain + sd) == call, "sigma %.0f" % sd)
-    add = R.additive_pickup(target, g)
-    check("L10 additive pickup lands outside the bin", rnd(add) != call, "%.0f" % add)
+    meth = R.methods(target, g)
+    check("L10 additive pickup and normal EM, every grouping, land outside the bin",
+          all(not (call - UNIT / 2 <= v < call + UNIT / 2) for v in meth.values()),
+          "; ".join("%s %.0f" % (n, v) for n, v in meth.items()))
+    near_ = min(min(abs(v - (call - UNIT / 2)), abs(v - (call + UNIT / 2))) for v in meth.values())
+    check("L10' each of them at least 1,500 off the bin's edge", near_ >= 1500, "nearest %.0f" % near_)
     check("L11 per-seat responses of the 2025 gauge changes differ by depth (LOO error over a fifth)",
           rg["loo_mae"] > 0.2, "LOO mean abs error %.3f" % rg["loo_mae"])
     peak = [r for r in rows if C.is_nine(r["orig"], r["dest"]) and r["so"] and r["dep"].month in (7, 8)]
@@ -238,6 +244,45 @@ def main(target):
     check("L13 the design note's rung 0 facts: per-seat 0.48 to 0.95 by route, completed demand over 232 on 118",
           round(lo_, 2) == 0.48 and round(hi_, 2) == 0.95 and over == figs["nine_departures_demand_over_232"] == 118,
           "%.3f to %.3f; %d departures" % (lo_, hi_, over))
+
+    # ============================================================ coarse groupings of months, EM, own-route windows
+    bk = R.buckets(target, g)
+    mh = R.month_holdout(target, g)
+    worst_month = max(abs(v) for v in mh.values())
+    check("B1 the month build recovers the censored open departures within 1 per cent in every month",
+          worst_month < 0.01, "worst %.2f per cent" % (100 * worst_month))
+    for name, (v, h) in bk.items():
+        w = max(abs(x) for x in h.values())
+        inside = call - UNIT / 2 + UNIT / 4 <= v < call + UNIT / 2 - UNIT / 4
+        check("B2 %s: rejected by the holdout or well inside the bin" % name,
+              w >= 0.03 or inside, "%.0f (%d), worst month %.2f per cent" % (v, rnd(v), 100 * w))
+        if not (call - UNIT / 2 <= v < call + UNIT / 2):
+            check("B3 %s lands outside the bin and misses the holdout by over a tenth" % name, w > 0.10,
+                  "worst month %.2f per cent" % (100 * w))
+    eh = R.em_holdout(target, g)
+    peak = [eh[m]["em"] for m in (6, 7, 8, 9)]
+    check("E1 at the nine routes' censoring, EM falls short of the demand above the cap in each of June to September",
+          max(peak) < -0.10, "June to September %s" % ", ".join("%.1f" % (100 * x) for x in peak))
+    check("E2 over the summer EM falls about a fifth short, the month build under a tenth over in every month",
+          -0.25 < eh["summer"]["em"] < -0.18 and max(eh[m]["month"] for m in range(3, 11)) < 0.10
+          and min(eh[m]["month"] for m in range(3, 11)) > -0.10,
+          "EM %.1f, month build %.1f to %.1f per cent" % (100 * eh["summer"]["em"],
+                                                          100 * min(eh[m]["month"] for m in range(3, 11)),
+                                                          100 * max(eh[m]["month"] for m in range(3, 11))))
+    check("E3 EM falls short by about half in August", -0.65 < eh[8]["em"] < -0.45, "%.1f" % (100 * eh[8]["em"]))
+    check("E4 the censoring the holdout copies is the nine routes' own: 98 per cent of August departures",
+          round(100 * eh[8]["censored_share"]) == 98, "%.3f" % eh[8]["censored_share"])
+    sh = R.selection_holdout(target, g)
+    ws = [sh["same flight within %d days" % d] for d in (7, 14, 21, 28, 35)]
+    check("W1 the same-flight reference drifts up with its window in the holdout",
+          all(b >= a - 0.005 for a, b in zip(ws, ws[1:])) and ws[-1] > 3 * sh["month"],
+          "month %.1f; windows %s" % (100 * sh["month"], ", ".join("%.1f" % (100 * x) for x in ws)))
+    for d in (28, 35):
+        v = loc["same flight within %d days" % d]
+        if not (call - UNIT / 2 <= v < call + UNIT / 2):
+            check("W2 same flight within %d days lands outside the bin and misses the holdout by 2.5 times the month build" % d,
+                  sh["same flight within %d days" % d] >= 2.5 * sh["month"],
+                  "%.0f; holdout %.1f against %.1f" % (v, 100 * sh["same flight within %d days" % d], 100 * sh["month"]))
 
     # ============================================================ holdouts on the shipped rows
     check("H1 month builds recover censored open departures within 1 per cent in every month",
@@ -334,7 +379,24 @@ def main(target):
     finally:
         shutil.rmtree(tmpd)
     mani = list(csv.DictReader(open(os.path.join(target, "export_manifest.csv"), encoding="utf-8")))
-    check("G7 the manifest lists every shipped file", {m["file"] for m in mani} == set(files), "%d rows" % len(mani))
+    check("G7 the manifest lists every other shipped file and not itself",
+          {m["file"] for m in mani} == set(files) - {"export_manifest.csv"}, "%d rows" % len(mani))
+    fleet = list(csv.DictReader(open(os.path.join(target, "fleet_register.csv"), encoding="utf-8")))
+    regs_ = [x["registration"] for x in fleet]
+    check("G8 every registration is listed once in the fleet register", len(regs_) == len(set(regs_)), "%d" % len(regs_))
+    dcs_tails = {(d["tail"], d["equip"]) for d in dcs.values()}
+    reg_model = {x["registration"]: x["seats"] for x in fleet}
+    seats_of = {"319": "144", "320": "180", "32N": "186", "321": "220", "32Q": "232"}
+    check("G9 every DCS tail is in the register with its type's seats",
+          all(reg_model.get(t) == seats_of[e] for t, e in dcs_tails), "%d tails" % len(dcs_tails))
+    first = min(e["logged_utc"] for e in ref)
+    last = max(e["logged_utc"] for e in ref)
+    f_loc = dt.datetime.strptime(first, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=C.UTC).astimezone(C.ROME).date()
+    l_loc = dt.datetime.strptime(last, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=C.UTC).astimezone(C.ROME).date()
+    span = "%d %s %d to %d %s %d" % (f_loc.day, f_loc.strftime("%B"), f_loc.year, l_loc.day, l_loc.strftime("%B"), l_loc.year)
+    man_ref = [m for m in mani if m["file"] == "booking_engine_refusals_s25.csv"][0]
+    check("G10 the dictionary and the manifest give the refusal log's own first and last dates",
+          span in " ".join(texts["data_dictionary_rev5.pdf"].split()) and span in man_ref["covers"], span)
 
     # ============================================================ realism sweep
     by_route = Counter()

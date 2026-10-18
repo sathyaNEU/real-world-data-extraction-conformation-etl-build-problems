@@ -45,7 +45,7 @@ MANIFEST = [
     ("dcs_flight_close_s25.csv", "Airport Operations", "DCS", "2025-11-03",
      "summer 2025 operated departures, every route", "flight close-out as finalised"),
     ("booking_engine_refusals_s25.csv", "Digital Sales", "booking engines", "2025-12-03",
-     "requests for summer 2025 departures, logged 1 May 2024 to 25 October 2025", ""),
+     "requests for summer 2025 departures, logged {span}", ""),
     ("summer2026_capacity_plan_v3.xlsx", "Network Planning", "", "2025-11-21", "summer 2026 against summer 2025",
      "version 3"),
     ("planning_basis_NP-PB-26S_issue2.pdf", "Network Planning", "", "2025-11-28", "the nine Linate routes",
@@ -62,13 +62,13 @@ MANIFEST = [
      ""),
     ("competitor_seats_IS25_IS26.csv", "Network Planning", "filed schedules", "2025-11-24",
      "weekly seats by airport pair, IS25 and IS26", "typical week in July"),
-    ("export_manifest.csv", "Network Planning", "", "2025-12-12", "this pack", ""),
 ]
 
 
 def build_pack(out):
     import pack as PK
     import docs as DC
+    import sim
     from records import Seasons
     os.makedirs(out, exist_ok=True)
     S = Seasons()
@@ -78,18 +78,23 @@ def build_pack(out):
     legs, bkg = PK.ym3_archive_s24(S, os.path.join(out, FILES["ym3"]))
     n[FILES["ym3"]] = bkg
     n[FILES["dcs"]] = PK.dcs_close_s25(S, os.path.join(out, FILES["dcs"]), regs)
-    nref, _, _ = PK.refusals_log(S, os.path.join(out, FILES["ref"]))
+    nref, _, ev = PK.refusals_log(S, os.path.join(out, FILES["ref"]))
     n[FILES["ref"]] = nref
+    first = min(e[0] for e in ev).astimezone(sim.ROME).date()
+    last = max(e[0] for e in ev).astimezone(sim.ROME).date()
+    span = "%d %s %d to %d %s %d" % (first.day, first.strftime("%B"), first.year, last.day, last.strftime("%B"),
+                                      last.year)
     DC.capacity_plan(S, os.path.join(out, FILES["cap"]))
     DC.planning_basis(os.path.join(out, FILES["basis"]))
     DC.change_log(S, os.path.join(out, FILES["log"]))
     DC.fleet_register(os.path.join(out, FILES["fleet"]), regs)
     DC.route_master(S, os.path.join(out, FILES["routes"]))
     DC.closeout(S, os.path.join(out, FILES["close"]))
-    DC.dictionary(os.path.join(out, FILES["dict"]))
+    DC.dictionary(os.path.join(out, FILES["dict"]), span)
     DC.fare_report(S, os.path.join(out, FILES["fares"]))
     DC.competitor_seats(S, os.path.join(out, FILES["comp"]))
-    DC.export_manifest(os.path.join(out, FILES["manifest"]), MANIFEST)
+    DC.export_manifest(os.path.join(out, FILES["manifest"]),
+                       [tuple(c.format(span=span) for c in row) for row in MANIFEST])
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     return n

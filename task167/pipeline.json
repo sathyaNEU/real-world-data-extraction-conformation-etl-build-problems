@@ -9,7 +9,7 @@
  "updated": "2026-10-18",
  "stump": "Fitting one call schedule by fund age over every fund the foundation has backed and applying it to each fund's 2027 age and undrawn balance files a reserve of $350 million, because twelve of the fourteen 2026 programme funds belong to the line-bridged class their own light first year shows (fees and a first investment, under 8 per cent of commitment), whose second year calls 37 per cent of commitment against the pooled schedule's 21, so the 2027 calls are $425.3 million and the reserve $450 million.",
  "architecture": 2,
- "loops": 1,
+ "loops": 2,
  "precut": {
   "exit": 0,
   "date": "2026-10-18"
@@ -23,12 +23,12 @@
   "nearest": "surface: task460 0.123 (a data dictionary's file, field, definition columns), task229 0.105, task139 0.102"
  },
  "judge": {
-  "verdict": "round 1 on 8abffa03: DETERMINISTIC, APPROVE; reader no leak; rule-3 audit AT_RISK (P(one) 0.25, P(both) 0.08)",
-  "disposition": "repaired in one generator pass: policy 2.4 files only the clock; the class shown by a light first year (fees and a first investment) with slow-starting ordinary funds; the truth repositioned by the pre-written rule",
+  "verdict": "round 2 on 2d75d4ac: DETERMINISTIC, FIX_NOW (optional, small); recheck PASS, P(one) about 0.19, P(both) about 0.06; reader no leak",
+  "disposition": "round 2 pins filed as plain facts in the dictionary (the positions report on trade date with unsettled purchases and settled cash; a management fee offset reduces the fees on its notice); the note's routes and Strength corrected; block 2 grades the class counts",
   "report": "coordinator relay, 2026-10-18"
  },
  "returned": [],
- "resume": "stage 4: fresh judge and recheck on the repaired pack",
+ "resume": "stage 4: the coordinator's targeted re-read, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

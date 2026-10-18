@@ -115,6 +115,17 @@ class Bundle:
         self.memo_docx = docx_words(p(self.f_docx))
 
 
+def dictionary_pins(b):
+    """the dictionary's plain facts the asks lean on, read from the bundle"""
+    d = {(f, k): v for f, k, v in zip(b.dict["File"], b.dict["Field"], b.dict["Definition"])}
+    pos = d.get((b.f_pos, "as_of"), "")
+    lt = d.get((b.f_act, "line_type"), "")
+    ok("PINS the positions report is on trade date, unsettled purchases in, cash settled (dictionary)",
+       "on trade date" in pos and "purchases not yet settled" in pos and "settled balance" in pos, pos[:80])
+    ok("PINS a management fee offset reduces the fees called on its notice (dictionary)",
+       "Management fee offset reduces the management fees called on the same notice" in lt, "")
+
+
 def read_back(b):
     """one positive control per format and per document the call or an ask leans on"""
     ok("READ xlsx: the register's header and 194 vehicle rows", list(b.reg.columns[:4]) == ["Fund ID", "Fund", "Vehicle",
@@ -486,6 +497,7 @@ def main(target):
     task = os.path.dirname(os.path.abspath(target))
     b = Bundle(target)
     read_back(b)
+    dictionary_pins(b)
     rules = policy_rules(b)
     ye = b.fx[b.fx["date"] <= pd.Timestamp(2026, 12, 31)].sort_values("date").iloc[-1]
     rate = float(ye["usd_per_eur"])

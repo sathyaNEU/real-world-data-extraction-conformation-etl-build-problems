@@ -147,7 +147,7 @@ Every term in the main ask and every convention the main computation needs. Ever
 | Id | Term or convention | Golden reading | Alternative and its call | Ruled out by |
 |---|---|---|---|---|
 | SF1 | "call reserve ... for 2027" | policy 2.2: the capital calls expected in calendar 2027 on commitments made before 1 January 2027, rounded up to the next $50 million | a reserve net of expected distributions; a stressed or upper-quantile figure | policy 2.2 ("the capital calls the Foundation expects to pay") and 2.3 ("before any distribution a fund sets against a call") |
-| SF2 | "capital calls" | every amount called: investments, management fees net of the offsets on the notice, partnership and organisational expenses | investments only ($380.2 million, $400 million); fee offsets ignored ($425.8 million, same call) | policy 2.3 names fees and expenses; offsets: same call (asserted) |
+| SF2 | "capital calls" | every amount called: investments, management fees net of the offsets on the notice, partnership and organisational expenses | investments only ($380.2 million, $400 million); fee offsets ignored ($425.8 million, same call) | policy 2.3 names fees and expenses; the dictionary ("A Management fee offset reduces the management fees called on the same notice"); offsets: same call (asserted), and Ask A's total 1411.6 against 1411.2 when ignored |
 | SF3 | "2027" | calendar 2027 by the date paid, January to December | a fiscal year; notice dates ($435.3 million, same call) | policy 2.2 ("that calendar year"); notice dates: same call asserted |
 | SF4 | "commitments made before the year began" | every vehicle with a first close on or before 31 December 2026, realised funds contributing nothing | 2027's new commitments added; realised funds projected too ($425.3 million, same call) | policy 2.3 (they "are not part of the call reserve") |
 | SF5 | "expects" | the mean of the year's calls | a percentile | policy 2.2 |
@@ -161,7 +161,7 @@ Every term in the main ask and every convention the main computation needs. Ever
 | SF13 | "from each of the four strategies" | the register's strategy of each fund, expected calls in millions to the nearest 25 | the general partner's own label | the register's Strategy column is the only strategy field |
 | SF14 | Ask A: "net asset value at 31 December 2026" | policy 4.1: each fund's latest reported value rolled forward for the contributions paid and distributions received after its date (the value date, the dictionary's "date the amount was paid or received") to 31 December, euros at 1.1326, each fund once | the reported values unrolled; euros at the reporting date; the roll-forward cut on notice dates | policy 4.1 ("contributions paid and distributions received after the date of that value") and the dictionary's value_date |
 | SF15 | Ask A: "euro and dollar funds", "vintages" | the register's currency and vintage (the year of first close) | the summary's currency label | the register; the summary's header ("Amounts in each fund's currency") |
-| SF16 | Ask B: "qualifying assets", "face value ... maturing in each quarter" | policy 3.1: Treasury bills maturing in 2027, the Schedule 1 fund and the reserve account's cash, at market value on a settled basis; bills by calendar quarter of maturity at face value | trade-date positions; agency discount notes; the operating account | policy 3.1, 3.2 and Schedule 1 |
+| SF16 | Ask B: "qualifying assets", "face value ... maturing in each quarter" | policy 3.1: Treasury bills maturing in 2027, the Schedule 1 fund and the reserve account's cash, at market value on a settled basis; bills by calendar quarter of maturity at face value | trade-date positions; agency discount notes; the operating account | policy 3.1, 3.2 and Schedule 1; the dictionary on the positions report ("on trade date and include purchases not yet settled; the cash line is the account's settled balance") |
 
 ## Ladder
 
@@ -206,11 +206,23 @@ schedule $376.7 million.
 
 **Routes the rule-3 audit named (asserted, ROUTE).** The regression of second-year on first-year share files $391.0 to
 $398.2 million ($400 million) across its four forms; the catch-up of the programme to the pooled cumulative schedule
-files $470.8 million ($500 million) and its average with the pooled rates $407.7 million ($450 million, recorded); an
-uplift of 16.1 to 30.6 per cent on the pooled rates lands the bin; of the rules of thumb, one third of the programme's
-commitment ($438.5 to $441.3 million) or of its undrawn balance ($400.9 to $403.7 million) and 35 per cent of its undrawn
-balance ($418.4 to $421.2 million), each with the earlier funds on a pooled schedule, land $450 million; 35 and 40 per
-cent of commitment and 40 per cent of the undrawn balance land $500 or $550 million.
+files $470.8 million ($500 million). Two routes skip the class and still land every graded calls figure, the reserve,
+the 425 total and all four strategy cells, because cells of $25 million cannot tell their strategy splits from the
+golden's: 35 per cent of the programme's undrawn balance with the earlier funds on a pooled schedule ($418.4 to $421.2
+million; buyout 173.6 to 174.0, growth 96.5 to 98.1, venture 83.0 to 83.1, credit 65.3 to 66.1), and an uplift of 19.7
+to 24.9 per cent (19.73 to 24.85) on the pooled rates. Others land the reserve alone: the rest of the 16.1 to 30.6 per
+cent uplift band; one third of the programme's commitment ($438.5 to $441.3 million, total cell 450, venture cell 100)
+or of its undrawn balance ($400.9 to $403.7 million, total cell 400); the average of the pooled rates and that catch-up
+($407.7 million, total cell 400). 35 and 40 per cent of commitment and 40 per cent of the undrawn balance land $500 or
+$550 million.
+
+**Strength.** P(one strong solver lands) about 0.19 (the stage 4 recheck's figure on the repaired pack): it must read
+each fund's class from the shape of its first-year notices, a light year of fees and one first investment that the
+fifteen slow-starting ordinary funds do not share, place the break at the gap rather than at a round threshold or a
+clustering (both file $400 million), and read the programme's twelve light funds at their own schedule. P(both land)
+about 0.06, most of it the two class-free routes above that land every graded calls figure; the class counts in the
+critical components (36 of 172 earlier and 12 of 14 programme funds under 8 per cent in their first year) are the one
+figure none of those routes produces.
 
 ## Closure table
 
@@ -307,9 +319,10 @@ value of those bills maturing in each quarter of 2027** (6 figures, $ million to
 - Primary B1 (D8, a trade date for the settled position): the custodian's positions report carries the 2027 bill
   ladder bought on 31 December for settlement on 4 January 2027 ($140 million face) beside the settled cash that will
   pay for it; the settled activity report has no purchase for those four bills. Taken as reported, qualifying assets
-  rise $137.1 million and each quarter's face value $40, $40, $30 and $30 million. Fair: the opening position and the
-  settled activity rebuild the settled holdings exactly (asserted); policy 3.1 says settled. Silent: the report's
-  account total ties to its rows, and no column carries a settlement date.
+  rise $137.1 million and each quarter's face value $40, $40, $30 and $30 million. Fair: the dictionary says the
+  report is on trade date, includes purchases not yet settled and carries the settled cash balance; the opening
+  position and the settled activity rebuild the settled holdings exactly (asserted); policy 3.1 says settled. Silent:
+  the report's account total ties to its rows, and no row or column marks which purchases are unsettled.
 - Primary B2 (D5, a category crossed by its label): the custodian's "Government Bill" class holds four agency discount
   notes beside the Treasury bills ($39 million face, one maturing in each quarter). Taken by class, qualifying assets
   rise $38.2 million and each quarter's face value $10, $8, $12 and $9 million. Fair: each row's description names its

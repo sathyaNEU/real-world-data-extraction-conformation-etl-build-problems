@@ -241,6 +241,32 @@ def block_routes(book, g):
     pr = m(tot(riv["pooled schedule, monthly ages, rate on the undrawn balance"]))
     check("ROUTE an uplift of 16.1 to 30.6 per cent on the pooled rates lands the bin (recorded)",
           abs((400 / pr - 1) * 100 - 16.1) < 0.05 and abs((450 / pr - 1) * 100 - 30.6) < 0.05, "%.1f" % pr)
+    # which class-free routes land every graded calls figure: the reserve, the total's cell and the four strategy cells
+    want = {"Buyout": 175, "Growth equity": 100, "Venture capital": 75, "Private credit": 75}
+    def every(fc):
+        bs = by_strategy(book, fc)
+        return K.reserve(tot(fc)) == 450 and cell25(m(tot(fc))) == 425 and all(cell25(m(bs[s])) == want[s] for s in STRATS)
+    cpr = K.curve(book, K.hist, rate=True)
+    cps = K.curve(book, K.hist)
+    fr = K.forecast(book, lambda f: cpr, rate=True)
+    fs = K.forecast(book, lambda f: cps)
+    def rule(r, undrawn, E):
+        return {fid: (r * ((f["commitment"] - f["paid"]) if undrawn else f["commitment"]) * book.fx_of(f) if f["programme"] else E[fid])
+                for fid, f in book.funds.items()}
+    hits = sorted("%s of %s, %s" % (rn, "undrawn" if u else "commitment", en) for r, rn in ((1 / 3, "a third"), (0.35, "35%"), (0.40, "40%"))
+                  for u in (False, True) for E, en in ((fr, "rates"), (fs, "shares")) if every(rule(r, u, E)))
+    check("ROUTE of the rules of thumb only 35 per cent of the programme's undrawn balance lands every graded calls figure",
+          hits == ["35% of undrawn, rates", "35% of undrawn, shares"], str(hits))
+    band = [u / 100000.0 for u in range(10000, 40000) if every({fid: v * (1 + u / 100000.0) for fid, v in fr.items()})]
+    check("ROUTE an uplift of 19.73 to 24.85 per cent on the pooled rates lands every graded calls figure",
+          abs(100 * min(band) - 19.73) < 0.005 and abs(100 * max(band) - 24.85) < 0.005, "%.3f to %.3f" % (100 * min(band), 100 * max(band)))
+    cum = [sum(cps[:k + 1]) for k in range(len(cps))]
+    cu = {fid: (max(0.0, min(cum[min(f["obs"] + 11, len(cum) - 1)] * f["commitment"] - f["paid"], f["commitment"] - f["paid"]))
+                * book.fx_of(f) if f["programme"] else fr[fid]) for fid, f in book.funds.items()}
+    avg = {fid: (fr[fid] + cu[fid]) / 2 for fid in fr}
+    partial = [rule(1 / 3, False, fr), rule(1 / 3, True, fr), avg]
+    check("ROUTE one third of commitment or undrawn and the averaged catch-up land the reserve but not every calls figure",
+          all(K.reserve(tot(x)) == 450 and not every(x) for x in partial), str([round(m(tot(x)), 1) for x in partial]))
 
 
 def block_backtest(book):
@@ -403,6 +429,11 @@ def block_forks(target, p, book, g):
     dic = dictionary(target)
     check("SF14 the value date is the date paid or received (dictionary)", dic.get((C.F_ACTIVITY, "value_date"), "") ==
           "The date the amount was paid or received.", "")
+    check("SF2 a management fee offset reduces the fees called on its notice (dictionary)",
+          "A Management fee offset reduces the management fees called on the same notice." in dic.get((C.F_ACTIVITY, "line_type"), ""), "")
+    check("SF16 the positions report is on trade date with unsettled purchases in it and settled cash (dictionary)",
+          dic.get((C.F_POS, "as_of"), "").endswith("Positions are reported on trade date and include purchases not yet settled; "
+                                                     "the cash line is the account's settled balance."), "")
     check("SF14 NAV rolled forward (4.1)", "adjusted for the contributions paid and distributions received after the date of that value" in norm, "")
     check("SF15 the summary's header says amounts are in each fund's currency", True, "")
     check("SF16 settled basis and the qualifying list (3.1, Schedule 1)", "on a settled basis" in norm and
