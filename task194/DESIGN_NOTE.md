@@ -1569,3 +1569,65 @@ lever against both the ranked quantity's noise and the unit's own history are al
 reflex sweep's filed-strata route and the readability screen. Two specific risks to settle there: the easy
 route designating **nobody** means the prompt must not make an empty answer implausible on its face, and
 Gate B requires the handover data shipped while nothing may name handovers as the exposure.
+
+### Architecture 6: the three Gate B tests, all passed (2026-10-18)
+
+Run before the remaining four screens, because Gate B is the test that could unmake the shape.
+
+**Test 1, does anything shipped connect complications to handovers: PASSES.** Every csv, txt and pdf in
+the pack grepped for handover, hand-over, transfer, transferred, moved between, ward move, pathway,
+step-down, inter-unit and between units. **Two hits, both innocent:** `activity_plan_2027q4.csv` records
+an "elective general surgery list transferred in from Marrowfield", which is a service reconfiguration
+fact about workload, and `data_dictionary.csv` describes `amalgamated_into` as the "cost centre the unit's
+activity transferred to on closure". Neither says anything about what explains a complication. **Both PDFs,
+the charter and the specification, have no hits at all.** And `episode_outcomes_extract.csv`'s `unit_code`
+is documented as "cost centre of the unit the episode separated from", so the shipped record attributes at
+the separating unit, which is the easy route, with nothing pointing past it.
+
+The rule the new file must follow, stated so it is not rediscovered: its column descriptions say what a
+row **is**, never what it explains.
+
+**Test 2, the sixth screen on the handover file itself: PASSES.** Nine columns the file affords, plus the
+two rate columns the pack already **publishes**, which are zero-work routes and so the most dangerous.
+Golden set [1, 3].
+
+| Column | Top-2 | Verdict |
+|---|---|---|
+| handovers alone, planned | [1, 2] | differs |
+| handovers alone, current | [2, 9] | differs |
+| handovers per separation | [1, 9] | differs |
+| handovers per bed-day | [1, 7] | differs |
+| distinct receiving units | [3, 6] | differs |
+| share of separations with a handover | [1, 9] | differs |
+| growth in handovers | [1, 4] | differs |
+| **published `standardised_ratio`** | [0, 3] | differs |
+| **published `adjusted_rate_per_1000`** | [0, 3] | differs |
+
+**None reproduces the set.** Better than expected on the empty-answer risk: the published
+`adjusted_rate_per_1000`, used directly against the tolerance, designates **{0}**, a named wrong unit
+rather than nobody. So the easy route gives one false positive and misses both true members, which is a
+stronger rung than an empty set and lowers the prompt risk that worried me.
+
+**Test 3, the single-use test on the movement log: PASSES, with evidence rather than reasoning.**
+`episode_outcomes_extract.csv` holds **465,882 episodes** against `activity_summary_monthly.csv`'s
+**463,691 separations**, a gap of **2,191**: the two files already differ in grain and in count, and a
+movement log is the file that explains the gap. The existing architecture already asks about exactly that
+reconciliation, so the log has an ask-side use in this world before the call touches it. Five further pack
+files it would serve are present: `activity_summary_monthly.csv`, `nursing_hours_by_unit_monthly.csv`,
+`hospital_sites.csv`, `unit_register.csv` and `quality_dashboard_2026q2.xlsx`. **The binding requirement
+for architecture 6: at least one ask must actually consume the log, and the episode-versus-separation
+reconciliation is the one to use.**
+
+**The empty-answer device, read from task180's prompt rather than invented.** Its grammar licenses the
+negative: "Will the new borehole networks put **any** of our five geothermal plants over the traffic-light
+amber in 2027, **and if so which** and in which quarters?" A whether-first question with a conditional
+which, so "none" is an ordinary outcome of the question's own form. Architecture 6's prompt takes the same
+shape, and its easy route designating {0} rather than nobody means the device is a safeguard rather than a
+load-bearing part.
+
+**Still outstanding, and the sweep is not complete.** Four of the six screens (the pincer and the
+dichotomy, move available against needed, the standard error of what the construction estimates, lever
+against the ranked quantity's noise and against the unit's own history), the readability screen, and one
+reflex I have not run: the **filed-strata excess** route, which `episode_outcomes_extract.csv` supports
+directly through its `comorbidity_score` and `drg_code` columns. That route reached the golden in
+candidate 1 and it has not been tested against a designation set.

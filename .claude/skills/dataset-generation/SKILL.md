@@ -132,6 +132,17 @@ identifiers and partial cuts. A model may trip on it; the stump never rests on i
 defect placed to be caught. Test: would the organisation's export look exactly like this if nobody had
 designed a task? The design note names each mess and the system that produces it.
 
+**A shipped file's column descriptions say what a row is, never what it explains.** That is the line between
+a decisive organ Gate B requires and an announcement the leak reader finds, and it is easy to cross while
+writing a data dictionary, because explaining a column is what dictionaries feel like they are for. A
+movement log's rows may be described as a patient's transfer between cost centres on a date; none may say
+that complications arise at transfers. The grep that settles it runs over every csv, txt and pdf in the
+pack for the decisive relation's vocabulary, and a hit is innocent only where it states a fact about the
+world (a service reconfigured, a unit closed) rather than a relation between the organ and the outcome.
+task194's architecture 6 passed it with two hits, both of that innocent kind, and with both governing PDFs
+clean. Note what makes the pass meaningful there: the shipped record attributes the outcome at the easy
+route's unit and nothing points past it.
+
 **An organ's realism is measured by its variance, not by its genre, and uniformity is the tell.** The file
 the decisive step needs is the one most likely to be built to exactly the shape that step needs, and a
 solver reads that shape as the instruction even when no sentence says anything. task197's archive held 695
