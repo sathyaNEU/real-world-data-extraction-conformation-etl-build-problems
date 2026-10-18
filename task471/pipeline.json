@@ -1,25 +1,53 @@
 {
  "task": "task471",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-18",
- "stump": "The default path expands each wave's returned parking-survey cards to its quarter's parking entries and pitches the markets the valley's short trips go to, because a card comes back only when its car leaves and the boxes came in two days after each wave's last handout, so the two- to four-week stays of the Gulf Coast and desert markets are thinned out of the replies.",
+ "stump": "The default path expands each wave's returned cards to its quarter's entries and pitches Washington, New York and Dallas (6,513, 5,121 and 4,829 trips), because a card comes back only when its car leaves and each wave's drop boxes were taken in two days after its last handout, so the cards handed in a wave's later days came back only from short stays, and the two- to four-week winter stays that make up much of Phoenix and Tampa are thinned out of the replies; weighted for when each stay could have come back, Phoenix, Tampa and Washington lead.",
  "architecture": 1,
  "loops": 0,
- "precut": null,
- "leak": null,
- "duplicate_check": {
-  "guard_check": "WARN only 2026-10-18 after naming the decisive generator G7 (with G12 first the signature repeated task196 v2, task255, task456 and task462); WARNs answered in the design note"
+ "precut": {
+  "exit": 1,
+  "date": "2026-10-18",
+  "note": "two FAIL, both the ask layer: the pair ceiling 55.5 against 40 and the reconciling cracker keeping ask A"
  },
- "judge": null,
+ "leak": {
+  "leak_py": "REVIEW 2026-10-18 on target.zip c9e9c2fd35a4d875: the standard names the shortlist and the call's words; the methods report, handout log and standard use the survey's own words; no LEAK",
+  "reader": "three rounds, sonnet at medium on fresh unzips: no decisive-step sentence, no helping file, the quoted sentences execute to the golden, question 6 analytical every round; every round landed the call; round 1 missed all fourteen passengers figures on the coded party, rounds 2 and 3 recoded the party from the verbatims and kept them (round 3's brief asked for example write-ins)"
+ },
+ "duplicate_check": {
+  "guard_check": "WARN only 2026-10-18 after naming the decisive generator G7 (with G12 first the signature repeated task196 v2, task255, task456 and task462); WARNs answered in the design note",
+  "heart": "WARN 2026-10-18 (org family, Gate G window, question form; answered in the note); nearest driver task157 at 0.10; surface screen 0 promoted"
+ },
+ "judge": {
+  "pass_1": "DETERMINISTIC, FIX_NOW on the write-up's step 2 (only Orlando is cut from the shortlist), fixed",
+  "pass_2": "DETERMINISTIC, APPROVE on the fix-pass build; Gate G statistical_rigor and analytical_non_defect, Gate H pass, stump power moderate",
+  "reports": [
+   "determinism_check_report.md",
+   "determinism_check_report_pass2.md"
+  ]
+ },
  "returned": [],
- "resume": "stage 2: prototype generator (register entries, card waves with handout days, stays and replies), ladder calibration, fork table, asks on the ticket sample's fares, prompt.txt, precut",
+ "resume": "stage 4 repair before any ship. The asks: the passengers device (a sum written for Q4 coded as its first number, and the parties written with who they cover coded right) is reconciled from the verbatims, which the methods report documents beside the coded party, by a careful cracker (reader rounds 2 and 3), so the pair ceiling is 55.5 against 40 and precut fails on it; no reading of Q4 the frozen documents leave open is both determinate and missed by a careful parser. Rebuild the ask layer on a per-candidate measure the pitch carries that the call does not read, with a silent primary (a grain or self-validation shape on rows outside the main population, found only by reconciling across grains), rewording the prompt's ask only if the passengers ask cannot carry one; the main call frozen (freeze.py check --mode rubric); then ceiling.py with the reconciling cracker, precut, the stage-3 gates, leak.py and a reader round on a neutral brief; a judge pass only if the author licenses it (the one re-judge is spent). Weigh the call's stump power in the same pass: every reader landed the call, round 3 citing the returns per card handed falling from 0.35 to 0.09 over each wave's last eight handout days, a rate rung 1's per-day weighting computes on the way; keeping rung 1 from showing the collection close is a stage 2 change to the ladder",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back"
+ "source_note": "seed ET28 (which routes are overpriced: airfares from the 10% ticket sample without double counting round trips): the world, the decision (three city-pair markets pitched to airlines a year) and the quantity (how many of the region's travellers fly each market and what they pay) kept; the seed's round-trip fare and multi-airport moves kept as Layer 1 and ask devices; the pitfall re-found in how the hub's parking card survey gets its replies back",
+ "ceiling": {
+  "pair": 28.0,
+  "pair_reconciling": 55.5,
+  "pair_alt": 40.7,
+  "cracker": 45.0,
+  "cracker_path": "collection-window weights with the coded party, 0 of 14 passengers",
+  "reconciling": 100.0,
+  "reconciling_path": "collection-window weights with each party recoded from Q4 as written, 14 of 14",
+  "best_mirror": "10.9 on R0 with the coded party",
+  "mirror_leakage": 7.1,
+  "script": "generator/ceiling.py"
+ },
+ "target_zip_sha256_16": "c9e9c2fd35a4d875"
 }
