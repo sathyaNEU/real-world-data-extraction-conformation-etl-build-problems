@@ -389,6 +389,42 @@ with the reserve drawn across it and the rounding (4): 25.
 - Sweep 9, fifteen dates after 14 January 2027 in the positions report: the maturity dates of the bills, the agency
   notes and the 2028 note, forward by nature; harmless.
 
+## Pre-ship check
+
+The 10/10 rules read again against the shipped pack (target.zip ff9df788):
+- Rule 1, the domain: the deciding quantity is next year's capital calls on commitments already made, the pacing
+  forecast an endowment's investment office builds from its funds' schedules by age (Takahashi-Alexander rates or
+  shares of commitment), conditioned on the financing class each fund's first-year notices show and validated out of
+  sample on the funds that have passed their second year; the swap test holds (the judge's Gate H: pass, both rounds).
+- Rule 2, two layers: Layer 1 is the two administrators' files with the 2016 handover quarter in both, euro funds in
+  euros, distributions netted on notices late in a fund's life, fee offsets on buyout and growth notices, twelve
+  cancelled notices and two naming systems, each asserted neutral on the call (R2); Layer 2 decides: the class read
+  from the shape of each fund's first year, chosen over one pooled schedule, a round threshold or two clusters by the
+  out-of-sample record.
+- Rule 3: nothing planted, no filed method, no field marks the class. The rule 3 audit on 8abffa03 read AT_RISK,
+  narrowly (P(one) about 0.25, P(both) about 0.08: the class readable as a first year with no Investments line, policy
+  2.4 quotable as a HOW); repaired in one rebuild, and the recheck on 2d75d4ac read PASS at P(one) about 0.19 and
+  P(both) about 0.06. The easy route on the clean truth files $350 million (R3a). Counted in P(both): two class-free
+  routes land every graded calls figure, 35 per cent of the programme's undrawn balance with the earlier funds pooled
+  ($418.4 to $421.2 million) and an uplift of 19.7 to 24.9 per cent on the pooled rates; the class counts in block 2
+  (36 of the 172 earlier funds and 12 of the 14 programme funds under 8 per cent in their first year) are the one
+  graded figure neither produces.
+- Determinism: judge round 1 on 8abffa03 DETERMINISTIC, APPROVE. Judge round 2 on 2d75d4ac DETERMINISTIC, FIX_NOW
+  (optional, small): calls of 425.8 and the $450 million reserve reproduced, the class-aware variants at 425 to 428,
+  the pooled routes failing, the leave-one-vintage-out holding, every NAV reproduced exactly, Gates G and H pass. Its
+  two pins are filed as dictionary facts (the positions report on trade date with purchases not yet settled and the
+  settled cash; a management fee offset reduces the fees called on its notice), the devices left as detection work;
+  figures.json and block 4 byte-identical across the fix (freeze.py: only this note's ladder section moved).
+- Readers: round 1 and round 2 no leak; the targeted re-read of ff9df788 clean (Q1 and Q2 none, Q6 an analytical
+  choice; both dictionary lines read as plain conventions naming no class or method; the as_of line's slight steer
+  toward the settled basis reads as a custodian's field note, left).
+- Duplicates: guard heart WARN (the objective's and the Gate G mechanism's use, the decision type against task168,
+  answered at the draw); guard surface pairs this build with task166, back to back on pattern E, sent to the author for
+  an optional clone-check, with a differentiation line on the card.
+- Gates at ship: checks 127, verify 51 on its own pandas path, two byte-identical builds, figures_check 59, precut 51
+  checks with no FAIL, voice-check PASS, leak.py REVIEW answered, container audit clean; target.zip from the final
+  rebuild.
+
 ## Tried and rejected
 
 - v1, the tail test on appraisal-smoothed marks (2026-10-18, on paper, never registered): the largest one-off

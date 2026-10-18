@@ -1,36 +1,37 @@
 {
  "task": "task167",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "nonprofit-grant-making",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-18",
  "stump": "Fitting one call schedule by fund age over every fund the foundation has backed and applying it to each fund's 2027 age and undrawn balance files a reserve of $350 million, because twelve of the fourteen 2026 programme funds belong to the line-bridged class their own light first year shows (fees and a first investment, under 8 per cent of commitment), whose second year calls 37 per cent of commitment against the pooled schedule's 21, so the 2027 calls are $425.3 million and the reserve $450 million.",
  "architecture": 2,
  "loops": 2,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18"
+  "date": "2026-10-18",
+  "checks": 51
  },
  "leak": {
-  "leak_py": "REVIEW, 4 lines answered in the design note's Leak review (2026-10-18, --asof 2027-01-14)",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-18, no LEAK (four lines: the policy's call words and stump terms, the grants memo's terms, the positions report's maturity dates; answered in the note's Leak review)",
+  "reader": "round 1 on 8abffa03 and round 2 on 2d75d4ac: no leak; the targeted re-read of ff9df788 clean (Q1 and Q2 none, Q6 analytical; the two dictionary lines plain conventions, the as_of line's slight steer left)"
  },
  "duplicate_check": {
-  "heart": "WARN (driver.near 0.12 task501 v3, overuse objective and gate_g, repeat.decision task168; answered at the draw)",
-  "nearest": "surface: task460 0.123 (a data dictionary's file, field, definition columns), task229 0.105, task139 0.102"
+  "heart": "WARN 2026-10-18 (overuse.objective, overuse.gate_g, repeat.decision against task168; answered at the draw)",
+  "nearest": "surface: task166 back to back on pattern E, sent to the author for an optional clone-check (differentiation line on the card)"
  },
  "judge": {
-  "verdict": "round 2 on 2d75d4ac: DETERMINISTIC, FIX_NOW (optional, small); recheck PASS, P(one) about 0.19, P(both) about 0.06; reader no leak",
-  "disposition": "round 2 pins filed as plain facts in the dictionary (the positions report on trade date with unsettled purchases and settled cash; a management fee offset reduces the fees on its notice); the note's routes and Strength corrected; block 2 grades the class counts",
-  "report": "coordinator relay, 2026-10-18"
+  "verdict": "DETERMINISTIC (round 2 on 2d75d4ac, FIX_NOW optional and small); round 1 on 8abffa03 DETERMINISTIC, APPROVE",
+  "disposition": "round 2's two pins filed as dictionary facts with figures.json and block 4 unchanged; rule 3 audit round 1 AT_RISK narrowly (P(one) 0.25, P(both) 0.08), repaired in one rebuild; recheck PASS, P(one) about 0.19, P(both) about 0.06, counting the two class-free routes that land every graded calls figure",
+  "report": "relayed by the coordinator (round 1: policy 2.4 a HOW, the class read as a zero, luck routes; round 2: the positions report's basis and the fee offset)"
  },
  "returned": [],
- "resume": "stage 4: the coordinator's targeted re-read, then ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

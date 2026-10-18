@@ -37,7 +37,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "investor_capital_activity_2016-04_2026-12.csv",
-    "rows": 26726,
+    "rows": 32112,
     "entity": "one line of one capital call or distribution notice from the current fund administrator: a fund, a notice date, a line type (portfolio investment, management fee, partnership expenses, return of capital, realised gain, income), an amount in the fund's currency",
     "grain": "fund x notice x line",
     "source": "synthetic"
