@@ -1,0 +1,124 @@
+{
+ "ask_a": {
+  "Ashcombe": {
+   "median_rent": 361,
+   "units": 7
+  },
+  "Corrisford": {
+   "median_rent": 312,
+   "units": 5
+  },
+  "Dunnaway": {
+   "median_rent": 236,
+   "units": 5
+  },
+  "Halberdine": {
+   "median_rent": 334,
+   "units": 7
+  },
+  "Quillmere": {
+   "median_rent": 296,
+   "units": 9
+  },
+  "Tessavon": {
+   "median_rent": 409,
+   "units": 11
+  }
+ },
+ "ask_b": {
+  "Ashcombe": {
+   "Hopcrate": 2,
+   "Tilldash": 2
+  },
+  "Corrisford": {
+   "Hopcrate": 1,
+   "Tilldash": 5
+  },
+  "Dunnaway": {
+   "Hopcrate": 0,
+   "Tilldash": 2
+  },
+  "Halberdine": {
+   "Hopcrate": 2,
+   "Tilldash": 4
+  },
+  "Quillmere": {
+   "Hopcrate": 4,
+   "Tilldash": 5
+  },
+  "Tessavon": {
+   "Hopcrate": 3,
+   "Tilldash": 4
+  }
+ },
+ "call": {
+  "density": 28800,
+  "gap": 7100,
+  "metro": "Tessavon",
+  "runner_density": 21700,
+  "runner_up": "Corrisford"
+ },
+ "cores": {
+  "Ashcombe": {
+   "dense_share": 2,
+   "density": 15100,
+   "present": 371000
+  },
+  "Corrisford": {
+   "dense_share": 47,
+   "density": 21700,
+   "present": 313000
+  },
+  "Dunnaway": {
+   "dense_share": 31,
+   "density": 15500,
+   "present": 330000
+  },
+  "Halberdine": {
+   "dense_share": 37,
+   "density": 18400,
+   "present": 265000
+  },
+  "Quillmere": {
+   "dense_share": 42,
+   "density": 18800,
+   "present": 251000
+  },
+  "Tessavon": {
+   "dense_share": 43,
+   "density": 28800,
+   "present": 417000
+  }
+ },
+ "paper": {
+  "pilot_year": 2027,
+  "sections": [
+   "4.1",
+   "4.2",
+   "4.3"
+  ]
+ },
+ "params": {
+  "dense_cut": "20,000",
+  "unit_max_m2": 450,
+  "unit_min_m2": 150
+ },
+ "rungs": {
+  "acs": "Halberdine",
+  "cadp": "Halberdine",
+  "one": "Halberdine",
+  "pool": "Corrisford",
+  "ring": "Tessavon"
+ },
+ "shares": {
+  "SI01 C": 91.1,
+  "SI01 O": 90.8,
+  "SI01 X": 81.4,
+  "SI02 C": 90.2,
+  "SI02 O": 80.3,
+  "SI02 X": 34.9,
+  "SI03 C": 74.2,
+  "SI03 O": 44.1,
+  "SI03 X": 11.7
+ }
+}

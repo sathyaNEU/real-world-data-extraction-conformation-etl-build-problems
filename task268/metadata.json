@@ -1,0 +1,12 @@
+{
+  "distractor_files": [
+    "target/acs5_2022_b08301_counties.csv",
+    "target/cbp_2022_county_sectors.csv",
+    "target/trenstead_expansion_log.xlsx"
+  ],
+  "deliverables": [
+    "pilot_metro_2027.xlsx",
+    "pilot_metro_board_2027.pptx"
+  ],
+  "stated_inputs": []
+}

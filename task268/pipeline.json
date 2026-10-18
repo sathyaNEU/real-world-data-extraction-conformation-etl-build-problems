@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-18",
   "stump": "The default path sends the pilot to Halberdine because it counts every primary job in the commuting table as a person at work in its tract on every weekday; carrying the national survey's share of weekdays on the employer's premises onto each flow by industry group alone moves it to Corrisford, and carried by industry group and the type of county the worker lives in, the share puts Tessavon first.",
   "architecture": 1,
@@ -15,20 +15,20 @@
     "date": "2026-10-18"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (sweeps 3 and 4, harmless)",
+    "reader": "landed the call: score_reader.py exit 1 (call 5 of 5, cores 15 of 18, asks 0 of 24)"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task253 0.10"
+    "heart": "BLOCK on the registration window only (ban.role, ban.strategy vs task165; test.same_driver vs task167 v2)",
+    "nearest": "task253 v1 0.10"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (asks 1 and 3 only; the call forced)",
+    "disposition": "SEND_BACK",
+    "report": "task268/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 2 done (precut exit 0, 51 checks). Paused on the guard: re-run `guard.py check` on the card; ban.strategy (composition_mix against task165, registered 14:10 on 2026-10-18) and test.same_driver (population, E, method_or_model_selection against task167 v2) clear once three builds are registered after task165 and task167 leaves the last twelve; ban.role (operations_director, task165) the same, or redraw the role then against whatever is in the last three. Re-register (`guard.py register`) when clear, then stage 3: the generator from the design note's ladder (the design-stage shares), the ask sheet's devices (cracker.py rewired to the cut pack), checks with SF1 to SF19 and the three-rules block.",
+  "resume": "Architecture 1 spent at stage 4 (the reader landed the call; DESIGN_NOTE.md, Tried and rejected). Re-root at stage 1 as architecture 2: a decisive step no classifier shared by the survey and the counts can reach; the old identity goes into the card's lineage when the new draw is registered, the design note's sections are rewritten and Tried and rejected kept.",
   "approved": null,
   "delivered": null,
   "portal": null,

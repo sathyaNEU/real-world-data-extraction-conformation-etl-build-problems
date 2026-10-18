@@ -89,7 +89,7 @@
     "task256": "shares the lane, the gap, G14 and composition_mix: task256 carries a reference group's multivariate distribution through two recorded measurements to size a fit box; task268 carries a one-dimensional on-premises share from a survey to tract-to-tract flows within residence strata (a synthetic small-area estimator), and the deciding figure is a presence-weighted density"
   },
   "lineage": [],
-  "notes": "WARN overuse.gate_g answered in the design note: the decisive step chooses the strata of a synthetic estimator, a method choice, and no other mechanism describes it honestly. Personas drawn with guard.py names --geo 'United States' --seed 268; Nathan Watkins and Elizabeth Walton set aside (first names on file).",
+  "notes": "WARN overuse.gate_g answered in the design note: the decisive step chooses the strata of a synthetic estimator, a method choice, and no other mechanism describes it honestly. Personas drawn with guard.py names --geo 'United States' --seed 268; Nathan Watkins and Elizabeth Walton set aside (first names on file). Architecture 1 spent at stage 4 on 2026-10-18: the isolated reader carried the survey's share by industry group and HOMEREL onto every flow by reflex and committed the golden call (score_reader.py exit 1); the stratum is a classifier both sources share, so it was the careful analyst's default, not a stump. The identity moves into lineage when the re-root is registered.",
   "client_domain": "survey-research-official-statistics",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "survey-research-official-statistics/small-area-estimation/3",
@@ -105,5 +105,6 @@
     "Megan Swanson",
     "Carolyn Cook"
   ],
-  "registered": "2026-10-18T16:11:12Z"
+  "registered": "2026-10-18T16:11:12Z",
+  "architecture_spent": true
 }
