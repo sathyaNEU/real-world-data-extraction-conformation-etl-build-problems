@@ -507,6 +507,11 @@ What stage 4 round 4 leaves standing, as measured (every figure asserted in chec
   statements file does not show (the one 2020 extension is a retail centre after its anchor closed), and no loan sent to
   special assets at its original maturity; below a cover of 1.0, 99 of 99 extend, as the support agreement and interest
   reserve now filed in the extract notes (every extension, no income condition) make real.
+- The targeted re-read of 7117491f (leak-task166e) found no line setting property income against a loan's payments,
+  naming a cover or debt yield threshold or saying which loans extend, and recorded mild tells, left as they are: "the
+  extended loan's payments are made as scheduled" and "an extended loan is not extended again" read as modelling rules,
+  and they are the SF23 and SF20 pins determinism needs; the extension terms sit in a file description rather than a
+  credit policy; the notes' header names the designation memo, and the CRE entries are richer than the others.
 - The fingerprint heart gate: WARN (`repeat.question_form`, answered at the draw); the ban window is task163, task245
   and task471. `guard.py surface` promotes task167 back to back (decisive pattern E and the close_out_summary context
   artifact on both cards): task167's v2 card was registered at 06:59:01Z, after this card (05:26:01Z), so the repeat
@@ -594,6 +599,56 @@ guarantor's reaffirmed support agreement, with an interest reserve funded at the
 payments are made as scheduled."), the pin that payments are made as scheduled kept (SF23); the cover test on the
 extension's own payment and the latest months' share asserted with the routes that land (RULES). Every other file in
 target.zip, both goldens and figures.json byte-identical to the round 4 pack; no figure moved.
+
+## Pre-ship check
+
+The 10/10 rules read again against the shipped pack (target.zip 7117491f):
+- Rule 1, the domain: the deciding quantity is each fixed-rate pool's +200 bp loss in economic value averaged over the
+  month-ends of 2027 on its behavioural cash flows, which a bank's ALM function projects from residential prepayment
+  on the refinancing incentive at the planning rate and from each commercial real estate balloon's extension at its
+  refinance cover (the property's income against a new loan of the balloon at the planning cycle's 6.95 per cent);
+  the swap test holds (the judge's Gate H: pass, every round).
+- Rule 2, two layers: Layer 1 is the servicing platform conversion with its xref and the loans held for sale, the rate
+  sheet archive's renamed codes and mid-week re-prices, the CRE file's floating loans, extended terms and interest-only
+  loans, ACT/360 interest, the maturity log's two layouts and five codes in credit administration's formats, the
+  operating statements by each borrower's fiscal year with their review dates, closing at each loan's payoff, the
+  custodian's thousands and factors, the agency payment delay, the auto roll and the register's terminated trade with
+  its termination date, each asserted neutral on the call (R2). Layer 2 decides: each balloon's extension forecast from
+  its refinance cover, chosen over the recent share, the rate gap, the note-rate DSCR and the debt yield on the full
+  history by the 2025-26 maturities held out.
+- Rule 3: nothing planted, no filed method, no field marks the class: the in-place and watch-list routes name Agency
+  MBS, grade 5 or worse names the pool a bin and a half low, and no sentence sets income against an extension's
+  payments. The easy route on the clean truth files Agency MBS (R3a); the decisive step alone files the pool (R3b). The
+  rule 3 audit and its rechecks read PASS in every round: round 1 tighter than the note said, round 2 at P(one) 0.13 to
+  0.15, round 3 at P(one) about 0.15 and P(both) 0.02 to 0.05, and round 4 (rule3/task166d) at P(one) about 0.22 and
+  P(both) about 0.05 independent and 0.09 at a correlation of 0.2, choosing this pack over round 3's (realism AT_RISK
+  only narrowly, clearly better). Counted in P(one): the hard cover tests on 25 and 30 years and on the extension's own
+  payment, debt yield hurdles of 9 to 10 per cent, four-fifths or 0.85 on every balloon, and the share of the latest
+  one or two months' maturities; the 1.00 rule stays asserted as a rejected rule that misses.
+- Determinism: judge round 1 (030758c7) DETERMINISTIC, APPROVE; round 2 (110523a5) DETERMINISTIC, APPROVE, with
+  realism AT_RISK and one fork unfiled, repaired (the bank's one extension filed with its terms); round 3
+  (judge-task166c) DETERMINISTIC, APPROVE, 149.9 against Agency MBS 110.5 and all twelve notionals reproduced; round 4
+  (judge-task166d) on 1297e652 DETERMINISTIC, APPROVE, no fix: CRE 149.6 probability-weighted and 150.1 thresholded
+  against Agency MBS 112, the mortgages 87, the Treasuries 67 and auto 31, the January to December 2027 window unique,
+  the Brier scores matching and the twelve sheet 2 values reproduced. Its low items stand as filed: the two
+  identical-economics pairs give 2,727.8 and 1,797.5 under a terms dedupe, and the literal reading supports the golden;
+  the weaker readings that round to $140 million (EXT-S as an extension 140.9, the 1.00 rule 143.8, a February 2027 to
+  January 2028 window 144.6) are excluded by the notes, the hold-out, and the prompt and policy. Since round 4 only
+  extract_notes.txt changed (the support-agreement sentence, as a blanket practice); figures.json, block 4 of the
+  write-up and both goldens are byte-identical to 1297e652.
+- Readers: rounds 1 to 3 no leak; round 4 (leak-task166d) clean on Q1 to Q4 with Q6 an analytical choice, its one
+  mild-to-moderate hint (the support-agreement sentence's income condition) reworded; the targeted re-read of 7117491f
+  (leak-task166e) clean, Q1 to Q4 none, Q6 an analytical choice, nothing reading as planted, its mild tells recorded
+  under Residual.
+- Duplicates: guard heart WARN (`repeat.question_form`, answered at the draw), no BLOCK; guard surface promotes task167
+  back to back (decisive pattern E and the close_out_summary context artifact on both cards; task167's v2 card
+  registered after this card) with a differentiation line on the card, and the seven card-level pairs differentiated
+  at the draw (task155, task37, task117, task137, task44, task97, task197), all left to the author's optional
+  clone-check.
+- Gates at ship: checks 117, verify 14 on its own pandas path, two byte-identical builds, figures_check 51, precut 51
+  checks with no FAIL, voice-check PASS, leak.py REVIEW answered, container audit clean on target/ and golden/, guard
+  validate clean, cracker pair ceiling 38.8 and mirror leakage 18.8 per cent; target.zip 7117491f from the final
+  rebuild.
 
 ## Tried and rejected
 
