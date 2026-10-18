@@ -48,7 +48,7 @@
    "xlsx"
   ],
   "largest_file": "renewal_case_notices_2024-01_2026-12.csv",
-  "largest_file_rows": 72572
+  "largest_file_rows": 72625
  },
  "sources": [
   {
@@ -64,8 +64,8 @@
   {
    "path": "case_actions_2024-2026.csv",
    "format": "csv",
-   "bytes": 241619,
-   "rows": 2428,
+   "bytes": 239624,
+   "rows": 2410,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, case-action log",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -82,8 +82,8 @@
   {
    "path": "dependants_2026-12.csv",
    "format": "csv",
-   "bytes": 1033061,
-   "rows": 23222,
+   "bytes": 1033457,
+   "rows": 23231,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Benefits, covered dependants (no names)",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -118,8 +118,8 @@
   {
    "path": "h1b_extension_calendar_2027.xlsx",
    "format": "xlsx",
-   "bytes": 129466,
-   "rows": 4087,
+   "bytes": 129396,
+   "rows": 4084,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software immigration team, 2027 H-1B extension calendar",
    "date": "2026-11-20",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -127,7 +127,7 @@
   {
    "path": "mobility_renewal_standard.pdf",
    "format": "pdf",
-   "bytes": 55595,
+   "bytes": 55749,
    "rows": null,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility, Work Permit Renewal Standard GM-07 revision 4. It cites two real USCIS changes as the company states them: the end of automatic extension for renewals filed on or after 30 October 2025 (DHS interim final rule) and the 18-month validity of (c)(9) cards approved from 5 December 2025",
    "date": "2025-11-12",
@@ -136,8 +136,8 @@
   {
    "path": "packet_dispatch_log_2025-2026.csv",
    "format": "csv",
-   "bytes": 894037,
-   "rows": 8357,
+   "bytes": 893569,
+   "rows": 8355,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software mailroom, dispatch log from its two dispatch systems",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -163,8 +163,8 @@
   {
    "path": "renewal_case_notices_2024-01_2026-12.csv",
    "format": "csv",
-   "bytes": 11181631,
-   "rows": 72572,
+   "bytes": 11189567,
+   "rows": 72625,
    "source": "Constructed for this task (seeded, deterministic): Marrowby Teale LLP (fictional outside counsel), case-management export of the USCIS notices and case-status events logged on Sallowmere Software's work-permit renewal matters, in the layout of a law firm's export; not USCIS records",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -172,7 +172,7 @@
   {
    "path": "renewal_case_register.xlsx",
    "format": "xlsx",
-   "bytes": 1615153,
+   "bytes": 1615315,
    "rows": 19066,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software Global Mobility (fictional), case register, two layouts across its April 2025 system change",
    "date": "2026-12-04",
@@ -181,8 +181,8 @@
   {
    "path": "work_permits_2026-12.xlsx",
    "format": "xlsx",
-   "bytes": 1922174,
-   "rows": 37991,
+   "bytes": 1920096,
+   "rows": 37936,
    "source": "Constructed for this task (seeded, deterministic): Sallowmere Software HR Systems, work permit roster",
    "date": "2026-12-04",
    "license": "CC0-1.0 (original work, constructed for this task)"

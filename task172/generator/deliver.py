@@ -42,6 +42,7 @@ def figures(target):
         expedite_response="about a week",
         rival_record_months=C.half_month(R["record KM, all receipts"]),
         rival_default_months=C.half_month(R["default: post-rule record, appointment waits plus the new delay"]),
+        rival_default_months_mix=C.half_month(R["default path reweighted to the quarter's categories"]),
         refile_days=C.REFILE_DAYS,
         month_days=C.MONTH_DAYS,
         standard_sections=["2.3", "3.1", "4.2", "4.3"],
@@ -269,11 +270,12 @@ def write_submission(path, F):
         "USCIS is setting fingerprint appointments %d weeks after receipt, so about nine in ten of the quarter's "
         "renewals that need an appointment will still be pending on the day the filer's card expires, and since "
         "renewals stopped extending the card, those still pending at their card's expiry have mostly been decided about "
-        "a week after the expedite request the team files when the card expires. Not %.1f months, the new appointment "
-        "delay laid on the record's appointment-route waits, which ignores that those waits now end at the card's "
-        "expiry. Not %.1f months, the 80th percentile of the record's own waits with open renewals censored, which "
-        "reflects appointments %d to 5 weeks out." % (
-            F["quote_months"], F["lead_weeks_now"], F["rival_default_months"], F["rival_record_months"],
+        "a week after the expedite request the team files when the card expires. Not %.1f to %.1f months, the new "
+        "appointment delay laid on the record's waits (%.1f at the quarter's mix of categories, %.1f at the record's), "
+        "which ignores that those waits now end at the card's expiry. Not %.1f months, the 80th percentile of the "
+        "record's own waits with open renewals censored, which reflects appointments %d to 5 weeks out." % (
+            F["quote_months"], F["lead_weeks_now"], F["rival_default_months_mix"], F["rival_default_months"],
+            F["rival_default_months_mix"], F["rival_default_months"], F["rival_record_months"],
             F["lead_weeks_before"]), "",
         "## 2. Critical Components", "",
         "1. Fingerprint appointments for renewals received in October and November 2026: a median of **%d weeks** after "

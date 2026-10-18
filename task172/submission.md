@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**The benefits portal should quote 5.5 months for the work-permit renewals filed from January to March 2027.** USCIS is setting fingerprint appointments 17 weeks after receipt, so about nine in ten of the quarter's renewals that need an appointment will still be pending on the day the filer's card expires, and since renewals stopped extending the card, those still pending at their card's expiry have mostly been decided about a week after the expedite request the team files when the card expires. Not 7.0 months, the new appointment delay laid on the record's appointment-route waits, which ignores that those waits now end at the card's expiry. Not 4.0 months, the 80th percentile of the record's own waits with open renewals censored, which reflects appointments 4 to 5 weeks out.
+**The benefits portal should quote 5.5 months for the work-permit renewals filed from January to March 2027.** USCIS is setting fingerprint appointments 17 weeks after receipt, so about nine in ten of the quarter's renewals that need an appointment will still be pending on the day the filer's card expires, and since renewals stopped extending the card, those still pending at their card's expiry have mostly been decided about a week after the expedite request the team files when the card expires. Not 6.5 to 7.0 months, the new appointment delay laid on the record's waits (6.5 at the quarter's mix of categories, 7.0 at the record's), which ignores that those waits now end at the card's expiry. Not 4.0 months, the 80th percentile of the record's own waits with open renewals censored, which reflects appointments 4 to 5 weeks out.
 
 ## 2. Critical Components
 

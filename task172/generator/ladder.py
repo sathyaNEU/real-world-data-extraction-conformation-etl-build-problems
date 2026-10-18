@@ -35,6 +35,26 @@ def wait_rows(rens, lo=None, hi=None, route=None):
     return rows
 
 
+def weighted_km_quantile(rows, p=0.8):
+    """Kaplan-Meier with case weights: (time, event, weight) rows"""
+    rows = sorted(rows)
+    tot = sum(r[2] for r in rows)
+    at_risk, S, i, n = tot, 1.0, 0, len(rows)
+    while i < n:
+        t, d, wsum, j = rows[i][0], 0.0, 0.0, i
+        while j < n and rows[j][0] == t:
+            d += rows[j][2] * rows[j][1]
+            wsum += rows[j][2]
+            j += 1
+        if d:
+            S *= 1 - d / at_risk
+            if S <= 1 - p + 1e-12:
+                return t
+        at_risk -= wsum
+        i = j
+    return float("nan")
+
+
 def routes(Q):
     rens, comp, T = Q["rens"], Q["comp"], Q["T"]
     out = {}
@@ -73,8 +93,33 @@ def routes(Q):
     recent = K.km_quantile(wait_rows(rens, lo=OLD[0], hi=OLD[1])) / M
     out["record since the rule plus the new delay, flat"] = recent + dL / M
     out["record since the rule plus the new delay times the appointment share"] = recent + comp["pA"] * dL / M
+    # the same shift at the quarter's own appointment share: a percentile moved by a mean, landing by coincidence
+    pA_q = sum(Q["mix"][c] * comp["pA_cat"][c] for c in C.CATS)
+    out["_pA_quarter"] = pA_q
+    out["record since the rule plus the new delay times the quarter's appointment share"] = recent + pA_q * dL / M
+    out["record, all receipts, plus the new delay times the quarter's appointment share"] = (
+        K.km_quantile(rec_all) / M + pA_q * dL / M)
+    # the default path reweighted to the quarter's categories: the post-rule rows (all (c)(26)) weighted so the
+    # appointment route carries the quarter's share
+    pA_post = float(np.mean([r["route"] == "appointment" for r in rens if r["route"] and not r["withdrawn"] and
+                             OLD[0] <= r["received"] <= OLD[1]]))
+    wrows = []
+    for r in rens:
+        if r["withdrawn"] or r["received"] is None or not (OLD[0] <= r["received"] <= OLD[1]) or not r["route"]:
+            continue
+        end = min(x for x in (C.EXPORT, r["stop"]) if x)
+        ap = r["route"] == "appointment"
+        add = dL if ap else 0.0
+        wt = pA_q / pA_post if ap else (1 - pA_q) / (1 - pA_post)
+        if r["decided"] and r["decided"] <= end:
+            wrows.append(((r["decided"] - r["received"]).days + add, 1, wt))
+        else:
+            wrows.append(((end - r["received"]).days + add, 0, wt))
+    out["default path reweighted to the quarter's categories"] = weighted_km_quantile(wrows) / M
     w, _ = K.simulate(comp, cap=False)
     out["stage model, uncapped"] = float(np.quantile(w, 0.8)) / M
+    w, _ = K.simulate(comp, cap=False, mix=Q["mix"])
+    out["stage model, uncapped, the quarter's categories"] = float(np.quantile(w, 0.8)) / M
     rng = np.random.default_rng(7)
     n = K.N_SIM
     appt = rng.random(n) < comp["pA"]
@@ -206,9 +251,17 @@ def variants(Q):
 
 
 def misreads(Q):
-    """constructions that contradict a shipped record; each still lands the bin, none is in the family"""
-    base, mix = Q["comp"], Q["mix"]
-    return {"every expedite accepted (the log records denials)": _q(base, mix=mix, use_accept=False)}
+    """constructions that contradict a shipped record or the estimand; each still lands the bin, none is in the family"""
+    base, mix, rens = Q["comp"], Q["mix"], Q["rens"]
+    out = {"every expedite accepted (the log records denials)": _q(base, mix=mix, use_accept=False)}
+    # the response read from USCIS's reply to the service request (outcome_date), not the decision notice (4.2)
+    reply = np.array([(r["exp_reply"] - r["exp_req"]).days for r in rens if r["exp_req"] and r["received"] >= C.IFR
+                      and r["exp_out"] == "Accepted" and r["exp_reply"]], float)
+    out["the expedite response read from USCIS's reply date, not the decision notice"] = _q(dict(base, E=reply), mix=mix)
+    # the quarter's mix keeping the (c)(9) cards of holders whose adjustment is approved (they will not renew)
+    mix_all, _ = K.forward_mix(Q["T"], Q["cases"], Q["ref"], Q["d_median"], keep_approved=True)
+    out["the quarter's mix keeping holders whose adjustment is approved"] = _q(base, mix=mix_all)
+    return out
 
 
 def one_sigma(Q):

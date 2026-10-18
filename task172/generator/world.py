@@ -24,8 +24,8 @@ SIM_END = dt.date(2027, 12, 31)
 P_APPT = {"(c)(26)": 0.70,          # renewals USCIS sends to a new fingerprint appointment; the rest reuse fingerprints
           "(c)(9)": 0.30}           # (c)(9) renewals mostly reuse the biometrics taken for the adjustment application
 L_OLD = (28.0, 6.0)                # receipt to appointment, mean and sd in days, the 2024 and 2025 base (Seattle)
-LEAD_RISE = 0.9                    # days a month the base rose after 30 October 2025, filers no longer waiting out
-                                   # the extension
+LEAD_RISE = 0.4                    # days a month the base rose after 30 October 2025, filers no longer waiting out
+                                   # the extension (about a week by the summer of 2026)
 LEAD_SEASON = (-1.0, -2.0, -1.5, 0.0, 1.0, 2.0, 3.0, 2.5, 0.5, -0.5, -1.0, 1.5)   # by calendar month, days
 LEAD_DRIFT = (0.6, 1.6)            # month-to-month drift of the base, AR(1) coefficient and innovation sd, days
 STATE_LEAD = {"WA": 1.00, "CA": 1.12, "TX": 0.90, "NY": 1.18, "MA": 1.05, "NC": 0.94, "GA": 0.91, "VA": 1.07}
@@ -581,6 +581,8 @@ def build(seed_note="172"):
         if p.term and cs.opened <= p.term <= cs.received and cs.filed_by == "Counsel":
             cs.stop = p.term          # the team stopped before USCIS had the filing in hand: no receipt in its care
             cs.received = None
+            # a packet already with the mailroom still went out, but a closed matter is never filed again
+            cs.sends = cs.sends[:1] + [x for x in cs.sends[1:] if x["sent"] <= cs.stop]
             if cs.new_card is not None:
                 cs.new_card.case = None
                 cs.new_card.basis = "void"
