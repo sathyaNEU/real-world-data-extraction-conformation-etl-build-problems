@@ -20,7 +20,7 @@ Stage 2. Every number below is printed by `generator/core.py` or `generator/ceil
 | World | Colombia; Observatorio Territorial del Nororiente keeps the Registro de Acciones Colectivas from material delivered by the Resena Andina clipping service; personas drawn with `guard.py names --locale es_CO --seed 199` |
 | Spine | `envios_resena_andina.csv`, one row per outlet x city x delivery day, about 31,000 rows, 2024-01-01 to 2026-09-30 |
 | Forum / forcing event / org | line_manager_or_team / period_close (the half year closed on 30 September and the definitive extract on 5 November) / university_or_school |
-| Answer | Tibu, 63.9 recorded collective actions per 100,000 residents over 1 April to 30 September 2026 (the clean truth's value; re-tuned mid-bin against the realised counts when the pack is cut) |
+| Answer | Tibu, 92.2 recorded collective actions per 100,000 residents over 1 April to 30 September 2026 (137 gathering-days over a published population of 148,590) |
 
 **Data-native sentence.** In this register an action exists only where a monitored outlet filed an account of
 it, and the clipping service's delivery log measures, for every city and every month, how much material
@@ -69,15 +69,16 @@ The pipeline a competent analyst builds from the protocol's words and the files'
 7. Rank the eleven cities on the window's monthly level over the baseline's monthly level.
 8. Designate the top city and print its window rate.
 
-Ends on: Sardinata, 78.8 actions per 100,000 residents.
-Golden: Tibu, 63.9 actions per 100,000 residents.
+Ends on: Sardinata, 121.4 actions per 100,000 residents.
+Golden: Tibu, 92.2 actions per 100,000 residents.
 
 ## Stump sentence
 
-The default path files Sardinata at 78.8 actions per 100,000 residents because it ranks the eleven cities on
+The default path files Sardinata at 121.4 actions per 100,000 residents because it ranks the eleven cities on
 their own recorded rise with residents as the only denominator, and Sardinata's entire rise is the material
-two outlets began filing from it, while Tibu's 98 per cent rise happened with the material reaching the
-monitor from it unchanged.
+three outlets began filing from it, which took its delivered items from 12,670 to 22,211 while Tibu's rise
+happened with the material reaching the monitor from it unchanged at 12,935 against 3,220 for a quarter of
+the span.
 
 ## Three rules
 
@@ -120,8 +121,8 @@ monitor from it unchanged.
   path's wrong answer.
 - Analyst test: with every field read, every date and code resolved and the protocol's window and unit
   applied, the easy route compares each city's half-year actions with its own baseline and files Sardinata,
-  78.8 actions per 100,000 residents; the obvious correction, dividing actions by the register's own protest
-  material, files Teorama, whose citations halved when one outlet stopped republishing. `checks.py` executes
+  121.4 actions per 100,000 residents; the obvious correction, dividing actions by the register's own protest
+  material, files Teorama, whose citations fell by two thirds when one outlet stopped republishing. `checks.py` executes
   both on the clean truth and asserts the named wrong answers, then changes the denominator alone and asserts
   the golden.
 - Estimand: the protocol's designation clause fixes the population (every action the register holds for the
@@ -152,10 +153,10 @@ verdict last. The decisive rung is silent on all six.
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| 0 rows as the exports hold them, ranked on the rise (Convencion 3.112) | the window and unit clauses send a reader to the action date and the gathering-day | two date columns and a day count column | yes, the first group-by | none ships | yes, the duplicate check finds the extract overlap | yes | readable |
-| 1 battery run, actions on the filed unit, per 100,000, ranked on the rise (Sardinata 2.500) | the protocol's comparison clause gives the baseline | counts and a population join | yes, the opponent default | none ships | yes | yes | readable |
-| 2 conditioned on the register's own protest material: retained items, citations or citing outlets (Teorama 2.000, 2.000, 1.764) | no sentence names a denominator; the field's published caveat is general | the retained-item and citation columns sit in the files the call already reads | yes, the media-reach reflex reaches exactly here | none ships | no, no sweep divides a count by its own coverage | one ratio | readable |
-| 3 (decisive) conditioned on the material the service delivered, every parameter-free form (Tibu 1.980) | no sentence names the delivered-item column, a denominator or an exposure; the protocol says only what an entry is | the delivered-item column sits in the same table as the retained-item column, named after the service's own delivery, with nothing marking it as the exposure and nothing excluding the other | no, measured: 10 of 10 reflexes name a wrong city, worst at 1.346 against the golden's 1.980 | none ships, and no audit, gold standard or certified figure measures the register's completeness | no, the battery does not reconcile a count against a volume at another grain | no, two ratios and a comparison across eleven cities | silent |
+| 0 rows as the exports hold them, ranked on the rise (Convencion 3.013) | the window and unit clauses send a reader to the action date and the gathering-day | two date columns and a day count column | yes, the first group-by | none ships | yes, the duplicate check finds the extract overlap | yes | readable |
+| 1 battery run, actions on the filed unit, per 100,000, ranked on the rise (Sardinata 3.175) | the protocol's comparison clause gives the baseline | counts and a population join | yes, the opponent default | none ships | yes | yes | readable |
+| 2 conditioned on the register's own protest material: retained items, citations or citing outlets (Teorama 1.748 on citations) | no sentence names a denominator; the field's published caveat is general | the retained-item and citation columns sit in the files the call already reads | yes, the media-reach reflex reaches exactly here | none ships | no, no sweep divides a count by its own coverage | one ratio | readable |
+| 3 (decisive) conditioned on the material the service delivered, every parameter-free form (Tibu 2.435) | no sentence names the delivered-item column, a denominator or an exposure; the protocol says only what an entry is | the delivered-item column sits in the same table as the retained-item column, named after the service's own delivery, with nothing marking it as the exposure and nothing excluding the other | no, measured: 10 of 10 reflexes name a wrong city, worst at 1.346 against the golden's 1.980 | none ships, and no audit, gold standard or certified figure measures the register's completeness | no, the battery does not reconcile a count against a volume at another grain | no, two ratios and a comparison across eleven cities | silent |
 
 **The eligibility condition is not a rung.** A response that ignores it still files Sardinata, because
 Sardinata is eligible, and the only city it removes is Hacari, whose rise is 0.95 and which no route names.
@@ -183,14 +184,15 @@ It supplies the scorecard's threshold column and is asserted inert against every
 
 | Rung | Analysis | Names | Score | Dies to |
 |---|---|---|---|---|
-| 0 | the exports read as they come | Convencion | 3.112 | the publication clause (the definitive supersedes) and the manual's unit |
-| 1 | battery run, filed unit, per 100,000, rise against the city's own baseline (the default path) | Sardinata | 2.500 | the protocol's outcome: a rise in the actions occurring, not in the entries held |
-| 2 | conditioned on the register's own protest material (retained items 2.000, citations 2.000, citing outlets 1.764), or capture estimated from citation redundancy | Teorama | 2.000 | the volumes are produced by the recorded actions, so the ratio cancels the rise; the redundancy family needs a free parameter the pack does not fix, and its winner moves from Teorama to Sardinata as that parameter moves |
-| 3 | conditioned on the material the service delivered, the only volume not produced by the actions | **Tibu** | 1.980 | nothing |
+| 0 | the exports read as they come | Convencion | 3.013 | the publication clause (the definitive supersedes) and the manual's unit |
+| 1 | battery run, filed unit, per 100,000, rise against the city's own baseline (the default path) | Sardinata | 3.175 | the protocol's outcome: a rise in the actions occurring, not in the entries held |
+| 2 | conditioned on the register's own protest material (citations 1.748 against the golden's 1.071), or capture estimated from citation redundancy | Teorama | 1.748 | the volumes are produced by the recorded actions, so the ratio cancels the rise; the redundancy family needs a free parameter the pack does not fix, and its winner moves from Teorama to Sardinata as that parameter moves |
+| 3 | conditioned on the material the service delivered, the only volume not produced by the actions | **Tibu** | 2.435 | nothing |
 
-**Arithmetic.** Golden 4th of 11 on rung 1 (the default path), 1st on rung 3. Default-path margin leader over
-golden 1.26x; decisive margin golden over runner-up 0.810 ranking units, which is 1.69x, 3.4 standard errors
-of the ranked quantity (0.2398 in the same units) and 20.2 units of the lever's own noise (0.0401), the
+**Arithmetic, on the cut pack.** Golden 4th of 11 on rung 1 (the default path), 1st on rung 3. Default-path
+margin leader over golden 1.309x; decisive margin golden over runner-up San Calixto 1.815x. On the clean
+truth the same margins are 1.26x and 1.85x, the decisive margin is 0.910 ranking units, 3.8 standard errors
+of the ranked quantity (0.2398 in the same units) and 22.7 units of the lever's own noise (0.0401), the
 number Part 3's refinement asks for in place of a preference for a decision shape. Every parameter-free form of rung 3 names the golden: per delivered item 1.69x, per square root 1.25x,
 saturating 1.28x, a fitted log-presence covariate at beta 1.002 1.69x. The exposure elasticity corridor is
 [0.255, 1.600] and the fitted value sits at 1.002 inside it. Move needed 0.520 ranking units against 1.500

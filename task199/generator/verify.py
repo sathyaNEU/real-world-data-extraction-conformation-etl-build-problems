@@ -151,7 +151,7 @@ def main():
                    "periodo de publicacion de los items",
                    ["tibu", "sardinata"])
     dic = readback("md", "diccionario_datos.md",
-                   "cuenta todo lo que el servicio remitio desde ese municipio",
+                   "cuenta cuanto remitio el servicio desde ese municipio",
                    ["designacion", "tasa ajustada"])
     pan = readback("xlsx", "panel_fuentes.xlsx", "agencia andina de prensa", ["volumen mensual"])
     pob = readback("xlsx", "proyecciones_poblacion.xlsx", "proyeccion 2026", ["designado"])
@@ -159,7 +159,7 @@ def main():
     # the filed estimand's own clauses are in the protocol, once each
     for clause in ("1 de abril al 30 de septiembre de 2026",
                    "veinticuatro meses terminados el 31 de diciembre de 2025",
-                   "al menos treinta acciones", "por 100.000 habitantes",
+                   "al menos setenta acciones", "por 100.000 habitantes",
                    "extracto definitivo del 5 de noviembre de 2026"):
         ok(prot.count(clause.lower()) >= 1, "protocol.states[%s]" % clause[:34])
     ok(man.count("una concentracion, en un dia, en un lugar") == 1, "manual.unit_stated_once")
@@ -236,7 +236,7 @@ def main():
         ok(edge >= 0.03 - 1e-9, "bin.%s" % c, "%.4f edge %.4f" % (v, edge))
 
     # ---- the eligibility condition, and that it removes nobody who could win
-    inelig = [c for c in PANEL if ad[(c, "w")] < 30]
+    inelig = [c for c in PANEL if ad[(c, "w")] < 70]
     ok("Tibu" not in inelig, "eligibility.golden_is_eligible", str(inelig))
     ok(all(c != o_rise[0] for c in inelig), "eligibility.removes_no_default_path_leader")
 
@@ -270,7 +270,15 @@ def main():
 
     # ---- provenance and the distractors
     man_rows = rows("manifiesto_exportacion.csv")
-    ok(len(man_rows) >= 10, "provenance.manifest_covers_the_bundle", str(len(man_rows)))
+    listed = {x["archivo"] for x in man_rows}
+    # a register need not list itself; every other shipped file has a row
+    shipped = set(files) - {"manifiesto_exportacion.csv"}
+    ok(listed >= shipped and not (listed - set(files)),
+       "provenance.manifest_equals_the_shipped_set",
+       "missing %s, extra %s" % (sorted(shipped - listed), sorted(listed - set(files))))
+    ok(not any(w in " ".join(x["area_que_lo_entrega"] + x["descripcion"] for x in man_rows).lower()
+               for w in ("sintetic", "ficticio", "ejercicio", "generado")),
+       "provenance.stays_inside_the_fiction")
     meta = json.load(open(os.path.join(os.path.dirname(TARGET), "metadata.json")))
     ok(len(meta["distractor_files"]) >= 2, "provenance.distractors_declared")
     ok(not any(re.search(r"distract|answer|golden", f, re.I) for f in files),

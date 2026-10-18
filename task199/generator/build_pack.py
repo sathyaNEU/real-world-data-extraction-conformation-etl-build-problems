@@ -43,6 +43,7 @@ PRELIM_SHARE = {"Valledupar": 0.78, "Barrancabermeja": 0.71, "Aguachica": 0.66, 
                 "Tibu": 0.62, "Sardinata": 0.95, "El Tarra": 0.69, "Convencion": 0.58,
                 "Teorama": 0.74, "San Calixto": 0.80, "Hacari": 0.61}
 MEAN_EXTRA_DAYS = 1.7      # mean extra days of an action that runs more than one
+REJECTED_LOTE = ("Rio de Oro", date(2025, 8, 11))   # the batch the register rejected, credited back
 MULTIDAY = {"Valledupar": 0.12, "Barrancabermeja": 0.18, "Aguachica": 0.09, "Ocana": 0.11,
             "Tibu": 0.14, "Sardinata": 0.16, "El Tarra": 0.21, "Convencion": 0.08,
             "Teorama": 0.13, "San Calixto": 0.10, "Hacari": 0.15}
@@ -572,6 +573,8 @@ def invoice_lines(d):
     for r in d["deliveries"]:
         if r["city"] in PANEL_NAMES or r["date"].year != 2025:
             continue
+        if r["date"] == REJECTED_LOTE[1] and desk_seat(r["city"]) == REJECTED_LOTE[0]:
+            continue                      # the credit note: the register rejected this lote
         pub = publication_period(r["city"], r["date"])
         key = (desk_seat(r["city"]), pub.year, pub.month)
         by[key] = by.get(key, 0) + r["delivered"]
@@ -749,9 +752,9 @@ def write_protocol():
          ("h", "3. Extractos y cierre"),
          ("p", "3.1 El registro publica un extracto preliminar al final de cada mes y un extracto "
                "definitivo treinta dias despues del cierre del mes. El extracto definitivo reemplaza "
-               "al preliminar para todos los efectos de este protocolo."),
+               "al preliminar para cualquier efecto de este protocolo."),
          ("p", "3.2 La designacion se calcula sobre el extracto definitivo del 5 de noviembre de 2026, "
-               "posterior al cierre definitivo de todos los meses del semestre evaluado."),
+               "posterior al cierre definitivo de cada mes del semestre evaluado."),
          ("h", "4. Designacion"),
          ("p", "4.1 La designacion se refiere a un aumento de la actividad de protesta del municipio. "
                "Los registros del Observatorio son la evidencia de esa actividad y no su medida."),
@@ -759,8 +762,8 @@ def write_protocol():
                "se compara cada municipio del panel con lo que su propio registro de los veinticuatro "
                "meses terminados el 31 de diciembre de 2025 implica para un semestre, contando las "
                "acciones por su fecha de ocurrencia."),
-         ("p", "4.3 Es elegible el municipio del panel que registre al menos treinta acciones en el "
-               "semestre y que haya pertenecido al panel durante todo el periodo de comparacion."),
+         ("p", "4.3 Es elegible el municipio del panel que registre al menos setenta acciones en el "
+               "semestre y que haya pertenecido al panel durante el periodo de comparacion completo."),
          ("p", "4.4 Se designa un municipio por semestre. Si dos municipios resultan equivalentes, se "
                "designa el de mayor aumento absoluto de acciones."),
          ("p", "4.5 La nota de vigilancia publica, para el municipio designado, su tasa de acciones "
@@ -795,7 +798,7 @@ def write_manual():
                "2025 con dos sectores."),
          ("h", "3. Revision"),
          ("p", "3.1 El equipo revisa una muestra de entradas cada mes y corrige la que no cumpla 1.1."),
-         ("t", [["Campo", "Plantilla 2024", "Plantilla 2025", "Plantilla 2026"],
+         ("t", [["Campo del registro", "en 2024", "en 2025", "en 2026"],
                 ["fecha de accion", "si", "si", "si"],
                 ["dias", "no", "no", "si"],
                 ["extracto", "no", "no", "si"],
@@ -892,7 +895,7 @@ corrio. La exportacion de 2025 renombro las columnas y escribe las fechas en for
 ## envios_resena_andina.csv
 
 Una fila es un dia en que un medio remitio material fechado en un municipio. `items_entregados`
-cuenta todo lo que el servicio remitio desde ese municipio, cualquiera sea el tema.
+cuenta cuanto remitio el servicio desde ese municipio, sea cual sea el tema.
 `items_retenidos` cuenta los items que el filtro del registro conservo para revision, es decir los
 que pueden describir una accion. `periodo_publicacion` es el mes en que se publicaron los items de
 la fila, que no siempre es el mes de la remision. Los codigos de fuente llevan el prefijo RSA desde
@@ -948,10 +951,29 @@ def write_manifest(rowcounts):
         "incidencias_viales.csv": "incidentes de la autoridad de transporte",
         "manifiesto_exportacion.csv": "este manifiesto",
     }
-    rows = [[k, v, DESC.get(k, "archivo del extracto"), "sintetico", "2026-11-05",
-             "uso interno del Observatorio"] for k, v in sorted(rowcounts.items())]
+    ORIGEN = {
+        "rac_acciones_2024.csv": "RAC, exportacion anual", "rac_acciones_2025.csv": "RAC, exportacion anual",
+        "rac_acciones_2026.csv": "RAC, exportacion anual",
+        "envios_resena_andina.csv": "Resena Andina, bitacora de remisiones",
+        "citas_rac.csv": "RAC, vinculo item-entrada",
+        "resumen_mensual_rac_2025.csv": "RAC, retornos de mesa",
+        "tabla_municipios.csv": "lista nacional de codigos, copia de trabajo",
+        "panel_fuentes.xlsx": "coordinacion de fuentes",
+        "proyecciones_poblacion.xlsx": "serie oficial de proyecciones, copia de trabajo",
+        "protocolo_designacion.pdf": "direccion del Observatorio",
+        "manual_codificacion.pdf": "equipo de codificacion",
+        "boletin_2026T1.pdf": "publicaciones",
+        "facturas_resena_andina_2025.pdf": "Resena Andina, administracion",
+        "diccionario_datos.md": "equipo de datos",
+        "indice_menciones_redes.csv": "proveedor de escucha digital",
+        "incidencias_viales.csv": "autoridad de transporte, entrega periodica",
+        "manifiesto_exportacion.csv": "equipo de datos",
+    }
+    rows = [[k, v, DESC.get(k, "archivo del extracto"), ORIGEN.get(k, "equipo de datos"),
+             "2026-11-05", "uso interno del Observatorio"]
+            for k, v in sorted(rowcounts.items())]
     w_csv(os.path.join(TARGET, "manifiesto_exportacion.csv"),
-          ["archivo", "filas", "descripcion", "origen", "fecha_extracto", "licencia"], rows)
+          ["archivo", "filas", "descripcion", "area_que_lo_entrega", "fecha_extracto", "uso"], rows)
 
 
 def write_pack(d, pops):

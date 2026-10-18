@@ -1,0 +1,297 @@
+{
+ "call": {
+  "city": "Tibu",
+  "rate_per_100k": 92.2,
+  "window_action_days": 137,
+  "baseline_action_days": 226
+ },
+ "components": {
+  "window_action_days": 137,
+  "baseline_action_days": 226,
+  "window_delivered_items": 3220,
+  "baseline_delivered_items": 12935,
+  "population": 148590
+ },
+ "runner_up": {
+  "city": "San Calixto",
+  "rate_per_100k": 76.4,
+  "ratio": 1.34
+ },
+ "decisive_ratio": {
+  "Tibu": 2.44,
+  "San Calixto": 1.34,
+  "Barrancabermeja": 1.17,
+  "Ocana": 1.15,
+  "Teorama": 1.14,
+  "Hacari": 1.07,
+  "Valledupar": 1.0,
+  "Aguachica": 0.89,
+  "El Tarra": 0.48,
+  "Sardinata": 0.45,
+  "Convencion": 0.44
+ },
+ "eligibility": {
+  "floor": 70,
+  "below": [
+   "Hacari"
+  ]
+ },
+ "default_path_rival": {
+  "city": "Sardinata",
+  "window_action_days": 177,
+  "baseline_action_days": 223,
+  "window_delivered_items": 22211,
+  "baseline_delivered_items": 12670
+ },
+ "citation_rival": {
+  "city": "Teorama",
+  "ratio": 1.14
+ },
+ "default_path": {
+  "city": "Sardinata",
+  "rate_per_100k": 121.4
+ },
+ "watch_note": [
+  {
+   "city": "Tibu",
+   "window": 137,
+   "baseline": 226,
+   "rate": 92.2,
+   "eligible": "si",
+   "designated": "si"
+  },
+  {
+   "city": "San Calixto",
+   "window": 80,
+   "baseline": 216,
+   "rate": 76.4,
+   "eligible": "si",
+   "designated": "no"
+  },
+  {
+   "city": "Barrancabermeja",
+   "window": 169,
+   "baseline": 564,
+   "rate": 84.4,
+   "eligible": "si",
+   "designated": "no"
+  },
+  {
+   "city": "Ocana",
+   "window": 100,
+   "baseline": 358,
+   "rate": 102.7,
+   "eligible": "si",
+   "designated": "no"
+  },
+  {
+   "city": "Teorama",
+   "window": 81,
+   "baseline": 292,
+   "rate": 49.7,
+   "eligible": "si",
+   "designated": "no"
+  },
+  {
+   "city": "Hacari",
+   "window": 56,
+   "baseline": 215,
+   "rate": 63.5,
+   "eligible": "no",
+   "designated": "no"
+  },
+  {
+   "city": "Valledupar",
+   "window": 334,
+   "baseline": 1326,
+   "rate": 66.1,
+   "eligible": "si",
+   "designated": "no"
+  },
+  {
+   "city": "Aguachica",
+   "window": 86,
+   "baseline": 383,
+   "rate": 75.9,
+   "eligible": "si",
+   "designated": "no"
+  },
+  {
+   "city": "El Tarra",
+   "window": 175,
+   "baseline": 252,
+   "rate": 98.5,
+   "eligible": "si",
+   "designated": "no"
+  },
+  {
+   "city": "Sardinata",
+   "window": 177,
+   "baseline": 223,
+   "rate": 121.4,
+   "eligible": "si",
+   "designated": "no"
+  },
+  {
+   "city": "Convencion",
+   "window": 107,
+   "baseline": 154,
+   "rate": 88.9,
+   "eligible": "si",
+   "designated": "no"
+  }
+ ],
+ "ask_a_cells": {
+  "T1|diario": 3090,
+  "T1|radio": 1555,
+  "T1|digital": 995,
+  "T1|agencia": 1711,
+  "T2|diario": 3205,
+  "T2|radio": 1609,
+  "T2|digital": 989,
+  "T2|agencia": 1796,
+  "T3|diario": 3170,
+  "T3|radio": 1568,
+  "T3|digital": 970,
+  "T3|agencia": 1841,
+  "T4|diario": 3162,
+  "T4|radio": 1472,
+  "T4|digital": 918,
+  "T4|agencia": 1808
+ },
+ "ask_a_totals": {
+  "T1": 7351,
+  "T2": 7599,
+  "T3": 7549,
+  "T4": 7360
+ },
+ "ask_a_billed": {
+  "T1": 7407,
+  "T2": 7531,
+  "T3": 7598,
+  "T4": 7234
+ },
+ "ask_a_amounts": {
+  "T1": 16545.0,
+  "T2": 16812.7,
+  "T3": 16980.5,
+  "T4": 16174.0
+ },
+ "ask_a_differences": {
+  "publicado_2024": 82,
+  "publicado_2025_remitido_2026": 125,
+  "lote_rechazado": 7
+ },
+ "ask_b": [
+  {
+   "city": "Abrego",
+   "held": 146,
+   "empty_months": 0
+  },
+  {
+   "city": "Bucarasica",
+   "held": 17,
+   "empty_months": 4
+  },
+  {
+   "city": "Cachira",
+   "held": 37,
+   "empty_months": 1
+  },
+  {
+   "city": "Chimichagua",
+   "held": 131,
+   "empty_months": 0
+  },
+  {
+   "city": "Curumani",
+   "held": 120,
+   "empty_months": 0
+  },
+  {
+   "city": "El Carmen",
+   "held": 58,
+   "empty_months": 0
+  },
+  {
+   "city": "Gonzalez",
+   "held": 29,
+   "empty_months": 1
+  },
+  {
+   "city": "La Esperanza",
+   "held": 56,
+   "empty_months": 0
+  },
+  {
+   "city": "La Playa",
+   "held": 27,
+   "empty_months": 1
+  },
+  {
+   "city": "Pelaya",
+   "held": 66,
+   "empty_months": 0
+  },
+  {
+   "city": "Rio de Oro",
+   "held": 54,
+   "empty_months": 0
+  },
+  {
+   "city": "San Martin",
+   "held": 89,
+   "empty_months": 0
+  }
+ ],
+ "ask_c": [
+  {
+   "sector": "Campesinado",
+   "per_action": 264.9,
+   "largest": 851
+  },
+  {
+   "sector": "Comerciantes",
+   "per_action": 340.4,
+   "largest": 699
+  },
+  {
+   "sector": "Docentes",
+   "per_action": 295.4,
+   "largest": 793
+  },
+  {
+   "sector": "Juntas comunales",
+   "per_action": 282.3,
+   "largest": 783
+  },
+  {
+   "sector": "Juventudes",
+   "per_action": 183.9,
+   "largest": 466
+  },
+  {
+   "sector": "Mineria artesanal",
+   "per_action": 329.2,
+   "largest": 818
+  },
+  {
+   "sector": "Mujeres organizadas",
+   "per_action": 370.4,
+   "largest": 806
+  },
+  {
+   "sector": "Transportadores",
+   "per_action": 276.6,
+   "largest": 807
+  }
+ ],
+ "units": {
+  "rate_per_residents": 100000,
+  "items_per": 1000,
+  "population_vintage": 2026,
+  "protocol_clause_outcome": 4.1,
+  "protocol_clause_estimand": 4.2,
+  "protocol_clause_eligibility": 4.3
+ }
+}

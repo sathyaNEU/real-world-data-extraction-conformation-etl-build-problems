@@ -217,12 +217,12 @@ def main():
     den = (sum((x - mx) ** 2 for x in xs) * sum((y - my) ** 2 for y in ys)) ** 0.5
     ok(cov / den > 0.85, "SF12.citations_track_the_action_count", "corr %.3f" % (cov / den))
     # SF13 the eligibility condition is inert
-    inelig = [c for c in panel if r[c]["aw"] < 30]
+    inelig = [c for c in panel if r[c]["aw"] < 70]
     ok(inelig == ["Hacari"] or all(c != g for c in inelig), "SF13.eligibility_is_inert",
        "ineligible: %s" % (inelig or "none"))
-    margin_floor = min(abs(r[c]["aw"] - 30) for c in panel)
+    margin_floor = min(abs(r[c]["aw"] - 70) for c in panel)
     ok(margin_floor >= 5, "SF13.no_city_sits_on_the_eligibility_floor",
-       "nearest %d actions from the floor" % margin_floor)
+       "nearest %d actions from the floor of 70" % margin_floor)
 
     # ---------------------------------------------------- screen 6 invariants
     s6 = core.screen6(t)
