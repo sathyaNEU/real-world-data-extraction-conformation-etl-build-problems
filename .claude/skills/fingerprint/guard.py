@@ -156,6 +156,17 @@ def load_cards(cards_dir=CARDS_DIR):
     return sorted(cards, key=draw_key)
 
 
+def card_is_spent(c):
+    """True when this card's own architecture is spent, so no reviewer will ever read the build.
+
+    A spent architecture's card stays on file, because its driver, stump and lineage still have to be
+    screened against (`fingerprint` Part 1: a card records identity, never outcome). What it must not do is
+    hold the axis bans, which exist so a reviewer does not read two similar builds side by side. A build
+    that was re-rooted or paused with its architecture dead is read by nobody, and in a lane whose
+    objective the taxonomy serves with few task types its axes fence off ground no live build occupies."""
+    return bool(c.get("architecture_spent"))
+
+
 def draw_key(c):
     """Draw order: the date drawn, then the time `register` stamped (cards filed before the stamp existed keep their
     task-number order and come ahead of stamped cards drawn the same day), then the task number."""
@@ -458,9 +469,10 @@ def check(cand, cards, vocab, status=None):
         if not cand.get("registered") and not (CARDS_DIR / ("%s.json" % cand.get("task"))).exists():
             key = (key[0], "9999", key[2])      # a draw not yet filed comes after everything filed that day
         ordered = [c for c in ordered if draw_key(c) < key]
-    recent = ordered[-RECENT:]
+    live = [c for c in ordered if not card_is_spent(c)]
+    recent = live[-RECENT:]
     window = ordered[-WINDOW:]
-    last = ordered[-1:] if ordered else []
+    last = live[-1:] if live else []
     diff = {k: v for k, v in (cand.get("differentiation") or {}).items() if (v or "").strip()}
 
     def tasks(cs):

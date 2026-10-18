@@ -45,6 +45,7 @@ anything else.
 | `driver_concrete`, `stump` | the move in the build's terms; the wrong committed answer and the step that lands it |
 | `answer`, `answer_source` | the committed answer verbatim, its source |
 | `lineage`, `differentiation` | earlier architectures with fate and driver; `{taskNN: one line}` against a flagged build |
+| `architecture_spent` | `true` when this card's own draw is dead and the slot has moved past it: the card then holds no axis ban, while its driver, stump and lineage are still screened against |
 
 **The driver catches the reskin.** Strip industry, organisation, metric names and figures; keep what
 quantity decides, where it comes from and what it does to the naive answer, so one insight in two
@@ -154,7 +155,10 @@ BLOCK if any rule blocks, else WARN, else PASS; exit 1 on BLOCK.
 | `people.first` / `people.last` | BLOCK, else WARN | first name in 3+ builds or the last twelve / surname in 2+ or the last twelve; else one older build |
 | `overuse.*`, `repeat.*` | WARN | domain, objective, shape, Gate G, decision type, deliverable set, PDF share, opening move, question form, geography, niche |
 
-- **Three and twelve:** the neighbours a reviewer holds, and one sitting.
+- **Three and twelve:** the neighbours a reviewer holds, and one sitting. The axis bans run against the
+  last three **live** cards: a card carrying `architecture_spent` is skipped, because those bans exist so a
+  reviewer does not read two similar builds side by side and a dead architecture is read by nobody. The
+  similarity rules and `slots` still see it, since a spent driver is the one most expensive to repeat.
 - **Two structural tests:** the Template clone on record (task86 v1, task72 v2) differed only in decision
   type, so `test.same_puzzle` alone passed it.
 - **Differentiation** clears only similarity rules, never axis bans. A line that cannot be written is the
@@ -176,7 +180,11 @@ back; the better outcome is never to face it.
 
 - **A PASS read as "not a clone"**: the design note still answers the similarity test.
 - **A card written to pass**: if two keys fit, use the reviewer's. **A vague driver**: no quantity, no source.
-- **A stale card** after a re-root: bans run against the dead architecture and pass.
+- **A stale card** after a re-root: the similarity rules run against the dead architecture and pass, and its
+  axes fence off ground no live build occupies. When an architecture is spent, set `architecture_spent` on
+  its card the same day, and move the identity into `lineage` when the new draw is registered. Four spent
+  cards in one lane had closed four domain-and-objective pairings on an objective the taxonomy serves with
+  14 task types, and one of them BLOCKed a fresh draw that no driver could have cleared.
 - **Vocabulary drift:** a new `vocab.json` value only when none is honest (reason in `notes`); `other`
   exists so no untrue key is forced.
 - **A family offered on its label:** a mechanism `coverage` shows as never drawn may have died in lineage
