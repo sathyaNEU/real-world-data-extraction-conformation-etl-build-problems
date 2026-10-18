@@ -1,6 +1,6 @@
 {
   "task": "task249",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-18",
   "slot_note": "",
   "domain": "physical-environmental-sciences",
@@ -10,8 +10,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Take 8 nodes down for the bench at the June round: OZ06, OZ17, OZ21, OZ25 and OZ32 read low and OZ29, OZ33 and OZ34 read high; the other 28 stay up and get the inlet cleaning.",
+  "answer_source": "task249/submission.md, Final Recommendation",
   "gap": [
     "population"
   ],
@@ -30,23 +30,25 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the quality plan and both exports correctly converts the nodes' ppb to the network's micrograms, aligns the nodes' UTC with the network's UTC+1, regresses each node's hourly ozone over the eight weeks on its nearest reference analyser and pulls the nodes whose slope falls outside 0.85 to 1.15; the slope against an analyser kilometres away is pulled toward zero by the sites' imperfect hour-to-hour agreement, so the healthy distant nodes go on the list and the nodes drifted high stay off it.",
-  "domain_test": "The quantity that decides is each node's span against true ozone at its own inlet, which the low-cost sensor field estimates remotely by matching a node's distribution over weeks to the regional reference network's, because ozone is a regional secondary pollutant whose distribution background sites share while their hour-to-hour values differ with distance; with another field's nouns there is no regional ozone field, no reference analyser kilometres away and no span drift of a gas-sensitive semiconductor head, so the task stops making sense.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:span-from-distributions-against-a-regional-reference-not-paired-slope",
+  "analyst_test": "A strong analyst who reads every file correctly and corrects the paired slope for the analysers' imperfect agreement (an errors-in-variables slope, or each node's spread against the analysers') over all hours of the window files a list that holds the healthy hill nodes and leaves off the hill node drifted high.",
+  "domain_test": "The quantity that decides is each node's span against true ozone at its inlet, read remotely against a reference network the way the field reads it: on the hours of the well-mixed afternoon boundary layer, because at night elevated sites stand above the surface layer that strips the plain's ozone; with another field's nouns there is no boundary layer, no nocturnal ozone loss and no hill village above it, so the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:remote-span-on-the-mixed-afternoon-not-all-hours",
   "layer1": [
-    "the nodes' export in UTC and ppb, the regional network's in UTC+1 and micrograms per cubic metre at 20 degrees",
-    "re-sent rows after a node's mobile link drops, with a later received time",
-    "nodes moved between sites and heads swapped at the March cleaning round, recorded in the maintenance log's tables",
-    "the regional network's preliminary release for 2028 and validated release for earlier years",
-    "a firmware release that moved some nodes to 30-minute records and micrograms at 25 degrees"
+    "the nodes' export in UTC and ppb against the regional network's hour-ending UTC+1 and micrograms at 20 degrees",
+    "OZN-B nodes' half-hour records beside OZN-A's hourly ones",
+    "records sent twice after the December link drop, with a later received time",
+    "the spare unit at OZ19's site reporting as OZ19B until the register moved",
+    "firmware 4.2's renumbered status codes, the dictionary giving only the current ones",
+    "two nodes moved to new roofs at the March cleaning round",
+    "the regional network's provisional release for 2028 beside its validated release for 2026 and 2027"
   ],
   "stakeholder_role": "the network coordinator who sets the pull list for the maintenance contractor's June round",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "nodes_o3_hourly_2027-10_2028-05.csv: the centre's node export, one row per node and reported hour (UTC), ozone in ppb, October 2027 to May 2028",
-    "rows": 0,
+    "file": "nodes_o3_export_2027-09-20_2028-05-31.csv: the centre's export of every record its 36 nodes sent, one row per record received (UTC, ppb, status, received time), September 2027 to May 2028",
+    "rows": 270025,
     "entity": "one node-hour of ozone reading",
     "grain": "node x hour (UTC)",
     "source": "synthetic"
@@ -67,14 +69,14 @@
     ]
   },
   "deliverables": [
-    "ozone_nodes_span_june_2028.xlsx",
+    "ozone_nodes_june_2028_round.xlsx",
     "june_2028_pull_list.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is each unit's gain against the truth at its own position, seen only through references at other positions that share the truth's distribution over weeks but agree with it only partly hour by hour, so a slope fitted on the paired readings is pulled toward zero by that imperfect agreement, making healthy distant units look low and units drifted high look healthy, while matching the unit's spread to the references' spread recovers the gain.",
-  "driver_concrete": "Each node's span against true ozone at its inlet over the eight weeks to 31 May 2028 has to be read by matching the node's hourly distribution to the regional reference analysers' (the spread of its readings against theirs), because ozone at background sites shares one regional distribution while the hour-to-hour values at sites kilometres apart agree only partly: the slope of the node on its nearest analyser is attenuated by that agreement, so healthy distant nodes fall below 0.85 and nodes drifted above 1.15 fall inside the band, the ratio of means mixes in each head's zero drift, and an orthogonal fit exaggerates every departure from one.",
-  "stump": "A competent solver regresses each node's hourly ozone over the eight weeks on its nearest reference analyser and pulls the nodes whose slope falls outside 0.85 to 1.15, filing a list that holds healthy nodes far from any analyser and leaves off the nodes drifted high, because the slope against an analyser kilometres away is pulled toward zero by how weakly the two sites agree hour by hour; only each node's span read from its distribution against the regional analysers' over the same weeks files the golden list.",
+  "driver": "The decisive quantity is each unit's gain against the truth at its own position, seen only through references elsewhere that share the truth only in the hours a daily process mixes the medium; outside those hours the units standing apart from the references differ for reasons that are not their gain, so any comparison over all hours, however it corrects for the references' imperfect agreement, misreads those units, and only the comparison restricted to the mixed hours reads every unit's gain.",
+  "driver_concrete": "Each node's span over the eight weeks has to be read on the afternoon hours of the well-mixed boundary layer, when the comarca shares one ozone: at night the hill villages' nodes stand above the surface layer where the plain loses its ozone, so their hourly spread is narrower for reasons that are not the head's, and every all-hours comparison (paired slope, errors-in-variables slope, spreads) reads a healthy hill node low and a hill node drifted high as healthy.",
+  "stump": "A competent solver who corrects for the analysers' imperfect agreement (an errors-in-variables slope or the spreads) over every hour of the eight weeks reads the hill villages' healthy nodes as low and the hill node drifted high as healthy, because at night those nodes stand above the surface layer where the plain loses its ozone; only the comparison on the afternoon hours of the mixed boundary layer reads every node's span.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task104": "there a self-adapting scorer's flags under a setting it never ran at are rebuilt because it withholds flagged observations from its own reference window; here a unit's gain is read against references elsewhere whose hour-to-hour agreement with it is partial, and the paired slope is attenuated by that agreement",
@@ -83,10 +85,17 @@
     "task501": "there (v4 round 1) a chain process's threshold is the dominant eigenvalue of a mixing matrix; here nothing is a network or an eigenvalue, only a gain against references elsewhere read from spreads instead of a paired slope",
     "task70": "there a per-record date is built from an event log with a class-conditional cut; here no record class or date is built: each unit's gain is read from its spread against the shared regional distribution",
     "task236": "there a capture rate is read against an independent fixed-protocol sample because the source's own attempts move with its change; here no capture or attempts exist: a unit's gain against the truth is read from the spread of its readings against references that share the truth's distribution but not its hourly values",
-    "task453": "there (v1) a seasonal adjustment estimated across a documented level change leaks it into two later periods; here no seasonal filter or level shift exists: a paired slope against distant references is attenuated by partial hour-to-hour agreement and the gain is read from the spreads"
+    "task453": "there (v1) a seasonal adjustment estimated across a documented level change leaks it into two later periods; here no seasonal filter or level shift exists: a paired slope against distant references is attenuated by partial hour-to-hour agreement and the gain is read from the spreads",
+    "task249": "v1 corrected an estimator for the references' partial hourly agreement over all hours; v2's decisive step is which hours carry the truth the references share (the mixed afternoon), and every all-hours estimator, v1's golden included, misreads the units that stand apart at night"
   },
-  "lineage": [],
-  "notes": "Drawn 2026-10-18 for perssathya's lane (wave 5, the first of four). The seed DQ22 (which low-cost sensors fail the drift tolerance and are pulled for recalibration) kept as its world, decision and quantity: a low-cost ozone network's pull list for recalibration judged on drift against tolerance. The seed's pitfall (the direction of the calibration regression) is left to its own world: here the decisive step is reading a node's span against references kilometres away, where the paired slope is attenuated by the sites' partial hour-to-hour agreement and the regional ozone distribution is what the sites share. stump_strategy other: an errors-in-variables attenuation from a remote reference, neither censoring nor composition. calibration_form none: no corpus of settled outcomes ships; the four analysers' own record shows the shared distribution.",
+  "lineage": [
+    {
+      "architecture": "v1",
+      "driver": "The decisive quantity is each unit's gain against the truth at its own position, seen only through references at other positions that share the truth's distribution over weeks but agree with it only partly hour by hour, so a slope fitted on the paired readings is pulled toward zero by that imperfect agreement, making healthy distant units look low and units drifted high look healthy, while matching the unit's spread to the references' spread recovers the gain.",
+      "fate": "stage 4 reader landed the call (errors-in-variables slope) and every ask figure, 2026-10-18; re-rooted to architecture 2"
+    }
+  ],
+  "notes": "Drawn 2026-10-18 for perssathya's lane (wave 5, the first of four). The seed DQ22 (which low-cost sensors fail the drift tolerance and are pulled for recalibration) kept as its world, decision and quantity: a low-cost ozone network's pull list for recalibration judged on drift against tolerance. The seed's pitfall (the direction of the calibration regression) is left to its own world: here the decisive step is reading a node's span against references kilometres away, where the paired slope is attenuated by the sites' partial hour-to-hour agreement and the regional ozone distribution is what the sites share. stump_strategy other: an errors-in-variables attenuation from a remote reference, neither censoring nor composition. calibration_form none: no corpus of settled outcomes ships; the four analysers' own record shows the shared distribution. Re-rooted 2026-10-18 to architecture 2 after the stage 4 reader landed v1 (lineage).",
   "client_domain": "physical-environmental-sciences",
-  "registered": "2026-10-18T18:53:05Z"
+  "registered": "2026-10-18T19:38:03Z"
 }
