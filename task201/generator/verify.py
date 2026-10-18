@@ -76,6 +76,25 @@ def main():
     ok(int(pop.telem.sum()) == call["n_telemetered"], "telemetered",
        "%d device-timed interruptions" % int(pop.telem.sum()))
 
+    # the telemetry archive is UTC: converted at the offset that applied on each stamp it reproduces
+    # the dispatch record's own start for the device-timed interruptions, and a flat hour does not
+    sc = pd.read_csv(os.path.join(TGT, "telemetria_operacje_lacznikow_utc.csv"), comment="#")
+    sct = pd.to_datetime(sc.ts_utc.str.replace("Z", "", regex=False))
+    DST_UTC = pd.Timestamp("2026-10-25 01:00")
+    sc["loc"] = (sct + pd.to_timedelta(np.where(sct < DST_UTC, 2, 1), unit="h")).dt.floor("min")
+    sc["flat"] = (sct + pd.Timedelta(hours=1)).dt.floor("min")
+    sc["key"] = sc.id_urzadzenia.map(norm_key)
+    tel = pop[pop.telem][["key", "start"]]
+    hit = len(tel.merge(sc[["key", "loc"]], left_on=["key", "start"], right_on=["key", "loc"]))
+    hitf = len(tel.merge(sc[["key", "flat"]], left_on=["key", "start"], right_on=["key", "flat"]))
+    ok(hit >= len(tel) * 0.99, "archive.offset",
+       "%d of %d device-timed starts reproduce from the archive at +02:00 before 25 October and "
+       "+01:00 after" % (hit, len(tel)))
+    n_pre = int((tel.start < pd.Timestamp("2026-10-25 03:00")).sum())
+    ok(hit - hitf == n_pre and n_pre > 90, "archive.flat_offset_fails",
+       "a flat +01:00 reproduces only %d of them: it misses every one of the %d device-timed starts "
+       "that fall while summer time still ran" % (hitf, n_pre))
+
     nl = pd.read_csv(os.path.join(TGT, "zgloszenia_klientow_2026.csv"), comment="#")
     nl["ts"] = pd.to_datetime(nl.ts_przyjecia)
     first = nl.dropna(subset=["id_zdarzenia"]).groupby("id_zdarzenia").ts.min()
@@ -180,12 +199,12 @@ def main():
                        sheet_name=None)
     pre, rev = xl["wstepne_2026"], xl["korekta_1_2026"]
     m = rev.miesiac != "2026-10"
-    ratio = float(pre[m].minuty_planowane.sum() / rev[m].minuty_planowane.sum())
+    ratio = float(pre[m].saidi_planowane_min_na_odb.sum() / rev[m].saidi_planowane_min_na_odb.sum())
     ok(abs(ratio - a3["korekta_pazdziernik"]["denominator_ratio"]) < 0.002, "a3.ratio",
        "the untouched months differ by one constant ratio of %.5f" % ratio)
     for v in ["SN", "nN"]:
-        a = float(rev[(rev.miesiac == "2026-10") & (rev.poziom == v)].minuty_awaryjne.iloc[0])
-        b = float(pre[(pre.miesiac == "2026-10") & (pre.poziom == v)].minuty_awaryjne.iloc[0]) / ratio
+        a = float(rev[(rev.miesiac == "2026-10") & (rev.poziom == v)].saidi_awaryjne_min_na_odb.iloc[0])
+        b = float(pre[(pre.miesiac == "2026-10") & (pre.poziom == v)].saidi_awaryjne_min_na_odb.iloc[0]) / ratio
         ok(abs(round(a - b, 1) - a3["korekta_pazdziernik"]["%s|min" % v]) <= 0.1,
            "a3.min.%s" % v, "%.1f minutes" % (a - b))
         ok(abs(round((a - b) / b * 100, 1) - a3["korekta_pazdziernik"]["%s|pct" % v]) <= 0.2,
@@ -209,8 +228,25 @@ def main():
     dic = open(os.path.join(TGT, "slownik_danych.md"), encoding="utf-8").read()
     ok("pierwszego zgloszenia" in dic, "fmt.md_control",
        "the dictionary's own definition of the recorded start is found")
-    ok(len(open(os.path.join(TGT, "provenance.md"), encoding="utf-8").read()) > 1200,
-       "fmt.md_provenance", "provenance reads")
+    prov = open(os.path.join(TGT, "provenance.md"), encoding="utf-8").read()
+    ok(len(prov) > 1200, "fmt.md_provenance", "provenance reads")
+    mm = re.search(r"\|\s*(\d+) prac planowanych w oknie", prov)
+    ok(mm is not None and int(mm.group(1)) == len(jobs), "doc.provenance_planned",
+       "provenance states %s planned works and the schedule holds %d"
+       % (mm.group(1) if mm else "no", len(jobs)))
+    bl = nl[(nl.kanal == "IVR") & (nl.oddzial.isna())].copy()
+    MON = {10: "pazdziernika", 11: "listopada"}
+    d0, d1 = bl.ts.min(), bl.ts.max()
+    want = "od %d %s do %d %s 2026" % (d0.day, MON[d0.month], d1.day, MON[d1.month])
+    ok(want in dic, "doc.ivr_window",
+       "the dictionary dates the IVR gap '%s' and the blank rows run %s to %s"
+       % (want, d0.date(), d1.date()))
+    ok(all(("na_odb" in c) for c in rev.columns if c not in ("miesiac", "poziom")),
+       "doc.returns_units", "the return names the unit in every value column")
+    pr25 = [float(x) for x in re.findall(r"\n?(\d+\.\d)\s", ret_pdf)]
+    ok(any(60.0 < x < 140.0 for x in pr25), "doc.prior_year_level",
+       "the prior-year table's annual unplanned minutes per customer sit in the order the window's "
+       "own daily rate implies")
 
     # ---------------------------------------------------------------- gates
     print("\n-- input gates from the bundle alone")

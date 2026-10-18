@@ -71,6 +71,31 @@ OVERLAP_FROM, OVERLAP_TO = "2026-11-01", "2026-11-07"   # the week both OMS expo
 # schedule. Separate `rodzaj` in the dispatch export; the procedure's population is unplanned only.
 PLANNED_SHARE = {"ZAN": 0.09, "PUS": 0.14, "GRB": 0.11, "NIE": 0.66}
 PLANNED_JOBS = 260
+# What the autumn programme actually does at a station, as the work order names it and as the
+# dispatcher types it into the outage record. The pool is SN/nN stations, so the scopes are the
+# station trades; the weights are the programme's own mix.
+PLANNED_SCOPE = [
+  ("przeglad stacji SN/nN", "prace planowane - przeglad stacji"),
+  ("wymiana odlacznika w stacji SN/nN", "prace planowane - wymiana odlacznika"),
+  ("remont rozdzielni nN", "prace planowane - remont rozdzielni nN"),
+  ("wymiana przekladnikow i zabezpieczen", "prace planowane - wymiana zabezpieczen"),
+  ("wymiana izolatorow na odcinku zasilajacym", "prace planowane - wymiana izolatorow"),
+  ("pomiary ochrony przeciwporazeniowej", "prace planowane - pomiary eksploatacyjne"),
+  ("przelaczenie zasilania stacji", "przelaczenia ruchowe"),
+]
+PLANNED_SCOPE_W = [0.34, 0.17, 0.12, 0.11, 0.10, 0.09, 0.07]
+# The indices the concession filed for 2024 and 2025, one copy read by the prior-year report and by
+# the golden's annexe. 2024 was filed in hours per customer, 2025 in minutes per customer (each
+# table says so in its own header). The level is the window's own: a 46-day storm-season stretch
+# carrying one major windstorm runs at about two and a half times the annual daily rate.
+RET24 = {("SN", "awaryjne"): 1.19, ("SN", "planowane"): 0.49,
+         ("nN", "awaryjne"): 0.68, ("nN", "planowane"): 0.26}
+SAIFI24 = {("SN", "awaryjne"): 0.98, ("SN", "planowane"): 0.17,
+           ("nN", "awaryjne"): 0.66, ("nN", "planowane"): 0.10}
+RET25 = {("SN", "awaryjne"): 78.3, ("SN", "planowane"): 31.6,
+         ("nN", "awaryjne"): 45.9, ("nN", "planowane"): 17.8}
+SAIFI25 = {("SN", "awaryjne"): 1.05, ("SN", "planowane"): 0.19,
+           ("nN", "awaryjne"): 0.72, ("nN", "planowane"): 0.11}
 PLANNED_MIN = (55, 185)   # a planned switching window is a working morning, not a day
 ORPHAN_N = 3400          # notifications tied to no interruption: a neighbour, an own fuse, a query
 IVR_GAP = ("2026-10-09", "2026-11-03")   # the IVR prompt change

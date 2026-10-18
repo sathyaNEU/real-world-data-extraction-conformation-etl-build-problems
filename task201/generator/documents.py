@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """task201: the governing procedure, the prior-year return, the dispatch note, the dictionary and the
 provenance record. Every figure in them is computed from the frames build.py cut."""
+import io
 import os, sys
 import numpy as np, pandas as pd
 from reportlab.lib.pagesizes import A4
@@ -38,29 +39,56 @@ def _tbl(data, widths=None):
 def procedure():
     """PR-07. Files the slot, the population, the outcome, the window, the unit and the drill."""
     path = os.path.join(TARGET, "procedura_PR-07_plan_remediacji.pdf")
-    doc = SimpleDocTemplate(path, pagesize=A4, topMargin=18 * mm, bottomMargin=18 * mm,
+    f = _procedure_flow()
+    # the footer carries the page count, so the document is built once to count its pages and again
+    # to ship with the count on every page
+    pages = _procedure_build(io.BytesIO(), f, "?")
+    _procedure_build(path, _procedure_flow(), pages)
+    return path
+
+
+def _procedure_build(target, flow, total):
+    doc = SimpleDocTemplate(target, pagesize=A4, topMargin=18 * mm, bottomMargin=20 * mm,
                             leftMargin=20 * mm, rightMargin=20 * mm,
                             title="PR-07 Plan remediacji sieci SN i nN",
                             author="Borowiecka Energia Operator", invariant=1)
+
+    def foot(canvas, d):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.6)
+        canvas.setFillGray(0.45)
+        canvas.drawString(20 * mm, 12 * mm, "PR-07 wyd. 3 | str. %d z %s | dokument wewnetrzny"
+                          % (canvas.getPageNumber(), total))
+        canvas.restoreState()
+    doc.build(flow, onFirstPage=foot, onLaterPages=foot)
+    return doc.page
+
+
+def _procedure_flow():
     f = []
     f.append(Paragraph("Borowiecka Energia Operator sp. z o.o.", SMALL))
     f.append(Paragraph("PR-07 Plan remediacji sieci SN i nN w sezonie burzowym", H1))
-    f.append(Paragraph("Wydanie 3. Obowiazuje od 1 wrzesnia 2026. Wlasciciel: Biuro Ruchu Sieci. "
-                       "Zatwierdzil: Dyrektor Operacyjny. Przeglad: wrzesien 2027.", SMALL))
+    f.append(Paragraph("Wydanie 3. Obowiazuje od 1 wrzesnia 2026. Zastepuje wydanie 2 z 14 wrzesnia "
+                       "2025 (okno analizy skrocono do 15 listopada, decyzje przeniesiono z narady "
+                       "technicznej spolki na narade ruchowa oddzialu). Wlasciciel: Biuro Ruchu "
+                       "Sieci. Zatwierdzil: Dyrektor Operacyjny. Przeglad: wrzesien 2027.", SMALL))
     f.append(Spacer(1, 7))
 
-    f.append(Paragraph("1. Zakres", H2))
+    f.append(Paragraph("1. Zakres i cel", H2))
     f.append(Paragraph(
         "Procedura obejmuje jeden sezon burzowy, od 1 pazdziernika do 31 marca, i dotyczy sieci "
-        "sredniego i niskiego napiecia eksploatowanej przez operatora. Nie dotyczy sprawozdawczosci "
-        "rocznej do organu regulacyjnego, ktora prowadzona jest w roku kalendarzowym i odrebnym "
-        "trybem.", BODY))
+        "sredniego i niskiego napiecia eksploatowanej przez operatora. Celem jest skierowanie "
+        "ograniczonego zasobu remontowego tam, gdzie przerwy w dostawie obciazyly odbiorcow "
+        "najbardziej. Procedura nie dotyczy sprawozdawczosci rocznej do organu regulacyjnego, ktora "
+        "prowadzona jest w roku kalendarzowym i odrebnym trybem, ani usuwania skutkow pojedynczego "
+        "zdarzenia, ktore prowadzi sluzba ruchowa w trybie pogotowia.", BODY))
 
     f.append(Paragraph("2. Slot remediacyjny", H2))
     f.append(Paragraph(
         "Na sezon przypada jeden slot remediacyjny: jeden tydzien brygady wraz z materialem, "
         "zarezerwowany poza planem prac i poza pogotowiem. Slot przypisuje sie do jednej klasy "
-        "odcinkow sieci w jednym rejonie energetycznym jednego oddzialu. Decyzje podejmuje narada "
+        "odcinkow sieci w jednym rejonie energetycznym jednego oddzialu, poniewaz brygada pracuje z "
+        "jednej bazy rejonowej, a material zamawia sie na jeden typ odcinka. Decyzje podejmuje narada "
         "ruchowa oddzialu. Slot niewykorzystany nie przechodzi na sezon nastepny.", BODY))
 
     f.append(Paragraph("3. Podstawa pomiaru", H2))
@@ -72,35 +100,42 @@ def procedure():
     f.append(Paragraph(
         "Do pomiaru wchodzi kazda <b>przerwa awaryjna</b> w sieci wlasnej operatora, dla ktorej "
         "zapisano zalaczenie w dniu pobrania danych lub wczesniej, a ktorej poczatek przypada w oknie "
-        "analizy. Wylaczenia planowane, przerwy bez zapisanego zalaczenia oraz przerwy w sieci innych "
-        "operatorow nie wchodza do pomiaru. Okno analizy dla sezonu 2026/2027 zamyka sie z dniem "
-        "15 listopada 2026 i otwiera z dniem 1 pazdziernika 2026, obie daty wlacznie.", BODY))
+        "analizy. Okno analizy dla sezonu 2026/2027 otwiera sie 1 pazdziernika 2026 i zamyka sie "
+        "15 listopada 2026, obie daty wlacznie.", BODY))
+    f.append(Paragraph(
+        "Wylaczenia planowane rozlicza sie w ramach programu prac eksploatacyjnych, razem z oknami "
+        "opublikowanymi w grafiku, i nie wchodza do tego pomiaru. Przerwa, dla ktorej na dzien "
+        "pobrania danych nie zapisano zalaczenia, pozostaje w systemie otwarta i wchodzi do pomiaru "
+        "sezonu, w ktorym zostanie zamknieta. Przerwy powstale w sieci innych operatorow rozlicza sie "
+        "z tymi operatorami i nie sa przedmiotem tej procedury.", BODY))
 
     f.append(Paragraph("4. Kolejnosc analizy", H2))
     f.append(Paragraph(
-        "Analize prowadzi sie poziomami, w kazdym kroku na podstawie udzialu w sumie poziomu "
-        "nadrzednego, liczonego z odbiorco-godzin przerw i podawanego w pelnych procentach:", BODY))
-    f.append(_tbl([["Krok", "Poziom", "Co sie wybiera"],
-                   ["1", "oddzial", "oddzial o najwiekszym udziale w sumie sieci"],
-                   ["2", "rejon energetyczny", "rejon o najwiekszym udziale w sumie wybranego oddzialu"],
-                   ["3", "klasa odcinka", "klasa o najwiekszym udziale w sumie wybranego rejonu"]],
-                  widths=[18 * mm, 42 * mm, 100 * mm]))
-    f.append(Spacer(1, 5))
-    f.append(Paragraph(
-        "Slot przypisuje sie do klasy odcinka wskazanej w kroku 3, w rejonie z kroku 2 i oddziale z "
-        "kroku 1. Udzialy zaokragla sie raz, na koncu, do pelnego procenta; sum czesciowych nie "
-        "zaokragla sie.", BODY))
+        "Analize prowadzi sie poziomami, od oddzialu do klasy odcinka, poniewaz tak samo zapada "
+        "decyzja o zasobie: najpierw wiadomo, ktory oddzial dostaje tydzien brygady, potem z ktorej "
+        "bazy rejonowej brygada wyjezdza, a na koncu na jaki typ odcinka zamawia sie material. Na "
+        "kazdym poziomie bierze sie pozycje o najwiekszym udziale w sumie poziomu nadrzednego, "
+        "liczonym z odbiorco-godzin przerw: na poziomie pierwszym oddzial w sumie sieci operatora, na "
+        "poziomie drugim rejon energetyczny w sumie wybranego oddzialu, na poziomie trzecim klase "
+        "odcinka w sumie wybranego rejonu. Udzialy podaje sie w pelnych procentach; zaokragla sie je "
+        "raz, na koncu, a sum czesciowych nie zaokragla sie.", BODY))
 
-    f.append(Paragraph("5. Dokumentacja decyzji", H2))
+    f.append(Paragraph("5. Terminy, dane i dokumentacja decyzji", H2))
     f.append(Paragraph(
-        "Narada ruchowa oddzialu otrzymuje nota przypisania slotu wraz z drzewem udzialow na trzech "
-        "poziomach. Nota wskazuje oddzial, rejon i klase odcinka, podaje udzial wskazanej klasy w sumie "
-        "jej rejonu oraz oddzial drugi w kolejnosci na poziomie pierwszym. Dokumentacje przechowuje "
-        "Biuro Ruchu Sieci do konca sezonu nastepnego.", BODY))
-    f.append(Spacer(1, 8))
-    f.append(Paragraph("PR-07 wyd. 3 | str. 1 z 1 | dokument wewnetrzny", SMALL))
-    doc.build(f)
-    return path
+        "Dane do analizy przygotowuje Biuro Analiz Sieciowych z eksportu systemu dyspozytorskiego i "
+        "rejestru urzadzen SN i nN, w terminie do piatego dnia po zamknieciu okna analizy. Narada "
+        "ruchowa oddzialu otrzymuje note przypisania slotu, ktora wskazuje oddzial, rejon "
+        "energetyczny i klase odcinka, podaje okno analizy i date pobrania danych oraz zestawienie "
+        "liczbowe na trzech poziomach analizy w zalaczniku. Note zatwierdza kierownik Biura Ruchu "
+        "Sieci, a kopie otrzymuja dyrektor operacyjny i kierownik rejonu, ktorego dotyczy slot. "
+        "Dokumentacje przechowuje Biuro Ruchu Sieci do konca sezonu nastepnego.", BODY))
+
+    f.append(Paragraph("6. Dokumenty zwiazane", H2))
+    f.append(Paragraph(
+        "Instrukcja ruchu i eksploatacji sieci dystrybucyjnej. PR-04 Program prac eksploatacyjnych i "
+        "grafik wylaczen planowanych. PR-11 Postepowanie w czasie zaklocen masowych. Slownik danych "
+        "pakietu sezonowego.", BODY))
+    return f
 
 
 def prior_year_return(st):
@@ -113,8 +148,10 @@ def prior_year_return(st):
                             author="Borowiecka Energia Operator", invariant=1)
     # figures derived from the 2026 window's own structure, scaled to prior years
     served = sum(st["served"].values())
-    rows24 = [("SN", 2.61, 1.04, 2.19, 0.37), ("nN", 1.14, 0.46, 1.86, 0.22)]
-    rows25 = [("SN", 171.4, 69.8, 2.34, 0.41), ("nN", 74.9, 31.2, 1.97, 0.25)]
+    rows24 = [(v, P.RET24[(v, "awaryjne")], P.RET24[(v, "planowane")],
+               P.SAIFI24[(v, "awaryjne")], P.SAIFI24[(v, "planowane")]) for v in ("SN", "nN")]
+    rows25 = [(v, P.RET25[(v, "awaryjne")], P.RET25[(v, "planowane")],
+               P.SAIFI25[(v, "awaryjne")], P.SAIFI25[(v, "planowane")]) for v in ("SN", "nN")]
     f = []
     f.append(Paragraph("Borowiecka Energia Operator sp. z o.o. | koncesja DEE/1884/W", SMALL))
     f.append(Paragraph("Sprawozdanie o wskaznikach niezawodnosci dostaw energii elektrycznej", H1))
@@ -157,8 +194,8 @@ def dispatch_note(st):
 Dyspozytor zmianowy: Cezary Wawszczyk, Centralna Dyspozycja Mocy BEO
 Data notatki: 14 listopada 2026
 
-Zmiana od 11 listopada 09:00 do 13 listopada 22:00. W tym czasie system odnotowal %d wylaczen
-awaryjnych. Szczyt przyjec w Centrum Zgloszen wypadl 12 listopada miedzy 04:00 a 07:00, kolejka
+Zmiana od 11 listopada 09:00 do 13 listopada 22:00. W tym czasie system odnotowal ponad %d tys.
+wylaczen awaryjnych. Szczyt przyjec w Centrum Zgloszen wypadl 12 listopada miedzy 04:00 a 07:00, kolejka
 IVR siegala wtedy osmiu minut, czesc klientow rozlaczala sie przed nagraniem.
 
 Brygady. Z czterech oddzialow wyjechalo 31 brygad wlasnych i 9 z umowy pomocy wzajemnej. Dojazdy
@@ -177,7 +214,7 @@ sa opisane w dziennym raporcie ruchu.
 
 Do naprawy w module raportowym: eksport z 1 do 7 listopada wyszedl w obu ukladach kolumn,
 stary i nowy modul nakladaja sie na tym tygodniu. Zglosilem do Biura Teleinformatyki.
-""" % n_h
+""" % (n_h // 1000)
     open(path, "w", encoding="utf-8").write(txt)
     return path
 
@@ -188,8 +225,8 @@ def dictionary(st):
 
 Wydanie 4, 16 listopada 2026. Wlasciciel: Biuro Analiz Sieciowych BEO.
 Czas lokalny Europe/Warsaw, chyba ze kolumna wskazuje inaczej.
-Slownik obejmuje pliki danych pakietu. Dokumenty (procedura PR-07, sprawozdanie o niezawodnosci
-2024-2025, notatka sluzby dyspozytorskiej) opisuja sie same i nie maja tu wpisow.
+Slownik obejmuje pliki danych pakietu. Procedur, sprawozdan i notatek sluzbowych slownik nie
+opisuje.
 
 ## awarie_oms_2026-10-01_2026-11-07.csv, awarie_oms_2026-11-01_2026-11-15.csv
 
@@ -218,7 +255,8 @@ wylaczenie moze miec wiele zgloszen. Kolumny: zgloszenie_id, ts_przyjecia, kanal
 albo aplikacja), oddzial, rejon, id_urzadzenia, nr_ppe (punkt poboru energii klienta),
 id_zdarzenia (puste, gdy dyspozytor nie powiazal zgloszenia z zadnym wylaczeniem), opis.
 Kolumny oddzial, rejon i id_urzadzenia wypelnia kanal przyjecia; kanal IVR nie zapisywal ich
-w okresie od 9 do 19 pazdziernika 2026, po zmianie drzewa zapowiedzi.
+od 9 pazdziernika do 2 listopada 2026, po zmianie drzewa zapowiedzi. Nowe drzewo weszlo 9
+pazdziernika, zapis pol przywrocono poprawka z 3 listopada.
 
 ## telemetria_operacje_lacznikow_utc.csv
 
@@ -245,8 +283,10 @@ w eksploatacji, w rozruchu albo w przygotowaniu.
 ## harmonogram_wylaczen_planowanych.xlsx
 
 Grafik wylaczen planowanych. Jeden arkusz na wydanie grafiku; arkusz wydania podaje date zlozenia
-kazdego wydania i uwagi. okno_od i okno_do to opublikowane okno wylaczenia, w ktorym praca ma sie
-zmiescic.
+kazdego wydania i uwagi. Kolumna odcinkow podaje liczbe odcinkow sieci objetych jedna pozycja
+grafiku, zakres przepisano z polecenia na prace. okno_od i okno_do to opublikowane okno wylaczenia,
+w ktorym praca ma sie zmiescic; okno_od wyznacza zglaszana gotowosc brygady i wyprzedza pierwsze
+lacznikowanie o kilkanascie do kilkudziesieciu minut, roznie dla kazdej pracy.
 
 ## odbiorcy_ppe.csv
 
@@ -287,12 +327,12 @@ osobowych odbiorcow, zgodnie z procedura udostepniania danych wewnetrznych.
 |---|---|---|---|---|---|
 | awarie_oms_2026-10-01_2026-11-07.csv | %d wylaczen, uklad kolumn do 2026-10-31 | wylaczen po 7 listopada | SD-OMS, modul raportowy 3.4 | 2026-11-16 06:00 | wewnetrzna, operator |
 | awarie_oms_2026-11-01_2026-11-15.csv | %d wylaczen, uklad kolumn od 2026-11-01 | wylaczen przed 1 listopada | SD-OMS, modul raportowy 4.0 | 2026-11-16 06:00 | wewnetrzna, operator |
-| zgloszenia_klientow_2026.csv | %d zgloszen o braku zasilania | zgloszen jakosciowych | Centrum Zgloszen, eksport CRM | 2026-11-16 06:00 | wewnetrzna, operator |
+| zgloszenia_klientow_2026.csv | ok. %d tys. wierszy o braku zasilania | zgloszen jakosciowych | Centrum Zgloszen, eksport CRM | 2026-11-16 06:00 | wewnetrzna, operator |
 | telemetria_operacje_lacznikow_utc.csv | %d operacji lacznikow, UTC | operacji na liniach bez telemetrii linii | SCADA historian | 2026-11-16 06:00 | wewnetrzna, operator |
 | rejestr_urzadzen_sn_nn.xlsx | %d urzadzen i liczba odbiorcow za kazdym | odbiorcow indywidualnie | model polaczeniowy GIS | 2026-10-01 | wewnetrzna, operator |
 | program_telemetrii_linii.xlsx | %d linii objetych programem | linii poza programem | Biuro Inwestycji | 2026-11-01 | wewnetrzna, operator |
 | harmonogram_wylaczen_planowanych.xlsx | %d prac planowanych w oknie, po wydaniach | prac odwolanych przed publikacja | Biuro Ruchu Sieci | 2026-11-16 | wewnetrzna, operator |
-| odbiorcy_ppe.csv | %d punktow poboru z przypisanym urzadzeniem | odbiorcow bez umowy dystrybucyjnej | rejestr PPE | 2026-11-16 | wewnetrzna, operator |
+| odbiorcy_ppe.csv | ok. %d tys. punktow poboru z przypisanym urzadzeniem | odbiorcow bez umowy dystrybucyjnej | rejestr PPE | 2026-11-16 | wewnetrzna, operator |
 | procedura_PR-07_plan_remediacji.pdf | zasady przypisania slotu remediacyjnego | sprawozdawczosci rocznej | Biuro Ruchu Sieci | 2026-09-01 | wewnetrzna, operator |
 | sprawozdanie_niezawodnosc_2024_2025.pdf | wskazniki koncesji za 2024 i 2025 | podzialu na oddzialy i rejony | sprawozdanie zlozone organowi | 2026-03-31 | wewnetrzna, operator |
 | sprawozdanie_URE_2026_wstepne_i_korekta.xlsx | dane miesieczne koncesji 2026 | podzialu na oddzialy | sprawozdawczosc biezaca | 2026-11-14 | wewnetrzna, operator |
@@ -301,12 +341,17 @@ osobowych odbiorcow, zgodnie z procedura udostepniania danych wewnetrznych.
 | notatka_sluzby_dyspozytorskiej.md | notatka ze zmiany po orkanie Halina | zestawien liczbowych sieci | Centralna Dyspozycja Mocy | 2026-11-14 | wewnetrzna, operator |
 | slownik_danych.md | opis kolumn kazdego pliku | wartosci danych | Biuro Analiz Sieciowych | 2026-11-16 | wewnetrzna, operator |
 
+Liczby w kolumnie "Co zawiera" pochodza z logu eksportu z 16 listopada 2026 o 06:00; dla plikow
+transakcyjnych podano je w tysiacach. Dla plikow sprawozdawczych i dokumentow liczb nie podajemy,
+poniewaz opisuje je wlasna strona tytulowa.
+
 Uwagi o kompletnosci. Archiwum telemetrii obejmuje tylko urzadzenia transmitujace do SCADA, to
 jest wylaczniki w GPZ oraz urzadzenia liniowe na liniach objetych programem telemetrii linii.
 Rejestr PPE jest wyciagiem i nie obejmuje punktow bez czynnej umowy dystrybucyjnej. Sprawozdania
 do organu sporzadzane sa dla calej koncesji i nie zawieraja podzialu na oddzialy.
-""" % (c["legacy"], c["current"], c["notifications"], c["scada"], c["devices"], c["programme"],
-       c["planned"], c["ppe"], c["quality"], c["vegetation"])
+""" % (c["legacy"], c["current"], int(round(c["notifications"] / 1000.0)), c["scada"],
+       c["devices"], c["programme"], c["planned_jobs"], int(round(c["ppe"] / 1000.0)),
+       c["quality"], c["vegetation"])
     open(path, "w", encoding="utf-8").write(txt)
     return path
 

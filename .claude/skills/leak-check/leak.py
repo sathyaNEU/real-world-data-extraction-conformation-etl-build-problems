@@ -599,7 +599,20 @@ def main():
         if k not in ran:
             lines.append("## %s (clean)\n" % k)
     out = task / "leak_check_report.md"
-    out.write_text("\n".join(lines))
+    # The reader's section is evidence and this script is not its author: a rewrite used to destroy it, and
+    # two repair passes had to restore it by hand from a transcript. Anything from the first reader heading
+    # onward is carried across unchanged, so the mechanical sweeps can be re-run as often as a repair needs.
+    carried = ""
+    if out.exists():
+        prev = out.read_text()
+        for head in ("## Solver's-eye read", "## Solver's eye read"):
+            cut = prev.find(head)
+            if cut >= 0:
+                carried = "\n\n" + prev[cut:].rstrip() + "\n"
+                break
+    out.write_text("\n".join(lines) + carried)
+    if carried and not a.quiet:
+        print("\ncarried over the reader's section from the previous report (%d characters)" % len(carried))
     if not a.quiet:
         print("\n".join(lines))
     print("\nverdict: %s  ->  %s" % (level, out))

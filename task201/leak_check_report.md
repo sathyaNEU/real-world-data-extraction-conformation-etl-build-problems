@@ -30,9 +30,14 @@ Stump terms swept: interval, recorded, decisive, zanowiec, golden, subset, nothi
 
 ## 11 prompt gate (clean)
 
-## Solver's-eye read
 
-One isolated reader, Sonnet at medium effort, on a fresh unzip of the pack and the prompt alone, 2026-10-18.
+## Solver's-eye read, preserved from the 2026-10-18 pass
+
+`leak.py` rewrites this file on every run, so the reader's read below was carried forward by hand
+after the world-level repair pass re-ran the sweeps. It was taken on the architecture 6 pack, before
+the repair, by one isolated reader (Sonnet at medium effort) on a fresh unzip of the pack and the
+prompt alone. No reader has run on the repaired pack: the documents and the telemetry archive changed,
+so the reader has to run again at stage 4.
 
 # task201 reader answers
 
@@ -94,3 +99,18 @@ Uncertainties: whether the intended method adds estimated lag, whether the DST f
   short, and a solver who notices has a defensible second reading. A transition inside the window is good
   Layer 1 mess, but it has to be the real transition rather than a flat offset. This goes into the repair
   pass with whatever the judge returns.
+
+### What the world-level repair pass closed, of the lines above
+
+- The clock: the archive is now written at the offset that applied (+02:00 to 01:00 UTC on 25 October 2026,
+  +01:00 after), `checks.py` R2 checks both regimes against the tz database and fails a flat hour, and
+  `verify.py` repeats the check from the bundle alone.
+- The procedure: rewritten without the exam-style step table, without the demand for the runner-up, and
+  with the exclusions carried as operational clauses rather than a tidy pre-definition.
+- The returns: the value columns name their index and unit, the interruption index is per customer rather
+  than per thousand, and the prior-year report's annual level now matches the window's own daily rate.
+- The dictionary's IVR window, the provenance's planned count and its row-count manifest, the dispatch
+  note's exact system count, and the schedule's constant lead-in and single cause: all fixed, each with an
+  assertion.
+- Still open and not this pass's: the reader's own landing of the leaf at about 60 per cent (Gate F), which
+  belongs to whatever architecture follows.

@@ -94,7 +94,9 @@ def build():
 
     # ------------------------------------------------------------------ 1-2 dispatch exports
     ev = ev.copy()
-    ev["przyczyna"] = np.where(ev.rodzaj.values == "planowane", "prace planowane",
+    # the dispatcher types the work order's own scope into a planned outage's cause field
+    ev["przyczyna"] = np.where(ev.rodzaj.values == "planowane",
+                               ev.przyczyna_planowa.fillna("prace planowane").values,
                                np.array(CAUSES)[rng.integers(0, len(CAUSES), len(ev))])
     ev["urzadzenie_eksport"] = unpad(ev.urzadzenie_id.values, ev.klucz_bez_zer.values)
     ev["czas_trwania_min"] = ((ev.t_zalaczenie - ev.t_poczatek_oms).dt.total_seconds() / 60.0).round(0)
@@ -258,13 +260,22 @@ def build():
     pl["okno_do"] = pl.okno_od + pd.to_timedelta(win_len, unit="m")
     # the published window is the job's: it opens before its first section and closes after the last
     # section was switched out, so every one of the job's starts falls inside it
-    jo = pl.groupby("id_pracy").t_utrata.min() - pd.Timedelta(minutes=20)
+    anchor = pl.groupby("id_pracy").t_utrata.min()
     jend = pl.groupby("id_pracy").t_zalaczenie.max()
-    jids = list(jo.index)
+    jids = list(anchor.index)
+    # the window's close is dimensioned on the job's content, over the planner's standard
+    # twenty-minute allowance for the first switching
+    jo = anchor - pd.Timedelta(minutes=20)
     fac = pd.Series(rng.uniform(0.66, 1.72, len(jids)), index=jids)
     span = (jend - jo).dt.total_seconds() / 60.0
     jd = jo + pd.to_timedelta((span * fac).round(0), unit="m")
-    pl["okno_od"] = pl.id_pracy.map(jo); pl["okno_do"] = pl.id_pracy.map(jd)
+    # the window opens on the lead-in notified for that job, which the planner sets per job; it is
+    # drawn on its own stream so the programme's content does not move with it
+    rngw = np.random.default_rng(P.SEED + 211)
+    lead = pd.Series(rngw.choice([10, 15, 20, 25, 30, 40, 45, 60], size=len(jids),
+                                 p=[0.07, 0.22, 0.24, 0.09, 0.18, 0.07, 0.08, 0.05]), index=jids)
+    pl["okno_od"] = pl.id_pracy.map(anchor - pd.to_timedelta(lead, unit="m"))
+    pl["okno_do"] = pl.id_pracy.map(jd)
     pl["przekroczenie_min"] = ((pl.t_zalaczenie - pl.okno_do).dt.total_seconds() / 60.0).clip(lower=0).round(0)
     # A1 device: the November sheet was issued, then revised; the issued windows are the earlier ones
     nov = pl.index[pl.t_utrata >= np.datetime64("2026-11-01")]
@@ -279,8 +290,7 @@ def build():
         out = pd.DataFrame(dict(
             id_pracy=g.id_pracy.first(), oddzial=g.oddzial.first(), rejon=g.rejon.first(),
             id_linii=g.feeder_id.first(), odcinkow=g.size(),
-            zakres=np.where(g.klasa_odcinka.first() == "SN-magistrala",
-                            "wymiana izolatorow ciagu SN", "przeglad stacji SN/nN"),
+            zakres=g.zakres_pracy.first(),
             okno_od=pd.to_datetime(g[col_od].min()).dt.strftime("%Y-%m-%d %H:%M"),
             okno_do=pd.to_datetime(g[col_do].max()).dt.strftime("%Y-%m-%d %H:%M"),
             status=status))
@@ -366,34 +376,39 @@ def build():
     un["cm"] = un.odbiorcy * (un.t_zalaczenie - un.t_poczatek_oms).dt.total_seconds() / 60.0
     served = int(served_by.sum())
     rows = []
+    # SAIDI is interrupted customer-minutes over customers supplied, SAIFI interrupted customers
+    # over customers supplied. Both are reported per network level and both carry the level's share.
     for m in sorted(set(un.mies) | set(pl_all.mies)):
         rows.append(dict(miesiac=m, poziom="SN",
-                         minuty_awaryjne=round(un[un.mies == m].cm.sum() * 0.63 / served, 2),
-                         minuty_planowane=round(pl_all[pl_all.mies == m].cm.sum() * 0.71 / served, 2),
-                         przerwy_awaryjne=round(len(un[un.mies == m]) * 0.63 / (served / 1000.0), 4)))
+                         saidi_awaryjne_min_na_odb=round(un[un.mies == m].cm.sum() * 0.63 / served, 2),
+                         saidi_planowane_min_na_odb=round(pl_all[pl_all.mies == m].cm.sum() * 0.71 / served, 2),
+                         saifi_awaryjne_na_odb=round(un[un.mies == m].odbiorcy.sum() * 0.63 / served, 4)))
         rows.append(dict(miesiac=m, poziom="nN",
-                         minuty_awaryjne=round(un[un.mies == m].cm.sum() * 0.37 / served, 2),
-                         minuty_planowane=round(pl_all[pl_all.mies == m].cm.sum() * 0.29 / served, 2),
-                         przerwy_awaryjne=round(len(un[un.mies == m]) * 0.37 / (served / 1000.0), 4)))
+                         saidi_awaryjne_min_na_odb=round(un[un.mies == m].cm.sum() * 0.37 / served, 2),
+                         saidi_planowane_min_na_odb=round(pl_all[pl_all.mies == m].cm.sum() * 0.29 / served, 2),
+                         saifi_awaryjne_na_odb=round(un[un.mies == m].odbiorcy.sum() * 0.37 / served, 4)))
     ret = pd.DataFrame(rows)
     # The preliminary submission divided by the customer count at 30 September; the revised one by the
     # count at 31 October, which the concession grew between. Every row therefore moves by one
     # constant ratio, and October's unplanned minutes move by that ratio and by the correction.
     prelim = ret.copy()
     DEN = 1.0 / 0.9605
-    for c in ["minuty_awaryjne", "minuty_planowane", "przerwy_awaryjne"]:
-        prelim[c] = (prelim[c] * DEN).round(2 if c != "przerwy_awaryjne" else 4)
+    for c in ["saidi_awaryjne_min_na_odb", "saidi_planowane_min_na_odb", "saifi_awaryjne_na_odb"]:
+        prelim[c] = (prelim[c] * DEN).round(2 if c != "saifi_awaryjne_na_odb" else 4)
     oct_sn = (prelim.miesiac == "2026-10") & (prelim.poziom == "SN")
     oct_nn = (prelim.miesiac == "2026-10") & (prelim.poziom == "nN")
-    prelim.loc[oct_sn, "minuty_awaryjne"] = (prelim.loc[oct_sn, "minuty_awaryjne"] * 0.868).round(2)
-    prelim.loc[oct_nn, "minuty_awaryjne"] = (prelim.loc[oct_nn, "minuty_awaryjne"] * 0.904).round(2)
+    prelim.loc[oct_sn, "saidi_awaryjne_min_na_odb"] = (
+        prelim.loc[oct_sn, "saidi_awaryjne_min_na_odb"] * 0.868).round(2)
+    prelim.loc[oct_nn, "saidi_awaryjne_min_na_odb"] = (
+        prelim.loc[oct_nn, "saidi_awaryjne_min_na_odb"] * 0.904).round(2)
     with pd.ExcelWriter(os.path.join(TARGET, "sprawozdanie_URE_2026_wstepne_i_korekta.xlsx"),
                         engine="openpyxl") as xl:
         prelim.to_excel(xl, sheet_name="wstepne_2026", index=False)
         ret.to_excel(xl, sheet_name="korekta_1_2026", index=False)
         pd.DataFrame([
             dict(arkusz="wstepne_2026", zlozono="2026-11-10",
-                 uwaga="dane wstepne koncesji, minuty na odbiorce, bez podzialu na oddzialy"),
+                 uwaga="dane wstepne koncesji, bez podzialu na oddzialy; listopad narastajaco "
+                       "do 15 listopada, przed zamknieciem miesiaca"),
             dict(arkusz="korekta_1_2026", zlozono="2026-11-14",
                  uwaga="korekta pazdziernika po zamknieciu zdarzen; zastepuje dane wstepne"),
         ]).to_excel(xl, sheet_name="wydania", index=False)
@@ -402,6 +417,7 @@ def build():
     lost = int((~base.e.map(lambda k: k).isin(set(reg.id_urzadzenia))).sum())
     counts = dict(legacy=n_leg, current=n_cur, notifications=len(nlw), scada=len(scw),
                   devices=len(reg), feeders=len(fd), programme=len(prog), planned=len(pl),
+                  planned_jobs=int(pl.id_pracy.nunique()),
                   ppe=len(ppe), quality=len(q), vegetation=len(veg))
     return dict(fd=fd, dv=dv, ev=ev, nl=nl, sc=sc, reg=reg, prog=prog, pl=pl, ppe=ppe,
                 returns=ret, prelim=prelim, counts=counts, ivr_blank=ivr_blank, orph=orph,

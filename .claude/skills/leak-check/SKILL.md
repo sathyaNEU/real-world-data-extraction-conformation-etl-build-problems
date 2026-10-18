@@ -52,6 +52,11 @@ python3 .claude/skills/leak-check/leak.py task100 --asof 2027-05-14
 | 10 container | writer signature or out-of-band timestamp (`reduce-house-fixes` H1 script) |
 | 11 prompt gate | `voice-check.py` on `prompt.txt`: a markdown character or line break is LEAK, any other failing rule REVIEW (all REVIEW on legacy `prompt.md`) |
 
+`leak.py` **carries the reader's section across a rewrite**: anything from the `## Solver's-eye read`
+heading onward in the existing report is preserved, because the sweeps are this script's output while the
+read is evidence it did not produce. Before that, a repair pass that re-ran the sweeps silently destroyed
+the read that had found its defect, and two passes in one sitting had to restore it from a transcript.
+
 LEAK stops the ship and is fixed in the generator, never by hand. Each REVIEW line gets one line in the
 design note saying why it is harmless, or a fix.
 

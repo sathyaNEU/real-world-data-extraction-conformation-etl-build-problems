@@ -7,6 +7,16 @@ import numpy as np, pandas as pd
 import params as P
 
 HOUR = np.timedelta64(1, "h")
+# Poland leaves summer time at 03:00 local on 25 October 2026, so the operational record (local wall
+# clock) stands two hours ahead of UTC before that instant and one hour ahead after it. The SCADA
+# historian keeps UTC, the dispatch system keeps local time, and the archive is written from the
+# local instant with the offset that applied to it.
+DST_END_LOCAL = np.datetime64("2026-10-25T03:00")
+
+
+def utc_offset_hours(local_naive):
+    """Hours the local wall clock stands ahead of UTC, per Europe/Warsaw, for this window."""
+    return np.where(np.asarray(local_naive, dtype="datetime64[m]") < DST_END_LOCAL, 2, 1)
 
 
 def _loguniform(rng, lo, hi, n):
@@ -127,6 +137,9 @@ def build_world(seed=P.SEED):
 def planned_work(dv, seed=P.SEED):
     """The autumn maintenance programme: whole sections switched out to a published schedule."""
     rng = np.random.default_rng(seed + 41)
+    # The work order's scope, drawn per visit on its own stream so the programme's days, feeders and
+    # durations do not move with it. The dispatcher copies a short form of it into the outage record.
+    rngz = np.random.default_rng(seed + 57)
     w = np.array([P.PLANNED_SHARE[b] for b in P.BRANCH]); w = w / w.sum()
     brs = rng.choice(list(P.BRANCH), size=P.PLANNED_JOBS, p=w)
     rows = []
@@ -148,6 +161,8 @@ def planned_work(dv, seed=P.SEED):
             if (f, day) not in used_days:
                 break
         used_days.add((f, day))
+        zi = int(rngz.choice(len(P.PLANNED_SCOPE), p=P.PLANNED_SCOPE_W))
+        zakres, przyczyna = P.PLANNED_SCOPE[zi]
         t = day + np.timedelta64(int(rng.integers(6, 10)), "h") + np.timedelta64(int(rng.integers(0, 55)), "m")
         for j, pi in enumerate(sorted(picks)):
             d = cand.iloc[int(pi)]
@@ -156,7 +171,8 @@ def planned_work(dv, seed=P.SEED):
                              urzadzenie_id=d.urzadzenie_id, klasa_odcinka=d.klasa_odcinka,
                              odbiorcy=int(d.odbiorcy_za_urzadzeniem), telemetrowane=True,
                              epizod="", t_utrata=t, zwloka_min=0.0,
-                             naprawa_min=dur, nieusunieta=False, rodzaj="planowane"))
+                             naprawa_min=dur, nieusunieta=False, rodzaj="planowane",
+                             zakres_pracy=zakres, przyczyna_planowa=przyczyna))
             t = t + np.timedelta64(int(dur) + int(rng.integers(12, 45)), "m")
     return pd.DataFrame(rows)
 
@@ -197,6 +213,7 @@ def scada_log(ev, seed=P.SEED):
         operacja=np.where(t.klasa_odcinka.values == "SN-magistrala", "wylacznik-otwarcie",
                           np.where(t.klasa_odcinka.values == "SN/nN-stacja", "rozlacznik-otwarcie",
                                    "wskaznik-zwarcia")),
-        ts_utc=(t.t_utrata.values - np.timedelta64(1, "h")),
+        ts_utc=(t.t_utrata.values
+                - utc_offset_hours(t.t_utrata.values).astype("timedelta64[h]")),
         jakosc_sygnalu=np.where(rng.random(len(t)) < 0.93, "OK", "OK-opozniony")))
     return out.sort_values("ts_utc").reset_index(drop=True)

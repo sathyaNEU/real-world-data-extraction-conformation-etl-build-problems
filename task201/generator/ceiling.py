@@ -129,11 +129,11 @@ def a2_path(nl, reg, ppe, dedup, resolve):
 def a3_path(xl, rebase):
     pre, rev = xl["wstepne_2026"], xl["korekta_1_2026"]
     m = rev.miesiac != "2026-10"
-    ratio = float(pre[m].minuty_planowane.sum() / rev[m].minuty_planowane.sum()) if rebase else 1.0
+    ratio = float(pre[m].saidi_planowane_min_na_odb.sum() / rev[m].saidi_planowane_min_na_odb.sum()) if rebase else 1.0
     out = {}
     for v in ["SN", "nN"]:
-        a = float(rev[(rev.miesiac == "2026-10") & (rev.poziom == v)].minuty_awaryjne.iloc[0])
-        b = float(pre[(pre.miesiac == "2026-10") & (pre.poziom == v)].minuty_awaryjne.iloc[0]) / ratio
+        a = float(rev[(rev.miesiac == "2026-10") & (rev.poziom == v)].saidi_awaryjne_min_na_odb.iloc[0])
+        b = float(pre[(pre.miesiac == "2026-10") & (pre.poziom == v)].saidi_awaryjne_min_na_odb.iloc[0]) / ratio
         out["%s|min" % v] = round(a - b, 1)
         out["%s|pct" % v] = round((a - b) / b * 100.0, 1)
     return out

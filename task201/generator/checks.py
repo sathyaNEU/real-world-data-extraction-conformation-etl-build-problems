@@ -128,16 +128,41 @@ def main():
     raw = pd.concat([leg.urzadzenie, cur.id_urzadzenia])
     lost = int((~raw.isin(set(reg.id_urzadzenia))).sum())
     ok(lost > 500, "R2.raw_join_loses", "a raw join drops %d export rows" % lost)
-    # UTC: converting the archive reproduces the recorded start of every telemetered interruption
+    # UTC: converting the archive at the offset that actually applied reproduces the recorded start
+    # of every telemetered interruption. Poland leaves summer time at 03:00 local on 25 October 2026,
+    # so the local record stands +02:00 of UTC before 01:00 UTC that day and +01:00 after it.
     sc = pd.read_csv(os.path.join(TARGET, "telemetria_operacje_lacznikow_utc.csv"), comment="#")
-    sc["loc"] = pd.to_datetime(sc.ts_utc.str.replace("Z", "", regex=False)) + pd.Timedelta(hours=1)
+    ts = pd.to_datetime(sc.ts_utc.str.replace("Z", "", regex=False))
+    DST_UTC = pd.Timestamp("2026-10-25 01:00")
+    sc["loc"] = ts + pd.to_timedelta(np.where(ts < DST_UTC, 2, 1), unit="h")
+    sc["flat"] = (ts + pd.Timedelta(hours=1)).dt.floor("min")
     tel = cl[cl.telemetrowane]
     sc["locm"] = sc["loc"].dt.floor("min")
     m = tel[["urzadzenie_id", "t_poczatek_oms"]].merge(
         sc[["id_urzadzenia", "locm"]], left_on=["urzadzenie_id", "t_poczatek_oms"],
         right_on=["id_urzadzenia", "locm"])
+    mf = tel[["urzadzenie_id", "t_poczatek_oms"]].merge(
+        sc[["id_urzadzenia", "flat"]], left_on=["urzadzenie_id", "t_poczatek_oms"],
+        right_on=["id_urzadzenia", "flat"])
+    n_pre = int((ts < DST_UTC).sum())
     ok(len(m) >= len(tel) * 0.99, "R2.utc_offset",
-       "%d of %d telemetered starts reproduce from the archive at +01:00" % (len(m), len(tel)))
+       "%d of %d telemetered starts reproduce from the archive at the offset that applied (+02:00 "
+       "before the change, +01:00 after)" % (len(m), len(tel)))
+    ok(n_pre > 300, "R2.utc_transition_inside",
+       "%d of %d archive records fall in the summer-time half of the window" % (n_pre, len(sc)))
+    n_pre_pop = int((tel.t_poczatek_oms < pd.Timestamp("2026-10-25 03:00")).sum())
+    ok(len(m) - len(mf) == n_pre_pop and n_pre_pop > 90, "R2.utc_flat_fails",
+       "a flat +01:00 reproduces only %d of the %d starts: it misses every one of the %d whose "
+       "device operated while summer time still ran, and each is an hour out" % (len(mf), len(m), n_pre_pop))
+    import datetime as _dt
+    from zoneinfo import ZoneInfo
+    _z = ZoneInfo("Europe/Warsaw")
+    probe = [("2026-10-24T12:00", 2), ("2026-10-25T00:59", 2), ("2026-10-25T01:00", 1),
+             ("2026-11-10T12:00", 1)]
+    real = all(int(_dt.datetime.fromisoformat(a).replace(tzinfo=_dt.timezone.utc)
+                   .astimezone(_z).utcoffset().total_seconds() // 3600) == b for a, b in probe)
+    ok(real, "R2.utc_rule_is_real",
+       "the two offsets the pack converts at are Europe/Warsaw's own, from the tz database")
     # the summary sheet's thousands agree with the register's units
     summ = pd.read_excel(os.path.join(TARGET, "rejestr_urzadzen_sn_nn.xlsx"),
                          sheet_name="podsumowanie_odbiorcy")
@@ -183,7 +208,9 @@ def main():
     live = set(prog[prog.status == "w eksploatacji"].id_linii)
     regt = set(reg[reg.telemetria_linii].id_linii)
     ok(live == regt, "SF7", "the programme's commissioned feeders are exactly the register's flagged ones")
-    ok(len(m) >= len(tel) * 0.99, "SF8", "the archive read as local time cannot reproduce any start")
+    ok(len(m) >= len(tel) * 0.99 and len(mf) < len(m), "SF8",
+       "the archive is UTC and its column says so: read as local time, or converted at one flat "
+       "hour across the summer-time change, it reproduces no start or only %d of %d" % (len(mf), len(m)))
     ok(abs(sum(float(x) for x in boxes[0]["shares"]) - 100.0) < 1e-6, "SF9",
        "each level's shares are of its own parent and sum to 100")
     sub = e[(e.oddzial == path[0]) & (e.rejon == path[1])]
@@ -244,6 +271,66 @@ def main():
     ok("oddzial" not in [c.lower() for c in ret.columns], "sep.a3",
        "the concession returns hold no branch row the call could read")
 
+    # ---------------------------------------------------------------- the documents against the data
+    print("\n-- every document's own count against what ships")
+    prov = open(os.path.join(TARGET, "provenance.md"), encoding="utf-8").read()
+    dic = open(os.path.join(TARGET, "slownik_danych.md"), encoding="utf-8").read()
+    sch = pd.read_excel(os.path.join(TARGET, "harmonogram_wylaczen_planowanych.xlsx"), sheet_name=None)
+    sheets = ["pazdziernik_wydanie_1", "listopad_wydanie_1", "listopad_wydanie_2"]
+    jobs = set().union(*[set(sch[k].id_pracy) for k in sheets])
+    pl_rows = set(leg[leg.rodzaj == "planowane"].zdarzenie_id) | \
+        set(cur[cur.rodzaj_wylaczenia == "planowane"].id_zdarzenia)
+    odc = int(sch["pazdziernik_wydanie_1"].odcinkow.sum() + sch["listopad_wydanie_2"].odcinkow.sum())
+    mm = re.search(r"\|\s*(\d+) prac planowanych w oknie", prov)
+    ok(mm is not None and int(mm.group(1)) == len(jobs), "doc.provenance_planned",
+       "provenance states %s planned works and the sheets hold %d jobs"
+       % (mm.group(1) if mm else "no", len(jobs)))
+    ok(odc == len(pl_rows), "doc.planned_grain",
+       "those %d jobs switch out %d sections, which is the planned row count in the dispatch exports"
+       % (len(jobs), odc))
+    nlf_all = pd.read_csv(os.path.join(TARGET, "zgloszenia_klientow_2026.csv"), comment="#")
+    mm = re.search(r"ok\. (\d+) tys\. wierszy o braku zasilania", prov)
+    ok(mm is not None and abs(int(mm.group(1)) * 1000 - len(nlf_all)) <= 500, "doc.provenance_rounded",
+       "provenance states about %s thousand rows against %d shipped, so its counts read as a log "
+       "entry rather than a row count" % (mm.group(1) if mm else "no", len(nlf_all)))
+    # the dictionary's IVR window is the window the blanks actually run in
+    bl = nlf_all[(nlf_all.kanal == "IVR") & (nlf_all.oddzial.isna())].copy()
+    bl["ts"] = pd.to_datetime(bl.ts_przyjecia)
+    MON = {10: "pazdziernika", 11: "listopada"}
+    d0, d1 = bl.ts.min(), bl.ts.max()
+    want = "od %d %s do %d %s 2026" % (d0.day, MON[d0.month], d1.day, MON[d1.month])
+    ok(want in dic, "doc.ivr_window",
+       "the dictionary dates the gap '%s' and the %d blank IVR rows run %s to %s"
+       % (want, len(bl), d0.date(), d1.date()))
+    ok(int((bl.ts > pd.Timestamp("2026-10-19 23:59")).sum()) > 300, "doc.ivr_window_bites",
+       "%d of the blank rows fall after 19 October, which the old window excluded"
+       % int((bl.ts > pd.Timestamp("2026-10-19 23:59")).sum()))
+    # the prior-year filed indices against the window's own daily rate
+    served = int(reg[reg.klasa_odcinka == "SN-magistrala"].groupby("oddzial")
+                 .odbiorcy_za_urzadzeniem.sum().sum())
+    cm = (cl.odbiorcy * (cl.t_zalaczenie - cl.t_poczatek_oms).dt.total_seconds() / 60.0).sum()
+    days = (pd.Timestamp(P.WIN_TO) - pd.Timestamp(P.WIN_FROM)).days + 1
+    win_saidi_day = cm / served / days
+    win_saifi_day = cl.odbiorcy.sum() / served / days
+    y_saidi = sum(P.RET25[(v, "awaryjne")] for v in ("SN", "nN")) / 365.0
+    y_saifi = sum(P.SAIFI25[(v, "awaryjne")] for v in ("SN", "nN")) / 365.0
+    for nm, a, b in [("saidi", win_saidi_day, y_saidi), ("saifi", win_saifi_day, y_saifi)]:
+        ok(1.8 <= a / b <= 3.5, "doc.prior_year_%s" % nm,
+           "the window runs at %.2fx the filed 2025 daily rate, which a storm-season window holding "
+           "one major windstorm should" % (a / b))
+    ok(all(abs(P.RET25[k] - P.RET24[k] * 60.0) / (P.RET24[k] * 60.0) < 0.25 for k in P.RET24),
+       "doc.prior_year_units", "2024 filed in hours and 2025 in minutes are the same order of level")
+    # the concession return names its index and its unit in the column, and reports per customer
+    rc = list(ret.columns)
+    ok(all(any(u in c for u in ("na_odb",)) for c in rc if c not in ("miesiac", "poziom")),
+       "doc.returns_units", "every value column names its unit: %s" % ",".join(rc))
+    saifi_oct = float(ret[(ret.miesiac == "2026-10") & (ret.poziom == "SN")].saifi_awaryjne_na_odb.iloc[0]) \
+        + float(ret[(ret.miesiac == "2026-10") & (ret.poziom == "nN")].saifi_awaryjne_na_odb.iloc[0])
+    oct_ci = cl[pd.to_datetime(cl.t_poczatek_oms).dt.strftime("%Y-%m") == "2026-10"].odbiorcy.sum()
+    ok(abs(saifi_oct - oct_ci / served) < 0.002, "doc.returns_saifi",
+       "the return's October interruption index is %.4f per customer, which is the %d "
+       "customer-interruptions the record holds over %d customers" % (saifi_oct, oct_ci, served))
+
     # ---------------------------------------------------------------- input gates
     print("\n-- the input gates")
     files = sorted(os.path.basename(f) for f in glob.glob(os.path.join(TARGET, "*")))
@@ -269,6 +356,34 @@ def main():
     ok(abs(tot - round(tot, -3)) > 1, "realism.no_round_total", "%.1f customer-hours" % tot)
     ok(not (e.groupby("klasa_odcinka").odbiorcy.nunique() == 1).any(), "realism.no_constant_stream",
        "no class has one customer count throughout")
+    plf = pd.concat([
+        leg[leg.rodzaj == "planowane"].rename(
+            columns=dict(zdarzenie_id="id", linia_sn="linia", ts_poczatek="start")),
+        cur[cur.rodzaj_wylaczenia == "planowane"].rename(
+            columns=dict(id_zdarzenia="id", id_linii="linia", poczatek_lokalny="start"))],
+        ignore_index=True)[["id", "linia", "start", "przyczyna"]].drop_duplicates("id")
+    plf["start"] = pd.to_datetime(plf.start)
+    pc = plf.przyczyna.value_counts(normalize=True)
+    ok(len(pc) >= 5 and float(pc.iloc[0]) < 0.5, "realism.planned_cause_spread",
+       "%d distinct causes on the planned rows, the commonest %.0f per cent"
+       % (len(pc), 100 * pc.iloc[0]))
+    zk = pd.concat([sch[k].zakres for k in sheets]).value_counts(normalize=True)
+    ok(len(zk) >= 5 and float(zk.iloc[0]) < 0.5, "realism.planned_scope_spread",
+       "%d distinct work scopes in the schedule, the commonest %.0f per cent"
+       % (len(zk), 100 * zk.iloc[0]))
+    jj = pd.concat([sch["pazdziernik_wydanie_1"], sch["listopad_wydanie_2"]], ignore_index=True)
+    jj["od"] = pd.to_datetime(jj.okno_od)
+    lead = []
+    for _, r in jj.iterrows():
+        c = plf[(plf.linia == r.id_linii) & (plf.start >= r.od) &
+                (plf.start <= r.od + pd.Timedelta(hours=26))]
+        if len(c):
+            lead.append(round((c.start.min() - r.od).total_seconds() / 60.0))
+    lv = pd.Series(lead).value_counts(normalize=True)
+    ok(len(lead) > 200 and len(lv) >= 5 and float(lv.iloc[0]) < 0.45, "realism.planned_lead_spread",
+       "%d published windows open between %d and %d minutes before their first switching, the "
+       "commonest lead %.0f per cent of them"
+       % (len(lead), min(lead), max(lead), 100 * lv.iloc[0]))
     people = ["Arkadiusz Dudko", "Karina Kurda", "Cezary Wawszczyk", "Lidia Lalak"]
     note = open(os.path.join(TARGET, "notatka_sluzby_dyspozytorskiej.md"), encoding="utf-8").read()
     ok(sum(1 for p in people if p in note) >= 1, "realism.personas_drawn",

@@ -759,3 +759,24 @@ recovered from the feeders whose line telemetry timestamps the device operation 
 section class. One corrects for how much was watched, the other for when the clock started. Neither pack
 can produce the other's correction, and the shared G12 label covers both because each turns on an absence
 of record rather than on a record of absence.
+
+**World-level repair pass, 2026-10-18. Raising the regulatory return's monthly figures: rejected, measured.**
+The leak reader read the return's 3.93 and 4.35 as too small for monthly minutes per customer against a
+171-minute annual SAIDI, and the obvious repair is to scale the workbook up. Measured on the pack's own
+truth, the korekta sheet is not free: October SN 4.35 and nN 2.55 are exactly 0.63 and 0.37 of 6.898,
+which is the window's unplanned customer-minutes over the 954,829 customers the register's trunk devices
+carry, and that denominator is printed in the prior-year report. Scaling the workbook by the 2.5x the
+reader's comparison implies would therefore plant a contradiction against the dispatch record that a
+solver can compute, which is the defect class this pass exists to remove. The inconsistency was closed on
+the side that ties to nothing instead: the filed 2024 and 2025 annual indices, which at 246 unplanned
+minutes and 4.31 interruptions put the window's daily rate at only 1.31x and 1.05x the annual mean, when a
+46-day storm-season window holding the year's windstorm should run two to three times it. Rebased to 124.2
+minutes and 1.77 interruptions, both ratios land at 2.59x and 2.55x, asserted as a band in `checks.py`
+(`doc.prior_year_saidi`, `doc.prior_year_saifi`). No graded figure moved.
+
+**World-level repair pass, 2026-10-18. Stating the schedule's grain in the dictionary: rejected.**
+The provenance count repair wanted a sentence saying one schedule row is one job covering several section
+outages. That sentence adjudicates ask A1's own device, which is exactly the grafik-against-export grain
+mismatch (`ceiling.py` A1), so the dictionary documents the `odcinkow` column factually and the provenance
+states the job count alone, with the 440 section outages asserted in `checks.py` (`doc.planned_grain`)
+rather than printed in a shipped document.

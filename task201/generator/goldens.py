@@ -10,15 +10,9 @@ GOLD = os.path.join(TASK, "golden")
 import params as P
 import drill
 
-# 2024 is filed in hours, 2025 in minutes (each stated in its own table header)
-RET24 = {("SN", "awaryjne"): 2.61, ("SN", "planowane"): 1.04,
-         ("nN", "awaryjne"): 1.14, ("nN", "planowane"): 0.46}
-SAIFI24 = {("SN", "awaryjne"): 2.19, ("SN", "planowane"): 0.37,
-           ("nN", "awaryjne"): 1.86, ("nN", "planowane"): 0.22}
-RET25 = {("SN", "awaryjne"): 171.4, ("SN", "planowane"): 69.8,
-         ("nN", "awaryjne"): 74.9, ("nN", "planowane"): 31.2}
-SAIFI25 = {("SN", "awaryjne"): 2.34, ("SN", "planowane"): 0.41,
-           ("nN", "awaryjne"): 1.97, ("nN", "planowane"): 0.25}
+# 2024 is filed in hours, 2025 in minutes (each stated in its own table header); params holds the
+# one copy the prior-year report also prints
+RET24, SAIFI24, RET25, SAIFI25 = P.RET24, P.SAIFI24, P.RET25, P.SAIFI25
 
 
 def main_call(st):
@@ -126,11 +120,11 @@ def ask_a3(st):
     # re-based on one denominator before the October difference is read. The ratio is the one the
     # untouched months all share.
     m = ret.miesiac != "2026-10"
-    ratio = float((prelim[m].minuty_planowane.sum() / ret[m].minuty_planowane.sum()))
+    ratio = float((prelim[m].saidi_planowane_min_na_odb.sum() / ret[m].saidi_planowane_min_na_odb.sum()))
     rev = {}
     for v in ["SN", "nN"]:
-        a = float(ret[(ret.miesiac == "2026-10") & (ret.poziom == v)].minuty_awaryjne.iloc[0])
-        b = float(prelim[(prelim.miesiac == "2026-10") & (prelim.poziom == v)].minuty_awaryjne.iloc[0]) / ratio
+        a = float(ret[(ret.miesiac == "2026-10") & (ret.poziom == v)].saidi_awaryjne_min_na_odb.iloc[0])
+        b = float(prelim[(prelim.miesiac == "2026-10") & (prelim.poziom == v)].saidi_awaryjne_min_na_odb.iloc[0]) / ratio
         rev["%s|min" % v] = round(a - b, 1)
         rev["%s|pct" % v] = round((a - b) / b * 100.0, 1)
         rev["%s|min_naive" % v] = round(a - b * ratio, 1)
