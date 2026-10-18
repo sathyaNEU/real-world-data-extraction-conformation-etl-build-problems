@@ -410,7 +410,29 @@ def statewide():
     S, conns = add_buyers(S)
     for s in S:
         s.setdefault("full", s["name"])
-    return add_purchase(assign_ids(add_facilities(S))), conns
+    return renumber(add_purchase(assign_ids(add_facilities(S)))), conns
+
+
+# buyers given a new PWS id when the system changed hands; the register keeps the old id as an inactive system, at
+# the population last reported under it, and its wholesale connections still carry the old id
+RENUMBERED = [("Quenby Junction Water Utility", dt.date(2024, 4, 1)), ("Halloway Township Water Utility", dt.date(2023, 10, 1)),
+              ("Tillerton East Sanitary District", dt.date(2024, 9, 1)), ("Westmere Heights Association", dt.date(2025, 1, 1))]
+
+
+def renumber(S):
+    r = K.rng("renumbered")
+    used = {s["pws"] for s in S}
+    by = {s["name"]: s for s in S}
+    for name, when in RENUMBERED:
+        s = by[name]
+        while True:
+            p = "%07d" % int(r.integers(4600000, 4699999))
+            if p not in used:
+                break
+        used.add(p)
+        s["old_pws"], s["renumbered"] = p, when
+        s["old_pop"] = int(round(s["pop"] * r.uniform(0.72, 0.86)))     # as last reported under the old owner
+    return S
 
 
 def people_reached(S, conns):

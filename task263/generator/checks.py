@@ -275,6 +275,8 @@ def run(target, T):
           ab == W.people_reached(S, T["conns"]), str(ab))
     check("Ask B: figures.json carries it", F["ask_b"] == ab)
     for mode, lab, counties in (("listed", "the listed systems alone", None), ("one_step", "buyers one step out", None),
+                                ("as_found", "the chains, each id's register row as found", None),
+                                ("active_only", "the chains, inactive ids left out", None),
                                 ("every_tie", "every tie followed", ["Granlund", "Sandholm"])):
         v = A.ask_b(D, target, mode)
         miss = [c for c in ab if v.get(c) != ab[c]]
@@ -288,6 +290,28 @@ def run(target, T):
           and sum(1 for m in two if m["pws_id"] not in lst) == 3)
     check("Ask B device: a buyer of a buyer in each county", chains_by_county(target, D) == {"Granlund", "Engvall",
                                                                                              "Hedstrom", "Sandholm"})
+    reg = {r["pws_id"]: r for r in A.rd(target, K.FILES["register"])}
+    con = A.rd(target, K.FILES["connections"])
+    ren = [s for s in S if s.get("old_pws")]
+    check("Ask B device: a buyer in each county renumbered on a change of owner, the register holding the old id as an "
+          "inactive system of the same name and county at an older population, every connection still on the old id",
+          sorted(s["county"] for s in ren) == sorted(("Granlund", "Engvall", "Hedstrom", "Sandholm")) and
+          all(reg[s["old_pws"]]["status"] == "Inactive" and reg[s["pws"]]["status"] == "Active" and
+              reg[s["old_pws"]]["system_name"] == reg[s["pws"]]["system_name"] and
+              reg[s["old_pws"]]["county"] == reg[s["pws"]]["county"] and
+              reg[s["old_pws"]]["population_served"] != reg[s["pws"]]["population_served"] for s in ren) and
+          not any(s["pws"] in (x["buyer_pws_id"], x["seller_pws_id"]) for s in ren for x in con) and
+          all(any(s["old_pws"] in (x["buyer_pws_id"], x["seller_pws_id"]) for x in con) for s in ren))
+    check("Ask B device: no other active system shares an inactive id's name and county (the closed systems the "
+          "register keeps match none)", sum(1 for r in reg.values() if r["status"] == "Inactive" and any(
+              q["status"] == "Active" and q["system_name"] == r["system_name"] and q["county"] == r["county"]
+              for q in reg.values())) == len(ren))
+
+    import cracker as CR
+    rows_cr = CR.score(target)
+    _, lc, ls, pair = CR.ceiling(rows_cr, rows_cr)
+    check("cracker.py on the cut pack: the cracker keeps no ask figure (%s), pair ceiling %.1f" % (
+        ", ".join("%s %d of %d" % (a, h, n) for a, n, h in rows_cr), pair), lc == 0 and pair <= 40)
 
     # ------------------------------------------------------------------------------------------ separation, distractors
     check("separation: the call computed from the call's files alone (results, records, inventory, plan) equals the "
