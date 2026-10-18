@@ -1,8 +1,11 @@
 # task200 design note
 
 **Status: PAUSED at stage 1. No card has ever been written or registered, which is deliberate.**
-Four Layer 2 mechanisms on the assigned ground were screened with measurements on 2026-10-18 and all
-four are dead. The ground is `criminology-justice` / `crime-incidence-hotspot-analysis`, objective
+Two passes have now screened two grounds shut on this number. The second pass (2026-10-18, below,
+`## The third ground`) measured six mechanisms dead on `supply-chain-logistics` x
+`general-statistics-data-science/multiple-testing-selective-inference` and derived the structural
+reason the cell holds nothing further. The first pass screened four Layer 2 mechanisms on the
+`criminology-justice` ground and all four are dead. The ground is `criminology-justice` / `crime-incidence-hotspot-analysis`, objective
 Anomaly Detection & Diagnostics. The measurement harness is
 `scratchpad/wave5/task200/screens.py` with its output in `screens_output.txt`; every number below
 reproduces from it with `python3 -I screens.py`.
@@ -70,6 +73,48 @@ reached from the client's side rather than ours:
 RC and `intervention-policing-policy-evaluation` EC. So this number cannot be redrawn inside the client
 domain on this objective; it needs another client domain's AD cell.
 
+## The third ground: supply-chain-logistics x multiple-testing-selective-inference (2026-10-18)
+
+Assigned ground for the second pass: card `domain` `supply-chain-logistics` (a house domain, so
+`client_domain` `general-statistics-data-science`), objective Anomaly Detection & Diagnostics, client
+task type `general-statistics-data-science/multiple-testing-selective-inference`, reserved `shape` 07.
+Six mechanisms were screened with measurements and all six are dead. The harness is
+`scratchpad/wave5/task200b/screens.py`, six screens, reproducible with `python3 -I screens.py`.
+
+**The structural law the six kills share, which is worth more than any one of them.** A multiple-testing
+analysis has exactly four places a decisive step can sit, and two of them are closed by the pincer while
+the other two are held by incumbents.
+
+| Where a decisive step can sit | Status on this ground |
+|---|---|
+| the **level** (how strong the correction is, the bound's coverage, the error criterion) | a convention: filed makes the step rule application, unfiled forks the call, and screens 1 and 3 measure that every route then lies on one axis |
+| the **family** (which hypotheses are corrected over) | the estimand's population, which the client's own pin for rigor pattern 1 states outright ("the family of hypotheses is defined"), so the WHAT screen kills it |
+| the **reference distribution** the statistic is judged against | data-forced and therefore live, and every form of it is held: the null of a selected maximum (task191), the empirical null estimated from the ensemble (task186), the margins-conditional or permutation null (task181 v1, where a dominant member contaminates the co-occurrences of everything it touches) |
+| the **statistic** itself | data-forced and therefore live, and every form of it is held or reflexive: the paired difference on shared units (task195), the combined or pooled statistic (the pooling reflex, screen 4), the order-restricted or trend statistic (`trend` is an enumerated opponent reflex), the posterior or local-fdr ordering (an open prior, screen 5), the latent count (task180 by a detection probability, task188 behind grouped tests, task192 from a validation batch, task196 from two capture channels) |
+
+So the cell's two incumbents are not two builds that happen to sit here. They occupy the only two
+data-forced slots the task type has, task191 the reference and task195 the statistic, which is why
+every candidate this pass generated converged on one of them. `guard.py check` says the same thing
+mechanically from outside the design: on the strongest candidate's axes it returns
+`BLOCK test.same_driver_older ... against task191` while `driver.text` scores the sentence at 0.05,
+which is the lexical blind spot the skill names, measured once more on this ground.
+
+**Two further facts about the ground, both free and both worth carrying.**
+
+- **`shape` 07 is not available**, whatever was reserved. `guard.py check` returns
+  `BLOCK ban.shape  prompt shape 07 repeats one of the last two builds against task244`, and that
+  survives the live-card gate change. Shapes 10, 12, 16 and 18 all clear on this ground, as do
+  `role_family` `operations_director` and `context_artifact` `filed_standard`; `procurement_lead` and
+  `monitoring_export` block against task170.
+- **The pairing itself is open and the domain has exactly two anomaly-detection routes.**
+  `supply-chain-logistics/anomaly-detection` draws no `ban.pairing` and no `ban.subdomain`. But the
+  house domain maps to `urban-regional-science` and `general-statistics-data-science`, and
+  urban-regional-science serves **no** anomaly-detection task type at all (land-use F, accessibility OS,
+  municipal-service-demand OS and F, regional-input-output OS, optimization OS, forecasting F,
+  network-analysis DD). So the only AD routes into this reserved domain are the two general-statistics
+  ones: `multiple-testing-selective-inference`, which this pass closes, and
+  `exploratory-data-analysis-distribution-assessment`, which this pass did not screen.
+
 ## Tried and rejected
 
 - The exposed or ambient population denominator, a crime rate per ambient person or per opportunity
@@ -121,12 +166,70 @@ domain on this objective; it needs another client domain's AD cell.
   short distance from home) and it still cannot be drawn, which is the clearest single statement of why
   the cell is closed rather than merely picked over.
 
+### Second pass, supply-chain-logistics x multiple-testing-selective-inference (2026-10-18, all six measured)
+
+- The latent count of genuinely short units behind a screen, with a filed trigger count deciding a
+  network-wide remedy (screen 1, measured): dead on the one-live-degree-of-freedom law. On a 54-pairing
+  audit grid (audited consignments 29 to 3,864, median 354) with 12 pairings genuinely 4.5 points short,
+  the six routes a competent analyst would use file **15, 8, 6, 6, 0.0 and 0.0** pairings and the truth
+  of 12 sits sixth of seven on that one axis, so **no trigger threshold between 1 and 59 puts the golden
+  on its own side of the call**: every rung shares its verdict with the decisive step. A correction is a
+  move along one axis, which is the general form of this kill.
+- The same latent count graded as a figure rather than a verdict (screen 2, measured): dead on the
+  estimator family. Six Storey lambdas from 0.3 to 0.8 all return **0.0** non-null pairings while
+  central matching on the same statistics returns **27.6**, a family spread of **27.6 pairings against a
+  printed unit of 1 and 0.4 permitted**, over by about seventy times. Nothing in a records pack closes
+  the family, and filing the estimator files the method.
+- Certification under a simultaneous bound, the audit covering every pairing whose own evidence does not
+  rule out a material shortfall (screen 3, measured): dead on nesting. The slates are
+  **8, 19, 27 and 27** pairings for the naive flag set, the per-pairing 95 per cent bound, the Sidak
+  simultaneous bound and the Bonferroni simultaneous bound, and containment is **total at every step
+  (8/8, 19/19, 27/27)**, so every rung is the same statistic at another level and the decisive rung adds
+  no reordering at all. The level is a convention besides, so the pincer closes it independently.
+- Dense and weak evidence combined across a unit's whole measured family rather than corrected within it
+  (screen 4, measured): dead on the reflex sweep and on readability. With 40 of 54 pairings 1.2 points
+  short, Bonferroni finds 5 and Benjamini-Hochberg 7, but **the pooling reflex lands the conclusion
+  outright: the audit-wide rate is 94.49 per cent against an agreed 95.0, z = 4.6**, and the hygiene
+  battery lands it too (Kolmogorov-Smirnov of the 54 p-values against uniform, **p = 3.45e-03**).
+  A determinism objection stands behind both: a Bonferroni test of the global null is a valid test at
+  the stated level, so "not established" is defensible and the fork is a competing defensible answer.
+- The slate of k under a filed materiality, ranked by the chance a pairing is materially short rather
+  than by its measured shortfall (screen 5, measured): dead twice. The decisive step is **worth nothing**
+  (ranking by z against the agreed level and by z against the material level name the identical slate,
+  (1, 12, 36)), and the family is **not closed** (the four material-aware routes split two to two,
+  (1, 12, 36) against (1, 36, 48), as the lower-bound and empirical-Bayes routes disagree with the
+  z and likelihood-ratio routes). A slate that forks across the corrected routes is the task182
+  architecture-4 death.
+- The confirming review that re-reads the weeks which triggered it, read conditional on the trigger
+  (screen 6, measured): dead on the single dial. Across overlap shares 0.15 to 1.00 the bias removed
+  rises 0.185 to 0.461 points while the corrected estimator's standard error rises 0.302 to infinity, so
+  **the lever over its own noise never clears 1 (0.61, 0.78, 0.80, 0.81, 0.60, 0.00)** and the corrected
+  estimate is **worse than doing nothing above half overlap** (mean absolute error 0.409 against 0.402 at
+  0.69, and 0.554 against 0.434 at 0.85). The overlap share that creates the bias is the share that
+  removes the evidence, one dial at both ends.
+
 ## Resume
 
-Do not re-screen the five mechanisms in the table above or the four in `## Tried and rejected`: all
-nine are measured, not argued. The next pass on this number takes it to **another client domain's
-anomaly-detection cell**, because Criminology & Justice has no second one. The nine axes reserved for
-this slot in wave 5 were never spent and return to the pool unused: `shape` 14,
-`stump_strategy` `population_selection`, `calibration_form` `realised_outcome_roster`, `role_family`
-`field_unit_lead`, `gate_g` `decomposition_attribution`, `gap` `population`, `forum`
-`council_or_assembly`, `forcing_event` `budget_or_appropriation`, `org_family` `local_government`.
+Do not re-screen anything above: fifteen mechanisms across three grounds are now measured dead, not
+argued. Two grounds are closed structurally rather than candidate by candidate, and the reasons are
+different, which is the useful part. On `crime-incidence-hotspot-analysis` the cell's one forced and
+silent family is a count the records leave as a range and task184 holds the only dimension that carries
+one. On `multiple-testing-selective-inference` the task type has four places a decisive step can sit,
+the level and the family are conventions the pincer closes, and the reference and the statistic are
+held by task191 and task195, which is why the guard returns `test.same_driver_older` against task191 on
+the strongest candidate's own axes.
+
+The next pass has two routes and should price both before drawing. **Route 1, keep the reserved domain
+and move the task type** to `general-statistics-data-science/exploratory-data-analysis-distribution-
+assessment`, the only other anomaly-detection route `supply-chain-logistics` has, since
+urban-regional-science serves no AD task type. It was not screened here. Two paper risks are already
+visible and should be measured first rather than designed around: a discrepancy distribution's
+asymmetry (the over-shipment side observes the recording noise that a loss mechanism cannot touch) makes
+the golden one subtraction of two shipped columns, which is readability test 6; and the client's own
+pattern 1 for that task type, judging outliers on the symmetric scale, turns on a scale convention that
+the closure table has to file. **Route 2, move the number to a different domain's AD cell**, in which
+case `shape` 07 is still unavailable (BLOCK against task244) and shapes 10, 12, 16 and 18 are open.
+
+`architecture` stays 0 because no architecture landed and nothing was cut. No card has been written;
+the axis probe at `scratchpad/wave5/task200b/task200_AXIS_PROBE_NOT_A_DRAW.json` exists only to read
+the ban window and must not be registered.
