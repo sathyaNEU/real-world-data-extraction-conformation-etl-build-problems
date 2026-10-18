@@ -172,8 +172,10 @@ def business(r, state, kind):
 
 def successor_of(r, b):
     """The new entity a business forms: a sole proprietor incorporates under the trade name, a partnership becomes an
-    LLC, an LLC elects corporate status under a new holding name. The trade name usually carries over."""
-    trade_name = b.dba or b.name.split(",")[0].rsplit(" ", 1)[0] if b.entity != "SOLE" else (b.dba or b.name)
+    LLC, an LLC or a corporation changes its form under the same name. About one in eight moves the business into a
+    new holding entity under another name, and the trade name carries over."""
+    trade_name = b.dba or (b.name.split(",")[0].rsplit(" ", 1)[0] if b.entity != "SOLE" else b.name)
+    basis = "change of entity"
     if b.entity == "SOLE":
         ent = "LLC" if r.random() < 0.7 else "INC"
         core = b.dba or b.name
@@ -182,11 +184,18 @@ def successor_of(r, b):
         core = trade_name
     else:
         ent = "INC" if b.entity == "LLC" else "LLC"
-        core = trade_name if r.random() < 0.55 else "%s %s" % (_pick(r, SURNAMES), _pick(r, ["Holdings", "Group", "Enterprises", "Services", "Partners"]))
+        if r.random() < 0.88:
+            core = trade_name
+        else:
+            core = "%s %s" % (_pick(r, SURNAMES), _pick(r, ["Holdings", "Group", "Enterprises", "Partners"]))
+            basis = "reorganisation"
     suf = _pick(r, SUFFIX[ent])
     legal = "%s %s" % (core, suf)
-    dba = (b.dba or core) if r.random() < 0.6 else ""
-    return {"name": legal, "dba": dba, "entity": ent}
+    if basis == "reorganisation":
+        dba = trade_name
+    else:
+        dba = (b.dba or core) if r.random() < 0.6 else ""
+    return {"name": legal, "dba": dba, "entity": ent, "basis": basis}
 
 
 ONLINE_PREFIX = ["88", "92", "93", "99", "87", "86", "85", "84", "83", "82", "81", "47", "46", "45", "27", "26", "20",

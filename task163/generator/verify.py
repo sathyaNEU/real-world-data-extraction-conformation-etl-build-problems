@@ -26,7 +26,7 @@ def check(label, cond, detail=""):
 
 
 def month(y, m):
-    return (y - 2022) * 12 + m - 1
+    return (y - 2021) * 12 + m - 1
 
 
 def docx_paragraphs(path):
@@ -60,7 +60,8 @@ def main():
     est = [t for t in std if "will produce" in t]
     check("DOCX: the standard files the estimand once",
           len(est) == 1 and "2025 share in the plan workbook" in est[0] and "business formations within four quarters"
-          in est[0] and "the twelve months to September 2026" in est[0] and "nearest 100" in est[0])
+          in est[0] and "the twelve months to September 2026" in est[0] and "unadjusted counts" in est[0] and
+          "nearest 100" in est[0])
     allstd = " ".join(std)
     check("DOCX: the standard names no method for the formations", not re.search(
         r"\b(rate|ratio|per application|latest|closed cohort|trend|grow\w*)\b", allstd.split("Sizing")[1].split("Timetable")[0]
@@ -113,15 +114,15 @@ def main():
     others = [s for s in states if s not in reform]
     L = {s: month(live[s].year, live[s].month) for s in reform}
 
-    def smm(s, t):
-        v = [BA[s][u] for u in range(0, month(2023, 12) + 1) if u % 12 == t % 12]
+    def smm(s, t, hi):
+        v = [BA[s][u] for u in range(0, hi + 1) if u % 12 == t % 12]
         return sum(v) / len(v)
 
-    def nine_index(t):
-        return sum(BA[o][t] for o in others) / sum(smm(o, t) for o in others)
-
     def ordinary(s, t):
-        return smm(s, t) * nine_index(t)
+        """The state's own level for the calendar month before go-live, moved with the nine states' applications
+        against their level over the same months."""
+        hi = L[s] - 1
+        return smm(s, t, hi) * sum(BA[o][t] for o in others) / sum(smm(o, t, hi) for o in others)
 
     y = {}
     for s in states:
@@ -235,7 +236,7 @@ def main():
             chain += by_ein.get(x, [])
             todo += succ_of.get(x, [])
         st = min((r for a in accts for r in regs[a["account_id"]]),
-                 key=lambda r: (r["liability_date"], r["kilbourne_from"]))["state"]
+                 key=lambda r: (r["liability_date"], r["filing_start"]))["state"]
         t = terr[st]
         T[t]["signed"] += 1
         if any(wq[(a["account_id"], 2025, 4)] > 0 and paid(a, 2025, 4) for a in chain):

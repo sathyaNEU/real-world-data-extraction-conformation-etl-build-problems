@@ -100,8 +100,9 @@ STANDARD = [
     ]),
     ("Sizing", [
         "Each state's line is its 2025 share in the plan workbook times the business formations within four quarters "
-        "that a year of business applications in the state, at the level of the twelve months to September 2026, will "
-        "produce. The twelve states add up to the line, which goes into the plan to the nearest 100.",
+        "that a year of business applications in the state, at the level of the twelve months to September 2026 in the "
+        "release's unadjusted counts, will produce. The twelve states add up to the line, which goes into the plan to "
+        "the nearest 100.",
         "Sales operations keeps the share tab: each state's 2025 first-time employers, counted from the January "
         "extract as the counting notes count them, over the state's business formations within four quarters from "
         "the applications of July 2024 to June 2025 in the October release.",
@@ -174,42 +175,49 @@ def _title(ws, title, note, span):
     ws.row_dimensions[2].height = 40
 
 
-LOG = [
-    # logged, state, effective, change type, change, source
+REFORM_TEXT = {
+    "OH": ("Online formation filings (LLC, corporation, partnership) let the filer apply for a federal EIN inside the "
+           "filing; the state passes the application to the IRS. Optional. Paper forms and the previous online filing "
+           "stay open.", "Secretary of State press release",
+           "Paper formation forms and the previous online filing withdrawn. Every formation filing now goes through the "
+           "integrated filing, which asks whether to apply for an EIN.", "Secretary of State notice"),
+    "PA": ("Online formation filings let the filer apply for a federal EIN inside the filing, passed to the IRS by the "
+           "Department of State. Optional; the previous filing routes stay open.", "Department of State announcement",
+           "Previous formation filing routes closed; every formation filing goes through the integrated filing.",
+           "Department of State notice"),
+    "MI": ("Online formation filings let the filer apply for a federal EIN inside the filing. Optional; the previous "
+           "routes stay open.", "Department of Licensing and Regulatory Affairs release",
+           "Previous formation filing routes closed; every formation filing goes through the integrated filing.",
+           "Department of Licensing and Regulatory Affairs notice"),
+}
+OTHER_LOG = [
     (dt.date(2023, 7, 6), "IN", dt.date(2023, 7, 1), "Fee change",
      "Online filing fee for new LLCs and corporations reduced.", "Secretary of State notice"),
     (dt.date(2023, 11, 8), "KY", dt.date(2023, 11, 6), "New filing system",
      "Secretary of State's online business filings move to a new system; it offers the state tax registration at "
      "the end of a formation filing. No IRS step.", "Secretary of State press release"),
-    (dt.date(2024, 2, 7), "OH", dt.date(2024, 2, 5), "Integrated EIN application",
-     "Online formation filings (LLC, corporation, partnership) let the filer apply for a federal EIN inside the "
-     "filing; the state passes the application to the IRS. Optional. Paper forms and the previous online filing "
-     "stay open.", "Secretary of State press release"),
-    (dt.date(2024, 5, 15), "PA", dt.date(2024, 5, 13), "Integrated EIN application",
-     "Online formation filings let the filer apply for a federal EIN inside the filing, passed to the IRS by the "
-     "Department of State. Optional; the previous filing routes stay open.", "Department of State announcement"),
-    (dt.date(2024, 8, 14), "MI", dt.date(2024, 8, 12), "Integrated EIN application",
-     "Online formation filings let the filer apply for a federal EIN inside the filing. Optional; the previous "
-     "routes stay open.", "Department of Licensing and Regulatory Affairs release"),
     (dt.date(2024, 9, 12), "WI", dt.date(2024, 9, 9), "New filing system",
      "Annual reports and amendments move to a new online portal. Formation filings unchanged.",
      "Department of Financial Institutions notice"),
     (dt.date(2025, 3, 5), "TN", dt.date(2025, 3, 3), "New filing system",
      "Business services portal relaunched for annual reports and certificates. Formation filings unchanged, no "
      "IRS step.", "Secretary of State press release"),
-    (dt.date(2025, 10, 3), "OH", dt.date(2025, 10, 1), "Older filing route closed",
-     "Paper formation forms and the previous online filing withdrawn. Every formation filing now goes through the "
-     "integrated filing, which asks whether to apply for an EIN.", "Secretary of State notice"),
-    (dt.date(2025, 12, 3), "PA", dt.date(2025, 12, 1), "Older filing route closed",
-     "Previous formation filing routes closed; every formation filing goes through the integrated filing.",
-     "Department of State notice"),
-    (dt.date(2026, 2, 4), "MI", dt.date(2026, 2, 2), "Older filing route closed",
-     "Previous formation filing routes closed; every formation filing goes through the integrated filing.",
-     "Department of Licensing and Regulatory Affairs notice"),
     (dt.date(2026, 6, 22), "MO", dt.date(2026, 7, 1), "Fee change",
      "Annual registration report fee waived for reports filed in the second half of 2026.",
      "Secretary of State notice"),
 ]
+
+
+def log_rows():
+    """The research log: the three integrated EIN filings and the closing of each state's older route, dated from the
+    world, and the other states' filing changes. A change is logged two days after it takes effect."""
+    rows = list(OTHER_LOG)
+    for st in WD.REFORM:
+        live, closed = dt.date(*WD.LAUNCH[st]), dt.date(*WD.RETIRE[st])
+        t1, s1, t2, s2 = REFORM_TEXT[st]
+        rows.append((live + dt.timedelta(days=2), st, live, "Integrated EIN application", t1, s1))
+        rows.append((closed + dt.timedelta(days=2), st, closed, "Older filing route closed", t2, s2))
+    return sorted(rows, key=lambda r: (r[0], r[1]))
 
 
 def write_log(path):
@@ -221,7 +229,7 @@ def write_log(path):
            "form or file. Effective is the state's own date." % P["research"], "F")
     cols = ["Logged", "State", "Effective", "Change type", "Change", "Source"]
     _head(ws, 4, cols, [11, 7, 11, 24, 78, 34])
-    for i, row in enumerate(LOG, start=5):
+    for i, row in enumerate(log_rows(), start=5):
         for c, v in enumerate(row, start=1):
             cell = ws.cell(row=i, column=c, value=v)
             cell.font = Font(name="Calibri", size=10)
@@ -333,12 +341,15 @@ DICT = [
     (R.F_REG, "account_id, state", "Account and the state it is registered in for withholding and unemployment tax."),
     (R.F_REG, "withholding_account, ui_account", "State withholding and unemployment insurance account numbers."),
     (R.F_REG, "liability_date", "Liability date on the state registration."),
-    (R.F_REG, "kilbourne_from, kilbourne_to", "Dates we filed in the state for the account (blank: still filing)."),
+    (R.F_REG, "filing_start, filing_end", "Dates we filed in the state for the account (blank: still filing)."),
     (R.F_SUTA, "transfer_no", "Payroll tax team's transfer number."),
     (R.F_SUTA, "state, effective_date", "State and date of the transfer."),
-    (R.F_SUTA, "predecessor_ein, predecessor_name, successor_ein, successor_name",
-     "Successor-employer transfers we filed with the states: a client's business passes to a successor employer, a "
-     "new entity carrying it on under a new EIN, and the state unemployment experience and wage base move with it."),
+    (R.F_SUTA, "basis", "Why the business passed to a new employer: change of entity (same owners, new legal form), "
+     "reorganisation (same owners, a new holding entity) or acquisition (a new owner)."),
+    (R.F_SUTA, "predecessor_ein, predecessor_name, predecessor_trade_name, successor_ein, successor_name, "
+     "successor_trade_name", "Successor-employer transfers we filed with the states: a client's business passes to a "
+     "successor employer, a new entity carrying it on under a new EIN, and the state unemployment experience and wage "
+     "base move with it."),
     (R.F_SUTA, "transfer, filed_on", "Total or partial transfer; date we filed it."),
     (R.F_TERR, "state, state_name, territory", "The 2025 sales territory of each core state."),
     (F_LOG, "Logged, State, Effective, Change type, Change, Source", "Research log of state business filing changes: "
@@ -372,7 +383,7 @@ MANIFEST_COLS = ["file", "provided_by", "source", "as_of", "covers"]
 def manifest_rows():
     return [
         [R.F_BFS, "Market Research (%s)" % P["research"], "U.S. Census Bureau, Business Formation Statistics, API "
-         "pull of the October 2026 release (public domain)", "2026-10-14", "12 core states, applications January 2022 "
+         "pull of the October 2026 release (public domain)", "2026-10-14", "12 core states, applications January 2021 "
          "to September 2026"],
         [R.F_BFS_APR, "Market Research (%s)" % P["research"], "U.S. Census Bureau, Business Formation Statistics, "
          "monthly download of the April 2026 release (public domain)", "2026-04-15", "12 core states, applications "
@@ -413,8 +424,9 @@ def write_all(out, share):
     PP.normalize_docx(p(F_NOTES), P["salesops"], P["salesops"], "2026-02-02T19:05:00Z", "2026-02-03T16:30:00Z",
                       revision=5, total_time=52, seed="task163/counting-notes",
                       title="First-time employers: how we count them")
-    PP.normalize_ooxml(p(F_LOG), P["research"], P["research"], "2023-07-06T13:44:00Z", "2026-02-04T15:20:00Z",
-                       excel=True)
+    last_logged = max(r[0] for r in log_rows())
+    PP.normalize_ooxml(p(F_LOG), P["research"], P["research"], "2023-07-06T13:44:00Z",
+                       "%sT15:20:00Z" % last_logged.isoformat(), excel=True)
     PP.normalize_ooxml(p(F_PLAN), P["planning"], P["salesops"], "2026-08-31T16:02:00Z", "2026-10-15T18:37:00Z",
                        excel=True)
     PP.normalize_ooxml(p(F_DICT), P["planning"], P["planning"], "2026-10-15T19:10:00Z", "2026-10-15T20:02:00Z",

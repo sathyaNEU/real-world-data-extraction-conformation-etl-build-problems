@@ -244,8 +244,8 @@ def wage_rows(C):
     return leg, cur
 
 
-REG_COLS = ["account_id", "state", "withholding_account", "ui_account", "liability_date", "kilbourne_from",
-            "kilbourne_to"]
+REG_COLS = ["account_id", "state", "withholding_account", "ui_account", "liability_date", "filing_start",
+            "filing_end"]
 
 
 def _regnos(b, state):
@@ -287,14 +287,14 @@ def registration_rows(C):
                     continue
                 wh, ui = _regnos(b, st)
                 out.append({"account_id": sp.acct, "state": st, "withholding_account": wh, "ui_account": ui,
-                            "liability_date": liable[st].isoformat(), "kilbourne_from": a.isoformat(),
-                            "kilbourne_to": z.isoformat() if z else ""})
-    out.sort(key=lambda r: (r["account_id"], r["kilbourne_from"], r["state"]))
+                            "liability_date": liable[st].isoformat(), "filing_start": a.isoformat(),
+                            "filing_end": z.isoformat() if z else ""})
+    out.sort(key=lambda r: (r["account_id"], r["filing_start"], r["state"]))
     return out
 
 
-SUTA_COLS = ["transfer_no", "state", "effective_date", "predecessor_ein", "predecessor_name", "successor_ein",
-             "successor_name", "transfer", "filed_on"]
+SUTA_COLS = ["transfer_no", "state", "effective_date", "basis", "predecessor_ein", "predecessor_name",
+             "predecessor_trade_name", "successor_ein", "successor_name", "successor_trade_name", "transfer", "filed_on"]
 
 
 def _pred_name(r, b):
@@ -320,19 +320,21 @@ def suta_rows(C):
         s = C.business[succ]
         r = K.rng("suta", s.key)
         if pred is None:
-            p_ein, p_name = s.pred_ein, _pred_name(r, s)
+            p_ein, p_name, p_trade = s.pred_ein, _pred_name(r, s), s.dba
         else:
             p = C.business[pred]
-            p_ein, p_name = p.ein, p.name
+            p_ein, p_name, p_trade = p.ein, p.name, p.dba
         filed = when + dt.timedelta(days=int(r.integers(9, 44)))
-        rows.append([state, when, ein_dash(p_ein), p_name, ein_dash(s.ein), s.name, "Total", filed])
-    rows.sort(key=lambda x: (x[7], x[1], x[4]))
+        rows.append([state, when, s.basis, ein_dash(p_ein), p_name, p_trade, ein_dash(s.ein), s.name, s.dba, "Total",
+                     filed])
+    rows.sort(key=lambda x: (x[10], x[1], x[6]))
     out, seq = [], {}
-    for state, when, pe, pn, se, sn, tr, filed in rows:
+    for state, when, basis, pe, pn, pt, se, sn, st, tr, filed in rows:
         seq[filed.year] = seq.get(filed.year, 0) + 1
         out.append({"transfer_no": "ST%d-%04d" % (filed.year, seq[filed.year]), "state": state,
-                    "effective_date": when.isoformat(), "predecessor_ein": pe, "predecessor_name": pn,
-                    "successor_ein": se, "successor_name": sn, "transfer": tr, "filed_on": filed.isoformat()})
+                    "effective_date": when.isoformat(), "basis": basis, "predecessor_ein": pe,
+                    "predecessor_name": pn, "predecessor_trade_name": pt, "successor_ein": se, "successor_name": sn,
+                    "successor_trade_name": st, "transfer": tr, "filed_on": filed.isoformat()})
     return out
 
 
