@@ -223,8 +223,9 @@ def fund_table(b, flows):
 
 
 def split_threshold(funds):
-    """the widest gap in the first-year pace of the funds observed nine months or more: its midpoint splits the classes"""
-    y = np.sort(funds.loc[funds["obs"] >= 9, "y1"].values)
+    """the widest gap in the first-year pace of the funds observed nine months or more, among first years under a quarter
+    of commitment: its midpoint splits the classes"""
+    y = np.sort(funds.loc[(funds["obs"] >= 9) & (funds["y1"] < 0.25), "y1"].values)
     g = np.diff(y)
     k = int(np.argmax(g))
     return (y[k] + y[k + 1]) / 2.0, y[k], y[k + 1]
@@ -275,8 +276,8 @@ def ceil_to(x_musd, unit):
 
 def the_call(b, rules, funds, hist, rate):
     thr, lo, hi = split_threshold(funds)
-    ok("CLASS the first-year pace splits at a gap wider than 15 points of commitment", hi - lo > 0.15,
-       "%.1f%% to %.1f%%" % (100 * lo, 100 * hi))
+    ok("CLASS the first-year pace splits at a gap of 3 points or more, from under 8 to over 11 per cent", hi - lo > 0.03 and
+       lo < 0.08 and hi > 0.11, "%.2f%% to %.2f%%" % (100 * lo, 100 * hi))
     funds["line"] = funds["y1"] < thr
     H = ~funds["programme"]
     hl, hs = H & funds["line"], H & ~funds["line"]
@@ -313,7 +314,22 @@ def the_call(b, rules, funds, hist, rate):
     ratio = min(schedule(funds, hist, hl, equal=e)[12:24].sum() / schedule(funds, hist, hs, equal=e)[12:24].sum()
                 for e in (False, True))
     own_within = max(abs((r["own"] - r["actual"]).sum()) / r["actual"].sum() for r in recs.values())
+    # the regression of second-year on first-year share (funds observed two years), applied to the programme
+    seen24 = H & (funds["obs"] >= 24)
+    x = funds.loc[seen24, "y1"].values
+    y2 = hist.loc[funds.index[seen24]].values[:, 12:24].sum(axis=1) / funds.loc[seen24, "commitment"].values
+    slope, icpt = np.polyfit(x, y2, 1)
+    prog = funds[funds["programme"]]
+    reg_p = sum(min((icpt + slope * f["y1"]) * f["commitment"], f["commitment"] - f["paid"]) * (rate if f["ccy"] == "EUR" else 1.0)
+                for _, f in prog.iterrows()) / 1e6
+    pooled_r = project(funds, lambda f: r_pool, rate, rate_rule=True)
+    reg_total = reg_p + float(pooled_r[~funds["programme"]].sum()) / 1e6
+    # the class misplaced at a round 15 per cent threshold
+    l15 = funds["y1"] < 0.15
+    s15l, s15o = schedule(funds, hist, H & l15), schedule(funds, hist, H & ~l15)
+    mis15 = float(project(funds, lambda f: s15l if f["y1"] < 0.15 else s15o, rate).sum()) / 1e6
     return dict(total=total, by_s=by_s, reserve=res, easy_share=easy_share, easy_rate=easy_rate, rec=rec, recs=recs,
+                reg_total=reg_total, mis15=mis15,
                 gap=(lo, hi), ratio=ratio, own_within=own_within,
                 n_hist=int(H.sum()), n_hist_line=int(hl.sum()), n_prog=int(funds["programme"].sum()),
                 n_prog_line=int((funds["programme"] & funds["line"]).sum()),
@@ -495,11 +511,14 @@ def main(target):
     ok("BACKTEST the own-class schedule misses by under a tenth of the pooled schedule's miss", abs(err_o) < 0.1 * abs(err_p),
        "pooled %.1f, own %.1f of %.1f" % (err_p, err_o, rec["actual"].sum() / 1e6))
     a = ask_a(b, flows, rate)
-    ok("ASK A nine figures", a == {"strategy:Buyout": 553.1, "strategy:Growth equity": 252.1, "strategy:Venture capital": 492.1,
-                                   "strategy:Private credit": 34.5, "ccy:EUR": 175.8, "ccy:USD": 1156.0,
-                                   "band:2015-2018": 328.4, "band:2019-2022": 933.3, "total": 1331.8}, str(a))
+    ok("ROUTE the regression of second-year on first-year share files a reserve a bin below", ceil_to(call["reg_total"], 50) == 400,
+       "%.1f" % call["reg_total"])
+    ok("ROUTE a 15 per cent class threshold files a reserve a bin below", ceil_to(call["mis15"], 50) == 400, "%.1f" % call["mis15"])
+    ok("ASK A nine figures", a == {"strategy:Buyout": 617.8, "strategy:Growth equity": 242.2, "strategy:Venture capital": 508.1,
+                                   "strategy:Private credit": 43.1, "ccy:EUR": 185.7, "ccy:USD": 1225.6,
+                                   "band:2015-2018": 326.4, "band:2019-2022": 960.2, "total": 1411.2}, str(a))
     bb = ask_b(b, rules)
-    ok("ASK B six figures", bb == {"total": 210.6, "bills": 88.6, "q1": 32.0, "q2": 15.0, "q3": 25.0, "q4": 18.0}, str(bb))
+    ok("ASK B six figures", bb == {"total": 161.0, "bills": 88.6, "q1": 32.0, "q2": 15.0, "q3": 25.0, "q4": 18.0}, str(bb))
     fig = json.load(open(os.path.join(task, "generator", "figures.json")))
     check_goldens(task, call, a, bb, fig)
     bad = [r for r in OUT if not r[1]]

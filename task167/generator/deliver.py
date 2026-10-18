@@ -168,10 +168,11 @@ def write_book(path, p, book, fc, fig, ca):
     for y in range(10):
         rows.append((y + 1, round(100 * cb[y], 1), nb(lambda f: K.hist(f) and K.is_line(f), y), round(100 * ca_[y], 1),
                      nb(lambda f: K.hist(f) and not K.is_line(f), y), round(100 * cp[y], 1)))
-    r = _table(ws2, 4, ("Year of age", "First year fees and expenses only", "Funds", "Other funds", "Funds", "All funds"),
+    r = _table(ws2, 4, ("Year of age", "Light first year (under %d per cent)" % fig["first_year_gap_pct"][0], "Funds",
+                        "Other funds", "Funds", "All funds"),
                rows, fmt={1: "0.0", 3: "0.0", 5: "0.0"}, widths=(12, 16, 9, 14, 9, 12))
-    ws2.cell(row=r + 1, column=1, value="Second-year calls, left out one vintage at a time: the funds whose first year was "
-             "fees and expenses only, $ million").font = Font(bold=True)
+    ws2.cell(row=r + 1, column=1, value="Second-year calls, left out one vintage at a time: the funds with a light first "
+             "year, $ million").font = Font(bold=True)
     bt = backtest(book)
     r = _table(ws2, r + 2, ("Vintage", "Funds", "Called in year two", "All-fund schedule", "Own schedule"),
                [(v, n, round(a, 1), round(pl, 1), round(ow, 1)) for v, n, a, pl, ow in bt],
@@ -187,7 +188,7 @@ def write_book(path, p, book, fc, fig, ca):
         name = p.veh[f["codes"][0]]["Fund"].replace(", L.P.", "")
         rows.append((fid, name, f["strategy"], f["vintage"], f["first_close"], f["ccy"],
                      round(f["commitment"] / 1e6, 2), round(100 * f["y1"], 1) if f["y1"] is not None else None,
-                     "fees and expenses only" if K.is_line(f) else "investments", round(fc[fid] / 1e6, 1)))
+                     "light" if K.is_line(f) else "ordinary", round(fc[fid] / 1e6, 1)))
     end = _table(ws3, 4, ("Fund ID", "Fund", "Strategy", "Vintage", "First close", "Currency", "Commitment (m)",
                           "First-year calls %", "First year", "Expected 2027 calls ($m)"), rows,
                  fmt={6: "#,##0.00", 7: "0.0", 9: "#,##0.0"}, widths=(10, 36, 15, 8, 11, 9, 14, 12, 20, 14))
@@ -222,9 +223,10 @@ def write_book(path, p, book, fc, fig, ca):
     c.number_format = "#,##0.0"
     c.font = Font(bold=True)
     c.border = Border(top=THIN)
+    neg = any((d["Reported NAV"] or 0.0) < 0 for d in ca)
     ws4.cell(row=end + 2, column=1, value="Reported NAV, contributions and distributions in the fund's currency, from the "
-             "administrator's capital account summary and the notices after each NAV date; a reported NAV below zero is the "
-             "general partner's figure for a fund whose first deals sit on its credit line.").font = Font(size=9, color="444444")
+             "administrator's capital account summary and the notices after each NAV date%s." % (
+                 "; a reported NAV below zero is the general partner's figure" if neg else "")).font = Font(size=9, color="444444")
     for col, w in zip("CDEFGHIJ", (15, 8, 9, 14, 11, 14, 14, 14)):
         ws4.column_dimensions[col].width = w
 
@@ -355,13 +357,14 @@ def write_memo(path, fig):
         % (fig["reserve_musd"], a["total"], fig["transfer_musd"]),
         "We expect the funds committed before 1 January to call $%d million in 2027: buyout $%d million, growth equity "
         "$%d million, venture capital $%d million and private credit $%d million (to the nearest $25 million). Most of it "
-        "is the 2026 programme in its second year. %s of its %s funds called only fees and expenses in 2026, as %d of our "
-        "%d earlier funds did in their first year; those funds then called more than twice the share of commitment the "
-        "others called in their second year. One schedule fitted over every fund, the usual pacing model, puts that "
-        "second year low in each of the %d vintages we can test, and would set the reserve at $%d million."
+        "is the 2026 programme in its second year. %s of its %s funds called less than %d per cent of commitment in "
+        "2026, fees and a first investment, as %d of our %d earlier funds did in their first year; those funds then called "
+        "more than twice the share of commitment the others called in their second year. One schedule fitted over every "
+        "fund, the usual pacing model, puts that second year low in each of the %d vintages we can test, and would set the "
+        "reserve at $%d million."
         % (fig["expected_calls_total_musd"], e["Buyout"], e["Growth equity"], e["Venture capital"], e["Private credit"],
-           words(fig["programme_line_funds"]).capitalize(), words(fig["programme_funds"]), fig["history_line_funds"],
-           fig["history_funds"], fig["backtest_vintages"], fig["rival_reserves_musd"]["pooled_rates"]),
+           words(fig["programme_line_funds"]).capitalize(), words(fig["programme_funds"]), fig["first_year_gap_pct"][0],
+           fig["history_line_funds"], fig["history_funds"], fig["backtest_vintages"], fig["rival_reserves_musd"]["pooled_rates"]),
         "The reserve account held $%.1f million of qualifying assets at 31 December, $%.1f million of them Treasury bills "
         "maturing in 2027. The bills bought on 31 December for the 2027 ladder settle on 4 January and count from then; "
         "the agency discount notes the custodian reports with its bills, the 2028 note and the prime fund do not qualify "
@@ -413,20 +416,21 @@ def submission(fig):
     rv = fig["rival_reserves_musd"]
     L.append("**The Foundation should hold a call reserve of $%d million for 2027.** The funds committed before 1 January "
              "are expected to call $%d million in 2027, most of it the 2026 programme in its second year: %s of its "
-             "%s funds called only fees and expenses in 2026, as %d of the %d earlier funds did in their first year "
-             "before calling more than twice the others' share of commitment in their second. Not $%d million, the reserve "
-             "from Takahashi-Alexander rates on the undrawn balance pooled over every earlier fund ($%d million from shares "
-             "of commitment pooled the same way), which puts the fee-only funds' second-year calls low in every vintage "
-             "left out of the fit. Not 2026's calls carried forward, which take the programme's first year as its pace."
+             "%s funds called less than %d per cent of commitment in 2026, fees and a first investment, as %d of the %d "
+             "earlier funds did in their first year before calling more than twice the others' share of commitment in "
+             "their second. Not $%d million, the reserve from Takahashi-Alexander rates on the undrawn balance pooled over "
+             "every earlier fund ($%d million from shares of commitment pooled the same way), which puts those funds' "
+             "second-year calls low in every vintage left out of the fit. Not 2026's calls carried forward, which take the "
+             "programme's first year as its pace."
              % (fig["reserve_musd"], fig["expected_calls_total_musd"], words(fig["programme_line_funds"]),
-                words(fig["programme_funds"]), fig["history_line_funds"], fig["history_funds"], rv["pooled_rates"],
-                rv["pooled_shares"]))
+                words(fig["programme_funds"]), fig["first_year_gap_pct"][0], fig["history_line_funds"], fig["history_funds"],
+                rv["pooled_rates"], rv["pooled_shares"]))
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
-    L.append("1. Funds whose first year called only fees and expenses: **%d** of the %d earlier funds and **%d** of the "
-             "%d programme funds." % (fig["history_line_funds"], fig["history_funds"], fig["programme_line_funds"],
-                                     fig["programme_funds"]))
+    L.append("1. Funds whose first year called less than %d per cent of commitment: **%d** of the %d earlier funds and "
+             "**%d** of the %d programme funds." % (fig["first_year_gap_pct"][0], fig["history_line_funds"],
+                                                   fig["history_funds"], fig["programme_line_funds"], fig["programme_funds"]))
     L.append("2. Capital calls expected in 2027: **$%d million** (to the nearest $25 million)." % fig["expected_calls_total_musd"])
     L.append("3. By strategy: buyout **$%d million**, growth equity **$%d million**, venture capital **$%d million**, private "
              "credit **$%d million**." % (e["Buyout"], e["Growth equity"], e["Venture capital"], e["Private credit"]))
@@ -437,13 +441,14 @@ def submission(fig):
              "fund_commitments_register.xlsx (the legacy file before 1 April 2016, settled notices only), and built each "
              "fund's calls gross of distributions (policy 2.3) by month of age from its first close (policy 2.4).")
     L.append("2. Split the funds on their first twelve months from first close: %d earlier funds and %d programme funds "
-             "called only fees and expenses, and no fund called between %d and %d per cent of commitment."
-             % (fig["history_line_funds"], fig["programme_line_funds"], fig["first_year_gap_pct"][0], fig["first_year_gap_pct"][1]))
-    L.append("3. Left out one vintage at a time, the schedule pooled over every earlier fund put the fee-only funds' "
+             "called less than %d per cent of commitment, fees and a first investment, and no fund called between %d and %d "
+             "per cent." % (fig["history_line_funds"], fig["programme_line_funds"], fig["first_year_gap_pct"][0],
+                            fig["first_year_gap_pct"][0], fig["first_year_gap_pct"][1]))
+    L.append("3. Left out one vintage at a time, the schedule pooled over every earlier fund put the light-first-year funds' "
              "second-year calls low in all %d vintages, and their own schedule came within %d per cent of those calls in "
              "total." % (fig["backtest_vintages"], fig["backtest_own_within_pct"]))
-    L.append("4. Fitted each class's schedule by month of age on the earlier funds, the fee-only funds calling more than twice "
-             "the others' share of commitment in their second year.")
+    L.append("4. Fitted each class's schedule by month of age on the earlier funds, the light-first-year funds calling more "
+             "than twice the others' share of commitment in their second year.")
     L.append("5. Applied each fund's class schedule to its 2027 ages, capped at its undrawn commitment, euro funds at %.4f "
              "(policy 2.5): $%d million expected." % (fig["eur_rate"], fig["expected_calls_total_musd"]))
     L.append("6. Rounded up to the next $50 million (policy 2.2): a call reserve of $%d million." % fig["reserve_musd"])

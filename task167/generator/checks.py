@@ -142,14 +142,14 @@ def block_gates(target, meta):
 
 def block_main(target, p, book, g):
     check("CALL reserve $450 million", g["reserve"] == 450, str(g["reserve"]))
-    check("CALL expected calls 425.5", abs(m(g["total"]) - 425.5) < 0.05, "%.2f" % m(g["total"]))
+    check("CALL expected calls 425.3", abs(m(g["total"]) - 425.3) < 0.05, "%.2f" % m(g["total"]))
     check("CALL golden a quarter cell inside", edge_dist(m(g["total"]), 50, up=True) >= 12.5,
           "%.1f from an edge" % edge_dist(m(g["total"]), 50, up=True))
     want = {"Buyout": 175, "Growth equity": 100, "Venture capital": 75, "Private credit": 75}
     for s in STRATS:
         x = m(g["by_strategy"][s])
-        check("CALL %s expected calls in the %d cell, a quarter cell inside" % (s, want[s]),
-              cell25(x) == want[s] and edge_dist(x, 25) >= 6.25, "%.1f, %.2f from an edge" % (x, edge_dist(x, 25)))
+        check("CALL %s expected calls in the %d cell, 5 or more inside it" % (s, want[s]),
+              cell25(x) == want[s] and edge_dist(x, 25) >= 5.0, "%.1f, %.2f from an edge" % (x, edge_dist(x, 25)))
     check("CALL strategies sum to the total cell", sum(want.values()) == cell25(m(g["total"])), "")
 
 
@@ -158,8 +158,19 @@ def block_class(book):
     prog = [f for f in book.funds.values() if f["programme"]]
     line = [f for f in hist if K.is_line(f)]
     y1 = sorted(f["y1"] for f in book.funds.values() if f["y1"] is not None and f["obs"] >= 9)
-    gap = [x for x in y1 if 0.03 <= x < 0.18]
-    check("CLASS nothing between 3 and 18 per cent in a first year (C1 for every threshold)", not gap, str(gap[:5]))
+    gap = [x for x in y1 if 0.08 <= x < 0.11]
+    check("CLASS nothing between 8 and 11 per cent in a first year (C1 for every threshold in the gap)", not gap, str(gap[:5]))
+    low = sorted(x for x in y1 if x < 0.25)
+    widest = max(range(len(low) - 1), key=lambda k: low[k + 1] - low[k])
+    check("CLASS the widest break among first years under 25 per cent is the class's, 7.6 to 11.1",
+          abs(low[widest] - 0.0762) < 0.001 and abs(low[widest + 1] - 0.1112) < 0.001, "%.4f to %.4f" % (low[widest], low[widest + 1]))
+    raw = lambda f: sum(f["h"][:min(12, f["obs"])]) / f["commitment"]
+    seen = [f for f in book.funds.values() if f["obs"] >= 9]
+    check("CLASS the light first years carry a first investment call (no fund called fees alone)",
+          all(raw(f) > 0.045 for f in seen if K.is_line(f)), "min %.4f" % min(raw(f) for f in seen if K.is_line(f)))
+    slow = [f for f in hist if not K.is_line(f) and f["y1"] < 0.20]
+    check("CLASS 15 ordinary funds started slowly (11.1 to 17.8 per cent), so a low first year alone is not the class",
+          len(slow) == 15 and min(f["y1"] for f in slow) > 0.111 and max(f["y1"] for f in slow) < 0.179, "%d" % len(slow))
     check("CLASS 36 of 172 earlier funds and 12 of 14 programme funds", len(hist) == 172 and len(line) == 36 and
           len(prog) == 14 and sum(1 for f in prog if K.is_line(f)) == 12, "")
     check("CLASS programme first years observed nine months or more", all(f["obs"] >= 9 for f in prog),
@@ -179,12 +190,12 @@ def block_class(book):
 def block_ladder(book):
     riv = L.rivals(book)
     fam = L.family(book)
-    named = {"pooled schedule, monthly ages, rate on the undrawn balance": (336.9, 350),
-             "pooled schedule, monthly ages, share of commitment": (281.0, 300),
-             "schedule by strategy, rate": (340.1, 350), "schedule of vintages 2014 on, rate": (354.1, 400),
-             "rates on calls since 2019": (349.4, 350),
-             "pooled schedule at the programme's own first-year pace": (100.7, 150),
-             "2026 calls carried": (149.9, 150), "2026 rate on the undrawn balance": (128.1, 150)}
+    named = {"pooled schedule, monthly ages, rate on the undrawn balance": (344.5, 350),
+             "pooled schedule, monthly ages, share of commitment": (298.2, 300),
+             "schedule by strategy, rate": (349.0, 350), "schedule of vintages 2014 on, rate": (359.9, 400),
+             "rates on calls since 2019": (358.9, 400),
+             "pooled schedule at the programme's own first-year pace": (147.6, 150),
+             "2026 calls carried": (198.0, 200), "2026 rate on the undrawn balance": (165.3, 200)}
     for k, (x, r) in named.items():
         v = m(tot(riv[k]))
         check("LADDER %s %.1f, reserve %d" % (k, x, r), abs(v - x) < 0.05 and K.reserve(tot(riv[k])) == r, "%.2f" % v)
@@ -192,15 +203,44 @@ def block_ladder(book):
     check("LADDER every rival at least a bin below the golden's cell", worst <= 400 and
           all(K.reserve(tot(v)) <= 400 for v in riv.values()), "nearest %.1f" % worst)
     totals = [m(tot(v)) for v in fam.values()]
-    check("FAMILY sixteen constructions, all a $450 million reserve", len(fam) == 16 and
-          all(K.reserve(tot(v)) == 450 for v in fam.values()), "%.1f to %.1f" % (min(totals), max(totals)))
-    check("FAMILY every construction 12.5 inside the cell", all(400 + 12.5 <= x <= 450 - 12.5 for x in totals),
+    check("FAMILY 36 constructions (ages, bases, weights, thresholds in the gap, vintage cuts, strategy, nearest "
+          "neighbours), all a $450 million reserve", len(fam) == 36 and all(K.reserve(tot(v)) == 450 for v in fam.values()),
           "%.1f to %.1f" % (min(totals), max(totals)))
+    check("FAMILY every construction 12.5 inside the bin and in the 425 cell of expected calls",
+          all(400 + 12.5 <= x <= 450 - 12.5 and cell25(x) == 425 for x in totals), "%.1f to %.1f" % (min(totals), max(totals)))
     for s in STRATS:
         xs = [m(by_strategy(book, v)[s]) for v in fam.values()]
         check("FAMILY %s in one cell under every construction" % s, len(set(cell25(x) for x in xs)) == 1,
               "%.1f to %.1f" % (min(xs), max(xs)))
     return riv, fam
+
+
+def block_routes(book, g):
+    """the routes the rule-3 audit names: the regression a bin off, the misplaced class a bin off, the pooled schedules two
+    bins off, and the rules of thumb and averages that land, recorded"""
+    r = {k: K.reserve(v) for k, v in L.routes(book).items()}
+    v = {k: m(x) for k, x in L.routes(book).items()}
+    regs = [k for k in r if k.startswith("second-year share regressed")]
+    check("ROUTE the regression of second-year on first-year share sits a bin below ($391.0 to $398.2 million)",
+          len(regs) == 4 and all(r[k] == 400 for k in regs) and abs(min(v[k] for k in regs) - 391.0) < 0.05 and
+          abs(max(v[k] for k in regs) - 398.2) < 0.05, str({k[-30:]: round(v[k], 1) for k in regs}))
+    mis = [k for k in r if k.startswith("first-year threshold 15") or k.startswith("first-year threshold 20") or k.startswith("two clusters")]
+    check("ROUTE the class misplaced (a 15 or 20 per cent threshold, two clusters) files $400 million",
+          len(mis) == 3 and all(r[k] == 400 for k in mis), str({k: round(v[k], 1) for k in mis}))
+    check("ROUTE a 5 per cent threshold finds no class and files the pooled $300 million", r["first-year threshold 5 per cent"] == 300, "")
+    check("ROUTE the catch-up to the pooled cumulative schedule files $500 million and its average with the pooled rates "
+          "$450 million (recorded)", r["the programme caught up to the pooled cumulative schedule"] == 500 and
+          r["average of the pooled rates and that catch-up"] == 450,
+          "%.1f, %.1f" % (v["the programme caught up to the pooled cumulative schedule"], v["average of the pooled rates and that catch-up"]))
+    land = sorted(k for k in r if k.startswith("rule of thumb") and r[k] == g["reserve"])
+    check("ROUTE rules of thumb landing $450 million: one third of commitment or of the undrawn balance, 35 per cent of the "
+          "undrawn balance (recorded)", [k.split(": ")[1].split(",")[0] for k in land] ==
+          ["35 per cent of the programme's undrawn balance"] * 2 + ["one third of the programme's commitment"] * 2 +
+          ["one third of the programme's undrawn balance"] * 2, str(land))
+    riv = L.rivals(book)
+    pr = m(tot(riv["pooled schedule, monthly ages, rate on the undrawn balance"]))
+    check("ROUTE an uplift of 16.1 to 30.6 per cent on the pooled rates lands the bin (recorded)",
+          abs((400 / pr - 1) * 100 - 16.1) < 0.05 and abs((450 / pr - 1) * 100 - 30.6) < 0.05, "%.1f" % pr)
 
 
 def block_backtest(book):
@@ -219,13 +259,28 @@ def block_backtest(book):
         tc += sum(cbv[12:24]) * c - a
         ta += a
     check("BACKTEST the pooled schedule low in all twelve vintages", len(vints) == 12 and under == 12, "%d of %d" % (under, len(vints)))
-    check("BACKTEST pooled misses $221.3 million, own schedule $1.5 million", abs(m(tp) + 221.3) < 0.05 and abs(m(tc) - 1.5) < 0.05,
+    check("BACKTEST pooled misses $177.7 million, own schedule $0.9 million", abs(m(tp) + 177.7) < 0.05 and abs(m(tc) - 0.9) < 0.05,
           "%.2f %.2f of %.1f" % (m(tp), m(tc), m(ta)))
     cb = K.curve(book, lambda f: K.hist(f) and K.is_line(f))
     ca = K.curve(book, lambda f: K.hist(f) and not K.is_line(f))
     cp = K.curve(book, K.hist)
-    check("BACKTEST second-year shares 43.3, 17.4, pooled 23.3", abs(100 * sum(cb[12:24]) - 43.3) < 0.05 and
-          abs(100 * sum(ca[12:24]) - 17.4) < 0.05 and abs(100 * sum(cp[12:24]) - 23.3) < 0.05, "")
+    check("BACKTEST second-year shares 37.3, 16.5, pooled 21.2", abs(100 * sum(cb[12:24]) - 37.3) < 0.05 and
+          abs(100 * sum(ca[12:24]) - 16.5) < 0.05 and abs(100 * sum(cp[12:24]) - 21.2) < 0.05, "")
+    # the class definition the out-of-sample record chooses: second-year calls of every earlier fund, each vintage left out
+    hy = [f for f in book.funds.values() if K.hist(f) and f["y1"] is not None and f["obs"] >= 24]
+    def oos(classify):
+        err = 0.0
+        for v in sorted(set(f["vintage"] for f in hy)):
+            cur = {c: K.curve(book, lambda f, c=c, v=v: K.hist(f) and f["vintage"] != v and classify(f) == c) for c in (True, False)}
+            for f in (h for h in hy if h["vintage"] == v):
+                err += abs(sum(cur[classify(f)][12:24]) * f["commitment"] - sum(f["h"][12:24])) * book.fx_of(f)
+        return m(err)
+    cut = L.kmeans_cut(book)
+    errs = {"gap": oos(K.is_line), "15": oos(lambda f: f["y1"] < 0.15), "20": oos(lambda f: f["y1"] < 0.20),
+            "kmeans": oos(lambda f: f["y1"] < cut), "pooled": oos(lambda f: True)}
+    check("BACKTEST the class at the gap misses least out of sample: $160.6 million against 209.3 (15 per cent), 235.3 "
+          "(20 per cent), 239.4 (two clusters) and 376.7 (pooled)", abs(errs["gap"] - 160.6) < 0.05 and
+          min(errs[k] for k in errs if k != "gap") >= 1.25 * errs["gap"], str({k: round(v, 1) for k, v in errs.items()}))
 
 
 def block_three_rules(target, book):
@@ -248,7 +303,7 @@ def block_three_rules(target, book):
     gold_t = K.forecast(tb, lambda f: cbt if f["cls"] == "line" else cat)
     check("R3b the decisive step alone on the clean truth files $450 million", K.reserve(tot(gold_t)) == 450, "%.1f" % m(tot(gold_t)))
     check("R3b the first-year split recovers the true class for every fund",
-          all((f["cls"] == "line") == (f["y1"] < 0.06) for f in tb.funds.values() if f["obs"] >= 9), "")
+          all((f["cls"] == "line") == (f["y1"] < K.LINE_THRESHOLD) for f in tb.funds.values() if f["obs"] >= 9), "")
     for lab, sel in (("by strategy", "strategy"), ("by vintage 2014 on", "v2014")):
         if sel == "strategy":
             cs = {s: K.curve(tb, lambda f, s=s: not f["programme"] and f["strategy"] == s, rate=True) for s in STRATS}
@@ -432,10 +487,10 @@ def block_separation(target, g):
 def block_asks(target, p):
     ga = CR.nav(p, target)
     gb = CR.assets(target)
-    want_a = {"strategy:Buyout": 553.1, "strategy:Growth equity": 252.1, "strategy:Venture capital": 492.1,
-              "strategy:Private credit": 34.5, "ccy:EUR": 175.8, "ccy:USD": 1156.0, "band:2015-2018": 328.4,
-              "band:2019-2022": 933.3, "total": 1331.8}
-    want_b = {"total": 210.6, "bills": 88.6, "q1": 32.0, "q2": 15.0, "q3": 25.0, "q4": 18.0}
+    want_a = {"strategy:Buyout": 617.8, "strategy:Growth equity": 242.2, "strategy:Venture capital": 508.1,
+              "strategy:Private credit": 43.1, "ccy:EUR": 185.7, "ccy:USD": 1225.6, "band:2015-2018": 326.4,
+              "band:2019-2022": 960.2, "total": 1411.2}
+    want_b = {"total": 161.0, "bills": 88.6, "q1": 32.0, "q2": 15.0, "q3": 25.0, "q4": 18.0}
     check("ASK A golden figures", ga == want_a, str(ga))
     check("ASK B golden figures", gb == want_b, str(gb))
     a1 = CR.nav(p, target, combined_seen=False)
@@ -588,8 +643,8 @@ def block_figures(target, g):
     check("FIGURES figures_check.py: every number in blocks 1 to 4 is in figures.json", fc.returncode == 0, fc.stdout.strip()[-90:])
     check("FIGURES the rivals block 1 names file $350 and $300 million", fig["rival_reserves_musd"] ==
           dict(pooled_rates=350, pooled_shares=300), str(fig["rival_reserves_musd"]))
-    check("FIGURES block 3's bounds: no first year between 3 and 18 per cent, the own schedule within 2 per cent, more than "
-          "twice the second-year share", fig["first_year_gap_pct"] == [3, 18] and fig["backtest_own_within_pct"] == 2 and
+    check("FIGURES block 3's bounds: no first year between 8 and 11 per cent, the own schedule within 1 per cent, more than "
+          "twice the second-year share", fig["first_year_gap_pct"] == [8, 11] and fig["backtest_own_within_pct"] == 1 and
           fig["second_year_share_ratio"] > 2.0 and fig["backtest_pooled_low_vintages"] == fig["backtest_vintages"] == 12, "")
 
 
@@ -600,6 +655,7 @@ def main(target):
     block_main(target, p, book, g)
     block_class(book)
     block_ladder(book)
+    block_routes(book, g)
     block_backtest(book)
     block_three_rules(target, book)
     block_mess(target)

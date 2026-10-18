@@ -5,9 +5,9 @@
   "q2": 15.0,
   "q3": 25.0,
   "q4": 18.0,
-  "total": 210.6
+  "total": 161.0
  },
- "backtest_own_within_pct": 2,
+ "backtest_own_within_pct": 1,
  "backtest_pooled_low_vintages": 12,
  "backtest_vintages": 12,
  "eur_rate": 1.1326,
@@ -18,29 +18,29 @@
   "Venture capital": 75
  },
  "expected_calls_by_strategy_unrounded_musd": {
-  "Buyout": 176.8,
-  "Growth equity": 101.1,
-  "Private credit": 69.2,
-  "Venture capital": 78.4
+  "Buyout": 178.0,
+  "Growth equity": 99.7,
+  "Private credit": 68.4,
+  "Venture capital": 79.2
  },
  "expected_calls_total_musd": 425,
- "expected_calls_total_unrounded_musd": 425.5,
+ "expected_calls_total_unrounded_musd": 425.3,
  "first_year_gap_pct": [
-  3,
-  18
+  8,
+  11
  ],
  "history_funds": 172,
  "history_line_funds": 36,
  "nav_musd": {
-  "band:2015-2018": 328.4,
-  "band:2019-2022": 933.3,
-  "ccy:EUR": 175.8,
-  "ccy:USD": 1156.0,
-  "strategy:Buyout": 553.1,
-  "strategy:Growth equity": 252.1,
-  "strategy:Private credit": 34.5,
-  "strategy:Venture capital": 492.1,
-  "total": 1331.8
+  "band:2015-2018": 326.4,
+  "band:2019-2022": 960.2,
+  "ccy:EUR": 185.7,
+  "ccy:USD": 1225.6,
+  "strategy:Buyout": 617.8,
+  "strategy:Growth equity": 242.2,
+  "strategy:Private credit": 43.1,
+  "strategy:Venture capital": 508.1,
+  "total": 1411.2
  },
  "policy_sections": [
   "1.1",
@@ -55,7 +55,7 @@
   "5.1",
   "5.2"
  ],
- "programme_commitment_musd": 1010.9,
+ "programme_commitment_musd": 1164.3,
  "programme_funds": 14,
  "programme_line_funds": 12,
  "reserve_musd": 450,
@@ -65,7 +65,7 @@
   "pooled_rates": 350,
   "pooled_shares": 300
  },
- "second_year_share_ratio": 2.49,
+ "second_year_share_ratio": 2.26,
  "statement_year": 2026,
- "transfer_musd": 239.4
+ "transfer_musd": 289.0
 }

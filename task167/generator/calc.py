@@ -198,7 +198,10 @@ def forecast(book, curvef, step=1, rate=False, by=None):
     return out
 
 
-def is_line(f, t=0.06):
+LINE_THRESHOLD = 0.09          # inside the gap in first-year share between the light first years and the rest
+
+
+def is_line(f, t=LINE_THRESHOLD):
     return f["y1"] is not None and f["y1"] < t
 
 
@@ -206,7 +209,7 @@ def hist(f):
     return not f["programme"]
 
 
-def golden_call(book, step=1, rate=False, thr=0.06, line_from=None, weight="commitment"):
+def golden_call(book, step=1, rate=False, thr=LINE_THRESHOLD, line_from=None, weight="commitment"):
     sel_b = (lambda f: hist(f) and is_line(f, thr) and (line_from is None or f["vintage"] >= line_from))
     sel_a = (lambda f: hist(f) and not is_line(f, thr))
     cb = curve(book, sel_b, step, rate, weight=weight)

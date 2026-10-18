@@ -22,15 +22,17 @@
   unfunded commitments). Generator seed 167 (the task number), fixed before any outcome was seen.
 - **World:** the Brandvold Foundation, Saint Paul (invented; no foundation of that name found). 186 fund commitments
   since 2006 through 194 vehicles (eight funds hold a main and a parallel vehicle), 172 of them from the 2006 to 2022
-  vintages and 14 from the 2026 re-entry programme ($1,010.9 million at the year-end rate, three of the fourteen in
+  vintages and 14 from the 2026 re-entry programme ($1,164.3 million at the year-end rate, three of the fourteen in
   euros), whose first closes fell between 12 January and 30 March 2026 after the board suspended new commitments for
   2023 to 2025 while the private allocation sat above its range. 146 funds are active at 31 December 2026.
 - **Strategy:** `forecast_method_backtest`, pattern E (G14's form) with G16 as the frame. The natural fit, a call
   schedule by fund age pooled over every fund (Takahashi-Alexander rates on the undrawn balance, or shares of
   commitment by age), is wrong out of sample for the funds that bridge their first deals on a subscription line:
-  they call nothing but fees and expenses in their first year and most of their capital in their second. No field
-  names the class; each fund's first-year notices show it. The programme spends 2027 in its second year, and twelve of
-  its fourteen funds called only fees and expenses in 2026.
+  they call fees and one small first investment in their first year, under 8 per cent of commitment in all, and the
+  deals the line carried in their second, while fifteen ordinary funds that started slowly called 11 to 18 per cent in
+  theirs. No field names the class; the shape of each fund's first-year notices shows it, with a clean break between
+  7.6 and 11.1 per cent. The programme spends 2027 in its second year, and twelve of its fourteen funds called less than
+  8 per cent of commitment in 2026.
 - **Furniture (honest alternatives where the first choice was banned at the draw):** forum `board_of_directors` (the
   foundation is a Minnesota nonprofit corporation; its board confirms the call reserve at its January meeting);
   forcing event `vote_or_meeting` (that meeting, 21 January 2027); organisation `foundation_or_funder`; role
@@ -64,16 +66,17 @@ The pipeline a competent analyst builds from the prompt and the files, with ever
 4. Apply it to each active fund's 2027 ages and undrawn balance, euro funds at the 31 December 2026 reference rate
    (policy 2.5), sum and round up to the next $50 million (policy 2.2).
 
-- **Ends on:** a reserve of $350 million (expected 2027 calls $336.9 million on the pooled rates on the undrawn
-  balance; $281.0 million and a $300 million reserve on pooled shares of commitment).
-- **Golden:** a reserve of $450 million (expected 2027 calls $425.5 million).
+- **Ends on:** a reserve of $350 million (expected 2027 calls $344.5 million on the pooled rates on the undrawn
+  balance; $298.2 million and a $300 million reserve on pooled shares of commitment).
+- **Golden:** a reserve of $450 million (expected 2027 calls $425.3 million).
 
 ## Stump sentence
 
 Fitting one call schedule by fund age over every fund the foundation has backed and applying it to each fund's 2027
 age and undrawn balance files a reserve of $350 million, because twelve of the fourteen 2026 programme funds belong to
-the line-bridged class their own fee-only first year shows, whose second year calls 43 per cent of commitment against
-the pooled schedule's 23, so the 2027 calls are $425.5 million and the reserve $450 million.
+the line-bridged class their own light first year shows (fees and a first investment, under 8 per cent of commitment),
+whose second year calls 37 per cent of commitment against the pooled schedule's 21, so the 2027 calls are $425.3
+million and the reserve $450 million.
 
 ## Three rules
 
@@ -82,10 +85,10 @@ the pooled schedule's 23, so the 2027 calls are $425.5 million and the reserve $
 - **Domain test:** the deciding quantity is next year's capital calls on existing fund commitments, the pacing
   forecast an endowment's investment office builds from its funds' contribution schedules by age (Takahashi-Alexander
   rates fitted to its own history), with the schedule of the funds that bridge their first deals on a subscription
-  line found from their fee-only first years and validated on the funds that have passed those ages.
+  line found from their light first years and validated on the funds that have passed those ages.
 - **Swap:** "how large a reserve must we hold for 2027's capital calls" with a hospital's capital projects for funds
   stops making sense: no limited partnership calls an allotment on a schedule its general partner sets, no credit
-  line defers the first calls, no fee-only first year marks a schedule shape.
+  line defers the first calls, no light first year marks a schedule shape.
 - **Layer 1:** two administrators' notice files in different layouts with the 2016 handover quarter in both (the
   administrator change); euro funds in euros (the general partners' currency); distributions set against calls on one
   notice late in a fund's life and fee offsets on buyout and growth notices (the general partners' notices); twelve
@@ -94,9 +97,10 @@ the pooled schedule's 23, so the 2027 calls are $425.5 million and the reserve $
 - **Layer 2:** forecast_uncertainty: the model choice on out-of-sample error, a schedule conditioned on each fund's
   own first-year class against one pooled schedule, which the funds that have passed their second year decide.
 - **Decisive step:** condition each fund's call schedule on its financing class, read from its own first-year notices
-  (fees and expenses only, 1.7 to 2.7 per cent of commitment, annualised for the programme's younger funds, against 18.3
-  per cent or more for every other fund),
-  and read the programme's line-bridged funds at the line-bridged funds' schedule.
+  (fees and a first investment, 5.2 to 7.6 per cent of commitment, annualised for the programme's younger funds,
+  against 11.1 per cent or more for every other fund, fifteen slow-starting ordinary funds among them at 11.1 to 17.8),
+  and read the programme's line-bridged funds at the line-bridged funds' schedule; the out-of-sample record chooses the
+  break at the gap over a round threshold past it or two clusters.
 - **Not semantics:** every field, code, currency, status and date read correctly, and every filed rule applied, still
   leaves the pooled schedule on $350 million; no column, code or document names the class, and line types only say
   what each amount was for.
@@ -128,11 +132,12 @@ one subtraction, ratio or half of a figure). Figures from `generator/ladder.py` 
 
 | Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R0 2026's calls carried ($149.9 million, reserve $150 million) or 2026's rate on the undrawn balance ($128.1 million) | policy 2.2 asks for calls expected in the year | the activity file's 2026 lines | yes, the trailing year | the funds' own ages: the programme was in its first year in 2026 | no | yes | readable |
-| R1 one schedule by age pooled over every fund ($336.9 million on rates, $281.0 million on shares; reserve $350 or $300 million) | policy 2.4 sends the solver to age | the first close and every call by month | yes, the default (Takahashi-Alexander) | the analyst's own back-test: left out a vintage at a time, the pooled schedule misses the line funds' second years low in every one of twelve vintages, by $221.3 million in all | no | no | readable |
-| R1b the schedule by strategy or by recent vintages or calls since 2019 ($340.1, $354.1, $349.4 million; reserve $350 or $400 million) | no | the register's strategy and vintage | yes, stratify on what is visible | the same back-test: the class runs across every strategy and vintage | no | no | readable |
-| R1c the programme's own first-year pace carried ($100.7 million; reserve $150 million) | no | the programme's 2026 lines | yes, credibility on the young book | the history: every fund whose first year called only fees called most of its capital in its second | no | yes, one ratio | readable |
-| R2 (decisive) each fund's schedule read from the funds whose first year looked like its own: the 36 line-bridged funds' schedule for the programme's twelve, the other 136's for the rest ($425.5 million; reserve $450 million) | no sentence names a line, a facility, a class, a fee-only year or a schedule by kind; the policy files what is forecast and the clock | no column marks the class: the register has no financing field and line types say what an amount was for | no: the reflexes are the trailing year, the pooled curve, strategy, vintage, recent windows and the young book's own pace, each measured wrong | none ships: no document scores a schedule; the closed record is read alike by every method | no: nothing is duplicated, missing or mis-keyed that points at it | no: a class read from each fund's first year, two schedules by month of age, applied fund by fund | silent |
+| R0 2026's calls carried ($198.0 million, reserve $200 million) or 2026's rate on the undrawn balance ($165.3 million) | policy 2.2 asks for calls expected in the year | the activity file's 2026 lines | yes, the trailing year | the funds' own ages: the programme was in its first year in 2026 | no | yes | readable |
+| R1 one schedule by age pooled over every fund ($344.5 million on rates, $298.2 million on shares; reserve $350 or $300 million) | policy 2.4 files the clock | the first close and every call by month | yes, the default (Takahashi-Alexander) | the analyst's own back-test: left out a vintage at a time, the pooled schedule misses the line funds' second years low in every one of twelve vintages, by $177.7 million in all | no | no | readable |
+| R1b the schedule by strategy or by recent vintages or calls since 2019 ($349.0, $359.9, $358.9 million; reserve $350 or $400 million) | no | the register's strategy and vintage | yes, stratify on what is visible | the same back-test: the class runs across every strategy and vintage | no | no | readable |
+| R1c the programme's own first-year pace carried ($147.6 million; reserve $150 million) | no | the programme's 2026 lines | yes, credibility on the young book | the history: the funds whose first year called under 8 per cent called 37 per cent of commitment in their second | no | yes, one ratio | readable |
+| R1f the class misplaced: a round 15 or 20 per cent threshold, or two clusters of first-year share ($391.1, $376.2, $374.3 million; reserve $400 million) | no | the first-year shares | yes, a round cut or a clustering | the out-of-sample record: the slow-starting ordinary funds call an ordinary second year, so those classes miss $209.3 to $239.4 million against the gap's $160.6 million | no | no | readable |
+| R2 (decisive) each fund's schedule read from the funds whose first year looked like its own: the 36 line-bridged funds' schedule for the programme's twelve, the other 136's for the rest ($425.3 million; reserve $450 million) | no sentence names a line, a facility, a class, a light year or a schedule by kind; the policy files what is forecast and the clock | no column marks the class: the register has no financing field and line types say what an amount was for | no: the reflexes are the trailing year, the pooled curve, strategy, vintage, recent windows and the young book's own pace, each measured wrong | none ships: no document scores a schedule; the closed record is read alike by every method | no: nothing is duplicated, missing or mis-keyed that points at it | no: a class read from each fund's first year, two schedules by month of age, applied fund by fund | silent |
 
 ## Semantic fork table
 
@@ -142,17 +147,17 @@ Every term in the main ask and every convention the main computation needs. Ever
 | Id | Term or convention | Golden reading | Alternative and its call | Ruled out by |
 |---|---|---|---|---|
 | SF1 | "call reserve ... for 2027" | policy 2.2: the capital calls expected in calendar 2027 on commitments made before 1 January 2027, rounded up to the next $50 million | a reserve net of expected distributions; a stressed or upper-quantile figure | policy 2.2 ("the capital calls the Foundation expects to pay") and 2.3 ("before any distribution a fund sets against a call") |
-| SF2 | "capital calls" | every amount called: investments, management fees net of the offsets on the notice, partnership and organisational expenses | investments only ($35 to $40 million less); fee offsets ignored ($426.0 million, same call) | policy 2.3 names fees and expenses; offsets: same call (asserted) |
-| SF3 | "2027" | calendar 2027 by the date paid, January to December | a fiscal year; notice dates | policy 2.2 ("that calendar year"); the forecast is by month of age, so notice and value dates give the same call |
-| SF4 | "commitments made before the year began" | every vehicle with a first close on or before 31 December 2026, realised funds contributing nothing | 2027's new commitments added | policy 2.3 (they "are not part of the call reserve") |
+| SF2 | "capital calls" | every amount called: investments, management fees net of the offsets on the notice, partnership and organisational expenses | investments only ($380.2 million, $400 million); fee offsets ignored ($425.8 million, same call) | policy 2.3 names fees and expenses; offsets: same call (asserted) |
+| SF3 | "2027" | calendar 2027 by the date paid, January to December | a fiscal year; notice dates ($435.3 million, same call) | policy 2.2 ("that calendar year"); notice dates: same call asserted |
+| SF4 | "commitments made before the year began" | every vehicle with a first close on or before 31 December 2026, realised funds contributing nothing | 2027's new commitments added; realised funds projected too ($425.3 million, same call) | policy 2.3 (they "are not part of the call reserve") |
 | SF5 | "expects" | the mean of the year's calls | a percentile | policy 2.2 |
-| SF6 | the age clock | months from the fund's first close | calendar years from the vintage | policy 2.4 ("counted in months from its first close") |
-| SF7 | euro conversion | the custodian's reference rate for 31 December 2026 (1.1326) | the 2026 average ($426.5 million, same call); notice-date rates (not applicable to a forecast) | policy 2.5; same call asserted |
-| SF8 | rounding | up to the next $50 million | to the nearest $50 million (450, same call); to the nearest $25 million (425) | policy 2.2 ("rounded up to the next $50 million"); the prompt ("as the policy does") |
-| SF9 | parallel vehicles | a parallel vehicle's commitment and calls are the foundation's | each vehicle as its own fund ($425.5 million, same call) | policy 1.1 ("directly or through a parallel vehicle"); same call asserted |
-| SF10 | cancelled notices | dropped | counted ($425.5 million, same call) | the dictionary ("Cancelled for a notice the general partner withdrew"); same call asserted |
-| SF11 | distributions set against calls | calls read gross | the net amount ($410.0 million, same call) | policy 2.3; same call asserted |
-| SF12 | the 2016 handover quarter | counted once, from the current file | counted twice ($435.5 million, same call) | the export manifest (the administrator "re-keyed the former administrator's notices from 1 April 2016"); same call asserted |
+| SF6 | the age clock | months from the fund's first close | calendar years from the vintage ($338.8 million, $350 million) | policy 2.4 ("a fund's age is counted in months from its first close") |
+| SF7 | euro conversion | the custodian's reference rate for 31 December 2026 (1.1326) | the 2026 average ($426.3 million, same call); notice-date rates (not applicable to a forecast) | policy 2.5; same call asserted |
+| SF8 | rounding | up to the next $50 million | to the nearest $50 million (450 at the golden's 425.3, 400 for any construction under 425); to the nearest $25 million (425) | policy 2.2 ("rounded up to the next $50 million"); the prompt ("as the policy does") |
+| SF9 | parallel vehicles | a parallel vehicle's commitment and calls are the foundation's | each vehicle as its own fund ($425.3 million, same call) | policy 1.1 ("directly or through a parallel vehicle"); same call asserted |
+| SF10 | cancelled notices | dropped | counted ($424.2 million, same call) | the dictionary ("Cancelled for a notice the general partner withdrew"); same call asserted |
+| SF11 | distributions set against calls | calls read gross | the net amount ($409.1 million, same call) | policy 2.3; same call asserted |
+| SF12 | the 2016 handover quarter | counted once, from the current file | counted twice ($431.1 million, same call) | the export manifest (the administrator "re-keyed the former administrator's notices from 1 April 2016"); same call asserted |
 | SF13 | "from each of the four strategies" | the register's strategy of each fund, expected calls in millions to the nearest 25 | the general partner's own label | the register's Strategy column is the only strategy field |
 | SF14 | Ask A: "net asset value at 31 December 2026" | policy 4.1: each fund's latest reported value rolled forward for the contributions paid and distributions received after its date (the value date, the dictionary's "date the amount was paid or received") to 31 December, euros at 1.1326, each fund once | the reported values unrolled; euros at the reporting date; the roll-forward cut on notice dates | policy 4.1 ("contributions paid and distributions received after the date of that value") and the dictionary's value_date |
 | SF15 | Ask A: "euro and dollar funds", "vintages" | the register's currency and vintage (the year of first close) | the summary's currency label | the register; the summary's header ("Amounts in each fund's currency") |
@@ -166,35 +171,46 @@ rounded up to the next $50 million.
 
 | Rung | Construction | Expected calls | Reserve | Dies to |
 |---|---|---|---|---|
-| R0 | 2026's calls carried | 149.9 | 150 | the programme's funds were in their first year in 2026 |
-| R0b | 2026's rate on the undrawn balance | 128.1 | 150 | the same, and most of the older funds' undrawn balance is never called |
-| R1 default | one schedule by age over every fund, rates on the undrawn balance (monthly, quarterly, annual ages: 336.9, 337.9, 341.2) | 336.9 | 350 | the out-of-sample record: the pooled schedule puts every vintage's line funds' second year low (by $221.3 million over 36 funds) |
-| R1a | the same on shares of commitment | 281.0 | 300 | the same |
-| R1b | the schedule by strategy (rates; shares 282.5) | 340.1 | 350 | the class runs across strategies: 11 of 58 buyout, 10 of 47 growth, 12 of 51 venture, 3 of 16 credit funds |
-| R1c | the schedule of the 2014 to 2022 vintages (rates; 2017 on 350.5, 2019 on 339.6) | 354.1 | 400 | one fund in four of those vintages bridges its first year; the programme is twelve in fourteen |
-| R1d | rates on calls since 2019 (since 2022: 349.8) | 349.4 | 350 | the same mix |
-| R1e | the pooled schedule at the programme's own first-year pace | 100.7 | 150 | every fund whose first year called only fees called 43 per cent of commitment in its second |
-| R2 decisive | the line-bridged funds' schedule for the twelve programme funds whose first year called only fees and expenses, the other funds' for the rest | 425.5 | 450 | golden |
+| R0 | 2026's calls carried | 198.0 | 200 | the programme's funds were in their first year in 2026 |
+| R0b | 2026's rate on the undrawn balance | 165.3 | 200 | the same, and most of the older funds' undrawn balance is never called |
+| R1 default | one schedule by age over every fund, rates on the undrawn balance (monthly, quarterly, annual ages: 344.5, 343.8, 350.2) | 344.5 | 350 | the out-of-sample record: the pooled schedule puts every vintage's line funds' second year low (by $177.7 million over 36 funds) |
+| R1a | the same on shares of commitment | 298.2 | 300 | the same |
+| R1b | the schedule by strategy (rates; shares 300.5) | 349.0 | 350 | the class runs across strategies: 11 of 58 buyout, 10 of 47 growth, 12 of 51 venture, 3 of 16 credit funds |
+| R1c | the schedule of the 2014 to 2022 vintages (rates; 2017 on 354.4, 2019 on 351.3) | 359.9 | 400 | one fund in four of those vintages bridges its first year; the programme is twelve in fourteen |
+| R1d | rates on calls since 2019 (since 2022: 354.2) | 358.9 | 400 | the same mix |
+| R1e | the pooled schedule at the programme's own first-year pace | 147.6 | 150 | the funds whose first year called under 8 per cent called 37 per cent of commitment in their second |
+| R1f | the class misplaced: a 15 per cent threshold (20 per cent 376.2, two clusters cut at 21.4 per cent 374.3) | 391.1 | 400 | the slow-starting ordinary funds call an ordinary second year: out of sample those classes miss $209.3, $235.3 and $239.4 million of second-year calls against the gap's $160.6 million |
+| R2 decisive | the line-bridged funds' schedule for the twelve programme funds whose first year called under 8 per cent (fees and a first investment), the other funds' for the rest | 425.3 | 450 | golden |
 
-**Position and margins.** Every rung files below the golden; the nearest, R1c at 354.1, sits $45.9 million under the
-golden cell's $400 million floor, and the default's 336.9 a full bin below it. The golden sits $25.5 million above the
-cell's floor and $24.5 million under its ceiling.
+**Position and margins.** Every rung files below the golden; the nearest, R1c at 359.9, sits $40.1 million under the
+golden cell's $400 million floor, and the default's 344.5 a full bin below it. The golden sits $25.3 million above the
+cell's floor and $24.7 million under its ceiling.
 
-**Convergence (C1, asserted, FAMILY).** Sixteen constructions of the class-conditioned schedule file 416.6 to 428.0,
-all a $450 million reserve: monthly, quarterly and annual ages on shares of commitment (425.5, 425.9, 423.7) and on
-rates on the undrawn balance (424.5, 424.9, 426.5); first-year thresholds of 4, 6, 9 and 12 per cent (all 425.5: the
-first-year shares split at 2.7 against 18.3 per cent, nothing between); the line funds of the 2012, 2014, 2016 and
-2018 vintages on (424.4, 422.3, 416.6, 428.0); funds equally weighted (427.8); the programme by class with the older
-funds pooled (424.8); the class schedules fitted within each strategy (426.2). The nearest, 416.6, sits 16.6 above the
-floor; one standard error of the line funds' second-year share (36 funds, about 4 per cent of the programme's $376.5
-million) leaves the golden in the cell. The strategy components at the nearest 25: buyout 171.1 to 178.5 (175),
-growth 96.8 to 101.8 (100), venture 76.9 to 84.6 (75), credit 67.6 to 73.6 (75), every construction in its cell.
+**Convergence (C1, asserted, FAMILY).** Thirty-six constructions of the class-conditioned schedule file 414.3 to
+432.1, all a $450 million reserve and all in the 425 cell of expected calls: monthly, quarterly and annual ages on
+shares of commitment and on rates on the undrawn balance, commitment-weighted or equally weighted (422.9 to 432.1);
+first-year thresholds of 8, 9, 10 and 11 per cent (all 425.3: the first-year shares break at 7.6 against 11.1 per cent,
+nothing between); the line funds of the 2012, 2014, 2016 and 2018 vintages on (421.9 to 427.0); the programme by class
+with the older funds pooled (425.7); the class schedules fitted within each strategy, on shares or rates (427.6,
+426.3); each fund's 5, 7, 10, 15, 20 or 30 nearest earlier funds in first-year share, annualised or as observed (414.3
+to 429.8). The strategy components at the nearest 25: buyout 174.9 to 182.7 (175), growth 94.0 to 101.5 (100),
+venture 74.8 to 83.8 (75), credit 66.0 to 69.7 (75), every construction in its cell.
 
 **Back-test (the out-of-sample record, asserted, BACKTEST).** Left out one vintage at a time, the pooled schedule
 fitted on the others puts the vintage's line funds' second-year calls low in all twelve vintages that have them, by
-$221.3 million in all (actual $473.4 million); the line funds' own schedule, fitted the same way, misses by $1.5 million
-in all. The 36 line funds called 43.3 per cent of commitment in their second year, the 136 others 17.4, the pooled
-schedule 23.3.
+$177.7 million in all (actual $407.5 million); the line funds' own schedule, fitted the same way, misses by $0.9 million
+in all. The 36 line funds called 37.3 per cent of commitment in their second year, the 136 others 16.5, the pooled
+schedule 21.2. Over every earlier fund's second year, the class at the gap misses $160.6 million out of sample, a 15
+per cent threshold $209.3 million, a 20 per cent threshold $235.3 million, two clusters $239.4 million and the pooled
+schedule $376.7 million.
+
+**Routes the rule-3 audit named (asserted, ROUTE).** The regression of second-year on first-year share files $391.0 to
+$398.2 million ($400 million) across its four forms; the catch-up of the programme to the pooled cumulative schedule
+files $470.8 million ($500 million) and its average with the pooled rates $407.7 million ($450 million, recorded); an
+uplift of 16.1 to 30.6 per cent on the pooled rates lands the bin; of the rules of thumb, one third of the programme's
+commitment ($438.5 to $441.3 million) or of its undrawn balance ($400.9 to $403.7 million) and 35 per cent of its undrawn
+balance ($418.4 to $421.2 million), each with the earlier funds on a pooled schedule, land $450 million; 35 and 40 per
+cent of commitment and 40 per cent of the undrawn balance land $500 or $550 million.
 
 ## Closure table
 
@@ -206,9 +222,9 @@ schedule 23.3.
 | 4 | As-of dating | notices with value dates to 31 December 2026 | filed (the export manifest) |
 | 5 | Version basis | settled notices; cancelled ones dropped | the dictionary; SF10 same call asserted |
 | 6 | Denominator | the share of commitment or of the undrawn balance | C1: both bases inside the cell (FAMILY asserted) |
-| 7 | Weighting | commitment-weighted or equal by fund | C1: 425.5 and 427.8 (asserted) |
+| 7 | Weighting | commitment-weighted or equal by fund | C1: 425.3 and 425.7 (asserted) |
 | 8 | Window length | which vintages the class schedule is read from | C1: all, 2012 on, 2014 on, 2016 on, 2018 on (asserted) |
-| 9 | Boundary inclusivity | the first-year class threshold | C1: no fund between 2.7 and 18.3 per cent (asserted) |
+| 9 | Boundary inclusivity | the first-year class threshold | C1: no fund between 7.6 and 11.1 per cent (asserted); a cut past the gap is a different class, chosen against by the out-of-sample record (C2 on the funds' own second years, asserted) |
 | 10 | Rounding path | the unrounded total rounded up once | filed (policy 2.2); SF8 |
 | 11 | Tie-break | none | n/a |
 | 12 | Maturity and censoring | the schedule at each age from the funds observed through it | C1: every construction reads the observed funds only; the programme's first year is observed for nine to twelve months, its class read from them (asserted) |
@@ -227,7 +243,7 @@ schedule 23.3.
 
 Executing the prompt and policy 2.2 to 2.5 word for word gives the capital calls the Foundation expects to pay in
 calendar 2027 on the fund commitments made before 1 January 2027, fees and expenses included, gross of distributions
-set against calls, each fund projected from its age in months from its first close, euros at the 31 December 2026
+set against calls, each fund's age counted in months from its first close, euros at the 31 December 2026
 reference rate, rounded up to the next $50 million; no shipped sentence says which schedule a fund follows, so a
 literal reader must estimate it from the records; the easy method on the same literal estimand (one pooled schedule)
 files $350 million, and the fork table leaves no reading under which any rung is the golden.
@@ -262,18 +278,18 @@ funds, for the 2015 to 2018 and 2019 to 2022 vintages and in total** (9 figures,
 - Primary A1 (D9 and D1, a rollup above its own parts): for each of the eight funds held through two vehicles, the
   summary's main-vehicle row is the general partner's combined statement for both interests (commitment,
   contributions, distributions, unfunded and value), and the parallel vehicle has its own row too. Summing the rows
-  counts every parallel interest twice: $43.8 million in all, $14.2 buyout, $13.8 growth, $11.2 venture, $4.5
+  counts every parallel interest twice: $36.0 million in all, $13.0 buyout, $9.6 growth, $7.8 venture, $5.7
   credit. Fair: the register lists each vehicle's own commitment and the main row's commitment and contributions to
   date equal both vehicles' (asserted). Silent: every code joins, no row repeats another, the main row's name is the
   main vehicle's, and no sentence says the statement is combined.
 - Primary A2 (D3, a missing currency read as the house's): the administrator's fund master defaults the currency of
   vehicles set up on its platform from 2021 to US dollars, so eleven euro vehicles carry a USD label over euro values.
-  Taken at the label, the euro funds' value falls $141.3 million and the dollar funds' rises $124.8 million; buyout,
+  Taken at the label, the euro funds' value falls $152.5 million and the dollar funds' rises $134.6 million; buyout,
   growth, credit, the 2019 to 2022 vintages and the total move too. Fair: the register's Currency column and the
   summary's header ("Amounts in each fund's currency"); the main rows' commitments equal the register's euro amounts.
   Silent: no blank, the label is a valid code.
 - Hazards: the roll-forward from each statement date (30 June for venture, 30 November for credit, 30 September for
-  the rest; unrolled, the total moves $191.5 million); euros at the statement date's rate (total $0.6 million).
+  the rest; unrolled, the total moves $152.1 million); euros at the statement date's rate (total $0.7 million).
 - Stops (built and asserted): S1 the cracker (rows summed, labels taken, the rule executed): all 9 miss; S1a A1 cracked
   alone: 7 of 9 still miss (venture and the 2015 to 2018 vintages kept); S1b A2 cracked alone: all 9 miss; S2 both: the
   golden.
@@ -310,11 +326,11 @@ value of those bills maturing in each quarter of 2027** (6 figures, $ million to
 
 | Hazard | Asks moved | Per-ask delta read the easy way |
 |---|---|---|
-| A1 combined statements | A | every figure, $43.8 million in all |
-| A2 defaulted currency | A | euro funds $141.3 million low, dollar funds $124.8 million high, total $16.5 million low |
+| A1 combined statements | A | every figure, $36.0 million in all |
+| A2 defaulted currency | A | euro funds $152.5 million low, dollar funds $134.6 million high, total $17.8 million low |
 | B1 the unsettled ladder | B | qualifying assets $137.1 million high, each quarter $30 to $40 million |
 | B2 agency notes as bills | B | qualifying assets $38.2 million high, each quarter $8 to $12 million |
-| roll-forward | A | total $191.5 million high when skipped |
+| roll-forward | A | total $152.1 million high when skipped |
 | the operating account and the non-qualifying holdings | B | qualifying assets $42.8 million high when counted |
 
 **Referee.** None: the policy files every basis and nothing shipped totals a graded figure on the golden path.
@@ -354,8 +370,9 @@ with the reserve drawn across it and the rounding (4): 25.
 - Sweep 4, the grants budget memo (schedule, million, programme, second, twelve): grant programmes, the grant
   agreements' payment schedules, the second quarter and twelve quarters of endowment value; it names no fund, call or
   schedule of calls; harmless (a declared distractor).
-- Sweep 4, the policy (schedule, million, commitments, commitment, expenses): Schedule 1 is the approved money market
-  fund, and 2.2 to 2.3 file the estimand; it names no schedule of calls and no financing class; harmless.
+- Sweep 4, the policy (schedule, million, commitment, commitments, investment, January): Schedule 1 is the approved
+  money market fund, 2.2 to 2.3 file the estimand and 5.1 names the director of investment risk and the board's January
+  meeting; it names no schedule of calls, no first investment and no financing class; harmless.
 - Sweep 9, fifteen dates after 14 January 2027 in the positions report: the maturity dates of the bills, the agency
   notes and the 2028 note, forward by nature; harmless.
 
@@ -399,3 +416,34 @@ with the reserve drawn across it and the rounding (4): 25.
 - `single-figure` for the card's shape once the quarterly path died (2026-10-18, at the PAUSED commit): the call carries
   a repeated unit (the four strategies' expected calls) and the asks carry the NAV and reserve-asset cuts, so the card
   takes `other`, its 25 criteria counted in the ask sheet.
+- A fees-only first year for the line-bridged class (stage 4 round 1, 2026-10-18): judge APPROVE and reader clean,
+  but the rule-3 audit read the class as a zero (twelve of fourteen programme funds with no Investments line in their
+  first year) and found policy 2.4's "projected from its age" quotable as a HOW. Replaced by a small first investment
+  call for the line-bridged funds and slow first years for some ordinary funds, 2.4 reworded to file only the clock.
+  Repositioning rule, written before the redesigned world was measured: only the programme's size (PROG_TOTAL_USD,
+  $0.9 to $1.3 billion in $50 million steps) and then the common first-year deal share (DEAL_YEARS[0], 0.32 to 0.38 in
+  0.02 steps) may move, smallest move first; take the first setting where (a) the class-aware golden sits $12.5 million
+  or more inside its bin, (b) the pooled-rate and pooled-share routes sit two or more bins below, (c) the linear
+  regression of second-year on first-year share sits one or more bins below, and (d) none of one third, 35 or 40 per
+  cent of commitment or of the undrawn balance, each plus the earlier funds' calls on either pooled schedule, lands in
+  the golden's bin; if none qualifies, keep the setting that fails fewest of (a) to (d) and report every lander.
+- Slow-starting ordinary funds at 9 to 15 per cent of commitment in their first year (stage 4 round 1, measured): a
+  second break opened at 15 to 18 per cent, the widest among first years under a quarter, and a class read there took
+  the slow starters in and filed $350 million; their first years now run to 17.8 per cent, so the class's break at 7.6
+  to 11.1 is the only clean one.
+- Slow starters making up half or all of their first-year shortfall in year two (measured): the regression of
+  second-year on first-year share then sat in the golden's bin ($376 to $382 million with half made up, $395 to $399
+  million with all of it, against a golden of $394 million at that size); they now make none of it up and read as
+  ordinary funds in their second year.
+- Twelve deals a year and an 8 per cent spread in each fund's pace (measured at a $1,050 million programme and a 0.34
+  first-year deal share, the repositioning rule's first pick): the nearest-neighbour constructions ran $399 to $459
+  million across k and annualising, three reserves. The structure was fixed first (twenty-four investment calls a year,
+  add-ons included; a 5 per cent pace spread; first investment calls of 3.5 to 5 per cent), and the rule re-run from the
+  start on it, with every class-aware construction required in one reserve bin and one cell of expected calls.
+- The repositioning rule's outcome on the fixed structure (36 settings): no setting cleared (d). The first that failed
+  only (d), every class-aware construction in one bin and one cell, was the 0.32 first-year deal share and a $1,150
+  million programme, kept. Landing in its bin: one third of the programme's commitment or of its undrawn balance and 35
+  per cent of its undrawn balance, each with the earlier funds on a pooled schedule; the average of the pooled rates
+  and the pooled catch-up ($407.7 million); an uplift of 16.1 to 30.6 per cent on the pooled rates. Off it: 35 and 40
+  per cent of commitment, 40 per cent of the undrawn balance, the regression ($391.0 to $398.2 million) and the class
+  misplaced at 15 or 20 per cent or by two clusters ($374.3 to $391.1 million).
