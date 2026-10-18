@@ -250,6 +250,21 @@ Each is cheap, each is run as code before any separation is measured, and each c
   bottom leaves every tail functional exactly observable and only the mean latent, and the mean is a basis
   question, so the step is a semantic fork; only a threshold that hides the top leaves a latent quantity a
   tail functional needs.
+- **The designation determinacy screen**, where the graded object is a name or a set chosen by comparing
+  units. Count the distinct answers **the golden's own estimator family** returns over redraws, not the
+  distinct answers the wrong routes return. Measured: a latent-propensity concentration gave 3.0 distinct
+  designated sets out of 4 (truth, empirical Bayes, negative-binomial MLE, moment-matched mixture); a
+  discriminability statistic gave 1.64 (equal-variance, unequal-variance, logit ROC, non-parametric); a
+  thinned escape rate gave 2.32; ten forms of an exposure denominator gave five sets and four distinct
+  leaders. Above one, the call is not determinate, and **discretising against a filed tolerance rescues it
+  only where the family's spread does not cross the line**, which a concentration's and a denominator's
+  spreads do. The other half is measured too: where the designation *is* determinate, the crude route
+  reaches it (a slate identical under all six licensed bandings and all eight conditioning forms in 20 of
+  20 redraws, with the crude route landing it 20 of 20). So on a unit-comparison call the shape to draw is
+  a **quantity whose construction the data forces, with the designation following from it**: the ships
+  grade an incidence recovered from two dependent capture channels, a response magnitude against a
+  scheduled trajectory, and a rate read against the observation effort that produced it, and each names
+  its unit as a consequence rather than as the graded object.
 
 ### 1.3 Couple the pitfall to the domain
 

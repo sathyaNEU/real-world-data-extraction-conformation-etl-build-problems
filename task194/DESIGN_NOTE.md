@@ -1779,3 +1779,87 @@ construction estimates), the silent-row readability screen and the full enumerat
   shrinkage reaches the same ranking without estimating it (horn three). Its `layer2_pattern` is
   `healthcare-delivery-health-economics/provider-quality-risk-adjustment/4`, the client's own pattern, not
   an own-named one.
+
+- **Architecture 8 pass, 2026-10-18: the number moved off `provider-quality-risk-adjustment` to
+  `business-operations-analytics` / `service-operations-sla` x anomaly-detection (client task type
+  `human-factors-ergonomics/safety-incident-error-analysis`), three structurally distinct Layer 2
+  mechanisms screened to death with measurements, nothing drawn and no card registered.** The axis window
+  on the new ground is wide: `guard.py check` on the probe card returns **PASS, exit 0, with no WARN**
+  (shape 09, gap `rule`, pattern A, `signal_vs_noise_or_hold`, `structural_verdict`, `binding_constraint`,
+  `physical_verification`, `operations_log`, `operations_director`, `line_manager_or_team`,
+  `incident_or_complaint`, `professional_services`, question form `whether`, Portugal, personas drawn at
+  `names --geo Portugal --seed 194`), nearest driver 0.05. **What shut the pass was the mechanism, not the
+  window.** Scripts in the builder's scratch directory: `screen_c1.py`, `screen_c2.py`, `screen_c3.py`,
+  `probe.py`.
+- **Rejected, measured: the latent concentration of event propensity across a unit's own members (the
+  field's accident-proneness deconvolution).** Decision shape was a designation against a filed tolerance
+  of 0.40, which is architecture 6's device and the one escape from a weighting fork. It does not reach:
+  over 20 world redraws of 12 depots (40 to 260 operatives each, gamma shapes 0.45 to 6.0), the golden's
+  **own** estimator family (latent truth, empirical Bayes, negative-binomial MLE, moment-matched mixture)
+  returns a mean of **3.0 distinct designated sets out of 4 variants**, maximum 4, and on one seed the
+  four sets were `()`, `(1,5)`, `(5)` and `(5)`. Stump power was present and irrelevant: empirical Bayes
+  reproduced the golden designation in **1 of 20** and the naive observed share in **0 of 20**. This is
+  the dispersion screen's horn two measured on new ground: discretising against a tolerance only helps
+  when the family's spread does not cross the line, and a concentration's spread crosses it.
+- **Rejected, measured: separating a verifier's discriminability from where it sets its acceptance line,
+  with a filed change to a common line making the historical miss rate uninformative (signal detection
+  theory, the field's own method for an inspection judgement).** The strongest candidate of the pass and
+  the only one whose stump power and domain fit both held: over 25 redraws of 12 teams (9,000 to 60,000
+  items each, discriminability 1.0 to 3.0, own lines -0.6 to 1.3), carrying each team's own historical
+  miss rate forward reproduced the true designation in **2 of 25**. It dies on the estimator family. The
+  four standard members (equal-variance d-prime, unequal-variance d_a at a signal spread of 1.25, a logit
+  ROC, non-parametric A' mapped back through an equal-variance ROC) return a mean of **1.64 distinct
+  designated sets**, maximum 3, and reproduce the true designation in 24, 14, 20 and 14 of 25
+  respectively; the worst absolute error on the graded figure across the family averages **9.67 escapes
+  per 1,000 against a 6.0 tolerance**, about a hundred times the printed unit. The ROC form is a method
+  and not a convention the closure table demands, so pinning it files the decisive step, and the dial
+  fails at both ends: a smaller move of the line shrinks the family's spread and makes the naive
+  carry-forward right. **It dies a second time, independently, on the abstraction test**, and this is the
+  fourth measured instance of the lexical blind spot: at 0.05 nearest it is lexically clean, and three
+  incumbents hold the same insight told in other nouns, each being "a measured classification statistic
+  does not transport, so find the invariant that does" (task192, class-conditional instrument behaviour
+  across a composition shift, live in the last twelve; **task446 v2**, a screen's yield carried onto a
+  population whose base rate moved; task229 v2, the share in a correct state seen through checks that
+  reset it).
+- **Rejected, measured: a unit's own defect rate where the record holds only what got past a shared
+  downstream check whose catch probability moves with its own instantaneous load.** Three independent
+  kills over 25 redraws of 12 depots across 52 weeks (volumes 60 to 420 jobs a week, own rates 5.0 to 14.0
+  per 1,000, a tolerance of 9.0, catch probability 0.05 to 0.95). **One, the corrected estimator cannot
+  rank:** the escape-weighted route reproduced the true designation in **1 of 25**, because thinning
+  leaves the escape counts too small to carry the comparison, which is the standard-error pricing step.
+  **Two, the quantity is not latent at all:** the desk logs what it caught, so caught plus escaped over
+  jobs is exact arithmetic on shipped records, and that route was the best of every non-truth route at
+  **7 of 25** while the naive escapes-per-job route scored 0 of 25 and the weekly-standardised reflex 0 of
+  25. Architecture 4's finding reproduced on new ground: anything recovered by arithmetic on these records
+  is observed, so filing it is rule application. **Three, the correction's own family forks:** a weekly, a
+  pooled and a monthly catch probability return a mean of **2.32 distinct designated sets out of 3**.
+- **Not re-screened, and recorded so it is not paid for twice: adjusting the comparison for a quantity the
+  unit's own conduct produces (over-adjustment, and its collider-bias form).** It probes clean at 0.10
+  nearest and it is this number's own architecture 7 screen 5, dead on the WHAT screen because the step
+  settles which reference rate each unit is compared to. The lexical score does not see it; the slot note
+  does.
+- **The structural rule the two passes together now carry for a unit-comparison anomaly call on human-error
+  ground, and it is measured from both sides.** task182's architecture 5 measured the records-fixed side of
+  the pincer on this same client task type: with every printed figure an exact integer or ratio the
+  determinacy half passes everywhere (the slate identical under all six licensed bandings 20/20, all eight
+  licensed forms of the conditioning naming one slate 20/20), and the stump is gone, the crude route
+  reaching the golden slate 20 of 20 in two of its three models. This pass measured the estimator side:
+  stump power is easy (naive routes at 0 of 20, 2 of 25 and 0 of 25) and determinacy is gone (1.64 to 3.0
+  distinct designated sets inside the golden's own family). **The dial that closes the family is the dial
+  that makes the quantity observed or the naive route right**, measured three times here: pin the ROC form
+  and the step is filed, shrink the move of the line and the carry-forward is correct; make the catch
+  probability exact per item and the total is arithmetic; close the mixture family with a standard and the
+  concentration is a definition. So a draw on this ground needs a graded figure that is records-exact while
+  the construction that produces it is not reachable by any group-by, which is the one shape neither pass
+  has screened.
+- **The one route left unscreened, with its forcing device named and its predicted death, so the next pass
+  starts past it.** An exactly-determined attribution system: each incident is recorded against work whose
+  touch pattern across units the pack gives at another grain, the per-unit quantities are the unique
+  solution of a square full-rank system (so every member of the estimator family, ordinary least squares,
+  weighted least squares and Poisson maximum likelihood, returns the identical numbers and the family
+  freedom that killed architecture 4's candidate 1 and candidate C2 above is absent by construction), and
+  the graded figures are records-exact. Predicted deaths, in the order to test them: the solve is an
+  attribution, so the WHAT screen asks whether it settles the unit; task48, task103 and task119's
+  never-registered draft hold the path-attribution insight; and a square incidence structure has to be
+  argued realistic against an operation that would produce an over-determined one. Not screened in this
+  pass and not claimed to survive.
