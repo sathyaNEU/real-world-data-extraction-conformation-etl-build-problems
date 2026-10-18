@@ -101,8 +101,8 @@ AGE_BANDS = ["U50", "50-64", "65-79", "80+"]
 # 4.0. The published table was built on FY2023-24 activity and clause 3.1 says it is not re-estimated
 # between specifications; since it was set, a falls and pressure-injury programme has pulled the
 # orthopaedic and medical bands below it while theatre throughput has pushed the surgical bands above it.
-NETWORK_DRIFT = {"ORTH-MAJ": 0.567, "ORTH-MIN": 0.584, "MED-COMPLEX": 0.948, "MED-GEN": 0.972,
-                 "SURG-MAJ": 1.221, "SURG-MIN": 1.254, "SAME-DAY": 1.0}
+NETWORK_DRIFT = {"ORTH-MAJ": 0.962, "ORTH-MIN": 0.971, "MED-COMPLEX": 0.993, "MED-GEN": 1.008,
+                 "SURG-MAJ": 1.034, "SURG-MIN": 1.046, "SAME-DAY": 1.0}
 
 # the unit whose case mix moved between two closed quarters while its own practice did not: the
 # orthopaedic theatre at Marrowfield was closed for ventilation works for two quarters, elective
@@ -179,38 +179,38 @@ MIX = {
 # status: "eligible" (a candidate), "embedded" (placed within twelve closed quarters), "nonacute", "merged_into".
 UNITS = [
     # code, name, hospital, mix, service, psi, sep, plan, ylast, role, status
-    ("41210", "General Medicine", "H1", "gen_med", "acute", 1.01400, 2300, 2077, 1.21000, "largest", "eligible"),
-    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.00600, 2600, 3560, 1.02000, "runner_up", "eligible"),
-    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.85000, 1900, 2305, 1.14000, "answer", "eligible"),
-    ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.03100, 1050, 1257, 1.28000, "hot2", "eligible"),
-    ("41310", "General Medicine", "H2", "gen_med", "acute", 1.06900, 1344, 1364, 1.09000, "mid", "eligible"),
-    ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.02760, 1200, 1470, 1.12000, "hot3", "eligible"),
-    ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.05200, 430, 506, 1.17000, "worst_level", "eligible"),
-    ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.00000, 620, 735, None, "hot1", "eligible"),
-    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.34500, 980, 1090, 1.10000, "mid", "eligible"),
-    ("41430", "Renal Medicine", "H3", "renal", "acute", 1.02200, 560, 652, 1.13000, "mid", "eligible"),
-    ("41510", "General Medicine", "H4", "gen_med_district", "acute", 1.05800, 390, 466, 1.05000, "merged", "eligible"),
-    ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.01900, 500, 779, 1.09000, "rising", "eligible"),
+    ("41210", "General Medicine", "H1", "gen_med", "acute", 1.07800, 3680, 4259, 1.21000, "largest", "eligible"),
+    ("41220", "General Surgery", "H1", "gen_surg", "acute", 1.00990, 4160, 4510, 1.02000, "runner_up", "eligible"),
+    ("41230", "Orthopaedics", "H1", "ortho", "acute", 1.01500, 3040, 3100, 1.14000, "answer", "eligible"),
+    ("41240", "Respiratory Medicine", "H1", "resp", "acute", 1.02500, 1680, 1700, 1.28000, "hot2", "eligible"),
+    ("41310", "General Medicine", "H2", "gen_med", "acute", 1.02000, 2150, 2000, 1.09000, "mid", "eligible"),
+    ("41320", "General Surgery", "H2", "gen_surg", "acute", 1.03000, 1920, 2100, 1.12000, "hot3", "eligible"),
+    ("41330", "Vascular Surgery", "H2", "vasc", "acute", 1.05000, 688, 760, 1.17000, "worst_level", "eligible"),
+    ("41410", "Orthopaedics", "H3", "ortho", "acute", 1.04500, 992, 1100, None, "hot1", "eligible"),
+    ("41420", "General Medicine", "H3", "gen_med", "acute", 1.02500, 1568, 1600, 1.10000, "mid", "eligible"),
+    ("41430", "Renal Medicine", "H3", "renal", "acute", 1.02000, 896, 950, 1.13000, "mid", "eligible"),
+    ("41510", "General Medicine", "H4", "gen_med_district", "acute", 1.03000, 624, 700, 1.05000, "merged", "eligible"),
+    ("41520", "Surgical Services", "H4", "gen_surg", "acute", 1.04000, 800, 1100, 1.09000, "rising", "eligible"),
     # units the programme has already been placed with inside the twelve closed quarters. Earlier cycles
     # were decided on the quarter closed at the time, so the register holds units that were standing badly
     # over their own record beside units that were having one bad quarter on an ordinary record.
-    ("41250", "Colorectal Surgery", "H1", "colorectal", "acute", 1.01100, 2200, 2240, None, "embed", "embedded"),
-    ("41260", "Aged Care", "H2", "aged", "acute", 1.03400, 1670, 1700, None, "embed", "embedded"),
-    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.00600, 2200, 2250, None, "embed", "embedded"),
-    ("41340", "Orthopaedics", "H3", "ortho", "acute", 1.02100, 1250, 1290, None, "embed", "embedded"),
-    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.02700, 1330, 1360, None, "embed", "embedded"),
-    ("41360", "Aged Care", "H1", "aged", "acute", 0.99800, 1115, 1140, None, "embed", "embedded"),
-    ("41440", "General Surgery", "H3", "gen_surg", "acute", 0.99100, 3020, 3080, None, "embed", "embedded"),
-    ("41450", "Geriatric Evaluation and Management", "H1", "aged", "acute", 1.04100, 1082, 1110, None, "embed", "embedded"),
+    ("41250", "Colorectal Surgery", "H1", "colorectal", "acute", 1.01100, 3520, 3584, None, "embed", "embedded"),
+    ("41260", "Aged Care", "H2", "aged", "acute", 1.03400, 2672, 2720, None, "embed", "embedded"),
+    ("41270", "Neurosciences", "H1", "neuro", "acute", 1.00600, 3520, 3600, None, "embed", "embedded"),
+    ("41340", "Orthopaedics", "H3", "ortho", "acute", 1.02100, 2000, 2064, None, "embed", "embedded"),
+    ("41350", "Respiratory Medicine", "H2", "resp", "acute", 1.02700, 2128, 2176, None, "embed", "embedded"),
+    ("41360", "Aged Care", "H1", "aged", "acute", 0.99800, 1784, 1824, None, "embed", "embedded"),
+    ("41440", "General Surgery", "H3", "gen_surg", "acute", 0.99100, 4832, 4928, None, "embed", "embedded"),
+    ("41450", "Geriatric Evaluation and Management", "H1", "aged", "acute", 1.04100, 1731, 1776, None, "embed", "embedded"),
     # the unit the team is with now, for the quarter in progress: no closed data for the placement
-    ("41460", "Rehabilitation and Aged Care", "H3", "aged", "acute", 1.01600, 470, 500, None, "current", "embedded"),
+    ("41460", "Rehabilitation and Aged Care", "H3", "aged", "acute", 1.01600, 752, 800, None, "current", "embedded"),
     # non-acute units: outside the indicator's scope (specification 4.0 clause 2.3)
-    ("41610", "Sub-acute Rehabilitation", "H2", "subacute", "rehabilitation", 1.0, 330, 350, None, "scope", "nonacute"),
-    ("41620", "Older Persons Mental Health", "H3", "subacute", "psychiatric", 1.0, 290, 300, None, "scope", "nonacute"),
-    ("41630", "Sub-acute Rehabilitation", "H4", "subacute", "rehabilitation", 1.0, 240, 250, None, "scope", "nonacute"),
+    ("41610", "Sub-acute Rehabilitation", "H2", "subacute", "rehabilitation", 1.0, 528, 560, None, "scope", "nonacute"),
+    ("41620", "Older Persons Mental Health", "H3", "subacute", "psychiatric", 1.0, 464, 480, None, "scope", "nonacute"),
+    ("41630", "Sub-acute Rehabilitation", "H4", "subacute", "rehabilitation", 1.0, 384, 400, None, "scope", "nonacute"),
     # predecessor units amalgamated into 41510 on 1 October 2025
-    ("41511", "Medical Ward 1", "H4", "gen_med_district", "acute", 1.05800, 205, None, None, "pred", "merged_into"),
-    ("41512", "Medical Ward 2", "H4", "gen_med_district", "acute", 1.05800, 185, None, None, "pred", "merged_into"),
+    ("41511", "Medical Ward 1", "H4", "gen_med_district", "acute", 1.05800, 328, None, None, "pred", "merged_into"),
+    ("41512", "Medical Ward 2", "H4", "gen_med_district", "acute", 1.05800, 296, None, None, "pred", "merged_into"),
 ]
 
 MERGE_DATE = dt.date(2025, 10, 1)
@@ -275,10 +275,37 @@ CODE_2022 = {c: g for c, _, g in LIST_2022}
 CODE_2026 = {c: g for c, _, g in LIST_2026}
 # the share of complications in each group, by case-mix profile
 GROUP_MIX = {
-    "surgical": {"G1": 0.21, "G2": 0.07, "G3": 0.05, "G4": 0.12, "G5": 0.08, "G6": 0.14, "G7": 0.11, "G8": 0.22},
-    "medical": {"G1": 0.18, "G2": 0.16, "G3": 0.13, "G4": 0.13, "G5": 0.19, "G6": 0.17, "G7": 0.04, "G8": 0.00},
-    "ortho": {"G1": 0.17, "G2": 0.11, "G3": 0.16, "G4": 0.10, "G5": 0.12, "G6": 0.09, "G7": 0.13, "G8": 0.12},
+    "surgical": {"G1": 0.14, "G2": 0.04, "G3": 0.10, "G4": 0.14, "G5": 0.06, "G6": 0.13, "G7": 0.09, "G8": 0.30},
+    "medical": {"G1": 0.20, "G2": 0.17, "G3": 0.09, "G4": 0.09, "G5": 0.19, "G6": 0.22, "G7": 0.04, "G8": 0.00},
+    "ortho": {"G1": 0.16, "G2": 0.12, "G3": 0.19, "G4": 0.09, "G5": 0.10, "G6": 0.08, "G7": 0.14, "G8": 0.12},
 }
+# Which harms a unit's patients suffer runs on how old they are: an eighty-year-old medical inpatient's
+# complications are pressure injuries and delirium, a fifty-year-old surgical patient's are a return to
+# theatre and a wound infection. The group mix a unit produces is therefore its clinical family's mix
+# pulled towards this profile by the share of its own episodes in the oldest age band, which the extract
+# carries in its age_band column.
+GROUP_MIX_OLDEST = {"G1": 0.18, "G2": 0.34, "G3": 0.06, "G4": 0.03, "G5": 0.30, "G6": 0.09,
+                    "G7": 0.00, "G8": 0.00}
+OLDEST_PULL = 1.35          # how strongly the oldest band's share pulls the mix towards that profile
+
+# How complete each reporting group is when a quarter is first published and at each restatement after it.
+# A complication is coded when it is documented, and documentation runs on the group's own clinical course:
+# a fall resulting in fracture and an unplanned return to theatre are documented the day they happen, while
+# a pressure injury is staged and audited retrospectively, delirium is often recorded on later review, and a
+# surgical site infection or a venous thromboembolism is frequently identified after the patient has gone
+# home and reaches the record through the readmission. The share is of the complications that quarter will
+# ultimately carry, at the quarter's own close and at the two closes after it.
+GROUP_COMPLETENESS = {
+    "G1": (0.620, 0.800, 0.915, 0.975), "G2": (0.430, 0.640, 0.810, 0.930),
+    "G3": (0.995, 1.000, 1.000, 1.000), "G4": (0.970, 0.992, 1.000, 1.000),
+    "G5": (0.610, 0.800, 0.920, 0.980), "G6": (0.930, 0.975, 0.995, 1.000),
+    "G7": (0.640, 0.825, 0.930, 0.980), "G8": (0.995, 1.000, 1.000, 1.000),
+}
+LAG_COMPLETE = 4            # a quarter stops moving four closes after its own
+# Coding for a quarter closes eight weeks after the quarter ends (specification 3.7), and the quarter is
+# restated at each later close. At the pull date the newest closed quarter has been published once and the
+# one before it twice, so those two are the only quarters still short of what their patients had.
+IMMATURE = {9: 0, 8: 1, 7: 2, 6: 3}   # quarter index -> how many closes have passed since its own
 # where each unit type's other quarterly indicators sit: deaths in hospital per 1,000 separations and
 # unplanned readmissions within 28 days per 100, on the dashboard beside the complication indicator
 OTHER_INDICATORS = {

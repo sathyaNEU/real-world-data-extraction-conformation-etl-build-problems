@@ -85,6 +85,77 @@ in the standard's own register, `survey_notes.md` stops itemising defects and st
 not collected, and the complaints register either honours its own one-row-per-contact header or explains
 the repeat in its own words.
 
+## ARCHITECTURE 3 FEASIBILITY (the residual's functional form, measured before any row was cut)
+
+The author's instruction was to check the plant's output spread inside the assessment period first, so the
+draw dies here rather than at stage 3 if it dies. It dies here. The work is in
+`scratchpad/r182v3/feas.py` and `close.py`, run on the design's own numbers rather than on a cut pack.
+
+**1. The plant as built runs flat inside the assessment period.** On architecture 2's shipped historian the
+total air rate's hourly medians inside 07:00 to 19:00 run 4,216 to 4,411 Nm3 an hour and the tenth to
+ninetieth percentile spread is a ratio of 1.20. There is nothing to extrapolate along, so the load curve
+would have to be redrawn: a creamery's effluent plant does swing with its intake campaigns, so four designs
+were modelled, day-level campaign factors spanning 0.80 to 1.00, 0.55 to 1.00, 0.35 to 1.00 and 0.20 to
+1.00 of full output, which put the quarter-hour output's own tenth to ninetieth spread at 0.74 to 0.95 down
+to 0.31 to 0.85.
+
+**2. The decisive step separates, and strongly, at every one of the four designs.** The residual taken from
+the plant-off windows files NSL01, NSL02, NSL04, NSL07 and NSL11 with NSL14 sixth; the residual that
+describes the assessment period files NSL02, NSL04, NSL07, NSL11 and NSL13 with NSL06 sixth. Two members of
+five differ at every design, because the error has opposite sign by position: at the roadside positions the
+empty road before 07:00 understates the residual by about 7 dB and at the hedgerow positions the dawn
+chorus overstates it by about 4.5, so the specific levels move in opposite directions. The right route's
+own fifth-to-sixth margin runs 0.51 to 0.92 dB across the designs. **That part of the architecture is
+sound.**
+
+**3. The functional forms do not separate the slate at any design, so the fit cannot be a rung.** Five
+forms were computed per position: a regression linear in energy against output, one linear in decibels
+against output, a log-log fit, a lowest-decile fit by output bin, and a fit restricted to the lowest-output
+quarter. At every one of the four designs, energy-linear, decibel-linear, lowest-decile and
+lowest-output-quarter all file the same five and the same sixth. The single exception is the
+lowest-output-quarter form at the 0.35 to 1.00 design, which files NSL06 for NSL13 by 0.03 dB, which is a
+coin flip and not a rung. The author's requirement that "the decibel fit must land a materially different
+residual that files a wrong set rather than the same one" cannot be met.
+
+**4. The forms do, however, move every printed level, so the graded figures carry a live degree of freedom
+while the call does not.** The decibel-linear form sits 1.4 to 1.6 dB below the energy-linear form at every
+one of the fourteen positions, and the lowest-decile form puts the residual 2 to 5 dB below the truth. The
+graded recommendation figures are fourteen levels and a margin to one decimal. So the architecture fails
+determinism on its graded quantities in the mirror image of the way task194's architecture 1 failed: there
+the forms were collinear and the call could not be forced, here the forms agree on the call and disagree on
+every number the prompt asks for.
+
+**5. And the tension is structural rather than tunable.** The intercept is identifiable only if the plant's
+contribution varies materially over the output range, and that variation is exactly the curvature of level
+against output that makes a fit in decibels disagree with a fit in energy. Widening the range to pin the
+intercept widens the disagreement (the decibel bias grows from 1.4 to 1.6 dB and the lowest-decile
+residual bias from 3 to 5 dB); narrowing it leaves the intercept's own sampling noise above the printed
+tenth. There is no window in which both hold.
+
+**6. The data will not close the wrong forms either.** At the 0.35 to 1.00 design the decibel form's
+residual exceeds the position's own quietest quarter-hour total at 3 of the 14 positions, which is
+physically impossible and would close it there; but the lowest-decile and lowest-output-quarter forms are
+never impossible at any design, and at the 0.20 to 1.00 design even the energy-linear form fails that test
+at 2 positions through sampling noise alone. So no shipped fact separates the candidates, and
+`determinism-check` section 1 leaves the method open only where the data does separate them.
+
+**7. Three fit-free replacements for the right route were worked and all three fail.** The staged-output
+exact solve, two or three discrete blower stages inside the period with the residual solved from the state
+means, carries the identical energy-against-decibel freedom, because the solve is the two-point case of the
+same linear form. The steady-plant temporal-difference route, using the position's own 24-hour record to
+carry the stop-window residual to the assessment hours, is circular: inside the period the record gives the
+plant's contribution plus the residual and the hour-to-hour differences cannot be attributed to the
+residual without already knowing the plant's contribution. The source on-and-off step at the window's own
+boundary, differencing 06:45 against 07:00, is fit-free and lands on the one place the residual is changing
+fastest, since 07:00 is when the road wakes up.
+
+**8. What the author owns.** The decisive step is good and measured; what has no determinate form is the
+estimator the right route needs. Either the graded recommendation side is cut back to what every form
+agrees on, which is the set of five and the name of the sixth and not the fourteen levels nor the margin,
+or the slot is re-rooted again. Nothing has been cut and no file has been written, so either costs only
+this note.
+
+
 ## PORTAL RETURN AND DIAGNOSIS (architecture 1, written before any change)
 
 Shipped 2026-10-11, left off the author's portal list: the call landed, so the build is `FAILED_TO_STUMP`
@@ -506,7 +577,7 @@ re-root can be read against what it replaces. It is not architecture 3's design 
 against it. Architecture 2's pack no longer exists; its evidence is in `determinism_check_report.md` and in
 `leak_check_report.md` under `## Solver's-eye read`.
 
-## Default path
+### Archived, architecture 2: Default path
 
 1. Read `noise_management_plan.pdf`: 14 monitoring positions, the assessment period weekday 07:00 to 19:00,
    the sample validity criteria, the tonality test, the process-record conventions, the mitigation slot of
@@ -527,7 +598,7 @@ against it. Architecture 2's pack no longer exists; its evidence is in `determin
 Ends on: NSL03, NSL04, NSL06, NSL11 and NSL12
 Golden: NSL04, NSL11, NSL07, NSL02 and NSL13
 
-## Stump sentence
+### Archived, architecture 2: Stump sentence
 
 A competent solver pairs every deployment with its position, takes each deployment's field-check deviation
 off its levels, excludes exactly the minutes the plan excludes, energetically averages each position's
@@ -539,7 +610,7 @@ variability (31.1 to 42.2 dB against specific levels of 37.4 to 53.0) and the sl
 on the Clonaraght road and the Glasha while NSL07, NSL02 and NSL13, the quiet-surroundings dwellings the
 plant contributes most to, drop out.
 
-## Three rules
+### Archived, architecture 2: Three rules
 
 - **Task type:** `environmental-monitoring-exceedance` (physical-environmental-sciences), the
   domain's only anomaly-detection task type in the client taxonomy, and the build is the assessment itself:
@@ -605,7 +676,7 @@ plant contributes most to, drop out.
   statistics of the measurement. No build on file teaches it: the nearest, task263, inverts mixtures of many
   sources by mass balance, and task186 judges a change against a shared cycle.
 
-## Readability screen
+### Archived, architecture 2: Readability screen
 
 Each rung, and whether a solver reads it off the pack or has to construct it.
 
@@ -616,7 +687,7 @@ Each rung, and whether a solver reads it off the pack or has to construct it.
 | 2 statistical background | a percentile or an LA90 mean of the same minutes, one more aggregation | readable |
 | **3 residual in the plant's stops (decisive)** | nothing names the stops as a measurement, nothing in the pack reports a level for them, and the intervals have to be built from the event log's per-unit starts and stops before a single minute can be averaged | **silent** |
 
-## Semantic fork table
+### Archived, architecture 2: Semantic fork table
 
 Every term and convention the main call runs on, with the reading the golden executes, the nearest
 alternative a literal reader could take, and what closes it. `checks.py` asserts every row. The rows from
@@ -650,7 +721,7 @@ answer, and SF19 to SF21 are where its two devices live.
 | SF23 | a band's level over the assessment period | the energy-equivalent level of its quarter-hour records in the period, both deployments together | the arithmetic mean of the same rows, or each deployment's own energy mean averaged | plan 4.3 files it in the clause that defines the test, once; and the three readings give the same prominent bands at every position anyway, 400 Hz at six of them and nothing else anywhere, with every band at every position 0.45 dB or more clear of the 5 dB test (all asserted in `checks.py` and the first two again in `verify.py`) |
 | SF22 | the window a process figure is read over | the counters at the window's own ends: 07:00 and 19:00 on each weekday of the position's deployments, and 00:00 on the Mondays for a week | the rate channels integrated over the window | the historian's six dropouts, which the counters carry through and a rate sum does not (asserted at every position and in every week); plan 5.1 for the week |
 
-## Ladder
+### Archived, architecture 2: Ladder
 
 Each figure is that rung's specific-level estimate in dB for the position, as built and measured in
 `generator/figures.json`; the slate is the five highest.
@@ -715,7 +786,7 @@ slate with NSL06 in and NSL13 out, because the blowers and the engine run throug
 asserts that the only minutes of any record with every source down are the intervals the log shows them all
 down in, so no window but those is free of the plant.
 
-## Closure table
+### Archived, architecture 2: Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
@@ -749,7 +820,7 @@ October 2026; the call they drive (which five dwellings the October slot covers,
 about a window not yet closed. The plan fixes the survey as the assessment, so the quantity is
 retrospective by design and the decision is forward facing.
 
-## Literal reader
+### Archived, architecture 2: Literal reader
 
 Executed word for word, the prompt and `noise_management_plan.pdf` give one quantity per position (the
 measured level over weekday 07:00 to 19:00 less the residual sound, in dB LAeq, to one decimal) and one slate
@@ -764,7 +835,7 @@ the window's own ends and over the historian's own rows (SF19 to SF22): which co
 which rows are records of their own quarter hour are settled by the records, not by a sentence, and that is
 where the ask layer's two devices live.
 
-## Oracles
+### Archived, architecture 2: Oracles
 
 No control, calibration corpus, certified figure or reconciliation column scores the method. The complaints
 register (rung 0's material and a declared distractor) records complaints and no levels. The met record
@@ -775,7 +846,7 @@ residual level or a corrected level for any position). On the ask side one refer
 no figure: the works' own inlet flow channel, against which the air per cubic metre treated is steady on the
 two blower meters together and not on the header alone.
 
-## Ask sheet
+### Archived, architecture 2: Ask sheet
 
 The ask layer was re-cut after the round-2 measurement. The figures it carried (the dewatering minutes and
 runs behind each level, and the week's runs and engine hours) were quantities a filed rule answered once
@@ -859,7 +930,7 @@ defined first, and then ask whether the device still bites. These two do: the ai
 wording, because one meter does not see one machine, and the record is thinner than its row count,
 whatever the wording, because an interface that holds a value writes rows that are not records.
 
-## Pack
+### Archived, architecture 2: Pack
 
 | File | Format | Role |
 |---|---|---|
@@ -877,7 +948,7 @@ whatever the wording, because an interface that holds a value writes rows that a
 | `effluent_quality_2026.csv` | csv | distractor, declared in metadata.json: the laboratory's discharge results, with its references, detection limits and non-detects |
 | `export_manifest.csv` | csv | provenance: per file what it is, what it covers, the system it came off, when it was extracted and on what terms |
 
-## Build record
+### Archived, architecture 2: Build record
 
 - `generator/build.py` runs everything: the survey (`world.py`, `sim.py`), the pack (`pack.py`, `docs.py`,
   `postprocess.py`), the golden (`golden.py` over `analysis.py`, `deliver.py`), `metadata.py`,
@@ -923,7 +994,7 @@ whatever the wording, because an interface that holds a value writes rows that a
   distance above 2, no containment). No offline register of Irish townlands was available, which is
   recorded here as the limit of that check.
 
-## Leak check (mechanical half)
+### Archived, architecture 2: Leak check (mechanical half)
 
 `leak.py task182 --asof 2026-10-16`: **REVIEW, no LEAK**, three lines, each answered here.
 
@@ -946,7 +1017,7 @@ Personas in the cut pack: Aiden Hawthorn and Orla O'Hurley, with the engineer an
 by initials on the deployment records. `guard.py heart task182`: **WARN, not BLOCK**; nearest driver 0.07
 (task263), answered in the card's differentiation.
 
-## Pre-ship check (client, eight points)
+### Archived, architecture 2: Pre-ship check (client, eight points)
 
 1. **Domain.** The build is a noise survey reduced to one attributable level per dwelling, which is the
    acoustics practitioner's own determination of a specific sound level. The swap test breaks it: another

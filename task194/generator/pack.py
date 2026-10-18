@@ -29,6 +29,7 @@ FILES = {
     "experience": "patient_experience_unit_quarterly.csv",
     "nursing": "nursing_hours_by_unit_monthly.csv",
     "hygiene": "hand_hygiene_audit_2026.csv",
+    "closeout": "coding_close_out_register.csv",
 }
 
 
@@ -350,6 +351,54 @@ def write_dashboard(target, expected, observed, inscope, rows):
     path = os.path.join(target, FILES["dashboard"])
     wb.save(path)
     return path
+
+
+def close_out_date(q):
+    """Coding for a quarter closes eight weeks after the quarter ends, specification 3.7."""
+    return W.QUARTERS[q][3] + dt.timedelta(days=56)
+
+
+def write_close_out(target, ultimate, coded_group):
+    """Clinical Information and Coding's close-out register: what each quarter carried at each publication.
+
+    A quarter is published when its coding closes and restated at every close after it, counted on the
+    episodes whose first recorded complication falls in each reporting group. A quarter stops moving two
+    closes after its own. The register runs to the last close before the export, so the two most recent
+    quarters have fewer publications than the rest.
+    """
+    groups = [g for g, _ in W.HAC_GROUPS]
+    last_close = max(close_out_date(q) for q in range(len(W.QUARTERS))
+                     if close_out_date(q) <= W.PULL_DATE)
+    out = []
+    for q in range(len(W.QUARTERS)):
+        own = close_out_date(q)
+        if own > W.PULL_DATE:
+            continue
+        lags = [k for k in range(len(W.QUARTERS) - q)
+                if close_out_date(q + k) <= last_close]
+        for k in lags:
+            pub = close_out_date(q + k)
+            for g in groups:
+                if q in W.IMMATURE:
+                    # the quarter's coded count at the lag it has reached is what the extract carries, and
+                    # the publications before it are that count back at the earlier completeness
+                    here = W.IMMATURE[q]
+                    base = coded_group.get((q, g), 0)
+                    if k == here:
+                        n = base
+                    else:
+                        c_here = W.GROUP_COMPLETENESS[g][min(here, W.LAG_COMPLETE - 1)] \
+                            if here < W.LAG_COMPLETE else 1.0
+                        c_k = W.GROUP_COMPLETENESS[g][k] if k < W.LAG_COMPLETE else 1.0
+                        n = int(round(base * c_k / c_here))
+                else:
+                    tot = ultimate.get((q, g), 0)
+                    c_k = W.GROUP_COMPLETENESS[g][k] if k < W.LAG_COMPLETE else 1.0
+                    n = tot if k >= W.LAG_COMPLETE else int(round(tot * c_k))
+                out.append([W.QUARTERS[q][0], pub.isoformat(), g, W.GROUP_NAME[g], n])
+    return _csv(os.path.join(target, FILES["closeout"]),
+                ["quarter", "published_date", "group_id", "group_name",
+                 "episodes_with_first_complication_in_group"], out)
 
 
 def write_distractors(target):

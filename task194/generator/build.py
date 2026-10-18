@@ -18,6 +18,17 @@ import world as W
 EXPORT_STAMP = dt.datetime(2027, 3, 5, 17, 40, 0)
 
 
+def golden_factors(target):
+    """The development factors, read back from the close-out register's own shipped bytes.
+
+    For each reporting group, what a quarter's count at its own close and at the close after it grew to by
+    the time the quarter stopped moving, pooled over the quarters that have finished moving. Nothing is
+    fitted: each factor is a ratio of two sums the register prints.
+    """
+    import golden as G
+    return G.development_factors(G._read(target, PK.FILES["closeout"]))
+
+
 def cut(target):
     if os.path.isdir(target):
         shutil.rmtree(target)
@@ -60,12 +71,43 @@ def cut(target):
                 en += rate[(W.DRG_BAND[r["drg"]], r["age"])]
         per_sep[code] = (o - en) / n                  # charter 4.3 per separation
         expected_per_sep[code] = e / n                # specification 3.4 per separation
-    elig = [c for c in per_sep if c in {x[0] for x in W.UNITS if x[10] == "eligible"}]
-    ranked = sorted(elig, key=lambda c: -per_sep[c] * plans[c])
-    plans = sim.centre_plans(plans, per_sep, ranked, ranked[0], expected_per_sep)
-    assert sorted(elig, key=lambda c: -per_sep[c] * plans[c])[:2] == ranked[:2], \
-        "centring the planned volumes moved the two graded units"
     detail = sim.complications(rows, W.UNITS)
+    # only the complications coded by the pull date stay in the record, and the two most recent quarters
+    # are short by their own patients' mix of reporting groups
+    observed, ultimate, coded_group = sim.apply_coding_lag(rows, W.UNITS)
+    detail = [d for d in detail if rows[d["row"]]["hac"]]
+    PK.write_close_out(target, ultimate, coded_group)
+    factors = golden_factors(target)
+    # each unit's avoidable complications per separation, on the counts developed to what the quarters'
+    # patients had, which is the figure the charter asks for and the one that is graded
+    first_group = {}
+    for code, _, g in W.LIST_2022 + W.LIST_2026:
+        first_group[code] = g
+    by_unit = {}
+    for r in rows:
+        if not r["in_scope"]:
+            continue
+        cell = by_unit.setdefault(r["unit"], {"obs": 0.0, "dev": 0.0})
+        if r["hac"]:
+            cell["obs"] += 1
+            g = first_group[r["hac_codes"][0]]
+            cell["dev"] += factors.get((g, W.IMMATURE[r["q"]]), 1.0) if r["q"] in W.IMMATURE else 1.0
+    dev_per_sep = {}
+    for x in W.UNITS:
+        code = x[0]
+        if code not in plans or code not in by_unit:
+            continue
+        qs = [q for q in sim.quarters_for(x) if (code, q) in expected]
+        e = sum(expected[(code, q)] for q in qs)
+        n = sum(allsep[(code, q)] for q in qs)
+        if not e or not n:
+            continue
+        dev_per_sep[code] = (by_unit[code]["dev"] - e) / n
+    elig = [c for c in dev_per_sep if c in {x[0] for x in W.UNITS if x[10] == "eligible"}]
+    ranked = sorted(elig, key=lambda c: -dev_per_sep[c] * plans[c])
+    plans = sim.centre_plans(plans, dev_per_sep, ranked, ranked[0], expected_per_sep)
+    assert sorted(elig, key=lambda c: -dev_per_sep[c] * plans[c])[:2] == ranked[:2], \
+        "centring the planned volumes moved the two graded units"
     replays = sim.add_replays(rows, W.UNITS)
     allrows = PK.write_extract(target, rows, replays)
     PK.write_detail(target, rows, detail)

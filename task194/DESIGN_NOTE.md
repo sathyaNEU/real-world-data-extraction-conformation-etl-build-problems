@@ -18,10 +18,15 @@ corpus is already leaning that way. The author declined to override, because an 
 whose purpose is met some other way and this one's purpose is exactly engaged, and declined to redraw the
 decisive step, because trading a design that passes the WHAT screen for an unbanned label on this number's
 last architecture is the wrong trade. The card is therefore written and **deliberately not registered**.
-**Resume condition:** the draw registers and the build proceeds when `ban.strategy` clears, which takes
-three further draws anywhere in the corpus after task469. That ban is now the only line `guard.py check`
-returns, the question-form WARN having lapsed as the corpus drew on, so when the check comes back with no
-BLOCK the card registers and stage 2 begins. Nothing about the design changes while it waits.
+**Registered.** The hold is over: `ban.strategy` lapsed once task469 rolled out of the three-build novelty
+window, and `guard.py check` returns WARN rather than BLOCK. The card was registered at
+2026-10-17T22:50:54Z with the draw exactly as it was held, nothing changed while it waited.
+
+**The one WARN, answered.** `repeat.question_form`: the form "which" repeats one of the last two prompts,
+against task242. The form is taken from the decision, and the decision is a pick of one unit from twelve,
+so "which" is the honest opening and any other form would misdescribe the call: a count asks how many, a
+gate asks whether, and this is neither. The repeat is against another lane's build rather than anything in
+this slot, and the prompt's shape, deliverables and sentence structure are drawn independently of it.
 
 **The decisive step.** A count of events that crystallise after the period they belong to, so the record's
 most recent quarters are short by a coding lag the record itself measures through two vintages of the same

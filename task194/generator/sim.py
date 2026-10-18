@@ -475,6 +475,34 @@ def settle_additive(rows, expected, design, units, passes=3):
     return observed
 
 
+_GROUP_MIX_CACHE = {}
+
+
+def group_mix_for(unit):
+    """The reporting groups a unit's complications fall in, given how old its patients are.
+
+    The clinical family's own mix pulled towards the oldest band's profile by the share of the unit's
+    episodes in that band, which is a property of the case mix the unit treats rather than a constant set
+    per unit.
+    """
+    code = unit[0]
+    if code in _GROUP_MIX_CACHE:
+        return _GROUP_MIX_CACHE[code]
+    mix = W.MIX[unit[3]]
+    oldest = 0.0
+    for band, (w, ages) in mix.items():
+        oldest += w * ages[W.AGE_BANDS.index("80+")]
+    a = min(0.92, W.OLDEST_PULL * oldest)
+    base = W.GROUP_MIX[W.MIX_FAMILY[unit[3]]]
+    out = {}
+    for g in base:
+        out[g] = (1.0 - a) * base[g] + a * W.GROUP_MIX_OLDEST.get(g, 0.0)
+    tot = sum(out.values())
+    out = {g: v / tot for g, v in out.items()}
+    _GROUP_MIX_CACHE[code] = out
+    return out
+
+
 def complications(rows, units):
     """Give every episode that recorded a complication its categories.
 
@@ -493,7 +521,7 @@ def complications(rows, units):
         family = W.MIX_FAMILY[u[3]]
         off_cis = row["unit"] in W.DETAIL_EXCLUDED
         r = rng("comp", row["unit"], row["sep_date"].isoformat(), i)
-        mix = W.GROUP_MIX[family]
+        mix = group_mix_for(u)
         groups = list(mix)
         weights = np.array([mix[g] for g in groups], dtype=float)
         weights = weights / weights.sum()
@@ -516,6 +544,53 @@ def complications(rows, units):
                                    onset=row["sep_date"] - dt.timedelta(days=int(r.integers(0, max(1, row["los"])))),
                                    row=i))
     return detail
+
+
+def apply_coding_lag(rows, units):
+    """Leave in the record only the complications coded by the pull date.
+
+    A complication is coded when it is documented, so a quarter keeps growing after its own coding close:
+    the newest closed quarter has been published once and the one before it twice, and both are still short
+    of what their patients had. Which complications are missing is not random across the record, because
+    documentation runs on the group's own clinical course, so a quarter's shortfall follows the mix of
+    groups its own patients produced.
+
+    Returns the coded counts per unit-quarter, and, per quarter and reporting group, the number of episodes
+    whose first recorded complication falls in that group both ultimately and as coded, which is what the
+    coding close-out register publishes.
+    """
+    first_group = {}
+    for code, _, g in W.LIST_2022 + W.LIST_2026:
+        first_group[code] = g
+    ultimate = {}
+    for i, row in enumerate(rows):
+        if not row["hac"] or not row["in_scope"]:
+            continue
+        g = first_group[row["hac_codes"][0]]
+        ultimate[(row["q"], g)] = ultimate.get((row["q"], g), 0) + 1
+    for i, row in enumerate(rows):
+        if not row["hac"] or not row["in_scope"] or row["q"] not in W.IMMATURE:
+            continue
+        lag = W.IMMATURE[row["q"]]
+        g = first_group[row["hac_codes"][0]]
+        c = W.GROUP_COMPLETENESS[g][lag]
+        r = rng("lag", row["unit"], row["sep_date"].isoformat(), i)
+        if r.random() >= c:
+            rows[i]["hac"] = False          # documented, and coded, after the pull date
+            rows[i]["hac_codes"] = []
+    coded = {}
+    coded_group = {}
+    observed = {}
+    for row in rows:
+        if not row["in_scope"]:
+            continue
+        key = (row["unit"], row["q"])
+        observed[key] = observed.get(key, 0) + (1 if row["hac"] else 0)
+        if row["hac"]:
+            g = first_group[row["hac_codes"][0]]
+            coded_group[(row["q"], g)] = coded_group.get((row["q"], g), 0) + 1
+    coded.update(observed)
+    return observed, ultimate, coded_group
 
 
 def add_replays(rows, units):
