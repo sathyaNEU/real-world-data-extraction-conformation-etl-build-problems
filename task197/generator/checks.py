@@ -244,13 +244,19 @@ def main():
         core.metered = real_met
     ck("R2 the main call never reads the settlement meter file", hits["n"] == 0,
        "%d reads of the metered series on the call's path" % hits["n"])
-    located_true = sum(1 for d in sim.dates() for m in range(1440)
-                       if W[d]["f"][m * 60:(m + 1) * 60].min() <= sim.QUALIFY_HZ)
     mins = list(csv.DictReader(open(os.path.join(
         TGT, "operator", "system_frequency_minute_summary.csv"), encoding="utf-8")))
-    located_pack = sum(1 for r in mins if float(r["frequency_min_hz"]) <= sim.QUALIFY_HZ)
-    ck("R2 the held summary rows change no minute the call locates",
-       located_true == located_pack, "%d true, %d in the shipped summary" % (located_true, located_pack))
+    want_min = []
+    for d in sim.dates():
+        for m in range(1440):
+            want_min.append(round(float(W[d]["f"][m * 60:(m + 1) * 60].min()), 4))
+    got_min = [float(r["frequency_min_hz"]) for r in mins]
+    moved = [i for i, (a, b) in enumerate(zip(want_min, got_min)) if a != b]
+    moved_located = [i for i in moved if want_min[i] <= sim.QUALIFY_HZ or got_min[i] <= sim.QUALIFY_HZ]
+    ck("R2 the held summary rows move no minute into or out of the call's located set",
+       not moved_located, "%d of %d held rows change a located minute" % (len(moved_located), len(moved)))
+    ck("the held summary rows are the only rows that differ from the minute's own minimum",
+       len(moved) == len(held), "%d rows differ, %d minutes held" % (len(moved), len(held)))
 
     # the devices' forcing, measured on the cut pack by ceiling.py's own reader
     P = ceiling.load()
@@ -314,24 +320,53 @@ def main():
        abs(sum(gc_g[0].values()) - F["exposure_above_total"]) < 0.05
        and abs(sum(gc_g[1].values()) - F["exposure_below_total"]) < 0.05, "")
 
-    # bins: every graded ask figure mid-bin at the unit its asking sentence states
+    # Bins. A gain is recovered through the traverse span, which a solver lands within a second or
+    # two of, so it carries path spread and takes the 0.3-of-a-unit floor. A block's capacity hours
+    # and a site's exposure are exact sums over shipped rows on a population the commitment file
+    # fixes, with the rounding path pinned in clause 4 and clause 5, so nothing on the solver's
+    # side can move them; those are asserted for exactness instead, with a floor that keeps no
+    # figure sitting on a printed boundary.
     adh = pack2.adherence(W, "golden")
     av = pack2.availability(W, placed, "golden")
-    bins = []
-    for sid, v in so.items():
-        bins.append(("down gain %s" % sid, edge(v["traj"], 1.0), 1.0))
-    for b in range(1, 7):
-        bins.append(("available block %d" % b, edge(av["available"][b], 0.1), 0.1))
-        bins.append(("shortfall block %d" % b, edge(av["lost"][b], 0.1), 0.1))
-    for sid in adh["above"]:
-        bins.append(("above %s" % sid, edge(adh["above"][sid], 0.1), 0.1))
-        bins.append(("below %s" % sid, edge(adh["below"][sid], 0.1), 0.1))
-    bins.append(("above portfolio", edge(adh["above_total"], 0.1), 0.1))
-    bins.append(("below portfolio", edge(adh["below_total"], 0.1), 0.1))
-    tight = min(bins, key=lambda x: x[1] / x[2])
-    ck("every graded ask figure sits at least 0.3 of its unit from a bin edge",
-       all(e >= 0.3 * u for (_, e, u) in bins),
-       "tightest %s at %.4f of a unit of %.1f" % (tight[0], tight[1] / tight[2], tight[2]))
+    gains = [("down gain %s" % sid, edge(v["traj"], 1.0)) for sid, v in so.items()]
+    ck("every graded gain sits at least 0.3 of a per cent from a bin edge",
+       all(e >= 0.3 for (_, e) in gains),
+       "tightest %s at %.3f pp" % min(gains, key=lambda x: x[1]))
+    bhours = [("available block %d" % b, edge(av["available"][b], 0.1)) for b in range(1, 7)] + \
+             [("shortfall block %d" % b, edge(av["lost"][b], 0.1)) for b in range(1, 7)]
+    ck("every graded capacity-hours figure sits at least 0.3 of its unit from a bin edge",
+       all(e >= 0.03 for (_, e) in bhours),
+       "tightest %s at %.4f MWh" % min(bhours, key=lambda x: x[1]))
+    expo = [("above %s" % k, edge(adh["above"][k], 0.1)) for k in adh["above"]] + \
+           [("below %s" % k, edge(adh["below"][k], 0.1)) for k in adh["below"]] + \
+           [("above portfolio", edge(adh["above_total"], 0.1)),
+            ("below portfolio", edge(adh["below_total"], 0.1))]
+    ck("no graded exposure figure sits on a printed boundary",
+       all(e >= 0.002 for (_, e) in expo),
+       "tightest %s at %.4f MWh from the edge" % min(expo, key=lambda x: x[1]))
+    # exactness: the pinned rounding path, and the one it closes, print the same figure
+    sum_then_round = {k: round(adh["above"][k], 1) for k in adh["above"]}
+    round_then_sum = {}
+    for s_site in sim.SITES:
+        sid = s_site["id"]
+        tot = 0.0
+        for d in sim.dates():
+            prog = W[d]["prog"][sid]
+            E = core.metered(W, d, sid)
+            cmask = np.zeros(96, dtype=bool)
+            for b in sim.commitments(s_site, d):
+                lo_h, hi_h = sim.BLOCK_HOURS[b]
+                cmask[lo_h * 4:hi_h * 4] = True
+            for pp in range(96):
+                if cmask[pp]:
+                    continue
+                dv = float(E[pp]) - float(prog[pp]) * 0.25
+                if dv >= 0:
+                    tot += round(dv, 1)
+        round_then_sum[sid] = round(tot, 1)
+    diff = [k for k in sum_then_round if sum_then_round[k] != round_then_sum[k]]
+    ck("clause 5's rounding path is the one that is pinned, and the alternative is closed",
+       len(diff) > 0, "round-each-period would move %d of 9 above-programme figures" % len(diff))
 
     # printed precision: every graded figure at the precision its asking sentence states
     sub = os.path.join(TASK, "submission.md")
