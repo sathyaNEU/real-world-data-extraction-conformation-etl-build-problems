@@ -1,6 +1,6 @@
 {
  "approved": null,
- "architecture": 5,
+ "architecture": 8,
  "architecture_1_spent": {
   "build_gates": {
    "asks_measure": {
@@ -91,11 +91,11 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "resume": "PAUSED at stage 1. The architecture counter stays at 4: architectures 5, 6 and 7 each landed no registrable draw. THE AXIS IS NOW OPEN AND THE MECHANISM IS WHAT IS MISSING, which inverts architecture 6's reading. The author reassigned the ground on 2026-10-18 to accounting-audit-forensic (house, client_domain banking-credit-financial-risk) x banking-credit-financial-risk/fraud-aml-detection, objective anomaly-detection, shape 01. Two probe cards confirm no axis ban fires on that ground (see draw.arch7_axis_open), so a resume does not need to redraw an axis. Architecture 7 screened three structurally distinct Layer 2 mechanisms and killed each with a measured number (see draw.arch7_screens and the design note's Architecture 7 section): do not re-screen sequential-stopping bias, the expected-by-chance coincidence baseline, top-censored severity, monetary unit sampling (task190 arch 3), the two-channel capture overlap (task196), or lead-driven adaptive examination (task124 arch 2). A fourth pass starts from the three-clause filter in draw.arch7_filter rather than from a candidate, and reads the enumeration of the task type's estimated quantities there before designing. Whoever resumes reads the Architecture 5, 6 and 7 sections and re-runs guard.py check before spending design time, because the ban window reorders as later builds register.",
+ "resume": "Architecture 8 screened out on this cell with no card registered. Three structurally distinct causal-design mechanisms died on measured numbers: an interruption channel where the naive per-job before-and-after excess reached the causal excess exactly (83.0 against a truth of 84.2) while the designed route was the noisier one (hazard ratio spreading 2.98 to 5.02 against 3.4); interference through a shared authorising desk where the crude network before-and-after was the answer (314 against a truth of 309) and a one-line regression landed within 25 per cent with the same verdict; and an effect per unit inside one window where the confounding worked as drawn (raw contrast -0.08, +0.12, -0.02 against a truth of 0.77) but adjusting for every recorded attribute returned 0.740, 0.801 and 0.751 inside 4 per cent of truth, because a job's recorded duration proxies the withheld difficulty, and the decisive route could not rank with a standard error 1.3 times its own point estimate. The swept law: with one mover and a recorded exposure base, crude over truth is 0.954, 0.953 and 1.001, so a causal design here may not grade a total over the population and window. A free kill came before any code: guard.py slots returned shipped task149 on the first candidate's nouns, and the whole workload, pace, fatigue, time-on-task and cumulative-experience family is spent on this ground. guard.py check on the probe card was WARN with no BLOCK and every reserved axis clear, so the mechanism shut the pass, not the guard. Its own note: pattern C is not honest beside a structural verdict, and utility_or_infrastructure repeats the cell incumbent's org family even though it clears every window. The three-clause filter a later pass must meet is in the design note.",
  "returned": [],
  "stage": 1,
  "stage_name": "draw",
- "status": "DRAWING",
+ "status": "PAUSED",
  "stump": "",
  "task": "task198",
  "updated": "2026-10-18",

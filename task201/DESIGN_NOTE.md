@@ -740,6 +740,101 @@ success rests on, a shared pool whose candidates' claims overlap so that sizing 
 whole pool double-books it, is task106's spent driver, and the only instance of it this world offers
 is candidate 5.
 
+### Candidate 6, the decaying yield of a flagged set, killed on measurement (2026-10-18)
+
+(Architecture 8, screen 1, `wave6/w6_201/screen1.py` and `seedsweep1.py`, run on a designed clean
+truth before any file was cut, on the re-rooted cell `general-statistics-data-science` /
+`multiple-testing-selective-inference`.) A sector inspectorate works its screen's flags in order of
+the absolute shortfall, its verification capacity is a fixed 45 cells a quarter, and a filed
+standard sets the minimum substantiated findings the campaign must reach, so the call is the
+quarter close at which the bar is met. Decisive quantity: how many of the 4,450 flags are genuine
+rather than the screen's own chance yield, so the campaign's yield decays once the list descends
+past the real signals, a real shortfall scaling with a cell's expected caseload and a chance
+shortfall with its square root. Every easy route carries a rate instead of a count: the pilot's own
+observed rate (0.6500 over 60 verified files) files quarter 2, the pooled corpus rate quarter 2 and
+the size-stratified pilot quarter 2, against a truth of quarter 5. It died twice over. **The graded
+figure is the crossing of a cumulative random walk:** over 20 seeds with every parameter fixed the
+truth took five distinct values, quarters 3, 4, 5, 6 and 7 (files 133 to 277 after the pilot),
+while all 20 seeds filed quarter 2 on the easy route, so the ladder's margin is the seed's and not
+the design's. **And the decisive route's estimator family does not close:** on one cut its six
+defensible forms filed quarter 8 (a parametric null simulation), quarter 1 (Storey at 0.4, 0.5 and
+0.6, and the Benjamini-Hochberg implied count) and quarter 2 (the null read off the unflagged
+bulk), not one of them the realised quarter 5. corr(absolute shortfall, cell size) over the flags
+is +0.9341 besides, so the worked order is the size order. **Rule earned:** an expected count of
+genuine findings cannot be graded through the date a cumulative count crosses a bar, because the
+crossing is a property of where individual signals happen to fall in the worked order rather than
+of the quantity being estimated.
+
+### Candidate 7, the genuine findings a fixed budget reaches, killed on measurement (2026-10-18)
+
+(Architecture 8, screen 2, `wave6/w6_201/screen2.py`.) The repair for candidate 6 was to grade an
+argmax rather than a crossing, which is what `stumping` 3 prescribes when a lever randomises the
+graded figure: five filing rounds inside the statutory re-opening window, the inspectorate's
+capacity covering 45 cells of one round, the call the round whose top 45 by shortfall holds the
+most genuine under-reporting. The design claim was an inversion worth having, that at a fixed
+budget a wider family is an advantage (more chances of holding a real signal in the top k) while at
+a fixed trigger it is a penalty, so the multiplicity correction, this cell's reflex and task191's
+whole cure, would point the wrong way. Measured, it points the right way. **4 of 10 enumerated
+reflexes reached the golden, the correction among them:** the most Bonferroni survivors, the most
+Benjamini-Hochberg survivors, the largest departure inside the top k and the highest pilot rate all
+named 2026Q2, which is the golden. The true margin on the graded quantity was **1.0417x** (25
+genuine findings against 24), far under the 1.15 floor; the golden held in only 19 of 24 seeds, the
+other 5 naming 2026Q1; and the decisive route's own forms split three ways (a null simulation named
+the golden at a margin of 1.0495, the local-FDR and BH-implied forms returned zero genuine findings
+for every round, an excess-over-chance form named 2026Q4). **Structural reason, not a tuning
+failure:** expected true discoveries at a fixed depth are dominated by per-test power, power here
+is the cell's expected caseload, and both the multiplicity correction and the top-k departure rank
+on exactly that, so the inversion is second order against the one thing every reflex already sorts
+on.
+
+### Candidate 8, a period's flags in excess of its own chance yield, killed on measurement (2026-10-18)
+
+(Architecture 8, screen 3, `wave6/w6_201/screen3.py`.) The only remaining way to put a family-level
+quantity to a decision is the fixed-trigger regime: each round's flags against the chance yield its
+own family would produce, with the screen testing every cell against its own trailing reference and
+the reference length drawn independently of size (2 to 24 months, out of entries, gaps and
+suspensions), which is also the shape candidate 2 of this draw would have taken. **6 of 7 routes
+reached the golden**, the plainest of all included: the most flags, the highest flag rate, the most
+tests (one group-by on the submission file), the excess itself, and both routes restricted to the
+common-exposure subset of cells carrying a full reference history. The golden's own margin was
+**1.0172x** (59 genuine flags against 58). corr(excess, breadth) +0.9189, corr(genuine flags,
+breadth) +0.8960, and corr(genuine flags, breadth times prevalence) **+0.9986**: a family's genuine
+count is breadth times prevalence times detection, so it is collinear with the row count of the
+file it is drawn from. The common-exposure filter reaching it is `stumping` 1.2's own screen fired
+in its own words, and the escapes that screen allows are spent here (no unit attaining the exposure
+is completion, which is task194's driver).
+
+### The family-level multiplicity direction on this cell, screened out (2026-10-18)
+
+Three structurally distinct ways of putting a false-discovery quantity to a decision were screened
+on measured truth, each died for its own reason, and the three reasons are one wall. Such a
+quantity can be put to a decision in exactly three ways: as **a count crossing a bar**, where the
+graded figure is a random walk's crossing (candidate 6, five distinct quarters over 20 seeds); as
+**a pick at a fixed budget**, where it is monotone in per-test power and the correction itself
+ranks on power (candidate 7, 4 of 10 reflexes, margin 1.0417x); or as **a pick at a fixed
+trigger**, where it is collinear with the family's breadth at +0.9986 and the breadth is one
+group-by (candidate 8, 6 of 7 reflexes, margin 1.0172x). **Rule earned:** on this cell a
+false-discovery quantity decides nothing a sorted column has not already decided, which is why the
+one driver that held here took the shape it did, task191 asking *whether* one selected extremum
+beats the extremum of a quiet set of the same size and length, a correction identical for every
+candidate and therefore unable to order candidates at all. The task type's other objects were each
+closed before this draw: the extremum against a null extremum is task191's; the null that holds a
+filed error rate, and the unit of independent evidence that fixes it, is task186's; the shrinkage a
+selected level needs is measured dead in task202 (the construction's spread 13.152 against the
+10.499 bias it removed, with empirical Bayes beating it more than three to one and James-Stein
+filing the golden verdict in 40 of 40 seeds) and in task471 (the shrinkage method forced by nothing
+filed); a selection-conditional interval that only widens dies on `stumping` 1.2's variance-only
+screen, with task195 holding the paired-difference uncertainty besides; and the family of
+hypotheses is itself one of the estimand's five parts, so filing it is rule application and leaving
+it open forks the main call. **What this leaves the next draw on this cell:** not a selective
+quantity over a family, but a quantity whose construction the data forces with the designation
+following from it, and the honest report is that this author's driver search on
+`multiple-testing-selective-inference` under anomaly-detection is spent, not that the cell is
+closed. The differentiation line this draw would have owed task191, written and now unspent: its
+correction is common to every candidate and answers whether, while each of the three candidates
+above needed a correction that differs by candidate, and all three ways of making it differ are
+collinear with a column the pack ships.
+
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus

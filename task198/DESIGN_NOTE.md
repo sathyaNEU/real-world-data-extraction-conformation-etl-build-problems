@@ -1746,3 +1746,117 @@ reading is therefore the opposite of architecture 6's: **the cell is available a
 missing**, so a further pass here is worth spending, and it should start from the three-clause filter above
 rather than from a candidate. The probes are `task198_probe_card.json` and `task198_probe2.json` in the
 builder's scratch directory; neither was registered.
+
+### Architecture 8: the ground reassigned to human-factors-ergonomics, three mechanisms measured (2026-10-18)
+
+The ground moved again, to `human-factors-ergonomics` / `safety-incident-error-analysis`, objective
+unchanged, with `structural_verdict`, `causal_design` and `confirm_surface_read` reserved and the one spent
+anomaly-detection driver on the cell named for the pass to draw away from (task181: events arise when one
+moving unit passes through the position of another present at the same time, so the expected count follows
+the crossings a period's traffic creates rather than the time units spend). Three Layer 2 mechanisms were
+screened as code on a clean truth, each killed by a measured number, no file cut (`screen_M1.py`,
+`screen_M2.py`, `screen_M3.py`, `sweep_law.py`, each run twice to byte-identical output). The axis read came
+back the other way from the mechanism read, as in architecture 7.
+
+**What the slot search bought before any code ran, and it closed the cell's natural family.** `guard.py
+slots` on the candidate nouns returned task149 (shipped: the hazard per unit of working time rises steeply
+with how fast a fixed content of work is done, measured against that work's engineered content) and
+task171's own kill of the duty-hour variant, which it retired as task149's driver by the abstraction test at
+guard 0.15. Taken with task202's six designation-set kills on this exact cell and task182's experience
+composition, **the whole workload, pace, fatigue, time-on-task, learning-curve and rate-in-cumulative-
+experience family is spent on this ground**, which is what the brief's own hint list points at. The first
+candidate drawn (a crew-shift's assigned work against the time it has for it, the demand-capacity mismatch
+of work measurement) was retired free on that search: it is task149's driver in other nouns. **Its lexical
+score was 0.27 against task149, a WARN and not a BLOCK**, so the guard would have passed it with a
+differentiation line while the abstraction test kills it outright: the documented blind spot, measured again
+here with a number.
+
+**M1, the interruption channel behind a count rise.** Jobs, crews, a dispatch change that pushes reactive
+work onto crews already on a planned job, an error hazard multiplied 3.4x on an interrupted job. Dead on the
+first measurement: **the naive per-job before-and-after excess reaches the causal excess exactly** (seed 0,
+83.0 against a truth of 84.2; the within-depot variant 83.0), so the channel construction is a decoration on
+the graded figure. The golden's own estimator is also the noisier one, its hazard ratio spreading 2.98 to
+5.02 over five seeds against a truth of 3.4, which is the pricing death of architecture 2 in another world.
+
+**M2, interference through a shared authorising desk.** The same dispatch change raises the isolation
+requests the converted depots send to one network control desk; the authoriser's own error rate rises
+convexly with the desk's concurrent load, so the change's whole effect lands on jobs at every depot,
+converted or not, and a weather-driven reactive shock in the same window moves the same load. The shape was
+drawn from F9's one shipped hold (interference through a shared pool) along its own vary axis, the
+interference structure (a congestion externality rather than a zero-sum transfer). Dead on measurement:
+**the crude network before-and-after is the answer** (seed 0, 314 against a truth of 309; the rate-adjusted
+read 294), the designed route returns 297 to 441 against a truth of 308 to 455, and **a one-line regression
+of daily incidents on daily requests, a derived daily total, lands within 25 per cent with the same sign and
+the same verdict** (228 against 309). The difference-in-differences did not go to zero either, 147 to 236,
+because a depot's error count is proportional to its own requests, so the arms separate and the easy route
+never files "exonerated".
+
+**The law both deaths measured, and its boundary swept.** `sweep_law.py` varied the hazard multiplier (2.0,
+3.4, 6.0), the affected share (0.25, 0.62) and the size of a second independent mover of the same total
+(0.00, 0.15, 0.40). **With the intervention the only mover and the exposure base recorded, crude over truth
+is 0.954, 0.953 and 1.001 at the three multipliers**: the crude before-and-after rate excess IS the causal
+excess, and no comparison design can carry a graded figure built on it. The ratio only departs where a
+second mover exists (1.14 to 1.96), and closing it is then a split of one total between two movers, which is
+`decomposition_attribution` and another lane's ground, not a causal design. The one other regime where the
+crude route is materially off, a small affected channel at a low multiplier, is sampling error on the graded
+count (a 1.886 ratio on a truth of 8.9 incidents), not a ladder. **So on this ground a causal design may not
+grade a total over the whole population and window**: the graded object has to be a per-unit effect inside
+one window, which is what M3 was drawn to be.
+
+**M3, the error-rate multiplier an interruption carries, identified inside one window.** No before and
+after, so neither law can apply: 67,000 jobs, the hazard rising with each job's unrecorded difficulty and
+multiplied 2.6x when the crew is pulled off it, the dispatcher choosing which job to interrupt on that same
+unrecorded difficulty, the recorded work-type code too coarse to adjust it away, and the identifying
+variation coming from the other depots' emergencies consuming a shared standby pool. The confounding worked
+as drawn: **the raw contrast reads -0.08, +0.12 and -0.02 extra errors per 100 interrupted jobs against a
+truth of 0.77**, so the easy route files that interruption costs nothing. It died on both of the remaining
+screens at once. **The reflex lands the truth: adjusting for every recorded attribute returns 0.740, 0.801
+and 0.751 against truths of 0.773, 0.770 and 0.767, inside 4 per cent**, because a job's recorded duration
+is a proxy for the difficulty the design withholds (and the coarse-code stratification 0.72 to 0.79,
+propensity matching 0.64 to 0.72). That proxy is structural, not a tuning fault: any authentic work-order
+file carries durations, and tuning the correlation away would rest the build on asserting that how long a
+job took says nothing about how hard it was. **And the decisive route cannot rank anyway: the Wald estimate
+is 0.749, 1.073 and 1.323 with a bootstrap standard error of 0.88 to 1.14, which is 1.3 times its own point
+estimate, and its 90 per cent interval runs -0.94 to +2.8**, covering zero in every seed; closing that to a
+tenth of the effect needs about 150 times the depot-days the pack could carry.
+
+**Where this pass stopped: the axis is open, the mechanism is missing, exactly as in architecture 7.**
+`guard.py check` on a probe card carrying the whole reserved axis set (`human-factors-ergonomics` /
+`safety-incident-error-analysis`, anomaly-detection, shape 11, gap `rule`, pattern C, `confirm_surface_read`,
+`structural_verdict`, `causal_design`, `retry_or_revision_log`, `planning_thread`, `executive_team`,
+`incident_or_complaint`, `utility_or_infrastructure`, `programme_officer`) returns **WARN, no BLOCK**: one
+`people.first` WARN on a persona, nothing else. No axis ban fired, and neither `test.same_puzzle` nor
+`test.same_driver` fired, because `structural_verdict` is unspent on this objective and gap `rule` with
+pattern C and `confirm_surface_read` is a free triple; nearest driver 0.09 (task149). The probe is
+`task198_probe3.json` in the builder's scratch directory and was not registered.
+
+**What a ninth pass must satisfy, one clause per kill.** The graded object must be (a) **not a total over
+the population and window**, since the crude before-and-after supplies that to within 5 per cent (M1, M2,
+the sweep); (b) **not identified against a confounder any recorded attribute proxies**, since durations,
+coarse codes and crew identity are all shipped and the adjustment on them lands the truth within 4 per cent
+(M3); and (c) **not estimated from variation thin enough that its own standard error approaches the effect**,
+which on a depot-day panel rules out every instrument a shared pool creates (M3). The three together say the
+decisive quantity cannot be a hazard multiplier, a counterfactual count or an effect per unit of work on
+this ground. What they leave is the shape the corpus's one Gate F strong hold actually used (task197): an
+unobserved quantity whose forcing input sits in another file at another grain, with the construction forced
+by arithmetic rather than by a fit, and the ninth pass should start from the file that does the forcing
+rather than from the estimator. On this cell the unexamined candidates for that file are the investigation
+record at barrier grain and the plant's own telemetry as a census (not a capture channel) of one error
+class; both were named and neither was screened, and the second carries a tolerance that reads as a knob.
+
+- The crew-shift's assigned work against the time it has for it, the demand-capacity mismatch of work
+  measurement (architecture 8, retired free at the slot search 2026-10-18). It is task149's shipped driver in
+  other nouns, at lexical 0.27 (a WARN, not a BLOCK) and an outright kill on the abstraction test, and
+  task171 had already retired the duty-hour variant of it on the same grounds.
+- The interruption channel behind a count rise (architecture 8, M1, measured 2026-10-18, nothing cut). The
+  naive per-job before-and-after excess reaches the causal excess exactly, 83.0 against a truth of 84.2, so
+  the construction is worth nothing on the graded figure; the designed route's own hazard ratio spreads 2.98
+  to 5.02 against a truth of 3.4.
+- Interference through a shared authorising desk, a congestion externality on F9's vary axis (architecture 8,
+  M2, measured 2026-10-18, nothing cut). The crude network before-and-after is the answer, 314 against a
+  truth of 309, a one-line regression on a derived daily total lands within 25 per cent, and the
+  difference-in-differences stays positive at 147 to 236 so the easy route never files "exonerated".
+- The error-rate multiplier an interruption carries, identified inside one window off a shared standby pool
+  (architecture 8, M3, measured 2026-10-18, nothing cut). The reflex adjustment on recorded durations lands
+  the truth inside 4 per cent (0.740 against 0.773) and the identifying instrument's standard error is 1.3
+  times its own point estimate with a 90 per cent interval covering zero.
