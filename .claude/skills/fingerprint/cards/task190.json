@@ -1,154 +1,162 @@
 {
-  "analyst_test": "A strong analyst who conforms the two laboratory extracts, drops the cases notified twice, carries the 2025 district merger through the crosswalk, runs the detector on notification dates and counts cases on onset dates, reads the case definition and the detector specification correctly and replays the detector at every allowed window still scores the windows by the outbreaks each one flags and converts that count into cases with the unit's own published preventable share, filing the longest allowed window, 56 days, at about 1,040 preventable cases. Summing each outbreak's own cases with onset after the alert date that window itself produces gives about 243 cases at 56 days against about 418 at 21 days, so the call is the 21-day window and the default path files the wrong one.",
-  "answer": "to be filled at stage 3",
-  "answer_source": "generator/figures.json",
-  "answer_unit": "named_option",
-  "architecture": 4,
-  "calibration_form": "none",
-  "client_domain": "epidemiology-public-health",
-  "context_artifact": "monitoring_export",
-  "decision_type": "dial_setting",
-  "decisive_rule_filed": false,
-  "deliverables": [
-    "detection_window_options.csv",
-    "cases_ahead_of_alert_by_window.png"
-  ],
-  "differentiation": {
-    "task104": "the nearest driver on file reconstructs what a self-adapting scorer would have flagged at a setting it never ran, and cannot, because the scorer withheld every flagged observation from its own reference window; here the detector's statistic is exactly reconstructable at every allowed window from the notification record, and the error is borrowing a performance ratio that the window in force produced.",
-    "task148": "that build's queue is drained by units that give up, so the decisive move is to carry an abandonment hazard into the wait every later unit meets; here nothing abandons and no hazard is estimated. What is open is only how a configuration's value is summed, and both routes run on the same complete record.",
-    "task154": "that build separates volume from price by revaluing each holder's stock over its own holding period, so the decisive move is a deflator matched to a window inside the data; here nothing is deflated, revalued or indexed. The quantity is a count of cases dated after an alert, and the easy route fails because the ratio it applies was produced by the configuration it is being used to replace.",
-    "task187": "the Jensen structure there averages a capped curved response over a spread of inputs, so the correction is to integrate a known response curve; here there is no response curve and no cap. The error is that a ratio realised under the configuration being replaced is substituted for a sum taken at each candidate configuration's own firing time, and it survives any smoothing of the data.",
-    "task188": "that build on this task type estimates a density of affected individuals from grouped tests, a pooled-testing estimator on one cross-section; here nothing is pooled and no density is estimated. The deciding quantity is a sum over outbreaks of the cases dated after a firing time that each candidate configuration produces, and the easy route is a published ratio applied to a count of detections.",
-    "task190_v1": "architecture 1 of this slot decided whether cases the bank had no record of yet were in the population, which is a population question and failed the WHAT screen; here every case, outbreak and alert is in the record and complete, and what is open is how a configuration's value is summed.",
-    "task190_v2": "architecture 2 estimated an excess of items over a fitted counterfactual density and the specifications disagreed; here nothing is fitted and no counterfactual density exists. The figure at every setting is an exact replay of a filed statistic plus an exact sum of dated cases.",
-    "task190_v3": "architecture 3 recovered an inclusion probability from a realised probability-proportional sample and reweighted findings by it, and its refer rested on a reliability factor Gate B forced into the pack. Here nothing is sampled, no weight is recovered, and the decisive step needs no constant at all: every input is a date or a count the pack already carries.",
-    "task194": "the neighbouring build ranks candidates on a count short by a coding lag the record measures through two vintages, so the decisive quantity is a maturity correction to a count; here the lag from onset to notification is identical under every candidate setting and cancels out of the comparison, which the design note asserts, and what moves is when the detector can cross.",
-    "task195": "that build's dial turns on the uncertainty of a paired difference between two screens, so the decisive move is an interval; here no interval is computed and the quantity is an exact sum of dated cases, with the windows separated by hundreds of cases rather than by a significance call.",
-    "task198": "that build's residual is built from a ratio that sits above every small unit and below every large one, so the decisive move is the shape of an expectation across unit size; here every unit is an outbreak, no expectation is built across their sizes, and what decides is that the configuration being evaluated is the thing that produced the ratio the easy route borrows.",
-    "task242": "the other build on this task type reads a prevalence share through a detector whose chance of registering an event fades with time since the event, so its correction averages a known detection curve over each unit's spread of event times. Here no detection probability exists: every outbreak in the register is detected or not by an exactly replayable statistic, and what decides is that the configuration being chosen is the thing that produced the ratio the easy route borrows.",
-    "task254": "that build's dial is a journey time whose later stages build during the unit's own passage, so the decisive move is to advance the clock through the stages; here there is no sequence of stages and no unit in transit. The quantity is a sum over episodes of the cases dated after a firing time, and the easy route fails because it borrows a ratio rather than because it reads a clock wrongly.",
-    "task501": "that build settles a chain process's sustainability from the dominant eigenvalue of a mixing matrix measured across two regimes; nothing here is modelled or projected. Every figure is a count of cases dated after an alert date that a filed statistic produces on the record as it stands."
-  },
-  "domain": "epidemiology-public-health",
-  "domain_test": "The deciding quantity is the outbreak cases still ahead of a detection, which is how surveillance evaluates an aberration-detection algorithm: timeliness is scored outbreak by outbreak as the cases with onset after the alert, because a detection is worth only the exposure it can still interrupt, and sensitivity (whether the outbreak is flagged at all) buys nothing where the flag lands after the last case. Swap the nouns to a bank screening card payments and the design has no reason to exist: a payment screen's value is the single payment it stops, there is no curve of further cases ahead of the alert, and the window would be chosen on the alert volume a team can work. Here the window matters because an outbreak's cases arrive over weeks in a shape, point source or continuing source, that decides both when the detector can cross and how much of the outbreak is left to prevent.",
-  "drawn": "2026-10-17",
-  "driver": "A detector setting is worth what each episode still has ahead of it when that setting's own alert fires, so the settings can only be compared by summing every episode's remaining volume at the firing time each setting itself produces; multiplying the episodes a setting flags by the remaining share the setting in force realised scores the settings by how many episodes they flag at all, because a slower setting flags every episode later and the episodes it adds are the ones it flags near their end.",
-  "driver_concrete": "The window the aberration detector accumulates cases over decides when each outbreak is flagged: the 56-day window flags almost every investigated outbreak against about half at 21 days, but it flags the point-source outbreaks four to five weeks later and the continuing-source ones in their closing weeks, so the cases with onset after the alert total about 418 at 21 days against about 243 at 56 days. Multiplying outbreaks flagged by the unit's published preventable share files about 1,040 cases at 56 days and the longest window.",
-  "forcing_event": "cutover_or_migration",
-  "forum": "regulator_or_inspector",
-  "gap": [
+ "analyst_test": "A strong analyst who conforms the two laboratory extracts, drops the cases notified twice, carries the 2025 district merger through the crosswalk, runs the detector on notification dates and counts cases on onset dates, reads the case definition and the detector specification correctly and replays the detector at every allowed window still scores the windows by the outbreaks each one flags and converts that count into cases with the unit's own published preventable share, filing the longest allowed window, 56 days, at about 1,040 preventable cases. Summing each outbreak's own cases with onset after the alert date that window itself produces gives about 243 cases at 56 days against about 418 at 21 days, so the call is the 21-day window and the default path files the wrong one.",
+ "answer": "to be filled at stage 3",
+ "answer_source": "generator/figures.json",
+ "answer_unit": "named_option",
+ "architecture": 4,
+ "calibration_form": "none",
+ "client_domain": "epidemiology-public-health",
+ "context_artifact": "monitoring_export",
+ "decision_type": "dial_setting",
+ "decisive_rule_filed": false,
+ "deliverables": [
+  "detection_window_options.csv",
+  "cases_ahead_of_alert_by_window.png"
+ ],
+ "differentiation": {
+  "task104": "the nearest driver on file reconstructs what a self-adapting scorer would have flagged at a setting it never ran, and cannot, because the scorer withheld every flagged observation from its own reference window; here the detector's statistic is exactly reconstructable at every allowed window from the notification record, and the error is borrowing a performance ratio that the window in force produced.",
+  "task148": "that build's queue is drained by units that give up, so the decisive move is to carry an abandonment hazard into the wait every later unit meets; here nothing abandons and no hazard is estimated. What is open is only how a configuration's value is summed, and both routes run on the same complete record.",
+  "task154": "that build separates volume from price by revaluing each holder's stock over its own holding period, so the decisive move is a deflator matched to a window inside the data; here nothing is deflated, revalued or indexed. The quantity is a count of cases dated after an alert, and the easy route fails because the ratio it applies was produced by the configuration it is being used to replace.",
+  "task187": "the Jensen structure there averages a capped curved response over a spread of inputs, so the correction is to integrate a known response curve; here there is no response curve and no cap. The error is that a ratio realised under the configuration being replaced is substituted for a sum taken at each candidate configuration's own firing time, and it survives any smoothing of the data.",
+  "task188": "that build on this task type estimates a density of affected individuals from grouped tests, a pooled-testing estimator on one cross-section; here nothing is pooled and no density is estimated. The deciding quantity is a sum over outbreaks of the cases dated after a firing time that each candidate configuration produces, and the easy route is a published ratio applied to a count of detections.",
+  "task190_v1": "architecture 1 of this slot decided whether cases the bank had no record of yet were in the population, which is a population question and failed the WHAT screen; here every case, outbreak and alert is in the record and complete, and what is open is how a configuration's value is summed.",
+  "task190_v2": "architecture 2 estimated an excess of items over a fitted counterfactual density and the specifications disagreed; here nothing is fitted and no counterfactual density exists. The figure at every setting is an exact replay of a filed statistic plus an exact sum of dated cases.",
+  "task190_v3": "architecture 3 recovered an inclusion probability from a realised probability-proportional sample and reweighted findings by it, and its refer rested on a reliability factor Gate B forced into the pack. Here nothing is sampled, no weight is recovered, and the decisive step needs no constant at all: every input is a date or a count the pack already carries.",
+  "task194": "the neighbouring build ranks candidates on a count short by a coding lag the record measures through two vintages, so the decisive quantity is a maturity correction to a count; here the lag from onset to notification is identical under every candidate setting and cancels out of the comparison, which the design note asserts, and what moves is when the detector can cross.",
+  "task195": "that build's dial turns on the uncertainty of a paired difference between two screens, so the decisive move is an interval; here no interval is computed and the quantity is an exact sum of dated cases, with the windows separated by hundreds of cases rather than by a significance call.",
+  "task198": "that build's residual is built from a ratio that sits above every small unit and below every large one, so the decisive move is the shape of an expectation across unit size; here every unit is an outbreak, no expectation is built across their sizes, and what decides is that the configuration being evaluated is the thing that produced the ratio the easy route borrows.",
+  "task242": "the other build on this task type reads a prevalence share through a detector whose chance of registering an event fades with time since the event, so its correction averages a known detection curve over each unit's spread of event times. Here no detection probability exists: every outbreak in the register is detected or not by an exactly replayable statistic, and what decides is that the configuration being chosen is the thing that produced the ratio the easy route borrows.",
+  "task254": "that build's dial is a journey time whose later stages build during the unit's own passage, so the decisive move is to advance the clock through the stages; here there is no sequence of stages and no unit in transit. The quantity is a sum over episodes of the cases dated after a firing time, and the easy route fails because it borrows a ratio rather than because it reads a clock wrongly.",
+  "task501": "that build settles a chain process's sustainability from the dominant eigenvalue of a mixing matrix measured across two regimes; nothing here is modelled or projected. Every figure is a count of cases dated after an alert date that a filed statistic produces on the record as it stands."
+ },
+ "domain": "epidemiology-public-health",
+ "domain_test": "The deciding quantity is the outbreak cases still ahead of a detection, which is how surveillance evaluates an aberration-detection algorithm: timeliness is scored outbreak by outbreak as the cases with onset after the alert, because a detection is worth only the exposure it can still interrupt, and sensitivity (whether the outbreak is flagged at all) buys nothing where the flag lands after the last case. Swap the nouns to a bank screening card payments and the design has no reason to exist: a payment screen's value is the single payment it stops, there is no curve of further cases ahead of the alert, and the window would be chosen on the alert volume a team can work. Here the window matters because an outbreak's cases arrive over weeks in a shape, point source or continuing source, that decides both when the detector can cross and how much of the outbreak is left to prevent.",
+ "drawn": "2026-10-17",
+ "driver": "A detector setting is worth what each episode still has ahead of it when that setting's own alert fires, so the settings can only be compared by summing every episode's remaining volume at the firing time each setting itself produces; multiplying the episodes a setting flags by the remaining share the setting in force realised scores the settings by how many episodes they flag at all, because a slower setting flags every episode later and the episodes it adds are the ones it flags near their end.",
+ "driver_concrete": "The window the aberration detector accumulates cases over decides when each outbreak is flagged: the 56-day window flags almost every investigated outbreak against about half at 21 days, but it flags the point-source outbreaks four to five weeks later and the continuing-source ones in their closing weeks, so the cases with onset after the alert total about 418 at 21 days against about 243 at 56 days. Multiplying outbreaks flagged by the unit's published preventable share files about 1,040 cases at 56 days and the longest window.",
+ "forcing_event": "cutover_or_migration",
+ "forum": "regulator_or_inspector",
+ "gap": [
+  "time"
+ ],
+ "gate_g": "method_or_model_selection",
+ "generators": [
+  "G1",
+  "G13",
+  "G2"
+ ],
+ "layer1": [
+  "three dates per case, onset, specimen and notification, with the detector running on one and the counts on another",
+  "two laboratory extracts whose layout and column names change when the labs merge mid-series",
+  "a preliminary and a revised weekly release overlapping over the same twelve weeks",
+  "ISO weeks against the unit's own epidemiological weeks",
+  "a district merger in 2025 with a crosswalk, so codes change mid-series",
+  "the outbreak register as a table inside a PDF",
+  "cases notified twice by two laboratories, resolved by the codebook's deduplication key",
+  "lab feed timestamps in UTC against notification dates in local time",
+  "district populations in thousands against case counts in units"
+ ],
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:what-a-detector-window-leaves-ahead-of-its-own-alert",
+ "lineage": [
+  {
+   "architecture": "v1",
+   "decision_type": "designation_set",
+   "domain": "banking-credit-financial-risk",
+   "driver": "The decisive quantity is the stock of undetected cases a scarce reviewer would meet, which is each unit's arrival rate multiplied by how long a case goes unseen there, so ranking units by the cases they confirm ranks them by arrivals alone and passes over the unit whose cases sit longest before anyone sees them.",
+   "fate": "spent at stage 4 on 2026-10-17 after three consecutive determinism SEND_BACK verdicts (r2 the working-day calendar, r3 the counting convention, r4 three ask conventions), with Gate F graded moderate to borderline then moderate to low. The decisive step was deciding to nowcast the caseload rather than count it, which settles whether members not yet observed are in the population: filing it made the computation follow from clause 6.2 and not filing it left the call open. Three isolated readers built the nowcast and landed the call at 80 to 90 per cent confidence. Re-rooted, not resumed; the stock-from-arrivals-and-time-unseen driver is not reused.",
+   "gap": [
+    "population",
     "time"
-  ],
-  "gate_g": "method_or_model_selection",
-  "generators": [
-    "G1",
-    "G13",
-    "G2"
-  ],
-  "layer1": [
-    "three dates per case, onset, specimen and notification, with the detector running on one and the counts on another",
-    "two laboratory extracts whose layout and column names change when the labs merge mid-series",
-    "a preliminary and a revised weekly release overlapping over the same twelve weeks",
-    "ISO weeks against the unit's own epidemiological weeks",
-    "a district merger in 2025 with a crosswalk, so codes change mid-series",
-    "the outbreak register as a table inside a PDF",
-    "cases notified twice by two laboratories, resolved by the codebook's deduplication key",
-    "lab feed timestamps in UTC against notification dates in local time",
-    "district populations in thousands against case counts in units"
-  ],
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:what-a-detector-window-leaves-ahead-of-its-own-alert",
-  "lineage": [
-    {
-      "architecture": "v1",
-      "decision_type": "designation_set",
-      "domain": "banking-credit-financial-risk",
-      "driver": "The decisive quantity is the stock of undetected cases a scarce reviewer would meet, which is each unit's arrival rate multiplied by how long a case goes unseen there, so ranking units by the cases they confirm ranks them by arrivals alone and passes over the unit whose cases sit longest before anyone sees them.",
-      "fate": "spent at stage 4 on 2026-10-17 after three consecutive determinism SEND_BACK verdicts (r2 the working-day calendar, r3 the counting convention, r4 three ask conventions), with Gate F graded moderate to borderline then moderate to low. The decisive step was deciding to nowcast the caseload rather than count it, which settles whether members not yet observed are in the population: filing it made the computation follow from clause 6.2 and not filing it left the call open. Three isolated readers built the nowcast and landed the call at 80 to 90 per cent confidence. Re-rooted, not resumed; the stock-from-arrivals-and-time-unseen driver is not reused.",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "gate_g": "method_or_model_selection",
-      "objective": "anomaly-detection",
-      "pattern": [
-        "none"
-      ],
-      "shape": "09",
-      "stump": "A competent solver conforms the alert and adjudication extracts, computes each line's confirmed cases per 1,000 customers over the last two quarters, and assigns the team to the lines that confirm the most, which is the lines where cases are found fastest rather than where they are sitting unfound.",
-      "stump_strategy": "maturity_censoring",
-      "subdomain": "fraud-aml-detection"
-    },
-    {
-      "architecture": 2,
-      "driver": "The decisive quantity is how many items were placed just under a threshold to stay under it, and the practice that placed them there leaves a matching shortfall just over the threshold, because the item each one replaced is not in the record any more. The surplus below and the shortfall above are the same quantity measured twice off one fitted size profile, so the record's own arithmetic refuses any profile whose two sides disagree, and a profile fitted through the emptied interval reads the surplus too large.",
-      "fate": "spent 2026-10-17 after three passes. Judge pass 1 SEND_BACK: the method was not forced and the data did not separate the candidates (310 to 512 across windows and families). Judge pass 2 SEND_BACK: the convergence was bought by an amount draw too smooth to separate them (chi-square per degree of freedom 0.029 bank-wide, tail probability below 1e-26). Judge pass 3 SEND_BACK, NOT_DETERMINISTIC: the realism was fixed and held (chi-square 1.11 to 1.44, p 0.06 to 0.23, amounts sampled not drawn from a curve) but the golden then reproduced under exactly one estimator, the average of the surplus below and the deficit above, which the pack files nowhere; surplus alone gave 71 to 786 and deficit alone 207 to 858, and the average agreed only because it cancels the fitted profile's level algebraically, being the half difference of two observed counts less a half slope correction. The refusal rule the build used, failing to reconcile within a fifth, is in no shipped file, so the 141 standing specifications cannot be reproduced from the bundle. Three further findings each needed redesign rather than repair: a flat rate on the paid-in column matched 7 of 8 segment cells, so book size alone reproduced the table; summing rounded segments and rounding the unrounded sum agreed in only 93 of 186 specifications; and the half difference's own sampling standard error was 31.7 against a cell 1.6 standard errors wide. Every structural gate passed every time, Gate G and Gate H included. The lesson for the slot: a decisive step that is an estimation choice over a fitted counterfactual density cannot be both forced and silent, because the specifications always disagree and nothing filable chooses between them without becoming rule application.",
-      "label": "v2 (Arahura Bank, cash deposits split below the NZ prescribed transaction threshold; excess mass below the line reconciled against the deficit above it)"
-    },
-    {
-      "architecture": 3,
-      "decision_type": "quantity_figure",
-      "domain": "accounting-audit-forensic",
-      "driver": "Items were drawn into the tested set with probability proportional to their size, so a tested item stands for a fixed amount of the population rather than for one item, and every item above that amount was certain to be drawn and stands only for itself. The selection amount is stated nowhere and is recovered from the tested set as the only amount for which every tested item contains a step of cumulated value and no untested item does, so scaling the findings on the ratio of total size to tested size understates the population's defect by a multiple, because the large items are all tested and sound while the defects sit in many small items that each stand for a whole step.",
-      "fate": "spent 2026-10-17 at stage 4 after two determinism judge passes, the second NOT_DETERMINISTIC SEND_BACK with stump power moderate to low. The bind is a property of the draw and not a tuning problem: the refer rested on basic precision, whose Poisson reliability factor Gate B forced the bundle to carry (a call resting on an input the pack does not hold fails outright), and carrying the factor table with the terms it uses supplied the vocabulary that made the probability-proportional projection recoverable, so Gate F fell. Fixing Gate B broke Gate F and fixing Gate F broke Gate B. The judge's blind enumeration filed the projection and matched the golden on all nine programme figures, the authority figure, the largest programme and the referral; the cold leak reader of the same pack landed the call at 80 to 90 per cent confidence. A landed call banks about 45 before any ask, so the top two could not average under 40 whatever the ask layer did (the measured 38.1 was (56.0 + 20.1) / 2, the 20.1 being a response that misses the call). The lane retires nothing, so the number re-roots at architecture 4; the rule taken from this death is that the decisive step may never rest on a constant or factor table Gate B forces the pack to ship. Nothing is resumed: not the monetary-unit sampling world, not the what-one-tested-item-stands-for driver, not the ladder, not the pack.",
-      "gap": [
-        "rule"
-      ],
-      "gate_g": "method_or_model_selection",
-      "label": "v3 (Carrowmore Port Authority, capital programme payments tested by monetary-unit selection; the year's misstatement projected from a sample drawn in euro)",
-      "objective": "anomaly-detection",
-      "pattern": [
-        "none"
-      ],
-      "shape": "12",
-      "stump": "The default path scales the errors found on the ratio of the population's book value to the tested book value and files 159,241 euro, certifying the population, because the tested set is read as a sample of items when it was drawn in euro: the 31 lines at or above the recovered interval hold 81 per cent of the tested book value and are sound, while every defect sits in a small day-work invoice that stands for a whole 180,000 euro step of the population.",
-      "stump_strategy": "population_selection",
-      "subdomain": "audit-testing-sampling"
-    }
-  ],
-  "loops": 0,
-  "mechanism_source": "design_note",
-  "niche": "a regional enteric-infection surveillance unit configuring the accumulation window of its new aberration-detection platform at go-live, where the window decides how early each outbreak is flagged and therefore how many of its cases are still ahead of the alert",
-  "notes": "Architecture 4, drawn 2026-10-17 after architecture 3 was called spent and the lane's own rule (.claude/authors/oviya13ya.md) refused retirement. The ground was re-drawn on every axis: banking fraud and AML went to task196 while this slot was being re-rooted, and the pairing here, epidemiology-public-health x disease-surveillance-outbreak-anomaly-detection, was last drawn at task188 on 2026-10-13, outside the three builds ban.pairing reaches. The one rule architecture 3's death earned is respected literally: the decisive step rests on no constant and no factor table, because every input it needs is a date or a count already in the pack (onset dates, notification dates, the district's own baseline rate and the platform's allowed windows), and nothing the pack must ship in order to make the call answerable names the method. stump_strategy is 'other' because no vocab key is true of the move: the error is a plug-in of a performance ratio produced by the configuration being replaced into the evaluation of configurations that would produce a different one. It is not composition_mix: nothing is standardised or reweighted, both routes run on the same outbreak population, and the pooled share fails not because the pool's mix shifts but because the configuration itself moves both terms of every outbreak's product. It is not decomposition_attribution: no movement is split across drivers. It is not population_selection: the outbreak register is the agency's investigation record and every entry is in scope at every setting. 'other' is spent across the last twelve (task182, task192, task193, task195), which is an overuse WARN rather than a ban, and the variety is carried by the driver, which names a mechanism no card on file holds. context_artifact is the legacy platform's alert-log export, which is honestly monitoring_export and is free against the last three builds. forum is regulator_or_inspector: the configuration is recorded in the go-live conformity notice the unit files with the national supervisory authority for the surveillance network, which is the only forum free against the last three builds that is true of this decision (committee_or_panel, line_manager_or_team, board_of_directors, trustees_or_governors and 'other' are each banned or spent). People come from guard.py names --geo Finland --seed 190 and are not typed. Shape is 'other' with its arithmetic written into the design note: the criteria come from each allowed accumulation window crossed with each of the three evaluation years (18 cells), the per-window three-year total (6), the call, the runner-up, the gap and the crossing window (4), the chart's named parts (6) and the two deliverables, which is 36 before any ask. That is shape 04 crossed with a period grid rather than either on its own, and both 04 and 13 are blocked against the last two builds (task195, task191), so the honest key is 'other' as the shape library licenses. The WARNs are answered here: method_or_model_selection is the honest Gate G because two defensible computations of one filed quantity stand and the data's own structure refuses the easy one, and the variety sits in the driver (nearest 0.07 on file); dial_setting repeats task195's answer type but its figure is a count of cases over a grid rather than an interval on a paired difference; government_agency is spent across the corpus but no other organisation runs statutory communicable-disease surveillance. Two further WARNs answered: the objective's own frequency is the lane's (every build in it is anomaly-detection), and question_form 'which' repeats against task197 because the decision is a pick among the platform's allowed settings, which is the form the decision itself takes. STATE, 2026-10-18: this card's ground was WARN with no BLOCK when it was registered and now returns BLOCK ban.subdomain against task242, which registered the same domain and subdomain inside the three builds the ban reaches; and the decisive step the card's driver, driver_concrete, stump and analyst_test describe was measured dead before any file was cut (the design note's ## Tried and rejected carries the algebra and the four measurements). The card is left as registered rather than silently rewritten, because the lane owner holds the decision on the re-draw; every axis except the pairing, the driver, driver_concrete, stump, analyst_test and layer2_pattern survives it. AUTHOR OVERRIDE 2026-10-18: ban.subdomain BLOCKs this card against task242, which registered epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection AFTER this slot had registered the same ground at 2026-10-17T23:01:30Z and begun designing on it. The author overrode the BLOCK and kept this draw: the ban exists so a reviewer holding three neighbours does not see a subdomain repeat, and that purpose is engaged by the later draw rather than by this one, which claimed the ground first and has a designed decisive step on it. Registered with --force on the author's decision. The consequence accepted: two of the last twelve builds share this subdomain and the clone screen will see it, so the differentiation line against task242 and task188 carries the weight.",
-  "objective": "anomaly-detection",
-  "official_decoy": false,
-  "opening_move": "question-first",
-  "org_family": "government_agency",
-  "pattern": [
+   ],
+   "gate_g": "method_or_model_selection",
+   "objective": "anomaly-detection",
+   "pattern": [
     "none"
-  ],
-  "question_form": "which",
-  "registered": "2026-10-18T04:40:14Z",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "per episode",
-  "shape": "other",
-  "spine": {
-    "entity": "one laboratory-confirmed notifiable enteric infection case",
-    "file": "case_notifications_2022_2026.csv",
-    "grain": "case notification",
-    "rows": 0,
-    "source": "synthetic, generated for this task"
+   ],
+   "shape": "09",
+   "stump": "A competent solver conforms the alert and adjudication extracts, computes each line's confirmed cases per 1,000 customers over the last two quarters, and assigns the team to the lines that confirm the most, which is the lines where cases are found fastest rather than where they are sitting unfound.",
+   "stump_strategy": "maturity_censoring",
+   "subdomain": "fraud-aml-detection"
   },
-  "stakeholder_role": "head of the enteric infection surveillance unit",
-  "stump": "The default path multiplies the outbreaks each window flags by the surveillance unit's published preventable share and files the 56-day window at about 1,040 cases, because that window flags the most outbreaks and the share is a correct published figure that reproduces the realised 2026 total exactly at the window in force; the window that leaves the most cases ahead of its own alerts is 21 days at about 418 cases, because the outbreaks a long window adds are flagged in their last weeks and every outbreak it does flag it flags weeks later.",
-  "stump_class": "analytical",
-  "stump_strategy": "other",
-  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
-  "task": "task190",
-  "validated_decoy": false,
-  "world": {
-    "currency": "EUR",
-    "geography": "Finland",
-    "invented_nouns": [
-      "Kaarna Infection Surveillance Unit",
-      "Vanamo",
-      "Ruokolampi"
-    ],
-    "org_type": "regional public health authority",
-    "people": [
-      "Pirjo Jaaskelainen",
-      "Tuomo Vaisanen",
-      "Emil Raatikainen"
-    ]
+  {
+   "architecture": 2,
+   "driver": "The decisive quantity is how many items were placed just under a threshold to stay under it, and the practice that placed them there leaves a matching shortfall just over the threshold, because the item each one replaced is not in the record any more. The surplus below and the shortfall above are the same quantity measured twice off one fitted size profile, so the record's own arithmetic refuses any profile whose two sides disagree, and a profile fitted through the emptied interval reads the surplus too large.",
+   "fate": "spent 2026-10-17 after three passes. Judge pass 1 SEND_BACK: the method was not forced and the data did not separate the candidates (310 to 512 across windows and families). Judge pass 2 SEND_BACK: the convergence was bought by an amount draw too smooth to separate them (chi-square per degree of freedom 0.029 bank-wide, tail probability below 1e-26). Judge pass 3 SEND_BACK, NOT_DETERMINISTIC: the realism was fixed and held (chi-square 1.11 to 1.44, p 0.06 to 0.23, amounts sampled not drawn from a curve) but the golden then reproduced under exactly one estimator, the average of the surplus below and the deficit above, which the pack files nowhere; surplus alone gave 71 to 786 and deficit alone 207 to 858, and the average agreed only because it cancels the fitted profile's level algebraically, being the half difference of two observed counts less a half slope correction. The refusal rule the build used, failing to reconcile within a fifth, is in no shipped file, so the 141 standing specifications cannot be reproduced from the bundle. Three further findings each needed redesign rather than repair: a flat rate on the paid-in column matched 7 of 8 segment cells, so book size alone reproduced the table; summing rounded segments and rounding the unrounded sum agreed in only 93 of 186 specifications; and the half difference's own sampling standard error was 31.7 against a cell 1.6 standard errors wide. Every structural gate passed every time, Gate G and Gate H included. The lesson for the slot: a decisive step that is an estimation choice over a fitted counterfactual density cannot be both forced and silent, because the specifications always disagree and nothing filable chooses between them without becoming rule application.",
+   "label": "v2 (Arahura Bank, cash deposits split below the NZ prescribed transaction threshold; excess mass below the line reconciled against the deficit above it)"
+  },
+  {
+   "architecture": 3,
+   "decision_type": "quantity_figure",
+   "domain": "accounting-audit-forensic",
+   "driver": "Items were drawn into the tested set with probability proportional to their size, so a tested item stands for a fixed amount of the population rather than for one item, and every item above that amount was certain to be drawn and stands only for itself. The selection amount is stated nowhere and is recovered from the tested set as the only amount for which every tested item contains a step of cumulated value and no untested item does, so scaling the findings on the ratio of total size to tested size understates the population's defect by a multiple, because the large items are all tested and sound while the defects sit in many small items that each stand for a whole step.",
+   "fate": "spent 2026-10-17 at stage 4 after two determinism judge passes, the second NOT_DETERMINISTIC SEND_BACK with stump power moderate to low. The bind is a property of the draw and not a tuning problem: the refer rested on basic precision, whose Poisson reliability factor Gate B forced the bundle to carry (a call resting on an input the pack does not hold fails outright), and carrying the factor table with the terms it uses supplied the vocabulary that made the probability-proportional projection recoverable, so Gate F fell. Fixing Gate B broke Gate F and fixing Gate F broke Gate B. The judge's blind enumeration filed the projection and matched the golden on all nine programme figures, the authority figure, the largest programme and the referral; the cold leak reader of the same pack landed the call at 80 to 90 per cent confidence. A landed call banks about 45 before any ask, so the top two could not average under 40 whatever the ask layer did (the measured 38.1 was (56.0 + 20.1) / 2, the 20.1 being a response that misses the call). The lane retires nothing, so the number re-roots at architecture 4; the rule taken from this death is that the decisive step may never rest on a constant or factor table Gate B forces the pack to ship. Nothing is resumed: not the monetary-unit sampling world, not the what-one-tested-item-stands-for driver, not the ladder, not the pack.",
+   "gap": [
+    "rule"
+   ],
+   "gate_g": "method_or_model_selection",
+   "label": "v3 (Carrowmore Port Authority, capital programme payments tested by monetary-unit selection; the year's misstatement projected from a sample drawn in euro)",
+   "objective": "anomaly-detection",
+   "pattern": [
+    "none"
+   ],
+   "shape": "12",
+   "stump": "The default path scales the errors found on the ratio of the population's book value to the tested book value and files 159,241 euro, certifying the population, because the tested set is read as a sample of items when it was drawn in euro: the 31 lines at or above the recovered interval hold 81 per cent of the tested book value and are sound, while every defect sits in a small day-work invoice that stands for a whole 180,000 euro step of the population.",
+   "stump_strategy": "population_selection",
+   "subdomain": "audit-testing-sampling"
+  },
+  {
+   "architecture": "v4",
+   "domain": "epidemiology-public-health",
+   "driver": "A detector setting is worth what each episode still has ahead of it when that setting's own alert fires, so the settings can only be compared by summing every episode's remaining volume at the firing time each setting itself produces; multiplying the episodes a setting flags by the remaining share the setting in force realised scores the settings by how many episodes they flag at all, because a slower setting flags every episode later and the episodes it adds are the ones it flags near their end.",
+   "fate": "abandoned on a model constraint, not a design finding: two builder sessions on two different models were terminated by an API safeguard that flags this ground's subject matter, so no agent available in this environment can build it",
+   "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+   "why": "the author override that kept the ground against ban.subdomain has nothing left to protect, since the ground is unavailable for a reason unrelated to the ban; the decisive step was also recorded as dead in four parameterisations, because whether a series is flagged at all dominates when it is flagged by about an order of magnitude, though that was never re-run as code"
   }
+ ],
+ "loops": 0,
+ "mechanism_source": "design_note",
+ "niche": "a regional enteric-infection surveillance unit configuring the accumulation window of its new aberration-detection platform at go-live, where the window decides how early each outbreak is flagged and therefore how many of its cases are still ahead of the alert",
+ "notes": "Architecture 4, drawn 2026-10-17 after architecture 3 was called spent and the lane's own rule (.claude/authors/oviya13ya.md) refused retirement. The ground was re-drawn on every axis: banking fraud and AML went to task196 while this slot was being re-rooted, and the pairing here, epidemiology-public-health x disease-surveillance-outbreak-anomaly-detection, was last drawn at task188 on 2026-10-13, outside the three builds ban.pairing reaches. The one rule architecture 3's death earned is respected literally: the decisive step rests on no constant and no factor table, because every input it needs is a date or a count already in the pack (onset dates, notification dates, the district's own baseline rate and the platform's allowed windows), and nothing the pack must ship in order to make the call answerable names the method. stump_strategy is 'other' because no vocab key is true of the move: the error is a plug-in of a performance ratio produced by the configuration being replaced into the evaluation of configurations that would produce a different one. It is not composition_mix: nothing is standardised or reweighted, both routes run on the same outbreak population, and the pooled share fails not because the pool's mix shifts but because the configuration itself moves both terms of every outbreak's product. It is not decomposition_attribution: no movement is split across drivers. It is not population_selection: the outbreak register is the agency's investigation record and every entry is in scope at every setting. 'other' is spent across the last twelve (task182, task192, task193, task195), which is an overuse WARN rather than a ban, and the variety is carried by the driver, which names a mechanism no card on file holds. context_artifact is the legacy platform's alert-log export, which is honestly monitoring_export and is free against the last three builds. forum is regulator_or_inspector: the configuration is recorded in the go-live conformity notice the unit files with the national supervisory authority for the surveillance network, which is the only forum free against the last three builds that is true of this decision (committee_or_panel, line_manager_or_team, board_of_directors, trustees_or_governors and 'other' are each banned or spent). People come from guard.py names --geo Finland --seed 190 and are not typed. Shape is 'other' with its arithmetic written into the design note: the criteria come from each allowed accumulation window crossed with each of the three evaluation years (18 cells), the per-window three-year total (6), the call, the runner-up, the gap and the crossing window (4), the chart's named parts (6) and the two deliverables, which is 36 before any ask. That is shape 04 crossed with a period grid rather than either on its own, and both 04 and 13 are blocked against the last two builds (task195, task191), so the honest key is 'other' as the shape library licenses. The WARNs are answered here: method_or_model_selection is the honest Gate G because two defensible computations of one filed quantity stand and the data's own structure refuses the easy one, and the variety sits in the driver (nearest 0.07 on file); dial_setting repeats task195's answer type but its figure is a count of cases over a grid rather than an interval on a paired difference; government_agency is spent across the corpus but no other organisation runs statutory communicable-disease surveillance. Two further WARNs answered: the objective's own frequency is the lane's (every build in it is anomaly-detection), and question_form 'which' repeats against task197 because the decision is a pick among the platform's allowed settings, which is the form the decision itself takes. STATE, 2026-10-18: this card's ground was WARN with no BLOCK when it was registered and now returns BLOCK ban.subdomain against task242, which registered the same domain and subdomain inside the three builds the ban reaches; and the decisive step the card's driver, driver_concrete, stump and analyst_test describe was measured dead before any file was cut (the design note's ## Tried and rejected carries the algebra and the four measurements). The card is left as registered rather than silently rewritten, because the lane owner holds the decision on the re-draw; every axis except the pairing, the driver, driver_concrete, stump, analyst_test and layer2_pattern survives it. AUTHOR OVERRIDE 2026-10-18: ban.subdomain BLOCKs this card against task242, which registered epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection AFTER this slot had registered the same ground at 2026-10-17T23:01:30Z and begun designing on it. The author overrode the BLOCK and kept this draw: the ban exists so a reviewer holding three neighbours does not see a subdomain repeat, and that purpose is engaged by the later draw rather than by this one, which claimed the ground first and has a designed decisive step on it. Registered with --force on the author's decision. The consequence accepted: two of the last twelve builds share this subdomain and the clone screen will see it, so the differentiation line against task242 and task188 carries the weight.",
+ "objective": "anomaly-detection",
+ "official_decoy": false,
+ "opening_move": "question-first",
+ "org_family": "government_agency",
+ "pattern": [
+  "none"
+ ],
+ "question_form": "which",
+ "registered": "2026-10-18T04:40:14Z",
+ "role_family": "statistical_office_head",
+ "scoring_unit": "per episode",
+ "shape": "other",
+ "spine": {
+  "entity": "one laboratory-confirmed notifiable enteric infection case",
+  "file": "case_notifications_2022_2026.csv",
+  "grain": "case notification",
+  "rows": 0,
+  "source": "synthetic, generated for this task"
+ },
+ "stakeholder_role": "head of the enteric infection surveillance unit",
+ "stump": "The default path multiplies the outbreaks each window flags by the surveillance unit's published preventable share and files the 56-day window at about 1,040 cases, because that window flags the most outbreaks and the share is a correct published figure that reproduces the realised 2026 total exactly at the window in force; the window that leaves the most cases ahead of its own alerts is 21 days at about 418 cases, because the outbreaks a long window adds are flagged in their last weeks and every outbreak it does flag it flags weeks later.",
+ "stump_class": "analytical",
+ "stump_strategy": "other",
+ "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+ "task": "task190",
+ "validated_decoy": false,
+ "world": {
+  "currency": "EUR",
+  "geography": "Finland",
+  "invented_nouns": [
+   "Kaarna Infection Surveillance Unit",
+   "Vanamo",
+   "Ruokolampi"
+  ],
+  "org_type": "regional public health authority",
+  "people": [
+   "Pirjo Jaaskelainen",
+   "Tuomo Vaisanen",
+   "Emil Raatikainen"
+  ]
+ }
 }

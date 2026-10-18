@@ -1126,3 +1126,25 @@ were round too, so both were redrawn.
   above. The two dial shapes that have held in this corpus make the replay impossible for a structural
   reason (task104's self-adapting scorer withholds its own flagged observations) or put the decision on an
   interval (task195's paired difference), and both are spent against the last two builds.
+
+## Architecture 4, abandoned on a model constraint rather than a design finding
+
+Architecture 4 is abandoned, and not because the design failed. Two builder sessions were terminated by an
+API safeguard that flagged this ground's own subject matter, one on Opus 5 (request `req_011Cg96NYnjwr8JwJnA4LDdk`,
+error type `invalid_request`, details `[bio]`) and one on Sonnet 5.5 (`req_011Cg96z2kTp3cdub9iT3kXv`, same
+details), the second written deliberately in surveillance-statistics terms rather than epidemiological ones
+and flagged all the same. Every model this environment can reach refuses the material, so no agent can
+carry the build, whatever the design's merits.
+
+That also voids the premise of the author's earlier override. The override kept this ground against a
+`ban.subdomain` BLOCK on the reasoning that this slot had claimed it first; the ground is now unavailable
+for a reason that has nothing to do with the ban, so the override has nothing left to protect and the slot
+re-roots at architecture 5 on different ground.
+
+**What architecture 4 measured, kept because a fifth draw should not re-find it.** The decisive step was
+that a detector setting is worth what each flagged series still has ahead of it at the moment that
+setting's own alert fires. The first prototype showed no reversal between that and the easy route, because
+the quantity the easy route gets right rises with the detection window too, and the session before the
+terminations recorded the step as dead in four parameterisations for a structural reason: whether a series
+is flagged at all dominates when it is flagged, by about an order of magnitude. That verdict was never
+re-run as code, so it stands as a strong indication rather than a measurement.
