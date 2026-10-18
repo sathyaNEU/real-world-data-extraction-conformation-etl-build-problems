@@ -244,6 +244,22 @@ lists (500 v1). **Measure the decisive rung on the graded name and the graded fi
 only changes who is blamed, while the counterfactual figure is the same whoever is blamed, is worth nothing on
 the figure, and a response skipping it files the golden figure (500 v1).
 
+**Price the estimator's own standard error in the same breath, in the graded figure's units.** The ceiling
+test is necessary and not sufficient: a decisive step whose estimator's standard error exceeds the ladder's
+margin cannot rank, however large the bias it chases. task198's architecture 2 priced 9.4 points of
+available bias against 4.5 needed, with the two separations financed by independent parameters, and died
+anyway, because the step had to recover a per-interviewer differential and the record measures it only
+through that interviewer's own out-of-unit workload: 33 observations at a median field load, a standard
+error of 6.96 points against a golden rise of 3.0, so the correction injects several times more noise than
+the bias it removes and lands on whichever small unit drew unluckily (the golden named in 2 of 12 seeds).
+A one-point standard error there needed 1,600 observations per interviewer per quarter against a realistic
+50 to 80, and noise falls as the square root, so no feasible pack closes it. **Prefer a decisive quantity
+the whole population estimates** (a variance component, a rate over every unit) **over one estimated
+per unit from that unit's own thin slice.** And watch for the dial that fails at both ends: there, a
+persistent differential made the additive control a solver reaches for the right analysis, so the schema
+tell reached the golden, while a non-persistent one left the within-period estimator too noisy to rank, and
+no setting satisfied both.
+
 **Price the move against the ceiling before screening a candidate at all.** Compute two numbers: the points
 the call has to move for the candidate to decide anything, and the largest move the affected population
 could produce if every one of its records flipped. task198's cutover family needed 8.79 points and could

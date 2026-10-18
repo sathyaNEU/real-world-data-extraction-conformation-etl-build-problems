@@ -57,6 +57,13 @@ has to be probed, and a minority of interviewers work more than one region becau
 territorial authority boundaries, so the record contains the same interviewer's own differential measured
 away from the region that looks worst, which is the only thing that separates her from it.
 
+**STATUS: this decisive step failed at stage 2 measurement, before any data was cut.** The world, the
+ground, the pincer case and the priced bias below all stand; the decisive step does not, because the
+interviewer differential it has to attribute cannot be estimated from one quarter's workload at the
+precision the ranking needs. The measurement and the arithmetic are in `## Tried and rejected` under
+"Architecture 2 decisive step". Do not read the Default path, Stump sentence or Three rules sections
+below as live.
+
 **Priced ceiling, computed before any row is cut** (`stumping` Part 3, and the rule this slot earned).
 At an item prevalence of 0.20 the person-level SD is 0.400, so the between-interviewer SD of the realised
 rate is `0.400 x sqrt(rho_int)`: 5.66 points at `rho_int` 0.02, 8.00 at 0.04, 9.80 at 0.06, all inside the
@@ -796,3 +803,41 @@ measures nothing, and an extract window measures nothing.
 **Screen worth reusing:** the magnitude bound killed the cutover candidate in one computation, before any
 design argument. Before accepting an input-property candidate, compute the points the call needs to move
 and the largest move the affected population can produce if every one of its records flipped.
+
+### Architecture 2 decisive step, spent at stage 2 measurement (2026-10-18), before any data was cut
+
+The reflex sweep was run as code before any separation was measured, which is what caught this, and the
+sweep killed the decisive step rather than a reflex.
+
+- **The decisive step as drawn** (attribute each candidate region's change to the interviewers who
+  collected it, by measuring each interviewer's differential within the quarter from the other regions she
+  worked, then netting the change in the workload-weighted lift). **Dies on Gate C, measured.** Over
+  twelve seeds the decisive route named the golden region in **2 of 12** at a differential persistence of
+  0.25 and **3 of 12** at 0.95, scattering across eight different regions; the easy route named the loud
+  region in only 7 of 12. The route does not rank.
+- **The cause is structural, not a tuning fault.** The quantity the step has to recover is a *per
+  interviewer* differential, and the record measures it only through that interviewer's own out-of-region
+  workload in the quarter, which at a realistic field load is 33 dwellings (median workload 33, mean 51).
+  At an item prevalence of 0.20 that is a standard error of **6.96 points**, against a golden rise of 3.0
+  points and a ladder margin needing the differential to about 1 to 2 points. The correction therefore
+  injects several times more noise than the bias it removes, and it lands on whichever small region drew
+  unluckily. A 1-point standard error needs **1,600 dwellings per interviewer per quarter** against a
+  realistic 50 to 80, and the noise falls only as the square root, so no feasible pack closes it. This is
+  `determinism-check` section 1's named failure, the candidates differing by less than their own sampling
+  error.
+- **Both ends of the persistence dial fail, for opposite reasons**, which is what makes it structural. With
+  a persistent differential the pooled estimate is precise, but then the additive time-invariant
+  interviewer control a solver reaches for is the right analysis and the schema tell reaches the golden.
+  With a non-persistent differential the reflex lands wrong, as required, but the within-quarter estimator
+  is too noisy to rank. There is no setting where the reflex lands wrong and the decisive route is
+  determinate.
+
+**The lesson, which extends the pricing rule rather than restating it.** Pricing the move against the
+ceiling is necessary and was done correctly: 9.4 points of interviewer-induced bias available against
+about 4.5 needed, with the two separations financed by independent parameters. It was also not sufficient,
+because it priced the **bias** the mechanism can deliver and said nothing about the **variance of the
+estimator that has to recover it**. Both belong in the same computation before a draw is accepted: the
+move available, the move needed, and the standard error of the quantity the decisive step must estimate,
+all in the graded figure's own units. A decisive step whose estimator's standard error exceeds the
+ladder's margin cannot rank, however large the bias it is chasing. This is the sufficient condition the
+pensions screen and this draw together point at, and it is cheap, because it is one square root.

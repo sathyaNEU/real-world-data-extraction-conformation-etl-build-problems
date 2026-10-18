@@ -4,8 +4,8 @@
  "status": "DRAWING",
  "domain": "survey-research-official-statistics/anomaly-detection",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-18",
  "architecture": 2,
  "loops": 0,
@@ -13,7 +13,7 @@
  "stump": "A competent solver stacks both questionnaire layouts, resolves the address log to the dwelling grain, converts the stamps, rebases the regions across the amalgamation and weights to the design correctly, ranks the regions on the quarter-on-quarter change in dwellings with damp or mould, and commits the loud region on its largest measured rise, because most of that rise is the differential of the one interviewer who carried two thirds of that region's quarter while a colleague was on leave, a differential her own records reproduce in the other regions she worked.",
  "judge": "architecture 1: NOT_DETERMINISTIC, SEND_BACK, 2026-10-18",
  "returned": [],
- "resume": "Stage 1 complete for architecture 2 and the card is registered. Next is stage 2: the readability screen (the decisive rung must come out silent, and the leave-one-interviewer-out reflex is the dangerous one), the semantic fork table, the ladder with the reflex sweep run as code BEFORE any separation is measured, the closure table's 22 axes, the literal reader line, the oracles and the ask sheet, then prompt.txt through voice-check. Build requirements the draw already owes are listed at the end of `## Draw`: interviewer differentials orthogonal to everything predicting the item and asserted near zero; no region-size tell, the loud region's concentration coming from a staffing gap rather than from being smallest; the full reflex sweep landing wrong. Nothing is cut until precut.py exits 0.",
+ "resume": "Stage 2, architecture 2's decisive step spent at measurement, awaiting the author's ruling. The world (Motu Korero Research, New Zealand Household Living Conditions Survey), the assigned ground, the registered card's axes, the pincer case two and the priced bias all stand; only the decisive step is dead, and it is flagged at the top of `## Draw` with the measurement in `## Tried and rejected`. The one candidate repair that keeps all of that is to move the decisive quantity from a per-interviewer differential to the interviewer design effect: a variance component the whole workforce measures precisely, combined with each region's own workload concentration, which is an exact function of the shares with no sampling noise. Its two named risks are crowding (task186 is this very domain and lane, task191 and task240 are the same judge-against-noise family) and an open estimator family for rho_int against the rule that an estimator's output can be graded only with its family closed to one form. Nothing is cut; precut.py exits 1 on the seven stage-2 sections and on the absent prompt.txt.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -91,6 +91,7 @@
   "warns_answered": "overuse.objective (fixed by the lane's task-number block task180 to task227), repeat.decision and repeat.question_form (both follow the decision, a pick of one region for one scarce boost)",
   "pincer_case": "case two: the interviewer component is a quantity the records measure about their own production, exactly computable from the random allocation the sample management log records, stated nowhere and recovered as no rule",
   "priced_ceiling": "about 9.4 points available against about 4.5 needed, a ratio of about 2.1, and the two separations are financed by independent parameters so buying one does not spend the other; both re-measured on the cut pack",
-  "stage1_gate": "precut.py: the four stage-1 sections present, all thirteen three-rules lines pass; the seven stage-2 sections correctly absent"
+  "stage1_gate": "precut.py: the four stage-1 sections present, all thirteen three-rules lines pass; the seven stage-2 sections correctly absent",
+  "stage2_finding": "the decisive step failed Gate C at stage 2 measurement before any data was cut: the within-quarter route named the golden in 2 of 12 seeds at persistence 0.25 and 3 of 12 at 0.95, scattering across eight regions, because a per-interviewer differential carries a 6.96-point standard error at a realistic 33-dwelling out-of-region workload against a 3.0-point golden rise. Both ends of the persistence dial fail for opposite reasons: persistent makes the additive interviewer control the right analysis (the schema tell reaches the golden), non-persistent makes the decisive route too noisy to rank. The world, the ground, the pincer case and the priced bias stand."
  }
 }
