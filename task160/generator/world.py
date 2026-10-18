@@ -226,8 +226,9 @@ def to_utc(t):
 
 def declarations(hs, truth):
     """The surge declaration log: one row for each change of declared level, timed at the 06:45 bed huddle or the
-    14:45 bed meeting of the day whose census night carries the new level. Activations carry the surge request number
-    the hospital sends both agencies."""
+    14:45 bed meeting of the day whose census night carries the new level. A pool member's activation carries the
+    surge request number it sends both agencies (SR-); before a hospital joined the pool, its activation carries its
+    own activation number in the cooperative's capacity reporting (CAP-)."""
     out = []
     seq = {}
     for i, h in enumerate(hs):
@@ -249,7 +250,8 @@ def declarations(hs, truth):
                 if prev == 0:
                     y = d.year if d.month >= 7 else d.year - 1
                     seq[(fid, y)] = seq.get((fid, y), 0) + 1
-                    req = "SR-%s-%s-%02d" % (h["member_no"], str(y)[2:] + str(y + 1)[2:], seq[(fid, y)])
+                    req = "%s-%s-%s-%02d" % ("SR" if C.in_pool(h, d) else "CAP", h["member_no"],
+                                              str(y)[2:] + str(y + 1)[2:], seq[(fid, y)])
                 out.append({"facility_id": fid, "declared_at": t, "level_from": prev, "level_to": lv, "request_no": req})
                 prev = lv
     out.sort(key=lambda x: (x["declared_at"], x["facility_id"]))

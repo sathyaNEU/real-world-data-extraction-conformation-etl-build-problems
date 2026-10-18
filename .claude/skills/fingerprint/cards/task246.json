@@ -1,0 +1,88 @@
+{
+  "task": "task246",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 4, seed DQ19 (a monitoring network's public alerts and the alert configuration that follows); the seed's world, decision and quantity kept, its averaging-period pitfall (data semantics) dropped and the pitfall re-found in the readings' own structure",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a county health department's measurement note on the arm-circumference (MUAC) wasting prevalence its long-rains nutrition surveillance round reports for each survey zone before the figures go into the county's public early warning bulletin, read net of each survey team's tape offset and field error found in the pre-survey standardisation test",
+  "objective": "data-quality-monitoring",
+  "shape": "14",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G17",
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "other",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "the county's nutrition information officer, who signs off each survey zone's figures for the county's early warning bulletin",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "child anthropometry export of the county's long-rains nutrition surveillance rounds",
+    "rows": 0,
+    "entity": "one child aged 6 to 59 months measured in one round (sex, age, weight, height, MUAC, oedema, cluster, team)",
+    "grain": "child x round",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "season_or_peak",
+  "org_family": "local_government",
+  "world": {
+    "geography": "Kenya, a fictional arid county in the north (its health department, survey zones, partner organisations and people are fictional; real national survey methods and MUAC cut-offs)",
+    "currency": "KES",
+    "org_type": "county government department of health (county nutrition unit) running a surveillance round with two partner NGOs' survey teams",
+    "invented_names": [],
+    "people": [
+      "Winny Karisa",
+      "Purity Maina",
+      "Barasa Kahindi",
+      "Caroline Nthenya",
+      "Kelvin Omollo"
+    ]
+  },
+  "deliverables": [
+    "lr2027_muac_measurement_review.xlsx",
+    "lr2027_gam_measurement_note.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is the share of a population below a fixed cut-off, read from single readings taken by several measurers whose repeat readings and readings against a reference reader are on file; each measurer adds a fixed offset and a random error larger than their repeat agreement shows, so the population's own distribution needs each measurer's offset taken out of the readings and the full random error, read against the reference, taken out of the spread, while a correction by the repeat agreement alone, with or without the offsets, leaves the share wrong group by group.",
+  "driver_concrete": "Each survey zone's wasting prevalence by MUAC is read from the normal distribution of its children's own arm circumference, which takes each team's tape offset against the supervisor out of that team's readings and each team's field error, read from its deviations from the supervisor across the standardisation children rather than from the technical error of its repeat readings, out of the zone's spread; the repeat-reading correction alone and the offset-plus-repeat correction each note a different set of zones.",
+  "stump": "A competent solver removes only the technical error of each team's repeat readings in the standardisation test from each zone's MUAC spread and reads the zone's error-free wasting prevalence at the readings' own mean, which leaves the teams' tape offsets against the supervisor in the readings, and so notes the wrong set of zones: zones read with a tight tape go un-noted and a zone read with a loose tape is noted or left alone on the wrong side of the two-point line.",
+  "stump_class": "analytical",
+  "analyst_test": "With every field read and every rule applied, the natural route takes each team's measurement error as the technical error of its repeat readings in the standardisation test, removes it from each zone's MUAC spread and reads the zone's error-free prevalence at the readings' own mean, which leaves the teams' tape offsets in the readings and notes too few zones; the golden also takes the offsets out and uses the error against the supervisor.",
+  "domain_test": "General statistics, measurement error: the call turns on each zone's error-free MUAC distribution, recovered by splitting the readings' mean and spread into the children's own and each team's offset and field error from replicate and reference readings; the setting's nouns can change without changing the task, which is the swap for this domain, but replacing the decomposition with the readings' own spread, the repeat-reading error or a reference spread changes which zones are noted.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:measurer-offset-and-field-error-out-of-the-spread",
+  "layer1": [
+    "two partner organisations' exports in different layouts and units (MUAC in millimetres in one, centimetres in the other)",
+    "team numbers reused across the two partners, resolved through the team rosters",
+    "a measurer substitution part-way through the round in one team's log",
+    "the standardisation test results as a report table for one partner and raw readings for the other",
+    "age recorded as months in one export and as date of birth in the other"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task266": "task266 builds a completion share from competing endings' hazards among students still enrolled, an event-history split of open spells; here nothing is open or competing: each child is measured once and the share comes from splitting each reading into the child's own arm circumference and the measurer's offset and field error found in a standardisation test against a supervisor.",
+    "task198": "task198's spent v2 inferred interviewer effects from the survey data through the few measurers whose workload crossed regions, and died on that inference's noise; here each measurer's offset and field error are measured directly on the same children as a supervisor before the round, and the decision is a tail share read net of them, not a ranking of changes."
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-10-18 against task471, task166, task198 (government_agency, committee_or_panel and research_desk banned, so the county government's nutrition unit asks and its early warning bulletin desk decides; parallel_run_overlap banned, so the error organ is the measurers' standardisation test against the supervisor, not a collocation). Calibration organ other: the pre-survey standardisation test (each measurer and the supervisor read the same children twice).",
+  "registered": "2026-10-18T07:06:31Z"
+}

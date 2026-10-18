@@ -79,7 +79,7 @@
     {
       "path": "data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 8561,
+      "bytes": 8696,
       "rows": 52,
       "source": "Constructed for this task (seeded, deterministic): Tri-Region Hospital Cooperative pool office, data dictionary",
       "date": "2026-12-21",
@@ -142,7 +142,7 @@
     {
       "path": "surge_declarations_2021-07-01_2026-12-20.csv",
       "format": "csv",
-      "bytes": 24733,
+      "bytes": 24773,
       "rows": 501,
       "source": "Constructed for this task (seeded, deterministic): Tri-Region Hospital Cooperative capacity system, surge plan declarations, 1 July 2021 to 20 December 2026",
       "date": "2026-12-21",

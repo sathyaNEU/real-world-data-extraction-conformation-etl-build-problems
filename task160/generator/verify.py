@@ -237,7 +237,8 @@ ok("timing: the Southeast's lead over the North moved by two weeks or more, cent
    and max(lag_ce_f) - min(lag_ce_f) < 0.6 * (max(lag_se_f) - min(lag_se_f)), (lag_se, lag_se_f, lag_ce, lag_ce_f))
 off = [centre(SE, w) - season(w)[0].toordinal() for w in CLOSED]
 off_f = [first(SE, w) - season(w)[0].toordinal() for w in CLOSED]
-ok("timing: the Southeast's own timing moved by more than three weeks, centres and first nights",
+ok("timing: the Southeast's own timing fell more than three weeks apart across the five winters, centres and first "
+   "nights",
    min(max(off) - min(off), max(off_f) - min(off_f)) > 21 and max(off) - min(off) == FIG["southeast_centre_moved_days"],
    (off, off_f))
 

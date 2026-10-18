@@ -285,7 +285,8 @@ DICTIONARY = [
     (F_DECL, "declared_at", "Eastern Time of the declaration, at the 06:45 bed huddle or the 14:45 bed meeting."),
     (F_DECL, "level_from", "The surge plan level before the declaration."),
     (F_DECL, "level_to", "The surge plan level the declaration sets."),
-    (F_DECL, "request_no", "The surge request sent to both agencies when a plan is activated."),
+    (F_DECL, "request_no", "The surge request sent to both agencies when a pool member's plan is activated (SR-); "
+                           "before a member joined the pool, its own activation number in the capacity system (CAP-)."),
     (F_CRS, "line_id", "Crestfield billing line."),
     (F_CRS, "timesheet_no", "Crestfield timesheet the line is billed from."),
     (F_CRS, "client_site", "Crestfield's code for the member (see the members workbook)."),
@@ -312,7 +313,10 @@ DICTIONARY = [
     (F_MEMBERS, "facility_id", "The member's facility id in the capacity system from 1 July 2024."),
     (F_MEMBERS, "staffed_med_surg_beds", "Medical and surgical beds the member can staff, as at 2 November 2026."),
     (F_MEMBERS, "surge_unit", "The unit the member's surge plan opens."),
-    (F_MEMBERS, "pool_member_from", "First day of the member's first pool season."),
+    (F_MEMBERS, "pool_member_from", "First day of the member's first pool season. The eight northern members bought "
+                                    "agency nurses through their own regional contract until it ended on 31 October "
+                                    "2026, and joined the pool on 1 November 2026; all eight have reported to the "
+                                    "capacity system since July 2021."),
     (F_MEMBERS, "crestfield_site_code", "Crestfield's client site code for the member."),
     (F_MEMBERS, "inland_seas_facility", "Inland Seas' facility name for the member."),
     (F_BLOCKS, "block_shifts", "The January block filed with the agencies, agency RN shifts."),

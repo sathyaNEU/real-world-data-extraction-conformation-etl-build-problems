@@ -289,8 +289,8 @@ def write_submission(path, R):
              "followed Central's by about four weeks; this winter Central's surge spells began %s, which puts the "
              "North's whole wave inside the block weeks, and the sixteen southern members' waves end before them. Not "
              "the five closed Januaries' average draw of %s shifts, which reads January by the calendar while the "
-             "Southeast's surge moved by more than three weeks between winters. Not a block timed from the Southeast, "
-             "whose lead over the North moved by two weeks or more between winters."
+             "Southeast's surge fell more than three weeks apart across the five winters. Not a block timed from the "
+             "Southeast, whose lead over the North moved by two weeks or more across the five winters."
              % ("{:,}".format(R["block"]), tx["ce_began"], tx["r0"]))
     L.append("")
     L.append("## 2. Critical Components")
@@ -311,7 +311,7 @@ def write_submission(path, R):
              "winter_pool_agreement_2026-27.pdf.")
     L.append("3. Back-tested the calendar on the five closed winters, 2021-22 to 2025-26: each winter's draw over its "
              "January block weeks, carried to the next winter, missed that winter's by two-fifths or more every time, "
-             "the Southeast's surge moving by more than three weeks between winters.")
+             "the Southeast's surge falling more than three weeks apart across the five winters.")
     L.append("4. Timed each region's wave in each closed winter by its members' surge spells: the North's followed "
              "Central's by about four weeks, a lag that varied about half as much as its lag behind the Southeast; "
              "carried from the other four winters, the lag behind Central missed the North's wave by about half as much "
