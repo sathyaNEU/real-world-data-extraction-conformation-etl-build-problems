@@ -141,8 +141,21 @@ reproducing:
 A step that survives the screen settles none of them: the estimand is beyond argument and two or more
 methods of estimating that one filed quantity still stand, with the data's own structure ruling out the
 easy one. Regression to the mean in a unit chosen for standing worst, the wrong counterfactual under
-staggered adoption and a ratio of totals against a mean of ratios all survive it, because each is a way
-of estimating a quantity the records already fix. The family label does not decide this:
+staggered adoption survive it, because each is a way of estimating a quantity the records already fix.
+**A ratio of totals against a mean of ratios survives only under a condition worth stating, because it
+usually fails.** Where the two differ by weighting alone, what separates them is the estimand's unit, and
+the unit is one of the five parts: name it ("as a volume-weighted average") and the computation follows
+from the clause, which is rule application and names the decisive quantity besides; leave it unnamed and
+the readings of "averaged over the year" are three different numbers, which is a semantic fork on the main
+recommendation and makes the stump a reading. task200 wrote the clause both ways and measured the unnamed
+one at 12.22, 12.22 and 9.20 on one cut, and found no third position: a physical total is the named version
+spelled differently, and treating the sources as a sample moves the separation onto the recorded sampling
+design, which is filed and so semantics again. It survives only where the two are estimators of one
+quantity under a design the pack does not fix, and a realistic pack records the design. The arithmetic is
+not the problem: that instantiation cleared its boundary by 26.7 standard errors over 60 seeds, on the
+right side in all 60, and died on the estimand sentence and on the swap test, where "each source already
+carries its own mean and the volumes sit in a separate return" reads identically with branches and basket
+values, or wards and bed-days, so the generating process has dropped out and the domain is a backdrop. The family label does not decide this:
 `estimand_identification` holds both the survivors and the three deaths above, so a draw in it writes the
 screen's answer into the note, naming the estimand's five parts and the sentence that files each, before
 the default path is written.
