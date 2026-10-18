@@ -12,11 +12,11 @@ def write(task, g):
         "domain": "Healthcare Delivery & Health Economics, provider quality and risk adjustment",
         "objective": "Anomaly Detection & Diagnostics",
         "as_of": W.AS_OF.isoformat(),
-        "committed_answer": "place the cycle IP-11 improvement team with Alderbrook Orthopaedics (cost "
-                            "centre %s), which is carrying %d avoidable hospital-acquired complications on "
-                            "the separations planned for the quarter from 1 April 2027, against %d at "
-                            "Marrowfield General Medicine"
-                            % (a["unit"], round(a["avoidable"]), round(g["runner"]["avoidable"])),
+        "committed_answer": "place the improvement team with Alderbrook General Medicine (cost centre "
+                            "%s), which is carrying %.1f avoidable hospital-acquired complications on the "
+                            "separations planned for the quarter from 1 April 2027, against %.1f at "
+                            "Alderbrook General Surgery, the unit the record as it stands puts first"
+                            % (a["unit"], a["avoidable"], g["runner"]["avoidable"]),
         "deliverables": ["embed_placement_2027q4.xlsx", "embed_placement_brief.pdf"],
         "distractor_files": [
             {"file": "patient_experience_unit_quarterly.csv",
@@ -36,7 +36,7 @@ def write(task, g):
                            "figure uses it"},
         ],
         # figures in the pack because the prompt or the records state them
-        "stated_inputs": ["2027-04-01", "2026-12-31", "2025-07-01", "1,000", "1000", "2025-26", "2026-27",
+        "stated_inputs": ["2027-04-01", "2026-12-31", "2024-07-01", "1,000", "1000", "2025-26", "2026-27",
                           "96.6", "2.4"],
         "declared_wrong_basis_distractor": None,
         "sources": [{"file": "all files under target/",

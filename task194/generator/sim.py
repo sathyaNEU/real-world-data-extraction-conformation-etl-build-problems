@@ -459,9 +459,14 @@ def assign_complications(rows, expected, design, units, targets=None):
         for c in chosen:
             rows[idx[c]]["hac"] = True
         observed[(code, q)] = int(min(target, len(idx)))
-    # a few complications are recorded on episodes the indicator leaves out: real, and outside its scope
+    # a few complications are recorded on episodes the indicator leaves out: real, and outside its scope.
+    # The risk runs with the length of the stay, as it does inside the indicator: a same-day separation
+    # has almost no exposure, while a sub-acute stay of several weeks acquires pressure injuries and
+    # falls at several times that rate. Where a stay was statistically discharged and readmitted, both
+    # episode records carry the complication, because the condition is still present at the care-type
+    # change and each episode is coded in full.
     for i, row in enumerate(rows):
-        if not row["in_scope"] and row["rstream"] < 0.052:
+        if not row["in_scope"] and row["rstream"] < 0.052 * (1.0 + 0.04 * min(row["los"], 30)):
             rows[i]["hac"] = True
     return observed
 

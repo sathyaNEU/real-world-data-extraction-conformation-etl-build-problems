@@ -43,10 +43,10 @@ request produced.
 ### member_incidence_review.xlsx
 
 1. Scam incidence index for each review-group member, cases per million payments sent, nearest case:
-   - Castlegate Payments (KM-104): 31, on 400 recorded and 690 indexed cases over 22,301,200 payments
-   - Saltmarch Pay (KM-112): 22, on 109 recorded and 139 indexed cases over 6,365,500 payments
-   - Trentmoor Money (KM-108): 15, on 246 recorded and 301 indexed cases over 20,002,400 payments
-   - Brindlemere Remit (KM-101): 12, on 443 recorded and 517 indexed cases over 42,722,700 payments
+   - Castlegate Payments (KM-104): 31, on 400 recorded and 690 indexed cases
+   - Saltmarch Pay (KM-112): 22, on 109 recorded and 139 indexed cases
+   - Trentmoor Money (KM-108): 15, on 246 recorded and 301 indexed cases
+   - Brindlemere Remit (KM-101): 12, on 443 recorded and 517 indexed cases
 2. Castlegate's walk from its register to its index, one line per reconciling item, whole cases:
    - Cases Castlegate's own register holds: 400
    - Cases its own record did not hold: 290

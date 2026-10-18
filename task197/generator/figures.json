@@ -51,15 +51,6 @@
  "call_gain": 72.0,
  "call_name": "Kampvliet",
  "call_site": "VKF-KPV",
- "constants": {
-  "deadband_mhz": 10,
-  "full_activation_mhz": 200,
-  "qualify_over_hz": 50.08,
-  "qualify_secs": 15,
-  "qualify_under_hz": 49.92,
-  "span_hz": 0.19,
-  "tolerance_pct": 90.0
- },
  "counts": {
   "archive_recordings": 2348,
   "archive_rows": 432028,
@@ -136,7 +127,6 @@
  "down_low_gain": 73.0,
  "down_low_name": "Kampvliet",
  "down_none_name": "Meppelerdiep",
- "episodes_total": 935,
  "exact": {
   "VKF-DLK": 92.999917,
   "VKF-HGZ": 88.000014,
@@ -218,7 +208,6 @@
   "sp": "VKF-RDL",
   "traj": "VKF-KPV"
  },
- "obliged_pairs": 935,
  "org": "Veerkracht Flex",
  "rec_difference_total": -2.4,
  "rec_metered_total": 2624.3,
@@ -378,18 +367,6 @@
    "under": false
   }
  ],
- "sites_outside_tolerance": 3,
- "spans": {
-  "VKF-DLK": 100,
-  "VKF-HGZ": 185,
-  "VKF-KPV": 90,
-  "VKF-MPD": 200,
-  "VKF-NWV": 95,
-  "VKF-OOS": 85,
-  "VKF-RDL": 190,
-  "VKF-TRB": 300,
-  "VKF-ZWT": 80
- },
  "tolerance": 90.0,
  "tso": "Rijksnet",
  "window_from": "2026-09-21",

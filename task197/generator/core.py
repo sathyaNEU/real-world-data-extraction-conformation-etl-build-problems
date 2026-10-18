@@ -140,6 +140,9 @@ def covered(recs):
     return out
 
 
+_scope_gate = lambda s, d, t: True       # build.py installs the reserve-withdrawal scope gate
+
+
 def episode_table(W, recs, cache, kind="under"):
     """One row per (site, qualifying episode the site was contracted for), with the response on each
     baseline. All of it reads the recorded 1 Hz power, exactly as the shipped archive carries it."""
@@ -159,6 +162,11 @@ def episode_table(W, recs, cache, kind="under"):
             for s in sim.SITES:
                 sid = s["id"]
                 if not sim.contracted(s, np.array([float(tstar)]), d)[0]:
+                    continue
+                # clause 2: the parts of a delivery block the site was withdrawn from reserve for
+                # are out of scope. On the under-frequency side every logged window is placed clear
+                # of every qualifying episode, so this gate is inert there and checks.py asserts it.
+                if not _scope_gate(s, d, tstar):
                     continue
                 if tstar not in cov.get((d, sid), ()):
                     continue
@@ -200,7 +208,10 @@ def metered(W, d, sid):
 
 
 def _metered(W, d, sid):
-    """Settlement meter: net MWh per quarter hour for one site and local date."""
+    """Settlement meter: net MWh per quarter hour for one site and local date. The meter sits at
+    the connection and registers the site's own auxiliary draw, which the platform's net active
+    power channel does not, so the registered energy sits a little under the integral of the
+    recorded power and carries the meter's own measurement spread."""
     s = sim.SITE_BY_ID[sid]
     prog = W[d]["prog"][sid]
     f = W[d]["f"]
@@ -209,6 +220,8 @@ def _metered(W, d, sid):
         lo, hi = p * 900, (p + 1) * 900
         P = sim.site_power(s, d, f, prog, lo, hi)
         out[p] = P.mean() * 0.25
+    r = sim._rng("meterdev", sid, d.isoformat())
+    out = out + r.normal(-0.0008 * s["pmax"], 0.0020 * s["pmax"], 96)
     return np.round(out, 4)
 
 def site_scores(rows):

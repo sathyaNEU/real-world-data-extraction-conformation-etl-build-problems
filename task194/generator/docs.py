@@ -72,7 +72,7 @@ def charter(target):
                    "funded from the partnership's recurrent allocation. The team works on the unit's own "
                    "practice and takes no part in coding, reporting or the audit of the indicator.", BODY),
          Paragraph("4.7 Where a unit the team is placed with is reconfigured, amalgamated or closed during "
-                   "the assessment quarter, the cycle is reported as incomplete and the placement does not "
+                   "the assessment quarter, the cycle is reported as discontinued and the placement does not "
                    "count against clause 4.2.", BODY),
          Paragraph("Part 6 Reporting", H2),
          Paragraph("6.1 The partnership reports each cycle to the committee, and annually to the board, on "

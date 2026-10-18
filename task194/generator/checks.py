@@ -105,188 +105,212 @@ def run(target, g, state):
            and p["episodes"] == int(r["in_scope_episodes"]),
            "R1 the series is the extract's own rollup (%s %s)" % (r["unit_code"], r["quarter"]))
 
-    # ---------- the ladder: three rungs, each named on the record ----------
+    # ---------- the ladder: six readings, five of them rungs, each named on the record ----------
     rts = g["routes"]
-    r0 = rts["R0 the published excess, carried onto the planned separations"]
-    r3 = rts["R10 the avoidable count as a rate per 1,000 separations, not as a count"]
-    r4 = rts["R12 the avoidable count over the window, carried onto the planned separations"]
+    R = {k.split()[0]: v for k, v in rts.items()}
+    r0, r5 = R["R0"], R["R5"]
     ok(r0["first"] != answer["unit"], "rung 0 names another unit (%s)" % r0["first"])
-    ok(r3["first"] != answer["unit"], "rung 3 names another unit (%s)" % r3["first"])
-    ok(r4["first"] == answer["unit"], "rung 4 names the answer (%s)" % r4["first"])
-    ok(len({r0["first"], r3["first"], r4["first"]}) == 3, "the three rungs name three different units")
-    for lab, rung, floor in (("0", r0, 1.15), ("3", r3, 1.15), ("4", r4, 1.5)):
-        ok(rung["margin"] >= floor, "rung %s margin %.3fx at or above %.2fx" % (lab, rung["margin"], floor))
-    ok(r4["margin"] <= 2.0, "the final margin %.3fx is inside the 1.5 to 2x band" % r4["margin"])
-    ok(g["published_rank"] in (4, 5), "the answer sits %d of %d on rung 0's ranking"
-       % (g["published_rank"], len(units)))
-    second_on = [k for k, v in rts.items() if v["second"] == answer["unit"] and v["first"] != answer["unit"]]
-    ok(len(second_on) <= 2, "the answer is second on at most two routes (%d)" % len(second_on))
+    ok(r5["first"] == answer["unit"], "the decisive rung names the answer (%s)" % r5["first"])
+    for lab in ("R1", "R2", "R3", "R4"):
+        ok(R[lab]["first"] != answer["unit"],
+           "rung %s names another unit (%s)" % (lab[1:], R[lab]["first"]))
+        ok(R[lab]["second"] != answer["unit"],
+           "the answer is not second on rung %s (second is %s)" % (lab[1:], R[lab]["second"]))
+    ok(len({R[l]["first"] for l in ("R0", "R1", "R5")}) == 3,
+       "rung 0, rung 1 and the decisive rung name three different units")
+    for lab in ("R0", "R1", "R2", "R3", "R4", "R5"):
+        ok(R[lab]["margin"] >= 1.15,
+           "rung %s margin %.3fx at or above 1.15x" % (lab[1:], R[lab]["margin"]))
+    ok(1.5 <= r5["margin"] <= 2.0, "the final margin %.3fx is inside the 1.5 to 2x band" % r5["margin"])
+    ok(g["recorded_rank"] in (4, 5), "the answer sits %d of %d on rung 0's ranking"
+       % (g["recorded_rank"], len(units)))
+    first_on = [k for k, v in rts.items() if v["first"] == answer["unit"]]
+    ok(len(first_on) == 1, "the answer is first on exactly one reading (%d)" % len(first_on))
+    second_on = [k for k, v in rts.items() if v["second"] == answer["unit"]]
+    ok(len(second_on) == 0, "the answer is second on no reading (%d)" % len(second_on))
     # dominance: the answer's edge on the decisive axis over the easy route's unit beats the runner's
-    base = by[r0["first"]]["avoidable"]
-    ok(answer["avoidable"] - base >= 1.2 * (runner["avoidable"] - base),
-       "the answer's edge over the easy route's unit dominates the runner's (%.1f against %.1f)"
-       % (answer["avoidable"] - base, runner["avoidable"] - base))
+    base = by[r0["first"]]["as_recorded"]
+    edge = answer["avoidable"] - answer["as_recorded"]
+    carried = by[r0["first"]]["as_recorded"] - answer["as_recorded"]
+    ok(edge >= 1.2 * carried,
+       "the answer's edge on the decisive axis dominates the decoy's carried advantage "
+       "(%.2f against %.2f, %.2fx)" % (edge, carried, edge / carried))
+    ok(base > answer["as_recorded"], "the record as it stands puts the decoy above the answer")
 
     # the lead, in complications, as a ratio, and against the record's own sampling error
     ok(abs(g["gap"] - (answer["avoidable"] - runner["avoidable"])) < 1e-9,
        "the gap is the two counts' difference")
     ok(1.5 <= g["margin"] <= 2.0, "the margin %.3fx is in band" % g["margin"])
-    ok(g["se_lead"] >= 2.0, "the lead is %.2f standard errors of the gap" % g["se_lead"])
-    ok(g["se_lead"] > 1.0, "the top two are not inside a standard error of each other")
+    ok(g["se_lead"] > 1.0,
+       "the top two are not inside a standard error of each other (%.2f)" % g["se_lead"])
+    ok(g["se_lead_third"] > g["se_lead"], "the third unit is further away again (%.2f)" % g["se_lead_third"])
     for d in units:
-        ok(abs(d["se"] - math.sqrt(d["observed"]) * d["plan"] / d["separations"]) < 1e-9,
-           "each unit's standard error is sqrt(observed) carried like its count (%s)" % d["unit"])
-    ok(sum(1 for d in units if d["avoidable"] / d["se"] > 2.5) == 3,
-       "three candidates stand above 2.5 of their own standard error")
-    ok(sum(1 for d in units if d["avoidable"] < 0) >= 3,
-       "the record carries units on both sides of zero (%d negative)"
-       % sum(1 for d in units if d["avoidable"] < 0))
+        ok(abs(d["se"] - math.sqrt(d["developed"]) * d["plan"] / d["separations"]) < 1e-9,
+           "each unit's standard error is sqrt(developed) carried like its count, because the developed "
+           "count is the graded quantity (%s)" % d["unit"])
+    ok(sum(1 for d in units if d["as_recorded"] < 0) >= 2,
+       "the record as it stands carries units on both sides of zero (%d negative)"
+       % sum(1 for d in units if d["as_recorded"] < 0))
+    ok(all(d["avoidable"] > 0 for d in units),
+       "every unit's developed avoidable count is positive")
 
     # ---------- R3a the analyst test, on the clean truth ----------
-    # a strong analyst who reads every rule correctly and reconciles to the published series row for row
-    # still ranks on the published expectation and files another unit
-    easy = max(units, key=lambda d: d["published_excess"])
+    # a strong analyst who reads every rule correctly, expects each unit's patients at the published
+    # table exactly as 3.1 requires and reconciles to the published series row for row still ranks on
+    # the complications coded so far and files another unit
+    easy = max(units, key=lambda d: d["as_recorded"])
     ok(easy["unit"] != answer["unit"], "R3a the easy route files another unit (%s)" % easy["unit"])
-    ok(easy["avoidable"] < 0,
-       "R3a the unit the easy route files carries a negative avoidable count (%.1f)" % easy["avoidable"])
-    ok(answer["published_excess"] > 0,
-       "R3a the answer is not invisible on the published basis, only fourth (%.1f)"
-       % answer["published_excess"])
-    ok(abs(answer["ratio"] - answer["observed"] / answer["expected"]) < 1e-12
-       and abs(easy["ratio"] - easy["observed"] / easy["expected"]) < 1e-12,
-       "R3a both routes read the published rates correctly")
+    ok(easy["unit"] == r0["first"], "R3a the easy route is rung 0")
+    ok(answer["as_recorded"] < easy["as_recorded"],
+       "R3a the answer reads below the easy route's unit on the record as it stands (%.2f against %.2f)"
+       % (answer["as_recorded"], easy["as_recorded"]))
+    ok(abs(easy["ratio"] - easy["observed"] / easy["expected"]) < 1e-12
+       and abs(answer["ratio"] - answer["observed"] / answer["expected"]) < 1e-12,
+       "R3a both routes read the published stratum table correctly")
+    ok(g["recorded_rank"] >= 4,
+       "R3a the answer is not visible on the record as it stands, it is %dth" % g["recorded_rank"])
 
     # ---------- R3b the decisive step alone moves the call ----------
-    ok(sorted(units, key=lambda d: -d["published_excess"])[0]["unit"] == easy["unit"]
+    ok(sorted(units, key=lambda d: -d["as_recorded"])[0]["unit"] == easy["unit"]
        and sorted(units, key=lambda d: -d["avoidable"])[0]["unit"] == answer["unit"],
-       "R3b the comparison frequency alone decides between the two rankings")
+       "R3b developing the immature quarters alone decides between the two rankings")
+    for lab in ("R2", "R3", "R4"):
+        ok(R[lab]["first"] != answer["unit"],
+           "R3b a single coarser correction leaves the call on a wrong answer (rung %s)" % lab[1:])
 
-    # ---------- the three facts that force the comparison frequency ----------
-    f = g["facts"]
-    ok("year ended 30 June 2024" in spec, "fact 1 the specification states the table's vintage")
-    ok("not re-estimated between specifications" in spec,
-       "fact 1 the specification states the table is not re-estimated")
-    ok(f["drift_spread"] >= 1.25,
-       "fact 2 the record's own frequency spans a factor of %.2f across the risk bands" % f["drift_spread"])
-    ok(f["drift_low"] < 0.95 and f["drift_high"] > 1.05,
-       "fact 2 it crosses 1.00 in both directions (%.3f to %.3f)" % (f["drift_low"], f["drift_high"]))
-    ok(len([x for x in f["drift"].values() if x < 1]) >= 2
-       and len([x for x in f["drift"].values() if x > 1]) >= 2,
-       "fact 2 at least two bands each side of the published table")
-    ok(f["surgical_high"] / max(f["surgical_low"], 1e-9) >= 3.0,
-       "fact 3 the candidates' case mixes differ several-fold (%.3f to %.3f)"
-       % (f["surgical_low"], f["surgical_high"]))
-    ok(f["surgical_none"] >= 2,
-       "fact 3 some candidates carry no surgical work at all (%d)" % f["surgical_none"])
+    # ---------- the observation process: what the close-out register measures ----------
+    reg = read(target, "coding_close_out_register.csv")
+    ok(len(reg) > 200, "the close-out register ships %d rows" % len(reg))
+    for col in ("unit_code", "quarter", "published_date", "separations_with_complication"):
+        ok(col in reg[0], "the register carries %s" % col)
+    # fact 1: the development factors are read back from the register's own shipped bytes
+    import build as _B
+    shipped_factors = _B.golden_factors(target)
+    ok(shipped_factors == g["factors"],
+       "fact 1 every development factor recomputes from the register's shipped bytes (%d factors)"
+       % len(shipped_factors))
+    # fact 2: a quarter keeps growing after its own close, and the register says by how much
+    lags = g["lags"]
+    ok(sorted(lags.values()) == [0, 1, 2, 3, 4],
+       "fact 2 the register shows five quarters at five different stages of settling (%s)" % lags)
+    ok(sum(1 for v in lags.values() if v > 0) == 4,
+       "fact 2 exactly four of the ten closed quarters are still filling")
+    ok(all(g["factors"][(c, 0)] >= 1.0 for c in g["eligible"]),
+       "fact 2 no cost centre's quarter shrinks after its own close")
+    ok(max(g["factors"][(c, 0)] for c in g["eligible"]) >= 1.5,
+       "fact 2 at least one cost centre's quarter is still half again short at its own close (%.3f)"
+       % max(g["factors"][(c, 0)] for c in g["eligible"]))
+    # fact 3: the factor is a property of the cost centre, several-fold apart across the twelve
+    f0 = {c: g["factors"][(c, 0)] for c in g["eligible"]}
+    ok((f0[answer["unit"]] - 1.0) / max(f0[r0["first"]] - 1.0, 1e-9) >= 5.0,
+       "fact 3 the answer's own shortfall at lag 0 is many times the decoy's (%.3f against %.3f)"
+       % (f0[answer["unit"]], f0[r0["first"]]))
+    ok(answer["uplift"] > 100.0,
+       "fact 3 the answer's own record grows by %.1f complications once developed" % answer["uplift"])
+    short = sorted(((1.0 - d["completeness"]) * 100.0, d["unit"]) for d in units)
+    ok(short[0][0] < 1.0 and short[-1][0] > 8.0,
+       "fact 3 the ten-quarter shortfall runs from %.2f to %.2f per cent across the twelve"
+       % (short[0][0], short[-1][0]))
+    ok(len({round(v, 2) for v, _ in short}) >= 10,
+       "fact 3 the shortfall is a continuum across the twelve, not two groups (%d distinct)"
+       % len({round(v, 2) for v, _ in short}))
+    # fact 4: nothing in the pack says how to develop, or that anything needs developing
+    for w in ("development factor", "completion factor", "incomplete", "provisional", "preliminary",
+              "still being coded", "coding backlog", "reports late", "restate", "not yet complete",
+              "run-off", "immature"):
+        ok(w not in charter.lower() and w not in spec.lower(),
+           "fact 4 no shipped clause names the decisive step (%s)" % w)
 
-    # ---------- the demonstration: a mix shift with the unit's own practice flat ----------
-    d_ = g["demo"]
-    ok(d_["mix_swing"] >= 0.25, "the demonstration unit's case mix moves (%.3f)" % d_["mix_swing"])
-    ok(d_["published_multiple"] >= 3.0,
-       "the published basis moves its avoidable count by a factor of %.1f" % d_["published_multiple"])
-    ok(d_["internal_spread"] <= 1.5,
-       "the record's own frequency holds it inside %.2f of a complication in every quarter"
-       % d_["internal_spread"])
-    ok(d_["published_multiple"] / max(d_["internal_spread"], 1e-9) >= 4.0,
-       "the two bases separate on the demonstration by a wide margin")
-    ok(len(d_["shifted"]) == 2, "the shift covers two closed quarters (%d)" % len(d_["shifted"]))
-    unshifted = [r for r in d_["rows"] if r["quarter"] not in d_["shifted"]]
-    ok(max(r["episodes"] for r in d_["rows"]) / min(r["episodes"] for r in d_["rows"]) < 1.15,
-       "the demonstration unit treats the same number of patients throughout")
-    ok(max(abs(r["internal"] - unshifted[0]["internal"]) for r in d_["rows"]) <= 1.5,
-       "its avoidable count on the record's own frequency does not move across the shift")
+    # ---------- the demonstration: the record shows the answer improving while it deteriorated --------
+    ok(R["R1"]["order"].index(answer["unit"]) + 1 == len(units),
+       "the answer sits last of %d on the most recent year as the record carries it" % len(units))
+    ok(R["R1"]["first"] != answer["unit"], "the recency route names another unit (%s)" % R["R1"]["first"])
 
-    # ---------- C1 convergence: every reading of charter 4.3 the text leaves open ----------
+    # ---------- C1 convergence: every reading of the development the text leaves open ----------
     conv = g["convergence"]
-    ok(len(conv) >= 12, "twelve or more readings of charter 4.3 are formed and ranked (%d)" % len(conv))
+    ok(len(conv) >= 5, "five or more readings of the development are formed and ranked (%d)" % len(conv))
     for label, v in conv.items():
         ok(v["first"] == answer["unit"],
            "C1 %s names the answer (%s at %.2f against %s at %.2f, %.2fx)"
            % (label, v["first"], v["first_value"], v["second"], v["second_value"], v["margin"]))
-        ok(v["margin"] >= 1.05, "C1 %s separates its first two (%.2fx)" % (label, v["margin"]))
-    ok(max(v["margin"] for v in conv.values()) >= 2.5,
-       "the strongest reading separates by %.2fx" % max(v["margin"] for v in conv.values()))
-
-    # ---------- the readings that do move the call, each ruled out by a quotable sentence ----------
-    rout = g["ruled_out"]
-    ok(len(rout) >= 3, "the readings that move the call are formed too (%d)" % len(rout))
-    for label, v in rout.items():
-        ok(v["first"] != answer["unit"], "%s does move the call (to %s)" % (label, v["first"]))
-    ok("same risk band and age band" in charter, "the clause that rules those readings out is shipped")
-    ok("ordinarily have" in charter, "charter 4.3 asks what such patients ordinarily have")
-    ok("would be expected to have" not in charter,
-       "charter 4.3 does not borrow the specification's defined term")
-    ok("expected complications of a group of episodes" in spec,
-       "the specification's own defined term sits in the specification, not the charter")
-    ok("does not maintain a measure of its own" not in charter,
-       "no clause rules the decisive step out by elimination")
-    for w in ("the network's own rate", "internally standardised", "achievable", "attainable"):
-        ok(w not in charter and w not in spec, "no shipped clause names a rate set (%s)" % w)
+        ok(v["margin"] >= 1.5, "C1 %s separates its first two (%.2fx)" % (label, v["margin"]))
+    ok(max(v["margin"] for v in conv.values()) - min(v["margin"] for v in conv.values()) <= 0.15,
+       "the five readings agree to within %.3f of a margin"
+       % (max(v["margin"] for v in conv.values()) - min(v["margin"] for v in conv.values())))
 
     # ---------- the semantic fork table ----------
     allq = sorted({q for (_, q) in panel})
-    SPEC_WINDOW = "the ten closed quarters of the specification period"
-    # SF1 the unit's own record over a period: specification 3.3 files the specification period to date
+    # SF1 "over a period" in charter 4.3: specification 3.3 files the specification period to date
     ok("every closed quarter from 1 July 2024" in spec, "SF1 specification 3.3 files the record's window")
-    for lab in (SPEC_WINDOW, "the eight most recent closed quarters",
-                "the four most recent closed quarters", "the latest closed quarter alone"):
-        ok(conv["the unit's own record taken over %s" % lab]["first"] == answer["unit"],
-           "SF1 the record over %s names the answer" % lab)
-    # SF2 the most avoidable complications: a count, not a rate
+    ok("No other period is reported for a unit" in spec,
+       "SF1 the window sentence closes the alternative readings rather than convergence doing it")
+    ok(R["R1"]["first"] != answer["unit"], "SF1 the four-quarter reading is rung 1 and names another unit")
+    # SF2 the most avoidable complications: a count, not a ratio or a rate
     ok("counted patient by patient" in charter, "SF2 charter 4.3 counts patient by patient")
-    ok(r3["first"] != answer["unit"] and r4["first"] == answer["unit"],
-       "SF2 the rate reading and the count reading name different units")
-    # SF3 the exposure the rate is carried on
+    ratio_first = max(units, key=lambda d: d["ratio_developed"])["unit"]
+    ok(ratio_first != answer["unit"],
+       "SF2 the developed ratio reading names another unit (%s) and the clause rules it out" % ratio_first)
+    # SF3 the exposure the excess is carried on
     ok("expected complications per separation" in spec, "SF3 specification 3.4 files the carrying")
-    ok(conv["the unit's rate taken per all separations in the record"]["first"]
-       == conv["the unit's rate taken per in-scope episodes in the record"]["first"],
-       "SF3 both denominators name the same unit")
-    # SF4 the comparison population's membership
-    ok(any("own hospital" in k for k in rout), "SF4 the restricted comparison is measured")
-    ok(any("peer group" in k for k in rout), "SF4 the peer-group comparison is measured")
-    # SF5 whether the unit's own patients sit inside the comparison
-    ok(conv["the unit's own patients left out of the comparison, frequency over %s" % SPEC_WINDOW]["first"]
-       == answer["unit"], "SF5 leave-one-out names the answer")
-    # SF6 the comparison frequency's own window
-    for lab in (SPEC_WINDOW, "the eight most recent closed quarters",
-                "the four most recent closed quarters", "the latest closed quarter alone"):
-        ok(conv["the comparison frequency measured over %s" % lab]["first"] == answer["unit"],
-           "SF6 the comparison frequency over %s names the answer" % lab)
-    # SF7 whether the comparison is stratified at all
-    ok([v for k, v in rout.items() if "no strata" in k][0]["first"] != answer["unit"],
-       "SF7 an unstratified comparison moves the call and charter 4.3 names the strata")
-    # SF8 closed quarters at the decision date
-    ok("eight weeks after the quarter ends" in spec, "SF8 specification 3.7 files when a quarter closes")
-    ok(len(allq) == 10 and allq[-1] == "2026-27 Q2", "SF8 the record carries the ten closed quarters only")
-    ok(max(r["separation_date"] for r in read(target, "episode_outcomes_extract.csv")) <= "2026-12-31",
-       "SF8 no separation falls after the last closed quarter")
-    # SF9 eligibility
-    ok(len(g["eligible"]) == 12, "SF9 charter 4.2 leaves twelve eligible units (%d)" % len(g["eligible"]))
-    ok("previous twelve closed quarters" in charter, "SF9 the charter files the exclusion window")
-    ok("four or more closed quarters" in charter, "SF9 the charter files the floor")
-    # SF10 the complication list revision
-    ok("the revision in force at separation" in spec, "SF10 the specification files which revision applies")
-    # SF11 the indicator's denominator
-    ok("excluded from the denominator is excluded from the numerator" in spec,
-       "SF11 the specification files the denominator's reach")
-    # SF12 the reference rate's scope
-    ok("reference rate of 96.6" in spec, "SF12 the reference rate is scoped to the adjusted rate")
-    ok(abs(answer["avoidable"] - answer["ratio_net"] * 96.6) > 1.0,
-       "SF12 the avoidable count is a count and does not carry the reference rate")
-    # SF13 the rounding of every graded figure
+    per_ep = max(units, key=lambda d: (d["developed"] - d["expected"]) / d["episodes"] * d["plan"])
+    uncarried = max(units, key=lambda d: d["developed"] - d["expected"])
+    ok(per_ep["unit"] == answer["unit"] and uncarried["unit"] == answer["unit"],
+       "SF3 both alternative exposures name the same unit (same call)")
+    # SF4 the comparison: the published stratum table, filed by specification 3.1
+    ok("not re-estimated between specifications" in spec,
+       "SF4 specification 3.1 files the published table as the expectation")
+    ok("year ended 30 June 2024" in spec, "SF4 the specification states the table's vintage")
     for d in units:
-        ok(sim.bin_edge(d["avoidable"], 1.0) >= sim.EDGE_BAR,
-           "SF13 %s's avoidable count sits %.3f from the whole complication's edge"
-           % (d["unit"], sim.bin_edge(d["avoidable"], 1.0)))
+        ok(abs(d["ratio"] - d["observed"] / d["expected"]) < 1e-12,
+           "SF4 %s's expectation is the published table's and nothing else" % d["unit"])
+    # SF5 how the growth between two vintages is read: five readings, one call
+    ok(len(conv) >= 5 and all(v["first"] == answer["unit"] for v in conv.values()),
+       "SF5 every reading of the growth names the answer")
+    # SF6 which quarters are still moving: the register's own rows settle it
+    ok(all(v == 0 for q, v in lags.items() if q == allq[-1]),
+       "SF6 the most recent closed quarter has stopped moving by its own rows")
+    ok(sum(1 for v in lags.values() if v > 0) == 4,
+       "SF6 the register's own rows name four quarters still moving")
+    # SF7 closed quarters at the decision date
+    ok("eight weeks after the quarter ends" in spec, "SF7 specification 3.7 files when a quarter closes")
+    ok(len(allq) == 10 and allq[-1] == "2026-27 Q2", "SF7 the record carries the ten closed quarters only")
+    ok(max(r["separation_date"] for r in read(target, "episode_outcomes_extract.csv")) <= "2026-12-31",
+       "SF7 no separation falls after the last closed quarter")
+    # SF8 eligibility
+    ok(len(g["eligible"]) == 12, "SF8 charter 4.2 leaves twelve eligible units (%d)" % len(g["eligible"]))
+    ok("previous twelve closed quarters" in charter, "SF8 the charter files the exclusion window")
+    ok("four or more closed quarters" in charter, "SF8 the charter files the floor")
+    # SF9 the complication list revision
+    ok("the revision in force at separation" in spec, "SF9 the specification files which revision applies")
+    # SF10 the indicator's denominator
+    ok("excluded from the denominator is excluded from the numerator" in spec,
+       "SF10 the specification files the denominator's reach")
+    # SF11 the reference rate's scope
+    ok("reference rate of 96.6" in spec, "SF11 the reference rate is scoped to the adjusted rate")
+    ok(abs(answer["avoidable"] - answer["ratio_developed"] * 96.6) > 1.0,
+       "SF11 the avoidable count is a count and does not carry the reference rate")
+    # SF12 the site a unit's activity counts to: an ask convention, pinned in the asking sentence
+    ok(len(W.REALIGNED) == 3, "SF12 three cost centres were realigned")
+    ok(any(b["facility"][(c, "2026-01-01")] != b["facility"][(c, "2026-12-01")] for c in W.REALIGNED),
+       "SF12 the realignment moves a unit's site inside the ask's own window")
+    # SF13 the rounding of every graded figure, at the unit the asking sentence states
+    for d in units:
+        ok(sim.bin_edge(d["avoidable"], 0.1) >= sim.EDGE_BAR * 0.1,
+           "SF13 %s's avoidable count sits %.4f from the decimal's edge (bar %.4f)"
+           % (d["unit"], sim.bin_edge(d["avoidable"], 0.1), sim.EDGE_BAR * 0.1))
         ok(sim.bin_edge(d["expected_plan"], 0.1) >= sim.EDGE_BAR * 0.1,
            "SF13 %s's expected count sits %.4f from the decimal's edge"
            % (d["unit"], sim.bin_edge(d["expected_plan"], 0.1)))
+    av = sorted(d["avoidable"] for d in units)
+    ok(min(av[i + 1] - av[i] for i in range(len(av) - 1)) > 0.1,
+       "SF13 the closest pair of adjacent graded units is %.4f apart, above the printed unit"
+       % min(av[i + 1] - av[i] for i in range(len(av) - 1)))
     for h in g["hospitals"]:
         for key in ("reported", "measured", "separations", "complications"):
             ok(float(h[key]).is_integer(),
                "SF13 %s's %s is a whole separation" % (h["hospital"], key))
         ok(h["reported"] == h["measured"] + h["separations"],
-           "SF13 %s's three figures reconcile: %d reported, %d measured, %d excluded"
+           "SF13 %s's three figures reconcile: %d reported, %d measured, %d not measured"
            % (h["hospital"], h["reported"], h["measured"], h["separations"]))
 
     # ---------- mess neutrality, one assertion per Layer 1 item (R2) ----------
