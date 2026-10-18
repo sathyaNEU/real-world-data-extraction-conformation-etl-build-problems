@@ -30,8 +30,8 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   each field's 2026 lead from piston aircraft, which airport lead inventories build from piston operations by engine
   class and operation type times lead per operation; at a field without a count the operations come from the network,
   and what the network misses has to be completed.
-- **Shape:** 01, a ranked list under a cap: each of the 24 non-towered fields' 2026 piston lead, qualified or not
-  against 25 kg, the count of qualifying fields and the first field below the line.
+- **Shape:** 01, a list of candidates against a cap: each of the 24 non-towered fields' 2026 lead from piston-engine
+  aircraft against the round's 12.5 kg, the count of qualifying fields and which they are.
 - **Strategy:** composition_mix (the network's seen-to-counted rate pooled over the counted fields does not fit a field
   whose based fleet differs in the share that never broadcasts), pattern E, decisive generator G14 (the conditioned
   yield), with G12 (a field the network hears little at is not a field with little activity) and G6 (the pool shifted
@@ -41,12 +41,12 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   a governing board of county and city representatives, inventories lead from piston-engine aircraft at the 30
   public-use general aviation fields in its valley: six with a control tower and 24 without. In 2025 it put an ADS-B
   receiver on every field. Its Unleaded Avgas Transition Grants pay for an unleaded fuel tank and dispenser at a field
-  without a tower; the 2027 round funds every such field whose 2026 lead from piston aircraft is 25 kg or more, under
-  the district's inventory method.
-- **Forcing fact:** the governing board adopts the 2027 grant round with the district's budget at its 9 December 2026
-  meeting; the air toxics planner's qualification memo and the field inventory go to it. As-of: 20 November 2026. The
-  call faces forward (the 2027 grant round); its quantity is the closed 2026 inventory year, which the program's
-  guidelines name as the basis (a retrospective quantity with its reason: the program qualifies on the latest complete
+  without a tower; the 2027 round funds every such field whose 2026 lead from piston-engine aircraft is 12.5 kg or
+  more, under the district's inventory method (CVAQD-AQ-17, Revision 3).
+- **Forcing fact:** the Governing Board adopts the 2027 grant round with the district's 2027 budget at its 10 March 2027
+  meeting; the air toxics planner's qualification memo and the field inventory go to it. As-of: 12 February 2027. The
+  call faces forward (the 2027 grant round); its quantity is the closed 2026 inventory year, which the round's
+  guidelines name as the basis (a retrospective quantity with its reason: the round qualifies on the latest complete
   year).
 - **Forum and forcing event:** council_or_assembly (the governing board), budget_or_appropriation (the 2027 grant
   round adopted with the budget). Organisation local_government; role policy_adviser. Personas from `guard.py names
@@ -59,12 +59,13 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   those fields and absent at the flight-school fields whose rental fleets all broadcast.
 - **The WHAT screen.** Population: every piston-engine aircraft operation (a takeoff or a landing, a touch-and-go being
   one of each) at a field in 2026, by any aircraft, heard by the network or not (filed in the district's method).
-  Outcome: lead emitted, at the method's per-operation factors by engine class and operation type. Window: calendar
-  2026, local time. Unit: kilograms of lead per field. Comparison: 25 kg. The decisive step settles none of them: it
-  is how the operations the network did not hear are estimated at a field without a count.
-- **Deliverables:** `corrisan_2026_field_piston_lead.csv` (the conformed inventory, one row per field and engine class)
-  and `cvaqd_2027_unleaded_grant_qualification.docx` (the qualifying fields, each field's lead against 25 kg, a chart).
-  Names to be fixed at the prompt.
+  Outcome: lead emitted, at the method's per-operation factors by engine class and operation type, an unrecorded
+  operation at 1.625 g. Window: calendar 2026, local time. Unit: kilograms of lead per field. Comparison: 12.5 kg or
+  more (the guidelines). The decisive step settles none of them: it is how the operations the network did not hear
+  are estimated at a field without a count, which method 4.4 leaves to "the fields with a count".
+- **Deliverables:** `corrisan_2026_field_piston_lead.csv` (each of the 24 fields' 2026 lead, whole kilograms) and
+  `cvaqd_2027_unleaded_grant_qualification.docx` (the memo to the Governing Board: the qualifying fields, the bar chart
+  of the 24 fields against the 12.5 kg line, the six towered fields' operations and lead).
 - **Sources, one line each:**
   - `stumping/references/client/two-layer-task-design.md`: Physical & Environmental Sciences has Layer 1 techniques
     and no Layer 2 patterns on file, so the pitfall comes from the five families: estimation_fit (survivorship,
@@ -81,43 +82,240 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
 
 ## Default path
 
-To be written at design.
+1. Read `adsb_field_events_20251230_20270102.csv`, times from UTC to Pacific time, kept local 2026; gave each event
+   its aircraft through `icao24` and MASTER.txt (DEREG.txt for an address MASTER no longer lists) and priced each
+   piston-engine operation by ACFTREF's engines and the method's Table 1, a touch-and-go two operations.
+2. At the six towers took the civil count in tower hours less the civil events recorded in those hours (method 4.2);
+   at the four count fields the study's piston-engine operations less those recorded (4.3).
+3. Took the network's share of the counted fields' operations: recorded over counted, 0.815.
+4. At each of the 20 fields without a count, put the unrecorded operations at the recorded piston operations times
+   (1 - 0.815) / 0.815, priced at 1.625 g (method 3.2, 4.4), and added the recorded lead.
+5. Compared each field with the guidelines' 12.5 kg.
+
+Ends on: eight fields, A71 F37 K58 L08 P05 S27 T13 T61 (Kestrel Ridge, Pellow, Saltry and Tavish in; Orrin Flats,
+Umber Creek and Wickrow out).
+
+Golden: seven fields, A71 F37 L08 O16 T13 U44 W33.
 
 ## Stump sentence
 
-To be written at design.
+The default path scales every field's recorded operations by the counted fields' 0.815 share and qualifies eight
+fields, A71 F37 K58 L08 P05 S27 T13 T61, putting the missed operations where the network already hears the most (the
+flight-school fields, whose rental fleets all broadcast) instead of with the based airplanes that never broadcast, so
+it drops the three vintage fields O16, U44 and W33 whose missed operations are a third of their lead.
 
 ## Three rules
 
-To be written at design.
+Task type: emissions inventory compilation (an activity-based airport lead inventory: operations by engine class and
+operation type conformed from a receiver network, the FAA register and counts, times factors per operation, the
+unobserved activity completed by estimation), a task type serving Data Extraction & Conformation (ETL).
+
+Domain test: the deciding quantity is each field's 2026 lead from piston-engine aircraft, built the way airport lead
+inventories build it (landing and takeoff operations by engine class and operation type times lead per operation), with
+the operations the activity data misses estimated from the fields where the activity is fully counted; the field's
+completion estimator here is a ratio estimator whose auxiliary is the airplanes that generate the missed activity.
+
+Swap: "which hospitals' 2026 sharps waste qualifies for a disposal grant, from a scanner network that reads only tagged
+containers" keeps the arithmetic but loses the domain's structure: here the misses are a property of the airplane
+(ADS-B Out or not), the airplanes are based unevenly by field type, the counts are towers' and counters', and the lead
+per operation is an engine-class factor; without them nothing fixes which auxiliary completes the inventory.
+
+Layer 1: the network's export in UTC against an inventory in Pacific local time (padding days, daylight time), the
+towers' counts kept in local tower hours with winter hours and closed days, the FAA register's padded layout (N-NUMBER
+without the N, upper-case MODE S CODE HEX against the export's lower-case `icao24`), N-numbers changed, exported or
+lapsed in 2026 (addresses only DEREG holds), the state's based list written four ways by county, the count studies in
+four layouts (L08's touch-and-go circuits), flight IDs blank or stale; each asserted neutral on the call and on every
+non-towered field's whole-kilogram lead (checks.py L1, SF2, SF9, SF10, SF12).
+
+Layer 2: estimation_fit: completing an undercounted activity record, where the choice of auxiliary decides the
+estimate; the missed operations are generated by the never-broadcasting airplanes, so they scale with the airplanes
+the network never recorded, not with what it recorded or with every based airplane.
+
+Decisive step: estimating each uncounted field's unrecorded operations as the counted fields' unrecorded operations per
+based piston airplane the network never recorded (23,376 over 338, 69.2) times that field's never-recorded airplanes,
+which qualifies O16, U44 and W33 and drops K58, P05, S27 and T61.
+
+Not semantics: every field, code, unit and definition read correctly (Pacific time, tower hours, civil columns, a
+touch-and-go two operations, TYPE ENGINE 1, the register's history, the network notes' sentence that aircraft without
+ADS-B Out are not recorded) still leaves the easy route scaling each field's recorded operations by one capture share;
+no field marks an airplane as non-broadcasting, and the step is the choice of estimator, not a reading.
+
+Not rule application: the method files the population (every piston-engine operation, recorded or not), the factors,
+the unrecorded operation's 1.625 g and the counted fields' unrecorded operations; 4.4 says only that the others are
+estimated from the fields with a count, and executing every filed rule with a capture share qualifies the default
+eight.
+
+Analyst test: a strong analyst who reads every file and rule correctly takes the counted fields' capture (0.815),
+completes each field's recorded operations with it and qualifies the eight fields A71 F37 K58 L08 P05 S27 T13 T61 (the
+default path's Ends on); split by flight training it qualifies nine; only the unrecorded operations per never-recorded
+airplane qualify the seven.
+
+Estimand: guidelines 2.1 and 2.2 (cvaqd_2027_unleaded_avgas_transition_grants.pdf): a public-use field in the district
+without a control tower whose 2026 lead from piston-engine aircraft, as method CVAQD-AQ-17 Revision 3 estimates it, is
+12.5 kg or more; method 1.1, 2.2 and 3 (cvaqd_aircraft_lead_inventory_method_rev3.pdf): every operation by a
+piston-engine aircraft at the field in calendar 2026 local time, recorded or not, at Table 1 or 1.625 g.
+
+No decoy: nothing is planted to be caught: the export, the register, the counts and the studies are what each system
+writes; no memo, draft, briefing or stakeholder figure argues a method or a list; the 5010 records are the airports'
+own filings, declared as the wrong-basis distractor and ruled out by their own dates and estimates.
+
+No certified replay: no published inventory, earlier qualification or certified figure ships to back a method out of;
+the counted fields are the method's own evidence (4.2, 4.3) and score candidates only by leave-one-out, which every
+analyst can run.
+
+Lesson: when a sensor misses whole units rather than a share of events, the activity it misses scales with the units
+it never detected, measured where the activity is fully counted, never with what it did detect; no build on file
+completes an undercounted record from the units that never registered.
 
 ## Readability screen
 
-To be written at design.
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0, one capture share from the counted fields (eight fields) | method 4.4 points to the fields with a count: fires | the towers' counts and the export side by side: fires | a capture or correction factor is the reflex for an undercounting sensor: fires | none | none | one ratio: fires | readable |
+| R1, the capture share split by the directory's flight training flag (nine fields) | none | the Flight Training column: fires | holding the pool to every visible attribute: fires | the counted fields' capture spreads 0.56 to 0.99: fires | none | two ratios: fires | readable |
+| R2, operations per based airplane at the counted fields (nine fields) | none | the based list beside the counts: fires | operations per based aircraft is the planner's textbook ratio: fires | none | none | one ratio: fires | readable |
+| R3, unrecorded operations per based airplane (eight fields) | none | the based list: fires | none | none | none | one ratio: fires | readable |
+| R4, never-recorded airplanes flying like the recorded ones (five fields) | the network notes' mechanism sentence: fires | none | none | none | none | none | readable |
+| G (decisive), unrecorded operations per never-recorded airplane measured at the counted fields (seven fields) | no clause names never-recorded airplanes, a rate per airplane or an auxiliary; 4.4 says only "from the fields with a count": silent | no column flags an airplane as broadcasting or not; the never-recorded set is built by joining the based list through the register to the export: silent | the reflexes are the capture share and its splits; testing which auxiliary the misses scale with is no battery step: silent | the counted fields score the candidates only by a leave-one-out nobody asks for: silent | every file reconciles; nothing is anomalous: silent | a join across three files and a ratio over ten fields: silent | silent |
 
 ## Semantic fork table
 
-To be written at design.
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | qualifies | 12.5 kg or more | more than 12.5 kg | same call: no field within 1 kg of the line (asserted) | guidelines 2.2 "is 12.5 kg or more" |
+| SF2 | 2026 | the local (Pacific) calendar year | the UTC year | same call and every lead in its whole kilogram (asserted) | method 1.1 "in local time (Pacific time)" |
+| SF3 | an operation | a takeoff or a landing, a touch-and-go two | a touch-and-go one, as the export's one event | same call (asserted) | method 2.1 "A touch-and-go is two operations" |
+| SF4 | piston-engine aircraft | TYPE ENGINE 1 (reciprocating) on a fixed wing | every fixed-wing airplane, turboprops and jets included | same call (asserted) | method 1.2 "Aircraft with turbine engines ... are outside the inventory" |
+| SF5 | fields without a control tower | the 24 public-use fields with ATCT N | the private strips too | not candidates | guidelines 2.1 "a public-use airfield"; the directory's Use column |
+| SF6 | lead at a field | its takeoffs and landings | flight away from the field | none ships | method 1.2 "lead emitted in flight away from the field" is outside |
+| SF7 | an unrecorded operation's lead | 1.625 g | class factors | none ships the class of an unrecorded operation | method 3.2 |
+| SF8 | the fields with a count | the six towers and the four count fields | towers only, studies only | same call and leads (asserted, SF13 rows) | method 4.2 and 4.3 name both |
+| SF9 | the tower's civil operations | air carrier, air taxi and general aviation itinerant, local civil | total operations, military included | same call and leads (asserted) | method 4.2 "civil operations"; the counts' column names |
+| SF10 | the tower's hours | the directory's hours, winter hours and closed days | the summer hours all year | same call and leads (asserted) | the directory's ATCT Hours (local) |
+| SF11 | based airplanes | the state's 2027 validation by N-number | the 5010 based counts | the 5010 counts carry no N-number to test | the 5010 notes: as last filed, the manager's report |
+| SF12 | recorded in 2026 | under any address the airplane carried in 2026 | under its current address only | same call and leads (asserted) | the register's history (DEREG) |
+| SF13 | the rate per never-recorded airplane | the ratio of totals at the ten counted fields | mean or median of the ten ratios, least squares through the origin, towers or studies alone | same call and every lead in its whole kilogram (asserted) | the data's structure: the ten ratios run 65 to 73 |
+| SF14 | lead in whole kilograms | rounded for reporting, qualified unrounded | qualified on the rounded lead | same call (asserted) | no field within 1 kg of the line |
 
 ## Ladder
 
-To be written at design.
+- **R0, the default path: one capture share (eight fields).** The counted fields' recorded share is 0.815 (towers'
+  civil operations in tower hours and the studies' piston operations); completing each field's recorded operations
+  with it qualifies A71 F37 K58 L08 P05 S27 T13 T61. The variant that scales the recorded lead by the share names the
+  same eight. Dies to the counted fields themselves: their shares run from 0.56 (D19) to 0.99 (L08), and the share
+  predicts a left-out counted field's unrecorded operations with a mean error of 342 per cent (L08 +3,162).
+- **R1, the reflex correction: the share split by flight training (nine fields).** 0.858 at the training fields, 0.734
+  elsewhere; adds N26. Dies to the same fact: within each group the shares still spread 0.71 to 0.99 and 0.56 to 0.80.
+- **R2, operations per based airplane (nine fields).** 79.7 at the counted fields; adds H52 and W85, keeps the golden
+  seven. Dies to the leave-one-out (90 per cent mean error): based fleets differ in how much they fly at home.
+- **R3, unrecorded operations per based airplane (eight fields).** 15.3; adds K58, P05, T61 and U44, drops O16 and W33.
+  Dies to the counted fields: 1.4 per based airplane at L08, 28.5 at D19 (122 per cent mean error).
+- **R4, the sophisticated near miss: the never-recorded airplanes fly like the recorded ones (five fields).** Finds
+  the never-recorded airplanes but gives them the field's recorded airplanes' operations; keeps W33, drops O16 and U44.
+  Dies to the counted fields: the never-recorded airplanes fly 65 to 73 operations a year there, the recorded ones
+  28 to 76 at the vintage fields (31 per cent mean error).
+- **R5, the network's record alone (four fields).**
+- **G, the decisive move (seven fields).** 23,376 unrecorded operations over 338 never-recorded airplanes at the
+  counted fields, 69.2 each, 65 to 73 field by field (4 per cent mean leave-one-out error, worst CRV +7).
+- **Margins:** the golden's nearest field is W33 at 10.2 per cent above the line (P05 11.1 below); every wrong rung's
+  nearest field is at least 3.8 per cent from it (R3's T61 and S27), R0's 7.4. Every lead is at least 0.26 kg from its
+  whole-kilogram edge; five other rate estimators give the same call and every lead in the same kilogram.
+- **Position, separation and dominance:** every rung names its own set (eight, nine, nine, eight, five, four against
+  seven); the corrections from R0 move fields in both directions and only the rate per never-recorded airplane takes
+  out the four training and park fields and brings in the three vintage ones together.
+- **Worth on the graded quantities:** the call (8) and the 24 leads (1.25 each): R0 keeps 11 leads, R1 5, R2 10, R3 8,
+  R4 20, R5 9; none lands the call (generator/ceiling.py).
+- **Grid:** the Layer 1 items mishandled one at a time and the rate estimators swapped leave the call and every lead
+  in place (checks.py); the capture share, its split and the per-based rates each land on a named wrong set.
 
 ## Closure table
 
-To be written at design.
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | every piston-engine operation at the field in 2026, recorded or not (method 2.2); the 24 public-use fields without a tower (guidelines 2.1) |
+| 2 | Unit of account | the field; lead in kilograms (method 3.3); an operation a takeoff or a landing (2.1) |
+| 3 | Attribution window | calendar 2026 in Pacific time (method 1.1); padding days and the UTC year change no figure (SF2, L1) |
+| 4 | As-of dating | the export of 8 January 2027, the register of 1 February 2027 with its cancelled registrations, the based validation of 1 January 2027 |
+| 5 | Version basis | one version of every file; the register's history read by date for an address that changed hands (Layer 1, the ask) |
+| 6 | Denominator | the rate per never-recorded airplane over the ten counted fields (SF13); the decisive step (HOW), every member of the family agreeing |
+| 7 | Weighting | the ratio of totals; mean of ratios, median and least squares agree (SF13) |
+| 8 | Window length | the whole 2026 year at every counted field |
+| 9 | Boundary inclusivity | 12.5 kg or more (SF1); nothing within 1 kg |
+| 10 | Rounding path | lead summed in grams, reported in whole kilograms, qualified unrounded (SF14); operations to the nearest hundred |
+| 11 | Tie-break | none: each field is judged on its own lead |
+| 12 | Maturity and censoring | the 2026 year is closed; the unrecorded operations are completed by estimation, the decisive step |
+| 13 | Order of operations | events, aircraft, priced operations, counted fields' unrecorded, never-recorded airplanes, rate, completion, comparison |
+| 14 | Row order | no dependence |
+| 15 | Duplicate resolution | no repeated event id or registration; a touch-and-go one event, two operations (SF3) |
+| 16 | Identity normalisation | N-numbers normalised across the four county sheets, the register's N-NUMBER without the N, hex case (Layer 1, asserted every based N-number matches) |
+| 17 | Netting | a tower's unrecorded operations are its civil count less the recorded civil events in its hours (method 4.2); military columns out (SF9) |
+| 18 | Dimensional units | grams per operation to kilograms per field; UTC to Pacific with daylight time from 8 March to 1 November 2026 (network notes) |
+| 19 | Code and status semantics | TYPE ENGINE 1 on TYPE AIRCRAFT 4 or 5 is a piston-engine airplane (SF4); never the stump |
+| 20 | Integerisation | whole kilograms; operations to the nearest hundred |
+| 21 | Clause scope | guidelines 2.2: the 2027 round on the 2026 inventory; method 4.4: the fields without a count |
+| 22 | Forward window contents | the 2027 round's qualifying list on the closed 2026 inventory (a retrospective quantity with its reason, Draw) |
 
 ## Literal reader
 
-To be written at design.
+Executed word for word, the guidelines and method fix the population (every piston-engine operation at each field in
+2026 Pacific time, recorded or not), the factors, 1.625 g for an unrecorded operation, the counted fields' unrecorded
+operations (4.2, 4.3) and the 12.5 kg line, and leave one thing open: how 4.4's estimate is made "from the fields with
+a count". The candidates are the capture share (R0, R1), the per-based rates (R2, R3), the never-recorded airplanes at
+the recorded ones' rate (R4) and the never-recorded airplanes at the counted fields' rate (G). The data separates them:
+the network notes say an aircraft without ADS-B Out is not recorded, the counted fields' unrecorded operations per
+never-recorded airplane run 65 to 73 while their capture runs 0.56 to 0.99 and their unrecorded operations per based
+airplane 1.4 to 28.5, and a leave-one-out at the ten counted fields gives mean errors of 4, 31, 90, 122 and 342 per
+cent for G, R4, R2, R3 and R0 (checks.py). Every member of G's family (ratio of totals, mean and median of ratios,
+least squares through the origin, towers or studies alone) gives the same seven fields and every lead in the same
+kilogram. Every write-up step names the file and rule it executes.
 
 ## Oracles
 
-To be written at design.
+None that ties only under the golden. The counted fields score every candidate on equal terms by the leave-one-out a
+solver chooses to run; no published inventory, earlier round or certified figure ships. The 5010 records give
+operations and based counts per field on another basis (managers' estimates for twelve months ending 2018 to 2025,
+every aircraft) and qualify 19 fields priced at 1.625 g, neither the golden nor rung 0 (the declared wrong-basis
+distractor). The lead monitors sit at two towered fields and rank no candidate.
 
 ## Ask sheet
 
-To be written at design.
+- **Ask A, each towered field's 2026 piston-engine operations (nearest hundred) and lead (whole kilograms): twelve
+  figures.** H18 home: the six towered fields complete the district's 2026 inventory that the board reads beside the
+  round; they are the counted fields whose counts the call consumes, and their piston lead is the trail from those
+  counts and the network's events through device rows the call never prices. Use: the inventory goes to the board
+  whole. Path: the export (event_time_utc, site, event, icao24), MASTER.txt (N-NUMBER, MODE S CODE HEX, MFR MDL CODE,
+  CERT ISSUE DATE), DEREG.txt (MODE S CODE HEX, MFR-MDL-CODE, CERT-ISSUE-DATE, CANCEL-DATE), ACFTREF.txt (TYPE-ACFT,
+  TYPE-ENG, NO-ENG), the towers' daily counts (Date, Facility, the civil columns), the directory's tower hours, the
+  method (2.1, 3, 4.2), the network notes (UTC) and the register notes (codes): nine files, seventeen columns. Primary
+  device: D2, an attribute at the wrong vintage: at each tower an owner or operator moved its N-number in 2026 from a
+  piston twin (or, at KTY, a T210) to the turbine aircraft that replaced it (three at CRV), so today's MASTER lists
+  every one of those addresses on a turboprop or jet whose certificate dates from the move, while the network heard
+  the piston airplane under it from January; DEREG holds the piston airplane's cancelled registration with the move's
+  date. Every address resolves in MASTER (no unmatched join, no key repeats), and the benign twins are the 190
+  N-numbers reissued years ago, where the current registration is right. Hazards: daylight time in the tower-hours
+  filter (moves all six towers' figures when ignored), the winter hours and closed days at VNL and DMR, the military
+  columns (HWK, CRV), a touch-and-go two operations, turboprops on TYPE AIRCRAFT 4 with TYPE ENGINE 2.
+  Stops (asserted, checks.py and generator/ceiling.py): today's register misses all 12; the moved addresses' events
+  dropped misses 10; the moved addresses read as the piston airplane all year misses at least 8; the register's
+  history read by date gives all 12. The device moves every tower by at least 1.1 kg and 600 operations.
+  Realism: owners keep a personalised number across aircraft, the FAA reassigns it on the change date, and the address
+  follows the number.
+- **The construction layer:** the seven qualifying fields, the 24 leads and the chart; the cracker has them.
+- **Main population zero-counts (asserted):** under today's register every non-towered field's lead, the counted fields'
+  unrecorded operations and the rate are unchanged; the moved addresses' events before each move are all at the towers.
+- **Hazard table (asserted):** D2 moves all 12 figures; daylight time ignored moves six; winter hours ignored one;
+  military as civil two; none moves the call or a non-towered lead.
+- **Referee:** none; the towers' counts tie under every pricing (they count operations, not engines).
+
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
+|---|---|---|
+| A, each towered field's 2026 piston-engine operations and lead | converts UTC with daylight time, keeps tower hours with the winter hours and closed days and the civil columns, counts a touch-and-go twice, prices by TYPE ENGINE and NO-ENG, resolves every address in MASTER and the few it no longer lists in DEREG; the moved addresses resolve in MASTER to turbine aircraft and their piston months price at nothing | miss |
+
+- Mirror leakage: 0.0 per cent of ask weight (every rung computes the towers as the cracker does: generator/ceiling.py).
+- Pair ceiling: 38.5 (weights 38 / 7 / 55: the call 8, each of the 24 leads 1.25; the cracker keeps the main block and
+  instructions, 45.0; the best mirror, R4, keeps 20 of the 24 leads, 32.0; average 38.5), rerun from the generated
+  rubric at ship.
+- Measured by: generator/ceiling.py on the cut pack.
 
 ## Tried and rejected
 
@@ -131,3 +329,11 @@ To be written at design.
 - 2026-10-18, at the draw: operations at untowered fields from a rate per based aircraft learned at towered fields
   (selection on the outcome) as the decisive step alone: one live degree of freedom (every rung a different rate on
   the same based-aircraft list); kept as a lower rung beside the network route.
+- 2026-10-18, at design: based broadcasting airplanes laid up for the year counted among the never-recorded: the small
+  count fields' ratios split (L08 2 airplanes to 5) and the family of rate estimators spread 3 per cent; dropped.
+- 2026-10-18, at design: an N-number changed late in 2026 at a count field read as never recorded by its current
+  address and moved L08's ratio; changes kept to fields without a count and before September (SF12 asserted).
+- 2026-10-18, at design: piston helicopters in the fleet: Table 1 is airplanes only and would need a rotorcraft factor;
+  the valley's helicopters are turbine.
+- 2026-10-18, at design: field targets on whole kilograms gave leads of exactly 22.00 and 3.00; offsets added so no lead
+  sits within 0.02 kg of a whole kilogram and no tower's operations on a hundred.

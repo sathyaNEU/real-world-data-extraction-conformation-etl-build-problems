@@ -1,88 +1,91 @@
 {
-  "task": "task470",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
-  "slot_note": "seed ET27 (historical fleet mix by tail number: the registry tells you who holds the N-number today); the world, the funding of airports first by a fleet-class activity quantity, and the tail-number register kept; the pitfall re-found in how a transponder network misses general aviation activity",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "an air district's 2027 unleaded avgas transition grants for non-towered general aviation fields, qualified on each field's 2026 lead from piston aircraft, built from the district's transponder receiver network, the aircraft register, tower counts and field count studies",
-  "objective": "etl",
-  "shape": "01",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "population"
-  ],
-  "pattern": [
-    "E"
-  ],
-  "generators": [
-    "G14",
-    "G12",
-    "G6"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "the district's air toxics planner",
-  "role_family": "policy_adviser",
-  "scoring_unit": "per active unit per period",
-  "spine": {
-    "file": "field receiver network detections export, 2026",
-    "rows": 0,
-    "entity": "one piston or turbine aircraft operation (takeoff, landing or touch-and-go) the district's receiver at a field recorded",
-    "grain": "aircraft operation",
-    "source": "synthetic (constructed in the layout of an ADS-B receiver network's airport operations export)"
-  },
-  "forum": "council_or_assembly",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "local_government",
-  "world": {
-    "geography": "United States",
-    "currency": "USD",
-    "org_type": "regional air quality district",
-    "invented_names": [],
-    "people": [
-      "Jeanette Steele",
-      "Yolanda Cortez",
-      "Tonya Krause"
-    ]
-  },
-  "deliverables": [],
-  "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "Activity at each site is seen through a sensor that records every event of some units and none of others, and the units it never records are spread unevenly across sites, so the missing activity is not a fixed share of what the sensor saw: it is rebuilt as the never-recorded units based at each site times the activity per such unit that the fully counted sites show, while one seen-to-counted ratio moves the missing activity from the sites holding those units to the sites whose units are all recorded.",
-  "driver_concrete": "Each non-towered field's 2026 piston operations are the receiver network's detections plus the operations of its based aircraft that never broadcast, at the rate per never-detected based aircraft the counted fields show, not the detections scaled by the counted fields' overall detection rate nor operations per based aircraft at those busier, counted fields.",
-  "stump": "The default path scales each field's detected piston operations by the share of counted operations the network saw at the counted fields, so the flight-school fields whose aircraft all broadcast are inflated past 25 kg of lead and the fields where old, non-broadcasting piston aircraft are based fall under it.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the detections to aircraft through the register, reads every file and applies the district's lead method scales each uncounted field's detected piston operations by the counted fields' detection rate and qualifies the wrong set of fields; adding each field's never-detected based piston aircraft at the counted fields' rate per such aircraft qualifies the golden set.",
-  "domain_test": "The deciding quantity is each field's 2026 lead from piston aircraft, which airport lead inventories build from piston operations by engine class and operation type times lead per operation, the operations at a field without a count taken from the transponder network, whose misses are the operations of aircraft that never broadcast and sit where old, privately flown piston aircraft are based; with a clinic's or a depot's nouns there is no piston engine, no leaded avgas, no broadcast equipage and no tower count, so the task stops reading.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:missed-activity-by-never-detected-units",
-  "layer1": [
-    "receiver detections stamped in UTC against tower counts kept by local day and only for the tower's hours",
-    "aircraft identified by a 24-bit transponder address whose N-number and register entry change when an N-number is reissued or an aircraft re-registered, read against the register as it stands today",
-    "the FAA aircraft register's fixed-width master, deregistered, aircraft reference and engine reference files",
-    "based aircraft lists keyed by N-number with and without the N prefix, with dashes and lowercase, one aircraft listed at two fields",
-    "count studies in each consultant's own layout, operations by aircraft class, a touch-and-go counted as two operations",
-    "airport master record annual operations estimates carried unchanged for years",
-    "fuel flowage reports by fixed base operator and month"
-  ],
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task107": "107's first architecture asked what share of past failures a new check could have stopped, with visibility set by each source's delivery kind and measured on a one-kind shadow trial; here the quantity is activity a sensor misses at each site, the misses belong to units that never broadcast anywhere, and the rate per such unit is measured where full counts exist.",
-    "task129": "129 separates two causes that switched on together through a per-record state; here no cause is separated: the missing activity is placed with the units that generate it, rebuilt from a year of detections across every site.",
-    "task36": "36 excludes a candidate by a filed remedy and conditions a dated candidate's counterfactual; here nothing is excluded by rule and nothing is dated: each site's total is completed from its never-seen units.",
-    "task44": "44 splits a pilot's pooled effect by a behavioural moderator measured over a prior instance of the window; here the pooled quantity is a sensor's seen-to-counted ratio, the split is whether each unit broadcasts at all, and it is rebuilt from where each unit was never seen."
-  },
-  "lineage": [],
-  "notes": "",
-  "registered": "2026-10-18T00:06:07Z"
+ "task": "task470",
+ "architecture": "v1",
+ "drawn": "2026-10-18",
+ "slot_note": "seed ET27 (historical fleet mix by tail number: the registry tells you who holds the N-number today); the world, the funding of airports first by a fleet-class activity quantity, and the tail-number register kept; the pitfall re-found in how a transponder network misses general aviation activity",
+ "domain": "physical-environmental-sciences",
+ "subdomain": "emissions-inventory",
+ "client_domain": "physical-environmental-sciences",
+ "niche": "an air district's 2027 unleaded avgas transition grants for non-towered general aviation fields, qualified on each field's 2026 lead from piston aircraft, built from the district's transponder receiver network, the aircraft register, tower counts and field count studies",
+ "objective": "etl",
+ "shape": "01",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "Seven of the 24 fields without a tower qualify: Thornacre Regional (T13), Ambrell County Airport (A71), Lanthorne Field (L08), Umber Creek Airport (U44), Orrin Flats Airport (O16), Fennick Airpark (F37) and Wickrow Airfield (W33)",
+ "answer_source": "task470/submission.md block 1; golden/cvaqd_2027_unleaded_grant_qualification.docx",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "E"
+ ],
+ "generators": [
+  "G14",
+  "G12",
+  "G6"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "gold_standard_subsample",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stakeholder_role": "the district's air toxics planner",
+ "role_family": "policy_adviser",
+ "scoring_unit": "per active unit per period",
+ "spine": {
+  "file": "field receiver network detections export, 2026",
+  "rows": 187413,
+  "entity": "one piston or turbine aircraft operation (takeoff, landing or touch-and-go) the district's receiver at a field recorded",
+  "grain": "aircraft operation",
+  "source": "synthetic (constructed in the layout of an ADS-B receiver network's airport operations export)"
+ },
+ "forum": "council_or_assembly",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "local_government",
+ "world": {
+  "geography": "United States",
+  "currency": "USD",
+  "org_type": "regional air quality district",
+  "invented_names": [],
+  "people": [
+   "Jeanette Steele",
+   "Yolanda Cortez",
+   "Tonya Krause"
+  ]
+ },
+ "deliverables": [
+  "corrisan_2026_field_piston_lead.csv",
+  "cvaqd_2027_unleaded_grant_qualification.docx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-many",
+ "driver": "Activity at each site is seen through a sensor that records every event of some units and none of others, and the units it never records are spread unevenly across sites, so the missing activity is not a fixed share of what the sensor saw: it is rebuilt as the never-recorded units based at each site times the activity per such unit that the fully counted sites show, while one seen-to-counted ratio moves the missing activity from the sites holding those units to the sites whose units are all recorded.",
+ "driver_concrete": "Each non-towered field's 2026 piston operations are the receiver network's detections plus the operations of its based aircraft that never broadcast, at the rate per never-detected based aircraft the counted fields show, not the detections scaled by the counted fields' overall detection rate nor operations per based aircraft at those busier, counted fields.",
+ "stump": "The default path scales every field's recorded operations by the counted fields' 0.815 share and qualifies eight fields, A71 F37 K58 L08 P05 S27 T13 T61, putting the missed operations where the network already hears the most (the flight-school fields, whose rental fleets all broadcast) instead of with the based airplanes that never broadcast, so it drops the three vintage fields O16, U44 and W33 whose missed operations are a third of their lead.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms the events to aircraft through the register, reads every file and applies the district's method scales each uncounted field's recorded piston operations by the counted fields' recorded share (0.815) and qualifies eight fields, A71 F37 K58 L08 P05 S27 T13 T61; split by flight training it qualifies nine; only the unrecorded operations per never-recorded based airplane at the counted fields (69.2) qualify the seven.",
+ "domain_test": "The deciding quantity is each field's 2026 lead from piston aircraft, which airport lead inventories build from piston operations by engine class and operation type times lead per operation, the operations at a field without a count taken from the transponder network, whose misses are the operations of aircraft that never broadcast and sit where old, privately flown piston aircraft are based; with a clinic's or a depot's nouns there is no piston engine, no leaded avgas, no broadcast equipage and no tower count, so the task stops reading.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:missed-activity-by-never-detected-units",
+ "layer1": [
+  "receiver detections stamped in UTC against tower counts kept by local day and only for the tower's hours",
+  "aircraft identified by a 24-bit transponder address whose N-number and register entry change when an N-number is reissued or an aircraft re-registered, read against the register as it stands today",
+  "the FAA aircraft register's fixed-width master, deregistered, aircraft reference and engine reference files",
+  "based aircraft lists keyed by N-number with and without the N prefix, with dashes and lowercase, one aircraft listed at two fields",
+  "count studies in each consultant's own layout, operations by aircraft class, a touch-and-go counted as two operations",
+  "airport master record annual operations estimates carried unchanged for years",
+  "fuel flowage reports by fixed base operator and month"
+ ],
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task107": "107's first architecture asked what share of past failures a new check could have stopped, with visibility set by each source's delivery kind and measured on a one-kind shadow trial; here the quantity is activity a sensor misses at each site, the misses belong to units that never broadcast anywhere, and the rate per such unit is measured where full counts exist.",
+  "task129": "129 separates two causes that switched on together through a per-record state; here no cause is separated: the missing activity is placed with the units that generate it, rebuilt from a year of detections across every site.",
+  "task36": "36 excludes a candidate by a filed remedy and conditions a dated candidate's counterfactual; here nothing is excluded by rule and nothing is dated: each site's total is completed from its never-seen units.",
+  "task44": "44 splits a pilot's pooled effect by a behavioural moderator measured over a prior instance of the window; here the pooled quantity is a sensor's seen-to-counted ratio, the split is whether each unit broadcasts at all, and it is rebuilt from where each unit was never seen."
+ },
+ "lineage": [],
+ "notes": "",
+ "registered": "2026-10-18T00:06:07Z"
 }

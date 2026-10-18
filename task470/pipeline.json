@@ -1,25 +1,42 @@
 {
  "task": "task470",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-18",
- "stump": "The default path scales each untowered field's detected piston operations by the share of counted operations the receiver network heard at the counted fields, so the flight-school fields whose aircraft all broadcast are inflated past 25 kg of lead and the fields where old, non-broadcasting piston aircraft are based fall under it.",
+ "stump": "The default path scales every field's recorded operations by the counted fields' 0.815 share and qualifies eight fields, A71 F37 K58 L08 P05 S27 T13 T61, putting the missed operations where the network already hears the most instead of with the based airplanes that never broadcast, so it drops the three vintage fields O16, U44 and W33.",
  "architecture": 1,
  "loops": 0,
- "precut": null,
- "leak": null,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18"
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-18 on the final build: the guidelines' 12.5 kg; generic inventory words in the method, network and register notes and two count reports; the 5010 records (declared wrong-basis distractor), the directory and the based list name the fields; no LEAK",
+  "reader": "round 1 running"
+ },
  "duplicate_check": {
   "guard_check": "PASS 2026-10-18 after redrawing the context artifact (operations_log) and the organisation family (local_government); same-driver older matches differentiated (task107, task129, task36, task44)"
  },
- "judge": null,
+ "judge": {
+  "verdict": "pass 1 running",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: default path, ladder on a prototype generator (detections, register, counts, based lists), fork table, asks, prompt.txt, precut",
+ "resume": "stage 4: the leak reader's round 1 (/tmp/leakread-task470-r1/answers.md) and the judge's pass 1 (/tmp/determinism-check-task470-r1/verdict.md, brief judge_brief.md) were running at this checkpoint; if lost, rebuild (python3 task470/generator/build.py), rerun both from a fresh unzip of target.zip, fix every finding in the generator in one pass, rebuild, leak.py, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET27 (historical fleet mix by tail number; a state funds first the airport most dependent on small aircraft): the world, the funding of fields first on a class of aircraft's activity and the register read through changing identifiers kept; the call made forward facing on the 2027 grant round; the seed's register reading kept as Layer 1; the pitfall re-found in how a transponder network misses general aviation activity"
+ "source_note": "seed ET27 (historical fleet mix by tail number; a state funds first the airport most dependent on small aircraft): the world, the funding of fields first on a class of aircraft's activity and the register read through changing identifiers kept; the call made forward facing on the 2027 grant round; the seed's register reading kept as Layer 1; the pitfall re-found in how a transponder network misses general aviation activity",
+ "ceiling": {
+  "pair": 38.5,
+  "cracker": 45.0,
+  "best_mirror": "32.0 on R4",
+  "mirror_leakage": 0.0,
+  "script": "generator/ceiling.py"
+ }
 }

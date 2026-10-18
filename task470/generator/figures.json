@@ -1,0 +1,313 @@
+{
+ "count": 7,
+ "count_word": "Seven",
+ "qualifying": [
+  {
+   "lid": "T13",
+   "name": "Thornacre Regional",
+   "lead_kg": 22
+  },
+  {
+   "lid": "A71",
+   "name": "Ambrell County Airport",
+   "lead_kg": 21
+  },
+  {
+   "lid": "L08",
+   "name": "Lanthorne Field",
+   "lead_kg": 16
+  },
+  {
+   "lid": "U44",
+   "name": "Umber Creek Airport",
+   "lead_kg": 15
+  },
+  {
+   "lid": "O16",
+   "name": "Orrin Flats Airport",
+   "lead_kg": 14
+  },
+  {
+   "lid": "F37",
+   "name": "Fennick Airpark",
+   "lead_kg": 14
+  },
+  {
+   "lid": "W33",
+   "name": "Wickrow Airfield",
+   "lead_kg": 14
+  }
+ ],
+ "first_below": {
+  "lid": "P05",
+  "name": "Pellow Municipal",
+  "lead_kg": 11
+ },
+ "threshold_kg": "12.5",
+ "fields": [
+  {
+   "lid": "T13",
+   "name": "Thornacre Regional",
+   "county": "Varnell",
+   "lead_kg": 22
+  },
+  {
+   "lid": "A71",
+   "name": "Ambrell County Airport",
+   "county": "Corrisan",
+   "lead_kg": 21
+  },
+  {
+   "lid": "L08",
+   "name": "Lanthorne Field",
+   "county": "Halwick",
+   "lead_kg": 16
+  },
+  {
+   "lid": "U44",
+   "name": "Umber Creek Airport",
+   "county": "Varnell",
+   "lead_kg": 15
+  },
+  {
+   "lid": "O16",
+   "name": "Orrin Flats Airport",
+   "county": "Ostrey",
+   "lead_kg": 14
+  },
+  {
+   "lid": "F37",
+   "name": "Fennick Airpark",
+   "county": "Corrisan",
+   "lead_kg": 14
+  },
+  {
+   "lid": "W33",
+   "name": "Wickrow Airfield",
+   "county": "Halwick",
+   "lead_kg": 14
+  },
+  {
+   "lid": "P05",
+   "name": "Pellow Municipal",
+   "county": "Halwick",
+   "lead_kg": 11
+  },
+  {
+   "lid": "S27",
+   "name": "Saltry Field",
+   "county": "Ostrey",
+   "lead_kg": 11
+  },
+  {
+   "lid": "K58",
+   "name": "Kestrel Ridge Airpark",
+   "county": "Corrisan",
+   "lead_kg": 11
+  },
+  {
+   "lid": "T61",
+   "name": "Tavish Aero Field",
+   "county": "Corrisan",
+   "lead_kg": 11
+  },
+  {
+   "lid": "G42",
+   "name": "Graylow Municipal",
+   "county": "Ostrey",
+   "lead_kg": 10
+  },
+  {
+   "lid": "N26",
+   "name": "Norwick Field",
+   "county": "Ostrey",
+   "lead_kg": 10
+  },
+  {
+   "lid": "H52",
+   "name": "Hollin Gap Airport",
+   "county": "Varnell",
+   "lead_kg": 9
+  },
+  {
+   "lid": "D19",
+   "name": "Dunmarsh Airport",
+   "county": "Varnell",
+   "lead_kg": 9
+  },
+  {
+   "lid": "W85",
+   "name": "Wenmore Airport",
+   "county": "Corrisan",
+   "lead_kg": 9
+  },
+  {
+   "lid": "C66",
+   "name": "Cobbett Airport",
+   "county": "Corrisan",
+   "lead_kg": 8
+  },
+  {
+   "lid": "Y02",
+   "name": "Yarrow Bend Strip",
+   "county": "Varnell",
+   "lead_kg": 6
+  },
+  {
+   "lid": "Z14",
+   "name": "Zellner Field",
+   "county": "Halwick",
+   "lead_kg": 6
+  },
+  {
+   "lid": "L29",
+   "name": "Lissom Field",
+   "county": "Halwick",
+   "lead_kg": 6
+  },
+  {
+   "lid": "M09",
+   "name": "Marsh Hollow Field",
+   "county": "Ostrey",
+   "lead_kg": 4
+  },
+  {
+   "lid": "R31",
+   "name": "Ravelle Field",
+   "county": "Varnell",
+   "lead_kg": 4
+  },
+  {
+   "lid": "B48",
+   "name": "Brannoch Airstrip",
+   "county": "Halwick",
+   "lead_kg": 3
+  },
+  {
+   "lid": "D73",
+   "name": "Dellow Strip",
+   "county": "Ostrey",
+   "lead_kg": 2
+  }
+ ],
+ "counted": {
+  "unrecorded": "23,376",
+  "never_recorded": "338",
+  "per_airplane": "69.2"
+ },
+ "never_recorded": {
+  "T13": "33",
+  "A71": "26",
+  "U44": "65",
+  "O16": "62",
+  "W33": "58",
+  "P05": "1",
+  "S27": "0",
+  "K58": "2",
+  "T61": "1",
+  "N26": "9",
+  "H52": "11",
+  "W85": "18",
+  "C66": "11",
+  "Y02": "22",
+  "Z14": "8",
+  "L29": "9",
+  "M09": "8",
+  "R31": "4",
+  "B48": "5",
+  "D73": "3"
+ },
+ "towers": [
+  {
+   "lid": "HWK",
+   "name": "Halwick Municipal",
+   "ops": "17,600",
+   "lead_kg": 22
+  },
+  {
+   "lid": "CRV",
+   "name": "Corrisan Valley Regional",
+   "ops": "9,900",
+   "lead_kg": 18
+  },
+  {
+   "lid": "OSY",
+   "name": "Ostrey Field",
+   "ops": "19,400",
+   "lead_kg": 23
+  },
+  {
+   "lid": "VNL",
+   "name": "Varnell County Airport",
+   "ops": "12,200",
+   "lead_kg": 16
+  },
+  {
+   "lid": "KTY",
+   "name": "Kesterly Field",
+   "ops": "13,600",
+   "lead_kg": 16
+  },
+  {
+   "lid": "DMR",
+   "name": "Dunmore Municipal",
+   "ops": "7,900",
+   "lead_kg": 13
+  }
+ ],
+ "rivals": {
+  "capture_pct": "82",
+  "capture_set": [
+   "Ambrell County Airport",
+   "Fennick Airpark",
+   "Kestrel Ridge Airpark",
+   "Lanthorne Field",
+   "Pellow Municipal",
+   "Saltry Field",
+   "Thornacre Regional",
+   "Tavish Aero Field"
+  ],
+  "capture_in": [
+   "Kestrel Ridge Airpark",
+   "Pellow Municipal",
+   "Saltry Field",
+   "Tavish Aero Field"
+  ],
+  "capture_out": [
+   "Orrin Flats Airport",
+   "Umber Creek Airport",
+   "Wickrow Airfield"
+  ],
+  "training_set_count": 9,
+  "training_in": [
+   "Kestrel Ridge Airpark",
+   "Norwick Field",
+   "Pellow Municipal",
+   "Saltry Field",
+   "Tavish Aero Field"
+  ],
+  "school_pct": "86",
+  "other_pct": "73"
+ },
+ "unrecorded_g": "1.625",
+ "stated": {
+  "clauses": [
+   "method 2.1",
+   "method 3.2",
+   "method 4.2",
+   "method 4.3",
+   "method 4.4",
+   "guidelines 2.2"
+  ],
+  "year": "2026",
+  "round": "2027"
+ },
+ "capture_low": {
+  "name": "Dunmarsh Airport",
+  "pct": "56"
+ },
+ "capture_high": {
+  "name": "Lanthorne Field",
+  "pct": "99"
+ }
+}
