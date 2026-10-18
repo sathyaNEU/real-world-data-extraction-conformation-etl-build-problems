@@ -10,7 +10,7 @@ The runner-up is Reiderland (VKF-RDL) at 83 per cent, 11 percentage points above
 
 ## Scorecard
 
-| Site | Contracted FCR (MW) | Realised gain (%) | Qualifying episodes | Under tolerance |
+| Site | Contracted FCR (MW) | Realised gain (%) | Qualifying episodes | Below tolerance |
 |---|---|---|---|---|
 | VKF-KPV Kampvliet | 5.00 | 72 | 137 | yes |
 | VKF-RDL Reiderland | 2.50 | 83 | 156 | yes |
@@ -30,7 +30,7 @@ Each qualifying episode is read at its extreme second on the published one-secon
 
 ## Down regulation, availability and imbalance
 
-Down-regulation gains are on the same characteristic and are reported in the workbook; Kampvliet is the lowest there too at 73 per cent, and Meppelerdiep had no qualifying over-frequency episode in the window. Reserve capacity held available and the shortfall against commitment are per block in the workbook; the withdrawn hours are taken from the platform's own log timestamps, which sit ninety seconds after each window opens throughout the file; the start field agrees with that on the rows the alarm handler wrote and reads two hours early on the rest. Outside the blocks they were committed to, the sites delivered 113.7 MWh above programme and 247.8 MWh below it, which is the imbalance position the desk carried and is dominated by the traverse lag rather than by any site missing dispatch.
+Down-regulation gains are on the same characteristic and are reported in the workbook; Kampvliet is the lowest there too at 73 per cent, and Meppelerdiep had no qualifying over-frequency episode in the window. Reserve capacity held available and the shortfall against commitment are per block in the workbook; the withdrawn hours are taken from the platform's own log timestamps, which sit ninety seconds after each window opens throughout the file; the start field agrees with that on the rows the alarm handler wrote and reads two hours early on the rest. Outside the blocks they were committed to, the sites delivered 114.4 MWh above programme and 242.6 MWh below it, which is the imbalance position the desk carried and is dominated by the traverse lag rather than by any site missing dispatch.
 
 ## Next steps
 

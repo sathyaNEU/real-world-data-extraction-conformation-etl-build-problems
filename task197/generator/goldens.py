@@ -26,7 +26,7 @@ def workbook(path, F):
     ws["A2"].font = Font(size=9, italic=True)
     ws.append([])
     _head(ws, 4, ["Site", "Name", "Contracted FCR (MW)", "Contracted gain (MW/Hz)",
-                  "Realised gain (% of contract)", "Qualifying episodes", "Under tolerance"])
+                  "Realised gain (% of contract)", "Qualifying episodes", "Below 90% tolerance"])
     for r in F["scorecard"]:
         ws.append([r["site"], r["name"], r["cap"], r["contract_gain"], r["gain_pct"], r["episodes"],
                    "yes" if r["under"] else "no"])
@@ -160,7 +160,7 @@ def memo(path, F):
     w("")
     w("## Scorecard")
     w("")
-    w("| Site | Contracted FCR (MW) | Realised gain (%) | Qualifying episodes | Under tolerance |")
+    w("| Site | Contracted FCR (MW) | Realised gain (%) | Qualifying episodes | Below tolerance |")
     w("|---|---|---|---|---|")
     for r in sc:
         w("| %s %s | %.2f | %.0f | %d | %s |" % (r["site"], r["name"], r["cap"], r["gain_pct"],

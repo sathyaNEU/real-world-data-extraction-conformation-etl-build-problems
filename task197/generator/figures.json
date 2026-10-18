@@ -9,18 +9,18 @@
    "shortfall": 18.0
   },
   {
-   "available": 1157.0,
+   "available": 1151.0,
    "block": 2,
    "committed": 1168.0,
    "hours": "04:00-08:00",
-   "shortfall": 11.0
+   "shortfall": 17.0
   },
   {
-   "available": 1416.5,
+   "available": 1407.1,
    "block": 3,
    "committed": 1428.0,
    "hours": "08:00-12:00",
-   "shortfall": 11.5
+   "shortfall": 20.9
   },
   {
    "available": 352.9,
@@ -30,31 +30,40 @@
    "shortfall": 7.1
   },
   {
-   "available": 1625.5,
+   "available": 1615.5,
    "block": 5,
    "committed": 1642.0,
    "hours": "16:00-20:00",
-   "shortfall": 16.5
+   "shortfall": 26.5
   },
   {
-   "available": 247.0,
+   "available": 244.2,
    "block": 6,
    "committed": 252.0,
    "hours": "20:00-24:00",
-   "shortfall": 5.0
+   "shortfall": 7.8
   }
  ],
  "call_episodes": 137,
  "call_gain": 72,
  "call_name": "Kampvliet",
  "call_site": "VKF-KPV",
+ "constants": {
+  "deadband_mhz": 10,
+  "full_activation_mhz": 200,
+  "qualify_over_hz": 50.08,
+  "qualify_secs": 15,
+  "qualify_under_hz": 49.92,
+  "span_hz": 0.19,
+  "tolerance_pct": 90.0
+ },
  "counts": {
-  "archive_recordings": 2348,
-  "archive_rows": 432028,
+  "archive_recordings": 2719,
+  "archive_rows": 537338,
   "auction_results": 126,
   "commitments": 256,
   "dictionary": 15,
-  "event_log": 44,
+  "event_log": 52,
   "freq_1s": 97730,
   "freq_min": 30240,
   "imbalance_prices": 2016,
@@ -124,6 +133,7 @@
  "down_low_gain": 73,
  "down_low_name": "Kampvliet",
  "down_none_name": "Meppelerdiep",
+ "episodes_total": 935,
  "exact": {
   "VKF-DLK": 92.999917,
   "VKF-HGZ": 88.000014,
@@ -139,7 +149,7 @@
   "VKF-DLK": 92.000259,
   "VKF-HGZ": 87.036437,
   "VKF-KPV": 73.040455,
-  "VKF-NWV": 89.001126,
+  "VKF-NWV": 88.998587,
   "VKF-OOS": 95.865389,
   "VKF-RDL": 80.994731,
   "VKF-TRB": 98.0033,
@@ -147,102 +157,102 @@
  },
  "exposure": [
   {
-   "above": 20.2,
-   "below": 50.7,
+   "above": 22.0,
+   "below": 46.8,
    "name": "Dollardkust",
    "site": "VKF-DLK"
   },
   {
-   "above": 8.9,
-   "below": 17.8,
+   "above": 8.2,
+   "below": 18.6,
    "name": "Hoogezand",
    "site": "VKF-HGZ"
   },
   {
-   "above": 10.8,
-   "below": 22.5,
+   "above": 10.9,
+   "below": 21.9,
    "name": "Kampvliet",
    "site": "VKF-KPV"
   },
   {
-   "above": 10.2,
-   "below": 15.8,
+   "above": 9.8,
+   "below": 16.1,
    "name": "Meppelerdiep",
    "site": "VKF-MPD"
   },
   {
-   "above": 11.3,
+   "above": 10.9,
    "below": 28.0,
    "name": "Nieuwveen",
    "site": "VKF-NWV"
   },
   {
-   "above": 9.0,
-   "below": 24.2,
+   "above": 9.3,
+   "below": 22.2,
    "name": "Oosterhout",
    "site": "VKF-OOS"
   },
   {
-   "above": 11.2,
-   "below": 18.1,
+   "above": 11.6,
+   "below": 17.4,
    "name": "Reiderland",
    "site": "VKF-RDL"
   },
   {
-   "above": 15.6,
+   "above": 15.3,
    "below": 22.1,
    "name": "Terborgh",
    "site": "VKF-TRB"
   },
   {
-   "above": 16.5,
-   "below": 48.6,
+   "above": 16.3,
+   "below": 49.5,
    "name": "Zwartewater",
    "site": "VKF-ZWT"
   }
  ],
- "exposure_above_total": 113.7,
- "exposure_below_total": 247.8,
+ "exposure_above_total": 114.4,
+ "exposure_below_total": 242.6,
  "filing_due": "2026-10-23",
  "forcing": {
-  "adh_above_natural": 940.2,
-  "adh_below_natural": 1056.0,
+  "adh_above_natural": 944.2,
+  "adh_below_natural": 1054.2,
   "adh_natural_site": {
    "VKF-DLK": [
-    213.8,
-    242.3
+    217.6,
+    240.3
    ],
    "VKF-HGZ": [
-    58.1,
-    67.0
+    57.3,
+    67.6
    ],
    "VKF-KPV": [
     111.7,
-    84.9
+    84.1
    ],
    "VKF-MPD": [
-    78.1,
-    62.0
+    77.7,
+    62.3
    ],
    "VKF-NWV": [
-    97.9,
-    127.5
+    98.0,
+    128.1
    ],
    "VKF-OOS": [
-    97.8,
-    83.6
+    98.4,
+    82.2
    ],
    "VKF-RDL": [
-    89.4,
-    64.1
+    90.0,
+    63.4
    ],
    "VKF-TRB": [
-    80.0,
-    61.2
+    80.5,
+    61.8
    ],
    "VKF-ZWT": [
-    113.3,
-    263.5
+    113.0,
+    264.4
    ]
   },
   "clock_blocks": {
@@ -285,11 +295,11 @@
    "VKF-TRB": 97,
    "VKF-ZWT": 93
   },
-  "ean_lost_mwh": 26.8,
+  "ean_lost_mwh": 29.1,
   "held_minutes": 32,
   "kwh_site": "VKF-DLK",
   "over_withdrawn": 5,
-  "prelim_gap_mwh": 2.974,
+  "prelim_gap_mwh": 2.926,
   "superseded_mwh": 12.3
  },
  "gap_pp": 11,
@@ -345,6 +355,7 @@
   "sp": "VKF-RDL",
   "traj": "VKF-KPV"
  },
+ "obliged_pairs": 935,
  "org": "Veerkracht Flex",
  "rung0_name": "Zwartewater",
  "rung0_pre": 76.8,
@@ -436,6 +447,18 @@
    "under": false
   }
  ],
+ "sites_outside_tolerance": 3,
+ "spans": {
+  "VKF-DLK": 100,
+  "VKF-HGZ": 185,
+  "VKF-KPV": 90,
+  "VKF-MPD": 200,
+  "VKF-NWV": 95,
+  "VKF-OOS": 85,
+  "VKF-RDL": 190,
+  "VKF-TRB": 300,
+  "VKF-ZWT": 80
+ },
  "tolerance": 90.0,
  "tso": "Rijksnet",
  "window_from": "2026-09-21",

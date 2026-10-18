@@ -341,6 +341,9 @@ def main():
        "the padding convention kept, the mechanics gone")
 
     print("\n-- the settlement advices tie, and the walk holds in index units")
+    # SF14: the quarter an indemnity line belongs to. Both readings are computable and they differ, so
+    # the asking sentence pins the grain; what is gone is any unexplained amount between them.
+
     import openpyxl
     _wb = openpyxl.load_workbook(os.path.join(TARGET, "settlement_advices_2026_27.xlsx"),
                                  data_only=True)
@@ -522,6 +525,27 @@ def main():
     det = xlsx_rows("settlement_advices_2026_27.xlsx", "advice detail")
     adv_month = {a["advice_no"]: a["settlement_month"] for a in adv}
     resid = [d for d in det if d["settlement_month"] != adv_month.get(d["advice_no"])]
+    # SF14: the quarter an indemnity line belongs to. Both readings compute from the shipped sheets and
+    # they differ, so the asking sentence pins the grain; what is gone is any unexplained amount between
+    # them, because every advice ties to the sum of its own lines.
+    _tierof = {m["code"]: m["tier"] for m in w["members"]}
+    _qof = lambda ms: G._settlement_quarter(dt.date(int(ms.split("-")[0]), int(ms.split("-")[1]), 15))
+    _own, _adv_basis = {}, {}
+    for r in _det:
+        if r["cover_class"] != "unauthorised fraud":
+            continue
+        k = (_qof(r["settlement_month"]), _tierof[r["member_code"]])
+        _own[k] = round(_own.get(k, 0.0) + float(r["indemnity_paid_gbp"]), 2)
+    for a in _adv:
+        if a["cover_class"] != "unauthorised fraud":
+            continue
+        k = (_qof(a["settlement_month"]), _tierof[a["member_code"]])
+        _adv_basis[k] = round(_adv_basis.get(k, 0.0) + float(a["advice_total_gbp"]), 2)
+    gap = sum(abs(_adv_basis.get(k, 0.0) - v) for k, v in _own.items())
+    ok("SF14 the own-month reading is the golden and the advice-month reading differs",
+       all(abs(_own[(q, t)] - G.ask_a(w)["Q%d %s" % (q, t)]) < 0.011
+           for q in (1, 2, 3, 4) for t in "ABC") and gap > 1000.0,
+       "the two readings differ by %.2f across the year, every pound of it a quarter attribution" % gap)
     ok("ask A's device sits on the unauthorised class only",
        resid and all(d["cover_class"] == "unauthorised fraud" for d in resid),
        "%d detail lines settle in a month other than their advice's" % len(resid))

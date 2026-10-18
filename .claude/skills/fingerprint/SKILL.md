@@ -87,6 +87,19 @@ other session's guard sees the draw.
 Clear every BLOCK by redrawing its axis; answer each WARN in one design-note line. `register` refuses a
 BLOCK; `--force` is the author's override, reason in `notes`.
 
+**2b. The window moves under you, and your own registration moves it.** The axis bans (`ban.forum`,
+`ban.forcing_event`, `ban.org_family`, `ban.strategy`, `ban.pairing`, `ban.subdomain`, `ban.pattern`,
+`ban.role`, `ban.artifact`, `ban.spine`, `ban.shape`) run against the last three builds by filing time, and
+`register` stamps that time afresh. So registering your own card pushes the slot's previous architecture
+out of the window and pulls another build in, and a late re-registration anywhere reorders every live
+build's window at once. A clear verdict therefore has a short shelf life. **Run `check` against the
+registered card as the last act of stage 1**, not against the draft, and run it again before relying on a
+clear verdict at stage 2. Three builds hit this in one day: one cleared `ban.forum` twice post-registration
+before landing on a third value, and one cleared three axis BLOCKs at stage 2 that had not existed when its
+draw was fixed. Redraw the axis rather than argue it, since differentiation never clears an axis ban, and
+say in the note which values were redrawn and why the replacement is the honester label and not merely the
+passing one.
+
 **3. Re-root:** move the old identity into `lineage` with its fate, write the new draw, check and register.
 The guard compares against the slot's own lineage too.
 

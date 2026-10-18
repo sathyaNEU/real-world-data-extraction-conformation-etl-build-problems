@@ -332,6 +332,13 @@ def episode_table(W, recs, cache, kind="under"):
 _MET_CACHE = {}
 
 
+# Each meter's own measurement stream. The index selects the stream, and the nine were chosen so
+# that all twenty graded exposure figures sit at least 0.3 of their printed tenth of a megawatt
+# hour from a bin edge; checks.py asserts the clearance rather than trusting the choice.
+MDEV = {"VKF-DLK": 7, "VKF-HGZ": 0, "VKF-KPV": 20, "VKF-MPD": 7, "VKF-NWV": 4,
+        "VKF-OOS": 1, "VKF-RDL": 8, "VKF-TRB": 10, "VKF-ZWT": 7}
+
+
 def metered(W, d, sid):
     key = (d, sid)
     if key not in _MET_CACHE:
@@ -352,7 +359,7 @@ def _metered(W, d, sid):
         lo, hi = p * 900, (p + 1) * 900
         P = sim.site_power(s, d, f, prog, lo, hi)
         out[p] = P.mean() * 0.25
-    r = sim._rng("meterdev", sid, d.isoformat())
+    r = sim._rng("meterdev%d" % MDEV[sid], sid, d.isoformat())
     out = out + r.normal(-0.0008 * s["pmax"], 0.0020 * s["pmax"], 96)
     return np.round(out, 4)
 

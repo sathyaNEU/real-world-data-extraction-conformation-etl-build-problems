@@ -36,16 +36,16 @@
 
 ### site_response_scorecard.xlsx
 
-1. Realised response gain, qualifying under-frequency episodes and tolerance verdict, nine sites in gain order, gains to the nearest whole per cent and counts whole:
-   - Kampvliet (VKF-KPV): 72 per cent, 137 episodes, under tolerance yes
-   - Reiderland (VKF-RDL): 83 per cent, 156 episodes, under tolerance yes
-   - Hoogezand (VKF-HGZ): 88 per cent, 157 episodes, under tolerance yes
-   - Nieuwveen (VKF-NWV): 91 per cent, 113 episodes, under tolerance no
-   - Dollardkust (VKF-DLK): 93 per cent, 145 episodes, under tolerance no
-   - Oosterhout (VKF-OOS): 95 per cent, 40 episodes, under tolerance no
-   - Meppelerdiep (VKF-MPD): 97 per cent, 33 episodes, under tolerance no
-   - Zwartewater (VKF-ZWT): 99 per cent, 77 episodes, under tolerance no
-   - Terborgh (VKF-TRB): 101 per cent, 77 episodes, under tolerance no
+1. Realised response gain, qualifying under-frequency episodes and whether the site falls below the 90 per cent tolerance, nine sites in gain order, gains to the nearest whole per cent and counts whole:
+   - Kampvliet (VKF-KPV): 72 per cent, 137 episodes, below tolerance yes
+   - Reiderland (VKF-RDL): 83 per cent, 156 episodes, below tolerance yes
+   - Hoogezand (VKF-HGZ): 88 per cent, 157 episodes, below tolerance yes
+   - Nieuwveen (VKF-NWV): 91 per cent, 113 episodes, below tolerance no
+   - Dollardkust (VKF-DLK): 93 per cent, 145 episodes, below tolerance no
+   - Oosterhout (VKF-OOS): 95 per cent, 40 episodes, below tolerance no
+   - Meppelerdiep (VKF-MPD): 97 per cent, 33 episodes, below tolerance no
+   - Zwartewater (VKF-ZWT): 99 per cent, 77 episodes, below tolerance no
+   - Terborgh (VKF-TRB): 101 per cent, 77 episodes, below tolerance no
 2. Realised response gain and episode count on the qualifying over-frequency episodes, nine sites in site order:
    - Dollardkust (VKF-DLK): 92 per cent, 20 episodes
    - Hoogezand (VKF-HGZ): 87 per cent, 152 episodes
@@ -58,20 +58,20 @@
    - Zwartewater (VKF-ZWT): 94 per cent, 71 episodes
 3. Reserve capacity hours held available and the shortfall against commitment, six delivery blocks, MWh to one decimal place:
    - Block 1 (00:00-04:00): held available 542.0, shortfall 18.0
-   - Block 2 (04:00-08:00): held available 1157.0, shortfall 11.0
-   - Block 3 (08:00-12:00): held available 1416.5, shortfall 11.5
+   - Block 2 (04:00-08:00): held available 1151.0, shortfall 17.0
+   - Block 3 (08:00-12:00): held available 1407.1, shortfall 20.9
    - Block 4 (12:00-16:00): held available 352.9, shortfall 7.1
-   - Block 5 (16:00-20:00): held available 1625.5, shortfall 16.5
-   - Block 6 (20:00-24:00): held available 247.0, shortfall 5.0
+   - Block 5 (16:00-20:00): held available 1615.5, shortfall 26.5
+   - Block 6 (20:00-24:00): held available 244.2, shortfall 7.8
 4. Energy delivered above programme and below programme in the settlement periods the site held no delivery-block commitment for, nine sites in site order, MWh to one decimal place:
-   - Dollardkust (VKF-DLK): above 20.2, below 50.7
-   - Hoogezand (VKF-HGZ): above 8.9, below 17.8
-   - Kampvliet (VKF-KPV): above 10.8, below 22.5
-   - Meppelerdiep (VKF-MPD): above 10.2, below 15.8
-   - Nieuwveen (VKF-NWV): above 11.3, below 28.0
-   - Oosterhout (VKF-OOS): above 9.0, below 24.2
-   - Reiderland (VKF-RDL): above 11.2, below 18.1
-   - Terborgh (VKF-TRB): above 15.6, below 22.1
-   - Zwartewater (VKF-ZWT): above 16.5, below 48.6
-   - Portfolio: above 113.7, below 247.8
+   - Dollardkust (VKF-DLK): above 22.0, below 46.8
+   - Hoogezand (VKF-HGZ): above 8.2, below 18.6
+   - Kampvliet (VKF-KPV): above 10.9, below 21.9
+   - Meppelerdiep (VKF-MPD): above 9.8, below 16.1
+   - Nieuwveen (VKF-NWV): above 10.9, below 28.0
+   - Oosterhout (VKF-OOS): above 9.3, below 22.2
+   - Reiderland (VKF-RDL): above 11.6, below 17.4
+   - Terborgh (VKF-TRB): above 15.3, below 22.1
+   - Zwartewater (VKF-ZWT): above 16.3, below 49.5
+   - Portfolio: above 114.4, below 242.6
 5. Bar chart of the under-frequency realised gains by site on the Scorecard sheet, one bar per site in gain order, with the tolerance line drawn across at 90 per cent and the axis titled in per cent of contracted gain.

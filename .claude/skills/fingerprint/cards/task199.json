@@ -8,7 +8,7 @@
   "client_domain": "political-science-public-policy",
   "niche": "which city of a conflict corridor a collective-action register sends its one half-yearly field verification to, when the press monitor receives very different volumes of material from each city",
   "objective": "anomaly-detection",
-  "shape": "01",
+  "shape": "10",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
   "answer": "",
@@ -26,7 +26,7 @@
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
@@ -42,7 +42,7 @@
     "source": "synthetic"
   },
   "forum": "line_manager_or_team",
-  "forcing_event": "audit_or_inspection",
+  "forcing_event": "period_close",
   "org_family": "university_or_school",
   "world": {
     "geography": "Colombia, Catatumbo and middle Magdalena corridor (Norte de Santander, Cesar, Santander)",
@@ -94,6 +94,6 @@
     "task198": "198 assigns a between-place difference to the people who measured it, and cannot identify it because measurer and place are collinear; 199's driver is measured for every city in every month, so identification is never the issue: the issue is that two of the three available measurements contain the count being tested."
   },
   "lineage": [],
-  "notes": "scoring_unit other: one field verification mission per half-year. calibration_form none by design: no audit or gold-standard subsample ships, because a bench that measured the register's own completeness would refute the naive read and make the decisive rung readable; the method is forced by the data's structure instead (the retained-item and citation volumes contain the action count by construction, the redundancy family needs a free parameter the pack does not fix, and every parameter-free presence form agrees). Pricing on the clean truth, before any file: move needed 0.400 ranking units against 1.260 available (3.15x); decisive margin 1.59x over the runner-up at 5.2 standard errors of the golden's own rise; golden 4th of 11 on the default path at 1.22x behind the leader; lever is a level moving the denominator 126 per cent while contributing 16 per cent of the ranked quantity's spread, so the lever and the noise are two variances (stumping Part 3's new screen does not fire); decisive route names the golden in 60 of 60 seeds, the default path misses it in 56 of 60. Labels: gap population because a row is a reported action rather than an action; decisive generator G12 (an absence of records is not a record of absence) with G14 for the conditioned yield that repairs it and G16 for the choice among conditioners; Gate G decomposition_attribution because every city's recorded rise is correctly reported and the call turns on assigning it to press presence or to activity, and the right assignment is pinned by the data's structure rather than by a validation bench or a standard. Shape 01 answered against overuse.shape: the criteria come from the eleven candidate cities, and of the eighteen shapes only 01 takes its criteria from candidates (17 and 08, native to the objective, take theirs from the periods of one series and would leave the eleven-city structure ungraded).",
-  "registered": "2026-10-18T06:09:32Z"
+  "notes": "scoring_unit other: one field verification mission per half-year. calibration_form none by design: no audit or gold-standard subsample ships, because a bench that measured the register's own completeness would refute the naive read and make the decisive rung readable; the method is forced by the data's structure instead (the retained-item and citation volumes contain the action count by construction, the redundancy family needs a free parameter the pack does not fix, and every parameter-free presence form agrees). Pricing on the clean truth, before any file: move needed 0.400 ranking units against 1.260 available (3.15x); decisive margin 1.59x over the runner-up at 5.2 standard errors of the golden's own rise; golden 4th of 11 on the default path at 1.22x behind the leader; lever is a level moving the denominator 126 per cent while contributing 16 per cent of the ranked quantity's spread, so the lever and the noise are two variances (stumping Part 3's new screen does not fire); decisive route names the golden in 60 of 60 seeds, the default path misses it in 56 of 60. Labels: gap population because a row is a reported action rather than an action; decisive generator G12 (an absence of records is not a record of absence) with G14 for the conditioned yield that repairs it and G16 for the choice among conditioners; Gate G decomposition_attribution because every city's recorded rise is correctly reported and the call turns on assigning it to press presence or to activity, and the right assignment is pinned by the data's structure rather than by a validation bench or a standard. Shape redrawn 01 to 10 at stage 2: task198 re-rooted and re-registered after this card was filed, which moved task471 (shape 01) into the last two builds and raised ban.shape, an axis ban no argument clears. Shape 10 is the honester fit in any case, because the criteria come from five checks on each of the eleven panel cities and the mission is a maximum rather than a cap that runs out mid-list; the protocol's eligibility condition supplies the threshold column and is asserted to remove no city that could win. Strategy and forcing event redrawn at stage 2 after task190 was retired by its owner, which pulled task245 into the last three and raised ban.strategy on population_selection and ban.forcing_event on audit_or_inspection. Both axes were redrawn rather than argued, and both new labels are the honester ones: the decisive step is that the exposure must not be caused by the outcome, which is a control choice in the causal-design family (conditioning on the retained-item or citation volume conditions on a descendant of the count being tested), and the designation falls due because the half year closed on 30 September and the register's definitive extract closed on 5 November. repeat.decision answered: the call is a mission allocation among eleven recorded candidates, which is the records-fixed shape the wave's rules prefer over an estimator output, and task166 differs in domain, objective, gap, pattern, Gate G and driver (0.05 similarity).",
+  "registered": "2026-10-18T06:36:24Z"
 }

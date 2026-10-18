@@ -126,6 +126,35 @@ def main():
     nrec = con.execute("SELECT count(*) FROM recording").fetchone()[0]
     nrow = con.execute("SELECT count(*) FROM power_1s").fetchone()[0]
     ck("archive rows", nrow > 25000, "%d one-second power rows in %d recordings" % (nrow, nrec))
+    # the archive's own spread, read back from the shipped database: an organ identical on every
+    # dimension but its timestamps announces the step it was built for
+    meta = con.execute("""SELECT trigger, site_id, start_utc,
+                          (julianday(end_utc) - julianday(start_utc)) * 86400 + 1 AS secs
+                          FROM recording""").fetchall()
+    trig = {}
+    for (tg, sid, st, secs) in meta:
+        trig.setdefault(tg, []).append((sid, st, int(round(secs))))
+    ck("the shipped archive holds captures of four or more kinds", len(trig) >= 4,
+       ", ".join("%s %d" % (k, len(v)) for k, v in sorted(trig.items(), key=lambda x: -len(x[1]))))
+    alen = {x[2] for v in trig.values() for x in v}
+    aoff = set()
+    for v in trig.values():
+        for (sid, st, secs) in v:
+            t = ts(st) + OFFSET
+            aoff.add((t.minute % 15) * 60 + t.second)
+    ck("the shipped archive's lengths and offsets vary",
+       len(alen) >= 100 and len(aoff) >= 30,
+       "%d distinct lengths %d..%d, %d distinct quarter-hour offsets"
+       % (len(alen), min(alen), max(alen), len(aoff)))
+    big = max(trig, key=lambda k: len(trig[k]))
+    ck("positive control, the archive reader can tell the capture kinds apart",
+       big == "FREQ-DEV" and len(trig[big]) > 1000 and "zzqq" not in trig,
+       "largest kind %s with %d recordings" % (big, len(trig[big])))
+    for k, v in trig.items():
+        if k == "FREQ-DEV":
+            continue
+        ck("capture kind %s is a minority of the archive" % k, len(v) < nrec * 0.5,
+           "%d of %d" % (len(v), nrec))
     power = defaultdict(dict)
     for sid, t, p in con.execute("""SELECT r.site_id, w.ts_utc, w.p_mw FROM power_1s w
                                     JOIN recording r ON r.recording_id = w.recording_id"""):

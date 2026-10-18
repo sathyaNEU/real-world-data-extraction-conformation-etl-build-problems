@@ -95,10 +95,11 @@ def main():
     w("")
     w("### site_response_scorecard.xlsx")
     w("")
-    w("1. Realised response gain, qualifying under-frequency episodes and tolerance verdict, nine sites "
-      "in gain order, gains to the nearest whole per cent and counts whole:")
+    w("1. Realised response gain, qualifying under-frequency episodes and whether the site falls below "
+      "the 90 per cent tolerance, nine sites in gain order, gains to the nearest whole per cent and "
+      "counts whole:")
     for r in sc:
-        w("   - %s (%s): %.0f per cent, %d episodes, under tolerance %s"
+        w("   - %s (%s): %.0f per cent, %d episodes, below tolerance %s"
           % (r["name"], r["site"], r["gain_pct"], r["episodes"], "yes" if r["under"] else "no"))
     w("2. Realised response gain and episode count on the qualifying over-frequency episodes, nine sites "
       "in site order:")

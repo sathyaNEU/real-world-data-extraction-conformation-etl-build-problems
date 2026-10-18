@@ -3,7 +3,7 @@ ladder arithmetic, the bins, and the separation line between the ask devices and
 
 Usage: python3 task197/generator/checks.py
 """
-import os, sys, json, csv, sqlite3, datetime as dt, statistics
+import os, sys, json, csv, sqlite3, datetime as dt, statistics, collections
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -355,8 +355,8 @@ def main():
            [("below %s" % k, edge(adh["below"][k], 0.1)) for k in adh["below"]] + \
            [("above portfolio", edge(adh["above_total"], 0.1)),
             ("below portfolio", edge(adh["below_total"], 0.1))]
-    ck("no graded exposure figure sits on a printed boundary",
-       all(e >= 0.002 for (_, e) in expo),
+    ck("every graded exposure figure sits at least 0.3 of its unit from a bin edge",
+       all(e >= 0.03 for (_, e) in expo),
        "tightest %s at %.4f MWh from the edge" % min(expo, key=lambda x: x[1]))
     # exactness: the pinned rounding path, and the one it closes, print the same figure
     sum_then_round = {k: round(adh["above"][k], 1) for k in adh["above"]}
@@ -381,6 +381,60 @@ def main():
     diff = [k for k in sum_then_round if sum_then_round[k] != round_then_sum[k]]
     ck("clause 5's rounding path is the one that is pinned, and the alternative is closed",
        len(diff) > 0, "round-each-period would move %d of 9 above-programme figures" % len(diff))
+
+    # ---- the archive's spread: an organ's realism is its variance, not its genre ---------------
+    trig = collections.Counter(r[2] for r in recs)
+    lens = {r[4] - r[3] for r in recs}
+    offs = {r[3] % 900 for r in recs}
+    ck("the archive holds captures of four or more kinds", len(trig) >= 4,
+       ", ".join("%s %d" % kv for kv in trig.most_common()))
+    ck("recording length and start offset vary across the archive",
+       len(lens) >= 100 and len(offs) >= 30,
+       "%d distinct lengths %d..%d, %d distinct quarter-hour offsets"
+       % (len(lens), min(lens), max(lens), len(offs)))
+    dp = [r for r in recs if r[2] == "DPDT"]
+    dlen = {r[4] - r[3] for r in dp}
+    doff = {r[3] % 900 for r in dp}
+    ck("the captures the decisive step reads are not the archive's only rows",
+       len(dp) / len(recs) < 0.5 and len(dp) > 200,
+       "%d of %d recordings, %.1f per cent" % (len(dp), len(recs), 100 * len(dp) / len(recs)))
+    ck("those captures are not identical on every dimension but their timestamps",
+       len(dlen) >= 50 and len(doff) >= 10,
+       "%d distinct lengths %d..%d, %d distinct offsets" % (len(dlen), min(dlen), max(dlen), len(doff)))
+    ck("captures other than the operator's deviation windows fall on every delivery date",
+       len({r[0] for r in recs if r[2] != "FREQ-DEV"}) == len(sim.dates()),
+       "%d of %d dates" % (len({r[0] for r in recs if r[2] != "FREQ-DEV"}), len(sim.dates())))
+    meds = {s_site["id"]: float(np.median([r[4] - r[3] for r in dp if r[1] == s_site["id"]]))
+            for s_site in sim.SITES}
+    ramps = {s_site["id"]: s_site["ramp_s"] for s_site in sim.SITES}
+    ck("no capture's length carries anything about the site's traverse span",
+       max(meds.values()) - min(meds.values()) <= 15,
+       "per-site median capture length spans %.0f s while the traverse spans %d s"
+       % (max(meds.values()) - min(meds.values()), max(ramps.values()) - min(ramps.values())))
+    # the organ's exactness: the boundaries a solver fits the traverse over are there, in full
+    full = {}
+    for s_site in sim.SITES:
+        sid = s_site["id"]
+        got = 0
+        for (dd, pp) in core.fit_boundaries(W, sid):
+            t = pp * 900
+            if any(lo <= t and t + 204 < hi for (d2, s2, tg, lo, hi) in recs
+                   if d2 == dd and s2 == sid):
+                got += 1
+        full[sid] = got
+    ck("every site keeps two or more fitting boundaries captured in full",
+       min(full.values()) >= 2, ", ".join("%s=%d" % (k[4:], v) for k, v in sorted(full.items())))
+    # R2: giving the archive its spread moved no response the call reads
+    want = set()
+    for d in sim.dates():
+        for (a, b) in W[d]["exc"]:
+            lo, hi = a, min(sim.DAY, b + 1)
+            for s_site in sim.SITES:
+                if sim.contracted(s_site, np.arange(lo, hi), d).any():
+                    want.add((d, s_site["id"], lo, hi))
+    got = {(r[0], r[1], r[3], r[4]) for r in recs if r[2] == "FREQ-DEV"}
+    ck("R2 the archive's added captures change no deviation window the call reads",
+       want == got, "%d wanted, %d present, %d differ" % (len(want), len(got), len(want ^ got)))
 
     # printed precision: every graded figure at the precision its asking sentence states
     sub = os.path.join(TASK, "submission.md")

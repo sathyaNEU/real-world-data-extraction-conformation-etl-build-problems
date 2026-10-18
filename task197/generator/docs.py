@@ -20,12 +20,19 @@ def _styles():
                           textColor=colors.HexColor("#555555")))
     return ss
 
-def pdf(path, title, blocks, author="", subject=""):
+# reportlab's invariant mode writes a fixed 2000-01-01 control date so the rebuild is byte
+# identical. The date is substituted afterwards for the one the document states about itself, at
+# equal byte length so the cross-reference offsets still hold.
+FIXED_PDF_DATE = b"D:20000101000000+00'00'"
+
+
+def pdf(path, title, blocks, author="", subject="", issued="2026-10-13 07:12"):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     ss = _styles()
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20*mm, rightMargin=20*mm,
                             topMargin=18*mm, bottomMargin=16*mm, title=title, author=author,
-                            subject=subject, creator="", producer="")
+                            subject=subject, creator=author,
+                            producer=(author + " document control") if author else "")
     flow = []
     for kind, body in blocks:
         if kind == "h1": flow.append(Paragraph(body, ss["H1x"]))
@@ -46,6 +53,12 @@ def pdf(path, title, blocks, author="", subject=""):
             ]))
             flow.append(t); flow.append(Spacer(1, 5))
     doc.build(flow)
+    stamp = ("D:%s%s%s%s%s00+00'00'" % (issued[0:4], issued[5:7], issued[8:10],
+                                        issued[11:13], issued[14:16])).encode("ascii")
+    assert len(stamp) == len(FIXED_PDF_DATE), (stamp, FIXED_PDF_DATE)
+    raw = open(path, "rb").read()
+    assert FIXED_PDF_DATE in raw, path
+    open(path, "wb").write(raw.replace(FIXED_PDF_DATE, stamp))
 
 def normalise_zip(path, when=(2026, 10, 13, 9, 0, 0)):
     """Rewrite a zip container (xlsx) with fixed entry timestamps so rebuilds match byte for byte."""
@@ -130,7 +143,7 @@ def technical_conditions(path, tso):
               "settled against the provider's nominated programme under the imbalance settlement rules."),
         ("small", "Rijksnet publishes system frequency at one-second resolution for every deviation beyond 75 "
                   "millihertz, and a minute summary for every day. Document reference RN-TC-FCR-2026-07."),
-    ], author=tso, subject="FCR technical conditions")
+    ], author=tso, subject="FCR technical conditions", issued="2026-01-05 11:20")
 
 
 def performance_standard(path, org, tol, window_from, window_to, as_of):
@@ -160,10 +173,11 @@ def performance_standard(path, org, tol, window_from, window_to, as_of):
         ("p", "Episodes in a settlement period the site was not contracted for are out of scope, as are the "
               "parts of a delivery block for which the site was withdrawn from reserve."),
         ("h2", "3. The review window and the decision"),
-        ("p", "The review window for a delivery month is the reserve quarter to date, ending with the last "
-              "delivery date before the desk's determination. For the determination dated %s the window runs "
-              "from %s to %s inclusive." % (as_of.strftime("%-d %B %Y"), window_from.strftime("%-d %B %Y"),
-                                            window_to.strftime("%-d %B %Y"))),
+        ("p", "The review window for a delivery month is the reserve quarter to date, ending with the "
+              "delivery date two days before the desk's determination. For the determination dated %s the "
+              "window runs from %s to %s inclusive." % (as_of.strftime("%-d %B %Y"),
+                                                        window_from.strftime("%-d %B %Y"),
+                                                        window_to.strftime("%-d %B %Y"))),
         ("p", "A site whose realised response gain on under-frequency episodes is below %.0f per cent of the "
               "gain its contract requires is outside tolerance. Where the system operator's single monthly "
               "test slot is to be used, the desk withdraws the one site whose realised response gain sits "
@@ -185,14 +199,15 @@ def performance_standard(path, org, tol, window_from, window_to, as_of):
               "delivered above programme and the energy delivered below programme over the review window, "
               "each as a positive quantity in megawatt hours, summed over those periods and rounded once at "
               "the end. A site's delivered energy for a period is the net volume its own settlement meters "
-              "register for that site over the period; its programme energy is the setpoint the control "
+              "register for that site over the period, before any adjustment the system operator applies at "
+              "settlement; its programme energy is the setpoint the control "
               "platform held for that period taken over the quarter hour."),
         ("p", "The system operator's settlement statements carry the volumes it settles for each metering "
               "point, with a grid loss adjustment at connections above 110 kilovolts, and the desk reconciles "
               "them to its own meters on the monthly settlement run."),
         ("small", "Document reference VKF-STD-RP-004. Review annually or on a change to the system operator's "
                   "technical conditions."),
-    ], author=org, subject="Reserve performance standard")
+    ], author=org, subject="Reserve performance standard", issued="2026-06-24 16:35")
 
 
 def availability_report(path, tso, org, month, blocks_pct, group_id):
@@ -211,4 +226,4 @@ def availability_report(path, tso, org, month, blocks_pct, group_id):
         ("p", "No capacity payment adjustment arises for this delivery month. Availability below 98.00 per cent "
               "in two consecutive delivery months is reviewed with the provider."),
         ("small", "Document reference RN-AV-%s-%s." % (group_id, month.replace(" ", "").replace("-", ""))),
-    ], author=tso, subject="FCR group availability")
+    ], author=tso, subject="FCR group availability", issued="2026-10-07 09:41")

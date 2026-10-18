@@ -185,9 +185,15 @@ def main():
         eq("the golden workbook's index for %s" % r["member_code"],
            int(r["scam_incidence_index_per_million"]), i2["index"])
     g_br = sheet("member_incidence_review.xlsx", "castlegate bridge", GOLDEN)
-    bridge = [r for r in g_br if r.get("cases") is not None]
-    eq("the bridge walks recorded to indexed", [int(r["cases"]) for r in bridge[:3]],
-       [ix["recorded"], round(ix["estimate"]) - ix["recorded"], round(ix["estimate"])])
+    col = "cases_per_million_payments"
+    bridge = [r for r in g_br if r.get(col) is not None]
+    per_m = lambda n: round(n / ix["volume"] * 1e6)
+    eq("the walk is stated in index units and walks recorded to indexed",
+       [int(r[col]) for r in bridge[:3]],
+       [per_m(ix["recorded"]), per_m(ix["estimate"] - ix["recorded"]), per_m(ix["estimate"])])
+    ok("the walk's two lines add to the index",
+       per_m(ix["recorded"]) + per_m(ix["estimate"] - ix["recorded"]) == ix["index"],
+       "%d + %d = %d" % (per_m(ix["recorded"]), per_m(ix["estimate"] - ix["recorded"]), ix["index"]))
 
     print("\n-- the ladder, the estimator family and the window sweep")
     def naive():
@@ -343,10 +349,15 @@ def main():
     ok("the pack dates the evidence base to the pull and names no feed change",
        "as pulled for this meeting on 2 July 2027" in pack_txt
        and "register feed change of February" not in pack_txt, "the pack agrees")
-    ok("the feed note keeps the padding convention and drops the mechanics",
+    ok("the feed note keeps the padding convention and carries no steer",
        "Pad the account number back to eight digits" in notes
-       and "An account stays on the register once it is reported" in notes
+       and "An account stays on the register" not in notes
+       and "already on the register" not in notes
        and "the field is blank" not in notes, "the note reads as an operations note")
+    manifest = open(os.path.join(TARGET, "export_manifest.csv"), encoding="utf-8").read()
+    ok("no shipped file comments on what a source omits",
+       "never recorded" not in manifest and "nobody has reported" not in manifest,
+       "the manifest states coverage and not absence")
     reasons = {r["report_reason"] for r in register}
     ok("the register's report reasons vary as a real register's do", len(reasons) >= 3,
        "%d distinct reasons" % len(reasons))
