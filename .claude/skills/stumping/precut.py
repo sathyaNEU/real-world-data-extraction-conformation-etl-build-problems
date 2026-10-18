@@ -46,15 +46,25 @@ def resolve(arg):
     return os.path.abspath(arg)
 
 
-def sections(text):
-    """H2 heading -> body, headings matched case-insensitively on their stripped text."""
-    out, cur, buf = {}, None, []
+def sections(text, dupes=None):
+    """H2 heading -> body, headings matched case-insensitively on their stripped text.
+
+    A repeated heading used to overwrite the earlier one silently, so a note carrying a duplicated or
+    half-spliced section passed every check on whichever copy came last. task199's note reached a
+    committed state with two "the judge's FIX_NOW, answered" headings and a "tried and rejected`) |"
+    heading sitting inside a table cell, and this gate read it as clean. Repeats are collected into
+    `dupes` for the caller to fail on.
+    """
+    out, cur, buf, seen = {}, None, [], []
     for line in text.splitlines():
         m = re.match(r"^##\s+(.+?)\s*$", line)
         if m and not line.startswith("###"):
             if cur is not None:
                 out[cur] = "\n".join(buf)
             cur, buf = re.sub(r"[`*]", "", m.group(1)).strip().lower(), []
+            if cur in seen and dupes is not None:
+                dupes.append(cur)
+            seen.append(cur)
         elif cur is not None:
             buf.append(line)
     if cur is not None:
@@ -161,11 +171,17 @@ def task_type_serves(task, line):
 
 def check_note(task_dir, note_text):
     rows = []
-    secs = sections(note_text)
+    dupes = []
+    secs = sections(note_text, dupes)
     task = os.path.basename(task_dir)
 
     def row(check, ok, detail, warn=False):
         rows.append((check, "PASS" if ok else ("WARN" if warn else "FAIL"), detail))
+
+    row("no repeated H2 heading", not dupes,
+        "each H2 appears once" if not dupes
+        else "repeated, so the earlier copy is unread and unchecked: %s"
+             % ", ".join(sorted(set(dupes))))
 
     for name in REQUIRED:
         row("section %s" % name, section(secs, name) is not None,

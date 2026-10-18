@@ -16,31 +16,7 @@ Stage 2. Every number below is printed by `generator/core.py` or `generator/ceil
 | Gate G | decomposition_attribution: every city's recorded rise is correctly reported, and the call turns on assigning it to press presence or to activity |
 | Strategy / Layer 2 | causal_design (the exposure must not be caused by the outcome) / estimand_identification, client pattern political-science-public-policy/conflict-protest-event-data-analysis/1 |
 | Decision-type WARN | pick_one_of_n repeats whichever build is filed immediately before this one (task198 v4 at filing, task166 earlier the same day): answered, because the call is a mission allocation among eleven recorded candidates, the records-fixed shape this wave's rules prefer over an estimator output, and task166 differs in domain, objective, gap, pattern, Gate G and driver at 0.05 similarity |
-| Calibration organ | none, by design (see `## Stage 3 findings answered
-
-| Finding | Where it came from | What was done |
-|---|---|---|
-| The generator attributed a multi-day action's days to its start date while the shipped rows carry each gathering-day on its own date | `verify.py`, on its own code path | The generator was changed to the shipped rows' convention, which is the manual's unit; the designation and every rung held, and the populations were re-tuned against the corrected counts |
-| The published monthly summary and one assertion still used the old convention | the same verifier run | Both were moved to gathering-days on their own dates |
-| The export manifest declared every file "sintetico", a statement inside the bundle that the world was built | `reduce-house-fixes` H24 | Rewritten as the area of the Observatorio that delivers each file; `verify.py` now asserts the manifest stays inside the fiction and covers the shipped set |
-| `leak.py` returned LEAK on two documents | sweep 2, author vocabulary | Both were the sweep's English TODO marker matching the Spanish word "todo" in ordinary prose. The four sentences were reworded without it; the clauses' force is unchanged and the verifier's controls were re-pointed. The sweep cannot tell the two apart, which is worth knowing for any Spanish-language pack |
-| `guard.py surface` found a persona "Campo Plantilla" | the surface screen | The manual's table header read as a name; the column was renamed and the screen now finds only the two carded personas, who sign the protocol and the manual |
-| The eligibility condition excluded nobody once the thin cities were thickened, leaving a graded column with eleven identical values | the golden's own figures | The protocol's floor was raised to seventy actions, which removes Hacari at 56 and nobody else, with the nearest other city 16 actions clear of it; the condition stays inert for the call, asserted |
-| Nine ask-A cells and six ask-B rows in the write-up were typed rather than read | `figures_check.py` | Every line in block 4 is now emitted from `figures.json`, and the units and clause numbers the write-up names are emitted with them |
-| Six of ask C's eight "largest single action" figures did not move: the biggest action in a sector is usually not one the coder recorded as a range | the forcing measurement on the cut pack | The figure was replaced by the sector's total participants, which the device moves in all eight sectors by 197 to 3,721, and the ask's unit was tied to the register's own entry (the 2025 export holds one per gathering-day, as the dictionary states) so the term carries no second reading |
-
-## The judge's FIX_NOW, answered
-
-| Finding | What was done |
-|---|---|
-| Ask 6's data contradicted the manual: all ranged entries held the range's low end in `participantes_est` while the manual promised a central estimate, and the committed figures reproduced only if each midpoint was floored before summing | The coder now leaves the numeric field empty where the source reported a range and no figure, which is what the manual and the dictionary state, and every range is drawn so its endpoints sum to an even number, so the midpoint is a whole participant and nothing has to be floored. The reconstruction and its grain are pinned in the asking sentence ("the participants per entry and in total for each actor sector, taking the midpoint where only a range is held") and the closing rounding clause now covers each class: actions, items and participant totals whole, participants per entry and every rate to one decimal |
-| Ask 4's "with a line for each difference" equally carried the per-quarter arithmetic deltas | Reworded to "with a line for each item reconciling the gap" |
-| The chart ask was internally inconsistent: bars of gathering-days per 1,000 items received cannot carry a line at 1.00, which belongs to the ratio | The bars carry the ratio of the half year's gathering-days per item received to the same figure over the comparison period, the axis says so, and the write-up's description matches |
-| Step 5 said the retained-items and citations denominators both rank Teorama first | Measured on the cut pack: citations rank Teorama first with the golden fourth at 1.071, while retained items rank the golden first at 1.658. Step 5 now names the citations route alone, and the ladder and readability rows say the same |
-| Seven graded figures sat inside the bin-edge floor, the worst being the designation ratio at 0.00013 and a sector mean on an exact tie at 330.85000 | No ratio is graded anywhere now: the chart prints no per-bar value, block 1 states the call on the four integer components instead, and the steps name the ordering rather than the ratios. The sector means are held clear by a deterministic pass in the generator that adjusts one plain entry per sector until the mean clears 0.3 of the printed unit and does not print round; the tightest is now 0.30 of the unit |
-| The leak reader's three quotes | The bulletin's methodological note is cut to one sentence, its "no compara municipios entre si ni anticipa la designacion" is gone, and the dictionary's line telling the analyst which two files do not enter the register is replaced by a plain listing. Protocol 4.1 is untouched: deleting it would open the Gate C fork the judge certified closed, and it names no normaliser, no city and no file |
-
-## Tried and rejected`) |
+| Calibration organ | none, by design (see `## Tried and rejected`) |
 | World | Colombia; Observatorio Territorial del Nororiente keeps the Registro de Acciones Colectivas from material delivered by the Resena Andina clipping service; personas drawn with `guard.py names --locale es_CO --seed 199` |
 | Spine | `envios_resena_andina.csv`, one row per outlet x city x delivery day, about 31,000 rows, 2024-01-01 to 2026-09-30 |
 | Forum / forcing event / org | line_manager_or_team / period_close (the half year closed on 30 September and the definitive extract on 5 November) / university_or_school |
@@ -198,11 +174,12 @@ It supplies the scorecard's threshold column and is asserted inert against every
 | SF6 | designated | exactly one city each half year | a set of cities above a threshold | the protocol: one city is designated each half year and receives the mission |
 | SF13 | meets the register's condition for a mission | at least thirty actions in the half year and panel membership through the baseline | the condition read against the baseline count, or against the rate | the protocol's clause names the half year and the count; same call either way, and no city sits within 9 actions of the floor |
 | SF7 | the actions the register holds | the definitive extract | the preliminary extract; the union of both (Convencion) | the publication clause: the definitive extract supersedes the preliminary |
-| SF8 | items the clipping service delivered | items delivered, all topics | items retained for screening | the ask's own words and the delivery log's two column descriptions |
+| SF8 | items the clipping service delivered | every item the service delivered from the municipality | items retained for screening | the ask's own words and the delivery log's two column descriptions, which separate what the service delivered from what the register's filter kept |
 | SF9 | municipality outside the panel | the register's city table, on the action's date | the published monthly summary's municipality column (desk grain) | ask B's primary: the summary stands above its own parts for every desk seat, measured |
 | SF10 | participants per action | the total participants over the actions holding a participant figure | counting unreported participants as zero; the numeric column's lower bound | the manual's sentence that the column carries a central estimate, and the note field holding the range |
 | SF11 | rate | actions over residents, rounded once at the end | rounded per month then summed | the prompt's closing rounding sentence governs the printed figures only |
 | SF12 | the material reaching the monitor | the delivered-item count for the city and month | the retained-item count; the citation count | not closed by any sentence: this is the open HOW, forced by the data's structure (see `## Literal reader`) |
+| SF14 | a line per item group closing each quarter's gap (ask 4) | the five groups that close the four quarterly gaps between delivered and billed: 82, 138, 70, 126 and 7 | the annual gap, which two groups close (82 and 7); the publication basis against the billing, which two others close (125 and 7) | the asking sentence names each quarter's gap, and only the five-group set closes all four quarters: the two-line annual set closes none of them, and the 125 items published in 2025 and delivered in 2026 sit on neither side of 2025. Asserted as SF14 in `checks.py` and again in `verify.py` from the shipped bytes |
 
 ## Ladder
 
@@ -293,30 +270,40 @@ lands on the golden and every differing reading either violates a quoted sentenc
 | the delivery log's own monthly totals | tie to the sum of their rows under every handling | not an oracle |
 | a completeness audit, gold standard or certified rate | none ships | by design |
 
-**The leak sweeps' REVIEW lines, answered.** Sweep 4 reads three design-note terms in the protocol: two are
-the words protocol and extract, and the third is Sardinata, which appears there only in clause 2.1's list of
-the eleven panel cities. Sweep 6 reads the three register exports, the delivery log, the city table, the road
-incidents and the published summary as naming every candidate beside numbers, which is what a register and a
-delivery log are: none of them ranks the cities on whether activity rose, the only aggregate among them
-covers 2025 at desk grain, and the one published artifact that does aggregate by city, the bulletin, stops at
-2026 Q1 and designates nobody.
+**The leak sweeps' REVIEW lines, answered** (`leak.py --asof 2026-11-05`: REVIEW, 0 LEAK, 7 REVIEW lines,
+three in sweep 4 and four in sweep 6). Sweep 4 reads three design-note terms in the protocol: two are the
+words protocol and extract, and the third is Sardinata, which appears there only in clause 2.1's list of the
+eleven panel cities. It reads three in the data dictionary, which are the column name `action_id`, the word
+extracto in the edition line and the word material in the delivery log's own row description: all three are
+the vocabulary a dictionary of these files has to use, and none of them names a denominator, an exposure or a
+city. It reads two in the prompt's own question sentence, which are the words action and record inside
+"recorded collective actions": the quantity the question asks for cannot be named without them. Sweep 6 reads
+the three register exports, the delivery log, the city table, the road incidents and the published summary as
+naming every candidate beside numbers, which is what a register and a delivery log are: none of them ranks
+the cities on whether activity rose, the only aggregate among them covers 2025 at desk grain, and the one
+published artifact that does aggregate by city, the bulletin, stops at 2026 Q1 and designates nobody.
 
 ## Ask sheet
 
-Three asks, 64 graded figures, every device outside the call's declared population.
+Three asks, 66 graded figures, every device outside the call's declared population.
 
 **Ask A. The service's deliveries for 2025 beside what its invoices bill, by quarter and outlet type, with a
-line for each difference.** 23 figures (16 quarter x outlet-type cells, 4 quarterly amounts, 3 difference
-lines). H18 home: an audit trail of an input the call consumes, through rows the call never reads, to another
-system's control total. Use: the coordinator signs the service's invoices. Primary: the contract's monthly
-completeness re-push, so items that failed checksum arrive in the next month's batch under fresh item ids
-with their publication dates kept, while the invoice bills each item once; found only by reconciling the
-log's own monthly count against the invoice line and resolved only by the transmission batch, since dropping
-by publication date also drops genuine same-day items. Hazards: H2 (invoice amounts in thousands of pesos),
-H1 (outlet codes gain a service prefix in 2026). Files and columns: the delivery log plus the invoice PDFs,
-11 columns on the path. Stops: log as exported 41,860; invoice total read as the log's 40,980; dropped by
-publication date 41,402; golden 41,508. Realism: a clipping service bills per desk-month and re-pushes failed
-items; the log keeps every push.
+line per item group closing each quarter's gap.** 25 figures (16 quarter x outlet-type cells, 4 quarterly
+amounts, 5 reconciling groups). H18 home: an audit trail of an input the call consumes, through rows the call
+never reads, to another system's control total. Use: the coordinator signs the service's invoices. Primary:
+the service hands over the first days of a month's batch once the month has turned, so a delivery row can
+carry the month before as its publication period, and the invoice bills the publication period while the log
+is keyed by the delivery day; the register also rejected one lote wholesale in August, which the credit note
+covers and the invoice does not bill. Found only by reconciling the log's own quarterly count against the
+invoice's quarterly lines, and resolved only by the publication-period column and the credit note, since
+re-dating the rows to their publication month also moves the delivered cells the ask asks for. Hazards: H2
+(invoice amounts in thousands of pesos), H1 (outlet codes gain a service prefix in 2026). Files and columns:
+the delivery log plus the invoice PDFs, 11 columns on the path. Stops, measured on the cut pack: the
+delivered grid read as the billing gives 7,351, 7,599, 7,549 and 7,360 against the invoice's 7,407, 7,531,
+7,598 and 7,234; every reconciling group reads zero against 82, 138, 70, 126 and 7; the amounts read in
+pesos rather than thousands are out by a factor of 1,000; golden 29,859 delivered against 29,770 billed, the
+gap closing in every quarter. Realism: a clipping service bills the period it published and delivers a
+month's tail after the month turns; the log keeps every delivery day.
 
 **Ask B. What the register holds for the twelve municipalities outside the panel in 2025, and in how many
 months of that year it holds none.** 27 figures (12 x 2, plus 3 corridor totals). H18 home: a component the
@@ -354,23 +341,24 @@ altogether.
 | H2 invoice amounts in thousands | A | 4 amount figures, a factor of 1,000 |
 | H3 day-first dates in the 2024 export | B, C | 3 municipality figures, 2 sector figures |
 | H4 two sector codes added in 2025 | C | 2 sector figures |
-| H5 three municipalities re-coded after a merger | B | 6 figures |
+| H5 three municipalities re-coded in the national list | B | 6 figures |
 
-**Referee.** Ask A's disagreement is arbitrated by the delivery log's transmission batch column, ask B's by
+**Referee.** Ask A's disagreement is arbitrated by the delivery log's publication-period column and the
+invoice's own credit note, ask B's by
 the city table's effective dates, ask C's by the manual's sentence on the participants column. Each says
 which rows, never which value, so none hands over a level.
 
-**Forcing, measured on the cut pack** (`generator/ceiling.py --forcing`): 35 of 35 sampled figures move
+**Forcing, measured on the cut pack** (`generator/ceiling.py --forcing`): 37 of 37 sampled figures move
 beyond the rounding their asking sentence states. Ask A's four billed quarters move by 49 to 126 items and
-its three difference lines from zero to 82, 125 and 7; ask B's twelve municipal figures move by 17 to 131
-gathering-days, three of them from zero; ask C's sixteen move by 18 to 56 participants per action and by 197
-to 3,721 in total.
+its five reconciling groups from zero to 82, 138, 70, 126 and 7; ask B's twelve municipal figures move by 17
+to 131 gathering-days, three of them from zero; ask C's sixteen move by 18 to 56 participants per action and
+by 197 to 3,721 in total.
 
 | Ask figure group | The cracker's path | Cracker verdict |
 |---|---|---|
 | A items delivered, 16 quarter x outlet-type cells | reconciles the log to the invoice, finds the gap, drops by publication date | miss |
 | A quarterly amounts billed, 4 | reads the dictionary's unit correctly, but the item set is still the dropped-by-date set | miss |
-| A difference lines, 3 | attributes the whole gap to one cause | miss |
+| A reconciling groups, 5 | reads the gap off the year rather than the quarter, so the groups that cross a quarter boundary never appear | miss |
 | B actions held, 12 municipalities | takes the published monthly summary, which is the natural municipal source | miss |
 | B months holding no action, 12 | same source, so the empty months follow it | miss |
 | B corridor totals, 3 | sums the summary | miss |
@@ -384,7 +372,7 @@ Mirror leakage: 0.0 per cent of ask weight (bar under 35). The two rows agree on
 device sits outside the call's population, which the separation assertions prove by count; what differs
 between them is the call, worth 33 points.
 Measured by: `generator/ceiling.py`, which sweeps the cracker's keep count and prints the pair at each: the
-cracker may keep 26 of 64 figures before the pair breaches 40, and it keeps 0. Re-run on the cut pack at
+cracker may keep 27 of 66 figures before the pair breaches 40, and it keeps 0. Re-run on the cut pack at
 stage 3, where each keep flag becomes a measured per-figure assertion that the response's own path lands
 outside that figure's bin, and the gated field takes the worse measurement.
 
@@ -400,7 +388,7 @@ outside that figure's bin, and the gated field takes the worse measurement.
 | knob sweep | the redundancy family's winner moves from Teorama to Sardinata as its free parameter moves, and the golden leads it at no value from 0.05 to 0.95 |
 | reflex sweep | 10 of 10 reflexes name a wrong city: raw rise, per-capita rise, window level, absolute increase, per retained item, per citation, per citing outlet, redundancy capture, the export read, the summary read |
 | orthogonality | inside the seven-city pool the activity multiplier correlates at most 0.43 with any static attribute; the golden sits inside the three presence risers' range on baseline capture, presence per 100,000 and citations per action, so no stratification separates it from them |
-| graded figure | every candidate city's rate sits at least 0.29 of the printed unit from its bin edge on the clean truth, and the populations are re-tuned against the realised counts at stage 3 to hold every graded rate at 0.3 or better |
+| graded figure | every candidate city's rate sits at least 0.29 of the printed unit from its bin edge on the clean truth, and the populations are re-tuned against the realised counts at stage 3 to hold every graded rate between 0.30 and 0.45 of the printed unit from its bin edge, so no rate lands on the tenth it prints |
 
 ## Single-use test
 
@@ -413,6 +401,7 @@ Of every file and every sentence added to force a convention: what else does the
 | the protocol's designation clause | it also sets the panel, the publication cycle, the tie-break and the mission's funding, and the coordinator's own role is defined in it | not single-use |
 | the invoice PDFs | the coordinator signs them; ask A's control total | not single-use, and they cover 2025 only, so they bear on no window figure |
 | the published monthly summary | the bulletin is built from it and the register's own returns process produces it | not single-use; it is ask B's primary and agrees with the detail for every panel city |
+| the panel workbook's note that the declared scope is self-reported and does not describe the volume a medium sends | none: a ficha sheet documents its own columns, and warning a reader off a volume it does not carry is work no panel sheet does | single-use, and cut. The deletion test settles it: the sentence is read by nothing, so with it gone the designation, the printed rate, all four call components, every rung and all eleven city rates are identical (target tree unchanged but for the four documents this pass edited), which means it was handing over the insight rather than forcing anything. What is left is the ficha's own column descriptions, including the delivery channel the sheet already distinguishes |
 
 ## Stage 3 findings answered
 
@@ -429,6 +418,10 @@ Of every file and every sentence added to force a convention: what else does the
 
 ## The judge's FIX_NOW, answered
 
+The first six rows are pass 1, from the judge's first NOT_DETERMINISTIC. The rows under them are pass 2,
+which the judge returned on ask 4 alone with everything else forced, and the leak reader's own findings from
+the same round.
+
 | Finding | What was done |
 |---|---|
 | Ask 6's data contradicted the manual: all ranged entries held the range's low end in `participantes_est` while the manual promised a central estimate, and the committed figures reproduced only if each midpoint was floored before summing | The coder now leaves the numeric field empty where the source reported a range and no figure, which is what the manual and the dictionary state, and every range is drawn so its endpoints sum to an even number, so the midpoint is a whole participant and nothing has to be floored. The reconstruction and its grain are pinned in the asking sentence ("the participants per entry and in total for each actor sector, taking the midpoint where only a range is held") and the closing rounding clause now covers each class: actions, items and participant totals whole, participants per entry and every rate to one decimal |
@@ -437,6 +430,47 @@ Of every file and every sentence added to force a convention: what else does the
 | Step 5 said the retained-items and citations denominators both rank Teorama first | Measured on the cut pack: citations rank Teorama first with the golden fourth at 1.071, while retained items rank the golden first at 1.658. Step 5 now names the citations route alone, and the ladder and readability rows say the same |
 | Seven graded figures sat inside the bin-edge floor, the worst being the designation ratio at 0.00013 and a sector mean on an exact tie at 330.85000 | No ratio is graded anywhere now: the chart prints no per-bar value, block 1 states the call on the four integer components instead, and the steps name the ordering rather than the ratios. The sector means are held clear by a deterministic pass in the generator that adjusts one plain entry per sector until the mean clears 0.3 of the printed unit and does not print round; the tightest is now 0.30 of the unit |
 | The leak reader's three quotes | The bulletin's methodological note is cut to one sentence, its "no compara municipios entre si ni anticipa la designacion" is gone, and the dictionary's line telling the analyst which two files do not enter the register is replaced by a plain listing. Protocol 4.1 is untouched: deleting it would open the Gate C fork the judge certified closed, and it names no normaliser, no city and no file |
+| Pass 2, ask 4, Gate C and E: "a line per reconciling item" had three defensible readings on this pack, and each gives a different line set. Measured on the cut pack: the annual delivered-against-billed gap of 89 is closed by two lines, 82 and 7; the shipped golden's three lines, 82 / 125 / 7, close a publication basis of 29,902 against 29,770 and not the delivered one, because the 125 items published in December 2025 reach the service in January 2026 and so are neither delivered nor billed in 2025; and the quarterly gaps, which is the grain the prompt's own table is asked at, are closed by five, 82, 138, 70, 126 and 7 | The asking sentence now pins the basis and the grain: "with a line per item group closing each quarter's gap". The quarterly bridge was verified first, since a reconciliation at a coarser grain than its own table does not reconcile it: it closes exactly, T1 7,351 less 7,407 = 82 less 138, T2 7,599 less 7,531 = 138 less 70, T3 7,549 less 7,598 = 70 less 126 plus 7, T4 7,360 less 7,234 = 126, so the annual fallback was not needed. Exactly one line set survives: the two-line annual set closes none of the four quarters and the 125 forms no group at all. The golden workbook now carries a Diferencia column and one line per group with the quarter it was delivered in and the quarter the invoice bills it in; `checks.py` asserts the closure per quarter as SF14 and `verify.py` recomputes it from the shipped bytes, deriving the credited mesa's pair from the published summary. Nothing else in ask A moved: the 16 cells, the four delivered totals, the four billed counts and the four amounts are byte-identical |
+| The leak reader's single-use finding: the panel workbook's Notas sheet warned that the declared scope "no describe el volumen que remite", which is work no ficha sheet does and which points at the decisive denominator | Cut, with the deletion test run first and recorded in `## Single-use test`: the sentence is read by no computation, so with it gone every call figure, every rung and all eleven rates are identical, which is what makes it an announcement rather than a closure. The sheet keeps its own column descriptions and gains the one it was missing, that the delivery channel distinguishes the primary mesas from the ones the team consults. The dictionary's `items_entregados` line also loses "sea cual sea el tema", which the rest of the line already says: the two column descriptions still separate what the service delivered from what the register's filter kept, which is what closes SF8 |
+| Three dictionary statements were not true of the shipped data: a citation table where 13 `id_item` values cite two entries each was described as one entry per item; a header claiming to describe the definitive extract while the 2026 export ships 320 preliminary rows; and three re-coded municipalities described as a merger of two entities that nothing in the data shows | All three were fixed in the sentence rather than the data, because each piece of data is load-bearing Layer 1 mess: the citation line now reads "un item puede citar mas de una entrada", the header describes "los archivos del extracto de esa fecha" and leaves the `extracto` column to say which rows are preliminary, and the city table's line now says the national list reassigned three codes. The register's rows, the citation table and the city table are byte-identical |
+| Two realism tells: all eleven city rates sat within 0.00004 of an exact tenth, and the Mujeres organizadas per-entry mean was exactly 356.500 | `tune_population` now runs two deterministic passes: the first fixes the printed rate exactly as before, the second keeps that printed rate and moves the projection off the bin's centre to a per-city offset, so the ten tunable rates sit 0.007 to 0.017 from the tenth they print and 0.30 to 0.43 of the printed unit inside their bins. Every printed rate is unchanged. The designated city is the exception by scope: its projection of 148,590 is a Critical Components figure and its printed 92.2 is the call, so the denominator is pinned in `PINNED_POP` and its rate still sits on the printed value, which `checks.py` asserts as the pinned case. The sector-mean pass gained the same off-centre condition and now adjusts a one-day entry, because a prolonged entry carries its figure on every day it ran and the mean then steps in multiples that skip the band: Mujeres organizadas is 356.2 on a total of 5,699 and Transportadores 61,922, and no other sector figure moved |
+| The reader's two smaller observations, judged | Neither is fixed in the records. Protocol 4.3's panel-membership half and the 4.4 tie rule cannot be executed because no file gives a panel entry date, and both are measurably inert: the count floor alone removes Hacari and nobody else, no city sits within 5 actions of it, and the tie rule never fires at a decisive margin of 1.815x. The protocol is a main-call document and the judge certified its clauses, so the shipped fact that would make 4.3 executable, an "Alta en el panel" column in the panel workbook with every panel city seated before the baseline, is left for the author to take or leave; it would move no figure. The manual's misplaced layout table was cheap and is fixed: the field-by-year table now sits under section 2 as clause 2.4, where the template fields are described, and section 3 keeps its own sentence about the monthly sample review |
+
+**Pass 2's gates, measured on the final rebuild.** `checks.py` exit 0, 121 checks, 121 PASS, 0 FAIL (100
+before, the 21 new ones the SF14 closure, the two off-centre bands and the pinned projection). `verify.py`
+exit 0, 87 checks, 87 PASS, 0 FAIL (76 before), reading only the shipped bundle and deriving the credited
+mesa's pair from the published summary. `figures_check.py` exit 0, 124 figures in blocks 1 to 4, 0 absent
+from `figures.json`. `precut.py` exit 0, 50 checks, 0 FAIL, 0 WARN. `voice-check.py` exit 0, 13 checks PASS,
+`prompt.txt` 995 characters, unchanged in length, with the call sentence byte-identical. `ceiling.py` pair
+ceiling 28.5 on 66 graded ask figures (bar 40), mirror leakage 0.0 per cent, the cracker keeping 0 of 66 and
+able to keep 27 before the pair breaches 40; `--forcing` 37 of 37 sampled figures move beyond their stated
+rounding. `leak.py --asof 2026-11-05` REVIEW, 0 LEAK, 7 REVIEW lines answered in `## Oracles`. `guard.py
+surface` clean, 0 pairs promoted, the personas found are the two on the card; `guard.py heart` WARN, 0 BLOCK,
+nearest driver 0.06. Two consecutive full rebuilds byte identical: target tree
+`cbb36f20c8baff69042eb85e72810d25`, golden `e93d935ac77539eee0cf0ac608a63a50`, `target.zip`
+`365b1d62dd2d6206f39bb9a4178eec30` with 17 members, re-cut from the final rebuild.
+
+**What moved in the pack.** Four documents and one data file: `diccionario_datos.md` (four sentences),
+`manual_codificacion.pdf` (the layout table moved to clause 2.4), `panel_fuentes.xlsx` (the Notas sheet),
+`proyecciones_poblacion.xlsx` (ten projections, every printed rate unchanged) and `rac_acciones_2025.csv`
+(nine rows' `participantes` values, in Rio de Oro, San Martin, Chimichagua and Pelaya, all outside the
+panel). Byte-identical: the delivery log, the invoices, the protocol, the 2024 and 2026 register exports, the
+citation table, the published monthly summary, the city table, the bulletin, both distractors and the export
+manifest. In `figures.json` 191 of 202 keys are unchanged, the three `ask_a_differences` keys are replaced by
+the five `ask_a_lines` keys, and the only values that moved are ask C's Mujeres organizadas pair and
+Transportadores total.
+
+**`freeze.py check --mode rubric`, run after the rebuild against the snapshot pass 1 took** (not retaken,
+because a snapshot retaken at the end of a repair proves nothing about the repair): exit 1, the same two
+frozen items as before this pass and no others, both of them pass 1's and both recorded above. The Final
+Recommendation numbers moved when pass 1 replaced the two ratios with the four integer components on the
+judge's own FIX_NOW, and the ladder section moved when pass 1 corrected its row to the measured fact that
+only the citations route names Teorama. The allow list reaches `figures.json` keys only, so neither can be
+expressed in it and neither was suppressed. On the ask side it reports both deliverable files and 24 ask
+figures moved, 8 more than before this pass, which are exactly the three retired and five added reconciling
+keys. Everything the mode freezes and this pass could have touched is unchanged: the Critical Components
+numbers, every main-call `figures.json` key, the stump sentence, the card's stump and driver, the default
+path and the prompt's call sentence.
 
 ## Tried and rejected
 
@@ -510,3 +544,25 @@ Of every file and every sentence added to force a convention: what else does the
 - A per-sector action count in ask C and an agency column free of ask A's primary: both were figures free to
   every response by construction, diluting the criteria beside them. The action count is not asked for at all
   and the re-push was re-sited as the contract's monthly completeness run, which reaches every batch.
+- Closing ask 4 by pinning the basis alone, leaving the grain to the table: rejected, because that is the
+  reading the judge returned. The sentence has to name the grain, since the annual bridge and the quarterly
+  bridge are both defensible on a table asked by quarter and they give two different line sets.
+- The annual two-line bridge (82 and 7) as the pinned reading: rejected on the measurement rather than on
+  taste. The quarterly bridge closes exactly, and a reconciliation coarser than the table it reconciles
+  leaves three of the four quarterly gaps unexplained, so the richest grain that closes is the one the ask
+  takes. The annual fallback was written into the repair's order and was not needed.
+- Keeping the shipped 125 line by pinning the publication basis instead: rejected. It would have moved the
+  billed side off the invoice's own quarterly lines, which this repair holds byte-identical, and the prompt
+  asks for what the invoices bill rather than what the service published.
+- Moving the designated city's projection off the printed tenth with the other ten: rejected. The projection
+  148,590 is a Critical Components figure and the printed 92.2 is the call, both frozen by the repair's
+  scope, so one rate of eleven still equals the tenth it prints and the generator pins it rather than
+  leaving the tuner to re-derive it.
+- Nudging a sector mean through a prolonged entry, as the pass did before this round: it adds the entry's
+  figure once per day it ran, so the mean moves in multiples of the day count and can step over the whole
+  band between the bin's centre and its edge. Mujeres organizadas alternated between the centre and the edge
+  for 400 iterations and the pass raised rather than converged. One-day entries only.
+- Correcting ask A's primary sentence to the mechanism the generator actually builds: the sheet described a
+  monthly completeness re-push under fresh item ids resolved by the transmission batch, and what the pack
+  carries is the publication period against the delivery day plus the credited lote. No data changed; the
+  sheet now describes what the cut pack contains, which is what the forcing measurement reads.
