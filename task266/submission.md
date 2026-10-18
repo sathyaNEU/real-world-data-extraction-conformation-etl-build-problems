@@ -21,8 +21,8 @@ Their three-year completion shares are 20.9, 24.9, 22.2, 25.9, 26.2 and 19.5 per
 3. Counted terms from the fall of entry (term 1, summer terms included) to the exit term; the fall 2024 class is observed to its eighth term and the fall 2025 class to its fifth.
 4. Estimated each program's cumulative incidence of the degree to the ninth term, term by term the degrees over the admissions still open times the share still open, with TO and WD as competing endings and open admissions censored after spring 2027: General Studies 20.9, Biological Sciences 24.9, Business Administration 22.2, Psychology 25.9, Medical Assisting 26.2, Early Childhood Education 19.5, Criminal Justice 32.5, HVAC-R Technology 44.4 and Nursing 36.7 per cent.
 5. Sent the programs below 30 per cent into review (the policy, section 3): six.
-6. Summed each fall2026_census_registrations.csv row registered at the census (RE, RW and WC) at its section's Cr Hrs in fall2026_section_schedule.xlsx (laboratory, shop and clinical sections carry none), by the student's program in effect for fall 2026 in program_of_record_history.csv, and divided by 15 (the policy, section 4).
-7. Counted each program's classes from the active sections of the subjects the register's Subjects sheet gives it, sections with one instructor, days and start time taken as one class with their census registrations added, and kept those under ten (the policy, section 4).
+6. Summed each fall2026_census_registrations.csv row in place at the census (RE and RW dated on or before the 8 September 2026 census in term_calendar_2018-2027.xlsx, and WC) at its section's Cr Hrs in fall2026_section_schedule.xlsx, by the student's program in effect for fall 2026 in program_of_record_history.csv, and divided by 15 (the policy, section 4).
+7. Counted each program's classes from the active sections of the subjects the register's Subjects sheet gives it, sections with one instructor, days and start time over the same weeks taken as one class with their census registrations added, and kept those under ten (the policy, section 4).
 
 ## 4. Deliverable Answers
 
@@ -39,25 +39,25 @@ Their three-year completion shares are 20.9, 24.9, 22.2, 25.9, 26.2 and 19.5 per
    - Heating, Ventilation, Air Conditioning and Refrigeration Technology (HVAC-R): 44.4 per cent, stays out of review
    - Nursing: 36.7 per cent, stays out of review
 2. Each program's full-time-equivalent enrolment at the fall 2026 census:
-   - General Studies: 1,164.1
-   - Biological Sciences: 358.0
-   - Business Administration: 531.7
-   - Psychology: 404.0
-   - Medical Assisting: 386.6
-   - Early Childhood Education: 343.6
-   - Criminal Justice: 397.1
-   - HVAC-R Technology: 274.5
-   - Nursing: 538.3
+   - General Studies: 1,148.8
+   - Biological Sciences: 352.5
+   - Business Administration: 525.2
+   - Psychology: 399.4
+   - Medical Assisting: 381.5
+   - Early Childhood Education: 341.0
+   - Criminal Justice: 391.2
+   - HVAC-R Technology: 272.3
+   - Nursing: 533.1
 3. Each program's classes of its own courses that ran in fall 2026 with fewer than ten students at the census:
-   - General Studies: 1
-   - Biological Sciences: 13
-   - Business Administration: 5
-   - Psychology: 5
-   - Medical Assisting: 9
-   - Early Childhood Education: 3
-   - Criminal Justice: 3
-   - HVAC-R Technology: 13
-   - Nursing: 78
+   - General Studies: 2
+   - Biological Sciences: 15
+   - Business Administration: 7
+   - Psychology: 7
+   - Medical Assisting: 10
+   - Early Childhood Education: 5
+   - Criminal Justice: 8
+   - HVAC-R Technology: 21
+   - Nursing: 79
 
 ### completion_review_board_paper_2027.pdf
 

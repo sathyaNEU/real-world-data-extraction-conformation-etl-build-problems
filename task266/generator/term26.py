@@ -4,6 +4,7 @@ courses sharing a room; online sections; sections cancelled before the census) a
 drops before the census and withdrawals after it; and the program changes that took effect in spring 2027."""
 import datetime as dt
 import math
+from collections import defaultdict
 
 import numpy as np
 
@@ -59,6 +60,18 @@ COURSES = {
 }
 ELECTIVES = {"IDS 260", "BIO 240", "BUS 250", "ACC 210", "PSY 250", "MDA 250", "ECE 250", "CRJ 240", "HVR 220",
              "NUR 230"}
+# the course record's credit hours from spring 2027, when English Composition I and College Algebra took on a fourth
+# hour of integrated support; fall 2026 sections ran at the earlier credit hours
+REVISED = {"ENG 101": 4, "MAT 110": 4}
+# accelerated offerings: a course in the first eight weeks and a course in the second, one instructor, one room and
+# one evening or weekend time for both
+ACCEL = {"GS": ("IDS 110", "IDS 250"), "BIO": ("BIO 105", "BIO 230"), "BUS": ("BUS 140", "BUS 220"),
+         "PSY": ("PSY 201", "PSY 240"), "MA": ("MDA 150", "MDA 290"), "ECE": ("ECE 120", "ECE 210"),
+         "CJ": ("CRJ 120", "CRJ 230"), "HVR": ("HVR 201", "HVR 210"), "NUR": ("NUR 120", "NUR 120")}
+WEEKEND = [("F", "17:30", "20:15"), ("S", "08:30", "11:15"), ("S", "12:00", "14:45")]
+WEEKEND_LAB = [("S", "08:30", "11:20"), ("S", "12:00", "14:50"), ("S", "15:00", "17:50")]
+PART = {"1": (TERM["start"], TERM["end"]), "A": (TERM["start"], TERM["start"] + dt.timedelta(days=53)),
+        "B": (TERM["start"] + dt.timedelta(days=56), TERM["end"])}
 GENED = ({"ENG 101": 10, "ENG 102": 1, "MAT 095": 3, "MAT 110": 4, "MAT 120": 1.5, "HIS 101": 1.5, "SOC 101": 1.5,
           "COM 101": 1.5, "CIS 101": 2, "ART 101": 1, "SPA 101": .8, "PSY 101": 2.5, "BIO 105": 1},
          {"ENG 101": .6, "ENG 102": 6, "MAT 110": 2, "MAT 120": 3, "HIS 101": 2, "SOC 101": 2, "COM 101": 2.5,
@@ -310,7 +323,8 @@ def schedule(regs, seed):
         subj, num = course.split()
         s = dict(crn=str(crn[0]), subj=subj, num=num, course=course, title=COURSES[course][0], campus=campus,
                  kind=kind, slot=slot, room=room, inst=inst, link=link, status="A",
-                 credits=COURSES[course][1] if kind in ("LEC", "ONL") else 0, cap=None, sec=sec, combined=None)
+                 credits=COURSES[course][1] if kind in ("LEC", "ONL") else 0, cap=None, sec=sec, combined=None,
+                 part="1")
         evening = slot is not None and slot[1] >= "17:00"
         pull[s["crn"]] = float(rng.uniform(.45, 1.55)) * (.62 if evening else 1.0)
         crn[0] += int(rng.integers(1, 4))
@@ -318,6 +332,91 @@ def schedule(regs, seed):
         members[s["crn"]] = []
         book.take(room, inst, slot)
         return s
+
+    def accelerate():
+        """Each program's accelerated pair: students move from the course's sections at one campus into a
+        first-eight-weeks section of one course and a second-eight-weeks section of the other, taught by one
+        instructor in one room at one evening (or Friday evening or Saturday) time; a course with a linked section takes
+        it in the same eight weeks, the two linked sections sharing their own room, time and instructor."""
+        busy = defaultdict(list)
+        for s in sections:
+            if s["slot"]:
+                for sid in members[s["crn"]]:
+                    busy[sid].append((s["slot"], s["crn"]))
+        evening = [x for x in SLOTS if x[1] >= "17:00"]
+        for prog in K.CODES:
+            pair = ACCEL[prog]
+            subj = pair[0].split()[0]
+            comp = COURSES[pair[0]][2]
+            made = False
+            tries = [(c, evening[int(k)], LAB_SLOTS) for c in ("QNL", "TRV", "HOL") if c in TAUGHT.get(subj, K.CAMPUS)
+                     for k in rng.permutation(len(evening))]
+            tries += [("QNL", WEEKEND[int(k)], WEEKEND_LAB) for k in rng.permutation(len(WEEKEND))]
+            for campus, slot, labslots in tries:
+                rooms = [r for r in ROOMS[campus]["MDA" if subj == "MDA" else "lec"] if book.free_room(r, slot)
+                         and not r.endswith("V")]
+                if not rooms or not any(book.free_inst(p["id"], slot) for p in pool[subj]):
+                    continue
+                lab = labroom = None
+                if comp:
+                    opts = [x for x in labslots if (x[1] >= "17:00" or x[0] == "S") and not overlaps(x, slot)]
+                    opts = [x for x in opts if any(book.free_room(r, x) for r in ROOMS[campus][comp])]
+                    if not opts:
+                        continue
+                    lab = opts[int(rng.integers(len(opts)))]
+                    labroom = [r for r in ROOMS[campus][comp] if book.free_room(r, lab)][0]
+                want = {"A": int(rng.integers(5, 10)), "B": int(rng.integers(6, 13))}
+                chosen = {}
+                taken_now = set()
+                for half, course in zip("AB", pair):
+                    src = [s for s in sections if s["course"] == course and s["campus"] == campus and s["kind"] == "LEC"
+                           and not s["combined"] and s["part"] == "1" and s["status"] == "A"]
+                    cands = []
+                    for s in src:
+                        links = {l["crn"] for l in sections if l["link"] == s["crn"]}
+                        for sid in sorted(members[s["crn"]]):
+                            if sid in taken_now:
+                                continue
+                            mine = [b for b, crn in busy[sid] if crn != s["crn"] and crn not in links]
+                            if any(overlaps(slot, b) for b in mine) or (lab and any(overlaps(lab, b) for b in mine)):
+                                continue
+                            cands.append((sid, s))
+                    if len(cands) < want[half]:
+                        break
+                    pick = sorted(rng.choice(len(cands), size=want[half], replace=False))
+                    chosen[half] = [cands[int(i)] for i in pick]
+                    taken_now.update(sid for sid, s in chosen[half])
+                if len(chosen) < 2:
+                    continue
+                inst = pick_inst(subj, campus, slot)
+                if not book.free_inst(inst, slot):
+                    [p for p in pool[subj] if p["id"] == inst][0]["n"] -= 1
+                    continue
+                room = rooms[int(rng.integers(len(rooms)))]
+                lab_inst = pick_inst(subj, campus, lab) if lab else None
+                for half, course in zip("AB", pair):
+                    new = new_section(course, campus, "LEC", slot, room, inst)
+                    new["part"] = half
+                    newlab = None
+                    if lab:
+                        newlab = new_section(course, campus, comp, lab, labroom, lab_inst, link=new["crn"])
+                        newlab["part"] = half
+                    for sid, s in chosen[half]:
+                        members[s["crn"]].remove(sid)
+                        members[new["crn"]].append(sid)
+                        moved = {s["crn"]}
+                        if newlab:
+                            for l in sections:
+                                if l["link"] == s["crn"] and sid in members[l["crn"]]:
+                                    members[l["crn"]].remove(sid)
+                                    members[newlab["crn"]].append(sid)
+                                    moved.add(l["crn"])
+                        busy[sid] = [b for b in busy[sid] if b[1] not in moved] + [(slot, new["crn"])] + (
+                            [(lab, newlab["crn"])] if newlab else [])
+                made = True
+                break
+            if not made:
+                raise RuntimeError("no accelerated pair for %s" % prog)
 
     for course in sorted(regs):
         subj = course.split()[0]
@@ -430,6 +529,7 @@ def schedule(regs, seed):
                     members[l["crn"]].append(sid)
                     busy.append(l["slot"])
     stack(sections, members, book, rng)
+    accelerate()
     # a linked section no student was placed in is not offered
     empty = {s["crn"] for s in sections if not members[s["crn"]]}
     sections[:] = [s for s in sections if s["crn"] not in empty]
@@ -441,6 +541,8 @@ def schedule(regs, seed):
                     "CLN": 8}[s["kind"]]
         if s["combined"] and s["combined"].startswith("ITV"):
             s["cap"] = 16
+        if s["part"] != "1" and s["kind"] == "LEC":
+            s["cap"] = 24
     return sections, members
 
 
@@ -509,7 +611,8 @@ def registrations(T, seed):
             status, when = ("RW" if web else "RE"), reg_on
             if s["kind"] in ("LEC", "ONL") and rng.random() < .083:
                 status = "WC"
-                when = CENSUS + dt.timedelta(days=int(rng.integers(6, 80)))
+                hi = 80 if s["part"] != "A" else (PART["A"][1] - CENSUS).days - 10
+                when = CENSUS + dt.timedelta(days=int(rng.integers(6, hi)))
             rows.append(dict(sid=sid, crn=crn, status=status, date=when))
     # withdrawals after the census carry to the linked section
     wc = {(r["sid"], secs[r["crn"]]["course"]) for r in rows if r["status"] == "WC"}
@@ -518,6 +621,27 @@ def registrations(T, seed):
         s = secs[r["crn"]]
         if s["kind"] in ("LAB", "SHP", "CLN") and (r["sid"], s["course"]) in wc:
             r["status"], r["date"] = "WC", wdate[(r["sid"], s["course"])]
+    # added after the census by the registrar (a late add, never later withdrawn), the linked section with it; full-term
+    # sections only, and never a section's every registration
+    late = {}
+    for r in rows:
+        s = secs[r["crn"]]
+        if s["kind"] in ("LEC", "ONL") and s["part"] == "1" and r["status"] in ("RE", "RW") and rng.random() < .015:
+            late[(r["sid"], s["course"])] = CENSUS + dt.timedelta(days=int(rng.integers(1, 14)))
+    at = defaultdict(int)
+    for r in rows:
+        if (r["sid"], secs[r["crn"]]["course"]) not in late:
+            at[r["crn"]] += 1
+    for k in sorted(late):
+        crns = [r["crn"] for r in rows if (r["sid"], secs[r["crn"]]["course"]) == k]
+        if any(at[c] == 0 for c in crns):
+            del late[k]
+            for c in crns:
+                at[c] += 1
+    for r in rows:
+        k = (r["sid"], secs[r["crn"]]["course"])
+        if k in late:
+            r["status"], r["date"] = "RE", late[k]
     # drops before the census: a section tried and dropped, often for another section of the course
     drops = []
     by_course = {}

@@ -112,6 +112,14 @@ def main(target):
     same("the 2023 class list", [n for n, v in closed.items() if v < FLOOR], F["rung_lists"]["closed2023"])
 
     # ------------------------------------------------------------------ Ask A: FTE at the fall 2026 census
+    import datetime as _dt
+    cal = sheet(P(find(r"term_calendar")), "Terms")
+    census = [t["Census date"] for t in cal if str(t["Term code"]) == "202710"][0]
+    census = census.date() if hasattr(census, "date") else census
+
+    def when(v):
+        return _dt.date(int(v[:4]), int(v[5:7]), int(v[8:10]))
+
     secs = sheet(P(find(r"section_schedule")), "Fall 2026 sections")
     cr = {str(s["CRN"]): s["Cr Hrs"] for s in secs}
     hist = rows_csv(P(find(r"program_of_record")))
@@ -120,24 +128,35 @@ def main(target):
         if h["effective_term"] <= "202710" and (not h["end_term"] or h["end_term"] >= "202710"):
             at[h["student_id"]] = h["program_code"]
     regs = rows_csv(P(find(r"census_registrations")))
+    # in place on the census date: registered by then, or withdrawn after it (a W grade)
+    held = [r for r in regs if r["reg_status"] == "WC" or
+            (r["reg_status"] in ("RE", "RW") and when(r["status_date"]) <= census)]
     hours = Counter()
-    for r in regs:
-        if r["reg_status"] in ("RE", "RW", "WC"):
-            hours[at.get(r["student_id"])] += cr[r["crn"]]
+    for r in held:
+        hours[at.get(r["student_id"])] += cr[r["crn"]]
     same("Ask A", {name[p]: round1(hours[p] / FTE) for p in nine}, F["ask_a"])
 
     # ------------------------------------------------------------------ Ask B: classes under ten
-    n = Counter(r["crn"] for r in regs if r["reg_status"] in ("RE", "RW", "WC"))
-    classes = defaultdict(list)
+    n = Counter(r["crn"] for r in held)
+    meet = defaultdict(list)
     for s in secs:
         if s["Status"] != "A" or owner.get(s["Subj"]) not in nine:
             continue
         key = str(s["CRN"]) if s["Days"] == "TBA" else (s["Instructor"], s["Days"], s["Begin"])
-        classes[key].append(s)
+        meet[key].append(s)
     small = Counter()
-    for lst in classes.values():
-        if sum(n[str(s["CRN"])] for s in lst) < SMALL:
-            small[owner[lst[0]["Subj"]]] += 1
+    for lst in meet.values():
+        # sections at one instructor's meeting time are one class only over the weeks they share
+        lst = sorted(lst, key=lambda s: (s["Start Date"], s["CRN"]))
+        runs = [[lst[0]]]
+        for s in lst[1:]:
+            if s["Start Date"] <= max(x["End Date"] for x in runs[-1]):
+                runs[-1].append(s)
+            else:
+                runs.append([s])
+        for run in runs:
+            if sum(n[str(s["CRN"])] for s in run) < SMALL:
+                small[owner[run[0]["Subj"]]] += 1
     same("Ask B", {name[p]: small[p] for p in nine}, F["ask_b"])
     if FAIL:
         print("verify: %d mismatches" % len(FAIL))

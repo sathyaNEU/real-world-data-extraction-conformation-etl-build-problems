@@ -245,32 +245,59 @@ def program_at_census(hist, term=K.FALL26):
     return out
 
 
-def census_rows(regs, statuses=("RE", "RW", "WC")):
-    return [r for r in regs if r["reg_status"] in statuses]
+def day(v):
+    return v.date() if isinstance(v, dt.datetime) else (dt.date.fromisoformat(v) if isinstance(v, str) else v)
 
 
-def ask_a(target, credits="section", program="census", statuses=("RE", "RW", "WC")):
-    """Each program's FTE at the fall 2026 census. credits: 'section' (the schedule's section credit hours) or 'row'
-    (the registration row's credit_hours); program: 'census' (the history's row in effect for fall 2026) or 'row'
-    (the registration's program_code)."""
+def census_rows(regs, census=None, mode="date"):
+    """Registrations in place at the census. mode: 'date' (registered on or before the census date, or withdrawn
+    after it); 'status' (RE, RW and WC whatever the date); 'all_dates' (RE, RW and WC dated on or before the census)."""
+    out = []
+    for r in regs:
+        st = r["reg_status"]
+        if st not in ("RE", "RW", "WC"):
+            continue
+        if mode == "date" and st in ("RE", "RW") and day(r["status_date"]) > census:
+            continue
+        if mode == "all_dates" and day(r["status_date"]) > census:
+            continue
+        out.append(r)
+    return out
+
+
+def ask_a(target, credits="section", program="census", census="date"):
+    """Each program's FTE at the fall 2026 census. credits: 'section' (the schedule's section credit hours), 'row'
+    (the registration row's credit_hours) or 'row_once' (the row's credit_hours once per student and course);
+    program: 'census' (the history's row in effect for fall 2026) or 'row' (the registration's program_code);
+    census: as census_rows."""
     pk, regs, secs, hist = fall26(target)
     sec_cr = {str(s["CRN"]): s["Cr Hrs"] for s in secs}
     prog_at = program_at_census(hist)
     tot = Counter()
-    for r in census_rows(regs, statuses):
+    seen = set()
+    for r in census_rows(regs, day(pk.census[K.FALL26]), census):
         p = prog_at.get(r["student_id"]) if program == "census" else r["program_code"]
-        c = sec_cr[r["crn"]] if credits == "section" else int(r["credit_hours"])
+        if credits == "section":
+            c = sec_cr[r["crn"]]
+        elif credits == "row":
+            c = int(r["credit_hours"])
+        else:
+            key = (r["student_id"], r["subject"], r["course_number"])
+            c = 0 if key in seen else int(r["credit_hours"])
+            seen.add(key)
         tot[p] += c
     return {p: tot[p] / K.FTE_HOURS for p in pk.programs}
 
 
-def ask_b(target, enrol="census", group="meeting"):
+def ask_b(target, enrol="census", group="dated"):
     """Each program's classes with fewer than ten students at the census. enrol: 'census' (registrations in place on
-    the census date) or 'export' (the schedule's Enrl); group: 'meeting' (sections sharing an instructor and a
-    scheduled meeting, whatever the room), 'none', 'room' (sections sharing a room and a meeting) or 'text'
-    (instructor, days and begin time as written, TBA included)."""
+    the census date), 'status' (RE, RW and WC whatever the date) or 'export' (the schedule's Enrl); group: 'dated'
+    (sections sharing an instructor and a scheduled meeting in the same weeks, whatever the room), 'meeting' (sharing
+    an instructor, days and begin time, whatever the weeks), 'none', 'room' (sharing a room, days and begin time) or
+    'text' (instructor, days and begin time as written, TBA included)."""
     pk, regs, secs, hist = fall26(target)
-    n = Counter(r["crn"] for r in census_rows(regs))
+    cen = day(pk.census[K.FALL26])
+    n = Counter(r["crn"] for r in census_rows(regs, cen, "date" if enrol == "census" else "status"))
     run = [s for s in secs if s["Status"] == "A" and pk.owner.get(s["Subj"]) in pk.programs]
 
     def key(s):
@@ -289,9 +316,24 @@ def ask_b(target, enrol="census", group="meeting"):
     groups = defaultdict(list)
     for s in run:
         groups[key(s)].append(s)
+    if group == "dated":
+        split = []
+        for lst in groups.values():
+            lst = sorted(lst, key=lambda s: (day(s["Start Date"]), s["CRN"]))
+            cur, last = [], None
+            for s in lst:
+                if cur and day(s["Start Date"]) > last:
+                    split.append(cur)
+                    cur, last = [], None
+                cur.append(s)
+                last = max(last, day(s["End Date"])) if last else day(s["End Date"])
+            split.append(cur)
+        classes = split
+    else:
+        classes = list(groups.values())
     out = Counter()
-    for k, lst in groups.items():
-        size = sum((n[str(s["CRN"])] if enrol == "census" else s["Enrl"]) for s in lst)
+    for lst in classes:
+        size = sum((n[str(s["CRN"])] if enrol != "export" else s["Enrl"]) for s in lst)
         progs = {pk.owner[s["Subj"]] for s in lst}
         if size < K.SMALL:
             for p in progs:

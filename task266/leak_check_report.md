@@ -4,11 +4,11 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: student, admission, entering, transfer, competing, admissions, withdrawal, recorded, extract, college, spring, censored, record, endings, degree, window, decisive, estimator, reason, estimate, asserted, survival, conversion, ending, nothing
+Stump terms swept: student, admission, transfer, entering, competing, admissions, withdrawal, recorded, estimate, extract, decisive, spring, college, record, degree, censored, asserted, endings, window, estimator, reason, register, survival, conversion, ending
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `policy_3-12_program_review.pdf`: 11 of 25 stump-paragraph terms appear (student, admission, entering, transfer, recorded, extract); read whether the document names the move
-- **REVIEW** `registrar_extract_notes_2027-05.pdf`: 12 of 25 stump-paragraph terms appear (student, admission, transfer, admissions, recorded, extract); read whether the document names the move
+- **REVIEW** `policy_3-12_program_review.pdf`: 12 of 25 stump-paragraph terms appear (student, admission, transfer, entering, recorded, estimate); read whether the document names the move
+- **REVIEW** `registrar_extract_notes_2027-05.pdf`: 13 of 25 stump-paragraph terms appear (student, admission, transfer, admissions, recorded, extract); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2)
 - **REVIEW** `fall2026_section_schedule.xlsx`: names 4 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -60,3 +60,14 @@ REVIEW lines, final run (2027-05-28):
 - Sweep 4, policy and notes: harmless. The shared words are the college's own vocabulary; neither document names censoring, a competing ending, a curve or an estimator.
 - Sweep 6, schedule and register: harmless. Course titles and the program catalogue sit beside section numbers, CIP codes and credits; nothing ranks a program on completion.
 - Sweep 9, term calendar: harmless. The four dates after the export are the published summer 2027 rows (first day, census, last day, conferral).
+
+Third read (2026-10-18, the asks re-cut in the wave 3 audit, the call frozen; sonnet, medium, a fresh copy of prompt.txt and target/ only):
+1. Decisive step: none named; the nearest is policy 3.3's "the share includes an estimate, made from that record, of how many of them will have earned the degree by the end of their ninth term", which says an estimate is needed and not how.
+2. Ranking file: none; the admissions and conferral files are raw rows, the success rates score subjects, not programs.
+3. Analyst-only file: none beyond the pack's own indexes (the export manifest, the notes as codebook, the term calendar, the conversion map, the IR file's About sheet, the register's Subjects sheet), each a file the college keeps.
+4. Answer-like figure or name: none; the 30 per cent floor is context.
+5. Literal sentences: 3.1 to 3.3 executed as the three classes pooled, the IR entrants less deaths over the degrees by the ninth term under the entry admission, the fall 2024 and 2025 classes' part an estimate of their future degrees; the estimate is the only open method.
+6. What decides: an analytical choice, how to estimate eventual completion for the students still inside their ninth term; nothing planted. The reader called reporting the observed share against 3.3 a rule-application risk (that reading is R0, which 3.3 rules out) and named the conversion map, the admission at entry and the TO and WD reasons as secondary steps (Layer 1).
+7. Asks: FTE, minor: the program at the census against the extract's program_code (the notes describe the file "as it stood when the file was extracted", and 4.1 asks for the program of record at the census, held in the history), and statuses dated after the census (4.3: in place on the census date). Classes: "meet together" inferred from days, times, room and instructor (no combination field); cancelled and online sections; the schedule's enrolment at export against the census registrations (the policy says census). The reader did not find the course record's credit hours on the extract or the eight-week sections' dates.
+8. Realism: none.
+Rulings: the policy (names the estimate requirement, not the method), the notes (field definitions; the WD to TO relabel stated as a definition), the schedule (no program mapping or ranking), the register (codes and the subject map) and the term calendar's summer 2027 rows (a forward calendar) are each harmless.

@@ -232,7 +232,8 @@ def write_registrations(path, T):
     rows = []
     for r in F["rows"]:
         s = secs[r["crn"]]
-        rows.append([K.FALL26, r["sid"], r["crn"], s["subj"], s["num"], s["sec"], T26.COURSES[s["course"]][1],
+        rows.append([K.FALL26, r["sid"], r["crn"], s["subj"], s["num"], s["sec"],
+                     T26.REVISED.get(s["course"], T26.COURSES[s["course"]][1]),
                      r["status"], r["date"].isoformat(), s["campus"], cur.get(r["sid"], "")])
     rows.sort(key=lambda x: (x[1], x[2], x[8]))
     return _csv(path, ["term_code", "student_id", "crn", "subject", "course_number", "section", "credit_hours",
@@ -249,19 +250,22 @@ def write_schedule(path, T):
     wb = Workbook()
     ws = wb.active
     ws.title = "Fall 2026 sections"
-    _head(ws, ["CRN", "Subj", "Crse", "Sec", "Title", "Type", "Link", "Camp", "Room", "Days", "Begin", "End",
-               "Instructor", "Cr Hrs", "Max", "Enrl", "Status"],
-          [7, 6, 6, 5, 34, 6, 7, 6, 12, 6, 7, 7, 10, 7, 6, 6, 7])
+    _head(ws, ["CRN", "Subj", "Crse", "Sec", "Title", "Type", "Link", "Camp", "Start Date", "End Date", "Room", "Days",
+               "Begin", "End", "Instructor", "Cr Hrs", "Max", "Enrl", "Status"],
+          [7, 6, 6, 5, 34, 6, 7, 6, 11, 11, 12, 6, 7, 7, 10, 7, 6, 6, 7])
     for s in secs:
         online = s["kind"] == "ONL"
         days = "TBA" if online else s["slot"][0]
         begin = None if online else s["slot"][1]
         end = None if online else s["slot"][2]
         kind = "LEC" if s["kind"] in ("LEC", "ONL") else s["kind"]
+        first, last = T26.PART[s["part"]]
         ws.append([int(s["crn"]), s["subj"], s["num"], s["sec"], s["title"], kind, int(s["link"]) if s["link"] else None,
-                   s["campus"], s["room"] if s["status"] == "A" else None, days, begin, end,
+                   s["campus"], first, last, s["room"] if s["status"] == "A" else None, days, begin, end,
                    s["inst"] if s["status"] == "A" else None, s["credits"], s["cap"],
                    exp.get(s["crn"], 0) if s["status"] == "A" else 0, s["status"]])
+        for c in (9, 10):
+            ws.cell(ws.max_row, c).number_format = "mm/dd/yyyy"
     wb.save(path)
     return len(secs)
 

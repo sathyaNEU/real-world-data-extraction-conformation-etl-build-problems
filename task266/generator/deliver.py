@@ -35,20 +35,23 @@ def results(target):
     inrev = [p for p in progs if R[p]["golden"] < K.FLOOR]
     a = A.ask_a(target)
     b = A.ask_b(target)
-    stops_a = dict(natural=A.ask_a(target, credits="row", program="row"),
-                   history_only=A.ask_a(target, credits="row", program="census"),
-                   section_only=A.ask_a(target, credits="section", program="row"),
-                   without_withdrawals=A.ask_a(target, statuses=("RE", "RW")))
+    stops_a = dict(natural=A.ask_a(target, credits="row", program="row", census="status"),
+                   row_credits=A.ask_a(target, credits="row"),
+                   row_credits_once=A.ask_a(target, credits="row_once"),
+                   extract_program=A.ask_a(target, program="row"),
+                   late_adds_kept=A.ask_a(target, census="status"),
+                   withdrawals_dropped=A.ask_a(target, census="all_dates"))
     stops_b = dict(natural=A.ask_b(target, enrol="export", group="none"),
                    census_uncombined=A.ask_b(target, group="none"),
+                   meeting=A.ask_b(target, group="meeting"),
+                   text=A.ask_b(target, group="text"),
                    room=A.ask_b(target, group="room"),
-                   text=A.ask_b(target, group="text"))
+                   late_adds_kept=A.ask_b(target, enrol="status", group="meeting"))
     secs = A.rows_xlsx(os.path.join(target, K.FILES["schedule"]), "Fall 2026 sections")
     regs = A.rows_csv(os.path.join(target, K.FILES["registrations"]))
     n = {}
-    for r in regs:
-        if r["reg_status"] in ("RE", "RW", "WC"):
-            n[r["crn"]] = n.get(r["crn"], 0) + 1
+    for r in A.census_rows(regs, A.day(pk.census[K.FALL26]), "date"):
+        n[r["crn"]] = n.get(r["crn"], 0) + 1
     nur_clinical = sum(1 for s in secs if s["Subj"] == "NUR" and s["Type"] == "CLN" and s["Status"] == "A"
                        and n.get(str(s["CRN"]), 0) < K.SMALL)
     return dict(R=R, progs=progs, inrev=inrev, a=a, b=b, stops_a=stops_a, stops_b=stops_b, ent=ent,
@@ -147,11 +150,13 @@ def write_scorecard(path, res):
         "The fall 2024 class is observed to its eighth term and the fall 2025 class to its fifth; their later terms "
         "use the rates of the classes observed in those terms.",
         "FTE: credit hours registered at the fall 2026 census (registrations in place on 8 September 2026, later "
-        "withdrawals included), each course counted at its section credit hours (laboratory, shop and clinical "
-        "sections carry none), by each student's program of record for fall 2026, divided by 15.",
+        "withdrawals included and registrations added after that date not), each at its section's credit hours in "
+        "the fall 2026 schedule (laboratory, shop and clinical sections carry none, and English Composition I and "
+        "College Algebra ran at three), by each student's program of record for fall 2026, divided by 15.",
         "Classes under ten students: sections of each program's own subjects that ran in fall 2026, sections taught "
         "together at one meeting (interactive video between campuses) counted as one class with their students "
-        "added; census registrations as above.",
+        "added; the accelerated sections that share a room and time in the first and second eight weeks are two "
+        "classes; census registrations as above.",
         "Shares are rounded to one decimal place from the unrounded estimate; the floor is applied to the unrounded "
         "share.",
         "Prepared by %s, Director of Institutional Research, 4 June 2027." % K.PEOPLE["ir"],
@@ -261,11 +266,11 @@ def write_paper(path, res, png):
       "advising begun in fall 2024 has cut first-year withdrawals, and on that class alone Criminal Justice "
       "(%.1f per cent) would also enter review." % r1(R[K.SIS["CJ"]]["closed2023"]))
     st.append(Paragraph("Review profile", S["h2"]))
-    P("FTE counts the credit hours registered at the fall 2026 census by each program's students, every course at "
-      "its section credit hours, divided by 15. Classes under ten counts the program's own sections that ran in "
-      "fall 2026 with fewer than ten students at the census, sections taught together over interactive video "
-      "counted once. %d of Nursing's %d are clinical groups, which take at most eight students each." % (
-          res["nur_clinical"], res["b"][K.SIS["NUR"]]))
+    P("FTE counts the credit hours registered at the fall 2026 census by each program's students, every section at "
+      "the credit hours it carried in fall 2026, divided by 15. Classes under ten counts the program's own sections "
+      "that ran in fall 2026 with fewer than ten students at the census, sections taught together over interactive "
+      "video counted once and the accelerated eight-week sections counted separately. %d of Nursing's %d are "
+      "clinical groups, which take at most eight students each." % (res["nur_clinical"], res["b"][K.SIS["NUR"]]))
     st.append(Paragraph("Notes. Students who died (%d) are removed from the classes. Shares are rounded to one "
                         "decimal place; the floor applies to the unrounded share. The workbook "
                         "program_completion_review_2027.xlsx has each program's share by term." % sum(
