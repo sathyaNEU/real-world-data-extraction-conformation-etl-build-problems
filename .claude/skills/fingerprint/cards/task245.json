@@ -1,0 +1,89 @@
+{
+  "task": "task245",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 4, seed DQ18 (which monitoring sites' annual compliance statistic is reportable): the seed's world, decision and quantity kept, the pitfall re-found in the data (analysers that stop on the heaviest days of a wind-borne dust plume)",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "environmental-monitoring-exceedance",
+  "niche": "a borough air quality network's data-capture review before the annual status report: which PM10 stations' 2027 counts of days above the 24-hour objective cannot be shown as meeting it once the days their analysers lost are counted, with a bulk terminal's dust plume reaching each station only on its own wind bearing",
+  "objective": "data-quality-monitoring",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G12",
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the borough council's air quality officer, who answers to the network's independent QA/QC auditor before the 2027 data year closes",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "thornmouth_council_aq_hourly_2027.csv",
+    "rows": 61320,
+    "entity": "one station's ratified PM10 concentration for one hour",
+    "grain": "station x hour",
+    "source": "synthetic"
+  },
+  "forum": "auditor",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United Kingdom, England, a fictional coastal borough in the north east (the council, its network, the port's bulk terminal, the QA/QC contractor and the people are invented; the UK air quality objectives and local air quality management are real)",
+    "currency": "GBP",
+    "org_type": "metropolitan borough council (environmental protection team)",
+    "invented_names": [
+      "Thornmouth",
+      "Thornmouth Borough Council",
+      "Thornmouth Bulk Terminal"
+    ],
+    "people": [
+      "Harriet Hopkins",
+      "Marc Bevan",
+      "Jemma Holloway"
+    ]
+  },
+  "deliverables": [
+    "thornmouth_pm10_2027_data_capture_review.xlsx",
+    "asr2027_pm10_data_capture_note.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a count of periods above a level over a whole cycle, read from records whose gaps are not random: a recorder fails during its heaviest periods, which reach it only when a shared driver points a fixed source at it, so a count over the recorded periods scaled by the share recorded, or filled from the other recorders' common level that period, misses them, and each lost period has to be rebuilt from that period's driver and the recorder's own response to it.",
+  "driver_concrete": "Each PM10 station's 2027 count of days above 50 micrograms per cubic metre, its lost days included, is rebuilt day by day from the network's background and that day's wind against the station's own pollution rose, because the stations whose analysers stop on heavy days lose exactly the days the bulk terminal's plume blew onto them; scaling by data capture, the 90.4th percentile, interpolation in time and network-only infill all leave those days clean.",
+  "stump": "Scaling each station's count over its valid days by its data capture (or reading the 90.4th percentile of its valid days) flags the stations with long outages in quiet spells and none of the stations whose analysers stopped on the terminal's plume days; filling the lost days from the other stations' readings that day, without the wind, still leaves those stations at 35 or fewer.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field and rule correctly counts each station's days above 50 over its valid days and corrects for the lost days by scaling up by data capture or by filling them from the rest of the network that day; both treat the lost days as ordinary for that station, flag the stations with long outages in quiet spells, and miss the stations whose analysers stopped on the days the plume blew onto them.",
+  "domain_test": "The deciding quantity is each station's whole-year count of days above the 24-hour objective with its lost days rebuilt from the day's wind direction against the station's own pollution rose (the terminal lies on a fixed bearing from each station) on top of the network's background, the way an air quality network reconstructs lost days; with hospitals and bed occupancy in place of stations and PM10 there is no bearing to a source, no wind and no reason a census fails on its busiest days, so the task stops reading.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:informative-outage-plume-sector-infill",
+  "layer1": [
+    "two operators' exports in different layouts (the council's long file in GMT, the terminal operator's wide file in local clock time)",
+    "hour-ending time stamps",
+    "ratification status and reason codes",
+    "partial days below the 75 per cent hour rule",
+    "station codes that differ between the operator's export and the council's register"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task265": "task265 corrects a survival curve's risk set for units the record saw only after their start (delayed entry); here nothing enters late: every day of the year is in the population, the records lose the heaviest days while they happen, and the lost days are rebuilt by splitting each station's level into the network's background and the terminal's plume by that day's wind, a source decomposition rather than a risk-set correction."
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-10-18 against task162, task163, task164 (forum regulator_or_inspector, forcing event statutory_or_regulatory_filing and role field_unit_lead banned, so the auditor's annual data audit decides and the council's air quality officer asks).",
+  "registered": "2026-10-18T03:19:15Z"
+}
