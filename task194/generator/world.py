@@ -296,35 +296,37 @@ OLDEST_PULL = 1.35          # how strongly the oldest band's share pulls the mix
 # home and reaches the record through the readmission. The share is of the complications that quarter will
 # ultimately carry, at the quarter's own close and at the two closes after it.
 # How complete a quarter's complications are when it is first published and at each restatement after it,
-# by how the complication was recorded. A ward on the clinical information system records a complication at
-# the point of care and it reaches the warehouse with the episode; a ward still on paper records it in the
-# notes, and it is coded from them whenever the coder reaches that chart, which is often after the quarter
-# has already been published. The share is of the complications the quarter will ultimately carry, at the
-# quarter's own close and at the three closes after it.
-MODE_COMPLETENESS = {
-    "electronic": (0.966, 0.991, 0.998, 1.000),
-    "paper": (0.558, 0.762, 0.888, 0.962),
-}
+# by how the complication was recorded. A complication recorded at the point of care on the clinical
+# information system reaches the warehouse with the episode and is coded in the same cycle; one written in
+# the paper notes is coded whenever the coder reaches that chart, which is often after the quarter has
+# already been published. The share is of the complications the episode's quarter will ultimately carry, at
+# the quarter's own close and at the three closes after it.
+ELEC_COMPLETENESS = (0.966, 0.991, 0.998, 1.000)
+PAPER_COMPLETENESS = (0.558, 0.762, 0.888, 0.962)
 LAG_COMPLETE = 4            # a quarter stops moving four closes after its own
 
-# When each unit's wards came onto the clinical information system. The rollout order was the vendor's and
-# the network's own technical readiness, cabling and device procurement ward by ward, so it runs across
-# sites and across specialties rather than with either: the four cost centres still recording on paper at
-# the export date sit at four different hospitals and in four different specialties. None is stated
-# anywhere to report late; the register carries the date its wards were registered on the system and
-# nothing else.
+# When each cost centre's wards were registered on the clinical information system. The programme ran ward
+# by ward from July 2024 to October 2026 in the order the vendor's implementation partner and the network's
+# own cabling and device procurement allowed, so it runs across sites and across specialties rather than
+# with either: each hospital has one of the four cost centres registered last, and those four sit in four
+# different specialties. The register carries the date and nothing else.
 CIS_MIGRATION = {
-    "41220": dt.date(2024, 4, 1), "41230": dt.date(2024, 10, 1), "41240": dt.date(2025, 1, 1),
-    "41310": dt.date(2025, 4, 1), "41320": dt.date(2025, 7, 1), "41420": dt.date(2025, 10, 1),
-    "41430": dt.date(2026, 1, 1), "41510": dt.date(2026, 4, 1),
-    "41250": dt.date(2024, 7, 1), "41260": dt.date(2025, 1, 1), "41270": dt.date(2024, 4, 1),
-    "41340": dt.date(2025, 4, 1), "41350": dt.date(2025, 7, 1), "41360": dt.date(2024, 10, 1),
-    "41440": dt.date(2025, 10, 1), "41450": dt.date(2026, 1, 1), "41460": dt.date(2026, 4, 1),
-    "41610": dt.date(2025, 7, 1), "41620": dt.date(2026, 1, 1), "41630": dt.date(2026, 7, 1),
-    "41511": dt.date(2026, 4, 1), "41512": dt.date(2026, 4, 1),
-    # still on paper at the export date, one at each hospital and one in each of four specialties
-    "41210": None, "41330": None, "41410": None, "41520": None,
+    "41210": dt.date(2026, 7, 1), "41220": dt.date(2024, 7, 1), "41230": dt.date(2024, 10, 1),
+    "41240": dt.date(2025, 10, 1), "41310": dt.date(2025, 1, 1), "41320": dt.date(2024, 7, 1),
+    "41330": dt.date(2026, 4, 1), "41410": dt.date(2026, 10, 1), "41420": dt.date(2025, 7, 1),
+    "41430": dt.date(2025, 4, 1), "41510": dt.date(2025, 1, 1), "41520": dt.date(2026, 1, 1),
+    "41250": dt.date(2024, 10, 1), "41260": dt.date(2025, 7, 1), "41270": dt.date(2025, 4, 1),
+    "41340": dt.date(2026, 1, 1), "41350": dt.date(2025, 1, 1), "41360": dt.date(2024, 7, 1),
+    "41440": dt.date(2026, 4, 1), "41450": dt.date(2025, 10, 1), "41460": dt.date(2026, 7, 1),
+    "41610": dt.date(2025, 4, 1), "41620": dt.date(2026, 1, 1), "41630": dt.date(2026, 10, 1),
+    "41511": dt.date(2025, 1, 1), "41512": dt.date(2025, 1, 1),
 }
+# How much of a ward's recording has moved onto the system, by how long the ward has been registered: the
+# devices land before the practice does, and the wards that take longest are the oldest buildings, so for
+# two quarters after registration a share of the complications is still written in the notes first.
+CIS_RAMP = ((91, 0.55), (182, 0.82), (273, 0.94))
+CIS_SETTLED = 0.985
+
 IMMATURE = {9: 0, 8: 1, 7: 2, 6: 3}   # quarter index -> how many closes have passed since its own
 # where each unit type's other quarterly indicators sit: deaths in hospital per 1,000 separations and
 # unplanned readmissions within 28 days per 100, on the dashboard beside the complication indicator

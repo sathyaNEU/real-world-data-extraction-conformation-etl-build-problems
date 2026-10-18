@@ -72,6 +72,43 @@ Every card is kept and architecture 3's identity now sits in the card's `lineage
 Nothing of it is resumed: not the monetary-unit sampling world, not the projection driver, not the
 ladder, not the pack.
 
+## Draw
+
+| | |
+|---|---|
+| Card | `.claude/skills/fingerprint/cards/task190.json`, architecture 4, registered 2026-10-17T23:01:30Z |
+| Pairing | epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (serves Anomaly Detection in the client taxonomy) |
+| Objective | anomaly-detection |
+| Shape | other: each allowed setting crossed with each evaluation year, with the arithmetic in the card's notes (04 and 13 both blocked against task195 and task191) |
+| Decision type | dial_setting; answer unit a named option |
+| Gap, pattern, Gate G | time; G1 decisive, G13 and G2 supporting; method_or_model_selection |
+| Strategy, Layer 2 | other (a performance ratio produced by the configuration being replaced); estimation_fit |
+| World | Finland, a regional public health authority of 14 surveillance districts; people from `guard.py names --geo Finland --seed 190` |
+| Forcing event | cutover_or_migration: the detection platform goes live and the configuration must be set |
+
+**Guard verdict, and it has moved.** At registration the card was WARN with no BLOCK, nearest driver 0.07
+against task104. Re-run after the parallel builders registered, `guard.py check` now returns **BLOCK
+ban.subdomain against task242**, which holds epidemiology-public-health /
+disease-surveillance-outbreak-anomaly-detection on the Data Quality Monitoring objective and registered
+inside the three builds the ban reaches. The pairing was free when it was drawn and is not free now, so the
+registered ground needs a redraw whatever happens to the decisive step.
+
+**The four WARNs, answered.** `government_agency` is 33 builds deep and has to be one here, because
+statutory communicable-disease surveillance is a function no other kind of organisation performs; the
+objective is the lane's own and its frequency is the lane rather than this draw;
+`method_or_model_selection` repeats against task196 and stands at 8 of the last 12, and it is the truthful
+label for "which basis ranks the settings" rather than a label chosen to spread the batch, so the variety
+is carried by the driver at 0.07 against the whole corpus; the question form `which` repeats against
+task197 and follows from the decision, which is a pick among the platform's allowed settings.
+
+**Stage 1 is not complete.** The decisive step this ground was drawn for (value each allowed accumulation
+window by the outbreak cases with onset after the alert it produces, against the reflex of multiplying the
+clusters a window flags by the unit's published preventable share) was simulated in four parameterisations
+and does not reverse: the two routes agree to within 1.6 to 4.1 per cent at every mix a district could
+plausibly record, for the structural reason written into `## Tried and rejected`. The data-native sentence
+that would have carried it is therefore not written, no prompt exists, nothing is cut, and the next move is
+a decision on the decisive step rather than any further build work.
+
 ## Architecture 3's record below this line
 
 Every heading from here to `## Tried and rejected` is architecture 3's, demoted so the design-stage gate cannot read a spent architecture's ladder, closure table or ask sheet as the live design. Architecture 4's own sections replace them when its decisive step is fixed.

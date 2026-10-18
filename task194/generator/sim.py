@@ -546,51 +546,64 @@ def complications(rows, units):
     return detail
 
 
+def electronic_share(unit, sep_date):
+    """How much of a ward's recording sits on the clinical information system on a given day."""
+    reg = W.CIS_MIGRATION.get(unit)
+    if reg is None or sep_date < reg:
+        return 0.0
+    days = (sep_date - reg).days
+    for cut, share in W.CIS_RAMP:
+        if days < cut:
+            return share
+    return W.CIS_SETTLED
+
+
+def maturity(q):
+    """How many closes have passed since a quarter's own close, by the pull date."""
+    return W.IMMATURE.get(q, W.LAG_COMPLETE)
+
+
 def apply_coding_lag(rows, units):
     """Leave in the record only the complications coded by the pull date.
 
-    A complication is coded when it is documented, so a quarter keeps growing after its own coding close:
-    the newest closed quarter has been published once and the one before it twice, and both are still short
-    of what their patients had. Which complications are missing is not random across the record, because
-    documentation runs on the group's own clinical course, so a quarter's shortfall follows the mix of
-    groups its own patients produced.
+    A complication is coded from what the clinician wrote. Written at the point of care on the clinical
+    information system it travels with the episode and is coded in the same cycle; written in the paper
+    notes it is coded whenever the coder reaches that chart, so the quarter keeps growing after its own
+    coding close. A quarter's shortfall therefore follows how its own wards were recording while its
+    patients were in them, which moves quarter by quarter as the system's rollout reaches each ward.
 
-    Returns the coded counts per unit-quarter, and, per quarter and reporting group, the number of episodes
-    whose first recorded complication falls in that group both ultimately and as coded, which is what the
-    coding close-out register publishes.
+    Returns the coded counts per unit-quarter, the ultimate counts, and the count each unit-quarter stood
+    at at every close after its own, which is what the coding close-out register publishes.
     """
-    first_group = {}
-    for code, _, g in W.LIST_2022 + W.LIST_2026:
-        first_group[code] = g
     ultimate = {}
+    vintage = {}
     for i, row in enumerate(rows):
         if not row["hac"] or not row["in_scope"]:
             continue
-        g = first_group[row["hac_codes"][0]]
-        ultimate[(row["q"], g)] = ultimate.get((row["q"], g), 0) + 1
-    for i, row in enumerate(rows):
-        if not row["hac"] or not row["in_scope"] or row["q"] not in W.IMMATURE:
-            continue
-        lag = W.IMMATURE[row["q"]]
-        g = first_group[row["hac_codes"][0]]
-        c = W.GROUP_COMPLETENESS[g][lag]
+        key = (row["unit"], row["q"])
+        ultimate[key] = ultimate.get(key, 0) + 1
+        e = electronic_share(row["unit"], row["sep_date"])
         r = rng("lag", row["unit"], row["sep_date"].isoformat(), i)
-        if r.random() >= c:
+        curve = W.ELEC_COMPLETENESS if r.random() < e else W.PAPER_COMPLETENESS
+        u = float(r.random())
+        lag = W.LAG_COMPLETE
+        for k, c in enumerate(curve):
+            if u < c:
+                lag = k
+                break
+        rows[i]["coding_lag"] = lag
+        for k in range(lag, W.LAG_COMPLETE + 1):
+            vintage[(row["unit"], row["q"], k)] = vintage.get((row["unit"], row["q"], k), 0) + 1
+        if lag > maturity(row["q"]):
             rows[i]["hac"] = False          # documented, and coded, after the pull date
             rows[i]["hac_codes"] = []
-    coded = {}
-    coded_group = {}
     observed = {}
     for row in rows:
         if not row["in_scope"]:
             continue
         key = (row["unit"], row["q"])
         observed[key] = observed.get(key, 0) + (1 if row["hac"] else 0)
-        if row["hac"]:
-            g = first_group[row["hac_codes"][0]]
-            coded_group[(row["q"], g)] = coded_group.get((row["q"], g), 0) + 1
-    coded.update(observed)
-    return observed, ultimate, coded_group
+    return observed, ultimate, vintage
 
 
 def add_replays(rows, units):
