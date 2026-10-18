@@ -142,11 +142,39 @@ def rush_and_burn_months(steps):
     return bad
 
 
+# The shipments a month's normal stock is held against. The space policy files the mean of the month's and the
+# next month's shipments ("fwd2"); the others are the fork table's alternatives (SF13), run only by checks.py.
+BASIS = "fwd2"
+
+
+def basis_shipments(S, k):
+    """The shipments month k's normal stock is held against, under BASIS; None where the months are missing."""
+    def g(m):
+        v = S.get(m)
+        return v
+    if BASIS == "same":
+        return g(k)
+    if BASIS == "flat":
+        return 1.0 if g(k) is not None else None
+    if BASIS == "next":
+        return g(nxt(k)) if g(k) is not None else None
+    if BASIS == "centred3":
+        vs = [g(prv(k)), g(k), g(nxt(k))]
+        return None if any(v is None for v in vs) else sum(vs) / 3.0
+    a, b = g(k), g(nxt(k))
+    return None if a is None or b is None else 0.5 * (a + b)
+
+
 def normal_cover(P, S, months):
     vals = []
     for k in months:
-        if k in P and k in S and nxt(k) in S and S[k] > 0:
-            vals.append(P[k] / (0.5 * (S[k] + S[nxt(k)])))
+        if BASIS == "fwd2":
+            if k in P and k in S and nxt(k) in S and S[k] > 0:
+                vals.append(P[k] / (0.5 * (S[k] + S[nxt(k)])))
+        elif k in P and k in S and S[k] > 0:
+            b = basis_shipments(S, k)
+            if b:
+                vals.append(P[k] / b)
     return float(np.median(vals)) if len(vals) >= 6 else None
 
 
@@ -156,9 +184,15 @@ def daily_normal(book, code, cover, S_ext):
     ks = sorted(S_ext)
     mids, vals = [], []
     for k in ks:
-        if nxt(k) in S_ext and S_ext[k] is not None and S_ext[nxt(k)] is not None:
-            mids.append(dt.date(k[0], k[1], 15))
-            vals.append(cover * 0.5 * (S_ext[k] + S_ext[nxt(k)]))
+        if BASIS == "fwd2":
+            if nxt(k) in S_ext and S_ext[k] is not None and S_ext[nxt(k)] is not None:
+                mids.append(dt.date(k[0], k[1], 15))
+                vals.append(cover * 0.5 * (S_ext[k] + S_ext[nxt(k)]))
+        else:
+            b = basis_shipments(S_ext, k)
+            if b is not None:
+                mids.append(dt.date(k[0], k[1], 15))
+                vals.append(cover * b)
     base = mids[0]
     x = np.array([(m - base).days for m in mids], float)
 

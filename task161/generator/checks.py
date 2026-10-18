@@ -404,6 +404,18 @@ def run(target, golden_dir, Bt=None):
          r["blocks"])
     r = calc.golden(B, opt={"test": "days"})
     S.ok("SF12", r["blocks"] == 2, "a block's position-months counted in position-days: %d" % r["blocks"])
+    alt = {}
+    try:
+        for b_ in ("same", "centred3", "next", "flat"):
+            calc.BASIS = b_
+            alt[b_] = calc.golden(B)["blocks"]
+    finally:
+        calc.BASIS = "fwd2"
+    S.ok("SF13", calc.golden(B)["blocks"] == 2 and
+         "its cover times the mean of its shipments in that month and the month after" in pol,
+         "normal stock as the cover times the mean of the month's and the next month's shipments (space policy 3.4): "
+         "2; against the same month's shipments %d, a centred three months %d, the next month %d, a flat median stock "
+         "%d, each ruled out by 3.4" % (alt["same"], alt["centred3"], alt["next"], alt["flat"]))
 
     # ------------------------------------------------------------------ A: the asks
     inp = read.ask_inputs(target)
@@ -451,6 +463,30 @@ def run(target, golden_dir, Bt=None):
     dd = {m["trailer"]: m["delivered"] for m in inp["manifest"]}
     S.ok("A6", all(dd[t] == rday[t] for t in tl), "every Avila trailer's delivery date is its WMS receipt's Pacific date, "
          "so its containers fall in the same month either way (%d trailers)" % len(tl))
+    # the split-receipt month: a box devanned in pieces is dated at its first piece (the dictionary's line, the
+    # golden's box_visits and verify.py's chain); dated at its last piece instead, these months move
+    last_ = {}
+    delta = {k: 0.0 for k in asks.MONTHS_2026}
+    for r_ in sorted(inp["receipts"], key=lambda x: x["received_at"]):
+        if r_["type"] not in asks.TEU:
+            continue
+        d_ = inp["to_local"](r_["received_at"])
+        cn = r_["equipment"]
+        if cn in last_ and (d_ - last_[cn][1]).days <= 3:
+            k0, k1 = last_[cn][0], (d_.year, d_.month)
+            if k0 != k1:
+                for k, sg in ((k0, -1.0), (k1, 1.0)):
+                    if k in delta:
+                        delta[k] += sg * asks.TEU[r_["type"]]
+            last_[cn] = (k1, d_)
+            continue
+        last_[cn] = ((d_.year, d_.month), d_)
+    lastT = {k: int(round(teu[k] + delta[k])) for k in teu}
+    moved = {"%d-%02d" % k: lastT[k] - gT[k] for k in teu if lastT[k] != gT[k]}
+    S.ok("A8", "counted once, in the month of its first receipt (WMS) or delivery (Avila)" in dic and gold == (10, 10)
+         and len(moved) >= 1, "the dictionary files a box received in pieces as counted once, in its first "
+         "receipt's month, which is how the golden dates each visit; dated at its last piece instead, %d of ten months' "
+         "TEU move: %s" % (len(moved), moved))
     import pack as _pk
     S.ok("A7", all(m["port"] == _pk.TERMINAL_PORT[m["terminal"]] for m in inp["manifest"]) and
          "Port of Los Angeles and the Port of Long Beach" in dic,
@@ -604,7 +640,9 @@ def run(target, golden_dir, Bt=None):
     # ------------------------------------------------------------------ P: pins once, counter-pins none
     pins = {"in our racks or outside them": PK.F_POLICY, "at least three quarters of its position-months": PK.F_POLICY,
             "holds the balances at the close of the business day just ended": PK.F_DICT,
-            "L5G1 2.25": PK.F_DICT, "Blocks are let whole and for the whole term": PK.F_OFFER}
+            "L5G1 2.25": PK.F_DICT, "Blocks are let whole and for the whole term": PK.F_OFFER,
+            "the mean of its shipments in that month and the month after": PK.F_POLICY,
+            "counted once, in the month of its first receipt": PK.F_DICT}
     where = {p: [f for f, t in txt.items() if p in t] for p in pins}
     S.ok("P1", all(where[p] == [f] for p, f in pins.items()),
          "each load-bearing sentence sits in exactly one file: %s" % where)

@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: earlier, excess, account, rushes, forecast, shipments, accounts, december, policy, season, positions, seasonal, months, notices, nothing, asserted, balance, bought-ahead, decisive, bought, tracker, method, owners, pallet, window
+Stump terms swept: earlier, excess, account, rushes, shipments, forecast, accounts, december, policy, season, positions, seasonal, months, method, asserted, notices, decisive, balance, bought-ahead, bought, tracker, owners, nothing, pallet, window
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `ridley-ames_bldg-b_overflow_blocks_2026-11-19.pdf`: carries 10 of 11 distinctive words of the committed call: 'We should take 2 of the six 4,000-position overflow blocks at Tamarind Avenue Logistics Park for January to June 2027, $'
 
 ## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `ridley-ames_bldg-b_overflow_blocks_2026-11-19.pdf`: 4 of 25 stump-paragraph terms appear (account, accounts, positions, pallet); read whether the document names the move
-- **REVIEW** `space_planning_policy_rev4.pdf`: 7 of 25 stump-paragraph terms appear (account, forecast, accounts, policy, positions, months); read whether the document names the move
+- **REVIEW** `space_planning_policy_rev4.pdf`: 8 of 25 stump-paragraph terms appear (account, shipments, forecast, accounts, policy, positions); read whether the document names the move
 - **REVIEW** `yv_client_advisories_2019-2026.pdf`: 3 of 25 stump-paragraph terms appear (earlier, shipments, months); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 3)
