@@ -37,7 +37,7 @@
   "scoring_unit": "per boarded entity",
   "spine": {
     "file": "onboarding_accounts_2022-2025.csv (the current account system's onboarding export)",
-    "rows": 35291,
+    "rows": 37103,
     "entity": "one payroll account, with its business identifiers, address state, opening stamp, first pay date, onboarding answer, channel and product",
     "grain": "account",
     "source": "synthetic (constructed in the layout of a payroll platform's account onboarding export)"
@@ -46,7 +46,7 @@
   "forcing_event": "budget_or_appropriation",
   "org_family": "professional_services",
   "world": {
-    "geography": "United States, twelve states of the Great Lakes, Ohio Valley and Mid-Atlantic (the company, its people, systems and customer data are fictional; the state filing reforms of 2023 to 2026 and the autumn 2025 rise in applications belong to the constructed world)",
+    "geography": "United States, twelve states of the Great Lakes, Ohio Valley and Mid-Atlantic (the company, its people, systems and customer data are fictional; the state filing reforms of 2023 to 2026 and the rise in applications from January 2026 belong to the constructed world)",
     "currency": "USD",
     "org_type": "regional payroll services company for small businesses (payroll processing and payroll tax filing on its own platform)",
     "invented_names": [

@@ -1,23 +1,39 @@
-{"task": "task163",
+{
+ "task": "task163",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "economics-econometrics",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-18",
  "stump": "Carrying each state's latest closed formation rate per application onto the twelve months of applications to September 2026 at the plan's 2025 shares files 2,800; the reform states' latest closed rate blends ordinary applications with applications the integrated filing added, about a fifth of the closed cohorts and about a third of the twelve months, and only the added applications' own yield, read against the nine other states before and after go-live and carried per added application, files 2,500.",
  "architecture": 1,
  "loops": 3,
- "precut": {"exit": 0, "date": "2026-10-18"},
- "leak": {"leak_py": "REVIEW (3 lines on the sizing standard, answered in the note's Leak sweep)", "reader": "rounds 1 to 3: no leak; round 3's small tells (the share tab's unrounded shares, two empty manifest covers) answered; a targeted re-read is due on the last pins"},
- "duplicate_check": {"heart": "WARN (repeat.gate_g, repeat.decision, repeat.question_form; answered at the draw)", "nearest": "surface 0.081 task124, 0.080 task132, 0.077 task144 (same-driver card keys, differentiated on the card)"},
- "judge": {"verdict": "round 3 on 72a5ef8d: DETERMINISTIC, APPROVE, no fix; recheck PASS, strength HOLDS (P(one) about 0.15, P(both) 0.04 to 0.05 counting the regressions), realism: the wave's ramp over the closings remains, recorded", "disposition": "last pins in: the counting notes file a successor of an EIN with no account in the extract as its predecessor's business (SF23); the share tab's shares as formulas shown to two decimals of a per cent; the manifest's covers filled; the card's stump and answer text brought to this build; figures.json and block 4 byte-identical to 24f38a7", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18",
+  "checks": 50
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-18, no LEAK (three lines on the sizing standard: the filed rounding, the call's words, ten stump-paragraph terms; answered in the note's Leak sweep)",
+  "reader": "round 1 on a9491969, round 2 on 4d1bb550 and round 3 on 72a5ef8d: no leak, Q6 analytical; the targeted re-read of the last pins on c4ac95d2 clean (Q1 none, Q6 analytical, nothing planted, the share tab reads as a real finance workbook; the remaining tells, the notes slightly tidied and the channel row naming the fix, are the cost of the judge's pins and left)"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-18 (repeat.gate_g, repeat.decision, repeat.question_form; answered at the draw)",
+  "nearest": "surface 0.081 task124, 0.080 task132, 0.077 task144 (same-driver card keys, differentiated on the card)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC, APPROVE (round 3 on 72a5ef8d); round 2 on 4d1bb550 DETERMINISTIC, FIX_NOW on wording; round 1 on a9491969 DETERMINISTIC, APPROVE with strength AT_RISK",
+  "disposition": "round 3 no fix: 2,499.64, a relative yield of 0.2603 and 312,103 added of 919,455 reproduced, seven variants at 2,491 to 2,500, every ask figure to the cent, Gates G and H pass; its one ask fork (a successor of an EIN with no account in the extract) closed by one sentence in the counting notes; rule 3 recheck PASS, strength HOLDS, P(one) about 0.15, P(both) 0.04 to 0.05 counting the regressions as landings; realism: three of four points fixed, the rise's January to April 2026 ramp over the three closings recorded as the residual",
+  "report": "relayed by the main session (round 1: formation-only bypasses on the round-1 world; round 2: four wording pins, provenance and realism; round 3: no fix, one ask fork)"
+ },
  "returned": [],
- "resume": "stage 4: the targeted re-read of the last pins, then ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""}
+ "portal_status_date": ""
+}
