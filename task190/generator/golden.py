@@ -104,7 +104,8 @@ def workbook(path, att, chain, a1, a2, a3, prior):
     ws = wb.create_sheet("Collection effort")
     ws["A1"] = "Collection round 2026: field effort by regional team"
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Field days are counted once per field visit; a visit covers several enterprises."
+    ws["A2"] = ("Field days are counted once per field visit; a visit covers several enterprises. "
+                "Usable returns are counted once per collection case.")
     _head(ws, 4, ["Region", "Field days consumed", "Usable returns", "Usable returns per field day"],
           [18, 18, 14, 24])
     row = 5
@@ -169,6 +170,8 @@ def workbook(path, att, chain, a1, a2, a3, prior):
         ("Interim operations", "a holding site's confirmation under an interim code is not a "
                                "recovery operation; the operation confirmed on the consignment the "
                                "holding site forwards is the one that counts"),
+        ("Field day", "eight hours, as the survey's collection documentation books it; the "
+                      "response log's time_unit column gives the unit each row is recorded in"),
         ("Rounding", "rates, shortfalls and shares to one decimal, tonnages to the nearest tonne, "
                      "field days and returns per day to two decimals"),
         ("Standard error", "of the recovery rate, shown for working; the plan reports attainment "

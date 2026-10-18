@@ -317,8 +317,9 @@ def main():
         stated += ["%.1f" % t26, "%.1f" % (t26 + 3.5), "%.1f" % (t26 + 7.0)]
         pa, pr = prior[k]
         stated += ["%d" % pa, "%d" % pr, "%.1f" % (100.0 * pr / pa)]
-    stated += ["%.1f" % (cv25 * 100), "%d" % int(round(tot25)),
-               "{:,}".format(int(round(tot25))), "%d" % W.MODULE_DAYS, "36,735", "36735"]
+    pub_tot = sum(a for a, _r in prior.values())      # the total the release prints, its own column's sum
+    stated += ["%.1f" % (cv25 * 100), "%d" % pub_tot, "{:,}".format(pub_tot),
+               "%d" % W.MODULE_DAYS, "36,735", "36735"]
     for v in (3.0, 2.0, 2.5, 1.0, 1.0):
         stated.append("%.1f" % v)
     stated += ["214", "143", "178", "71", "69"]

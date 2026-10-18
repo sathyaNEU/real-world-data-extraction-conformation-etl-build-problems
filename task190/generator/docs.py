@@ -115,7 +115,7 @@ def sample_design(path, issued, resp):
                     % NUMWORD[W.FIELD_DAY_HOURS], BODY),
           Spacer(1, 10),
           Paragraph("%s, Business and Environment Statistics Division. Issued %s."
-                    % (W.INSTITUTE, W.EXTRACT_SURVEY), SMALL)]
+                    % (W.INSTITUTE, _long(W.EXTRACT_SURVEY)), SMALL)]
     d.build(f)
 
 

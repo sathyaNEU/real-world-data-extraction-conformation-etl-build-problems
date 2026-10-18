@@ -4,29 +4,31 @@
  "status": "BUILD",
  "domain": "survey-research-official-statistics/anomaly-detection",
  "objective": "anomaly-detection",
- "stage": 3,
- "stage_name": "build complete, stage 4 pending",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-18",
  "stump": "Each waste stream's 2026 recovery rate is a complete register tonnage over a design-based estimate of the stream's arisings, so all of the rate's sampling error is the denominator's and none comes from the stratum the survey enumerates completely; 95.8 per cent of metal arisings sit in that stratum, giving it a 1.1 per cent CV against mixed commercial and industrial's 5.7, so metal's 2.9 point shortfall is 4.57 standard errors while mixed C&I's larger 4.9 point shortfall is 1.45. Every route that ranks the shortfall, or tests it against the published national CV or the stream's reporting-enterprise count, files mixed commercial and industrial.",
  "architecture": 6,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-18",
   "checks": "51 checks, 0 FAIL, 0 WARN against the architecture-6 card; 1 FAIL against the card registered in the repo, which is still architecture 4's and which this builder is barred from registering"
  },
  "build_gates": {
-  "generator_checks": "PASS, 53 checks, 0 FAIL, exit 0",
-  "verify": "PASS, 43 checks, 0 FAIL, exit 0 (reads only target/ and golden/)",
+  "generator_checks": "PASS, 75 checks, 0 FAIL, exit 0 (was 53; blocks H and J added for the repair pass)",
+  "verify": "PASS, 53 checks, 0 FAIL, exit 0 (was 43; reads only target/ and golden/)",
   "rebuilds": "two consecutive rebuilds byte-identical on all 19 files",
   "figures_check": "exit 0, 181 figures in blocks 1 to 4, 0 absent from figures.json",
-  "input_gates": "17 files, 3 formats, three csv files above 25,000 rows, 2 declared distractors, every file licence-clean with source and date",
-  "ceiling": "pair ceiling 28.5 (gate 40), mirror leakage 0.0 per cent (gate under 35), measured on the cut pack",
-  "realism": "golden-realism pass run on both goldens after the figures froze; container audit clean on target/ and golden/"
+  "input_gates": "17 files, 3 formats, three csv files above 25,000 rows (80,104 / 41,466 / 41,369), 2 declared distractors, every file licence-clean with source and date",
+  "ceiling": "pair ceiling 28.5 (gate 40), mirror leakage 0.0 per cent, measured on the cut pack; 46.2 if both top responses resolve A3's association returns, measured and recorded in the design note's ask sheet",
+  "realism": "golden-realism pass on both goldens after the figures froze; container audit clean on target/ and golden/; realism sweep clean (no constant column, no repeated block, no round total, no dominating text value, personas drawn); register realism asserted in checks.py block J",
+  "precut": "exit 0, 51 checks, 0 FAIL, 0 WARN; voice-check.py exit 0 on the 994-character prompt",
+  "archive": "target.zip cut from the final rebuild, 17 members, md5 bbf01fae98537ad271c72b80206f113c, sha256 1d1d797e1e62b9052d92e900bb9ace344ddd31ef131e188dc6397e8e73ce21c9, every member byte-equal to the tree"
  },
  "leak": {
-  "leak_py": "REVIEW, 0 LEAK, sweep 11 clean",
-  "reader": "LANDED THE CALL at about 75 per cent confidence on 2026-10-18"
+  "leak_py": "REVIEW, 0 LEAK, sweeps 1, 2, 5, 6, 7, 8, 9 and 11 clean; REVIEW on 3 (the memo carries the estimand) and 4 (document vocabulary), the same two categories as the judged pack",
+  "reader": "LANDED THE CALL at about 75 per cent confidence on 2026-10-18; the report section is preserved verbatim in leak_check_report.md with a note on what the repair pass changed under it. A fresh reader after this pass is the Gate F test the orchestrator is holding."
  },
  "duplicate_check": {
   "heart": "WARN against the architecture-6 card (BLOCK against the stale registered card is that card matching its own architecture-4 driver at 1.00)",
@@ -41,11 +43,26 @@
   "order": "derivation written before the graded blocks were opened; the judge reached the main call independently"
  },
  "returned": [],
- "resume": "Stage 4 round 1 is in, and one repair pass is running. The judge returned NOT_DETERMINISTIC with FIX_NOW: both failures are on the ask side, the main call recomputed exactly and Gates C, D, F, G and H passed. Verified by the orchestrator before the pass was commissioned: the response log carries 15 byte-identical duplicate rows, and deliverable 3's Norte figure of 16.66 is 542 over 32.54 where 542 is the raw row count including 4 duplicates, so the figure is 16.53 on 538 unique cases and 542 would put usable returns at 1,634 against the design's 1,630. The six repairs in flight: that figure and its ask re-derived on unique cases; the hours-per-field-day convention filed in an input file, since 71 rows carry time_unit h and nothing states it; the 2025 release's 3.9 per cent national CV cut as a confirmer of the variance method, because it reproduces at 3.915 under the finite-population correction and 4.091 without it, which is an oracle; the 2025 release's recovered tonnages either reconciled exactly from the register or given a stated cause for the gap, since the residuals run +47 to +345 t and the judge could not reconcile them; the reader's four realism defects; and two thin forks, the municipal association rows and the origin-region basis. The decisive step is deliberately untouched: Gate F is held open and a fresh reader after the pass is the test, because the oracle may be why the reader found the method. Still open and not a repair: heart BLOCKs ban.org_family against task244 and the honest key for a statutory statistics institute is the one task244 used.",
+ "resume": "Stage 4 round 2, reader and judge both spawned on the repaired pack at target.zip bbf01fae98537ad271c72b80206f113c. The repair is verified here rather than taken on the report: figures.json diffed key by key against the judged commit shows 191 shared keys with exactly two moved, both of them the Gate A fix (a1_Norte usable returns 542 to 538 and returns per day 16.66 to 16.53), one key renamed and one added, which is the oracle cut. A fresh build is byte-identical under diff -rq on target and golden, checks 75 of 75, verify 53 of 53, ceiling 28.5 with zero mirror leakage, precut 51 with 0 FAIL and 0 WARN, figures_check 181 figures with none absent, voice-check PASS at 994 characters, and the prompt moved by exactly the two intended words. Both threads re-run because documents and the prompt changed, and the second reader is the Gate F test: the oracle that let the first one confirm the variance method is gone. Open and not a repair: heart BLOCKs ban.org_family against task244, an author decision. Two things the repair recorded for the author: the A3 fork's cheaper closure holds the measured pair ceiling at 28.5 but a reader who resolves it anyway puts the worst case at 46.2, inside the house bar of 50 but above the 40 this build was built to; and SF3's convergence was re-measured rather than tuned, no stream moving more than 0.73 per cent when both register files are read consistently.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "repair_pass": {
+  "date": "2026-10-18",
+  "trigger": "stage 4 judge: NOT_DETERMINISTIC, FIX_NOW, both failures on the ask side",
+  "frozen": "the main call and every figure behind it are byte-identical to the judged pack: 70,384 t over 124,354 t, 56.6 per cent, interval 55.4 to 57.8, se 0.635, metal 4.57 se, mixed commercial and industrial 1.45 se, all eight streams' rates and targets, the chain sheet's 32 cells and the 2025 and municipal ask figures",
+  "moved": "a1_Norte.usable_returns 542 to 538 and a1_Norte.returns_per_day 16.66 to 16.53; figures.json's national CV key renamed and the published 2025 figure added (3.4). Nothing else in figures.json moved.",
+  "repairs": [
+   "1 Gate A: a usable return is counted per collection case, not per log row; the five regions tie to the micro-data's 1,630 records (checks A7)",
+   "2 Gate B and E: the field day of eight hours is filed in the survey's own collection documentation, section 5 (checks H1 to H3, verify's own read-back with a positive control)",
+   "3 the oracle: the release published the 2026 round's own CV, which reproduced at 3.915 with the finite-population correction and 4.091 without; it now publishes the 2025 round's measure, 3.4 per cent, which no estimator of the 2026 round reproduces and nothing in the bundle recomputes (checks H4, H5)",
+   "4 the calibration: the 2025 release's recovered column is the register as at the 30 June 2026 extract, stated in the release, 3.3 to 5.0 per cent below a recompute on the shipped extract; it still pins R1 as recovery and rules out a first-operation-only read (checks H7 to H10)",
+   "5 realism: lag distributions with a tail and a weekday and holiday structure, weighbridge net tonnages summing to the designed whole tonnes, drawn facility and carrier names, and the capacity note rewritten as a memo (checks J1 to J8)",
+   "6 the two thin forks: 'by origin region' in the prompt and the municipal series' counting convention in the memo (SF13, SF14)"
+  ],
+  "closure_changed": "SF3's convergence is now asserted on the confirmation-date window read over both register files, where no stream moves by more than 0.73 per cent and metal alone is established; SF3b records that the half reading (2026 despatches only) loses the extract's 762 January confirmations, establishes two streams and so contradicts the memo's one-stream clause. The despatch-date pin is unchanged."
+ }
 }

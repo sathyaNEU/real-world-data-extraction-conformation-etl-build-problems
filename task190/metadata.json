@@ -13,7 +13,7 @@
   "files": [
     {
       "file": "bws_2026_design_and_weighting.pdf",
-      "role": "the survey's sample design, stratification, issued sample and weighting",
+      "role": "the survey's sample design, stratification, issued sample, weighting and the\n                  collection operations the response log records, including the field day the division\n                  books field work in",
       "licence": "synthetic, CC0-1.0",
       "source": "generator/build.py",
       "date": "2026-10-18"
@@ -41,7 +41,7 @@
     },
     {
       "file": "collection_capacity_note_2027.pdf",
-      "role": "the division's collection capacity note, which files the estimand and the bar",
+      "role": "the head of collection operations' memo to the division director, which files the\n               estimand, the bar and the municipal series' counting convention",
       "licence": "synthetic, CC0-1.0",
       "source": "generator/build.py",
       "date": "2026-10-18"
@@ -125,7 +125,7 @@
     },
     {
       "file": "waste_statistics_2025_release.pdf",
-      "role": "the revised 2025 statistics release with its methodological note",
+      "role": "the revised 2025 statistics release: the prior year's arisings, recovered tonnage\n                   and recovery rate per stream, with the methodological note giving the 2025 round's own\n                   precision measure and the register extract Table 1 was compiled from",
       "licence": "synthetic, CC0-1.0",
       "source": "generator/build.py",
       "date": "2026-10-18"
@@ -213,8 +213,8 @@
     "62.6",
     "62.7",
     "62096",
-    "623,429",
-    "623429",
+    "623,430",
+    "623430",
     "63.0",
     "64.5",
     "65074",
