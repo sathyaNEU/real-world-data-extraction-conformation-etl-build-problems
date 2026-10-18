@@ -62,8 +62,8 @@ DISTRICT_PROFILE = {
 }
 # Storm episodes: (name, start, end, share of the window's events, branch weights)
 EPISODES = [
-  ("orkan Halina",     "2026-11-11T09:00", "2026-11-13T22:00", 0.57, {"ZAN":0.7,"PUS":1.0,"GRB":1.35,"NIE":0.8}),
-  ("front 2 listopada","2026-11-02T04:00", "2026-11-03T20:00", 0.17, {"ZAN":0.8,"PUS":0.9,"GRB":0.8,"NIE":2.6}),
+  ("wichura 11-13.11",  "2026-11-11T09:00", "2026-11-13T22:00", 0.57, {"ZAN":0.7,"PUS":1.0,"GRB":1.35,"NIE":0.8}),
+  ("front 02.11",      "2026-11-02T04:00", "2026-11-03T20:00", 0.17, {"ZAN":0.8,"PUS":0.9,"GRB":0.8,"NIE":2.6}),
 ]
 OVERLAP_FROM, OVERLAP_TO = "2026-11-01", "2026-11-07"   # the week both OMS exports carry
 

@@ -42,6 +42,46 @@ def unpad(key, flag):
     return out
 
 
+def stamp_workbook(xl):
+    """Fix the workbook's own properties, so the build clock never reaches the shipped container."""
+    p = xl.book.properties
+    p.creator = "Borowiecka Energia Operator"
+    p.lastModifiedBy = "Borowiecka Energia Operator"
+    p.created = EXPORT_TS
+    p.modified = EXPORT_TS
+    p.title = None
+    p.description = None
+
+
+def normalise_containers(d):
+    """Repack every OOXML container with fixed entry timestamps, so a rebuild is byte-identical.
+    openpyxl and python-docx stamp zip entries with the build clock."""
+    import zipfile
+    if not os.path.isdir(d):
+        return
+    for f in sorted(os.listdir(d)):
+        if not f.endswith((".xlsx", ".docx", ".pptx")):
+            continue
+        p = os.path.join(d, f)
+        import re as _re
+        with zipfile.ZipFile(p) as z:
+            items = []
+            for i in z.infolist():
+                data = z.read(i.filename)
+                if i.filename.startswith("docProps/"):
+                    data = _re.sub(rb"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ",
+                                   b"2026-11-16T06:00:00Z", data)
+                items.append((i, data))
+        tmp = p + ".tmp"
+        with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:
+            for info, data in items:
+                ni = zipfile.ZipInfo(info.filename, date_time=(2026, 11, 16, 6, 0, 0))
+                ni.compress_type = info.compress_type
+                ni.external_attr = info.external_attr
+                z.writestr(ni, data)
+        shutil.move(tmp, p)
+
+
 def build():
     if os.path.isdir(TARGET):
         shutil.rmtree(TARGET)
@@ -385,6 +425,8 @@ if __name__ == "__main__":
         if r.returncode != 0:
             print(r.stdout[-1500:]); print(r.stderr[-1500:])
             raise SystemExit("metadata scrub failed on %s" % d)
+    normalise_containers(TARGET)
+    normalise_containers(os.path.join(TASK, "golden"))
     for root, _, files in os.walk(TARGET):
         for f in files:
             os.utime(os.path.join(root, f), (MTIME, MTIME))

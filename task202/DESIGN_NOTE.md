@@ -43,12 +43,22 @@ and `guard.py check` returns WARN with no BLOCK.
    is rule application under the estimand pincer; `/2` ("stratify before reading a correlation") pins the
    within-group comparison or the unit-defining grouping, which is the estimand's unit. `layer2_pattern` is
    therefore `own:`, and the swap test is answered on the domain's nouns in `## Three rules`.
-8. **The two `guard.py check` WARNs, answered.** `three_rules.strategy_risk` on `grain_or_unit`: the grain
+8. **The `guard.py check` WARNs, answered.** `three_rules.strategy_risk` on `grain_or_unit`: the grain
    mismatch is the **gap** this build exploits, not its decisive step, and the `Analyst test` line shows the
    easy route failing after every field is read and every filed rule applied. `repeat.gate_g` against
    task172: `method_or_model_selection` is the honest label, because seven routes to the same filed
    quantity stand and the portal's own goodness of fit is what closes the family; no other Gate G key
-   describes a method closed by the data.
+   describes a method closed by the data. **Registering this card moved the window and added two more
+   WARNs, which is the behaviour `fingerprint` Part 2b predicts:** `repeat.gate_g` now also cites
+   task190 (6) and `overuse.gate_g` fires at five of the last twelve. Both are answered the same way, and
+   neither is clearable by redrawing honestly: the remaining Gate G keys describe a forecast, a stated
+   limit, an attribution, a hold, or a correct number resisted, and this call is none of those. The
+   mechanism inside the key is not the recycled part, which is what the heart check measures.
+9. **`guard.py heart task202`, run after registration: `HEART VERDICT: WARN`, exit 0, not BLOCK.** On
+   driver and stump text against every card, every lineage driver, every stump and every shipped-ledger
+   row, the nearest is **0.09** (task255's truncated-and-censored size distribution, differentiated in the
+   card) and the nearest stump text is **0.04** (task103 v3, this domain's incumbent), so the heart of
+   this stump sits far from the build that shares its domain and objective.
 
 ## Default path
 
@@ -276,6 +286,11 @@ are fixed and how the award distribution is recovered is left to the analysis.
   share and referred value share, and the referred award count.
 - `generator/figures.json` plus `figures_check.py`: every graded figure with its printed unit and its
   mid-bin clearance.
+- **Implementation invariance of the solve itself**, measured rather than argued: the committed share falls
+  monotonically in the ceiling, and two independent implementations of the backward solve (an exhaustive
+  grid over every multiple of PHP 100, and a binary search) return the **same ceiling on all ten seeds at
+  each of three committed shares, 6, 10 and 15 per cent**, on the second model cut. The solve is therefore
+  not itself a fork, and the ladder's spread is the shape's, not the search's.
 - The portal's goodness of fit, which is the pack's own closure evidence: KS against a single lognormal
   12.5 times the five per cent critical value, against a gamma 18.8 times, against an EM two-component fit
   23.0 times; and the within-partner spread scaling with the partner's level, which refuses an additive

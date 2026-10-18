@@ -134,7 +134,8 @@ carrying 270.8 thousand interrupted customer-hours.
 
 A solver who cleans both exports, normalises the device keys, applies PR-07's population exactly and
 drills the recorded customer-hours level by level commits the slot to the Zanowiec trunk sections in
-rejon Zanowiec Miasto, because the dispatch record times every interruption on a feeder without line
+rejon Zanowiec Miasto on Zanowiec's 206.9 thousand interrupted customer-hours, because the dispatch
+record times every interruption on a feeder without line
 telemetry from the first customer notification rather than from the loss of supply, and that unrecorded
 opening runs 242.5 minutes on the fused rural spurs that carry Grabownik's exposure against 8.6 on the
 trunks that carry Zanowiec's.
@@ -189,9 +190,9 @@ trunks that carry Zanowiec's.
   answer, which the R3a assertion executes on the clean truth.
 - **Analyst test:** with both exports de-duplicated, the keys padded, the UTC archive converted, PR-07's
   population applied exactly and the drill rule executed to the letter, computing interrupted
-  customer-hours from the recorded start to restoration files the Zanowiec branch at level one, rejon
-  Zanowiec Miasto at level two and its `SN-magistrala` trunk sections as the leaf, which is the wrong
-  leaf.
+  customer-hours from the recorded start to restoration files the Zanowiec branch at level one on 206.9
+  thousand interrupted customer-hours, rejon Zanowiec Miasto at level two and its `SN-magistrala` trunk
+  sections as the leaf, which is the wrong leaf.
 - **Estimand:** PR-07 section 3 files it to the letter: the population (every unplanned interruption of
   supply on the operator's own network whose restoration is recorded on or before the extract, with its
   start in the window 1 October to 15 November 2026, both dates inclusive), the outcome (the customers a
@@ -484,3 +485,137 @@ row and the mirror's scored from different device readings).
 **Pair ceiling:** 28.5
 **Mirror leakage:** 0.0
 
+## Tried and rejected
+
+### Candidate 1, separating confounding inflation from polygenic signal, killed at the draw (2026-10-18)
+
+(Architecture v1a, on `genomics-gwas-high-dimensional-association`; never registered.) The filed
+quantity was each contributing cohort's confounding inflation, unobserved, recovered as the intercept
+of a regression of chi-square on a linkage covariate. Killed on the sixth screen at four measured
+settings with no window between them: profiled over the intercept with the slope free, the set within
+two log-likelihood units was 0.0204 wide at its sharpest against a printed precision of 0.01, twice
+the printed unit, and 0.0962 (ten times) at the only range where the low-covariate bin named the wrong
+candidate. Three of nine enumerated routes reached the golden and all three were the same move, reading
+the region where the signal is absent. **Rule earned:** an identification of the form "estimate the
+nuisance where the signal vanishes" fails the sixth screen by construction, because the region where
+the signal vanishes publishes the nuisance and the leverage that sharpens the identification is what
+purifies that region.
+
+### Candidate 2, fine-mapping which variant in a locus is causal, killed at the draw (2026-10-18)
+
+(Architecture v1b; never registered.) Under the standard single-causal-variant model the causal variant
+has the largest expected statistic, so the lead can differ from it in only three ways and each was
+measured: with equal power the answer is the lead, so lead-by-p-value and largest-absolute-effect both
+reach it and the standard pipeline is the golden; with the causal variant poorly imputed the licensed
+method family split three to one on the graded name and the minimum of the imputation column published
+the answer; with two causal variants the family split again and the well-posed answer is a set rather
+than a name. **Rule earned:** where the well-posed answer to "which one" is a set, a build that grades
+a name grades an arbitrary element of it, and no amount of margin fixes that.
+
+### The genomics ground abandoned at the re-root (2026-10-18)
+
+Both candidates above were on biomedical genomics ground and both died at the draw, the second on the
+graded object itself. The ground is left behind rather than screened further: the number moves to
+`energy-systems-utilities` / `grid-reliability-outage-analysis`, where the graded object is a single
+named leaf of a drill whose every box carries one well-posed share.
+
+### A revision log as the calibration organ, rejected before any file was cut (2026-10-18)
+
+The reserved `calibration_form` was `retry_or_revision_log`, and the natural instance here is the
+dispatch system's own edit history, where an operator back-dates an interruption's start once the crew
+reports what it found. Rejected on the revelation screen: a revision that records the true loss of
+supply publishes the quantity the decisive step estimates, so a filter on the revised rows returns the
+answer rather than an approximation. Replaced by `parallel_run_overlap`, where the second channel exists
+for its own operational reason and never covers the sections that need it.
+
+### Interval censoring of the restoration end, rejected on measurement (2026-10-18)
+
+The first shape tried on this ground censored the **restoration** time between two meter polls, so each
+duration lay in an interval of width twice the polling period. Killed by one computation: with the two
+offsets independent and uniform on the polling interval, the midpoint of the bracket is unbiased for the
+mean, so the reflex "subtract one polling interval" reaches the golden exactly, and for a share rather
+than a mean the per-event midpoint classifier was measured 0.5 percentage points from the truth at a
+240-minute cadence against a 13-point error for the recorded bracket, so the only route that lands
+wrong is one no analyst takes. Replaced by censoring at the **start**, which is one-sided, has no
+midpoint to take because the record holds no upper bound for it, and whose size is measurable only on a
+subset selected against the sections that need it.
+
+### Right censoring at the extract as the decisive step, rejected on the WHAT screen (2026-10-18)
+
+Treating the interruptions still open at the extract as right-censored rather than dropped was drafted
+as the decisive step and killed on `stumping`'s WHAT screen without a measurement, because it settles
+whether members not yet observed are in the population, which is one of the estimand's five parts: file
+it and the computation follows from the clause (rule application), leave it unfiled and the main call
+forks. This is task190's death in another world. The three unrestored interruptions still ship, filed
+out of the population by PR-07 s.3, and `checks.py` asserts they move no graded share by more than
+0.03 pp.
+
+### Hour of day as the conditioner, rejected at design (2026-10-18)
+
+The pre-notification interval is physically longer at night, which would have been a second conditioner
+and a second rung. Rejected because the recorded start of an untelemetered interruption **is** the
+notification, so an event that began at 02:00 and was reported at 06:40 carries an 06:40 start: the
+conditioner would have to be recovered from the very quantity the step is estimating. Dropped in favour
+of the section class, which the register fixes independently of any timestamp.
+
+### Grading any share of the drill, rejected on measurement (2026-10-18)
+
+The first design graded each box's share of its parent level to the nearest whole per cent, twelve
+figures, which is what shape 12 grades. Killed by measurement rather than argument: the golden's own
+estimator family (class mean, class median, class customer-weighted mean, class trimmed mean, branch by
+class mean) spreads a single box's share by up to 0.3176 percentage points, driven by the sampling error
+of the low-voltage class interval in the golden rejon, and a search over 500 seeds found **no** seed
+where even one share figure sat far enough from its bin edge to survive that spread while the ladder
+also held (the bar was an edge above three times the spread; the best seeds reached 0.049 pp of edge
+against 0.374 pp of spread). Replaced by records-fixed counts: the 25 graded figures on the call side
+are whole interruption and customer-interruption counts, the shares stay in the deliverables as the
+drill's working and the write-up states none of them.
+
+### The count drill reaching the golden leaf, found and broken (2026-10-18)
+
+Measured on the cut pack: drilling on the plain **number of interruptions** at each level, with no
+duration analysis of any kind, reached the golden leaf exactly, because the correction's whole effect is
+to weight up the many small rural interruptions and those are where the counts are. With every graded
+figure a count, a response running `size()` three times would have landed the call and all 25 counts.
+Broken by giving the golden branch's rejony genuinely different restoration times, which the dispatch
+note's account of impassable forest roads supports: Borowa Puszcza now carries a restoration multiplier
+of 2.10 against Mokrzyce's 0.25, so Mokrzyce leads on count (1,846 against 1,136) while Borowa Puszcza
+leads on customer-hours (107.5 thousand against 70.2), and the count drill files Mokrzyce. Re-measured
+after the break: eleven of twelve enumerated routes miss the golden leaf.
+
+### Interval censoring of the restoration end, rejected on measurement (2026-10-18)
+
+The first shape tried on this ground censored the **restoration** time between two meter polls, so each
+duration lay in an interval of width twice the polling period. Killed by one computation: with the two
+offsets independent and uniform on the polling interval the midpoint of the bracket is unbiased for the
+mean, so the reflex "subtract one polling interval" reaches the golden exactly, and for a share rather
+than a mean the per-event midpoint classifier was measured 0.5 percentage points from the truth at a
+240-minute cadence against a 13-point error for the recorded bracket, so the only route that lands wrong
+is one no analyst takes. Replaced by censoring at the **start**, which is one-sided, has no midpoint to
+take because the record holds no upper bound for it, and whose size is measurable only on a subset
+selected against the sections that need it.
+
+### Right censoring at the extract as the decisive step, rejected on the WHAT screen (2026-10-18)
+
+Treating the interruptions still open at the extract as right-censored rather than dropped was drafted as
+the decisive step and killed on `stumping`'s WHAT screen without a measurement, because it settles
+whether members not yet observed are in the population, which is one of the estimand's five parts: file
+it and the computation follows from the clause, leave it unfiled and the main call forks. This is
+task190's death in another world. The five unrestored interruptions still ship, filed out of the
+population by PR-07 s.3, and `checks.py` asserts that carrying them at the extract time leaves the call
+where it is.
+
+### Hour of day as the conditioner, rejected at design (2026-10-18)
+
+The pre-notification interval is physically longer at night, which would have been a second conditioner
+and a second rung. Rejected because the recorded start of an untimed interruption **is** the
+notification, so an interruption that began at 02:00 and was reported at 06:40 carries an 06:40 start:
+the conditioner would have to be recovered from the very quantity the step is estimating. Dropped in
+favour of the section class, which the register fixes independently of any timestamp.
+
+### A per-branch count of overrunning planned jobs, folded (2026-10-18)
+
+A1 first asked for the overrunning jobs per branch. Measured on the cut pack, the row-grain and
+job-grain counts coincided on the two small branches (Zanowiec 7 against 7, Grabownik 1 against 1), so
+the cracker kept 2 of 27 ask figures and the A1 row was not an honest miss. Folded into one total, which
+the row grain gets wrong globally, and the measured cracker keep went to 0 of 27.

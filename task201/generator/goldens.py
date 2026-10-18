@@ -150,10 +150,13 @@ def write_note(call, a1, a2, a3, path):
         s.left_margin = s.right_margin = Mm(22); s.top_margin = s.bottom_margin = Mm(18)
     st = d.styles["Normal"]; st.font.name = "Calibri"; st.font.size = Pt(10)
 
-    h = d.add_paragraph(); r = h.add_run("Przypisanie slotu remediacyjnego, sezon 2026/2027")
+    h = d.add_paragraph()
+    r = h.add_run("Slot remediacyjny 2026/2027 idzie na %s w rejonie %s"
+                  % (P.CLS_PL[call["klass"]], call["district"]))
     r.bold = True; r.font.size = Pt(14)
-    p = d.add_paragraph("PR-07 krok 5. Do narady ruchowej oddzialu. Okno analizy 1 pazdziernika do "
-                        "15 listopada 2026, dane pobrane 16 listopada 2026 o 06:00.")
+    p = d.add_paragraph("Nota PR-07/2026-11/GRB. Do: narada ruchowa oddzialu %s. Od: Biuro Analiz "
+                        "Sieciowych. PR-07 krok 5. Okno analizy 1 pazdziernika do 15 listopada 2026, "
+                        "dane pobrane 16 listopada 2026 o 06:00." % nm[call["branch"]])
     p.runs[0].font.size = Pt(8.5); p.runs[0].font.color.rgb = RGBColor(0x60, 0x60, 0x60)
 
     d.add_paragraph()
@@ -178,6 +181,9 @@ def write_note(call, a1, a2, a3, path):
         row[2].text = "{:,}".format(b["przerwy"]).replace(",", " ")
         row[3].text = "{:,}".format(b["odbiorcoprzerwy"]).replace(",", " ")
 
+
+    sp = d.add_paragraph("Zrodlo: SD-OMS, eksporty wylaczen 2026-10-01..2026-11-15; rejestr urzadzen SN i nN, stan 2026-10-01; archiwum telemetrii. Przerwy awaryjne wg PR-07 s.3.")
+    sp.runs[0].font.size = Pt(7.6); sp.runs[0].font.color.rgb = RGBColor(0x70, 0x70, 0x70)
     d.add_paragraph()
     t = d.add_paragraph(); t.add_run("Poziom 2, rejony oddzialu %s" % nm[call["branch"]]).bold = True
     tb = d.add_table(rows=1, cols=4); tb.style = "Light Grid Accent 1"
@@ -202,17 +208,17 @@ def write_note(call, a1, a2, a3, path):
 
     d.add_page_break()
     t = d.add_paragraph(); t.add_run("Zalacznik A. Wylaczenia planowane w oknie analizy").bold = True
-    tb = d.add_table(rows=1, cols=5); tb.style = "Light Grid Accent 1"
-    for i, c in enumerate(["Oddzial", "Odbiorco-godziny 2026-10", "Odbiorco-godziny 2026-11",
-                           "Prace po oknie", "Uwagi"]):
+    tb = d.add_table(rows=1, cols=4); tb.style = "Light Grid Accent 1"
+    for i, c in enumerate(["Oddzial", "Odbiorco-godziny prac po slocie",
+                           "Odbiorco-godziny prac planowanych 2026-10",
+                           "Odbiorco-godziny prac planowanych 2026-11"]):
         tb.rows[0].cells[i].text = c
     for b in P.BRANCH:
         row = tb.add_row().cells
         row[0].text = "%s (%s)" % (nm[b], b)
-        row[1].text = "%.1f" % a1["godziny"].get("%s|2026-10" % b, 0.0)
-        row[2].text = "%.1f" % a1["godziny"].get("%s|2026-11" % b, 0.0)
-        row[3].text = str(a1["prace_przekroczone"][b])
-        row[4].text = "grafik wg wydania 2 dla listopada"
+        row[1].text = "%.1f" % a1["godziny_prac_przekroczonych"][b]
+        row[2].text = "%.1f" % a1["godziny"].get("%s|2026-10" % b, 0.0)
+        row[3].text = "%.1f" % a1["godziny"].get("%s|2026-11" % b, 0.0)
     d.add_paragraph("Prac planowanych w oknie analizy: %d, na %d wylaczeniach. Poza opublikowane "
                     "okno wyszlo %d prac, lacznie o %.1f godziny."
                     % (a1["prac_planowanych"], a1["wierszy_planowanych"],
@@ -234,7 +240,7 @@ def write_note(call, a1, a2, a3, path):
     d.add_paragraph()
     t = d.add_paragraph(); t.add_run("Zalacznik C. Wskazniki sprawozdawcze koncesji").bold = True
     tb = d.add_table(rows=1, cols=5); tb.style = "Light Grid Accent 1"
-    for i, c in enumerate(["Rok", "Poziom", "SAIDI awaryjne [min]", "SAIDI planowane [min]",
+    for i, c in enumerate(["Rok sprawozdawczy", "Poziom napiecia sieci", "SAIDI awaryjne [min]", "SAIDI planowane [min]",
                            "SAIFI awaryjne / planowane"]):
         tb.rows[0].cells[i].text = c
     for y, tabv in [("2024", RET24), ("2025", RET25)]:
@@ -250,10 +256,18 @@ def write_note(call, a1, a2, a3, path):
                     % (a3["korekta_pazdziernik"]["SN|min"], a3["korekta_pazdziernik"]["SN|pct"],
                        a3["korekta_pazdziernik"]["nN|min"], a3["korekta_pazdziernik"]["nN|pct"]))
 
-    pf = d.add_paragraph("Biuro Analiz Sieciowych BEO | PR-07 krok 5 | 16 listopada 2026")
+    nt = d.add_paragraph(
+        "Uwagi do liczb. Identyfikatory urzadzen z eksportow SD-OMS sprowadzono do postaci z zerami "
+        "wiodacymi, zgodnie ze slownikiem danych; bez tego 2 823 wiersze eksportu nie lacza sie z "
+        "rejestrem. Piec przerw bez zapisanego zalaczenia na 16 listopada nie wchodzi do pomiaru, "
+        "zgodnie z PR-07 s.3. Grafik wylaczen planowanych czytany wg wydania 2 dla listopada, ktore "
+        "zastepuje wydanie 1. Udzialy podano w pelnych procentach, liczone z niezaokraglonych "
+        "odbiorco-godzin.")
+    nt.runs[0].font.size = Pt(7.8); nt.runs[0].font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+    pf = d.add_paragraph("Biuro Analiz Sieciowych BEO | nota PR-07/2026-11/GRB | 16 listopada 2026")
     pf.runs[0].font.size = Pt(8); pf.runs[0].font.color.rgb = RGBColor(0x70, 0x70, 0x70)
     cp = d.core_properties
-    cp.author = "Biuro Analiz Sieciowych BEO"; cp.title = "Przypisanie slotu remediacyjnego 2026/2027"
+    cp.author = "Biuro Analiz Sieciowych BEO"; cp.title = "Nota PR-07/2026-11/GRB, slot remediacyjny 2026/2027"
     cp.comments = ""; cp.last_modified_by = "Biuro Analiz Sieciowych BEO"
     cp.created = datetime.datetime(2026, 11, 16, 7, 40)
     cp.modified = datetime.datetime(2026, 11, 16, 7, 40)
@@ -279,19 +293,20 @@ def write_tree(call, path):
         c = "white" if lit else "#1a1a1a"
         ax.text(x + w / 2, y + h * 0.66, label, ha="center", va="center", fontsize=9.2,
                 color=c, fontweight="bold" if lit else "normal")
-        ax.text(x + w / 2, y + h * 0.30, "%s  (%d %%)" % (extra, pct), ha="center", va="center",
-                fontsize=8.1, color=c)
+        ax.text(x + w / 2, y + h * 0.30, "%s  |  %d %% odb.-godzin" % (extra, pct),
+                ha="center", va="center", fontsize=7.3, color=c)
 
-    ax.text(50, 96, "Drzewo udzialow w odbiorco-godzinach przerw, okno 1.10 do 15.11.2026",
+    ax.text(50, 96, "Ekspozycja sezonu siedzi na odgalezieniach SN w rejonie %s" % call["district"],
             ha="center", fontsize=12.5, fontweight="bold", color="#1a1a1a")
-    ax.text(50, 92, "PR-07 krok 1 do 3; sciezka do wskazanej klasy odcinka zaznaczona",
-            ha="center", fontsize=9, color="#5b6770")
+    ax.text(50, 92, "Drzewo PR-07 krok 1 do 3; w kazdym polu odbiorco-przerwy i udzial poziomu; "
+                    "okno 1.10 do 15.11.2026", ha="center", fontsize=9, color="#5b6770")
     rows = [("Poziom 1, oddzialy", 70.0, call["levels"][0], call["branch"], lambda k: nm.get(k, k)),
             ("Poziom 2, rejony %s" % nm[call["branch"]], 42.0, call["levels"][1], call["district"], lambda k: k),
             ("Poziom 3, klasy odcinkow %s" % call["district"], 14.0, call["levels"][2], call["klass"], lambda k: k)]
     centres = {}
     for title, y, lvl, lit_name, labf in rows:
-        ax.text(2, y + 15.5, title, fontsize=9.4, fontweight="bold", color="#1f4e79")
+        ax.text(98, y + 15.3, title, fontsize=9.2, fontweight="bold", color="#1f4e79",
+                ha="right")
         n = len(lvl["boxes"]); w = 21.0; gapw = (100 - 4 - n * w) / max(1, n - 1)
         for i, b in enumerate(lvl["boxes"]):
             x = 2 + i * (w + gapw)

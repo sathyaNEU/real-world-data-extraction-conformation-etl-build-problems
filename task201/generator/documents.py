@@ -41,7 +41,7 @@ def procedure():
     doc = SimpleDocTemplate(path, pagesize=A4, topMargin=18 * mm, bottomMargin=18 * mm,
                             leftMargin=20 * mm, rightMargin=20 * mm,
                             title="PR-07 Plan remediacji sieci SN i nN",
-                            author="Borowiecka Energia Operator")
+                            author="Borowiecka Energia Operator", invariant=1)
     f = []
     f.append(Paragraph("Borowiecka Energia Operator sp. z o.o.", SMALL))
     f.append(Paragraph("PR-07 Plan remediacji sieci SN i nN w sezonie burzowym", H1))
@@ -110,7 +110,7 @@ def prior_year_return(st):
     doc = SimpleDocTemplate(path, pagesize=A4, topMargin=18 * mm, bottomMargin=18 * mm,
                             leftMargin=18 * mm, rightMargin=18 * mm,
                             title="Sprawozdanie o niezawodnosci dostaw 2024-2025",
-                            author="Borowiecka Energia Operator")
+                            author="Borowiecka Energia Operator", invariant=1)
     # figures derived from the 2026 window's own structure, scaled to prior years
     served = sum(st["served"].values())
     rows24 = [("SN", 2.61, 1.04, 2.19, 0.37), ("nN", 1.14, 0.46, 1.86, 0.22)]
@@ -123,13 +123,13 @@ def prior_year_return(st):
                        "rejony ani klasy odcinkow.", SMALL))
     f.append(Spacer(1, 8))
     f.append(Paragraph("Tabela 1. Rok 2024. Czas trwania przerw w <b>godzinach</b> na odbiorce.", H2))
-    f.append(_tbl([["Poziom napiecia", "SAIDI awaryjne [h/odb.]", "SAIDI planowane [h/odb.]",
+    f.append(_tbl([["Poziom napiecia sieci", "SAIDI awaryjne [h/odb.]", "SAIDI planowane [h/odb.]",
                     "SAIFI awaryjne [1/odb.]", "SAIFI planowane [1/odb.]"]] +
                   [[a, "%.2f" % b, "%.2f" % c, "%.2f" % d, "%.2f" % e] for a, b, c, d, e in rows24],
                   widths=[30 * mm, 36 * mm, 36 * mm, 32 * mm, 32 * mm]))
     f.append(Spacer(1, 8))
     f.append(Paragraph("Tabela 2. Rok 2025. Czas trwania przerw w <b>minutach</b> na odbiorce.", H2))
-    f.append(_tbl([["Poziom napiecia", "SAIDI awaryjne [min/odb.]", "SAIDI planowane [min/odb.]",
+    f.append(_tbl([["Poziom napiecia sieci", "SAIDI awaryjne [min/odb.]", "SAIDI planowane [min/odb.]",
                     "SAIFI awaryjne [1/odb.]", "SAIFI planowane [1/odb.]"]] +
                   [[a, "%.1f" % b, "%.1f" % c, "%.2f" % d, "%.2f" % e] for a, b, c, d, e in rows25],
                   widths=[30 * mm, 36 * mm, 36 * mm, 32 * mm, 32 * mm]))
@@ -149,13 +149,13 @@ def prior_year_return(st):
 def dispatch_note(st):
     """One voice: the dispatch shift lead's note after the windstorm. Operational, no ranking."""
     ev = st["ev"]
-    halina = ev[ev.epizod == "orkan Halina"]
+    halina = ev[ev.epizod == "wichura 11-13.11"]
     n_h = len(halina)
     path = os.path.join(TARGET, "notatka_sluzby_dyspozytorskiej.md")
-    txt = """# Notatka ze zmiany dyspozytorskiej, orkan Halina
+    txt = """# Notatka ze zmiany dyspozytorskiej, wichura 11-13 listopada
 
-Sporzadzil: Cezary Wawszczyk, dyspozytor zmianowy, Centralna Dyspozycja Mocy BEO
-Data: 14 listopada 2026
+Dyspozytor zmianowy: Cezary Wawszczyk, Centralna Dyspozycja Mocy BEO
+Data notatki: 14 listopada 2026
 
 Zmiana od 11 listopada 09:00 do 13 listopada 22:00. W tym czasie system odnotowal %d wylaczen
 awaryjnych. Szczyt przyjec w Centrum Zgloszen wypadl 12 listopada miedzy 04:00 a 07:00, kolejka

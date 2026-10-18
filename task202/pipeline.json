@@ -8,8 +8,8 @@
  "updated": "2026-10-18",
  "architecture": 1,
  "loops": 0,
- "card_registered": false,
- "resume": "DESIGN complete and measured on the nonprofit-grant-making ground, nothing cut. Card draft at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task202b/task202_card.json, guard.py check = WARN (no BLOCK; two WARNs answered in DESIGN_NOTE.md ## Draw item 8). DESIGN_NOTE.md carries all twelve precut sections; precut.py is 49/51 green and FAILs only on 'card registered' (the builder is not allowed to register) and 'ceiling measured by a script' (generator/cracker.py, stage 3). prompt.txt passes voice-check.py exit 0. NEXT: register the card, then build stage 3 from the locked model in the scratch directory (model3.py is the generating process; lock.py reproduces the ladder). Locked parameters: capital-item share 0.09 at 3.90x the standard award with upper-mode log-sd 0.28, province level spread 0.42 against 0.12 within province, committed referral share 6.0 per cent, printed unit PHP 100, 88 partners in 8 provinces, 2 pilot provinces on the portal, 6 household-size bands, portal spine about 26,800 awards over 27 months with about 11,900 inside the 12-month window.",
+ "card_registered": true,
+ "resume": "DESIGN complete and measured on the nonprofit-grant-making ground, nothing cut. Card draft at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task202b/task202_card.json, guard.py check = WARN (no BLOCK; two WARNs answered in DESIGN_NOTE.md ## Draw item 8). DESIGN_NOTE.md carries all twelve precut sections; precut.py is 49/51 green and FAILs only on 'card registered' (the builder is not allowed to register) and 'ceiling measured by a script' (generator/cracker.py, stage 3). prompt.txt passes voice-check.py exit 0. The card IS now registered and guard.py heart returns WARN exit 0 (not BLOCK). NEXT: build stage 3 from the locked model in the scratch directory (model3.py is the generating process; lock.py reproduces the ladder). Locked parameters: capital-item share 0.09 at 3.90x the standard award with upper-mode log-sd 0.28, province level spread 0.42 against 0.12 within province, committed referral share 6.0 per cent, printed unit PHP 100, 88 partners in 8 provinces, 2 pilot provinces on the portal, 6 household-size bands, portal spine about 26,800 awards over 27 months with about 11,900 inside the 12-month window.",
  "designation_set_screen": {
   "assigned": "carry task194 architecture 6's designation-set device onto human-factors-ergonomics / safety-incident-error-analysis, screening against task181 first",
   "method": "guard.py nearest on each candidate driver, then the abstraction test on latent structure, default path and correction",
@@ -54,5 +54,13 @@
   "survivor": "the aggregation mechanism at the locked setting: the committed share has to be cut on the award-level distribution, which the claim returns (every partner's own average) and the portal (the within-partner shape) hold one half each. Default path 20.3 printed units low and refers 9.6 per cent against the committed 6.0; minimum separation across the seven wrong routes 1.8 printed units; golden stable 10 of 10 seeds; the portal refuses every smoothed shape at KS 12.5, 18.8 and 23.0 times the five per cent critical value; within-partner spread scales with partner level (corr 0.98) which refuses an additive shape.",
   "limit_reported": "measuring the award shape on a subset of the portal (one band, or one tercile of portal partner level) moves the ceiling by up to 7.0 printed units, more than three of the seven rung separations. SF4 closes it by the pack's own band-homogeneity test, which does not reject, so the closure rests on a test rather than on the records: point the determinism judge here first.",
   "not_run": "no generator, no pack, no goldens, no metadata.json, no submission.md, no verify.py, no figures.json; precut.py FAILs on 'card registered' and 'ceiling measured by a script'."
+ },
+ "gates_run": {
+  "guard.py check": "WARN, exit 0, no BLOCK (post-registration: three_rules.strategy_risk, repeat.gate_g vs task172 and task190(6), overuse.gate_g 5 of last 12; all answered in DESIGN_NOTE.md ## Draw items 8-9)",
+  "guard.py heart task202": "HEART VERDICT: WARN, exit 0, NOT BLOCK. Nearest driver 0.09 (task255), nearest stump text 0.04 (task103 v3).",
+  "voice-check.py on prompt.txt": "PASS, exit 0, 891 characters",
+  "precut.py task202": "exit 1, 51 checks, 1 FAIL 1 WARN. Only FAIL is 'ceiling measured by a script' (generator/cracker.py, stage 3); only WARN is 'semantic forks asserted' (generator/checks.py, stage 3). 'card registered' now PASSES.",
+  "guard.py surface": "NOT RUN: requires a cut pack",
+  "stage 3 gates": "NOT RUN, reported as skipped: generator checks, verify.py, two byte-identical rebuilds, figures_check.py, the input gates, realism sweep, golden-realism, leak.py"
  }
 }
