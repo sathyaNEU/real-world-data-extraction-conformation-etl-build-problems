@@ -1,0 +1,104 @@
+{
+  "task": "task166",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 7 (new), seed FC37: the world (a regional bank's ALCO designating one $1.2 billion four-year pay-fixed swap overlay against one of five fixed-rate pools: a Treasury ladder, agency MBS, 2023-24 residential mortgages, auto loans, fixed-rate CRE loans), the decision and the quantity (the +200 bp loss in economic value averaged over the swap's first twelve months) kept; the seed's certified-control-set method clause and the ALM report's trailing-year ranking are not shipped; the pitfall is re-found from how each pool's balance runs off under the planning cycle's base case",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "stress-testing-capital",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a Pittsburgh regional bank's ALCO designating its one $1.2 billion four-year pay-fixed swap overlay against the fixed-rate pool whose +200 bp economic value loss, averaged over the swap's first twelve months (calendar 2027), is largest, when the 2023-24 jumbo mortgages are in the money at the planning cycle's 6.25 per cent and about $2.2 billion of five-year CRE loans written at peak values in the first half of 2022 fall due inside the year",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G13",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "the bank's head of balance sheet management, who writes the hedge designation memo the overlay is traded on",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "residential_loan_month_extract (the servicing system's monthly loan-level performance extract for the 2023-24 portfolio mortgages, January 2023 to November 2026)",
+    "rows": 160000,
+    "entity": "one portfolio mortgage loan in one calendar month (balance, payment, note rate, status, payoff)",
+    "grain": "loan x month",
+    "source": "synthetic (constructed in the layout of a mortgage servicing system's monthly loan-level extract, two layouts across a 2024 servicing platform conversion)"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "financial_institution",
+  "world": {
+    "geography": "United States, Pennsylvania (Pittsburgh; footprint western Pennsylvania, Ohio and West Virginia)",
+    "currency": "USD",
+    "org_type": "regional bank holding company, about $31 billion in assets",
+    "invented_names": [
+      "Carrick Valley Bancorp",
+      "Carrick Valley Bank"
+    ],
+    "people": [
+      "Guy Morrison",
+      "Sheri Roberts",
+      "Cody Li",
+      "Jeff Guzman",
+      "Joshua Boyd"
+    ]
+  },
+  "layer1": [
+    "the residential servicing platform conversion of 2024: loan-month records in the legacy layout to the conversion month and in the new layout after, loan numbers through the conversion crosswalk, the conversion month in both extracts",
+    "status transitions under the servicing codebook (payoffs, servicing transfers out, charge-off and REO codes) in the monthly loan tape",
+    "the CRE maturity log and the property operating statement extract keyed on different loan numbers (the credit system's note numbers against the core system's account numbers)",
+    "rates on different bases and day counts: Treasuries semi-annual, agency MBS monthly with a payment delay, CRE notes on actual/360, auto loans simple interest",
+    "the custodian's securities holdings in thousands of face with MBS on original face and a factor, the loan tapes in dollars",
+    "the pricing desk's rate sheet archive (posted rates by product and lock period) against the planning cycle's monthly paths",
+    "operating statements reviewed on each borrower's own fiscal year, some reviews stale or pending"
+  ],
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:balloon-maturities-extended-by-refinance-cover",
+  "deliverables": [
+    "overlay_designation_2027.xlsx",
+    "overlay_designation_alco.pptx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "Two parts of a stock answer the same forward terms in opposite directions: one, whose units hold rates the terms now beat, leaves faster than its own past, while the other, whose units fall due inside the window, keeps every due unit whose own earnings no longer cover the terms it would have to roll onto, at a share read from past due dates by that cover; the part with the most exposure over the window is found only when both answers are projected, because the schedule, a recent share or a price gap leaves the second part running off and names a third part that is neither.",
+  "driver_concrete": "Carrick Valley's fixed-rate CRE pool holds about $2.2 billion of five-year loans written at peak values in the first half of 2022 that fall due inside 2027, and most of them will be extended for 36 months at their note rates because their properties' latest income no longer covers a new 25-year loan of the balloon balance at the planning cycle's CRE rate, the cover at which the bank's own record of maturities since 2015 shows loans extend; with the 2023-24 mortgages prepaying on the bank's incentive curve at the planning rate of 6.25 per cent, the CRE pool's +200 bp loss averaged over the swap's first year is the largest of the five, while every route that pays the balloons off on schedule, at the recent extension share, by rate gap or by property type designates the agency MBS.",
+  "stump": "A strong solver prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the planning rate, runs the CRE loans to their contractual maturities and designates the agency MBS; the step that lands it there is paying the 2027 CRE balloons off on schedule (or at the recent extension share, or by rate gap), when the bank's maturity record shows that loans whose property income no longer covers a new loan at the prevailing CRE rate are extended for 36 months, and the 2027 wall is mostly such loans.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the hedge policy, the planning cycle and every file correctly, prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the 6.25 per cent planning rate and runs the CRE loans to their contractual maturities designates the agency MBS; only extending each 2027 CRE balloon at the share the bank's maturity record shows for its property's income cover at the planning CRE rate designates the CRE pool.",
+  "domain_test": "The deciding quantity is each pool's +200 bp loss in economic value on its expected cash flows through the hedge year, which asset-liability management projects from behaviour: mortgage prepayment by refinancing incentive at the planning rate, and balloon outcomes at maturity by refinance cover (the property's income against a new loan's debt service at the market rate); with another field's nouns (a hospital's wards, a utility's feeders) neither the incentive curve nor the refinance test on maturing balloons exists, so the quantity that decides the call has nothing to stand on.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task137": "task137 reads a deposit's retention-offer share at maturity by the rate drop (v1) and then by the class of the money; here the rate gap is the rival that misses (the 2027 balloons' gaps are no wider than those of the 2026 maturities that refinanced), no class is rebuilt from entry data, and the share that stays is set by each property's own income against a new loan's debt service at the planning rate, joined from the operating statements, inside a ranking of five pools' value sensitivity",
+    "task155": "task155 conditions a take-up share on whether an open task adjoins work already scheduled; here the conditioned share is a maturing loan's stay past its due date, set by its property income against a new loan at today's rate, and it decides a ranking of rate exposure only together with another pool's incentive-driven run-off",
+    "task197": "task197 separates a unit's response to a shared signal from its scheduled trajectory inside each episode; here nothing is netted from a trajectory, the decisive share is each maturing balloon's chance of extending at its own refinance cover",
+    "task37": "task37 recovers an unstated coupling rule from a closed outcome roll; here no rule is recovered or filed, the extension share is a smooth behaviour estimated from the maturity record and validated on held-out maturities",
+    "task44": "task44 splits a pilot's pooled effect by a behavioural moderator measured over a prior instance of the window; here no effect is split, and the forward wall's stay share is read at each loan's own refinance cover from every past maturity",
+    "task97": "task97 conditions a repeat-need rate on the history of the place a unit occupies, carried through an account conversion; here the stay share is conditioned on each loan's current income against the terms it must roll onto",
+    "task117": "task117 replays closed operations with per-unit caps from another entity and follow-on start times; here nothing is replayed and no cap binds, the forecast is a behavioural share at maturity feeding a value sensitivity",
+    "task133": "task133 counts taken-over loans only from their age at a system takeover (delayed entry) for a credit loss allowance; here nothing is truncated, and the forecast is each pool's behavioural balance path and its rate sensitivity",
+    "task157": "task157 sizes a returning cohort's remainder from the part already back; here the forward exposure of maturing balloons is set by a refinance test read from closed maturities, with no leading edge",
+    "task151": "task151 sums the chances of clearing stepped payout lines from a resampled distribution; here no threshold payoff is graded and no tail decides, the measure is an expected-cash-flow sensitivity",
+    "task163": "task163 reads a conversion yield on marginal entrants against untreated states; here the decision is which pool's forward balance path carries the most rate exposure, read from prepayment and maturity behaviour"
+  },
+  "lineage": [],
+  "notes": "Domain: the seed's house label was economics (bank balance-sheet risk management); the client taxonomy files asset-liability and interest-rate-risk work under banking-credit-financial-risk, and the task type nearest the deciding analysis (a +200 bp economic value of equity stress on behavioural cash flows) is stress-testing-capital, which serves forecasting. Forcing event: the designation must be documented at the swap's inception, so the memo is due before the trade (purchase_order_or_contract). Context artifact: the quarterly ALM report, a close-out of the bank's quarter-end interest-rate-risk position at balance-sheet level that ranks no pool.",
+  "registered": "2026-10-18T05:26:01Z"
+}
