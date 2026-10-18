@@ -97,6 +97,22 @@ step: `build-pipeline` classes a rung executed as a work order as announced, not
 Answers append to the report under `## Solver's-eye read`, with a verdict on each REVIEW line. The main
 thread rules fix or harmless per line, harmless ones one line each in the design note.
 
+**The reader also hands back every figure it committed to, as a JSON object keyed exactly as
+`<task>/generator/figures.json` is keyed** (a nested value by a dotted key, `"a1_Norte.contacts": 1965`),
+holding only the figures it actually answered. Score it before reading its verdict:
+
+```
+python3 .claude/skills/leak-check/score_reader.py taskNN <reader.json>   # 0 holds; 2 thin; 1 Gate F failed
+```
+
+A hit is an exact match at the golden's own precision. Exit 1 on a hit of the call, or on 35 per cent or
+more of the ask figures: Gate F has failed, and **a reader hit means the device is absent from that
+reader's path rather than weak**, so the repair re-sites the device and never re-words the ask
+(`supplemental-stumping` 1.1c). Exit 2 between a fifth and 35 per cent names the ask that leaked. The
+design note's cracker table is a model of the opponent written by the author; this is the measurement, and
+it outranks the table. task190 architecture 6 shipped a cracker table claiming all three asks missed and a
+`precut.py` pair ceiling of 28.5 through three stage 4 rounds; its round-3 reader reported 43 of 43.
+
 ## Not a leak
 
 - A figure the prompt states or `stated_inputs` lists.
@@ -111,4 +127,5 @@ thread rules fix or harmless per line, harmless ones one line each in the design
 
 - [ ] `leak.py --asof` CLEAN or REVIEW, sweep 11 clean; every REVIEW answered or fixed
 - [ ] Reader run once after the realism sweep: nothing quoted for question 1, every question-5 sentence executes to the golden
+- [ ] `score_reader.py` run on the reader's own figures before its verdict is read: exit 0, the call missed
 - [ ] All reader findings fixed in the generator before the judge; `leak.py` re-run after every rebuild

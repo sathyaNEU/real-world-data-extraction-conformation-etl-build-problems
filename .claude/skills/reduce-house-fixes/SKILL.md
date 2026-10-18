@@ -287,6 +287,29 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
 - **Tooling.** `leak.py` sweep 2: the built-pack sentence is LEAK in any file, the bare words REVIEW in
   documents; it cannot tell an in-world "fictitious vendor" from a tell.
 
+## H25. A shipped document validated by the same permissive reader that wrote it
+
+- **Defect.** A document under `target/` is unreadable to a parser a solver would reach for, while the
+  generator's own "the text is unchanged" assertion reads it with the lenient reader of the library that
+  produced it, so the defect ships green. The decisive rule can sit in that document, which puts the whole
+  build out of reach on the commonest route into it.
+- **Cost.** A solver on the ordinary route cannot read the governing clause at all, so the response is
+  graded against a call the pack never showed it. It also reads as a corrupted pack in the input review.
+- **Line.** A document a writer library emits is fine; what is not fine is an in-place byte substitution in
+  a structured container. Patching a `/Info` string, a sheet name or a container header by offset moves the
+  bytes that the cross-reference table or the escaping depends on. Re-serialise through a library that
+  rewrites the structure instead.
+- **Check.** Open every shipped document with every reader a solver is likely to use, not one, and assert
+  the decisive sentences are present in each: for a PDF, a lenient reader and a strict one and at least one
+  independent text extractor. Assert the strict reader's text equals the lenient reader's. Assert any string
+  the generator rewrote is still a balanced, correctly escaped literal.
+- **Repair.** In the generator, re-serialise the document rather than patching bytes, then confirm the
+  rebuild is byte-identical twice and the golden that shares the code path is fixed by the same change.
+  Normalising through a second library also drops the writer library's header and trailer comments, so the
+  toolchain signature goes away rather than being overwritten in place (H1).
+- **Tooling.** `leak.py` sweep 10 reads the container's writer signature and sweep 7 reads hidden content;
+  neither opens the document twice, so neither can see this. The assertion belongs in `checks.py`.
+
 ---
 
 ## Adding an entry
