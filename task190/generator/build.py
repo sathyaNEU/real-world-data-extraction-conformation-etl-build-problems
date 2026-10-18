@@ -45,6 +45,15 @@ F = {
 P = {k: os.path.join(TARGET, v) for k, v in F.items()}
 
 
+def exact(v, what=""):
+    """A tonnage total the design fixed. The weighbridge noise on the individual consignments sums
+    to zero over each class of each stream, so every total the deliverables state is a whole tonne
+    and is the one the design fixed; this is where that is checked rather than assumed."""
+    n = int(round(v))
+    assert abs(v - n) < 1e-6, (what, v)
+    return n
+
+
 def rows(path):
     with open(path, newline="", encoding="utf-8") as fh:
         rd = csv.reader(fh)
@@ -92,7 +101,7 @@ def recovered_by_stream(ch, kind_of, code2stream, facility_permits, year, drop_r
         if drop_renotified and d[10] and d[10] in producer_origin:
             continue
         if kind_of.get(terminal_op(ch, c, kind_of, child_of)) == "recovery":
-            out[code2stream[d[7]]] += int(d[8])
+            out[code2stream[d[7]]] += float(d[8])
     return out
 
 
@@ -110,15 +119,16 @@ def stage_chain(ch, kind_of, code2stream, facility_permits, year, arisings):
         if not d[3].startswith(str(year)):
             continue
         s = code2stream[d[7]]
-        t = int(d[8])
+        t = float(d[8])
         desp[s] += t
         op = terminal_op(ch, c, kind_of, child_of)
         if kind_of.get(op) in ("recovery", "disposal"):
             conf[s] += t
             if kind_of[op] == "recovery":
                 rec[s] += t
-    return {k: {"arisings": arisings[k], "despatched": desp[k], "confirmed": conf[k],
-                "recovered": rec[k]} for k, *_ in W.STREAMS}
+    return {k: {"arisings": arisings[k], "despatched": exact(desp[k], "despatched " + k),
+                "confirmed": exact(conf[k], "confirmed " + k),
+                "recovered": exact(rec[k], "recovered " + k)} for k, *_ in W.STREAMS}
 
 
 def ask_a1(log_rows, region_of):
@@ -130,7 +140,7 @@ def ask_a1(log_rows, region_of):
         reg = region_of[r[1]]
         fd = float(r[7])
         if r[8] == "h":
-            fd = fd / 8.0
+            fd = fd / float(W.FIELD_DAY_HOURS)
         if r[5]:
             if r[5] in seen:
                 continue
@@ -138,10 +148,14 @@ def ask_a1(log_rows, region_of):
         days[reg] += fd
         if r[9] == "usable return":
             ret[reg] += 1
-    # the usable-return count is a per-case outcome and carries no visit grain
+    # the usable-return count is a per-case outcome and carries no visit grain, so it is counted
+    # once per collection case: the log holds a re-sent operations batch of exact duplicate rows,
+    # and a case that returned is one usable return however many times its row was loaded
     ret = collections.Counter()
+    cases = set()
     for r in log_rows:
-        if r[9] == "usable return":
+        if r[9] == "usable return" and r[0] not in cases:
+            cases.add(r[0])
             ret[region_of[r[1]]] += 1
     return {reg: {"days": days[reg], "returns": ret[reg], "per_day": ret[reg] / days[reg]}
             for reg in W.REGIONS}
@@ -179,13 +193,18 @@ def ceiling_deltas(path, P, a1, a2, a3, region_of, kind_of, code2stream, facilit
     for resolve_units in (True, False):
         resp = "cracker" if resolve_units else "mirror"
         days, ret = collections.Counter(), collections.Counter()
+        seen_case = set()
         for r in log:                                  # the device unresolved: every row counted
             reg = region_of[r[1]]
             fd = float(r[7])
             if r[8] == "h" and resolve_units:
-                fd = fd / 8.0
+                fd = fd / float(W.FIELD_DAY_HOURS)
             days[reg] += fd
             if r[9] == "usable return":
+                # the cracker runs the battery, so it counts a case once; the mirror counts rows
+                if resolve_units and r[0] in seen_case:
+                    continue
+                seen_case.add(r[0])
                 ret[reg] += 1
         for reg in W.REGIONS:
             mark(resp, "field days consumed %s" % reg, days[reg], a1[reg]["days"], 0.01)
@@ -241,25 +260,33 @@ def main():
     ch26 = chains([P["h1"], P["h2"]])
     rec26 = recovered_by_stream(ch26, kind_of, code2stream, facility_permits, 2026)
     for k, *_ in W.STREAMS:
-        assert rec26[k] == att[k]["recovered_t"], (k, rec26[k], att[k]["recovered_t"])
+        assert exact(rec26[k], "recovered " + k) == att[k]["recovered_t"], \
+            (k, rec26[k], att[k]["recovered_t"])
     arisings = {k: att[k]["arisings"] for k, *_ in W.STREAMS}
     chain = stage_chain(ch26, kind_of, code2stream, facility_permits, 2026, arisings)
     ch25 = chains([P["y25"]])
-    a2 = recovered_by_stream(ch25, kind_of, code2stream, facility_permits, 2025, drop_renotified=True)
+    a2raw = recovered_by_stream(ch25, kind_of, code2stream, facility_permits, 2025, drop_renotified=True)
+    a2 = {k: exact(a2raw[k], "2025 recovery " + k) for k, *_ in W.STREAMS}
     a2_lazy = recovered_by_stream(ch25, kind_of, code2stream, facility_permits, 2025)
     a1 = ask_a1(rows(P["log"]), region_of)
     authorities = set(pack.AUTHORITY.values())
     a3 = ask_a3(rows(P["mret"]), rows(P["mrec"]), authorities)
 
     targets = {k: att[k]["target"] for k, *_ in W.STREAMS}
-    nat_cv, nat_tot = sim.national_cv(samp)
+    nat_cv, nat_tot = sim.national_cv(samp)          # the 2026 round's own precision, published nowhere
+    cv25, tot25, est25 = sim.round_2025(pop, idx)    # the 2025 round, which the release reports
+    # The 2025 release's Table 1. Arisings are the 2025 round's own estimate. Recovered tonnage is
+    # the register as it stood at the extract the release was compiled from, so it sits below a
+    # recompute on the 2027-01-31 extract by the confirmations the register took in between; the
+    # release states the extract date and that the series is not revised for late confirmations.
+    prng = np.random.default_rng(W.SEED + 31)
     prior = {}
     for k, *_ in W.STREAMS:
-        pa = int(round(att[k]["arisings"] * 0.978))
-        prior[k] = (pa, int(round(pa * (att[k]["rate"] - 0.012))))
+        late = float(prng.uniform(0.028, 0.052))       # still unconfirmed at the June 2026 extract
+        prior[k] = (int(round(est25[k])), int(round(a2[k] * (1.0 - late))))
     docs.plan_targets(P["plan"], targets)
     docs.sample_design(P["design"], W.ISSUED, {c: r for c, _l, _N, r in W.STRATA})
-    docs.release_2025(P["release"], nat_cv, nat_tot, prior)
+    docs.release_2025(P["release"], cv25, tot25, prior)
     docs.capacity_note(P["cap"], targets)
     docs.operation_codes(P["ops"])
 
@@ -269,7 +296,8 @@ def main():
     G.chart(gp, att)
 
     extra = {
-        "national_arisings_cv_pct": round(nat_cv * 100, 1),
+        "published_national_cv_pct_2025": round(cv25 * 100, 1),
+        "national_arisings_cv_pct_2026": round(nat_cv * 100, 1),
         "survey_usable_returns": n_md,
         "register_legs_2026": n_h1 + n_h2,
         "a2_lazy_total_t": int(sum(a2_lazy.values())),
@@ -289,7 +317,8 @@ def main():
         stated += ["%.1f" % t26, "%.1f" % (t26 + 3.5), "%.1f" % (t26 + 7.0)]
         pa, pr = prior[k]
         stated += ["%d" % pa, "%d" % pr, "%.1f" % (100.0 * pr / pa)]
-    stated += ["3.9", "4.1", "46", "36,735", "36735"]
+    stated += ["%.1f" % (cv25 * 100), "%d" % int(round(tot25)),
+               "{:,}".format(int(round(tot25))), "46", "36,735", "36735"]
     for v in (3.0, 2.0, 2.5, 1.0, 1.0):
         stated.append("%.1f" % v)
     stated += ["214", "143", "178", "71", "69"]

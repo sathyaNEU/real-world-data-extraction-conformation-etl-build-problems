@@ -14,6 +14,8 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 import pack                                                         # noqa: E402
 import world as W                                                   # noqa: E402
 
+NUMWORD = {6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten"}
+
 SS = getSampleStyleSheet()
 BODY = ParagraphStyle("b", parent=SS["BodyText"], fontName="Times-Roman", fontSize=9.5, leading=13)
 H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Times-Bold", fontSize=13, leading=16, spaceAfter=6)
@@ -99,14 +101,17 @@ def sample_design(path, issued, resp):
           Paragraph("5. Collection operations", H2),
           Paragraph("bws_2026_response_log.csv records the division's contacts with each issued "
                     "enterprise under the collection case opened for it, with the field days "
-                    "attributed to the contact. Field work is organised by regional team.", BODY),
+                    "attributed to the contact. Field work is organised by regional team. The "
+                    "division books field work in field days of %s hours, and a team records the "
+                    "time a contact took in the unit shown in the log's time_unit column."
+                    % NUMWORD[W.FIELD_DAY_HOURS], BODY),
           Spacer(1, 10),
           Paragraph("%s, Business and Environment Statistics Division. Issued %s."
                     % (W.INSTITUTE, W.EXTRACT_SURVEY), SMALL)]
     d.build(f)
 
 
-def release_2025(path, nat_cv, nat_total, prior):
+def release_2025(path, cv_2025, nat_total, prior):
     d = _doc(path, "Estatisticas dos residuos 2025, versao revista")
     f = [Paragraph("Business waste statistics, reference year 2025", H1),
          Paragraph("Revised release, 30 September 2026. This release supersedes the preliminary "
@@ -122,15 +127,21 @@ def release_2025(path, nat_cv, nat_total, prior):
           Paragraph("Table 2: arisings by activity class, 2025", H2),
           Paragraph("Table 2 is published in the accompanying data file and is not reproduced here.", BODY),
           Paragraph("Methodological note", H2),
-          Paragraph("The arisings estimates are produced from the %s. The coefficient of variation "
-                    "of the estimated national total of business waste arising is 3.9 per cent for "
-                    "the 2026 round and 4.1 per cent for 2025. Precision measures for the activity "
-                    "class breakdown, which is the survey's publication domain, are given in the "
-                    "quality report; the statistical stream breakdown is published without them."
-                    % W.SURVEY, BODY),
+          Paragraph("The arisings estimates are produced from the %s. Total business waste arising "
+                    "in 2025 is estimated at %s tonnes, and the coefficient of variation of that "
+                    "estimated national total in the 2025 round is %.1f per cent. Precision "
+                    "measures for the activity class breakdown, which is the survey's publication "
+                    "domain, are given in the quality report; the statistical stream breakdown is "
+                    "published without them."
+                    % (W.SURVEY, "{:,}".format(sum(a for a, _r in prior.values())), cv_2025 * 100),
+                    BODY),
           Paragraph("Recovered tonnage is taken from the %s and covers movements of controlled "
                     "waste only. Waste treated on the producer's own site does not appear in the "
-                    "register and is estimated from the survey alone." % W.REGISTER, BODY),
+                    "register and is estimated from the survey alone. The register column in "
+                    "Table 1 is as extracted on %s, the extract this release was compiled from. "
+                    "The register goes on receiving treatment confirmations for consignments "
+                    "despatched in earlier reference years, and the published series is not "
+                    "revised for them." % (W.REGISTER, W.PRIOR_EXTRACT), BODY),
           Spacer(1, 10),
           Paragraph("%s. Reproduced under the open licence for public-sector information."
                     % W.INSTITUTE, SMALL)]

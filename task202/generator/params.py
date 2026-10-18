@@ -48,7 +48,7 @@ REVISED_MONTHS = [(2026, 11), (2027, 2)]   # reopened after the partner reconcil
 CAPITAL_FROM = (2025, 7)
 
 # ------------------------------------------------------------------ the award process
-BASE = 3316.0                    # the standard living-cost award at the reference band, pesos
+BASE = 3311.5                    # the standard living-cost award at the reference band, pesos
 PROV_SD = 0.42                   # between-province spread of partner award level, log scale
 WITHIN_PROV_SD = 0.12            # within-province spread
 PILOT_RANKS = (1, 3)             # the two provinces that ran the portal pilot, by award level rank

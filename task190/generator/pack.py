@@ -43,6 +43,110 @@ DIS_OPS = {"metal": "D1", "mixed_ci": "D10", "paper": "D10", "wood": "D10",
            "cd_rubble": "D1", "glass": "D1", "plastic": "D10", "textile": "D1"}
 
 
+# Place and family-name pools for facility and carrier names, drawn from the pt_PT locale lists
+# the fingerprint guard draws personas from and folded to the register's ASCII convention. Names are
+# drawn from these pools, never numbered in file order: a register of ninety-six sites named in
+# sequence is the tell a reader reports first. Places are held by region so that a site's name and
+# its licensed region agree.
+PLACES = {
+    "Norte": ["Amarante", "Barcelos", "Braga", "Braganca", "Chaves", "Ermesinde", "Espinho",
+              "Esposende", "Fafe", "Felgueiras", "Freamunde", "Gandra", "Gondomar", "Guimaraes",
+              "Lamego", "Lixa", "Macedo de Cavaleiros", "Maia", "Marco de Canaveses", "Matosinhos"],
+    "Centro": ["Abrantes", "Alcobaca", "Anadia", "Aveiro", "Caldas da Rainha", "Cantanhede",
+               "Castelo Branco", "Coimbra", "Covilha", "Entroncamento", "Esmoriz", "Estarreja",
+               "Fatima", "Fiaes", "Figueira da Foz", "Fundao", "Gafanha da Nazare", "Gouveia",
+               "Guarda", "Ilhavo", "Leiria", "Lourosa", "Mangualde", "Marinha Grande", "Mealhada",
+               "Meda"],
+    "Lisboa": ["Agualva-Cacem", "Almada", "Amadora", "Amora", "Alverca do Ribatejo", "Barreiro",
+               "Costa da Caparica", "Lisboa", "Loures"],
+    "Alentejo": ["Alcacer do Sal", "Almeirim", "Beja", "Cartaxo", "Elvas", "Estremoz", "Evora"],
+    "Algarve": ["Albufeira", "Faro", "Lagoa", "Lagos", "Loule"],
+}
+SURNAMES = ["Abreu", "Almeida", "Alves", "Amaral", "Amorim", "Andrade", "Anjos", "Antunes",
+            "Araujo", "Assuncao", "Azevedo", "Baptista", "Barbosa", "Barros", "Batista", "Borges",
+            "Branco", "Brito", "Campos", "Cardoso", "Carneiro", "Carvalho", "Castro", "Coelho",
+            "Correia", "Costa", "Cruz", "Cunha", "Domingues", "Esteves", "Faria", "Fernandes",
+            "Ferreira", "Figueiredo", "Fonseca", "Freitas", "Garcia", "Gaspar", "Gomes",
+            "Goncalves", "Guerreiro", "Henriques", "Jesus", "Leal", "Leite", "Lima", "Lopes",
+            "Loureiro", "Lourenco", "Macedo", "Machado", "Magalhaes", "Maia", "Marques", "Martins",
+            "Matias", "Matos", "Melo", "Mendes", "Miranda", "Monteiro", "Morais", "Moreira",
+            "Mota", "Moura", "Nascimento", "Neto", "Neves", "Nogueira", "Nunes", "Oliveira",
+            "Pacheco", "Paiva", "Pereira", "Pinheiro", "Pinho", "Pinto", "Pires", "Ramos", "Reis",
+            "Ribeiro", "Rocha", "Rodrigues", "Santos"]
+SITE_KINDS = {
+    "final": ["Centro de Triagem", "Unidade de Tratamento Mecanico e Biologico",
+              "Centro de Valorizacao Organica", "Unidade de Valorizacao Energetica",
+              "Aterro Sanitario", "Unidade de Reciclagem de Metais",
+              "Centro de Processamento de Inertes", "Unidade de Reciclagem de Plasticos"],
+    "interim": ["Estacao de Transferencia", "Centro de Recolha e Armazenagem",
+                "Parque de Transferencia de Residuos"],
+}
+CARRIER_FORMS = ["Transportes %s, Lda", "%s & Filhos, Lda", "%s Transportes de Residuos, Lda",
+                 "%s Logistica Ambiental, Lda"]
+CARRIER_PLACE_FORMS = ["Rodoviaria de %s, Lda", "Transportes Reunidos de %s, Lda"]
+
+
+def _pick(rng, seq):
+    return seq[int(rng.integers(0, len(seq)))]
+
+
+def _unique(rng, make, n):
+    """n distinct names drawn from a pool of forms, in draw order."""
+    seen, out = set(), []
+    while len(out) < n:
+        v = make()
+        if v not in seen:
+            seen.add(v)
+            out.append(v)
+    return out
+
+
+# -------------------------------------------------------------- consignment dates: lags and weights
+def _bump(d, rl, back_first=False):
+    """A date that falls on a weekend moves to the adjacent working day most of the time; a
+    register of continuously operating sites still carries some Saturday movements."""
+    if d.weekday() < 5 or rl.random() >= 0.85:
+        return d
+    if d.weekday() == 5:
+        return d - dt.timedelta(days=1) if back_first and rl.random() < 0.7 else d + dt.timedelta(days=2)
+    return d + dt.timedelta(days=1) if not back_first or rl.random() < 0.7 else d - dt.timedelta(days=2)
+
+
+def _lag(rl, median, sigma, cap, start, limit):
+    """A transit, treatment or storage lag: a short mode with a real right tail, truncated to the
+    window the extract can observe rather than clamped onto its last day."""
+    room = (limit - start).days
+    if room <= 1:
+        return max(1, room)
+    for _ in range(6):
+        v = max(1, min(cap, int(round(float(rl.lognormal(math.log(median), sigma))))))
+        if v <= room:
+            return v
+    return int(rl.integers(1, room + 1))
+
+
+def _then(rl, prev, median, sigma, cap, limit):
+    d = _bump(prev + dt.timedelta(days=_lag(rl, median, sigma, cap, prev, limit)), rl)
+    return min(d, limit)
+
+
+def _kg_noise(rl, n):
+    """Net weights come off a weighbridge in 20 kg steps, so a consignment's recorded tonnage is
+    not a whole number. The offsets are in hundredths of a tonne and sum to exactly zero over the
+    group, so every tonnage total the deliverables state is the one the design fixed."""
+    o = (rl.integers(-25, 26, size=n) * 2).astype(int)
+    s = int(o.sum())
+    i = 0
+    while s != 0:
+        j = i % n
+        step = -2 if s > 0 else 2
+        if -50 <= o[j] + step <= 50:
+            o[j] += step
+            s += step
+        i += 1
+    return o
+
+
 def _writecsv(path, header, rows):
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh, lineterminator="\n")
@@ -81,12 +185,14 @@ def build_crosswalk(ents, rng, path):
     """agency permit number against business register enterprise number. A handful of permits were
     superseded when an enterprise re-registered; one duplicate row survives from a 2019 migration."""
     rows, permit_of, super_pairs = [], {}, []
+    dr = np.random.default_rng(W.SEED + 43)      # permit valid-from dates
     pid = 310000
     for e in ents:
         pid += 1
         p = "APA-%06d" % pid
         permit_of[e["ent"]] = p
-        rows.append([p, e["ent"], e["region"], e["nace"], "current", "", "2015-04-01"])
+        vf = (dt.date(2009, 3, 2) + dt.timedelta(days=int(dr.integers(0, 3500)))).isoformat()
+        rows.append([p, e["ent"], e["region"], e["nace"], "current", "", vf])
     # 34 supersessions spread over the frame (hazard H4), none inside the 2026 responding sample
     pool = [e for e in ents if e["sample_idx"] is None]
     picks = rng.choice(len(pool), size=34, replace=False)
@@ -98,7 +204,8 @@ def build_crosswalk(ents, rng, path):
         for r in rows:
             if r[0] == old:
                 r[4], r[5] = "superseded", newp
-        rows.append([newp, e["ent"], e["region"], e["nace"], "current", "", "2024-09-01"])
+        rows.append([newp, e["ent"], e["region"], e["nace"], "current", "",
+                     (dt.date(2024, 1, 8) + dt.timedelta(days=int(dr.integers(0, 330)))).isoformat()])
         super_pairs.append((old, newp, e["ent"], e["region"]))
     # one duplicated crosswalk row from the 2019 migration, same permit and enterprise
     rows.append(list(rows[411]))
@@ -133,7 +240,8 @@ def build_microdata(samp, idx, ents, per_stratum, path):
 
 
 def build_facilities(rng, path):
-    fac, rows = [], []
+    nr = np.random.default_rng(W.SEED + 37)      # the name and licence-date stream
+    fac, rows, used = [], [], set()
     fid = 70000
     for i in range(96):
         fid += 1
@@ -141,16 +249,23 @@ def build_facilities(rng, path):
         reg = W.REGIONS[int(rng.choice(len(W.REGIONS), p=W.REGION_W))]
         p = "APA-F%05d" % fid
         ops = "R13,D15" if role == "interim" else ",".join(sorted({REC_OPS[k] for k, *_ in W.STREAMS} | {"D1", "D10"}))
+        while True:
+            nm = "%s de %s" % (_pick(nr, SITE_KINDS[role]), _pick(nr, PLACES[reg]))
+            if nm not in used:
+                used.add(nm)
+                break
+        lic = (dt.date(2008, 1, 1) + dt.timedelta(days=int(nr.integers(0, 3650)))).isoformat()
         fac.append({"permit": p, "role": role, "region": reg})
-        rows.append([p, "Unidade %d de %s" % (i + 1, reg), reg, role, ops, "2014-07-01"])
+        rows.append([p, nm, reg, role, ops, lic])
     _writecsv(path, ["facility_permit_no", "facility_name", "region", "facility_role",
                      "licensed_operations", "licensed_from"], rows)
     return fac
 
 
-def _consignments(rng, key, target_rec, confirmed, despatched, year):
-    """Integer-tonne consignments for one stream in one year, summing exactly to the three class
-    totals: confirmed at a recovery operation, confirmed at disposal, despatched but unconfirmed."""
+def _consignments(rng, rl, key, target_rec, confirmed, despatched, year):
+    """Consignments for one stream in one year, each tonnage as a weighbridge records it (whole
+    hundredths of a tonne), summing exactly to the three class totals: confirmed at a recovery
+    operation, confirmed at disposal, despatched but unconfirmed."""
     out = []
     for cls, total in (("rec", target_rec), ("dis", confirmed - target_rec),
                        ("unc", despatched - confirmed)):
@@ -170,16 +285,24 @@ def _consignments(rng, key, target_rec, confirmed, despatched, year):
                 t[j] -= 1
                 diff += 1
             i += 1
-        for v in t:
+        for v in (t.astype(int) * 100 + _kg_noise(rl, n)):
             out.append((cls, int(v)))
     rng.shuffle(out)
     return out
+
+
+def _t(cents):
+    return "%d.%02d" % (cents // 100, cents % 100)
 
 
 def build_register(samp, ents, permit_of, fac, rng, paths, pop=None):
     """2026 (two half-year extracts, the schema changed on 1 July) and 2025 producer-origin
     consignments with their legs, plus the child consignments interim facilities forward."""
     att = sim.attainment(samp)
+    # the lag and weighbridge draws come from their own stream, so the consignment allocation,
+    # the producers, the codes and the sites are the ones the rest of the pack was cut with
+    rl = np.random.default_rng(W.SEED + 23)
+    limit = dt.date.fromisoformat(W.EXTRACT_REGISTER)
     interim = [f for f in fac if f["role"] == "interim"]
     finals = [f for f in fac if f["role"] == "final"]
     producers = [e for e in ents]
@@ -207,9 +330,9 @@ def build_register(samp, ents, permit_of, fac, rng, paths, pop=None):
         desp25 = int(round(conf25 / W.CONFIRMED_SHARE[key]))
         for year, rec, conf, desp, sink in ((2026, rec26, conf26, desp26, legs26),
                                             (2025, rec25, conf25, desp25, legs25)):
-            cons = _consignments(rng, key, rec, conf, desp, year)
+            cons = _consignments(rng, rl, key, rec, conf, desp, year)
             dates = _dates(rng, len(cons), year)
-            for (cls, tonnes), d in zip(cons, dates):
+            for (cls, cents), d in zip(cons, dates):
                 cno += 1
                 parent_is_producer = ""
                 hh = int(rng.choice(4, p=strat_share[key]))
@@ -222,37 +345,45 @@ def build_register(samp, ents, permit_of, fac, rng, paths, pop=None):
                 carrier = "APA-C%05d" % (80000 + int(rng.integers(0, 140)))
                 pnum = "NW%08d" % cno
                 seq = 1
+                d = _bump(d, rl, back_first=True)
                 chain_date = d.isoformat()
+                tonnes = _t(cents)
+                recv = _then(rl, d, 1.3, 0.55, 14, limit)
                 rows = [[pnum, seq, "PRODUCER_DESPATCH", d.isoformat(), permit_of[prod["ent"]],
                          carrier, "", code, tonnes, "", parent_is_producer]]
                 if via:
                     f = interim[int(rng.integers(0, len(interim)))]
                     seq += 1
-                    rows.append([pnum, seq, "FACILITY_RECEIPT", (d + dt.timedelta(days=1)).isoformat(),
+                    rows.append([pnum, seq, "FACILITY_RECEIPT", recv.isoformat(),
                                  permit_of[prod["ent"]], carrier, f["permit"], code, tonnes, "", ""])
                     seq += 1
-                    rows.append([pnum, seq, "TREATMENT_CONFIRMED", (d + dt.timedelta(days=2)).isoformat(),
+                    held = _then(rl, recv, 2.4, 0.75, 30, limit)
+                    rows.append([pnum, seq, "TREATMENT_CONFIRMED", held.isoformat(),
                                  permit_of[prod["ent"]], carrier, f["permit"], code, tonnes, "R13", ""])
                     cno += 1
                     child = "NW%08d" % cno
                     g = finals[int(rng.integers(0, len(finals)))]
                     op = REC_OPS[key] if cls == "rec" else (DIS_OPS[key] if cls == "dis" else "")
-                    rows.append([child, 1, "PRODUCER_DESPATCH", (d + dt.timedelta(days=6)).isoformat(),
+                    fwd = _then(rl, held, 11.0, 0.70, 120, limit)
+                    frecv = _then(rl, fwd, 1.3, 0.55, 14, limit)
+                    rows.append([child, 1, "PRODUCER_DESPATCH", fwd.isoformat(),
                                  f["permit"], carrier, "", code, tonnes, "", pnum])
-                    rows.append([child, 2, "FACILITY_RECEIPT", (d + dt.timedelta(days=7)).isoformat(),
+                    rows.append([child, 2, "FACILITY_RECEIPT", frecv.isoformat(),
                                  f["permit"], carrier, g["permit"], code, tonnes, "", pnum])
                     if cls != "unc":
-                        rows.append([child, 3, "TREATMENT_CONFIRMED", (d + dt.timedelta(days=9)).isoformat(),
+                        rows.append([child, 3, "TREATMENT_CONFIRMED",
+                                     _then(rl, frecv, 3.0, 0.80, 45, limit).isoformat(),
                                      f["permit"], carrier, g["permit"], code, tonnes, op, pnum])
                 else:
                     g = finals[int(rng.integers(0, len(finals)))]
                     seq += 1
-                    rows.append([pnum, seq, "FACILITY_RECEIPT", (d + dt.timedelta(days=1)).isoformat(),
+                    rows.append([pnum, seq, "FACILITY_RECEIPT", recv.isoformat(),
                                  permit_of[prod["ent"]], carrier, g["permit"], code, tonnes, "", ""])
                     if cls != "unc":
                         op = REC_OPS[key] if cls == "rec" else DIS_OPS[key]
                         seq += 1
-                        rows.append([pnum, seq, "TREATMENT_CONFIRMED", (d + dt.timedelta(days=3)).isoformat(),
+                        rows.append([pnum, seq, "TREATMENT_CONFIRMED",
+                                     _then(rl, recv, 3.0, 0.80, 45, limit).isoformat(),
                                      permit_of[prod["ent"]], carrier, g["permit"], code, tonnes, op, ""])
                 for r in rows:
                     sink.append((chain_date, r))
@@ -319,7 +450,7 @@ def _renotify(y25, rng, cno):
             q[3] = (dt.date.fromisoformat(r[3]) + dt.timedelta(days=4)).isoformat()
             extra.append(q)
         d = [x for x in chains[c] if x[2] == "PRODUCER_DESPATCH"][0]
-        pairs.append((c, new, d[7], int(d[8])))
+        pairs.append((c, new, d[7], float(d[8])))
     return y25 + extra, pairs
 
 
@@ -473,11 +604,20 @@ STREAM_NAME_LOCAL = {k: n for k, n, _p, _m, _c in W.STREAMS}
 
 
 def build_distractors(rng, fac, path_veh, path_haz):
+    nr = np.random.default_rng(W.SEED + 41)      # the carrier-name stream
+    allplaces = [pl for reg in W.REGIONS for pl in PLACES[reg]]
+
+    def make():
+        if nr.random() < 0.72:
+            return _pick(nr, CARRIER_FORMS) % _pick(nr, SURNAMES)
+        return _pick(nr, CARRIER_PLACE_FORMS) % _pick(nr, allplaces)
+
+    names = _unique(nr, make, 140)
     rows = []
     for i in range(140):
         p = "APA-C%05d" % (80000 + i)
         for v in range(int(rng.integers(2, 7))):
-            rows.append([p, "Transportes %d" % (i + 1), "%02d-%s-%02d" % (int(rng.integers(10, 99)),
+            rows.append([p, names[i], "%02d-%s-%02d" % (int(rng.integers(10, 99)),
                          "ABCDEFGHJ"[int(rng.integers(0, 9))] * 2, int(rng.integers(10, 99))),
                          float(round(rng.uniform(7.5, 26.0), 1)),
                          (dt.date(2026, 1, 1) + dt.timedelta(days=int(rng.integers(0, 365)))).isoformat()])
