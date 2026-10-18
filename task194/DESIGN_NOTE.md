@@ -1982,3 +1982,83 @@ construction estimates), the silent-row readability screen and the full enumerat
   for it in this pass, so there is no candidate yet by the skill's own test: the file that does the forcing
   cannot be named. The two shapes of the fresh task type left unmeasured are a mixture's component share and
   a tail index, and both are expected to die parametric by the law above unless a second file pins them.
+
+- **Cell 3 opened and closed in one pass: pharmacology-pharmacoepidemiology-safety /
+  `safety-signal-detection`, three candidates screened to death with measurements, nothing drawn, no card
+  registered, no file in `target/` or `golden/` touched.** The cell was chosen because the client taxonomy
+  gives `safety-signal-detection` anomaly-detection as its only objective, so the task-type block that
+  governed architecture 3 cannot fire here and a forward-facing count cannot be retagged as forecasting.
+  The one spent AD driver on the cell is task193's (how many units would show one of two orderings by
+  chance, each unit's room for an ordering set by where its own first exposure falls), and all three
+  candidates were drawn away from it. **The axis window is open and what is missing is a mechanism**, the
+  same finding as architecture 8 on its ground: `guard.py check` on the probe card returns no axis ban at
+  all, no overuse WARN, and nearest driver 0.08, with only `test.same_driver_older` against task229 v1
+  (gap `population` plus pattern `D` plus Gate G `signal_vs_noise_or_hold`, a differentiable older match
+  that owes one line) and two persona WARNs. The reserved axis set itself is therefore not what shut the
+  pass.
+- **Candidate 1, the exposure denominator of a reporting rate, dead on measurement in three modes.** The
+  brief's own pointer (exposure denominators come from a different system at a different grain) and the
+  only live field tool the cell's four leave open, task193 holding the sequence screen and task180 v3 the
+  self-controlled comparison. Decision shape: an additional risk minimisation measure renewed, replaced or
+  lapsed at the periodic safety filing, on a reporting rate per 1,000 patient-years against the charter's
+  bar, patient-years being unobserved and built from aggregate supply through a consumption factor the
+  dispensing panel holds at patient grain. Measured over market growth 0.000 to 0.140 a month and a
+  non-panel maintenance dose of 14 to 28 mg: (a) **the denominator is observed**, because a supply file
+  publishes packs and a pack is a known number of days of therapy, so packs times days of therapy returns
+  the truth at +0.000 per cent at every one of the ten settings, which makes filing the quantity rule
+  application and the panel unnecessary; (b) **where the supply is published as mass only, the decisive
+  construction forks across its own family**, four defensible readings of realised mg per patient-day
+  (person-time weighted 17.911, mean of per-patient rates 14.468, median patient 16.719, maintenance
+  patients only 18.169) putting the graded rate at 2.4812, 2.0043, 2.3161 and 2.5169 per 1,000
+  patient-years, a spread of 0.5127 against a printed precision of 0.01, about fifty times over, which is
+  architecture 3's death repeated; (c) **the only mode that separates is panel-to-market transport**, the
+  error running from -21.02 to +27.92 per cent as the non-panel markets' dose moves over a range nothing
+  in the pack records, which is selection and is `population_selection`, task182's reserved strategy this
+  wave. The cohort-maturity mode is the smaller half of the family besides: across the whole plausible
+  growth range the nominal-factor error moves only from +23.78 to +12.48 per cent, so about eleven of the
+  twenty-four points are composition and the rest is a published constant, and `composition_mix` is
+  blocked on the last three builds anyway.
+- **Candidate 2, the share of the event's risk inside the measure's monitored window, the largest
+  separation measured on this cell and dead on the estimand.** The decision renews a fixed early
+  monitoring schedule, replaces it with continuing monitoring, or lapses it, on the share of the risk
+  arising in the first twelve weeks of treatment; the easy route reads that share off the cases' own
+  time-to-onset distribution, which is pharmacovigilance's standard instrument. Measured on a cohort of
+  thirty monthly initiation cohorts at 5 per cent growth with 20 per cent abandoning during titration:
+  person-time is front-loaded at 0.3890 in weeks 0 to 12, so under a **flat** true hazard the
+  time-to-onset instrument files 0.3986 of the risk inside the monitored window against a truth of
+  0.1154, a 3.5 times overstatement, and the hazard-resolved route recovers 0.1211; under an early hazard
+  0.7035 against 0.5051, under a late one 0.2447 against 0.0455. The separation is the best this slot has
+  measured and the candidate still dies, three ways. The decisive construction is cases per band over
+  person-time per band, and **person-time per band is exact arithmetic on the panel's fills once the
+  charter files the bands**, so the quantity is observed and the step is rule application. Removing the
+  panel sends the construction into a deconvolution of the maintenance-supply series against the
+  initiation series implied by starter packs, which is architecture 8's exactly-determined attribution
+  route and architecture 9 killed it by condition number (median 437, negative in 25 of 25 redraws).
+  Leaving the long durations unobserved at the lock point is whether the not-yet-observed members are in
+  the population, the WHAT screen's first failure mode, and **task193's own note already dropped this
+  exact candidate at the draw for that reason** (its architecture 2, third draw), with task184 and task189
+  holding interval-censored event times and left-censored measurements in this lane.
+- **Candidate 3, the informative person-time a surveillance arrangement will deliver, dead on separation
+  before the estimand.** The decision renews the current claims source, replaces it with a smaller and
+  more stable one, or lapses to spontaneous reporting only, on the exposed person-time each source can
+  deliver with the charter's twelve months of continuous follow-up, which is unobserved and forward
+  facing. Measured on three sources (14.2 million lives at 19 months median enrolment, 3.4 million at 58,
+  8.9 million at 11): the decisive construction ranks the large commercial source first at 3,850
+  informative patient-years against 3,050 and 1,502, and **covered lives alone ranks them the same way**,
+  so the construction does not change the answer at any realistic setting. The dial that would separate
+  them, lengthening the required follow-up against median enrolment, is the dial that makes every source
+  unusable. Independently dead on the WHAT screen: which enrollees contribute is the population part of
+  the estimand, filed it is a procedure over the spans file and unfiled the figure is not determinate.
+- **What the three measurements leave for a fourth pass on this cell, stated so it is not paid for twice.**
+  Every candidate died at the same joint: a pharmacovigilance rate's denominator is either exact on a
+  shipped aggregate, which makes the step rule application, or estimated per patient from a panel, which
+  reopens the weighting family, and that is architecture 4's dichotomy and architecture 9's law restated
+  in a third set of nouns. Candidate 2 is the one worth returning to, because its separation is measured
+  at 3.5 times and only its denominator is the problem: a live draw here needs a risk set by duration that
+  is neither exact arithmetic on a shipped file nor a question about which members the population holds,
+  and no file a safety desk keeps (case versions, follow-up questionnaires, dispensing panel, aggregate
+  supply, prescriber certification register, signal management log) supplies one. The three escapes
+  `stumping` 1.2b licenses are each spent or banned on this objective besides: a second independent
+  observation of the same events is task196, a verified subsample is task192 and task244, and a filed
+  external rate is rule application. So the cell is not drawable on a rate, and the next pass on it should
+  start from a non-rate quantity or the number should move to a fourth ground.
