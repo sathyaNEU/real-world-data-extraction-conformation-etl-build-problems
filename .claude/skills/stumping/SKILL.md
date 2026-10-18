@@ -287,6 +287,20 @@ the ladder.
 - **Every reflex lands wrong:** list the reflexes for this pitfall (pool, aggregate scale, stratify on
   visible attributes, trend, reweight, shrink, add a control); each files the default or another named
   wrong answer (181, 445, 446, 230). A reflex reaching the golden spends the stump.
+  **Run the sweep as code before the ladder's numbers are measured, not after.** The sweep is cheap, about
+  a minute on a cut pack, and it decides whether the mechanism can carry a ladder at all, so measuring
+  separations first spends the design time twice: task194's architecture 3 had every filed floor cleared,
+  1.50x on rung 0 and 2.008x on the decisive rung, and died anyway because 6 of 22 reflexes reached the
+  golden, the worst at 3.47x.
+  **What makes a reflex reach it is a correlation the designer put there.** If the thing that creates the
+  signal also predicts the outcome's level, a finer standardisation gets the answer for free: there the
+  lag's depth followed the complication groups, those groups come from old, comorbid, long-staying
+  patients, and those are exactly the patients the published standard under-adjusts for, so holding the
+  pool to every visible attribute arrived at the golden with no maturity analysis at all. So the signal's
+  driver is chosen orthogonal to everything that predicts the outcome, the association between the two
+  measured and asserted near zero, and no single visible grouping (a site, a specialty, a vintage flag)
+  may isolate the rows it acts on. Where the signal lives only in the time structure, no cross-sectional
+  control can remove it, which is the property to engineer for.
 - **Wrong now:** the default construction is wrong on the data in hand; a record blessing the naive method
   until the window breaks it (27 of 30 builds) is blocked.
 - **Under-used ground first:** `uncertainty_hold` was never drawn, `causal_design` and
