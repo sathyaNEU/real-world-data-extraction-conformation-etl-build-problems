@@ -601,7 +601,7 @@ def main():
     # the amount side: the register's own reimbursement column is a different quantity, which is why the
     # asking sentence names what the advices settled
     _by_reimb = _table([(_casekey[r][0], _casekey[r][1], _reimb[r]) for r in _percase])
-    ok("the register's reimbursement column is not the indemnity the advices settled",
+    ok("SF17 the register's reimbursement column is not the indemnity the advices settled",
        len(_against_golden(_by_reimb)) >= 12,
        "%d of 16 differ, %.2f of top-up the register does not carry"
        % (len(_against_golden(_by_reimb)), round(sum(_percase.values()) - sum(_reimb[r] for r in _percase), 2)))

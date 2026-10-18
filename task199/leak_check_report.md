@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: action, window, protocol, sentence, golden, clause, decisive, measured, definitive, extract, denominator, counts, population, reading, volume, asserted, baseline, published, record, pattern, material, nothing, activity, exposure, delivery
+Stump terms swept: action, clause, sentence, protocol, window, decisive, golden, denominator, measured, definitive, extract, counts, population, volume, asserted, reading, baseline, published, record, pattern, activity, exposure, material, nothing, delivery
 
 ## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `diccionario_datos.md`: 3 of 25 stump-paragraph terms appear (action, extract, material); read whether the document names the move

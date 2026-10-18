@@ -200,8 +200,104 @@ value before rounding, every one is more than 6 per cent from the golden, and no
 | SF10 | register status | registered and expired registrations count | exclude expired | same call | C1: no matched payment's account carries status expired or withdrawn, asserted at zero |
 | SF12 | the two-source estimate | plain Petersen, 400 x 270 / 157 = 687.9 cases, 30.940 per million | Chapman 686.8 (30.890); Bailey 686.1 (30.858); continuity-corrected Petersen 687.3 (30.915); the conditional maximum likelihood estimate 687 (30.900); and the same estimate written as the independent channel over a capture probability read off the member's own cases, which can be taken off every own case (30.940), off the cases it asked the receiving firm about (30.935) or off the cases it never asked about (30.947); the observed union 513 (23.073) quoted as a lower bound | 31 under all eight forms; 23 under the union bound | C1 asserted in `checks.py` and again in `verify.py` on the shipped bytes: the eight forms span 0.29 per cent of the figure and every one prints 31, and the three capture-probability readings agree to four decimal places (0.392405, 0.392500, 0.392562) because the independent capture is assigned at the same rate inside every subset an analyst can cut, so no choice of subset crosses the printed bin; the union is not an estimator of the filed population but the count of cases the two channels did record, which clause 4.2's own words exclude |
 | SF13 | a registration that predates its own payment | counts: the register is a standing list and the account was already on it | drop them, on the reading that a second sighting must postdate the event | same call | C1 alone, with no sentence anywhere in the pack: 167 of the 270 independent registrations predate their payment and the share is the same on both sides of the overlap (0.618 of the member's own cases against 0.619 of the rest), so dropping every one of them divides a smaller numerator by a proportionally smaller overlap and prints 31 (30.885), asserted in `checks.py` and `verify.py`. The feed note's sentence stating the persistence fact was deleted after the second leak read: the convergence had already closed the row, so the sentence bought nothing and pointed at the method (the single-use test) |
-| SF14 | the quarter an indemnity payment belongs to (ask 1) | the quarter the line itself settles in, which the asking sentence pins | the quarter of the advice that pays it | a different set of sixteen figures, asserted | the asking sentence, "each line in the quarter it settles in", worded the way ask 3 pins its own population; every advice total ties to the sum of its own detail lines, so the two readings differ only on the quarter and not on any unexplained amount |
+| SF14 | the quarter an indemnity line belongs to (ask 4) | the quarter the case the line pays closed in, which the asking sentence pins: "the indemnity the advices settled, by member tier and the 2026/27 quarter each case closed in" | the quarter of the advice that pays the line; the line's own month field read as a settlement month of its own | the advice quarter gives a different set of sixteen figures, 320,142.56 apart on the Q1 total; the line's own month gives the same sixteen | C1 asserted in `checks.py` and again in `verify.py` on the shipped bytes: every one of the 6,416 detail lines carries the month its own case closed in the register, 0 disagreeing, so the register's `closed_date` and the line's own month are one basis and not two. The advice's month is not a reading of the asking sentence at all, because the sentence dates each case by its own closure and the register dates it: 35 lines sit on an advice raised in a later quarter than their case closed |
+| SF15 | the grain the sixteen figures sit at (ask 4) | the case, pinned by "each case" in the asking sentence | the advice detail line; the advice | the line grain gives the same sixteen figures; the advice grain differs on 16 of 16 | asserted: each case's lines carry one closure quarter and one tier, so the 3,662 lines roll up to 3,627 cases without moving a figure, while the advice grain holds the same 2,984,362.84 over the year and attributes 486,513.00 of it to the quarter its advice was raised in |
+| SF16 | "member tier" (ask 4) | the contribution tier in `member_register.csv` | the tier the advice itself carries | same figures | C1: all 288 advices carry the tier the register carries, 0 disagreeing, asserted in `checks.py` and `verify.py` |
+| SF17 | "the indemnity the advices settled" (ask 4) | `indemnity_paid_gbp` on the advice detail lines, which the dictionary defines as the amount the advice settled for that case | the register's `reimbursed_amount_gbp` on the same cases; the same net of the recovery credits the ledger posts later | the register column differs on 12 of 16 figures and the netting on 16 of 16 | the asking sentence names what the advices settled, and standard clause 5.2 credits a recovery against its case at the date the funds arrive rather than in an advice; both alternatives computed and asserted as different quantities, the register short by the 486,513.00 of top-up it does not carry |
 | SF11 | "preceded" | the recall request's date is strictly earlier than the registration date | same-day counts as preceding | same call | C1: no matched payment has a recall request dated the same day as the registration, asserted at zero |
+
+## Ask 4's basis and grain, enumerated
+
+The re-judge read Gate G PASS, Gate H PASS, Gate F strong with no lever needed, Gates B and D PASS and the
+main call forced with every critical component to the penny, and failed Gates C and E on **ask 4 alone**.
+`determinism-check` sends an architecture back on Gate G or Gate H, the two gates that say the build is the
+wrong build, so a Gate C and E failure confined to one supplementary ask is an ask-layer repair and spends
+no architecture. This section is that repair: the asking sentence now carries the basis and the grain, and
+no graded figure anywhere in the build moved.
+
+**The defect.** The clause read "each line in the quarter it settles in", and the pack holds a settlement
+month at two grains: on the advice (288 rows) and on the advice's own detail lines (6,416 rows). 35 detail
+lines, all unauthorised fraud, carry a month earlier than the advice that pays them, which is the month that
+case first settled, so both grains were licensed readings of one phrase and all sixteen graded figures
+differed between them. The judge also held that the detail-month reading, read as a claim about when the
+mutual settled, puts up to four advices into one member-cover-month, which clause 5.1 forbids.
+
+**The wording.** Before: `Also unauthorised-fraud indemnity by member tier per 2026/27 quarter, each line in
+the quarter it settles in, totals unrounded;`  After: `Also unauthorised-fraud indemnity the advices settled,
+by member tier and the 2026/27 quarter each case closed in, totals unrounded;` The prompt is 997 characters
+and its call sentence is byte-identical. The basis is now an event the register dates once (the case closed)
+rather than a field the workbook carries twice, and the grain is the case. Clause 5.1 is satisfied rather
+than contested: nothing claims four advices settled in one month, only that four advices pay lines on cases
+that closed in one quarter, which is what a prior-period top-up is.
+
+**Every basis the pack makes plausible for the period side**, each computed on the cut pack over the
+sixteen graded figures (`generator/checks.py`, `generator/verify.py`, and the table reproduced by
+`generator/ceiling.py --forcing`):
+
+| Basis | Q1 total | Figures off the golden | Worst gap | Admitted by the pinned wording |
+|---|---|---|---|---|
+| the case's `closed_date` in `case_register_2024_27.csv`, scheme-year quarters | 984,521.08 | 0 of 16 | 0.00 | **yes, this is the golden** |
+| the detail line's own `settlement_month` | 984,521.08 | 0 of 16 | 0.00 | yes, and it converges: the same month on 6,416 of 6,416 lines |
+| the advice's `settlement_month`, lines summed under it | 664,378.52 | 16 of 16 | 320,142.56 on the Q1 total | no: the sentence dates each case by its own closure, and 35 lines sit on an advice raised a quarter later |
+| the advice's `advice_date`, advice totals summed under it | 664,378.52 | 16 of 16 | 320,142.56 on the Q1 total | no, same reason, and this is the natural read the device rides on |
+| the case's `payment_date` | 813,976.84 | 16 of 16 | 259,848.83 on the Q4 total | no: "closed in", not sent in |
+| the case's `notified_date` | 842,965.43 | 16 of 16 | 233,187.43 on the Q4 total | no: "closed in", not recorded in |
+| calendar quarters on the closure date | 596,560.32 | 16 of 16 | 387,960.76 on the Q1 total | no: a 2026/27 quarter is a quarter of the scheme year ended 31 March 2027 (clauses 4.2 and 4.3), and the recovery statement's own four quarters reproduce only on that convention |
+
+**Every grain**, same figures: the case (the golden, 3,627 cases), the detail line (identical, 3,662 lines,
+because each case's lines carry one closure quarter and one tier) and the advice (16 of 16 off, the rollup).
+The three grains hold the same 2,984,362.84 of unauthorised indemnity over the year, so the difference
+between them is attribution and never an unexplained amount: every one of the 288 advices ties to the sum of
+its own detail lines and every `case_lines` equals its own row count.
+
+**Every amount side:** `indemnity_paid_gbp` on the detail lines, which the dictionary defines as the amount
+the advice settled for that case (the golden); `advice_total_gbp`, the same money one grain up; the
+register's `reimbursed_amount_gbp` on the same cases, which differs on 12 of 16 figures because it does not
+carry the 486,513.00 of prior-period top-up the advices paid, and which the sentence excludes by naming what
+the advices settled; and those lines net of the recovery credits the ledger posts later, which differs on 16
+of 16 and which clause 5.2 excludes by crediting a recovery against its case at the date the funds arrive
+rather than in an advice. **Every tier side:** the register's contribution tier and the tier the advice
+carries agree on all 288 advices.
+
+So the pinned wording admits exactly one answer, reachable two ways on the basis and two ways on the grain,
+and the committed sixteen figures are that answer unchanged.
+
+**Why this basis and not the other two that would also close the fork.** A pin is paid for, and the two
+obvious pins pay with the ask's whole difficulty. "Each line in the quarter its own settlement month states"
+names the line-level field, so the natural read becomes a group-by of the detail sheet and the device dies.
+"Each line in the quarter of the advice that settles it" makes the advice-grain rollup the golden, which is
+the natural read itself, so every figure goes free and all sixteen change. On Part 0's weights the cost is
+measurable: with ask 4 free to the response that lands the call the pair ceiling goes from 37.4 to 43.9, and
+free to both responses to 50.3, against a gate of 40; deleting the ask rather than defending it leaves 52
+criteria and a pair of 40.1, so there is no sizing escape and the ask has to keep a device. The pinned basis
+keeps it: the closure quarter is not a column of the advices workbook, so a response working at the advice
+grain still files 664,378.52 against 984,521.08 on the Q1 total and misses 16 of 16. The device is now the
+grain rather than the reading, which is the shape `supplemental-stumping` Part 6 names as the one an
+inconsistency nothing in the pack invites buys: a rollup above its own parts, found only by reconciling
+amounts across grains, which no column description asks for and no sweep performs. The residual exposure is
+stated rather than hidden: a response that executes the pinned basis literally, joining each line to the
+register's `closed_date`, lands the ask. That is the honest ceiling of a grain device, and it is why the ask
+sheet's cracker row for ask A reads miss on the measured natural read and not on an argument.
+
+**What the pin governs and what it must leave alone.** It governs the sixteen unauthorised-fraud indemnity
+figures and nothing else. The figures sitting next to it are ask 5's twelve notification counts and twelve
+reported values, keyed to the notification dates in the quarter to 30 June 2027, and ask 6's fifteen recovery
+shares, keyed to scam-reimbursement cases closed in each 2025/26 quarter: the clause reaches neither, because
+it is scoped to what the advices settled on the unauthorised cover in 2026/27, and both are asserted
+unchanged (`freeze.py check --mode rubric` reports 0 ask figures moved, and `checks.py` and `verify.py`
+reproduce all 39 of their figures). The phrase "cases closed in the quarter" is the pack's own, from the
+dictionary's definition of the recovery statement's stated column, so ask 4 and ask 6 share the
+organisation's convention while their devices stay distinct: ask 4's is the advice grain's rollup, ask 6's is
+a statement true only in its own scope.
+
+**The 35 rows stay, and the measurement is why.** The question was whether the data can support a single
+forced reading. It can: the line's own month is the month its case closed in the register on 6,416 of 6,416
+detail lines, 0 disagreeing, so the field corroborates the pinned basis instead of competing with it, and
+the pattern is the Layer 1 mess a monthly settlement run produces when the recoveries team closes an earlier
+quarter off. Changing them would have moved sixteen graded figures to repair a sentence. What changed instead
+is one clause of the prompt, one line of the write-up's block 4, the basis line on the golden's indemnity
+sheet, and the assertions. `target.zip` is byte-identical to the pack the judge read, md5
+58fea759d25de0f25cd583ff70449695 over 19 members, which is the scope proof.
 
 ## Ladder
 
@@ -367,7 +463,7 @@ monetary quantity in the pack is outside its path.
 
 | id | Ask | Figures | Primary device (silent) | Hazards shared | File and columns | Forcing figure (designed; measured at stage 3) |
 |---|---|---|---|---|---|---|
-| A | for each of the four quarters of 2026/27 and each of the three member tiers, the indemnity the mutual paid on unauthorised fraud, to the nearest pound, plus each quarter's total taken from the unrounded tier amounts | 16 | D9 self-validation at a grain nothing names: a settlement advice's total covers its own case lines plus a prior-period adjustment belonging to cases settled in an earlier quarter, so the advice is a rollup above its own parts on about a third of the unauthorised advices, and only a detail-against-total reconciliation per advice finds it | amounts in pence on the 2023/24 extract, recoveries as later credit rows, the 2024/25 template change | `settlement_advices_2026_27.xlsx` (advices and advice detail) plus `case_payments.csv`, 11 columns on the path | measured on the cut pack: the advice totals read 920,819 against the golden 664,379 on the Q1 total, a gap of 256,440 against a rounding of 1, and 16 of 16 figures move, the narrowest of them by 13,559 |
+| A | the indemnity the advices settled on unauthorised fraud, for each of the four quarters of 2026/27 by the quarter each case closed in and each of the three member tiers, to the nearest pound, plus each quarter's total taken from the unrounded tier amounts | 16 | D6 grain, a rollup above its own parts: the mutual settles monthly by advice and a third of the unauthorised advices pay a prior-period top-up on a case that closed in an earlier quarter, so the advice's own month is not its cases' closure month and only a reconciliation of the advice total against its own lines, case by case, finds it. The asking sentence pins the basis (the quarter the case closed in) and the grain (the case), so the closure quarter is not a column of the workbook the natural read works in | amounts in pence on the 2023/24 extract, recoveries as later credit rows, the 2024/25 template change | `settlement_advices_2026_27.xlsx` (advices and advice detail) plus `case_register_2024_27.csv` for the closure dates and `case_payments.csv`, 11 columns on the path | measured on the cut pack by `ceiling.py --forcing` and `ask_stops_build.py`: the advice grain reads 664,378.52 against the golden 984,521.08 on the Q1 total, a gap of 320,142.56 against a rounding of 1, and 16 of 16 figures print differently, the narrowest of them by 5,278.73 |
 | B | for each of the twelve members, the scam cases notified in the quarter to 30 June 2027 and the value they reported, to the nearest pound | 24 | D5 scope, a silently partial extract: the Q1 notification file was cut on 20 June and the 21 to 30 June notifications sit in the quarter-end supplementary file, while each member's own Q1 return states a case count the main extract's rows do not reach, so only a return-against-extract reconciliation finds the gap | case references allocated per member and scheme year, a quarter that straddles the mutual's own year end, the returns workbook's own vintage column | `notifications_2027_28_q1.csv`, `notifications_2027_28_q1_supplementary.csv` and the returns workbook's Q1 sheet, 9 columns | measured on the cut pack: the main extract alone reads 405,985 against the golden 460,362 on Brindlemere's reported value, the widest of the twenty-four, a gap of 54,377 against a rounding of 1, and 24 of 24 figures move, the narrowest of them by a whole case (Pelbury's 14 against 15) |
 | C | for each of the three recovery routes and each quarter of 2025/26, the share of the reimbursed amount recovered on cases closed in that quarter, from the case-level credits, to one decimal, plus each route's total over the same four quarters | 15 | D9 a control total true only in its own scope: the statement counts a recovery in the quarter the money arrived rather than the quarter the case closed in, and states the repatriation route net of that route's own agent charge, so its route shares sum to its own stated total while disagreeing with the case-level credits | recoveries posted as later credit rows with their own value dates, cases closing across a quarter boundary, the 2023/24 extract's pence amounts | `recovery_statement_2025_26.csv` plus `case_payments.csv`, 10 columns | measured on the cut pack: the statement reads 2.3 against the golden 15.1 per cent on the Q2 beneficiary recall figure, a gap of 12.8 against a rounding of 0.1, and 15 of 15 figures move, the narrowest of them by 0.5 of a point |
 
@@ -386,8 +482,10 @@ recovery routes.
 | case references reissued across members | B, C | B: 8 of 24; C: 3 of 15 |
 
 **Referee.** One byte-clean arbiter per designed disagreement, each handing over no level: the settlement
-advice's own detail tab (ask A), the member's quarterly return case count (ask B) and the case-level credit
-rows (ask C). None of them states an ask's answer and none is read by the call.
+advice's own detail tab with the register's closure dates on its unauthorised-fraud rows (ask A), the
+member's quarterly return case count (ask B) and the case-level credit rows (ask C). None of them states an
+ask's answer, and none sits inside the call's declared population: the call reads the register's APP-scam
+rows inside the scheme year and ask A reads its unauthorised-fraud rows, asserted by count.
 
 ### Cracker sheet
 
@@ -405,8 +503,8 @@ pair arithmetic rather than defended with devices, which is what the sweep above
 
 | Ask figure | What the cracker computes | Why it misses | Cracker |
 |---|---|---|---|
-| A, each quarter x tier indemnity | sums the advices, nets the credit rows it finds, converts the pence export | the residual adjustment line is inside the advice total and belongs to an earlier quarter; nothing names it and no sweep reconciles a rollup to its own detail | miss |
-| A, each quarter's total | the same sum one level up | carries the same residual, three months of the year | miss |
+| A, each quarter x tier indemnity | sums the advices by their own settlement month, on the reading that the advice for a month settles the cases that closed in it; nets the credit rows it finds, converts the pence export | that reading is true of 3,627 of the 3,662 lines and false of 35: the advice is a rollup above its own parts, and only a reconciliation of each advice total against its own case lines finds it. Nothing names it, no column description asks for it and the hygiene battery does not reconcile amounts across grains. Measured: 664,378.52 against 984,521.08 on the Q1 total | miss |
+| A, each quarter's total | the same sum one level up | carries the same attribution, in every quarter of the year | miss |
 | B, cases notified per member | the main Q1 extract, deduplicated, references resolved | the 21 to 30 June notifications are in a second file no sweep asks for, and the main extract is internally consistent | miss |
 | B, value reported per member | the same extract's payment amounts | the same missing rows carry the value, so every member's figure is short | miss |
 | C, recovery share per route per quarter | the recovery statement's own route and quarter columns | the statement's quarter is the quarter the money arrived and the repatriation route is stated net of its agent charge, and it reconciles to its own stated total either way | miss |
@@ -672,3 +770,40 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
 - **`causal_design` as the strategy label**: the honest key for capture interference, taken by task197 five
   minutes before this card filed, so the card carries `other` with the mechanism named in its notes rather
   than a negotiated axis.
+- **Ask 4's basis read off a field name rather than an event** (re-judge pass 3, findings C and E, repaired
+  here): the clause said "each line in the quarter it settles in" while the workbook carries a settlement
+  month at two grains, so the phrase had two licensed readings and all sixteen figures differed between them
+  by up to 320,142.56, with 486,513.00 of indemnity moving between quarters. Rejected as unrepairable by
+  argument: the enumeration above shows seven plausible period bases, and a sentence that names a field the
+  pack holds twice can never admit one of them. The sentence now names the event, the quarter the case closed
+  in, which the register dates once. Gate C and Gate E are answered by the enumeration rather than by a
+  preference between the two tables.
+- **Pinning the basis on the line's own settlement month, the committed reading stated plainly**: it closes
+  the fork and kills the ask. The clause would name the detail sheet's own column, so the natural read
+  becomes a group-by of that column and the device goes free; on Part 0's weights that is a pair of 43.9 with
+  the response that lands the call keeping it and 50.3 with both responses keeping it, against a gate of 40.
+  Rejected for that measurement.
+- **Pinning the basis on the advice that pays the line, which the judge called the better-grounded reading**:
+  rejected for the same arithmetic and worse. The advice-grain rollup is the natural read itself, so the ask
+  becomes a 288-row group-by, every figure goes free, and all sixteen committed figures change. Deleting the
+  ask instead was also computed and also fails, at 52 criteria and a pair of 40.1, so the ask has to keep a
+  device and the basis has to sit where the workbook cannot answer it.
+- **Changing the 35 rows** (the alternative this repair was asked to price): rejected on the measurement. The
+  line's own month is the month its case closed in the register on 6,416 of 6,416 detail lines, 0 disagreeing,
+  so the rows support a single forced reading and the field corroborates the pinned basis instead of
+  competing with it. Changing them would have moved sixteen graded figures to repair one sentence;
+  `target.zip` is byte-identical to the pack the judge read, md5 58fea759d25de0f25cd583ff70449695 over 19
+  members.
+- **A silent primary rebuilt inside the advices workbook, to replace the one the pin was feared to spend**:
+  drafted and held, not built. A partial detail sheet completed from the register repeats ask B's primary
+  (a silently partial extract found against a control); a withdrawn-and-reissued advice breaks clause 5.1's
+  one advice per cover per month, which the battery's key-uniqueness sweep reads as a work order; a tier
+  carried at the wrong vintage moves only the twelve tier cells and leaves the four quarter totals free,
+  because a quarter total is invariant to the tier split. None was needed: the pinned basis leaves the rollup
+  live at 16 of 16 figures, measured, and the residual exposure (a response that joins the register's closure
+  dates lands the ask) is written into the ask sheet rather than argued away.
+- **Freeze mode for this repair**: both run and both recorded. `--mode determinism` PASS at exit 0, which is
+  the stronger of the two here because this repair moves no graded figure at all; `--mode rubric` PASS at
+  exit 0 with its own WARN, "nothing on the ask side moved", which is the correct reading of a repair that
+  changed an asking sentence's basis and grain while every figure it governs stayed where it was. The
+  snapshot was taken before the first edit, and was neither retaken nor suppressed.

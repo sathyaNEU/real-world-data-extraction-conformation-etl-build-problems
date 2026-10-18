@@ -297,30 +297,32 @@ def main():
     # plus the lote the invoice credited. The coarser annual reading and the publication basis are
     # the readings the old wording admitted, and both are measured here against the same rows.
     delq, pubq, billq = {}, {}, {}
-    for r in d["deliveries"]:
-        if r["city"] not in nonpanel:
+    for row in d["deliveries"]:
+        if row["city"] not in nonpanel:
             continue
-        pub = B.publication_period(r["city"], r["date"])
-        if r["date"].year == 2025:
-            q = (r["date"].month - 1) // 3 + 1
-            delq[q] = delq.get(q, 0) + r["delivered"]
+        pub = B.publication_period(row["city"], row["date"])
+        if row["date"].year == 2025:
+            q = (row["date"].month - 1) // 3 + 1
+            delq[q] = delq.get(q, 0) + row["delivered"]
         if pub.year == 2025:
             q = (pub.month - 1) // 3 + 1
-            pubq[q] = pubq.get(q, 0) + r["delivered"]
+            pubq[q] = pubq.get(q, 0) + row["delivered"]
     for _seat, m, items, _val in inv:
         q = (m - 1) // 3 + 1
         billq[q] = billq.get(q, 0) + items
     groups = {}
-    for r in d["deliveries"]:
-        if r["city"] not in nonpanel:
+    for row in d["deliveries"]:
+        if row["city"] not in nonpanel:
             continue
-        pub = B.publication_period(r["city"], r["date"])
-        cred = (r["date"] == B.REJECTED_LOTE[1] and B.desk_seat(r["city"]) == B.REJECTED_LOTE[0])
-        dq = (r["date"].month - 1) // 3 + 1 if r["date"].year == 2025 else 0
-        bq = 0 if (cred or r["date"].year != 2025 or pub.year != 2025) else (pub.month - 1) // 3 + 1
+        pub = B.publication_period(row["city"], row["date"])
+        cred = (row["date"] == B.REJECTED_LOTE[1]
+                and B.desk_seat(row["city"]) == B.REJECTED_LOTE[0])
+        dq = (row["date"].month - 1) // 3 + 1 if row["date"].year == 2025 else 0
+        bq = 0 if (cred or row["date"].year != 2025 or pub.year != 2025) \
+            else (pub.month - 1) // 3 + 1
         if dq == bq or (dq == 0 and bq == 0):
             continue
-        groups[(dq, bq, cred)] = groups.get((dq, bq, cred), 0) + r["delivered"]
+        groups[(dq, bq, cred)] = groups.get((dq, bq, cred), 0) + row["delivered"]
     ok(len(groups) == 5, "SF14.five_groups_close_the_four_quarters",
        ", ".join("%s=%d" % (k, v) for k, v in sorted(groups.items())))
     for q in (1, 2, 3, 4):
@@ -339,9 +341,9 @@ def main():
             closes += 1
     ok(closes == 0, "SF14.the_annual_line_set_closes_no_quarter",
        "%d of 4 quarters close on the two annual lines" % closes)
-    dec25 = sum(r["delivered"] for r in d["deliveries"]
-                if r["city"] in nonpanel and r["date"].year == 2026
-                and B.publication_period(r["city"], r["date"]).year == 2025)
+    dec25 = sum(row["delivered"] for row in d["deliveries"]
+                if row["city"] in nonpanel and row["date"].year == 2026
+                and B.publication_period(row["city"], row["date"]).year == 2025)
     ok(dec25 > 0 and sum(pubq.values()) - sum(billq.values()) == dec25 + sum(
         v for k, v in groups.items() if k[2]),
        "SF14.the_publication_basis_is_a_different_gap",
@@ -349,6 +351,29 @@ def main():
        % (sum(pubq.values()), sum(billq.values()), dec25))
     ok(all(k[0] != 0 for k in groups), "SF14.every_closing_group_is_delivered_inside_2025",
        "the items published in 2025 and delivered in 2026 form no closing group")
+
+    # -------------------------------- the panel register's own dates, so clause 4.3 can be executed
+    # The clause admits the municipality that holds the count and has belonged to the panel for the
+    # whole comparison period. The second half was unexecutable while no file gave an entry date, and
+    # the register now carries one. It stays inert, and the seating carries nothing about the call.
+    alta = {c: B.panel_alta(c) for c in panel}
+    ok(max(alta.values()) < B.BASE[0], "alta.every_panel_city_seated_before_the_baseline",
+       "latest %s against a comparison period opening %s" % (max(alta.values()), B.BASE[0]))
+    ok(len(set(alta.values())) >= 4, "alta.seating_is_varied",
+       "%d distinct semester starts over %d municipalities" % (len(set(alta.values())), len(panel)))
+    ok(sum(1 for c in panel if c != g and alta[c] == alta[g]) >= 1, "alta.the_golden_date_is_shared",
+       "%s %s, shared with %s" % (g, alta[g], [c for c in panel if c != g and alta[c] == alta[g]]))
+    ok(alta[g] != min(alta.values()) and alta[g] != max(alta.values()),
+       "alta.the_golden_is_neither_the_first_nor_the_last_seated",
+       "earliest %s, latest %s" % (min(alta, key=lambda c: alta[c]), max(alta, key=lambda c: alta[c])))
+    risers = ("Sardinata", "El Tarra", "Convencion")
+    ok(len({alta[c] for c in risers}) > 1, "alta.the_presence_risers_do_not_share_a_date",
+       ", ".join("%s %s" % (c, alta[c]) for c in risers))
+    full = [c for c in panel if r[c]["aw"] >= 70 and alta[c] < B.BASE[0]]
+    count_only = [c for c in panel if r[c]["aw"] >= 70]
+    ok(full == count_only and g in full, "alta.clause_4_3_stays_inert",
+       "%d eligible either way, the count floor alone removing %s"
+       % (len(full), [c for c in panel if c not in full]))
 
     # ---------------------------------------------------- graded figures, bins
     for c in panel:

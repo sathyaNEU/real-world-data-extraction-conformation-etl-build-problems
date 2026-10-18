@@ -101,6 +101,9 @@ POST_MIN, POST_JIT = 206, 84                     # the settle window a capture r
 TRUNC_RATE = 0.08                                # captures the platform's buffer wrapped on
 MISS_RATE = 0.38                                 # steps the capture queue was too busy to take
 MANUAL_PER_SITE = 2                              # ad hoc captures a desk engineer took
+PRE_EVENT = 45                                   # pre-fault time every recorder in the fleet keeps
+FDEV_DROP = 0.022                                # captures the archive writer's queue dropped
+FDEV_TRUNC = 0.075                               # captures the writer's buffer wrapped part way
 
 
 RING_SALT = 191          # the configuration the nine sites were commissioned with
@@ -114,45 +117,82 @@ def ring(sid):
     return RING[sim._stable("ring%d" % RING_SALT, sid) % len(RING)]
 
 
+def recorder_pre(sid):
+    """The pre-event window a site's disturbance recorder writes out when it arms: the pre-fault
+    time configured across the fleet plus the depth of that site's own ring buffer."""
+    return PRE_EVENT + ring(sid)
+
+
+def dev_windows(sid, d, f):
+    """The windows the site's own disturbance recorder recorded on local date d.
+
+    The recorder watches the frequency the site's own transducer measures. It arms when that
+    deviation has held beyond the site's configured threshold for its confirmation count, writes out
+    the ring buffer it holds as the pre-event window, and closes the file once the deviation has sat
+    back inside the release threshold for the hold-off. It is armed while the unit is in reserve
+    delivery, which is what the platform keeps the high-resolution archive for. Nothing the system
+    operator publishes reaches any of it, so where a recording begins and ends is a fact about the
+    site and the second its own threshold was crossed."""
+    c = sim.RECORDER[sid]
+    s = sim.SITE_BY_ID[sid]
+    t = np.arange(sim.DAY)
+    dev = np.abs(f + sim.meas_error(s, d, t) - 50.0)
+    armed = dev >= c["thr"]
+    released = dev < c["thr"] - c["hyst"]
+    live = sim.contracted(s, t, d)
+    pre, conf, hold = recorder_pre(sid), c["conf"], c["hold"]
+    out, i, n = [], 0, sim.DAY
+    while i < n:
+        if not (armed[i] and live[i] and i + conf <= n and armed[i:i + conf].all()):
+            i += 1
+            continue
+        lo = max(0, i - pre - c["lat"])
+        j, run = i + conf, 0
+        while j < n:
+            run = run + 1 if released[j] else 0
+            if run >= hold:
+                break
+            j += 1
+        # the file closes as far behind the hold-off as the archive link is backed up at the time
+        flush = int(sim._rng("flush", sid, d.isoformat(), i).randint(0, c["flush"] + 1))
+        out.append((lo, min(n, j + 1 + flush)))
+        i = j + 1
+    merged = []
+    for (a, b) in out:
+        if merged and a <= merged[-1][1]:
+            merged[-1] = (merged[-1][0], max(merged[-1][1], b))
+        else:
+            merged.append((a, b))
+    return merged
+
+
+FIT_CLEAR = 1200         # seconds of settled non-delivery a fitting boundary sits inside
+
+
 def fit_boundaries(W, sid):
-    """The settlement period boundaries a solver can fit a site's traverse over: the setpoint steps
-    by more than a megawatt, the period before it was already settled, no qualifying episode of
-    either sign runs through the window, and the frequency sits inside the dead band across it. The
-    generator computes the same set the solver does, so the organ's exactness is asserted rather
-    than hoped for: the first two of these per site are always captured and never truncated, and
-    the capture queue is free to miss or wrap on any of the rest."""
+    """The settlement period boundaries a solver recovers a site's traverse span over, which are the
+    ones the determination names: the boundaries at which the site held no reserve commitment. With
+    no reserve obligation the controller answers no frequency deviation, so the recorded power across
+    such a boundary is the programme traverse and the channel's own noise, whatever the system
+    frequency did. The setpoint has to step by more than a megawatt and the period before it has to
+    be settled, or there is no traverse to read. The generator computes the same set the solver does,
+    so the organ's exactness is asserted rather than hoped for: the first few of these per site are
+    always captured and never truncated, and the capture queue is free to miss or wrap on the rest."""
+    s = sim.SITE_BY_ID[sid]
     out = []
-    marked = {}
     for d in sim.dates():
         if d < sim.dates()[-1] - dt.timedelta(days=TRANS_RETENTION_DAYS - 1):
             continue
-        if d not in marked:
-            m = np.zeros(sim.DAY + 400, dtype=bool)
-            for (t0, t1, tstar, fx) in W[d]["under"] + W[d]["over"]:
-                m[max(0, t0 - 120):min(sim.DAY, t1 + 121)] = True
-            marked[d] = m
         prog = W[d]["prog"][sid]
-        f = W[d]["f"]
         for p in range(2, 96):
             t = p * 900
             if abs(prog[p] - prog[p - 1]) < 1.0:
                 continue
             if abs(prog[p - 1] - prog[p - 2]) > 0.35:
                 continue
-            if marked[d][max(0, t - 30):t + 215].any():
+            if sim.contracted(s, np.arange(max(0, t - FIT_CLEAR), t + 215), d).any():
                 continue
-            quiet = True
-            for mk in range(0, 5):
-                m0 = (t // 60) + mk
-                if m0 * 60 >= sim.DAY:
-                    quiet = False
-                    break
-                seg = f[m0 * 60:(m0 + 1) * 60]
-                if seg.min() < 50.0 - sim.DEADBAND or seg.max() > 50.0 + sim.DEADBAND:
-                    quiet = False
-                    break
-            if quiet:
-                out.append((d, p))
+            out.append((d, p))
     return out
 
 
@@ -198,13 +238,23 @@ def recordings(W, events=()):
         occupied[(d, sid)].append((lo, hi))
         return True
 
-    # 1. the operator's deviation windows, which are where every graded response is read
+    # 1. each site's own disturbance recorder, which is where every graded response is read. The
+    #    recorder's threshold, ring buffer, hysteresis and hold-off fix the bounds (dev_windows);
+    #    the archive writer's queue drops a capture when it is backed up.
     for d in sim.dates():
-        for (a, b) in W[d]["exc"]:
-            lo, hi = a, min(sim.DAY, b + 1)
-            for s in sim.SITES:
-                if sim.contracted(s, np.arange(lo, hi), d).any():
-                    take(d, s["id"], "FREQ-DEV", lo, hi, False)
+        f = W[d]["f"]
+        for s in sim.SITES:
+            sid = s["id"]
+            for (lo, hi) in dev_windows(sid, d, f):
+                r = sim._rng("fdevq", sid, d.isoformat(), lo)
+                if r.random_sample() < FDEV_DROP:
+                    continue
+                if r.random_sample() < FDEV_TRUNC:
+                    # the archive writer's buffer wrapped, so the file closed part way through
+                    floor = lo + recorder_pre(sid) + 30
+                    if floor < hi - 1:
+                        hi = floor + int(r.randint(0, hi - 1 - floor))
+                take(d, sid, "FREQ-DEV", lo, hi, False)
 
     # 2. the platform's rate-of-change captures at a setpoint step, kept for a fortnight
     floor = {s["id"]: set(fit_boundaries(W, s["id"])[:FIT_FLOOR]) for s in sim.SITES}

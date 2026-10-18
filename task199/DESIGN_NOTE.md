@@ -268,6 +268,7 @@ lands on the golden and every differing reading either violates a quoted sentenc
 | the service's invoices (ask A's control total) | cover 2025 only, so they bear on no window figure | not an oracle for the call; they arbitrate ask A alone |
 | the register's published monthly summary | agrees with the detail for every panel city on every basis, and stands above its own parts only for the non-panel desk seats | not an oracle; that disagreement is ask B's primary and sits outside the panel |
 | the delivery log's own monthly totals | tie to the sum of their rows under every handling | not an oracle |
+| the panel register's entry dates (`panel_fuentes.xlsx`, Municipios del panel) | names every panel municipality beside a date and says nothing about activity, volume or the designation | not an oracle; it exists so the protocol's clause 4.3 can be executed in full. Every municipality is seated before the comparison period opens, so the membership half admits all eleven and the count floor alone removes Hacari, asserted in `checks.py` and again in `verify.py`; the seating is asserted uninformative |
 | a completeness audit, gold standard or certified rate | none ships | by design |
 
 **The leak sweeps' REVIEW lines, answered** (`leak.py --asof 2026-11-05`: REVIEW, 0 LEAK, six REVIEW lines
@@ -402,6 +403,7 @@ Of every file and every sentence added to force a convention: what else does the
 | the protocol's designation clause | it also sets the panel, the publication cycle, the tie-break and the mission's funding, and the coordinator's own role is defined in it | not single-use |
 | the invoice PDFs | the coordinator signs them; ask A's control total | not single-use, and they cover 2025 only, so they bear on no window figure |
 | the published monthly summary | the bulletin is built from it and the register's own returns process produces it | not single-use; it is ask B's primary and agrees with the detail for every panel city |
+| the panel register's municipalities sheet, with each one's panel entry date and semester | the register the panel is administered from: clause 2.2 of the protocol creates the fact (a municipality enters at the start of a semester and stays while monitoring is continuous), the workbook already holds the other half of the same register in its source sheets, the semestral ficha review at the close of each semester runs off it, and the semester label is how the coordinator knows which municipalities a given semester's note covers. Clause 4.3 is one consumer among those | not single-use, and it points at no part of the decisive step: it names no volume, no denominator, no exposure and no city's activity. The deletion test was run and is the measurement below: with the sheet gone the answer is forced exactly as before, because the clause it serves is the eligibility threshold, which is asserted inert and which no route's answer turns on. The contrast with the cut Notas sentence is the point: that sentence's only work was to stop a reader inferring coverage from declared scope, which is the decisive denominator, while a date register serves a membership clause |
 | the panel workbook's note that the declared scope is self-reported and does not describe the volume a medium sends | none: a ficha sheet documents its own columns, and warning a reader off a volume it does not carry is work no panel sheet does | single-use, and cut. The deletion test settles it: the sentence is read by nothing, so with it gone the designation, the printed rate, all four call components, every rung and all eleven city rates are identical (target tree unchanged but for the four documents this pass edited), which means it was handing over the insight rather than forcing anything. What is left is the ficha's own column descriptions, including the delivery channel the sheet already distinguishes |
 
 ## Stage 3 findings answered
@@ -435,12 +437,13 @@ the same round.
 | The leak reader's single-use finding: the panel workbook's Notas sheet warned that the declared scope "no describe el volumen que remite", which is work no ficha sheet does and which points at the decisive denominator | Cut, with the deletion test run first and recorded in `## Single-use test`: the sentence is read by no computation, so with it gone every call figure, every rung and all eleven rates are identical, which is what makes it an announcement rather than a closure. The sheet keeps its own column descriptions and gains the one it was missing, that the delivery channel distinguishes the primary mesas from the ones the team consults. The dictionary's `items_entregados` line also loses "sea cual sea el tema", which the rest of the line already says: the two column descriptions still separate what the service delivered from what the register's filter kept, which is what closes SF8 |
 | Three dictionary statements were not true of the shipped data: a citation table where 13 `id_item` values cite two entries each was described as one entry per item; a header claiming to describe the definitive extract while the 2026 export ships 320 preliminary rows; and three re-coded municipalities described as a merger of two entities that nothing in the data shows | All three were fixed in the sentence rather than the data, because each piece of data is load-bearing Layer 1 mess: the citation line now reads "un item puede citar mas de una entrada", the header describes "los archivos del extracto de esa fecha" and leaves the `extracto` column to say which rows are preliminary, and the city table's line now says the national list reassigned three codes. The register's rows, the citation table and the city table are byte-identical |
 | Two realism tells: all eleven city rates sat within 0.00004 of an exact tenth, and the Mujeres organizadas per-entry mean was exactly 356.500 | `tune_population` now runs two deterministic passes: the first fixes the printed rate exactly as before, the second keeps that printed rate and moves the projection off the bin's centre to a per-city offset, so the ten tunable rates sit 0.007 to 0.017 from the tenth they print and 0.30 to 0.43 of the printed unit inside their bins. Every printed rate is unchanged. The designated city is the exception by scope: its projection of 148,590 is a Critical Components figure and its printed 92.2 is the call, so the denominator is pinned in `PINNED_POP` and its rate still sits on the printed value, which `checks.py` asserts as the pinned case. The sector-mean pass gained the same off-centre condition and now adjusts a one-day entry, because a prolonged entry carries its figure on every day it ran and the mean then steps in multiples that skip the band: Mujeres organizadas is 356.2 on a total of 5,699 and Transportadores 61,922, and no other sector figure moved |
-| The reader's two smaller observations, judged | Neither is fixed in the records. Protocol 4.3's panel-membership half and the 4.4 tie rule cannot be executed because no file gives a panel entry date, and both are measurably inert: the count floor alone removes Hacari at 56 actions, the nearest other city sits 10 actions clear of it, the tie rule never fires at a decisive margin of 1.8150x, and every one of the eleven panel cities holds at least one action in every one of the 24 baseline months, so nothing in the records contradicts membership through the comparison period either. The protocol is a main-call document and the judge certified its clauses, so the shipped fact that would make 4.3 executable, an "Alta en el panel" column in the panel workbook with every panel city seated before the baseline, is left for the author to take or leave; it would move no figure. The manual's misplaced layout table was cheap and is fixed: the field-by-year table now sits under section 2 as clause 2.4, where the template fields are described, and section 3 keeps its own sentence about the monthly sample review |
+| The reader's two smaller observations, judged, and the author's ruling on the first | Protocol 4.3's panel-membership half and the 4.4 tie rule could not be executed because no file gave a panel entry date. Both are measurably inert: the count floor alone removes Hacari at 56 actions, the nearest other city sits 10 actions clear of it, the tie rule never fires at a decisive margin of 1.8150x, and every one of the eleven panel cities holds at least one action in every one of the 24 baseline months. Inert is not enough, because a clause in a governing document that cannot be executed from anything in the pack is the shape of a Gate B missing-input finding, so on the author's ruling `panel_fuentes.xlsx` gained a Municipios del panel sheet carrying each municipality's entry date and semester, and the dictionary's line for the workbook names it. The three conditions on it are met and measured: it moves nothing (every one of the 199 `figures.json` values identical, and every city's window and baseline counts, delivered volumes, population, rate and all four rung scores identical to six decimals, winners, position, margin and lead with them); it passes the single-use test, recorded above with its deletion test; and the seating is varied and uninformative, eight distinct semester starts from 2017-II to 2022-I, the golden on 2020-II shared with Hacari and neither the earliest nor the latest, the three presence risers on three different dates, and the newest and oldest members both cities that no route's answer names. The manual's misplaced layout table was cheap and is fixed: the field-by-year table now sits under section 2 as clause 2.4, where the template fields are described, and section 3 keeps its own sentence about the monthly sample review |
 
-**Pass 2's gates, measured on the final rebuild.** `checks.py` exit 0, 121 checks, 121 PASS, 0 FAIL (100
-before, the 21 new ones the SF14 closure, the two off-centre bands and the pinned projection). `verify.py`
-exit 0, 87 checks, 87 PASS, 0 FAIL (76 before), reading only the shipped bundle and deriving the credited
-mesa's pair from the published summary. `figures_check.py` exit 0, 124 figures in blocks 1 to 4, 0 absent
+**Pass 2's gates, measured on the final rebuild.** `checks.py` exit 0, 127 checks, 127 PASS, 0 FAIL (100
+before; the 27 new ones are the SF14 closure, the two off-centre bands, the pinned projection and the panel
+register's six invariants). `verify.py` exit 0, 91 checks, 91 PASS, 0 FAIL (76 before), reading only the
+shipped bundle, deriving the credited mesa's pair from the published summary and executing clause 4.3 on both
+halves from the panel register. `figures_check.py` exit 0, 124 figures in blocks 1 to 4, 0 absent
 from `figures.json`. `precut.py` exit 0, 51 checks, 0 FAIL, 0 WARN, the new no-repeated-H2 check among them: this note carried a second copy of two sections inside the Draw table's last row, which left the earlier copy unread, and the duplicates are removed and the row restored. `voice-check.py` exit 0, 13 checks PASS,
 `prompt.txt` 995 characters, unchanged in length, with the call sentence byte-identical. `ceiling.py` pair
 ceiling 28.5 on 66 graded ask figures (bar 40), mirror leakage 0.0 per cent, the cracker keeping 0 of 66 and
@@ -448,11 +451,16 @@ able to keep 27 before the pair breaches 40; `--forcing` 37 of 37 sampled figure
 rounding. `leak.py --asof 2026-11-05` REVIEW, 0 LEAK, six REVIEW lines answered in `## Oracles`. `guard.py
 surface` clean, 0 pairs promoted, the personas found are the two on the card; `guard.py heart` WARN, 0 BLOCK,
 nearest driver 0.06. Two consecutive full rebuilds byte identical: target tree
-`cbb36f20c8baff69042eb85e72810d25`, golden `e93d935ac77539eee0cf0ac608a63a50`, `target.zip`
-`365b1d62dd2d6206f39bb9a4178eec30` with 17 members, re-cut from the final rebuild.
+`16ee337366733892eba5aa3a64fa2b68`, golden `e93d935ac77539eee0cf0ac608a63a50`, `target.zip`
+`97dd76fb2a5658bfa2746afc7f23baa1` with 17 members, re-cut from the final rebuild. Before the panel register
+sheet was added the same three digests were `cbb36f20c8baff69042eb85e72810d25`,
+`e93d935ac77539eee0cf0ac608a63a50` and `365b1d62dd2d6206f39bb9a4178eec30`: the golden is unchanged by it,
+which is the first of the three conditions the sheet had to meet.
 
-**What moved in the pack.** Four documents and one data file: `diccionario_datos.md` (four sentences),
-`manual_codificacion.pdf` (the layout table moved to clause 2.4), `panel_fuentes.xlsx` (the Notas sheet),
+**What moved in the pack.** Four documents and one data file: `diccionario_datos.md` (four sentences plus
+the line naming the panel register sheet), `panel_fuentes.xlsx` (the Notas sheet and the new Municipios del
+panel sheet),
+`manual_codificacion.pdf` (the layout table moved to clause 2.4),
 `proyecciones_poblacion.xlsx` (ten projections, every printed rate unchanged) and `rac_acciones_2025.csv`
 (nine rows' `participantes` values, in Rio de Oro, San Martin, Chimichagua and Pelaya, all outside the
 panel). Byte-identical: the delivery log, the invoices, the protocol, the 2024 and 2026 register exports, the
@@ -563,6 +571,18 @@ path and the prompt's call sentence.
   figure once per day it ran, so the mean moves in multiples of the day count and can step over the whole
   band between the bin's centre and its edge. Mujeres organizadas alternated between the centre and the edge
   for 400 iterations and the pass raised rather than converged. One-day entries only.
+- Leaving protocol 4.3 inert and shipping no panel entry date, which is what this pass first proposed on
+  the measurement that the clause removes nobody: overruled by the author, and rightly, because an inert
+  clause and an unexecutable one are different findings. The portal's judge reads a governing clause it
+  cannot execute from the pack as a missing input, so the register now carries the date and the clause can
+  be executed on both halves. The three conditions the sheet had to meet are measured in the row above.
+- Seating every panel municipality on one date, or on dates drawn from anything the call reads: rejected.
+  The seating is drawn from the municipality's name alone and asserted uninformative, because a register
+  whose dates line up with the answer is a decoy in a file the solver has every reason to open.
+- Putting the entry date on the panel workbook's source sheets as a column: rejected on the data's own
+  structure. Those sheets are the panel of monitored outlets, one row per medium, and clause 4.3 is about a
+  municipality's membership, so the fact belongs in its own sheet of the same register rather than bolted to
+  a row about a newspaper.
 - Correcting ask A's primary sentence to the mechanism the generator actually builds: the sheet described a
   monthly completeness re-push under fresh item ids resolved by the transmission batch, and what the pack
   carries is the publication period against the delivery day plus the credited lote. No data changed; the

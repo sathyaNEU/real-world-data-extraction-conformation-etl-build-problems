@@ -154,6 +154,7 @@ def main():
                    "cuenta cuanto remitio el servicio desde ese municipio",
                    ["designacion", "tasa ajustada"])
     pan = readback("xlsx", "panel_fuentes.xlsx", "agencia andina de prensa", ["volumen mensual"])
+    sh_pan = sheets_of_xlsx("panel_fuentes.xlsx")
     pob = readback("xlsx", "proyecciones_poblacion.xlsx", "proyeccion 2026", ["designado"])
 
     # the filed estimand's own clauses are in the protocol, once each
@@ -333,6 +334,20 @@ def main():
            == sum(v for k, v in annual.items() if k[0] == q)) == 0,
        "askA.the_annual_line_set_closes_no_quarter")
     ok(all(k[0] != 0 for k in groups), "askA.every_closing_group_is_delivered_inside_2025")
+
+    # ---- the panel register's entry dates, so the protocol's clause 4.3 can be executed in full
+    alta_rows = [row for row in sh_pan["Municipios del panel"][1:] if row and row[0]]
+    alta = {row[0]: d_iso(str(row[2])[:10]) for row in alta_rows}
+    ok(sorted(alta) == sorted(PANEL), "alta.every_panel_city_is_seated",
+       "%d of %d municipalities" % (len(alta), len(PANEL)))
+    ok(alta and max(alta.values()) < BASE[0], "alta.seated_before_the_comparison_period",
+       "latest %s against %s" % (max(alta.values()), BASE[0]))
+    ok(len(set(alta.values())) >= 4, "alta.seating_is_varied", "%d distinct dates" % len(set(alta.values())))
+    full = [c for c in PANEL if ad[(c, "w")] >= 70 and alta[c] < BASE[0]]
+    ok(full == [c for c in PANEL if ad[(c, "w")] >= 70] and "Tibu" in full,
+       "alta.clause_4_3_is_executable_and_inert",
+       "%d eligible on both halves, the count floor alone removing %s"
+       % (len(full), [c for c in PANEL if c not in full]))
 
     # ---- provenance and the distractors
     man_rows = rows("manifiesto_exportacion.csv")

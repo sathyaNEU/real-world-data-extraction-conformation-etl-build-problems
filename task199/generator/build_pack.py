@@ -730,6 +730,33 @@ def write_lookups(pops):
 
 # ------------------------------------------------------------------ workbooks
 
+# The panel register's own dates. A municipality enters the panel at the start of a semester, which is
+# what clause 2.2 of the protocol says, and the panel has grown semester by semester since the first
+# edition, so the seating spreads over the semesters before the baseline with the founding group the
+# largest. Each date is drawn from the municipality's name alone, so the seating carries nothing about
+# activity, presence or the designation, and `checks.py` asserts that it carries nothing: the golden's
+# own date is shared, it is neither the earliest nor the latest, and the three cities whose press
+# presence rose sit on three different dates.
+PANEL_SEMESTERS = [date(y, m, 1) for y in range(2017, 2024) for m in (1, 7)]
+
+
+def panel_alta(city):
+    """The semester start on which a panel municipality came under continuous monitoring."""
+    rng = random.Random("alta2|%s" % city)
+    weights = [8 if s == PANEL_SEMESTERS[0] else max(1, 8 - (s.year - 2017)) for s in PANEL_SEMESTERS]
+    x = rng.random() * float(sum(weights))
+    acc = 0.0
+    for s, w in zip(PANEL_SEMESTERS, weights):
+        acc += w
+        if x < acc:
+            return s
+    return PANEL_SEMESTERS[-1]
+
+
+def semester_label(d):
+    return "%d-%s" % (d.year, "I" if d.month == 1 else "II")
+
+
 def write_workbooks(pops):
     import openpyxl
     wb = openpyxl.Workbook()
@@ -743,10 +770,21 @@ def write_workbooks(pops):
                 continue
             ws.append([code, name, t, amb, "primario" if t in PUSHED else "consulta"])
         ws.column_dimensions["B"].width = 30
+    ws = wb.create_sheet("Municipios del panel")
+    ws.append(["Municipio", "Cod DIVIPOLA", "Alta en el panel", "Semestre de alta"])
+    for city in sorted(PANEL_NAMES):
+        alta = panel_alta(city)
+        ws.append([city, DIVIPOLA[city], alta.isoformat(), semester_label(alta)])
+    ws.column_dimensions["A"].width = 22
+    for col in ("B", "C", "D"):
+        ws.column_dimensions[col].width = 18
+
     ws = wb.create_sheet("Notas")
     ws.append(["Panel vigente al 5 de noviembre de 2026."])
     ws.append(["El ambito declarado es el que cada medio reporta en su ficha."])
     ws.append(["El canal de entrega distingue las mesas primarias de las de consulta."])
+    ws.append(["El alta en el panel es la fecha desde la cual el Observatorio mantiene seguimiento"])
+    ws.append(["continuo del municipio."])
     ws.append(["Las fichas se revisan al cierre de cada semestre."])
     wb.save(os.path.join(TARGET, "panel_fuentes.xlsx"))
 
@@ -995,8 +1033,9 @@ Codigos DIVIPOLA con sus fechas de vigencia. Tres municipios recibieron codigo n
 
 ## panel_fuentes.xlsx, proyecciones_poblacion.xlsx
 
-Panel de medios vigente al cierre, una hoja por tipo. Proyecciones municipales de poblacion en
-unidades y en miles, mas la serie anterior al censo.
+Panel de medios vigente al cierre, una hoja por tipo, y la hoja de municipios del panel con la fecha
+y el semestre de alta de cada uno. Proyecciones municipales de poblacion en unidades y en miles, mas
+la serie anterior al censo.
 
 ## Otros archivos del extracto
 

@@ -75,6 +75,60 @@ SITES = [
 SITE_BY_ID = {s["id"]: s for s in SITES}
 BLOCK_HOURS = [(0, 4), (4, 8), (8, 12), (12, 16), (16, 20), (20, 24)]   # local, FCR blocks 1..6
 
+# --- each unit's own frequency transducer and disturbance recorder -------------------------------
+# The platform's high-resolution archive is written by a recorder at each site, and every one of
+# them watches the frequency its own transducer measures rather than anything the system operator
+# publishes. thr is the deviation the recorder arms at and hyst the margin it releases at, conf the
+# seconds beyond the threshold it waits before arming, lat the seconds the arming itself takes, hold
+# the seconds inside the release threshold it holds the file open for, off the calibration offset
+# commissioning recorded on the transducer, flush the deepest backlog the archive link runs at, which
+# is how many seconds late the file closes. The pre-event window is the ring buffer's whole content
+# (core.recorder_pre). Values are the commissioning configuration of each site and nothing else.
+RECORDER = {
+    "VKF-MPD": dict(flush=60, thr=0.034, hyst=0.011, conf=3, lat=1, hold=95,  off=0.0025),
+    "VKF-OOS": dict(flush=90, thr=0.036, hyst=0.009, conf=5, lat=0, hold=30,  off=0.0018),
+    "VKF-NWV": dict(flush=40, thr=0.038, hyst=0.014, conf=2, lat=2, hold=120, off=-0.0007),
+    "VKF-KPV": dict(flush=110, thr=0.040, hyst=0.010, conf=4, lat=1, hold=45,  off=-0.0014),
+    "VKF-TRB": dict(flush=50, thr=0.042, hyst=0.012, conf=3, lat=0, hold=140, off=0.0013),
+    "VKF-ZWT": dict(flush=70, thr=0.044, hyst=0.008, conf=5, lat=1, hold=75,  off=-0.0022),
+    "VKF-DLK": dict(flush=130, thr=0.046, hyst=0.015, conf=6, lat=3, hold=25,  off=-0.0025),
+    "VKF-HGZ": dict(flush=45, thr=0.050, hyst=0.013, conf=2, lat=2, hold=60,  off=0.0009),
+    "VKF-RDL": dict(flush=120, thr=0.052, hyst=0.011, conf=4, lat=3, hold=35,  off=0.0021),
+}
+MEAS_SD = 0.0019          # Hz, the slowly varying error of a site's own frequency measurement
+MEAS_KNOT = 60            # s between that error's own samples
+TRIM_SD = 0.030           # the unit's realised droop gain between activations
+TRIM_KNOT = 1200          # s over which that trim moves
+
+_MEAS = {}
+_TRIM = {}
+
+
+def meas_error(site, d, t):
+    """The error the site's own frequency transducer carries at local second t: the calibration
+    offset commissioning recorded on it, plus the slowly varying error of the measurement itself.
+    The operator publishes from a different chain at a different node, so the unit's droop
+    controller never sees the published number to the last digit."""
+    key = (site["id"], d)
+    if key not in _MEAS:
+        _MEAS[key] = _rng("fmeas", site["id"], d.isoformat()).normal(
+            0, MEAS_SD, DAY // MEAS_KNOT + 2)
+    k = _MEAS[key]
+    return RECORDER[site["id"]]["off"] + np.interp(
+        np.asarray(t, dtype=float), np.arange(len(k)) * MEAS_KNOT, k)
+
+
+def gain_trim(site, d, t):
+    """The unit's realised droop gain is not a constant between activations: a battery's state of
+    charge and an engine's running temperature both move it, and the controller's own trim drifts
+    between quarterly checks. One factor per unit, moving over the hours of a day."""
+    key = (site["id"], d)
+    if key not in _TRIM:
+        _TRIM[key] = _rng("trim", site["id"], d.isoformat()).normal(
+            0, TRIM_SD, DAY // TRIM_KNOT + 2)
+    k = _TRIM[key]
+    return 1.0 + np.interp(np.asarray(t, dtype=float), np.arange(len(k)) * TRIM_KNOT, k)
+
 # Days a site is out of the reserve market, with the reason the platform event log carries.
 OUT_OF_MARKET = {
     "VKF-KPV": [dt.date(2026, 9, 24), dt.date(2026, 9, 25)],
@@ -324,24 +378,27 @@ _fcr_gate = None            # build.py installs the reserve-availability gate he
 
 def site_power(site, d, f, prog, lo, hi):
     """Net active power in MW for local seconds [lo, hi), from the trajectory, the lagged FCR
-    response and telemetry noise."""
+    response and telemetry noise. The controller answers the frequency the unit's own transducer
+    measures, at the gain its own trim is running."""
     t = np.arange(lo, hi)
     base = traj(site, prog, t)
     gate = _fcr_gate(site, d, t) if _fcr_gate else contracted(site, t, d)
-    req = required(site, f[lo:hi]) * gate
+    req = required(site, f[lo:hi] + meas_error(site, d, t)) * gate
     gu, gd = site["gain"], site.get("gain_dn", site["gain"])
+    k = np.where(req >= 0, gu, gd) * gain_trim(site, d, t)
     a = np.exp(-1.0 / site["tau"])
     resp = np.zeros(len(t))
     # warm start: run the lag from 400 s before the window so the state is right
     pre_lo = max(0, lo - 400)
     tp = np.arange(pre_lo, lo)
     gate_pre = _fcr_gate(site, d, tp) if _fcr_gate else contracted(site, tp, d)
-    req_pre = required(site, f[pre_lo:lo]) * gate_pre
+    req_pre = required(site, f[pre_lo:lo] + meas_error(site, d, tp)) * gate_pre
+    k_pre = np.where(req_pre >= 0, gu, gd) * gain_trim(site, d, tp)
     v = 0.0
-    for x in req_pre:
-        v = a * v + (1 - a) * (gu if x >= 0 else gd) * x
-    for i, x in enumerate(req):
-        v = a * v + (1 - a) * (gu if x >= 0 else gd) * x
+    for i in range(len(req_pre)):
+        v = a * v + (1 - a) * k_pre[i] * req_pre[i]
+    for i in range(len(req)):
+        v = a * v + (1 - a) * k[i] * req[i]
         resp[i] = v
     r = _rng("tel", site["id"], d.isoformat(), int(lo))
     noise = r.normal(0, 0.013, len(t)) + 0.004 * np.sin(t / 17.0 + _stable(site["id"]) % 7)
