@@ -427,6 +427,137 @@ is left registered at architecture 4 rather than half re-rooted, because archite
 the slot's filed identity and moving it into `lineage` with nothing to put in its place would leave the
 card describing no draw.
 
+## ARCHITECTURE 6 OBSERVABILITY SCREEN (run before a card was registered, and it fails)
+
+Drawn on the wave-6 reserved cell, which is new ground for this number: `healthcare-delivery-health-economics`
+/ `payment-claims-health-plan-analytics`, objective `anomaly-detection`, reserved `decision_type`
+`schedule_or_sequence`, shape `06`, decisive gap `time`, `stump_strategy` `population_selection`, `gate_g`
+`binding_constraint`. The five earlier architectures sat on general-statistics and human-factors ground, so
+nothing here re-walks them. Work in `scratchpad/w6_182/screen.py`, `screen2.py`, `screen3.py`, `screen4.py`,
+`sweep.py`, `sweep2.py`, `confirm.py` and `fulladj.py`; `screen4.py --verify` reproduces pass 3's table
+before extending it, which is how the fast path was trusted.
+
+### 1. The draw, as screened
+
+**The world.** A nonprofit Medicaid managed-care plan's program-integrity unit sets its review calendar for
+the coming six quarters under a fixed reviewer capacity, forced by a state agency inspection of the plan's
+integrity function. The units are sixteen attributed medical groups. The question is which groups' rate of
+starting members on a long-running service is aberrant, and in which quarter each is placed.
+
+**The deciding quantity.** Each group's new initiations of the service per 1,000 member-months of its
+attributed panel's eligible exposure. The member-month is this task type's own exposure unit and the
+initiation count is a count of transitions.
+
+**The mechanism.** A transition is visible only against a recorded absence, and the plan records an absence
+only while it is holding the member. A member-month can be eligible while the twelve months before it are
+not, so a group that recently took on members contributes exposure whose past the plan never saw, and every
+member already mid-service when the plan picked them up bills a first claim some months later and files as
+a brand-new start. The dial is stock over flow: a service used for forty months carries a prevalent stock
+forty times its own monthly initiation flow, so an intake of two per cent of a panel a month injects a
+contamination of the same order as the whole signal. That ratio is structural, not tuned.
+
+### 2. Default path (as screened)
+
+1. Load `claim_detail.csv`, keep the final payable version of each claim line, net the denials and reversals.
+2. Build member-months from the eligibility spans in `eligibility_spans.csv`, counting any covered day as a month.
+3. Attribute each member to a medical group from the attribution file.
+4. Count each group's new starts: members with a claim for the service in the review window and no claim for it in the twelve months before the window (the plan's own new-user definition, the one its operational report uses).
+5. Divide by the group's panel member-months in the window, times 1,000; rank the sixteen groups.
+6. Fill the six quarterly review slots in rank order.
+
+**Ends on:** the three highest-intake groups in the first three quarters, a calendar driven by the groups'
+own member intake.
+**Golden (as designed):** the six groups whose initiation rate is elevated once exposure is held to
+member-months the plan could have watched a start in.
+
+### 3. Stump sentence (as screened)
+
+A solver who reconciles the claim versions, nets the reversals, builds member-months from the eligibility
+spans and applies the plan's own twelve-month claims look-back files the three highest-intake groups into the
+first three quarters, because for a member the plan has only just picked up those twelve claim-free months
+are satisfied by there being no record at all.
+
+### 4. Three rules (as screened)
+
+- **Task type:** `payment-claims-health-plan-analytics`, which the client taxonomy lists under ETL and Anomaly Detection, so the objective is legal on the cell.
+- **Domain test:** the deciding quantity is an initiation rate per member-month of eligible exposure, this task type's own exposure unit, and the field's own analysis restricts a transition count to exposure whose preceding span the plan held.
+- **Swap:** put a school's pupils in for a plan's members and the call still reads, because any intermittently observed records system has the same property. **This line does not pass**, and it is the first of the two reasons the draw was killed.
+- **Layer 1:** claim versions with one payable; denials and reversals netting at a grain the detail file does not show; service date against paid date with the recent months' run-out incomplete; capitated encounters carrying no payment; eligibility starting and stopping mid-month; a group's identifier changing on acquisition. Each is produced by the plan's own adjudication and enrolment systems; nothing is placed to be caught.
+- **Layer 2:** `estimand_identification`, `own:watched-absence-exposure`: the exposure that may carry a transition is the exposure whose own preceding span was watched.
+- **Decisive step:** hold the exposure, and the index, to member-months preceded by twelve consecutive months in which the plan held the member and saw no claim for the service.
+- **Not semantics:** every field can be read correctly, every claim version netted and every eligibility span parsed, and the plan's own new-user definition still files the wrong calendar; the error is in which months are exposure, not in what any column means.
+- **Not rule application:** no shipped sentence states the observability condition. **This line does not pass either**, for the reason in section 6: the condition is exact arithmetic on the eligibility spans, so filing it is rule application and not filing it forks the graded order.
+- **Analyst test:** as section 3, ending on the three highest-intake groups in the first three quarters.
+- **Estimand:** initiations per 1,000 member-months of exposure for the attributed panel over the review window.
+- **No decoy:** nothing is copied, withheld, or written to carry the wrong answer; the plan's own operational new-user report is the attractive route because it is how the plan counts, not because it was planted.
+- **No certified replay:** the settled-validation ledger confirms outcomes, never the method.
+- **Lesson:** that a member-month of exposure can be observed while the past that defines a transition was not. No build on file teaches it; task458 teaches the adjacent lesson from the other side.
+
+### 5. What separated, measured over twenty world draws
+
+The harness ranks the sixteen groups under eleven routes and compares each route's top six against the
+designed route's and against the world's own elevated six. Four passes, each run twice with identical output.
+
+| pass | finding |
+|---|---|
+| 1 | With a low-prevalence service the contamination is 4 per cent of the signal and the easy route reaches the golden set 18 of 20. Diagnosis, not a tuning failure: the contamination is a stock and the signal a flow, so the dial is the mean duration of ongoing use. |
+| 2 | With an ongoing service (prevalence 10 to 30 per cent) the easy route reaches the golden set 1 of 20 and overstates the worst group by 2.2 to 2.8 times. But the margin at the capacity boundary was 1.035 and the designed route named the world's elevated six only 13 of 20, because the denominator still held the member-months of members already on the service. |
+| 3 | Unifying the criterion (a member-month is exposure only if the twelve months before it are eligible and service-free) makes the designed route name the elevated six 20 of 20, and **no route but the designed one reaches the golden order even once**. Every claims-anchored route fails on the set: the easy route 0 to 2 of 20, the same sentence on claims alone 1, a 24-month claims look-back 1, first-ever-claim-in-the-extract 1, numerator-only 10, denominator-only 0, one group-by 1, at-risk-only 1. |
+| 4 | The dial, nine cells. Three quantities have to hold at once and no cell holds them: the boundary gap must beat sampling noise so the filter-and-divide variants converge, the contamination spread must beat that same gap so the claims-anchored routes fail, and the designed route must name the truth. Cells where every claims-anchored reflex dies (0 to 1 of 20) have the designed route naming the truth 9 to 10 of 20 at a margin of 1.06 to 1.11; cells where the designed route names the truth 16 to 17 of 20 have the filter-and-divide variants reaching the set 15 to 17 of 20. |
+
+**The clincher, and it is the common-exposure subset screen's own diagnostic.** In the one cell where the
+designed route recovers the world (cell Q: twenty to seventy thousand attributed members a group, intake
+3 to 70 per cent, prevalence 15 to 45 per cent, propensity 1.15 to 2.60):
+
+| route | names the world's elevated six | boundary margin |
+|---|---|---|
+| the designed route (rolling observability) | 17 of 20 | 1.116 |
+| filter and divide (groups whose whole pre-window span is eligible) | **20 of 20** | **1.179** |
+| the index washout alone, exposure left whole | **20 of 20** | n/a |
+
+The subset already at the common exposure is a filter and a divide, it estimates the same quantity with no
+model, and it reaches the answer more often than the designed construction and at a wider margin. The
+designed construction is decoration on the graded figure. In the other cell the same comparison inverts the
+ladder outright: the designed route names the truth 10 of 20 against the index-washout-only reflex's 18.
+
+The full-adjustment reflex was run as code on the coordinator's instruction (the easy rate residualised on
+panel size, intake share, recorded prevalence and the churner-settled mix, all columns the pack must ship)
+and does **not** land it, 3 of 20 and 7 of 20. So that reflex is not what kills this draw; the two screens
+below are.
+
+### 6. Why it is dead, in the skill's own terms
+
+- **The WHAT screen** (`stumping` 1.2). The decisive step settles which member-months are exposure and which indices may be counted. That is the estimand's **population**, one of the five parts, so filing it is rule application and leaving it unfiled leaves the graded order unforced, which is exactly the fork the measurement found between the rolling and window-level readings. There is no third position, and this is the same screen that killed this slot's architecture 1.
+- **The common-exposure subset screen** (`stumping` 1.2, fourth bullet). "Put the units on a common exposure before comparing" cannot carry a stump because the attaining subset is a filter and a divide. The screen predicts it reaches the golden at a wider margin than the designed route; measured here at 1.179 against 1.116, with 20 of 20 against 17. Of the three escapes the screen allows, two are closed on this ground (no unit attains the exposure is completion, which is spent on this cell by task451 and in this lane by task194 and task201; the attaining subset being unrepresentative is a plant) and the third is the variance screen, which is precisely the 9 to 10 of 20 recovery in the cells where the stump exists.
+- **The denominator law, from the coordinator's wave note and independently confirmed here.** A rate's denominator is either exact arithmetic on a shipped aggregate, which makes the decisive step rule application, or estimated per unit, which reopens the weighting family. Member-months built from per-member start and stop dates are exact arithmetic, so a decisive step that selects among them is on the first horn. That closed three cells for task194 and it closes this one.
+- **The swap test** (section 4) does not pass on its own terms: the mechanism is a property of any intermittently observed records system, so the claims apparatus is carrying the quantity but not the insight.
+
+### 7. What is settled for the next draw on this cell, so it is not paid for twice
+
+- **The cell and the reserved axis set are clean, and the kill is purely on measurement.** `guard.py check` on the architecture 6 card returns **PASS**, nearest driver 0.06 (task245), with no BLOCK and no WARN. This is the opposite of architecture 5, where the guard independently agreed with the screen. The reservation is sound; what is spent is this mechanism, not the ground.
+- **The observation-window family on claims ground is now spent twice over and should not be drawn again.** task458 holds the trait-capture half (a lasting trait counted from records that show it only while the member is observed, each recorded member reweighted by the fully-observed members' capture share); architecture 6 holds the transition half (a start visible only against a watched absence, exposure excluded rather than reweighted). Both die on the estimand's population.
+- **The stock-over-flow lever is real, large and reusable.** Where a decisive quantity is a flow and the contaminating quantity is the matching stock, the lever is the mean duration, which is tens of months for exactly the services a plan profiles. Measured at a 1.8 to 2.3 times spread in the easy route across groups, far above the 1.1 to 1.2 that architecture 5 could reach. Anyone needing a large distortion on claims ground should start from the stock-flow ratio rather than from a mix multiplier.
+- **What a seventh draw on this cell would have to do**, now that the two population-selection families are shut: file a quantity the records do **not** fix, so that two estimators of one filed quantity can stand (`stumping` 1.2a's first horn), and have the data force the construction from a second file at a different grain whose variety no stratification of the claims file reproduces (1.6a). On this cell that points away from any rate over member-months, because the eligibility file fixes the denominator by exact arithmetic, and towards a quantity the claims record only partly captures with a second, structurally different view of the same events. The three cheap screens to run on any such candidate before design: the profile width of the claimed self-measurement (1.2b), the designation determinacy count over the golden's own estimator family, and the filter-and-divide comparison in section 5's table, which is one computation and has now killed a draw on this ground.
+- **Not registered, deliberately.** The card sits at `scratchpad/w6_182/task182_card.json` as evidence. Nothing was registered, because registering a mechanism measured dead would pollute the axis bans every other draw in this wave reads, and `cards/task182.json` stands at architecture 4 for the reason section 8 of the architecture 5 screen gives.
+
+### 8. The draw inverted: what each file on this cell forces
+
+Architecture 6 started from the field's own estimator (a risk-bearing plan's utilisation rate per
+member-month) and spent the field's characteristic quantity, which is how the cell's two
+population-selection families both came to be shut. Started from the other end, asking of each file what it
+pins that no other file pins:
+
+| file | what it pins that nothing else pins | verdict |
+|---|---|---|
+| eligibility and enrolment spans | the plan's own risk period per member, to the day | closed: exact arithmetic, so a decisive step selecting among member-months is rule application (the denominator law) |
+| the adjustment and reversal history | the as-of state of any figure at any past date, so the record measures its own revision | live in form, occupied in practice: two vintages are one of the three self-measurement cases 1.2b allows, but the maturity and completion route is spent on this cell by task451 and in this lane by task194 and task201, and `maturity_censoring` is blocked by task471 |
+| the capitation encounter file, carrying no payment | the volume of care delivered where no price exists, which the paid-claims file cannot state at any grain | **the most promising unspent direction on this cell**: it is a second, structurally different view of the same events rather than one view measured twice, which is the shape 1.2b says to look for. The caveat to clear first is task196, whose driver recovers partly-captured events from the overlap of two capture channels; a draw here has to force a quantity from the two channels' different *economics*, not from their overlap |
+| the provider identifier crosswalk through acquisitions | entity continuity across a change of billing identity | Layer 1 on this cell by the brief's own assignment, and `identity_resolution` carries a `three_rules.strategy_risk` WARN |
+
+So a seventh draw on this cell should be built from the capitation encounter file outward, not from a rate
+inward. The quantity to look for is one the paid record cannot price and the encounter record cannot value,
+with the construction forced by reading the two against each other.
+
 ## ARCHITECTURE 3 RE-ROOT (archived: spent at the feasibility check, 2026-10-18)
 
 **Why architecture 2 died, in one line.** Clause 3.1 obliged every solver to produce a residual and the
@@ -1548,6 +1679,49 @@ figures.json keys only, so a section hash cannot be allow-listed, and the snapsh
 the check pass: the move is reported and accepted on that basis.
 
 ## Tried and rejected
+- **Architecture 6, drawn on the wave-6 claims cell and killed as code before a card was registered: the
+  mechanism separates strongly and the decisive step is still the estimand's population.** The draw is a
+  Medicaid plan's program-integrity review calendar over six quarters, the groups ranked on new starts of a
+  long-running service per 1,000 member-months, the decisive step holding exposure and index to
+  member-months preceded by twelve eligible service-free months. Four passes over twenty world draws: the
+  easy route reaches the golden set 0 to 2 of 20, the same sentence on claims alone 1 of 20, and no route
+  but the decisive one reaches the golden ORDER even once, with the designed route naming the world's
+  elevated six 20 of 20 at the best cell. It dies anyway, twice. The WHAT screen: the step settles which
+  member-months are exposure, which is the estimand's population, so filing it is rule application and not
+  filing it forks the order, which is the fork the dial found between the rolling and window-level
+  readings. And the common-exposure subset screen, measured rather than argued: the filter-and-divide
+  subset names the world's elevated six 20 of 20 at a boundary margin of 1.179 against the designed route's
+  17 of 20 at 1.116, so the designed construction is decoration on the graded figure, and in the cell where
+  every claims-anchored reflex dies the ladder inverts outright (designed route 10 of 20 against a
+  one-line reflex's 18). One dial, three conditions, no cell holds all three: architecture 5's verdict
+  shape on new ground. Numbers in `## ARCHITECTURE 6 OBSERVABILITY SCREEN`.
+- **The guard did not kill architecture 6 and that is the useful part.** `guard.py check` returns PASS,
+  nearest driver 0.06 against task245, no BLOCK and no WARN, where architecture 5's card BLOCKed on three
+  rules at once. So the wave-6 reserved cell and axis set are genuinely open and the kill is purely on
+  measurement: what is spent is this mechanism, not the ground. A seventh draw inherits a clean axis set.
+- **The observation-window family on claims ground is now spent on both halves and should not be drawn a
+  third time.** task458 holds the trait half (a lasting trait counted from records that show it only while
+  the member is observed, each recorded member reweighted by the fully-observed members' capture share at
+  its own window length); architecture 6 holds the transition half (a start visible only against a watched
+  absence, exposure excluded rather than reweighted, the error running the other way). Different moves,
+  opposite signs, one grave: both decide the estimand's population.
+- **Two candidates died on the corpus before any code, which is where they were cheapest.** A coding-intensity
+  draw (each group's risk-score growth measured on members whose collection window the plan observed in
+  full) is task458's driver in the same field, found by `guard.py slots` on three nouns. A same-store draw
+  (growth on the members present in both years) is task68's matched panel of continuing units told in
+  members instead of exporters, which the driver text screen would have scored near zero. Neither cost a
+  line of simulation.
+- **The stock-over-flow lever is worth keeping even though this draw is dead.** Where the decisive quantity
+  is a flow and the contaminating quantity is the matching stock, the lever is the mean duration of the
+  stock, which is tens of months for exactly the services a plan profiles for over-initiation; measured at
+  a 1.8 to 2.3 times spread across groups in the easy route, against the 1.1 to 1.2 that architecture 5's
+  conditioned rate could reach at the limit of credibility. A later draw needing a large, credible
+  distortion on claims ground should price the stock-flow ratio before reaching for a mix multiplier.
+- **The full-adjustment reflex does not land this one, run as code rather than assumed.** The easy rate
+  residualised on every visible group attribute (panel size, intake share, recorded prevalence, the
+  churner-settled mix) names the world's elevated six 3 of 20 and the golden 7 of 20, so the sibling
+  finding that a shipped field can proxy a withheld driver does not fire here. Recorded because the
+  enumeration is the sweep's only warranty and this one was missing from the first ten.
 - **Option (a) from the screen's section 8 is explored, not open, and the slot is paused on that reading.**
   The screen offered a sixth draw a correction whose driver is invisible by its position in time rather
   than merely orthogonal in the cross-section. Model A already was one: a duty's position in its
