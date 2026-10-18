@@ -100,6 +100,24 @@ deaths, ladder strength and licensed spread rose together with one parameter (th
 snapshot interval against the median duration), so re-tuning moved along the curve rather than off it. If
 the two cannot be separated, the mechanism is spent.
 
+### 1.2b The pincer on a break in the records, and the one case that lives
+
+A break in how the records were made (a system cutover, a basis change, a rename, an extract window, a
+definitional change) decides the call only if the analyst gets it wrong, and there are three cases. **One:**
+the pack states the break, so the right computation follows from reading a shipped sentence, which is data
+semantics or rule application and banned as the decisive step. **Two:** the pack does not state it and the
+break is a quantity the records measure about themselves, which is the only live case. **Three:** the pack
+does not state it and it is not exactly measurable, so it is either recovered as an unstated rule, which is
+banned, or unidentifiable, which means the design needs a field the pack does not have.
+
+The distinction that decides which case a candidate is in: **a fact about how records were produced does
+not measure itself, while a quantity the records measure about themselves does.** A cutover does not
+measure its own capture difference, a basis change with no overlapping period measures nothing, a rename
+measures nothing, an extract window measures nothing. Two vintages of one series do measure their own
+coding lag (194), an audit subsample does measure a classifier's own error rates (192), and shared
+specimens do measure the dependence between two screens (195). task198 screened fourteen mechanisms across
+three routes and every one died in case one or case three, which is what sent the number to a new world.
+
 ### 1.2 The stump lives in HOW, never in WHAT
 
 The estimand (population, outcome, window, unit, comparison) is filed so its literal execution is the
@@ -225,6 +243,12 @@ beside it, and the one entity present only in the later period is the first thin
 lists (500 v1). **Measure the decisive rung on the graded name and the graded figure separately:** a rung that
 only changes who is blamed, while the counterfactual figure is the same whoever is blamed, is worth nothing on
 the figure, and a response skipping it files the golden figure (500 v1).
+
+**Price the move against the ceiling before screening a candidate at all.** Compute two numbers: the points
+the call has to move for the candidate to decide anything, and the largest move the affected population
+could produce if every one of its records flipped. task198's cutover family needed 8.79 points and could
+produce at most 2.644 on any queue, so one computation killed a whole family that three paragraphs of
+argument had left open. Run it first, on the clean truth, before any screen that costs design time.
 
 **Two separations financed by one quantity are priced together, before the design is accepted.** A ladder
 usually needs two inequalities to hold at once: the easy route must lose on the record as it stands, and the

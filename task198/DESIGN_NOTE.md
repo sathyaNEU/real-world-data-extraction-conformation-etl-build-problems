@@ -557,3 +557,67 @@ Measured or screened before any design time was spent, so no later pass repeats 
   separate: the FY2026 over FY2023-25 quantile ratio bends most for Member data corrections at 1.237,
   against Contribution queries at 1.158, because the roster swing from five to fourteen positions moves
   congestion's own contribution to the shape. Viable only if the main call's generating process is retuned.
+
+### Architecture 2 route 3, the input-property family, screened 2026-10-18
+
+Route 3 keeps the call shape and files the comparison with zero reading residue (each queue's own FY2023
+to FY2025 quarters, all twelve, pooled: no matching, no nearest-k, no band, no tolerance) and puts the
+decisive step on a property of the records feeding it. Under that filing the default path lands **Member
+data corrections at +20.36 points** (FY2026 25.69 against its own 5.33), with Investment switches second
+at +11.57, so a candidate must move the call by **8.79 points** to decide anything. Each candidate below
+carries the two exact computations a competent analyst would choose between, and the rule that killed it.
+
+- **The platform cutover, 506 overlapping cases, two extracts covering different years.** (a) Build
+  FY2023 and FY2024 from the Gemini extract as the system of record for those years, where the 506 TRF
+  rows carry no outcome; (b) stack both extracts and resolve the 506 on `legacy_case_ref`, taking the
+  outcome from Orbit. Both exact, no parameter in either. **Dies twice, both measured.** Magnitude: the
+  cutover population is about one per cent of every queue's history, so if every cutover case flipped its
+  outcome the largest possible move in any queue's historical share is 2.644 points (Death benefits),
+  0.685 for Member data corrections and 0.760 for Investment switches, against the 8.79 needed. Two
+  orders of magnitude short, so it cannot decide the call however it is computed. Semantics: the status
+  reference documents TRF as the case carried to Orbit quoting the Gemini number, and the dictionary
+  documents `legacy_case_ref` the same way, so (b) follows from reading a shipped sentence correctly, and
+  architecture 1's own default path already performed it at step 2 as a hygiene reflex.
+- **The roster's basis change, monthly hours to quarterly FTE.** (a) Convert the FY2023 and FY2024 hours
+  sheets to positions by the stated conversion; (b) rescale each queue's hours-based history by that
+  queue's own hours-to-FTE ratio observed over a period carried on both bases. **Dies on identifiability,
+  verified in the workbook:** the basis changes cleanly at FY2025 (FY2023 and FY2024 hours by month,
+  FY2025 and FY2026 FTE by quarter) and **no period is carried on both bases**, so (b) is not computable
+  at all, while the Notes sheet states the conversion ("one rostered position is 7.0 rostered hours a
+  working day"), which makes (a) rule application. Building the overlap to make (b) computable turns it
+  into a reconciliation the hygiene battery performs and a control bench that refutes the naive read
+  (readability test 4); weakening the stated conversion puts (b) on a fact in no shipped sentence.
+- **The renamed queue, Record amendments to Member data corrections.** (a) Map Gemini RA to MS-DC by
+  `queue_reference.csv` and read the queue's own history as its RA quarters; (b) where the rename
+  accompanied a reorganisation, the comparable history is the pooled history of every predecessor that
+  fed the new queue. (b) is exact only for a merge, since a split needs an allocation, which is a knob.
+  **The one candidate magnitude does not kill**, because it bears on Member data corrections, the default
+  winner, and a scope change could deliver the 8.79 points. **Dies on the pincer:** if the reference file
+  maps both predecessors, reading it correctly gives (b), which is identity resolution and rule
+  application; if it maps only one, (b) rests on a reorganisation in no shipped sentence and has to be
+  recovered from a volume discontinuity, which is a withheld rule and banned as the decisive step. The
+  case record also carries no case-type field, so the admissible merge version needs a predecessor queue
+  the pack does not have.
+- **The charge extract's April 2026 lines inside a FY2026 window.** (a) Count the cases the charges cover
+  by charge date; (b) by response date. **Dies on the separation line before the pincer is reached:**
+  `scheme_charges_fy2026.csv` and `fee_schedule_2025.pdf` are Ask 2's own files, the main call reads
+  neither, and moving the call onto them consumes the mirror device the measured pair ceiling of 39.5
+  rests on. It is a date-basis reading in any case, which is data semantics, and the reader's half-
+  sureness about it is an ask fork to close in the ask layer.
+
+**The pincer, which is the general result and the reason the stop rule fires.** For an input-property
+break to decide the call, the analyst has to get it wrong, and there are only three cases. One, the pack
+states the break, and the right computation follows from reading a shipped sentence: data semantics or
+rule application, banned. Two, the pack does not state the break and the break is a quantity the records
+measure about themselves: this is the only live case, and it is the one task194 took, where two vintages
+of one series measure their own coding lag. Three, the pack does not state the break and it is not
+exactly measurable: either it is recovered as a rule, which is a withheld rule and banned, or it is
+unidentifiable and the design needs a field the pack does not have. **None of the four families is of the
+second kind**, because each is a fact about how the records were produced (a cutover, a basis change, a
+rename, an extract window) rather than a quantity the records measure about themselves: a cutover does
+not measure its own capture difference, a basis change with no overlap measures nothing, a rename
+measures nothing, and an extract window measures nothing.
+
+**Screen worth reusing:** the magnitude bound killed the cutover candidate in one computation, before any
+design argument. Before accepting an input-property candidate, compute the points the call needs to move
+and the largest move the affected population can produce if every one of its records flipped.
