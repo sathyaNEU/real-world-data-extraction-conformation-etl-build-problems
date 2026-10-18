@@ -1,0 +1,89 @@
+{
+  "task": "task248",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "",
+  "domain": "epidemiology-public-health",
+  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+  "niche": "a regional public health service's wastewater surveillance of SARS-CoV-2 at 24 treatment plants, whose verification desk checks every high-level alert episode on the dashboard: how many episodes last winter's samples raise once the dashboard reads each sample on the shed load (the RNA the sewer destroyed on the way to the plant restored), the basis it moves to on 1 May 2028",
+  "objective": "data-quality-monitoring",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G16",
+    "G4"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stakeholder_role": "the wastewater surveillance coordinator who rosters the verification desk",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "the molecular laboratory's sample results for the 24 plants and the paired upstream study, one row per sample, target and analysis, January 2026 to March 2028",
+    "rows": 0,
+    "entity": "one composite sample, target and analysis run (SARS-CoV-2 N1 or PMMoV, gene copies per litre)",
+    "grain": "site x sample x target x analysis",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "New Zealand, a fictional region (the public health service, its plants, towns and people are fictional; the decay of SARS-CoV-2 RNA in sewers is modelled on published wastewater studies)",
+    "currency": "NZD",
+    "org_type": "regional public health service",
+    "invented_names": [],
+    "people": [
+      "Fiona Chandler",
+      "Luke Jefferies",
+      "Craig Stuart",
+      "Alana Costello"
+    ]
+  },
+  "deliverables": [
+    "winter_2027_episodes_shed_load.xlsx",
+    "verification_desk_winter_2028.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is each unit's level against its own baseline, read from a measurement that loses part of what it carries in transit at a rate that rises with a covariate moving over the year, so any correction constant over the year cancels against the baseline and leaves every level as recorded, a covariate term added beside the transit length corrects the short transits as much as the long, and only the loss rate as a function of the covariate multiplied by each unit's transit length, recovered from paired measurements at both ends of the transit, moves the levels.",
+  "driver_concrete": "Each plant's winter 2027 alert episodes on the shed load need the sewer's RNA decay rate as a function of the wastewater's temperature, fitted to the paired upstream study and applied over each plant's population-weighted travel time: a correction constant over the year (the study's average loss, or one rate over each travel time) cancels against each plant's own baseline and leaves the episodes as published, PMMoV normalization leaves the target's own decay in, and a temperature term beside travel time corrects the short sewers as much as the long, while the winter samples at the long trunk sewers lost far less RNA than the summer samples that set their baselines.",
+  "stump": "A competent solver restores each sample's shed load with the paired study's single decay rate over the plant's travel time (or reads the levels on PMMoV-normalized concentrations) and files the dashboard's published count of winter 2027 alert episodes, because a correction constant over the year cancels against each plant's own baseline; the RNA's decay rate rises with the water's temperature, so the winter samples at the long trunk sewers lost far less than the summer samples that set their baselines, and only the temperature-dependent rate applied over each travel time removes the episodes the colder water alone raised.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the methods note and the paired study correctly fits one decay rate to the study's ratios of plant to upstream concentration against travel time, restores every sample's shed load with it, recomputes the baselines and levels and files the published episode count, because a rate that does not move over the year scales a plant's winter samples and its baseline alike.",
+  "domain_test": "The quantity that decides is each plant's level on the shed load, which wastewater-based epidemiology recovers by treating the RNA's decay in the sewer as first order over the population-weighted travel time at a rate that rises with the water's temperature; with another field's nouns there is no sewer travel time, no temperature-driven decay of a virus's RNA and no faecal marker that survives the trip, so the task stops making sense.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task133": "there a filed outcome curve is conditioned on each unit's own survival to date (a division by survival in a credit book); here a measurement loses part of what it carries in transit at a rate that moves with the season, read against each unit's own baseline, so the only correction that moves anything is the season-dependent part of the loss over each unit's transit length, recovered from paired measurements at both ends"
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-10-18 for perssathya's lane (wave 4, the last of six). The seed DQ21 re-found: its air quality duty desk and alert episodes kept as a wastewater dashboard's verification desk and its alert episodes, its environmental-monitoring pairing banned against task247, and its gap rule (rule application) replaced by the shed-load reconstruction. stump_strategy other: a measurement's in-transit loss whose rate moves with the season, read against each unit's own baseline (neither censoring nor composition).",
+  "client_domain": "epidemiology-public-health",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:temperature-dependent-in-sewer-decay-over-travel-time-against-own-baseline",
+  "layer1": [
+    "the molecular laboratory's results kept by analysis run, a sample re-analysed after a failed run appearing twice",
+    "the paired upstream study reported by the field team in gene copies per millilitre, the laboratory in gene copies per litre",
+    "the water services company's hourly SCADA export of flow and inlet temperature in local time across the daylight saving changes, with a probe replaced mid-record",
+    "two plants merged under one site code in 2027, the register keeping the old codes",
+    "the hydraulic model's population-weighted travel times in minutes in the plant register",
+    "composite samples labelled by the date the composite ended against the dashboard's Monday weeks"
+  ],
+  "registered": "2026-10-18T16:32:19Z"
+}
