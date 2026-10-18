@@ -1,0 +1,34 @@
+{
+  "task": "task175",
+  "owner": "sathya8571",
+  "status": "PAUSED",
+  "domain": "product-analytics/retention-cohort-lifetime-value-modeling",
+  "objective": "forecasting",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-18",
+  "stump": "",
+  "architecture": 0,
+  "loops": 0,
+  "precut": {"exit": null, "date": ""},
+  "leak": {"leak_py": "", "reader": ""},
+  "duplicate_check": {"heart": "", "nearest": ""},
+  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "returned": [],
+  "grounds_closed": [
+    "product-analytics/retention-cohort-lifetime-value-modeling: a member-level forecast of a per-member capped benefit (FC46's quantity), any decisive step that refines the member's predictive year"
+  ],
+  "resume": "PAUSED at stage 1 under the wave brief's two-candidate rule; no card written or registered, nothing cut, architecture 0. Read DESIGN_NOTE.md first and re-screen nothing in it. Two candidates on FC46's world, decision and quantity were prototyped and measured on three seeds and both fail the bar: candidate 1 (the cap priced on each member's predictive year with the spread of individual responses the pilot measures) and candidate 2 (membership orders are the cart's purchase sessions that paid-shipping orders batched). The structural finding: the right family is a continuum (the member's own rate uncertainty alone moves the capped total +1.26% to +1.54%, the response form +0.41% to +0.51%, pilot sampling about 0.6% one sigma), and under a per-member cap a common-factor error cancels the point-forecast error (point-capped average-uplift routes +1.77% to +3.06%), while a 52-week pilot would hand the golden over by filter and divide (-0.86%, SD 0.58%). No bin both holds the family inside a quarter-bin and puts every partial route a full bin away. Next pass: either keep the world and move the decisive step off the member's predictive year to a level neither the pilot nor the analog cohort hands over (price it on the harness against laws 1 and 2 first), or re-number to another seed in the lane (the author's call).",
+  "screens": {
+    "harness": "scratchpad/b175/proto/ (proto2.py candidate 1, proto3.py candidate 2, pilot52.py subset arithmetic, proto1.py and sweep1.py the first sweep); session-scoped, rebuild from DESIGN_NOTE.md's harness section",
+    "candidates_measured": 2,
+    "seeds": [1, 2, 3],
+    "paper_rejections_at_draw": 10
+  },
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}
