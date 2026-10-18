@@ -101,8 +101,9 @@ to 0.31 to 0.85.
 
 **2. The decisive step separates, and strongly, at every one of the four designs.** The residual taken from
 the plant-off windows files NSL01, NSL02, NSL04, NSL07 and NSL11 with NSL14 sixth; the residual that
-describes the assessment period files NSL02, NSL04, NSL07, NSL11 and NSL13 with NSL06 sixth. Two members of
-five differ at every design, because the error has opposite sign by position: at the roadside positions the
+describes the assessment period files NSL02, NSL04, NSL07, NSL11 and NSL13 with NSL06 sixth. That is one
+swap, NSL01 entering and NSL13 leaving, with the sixth place changing name as well, and it holds at every
+design. The error has opposite sign by position: at the roadside positions the
 empty road before 07:00 understates the residual by about 7 dB and at the hedgerow positions the dawn
 chorus overstates it by about 4.5, so the specific levels move in opposite directions. The right route's
 own fifth-to-sixth margin runs 0.51 to 0.92 dB across the designs. **That part of the architecture is
@@ -148,6 +149,72 @@ plant's contribution plus the residual and the hour-to-hour differences cannot b
 residual without already knowing the plant's contribution. The source on-and-off step at the window's own
 boundary, differencing 06:45 against 07:00, is fit-free and lands on the one place the residual is changing
 fastest, since 07:00 is when the road wakes up.
+
+**The numbers, per position.** Output spread first, measured on the shipped historian inside weekday 07:00
+to 19:00 within each position's own two deployment weeks, which is the quantity the extrapolation would
+have to run along:
+
+| position | quarter hours | min | p10 | median | p90 | max | p90/p10 | max/min |
+|---|---|---|---|---|---|---|---|---|
+| NSL01, NSL02, NSL04, NSL05 | 469 | 3,691 | 3,991 | 4,296 | 4,741 | 5,137 | 1.188 | 1.392 |
+| NSL03 | 460 | 3,459 | 3,875 | 4,208 | 4,552 | 5,054 | 1.175 | 1.461 |
+| NSL06, NSL07, NSL08 | 464 | 3,459 | 3,772 | 4,166 | 4,542 | 4,983 | 1.204 | 1.441 |
+| NSL09, NSL10 | 460 | 3,337 | 3,855 | 4,204 | 4,585 | 4,983 | 1.189 | 1.493 |
+| NSL11, NSL12 | 462 | 3,337 | 3,916 | 4,228 | 4,624 | 4,881 | 1.181 | 1.463 |
+| NSL13 | 466 | 3,459 | 3,821 | 4,190 | 4,605 | 4,874 | 1.205 | 1.409 |
+| NSL14 | 475 | 3,672 | 3,941 | 4,282 | 4,710 | 5,137 | 1.195 | 1.399 |
+
+Every position sits at a tenth-to-ninetieth ratio of 1.18 to 1.21 and a max-to-min of 1.39 to 1.49, nearly
+identical across the fourteen because they share one plant. Extrapolating to zero output from that range is
+a reach of about five times the observed span.
+
+Then the candidate fits, per position, on the modelled campaign design of 0.35 to 1.00, the widest output
+range at which the energy-linear form itself stays physically possible everywhere. Residual levels in dB,
+and the specific level each one produces:
+
+| position | kind | total | residual, true | energy-linear | decibel-linear | lowest-decile | log-log | lowest-output-quarter | dB minus energy | specific, true | specific, dB fit |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| NSL01 | road | 44.7 | 38.0 | 37.8 | 40.9 | 34.7 | 18.3 | 34.8 | +3.2 | 43.7 | 42.3 |
+| NSL02 | road | 48.5 | 41.0 | 40.6 | 44.4 | 35.7 | 21.3 | 42.2 | +3.8 | 47.7 | 46.4 |
+| NSL03 | hedge | 44.5 | 39.5 | 38.9 | 41.0 | 36.6 | 20.2 | 36.5 | +2.1 | 42.8 | 41.9 |
+| NSL04 | road | 52.6 | 41.5 | 41.1 | 48.2 | impossible | 21.9 | 44.1 | +7.1 | 52.2 | 50.6 |
+| NSL05 | hedge | 39.6 | 34.0 | 34.5 | 36.2 | 30.9 | 16.6 | 28.5 | +1.7 | 38.2 | 36.9 |
+| NSL06 | hedge | 46.3 | 41.5 | 41.2 | 42.8 | 37.3 | 23.0 | impossible | +1.6 | 44.6 | 43.7 |
+| NSL07 | road | 48.3 | 40.5 | 40.8 | 44.5 | 36.9 | 21.0 | 42.2 | +3.7 | 47.5 | 45.9 |
+| NSL08 | hedge | 41.9 | 37.0 | 36.6 | 38.7 | 31.7 | 18.2 | 32.6 | +2.1 | 40.3 | 39.1 |
+| NSL09 | hedge | 44.9 | 38.0 | 37.8 | 41.1 | 35.3 | 18.8 | 40.9 | +3.3 | 43.9 | 42.5 |
+| NSL10 | hedge | 38.6 | 33.0 | 33.0 | 35.1 | 29.5 | 14.2 | 33.4 | +2.1 | 37.2 | 36.1 |
+| NSL11 | road | 49.8 | 40.0 | 39.7 | 45.7 | 36.7 | 20.3 | impossible | +6.0 | 49.3 | 47.7 |
+| NSL12 | hedge | 44.1 | 38.5 | 38.1 | 40.6 | 34.0 | 19.6 | 37.1 | +2.5 | 42.7 | 41.5 |
+| NSL13 | hedge | 46.9 | 42.0 | 41.4 | 43.5 | 37.3 | 23.2 | 38.2 | +2.1 | 45.2 | 44.2 |
+| NSL14 | road | 42.7 | 37.5 | 37.8 | 39.4 | 33.7 | 20.1 | 35.5 | +1.6 | 41.1 | 39.9 |
+
+**How far apart the residuals are, and why that does not move the ranking.** The energy-linear form recovers
+the true residual to within 0.2 to 0.7 dB at all fourteen positions. The decibel-linear form sits 1.6 to
+7.1 dB above it, and the bias is largest exactly where the plant dominates (NSL04 +7.1, NSL11 +6.0) and
+smallest where the residual dominates (NSL06 +1.6, NSL14 +1.6, NSL05 +1.7). That is the whole explanation of
+the dead ladder: a 7 dB error in a residual sitting 11 dB below the total moves the specific level by
+1.6 dB, while a 1.6 dB error in a residual sitting 5 dB below the total moves it by 0.9, so the form's
+error is large where it cannot matter and small where it could. The lowest-decile form puts the residual 3
+to 5 dB below the truth and returns a value above the measured total at NSL04; the log-log form returns
+residuals of 14 to 23 dB, which is not a contender any competent analyst would file.
+
+**Whether the ranking moves, in the terms asked.** Between the stop-window route and the in-window route it
+moves: one swap in the five, NSL01 in and NSL13 out, and the sixth changing from NSL06 to NSL14, with the
+wrong route's own fifth-to-sixth margin reading 2.12 dB against the right route's 0.65. Between the
+candidate fits it does not move at all. The pair that was supposed to swap is the fifth and the sixth,
+NSL13 and NSL06; the decibel-linear form still puts NSL13 ahead by 0.54 dB at the 0.35 to 1.00 design and
+0.75 dB at 0.55 to 1.00, against a true margin of 0.65 and 0.79, so it misses the swap by more than the
+width of the bin and in the same direction as the truth. The lowest-decile form misses by 0.68 and the
+log-log form by 0.60. The only form that crosses is the lowest-output-quarter fit, by 0.03 dB, a coin flip
+rather than a rung, and that same form returns a residual above the position's own measured total at two or
+three positions depending on the design, so the data closes it instead of filing it.
+
+**And the forms do not agree inside the printed unit, which is the second half of the failure.** On the
+fourteen graded specific levels the energy-linear and decibel-linear forms differ by 0.9 to 1.8 dB, nine to
+eighteen times the printed unit of 0.1 dB; on the residual they differ by 1.6 to 7.1 dB. So the
+architecture has the worst of both: the forms agree on the call, which kills the ladder, and disagree far
+outside the printed unit on every graded figure, which kills determinism.
 
 **8. What the author owns.** The decisive step is good and measured; what has no determinate form is the
 estimator the right route needs. Either the graded recommendation side is cut back to what every form
@@ -1347,3 +1414,30 @@ the check pass: the move is reported and accepted on that basis.
 - **A daytime plant shutdown added to the pack.** It would make the in-window residual directly
   observable, which is architecture 2's finding again one window later: the step would be to find the
   daytime stop in the log.
+- **Architecture 3's right route, the residual recovered by extrapolating a fit to zero plant output.**
+  Killed at the feasibility check before a row was cut, and killed structurally rather than by tuning. The
+  decisive step is sound: the stop-window residual swaps NSL01 in for NSL13 and moves the sixth from NSL06
+  to NSL14 at every one of the four modelled campaign designs. What has no determinate form is the
+  estimator. Energy-linear, decibel-linear, lowest-decile, log-log and lowest-output-quarter all file the
+  same five and the same sixth, so the fit cannot be a rung; the only form that crosses the fifth-to-sixth
+  pair does so by 0.03 dB and returns an impossible residual elsewhere. Meanwhile the forms move every
+  graded level by 0.9 to 1.8 dB, nine to eighteen printed units, so the fourteen levels and the margin are
+  not determinate. The intercept is identifiable only through the curvature of level against output, which
+  is the same curvature that makes the forms disagree, so widening the output range widens the
+  disagreement and narrowing it buries the intercept in noise. Full numbers in
+  `## ARCHITECTURE 3 FEASIBILITY`.
+- **Redrawing the plant's load curve to make the extrapolation reach.** The shipped plant is flat inside
+  the assessment period, p90 over p10 of 1.18 to 1.21 and max over min of 1.39 to 1.49 at every position,
+  so zero output is about five observed spans away. Campaign designs from 0.80-1.00 down to 0.20-1.00 were
+  modelled and none fixes the finding above, because the problem is the form and not the span.
+- **The staged-output exact solve** (two or three discrete blower stages inside the period, the residual
+  solved from the state means): it is the two-point case of the same linear form and carries the identical
+  energy-against-decibel freedom, so it inherits the indeterminacy whole.
+- **The steady-plant temporal-difference route** (carrying the stop-window residual to the assessment
+  hours through the position's own 24-hour record, since a constant source makes the record's differences
+  the residual's): circular. Inside the period the record gives the plant's contribution plus the
+  residual, and the hour-to-hour differences cannot be attributed to the residual without already knowing
+  the plant's contribution, which is the answer.
+- **The source on-and-off step at the window's own boundary** (differencing 06:45 against 07:00): fit-free
+  and aimed at the one place the residual is changing fastest, because 07:00 is when the road wakes up, so
+  the step is contaminated by exactly the diurnal shape the architecture is about.

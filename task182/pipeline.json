@@ -5,8 +5,8 @@
   "domain": "physical-environmental-sciences",
   "objective": "anomaly-detection",
   "stage": 1,
-  "stage_name": "draw: architecture 3 registered, the card filed and the design note's re-root and Draw sections written. Stage 2 has not started: no design section, no ladder and no file is cut until precut.py passes on architecture 3",
-  "updated": "2026-10-17",
+  "stage_name": "draw: architecture 3 registered and its feasibility measured before any row was cut. Stage 2 is blocked on the finding below and no design section, ladder or file exists; precut.py fails on architecture 3 by design, eleven sections missing, because architecture 2's copies were demoted to H3 so no mechanical gate can pass on a dead design",
+  "updated": "2026-10-18",
   "architecture": 3,
   "loops": 0,
   "stump": "A competent solver pairs every deployment with its position, takes each deployment's field-check deviation off its levels, excludes exactly the minutes the plan excludes, energetically averages each position's weekday daytime LAeq and then needs the residual term of the plan's subtraction; the step that lands it on the wrong slate is taking that residual from the only minutes the pack records the plant shut down, the weekly process stops between 04:30 and 06:45, which lie outside the 07:00 to 19:00 assessment period the plan files, so at the roadside positions the empty road understates the residual and at the hedgerow and woodland positions the dawn chorus overstates it, the specific levels move in opposite directions by position and the slate's fourth to sixth places change. The exact wrong set and the margins are filed at stage 2 when the ladder is measured.",
@@ -52,7 +52,7 @@
       "commit": ""
     }
   ],
-  "resume": "stage 2 (design): write the default path ending on a wrong answer, the stump sentence, the ladder with the plant-off-window route as the attractive wrong rung, the fork table, the closure table, the literal reader, the oracles, the ask layer and prompt.txt, then run precut.py. Nothing is cut until it exits 0. The world, the positions, the meters, the plant, the met mast and the historian are kept, and as much of generator/ as the new decisive step allows; architecture 2's target/, golden/, submission.md, metadata.json, target.zip, figures.json and .freeze.json are architecture 2's and are rebuilt or removed at stage 3.",
+  "resume": "stage 2 is blocked: see the `blocked` record and the design note's ## ARCHITECTURE 3 FEASIBILITY section. The architecture 3 card stands as registered (WARN, no BLOCK) and the decisive step it carries is measured and sound; what is missing is a determinate estimator for the in-window residual. precut.py fails on architecture 3 with eleven sections missing, which is the honest state, because architecture 2's design sections were demoted to H3 so the gate can no longer pass on dead content. Architecture 2's pack, goldens and generator are untouched on disk.",
   "approved": false,
   "delivered": null,
   "portal": null,
@@ -80,5 +80,11 @@
       "cracked": 0,
       "items": 5
     }
-  ]
+  ],
+  "blocked": {
+    "on": "architecture 3's right route has no determinate estimator. The decisive step separates: the stop-window residual swaps NSL01 in for NSL13 and moves the sixth from NSL06 to NSL14 at every modelled design, the wrong route's fifth-to-sixth margin reading 2.12 dB against the right route's 0.65. But the candidate fits (energy-linear, decibel-linear, lowest-decile, log-log, lowest-output-quarter) all file the same five and the same sixth, so the fit cannot be a rung, while moving every graded level by 0.9 to 1.8 dB, nine to eighteen printed units, so the fourteen levels and the margin are not determinate. The tension is structural: the intercept is identifiable only through the curvature that makes the forms disagree",
+    "measured": "output spread inside weekday 07:00 to 19:00 at each position on the shipped historian, p90/p10 1.18 to 1.21 and max/min 1.39 to 1.49, so zero output is about five observed spans away; four campaign designs from 0.80-1.00 to 0.20-1.00 modelled; per-position fit table and the ranking comparison in the design note's ## ARCHITECTURE 3 FEASIBILITY section; work in scratchpad/r182v3/feas.py, close.py and table.py",
+    "decision_owed": "the author's, and not to be taken here: either the graded recommendation side is cut back to what every form agrees on, the set of five and the name of the sixth but not the fourteen levels nor the margin, or the slot is re-rooted at architecture 4. Three architectures have gone on this number and the author's file forbids retiring it, so the next draw is chosen rather than reached for. Nothing is cut and no file written, so either costs only the note",
+    "not_started": "architecture 4. No draw, no card change and no guard run beyond architecture 3's own registration"
+  }
 }

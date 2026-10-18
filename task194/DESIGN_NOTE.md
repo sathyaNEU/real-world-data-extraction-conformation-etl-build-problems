@@ -818,3 +818,31 @@ script says that in its output instead of printing the row twice and calling it 
   population is still accumulating and the development is an observed ratio between two vintages. Any other
   label would be a false entry in the card, which is worse than a blocked draw, because the card is what
   guards every other build and what the clone screen reads.
+- **Architecture 3 measured at stage 2 and stopped on a bound, before a ladder number was written.** The
+  machinery works: the close-out register ships, the development factors are read back from its own bytes,
+  the immature quarters are identified from the register alone, and all five readings of the development
+  name the same unit. What fails is the ladder arithmetic, and it fails on a bound rather than on tuning.
+  **The bound.** A development-flip ladder has to pay for two separations out of one budget, the uplift the
+  immature quarters carry. Separation 1 is the flip: the golden must sit below rung 0's leader on the record
+  as it stands, or the easy route names the golden and there is no stump. Separation 2 is the margin: the
+  golden must lead once the quarters are developed. The uplift pays for both, and nothing else can, because
+  on the record as it stands the golden is behind by construction. **Measured on the cut pack at the best
+  point found:** the golden (41210 General Medicine) carries an uplift of 235.3 complications, which is
+  **27.25** in the figure's own units. The flip comes out at **2.35 complications, 1.50x, and 0.32 standard
+  errors**. The margin comes out at **16.03 complications, 2.008x, and 1.75 standard errors**. Together
+  they spend 18.38 of the 27.25 available, and clearing two standard errors on each would take
+  **33.14 against a 27.25 budget**. The architecture is short before any room is asked for, and the point
+  that clears the margin does it by spending almost the whole budget there, leaving the flip inside the
+  noise. That is architecture 1's fragility in another dress: there two functional forms fitted at 1.02 to
+  1, here the thing that separates the easy route from the answer is a third of a standard error.
+  **Why tuning cannot fix it.** The two separations trade off directly: pushing the golden further below
+  the leader on the record means a smaller recorded ratio, which cuts the developed excess the margin is
+  measured on. Both are measured in the same Poisson error of the same counts. **Why scale cannot fix it at
+  unit scale.** The budget grows with the count and the error with its square root, so the budget closes at
+  about twice the top units' volume for a bare two-and-two and four times for room: 30,000 to 60,000
+  separations a year in one cost centre, which is a whole hospital rather than a unit. The relative-distance
+  floor is not the one that fails, and that distinction matters: the flip clears a nearest-wrong-cell test
+  easily at 1.50x and fails the sampling-noise test at 0.32 standard errors.
+  **What is not wrong with it.** The estimand stays filed in all five parts with the published table as the
+  comparison, the open step stays the observation process, and the WHAT screen passes. The design is sound
+  and the ladder it can carry is not.

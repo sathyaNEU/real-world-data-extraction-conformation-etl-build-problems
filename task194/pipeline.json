@@ -4,16 +4,16 @@
   "status": "PAUSED",
   "domain": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
   "objective": "anomaly-detection",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-17",
   "stump": "A competent solver reconciles to the published indicator, ranks the eligible units on the complications each records above the expectation the published stratum rates give it, and places the improvement team with Alderbrook General Surgery (41220), whose patients sit where the published standard has gone most out of date, rather than with Alderbrook Orthopaedics (41230), whose own patients are having the most complications they should not be having. On the comparison the charter asks for, 41220 carries minus 3.7 avoidable complications and 41230 carries 40.0.",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": "",
-    "detail": "architecture 2's precut state is void"
+    "exit": 1,
+    "date": "2026-10-18",
+    "detail": "stage 2 stopped before the ladder table was written, on a measured bound rather than on a gate. See architecture_3_bound."
   },
   "leak": {
     "leak_py": "",
@@ -29,7 +29,7 @@
     "report": "NOT_DETERMINISTIC, underspecified_objective on Gates C and E, plus Gate G surface_read_rejection. Charter 4.3's comparison was treated as HOW when it is one of the five parts of the WHAT. See the card's lineage."
   },
   "returned": [],
-  "resume": "Architecture 3 drawn on every axis but one. The card is written with architecture 2 in lineage, architecture 3's axes, loops 0, and differentiation against task157, task231 and task469; it is NOT registered, because guard.py check still returns one BLOCK: maturity_censoring repeats task469 inside the three-build novelty window. The decisive step passes the WHAT screen: the estimand's five parts are all filed, the comparison included, and what stays open is the observation process, the record's most recent quarters being short by a coding lag the series' own earlier vintages measure. The alternative examined at the draw, judging each unit's excess against its own sampling error, FAILS the screen because specification 3.4 already files how the record is carried onto the planned quarter, so the easy route would be a filed procedure and the golden a departure from it. Kept for whichever direction wins: the register and the charter's twelve-quarter bar, the eligible row set, the twelve-reading convergence machinery, the per-device assertion pattern, the measured cracker, the realism work on casemix, weekday, holidays, rostering and the theatre closure, and both fixes to the fiction's own history. The surgical share now carries its definition and its true floor of zero.",
+  "resume": "Stage 2 stopped on a measured bound, reported rather than worked around. Architecture 3's generator pass is in place and rebuildable: world.py carries GROUP_COMPLETENESS over four lags, LAG_COMPLETE, IMMATURE, GROUP_MIX_OLDEST and OLDEST_PULL; sim.py carries group_mix_for and apply_coding_lag; pack.py writes coding_close_out_register.csv; golden.py carries development_factors, immature_lags, blended_factor, unit_groups, developed, avoidable, standings, routes and convergence, all measured from the shipped bundle. If the author sanctions divisional volume for the top two candidates, the design point is a psi and plan retune in world.py and nothing else. If the number retires, the bound is the finding and it is recorded in the note's ## Tried and rejected.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -82,5 +82,24 @@
     "Look a strategy label's ban window up before spending design time on a direction, in the same breath as guard.py mechanisms and coverage. The ban is deliberately not escapable by argument, so a direction's availability is a fact to look up, not a judgement to argue.",
     "Forecasting is not a legal objective for provider-quality-risk-adjustment: guard.py blocks it on the task type, because under forecasting the domain would be a backdrop.",
     "Never relabel a mechanism to pass a ban. The card guards every other build and the clone screen reads it, so a false label is worse than a blocked draw."
-  ]
+  ],
+  "architecture_3_bound": {
+    "what_works": "the close-out register ships; the development factors are read back from its own shipped bytes; the immature quarters are identified from the register alone; all five readings of the development name the same unit; the estimand is filed in all five parts with the published table as the comparison and the WHAT screen passes",
+    "what_fails": "the ladder arithmetic, on a bound rather than on tuning",
+    "the_bound": "a development-flip ladder pays for two separations out of one budget, the uplift the immature quarters carry. Separation 1 is the flip, the golden sitting below rung 0's leader on the record as it stands. Separation 2 is the margin, the golden leading once developed. Nothing but the uplift can pay for either.",
+    "measured": {
+      "uplift_budget_in_figure_units": 27.25,
+      "flip": "2.35 complications, 1.50x, 0.32 standard errors",
+      "margin": "16.03 complications, 2.008x, 1.75 standard errors",
+      "spent": 18.38,
+      "needed_for_two_standard_errors_each": 33.14,
+      "golden": "41210 General Medicine, developed avoidable 31.92 on 4,258 planned separations",
+      "rung_0_leader": "41410 Orthopaedics at 7.02 as recorded, 12.68 developed",
+      "developed_runner_up": "41220 General Surgery at 15.89"
+    },
+    "why_tuning_cannot_fix_it": "the two separations trade off directly: pushing the golden further below the leader on the record means a smaller recorded ratio, which cuts the developed excess the margin is measured on, and both are measured in the same Poisson error of the same counts",
+    "why_scale_cannot_fix_it_at_unit_scale": "the budget grows with the count and the error with its square root, so it closes at about twice the top units' volume for a bare two-and-two and four times for room, which is 30,000 to 60,000 separations a year in one cost centre, a whole hospital rather than a unit",
+    "which_floor_fails": "not the relative-distance floor: the flip clears a nearest-wrong-cell test at 1.50x and fails the sampling-noise test at 0.32 standard errors",
+    "decision_for_the_author": "retire the number, or sanction a scale beyond unit scale for the top two candidates. Not taken here."
+  }
 }
