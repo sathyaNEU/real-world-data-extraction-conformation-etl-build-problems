@@ -1,0 +1,38 @@
+{
+ "task": "task170",
+ "owner": "sathya8571",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics/utilization-access-demand-forecasting",
+ "objective": "forecasting",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-18",
+ "stump": "Fitting each child's growth line from the register and moving the child onto TLD when the line reaches 30 kg files a C7 order about 23,000 bottles short, because the switch is taken on a single clinic weighing and the weighings scatter about 1.3 kg around a line that rises about 0.18 kg a month, so most children are first weighed at 30 kg months before their line gets there.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "task119 v1 0.08 (driver)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: default path figures from the generator, ladder, fork table, closure table, asks, prompt.txt, precut.py",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
