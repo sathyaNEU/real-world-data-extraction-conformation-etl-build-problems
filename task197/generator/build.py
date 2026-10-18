@@ -50,12 +50,13 @@ UNAVAIL = [
     ("VKF-NWV", dt.date(2026, 9, 24), 2, "04:00", 28, "control platform link degraded", "COM-DEG", "utc", False, True),
     ("VKF-DLK", dt.date(2026, 9, 30), 1, "00:01", 46, "inverter bank 1 isolated", "INV-IS1", "utc", False, True),
     ("VKF-RDL", dt.date(2026, 9, 23), 5, "16:00", 40, "engine 2 knock sensor fault", "ENG-KNK", "utc", False, True),
+    ("VKF-DLK", dt.date(2026, 9, 22), 5, "16:05", 45, "inverter bank 3 isolated", "INV-IS3", "utc", False, True),
     # --- three windows a later correction row cancels: the reserve was not withdrawn ----------
     ("VKF-OOS", dt.date(2026, 9, 28), 4, "13:20", 56, "reserve withdrawn, pending investigation", "ALM-DRP", "local", False, False),
     ("VKF-HGZ", dt.date(2026, 10, 2), 6, "21:10", 68, "reserve withdrawn, pending investigation", "ENG-TRP", "local", False, False),
     ("VKF-NWV", dt.date(2026, 10, 10), 3, "09:05", 33, "reserve withdrawn, pending investigation", "COM-LOS", "local", False, False),
 ]
-SUPERSEDED = {18, 19, 20}       # indexes into UNAVAIL whose event a correction row cancels
+SUPERSEDED = {19, 20, 21}       # indexes into UNAVAIL whose event a correction row cancels
 STAMP_SHIFT = 7200              # seconds the operator-interface handler's rows read early
 
 # The operator's minute summary ran on the SCADA chain's own one-minute average for a few short

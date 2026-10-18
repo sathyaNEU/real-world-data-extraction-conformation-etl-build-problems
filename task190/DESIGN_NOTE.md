@@ -72,7 +72,9 @@ Every card is kept and architecture 3's identity now sits in the card's `lineage
 Nothing of it is resumed: not the monetary-unit sampling world, not the projection driver, not the
 ladder, not the pack.
 
-## Draw
+### Architecture 4: Draw, archived
+
+Architecture 4's draw table is demoted to an H3 archive heading, because `precut.py` reads whichever copy of a section it finds and would otherwise pass the design-stage gate on a ground that is abandoned twice over, once on the model constraint in the final section and once on the `ban.subdomain` BLOCK against task242 recorded below. Architecture 5 writes its own `## Draw` when its decisive step is fixed.
 
 | | |
 |---|---|
@@ -1126,6 +1128,60 @@ were round too, so both were redrawn.
   above. The two dial shapes that have held in this corpus make the replay impossible for a structural
   reason (task104's self-adapting scorer withholds its own flagged observations) or put the decision on an
   interval (task195's paired difference), and both are spent against the last two builds.
+- **Architecture 5's axis map on the assigned criminology ground, read off `guard.py check` before any design
+  time went in, and banked because the slot note architecture 4 left is wrong about two labels.** On
+  criminology-justice / crime-incidence-hotspot-analysis with objective anomaly-detection, the only axis
+  BLOCKs against the current last three (task197, task196 v2, task194 v3) are: strategy `maturity_censoring`
+  and `causal_design`; shape `17`; context artifact `register`, `planning_thread` and `close_out_summary`;
+  role `capacity_planner` and `programme_officer`; forum `board_of_directors` and `trustees_or_governors`;
+  forcing event `vote_or_meeting`, `audit_or_inspection` and `statutory_or_regulatory_filing`; org family
+  `cooperative_or_member_body`. With gap `objective` and pattern `none`, decision type `quantity_figure`
+  blocks on `test.same_puzzle_older` against task140 and `pick_one_of_n` against task184 v1, and Gate G
+  `binding_constraint` blocks against task140 and `decomposition_attribution` against task184 v1. Every
+  other value on every axis is open, `composition_mix` and `population_selection` included: those two are
+  not guard-blocked, so the slot note's line that they are banned for this slot was a design judgement about
+  the epidemiological ground and not a fact about the guard. `renew_replace_lapse` has never been drawn in
+  the corpus and `date_or_period` once; both are open here.
+- **Eleven candidate decisive steps on crime-incidence-hotspot-analysis, each put through the WHAT screen,
+  the swap test and the corpus before any row was cut, and all eleven died.** The five patterns the client's
+  own library gives this task type die first: the named exposure denominator and the benchmark pool are the
+  estimand's comparison, so filing them leaves a group-by and leaving them open is a fork (the library's own
+  pin, "risk per a stated exposure", files it); persistence across periods is the window; recorded crime
+  mixing incidence, reporting and detection resolves into a channel column (semantics), a reporting rate
+  estimated off a survey (open family), or a driver already spent (task196's two capture channels, task446
+  v2's assurance-sample sensitivity, task182 v1's instrument footprint, task104's endogenous detector);
+  testing clusters against a spatial null is task191's selection-on-the-max plus a bandwidth or neighbour
+  tolerance the house bans as a residue; and smoothing small-exposure rates is an open shrinkage family worth
+  about 8 per cent (G16's own note). Six more were drawn and killed: maximal coverage over overlapping patrol
+  zones and a junction-connected focal sum both fail the swap test, because a neighbourhood or union count
+  reads identically with warehouse aisles in it; direct against indirect standardisation is task194 v2 and is
+  a convention rather than a method; a like-for-like panel of continuing premises is task68; distinct
+  victimised targets against offences is a one-line `nunique` the hygiene battery performs; and time-at-risk
+  against a count of units is task181 v1's crossings driver. **The structural reason, worth more than the
+  list: in a world additive over rows, every quantity this task type estimates is either one of the
+  estimand's five parts or a correction already spent in this lane, so the ground has no decisive step left
+  for this slot rather than no good one.**
+- **The near-repeat clustering ratio, the one candidate that cleared the WHAT screen and the swap test, is
+  dead on measurement before any file was cut.** The step was to rank the district's areas for a
+  post-burglary cocooning response on how much more often their burglaries fall close together in place and
+  in time than the same burglaries would by chance, the expectation taken exactly from each area's own
+  spatial and temporal pair margins (the Knox form, which needs no fit at all and so avoids the background
+  rate that killed task181 v3), against the reflex of the raw close-pair count or the share of burglaries
+  with a close neighbour. Ten reflexes were swept as code on the generating process: seven of them (the
+  count, the count per 1,000 dwellings, the count per square kilometre, the raw close-pair count, close
+  pairs per burglary, close pairs over all pairs, and the share of burglaries with a close neighbour) land on
+  a compact, busy area and not on the designed winner, which is the separation the design wanted and it
+  holds. The eighth kills it: **the plain share of addresses burgled more than once, which the duplicate
+  sweep in the hygiene battery computes for free, reaches the designed winner at every boost from 0.15 to
+  0.60, and always by a wider margin than the decisive step (1.50x to 2.89x against the Knox ratio's own
+  1.26x to 1.46x), so the decisive move is the smallest move on the ladder, which is build 37's death
+  shape.** It is one dial and not a tuning problem: repeat and near-repeat victimisation share the boost
+  account, so raising the boost raises both margins together, and the Knox margin saturates near 1.46x
+  however hard it is driven. Forcing the near-repeats onto different addresses (the same-address share cut
+  from 0.30 to 0.12) suppresses the reflex at three boosts out of five and not at the other two, at margins
+  of 1.03x to 1.13x, which is seed noise rather than the computable blindness L1 requires, and it
+  contradicts the domain's own mechanism. Not resumed, and not re-found: the near-repeat latent structure is
+  now spent in this lane twice, at task181 v3 on the background rate and here on the repeat-address reflex.
 
 ## Architecture 4, abandoned on a model constraint rather than a design finding
 

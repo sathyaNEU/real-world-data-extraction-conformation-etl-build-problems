@@ -161,8 +161,8 @@ def memo(path, F):
     w("Down-regulation gains are on the same characteristic and are reported in the workbook; %s is the "
       "lowest there too at %.0f per cent, and %s had no qualifying over-frequency episode in the window. "
       "Reserve capacity held available and the shortfall against commitment are per block in the workbook; "
-      "the withdrawn hours are the hours the sites were in fact out of reserve, which is not the same set as "
-      "the rows read off their logged start fields. Outside the blocks they were committed to, the sites "
+      "the withdrawn hours are taken from the platform's own event timestamps, which the start field on the "
+      "operator-interface rows does not agree with. Outside the blocks they were committed to, the sites "
       "delivered %.1f MWh above programme and %.1f MWh below it, which is the imbalance position the desk "
       "carried and is dominated by the traverse lag rather than by any site missing dispatch." % (
           F["down_low_name"], F["down_low_gain"], F["down_none_name"],

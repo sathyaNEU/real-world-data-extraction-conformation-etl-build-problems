@@ -491,22 +491,25 @@ def run(target, figures_path):
     task = os.path.dirname(target)
     wb = openpyxl.load_workbook(os.path.join(task, "golden", "embed_placement_2027q4.xlsx"))
     ws = wb["Placement"]
-    seen = {}
+    seen, recorded, ratios = {}, {}, {}
     for row in ws.iter_rows(min_row=5, values_only=True):
         if row[0] and str(row[0]).isdigit():
-            seen[str(row[0])] = row[6]
+            seen[str(row[0])] = row[7]
+            recorded[str(row[0])] = row[4]
+            ratios[str(row[0])] = (row[5], row[6])
     ok(seen == fig["avoidable_by_unit"], "the workbook carries every unit's avoidable count")
-    ratios = {}
-    for row in ws.iter_rows(min_row=5, values_only=True):
-        if row[0] and str(row[0]).isdigit():
-            ratios[str(row[0])] = (row[4], row[5])
-    ok(ratios[fig["call_unit_code"]] == (fig["pick_published_ratio"], fig["pick_comparison_ratio"]),
+    ok(recorded == fig["as_recorded_by_unit"],
+       "the workbook carries every unit's figure on the record as it stands")
+    # the workbook's own cells are read back at the precision the asking sentence states
+    for u, v in seen.items():
+        ok(abs(v - round(v, 1)) < 1e-9, "the workbook states %s's count to one decimal (%s)" % (u, v))
+    ok(ratios[fig["call_unit_code"]] == (fig["pick_published_ratio"], fig["pick_developed_ratio"]),
        "the workbook carries the call's two standardised ratios")
     hs = wb["Hospital year"]
     hw = {r[0]: (r[1], r[2]) for r in hs.iter_rows(min_row=5, values_only=True) if r[0]}
-    want = {v["name"]: (v["separations_excluded"], v["excluded_with_a_complication"])
+    want = {v["name"]: (v["separations_not_measured"], v["not_measured_with_a_complication"])
             for v in fig["hospital_year"].values()}
-    ok(hw == want, "the workbook carries what the indicator excludes at each hospital")
+    ok(hw == want, "the workbook carries what the indicator does not measure at each hospital")
     gi = wb["Outside the indicator"]
     outside = {r[0]: (r[1], r[2]) for r in gi.iter_rows(min_row=5, values_only=True) if r[0]}
     ok(outside == {k: (v["separations"], v["with_complication"])

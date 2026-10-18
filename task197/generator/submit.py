@@ -107,20 +107,17 @@ def main():
             w("   - %s (%s): none, 0 episodes" % (d["name"], d["site"]))
         else:
             w("   - %s (%s): %.0f per cent, %d episodes" % (d["name"], d["site"], d["gain_pct"], d["episodes"]))
-    w("3. Reserve capacity hours committed, held available and short, six delivery blocks, MWh to one "
-      "decimal place:")
+    w("3. Reserve capacity hours held available and the shortfall against commitment, six delivery "
+      "blocks, MWh to one decimal place:")
     for b in F["availability"]:
-        w("   - Block %d (%s): committed %.1f, held available %.1f, shortfall %.1f"
-          % (b["block"], b["hours"], b["committed"], b["available"], b["shortfall"]))
-    w("   - Portfolio: committed %.1f, held available %.1f, shortfall %.1f"
-      % (F["avail_committed_total"], F["avail_available_total"], F["avail_shortfall_total"]))
-    w("4. Net metered volume for the window and the difference against the operator's settlement "
-      "statements, nine sites in site order, MWh to one decimal place:")
-    for r in F["reconciliation"]:
-        w("   - %s (%s): metered %.1f, settled %.1f, difference %.1f"
-          % (r["name"], r["site"], r["metered"], r["settled"], r["difference"]))
-    w("   - Portfolio: metered %.1f, settled %.1f, difference %.1f"
-      % (F["rec_metered_total"], F["rec_settled_total"], F["rec_difference_total"]))
+        w("   - Block %d (%s): held available %.1f, shortfall %.1f"
+          % (b["block"], b["hours"], b["available"], b["shortfall"]))
+    w("4. Energy delivered above programme and below programme in the settlement periods the site held "
+      "no delivery-block commitment for, nine sites in site order, MWh to one decimal place:")
+    for r in F["exposure"]:
+        w("   - %s (%s): above %.1f, below %.1f" % (r["name"], r["site"], r["above"], r["below"]))
+    w("   - Portfolio: above %.1f, below %.1f"
+      % (F["exposure_above_total"], F["exposure_below_total"]))
     w("5. Bar chart of the under-frequency realised gains by site on the Scorecard sheet, one bar per "
       "site in gain order, with the tolerance line drawn across at %.0f per cent and the axis titled in "
       "per cent of contracted gain." % F["tolerance"])
