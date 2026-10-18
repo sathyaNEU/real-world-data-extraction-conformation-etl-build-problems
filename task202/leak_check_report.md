@@ -1,18 +1,18 @@
 # leak check, task202
 
-**Verdict: REVIEW.** 17 files read, 43 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 53 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: window, asserted, returns, reading, twelve, printed, measured, domain, average, stated, decisive, status, generator, driver, accredited, sentence, partner-band, shipped, architecture, device, committed, boundary, mechanism, spread, measures
 
 ## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `DATA_DICTIONARY.md`: carries 4 of 5 distinctive words of the committed call: 'Set the 2027/28 referral ceiling for a four-person household at PHP 7,800.'
-- **REVIEW** `hrg_operating_policy_2027_edition.pdf`: carries 5 of 5 distinctive words of the committed call: 'Set the 2027/28 referral ceiling for a four-person household at PHP 7,800.'
+- **REVIEW** `DATA_DICTIONARY.md`: carries 4 of 5 distinctive words of the committed call: 'Set the 2027/28 referral ceiling for a four-person household at PHP 8,000.'
+- **REVIEW** `hrg_operating_policy_2027_edition.pdf`: carries 5 of 5 distinctive words of the committed call: 'Set the 2027/28 referral ceiling for a four-person household at PHP 8,000.'
 
 ## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `DATA_DICTIONARY.md`: 3 of 25 stump-paragraph terms appear (returns, status, accredited); read whether the document names the move
-- **REVIEW** `hrg_operating_policy_2027_edition.pdf`: 5 of 25 stump-paragraph terms appear (returns, twelve, average, status, accredited); read whether the document names the move
+- **REVIEW** `hrg_operating_policy_2027_edition.pdf`: 6 of 25 stump-paragraph terms appear (returns, twelve, printed, average, status, accredited); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

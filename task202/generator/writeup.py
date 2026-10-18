@@ -272,7 +272,7 @@ def transferred(archive, claimed):
     which cannot be paid, so they are one instruction and count once. The claim returns settle it on
     their own: the check register is not needed and its own reading does not reach this figure.
     """
-    out, repeats = {}, 0
+    out, repeats, ninstr = {}, 0, {}
     for k, lines in archive.items():
         clm = claimed.get(k)
         if clm is not None and round(sum(g for g, _, _ in lines), 2) > clm + 0.005:
@@ -283,10 +283,12 @@ def transferred(archive, claimed):
                 seen.add(ln)
                 tot = round(tot + ln[2], 2)
             out[k] = tot
+            ninstr[k] = len(seen)
             repeats += 1
         else:
             out[k] = round(sum(n for _, _, n in lines), 2)
-    return out, repeats
+            ninstr[k] = len(lines)
+    return out, repeats, ninstr
 
 
 def ask_figures(target, F):
@@ -295,21 +297,26 @@ def ask_figures(target, F):
     check, raw_rows = read_check_register(os.path.join(target, F["checks"]), acc)
     archive = read_archive(os.path.join(target, F["archive"]))
     claimed, _ = read_closed_returns([os.path.join(target, F[k]) for k in ("ret2425", "ret2526")])
-    trans, repeats = transferred(archive, claimed)
+    trans, repeats, ninstr = transferred(archive, claimed)
     quarters = []
     for mo in sorted({k[1] for k in check}):
         if _quarter(mo) not in quarters:
             quarters.append(_quarter(mo))
     tq = {_qlabel(q): 0.0 for q in quarters}
     hq = {_qlabel(q): 0.0 for q in quarters}
+    pq = {_qlabel(q): 0.0 for q in quarters}
+    iq = {_qlabel(q): 0 for q in quarters}
     rc = {r: 0 for r in REASONS}
     for k, v in check.items():
         q = _qlabel(_quarter(k[1]))
         hq[q] = round(hq[q] + v["held"], 2)
+        pq[q] = round(pq[q] + v["passed"], 2)
         if v["held"] > 0.005:
             rc[v["reason"] if v["reason"] in REASONS else "Not recorded"] += 1
     for k, v in trans.items():
         tq[_qlabel(_quarter(k[1]))] = round(tq[_qlabel(_quarter(k[1]))] + v, 2)
+    for k, n in ninstr.items():
+        iq[_qlabel(_quarter(k[1]))] += n
     cq = {_qlabel(q): 0.0 for q in quarters}
     for k, v in claimed.items():
         cq[_qlabel(_quarter(k[1]))] = round(cq[_qlabel(_quarter(k[1]))] + v, 2)
@@ -327,8 +334,10 @@ def ask_figures(target, F):
     uq = {q: round(cq[q] - hq[q] - rq[q] - tq[q], 2) for q in cq}
     return {"quarters": [_qlabel(q) for q in quarters],
             "_raw": {"transferred": tq, "held": hq, "claimed": cq, "recovered": rq,
-                     "unsettled": uq},
+                     "unsettled": uq, "passed": pq},
             "transferred": {k: int(round(v)) for k, v in tq.items()},
+            "instructions": dict(iq),
+            "passed": {k: int(round(v)) for k, v in pq.items()},
             "held": {k: int(round(v)) for k, v in hq.items()},
             "claimed": {k: int(round(v)) for k, v in cq.items()},
             "recovered": {k: int(round(v)) for k, v in rq.items()},
@@ -362,7 +371,7 @@ def ask_stops(target, F):
     check, _ = read_check_register(os.path.join(target, F["checks"]), acc)
     archive = read_archive(os.path.join(target, F["archive"]))
     claimed, _ = read_closed_returns([os.path.join(target, F[k]) for k in ("ret2425", "ret2526")])
-    trans, _ = transferred(archive, claimed)
+    trans, _, ninstr = transferred(archive, claimed)
     quarters = []
     for mo in sorted({k[1] for k in check}):
         if _quarter(mo) not in quarters:
@@ -376,18 +385,37 @@ def ask_stops(target, F):
             out[_qlabel(_quarter(k[1]))] = round(out[_qlabel(_quarter(k[1]))] + v, 2)
         return {k: int(round(v)) for k, v in out.items()}
 
+    def countq(d):
+        """A per-claim-month count summed into the quarter of the claim month."""
+        out = {q: 0 for q in QL}
+        for k, v in d.items():
+            out[_qlabel(_quarter(k[1]))] += int(v)
+        return out
+
+
+
+    def pair(amount, count):
+        """One stop of ask A: the pesos settled and the instructions settled on, per quarter."""
+        return dict(list(amount.items()) + [("n " + k, v) for k, v in count.items()])
+
+    def pairB(held, passed):
+        """One stop of ask B: the pesos the check passed and the pesos it held back, per quarter."""
+        return dict(list(held.items()) + [("passed " + k, v) for k, v in passed.items()])
+
     # ---- A, what the runs transferred
     A = {}
-    A["A1 every run line summed as it stands"] = byq(
-        {k: round(sum(n for _, _, n in v), 2) for k, v in archive.items()})
-    A["A2 the gross column summed, recoveries left in"] = byq(
-        {k: round(sum(g for g, _, _ in v), 2) for k, v in archive.items()})
-    A["A3 the over-stated claim-months dropped"] = byq(
+    nlines = {k: len(v) for k, v in archive.items()}
+    A["A1 every run line summed as it stands"] = pair(byq(
+        {k: round(sum(n for _, _, n in v), 2) for k, v in archive.items()}), countq(nlines))
+    A["A2 the gross column summed, recoveries left in"] = pair(byq(
+        {k: round(sum(g for g, _, _ in v), 2) for k, v in archive.items()}), countq(nlines))
+    A["A3 the over-stated claim-months dropped"] = pair(byq(
         {k: (0.0 if len(set(v)) < len(v) else round(sum(n for _, _, n in v), 2))
-         for k, v in archive.items()})
+         for k, v in archive.items()}),
+        countq({k: (0 if len(set(v)) < len(v) else len(v)) for k, v in archive.items()}))
     # the reading the asking sentence closes: the instruction counted once, but attributed to the
     # quarter the run fell in rather than the quarter of the claim month it settles
-    byrun = {}
+    byrun, nrun = {}, {}
     with open(os.path.join(target, F["archive"]), newline="", encoding="utf-8") as fh:
         seen = {}
         for r in csv.DictReader(fh):
@@ -399,18 +427,21 @@ def ask_stops(target, F):
             d = r["run_date"].strip()
             q = _qlabel(_quarter((int(d[6:10]), int(d[3:5]))))
             byrun[q] = round(byrun.get(q, 0.0) + trip[2], 2)
-    A["A4 one instruction once, by the quarter of the run date"] = {
-        q: int(round(byrun.get(q, 0.0))) for q in QL}
-    A["A5 one instruction once, by the quarter of the claim month (the answer)"] = byq(trans)
+            nrun[q] = nrun.get(q, 0) + 1
+    A["A4 one instruction once, by the quarter of the run date"] = pair(
+        {q: int(round(byrun.get(q, 0.0))) for q in QL}, {q: nrun.get(q, 0) for q in QL})
+    A["A5 one instruction once, by the quarter of the claim month (the answer)"] = pair(
+        byq(trans), countq(ninstr))
 
     # ---- B, what the check held back
     B = {}
-    B["B1 the held column summed as it stands"] = byq(
-        {(r["code"], r["month"]): r["held"] for r in sorted(reg, key=lambda r: r["checked"])})
+    b1 = {(r["code"], r["month"]): r["held"] for r in sorted(reg, key=lambda r: r["checked"])}
+    b1p = {(r["code"], r["month"]): r["passed"] for r in sorted(reg, key=lambda r: r["checked"])}
+    B["B1 the two currency columns summed as they stand"] = pairB(byq(b1), byq(b1p))
     seq = {}
     for r in sorted(reg, key=lambda r: (r["code"], r["month"], r["checked"])):
         seq.setdefault(r["code"], []).append(r)
-    flat, first = {}, {}
+    flat, flatp, first = {}, {}, {}
     for code, rs in seq.items():
         prev = None
         for r in rs:
@@ -418,10 +449,11 @@ def ask_stops(target, F):
             if k not in first:
                 first[k] = r
             flat[k] = round(r["held"] - (prev["held"] if prev is not None else 0.0), 2)
+            flatp[k] = round(r["passed"] - (prev["passed"] if prev is not None else 0.0), 2)
             prev = r
-    B["B2 differenced with no period reset at all"] = byq(flat)
+    B["B2 differenced with no period reset at all"] = pairB(byq(flat), byq(flatp))
 
-    def diff(pick_first, year):
+    def diff(pick_first, year, fld="held"):
         out, prev = {}, {}
         for code, rs in seq.items():
             for r in rs:
@@ -430,16 +462,19 @@ def ask_stops(target, F):
                     continue
                 sy = year(code, r["month"])
                 base = prev.get((code, sy), 0.0)
-                out[k] = round(r["held"] - base, 2)
-                prev[(code, sy)] = r["held"]
+                out[k] = round(r[fld] - base, 2)
+                prev[(code, sy)] = r[fld]
         return out
 
-    B["B3 the later check, differenced inside the scheme year"] = byq(
-        diff(False, lambda c, mo: _scheme_year(mo)))
-    B["B4 the first check of each claim-month, accreditation year"] = byq(
-        diff(True, lambda c, mo: _accreditation_year(acc[c], mo)))
-    B["B5 the later check, differenced inside the accreditation year (the answer)"] = byq(
-        {k: v["held"] for k, v in check.items()})
+    sy_year = lambda c, mo: _scheme_year(mo)
+    ay_year = lambda c, mo: _accreditation_year(acc[c], mo)
+    B["B3 the later check, differenced inside the scheme year"] = pairB(
+        byq(diff(False, sy_year)), byq(diff(False, sy_year, "passed")))
+    B["B4 the first check of each claim-month, accreditation year"] = pairB(
+        byq(diff(True, ay_year)), byq(diff(True, ay_year, "passed")))
+    B["B5 the later check, differenced inside the accreditation year (the answer)"] = pairB(
+        byq({k: v["held"] for k, v in check.items()}),
+        byq({k: v["passed"] for k, v in check.items()}))
 
     # ---- C, the claim-months held, by reason
     C = {}
@@ -478,13 +513,14 @@ def figures(target, F):
     W = dict(mean=mean, cnt=cnt, shape=shape)
     f = solve.figures_for(C, W)
     s0 = solve.share_cells(C, mean, cnt, shape)
-    s1 = solve.share_cells(C - P.ROUND_TO, mean, cnt, shape)
+    s1 = solve.share_cells(C - P.CANDIDATE_STEP, mean, cnt, shape)
     default = solve.lowest(lambda x: solve.share_cells(x, mean, cnt, np.array([1.0])))
     fig = {
         "call": int(C),
         "call_php": "PHP %s" % "{:,}".format(int(C)),
-        "call_down": int(C - P.ROUND_TO),
+        "call_down": int(C - P.CANDIDATE_STEP),
         "round_to": P.ROUND_TO,
+        "candidate_step": P.CANDIDATE_STEP,
         "share_pct": round(100 * s0, 2),
         "share_down_pct": round(100 * s1, 2),
         "committed_pct": round(100 * P.COMMITTED_SHARE, 1),
@@ -578,7 +614,7 @@ def submission(fig):
       "pooled or rescaled to the portfolio, which do not reproduce the average award the returns state "
       "for each of the other partners. Not a lognormal or a gamma at the portal's coefficient of "
       "variation, which the portal's own fit refuses at %d and %d times the five per cent critical "
-      "value." % (fig["share_pct"], fig["committed_pct"], "{:,}".format(fig["call"] - 100),
+      "value." % (fig["share_pct"], fig["committed_pct"], "{:,}".format(fig["call_down"]),
                    fig["share_down_pct"], fig["cells"], "{:,}".format(fig["default_call"]),
                    fig["default_share_pct"], fig["ks_lognormal"], fig["ks_gamma"]))
     A("")
@@ -591,7 +627,7 @@ def submission(fig):
     A("3. At PHP %s the schedule refers **%.2f per cent** of those awards" %
       ("{:,}".format(fig["call"]), fig["share_pct"]))
     A("4. At PHP %s it refers **%.2f per cent**, above the commitment, so PHP %s is the lowest "
-      "qualifying multiple of PHP 100" % ("{:,}".format(fig["call"] - 100), fig["share_down_pct"],
+      "qualifying amount in Schedule E" % ("{:,}".format(fig["call_down"]), fig["share_down_pct"],
                                           "{:,}".format(fig["call"])))
     A("")
     A("## 3. Step-by-Step Solution")
@@ -617,7 +653,7 @@ def submission(fig):
       "hrg_operating_policy_2027_edition.pdf, rounded up to the nearest PHP 100 under B.3, and took the lowest candidate whose referred share "
       "is at or below %.1f per cent: PHP %s refers %.2f per cent and PHP %s refers %.2f per cent." %
       (fig["committed_pct"], "{:,}".format(fig["call"]), fig["share_pct"],
-       "{:,}".format(fig["call"] - 100), fig["share_down_pct"]))
+       "{:,}".format(fig["call_down"]), fig["share_down_pct"]))
     A("7. Cut instead on the distribution of the %d partner-band averages, the ceiling is PHP %s and "
       "the schedule refers %.2f per cent of the window's awards." %
       (fig["cells"], "{:,}".format(fig["default_call"]), fig["default_share_pct"]))
@@ -652,14 +688,16 @@ def submission(fig):
     a = fig["asks"]
     A("### claims_annex.xlsx")
     A("")
-    A("1. The pesos the archived payment runs transferred against each closed scheme quarter's claim "
-      "months, one payment instruction counted once:")
+    A("1. Of each closed scheme quarter's claims, the pesos the Treasury settled and the payment "
+      "instructions it settled them on:")
     for q in a["quarters"]:
-        A("   - %s: PHP %s" % (q, "{:,}".format(a["transferred"][q])))
-    A("2. The pesos the pre-payment claim check held back in each closed scheme quarter, from each "
-      "month's own hold:")
+        A("   - %s: PHP %s on %s instructions"
+          % (q, "{:,}".format(a["transferred"][q]), "{:,}".format(a["instructions"][q])))
+    A("2. The pesos the pre-payment claim check passed and the pesos it held back in each closed "
+      "scheme quarter, from each month's own position:")
     for q in a["quarters"]:
-        A("   - %s: PHP %s" % (q, "{:,}".format(a["held"][q])))
+        A("   - %s: passed PHP %s, held PHP %s"
+          % (q, "{:,}".format(a["passed"][q]), "{:,}".format(a["held"][q])))
     A("3. The partner claim-months the check held an amount back in, by reason recorded:")
     for r in REASONS:
         A("   - %s: %s" % (r, "{:,}".format(a["holds_by_reason"][r])))

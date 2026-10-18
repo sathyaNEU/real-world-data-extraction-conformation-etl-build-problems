@@ -29,32 +29,37 @@ import writeup as WU
 W_REC, W_INSTR, W_ASK, R_KEEP = 38.0, 7.0, 55.0, 5.0
 TARGET = os.path.join(os.path.dirname(HERE), "target")
 
-# the asking sentence's own rounding: the annex amounts to the nearest peso, the claim-months whole
+# the asking sentence's own rounding: the annex amounts to the nearest peso, the instruction and
+# claim-month counts whole
 UNIT = {"A": 1.0, "B": 1.0, "C": 1.0}
-ASKS = [("A the pesos the payment runs transferred, by scheme quarter", "A", 1),
-        ("B the pesos the claim checks held back, by scheme quarter", "B", 1),
-        ("C the claim-months with a hold, by reason", "C", 1)]
+ASKS = [("A of each quarter's claims, the pesos settled and the instructions", "A", 1),
+        ("B the pesos the claim checks passed and the pesos they held back", "B", 1),
+        ("C the partner claim-months a hold was recorded in, by reason", "C", 1)]
 # what the cracker's path files on each ask: it sums the column as the export states it and groups
 # by the column the ask names, which is stop 1 of each ladder (stop 2 of C, which reports the blanks
 # rather than dropping them, is the kinder reading and is scored too)
 CRACKER_STOP = {"A": 0, "B": 0, "C": 1}
 SCHEDULE_CRITERIA = 24          # six ceilings, six referred shares, six value shares, six factors
 
-# The reader-calibrated response, which is the measurement that matters. The cracker's stops are the
-# author's guesses at the opponent's routes, and the stage 4 reader beat all three of them: it kept
-# 0 of 6 on A, 6 of 6 on B and 6 of 6 on C where the cracker said nought of eighteen. So this row is
-# not a guess. It is the stop each ask's ladder reaches for a response that
-#   * reads the data dictionary and applies every convention filed in it,
-#   * reconciles each closed-period file against the claim returns, which is what found the
-#     register's running totals, and
-#   * takes the ordinary hygiene moves (key uniqueness, folding a free-text field onto its list,
-#     cross-tabulating a blank against the movement that produced it).
-# A is at its answer because the re-issue convention is now filed, which is what makes the device
-# fair and is what it costs. B is at the scheme-year stop, because the year the return workbooks
-# label is the year such a response assumes and the accreditation year is in no sentence. C is at its
-# answer, because the blank-reason device is the one the reader cracked and the rewording did not
-# replace it.
-READER_STOP = {"A": "A5", "B": "B3", "C": "C4"}
+# The reader-calibrated response, which is the measurement that matters, and each row's provenance.
+# The stage 4 reader (a medium thread holding only the pack and prompt.txt) beat all three cracker
+# stops on the previous cut: it kept 0 of 6 on A, 6 of 6 on B and 6 of 6 on C. This row is that
+# reader's stop on each ask, re-scored on this cut:
+#   A  MEASURED 0 of 6. The reader summed the run lines as the archive states them and was high on
+#      every quarter. The previous pass then filed the re-issue convention in the data dictionary
+#      to make the device fair, which handed the ask back in one step; that sentence is gone and the
+#      asking sentence now closes the reading instead ("of those claims the pesos settled": run
+#      lines summing above what the partner claimed cannot answer it). So the measured stop stands.
+#   B  MEASURED 0 of 6. The reader found the register's running totals and assumed the scheme year;
+#      the series turns over on the partner's own accreditation anniversary (stop B3).
+#   C  MEASURED 6 of 6, and NOT REPAIRED. The reader cross-tabulated the increments against the
+#      reason column and read the blank both ways. Its primary reaches one figure of six (stop C3
+#      keeps five), so Ask C has no effective device mass, and Part 6's free-figure rule is why it
+#      was not widened with the other two: widening an ungated ask hands figures away.
+READER_STOP = {"A": "A1", "B": "B3", "C": "C4"}
+READER_NOTE = {"A": "MEASURED by the stage 4 reader, pin removed since",
+               "B": "MEASURED by the stage 4 reader",
+               "C": "MEASURED by the stage 4 reader, primary NOT replaced"}
 
 
 def rows_of(group, stops, gold, keys):
@@ -71,9 +76,11 @@ def main():
     fig = WU.figures(TARGET, B.FILES)
     a = fig["asks"]
     stops = WU.ask_stops(TARGET, B.FILES)
-    keys = {"A": a["quarters"], "B": a["quarters"], "C": WU.REASONS}
-    gold = {"A": [a["transferred"][q] for q in a["quarters"]],
-            "B": [a["held"][q] for q in a["quarters"]],
+    QA = a["quarters"]
+    keys = {"A": QA + ["n " + q for q in QA], "B": QA + ["passed " + q for q in QA],
+            "C": list(WU.REASONS)}
+    gold = {"A": [a["transferred"][q] for q in QA] + [a["instructions"][q] for q in QA],
+            "B": [a["held"][q] for q in QA] + [a["passed"][q] for q in QA],
             "C": [a["holds_by_reason"][r] for r in WU.REASONS]}
     print("golden call PHP %s; the annex covers claim months %s to %s"
           % ("{:,}".format(fig["call"]), "2024-07", "2025-12"))
@@ -99,30 +106,30 @@ def main():
     print("   the annex asks consume nothing the call's construction produces, so the mirror's ask")
     print("   row is the cracker's row figure for figure. The separation is asserted, not asserted")
     print("   by assumption: checks.py separation.ceiling_without_either_ask_file recomputes the")
-    print("   ceiling from a folder holding only the four files the call reads and gets PHP 7,800,")
+    print("   ceiling from a folder holding only the four files the call reads and gets PHP 8,000,")
     print("   separation.checks_rows_in_the_window and separation.archive_rows_in_the_window are 0,")
     print("   and separation.device_partner_months_in_the_window is 0. Printing a second scored row")
     print("   would be comparing a list with itself, so the mirror's ask weight is the cracker's.")
 
-    print("\nREADER-CALIBRATED: applies every filed convention and the ordinary hygiene moves")
-    rkept = 0
+    print("\nREADER-CALIBRATED: the stop an isolated reader at medium effort actually reached")
+    rkept, per = 0, {}
     for label, grp, _ in ASKS:
         ladder = rows_of(grp, stops, gold[grp], keys[grp])
         pick = next(r for r in ladder if r[0].startswith(READER_STOP[grp]))
         rkept += pick[1]
-        print("   %-58s keeps %d of %d   (%s)" % (label, pick[1], pick[2], pick[0][:46]))
+        per[grp] = pick
+        print("   %-58s keeps %2d of %2d" % (label, pick[1], pick[2]))
+        print("      %-55s %s" % (pick[0][:55], READER_NOTE[grp]))
     Lr = rkept / float(n_ask)
     rpair = (W_REC + R_KEEP) / 2.0 + W_INSTR + W_ASK * Lr
     print("   keeps %d of %d ask figures, %.3f of the ask weight" % (rkept, n_ask, Lr))
     print("   PAIR AT THE READER'S KEEP %.1f   (bar 50, build to 40)" % rpair)
-    if rpair > 50:
-        print("   OVER THE BAR. The ask band cannot absorb a fair Ask A at %d graded figures: filing"
-              % n_ask)
-        print("   the re-issue convention hands back 6 of %d, and Ask C's blank-reason device is the"
-              % n_ask)
-        print("   one the reader already cracked. Holding the pair under 50 at this keep rate needs")
-        print("   more graded figures, which needs prompt room, which is a rubric pass and not a")
-        print("   determinism one. Reported rather than papered over.")
+    print("   sensitivity, one whole ask lost to a reader this row does not model:")
+    for label, grp, _ in ASKS:
+        n_i = len(keys[grp])
+        alt = rkept - per[grp][1] + n_i
+        print("      %-56s %2d of %2d -> pair %.1f" % ("all of " + label[:48], alt, n_ask,
+              (W_REC + R_KEEP) / 2.0 + W_INSTR + W_ASK * alt / n_ask))
 
     Lc = kept / float(n_ask)
     Lm = Lc
@@ -145,11 +152,7 @@ def main():
                if (W_REC + R_KEEP) / 2.0 + W_INSTR + W_ASK * k / n_ask <= 40)
     print("   so the asks have to hold both responses to %d of %d or fewer, which is the fifth each"
           % (hold, n_ask))
-    print("   that Part 0 prices; the deepest stop measured keeps 5 of %d (C3, the response that"
-          % n_ask)
-    print("   differences the register and folds the free text but drops the blank reasons), and a")
-    print("   response that cracks one whole ask would keep 6 of %d for a pair of %.1f" %
-          (n_ask, (W_REC + R_KEEP) / 2.0 + W_INSTR + W_ASK * 6 / n_ask))
+    print("   that Part 0 prices. The reader-calibrated row above sits at %d of %d." % (rkept, n_ask))
 
     alt = n_ask + SCHEDULE_CRITERIA
     altC = W_REC + W_INSTR + W_ASK * (kept + SCHEDULE_CRITERIA) / alt

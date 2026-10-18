@@ -24,15 +24,15 @@ import writeup as WU
 N = 0
 FAIL = []
 
-# clause 9's margin, in percentage points of the committed share: how far the preceding multiple of
-# PHP 100 fails the commitment, and how far the committed multiple clears it. Both floors are what
-# the architecture supports, measured rather than wished for: the separation between cutting the
-# partner-band averages and cutting the awards is produced by the within-cell award spread, and that
-# same spread is what makes the share curve shallow at the boundary. The frontier is in the design
-# note's `## Tried and rejected` with the numbers; the short version is that every setting reaching
-# a 0.30-point failure margin puts a wrong rung within PHP 100 of the golden.
-MARGIN_FLOOR = 0.04
-CLEARANCE_FLOOR = 0.05
+# clause 9's margin, in percentage points of the committed share: how far the preceding entry in
+# schedule E fails the commitment, and how far the committed entry clears it. Both are set by
+# schedule E's spacing against the award level, and both are measured: at the shipped setting the
+# preceding entry fails by 0.85 points and the committed entry clears by 0.41, against a clustered
+# bootstrap standard error of 0.14 points on the share. The frontier that fixes how far they can be
+# pushed is in the design note's `## Tried and rejected`: driving the crossing further down inside
+# one schedule step pulls the single-lognormal rung onto the committed entry.
+MARGIN_FLOOR = 0.30
+CLEARANCE_FLOOR = 0.30
 
 
 def ok(label, cond, note=""):
@@ -114,14 +114,18 @@ def run(target, world, fig, golden_dir):
     # ---------------------------------------------------------- R3a/R3b: the analyst test
     L = solve.ladder(W)
     G = L["R6"]
-    eq("R3a.default_path_files_the_named_wrong_answer", L["R1"], 5800)
-    eq("R3b.decisive_step_alone_files_the_golden", G, 7800)
+    eq("R3a.default_path_files_the_named_wrong_answer", L["R1"], 6000)
+    eq("R3b.decisive_step_alone_files_the_golden", G, 8000)
     ok("R3b.default_is_wrong_by", abs(G - L["R1"]) >= 1000, "%d pesos" % (G - L["R1"]))
-    for r, lo in (("R2", 500), ("R3", 500), ("R4", 500), ("R5a", 500), ("R5b", 500)):
-        ok("R3b.rung_%s_separated" % r, abs(L[r] - G) >= lo,
-           "%s at %d, %+d pu" % (r, L[r], (L[r] - G) // 100))
-    ok("R3b.every_rung_distinct", len({L[r] for r in solve.ROUTES + ["R6"]}) == len(solve.ROUTES) + 1,
+    for r in ("R2", "R3", "R4", "R5a", "R5b"):
+        ok("R3b.rung_%s_separated" % r, abs(L[r] - G) >= P.CANDIDATE_STEP,
+           "%s at %d, %+d schedule steps" % (r, L[r], (L[r] - G) // P.CANDIDATE_STEP))
+    # on schedule E's spacing several wrong routes land on the same wrong entry, which is a wrong
+    # answer each; what has to hold is that none of them lands on the committed entry
+    ok("R3b.no_wrong_rung_on_the_golden", all(L[r] != G for r in solve.ROUTES),
        sorted(L[r] for r in solve.ROUTES + ["R6"]))
+    ok("R3b.wrong_rungs_span_the_schedule",
+       len({L[r] for r in solve.ROUTES}) >= 3, sorted({L[r] for r in solve.ROUTES}))
     eq("R3b.correct_family_converges", L["Rmix"], G, 0, "a correctly specified two-component fit")
 
     # ---------------------------------------------------------- R3c: no plant
@@ -224,9 +228,18 @@ def run(target, world, fig, golden_dir):
 
     # ---------------------------------------------------------- clause 9's own margin
     s0 = solve.share_cells(G, mean, cnt, shape)
-    s1 = solve.share_cells(G - 100, mean, cnt, shape)
+    s1 = solve.share_cells(G - P.CANDIDATE_STEP, mean, cnt, shape)
     ok("clause9.at_or_below", s0 <= P.COMMITTED_SHARE, "%.6f" % s0)
     ok("clause9.one_step_down_above", s1 > P.COMMITTED_SHARE, "%.6f" % s1)
+    ok("clause9.the_grid_is_filed_as_a_rule",
+       "lowest whole multiple of one thousand pesos" in txt[B.FILES["policy"]]
+       and "set in whole thousands of pesos" in txt[B.FILES["policy"]])
+    ok("clause9.the_grid_names_no_amount",
+       not re.search(r"PHP [\d,]{3,}", txt[B.FILES["policy"]]),
+       "the policy prints no peso amount at all")
+    ok("clause9.grid_spacing",
+       solve.candidates() == list(range(P.CANDIDATE_FROM, P.CANDIDATE_TO + 1, P.CANDIDATE_STEP))
+       and P.CANDIDATE_STEP == 1000 and G % P.CANDIDATE_STEP == 0, "%d" % P.CANDIDATE_STEP)
     # the margin in the units the judge reads it in: the preceding multiple has to fail by enough
     # that the shape's own sampling error cannot reach the line
     ok("clause9.preceding_multiple_fails_by",
@@ -238,19 +251,25 @@ def run(target, world, fig, golden_dir):
     # the rounding sentence in 9.1 is load-bearing, not decoration: the prompt orders shares to one
     # decimal place, and at the preceding multiple the reported share is exactly the commitment, so
     # without the sentence a literal reader could quote 9.1 and file the preceding multiple
-    ok("clause9.the_rounding_sentence_is_load_bearing",
-       round(100 * s1, 1) <= 100 * P.COMMITTED_SHARE + 1e-9
-       and "tested as it is computed and not as it is rounded" in txt[B.FILES["policy"]],
-       "the preceding multiple reports %.1f per cent against a commitment of %.1f"
-       % (round(100 * s1, 1), 100 * P.COMMITTED_SHARE))
+    # schedule E's spacing closes the reporting-precision fork on the records rather than on the
+    # sentence: no amount in schedule E has a share that reports as the commitment while exceeding
+    # it, so the test cannot turn on the rounding. 9.1's sentence is kept as belt and braces.
+    rep = [(c, 100 * solve.share_cells(c, mean, cnt, shape)) for c in solve.candidates()]
+    ok("clause9.no_entry_reports_the_commitment_while_exceeding_it",
+       not any(v > 100 * P.COMMITTED_SHARE + 1e-12
+               and round(v, 1) <= 100 * P.COMMITTED_SHARE + 1e-9 for _, v in rep),
+       "nearest entry above the commitment reports %.1f per cent"
+       % min((v for _, v in rep if v > 100 * P.COMMITTED_SHARE), default=0.0))
+    ok("clause9.the_rounding_sentence_is_filed",
+       "tested as it is computed and not as it is rounded" in txt[B.FILES["policy"]])
     # the flip condition, as a number rather than as an adjective
     ok("clause9.flip_condition_down",
-       abs(100 * (s1 - P.COMMITTED_SHARE) - 0.0432) < 0.0005,
-       "7,700 is filed only if its share falls by more than %.4f points, %.2f per cent of itself"
+       abs(100 * (s1 - P.COMMITTED_SHARE) - 0.8471) < 0.0005,
+       "the preceding entry is filed only if its share falls by more than %.4f points, %.2f per cent of itself"
        % (100 * (s1 - P.COMMITTED_SHARE), 100 * (s1 - P.COMMITTED_SHARE) / (100 * s1)))
     ok("clause9.flip_condition_up",
-       abs(100 * (P.COMMITTED_SHARE - s0) - 0.0571) < 0.0005,
-       "7,900 is filed only if the share at 7,800 rises by more than %.4f points, %.2f per cent "
+       abs(100 * (P.COMMITTED_SHARE - s0) - 0.4122) < 0.0005,
+       "the following entry is filed only if the share at the committed one rises by more than %.4f points, %.2f per cent "
        "of itself" % (100 * (P.COMMITTED_SHARE - s0),
                       100 * (P.COMMITTED_SHARE - s0) / (100 * s0)))
     ok("clause9.clearance", (P.COMMITTED_SHARE - s0) / (s1 - s0) > 0.15, "%.2f of the step" % ((P.COMMITTED_SHARE - s0) / (s1 - s0)))
@@ -258,7 +277,7 @@ def run(target, world, fig, golden_dir):
     mono = [solve.share_cells(c, mean, cnt, shape) for c in range(5000, 11001, 100)]
     ok("clause9.monotone", all(mono[i] >= mono[i + 1] - 1e-12 for i in range(len(mono) - 1)))
     ok("clause9.lowest_is_unique", all(solve.share_cells(c, mean, cnt, shape) > P.COMMITTED_SHARE
-                                       for c in range(G - 500, G, 100)))
+                                       for c in solve.candidates() if c < G))
 
     # ---------------------------------------------------------- the semantic fork table
     # SF1 the scheme's awards: all accredited partners, or only the portal partners
@@ -280,7 +299,15 @@ def run(target, world, fig, golden_dir):
        "no capital component before the amendment")
     ok("SF3.amendment_shipped", "1 July 2025" in txt[B.FILES["policy"]]
        and "SHL" in txt[B.FILES["policy"]])
-    ok("SF3.alternative_moves_so_the_record_decides", abs(sf3 - G) >= 100, "%d" % sf3)
+    # on schedule E's spacing the 27-month reading files the same entry, so the fork does not
+    # reach the call at all; the record still separates the readings and is what the write-up cites
+    eq("SF3.alternative_same_call_on_the_schedule", sf3, G, 0, "%d" % sf3)
+    ok("SF3.alternative_shape_really_differs",
+       abs(solve.share_cells(G, mean, cnt, sh27 / sh27.mean())
+           - solve.share_cells(G, mean, cnt, shape)) > 0.0005,
+       "the 27-month shape puts the share at %.4f against %.4f, inside the schedule step"
+       % (100 * solve.share_cells(G, mean, cnt, sh27 / sh27.mean()),
+          100 * solve.share_cells(G, mean, cnt, shape)))
     # SF4 the shape pooled or per band
     def grouped(c, gmap, arrs):
         above = tot = 0.0
@@ -307,10 +334,10 @@ def run(target, world, fig, golden_dir):
            "%.3f" % (float(np.quantile(sub, 0.94)) / float(np.quantile(shape, 0.94))))
     # SF5 rounding up
     ok("SF5.rounded_up_filed", "rounded up to the nearest one hundred pesos" in txt[B.FILES["policy"]])
-    eq("SF5.band2_ceiling_is_rounded_up", solve.band_ceiling(G, 2), 5600)
+    eq("SF5.band2_ceiling_is_rounded_up", solve.band_ceiling(G, 2), 5700)
     ok("SF5.round_down_would_differ", 100 * int(G * P.SCALE3[2] / 100000) != solve.band_ceiling(G, 2))
     # SF6 the lowest qualifying ceiling
-    ok("SF6.lowest_filed", "the lowest amount" in txt[B.FILES["policy"]])
+    ok("SF6.lowest_filed", "is the lowest whole multiple" in txt[B.FILES["policy"]])
     # SF7 share of awards, not of value
     ok("SF7.share_of_awards_filed", "share of the scheme's awards" in txt[B.FILES["policy"]])
     fv = solve.figures_for(G, W)
@@ -424,10 +451,10 @@ def _ask_checks(target, world, fig):
     raw = fig.get("_asks_raw") or WU.ask_figures(target, B.FILES)["_raw"]
 
     # ---- the main call is where it was: a device that moved it fails here
-    for k, v in (("call", 7800), ("call_down", 7700), ("default_call", 5800), ("cells", 528),
+    for k, v in (("call", 8000), ("call_down", 7000), ("default_call", 6000), ("cells", 528),
                  ("awards", 49265), ("partners", 88)):
         eq("separation.main_call_%s_unmoved" % k, fig[k], v)
-    for k, v in (("share_pct", 5.94), ("share_down_pct", 6.04), ("default_share_pct", 9.82),
+    for k, v in (("share_pct", 5.59), ("share_down_pct", 6.85), ("default_share_pct", 8.93),
                  ("cv", 0.72)):
         eq("separation.main_call_%s_unmoved" % k, fig[k], v, 1e-9)
 
@@ -551,17 +578,39 @@ def _ask_checks(target, world, fig):
 
     # ---- the ladder: every stop outside the bin on every figure
     st = WU.ask_stops(target, B.FILES)
-    gold = {"A": [a["transferred"][q] for q in a["quarters"]],
-            "B": [a["held"][q] for q in a["quarters"]],
+    QA = a["quarters"]
+    # each ask's graded cells, both measures of A and of B
+    KEYS = {"A": QA + ["n " + q for q in QA], "B": QA + ["passed " + q for q in QA],
+            "C": list(WU.REASONS)}
+    gold = {"A": [a["transferred"][q] for q in QA] + [a["instructions"][q] for q in QA],
+            "B": [a["held"][q] for q in QA] + [a["passed"][q] for q in QA],
             "C": [a["holds_by_reason"][r] for r in WU.REASONS]}
-    expect = {"A": [0, 0, 0, 0, 6], "B": [0, 0, 0, 0, 6], "C": [0, 0, 5, 6]}
+    eq("ladder.graded_figures", sum(len(v) for v in gold.values()), 30)
+    # A4 attributes the instruction to the quarter of its run date, which lands on one of the
+    # twelve by coincidence of the draw; it is recorded rather than smoothed over
+    expect = {"A": [0, 0, 0, 1, 12], "B": [0, 0, 0, 0, 12], "C": [0, 0, 5, 6]}
     for grp in ("A", "B", "C"):
-        keys = a["quarters"] if grp != "C" else WU.REASONS
+        keys = KEYS[grp]
         for i, (label, vals) in enumerate(st[grp].items()):
             hits = sum(1 for k, g in zip(keys, gold[grp]) if abs(vals[k] - g) <= 0.5)
             eq("ladder.%s_stop_%d_hits" % (grp, i + 1), hits, expect[grp][i], 0, label)
         worst = max(abs(list(st[grp].values())[0][k] - g) for k, g in zip(keys, gold[grp]))
         ok("ladder.%s_lazy_delta" % grp, worst > 0, "%.0f" % worst)
+    # the reader-calibrated row: the stop an isolated reader at medium effort actually reached on
+    # each ask, scored on the cut pack rather than taken from the cracker sheet
+    READER = {"A": 0, "B": 2, "C": 3}
+    kept = 0
+    for grp in ("A", "B", "C"):
+        vals = list(st[grp].values())[READER[grp]]
+        kept += sum(1 for k, g in zip(KEYS[grp], gold[grp]) if abs(vals[k] - g) <= 0.5)
+    eq("ladder.reader_calibrated_keep", kept, 6)
+    pair = (38.0 + 5.0) / 2.0 + 7.0 + 55.0 * kept / 30.0
+    ok("ladder.reader_calibrated_pair_under_the_bar", pair < 50.0, "%.1f" % pair)
+
+    # ---- ask A's convention is forced by the records and filed nowhere
+    dct = open(os.path.join(target, B.FILES["dict"]), encoding="utf-8").read()
+    for phrase in ("counted once", "a second time", "is that one instruction"):
+        ok("deviceA.the_convention_is_not_filed[%s]" % phrase, phrase not in dct)
 
     # ---- every count and delta the ask sheet states, so the note's prose recomputes (H2, H3)
     raw_rows = [r for r in csv.DictReader(
@@ -628,7 +677,7 @@ def _ask_checks(target, world, fig):
        all(int(round(h4[q])) != a["transferred"][q] for q in QL),
        "max delta %d" % max(int(round(h4[q])) - a["transferred"][q] for q in QL))
     eq("hazard.H4_largest_delta",
-       max(int(round(h4[q])) - a["transferred"][q] for q in QL), 1230553)
+       max(int(round(h4[q])) - a["transferred"][q] for q in QL), 1208963)
 
     # ---- the quarter closure, at the grain the annex balances on
     for q in a["quarters"]:
@@ -642,7 +691,7 @@ def _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv):
     W = world["W"]
     R = world["R"]
     # ---------------------------------------------------------- closure axes that need a number
-    eq("axis10.rounding_once", solve.band_ceiling(G, 5), 8800)
+    eq("axis10.rounding_once", solve.band_ceiling(G, 5), 9000)
     import math
     for b in P.BANDS:
         exact = 100 * math.ceil(G * math.sqrt(b / 4.0) / 100 - 1e-9)
@@ -673,15 +722,20 @@ def _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv):
     neu = MC.all_items(target)
     for k, v in sorted(neu.items()):
         eq("mess.%s_call_unchanged" % k, v["call"], G, 0)
-        eq("mess.%s_overall_share_unchanged" % k, round(v["share"], 2), fig["share_pct"], 1e-9)
-        if k != "both_counted":
+        if k == "both_counted":
+            # not a Layer 1 item: counting a superseded return as well as its revision breaks
+            # clause 4.2, so it is judged at the precision the graded figure prints
+            eq("mess.%s_printed_overall_share_unchanged" % k, round(v["share"], 1),
+               fig["referred_share"], 1e-9)
+        else:
+            eq("mess.%s_overall_share_unchanged" % k, round(v["share"], 2), fig["share_pct"], 1e-9)
             eq("mess.%s_band_figures_unchanged" % k, round(v["b4"], 1),
                fig["bands"]["4"]["referred_share"], 1e-9)
     # counting a superseded return as well as its revision breaks clause 4.2 rather than mishandling
     # the mess, and the asks are meant to turn on it: it must move an ask figure and nothing else
-    ok("ask.device_superseded_return_moves_a_band_figure",
-       round(neu["both_counted"]["b4"], 1) != fig["bands"]["4"]["referred_share"],
-       "band 4 share %.4f against %.1f" % (neu["both_counted"]["b4"], fig["bands"]["4"]["referred_share"]))
+    ok("ask.device_superseded_return_moves_the_award_count",
+       neu["both_counted"]["awards"] != fig["awards"],
+       "%s awards against %s" % (neu["both_counted"]["awards"], fig["awards"]))
     eq("ask.device_superseded_return_leaves_the_call", neu["both_counted"]["call"], G, 0)
 
     # ---------------------------------------------------------- distractor deletion
@@ -789,8 +843,8 @@ def _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv):
         ok("golden.%s_exists" % f, os.path.exists(os.path.join(golden_dir, f)))
     gx = text_of(os.path.join(golden_dir, GD.XLSX))
     gp = text_of(os.path.join(golden_dir, GD.PDF))
-    ok("golden.call_in_workbook", "7800" in gx.replace(",", "") or "7,800" in gx)
-    ok("golden.call_in_paper", "PHP 7,800" in gp, gp[:0])
+    ok("golden.call_in_workbook", "8000" in gx.replace(",", "") or "8,000" in gx)
+    ok("golden.call_in_paper", "PHP 8,000" in gp, gp[:0])
     for b in P.BANDS:
         c = "{:,}".format(solve.band_ceiling(G, b))
         ok("golden.band_%d_ceiling_in_paper" % b, c in gp, c)

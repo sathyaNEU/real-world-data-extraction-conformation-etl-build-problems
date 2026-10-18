@@ -77,7 +77,7 @@ def schedule_workbook(path, fig):
 
     bs = wb.create_sheet("Basis")
     rows = [
-        ("Clause 9 quantity", "lowest multiple of PHP 100 referring at or below 6.0 per cent of the "
+        ("Clause 9 quantity", "lowest amount in Schedule E referring at or below 6.0 per cent of the "
                               "scheme's awards"),
         ("Window", "the twelve months to 31 March 2027, award counted in the month it was paid"),
         ("Awards in the window", fig["awards"]),
@@ -86,7 +86,7 @@ def schedule_workbook(path, fig):
         ("Portal award rows in the window", fig["portal_window_rows"]),
         ("Award shape, coefficient of variation", fig["cv"]),
         ("Referred share at PHP %s" % "{:,}".format(fig["call"]), fig["share_pct"]),
-        ("Referred share at PHP %s" % "{:,}".format(fig["call"] - 100), fig["share_down_pct"]),
+        ("Referred share at PHP %s" % "{:,}".format(fig["call_down"]), fig["share_down_pct"]),
         ("Referred awards at the schedule", fig["referred_awards"]),
         ("Rounding", "each band ceiling rounded up to the nearest PHP 100 under B.3"),
         ("Returns superseded", "REVISED returns taken for the two reopened months, Nov-2026 and "
@@ -136,17 +136,18 @@ def annex_workbook(path, fig):
                 % (P.PEOPLE["assurance"][0], P.OFFICE, P.EXTRACT_DATE.strftime("%d %B %Y")))
     for r in (3, 4):
         ws.cell(row=r, column=1).font = Font(italic=True, size=9)
-    cols = ["Scheme quarter", "Claimed on returns", "Held by the check", "Recovered in the runs",
-            "Not settled in the archive", "Transferred by the runs"]
+    cols = ["Scheme quarter", "Claimed on returns", "Passed by the check", "Held by the check",
+            "Recovered in the runs", "Not settled in the archive", "Settled by the Treasury",
+            "Payment instructions"]
     for j, c in enumerate(cols, start=1):
         cl = ws.cell(row=6, column=j, value=c)
         cl.font = head
         cl.fill = fill
         cl.alignment = Alignment(wrap_text=True, vertical="center")
-    tot = [0, 0, 0, 0, 0]
+    tot = [0, 0, 0, 0, 0, 0, 0]
     for i, q in enumerate(a["quarters"], start=7):
-        vals = [a["claimed"][q], a["held"][q], a["recovered"][q], a["unsettled"][q],
-                a["transferred"][q]]
+        vals = [a["claimed"][q], a["passed"][q], a["held"][q], a["recovered"][q],
+                a["unsettled"][q], a["transferred"][q], a["instructions"][q]]
         ws.cell(row=i, column=1, value=q).border = Border(bottom=thin)
         for j, v in enumerate(vals, start=2):
             cl = ws.cell(row=i, column=j, value=v)
@@ -160,7 +161,13 @@ def annex_workbook(path, fig):
         cl.number_format = money
         cl.font = bold
     notes = [
-        "Claimed less held, recovered and not yet settled equals transferred in every quarter.",
+        "Claimed less held, recovered and not yet settled equals settled in every quarter, and "
+        "claimed less held equals passed.",
+        "A payment instruction settles a partner's claim month. Where the first half's release was "
+        "held for a mandate re-validation the Treasury settled both halves on one instruction, and "
+        "the archive is an instruction extract, so that instruction's amounts stand on each of the "
+        "two run lines it covers: those lines together come to more than the partner claimed for "
+        "the month, which cannot be settled, so they are one instruction and one amount.",
         "Each side is keyed to the claim month: the month a return was filed for, and for a payment "
         "run line the claim month it covers.",
         "The %d partner claim-months with no run line in the extract were released in a run dated "
@@ -172,10 +179,10 @@ def annex_workbook(path, fig):
     for i, t in enumerate(notes):
         cl = ws.cell(row=r + 2 + i, column=1, value=t)
         cl.font = Font(italic=True, size=9)
-    for j, w in enumerate([18, 19, 18, 19, 21, 21], start=1):
+    for j, w in enumerate([18, 19, 19, 18, 19, 21, 21, 18], start=1):
         ws.column_dimensions[get_column_letter(j)].width = w
     ws.freeze_panes = ws.cell(row=7, column=1)
-    ws.print_area = "A1:F%d" % (r + 2 + len(notes))
+    ws.print_area = "A1:H%d" % (r + 2 + len(notes))
     ws.print_title_rows = "6:6"
 
     hs = wb.create_sheet("Hold reasons")
@@ -312,9 +319,9 @@ def board_paper(path, fig, test, png):
                    % "{:,}".format(fig["call"]), body),
          Paragraph("The schedule below would refer %.2f per cent of the awards the scheme resolved in "
                    "the twelve months to 31 March 2027, within the %.1f per cent the Board committed "
-                   "to in clause 9. PHP %s, the next multiple of one hundred pesos down, would refer "
+                   "to in clause 9. PHP %s, the next amount down in Schedule E, would refer "
                    "%.2f per cent and is outside it." %
-                   (fig["share_pct"], 100 * P.COMMITTED_SHARE, "{:,}".format(fig["call"] - 100),
+                   (fig["share_pct"], 100 * P.COMMITTED_SHARE, "{:,}".format(fig["call_down"]),
                     fig["share_down_pct"]), body),
          Paragraph("Schedule", h2)]
     rows = [["Band", "Household size", "Factor", "Ceiling (PHP)", "Awards referred (%)",

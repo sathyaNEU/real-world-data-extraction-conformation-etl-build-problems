@@ -291,11 +291,11 @@ def policy(path, R):
     s.append(Paragraph("9 The referral ceiling for 2027/28", h2))
     s.append(Paragraph(
         "9.1 For each scheme year the Board sets a referral ceiling at the reference household size "
-        "of four persons. The ceiling for the 2027/28 scheme year is the lowest amount, being a "
-        "multiple of one hundred pesos, such that when the ceiling for each other band is generated "
-        "from it by the factor in Schedule B and rounded up to the nearest one hundred pesos, the "
-        "share of the scheme's awards that would be referred under clause 7 is at or below 6.0 per "
-        "cent. The share is tested as it is computed and not as it is rounded for reporting.", body))
+        "of four persons. The ceiling for the 2027/28 scheme year is the lowest whole multiple of "
+        "one thousand pesos such that when the ceiling for each other band is generated from it by "
+        "the factor in Schedule B and rounded up to the nearest one hundred pesos, the share of the "
+        "scheme's awards that would be referred under clause 7 is at or below 6.0 per cent. The "
+        "share is tested as it is computed and not as it is rounded for reporting.", body))
     s.append(Paragraph(
         "9.2 For 9.1 the scheme's awards are the awards of all accredited partners at the award "
         "volumes and award levels of the twelve months to 31 March 2027. An award is counted in the "
@@ -311,6 +311,11 @@ def policy(path, R):
     s.append(Paragraph(
         "9.5 The share in 9.1 is the reviewing capacity the Board has agreed for the Desk for the "
         "scheme year.", body))
+    s.append(Paragraph(
+        "9.6 The reference-size ceiling is set in whole thousands of pesos under 9.1 because it is "
+        "printed on the household relief guidance partners issue and is loaded into the partner "
+        "claim portal's award validation table before the scheme year opens, and the Office "
+        "maintains both to the figure the Board approves rather than restating them in year.", body))
 
     s.append(Paragraph("Schedule A: household-size bands", h2))
     s.append(grid([["Band", "Household size"]] + [[RC.legacy_band(b), P.BAND_LABEL[b]] for b in P.BANDS],
@@ -456,9 +461,9 @@ One more thing, and it comes from the audit committee rather than from me. The D
 pre-payment control and we used to have one: the claim check held an amount back on the way through
 until we withdrew it at the end of 2025. Before the Board is asked to put a new one in, the committee
 wants to see what the old one was holding back and whether what the Treasury actually sent out ties
-to what partners claimed. Steven has put the check register and the Treasury's archive extract for
-the closed claim months in the folder with the rest. Quarter by quarter is enough, and the committee
-reads the scheme's own quarters.
+to what partners claimed, and on how many payment instructions it went out. Steven has put the check
+register and the Treasury's archive extract for the closed claim months in the folder with the rest.
+Quarter by quarter is enough, and the committee reads the scheme's own quarters.
 
 Thanks,
 %s
@@ -575,12 +580,9 @@ The Treasury's archived payment runs for the closed claim months, retrieved for 
 The columns are those of %(treasury)s, and `claim_months_covered` is the claim month the line
 settles.
 
-The archive is an export of payment instructions against the run lines they settle. Where one
-instruction settled both halves of a partner's claim month, because the first half's release was
-held for a mandate re-validation, the instruction's own `gross_php`, `recoveries_php` and `net_php`
-stand on each of the two lines it covers; a line that repeats all three amounts of another line for
-the same partner and claim month is that one instruction a second time, and the instruction is
-counted once.
+A partner's claim month is normally released over the two runs of the following month, on the 8th and
+the 22nd. `run_ref` is the Treasury's reference for the run, and the extract was taken on 31 January
+2026.
 
 ## %(followup)s
 

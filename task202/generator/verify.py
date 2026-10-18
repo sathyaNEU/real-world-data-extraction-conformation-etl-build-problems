@@ -69,6 +69,20 @@ def ceiling(C, b, scale):
     return 100 * int(math.ceil(round(C * scale[b], 6) / 100.0))
 
 
+WORDS = {"one hundred": 100, "five hundred": 500, "one thousand": 1000, "two thousand": 2000}
+
+
+def read_candidates(policy_text):
+    """Clause 9.1 files the grid the ceiling is set on, so the candidate set is read off the policy
+    rather than assumed: the lowest whole multiple of the amount 9.1 names."""
+    m = re.search(r"lowest whole multiple of ([a-z ]+?) pesos", policy_text)
+    need(m is not None, "clause 9.1 names the grid the ceiling is set on")
+    step = WORDS.get(m.group(1).strip())
+    need(step is not None, "the grid is an amount this verifier knows", m.group(1))
+    need("set in whole thousands of pesos" in policy_text, "9.6 states why the grid is what it is")
+    return list(range(step, 30001, step)), step
+
+
 def read_scale(policy_text):
     """Schedule B files the scale as a rule and tabulates no factor, so every band's factor is
     computed from B.2: the square root of the ratio of the band's size to the reference size of four,
@@ -263,20 +277,26 @@ def closed_annex(target):
         for r in csv.DictReader(fh):
             arch.setdefault((pkey(r["partner_code"]), month(r["claim_months_covered"])), []).append(
                 (float(r["gross_php"]), float(r["recoveries_php"]), float(r["net_php"])))
-    trans, recov, repeats = {}, {}, 0
+    trans, recov, ninstr, repeats = {}, {}, {}, 0
     for k, lines in arch.items():
         if round(sum(g for g, _, _ in lines), 2) > claimed.get(k, 0.0) + 0.005:
             need(len(set(lines)) == 1, "the over-stated month's lines state the same amounts", str(k))
             trans[k], recov[k], repeats = lines[0][2], lines[0][1], repeats + 1
+            ninstr[k] = 1
         else:
             trans[k] = round(sum(x[2] for x in lines), 2)
             recov[k] = round(sum(x[1] for x in lines), 2)
+            ninstr[k] = len(lines)
     need(repeats > 0, "the archive carries payment instructions across run lines", repeats)
     qs = sorted({scheme_quarter(mo) for _, mo in own})
     agg = lambda src, keyf: {q: round(sum(keyf(v) for k, v in src.items()
                                           if scheme_quarter(k[1]) == q), 2) for q in qs}
     out = {"transferred": agg(trans, lambda v: v), "held": agg(own, lambda v: v[1]),
-           "claimed": agg(claimed, lambda v: v), "recovered": agg(recov, lambda v: v)}
+           "claimed": agg(claimed, lambda v: v), "recovered": agg(recov, lambda v: v),
+           "passed": {q: int(round(sum(v[0] for k, v in own.items()
+                                       if scheme_quarter(k[1]) == q))) for q in qs}}
+    out["instructions"] = {q: int(round(sum(n for k, n in ninstr.items()
+                                            if scheme_quarter(k[1]) == q))) for q in qs}
     out["unsettled"] = {q: round(out["claimed"][q] - out["held"][q] - out["recovered"][q]
                                  - out["transferred"][q], 2) for q in qs}
     reasons = {r: 0 for r in REASONS}
@@ -319,13 +339,15 @@ def main(target, golden, figures_path, submission_path):
     need(len(cells) == 528, "window cells", len(cells))
     awards = sum(n for n, t in cells.values())
 
+    cands, step = read_candidates(pol)
     C = None
-    for cand in range(1000, 30001, 100):
+    for cand in cands:
         if share(cand, cells, shape, scale) <= CAP:
             C = cand
             break
     need(C is not None, "a qualifying ceiling exists")
-    need(share(C - 100, cells, shape, scale) > CAP, "the ceiling is the lowest qualifying multiple")
+    need(all(share(c, cells, shape, scale) > CAP for c in cands if c < C),
+         "the ceiling is the lowest qualifying amount in schedule E")
 
     fig = json.load(open(figures_path))
     need(fig["call"] == C, "the call", "%s vs %s" % (fig["call"], C))
@@ -334,13 +356,15 @@ def main(target, golden, figures_path, submission_path):
     need(fig["portal_window_rows"] == rowsn, "portal rows in the window")
     need(fig["portal_partners"] == nparts, "portal partners")
     need(round(100 * share(C, cells, shape, scale), 2) == fig["share_pct"], "the referred share")
-    need(round(100 * share(C - 100, cells, shape, scale), 2) == fig["share_down_pct"],
-         "the share one step down")
+    need(round(100 * share(C - step, cells, shape, scale), 2) == fig["share_down_pct"],
+         "the share one schedule step down")
+    need(fig["call_down"] == C - step, "the preceding schedule entry")
+    need(fig["candidate_step"] == step, "schedule E's spacing")
     mu = sum(shape) / len(shape)
     sd = (sum((x - mu) ** 2 for x in shape) / (len(shape) - 1)) ** 0.5
     need(round(sd / mu, 2) == fig["cv"], "the coefficient of variation", sd / mu)
     dflt = None
-    for cand in range(1000, 30001, 100):
+    for cand in cands:
         if share(cand, cells, [1.0], scale) <= CAP:
             dflt = cand
             break
@@ -373,6 +397,15 @@ def main(target, golden, figures_path, submission_path):
     for q, v in annex["held"].items():
         need(fig["asks"]["held"][q] == v, "annex held %s" % q,
              "%s vs %s" % (fig["asks"]["held"][q], v))
+    for q, v in annex["passed"].items():
+        need(fig["asks"]["passed"][q] == v, "annex passed %s" % q,
+             "%s vs %s" % (fig["asks"]["passed"][q], v))
+    for q, v in annex["instructions"].items():
+        need(fig["asks"]["instructions"][q] == v, "annex instructions %s" % q,
+             "%s vs %s" % (fig["asks"]["instructions"][q], v))
+    for q in annex["transferred"]:
+        need(abs(annex["claimed"][q] - annex["held"][q] - annex["passed"][q]) <= 2.0,
+             "the annex's passed and held close on what was claimed in %s" % q)
     for r, v in annex["holds_by_reason"].items():
         need(fig["asks"]["holds_by_reason"][r] == v, "annex holds for %s" % r,
              "%s vs %s" % (fig["asks"]["holds_by_reason"][r], v))
@@ -390,9 +423,12 @@ def main(target, golden, figures_path, submission_path):
     need("{:,}".format(sum(annex["unsettled"].values())) in head,
          "the annex's finding line states what was not settled")
     for q, v in annex["transferred"].items():
-        need(int(pay[q][5]) == v, "the annex workbook states what was transferred in %s" % q,
-             pay[q][5])
-        need(int(pay[q][2]) == annex["held"][q], "the annex workbook states the hold in %s" % q)
+        need(int(pay[q][6]) == v, "the annex workbook states what was settled in %s" % q,
+             pay[q][6])
+        need(int(pay[q][3]) == annex["held"][q], "the annex workbook states the hold in %s" % q)
+        need(int(pay[q][2]) == annex["passed"][q], "the annex workbook states what passed in %s" % q)
+        need(int(pay[q][7]) == annex["instructions"][q],
+             "the annex workbook states the instructions in %s" % q)
     hr = {}
     for row in ga["Hold reasons"].iter_rows(min_row=5, max_row=10, values_only=True):
         hr[str(row[0]).strip()] = int(row[1])
@@ -400,7 +436,11 @@ def main(target, golden, figures_path, submission_path):
         need(hr[r] == v, "the annex workbook states the claim-months held for %s" % r, hr.get(r))
     sub0 = open(submission_path, encoding="utf-8").read()
     for q, v in annex["transferred"].items():
-        need("{:,}".format(v) in sub0, "the write-up states what was transferred in %s" % q)
+        need("{:,}".format(v) in sub0, "the write-up states what was settled in %s" % q)
+    for q, v in annex["passed"].items():
+        need("{:,}".format(v) in sub0, "the write-up states what passed in %s" % q)
+    for q, v in annex["instructions"].items():
+        need("{:,}".format(v) in sub0, "the write-up states the instructions in %s" % q)
     for r, v in annex["holds_by_reason"].items():
         need("%s: %s" % (r, "{:,}".format(v)) in sub0, "the write-up states the holds for %s" % r)
 

@@ -75,7 +75,8 @@ def metadata(target, fig):
                      "date": P.AS_OF, "license": "CC0-1.0 (original work)"}],
         "created": "2026-10-18",
         "generator": "task202/generator/make.py",
-        "answer": {"call": fig["call_php"], "unit": "pesos to the nearest PHP 100"},
+        "answer": {"call": fig["call_php"],
+                   "unit": "pesos, an amount listed in the operating policy's schedule E"},
         "files": files,
     }
     with open(os.path.join(TASK, "metadata.json"), "w") as fh:

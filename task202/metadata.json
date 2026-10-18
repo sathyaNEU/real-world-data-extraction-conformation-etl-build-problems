@@ -50,14 +50,14 @@
   "created": "2026-10-18",
   "generator": "task202/generator/make.py",
   "answer": {
-    "call": "PHP 7,800",
-    "unit": "pesos to the nearest PHP 100"
+    "call": "PHP 8,000",
+    "unit": "pesos, an amount listed in the operating policy's schedule E"
   },
   "files": [
     {
       "path": "portal_awards_2025-01_2027-03.csv",
       "format": "csv",
-      "bytes": 2625352,
+      "bytes": 2625071,
       "rows": 26195,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -66,7 +66,7 @@
     {
       "path": "hrg_claim_returns_fy2024-25.xlsx",
       "format": "xlsx",
-      "bytes": 170966,
+      "bytes": 170867,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -75,7 +75,7 @@
     {
       "path": "hrg_claim_returns_fy2025-26.xlsx",
       "format": "xlsx",
-      "bytes": 170728,
+      "bytes": 170619,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -84,7 +84,7 @@
     {
       "path": "hrg_claim_returns_fy2026-27.xlsx",
       "format": "xlsx",
-      "bytes": 151300,
+      "bytes": 151449,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -93,7 +93,7 @@
     {
       "path": "hrg_operating_policy_2027_edition.pdf",
       "format": "pdf",
-      "bytes": 6286,
+      "bytes": 6477,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -138,7 +138,7 @@
     {
       "path": "DATA_DICTIONARY.md",
       "format": "md",
-      "bytes": 6595,
+      "bytes": 6304,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -156,7 +156,7 @@
     {
       "path": "referral_ceiling_request.eml",
       "format": "eml",
-      "bytes": 1997,
+      "bytes": 2047,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -165,7 +165,7 @@
     {
       "path": "hrg_annual_report_partner_summary_fy2025-26.pdf",
       "format": "pdf",
-      "bytes": 3951,
+      "bytes": 3945,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -174,7 +174,7 @@
     {
       "path": "treasury_disbursement_runs_2026_2027.csv",
       "format": "csv",
-      "bytes": 202349,
+      "bytes": 202295,
       "rows": 2615,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -192,7 +192,7 @@
     {
       "path": "hrg_claim_check_register_2024_2025.csv",
       "format": "csv",
-      "bytes": 141864,
+      "bytes": 141838,
       "rows": 1604,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -201,7 +201,7 @@
     {
       "path": "treasury_disbursement_runs_2024_2025.csv",
       "format": "csv",
-      "bytes": 236146,
+      "bytes": 236083,
       "rows": 3053,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",

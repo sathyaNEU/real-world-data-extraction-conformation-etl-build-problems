@@ -3,20 +3,20 @@
     "check_months": 1566,
     "check_rows": 1604,
     "claimed": {
-      "2024/25 Q1": 32629209,
-      "2024/25 Q2": 31769423,
-      "2024/25 Q3": 25194008,
-      "2024/25 Q4": 28140223,
-      "2025/26 Q1": 41053381,
-      "2025/26 Q2": 40759836
+      "2024/25 Q1": 32056732,
+      "2024/25 Q2": 31212030,
+      "2024/25 Q3": 24751981,
+      "2024/25 Q4": 27646505,
+      "2025/26 Q1": 40333102,
+      "2025/26 Q2": 40044708
     },
     "held": {
-      "2024/25 Q1": 267012,
-      "2024/25 Q2": 147874,
-      "2024/25 Q3": 270559,
-      "2024/25 Q4": 165711,
-      "2025/26 Q1": 275978,
-      "2025/26 Q2": 228163
+      "2024/25 Q1": 262327,
+      "2024/25 Q2": 145280,
+      "2024/25 Q3": 265812,
+      "2024/25 Q4": 162803,
+      "2025/26 Q1": 271136,
+      "2025/26 Q2": 224160
     },
     "holds_by_reason": {
       "Arithmetic error on return": 17,
@@ -27,6 +27,22 @@
       "Receipts incomplete": 73
     },
     "instruction_repeats": 138,
+    "instructions": {
+      "2024/25 Q1": 486,
+      "2024/25 Q2": 483,
+      "2024/25 Q3": 493,
+      "2024/25 Q4": 481,
+      "2025/26 Q1": 488,
+      "2025/26 Q2": 484
+    },
+    "passed": {
+      "2024/25 Q1": 31794406,
+      "2024/25 Q2": 31066751,
+      "2024/25 Q3": 24486170,
+      "2024/25 Q4": 27483702,
+      "2025/26 Q1": 40061966,
+      "2025/26 Q2": 39820548
+    },
     "quarters": [
       "2024/25 Q1",
       "2024/25 Q2",
@@ -37,92 +53,93 @@
     ],
     "recovered": {
       "2024/25 Q1": 0,
-      "2024/25 Q2": 2370,
-      "2024/25 Q3": 1231,
-      "2024/25 Q4": 3552,
-      "2025/26 Q1": 4842,
+      "2024/25 Q2": 2328,
+      "2024/25 Q3": 1210,
+      "2024/25 Q4": 3489,
+      "2025/26 Q1": 4757,
       "2025/26 Q2": 0
     },
     "run_months": 1527,
     "transferred": {
-      "2024/25 Q1": 32135504,
-      "2024/25 Q2": 30755712,
-      "2024/25 Q3": 24385079,
-      "2024/25 Q4": 26754851,
-      "2025/26 Q1": 39755121,
-      "2025/26 Q2": 39301120
+      "2024/25 Q1": 31571689,
+      "2024/25 Q2": 30216105,
+      "2024/25 Q3": 23957244,
+      "2024/25 Q4": 26285439,
+      "2025/26 Q1": 39057620,
+      "2025/26 Q2": 38611585
     },
     "unsettled": {
-      "2024/25 Q1": 226694,
-      "2024/25 Q2": 863467,
-      "2024/25 Q3": 537140,
-      "2024/25 Q4": 1216110,
-      "2025/26 Q1": 1017440,
-      "2025/26 Q2": 1230553
+      "2024/25 Q1": 222717,
+      "2024/25 Q2": 848317,
+      "2024/25 Q3": 527715,
+      "2024/25 Q4": 1194773,
+      "2025/26 Q1": 999589,
+      "2025/26 Q2": 1208963
     }
   },
   "awards": 49265,
   "bands": {
     "1": {
       "awards": 9149,
-      "ceiling": 3900,
+      "ceiling": 4000,
       "factor": 0.5,
-      "referred_share": 6.2,
-      "referred_value_share": 22.9
+      "referred_share": 5.8,
+      "referred_value_share": 22.0
     },
     "2": {
       "awards": 9080,
-      "ceiling": 5600,
+      "ceiling": 5700,
       "factor": 0.707,
-      "referred_share": 5.8,
-      "referred_value_share": 22.1
+      "referred_share": 5.5,
+      "referred_value_share": 21.3
     },
     "3": {
       "awards": 8987,
-      "ceiling": 6800,
+      "ceiling": 7000,
       "factor": 0.866,
-      "referred_share": 5.8,
-      "referred_value_share": 21.9
+      "referred_share": 5.4,
+      "referred_value_share": 21.0
     },
     "4": {
       "awards": 8829,
-      "ceiling": 7800,
+      "ceiling": 8000,
       "factor": 1.0,
-      "referred_share": 6.1,
-      "referred_value_share": 22.5
+      "referred_share": 5.7,
+      "referred_value_share": 21.7
     },
     "5": {
       "awards": 7063,
-      "ceiling": 8800,
+      "ceiling": 9000,
       "factor": 1.118,
-      "referred_share": 6.0,
-      "referred_value_share": 22.4
+      "referred_share": 5.7,
+      "referred_value_share": 21.7
     },
     "6": {
       "awards": 6157,
-      "ceiling": 9600,
+      "ceiling": 9800,
       "factor": 1.225,
-      "referred_share": 5.7,
-      "referred_value_share": 21.8
+      "referred_share": 5.4,
+      "referred_value_share": 21.1
     }
   },
-  "call": 7800,
-  "call_down": 7700,
-  "call_php": "PHP 7,800",
+  "call": 8000,
+  "call_down": 7000,
+  "call_php": "PHP 8,000",
+  "candidate_step": 1000,
   "cells": 528,
   "committed_pct": 6.0,
   "cv": 0.72,
-  "default_call": 5800,
-  "default_share_pct": 9.82,
+  "default_call": 6000,
+  "default_share_pct": 8.93,
   "ks_gamma": 19,
   "ks_lognormal": 16,
   "partners": 88,
   "portal_partners": 22,
   "portal_window_rows": 11788,
-  "referred_awards": 2928,
-  "referred_share": 5.9,
-  "referred_value_share": 22.2,
+  "referred_awards": 2753,
+  "referred_share": 5.6,
+  "referred_value_share": 21.4,
   "round_to": 100,
-  "share_down_pct": 6.04,
-  "share_pct": 5.94
+  "share_down_pct": 6.85,
+  "share_pct": 5.59
 }

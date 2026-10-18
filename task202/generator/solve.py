@@ -1,8 +1,8 @@
 """Clause 9's quantity, and every route to it.
 
-Clause 9 files the quantity: the lowest amount, a multiple of PHP 100, such that when each band's
-ceiling is generated from it by schedule B's scale and rounded up to the nearest PHP 100, the share
-of the scheme's awards that would be referred is at or below 6.0 per cent. It files no method, and
+Clause 9 files the quantity: the lowest amount in schedule E such that when each band's ceiling is
+generated from it by schedule B's scale and rounded up to the nearest PHP 100, the share of the
+scheme's awards that would be referred is at or below 6.0 per cent. It files no method, and
 the seven routes below all execute it; they differ in which distribution the share is computed on.
 """
 import numpy as np
@@ -46,15 +46,24 @@ def share_pool(C, vals, bands, weight):
     return above / tot
 
 
+def candidates():
+    """Schedule E, the amounts the Board approves a reference-size ceiling from."""
+    return list(range(P.CANDIDATE_FROM, P.CANDIDATE_TO + 1, P.CANDIDATE_STEP))
+
+
 def lowest(fn, cap=None, lo=1000, hi=90000):
-    """The lowest multiple of PHP 100 whose share is at or below the cap (clause 9's own words)."""
+    """The lowest amount in schedule E whose share is at or below the cap (clause 9's own words).
+    The search is over schedule E's own spacing, which is what clause 9.1 names as the candidate
+    set; it is deliberately wider than schedule B's PHP 100 rounding of the generated band
+    ceilings, which is a separate rule."""
     cap = P.COMMITTED_SHARE if cap is None else cap
-    a, b = int(lo), int(hi)
+    S = P.CANDIDATE_STEP
+    a, b = int(lo // S * S), int(-(-hi // S) * S)
     assert fn(b) <= cap, "the search range does not reach the cap"
     if fn(a) <= cap:
         return a
-    while b - a > P.ROUND_TO:
-        mid = max(int((a + b) // 2 // P.ROUND_TO * P.ROUND_TO), a + P.ROUND_TO)
+    while b - a > S:
+        mid = max(int((a + b) // 2 // S * S), a + S)
         if fn(mid) <= cap:
             b = mid
         else:
