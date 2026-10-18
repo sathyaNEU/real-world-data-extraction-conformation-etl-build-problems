@@ -1,0 +1,306 @@
+{
+ "min_out": 89,
+ "interval_years": 4.75,
+ "year_days": 365.25,
+ "fit_lo": 15,
+ "fit_hi": 65,
+ "range_lo_min": 10,
+ "range_lo_max": 30,
+ "range_hi_min": 55,
+ "range_hi_max": 75,
+ "alert_line": 80,
+ "b1_days": 30,
+ "comp_kalinawan_city": 89,
+ "lo_kalinawan_city": 84,
+ "hi_kalinawan_city": 94,
+ "comp_santa_cruz": 63,
+ "lo_santa_cruz": 59,
+ "hi_santa_cruz": 66,
+ "comp_san_isidro": 63,
+ "lo_san_isidro": 60,
+ "hi_san_isidro": 67,
+ "comp_esperanza": 89,
+ "lo_esperanza": 84,
+ "hi_esperanza": 99,
+ "comp_magsaysay": 89,
+ "lo_magsaysay": 83,
+ "hi_magsaysay": 96,
+ "comp_mabini": 89,
+ "lo_mabini": 82,
+ "hi_mabini": 96,
+ "comp_libertad": 56,
+ "lo_libertad": 51,
+ "hi_libertad": 60,
+ "comp_san_luis": 64,
+ "lo_san_luis": 59,
+ "hi_san_luis": 68,
+ "comp_del_carmen": 52,
+ "lo_del_carmen": 49,
+ "hi_del_carmen": 57,
+ "comp_quezon": 90,
+ "lo_quezon": 86,
+ "hi_quezon": 95,
+ "comp_rizal": 89,
+ "lo_rizal": 81,
+ "hi_rizal": 92,
+ "comp_san_miguel": 90,
+ "lo_san_miguel": 84,
+ "hi_san_miguel": 93,
+ "b1_KLW-01": 88.0,
+ "b1_KLW-02": 76.5,
+ "b1_KLW-03": 73.6,
+ "b1_KLW-04": 85.2,
+ "b1_KLW-05": 82.8,
+ "b1_KLW-06": 81.6,
+ "b1_KLW-07": 61.0,
+ "b1_KLW-08": 66.0,
+ "b1_KLW-09": 70.4,
+ "b1_KLW-10": 86.0,
+ "b1_KLW-11": 81.5,
+ "b1_KLW-12": 83.3,
+ "c1_KLW-01": 77.2,
+ "c1_KLW-02": 84.6,
+ "c1_KLW-03": 84.4,
+ "c1_KLW-04": 81.8,
+ "c1_KLW-05": 77.3,
+ "c1_KLW-06": 59.2,
+ "c1_KLW-07": 39.8,
+ "c1_KLW-08": 37.8,
+ "c1_KLW-09": 64.6,
+ "c1_KLW-10": 78.1,
+ "c1_KLW-11": 74.9,
+ "c1_KLW-12": 75.9,
+ "call": [
+  "City of Santa Cruz",
+  "San Isidro",
+  "Libertad",
+  "San Luis",
+  "Del Carmen"
+ ],
+ "lgus": {
+  "Kalinawan City": {
+   "completeness": 89,
+   "interval": [
+    84,
+    94
+   ],
+   "alert": false,
+   "b1": 88.0,
+   "c1": 77.2,
+   "raw": 0.8931,
+   "closed": 0.915,
+   "movers50": 365,
+   "reg_adult": 4090
+  },
+  "City of Santa Cruz": {
+   "completeness": 63,
+   "interval": [
+    59,
+    66
+   ],
+   "alert": true,
+   "b1": 76.5,
+   "c1": 84.6,
+   "raw": 0.6326,
+   "closed": 0.6194,
+   "movers50": 54,
+   "reg_adult": 2404
+  },
+  "San Isidro": {
+   "completeness": 63,
+   "interval": [
+    60,
+    67
+   ],
+   "alert": true,
+   "b1": 73.6,
+   "c1": 84.4,
+   "raw": 0.6316,
+   "closed": 0.6304,
+   "movers50": 69,
+   "reg_adult": 1975
+  },
+  "Esperanza": {
+   "completeness": 89,
+   "interval": [
+    84,
+    99
+   ],
+   "alert": false,
+   "b1": 85.2,
+   "c1": 81.8,
+   "raw": 0.8923,
+   "closed": 0.7234,
+   "movers50": -653,
+   "reg_adult": 2567
+  },
+  "Magsaysay": {
+   "completeness": 89,
+   "interval": [
+    83,
+    96
+   ],
+   "alert": false,
+   "b1": 82.8,
+   "c1": 77.3,
+   "raw": 0.8908,
+   "closed": 0.7592,
+   "movers50": -544,
+   "reg_adult": 2485
+  },
+  "Mabini": {
+   "completeness": 89,
+   "interval": [
+    82,
+    96
+   ],
+   "alert": false,
+   "b1": 81.6,
+   "c1": 59.2,
+   "raw": 0.8879,
+   "closed": 0.7382,
+   "movers50": -581,
+   "reg_adult": 2419
+  },
+  "Libertad": {
+   "completeness": 56,
+   "interval": [
+    51,
+    60
+   ],
+   "alert": true,
+   "b1": 61.0,
+   "c1": 39.8,
+   "raw": 0.5564,
+   "closed": 0.4951,
+   "movers50": -242,
+   "reg_adult": 1026
+  },
+  "San Luis": {
+   "completeness": 64,
+   "interval": [
+    59,
+    68
+   ],
+   "alert": true,
+   "b1": 66.0,
+   "c1": 37.8,
+   "raw": 0.6385,
+   "closed": 0.5764,
+   "movers50": -263,
+   "reg_adult": 1359
+  },
+  "Del Carmen": {
+   "completeness": 52,
+   "interval": [
+    49,
+    57
+   ],
+   "alert": true,
+   "b1": 70.4,
+   "c1": 64.6,
+   "raw": 0.5173,
+   "closed": 0.4612,
+   "movers50": -291,
+   "reg_adult": 1178
+  },
+  "Quezon": {
+   "completeness": 90,
+   "interval": [
+    86,
+    95
+   ],
+   "alert": false,
+   "b1": 86.0,
+   "c1": 78.1,
+   "raw": 0.8978,
+   "closed": 0.93,
+   "movers50": 64,
+   "reg_adult": 2296
+  },
+  "Rizal": {
+   "completeness": 89,
+   "interval": [
+    81,
+    92
+   ],
+   "alert": false,
+   "b1": 81.5,
+   "c1": 74.9,
+   "raw": 0.8889,
+   "closed": 0.9285,
+   "movers50": 97,
+   "reg_adult": 1795
+  },
+  "San Miguel": {
+   "completeness": 90,
+   "interval": [
+    84,
+    93
+   ],
+   "alert": false,
+   "b1": 83.3,
+   "c1": 75.9,
+   "raw": 0.8977,
+   "closed": 0.9535,
+   "movers50": 86,
+   "reg_adult": 2068
+  }
+ },
+ "rung_sets": {
+  "closed": [
+   "City of Santa Cruz",
+   "San Isidro",
+   "Esperanza",
+   "Magsaysay",
+   "Mabini",
+   "Libertad",
+   "San Luis",
+   "Del Carmen"
+  ],
+  "closed_trimmed": [
+   "City of Santa Cruz",
+   "San Isidro",
+   "Esperanza",
+   "Magsaysay",
+   "Mabini",
+   "Libertad",
+   "San Luis",
+   "Del Carmen"
+  ],
+  "seg": [
+   "City of Santa Cruz",
+   "San Isidro",
+   "Esperanza",
+   "Magsaysay",
+   "Mabini",
+   "Libertad",
+   "San Luis",
+   "Del Carmen"
+  ],
+  "brass": [
+   "Kalinawan City",
+   "City of Santa Cruz",
+   "San Isidro",
+   "Esperanza",
+   "Magsaysay",
+   "Mabini",
+   "Libertad",
+   "San Luis",
+   "Del Carmen",
+   "Quezon",
+   "Rizal",
+   "San Miguel"
+  ],
+  "in_province": [
+   "City of Santa Cruz",
+   "San Isidro",
+   "Esperanza",
+   "Magsaysay",
+   "Mabini",
+   "Libertad",
+   "San Luis",
+   "Del Carmen"
+  ]
+ }
+}
