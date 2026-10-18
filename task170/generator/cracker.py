@@ -40,6 +40,10 @@ ROUTES = {
     "cracker_refusals_cracked": dict(region_route="registry_current", date_route="signed", products="cms_code"),
     "cracker_donation_cracked": dict(region_route="registry_current", date_route="signed", refusals="include"),
     "label_posted": dict(region_route="label", date_route="posted", refusals="include", products="cms_code"),
+    "cracker_returns_netted": dict(region_route="registry_current", date_route="signed", refusals="net_returns",
+                                   products="cms_code"),
+    "cracker_reissue_cracked_returns_netted": dict(region_route="registry_dated", date_route="signed",
+                                                   refusals="net_returns", products="cms_code"),
     "cracker_both_A_devices_cracked": dict(region_route="registry_dated", date_route="signed", products="cms_code"),
     "cracker_both_B_devices_cracked": dict(region_route="registry_dated", date_route="signed", refusals="include"),
 }

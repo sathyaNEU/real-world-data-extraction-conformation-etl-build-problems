@@ -59,17 +59,31 @@ class Pack:
             c = D.fromisoformat(r["closed_on"]) if r["closed_on"] else D(2100, 1, 1)
             if (o.year, o.month) <= mo <= (c.year, c.month):
                 hit.append(r)
+        if not hit and route == "registry_dated_loose":
+            hit = sorted(recs, key=lambda r: r["opened_on"])[-1:]
         assert len(hit) == 1, (code, d, len(hit))
         return hit[0]["region"]
 
 
 def deliveries(P, region_route="registry_dated", date_route="signed", depot=False, refusals="exclude"):
     """Bottles by (region, cycle) and national by month. A delivery refused at the gate (its proof of delivery
-    records the refusal, and a return line brings the goods back) was not delivered."""
+    records the refusal, and a return line brings the goods back) was not delivered. refusals "net_returns" counts
+    every customer delivery and nets every return line, dated by its posting, against its customer's region."""
     out = {(r, c): 0 for r in REGIONS for c in CYCLES}
     month = {}
     for ln in P.lines:
         if ln["delivery_type"] == "LR":
+            if refusals == "net_returns":
+                d = D.fromisoformat(ln["posting_date"])
+                a = P.acc[ln["customer"]]
+                rr = "registry_dated_loose" if region_route == "registry_dated" else region_route
+                reg = (P.region(a["mfl_code"], d, rr, ln["delivery_region"]) if a["mfl_code"]
+                       else ln["delivery_region"])
+                if region_route == "label":
+                    reg = ln["delivery_region"]
+                for c, (lo, hi) in CYCLES.items():
+                    if lo <= d <= hi and reg in REGIONS:
+                        out[(reg, c)] -= int(ln["qty"])
             continue
         if ln["delivery_type"] != "LF" and not depot:
             continue

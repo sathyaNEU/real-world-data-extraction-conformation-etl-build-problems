@@ -6,12 +6,12 @@
   "domain": "healthcare-delivery-health-economics",
   "subdomain": "utilization-access-demand-forecasting",
   "client_domain": "healthcare-delivery-health-economics",
-  "niche": "national ARV quantification of the adult first-line pack across the paediatric weight-band transition",
+  "niche": "national ARV quantification of the children's line of the adult first-line TLD order across the paediatric weight-band transition, the band just lowered to 30 kg and the children's visits just thinned",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "2,690,000 bottles of TLD 30s in the C7 order",
+  "answer": "11 pallets (88,704 bottles) of TLD 30s on line 2, the children's line, of the C7 order",
   "answer_source": "generator/figures.json",
   "gap": [
     "time",
@@ -31,13 +31,13 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "operations_log",
   "stakeholder_role": "the Central Medical Stores quantification lead",
   "role_family": "procurement_lead",
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "paediatric register visit extract",
-    "rows": 790033,
+    "rows": 698723,
     "entity": "one clinic visit of a child on antiretroviral treatment, with the weighing and the regimen dispensed",
     "grain": "child x clinic visit",
     "source": "synthetic"
@@ -48,7 +48,7 @@
   "world": {
     "geography": "fictional",
     "currency": "USD",
-    "org_type": "national Central Medical Stores of a southern African ministry of health, ordering antiretrovirals for a programme of about 13 million people",
+    "org_type": "national Central Medical Stores of a southern African ministry of health, ordering antiretrovirals for a programme of about 310,000 adults on TLD and 12,000 children on treatment",
     "invented_names": [],
     "people": [
       "Nomalanga Magubane",
@@ -63,11 +63,11 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "Units move to another line at the first of their scheduled measurements that reads at or above a fixed level, and a single measurement scatters around each unit's own path by more than the path rises between measurements, so most moves come months before the paths reach the level; only the chance that each scheduled measurement reads over the level, taken from each unit's own path and the record's scatter, forecasts them, while paths projected to the level, a fixed age, the recent count of moves, the moves seen at each recorded level or a pooled rate each misplace them.",
-  "driver_concrete": "Children on paediatric antiretroviral regimens move to adult TLD at the first clinic weighing that reads 30 kg or more, and a clinic weighing scatters more than a kilogram either side of a child's own growth line while the line rises about a fifth of a kilogram a month, so most switches come months before the line reaches 30 kg; the C7 order needs each child's chance of a qualifying weighing at each scheduled visit, and projecting growth to 30 kg, a switch age, the recent switch count or the switch rate by last recorded weight each leave the order thousands of bottles short.",
-  "stump": "A competent solver fits each child's growth line from the register, switches the child to TLD at the first scheduled visit after the line reaches 30 kg and files an order of 2,665,000 bottles against 2,690,000, because the first weighing that reads 30 kg comes months before the line gets there.",
+  "driver_concrete": "Children on paediatric antiretroviral regimens move to adult TLD at the first clinic weighing that reads 30 kg or more, and a clinic weighing scatters more than a kilogram either side of a child's own growth line while the line rises about a fifth of a kilogram a month, so most switches come months before the line reaches 30 kg; the children's line of the C7 order needs each child's chance of a qualifying weighing at each visit its own dispensing interval schedules, and projecting growth to 30 kg, a switch age, the recent switch count or the switch rate by last recorded weight each misplace the line by a pallet or more, the register's own rates because its switches came under the 35 kg band and at the monthly visits the 2026 guidelines replaced.",
+  "stump": "A competent solver fits each child's growth line from the register, switches the child to TLD at the first scheduled visit after the line reaches 30 kg and files line 2 at 10 pallets against 11, because the first weighing that reads 30 kg comes months before the line gets there.",
   "stump_class": "analytical",
-  "analyst_test": "With every field read and the 30 kg dosing band applied as filed, a strong analyst projects each child's weighings forward on a fitted growth line, moves the child to TLD when the line reaches 30 kg and files a C7 order of 2,665,000 bottles, 5 steps of 5,000 below the 2,690,000 the scheduled weighings imply.",
-  "domain_test": "The order turns on the paediatric regimen-transition forecast of ARV quantification, the patient-months on TLD of children who will be weighed into the 30 kg band at their scheduled visits, built from each child's weighings, the clinics' weighing scatter, visit schedules and retention; with another field's nouns the dosing band applied at a clinic weighing, the dispensing interval and the cycle order stop meaning anything.",
+  "analyst_test": "With every field read, the 2026 dosing band applied as filed and the SOP's line 2 built as filed, a strong analyst projects each child's weighings forward on a fitted growth line, moves the child to TLD when the line reaches 30 kg and files line 2 at 10 pallets of 8,064 bottles, one pallet below the 11 the scheduled weighings imply.",
+  "domain_test": "The line turns on the paediatric regimen-transition forecast of ARV quantification, the patient-months on TLD of children who will be weighed into the 30 kg band at their scheduled visits, built from each child's weighings, the clinics' weighing scatter, each child's dispensing interval and retention; with another field's nouns the dosing band applied at a clinic weighing, the dispensing interval and the cycle order's paediatric line stop meaning anything.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:first-scheduled-weighing-over-the-dosing-band-from-each-childs-growth-line-and-the-scale-scatter",
   "layer1": [
@@ -77,12 +77,14 @@
     "estimated dates of birth entered as 1 July of the year",
     "drug collections by a caregiver with no weighing recorded",
     "visit rows re-sent by clinic tablets after a failed sync",
+    "the 2026 edition of the dosing annex in force from 1 March 2026, the register's earlier moves onto TLD made at 35 kg and its children's visits thinned by the two- and three-month dispensing it introduced",
     "deaths, transfers out and loss to follow-up entered weeks after the last visit",
     "the logistics information system's monthly facility reports with returned and resubmitted months, each stamped with the requisition group's region at submission",
     "the warehouse system's delivery documents: posting dates days before the proof of delivery, transfers between CMS warehouses, returns from customers and the odd delivery refused at the gate",
-    "the customer master's delivery region not updated after the April 2026 regional boundary change, and facility codes reissued to new sites after closures",
     "the warehouse stock by batch with a quarantined lot, and a planned framework call-off beside the confirmed lots",
-    "the programme's patient projection by region and month in its own layout"
+    "the programme's patient projection by region and month in its own layout",
+    "the customer master's delivery region kept as set when each account was opened, before the April 2026 regional boundary change, and facility codes reissued to new sites after closures",
+    "a partner's donated TLD reported on its own eLMIS product line"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
@@ -99,6 +101,6 @@
     "task229": "a convex conversion of a daily mean biased by within-day swings; here a first passage of noisy repeated measurements over a fixed band"
   },
   "lineage": [],
-  "notes": "stump_strategy other: the decisive step is the first passage of noisy scheduled measurements over a dosing band, which none of the listed strategies names; forecast_method_backtest is spent by task167 and composition_mix belongs to task165. G7 first because a switch can only happen at a scheduled clinic weighing and the forecast is each scheduled weighing's chance of reading 30 kg or more; G13 and time follow because the step decides when each switch falls against the cycle window (time with G13 is task162's signature inside the batch). forcing_event purchase_order_or_contract is the honest key for a cycle order and is also task165's value; vote_or_meeting is banned by task167.",
+  "notes": "stump_strategy other: the decisive step is the first passage of noisy scheduled measurements over a dosing band, which none of the listed strategies names; forecast_method_backtest is spent by task167 and composition_mix belongs to task165. G7 first because a switch can only happen at a scheduled clinic weighing and the forecast is each scheduled weighing's chance of reading 30 kg or more; G13 and time follow because the step decides when each switch falls against the cycle window (time with G13 is task162's signature inside the batch). forcing_event purchase_order_or_contract is the honest key for a cycle order and is also task165's value; vote_or_meeting is banned by task167. Stage 4 round 1: the call moved from the whole C7 order to line 2, the children's line, in whole pallets; context_artifact redrawn from monitoring_export (it collided with task246's redraw, and the stock status report no longer carries the call) to operations_log, the paediatric register's encounter extract the forecast is built from.",
   "registered": "2026-10-18T09:10:20Z"
 }

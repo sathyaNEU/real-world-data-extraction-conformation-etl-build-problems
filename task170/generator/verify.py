@@ -16,6 +16,7 @@ import re
 D = dt.date
 DPM = 30.4375
 COUNT = D(2026, 8, 31)
+PALLET = 84 * 96
 FAILS = []
 
 
@@ -82,7 +83,7 @@ def sf(z):
 
 # ---------------------------------------------------------------------------------------------------- the call
 def children_need(t):
-    codes = {r["legacy_register_text"]: r["regimen_code"] for r in rows(os.path.join(t, "national_regimen_codes_2025.csv"))}
+    codes = {r["legacy_register_text"]: r["regimen_code"] for r in rows(os.path.join(t, "national_regimen_codes_2026.csv"))}
     cw = {r["art_no"]: r["upid"] for r in rows(os.path.join(t, "art_number_crosswalk_2024-06.csv"))}
     visits = {}
     seen = set()
@@ -170,6 +171,20 @@ def children_need(t):
         ss += sum((y - a - b * x) ** 2 for x, y in pts_)
         dof += n - 2
     sig = math.sqrt(ss / dof)
+    # the share of first readings of 30 kg or more since the 2026 guidelines, on a paediatric first line at the
+    # weighing before, that did not move the child onto TLD at that visit
+    held = moved = 0
+    for u, vs in by.items():
+        ws_ = sorted(v for v in vs if v[0] <= COUNT and v[1] is not None)
+        for j, v in enumerate(ws_):
+            if v[0] >= D(2026, 3, 1) and v[1] >= 30.0:
+                if j > 0 and ws_[j - 1][2] in ("P1-AB3D10", "P1-AB3D50"):
+                    if v[2] == "A1-TLD":
+                        moved += 1
+                    else:
+                        held += 1
+                break
+    lag = held / (held + moved)
     lastyr = [v for u in cand for v in by[u] if add_m(COUNT, -12) < v[0] <= COUNT]
     q = 1 - sum(1 for v in lastyr if v[1] is None) / len(lastyr)
     Cm = [0.0] * 10
@@ -192,18 +207,22 @@ def children_need(t):
         else:
             lw = [v[1] for v in vs if v[1] is not None][-1]
             mus = [lw] * len(sch)
-        notyet, Pm, i = 1.0, [], 0
+        free, hold, done = 1.0, 0.0, 0.0
         cum = [0.0] * len(sch)
         for j, mu in enumerate(mus):
             pj = sf((30.0 - mu) / sig) * q
-            notyet *= 1 - pj
-            cum[j] = 1 - notyet
+            mh = hold * q
+            trig = free * pj
+            done += mh + trig * (1 - lag)
+            hold += trig * lag - mh
+            free -= trig
+            cum[j] = done
         S = surv(D.fromisoformat(pts[u]["date_of_birth"]))
         for k, e in enumerate(ends):
             done = [cum[j] for j, x in enumerate(sch) if x <= e]
             Cm[k] += (done[-1] if done else 0.0) * S[k]
-    need = sum(Cm) + 6 * Cm[-1]
-    return need, len(on), len(cand), sig
+    need = sum(round(x) for x in Cm) + 6 * round(Cm[-1])
+    return need, len(on), len(cand), sig, lag
 
 
 def call(t):
@@ -216,11 +235,11 @@ def call(t):
     soh = sum(r["F"] for k, r in st.items() if k > 1 and r.get("E") == "Usable")
     oo = xlsx_sheet(os.path.join(t, "cms_stock_status_2026-08-31.xlsx"), "On order")
     shipped = sum(r["D"] for k, r in oo.items() if k > 1 and r.get("F") == "Confirmed")
-    need, n_on, n_c, sig = children_need(t)
-    order = adults + need - soh - shipped
+    need, n_on, n_c, sig, lag = children_need(t)
+    line1 = adults - soh - shipped
     return dict(adults=int(adults), cons=int(cons), mx=int(mx), soh=int(soh), shipped=int(shipped), children=need,
-                on=n_on, cand=n_c, sig=sig,
-                unrounded=order, order=int(5000 * round(order / 5000)))
+                on=n_on, cand=n_c, sig=sig, lag=lag, line1_unrounded=line1, line1=int(round(line1 / PALLET)),
+                line2_unrounded=need, line2=int(round(need / PALLET)))
 
 
 # ---------------------------------------------------------------------------------------------------- the asks
@@ -274,9 +293,13 @@ def main(t):
     ok(c["on"] == fig["on_tld"], "V4 children on TLD at the count %d" % c["on"])
     ok(c["cand"] == fig["candidates"], "V5 children on a paediatric first line %d" % c["cand"])
     ok(abs(c["sig"] - fig["sigma"]) < 0.005, "V6 residual scatter %.3f kg" % c["sig"])
-    ok(c["order"] == fig["order"], "V7 the order recomputes: %d (unrounded %.0f)" % (c["order"], c["unrounded"]))
-    edge = 2500 - abs(c["unrounded"] - c["order"])
-    ok(edge >= 1250, "V8 the order sits %.0f bottles inside its 5,000-bottle step (at least a quarter step)" % edge)
+    ok(abs(100 * c["lag"] - fig["held_back_pct"]) < 0.05, "V6 readings of 30 kg or more held back since March 2026: "
+       "%.1f%%" % (100 * c["lag"]))
+    ok(c["line1"] == fig["line1"], "V7 line 1 recomputes: %d pallets (unrounded %.0f bottles)" % (c["line1"], c["line1_unrounded"]))
+    ok(c["line2"] == fig["call"] and c["line2_unrounded"] == fig["call_unrounded"], "V7 line 2 recomputes: %d "
+       "pallets (unrounded %d bottles)" % (c["line2"], c["line2_unrounded"]))
+    edge = PALLET / 2 - abs(c["line2_unrounded"] - c["line2"] * PALLET)
+    ok(edge >= PALLET / 8, "V8 line 2 sits %.0f bottles inside its pallet" % edge)
     A, B = asks(t)
     for k, v in fig["asks"].items():
         kind, r, cy = k.split()
@@ -284,12 +307,14 @@ def main(t):
         ok(got == v, "V9 %s recomputes: %d" % (k, got))
     task = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sub = open(os.path.join(task, "submission.md")).read()
-    ok("{:,}".format(c["order"]) in sub, "V10 the write-up states the order %s" % "{:,}".format(c["order"]))
+    ok("%d pallets of TLD 30s (%s bottles)" % (c["line2"], "{:,}".format(c["line2"] * PALLET)) in sub,
+       "V10 the write-up states line 2, %d pallets" % c["line2"])
     gx = os.path.join(task, "golden", "c7_tld_order.xlsx")
     sh = xlsx_sheet(gx, "C7 order")
     vals = [v.get("B") for k, v in sorted(sh.items())]
-    want = [fig["order"], fig["adult_consumption"], fig["adult_max_stock"], -fig["soh"], -fig["shipped"]]
-    ok(all(w in vals for w in want), "V11 the order workbook carries the order and its components as the write-up "
+    want = [fig["line1_bottles"], fig["call_bottles"], fig["call_unrounded"], fig["adult_consumption"],
+            fig["adult_max_stock"], -fig["soh"], -fig["shipped"], fig["on_tld"], fig["candidates"]]
+    ok(all(w in vals for w in want), "V11 the order workbook carries both lines and their components as the write-up "
        "states them")
     rg = xlsx_sheet(gx, "Regions C4 C5")
     got = {}

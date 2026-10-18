@@ -37,7 +37,7 @@ F_REG = "facility_registry_extract_2026-09-01.csv"
 F_VL = "paed_viral_load_2025-07_2026-08.csv"
 F_DICT = "data_dictionary.xlsx"
 F_MAN = "extract_manifest_2026-09-02.csv"
-F_CODES = "national_regimen_codes_2025.csv"
+F_CODES = "national_regimen_codes_2026.csv"
 DISTRACTORS = [F_VL, DOC.F_EST]
 
 HEAD_FILL = PatternFill("solid", fgColor="DCE6E0")
@@ -97,27 +97,18 @@ def adult_need(proj):
 
 
 def place_order(Wd):
-    """Fix the third confirmed lot of the C6 order so that the middle of the family's orders, its members and the
-    two compound choices that push the need furthest up and down, sits at the centre of its 5,000-bottle step, a
-    multiple of 5,000 (the lot stays a multiple of the 96-bottle carton)."""
+    """Fix the third confirmed lot of the C6 order so that line 1 (the projection's patients, net of the usable stock
+    and the confirmed lots) sits at the centre of its pallet (the lot stays a multiple of the 96-bottle carton). Line
+    2, the call, is placed by the campaign's size in the world (world.P catch_n), set before the pack was cut."""
     S = Wd["S"]
-    fam, c = LD.family(Wd["kids"], Wd["visits"])
     an, _ = adult_need(S["proj"])
     soh = sum(b["qty"] for b in S["batches"] if b["status"] == "Usable")
     conf = [s for s in S["ship"] if s["status"] == "Confirmed"]
-    lo, hi = LD.extreme_pairs(fam)
-    v_lo = LD.compound(Wd["kids"], Wd["visits"], lo)
-    v_hi = LD.compound(Wd["kids"], Wd["visits"], hi)
-    span = [fam[k] for k in LD.FAMILY] + [v_lo, v_hi]
-    mid = (min(span) + max(span)) / 2
-    u = an + mid - soh - sum(s["qty"] for s in conf)
-    target = C.LOT * np.round(u / C.LOT)
+    u = an - soh - sum(s["qty"] for s in conf)
+    target = C.PALLET * np.round(u / C.PALLET)
     lot3 = conf[-1]
-    q = lot3["qty"] + (u - target)
-    lot3["qty"] = int(round(q / 96.0)) * 96
-    Wd["family"] = fam
-    Wd["ctx"] = c
-    return fam
+    lot3["qty"] = int(round((lot3["qty"] + (u - target)) / C.CARTON)) * C.CARTON
+    return lot3["qty"]
 
 
 # ---------------------------------------------------------------------------------------------------- register
@@ -306,14 +297,24 @@ def write_vl(out, Wd, rng):
                                           "result_date"], rows)
 
 
-def estimates(S, rng):
+def children_on_art(W, t):
+    """Children under 15 in care in the register at the end of month t."""
+    return int(((W["enrol"] <= t) & (W["exitm"] > t) & ((t - W["bm"]) / 12.0 < 15)).sum())
+
+
+def estimates(S, rng, W):
     tot_on = sum(S["adults"].values())
     age = []
-    for g, share, cov in (("0-14", 0.052, 0.66), ("15-24", 0.118, 0.81), ("25-49", 0.611, 0.90), ("50+", 0.219, 0.93)):
-        plhiv = int(round(tot_on * 1.12 * share / 0.93 * float(rng.uniform(0.97, 1.03)), -2))
+    kids = children_on_art(W, C.mi(2026, 6))
+    for g, share, cov in (("0-14", None, 0.79), ("15-24", 0.118, 0.81), ("25-49", 0.611, 0.90), ("50+", 0.219, 0.93)):
+        if share is None:
+            on = int(round(kids, -2))
+            plhiv = int(round(kids / cov, -2))
+        else:
+            plhiv = int(round(tot_on * 1.12 * share / 0.93 * float(rng.uniform(0.97, 1.03)), -2))
+            on = int(round(plhiv * cov, -2))
         age.append([g, "{:,}".format(plhiv), "{:,}".format(int(plhiv * 0.91 // 100 * 100)),
-                    "{:,}".format(int(plhiv * 1.10 // 100 * 100)), "{:,}".format(int(round(plhiv * cov, -2))),
-                    "%.0f" % (100 * cov)])
+                    "{:,}".format(int(plhiv * 1.10 // 100 * 100)), "{:,}".format(on), "%.0f" % (100.0 * on / plhiv)])
     reg = []
     for r in C.REGIONS:
         on = sum(v for k, v in S["adults"].items() if [x for x in S["recs"] if x["rid"] == k][0]["region"] == r)
@@ -344,7 +345,7 @@ def build_pack(out):
     n[F_VL] = write_vl(out, Wd, rng)
     DOC.write_dosing(out)
     DOC.write_sop(out)
-    DOC.write_estimates(out, estimates(Wd["S"], rng))
+    DOC.write_estimates(out, estimates(Wd["S"], rng, Wd["W"]))
     n[F_DICT] = write_dictionary(out)
     n[F_MAN] = write_manifest(out, n)
     return n, Wd
@@ -402,7 +403,8 @@ DICT = [
     (F_DEL, "posting_date", "Date the goods issue was posted in the warehouse system"),
     (F_DEL, "customer", "CMS customer account"),
     (F_DEL, "ship_to_name", "Account name"),
-    (F_DEL, "delivery_region", "The customer's region in the CMS customer master"),
+    (F_DEL, "delivery_region", "The customer's region in the CMS customer master (the account's region, as recorded "
+                               "when the account was opened)"),
     (F_DEL, "route", "Delivery route in the customer master"),
     (F_DEL, "material", "CMS material number"),
     (F_DEL, "material_description", "Material description"),
@@ -414,12 +416,16 @@ DICT = [
     (F_POD, "signed_by", "Role of the officer who signed, as the driver entered it"),
     (F_ACC, None, "One row per CMS customer account, open or closed, from the customer master"),
     (F_ACC, "mfl_code", "Facility registry code the account was opened for"),
-    (F_ACC, "delivery_region", "Region recorded on the account"),
+    (F_ACC, "delivery_region", "Region recorded on the account when it was opened; accounts are not updated when a "
+                               "district changes region (the facility registry holds each facility's current region)"),
     (F_LMIS, None, "One requisition per facility, month and submission (the ART programme's monthly report and order), "
                    "with a line item per product, from the eLMIS, July 2025 to the reports submitted by 2 September 2026."),
     (F_LMIS, "period", "Month reported, YYYY-MM"),
     (F_LMIS, "region", "Region of the requisition group the report was submitted to"),
     (F_LMIS, "status", "Approved, Returned (sent back to the facility by the district reviewer), Submitted (awaiting review)"),
+    (F_LMIS, "productCode", "eLMIS product code. ARV0412 and ARV0412D are both TDF/3TC/DTG 300/300/50 mg tablets, "
+                            "bottle of 30: ARV0412 from CMS stock, ARV0412D from partner-donated stock delivered "
+                            "outside CMS, reported on its own line"),
     (F_LMIS, "quantityDispensed", "Quantity dispensed to patients in the month, in the product's unit (bottles)"),
     (F_LMIS, "stockOnHand", "Physical count at the end of the month"),
     (F_REG, None, "One row per facility record in the Ministry's facility registry (master facility list), ART sites, "
@@ -429,7 +435,7 @@ DICT = [
     (F_REG, "opened_on", "Date the facility opened"),
     (F_REG, "closed_on", "Date the facility closed"),
     (F_VL, None, "One row per viral load result for a patient in the register, samples from July 2025"),
-    (DOC.F_DOSING, None, "National guidelines 2025, Annex 7, paediatric dosing"),
+    (DOC.F_DOSING, None, "National guidelines 2026, Annex 7, paediatric dosing"),
     (DOC.F_SOP, None, "CMS standard operating procedure QP-04 version 3"),
     (DOC.F_EST, None, "National ART Programme, HIV estimates 2026 round, summary tables"),
 ]
@@ -455,7 +461,7 @@ MANIFEST = [
     (F_PTS, "National EPR, paediatric and adolescent ART module", "Paediatric ART programme", "2026-09-02",
      "Patients with a visit since 1 January 2023"),
     (F_CW, "National EPR migration tables", "Paediatric ART programme", "2026-09-02", "Legacy ART numbers"),
-    (F_CODES, "National regimen code list, 2025", "National ART Programme", "2026-09-02", "All codes"),
+    (F_CODES, "National regimen code list, 2026", "National ART Programme", "2026-09-02", "All codes"),
     (F_PROJ, "ART programme projection, September 2026 round", "National ART Programme", "2026-09-01",
      "September 2026 to June 2027"),
     (F_STOCK, "CMS stock status report", "CMS Quantification Unit", "2026-09-02", "Count of 31 August 2026"),
@@ -468,7 +474,7 @@ MANIFEST = [
     (F_REG, "Ministry of Health facility registry", "Health Information Unit", "2026-09-01", "ART sites"),
     (F_VL, "National laboratory information system", "Paediatric ART programme", "2026-09-02",
      "Samples from 1 July 2025, results by 2 September 2026"),
-    (DOC.F_DOSING, "National guidelines, 2025 edition", "National ART Programme", "2025-07-01", "Annex 7"),
+    (DOC.F_DOSING, "National guidelines, 2026 edition", "National ART Programme", "2026-03-01", "Annex 7"),
     (DOC.F_SOP, "CMS document register", "CMS Quantification Unit", "2026-03-01", "QP-04 v3"),
     (DOC.F_EST, "HIV estimates, 2026 round", "Strategic Information Unit", "2026-07-30", "Summary tables"),
     (F_DICT, "CMS Quantification Unit", "CMS Quantification Unit", "2026-09-02", "Fields of every file"),

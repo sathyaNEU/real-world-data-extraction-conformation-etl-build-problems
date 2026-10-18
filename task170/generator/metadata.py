@@ -14,7 +14,7 @@ SOURCES = {
     PK.F_EPR: "national EPR paediatric and adolescent ART module, encounters 1 June 2024 to 31 August 2026",
     PK.F_PTS: "national EPR paediatric and adolescent ART module, patient master at 2 September 2026",
     PK.F_CW: "national EPR migration tables, legacy ART numbers to national patient identifiers",
-    PK.F_CODES: "national regimen code list, 2025",
+    PK.F_CODES: "national regimen code list, 2026",
     PK.F_PROJ: "National ART Programme patient projection, September 2026 round",
     PK.F_STOCK: "Central Medical Stores stock status report, count of 31 August 2026",
     PK.F_DEL: "Central Medical Stores warehouse system, outbound deliveries of TLD 30s, July 2025 to August 2026",
@@ -25,13 +25,14 @@ SOURCES = {
     PK.F_VL: "national laboratory information system, paediatric viral load results from July 2025",
     PK.F_DICT: "Central Medical Stores quantification unit, data dictionary",
     PK.F_MAN: "Central Medical Stores quantification unit, extract manifest for the 2 September 2026 pull",
-    DOC.F_DOSING: "Ministry of Health, national HIV guidelines 2025, Annex 7 paediatric dosing",
+    DOC.F_DOSING: "Ministry of Health, national HIV guidelines 2026, Annex 7 paediatric dosing (effective 1 March 2026)",
     DOC.F_SOP: "Central Medical Stores, SOP QP-04 version 3, cycle quantification (effective 1 March 2026)",
     DOC.F_EST: "National ART Programme, HIV estimates 2026 round, summary tables",
 }
 DISTRACTORS = list(PK.DISTRACTORS)
-TITLE = ("How many 30-tablet bottles of TLD a national Central Medical Stores should order for January to June 2027, "
-         "when a late-diagnosed cohort of children born in 2015-16 is being weighed into the 30 kg dosing band")
+TITLE = ("How many pallets of TLD 30s a national Central Medical Stores should order on the children's line of its "
+         "January to June 2027 order, when children are weighed into the 30 kg band at visits that just became less "
+         "frequent")
 
 
 def rows_of(path):
@@ -73,14 +74,14 @@ def write(task_dir):
         "domain": "Healthcare Delivery & Health Economics",
         "client_domain": "Healthcare Delivery & Health Economics",
         "house_domain": "healthcare-delivery-health-economics",
-        "subdomain": "utilization, access and demand forecasting (a national ARV quantification: the C7 order of the adult "
-                     "TLD pack, the paediatric regimen transitions forecast child by child from the register's scheduled "
-                     "weighings)",
+        "subdomain": "utilization, access and demand forecasting (a national ARV quantification: the children's line of "
+                     "the C7 TLD order, the paediatric regimen transitions forecast child by child from the register's "
+                     "scheduled weighings)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a committed order of TLD bottles for one cycle with the projection's consumption and maximum "
-                        "stock and the stock and shipments it nets, each region's CMS deliveries and reported dispensing "
-                        "over the last two closed cycles, and a chart of those deliveries and that dispensing by region "
-                        "for each cycle, every bar labelled",
+        "prompt_shape": "the children's line of one cycle's TLD order in whole pallets with the children it carries, "
+                        "the adults' line with its consumption, maximum stock and the stock and shipments it nets, each "
+                        "region's CMS deliveries and reported dispensing over the last two closed cycles, and a chart of "
+                        "those deliveries and that dispensing by region for each cycle, every bar labelled",
         "as_of": "2026-09-02",
         "deliverables": ["c7_tld_order.xlsx", "c4_c5_tld_flows.png"],
         "distractor_files": DISTRACTORS,

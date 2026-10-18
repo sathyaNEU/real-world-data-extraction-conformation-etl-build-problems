@@ -29,7 +29,7 @@ def _dmy(s):
 
 
 def register_view(pack, drop_resent=True, link_legacy=True, dedupe_overlap=True):
-    codes = {r["legacy_register_text"]: r["regimen_code"] for r in _rows(os.path.join(pack, "national_regimen_codes_2025.csv"))}
+    codes = {r["legacy_register_text"]: r["regimen_code"] for r in _rows(os.path.join(pack, "national_regimen_codes_2026.csv"))}
     cw = {r["art_no"]: r["upid"] for r in _rows(os.path.join(pack, "art_number_crosswalk_2024-06.csv"))}
     epr = pd.read_csv(os.path.join(pack, "paed_register_visits_epr_2024-06_2026-08.csv"), dtype=str, keep_default_na=False)
     if drop_resent:
