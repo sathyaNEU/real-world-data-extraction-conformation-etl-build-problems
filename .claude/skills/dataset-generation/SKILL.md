@@ -143,6 +143,25 @@ task194's architecture 6 passed it with two hits, both of that innocent kind, an
 clean. Note what makes the pass meaningful there: the shipped record attributes the outcome at the easy
 route's unit and nothing points past it.
 
+**Two files that observe the same events need two detection logics, and matching bounds are a
+causal impossibility rather than a realism nit.** Where a pack carries the same real-world events as
+seen by different parties, the natural way to generate it is to cut both from one event list, and that
+leaves every derived record bounded exactly by the artefact it was derived from. No physics explains
+it, so there is no argument available at review: the pack simply shows how it was made. task197 shipped
+a provider archive whose 1,756 deviation recordings each began and ended on the exact second of one of
+the system operator's 666 published extracts, 1,756 of 1,756 on both bounds, and two of its nine sites
+held byte-identical bound sets, 184 recordings with the same starts, the same ends and the same mean
+duration of 162.4 seconds at the same standard deviation of 26.8. Three determinism judge passes read
+Gate G and Gate H as PASS over that pack, one of them deriving before it read the answers, because they
+were checking whether the figures recompute and not whether the records could exist. The stage 4 reader,
+asked directly whether the series looked generated and to give the spreads it used, found it in one
+pass. So each observer gets its own trigger: its own threshold, its own pre-roll, its own release
+condition with hysteresis and hold-off, and real independence, meaning no two observers share a bound
+set and each sometimes records an event the others miss. The generator check is one line and belongs in
+`checks.py`: count the derived records whose bounds coincide with a published bound, and assert no two
+producers share a bound set. Ask of every pair of files describing one event stream, before it is cut,
+who detected this and with what, and whether that party could know the other's boundaries.
+
 **An organ's realism is measured by its variance, not by its genre, and uniformity is the tell.** The file
 the decisive step needs is the one most likely to be built to exactly the shape that step needs, and a
 solver reads that shape as the instruction even when no sentence says anything. task197's archive held 695
