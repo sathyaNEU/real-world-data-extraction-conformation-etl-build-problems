@@ -1281,3 +1281,64 @@ variance the step cannot rank.
   carry no device, so both responses bank their four figures and the pair came out at **48.3** with a
   mirror leakage of 28.0 per cent, under the bar of 50 but far above the build-to-40 target. Every
   authority but the blank one is now inside an amalgamated return, which solves to 39.5 and 12.0.
+
+### Architecture 3 decisive step, spent at stage 3 on a reflex nobody listed (2026-10-18)
+
+The ten reflexes on the author's list all land wrong, measured: supplied replicate weights 4.57, design
+standard error 4.57, bootstrap of the design 3.71, simple random sample 4.60, trim the most extreme unit
+4.57, stratify on visible interviewer attributes 4.57, shrink 25, 50 and 75 per cent to the national change
+4.03, 3.49 and 2.95, every one of them filing the supplied verdict against a 1.96 bar. An eleventh reflex,
+which is not on the list and which I added while building `checks.py`, reaches the golden verdict:
+
+- **Judge the rise against the region's own historical quarter-to-quarter variation.** The named region's
+  six quarterly rates give five consecutive changes with a standard deviation of 9.15 points, against an
+  observed rise of 7.64, so z is **0.83** and the verdict is not established, with no interviewer
+  component, no workload log and no re-formed replication anywhere in the route. Measured across seeds:
+  **in 5 of 5 seeds where the design works (z_supplied above 1.96 and z_correct below it), the own-history
+  reflex reaches the golden verdict.** It is not a coin flip, it is a reliable route.
+
+**Why it is structural, and this is the third time the same number has been on both sides.** The
+interviewer component inflates the variance of a *change* only if the differential is redrawn each
+quarter: a differential that persists cancels out of the difference entirely, leaving the supplied
+interval correct and no stump at all. But a component that is redrawn each quarter is exactly what makes
+the region's own series wobble, so the series displays the very spread the decisive step computes
+analytically. The supplied interval can only be wrong by a factor the unit's own history already shows.
+
+- Component fresh each period: it inflates the change's variance, and it is readable off the series.
+- Component persistent: it is invisible in the series, and it does not inflate the change's variance.
+
+Attempting to separate them fails on plausibility. Making the history stable relative to the field quarter
+needs the panel to have been far more dispersed before the consolidation; a ten-to-four consolidation was
+measured and does not do it (the history's own change standard deviation stays at 9.06 and the supplied
+route drops to z 1.775, which breaks rung 2), and the gap only opens at something like thirty-to-four,
+which no field operation does.
+
+**The rule this earns, which rules out a family.** A decisive step that corrects an understated variance
+cannot be silent for a call about a *change* when the unit's own history is in the pack, because the
+component that makes the supplied interval wrong is the component that makes the history wobble, so an
+empirical standard deviation over the unit's own periods estimates the correct spread with none of the
+mechanism. Such a step is sound only where the unit has no usable history in the pack, or where the call
+is about a level rather than a change. Price it with one computation before drawing: take the unit's own
+period-to-period standard deviation and the correct standard error, and if the first is within about a
+factor of two of the second, the decisive rung is readable off the series.
+
+**What this is not.** It is not a Gate C failure: the analysis is determinate, the estimator family is
+closed to 0.08 per cent and the verdict holds to a 30 per cent error in the component. It is a Gate F and
+readability failure, the decisive rung not being silent. It is also a gate hole worth naming: `precut.py`
+exits 0 on this design and the reflex sweep as listed passes, because neither can see a reflex nobody
+listed, so the sweep is only as good as the enumeration behind it.
+
+### A third gate hole, found by the same route (2026-10-18)
+
+`precut.py`'s "semantic forks asserted" check is **inert while `generator/checks.py` does not exist**. At
+stage 2 this design had ten `SF` rows and no generator, and precut exited 0 with that check passing; as
+soon as `checks.py` appeared carrying assertions for SF2 and SF4 only, the same check failed and named the
+other eight. So the stage-2 gate can be passed with **zero** forks asserted, and the failure surfaces only
+at stage 3 when the generator arrives. The current true state of this build is `precut.py` **exit 1**, one
+FAIL, on SF1, SF3, SF5, SF6, SF7, SF8, SF9 and SF10 not being asserted.
+
+That is the same shape as the two holes already filed from this wave: a gate that checks for the presence
+of a thing rather than the behaviour of it. The `Measured by:` check located a script instead of running
+it; the fork check counts assertions only once there is a file to count them in; and the reflex sweep is
+only as good as the enumeration behind it. The common repair is to make each gate fail loudly when the
+thing it depends on is absent, rather than pass quietly.

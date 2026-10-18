@@ -296,11 +296,34 @@ across-seed run exposed it. And where a variance lever is taken at all, take it 
 than on a tail share: the percentile's lever is linear in sigma while a tail probability's noise blows up,
 which on that ground was 7 standard errors against under 1 for the same idea.
 
+**A variance-correcting step cannot be silent on a call about a change while the unit's own history is in
+the pack**, because the component that makes the supplied interval wrong is the component that makes the
+history wobble. The two are the same number from both sides: a differential redrawn each period inflates
+the variance of a change and is readable off the series, while a persistent one is invisible in the series
+and cancels out of the difference entirely, so there is no setting at which the correction matters and the
+series does not show it. task198's architecture 3 died on it after ten listed reflexes all landed wrong at
+z 2.95 to 4.60: the eleventh, judging the rise against the region's own quarter-to-quarter variation, gave
+five consecutive changes with a standard deviation of 9.15 points against a 7.64 rise, so z 0.83 and the
+golden verdict in 5 of 5 working seeds, with no component, no workload log and no re-formed replication
+anywhere in the route. Consolidating the panel left the history's own change spread at 9.06 and broke rung
+2 instead. Sound only where the unit has no usable history in the pack, or where the call is about a level
+rather than a change. One computation prices it: take the unit's own period-to-period standard deviation
+and the correct standard error, and if the first is within about a factor of two of the second, the
+decisive rung is readable off the series.
+
+**The reflex sweep is only as good as the enumeration behind it,** which is why it is run as code and why
+the enumeration is written down and argued rather than listed from memory. Ten reflexes landing wrong is
+evidence about those ten. Enumerate by asking what the decisive quantity is a substitute for, then list
+every other way the pack measures that same thing: there the correct spread of a change had an empirical
+twin sitting in the unit's own series, and nothing in a sweep of corrections, poolings, stratifications
+and shrinkages reaches it.
+
 **The pricing sequence, run in this order before a word of design:** name the residue the filed WHAT leaves
 (a knob fails at once, only a method survives); price the move available against the move needed; price the
-standard error of whatever the step must estimate; and check whether the lever and the ranked quantity's
-noise are the same variance. Each is one computation on the clean truth and each has killed a family that
-paragraphs of argument had left open.
+standard error of whatever the step must estimate; check whether the lever and the ranked quantity's noise
+are the same variance; and, where the step corrects a variance on a call about a change, check whether the
+unit's own history already estimates what the step computes. Each is one computation on the clean truth and
+each has killed a family that paragraphs of argument had left open.
 
 **Price the move against the ceiling before screening a candidate at all.** Compute two numbers: the points
 the call has to move for the candidate to decide anything, and the largest move the affected population

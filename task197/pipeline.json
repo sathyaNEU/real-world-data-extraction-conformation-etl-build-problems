@@ -9,7 +9,7 @@
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "stage 4: the parent spawns the isolated leak reader and the determinism judge from target.zip, prompt.txt and submission.md's graded blocks; findings come back here for one generator pass. The ask layer was rebuilt at stage 3 after the pair ceiling came back at 65.8: three undocumented primaries replace four devices that filed sentences adjudicated, and clauses 4 and 5 of the performance standard were reworded to file their quantities without adjudicating a device. Clauses 1 to 3 and every main-call figure are unchanged, proved by freeze.py check --mode rubric.",
+  "resume": "Stage 4: the reader landed the call on a uniform organ and the determinism judge is still running. The builder is doing the archive realism work and the two document edits now and holding the rebuild so both sets of findings land in one generator pass. Then every stage-3 gate re-run with counts, the reader re-read because documents changed, and the judge re-run once only on FIX_NOW.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
     "checks.py": "61 checks, 0 failed (floor 40)",
@@ -33,5 +33,8 @@
     "pair_ceiling": 34.5,
     "mirror_leakage": 6.0,
     "measured_by": "generator/ceiling.py"
+  },
+  "leak": {
+    "reader": "LANDED THE CALL 2026-10-18: VKF-KPV at 72, RDL at 83, gap 11, which is the golden exactly, at about 80 per cent confidence. Question 3 names why: the 695 programme_transition recordings in the archive, \"exactly 241 s each\", every one starting 30 seconds before a quarter-hour boundary and carrying nothing but the ramp, which it calls built for the analyst. Diagnosis is uniformity rather than single use and is now a rule in dataset-generation section 7: an organ's realism is measured by its variance, not by its genre. Fix is to give the archive its genre's spread (varied lengths, offsets, reasons, some truncated or missing) and make the transition recordings a minority of the file, moving no graded figure. Two sentences ruled on: clause 5 of the technical conditions stays, because it states an obligation rather than a method and would exist without the trap; the standard's \"Replaces version 3, which assessed response on block averages\" loses its characterisation of the old method, because naming the easy route and marking it superseded is a signpost at rung 0. Open judgement passed to the builder: the nine mislabelled start_local rows are half of an eighteen-row file, which reads as designed whatever the mechanism."
   }
 }

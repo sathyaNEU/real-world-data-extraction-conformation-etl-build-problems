@@ -244,7 +244,10 @@ def check_note(task_dir, note_text):
         missing = [r[0].strip("`* ") for r in sf_rows if r[0].strip("`* ") not in src]
         row("semantic forks asserted", not missing, "every SF id appears in generator/checks.py" if not missing else "not in checks.py: " + ", ".join(missing))
     elif sf_rows:
-        row("semantic forks asserted", True, "generator/checks.py not written yet; each SF id must appear in it", warn=True)
+        ids = ", ".join(r[0].strip("`* ") for r in sf_rows)
+        row("semantic forks asserted", False,
+            "generator/checks.py not written yet, so this check is not run: %d rows still owe an assertion (%s)"
+            % (len(sf_rows), ids), warn=True)
 
     # Closure table: 22 axes.
     ct = section(secs, "Closure table") or ""

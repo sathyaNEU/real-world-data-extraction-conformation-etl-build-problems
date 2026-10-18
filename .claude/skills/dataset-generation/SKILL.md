@@ -132,6 +132,20 @@ identifiers and partial cuts. A model may trip on it; the stump never rests on i
 defect placed to be caught. Test: would the organisation's export look exactly like this if nobody had
 designed a task? The design note names each mess and the system that produces it.
 
+**An organ's realism is measured by its variance, not by its genre, and uniformity is the tell.** The file
+the decisive step needs is the one most likely to be built to exactly the shape that step needs, and a
+solver reads that shape as the instruction even when no sentence says anything. task197's archive held 695
+recordings, every one exactly 241 seconds long and every one starting exactly 30 seconds before a
+quarter-hour boundary, carrying nothing but the ramp the decisive reconstruction wants: the stage-4 reader
+quoted them as having one use and as looking built for the analyst, and landed the call. A real archive's
+recordings vary in length, in start offset and in completeness, exist for several reasons (alarms, tests,
+disturbances, operator captures) and include some that are truncated, some that overlap and some that are
+missing where they should exist. So give the organ its genre's spread, and make the subset the decisive
+step uses a minority of what the file holds rather than the whole of it. The check is one line of code on
+the cut pack: take the distribution of length, offset and reason over the organ's rows, and if the rows the
+decisive step reads are the file's only rows, or are identical on every dimension but their timestamps,
+the organ announces the step. Varying it moves no graded figure, so there is no trade to weigh.
+
 **Governing rule:** if a messy choice could flip the answer, cut it. The one exception is a **ledgered ask
 device** (`supplemental-stumping`): it moves only its named asks by the stated deltas, with zero rows in
 the main call's declared population, asserted by count. **Clean-data test:** with every file clean, the

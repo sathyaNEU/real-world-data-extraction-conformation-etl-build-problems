@@ -4,8 +4,8 @@
  "status": "DESIGN",
  "domain": "survey-research-official-statistics/anomaly-detection",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-18",
  "architecture": 3,
  "loops": 0,
@@ -13,7 +13,7 @@
  "stump": "A competent solver rebuilds both quarters across the two questionnaire layouts, rebases the region across the amalgamation, rules out every rival explanation on a shipped fact, judges the +6.6 point change against the survey's own supplied replicate weights at 3.53 standard errors and files the rise as an established population change, because every replicate the pack ships is formed on primary sampling units and no replicate ever varies the interviewer composition of the quarter.",
  "judge": "architecture 1: NOT_DETERMINISTIC, SEND_BACK, 2026-10-18",
  "returned": [],
- "resume": "Stage 2 complete: precut.py exits 0 (50 checks, 0 FAIL, 0 WARN) and asks_measure.py exits 0 at a solved pair ceiling of 39.5 with 12.0 per cent mirror leakage. generator/core.py carries the clean truth (main call and ask side) and generator/asks_measure.py solves the ceiling. Next is stage 3: build the 19-file pack under target/ from core.py, write build_pack.py, make_golden.py, checks.py and verify.py, re-point asks_measure.py's figure lookups through verify.py's bundle pipeline, then the stage-3 gates. Nothing is cut yet.",
+ "resume": "Stage 3, architecture 3's decisive step spent on measurement, awaiting the author's ruling under the stop rule. Nothing was cut: target/ and golden/ do not exist. generator/core.py holds the full clean truth (67,320 dwelling rows, 1,122 units, 113 interviewers, 84 replicate groups, pack-side and ask-side truth) and generator/checks.py executes the analyst test, the decisive step, the sweep, the fork rows and the margin. The card is registered at v3 and PASSes; precut.py exits 0 and cannot see this finding, which is itself worth filing. What survives: the pincer, the four-step pricing sequence, and the new result that a variance-correcting step is readable off the unit's own history whenever the call is about a change.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -100,14 +100,16 @@
    "reflex_sweep": "ten reflexes run as code before the separations, every one filing the supplied verdict at z 2.38 to 4.14; none reaches the golden verdict; nearest is three-quarter shrinkage at 2.38, still 21 per cent clear of the 1.96 bar",
    "margin": "sigma_int must fall 61 per cent, from 10.08 to 3.94 points, before the verdict flips: about 15 relative standard errors and 400 times the estimator family's own spread; the verdict holds at a 25 per cent and a 50 per cent error in the component",
    "asks": "pair ceiling 39.5 solved with both columns (cracker 60.4 keeping 7 of 25, mirror 18.6 keeping 3), mirror leakage 12.0 per cent; ask2 smallest quarterly gap 702 interviews, ask3 grouped-area rate gap 6.3 to 8.8 per 1,000 against a 0.05 bin half-width",
-   "seed_incidence": "the realised change must land between the two intervals, which happened in 2 of 6 seeds at each rise setting, about a third; the generator fixes seed 32191656 and no role is hostage to it, because there is one named region and one verdict"
+   "seed_incidence": "the realised change must land between the two intervals, which happened in 2 of 6 seeds at each rise setting, about a third; the generator fixes seed 32191656 and no role is hostage to it, because there is one named region and one verdict",
+   "stage3_finding": "spent at stage 3 on an eleventh reflex, not on the author's list, found while writing checks.py: judging the rise against the region's own historical quarter-to-quarter variation (SD 9.15 points against a 7.64 rise, z 0.83) reaches the golden verdict with none of the mechanism, in 5 of 5 seeds where the design works. Structural: the interviewer component inflates a change's variance only if it is redrawn each quarter, and a component redrawn each quarter is what makes the region's own series wobble, so the series displays the spread the decisive step computes. A 10-to-4 panel consolidation was measured and does not close it (history SD 9.06, supplied route falls to z 1.775, breaking rung 2). The author's ten listed reflexes all land wrong, 2.95 to 4.60."
   }
  },
  "precut": {
-  "exit": 0,
+  "exit": 1,
   "date": "2026-10-18",
   "checks": 50,
-  "fail": 0,
-  "warn": 0
+  "fail": 1,
+  "warn": 0,
+  "fail_detail": "semantic forks asserted: SF1, SF3, SF5, SF6, SF7, SF8, SF9, SF10 not in checks.py. Not repaired because the decisive step is spent pending the ruling. Note that this check was inert at stage 2 while generator/checks.py did not exist, so the stage-2 exit 0 passed a check that could not fail."
  }
 }
