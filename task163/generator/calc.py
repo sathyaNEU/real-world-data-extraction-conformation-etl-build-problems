@@ -1,0 +1,521 @@
+"""task163 golden computations, read from the shipped pack only (target/), on the generator's own code path.
+
+The plan line: for each state, the 2025 share in the plan workbook times the employer business formations within four
+quarters that a year of applications at the level of the twelve months to September 2026 will produce, summed over the
+twelve states and rounded to the nearest 100 (the 2027 sizing standard).
+
+The golden forecast of those formations. In the nine states without the integrated filing, formations are the state's
+formation rate per application over every closed cohort, times its applications in the twelve months. In Ohio,
+Pennsylvania and Michigan the applications are split into the ones the state would have had (its own 2022-2023 level
+for each calendar month, moved month by month with the nine states' applications against their own 2022-2023 level)
+and the ones the integrated filing added (the rest, from the go-live month); the formations of the closed cohorts
+since go-live, less the ordinary applications at the state's own pre-go-live rate, over the added applications at that
+rate, give the added applications' yield relative to an ordinary application (pooled over the three states); the
+twelve months' formations are the ordinary applications at the pre-go-live rate plus the added at that relative yield.
+
+The asks, from the January 2026 extract: each sales territory's 2024 first-time employers (businesses whose first
+payroll ever ran with Kilbourne, in the state they first employed in), how many Kilbourne still paid wages for in the
+fourth quarter of 2025, their gross wages in their first quarter on payroll, and the 2024 first-time employers by
+signup channel."""
+from __future__ import annotations
+
+import csv
+import datetime as dt
+import itertools
+import json
+import os
+
+import numpy as np
+import openpyxl
+
+FIPS = {"39": "OH", "42": "PA", "26": "MI", "18": "IN", "27": "MN", "55": "WI", "21": "KY", "54": "WV", "47": "TN",
+        "29": "MO", "19": "IA", "51": "VA"}
+STATES = ["OH", "PA", "MI", "IN", "MN", "WI", "KY", "WV", "TN", "MO", "IA", "VA"]
+NMON = 57                                   # January 2022 to September 2026
+
+
+def mi(y, m):
+    return (y - 2022) * 12 + (m - 1)
+
+
+TTM = list(range(mi(2025, 10), mi(2026, 9) + 1))
+LAST_CLOSED = mi(2025, 6)
+
+
+# ------------------------------------------------------------------------------------------------- loading
+def load_bfs(path):
+    """{(state, series, sa): array over the 57 months, nan where the release has no value}."""
+    with open(path, encoding="utf-8") as fh:
+        rows = json.load(fh)
+    head = rows[0]
+    ix = {h: i for i, h in enumerate(head)}
+    out = {}
+    for r in rows[1:]:
+        st = FIPS[r[ix["state"]]]
+        y, m = (int(x) for x in r[ix["time"]].split("-"))
+        key = (st, r[ix["data_type_code"]], r[ix["seasonally_adj"]])
+        if key not in out:
+            out[key] = np.full(NMON, np.nan)
+        out[key][mi(y, m)] = float(r[ix["cell_value"]])
+    return out
+
+
+def load_share(path):
+    wb = openpyxl.load_workbook(path, data_only=True)
+    ws = wb["Share 2025"]
+    out = {}
+    for row in ws.iter_rows(min_row=1, values_only=True):
+        if row and isinstance(row[0], str) and len(row[0]) == 2 and row[0] in STATES:
+            out[row[0]] = {"count": int(row[2]), "base": int(row[3]), "share": float(row[4])}
+    return out
+
+
+def load_changes(path):
+    """{state: (go-live date, older route closed date)} for the integrated EIN filings in the research log."""
+    wb = openpyxl.load_workbook(path, data_only=True)
+    ws = wb["Log"]
+    head = None
+    live, closed = {}, {}
+    for row in ws.iter_rows(values_only=True):
+        if head is None:
+            if row and row[0] == "Logged":
+                head = {h: i for i, h in enumerate(row)}
+            continue
+        if not row or row[head["State"]] is None:
+            continue
+        kind = row[head["Change type"]]
+        st = row[head["State"]]
+        eff = row[head["Effective"]]
+        eff = eff.date() if isinstance(eff, dt.datetime) else eff
+        if kind == "Integrated EIN application":
+            live[st] = eff
+        elif kind == "Older filing route closed":
+            closed[st] = eff
+    return {s: (live[s], closed.get(s)) for s in live}
+
+
+def read_csv(path):
+    with open(path, encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+class Pack:
+    def __init__(self, target):
+        p = lambda f: os.path.join(target, f)
+        self.bfs = load_bfs(p("bfs_state_api_2026-10-14.json"))
+        self.share = load_share(p("plan_2027_workbook.xlsx"))
+        self.changes = load_changes(p("state_filing_changes_log.xlsx"))
+        self.target = target
+
+
+# ------------------------------------------------------------------------------------------------- the plan line
+def series(P, st, name, sa="no"):
+    return P.bfs[(st, name, sa)]
+
+
+def same_month_mean(x, lo, hi, t):
+    idx = [u for u in range(lo, hi + 1) if u % 12 == t % 12]
+    return float(np.mean(x[idx]))
+
+
+def counterfactual(P, st, kind, controls, launch_idx, sa="no"):
+    """The ordinary applications a state would have had, month by month, from the control states' path."""
+    BA = {s: series(P, s, "BA_BA", sa) for s in STATES}
+    L = launch_idx
+    if kind in ("CF1", "CF2", "CF3", "CF4"):
+        lo, hi = {"CF1": (0, mi(2023, 12)), "CF2": (0, L - 1), "CF3": (L - 12, L - 1), "CF4": (0, mi(2023, 12))}[kind]
+        if kind == "CF4":
+            idx = np.array([np.mean([BA[o][t] / same_month_mean(BA[o], lo, hi, t) for o in controls])
+                            for t in range(NMON)])
+        else:
+            idx = np.array([sum(BA[o][t] for o in controls) / sum(same_month_mean(BA[o], lo, hi, t) for o in controls)
+                            for t in range(NMON)])
+        return np.array([same_month_mean(BA[st], lo, hi, t) for t in range(NMON)]) * idx
+    nine = np.array([sum(BA[o][t] for o in controls) for t in range(NMON)])
+    if kind == "CF5":
+        return BA[st][:L].sum() / nine[:L].sum() * nine
+    out = np.zeros(NMON)                     # CF6: month-of-year ratio to the controls' total before go-live
+    for t in range(NMON):
+        idx = [u for u in range(0, L) if u % 12 == t % 12]
+        out[t] = BA[st][idx].sum() / nine[idx].sum() * nine[t]
+    return out
+
+
+def own_counterfactual(P, st, launch_idx):
+    """The before-and-after read: the state's own 2022-2023 level for each calendar month, no comparison."""
+    BA = series(P, st, "BA_BA")
+    return np.array([same_month_mean(BA, 0, mi(2023, 12), t) for t in range(NMON)])
+
+
+def launch_index(d):
+    return mi(d.year, d.month)
+
+
+def plan(P, cf="CF1", y="Y1", a="A1", nine_y="all", vol="no", controls=None, cf_override=None):
+    """The plan line under one construction. Returns a dict with the total, each state's formations and the parts."""
+    reform = sorted(P.changes)
+    controls = controls or [s for s in STATES if s not in reform]
+    L = {s: launch_index(P.changes[s][0]) for s in reform}
+    BA = {s: series(P, s, "BA_BA") for s in STATES}
+    F4 = {s: series(P, s, "BF_BF4Q") for s in STATES}
+    G = {s: (cf_override[s] if cf_override else counterfactual(P, s, cf, controls, L[s])) for s in reform}
+    Y = {}
+    for s in STATES:
+        if s in reform:
+            lo, hi = {"Y1": (0, L[s] - 1), "Y2": (0, mi(2023, 12)), "Y3": (L[s] - 12, L[s] - 1)}[y]
+        else:
+            lo, hi = {"all": (0, LAST_CLOSED), "latest": (LAST_CLOSED - 11, LAST_CLOSED),
+                      "pre": (0, mi(2023, 12))}[nine_y]
+        Y[s] = F4[s][lo:hi + 1].sum() / BA[s][lo:hi + 1].sum()
+    I = {s: np.where(np.arange(NMON) >= L[s], BA[s] - G[s], 0.0) for s in reform}
+    post = {s: list(range(L[s], LAST_CLOSED + 1)) for s in reform}
+    rel = {}
+    if a in ("A1", "A5"):
+        sh = 1 if a == "A5" else 0
+        num = sum((F4[s][L[s] + sh:LAST_CLOSED + 1] - Y[s] * G[s][L[s] + sh:LAST_CLOSED + 1]).sum() for s in reform)
+        den = sum((Y[s] * I[s][L[s] + sh:LAST_CLOSED + 1]).sum() for s in reform)
+        rel = {s: ("rel", num / den) for s in reform}
+    elif a == "A2":
+        num = sum((F4[s][post[s]] - Y[s] * G[s][post[s]]).sum() for s in reform)
+        den = sum(I[s][post[s]].sum() for s in reform)
+        rel = {s: ("abs", num / den) for s in reform}
+    elif a == "A3":
+        rel = {s: ("rel", (F4[s][post[s]] - Y[s] * G[s][post[s]]).sum() / (Y[s] * I[s][post[s]]).sum()) for s in reform}
+    elif a == "A4":
+        x = np.concatenate([Y[s] * I[s][post[s]] for s in reform])
+        yy = np.concatenate([(F4[s] - Y[s] * G[s])[post[s]] for s in reform])
+        rel = {s: ("rel", float((x * yy).sum() / (x * x).sum())) for s in reform}
+    elif a == "A6":
+        for s in reform:
+            X = np.vstack([G[s][post[s]], I[s][post[s]]]).T
+            b = np.linalg.lstsq(X, F4[s][post[s]], rcond=None)[0]
+            rel[s] = ("joint", b)
+    elif a == "A7":
+        rows, yy = [], []
+        for j, s in enumerate(reform):
+            for t in range(0, LAST_CLOSED + 1):
+                x = [0.0] * (len(reform) + 1)
+                x[j] = G[s][t] if t >= L[s] else BA[s][t]
+                x[-1] = max(0.0, I[s][t]) if t >= L[s] else 0.0
+                rows.append(x)
+                yy.append(F4[s][t])
+        b = np.linalg.lstsq(np.array(rows), np.array(yy), rcond=None)[0]
+        rel = {s: ("joint", (b[j], b[-1])) for j, s in enumerate(reform)}
+    out = {"F": {}, "added_ttm": {}, "ordinary_ttm": {}, "yield": Y, "rel": rel}
+    total = 0.0
+    for s in STATES:
+        vol_s = series(P, s, "BA_BA", vol)[TTM].sum()
+        if s in reform:
+            scale = vol_s / BA[s][TTM].sum()
+            g = G[s][TTM].sum() * scale
+            i = vol_s - g
+            k, v = rel[s]
+            if k == "rel":
+                f = Y[s] * g + v * Y[s] * i
+            elif k == "abs":
+                f = Y[s] * g + v * i
+            else:
+                f = v[0] * g + v[1] * i
+            out["added_ttm"][s], out["ordinary_ttm"][s] = i, g
+        else:
+            f = Y[s] * vol_s
+        out["F"][s] = f
+        total += P.share[s]["share"] * f
+    out["total"] = total
+    return out
+
+
+def golden(P):
+    return plan(P)
+
+
+CF_KINDS = ("CF1", "CF2", "CF3", "CF4", "CF5", "CF6")
+Y_KINDS = ("Y1", "Y2", "Y3")
+A_KINDS = ("A1", "A2", "A3", "A4", "A5", "A6", "A7")
+
+
+def family(P, wide=False):
+    """Every construction the design admits: counterfactual, ordinary rate window, added-yield estimator, the nine
+    states' rate window, unadjusted or adjusted volume, and the control set with or without the states whose filing
+    systems changed in ways that do not touch the EIN application."""
+    out = {}
+    nine_opts = ("all", "latest") if not wide else ("all", "latest", "pre")
+    reform = sorted(P.changes)
+    others = [s for s in STATES if s not in reform]
+    ctl_opts = {"nine": others, "six": [s for s in others if s not in ("IN", "KY", "TN")]}
+    for cf, y, a in itertools.product(CF_KINDS, Y_KINDS, A_KINDS):
+        for ny in nine_opts:
+            for vol in ("no", "yes"):
+                for cn, ctl in ctl_opts.items():
+                    if cn == "six" and not (ny == "all" and vol == "no"):
+                        continue
+                    out[(cf, y, a, ny, vol, cn)] = plan(P, cf, y, a, ny, vol, ctl)["total"]
+    return out
+
+
+# ------------------------------------------------------------------------------------------------- the rungs
+def rate(P, s, lo, hi, num="BF_BF4Q", den="BA_BA"):
+    return series(P, s, num)[lo:hi + 1].sum() / series(P, s, den)[lo:hi + 1].sum()
+
+
+def rung_latest_closed(P):
+    """Rung 0: each state's formations per application over its latest four closed quarters (July 2024 to June 2025
+    applications) carried onto the twelve months."""
+    return sum(P.share[s]["share"] * rate(P, s, LAST_CLOSED - 11, LAST_CLOSED) * series(P, s, "BA_BA")[TTM].sum()
+               for s in STATES)
+
+
+def rung_all_closed(P):
+    return sum(P.share[s]["share"] * rate(P, s, 0, LAST_CLOSED) * series(P, s, "BA_BA")[TTM].sum() for s in STATES)
+
+
+def rung_latest_quarter(P):
+    return sum(P.share[s]["share"] * rate(P, s, LAST_CLOSED - 2, LAST_CLOSED) * series(P, s, "BA_BA")[TTM].sum()
+               for s in STATES)
+
+
+def rung_pre_reform_rate(P):
+    """Every application at the state's pre-go-live rate (the added treated as ordinary)."""
+    tot = 0.0
+    for s in STATES:
+        if s in P.changes:
+            L = launch_index(P.changes[s][0])
+            r = rate(P, s, 0, L - 1)
+        else:
+            r = rate(P, s, 0, LAST_CLOSED)
+        tot += P.share[s]["share"] * r * series(P, s, "BA_BA")[TTM].sum()
+    return tot
+
+
+def rung_zero_added(P):
+    """The added applications never form: only the counterfactual applications at the pre-go-live rate."""
+    g = plan(P)
+    tot = 0.0
+    for s in STATES:
+        if s in P.changes:
+            tot += P.share[s]["share"] * g["yield"][s] * g["ordinary_ttm"][s]
+        else:
+            tot += P.share[s]["share"] * g["F"][s]
+    return tot
+
+
+def rung_before_after(P):
+    """The split read before and after against the state's own 2022-2023 level, no comparison states."""
+    reform = sorted(P.changes)
+    G = {s: own_counterfactual(P, s, launch_index(P.changes[s][0])) for s in reform}
+    return plan(P, cf_override=G)["total"]
+
+
+def rung_effect_level(P):
+    """The reflex comparison: the filing's effect on formations measured against the nine states as a monthly level over
+    the closed cohorts since go-live, and that level carried onto the twelve months."""
+    g = plan(P)
+    tot = 0.0
+    for s in STATES:
+        if s in P.changes:
+            L = launch_index(P.changes[s][0])
+            G = counterfactual(P, s, "CF1", [o for o in STATES if o not in P.changes], L)
+            F4 = series(P, s, "BF_BF4Q")
+            post = list(range(L, LAST_CLOSED + 1))
+            excess = (F4[post] - g["yield"][s] * G[post]).mean()
+            tot += P.share[s]["share"] * (g["yield"][s] * g["ordinary_ttm"][s] + 12 * excess)
+        else:
+            tot += P.share[s]["share"] * g["F"][s]
+    return tot
+
+
+def rung_volume_regression(P, dummies=False):
+    """Each reform state's monthly formations regressed on its applications over every closed cohort (with an
+    intercept, and calendar-month terms if asked), the fit carried onto the twelve months; the nine at their rate."""
+    tot = 0.0
+    for s in STATES:
+        BA, F4 = series(P, s, "BA_BA"), series(P, s, "BF_BF4Q")
+        if s in P.changes:
+            t = np.arange(0, LAST_CLOSED + 1)
+            X, Xf = [np.ones(len(t)), BA[t]], [np.ones(len(TTM)), BA[TTM]]
+            if dummies:
+                for m in range(1, 12):
+                    X.append((t % 12 == m).astype(float))
+                    Xf.append((np.array(TTM) % 12 == m).astype(float))
+            b = np.linalg.lstsq(np.vstack(X).T, F4[t], rcond=None)[0]
+            f = float(np.vstack(Xf).T.dot(b).sum())
+        else:
+            f = rate(P, s, 0, LAST_CLOSED) * BA[TTM].sum()
+        tot += P.share[s]["share"] * f
+    return tot
+
+
+def rung_flags(P, flag):
+    """Formations per flagged application (high-propensity or planned wages) over the latest four closed quarters,
+    carried onto the twelve months' flagged applications."""
+    return sum(P.share[s]["share"] * rate(P, s, LAST_CLOSED - 11, LAST_CLOSED, den=flag) *
+               series(P, s, flag)[TTM].sum() for s in STATES)
+
+
+def carry_2025(P):
+    return float(sum(P.share[s]["count"] for s in STATES))
+
+
+def growth_routes(P):
+    """Kilbourne's 2025 first-time employers grown with the applications, every window an analyst would pick."""
+    c = carry_2025(P)
+    BA = lambda sa="no": sum(series(P, s, "BA_BA", sa) for s in STATES)
+    nsa, sa = BA("no"), BA("yes")
+    out = {}
+    out["ttm_over_cal2025"] = c * nsa[TTM].sum() / nsa[mi(2025, 1):mi(2025, 12) + 1].sum()
+    out["ttm_over_base_window"] = c * nsa[TTM].sum() / nsa[mi(2024, 7):mi(2025, 6) + 1].sum()
+    out["ttm_over_prior_ttm"] = c * nsa[TTM].sum() / nsa[mi(2024, 10):mi(2025, 9) + 1].sum()
+    out["six_quarters_sa"] = c * sa[mi(2026, 7):mi(2026, 9) + 1].sum() / sa[mi(2024, 10):mi(2024, 12) + 1].sum()
+    out["ytd_yoy"] = c * nsa[mi(2026, 1):mi(2026, 9) + 1].sum() / nsa[mi(2025, 1):mi(2025, 9) + 1].sum()
+    return out
+
+
+def rung_trend(P):
+    """Each state's monthly formations (closed cohorts from July 2023) on a straight line, carried to the cohorts of the
+    twelve months."""
+    tot = 0.0
+    for s in STATES:
+        f = series(P, s, "BF_BF4Q")
+        t = np.arange(mi(2023, 7), LAST_CLOSED + 1)
+        b1, b0 = np.polyfit(t, f[t], 1)
+        tot += P.share[s]["share"] * float(sum(b0 + b1 * u for u in TTM))
+    return tot
+
+
+def rungs(P):
+    out = {"latest_closed": rung_latest_closed(P), "all_closed": rung_all_closed(P),
+           "latest_quarter": rung_latest_quarter(P), "pre_reform_rate": rung_pre_reform_rate(P),
+           "zero_added": rung_zero_added(P), "before_after": rung_before_after(P),
+           "effect_level": rung_effect_level(P), "volume_regression": rung_volume_regression(P),
+           "volume_regression_months": rung_volume_regression(P, True),
+           "hba": rung_flags(P, "BA_HBA"), "wba": rung_flags(P, "BA_WBA"), "carry_2025": carry_2025(P),
+           "trend": rung_trend(P)}
+    out.update({"growth_" + k: v for k, v in growth_routes(P).items()})
+    return out
+
+
+def round100(x):
+    return int(100 * np.floor(x / 100.0 + 0.5))
+
+
+# ------------------------------------------------------------------------------------------------- the asks
+def ein_key(e):
+    d = "".join(ch for ch in e if ch.isdigit())
+    return d.zfill(9)
+
+
+class Book:
+    """The January 2026 extract, read and joined."""
+
+    def __init__(self, target):
+        p = lambda f: os.path.join(target, f)
+        self.acc = read_csv(p("onboarding_accounts_2022-2025.csv"))
+        self.xw = read_csv(p("client_migration_crosswalk_2024-06-15.csv"))
+        self.leg = read_csv(p("legacy_quarterly_wages_2022Q1-2024Q2.csv"))
+        self.cur = read_csv(p("quarterly_wages_2024Q2-2025Q4.csv"))
+        self.reg = read_csv(p("state_tax_registrations_2026-01-09.csv"))
+        self.suta = read_csv(p("suta_successor_transfers_2022-2025.csv"))
+        self.terr = {r["state"]: r["territory"] for r in read_csv(p("sales_territories_2025.csv"))}
+        self.by_acct = {r["account_id"]: r for r in self.acc}
+        self.legacy_of = {r["account_id"]: r["legacy_client_no"] for r in self.xw}
+        self.code_of = {r["account_id"]: r["legacy_source_code"] for r in self.xw}
+        self.acct_of_legacy = {r["legacy_client_no"]: r["account_id"] for r in self.xw}
+        self.regs = {}
+        for r in self.reg:
+            self.regs.setdefault(r["account_id"], []).append(r)
+        self.by_ein = {}
+        for r in self.acc:
+            self.by_ein.setdefault(ein_key(r["ein"]), []).append(r)
+        # wages by account and quarter: legacy (company-level group 00, cents) and current (dollars)
+        self.wq = {}
+        self.wq_paid = {}
+        for r in self.leg:
+            if r["pay_group"] != "00":
+                continue
+            a = self.acct_of_legacy[r["client_no"]]
+            k = (a, int(r["tax_year"]), int(r["tax_qtr"]))
+            self.wq[k] = self.wq.get(k, 0) + int(r["gross_wages"])
+        for r in self.cur:
+            y, q = r["quarter"].split("-Q")
+            k = (r["account_id"], int(y), int(q))
+            self.wq[k] = self.wq.get(k, 0) + int(round(float(r["gross_wages"]) * 100))
+        self.succ_of = {}
+        for r in self.suta:
+            self.succ_of.setdefault(ein_key(r["predecessor_ein"]), []).append(ein_key(r["successor_ein"]))
+        self.successor_eins = {ein_key(r["successor_ein"]) for r in self.suta}
+
+    def first_state(self, accts):
+        """The state the business first employed in: its registration with the earliest liability date."""
+        regs = [r for a in accts for r in self.regs.get(a["account_id"], [])]
+        return min(regs, key=lambda r: (r["liability_date"], r["kilbourne_from"]))["state"]
+
+    def liable_before(self, accts, d):
+        """True when a state registration of any of the accounts shows the business liable for wages before date d."""
+        return any(r["liability_date"] < d for a in accts for r in self.regs.get(a["account_id"], []))
+
+    def business_accounts(self, a):
+        """Every account of the business: the EIN's accounts and each successor EIN's, followed through the register."""
+        seen, todo, out = set(), [ein_key(a["ein"])], []
+        while todo:
+            e = todo.pop()
+            if e in seen:
+                continue
+            seen.add(e)
+            out.extend(self.by_ein.get(e, []))
+            todo.extend(self.succ_of.get(e, []))
+        return out
+
+
+def quarter_of(d):
+    return int(d[:4]), (int(d[5:7]) - 1) // 3 + 1
+
+
+def paid_by_us(acct, y, q):
+    if acct["product"] == "Tax filing only" and acct["product_since"]:
+        qs = dt.date(y, 3 * q - 2, 1).isoformat()
+        if acct["product_since"] <= qs:
+            return False
+    return True
+
+
+def cohort_2024(B):
+    """The businesses whose first payroll ever ran with Kilbourne in 2024: an EIN's earliest account has its first pay
+    date in 2024, the EIN is not a successor carrying on an existing business, and no state registration shows it
+    liable for wages before that first pay date."""
+    out = []
+    for e, accts in sorted(B.by_ein.items()):
+        first = min(accts, key=lambda r: (r["first_pay_date"], r["account_id"]))
+        if not first["first_pay_date"].startswith("2024"):
+            continue
+        if e in B.successor_eins or B.liable_before(accts, first["first_pay_date"]):
+            continue
+        out.append((e, first))
+    return out
+
+
+CODE_CHANNEL = {"ACCT": "accountant referral", "CPA": "accountant referral", "BANK": "bank partner",
+                "BP": "bank partner", "WEB": "web sign-up", "OUT": "outbound", "TEL": "outbound",
+                "MKT": "partner marketplace", "APX": "partner marketplace"}
+
+
+def asks(B):
+    """The golden ask tables: by territory (signed, still with us in the fourth quarter of 2025, gross wages in cents in
+    the first quarter on payroll and in 2024) and by signup channel."""
+    T = {t: {"signed": 0, "still": 0, "wages_cents": 0, "wages_2024_cents": 0} for t in sorted(set(B.terr.values()))}
+    ch = {}
+    cohort = cohort_2024(B)
+    for e, first in cohort:
+        allacc = B.business_accounts(first)
+        st = B.first_state([a for a in allacc if ein_key(a["ein"]) == e])
+        t = B.terr[st]
+        T[t]["signed"] += 1
+        if any(B.wq.get((a["account_id"], 2025, 4), 0) > 0 and paid_by_us(a, 2025, 4) for a in allacc):
+            T[t]["still"] += 1
+        y, q = quarter_of(first["first_pay_date"])
+        T[t]["wages_cents"] += sum(B.wq.get((a["account_id"], y, q), 0) for a in allacc)
+        T[t]["wages_2024_cents"] += sum(B.wq.get((a["account_id"], 2024, qq), 0) for a in allacc for qq in (1, 2, 3, 4)
+                                        if paid_by_us(a, 2024, qq))
+        code = B.code_of.get(first["account_id"])
+        channel = CODE_CHANNEL[code] if code else first["signup_channel"]
+        ch[channel] = ch.get(channel, 0) + 1
+    return T, ch, cohort

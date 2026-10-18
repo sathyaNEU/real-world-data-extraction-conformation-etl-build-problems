@@ -1,0 +1,76 @@
+{
+ "call": 2300,
+ "call_exact": 2305.5,
+ "channels": {
+  "accountant referral": 481,
+  "bank partner": 241,
+  "outbound": 277,
+  "partner marketplace": 242,
+  "web sign-up": 800
+ },
+ "components": {
+  "added_ttm_about": 500000,
+  "formations_ttm_about": 105000,
+  "reform_share_of_line": 0.799,
+  "rel_yield": 0.163
+ },
+ "dates": [
+  "2024-02-05",
+  "2024-05-13",
+  "2024-08-12"
+ ],
+ "roundings": [
+  100,
+  5000,
+  100000
+ ],
+ "step_figures": {
+  "added_ttm": 473205,
+  "apps_ttm_reform": 1073402,
+  "unrounded_line": 2305.5
+ },
+ "steps": {
+  "golden_exact": 2305.5,
+  "yield_MI_pct": 7.02,
+  "yield_OH_pct": 7.21,
+  "yield_PA_pct": 7.37
+ },
+ "territories": {
+  "Indiana-Kentucky": {
+   "first_quarter_wages": "1702845.52",
+   "signed": 197,
+   "still": 153,
+   "wages_2024": "6565923.84"
+  },
+  "Michigan": {
+   "first_quarter_wages": "3839377.24",
+   "signed": 419,
+   "still": 334,
+   "wages_2024": "14092742.08"
+  },
+  "Ohio": {
+   "first_quarter_wages": "6303064.11",
+   "signed": 724,
+   "still": 594,
+   "wages_2024": "24995811.51"
+  },
+  "Pennsylvania": {
+   "first_quarter_wages": "3448677.54",
+   "signed": 410,
+   "still": 341,
+   "wages_2024": "12317539.17"
+  },
+  "South and Plains": {
+   "first_quarter_wages": "1090881.60",
+   "signed": 157,
+   "still": 128,
+   "wages_2024": "4049158.45"
+  },
+  "Upper Midwest": {
+   "first_quarter_wages": "1086114.72",
+   "signed": 134,
+   "still": 108,
+   "wages_2024": "4391458.26"
+  }
+ }
+}

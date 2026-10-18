@@ -11,7 +11,7 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
+  "answer": "2,300 new first-time employers in the 2027 plan's first-time-employer line (twelve core states, nearest 100)",
   "answer_source": "",
   "gap": [
     "population",
@@ -36,9 +36,9 @@
   "role_family": "finance_controller",
   "scoring_unit": "per boarded entity",
   "spine": {
-    "file": "onboarding_new_accounts_2022-2025.csv (the payroll platform's new-account onboarding export)",
-    "rows": 30000,
-    "entity": "one payroll account opened on the platform, with its business identifiers, state, onboarding dates and first payroll run",
+    "file": "onboarding_accounts_2022-2025.csv (the current account system's onboarding export)",
+    "rows": 31912,
+    "entity": "one payroll account, with its business identifiers, address state, opening stamp, first pay date, onboarding answer, channel and product",
     "grain": "account",
     "source": "synthetic (constructed in the layout of a payroll platform's account onboarding export)"
   },
@@ -60,14 +60,13 @@
     ]
   },
   "layer1": [
-    "the Census business formation statistics in their release layout: state by month, business applications, high-propensity, planned-wages and corporate applications, seasonally adjusted and unadjusted rows flagged, formations within four and eight quarters published only for cohorts old enough, blank after",
-    "a revised release overlapping the earlier extract the research team kept, the annual seasonal factors re-estimated",
-    "state codes as FIPS numbers in the statistics and as postal abbreviations in the company's files",
-    "each state's business registration report in its own layout, one state changing its report layout across years",
-    "the onboarding export's two layouts across the platform's 2024 account-system migration, account timestamps in UTC",
-    "employer identification numbers with and without the hyphen, leading zeros dropped by a spreadsheet, the vendor file keyed on state charter numbers",
-    "the company's fiscal year (February to January) against calendar years and calendar quarters",
-    "test and void payroll runs in the run history, and accounts reopened under a new account number"
+    "the Census business formation statistics as the research team pulled them: the October release from the API in its long layout with FIPS state codes and adjusted and unadjusted rows, formations within four and eight quarters published only for closed cohorts",
+    "the April release kept from the monthly download in the wide layout with postal codes, its latest three months preliminary and its seasonal factors estimated on less data",
+    "the onboarding export's two layouts across the June 2024 migration: legacy client-since stamps in Eastern month/day/year text and upper-case legal names against UTC ISO stamps",
+    "employer identification numbers hyphenated, plain, and with the leading zero lost on legacy rows",
+    "legacy quarterly wages in cents by pay group with the client's company-level group, current wages in dollars with no state, the migration quarter split across both files",
+    "legacy client numbers through the migration crosswalk, state registrations keyed by account, the successor register keyed by EIN",
+    "accounts reopened under the old EIN, successors under a new EIN, relocations, and product changes (the HR bundle, tax filing only)"
   ],
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:marginal-applicant-employer-yield-read-against-untreated-states",
@@ -78,10 +77,10 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "A cut in the cost of entering a leading count draws in marginal entrants who seldom go on to the outcome, so each entrant the cut adds yields a fraction of what an ordinary entrant yields, while a common rise in the count across every region over the same months is ordinary and yields in full; only the treated regions read against the untreated ones, before and after, separate the two and give the added entrants' yield, and carried per added entrant onto a forward period holding far more of them than any closed cohort, it puts the treated regions' outcome below their own latest yield, above zero, and far below the average or high-propensity yield.",
-  "driver_concrete": "Ohio's, Pennsylvania's and Michigan's online formation filings now file the IRS application for an employer identification number for every new business that ticks the box, so applications there doubled once each state retired its older filing route, while the other nine states rose about a fifth on a common 2025 wave; read against those nine before and after, the applications the reform added formed employers within four quarters at about three tenths of the ordinary rate in the closed 2024 and 2025 cohorts, and carried per added application onto the plan's twelve months of applications to September 2026, with the common wave at the ordinary rate, it puts Kilbourne's 2027 first-time employers well under each state's latest closed rate, the high-propensity split or the pre-reform rate, and well over a zero yield for the added applications.",
-  "stump": "Carrying each state's formations within four quarters per application over its latest four closed quarters onto the twelve months of applications to September 2026 at the plan's 2025 share files about 2,600; the step that lands it there is treating the reform states' latest closed rate as theirs, when it is a mix of ordinary and added applications whose added share has since more than doubled, and only the added applications' own yield, read against the nine other states before and after and carried per added application, gives the golden figure.",
+  "driver_concrete": "Ohio's, Pennsylvania's and Michigan's online formation filings now file the IRS application for an employer identification number for every new business that ticks the box, so applications there roughly doubled once each state retired its older filing route, while the other nine states rose about an eighth on a common wave from mid-2023 to mid-2024; read against those nine before and after, the applications the reform added formed employers within four quarters at under a fifth of the ordinary rate in the closed 2024 and 2025 cohorts, and carried per added application onto the plan's twelve months of applications to September 2026, with the common wave at the ordinary rate, it puts Kilbourne's 2027 first-time employers at 2,300, well under each state's latest closed rate (2,800), the high-propensity split or the pre-reform rate, and well over a zero yield for the added applications (2,100).",
+  "stump": "Carrying each state's formations within four quarters per application over its latest four closed quarters onto the twelve months of applications to September 2026 at the plan's 2025 share files 2,800; the step that lands it there is treating the reform states' latest closed rate as theirs, when it is a mix of ordinary and added applications whose added share rose from about a fifth of the closed cohorts to nearly half of the twelve months, and only the added applications' own yield, read against the nine other states before and after and carried per added application, gives 2,300.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stacks the formation statistics by state, keeps only cohorts old enough to have closed, reads the plan standard's estimand and share table correctly and carries each state's latest closed formation rate per application onto the twelve months of applications to September 2026 files about 2,600, and the cheaper corrections (the high-propensity split at its closed rates, a zero yield for the reform states' extra applications, a before-and-after in the reform states alone) file other wrong figures; only estimating the added applications' yield against the nine other states and carrying it per added application gives the golden figure (executed in checks.py on the generator's clean truth).",
+  "analyst_test": "A strong analyst who stacks the formation statistics by state, keeps only cohorts old enough to have closed, reads the plan standard's estimand and share table correctly and carries each state's latest closed formation rate per application onto the twelve months of applications to September 2026 files 2,800, and the cheaper corrections (the latest closed quarter's rate 2,700, a before-and-after split in the reform states alone 2,500, the filing's effect carried as a level 2,200, a zero yield for the added applications 2,100, the high-propensity split 2,900) file other wrong figures; only estimating the added applications' yield against the nine other states and carrying it per added application gives 2,300 (executed in checks.py on the generator's clean truth).",
   "domain_test": "The deciding quantity is the employer yield of the business applications a filing reform added, identified the way an econometrician identifies a policy's effect on business formation (difference-in-differences of applications and of closed formation cohorts against the states the reform did not reach, before and after) and carried into a formation forecast; with a clinic's referrals or a utility's connection requests in place of applications there is no federal application register whose filings become employers only after a four-quarter window, no high-propensity classification that the marginal filer inflates, and no filing cost whose cut changes who applies, so the call has nothing to stand on.",
   "mechanism_source": "design_note",
   "differentiation": {
