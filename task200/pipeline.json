@@ -1,31 +1,34 @@
 {
- "architecture": 1,
- "grounds_closed": [
-  "physical-environmental-sciences/environmental-monitoring-exceedance",
-  "criminology-justice/crime-incidence-hotspot-analysis",
-  "supply-chain-logistics(general-statistics-data-science)/multiple-testing-selective-inference"
- ],
- "loops": 0,
- "objective": "anomaly-detection",
- "owner": "oviya13ya",
- "precut": {
-  "date": "2026-10-18",
-  "exit": 1
- },
- "resume": "PAUSED at stage 1 after a second screening pass. No card has ever been written or registered, which is deliberate: a card written to pass protects nobody and a half-drawn card binds every live build's guard. Not retired. Read DESIGN_NOTE.md first and re-screen nothing in it: fifteen mechanisms across three grounds are measured dead. Grounds closed: environmental monitoring exceedance (a variance lever carried neither a ranking nor a banded verdict); crime incidence hotspot analysis (closed structurally, the one forced-and-silent family is a count the records leave as a range and task184 holds the only dimension that carries one); and, new on 2026-10-18, supply-chain-logistics (client domain general-statistics-data-science) x multiple-testing-selective-inference, where six mechanisms were measured dead over seven screens and the cell is closed structurally. The structural finding: a multiple-testing analysis has four places a decisive step can sit, the level and the family are conventions the WHAT-screen pincer closes (measured: six routes to a latent count file 15, 8, 6, 6, 0.0, 0.0 on one axis with the truth of 12 sixth of seven, and no trigger threshold isolates it; the certification slates nest totally at 8/8, 19/19, 27/27), while the reference distribution and the statistic are the two data-forced slots and both are held, task191 holding the reference and task195 the statistic. guard.py check confirms it from outside the design, returning BLOCK test.same_driver_older against task191 on the strongest candidate's axes while driver.text scores only 0.05. The designation determinacy screen (stumping 1.2's sixth) was run on both candidates that grade a set, counted on the golden's own estimator family over 20 redraws: the audit slate returns 2.90 distinct sets of 6 forms per redraw and the materiality slate 2.05 of 4, so neither designation is determinate, and the crude route lands inside the golden family in 0 of 20 and 2 of 20 redraws respectively. Also measured: the pooling reflex lands the dense-weak candidate outright (z = 4.6), the materiality slate forks two ways across the corrected routes, and the selection-conditioned confirmation has lever over noise peaking at 0.81 and is worse than doing nothing above half overlap. Two routes for the next pass, in DESIGN_NOTE.md's Resume: keep the reserved domain and move to general-statistics-data-science/exploratory-data-analysis-distribution-assessment, the only other AD route supply-chain-logistics has because urban-regional-science serves no AD task type (two paper risks named there, price them before designing); or move the number to another domain's AD cell. shape 07 is NOT available on either route: guard.py check returns BLOCK ban.shape against task244, and that survives the live-card gate change; shapes 10, 12, 16 and 18 clear, as do role_family operations_director and context_artifact filed_standard, while procurement_lead and monitoring_export block against task170. The pairing supply-chain-logistics/anomaly-detection itself draws no ban.pairing and no ban.subdomain. architecture stays 0 because no architecture landed; nothing was cut. The axis probe at scratchpad/wave5/task200b/task200_AXIS_PROBE_NOT_A_DRAW.json reads the window only and must not be registered.",
- "screens": {
-  "command": "python3 -I screens.py",
-  "harness": "scratchpad/wave5/task200b/screens.py",
-  "mechanisms_dead_this_pass": 6,
-  "mechanisms_dead_total": 15,
-  "reproducible": "two consecutive runs byte-identical, 6913 bytes, stderr included",
-  "screens": 7
- },
- "stage": 1,
- "stage_name": "draw",
- "status": "DRAWING",
- "task": "task200",
- "updated": "2026-10-18",
- "wave6_cell": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
- "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race."
+  "architecture": 1,
+  "grounds_closed": [
+    "physical-environmental-sciences/environmental-monitoring-exceedance",
+    "criminology-justice/crime-incidence-hotspot-analysis",
+    "supply-chain-logistics(general-statistics-data-science)/multiple-testing-selective-inference",
+    "biomedical-clinical-research/genomics-gwas-high-dimensional-association"
+  ],
+  "loops": 0,
+  "objective": "anomaly-detection",
+  "owner": "oviya13ya",
+  "precut": {
+    "exit": 1,
+    "date": "2026-10-18"
+  },
+  "resume": "PAUSED at stage 1 after a third screening pass. No card has ever been written or registered, which is deliberate: a card written to pass protects nobody and a half-drawn card binds every live build's guard. Not retired. Read DESIGN_NOTE.md first and re-screen nothing in it: twenty-six mechanisms across four grounds are measured or structurally dead. Grounds closed: environmental monitoring exceedance; crime incidence hotspot analysis (closed structurally); supply-chain-logistics x multiple-testing-selective-inference (closed structurally, six mechanisms over seven screens); and, new on 2026-10-18, biomedical-clinical-research x genomics-gwas-high-dimensional-association, where one architecture was measured dead and eleven directions closed, four of them by guard.py slots on evidence this repo already held. The structural finding: a high-dimensional association scan offers four kinds of per-bucket aggregate a split can follow and all four are closed (a count past a line is a filed test; a level at a selected unit is a shrinkage target, measured here at lever over family spread 0.007 to 0.192 across the dial and never above 1; a variance-explained or signal-mass aggregate is task246's and task237's driver in other nouns and was measured inseparable from the selection correction at 115 slots of 36,000; a frequency, call rate or effective sample size is exact arithmetic and so rule application). Two further measured facts: the decisive step reordered none of the seven buckets over 20 redraws, and corr(decisive measure, programme discovery size) was +0.962 against the +0.98 that killed task57. The reserved decision_type is itself part of the problem: allocation_to_total grades a share per bucket, which is a level per bucket, so stumping 1.6a's discretising rescue has no threshold to work with; measured from both sides, the correction family names one largest-share programme in 20 of 20 redraws while spreading the split by 472 slots, and the crude route names that same programme in 20 of 20. Biomedical & Clinical Research serves anomaly-detection with this one subdomain only, so the number cannot be redrawn inside the client domain on this objective except back into the same cell. Axis facts measured from outside the design: shape 05 draws no ban; the triple gap objective plus decisive generator G17 plus Gate G decomposition_attribution BLOCKs on test.same_driver_older against task237; Gate G decomposition_attribution and question form how-many each WARN against task248; pattern A was reserved and is not honest here, filed as none. architecture stays 0 because no architecture landed and nothing was cut. The card at scratchpad/w6_200/task200_card.json records the screened and dead architecture with architecture_spent true, carries no world or personas, returns BLOCK on guard.py check, and must not be registered.",
+  "screens": {
+    "harness": "scratchpad/w6_200/screen1.py, screen1b.py, screen1c.py, screen2_rank_pricing.py",
+    "command": "python3 -I screen1.py",
+    "screens": 4,
+    "mechanisms_dead_this_pass": 11,
+    "mechanisms_dead_total": 26,
+    "reproducible": "two consecutive runs of screen1.py byte-identical, 1763 bytes, stderr included",
+    "door_left_open": "the determinacy half of the rank-verified pincer does not close on this ground: 46 of 120 adjacent pairs sit between one and ten family-spreads (median 12.30), so what blocks a rank verified is the certainty bar, not determinacy"
+  },
+  "stage": 1,
+  "stage_name": "draw",
+  "status": "PAUSED",
+  "task": "task200",
+  "updated": "2026-10-18",
+  "wave6_cell": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
+  "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
+  "architecture_note": "architecture 1 was drawn far enough to be screened as code and is dead; nothing was cut, no card was registered, and the card recording it carries architecture_spent true at scratchpad/w6_200/task200_card.json. The next pass starts architecture 2."
 }
