@@ -1511,3 +1511,61 @@ it escapes the other way, through a pooling the design fixes.
 set (which complications or which units enter the improvement programme), one population figure (how many
 of the partnership's complications were avoidable) or a hold (whether the placement is funded at all), and
 each escapes the volume leak by construction rather than by tuning.
+
+### Architecture 6: a designation set against a filed tolerance, both cheap screens passed (2026-10-18)
+
+**Shape**, taken from the three designation_set ships (task180, task181, task193) after reading them
+rather than reasoning about them. Which clinical units the partnership designates for the 2027 Q4
+improvement programme, each judged against the charter's filed tolerance of avoidable complications per
+1,000 separations. Following task181's escape, the exposure the complications actually scale with is **not
+filed**: they arise at care handovers, not per separation and not per bed-day, and the activity plan
+reconfigures pathways so handovers and separations move differently.
+
+**The structural advantage, measured rather than assumed.** Membership is decided per candidate against a
+fixed tolerance, so there is no cross-unit comparison of heterogeneous sizes for a volume proxy to publish,
+**and the tolerance fixes the denominator, so no weighting is free.** The measured contrast is the point:
+
+| | Result |
+|---|---|
+| designated set across five estimator variants | **one set, [1, 3]**, identical under every variant |
+| unit 1's printed rate across the same five variants | **28.4, 28.6, 28.7, three distinct figures** |
+
+So the weighting freedom that killed candidate 1 (16.9 / 18.0 / 18.3), architecture 3 (36.6 to 49.0) and
+candidate A (10.1 / 10.2 / 10.5) is still present and **does not cross the tolerance**. A designation set
+discretises it away. That is why `designation_set` is 3 of the 9 coarse ships and 0 of the 5 pauses.
+
+**Sixth screen, run first: passes.** The golden set is [1, 3], 2 of 14.
+
+| Rival designation route | Set | Verdict |
+|---|---|---|
+| current count scaled by separations | empty | designates nobody |
+| current count scaled by bed-days | empty | designates nobody |
+| current observed rate, no projection | empty | designates nobody |
+| current count carried forward | empty | designates nobody |
+
+All four easy routes designate **nobody**, which is task180's own shape, where the analyst files that no
+unit goes over. Of nine single sorted columns, eight differ (planned separations [0,2]; planned handovers
+[1,2]; handovers per separation [1,9]; current rate per 1,000 [0,3]; current per-handover rate [0,8]; and
+so on). The one that reproduces the set is **the construction itself**, the per-handover rate times
+handovers per separation, which is the answer computed correctly rather than a leak.
+
+**Uniqueness on methods, per the convention-versus-method clause: passes.** Each unit's own ratio of
+totals, shrinkage halfway to the pooled rate, a James-Stein style shrinkage by counts, a Poisson maximum
+likelihood with a continuity term and a rate pooled over the prior two quarters all designate [1, 3]. One
+distinct set.
+
+**Three test-design errors of mine, caught and corrected in the same pass, because the pattern matters
+more than the instances.** First, the per-handover rate was uniform across units, which made the golden
+rate exactly proportional to handovers per separation so that one column reproduced the set; the rate now
+varies by unit. Second, the uniqueness table's first row passed the **true generating parameter** rather
+than an estimate, so it was the oracle and not a variant, and I had reported a disagreement that did not
+exist; the five genuine estimators agree. Third, the set test used a top-k sort with k of 10 out of 14,
+which any correlated column satisfies, so the test could not discriminate; raising the tolerance to a
+two-unit set made it bite. **Three times tonight I have built a test and read its artefact as a finding.**
+
+**What has not been run.** Only the two cheap screens are done. The pincer and the dichotomy, the move
+available against the move needed, the standard error of what the construction must estimate, and the
+lever against both the ranked quantity's noise and the unit's own history are all outstanding, as are the
+reflex sweep's filed-strata route and the readability screen. Two specific risks to settle there: the easy
+route designating **nobody** means the prompt must not make an empty answer implausible on its face, and
+Gate B requires the handover data shipped while nothing may name handovers as the exposure.

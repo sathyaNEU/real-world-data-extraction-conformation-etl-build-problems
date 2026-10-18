@@ -313,7 +313,17 @@ tempting generalisation, that a pick over units of different size cannot hold be
 either a count volume publishes or a rate whose denominator is a choice: `pick_one_of_n` is 5 of the 15
 ships against 2 of the 5 pauses, and **3 of the 9 coarse-grained ships answer a pick** (task119, task183,
 task188), so the decision type is not the wall either. What the table does show, weakly and worth using, is
-that `designation_set` is 3 of the 9 coarse ships and none of the pauses. **Both failed generalisations
+that `designation_set` is 3 of the 9 coarse ships and none of the pauses, **and that association turns out to
+have a mechanism rather than being a small-sample accident: discretising the answer makes a free weighting
+harmless, so long as the weighting's spread does not cross the threshold.** task194's architecture 6
+measured both halves in one pair of numbers: the designated set is identical, one set under all five
+estimator variants, while the printed rate of a designated unit is 28.4, 28.6 and 28.7 under the same five.
+The weighting freedom that killed three earlier candidates on that number (16.9 / 18.0 / 18.3, then 36.6 to
+49.0, then 10.1 / 10.2 / 10.5) is still fully present and simply does not reach the decision. So where a
+ground offers only quantities whose estimator carries a weighting choice, do not conclude the ground is
+closed: ask whether the decision can be discretised against a filed tolerance, which fixes the denominator
+without filing a method. The check is one computation, the set under every variant against the figure under
+every variant, and it is the same table either way. **Both failed generalisations
 failed the same way: a pattern across the five pauses read as a law without checking it against the fifteen
 ships.** Before filing any claim of the form "this ground or shape cannot hold", count it on both sides.
 
