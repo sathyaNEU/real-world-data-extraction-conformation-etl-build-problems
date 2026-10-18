@@ -1,0 +1,368 @@
+{
+ "call": [
+  "TBT1",
+  "TH3",
+  "TBT4"
+ ],
+ "constants": {
+  "allowed": 35,
+  "bearing_half": 22.5,
+  "bearing_hours": 6,
+  "daily_valid_hours": 18,
+  "frisbee_area": 0.0405,
+  "frisbee_mm": 227,
+  "lab_area": 0.0731,
+  "limit": 50,
+  "min_cell_hours": 5,
+  "no2_basis": 1.91,
+  "no2_logger": 1.88,
+  "procedure_sections": [
+   "3",
+   "5.1",
+   "5.2",
+   "5.3"
+  ],
+  "sectors": [
+   4,
+   8,
+   12,
+   16,
+   36
+  ],
+  "speed_band": 4.0,
+  "wet_mm": 0.2
+ },
+ "evidence": {
+  "lost_bearing": 103,
+  "lost_days": 229,
+  "valid_bearing": 72,
+  "valid_days": 866
+ },
+ "readings": 288,
+ "reference": "wind_cells_median_16_2_wet_mix",
+ "rungs": {
+  "interp_daily": [],
+  "interp_hourly": [],
+  "interp_hybrid_168": [],
+  "interp_hybrid_24": [],
+  "interp_hybrid_72": [],
+  "net_hourly_council_bg": [],
+  "net_hourly_median": [],
+  "net_hourly_rural": [],
+  "net_hourly_two_way": [],
+  "net_nearest_daily": [],
+  "net_ratio_daily": [],
+  "net_regression_daily": [],
+  "net_twoway_daily": [],
+  "p904_higher": [
+   "TH5",
+   "TH6"
+  ],
+  "p904_linear": [
+   "TH5",
+   "TH6"
+  ],
+  "p904_lower": [
+   "TH5",
+   "TH6"
+  ],
+  "p904_nearest": [
+   "TH5",
+   "TH6"
+  ],
+  "pro_rata": [
+   "TH5",
+   "TH6"
+  ],
+  "pro_rata_month": [
+   "TH6"
+  ]
+ },
+ "stations": [
+  {
+   "bearing_days": 34,
+   "bearing_network": 19.9,
+   "bearing_station": 53.9,
+   "code": "TBT1",
+   "dep": 69,
+   "dep_lab": 51,
+   "family": [
+    40,
+    60
+   ],
+   "interval": [
+    39,
+    61
+   ],
+   "lost_bearing": 41,
+   "lost_days": 80,
+   "name": "North Gate",
+   "no2": null,
+   "no2_export": null,
+   "note": true,
+   "operator": "Thornmouth Bulk Terminal",
+   "pro_rata": 28.2,
+   "rebuilt_above": 35,
+   "valid_bearing_share": 11.9,
+   "valid_count": 22,
+   "valid_days": 285,
+   "year_count": 57
+  },
+  {
+   "code": "TBT2",
+   "dep": 61,
+   "dep_lab": 46,
+   "family": [
+    12,
+    16
+   ],
+   "interval": [
+    11,
+    17
+   ],
+   "name": "East Berth",
+   "no2": null,
+   "no2_export": null,
+   "note": false,
+   "operator": "Thornmouth Bulk Terminal",
+   "pro_rata": 5.7,
+   "valid_count": 5,
+   "valid_days": 318,
+   "year_count": 14
+  },
+  {
+   "bearing_days": 14,
+   "bearing_network": 22.2,
+   "bearing_station": 82.1,
+   "code": "TH3",
+   "dep": null,
+   "dep_lab": null,
+   "family": [
+    46,
+    57
+   ],
+   "interval": [
+    45,
+    58
+   ],
+   "lost_bearing": 29,
+   "lost_days": 71,
+   "name": "Harbour Walk",
+   "no2": 19.0,
+   "no2_export": 18.9,
+   "note": true,
+   "operator": "Thornmouth Borough Council",
+   "pro_rata": 21.1,
+   "rebuilt_above": 34,
+   "valid_bearing_share": 4.8,
+   "valid_count": 17,
+   "valid_days": 294,
+   "year_count": 51
+  },
+  {
+   "bearing_days": 24,
+   "bearing_network": 21.0,
+   "bearing_station": 63.0,
+   "code": "TBT4",
+   "dep": 60,
+   "dep_lab": 44,
+   "family": [
+    45,
+    55
+   ],
+   "interval": [
+    44,
+    56
+   ],
+   "lost_bearing": 33,
+   "lost_days": 78,
+   "name": "South Yard",
+   "no2": null,
+   "no2_export": null,
+   "note": true,
+   "operator": "Thornmouth Bulk Terminal",
+   "pro_rata": 24.2,
+   "rebuilt_above": 32,
+   "valid_bearing_share": 8.4,
+   "valid_count": 19,
+   "valid_days": 287,
+   "year_count": 51
+  },
+  {
+   "code": "TBT3",
+   "dep": 59,
+   "dep_lab": 44,
+   "family": [
+    16,
+    16
+   ],
+   "interval": [
+    15,
+    17
+   ],
+   "name": "Rail Sidings",
+   "no2": null,
+   "no2_export": null,
+   "note": false,
+   "operator": "Thornmouth Bulk Terminal",
+   "pro_rata": 16.3,
+   "valid_count": 16,
+   "valid_days": 359,
+   "year_count": 16
+  },
+  {
+   "code": "TBT5",
+   "dep": 46,
+   "dep_lab": 35,
+   "family": [
+    9,
+    15
+   ],
+   "interval": [
+    8,
+    16
+   ],
+   "name": "West Gate",
+   "no2": null,
+   "no2_export": null,
+   "note": false,
+   "operator": "Thornmouth Bulk Terminal",
+   "pro_rata": 7.7,
+   "valid_count": 7,
+   "valid_days": 331,
+   "year_count": 14
+  },
+  {
+   "code": "TH5",
+   "dep": null,
+   "dep_lab": null,
+   "family": [
+    24,
+    32
+   ],
+   "interval": [
+    23,
+    33
+   ],
+   "name": "Market Street",
+   "no2": 29.0,
+   "no2_export": 28.8,
+   "note": false,
+   "operator": "Thornmouth Borough Council",
+   "pro_rata": 37.8,
+   "valid_count": 24,
+   "valid_days": 232,
+   "year_count": 30
+  },
+  {
+   "code": "TH6",
+   "dep": null,
+   "dep_lab": null,
+   "family": [
+    27,
+    33
+   ],
+   "interval": [
+    26,
+    34
+   ],
+   "name": "Westholme Avenue",
+   "no2": 26.3,
+   "no2_export": 26.1,
+   "note": false,
+   "operator": "Thornmouth Borough Council",
+   "pro_rata": 41.9,
+   "valid_count": 27,
+   "valid_days": 235,
+   "year_count": 30
+  },
+  {
+   "code": "TH1",
+   "dep": null,
+   "dep_lab": null,
+   "family": [
+    24,
+    24
+   ],
+   "interval": [
+    23,
+    25
+   ],
+   "name": "Town Hall",
+   "no2": 19.4,
+   "no2_export": 19.2,
+   "note": false,
+   "operator": "Thornmouth Borough Council",
+   "pro_rata": 24.5,
+   "valid_count": 24,
+   "valid_days": 358,
+   "year_count": 24
+  },
+  {
+   "code": "TH2",
+   "dep": null,
+   "dep_lab": null,
+   "family": [
+    15,
+    15
+   ],
+   "interval": [
+    14,
+    16
+   ],
+   "name": "Grangefield",
+   "no2": 15.5,
+   "no2_export": 15.4,
+   "note": false,
+   "operator": "Thornmouth Borough Council",
+   "pro_rata": 15.3,
+   "valid_count": 15,
+   "valid_days": 358,
+   "year_count": 15
+  },
+  {
+   "code": "TH4",
+   "dep": null,
+   "dep_lab": null,
+   "family": [
+    11,
+    11
+   ],
+   "interval": [
+    10,
+    12
+   ],
+   "name": "Ellerby Road",
+   "no2": 23.7,
+   "no2_export": 23.5,
+   "note": false,
+   "operator": "Thornmouth Borough Council",
+   "pro_rata": 11.2,
+   "valid_count": 11,
+   "valid_days": 360,
+   "year_count": 11
+  },
+  {
+   "code": "TH7",
+   "dep": null,
+   "dep_lab": null,
+   "family": [
+    2,
+    2
+   ],
+   "interval": [
+    1,
+    3
+   ],
+   "name": "Rookwood Farm",
+   "no2": null,
+   "no2_export": null,
+   "note": false,
+   "operator": "Thornmouth Borough Council",
+   "pro_rata": 2.0,
+   "valid_count": 2,
+   "valid_days": 360,
+   "year_count": 2
+  }
+ ]
+}
