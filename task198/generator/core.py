@@ -5,6 +5,7 @@ worked by one interviewer and each interviewer works PSUs across every stratum, 
 groups cut across the replication groups the design supplies. The recorded outcome carries an area
 effect at PSU level and a probing differential at interviewer level, redrawn each quarter.
 """
+import collections
 import numpy as np
 CUR, CMP = "2026Q4", "2025Q4"
 NAMED = "Manawatu-Whanganui"          # the region the prompt names

@@ -1,19 +1,19 @@
 {
  "task": "task198",
  "owner": "oviya13ya",
- "status": "DRAWING",
+ "status": "DESIGN",
  "domain": "survey-research-official-statistics/anomaly-detection",
  "objective": "anomaly-detection",
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-10-18",
- "architecture": 2,
+ "architecture": 3,
  "loops": 0,
- "call": "Which region's rise in dwellings with damp or mould takes the one boosted sample in the 2027 Q1 field quarter: the region whose rise survives attribution to the interviewers who collected it, committed with its own observed rate. Candidate regions and figures are fixed at stage 2.",
- "stump": "A competent solver stacks both questionnaire layouts, resolves the address log to the dwelling grain, converts the stamps, rebases the regions across the amalgamation and weights to the design correctly, ranks the regions on the quarter-on-quarter change in dwellings with damp or mould, and commits the loud region on its largest measured rise, because most of that rise is the differential of the one interviewer who carried two thirds of that region's quarter while a colleague was on leave, a differential her own records reproduce in the other regions she worked.",
+ "call": "The rise in dwellings with damp or mould that the Household Living Conditions Survey measured in Manawatu-Whanganui between the December 2025 and December 2026 quarters is NOT established as a population change: +6.6 points at 0.9 standard errors once the replication spans the field workload, against 3.5 standard errors on the supplied replicate weights, so the region's 2027 Q1 addresses go to a fresh interviewer panel.",
+ "stump": "A competent solver rebuilds both quarters across the two questionnaire layouts, rebases the region across the amalgamation, rules out every rival explanation on a shipped fact, judges the +6.6 point change against the survey's own supplied replicate weights at 3.53 standard errors and files the rise as an established population change, because every replicate the pack ships is formed on primary sampling units and no replicate ever varies the interviewer composition of the quarter.",
  "judge": "architecture 1: NOT_DETERMINISTIC, SEND_BACK, 2026-10-18",
  "returned": [],
- "resume": "Stage 2. Architecture 2's decisive step and its approved repair are both spent, measured, with no data cut, so the author's stop rule fires: the number moves to a different world rather than a third decisive step here. What survives and is worth carrying: the pincer (stumping 1.2b), the full pricing rule including the estimator's standard error, and the new result that a decisive step which moves a variance cannot carry a ranking because the lever and the numerator noise are one variance. The registered card's world and axes belong to a dead step; re-root the card when the new world is assigned. Nothing is cut; precut.py exits 1 on the seven stage-2 sections and the absent prompt.txt.",
+ "resume": "Stage 2 complete: precut.py exits 0 (50 checks, 0 FAIL, 0 WARN) and asks_measure.py exits 0 at a solved pair ceiling of 39.5 with 12.0 per cent mirror leakage. generator/core.py carries the clean truth (main call and ask side) and generator/asks_measure.py solves the ceiling. Next is stage 3: build the 19-file pack under target/ from core.py, write build_pack.py, make_golden.py, checks.py and verify.py, re-point asks_measure.py's figure lookups through verify.py's bundle pipeline, then the stage-3 gates. Nothing is cut yet.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -93,6 +93,21 @@
   "priced_ceiling": "about 9.4 points available against about 4.5 needed, a ratio of about 2.1, and the two separations are financed by independent parameters so buying one does not spend the other; both re-measured on the cut pack",
   "stage1_gate": "precut.py: the four stage-1 sections present, all thirteen three-rules lines pass; the seven stage-2 sections correctly absent",
   "stage2_finding": "the decisive step failed Gate C at stage 2 measurement before any data was cut: the within-quarter route named the golden in 2 of 12 seeds at persistence 0.25 and 3 of 12 at 0.95, scattering across eight regions, because a per-interviewer differential carries a 6.96-point standard error at a realistic 33-dwelling out-of-region workload against a 3.0-point golden rise. Both ends of the persistence dial fail for opposite reasons: persistent makes the additive interviewer control the right analysis (the schema tell reaches the golden), non-persistent makes the decisive route too noisy to rank. The world, the ground, the pincer case and the priced bias stand.",
-  "repair_finding": "conditions 2 and 3 passed (driver 0.05 against task186 and 0.07 against task191; sigma_b 6.73 ANOVA / 6.74 REML / 6.73 MoM with the name identical under all three; variance component relative SE 4.1 per cent, 24x better than the dead per-interviewer step; corr(decisive measure, region size) -0.076). Condition 1 failed on name stability: the golden was named in 2 of 14 seeds and the loud region in 4 of 14, because the interviewer-induced spread that flips the ranking in the denominator is the same variance that randomises the measured change in the numerator. Exact, not tunable."
+  "repair_finding": "conditions 2 and 3 passed (driver 0.05 against task186 and 0.07 against task191; sigma_b 6.73 ANOVA / 6.74 REML / 6.73 MoM with the name identical under all three; variance component relative SE 4.1 per cent, 24x better than the dead per-interviewer step; corr(decisive measure, region size) -0.076). Condition 1 failed on name stability: the golden was named in 2 of 14 seeds and the loud region in 4 of 14, because the interviewer-induced spread that flips the ranking in the denominator is the same variance that randomises the measured change in the numerator. Exact, not tunable.",
+  "v3": {
+   "guard": "PASS, no BLOCK and no WARN, re-run against the REGISTERED card as the last act of stage 1 with forum operations_desk; nearest driver 0.07 task195, 0.06 task452 v1, task186 0.05; architecture 2 own driver absent from the top four. Forum redrawn twice because registering v3 reshuffled the three-build window: committee_or_panel collided with task166 and customer_or_counterparty with task471 after this card was filed. period_close and research_or_statistics_office clean on the same window.",
+   "pricing": "residue is a method (which groups the replication is formed over); move available f=3.95 against 1.80 needed, ratio 2.19; SE of the estimated component 4.1 per cent with the estimator family spanning 0.15 per cent; lever and ranked-quantity noise are not one variance because nothing is ranked, the region is named and the lever acts on a stated threshold",
+   "reflex_sweep": "ten reflexes run as code before the separations, every one filing the supplied verdict at z 2.38 to 4.14; none reaches the golden verdict; nearest is three-quarter shrinkage at 2.38, still 21 per cent clear of the 1.96 bar",
+   "margin": "sigma_int must fall 61 per cent, from 10.08 to 3.94 points, before the verdict flips: about 15 relative standard errors and 400 times the estimator family's own spread; the verdict holds at a 25 per cent and a 50 per cent error in the component",
+   "asks": "pair ceiling 39.5 solved with both columns (cracker 60.4 keeping 7 of 25, mirror 18.6 keeping 3), mirror leakage 12.0 per cent; ask2 smallest quarterly gap 702 interviews, ask3 grouped-area rate gap 6.3 to 8.8 per 1,000 against a 0.05 bin half-width",
+   "seed_incidence": "the realised change must land between the two intervals, which happened in 2 of 6 seeds at each rise setting, about a third; the generator fixes seed 32191656 and no role is hostage to it, because there is one named region and one verdict"
+  }
+ },
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18",
+  "checks": 50,
+  "fail": 0,
+  "warn": 0
  }
 }

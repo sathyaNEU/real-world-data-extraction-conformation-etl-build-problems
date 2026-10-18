@@ -17,7 +17,7 @@ carry a verdict on one named candidate against a stated threshold.
 
 | Field | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task198.json`, architecture v3, registered 2026-10-18, `guard.py check` **PASS**, no BLOCK and no WARN |
+| Card | `.claude/skills/fingerprint/cards/task198.json`, architecture v3, registered 2026-10-18, forum redrawn to `operations_desk`; `guard.py check` re-run against the registered card as the last act of stage 1 and returning **PASS**, no BLOCK and no WARN |
 | Domain / subdomain | `survey-research-official-statistics` / `anomaly-detection` |
 | Objective | Anomaly Detection & Diagnostics (fixed by the lane's task-number block) |
 | Shape | 18, hypotheses versus evidence: the rival explanations for the move are the grid's cells |
@@ -86,6 +86,18 @@ relative standard errors**, before the golden verdict flips to the supplied one.
 - `determinism-check` sections 1, 3 and 5: the method may stay open only where the data forces it; the
   call's robustness is not the figures' determinacy; a robustness claim is graded over the whole range it
   names.
+
+**The forum, and the window mechanism that cost two redraws.** `ban.forum`, `ban.forcing_event` and
+`ban.org_family` run on the last three builds by draw time, and **registering this card reshuffled that
+window itself**, because architecture 2's card had been sitting in it. So a forum that cleared before
+registering can collide after: `committee_or_panel` collided with task166 and `customer_or_counterparty`
+with task471, both of them after this card was filed. The check that counts is therefore the one run
+against the **registered** card as the last act of stage 1, not the one run on the draft. The forum was
+then drawn on the act rather than off the free list: no formal forum signs a quarterly regional figure, and
+the act the verdict feeds is the field operations desk issuing the region's 2027 Q1 addresses to a
+different interviewer panel, so `operations_desk` is honest where `executive_team` (which also cleared) is
+the same stretch as `regulator_or_inspector` here. `period_close` and `research_or_statistics_office` are
+clean on the same window.
 
 **Build requirements this draw owes.** The field workload log reads as an operations record kept for pay
 and travel and explains nothing. The quality framework and the commissioning letter pose a question and
@@ -1246,3 +1258,17 @@ is a verdict on one named candidate, or a flag against a stated threshold on a g
 decide which of N is largest. Price this before drawing any such step: compute the lever's size in the
 denominator and the same quantity's contribution to the numerator's spread, and if they are the same
 variance the step cannot rank.
+
+### Architecture 3, settings abandoned at stage 2 (2026-10-18)
+
+- The first tuning (true rise 6.4 points, four-interviewer panel, `sigma_int` 8.82) gave the right faces,
+  every reflex filing the supplied verdict and the golden filing not established, but the wrong margin:
+  the golden sat at z 1.83 against the framework's 1.96 bar, so `sigma_int` had only to fall 8 per cent,
+  about two relative standard errors, for the verdict to flip. Replaced by a true rise of 3.0 points at
+  the same panel, which puts the golden at z 0.89 and the flip 61 per cent away, about fifteen relative
+  standard errors. This is the author's instruction to measure the margin rather than the face, and the
+  first setting would have passed a check that only read which side of the bar each route landed on.
+- An ask layer with two ungrouped benchmark authorities. Died on the solved ceiling: ungrouped authorities
+  carry no device, so both responses bank their four figures and the pair came out at **48.3** with a
+  mirror leakage of 28.0 per cent, under the bar of 50 but far above the build-to-40 target. Every
+  authority but the blank one is now inside an amalgamated return, which solves to 39.5 and 12.0.

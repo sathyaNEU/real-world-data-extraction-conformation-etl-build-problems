@@ -80,8 +80,8 @@ The solver files 25 cases per million payments for Castlegate because it treats 
 matches between Castlegate's payments and the scheme's mule register as a second, independent sighting of
 the case, when 125 of the 282 matches that are also its own cases exist only because Castlegate asked the
 receiving firm to return the money after opening the case, so the overlap it divides by is partly its own
-work and what neither channel saw comes out at about a third of its true size, 60.3 cases against 175 on
-the same observed union of 513.
+work and what neither channel saw comes out at about a quarter of its true size, 47.3 cases against
+174.9 on the same observed union of 513.
 
 ## Three rules
 

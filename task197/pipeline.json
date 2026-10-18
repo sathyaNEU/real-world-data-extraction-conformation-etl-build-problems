@@ -9,17 +9,29 @@
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "stage 4: the parent spawns the isolated leak reader and the determinism judge from target.zip, the prompt and submission.md; findings come back here for one generator pass",
+  "resume": "stage 4: the parent spawns the isolated leak reader and the determinism judge from target.zip, prompt.txt and submission.md's graded blocks; findings come back here for one generator pass. The ask layer was rebuilt at stage 3 after the pair ceiling came back at 65.8: three undocumented primaries replace four devices that filed sentences adjudicated, and clauses 4 and 5 of the performance standard were reworded to file their quantities without adjudicating a device. Clauses 1 to 3 and every main-call figure are unchanged, proved by freeze.py check --mode rubric.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
-    "checks.py": "38 checks, 0 failed",
-    "verify.py": "66 checks, 0 failed",
-    "figures_check.py": "114 figures, 0 absent",
-    "precut.py": "47 of 50, 3 FAIL in the ask sheet (pair ceiling 65.8, mirror leakage 52.5, cracker keeps the asks)",
-    "leak.py": "REVIEW (8 reader lines, no LEAK)",
+    "checks.py": "61 checks, 0 failed (floor 40)",
+    "verify.py": "123 checks, 0 failed, reading only the shipped bundle",
+    "figures_check.py": "95 figures in blocks 1 to 4, 0 absent, exit 0",
+    "precut.py": "50 checks, 0 FAIL, 0 WARN, exit 0",
+    "voice-check.py": "PASS, 992 characters",
+    "ceiling.py": "pair ceiling 34.5 (bar 40), mirror leakage 6.0 per cent (bar under 35)",
+    "leak.py": "REVIEW, no LEAK (3 generic-vocabulary reader lines, 2 INFO)",
     "guard surface": "clean, no personas in the pack",
-    "guard heart": "WARN (gate_g repeat and question form)",
-    "rebuilds": "two byte-identical, 20 files"
+    "guard heart": "WARN (gate_g repeat and overuse, question form), answered in the draw table",
+    "freeze.py --mode rubric": "PASS with --allow down.7.episodes,down.8.episodes",
+    "rebuilds": "two byte-identical, 18 files; target.zip cut from the final bytes, 18 members"
   },
-  "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain"
+  "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
+  "stage_name": "build",
+  "updated": "2026-10-18",
+  "ask_layer": {
+    "figures": 50,
+    "primaries": "A D9 the minute summary against its own seconds; B D8 the logged clock against start_local; C D6 the meter interval index",
+    "pair_ceiling": 34.5,
+    "mirror_leakage": 6.0,
+    "measured_by": "generator/ceiling.py"
+  }
 }
