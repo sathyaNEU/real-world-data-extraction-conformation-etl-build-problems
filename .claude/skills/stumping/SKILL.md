@@ -398,7 +398,13 @@ Each rung runs six tests on paper; any that fires makes it readable, and a reada
 (36 of 79 rounds, 13 of 21 portal results; `strategies.md` Part 6). **1 Filed sentence:** a clause,
 definition or formula names the decisive quantity, or only makes the solver ask the question: a clause it
 cannot avoid reading sends it looking, and a join forced by a key it already holds is one line of code; a
-template asking for each candidate's affected population is that clause for every candidate (500 v2). **2 Schema:** a column, key or marker makes it a row
+template asking for each candidate's affected population is that clause for every candidate (500 v2). **A
+filed confidence level, significance level or test threshold is a filed method whenever the decisive step is
+an inference**, not a convention a pin may close: "established below target at the 95 per cent level" leaves
+only a textbook variance formula to choose, so the step is rule application and the rung is readable.
+task190 architecture 6 filed that level in its authority memo, screened its decisive rung `silent`, and its
+isolated reader landed the call and all 38 ask figures. Where the inference itself is the stump, the level
+stays unfiled and the records force it. **2 Schema:** a column, key or marker makes it a row
 predicate or a header-found join. **3 Reflex:** an opponent default. **4 Control bench:** a control or
 corpus scores the rules or refutes the naive read. **5 Hygiene:** the battery finds it (73 v2, 117). **6
 Linear:** one subtraction, ratio or half of a reported figure. The note gives a row per rung, verdict

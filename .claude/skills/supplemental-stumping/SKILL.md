@@ -53,6 +53,22 @@ cell) and the all-nil response. More than about a quarter of the cells recoverab
 component measures the data's shape rather than the solver's analysis, and the ask's shape has to change,
 not its wording.
 
+**1.1c The cracker table is a model, the isolated reader is the measurement, and the reader wins.** Score
+every figure the stage 4 reader reports against `generator/figures.json`, key by key, before reading its
+verdict: that scoring is the only number on the ask layer that was not written by the author. A reader hit
+means the device is **absent from that reader's path, not weak**, so the repair is to re-site the device
+(another file, another grain, another join in the resolution chain) and never to re-word the ask, widen a
+bin or add a second device beside the first. task190's `## Ask sheet` claimed the cracker missed all three
+asks and the measured pair ceiling was 28.5; its round-3 reader, a medium thread holding only the pack and
+`prompt.txt`, reported 43 of 43 graded figures, the call and all 38 ask figures, and volunteered the
+easy-route error unprompted. The three causes it quoted are the three to screen for before the pack is
+cut: a release note that tells the reader a later extract stands above the published column announces the
+device (Part 3's law 3); two devices whose arithmetic is exact enough to find by inspection, five December
+values at about fourteen times a month and five rollup rows each summing to exactly three members, are
+seen, not silent (law 4 aimed, but landing on a round multiple is a marker); and a device whose two
+handlings both tie hands the ask to whoever notices either. An ask layer re-sited once on paper, from a
+measured 65.5 to a paper 28.5, is still a paper figure: re-measure it with a reader before it counts.
+
 **A fork is not a device, and this is the commonest way an ask layer fails.** A device is found only by an
 internal inconsistency; a fork is resolved by reading a sentence. So closing the fork hands the ask to every
 response that reads it, and leaving it open is a determinism finding against the build. Two builds in one
