@@ -98,15 +98,20 @@ def ask_c(d):
     figure is excluded. Both figures move under the numeric column's own lower bounds, measured."""
     tot, n, mx = {}, {}, {}
     for x in d["actions"]:
-        if x["city"] in PANEL or x["date"].year != 2025:
+        if x["city"] in PANEL:
             continue
         if x["truth_participants"] is None:
             continue
-        v = x["truth_participants"]
-        s = x["sector"]
-        tot[s] = tot.get(s, 0) + v
-        n[s] = n.get(s, 0) + 1
-        mx[s] = max(mx.get(s, 0), v)
+        # the 2025 export holds one entry per gathering-day, which is what the dictionary calls a
+        # row and what the ask counts, so a prolonged action enters once for each of its days
+        for k in range(x["days"]):
+            if (x["date"] + timedelta(days=k)).year != 2025:
+                continue
+            v = x["truth_participants"]
+            s = x["sector"]
+            tot[s] = tot.get(s, 0) + v
+            n[s] = n.get(s, 0) + 1
+            mx[s] = max(mx.get(s, 0), v)
     return [dict(sector=s, per_action=round(tot[s] / n[s], 1), total=tot[s], actions=n[s])
             for s in sorted(tot)]
 
