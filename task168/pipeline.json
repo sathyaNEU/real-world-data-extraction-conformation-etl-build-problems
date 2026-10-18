@@ -1,21 +1,34 @@
 {
   "task": "task168",
   "owner": "sathya8571",
-  "status": "DESIGN",
+  "status": "BUILD",
   "domain": "supply-chain-logistics",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-18",
-  "stump": "",
+  "stump": "A strong solver who sees the routes are full carries the 2025 gauge changes' 0.77 extra passengers per extra seat onto the 620,224 added seats and files 475,000 against the golden of 175,000, when each sold-out departure's demand has to be completed from the booking build of departures of its own season that never sold out.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": ""},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-18"
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (232 seats and the estimand's wording in the planning basis; planned dates in the fleet register, on the H16 allow-list)",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "WARN, no BLOCK (overuse.objective, repeat.deliverables against task166, same-puzzle NOTE against task70 differentiated)",
+    "nearest": "task254 driver 0.07; guard.py surface promotes task70 on card axes (surface 0.079, pct 47), differentiation on the card"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: default path, ladder measured on the prototype, ask sheet, prompt.txt, precut.py",
+  "resume": "stage 4: reader and judge",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -23,5 +36,15 @@
   "portal_status": "",
   "portal_status_date": "",
   "wave": "wave 7 (new), seed FC39 (world, decision and quantity kept; the seed's planning standard of carried plus denied bookings not shipped)",
-  "guard": "WARN, no BLOCK, against the registered card (2026-10-18T06:47:15Z): overuse.objective (the lane), repeat.deliverables (pptx+xlsx against task166), same-puzzle NOTE against task70 v2 differentiated; context_artifact and forcing_event redrawn before registration after task198 v4 and task199 entered the window"
+  "guard": "WARN, no BLOCK, against the registered card (2026-10-18T06:47:15Z): overuse.objective (the lane), repeat.deliverables (pptx+xlsx against task166), same-puzzle NOTE against task70 v2 differentiated; context_artifact and forcing_event redrawn before registration after task198 v4 and task199 entered the window",
+  "stage3": {
+    "generator_checks": "71 assertions, 0 failed",
+    "verify": "25 checks, 0 failed",
+    "rebuild": "byte-identical",
+    "figures_check": "exit 0",
+    "voice_check": "exit 0",
+    "ceiling": "pair 28.5, mirror leakage 0.0, both on the call 45.0 (generator/ceiling.py on target.zip)",
+    "call": "175,000 additional passengers (nearest 25,000)",
+    "default_path": "475,000"
+  }
 }

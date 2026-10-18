@@ -1,0 +1,150 @@
+{
+ "task": "task167",
+ "title": "How large a call reserve a Minnesota grant-making foundation's liquidity policy requires for 2027 on its private fund commitments",
+ "domain": "General Statistics & Data Science",
+ "client_domain": "General Statistics & Data Science",
+ "house_domain": "nonprofit-grant-making",
+ "subdomain": "endowment management (a grant-making foundation's private-markets programme: the year's call reserve forecast fund by fund from the call schedules of the funds whose first year was financed like each fund's own)",
+ "objective": "Forecasting & Predictive Modeling",
+ "prompt_shape": "one committed reserve with the year's expected calls in total and by strategy, the private funds' net asset value at year end by strategy, currency, vintage band and in total, and the reserve account's qualifying assets with their bills and the face value maturing each quarter",
+ "as_of": "2027-01-14",
+ "deliverables": [
+  "call_reserve_2027.xlsx",
+  "call_reserve_memo_2027.pdf"
+ ],
+ "distractor_files": [
+  "grants_budget_2027.docx",
+  "gp_reported_performance_2026q3.csv"
+ ],
+ "input_gates": {
+  "files": 12,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "investor_capital_activity_2016-04_2026-12.csv",
+  "largest_file_rows": 26726
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task167/generator/build.py (seeded, deterministic) around a fictional private foundation in Saint Paul, Minnesota, its fund managers, its two fund administrators and its custodian; no real organisation's records or person is depicted.",
+   "date": "2027-01-14",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-10-18",
+ "generator": "task167/generator/build.py",
+ "files": [
+  {
+   "path": "capital_account_summary_2026-12-31.xlsx",
+   "format": "xlsx",
+   "bytes": 17704,
+   "rows": 157,
+   "source": "Constructed for this task (seeded, deterministic): the Foundation's current fund administrator, capital account summary at 31 December 2026",
+   "date": "2027-01-13",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "data_dictionary.xlsx",
+   "format": "xlsx",
+   "bytes": 8036,
+   "rows": 33,
+   "source": "Constructed for this task (seeded, deterministic): Brandvold Foundation investment office, data dictionary",
+   "date": "2027-01-14",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "eur_usd_reference_rates_2006-2026.csv",
+   "format": "csv",
+   "bytes": 103245,
+   "rows": 5433,
+   "source": "Constructed for this task (seeded, deterministic): the Foundation's custodian, euro reference rates, business days 2006 to 2026 (a constructed series, not an official release)",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "export_manifest.csv",
+   "format": "csv",
+   "bytes": 1723,
+   "rows": 11,
+   "source": "Constructed for this task (seeded, deterministic): Brandvold Foundation investment office, export manifest for the January 2027 board set",
+   "date": "2027-01-14",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "fund_commitments_register.xlsx",
+   "format": "xlsx",
+   "bytes": 20499,
+   "rows": 194,
+   "source": "Constructed for this task (seeded, deterministic): Brandvold Foundation investment office, fund commitments register, one row per vehicle",
+   "date": "2027-01-11",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "gp_reported_performance_2026q3.csv",
+   "format": "csv",
+   "bytes": 10578,
+   "rows": 132,
+   "source": "Constructed for this task (seeded, deterministic): general partners' quarterly reports at 30 September 2026, compiled by the investment office",
+   "date": "2026-12-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "grants_budget_2027.docx",
+   "format": "docx",
+   "bytes": 9651,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): Brandvold Foundation grants office, 2027 grants budget memo",
+   "date": "2026-12-11",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "investor_capital_activity_2016-04_2026-12.csv",
+   "format": "csv",
+   "bytes": 2888987,
+   "rows": 26726,
+   "source": "Constructed for this task (seeded, deterministic): the Foundation's current fund administrator, investor capital activity extract, notice lines with value dates 1 April 2016 to 31 December 2026",
+   "date": "2027-01-13",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "legacy_administrator_notices_2006-2016.xlsx",
+   "format": "xlsx",
+   "bytes": 335945,
+   "rows": 4927,
+   "source": "Constructed for this task (seeded, deterministic): the Foundation's former fund administrator, notice history, payment dates 3 January 2006 to 30 June 2016",
+   "date": "2016-07-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "liquidity_and_reserve_policy_2025.pdf",
+   "format": "pdf",
+   "bytes": 61184,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): Brandvold Foundation board of directors, liquidity and reserve policy adopted 12 June 2025",
+   "date": "2025-06-16",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "reserve_custody_activity_2026.csv",
+   "format": "csv",
+   "bytes": 69129,
+   "rows": 621,
+   "source": "Constructed for this task (seeded, deterministic): the Foundation's custodian, settled activity report for account 6011-2207, 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "reserve_custody_positions_2026-12-31.csv",
+   "format": "csv",
+   "bytes": 2758,
+   "rows": 21,
+   "source": "Constructed for this task (seeded, deterministic): the Foundation's custodian, positions report for accounts 6011-2207 and 6011-2215 at 31 December 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}

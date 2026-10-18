@@ -1,13 +1,38 @@
-{"task": "task167", "owner": "sathya8571", "status": "DESIGN",
- "domain": "nonprofit-grant-making", "objective": "forecasting",
- "stage": 2, "stage_name": "design", "updated": "2026-10-18",
- "stump": "Fitting the call schedule by fund age over every fund the foundation has backed and applying it to each fund's 2027 age files a reserve roughly a quarter too low, because the 2025 programme's funds run on the line-bridged schedule their own fee-only first year shows, which calls most of a fund's capital in its second year.",
- "architecture": 2, "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": ""},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+{
+ "task": "task167",
+ "owner": "sathya8571",
+ "status": "BUILD",
+ "domain": "nonprofit-grant-making",
+ "objective": "forecasting",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-18",
+ "stump": "Fitting one call schedule by fund age over every fund the foundation has backed and applying it to each fund's 2027 age and undrawn balance files a reserve of $350 million, because twelve of the fourteen 2026 programme funds belong to the line-bridged class their own fee-only first year shows, whose second year calls 43 per cent of commitment against the pooled schedule's 23, so the 2027 calls are $425.5 million and the reserve $450 million.",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18"
+ },
+ "leak": {
+  "leak_py": "REVIEW, 4 lines answered in the design note's Leak review (2026-10-18, --asof 2027-01-14)",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "WARN (driver.near 0.12 task501 v3, overuse objective and gate_g, repeat.decision task168; answered at the draw)",
+  "nearest": "surface: task460 0.123 (a data dictionary's file, field, definition columns), task229 0.105, task139 0.102"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
  "returned": [],
- "resume": "stage 2: prototype the two-class pacing world, ladder, fork table, closure, asks, prompt; precut.py",
- "approved": null, "delivered": null, "portal": null,
- "portal_id": "", "portal_status": "", "portal_status_date": ""}
+ "resume": "stage 4: reader and judge",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}

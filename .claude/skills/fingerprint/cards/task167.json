@@ -6,13 +6,13 @@
   "domain": "nonprofit-grant-making",
   "subdomain": "other",
   "client_domain": "general-statistics-data-science",
-  "niche": "a grant-making foundation's investment office sizing the 1 January 2027 liquidity reserve for the capital calls its private fund commitments will make in 2027, eighteen months into a $1.0 billion re-entry programme whose funds called almost nothing but fees in their first year",
+  "niche": "a grant-making foundation's investment office sizing the 1 January 2027 liquidity reserve for the capital calls its private fund commitments will make in 2027, a year into a $1.0 billion re-entry programme whose funds called almost nothing but fees in their first year",
   "objective": "forecasting",
-  "shape": "02",
+  "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "$450 million",
+  "answer_source": "submission.md block 1; generator/figures.json reserve_musd",
   "gap": [
     "population",
     "time"
@@ -36,8 +36,8 @@
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "capital_activity_2016_2026.csv",
-    "rows": 27000,
+    "file": "investor_capital_activity_2016-04_2026-12.csv",
+    "rows": 26726,
     "entity": "one line of one capital call or distribution notice from the current fund administrator: a fund, a notice date, a line type (portfolio investment, management fee, partnership expenses, return of capital, realised gain, income), an amount in the fund's currency",
     "grain": "fund x notice x line",
     "source": "synthetic"
@@ -48,12 +48,13 @@
   "world": {
     "geography": "United States, Minnesota (a private foundation in Saint Paul organised as a nonprofit corporation; funds in the United States and Europe)",
     "currency": "USD",
-    "org_type": "a private grant-making foundation with a $4.0 billion endowment and a private-markets programme of about 110 fund commitments since 2006",
+    "org_type": "a private grant-making foundation with a $4.0 billion endowment and a private-markets programme of 186 fund commitments since 2006",
     "invented_names": [],
     "people": [
       "Troy Stein",
       "Kristin Brown",
-      "Brian Erickson"
+      "Brian Erickson",
+      "Adriana Mitchell"
     ]
   },
   "deliverables": [
@@ -63,18 +64,18 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "Units draw what they were allotted along one of two schedules that no record names: some draw almost nothing but carrying charges in their first year and most of the allotment in their second and third, the rest draw steadily from the start; the young book drew almost nothing in its first year and spends the forward window in its second, so the schedule pooled by age over every unit, the young book's own first-year pace carried forward and the trailing rate on the undrawn balance all put the window's draws too low, while the schedule of the units whose first year looked like the young book's, read at the ages they have already passed, gives the draw.",
-  "driver_concrete": "Since about 2012 a growing share of the foundation's funds have bridged their first deals on a credit line and called only fees and expenses in their first year, then most of their capital in years two and three to repay it, while the rest called steadily from the start, and nothing in the register says which; the 2025 programme ($1.0 billion in 14 funds) called almost nothing but fees in 2026 and spends 2027 in its second year, so the 2027 calls are the line-bridged funds' schedule at those ages, not the schedule pooled over every fund, the programme's slow start carried forward or 2026's rate on the undrawn balance.",
+  "driver_concrete": "Since about 2012 about a quarter of the foundation's funds have bridged their first deals on a credit line and called only fees and expenses in their first year, then most of their capital in year two to repay it, while the rest called steadily from the start, and nothing in the register says which; the 2026 programme ($1.0 billion in 14 funds, first closes January to March 2026, twelve of them line-bridged) called almost nothing but fees in 2026 and spends 2027 in its second year, so the 2027 calls are the line-bridged funds' schedule at those ages, not the schedule pooled over every fund, the programme's slow start carried forward or 2026's rate on the undrawn balance.",
   "stump": "A competent solver fits the call schedule by fund age over every fund the foundation has backed (rates on the undrawn balance or shares of commitment by age, by strategy or not), applies it to each fund's 2027 age and files a reserve roughly a quarter too low, because the programme's funds run on the line-bridged schedule that their own fee-only first year shows and the pooled schedule averages away.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches both administrators' notice files, converts the euro funds, nets each notice to its lines and reads the liquidity policy correctly, then fits the call schedule by fund age over all 110 funds (by strategy or not) and applies it to every fund's 2027 age and undrawn balance, sets the 2027 reserve roughly a quarter too low, where the schedule of the funds whose first year was fee-only, read at the ages the programme reaches in 2027, sets it right.",
+  "analyst_test": "A strong analyst who stitches both administrators' notice files, converts the euro funds, reads every notice line by line, gross of any distribution set against a call, and reads the liquidity policy correctly, then fits the call schedule by fund age over all 172 earlier funds (by strategy or not) and applies it to every fund's 2027 age and undrawn balance, sets the 2027 reserve roughly a quarter too low, where the schedule of the funds whose first year was fee-only, read at the ages the programme reaches in 2027, sets it right.",
   "domain_test": "The deciding quantity is next year's capital calls on existing fund commitments, the private-markets pacing forecast an endowment's investment office builds from its funds' contribution schedules by age (Takahashi-Alexander rates fitted to its own fund history), with the schedule of the funds that bridge their first deals on a subscription line found from their fee-only first years and validated on the funds that have passed those ages; swap in hospital capital projects and there is no limited partnership calling an allotment on a schedule its general partner sets, no credit line deferring the first calls and no fee-only first year.",
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:call-schedule-by-first-year-draw-class",
   "layer1": [
     "two fund administrators' notice files in different layouts, the 2016 handover quarter carried in both",
-    "euro funds' notices in euros, converted at the notice date",
-    "notices carrying several lines (portfolio investments, management fees, partnership expenses) and distributions netted against calls on the same notice",
-    "fund names keyed differently in the register and the administrators' files",
+    "euro funds' notices in euros, the general partners' currency",
+    "notices carrying several lines (portfolio investments, management fees and their offsets, partnership expenses) and distributions netted against calls on one notice late in a fund's life",
+    "fund names keyed differently in the register and the former administrator's file",
     "cancelled and reissued notices"
   ],
   "mechanism_source": "design_note",
