@@ -1,38 +1,51 @@
 {
  "task": "task165",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "urban-regional-science",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-18",
  "stump": "Taking the Priority 1 collectors' rock salt per lane-km per severity point less the 424 lane-km's own Priority 2 salt at the planning severity files 2,600 t; the moved collectors' Priority 1 salt rises with how much of each street Priority 2 already salted and the gain is mostly the length Priority 2 left untreated, so only the earlier moves' gain read at the new streets' own Priority 2 salt files 2,200 t.",
  "architecture": 1,
  "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18"
+  "date": "2026-10-18",
+  "checks": 51
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-18, after the round 2 fix pass): 61.7 is the planning severity the plan files; the procedure and the plan share the call's words because they file the seasonal tonnage; the dispatch schedules' October dates are forward bookings (H16 allow-list)",
-  "reader": "round 1 clean (Q6 analytical, no field marks prior coverage, the procedure files only the WHAT); round 2 re-read clean (minor realism tells only); a targeted re-read due on the round 2 fix pass"
+  "leak_py": "REVIEW 2026-10-18 --asof 2026-09-25, no LEAK (61.7 is the planning severity the plan files; the procedure and the plan share the call's words because they file the seasonal tonnage; the dispatch schedules' October dates are forward bookings, H16 allow-list)",
+  "reader": "round 1 (leak-task165) clean, Q6 analytical; round 2 (leak-task165b) clean, mild realism tells; round 3 (leak-task165c) clean, the plan's per-point sentence read as its ordinary severity convention"
  },
  "duplicate_check": {
-  "heart": "PASS (nearest 0.11, task118 driver); surface exit 0, nine pairs promoted for adjudication as at round 1 (four card-level differentiated on the card, task163 and task167 two apart on gap and decision type, task164, task453 and task159 on surface similarity)",
-  "nearest": "task118 0.11 (driver)"
+  "heart": "PASS 2026-10-18 (nearest driver 0.11, task118, differentiated at the draw)",
+  "nearest": "surface exit 0: nine pairs promoted (task164 back to back, task453 and task159 on surface similarity, task163 and task167 two apart on the decisive gap and decision type, task465, task134, task146 and task54 on gap, pattern and decision family), each with a differentiation line on the card, left to the author's optional clone-check"
  },
  "judge": {
-  "verdict": "round 1: NOT_DETERMINISTIC on supplementary answer 3 only (yard basis unfiled, no exact route for the older controllers); round 2: DETERMINISTIC (main call 2,201 t, variants 2,168 to 2,235 t, domes exact, Gates F, G and H pass) with FIX_NOW on the arterial precision (the loading-log calibration within 0.2 to 6.6 t of the exact route, unpinned at the tonne)",
-  "disposition": "round 2 FIX_NOW fixed in the generator: the arterial figures to the nearest 50 t, the exact route and the loading-log calibration in one cell each, 17.2 t or more from every edge; the recheck's forks closed (block 2 at the precision every construction shares, the one-sigma and length wording, the pooled rung at 1,500 to 1,600 t) and its realism findings answered (each winter's swing, the moves' yearly counts, the audit in sittings); one re-judge due",
-  "report": "scratchpad judge-task165b/verdict.md; recheck rule3/task165b.md"
+  "verdict": "DETERMINISTIC, APPROVE, no fix (round 3, judge-task165c, on d87ff77a: 2,203.7 t by its own construction, estimators 2,158 to 2,221 t, all 8 dome and 12 arterial figures exact); round 1 NOT_DETERMINISTIC on supplementary answer 3 only, round 2 DETERMINISTIC with FIX_NOW on the arterial precision",
+  "disposition": "round 1 fixed in one pass (the arterial yard basis filed in the ask, the pre-wet rate and brine weight in the plan, with the rule 3 audit's points); round 2 fixed in one pass (the arterial figures to the nearest 50 t, block 2 at the shared precision, the recheck's forks and realism items); round 3's two advisories recorded under Residual, the prompt unchanged",
+  "report": "scratchpad judge-task165c/verdict.md (rounds 1 and 2: judge-task165, judge-task165b; rule 3: rule3/task165, rule3/task165b)"
  },
  "returned": [],
- "resume": "stage 4: the one re-judge and the targeted re-read on the round 2 fix pass, then ship",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "wave": "wave 6 (new), seed FC36 (world, decision and quantity kept; the seed's planning-tool ranking, usage-model back-tests and route-register field reading not shipped)",
+ "guard": "PASS at registration (2026-10-18T14:10:39Z) after waiting out bans on honest keys; the forum redrawn in the build to council_or_assembly when line_manager_or_team was banned against task247",
+ "stage3": {
+  "generator_checks": "162 assertions, 0 failed",
+  "verify": "29 checks, 0 failed",
+  "rebuild": "byte-identical (target, golden, figures, submission)",
+  "figures_check": "exit 0 (39 figures)",
+  "voice_check": "exit 0",
+  "ceiling": "pair 33.3, mirror leakage 8.7 per cent (generator/cracker.py on the cut pack); the cracker 0 of 8 dome and 0 of 12 arterial figures",
+  "call": "commit 2,200 t of rock salt above the rolled-over 39,100 t (golden 2,213.7 t)",
+  "zip": "target.zip d87ff77accb172cc683bb93d9f2a1add316122581dbde6bbca935e2ed741ab6a"
+ }
 }
