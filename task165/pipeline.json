@@ -1,0 +1,38 @@
+{
+ "task": "task165",
+ "owner": "sathya8571",
+ "status": "BUILD",
+ "domain": "urban-regional-science",
+ "objective": "forecasting",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-18",
+ "stump": "Taking the Priority 1 collectors' rock salt per lane-km per severity point less the 424 lane-km's own Priority 2 salt at the planning severity files 2,600 t; the moved collectors' Priority 1 salt rises with how much of each street Priority 2 already salted and the gain is mostly the length Priority 2 left untreated, so only the earlier moves' gain read at the new streets' own Priority 2 salt files 2,200 t.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-18"
+ },
+ "leak": {
+  "leak_py": "REVIEW, no LEAK (2026-10-18): 61.7 is the planning severity the plan files (the estimand's window, WHAT); the procedure and the plan share the call's words because they file the seasonal tonnage; the dispatch schedules' October dates are forward bookings (H16 allow-list)",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "PASS (nearest 0.06, task118 driver); surface exit 0, nine pairs promoted for adjudication: four card-level (task465, task134, task146, task54) differentiated on the card, task163 and task167 two apart on gap and decision type with different patterns, task164, task453 and task159 on surface similarity in the corpus top 1 percent",
+  "nearest": "task118 0.11 (driver)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 4: reader and judge",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
