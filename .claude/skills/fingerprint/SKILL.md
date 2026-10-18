@@ -179,6 +179,12 @@ back; the better outcome is never to face it.
 ## Part 4. How this goes wrong
 
 - **A PASS read as "not a clone"**: the design note still answers the similarity test.
+- **The guard checks the vocabulary, not whether the design earns the label.** `guard.py check` PASSed a
+  card whose `gate_g` was `binding_constraint` whose stump was in fact carried by the exposure population,
+  and the draw that wrote it refused its own label rather than keep the PASS. A `gate_g` is honest only
+  when the named mechanism carries the decisive step: `binding_constraint` needs the limit itself to change
+  the naive pick, and on a ground where the binding quantity is not estimated it cannot. Read the vocab
+  entry against the design, and when they disagree say so rather than banking the PASS.
 - **A card written to pass**: if two keys fit, use the reviewer's. **A vague driver**: no quantity, no source.
 - **A stale card** after a re-root: the similarity rules run against the dead architecture and pass, and its
   axes fence off ground no live build occupies. When an architecture is spent, set `architecture_spent` on

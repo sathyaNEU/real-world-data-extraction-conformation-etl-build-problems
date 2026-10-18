@@ -245,7 +245,22 @@ Each is cheap, each is run as code before any separation is measured, and each c
   divide estimating the same quantity with no model, and it reached the golden at a wider margin than the
   designed route (1.147x against 1.075x). The only escapes are that no unit attains the exposure, which is
   completion and is spent, that too few do, which is the variance screen above, or that the attaining
-  subset is unrepresentative, which is a plant.
+  subset is unrepresentative, which is a plant. **Confirmed on a second ground and a second mechanism:** a
+  claims draw whose designed step held exposure to member-months the plan could have watched a transition
+  in separated strongly (the easy route reached the golden set in 0 to 2 of 20 world draws, every
+  claims-anchored reflex in 0 to 1, the worst unit overstated 2.19x median) and still died, because the
+  filter-and-divide subset named the elevated set **20 of 20 at a margin of 1.179 against the designed
+  route's 17 of 20 at 1.116**, and in a neighbouring dial cell the ladder inverted outright, a one-line
+  reflex reaching 18 of 20 against the designed route's 10. **A lever of 1.8 to 2.3x is not evidence the
+  screen does not fire**: measure the attaining subset, not the easy route.
+
+- **`population_selection` needs the data to force the selection.** The WHAT screen kills any decisive step
+  that settles which rows are the population, because filing that settlement is rule application and
+  leaving it unfiled leaves the graded order unforced, which is a fork. So the strategy is only drawable
+  where the records themselves force the selection: a class with zero observed conversion, or a closed
+  corpus of realised outcomes that admits one population. A selection chosen because it is the clean or
+  observable one is not forced, however large its lever. Two population-selection families on one cell were
+  shut this way, the trait half and the transition half, with the guard passing both cards.
 - **The truncation-direction screen.** Ask which end a suppressing threshold hides. One that hides the
   bottom leaves every tail functional exactly observable and only the mean latent, and the mean is a basis
   question, so the step is a semantic fork; only a threshold that hides the top leaves a latent quantity a
