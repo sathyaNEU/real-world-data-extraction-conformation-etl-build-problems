@@ -220,6 +220,11 @@ def run(target, golden, st, meta_path):
     check("Ask B rounding: every region's spending at least $150 from a thousand-dollar edge",
           all(edge(res["spending"][n], 1000) >= 150 for n in K.NAMES))
     check("Ask golden recomputes with every call file removed, and the call with every ask file removed", separation(target))
+    import cracker as CR
+    cr_rows = CR.score(target, res)
+    _, lc, ls, pair = CR.ceiling(cr_rows, cr_rows)
+    check("cracker.py on the cut pack: the cracker keeps no ask figure (%s), pair ceiling %.1f" % (
+        ", ".join("%s %d of %d" % (a, h, n) for a, n, h in cr_rows), pair), lc == 0 and pair <= 40)
 
     # ------------------------------------------------------------------------------------------ distractors, gates
     import json

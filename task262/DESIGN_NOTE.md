@@ -214,8 +214,10 @@ and reports no start count.
 
 Mirror leakage: the mirror (rung 0, Halverston) takes the asks the cracker's way and misses all 16; it keeps the chart
 parts only where the chart is drawn, under 35 per cent of ask weight.
-Pair ceiling: the cracker banks the call and its components and none of the 16 Bridges figures; the mirror keeps the
-asks' format items; the pair sits near 40.
+Pair ceiling: 32.5 (the cracker banks the call and its components, 45 with instruction-following, and the chart's
+five parts from its own elasticities, and none of the 16 Bridges figures; the mirror 5 plus 7 plus the chart's form, 3).
+Measured by: `generator/cracker.py`, run on the cut pack after every change (checks.py runs it and asserts it): the
+cracker keeps 0 of 16 ask figures (A 0 of 8, B 0 of 8), and the mirror, taking the asks the same way, 0 of 16.
 
 ## Build record
 
