@@ -98,6 +98,19 @@ stage 1, never resumed. `status.py next` prints what a rework still owes.
 
 ## `freeze.py` and `status.py`
 
+- **Pick the mode whose contract matches the repair's scope, and if none matches, say so rather than
+  manufacturing a pass.** `--mode determinism` appends any changed Deliverable Answers block to its
+  findings unconditionally, on the premise that a determinism repair moves no graded figure, and `--allow`
+  reaches only `figures.json` keys. So a determinism finding whose fix changes an asking sentence's unit or
+  an ask's figures cannot be proved by that mode: task196's judge required the walk restated in index units
+  and ask 1's grain pinned, both of which move block 4, so with all 25 ordered keys allowed exactly one
+  finding remained and it was the ordered change itself. The control there is `--mode rubric`, which proved
+  the Final Recommendation and Critical Components numbers, every main-call `figures.json` value, the stump
+  sentence, the card's stump and driver, the ladder, the default path and the prompt's call sentence all
+  unchanged while 18 ask figures moved, plus a fresh `snapshot` taken at the repair's end so that nothing
+  moves from there to the judge. Editing `freeze.py` or retaking the snapshot to clear a mode the repair
+  was always going to fail manufactures a pass on the author's own control: record both commands and both
+  outputs instead, and let the author pick the mode.
 - `freeze.py snapshot taskNN` before the first edit of a fix; `freeze.py check taskNN --mode determinism` or
   `--mode rubric` after the rebuild. It freezes the Final Recommendation and Critical Components numbers,
   the figures.json keys carrying them, the stump sentence, the card's stump and driver, the design note's

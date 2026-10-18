@@ -1481,3 +1481,50 @@ same way. The decisive step becomes recovering each family's multiple from its o
 reweighting to the filed mix, which is a construction rather than a filter, and screen 3 stays exact
 because each family's multiple is still a plateau. This changes what the decisive construction is rather
 than a parameter of it, so it is not a retune; whether it is worth taking is the author's call.
+
+### Architecture 5: the ground enumerated through the dichotomy, one pass (2026-10-18)
+
+Run `stumping` 1.2a first, as instructed, which asks whether the filed quantity is observed. That splits
+the ground in two and both branches were searched. Screened against the two live traps (task194's
+development of immature periods, task196's two dependent capture channels), against the 33 corpus cards
+that touch claims, coverage or enrolment, and against the sixth screen architecture 4 earned.
+
+**Branch A, the filed quantity is unobserved, so two estimators of it can stand.** What a health plan
+genuinely cannot see in its own claims, taking the author's steer toward absence over transformation.
+
+| Candidate unobserved quantity | Killed by |
+|---|---|
+| A1 claims incurred but not yet reported or paid | development of immature periods: task194 live, task451 and task130 on file |
+| A2 the latent count behind imperfect discovery of other coverage | two dependent capture channels, task196 live; every discovery route is a channel |
+| A3 a condition's prevalence, ascertained only through billed encounters | task458, in this very subdomain: a trait counted from events logged while each unit is observed |
+| A4 care under a delegated sub-capitation, rows wholly absent and unflagged | not estimable from the pack except through a second channel (A2) or a rate transported from comparable groups, which is the comparison and so WHAT |
+| A5 out-of-network care members never submitted, absent and selected on claim size | the correction is a size-truncation model: task182 v4's length-biased entry, and an estimator family the dichotomy says four architectures died on |
+| A6 member cost-sharing actually collected, as against the obligation the plan records | genuinely unobserved and nothing in a claims pack estimates it, so not a design |
+| A7 dependents who became ineligible, the event never recorded | estimable only from audit response, which is nonresponse selection, and `population_selection` is banned against the last three builds |
+| A8 the coding a provider submitted before the plan's clinical editor acted | observed if the pack ships the submitted version or an edit reason code; otherwise the uncaught share needs the editor's sensitivity, which is A2 |
+| A9 what the plan would have paid under a different contract | arithmetic on filed rates: rule application |
+| A10 the plan's retained cost next year under its stop-loss attachment | a future value through a nonlinearity, which is task187's Jensen gap, and a forecast besides |
+
+**Branch B, the filed quantity is recorded, so the only live levers are selection and nonlinearity in how
+the records relate to it, and the decisive step must be records-fixed.**
+
+| Candidate records-fixed step | Killed by |
+|---|---|
+| B1 which of billed, allowed, plan paid, member responsibility or reference amount the comparison runs on | filed is rule application, unfiled is a fork on the main recommendation |
+| B2 the services absorbed into a global surgical period | the absence is rule-determined, so identifying them is executing the payment rule |
+| B3 claims processed out of service-date order, so the cost-sharing accumulators misapply | replaying adjudication in service order is executing stated rules |
+| B4 split lines against distinct encounters | invertible by grouping on the claim key, so the quantity is observed |
+| B5 the contract rate behind the lesser-of plateau | architecture 4, killed by the sixth screen: censoring is revelation |
+| B6 per-family rates reweighted to the filed mix against pooling at the censoring mix | two weightings of observed components separated by the estimand's unit, the shape qualified in 1.2 |
+
+**The result, and it is a property of the ground rather than of the search.** A claims file is a payment
+ledger, and the only things a payment ledger cannot see are **payments not yet made, payments made
+elsewhere, conditions never billed, and what the rules would have done.** Those four are exactly
+completion, capture, ascertainment and rule replay. Three are live or spent in this subdomain (task194 and
+task451, task196, task458) and the fourth is banned as a decisive step by rule 3. Every absence on the
+ground routes into one of them, into revelation on a subset, or into not being estimable at all.
+
+**No candidate reached measurement, so there are no six screens to report.** Each died at the draw on a
+named rule, and measuring a candidate already dead would be the dressing-up the pricing sequence exists to
+prevent. The ground is not exhausted in the sense task182's thirteen affordances were, but the four latent
+quantities a payment ledger admits are, and that is the part the decision needs.

@@ -125,6 +125,26 @@ the two cannot be separated, the mechanism is spent.
 
 ### 1.2b The pincer on a break in the records, and the one case that lives
 
+**Case two needs a statistic whose value is not invariant to the parameter being recovered, and that is
+one computation rather than a judgement.** Having information "about its own production" is not the test:
+something observable has to move when the parameter moves. The cases that hold pass it for that reason, two
+vintages measuring a coding lag because the lag is exactly their difference, an audit subsample measuring
+error rates because it is a second independent look at the same unit, shared specimens measuring dependence
+because both screens see the one specimen. A multiplicative thinning of a count fails it, because every
+observable (the count distribution, the repeat shares, the inter-event structure) moves only through the
+product of rate and reporting. **Price it by profiling the likelihood of the claimed self-measurement over
+the parameter to be recovered with the nuisance parameters free, and reading the width of the set within two
+log-likelihood units.** A flat profile is case three whatever the mechanism's story sounds like. task200's
+dark-figure candidate passed every paper screen and died here: the profile over the reporting level was flat
+from 0.10 to 1.00 within 0.08 log-likelihood units, so true incidence was pinned only to 38.0 to 367.3 per
+1,000 households, about 8,200 times the printed precision, and state dependence did not rescue it because a
+state-dependent thinned process is observationally equivalent to a sparser process with a different
+dispersion and a different decay. The escapes all add a second non-invariant observable and each is spent or
+banned: a second independent observation of the same events, an audit or verified subsample, a
+complete-reporting sub-population whose rate transports, a filed external rate (rule application), or
+selection on a recorded attribute rather than on the count, whose residue is where the complete region
+starts and so is a cut-off.
+
 A break in how the records were made (a system cutover, a basis change, a rename, an extract window, a
 definitional change) decides the call only if the analyst gets it wrong, and there are three cases. **One:**
 the pack states the break, so the right computation follows from reading a shipped sentence, which is data
