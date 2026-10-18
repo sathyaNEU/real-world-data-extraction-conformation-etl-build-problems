@@ -73,7 +73,9 @@ def main():
                    "we paid wages for it, on any of its accounts, with a pay date in that quarter",
                    "A quarter an account spent on tax filing only does not count",
                    "calendar quarter of its first payroll with us", "gross wages we ran on our payroll",
-                   "the channel of its first account"):
+                   "the channel of its first account",
+                   "the successor of an EIN with no account in the year-end planning extract is the same business as "
+                   "that predecessor"):
         check("DOCX: the counting notes file '%s'" % phrase, phrase in nt)
     wb = openpyxl.load_workbook(p("plan_2027_workbook.xlsx"), data_only=True)
     share = {}
@@ -81,6 +83,8 @@ def main():
         if r and isinstance(r[0], str) and len(r[0]) == 2 and r[0].isupper() and r[0] != "Total":
             share[r[0]] = (int(r[2]), int(r[3]), float(r[4]))
     check("XLSX: the share tab reads (twelve states)", len(share) == 12)
+    check("XLSX: each state's share is its 2025 count over its formations base",
+          all(abs(v[2] - v[0] / v[1]) < 1e-12 for v in share.values()))
     lw = openpyxl.load_workbook(p("state_filing_changes_log.xlsx"), data_only=True)["Log"]
     live = {}
     for r in lw.iter_rows(values_only=True):

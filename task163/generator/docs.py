@@ -124,6 +124,9 @@ NOTES = [
         "A business is the employer, whatever its account or EIN. A client that comes back after cancelling, re-forms "
         "as a new entity and carries on, or is bought by a new owner who carries it on, is the same business, and its "
         "accounts count as one.",
+        "A business the successor transfer register lists as the successor of an EIN with no account in the year-end "
+        "planning extract is the same business as that predecessor: it was bought or passed on, so it had paid wages "
+        "before it came to us.",
     ]),
     ("Still with us", [
         "A business is still with us in a quarter when we paid wages for it, on any of its accounts, with a pay date "
@@ -410,10 +413,13 @@ def manifest_rows():
          "2024-06-15", "Legacy clients since January 2022; pay dates to 14 June 2024"],
         [R.F_SUTA, "Payroll Tax", "Successor transfer register", "2026-03-02", "Transfers effective 2022 to 2025"],
         [R.F_TERR, "Sales Operations (%s)" % P["salesops"], "2025 territory map", "2025-01-06", "12 core states"],
-        [F_NOTES, "Sales Operations (%s)" % P["salesops"], "Counting notes", "2026-02-03", ""],
-        [F_STANDARD, "FP&A (%s)" % P["planning"], "2027 plan sizing standard", "2026-09-01", ""],
-        [F_PLAN, "FP&A (%s)" % P["planning"], "Plan workbook (share tab by Sales Operations)", "2026-10-15", ""],
-        [F_DICT, "FP&A (%s)" % P["planning"], "Field guide", "2026-10-15", ""],
+        [F_NOTES, "Sales Operations (%s)" % P["salesops"], "Counting notes", "2026-02-03",
+         "How first-time employers are counted: who counts, still with us, wages and channel"],
+        [F_STANDARD, "FP&A (%s)" % P["planning"], "2027 plan sizing standard", "2026-09-01",
+         "2027 operating plan, first-time-employer line: states, measure, share and rounding"],
+        [F_PLAN, "FP&A (%s)" % P["planning"], "Plan workbook (share tab by Sales Operations)", "2026-10-15",
+         "Share 2025 tab for the 12 core states, workbook notes"],
+        [F_DICT, "FP&A (%s)" % P["planning"], "Field guide", "2026-10-15", "Fields and codes of the files in this pack"],
     ]
 
 
@@ -436,5 +442,12 @@ def write_all(out, share):
                        "%sT15:20:00Z" % last_logged.isoformat(), excel=True)
     PP.normalize_ooxml(p(F_PLAN), P["planning"], P["salesops"], "2026-08-31T16:02:00Z", "2026-10-15T18:37:00Z",
                        excel=True)
+    # the share tab's computed cells: each share its count over its base, the totals summed, as the tab was built
+    first, last = 5, 4 + len(WD.STATES)
+    tot = last + 1
+    f = {"E%d" % r: "C%d/D%d" % (r, r) for r in range(first, last + 1)}
+    f.update({"C%d" % tot: "SUM(C%d:C%d)" % (first, last), "D%d" % tot: "SUM(D%d:D%d)" % (first, last),
+              "E%d" % tot: "C%d/D%d" % (tot, tot)})
+    PP.add_formulas(p(F_PLAN), 1, f)
     PP.normalize_ooxml(p(F_DICT), P["planning"], P["planning"], "2026-10-15T19:10:00Z", "2026-10-15T20:02:00Z",
                        excel=True)

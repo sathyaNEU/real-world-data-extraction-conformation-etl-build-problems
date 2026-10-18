@@ -427,7 +427,8 @@ def submission(X):
     L.append(
         "5. Counted 2024 first-time employers by business as first_time_employer_counting_notes.docx counts them (an "
         "EIN's accounts, a client the legacy system re-opened under its corrected EIN, and its successors in "
-        "suta_successor_transfers_2022-2025.csv as one; first paid wages in 2024 in the wage files, since a migrated "
+        "suta_successor_transfers_2022-2025.csv as one, a successor of an EIN with no account in the extract left out "
+        "as its predecessor's business; first paid wages in 2024 in the wage files, since a migrated "
         "account's first_pay_date is its legacy client-since date; no liability date before that quarter in "
         "state_tax_registrations_2026-01-09.csv), each in the territory in sales_territories_2025.csv of its earliest "
         "registration's state.")
