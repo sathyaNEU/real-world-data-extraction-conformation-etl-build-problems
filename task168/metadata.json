@@ -1,0 +1,170 @@
+{
+  "task": "task168",
+  "title": "How many more passengers an Italian domestic airline's nine Linate routes to the South and the islands will carry in summer 2026 than in summer 2025, when their A319s give way to A321neos on routes whose summer departures sell out",
+  "domain": "Urban & Regional Science",
+  "client_domain": "Urban & Regional Science",
+  "house_domain": "supply-chain-logistics",
+  "subdomain": "forecasting (transport demand: an airline's passengers carried after a gauge change, sold-out departures' demand completed from the booking build of departures of the same season that never sold out)",
+  "objective": "Forecasting & Predictive Modeling",
+  "prompt_shape": "a forecast figure (additional passengers carried, summer 2026 over summer 2025, nine routes), with the passengers turned away from summer 2025 departures because the flight was full for each of the 18 route directions, charted on one slide",
+  "as_of": "2025-12-12",
+  "deliverables": [
+    "summer2026_upgauge_forecast.xlsx",
+    "summer2025_turnaways.pptx"
+  ],
+  "distractor_files": [
+    "fare_report_IS25.xlsx",
+    "competitor_seats_IS25_IS26.csv"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 14,
+    "formats": [
+      "csv",
+      "pdf",
+      "sqlite",
+      "xlsx"
+    ],
+    "largest_file": "ym3_leg_history_s24.sqlite",
+    "largest_file_rows": 590945
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task168/generator/build.py (seeded, deterministic) around a fictional Italian domestic airline (Navigli Air), its northern bases and its routes to real Italian airports, in the layouts of an airline's revenue management extract, a legacy yield management archive, a departure control close-out, booking engine logs and network planning documents; no real organisation's records or person is depicted.",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-18",
+  "generator": "task168/generator/build.py",
+  "files": [
+    {
+      "path": "booking_engine_refusals_s25.csv",
+      "format": "csv",
+      "bytes": 12896470,
+      "rows": 147441,
+      "source": "Constructed for this task (seeded, deterministic): booking engines, requests for summer 2025 departures that could not be sold",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "competitor_seats_IS25_IS26.csv",
+      "format": "csv",
+      "bytes": 5971,
+      "rows": 94,
+      "source": "Constructed for this task (seeded, deterministic): Network Planning, filed weekly seats by airport pair, IS25 and IS26",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "data_dictionary_rev5.pdf",
+      "format": "pdf",
+      "bytes": 4205,
+      "rows": null,
+      "source": "Constructed for this task (seeded, deterministic): Revenue Management Systems, data dictionary for the analytics extracts, revision 5",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dcs_flight_close_s25.csv",
+      "format": "csv",
+      "bytes": 1602370,
+      "rows": 28140,
+      "source": "Constructed for this task (seeded, deterministic): departure control, summer 2025 flight close-out",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "export_manifest.csv",
+      "format": "csv",
+      "bytes": 1552,
+      "rows": 14,
+      "source": "Constructed for this task (seeded, deterministic): Network Planning, export manifest for this pack (12 December 2025)",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fare_report_IS25.xlsx",
+      "format": "xlsx",
+      "bytes": 8256,
+      "rows": 51,
+      "source": "Constructed for this task (seeded, deterministic): Revenue Management, IS25 fare report",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "fleet_register.csv",
+      "format": "csv",
+      "bytes": 2954,
+      "rows": 59,
+      "source": "Constructed for this task (seeded, deterministic): Fleet Management, fleet register as at 30 November 2025",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "planning_basis_NP-PB-26S_issue2.pdf",
+      "format": "pdf",
+      "bytes": 3329,
+      "rows": null,
+      "source": "Constructed for this task (seeded, deterministic): Network Planning, summer 2026 planning basis NP-PB-26S issue 2 (28 November 2025)",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "rm_booking_build_s25.csv",
+      "format": "csv",
+      "bytes": 7622648,
+      "rows": 28140,
+      "source": "Constructed for this task (seeded, deterministic): revenue management system, summer 2025 departure booking build (extract 1 December 2025)",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "route_master.csv",
+      "format": "csv",
+      "bytes": 2815,
+      "rows": 47,
+      "source": "Constructed for this task (seeded, deterministic): Network Planning, route master",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "schedule_change_log.xlsx",
+      "format": "xlsx",
+      "bytes": 11257,
+      "rows": 167,
+      "source": "Constructed for this task (seeded, deterministic): Network Planning, schedule change log IS24 to IS26 with the IS25 renumbering",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "summer2026_capacity_plan_v3.xlsx",
+      "format": "xlsx",
+      "bytes": 10593,
+      "rows": 74,
+      "source": "Constructed for this task (seeded, deterministic): Network Planning, summer 2026 segment capacity plan version 3 (21 November 2025)",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "summer_closeout_IS24_IS25.pdf",
+      "format": "pdf",
+      "bytes": 7758,
+      "rows": null,
+      "source": "Constructed for this task (seeded, deterministic): Revenue Management reporting, summer close-out by route IS24 and IS25 (14 November 2025)",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "ym3_leg_history_s24.sqlite",
+      "format": "sqlite",
+      "bytes": 18427904,
+      "rows": 590945,
+      "source": "Constructed for this task (seeded, deterministic): YM3 yield management archive, summer 2024 legs, snapshots and flown passengers",
+      "date": "2025-12-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

@@ -10,8 +10,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "175,000 additional passengers carried on the nine routes in summer 2026 over summer 2025 (nearest 25,000)",
+  "answer_source": "task168/generator/figures.json (call_additional_passengers), recomputed by task168/generator/verify.py",
   "gap": [
     "population",
     "time"
@@ -36,7 +36,7 @@
   "scoring_unit": "per boarded entity",
   "spine": {
     "file": "the new revenue management system's departure booking build export for summer 2025 (one row per departure)",
-    "rows": 0,
+    "rows": 28140,
     "entity": "one departure (one flight on one date) with its bookings on hand at each data collection point, its sell-out time and its sold seats",
     "grain": "flight x departure date",
     "source": "synthetic"
@@ -58,15 +58,15 @@
   },
   "deliverables": [
     "summer2026_upgauge_forecast.xlsx",
-    "summer2025_upgauges.pptx"
+    "summer2025_turnaways.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "A unit that reached its cap is observed only up to the moment it reached it, so its full demand is completed from the build of units that never reached the cap; but the units that never reach it are the slow-season ones, whose demand arrives late, so completing the capped units from them, or from a build pooled over the season, places every fast-season unit far further from its final count than it was, and the past instances that could test the completion never exercised the fast-season units, which stayed at their cap, while the forward plan lifts the cap above them; only the build of units from the same season completes them.",
-  "driver_concrete": "Each sold-out summer 2025 departure's demand is its seats over the share of final bookings a departure of its own month holds on the day it sold out, read from the departures that never sold out in that month on the airline's other domestic routes; the nine routes' own open departures are April, May and October ones whose passengers book a few weeks out while July and August passengers book two to three months out, so a build taken from them, or pooled over the summer, reads every peak departure as further from its final count than it was and adds tens of thousands of passengers, and the 2025 upgauges, a quarter larger on routes whose peaks stayed full, never tested the peak months.",
-  "stump": "A strong solver who sees the routes are full takes the passengers each 2025 upgauge added per added seat (about 0.85) times this summer's 620,000 added seats and files about 530,000 against the golden of about 180,000; the step that lands it there is carrying a response measured on quarter-size upgauges of routes whose peaks stayed full onto upgauges three-fifths larger, when each sold-out departure's demand has to be completed from its own month's booking build.",
+  "driver_concrete": "Each sold-out summer 2025 departure's demand is its seats over the share of final bookings a departure of its own month holds at the moment it sold out, read from the departures that never sold out in that month on the airline's other domestic routes; the nine routes' own open departures are April, May and October ones whose passengers book a few weeks out while July and August passengers book two to three months out, so a build taken from them, or pooled over the summer, reads every peak departure as further from its final bookings than it was and adds 50,000 to 100,000 passengers, and the 2025 gauge changes, of 22 to 29 per cent on routes whose demand still filled most of the new seats, never tested a change that demand fills only in part.",
+  "stump": "A strong solver who sees the routes are full takes the 2025 gauge changes' 0.77 extra passengers per extra seat times this summer's 620,224 added seats and files 475,000 against the golden of 175,000; the step that lands it there is carrying a response measured on gauge changes of 22 to 29 per cent, into routes whose demand still filled most of the new seats, onto a 61 per cent gauge change that summer 2025's demand fills only in part, when each sold-out departure's demand has to be completed from the booking build of departures of its own season that never sold out.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly and completes each sold-out departure from a booking build taken from the departures that never sold out, pooled over the summer or from the nine routes' own, files about 240,000 or more against about 180,000; the default path, the 2025 upgauges' passengers per added seat, files about 530,000; only completing each departure from the build of its own month, read from the network's open departures in that month, files about 180,000.",
+  "analyst_test": "A strong analyst who reads every file and rule correctly and carries the 2025 gauge changes' 0.77 extra passengers per extra seat onto the 620,224 added seats files 475,000; one who completes the sold-out departures from a build pooled over the summer files 225,000, or 275,000 from the nine routes' own open departures; only completing each departure from the build of departures of its own month that never sold out, on the network's other routes, files 175,000.",
   "domain_test": "The deciding quantity is each sold-out departure's unconstrained demand, which a revenue management analyst recovers by projection detruncation (bookings at sell-out over the booking-curve share that comparable unconstrained departures of the same departure season hold at that day) and sets against the new gauge; swap in hospital wards enlarged after a winter of full beds and the task stops reading, because admissions have no advance booking build, no sell-out day and no season-specific booking curve to complete them from.",
   "mechanism_source": "design_note",
   "differentiation": {
