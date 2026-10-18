@@ -143,6 +143,20 @@ task194's architecture 6 passed it with two hits, both of that innocent kind, an
 clean. Note what makes the pass meaningful there: the shipped record attributes the outcome at the easy
 route's unit and nothing points past it.
 
+**A contradiction between two files is only a contradiction at a grain where both sides measure the
+same thing, so establish commensurability before believing one.** The cheap join is almost always
+the wrong one, because the two files date different events: an item is published on one date and
+delivered on another, a case is advised in one month and closed in another. task199's stage 4 reader
+reported that 2,587 of 6,773 day-municipality pairs cited more items than the filter had retained,
+which would be impossible, and the orchestrator reproduced it at 2,740 of 22,075 with its own join.
+Both had matched the citation's publication date against the delivery log's send date. At the one
+grain where the two sides are commensurable, municipality totals over the whole window, cited runs
+at 40 to 70 per cent of retained and **no municipality exceeds it at all**. The impossibility did not
+exist, and acting on it would have repaired data that was correct. The check costs one computation:
+before reporting that two files cannot both be true, aggregate both to the coarsest grain the claim
+still has meaning at, usually the entity over the whole window, and see whether the contradiction
+survives. A reader's or a judge's structural finding is a hypothesis with a join inside it.
+
 **Two files that observe the same events need two detection logics, and matching bounds are a
 causal impossibility rather than a realism nit.** Where a pack carries the same real-world events as
 seen by different parties, the natural way to generate it is to cut both from one event list, and that
