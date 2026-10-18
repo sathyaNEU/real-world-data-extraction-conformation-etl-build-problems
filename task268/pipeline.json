@@ -1,21 +1,34 @@
 {
   "task": "task268",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
   "stage": 2,
   "stage_name": "design",
   "updated": "2026-10-18",
-  "stump": "The default path sends the pilot to Halberdine because it counts every primary job in the commuting table as a person at work in its tract on every weekday; carrying the national survey's share of days on the employer's premises onto each flow by industry group alone moves it to Corrisford, and carried by industry group and the type of county the worker lives in, the share puts Tessavon first.",
+  "stump": "The default path sends the pilot to Halberdine because it counts every primary job in the commuting table as a person at work in its tract on every weekday; carrying the national survey's share of weekdays on the employer's premises onto each flow by industry group alone moves it to Corrisford, and carried by industry group and the type of county the worker lives in, the share puts Tessavon first.",
   "architecture": 1,
   "loops": 0,
-  "precut": {"exit": null, "date": ""},
-  "leak": {"leak_py": "", "reader": ""},
-  "duplicate_check": {"heart": "", "nearest": "task253 0.10"},
-  "judge": {"verdict": "", "disposition": "", "report": ""},
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-18"
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task253 0.10"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
   "returned": [],
-  "resume": "stage 2: ladder numbers from the generator prototype, the asks and their devices, the fork table, closure, prompt.txt, precut.py",
+  "resume": "stage 2 done (precut exit 0, 51 checks). Paused on the guard: re-run `guard.py check` on the card; ban.strategy (composition_mix against task165, registered 14:10 on 2026-10-18) and test.same_driver (population, E, method_or_model_selection against task167 v2) clear once three builds are registered after task165 and task167 leaves the last twelve; ban.role (operations_director, task165) the same, or redraw the role then against whatever is in the last three. Re-register (`guard.py register`) when clear, then stage 3: the generator from the design note's ladder (the design-stage shares), the ask sheet's devices (cracker.py rewired to the cut pack), checks with SF1 to SF19 and the three-rules block.",
   "approved": null,
   "delivered": null,
   "portal": null,
