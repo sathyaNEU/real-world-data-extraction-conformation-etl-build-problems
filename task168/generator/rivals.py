@@ -457,3 +457,332 @@ def additive_pickup(target, g=None):
             D = r["bkd"][-1]
         tot += min(D, C.seats_s26(r)) * (1 - ns[(r["orig"], r["dest"])])
     return tot - base
+
+
+# ------------------------------------------------------------------ the families a revenue analyst could reach for
+BUCKETS = {
+    "June to September against the rest": {3: 0, 4: 0, 5: 0, 6: 1, 7: 1, 8: 1, 9: 1, 10: 0},
+    "July and August against the rest": {3: 0, 4: 0, 5: 0, 6: 0, 7: 1, 8: 1, 9: 0, 10: 0},
+    "March to May, June to August, September and October": {3: 0, 4: 0, 5: 0, 6: 1, 7: 1, 8: 1, 9: 2, 10: 2},
+    "March to June, July and August, September and October": {3: 0, 4: 0, 5: 0, 6: 0, 7: 1, 8: 1, 9: 2, 10: 2},
+    "March to May, June to September, October": {3: 0, 4: 0, 5: 0, 6: 1, 7: 1, 8: 1, 9: 1, 10: 2},
+    "March to May, June and July, August and September, October": {3: 0, 4: 0, 5: 0, 6: 1, 7: 1, 8: 2, 9: 2, 10: 3},
+}
+
+
+def month_holdout(target, g, mapping=None, share=0.85):
+    """The open departures off the nine routes censored at share of their final bookings and completed from the
+    build of their group of months (each departure left out of its own group's build); error of the completed
+    total against the actual, by departure month. mapping None is the month itself; a constant is the pooled build."""
+    rows, dcps = g["rows"], g["dcps"]
+    arr = np.array(dcps, float)
+    key = (lambda r: r["dep"].month) if mapping is None else (lambda r: mapping[r["dep"].month])
+    refs = [r for r in rows if r["so"] == "" and not C.is_nine(r["orig"], r["dest"]) and r["bkd"][-1] >= 40]
+    sums, cnt = defaultdict(lambda: 0), defaultdict(int)
+    for r in refs:
+        sums[key(r)] = sums[key(r)] + r["bkd"] / r["bkd"][-1]
+        cnt[key(r)] += 1
+    acc = defaultdict(lambda: [0.0, 0.0])
+    for r in refs:
+        cur = (sums[key(r)] - r["bkd"] / r["bkd"][-1]) / (cnt[key(r)] - 1)
+        cap = share * r["bkd"][-1]
+        j = int(np.nonzero(r["bkd"] >= cap)[0][0])
+        if j == 0:
+            continue
+        b0, b1 = r["bkd"][j - 1], r["bkd"][j]
+        x = arr[j - 1] - (arr[j - 1] - arr[j]) * ((cap - b0) / (b1 - b0) if b1 > b0 else 1.0)
+        acc[r["dep"].month][0] += cap / C.interp(cur, dcps, x)
+        acc[r["dep"].month][1] += r["bkd"][-1]
+    return {m: v[0] / v[1] - 1 for m, v in sorted(acc.items())}
+
+
+def buckets(target, g=None):
+    """Each grouping of departure months: the call's figure and the holdout's error by month."""
+    g = g or C.golden(target)
+    rows, dcs, dcps = g["rows"], g["dcs"], g["dcps"]
+    nn = lambda r: not C.is_nine(r["orig"], r["dest"])
+    out = {}
+    for name, mp in BUCKETS.items():
+        c, _ = C.curves(rows, lambda r, mp=mp: mp[r["dep"].month], keep=nn)
+        gain = C.forecast(rows, dcs, dcps, lambda r, mp=mp, c=c: c[mp[r["dep"].month]])[0]
+        out[name] = (gain, month_holdout(target, g, mp))
+    return out
+
+
+def em_normal(x, c, iters=5000, tol=1e-8):
+    """Expectation-maximisation for normal demand with right-censored observations (c True where x is the cap)."""
+    from scipy.stats import norm
+    mu = float(x.mean())
+    sd = max(float(x.std()), 5.0)
+    for _ in range(iters):
+        z = (x - mu) / sd
+        lam = norm.pdf(z) / np.maximum(norm.sf(z), 1e-12)
+        e1 = np.where(c, mu + sd * lam, x)
+        e2 = np.where(c, mu ** 2 + sd ** 2 + sd * (x + mu) * lam, x ** 2)
+        mu2 = float(e1.mean())
+        sd2 = float(np.sqrt(max(e2.mean() - mu2 ** 2, 1.0)))
+        done = abs(mu2 - mu) < tol and abs(sd2 - sd) < tol
+        mu, sd = mu2, sd2
+        if done:
+            break
+    z = (x - mu) / sd
+    lam = norm.pdf(z) / np.maximum(norm.sf(z), 1e-12)
+    return np.where(c, mu + sd * lam, x)
+
+
+def em_forecast(target, g, key):
+    """The call's figure with each sold-out departure's demand from a normal EM on the final bookings of its cell;
+    a cell with no departure below the seats keeps its departures at the seats."""
+    rows, dcs = g["rows"], g["dcs"]
+    ns = C.noshow_by_leg(rows, dcs)
+    cells = defaultdict(list)
+    for r in rows:
+        if C.is_nine(r["orig"], r["dest"]):
+            cells[key(r)].append(r)
+    tot, base = 0.0, 0
+    for k, rs in cells.items():
+        x = np.array([r["bkd"][-1] for r in rs], float)
+        c = np.array([r["so"] != "" for r in rs])
+        e = em_normal(x, c) if (~c).any() else x
+        for r, v in zip(rs, e):
+            base += int(dcs[(r["flt"], r["dep"].isoformat())]["pax_flown"])
+            tot += min(v, C.seats_s26(r)) * (1 - ns[(r["orig"], r["dest"])])
+    return tot - base
+
+
+def em_holdout(target, g=None):
+    """The other routes' open departures, each route direction and month censored so that the share of its
+    departures held at the cap equals the nine routes' sold-out share in that month; for the censored departures,
+    the demand above the cap completed by a normal EM on the cell's final bookings and by the month build from the
+    moment the bookings reached the cap (each departure left out of its month's build), against the actual."""
+    g = g or C.golden(target)
+    rows, dcps = g["rows"], g["dcps"]
+    arr = np.array(dcps, float)
+    sold = defaultdict(lambda: [0, 0])
+    for r in rows:
+        if C.is_nine(r["orig"], r["dest"]):
+            sold[r["dep"].month][0] += r["so"] != ""
+            sold[r["dep"].month][1] += 1
+    f = {m: v[0] / v[1] for m, v in sold.items()}
+    refs = [r for r in rows if r["so"] == "" and not C.is_nine(r["orig"], r["dest"]) and r["bkd"][-1] > 0]
+    sums, cnt = defaultdict(lambda: 0), defaultdict(int)
+    cells = defaultdict(list)
+    for r in refs:
+        sums[r["dep"].month] = sums[r["dep"].month] + r["bkd"] / r["bkd"][-1]
+        cnt[r["dep"].month] += 1
+        cells[((r["orig"], r["dest"]), r["dep"].month)].append(r)
+    acc = defaultdict(lambda: defaultdict(float))
+    for (od, m), rs in sorted(cells.items(), key=lambda kv: (kv[0][0], kv[0][1])):
+        rs = sorted(rs, key=lambda r: (r["bkd"][-1], r["dep"], r["flt"]))
+        n = len(rs)
+        u = max(1, int(round((1 - f[m]) * n)))
+        if u >= n:
+            continue
+        x = np.array([r["bkd"][-1] for r in rs], float)
+        cap = (x[u - 1] + x[u]) / 2.0
+        c = np.arange(n) >= u
+        e = em_normal(np.where(c, cap, x), c)
+        for r, cc, ee in zip(rs, c, e):
+            if not cc:
+                continue
+            cur = (sums[m] - r["bkd"] / r["bkd"][-1]) / (cnt[m] - 1)
+            j = int(np.nonzero(r["bkd"] >= cap)[0][0])
+            if j == 0:
+                pr = r["bkd"][-1]
+            else:
+                b0, b1 = r["bkd"][j - 1], r["bkd"][j]
+                xx = arr[j - 1] - (arr[j - 1] - arr[j]) * ((cap - b0) / (b1 - b0) if b1 > b0 else 1.0)
+                pr = cap / C.interp(cur, dcps, xx)
+            a = acc[m]
+            a["em"] += ee
+            a["month"] += pr
+            a["actual"] += r["bkd"][-1]
+            a["cap"] += cap
+            a["n"] += 1
+    out = {}
+    tot = defaultdict(float)
+    for m, a in sorted(acc.items()):
+        sp = a["actual"] - a["cap"]
+        out[m] = {"censored_share": f[m], "departures": int(a["n"]), "em": (a["em"] - a["cap"]) / sp - 1,
+                  "month": (a["month"] - a["cap"]) / sp - 1}
+        for k in ("em", "month", "actual", "cap"):
+            tot[k] += a[k]
+    sp = tot["actual"] - tot["cap"]
+    out["summer"] = {"em": (tot["em"] - tot["cap"]) / sp - 1, "month": (tot["month"] - tot["cap"]) / sp - 1}
+    return out
+
+
+def additive(target, g, key, keep, point="exact"):
+    """Additive pickup: the seats plus the mean bookings still to come, in passengers, of the open departures of the
+    key's group, from the moment the departure sold out (or its bookings at the last snapshot before it did)."""
+    rows, dcs, dcps = g["rows"], g["dcs"], g["dcps"]
+    arr = np.array(dcps, float)
+    pick = defaultdict(list)
+    for r in rows:
+        if r["so"] == "" and keep(r) and r["bkd"][-1] > 0:
+            pick[key(r)].append(r["bkd"][-1] - r["bkd"])
+    pm = {k: np.mean(v, axis=0) for k, v in pick.items()}
+    ns = C.noshow_by_leg(rows, dcs)
+    tot, base = 0.0, 0
+    for r in rows:
+        if not C.is_nine(r["orig"], r["dest"]):
+            continue
+        base += int(dcs[(r["flt"], r["dep"].isoformat())]["pax_flown"])
+        if not r["so"]:
+            D = r["bkd"][-1]
+        elif point == "exact":
+            D = r["cap"] + float(np.interp(C.x_sellout(r), arr[::-1], pm[key(r)][::-1]))
+        else:
+            jj = int(np.nonzero(arr > C.x_sellout(r))[0][-1])
+            D = r["bkd"][jj] + pm[key(r)][jj]
+        tot += min(D, C.seats_s26(r)) * (1 - ns[(r["orig"], r["dest"])])
+    return tot - base
+
+
+def methods(target, g=None):
+    """The standard unconstraining methods outside the golden's family."""
+    g = g or C.golden(target)
+    nn = lambda r: not C.is_nine(r["orig"], r["dest"])
+    own = lambda r: C.is_nine(r["orig"], r["dest"])
+    return {
+        "additive, month, other routes": additive(target, g, lambda r: r["dep"].month, nn),
+        "additive, pooled, other routes": additive(target, g, lambda r: 0, nn),
+        "additive, pooled, every open departure": additive(target, g, lambda r: 0, lambda r: True),
+        "additive, pooled, nine routes' own": additive(target, g, lambda r: 0, own),
+        "additive, pooled, nine routes' own, last open snapshot": additive(target, g, lambda r: 0, own, "lastopen"),
+        "additive, pooled, every open departure, last open snapshot": additive(target, g, lambda r: 0,
+                                                                              lambda r: True, "lastopen"),
+        "EM, flight and month": em_forecast(target, g, lambda r: (r["flt"], r["dep"].month)),
+        "EM, route direction": em_forecast(target, g, lambda r: (r["orig"], r["dest"])),
+        "EM, route direction and month": em_forecast(target, g, lambda r: (r["orig"], r["dest"], r["dep"].month)),
+    }
+
+
+def local_members(target, g=None):
+    """Time-local constructions on the nine routes' own open departures and on the whole network, as an analyst
+    holding the reference to the same flight or to nearby dates would build them."""
+    g = g or C.golden(target)
+    rows, dcs, dcps = g["rows"], g["dcs"], g["dcps"]
+    open_ = [r for r in rows if r["so"] == "" and r["bkd"][-1] > 0]
+    by_flt = defaultdict(list)
+    by_dir = defaultdict(list)
+    by_day = defaultdict(list)
+    for r in open_:
+        sh = r["bkd"] / r["bkd"][-1]
+        by_flt[r["flt"]].append((r["dep"], sh))
+        by_dir[(r["orig"], r["dest"])].append((r["dep"], sh))
+        by_day[r["dep"]].append(sh)
+    cm_all, _ = C.curves(rows, lambda r: r["dep"].month, keep=lambda r: True)
+    out = {}
+
+    def near(lst, d, k):
+        v = [sh for dd, sh in lst if abs((dd - d).days) <= k]
+        return np.mean(v, axis=0) if v else None
+
+    for k in (7, 14, 21, 28, 35):
+        cache = {}
+
+        def cf(r, k=k, cache=cache):
+            key = (r["flt"], r["dep"])
+            if key not in cache:
+                c = near(by_flt[r["flt"]], r["dep"], k)
+                if c is None:
+                    c = near(by_dir[(r["orig"], r["dest"])], r["dep"], k)
+                if c is None:
+                    c = cm_all[r["dep"].month]
+                cache[key] = c
+            return cache[key]
+        out["same flight within %d days" % k] = C.forecast(rows, dcs, dcps, cf)[0]
+    c_dm, _ = C.curves(rows, lambda r: (r["orig"], r["dest"], r["dep"].month), keep=lambda r: C.is_nine(r["orig"], r["dest"]))
+    out["route direction and month, own open"] = C.forecast(
+        rows, dcs, dcps, lambda r: c_dm.get((r["orig"], r["dest"], r["dep"].month), cm_all[r["dep"].month]))[0]
+    cache30 = {}
+
+    def w30(r):
+        if r["dep"] not in cache30:
+            v = []
+            for k in range(-30, 31):
+                v.extend(by_day.get(r["dep"] + dt.timedelta(days=k), []))
+            cache30[r["dep"]] = np.mean(v, axis=0)
+        return cache30[r["dep"]]
+    out["every open departure within 30 days"] = C.forecast(rows, dcs, dcps, w30)[0]
+    med = defaultdict(list)
+    for r in rows:
+        if r["so"] == "" and not C.is_nine(r["orig"], r["dest"]) and r["bkd"][-1] > 0:
+            med[r["dep"].month].append(r["bkd"] / r["bkd"][-1])
+    cmed = {m: np.median(v, axis=0) for m, v in med.items()}
+    out["month, median share"] = C.forecast(rows, dcs, dcps, lambda r: cmed[r["dep"].month])[0]
+    return out
+
+
+def selection_holdout(target, g=None, windows=(7, 14, 21, 28, 35)):
+    """The other routes' open departures censored cell by cell to the nine routes' sold-out share of the month (as
+    em_holdout); the departures held at the cap completed from the same flight's departures that stayed under it
+    within k days (the same route direction's, then the month build, where none), and from the month build of
+    every open departure off the nine routes (each departure left out); error in the demand above the cap."""
+    g = g or C.golden(target)
+    rows, dcps = g["rows"], g["dcps"]
+    arr = np.array(dcps, float)
+    sold = defaultdict(lambda: [0, 0])
+    for r in rows:
+        if C.is_nine(r["orig"], r["dest"]):
+            sold[r["dep"].month][0] += r["so"] != ""
+            sold[r["dep"].month][1] += 1
+    f = {m: v[0] / v[1] for m, v in sold.items()}
+    refs = [r for r in rows if r["so"] == "" and not C.is_nine(r["orig"], r["dest"]) and r["bkd"][-1] > 0]
+    sums, cnt = defaultdict(lambda: 0), defaultdict(int)
+    cells = defaultdict(list)
+    for r in refs:
+        sums[r["dep"].month] = sums[r["dep"].month] + r["bkd"] / r["bkd"][-1]
+        cnt[r["dep"].month] += 1
+        cells[((r["orig"], r["dest"]), r["dep"].month)].append(r)
+    cap_of, held = {}, {}
+    for (od, m), rs in cells.items():
+        rs = sorted(rs, key=lambda r: (r["bkd"][-1], r["dep"], r["flt"]))
+        n = len(rs)
+        u = max(1, int(round((1 - f[m]) * n)))
+        if u >= n:
+            continue
+        x = np.array([r["bkd"][-1] for r in rs], float)
+        cap = (x[u - 1] + x[u]) / 2.0
+        for k, r in enumerate(rs):
+            cap_of[(r["flt"], r["dep"])] = cap
+            held[(r["flt"], r["dep"])] = k >= u
+    by_flt, by_dir = defaultdict(list), defaultdict(list)
+    for r in refs:
+        key = (r["flt"], r["dep"])
+        if key in held and not held[key]:
+            sh = r["bkd"] / r["bkd"][-1]
+            by_flt[r["flt"]].append((r["dep"], sh))
+            by_dir[(r["orig"], r["dest"])].append((r["dep"], sh))
+
+    def near(lst, d, k):
+        v = [sh for dd, sh in lst if abs((dd - d).days) <= k]
+        return np.mean(v, axis=0) if v else None
+
+    acc = defaultdict(lambda: defaultdict(float))
+    for r in refs:
+        key = (r["flt"], r["dep"])
+        if not held.get(key):
+            continue
+        cap = cap_of[key]
+        j = int(np.nonzero(r["bkd"] >= cap)[0][0])
+        if j == 0:
+            continue
+        b0, b1 = r["bkd"][j - 1], r["bkd"][j]
+        xx = arr[j - 1] - (arr[j - 1] - arr[j]) * ((cap - b0) / (b1 - b0) if b1 > b0 else 1.0)
+        m = r["dep"].month
+        mb = (sums[m] - r["bkd"] / r["bkd"][-1]) / (cnt[m] - 1)
+        est = {"month": cap / C.interp(mb, dcps, xx)}
+        for k in windows:
+            c = near(by_flt[r["flt"]], r["dep"], k)
+            if c is None:
+                c = near(by_dir[(r["orig"], r["dest"])], r["dep"], k)
+            if c is None:
+                c = mb
+            est["same flight within %d days" % k] = cap / C.interp(c, dcps, xx)
+        for name, v in est.items():
+            acc[name]["est"] += v
+            acc[name]["actual"] += r["bkd"][-1]
+            acc[name]["cap"] += cap
+    return {name: (a["est"] - a["cap"]) / (a["actual"] - a["cap"]) - 1 for name, a in acc.items()}

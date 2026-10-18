@@ -55,17 +55,14 @@ def rm_build_s25(S, path):
 
 # ------------------------------------------------------------------ the old RM system's S24 archive
 def ym3_archive_s24(S, path):
-    """The archive, written with leg ids from a base and a stride; when the file's bytes happen to spell a token a
-    document sweep reads as author vocabulary, the next stride is taken (the content is the same either way)."""
+    """The archive, keyed by YM3's leg id (departure date yymmdd and flight number)."""
     from fileio import binary_is_clean
-    for stride in range(13, 40):
-        n = _ym3_write(S, path, stride)
-        if binary_is_clean(path):
-            return n
-    raise RuntimeError("no clean stride")
+    n = _ym3_write(S, path)
+    assert binary_is_clean(path), "the archive's bytes spell a swept token"
+    return n
 
 
-def _ym3_write(S, path, stride):
+def _ym3_write(S, path):
     if os.path.exists(path):
         os.remove(path)
     con = sqlite3.connect(path)
@@ -73,10 +70,10 @@ def _ym3_write(S, path, stride):
     cur.executescript("""
         PRAGMA page_size=4096;
         CREATE TABLE ym3_extract (k TEXT PRIMARY KEY, v TEXT);
-        CREATE TABLE legs (leg_id INTEGER PRIMARY KEY, flt INTEGER, dep_dt TEXT, std TEXT, orig TEXT, dest TEXT,
-                           typ TEXT, cap INTEGER);
-        CREATE TABLE bkg (leg_id INTEGER, dcp INTEGER, bkd INTEGER, avl TEXT, PRIMARY KEY (leg_id, dcp));
-        CREATE TABLE flown (leg_id INTEGER PRIMARY KEY, pax INTEGER, inf INTEGER);
+        CREATE TABLE legs (leg_id TEXT PRIMARY KEY, flt INTEGER, dep_dt TEXT, std TEXT, orig TEXT, dest TEXT,
+                           typ TEXT, cap INTEGER) WITHOUT ROWID;
+        CREATE TABLE bkg (leg_id TEXT, dcp INTEGER, bkd INTEGER, avl TEXT, PRIMARY KEY (leg_id, dcp)) WITHOUT ROWID;
+        CREATE TABLE flown (leg_id TEXT PRIMARY KEY, pax INTEGER, inf INTEGER) WITHOUT ROWID;
     """)
     cur.executemany("INSERT INTO ym3_extract VALUES (?, ?)", [
         ("system", "YM3 yield management, leg inventory archive"),
@@ -94,7 +91,7 @@ def _ym3_write(S, path, stride):
     rows.sort(key=lambda r: (r[0], r[1], r[2]))
     leg_rows, bkg_rows, flown_rows = [], [], []
     for k, (d, std, flt, L, i, snap) in enumerate(rows):
-        lid = 700000 + stride * k + (flt % 7)
+        lid = "%s%04d" % (d.strftime("%y%m%d"), flt)
         leg_rows.append((lid, flt, d.strftime("%d/%m/%Y"), std.replace(":", ""), L.orig, L.dest, L.equip_code(i),
                          int(L.seats[i])))
         for t, b in zip(W.DCP_OLD, snap):
@@ -111,14 +108,19 @@ def _ym3_write(S, path, stride):
 
 # ------------------------------------------------------------------ departure control close-out, S25
 def tails_for(S):
-    """A simple rotation of registrations per aircraft type, enough for the DCS file's tail column."""
-    regs = {}
+    """The registrations behind the DCS file's tail column: one register, every mark unique across types."""
     letters = "ABCDEFGHJKLMNPRSTUVWZ"
     rng = sim.stream("tails")
-    for typ, n in (("319", 18), ("320", 9), ("32N", 14), ("321", 8)):
-        out = set()
+    used = set()
+    regs = {}
+    for typ, n in (("319", 24), ("320", 5), ("32N", 14), ("321", 6)):
+        out = []
         while len(out) < n:
-            out.add("I-N" + "".join(letters[int(x)] for x in rng.integers(0, len(letters), 3)))
+            reg = "I-N" + "".join(letters[int(x)] for x in rng.integers(0, len(letters), 3))
+            if reg in used or reg.startswith("I-NQA"):
+                continue
+            used.add(reg)
+            out.append(reg)
         regs[typ] = sorted(out)
     return regs
 

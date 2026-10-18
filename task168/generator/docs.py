@@ -236,11 +236,11 @@ def change_log(S, path):
     # IS24 changes against IS23 (history)
     for b, st_ in [("VRN", "OLB"), ("BLQ", "TPS"), ("LIN", "CIY")]:
         ref += 1
-        rows.append(["SC-24-%03d" % ref, "IS24", "%s-%s" % (b, st_), "new route", "", "daily",
+        rows.append(["SC-24-%03d" % ref, "IS24", "%s-%s" % (b, st_), "new route", "", "twice daily",
                      "31/03/2024", "06/10/2023", ""])
     for b, st_ in [("TRN", "BRI"), ("VCE", "TPS")]:
         ref += 1
-        rows.append(["SC-24-%03d" % ref, "IS24", "%s-%s" % (b, st_), "frequency", "4 weekly", "daily",
+        rows.append(["SC-24-%03d" % ref, "IS24", "%s-%s" % (b, st_), "frequency", "daily", "twice daily",
                      "31/03/2024", "20/10/2023", ""])
     ref = 0
     for r in rr:
@@ -298,23 +298,31 @@ def fleet_register(path, regs):
     for k, reg in enumerate(regs["319"]):
         exit_ = exits[k] if k < len(exits) else None
         status = "retired" if exit_ is not None and exit_ <= dt.date(2025, 11, 30) else "in service"
-        y, m = 2002 + int(rng.integers(0, 4)), 1 + int(rng.integers(0, 12))
+        y, m = 2002 + int(rng.integers(0, 5)), 1 + int(rng.integers(0, 12))
         rows.append([reg, "A319-112", 144, "owned" if k % 3 else "leased", "%d-%02d" % (y, m),
                      exit_.isoformat() if exit_ else "", status])
-    for reg in regs["320"]:
+    # the A320s left for the A321s of the summer 2025 gauge changes
+    a320_exit = [dt.date(2025, 2, 17), dt.date(2025, 3, 3), dt.date(2025, 3, 12), dt.date(2025, 3, 20), dt.date(2025, 3, 26)]
+    for reg, ex in zip(regs["320"], a320_exit):
         y, m = 2008 + int(rng.integers(0, 4)), 1 + int(rng.integers(0, 12))
-        rows.append([reg, "A320-214", 180, "owned", "%d-%02d" % (y, m), "", "in service"])
-    for reg in regs["32N"]:
-        y, m = 2020 + int(rng.integers(0, 3)), 1 + int(rng.integers(0, 12))
-        rows.append([reg, "A320-251N", 186, "leased", "%d-%02d" % (y, m), "", "in service"])
+        rows.append([reg, "A320-214", 180, "leased", "%d-%02d" % (y, m), ex.isoformat(), "returned"])
+    for k, reg in enumerate(regs["32N"]):
+        if k < 8:
+            y, m = 2021 + int(rng.integers(0, 3)), 1 + int(rng.integers(0, 12))
+            ins = "%d-%02d" % (y, m)
+        else:
+            ins = "2025-%02d" % (1 + int(rng.integers(0, 3)))
+        rows.append([reg, "A320-251N", 186, "leased", ins, "", "in service"])
     for reg in regs["321"]:
-        y, m = 2015 + int(rng.integers(0, 3)), 1 + int(rng.integers(0, 12))
-        rows.append([reg, "A321-231", 220, "leased", "%d-%02d" % (y, m), "", "in service"])
+        ins = "%d-%02d" % (2024 + int(rng.integers(0, 2)), [11, 12, 1, 2, 3][int(rng.integers(0, 5))])
+        rows.append([reg, "A321-231", 220, "leased", ins, "", "in service"])
     deliv = [("I-NQAA", "2026-01-15"), ("I-NQAB", "2026-01-28"), ("I-NQAC", "2026-02-05"), ("I-NQAD", "2026-02-11"),
              ("I-NQAE", "2026-02-19"), ("I-NQAF", "2026-02-26"), ("I-NQAG", "2026-03-05"), ("I-NQAH", "2026-03-17"),
              ("I-NQAL", "2026-05-13"), ("I-NQAM", "2026-05-27")]
     for reg, dd in deliv:
         rows.append([reg, "A321-271NX", 232, "leased", dd, "", "on order"])
+    regs_all = [r[0] for r in rows]
+    assert len(regs_all) == len(set(regs_all)), "a registration is listed twice"
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, lineterminator="\n")
         w.writerow(["registration", "model", "seats", "ownership", "in_service", "exit", "status_20251130"])
@@ -372,7 +380,7 @@ def closeout(S, path):
 
 
 # ------------------------------------------------------------------ the data dictionary
-def dictionary(path):
+def dictionary(path, refusal_span):
     st = [Paragraph("Navigli Air - Revenue Management Systems", SMALL),
           Paragraph("Data dictionary: analytics extracts", H1),
           Paragraph("Revision 5, 2 December 2025. Owner: Concetta Gaito, Revenue Management Systems.", SMALL)]
@@ -418,8 +426,8 @@ def dictionary(path):
            ("tail", "aircraft registration")])
     block("booking_engine_refusals_s25.csv",
           "Records written by the booking engines (website WEB, app APP, contact centre CC, agency feed GDS) when a "
-          "request for a departure could not be sold, for summer 2025 departures, requests logged from 1 May 2024 "
-          "to 25 October 2025.",
+          "request for a departure could not be sold, for summer 2025 departures; the requests in this extract were "
+          "logged %s." % refusal_span,
           [("event_id", "record number"),
            ("logged_utc", "time the record was written, UTC"),
            ("channel", "WEB, APP, CC or GDS"),

@@ -8,7 +8,7 @@ import sim
 from network import build_season
 
 BASE_BLOCK_NEW = {"LIN": 2100, "TRN": 2300, "VRN": 2400, "VCE": 2500, "BLQ": 2600}
-BASE_BLOCK_OLD = {"LIN": 400, "TRN": 500, "VRN": 600, "VCE": 700, "BLQ": 800}
+BASE_BLOCK_OLD = {"LIN": 200, "TRN": 400, "VRN": 500, "VCE": 600, "BLQ": 700}
 
 
 def route_list():

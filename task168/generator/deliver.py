@@ -34,7 +34,10 @@ def compute(target):
     sold = sum(1 for r in nine if r["so"])
     resp = R.per_seat_response(target, rows, dcs)
     over = sum(1 for r in nine if C.demand(r, g["curves"][r["dep"].month], g["dcps"]) > 232)
-    return dict(g=g, fam=fam, rg=rg, bt=bt, pc=pc, ta=ta, n_nine=len(nine), n_sold=sold, resp=resp, n_over_232=over)
+    bk = R.buckets(target, g)
+    eh = R.em_holdout(target, g)
+    return dict(g=g, fam=fam, rg=rg, bt=bt, pc=pc, ta=ta, n_nine=len(nine), n_sold=sold, resp=resp, n_over_232=over,
+                bk=bk, eh=eh)
 
 
 def figures(c):
@@ -62,6 +65,12 @@ def figures(c):
         "holdout_censor_share_pct": 85,
         "holdout_month_within_pct": int(math.ceil(month_err * 100)),
         "holdout_pooled_peak_over_pct": 10 if min(pc[7]["pooled"], pc[8]["pooled"]) > 0.10 else None,
+        "holdout_coarse_worst_month_min_pct": 3 if min(max(abs(x) for x in h.values())
+                                                       for v, h in c["bk"].values()) >= 0.03 else None,
+        "em_holdout_august_censored_pct": int(round(100 * c["eh"][8]["censored_share"])),
+        "em_holdout_summer_shortfall_pct": round(-100 * c["eh"]["summer"]["em"], 1),
+        "em_holdout_august_shortfall_pct": round(-100 * c["eh"][8]["em"], 1),
+        "em_holdout_month_build_worst_pct": round(100 * max(abs(c["eh"][m]["month"]) for m in range(3, 11)), 1),
         "turned_away": {"%s-%s" % k: v for k, v in sorted(ta.items())},
     }
     for st in ROUTE_ORDER:
@@ -320,12 +329,12 @@ def submission(f, path):
     L.append("## Tags\n")
     L.append("**Domain:** Urban & Regional Science (forecasting: an airline's passengers carried on nine Linate "
              "routes after a gauge change, each sold-out departure's demand completed from the booking build of its "
-             "own season).")
+             "own month).")
     L.append("**Analytical objective:** Forecasting & Predictive Modeling.\n")
     L.append("## 1. Final Recommendation\n")
     L.append("**The nine Linate routes will carry about %s more passengers in summer 2026 than they carried in summer "
              "2025.** %s of their %s summer 2025 departures sold out, so each sold-out departure's demand is its seats "
-             "over the share of final bookings that departures of the same month which never sold out held when it "
+             "over the share of final bookings that departures of its own month which never sold out held when it "
              "sold out; re-flown at summer 2026's seats less no-shows, that demand puts about %s more passengers into "
              "the %s seats added. Not the 2025 gauge changes' %s extra passengers per extra seat carried onto this "
              "one, about %s: those changes added %d to %d per cent to the seats of routes whose demand still filled "
@@ -333,7 +342,9 @@ def submission(f, path):
              "departure. Not a booking build pooled over the summer, about %s, nor one from the nine routes' own "
              "departures that never sold out, about %s: both are weighted to spring and autumn departures, whose "
              "passengers book a few weeks out, so they read every July and August departure as further from its "
-             "final bookings than it was." % (
+             "final bookings than it was. Not a normal EM on the final bookings, which reads the demand above the "
+             "seats from the few departures that did not sell out and falls well short of it on the other routes' "
+             "departures censored as deeply." % (
                  fmt(f["call_additional_passengers"]), fmt(f["s25_departures_sold_out"]),
                  fmt(f["s25_departures_nine"]), fmt(f["call_additional_passengers"]), fmt(f["s26_seats_added"]),
                  "%.2f" % f["rival_per_seat"], fmt(f["rival_per_seat_total_about"]),
@@ -354,9 +365,16 @@ def submission(f, path):
         "bookings stop at the seats." % (fmt(f["s25_departures_sold_out"]), fmt(f["s25_departures_nine"])),
         "From the summer 2025 departures off the nine routes that never sold out, built each departure month's mean "
         "share of final bookings on hand at every snapshot; censored at %d per cent of their final bookings, those "
-        "departures are recovered within %d per cent in every month by their own month's build, while the build "
-        "pooled over the summer puts their July and August totals more than %d per cent too high." % (
-            f["holdout_censor_share_pct"], f["holdout_month_within_pct"], f["holdout_pooled_peak_over_pct"]),
+        "departures are recovered within %d per cent in every month by their own month's build, while builds over "
+        "coarser groups of months (peak against shoulder, or three or four periods) miss some month by %d per cent "
+        "or more and the build pooled over the summer puts July and August more than %d per cent too high." % (
+            f["holdout_censor_share_pct"], f["holdout_month_within_pct"], f["holdout_coarse_worst_month_min_pct"],
+            f["holdout_pooled_peak_over_pct"]),
+        "Censored instead so that each route direction's month holds the nine routes' sold-out share of that month "
+        "at the cap (%d per cent in August), the month build overstates the demand above the cap by under a tenth "
+        "in every month, while a normal EM on each route direction and month's final bookings falls short of it in "
+        "every month from June to September, by about a fifth over the summer and by about half in August." % (
+            f["em_holdout_august_censored_pct"]),
         "Completed each sold-out departure on the nine routes as its seats over its month's share on hand at its "
         "sold_out_utc.",
         "Re-flew every summer 2025 departure %d days later at its seats in summer2026_capacity_plan_v3.xlsx (%d on "

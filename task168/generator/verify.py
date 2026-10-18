@@ -35,7 +35,7 @@ def main(target):
     ref = pd.read_csv(os.path.join(target, "booking_engine_refusals_s25.csv"), dtype={"session_ref": str})
     cols = [c for c in rm.columns if c.startswith("bkd_d")]
     t = np.array([int(c[5:]) for c in cols], float)
-    ok("format csv: RM build reads back", len(rm) == 28140 and len(cols) == 58, "%d rows, %d snapshots" % (len(rm), len(cols)))
+    ok("format csv: RM build reads back", len(rm) == 35280 and len(cols) == 58, "%d rows, %d snapshots" % (len(rm), len(cols)))
 
     rm["dep"] = pd.to_datetime(rm["dep_date"])
     rm["nine"] = ((rm["orig"] == "LIN") & rm["dest"].isin(NINE)) | ((rm["dest"] == "LIN") & rm["orig"].isin(NINE))
@@ -116,7 +116,7 @@ def main(target):
     legs = pd.read_sql("select l.leg_id, l.orig, l.dest, l.typ, l.cap, f.pax, f.inf from legs l join flown f using (leg_id)", con)
     nb = pd.read_sql("select count(*) n from bkg", con)["n"][0]
     con.close()
-    ok("format sqlite: YM3 archive reads back", len(legs) == 28140 and nb == 28140 * 19, "%d legs, %d snapshots" % (len(legs), nb))
+    ok("format sqlite: YM3 archive reads back", len(legs) == 35280 and nb == 35280 * 19, "%d legs, %d snapshots" % (len(legs), nb))
     log = pd.DataFrame(list(load_workbook(os.path.join(target, "schedule_change_log.xlsx"))["Log"].iter_rows(min_row=2, values_only=True)),
                        columns=["ref", "season", "route", "change", "from", "to", "eff", "entered", "note"])
     past = set(log[(log["season"] == "IS25") & (log["change"] == "gauge")]["route"])
@@ -163,6 +163,96 @@ def main(target):
        me * 100 <= figs["holdout_month_within_pct"], "max %.2f per cent" % (100 * me))
     ok("holdout: pooled build over %d per cent high in July and August" % figs["holdout_pooled_peak_over_pct"],
        min(pj, pa) * 100 > figs["holdout_pooled_peak_over_pct"], "Jul %.2f, Aug %.2f per cent" % (100 * pj, 100 * pa))
+
+    # coarser groups of months in the same holdout: every one misses some month by the stated margin
+    groups = [{3: 0, 4: 0, 5: 0, 6: 1, 7: 1, 8: 1, 9: 1, 10: 0}, {3: 0, 4: 0, 5: 0, 6: 0, 7: 1, 8: 1, 9: 0, 10: 0},
+              {3: 0, 4: 0, 5: 0, 6: 1, 7: 1, 8: 1, 9: 2, 10: 2}, {3: 0, 4: 0, 5: 0, 6: 0, 7: 1, 8: 1, 9: 2, 10: 2},
+              {3: 0, 4: 0, 5: 0, 6: 1, 7: 1, 8: 1, 9: 1, 10: 2}, {3: 0, 4: 0, 5: 0, 6: 1, 7: 1, 8: 2, 9: 2, 10: 3}]
+    worst = []
+    for gm in groups:
+        gk = np.array([gm[mm] for mm in month])
+        gs = {q: share[hm & (gk == q)].sum(axis=0) for q in set(gm.values())}
+        gn = {q: int((hm & (gk == q)).sum()) for q in set(gm.values())}
+        accq = {}
+        for k in rr:
+            q = gk[k]
+            cg = (gs[q] - share[k]) / (gn[q] - 1)
+            c85 = 0.85 * fin[k]
+            j = int(np.nonzero(B[k] >= c85)[0][0])
+            if j == 0:
+                continue
+            b0, b1 = B[k, j - 1], B[k, j]
+            xx = t[j - 1] - (t[j - 1] - t[j]) * ((c85 - b0) / (b1 - b0) if b1 > b0 else 1.0)
+            a = accq.setdefault(month[k], [0.0, 0.0])
+            a[0] += c85 / np.interp(xx, t[::-1], cg[::-1])
+            a[1] += fin[k]
+        worst.append(max(abs(a[0] / a[1] - 1) for a in accq.values()))
+    ok("holdout: every coarser grouping misses some month by %d per cent or more" % figs["holdout_coarse_worst_month_min_pct"],
+       min(worst) * 100 >= figs["holdout_coarse_worst_month_min_pct"], ", ".join("%.1f" % (100 * w) for w in worst))
+
+    # the same departures censored to the nine routes' sold-out share of each month: EM against the month build
+    from scipy.stats import norm as _n
+
+    def em(x, c):
+        mu, sd = x.mean(), max(x.std(), 5.0)
+        for _ in range(5000):
+            z = (x - mu) / sd
+            lam = _n.pdf(z) / np.maximum(_n.sf(z), 1e-12)
+            e1 = np.where(c, mu + sd * lam, x)
+            e2 = np.where(c, mu ** 2 + sd ** 2 + sd * (x + mu) * lam, x ** 2)
+            mu2, sd2 = e1.mean(), np.sqrt(max(e2.mean() - e1.mean() ** 2, 1.0))
+            stop = abs(mu2 - mu) < 1e-8 and abs(sd2 - sd) < 1e-8
+            mu, sd = mu2, sd2
+            if stop:
+                break
+        z = (x - mu) / sd
+        return np.where(c, mu + sd * _n.pdf(z) / np.maximum(_n.sf(z), 1e-12), x)
+
+    nine_sold = rm[rm["nine"]].groupby(rm["dep"].dt.month)["sold"].mean()
+    full = refmask.to_numpy()
+    cm_sum = {mm: share[full & (month == mm)].sum(axis=0) for mm in curves}
+    cm_n = {mm: int((full & (month == mm)).sum()) for mm in curves}
+    od = (rm["orig"] + "-" + rm["dest"]).to_numpy()
+    tot = {}
+    for (o, mm), idx in pd.Series(np.arange(len(rm)))[full].groupby([od[full], month[full]]):
+        ix = idx.to_numpy()
+        ix = ix[np.lexsort((rm["flight_no"].to_numpy()[ix], rm["dep"].to_numpy()[ix], fin[ix]))]
+        n = len(ix)
+        u = max(1, int(round((1 - nine_sold[mm]) * n)))
+        if u >= n:
+            continue
+        xs = fin[ix]
+        capv = (xs[u - 1] + xs[u]) / 2.0
+        cc = np.arange(n) >= u
+        e = em(np.where(cc, capv, xs), cc)
+        a = tot.setdefault(mm, [0.0, 0.0, 0.0, 0.0])
+        for k, ce, ee in zip(ix, cc, e):
+            if not ce:
+                continue
+            cmb = (cm_sum[mm] - share[k]) / (cm_n[mm] - 1)
+            j = int(np.nonzero(B[k] >= capv)[0][0])
+            if j == 0:
+                pr = fin[k]
+            else:
+                b0, b1 = B[k, j - 1], B[k, j]
+                xx = t[j - 1] - (t[j - 1] - t[j]) * ((capv - b0) / (b1 - b0) if b1 > b0 else 1.0)
+                pr = capv / np.interp(xx, t[::-1], cmb[::-1])
+            a[0] += ee
+            a[1] += pr
+            a[2] += fin[k]
+            a[3] += capv
+    sp = {mm: (a[0] - a[3]) / (a[2] - a[3]) - 1 for mm, a in tot.items()}
+    pm = {mm: (a[1] - a[3]) / (a[2] - a[3]) - 1 for mm, a in tot.items()}
+    tt = [sum(a[i] for a in tot.values()) for i in range(4)]
+    summer = (tt[0] - tt[3]) / (tt[2] - tt[3]) - 1
+    ok("EM holdout: August censored at the nine routes' %d per cent" % figs["em_holdout_august_censored_pct"],
+       round(100 * nine_sold[8]) == figs["em_holdout_august_censored_pct"], "%.3f" % nine_sold[8])
+    ok("EM holdout: the month build under a tenth over or under in every month", max(abs(x) for x in pm.values()) < 0.10,
+       ", ".join("%d:%.1f" % (mm, 100 * x) for mm, x in sorted(pm.items())))
+    ok("EM holdout: EM short in every month from June to September", max(sp[mm] for mm in (6, 7, 8, 9)) < 0,
+       ", ".join("%d:%.1f" % (mm, 100 * sp[mm]) for mm in (6, 7, 8, 9)))
+    ok("EM holdout: about a fifth short over the summer, about half in August", -0.25 < summer < -0.17
+       and -0.62 < sp[8] < -0.45, "summer %.1f, August %.1f" % (100 * summer, 100 * sp[8]))
 
     # the ask: passengers turned away because the flight was full
     r9 = ref[((ref["orig"] == "LIN") & ref["dest"].isin(NINE)) | ((ref["dest"] == "LIN") & ref["orig"].isin(NINE))]
