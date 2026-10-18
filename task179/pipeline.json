@@ -1,0 +1,51 @@
+{
+ "task": "task179",
+ "owner": "sathya8571",
+ "status": "PAUSED",
+ "domain": "",
+ "objective": "forecasting",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-18",
+ "stump": "",
+ "architecture": 0,
+ "loops": 0,
+ "card_registered": false,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates",
+ "screen": {
+  "assigned": "a forecasting judgment an EMS deployment analyst would recognise, inferred from the data, the rival rejected out of sample; ideas named: pooling with the areas' co-movement measured in the record, the lever of 30 per cent or more on units needed with no pooling discount or square-root law landing, next summer's level against the record's under a trend or a known change, a back-test on past summers",
+  "candidate_1": "the district requirement from the areas' joint evenings (c1_pool.py, c1_summary.py, c1_station.py, c1_total.py; seeds 1 to 3): golden sigma 0.40 to 0.91 units in every realistic world (1.51 at twice the size, 0.24 only in small Poisson districts), the family spreading 0.44 to 1.19 units on one pack and two whole numbers in 6 of 9 district-seeds at the base world; the truth's pooling lever one unit a pooled district (8 per cent of units needed), 29 to 33 per cent only if the closed summers were staffed station by station; independence and the square-root law land the golden in 3 to 6 of 6 district-seeds wherever sigma is under 0.9 (one dial); the common-exposure subset fires 6 of 6 (the district's own totals filtered, summed and quantiled are the golden); pooling is the estimand's unit (rule application once filed) and the co-movement reading is task143's driver by abstraction; three-district total sigma 1.09 to 1.19",
+  "candidate_2": "next summer's level (c2_level.py, c2_sigma.py; seeds 1 to 3 and 101 to 120) on small Poisson districts: steady 3 per cent, North accelerating 4 to 9 per cent a year, Central 18 per cent lower from 2025, South 20 per cent higher in 2026 only; routes' own sigma 0.10 to 0.48 units (0.26 to 0.48 with a trend), every lever a unit or less; the flat hold, the plain mean and the last summer land, the plain mean lands scenario C by cancellation, and the back-test on 2025 and 2026 lands the truth in 13, 17 and 2 of 20 (A, C, D) while picking six different routes",
+  "eda6c8c_screens": "run as code in screen179.py (screen179.out byte-identical with screen179_run2.out): candidate 1 dispersion fires (family 0.49 to 0.78 units on one pack), variance-only passes, common-exposure fires 6 of 6, truncation direction hides the bottom and leaves every district's units unchanged at imputations of 0, 1, 1.5 and 2 (Layer 1); candidate 2 dispersion and truncation do not apply, variance-only passes, common-exposure fires in 8 of 12 scenario-seeds",
+  "registration": "window at 2689b12 task165, task268, task248 (it moved during the screen from task201, task247, task165 at fa74407); honest free keys had a design held: hospital_or_health_provider, customer_or_counterparty, forcing event other (the county mutual-aid roster closing in May), filed_standard, prior_period_close_out, shape 05; the honest role capacity_planner is held by task248; strategies grain_or_unit (candidate 1) and forecast_method_backtest (candidate 2) free",
+  "taxonomy": "healthcare-delivery-health-economics, utilization-access-demand-forecasting (the client library's pattern 4, capacity to an overdispersed quantile, is this quantity) or patient-flow-beds-workforce-optimization; urban-regional-science municipal-service-demand-resource-allocation held by task165's subdomain",
+  "repeat_screen": "guard.py recent, coverage, mechanisms --objective forecasting and slots before any card (the pooled-percentile driver, the level driver, pooling, percentile, surge, ambulance, medic, dispatch): no slot or card spent either mechanism; binding matches by abstraction task143 (shared component in a joint tail) and task142 (a percentile of a period total); near drivers task148, task159, task160 and task162 read on their cards and untouched",
+  "paper_only": "heat normalised over a long weather record (the lever's sign set by the draw, contested); a venue's event calendar (composition_mix, held, and the venue's event evenings filtered and divided); a development's occupancy (two filters and a divide); an alternative-response pilot going city-wide (a filed condition, the pilot district at the coming exposure, a few per cent); a frequent-caller programme (a few per cent); capacity-censored demand under area dispatch (task168's driver, or a join on a complete mutual-aid log); the county's cut units overflowing to the contractor (task156's driver); offload delays or cross-area travel (the filed 1.2 unit-hours, else task142's driver); peak concurrency (task142, task148); hourly fractiles or station requirements summed (the estimand's unit); the predictive spread widened by next summer's level shock (variance-only); a summer-specific growth (a few per cent); one joint 9-in-10 condition across districts (the estimand, then a count)",
+  "prototypes": "scratchpad b179/screen: c1_pool.py, c1_summary.py (c1_summary.out), c1_station.py, c1_total.py, c2_level.py (c2_level.out), c2_sigma.py (c2_sigma.out), screen179.py (screen179.out, byte-identical with screen179_run2.out over two runs)"
+ },
+ "resume": "PAUSED at stage 1 under the brief's two-candidate rule, no card registered, nothing cut, architecture 0, not retired. Both of the brief's ideas failed on measurement over three seeds each plus sweeps: pooling with the areas' co-movement (pooling is the estimand's unit and the district's own totals are the golden; the co-movement reading is task143's driver; independence and the square-root law land wherever the golden's sigma is under 0.9 units) and next summer's level (every lever a unit or less against routes' own sigma of 0.26 to 0.48, the flat hold and the plain mean land, the back-test cannot select). The binding finding is a sigma floor no decisive step moves: whole units per district at the 9-in-10 percentile of one weekend evening, read from nine or ten summers, carry 0.40 to 0.91 units of the golden's own sigma in every realistic world against the 0.25 budget, and the total 1.09 to 1.19. Read the design note's structural paragraph and ## Tried and rejected first and re-screen nothing in it. The coordinator or the author decides whether the number is redrawn on another quantity in this world (one resting on many more events than one evening's percentile, which changes the seed's quantity), moved to another seed in the lane, or retired.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
