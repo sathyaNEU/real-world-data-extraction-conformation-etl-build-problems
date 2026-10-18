@@ -314,9 +314,12 @@ regressions that lean on the Southeast's timing also carry it 33 days before its
 (about 0.4 of strong solvers get past the calendar), include the eight North members, time the North region by region,
 and then choose Central over the Southeast as the North's clock (about 0.4 of those who time regions: the Southeast is
 where the wave starts and where most solvers anchor, and the two clocks separate in the record by their spread, not by
-any single winter). P(both land) about 0.03 if independent and under 0.07 with any plausible correlation. The rule-3
-audits' bypasses (the aligned analog, the eyeballed Southeast lag, the draw-weighted centre) are closed: every
-Southeast-anchored, statewide or draw-weighted route misses by a full bin or more. The seed was fixed by rule (task
+any single winter). P(both land) about 0.03 if independent and under 0.07 with any plausible correlation; the
+rule-3 recheck on the multi-state cut measured P(one) about 0.17 and P(both) about 0.05. The rule-3 audits' bypasses
+(the aligned analog, the eyeballed Southeast lag, the draw-weighted centre) are closed: every Southeast-anchored route,
+and every alignment of the whole census on a statewide or draw-weighted anchor, misses by a full bin or more; the
+residual routes the recheck measured (the raw-date Southeast wastewater, the North placed from a pooled southern
+centre) are recorded in `## Pre-ship check`. The seed was fixed by rule (task
 number, then the as-of month and day: 1601221) before any data was generated and is never searched; this winter's
 southern amplitudes, the North's amplitudes and lags and the timing constants are design parameters that put the golden
 mid-bin and keep the closed winters' record free of a chance fit to the Southeast's timing.
@@ -530,8 +533,9 @@ answered at the draw; nearest driver 0.10 (task157); the two NOTEs are the diffe
 ## Build record
 
 Stage 3 rework, 2026-10-18 (the multi-state world, the second silent device on Ask A, the North's lags re-drawn so the
-closed winters carry no chance fit to the Southeast's timing, and the rule-3 recheck's routes asserted, in one rebuild).
-`build.py`: `checks.py` 181 run, 0 failed (the three-rules block R1 to R3c on the clean truth and the pack, every SF row
+closed winters carry no chance fit to the Southeast's timing, and the rule-3 recheck's routes asserted, in one rebuild;
+the joining lines and the reworded step 3 after stage 4, no figure moved). `build.py`: `checks.py` 183 run, 0 failed
+(the three-rules block R1 to R3c on the clean truth and the pack, every SF row
 SF1 to SF11, the ladder's rungs and the golden's bracket, thirty-four REFLEX routes each a quarter bin or more outside
 the golden's cell and the fifteen timing routes a full bin or more, the out-of-sample record against the Southeast's
 lag and every regression, nine constructions of the golden and fourteen more on the pack, the one-sigma corridor, the
@@ -550,6 +554,45 @@ capacity export at 26,406 rows; distractors `rn_workforce_survey_2025q1_2026q3.x
 `target.zip` cut from the final rebuild, 16 entries equal to `target/` byte for byte. The seed was fixed by rule
 (1601221) before any data was generated and never searched. Every file in the pack carries the pull's modification
 time, 21 December 2026 09:30 Eastern (`dataset-generation` section 9).
+
+## Pre-ship check
+
+The 10/10 rules re-read against the built pack (the judged cut 5d7a4619, with the joining lines since):
+- Rule 1, the domain: the deciding quantity is the January surge staffing demand of each region's hospitals, forecast
+  the way a health-system capacity planner forecasts a winter surge (where each region's respiratory wave falls in the
+  window, timed from the region it follows, turned into agency shifts through each surge unit's staffing per level);
+  the swap test holds (the judge's Gate H: domain pass).
+- Rule 2, two layers: Layer 1 is the capacity system's two layouts and the roster's keys, Crestfield's UTC report with
+  its two-line nights and four-hour cancellation lines, Inland Seas' payroll-dated workbooks, the staffed-bed changes,
+  the revised wastewater results, the register as a PDF table and the block book's agency slots, each asserted neutral
+  on the call (R2); Layer 2 decides (the judge's Gate H: layers pass, decisive step analytical).
+- Rule 3: no plant, no filed method, no field or sentence carries the regions' timing (the rule-3 recheck: PASS, P(one)
+  about 0.17, P(both) about 0.05; the reader: no leak, no timing word in any document); the easy route on the clean
+  truth files 2,450 (R3a).
+- Determinism: the judge DETERMINISTIC, APPROVE, no fix (its own North waves 594, 575, 601, 614 and 586 shift by shift;
+  the left-out-winter error favours Central, 3.0 days against 5.3; the member table, the chart and Gates G and H
+  reproduce).
+- Since the judged cut: the North's activations before 1 November 2026 carry their own capacity-reporting numbers
+  (CAP-) in place of pool surge requests, and the dictionary's `pool_member_from` line says when and why the eight
+  northern members joined (their own regional contract ended on 31 October 2026); solution step 3 and block 1 now say
+  the Southeast's surge fell more than three weeks apart across the five winters (24 to 29 days by the anchors tried,
+  at most 12 to 19 from one winter to the next). `figures.json` and block 4 of the write-up are byte-identical to the
+  judged build's, and the 4-hour lines' wording is unchanged.
+- Residual, recorded as measured:
+  - Realism (the recheck): the North's centres fall three to six weeks after real Michigan seasons' in the named
+    winters, its lag behind Central moves only about four days either way, tighter than real seasons, and its per-wave
+    draw varies only about 2.5 per cent either way. The spread stays as built because a realistic one would take the
+    answer out of its bin: the block holds 600 only while the North's placement errs by less than about a week (moved
+    6 days early it files 572.8, 10 days late 569.2), and a lag spread of a week or more either way would carry
+    single-winter estimates, and in some draws the pooled ones, past that line.
+  - The raw-date Southeast-wastewater route: the North's wastewater peak timed from the Southeast's on raw sample dates
+    lands (589.6 and 591.6 by the mean and the median lag); smoothed three days either side it files 429.6 and 558.4,
+    and seven days either side (the built route) 367.2 and 417.2. The recheck adds under 0.01 to P(one) for it.
+  - The closest miss: the North placed from the pooled southern centre plus the median lag, 574.0 in the recheck's
+    construction. The family straddles the edge by how the sixteen members' centres are pooled: the median of their
+    spell midpoints files 522.4 and 548.0 (mean and median lag), the draw-weighted centre 554.4 and 572.8, and the mean
+    of their midpoints, or of the two regional centres, 584.8 and 591.6, which land; half of that clock is Central's,
+    so a solver who pools the south has partly taken the right one.
 
 ## Tried and rejected
 - Ask B as first built (only the teams that report after a stand-down): 8 of 16 members nil and every figure 0 or one
@@ -625,3 +668,7 @@ time, 21 December 2026 09:30 Eastern (`dataset-generation` section 9).
   winter's early Southeast, put the North in February and filed none; the North's lags were re-drawn (26.0 to 34.25
   days, the same spread) so the record carries no such fit: that regression now misses by 15.6 days out of sample and
   files 600, and its first-night twin misses by 6.6 against Central's 3.1 and files 54 (asserted, OOS and REFLEX).
+- Every activation in the declaration log numbered as a pool surge request (SR-), the North's before it joined
+  included, with no line on why the northern members stayed out of the pool until 2026: the recheck read both as loose
+  ends of the joining; the North's pre-pool activations carry their own capacity-reporting numbers (CAP-) and the
+  dictionary says when and why they joined (asserted, REAL), every figure unchanged.

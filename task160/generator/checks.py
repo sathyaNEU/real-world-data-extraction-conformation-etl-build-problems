@@ -309,6 +309,16 @@ def main(pack=None):
     revd = [ln for ln in reg.splitlines() if re.search(r"\d{1,2} [A-Z][a-z]{2} \d{4}$", ln) and not ln.startswith("TRHC")]
     dates = [re.search(r"(\d{1,2} [A-Z][a-z]{2} \d{4})$", ln).group(1) for ln in revd]
     check("REAL every member's plan has its own revision date", len(dates) == 24 and len(set(dates)) >= 22, dates)
+    dl = pd.read_csv(PR.find(r"surge_declarations_.*\.csv", pack), dtype=str)
+    dl = dl[dl["request_no"].notna()]
+    north_ids = set(P.fids("North"))
+    pre = dl["facility_id"].isin(north_ids) & (dl["declared_at"] < C.NORTH_JOIN.isoformat())
+    check("REAL the North's activations before it joined carry its own capacity-reporting numbers, every pool "
+          "member's a surge request", pre.sum() >= 40 and dl.loc[pre, "request_no"].str.startswith("CAP-").all()
+          and dl.loc[~pre, "request_no"].str.startswith("SR-").all(), (int(pre.sum()), len(dl)))
+    check("REAL the dictionary records why and when the northern members joined the pool",
+          "their own regional contract until it ended on 31 October 2026, and joined the pool on 1 November 2026" in ddt,
+          "")
 
     # ------------------------------------------------------------------------------------------ closure axes
     check("AXIS9 no surge shift within three days of either block edge (truth)",

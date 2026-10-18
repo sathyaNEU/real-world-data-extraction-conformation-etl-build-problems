@@ -16,19 +16,19 @@
  },
  "leak": {
   "leak_py": "REVIEW, no LEAK, every line answered in the design note (2026-10-18, the multi-state cut)",
-  "reader": "no leak on the f7d03fbf cut; a fresh read is due on the multi-state cut"
+  "reader": "no leak on 5d7a4619 and no timing word in any document; a targeted re-read of the joining lines is due"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.question_form against task470, answered at the draw); surface exit 0, five card-level pairs answered in the design note",
   "nearest": "task157 0.10 (driver)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC on the f7d03fbf cut; the rule-3 recheck on fcb08fab a PASS",
-  "disposition": "the recheck's realism items and its routes, and the second Ask A device, folded into the multi-state rework; a fresh judge is due on the reworked cut",
+  "verdict": "DETERMINISTIC, APPROVE, no fix on 5d7a4619; the rule-3 recheck a PASS (P(one) about 0.17, P(both) about 0.05)",
+  "disposition": "the recheck's three joining loose ends and the step 3 wording fixed with no figure moved; its residual realism risks recorded in the pre-ship check",
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: a fresh leak reader and determinism judge on the multi-state cut (target.zip 5d7a4619)",
+ "resume": "stage 5: ship once the targeted re-read of the joining lines on target.zip 54fb09ce is clean",
  "approved": null,
  "delivered": null,
  "portal": null,
