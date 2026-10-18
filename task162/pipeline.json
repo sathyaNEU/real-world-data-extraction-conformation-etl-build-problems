@@ -1,0 +1,13 @@
+{"task": "task162", "owner": "sathya8571", "status": "DESIGN",
+ "domain": "product-analytics/feature-adoption-diffusion-modeling", "objective": "forecasting",
+ "stage": 2, "stage_name": "design", "updated": "2026-10-18",
+ "stump": "Rebuilding the new tracker's weekly items from the old export and carrying the record's release-week profile, or the past year's busiest week scaled for growth, onto the first quarter files 7 triagers; the step that lands it there is treating each first-quarter release week as typical, when all three releases ship on Patch Tuesday and the Windows restart burst falls inside each release week, so the busiest week needs 8.",
+ "architecture": 1, "loops": 0,
+ "precut": {"exit": null, "date": ""},
+ "leak": {"leak_py": "", "reader": ""},
+ "duplicate_check": {"heart": "", "nearest": ""},
+ "judge": {"verdict": "", "disposition": "", "report": ""},
+ "returned": [],
+ "resume": "stage 2: design (default path, ladder, fork table, closure, asks, prompt) to precut.py exit 0",
+ "approved": null, "delivered": null, "portal": null,
+ "portal_id": "", "portal_status": "", "portal_status_date": ""}
