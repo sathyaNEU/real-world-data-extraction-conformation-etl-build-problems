@@ -1,0 +1,488 @@
+{
+ "call": {
+  "answer": "no",
+  "warned": [
+   "Lagoon Coast job-loss rate",
+   "Industrial Corridor job-finding rate",
+   "Cocoa Belt East job-finding rate",
+   "Cocoa Belt East job-loss rate",
+   "Cocoa Belt West job-finding rate",
+   "Cocoa Belt West job-loss rate",
+   "Northern Savanna job-finding rate",
+   "Northern Savanna job-loss rate",
+   "Central Hills job-finding rate",
+   "Central Hills job-loss rate",
+   "River Basin job-loss rate",
+   "Creeks job-finding rate",
+   "University Towns job-loss rate"
+  ],
+  "count": 13,
+  "of": 24
+ },
+ "cells": [
+  {
+   "district": "D01",
+   "name": "Metropolitan Core",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 43.4,
+   "true_rate": 44.7,
+   "not_real": 13.4,
+   "warning": false
+  },
+  {
+   "district": "D01",
+   "name": "Metropolitan Core",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 4.2,
+   "true_rate": 4.3,
+   "not_real": 15.2,
+   "warning": false
+  },
+  {
+   "district": "D02",
+   "name": "Metropolitan Fringe",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 42.3,
+   "true_rate": 43.0,
+   "not_real": 11.9,
+   "warning": false
+  },
+  {
+   "district": "D02",
+   "name": "Metropolitan Fringe",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 4.8,
+   "true_rate": 5.0,
+   "not_real": 14.6,
+   "warning": false
+  },
+  {
+   "district": "D03",
+   "name": "Lagoon Coast",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 39.6,
+   "true_rate": 40.5,
+   "not_real": 19.3,
+   "warning": false
+  },
+  {
+   "district": "D03",
+   "name": "Lagoon Coast",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 1.5,
+   "true_rate": 1.0,
+   "not_real": 45.1,
+   "warning": true
+  },
+  {
+   "district": "D04",
+   "name": "Industrial Corridor",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 11.9,
+   "true_rate": 5.9,
+   "not_real": 58.6,
+   "warning": true
+  },
+  {
+   "district": "D04",
+   "name": "Industrial Corridor",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 4.1,
+   "true_rate": 3.9,
+   "not_real": 22.0,
+   "warning": false
+  },
+  {
+   "district": "D05",
+   "name": "Cocoa Belt East",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 17.5,
+   "true_rate": 9.3,
+   "not_real": 60.8,
+   "warning": true
+  },
+  {
+   "district": "D05",
+   "name": "Cocoa Belt East",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 1.0,
+   "true_rate": 0.4,
+   "not_real": 69.0,
+   "warning": true
+  },
+  {
+   "district": "D06",
+   "name": "Cocoa Belt West",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 20.7,
+   "true_rate": 14.1,
+   "not_real": 50.7,
+   "warning": true
+  },
+  {
+   "district": "D06",
+   "name": "Cocoa Belt West",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 1.1,
+   "true_rate": 0.5,
+   "not_real": 62.1,
+   "warning": true
+  },
+  {
+   "district": "D07",
+   "name": "Northern Savanna",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 17.7,
+   "true_rate": 9.4,
+   "not_real": 61.1,
+   "warning": true
+  },
+  {
+   "district": "D07",
+   "name": "Northern Savanna",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 1.1,
+   "true_rate": 0.5,
+   "not_real": 60.7,
+   "warning": true
+  },
+  {
+   "district": "D08",
+   "name": "Central Hills",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 15.1,
+   "true_rate": 6.3,
+   "not_real": 68.4,
+   "warning": true
+  },
+  {
+   "district": "D08",
+   "name": "Central Hills",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 1.1,
+   "true_rate": 0.4,
+   "not_real": 67.1,
+   "warning": true
+  },
+  {
+   "district": "D09",
+   "name": "River Basin",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 38.9,
+   "true_rate": 38.4,
+   "not_real": 20.3,
+   "warning": false
+  },
+  {
+   "district": "D09",
+   "name": "River Basin",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 1.5,
+   "true_rate": 0.9,
+   "not_real": 48.9,
+   "warning": true
+  },
+  {
+   "district": "D10",
+   "name": "Creeks",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 13.8,
+   "true_rate": 8.7,
+   "not_real": 46.7,
+   "warning": true
+  },
+  {
+   "district": "D10",
+   "name": "Creeks",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 4.6,
+   "true_rate": 4.4,
+   "not_real": 23.2,
+   "warning": false
+  },
+  {
+   "district": "D11",
+   "name": "Market Towns",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 39.4,
+   "true_rate": 39.4,
+   "not_real": 15.5,
+   "warning": false
+  },
+  {
+   "district": "D11",
+   "name": "Market Towns",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 3.9,
+   "true_rate": 3.9,
+   "not_real": 17.7,
+   "warning": false
+  },
+  {
+   "district": "D12",
+   "name": "University Towns",
+   "flow": "job-finding",
+   "key": "UE",
+   "published": 40.6,
+   "true_rate": 41.8,
+   "not_real": 17.3,
+   "warning": false
+  },
+  {
+   "district": "D12",
+   "name": "University Towns",
+   "flow": "job-loss",
+   "key": "EU",
+   "published": 1.5,
+   "true_rate": 0.9,
+   "not_real": 47.2,
+   "warning": true
+  }
+ ],
+ "reinterview": {
+  "persons": 15221,
+  "table": {
+   "E": {
+    "E": 7367,
+    "U": 33,
+    "N": 55
+   },
+   "U": {
+    "E": 45,
+    "U": 644,
+    "N": 78
+   },
+   "N": {
+    "E": 61,
+    "U": 98,
+    "N": 6840
+   }
+  },
+  "matrix": {
+   "EE": 98.82,
+   "EU": 0.44,
+   "EN": 0.74,
+   "UE": 5.87,
+   "UU": 83.96,
+   "UN": 10.17,
+   "NE": 0.87,
+   "NU": 1.4,
+   "NN": 97.73
+  },
+  "misread": {
+   "EU": 0.44,
+   "EN": 0.74,
+   "UE": 5.87,
+   "UN": 10.17,
+   "NE": 0.87,
+   "NU": 1.4
+  },
+  "correct": {
+   "E": 98.82,
+   "U": 83.96,
+   "N": 97.73
+  }
+ },
+ "bands": {
+  "warned_low": 45.1,
+  "warned_high": 69.0,
+  "clear_low": 11.9,
+  "clear_high": 23.2
+ },
+ "rungs": {
+  "ppv_statewide": 18.1,
+  "both_right": 17.0,
+  "net_same": false,
+  "flow_net_diff": []
+ },
+ "match": [
+  {
+   "district": "D01",
+   "name": "Metropolitan Core",
+   "persons": 10364,
+   "rate": 92.0,
+   "due": 11266
+  },
+  {
+   "district": "D02",
+   "name": "Metropolitan Fringe",
+   "persons": 10184,
+   "rate": 90.8,
+   "due": 11221
+  },
+  {
+   "district": "D03",
+   "name": "Lagoon Coast",
+   "persons": 10271,
+   "rate": 91.2,
+   "due": 11264
+  },
+  {
+   "district": "D04",
+   "name": "Industrial Corridor",
+   "persons": 10111,
+   "rate": 91.6,
+   "due": 11034
+  },
+  {
+   "district": "D05",
+   "name": "Cocoa Belt East",
+   "persons": 9956,
+   "rate": 90.4,
+   "due": 11012
+  },
+  {
+   "district": "D06",
+   "name": "Cocoa Belt West",
+   "persons": 10178,
+   "rate": 90.3,
+   "due": 11275
+  },
+  {
+   "district": "D07",
+   "name": "Northern Savanna",
+   "persons": 10004,
+   "rate": 91.2,
+   "due": 10967
+  },
+  {
+   "district": "D08",
+   "name": "Central Hills",
+   "persons": 10268,
+   "rate": 91.1,
+   "due": 11271
+  },
+  {
+   "district": "D09",
+   "name": "River Basin",
+   "persons": 10357,
+   "rate": 92.0,
+   "due": 11259
+  },
+  {
+   "district": "D10",
+   "name": "Creeks",
+   "persons": 10232,
+   "rate": 91.1,
+   "due": 11227
+  },
+  {
+   "district": "D11",
+   "name": "Market Towns",
+   "persons": 9914,
+   "rate": 90.8,
+   "due": 10915
+  },
+  {
+   "district": "D12",
+   "name": "University Towns",
+   "persons": 9816,
+   "rate": 91.1,
+   "due": 10777
+  }
+ ],
+ "days": [
+  {
+   "district": "D01",
+   "name": "Metropolitan Core",
+   "persons": 1083,
+   "mean": 7.3
+  },
+  {
+   "district": "D02",
+   "name": "Metropolitan Fringe",
+   "persons": 986,
+   "mean": 6.3
+  },
+  {
+   "district": "D03",
+   "name": "Lagoon Coast",
+   "persons": 1097,
+   "mean": 6.9
+  },
+  {
+   "district": "D04",
+   "name": "Industrial Corridor",
+   "persons": 1035,
+   "mean": 6.6
+  },
+  {
+   "district": "D05",
+   "name": "Cocoa Belt East",
+   "persons": 1004,
+   "mean": 7.1
+  },
+  {
+   "district": "D06",
+   "name": "Cocoa Belt West",
+   "persons": 1069,
+   "mean": 6.9
+  },
+  {
+   "district": "D07",
+   "name": "Northern Savanna",
+   "persons": 1044,
+   "mean": 6.8
+  },
+  {
+   "district": "D08",
+   "name": "Central Hills",
+   "persons": 1190,
+   "mean": 6.7
+  },
+  {
+   "district": "D09",
+   "name": "River Basin",
+   "persons": 1025,
+   "mean": 6.6
+  },
+  {
+   "district": "D10",
+   "name": "Creeks",
+   "persons": 955,
+   "mean": 6.1
+  },
+  {
+   "district": "D11",
+   "name": "Market Towns",
+   "persons": 1116,
+   "mean": 6.7
+  },
+  {
+   "district": "D12",
+   "name": "University Towns",
+   "persons": 958,
+   "mean": 6.1
+  }
+ ],
+ "constants": {
+  "warn_share": 33.3,
+  "districts": 12,
+  "rates": 24,
+  "quarters_reinterview": "2026Q4 to 2027Q4",
+  "pairs": 4,
+  "sections_cited": "methodology note sections 8.1, 8.2 and 8.3"
+ }
+}
