@@ -273,6 +273,15 @@ The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
   FIX_NOW" holds only while nothing graded moves.
 - **After:** relay the verdict, disposition, Gate G and Gate H lines. **APPROVE** ships. **FIX_NOW** is fixed
   in the generator and re-judged once. **SEND_BACK** re-roots or retires (`build-pipeline`).
+- **A disposition is read against the gate table, not taken on its label.** The table sends back on Gate
+  G and Gate H, the two that say the build is the wrong build. A Gate C or Gate E failure confined to a
+  supplementary ask, with the main call forced and G and H passing, is an ask-layer repair and spends no
+  architecture, whatever the thread called it: the asks are legally free of the call's rules, so the
+  loosest wording in the build sits where Gate C is graded, and that is a wording fix. task196 was paused
+  as spent on a third SEND_BACK whose gates read G PASS, H PASS, F strong with no lever needed, the main
+  call reproducing exactly, and ask 4 alone failing C and E. Re-rooting that throws away a world, a pack
+  and a forced call to repair one sentence. Before spending an architecture, name the gate that failed and
+  check it is G or H.
 
 ## Checklist
 

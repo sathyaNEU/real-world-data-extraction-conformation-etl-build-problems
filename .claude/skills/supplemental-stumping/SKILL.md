@@ -134,6 +134,22 @@ Each ask is a ladder of three to five stops, complete competent pipelines at dis
 
 Every ask answer recomputes from the bundle, forced by the records: enumerate the wording's readings and prove convergence (align the data so every licensed reading selects the same rows) or pin the wording; band by the margin you own; the records, never the ask, force the device; assert disjointness wherever a breakdown could count two ways.
 
+**The reconciliation ask is where determinism dies, and the asking sentence is the only place it can be
+saved.** A bridge between two totals has as many licensed readings as there are bases that could define
+either total, so a reconciling ask that names neither its basis nor its grain is underspecified however
+clean its arithmetic. Two builds in one night lost a judge pass to exactly this, each on its own
+supplementary ask while its main call was forced and Gates F, G and H all passed. task196's advice
+detail carried 35 rows whose settlement month precedes their advice, all of them that case's first
+advice month, leaving two licensed readings under which all sixteen graded figures differ and 486,513
+moves between quarters. task199 asked for a line per reconciling item and the pack supports three
+bridges: an annual one closed by two lines, a three-line set in which one item closes nothing on the
+delivered basis, and a quarterly one needing five, which is the grain the ask's own table already uses.
+So the asking sentence carries the basis (which date or event defines each side) and the grain (the
+level at which the two sides must balance), the reconciliation is at the same grain as the table it
+reconciles, and `checks.py` asserts the closure at that grain, each side minus the other equalling the
+sum of its lines. Enumerate the bases before writing the ask, not after a judge enumerates them for
+you: the count of plausible bases is the count of readings, and one is the only acceptable number.
+
 **A pin is paid for, not free.** A pin says what to compute; it never makes computing it correctly hard,
 and the reading it closes was often carrying the ask's difficulty. So every pin added to close a fork is
 paired with a silent primary underneath it, and the pair is **measured** afterwards, never assumed: run
