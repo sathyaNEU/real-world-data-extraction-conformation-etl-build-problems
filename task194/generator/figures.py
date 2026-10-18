@@ -47,12 +47,16 @@ def write(gendir, g):
         "pick_record_separations": a["separations"],
         "pick_in_scope_episodes": a["episodes"],
         "pick_observed_complications": int(a["observed"]),
-        "pick_developed_complications": round(a["developed"], 1),
+        # the development arithmetic is stated to two decimals, not one: the developed count and the
+        # uplift both sit about four ten-thousandths from a one-decimal bin edge (3408.54965 and
+        # 311.54965), so one decimal flips on the last digit of a factor, which is exactly how one
+        # recomputation read 11.7 where the code gives 11.6. Two decimals clears the bar on all of them.
+        "pick_developed_complications": round(a["developed"], 2),
         "pick_expected_complications": round(a["expected"], 1),
         "pick_expected_on_plan": round(a["expected_plan"], 1),
         "pick_published_ratio": round(a["ratio"], 3),
         "pick_developed_ratio": round(a["ratio_developed"], 3),
-        "pick_uplift_complications": round(a["uplift"], 1),
+        "pick_uplift_complications": round(a["uplift"], 2),
         "pick_shortfall_per_cent": round(100.0 * (1.0 - a["completeness"]), 2),
         "pick_as_recorded": av(a["as_recorded"]),
         "pick_closed_quarters": a["quarters"],
@@ -77,9 +81,26 @@ def write(gendir, g):
         "route_margins": {k.split()[0]: round(v["margin"], 3) for k, v in g["routes"].items()},
         "route_first_values": {k.split()[0]: round(v["first_value"], 2) for k, v in g["routes"].items()},
 
-        # the observation process: what the close-out register measures
-        "quarters_still_moving": sorted(k for k, v in g["lags"].items() if v > 0),
-        "closes_still_to_run": {k: v for k, v in g["lags"].items()},
+        # the observation process: what the close-out register measures.
+        # `lags[q]` is the index of the publication the record holds for q, so lag 0 is a quarter the
+        # record holds at its own coding close and nothing after it, the shortest of the set, and the
+        # highest lag is the one nearest settled. Every quarter in `lags` is still filling: filtering on
+        # a positive lag names the most settled and drops the shortest, which was the defect.
+        "quarters_still_filling": sorted(g["lags"]),
+        "quarters_still_filling_count": len(g["lags"]),
+        "publication_held_by_quarter": {k: v for k, v in sorted(g["lags"].items())},
+        "pick_uplift_by_quarter": {q: round(v["uplift"], 2)
+                                   for q, v in g["pick_uplift_by_quarter"].items()},
+        "pick_observed_by_quarter": {q: v["observed"]
+                                     for q, v in g["pick_uplift_by_quarter"].items()},
+        "pick_factor_by_quarter": {q: round(v["factor"], 4)
+                                   for q, v in g["pick_uplift_by_quarter"].items()},
+        "pick_shortest_quarter": max(g["pick_uplift_by_quarter"],
+                                     key=lambda q: g["pick_uplift_by_quarter"][q]["uplift"]),
+        "pick_shortest_quarter_uplift": round(max(v["uplift"] for v in
+                                                  g["pick_uplift_by_quarter"].values()), 2),
+        "pick_settled_quarter": min(g["pick_uplift_by_quarter"],
+                                    key=lambda q: g["pick_uplift_by_quarter"][q]["uplift"]),
         "development_factor_by_unit_and_lag": {"%s:%d" % (c, l): round(v, 4)
                                                for (c, l), v in sorted(g["factors"].items())},
         "pick_factor_at_lag_0": round(g["factors"][(a["unit"], 0)], 4),
@@ -88,6 +109,7 @@ def write(gendir, g):
         "readings_naming_the_call": sum(1 for v in g["convergence"].values()
                                         if v["first"] == a["unit"]),
         "reading_margins": {k: round(v["margin"], 3) for k, v in g["convergence"].items()},
+        "cycle": "IP-11",
 
         # clauses the write-up cites
         "charter_clauses": ["4.1", "4.2", "4.3", "4.4", "4.5"],

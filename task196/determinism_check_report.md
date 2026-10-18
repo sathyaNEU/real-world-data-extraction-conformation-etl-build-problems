@@ -1,102 +1,332 @@
-# Determinism check report, task196 architecture 2, pass 1
+# task196 determinism judge report
 
-**Verdict NOT_DETERMINISTIC, judge's disposition SEND_BACK, overridden by the author to FIX_NOW**, on the
-19-member bundle whose zip md5 was 72c2b367aa54077806c3183825940d2b.
+Isolated judge. File universe: the fresh unzip at
+`/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task196_judge_pack/`
+(19 members) plus the graded blocks inlined in the brief. Nothing under the repo was opened: no design
+note, no generator, no pipeline.json, no earlier report, no skills, no guidelines, no other task folder.
+No git command run, no agent spawned. Every load-bearing figure below was recomputed from the shipped
+files with pandas / openpyxl / pdfplumber, not checked against arithmetic shown to me.
 
-**The override and its reason.** An architecture is spent when the decisive step cannot be saved, and the
-mark of that is when the only way to close the fork is to file the HOW. Every fork below closes by fixing
-data or by making a wrong sentence right: the prompt's "our data stops at 31 March 2027" against extracts
-running to 30 June, a designed cluster of registrations 1 to 5 days before the request that makes a second
-attribution reading defensible, 33 pre-payment registrations, an overlap of 120 narrow enough that one
-legitimate estimator form crosses the rounding boundary, and a golden ask-6 total that does not match its
-own rows. None of them is the estimator or the attribution rule. Gate F is moderate with the trap working,
-Gate G passes, Gate H passes with the decisive step analytical, and the isolated reader filed 23 against
-the golden's 31 by the default path.
+---
 
-**The condition, and it is hard.** If the re-judge after this pass is not APPROVE, the architecture is
-spent and the slot re-roots, with no second override.
+## Part 0. The answer the prompt and the bundle lead me to, written before the graded blocks were opened
 
-# Task 196 determinism review
+Reading order: `prompt` -> `export_manifest.csv` -> `data_dictionary.csv` -> `indemnity_standard_v6.pdf`
+-> `register_feed_notes.txt` -> `trustee_pack_2027_07.pdf` -> the data.
 
-Note on method: the brief file inlines the graded blocks, so I had seen them when I opened it. The enumeration below was nonetheless built from the bundle only, and compared with the golden afterwards. Brief path says `target/`; the pack is actually the flat dir `task196_judge_pack/` (19 files, no `target/` subfolder). All recomputation is from those files.
+1. **What is asked.** Standard 4.2 defines the scam incidence index as "the number of scam cases arising
+   from payments its own customers sent in the scheme year ended 31 March, **whether or not the member's
+   own systems recorded them**, counted once a case however many payments it covers, per million payments
+   sent as reported on the member's **revised** quarterly returns for that year", "estimated on the
+   mutual's evidence base as it stands when the review is prepared, being the members' case registers and
+   the scheme's beneficiary account register". 4.3 fixes the window (scheme year to 31 March 2027, index
+   applies from 1 October 2027). 4.4 fixes the presentation (recorded -> cases its own record did not hold
+   -> indexed, index to the nearest whole case).
+2. **So the estimand is a population total including unobserved members**, with two named sightings lists.
+   That is a dual-system / capture-recapture estimate, not a count. The register is industry-wide
+   (`register_feed_notes.txt`), so it sights cases the member never recorded.
+3. **The dependence problem.** `fund_return_requests.csv` holds the member's own outbound requests to the
+   receiving firm. A request makes the receiving firm report the account, so a register row whose
+   `registered_date` falls on or after the member's own request on that payment is the member's own case
+   coming back, not an independent second sighting. Those must be dropped before the estimate.
+4. **Review group** = the four members with `triennial_review_this_cycle = yes` in `member_register.csv`
+   (KM-104, KM-101, KM-112, KM-108), corroborated by standard 4.1 and the trustee pack's item 4.
+5. My own computation, before reading the blocks:
 
-## Pre-reading enumeration (answer the prompt and bundle lead to)
+   | | KM-104 | KM-112 | KM-108 | KM-101 |
+   |---|---|---|---|---|
+   | recorded scam cases 2026/27 | 400 | 109 | 246 | 443 |
+   | register matches 2026/27 | 395 | 85 | 162 | 302 |
+   | matches preceded by own request | 125 | 39 | 75 | 142 |
+   | independent sightings n2 | 270 | 46 | 87 | 160 |
+   | overlap m | 157 | 36 | 71 | 137 |
+   | payments sent, revised 2026/27 | 22,233,300 | 6,365,500 | 20,002,400 | 42,722,700 |
+   | N (Lincoln-Petersen) | 687.90 | 139.28 | 301.44 | 517.37 |
+   | index | 30.940 -> **31** | 21.880 -> **22** | 15.070 -> **15** | 12.110 -> **12** |
 
-Index = scam cases arising from Castlegate customers' payments in scheme year to 31 Mar 2027 (standard v6 4.2), recorded or not, per million payments sent on the revised returns.
-Denominator: revised 2026/27 sum, KM-104 = 22,301,200 (preliminary sheet differs by 6,258 in Q4 only, no rounding effect).
-Numerator candidates for Castlegate (A = own register scam cases, payment date in 2026/27 = 400; 412 payments match the scheme register, 325 of them carry an own case ref; 87 do not):
+   **My call: 31 scam cases per million payments sent for Castlegate, indemnity year from 1 October 2027.**
+   Walk: 400 recorded, +288 its own record did not hold, 688 indexed.
 
-| Reading | Cases | Index | Rounded |
-|---|---|---|---|
-| Plan on own register | 400 | 17.94 | 18 |
-| Two-source (Lincoln-Petersen) on all 412 matches | 507.1 | 22.74 | 23 |
-| Two-source with registrations a prior own fund-return request produced removed from the register list (205 out): 400 x 207/120 (golden) | 690.0 | 30.94 | 31 |
-| Same, Chapman form | 688.3 | 30.86 | 31 |
-| Capture probability taken only from own cases no request was sent on (34/109), non-register sightings 87 scaled by it | 678.9 | 30.44 | 30 |
-| Golden rule but evidence cut at 31 Mar 2027 (A by notified date, matches by registered date, requests by sent date) | 581.7 | 26.08 | 26 |
-| Golden but also drop sightings registered before the payment date (33, all in A) | 800 | 35.9 | 36 |
-| Golden but request attribution allows registration 1-2 days before the request (cluster, see below) | 795.5 | 35.7 | 36 |
+That is the committed answer, reached independently. Everything below is the adversarial test of it.
 
-My own first answer from the bundle: 31 (the request-attribution adjustment is the evident analytic move). I could not stop at 31 as forced, see Gate C.
+---
 
-## Verdict: NOT_DETERMINISTIC
+## Part 1. Gate table
 
-## Disposition: SEND_BACK
-The estimand needs the evidence window, the attribution rule for own-request registrations and the estimator form filed in the prompt (what, not how), and ask 6 needs its population and totals pinned; that changes what solvers see, so a rerun is required.
-
-## Gate table
-
-| Gate | Result | Line |
+| Gate | Result | One line |
 |---|---|---|
-| A | PASS for main figures, FAIL on ask 6 route totals | 400, 412, 205, 207, 120, 290, 690, 22,301,200 all reproduce; other members' 22 / 15 / 12 reproduce. Ask 6 "route totals" (7.9/5.4/2.3) are not the totals of the quarter rows (see below). |
-| B | PASS | Every decisive fact is in the files (standard 4.2, returns, register, matches, requests). Method (two-source) is not in any file but method vagueness is permitted. |
-| C | FAIL | Main call is not closed against several defensible conventions (30, 26, 36); ask 6 has unpinned population/source/totals. |
-| D | PASS with risk | Splits would trace to unpinned conventions (window, attribution rule), not to the data, which is a Gate C/E issue rather than a semantic stump. |
-| E | FAIL (partial) | Prompt says "our data stops at 31 March 2027" while files carry rows to 30 June 2027; ask 6 never says case-year, closing-date basis, ledger vs statement, cover, or what "route totals" total. |
-| F | Moderate | The stump (own requests produce register entries, so the two lists are not independent) is not documented anywhere; naive routes give 18 or 23. Dictionary and manifest hand over the under-recording concept. |
-| G | PASS | method_or_model_selection / statistical_rigor on honest reported numbers. |
-| H | PASS | domain used, two layers, decisive step analytical. |
-| Hygiene | PASS with notes | see below. |
+| A - solution correct on the shipped files | **PASS** | Every critical component and every graded figure reproduced to the digit, including the three asks; one loose sentence in the Final Recommendation block (below). |
+| B - every decisive fact in the shipped files | **PASS** | Estimand, window, denominator basis, review group, dependence evidence and as-of all located in named files; no external dependency; the recommendation's vocabulary ("scam incidence index", "cases per million payments sent", the walk, "review ... falls in the cycle") all appears in shipped text. |
+| C - uniquely forced, no defensible alternative | **FAIL (two committed answers)** | (i) Supplementary ask 1 admits two licensed bases, `advice_total_gbp` vs case-level `indemnity_paid_gbp`, differing by GBP 815,235 on the year; (ii) the walk's case-count lines (288 / 688) are not invariant across standard capture-recapture estimator forms (686-689). The main index of 31 is forced. |
+| D - difficulty is analytical, not semantic | **PASS** (main call) | The main call's decisive step is the dependence correction and the estimand, not a word; the ask-1 split is semantic and is reported under C/E, not credited as difficulty. |
+| E - prompt unambiguous on the decision | **FAIL (ask 1)** | "unauthorised-fraud indemnity by member tier each 2026/27 quarter, totals from unrounded amounts" never names the grain, where the sibling ask 3 does say "from case-level credits"; the main ask and asks 2 and 3 are pinned. |
+| F - stump power | **PASS, strong** | Four natural wrong answers sit on the easy routes (18, 23, 25, 33); only the dependence-corrected dual-system estimate gives 31. |
+| G - stumping type | **PASS** | `mechanism: method_or_model_selection`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. |
+| H - the three rules | **PASS** | `domain: pass`, `layers: pass`, `decisive_step: analytical`. |
 
-## Figures I could not reproduce, or that I reproduce only under a convention the text does not file
+**Verdict: NOT_DETERMINISTIC** (narrow: the main recommendation of 31 is forced and robust; two graded
+figure sets are not uniquely forced).
+**Taxonomy: underspecified_objective.** **Fix location: prompt** (one clause in ask 1, one clause on the
+walk), with an optional supporting line in `data_dictionary.csv`.
+**Disposition: SEND_BACK** - the repair is two pinning clauses and leaves the main call, the ladder, the
+stump and every main-side figure frozen, but it changes the prompt solvers read, so prior runs are
+invalidated and a rerun is required.
 
-1. Ask 6 route totals: golden 7.9 / 5.4 / 2.3. Over the cases the quarter rows cover (2025/26 scheme-year scam cases closed 1 Apr 2025 to 31 Mar 2026, denominator 6,548,215) the totals are 8.33 / 5.74 / 2.22 (8.3 / 5.7 / 2.2). Golden totals only reproduce on all 2025/26 scheme-year scam cases including the 921 closed after 31 Mar 2026 (denominator 10,468,750: 7.91 / 5.44 / 2.25). The quarter rows themselves reproduce (Q1 5.7/4.4/2.3, Q2 12.9/3.8/2.0, Q3 5.8/7.4/0.9, Q4 8.7/5.1/3.7) only with: scam cover only; case belongs to scheme year 2025/26; grouped by closing quarter; numerator all ledger credits ever posted (to July 2026). Reading "cases closed in each 2025/26 quarter" literally (any case year) gives Q1 9.7/6.5/1.7, Q2 10.8/3.8/3.2, Q3 5.7/7.3/0.9, Q4 8.7/5.1/3.7; adding unauthorised fraud gives yet another set (Q1 8.5/6.0/2.2 ...). The shipped recovery_statement_2025_26.csv (same population as the golden denominators, but credits "as credited", repatriation net of agent charges) gives Q1 0.6/0.0/0.1 ... Q4 9.3/4.5/2.2; its basis is not tied to the ledger anywhere.
-2. Ask 4 quarter totals: reproduce from advice-detail indemnity_paid_gbp (Q1 665,483.62 etc.). Rounded parts do not sum to the rounded total in Q1 (311,088+272,896+81,499 = 665,483 vs 665,484) and Q3 (613,154 vs 613,153); a one-pound fork depending on summing before or after rounding. Not filed.
-3. Ask 4 source: the advice header advice_total_gbp disagrees with the sum of the detail lines in 49 of 144 unauthorised advices (header higher, +15% to +740%, e.g. ADV-202604-101-U 59,472.82 vs lines 32,097.45; every scam advice ties). Header-based quarter totals are Q1 921,924, Q2 793,015, Q3 836,252, Q4 764,257. The golden (lines) is supported by the column name indemnity_paid_gbp and by exact tie of every line to the register's reimbursed_amount_gbp, so I treat the golden as the better reading, but no shipped text says the header is wrong or what the excess is.
-4. Ask 5 reproduces (957 rows over main plus supplement, all notified 1 Apr to 30 Jun 2027; counts equal the revised returns). Five rows share a case_reference with a different case (different dates and amounts): a solver who deduplicates on reference loses them (e.g. KM-101 191 / 458,875 instead of 193 / 460,362). Golden keeps them, correctly, but nothing says references can collide.
-5. Index per member: Saltmarch 139.3 (21.88 -> 22), Trentmoor 301.4 (15.07 -> 15), Brindlemere 517.4 (12.11 -> 12) reproduce under the golden convention. Recorded 109 / 246 / 443 reproduce.
+---
 
-## Gate C detail: main call forks
+## Part 2. Gate A - what reproduced
 
-Standard 4.2/4.4 fix the definition, the denominator and the rounding; they do not fix how the two sources are combined, what window the evidence runs to, or how to treat registrations an own request produced. The shipped text is silent, and each of these is defensible:
+### 2.1 The main chain (all exact)
 
-- Evidence window. Prompt: "our data stops at 31 March 2027". Trustee pack: reviews "prepared from the mutual's evidence base at 31 March 2027". Standard 4.2: "as it stands when the review is prepared". Files: register notified dates to 27 Jun 2027 (51 of Castlegate's 400 notified after 31 Mar), matches registered to 30 Jun 2027 (55 of 412), requests to 25 Apr 2027. Golden uses everything (31). Cutting at 31 March gives Castlegate 26, Saltmarch 18, Trentmoor 14, Brindlemere 10. Closed only by inferring that 4.2 outranks the prompt and pack.
-- Attribution rule for own-request registrations. Golden rule: request_sent_date <= registered_date (205). The reglag distribution (registered minus request, all members) is: induced registrations sit at fixed lags by firm type (clearing bank +1/+2, e-money +14/+15, building society/overseas +38 to +40), and there is a sharp cluster the other side of the request (-1: 275, -2: 248, -3: 163, -4: 99, -5: 48 against a flat tail of about 12 a day at -8 to -12, and no same-day rows). Those near-miss registrations are scored as independent by the golden rule. Treating registration within two days before the request as request-linked gives Castlegate 795.5 cases, 35.7 (36), Saltmarch 23, Trentmoor 16, Brindlemere 12 or 13. The golden's own sentence ("not a rule on the registration date") sits uneasily with a step that is itself a registration-date rule. The text does not say which is right.
-- Pre-payment registrations. 33 of Castlegate's matches (all in its own register) were registered before the payment date (as early as 94 days before across members). Dropping them from the register list as non-attributable gives 800 cases, 35.9 (36).
-- Estimator form. Chapman 688 gives 31, but conditioning capture probability on own cases never requested (34/109) gives 679, 30.44, which rounds to 30. Nothing in the pack pins Lincoln-Petersen on the independent register list over this. With only 120 overlaps the sampling band on 690 is about plus or minus 8 percent (index about 28.5 to 33.5), so "nearest whole case" is not a quantity the data forces; the golden is the one point estimator, not the only licensed one. The all-members ranking is unaffected by any of these (Castlegate first, then Saltmarch, Trentmoor, Brindlemere), so the chart order and the "highest" call survive; the stated index figures do not.
+| Figure | Committed | Recomputed | Source |
+|---|---|---|---|
+| Recorded scam cases, KM-104, scheme year 2026/27 | 400 | **400** | `case_register_2024_27.csv`, `cover_class == scam reimbursement`, `scheme_year == 2026/27` (and identically on `payment_date` in 2026-04-01..2027-03-31: 0 of 18,280 rows disagree between the two), 400 distinct `case_reference`, no duplicates, `side` is `sending` on every row |
+| Payments sent, revised 2026/27 | 22,233,300 | **22,233,300** | `member_quarterly_returns.xlsx`, sheet `returns 2024-25 onward`, the only 2026/27 rows with `vintage == revised` |
+| Register matches | 395 | **395** | `member_payment_matches.csv`, KM-104, `scheme_year == 2026/27`; 395 rows, 395 distinct accounts, 282 carrying a `case_reference` and 113 not |
+| Matches preceded by own request | 125 | **125** | join to `fund_return_requests.csv` on `beneficiary_account_ref`; `registered_date >= request_sent_date` gives 125, and so does strict `>` (no date ties, so the "on or after" wording is not load-bearing) |
+| Independent sightings | 270 | **270** | 395 - 125 |
+| Overlap | 157 | **157** | of the 270, 157 carry a `case_reference` that is in the 400; all 157 are in the 2026/27 scam set, none in another year or cover; the complement 270-157 = 113 equals 395-282, i.e. every request-preceded match does carry a case reference, as it must |
+| Indexed cases | 688 | **687.898 -> 688** | 400 x 270 / 157 |
+| Index | 30.94 -> 31 | **30.9400 -> 31** | 687.898 / 22.2333 |
+| Walk | 400 / 288 / 688 | **400 / 287.898 -> 288 / 688** | 4.4 order |
+| "under three in five" chart title | - | **58.1%** (400/688) | holds |
 
-Competing answers that do survive on the shipped files: 30 (stratified estimator), 26 (31 March cut), 36 (near-miss or pre-payment treatment). 18 and 23 are the easy-route answers and are properly ruled out by the own-request dependence.
+The other three review-group members reproduce exactly as committed: 109 -> 139 -> **22**,
+246 -> 301 -> **15**, 443 -> 517 -> **12**. The CSV ordering by index (31, 22, 15, 12) is correct.
 
-## Gate G (full)
-mechanism: statistical_rigor / method_or_model_selection (dependence-aware two-source estimate, with a data-driven choice of which sightings are independent)
-stumping_family: analytical_non_defect
-surface_read_dependency: no
-sole_data_defect: no
-Every reported number (400 recorded, 412 matches, 22,301,200 payments) is correct; nothing reported is overturned. The difficulty is that a two-source estimate on all matches is biased because Castlegate's own fund-return requests create register entries, which is a method failure on honest figures, not a rejection of a misleading surface read. On a version of the data without the request effect the all-matches estimate would simply be right, so the dependence is part of the structure being tested; borderline only in that the dependence exists solely in a file whose job is to expose it.
+### 2.2 Ask 1 - unauthorised-fraud indemnity by tier per 2026/27 quarter
 
-## Gate H (full)
-domain: pass. The deciding quantity is an actuarial incidence estimate for unrecorded claims (cases a member's own record did not hold) per exposure, which an underwriting and pricing function would estimate with a two-source model; swapping nouns to hospitals or schools would not leave the task unchanged since the beneficiary-account register, fund-return requests and the member's own record are specific to scheme claims.
-layers: pass. Layer 1: 2023/24 layout with pence, dd/mm/yyyy and thousands against whole payments later; preliminary against revised returns for 2026/27; sort-code hyphen and leading-zero mismatch between the match run and the register; scheme-year quarters starting in April; a notifications feed with a supplement and colliding case references. Layer 2: the own-request dependence between the register and the case list and the two-source estimate built around it.
-decisive_step: analytical. A strong analyst who cleaned everything and read every field correctly would run a two-source estimate on all 412 matches (507, index 23) or plan on the register (400, index 18), so the easy route files a wrong answer. The qualifier is that the repair itself is not unique (Gate C), which is a determinism problem and not a Gate H failure.
+Reproduced to the pound **on the case-detail basis**: Q1 A 311,088 / B 271,791 / C 81,499, total 664,379;
+Q2 309,882 / 228,966 / 83,191, total 622,039; Q3 317,029 / 222,673 / 75,171, total 614,872; Q4 339,633 /
+181,104 / 75,823, total 596,560. The "totals from unrounded amounts" instruction is load-bearing and the
+submission obeys it: rounding the tier figures first gives 664,378 in Q1 and 614,873 in Q3. Tier is
+time-invariant (the `advices` sheet and `member_register.csv` agree on all 288 advices). Quarter assignment
+is unforked (`advice_date` is always the 25th of its own `settlement_month`). See 3.1 for why this answer
+is not forced.
 
-## Files / Hygiene: PASS with notes
-19 files; formats csv, xlsx, pdf, txt (4). Largest: mule_account_register.csv 29,989 rows (meets the 25,000 floor). Distractors present (national_scam_statistics_calendar_year.csv, aml_alert_summary.csv, recovery_statement_2025_26.csv as a conflicting basis, notifications feed in the other direction). No README or benchmark disclosure found; no public-data contamination (synthetic fiction). Notes, not exclusion-level: register_feed_notes.txt reads as an explained how-to ("Pad the account number back to eight digits ... or the match loses every account") rather than a log entry; export_manifest.csv "what_it_omits" and data_dictionary.csv ("A case appears in the register only when the member's own controls or its customer brought it to it") spell out the under-recording concept; trustee_pack_2027_07.pdf refers to "the register feed change of February 2027" and to papers 1 to 3, and nothing in the pack describes a Feb 2027 change (I checked register volumes, request-induced share and lags by month: no discontinuity); recovery_statement_2025_26.csv bases (as credited, net of agent charges) are unreconciled with the ledger. Trustee pack and prompt say data stops at 31 March 2027 while the extracts run to 30 June 2027 (temporal coherence finding, and the source of the window fork above).
+### 2.3 Ask 2 - cases notified in the quarter to 30 June 2027
 
-## Stump power (Gate F)
-The own-request dependence is the working trap: the easy two-source estimate and the register count both land on a wrong index (23, 18), and nothing in the pack names the dependence. Too-easy signals are limited to the dictionary/manifest explaining under-recording. Because the correct repair is not uniquely forced (30 / 31 / 36), a solver who finds the trap can still miss the golden for a convention reason, which is not credit as a valid stump.
+All 24 figures reproduce exactly (KM-101 193 / 460,362.18 ... KM-124 101 / 231,542.05) on the union of
+`notifications_2027_28_q1.csv` (cut 20 June, 837 rows) and
+`notifications_2027_28_q1_supplementary.csv` (21-30 June, 119 rows), **counting rows, not distinct
+`case_reference`**. This is a real fork that the pack closes properly: 5 references are shared (2 inside the
+main extract, 3 across the two files) but the colliding rows are plainly different cases (different
+`payment_date`, `payment_amount_gbp`, `notified_date`, `case_status`), and the `return 2027-28 Q1` sheet of
+`member_quarterly_returns.xlsx` reports `scam_cases_notified` of 193 / 121 / 109 / 93 / ... which equals the
+row counts member by member for all twelve. A solver who dedupes gets 191 / 120 / 108 / 92 and contradicts
+the member's own revised return. The forks converge **on the records**, not by rounding.
 
-## Fix (prompt, then input_files)
-- prompt: file the estimand, not the method: state the evidence cut-off ("register and matching run as received to 30 June 2027" or "to 31 March 2027"), and that sightings produced by the member's own fund-return requests are not independent sightings (or name the population: payments whose registration did not follow an own request). Remove or reword "our data stops at 31 March 2027".
-- input_files: decide the near-miss cluster and the 33 pre-payment registrations (either remove the near-miss cluster so the date rule is clean, or give a shipped fact that classifies them), and widen the overlap so the rounded index is not inside the sampling noise; reconcile or explain the 49 unauthorised advice headers and the recovery statement basis, or state the ledger as source in the ask.
-- prompt, ask 6: state case population (scheme-year-2025/26 scam cases, by closing quarter), the credit basis (all ledger credits to date), and that the route total covers the same cases as the quarter rows (or what it covers); state that ask 4 totals are summed before rounding.
-- solution: if ask 6 is kept as is, the route totals line must be changed to 8.3 / 5.7 / 2.2 to agree with the quarter rows.
+### 2.4 Ask 3 - share of reimbursement recovered by route, cases closed in each 2025/26 quarter
+
+All 15 figures reproduce exactly. The population is scam-reimbursement cases of **scheme year 2025/26**
+whose `closed_date` falls in the quarter; numerator is `case_payments.csv` recovery credits on those cases
+(any value date); denominator is their `reimbursed_amount_gbp`. This is pinned, not guessed: the
+denominators 252,329.33 / 1,427,886.02 / 2,229,339.01 / 2,859,471.69 match
+`recovery_statement_2025_26.csv`'s `reimbursed_in_quarter_gbp` **to the penny**, which fixes both the cover
+restriction and the scheme-year restriction from a shipped artifact. Recomputed: Q1 6.5 / 3.4 / 2.8;
+Q2 15.1 / 3.3 / 3.8; Q3 8.5 / 2.5 / 5.9; Q4 5.4 / 2.5 / 7.4; totals 8.5287 / 2.7067 / 5.9686 -> 8.5 / 2.7 / 6.0.
+The statement's own `recovered_stated_gbp` is a declared-basis distractor (repatriation "net of recovery
+agent charges") and does not reconcile to the credits on any route, so the prompt's "from case-level
+credits" is doing necessary work.
+
+### 2.5 The one Gate A blemish (solution wording, not a figure)
+
+The Final Recommendation block rejects "a rule on the registration date, which cannot tell a sighting
+another firm's victim produced from one Castlegate's own request produced", while Step 5 *is* a rule on the
+registration date (registered on or after the member's own request). Read charitably it rejects a
+date-only rule that ignores the requests, but as written the two blocks read as contradicting each other.
+Repairable in the solution block; no figure moves.
+
+---
+
+## Part 3. Gate C - the forks, enumerated and computed
+
+### 3.1 Open fork, governing: supplementary ask 1's basis
+
+`settlement_advices_2026_27.xlsx` contains two licensed amount fields and they do not tie:
+
+- `advices!advice_total_gbp` - data dictionary: "The amount the advice settled with the member";
+  standard 5.1: "the advice states the amount settled and the number of case lines it covers".
+- `advice detail!indemnity_paid_gbp` - data dictionary: "The amount the advice settled for that case".
+
+For all 144 scam advices the detail sums to the advice total exactly. For unauthorised fraud, **49 of 144
+advices do not tie**, always with the total exceeding the sum of its own lines, by amounts with no visible
+structure (ratios 1.15x to 8.40x; mismatches spread across every month and every one of the twelve
+members). Year totals: `advice_total_gbp` 3,313,084.58 against detail 2,497,849.84, a gap of **815,234.74
+(33 per cent)**. Nothing in the pack explains it: no note column, no `sharedStrings`, no hidden sheet, no
+defined name, no line in `data_dictionary.csv`, `export_manifest.csv` or either PDF, and
+`case_lines` equals the detail row count for all 288 advices, so the detail is demonstrably complete.
+
+The two answers the fork produces:
+
+| | Q1 A / B / C (total) | Q2 total | Q3 total | Q4 total | year |
+|---|---|---|---|---|---|
+| case detail (committed) | 311,088 / 271,791 / 81,499 (664,379) | 622,039 | 614,872 | 596,560 | 2,497,850 |
+| advice totals | 423,287 / 344,133 / 153,399 (920,819) | 791,082 | 837,971 | 763,213 | 3,313,085 |
+
+The committed basis is the better-supported of the two: the prompt's word is "indemnity" and the only field
+named indemnity is `indemnity_paid_gbp`; "totals from unrounded amounts" points at building up from
+components; and the scam cover establishes the workbook's own invariant (total = sum of lines) that the 49
+unauthorised totals violate while their line counts are right. But "better supported" is not "uniquely
+forced". A rigorous analyst who takes the aggregate the governing standard names as "the amount settled"
+commits no analytical error, and 16 graded figures move. Gate C fails on ask 1; Gate E fails on its asking
+sentence, which omits the grain its own sibling ask 3 states ("from case-level credits").
+
+### 3.2 Open fork, secondary: the estimator form behind the walk's case counts
+
+The estimator is nowhere pinned. Grepping every file in every format (CSV, TXT, both PDFs' extracted text,
+both workbooks' XML) for `petersen|lincoln|chapman|recapture|capture|estimator|two-source|multiplier|
+independen*|uplift|gross-up` returns **zero hits**. Standard 4.2 names the two sighting lists and says
+"estimated"; 4.4 names the presentation. Nothing selects a form, and no prior-year index or worked example
+ships that would calibrate one (the trustee pack says expressly "No index is proposed in this pack").
+
+Every form a competent analyst could use, computed:
+
+| Form | N (KM-104) | indexed, whole | "did not hold" | index |
+|---|---|---|---|---|
+| Lincoln-Petersen / dual-system, N = n1 n2 / m (committed) | 687.898 | 688 | 288 | 30.9400 -> 31 |
+| Chapman, N = (n1+1)(n2+1)/(m+1) - 1 | 686.791 | 687 | 287 | 30.8902 -> 31 |
+| Bailey, N = n1 (n2+1)/(m+1) | 686.076 | 686 | 286 | 30.8580 -> 31 |
+| capture-probability forms (n1/(m/n2), n2/(m/n1)) | 687.898 | 688 | 288 | 30.9400 -> 31 |
+| LP on the stricter independence rule in 3.3 | 688.660 | 689 | 289 | 30.9740 -> 31 |
+
+**The index survives all of them at the precision the asking sentence states** ("the index to the nearest
+whole case"): the spread is 30.842 to 30.974 against a bin edge at 30.500, so the worst case clears the
+printed edge by **0.358 cases per million**, about 8.0 indexed cases of headroom. Same for the other three
+members: KM-112 21.591-21.880 against 21.500 (margin **0.091**, the tightest in the pack, about 0.6 cases),
+KM-108 15.032-15.094 against 15.500 (margin **0.406**), KM-101 12.057-12.110 against 12.500
+(margin **0.390**). All 24 estimator x independence-rule combinations give the same four indices 31 / 22 /
+15 / 12, so the main recommendation and `incidence_index_2027_28.csv` are robust.
+
+What does **not** survive is the thing standard 4.4 and the prompt both require in whole cases: the walk.
+"Cases its own record did not hold" is 286, 287, 288 or 289 and "indexed cases" is 686, 687, 688 or 689
+depending on an estimator the package never names. KM-112's indexed count likewise moves over 137-139.
+These are committed, separately gradable figures with no tolerance, so Gate C fails here too. Note the
+fork vanishes if the walk is expressed in index units: 17.991 -> 18 recorded, 12.949 -> 13 not held,
+30.940 -> 31 indexed, and every estimator form gives the same 18 / 13 / 31.
+
+### 3.3 Closed forks, with how each closes
+
+| Fork | Options and what each computes | Closed by |
+|---|---|---|
+| **As-of of the register evidence** | sightings to the 2 July pull: n2 270, m 157, **index 31**. Sightings capped at the 31 March 2027 scheme-year end: n2 235, m 130, N 723.08, **index 32.52 -> 33**. Capped at 2 July or 30 June: identical to base (max `registered_date` is 2027-06-30 in the matches, 2027-07-01 in the register), so no whole-day variant of the pull bites. | Standard 4.2, "estimated on the mutual's evidence base **as it stands when the review is prepared**", plus 4.5/the trustee pack ("pulled for this meeting on 2 July 2027") and the prompt's "the feed runs to the 2 July pull". This is the single most load-bearing sentence in the pack: the two readings do **not** converge, they give 31 and 33, and closure rests entirely on that clause being read literally. It is stated in three places, so I call it closed. |
+| **Which date puts a case in the scheme year** | `payment_date` / `scheme_year` field: 400 recorded, m 157, **index 31**. `notified_date`: 397 recorded, m 133, N 805.94, **index 36.25 -> 36**. | Standard 4.2, "cases **arising from payments** its own customers sent in the scheme year ended 31 March". The `scheme_year` column and `payment_date` agree on all 18,280 rows, so the two convergent readings converge **on the records**, not by rounding. |
+| **Return vintage for the denominator** | revised 22,233,300 -> 30.9400 -> **31**. Preliminary 22,227,042 -> 30.9487 -> **31**. `notified_payments_next_indemnity_year` 23,123,000 -> 29.7495 -> 30. | 4.2 says "as reported on the member's **revised** quarterly returns for that year", and the dictionary's vintage line. The preliminary variant converges by arithmetic (the two denominators differ by only 6,258 payments), not on the records, but the governing text excludes it anyway; the member-register volume is next year's expectation and is not licensed at all. |
+| **Register-status filter** | all accounts, or `register_status == reported` only: identical, 270 / 157 / **31**. All 395 of Castlegate's matched accounts are `reported`; the 4,040 `closed by firm` accounts never touch this member. Convergence is on the records. | `register_feed_notes.txt`, "An account stays on the register once it is reported". |
+| **Account-reference normalisation** | padded join: 395 of 395 matched to `mule_account_register.csv`. Naive join without re-padding: 353, losing 42 accounts. | `register_feed_notes.txt` states the padding rule and names the failure. Layer 1 mess, non-decisive here because the matches file already carries the register's date, verified identical for all 395 rows. |
+| **Quarter to 30 June 2027, endpoint** | inclusive: 956 rows, 193 / 121 / 109 / 93 etc. Exclusive of 30 June: 12 rows dropped across 9 members. (13 rows sit on 1 April.) | "the quarter to 30 June 2027" is the quarter ending that day, and the `return 2027-28 Q1` sheet pins the inclusive counts member by member. Converges on the records. |
+| **Ask 1 quarter basis** | `settlement_month` or `advice_date`: identical for all 288 advices (every advice is dated the 25th of its own month). | Converges on the records. |
+| **Ask 3 credit window** | all credits on cases closed in the quarter (committed) vs credits valued inside the same quarter (different figures on every route). | The prompt attaches the quarter to the closure ("on cases closed in each 2025/26 quarter"), `export_manifest.csv` describes the statement as "recoveries on cases closed in the year by route", and standard 5.2 credits recoveries against the case at the date funds arrive. The statement's penny-exact denominator match confirms the population. |
+| **Ask 3 cover and scheme year** | scam + scheme year 2025/26 (committed, 6.5/3.4/2.8 ...). All covers, all years closed in quarter: 8.6/3.7/2.3 ... Scam only, all years: 10.9/4.8/2.9 ... | Pinned by `recovery_statement_2025_26.csv`, whose `reimbursed_in_quarter_gbp` equals the committed denominator exactly in all four quarters. Without that file this would be an open fork; with it, it is closed on the records. |
+| **Independence rule for the second source** | committed: drop the 125 matches registered on or after the member's own request -> n2 270, m 157, **31**. Stricter: keep only the 167 accounts registered *before* the payment left -> N 688.66, **31**. Over-broad: drop all 220 accounts the member ever chased -> n2 175, m 62, N 1,129.03, index 50.78 -> 51. | The over-broad rule discards sightings that demonstrably predate the request and is not a reasonable choice; the committed and stricter rules both give 31. Sensitivity here is to an unreasonable choice only, which the gate permits. |
+
+---
+
+## Part 4. Figures I could not reproduce
+
+None. Every committed figure in the four blocks reproduced exactly from the shipped files: the five
+critical components, all eight solution steps, the four member indices, the three walk lines, the twelve
+tier-quarter amounts and four quarter totals (on the case-detail basis), the twelve case counts and twelve
+values for the June quarter, and all fifteen recovery shares. The defects above are forks and a wording
+slip, not unreproduced numbers.
+
+---
+
+## Part 5. Files and hygiene - PASS
+
+19 files; 4 formats (12 CSV, 2 XLSX, 2 PDF, 1 TXT) - clears the 5-file floor and the three-format bar, no
+monoculture. Largest file `case_payments.csv` at 33,851 rows. All artifacts read as operational exports:
+the 2023/24 register in the old layout with `dd/mm/yyyy` dates and amounts in pence, the pre-2024/25
+returns sheet in thousands against whole payments after, preliminary and revised 2026/27 vintages
+overlapping, a notification feed cut on 20 June plus a quarter-end supplement, account references written
+two different ways on the two sides of a join, colliding case references, a recovery statement on a mixed
+stated basis. Distractors are relevant and unused: `aml_alert_summary.csv`,
+`national_scam_statistics_calendar_year.csv` (calendar quarters, loss value per GBP million, no count
+basis), `recovery_statement_2025_26.csv`'s stated recoveries, the preliminary 2026/27 sheet, the 2023/24
+register. No README or how-generated artifact, no "synthetic"/"generated"/"benchmark" language, no tool
+banner; workbook `docProps` and both PDF `/Producer` strings read "Kelverstone Mutual secretariat", in
+fiction. Data is fictional, so no public-data contamination and no canonical published finding. Dates are
+coherent with a 2 July 2027 pull throughout.
+
+Two minor, non-decisional findings, in-house FIX_NOW, neither exclusion-level and neither touching the
+analytic surface:
+- both PDFs carry `/CreationDate D:20000101000000`, which contradicts the 2027 fiction.
+- the 49 non-tying unauthorised advice totals (3.1) read as an unintended data defect rather than
+  authentic mess, because the scam cover ties perfectly and nothing in the pack accounts for the gap.
+  Fixing it is what closes the ask-1 fork.
+
+Nothing exclusion-level.
+
+---
+
+## Part 6. Stump power (Gate F) - strong
+
+Four wrong answers sit on the natural easy routes and only the dependence-corrected dual-system estimate
+reaches 31: report the recorded rate, 400 / 22.2333 = **18**; add the register's 113 unmatched sightings to
+the register count, 513 -> **23**; run the two-source estimate on all 395 matches without the dependence
+correction, 560.28 -> **25**; or confine the register evidence to the scheme year instead of the 2 July
+pull, 723.08 -> **33**. The decisive insight is genuinely hard and genuinely in the data: the member's own
+fund-return request is what makes the receiving firm report the account, so 125 of its 395 register
+sightings are its own capture coming back, and using them inflates the overlap and collapses the estimate.
+No documentation hands that out, the prompt does not gesture at it, and the correction needs a join
+(`member_payment_matches` x `fund_return_requests` on the account, compared on dates) the prompt never
+mentions. The asks each carry their own device as well: the rounding order in ask 1 (664,379 against
+664,378), the colliding case references in ask 2 (193 against 191 if deduped), and the statement's
+stated-basis recoveries in ask 3. I would expect a strong model to file 23 or 25.
+
+## Part 7. Stumping type (Gate G)
+
+`mechanism: method_or_model_selection`, `stumping_family: analytical_non_defect`,
+`surface_read_dependency: no`, `sole_data_defect: no`.
+
+Every reported number in the pack is **fine**: the 400 recorded cases are correctly recorded, the 395
+matches are correct matches, the revised returns are the right denominator, the 125 request-preceded
+sightings are real sightings. Nothing the solver must catch is wrong or misleading, and no defect, decoy
+or withheld rule carries the call. The difficulty is choosing the estimand the governing standard actually
+defines (a population total including cases the member never recorded) and then the estimator's second
+source correctly, which is method and estimand selection on honest data. Not banned; no
+`banned_stumping_type` finding. The FINE-numbers method carrying the difficulty is dual-system
+(capture-recapture) estimation with a source-dependence correction pinned by the member's own outbound
+request log.
+
+## Part 8. The three rules (Gate H)
+
+`domain: pass`, `layers: pass`, `decisive_step: analytical`.
+
+The field's own analysis decides it: an incidence rate per million exposure units for an indemnity year's
+contribution loading, over cases **incurred but not recorded**, estimated from two sighting lists, which is
+experience-rating work and is instituted as such by Part 4 of the mutual's own standard. Swap test: putting
+another field's nouns in does not leave the task reading the same, because the quantity is an indemnity
+index that an insurance instrument defines, measures over a scheme year and applies to an indemnity year
+from the following 1 October; the estimation method generalises across fields, but the estimand, the
+exposure base (revised returns of payments sent) and the use (loss-control placement and contribution
+loading) are the domain's. Layer 1: layout and unit changes across register and return vintages (pence and
+`dd/mm/yyyy` in 2023/24, thousands before 2024/25, preliminary against revised 2026/27), account
+references written two ways across the register and the matching run, a notification feed cut mid-quarter
+with a supplement, colliding case references, a recovery statement on a mixed stated basis, calendar-year
+national statistics against a fiscal scheme year. Layer 2: the estimand includes cases the member never
+recorded, and the second sighting list is dependent on the member's own fund-return requests.
+The easy route a strong analyst who cleaned everything and read every rule correctly would still take: run
+the two-source estimate on all 395 register matches, giving 560 cases and an index of **25**, or simply add
+the 113 unmatched register sightings to the 400 recorded, giving 513 and **23**. Either is wrong and both
+are reachable with perfect data hygiene, so H3 passes as analytical.
+
+---
+
+## Part 9. Fix
+
+**Prompt**, two clauses, main-call side frozen:
+
+1. Ask 1: name the grain, exactly as ask 3 already does. "...unauthorised-fraud indemnity by member tier
+   each 2026/27 quarter, **from the case-level indemnity amounts on the advice detail**, totals from
+   unrounded amounts". Optionally support it with one `data_dictionary.csv` line saying what
+   `advice_total_gbp` carries beyond its case lines, so the 49 non-tying advices read as mess rather than
+   as an error. This is the governing repair.
+2. The walk: either state the walk in index units (cases per million, nearest whole case, which is
+   invariant at 18 / 13 / 31 across every estimator form) or have the asking sentence state the estimate
+   form once, without filing how the sightings are attributed. The latter keeps the walk in whole cases;
+   either keeps the decisive step, the dependence correction, untouched.
+
+Nothing else needs to move: the main recommendation of 31, the ladder, the four indices, the CSV
+deliverable, ask 2 and ask 3 all stand as shipped. The Final Recommendation block's "not a rule on the
+registration date" sentence should be reworded in the **solution** to stop contradicting Step 5.

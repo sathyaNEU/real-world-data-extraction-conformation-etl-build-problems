@@ -93,8 +93,17 @@ def run(target, figures_path):
     # fitted here and no parameter is chosen.
     reg = pd.read_csv(os.path.join(target, "coding_close_out_register.csv"), dtype={"unit_code": str})
     ok(len(reg) > 200, "the close-out register ships %d rows" % len(reg))
-    ok(set(reg.columns) == {"quarter", "published_date", "unit_code", "separations_with_complication"},
-       "the register's columns are the four it declares (%s)" % sorted(reg.columns))
+    ok(set(reg.columns) == {"quarter", "published_date", "unit_code", "separations_with_complication",
+                            "episodes_awaiting_coding", "episodes_coded_since_last_close",
+                            "coder_fte_allocated", "principal_reason_open"},
+       "the register's columns are the eight it declares (%s)" % sorted(reg.columns))
+    # only the complication count feeds the indicator; the queue columns are the department's own
+    # workload record and are recomputed here only to confirm they are present and sane
+    ok((reg.episodes_awaiting_coding >= 0).all(), "the coding queue is never negative")
+    ok((reg.coder_fte_allocated > 0).all(), "every close carries a coder establishment")
+    ok(reg.principal_reason_open.nunique() >= 3,
+       "the register carries more than one standing reason for an open code (%d)"
+       % reg.principal_reason_open.nunique())
     reg = reg.sort_values(["quarter", "unit_code", "published_date"])
     cells = {}
     for (q, u), d in reg.groupby(["quarter", "unit_code"]):
@@ -124,8 +133,14 @@ def run(target, figures_path):
     lags = {q: int(pubs[q]) - 1 for q in moving}
     ok(sorted(lags.values()) == [0, 1, 2, 3, 4],
        "the register shows five quarters at five stages of settling (%s)" % lags)
-    ok(sorted(q for q, v in lags.items() if v > 0) == sorted(fig["quarters_still_moving"]),
-       "the four quarters still filling are the ones figures.json names")
+    # every quarter the register still shows moving is still filling, and the one held at its own close
+    # alone (lag 0) is the shortest of them, not a settled one
+    ok(sorted(lags) == sorted(fig["quarters_still_filling"]),
+       "the five quarters still filling are the ones figures.json names")
+    ok(len(lags) == fig["quarters_still_filling_count"] == 5,
+       "five of the ten closed quarters are still filling (%d)" % len(lags))
+    ok({k: v for k, v in sorted(lags.items())} == fig["publication_held_by_quarter"],
+       "figures.json carries the publication the record holds for each")
 
     F = factors()
     ok(abs(F[(fig["call_unit_code"], 0)] - fig["pick_factor_at_lag_0"]) < 5e-4,
@@ -215,6 +230,42 @@ def run(target, figures_path):
                  / float(sum(gi.loc[(u, q)].separations for q in allq if (u, q) in gi.index))
                  * int(pl[u]), 1) == fig["expected_on_plan_by_unit"][u],
            "the expected count on the plan at %s" % u)
+
+    # ---- the uplift each still-filling quarter carries, recomputed from the register ----
+    # This is the claim the write-up has to make checkable: which quarter moves the answer. The record
+    # holds each of the five at a different publication, so the shortest is the one held at its own
+    # close alone and the one nearest settled carries a factor of 1.000 and adds nothing.
+    pick = fig["call_unit_code"]
+    up = {}
+    for q in sorted(lags):
+        if (pick, q) not in gi.index:
+            continue
+        n = float(gi.loc[(pick, q)].observed)
+        up[q] = n * (F.get((pick, lags[q]), 1.0) - 1.0)
+        ok(int(n) == fig["pick_observed_by_quarter"][q],
+           "the pick's observed count in %s (%d)" % (q, int(n)))
+        ok(abs(round(up[q], 2) - fig["pick_uplift_by_quarter"][q]) < 5e-3,
+           "the pick's uplift in %s recomputes to %.2f" % (q, up[q]))
+    ok(sorted(up) == sorted(fig["pick_uplift_by_quarter"]),
+       "every still-filling quarter is accounted for (%d)" % len(up))
+    ok(abs(sum(up.values()) - fig["pick_uplift_complications"]) < 5e-3,
+       "the five quarters' uplift sums to the pick's own uplift (%.2f)" % sum(up.values()))
+    shortest = max(up, key=lambda q: up[q])
+    ok(shortest == fig["pick_shortest_quarter"] and lags[shortest] == 0,
+       "the quarter carrying the most uplift is the one held at its own close (%s)" % shortest)
+    ok(up[shortest] > 0.5 * sum(up.values()),
+       "the shortest quarter carries more than half the uplift (%.2f of %.2f)"
+       % (up[shortest], sum(up.values())))
+    settled = min(up, key=lambda q: up[q])
+    ok(abs(up[settled]) < 1e-9 and settled == fig["pick_settled_quarter"],
+       "the quarter nearest settled carries no uplift at all (%s)" % settled)
+    # every figure of the development arithmetic is stated where two decimals are not edge-fragile
+    def _edge(v, unit):
+        sc = round(1.0 / unit)
+        return unit / 2.0 - abs(v - round(v * sc) / float(sc))
+    for q, v in up.items():
+        ok(_edge(v, 0.01) >= 0.003,
+           "%s's uplift sits %.5f from the two-decimal edge" % (q, _edge(v, 0.01)))
 
     # ---- rung 0: the record as it stands, which is what the series and the dashboard invite ----
     rec = avoidable(develop=False)

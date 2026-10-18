@@ -212,8 +212,55 @@ def run(target, g, state):
     # ---------- the observation process: what the close-out register measures ----------
     reg = read(target, "coding_close_out_register.csv")
     ok(len(reg) > 200, "the close-out register ships %d rows" % len(reg))
-    for col in ("unit_code", "quarter", "published_date", "separations_with_complication"):
+    for col in ("unit_code", "quarter", "published_date", "separations_with_complication",
+                "episodes_awaiting_coding", "episodes_coded_since_last_close",
+                "coder_fte_allocated", "principal_reason_open"):
         ok(col in reg[0], "the register carries %s" % col)
+    # The register is the coding department's own close record, not a development triangle with a
+    # covering file name: the queue columns are what a reader opens it for besides the two vintages.
+    # They scale with the cost centre's volume and the season and carry no signal about how far its
+    # coding has settled, which is asserted rather than asserted-by-intention: no cut on any of them
+    # isolates the cost centres whose records are shortest.
+    ok(all(int(r["episodes_awaiting_coding"]) >= 0 for r in reg),
+       "the coding queue is never negative")
+    ok(len({r["principal_reason_open"] for r in reg}) >= 3,
+       "the register carries more than one standing reason for an open code (%d)"
+       % len({r["principal_reason_open"] for r in reg}))
+    ok(all(float(r["coder_fte_allocated"]) > 0 for r in reg),
+       "every close carries a coder establishment")
+    short4 = {d["unit"] for d in sorted(units, key=lambda x: x["completeness"])[:4]}
+    for col in ("episodes_awaiting_coding", "episodes_coded_since_last_close",
+                "coder_fte_allocated", "principal_reason_open"):
+        per_unit = defaultdict(list)
+        for r in reg:
+            if r["unit_code"] in {d["unit"] for d in units}:
+                per_unit[r["unit_code"]].append(r[col])
+        if col == "principal_reason_open":
+            cells = defaultdict(set)
+            for c, vals in per_unit.items():
+                cells[tuple(sorted(set(vals)))].add(c)
+        else:
+            # split the twelve at the median of the column's own per-unit mean
+            means = {c: sum(float(v) for v in vals) / len(vals) for c, vals in per_unit.items()}
+            med = sorted(means.values())[len(means) // 2]
+            cells = defaultdict(set)
+            for c, m in means.items():
+                cells["high" if m >= med else "low"].add(c)
+        best = 0.0
+        for cell, members in cells.items():
+            tp = len(members & short4)
+            if not tp:
+                continue
+            best = max(best, 2.0 * tp / (len(members) + len(short4)))
+        ok(best <= 0.75,
+           "no cut on the register's %s isolates the four shortest records (best F1 %.2f)" % (col, best))
+    # the queue moves with the season the cycle notes already mention, not with the cost centre's lag
+    by_month = defaultdict(list)
+    for r in reg:
+        by_month[int(r["published_date"][5:7])].append(int(r["episodes_awaiting_coding"]))
+    ok(len(by_month) >= 2 and max(sum(v) / len(v) for v in by_month.values())
+       > 1.1 * min(sum(v) / len(v) for v in by_month.values()),
+       "the coding queue moves with the close's own season")
     # fact 1: the development factors are read back from the register's own shipped bytes
     import build as _B
     shipped_factors = _B.golden_factors(target)
@@ -224,8 +271,34 @@ def run(target, g, state):
     lags = g["lags"]
     ok(sorted(lags.values()) == [0, 1, 2, 3, 4],
        "fact 2 the register shows five quarters at five different stages of settling (%s)" % lags)
-    ok(sum(1 for v in lags.values() if v > 0) == 4,
-       "fact 2 exactly four of the ten closed quarters are still filling")
+    # `lags[q]` is the index of the publication the record holds for q, so EVERY quarter in `lags` is
+    # still filling and lag 0 is the shortest of them, not a settled one. Filtering on a positive lag
+    # names the four most settled and drops the shortest, which is the defect this assertion now blocks.
+    ok(len(lags) == 5,
+       "fact 2 exactly five of the ten closed quarters are still filling (%d)" % len(lags))
+    ok(min(lags.values()) == 0,
+       "fact 2 one quarter is held at its own close and nothing after it, the shortest of the five")
+    up = g["pick_uplift_by_quarter"]
+    ok(set(up) == set(lags), "fact 2 the pick's uplift is accounted for over all five (%s)" % sorted(up))
+    ok(abs(sum(v["uplift"] for v in up.values()) - answer["uplift"]) < 1e-9,
+       "fact 2 the five quarters' uplift sums to the pick's own uplift (%.5f)" % answer["uplift"])
+    shortest = max(up, key=lambda q: up[q]["uplift"])
+    ok(up[shortest]["lag"] == 0,
+       "fact 2 the quarter carrying the most uplift is the one held at its own close (%s)" % shortest)
+    ok(up[shortest]["uplift"] > 0.5 * answer["uplift"],
+       "fact 2 the shortest quarter carries more than half the pick's uplift (%.2f of %.2f)"
+       % (up[shortest]["uplift"], answer["uplift"]))
+    settled = min(up, key=lambda q: up[q]["uplift"])
+    ok(abs(up[settled]["uplift"]) < 1e-9 and up[settled]["lag"] == max(lags.values()),
+       "fact 2 the quarter nearest settled carries no uplift at all (%s)" % settled)
+    # the development arithmetic is stated to two decimals because one decimal is edge-fragile on it
+    for q, v in up.items():
+        ok(sim.bin_edge(v["uplift"], 0.01) >= sim.EDGE_BAR * 0.01,
+           "fact 2 %s's uplift sits %.5f from the two-decimal edge" % (q, sim.bin_edge(v["uplift"], 0.01)))
+    for lab, val in (("developed", answer["developed"]), ("uplift", answer["uplift"])):
+        ok(sim.bin_edge(val, 0.01) >= sim.EDGE_BAR * 0.01,
+           "fact 2 the pick's %s sits %.5f from the two-decimal edge (%.5f)"
+           % (lab, sim.bin_edge(val, 0.01), val))
     ok(all(g["factors"][(c, 0)] >= 1.0 for c in g["eligible"]),
        "fact 2 no cost centre's quarter shrinks after its own close")
     ok(max(g["factors"][(c, 0)] for c in g["eligible"]) >= 1.5,
@@ -297,11 +370,14 @@ def run(target, g, state):
     # SF5 how the growth between two vintages is read: five readings, one call
     ok(len(conv) >= 5 and all(v["first"] == answer["unit"] for v in conv.values()),
        "SF5 every reading of the growth names the answer")
-    # SF6 which quarters are still moving: the register's own rows settle it
-    ok(all(v == 0 for q, v in lags.items() if q == allq[-1]),
-       "SF6 the most recent closed quarter has stopped moving by its own rows")
-    ok(sum(1 for v in lags.values() if v > 0) == 4,
-       "SF6 the register's own rows name four quarters still moving")
+    # SF6 which quarters are still filling: the register's own rows settle it, and the most recent
+    # closed quarter is the shortest of them rather than a settled one
+    ok(lags.get(allq[-1]) == 0,
+       "SF6 the most recent closed quarter is held at its own close alone (%s)" % allq[-1])
+    ok(len(lags) == 5 and set(lags) == set(allq[-5:]),
+       "SF6 the register's own rows name the five most recent closed quarters as still filling")
+    ok(all(q not in lags for q in allq[:-5]),
+       "SF6 the five older quarters have settled by their own rows")
     # SF7 closed quarters at the decision date
     ok("eight weeks after the quarter ends" in spec, "SF7 specification 3.7 files when a quarter closes")
     ok(len(allq) == 10 and allq[-1] == "2026-27 Q2", "SF7 the record carries the ten closed quarters only")
@@ -437,6 +513,21 @@ def run(target, g, state):
     ok("ordinarily have" not in charter and "ordinarily have" not in spec,
        "no shipped clause leaves the comparison frequency open")
     ok("separations planned" in charter, "the charter files the activity basis in clause 4.4")
+    # defect 2: the write-up named a cycle no shipped file carried. The register ends at the cycle in
+    # progress and the notes head the next one, so the label the deliverables use is grounded.
+    notes_txt = open(os.path.join(target, "placement_cycle_notes.txt"), encoding="utf-8").read()
+    placements = read(target, "improvement_placements.csv")
+    cycles = [r["cycle"] for r in placements]
+    ok(cycles, "the placement register carries a cycle identifier (%s)" % (sorted(set(cycles))[:3]))
+    ok("IP-11" in notes_txt,
+       "the cycle the deliverables name is the one the notes head (IP-11)")
+    ok("IP-11" not in str(cycles),
+       "IP-11 is the next cycle, so the register of closed and in-progress placements does not carry it")
+    ok(max(cycles) == "IP-10", "the register ends at the cycle in progress (%s)" % max(cycles))
+    ok(notes_txt.count("IP-10") == 0,
+       "the notes no longer head the April cycle with the in-progress cycle's own number")
+    ok("on 24 March" in notes_txt and "20 March" in notes_txt,
+       "the notes state the committee date and the papers date as dates, not as bare ordinals")
     ok("standardised ratio is reported" in spec, "the specification files the reporting period")
     ok(charter.count("most avoidable complications") == 1
        and charter.count("expected complications") == 1,

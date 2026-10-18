@@ -307,6 +307,24 @@ def developed(b, code, qs, factors, lags, groups=None):
     return total
 
 
+def uplift_by_quarter(b, code, factors, lags):
+    """What each of a unit's still-filling quarters adds once it is carried to its own ultimate.
+
+    `lags[q]` is the index of the publication the record holds for q, so lag 0 is a quarter the record
+    holds at its own coding close and nothing after it, which is the shortest of the five, and the
+    highest lag is the one nearest settled. A quarter whose factor is 1.000 adds nothing.
+    """
+    out = OrderedDict()
+    for q in sorted(lags):
+        p = b["panel"].get((code, q))
+        if p is None:
+            continue
+        f = factors.get((code, lags[q]), 1.0)
+        out[q] = dict(lag=lags[q], observed=int(p["observed"]), factor=f,
+                      uplift=p["observed"] * (f - 1.0))
+    return out
+
+
 def avoidable(b, code, qs, factors, lags, groups=None, develop=True):
     """Charter 4.3 carried onto the planned separations under specification 3.4.
 
@@ -556,6 +574,12 @@ def convergence(b, groups):
         development_factors(rows, "simple", quarters_from="2025-26"))
     add("the growth read through the intervening publication rather than in one step",
         _chained_factors(rows))
+    add("only the finished quarters from 2024-25 Q3 on",
+        development_factors(rows, "volume", quarters_from="2024-25 Q3"))
+    add("only the finished quarters from 2024-25 Q3 on, averaged",
+        development_factors(rows, "simple", quarters_from="2024-25 Q3"))
+    add("only the finished quarters from 2025-26 Q1 on",
+        development_factors(rows, "volume", quarters_from="2025-26 Q1"))
     return readings
 
 
@@ -659,6 +683,8 @@ def compute(target):
                 factors=factors, lags=lags, groups=groups, routes=rts, convergence=conv,
                 rung0=rung0, rung1=rung1, rung2=answer,
                 hospitals=hosp, outside=outside, groups_by_year=groups_year,
+                pick_uplift_by_quarter=uplift_by_quarter(b, answer["unit"], factors, lags),
+                runner_uplift_by_quarter=uplift_by_quarter(b, runner["unit"], factors, lags),
                 gap=answer["avoidable"] - runner["avoidable"],
                 margin=answer["avoidable"] / runner["avoidable"],
                 se_gap=se_gap, se_lead=(answer["avoidable"] - runner["avoidable"]) / se_gap,

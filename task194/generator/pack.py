@@ -359,15 +359,33 @@ def close_out_date(q):
     return W.QUARTERS[q][3] + dt.timedelta(days=56)
 
 
-def write_close_out(target, vintage):
-    """Clinical Information and Coding's close-out register: what each quarter carried at each publication.
+# The coding department's own standing reasons for a code still open at a close, taken from the queue
+# report rather than from any unit's circumstances: the mix moves with the quarter (elective load in the
+# spring quarters, the January and winter queue the cycle notes mention), not with the cost centre, so the
+# column says nothing about which cost centres settle late.
+LATE_REASONS = ["Awaiting discharge summary", "Clinical query with the treating team",
+                "Awaiting histopathology", "Queue, no query raised"]
 
-    A quarter is published when its coding closes and restated at every close after it, counted on the
-    separations that carried at least one complication against the cost centre. The register runs to the
-    last close before the export, so the most recent quarters have fewer publications than the rest.
+
+def write_close_out(target, vintage, seps=None):
+    """Clinical Information and Coding's close-out register: the quarterly coding close, cost centre by
+    cost centre.
+
+    One row per reporting quarter, cost centre and close. It carries what the quarter had coded at that
+    close, counted on the separations that carried at least one complication, and the queue the close was
+    run against: the episodes still awaiting a code, the episodes coded since the previous close, the
+    coder establishment the cost centre's work was allocated, and the standing reason most of the open
+    codes were held under. The register runs to the last close before the export, so the most recent
+    quarters have been through fewer closes than the rest.
+
+    Only `separations_with_complication` feeds the indicator. The queue columns are the department's own
+    workload record: they scale with the cost centre's volume and with the season, never with how far its
+    coding has settled, and `checks.py` asserts that no cut on them isolates the cost centres whose
+    records are shortest.
     """
     last_close = max(close_out_date(q) for q in range(len(W.QUARTERS))
                      if close_out_date(q) <= W.PULL_DATE)
+    seps = seps or {}
     out = []
     for q in range(len(W.QUARTERS)):
         if close_out_date(q) > W.PULL_DATE:
@@ -376,15 +394,28 @@ def write_close_out(target, vintage):
                 if close_out_date(q + k) <= last_close]
         for k in lags:
             pub = close_out_date(q + k)
+            qmonth = pub.month
             for x in W.UNITS:
                 code = x[0]
                 n = vintage.get((code, q, min(k, W.LAG_COMPLETE)), 0)
                 if n == 0 and vintage.get((code, q, W.LAG_COMPLETE), 0) == 0:
                     continue                    # the cost centre reported no activity that quarter
-                out.append([W.QUARTERS[q][0], pub.isoformat(), code, n])
+                # the queue the close was run against: the cost centre's own volume, the season the
+                # close falls in, and how many closes this quarter has already been through
+                vol = seps.get((code, q)) or x[6] or 400
+                r = sim.rng("queue", code, W.QUARTERS[q][0], str(k))
+                season = 1.34 if qmonth in (2, 3) else (1.18 if qmonth in (5, 6) else 1.0)
+                awaiting = int(round(vol * 0.058 * season * (0.62 ** k) * (0.90 + 0.20 * r.random())))
+                coded = int(round(vol * 0.21 * (0.74 ** k) * (0.92 + 0.16 * r.random())))
+                fte = round(vol / 1850.0 * season ** 0.5 * (0.95 + 0.10 * r.random()), 2)
+                reason = LATE_REASONS[(qmonth // 3 + k) % len(LATE_REASONS)]
+                out.append([W.QUARTERS[q][0], pub.isoformat(), code, n,
+                            awaiting, coded, "%.2f" % fte, reason])
     out.sort(key=lambda r: (r[0], r[1], r[2]))
     return _csv(os.path.join(target, FILES["closeout"]),
-                ["quarter", "published_date", "unit_code", "separations_with_complication"], out)
+                ["quarter", "published_date", "unit_code", "separations_with_complication",
+                 "episodes_awaiting_coding", "episodes_coded_since_last_close",
+                 "coder_fte_allocated", "principal_reason_open"], out)
 
 
 def write_distractors(target):

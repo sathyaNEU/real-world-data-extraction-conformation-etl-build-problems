@@ -155,7 +155,7 @@ def thread(target):
     director = W.PEOPLE["director"][0]
     gov = W.PEOPLE["governance"][0]
     path = os.path.join(target, "placement_cycle_notes.txt")
-    text = """Notes on the IP-10 placement cycle (quarter from 1 April 2027)
+    text = """Notes on the IP-11 placement cycle (quarter from 1 April 2027)
 Kept by Clinical Improvement. Latest note first.
 
 5 March 2027, %(gov)s
@@ -167,11 +167,11 @@ the end of May, which is after your committee. The activity plan for the April q
 3 March 2027, %(director)s
 Thanks. Add the placement register, and the three unit-level files the consumer, nursing and
 infection prevention teams sent across, in case the committee asks what else moved. Papers close on
-the 20th.
+20 March, four days before the committee.
 
 24 February 2027, %(director)s
 The team finishes at Rehabilitation and Aged Care on 31 March and starts wherever we land on
-1 April, so the recommendation goes to the committee on the 24th with the charter extract attached.
+1 April, so the recommendation goes to the committee on 24 March with the charter extract attached.
 
 19 February 2027, %(gov)s
 Two housekeeping notes. The comorbidity score is keyed on about six episodes in seven and the rate

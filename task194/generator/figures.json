@@ -41,13 +41,6 @@
   "4.4",
   "4.5"
  ],
- "closes_still_to_run": {
-  "2025-26 Q2": 4,
-  "2025-26 Q3": 3,
-  "2025-26 Q4": 2,
-  "2026-27 Q1": 1,
-  "2026-27 Q2": 0
- },
  "complication_groups": {
   "G1": {
    "fy2025_26": 3563,
@@ -90,6 +83,7 @@
    "name": "Surgical complications requiring unplanned return to theatre"
   }
  },
+ "cycle": "IP-11",
  "development_factor_by_unit_and_lag": {
   "41210:0": 1.763,
   "41210:1": 1.3148,
@@ -435,19 +429,43 @@
  "pick_adjusted_rate": 98.9,
  "pick_as_recorded": 8.5,
  "pick_closed_quarters": 10,
- "pick_developed_complications": 3408.5,
+ "pick_developed_complications": 3408.55,
  "pick_developed_ratio": 1.127,
  "pick_expected_complications": 3023.6,
  "pick_expected_on_plan": 350.4,
  "pick_factor_at_lag_0": 1.763,
+ "pick_factor_by_quarter": {
+  "2025-26 Q2": 1.0,
+  "2025-26 Q3": 1.0376,
+  "2025-26 Q4": 1.1242,
+  "2026-27 Q1": 1.3148,
+  "2026-27 Q2": 1.763
+ },
  "pick_in_scope_episodes": 33494,
+ "pick_observed_by_quarter": {
+  "2025-26 Q2": 305,
+  "2025-26 Q3": 310,
+  "2025-26 Q4": 348,
+  "2026-27 Q1": 287,
+  "2026-27 Q2": 218
+ },
  "pick_observed_complications": 3097,
  "pick_planned_separations": 4261,
  "pick_published_ratio": 1.024,
  "pick_record_separations": 36767,
+ "pick_settled_quarter": "2025-26 Q2",
+ "pick_shortest_quarter": "2026-27 Q2",
+ "pick_shortest_quarter_uplift": 166.33,
  "pick_shortfall_per_cent": 9.14,
  "pick_standard_error": 6.77,
- "pick_uplift_complications": 311.5,
+ "pick_uplift_by_quarter": {
+  "2025-26 Q2": 0.0,
+  "2025-26 Q3": 11.65,
+  "2025-26 Q4": 43.23,
+  "2026-27 Q1": 90.34,
+  "2026-27 Q2": 166.33
+ },
+ "pick_uplift_complications": 311.55,
  "planned_separations_by_unit": {
   "41210": 4261,
   "41220": 4754,
@@ -462,22 +480,34 @@
   "41510": 711,
   "41520": 1099
  },
- "quarters_still_moving": [
+ "publication_held_by_quarter": {
+  "2025-26 Q2": 4,
+  "2025-26 Q3": 3,
+  "2025-26 Q4": 2,
+  "2026-27 Q1": 1,
+  "2026-27 Q2": 0
+ },
+ "quarters_still_filling": [
   "2025-26 Q2",
   "2025-26 Q3",
   "2025-26 Q4",
-  "2026-27 Q1"
+  "2026-27 Q1",
+  "2026-27 Q2"
  ],
+ "quarters_still_filling_count": 5,
  "rate_denominator": 1000,
  "reading_margins": {
+  "only the finished quarters from 2024-25 Q3 on": 1.567,
+  "only the finished quarters from 2024-25 Q3 on, averaged": 1.574,
+  "only the finished quarters from 2025-26 Q1 on": 1.528,
   "only the finished quarters from 2025-26 on": 1.528,
   "only the finished quarters from 2025-26 on, averaged": 1.528,
   "the finished quarters' ratios averaged across the quarters": 1.608,
   "the finished quarters' ratios pooled over their counts": 1.604,
   "the growth read through the intervening publication rather than in one step": 1.604
  },
- "readings_naming_the_call": 5,
- "readings_of_the_development": 5,
+ "readings_naming_the_call": 8,
+ "readings_of_the_development": 8,
  "recorded_rank_of_call": 5,
  "reference_rate": 96.6,
  "route_first_values": {

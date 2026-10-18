@@ -76,7 +76,7 @@ def cut(target):
     # are short by their own patients' mix of reporting groups
     observed, ultimate, vintage = sim.apply_coding_lag(rows, W.UNITS)
     detail = [d for d in detail if rows[d["row"]]["hac"]]
-    PK.write_close_out(target, vintage)
+    PK.write_close_out(target, vintage, allsep)
     factors = golden_factors(target)
     # each unit's avoidable complications per separation, on the counts developed to what the quarters'
     # patients had, which is the figure the charter asks for and the one that is graded
