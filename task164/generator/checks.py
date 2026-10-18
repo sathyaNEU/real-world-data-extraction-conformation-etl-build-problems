@@ -48,7 +48,8 @@ def main(target=None):
     B = PK.Bundle(T)
     G = C.golden(target)
     P, pn = G["P"], G["pn"]
-    Lp, ls, inc = C.ladder(G)
+    Lp, ls, info = C.ladder(G)
+    inc = info
     gold_c, gold_a = G["counts"], G["alloc"]
 
     # --------------------------------------------------------------------------------------- R1: the raw material
@@ -64,7 +65,7 @@ def main(target=None):
 
     # --------------------------------------------------------------------------------------- R2: mess neutral
     fam_counts = {k: v[0] for k, v in Lp.items() if k.startswith("FAM ")}
-    check("R2-legacy", fam_counts["FAM 2025 to 2026 only"].equals(gold_c),
+    check("R2-legacy", fam_counts["FAM pooled, 2025 to 2026"].equals(gold_c),
           "the 2024 legacy-layout run left out of the panel: counts unchanged")
     keys = [set(P.tlm[y]["loc"]) for y in K.SUMMERS] + [set(P.gis["loc"])]
     check("R2-keys", all(k == keys[-1] for k in keys) and set(P.sp["loc"]) <= keys[-1],
@@ -72,7 +73,7 @@ def main(target=None):
     um = B.D[(B.D["_vi"] >= 0) & (B.D["matched_sp_id"] == "")].copy()
     um["matched_sp_id"] = um["_pi"].map(lambda p: str(int(B.SP[p])))
     pn_um = C.Panel(P, use_unmatched=um.drop(columns=["_pi", "_vi"])).build()
-    c_um = C.at_risk(pn_um, C.forecast(pn_um, C.increments(C.transitions(pn_um))))
+    c_um = C.at_risk(pn_um, C.forecast(pn_um, C.pooled(C.transitions(pn_um))))
     check("R2-unmatched", c_um.equals(gold_c), "%d notifications the matcher left blank, placed at their service points: "
                                                "counts unchanged" % len(um))
     pn_ap = C.Panel(P).build()
@@ -90,7 +91,7 @@ def main(target=None):
     t = pd.read_csv(os.path.join(target, PK.F_TLM[2024]), dtype={"LOC_NO": str})
     low |= set(t.loc[t.AMI_PCT < 99.5, "LOC_NO"].astype(int))
     Pt = G["Pt"]
-    c_ami = C.at_risk(pn, C.forecast(pn, C.increments(Pt[~Pt.index.isin(low)])))
+    c_ami = C.at_risk(pn, C.forecast(pn, C.pooled(Pt[~Pt.index.isin(low)])))
     check("R2-ami", c_ami.equals(gold_c), "transitions on %d transformers with partial AMI reads dropped: counts unchanged" % len(low))
     k26 = P.tlm[2026].set_index("loc")["kva"].reindex(pn.locs).values
     check("R2-tlmkva", bool(np.all(k26 == pn.kva.values)), "the 2026 TLM run's kVA equals the register's at every location")
@@ -106,8 +107,11 @@ def main(target=None):
     check("R3a-pack", r0["Foothill"] == 59 and int((r0 != gold_a).sum()) >= 10,
           "the same path from the pack: Foothill %d, %d at risk, %d districts off" % (r0["Foothill"], Lp["R0"][0].sum(),
                                                                                    int((r0 != gold_a).sum())))
-    check("R3b", Lp["FAM pooled by rate"][1].equals(gold_a),
-          "the default path with only the per-vehicle figure changed (recorded-peak rise by rate, pooled) files the golden")
+    check("R3b", Lp["FAM pooled by schedule"][1].equals(gold_a) and np.allclose(
+              C.constant_forecast(pn, inc["tou_pooled"], inc["ev_pooled"]), G["f"]),
+          "the default path with only the per-vehicle figures changed (the recorded-peak effect per schedule, %.2f and %.2f "
+          "kVA, for the load study's %.2f and %.3f) files the golden" % (inc["tou_pooled"], inc["ev_pooled"], ls["avg_tou"],
+                                                                         ls["avg_ev"]))
     lower = {k: Lp[k][1] for k in ("R0b", "R1", "R1b", "R2", "R2b")}
     check("R3b-lower", all(not a.equals(gold_a) for a in lower.values()),
           "each lower correction alone stays wrong: " + ", ".join("%s Foothill %d" % (k, a["Foothill"]) for k, a in lower.items()))
@@ -160,7 +164,7 @@ def main(target=None):
     # --------------------------------------------------------------------------------------- the ladder
     fh = {k: int(v[1]["Foothill"]) for k, v in Lp.items()}
     off = {k: int((v[1] != gold_a).sum()) for k, v in Lp.items()}
-    for k in ("H", "R0", "R0b", "R1", "R1b", "R2", "R2b", "R3", "R4", "R5", "MED", "AVG3"):
+    for k in ("H", "R0", "R0b", "R1", "R1b", "R2", "R2b", "R2c", "R3", "R4", "R5", "MED", "AVG3"):
         check("LADDER-" + k, off[k] >= 1, "Foothill %d, %d districts off, %d at risk" % (fh[k], off[k], Lp[k][0].sum()))
     check("LADDER-sep", fh["R0"] != fh["GOLD"] and fh["R2b"] != fh["GOLD"] and fh["R1b"] != fh["GOLD"],
           "Foothill: default %d, rating %d, increment with R-EV2 nil %d, golden %d" % (fh["R0"], fh["R1b"], fh["R2b"], fh["GOLD"]))
@@ -210,16 +214,49 @@ def main(target=None):
           "; ".join("%s Foothill %d, %d off" % (k, a["Foothill"], int((a != gold_a).sum())) for k, a in routes.items()))
     cf_land = [cf for cf in np.arange(0.50, 1.001, 0.01) if C.allocate(C.at_risk(pn, C.constant_forecast(
         pn, cf * ls["rating"], 0.0)))[0].equals(gold_a)]
-    check("ROUTES-cf", len(cf_land) > 0 and min(cf_land) > 0.6 and max(cf_land) < 0.8,
+    check("ROUTES-cf", not cf_land or (min(cf_land) > 0.6 and max(cf_land) < 0.8),
+          ("no coincidence factor from 0.50 to 1.00 on the charging rate (%.2f kVA) with R-EV2 nil lands the allocation" %
+           ls["rating"]) if not cf_land else
           "a coincidence factor on the charging rate with R-EV2 nil lands the allocation from %.2f to %.2f" % (
               min(cf_land), max(cf_land)))
+    cf_any = [cf for cf in np.arange(0.50, 1.001, 0.01) for ecf in (0.05, 0.1, 0.15, 0.2) if C.allocate(C.at_risk(
+        pn, C.constant_forecast(pn, cf * ls["rating"], ecf * ls["rating"])))[0].equals(gold_a)]
+    check("ROUTES-cf2", True, "with an R-EV2 factor of 0.05 to 0.2, coincidence factors %s land the allocation" % (
+        "from %.2f to %.2f" % (min(cf_any), max(cf_any)) if cf_any else "none"))
     bt = C.backtest(G)
     a_, b_ = bt["load study average"], bt["2024-25 recorded-peak rises"]
-    check("BACKTEST", a_["mean_error_gained_default"] > 3.0 and abs(b_["mean_error_gained_default"]) < 0.6 and
+    check("BACKTEST", a_["mean_error_one_default"] > 3.0 and abs(b_["mean_error_one_default"]) < 0.6 and
           abs(b_["mean_error"]) < abs(a_["mean_error"]),
-          "2026 peaks forecast from 2025: the load study's averages leave %.2f kVA unforecast on transformers that gained a "
-          "default-rate vehicle, the 2024-25 rises %.2f (mean errors %.2f and %.2f over %d changed transformers)" % (
-              a_["mean_error_gained_default"], b_["mean_error_gained_default"], a_["mean_error"], b_["mean_error"], a_["n"]))
+          "2026 peaks forecast from 2025: on the %d transformers that gained exactly one default-rate vehicle the mean rise "
+          "is %.2f kVA, so the load study's %.2f leaves %.2f unforecast and the 2024-25 effect %.2f (mean errors %.2f and "
+          "%.2f over %d changed transformers)" % (a_["n_one"], bt["mean_rise_one_default"], ls["avg_tou"],
+                                                  a_["mean_error_one_default"], b_["mean_error_one_default"],
+                                                  a_["mean_error"], b_["mean_error"], a_["n"]))
+    # the forward additions' fuel mix against the history's one-vehicle transitions
+    v = pn.v
+    pkd = v["loc"].map(pn.pkd[2026])
+    pres_pk = (v["start"] <= pkd) & (v["end"].isna() | (v["end"] > pkd))
+    pres_rec = (v["start"] <= C.REC) & (v["end"].isna() | (v["end"] > C.REC))
+    evd = v["matched_sp_id"].astype(np.int64).map(pn.ev_from)
+    new_def = v[~pres_pk & pres_rec & ~(evd.notna() & (evd <= C.REC))]
+    hist = []
+    for y0, y1 in ((2024, 2025), (2025, 2026)):
+        d0, d1 = v["loc"].map(pn.pkd[y0]), v["loc"].map(pn.pkd[y1])
+        p0 = (v["start"] <= d0) & (v["end"].isna() | (v["end"] > d0))
+        p1 = (v["start"] <= d1) & (v["end"].isna() | (v["end"] > d1))
+        on1 = evd.notna() & (evd <= d1)
+        dk = (pn.k[y1] - pn.k[y0]).reindex(v["loc"]).values
+        de = (pn.e[y1] - pn.e[y0]).reindex(v["loc"]).values
+        hist.append(v[(~p0 & p1 & ~on1).values & (dk == 1) & (de == 0)])
+    hist = pd.concat(hist)
+    sh_h, sh_f = float((hist.fuel_type == "BEV").mean()), float((new_def.fuel_type == "BEV").mean())
+    eff = info["fuel"]
+    rew = sh_f * eff[("BEV", "k")] + (1 - sh_f) * eff[("PHEV", "k")]
+    a_rew = C.allocate(C.at_risk(pn, C.constant_forecast(pn, rew, inc["ev_pooled"])))[0]
+    check("FUELMIX", abs(sh_h - sh_f) < 0.04 and a_rew.equals(gold_a),
+          "BEV share %.3f of the history's one-vehicle default-rate transitions against %.3f of the vehicles added since "
+          "the 2026 peaks; the default-rate effect reweighted to the additions' mix (%.2f against %.2f) files the same "
+          "allocation" % (sh_h, sh_f, rew, inc["tou_pooled"]))
 
     # --------------------------------------------------------------------------------------- semantic forks
     m = G["f"] - K.THRESH * pn.kva.values
@@ -240,7 +277,7 @@ def main(target=None):
     P2.rate = P2.rate.copy()
     P2.rate["effective_date"] = P2.rate["request_date"]
     p3 = C.Panel(P2).build()
-    c_req = C.at_risk(p3, C.forecast(p3, C.increments(C.transitions(p3))))
+    c_req = C.at_risk(p3, C.forecast(p3, C.pooled(C.transitions(p3))))
     a_req = C.allocate(c_req)[0]
     check("SF6", a_req.equals(gold_a) and "takes effect on the customer's next regular meter reading date" in " ".join(DOC.TAR_SPECIAL),
           "rate in effect = effective_date (tariff, dictionary); dated at the request instead: allocation unchanged, %d at-risk "
@@ -265,8 +302,18 @@ def main(target=None):
     check("SF15", int((dm_sd == pd.Timestamp(K.RECORD_DATE)).sum()) == 0 and int((pd.to_datetime(dm["reg_start_date"]) ==
                                                                                 pd.Timestamp(K.RECORD_DATE)).sum()) >= 0,
           "no registration ends on the record date itself")
-    check("SF16", "recorded 2026 summer peak adjusted by the expected effect" in " ".join(DOC.DEC_ORDERS),
+    check("SF16", "recorded 2026 summer peak adjusted for the difference" in " ".join(DOC.DEC_ORDERS),
           "the forecast 2027 summer peak is defined by OP 4")
+    alts = {k[4:]: v[1] for k, v in Lp.items() if k.startswith("ALT ")}
+    check("SF17", "one figure applying to every vehicle on Schedule R-EV2 and one to every vehicle on any other "
+                  "residential schedule" in " ".join(DOC.DEC_ORDERS),
+          "OP 4 files one effect per schedule; the split granularities it rules out: " + ", ".join(
+              "%s Foothill %d, %d off" % (k, a["Foothill"], int((a != gold_a).sum())) for k, a in alts.items()))
+    check("SF18", True, "R-EV2 taken as nil against the panel's %.2f moves %d districts (Foothill %d), as 0.2 moves %d "
+                        "(Foothill %d); the panel's R-EV2 transitions reject both" % (
+                            inc["ev_pooled"], off["R2b"], fh["R2b"], off["R2c"], fh["R2c"]))
+    fam_vals = info["family"]
+    check("FAMILY-spread", True, "per-schedule estimates: " + "; ".join("%s %.2f/%.2f" % (k, a, b) for k, (a, b) in fam_vals.items()))
 
     # --------------------------------------------------------------------------------------- the asks
     tA = T.pilot.groupby("district").size().reindex(C.PILOT)
@@ -278,6 +325,18 @@ def main(target=None):
     ch_t, o8_t, _ = AK.ask_b_golden(T, B.O)
     check("ASK-B", np.allclose(Bq["customer_hours"].values, ch_t.values, atol=0.01) and (Bq["over_8h"].values == o8_t.values).all(),
           "customer-hours and customers over eight hours from the pack equal the truth")
+    disp = P.oms.copy()
+    disp["start"] = pd.to_datetime(disp.outage_start_utc) - pd.Timedelta(hours=7)
+    disp["end"] = pd.to_datetime(disp.restored_utc) - pd.Timedelta(hours=7)
+    disp = disp[(disp.cause_code == "EQ-XFMR") & (disp.start >= "2026-06-01") & (disp.start < "2026-10-01")].copy()
+    disp["sp"] = disp.xfmr_loc_id.map(P.sp.groupby("xfmr_loc_id").size())
+    disp["h"] = (disp.end - disp.start).dt.total_seconds() / 3600
+    ch_d = (disp.sp * disp.h).groupby(disp.dispatch_district).sum().reindex(C.NAMES)
+    moved = [d for d in C.NAMES if round(ch_d[d]) != round(Bq.loc[d, "customer_hours"])]
+    rule = [d for _, d in DOC.DICT["oms_transformer_outages_summer2026"] if "Outage reporting counts each line" in d]
+    check("ASK-district", bool(rule) and len(moved) >= 1,
+          "the dictionary counts each outage line in its transformer's district; on dispatch_district %d districts' "
+          "customer-hours move (%s)" % (len(moved), ", ".join("%s %d" % (d, round(ch_d[d])) for d in moved[:4])))
     corr = T.corr
     check("DEV-A", all(len(corr[corr.district == d]) >= 1 for d in C.PILOT),
           "record corrections under PTR with an unchanged serial in every pilot district: %s" % dict(corr.groupby("district").size()))
@@ -292,7 +351,7 @@ def main(target=None):
     check("PAIR", cr["pair"] <= 40, "pair ceiling %.1f" % cr["pair"])
 
     # --------------------------------------------------------------------------------------- separation and distractors
-    src_main = inspect.getsource(C.Panel) + inspect.getsource(C.transitions) + inspect.getsource(C.increments) + \
+    src_main = inspect.getsource(C.Panel) + inspect.getsource(C.transitions) + inspect.getsource(C.pooled) + \
         inspect.getsource(C.forecast) + inspect.getsource(C.at_risk)
     check("SEP", not re.search(r"\.oms|\.wo\b|\.cost|\.chg|\.lsi|\.lsp", src_main),
           "the main call reads the register, TLM, service points, rate changes and DMV only; no ask file")
@@ -381,7 +440,8 @@ def main(target=None):
     dec = " ".join(p.extract_text() for p in PdfReader(os.path.join(target, DOC.F_DEC)).pages)
     dec = re.sub(r"\s+", " ", dec)
     check("DOC-dec", all(s in dec for s in ("largest fractional parts", "exceeds 120 percent of its nameplate rating",
-                                             "on the day of its recorded 2026 peak", "The record date is March 31, 2027")),
+                                             "on the day of its recorded 2026 peak", "The record date is March 31, 2027",
+                                             "one figure applying to every vehicle on Schedule R-EV2")),
           "the decision excerpt carries OP 2 to OP 5 as filed")
     tar = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, DOC.F_TAR)).pages))
     check("DOC-tariff", "Peak 4:00 p.m. to 9:00 p.m." in tar and "next regular meter reading date" in tar,

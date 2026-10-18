@@ -150,6 +150,46 @@ def increments(Pt, by_size=True, by_pos=True, agg="mean"):
     return {"tou": out, "ev": float(f(e["adj"]))}
 
 
+def per_schedule(t, e):
+    """OP 4's granularity: one figure for every default-rate vehicle, one for every R-EV2 vehicle."""
+    return {"tou": {(sg, p): float(t) for sg in "SML" for p in (1, 2, 3)}, "ev": float(e)}
+
+
+def pooled(Pt, agg="mean"):
+    f = (lambda s: s.mean()) if agg == "mean" else (lambda s: s.median())
+    return per_schedule(f(Pt[(Pt.dk == 1) & (Pt.de == 0)]["adj"]), f(Pt[(Pt.de == 1) & (Pt.dk == 0)]["adj"]))
+
+
+def one_or_two(Pt):
+    t = pd.concat([Pt[(Pt.dk == 1) & (Pt.de == 0)]["adj"], Pt[(Pt.dk == 2) & (Pt.de == 0)]["adj"] / 2])
+    e = pd.concat([Pt[(Pt.de == 1) & (Pt.dk == 0)]["adj"], Pt[(Pt.de == 2) & (Pt.dk == 0)]["adj"] / 2])
+    return per_schedule(t.mean(), e.mean())
+
+
+def least_squares(Pt, groups=None, added_only=True):
+    """The change in recorded peak regressed on the vehicles added on each schedule, group means swept out."""
+    sel = Pt[(Pt.dk >= 0) & (Pt.de >= 0)] if added_only else Pt
+    y = sel["adj"].values.astype(float)
+    X = np.c_[sel.dk.values, sel.de.values].astype(float)
+    if groups is not None:
+        g = np.asarray(groups(sel))
+        y = y - pd.Series(y).groupby(g).transform("mean").values
+        X = X - pd.DataFrame(X).groupby(g).transform("mean").values
+    b = np.linalg.lstsq(X, y, rcond=None)[0]
+    return per_schedule(b[0], b[1])
+
+
+def cross_section(pn):
+    """2026 recorded peaks on the vehicles present at the 2026 peak, within district, kVA rating and service points."""
+    sp = pn.P.tlm[2026].set_index("loc")["sp"].reindex(pn.locs)
+    cell = pn.district.astype(str) + "/" + pn.kva.astype(str) + "/" + sp.astype(str)
+    d = pd.DataFrame({"pk": pn.pk[2026].values, "k": pn.k[2026].values, "e": pn.e[2026].values, "c": cell.values})
+    res = d.pk - d.groupby("c").pk.transform("mean")
+    X = np.c_[d.k - d.groupby("c").k.transform("mean"), d.e - d.groupby("c").e.transform("mean")]
+    b = np.linalg.lstsq(X, res.values, rcond=None)[0]
+    return per_schedule(b[0], b[1])
+
+
 def cum(tab, sg, k, e):
     s = np.zeros(len(k))
     for i in range(1, int(max(k.max(), 1)) + 1):
@@ -249,7 +289,7 @@ def golden(target=TARGET):
     P = Pack(target)
     pn = Panel(P).build()
     Pt = transitions(pn)
-    tab = increments(Pt)
+    tab = pooled(Pt)
     f = forecast(pn, tab)
     counts = at_risk(pn, f)
     alloc, q = allocate(counts)
@@ -283,6 +323,59 @@ def flows(pn):
                 switched=cnt(pres_pk & pres_rec & ~ev_pk & ev_rec))
 
 
+def fuel_states(pn, dates):
+    """(default-rate, R-EV2) vehicle counts per transformer and fuel type on a per-transformer date."""
+    v = pn.v
+    day = v["loc"].map(dates)
+    pres = (v["start"] <= day) & (v["end"].isna() | (v["end"] > day))
+    evd = v["matched_sp_id"].astype(np.int64).map(pn.ev_from)
+    on_ev = evd.notna() & (evd <= day)
+    out = {}
+    for fu in ("BEV", "PHEV"):
+        m = v["fuel_type"] == fu
+        out[(fu, "k")] = v[pres & ~on_ev & m].groupby("loc").size().reindex(pn.locs).fillna(0).astype(int).values
+        out[(fu, "e")] = v[pres & on_ev & m].groupby("loc").size().reindex(pn.locs).fillna(0).astype(int).values
+    return out
+
+
+def by_fuel(pn):
+    """A figure per schedule and fuel type, from the one-vehicle transitions, applied vehicle by vehicle."""
+    st = {y: fuel_states(pn, pn.pkd[y]) for y in (2024, 2025, 2026)}
+    rec = fuel_states(pn, pd.Series(REC, index=pn.locs))
+    adj_all, cols = [], []
+    for y0, y1 in ((2024, 2025), (2025, 2026)):
+        dk = pn.k[y1].values - pn.k[y0].values
+        de = pn.e[y1].values - pn.e[y0].values
+        same = (dk == 0) & (de == 0)
+        ratio = pd.Series(pn.pk[y1].values / pn.pk[y0].values)[same].groupby(pn.district.values[same]).median()
+        adj = pn.pk[y1].values - pn.district.map(ratio).values * pn.pk[y0].values
+        d = {key: st[y1][key] - st[y0][key] for key in st[y1]}
+        adj_all.append((adj, d))
+    eff = {}
+    for fu in ("BEV", "PHEV"):
+        for cls in ("k", "e"):
+            vals = []
+            for adj, d in adj_all:
+                tot = sum(np.abs(x) for x in d.values())
+                m = (d[(fu, cls)] == 1) & (tot == 1)
+                vals.append(adj[m])
+            eff[(fu, cls)] = float(np.concatenate(vals).mean())
+    f = pn.pk[2026].values.copy()
+    for key, e_ in eff.items():
+        f += e_ * (rec[key] - st[2026][key])
+    return f, eff
+
+
+def by_district(pn, Pt):
+    f = pn.pk[2026].values.copy()
+    for d in NAMES:
+        sub = Pt[Pt.district == d]
+        t = pooled(sub)
+        m = (pn.district == d).values
+        f[m] += t["tou"][("S", 1)] * (pn.k1.values[m] - pn.k[2026].values[m]) + t["ev"] * (pn.e1.values[m] - pn.e[2026].values[m])
+    return f
+
+
 def ladder(G):
     P, pn, Pt, tab = G["P"], G["pn"], G["Pt"], G["tab"]
     ls = load_study_demand(P)
@@ -291,8 +384,7 @@ def ladder(G):
     k0, e0, k1, e1, p26 = pn.k[2026].values, pn.e[2026].values, pn.k1.values, pn.e1.values, pn.pk[2026].values
     one = Pt[((Pt.dk + Pt.de) == 1) & (Pt.dk >= 0) & (Pt.de >= 0)]
     pooled_any = float(one["adj"].mean())
-    pooled = increments(Pt, by_size=False, by_pos=False)
-    tou_pooled = pooled["tou"][("S", 1)]
+    tou, ev = tab["tou"][("S", 1)], tab["ev"]
 
     def fc(tab_, a, b, c, d):
         return p26 + cum(tab_, sg, c, d) - cum(tab_, sg, a, b)
@@ -304,39 +396,52 @@ def ladder(G):
     R["R1"] = p26 + (fl["newT"] + fl["newE"]) * ls["rating"]
     R["R1b"] = constant_forecast(pn, ls["rating"], 0.0)
     R["R2"] = constant_forecast(pn, pooled_any, pooled_any)
-    R["R2b"] = constant_forecast(pn, tou_pooled, 0.0)
+    R["R2b"] = constant_forecast(pn, tou, 0.0)
+    R["R2c"] = constant_forecast(pn, tou, 0.2)
     R["R3"] = fc(tab, k0, e0, k0 + fl["newT"], e0 + fl["newE"])
     R["R4"] = fc(tab, k0, e0, k1 + fl["switched"], e1 - fl["switched"])
     R["R5"] = fc(tab, k0, e0, k1 + fl["goneT"], e1 + fl["goneE"])
-    R["MED"] = forecast(pn, increments(Pt, agg="median"))
+    R["MED"] = forecast(pn, pooled(Pt, agg="median"))
     f24 = pn.pk[2024].values + cum(tab, sg, k1, e1) - cum(tab, sg, pn.k[2024].values, pn.e[2024].values)
     f25 = pn.pk[2025].values + cum(tab, sg, k1, e1) - cum(tab, sg, pn.k[2025].values, pn.e[2025].values)
     R["AVG3"] = (f24 + f25 + fc(tab, k0, e0, k1, e1)) / 3
     R["GOLD"] = forecast(pn, tab)
+    raw = transitions(pn, weather="none")
     fam = {
-        "size x position": tab,
-        "size only": increments(Pt, by_pos=False),
-        "position only": increments(Pt, by_size=False),
-        "pooled by rate": pooled,
-        "additive weather": increments(transitions(pn, weather="add")),
-        "no weather adjustment": increments(transitions(pn, weather="none")),
-        "2025 to 2026 only": increments(Pt[Pt.y == 2026]),
-        "2024 to 2025 only": increments(Pt[Pt.y == 2025]),
+        "pooled by schedule": tab,
+        "pooled, 2024 to 2025": pooled(Pt[Pt.y == 2025]),
+        "pooled, 2025 to 2026": pooled(Pt[Pt.y == 2026]),
+        "pooled, additive weather": pooled(transitions(pn, weather="add")),
+        "pooled, no weather adjustment": pooled(raw),
+        "one or two added, per vehicle": one_or_two(Pt),
+        "least squares, weather-adjusted": least_squares(Pt),
+        "least squares, district and year effects": least_squares(raw, groups=lambda s: s.district.astype(str) + "/" + s.y.astype(str)),
+        "least squares, year effects": least_squares(raw, groups=lambda s: s.y),
+        "least squares, every change": least_squares(Pt, added_only=False),
+        "2026 cross-section": cross_section(pn),
     }
     for k, t in fam.items():
         R["FAM " + k] = forecast(pn, t)
+    ffuel, eff_fuel = by_fuel(pn)
+    R["ALT size x position"] = forecast(pn, increments(Pt))
+    R["ALT size"] = forecast(pn, increments(Pt, by_pos=False))
+    R["ALT position"] = forecast(pn, increments(Pt, by_size=False))
+    R["ALT fuel type"] = ffuel
+    R["ALT district"] = by_district(pn, Pt)
     out = {}
     for k, f in R.items():
         c = at_risk(pn, f)
         a, q = allocate(c)
         out[k] = (c, a, q)
-    return out, ls, {"pooled_any": pooled_any, "tou_pooled": tou_pooled, "ev_pooled": pooled["ev"]}
+    info = {"pooled_any": pooled_any, "tou_pooled": tou, "ev_pooled": ev, "fuel": eff_fuel,
+            "family": {k: (t["tou"][("S", 1)], t["ev"]) for k, t in fam.items()}}
+    return out, ls, info
 
 
 def backtest(G):
-    """Out of sample: each transformer's 2026 recorded peak forecast from its 2025 peak and the change in its vehicles
-    between the two peak days, with the per-vehicle figures taken (a) from the load study's window averages and (b) from
-    the 2024 to 2025 transitions alone; the error over the transformers whose vehicles changed."""
+    """Out of sample: each transformer's 2026 recorded peak forecast from its 2025 peak (weather-adjusted by the
+    district's median ratio on unchanged transformers) and the change in its vehicles between the two peak days, the
+    per-vehicle figures taken (a) from the load study's window averages and (b) from the 2024 to 2025 transitions alone."""
     P, pn = G["P"], G["pn"]
     ls = load_study_demand(P)
     dk = (pn.k[2026] - pn.k[2025]).values
@@ -344,18 +449,16 @@ def backtest(G):
     flat = (dk == 0) & (de == 0)
     ratio = (pn.pk[2026] / pn.pk[2025])[flat].groupby(pn.district[flat]).median()
     base = pn.district.map(ratio).values * pn.pk[2025].values
-    t25 = increments(transitions(pn, years=((2024, 2025),)))
-    sg = pn.sg.values
+    t25 = pooled(transitions(pn, years=((2024, 2025),)))
     fa = base + dk * ls["avg_tou"] + de * ls["avg_ev"]
-    fb = base + cum(t25, sg, pn.k[2026].values, pn.e[2026].values) - cum(t25, sg, pn.k[2025].values, pn.e[2025].values)
+    fb = base + dk * t25["tou"][("S", 1)] + de * t25["ev"]
     act = pn.pk[2026].values
     ch = ~flat
-    up = ch & (dk >= 1) & (de == 0)
+    one = (dk == 1) & (de == 0)
     out = {}
     for name, f in (("load study average", fa), ("2024-25 recorded-peak rises", fb)):
         res = act - f
-        out[name] = {"n": int(ch.sum()), "mean_error": float(res[ch].mean()), "rmse": float(np.sqrt((res[ch] ** 2).mean())),
-                     "mean_error_gained_default": float(res[up].mean()),
-                     "at_risk_2026_forecast": int((f > THRESH * pn.kva.values).sum()),
-                     "at_risk_2026_recorded": int((act > THRESH * pn.kva.values).sum())}
+        out[name] = {"n": int(ch.sum()), "n_one": int(one.sum()), "mean_error": float(res[ch].mean()),
+                     "rmse": float(np.sqrt((res[ch] ** 2).mean())), "mean_error_one_default": float(res[one].mean())}
+    out["mean_rise_one_default"] = float((act - base)[one].mean())
     return out

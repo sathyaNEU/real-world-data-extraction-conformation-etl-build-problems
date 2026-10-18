@@ -7,28 +7,35 @@
  "stage": 4,
  "stage_name": "check",
  "updated": "2026-10-18",
- "stump": "Adding each vehicle's average 4 to 9 pm charging demand from the load study (0.61 kVA on the default rate) to its transformer's recorded 2026 peak files Foothill 59 of the 400; the transformers that gained a default-rate vehicle between summers show their recorded peak rising about 4.9 kVA, which files Foothill 77.",
+ "stump": "Taking each schedule's per-vehicle figure from the load study's average 4 to 9 pm charging demand (0.61 kVA on the default rate) and adding it to each transformer's recorded 2026 peak files Foothill 59 of the 400; the transformers that gained one default-rate vehicle between summers show their recorded peak rising about 4.9 kVA (0.9 for R-EV2), which files Foothill 79.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-18"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (five REVIEW lines answered in the note's ## Leak sweep)",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK (the same five REVIEW lines, answered in the note's ## Leak sweep)",
+  "reader": "round 1 on 83c6815f: no leak"
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK (warns answered at the draw)",
-  "nearest": "heart: task94 ledger row 0.11; surface: task453 promoted at 0.102 (differentiated on the card)"
+  "heart": "WARN, no BLOCK",
+  "nearest": "heart: task94 ledger row 0.10; surface: task453 promoted at 0.102 (differentiated on the card)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "round 1 on 83c6815f: NOT_DETERMINISTIC, SEND_BACK (Gates C and E: the effect's granularity unfiled)",
+  "disposition": "repaired by filing OP 4's WHAT (one expected effect per schedule); full re-judge and reader due",
   "report": ""
  },
- "returned": [],
- "resume": "stage 4: reader and judge",
+ "returned": [
+  {
+   "round": 1,
+   "pack": "83c6815f",
+   "finding": "OP 4 granularity unfiled (Gates C, E)",
+   "repair": "OP 4 files one expected effect per schedule; per-schedule hole family; pins on the outage district and the pilot cost basis"
+  }
+ ],
+ "resume": "stage 4: re-judge and reader on the OP 4 granularity repair",
  "approved": null,
  "delivered": null,
  "portal": null,
