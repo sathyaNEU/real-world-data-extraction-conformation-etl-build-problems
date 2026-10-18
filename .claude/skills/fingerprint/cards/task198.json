@@ -2,7 +2,7 @@
   "task": "task198",
   "architecture": "v1",
   "drawn": "2026-10-17",
-  "slot_note": "new build, architecture 1. Seed AD21 supplied the world shape only (one scarce investigation to one of N candidates, committed with a rate); the pitfall is re-found from the data under the 10/10 rules.",
+  "slot_note": "MID RE-ROOT. Architecture 1 is spent (see lineage) and architecture 2's decisive axes are not yet drawn, so the live axes below still describe architecture 1 and are kept live deliberately, so that parallel builds' guard stays protected rather than under-protected against a dead driver. Do not read them as a current draw. Ten candidate mechanisms for architecture 2 are screened in task198/DESIGN_NOTE.md `## Tried and rejected`, each with the rule that killed it, two of them measured on the generator's clean truth. Seed AD21 supplied the world shape only (one scarce investigation to one of N candidates, committed with a rate).",
   "domain": "business-operations-analytics",
   "subdomain": "service-operations-sla",
   "client_domain": "general-statistics-data-science",
@@ -90,7 +90,28 @@
     "task191": "task191's move was to judge the largest of many candidates against the largest a quiet set produces (a selection effect in the noise); here every queue carries thousands of cases a quarter and the shortfall is systematic, not sampling, so a correct multiplicity or shrinkage treatment still files the wrong queue.",
     "task129": "task129's architecture 1 sat in this house domain and subdomain and was re-rooted away before any data was cut; its driver was web performance engineering and nothing of it is reused."
   },
-  "lineage": [],
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-17",
+      "fate": "spent at stage 4 on 2026-10-18: determinism judge NOT_DETERMINISTIC, SEND_BACK, underspecified_objective on Gates C and E with Gate H reading the decisive step as rule application, and the isolated leak reader reached the same finding independently. The pack itself passed every free gate (19 files, four formats, a 42,481-row spine, byte-identical rebuilds, pair ceiling 39.5, mirror leakage 12.0) and the world, the pack architecture and the Layer 1 mess are kept for architecture 2.",
+      "why": "Framework clause 4.2 filed the comparison, a queue's share against its own earlier quarters 'which carried the same offered load', which was correct and mandatory because the comparison is one of the five parts of the WHAT. The residue left open was how closely 'the same' must match, which is a knob rather than a method: Contribution queries wins under the nearest one to four quarters pooled or a load band of 0.05 to 0.2, Investment switches (the plain highest-share answer) under a band of 0.22 to 0.3 or load rounded to whole positions-equivalents, and Member data corrections under five or more nearest quarters pooled or no matching. Pinning the tolerance closes C and E and finishes F, because with the comparison filed and the tolerance filed nothing analytical is left. The rule it earned is now in determinism-check section 1.",
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "other",
+      "layer2_family": "allocation_constraints",
+      "layer2_pattern": "own:queue-scale-service-level",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "shape": "08",
+      "decision_type": "pick_one_of_n",
+      "driver": "The outcome a unit is judged on falls steeply with the number of parallel servers it runs at an unchanged load per server, so an expectation built on that ratio alone sits above every small unit and below every large one, and the unit whose outcome genuinely exceeds what its own load and server count imply sits mid-pack on any ratio-based residual while the smallest unit tops it.",
+      "driver_concrete": "The share of member-service cases answered outside target that a queue's own offered load and staffed positions imply is read off the queue's own earlier quarters, and matching those quarters on the load divided by the staffed positions instead of on the load itself reads Member data corrections' five-position FY2026 quarters against the fourteen-position quarters it ran at the same occupancy while a remediation programme carried nearly three times the caseload, so it reports a 16.0 point gap there and only 10.2 for Contribution queries, whose load and roster never moved.",
+      "stump": "A competent solver rebuilds every queue's FY2026 breach share correctly across both case systems on the financial year with the clock rules and the unanswered cases applied, compares each queue with its own FY2023 to FY2025 quarters at the same load per staffed position, and commits Member data corrections at 25.8 per cent, because that queue carried fourteen positions through the two years its own history is read from and five in FY2026.",
+      "answer": "Contribution queries (MS-CQ) takes the one process re-engineering review in the first half of 2027; its FY2026 breach share is 12.4 per cent, on the 6,480 cases it received between 1 April 2025 and 31 March 2026."
+    }
+  ],
   "notes": "stump_strategy other: the decisive move is a specification error in the expectation (an omitted scale argument in a queueing service-level estimate), which none of the listed families names honestly. It is not composition_mix (no mix shift or reweighting of strata), not population_selection (the population is filed and includes the unanswered cases), not maturity_censoring (the window closes a month before the extract and the unanswered cases are a filed part of the estimand, not the decisive step), not grain_or_unit (the unit of the decision is the queue in every reading) and not uncertainty_hold (the shortfall is systematic, with thousands of cases per queue-quarter). forum regulator_or_inspector: the Pensions Authority receives the service improvement response. Three rules answered in the design note. generators G14 first: the decisive move is a yield conditioned on a second argument (the staffed position count) and not only on the load per position; G16 is held by task241 and G12, which carries the unanswered-case rung, is held by task194.",
   "registered": "2026-10-17T22:32:20Z"
 }

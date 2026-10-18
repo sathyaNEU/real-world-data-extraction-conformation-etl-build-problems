@@ -1,9 +1,25 @@
 # task198 design note
 
-Rathbroe Pension Services, member operations. Which of nine member-service case queues takes the one
-process re-engineering review in H1 2027.
+Rathbroe Pension Services, member operations. The world, the pack architecture and the Layer 1 mess
+are kept; the decisive step is being re-rooted.
 
-## Draw
+**Status: architecture 1 is spent and architecture 2 is not yet drawn.** Architecture 1 took
+NOT_DETERMINISTIC / SEND_BACK from the determinism judge and the same finding independently from the
+isolated reader (`determinism_check_report.md`, `leak_check_report.md`): framework clause 4.2 filed the
+comparison correctly, and the residue it left open was how closely "the same offered load" must match,
+which is a knob rather than a method, so three queues win across licensed readings. Gates C and E fail on
+the flip and Gate H reads the decisive step as rule application. Every section of architecture 1's design
+below carries an `### ARCHIVE architecture 1 (spent)` heading so `precut.py` cannot pass on it; the eleven
+H2 sections return when architecture 2's decisive step is fixed.
+
+The constraint on architecture 2, now a rule in `determinism-check` section 1: **what stays open after the
+WHAT is filed must be a method a competent analyst could defend differently, not a tolerance, a cut-off, a
+rounding or a nearest-k.** The screen that candidate mechanisms are held to, run at the draw: name the
+residue the decisive step leaves open and ask whether a competent analyst could argue for a different
+value of it on grounds other than taste; then name which of the five parts of the WHAT the step could be
+mistaken for, because if it is any of them it must be filed and can no longer carry the stump.
+
+### ARCHIVE architecture 1 (spent): Draw
 
 | Field | Value |
 |---|---|
@@ -67,7 +83,7 @@ way to read the queue's own history and the offered-load match the right one.
 - `analytical_tasks/02_anomaly_detection/AD21`: world only, one scarce investigation to one of N
   candidates committed with a rate. Its mechanism rows were not read.
 
-## Default path
+### ARCHIVE architecture 1 (spent): Default path
 
 The pipeline a competent analyst builds from the framework's words and the files' grain, without stopping
 to ask what a queue of a given size can reach.
@@ -100,7 +116,7 @@ to ask what a queue of a given size can reach.
 Ends on: Member data corrections, FY2026 breach share 25.8 per cent
 Golden: Contribution queries, FY2026 breach share 12.4 per cent
 
-## Stump sentence
+### ARCHIVE architecture 1 (spent): Stump sentence
 
 A competent solver rebuilds every queue's FY2026 breach share correctly across both case systems on the
 financial year with the clock rules and the unanswered cases applied, compares each queue with its own
@@ -109,7 +125,7 @@ FY2023 to FY2025 quarters at the same load per staffed position, and commits Mem
 from and five in FY2026, and at the same work per head a five-position queue cannot reach the service
 level a fourteen-position queue reaches.
 
-## Three rules
+### ARCHIVE architecture 1 (spent): Three rules
 
 - **Task type:** `general-statistics-data-science` / `exploratory-data-analysis-distribution-assessment`,
   which serves Anomaly Detection & Diagnostics; the build works its pattern 2 (stratify before reading a
@@ -171,7 +187,7 @@ level a fourteen-position queue reaches.
   version of itself. No build on file teaches it: the nearest, task194 v2, turned on a stale external
   standard and task187 on a Jensen gap inside one unit.
 
-## Readability screen
+### ARCHIVE architecture 1 (spent): Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -180,7 +196,7 @@ level a fourteen-position queue reaches.
 | 2 occupancy match (default path) | the framework names offered load, not the ratio | occupancy is not a column, it is built from three files | yes, the field's workload measure | none | no | one ratio | readable |
 | 3 offered-load match (decisive) | no sentence says the service level at a given occupancy depends on the position count | no column marks team size as a stratum; positions sit in a workbook whose sheets change basis | no: every reflex (pool, index on workload, add positions as a control, trend, own-history average) lands on another queue, measured | no control or published figure ties only under it | the battery passes under both matches | not a subtraction, ratio or half of a reported figure | silent |
 
-## Semantic fork table
+### ARCHIVE architecture 1 (spent): Semantic fork table
 
 | id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -198,7 +214,7 @@ level a fourteen-position queue reaches.
 | SF11 | "the chargeable cases our scheme charging covers" | the cases the charges cover, recovered as each line's charge over the schedule's per-case fee | the charge lines counted as cases | the ask's four figures, 4,584 against 7,582 | a line is a charge, not a case: `fee_schedule_2025.pdf` states the per-case fee for each chargeable case type and the two rate periods, and every consolidated line's charge is an exact multiple of it |
 | SF12 | "its active members at 31 March 2026" | the per-scheme figure in the trustee membership statement | the register's `active_members` as returned by the sponsor, which is the group total where the sponsor returns for several schemes | the ask's eighteen grouped figures, register rates 41.9 to 151.0 against golden 158.0 to 182.1 | the asking sentence's own words: the register's note states the column is active members as returned by the sponsor, not a per-scheme figure at 31 March 2026, and the trustee statement is headed active members at 31 March 2026 by scheme |
 
-## Ladder
+### ARCHIVE architecture 1 (spent): Ladder
 
 Four rungs, four distinct winners. Each reproduces from the raw files, names its own candidate and dies
 to one shipped fact or construction.
@@ -244,7 +260,7 @@ logit of the queue's own breach share on log load, and the ratio rather than the
 three licensed readings of offered load (positions-equivalents, standard minutes, cases received) also
 all name it, at margins of 3.71x, 1.43x and 1.43x.
 
-## Closure table
+### ARCHIVE architecture 1 (spent): Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -271,7 +287,7 @@ all name it, at margins of 3.71x, 1.43x and 1.43x.
 | 21 | Clause scope | the framework's 4.2 governs the review candidate only; the standard's 3.x governs the clock | each clause names its scope |
 | 22 | Forward window contents | the committed window (H1 2027) holds no cases: the call is which queue takes the review, and the quantity is FY2026's | the framework files the quantity on the closed year, and the Authority letter sets the H1 2027 slot |
 
-## Literal reader
+### ARCHIVE architecture 1 (spent): Literal reader
 
 Executed word for word, the framework's 4.2 says to take each queue's FY2026 breach share and the share
 the same queue reached in those of its FY2023 to FY2025 quarters that carried the same offered load, and
@@ -287,7 +303,7 @@ quarter against fourteen-position quarters and reports a gap the queue's own fiv
 Seven estimators of the load match agree on the name and the graded figure is the observed share, which
 is determinate under all of them.
 
-## Oracles
+### ARCHIVE architecture 1 (spent): Oracles
 
 - `service_monitoring_export.xlsx` reproduces on its own stated basis (cases closed in the calendar
   quarter, elapsed working days) under every method, golden and wrong alike, and presents queues in queue-
@@ -300,7 +316,7 @@ is determinate under all of them.
 - No control, published figure or reconciliation column in the pack ties only under the decisive match.
   The roster workbook records the temporary posts as a resourcing fact, not as an explanation.
 
-## Ask sheet
+### ARCHIVE architecture 1 (spent): Ask sheet
 
 Three asks, 25 graded ask figures, solved on the cut pack by `generator/asks_measure.py`. Ask 1 is the
 one free construction figure both responses bank; Ask 2 is a mirror device the cracker recovers; Ask 3
@@ -472,3 +488,72 @@ Three rules filed during this build, each binding on stage 3, plus the one the a
   and 2.2 times the caseload. Died on the dominance test: the winner's edge on the decisive axis has to
   clear 1.2 times the decoy's advantage on the carried axis, and at eleven positions it did not. Fourteen
   positions and 2.8 times the caseload clears it at 7.47 points against 5.77.
+
+### Architecture 1, spent at stage 4 (2026-10-18)
+
+- The load-matched within-queue baseline as the decisive step (each queue's FY2026 share against the
+  share it reached in those of its FY2023 to FY2025 quarters that carried the same offered load). Died at
+  stage 4: determinism judge NOT_DETERMINISTIC / SEND_BACK, Gates C and E failing on a flip and Gate H
+  reading the decisive step as rule application, with the isolated reader reaching the same finding
+  independently. Clause 4.2 filed the comparison, which was correct and mandatory because the comparison
+  is one of the five parts of the WHAT, and the only residue left open was how closely "the same" must
+  match. Three queues win across licensed readings: Contribution queries under the nearest one to four
+  quarters pooled or a load band of 0.05 to 0.2, Investment switches (the plain highest-share answer)
+  under a band of 0.22 to 0.3 or load rounded to whole positions-equivalents, Member data corrections
+  under five or more nearest quarters pooled or no matching. Pinning the tolerance closes C and E and
+  finishes F, because with the comparison filed and the tolerance filed nothing analytical is left. The
+  rule it earned is in `determinism-check` section 1.
+
+### Architecture 2 candidate mechanisms screened at the draw, each with the rule that killed it
+
+Measured or screened before any design time was spent, so no later pass repeats them.
+
+- A cross-queue expectation (a queue's share against what queues of its size and load reach across the
+  operation). Dead on the WHAT screen: which pool supplies the expectation is the comparison. This is also
+  the shape that killed task194's architecture 2.
+- Right-censoring the cases unanswered at the extract. Dead twice: the population, including members not
+  yet observed, is one of the five parts, and `maturity_censoring` is banned against the last three builds
+  while task194 holds it.
+- Arrival-process variability as the omitted argument (the G/G/s delay is linear in the squared
+  coefficient of variation of arrivals, which the generator already carries at 1.8 to 4.0 across queues,
+  so an expectation built on mean load alone misreads every bursty queue). Dead on lineage, not on the
+  residue test: architecture 1's driver is already "an expectation built on the ratio alone omits an
+  argument of the delay function", and changing the omitted argument from the server count to the arrival
+  variability is the same driver in other nouns, which the abstraction test reads as one insight. Measured
+  as unsupported by the pack as cut in any case: arrivals are assigned to uniform random working days, so
+  the shipped timestamps are Poisson (variance over mean 0.59 to 1.95 across queues) and the burstiness
+  would have to be built.
+- A within-scheme (crossed scheme by queue) comparison, re-finding the seed's "the worst rate belongs to
+  one bad batch" without a withheld rule. Dead on lineage: architecture 1 already stratifies an expectation
+  on a dimension no column marks as a stratum (team size), and stratifying on the scheme instead is the
+  same driver with a different stratum.
+- Cluster-robust inference on the excess (scheme-event clustering as the unit of variation). Dead on rule
+  1: the swap test fails, because clustered inference reads identically with another field's nouns in and
+  nothing about pensions administration or service operations makes it the deciding quantity.
+- A ratio of totals against a mean of quarterly shares as the decisive step, which `stumping` 1.2 blesses
+  as surviving the WHAT screen. Dead on the closure table: weighting is axis 7, which `precut.py` requires
+  closed, so it cannot also be the open decisive step.
+- Re-basing the 2022 work-measurement study's standard minutes to a current vintage. Dead on lineage
+  against task194's architecture 2 (an external standard fixed at a stale vintage, re-based), which is
+  named in this card's own `differentiation`.
+- A filed back-test selecting the baseline, which is the determinism judge's own suggested lever. Dead on
+  the readability screen, test 4 and test 3 together: a corpus that scores the candidate methods is a
+  control bench, and back-testing is an opponent reflex (`stumping` Part 0), which is how task181's
+  architecture 3 died at design on this same objective.
+- The queue-time against touch-time decomposition (a process re-engineering review moves the work content,
+  not the time a case waits for a caseworker, so the filed outcome's unmovable component has to be
+  separated). Measured on the generator's clean truth and it does re-rank: the easy route on the FY2026
+  breach share files Investment switches at 29.8 per cent, while the work component over target files
+  Contribution queries, where the process drift actually sits, at a margin of 1.41 times the next queue.
+  Dead on the residue test as it stands: the only knob-free identification of the split runs through the
+  delay formula at the queue's own load and positions, which is architecture 1's driver, and every
+  model-free identification (the queue's own lowest-load quarters, a fitted intercept at zero congestion)
+  is a cut-off or a functional form, which is exactly the knob the re-root constraint bans. Little's Law
+  does not rescue it: it returns the whole time in system, and splitting out the waiting part needs the
+  number in service, which no shipped field records.
+- The distribution's shape as the discriminator (congestion scales a queue's whole answer-time
+  distribution, while a process fault shifts a subset of it, so the bend in the quantile ratio should
+  isolate the fault without any model of load). Measured on the generator's clean truth and it does not
+  separate: the FY2026 over FY2023-25 quantile ratio bends most for Member data corrections at 1.237,
+  against Contribution queries at 1.158, because the roster swing from five to fourteen positions moves
+  congestion's own contribution to the shape. Viable only if the main call's generating process is retuned.
