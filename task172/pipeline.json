@@ -9,14 +9,15 @@
  "updated": "2026-10-18",
  "stump": "A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the thirteen extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases censored, give 4.0); about nine in ten of the quarter's renewals that need an appointment will reach the filer's card expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a week after the expedite request the team files around the day the card expires, so the quarter's 80th percentile is 5.5 months.",
  "architecture": 1,
- "loops": 2,
+ "loops": 3,
  "precut": {
   "exit": 0,
   "date": "2026-10-18"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-18, round 2 rework): the standard shares the call's vocabulary; future dates only in forward-looking columns",
-  "reader": "round 2: clean; the revision note naming 1.3, 1.4 and 2.4 softened (round 1 readings closed by GM-07 2.4 and SF15)"
+  "leak_py": "REVIEW, no LEAK (2026-10-18, round 3 rework): the standard shares the call's vocabulary; future dates only in forward-looking columns",
+  "reader": "round 3: clean, as a solver near 4.0 (leak-task172c/reader_answers.md); round 2: clean; the revision note naming 1.3, 1.4 and 2.4 softened (round 1 readings closed by GM-07 2.4 and SF15)",
+  "score_reader": "exit 0 on the round 3 reader (leak-task172c, figures keyed as figures.json in the build's scratch): call 0 of 1 hit (the reader's 4.0 against 5.5), no ask figure committed, so this reader leaves the ask layer unmeasured"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective)",
@@ -24,12 +25,12 @@
   "nearest": "task127 v2 0.13 (driver, differentiated)"
  },
  "judge": {
-  "verdict": "round 2 NOT_DETERMINISTIC on the supplementary tables only (main call reproduced, P80 163 days); round 1 NOT_DETERMINISTIC on table 1 only",
-  "disposition": "FIX_NOW (round 2): Q3 2026 refiled kept at 14 after the generator's refiles after Stop work were removed; domestic partners and the governing household pinned in GM-07 1.3; repeated child IDs repaired; the (c)(9) backlog reading entered as a misconstruction (SF22)",
-  "report": "coordinator's scratchpad: judge-task172b/verdict.md, rule3/task172b.md, leak-task172b/reader_answers.md (round 1: judge-task172, rule3/task172.md, leak-task172)"
+  "verdict": "round 3 DETERMINISTIC with SOLUTION_WRONG on one graded cell (September 2027 (c)(26), golden 771, judge 769); round 2 NOT_DETERMINISTIC on the supplementary tables only (main call reproduced, P80 163 days); round 1 NOT_DETERMINISTIC on table 1 only",
+  "disposition": "FIX_NOW (round 3): 771 stands. The two are the spouses of employees 723523 (MP-75243, D8711081) and 425305 (MP-28124, D7713094), whose latest cards (to 30 September 2027) the benefits portal filed under the Benefits ID alone; one spouse per household makes each Benefits ID the person Global Mobility took into its care. GM-07 1.3 now files the spouse as the one person Global Mobility took into its care with the household, however Benefits covers her, and no other dependant; submission step 5 names the people counted and left out; SF25 and H25 asserted",
+  "report": "coordinator's scratchpad: judge-task172c/verdict.md, leak-task172c/reader_answers.md (round 2: judge-task172b, rule3/task172b.md, leak-task172b; round 1: judge-task172, rule3/task172.md, leak-task172)"
  },
  "returned": [],
- "resume": "stage 4 round 3: one re-judge and a targeted re-read, then ship",
+ "resume": "stage 4 round 4: a targeted check of the September 2027 (c)(26) cell, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -38,11 +39,11 @@
  "portal_status_date": "",
  "answer": "5.5 months",
  "stage3": {
-  "checks": "108 of 108",
+  "checks": "110 of 110",
   "verify": "0 failed",
   "rebuild": "19 files byte-identical",
-  "figures_check": "exit 0, 35 figures",
-  "precut": "51 checks, 0 FAIL, 0 WARN",
+  "figures_check": "exit 0, 37 figures",
+  "precut": "52 checks, 0 FAIL, 0 WARN",
   "screens": "dispersion, variance-only, common-exposure subset (1 decided renewal since the rule at the forward exposure) and truncation direction pass (stumping 1.2)",
   "recentre": "PAPER_MEAN 21 again after round 2's lead change (18, 19, 21 clear; 21 nearest 5.50 among them); generator/recentre.py exit 0",
   "golden": "5.395 months (164 days), quote 5.5; 4.4 days above the 5.25 line, 10.8 under the 5.75 line",
@@ -53,8 +54,9 @@
   "mirror_leakage": 0.0,
   "target_zip": {
    "members": 14,
-   "bytes": 5819305,
-   "sha256": "dff6e4fbb75c08225bba14513aa6d9c6bf1d44d9e3a7d496c60148536fa33e44"
-  }
+   "bytes": 5819313,
+   "sha256": "bf400e1054f6e1615826627d3d0b5c21fdb9bbd90744f984c9703fd8ed1d9a0f"
+  },
+  "house_fixes": "H25 asserted in checks.py: the standard opens in pypdf (lenient and strict), pdfminer.six, pdfplumber and pdftotext with every paragraph, and the strict text equals the lenient"
  }
 }

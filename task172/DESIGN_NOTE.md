@@ -214,8 +214,9 @@ week after the expedite request the team files around the day the card expires, 
 | SF20 | ask B, "within 30 days" | received no later than the 30th day after the notice date | day 30 excluded | pinned, and moot: no refiling lands on day 30 or 31 (asserted) | GM-07 2.4 |
 | SF21 | ask B, "filed again" | USCIS's receipt of the renewal | the packet's dispatch | pinned | GM-07 2.3 and 2.4 |
 | SF22 | the appointment lead a (c)(9) renewal sent to an appointment meets in the quarter | the support centre's queue now set, about seventeen weeks | the record's (c)(9) lead, about five weeks (5.0) | misconstruction | an appointment is a support centre's slot, not a category's: the October and November lead stands at four to five times the 2025 lead in every state the receipts reached (asserted); no record has a queue by category |
-| SF23 | ask A, a domestic partner Benefits covers | the household's spouse | not a spouse (180 / 184 / 755) | pinned | GM-07 1.3 (the person Global Mobility took into its care with the household, whether Benefits covers her as a spouse or as a domestic partner) |
+| SF23 | ask A, a domestic partner Benefits covers | the household's spouse | not a spouse (180 / 184 / 755) | pinned | GM-07 1.3 (the one person Global Mobility took into its care with the employee's household, however Benefits covers her; no other dependant is tracked) |
 | SF24 | ask A, the household a spouse belongs to where records disagree | Global Mobility's records | Benefits | pinned, and no record disagrees: a child's ID that matched a spouse's was a generator fault, now repaired (asserted) | GM-07 1.3 |
+| SF25 | ask A, a card the benefits portal files under a spouse's Benefits ID where Global Mobility's records carry her under another | her card: the household has one spouse, so the two IDs are one person, counted once by her latest card (September (c)(26) 771) | a Benefits-only spouse never taken into care, left out (769, the round 3 judge), or a second person (202 / 200 / 803) | pinned | GM-07 1.3 (the one person Global Mobility took into its care with the employee's household, however Benefits covers her); each of the 897 households with a Benefits spouse ID no Global Mobility record carries has exactly one Global Mobility spouse ID, and the 97 spouses Benefits covers in households Global Mobility never took in hold no card on any record (asserted) |
 
 ## Ladder
 
@@ -306,8 +307,8 @@ eight cells (four quarters by rejected and refiled within 30 days) and the two f
   under the dependant ID Benefits gave her, so one card sits under two IDs; 897 households carry two spouse IDs and
   560 of them share a card to the day, and an employee has one spouse; it moves every (c)(26) cell and July's
   (c)(9)). Documented and pinned: A2 (the household link, Benefits covering only spouses on the plan today, the
-  roster's onboarding entry, the register and the tracker carrying the rest; GM-07 1.3 makes Global Mobility's records
-  govern and counts a domestic partner Benefits covers as the household's spouse, 238 Benefits rows), A5 (GM-07 1.4
+  roster's onboarding entry, the register and the tracker carrying the rest; GM-07 1.3 files the spouse as the
+  one person Global Mobility took into its care with the household, however Benefits covers her (238 Benefits rows name a domestic partner), and no other dependant), A5 (GM-07 1.4
   names the roster's category as not always the approval's; a spouse who moved from (c)(26) to (c)(9) uploads her new
   card under the category of her first entry), A3 (GM-07 1.4 keeps a permanent resident's last card to its last
   day). Benefits gives every dependant an ID of her own (a child's ID once repeated a spouse's, a generator fault, now
@@ -398,8 +399,18 @@ What stays open after the rework, and why each is accepted:
   spouse; the 897 households the pack shows with two spouse IDs each carry them for one spouse (asserted against the
   world), and 560 of them share a card to the day across the two IDs, which is the figure that makes per-ID counting
   wrong. A same-day pair of approvals exists for one current person; neither card ends from June to September 2027.
-  GM-07 1.3 counts a domestic partner Benefits covers as the household's spouse and makes Global Mobility's records
-  the household that governs (SF23, SF24).
+  GM-07 1.3 files the spouse as the one person Global Mobility took into its care with the household, however
+  Benefits covers her, and no other dependant (SF23, SF24, SF25).
+- Ask A's September 2027 (c)(26) cell is 771 (round 3 judge 769, settled). The two are the spouses of employees
+  723523 (MP-75243 on Global Mobility's records, D8711081 in Benefits) and 425305 (MP-28124, D7713094). Each joined
+  Benefits after her household came into Global Mobility's care, and the benefits portal filed her latest card
+  (approved 26 February and 4 January 2024, both ending 30 September 2027) under the Benefits ID only; her
+  Global Mobility ID's latest card ended 25 May and 6 April 2024. The judge counted persons by ID and left out the
+  Benefits IDs no Global Mobility record carries as spouses never taken into care, which drops exactly these two
+  (asserted, SF25). GM-07 1.3 forces 771: the spouse is the one person Global Mobility took into its care with
+  the household, however Benefits covers her, and every household with such a Benefits ID has one Global Mobility
+  spouse; the spouses Benefits covers in households never taken in exist (97) but hold no card. Submission step
+  5 names the people counted and left out and the two cards.
 - Ask B's Q3 2026 refiled count is 14: the three matters a judge read as refiled (SLW-2026-03819, -03932, -04941)
   were closed on the employee's departure before any refile; the generator had shipped refile packets after Stop work
   and marked them Receipted though USCIS's receipt was never on record. The world now sends nothing after a stop and
@@ -501,3 +512,9 @@ clearly under it, and the asks carry the bar (pair ceiling 33.1, both on the cal
   Mobility's; Benefits now never repeats an ID.
 - v1 the revision note naming sections 1.3, 1.4 and 2.4 as added in revision 4 (round 2 reader, a mild tell): the
   note keeps only the section 3 rewrite.
+- v1 GM-07 1.3 reading "the person Global Mobility took into its care with the household, whether Benefits covers
+  her as a spouse or as a domestic partner" (stage 4 round 3, judge SOLUTION_WRONG on September 2027 (c)(26), 769
+  against 771): read as excluding the spouses known only by a Benefits ID, it let a judge drop the two spouses whose
+  latest card the portal filed under that ID, and "whether Benefits covers her" could be read as taking in Benefits
+  spouses never in Global Mobility's care; 1.3 now files the spouse as the one person Global Mobility took into its
+  care with the household, however Benefits covers her, and no other dependant, and the golden stands at 771.
