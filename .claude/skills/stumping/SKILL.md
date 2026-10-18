@@ -589,6 +589,54 @@ object is **a level at a selected unit** cannot hold, because every such level i
 shrinkage is both the opponent's reflex and the better estimator. Draw a non-level object there instead
 (a rank verified, an extremum judged against a null extremum) or draw elsewhere.
 
+**Four screens that each closed a whole cell in one sitting, run before the pricing sequence** because
+each is one computation on the clean truth and each kills a family the field's own vocabulary makes look
+open:
+
+1. **The crude route, where the graded figure is a total over the population and window.** Check whether
+   the crude before-and-after rate excess already equals the causal excess. Swept across a hazard
+   multiplier of 2.0 to 6.0, an affected share of 0.25 to 0.62 and a second mover of 0.00 to 0.40: with the
+   intervention the only mover and the exposure base recorded, crude over truth is **0.954, 0.953 and
+   1.001**. Two of task198's three screens had the naive answer as the truth (83.0 against 84.2, and 314
+   against 309), so the designed construction was decoration on the graded figure. It departs only where a
+   second independent mover of the same total exists, and splitting one total between two movers is
+   `decomposition_attribution`, not a causal design. **So a causal design may not grade a total over the
+   population and window.**
+2. **The shipped proxy, where the design withholds a confounder.** Adjusting for every recorded attribute
+   returned 0.740, 0.801 and 0.751 against truths of 0.773, 0.770 and 0.767, inside 4 per cent, because a
+   job's recorded duration proxied the difficulty the design withheld and no authentic work-order file
+   omits durations. Name the field that proxies your withheld variable and run the full-adjustment reflex
+   as code; in a claims pack it is the paid amount, the place of service and the length of stay. Then check
+   the decisive route's own standard error: that screen's instrument estimated 0.749, 1.073 and 1.323 with
+   a standard error of 0.88 to 1.14, **1.3 times its own point estimate**, needing about 150 times the
+   panel a pack could carry.
+3. **The rate's denominator.** A rate's denominator is either exact arithmetic on a shipped aggregate,
+   which makes the decisive step rule application, or estimated per unit from a panel, which reopens the
+   weighting family. Measured: publishing supply as packs made packs times days of therapy return the
+   truth at **+0.000 per cent at all ten settings**; publishing it as mass only put four defensible
+   readings of the per-unit factor at 2.4812, 2.0043, 2.3161 and 2.5169, **a spread of 0.5127 against a
+   printed precision of 0.01**. That dichotomy closed three cells for one number, so it is structural. Its
+   escapes are each spent or banned on anomaly-detection ground: a second independent observation of the
+   same events, a verified subsample, a filed external rate.
+4. **The three ways a false-discovery quantity reaches a decision, all closed.** A count crossing a bar is
+   a random walk's crossing: with every parameter fixed the truth took five distinct values across 20
+   seeds while all 20 easy routes filed the same one. A pick at a fixed budget is monotone in per-test
+   power, which the multiplicity correction itself ranks on, so **4 of 10 reflexes reached the golden, the
+   correction among them**, at a margin of 1.0417x. A pick at a fixed trigger is collinear with the
+   family's breadth at **+0.9986**, and breadth is one group-by, so **6 of 7 routes reached the golden**
+   including "most tests", at a margin of 1.0172x. **This is also why the one build that holds on that
+   ground asks whether one extremum beats a null extremum rather than which one does:** the correction is
+   identical for every candidate, so it cannot order candidates at all.
+
+**Where three screens close a cell, invert the draw.** Three cells closed in one sitting, each reporting
+that `guard.py check` fired no axis ban and the nearest driver sat at 0.08: the window was open and the
+mechanism was missing every time, because each draw started from the field's own estimator and the field's
+characteristic quantity is what gets spent first. Start instead from **the file that does the forcing**:
+the shape of the corpus's strongest hold is an unobserved quantity whose forcing input sits in another file
+at another grain, with the construction forced by arithmetic rather than by a fit. Enumerate the files the
+organisation actually keeps, ask of each what it pins that no other file pins, and take the quantity that
+file forces. A draw that begins with the estimator and looks for data to suit it has the search backwards.
+
 **The pricing sequence, run in this order before a word of design:** name the residue the filed WHAT leaves
 (a knob fails at once, only a method survives); price the move available against the move needed; price the
 standard error of whatever the step must estimate; check whether the lever and the ranked quantity's noise
