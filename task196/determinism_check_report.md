@@ -1,70 +1,108 @@
-# Determinism review, task196 (judge thread, fresh unzip md5 58fea759d25de0f25cd583ff70449695)
+# Determinism review, task196 (re-judge of the repaired bundle)
 
-Order kept: yes. My derivation was written to disk
-(/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/task196_derivation.md) before the graded blocks were opened.
-Consequence worth knowing: that derivation did NOT reach the submitted call. I had filed fund_return_requests.csv as a
-distractor and landed on 25 per million (count about 560). I reached 31 / 688 only after opening the blocks, then reproduced it.
+Pack: fresh unzip, 19 members, zip md5 b857fbef40cc860f9beee3fe78869301.
 
-## Verdict
-NOT_DETERMINISTIC (taxonomy: underspecified_objective), on two supplementary asks, not on the main call.
-Main call: forced and correct (31 per million, 688 indexed cases), with named residual risks below.
-Disposition: FIX_NOW. Pin the population of the recovery-share ask and the count basis of the notified-cases ask in the prompt wording, and
-qualify the indexed case count in the golden. Main call, pack and stump untouched. Any run graded on the old ask wording is graded on different text for those two asks only.
+**Order kept.** My derivation was written to disk (scratchpad task196_derivation.md) before the graded blocks were opened. It is incomplete on the main call: working blind I filed 25 per million for Castlegate (all 395 register matches treated as an independent second source) and never screened the matches against fund_return_requests.csv. I opened the graded blocks only after writing that. Everything below on the main call after that point was then recomputed from the files, not accepted.
+
+**Verdict: DETERMINISTIC.**
+**Disposition: APPROVE.** No repair required; a model rerun is not needed. Two soft points are listed under Gate C and E as watch items, neither blocks.
 
 ## Gate table
+
 | Gate | Result | Line |
 |---|---|---|
-| A | PASS | Every graded figure reproduces (index 31/22/15/12, counts 400/395/125/270/157/288, 688/139/301/517, indemnity grid and quarter totals, notified grid, recovery shares) once each ask's population is the one the golden uses. |
-| B | PASS (note) | Every deciding fact is in the pack. The mechanism that makes 125 matches self-caused (a return request prompts the holding firm to register) is stated in no sentence; it is evidenced by the data: registration falls 1 to 40 days after the request in 125 cases and 20 to 172 days before it in 95, nothing between, no ties, same pattern for peers. |
-| C | FAIL (asks 5 and 6) | Main call survives. Recovery ask: four populations are licensed by the sentence and give different grids. Notified ask: row count vs distinct case_reference differs on four members. See below. |
-| D | PASS | Main call separates on analysis (independence of the two sources), not on a word. |
-| E | FAIL (asks 5 and 6) | "cases closed in each 2025/26 quarter" does not say scam cover or scheme year 2025/26; "cases each member notified" does not say rows or distinct references. |
-| F | STRONG | Easy routes file 18 (record), 23 (record plus register-found), 25 (two-source on all 395 matches), 26/35 (peer pooled recall), 51 (drop every request). Only 31 uses the request dates. No hardening lever needed. |
-| G | PASS | see line |
-| H | PASS | see line |
+| A correct | PASS | Every critical component and every deliverable figure reproduces (400, 395, 125, 270, 157, 288, 400x270/157 = 687.9, 30.94, 18+13=31, the other three indices, unauthorised table, 12 notified rows, recovery grid). Blocks agree with each other. |
+| B facts present | PASS | The decisive fact (a registration answering the member's own fund-return request) is recoverable from fund_return_requests.csv request_sent_date against member_payment_matches.csv registered_date, both shipped. No external rule needed. No file states the mechanism in words; the data shows it (see Gate C). |
+| C uniquely forced | PASS, two watch items | Main call: 31 is the only value that survives the data. Competing 23, 25, 26, 34 are each refuted by the files (below). Supplementary asks: one reading each survives. Watch items: pooled-detection estimator form (34), and keep versus drop of repeat advice lines. |
+| D analytical not semantic | PASS | The split runs on the analysis (are the two sightings independent), not on a word. |
+| E prompt unambiguous | PASS, one soft point | Recovery ask now names cover, payment year and credit scope; notified ask is count-basis neutral. Soft point: "totals unrounded" beside "amounts to the pound" (Q1 and Q3 quarter totals differ by 1 pound under sum-of-rounded-tiers). |
+| F stump power | STRONG | A blind capable pass (mine) filed 25, a clean wrong answer, with every file read and every field read correctly. 23, 25, 26 and 34 all file wrong. |
+| G stumping type | PASS | see line below |
+| H three rules | PASS | see line below |
 
-Gate G: mechanism: statistical_rigor (dependence between the two sources of a two-source estimate; method choice on honest data); stumping_family: analytical_non_defect; surface_read_dependency: no; sole_data_defect: no. The reported 400 and 395 are right; the estimator's independence assumption is what breaks, a feature of how the data arose, not a defect to catch.
-Gate H: domain: pass; layers: pass; decisive_step: analytical. Layer 1: padded vs unpadded account refs, preliminary vs revised returns, thousands vs units, two register layouts, main plus supplementary feeds. Layer 2: multiple-systems estimation of cases the record missed, with the dependent sightings removed. Swap test fails to preserve the task (it is an undercount estimate, not a list check). Easy route a strong analyst takes after cleaning everything: two-source estimate on all 395 matches, 400 x 395 / 282 = 560 cases, 25 per million.
+**Gate G line:** `mechanism: method_or_model_selection (dual-system estimation with a dependence correction)`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. No shipped figure is wrong or misleading: the 395 matches, 400 recorded cases and 22,233,300 payments are all correct as reported; the difficulty is that two sources are not independent, which is a property of how the process works and survives clean data. No shipped artifact ranks the members on the index (trustee pack says no index is proposed; national statistics and AML alerts do not carry it). Gate G passes.
 
-## Evidence, main call (all recomputed from the pack)
-Castlegate payments 22,233,300 (revised). Recorded 400 (register, payment-year basis; returns' 338 omit 62 notified after 31 March). Matches 395 (282 recorded, 113 not). Padding the account number changes no join (all 6,994 matches join after padding, all status reported). Fund-return request preceded registration on 125; independent 270, of which 157 recorded. 400 x 270 / 157 = 687.90, 30.940 per million. Walk 17.991 / +12.949 / 30.940 prints 18 / 13 / 31. Group: Saltmarch 139.28 / 21.88 (22), Trentmoor 301.44 / 15.07 (15), Brindlemere 517.37 / 12.11 (12). Clean split rule: strict or non-strict "request on or before registration" gives the same 125 (no ties, no values within 20 days either side).
-Surviving alternatives on the main call: peer-pooled independent recall (0.307 vs Castlegate 0.3925, z about 3.4, so the data reject pooling) gives 767.75 / 34.5 (35); dropping every request gives 1,129 / 50.8. Both are weaker readings; I do not count them as surviving. Residual risk, not a failure: the index carries sampling error of about plus or minus 1.8 per million on 157 of 400; every solver who uses the member's own two-source form lands on 31.
+**Gate H line:** `domain: pass`, `layers: pass`, `decisive_step: analytical`. Field's own analysis: two-source (capture-recapture) estimation of cases the member's record did not hold, run per member against an external register, with the independence assumption tested. Layer 1: 2023/24 layout against later layout (APP/UNAUTH, pence, dd/mm/yyyy, payments in thousands), preliminary and revised returns overlapping, sort code hyphenated against zero-padded account numbers, main feed plus a supplementary extract, scheme quarters against calendar quarters. Layer 2: the receiving firms register accounts after the member's own fund-return request, so those matches are the member's own cases coming back. Easy route a strong analyst takes after reading everything correctly: Lincoln-Petersen on all 395 matches, 400x395/282 = 560.3, 25 per million (not-held 7), or simply recorded plus unmatched sightings, 513, 23. Wrong answers; correct is 31. Swap test: replacing "payments" and "scam cases" with another field's nouns does not preserve the task, because the deciding quantity is an estimate of unseen cases from a second source with a source-dependence correction.
 
-## Item 1, the indemnity ask (the earlier defect)
-Sentence: "unauthorised-fraud indemnity the advices settled, by member tier and the 2026/27 quarter each case closed in, totals unrounded."
-Bases and grains enumerated:
-- Case grain (indemnity_paid_gbp) by register closed_date quarter, all advice lines: A 389,667.22 / 349,939.20 / 343,190.44 / 339,633.35; B 390,380.41 / 277,917.53 / 237,744.26 / 181,103.67; C 204,473.45 / 101,819.98 / 92,670.03 / 75,823.30 (total 2,984,362.84). This is the golden.
-- Same, by the line's settlement_month quarter: numerically identical (the 35 repeat lines carry the case's original month).
-- Same, one line per case (35 repeat lines, 486,513.00, dropped; equals register reimbursed): A 311,087.84 / 309,881.88 / 317,028.59 / 339,633.35; B 271,791.35 / 228,966.01 / 222,672.81 / 181,103.67; C 81,499.33 / 83,191.04 / 75,170.67 / 75,823.30 (total 2,497,849.84).
-- Advice grain (advice_total_gbp) by advice month: A 311,087.84 / 369,083.02 / 348,469.17 / 393,790.18 etc. Cannot be split by the case's closing quarter, so the sentence excludes it. Lines sum to advice totals to the penny and match the advice's stated case_lines.
-- Tier: advices and register agree for all 12 members; Wrenhall is A in both ("held from the 2024 review"); the volume rule would make it B and is rebutted by tier_basis. Scheme quarters share calendar boundaries, so only labels could differ.
-Survive the sentence as written: 1 grid (the golden). The old two-grain problem is gone: both advice fields sum to the same total, and the closing-quarter wording admits only the case-grain field. Residual: a solver who treats the 35 repeat lines (amounts up to 2,000 times the case's reimbursed amount) as errors gets the third grid; "the advices settled" and the advice's own case_lines and total make that a departure from the sentence, so I rate it forced with that named risk.
+## 1. Recovery-share ask: every reading enumerated
 
-## Item 2, the indexed case count in the call sentence (ruling)
-Count under every licensed form, Castlegate (index in brackets): two-source R x n / k 687.90 (30.94); Chapman 686.79 (30.89); Bailey 686.08 (30.86); R + U / own recall pooled over 2 years 688.10 (30.95); over 3 years 688.56 (30.97); quarter-stratified 688.46 (30.97); firm-type stratified 687.55 (30.92); channel stratified 687.79 (30.94). Rounded counts: 686, 687, 688, 689. The index is 31 under all of them. Other members spread the same way (Trentmoor 300.67 to 301.44; its golden 301 sits 0.06 case from the 301.5 edge under the plain form).
-Ruling: the shipped text does not force one form (standard 4.2 says only "estimated on the evidence base"), so the count is NOT determinate to the case. It is NOT a Gate A failure (688 reproduces exactly under the form the golden names) and NOT a Gate C failure on the call as the prompt asks it, because the prompt asks for the index per million and the walk per million, never a count, and the index is invariant at 31. It is a precision claim the files do not force, sitting in the committed recommendation and in the deliverable answers (688, 139, 301, 517, 288). Do not cut it from the frozen call; the call sentence is golden text, not solver-facing, so qualifying it costs no stump and no rerun. Fix: state the form beside the count ("688 on the two-source estimate, 400 x 270 / 157") and have the rubric accept 686 to 689 (Trentmoor 300 to 302, Saltmarch 138 to 139, Brindlemere 516 to 517, not-held 286 to 289). If the author prefers to leave the call word for word, that is acceptable only with that tolerance in the rubric.
+Base reading (scam cover, payments in 2025/26, closed in scheme quarter Q1 = Apr-Jun to Q4 = Jan-Mar of 2025/26, denominator reimbursed_amount_gbp, every recovery credit whatever its value date, route totals pooled over the four): 
 
-## Failing asks
-Ask 6, recovery share (Gate C and E, underspecified_objective). Sentence: "share of reimbursement recovered by route on cases closed in each 2025/26 quarter, from case-level credits." Golden population: scam reimbursement cover, register scheme_year 2025/26, closed in the quarter, denominator register reimbursed_amount (it equals recovery_statement reimbursed_in_quarter to the penny, so the population is recoverable only by reconciling the statement the sentence tells the solver not to use). Literal alternatives, Q1 / Q2 / Q3 / Q4 beneficiary recall and route totals recall, repatriation, insurer:
-- golden (scam, scheme year 2025/26): 6.5 15.1 8.5 5.4; totals 8.5, 2.7, 6.0
-- all cases closed in the quarter, both covers: 8.6 10.0 7.2 5.4; totals 7.7, 3.5, 4.6
-- scam cover, any scheme year: 9.9 11.7 8.1 5.6; totals 8.6, 3.4, 4.8
-- payment_amount denominator, both covers: totals 7.2, 3.3, 4.4; credits dated inside 2025/26 only: totals 6.7, 2.9, 4.3.
-The sentence names neither cover nor scheme year; the first reading most solvers take (closed_date in the quarter) is not the golden.
-Ask 5, cases notified (Gate C): feed plus supplement rows give 193 / 121 / 109 / 93 for KM-101, 102, 104, 110 (equal to the revised returns); distinct case_reference gives 191 / 120 / 108 / 92 (the dictionary says a case is one case however many legs it covers; the repeats carry different payment and notified dates). Values are identical either way. Second, weaker risk: the register also holds 457 cases notified April to June 2027 (Castlegate 62 scam, 7 unauthorised) that are not in the feed.
+| Quarter | recall | repatriation | insurer |
+|---|---|---|---|
+| Q1 | 6.5 | 3.4 | 2.8 |
+| Q2 | 15.1 | 3.3 | 3.8 |
+| Q3 | 8.5 | 2.5 | 5.9 |
+| Q4 | 5.4 | 2.5 | 7.4 |
+| Four | 8.5 | 2.7 | 6.0 |
 
-## Item 3, distance from rounding edge (fraction of the stated unit; none prints round, none on a tie, all computed from pence or whole counts)
-Index: Castlegate 30.940 (0.44), Saltmarch 21.879 (0.38), Trentmoor 15.070 (0.43), Brindlemere 12.110 (0.39). Walk lines 17.991 (0.49), 12.949 (0.45), total 30.940 (0.44).
-Counts: 687.90 (0.40), 139.28 (0.22), 301.437 (0.063, nearest to an edge), 517.37 (0.13), not-held 287.90 (0.40).
-Indemnity cells in pounds: closest 277,917.53 (0.03), 204,473.45 (0.05), 343,190.44 (0.06), 390,380.41 (0.09); others at least 0.15; quarter totals 984,521.08, 729,676.71, 673,604.73, 596,560.32 (0.18 or more).
-Notified values: closest 153,759.53 (0.03), then 285,422.35 and 26,336.35 (0.15); rest at least 0.17.
-Recovery shares in units of 0.1: closest Q4 recall 5.4461 (0.039, 0.004 points from 5.45), Q3 insurer 5.8579 (0.079), Q1 insurer 2.8365 (0.135), Q1 repatriation 3.3668 (0.168); route totals 8.5287, 2.7067, 5.9686 (0.21, 0.43, 0.19). No exact tie anywhere.
+(unrounded 6.4733, 15.0884, 8.5137, 5.4461, 8.5287; 3.3668, 3.3157, 2.4796, 2.5212, 2.7067; 2.8365, 3.8108, 5.8579, 7.4087, 5.9686. Credits 577,309.31 / 183,214.45 / 404,013.22 on 6,769,026.05 reimbursed; quarter denominators 252,329.33, 1,427,886.02, 2,229,339.01, 2,859,471.69, which equal recovery_statement_2025_26.csv reimbursed_in_quarter to the penny, so the base scope is the pack's own.)
+
+Other readings the pack licenses, and the four-quarter totals (recall / repatriation / insurer) each returns:
+- cover unauthorised only: 4.1 / 3.6 / 4.1; both covers: 7.5 / 2.9 / 5.5
+- payment year: cases closed in 2025/26 from any payment year: 8.6 / 3.4 / 4.8
+- window: closed in calendar 2025 (only three quarters exist): 10.8 / 2.8 / 4.9
+- denominator payment_amount_gbp (equals the summed payment legs): 8.0 / 2.5 / 5.6
+- credit scope: credits dated by 31 Mar 2026 (drops 199 credits worth 187,263.81): 7.0 / 1.9 / 5.5; credits in the quarter of closure: 2.5 / 1.1 / 3.0; credits dated on or before closure: none exist
+- totals as mean of the four quarterly shares: 8.9 / 2.9 / 5.0
+- the recovery statement's own recovered_stated_gbp (net of agent charges, different basis): not a case-level credit
+
+Quarter convention: scheme Q1 = Apr-Jun and calendar Q2 cut the same four buckets, so label only. **Surviving the sentence as written: 1.** "scam reimbursement" fixes cover and the reimbursed denominator; "cases from 2025/26 payments" fixes payment year; "closed in each 2025/26 quarter" with "the four" fixes the scheme year (calendar 2025 has three); "every case-level credit" fixes credit scope; "route totals over the four" is a total, so pooled, not a mean of shares. The pack's own statement uses the same scheme-quarter and reimbursed basis.
+
+## 2. Notified-cases ask
+
+Main file 837 rows, supplement 119, 956 rows in all. 956 distinct case_reference values; zero overlap between the two files; no duplicate under upper-casing, punctuation and zero stripping; no collision on member, payment date and amount. **Distinct cases and feed rows select the same rows, and no member differs.** Both series, members KM-101, 102, 103, 104, 106, 108, 110, 112, 115, 118, 121, 124: 193, 121, 60, 109, 64, 111, 93, 28, 15, 37, 24, 101 (total 956). The main file alone (cut 20 June, 837 rows) is excluded by "2027/28 Q1", the quarter to 30 June. The counts equal the returns sheet's scam_cases_notified exactly, not scam plus unauthorised, so the feed is the scam feed.
+
+## 3. Indexed case counts under every estimator form
+
+Matches screened for a preceding own request (KM-104: 395 matches, 125 preceded, 270 independent, 157 of which are recorded cases; screened detection 0.3925). Independent confirmations: cases never requested are in the register at 0.392 (62 of 158), the same rate as requested cases on independent matches (0.393); registrations after a request fall 1 to 40 days later with none beyond 45; "returned in part" outcomes sit on the registered-after side 1,262 of 1,483. The screened detection rate is a fixed member property: Castlegate 0.391, 0.390, 0.392, 0.392 across the four years, Brindlemere 0.311, 0.311, 0.309, 0.309 and so on, against a pooled 0.319.
+
+Indexed cases (index per million in brackets), per form:
+
+| Form | Castlegate | Saltmarch | Trentmoor | Brindlemere |
+|---|---|---|---|---|
+| Lincoln-Petersen, own member | 687.9 (30.94) | 139.3 (21.88) | 301.4 (15.07) | 517.4 (12.11) |
+| Chapman | 686.8 (30.89) | 138.7 (21.79) | 300.9 (15.04) | 517.0 (12.10) |
+| Seber-Bailey | 686.1 (30.86) | 138.5 (21.75) | 300.7 (15.03) | 516.8 (12.10) |
+| recorded + independent-unmatched / own detection, 2, 3, 4 year | 688.1 to 688.7 (30.95 to 30.97) | 139.3 to 139.4 | 301.1 to 301.2 | 517.2 to 517.4 |
+| firm-type strata, own | 687.5 (30.92) | 140.4 (22.05) | 301.8 (15.09) | 516.9 (12.10) |
+| no-request cases only for detection | 688.0 (30.94) | 139.0 (21.84) | 301.2 (15.06) | 517.9 (12.12) |
+| detection pooled over all members | 753.7 (33.90) | 140.3 (22.04) | 296.1 (14.80) | 515.0 (12.05) |
+| not screened, LP on all matches | 560.3 (25.20) | 123.5 (19.41) | 273.0 (13.65) | 479.5 (11.22) |
+| not screened, recorded + matches | 513 (23.07) | 119 (18.69) | 262 (13.10) | 466 (10.91) |
+
+**The stated band** (686 to 689, 138 to 140, 300 to 302, 515 to 521) **holds every own-member screened form** (Seber 138.5 and strata 140.4 for Saltmarch are the edges, both inside). It does not hold the pooled-detection form for Castlegate (753.7) or Trentmoor (296.1), and it does not hold the unscreened forms. **The index moves nowhere inside the own-member family**: 31, 22, 15, 12 on all of them, nearest distance to a rounding edge 0.25 per million (Saltmarch under Seber-Bailey). It moves only under the pooled-detection form, Castlegate 31 to 34. That form is not licensed by the data: the pooled rate is rejected for Castlegate (z = 3.4) and every member's rate is constant across four years, so I treat it as a refuted form, not a surviving alternative. The shipped text is silent on estimator form, so this rests on the data, not on a sentence.
+
+**Does naming the estimator form beside the count make the decisive step easier to find?** The prompt and the pack do not name one. In the deliverable answers, "two-source estimate" names only the method class, which any analyst would reach, so it gives away nothing. The clause "register sightings no fund-return request of its own preceded" names the decisive step; if it were ever placed beside the count in anything the solver sees, it would hand over the stump. As the blocks stand it sits only on the graded side. Keep it off the prompt, the CSV header and any sheet label.
+
+## 4. Distance from the rounding edge, in units of the stated rounding
+
+None prints round and none sits on a tie. Amounts are exact decimals, so no float tie is possible.
+- Index (per case per million): Castlegate 30.94, 0.44; Saltmarch 21.88, 0.38; Trentmoor 15.07, 0.43; Brindlemere 12.11, 0.39.
+- Walk lines: recorded 17.99, 0.49; not held 12.95, 0.45; indexed 30.94, 0.44. The two lines sum to the index with no rounding gap (18 + 13 = 31).
+- Indexed counts as printed in the answers: 687.9 (0.4), 139.3 (0.22), 301.44 (0.06, the closest; 302 under strata, hence the band), 517.37 (0.13).
+- Recovery shares (units of 0.1): closest recall Q4 5.4461, 0.04; insurer Q3 5.8579, 0.08; recall Q1 0.23, repatriation Q4 0.29; the remaining cells and the four-quarter totals 0.13 to 0.43.
+- Notified values (pounds): KM-103 153,759.53, 0.03; KM-102 285,422.35, 0.15; KM-115 0.15; KM-118 0.17; KM-110 0.18; KM-112 0.34; rest 0.32 to 0.48; KM-104 307,225.98 and KM-106 135,015.97 are 0.48 and 0.47.
+- Unauthorised table (pounds): B Q2 277,917.53, 0.03; C Q1 204,473.45, 0.05; A Q3 343,190.44, 0.06; B Q1 390,380.41, 0.09; rest 0.15 to 0.48. Quarter totals 0.18 to 0.42.
+
+## 5. Repeated advice lines
+
+35 lines (33 cases, two of them with three lines) repeat a case already on an earlier advice; all are unauthorised fraud. Every repeat carries an amount that differs from the case's reimbursed amount, and every first line equals it. The ask's wording forces **keeping them**: "unauthorised-fraud indemnity the advices settled" is the money the advices settled; advice_total_gbp is defined as "the amount the advice settled" and includes the repeats (case_lines counts them), and the unauthorised advice totals sum to 2,984,362.84, the same as keeping every line. The ask carries no "once each" or "distinct" for this item, unlike the notified item; dropping needs an unstated dedupe rule and an unstated choice of line.
+
+**Totals:** keep = 2,984,362.84 (Q1 984,521.08, Q2 729,676.71, Q3 673,604.73, Q4 596,560.32). Drop later lines (keep first per case) = 2,497,849.84. Drop earlier lines (keep last) = 2,946,197.35. The repeat lines are worth 486,513.00. Watch item: a solver who sees 33 repeats with off-size amounts may dedupe. The wording and the advice totals argue against it, and it is an ask-level device, not the main call. Tier by quarter, kept: A 389,667.22 / 349,939.20 / 343,190.44 / 339,633.35; B 390,380.41 / 277,917.53 / 237,744.26 / 181,103.67; C 204,473.45 / 101,819.98 / 92,670.03 / 75,823.30. These match the graded answer.
 
 ## Figures that did not reproduce
-None as submitted. Under the literal readings above, ask 6 reproduces only on the scam / scheme-year-2025/26 population (my own pre-blocks derivation gave 8.584, 9.994, 7.225, 5.402 for recall), and ask 5's counts for KM-101, 102, 104, 110 reproduce only on rows (I derived 191, 120, 108, 92 as the dictionary-literal count). My pre-blocks main answer was 25 / 560, not 31 / 688.
 
-## Hygiene (brief)
-19 files; formats csv, xlsx, pdf, txt (4); mule_account_register.csv 28,394 rows; distractors present (national statistics, AML alerts, recovery statement). Dates coherent (feed notes and pack 2 July 2027, register to 30 June 2027). Licence and provenance records not in the pack, not checked. No authoring language seen in the notes or PDFs read. No exclusion-level finding.
+None. Every graded figure reproduces from the files. My blind derivation differed on one item, the main call (25 versus the graded 31), and that was my omission of the request screen; after screening, 125, 270, 157, 688 and 30.94 all reproduce exactly. Nothing else differs; the notified table, recovery grid and unauthorised table matched my blind figures to the penny.
+
+## Hygiene
+
+PASS. 19 files, formats csv, xlsx, pdf, txt; case_payments.csv has 33,851 rows and the account register 28,394. Distractors in use: quarterly returns scam_cases_notified (338, a different basis), recovery statement (different basis, net of charges), member_register notified payments (1 Oct 2027 volume, would give 24 unscreened or 30 screened per million, a wrong-year denominator), national statistics, AML alerts. No authoring language found in the pack. No exclusion-level finding.
+
+## Cross-batch
+
+I did not read any other task folder, as instructed; no cross-batch fingerprint was run.
 
 ## Fix
-prompt: ask 6 add the population ("scam reimbursement cases from 2025/26 payments, by the quarter each closed in"); ask 5 add the count basis ("a case counted once however many legs"), or accept rows and say so in the golden if rows is kept. solution: qualify the indexed counts as above, rubric tolerance 686 to 689.
+
+none.
