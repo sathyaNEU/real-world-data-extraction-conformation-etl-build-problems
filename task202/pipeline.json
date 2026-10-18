@@ -3,13 +3,13 @@
  "owner": "oviya13ya",
  "objective": "anomaly-detection",
  "status": "DESIGN",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-18",
  "architecture": 1,
  "loops": 0,
  "card_registered": true,
- "resume": "DESIGN complete and measured on the nonprofit-grant-making ground, nothing cut. Card draft at /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task202b/task202_card.json, guard.py check = WARN (no BLOCK; two WARNs answered in DESIGN_NOTE.md ## Draw item 8). DESIGN_NOTE.md carries all twelve precut sections; precut.py is 49/51 green and FAILs only on 'card registered' (the builder is not allowed to register) and 'ceiling measured by a script' (generator/cracker.py, stage 3). prompt.txt passes voice-check.py exit 0. The card IS now registered and guard.py heart returns WARN exit 0 (not BLOCK). NEXT: build stage 3 from the locked model in the scratch directory (model3.py is the generating process; lock.py reproduces the ladder). Locked parameters: capital-item share 0.09 at 3.90x the standard award with upper-mode log-sd 0.28, province level spread 0.42 against 0.12 within province, committed referral share 6.0 per cent, printed unit PHP 100, 88 partners in 8 provinces, 2 pilot provinces on the portal, 6 household-size bands, portal spine about 26,800 awards over 27 months with about 11,900 inside the 12-month window.",
+ "resume": "BUILD complete and every free gate green after a /fix-rubric pass that re-sited the ask layer onto the closed period (claim months July 2024 to December 2025) with the recommendation side frozen. freeze.py check task202 --mode rubric = PASS: call PHP 7,800, 5.94 per cent, PHP 7,700 at 6.04, default PHP 5,800 at 9.82, the ladder, the stump and the card all unmoved; only the ask side moved (claims_annex.xlsx, 46 ask figures). precut.py = 51 checks, 0 FAIL, 0 WARN (pair ceiling 28.5, mirror leakage 0.0). cracker.py on the cut pack: the cracker keeps 0 of 18 annex figures, pair 28.5, mirror leakage 0.0; the schedule's 24 figures are scored in the 38-point recommendation block, which is the accounting change the 65.5 measurement turned on. Two new ask-only files (hrg_claim_check_register_2024_2025.csv, treasury_disbursement_runs_2024_2025.csv), a third deliverable (claims_annex.xlsx), 17 files, 5 formats, 26,195-row portal, 3 distractors. target.zip sha256 2c603ddde052c9b07ace491ba4aeaf60ee49742fc4fa68ae4a22a606d9d862bb, 17 members, 913,699 bytes, identical across two separate cuts. NEXT: stage 4, the leak reader and the determinism judge (orchestrator's); the determinism judge should read the three annex asking sentences first, since each carries its own basis and grain.",
  "designation_set_screen": {
   "assigned": "carry task194 architecture 6's designation-set device onto human-factors-ergonomics / safety-incident-error-analysis, screening against task181 first",
   "method": "guard.py nearest on each candidate driver, then the abstraction test on latent structure, default path and correction",
@@ -56,11 +56,30 @@
   "not_run": "no generator, no pack, no goldens, no metadata.json, no submission.md, no verify.py, no figures.json; precut.py FAILs on 'card registered' and 'ceiling measured by a script'."
  },
  "gates_run": {
-  "guard.py check": "WARN, exit 0, no BLOCK (post-registration: three_rules.strategy_risk, repeat.gate_g vs task172 and task190(6), overuse.gate_g 5 of last 12; all answered in DESIGN_NOTE.md ## Draw items 8-9)",
-  "guard.py heart task202": "HEART VERDICT: WARN, exit 0, NOT BLOCK. Nearest driver 0.09 (task255), nearest stump text 0.04 (task103 v3).",
-  "voice-check.py on prompt.txt": "PASS, exit 0, 891 characters",
-  "precut.py task202": "exit 1, 51 checks, 1 FAIL 1 WARN. Only FAIL is 'ceiling measured by a script' (generator/cracker.py, stage 3); only WARN is 'semantic forks asserted' (generator/checks.py, stage 3). 'card registered' now PASSES.",
-  "guard.py surface": "NOT RUN: requires a cut pack",
-  "stage 3 gates": "NOT RUN, reported as skipped: generator checks, verify.py, two byte-identical rebuilds, figures_check.py, the input gates, realism sweep, golden-realism, leak.py"
+  "generator/make.py": "292 assertions passed; verify: 2161 independent checks; byte-identical rebuild",
+  "verify.py": "2161 independent checks passed from the bundle alone; call PHP 7,800",
+  "two byte-identical rebuilds": "PASS, and target.zip identical across two separate cuts",
+  "figures_check.py": "77 figures in blocks 1 to 4, 0 absent from generator/figures.json",
+  "input gates": "17 files, 5 formats (csv, eml, md, pdf, xlsx), largest portal_awards_2025-01_2027-03.csv at 26,195 rows, 3 distractors",
+  "leak.py --asof 2027-04-30": "verdict REVIEW (not LEAK), sweep 11 prompt gate clean",
+  "precut.py task202": "51 checks, 0 FAIL, 0 WARN, exit 0",
+  "voice-check.py": "PASS, exit 0, 996 characters",
+  "guard.py surface task202": "exit 0, highest promoted pair 0.102 (card-level, on the frozen draw)",
+  "cracker.py": "pair ceiling 28.5, mirror leakage 0.0 per cent, cracker keeps 0 of 18",
+  "freeze.py check task202 --mode rubric": "PASS: the main call, the stump and every frozen figure are unchanged",
+  "guard.py heart": "NOT RUN (the brief excludes it)"
+ },
+ "rubric_fix": {
+  "finding": "precut.py exit 1 on 'pair ceiling 65.5 (ceiling 40)' and 'cracker misses every ask: cracker keeps A1, A2, A3, A4, D1, D2'",
+  "diagnosis": "every graded figure was the call's own construction over the call's own population (ban 4, Part 1.2), so no device could sit under it (Part 2.1's corollary)",
+  "repair": "the 24 schedule figures scored in the recommendation block where they belong; the ask band re-sited onto three closed-period asks with one silent primary each (D6 an instruction standing on the run lines it covers, D3 a stock read as a flow, D4 a blank that means two things), 18 figures",
+  "measured": {
+   "pair_ceiling": 28.5,
+   "mirror_leakage": 0.0,
+   "cracker_keeps": "0 of 18",
+   "deepest_stop": "C3 keeps 5 of 18, pair 43.8",
+   "one_whole_ask_cracked": "6 of 18, pair 46.8"
+  },
+  "frozen": "freeze.py check --mode rubric PASS; the call sentence in prompt.txt byte-identical, prompt 996 characters"
  }
 }

@@ -20,6 +20,13 @@ CAP = 0.060
 REF = 4
 BANDS = (1, 2, 3, 4, 5, 6)
 RET = ("hrg_claim_returns_fy2025-26.xlsx", "hrg_claim_returns_fy2026-27.xlsx")
+CLOSED_RET = ("hrg_claim_returns_fy2024-25.xlsx", "hrg_claim_returns_fy2025-26.xlsx")
+CHECKS = "hrg_claim_check_register_2024_2025.csv"
+ARCHIVE = "treasury_disbursement_runs_2024_2025.csv"
+ANNEX = "claims_annex.xlsx"
+CLOSED = [(2024, m) for m in range(7, 13)] + [(2025, m) for m in range(1, 13)]
+REASONS = ["Receipts incomplete", "Household record incomplete", "Duplicate application",
+           "Component not eligible", "Arithmetic error on return", "Not recorded"]
 PORTAL = "portal_awards_2025-01_2027-03.csv"
 XWALK = "partner_identifier_crosswalk.csv"
 POLICY = "hrg_operating_policy_2027_edition.pdf"
@@ -153,6 +160,131 @@ def share(C, cells, shape, scale, band=None, value=False):
     return num / den
 
 
+def scheme_quarter(mo):
+    y = mo[0] if mo[1] >= 7 else mo[0] - 1
+    return "%d/%s Q%d" % (y, str(y + 1)[2:], (mo[1] - 7) % 12 // 3 + 1)
+
+
+def pkey(code):
+    return str(code).strip().replace("/", "-").replace("_", "-").upper()
+
+
+def fold(x):
+    t = " ".join(str(x or "").split()).rstrip(".").strip()
+    if not t:
+        return ""
+    for r in REASONS:
+        if t.lower() == r.lower():
+            return r
+    return t
+
+
+def closed_claims(target):
+    """What each closed claim month was claimed for, and the recoveries claimed back in it."""
+    amt, n, rec = {}, {}, {}
+    for f in CLOSED_RET:
+        ws = load_workbook(os.path.join(target, f), read_only=True, data_only=True).active
+        grid = [list(r) for r in ws.iter_rows(values_only=True)]
+        h = next(i for i, r in enumerate(grid)
+                 if r and any(str(c).strip() in ("return_month", "claim_month") for c in r if c))
+        col = {str(c).strip(): j for j, c in enumerate(grid[h]) if c}
+        mc = col.get("return_month", col.get("claim_month"))
+        nc = col.get("award_count", col.get("awards"))
+        tc = col.get("claim_total_php", col.get("total_claimed_php"))
+        pc = col["partner_code"]
+        for r in grid[h + 1:]:
+            if not r or r[mc] is None:
+                continue
+            mo = month(r[mc])
+            if mo not in CLOSED:
+                continue
+            k = (pkey(r[pc]), mo)
+            if int(r[nc]) < 0:
+                rec[k] = round(rec.get(k, 0.0) + float(r[tc]), 2)
+            else:
+                amt[k] = round(amt.get(k, 0.0) + float(r[tc]), 2)
+                n[k] = n.get(k, 0) + int(r[nc])
+    return amt, n, rec
+
+
+def closed_annex(target):
+    """The annex, rebuilt from the shipped bundle on this file's own code path.
+
+    Two readings the records force. The check register holds a second check where a partner answered
+    a hold, and the later check stands. Its two currency columns state the partner's position in the
+    scheme year, not the month: an amount passed above what the month was claimed for cannot be, the
+    July rows reset, and the difference inside the scheme year restores the month. And a run line can
+    carry a payment instruction that settled both of a claim month's halves, so the lines of such a
+    month state the same amounts and together exceed the claim; the instruction counts once.
+    """
+    claimed, claimed_n, _ = closed_claims(target)
+    rows = []
+    with open(os.path.join(target, CHECKS), newline="", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            rows.append((pkey(r["claims_partner_ref"]), month(r["claim_month"]),
+                         r["checked_date"].strip(), float(r["amount_passed_php"]),
+                         float(r["amount_held_php"]), int(r["awards_passed"]),
+                         fold(r["hold_reason"])))
+    live = {}
+    for r in rows:
+        k = (r[0], r[1])
+        if k not in live or r[2] > live[k][2]:
+            live[k] = r
+    need(all(len({x[2] for x in rows if (x[0], x[1]) == k}) ==
+             len([x for x in rows if (x[0], x[1]) == k]) for k in list(live)[:40]),
+         "no claim month carries two checks dated the same day")
+    months = {}
+    for (code, mo) in live:
+        months.setdefault(code, []).append(mo)
+    own = {}
+    for code, ms in months.items():
+        ms.sort()
+        base = {}
+        for mo in ms:
+            sy = mo[0] if mo[1] >= 7 else mo[0] - 1
+            b = base.get(sy, (0.0, 0.0))
+            r = live[(code, mo)]
+            own[(code, mo)] = (round(r[3] - b[0], 2), round(r[4] - b[1], 2), r[5], r[6])
+            base[sy] = (r[3], r[4])
+    for k, v in own.items():
+        need(abs(round(claimed.get(k, 0.0) - v[0] - v[1], 2)) < 0.005,
+             "the month's own passed and held add back to what it was claimed for", str(k))
+    arch = {}
+    with open(os.path.join(target, ARCHIVE), newline="", encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            arch.setdefault((pkey(r["partner_code"]), month(r["claim_months_covered"])), []).append(
+                (float(r["gross_php"]), float(r["recoveries_php"]), float(r["net_php"])))
+    trans, recov, repeats = {}, {}, 0
+    for k, lines in arch.items():
+        if round(sum(g for g, _, _ in lines), 2) > claimed.get(k, 0.0) + 0.005:
+            need(len(set(lines)) == 1, "the over-stated month's lines state the same amounts", str(k))
+            trans[k], recov[k], repeats = lines[0][2], lines[0][1], repeats + 1
+        else:
+            trans[k] = round(sum(x[2] for x in lines), 2)
+            recov[k] = round(sum(x[1] for x in lines), 2)
+    need(repeats > 0, "the archive carries payment instructions across run lines", repeats)
+    qs = sorted({scheme_quarter(mo) for _, mo in own})
+    agg = lambda src, keyf: {q: round(sum(keyf(v) for k, v in src.items()
+                                          if scheme_quarter(k[1]) == q), 2) for q in qs}
+    out = {"transferred": agg(trans, lambda v: v), "held": agg(own, lambda v: v[1]),
+           "claimed": agg(claimed, lambda v: v), "recovered": agg(recov, lambda v: v)}
+    out["unsettled"] = {q: round(out["claimed"][q] - out["held"][q] - out["recovered"][q]
+                                 - out["transferred"][q], 2) for q in qs}
+    reasons = {r: 0 for r in REASONS}
+    pop = 0
+    for k, v in own.items():
+        if v[1] > 0.005:
+            reasons[v[3] if v[3] in REASONS else "Not recorded"] += 1
+            pop += 1
+            need(v[2] < claimed_n.get(k, v[2]), "a held month passed fewer awards than it claimed",
+                 str(k))
+    need(pop > 0, "the register holds claim months with an amount held back", pop)
+    for key in ("transferred", "held", "claimed", "recovered", "unsettled"):
+        out[key] = {q: int(round(v)) for q, v in out[key].items()}
+    out["holds_by_reason"] = reasons
+    return out
+
+
 def main(target, golden, figures_path, submission_path):
     pol = pdf_text(os.path.join(target, POLICY))
     need(len(pol) > 2000, "policy text extracted", "%d characters" % len(pol))
@@ -223,6 +355,45 @@ def main(target, golden, figures_path, submission_path):
             edge = 0.05 - abs(v - round(v, 1))
             need(edge > 0.0075, "band %d figure sits off its printed edge" % b,
                  "%.4f edge %.4f" % (v, edge))
+
+    # ---------------------------------------------------------- the closed-period annex
+    annex = closed_annex(target)
+    for q, v in annex["transferred"].items():
+        need(fig["asks"]["transferred"][q] == v, "annex transferred %s" % q,
+             "%s vs %s" % (fig["asks"]["transferred"][q], v))
+    for q, v in annex["held"].items():
+        need(fig["asks"]["held"][q] == v, "annex held %s" % q,
+             "%s vs %s" % (fig["asks"]["held"][q], v))
+    for r, v in annex["holds_by_reason"].items():
+        need(fig["asks"]["holds_by_reason"][r] == v, "annex holds for %s" % r,
+             "%s vs %s" % (fig["asks"]["holds_by_reason"][r], v))
+    for q in annex["transferred"]:
+        need(annex["claimed"][q] - annex["held"][q] - annex["recovered"][q]
+             - annex["unsettled"][q] - annex["transferred"][q] in (-2, -1, 0, 1, 2),
+             "annex closes at the quarter %s" % q)
+    ga = load_workbook(os.path.join(golden, ANNEX), data_only=True)
+    pay = {}
+    for row in ga["Payments and holds"].iter_rows(min_row=7, max_row=12, values_only=True):
+        pay[str(row[0]).strip()] = row
+    head = str(ga["Payments and holds"]["A2"].value)
+    need("{:,}".format(sum(annex["held"].values())) in head,
+         "the annex's finding line states what the check held back", head[:60])
+    need("{:,}".format(sum(annex["unsettled"].values())) in head,
+         "the annex's finding line states what was not settled")
+    for q, v in annex["transferred"].items():
+        need(int(pay[q][5]) == v, "the annex workbook states what was transferred in %s" % q,
+             pay[q][5])
+        need(int(pay[q][2]) == annex["held"][q], "the annex workbook states the hold in %s" % q)
+    hr = {}
+    for row in ga["Hold reasons"].iter_rows(min_row=5, max_row=10, values_only=True):
+        hr[str(row[0]).strip()] = int(row[1])
+    for r, v in annex["holds_by_reason"].items():
+        need(hr[r] == v, "the annex workbook states the claim-months held for %s" % r, hr.get(r))
+    sub0 = open(submission_path, encoding="utf-8").read()
+    for q, v in annex["transferred"].items():
+        need("{:,}".format(v) in sub0, "the write-up states what was transferred in %s" % q)
+    for r, v in annex["holds_by_reason"].items():
+        need("%s: %s" % (r, "{:,}".format(v)) in sub0, "the write-up states the holds for %s" % r)
 
     # the goldens carry the same figures at the same rounding
     gx = load_workbook(os.path.join(golden, "relief_referral_ceilings_2027-28.xlsx"), data_only=True)

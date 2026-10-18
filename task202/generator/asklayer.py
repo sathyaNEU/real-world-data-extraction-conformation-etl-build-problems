@@ -115,6 +115,10 @@ class Closed:
                 recovery=recov.get(key, 0.0),
                 deferred=bool(r.random() < P.DEFER_RATE),
                 consolidated=False)
+        # a run the Treasury has to net a recovery against is not one it defers
+        for c in self.cells.values():
+            if c["recovery"] > 0:
+                c["deferred"] = False
         # the payment instruction that settles both halves of a partner's claim month
         for key, c in self.cells.items():
             r = sim.stream(42, key[0], IDX[key[1]])

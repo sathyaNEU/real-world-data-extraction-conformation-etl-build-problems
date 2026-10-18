@@ -146,6 +146,36 @@ def read_closed_returns(paths):
     return claimed, recov
 
 
+_CLAIMED_N = {}
+
+
+def _claimed_counts(target, F):
+    """The awards each closed claim month was claimed for, from the returns."""
+    key = os.path.abspath(target)
+    if key in _CLAIMED_N:
+        return _CLAIMED_N[key]
+    out = {}
+    for path in [os.path.join(target, F[k]) for k in ("ret2425", "ret2526")]:
+        ws = load_workbook(path, read_only=True, data_only=True).active
+        grid = [[c for c in r] for r in ws.iter_rows(values_only=True)]
+        hdr = next(i for i, r in enumerate(grid)
+                   if r and any(str(c).strip() in ("return_month", "claim_month") for c in r if c))
+        cols = {str(c).strip(): j for j, c in enumerate(grid[hdr]) if c}
+        mc = cols.get("return_month", cols.get("claim_month"))
+        nc = cols.get("award_count", cols.get("awards"))
+        pc = cols["partner_code"]
+        for r in grid[hdr + 1:]:
+            if not r or r[mc] is None:
+                continue
+            mo = _month(r[mc])
+            if not (CHECK_FROM <= mo <= CHECK_TO) or int(r[nc]) < 0:
+                continue
+            k = (_norm(r[pc]), mo)
+            out[k] = out.get(k, 0) + int(r[nc])
+    _CLAIMED_N[key] = out
+    return out
+
+
 def read_check_register(path):
     """Each closed claim month's own passed and held amounts, per partner.
 
@@ -199,18 +229,19 @@ def read_archive(path):
     return out
 
 
-def transferred(archive, check):
+def transferred(archive, claimed):
     """What the runs transferred against each closed claim month.
 
     The archive is an export of payment instructions against run lines, so where one instruction
     settled both of a partner's half-month runs its amounts sit on both lines. The lines of such a
-    month state the same amounts and together come to more than the check passed for that month,
-    which is impossible, so they are one instruction and count once.
+    month state the same amounts and together come to more than the partner claimed for the month,
+    which cannot be paid, so they are one instruction and count once. The claim returns settle it on
+    their own: the check register is not needed and its own reading does not reach this figure.
     """
     out, repeats = {}, 0
     for k, lines in archive.items():
-        passed = check.get(k, {}).get("passed")
-        if passed is not None and round(sum(g for g, _, _ in lines), 2) > passed + 0.005:
+        clm = claimed.get(k)
+        if clm is not None and round(sum(g for g, _, _ in lines), 2) > clm + 0.005:
             seen, tot = set(), 0.0
             for ln in lines:
                 if ln in seen:
@@ -228,7 +259,8 @@ def ask_figures(target, F):
     """The closed-period annex: what the runs transferred, what the checks held and why."""
     check, raw_rows = read_check_register(os.path.join(target, F["checks"]))
     archive = read_archive(os.path.join(target, F["archive"]))
-    trans, repeats = transferred(archive, check)
+    claimed, _ = read_closed_returns([os.path.join(target, F[k]) for k in ("ret2425", "ret2526")])
+    trans, repeats = transferred(archive, claimed)
     quarters = []
     for mo in sorted({k[1] for k in check}):
         if _quarter(mo) not in quarters:
@@ -243,7 +275,6 @@ def ask_figures(target, F):
             rc[v["reason"] if v["reason"] in REASONS else "Not recorded"] += 1
     for k, v in trans.items():
         tq[_qlabel(_quarter(k[1]))] = round(tq[_qlabel(_quarter(k[1]))] + v, 2)
-    claimed, _ = read_closed_returns([os.path.join(target, F[k]) for k in ("ret2425", "ret2526")])
     cq = {_qlabel(q): 0.0 for q in quarters}
     for k, v in claimed.items():
         cq[_qlabel(_quarter(k[1]))] = round(cq[_qlabel(_quarter(k[1]))] + v, 2)
@@ -260,6 +291,8 @@ def ask_figures(target, F):
         rq[_qlabel(_quarter(k[1]))] = round(rq[_qlabel(_quarter(k[1]))] + v, 2)
     uq = {q: round(cq[q] - hq[q] - rq[q] - tq[q], 2) for q in cq}
     return {"quarters": [_qlabel(q) for q in quarters],
+            "_raw": {"transferred": tq, "held": hq, "claimed": cq, "recovered": rq,
+                     "unsettled": uq},
             "transferred": {k: int(round(v)) for k, v in tq.items()},
             "held": {k: int(round(v)) for k, v in hq.items()},
             "claimed": {k: int(round(v)) for k, v in cq.items()},
@@ -292,7 +325,8 @@ def ask_stops(target, F):
     reg = _raw_register(os.path.join(target, F["checks"]))
     check, _ = read_check_register(os.path.join(target, F["checks"]))
     archive = read_archive(os.path.join(target, F["archive"]))
-    trans, _ = transferred(archive, check)
+    claimed, _ = read_closed_returns([os.path.join(target, F[k]) for k in ("ret2425", "ret2526")])
+    trans, _ = transferred(archive, claimed)
     quarters = []
     for mo in sorted({k[1] for k in check}):
         if _quarter(mo) not in quarters:
@@ -430,6 +464,7 @@ def figures(target, F):
     fig["ks_lognormal"] = int(round(float(np.abs(_n.cdf((np.log(xs) + 0.5 * v) / np.sqrt(v)) - ecdf).max()) / crit))
     fig["ks_gamma"] = int(round(float(np.abs(_g.cdf(xs * kk, kk) - ecdf).max()) / crit))
     fig["asks"] = ask_figures(target, F)
+    fig["_asks_raw"] = fig["asks"].pop("_raw")
     fig["_test"] = _test_block(fig, mean, cnt, shape, C)
     return fig
 

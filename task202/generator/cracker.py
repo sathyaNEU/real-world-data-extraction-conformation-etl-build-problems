@@ -1,127 +1,132 @@
 """The cracker and mirror sheets, measured on the cut pack rather than argued on paper.
 
-The cracker is the response that LANDS the call, runs the hygiene battery and executes every filed
-rule it points at; the mirror is the best response that stops at a wrong rung. Each ask figure is
-scored a hit when it falls within half a unit of the rounding the asking sentence states. The pair is
-computed on Part 0's weights (38 recommendation and components, 7 instruction-following, 55 asks) so
-the figure is comparable with other builds, with r = 5 for the recommendation weight a wrong call keeps.
+The cracker is the response that LANDS the call, runs the hygiene battery (key uniqueness, exact
+duplicates, unmatched joins, fan-out, count ties) and executes every filed rule it points at; the
+mirror is the best response that stops at a wrong rung of the call. Each ask figure is scored a hit
+when it falls within half a unit of the rounding the asking sentence states.
+
+Where the criteria sit, because the previous pass's measurement turned on exactly this. The six band
+ceilings, the twelve referred shares and the six scale factors are the recommendation's own schedule:
+they are generated from the committed ceiling by schedule B over the population clause 9 declares, so
+a response that lands the call has them all, and they are scored in the recommendation and critical
+components block that Part 0 prices at 38. The ask band is the closed-period annex, whose figures are
+computed from two files the ceiling never reads, over claim months that closed before its window
+opened. The audit line at the foot prints what the pair would be if the schedule were scored as asks
+instead, which is the accounting that measured 65.5 and the reason the ask layer was re-sited.
 
     python3 task202/generator/cracker.py
 """
-import json
 import os
 import sys
 
-import numpy as np
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
 
 import build as B
 import params as P
-import records as RC
-import sim
-import solve
 import writeup as WU
 
 W_REC, W_INSTR, W_ASK, R_KEEP = 38.0, 7.0, 55.0, 5.0
+TARGET = os.path.join(os.path.dirname(HERE), "target")
 
-# the asking sentences' own units: the prompt states ceilings in pesos to the nearest PHP 100, each
-# share to one decimal place and each scale factor to three decimals
-ASKS = [("A1 band ceilings", "ceiling", 100.0),
-        ("A2 referred share of awards", "referred_share", 0.1),
-        ("A3 referred share of award value", "referred_value_share", 0.1),
-        ("A4 scale factor applied", "factor", 0.001)]
-CONTENT = ["D1 workbook carries the schedule", "D2 board paper draws the distribution and the ceilings"]
+# the asking sentence's own rounding: the annex amounts to the nearest peso, the claim-months whole
+UNIT = {"A": 1.0, "B": 1.0, "C": 1.0}
+ASKS = [("A the pesos the payment runs transferred, by scheme quarter", "A", 1),
+        ("B the pesos the claim checks held back, by scheme quarter", "B", 1),
+        ("C the claim-months with a hold, by reason", "C", 1)]
+# what the cracker's path files on each ask: it sums the column as the export states it and groups
+# by the column the ask names, which is stop 1 of each ladder (stop 2 of C, which reports the blanks
+# rather than dropping them, is the kinder reading and is scored too)
+CRACKER_STOP = {"A": 0, "B": 0, "C": 1}
+SCHEDULE_CRITERIA = 24          # six ceilings, six referred shares, six value shares, six factors
 
 
-def answers(mean, cnt, shape):
-    """What a response filing ceiling C reports for every graded figure, on its own distribution."""
-    C = solve.lowest(lambda x: solve.share_cells(x, mean, cnt, shape))
-    F = solve.figures_for(C, {"mean": mean, "cnt": cnt, "shape": shape})
-    out = {"call": C, "bands": {}}
-    for b in P.BANDS:
-        d = F["bands"][b]
-        out["bands"][b] = {"ceiling": d["ceiling"], "referred_share": d["referred_share"],
-                           "referred_value_share": d["referred_value_share"], "factor": d["factor"]}
+def rows_of(group, stops, gold, keys):
+    labels = list(stops[group])
+    out = []
+    for i, label in enumerate(labels):
+        vals = stops[group][label]
+        hits = sum(1 for k, g in zip(keys, gold) if abs(vals[k] - g) <= UNIT[group] / 2.0)
+        out.append((label, hits, len(keys)))
     return out
 
 
-def score(resp, gold):
-    """Per ask, the figures this response keeps."""
-    rows = []
-    for label, key, unit in ASKS:
-        hits = 0
-        for b in P.BANDS:
-            if abs(resp["bands"][b][key] - gold["bands"][b][key]) <= unit / 2.0:
-                hits += 1
-        rows.append((label, hits, len(P.BANDS)))
-    # the two content criteria are free: any response that produces the named files earns them
-    for c in CONTENT:
-        rows.append((c, 1, 1))
-    return rows
-
-
-def pair(cracker_rows, mirror_rows):
-    kept = lambda rows: sum(h for _, h, _ in rows) / float(sum(n for _, _, n in rows))
-    Lc, Lm = kept(cracker_rows), kept(mirror_rows)
-    C = W_REC + W_INSTR + W_ASK * Lc
-    S = R_KEEP + W_INSTR + W_ASK * Lm
-    return Lc, Lm, C, S, (C + S) / 2.0
-
-
 def main():
-    W = sim.make()
-    mean, cnt, shape = W["mean"], W["cnt"], W["shape"]
-    gold = answers(mean, cnt, shape)
-    print("golden call PHP %s" % "{:,}".format(gold["call"]))
+    fig = WU.figures(TARGET, B.FILES)
+    a = fig["asks"]
+    stops = WU.ask_stops(TARGET, B.FILES)
+    keys = {"A": a["quarters"], "B": a["quarters"], "C": WU.REASONS}
+    gold = {"A": [a["transferred"][q] for q in a["quarters"]],
+            "B": [a["held"][q] for q in a["quarters"]],
+            "C": [a["holds_by_reason"][r] for r in WU.REASONS]}
+    print("golden call PHP %s; the annex covers claim months %s to %s"
+          % ("{:,}".format(fig["call"]), "2024-07", "2025-12"))
 
-    cracker = gold                                     # the cracker lands the call
-    crows = score(cracker, gold)
-    print("\nCRACKER: lands the call, executes clause 4.2, 9.2 and 9.3 and schedule B, runs the battery")
-    for label, h, n in crows:
-        print("   %-46s keeps %d of %d" % (label, h, n))
+    print("\nCRACKER: lands the call, runs the battery, executes clause 4.2, 9.2, 9.3 and schedule B")
+    print("   recommendation and critical components: lands the call and generates all %d schedule"
+          % SCHEDULE_CRITERIA)
+    print("   figures from it, so it banks the whole %.0f-point block before any ask" % W_REC)
+    crows, n_ask = [], 0
+    for label, grp, _ in ASKS:
+        ladder = rows_of(grp, stops, gold[grp], keys[grp])
+        pick = ladder[CRACKER_STOP[grp]]
+        crows.append((label, pick[1], pick[2]))
+        n_ask += pick[2]
+        print("   %-58s keeps %d of %d   (%s)" % (label, pick[1], pick[2], pick[0][:46]))
+    kept = sum(h for _, h, _ in crows)
+    print("   every other stop measured on this pack, for the record:")
+    for label, grp, _ in ASKS:
+        for lab, h, n in rows_of(grp, stops, gold[grp], keys[grp]):
+            print("      %-66s %d of %d" % (lab[:66], h, n))
 
-    # the mirror: every response that stops at a wrong rung, scored on its own reading
-    cands = {}
-    cv = float(shape.std(ddof=1) / shape.mean())
-    cands["rung 1, the partner-band averages (the default path)"] = answers(mean, cnt, np.array([1.0]))
-    cands["rung 5a, a lognormal at the portal's CV"] = answers(mean, cnt, solve.quantiles_lognormal(cv))
-    cands["rung 5b, a gamma at the portal's CV"] = answers(mean, cnt, solve.quantiles_gamma(cv))
-    sh27 = np.array([a["amount"] / mean[(a["partner"], a["band"])] for a in W["por"]
-                     if (a["partner"], a["band"]) in mean], float)
-    cands["the shape over the portal's whole 27 months"] = answers(mean, cnt, sh27 / sh27.mean())
-    best = None
-    print("\nMIRRORS: each stops at a wrong rung and reports its own figures")
-    for lab, resp in cands.items():
-        rows = score(resp, gold)
-        k = sum(h for _, h, _ in rows)
-        n = sum(n for _, _, n in rows)
-        print("   %-52s call PHP %-7s keeps %2d of %d" % (lab, "{:,}".format(resp["call"]), k, n))
-        for label, h, nn in rows:
-            if h:
-                print("        keeps %d of %d on %s" % (h, nn, label))
-        if best is None or k > best[1]:
-            best = (lab, k, rows)
-    mrows = best[2]
-    Lc, Lm, C, S, pr = pair(crows, mrows)
-    print("\nthe best miss is %s, keeping %d of %d ask criteria" % (best[0], best[1],
-                                                                    sum(n for _, _, n in mrows)))
-    print("\nPAIR on Part 0's weights (%.0f recommendation and components, %.0f instruction, %.0f asks, r = %.0f)"
-          % (W_REC, W_INSTR, W_ASK, R_KEEP))
-    print("   cracker keeps %.3f of the ask weight -> %.1f" % (Lc, C))
-    print("   mirror  keeps %.3f of the ask weight -> %.1f" % (Lm, S))
-    print("   PAIR CEILING %.1f   (bar 50, build to 40)" % pr)
+    print("\nMIRROR: stops at a wrong rung of the call (rung 1 to 5 of the ladder)")
+    print("   the annex asks consume nothing the call's construction produces, so the mirror's ask")
+    print("   row is the cracker's row figure for figure. The separation is asserted, not asserted")
+    print("   by assumption: checks.py separation.ceiling_without_either_ask_file recomputes the")
+    print("   ceiling from a folder holding only the four files the call reads and gets PHP 7,800,")
+    print("   separation.checks_rows_in_the_window and separation.archive_rows_in_the_window are 0,")
+    print("   and separation.device_partner_months_in_the_window is 0. Printing a second scored row")
+    print("   would be comparing a list with itself, so the mirror's ask weight is the cracker's.")
+
+    Lc = kept / float(n_ask)
+    Lm = Lc
+    Cs = W_REC + W_INSTR + W_ASK * Lc
+    Ss = R_KEEP + W_INSTR + W_ASK * Lm
+    pair = (Cs + Ss) / 2.0
+    print("\nPAIR on Part 0's weights (%.0f recommendation and components, %.0f instruction, %.0f asks,"
+          " r = %.0f)" % (W_REC, W_INSTR, W_ASK, R_KEEP))
+    print("   cracker keeps %d of %d ask figures, %.3f of the ask weight -> %.1f" % (kept, n_ask, Lc, Cs))
+    print("   mirror  keeps %d of %d ask figures, %.3f of the ask weight -> %.1f" % (kept, n_ask, Lm, Ss))
+    print("   PAIR CEILING %.1f   (bar 50, build to 40)" % pair)
     print("   MIRROR LEAKAGE %.1f per cent of ask weight (bar under 35)" % (100 * Lm))
 
-    # solve the target keep count with the script rather than on paper
-    print("\nwhat the pair would be at each cracker keep count, with this mirror held:")
-    n_ask = sum(n for _, _, n in crows)
-    for keep in range(0, n_ask + 1, 2):
-        c = W_REC + W_INSTR + W_ASK * keep / n_ask
-        print("   cracker keeps %2d of %d -> pair %.1f%s" % (keep, n_ask, (c + S) / 2.0,
-                                                             "   <= 40" if (c + S) / 2.0 <= 40 else ""))
-    print("\nthe cracker keeps a figure whenever it lands the call, because every graded figure in the")
-    print("prompt is the call's own construction over the call's own population: supplemental-stumping")
-    print("Part 2.1's corollary says no device can sit under such an ask, and this is the measurement.")
-    return pr, 100 * Lm
+    print("\nwhat the pair would be at each keep count, the asks being decoupled so both rows move:")
+    for k in range(0, n_ask + 1, 2):
+        p = (W_REC + R_KEEP) / 2.0 + W_INSTR + W_ASK * k / n_ask
+        print("   both responses keep %2d of %d -> pair %.1f%s"
+              % (k, n_ask, p, "   <= 40" if p <= 40 else ""))
+    hold = max(k for k in range(n_ask + 1)
+               if (W_REC + R_KEEP) / 2.0 + W_INSTR + W_ASK * k / n_ask <= 40)
+    print("   so the asks have to hold both responses to %d of %d or fewer, which is the fifth each"
+          % (hold, n_ask))
+    print("   that Part 0 prices; the deepest stop measured keeps 5 of %d (C3, the response that"
+          % n_ask)
+    print("   differences the register and folds the free text but drops the blank reasons), and a")
+    print("   response that cracks one whole ask would keep 6 of %d for a pair of %.1f" %
+          (n_ask, (W_REC + R_KEEP) / 2.0 + W_INSTR + W_ASK * 6 / n_ask))
+
+    alt = n_ask + SCHEDULE_CRITERIA
+    altC = W_REC + W_INSTR + W_ASK * (kept + SCHEDULE_CRITERIA) / alt
+    altS = R_KEEP + W_INSTR + W_ASK * (kept + 8) / alt
+    print("\naudit line, the accounting the previous pass used: scoring the schedule's %d figures in"
+          % SCHEDULE_CRITERIA)
+    print("   the ask band instead puts the pair at %.1f (cracker %.1f, a mirror keeping the six"
+          % ((altC + altS) / 2.0, altC))
+    print("   factors and two content criteria %.1f). The gate takes the figure above, because the"
+          % altS)
+    print("   schedule is the recommendation's own components over the call's own population and")
+    print("   Part 1.2 ban 4 forbids counting it as an ask at all.")
+    return pair, 100 * Lm
 
 
 if __name__ == "__main__":

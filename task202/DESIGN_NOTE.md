@@ -1,7 +1,11 @@
 # task202 design note
 
-**Status: architecture v1 built, stage 3 complete on the free gates, one gate red (the ask layer's
-pair ceiling, measured at 65.5 against the bar of 40).** Four grounds were screened to
+**Status: architecture v1 built, stage 3 complete, every free gate green.** The ask layer was
+re-sited onto the closed period in a `/fix-rubric` pass with the recommendation side frozen
+(`freeze.py check task202 --mode rubric` PASS): the pair ceiling is **28.5** against the bar of 40 and
+mirror leakage **0.0 per cent** against 35, measured by `generator/cracker.py` on the cut pack. The
+call, its schedule, the stump and the ladder are byte-identical to the pass before. Four grounds were
+screened to
 death before it (human-factors thinned-count and time-on-task, multiple-testing selective inference, the
 designation-set device on task181's safety-incident ground, and environmental-monitoring exceedance on four
 mechanisms and five candidates); all of those kills, with their measurements, are in `## Tried and
@@ -318,6 +322,14 @@ are fixed and how the award distribution is recovered is left to the analysis.
   grid over every multiple of PHP 100, and a binary search) return the **same ceiling on all ten seeds at
   each of three committed shares, 6, 10 and 15 per cent**, on the second model cut. The solve is therefore
   not itself a fork, and the ladder's spread is the shape's, not the search's.
+- **The ask layer's own oracles**, all in `generator/checks.py` under `separation.*`, `deviceA.*`,
+  `deviceB.*`, `deviceC.*`, `ladder.*` and `closure.*`: the main call recomputed from a folder
+  holding only the four files it reads (PHP 7,800 and 5.94 per cent, so deleting every device leaves
+  the call where it was), zero ask-layer rows and zero device partner-months inside clause 9's
+  window, each device's forcing figure on the cut pack, every ask stop's hit count against the
+  golden, and the quarter closure to the centavo. `verify.py` rebuilds all eighteen annex figures
+  from the bundle alone on its own code path (`closed_annex`), against the golden workbook and the
+  write-up.
 - The portal's goodness of fit, which is the pack's own closure evidence: KS against a single lognormal
   16.1 times the five per cent critical value, against a gamma 19.1 times, against an EM two-component fit
   0.33 times, which accepts it and is why the correctly specified fit is a corridor and not a rung; and the
@@ -326,66 +338,220 @@ are fixed and how the award distribution is recovered is left to the analysis.
 
 ## Ask sheet
 
-The prompt asks for four families of six figures and two deliverables: twenty-four graded figures, every
-one separately gradable and determinate, each with its unit and rounding inside the asking sentence. Band
-4's ceiling is the main call.
+The prompt asks for three deliverables. The schedule workbook and the board paper carry the call and
+its components: six band ceilings, six referred shares of awards, six referred shares of award value
+and six scale factors, twenty-four figures that are generated from the committed ceiling by schedule B
+over exactly the population clause 9 declares. **Those twenty-four are the recommendation's critical
+components and are scored in the 38-point recommendation block, not in the ask band.** A response that
+lands the call has all of them, which is what Part 0's arithmetic already assumes when it gives a
+landed call 38 + 7 before any ask. The previous pass scored them inside the 55-point ask band, which is
+the whole of its 65.5 measurement: scoring the call's own construction as an ask is Part 1.2 ban 4, and
+Part 2.1's corollary says no device can sit under such an ask because the separation line puts zero
+device rows inside the main call's declared population. The ask band is now the third deliverable.
 
-| Ask | Figures | Device against the careful solver's path |
-|---|---|---|
-| A1 each band's 2027/28 referral ceiling, pesos to the nearest PHP 100 | 6 | the scale is filed as a rule inside the policy PDF and the rounding rule is a separate clause of it, applied once and after the factor |
-| A2 each band's referred share of its own window awards, one decimal | 6 | the band mix differs between the pilot and the portfolio, so a portal-only read misses every band; counting a superseded return as well as its revision moves band 4 from 6.1 to 6.0, measured |
-| A3 each band's referred share of its own window award value, one decimal | 6 | value share against count share: the capital-item components carry 22 per cent of value against 6 per cent of count |
-| A4 the equivalence-scale factor applied at each band, three decimals | 6 | schedule B tabulates no factor at all: every band's factor has to be computed from B.2's rule, and the band's size is its lower bound, which is what fixes the open band |
-| D1, D2 the two deliverables | 2 content criteria | the schedule workbook and the board paper, which must carry the distribution against the ceilings |
+`claims_annex.xlsx` answers the audit committee, whose question is in the round's own request: the
+Desk referral clause 7 creates is a pre-payment control, the scheme already had one, and before the
+Board is asked to put a new one in the committee wants the size of what the old one caught and
+whether what the Treasury sent out ties to what partners claimed. The annex covers **claim months July
+2024 to December 2025**, the eighteen months the pre-payment claim check covered before it was
+withdrawn on 1 January 2026. The ceiling's window is the twelve months to 31 March 2027. The two do
+not overlap by a single row.
 
-**Dropped, and why each is out.** The designating ask (which partners' own referred share would exceed 12
-per cent) was dropped at the design stage because the golden's own estimator family returned 2 distinct
-designated sets over 12 bootstrap redraws. Two further asks were dropped at the build: the number of
-window awards referred, and the award shape's coefficient of variation. The prompt asks for neither, and a
-graded figure the prompt never asked for is an open fork by construction, since nothing fixes its basis,
-population or rounding (`determinism-check` section 5). Both are still computed and asserted; they sit in
-the goldens' basis sheet as working, not as answers the rubric owes.
+### Ask A, what the payment runs transferred, by scheme quarter
 
-**Pair ceiling:** 65.5 (measured on the cut pack, over the bar of 40, and the one red gate in this build).
+- **Figures:** 6, one per scheme quarter from 2024/25 Q1 to 2025/26 Q2, in pesos to the nearest peso.
+  Golden 32,135,504 / 30,755,712 / 24,385,079 / 26,754,851 / 39,755,121 / 39,301,120.
+- **H18 home:** the audit trail. The claim returns are the input the call consumes; the trail runs
+  from them, through run lines the ceiling never reads, to the Treasury's own control total.
+- **Use:** the committee is asking whether the claims record the ceiling is struck on is the record
+  the money followed. The quarter is the grain its own papers use.
+- **Primary device (D6, grain, one of the four shapes that costs the cracker anything):** the archive
+  is an export of payment **instructions** against run lines. Where one instruction settled both of a
+  partner's half-month runs, because the first half's release was held for a mandate re-validation,
+  the instruction's amounts stand on both lines it covers. 138 of 1,527 partner claim-months. No
+  flag, no marker, no status column, every key unique, every join matched, no duplicated row, counts
+  tie: the hygiene battery sees nothing.
+- **The figure that makes the wrong reading wrong:** in those 138 partner claim-months the run lines
+  sum to more than the partner claimed for the month, which cannot be paid, and in all 138 the lines
+  state the same three amounts; in the other 1,389 the lines sum to the claim net of what the check
+  held, exactly. Asserted as `deviceA.*` in `generator/checks.py`.
+- **Hazards on this ask:** H2 (the recovery lag), H4 (the claim-months the archive does not carry).
+- **Files on the golden's path:** `target/treasury_disbursement_runs_2024_2025.csv`,
+  `hrg_claim_returns_fy2024-25.xlsx`, `hrg_claim_returns_fy2025-26.xlsx`, `export_manifest.csv`,
+  `DATA_DICTIONARY.md`, `hrg_operating_policy_2027_edition.pdf`, `referral_ceiling_request.eml`,
+  `hrg_partner_accreditation_register.csv` (8 files); 11 columns on the path (`run_ref`, `run_date`,
+  `partner_code`, `claim_months_covered`, `gross_php`, `recoveries_php`, `net_php`, and the returns'
+  claim month, partner code, award count and claim total).
+- **Stops, each a complete competent pipeline** (`writeup.ask_stops`, asserted stop by stop):
+  A1 every run line summed as the export states it, 35,627,385 / 33,616,978 / 26,125,629 /
+  29,770,915 / 42,575,957 / 42,606,146; A2 the gross column summed with recoveries left in,
+  35,627,385 / 33,619,348 / 26,128,092 / 29,774,467 / 42,580,799 / 42,606,146; A3 the over-stated
+  claim-months dropped altogether, 28,643,623 / 27,894,446 / 22,644,528 / 23,738,786 / 36,934,285 /
+  35,996,094; A4 the instruction counted once, the answer. **Lazy delta 3,491,881 pesos**, and no stop
+  reproduces a single graded figure.
+- **Realism:** a payment system that exports instructions against the run lines they settle, and
+  repeats the instruction's amounts on each line, is what a Treasury archive extract looks like; the
+  round's folder holds it because the committee asked for the closed months.
 
-**Mirror leakage:** 34.6 per cent of ask weight (measured, under the 35 bar).
+### Ask B, what the claim check held back, by scheme quarter
 
-**Measured by:** `generator/cracker.py`, run on the cut pack. It scores both responses from different
-readings on Part 0's weights (38 recommendation and components, 7 instruction-following, 55 asks, r = 5),
-prints one row per response and sweeps the pair against the cracker's keep count.
+- **Figures:** 6, one per scheme quarter, in pesos to the nearest peso. Golden 267,012 / 147,874 /
+  270,559 / 165,711 / 275,978 / 228,163.
+- **H18 home:** a qualifier on the call's own input. The returns state what partners **claimed**; the
+  check held part of it back, so the committee is being told how much of the claimed amount the
+  record actually stood behind.
+- **Use:** the size of the control the Desk referral replaces, which is the committee's question.
+- **Primary device (D3, meaning set per date, a stock read as a flow):** the register's two currency
+  columns state the partner's **position in the scheme year** at that check, not the month's own
+  figure. The column names say neither, and the data dictionary describes them as what they are
+  without naming a convention. 1,424 of 1,604 rows state an amount passed above what the month was
+  claimed for, which is impossible; 180 rows are a scheme year's July and carry the month alone.
+- **The figure that makes the wrong reading wrong:** differencing inside the scheme year restores
+  claimed less passed as held in **every** one of the 1,566 partner claim-months, to the centavo, and
+  the undifferenced column satisfies it in none of the later ones. Asserted as `deviceB.*`.
+- **Second resolution this ask needs:** 38 partner claim-months carry two checks, the later one
+  standing after the partner answered the hold. Taking the earlier check moves all six figures.
+- **Hazards on this ask:** H1 (the separator the claims system changed in January 2025).
+- **Files on the golden's path:** `target/hrg_claim_check_register_2024_2025.csv`,
+  `hrg_claim_returns_fy2024-25.xlsx`, `hrg_claim_returns_fy2025-26.xlsx`,
+  `hrg_partner_accreditation_register.csv`, `export_manifest.csv`, `DATA_DICTIONARY.md`,
+  `hrg_operating_policy_2027_edition.pdf`, `referral_ceiling_request.eml` (8 files); 10 columns
+  (`claim_month`, `claims_partner_ref`, `checked_date`, `awards_passed`, `amount_passed_php`,
+  `amount_held_php`, and the returns' claim month, partner code, award count and claim total).
+- **Stops:** B1 the held column summed as it stands, 530,242 / 1,094,454 / 1,774,569 / 2,389,665 /
+  577,649 / 1,342,487; B2 differenced without the scheme year's July reset, 189,008 / 124,547 /
+  224,468 / 141,055 / -603,961 / 176,276; B3 differenced from the first check of each claim month,
+  269,639 / 145,247 / 276,630 / 168,768 / 279,546 / 226,097; B4 the answer. **Lazy delta 2,223,954
+  pesos**, and no stop reproduces a graded figure.
+- **Realism:** a claims system whose figure columns were turned year-to-date for the finance report
+  and whose award count was left alone is an ordinary release artefact; the register was extracted for
+  the reconciliation and nobody re-stated it.
 
-**What the measurement says, and it is a finding about the ask layer rather than about any device.** Every
-graded figure in the prompt is the call's own construction over the call's own population: the six ceilings
-are generated from the call by schedule B, the six factors are read off schedule B, and the twelve shares
-are that construction cut per band over exactly the rows clause 9's own comparison runs over. A response
-that lands the call therefore keeps all twenty-four, so the cracker keeps 26 of 26 ask criteria and scores
-100 against the mirror's 31.0. `supplemental-stumping` Part 1.2 ban 4 forbids an ask keyed to the call's
-construction and Part 2.1's corollary gives the reason no device can repair it: an ask computed over the
-call's own population can carry no primary, because the separation line puts zero device rows inside the
-main call's declared population. The sweep in `cracker.py` prices it exactly: the pair reaches 40 only when
-the cracker keeps 2 of 26 or fewer.
+### Ask C, the claim-months with a hold, by reason
 
-The ask layer therefore needs re-siting rather than hardening, onto quantities the call never reads (the
-claims pipeline's own records, the accreditation and enrolment history, the reconciliation between the
-returns and the Treasury's payment runs), and that changes `prompt.txt`, which is outside this pass. The
-repair route is `/fix-rubric` with the main recommendation side frozen, and `freeze.py check --mode rubric`
-proves the scope.
+- **Figures:** 6, one per reason, as whole counts. Golden Receipts incomplete 73, Household record
+  incomplete 46, Duplicate application 36, Component not eligible 30, Arithmetic error on return 17,
+  no reason recorded 76.
+- **H18 home:** the same audit trail, read for what the old control was catching rather than for how
+  much; a component of the committee's case that does not touch the ceiling.
+- **Use:** the Desk inherits these cases from 2027/28, so their mix is what the Board is being asked
+  to staff.
+- **Primary device (D4, a blank that means two things):** `hold_reason` is empty both where nothing
+  was held and where a hold's reason was never recorded, because the field was free text and not
+  mandatory until the April 2025 release. 76 partner claim-months have a hold of their own and no
+  reason; 1,288 have a blank reason and no hold.
+- **The figure that makes the wrong reading wrong:** the hold's existence is settled by the record and
+  not by the blank. 278 partner claim-months passed fewer awards than the return claims for them, and
+  those are exactly the 278 whose own held amount is above zero: the two routes agree on every row,
+  asserted, so the blank cannot be read as the absence of a hold.
+- **Second resolution this ask needs:** the reason was free text before the release, so 74 entries in
+  21 spellings are the same five reasons in whatever case and punctuation the checker typed; each
+  folds onto exactly one of the five on the list, asserted.
+- **Hazards on this ask:** H1 (the separator), and Ask B's year-to-date convention, which decides
+  which claim-months count as held if the amount column is used for the test.
+- **Files on the golden's path:** `target/hrg_claim_check_register_2024_2025.csv`,
+  `hrg_claim_returns_fy2024-25.xlsx`, `hrg_claim_returns_fy2025-26.xlsx`,
+  `hrg_partner_accreditation_register.csv`, `household_size_bands.csv`, `export_manifest.csv`,
+  `DATA_DICTIONARY.md`, `referral_ceiling_request.eml` (8 files); 12 columns (`check_ref`,
+  `claim_month`, `claims_partner_ref`, `checked_date`, `checker_ref`, `awards_passed`,
+  `amount_passed_php`, `amount_held_php`, `hold_reason`, and the returns' claim month, partner code
+  and award count).
+- **Stops:** C1 rows with a held amount grouped by the reason column, 54 / 35 / 32 / 23 / 13 / 0;
+  C2 the same with blanks counted as a line of their own, 54 / 35 / 32 / 23 / 13 / 888; C3 each
+  month's own hold with the blanks dropped, 73 / 46 / 36 / 30 / 17 / 0; C4 the answer. **Lazy delta
+  812 claim-months.** C1 and C2 reproduce no graded figure; C3, the response that differences the
+  register and folds the free text and still reads a blank as no reason, keeps five of the six and is
+  the deepest stop measured anywhere in this layer.
+- **Realism:** a free-text field that became a list, left unmigrated, is the most ordinary thing in a
+  case register.
 
-**The premise the number rests on, stated so it is not read as more than it is.** The pair ceiling assumes
-one of the top two responses lands the call, which is the conservative premise and the one the gate reads.
-Measured the other way, with both top responses stopping at a wrong rung, the pair is 31.0: every mirror
-measured keeps only the six scale factors and the two content criteria. Which premise holds is a question
-about the ladder, and the ladder's own evidence is the six wrong routes at 6 to 20 printed units and the
-silent decisive rung; the stage 4 cold reader settles it, and until it does the gated field carries the
-worse of the two numbers.
+### The separation line, by count
 
-| Ask | The cracker's route | Cracker |
-|---|---|---|
-| A1 | lands the call and generates the band ceilings by schedule B | keeps 6 of 6 |
-| A2 | lands the call and cuts the rebuilt distribution per band | keeps 6 of 6 |
-| A3 | lands the call and takes the value above each band ceiling | keeps 6 of 6 |
-| A4 | reads schedule B.2 and computes all six factors from the rule | keeps 6 of 6 |
-| D1, D2 | produces both named files with the schedule and the chart | keeps 2 of 2 |
+Zero device and hazard rows inside the main call's declared population, asserted in
+`generator/checks.py` rather than argued:
+
+| What is asserted | Count |
+|---|---|
+| `separation.checks_rows_in_the_window` | 0 of 1,604 |
+| `separation.archive_rows_in_the_window` | 0 of 3,053 |
+| `separation.device_partner_months_in_the_window` (consolidated, deferred or held) | 0 |
+| `separation.recoveries_outside_the_window` | 0 in the window |
+| `separation.checks_months_are_closed` / `archive_months_are_closed` | 2024-07 to 2025-12 |
+| `separation.ceiling_without_either_ask_file` | PHP 7,800 from a folder holding only the four files the call reads |
+| `separation.share_without_either_ask_file` | 5.94 per cent |
+| `separation.main_call_*_unmoved` | call 7,800, down 7,700, default 5,800, cells 528, awards 49,265, partners 88, shares 5.94 / 6.04 / 9.82, cv 0.72 |
+
+Delete every device and the call is the same call, struck on the same rows, at the same distance from
+the next multiple of PHP 100. The only file the call reads that the asks touch at all is
+`hrg_claim_returns_fy2025-26.xlsx`, and they read its July-to-December 2025 rows, which are outside
+clause 9's window; `hrg_claim_returns_fy2024-25.xlsx` is read by neither the call's path nor its
+verifier, and it is where the four recovery lines were added.
+
+### The hazards, and what each moves
+
+| # | Hazard | Asks moved | Measured delta |
+|---|---|---|---|
+| H1 | the claims system moved the partner reference's separator in January 2025 and the register was not reloaded, so 536 of 1,604 rows carry `HRG/ALB/001` | B, C | B's first two quarters fall to 0 from 267,012 and 147,874 if the unjoined months are dropped |
+| H2 | a recovery is applied against the partner's next transfer, so its run sits in the quarter after the negative claim line's | A | 5 of the 6 quarters move, by 1,231 to 4,842 pesos |
+| H3 | the register holds the original check and the later one for 38 partner claim-months | B, C | all six of B's figures move (stop B3) |
+| H4 | 39 partner claim-months were released in a run dated after the archive's cut-off and are not in it | A | imputing them moves all six of A's figures, by up to 1,230,553 pesos |
+| H5 | the reason was free text in 21 spellings before the April 2025 release | C | all five named reasons move (stop C1) |
+
+No subset of these composes back inside a bin: H1 and H3 move B in opposite directions and H4 moves A
+one way only, which `checks.py` asserts stop by stop.
+
+**The referee.** The claim returns arbitrate the register's convention and the archive's grain without
+handing over a level: an amount passed above what the month was claimed for cannot be, and run lines
+summing above the claim cannot be paid. They are byte-clean (the call's own window rows are untouched
+and asserted unmoved), they state no hold, no instruction and no quarter, and they tie under every
+handling. Nothing else in the pack separates the readings, which is why the devices are not forks.
+
+**The quarter grouping is convergent, not a fork.** The scheme year opens in July, so its quarters are
+July to September, October to December, January to March and April to June, which over claim months
+July 2024 to December 2025 are the same six buckets as the calendar quarters: measured, all six figures
+identical under both readings, only the labels differ. The asking sentence's "scheme quarter" therefore
+closes nothing it needed to close, and no graded figure turns on it.
+
+| Ask | The cracker's route, run on the cut pack | Figures kept | Verdict |
+|---|---|---|---|
+| A, what the payment runs transferred by scheme quarter | lands the call, runs the battery, sums every run line as the export states it (stop A1) | 0 of 6 | miss |
+| B, what the claim check held back by scheme quarter | sums the held column as the register states it (stop B1) | 0 of 6 | miss |
+| C, the claim-months with a hold by reason | counts rows with a held amount, grouped by the reason column with the blanks as their own line (stop C2) | 0 of 6 | miss |
+
+**Measured by:** `generator/cracker.py`, run on the cut pack. It scores the cracker from the stops
+`writeup.ask_stops` computes on the shipped files, prints one row per response on Part 0's weights (38
+recommendation and components, 7 instruction-following, 55 asks, r = 5), sweeps the pair against the
+keep count, and prints the audit line for the accounting the previous pass used.
+
+**Pair ceiling:** 28.5 (measured on the cut pack: cracker 45.0, mirror 12.0).
+
+**Mirror leakage:** 0.0 per cent of ask weight (measured).
+
+**Why the mirror's ask row is the cracker's, rather than a second scored list.** The annex asks consume
+nothing the call's construction produces, so a response that stops at a wrong rung of the ladder answers
+them exactly as a response that lands it does. Part 7 says that where that is so the output says it and
+points at the separation assertions rather than printing a duplicate row, because comparing a list with
+itself cannot perform the coupling test. The separation assertions above are the proof, and the coupling
+test is answered by them: no graded annex figure changes when the call changes, and no main-call figure
+changes when a device is deleted.
+
+**What the sweep prices, stated as the sensitivity it is.** With the asks decoupled, both rows move
+together, so the pair is 28.5 + 55 L and the bar needs both responses held to 3 of 18 figures or fewer,
+which is the fifth each Part 0 prices. The deepest stop measured keeps 5 of 18 (C3, pair 43.8), and a
+response that cracked one whole ask would keep 6 of 18 (pair 46.8). The register's year-to-date
+convention is the load-bearing one: it gates Ask B's six figures and the amount route into Ask C's six.
+Nothing in the prompt or the pack invites the cross-file comparison that reveals it, which is the
+property the design rests on, and it is recorded here rather than presented as margin.
+
+**Dropped, and why each is out.** The designating ask (which partners' own referred share would exceed
+12 per cent) died at the design stage because the golden's own estimator family returned 2 distinct
+designated sets over 12 bootstrap redraws. The number of window awards referred and the award shape's
+coefficient of variation were dropped at the build: the prompt asks for neither, and a graded figure the
+prompt never asked for is an open fork by construction. All three are still computed and asserted. The
+annex's claimed, recovered and not-settled columns are workings, not graded figures: they are in the
+golden because a reconciliation that does not show its lines is not one, and `checks.py` asserts the
+closure at the quarter, each quarter's claim less what was held, recovered and not yet settled equalling
+what was transferred, to the centavo.
 
 ## Tried and rejected
 
@@ -778,3 +944,47 @@ construction over the call's own population, which `supplemental-stumping` Part 
 shape's coefficient of variation) because the prompt asks for neither and a graded figure with no asking
 sentence has no fixed basis. The repair is to re-site the ask layer onto quantities the call never reads,
 which changes `prompt.txt` and belongs to `/fix-rubric`.
+
+### The ask layer re-sited onto the closed period: what died on the way (2026-10-18)
+
+The finding this pass answers, carried forward from the measurement that produced it rather than
+restated: every graded figure the prompt asked for was the call's own construction over the call's own
+population, so a response that landed the call kept 26 of 26 ask criteria and scored 100 against the
+best mirror's 31.0, for a pair of 65.5. `supplemental-stumping` Part 1.2 ban 4 forbids the ask and
+Part 2.1's corollary gives the reason no device could have repaired it in place: with zero device rows
+allowed inside the main call's declared population, an ask computed over that population can carry no
+primary. The sweep priced it exactly, at a pair of 40 only if the cracker kept 2 of 26 or fewer. The
+layer was therefore re-sited, not hardened, and these are the deaths on the way.
+
+- **Hardening the band-schedule asks in place:** dead before it was attempted, on the measurement
+  above. Nothing was tried a second time.
+- **The scheme quarter as a hazard:** measured as a no-op. The scheme year opens in July, so its
+  quarters are the calendar quarters over claim months July 2024 to December 2025, and all six figures
+  are identical under both readings. It is recorded in the ask sheet as a convergence instead, which
+  is what it is, and it moves nothing (necessity matrix).
+- **The recovery lag inside its own quarter:** measured as a no-op. With the recoveries claimed back
+  in October 2024, January 2025 and May 2025 the run that carries each one falls in the same quarter as
+  the negative claim line, so 0 of 6 figures moved. Re-sited to the last month of a quarter, where it
+  moves 5 of 6 by 1,231 to 4,842 pesos.
+- **A free-text reason style with a trailing space:** dead because a naive read strips. It matched the
+  list label after `.strip()`, so the un-normalised stop reproduced the golden's named counts;
+  replaced with title case, after which stop C1 reproduces none of them.
+- **A fourth and fifth ask to dilute the keep count:** not built, on the prompt's arithmetic. The
+  three sentences carrying the call are frozen at 478 characters, which leaves 517 of the 999 for the
+  whole ask block, and three asks stated with their basis, grain, unit and rounding spend 512 of them.
+  The dilution would have been bought with an underspecified ask, which is the trade Part 5 refuses.
+- **A key-collision device (D7), a duplication device (D1) and a partial-extract device (D5):** all
+  three died on the same screen. The hygiene battery runs key uniqueness, exact duplicates, unmatched
+  joins, fan-out and count ties, so a device found by any of them is free to the cracker. What is left
+  is the grain and self-validation family, which is where all three primaries ended up: an instruction
+  standing on the lines it covers, a stock read as a flow, and a blank that means two things.
+- **A claims-check log whose closure made Ask A derivable from Ask B:** dead on the arithmetic. If
+  what the runs transferred is exactly the claim less what the check held and what it recovered, a
+  response that cracks the register's convention gets Ask A for nothing without ever reading the
+  archive. Broken by the 39 partner claim-months the archive does not carry, which only the archive's
+  own coverage reveals, so the three quantities no longer determine each other.
+- **The register's `awards_passed` column as year-to-date as well:** rejected after it was drafted. It
+  would have been more coherent as a release artefact, and it would have put one device in front of 12
+  of the 18 figures. Left monthly, so the hold population has a second route (the awards the return
+  claims against the awards the check passed) that agrees with the amount route on every row,
+  asserted. The concentration that remains is recorded in the ask sheet as the layer's sensitivity.

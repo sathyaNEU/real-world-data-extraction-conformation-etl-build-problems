@@ -439,6 +439,14 @@ value, and the scale factor you applied, plus a short paper the trustees can rea
 workbook. The Desk's capacity is the constraint the Board signed up to, so the share matters as much
 as the amounts.
 
+One more thing, and it comes from the audit committee rather than from me. The Desk referral is a
+pre-payment control and we used to have one: the claim check held an amount back on the way through
+until we withdrew it at the end of 2025. Before the Board is asked to put a new one in, the committee
+wants to see what the old one was holding back and whether what the Treasury actually sent out ties
+to what partners claimed. Steven has put the check register and the Treasury's archive extract for
+the closed claim months in the folder with the rest. Quarter by quarter is enough, and the committee
+reads the scheme's own quarters.
+
 Thanks,
 %s
 %s

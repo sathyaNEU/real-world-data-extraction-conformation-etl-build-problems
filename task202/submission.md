@@ -46,3 +46,27 @@ The schedule it generates refers 5.94 per cent of the awards the scheme resolved
 1. The recommendation on page 1: set the 2027/28 referral ceiling for a four-person household at PHP 7,800.
 2. The same six ceilings, referred shares of awards and of award value, and scale factors as the workbook, in the schedule table on page 1.
 3. The award distribution and the ceilings drawn across household sizes: a histogram of the four-person band's award amounts with the PHP 7,800 ceiling marked and the referred tail shaded, beside the six ceilings stepped across the household-size bands with each band's referred share labelled, on page 1.
+
+### claims_annex.xlsx
+
+1. The pesos the archived payment runs transferred against each closed scheme quarter's claim months, one payment instruction counted once:
+   - 2024/25 Q1: PHP 32,135,504
+   - 2024/25 Q2: PHP 30,755,712
+   - 2024/25 Q3: PHP 24,385,079
+   - 2024/25 Q4: PHP 26,754,851
+   - 2025/26 Q1: PHP 39,755,121
+   - 2025/26 Q2: PHP 39,301,120
+2. The pesos the pre-payment claim check held back in each closed scheme quarter, from each month's own hold:
+   - 2024/25 Q1: PHP 267,012
+   - 2024/25 Q2: PHP 147,874
+   - 2024/25 Q3: PHP 270,559
+   - 2024/25 Q4: PHP 165,711
+   - 2025/26 Q1: PHP 275,978
+   - 2025/26 Q2: PHP 228,163
+3. The partner claim-months the check held an amount back in, by reason recorded:
+   - Receipts incomplete: 73
+   - Household record incomplete: 46
+   - Duplicate application: 36
+   - Component not eligible: 30
+   - Arithmetic error on return: 17
+   - Not recorded: 76

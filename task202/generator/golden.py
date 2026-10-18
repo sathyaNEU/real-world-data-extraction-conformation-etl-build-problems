@@ -14,9 +14,11 @@ from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer
 import docs
 import params as P
 import records as RC
+import writeup as WU
 
 XLSX = "relief_referral_ceilings_2027-28.xlsx"
 PDF = "referral_ceiling_board_paper.pdf"
+ANNEX = "claims_annex.xlsx"
 PNG = "_award_distribution.png"
 
 
@@ -102,6 +104,143 @@ def schedule_workbook(path, fig):
     wb.properties.creator = P.PEOPLE["assurance"][0]
     wb.properties.lastModifiedBy = P.PEOPLE["assurance"][0]
     wb.properties.title = "%s referral ceiling schedule 2027/28" % P.SCHEME_SHORT
+    wb.properties.created = dt.datetime(2027, 5, 21, 16, 5)
+    wb.properties.modified = dt.datetime(2027, 5, 21, 16, 5)
+    wb.save(path)
+    docs.finalise_xlsx(path, (2027, 5, 21, 16, 5, 0))
+
+
+def annex_workbook(path, fig):
+    """The closed-period annex the audit committee asked for beside the schedule."""
+    a = fig["asks"]
+    wb = Workbook()
+    head = Font(bold=True, color="FFFFFF")
+    fill = PatternFill("solid", fgColor="2F4B6E")
+    bold = Font(bold=True)
+    thin = Side(style="thin", color="9AA3AE")
+    money = "#,##0"
+
+    ws = wb.active
+    ws.title = "Payments and holds"
+    ws["A1"] = "%s: claims assurance annex, closed claim months" % P.SCHEME
+    ws["A1"].font = Font(bold=True, size=13)
+    tot_held = sum(a["held"][q] for q in a["quarters"])
+    tot_uns = sum(a["unsettled"][q] for q in a["quarters"])
+    ws["A2"] = ("The check held PHP %s back over the eighteen closed claim months, and PHP %s of "
+                "what partners claimed had not been settled when the archive was cut."
+                % ("{:,}".format(tot_held), "{:,}".format(tot_uns)))
+    ws["A2"].font = Font(bold=True, size=10)
+    ws["A3"] = ("Claim months July 2024 to December 2025, the period the pre-payment claim check "
+                "covered. Scheme quarters, July to June. Amounts in pesos.")
+    ws["A4"] = ("Prepared by %s, %s, for the audit committee. Claims extract of %s."
+                % (P.PEOPLE["assurance"][0], P.OFFICE, P.EXTRACT_DATE.strftime("%d %B %Y")))
+    for r in (3, 4):
+        ws.cell(row=r, column=1).font = Font(italic=True, size=9)
+    cols = ["Scheme quarter", "Claimed on returns", "Held by the check", "Recovered in the runs",
+            "Not settled in the archive", "Transferred by the runs"]
+    for j, c in enumerate(cols, start=1):
+        cl = ws.cell(row=6, column=j, value=c)
+        cl.font = head
+        cl.fill = fill
+        cl.alignment = Alignment(wrap_text=True, vertical="center")
+    tot = [0, 0, 0, 0, 0]
+    for i, q in enumerate(a["quarters"], start=7):
+        vals = [a["claimed"][q], a["held"][q], a["recovered"][q], a["unsettled"][q],
+                a["transferred"][q]]
+        ws.cell(row=i, column=1, value=q).border = Border(bottom=thin)
+        for j, v in enumerate(vals, start=2):
+            cl = ws.cell(row=i, column=j, value=v)
+            cl.number_format = money
+            cl.border = Border(bottom=thin)
+            tot[j - 2] += v
+    r = 7 + len(a["quarters"])
+    ws.cell(row=r, column=1, value="All six quarters").font = bold
+    for j, v in enumerate(tot, start=2):
+        cl = ws.cell(row=r, column=j, value=v)
+        cl.number_format = money
+        cl.font = bold
+    notes = [
+        "Claimed less held, recovered and not yet settled equals transferred in every quarter.",
+        "Each side is keyed to the claim month: the month a return was filed for, and for a payment "
+        "run line the claim month it covers.",
+        "The %d partner claim-months with no run line in the extract were released in a run dated "
+        "after the archive's cut-off of 31 January 2026 and are shown as not settled; the manifest "
+        "records the cut-off." % (a["check_months"] - a["run_months"]),
+        "A recovery is applied against the partner's next transfer, so it falls in the quarter after "
+        "the one the negative claim line sits in.",
+    ]
+    for i, t in enumerate(notes):
+        cl = ws.cell(row=r + 2 + i, column=1, value=t)
+        cl.font = Font(italic=True, size=9)
+    for j, w in enumerate([18, 19, 18, 19, 21, 21], start=1):
+        ws.column_dimensions[get_column_letter(j)].width = w
+    ws.freeze_panes = ws.cell(row=7, column=1)
+    ws.print_area = "A1:F%d" % (r + 2 + len(notes))
+    ws.print_title_rows = "6:6"
+
+    hs = wb.create_sheet("Hold reasons")
+    hs["A1"] = "Partner claim-months the check held an amount back in, by reason recorded"
+    hs["A1"].font = Font(bold=True, size=12)
+    hs["A2"] = "Claim months July 2024 to December 2025."
+    hs["A2"].font = Font(italic=True, size=9)
+    for j, c in enumerate(["Reason recorded", "Partner claim-months"], start=1):
+        cl = hs.cell(row=4, column=j, value=c)
+        cl.font = head
+        cl.fill = fill
+    n = 0
+    for i, k in enumerate(WU.REASONS, start=5):
+        hs.cell(row=i, column=1, value=k).border = Border(bottom=thin)
+        cl = hs.cell(row=i, column=2, value=a["holds_by_reason"][k])
+        cl.number_format = "#,##0"
+        cl.border = Border(bottom=thin)
+        n += a["holds_by_reason"][k]
+    hs.cell(row=5 + len(WU.REASONS), column=1, value="All reasons").font = bold
+    cl = hs.cell(row=5 + len(WU.REASONS), column=2, value=n)
+    cl.font = bold
+    cl.number_format = "#,##0"
+    hs.column_dimensions["A"].width = 32
+    hs.column_dimensions["B"].width = 22
+
+    bs = wb.create_sheet("Basis")
+    rows = [
+        ("As at", P.EXTRACT_DATE.isoformat()),
+        ("Period", "claim months July 2024 to December 2025; the pre-payment check was withdrawn "
+                   "on 1 January 2026 and returns are paid in full and reviewed after payment"),
+        ("Quarters", "the scheme's own quarters, July to September and so on; the folder's export "
+                     "manifest gives each return workbook's fiscal year as July to June"),
+        ("Basis of each side", "the claim month the return was filed for, and for a run line the "
+                               "claim month it covers"),
+        ("Check register rows read", a["check_rows"]),
+        ("Partner claim-months checked", a["check_months"]),
+        ("Partner claim-months with run lines", a["run_months"]),
+        ("Claim-months settled on one payment instruction", a["instruction_repeats"]),
+        ("Holds in the period", n),
+        ("Note on the register", "a partner claim-month checked twice is taken at the later check, "
+                                 "and the two currency columns run on from the scheme year's July "
+                                 "row, so each month's own figure is the difference inside the "
+                                 "scheme year"),
+        ("Note on the archive", "where one payment instruction settled both of a partner's "
+                                "half-month runs, its amounts stand on both lines and the "
+                                "instruction is counted once"),
+        ("Note on the reasons", "the reason was free text until the April 2025 release, so the "
+                                "earlier entries are folded onto the five reasons on the list, and "
+                                "a hold with no reason recorded is shown as its own line"),
+        ("Out of scope", "claim months from January 2026, which the check register does not cover, "
+                         "and the ceiling's own window of April 2026 to March 2027"),
+    ]
+    bs["A1"] = "Basis of the annex"
+    bs["A1"].font = Font(bold=True, size=12)
+    for i, (k, v) in enumerate(rows, start=3):
+        bs.cell(row=i, column=1, value=k).font = Font(bold=True)
+        cl = bs.cell(row=i, column=2, value=v)
+        cl.alignment = Alignment(wrap_text=True, vertical="top")
+        if isinstance(v, int):
+            cl.number_format = "#,##0"
+    bs.column_dimensions["A"].width = 42
+    bs.column_dimensions["B"].width = 86
+    wb.properties.creator = P.PEOPLE["assurance"][0]
+    wb.properties.lastModifiedBy = P.PEOPLE["assurance"][0]
+    wb.properties.title = "%s claims assurance annex" % P.SCHEME_SHORT
     wb.properties.created = dt.datetime(2027, 5, 21, 16, 5)
     wb.properties.modified = dt.datetime(2027, 5, 21, 16, 5)
     wb.save(path)
@@ -221,6 +360,7 @@ def write(folder, fig, test):
     os.makedirs(folder, exist_ok=True)
     png = os.path.join(folder, PNG)
     schedule_workbook(os.path.join(folder, XLSX), fig)
+    annex_workbook(os.path.join(folder, ANNEX), fig)
     chart(png, fig, test)
     board_paper(os.path.join(folder, PDF), fig, test, png)
     os.remove(png)

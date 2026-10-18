@@ -8,7 +8,8 @@
   "as_of": "2027-04-30",
   "deliverables": [
     "relief_referral_ceilings_2027-28.xlsx",
-    "referral_ceiling_board_paper.pdf"
+    "referral_ceiling_board_paper.pdf",
+    "claims_annex.xlsx"
   ],
   "distractor_files": [
     "hrg_annual_report_partner_summary_fy2025-26.pdf",
@@ -17,7 +18,8 @@
   ],
   "stated_inputs": [
     "relief_referral_ceilings_2027-28.xlsx",
-    "referral_ceiling_board_paper.pdf"
+    "referral_ceiling_board_paper.pdf",
+    "claims_annex.xlsx"
   ],
   "field_terms": [
     "equivalence scale",
@@ -26,7 +28,7 @@
     "claim return"
   ],
   "input_gates": {
-    "files": 15,
+    "files": 17,
     "formats": [
       "csv",
       "eml",
@@ -64,7 +66,7 @@
     {
       "path": "hrg_claim_returns_fy2024-25.xlsx",
       "format": "xlsx",
-      "bytes": 170846,
+      "bytes": 170966,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -136,7 +138,7 @@
     {
       "path": "DATA_DICTIONARY.md",
       "format": "md",
-      "bytes": 4509,
+      "bytes": 5658,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -145,8 +147,8 @@
     {
       "path": "export_manifest.csv",
       "format": "csv",
-      "bytes": 4466,
-      "rows": 15,
+      "bytes": 5189,
+      "rows": 17,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
       "license": "CC0-1.0 (original work)"
@@ -154,7 +156,7 @@
     {
       "path": "referral_ceiling_request.eml",
       "format": "eml",
-      "bytes": 1363,
+      "bytes": 1997,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
@@ -183,6 +185,24 @@
       "format": "csv",
       "bytes": 50629,
       "rows": 940,
+      "source": "Constructed (seeded generator)",
+      "date": "2027-04-30",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "hrg_claim_check_register_2024_2025.csv",
+      "format": "csv",
+      "bytes": 142091,
+      "rows": 1604,
+      "source": "Constructed (seeded generator)",
+      "date": "2027-04-30",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "treasury_disbursement_runs_2024_2025.csv",
+      "format": "csv",
+      "bytes": 236146,
+      "rows": 3053,
       "source": "Constructed (seeded generator)",
       "date": "2027-04-30",
       "license": "CC0-1.0 (original work)"

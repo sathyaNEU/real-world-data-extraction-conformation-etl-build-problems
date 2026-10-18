@@ -54,9 +54,9 @@ def metadata(target, fig):
                         "beside each band's referred share of awards and of award value and the scale "
                         "factor applied, and a chart of the award distribution against the ceilings",
         "as_of": P.AS_OF,
-        "deliverables": [GD.XLSX, GD.PDF],
+        "deliverables": [GD.XLSX, GD.PDF, GD.ANNEX],
         "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],
-        "stated_inputs": [GD.XLSX, GD.PDF],
+        "stated_inputs": [GD.XLSX, GD.PDF, GD.ANNEX],
         "field_terms": ["equivalence scale", "referral ceiling", "award shape", "claim return"],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},

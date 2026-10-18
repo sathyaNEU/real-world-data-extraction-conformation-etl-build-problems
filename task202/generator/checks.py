@@ -299,6 +299,200 @@ def _portal_reconciliation(target, W, R):
     return {"revised_matches": rev_ok, "prelim_mismatches": pre_bad}
 
 
+def _ask_checks(target, world, fig):
+    """The annex asks: the separation line, each device's forcing figure, every ladder stop and the
+    quarter closure. The ceiling's own figures are asserted against their frozen values first, so a
+    device that reached the main call would fail here before anything else."""
+    WINDOW = {(2026, m) for m in range(4, 13)} | {(2027, m) for m in range(1, 4)}
+    C = world["R"].closed
+    a = fig["asks"]
+    raw = fig.get("_asks_raw") or WU.ask_figures(target, B.FILES)["_raw"]
+
+    # ---- the main call is where it was: a device that moved it fails here
+    for k, v in (("call", 7800), ("call_down", 7700), ("default_call", 5800), ("cells", 528),
+                 ("awards", 49265), ("partners", 88)):
+        eq("separation.main_call_%s_unmoved" % k, fig[k], v)
+    for k, v in (("share_pct", 5.94), ("share_down_pct", 6.04), ("default_share_pct", 9.82),
+                 ("cv", 0.72)):
+        eq("separation.main_call_%s_unmoved" % k, fig[k], v, 1e-9)
+
+    # ---- zero device or hazard rows inside the main call's declared population, by count
+    for key, col in (("checks", "claim_month"), ("archive", "claim_months_covered")):
+        months = []
+        with open(os.path.join(target, B.FILES[key]), newline="", encoding="utf-8") as fh:
+            for r in csv.DictReader(fh):
+                months.append(WU._month(r[col]))
+        eq("separation.%s_rows_in_the_window" % key, sum(1 for m in months if m in WINDOW), 0)
+        ok("separation.%s_months_are_closed" % key,
+           min(months) == P.CHECK_FROM and max(months) == P.CHECK_TO,
+           "%s to %s" % (min(months), max(months)))
+    eq("separation.device_partner_months_in_the_window",
+       sum(1 for k, c in C.cells.items()
+           if k[1] in WINDOW and (c["consolidated"] or c["deferred"] or c["held_amount"] > 0)), 0)
+    eq("separation.recoveries_outside_the_window",
+       sum(1 for mo, _, _, _, _ in C.recovery_lines if mo in WINDOW), 0)
+    # delete every ask-layer row and the ceiling is the same ceiling: the call's own path reads
+    # four files and neither closed-period file is one of them
+    import shutil
+    import tempfile
+    tmp = tempfile.mkdtemp()
+    try:
+        for k in ("ret2526", "ret2627", "portal", "xwalk"):
+            shutil.copy(os.path.join(target, B.FILES[k]), os.path.join(tmp, B.FILES[k]))
+        cells2 = WU.read_returns([os.path.join(tmp, B.FILES[k]) for k in ("ret2526", "ret2627")])
+        xw2 = WU.read_crosswalk(os.path.join(tmp, B.FILES["xwalk"]))
+        por2 = WU.read_portal(os.path.join(tmp, B.FILES["portal"]), xw2)
+        m2 = {k: v[1] / v[0] for k, v in cells2.items()}
+        n2 = {k: v[0] for k, v in cells2.items()}
+        sh2 = np.array([x / m2[(c, b)] for c, b, x in por2], float)
+        sh2 = sh2 / sh2.mean()
+        C2 = solve.lowest(lambda x: solve.share_cells(x, m2, n2, sh2))
+        eq("separation.ceiling_without_either_ask_file", C2, fig["call"])
+        eq("separation.share_without_either_ask_file",
+           round(100 * solve.share_cells(C2, m2, n2, sh2), 2), fig["share_pct"], 1e-9)
+    finally:
+        shutil.rmtree(tmp)
+
+    # ---- device A, one payment instruction standing on both of a claim month's run lines
+    archive = WU.read_archive(os.path.join(target, B.FILES["archive"]))
+    claimed, _ = WU.read_closed_returns([os.path.join(target, B.FILES[k])
+                                         for k in ("ret2425", "ret2526")])
+    over = [k for k, v in archive.items()
+            if round(sum(g for g, _, _ in v), 2) > claimed.get(k, 0.0) + 0.005]
+    exact = [k for k, v in archive.items()
+             if abs(round(sum(g for g, _, _ in v), 2) - round(sum(x[0] for x in set(v)), 2)) < 0.005]
+    eq("deviceA.claim_months_whose_lines_exceed_what_was_claimed", len(over),
+       a["instruction_repeats"])
+    ok("deviceA.every_such_month_states_the_same_amounts_on_its_lines",
+       all(len(set(archive[k])) == 1 and len(archive[k]) > 1 for k in over), len(over))
+    eq("deviceA.other_claim_months_never_exceed_the_claim",
+       sum(1 for k, v in archive.items()
+           if k not in over and round(sum(g for g, _, _ in v), 2) > claimed.get(k, 0.0) + 0.005), 0)
+    ok("deviceA.the_repeat_is_not_an_exact_duplicate_row",
+       len(exact) >= 0 and all(len({x[0] for x in archive[k]}) == 1 for k in over))
+
+    # ---- device B, the register's two currency columns run on inside the scheme year
+    rows = WU._raw_register(os.path.join(target, B.FILES["checks"]))
+    check, _ = WU.read_check_register(os.path.join(target, B.FILES["checks"]))
+    impossible = sum(1 for r in rows if r["passed"] > claimed.get((r["code"], r["month"]), 0.0) + 0.005)
+    july = sum(1 for r in rows if r["month"][1] == P.SCHEME_YEAR_START)
+    ok("deviceB.rows_stating_more_passed_than_the_month_was_claimed_for",
+       impossible > 0.8 * len(rows), "%d of %d" % (impossible, len(rows)))
+    ok("deviceB.the_scheme_year_opening_rows_reset", july > 0, july)
+    bad = [k for k, v in check.items()
+           if abs(round(claimed.get(k, 0.0) - v["passed"] - v["held"], 2)) > 0.005]
+    eq("deviceB.differencing_restores_claimed_less_passed_as_held", len(bad), 0)
+    ties = {}
+    for r in rows:
+        ties.setdefault((r["code"], r["month"]), set()).add(r["checked"])
+    eq("deviceB.no_claim_month_has_two_checks_on_one_date",
+       sum(1 for k, v in ties.items() if len(v) != len([x for x in rows
+                                                        if (x["code"], x["month"]) == k])), 0)
+
+    # ---- device C, a blank reason means two things
+    blank_hold = sum(1 for v in check.values() if v["held"] > 0.005 and not v["reason"])
+    blank_none = sum(1 for v in check.values() if v["held"] <= 0.005 and not v["reason"])
+    eq("deviceC.holds_with_no_reason_recorded", blank_hold, a["holds_by_reason"]["Not recorded"])
+    ok("deviceC.blank_also_means_no_hold", blank_none > blank_hold, blank_none)
+    free = [r["reason"] for r in rows
+            if r["reason"] and r["reason"] not in WU.REASONS]
+    ok("deviceC.free_text_entries_before_the_list", len(free) > 0, len(free))
+    ok("deviceC.every_free_text_entry_folds_onto_one_reason",
+       all(WU._reason(x) in WU.REASONS for x in free), len(set(free)))
+    byn = {k for k, v in check.items() if v["held"] > 0.005}
+    bycount = {k for k, v in check.items()
+               if v["passed_n"] < WU._claimed_counts(target, B.FILES).get(k, v["passed_n"])}
+    eq("deviceC.the_hold_population_agrees_on_both_routes", len(byn ^ bycount), 0)
+
+    # ---- the ladder: every stop outside the bin on every figure
+    st = WU.ask_stops(target, B.FILES)
+    gold = {"A": [a["transferred"][q] for q in a["quarters"]],
+            "B": [a["held"][q] for q in a["quarters"]],
+            "C": [a["holds_by_reason"][r] for r in WU.REASONS]}
+    expect = {"A": [0, 0, 0, 6], "B": [0, 0, 0, 6], "C": [0, 0, 5, 6]}
+    for grp in ("A", "B", "C"):
+        keys = a["quarters"] if grp != "C" else WU.REASONS
+        for i, (label, vals) in enumerate(st[grp].items()):
+            hits = sum(1 for k, g in zip(keys, gold[grp]) if abs(vals[k] - g) <= 0.5)
+            eq("ladder.%s_stop_%d_hits" % (grp, i + 1), hits, expect[grp][i], 0, label)
+        worst = max(abs(list(st[grp].values())[0][k] - g) for k, g in zip(keys, gold[grp]))
+        ok("ladder.%s_lazy_delta" % grp, worst > 0, "%.0f" % worst)
+
+    # ---- every count and delta the ask sheet states, so the note's prose recomputes (H2, H3)
+    raw_rows = [r for r in csv.DictReader(
+        open(os.path.join(target, B.FILES["checks"]), newline="", encoding="utf-8"))]
+    eq("prose.register_rows", len(raw_rows), 1604)
+    eq("prose.register_partner_months", len(check), 1566)
+    eq("prose.register_july_rows", sum(1 for r in rows if r["month"][1] == P.SCHEME_YEAR_START), 180)
+    months_seen = {}
+    for r in rows:
+        months_seen[(r["code"], r["month"])] = months_seen.get((r["code"], r["month"]), 0) + 1
+    eq("prose.claim_months_checked_twice", sum(1 for v in months_seen.values() if v > 1), 38)
+    eq("prose.rows_with_the_old_separator",
+       sum(1 for r in raw_rows if "/" in r["claims_partner_ref"]), 536)
+    eq("prose.rows_stating_an_impossible_amount_passed", impossible, 1424)
+    eq("prose.free_text_reason_entries", len(free), 74)
+    eq("prose.free_text_spellings", len(set(free)), 21)
+    eq("prose.blank_reason_with_no_hold", blank_none, 1288)
+    eq("prose.archive_rows",
+       sum(1 for _ in open(os.path.join(target, B.FILES["archive"]), encoding="utf-8")) - 1, 3053)
+    eq("prose.archive_partner_months", len(archive), 1527)
+    absent = [k for k in check if k not in archive]
+    eq("prose.claim_months_absent_from_the_archive", len(absent), 39)
+    eq("prose.claim_months_tying_exactly", len(archive) - len(over), 1389)
+    eq("prose.holds_in_the_period", sum(a["holds_by_reason"].values()), 278)
+    ok("prose.the_manifest_records_the_archive_cut_off",
+       "31 January 2026" in open(os.path.join(target, B.FILES["manifest"]), encoding="utf-8").read())
+    for k in ("checks", "archive"):
+        ok("prose.the_dictionary_names_%s" % k,
+           B.FILES[k] in open(os.path.join(target, B.FILES["dict"]), encoding="utf-8").read())
+
+    # ---- each hazard's measured delta, recomputed here rather than taken from a scratch script
+    _, recl = WU.read_closed_returns([os.path.join(target, B.FILES[k])
+                                      for k in ("ret2425", "ret2526")])
+    QL = a["quarters"]
+    ql = lambda mo: WU._qlabel(WU._quarter(mo))
+    h1 = {q: 0.0 for q in QL}
+    for k, v in check.items():
+        if k[1] >= (2025, 1):
+            h1[ql(k[1])] = round(h1[ql(k[1])] + v["held"], 2)
+    ok("hazard.H1_the_unjoined_months_empty_the_first_two_quarters",
+       int(round(h1[QL[0]])) == 0 and int(round(h1[QL[1]])) == 0
+       and all(int(round(h1[q])) == a["held"][q] for q in QL[2:]),
+       [int(round(h1[q])) for q in QL])
+    h2 = {q: float(a["transferred"][q]) for q in QL}
+    for k, v in recl.items():
+        h2[ql(k[1])] = round(h2[ql(k[1])] - abs(v), 2)
+    for k, lines in archive.items():
+        r2 = round(sum(x[1] for x in set(lines)), 2)
+        if r2:
+            h2[ql(k[1])] = round(h2[ql(k[1])] + r2, 2)
+    eq("hazard.H2_the_recovery_lag_moves_this_many_quarters",
+       sum(1 for q in QL if int(round(h2[q])) != a["transferred"][q]), 5)
+    for (code, mo), v in recl.items():
+        nxt = (mo[0] + (mo[1] == 12), mo[1] % 12 + 1)
+        ok("hazard.H2_recovery_%s_%s_is_applied_in_the_next_claim_month" % (code, mo[1]),
+           any(abs(x[1] - abs(v)) < 0.005 for x in archive.get((code, nxt), [])),
+           "%s -> %s" % (mo, nxt))
+    ok("hazard.H2_each_recovery_crosses_a_quarter_boundary",
+       all(ql(mo) != ql((mo[0] + (mo[1] == 12), mo[1] % 12 + 1)) for (_, mo) in recl))
+    h4 = {q: float(a["transferred"][q]) for q in QL}
+    for k in absent:
+        h4[ql(k[1])] = round(h4[ql(k[1])] + claimed.get(k, 0.0) - check[k]["held"], 2)
+    ok("hazard.H4_imputing_the_absent_months_moves_every_quarter",
+       all(int(round(h4[q])) != a["transferred"][q] for q in QL),
+       "max delta %d" % max(int(round(h4[q])) - a["transferred"][q] for q in QL))
+    eq("hazard.H4_largest_delta",
+       max(int(round(h4[q])) - a["transferred"][q] for q in QL), 1230553)
+
+    # ---- the quarter closure, at the grain the annex balances on
+    for q in a["quarters"]:
+        eq("closure.%s" % q, round(raw["claimed"][q] - raw["held"][q] - raw["recovered"][q]
+                                   - raw["unsettled"][q], 2), round(raw["transferred"][q], 2), 0.005)
+    eq("closure.every_hold_has_a_reason_line", sum(a["holds_by_reason"].values()),
+       sum(1 for v in check.values() if v["held"] > 0.005))
+
+
 def _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv):
     W = world["W"]
     R = world["R"]
@@ -435,14 +629,18 @@ def _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv):
         ok("register.dictionary_names_%s" % k, B.FILES[k] in dct, B.FILES[k])
     # H4: the golden folder is exactly the deliverables
     import golden as _G
-    ok("ship.golden_is_the_deliverables", sorted(os.listdir(golden_dir)) == sorted([_G.XLSX, _G.PDF]),
+    ok("ship.golden_is_the_deliverables",
+       sorted(os.listdir(golden_dir)) == sorted([_G.XLSX, _G.PDF, _G.ANNEX]),
        sorted(os.listdir(golden_dir)))
     # the archive is cut after these checks run, so its freshness is asserted in make.py where it
     # is cut (H7: a freshness assertion rather than build order)
 
+    # ---------------------------------------------------------- the ask layer
+    _ask_checks(target, world, fig)
+
     # ---------------------------------------------------------- the goldens
     import golden as GD
-    for f in (GD.XLSX, GD.PDF):
+    for f in (GD.XLSX, GD.PDF, GD.ANNEX):
         ok("golden.%s_exists" % f, os.path.exists(os.path.join(golden_dir, f)))
     gx = text_of(os.path.join(golden_dir, GD.XLSX))
     gp = text_of(os.path.join(golden_dir, GD.PDF))

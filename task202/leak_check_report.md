@@ -1,10 +1,10 @@
 # leak check, task202
 
-**Verdict: REVIEW.** 15 files read, 31 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 43 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: window, stated, domain, driver, decisive, printed, mechanism, returns, measured, committed, partner-band, readable, shipped, abstraction, shares, anomaly, average, spread, measures, rebuild, silent, status, asserted, objective, nothing
+Stump terms swept: window, returns, domain, driver, stated, mechanism, decisive, printed, status, architecture, measured, generator, device, committed, partner-band, readable, shipped, abstraction, anomaly, average, spread, measures, rebuild, closure, asserted
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `DATA_DICTIONARY.md`: carries 4 of 5 distinctive words of the committed call: 'Set the 2027/28 referral ceiling for a four-person household at PHP 7,800.'

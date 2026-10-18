@@ -132,12 +132,15 @@ REASON_FROM = (2025, 4)          # the reason field became mandatory at the Apri
 REASON_EARLY = 0.45              # earlier holds a checker recorded a reason for anyway
 # the reason was free text until the April 2025 release turned it into a list, so the earlier
 # entries carry whatever case and punctuation the checker typed
-REASON_STYLE = [lambda s: s.lower(), lambda s: s.upper(), lambda s: s + ".",
-                lambda s: s.rstrip() + " ", lambda s: s.lower().replace(" ", "  ")]
+REASON_STYLE = [lambda s: s.lower(), lambda s: s.upper(), lambda s: s.title(),
+                lambda s: s + ".", lambda s: s.lower().replace(" ", "  ")]
 CHECKERS = 6
 RECHECK_RATE = 0.12              # 2024/25 partner-months the year-end reconciliation checked again
 CONSOL_RATE = 0.085              # partner-months the Treasury settled on one payment instruction
 DEFER_RATE = 0.022               # partner-months released in a run dated after the archive's cut-off
 ARCHIVE_CUTOFF = dt.date(2026, 1, 31)
 # three awards recovered inside the 2024/25 returns, each claimed back as its own negative line
-ASK_RECOVERIES = [("P-ALB", 3, (2024, 10), 2), ("P-ILI", 9, (2025, 1), 4), ("P-MSO", 5, (2025, 5), 3)]
+# each is claimed back in the last month of a scheme quarter, so the run that carries the recovery
+# falls in the quarter after the one the negative claim line sits in
+ASK_RECOVERIES = [("P-ALB", 3, (2024, 9), 2), ("P-ILI", 9, (2024, 12), 4),
+                  ("P-MSO", 5, (2025, 3), 3), ("P-LEY", 2, (2025, 6), 4)]
