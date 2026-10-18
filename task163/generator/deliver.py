@@ -32,6 +32,12 @@ def fmt(x, dp=0):
     return format(v, ",.%df" % dp) if dp else format(int(v), ",")
 
 
+def golive_text(X):
+    names = {"OH": "Ohio", "PA": "Pennsylvania", "MI": "Michigan"}
+    order = sorted(X.reform, key=lambda s: X.P.changes[s][0])
+    return ", ".join("%s %s" % (names[s], K.us_date(X.P.changes[s][0]).replace(",", "")) for s in order)
+
+
 def about_added(X):
     v = K.round_to(X.added_ttm, 100000)
     return "half a million" if v == 500000 else fmt(v)
@@ -154,8 +160,9 @@ def write_xlsx(path, X):
 
     ws2 = wb.create_sheet("Added yield")
     _title(ws2, "The integrated filing's added applications: formation yield from the closed cohorts", [
-        "Ordinary applications: the state's own 2022-2023 level for each calendar month, moved month by month with the "
-        "nine other states' applications against their 2022-2023 level. Added: the rest, from the go-live month.",
+        "Ordinary applications: the state's own average for each calendar month from January 2021 to go-live, moved "
+        "month by month with the nine other states' applications against their average over the same months. Added: "
+        "the rest, from the go-live month.",
         "Closed cohorts: applications from go-live to June 2025 (the last month the October release has formations "
         "within four quarters for). Relative yield, pooled: (formations less ordinary applications at the state's "
         "pre-go-live rate) over (added applications at that rate) = %.3f." % X.rel,
@@ -332,8 +339,8 @@ def write_docx(path, X, png):
         "2026 are ones the integrated filing added. Read against the nine other states before and after go-live, "
         "the added applications in the closed cohorts formed employers, taking the three states together, at under a "
         "fifth of the rate of the applications those states would have had anyway, and they are nearly half of the "
-        "three states' "
-        "applications in the twelve months against about a fifth of the closed cohorts'. Priced that way, the twelve "
+        "three states' applications in the twelve months against about a quarter of the closed cohorts'. Every "
+        "state's ordinary applications also rose about an eighth from autumn 2025. Priced that way, the twelve "
         "months' applications will produce about %s employer formations within four quarters, and at the 2025 shares "
         "that is %s first-time employers, about four fifths of them in the three states." %
         (fmt(X.call), about_added(X), fmt(K.round_to(X.added_ttm + X.ordinary_ttm, 100000) / 1e6, 1) + " million",
@@ -374,13 +381,17 @@ def submission(X):
         "About %s of Ohio's, Pennsylvania's and Michigan's applications in the twelve months to September 2026 were "
         "added by their integrated EIN filings, and set against the nine other states before and after each go-live "
         "the added applications, pooled over the three states, form employers within four quarters at under a fifth "
-        "of the ordinary rate. Not each "
+        "of the ordinary rate; they are nearly half of the three states' applications in the twelve months against "
+        "about a quarter of the closed cohorts', and every state's ordinary applications rose about an eighth from "
+        "autumn 2025. Not each "
         "state's latest closed formation rate carried onto the twelve months, which prices the added applications at "
         "the share the closed cohorts held. Not the three states' own level before go-live as the counterfactual, "
-        "which counts the rise every state shared as added applications. Not the filing's effect on formations "
+        "which counts the autumn 2025 rise every state shared as added applications. Not the filing's effect on "
+        "formations "
         "carried as a monthly level, which misses that the twelve months hold far more added applications than the "
         "closed cohorts. Not 2025's first-time employers grown with applications, which grows formations as fast as "
-        "applications." % about_added(X))
+        "applications when the added applications that make up nearly half of the three states' twelve months form "
+        "employers at under a fifth of the ordinary rate." % about_added(X))
     L.append("")
     L.append("## 2. Critical Components\n")
     L.append("1. About **%s** of the three states' applications in the twelve months to September 2026 were added by "
@@ -400,12 +411,13 @@ def submission(X):
     L.append(
         "2. Took the unadjusted BA_BA and BF_BF4Q rows of bfs_state_api_2026-10-14.json, whose formations close at "
         "June 2025 applications, and the integrated EIN filings' go-live dates in state_filing_changes_log.xlsx "
-        "(Ohio 5 February 2024, Pennsylvania 13 May 2024, Michigan 12 August 2024).")
+        "(%s)." % golive_text(X))
     L.append(
-        "3. Set each of the three states' ordinary applications at its 2022-2023 level for the calendar month times "
-        "the nine other states' applications against their 2022-2023 level, the rest from the go-live month being "
-        "added: %s added of %s applications in the twelve months." % (fmt(X.added_ttm), fmt(X.added_ttm +
-                                                                                          X.ordinary_ttm)))
+        "3. Set each of the three states' ordinary applications, month by month, at its own average for that "
+        "calendar month from January 2021 to go-live times the nine other states' applications against their "
+        "average for that calendar month over the same months, the rest from the go-live month being added: %s added "
+        "of %s applications in the twelve months." %
+        (fmt(X.added_ttm), fmt(X.added_ttm + X.ordinary_ttm)))
     L.append(
         "4. Divided the closed cohorts' formations since go-live, less the ordinary applications at each state's "
         "pre-go-live rate (Ohio %.2f, Pennsylvania %.2f, Michigan %.2f per cent), by the added applications at that "
@@ -425,7 +437,8 @@ def submission(X):
         "7. Read each business's signup channel from its first account, an account opened on the legacy system by "
         "its legacy_source_code in the crosswalk.")
     L.append(
-        "8. Priced the twelve months' ordinary applications in the three states at the state's rate and the added at "
+        "8. Priced the twelve months' ordinary applications in the three states at the state's pre-go-live rate and "
+        "the added at "
         "%.3f of it, the nine states' applications at their rate over every closed cohort, and added each state's "
         "formations times its share: %s, which goes into the plan as %s." % (X.rel, fmt(X.total, 1), fmt(X.call)))
     L.append("")
@@ -469,7 +482,7 @@ def figures(X):
                             "first_quarter_wages": "%.2f" % (T[t]["wages_cents"] / 100.0),
                             "wages_2024": "%.2f" % (T[t]["wages_2024_cents"] / 100.0)} for t in TERR_ORDER},
         "channels": {c: X.CH.get(c, 0) for c in CH_ORDER},
-        "dates": ["2024-02-05", "2024-05-13", "2024-08-12"],
+        "dates": [X.P.changes[s][0].isoformat() for s in X.reform],
         "roundings": [100, 5000, 100000],
     }
     return out

@@ -124,6 +124,7 @@ class Business:
     split: float = 1.0           # share of wages in group 01 when there are two
     pred: int | None = None      # the Kilbourne business this one succeeds
     pred_ein: str = ""           # a predecessor outside Kilbourne's 2022-2025 book
+    basis: str = ""              # how a successor came about (change of entity, reorganisation, acquisition)
     succ: int | None = None
     moves: list = field(default_factory=list)       # [(date, state)]
     spans: list = field(default_factory=list)       # [[start, stop]] payroll spans with Kilbourne, one per account
@@ -142,7 +143,15 @@ class Company:
     def __init__(self):
         self.business = {}
         self.successors = []        # (pred bid or None, succ bid, effective date, state)
+        self.eins = set()           # every EIN in use (Kilbourne's clients and outside predecessors): never reissued
         self._next = 0
+
+    def new_ein(self, r, b, old=False):
+        e = NM.ein(r, b, old=old)
+        while e in self.eins:
+            e = NM.ein(r, b, old=old)
+        self.eins.add(e)
+        return e
 
     def new_bid(self):
         self._next += 1
@@ -203,7 +212,8 @@ def build(W, scale=1.0):
                     elif kind == "succ_ext":
                         b.liable0 = b.first_pay
                         # the predecessor ran its payroll elsewhere: its EIN is on the tax team's register only
-                        b.pred_ein = NM.ein(rs, b, old=True)
+                        b.pred_ein = C.new_ein(rs, b, old=True)
+                        b.basis = "acquisition"
                         C.successors.append((None, b.bid, b.first_pay, s.usps))
                     else:
                         b.liable0 = b.first_pay - dt.timedelta(days=int(rs.integers(200, 365 * 16)))
@@ -282,6 +292,7 @@ def _life(C, b):
                           b.wage_q * (1.03 ** years), b.growth, b.seasonal, key=b.key + "/s", liable0=when,
                           pred=b.bid)
             s2.groups, s2.split = b.groups, b.split
+            s2.basis = info["basis"]
             b.succ = s2.bid
             b.spans[-1][1] = when - dt.timedelta(days=1)
             C.business[s2.bid] = s2
@@ -301,7 +312,7 @@ def _life(C, b):
 
 def _accounts(C, b):
     ra = K.rng("acct", b.key)
-    b.ein = NM.ein(ra, b)
+    b.ein = C.new_ein(ra, b)
     for k, (start, stop) in enumerate(b.spans):
         lead = int(ra.integers(5, 38))
         local = dt.datetime.combine(start - dt.timedelta(days=lead), dt.time(0, 0)) + \

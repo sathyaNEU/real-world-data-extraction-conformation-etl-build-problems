@@ -28,7 +28,7 @@ import world as WD          # noqa: E402
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
-ENDS_ON = 2800
+ENDS_ON = 3100
 RESULTS = []
 
 
@@ -76,7 +76,7 @@ def main():
     edge = min(K.edge_distance(v, 100) for v in vals)
     ok("FAMILY every construction a quarter bin or more from an edge", edge >= 0.25, "nearest %.3f" % edge)
     Fw = CA.family(P, wide=True)
-    ok("FAMILY wide (the nine at their 2022-2023 rate too) rounds to the call",
+    ok("FAMILY wide (the nine at their 2021-2022 rate too) rounds to the call",
        all(CA.round100(v) == call for v in Fw.values()), "%.1f to %.1f" % (min(Fw.values()), max(Fw.values())))
     # one sigma of the deciding quantity: the release's counts redrawn as Poisson around themselves
     rr = np.random.default_rng(163)
@@ -98,6 +98,34 @@ def main():
         boot.append(CA.golden(P)["total"])
     P.bfs = {k: v.copy() for k, v in orig.items()}
     sd = float(np.std(boot))
+    first_ttm = CA.TTM[0]
+
+    def redraw_estimation():
+        """Formations everywhere and applications before the twelve months redrawn; the twelve months' applications
+        are the estimand's own volume and stay as filed."""
+        d = {k: v.copy() for k, v in orig.items()}
+        for k, v in orig.items():
+            if k[2] != "no" or k[1] not in ("BA_BA", "BF_BF4Q"):
+                continue
+            x = v.copy()
+            m = ~np.isnan(x)
+            idx = np.where(m)[0]
+            if k[1] == "BA_BA":
+                idx = idx[idx < first_ttm]
+            x[idx] = rr.poisson(x[idx])
+            d[k] = x
+        return d
+
+    boot2 = []
+    for _ in range(300):
+        P.bfs = redraw_estimation()
+        boot2.append(CA.golden(P)["total"])
+    P.bfs = {k: v.copy() for k, v in orig.items()}
+    lo95, hi95 = np.percentile(boot2, 2.5), np.percentile(boot2, 97.5)
+    margin = min(lo95 - (call - 50), (call + 50) - hi95)
+    ok("SIGMA the bootstrap's 95 per cent interval sits inside the call's bin with margin",
+       margin >= 3, "%.1f to %.1f in %d to %d, margin %.1f (sd %.1f)" % (lo95, hi95, call - 50, call + 50, margin,
+                                                                       np.std(boot2)))
     ok("SIGMA one sigma of the release's counts keeps the call",
        CA.round100(G - sd) == call and CA.round100(G + sd) == call and CA.round100(vals.min() - sd) == call
        and CA.round100(vals.max() + sd) == call, "sigma %.1f on %.1f, family %.1f to %.1f" % (sd, G, vals.min(),
@@ -142,6 +170,24 @@ def main():
        "under every pooled estimator",
        max(comp["rel"]) < 0.20, "%.3f to %.3f" % (min(comp["rel"]), max(comp["rel"])))
 
+    # the write-up's stated shares and rise
+    nine_ = [s_ for s_ in CA.STATES if s_ not in reform]
+    Lx = {s_: CA.launch_index(P.changes[s_][0]) for s_ in reform}
+    BAx = {s_: CA.series(P, s_, "BA_BA") for s_ in CA.STATES}
+    Gx = {s_: CA.counterfactual(P, s_, "CF1", nine_, Lx[s_]) for s_ in reform}
+    add_c = sum(sum(BAx[s_][t] - Gx[s_][t] for t in range(Lx[s_], CA.LAST_CLOSED + 1)) for s_ in reform)
+    all_c = sum(sum(BAx[s_][t] for t in range(Lx[s_], CA.LAST_CLOSED + 1)) for s_ in reform)
+    add_t = sum(g["added_ttm"].values()) / (sum(g["added_ttm"].values()) + sum(g["ordinary_ttm"].values()))
+    ttm_ = list(CA.TTM)
+    prior_ = [t - 12 for t in ttm_]
+    rise9 = sum(BAx[s_][ttm_].sum() for s_ in nine_) / sum(BAx[s_][prior_].sum() for s_ in nine_) - 1
+    rise_r = [Gx[s_][ttm_].sum() / Gx[s_][prior_].sum() - 1 for s_ in reform]
+    ok("TEXT the added applications are about a quarter of the closed cohorts since go-live and nearly half of the "
+       "twelve months", 0.20 <= add_c / all_c <= 0.30 and 0.40 <= add_t < 0.50, "%.3f, %.3f" % (add_c / all_c, add_t))
+    ok("TEXT every state's ordinary applications rose about an eighth into the twelve months",
+       all(0.10 <= v <= 0.15 for v in [rise9] + rise_r), "nine %.3f, reform %s" % (rise9, ", ".join(
+           "%.3f" % v for v in rise_r)))
+
     # ------------------------------------------------------------------ the three rules on the clean truth
     r0_truth = CA.rung_latest_closed(MP)
     ok("R3a the easy route on the clean truth, every filed rule applied, files the named wrong answer",
@@ -156,6 +202,10 @@ def main():
        all(CA.round100(v) != call for v in lower.values()),
        ", ".join("%s %d" % (k, CA.round100(v)) for k, v in lower.items()))
     RG = CA.rungs(P)
+    BY = CA.bypasses(P)
+    nb = min(BY, key=lambda k: abs(BY[k] - G))
+    ok("BYPASS every straight line, growth carry and rate trend misses by a full bin or more",
+       abs(BY[nb] - G) >= 100, "%d routes, nearest %s %.1f (%.2f bins)" % (len(BY), nb, BY[nb], (BY[nb] - G) / 100))
     near = min(abs(v - G) for v in RG.values())
     ok("RIVALS every measured rival misses by a full bin or more", near >= 100,
        "nearest %.1f (%s)" % (near, min(RG, key=lambda k: abs(RG[k] - G))))
@@ -250,35 +300,29 @@ def main():
     ok("OUT-OF-SAMPLE the golden forecast lands near the formations the twelve months will produce",
        abs(G - truth) < abs(RG["latest_closed"] - truth) / 4 and abs(G - truth) / truth < 0.04,
        "golden %.1f, truth %.1f, default %.1f" % (G, truth, RG["latest_closed"]))
-    # back-test on the closed cohorts: fit the split on go-live to December 2024, predict January to June 2025
-    Pb = CA.Pack(TARGET)
-    save = CA.LAST_CLOSED
-    CA.LAST_CLOSED = CA.mi(2024, 12)
-    gb = CA.plan(Pb)
-    CA.LAST_CLOSED = save
-    hold = list(range(CA.mi(2025, 1), CA.mi(2025, 6) + 1))
-    err = {}
-    obs = sum(P.bfs[(s, "BF_BF4Q", "no")][hold].sum() for s in P.changes)
-    pred_split = 0.0
-    pred_blend = 0.0
-    pred_pre = 0.0
-    for s in P.changes:
-        L = CA.launch_index(P.changes[s][0])
-        Gs = CA.counterfactual(P, s, "CF1", [o for o in CA.STATES if o not in P.changes], L)
-        BA = P.bfs[(s, "BA_BA", "no")]
-        F4 = P.bfs[(s, "BF_BF4Q", "no")]
-        y = gb["yield"][s]
-        r = gb["rel"][s][1]
-        pred_split += y * (Gs[hold].sum() + r * (BA[hold] - Gs[hold]).sum())
-        lo = CA.mi(2024, 1)
-        pred_blend += F4[lo:CA.mi(2024, 12) + 1].sum() / BA[lo:CA.mi(2024, 12) + 1].sum() * BA[hold].sum()
-        pred_pre += y * BA[hold].sum()
-    err = {"split": pred_split / obs - 1, "latest blended rate": pred_blend / obs - 1, "pre-go-live rate":
-           pred_pre / obs - 1}
-    ok("BACKTEST the split fitted to December 2024 predicts January to June 2025 formations; the rivals do not",
-       abs(err["split"]) < 0.02 and abs(err["latest blended rate"]) > 3 * abs(err["split"]) and
-       abs(err["pre-go-live rate"]) > 3 * abs(err["split"]),
-       ", ".join("%s %+.1f%%" % (k, 100 * v) for k, v in err.items()))
+    # back-test on the closed cohorts across a change of mix: fit the split on the cohorts from a year after each
+    # go-live, predict each state's first year after go-live (when its applications first took on added ones)
+    reform = sorted(P.changes)
+    others = [o for o in CA.STATES if o not in reform]
+    Ls = {s: CA.launch_index(P.changes[s][0]) for s in reform}
+    Gs = {s: CA.counterfactual(P, s, "CF1", others, Ls[s]) for s in reform}
+    BAs = {s: CA.series(P, s, "BA_BA") for s in reform}
+    F4s = {s: CA.series(P, s, "BF_BF4Q") for s in reform}
+    ys = {s: F4s[s][:Ls[s]].sum() / BAs[s][:Ls[s]].sum() for s in reform}
+    fit = {s: list(range(Ls[s] + 12, CA.LAST_CLOSED + 1)) for s in reform}
+    r_fit = sum((F4s[s][fit[s]] - ys[s] * Gs[s][fit[s]]).sum() for s in reform) / \
+        sum((ys[s] * (BAs[s][fit[s]] - Gs[s][fit[s]])).sum() for s in reform)
+    hold = {s: list(range(Ls[s], Ls[s] + 12)) for s in reform}
+    obs = sum(F4s[s][hold[s]].sum() for s in reform)
+    pred_split = sum(ys[s] * (Gs[s][hold[s]].sum() + r_fit * (BAs[s][hold[s]] - Gs[s][hold[s]]).sum())
+                     for s in reform)
+    pred_rate = sum(F4s[s][Ls[s] - 12:Ls[s]].sum() / BAs[s][Ls[s] - 12:Ls[s]].sum() * BAs[s][hold[s]].sum()
+                    for s in reform)
+    err = {"split": pred_split / obs - 1, "latest closed rate": pred_rate / obs - 1}
+    ok("BACKTEST across the go-live change of mix the split predicts each state's first year; the latest rate does not",
+       abs(err["split"]) < 0.02 and abs(err["latest closed rate"]) > 0.08 and
+       abs(err["latest closed rate"]) > 4 * abs(err["split"]),
+       ", ".join("%s %+.1f%%" % (k, 100 * v) for k, v in err.items()) + ", yield fitted %.3f" % r_fit)
 
     # ------------------------------------------------------------------ the share tab and the separation line
     base = {s: int(np.nansum(P.bfs[(s, "BF_BF4Q", "no")][CA.mi(2024, 7):CA.mi(2025, 6) + 1])) for s in CA.STATES}
@@ -306,7 +350,8 @@ def main():
     # ------------------------------------------------------------------ semantic fork rows
     std = docx_text(os.path.join(TARGET, "plan_2027_sizing_standard.docx"))
     notes = docx_text(os.path.join(TARGET, "first_time_employer_counting_notes.docx"))
-    ok("SF1 seasonally adjusted twelve-month total: same call", CA.round100(sa) == call)
+    ok("SF1 the twelve months' applications are the release's unadjusted counts (filed), and the adjusted give the "
+       "same call", CA.round100(sa) == call and "unadjusted counts" in std)
     ok("SF2 the share as displayed or as stored: same call", CA.round100(shown) == call)
     ok("SF3 formations within four quarters, not eight: the standard's sentence",
        "business formations within four quarters" in std)
@@ -324,6 +369,11 @@ def main():
        "nearest 100" in std)
     ok("SF8 the formations the year of applications will produce, not formations in calendar 2027: the standard",
        "will produce" in std)
+    carry = sum(P.share[s]["count"] for s in CA.STATES)
+    ok("SF16 the share's own base window against the twelve months: the share multiplies the twelve months' "
+       "formations; read onto its base window it only returns the 2025 count",
+       "over the state's business formations within four quarters from the applications of July 2024 to June 2025"
+       in std and abs(carry - G) >= 100, "share on its base window gives %.0f" % carry)
     ok("SF9 a first-time employer is a business whose first payroll ever runs with us: the counting notes",
        "first payroll ever runs with us" in notes and "re-forms as a new entity" in notes)
     ok("SF10 counted in the state it first employed in, not the address state: the counting notes",
@@ -381,9 +431,9 @@ def main():
        ", ".join("%s %.1f" % kv for kv in singles.items()))
     ok("ASK mirror leakage under 35 per cent", res["mirror_leakage"] < 35, "%.1f" % res["mirror_leakage"])
     # devices present in every territory the asks grade
-    inh = collections.Counter(R.TERRITORY[b.state0] for b in C.business.values() if b.kind == "inhouse" and
+    inh = collections.Counter(R.TERRITORY.get(b.state0, "") for b in C.business.values() if b.kind == "inhouse" and
                               b.spells[0].flag_first and b.spells[0].start.year == 2024)
-    suc = collections.Counter(R.TERRITORY[b.state0] for b in C.business.values() if b.kind in ("successor", "succ_ext")
+    suc = collections.Counter(R.TERRITORY.get(b.state0, "") for b in C.business.values() if b.kind in ("successor", "succ_ext")
                               and b.spells[0].flag_first and b.spells[0].start.year == 2024)
     tax = collections.Counter()
     tax_late = 0
@@ -461,13 +511,16 @@ def main():
     # ------------------------------------------------------------------ realism sweep
     signed = [T[t]["signed"] for t in T]
     still = [T[t]["still"] for t in T]
-    ok("REALISM no two territories share a count", len(set(signed)) == len(signed) and len(set(still)) == len(still))
+    rows_ = list(zip(signed, still))
+    ok("REALISM no two territories share a row (signed and still together)", len(set(rows_)) == len(rows_))
     ok("REALISM no round totals among the graded figures",
        sum(signed) % 100 and sum(still) % 100 and all(T[t]["wages_cents"] % 100000 for t in T) and G % 10)
     accounts = [a["account_id"] for a in B.acc]
     ok("REALISM account numbers unique, every legacy client in the crosswalk and the export",
        len(set(accounts)) == len(accounts) and all(r["client_no"] in B.acct_of_legacy for r in B.leg) and
        all(r["account_id"] in B.by_acct for r in B.xw))
+    all_eins = [b.ein for b in C.business.values()] + [b.pred_ein for b in C.business.values() if b.pred_ein]
+    ok("REALISM an EIN belongs to one business only", len(set(all_eins)) == len(all_eins))
     eins = [a["ein"] for a in B.acc]
     ok("REALISM EIN formats as the systems write them (hyphenated, plain, leading zero lost)",
        any("-" in e for e in eins) and any(e.isdigit() and len(e) == 9 for e in eins) and

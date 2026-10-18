@@ -6,12 +6,12 @@ twelve states and rounded to the nearest 100 (the 2027 sizing standard).
 
 The golden forecast of those formations. In the nine states without the integrated filing, formations are the state's
 formation rate per application over every closed cohort, times its applications in the twelve months. In Ohio,
-Pennsylvania and Michigan the applications are split into the ones the state would have had (its own 2022-2023 level
-for each calendar month, moved month by month with the nine states' applications against their own 2022-2023 level)
-and the ones the integrated filing added (the rest, from the go-live month); the formations of the closed cohorts
-since go-live, less the ordinary applications at the state's own pre-go-live rate, over the added applications at that
-rate, give the added applications' yield relative to an ordinary application (pooled over the three states); the
-twelve months' formations are the ordinary applications at the pre-go-live rate plus the added at that relative yield.
+Pennsylvania and Michigan the applications are split into the ones the state would have had (its own level for each
+calendar month before go-live, moved month by month with the nine states' applications against their level over the
+same months) and the ones the integrated filing added (the rest, from the go-live month); the formations of the closed
+cohorts since go-live, less the ordinary applications at the state's own pre-go-live rate, over the added applications
+at that rate, give the added applications' yield relative to an ordinary application (pooled over the three states);
+the twelve months' formations are the ordinary applications at the pre-go-live rate plus the added at that yield.
 
 The asks, from the January 2026 extract: each sales territory's 2024 first-time employers (businesses whose first
 payroll ever ran with Kilbourne, in the state they first employed in), how many Kilbourne still paid wages for in the
@@ -31,11 +31,11 @@ import openpyxl
 FIPS = {"39": "OH", "42": "PA", "26": "MI", "18": "IN", "27": "MN", "55": "WI", "21": "KY", "54": "WV", "47": "TN",
         "29": "MO", "19": "IA", "51": "VA"}
 STATES = ["OH", "PA", "MI", "IN", "MN", "WI", "KY", "WV", "TN", "MO", "IA", "VA"]
-NMON = 57                                   # January 2022 to September 2026
+NMON = 69                                   # January 2021 to September 2026
 
 
 def mi(y, m):
-    return (y - 2022) * 12 + (m - 1)
+    return (y - 2021) * 12 + (m - 1)
 
 
 TTM = list(range(mi(2025, 10), mi(2026, 9) + 1))
@@ -119,11 +119,15 @@ def same_month_mean(x, lo, hi, t):
 
 
 def counterfactual(P, st, kind, controls, launch_idx, sa="no"):
-    """The ordinary applications a state would have had, month by month, from the control states' path."""
+    """The ordinary applications a state would have had, month by month, from the control states' path. Every kind
+    rests on months before the state's go-live: its own level for each calendar month before go-live (CF1), in 2021
+    and 2022 (CF2) or in the twelve months before go-live (CF3), moved with the controls' applications against their level on
+    the same months (pooled, or the controls' ratios averaged in CF4); or the state's ratio to the controls' total
+    before go-live (CF5), or that ratio for each calendar month (CF6)."""
     BA = {s: series(P, s, "BA_BA", sa) for s in STATES}
     L = launch_idx
     if kind in ("CF1", "CF2", "CF3", "CF4"):
-        lo, hi = {"CF1": (0, mi(2023, 12)), "CF2": (0, L - 1), "CF3": (L - 12, L - 1), "CF4": (0, mi(2023, 12))}[kind]
+        lo, hi = {"CF1": (0, L - 1), "CF2": (0, mi(2022, 12)), "CF3": (L - 12, L - 1), "CF4": (0, L - 1)}[kind]
         if kind == "CF4":
             idx = np.array([np.mean([BA[o][t] / same_month_mean(BA[o], lo, hi, t) for o in controls])
                             for t in range(NMON)])
@@ -134,7 +138,7 @@ def counterfactual(P, st, kind, controls, launch_idx, sa="no"):
     nine = np.array([sum(BA[o][t] for o in controls) for t in range(NMON)])
     if kind == "CF5":
         return BA[st][:L].sum() / nine[:L].sum() * nine
-    out = np.zeros(NMON)                     # CF6: month-of-year ratio to the controls' total before go-live
+    out = np.zeros(NMON)
     for t in range(NMON):
         idx = [u for u in range(0, L) if u % 12 == t % 12]
         out[t] = BA[st][idx].sum() / nine[idx].sum() * nine[t]
@@ -142,9 +146,9 @@ def counterfactual(P, st, kind, controls, launch_idx, sa="no"):
 
 
 def own_counterfactual(P, st, launch_idx):
-    """The before-and-after read: the state's own 2022-2023 level for each calendar month, no comparison."""
+    """The before-and-after read: the state's own level before go-live for each calendar month, no comparison."""
     BA = series(P, st, "BA_BA")
-    return np.array([same_month_mean(BA, 0, mi(2023, 12), t) for t in range(NMON)])
+    return np.array([same_month_mean(BA, 0, launch_idx - 1, t) for t in range(NMON)])
 
 
 def launch_index(d):
@@ -162,10 +166,10 @@ def plan(P, cf="CF1", y="Y1", a="A1", nine_y="all", vol="no", controls=None, cf_
     Y = {}
     for s in STATES:
         if s in reform:
-            lo, hi = {"Y1": (0, L[s] - 1), "Y2": (0, mi(2023, 12)), "Y3": (L[s] - 12, L[s] - 1)}[y]
+            lo, hi = {"Y1": (0, L[s] - 1), "Y2": (0, mi(2022, 12)), "Y3": (L[s] - 12, L[s] - 1)}[y]
         else:
             lo, hi = {"all": (0, LAST_CLOSED), "latest": (LAST_CLOSED - 11, LAST_CLOSED),
-                      "pre": (0, mi(2023, 12))}[nine_y]
+                      "pre": (0, mi(2022, 12))}[nine_y]
         Y[s] = F4[s][lo:hi + 1].sum() / BA[s][lo:hi + 1].sum()
     I = {s: np.where(np.arange(NMON) >= L[s], BA[s] - G[s], 0.0) for s in reform}
     post = {s: list(range(L[s], LAST_CLOSED + 1)) for s in reform}
@@ -231,7 +235,7 @@ def golden(P):
 
 CF_KINDS = ("CF1", "CF2", "CF3", "CF4", "CF5", "CF6")
 Y_KINDS = ("Y1", "Y2", "Y3")
-A_KINDS = ("A1", "A2", "A3", "A4", "A5", "A6", "A7")
+A_KINDS = ("A1", "A2", "A3", "A4", "A5", "A7")
 
 
 def family(P, wide=False):
@@ -300,7 +304,7 @@ def rung_zero_added(P):
 
 
 def rung_before_after(P):
-    """The split read before and after against the state's own 2022-2023 level, no comparison states."""
+    """The split read before and after against the state's own level before go-live, no comparison states."""
     reform = sorted(P.changes)
     G = {s: own_counterfactual(P, s, launch_index(P.changes[s][0])) for s in reform}
     return plan(P, cf_override=G)["total"]
@@ -394,6 +398,94 @@ def rungs(P):
     return out
 
 
+# ------------------------------------------------------------------------------------------------- the bypasses
+def _proj_months(f, start, log=False):
+    """A straight line (or a log-linear one) through a monthly series from `start` to the last closed month, summed
+    over the twelve months' cohorts."""
+    t = np.arange(start, LAST_CLOSED + 1)
+    y = np.log(f[t]) if log else f[t]
+    b1, b0 = np.polyfit(t, y, 1)
+    v = b0 + b1 * np.array(TTM, dtype=float)
+    return float(np.exp(v).sum() if log else v.sum())
+
+
+def _annual(x, first_month):
+    """Twelve-month totals of closed cohorts for years starting in `first_month` (1-12): {(start index): total}."""
+    out = {}
+    for t0 in range(0, LAST_CLOSED - 10):
+        if (t0 % 12) + 1 == first_month and t0 + 11 <= LAST_CLOSED:
+            out[t0] = float(x[t0:t0 + 12].sum())
+    return out
+
+
+def bypasses(P):
+    """Every route that sizes the line without splitting the applications: straight lines through the closed
+    formations (monthly, adjusted or not, linear or log, and annual totals by calendar, fiscal and July years), the
+    rate per application on a line, and the 2025 first-time employers carried or grown with formations or with
+    applications over every window an analyst would pick."""
+    out = {}
+    sh = {s: P.share[s]["share"] for s in STATES}
+    for nm, start in (("2021-01", mi(2021, 1)), ("2022-01", mi(2022, 1)), ("2022-07", mi(2022, 7)),
+                      ("2023-01", mi(2023, 1)),
+                      ("2023-07", mi(2023, 7)), ("2024-01", mi(2024, 1)), ("2024-07", mi(2024, 7))):
+        out["formation line, monthly from " + nm] = sum(sh[s] * _proj_months(series(P, s, "BF_BF4Q"), start)
+                                                       for s in STATES)
+        out["formation line, monthly adjusted from " + nm] = sum(
+            sh[s] * _proj_months(series(P, s, "BF_BF4Q", "yes"), start) for s in STATES)
+        out["formation log line, monthly from " + nm] = sum(
+            sh[s] * _proj_months(series(P, s, "BF_BF4Q"), start, log=True) for s in STATES)
+        if start >= mi(2023, 1):
+            tot = 0.0
+            for s in STATES:
+                f, a = series(P, s, "BF_BF4Q"), series(P, s, "BA_BA")
+                t = np.arange(start, LAST_CLOSED + 1)
+                b1, b0 = np.polyfit(t, f[t] / a[t], 1)
+                tot += sh[s] * float(sum((b0 + b1 * u) * a[u] for u in TTM))
+            out["rate per application on a line from " + nm] = tot
+    mid_ttm = float(np.mean(TTM))
+    for nm, fm in (("calendar", 1), ("fiscal February", 2), ("fiscal October", 10), ("July", 7)):
+        tot = 0.0
+        ok = True
+        for s in STATES:
+            ann = _annual(series(P, s, "BF_BF4Q"), fm)
+            keys = sorted(ann)[-3:]
+            if len(keys) < 2:
+                ok = False
+                break
+            xs = np.array([k + 5.5 for k in keys])
+            b1, b0 = np.polyfit(xs, np.array([ann[k] for k in keys]), 1)
+            tot += sh[s] * float(b0 + b1 * mid_ttm)
+        if ok:
+            out["formation line, %s-year totals" % nm] = tot
+    carry = sum(P.share[s]["count"] for s in STATES)
+    out["2025 first-time employers carried"] = carry
+    groups = {"nine": [s for s in STATES if s not in P.changes], "twelve": STATES}
+    lc = LAST_CLOSED
+    for gname, grp in groups.items():
+        f = sum(series(P, s, "BF_BF4Q") for s in grp)
+        out["2025 grown by the %s states' formation growth, latest year on the one before" % gname] = \
+            carry * f[lc - 11:lc + 1].sum() / f[lc - 23:lc - 11].sum()
+        a = sum(series(P, s, "BA_BA") for s in grp)
+        for wn, (w0, w1) in (("calendar 2024", (mi(2024, 1), mi(2024, 12))), ("calendar 2025", (mi(2025, 1),
+                                                                                                 mi(2025, 12))),
+                             ("October 2023 to September 2024", (mi(2023, 10), mi(2024, 9))),
+                             ("October 2024 to September 2025", (mi(2024, 10), mi(2025, 9))),
+                             ("February 2024 to January 2025", (mi(2024, 2), mi(2025, 1))),
+                             ("July 2024 to June 2025", (mi(2024, 7), mi(2025, 6))),
+                             ("January to September 2025", (mi(2025, 1), mi(2025, 9)))):
+            if wn == "January to September 2025":
+                g = a[mi(2026, 1):mi(2026, 9) + 1].sum() / a[w0:w1 + 1].sum()
+            else:
+                g = a[TTM].sum() / a[w0:w1 + 1].sum()
+            out["2025 grown by the %s states' applications from %s" % (gname, wn)] = carry * g
+    tot = 0.0
+    for s in STATES:
+        a = series(P, s, "BA_BA")
+        tot += P.share[s]["count"] * a[TTM].sum() / a[mi(2025, 1):mi(2025, 12) + 1].sum()
+    out["each state's 2025 first-time employers grown by its own applications"] = tot
+    return out
+
+
 def round100(x):
     return int(100 * np.floor(x / 100.0 + 0.5))
 
@@ -447,7 +539,7 @@ class Book:
     def first_state(self, accts):
         """The state the business first employed in: its registration with the earliest liability date."""
         regs = [r for a in accts for r in self.regs.get(a["account_id"], [])]
-        return min(regs, key=lambda r: (r["liability_date"], r["kilbourne_from"]))["state"]
+        return min(regs, key=lambda r: (r["liability_date"], r["filing_start"]))["state"]
 
     def liable_before(self, accts, d):
         """True when a state registration of any of the accounts shows the business liable for wages before date d."""

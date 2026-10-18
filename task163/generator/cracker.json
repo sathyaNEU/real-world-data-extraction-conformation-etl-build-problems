@@ -3,13 +3,13 @@
   "cracker": {
    "ask_share": 0.06060606060606061,
    "score": 48.333333333333336,
-   "pair": 31.833333333333336,
+   "pair": 32.66666666666667,
    "hits": []
   },
   "cracker + prior liability": {
    "ask_share": 0.2727272727272727,
    "score": 60.0,
-   "pair": 37.666666666666664,
+   "pair": 38.5,
    "hits": [
     "Indiana-Kentucky signed",
     "Michigan signed",
@@ -22,19 +22,19 @@
   "cracker + tax filing only": {
    "ask_share": 0.06060606060606061,
    "score": 48.333333333333336,
-   "pair": 31.833333333333336,
+   "pair": 32.66666666666667,
    "hits": []
   },
   "cracker + every tax filing only account dropped": {
    "ask_share": 0.06060606060606061,
    "score": 48.333333333333336,
-   "pair": 31.833333333333336,
+   "pair": 32.66666666666667,
    "hits": []
   },
   "cracker + prior liability + tax filing only": {
    "ask_share": 0.48484848484848486,
    "score": 71.66666666666667,
-   "pair": 43.5,
+   "pair": 44.333333333333336,
    "hits": [
     "Indiana-Kentucky signed",
     "Indiana-Kentucky still",
@@ -53,19 +53,19 @@
   "cracker + group 00": {
    "ask_share": 0.06060606060606061,
    "score": 48.333333333333336,
-   "pair": 31.833333333333336,
+   "pair": 32.66666666666667,
    "hits": []
   },
   "cracker + legacy source code": {
    "ask_share": 0.06060606060606061,
    "score": 48.333333333333336,
-   "pair": 31.833333333333336,
+   "pair": 32.66666666666667,
    "hits": []
   },
   "every device": {
    "ask_share": 1.0,
    "score": 100.0,
-   "pair": 57.666666666666664,
+   "pair": 58.5,
    "hits": [
     "Indiana-Kentucky signed",
     "Indiana-Kentucky still",
@@ -99,181 +99,181 @@
    ]
   }
  },
- "mirror_leakage": 6.0606060606060606,
- "mirror_score": 15.333333333333334,
+ "mirror_leakage": 9.090909090909092,
+ "mirror_score": 17.0,
  "cracker_rows": [
   [
    "Indiana-Kentucky signed",
    197,
-   246,
+   225,
    "miss"
   ],
   [
    "Indiana-Kentucky still",
-   153,
-   203,
+   149,
+   185,
    "miss"
   ],
   [
    "Indiana-Kentucky wages_cents",
-   170284552,
-   264065014,
+   185434129,
+   245375312,
    "miss"
   ],
   [
    "Indiana-Kentucky wages_2024_cents",
-   656592384,
-   948738324,
+   745532407,
+   946360026,
    "miss"
   ],
   [
    "Michigan signed",
-   419,
-   492,
+   417,
+   497,
    "miss"
   ],
   [
    "Michigan still",
-   334,
-   418,
+   324,
+   420,
    "miss"
   ],
   [
    "Michigan wages_cents",
-   383937724,
-   553291756,
+   380209113,
+   536627403,
    "miss"
   ],
   [
    "Michigan wages_2024_cents",
-   1409274208,
-   1993734020,
+   1413159843,
+   1932462359,
    "miss"
   ],
   [
    "Ohio signed",
-   724,
-   862,
+   764,
+   926,
    "miss"
   ],
   [
    "Ohio still",
-   594,
-   737,
+   611,
+   781,
    "miss"
   ],
   [
    "Ohio wages_cents",
-   630306411,
-   915273267,
+   635788653,
+   998903170,
    "miss"
   ],
   [
    "Ohio wages_2024_cents",
-   2499581151,
-   3366943839,
+   2595452639,
+   3749323352,
    "miss"
   ],
   [
    "Pennsylvania signed",
-   410,
-   501,
+   441,
+   520,
    "miss"
   ],
   [
    "Pennsylvania still",
-   341,
-   439,
+   352,
+   434,
    "miss"
   ],
   [
    "Pennsylvania wages_cents",
-   344867754,
-   522208651,
+   377224298,
+   551141440,
    "miss"
   ],
   [
    "Pennsylvania wages_2024_cents",
-   1231753917,
-   1827309112,
+   1532600426,
+   2072523664,
    "miss"
   ],
   [
    "South and Plains signed",
-   157,
-   179,
+   121,
+   143,
    "miss"
   ],
   [
    "South and Plains still",
-   128,
-   151,
+   93,
+   115,
    "miss"
   ],
   [
    "South and Plains wages_cents",
-   109088160,
-   152219397,
+   98899000,
+   140491238,
    "miss"
   ],
   [
    "South and Plains wages_2024_cents",
-   404915845,
-   543453503,
+   394034592,
+   549483373,
    "miss"
   ],
   [
    "Upper Midwest signed",
-   134,
-   161,
+   119,
+   143,
    "miss"
   ],
   [
    "Upper Midwest still",
-   108,
-   133,
+   93,
+   121,
    "miss"
   ],
   [
    "Upper Midwest wages_cents",
-   108611472,
-   169241930,
+   105445640,
+   145213355,
    "miss"
   ],
   [
    "Upper Midwest wages_2024_cents",
-   439145826,
-   611769820,
+   401863632,
+   532809632,
    "miss"
   ],
   [
    "channel accountant referral",
-   481,
-   549,
+   540,
+   594,
    "miss"
   ],
   [
    "channel bank partner",
-   241,
-   211,
+   254,
+   212,
    "miss"
   ],
   [
    "channel outbound",
-   277,
-   240,
+   259,
+   225,
    "miss"
   ],
   [
    "channel partner marketplace",
-   242,
-   217,
+   248,
+   222,
    "miss"
   ],
   [
    "channel web sign-up",
-   800,
-   1224,
+   758,
+   1201,
    "miss"
   ]
  ]

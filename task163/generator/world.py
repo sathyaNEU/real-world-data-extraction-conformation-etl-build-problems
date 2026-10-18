@@ -1,14 +1,15 @@
 """The world before any file is written: twelve states' business applications and the employer business formations
-those applications produce, month by month from January 2022 to December 2027 (the truth runs past the release; only
+those applications produce, month by month from January 2021 to December 2027 (the truth runs past the release; only
 what the October 2026 release could hold is ever shipped).
 
 Two kinds of application reach the statistics in Ohio, Pennsylvania and Michigan once their integrated formation
-filings went live: the ordinary application, filed by a business that wanted an employer identification number, and
-the application the integrated filing adds, filed for a new business whose owner ticked the federal EIN box while
-forming the entity. The statistics never tell them apart: both carry the same high-propensity, planned-wage and
+filings went live in 2023: the ordinary application, filed by a business that wanted an employer identification
+number, and the application the integrated filing adds, filed for a new business whose owner ticked the federal EIN box
+while forming the entity. The statistics never tell them apart: both carry the same high-propensity, planned-wage and
 corporate flags at much the same rates. The added application seldom becomes an employer: it forms within four
-quarters at REL_ADDED of its state's ordinary rate. Every state also rode a common rise in ordinary applications from summer 2023
-to summer 2024 (NATIONAL_RISE), at the ordinary rate."""
+quarters at REL_ADDED of its state's ordinary rate. While each state's older filing route stayed open about three in
+ten formation filers ticked the box; once the route closed (October 2025 to February 2026) every filer met the
+question. From autumn 2025 every state's ordinary applications rose about an eighth on a common wave (WAVE)."""
 from __future__ import annotations
 
 import math
@@ -51,16 +52,18 @@ REFORM = ("OH", "PA", "MI")
 OTHERS = tuple(s.usps for s in STATES if s.usps not in REFORM)
 
 # the integrated formation filings: go-live and the date each state closed its older filing route
-LAUNCH = {"OH": (2024, 2, 5), "PA": (2024, 5, 13), "MI": (2024, 8, 12)}
+LAUNCH = {"OH": (2023, 1, 9), "PA": (2023, 4, 3), "MI": (2023, 7, 10)}
 RETIRE = {"OH": (2025, 10, 1), "PA": (2025, 12, 1), "MI": (2026, 2, 2)}
-ADDED_MAX = {"OH": 1.00, "PA": 1.05, "MI": 0.95}   # added applications at full take-up, per ordinary application
-VOLUNTARY = 0.55        # share of full take-up reached while the older route stayed open
-TAU = 8.0               # months to take-up of the voluntary phase (1 - e^-1)
+ADDED_MAX = {"OH": 1.15, "PA": 1.21, "MI": 1.09}   # added applications at full take-up, per ordinary application
+VOLUNTARY = 0.30        # share of full take-up reached while the older route stayed open
+TAU = 2.0               # months to take-up of the voluntary phase (1 - e^-1)
 RETIRE_RAMP = 2.0       # months for filers to move once the older route closed
 REL_ADDED = 0.18        # an added application's formation rate within four quarters, relative to its state's ordinary rate
 
-NATIONAL_RISE = 0.12    # the common rise in ordinary applications, summer 2023 to summer 2024
+NATIONAL_RISE = 0.0     # an earlier common rise in ordinary applications (none in this world)
 RISE_FROM, RISE_TO = (2023, 7), (2024, 6)
+WAVE = 0.12             # the common rise in ordinary applications every state shows from autumn 2025
+WAVE_FROM, WAVE_TO = (2025, 8), (2025, 11)
 COMMON_DRIFT = 0.0      # yearly
 
 # seasonal profile of applications (unadjusted), January first; the added applications follow formation filings,
@@ -91,17 +94,21 @@ def _frac_month_after(day_tuple):
     return K.midx(y, m), (n - d + 1) / n
 
 
-def national(t):
-    """Common factor on ordinary applications in month index t (a smooth rise between RISE_FROM and RISE_TO)."""
-    a, b = K.midx(RISE_FROM), K.midx(RISE_TO)
+def _smooth(t, a, b):
     if t <= a:
-        f = 0.0
-    elif t >= b:
-        f = 1.0
-    else:
-        x = (t - a) / (b - a)
-        f = x * x * (3 - 2 * x)
-    return 1.0 + NATIONAL_RISE * f
+        return 0.0
+    if t >= b:
+        return 1.0
+    x = (t - a) / (b - a)
+    return x * x * (3 - 2 * x)
+
+
+def national(t):
+    """Common factor on ordinary applications in month index t: a smooth rise between RISE_FROM and RISE_TO and a
+    second between WAVE_FROM and WAVE_TO, every state alike."""
+    f1 = _smooth(t, K.midx(RISE_FROM), K.midx(RISE_TO))
+    f2 = _smooth(t, K.midx(WAVE_FROM), K.midx(WAVE_TO))
+    return (1.0 + NATIONAL_RISE * f1) * (1.0 + WAVE * f2)
 
 
 def drift(t, s):

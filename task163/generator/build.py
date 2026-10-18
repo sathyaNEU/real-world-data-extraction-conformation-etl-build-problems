@@ -6,11 +6,11 @@ compared byte for byte and deleted.
     python3 task163/generator/build.py --out DIR    the pack only, into DIR
     python3 task163/generator/build.py --zip        also cut target.zip from the pack (at ship)
 
-The company's size is calibrated by a fixed rule: the share multiplier starts at 1 and is rescaled, at most six times,
-by the ratio of 2,302 to the midpoint of the plan line's construction family, stopping at the first value within 3 of
-2,302 (else the closest). Every business keeps its own random streams whatever the size, so a rescale adds or drops
-businesses at the margin and moves nothing else. The rule puts the family inside the central half of its bin at a
-non-round value; it never searches seeds."""
+The company's size is calibrated by a fixed rule: the share multiplier starts at 1 and is rescaled, at most eight
+times, by the ratio of 2,500.5 to the plan line, stopping at the first value within 2 of 2,500.5 (else the closest).
+The target is the centre of the bin the line falls in once the autumn 2025 rise is in the world (2,450 to 2,550), where
+the line's bootstrap interval sits centred. Every business keeps its own random streams whatever the size, so a rescale
+adds or drops businesses at the margin and moves nothing else. The rule never searches seeds."""
 from __future__ import annotations
 
 import argparse
@@ -37,7 +37,7 @@ import world as WD          # noqa: E402
 TASK = os.path.dirname(HERE)
 PACK_DONE = (2026, 10, 15, 16, 48, 0)                       # FP&A assembled the pack, Eastern time
 MTIME = calendar.timegm((2026, 10, 15, 20, 48, 0, 0, 0, 0))  # the same moment, UTC
-TARGET_MID = 2302.0
+TARGET_LINE = 2500.5
 
 
 class MemPack:
@@ -67,6 +67,10 @@ def family_mid(P):
     return 0.5 * (v.min() + v.max()), v.min(), v.max()
 
 
+def golden_line(P):
+    return CA.golden(P)["total"]
+
+
 class Built:
     pass
 
@@ -75,17 +79,19 @@ def world(quiet=True):
     B = Built()
     B.W = WD.simulate()
     scale, best = 1.0, None
-    for it in range(7):
+    for it in range(9):
         C = CO.build(B.W, scale)
         share = share_table(B.W, C)
-        mid, lo, hi = family_mid(MemPack(B.W, share))
+        MP = MemPack(B.W, share)
+        g = golden_line(MP)
         if not quiet:
-            print("  calibration %d: scale %.4f, family %.1f to %.1f, midpoint %.1f" % (it, scale, lo, hi, mid))
-        if best is None or abs(mid - TARGET_MID) < abs(best[0] - TARGET_MID):
-            best = (mid, scale, C, share)
-        if abs(mid - TARGET_MID) <= 3 or it == 6:
+            mid, lo, hi = family_mid(MP)
+            print("  calibration %d: scale %.4f, line %.1f, family %.1f to %.1f" % (it, scale, g, lo, hi))
+        if best is None or abs(g - TARGET_LINE) < abs(best[0] - TARGET_LINE):
+            best = (g, scale, C, share)
+        if abs(g - TARGET_LINE) <= 2.0 or it == 8:
             break
-        scale *= TARGET_MID / mid
+        scale *= TARGET_LINE / g
     B.mid, B.scale, B.C, B.share = best
     return B
 
@@ -158,10 +164,10 @@ def main():
     if os.path.isdir(target):
         shutil.rmtree(target)
     B, n = build(target)
-    print("  scale %.4f, family midpoint %.1f" % (B.scale, B.mid))
+    print("  scale %.4f, line %.1f" % (B.scale, B.mid))
     import json
     with open(os.path.join(HERE, "calibration.json"), "w") as fh:
-        json.dump({"scale": B.scale, "family_mid": round(B.mid, 3)}, fh, indent=1)
+        json.dump({"scale": B.scale, "line": round(B.mid, 3)}, fh, indent=1)
         fh.write("\n")
     import deliver
     deliver.main(target, os.path.join(TASK, "golden"), os.path.join(HERE, "figures.json"),

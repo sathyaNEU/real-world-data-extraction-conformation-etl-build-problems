@@ -26,13 +26,13 @@
       "json",
       "xlsx"
     ],
-    "largest_file": "quarterly_wages_2024Q2-2025Q4.csv",
-    "largest_file_rows": 144043
+    "largest_file": "legacy_quarterly_wages_2022Q1-2024Q2.csv",
+    "largest_file_rows": 177702
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task163/generator/build.py (seeded, deterministic) around a fictional payroll services company in Columbus, Ohio, in the layouts of the Census Bureau's Business Formation Statistics API and monthly download, the Census Nonemployer Statistics API, a payroll platform's onboarding export, quarterly wage files, state registrations and migration crosswalk, a legacy client system's quarterly wage report and a payroll tax team's successor transfer register; the state filing reforms are fictional and no real organisation's records or person is depicted.",
+      "origin": "constructed for this task by task163/generator/build.py (seeded, deterministic) around a fictional payroll services company in Columbus, Ohio. The three statistics files follow the layouts of the Census Bureau's Business Formation Statistics API and monthly download and the Census Nonemployer Statistics API, but every value in them is simulated for the scenario and none is Census data; the integrated EIN filings in Ohio, Pennsylvania and Michigan, and the autumn 2025 rise in applications, are fictional. The company files follow the layouts of a payroll platform's onboarding export, quarterly wage files, state registrations and migration crosswalk, a legacy client system's quarterly wage report and a payroll tax team's successor transfer register. No real organisation's records or person is depicted.",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work)"
     }
@@ -43,27 +43,27 @@
     {
       "path": "bfs_monthly_states_2026-04-15.csv",
       "format": "csv",
-      "bytes": 48912,
+      "bytes": 48779,
       "rows": 660,
-      "source": "Constructed: constructed in the layout of the Business Formation Statistics monthly download (bfs_monthly.csv), April 2026 release; values simulated for this task, not Census data",
+      "source": "Constructed in the layout of the Business Formation Statistics monthly download (bfs_monthly.csv, April 2026 release). Every value is simulated for the scenario, the same constructed series as the October pull at an earlier vintage; none is a Census value",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "bfs_state_api_2026-10-14.json",
       "format": "json",
-      "bytes": 454451,
-      "rows": 8064,
-      "source": "Constructed: constructed in the layout of a U.S. Census Bureau Business Formation Statistics API response (timeseries/eits/bfs), twelve states, October 2026 release; values simulated for this task's fictional world, not Census data",
+      "bytes": 568042,
+      "rows": 10080,
+      "source": "Constructed in the layout of the U.S. Census Bureau's Business Formation Statistics API response (timeseries/eits/bfs, October 2026 release, twelve states, January 2021 to September 2026). Nothing in it is a Census value: every series for every state is simulated for the scenario, and the Ohio, Pennsylvania and Michigan series from 2023 carry the scenario's fictional integrated EIN filings. Only the layout (field names, series codes, FIPS codes, adjustment flags, the formation series' publication lag) follows the real release",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "client_migration_crosswalk_2024-06-15.csv",
       "format": "csv",
-      "bytes": 884433,
-      "rows": 17829,
-      "source": "Constructed: Kilbourne Payroll, migration load crosswalk, legacy client numbers to accounts (15 June 2024)",
+      "bytes": 1060341,
+      "rows": 21355,
+      "source": "Constructed: the fictional Kilbourne Payroll's simulated migration load crosswalk, legacy client numbers to accounts (15 June 2024)",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -72,16 +72,16 @@
       "format": "docx",
       "bytes": 10372,
       "rows": null,
-      "source": "Constructed: Kilbourne Payroll Sales Operations, first-time employer counting notes (3 February 2026)",
+      "source": "Constructed: written for the scenario as the fictional Kilbourne Payroll Sales Operations' first-time employer counting notes (3 February 2026)",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "legacy_quarterly_wages_2022Q1-2024Q2.csv",
       "format": "csv",
-      "bytes": 4146667,
-      "rows": 136597,
-      "source": "Constructed: Kilbourne Payroll, legacy client system quarterly wage report by pay group, to 14 June 2024",
+      "bytes": 5397842,
+      "rows": 177702,
+      "source": "Constructed: the fictional Kilbourne Payroll's simulated legacy client system quarterly wage report by pay group, to 14 June 2024",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -90,16 +90,16 @@
       "format": "csv",
       "bytes": 13290,
       "rows": 204,
-      "source": "Constructed: constructed in the layout of a Census Bureau Nonemployer Statistics API extract, 2023, twelve states; values simulated for this task, not Census data",
+      "source": "Constructed in the layout of a Census Bureau Nonemployer Statistics API extract (2023, twelve states, NAICS sectors). Every value is simulated for the scenario; none is a Census value",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "onboarding_accounts_2022-2025.csv",
       "format": "csv",
-      "bytes": 5235356,
-      "rows": 31912,
-      "source": "Constructed: Kilbourne Payroll (fictional), current account system, onboarding export of the year-end planning extract (9 January 2026)",
+      "bytes": 5789504,
+      "rows": 35291,
+      "source": "Constructed: a simulated onboarding export from the current account system of Kilbourne Payroll, a fictional company (the year-end planning extract of 9 January 2026); every client, name and EIN in it is invented",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -108,43 +108,43 @@
       "format": "csv",
       "bytes": 2379,
       "rows": 15,
-      "source": "Constructed: Kilbourne Payroll FP&A, planning pack manifest (15 October 2026)",
+      "source": "Constructed: the fictional Kilbourne Payroll FP&A's planning pack manifest (15 October 2026)",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "plan_2027_sizing_standard.docx",
       "format": "docx",
-      "bytes": 10658,
+      "bytes": 10679,
       "rows": null,
-      "source": "Constructed: Kilbourne Payroll FP&A, 2027 plan sizing standard (1 September 2026)",
+      "source": "Constructed: written for the scenario as the fictional Kilbourne Payroll FP&A's 2027 plan sizing standard (1 September 2026)",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "plan_2027_workbook.xlsx",
       "format": "xlsx",
-      "bytes": 8183,
+      "bytes": 8167,
       "rows": 21,
-      "source": "Constructed: Kilbourne Payroll FP&A, 2027 plan workbook with the 2025 share tab (15 October 2026)",
+      "source": "Constructed: the fictional Kilbourne Payroll FP&A's 2027 plan workbook with the 2025 share tab (15 October 2026); its formations base is summed from the constructed statistics pull",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "plan_pack_field_guide.xlsx",
       "format": "xlsx",
-      "bytes": 9343,
-      "rows": 48,
-      "source": "Constructed: Kilbourne Payroll FP&A, planning pack field guide (15 October 2026)",
+      "bytes": 9440,
+      "rows": 49,
+      "source": "Constructed: the fictional Kilbourne Payroll FP&A's planning pack field guide (15 October 2026)",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "quarterly_wages_2024Q2-2025Q4.csv",
       "format": "csv",
-      "bytes": 4536670,
-      "rows": 144043,
-      "source": "Constructed: Kilbourne Payroll, current account system, quarterly wages by account, 17 June 2024 to 31 December 2025",
+      "bytes": 5083492,
+      "rows": 161329,
+      "source": "Constructed: simulated quarterly wages by account from the fictional Kilbourne Payroll's current account system, 17 June 2024 to 31 December 2025",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -153,7 +153,7 @@
       "format": "csv",
       "bytes": 345,
       "rows": 12,
-      "source": "Constructed: Kilbourne Payroll Sales Operations, 2025 territory map",
+      "source": "Constructed: the fictional Kilbourne Payroll Sales Operations' 2025 territory map",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -162,25 +162,25 @@
       "format": "xlsx",
       "bytes": 7538,
       "rows": 14,
-      "source": "Constructed: Kilbourne Payroll Market Research, log of state business filing changes (2023 to 2026); the filing changes are fictional",
+      "source": "Constructed: the fictional Kilbourne Payroll Market Research's log of state business filing changes (2023 to 2026); every change it logs, in every state, is fictional, including the integrated EIN filings",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "state_tax_registrations_2026-01-09.csv",
       "format": "csv",
-      "bytes": 1818413,
-      "rows": 32456,
-      "source": "Constructed: Kilbourne Payroll, current account system, state tax registrations (9 January 2026)",
+      "bytes": 2021093,
+      "rows": 35969,
+      "source": "Constructed: simulated state tax registrations from the fictional Kilbourne Payroll's current account system (9 January 2026)",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "suta_successor_transfers_2022-2025.csv",
       "format": "csv",
-      "bytes": 236881,
-      "rows": 2123,
-      "source": "Constructed: Kilbourne Payroll Payroll Tax, successor transfer register, 2022 to 2025",
+      "bytes": 353014,
+      "rows": 2398,
+      "source": "Constructed: the fictional Kilbourne Payroll payroll tax team's simulated successor transfer register, 2022 to 2025; every business in it is invented",
       "date": "2026-10-15",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }

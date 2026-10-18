@@ -29,7 +29,7 @@ PEOPLE = {
 UTC = dt.timezone.utc
 
 # ------------------------------------------------------------------------------------------------- calendar
-M0 = (2022, 1)                     # first month of every monthly array (the research team's extract starts here)
+M0 = (2021, 1)                     # first month of every monthly array (the research team's extract starts here)
 SIM_END = (2027, 12)               # the simulation runs through the plan year (truth only; never shipped past the cut)
 AS_OF = dt.date(2026, 10, 16)      # Friday: the plan sign-off
 BFS_RELEASE = dt.date(2026, 10, 14)        # the October 2026 release (applications through September 2026)
