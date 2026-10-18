@@ -1346,3 +1346,64 @@ measurements.
   estimator is not an estimator anybody would file, so both could have been written up as not real
   routes. A measurement that fires is not answered on paper; both were closed in the generator instead,
   by crowding the golden's peer group and by separating the two largest units' expected volumes.
+
+### Architecture 4: two candidates, both killed by 1.6a's hard clause before design (2026-10-18)
+
+Architecture 3 died because the completion method was not forced, so the decision was robust and the
+graded figure was one of six values. `stumping` 1.6a now requires the construction to be **uniquely
+determined by the data's structure**, and its test is one computation run before the six screens:
+enumerate the variants a competent analyst would use and compute the graded figure under each.
+
+**Candidate 1, each unit's own complication propensity identified from patients who pass through several
+units.** The quantity is unobserved (a unit's propensity net of the patients it happens to get); the
+construction combines the unit-stay segment grain with the separation outcome grain and absorbs a patient
+effect, which is the closest thing on this ground to task197's forced least squares. Measured on the clean
+truth, 13,403 segments over 9,000 patients with 45 per cent multi-unit:
+
+| Variant | Names | Graded figure, per 100 separations | Prints |
+|---|---|---|---|
+| ordinary least squares, two-way | unit 3 | 18.32 | 18.3 |
+| weighted least squares by stratum | unit 3 | 16.88 | **16.9** |
+| ridge-shrunk unit effects | unit 3 | 18.28 | 18.3 |
+| heavier shrinkage | unit 3 | 17.96 | **18.0** |
+| multi-unit patients only | unit 3 | 18.32 | 18.3 |
+
+**The name agrees and the figure does not: three printed values at one decimal.** That is architecture 3's
+death exactly. And a second kill on top: the filed-strata excess route, which is the published method the
+pack has to ship, **already names unit 3**, so the standard risk-adjustment route is the golden and only
+the raw rate lands wrong.
+
+**Candidate 2, the true complication count behind incomplete coding, recovered from a coding audit.** The
+quantity is unobserved; the construction combines the audit's re-coded-separation grain with the register's
+separation grain. Measured on 17,340 separations with a 6 per cent audit:
+
+| Variant of the scale-up | Names | Figure | Prints |
+|---|---|---|---|
+| one detection ratio for the book | unit 7 | 8.79 | 8.8 |
+| each unit's own audited ratio | unit 7 | 10.34 | 10.3 |
+| detection by risk stratum | unit 7 | 8.81 | 8.8 |
+| the audited rate direct | **unit 3** | 13.64 | 13.6 |
+| mean of per-stratum ratios | unit 7 | 8.74 | 8.7 |
+
+**Worse than candidate 1: the name forks too**, four variants naming unit 7 and one naming unit 3, with
+four distinct printed figures.
+
+**Why this ground cannot satisfy the clause, which is the finding rather than the build.** The dichotomy
+and 1.6a close against each other here, and it is a property of the data type.
+
+- Anything recovered by **arithmetic** on these records (interval containment of an onset in a unit stay,
+  patient-days by unit, set arithmetic over a person key) is **observed** in the dichotomy's sense, because
+  the records fix it. Filing it makes the computation executable, so the step is rule application.
+- Anything genuinely **unobserved** here is a **rate**: a true rate behind incomplete coding, a unit's own
+  propensity net of case mix, a counterfactual count. Every rate estimator on small counts across
+  heterogeneous units carries a weighting choice (pooled or per-unit, which strata, ratio of totals or mean
+  of ratios) and a shrinkage choice (fixed or random effects). All are standard practice and all move the
+  graded figure, as both tables above measure.
+
+**task197 escapes because of its data type, not its cleverness.** Its construction fits a dense physical
+trace where the residual is measurement noise and no competent analyst would weight or shrink it, so least
+squares returns one answer. Provider quality has no dense deterministic signal; it has sparse counts over
+units, which is exactly the setting where weighting and shrinkage are both defensible. **So 1.6a's hard
+clause is a constraint on the data type as much as on the mechanism: a uniquely determined construction
+needs dense observations of one unit, not sparse counts across many.** That is the question to put to the
+author rather than spend a ninth number on it.

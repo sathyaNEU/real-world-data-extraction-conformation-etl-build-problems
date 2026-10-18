@@ -286,6 +286,19 @@ the design, which is the case `determinism-check` section 1 ranks first. **So th
 "is a construction available" but "do the standard variants of it agree on the graded figure", and that is
 one computation on the clean truth.**
 
+**And that clause is about the construction, not about the data type: measured against this corpus, the
+tempting generalisation is false.** It is natural to conclude that a forced construction needs dense
+observations of one unit and so is unavailable on sparse counts across many, which would rule out provider,
+claims and survey rates as a class. Checked over the 20 builds on this objective with a status: every one of
+the five paused builds is coarse-grained, which is the half that looks confirming, but **9 of the 15 shipped
+builds are coarse-grained too**, several on very few rows, and 7 of the 15 ships have a rate as their
+deciding quantity against none of the pauses. So neither a coarse grain nor a rate quantity is
+disqualifying, and the family that actually keeps failing is narrower than either: **a rate whose estimator
+carries a free weighting or shrinkage choice.** The coarse grounds that shipped avoided it by deciding
+something else, a unit of analysis, an audit subsample's transported error rate, the uncertainty of a paired
+difference, a construction over orderings, a density from grouped tests with the pooling fixed by the design.
+Draw from those shapes on coarse ground rather than concluding the ground is closed.
+
 Each clause of that sentence answers a screen: unobserved satisfies the
 dichotomy; two grains means no one file publishes it; fitted means no subset reveals it; and varied inputs
 mean the organ does not announce itself. Where a candidate is missing one of those clauses, that is the
