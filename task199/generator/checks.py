@@ -291,7 +291,7 @@ def main():
        "ask.C_column_does_not_touch_the_call")
     ok(near(B.action_days(stripped, g, *B.WIN), days_w), "ask.C_column_does_not_touch_the_count")
 
-    # ------------------------------------ ask A's reconciliation closes at the grain it is asked at
+    # ----------------------------- SF14, ask A's reconciliation closes at the grain it is asked at
     # The ask asks for a line per item group closing each quarter's gap, so the line set is the one
     # that closes all four quarters: the groups whose delivery quarter and billed quarter differ,
     # plus the lote the invoice credited. The coarser annual reading and the publication basis are
@@ -321,33 +321,33 @@ def main():
         if dq == bq or (dq == 0 and bq == 0):
             continue
         groups[(dq, bq, cred)] = groups.get((dq, bq, cred), 0) + r["delivered"]
-    ok(len(groups) == 5, "askA.five_groups_close_the_four_quarters",
+    ok(len(groups) == 5, "SF14.five_groups_close_the_four_quarters",
        ", ".join("%s=%d" % (k, v) for k, v in sorted(groups.items())))
     for q in (1, 2, 3, 4):
         gap = delq.get(q, 0) - billq.get(q, 0)
         closed = (sum(v for k, v in groups.items() if k[0] == q)
                   - sum(v for k, v in groups.items() if k[1] == q))
-        ok(gap == closed, "askA.quarter_closes.T%d" % q, "gap %+d, lines %+d" % (gap, closed))
+        ok(gap == closed, "SF14.quarter_closes.T%d" % q, "gap %+d, lines %+d" % (gap, closed))
     annual = {k: v for k, v in groups.items() if k[1] == 0}
     ok(sum(delq.values()) - sum(billq.values()) == sum(annual.values()),
-       "askA.annual_identity", "%d delivered less %d billed = %d"
+       "SF14.annual_identity", "%d delivered less %d billed = %d"
        % (sum(delq.values()), sum(billq.values()), sum(annual.values())))
     closes = 0
     for q in (1, 2, 3, 4):
         gap = delq.get(q, 0) - billq.get(q, 0)
         if gap == sum(v for k, v in annual.items() if k[0] == q):
             closes += 1
-    ok(closes == 0, "askA.the_annual_line_set_closes_no_quarter",
+    ok(closes == 0, "SF14.the_annual_line_set_closes_no_quarter",
        "%d of 4 quarters close on the two annual lines" % closes)
     dec25 = sum(r["delivered"] for r in d["deliveries"]
                 if r["city"] in nonpanel and r["date"].year == 2026
                 and B.publication_period(r["city"], r["date"]).year == 2025)
     ok(dec25 > 0 and sum(pubq.values()) - sum(billq.values()) == dec25 + sum(
         v for k, v in groups.items() if k[2]),
-       "askA.the_publication_basis_is_a_different_gap",
+       "SF14.the_publication_basis_is_a_different_gap",
        "%d published less %d billed; %d items published in 2025 reach the service in 2026"
        % (sum(pubq.values()), sum(billq.values()), dec25))
-    ok(all(k[0] != 0 for k in groups), "askA.every_closing_group_is_delivered_inside_2025",
+    ok(all(k[0] != 0 for k in groups), "SF14.every_closing_group_is_delivered_inside_2025",
        "the items published in 2025 and delivered in 2026 form no closing group")
 
     # ---------------------------------------------------- graded figures, bins
