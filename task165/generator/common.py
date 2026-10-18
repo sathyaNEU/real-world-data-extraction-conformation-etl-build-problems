@@ -49,7 +49,7 @@ LEGACY_WINTERS = ["2021-22", "2022-23"]
 SEASON = {w: (dt.date(int(w[:4]), 11, 1), dt.date(int(w[:4]) + 1, 3, 31)) for w in WINTERS}
 PLANNING_SEVERITY = 61.7                       # WSI points, the 1991-2020 average of the index
 # each winter's Winter Severity Index (sum of event points, 1 November to 31 March)
-WSI_TARGET = {"2021-22": 63.4, "2022-23": 50.1, "2023-24": 38.9, "2024-25": 67.2, "2025-26": 52.6}
+WSI_TARGET = {"2021-22": 63.4, "2022-23": 50.1, "2023-24": 38.9, "2024-25": 67.2, "2025-26": 58.4}
 MOVE_DATES = {"A": dt.date(2022, 11, 1), "B": dt.date(2023, 11, 1), "C": dt.date(2024, 11, 1),
               "D": dt.date(2025, 11, 1)}
 FIRST_P1_WINTER = {"A": "2022-23", "B": "2023-24", "C": "2024-25", "D": "2025-26"}

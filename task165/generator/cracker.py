@@ -30,7 +30,7 @@ def r1(v):
 def ask_points(stock, room, art, gold):
     gs, gr, ga = gold
     ka = sum(1 for y in C.YARDS if r1(stock[y]) == r1(gs[y])) + sum(1 for y in C.YARDS if r1(room[y]) == r1(gr[y]))
-    kb = sum(1 for k in ga if r1(art[k]) == r1(ga[k]))
+    kb = sum(1 for k in ga if round(art[k]) == round(ga[k]))
     content = 1 if kb == len(ga) else 0
     n = 8 + 12 + CHART_CONTENT + CHART_PARTS
     keep = ka + kb + content + CHART_PARTS

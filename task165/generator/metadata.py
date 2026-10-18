@@ -72,9 +72,9 @@ def write(task_dir):
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "a committed seasonal tonnage to the nearest 100 t, each works yard's dome stock and room on 1 "
                         "November 2026, each yard's Priority 1 arterial rock salt in each of three winters, and a "
-                        "one-page memo charting the arterial figures",
+                        "one-page report to council charting the arterial figures",
         "as_of": "2026-09-25",
-        "deliverables": ["salt_commitment_2026-27.xlsx", "seasonal_salt_commitment_memo.docx"],
+        "deliverables": ["salt_commitment_2026-27.xlsx", "seasonal_salt_commitment_council_report.docx"],
         "distractor_files": DISTRACTORS,
         "field_terms": [],
         "stated_inputs": [],

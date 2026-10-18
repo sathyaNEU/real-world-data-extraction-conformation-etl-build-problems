@@ -20,6 +20,7 @@ import records as R
 import world as Wd
 
 BRINE_KG_L = 1.18      # plant brine, kilograms a litre
+PREWET_L_T = 40.0      # the tandems' pre-wet rate, litres of brine a tonne of rock salt
 F_LEGACY = "avl_legacy_segment_shift_2021-11-01_2023-03-31.csv"
 F_PASSES = "telematics_segment_passes_2023-10-01_2026-09-23.parquet"
 F_XWALK = "gis_segment_crosswalk_2023.csv"
@@ -98,7 +99,7 @@ def pass_rows(W, S):
         unit = p["unit"]
         ctl = W.controller_on(unit, day)
         tandem = W.unit_by_id[unit]["class"] == "TANDEM"
-        lpt = float(rng.uniform(36.0, 44.0)) if tandem else 0.0      # pre-wet brine, litres a tonne of salt
+        lpt = PREWET_L_T if tandem else 0.0                         # pre-wet brine, litres a tonne of salt
         i = 0
         while i < len(rows):
             n = int(rng.choice([1, 2, 3], p=[0.45, 0.40, 0.15])) if ctl == "M410" else int(rng.integers(1, 7))
@@ -106,18 +107,18 @@ def pass_rows(W, S):
             runs += 1
             ref = "%s-%s-%05d" % (unit, chunk[0]["entry"].strftime("%y%m%d"), runs % 100000)
             tot = sum(r["t"] for r in chunk)
-            tot_l = round(tot * lpt)
+            tot_l = round(tot * lpt, 1)
             for r in chunk:
                 s = W.by_id[r["segment_id"]]
                 if ctl == "M410":
                     # the older controller reports the run's material as one mass, salt and brine together
                     val, lit = tot + tot_l * BRINE_KG_L / 1000.0, tot_l
                 else:
-                    val, lit = r["t"], round(r["t"] * lpt)
+                    val, lit = r["t"], round(round(r["t"], 3) * lpt, 1)
                 out.append({"unit_id": unit, "route_code": p["route_code"], "segment_id": r["segment_id"],
                             "entry_utc": K.to_utc(r["entry"]), "exit_utc": K.to_utc(r["exit"]),
                             "material_code": "SS" if s["pool"] == "P3" else "RS",
-                            "applied_t": round(val, 3), "prewet_l": int(lit), "run_ref": ref})
+                            "applied_t": round(val, 3), "prewet_l": float(lit), "run_ref": ref})
             i += n
     out.sort(key=lambda r: (r["entry_utc"], r["unit_id"], r["segment_id"]))
     return out
@@ -132,7 +133,7 @@ def write_passes(path, rows):
         "exit_utc": pa.array([r["exit_utc"].replace(tzinfo=K.UTC) for r in rows], pa.timestamp("s", tz="UTC")),
         "material_code": pa.array([r["material_code"] for r in rows], pa.string()),
         "applied_t": pa.array([r["applied_t"] for r in rows], pa.float64()),
-        "prewet_l": pa.array([r["prewet_l"] for r in rows], pa.int32()),
+        "prewet_l": pa.array([r["prewet_l"] for r in rows], pa.float64()),
         "run_ref": pa.array([r["run_ref"] for r in rows], pa.string()),
     })
     pq.write_table(tbl, path, compression="snappy", use_dictionary=True, write_statistics=True,
@@ -238,7 +239,8 @@ def revision_rows(W):
     out = []
     people = ["rta02", "rta05", "rta07", "rta11"]
     for i, (d, sid, field, old, new, txt) in enumerate(rows):
-        entered = d - dt.timedelta(days=int(3 + K.stable_int(sid, field) % 25))
+        lag = int(K.stable_int(sid, field, "lag") % 52) - 9          # from nine days after to 42 days before
+        entered = min(d - dt.timedelta(days=lag), dt.date(2026, 9, 14))
         out.append(("RA-%05d" % (10421 + i), d.isoformat(), sid, field, old, new, txt,
                     people[K.stable_int(txt) % 4], entered.isoformat()))
     return out

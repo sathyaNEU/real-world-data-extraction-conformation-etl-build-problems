@@ -35,6 +35,13 @@ class Sim:
     def _run(self):
         W, rng = self.W, self.rng
         segs = [s for s in W.segments]
+        rot = np.random.default_rng(W.seed + 11)
+        groups = {}
+        for rc, c in sorted(W.circuits.items()):
+            if rc in W.contract_circuits:
+                continue
+            groups.setdefault((c["yard"], c["kind"]), []).append(rc)
+        self.assign = {}
         for w in K.WINTERS:
             # circuit membership this winter
             members = {}
@@ -46,6 +53,16 @@ class Sim:
                 members.setdefault(rc, []).append(s)
             for e in W.events[w]:
                 pts = e["points"]
+                # trucks rotate: a circuit's own truck most events, a swap with another circuit of the yard otherwise
+                unit_for = {}
+                for key, rcs in sorted(groups.items()):
+                    units = [W.circuits[rc]["unit"] for rc in rcs]
+                    for i in range(len(units)):
+                        if rot.random() < 0.15:
+                            j = int(rot.integers(0, len(units)))
+                            units[i], units[j] = units[j], units[i]
+                    unit_for.update(dict(zip(rcs, units)))
+                self.assign[(w, e["event_no"])] = unit_for
                 for rc, ss in sorted(members.items()):
                     c = W.circuits[rc]
                     kind = c["kind"]
@@ -67,9 +84,10 @@ class Sim:
                     starts = sorted(rng.uniform(t_a, t_b, n))
                     seg_salt = {}
                     for s in ss:
-                        exp_t = W.rate(s, w) * s["lane_km"] * s["m"] * (pts / K.PLANNING_SEVERITY) * (1 + W.shock[w])
+                        exp_t = W.rate(s, w) * s["lane_km"] * s["m"] * W.wmult[(s["segment_id"], w)] * \
+                            (pts / K.PLANNING_SEVERITY) * (1 + W.shock[w])
                         seg_salt[s["segment_id"]] = exp_t * max(0.3, 1 + rng.normal(0, Wd.EVENT_CV))
-                    unit = c.get("unit")
+                    unit = unit_for.get(rc, c.get("unit"))
                     prev_end = None
                     for k in range(n):
                         t0 = e["start"] + dt.timedelta(hours=float(starts[k]))
@@ -116,7 +134,7 @@ class Sim:
                 rows = []
                 for sid in c["segments"]:
                     s = W.by_id[sid]
-                    amt = 0.045 * s["lane_km"] * (1 + rng.normal(0, 0.1))
+                    amt = 0.048 * s["lane_km"] * (1 + rng.normal(0, 0.1))
                     dur = s["centreline_km"] / SPEED_KMH["ART"]
                     t1 = clock + dt.timedelta(hours=dur)
                     rows.append({"segment_id": sid, "entry": clock, "exit": t1, "t": amt})

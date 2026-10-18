@@ -1,0 +1,580 @@
+{
+ "backtest": {
+  "as issued": {
+   "days": 11857,
+   "hot_days": 1174,
+   "hot_mean": -0.27,
+   "rmse": 0.143
+  },
+  "carry": {
+   "days": 11857,
+   "hot_days": 1174,
+   "hot_mean": -0.001,
+   "rmse": 0.087
+  },
+  "flag": {
+   "days": 11857,
+   "hot_days": 1174,
+   "hot_mean": -0.263,
+   "rmse": 0.142
+  },
+  "nearest": {
+   "days": 11857,
+   "hot_days": 1174,
+   "hot_mean": -0.001,
+   "rmse": 0.083
+  },
+  "refill": {
+   "days": 11857,
+   "hot_days": 1174,
+   "hot_mean": -0.001,
+   "rmse": 0.065
+  },
+  "regression": {
+   "days": 11857,
+   "hot_days": 1174,
+   "hot_mean": -0.133,
+   "rmse": 0.129
+  }
+ },
+ "call": [
+  "PB06",
+  "PB07",
+  "PB09",
+  "PB10",
+  "PB11",
+  "PB12",
+  "PB13",
+  "PB14",
+  "PB15"
+ ],
+ "clear_sky": 0.06,
+ "clear_sky_exact": 0.0595,
+ "constants": {
+  "b_all": 0.045,
+  "b_fill": -0.007,
+  "k1": 1.29
+ },
+ "conventions": {
+  "depth_band_m": 2,
+  "gps_hours": 5,
+  "hot_anomaly_c": 0.6,
+  "hotspot_min_c": 1.0,
+  "kelvin": 273.15,
+  "levels": [
+   4.0,
+   8.0
+  ],
+  "overlap_years": [
+   2018,
+   2026
+  ],
+  "small_colony_cm": 10,
+  "wide_colony_cm": 100,
+  "window_days": 84
+ },
+ "count": 9,
+ "gps": {
+  "Cozumel II 2025-08": [
+   4.02,
+   4.85,
+   16
+  ],
+  "Cozumel II 2026-04": [
+   4.05,
+   4.83,
+   16
+  ],
+  "Cozumel II 2026-08": [
+   -0.97,
+   -0.18,
+   16
+  ],
+  "Ixchel 2024-04": [
+   -1.33,
+   -0.07,
+   16
+  ],
+  "Ixchel 2024-08": [
+   -0.9,
+   -0.05,
+   16
+  ],
+  "Ixchel 2025-04": [
+   -1.43,
+   -0.1,
+   16
+  ],
+  "Ixchel 2027-04": [
+   -1.68,
+   -0.12,
+   16
+  ]
+ },
+ "hot_low": {
+  "as issued": 0.27,
+  "carry": 0.001,
+  "flag": 0.263,
+  "nearest": 0.001,
+  "refill": 0.001,
+  "regression": 0.133
+ },
+ "hot_low_2dp": {
+  "as issued": 0.27,
+  "carry": 0.0,
+  "flag": 0.26,
+  "nearest": 0.0,
+  "refill": 0.0,
+  "regression": 0.13
+ },
+ "repeats": {
+  "runs": {
+   "DW": 78,
+   "KT": 75
+  },
+  "total": 153,
+  "wide": {
+   "AV": 32,
+   "DW": 135,
+   "JR": 34,
+   "KT": 136,
+   "LC": 34,
+   "MS": 38
+  }
+ },
+ "rung_dhw": {
+  "as issued": [
+   2.33,
+   3.79,
+   2.3,
+   5.37,
+   3.44,
+   8.32,
+   9.28,
+   5.98,
+   9.56,
+   11.69,
+   7.55,
+   5.99,
+   7.05,
+   4.93,
+   7.37,
+   1.83
+  ],
+  "flag": [
+   2.23,
+   3.62,
+   2.04,
+   5.0,
+   3.29,
+   7.85,
+   8.76,
+   5.72,
+   9.02,
+   11.08,
+   7.13,
+   5.76,
+   6.5,
+   4.21,
+   6.95,
+   1.62
+  ],
+  "pooled": [
+   2.1,
+   3.66,
+   2.07,
+   4.62,
+   3.17,
+   7.89,
+   8.68,
+   5.62,
+   8.95,
+   11.15,
+   7.01,
+   5.64,
+   6.38,
+   4.2,
+   6.97,
+   1.48
+  ],
+  "refill, no difference": [
+   3.27,
+   5.34,
+   2.3,
+   6.52,
+   5.28,
+   9.42,
+   11.73,
+   7.46,
+   10.62,
+   12.69,
+   13.74,
+   10.38,
+   13.11,
+   10.02,
+   11.68,
+   6.41
+  ],
+  "regression": [
+   2.46,
+   4.01,
+   2.04,
+   5.76,
+   4.01,
+   8.85,
+   9.6,
+   6.29,
+   9.99,
+   11.87,
+   8.59,
+   6.48,
+   7.61,
+   5.46,
+   8.17,
+   2.55
+  ]
+ },
+ "rungs": {
+  "as issued": [
+   "PB06",
+   "PB07",
+   "PB09",
+   "PB10"
+  ],
+  "flag": [
+   "PB07",
+   "PB09",
+   "PB10"
+  ],
+  "pooled": [
+   "PB07",
+   "PB09",
+   "PB10"
+  ],
+  "refill, no difference": [
+   "PB06",
+   "PB07",
+   "PB09",
+   "PB10",
+   "PB11",
+   "PB12",
+   "PB13",
+   "PB14",
+   "PB15"
+  ],
+  "regression": [
+   "PB06",
+   "PB07",
+   "PB09",
+   "PB10",
+   "PB11",
+   "PB15"
+  ]
+ },
+ "sites": [
+  {
+   "code": "PB01",
+   "colonies": 148,
+   "declared": "No alert",
+   "declared_dhw": 2.3,
+   "dhw": 3,
+   "dhw_exact": 3.11,
+   "dhw_range": [
+    3.1,
+    3.11
+   ],
+   "hours": 3584,
+   "level": "No alert",
+   "name": "Bajo Pelicano",
+   "prevalence": 78.4,
+   "region": "north",
+   "survey": false,
+   "verdict": "confirms"
+  },
+  {
+   "code": "PB02",
+   "colonies": 151,
+   "declared": "No alert",
+   "declared_dhw": 3.8,
+   "dhw": 5,
+   "dhw_exact": 4.95,
+   "dhw_range": [
+    4.72,
+    5.3
+   ],
+   "hours": 2783,
+   "level": "Alert Level 1",
+   "name": "Arrecife Las Garzas",
+   "prevalence": 75.5,
+   "region": "north",
+   "survey": false,
+   "verdict": "raises"
+  },
+  {
+   "code": "PB03",
+   "colonies": 128,
+   "declared": "No alert",
+   "declared_dhw": 2.3,
+   "dhw": 2,
+   "dhw_exact": 2.04,
+   "dhw_range": [
+    2.04,
+    2.04
+   ],
+   "hours": 3333,
+   "level": "No alert",
+   "name": "Cabezo Tortuga",
+   "prevalence": 67.2,
+   "region": "north",
+   "survey": false,
+   "verdict": "confirms"
+  },
+  {
+   "code": "PB04",
+   "colonies": 147,
+   "declared": "Alert Level 1",
+   "declared_dhw": 5.4,
+   "dhw": 6,
+   "dhw_exact": 6.07,
+   "dhw_range": [
+    5.9,
+    6.25
+   ],
+   "hours": 4678,
+   "level": "Alert Level 1",
+   "name": "Punta Abanico",
+   "prevalence": 40.8,
+   "region": "north",
+   "survey": false,
+   "verdict": "confirms"
+  },
+  {
+   "code": "PB05",
+   "colonies": 185,
+   "declared": "No alert",
+   "declared_dhw": 3.4,
+   "dhw": 5,
+   "dhw_exact": 5.03,
+   "dhw_range": [
+    4.88,
+    5.03
+   ],
+   "hours": 4074,
+   "level": "Alert Level 1",
+   "name": "Bajo del Ancla",
+   "prevalence": 34.6,
+   "region": "north",
+   "survey": false,
+   "verdict": "raises"
+  },
+  {
+   "code": "PB06",
+   "colonies": 186,
+   "declared": "Alert Level 2",
+   "declared_dhw": 8.3,
+   "dhw": 9,
+   "dhw_exact": 8.85,
+   "dhw_range": [
+    8.85,
+    8.92
+   ],
+   "hours": 2859,
+   "level": "Alert Level 2",
+   "name": "Arrecife Los Pargos",
+   "prevalence": 5.9,
+   "region": "central",
+   "survey": true,
+   "verdict": "confirms"
+  },
+  {
+   "code": "PB07",
+   "colonies": 126,
+   "declared": "Alert Level 2",
+   "declared_dhw": 9.3,
+   "dhw": 11,
+   "dhw_exact": 11.07,
+   "dhw_range": [
+    11.06,
+    11.07
+   ],
+   "hours": 4412,
+   "level": "Alert Level 2",
+   "name": "Cayo Medusa",
+   "prevalence": 20.6,
+   "region": "central",
+   "survey": true,
+   "verdict": "confirms"
+  },
+  {
+   "code": "PB08",
+   "colonies": 173,
+   "declared": "Alert Level 1",
+   "declared_dhw": 6.0,
+   "dhw": 7,
+   "dhw_exact": 6.96,
+   "dhw_range": [
+    6.96,
+    7.05
+   ],
+   "hours": 3188,
+   "level": "Alert Level 1",
+   "name": "Bajo Langosta",
+   "prevalence": 49.7,
+   "region": "central",
+   "survey": false,
+   "verdict": "confirms"
+  },
+  {
+   "code": "PB09",
+   "colonies": 190,
+   "declared": "Alert Level 2",
+   "declared_dhw": 9.6,
+   "dhw": 10,
+   "dhw_exact": 10.01,
+   "dhw_range": [
+    9.99,
+    10.01
+   ],
+   "hours": 2565,
+   "level": "Alert Level 2",
+   "name": "Arrecife Los Ronquillos",
+   "prevalence": 37.4,
+   "region": "central",
+   "survey": true,
+   "verdict": "confirms"
+  },
+  {
+   "code": "PB10",
+   "colonies": 172,
+   "declared": "Alert Level 2",
+   "declared_dhw": 11.7,
+   "dhw": 12,
+   "dhw_exact": 11.98,
+   "dhw_range": [
+    11.83,
+    12.02
+   ],
+   "hours": 4338,
+   "level": "Alert Level 2",
+   "name": "Punta Cascabel",
+   "prevalence": 32.0,
+   "region": "central",
+   "survey": true,
+   "verdict": "confirms"
+  },
+  {
+   "code": "PB11",
+   "colonies": 166,
+   "declared": "Alert Level 1",
+   "declared_dhw": 7.6,
+   "dhw": 13,
+   "dhw_exact": 13.0,
+   "dhw_range": [
+    12.95,
+    13.04
+   ],
+   "hours": 3743,
+   "level": "Alert Level 2",
+   "name": "Bajo Coralillo",
+   "prevalence": 50.6,
+   "region": "south",
+   "survey": true,
+   "verdict": "raises"
+  },
+  {
+   "code": "PB12",
+   "colonies": 161,
+   "declared": "Alert Level 1",
+   "declared_dhw": 6.0,
+   "dhw": 10,
+   "dhw_exact": 9.91,
+   "dhw_range": [
+    9.88,
+    10.1
+   ],
+   "hours": 4350,
+   "level": "Alert Level 2",
+   "name": "Arrecife El Tiburon",
+   "prevalence": 9.3,
+   "region": "south",
+   "survey": true,
+   "verdict": "raises"
+  },
+  {
+   "code": "PB13",
+   "colonies": 170,
+   "declared": "Alert Level 1",
+   "declared_dhw": 7.0,
+   "dhw": 12,
+   "dhw_exact": 12.26,
+   "dhw_range": [
+    12.03,
+    12.26
+   ],
+   "hours": 3413,
+   "level": "Alert Level 2",
+   "name": "Cabezo Morena",
+   "prevalence": 54.1,
+   "region": "south",
+   "survey": true,
+   "verdict": "raises"
+  },
+  {
+   "code": "PB14",
+   "colonies": 156,
+   "declared": "Alert Level 1",
+   "declared_dhw": 4.9,
+   "dhw": 9,
+   "dhw_exact": 9.02,
+   "dhw_range": [
+    8.73,
+    9.15
+   ],
+   "hours": 3862,
+   "level": "Alert Level 2",
+   "name": "Bajo Rompiente",
+   "prevalence": 25.0,
+   "region": "south",
+   "survey": true,
+   "verdict": "raises"
+  },
+  {
+   "code": "PB15",
+   "colonies": 165,
+   "declared": "Alert Level 1",
+   "declared_dhw": 7.4,
+   "dhw": 11,
+   "dhw_exact": 11.02,
+   "dhw_range": [
+    10.78,
+    11.21
+   ],
+   "hours": 3757,
+   "level": "Alert Level 2",
+   "name": "Punta Gorgonia",
+   "prevalence": 32.7,
+   "region": "south",
+   "survey": true,
+   "verdict": "raises"
+  },
+  {
+   "code": "PB16",
+   "colonies": 161,
+   "declared": "No alert",
+   "declared_dhw": 1.8,
+   "dhw": 6,
+   "dhw_exact": 5.96,
+   "dhw_range": [
+    5.79,
+    6.19
+   ],
+   "hours": 3683,
+   "level": "Alert Level 1",
+   "name": "Arrecife Sargazo",
+   "prevalence": 62.1,
+   "region": "south",
+   "survey": false,
+   "verdict": "raises"
+  }
+ ]
+}

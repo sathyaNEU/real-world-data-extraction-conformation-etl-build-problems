@@ -101,8 +101,8 @@ def plan_text(W):
         "the Priority 1 roads are clear. Plowed when snow reaches 8 cm.",
         "Priority 3: local streets. Plowed when snow reaches 10 cm. Sand and salt on hills on request.",
         "Anti-icing brine is applied ahead of events on arterials and bridges only. Arterial tandems also pre-wet "
-        "their rock salt at the spinner with plant brine (23 per cent salt by weight, 1.18 kg a litre); the single "
-        "axles on the collector and local circuits spread dry salt.",
+        "their rock salt at the spinner with plant brine at 40 litres to the tonne of salt (23 per cent salt by "
+        "weight, 1.18 kg a litre); the single axles on the collector and local circuits spread dry salt.",
         "Spreader controllers are calibrated to the division's application rates, which are set in kilograms per "
         "lane-km for each material and pavement temperature range.",
     ]),

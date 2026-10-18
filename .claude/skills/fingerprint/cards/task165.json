@@ -37,7 +37,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "telematics_segment_passes_2023-10-01_2026-09-23.parquet (the fleet telematics platform's segment passes from the October 2023 replacement) beside avl_legacy_segment_shift_2021-11-01_2023-03-31.csv (the legacy AVL's segment-by-shift summaries for the two winters before it)",
-    "rows": 318889,
+    "rows": 352929,
     "entity": "one spreader truck's pass over one route segment, with the rock salt it put down",
     "grain": "truck pass x segment",
     "source": "synthetic (constructed in the layout of a winter-maintenance telematics platform's segment-pass export, beside a legacy AVL's segment-by-shift material summary)"
@@ -68,7 +68,7 @@
   },
   "deliverables": [
     "salt_commitment_2026-27.xlsx",
-    "seasonal_salt_commitment_memo.docx"
+    "seasonal_salt_commitment_council_report.docx"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
@@ -80,7 +80,8 @@
     "storm log layout changed in 2023 (title block and event points to coded events and a Season WSI row)",
     "free-text route audit reasons in the revision log",
     "supplier dispatch schedule re-issued; dome survey capture times in UTC; loads weighed at another yard's scale house during scale outages; inter-yard transfers",
-    "older spreader controllers writing a run's total, salt and brine together, on every segment row; contractor circuits reporting outside the telematics; a yard boundary realignment"
+    "older spreader controllers writing a run's total, salt and brine together, on every segment row; contractor circuits reporting outside the telematics; a yard boundary realignment",
+    "trucks rotating between circuits of their yard; route audit entries keyed unevenly before or after their effective dates; a register pull of the salted network only"
   ],
   "driver": "The extra input an upgraded service level puts into a unit is the part of the unit the old level left untreated, so the average gain measured on units upgraded earlier, chosen because the old level already treated much of them, understates the gain for units the old level barely reached, while their upgraded level less the new units' present input overstates it; only the gain conditioned on how much of each unit the old level already treated, read from each unit's own record under it, carries across to the new units.",
   "driver_concrete": "Quellbrook's Priority 2 trucks salt a collector only at its intersections, hills and curves, so a collector's gain on moving to Priority 1 is mostly the stretch between them at the Priority 1 rate; the collectors moved from 2022 to 2025 were mostly hill, school and hospital-access streets whose Priority 2 salt already covered much of their length, while the redesign's 424 lane-km are long flat outer-suburb grid collectors whose Priority 2 trucks salted about a sixth of them, so the moved streets' average gain understates theirs and the Priority 1 collectors' rate less the new streets' own Priority 2 salt overstates it; only the gain read off each moved street's own Priority 2 salt, at the new streets' Priority 2 salt, carries across.",

@@ -6,11 +6,11 @@
   "house_domain": "urban-regional-science",
   "subdomain": "municipal service demand and resource allocation (a city's winter road salt for a change of service level, forecast from the spreader records of the streets that went through the same change before, conditioned on how much of each street the old service already salted)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed seasonal tonnage to the nearest 100 t, each works yard's dome stock and room on 1 November 2026, each yard's Priority 1 arterial rock salt in each of three winters, and a one-page memo charting the arterial figures",
+  "prompt_shape": "a committed seasonal tonnage to the nearest 100 t, each works yard's dome stock and room on 1 November 2026, each yard's Priority 1 arterial rock salt in each of three winters, and a one-page report to council charting the arterial figures",
   "as_of": "2026-09-25",
   "deliverables": [
     "salt_commitment_2026-27.xlsx",
-    "seasonal_salt_commitment_memo.docx"
+    "seasonal_salt_commitment_council_report.docx"
   ],
   "distractor_files": [
     "yard_timesheets_2025-26.csv",
@@ -27,7 +27,7 @@
       "xlsx"
     ],
     "largest_file": "telematics_segment_passes_2023-10-01_2026-09-23.parquet",
-    "largest_file_rows": 318889
+    "largest_file_rows": 352929
   },
   "sources": [
     {
@@ -43,8 +43,8 @@
     {
       "path": "avl_legacy_segment_shift_2021-11-01_2023-03-31.csv",
       "format": "csv",
-      "bytes": 7539799,
-      "rows": 154096,
+      "bytes": 8221451,
+      "rows": 168044,
       "source": "Constructed: City of Quellbrook Roads Division, legacy AVL segment-by-shift material summaries, 1 November 2021 to 31 March 2023",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -79,7 +79,7 @@
     {
       "path": "export_manifest.csv",
       "format": "csv",
-      "bytes": 2184,
+      "bytes": 2281,
       "rows": 20,
       "source": "Constructed: City of Quellbrook Roads Division fleet telematics, export manifest for the 25 September 2026 pull",
       "date": "2026-09-25",
@@ -88,8 +88,8 @@
     {
       "path": "fleet_units_2026-09.csv",
       "format": "csv",
-      "bytes": 8685,
-      "rows": 216,
+      "bytes": 10294,
+      "rows": 255,
       "source": "Constructed: City of Quellbrook Fleet Services, winter fleet units at 24 September 2026",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -97,8 +97,8 @@
     {
       "path": "gis_segment_crosswalk_2023.csv",
       "format": "csv",
-      "bytes": 84536,
-      "rows": 2009,
+      "bytes": 93398,
+      "rows": 2220,
       "source": "Constructed: City of Quellbrook GIS Services, segment crosswalk for the 21 August 2023 GIS release",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -106,7 +106,7 @@
     {
       "path": "kettlewood_material_returns_2023-24_to_2025-26.xlsx",
       "format": "xlsx",
-      "bytes": 9184,
+      "bytes": 9188,
       "rows": 51,
       "source": "Constructed: Kettlewood Road Services, monthly material returns under contract RW-2023-07, winters 2023-24 to 2025-26",
       "date": "2026-09-25",
@@ -133,7 +133,7 @@
     {
       "path": "qrt_frequent_network_2026_streets.xlsx",
       "format": "xlsx",
-      "bytes": 8261,
+      "bytes": 8264,
       "rows": 37,
       "source": "Constructed: Quellbrook Regional Transit Service Planning, frequent network streets for the 30 August 2026 network",
       "date": "2026-09-25",
@@ -151,8 +151,8 @@
     {
       "path": "route_audit_revision_log.csv",
       "format": "csv",
-      "bytes": 110365,
-      "rows": 941,
+      "bytes": 162543,
+      "rows": 1402,
       "source": "Constructed: City of Quellbrook Roads Operations Centre, route audit revision log to 14 September 2026",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -178,7 +178,7 @@
     {
       "path": "storm_log_2021-22_to_2025-26.xlsx",
       "format": "xlsx",
-      "bytes": 18349,
+      "bytes": 18357,
       "rows": 163,
       "source": "Constructed: City of Quellbrook Roads Operations Centre, storm log and Winter Severity Index, winters 2021-22 to 2025-26",
       "date": "2026-09-25",
@@ -187,8 +187,8 @@
     {
       "path": "telematics_segment_passes_2023-10-01_2026-09-23.parquet",
       "format": "parquet",
-      "bytes": 7701372,
-      "rows": 318889,
+      "bytes": 8674209,
+      "rows": 352929,
       "source": "Constructed: City of Quellbrook Roads Division, fleet telematics platform segment passes, 1 October 2023 to 23 September 2026 (UTC)",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -196,7 +196,7 @@
     {
       "path": "winter_maintenance_plan_2026-27.pdf",
       "format": "pdf",
-      "bytes": 42881,
+      "bytes": 42893,
       "rows": null,
       "source": "Constructed: City of Quellbrook Roads Division, winter maintenance plan 2026-27 (18 September 2026)",
       "date": "2026-09-25",
@@ -205,8 +205,8 @@
     {
       "path": "winter_route_register_2026-09-14.csv",
       "format": "csv",
-      "bytes": 219518,
-      "rows": 2009,
+      "bytes": 245835,
+      "rows": 2220,
       "source": "Constructed: City of Quellbrook Roads Operations Centre, winter route register at 14 September 2026",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -214,8 +214,8 @@
     {
       "path": "yard_loading_log_2023-11_2026-03.csv",
       "format": "csv",
-      "bytes": 648254,
-      "rows": 20154,
+      "bytes": 760644,
+      "rows": 23664,
       "source": "Constructed: City of Quellbrook Roads Division, yard loader scale log, 1 November 2023 to 31 March 2026",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -223,8 +223,8 @@
     {
       "path": "yard_timesheets_2025-26.csv",
       "format": "csv",
-      "bytes": 300497,
-      "rows": 6995,
+      "bytes": 361637,
+      "rows": 8420,
       "source": "Constructed: City of Quellbrook Payroll, yard winter timesheets, winter 2025-26",
       "date": "2026-09-25",
       "license": "CC0-1.0 (original work, constructed for this task)"

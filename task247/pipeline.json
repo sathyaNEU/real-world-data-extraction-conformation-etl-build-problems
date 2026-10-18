@@ -1,26 +1,26 @@
 {
   "task": "task247",
   "owner": "perssathya",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "physical-environmental-sciences",
   "objective": "data-quality-monitoring",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-18",
-  "stump": "Correcting the 2027 near-real-time sea surface temperature record by the past seasons' mean difference from the reprocessed record, clear and cloud-filled days apart, keeps the survey on the reefs the bulletins declared at Alert Level 2; refilling each cloud gap from the clear days on both sides, as the reprocessed analysis will, puts the southern reefs whose heat came under a stalled trough at Alert Level 2 as well.",
+  "stump": "Correcting the 2027 near-real-time sea surface temperature record by the past seasons' mean differences from the reprocessed record, observed and filled days apart (+0.060 and -0.007), files three sites at Alert Level 2 (PB07, PB09, PB10); refilling each cloud gap from the observed days either side, as the reprocessed analysis will, files nine (PB06, PB07, PB09, PB10 confirmed and PB11 to PB15 raised).",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-18"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (sweeps 4, 6 and 8; no LEAK)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.deliverables, repeat.question_form; answered in the Draw)",
+    "nearest": "task138 v1 lineage 0.06; task458 v1 lineage, task245, task70 v1, task123 v2 at 0.05"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2 design: the simulator (16 reef sites, daily climatology and maximum monthly mean, heat events, cloud gaps, the near-real-time analysis relaxing to climatology under cloud, the reprocessed record) tuned so the refilled heating weeks clear the alert lines with margin under every reasonable refill and bias estimate while the mean-correction routes keep the declared list; then the asks, the fork table, the closure, the prompt and precut.",
+  "resume": "stage 4: the leak reader and the determinism judge (thread spawned from /tmp/determinism-check-task247-1792337187/judge_brief.md) were running on the cut pack (target.zip sha256 2e50716a); read both reports (rerun them if their scratch folders are gone), fix every finding in the generator in one pass, rebuild with make.py, then ship (target.zip and golden/ with git add -f, the ledger row, the card, the board).",
   "approved": null,
   "delivered": null,
   "portal": null,
