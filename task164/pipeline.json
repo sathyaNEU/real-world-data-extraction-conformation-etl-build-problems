@@ -1,45 +1,50 @@
 {
  "task": "task164",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities/load-forecasting",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-18",
  "stump": "Taking each schedule's per-vehicle figure from the load study's average 4 to 9 pm charging demand (0.61 kVA on the default rate) and adding it to each transformer's recorded 2026 peak files Foothill 59 of the 400; the transformers that gained one default-rate vehicle between summers show their recorded peak rising about 4.9 kVA (0.9 for R-EV2), which files Foothill 79.",
  "architecture": 1,
  "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18"
+  "date": "2026-10-18",
+  "checks": 50
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (the same five REVIEW lines, answered in the note's ## Leak sweep)",
-  "reader": "round 1 on 83c6815f: no leak"
+  "leak_py": "REVIEW 2026-10-18, no LEAK (the decision carries 120 and the call's words, the decision and the tariff carry stump terms, three column names; each answered in the note's ## Leak sweep (stage 3))",
+  "reader": "round 1 on 83c6815f: no leak; round 2 on 1d00350a: no leak, Q6 analytical (its literal OP 4 run on the load study files Foothill 58 to 78)"
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK",
-  "nearest": "heart: task94 ledger row 0.10; surface: task453 promoted at 0.102 (differentiated on the card)"
+  "heart": "WARN 2026-10-18, no BLOCK (strategy risk, a persona first name, the Gate G mechanism repeat, the png and xlsx pair)",
+  "nearest": "heart: task94 ledger row 0.10; surface: task453 promoted at 0.102 (surface proximity only, differentiated on the card)"
  },
  "judge": {
-  "verdict": "round 1 on 83c6815f: NOT_DETERMINISTIC, SEND_BACK (Gates C and E: the effect's granularity unfiled)",
-  "disposition": "repaired by filing OP 4's WHAT (one expected effect per schedule); full re-judge and reader due",
-  "report": ""
+  "verdict": "DETERMINISTIC, APPROVE (round 2 on 1d00350a); round 1 on 83c6815f NOT_DETERMINISTIC, SEND_BACK",
+  "disposition": "round 1 (Gates C and E, the effect's granularity unfiled) repaired by filing OP 4's WHAT only, one expected effect per schedule, with the per-schedule hole family and pins on the outage district and the pilot cost basis; round 2 no fix: 1,824 at risk, Foothill 361, all twelve counts and the allocation reproduced with no near-tie (sixth remainder 0.789, seventh 0.202), stable for default effects of 4.1 to 5.3 kVA and R-EV2 effects of 0.5 to 1.1, pilot and failures reproduced, Gates G and H pass; rule 3 recheck PASS, P(one) about 0.15, P(both) about 0.04",
+  "report": "relayed by the main session (round 1: OP 4 granularity unfiled; round 2: no fix, low notes on the mean against the median and the cost basis left as filed)"
  },
- "returned": [
-  {
-   "round": 1,
-   "pack": "83c6815f",
-   "finding": "OP 4 granularity unfiled (Gates C, E)",
-   "repair": "OP 4 files one expected effect per schedule; per-schedule hole family; pins on the outage district and the pilot cost basis"
-  }
- ],
- "resume": "stage 4: re-judge and reader on the OP 4 granularity repair",
+ "returned": [],
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "build": {
+  "checks_py": "99 run, 0 failed (R1a to R3c, R2 neutrality, FAMILY, HOLES, BIN, LADDER, CORRIDOR, ROUTES, BACKTEST, FUELMIX, SF1 to SF18, ASK, DEV, CRACKER, MIRROR, PAIR, SEP, DIST, GATE, REAL, DOC)",
+  "verify_py": "11 on its own code path (pandas and pdftotext), 0 failed",
+  "rebuilds": "two builds byte-identical (21 target files, 2 goldens, figures.json, submission.md); a third from the committed generator at ship identical on every file, its zip the same sha256",
+  "target_zip_sha256": "1d00350a02687262f4f7eff65046070f771af2cfff8dd478673c66574208d016",
+  "figures_check": "exit 0, 70 figures",
+  "input_gates": "21 files, 4 formats (csv, parquet, pdf, xlsx), largest 3,671,683 rows (the load study intervals), 297,919 service points, 2 distractors in metadata.json",
+  "cracker": "pair ceiling 31.6 (cracker 48.1, mirror 15.1), mirror leakage 5.6 per cent"
+ },
+ "answer": "Foothill 79 of the 400 (Railyard 68, Canal 49, Mission 23, West Bluff 16, Crestview 4, Lakeside 4, Sunrise 3, Sandhill 72, Kingsley 26, Highland 8, Brookside 48), 1,824 transformers at risk; the default path Foothill 59",
+ "wave": "wave 6 (new), seed FC35 (world, decision and quantity kept; the pilot-reproduction mechanism not used)"
 }
