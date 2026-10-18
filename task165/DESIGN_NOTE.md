@@ -21,9 +21,9 @@ street to Priority 1 adds depends on how much of it Priority 2 already salted.
 | Decision | `quantity_figure`, answer unit `count` (tonnes of rock salt) |
 | Mechanism | gap population (decisive: the gain was measured on collectors moved because they were hazardous, and the new streets are not), with time (the coming winter at the planning severity, not last winter's or the five winters' mean); pattern none; generators G14 (the earlier moves' gain conditioned on each street's own Priority 2 salt), G6 (the new pool's coverage sits far below the earlier moves'), G13 (the planning severity); Gate G `forecasting`; strategy `composition_mix` |
 | Layer 2 family / pattern | `estimation_fit` (a treatment gain carried from earlier treated units to new ones conditioned on the covariate that drives it, measured in each unit's own history); `own:service-upgrade-gain-conditioned-on-prior-partial-coverage` |
-| Layer 1 | the AVL system replaced on 1 October 2023 (legacy segment-by-shift summaries in kilograms and local time, then one row per pass in tonnes and UTC); the 2023 GIS re-segmentation splitting long arterial and Priority 2 segments through a crosswalk; the storm log's layout change in 2023; free-text revision reasons; and on the asks' rows only, the supplier's re-issued dispatch schedule, the survey's capture window in UTC, weighings at another yard's scale house, inter-yard transfers, older controllers writing a run's total on each segment, contractor circuits outside the telematics and the July 2026 yard realignment (full inventory in `## Layer 1 inventory`) |
+| Layer 1 | the AVL system replaced on 1 October 2023 (legacy segment-by-shift summaries in kilograms and local time, then one row per pass in tonnes and UTC); the 2023 GIS re-segmentation splitting long arterial and Priority 2 segments through a crosswalk; the storm log's layout change in 2023; free-text revision reasons; each winter's own swing in salt per point, common to every road; and on the asks' rows only, the supplier's re-issued dispatch schedule, the survey's capture window in UTC, weighings at another yard's scale house, inter-yard transfers, older controllers writing a run's total on each segment, contractor circuits outside the telematics and the July 2026 yard realignment (full inventory in `## Layer 1 inventory`) |
 | Furniture | forum `council_or_assembly` (spending above the contract quantity needs council's approval under the City's procurement by-law, so the winter operations manager's commitment goes to council as a one-page report before the supplier's 1 October deadline), forcing event `purchase_order_or_contract` (the supply contract's 1 October deadline for seasonal tonnage), organisation family `local_government`, role family `operations_director` (the roads division's winter operations manager), context artifact `register` (the winter route register), calibration `none`, opening `question-first`, question form `how-much` |
-| Spine | the fleet telematics platform's segment-pass export (one row per spreader pass over one route segment, with the rock salt put down), 1 October 2023 to 23 September 2026, 352,929 rows, beside the legacy AVL's segment-by-shift summaries for November 2021 to March 2023; constructed in the layout of a winter-maintenance telematics export |
+| Spine | the fleet telematics platform's segment-pass export (one row per spreader pass over one route segment, with the rock salt put down), 1 October 2023 to 23 September 2026, 344,770 rows, beside the legacy AVL's segment-by-shift summaries for November 2021 to March 2023; constructed in the layout of a winter-maintenance telematics export |
 | Deliverables | `salt_commitment_2026-27.xlsx` (the commitment, its working and the ask tables) and `seasonal_salt_commitment_council_report.docx` (a one-page staff report to council recommending the commitment, with the chart of the arterial figures) |
 | People | drawn with `guard.py names --geo "Canada" --seed 165`: Doris Wilkerson (manager, winter operations, owner of the winter maintenance plan), Mary Huynh (fleet telematics analyst, the exports and the data dictionary), Kristin Gonzalez (service planning, Quellbrook Regional Transit, the frequent network street list), Andre Nixon (director of roads, who approved the procurement procedure and the plan); the requester is in no file and not in the prompt |
 | World | Quellbrook (checked: no Canadian or United States place of the name), a fictional lakeshore city in southern Ontario of about 410,000, whose public works roads division runs winter maintenance from four works yards (Kelvin Road, Mapleford, Ridge and Lakeshore); Quellbrook Regional Transit runs the buses; Northgrit Salt Supply (supplier), Tessaline Geomatics (dome survey) and Kettlewood Road Services (arterial contractor) are fictional, as are the people, systems and data; each invented name was searched and none sits within two letters of a well-known organisation or place (H21) |
@@ -82,7 +82,7 @@ how much of the street Priority 2 salted: that is inferred from the earlier move
 
 **Data-native sentence.** Quellbrook's Priority 2 trucks salt only a collector's intersections, hills and curves, so
 each collector's Priority 2 winters in the spreader records measure how much of it was already treated (more of a short
-block, whose intersection approaches are a larger share of it, and much more of a hill or a run of curves); the 431
+block, whose intersection approaches are a larger share of it, and much more of a hill or a run of curves); the 377
 collectors the route audit moved to Priority 1 from 2022 to 2025 were mostly hill, school, hospital and inner-suburb
 transit streets moved because they were hazardous or dense with intersections, while the redesign put frequent service
 on flat outer-suburb collectors whose Priority 2 trucks salted little beyond their intersections, so the gain the
@@ -116,9 +116,9 @@ Every figure below is built by `generator/calc.py` from the shipped pack and ass
 3. Join both AVL exports to the register (the crosswalk for the legacy ids, kilograms to tonnes, passes in season by
    local date) and take, for every collector segment in each winter it was Priority 1 (the inner-city frequent streets
    every winter, each earlier move from its first Priority 1 winter), the rock salt per lane-km per WSI point.
-4. Take the 216 segments' own rock salt per lane-km per WSI point over the five winters, all at Priority 2 (1.7 t a
-   lane-km in a 61.7-point winter).
-5. The gain is (3) less (4), times 424.0 lane-km and 61.7 points: 2,574.4 t.
+4. Take the 216 segments' own rock salt per lane-km per WSI point over the five winters, all at Priority 2 (1.58 t a
+   lane-km in a 61.7-point winter, about 700 t over the 424.0 lane-km).
+5. The gain is (3) less (4), times 424.0 lane-km and 61.7 points: 2,613.3 t.
 
 Ends on: 2,600 t.
 
@@ -142,7 +142,7 @@ only the gain read off each earlier move's own Priority 2 salt, at the new stree
   way winter maintenance engineers size a level-of-service change, per point of storm severity at the planning
   severity, carried across from the spreader records of the collectors moved before by how much of each street
   Priority 2 already salted; replacing it with a generic summary (the average gain, or the average Priority 1 rate less
-  the present salt) moves the call by about 370 t or 650 t.
+  the present salt) moves the call by about 400 t or 700 t.
 - **Swap:** "how many more megawatt-hours to contract when 424 km of feeders move to a higher reliability tier" reads as
   a quantity, but no feeder tier treats only its hazard spots, so nothing makes the upgrade's gain fall with how much of
   each unit the old tier already served, and there is no storm severity to plan a winter at.
@@ -152,13 +152,15 @@ only the gain read off each earlier move's own Priority 2 salt, at the new stree
   main-population segment is split); the storm log's layout change; free-text revision reasons; the asks' own records
   (survey times in UTC, weighings at another yard's scale, transfers, dispatch re-issue, run totals on every segment,
   combined salt and brine mass, contractor circuits, the yard realignment) sit on no row the call reads. Trucks rotate
-  between circuits of their yard, route audit entries lag their effective dates unevenly, and the register pull holds
-  the salted network only (the manifest says so).
-- **Layer 2:** `estimation_fit`: the Priority 2 to Priority 1 gain carried from the 431 collectors moved in 2022 to 2025
+  between circuits of their yard, the route audit keys each change in a few sittings and some after the change takes
+  effect, the register pull holds the salted network only (the manifest says so), and each winter carries its own swing
+  in salt per point that the index does not carry (about 14 per cent between winters, common to every road; netted
+  against the never-moved collectors or not, the call holds, SF14).
+- **Layer 2:** `estimation_fit`: the Priority 2 to Priority 1 gain carried from the 377 collectors moved in 2022 to 2025
   to the 216 new ones conditioned on each street's own Priority 2 salt per lane-km per point, against the pooled gain and
   the pooled Priority 1 level; both rivals are rejected out of sample (each move year held out, ten-fold
-  cross-validation, and the new streets' band predicted from the rest), and every conditioned form, a power law
-  included, files the same 2,200 t.
+  cross-validation, and the new streets' band predicted from the rest), and every standard conditioned form, a power law
+  included, files the same 2,200 t, the coarse ones closing on it as they are refined.
 - **Decisive step:** recognising that a moved collector's gain falls, and its Priority 1 level rises, with how much of
   it Priority 2 already salted, so the earlier moves' gain has to be read at the new streets' own Priority 2 salt rather
   than averaged or netted from an average level.
@@ -170,8 +172,9 @@ only the gain read off each earlier move's own Priority 2 salt, at the new stree
   every stated rule leaves the gain to be estimated, and the natural estimate files the default path's figure.
 - **Analyst test:** a strong analyst who maps both AVL exports onto the register, converts kilograms and clocks,
   normalises every winter by the filed WSI and takes the Priority 1 collectors' salt per lane-km less the new streets'
-  own Priority 2 salt at the planning severity files 2,600 t; one who measures the before-and-after gain of the 431
-  collectors moved since 2022 files 1,500 t; only the gain read off each earlier move's own Priority 2 salt files 2,200 t.
+  own Priority 2 salt at the planning severity files 2,600 t; one who measures the before-and-after gain of the 377
+  collectors moved since 2022 files 1,500 to 1,600 t; only the gain read off each earlier move's own Priority 2 salt
+  files 2,200 t.
 - **Estimand:** the procurement procedure (`road_salt_procurement_procedure_RO-PR-07.pdf`, 4.2) fixes the population
   (the roads the service change moves, the route audit's 30 August 2026 entries), the outcome (the rock salt they will
   need over what they needed before), the window (1 November to 31 March, a winter at the planning severity), the unit
@@ -196,15 +199,15 @@ one subtraction, ratio or half of a figure).
 |---|---|---|---|---|---|---|---|
 | R0b the Priority 1 network's salt per lane-km per point, gross, at the planning severity (5,400) | the procedure's "over what they needed before" | the register's priority | yes, the first rate | the earlier moves' gains are under a third of it | no | yes | readable |
 | R1 default: the Priority 1 collectors' rate less the new streets' own Priority 2 salt (2,600) | the procedure's comparison invites it | the register's class and priority | yes, the careful netting | the earlier moves' post-move levels rise with their pre-move salt, for an analyst who looks | no | yes, one subtraction | readable |
-| R2 the earlier moves' pooled before-and-after gain (1,500) | no | the revision log's dates | yes, the event study | holding out each move year shows its error following the year's coverage | no | yes, a mean | readable |
-| R2b the gain of the transit-driven earlier moves only (1,600) | no | the revision reasons | yes, stratify on a visible field | the transit moves' coverage still sits well over twice the new streets' | no | yes | readable |
-| R2c the pooled gain stratified by yard, lanes or length band (1,500 to 1,600) | no | the register's columns | yes, reweight | as R2 | no | yes | readable |
+| R2 the earlier moves' pooled before-and-after gain (1,500 to 1,600) | no | the revision log's dates | yes, the event study | holding out each move year shows its error following the year's coverage | no | yes, a mean | readable |
+| R2b the gain of the transit-driven earlier moves only (1,500) | no | the revision reasons | yes, stratify on a visible field | the transit moves' coverage still sits well over twice the new streets' | no | yes | readable |
+| R2c the pooled gain stratified by yard, lanes or length band (1,500) | no | the register's columns | yes, reweight | as R2 | no | yes | readable |
 | R2d the golden's gain at last winter's 58.4 points (2,100) | the plan's severity normal | the storm log | a half-step | the procedure's planning severity | no | yes, a ratio | readable |
-| R3 (decisive) the earlier moves' gain read at each new street's own Priority 2 salt (2,200) | no shipped sentence says how a street's salt responds to its service level or how much of it Priority 2 salts | no column holds coverage, hazard length or a gain; the property exists only as each street's own Priority 2 salt | no: the reflexes pool, net, stratify on visible fields, reweight or add controls, and each lands wrong | the held-out move years, the folds and the new streets' band score it, and score every rival wrong | no: nothing is duplicated, missing or mis-keyed on the call's rows | no: a fit across 431 streets read at 216 others | silent |
+| R3 (decisive) the earlier moves' gain read at each new street's own Priority 2 salt (2,200) | no shipped sentence says how a street's salt responds to its service level or how much of it Priority 2 salts | no column holds coverage, hazard length or a gain; the property exists only as each street's own Priority 2 salt | no: the reflexes pool, net, stratify on visible fields, reweight or add controls, and each lands wrong | the held-out move years, the folds and the new streets' band score it, and score every rival wrong | no: nothing is duplicated, missing or mis-keyed on the call's rows | no: a fit across 377 streets read at 216 others | silent |
 
-**The common-exposure subset screen, answered.** Read by its letter the screen applies: 169 of the earlier moves have
-Priority 2 salt within 1.0 t a lane-km of the new streets' 1.7, and their lane-km weighted gain over 424 lane-km at 61.7
-points files 2,206.6 t (within 0.5 t, 109 streets, 2,208.2 t), with no model. The subset is the golden method in its
+**The common-exposure subset screen, answered.** Read by its letter the screen applies: 151 of the earlier moves have
+Priority 2 salt within 1.0 t a lane-km of the new streets' 1.58, and their lane-km weighted gain over 424 lane-km at 61.7
+points files 2,189.5 t (within 0.5 t, 105 streets, 2,240.4 t), with no model. The subset is the golden method in its
 cheapest form, not a bypass of it: it is defined on each street's own pre-move Priority 2 salt, the effect modifier the
 solver must first decide to condition on, unlike an exposure the estimand names. Matched on any visible field instead
 (yard, lanes, length band, the transit reason), the earlier moves file 1,500 to 1,600 t. So the difficulty sits in
@@ -225,12 +228,15 @@ Every term in the main ask and every convention the main computation needs; ever
 | SF3 | "424 lane-km" | the register's lane_km of the 216 segments (424.0), rates per lane-km | rates and lengths in centreline km | 1,900 t | the plan 2 ("application rates, which are set in kilograms per lane-km") |
 | SF4 | the winter | 1 November to 31 March, local dates | the platform's dates in UTC; the supply season from 1 October | same call (no collector pass within six hours of a season boundary, none in October or April, asserted) | the procedure 4.2; C1 |
 | SF5 | the severity | 61.7 WSI points | last winter's 58.4; the five winters' mean | 2,100 t; 2,000 t | the plan 4 ("Material planning uses the planning severity of 61.7 WSI points") |
-| SF6 | salt against severity | in proportion | a line with an intercept | same call (the never-moved collectors' intercept within 3 per cent of nil, asserted) | C1, asserted |
+| SF6 | salt against severity | per WSI point | a line with an intercept through the five winters | another figure: each winter's swing tilts the line (the never-moved collectors' five winters give an intercept of about a fifth of a winter's salt, 980 t of 4,700 t) | the plan 4 ("plans each road's salt per WSI point"), asserted |
 | SF7 | "rock salt" | material RS | sand and salt rows | same call (collectors carry RS only, asserted) | the dictionary's material codes |
 | SF8 | the moved roads | the revision log's 30 August 2026 entries | the transit agency's street list | same segments (asserted) | C1, asserted |
 | SF9 | units in the legacy export | kilograms | tonnes | a thousandfold off, loud | the dictionary ("kilograms") |
 | SF10 | rounding | the total to the nearest 100 t, once | the gain per lane-km rounded first | same call | the procedure 4.2 |
-| SF11 | the earlier moves | every collector moved Priority 2 to Priority 1 on 1 November 2022, 2023, 2024 and 2025 | those with a transit reason only | 1,600 t (R2b, a rung, not a reading) | the revision log; the golden reads all 431 (asserted) |
+| SF11 | the earlier moves | every collector moved Priority 2 to Priority 1 on 1 November 2022, 2023, 2024 and 2025 | those with a transit reason only | 1,500 t (R2b, a rung, not a reading) | the revision log; the golden reads all 377 (asserted) |
+| SF12 | the gain component's precision | about 5 t a lane-km, the whole tonne every family member shares (5.13 to 5.23) | one decimal (5.2 on the golden, 5.1 under four bands or the power law) | same call; the component is stated where every construction agrees | block 2 states it to the tonne; SF12 asserts every member rounds to 5 |
+| SF13 | the own-salt component's basis | their salt over their lane-km and the five winters' points together (670.7 t, 1.58 t a lane-km) | the mean of the 216 streets' rates (1.70), of the five winters' rates (1.57), the three telematics winters (1.58) | the same figure at the stated precision (about 700 t, under 2 t a lane-km); a single winter alone (1.46 to 1.67) is outside the component's window | the component's own words ("over the five winters"), asserted on every basis |
+| SF14 | each winter's swing | each winter by its WSI, the windows pooled | each winter netted against the never-moved collectors' same winter; one winter either side of each move | same call: netted 2,186.3 to 2,211.5 t; un-netted one-winter windows 2,162.5 to 2,227.1 t | C1 (FAMILY and SF14, asserted) |
 
 ## Ladder
 
@@ -239,88 +245,110 @@ OOS, FAMILY, CRUDE, SIGMA, ORTHO, TWIN). The graded quantity is the seasonal ton
 
 | Rung | Construction | Tonnes | Dies to |
 |---|---|---|---|
-| R0 | last winter's Priority 1 network salt per lane-km, gross, at last winter's severity | 5,000 | the procedure's comparison and planning severity |
-| R0b | the same per point at the planning severity | 5,400 | the procedure's comparison; arterials are not collectors |
-| R1 default | the Priority 1 collectors' rate less the new streets' own Priority 2 salt | 2,600 (2,574.4) | the earlier moves' Priority 1 levels rise with their Priority 2 salt |
-| R1b | the same with only the earlier moves' Priority 1 winters | 2,500 (2,547.7) | as R1 |
-| R1c | the default at last winter's 58.4 points | 2,400 (2,436.7) | as R1, and the plan's planning severity |
-| R1d | the default at the five winters' mean | 2,300 (2,319.9) | as R1c |
-| R2 | the earlier moves' pooled gain per lane-km per point | 1,500 (1,547.4) | each move year's error follows its coverage when held out; the new streets' band predicted from the rest misses by half |
-| R2b | the transit-driven earlier moves' gain | 1,600 (1,598.4) | their coverage is still well over twice the new streets' |
-| R2c | the pooled gain stratified by yard, by lanes or by length band | 1,500 to 1,600 (1,542.5 to 1,551.2) | as R2 |
-| R2d | the golden's gain at last winter's 58.4 points | 2,100 (2,084.8) | the plan's planning severity |
-| R2e | the golden's gain at the five winters' mean severity | 2,000 (1,984.9) | as R2d |
-| R2f | the earlier moves' ratio of Priority 1 to Priority 2 salt applied to the new streets' own salt | 600 | the ratio falls steeply with coverage |
-| R2g | the pooled gain trended across the four move years | 1,600 (1,599.2) | as R2 |
-| R2h | the pooled gain against the never-moved Priority 2 collectors, winter by winter | 1,600 (1,552.9) | as R2 |
-| R2i | the earlier moves whose Priority 2 salt lies inside the new streets' range, their gain averaged | 2,100 (2,089.4) | matched on the range, not the level |
-| R3 decisive | the earlier moves' gain regressed on each street's own Priority 2 salt per lane-km per point, read at the new streets' | 2,200 (2,202.6) | golden |
+| R0 | last winter's Priority 1 network salt per lane-km, gross, at last winter's severity | 5,000 (5,045.3) | the procedure's comparison and planning severity |
+| R0b | the same per point at the planning severity | 5,400 (5,392.8) | the procedure's comparison; arterials are not collectors |
+| R1 default | the Priority 1 collectors' rate less the new streets' own Priority 2 salt | 2,600 (2,613.3) | the earlier moves' Priority 1 levels rise with their Priority 2 salt |
+| R1b | the same with only the earlier moves' Priority 1 winters | 2,600 (2,586.5) | as R1 |
+| R1c | the default at last winter's 58.4 points | 2,500 (2,473.5) | as R1, and the plan's planning severity |
+| R1d | the default at the five winters' mean | 2,400 (2,354.9) | as R1c |
+| R2 | the earlier moves' pooled gain per lane-km per point | 1,500 to 1,600 (1,516.2; its stratified, transit-only and never-moved forms 1,504.6 to 1,520.3) | held out by move year it misses by up to 18.8 per cent; the new streets' band predicted from the rest misses by half |
+| R2b | the transit-driven earlier moves' gain | 1,500 (1,508.1) | their coverage is still well over twice the new streets' |
+| R2c | the pooled gain stratified by yard, by lanes or by length band | 1,500 (1,504.6 to 1,520.3) | as R2 |
+| R2d | the golden's gain at last winter's 58.4 points | 2,100 (2,095.3) | the plan's planning severity |
+| R2e | the golden's gain at the five winters' mean severity | 2,000 (1,994.8) | as R2d |
+| R2f | the earlier moves' ratio of Priority 1 to Priority 2 salt applied to the new streets' own salt | 600 (585.3) | the ratio falls steeply with coverage |
+| R2g | the pooled gain trended across the four move years | 1,800 (1,773.3) | as R2 |
+| R2h | the pooled gain against the never-moved Priority 2 collectors, winter by winter | 1,500 (1,507.1) | as R2 |
+| R3 decisive | the earlier moves' gain regressed on each street's own Priority 2 salt per lane-km per point, read at the new streets' | 2,200 (2,213.7) | golden |
 
 **Re-centring rule (written before the stage 4 changes to the noise and the coverage model were made).** After any
 change to the world's noise or coverage model, only R_MID moves, in steps of 0.005 t a lane-km, and only until the
 lane-km weighted golden sits within 15 t of its bin's centre; no other parameter is tuned against the golden, a rung, a
-hedge or a crude construction. Applied after the stage 4 changes: the golden came out at 2,202.6 t, 2.6 t from the
-centre, so R_MID did not move.
+hedge or a crude construction. Applied after the first stage 4 changes: the golden came out at 2,202.6 t, so R_MID did
+not move. Applied after the round 2 changes (each winter's own swing, the earlier moves' yearly counts set by their
+programmes, the audit keyed in sittings): the golden came out at 2,219.0 t, 19.0 t from the centre; R_MID stepped from
+6.297 to 6.282 in three steps (2,217.2, 2,215.5, 2,213.7 t) and stopped at the first inside 15 t. Nothing else moved
+against a figure.
 
 **Position and margins.** The golden is bracketed: every netting of an average Priority 1 level sits above it (R1 by
-372 t), every average gain below it (R2 by 655 t), and the severity slips on either side of it off its bin (R2d 118 t
-below, R1c 234 t above). Each correction from R0b walks down; only the decisive move turns up from the average gain.
+400 t), every average gain below it (R2 by 698 t), and the severity slips on either side of it off its bin (R2d 118 t
+below, R1c 260 t above). Each correction from R0b walks down; only the decisive move turns up from the average gain.
 
 **Hedges (asserted, HEDGE).** The golden is not the midpoint of the rivals: the midpoint of the default and the pooled
-gain files 2,060.9 t, of the moves' own level and the pooled gain 2,047.6 t, of the default and the transit moves' gain
-2,086.4 t, each at least 50 t outside the golden's bin. Last winter's totals netted with no planning severity (the
-Priority 1 collectors' 7.26 t a lane-km less the new streets' 1.57) file 2,409.1 t: last winter now scores 58.4 points,
-outside the band (about 51 to 54 points) where that route landed the golden by coincidence.
+gain files 2,064.7 t, of the moves' own level and the pooled gain 2,051.3 t, of the default and the transit moves' gain
+2,060.7 t, each at least 50 t outside the golden's bin. Last winter's totals netted with no planning severity (the
+Priority 1 collectors' 7.25 t a lane-km less the new streets' 1.48) file 2,449.6 t, 2,400 t.
 
-**Convergence (C1, asserted on the cut pack).** The golden family, 18 members: the gain or the post-move level regressed
-on the pre-move salt, weighted by lane-km or not; each earlier move's pre-move winters pooled or only the last; the
-post-move winters pooled or only the first; each winter normalised by its own WSI, rates as the mean of each winter's,
-or each winter against the never-moved Priority 2 collectors; quadratic; outliers dropped; the 10, 20 or 40 nearest
-earlier moves; three, four, five or eight bands of Priority 2 salt; the prediction summed street by street or at the
-pool's mean. Every member files 2,200 t, from 2,174.6 t (three bands) to 2,210.2 t (the 10 nearest), the nearest 24.6 t
-from the bin's edge and every other member 32 t or more. The power law (log Priority 1 level on log Priority 2 salt)
-files 2,182.4 t, the same bin.
+**Convergence (C1, asserted on the cut pack).** The golden family, 19 members: the gain or the post-move level regressed
+on the pre-move salt, weighted by lane-km or not; the prediction summed street by street or at the pool's mean; each
+winter against the never-moved Priority 2 collectors, or each winter's points netted by their swing, with the windows
+pooled or one winter either side of each move; rates as the mean of each winter's; quadratic; outliers dropped; the 10,
+20 or 40 nearest earlier moves; four, five or eight equal-count bands of Priority 2 salt. Every member files 2,200 t,
+from 2,176.2 t (four bands) to 2,219.4 t (unweighted), the nearest 26.2 t from the bin's edge, and every member's gain is
+about 5 t a lane-km (5.13 to 5.23; component 2 is stated at that precision, SF12). The power law (log Priority 1 level on
+log Priority 2 salt) files 2,176.5 t, the same bin.
 
-**Crude settings (asserted, CRUDE).** Fixed 1.5 t and 1 t bands (2,192.5 t, 2,210.6 t), the 10 earlier moves nearest the
-pool's mean (2,177.8 t), windows of 0.2 t and 1 t either side of it (2,217.7 t, 2,206.6 t) and a 0.62 t kernel
-(2,185.3 t) all file the golden. Only a kernel of 1.23 t, more than twice the new streets' own spread of 0.54 t, slips a
-bin (2,116.4 t), toward the pooled gain it approaches as the bandwidth grows. The mean of per-street ratios files 1,184 t.
+**Each winter's swing (asserted, SF14).** The never-moved Priority 2 collectors' salt per point runs from 0.925 to 1.051
+of its five-winter level (2023-24 low, 2024-25 high), and the Priority 1 collectors' rate per point from 7.10 to 8.09 t a
+lane-km in a 61.7-point winter, about 14 per cent: event mix, pavement temperatures and freezing rain the index does not
+score, common to every road. A window of one winter either side of a move carries that winter's swing, so the family
+reads one-winter windows netted against the never-moved collectors' same winter (2,194.5 to 2,211.5 t); un-netted they
+stay in the bin (2,162.5 to 2,227.1 t), the first winter after each move 12.5 t from its edge.
 
-**One sigma (asserted).** A bootstrap over the 431 earlier-moved streets puts one standard error of the golden at
-14.7 t; the golden plus or minus two standard errors stays in its bin (47.4 t of clearance), and every family member
-plus or minus one standard error stays in it. The relation rests on 431 streets over four move years and five winters,
-one to four winters on each side of each move. The streets' rates now vary from winter to winter as spreader records do
-(a street's own multiplier with a 5 per cent spread, a winter-to-winter multiplier with a 7 per cent spread, on top of
-each event's own scatter), so the gain line reads r = -0.95 rather than -0.98.
+**Crude settings (asserted, CRUDE).** Settings within the new streets' own spread of Priority 2 salt (0.51 t a lane-km)
+file the golden: fixed 1.5 t and 1 t bands (2,198.5 t, 2,196.6 t), windows of 0.2 t and 1 t either side of the pool's
+mean (2,234.4 t over 44 streets, 2,189.5 t over 151) and a 0.62 t kernel (2,185.0 t). Coarser settings slip toward the
+pooled gain and close on the golden as they are refined: equal-count bands from two to six file 2,105.2, 2,147.8,
+2,176.2, 2,195.5 and 2,198.4 t (three bands' second band, 2.2 to 5.2 t a lane-km, holds the new streets' upper eighth and
+sits 1.1 t above them), kernels of 1.23, 0.9, 0.62 and 0.45 t file 2,120.7, 2,158.6, 2,185.0 and 2,198.6 t. Thin
+settings settle in the bin once 30 or more streets carry them: the 10 and 20 earlier moves nearest the pool's mean file
+2,294.9 and 2,280.3 t, 30 to 60 of them 2,233.5 to 2,235.1 t; a 0.1 t window (24 streets) 2,255.5 t. The range trim's
+plain average (the earlier moves inside the new streets' range, R2i before) files 2,136.4 t, 2,100 t. The mean of
+per-street ratios files 1,076.6 to 1,132.0 t (unweighted, by lane-km), 1,100 t.
+
+**Standard error (asserted, SIGMA).** A bootstrap over the 377 earlier-moved streets puts one standard error of the
+golden at 15.0 t; the golden plus or minus two of its own standard errors stays in its bin (36.3 t of clearance against
+29.9 t), and every family member's point value sits more than one of the golden's standard errors inside the bin
+(nearest 26.2 t). The claim holds with the golden's own error: the noisier members carry larger errors of their own
+(the recheck measured 19 t for three bands and 52 t for the 10 nearest the mean on the previous draw), so they land on
+the shipped draw rather than by construction, which is why the coarse and thin settings are listed apart. The relation
+rests on 377 streets over four move years (136, 69, 119 and 53, each year's programmes) and five winters, one to four
+winters either side of each move; each street carries its own persistent multiplier (5 per cent), a winter-to-winter
+multiplier (7 per cent), each winter's common swing and each event's scatter.
 
 **Out of sample (asserted, OOS).** Holding out each move year in turn, the conditioned gain predicts the held-out year's
-total within 3.2 per cent, the pooled gain misses by up to 11.3 per cent; ten-fold cross-validation puts the line's
-weighted squared error at 0.0663 against the power law's 0.0776 and the pooled gain's 0.7055; fitted on the moves above
-the new streets' 90th percentile of Priority 2 salt and read on the 164 below it, the line misses their total gain by
-0.1 per cent, the power law by 12.0 per cent and the pooled gain by 49.3 per cent.
+total closer than the pooled gain in every year (5.2, 1.1, 4.1 and 1.9 per cent off, each year carrying its own
+winters' swing, against 18.8, 6.4, 6.1 and 10.0 for the pooled gain); ten-fold cross-validation puts the line's weighted
+squared error at 0.0507 against the power law's 0.0596 and the pooled gain's 0.5728; fitted on the moves above the new
+streets' 90th percentile of Priority 2 salt and read on the 140 below it, the line misses their total gain by 1.9 per
+cent, the power law by 12.8 per cent and the pooled gain by 50.9 per cent.
 
 **Sweep (asserted, stumping Part 6).** Every reflex lands off the golden's bin and at least 100 t from the golden (the
-nearest, R2i, by 113 t): pooled; stratified by yard, by reason, by lanes or length band; trended across move years;
+nearest rung, R2d, by 118 t): pooled; stratified by yard, by reason, by lanes or length band; trended across move years;
 with a control group of never-moved Priority 2 collectors; the ratio; netting the level. The hazard share (hills and
-curves) is drawn independently of yard, lanes, length and route code (its correlation with each under 0.1 among the
-earlier moves and the new streets, asserted); the intersection share rises as segments shorten, so Priority 2 salt per
-lane-km does too (asserted), on every pool alike.
+curves) is drawn independently of yard, lanes, length and route code (each sample correlation inside three sampling
+errors, the largest 0.115 with length among the earlier moves against 0.155, asserted). The intersection approaches are
+a larger share of a short segment, so Priority 2 salt per lane-km rises as segments shorten: plainly on the redesign's
+streets, whose hazard share is small and alike (correlation with one over length 0.82), and hardly on the earlier moves
+(0.01), whose hills, school frontages and hospital approaches vary far more than their intersection share and overlap
+it (asserted on both pools, and 0.19 over the never-moved collectors).
 
-**Twin pair (O1).** RS177562 and RS177661, two sections of Knox Line moved on the same date under the same reason, same
-yard and lanes, centreline lengths within 0.06 km: gains 6.34 t and 2.34 t a lane-km in a 61.7-point winter against
-Priority 2 salt of 1.03 t and 5.42 t. No visible field tells them apart.
+**Twin pair (O1).** RS168717 and RS168888, two sections of Canterbury Street moved on the same date under the same
+reason, same yard and lanes, centreline lengths within 0.06 km: gains 5.19 t and 2.16 t a lane-km in a 61.7-point winter
+against Priority 2 salt of 1.93 t and 6.41 t. No visible field tells them apart.
 
-**Worth on the graded quantity.** Seeing the conditioning is worth 372 t against the netting and 655 t against the
+**Worth on the graded quantity.** Seeing the conditioning is worth 400 t against the netting and 698 t against the
 pooled gain; planning at 61.7 points rather than last winter's is worth 118 t.
 
-**Strength (adversarial route list, P per strong solver).** The default netting (R1, R1b, 2,500 to 2,600) 0.30; the
-event study on the earlier moves (R2, R2b, R2c, R2g or R2h, 1,500 to 1,600) 0.30; a severity slip on any route (2,000
-to 2,400) 0.06; a gross level (5,000 to 5,400 or 2,900) 0.04; a hedge between the rivals (2,000 to 2,100) 0.04; a
-contingency on a rival (R2 plus 20 per cent, 1,900) 0.03; a match on the new streets' range or a kernel wider than their
-spread (2,100) 0.04; the mean of ratios (1,200) 0.01; the conditioned gain in any of its standard forms, the power law
-included (2,200) 0.14; anything else 0.04. P(one strong solver lands) about 0.14, with no coincidental route left;
-P(both land) about 0.05 with a correlation of 0.3 allowed. The seed is fixed by rule (the task number, then the as-of
-month and day: 1650925) before any data is generated and is never searched.
+**Strength (adversarial route list, P per strong solver).** The default netting (R1, R1b, 2,600) 0.30; the event study on
+the earlier moves (R2, R2b, R2c, R2g or R2h, 1,500 to 1,800) 0.30; a severity slip on any route (2,000 to 2,500) 0.06; a
+gross level (5,000 to 5,400 or 2,900) 0.04; a hedge between the rivals (2,000 to 2,100) 0.04; a contingency on a rival
+(R2 plus 20 per cent, 1,800) 0.03; a coarse or thin conditioning (two or three bands, a wide kernel, the range trim, the
+10 or 20 streets nearest the mean: 2,100 or 2,300) 0.05; the mean of ratios (1,100) 0.01; the conditioned gain in any of
+its standard forms, netted or not, the power law included (2,200) 0.13; anything else 0.04. P(one strong solver lands)
+about 0.13; P(both land) about 0.05 with a correlation of 0.3 allowed (0.13 squared plus 0.3 of 0.13 times 0.87). The
+seed is fixed by rule (the task number, then the as-of month and day: 1650925) before any data is generated and is
+never searched.
 
 ## Closure table
 
@@ -333,12 +361,12 @@ month and day: 1650925) before any data is generated and is never searched.
 | 5 | Version basis | each segment's priority in each winter from the revision log | the revision log; the register carries the current priority |
 | 6 | Denominator | lane-km and WSI points | the register, the plan's per lane-km rates and the storm log; SF3, SF6 |
 | 7 | Weighting | lane-km weighted or not | C1 across the golden family (asserted) |
-| 8 | Window length | all five winters against fewer | C1 across pre- and post-move windows (asserted) |
+| 8 | Window length | all five winters against fewer | C1 across pre- and post-move windows, one-winter windows netted against the never-moved collectors (asserted; un-netted they stay in the bin, SF14) |
 | 9 | Boundary inclusivity | the season's first and last days | nothing within six hours of either (asserted) |
 | 10 | Rounding path | the total once, to the nearest 100 t | filed (the procedure); SF10 |
 | 11 | Tie-break | none | n/a, one figure |
 | 12 | Maturity and censoring | the new streets' Priority 1 winter not yet observed | the decisive forecast itself; nothing is censored in the records |
-| 13 | Order of operations | normalise per point, then fit, then scale to 61.7 | C1 (order-free under proportional scaling, asserted in SF6) |
+| 13 | Order of operations | normalise per point, then fit, then scale to 61.7 | filed (the plan plans salt per WSI point, SF6); C1 |
 | 14 | Row order | sums only | C1 |
 | 15 | Duplicate resolution | none on the call's rows | the realism sweep (no repeated pass key; no copied block) |
 | 16 | Identity normalisation | legacy ids to current through the crosswalk | the crosswalk; no main-population segment is split (asserted) |
@@ -360,11 +388,11 @@ the golden.
 
 ## Oracles
 
-- The earlier moves (431 collectors, before and after): the evidence every route reads; on the wrong path they confirm
+- The earlier moves (377 collectors, before and after): the evidence every route reads; on the wrong path they confirm
   the pooled gain in sample, and only a held-out year, a fold or the new streets' band shows the bias, which the solver
   has to run. They do not tie only under the golden.
-- The never-moved Priority 2 collectors: a control for winter effects; blind to the decisive move because none of them
-  changed service (their gain is nil under every basis).
+- The never-moved Priority 2 collectors: a control for each winter's swing (the family's netted members read it);
+  blind to the decisive move because none of them changed service (their gain is nil under every basis).
 - The storm log's WSI: an input every route reads alike.
 - The asks' referees (the scale houses' own times, the yard loading log, the contractor's returns) sit on no row the
   call reads.
@@ -408,37 +436,44 @@ supplier have landed, and the tonnes more the dome can then take** (8 figures, t
 
 **Ask B. For each works yard, the rock salt spread on its Priority 1 arterial circuits in each of the winters 2023-24,
 2024-25 and 2025-26, counting each circuit under the yard it belonged to that winter** (12 figures, to the nearest
-tonne).
+50 t).
 - H18 home: an audit of the input the call consumes. The call reads the telematics export's collector rows; this ask
   reconciles the same export's arterial rows, by yard and winter, to the yards' own records and the contractor's
   returns, on rows the call never reads.
 - The yard basis is WHAT and is filed in the ask's own sentence (the yard each circuit belonged to that winter: the
-  route code the pass carries, and the revision log's 1 July 2026 YARD entries), so the register's current yard is a
-  misreading, not a second reading.
-- The tonne rounding is what every honest construction shares: the golden (run totals once, the brine's mass taken off
-  at the plan's 1.18 kg a litre) and the salt read back from the brine at the plan's 40 litres to the tonne agree to
-  0.17 t in every cell, and every cell sits 0.3 t or more from a whole-tonne edge (asserted). A flat halving of the older
-  controllers' rows or a scaling to the loader log is an approximation that misses by tens of tonnes.
+  route code the pass carries, and the revision log's 1 July 2026 YARD entries), so the register's current yard, and
+  the fleet list's yard for the two Mapleford tandems that moved with their circuits, are misreadings, not second
+  readings.
+- The 50 t rounding is what every honest correction of the older controllers shares. The records' own route (run
+  totals once, the brine's mass taken off at the plan's 1.18 kg a litre) and the loading-log calibration (each
+  older-controller unit's winter taken at the tonnes its yard's loader scale put into it) differ by 4.5 t at most and
+  file the same figure in every cell, each 17.2 t or more from a 50 t edge (a quarter-bin is 12.5 t; asserted, and
+  recomputed by the verifier on its own path); the salt read back from the brine at the plan's 40 litres a tonne agrees
+  to 0.16 t. A flat halving of the older controllers' rows is a rougher correction (11 t below to 89 t above) and moves
+  five of the twelve figures. Where a cell would sit within 16 t of an edge under either route, the City trucks'
+  newer-controller passes of that yard and winter carry the difference in proportion (a fraction of a per cent of each),
+  on the simulated truth, so the platform, the loader log and every total follow.
 - Primary B1 (D6, an event's quantity on every line it covers; silent): the arterial tandems still carrying the older
   spreader controller report a run's total, and the platform writes that total on every segment row of the run; the
   rows carry their own segment and entry times, so no key repeats and nothing is a duplicate. Summed as rows, every
-  figure is high. Fair: every row of an older-controller run repeats one total (asserted over 19,103 runs), the run
+  figure is high. Fair: every row of an older-controller run repeats one total (asserted over 18,705 runs), the run
   reference groups them, and the fleet list dates each controller's replacement.
 - Primary B1b (D3, a meaning set per source; silent): the same controllers report the run's material as one mass, salt
   and spinner brine together, where the newer controllers report the salt alone beside the brine litres. Fair and exact:
   the plan files the pre-wet rate (40 litres to the tonne) and the brine's weight (1.18 kg a litre); the newer
   controllers' rows carry exactly 40 litres a tonne and the older ones 38.2, which is 40 litres over a tonne of salt plus
-  its brine (asserted). With the run totals taken once and the brine left in, every figure is high by 50 t or more.
+  its brine (asserted). With the run totals taken once and the brine left in, every figure is high by 48.8 t or more and
+  lands a full 50 t cell or more above the golden's (asserted).
 - Mirror device B2 (D4, a reporter absent): three arterial circuits at Kelvin Road and Mapleford are run by Kettlewood
   Road Services under contract RW-2023-07, whose trucks report to its own system; its salt is in its monthly returns,
-  which the plan points to. Six figures move by 386 t or more.
+  which the plan points to. Six figures move by 351 t or more.
 - Hazards: HB1 UTC against the season's dates (frost patrols on arterials late on 31 October 2024 at Lakeshore and late
-  on 31 March 2026 at Ridge); HB2 the register's current yard against the yard a circuit belonged to that winter (the
-  ask's sentence closes it).
-- Stops (asserted): every row summed (the cracker's natural read, every figure off by 1,082 t or more); run totals once,
-  brine left in (every figure, 50 t or more); brine netted on every row, run totals repeated (every figure, 985 t or
-  more); the contractor left out (six figures, 386 t or more); the register's yard (six figures, 1,037 t or more); season
-  dates in UTC (two figures, 7.8 t or more); the golden.
+  on 31 March 2026 at Ridge, 8.2 t each way), which at the nearest 50 t moves no figure; HB2 the register's current yard
+  against the yard a circuit belonged to that winter (the ask's sentence closes it).
+- Stops (asserted): every row summed (the cracker's natural read, every figure off by 1,032 t or more); run totals once,
+  brine left in (every figure, 48.8 t or more, a cell or more); brine netted on every row, run totals repeated (every
+  figure, 939 t or more); the contractor left out (six figures, 351 t or more); the register's yard (six figures, 962 t or
+  more); the golden.
 - Span: the telematics export, the fleet list, the plan, the contractor's returns, the register, the revision log, the
   dictionary, the yard loading log (8 files).
 
@@ -453,8 +488,8 @@ its content (Ask B) and its parts (every yard and winter shown and labelled; the
 | HA1 dispatch re-issue | the supplier re-cut its October schedule on 21 September | A | three yards' stock and room by 17 to 73 t |
 | HA2 transfers | Ridge filled the rebuilt Lakeshore dome on a city tandem | A | Ridge and Lakeshore by 221 t when supplier loads only are counted |
 | HA3 wet load turned back | a supplier load weighed in and out at Mapleford | A | Mapleford by 43 t when only inbound supplier loads are counted |
-| HB1 UTC | the platform stores UTC | B | two figures, by 7.8 t or more |
-| HB2 realignment | arterials moved between yards on 1 July 2026 | B | Kelvin Road and Mapleford, every winter, by 1,037 t or more, when the register's current yard is read |
+| HB1 UTC | the platform stores UTC | B | none at the nearest 50 t (two cells by 8.2 t) |
+| HB2 realignment | arterials moved between yards on 1 July 2026 | B | Kelvin Road and Mapleford, every winter, by 962 t or more, when the register's current yard is read |
 
 **Referee.** Ask A: the scale-house log's own times against the survey's flight log; Ask B: the yard loading log.
 Neither hands over a figure.
@@ -491,7 +526,8 @@ of Ask A's devices cracked 42.8, with both of Ask B's 48.8.
 | dispatch re-issue, survey clock, weighings at another scale, transfers, wet load | the supplier, the survey contractor, the scale houses | the asks' files | the stops in `## Ask sheet` | none: no row the call reads |
 | run totals, combined mass, contractor circuits, realignment | the older controllers, the contractor, the route audit | the pass export's arterial rows, the returns, the register | the stops in `## Ask sheet` | none: no row the call reads |
 | trucks rotating between circuits | yard dispatch (a spare or a swap most storms) | the pass export, the loading log, the timesheets | a circuit read as one truck | none: the call reads salt by segment, whoever spread it |
-| uneven route audit entry lags | the route audit's own backlog (some entries keyed after the change) | the revision log | the entry date read as the effective date | none: the call reads the effective date (asserted no priority change after 31 March 2026 but the redesign's) |
+| route audit sittings | the route audit keys each change in sittings of 40 to 90 segments on working days, a segment's priority and route rows together, one change in four finished after it took effect | the revision log | the entry date read as the effective date | none: the call reads the effective date (asserted no priority change after 31 March 2026 but the redesign's) |
+| each winter's swing in salt per point | the weather the index does not score (event mix, pavement temperatures, freezing rain), common to every road | every salt record | one winter either side of a move read as typical | same call, netted against the never-moved collectors or not (SF14, asserted) |
 | a pull of the salted network only | the register export's filter (Priority 1 and 2, and the Priority 3 hills) | the register, the manifest says so | the register read as every street | none |
 
 ## Tried and rejected
@@ -540,3 +576,36 @@ of Ask A's devices cracked 42.8, with both of Ask B's 48.8.
   carries.
 - Cross streets named without a suffix (a naming bug in the second round of street names): fixed in the generator,
   every tonnage unchanged.
+- Winters as steady as the index (the Priority 1 collector rate per point within 2 per cent across winters of 38.9 to
+  67.2 points, the recheck's realism finding): each winter now carries a swing the index does not carry, common to every
+  road (a winter's multiplier drawn with a 3 per cent spread, the realised rate per point spanning 14 per cent, inside the
+  10 to 25 per cent real fleets show); R_MID then moved by the re-centring rule alone.
+- Salt in proportion to severity closed by the data (the never-moved collectors' intercept near nil): under each
+  winter's swing five winters tilt the line (an intercept of about a fifth of a winter's salt), so the plan now files
+  that salt is planned per WSI point (SF6).
+- One-winter windows as plain family members: each carries its winter's own swing; the family reads them netted against
+  the never-moved collectors' same winter, and un-netted they stay in the bin, no longer a quarter-bin clear.
+- 431 earlier moves in steady yearly counts (122, 112, 107, 90): each year now carries its own programmes (136, 69, 119,
+  53, 377 in all); one standard error rose from 14.7 to 15.0 t.
+- Three equal-count bands as a family member: on the new draw its second band (2.2 to 5.2 t a lane-km) holds the new
+  streets' upper eighth and sits 1.1 t above them, and it files 2,147.8 t; it is listed with the median split and the
+  wide kernels as a coarse setting that closes on the golden as it is refined, and nothing was moved to bring it back.
+- The 10 earlier moves nearest the pool's mean as a crude setting that lands: it files 2,294.9 t on this draw; thin
+  settings are asserted from 30 streets up, where they settle in the bin.
+- R2i (the earlier moves inside the new streets' range, averaged) as a rung 100 t or more from the golden: it now sits
+  77 t below (2,136.4 t), so it is listed with the crude conditioned forms.
+- The gain component at one decimal (5.2, 0.045 from its edge, with four family members at 5.1 on the previous draw):
+  stated as about 5 t a lane-km, the precision every construction shares (SF12).
+- The own-salt component at one decimal (1.7 lane-km weighted against 1.8 as the streets' unweighted mean, the
+  recheck's fork): stated over the five winters as about 700 t, under 2 t a lane-km, which every basis shares (SF13).
+- The arterial figures to the nearest tonne: the loading-log calibration came within 0.2 to 6.6 t of the records'
+  route, so the correction of the older controllers was unpinned at the tonne; the figures are asked to the nearest
+  50 t and every cell sits a quarter-bin or more from its edge under both routes (asserted), while the brine left in
+  still lands a full cell high and the run totals summed every row miss by a tonne a row.
+- Route audit entries keyed row by row (the redesign over 52 days, a segment's priority and route rows on one day 2.8
+  per cent of the time): the audit keys each change in a few sittings on working days, both rows of a segment together,
+  and the change numbers follow the keying order.
+- The one-sigma claim as written (every family member within one standard error): it holds with the golden's own
+  error, not each member's; restated in `## Ladder` and in SIGMA.
+- "On every pool alike" for the length effect: measured, it shows plainly on the redesign's streets and hardly on the
+  earlier moves; the note now says what the data show and both pools are asserted.

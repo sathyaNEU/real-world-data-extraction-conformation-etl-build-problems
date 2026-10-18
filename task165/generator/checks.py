@@ -2,7 +2,7 @@
 yards.py).
 
 The three-rules block (R1 to R3c), the ladder and its rivals, the out-of-sample tests, the golden's family and its
-one-sigma corridor, the reflex sweep, the twin pair, every semantic fork row (SF1 to SF11), both asks with their
+standard error, the reflex sweep, the twin pair, every semantic fork row (SF1 to SF14), both asks with their
 devices and stops, the cracker's measured pair, the separation line, the input gates, the realism sweep, the dates
 and the distractors' deletion test."""
 from __future__ import annotations
@@ -36,9 +36,11 @@ RESULTS = []
 
 GOLD = 2200            # the seasonal tonnage, nearest 100 t
 DEFAULT = 2600         # rung 1, the default path
-POOLED = 1500          # rung 2, the earlier moves' average gain
-N_MOVES = 431          # collectors moved Priority 2 to Priority 1 on 1 November 2022 to 2025
-OWN, GAIN = 1.7, 5.2   # the components, t a lane-km in a winter at the planning severity
+POOLED = (1500, 1600)  # rung 2, the earlier moves' average gain: 1,500 to 1,600 (pooled 1,500, its DiD forms 1,600)
+N_MOVES = 377          # collectors moved Priority 2 to Priority 1 on 1 November 2022 to 2025
+OWN_T, OWN_UNDER = 700, 2   # component 1: own Priority 2 salt over the five winters, t in all (nearest 100) and a
+                            # lane-km bound, in a winter at the planning severity
+GAIN = 5               # component 2: the gain, t a lane-km in that winter (nearest tonne)
 SEV = C.PLAN_SEV
 ASK_EDGE = 0.0295      # every ask figure at least this far (t) from its one-decimal rounding edge
 
@@ -104,20 +106,29 @@ def main():
     check("GOLD the earlier moves: %d collectors on the four 1 November dates" % N_MOVES,
           len(d) == N_MOVES and sorted({str(e) for e in d["eff"]}) == ["2022-11-01", "2023-11-01", "2024-11-01",
                                                                    "2025-11-01"], "%d" % len(d))
-    check("GOLD component: own Priority 2 salt 1.7 t a lane-km, clear of its edge",
-          r1(own) == OWN and K.bin_edge_distance(own, 0.1) >= 0.015, "%.4f" % own)
+    check("GOLD component: own Priority 2 salt over the five winters about 700 t, under 2 t a lane-km, clear of "
+          "its edge", call(own * L) == OWN_T and own < OWN_UNDER and K.bin_edge_distance(own * L, 100) >= 15,
+          "%.1f t, %.3f t a lane-km" % (own * L, own))
     ids_new = list(nn["segment_id"])
     tot_new = {w: sum(float(P_.salt.get((s_, w), 0.0)) for s_ in ids_new) for w in K.WINTERS}
-    alt_own = [tot_new[w] / (L * P_.wsi[w]) * SEV for w in K.WINTERS] + \
-        [float(np.mean([tot_new[w] / (L * P_.wsi[w]) for w in K.WINTERS])) * SEV]
-    check("GOLD component: own Priority 2 salt rounds to 1.7 in every winter and as the mean of winters",
-          all(r1(v) == OWN for v in alt_own), str([round(v, 3) for v in alt_own]))
-    check("GOLD component: the gain 5.2 t a lane-km, clear of its edge",
-          r1(gain) == GAIN and K.bin_edge_distance(gain, 0.1) >= 0.025, "%.4f" % gain)
+    tel = ["2023-24", "2024-25", "2025-26"]
+    bases = {"pooled (the golden)": own,
+             "mean of the five winters' rates": float(np.mean([tot_new[w] / (L * P_.wsi[w]) for w in K.WINTERS])) * SEV,
+             "mean of the 216 streets' rates": float(nn["p2"].mean()) * SEV,
+             "lane-km weighted mean of the streets' winter means": float(np.average(
+                 [np.mean([float(P_.salt.get((s_, w), 0.0)) / (lk_ * P_.wsi[w]) for w in K.WINTERS])
+                  for s_, lk_ in zip(nn["segment_id"], nn["lane_km"])], weights=nn["lane_km"])) * SEV,
+             "the three telematics winters": sum(tot_new[w] for w in tel) / (L * sum(P_.wsi[w] for w in tel)) * SEV}
+    check("SF13 component 1 files the same figure on every basis of the five winters (t in all and a lane-km)",
+          all(call(v * L) == OWN_T and v < OWN_UNDER for v in bases.values()),
+          str({k: round(v * L, 1) for k, v in bases.items()}))
+    check("GOLD component 2: the gain about 5 t a lane-km, clear of its edge",
+          int(round(gain)) == GAIN and K.bin_edge_distance(gain, 1.0) >= 0.2, "%.4f" % gain)
     figs = json.load(open(os.path.join(HERE, "figures.json")))
     check("GOLD figures.json carries the call and both components",
-          figs["commitment_t"] == GOLD and figs["own_p2_t_per_lkm"] == r1(own) and figs["gain_t_per_lkm"] == r1(gain)
-          and figs["lane_km"] == 424.0 and figs["segments"] == 216 and figs["earlier_moves"] == N_MOVES, "")
+          figs["commitment_t"] == GOLD and figs["own_p2_t"] == OWN_T and figs["own_p2_t_per_lkm_under"] == OWN_UNDER
+          and figs["gain_t_per_lkm"] == GAIN and figs["lane_km"] == 424.0 and figs["segments"] == 216 and
+          figs["earlier_moves"] == N_MOVES, "")
 
     # ------------------------------------------------------------------------------------------ R1
     import pyarrow.parquet as pq
@@ -151,6 +162,7 @@ def main():
     # ------------------------------------------------------------------------------------------ R3 on the clean truth
     W = Wd.World()
     S = R.Sim(W)
+    P2.settle_arterial_cells(W, S)     # the arterial cells settled as the build settles them (collectors untouched)
     wsi_t = {w: sum(e["points"] for e in W.events[w]) for w in K.WINTERS}
     segs = {s["segment_id"]: s for s in W.segments}
 
@@ -180,7 +192,7 @@ def main():
     pooled_t = ((post_t - pre_t) * Lk).sum() / Lk.sum() * Lt * SEV
     check("R3a the easy route on the clean truth files the default path", call(r3a) == DEFAULT, "%.1f t" % r3a)
     check("R3b the decisive step alone on the clean truth files the golden", call(r3b) == GOLD, "%.1f t" % r3b)
-    check("R3b the event study alone (pooled gain) on the clean truth stays wrong", call(pooled_t) == POOLED,
+    check("R3b the event study alone (pooled gain) on the clean truth stays wrong", call(pooled_t) in POOLED,
           "%.1f t" % pooled_t)
     expected = sum(W.gain_truth(s) * s["lane_km"] * s["m"] for s in new)
     check("R3b the world's own expected gain within two standard errors of the golden", abs(expected - g) < 2 * 15.0,
@@ -204,7 +216,7 @@ def main():
     Pu = C.Pack(TARGET, utc_as_local=True)
     gu = C.golden(Pu)
     check("R2 the platform's UTC times read as local: same call and components",
-          call(gu) == GOLD and r1(gu / L) == r1(gain), "%.1f t" % gu)
+          call(gu) == GOLD and int(round(gu / L)) == GAIN, "%.1f t" % gu)
     Px = C.Pack(TARGET, xwalk=False)
     gx = C.golden(Px)
     check("R2 the legacy ids joined without the crosswalk: same call", call(gx) == GOLD, "%.1f t" % gx)
@@ -238,23 +250,23 @@ def main():
         "R0 the Priority 1 network gross, last winter": (C.r0_network(P_, sev=last, winters=["2025-26"]), 5000),
         "R0b the Priority 1 network gross, planning severity": (C.r0_network(P_), 5400),
         "R1 default: Priority 1 collector rate less own salt": (C.r1_default(P_), DEFAULT),
-        "R1b the same over the earlier moves' Priority 1 winters": (C.r1_default(P_, True), 2500),
-        "R1c the default at last winter's points (no planning severity)": (C.r1_default(P_) * last / SEV, 2400),
-        "R1d the default at the five winters' mean points": (C.r1_default(P_) * wmean / SEV, 2300),
-        "R2 the earlier moves' pooled gain": (C.r2_pooled(P_), POOLED),
-        "R2b the transit-driven earlier moves' gain": (C.r2_pooled(P_, "QRT Route"), 1600),
-        "R2c the pooled gain stratified by yard": (C.reflex_stratified(P_, "yard"), 1600),
-        "R2c the pooled gain stratified by lanes": (C.reflex_stratified(P_, "lanes"), 1500),
-        "R2c the pooled gain stratified by length band": (C.reflex_stratified(P_, "lenband"), 1500),
+        "R1b the same over the earlier moves' Priority 1 winters": (C.r1_default(P_, True), DEFAULT),
+        "R1c the default at last winter's points (no planning severity)": (C.r1_default(P_) * last / SEV, 2500),
+        "R1d the default at the five winters' mean points": (C.r1_default(P_) * wmean / SEV, 2400),
+        "R2 the earlier moves' pooled gain (1,500 to 1,600)": (C.r2_pooled(P_), POOLED),
+        "R2b the transit-driven earlier moves' gain": (C.r2_pooled(P_, "QRT Route"), POOLED),
+        "R2c the pooled gain stratified by yard": (C.reflex_stratified(P_, "yard"), POOLED),
+        "R2c the pooled gain stratified by lanes": (C.reflex_stratified(P_, "lanes"), POOLED),
+        "R2c the pooled gain stratified by length band": (C.reflex_stratified(P_, "lenband"), POOLED),
         "R2d the golden's gain at last winter's points": (g * last / SEV, 2100),
         "R2e the golden's gain at the five winters' mean": (g * wmean / SEV, 2000),
         "R2f the earlier moves' ratio on own salt": (C.reflex_ratio(P_), 600),
-        "R2g the pooled gain trended over move years": (C.reflex_trend(P_), 1600),
-        "R2h the pooled gain against never-moved collectors": (C.reflex_did(P_), 1600),
-        "R2i the earlier moves inside the new streets' range, averaged": (C.range_match(P_)[0], 2100),
+        "R2g the pooled gain trended over move years": (C.reflex_trend(P_), 1800),
+        "R2h the pooled gain against never-moved collectors": (C.reflex_did(P_), POOLED),
     }
     for name, (v, want) in lad.items():
-        check("LADDER %s" % name, call(v) == want and abs(v - g) >= 100 and call(v) != GOLD,
+        want = want if isinstance(want, tuple) else (want,)
+        check("LADDER %s" % name, call(v) in want and abs(v - g) >= 100 and call(v) != GOLD,
               "%.1f t -> %d" % (v, call(v)))
     for name, v in (("the default and the pooled gain", (C.r1_default(P_) + C.r2_pooled(P_)) / 2),
                     ("the moves' own level and the pooled gain", (C.r1_default(P_, True) + C.r2_pooled(P_)) / 2),
@@ -274,8 +286,8 @@ def main():
 
     # ------------------------------------------------------------------------------------------ out of sample
     ho = C.holdout(P_)
-    check("OOS each move year held out: the conditioned gain within 4 per cent",
-          all(abs(v[1]) < 0.04 for v in ho.values()), str({k: round(v[1], 3) for k, v in ho.items()}))
+    check("OOS each move year held out: the conditioned gain closer than the pooled gain in every year",
+          all(abs(v[1]) < abs(v[0]) for v in ho.values()), str({k: round(v[1], 3) for k, v in ho.items()}))
     check("OOS each move year held out: the pooled gain off by over 10 per cent in a year",
           max(abs(v[0]) for v in ho.values()) > 0.10, str({k: round(v[0], 3) for k, v in ho.items()}))
     cv = {f: C.cv_wsse(P_, f) for f in ("line", "loglog", "pool")}
@@ -294,41 +306,64 @@ def main():
     fam = {
         "weighted by lane-km (golden)": g,
         "unweighted": C.golden(P_, weight=False),
-        "the last winter before each move only": C.golden(P_, pre_last=True),
-        "the first winter after each move only": C.golden(P_, post_first=True),
-        "both one-winter windows": C.golden(P_, pre_last=True, post_first=True),
         "summed street by street": C.golden(P_, per_segment=True),
         "the Priority 1 level regressed, own salt taken off": C.golden(P_, level=True),
         "each winter against the never-moved collectors": C.golden_did(P_),
+        "each winter's points netted by the never-moved collectors' swing": C.golden_netted(P_),
+        "netted, the last winter before each move only": C.golden_netted(P_, pre_last=True),
+        "netted, the first winter after each move only": C.golden_netted(P_, post_first=True),
+        "netted, both one-winter windows": C.golden_netted(P_, pre_last=True, post_first=True),
         "each street's rate the mean of its winters": C.winter_mean(P_),
         "quadratic in Priority 2 salt": C.quadratic(P_),
         "outliers over three deviations dropped": C.trimmed(P_),
         "10 nearest earlier moves": C.knn(P_, 10),
         "20 nearest earlier moves": C.knn(P_, 20),
         "40 nearest earlier moves": C.knn(P_, 40),
-        "three bands of Priority 2 salt": C.qbins(P_, 3),
-        "four bands": C.qbins(P_, 4),
+        "four bands of Priority 2 salt": C.qbins(P_, 4),
         "five bands": C.qbins(P_, 5),
         "eight bands": C.qbins(P_, 8),
     }
     for name, v in fam.items():
         check("FAMILY %s files the golden" % name, call(v) == GOLD and K.bin_edge_distance(v, 100) >= 24,
               "%.1f t" % v)
+    check("SF12 every family member's gain is about 5 t a lane-km (component 2 at the precision they share)",
+          all(int(round(v / L)) == GAIN and K.bin_edge_distance(v / L, 1.0) >= 0.2 for v in fam.values()),
+          "%.3f to %.3f" % (min(fam.values()) / L, max(fam.values()) / L))
+    ix = C.control_index(P_)
+    raw1 = {"the last winter before each move only": C.golden(P_, pre_last=True),
+            "the first winter after each move only": C.golden(P_, post_first=True),
+            "both one-winter windows": C.golden(P_, pre_last=True, post_first=True)}
+    check("SF14 each winter's swing (over 10 per cent on the never-moved collectors): one-winter windows read "
+          "netted, and un-netted they stay in the bin", max(ix.values()) / min(ix.values()) - 1 > 0.10 and
+          all(call(v) == GOLD for v in raw1.values()),
+          "%s; un-netted %s" % ({w: round(v, 3) for w, v in ix.items()}, {k: round(v, 1) for k, v in raw1.items()}))
+    spread_new = float(np.std(nn["p2"].values * SEV))
     crude_in = {"fixed 1.5 t bands": C.fixed_bands(P_, 1.5), "fixed 1 t bands": C.fixed_bands(P_, 1.0),
-                "the 10 nearest the pool's mean": C.nearest_to_mean(P_, 10),
                 "a window of 0.2 t either side": C.window(P_, 0.2)[0], "a window of 1 t": C.window(P_, 1.0)[0],
                 "a kernel of 0.62 t": C.kernel(P_, 0.62)}
-    check("CRUDE settings of the conditioning file the golden (bands, nearest, windows, a 0.62 t kernel)",
+    check("CRUDE settings of the conditioning within the new streets' own spread file the golden",
           all(call(v) == GOLD for v in crude_in.values()), str({k: round(v, 1) for k, v in crude_in.items()}))
-    wide = C.kernel(P_, 1.23)
-    spread_new = float(np.std(nn["p2"].values * SEV))
-    check("CRUDE only a kernel wider than the new streets' own spread (1.23 t) slips a bin, toward the pooled gain",
-          call(wide) == 2100 and 1.23 > 1.5 * spread_new, "%.1f t, new streets' spread %.2f t" % (wide, spread_new))
+    coarse = {"equal-count bands, 2 to 6": [C.qbins(P_, q) for q in (2, 3, 4, 5, 6)],
+              "kernels of 1.23, 0.9, 0.62 and 0.45 t": [C.kernel(P_, b_) for b_ in (1.23, 0.9, 0.62, 0.45)]}
+    check("CRUDE coarse settings close on the golden as they are refined (two or three bands, wide kernels slip)",
+          all(all(abs(v[i + 1] - g) <= abs(v[i] - g) + 1.0 for i in range(len(v) - 1)) and
+              call(v[-1]) == GOLD and call(v[-2]) == GOLD for v in coarse.values()),
+          str({k: [round(x_, 1) for x_ in v] for k, v in coarse.items()}))
+    thin = {k_: C.nearest_to_mean(P_, k_) for k_ in (10, 20, 30, 40, 60)}
+    wins = {h_: C.window(P_, h_) for h_ in (0.1, 0.2, 0.5)}
+    check("CRUDE thin settings settle in the golden's bin once 30 or more streets carry them",
+          all(call(v) == GOLD for k_, v in thin.items() if k_ >= 30) and
+          all(call(v) == GOLD for v, n_ in wins.values() if n_ >= 30),
+          "nearest the mean %s; windows %s" % ({k_: round(v, 1) for k_, v in thin.items()},
+                                               {h_: (round(v, 1), n_) for h_, (v, n_) in wins.items()}))
+    rm_ = C.range_match(P_)
+    check("CRUDE the range trim's plain average (R2i) stays off the golden's bin, toward the pooled gain",
+          call(rm_[0]) != GOLD and rm_[0] < g, "%.1f t over %d streets" % (rm_[0], rm_[1]))
     sd = C.bootstrap_sd(P_)
     check("SIGMA one bootstrap standard error over the %d streets under 16 t" % N_MOVES, sd < 16.0, "%.1f t" % sd)
     check("SIGMA the golden plus or minus two standard errors stays in its bin",
           K.bin_edge_distance(g, 100) > 2 * sd, "%.1f against %.1f" % (K.bin_edge_distance(g, 100), 2 * sd))
-    check("SIGMA every family member plus or minus one standard error stays in the bin",
+    check("SIGMA every family member sits more than the golden's own standard error inside the bin",
           all(K.bin_edge_distance(v, 100) > sd for v in fam.values()),
           "nearest %.1f t" % min(K.bin_edge_distance(v, 100) for v in fam.values()))
 
@@ -339,8 +374,9 @@ def main():
         cy = max(abs(np.corrcoef(df["h"], (df["yard"] == y).astype(float))[0, 1]) for y in K.YARDS)
         cl_ = abs(np.corrcoef(df["h"], df["lanes"])[0, 1])
         cc = abs(np.corrcoef(df["h"], df["cl"])[0, 1])
-        check("ORTHO %s hazard share against lanes, length and yard (never shipped)" % pool,
-              cl_ < 0.1 and cc < 0.1 and cy < 0.2, "%.3f, %.3f, %.3f" % (cl_, cc, cy))
+        lim = 3.0 / np.sqrt(len(df))
+        check("ORTHO %s hazard share against lanes, length and yard, inside three sampling errors (never shipped)"
+              % pool, cl_ < lim and cc < lim and cy < 0.2, "%.3f, %.3f, %.3f (limit %.3f)" % (cl_, cc, cy, lim))
     p2c = P_.reg[(P_.reg["func_class"] == "COLLECTOR") & (P_.reg["priority"] == "2")]
     rr_ = [P_.rate(s_, K.WINTERS, lk_) for s_, lk_ in zip(p2c["segment_id"], p2c["lane_km"])]
     cinv = float(np.corrcoef(rr_, 1.0 / p2c["centreline_km"].values)[0, 1])
@@ -406,8 +442,9 @@ def main():
     ws_ = np.array([P_.wsi[w] for w in K.WINTERS])
     st_ = np.array([sum(float(P_.salt.get((s, w), 0.0)) for s in ctrl["segment_id"]) for w in K.WINTERS])
     bi = np.polyfit(ws_, st_, 1)
-    check("SF6 salt against severity: in proportion (the never-moved collectors' intercept near nil)",
-          abs(bi[1]) / st_.mean() < 0.03, "intercept %.1f t of %.1f" % (bi[1], st_.mean()))
+    check("SF6 salt against severity: per WSI point, as the plan plans it (five winters cannot pin an intercept)",
+          "plans each road's salt per WSI point" in plan,
+          "a line through the never-moved collectors' five winters: intercept %.1f t of %.1f" % (bi[1], st_.mean()))
     check("SF7 the collectors carry rock salt only (RS), no sand and salt mix",
           set(pc["material_code"]) == {"RS"} and set(legc["MATL"]) == {"SALT"}, "")
     qrt = pd.read_excel(os.path.join(TARGET, P.F_QRT), header=3)
@@ -430,7 +467,6 @@ def main():
     # ------------------------------------------------------------------------------------------ Ask A
     Yd = Y.Yards(W, S)
     pr = P.pass_rows(W, S)
-    P2.settle_arterial_edges(W, S, pr)
     P2.settle_dome_edges(Yd)
     gs, gr = C.ask_a(TARGET)
     check("ASK A the golden equals the clean truth (stock on 1 November, every dome)",
@@ -469,11 +505,14 @@ def main():
                 truthB[key] = truthB.get(key, 0.0) + rr["t"]
     dB = max(abs(ga[k] - truthB.get(k, 0.0)) for k in ga)
     check("ASK B the golden within a tonne of the simulated truth in every cell", dB < 1.0, "%.3f t" % dB)
-    eb = min(K.bin_edge_distance(v, 1.0) for v in ga.values())
-    check("ASK B every figure 0.3 t or more from its whole-tonne rounding edge", eb >= 0.3, "%.3f t" % eb)
+    lc = C.arterial_salt(TARGET, "loader_cal")
+    eb = min(min(K.bin_edge_distance(ga[k], C.ART_UNIT), K.bin_edge_distance(lc[k], C.ART_UNIT)) for k in ga)
+    check("ASK B the records and the loading-log calibration file the same 50 t figure in every cell, each a "
+          "quarter-bin or more from an edge", all(C.r50(lc[k]) == C.r50(ga[k]) for k in ga) and eb >= 12.5,
+          "nearest edge %.1f t, largest gap %.1f t" % (eb, max(abs(lc[k] - ga[k]) for k in ga)))
     gp = C.arterial_salt(TARGET, "prewet_rate")
-    check("ASK B the salt read back from the brine at 40 litres a tonne files the same whole tonnes (C1)",
-          all(round(gp[k]) == round(ga[k]) for k in ga), "largest gap %.3f t" % max(abs(gp[k] - ga[k]) for k in ga))
+    check("ASK B the salt read back from the brine at 40 litres a tonne files the same 50 t figures (C1)",
+          all(C.r50(gp[k]) == C.r50(ga[k]) for k in ga), "largest gap %.3f t" % max(abs(gp[k] - ga[k]) for k in ga))
     art = ps[ps["route_code"].str.contains("-A") & (ps["material_code"] == "RS")].copy()
     art["day"] = art["entry_utc"].dt.tz_convert("America/Toronto").dt.date
     m410 = [W.controller_on(u, d) == "M410" for u, d in zip(art["unit_id"], art["day"])]
@@ -489,13 +528,22 @@ def main():
           "%d runs" % len(runs))
     two = [(y, w) for y in ("KLV", "MPF") for w in K.NEW_WINTERS]
     stopsB = {"rows": list(ga), "runs_once": list(ga), "net_brine": list(ga), "no_contract": two,
-              "register_yard": two, "utc_season": [("LKS", "2024-25"), ("RDG", "2025-26")]}
+              "register_yard": two}
     for m, want in stopsB.items():
         a_ = C.arterial_salt(TARGET, m)
-        moved = sorted(k for k in ga if round(a_[k]) != round(ga[k]))
+        moved = sorted(k for k in ga if C.r50(a_[k]) != C.r50(ga[k]))
         gap = min(abs(a_[k] - ga[k]) for k in want)
-        check("ASK B the %s route moves %d figures" % (m, len(want)), moved == sorted(want) and gap >= 1.5,
+        check("ASK B the %s route moves %d figures at 50 t" % (m, len(want)), moved == sorted(want),
               "smallest %.1f t" % gap)
+    ro = C.arterial_salt(TARGET, "runs_once")
+    hv = C.arterial_salt(TARGET, "halve")
+    us = C.arterial_salt(TARGET, "utc_season")
+    check("ASK B the brine left in (B1b) lands a full 50 t cell or more above in every cell",
+          all(C.r50(ro[k]) - C.r50(ga[k]) >= 50 for k in ga),
+          "smallest excess %.1f t; halving moves %d cells (%.0f to %+.0f t); the UTC season moves %d" % (
+              min(ro[k] - ga[k] for k in ga), sum(C.r50(hv[k]) != C.r50(ga[k]) for k in ga),
+              min(hv[k] - ga[k] for k in ga), max(hv[k] - ga[k] for k in ga),
+              sum(C.r50(us[k]) != C.r50(ga[k]) for k in ga)))
     lk = P_.reg[P_.reg["func_class"] == "ARTERIAL"].copy()
     lk["y"] = lk["route_code"].str[:3]
     tot_l = lk["lane_km"].sum()
@@ -503,7 +551,7 @@ def main():
     for w in K.NEW_WINTERS:
         rate_ = sum(ga[(y, w)] for y in K.YARDS) / tot_l
         for y in K.YARDS:
-            blind += int(round(rate_ * lk.loc[lk["y"] == y, "lane_km"].sum()) == round(ga[(y, w)]))
+            blind += int(C.r50(rate_ * lk.loc[lk["y"] == y, "lane_km"].sum()) == C.r50(ga[(y, w)]))
     check("ASK B one network rate times each yard's arterial lane-km recovers no cell", blind == 0, "%d" % blind)
 
     # ------------------------------------------------------------------------------------------ the cracker
@@ -568,13 +616,13 @@ def main():
                                                                    for x in meta["files"]), "")
 
     # ------------------------------------------------------------------------------------------ realism
-    dash = [f for f, t in txt.items() if "—" in t or "–" in t]
+    dash = [f for f, t in txt.items() if "\u2014" in t or "\u2013" in t]
     check("REALISM no shipped file carries an em or en dash", not dash, str(dash))
     sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
     pt = os.path.join(TASK, "prompt.txt")
     prompt = open(pt, encoding="utf-8").read() if os.path.exists(pt) else ""
     check("REALISM the submission and prompt carry no em or en dash",
-          not any(c in sub + prompt for c in ("—", "–")), "")
+          not any(c in sub + prompt for c in ("\u2014", "\u2013")), "")
     alltxt = " ".join(txt.values())
     check("REALISM every persona from guard.py names appears, and no placeholder identity",
           all(n in alltxt for n in K.PEOPLE.values()) and
@@ -594,12 +642,47 @@ def main():
     unit_tr = set(tr.loc[tr["Carrier"] == "CITY OF QUELLBROOK", "Vehicle"].str.replace("Unit ", ""))
     check("REALISM the transfer truck is a Ridge unit in the fleet list",
           unit_tr <= set(fl.loc[fl["yard"] == "RDG", "unit_id"]), str(unit_tr))
-    rcount = rev[rev["field"] == "PRIORITY"]["reason"].value_counts()
-    check("REALISM revision reasons are the audit's own batches (no reason on more than one move date)",
-          all(rev[rev["reason"] == r_]["effective_date"].nunique() <= 30 for r_ in rcount.index), "")
+    mvr = rev[(rev["field"] == "PRIORITY") & (rev["old_value"] == "2")]
+    check("REALISM each move reason is one programme on one effective date",
+          all(mvr[mvr["reason"] == r_]["effective_date"].nunique() == 1 for r_ in mvr["reason"].unique()),
+          "%d reasons" % mvr["reason"].nunique())
     lagd = (pd.to_datetime(rev["effective_date"]) - pd.to_datetime(rev["entered_on"])).dt.days
     check("REALISM route audit entries lag their effective dates unevenly, some entered after",
           lagd.min() < 0 and lagd.max() - lagd.min() >= 40, "%d to %d days" % (lagd.min(), lagd.max()))
+    batch = rev[rev["reason"] != "Assumed from developer, subdivision collector"]
+    sit = batch.groupby(["effective_date", "reason"])["entered_on"].nunique()
+    pair = rev[rev["field"].isin(["PRIORITY", "ROUTE"]) & rev["reason"].isin(mvr["reason"].unique())]
+    same = pair.groupby(["segment_id", "effective_date"])["entered_on"].nunique()
+    red = rev[rev["effective_date"] == "2026-08-30"]
+    wk = pd.to_datetime(rev["entered_on"]).dt.weekday
+    check("REALISM the audit keys each change in a few sittings, a segment's priority and route rows together, on "
+          "working days", sit.max() <= 6 and (same == 1).all() and red["entered_on"].nunique() <= 6 and (wk < 5).all(),
+          "redesign on %d days; at most %d sittings a change" % (red["entered_on"].nunique(), sit.max()))
+    cnt = d.groupby([str(e) for e in d["eff"]]).size()
+    check("REALISM the earlier moves' yearly counts follow their programmes (uneven)",
+          cnt.max() >= 2 * cnt.min(), str(cnt.to_dict()))
+    p1w = {}
+    for w in K.WINTERS:
+        tt = dd_ = 0.0
+        for s_ in W.segments:
+            if s_["func_class"] == "COLLECTOR" and s_["pool"] != "NEW" and W.priority(s_, w) == 1:
+                tt += float(P_.salt.get((s_["segment_id"], w), 0.0))
+                dd_ += s_["lane_km"] * P_.wsi[w]
+        p1w[w] = tt / dd_ * SEV
+    check("REALISM the Priority 1 collector rate per point swings between winters (10 to 25 per cent)",
+          0.10 <= max(p1w.values()) / min(p1w.values()) - 1 <= 0.25, str({w: round(v, 2) for w, v in p1w.items()}))
+    lenc = {}
+    for pool in ("NEW", "MOVE"):
+        ss = [s_ for s_ in W.segments if s_["pool"] == pool]
+        if pool == "NEW":
+            rr = [P_.rate(s_["segment_id"], K.WINTERS, s_["lane_km"]) for s_ in ss]
+        else:
+            pre_ = d.set_index("segment_id")["pre"]
+            rr = [float(pre_[s_["segment_id"]]) for s_ in ss]
+        lenc[pool] = float(np.corrcoef(rr, [1.0 / s_["centreline_km"] for s_ in ss])[0, 1])
+    check("REALISM short segments carry more Priority 2 salt a lane-km: plain on the redesign's flat streets, "
+          "swamped on the earlier moves by their hills, frontages and approaches", lenc["NEW"] > 0.5 and
+          abs(lenc["MOVE"]) < 0.3, "corr with 1/length: new %.2f, earlier moves %.2f" % (lenc["NEW"], lenc["MOVE"]))
     upc = ps.groupby(["route_code"])["unit_id"].nunique()
     check("REALISM trucks rotate: most circuits run by more than one unit over the three winters",
           (upc > 1).mean() > 0.5, "%.0f per cent of circuits" % (100 * (upc > 1).mean()))

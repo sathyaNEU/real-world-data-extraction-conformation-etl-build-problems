@@ -201,7 +201,7 @@ def loading_log(W, S, rng):
     """Salt loaded into each truck each shift at its yard (loader scale), 2023-24 to 2025-26; trucks carry what is
     left in the hopper into the next shift."""
     per = {}
-    for p in S.passes:
+    for p in list(S.passes) + list(S.patrols):
         if p["winter"] not in K.NEW_WINTERS or p["contract"] or not p["rows"]:
             continue
         t = p["rows"][0]["entry"]

@@ -15,7 +15,7 @@ import common as K
 
 # ----------------------------------------------------------------------------------------------- parameters
 # tonnes of rock salt per lane-km in a winter at the planning severity (61.7 WSI points)
-R_MID = 6.297     # Priority 1 over a collector's length
+R_MID = 6.282     # Priority 1 over a collector's length
 R_HAZ1 = 9.697    # Priority 1 on a collector's hazard lane-km (its full pass plus the blasts there)
 R_HAZ2 = 10.23    # Priority 2 on a collector's hazard lane-km (spot treatment, heavier once ice has formed)
 R_ART = 12.05     # Priority 1 arterials
@@ -24,7 +24,9 @@ R_LOCAL_SS = 1.10  # sand-salt on Priority 3 hill locals (tonnes of mix per lane
 M_SD = 0.05        # a segment's own persistent multiplier (shade, drainage, grade the register does not carry)
 WINTER_SD = 0.07   # a segment's own winter-to-winter multiplier (operators, timing of events on the street)
 EVENT_CV = 0.16    # a segment's salt in one event about its expectation
-SHOCK_SD = 0.003   # a winter's effect the index does not carry
+SHOCK_SD = 0.03    # a winter's swing the index does not carry (event mix, pavement temperatures, freezing
+                   # rain), common to every road: the Priority 1 collector rate per point spans about 14 per
+                   # cent over the five winters
 
 # Priority 2 salts each segment's intersection approaches: INT_KM of centreline in all (both ends)
 INT_KM = 0.10
@@ -35,8 +37,11 @@ H_FLAT = (0.05, 40.0)   # the flat streets each reason also brought in (as flat 
 FLAT_SHARE = 0.30       # their share of each reason's moves
 H_INNER = (0.38, 8.0)
 H_P2 = (0.25, 6.0)
-BATCH_MIX = {"A": {"hill": 84, "school": 38}, "B": {"transit": 43, "school": 43, "hospital": 26},
-             "C": {"hill": 64, "hospital": 26, "school": 17}, "D": {"transit": 47, "school": 26, "hill": 17}}
+# the earlier moves, one programme at a time: 2022 the hill-street motion and that year's school bus review; 2023 the
+# Route 14 upgrade and the hospital's east entrance; 2024 the petition motion, the school review and the paramedics'
+# access review; 2025 the Route 22 upgrade and a small school review
+BATCH_MIX = {"A": {"hill": 92, "school": 44}, "B": {"transit": 43, "hospital": 26},
+             "C": {"hill": 64, "school": 31, "hospital": 24}, "D": {"transit": 41, "school": 12}}
 CL_RANGE = (0.45, 1.35)       # collector segment lengths, km
 CL_RANGE_NEW = (0.45, 1.35)   # the redesign's collectors: the same block lengths
 CL_RANGE_FLAT = (0.45, 1.35)

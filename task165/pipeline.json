@@ -15,20 +15,20 @@
   "date": "2026-10-18"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-18, after the stage 4 fix pass): 61.7 is the planning severity the plan files; the procedure and the plan share the call's words because they file the seasonal tonnage; the dispatch schedules' October dates are forward bookings (H16 allow-list)",
-  "reader": "round 1 clean (Q6 analytical, no field marks prior coverage, the procedure files only the WHAT); targeted re-read due after the fix pass"
+  "leak_py": "REVIEW, no LEAK (2026-10-18, after the round 2 fix pass): 61.7 is the planning severity the plan files; the procedure and the plan share the call's words because they file the seasonal tonnage; the dispatch schedules' October dates are forward bookings (H16 allow-list)",
+  "reader": "round 1 clean (Q6 analytical, no field marks prior coverage, the procedure files only the WHAT); round 2 re-read clean (minor realism tells only); a targeted re-read due on the round 2 fix pass"
  },
  "duplicate_check": {
-  "heart": "PASS (nearest 0.06, task118 driver); surface exit 0, nine pairs promoted for adjudication as at round 1 (four card-level differentiated on the card, task163 and task167 two apart on gap and decision type, task164, task453 and task159 on surface similarity)",
+  "heart": "PASS (nearest 0.11, task118 driver); surface exit 0, nine pairs promoted for adjudication as at round 1 (four card-level differentiated on the card, task163 and task167 two apart on gap and decision type, task164, task453 and task159 on surface similarity)",
   "nearest": "task118 0.11 (driver)"
  },
  "judge": {
-  "verdict": "round 1: NOT_DETERMINISTIC on supplementary answer 3 only (yard basis unfiled, no exact route for the older controllers), main call DETERMINISTIC, Gates F, G and H pass",
-  "disposition": "FIX_NOW, fixed in the generator; one re-judge due",
-  "report": "scratchpad judge-task165/verdict.md"
+  "verdict": "round 1: NOT_DETERMINISTIC on supplementary answer 3 only (yard basis unfiled, no exact route for the older controllers); round 2: DETERMINISTIC (main call 2,201 t, variants 2,168 to 2,235 t, domes exact, Gates F, G and H pass) with FIX_NOW on the arterial precision (the loading-log calibration within 0.2 to 6.6 t of the exact route, unpinned at the tonne)",
+  "disposition": "round 2 FIX_NOW fixed in the generator: the arterial figures to the nearest 50 t, the exact route and the loading-log calibration in one cell each, 17.2 t or more from every edge; the recheck's forks closed (block 2 at the precision every construction shares, the one-sigma and length wording, the pooled rung at 1,500 to 1,600 t) and its realism findings answered (each winter's swing, the moves' yearly counts, the audit in sittings); one re-judge due",
+  "report": "scratchpad judge-task165b/verdict.md; recheck rule3/task165b.md"
  },
  "returned": [],
- "resume": "stage 4: targeted re-read, the one re-judge and the rule 3 recheck on the fix pass",
+ "resume": "stage 4: the one re-judge and the targeted re-read on the round 2 fix pass, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

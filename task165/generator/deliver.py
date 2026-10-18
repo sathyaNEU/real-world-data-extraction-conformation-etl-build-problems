@@ -37,6 +37,14 @@ def rt(v):
     return int(round(v + 1e-9))
 
 
+def r50(v):
+    return C.r50(v)
+
+
+def r100(v):
+    return int(round(v / 100.0) * 100)
+
+
 def r1(v):
     return float("%.1f" % (v + 0.0))
 
@@ -59,7 +67,7 @@ def compute(target):
                         reg.loc[r["segment_id"], "to_street"], r["yard"], float(r["lane_km"]),
                         float(r["p2"] * C.PLAN_SEV), float(g)))
     return {"raw": raw, "commitment": int(round(raw / 100.0) * 100), "lane_km": L, "own_p2": x0 * C.PLAN_SEV,
-            "gain_per_lkm": raw / L, "b0": float(b[0]), "b1": float(b[1]), "n_moves": len(d),
+            "own_total": x0 * C.PLAN_SEV * L, "gain_per_lkm": raw / L, "b0": float(b[0]), "b1": float(b[1]), "n_moves": len(d),
             "moves_lkm": float(d["lane_km"].sum()), "stock": stock, "room": room, "art": art, "per_seg": per_seg,
             "wsi": P.wsi}
 
@@ -93,11 +101,13 @@ def workbook(g, path):
         ("Service change since the 2025-26 winter closed", "Collectors moved to Priority 1 on 30 August 2026 (QRT frequent network)"),
         ("Lane-km moved", round(g["lane_km"], 2)),
         ("Planning severity (WSI points)", 61.7),
-        ("Their Priority 2 rock salt in a planning-severity winter (t per lane-km)", r1(g["own_p2"])),
-        ("Gain on moving to Priority 1 in a planning-severity winter (t per lane-km)", r1(g["gain_per_lkm"])),
+        ("Their Priority 2 rock salt over the five winters, in a planning-severity winter (t, nearest 100)",
+         r100(g["own_total"])),
+        ("Gain on moving to Priority 1 in a planning-severity winter (t per lane-km, nearest tonne)",
+         rt(g["gain_per_lkm"])),
         ("Seasonal tonnage to commit (t, nearest 100)", g["commitment"]),
     ]
-    fmts = ["#,##0", "@", "0.0", "0.0", "0.0", "0.0", "#,##0"]
+    fmts = ["#,##0", "@", "0.0", "0.0", "#,##0", "0", "#,##0"]
     for i, (k, v) in enumerate(rows, 4):
         ws.cell(row=i, column=1, value=k)
         c = ws.cell(row=i, column=2, value=v)
@@ -148,11 +158,11 @@ def workbook(g, path):
     ws3.cell(row=7, column=1, value="Survey stock brought forward by every weighing in to and out of each dome after "
                                     "its capture, and the October bookings in the 21 September dispatch issue.")
     ws4 = wb.create_sheet("Arterial salt")
-    _head(ws4, 1, ["Yard"] + ["%s (t)" % w for w in WINTERS3], [16, 14, 14, 14])
+    _head(ws4, 1, ["Yard"] + ["%s (t, nearest 50)" % w for w in WINTERS3], [16, 18, 18, 18])
     for i, y in enumerate(C.YARDS, 2):
         ws4.cell(row=i, column=1, value=YNAME[y])
         for j, w in enumerate(WINTERS3, 2):
-            ws4.cell(row=i, column=j, value=rt(g["art"][(y, w)])).number_format = "#,##0"
+            ws4.cell(row=i, column=j, value=r50(g["art"][(y, w)])).number_format = "#,##0"
     ws4.cell(row=7, column=1, value="Rock salt spread on each yard's Priority 1 arterial circuits, 1 November to 31 "
                                     "March, each circuit under the yard it belonged to that winter, contract circuits "
                                     "included.")
@@ -191,7 +201,7 @@ def chart_png(g):
         vals = [g["art"][(y, w)] for y in C.YARDS]
         bars = ax.bar(x + (k - 1) * (wd + 0.02), vals, wd, color=SERIES[k], label=w, zorder=2)
         for b_, v in zip(bars, vals):
-            ax.text(b_.get_x() + b_.get_width() / 2, v + 120, "{:,.0f}".format(rt(v)), ha="center", va="bottom",
+            ax.text(b_.get_x() + b_.get_width() / 2, v + 120, "{:,.0f}".format(r50(v)), ha="center", va="bottom",
                     fontsize=6.2, color="#33332f", rotation=90)
     ax.set_xticks(x)
     ax.set_xticklabels([YNAME[y] for y in C.YARDS])
@@ -256,20 +266,21 @@ def memo(g, path):
          "Regional Transit's frequent network, {:.1f} lane-km, sized as RO-PR-07 4.2 sets it out: the extra salt "
          "those streets will need over what they took at Priority 2, in a winter of 61.7 WSI points.".format(
              g["lane_km"]), after=6)
-    para("At Priority 2 our trucks salted these streets at their intersections and little else, {:.1f} t a "
-         "lane-km in a winter of that severity. The collectors we moved to Priority 1 between 2022 and 2025 were "
-         "mostly hill, school and hospital streets that Priority 2 already salted along much of their length, and "
-         "their spreader records show the gain from the move falling the more Priority 2 salt a street already took. "
-         "Read at these streets' own Priority 2 salt, the move adds {:.1f} t a lane-km.".format(
-             r1(g["own_p2"]), r1(g["gain_per_lkm"])), after=6)
+    para("At Priority 2 our trucks salted these streets at their intersections and little else, about {:,} t in a "
+         "winter of that severity, under 2 t a lane-km. The collectors we moved to Priority 1 between 2022 and 2025 "
+         "were mostly hill, school and hospital streets that Priority 2 already salted along much of their length, "
+         "and their spreader records show the gain from the move falling the more Priority 2 salt a street already "
+         "took. Read at these streets' own Priority 2 salt, the move adds about {:d} t a lane-km.".format(
+             r100(g["own_total"]), rt(g["gain_per_lkm"])), after=6)
     para("The rolled-over 39,100 t carries the existing programme, whose Priority 1 arterial circuits are charted below "
          "for the last three winters. The working, each yard's dome stock and room for 1 November, and those arterial "
          "figures are in salt_commitment_2026-27.xlsx.", after=6)
     pic = io.BytesIO(chart_png(g))
     d.add_picture(pic, width=Mm(168))
     d.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
-    para("Contract circuits are included; each yard's figure is for the arterial circuits it ran that winter. WSI is "
-         "the Roads Operations Centre's Winter Severity Index (plan section 4).", size=8.5, after=0, color="52514E")
+    para("Tonnes to the nearest 50. Contract circuits are included; each yard's figure is for the arterial circuits it "
+         "ran that winter. WSI is the Roads Operations Centre's Winter Severity Index (plan section 4).", size=8.5,
+         after=0, color="52514E")
     d.save(path)
     res = PP.normalize_docx(path, K.PEOPLE["winter_manager"], K.PEOPLE["winter_manager"], "2026-09-28T13:40:00Z",
                             "2026-09-28T19:10:00Z", revision=5, total_time=48, seed="memo-salt-2026",
@@ -280,14 +291,15 @@ def memo(g, path):
 # ---------------------------------------------------------------------------------------------- figures and write-up
 def figures(g):
     f = {"commitment_t": g["commitment"], "rollover_t": 39100, "lane_km": round(g["lane_km"], 1),
-         "segments": len(g["per_seg"]), "planning_wsi": 61.7, "own_p2_t_per_lkm": r1(g["own_p2"]),
-         "gain_t_per_lkm": r1(g["gain_per_lkm"]), "earlier_moves": g["n_moves"], "procedure_clause": "4.2",
-         "rounding_unit_t": 100}
+         "segments": len(g["per_seg"]), "planning_wsi": 61.7, "own_p2_t": r100(g["own_total"]),
+         "own_p2_t_per_lkm_under": 2, "own_p2_t_per_lkm": round(g["own_p2"], 2),
+         "gain_t_per_lkm": rt(g["gain_per_lkm"]), "earlier_moves": g["n_moves"], "procedure_clause": "4.2",
+         "rounding_unit_t": 100, "arterial_unit_t": 50}
     for y in C.YARDS:
         f["stock_%s" % y] = r1(g["stock"][y])
         f["room_%s" % y] = r1(g["room"][y])
         for w in WINTERS3:
-            f["art_%s_%s" % (y, w)] = rt(g["art"][(y, w)])
+            f["art_%s_%s" % (y, w)] = r50(g["art"][(y, w)])
     return f
 
 
@@ -301,17 +313,18 @@ def write_submission(path, g):
     L.append("**Analytical objective:** Forecasting & Predictive Modeling.\n")
     L.append("## 1. Final Recommendation\n")
     L.append("**Commit {:,} t of rock salt above the rolled-over 39,100 t contract for November 2026 to March 2027.** "
-             "The redesign's collectors took {:.1f} t a lane-km of Priority 2 salt in a 61.7-point winter, far less "
-             "than the collectors moved to Priority 1 before them, and read off those earlier moves at each "
-             "street's own Priority 2 salt the move adds {:.1f} t a lane-km over {:.1f} lane-km. Not the Priority 1 "
+             "The redesign's collectors took under {:d} t a lane-km of Priority 2 salt in a 61.7-point winter, far "
+             "less than the collectors moved to Priority 1 before them, and read off those earlier moves at each "
+             "street's own Priority 2 salt the move adds about {:d} t a lane-km over {:.1f} lane-km. Not the Priority 1 "
              "collectors' rate less these streets' own salt, which carries the higher Priority 1 level of streets with "
              "more intersections, hills and curves onto flat ones; not the earlier moves' average gain, which belongs "
              "to streets Priority 2 had already salted along much of their length.\n".format(
-                 f["commitment_t"], f["own_p2_t_per_lkm"], f["gain_t_per_lkm"], g["lane_km"]))
+                 f["commitment_t"], f["own_p2_t_per_lkm_under"], f["gain_t_per_lkm"], g["lane_km"]))
     L.append("## 2. Critical Components\n")
-    L.append("1. The {:.1f} lane-km's own Priority 2 rock salt in a winter of 61.7 WSI points: **{:.1f} t per "
-             "lane-km**.".format(g["lane_km"], f["own_p2_t_per_lkm"]))
-    L.append("2. Their gain on moving to Priority 1 in that winter: **{:.1f} t per lane-km**.\n".format(
+    L.append("1. The {:.1f} lane-km's own Priority 2 rock salt over the five winters, in a winter of 61.7 WSI points: "
+             "**about {:,} t, under {:d} t per lane-km**.".format(g["lane_km"], f["own_p2_t"],
+                                                                f["own_p2_t_per_lkm_under"]))
+    L.append("2. Their gain on moving to Priority 1 in that winter: **about {:d} t per lane-km**.\n".format(
         f["gain_t_per_lkm"]))
     L.append("## 3. Step-by-Step Solution\n")
     L.append("1. Took the {} segments route_audit_revision_log.csv moves from priority 2 to 1 on 2026-08-30, {:.1f} "
@@ -337,7 +350,7 @@ def write_submission(path, g):
     for y in C.YARDS:
         L.append("   - {}: {:,.1f} t in the dome, {:,.1f} t more".format(YNAME[y], f["stock_%s" % y], f["room_%s" % y]))
     L.append("3. Rock salt spread on each yard's Priority 1 arterial circuits, each circuit under the yard it belonged to "
-             "that winter:")
+             "that winter, to the nearest 50 t:")
     for y in C.YARDS:
         L.append("   - {}: 2023-24 {:,} t, 2024-25 {:,} t, 2025-26 {:,} t".format(
             YNAME[y], f["art_%s_2023-24" % y], f["art_%s_2024-25" % y], f["art_%s_2025-26" % y]))
