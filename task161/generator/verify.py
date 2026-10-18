@@ -120,7 +120,7 @@ class Pack:
         rc["ts"] = pd.to_datetime(rc["received_at_utc"], utc=True)
         rc["d"] = local_date(rc["received_at_utc"])
         self.rc = rc.sort_values("ts", kind="mergesort")
-        mf = pd.read_excel(f("avila_delivery_manifest_2024-03_2026-12.xlsx"), sheet_name="Deliveries")
+        mf = pd.read_excel(f("avila_delivery_manifest_2024-03_2026-12.xlsx"), sheet_name="Deliveries", header=3)
         self.mf = mf
         self.notices = self._notices()
 
@@ -350,12 +350,65 @@ def monthly_fall(pk, info):
     return block_test(total)
 
 
-def ask1(pk):
-    lp = pd.read_csv(os.path.join(pk.t, "wms_lpn_inventory_20261207T0800Z.csv"))
-    close = local_date(lp["snapshot_utc"]).iloc[0] - DAY
-    nt = pk.nightly[pk.nightly["d"] == close].groupby("site_id")["on_hand_pallets"].sum()
-    rk = lp[lp["location_type"] == "RACK"].groupby("site_id").size()
-    return {s: int(nt[s] - rk[s]) for s in ("CAR1", "RDZ1", "WIL1", "CMP1")}
+def backtest(pk, info, horizon=90):
+    """Each earlier rush left out in turn: each account's excess path after the step predicted from its other rushes
+    by the burn share (shipment-weighted) and by a half-life (median of the others' log-linear fits)."""
+    tot = {"burn": 0.0, "fade": 0.0}
+    per = {}
+    for k in pk.current:
+        x = info[k]
+        P, S = pk.monthly([k])
+        nf = pk.normal_fn(x["cv"], S)
+        o, sh = pk.oh[k], pk.sh[k]
+        paths, fits = {}, {}
+        for st in pk.steps:
+            i0 = pk.ix[st]
+            pre = [pk.days[i] for i in range(i0 - 7, i0)]
+            n0 = np.mean([nf(d) for d in pre])
+            e0 = np.mean([o[pk.ix[d]] - nf(d) for d in pre])
+            if e0 < 0.12 * n0:
+                continue
+            later = [d for d in pk.adv_dates if d > st]
+            stop = pk.ix.get(min(later)) if later else 10 ** 9
+            fx, fy, cum = [], [], 0.0
+            for i in range(i0, min(len(pk.days), i0 + 240, stop)):
+                cum += sh[i]
+                e = o[i] - nf(pk.days[i])
+                if e <= 0.25 * e0:
+                    break
+                fx.append(cum)
+                fy.append(e0 - e)
+            if len(fx) < 15:
+                continue
+            es, cs, ts, cum = [], [], [], 0.0
+            for i in range(i0, min(i0 + horizon, stop, len(pk.days))):
+                cum += sh[i]
+                es.append(o[i] - nf(pk.days[i]))
+                cs.append(cum)
+                ts.append(i - i0 + 1)
+            paths[st] = (e0, np.array(es), np.array(cs), np.array(ts))
+            fits[st] = (float(np.polyfit(fx, fy, 1)[0]), fx[-1])
+        for st in paths:
+            others = [q for q in paths if q != st]
+            if not others:
+                continue
+            s_ = sum(fits[q][0] * fits[q][1] for q in others) / sum(fits[q][1] for q in others)
+            hls = []
+            for q in others:
+                e0q, eq, _, tq = paths[q]
+                okq = eq > 0.05 * e0q
+                if okq.sum() >= 10:
+                    b = np.polyfit(tq[okq] / 30.4, np.log(eq[okq]), 1)[0]
+                    hls.append(np.log(0.5) / b if b < 0 else 50.0)
+            e0, es, cs, ts = paths[st]
+            act = np.maximum(es, 0.0)
+            pb = np.maximum(0.0, e0 - s_ * cs)
+            pf = e0 * 0.5 ** (ts / 30.4 / float(np.median(hls))) if hls else e0 + 0 * ts
+            for name, pr in (("burn", pb), ("fade", pf)):
+                err = float(np.abs(pr - act).mean())
+                tot[name] += err
+                per[(st, name)] = per.get((st, name), 0.0) + err
+    return tot, per
 
 
 def ask2(pk):
@@ -424,18 +477,31 @@ def main(target, golden):
        "the default path: half-life %.2f months, %d blocks (block 1 used %.0f per cent)" % (hl, nf_, 100 * Uf[0]))
     nm_, Um, _ = monthly_fall(pk, info)
     ok("V6", nm_ == 1 == F["rivals"]["per_account_fall_blocks"], "each account's own monthly fall: %d block" % nm_)
-    a1 = ask1(pk)
-    ok("V7", a1 == F["a1"], "A1 recomputed: %s" % a1)
+    jan = [pk.ix[d] for d in mdays((2026, 1))]
+    five = int(sum(pk.sh[k][jan].sum() for k in seas))
+    ok("V7", five == F["components"]["five_jan2026_shipments"] and five < 0.5 * sum(info[k]["e31"] for k in seas),
+       "the five seasonal accounts shipped %d pallets in January 2026, under half of their excess at 31 December" % five)
+    tot = sum(pk.oh[k] for k in pk.current)
+    nov = [pk.ix[d] for d in mdays((2026, 11))]
+    dec = [pk.ix[d] for d in mdays((2026, 12)) if d in pk.ix]
+    flat = {name: block_test([float(v)] * 6)[0] for name, v in
+            (("close", tot[pk.ix[pk.last]]), ("november", tot[nov].mean()), ("december", tot[dec].mean()))}
+    ok("V12", all(v >= 3 for v in flat.values()), "today's stock held flat files a block more: %s" % flat)
+    bt, per = backtest(pk, info)
+    rushes = sorted({x[0] for x in per})
+    ahead = sum(1 for st in rushes if per[(st, "burn")] < per[(st, "fade")])
+    ok("V13", bt["burn"] <= 0.70 * bt["fade"] and ahead >= 2,
+       "leave-one-out on the earlier rushes: burn %.0f against fade %.0f; the burn ahead on %d of %d (%s)" %
+       (bt["burn"], bt["fade"], ahead, len(rushes),
+        ", ".join("%s %.0f/%.0f" % (st, per[(st, "burn")], per[(st, "fade")]) for st in rushes)))
     a2 = ask2(pk)
     ok("V8", all(int(round(a2[k][0])) == F["a2_teu"][k] and "%.3f" % a2[k][1] == F["a2_share"][k] for k in a2),
        "A2 recomputed: %s" % {k: (int(round(v[0])), "%.3f" % v[1]) for k, v in a2.items()})
     edge = min(min(0.5 - abs(t - round(t)), (0.0005 - abs(s - round(s, 3))) * 1000) for t, s in a2.values())
     ok("V9", edge >= 0.25, "every A2 figure a quarter cell or more from its rounding edge (%.2f of a cell)" % edge)
     gw = pd.read_excel(os.path.join(golden, "overflow_blocks_h1_2027.xlsx"), sheet_name=None, header=None)
-    a1x = gw["Off-rack 6 Dec"].iloc[4:8]
-    ok("V10", {r[1]: int(r[4]) for r in a1x.itertuples(index=False)} == a1 and
-       "take 2 of the 6 blocks" in str(gw["Blocks"].iloc[3, 0]),
-       "the golden workbook carries the call and A1 as recomputed")
+    ok("V10", "take 2 of the 6 blocks" in str(gw["Blocks"].iloc[3, 0]) and "Off-rack 6 Dec" not in gw,
+       "the golden workbook carries the call")
     ch = pdf(os.path.join(golden, "port_share_2026.pdf"))
     ok("V11", all("{:,} TEU".format(F["a2_teu"][k]) in ch for k in a2) and all(F["a2_share"][k] + "%" in ch for k in a2),
        "the chart labels every bar with its TEU and share")

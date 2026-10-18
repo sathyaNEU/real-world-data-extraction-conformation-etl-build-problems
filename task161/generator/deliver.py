@@ -15,8 +15,6 @@ import postprocess as PP
 import read
 
 SEASONAL = ["PD2047", "PD2052", "PD2058", "PD2102", "PD2108"]
-BUILDING_NAME = {"CAR1": "Del Amo, Carson", "RDZ1": "Alondra, Rancho Dominguez", "WIL1": "Anaheim Street, Wilmington",
-                 "CMP1": "Artesia, Compton"}
 MONTHS = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
           "November", "December"]
 
@@ -25,16 +23,26 @@ def compute(target):
     B = read.book(target)
     g, parts = calc.golden(B, return_parts=True)
     inp = read.ask_inputs(target)
-    a1 = asks.a1_golden(inp["site_onhand"], inp["lpn"])
-    racked = {s: inp["site_onhand"][s] - a1[s] for s in asks.BUILDINGS}
     teu, share = asks.a2_golden(inp["receipts"], inp["manifest"], inp["LA"], inp["LB"], inp["to_local"])
     fade = calc.rival_decay(B)
     rivals = {"fade": fade, "book_burn": calc.rival_book_burn(B, "slope"),
+              "book_burn_totals": calc.rival_book_burn(B, "total"),
               "per_account_fall": calc.rival_per_account_monthly_fall(B), "no_payback": calc.rival_no_payback(B)}
-    return B, g, parts, inp, a1, racked, teu, share, rivals
+    return B, g, parts, inp, teu, share, rivals
 
 
-def figures(B, g, parts, inp, a1, racked, teu, share, rivals):
+def flat_hold(B):
+    """Today's stock held flat through the term: the close of 6 December, November's mean, December to date."""
+    tot = sum(B.acc[c]["oh"] for c in B.current)
+    nov = [B.idx[d] for d in calc.month_days((2026, 11))]
+    dec = [B.idx[d] for d in calc.month_days((2026, 12)) if d in B.idx]
+    out = {}
+    for name, v in (("close", tot[B.idx[B.last]]), ("november", tot[nov].mean()), ("december", tot[dec].mean())):
+        out[name] = calc.blocks([float(v)] * 6)["blocks"]
+    return out
+
+
+def figures(B, g, parts, inp, teu, share, rivals):
     acc = {}
     for c in B.current:
         p = parts[c]
@@ -50,6 +58,8 @@ def figures(B, g, parts, inp, a1, racked, teu, share, rivals):
     tot31 = sum(acc[c]["excess_31dec"] for c in B.current)
     win = ["%s 2027" % MONTHS[m] for m in range(1, 7)]
     gT, gS = asks.rounded_a2(teu, share)
+    jan26 = [B.idx[d] for d in calc.month_days((2026, 1))]
+    five_jan = int(sum(B.acc[c]["ship"][jan26].sum() for c in SEASONAL))
     F = {
         "call": {"blocks": g["blocks"], "of": 6, "cost": "$2,200,000", "cost_n": 2200000, "price": "$1,100,000"},
         "components": {
@@ -61,6 +71,7 @@ def figures(B, g, parts, inp, a1, racked, teu, share, rivals):
             "positions": dict(zip(win, [int(round(x)) for x in g["positions"]])),
             "overflow": dict(zip(win, [int(round(x)) for x in g["overflow"]])),
             "overflow_min": int(round(min(g["overflow"]))), "overflow_max": int(round(max(g["overflow"]))),
+            "five_jan2026_shipments": five_jan, "five_excess_half": int(round(seas31 / 2.0)),
         },
         "accounts": acc,
         "steps": {"past_steps": [s.isoformat() for s in B.steps], "notices_total": round(sum(B.notices.values())),
@@ -74,10 +85,9 @@ def figures(B, g, parts, inp, a1, racked, teu, share, rivals):
                    "fade_block1_pct": int(round(100 * rivals["fade"]["use"][0])),
                    "book_burn_blocks": rivals["book_burn"]["blocks"], "book_burn_share": round(rivals["book_burn"]["phi"], 3),
                    "per_account_fall_blocks": rivals["per_account_fall"]["blocks"],
-                   "no_payback_blocks": rivals["no_payback"]["blocks"]},
-        "a1": {s: int(a1[s]) for s in asks.BUILDINGS},
-        "a1_site_onhand": {s: int(inp["site_onhand"][s]) for s in asks.BUILDINGS},
-        "a1_racked": {s: int(racked[s]) for s in asks.BUILDINGS},
+                   "no_payback_blocks": rivals["no_payback"]["blocks"],
+                   "book_burn_totals_blocks": rivals["book_burn_totals"]["blocks"],
+                   "flat_hold_blocks": flat_hold(B)},
         "a2_teu": {"%s 2026" % MONTHS[k[1]]: gT[k] for k in asks.MONTHS_2026},
         "a2_share": {"%s 2026" % MONTHS[k[1]]: "%.3f" % gS[k] for k in asks.MONTHS_2026},
         "a2_share_raw": {"%s 2026" % MONTHS[k[1]]: share[k] for k in asks.MONTHS_2026},
@@ -190,24 +200,6 @@ def write_workbook(path, B, g, parts, F, inp, teu, share):
     widths(ws, [10, 30, 14, 16, 14, 14, 12, 14, 14])
     ws.freeze_panes = "C5"
 
-    # ---- A1
-    ws = wb.create_sheet("Off-rack 6 Dec")
-    ws["A1"] = "Pallets outside our racks at the close of Sunday 6 December 2026, by building"
-    ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = ("On hand: nightly inventory run of 7 December 08:00Z. In racks: rack positions holding a pallet in the "
-                "LPN export of the same run. Outside the racks: floor lanes, dock staging and storage trailers in the yard.")
-    header(ws, 4, ["Building", "Site", "Pallets on hand", "In rack positions", "Outside the racks"])
-    r = 5
-    for s in asks.BUILDINGS:
-        vals = [BUILDING_NAME[s], s, F["a1_site_onhand"][s], F["a1_racked"][s], F["a1"][s]]
-        for j, v in enumerate(vals, 1):
-            cell = ws.cell(row=r, column=j, value=v)
-            if j > 2:
-                cell.number_format = "#,##0"
-        r += 1
-    widths(ws, [28, 8, 16, 16, 16])
-    ws.freeze_panes = "A5"
-
     # ---- A2
     ws = wb.create_sheet("Port TEU 2026")
     ws["A1"] = "Import containers whose freight reached us from the two ports, January to October 2026"
@@ -316,12 +308,11 @@ def write_chart(path, F):
 
 
 def write_all(target, gdir, gen):
-    B, g, parts, inp, a1, racked, teu, share, rivals = compute(target)
-    F = figures(B, g, parts, inp, a1, racked, teu, share, rivals)
+    B, g, parts, inp, teu, share, rivals = compute(target)
+    F = figures(B, g, parts, inp, teu, share, rivals)
     write_workbook(os.path.join(gdir, "overflow_blocks_h1_2027.xlsx"), B, g, parts, F, inp, teu, share)
     write_chart(os.path.join(gdir, "port_share_2026.pdf"), F)
     with open(os.path.join(gen, "figures.json"), "w") as fh:
         json.dump(F, fh, indent=1, sort_keys=True)
         fh.write("\n")
-    return {"B": B, "g": g, "parts": parts, "inp": inp, "a1": a1, "teu": teu, "share": share, "F": F,
-            "rivals": rivals}
+    return {"B": B, "g": g, "parts": parts, "inp": inp, "teu": teu, "share": share, "F": F, "rivals": rivals}

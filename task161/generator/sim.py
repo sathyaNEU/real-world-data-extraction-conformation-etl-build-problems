@@ -170,10 +170,12 @@ def simulate():
         for r, tot in E_total.items():
             b0, b1, step = W.RUSHES[r]
             bd = [d for d in days(b0, b1) if open_day(d)]
-            w = np.linspace(0.6, 1.6, len(bd))
+            # bought-ahead receipts spread evenly over the open days between the announcement and the step
+            w = np.ones(len(bd))
             w = w / w.sum()
             for d, wi in zip(bd, w):
                 build_add[DIDX[d]] += tot * wi
+            for d in days(b0, b1):
                 in_build[DIDX[d]] = True
         S = np.zeros(ND, int)
         R = np.zeros(ND, int)
@@ -183,6 +185,7 @@ def simulate():
         boxes = []      # (day index, size, pallets)
         oh = 0.0
         e = 0.0
+        res, cur = 0.0, 0.0     # stock left from earlier rushes (burning) and the build under way (held)
         started = False
         for i, d in enumerate(ALL_DAYS):
             if not acc.active(d):
@@ -200,9 +203,13 @@ def simulate():
             sh = int(min(sh, max(0, oh)))
             # excess: build or burn
             if in_build[i]:
-                e += build_add[i]
-            elif e > 0:
-                e = max(0.0, e - acc.s * sh)
+                cur += build_add[i]
+            elif cur > 0:
+                res += cur
+                cur = 0.0
+            if res > 0:
+                res = max(0.0, res - acc.s * sh)
+            e = res + cur
             target = N[i] + e
             after = oh - sh
             rcv = 0

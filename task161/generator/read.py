@@ -286,13 +286,15 @@ def read_manifest(target):
     import openpyxl
     wb = openpyxl.load_workbook(os.path.join(target, F_AVILA), read_only=True, data_only=True)
     ws = wb["Deliveries"]
-    rows = ws.iter_rows(values_only=True)
+    rows = ws.iter_rows(min_row=4, values_only=True)
     head = list(next(rows))
     out = []
     for r in rows:
         d = dict(zip(head, r))
+        if d.get("Trailer") is None:
+            continue
         out.append({"trailer": d["Trailer"], "container": d["Container"], "iso": d["ISO Type"],
-                    "pallets": int(d["Pallets"]),
+                    "pallets": int(d["Pallets"]), "port": d["Port"], "terminal": d["Pickup Terminal"],
                     "delivered": d["Delivery Date"].date() if hasattr(d["Delivery Date"], "date") else d["Delivery Date"]})
     return out
 
@@ -330,8 +332,6 @@ def read_lpn(target):
 
 
 def ask_inputs(target):
-    lpn = read_lpn(target)
-    close = run_close(lpn[0]["snapshot_utc"])
     LA, LB = read_ports(target)
-    return {"site_onhand": site_onhand(target, close), "lpn": lpn, "receipts": read_receipts(target),
-            "manifest": read_manifest(target), "LA": LA, "LB": LB, "to_local": pacific_date, "close": close}
+    return {"receipts": read_receipts(target), "manifest": read_manifest(target), "LA": LA, "LB": LB,
+            "to_local": pacific_date}

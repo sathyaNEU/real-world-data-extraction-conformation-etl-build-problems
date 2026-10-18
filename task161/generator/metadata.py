@@ -60,8 +60,7 @@ def write(target, out_path):
                      "share of them its own earlier rushes burned, checked against the book's earlier duty steps)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "a count of overflow blocks read off a six-month forecast of positions by the space policy's "
-                        "block test, with pallets outside the racks in four buildings and ten months of import TEU and "
-                        "port share (twenty figures, charted)",
+                        "block test, with ten months of import TEU and port share (twenty figures, charted)",
         "as_of": AS_OF,
         "deliverables": ["overflow_blocks_h1_2027.xlsx", "port_share_2026.pdf"],
         "distractor_files": list(P.DISTRACTORS),

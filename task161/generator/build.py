@@ -16,6 +16,7 @@ import sys
 import tempfile
 import time
 import warnings
+from zoneinfo import ZoneInfo
 
 warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -24,9 +25,17 @@ import core     # noqa: E402
 import pack     # noqa: E402
 
 TASK = os.path.dirname(HERE)
-# the planner's folder as it stood when the call was made (Monday 7 December 2026), and the goldens as sent
-EXPORT_STAMP = dt.datetime(2026, 12, 7, 9, 10, 0)
-GOLDEN_STAMP = dt.datetime(2026, 12, 7, 15, 45, 0)
+PACIFIC = ZoneInfo("America/Los_Angeles")
+# the goldens as sent (Monday 7 December 2026, 15:45 Pacific); each pack file keeps its own date (pack.FILE_STAMPS)
+GOLDEN_STAMP_UTC = dt.datetime(2026, 12, 7, 23, 45, 0)
+
+
+def epoch(utc):
+    return utc.replace(tzinfo=dt.timezone.utc).timestamp()
+
+
+def local_tuple(utc):
+    return utc.replace(tzinfo=dt.timezone.utc).astimezone(PACIFIC).timetuple()[:6]
 
 
 class Built:
@@ -40,9 +49,9 @@ def build(out, quiet=False):
     t0 = time.time()
     Wd = core.build_world()
     counts = pack.write_all(out, Wd)
-    stamp = EXPORT_STAMP.timestamp()
     for f in os.listdir(out):
-        os.utime(os.path.join(out, f), (stamp, stamp))
+        t = epoch(pack.FILE_STAMPS[f])
+        os.utime(os.path.join(out, f), (t, t))
     B = Built()
     B.Wd, B.counts = Wd, counts
     if not quiet:
@@ -58,11 +67,10 @@ def digest(folder):
 def cut_zip(root):
     import zipfile
     folder = os.path.join(root, "target")
-    when = EXPORT_STAMP.timetuple()[:6]
     zp = os.path.join(root, "target.zip")
     with zipfile.ZipFile(zp, "w") as z:
         for f in sorted(os.listdir(folder)):
-            zi = zipfile.ZipInfo(f, date_time=when)
+            zi = zipfile.ZipInfo(f, date_time=local_tuple(pack.FILE_STAMPS[f]))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             with open(os.path.join(folder, f), "rb") as fh:
@@ -80,7 +88,7 @@ def everything(root, quiet=False):
     os.makedirs(gdir)
     os.makedirs(os.path.join(root, "generator"), exist_ok=True)
     res = DL.write_all(os.path.join(root, "target"), gdir, os.path.join(root, "generator"))
-    stamp = GOLDEN_STAMP.timestamp()
+    stamp = epoch(GOLDEN_STAMP_UTC)
     for f in os.listdir(gdir):
         os.utime(os.path.join(gdir, f), (stamp, stamp))
     MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"))

@@ -27,12 +27,14 @@ BUILDINGS = [
 ]
 assert sum(b[4] for b in BUILDINGS) == RACK_CAP
 
-# Shipment seasonality by category, Jan..Dec (normalised in sim to mean 1).
+# Shipment seasonality by category, Jan..Dec (normalised in sim to mean 1). The five seasonal categories
+# (housewares, toys, electronics accessories, seasonal decor, small appliances) ship their holiday quarter at
+# about twice their first-half pace or more.
 PROFILE = {
     "furniture":   [0.86, 0.86, 0.96, 0.97, 0.98, 0.99, 1.01, 1.07, 1.10, 1.09, 1.07, 1.04],
-    "housewares":  [0.70, 0.70, 0.78, 0.80, 0.84, 0.88, 0.96, 1.12, 1.30, 1.42, 1.40, 1.10],
+    "housewares":  [0.60, 0.60, 0.68, 0.72, 0.78, 0.84, 0.96, 1.16, 1.40, 1.54, 1.52, 1.20],
     "toys":        [0.52, 0.56, 0.70, 0.74, 0.80, 0.86, 0.98, 1.22, 1.48, 1.58, 1.42, 1.14],
-    "electronics": [0.74, 0.72, 0.80, 0.82, 0.86, 0.90, 0.96, 1.10, 1.24, 1.34, 1.40, 1.12],
+    "electronics": [0.62, 0.60, 0.70, 0.74, 0.80, 0.86, 0.96, 1.14, 1.34, 1.46, 1.54, 1.24],
     "apparel":     [0.84, 0.94, 1.03, 1.02, 0.97, 0.92, 0.96, 1.10, 1.12, 1.06, 1.01, 0.93],
     "footwear":    [0.84, 0.95, 1.07, 1.05, 0.98, 0.94, 1.06, 1.16, 1.06, 0.98, 0.98, 0.93],
     "textiles":    [0.88, 0.89, 0.96, 0.97, 0.98, 0.99, 1.02, 1.07, 1.09, 1.07, 1.05, 1.03],
@@ -40,7 +42,7 @@ PROFILE = {
     "pet":         [0.97, 0.95, 1.00, 0.99, 1.00, 1.00, 1.01, 1.02, 1.02, 1.03, 1.01, 1.00],
     "auto":        [0.92, 0.94, 1.02, 1.05, 1.06, 1.04, 1.02, 1.02, 0.99, 0.98, 0.98, 0.98],
     "decor":       [0.22, 0.22, 0.32, 0.42, 0.55, 0.78, 1.12, 1.74, 2.12, 2.14, 1.68, 0.88],
-    "appliances":  [0.70, 0.70, 0.78, 0.80, 0.84, 0.88, 0.95, 1.10, 1.30, 1.42, 1.44, 1.09],
+    "appliances":  [0.60, 0.60, 0.68, 0.72, 0.78, 0.84, 0.95, 1.14, 1.40, 1.54, 1.56, 1.19],
     "fitness":     [1.28, 1.14, 1.08, 0.99, 0.92, 0.87, 0.87, 0.89, 0.91, 0.93, 0.99, 1.13],
     "office":      [0.88, 0.90, 0.94, 0.92, 0.96, 1.15, 1.30, 1.28, 1.00, 0.92, 0.88, 0.87],
 }
@@ -62,20 +64,23 @@ ANNOUNCED = {"R2019": dt.date(2019, 5, 13), "R2025A": dt.date(2025, 1, 2), "R202
 # forward shipments held as normal stock; s = share of shipments served from bought-ahead stock while
 # any is left (the affected lines); g = growth a year; m = months of the affected lines' consumption
 # bought ahead in each rush (0 = took no part); start/end = contract dates; ppc = pallets per 40ft box.
+# Every account bought about two months in each earlier rush, except that in the April 2025 rush the five seasonal
+# accounts, whose goods faced the steepest of that spring's expected rates, bought through the end of July (3.8
+# months); in the 2026 rush the five bought for their whole 2027 season.
 ACCOUNTS = {
     # code     category      level  cover  s      g      m by rush                                             start         end   ppc
     "A01": ("furniture",   3550, 1.78, 0.120, 0.030, {"R2019": 2.1, "R2025A": 2.6, "R2025B": 2.3, "R2026": 1.8},  "2019-04-01", None, 19.5),
-    "A02": ("housewares",  2900, 1.25, 0.165, 0.040, {"R2019": 1.9, "R2025A": 2.4, "R2025B": 2.2, "R2026": 10.9}, "2019-04-01", None, 21.0),
-    "A03": ("toys",        2350, 1.44, 0.180, 0.020, {"R2019": 2.0, "R2025A": 2.5, "R2025B": 2.4, "R2026": 11.4}, "2019-04-01", None, 23.5),
-    "A04": ("electronics", 2200, 0.91, 0.145, 0.060, {"R2019": 1.8, "R2025A": 2.3, "R2025B": 2.1, "R2026": 10.4}, "2019-04-01", None, 24.0),
+    "A02": ("housewares",  2900, 1.25, 0.165, 0.040, {"R2019": 1.9, "R2025A": 3.8, "R2025B": 2.2, "R2026": 10.9}, "2019-04-01", None, 21.0),
+    "A03": ("toys",        2350, 1.44, 0.180, 0.020, {"R2019": 2.0, "R2025A": 3.8, "R2025B": 2.4, "R2026": 11.4}, "2019-04-01", None, 23.5),
+    "A04": ("electronics", 2200, 0.91, 0.145, 0.060, {"R2019": 1.8, "R2025A": 3.8, "R2025B": 2.1, "R2026": 10.4}, "2019-04-01", None, 24.0),
     "A05": ("apparel",     2650, 1.10, 0.090, 0.030, {"R2019": 2.0, "R2025A": 2.5, "R2025B": 2.2, "R2026": 1.0},  "2019-04-01", None, 22.0),
     "A06": ("footwear",    1700, 1.20, 0.110, 0.050, {"R2019": 1.9, "R2025A": 2.6, "R2025B": 2.1, "R2026": 1.2},  "2019-04-01", None, 20.5),
     "A07": ("textiles",    1900, 1.39, 0.110, 0.030, {"R2019": 2.2, "R2025A": 2.7, "R2025B": 2.4, "R2026": 1.5},  "2019-04-01", None, 21.5),
     "A08": ("outdoor",     1500, 1.63, 0.120, 0.040, {"R2019": 0.0, "R2025A": 2.6, "R2025B": 2.2, "R2026": 1.2},  "2020-03-02", None, 17.5),
     "A09": ("pet",         1800, 0.82, 0.070, 0.070, {"R2019": 1.8, "R2025A": 2.4, "R2025B": 2.0, "R2026": 0.8},  "2019-04-01", None, 22.5),
     "A10": ("auto",        1600, 1.30, 0.120, 0.030, {"R2019": 2.0, "R2025A": 2.5, "R2025B": 2.3, "R2026": 1.2},  "2019-04-01", None, 23.0),
-    "A11": ("decor",        900, 2.02, 0.215, 0.020, {"R2019": 2.1, "R2025A": 2.6, "R2025B": 2.3, "R2026": 11.4}, "2019-04-01", None, 18.5),
-    "A12": ("appliances",  1500, 1.10, 0.165, 0.050, {"R2019": 0.0, "R2025A": 2.4, "R2025B": 2.2, "R2026": 10.9}, "2021-05-03", None, 21.0),
+    "A11": ("decor",        900, 2.02, 0.215, 0.020, {"R2019": 2.1, "R2025A": 3.8, "R2025B": 2.3, "R2026": 11.4}, "2019-04-01", None, 18.5),
+    "A12": ("appliances",  1500, 1.10, 0.165, 0.050, {"R2019": 0.0, "R2025A": 3.8, "R2025B": 2.2, "R2026": 10.9}, "2021-05-03", None, 21.0),
     "A13": ("fitness",     1000, 1.49, 0.130, 0.040, {"R2019": 0.0, "R2025A": 2.5, "R2025B": 2.0, "R2026": 1.0},  "2023-02-06", None, 19.0),
     "A14": ("office",      1100, 1.01, 0.080, 0.020, {"R2019": 1.8, "R2025A": 2.3, "R2025B": 2.0, "R2026": 0.8},  "2019-04-01", None, 24.5),
     # former accounts (in the history, not in the book at the as-of)
@@ -96,7 +101,7 @@ SUBLEASE_SITE = ("DHS1", "Dominguez sublease", "Rancho Dominguez")
 PEOPLE = {
     "vp_ops": ("Mariah Norman", "Vice President, Operations"),
     "wms": ("Jerome Lam", "WMS Systems Lead"),
-    "cs": ("Nicole Freeman", "Customer Service Manager"),
+    "cs": ("Frederick James", "Customer Service Manager"),
     "landlord": ("Brandon Page", "Leasing Manager"),
 }
 

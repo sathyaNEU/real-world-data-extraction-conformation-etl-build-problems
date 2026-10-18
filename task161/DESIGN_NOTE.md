@@ -5,11 +5,11 @@
 - **Card:** `.claude/skills/fingerprint/cards/task161.json`, registered 2026-10-18T01:20:40Z, guard WARN (no BLOCK).
 - **Pairing:** Supply Chain & Logistics (house domain `supply-chain-logistics`, task type fulfillment and warehousing), client domain Urban & Regional Science, task type `forecasting`. Objective Forecasting & Predictive Modeling.
 - **Seed:** FC32. Kept: the world (an import 3PL beside the San Pedro Bay ports, 40,000 rack positions in its own buildings), the decision (how many of six 4,000-position overflow blocks to take for January to June) and the quantity (the half-year's positions above the 3PL's own racks). Not kept: the seed's error-band mechanism, its leasing test on a lower edge, its option date and its booking notices for the half-year.
-- **Shape:** 02, forecast across many periods (each month of January to June 2027 against the racks), the call read off the monthly path by the space policy's block test. Criteria: the call and its components, A1 (four buildings), A2 (ten months, two figures each), the chart (five parts), the two files: 32 or more.
+- **Shape:** 02, forecast across many periods (each month of January to June 2027 against the racks), the call read off the monthly path by the space policy's block test. Criteria: the call and its components, the port ask (ten months, two figures each), the chart (five parts), the two files: 28 or more.
 - **Strategy:** `other` (a stock balance: bought-ahead pallets netted per account against that account's own shipments). Gap time, then population. Decisive generator G7 (when can the excess physically leave: only as its owner ships), then G13 (the burn runs through months no earlier burn ran through for the seasonal accounts) and G2 (the unit of netting is the account's own stock, not the book).
-- **Data-native sentence:** each account's bought-ahead pallets leave the buildings only as that account ships, and in every earlier rush an account's excess fell by a steady share of its own shipments until its own excess was gone; this rush's excess sits mostly with five seasonal accounts that bought for their whole 2027 season, whose own shipments stay low until summer, so it outlasts anything the earlier rushes' fade suggests.
+- **Data-native sentence:** each account's bought-ahead pallets leave the buildings only as that account ships, and in every earlier rush an account's excess fell by a steady share of its own shipments until its own excess was gone; this rush's excess sits mostly with five seasonal accounts that bought for their whole 2027 season, whose own shipments run at their first-half low through June, so it outlasts anything the earlier rushes' fade suggests; the one earlier rush in their low season (April 2025) shows it.
 - **Furniture:** forum executive_team; forcing event season_or_peak (the half-year after the rush; the park lets its six blocks for the January to June term to whoever commits first, with no option or exercise date in this world); organisation logistics_or_3pl; role capacity_planner; context artifact filed_standard (the 3PL's space policy filing the forecast basis and the block test, and the park's block offer); calibration existing_book_actuals (the book's own 2019 and 2025 rushes).
-- **Personas** (guard.py names --geo 'United States' --seed 161): Mariah Norman (VP Operations, owns the space policy), Jerome Lam (WMS systems lead, owns the export dictionary), Nicole Freeman (customer service manager, keeps the booking-notice tracker), Brandon Page (leasing manager at the park's landlord). Karen Haynes was drawn and dropped (first name on an older build).
+- **Personas** (guard.py names --geo 'United States' --seed 161): Mariah Norman (VP Operations, owns the space policy), Jerome Lam (WMS systems lead, owns the export dictionary), Frederick James (customer service manager, keeps the booking-notice tracker; drawn at stage 4, when the first name drawn at the draw fell under the guard's first-name ban against a recent build), Brandon Page (leasing manager at the park's landlord). Karen Haynes was drawn and dropped (first name on an older build).
 - **WARN answers.** overuse.gate_g: method_or_model_selection is the honest mechanism (a fade, a book-level burn and a per-account burn all fit the small earlier rushes on the book total; only the rushes of different season and the accounts' own paths separate them), and the strategy and generator differ from every one of the five. repeat.decision and repeat.question_form against task160: the call is a count of blocks, so it asks how many; task160's is a count of nurse shifts in another domain, mechanism and furniture. Deliverables are pdf plus xlsx, clearing repeat.deliverables.
 - **Same puzzle and same driver** (older): differentiated on the card against task259, task87, task135, task451, task460; none nets a stock against its owners' own use.
 - **Sources read at the draw** (one line each):
@@ -24,9 +24,9 @@
 
 1. Stack the legacy WMS on-hand export (to 30 September 2022) and the new WMS nightly snapshot (from 12 September 2022, sites summed, run stamps converted to the Pacific close), map the accounts through the register, and average the book's pallets on hand by calendar month.
 2. Take the book's normal stock from its clean months as a cover on shipments (pallets held against the mean of this and next month's shipments), and measure the book's excess over it after each earlier duty step (1 September 2019, 5 April 2025, 7 August 2025, dates from the broker's advisories).
-3. Fit the fade of that excess: a half-life of 0.97 months on the three rushes, the excess back to normal within two months.
+3. Fit the fade of that excess: a half-life of 0.87 months on the three rushes (the median of 0.72, 1.30 and 0.87), the excess back to normal within two months.
 4. Project the close of 31 December from the close of 6 December plus the December booking notices less the rest of December's forecast shipments, take its excess over the normal stock, and fade it at the fitted half-life through January to June 2027.
-5. Add the faded excess to the 2027 normal stock, take each month's overflow above the 40,000 rack positions and run the space policy's block test: the first block is used 17 per cent of its position-months.
+5. Add the faded excess to the 2027 normal stock, take each month's overflow above the 40,000 rack positions and run the space policy's block test: the first block is used 14 per cent of its position-months.
 
 Ends on: 0 blocks (none)
 
@@ -34,7 +34,7 @@ Golden: 2 blocks
 
 ## Stump sentence
 
-The default path fades this rush's excess at the 0.97-month half-life the earlier rushes showed, leaves overflow only in January and takes 0 blocks (none); the step that lands it there is treating the excess as a proportional decay of the book's total, when it is stock each account burns at a steady share of its own shipments, and most of it belongs to five seasonal accounts that bought for their whole 2027 season and ship little until summer, so the second block stays 97 per cent used through June.
+The default path fades this rush's excess at the 0.87-month half-life the earlier rushes showed, leaves overflow only in January and takes 0 blocks (none); the step that lands it there is treating the excess as a proportional decay of the book's total, when it is stock each account burns at a steady share of its own shipments, and most of it belongs to five seasonal accounts that bought for their whole 2027 season and ship at their first-half low through June, so the first two blocks stay full through June.
 
 ## Three rules
 
@@ -46,7 +46,7 @@ The default path fades this rush's excess at the 0.97-month half-life the earlie
 - **Decisive step:** net each account's bought-ahead stock against its own forecast shipments at the burn share its own earlier rushes show, until that account's excess is gone, so the seasonal accounts' stock, bought for their 2027 season, stays until summer.
 - **Not semantics:** every field, code, unit and date can be read correctly (the run stamps converted, the accounts mapped, the notices converted, the sites summed) and a solver who then fades the book's excess at the earlier rushes' half-life still files no block; no field, code or definition says how fast bought-ahead stock leaves or whose it is.
 - **Not rule application:** the space policy files only the forecast basis (the accounts under contract, every pallet they hold in our racks or outside them, the mean of each day's close, the 40,000 rack positions) and the block test; no filed rule or procedure says how to forecast the stock, so executing every stated rule on a fade of the excess files no block, and on a burn of the book's total files no block.
-- **Analyst test:** a strong analyst who stacks both WMS exports, maps the accounts, projects December from the notices and reads the block test correctly, then fades the book's excess over its normal stock at the 0.97-month half-life the 2019 and 2025 rushes showed, files 0 blocks (none); burning each account's excess at the share of its own shipments those rushes show files 2.
+- **Analyst test:** a strong analyst who stacks both WMS exports, maps the accounts, projects December from the notices and reads the block test correctly, then fades the book's excess over its normal stock at the 0.87-month half-life the 2019 and 2025 rushes showed, files 0 blocks (none); burning each account's excess at the share of its own shipments those rushes show files 2.
 - **Estimand:** the space policy, section 3: a space forecast covers the accounts under contract on the day it is made and counts every pallet they will hold with us, in our racks or outside them, as the mean of each day's closing stock in the month, overflow being that figure above the 40,000 rack positions of the four buildings; section 4's block test; the window (January to June 2027) and the unit (whole blocks of 4,000 positions) from the prompt and the park's offer.
 - **No decoy:** nothing is planted: no copied block, withheld rule, memo, draft, briefing or stakeholder figure argues a number of blocks; the earlier rushes are the book's own history, and no shipped file computes a forecast, a burn share or a block count.
 - **No certified replay:** no certified or published figure is reproduced to recover a method; the earlier rushes are ordinary days in the WMS exports, and the burn is read from how each account's stock behaved after each step, not fitted to a printed total.
@@ -80,25 +80,27 @@ The default path fades this rush's excess at the 0.97-month half-life the earlie
 
 ## Ladder
 
-Each rung is a full pipeline from the raw files. Figures are each block's use over the term (share of its 24,000 position-months), the call by the block test, all measured on the cut pack (checks.py L1 to L10).
+Each rung is a full pipeline from the raw files. Figures are each block's use over the term (share of its 24,000 position-months), the call by the block test, all measured on the cut pack (checks.py L1 to L10, B1 to B4).
 
 | Rung | Construction | Call | Block uses (1, 2, 3, 4) | Dies to |
 |---|---|---|---|---|
-| 0 (default) | book excess faded at the earlier rushes' half-life (0.97 months) | 0 | 0.17, 0.04, 0, 0 | the accounts' own paths and their owners' shipments: the fade takes 10,138 pallets of excess out in January, more than the 2,110 held outside the five seasonal accounts plus the five's own January shipments of 6,812 |
-| 1 | book excess burned at the book's share of book shipments (0.125 on the slope, 0.106 on totals) | 0 or 1 | 0.74, 0.43 (slope); 0.91, 0.56 (totals) | the book's share mixes accounts that hold none of this rush's excess with the five that hold most of it |
-| 2 | each account's excess falls by its own earlier fall per month | 1 | 1.00, 0.66, 0.04 | the April 2025 step: the seasonal accounts' excess fell in step with their own low spring shipments, not at their August rate |
-| 3 (decisive) | each account's excess burned at the share of its own forecast shipments its earlier rushes show, until it is gone | 2 | 1.00, 0.97, 0.10, 0 | the golden |
-| other side | no payback (the rush's stock held through June) | 3 | 1.00, 1.00, 0.94, 0.49 | every earlier rush: the excess left |
-| other side | Holt-Winters on the book's monthly positions through the rush; the autumn trend | 5 | 1.00, 1.00, 1.00, 0.88; all 1.00 | the record after every earlier step |
-| other side | last year's January to June scaled by November against November | 0 | 0.57, 0.14 | the 2027 stock is this rush's excess, not a scaled 2026 |
+| 0 (default) | book excess faded at the earlier rushes' half-life (0.87 months) | 0 | 0.14, 0, 0, 0 | the earlier rushes left out in turn (L8) and the owners' shipments (L9): the fade takes 10,926 pallets of excess out in January, more than the 1,095 held outside the five seasonal accounts plus the five's own January shipments of 5,749 |
+| 1 | book excess burned at the book's share of book shipments (0.128 on the slope, 0.109 on totals) | 0 or 1 | 0.70, 0.33 (slope); 0.88, 0.44 (totals) | the book's share mixes accounts that hold none of this rush's excess with the five that hold most of it |
+| 2 | each account's excess falls by its own earlier fall per month | 1 | 1.00, 0.65, 0.01 (median rate; mean 0.70, latest 0.48) | the April 2025 step: the seasonal accounts' excess fell in step with their own low spring shipments, not at their autumn rate |
+| 3 (decisive) | each account's excess burned at the share of its own forecast shipments its earlier rushes show, until it is gone | 2 | 1.00, 1.00, 0.18, 0 | the golden |
+| other side | today's stock held flat (the close of 6 December, November's mean, December to date) | 3 | 1.00, 1.00, 1.00, 0.05 to 0.48 | every earlier rush: the excess left |
+| other side | no payback (the rush's stock held through June) | 3 | 1.00, 1.00, 0.85, 0.38 | every earlier rush: the excess left |
+| other side | Holt-Winters on the book's monthly positions through the rush; the autumn trend | 5; 6 | | the record after every earlier step |
+| other side | last year's January to June scaled by November against November | 0 | 0.67, 0.29 | the 2027 stock is this rush's excess, not a scaled 2026 |
+| hedge | halfway between the fade and no payback | 1 | 1.00, 0.27 | neither half survives the earlier rushes |
 
-- **Winners and margins:** the golden takes block 2 at 0.967 against the 0.75 line (flip: block 2 under 0.75 needs every account's share 29 per cent higher) and refuses block 3 at 0.098 (flip: block 3 at 0.75 needs every share 62 per cent lower). The nearest wrong rung on each side: rung 2 at block 2 = 0.66, no payback at block 3 = 0.94.
+- **Winners and margins:** the golden takes block 2 at 1.00 against the 0.75 line (flip: block 2 under 0.75 needs every account's share 52 per cent higher) and refuses block 3 at 0.18 (flip: block 3 at 0.75 needs every share 68 per cent lower). The nearest wrong rung on each side: rung 2 at block 2 = 0.65 (0.70 at the mean rate), no payback at block 3 = 0.85.
 - **Position and dominance:** the golden is the only construction the earlier rushes do not reject that files 2; the corrections below it walk up (0, then 0 or 1, then 1) and the decisive move is the only one reaching 2; the other side's routes file 3 or more, or 0.
-- **Out of sample on the earlier rushes (L8):** each rush left out in turn and predicted from the other two, the mean absolute error of each account's excess path over the 90 days after the step, summed over accounts: burn share 3,563, fade 4,119, calendar rate 4,070; on the April 2025 step, the one rush in the seasonal accounts' low season, 1,118 against 1,829 and 1,631.
-- **Grid:** burn share per account (episodes weighted by shipments, unweighted mean, median, latest episode, pooled, times 0.85 and 1.15) by normal cover (median of clean months, mean since 2024) by shipment forecast (same month grown, two-year mean grown, no growth): all 42 cells file 2 (block 2 between 0.86 and 1.00, block 3 between 0.05 and 0.30); each earlier rush alone files 2 (L6, L7).
+- **Out of sample on the earlier rushes (L8, V13):** each rush left out in turn and predicted from the other two, the mean absolute error of each account's excess path over the 90 days after the step, summed over accounts: burn share 2,421, fade 4,536 (47 per cent under), calendar rate 3,299; by rush (burn, fade): 2019 611 and 913, April 2025 1,047 and 2,546, August 2025 763 and 1,078. The burn is ahead of the fade on all three rushes, so 2019 is no longer a reason to prefer the fade; the April 2025 rush, the one earlier rush in the seasonal accounts' low season, separates them most.
+- **Grid:** burn share per account (episodes weighted by shipments, unweighted mean, median, latest episode, pooled, times 0.85 and 1.15) by normal cover (median of clean months, mean since 2024) by shipment forecast (same month grown, two-year mean grown, no growth): all 42 cells file 2 (block 2 between 0.96 and 1.00, block 3 between 0.05 and 0.35); each earlier rush alone files 2; the fade at each rush's own half-life (0.72, 1.30, 0.87 months) files 0 (L6, L7, B4).
 - **Worth:** rung 0 to rung 3 moves the call by two blocks; rung 2 to rung 3 by one.
-- **Accidental landings, measured:** last year's January to June scaled by the projected close of 31 December against December 2025 files 2 (block 3 = 0.57); a hedge between the fade (0) and no payback (3) can land on 2. Both are counted in the stump estimate below.
-- **Stump estimate:** a strong response reaches the per-account burn with probability about 0.10; the hedge and the scaled accident add about 0.06; P(one of the top two on the call) about 0.3, P(both) about 0.03.
+- **Accidental landings, measured:** last year's January to June scaled by the projected close of 31 December against December 2025 files 2 (block 2 at 0.77, block 3 at 0.42), and by the close of 6 December against December 2025 also 2 (0.85, 0.52); the same carry by November against November, the latest full month, files 0. No natural change moves the December carries off 2 without moving the golden, so they are counted below.
+- **Stump estimate:** a strong response reaches the per-account burn with probability about 0.10; the December carries add about 0.04 (a single December ratio on last year's first half is a rare route for a strong solver, and the November ratio a solver reaches first files 0); the flat hold (3) and the hedge (1) no longer land. P(one of the top two on the call) about 0.15, P(both) about 0.03.
 
 ## Closure table
 
@@ -112,7 +114,7 @@ Each rung is a full pipeline from the raw files. Figures are each block's use ov
 | 6 | Denominator | a block's 24,000 position-months | space policy 4.2 |
 | 7 | Weighting | each account's own episodes, weighted by their shipments | C3: unweighted, median and pooled shares give 2, asserted |
 | 8 | Window length | all three earlier rushes | C3: each rush alone gives 2, asserted |
-| 9 | Boundary inclusivity | at least three quarters | uses sit at 0.97 and 0.11, C1 |
+| 9 | Boundary inclusivity | at least three quarters | uses sit at 1.00 and 0.18, C1 |
 | 10 | Rounding path | block uses unrounded; ask figures rounded once at the end | the prompt's last sentence; checks.py |
 | 11 | Tie-break | none; blocks fill in order | space policy 4.2 |
 | 12 | Maturity and censoring | nothing censored: the window is forecast, December completed by the notices | the tracker's header |
@@ -133,18 +135,9 @@ Executed word for word, the prompt, space policy sections 3 and 4, the park's of
 
 ## Oracles
 
-none: no shipped file states a forecast, a burn share, an excess or a block count; the capacity report (a distractor) reports past fiscal periods' rack utilisation only; the earlier rushes are history in the same exports, not a control that ties under the golden or the wrong path.
+none: no shipped file states a forecast, a burn share, an excess or a block count; the capacity report (a distractor) reports past fiscal periods' rack utilisation only; the pallet extract (a distractor) lists the warehouse locations at the close and states no total; the earlier rushes are history in the same exports, not a control that ties under the golden or the wrong path.
 
 ## Ask sheet
-
-**A1. Pallets outside the racks at the close of 6 December, in each of the four buildings** (four whole numbers).
-- H18: where the overflow sits now, the pallets the blocks would take first.
-- Use: the move plan into the blocks.
-- Primary device: the pallet-level export (warehouse locations: racks, floor lanes, dock staging) does not hold yard trailers, while the nightly snapshot's site total counts every pallet the site holds; outside the racks is the site's total less its racked pallets. The pallet export's non-rack rows give 777, 681, 447 and 333 against 1,815, 1,589, 1,042 and 776.
-- Hazards: the sublease is a site and not a building. The run stamp is inert here: the close of Sunday 6 December equals Saturday's, so the run stamped 6 December holds the same balances (asserted A1b).
-- Files and columns on the path: the nightly snapshot (snapshot_utc, site_id, account_id, on_hand_pallets), the pallet export (site_id, location_type, lpn), the dictionary, the site register.
-- Stops: non-rack rows (777, 681, 447, 333); the golden (1,815, 1,589, 1,042, 776); the gap is the yard's storage trailers, 1,038, 908, 595 and 443 (asserted A1c).
-- Realism: a WMS's pallet-level inventory export covers its warehouse locations; trailers in the yard are held under yard locations the nightly balance counts.
 
 **A2. For each month of January to October 2026, the TEU of the import containers whose freight reached us from the two ports (whole TEU) and that TEU as a share of the two ports' loaded import TEU (per cent, three decimals)** (twenty figures; the chart's bars and labels carry them).
 - H18: an input reconciled to another system's total: the book's receipts against the ports' published imports.
@@ -156,39 +149,39 @@ none: no shipped file states a forecast, a burn share, an excess or a block coun
 - Bins: every TEU 0.25 from its whole-TEU edge; every share at least 0.00026 from its three-decimal edge (a quarter cell; A2a, V9).
 - Realism: split devanning and shipper-owned boxes on a rotation are how a receiving dock and two of its importers really work; a transload partner's manifest is the only record of which port boxes fed a trailer.
 
-**The main population's zero-counts:** A1 reads the site split and location types at one close; the call reads each account's total across sites (unchanged by either), asserted. A2 reads TEU and equipment; the call reads pallets, unchanged by the split receipts' re-dating (the pallets move between two adjacent days inside one month, asserted on every split), the box numbers and the trailers.
+- Closures (the reader's and the judge's readings): the dictionary names the two ports ("Ocean containers reach us by dray from the container terminals of the Port of Los Angeles and the Port of Long Beach"), Avila's manifest carries each container's port beside its pickup terminal and says what it lists (containers devanned at Avila and delivered to us in 53' trailers), and every Avila trailer's delivery date is its WMS receipt's Pacific date, so a container counted through the manifest or through the trailer's receipt falls in the same month (A6, A7).
 
-**Hazard table:** the UTC stamps (A1 run, A2 month boundary), the 45ft TEU line (A2), the sublease as a site (A1).
+**The main population's zero-counts:** the port ask reads TEU and equipment; the call reads pallets, unchanged by the split receipts' re-dating (the pallets move between two adjacent days, asserted on every split), the box numbers and the trailers.
 
-**Referee:** none for A1 (the site total is the record); for A2 the partner's manifest is the only record of the trailers' boxes.
+**Hazard table:** the UTC stamps (the month boundary), the 45ft TEU line, the two ports' layouts.
+
+**Referee:** the partner's manifest is the only record of the trailers' boxes.
 
 | Ask | Cracker (C1) | Verdict |
 |---|---|---|
-| A1 four buildings | the pallet export's non-rack rows: 0 of 4 | miss |
-| A2 TEU, ten months | battery dedup of repeated box numbers, no 53ft trailer counted: 0 of 10 | miss |
-| A2 shares, ten months | from those TEU: 0 of 10 | miss |
+| Port TEU, ten months | battery dedup of repeated box numbers, no 53ft trailer counted: 0 of 10 | miss |
+| Port shares, ten months | from those TEU: 0 of 10 | miss |
 | Chart bars and labels | from those figures: 0 of 2 | miss |
 
-A thorough solver beyond the cracker (C2: reconciles the pallet export to the snapshot and reads the manifest, collapsing repeated numbers) keeps A1 (4 of 4) and misses A2 (0 of 20), keeping 24.1 per cent of the ask weight.
+A thorough solver beyond the cracker (C2: reads the manifest, collapsing repeated numbers) misses all twenty figures as well, keeping the chart's three structural points (12.0 per cent of the ask weight).
 
-Pair ceiling: 38.0 (C2 with the mirror; C1 with the mirror 34.2)
+Pair ceiling: 35.1 (C1 or C2 with the mirror)
 
-Mirror leakage: 10.3 (the mirror stops on rung 2, one block, and handles the asks as C1)
+Mirror leakage: 12.0 (the mirror stops on rung 2, one block, and handles the ask as C1)
 
 Measured by: generator/cracker.py
 
 ## Leak sweep
 
 `leak.py task161 --asof 2026-12-07`: REVIEW, no LEAK (the rack capacity 40,000, the block size 4,000 and the price $1,100,000 are filed inputs, listed under `stated_inputs`).
-- The block offer carries the call's words: it is the offer the call answers (six blocks, the term, the price), with no number to take. Harmless.
+- The block offer carries the call's words and four stump terms ("accounts" in its copy line, positions, pallets): it is the offer the call answers (six blocks, the term, the price), with no number to take. Harmless.
 - The space policy carries seven stump terms (account, forecast, policy, positions, months): it files the estimand and the block test and names no method for the stock (P2 asserts no sentence names a fade, a burn, a half-life or a netting). Harmless.
 - The advisories carry three (earlier, shipments, months): "bring shipments forward" and dates. Harmless.
-- The site list names three of the four buildings A1 asks about, with rack positions; it ranks nothing. Harmless.
 - Dates after the as-of: the December booking tracker (arrivals due 7 to 31 December), the export manifest (the tracker's coverage) and the site list (the sublease ends 31 December): forward-looking records known at the as-of, the allow-list S13 asserts.
 
 ## Surface screen
 
-`guard.py surface task161` promotes nine pairs for adjudication; none carries a hard tell. Four (task267, task448, task266, task194) on surface similarity 0.102, the corpus top percentile, share only `export_manifest.csv`, a corpus habit in 55 builds, and no column, prompt phrase or decision; five (task451, task135, task460, task87, task259) on the card signature (gap time, pattern G7, Gate G or decision type) already differentiated on the card at registration. The people read finds "Jan Feb" (two month labels in adjacent cells) and "Vance Customs" (the broker's firm name), not personas. `guard.py heart task161`: WARN (overuse.gate_g, repeat.decision and repeat.question_form against task160, answered in the Draw), nearest drivers 0.06.
+`guard.py surface task161` promotes ten pairs for adjudication; none carries a hard tell. Four (task267, task448, task266, task194) on surface similarity 0.102, the corpus top percentile, share only `export_manifest.csv`, a corpus habit in 55 builds, and no column, prompt phrase or decision; five (task451, task135, task460, task87, task259) on the card signature differentiated at registration; and task160, the build before this one, on two of three mechanism axes (gap time and decision type quantity_figure): its decisive pattern (G16 against G7), strategy (forecast_method_backtest against other), Gate G mechanism (forecasting against method_or_model_selection), domain, world and decision all differ, so it is the same-puzzle test's near miss, left for the author's adjudicated clone-check. The people read finds "Jan Feb" (two month labels in adjacent cells) and "Vance Customs" (the broker's firm name), not personas. `guard.py heart task161`: WARN (overuse.gate_g, repeat.decision and repeat.question_form against task160, answered in the Draw), nearest drivers 0.06; its people.first BLOCK on the customer service manager's first name, used by a build registered earlier the same night, was cleared by drawing Frederick James from `guard.py names`.
 
 ## Tried and rejected
 
@@ -208,3 +201,15 @@ Measured by: generator/cracker.py
 - Three client names within an edit or a word of real firms (Kenwick against Kenswick, Paloma against Paloma Wool, Ritter against Ritter's): renamed Quillan, Ostrander and Bramwell before the pack was cut.
 - The run stamp as an A1 hazard: the as-of close is a Sunday, so the run stamped 6 December holds the same balances; kept as Layer 1 texture and not counted against A1.
 - A projection Saturday weight of 0.42 from the generator's calendar: the book's own Saturday shipments run 0.40 of a weekday in 2025 and 2026, so the golden uses 0.40 and S11 asserts it.
+
+- The off-rack ask (pallets outside the racks at each building): the reader and the judge read it two ways (floor and staging rows only, or the nightly balance less racked pallets) because the pallet extract's coverage was unfiled; filing it (warehouse locations only, yard trailers in the yard system) closed the reading but handed the device to the cracker, which executes filed coverage, leaving the ask no silent primary; retired, and the pallet extract kept as a distractor with its coverage filed.
+- Today's stock held flat landed 2 (overflow 10,449 to 10,870 inside the 7,000 to 11,000 band that files 2): bought-ahead arrivals now spread evenly over each build window instead of ramping into December, so the close of 6 December holds more of the build (52,180 pallets) and every flat hold files 3, while the 31 December stock and the golden are unchanged in kind.
+- The fade passed the earlier rushes' back-test (13.5 per cent behind the burn, ahead in 2019): the April 2025 rush now has the five seasonal accounts buying through the end of July (3.8 months), facing the steepest of that spring's expected rates, the one earlier rush in their low season; the burn is 47 per cent under the fade and ahead on all three rushes.
+- An April 2025 pull-forward through October (6.9 months): its stock ran into the August 2025 episode and each account's own monthly fall landed 2; through July keeps the two episodes apart.
+- Stock from an earlier rush frozen through a later build (the generator held the burn during build days): it now keeps burning through the later build at its owner's share.
+- Each account's own monthly fall at 0.77 of block 2 (landing 2) with the milder seasonal categories shipping their holiday quarter at only 1.6 to 1.8 times their first-half pace: housewares, mobile accessories and small appliances now run at about twice, as their categories do; the monthly fall files 1 at the median, mean or latest rate.
+- A sailing-shaped build (arrivals climbing over five weeks and tailing off over four): it put the 2019 and August 2025 rushes on the fade's side of the back-test; the even spread kept.
+- Write-up figures that rest on the episode-fit conventions (the 30 June excess, block 3's use, the monthly overflow line, block 2's 96.7 per cent): the judge's conventions gave 11,571, 28.7 per cent, a flat line and 100 per cent; the write-up now states only the close's stock, the five's January 2026 shipments, the call and what every construction shares.
+- A sublease shown holding 556 pallets at the close of its last day: emptied over its last ten days.
+- Every document dated with the export: each file now carries its own date (exports at their pull, documents at their saving), and the capacity report's workbook is dated December 2026.
+- Two shares that read round at three decimals (0.300, 0.280) and a month of exactly 1,800 TEU: the port placement moves a share ending in zero to the next cell, and four of that month's 40ft high cubes are re-typed as 45ft boxes.

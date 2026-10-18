@@ -242,7 +242,7 @@ def run(target, golden_dir, Bt=None):
          "draft or stakeholder figure argues a number of blocks (%d repeats)" % len(plant))
 
     # ------------------------------------------------------------------ L: the ladder and the margins
-    S.ok("L1", g["blocks"] == 2 and use[0] == 1.0 and 0.90 <= use[1] <= 1.0 and use[2] <= 0.25,
+    S.ok("L1", g["blocks"] == 2 and use[0] == 1.0 and 0.90 <= use[1] <= 1.0 and use[2] <= 0.40,
          "the golden on the pack: 2 blocks, block uses %s" % [round(u, 4) for u in use[:4]])
     S.ok("L2", tg["blocks"] == 2, "the golden on the clean truth: 2 blocks")
     want = {"fade": 0, "time_back": 0, "book_burn": 0, "book_burn_totals": 1, "monthly_fall": 0,
@@ -250,10 +250,11 @@ def run(target, golden_dir, Bt=None):
     got = {k: R[k]["blocks"] for k in R}
     S.ok("L3", all(got[k] == v for k, v in want.items()) and got["holt_winters"] >= 3 and got["trend"] >= 3,
          "every other route by name: %s" % got)
-    S.ok("L4", got["scaled_dec"] == 2 and got["scaled_sepnov"] != 2,
-         "the accidental landing measured: last year's January to June scaled by the projected close of 31 "
-         "December over December 2025 files 2 (block 3 at %.2f); by September to November, %d" %
-         (R["scaled_dec"]["use"][2], got["scaled_sepnov"]))
+    sc = {k: got[k] for k in ("scaled_nov", "scaled_sepnov", "scaled_dec")}
+    S.ok("L4", sc["scaled_nov"] != 2 and sc["scaled_sepnov"] != 2,
+         "the scaled carries measured: last year's January to June scaled by November over November %d, by September to "
+         "November %d, by the projected close of 31 December over December 2025 %d (block 3 at %.2f)" %
+         (sc["scaled_nov"], sc["scaled_sepnov"], sc["scaled_dec"], R["scaled_dec"]["use"][2]))
     up = flip_scale(B, 1.0, 2.0, lambda r: r["blocks"] >= 2)
     dn = flip_scale(B, 0.05, 1.0, lambda r: r["blocks"] <= 2)
     S.ok("L5", up >= 1.2 and dn <= 0.6, "flip: block 2 falls under three quarters only with every account's share "
@@ -277,16 +278,26 @@ def run(target, golden_dir, Bt=None):
     S.ok("L7", all(v == 2 for v in alone.values()), "each earlier rush alone files 2: %s" % alone)
     tot, per = backtest(B, parts)
     apr = {k: per[(dt.date(2025, 4, 5), k)] for k in ("burn", "fade", "rate")}
-    S.ok("L8", tot["burn"] * 1.1 <= min(tot["fade"], tot["rate"]) and apr["burn"] * 1.4 <= min(apr["fade"], apr["rate"]),
-         "out of sample on the earlier rushes (each left out in turn, 90 days scored): mean absolute error summed over "
-         "accounts, burn %.0f, fade %.0f, calendar rate %.0f; the April 2025 step alone %.0f, %.0f, %.0f" %
-         (tot["burn"], tot["fade"], tot["rate"], apr["burn"], apr["fade"], apr["rate"]))
+    rush = {st: {k: per[(st, k)] for k in ("burn", "fade", "rate")} for st in sorted({x[0] for x in per})}
+    ahead = sum(1 for v in rush.values() if v["burn"] < v["fade"])
+    S.ok("L8", tot["burn"] <= 0.70 * tot["fade"] and ahead >= 2 and rush[dt.date(2019, 9, 1)]["burn"] <=
+         rush[dt.date(2019, 9, 1)]["fade"] and tot["burn"] < tot["rate"],
+         "out of sample on the earlier rushes (each left out in turn, 90 days scored), mean absolute error summed over "
+         "accounts: burn %.0f, fade %.0f (%.0f per cent under), calendar rate %.0f; by rush (burn, fade, rate) %s; the "
+         "burn ahead of the fade on %d of %d" % (tot["burn"], tot["fade"], 100 * (1 - tot["burn"] / tot["fade"]),
+                                                 tot["rate"], {str(k): tuple(round(x) for x in v.values())
+                                                               for k, v in rush.items()}, ahead, len(rush)))
     jan = calc.WINDOW[0]
     E31 = calc._book_parts(B)["E"]
     lam = 0.5 ** (1.0 / R["fade"]["half_life_months"])
     fade_fall_jan = E31 * (1 - lam ** (31 / 30.4))
     seas_ship_jan = sum(parts[c]["fc"][jan] for c in SEASONAL)
     seas_e = sum(calc_excess(B, parts, c) for c in SEASONAL)
+    jan26 = [B.idx[d] for d in calc.month_days((2026, 1))]
+    five_jan26 = sum(B.acc[c]["ship"][jan26].sum() for c in SEASONAL)
+    S.ok("L9a", five_jan26 < 0.5 * seas_e and five_jan26 == F_figs()["components"]["five_jan2026_shipments"],
+         "the shipments bound: the five seasonal accounts shipped %.0f pallets in January 2026, under half of their %.0f "
+         "pallets of excess at 31 December, the share a one-month half-life takes out in January" % (five_jan26, seas_e))
     S.ok("L9", seas_e > 0.8 * E31 and fade_fall_jan - (E31 - seas_e) > seas_ship_jan,
          "the fade needs bought-ahead stock to leave faster than its owners ship: it takes %.0f pallets of excess out "
          "in January, more than the %.0f the accounts outside the five hold plus the five's own January shipments of "
@@ -296,6 +307,61 @@ def run(target, golden_dir, Bt=None):
     S.ok("L10", abs(tot_e - E31) / E31 < 0.03, "lens: the default path and the golden start from one population at one "
          "moment (the book's excess at 31 December %.0f against the accounts' summed %.0f); they differ only in how it "
          "leaves" % (E31, tot_e))
+
+    # ------------------------------------------------------------------ B: bypasses without the decisive step
+    tot_oh = sum(B.acc[c]["oh"] for c in B.current)
+    nov = [B.idx[d] for d in calc.month_days((2026, 11))]
+    dec = [B.idx[d] for d in calc.month_days((2026, 12)) if d in B.idx]
+    flat = {n_: calc.blocks([float(v)] * 6)["blocks"] for n_, v in
+            (("close of 6 December", tot_oh[B.idx[B.last]]), ("November mean", tot_oh[nov].mean()),
+             ("December to date", tot_oh[dec].mean()))}
+    S.ok("B1", all(v >= 3 for v in flat.values()), "today's stock held flat misses by a block or more: %s (the close "
+         "%.0f pallets)" % (flat, tot_oh[B.idx[B.last]]))
+    hp = [(a_ + b_) / 2 for a_, b_ in zip(R["fade"]["positions"], R["no_payback"]["positions"])]
+    hedge = calc.blocks(hp)
+    S.ok("B2", hedge["blocks"] != 2, "a hedge halfway between the fade and no payback files %d (block 2 at %.2f)" %
+         (hedge["blocks"], hedge["use"][1]))
+    res_, parts_ = calc.golden(B, return_parts=True)
+    var2 = {}
+    for how in ("median", "mean", "latest"):
+        tot2 = np.zeros(6)
+        for c in B.current:
+            p = parts_[c]
+            rates = [e[1] * e[4] / max(1, e[3]) * 30.4 for e in p["episodes"]]
+            if not rates:
+                rate = 0.0
+            elif how == "median":
+                rate = float(np.median(rates))
+            elif how == "mean":
+                rate = float(np.mean(rates))
+            else:
+                rate = rates[-1]
+            S_ext = dict(p["S"])
+            S_ext.update({k: v for k, v in p["fc"].items() if v is not None})
+            at = calc.daily_normal(B, c, p["cover"], S_ext)
+            E = max(0.0, p["oh_dec31"] - at(dt.date(2026, 12, 31)))
+            j = 0
+            for i, k in enumerate(calc.WINDOW):
+                vals = []
+                for d in calc.month_days(k):
+                    j += 1
+                    vals.append(at(d) + max(0.0, E - rate * j / 30.4))
+                tot2[i] += np.mean(vals)
+        r2 = calc.blocks(tot2)
+        var2[how] = (r2["blocks"], round(r2["use"][1], 2))
+    S.ok("B3", all(v[0] != 2 for v in var2.values()), "each account's own monthly fall, at the median, mean or latest "
+         "rush's rate: %s" % var2)
+    hl_each = {}
+    for ep in calc.past_book_episodes(B):
+        e_ = ep["e"]
+        t_ = np.arange(len(e_)) / 30.4
+        ok_ = e_ > 0.05 * max(e_[0], 1)
+        if ok_.sum() >= 15:
+            b_ = np.polyfit(t_[ok_], np.log(e_[ok_]), 1)[0]
+            h_ = np.log(0.5) / b_ if b_ < 0 else 60.0
+            hl_each[str(ep["step"])] = (round(h_, 2), calc.rival_decay(B, hl_months=h_)["blocks"])
+    S.ok("B4", all(v[1] != 2 for v in hl_each.values()), "the fade at each earlier rush's own half-life (months, "
+         "blocks): %s" % hl_each)
 
     # ------------------------------------------------------------------ SF: the semantic fork table
     txt = doc_texts(target)
@@ -341,18 +407,6 @@ def run(target, golden_dir, Bt=None):
 
     # ------------------------------------------------------------------ A: the asks
     inp = read.ask_inputs(target)
-    a1 = asks.a1_golden(inp["site_onhand"], inp["lpn"])
-    lpn_only = asks.a1_lpn_only(inp["lpn"])
-    prev = read.site_onhand(target, inp["close"] - dt.timedelta(days=1))
-    S.ok("A1a", a1 == {"CAR1": 1815, "RDZ1": 1589, "WIL1": 1042, "CMP1": 776},
-         "pallets outside the racks at the close of 6 December: %s" % a1)
-    S.ok("A1b", all(lpn_only[s] != a1[s] for s in a1) and prev == inp["site_onhand"] and inp["close"].weekday() == 6,
-         "the pallet export's non-rack rows %s miss every building; the close of Sunday 6 December equals Saturday's, "
-         "so the run read for the close does not move A1" % lpn_only)
-    split = Wd["split_asof"]
-    trl = {s: sum(p["TRL:" + s] for p in split.values()) for s in asks.BUILDINGS}
-    S.ok("A1c", all(a1[s] - lpn_only[s] == trl[s] for s in a1),
-         "the gap is the yard's storage trailers, which only the nightly site balance counts: %s" % trl)
     teu, share = asks.a2_golden(inp["receipts"], inp["manifest"], inp["LA"], inp["LB"], inp["to_local"])
     gT, gS = asks.rounded_a2(teu, share)
     e_t = min(0.5 - abs(teu[k] - round(teu[k])) for k in teu)
@@ -373,10 +427,10 @@ def run(target, golden_dir, Bt=None):
     S.ok("A2c", all(v[0] <= 1 and v[1] <= 1 for k, v in res.items() if "UTC" not in k and "45ft" not in k) and
          res["visits, manifest, UTC months"][0] <= 6 and res["visits, manifest, 45ft at 2 TEU"][0] == 0,
          "every stop misses (TEU hits, share hits of ten): %s" % res)
-    cr, _, _, _ = cracker.score(inp)
+    cr, _, _ = cracker.score(inp)
     p1 = (cr["C1"]["score"] + cr["M"]["score"]) / 2
     p2 = (cr["C2"]["score"] + cr["M"]["score"]) / 2
-    S.ok("A3", max(p1, p2) <= 40.0 and cr["M"]["kept"] < 0.35 and cr["C1"]["a1"] == 0 and cr["C1"]["teu"] == 0,
+    S.ok("A3", max(p1, p2) <= 40.0 and cr["M"]["kept"] < 0.35 and cr["C1"]["teu"] == 0 and cr["C1"]["share"] == 0,
          "cracker sheet on the pack: pair ceiling C1 with the mirror %.1f, C2 with the mirror %.1f; mirror leakage "
          "%.1f per cent" % (p1, p2, 100 * cr["M"]["kept"]))
     pairs = {}
@@ -393,6 +447,14 @@ def run(target, golden_dir, Bt=None):
     tl = {m["trailer"] for m in inp["manifest"]}
     rc_tl = {r["equipment"] for r in inp["receipts"] if r["type"] == "53DV" and r["equipment"].startswith("AVTL")}
     S.ok("A5", tl == rc_tl, "every Avila trailer in the receipts is in the partner's manifest and back (%d)" % len(tl))
+    rday = {r["equipment"]: read.pacific_date(r["received_at"]) for r in inp["receipts"] if r["type"] == "53DV"}
+    dd = {m["trailer"]: m["delivered"] for m in inp["manifest"]}
+    S.ok("A6", all(dd[t] == rday[t] for t in tl), "every Avila trailer's delivery date is its WMS receipt's Pacific date, "
+         "so its containers fall in the same month either way (%d trailers)" % len(tl))
+    import pack as _pk
+    S.ok("A7", all(m["port"] == _pk.TERMINAL_PORT[m["terminal"]] for m in inp["manifest"]) and
+         "Port of Los Angeles and the Port of Long Beach" in dic,
+         "the manifest's port column matches each pickup terminal, and the dictionary names the two ports")
 
     # ------------------------------------------------------------------ G: the input gates
     meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json")))
@@ -414,8 +476,8 @@ def run(target, golden_dir, Bt=None):
             ii = read.ask_inputs(tmp)
             t2, s2 = asks.rounded_a2(*asks.a2_golden(ii["receipts"], ii["manifest"], ii["LA"], ii["LB"],
                                                      ii["to_local"]))
-            S.ok("G3.%d" % (k + 1), r["blocks"] == 2 and r["use"] == g["use"] and t2 == gT and s2 == gS and
-                 asks.a1_golden(ii["site_onhand"], ii["lpn"]) == a1, "%s deleted: the call and every ask unchanged" % d)
+            S.ok("G3.%d" % (k + 1), r["blocks"] == 2 and r["use"] == g["use"] and t2 == gT and s2 == gS,
+                 "%s deleted: the call and the port ask unchanged" % d)
         finally:
             shutil.rmtree(tmp)
 
@@ -428,7 +490,7 @@ def run(target, golden_dir, Bt=None):
     bk, _, _ = calc.book_series(B, list(B.acc))
     vals = [round(v) for v in bk.values()]
     S.ok("S2", len(set(vals)) == len(vals), "no two months of the book's stock are equal")
-    figs = list(a1.values()) + list(gT.values())
+    figs = list(gT.values())
     S.ok("S3", not any(v % 100 == 0 for v in figs) and len(set(gS.values())) == 10,
          "no graded count is a round hundred; the ten shares are distinct")
     dist = {c: len(set(B.acc[c]["ship"][B.idx[dt.date(2025, 1, 1)]:])) for c in B.current}
@@ -441,10 +503,11 @@ def run(target, golden_dir, Bt=None):
             ok_cd &= len(cn) == 11 and records.iso6346_check(cn[:10]) == int(cn[10])
     for m in inp["manifest"]:
         ok_cd &= records.iso6346_check(m["container"][:10]) == int(m["container"][10])
-    ok_ss = all(records.sscc(int(l["lpn"][8:17]), int(l["lpn"][0:2]))[-1] == l["lpn"][-1] for l in inp["lpn"][:5000])
+    lpn_rows = read.read_lpn(target)
+    ok_ss = all(records.sscc(int(l["lpn"][8:17]), int(l["lpn"][0:2]))[-1] == l["lpn"][-1] for l in lpn_rows[:5000])
     S.ok("S5", ok_cd and ok_ss, "every container number carries its ISO 6346 check digit; every SSCC its GS1 check digit")
-    people = {"Mariah Norman", "Jerome Lam", "Nicole Freeman", "Brandon Page"}
-    named = set(re.findall(r"\b(Mariah Norman|Jerome Lam|Nicole Freeman|Brandon Page)\b", " ".join(txt.values())))
+    people = {"Mariah Norman", "Jerome Lam", "Frederick James", "Brandon Page"}
+    named = set(re.findall(r"\b(Mariah Norman|Jerome Lam|Frederick James|Brandon Page)\b", " ".join(txt.values())))
     creators = set()
     for f in files:
         if f.endswith(".xlsx"):
@@ -470,9 +533,21 @@ def run(target, golden_dir, Bt=None):
         if f.endswith(".xlsx"):
             with zipfile.ZipFile(os.path.join(target, f)) as z:
                 mod += re.findall(r"<dcterms:modified[^>]*>([^<]*)<", z.read("docProps/core.xml").decode())
-    S.ok("S9", all(m <= "2026-12-07T23:59:59Z" for m in mod) and
-         len({int(os.path.getmtime(os.path.join(target, f))) for f in files}) == 1,
-         "no document dated after the as-of; one export time on every file")
+    stamps_ok = all(int(os.path.getmtime(os.path.join(target, f))) ==
+                    int(PK.FILE_STAMPS[f].replace(tzinfo=dt.timezone.utc).timestamp()) for f in files)
+    S.ok("S9", all(m <= "2026-12-07T23:59:59Z" for m in mod) and stamps_ok and
+         max(PK.FILE_STAMPS.values()) <= dt.datetime(2026, 12, 8, 7, 59),
+         "each file carries its own in-world date (exports at their pull, documents at their saving), none after the "
+         "as-of")
+    dhs_end = {}
+    for d0 in (dt.date(2025, 10, 31), dt.date(2025, 10, 25), dt.date(2026, 12, 6)):
+        dhs_end[str(d0)] = sum(p.get("DHS1", 0) for p in records.site_split(Wd["truth"], d0).values())
+    S.ok("S16", dhs_end["2025-10-31"] == 0 and dhs_end["2025-10-25"] > 0,
+         "the 2025 sublease is emptied by the close of its last day (DHS1 pallets %s)" % dhs_end)
+    with zipfile.ZipFile(os.path.join(target, PK.F_CAPACITY)) as z:
+        cap_core = z.read("docProps/core.xml").decode()
+    S.ok("S17", all(x >= "2026-12-01" for x in re.findall(r"<dcterms:\w+[^>]*>([^<]*)<", cap_core)),
+         "the fiscal 2026 period 12 capacity report is dated December 2026 inside and out")
     rd = {}
     for r in inp["receipts"]:
         d = read.pacific_date(r["received_at"])
@@ -545,10 +620,11 @@ def run(target, golden_dir, Bt=None):
     F = json.load(open(os.path.join(HERE, "figures.json")))
     import openpyxl as ox
     gw = ox.load_workbook(os.path.join(golden_dir, "overflow_blocks_h1_2027.xlsx"), data_only=True)
-    a1x = {r[1]: r[4] for r in gw["Off-rack 6 Dec"].iter_rows(min_row=5, values_only=True) if r[1]}
     a2x = {r[0]: (r[1], r[4]) for r in gw["Port TEU 2026"].iter_rows(min_row=5, values_only=True) if r[0]}
     mon = {k: "%s 2026" % sim_month(k) for k in asks.MONTHS_2026}
-    S.ok("F1", a1x == F["a1"] == a1, "the workbook's off-rack sheet, figures.json and the recompute agree")
+    S.ok("F1", F["components"]["on_hand_6dec"] == int(round(tot_oh[B.idx[B.last]])) and
+         "Off-rack 6 Dec" not in gw.sheetnames, "the write-up's on-hand figure recomputes (%d); the workbook carries the "
+         "call, the accounts, the port sheet and the notes" % F["components"]["on_hand_6dec"])
     S.ok("F2", all(a2x[mon[k][:3] + " 2026"] == (gT[k], round(gS[k], 3)) for k in asks.MONTHS_2026) and
          all(F["a2_teu"][mon[k]] == gT[k] and F["a2_share"][mon[k]] == "%.3f" % gS[k] for k in asks.MONTHS_2026),
          "the workbook's port sheet, figures.json and the recompute agree on all twenty figures")
@@ -559,6 +635,10 @@ def run(target, golden_dir, Bt=None):
          "the workbook's call line and block table: %s" % call_cell)
     S.report()
     return S
+
+
+def F_figs():
+    return json.load(open(os.path.join(HERE, "figures.json")))
 
 
 def sim_month(k):

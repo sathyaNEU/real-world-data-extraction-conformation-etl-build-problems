@@ -15,9 +15,10 @@ ONE = dt.timedelta(days=1)
 
 def tune_ports(receipts, manifest, la, lb):
     """The ports' figures are constructed: where the book's share (per cent, graded to three decimals) would
-    sit within 0.00026 of a cell edge, that month's Long Beach loaded inbound is moved (by well under one per
-    cent) so the share sits between 0.00004 and 0.00021 from its cell's centre, on the side it was on. The
-    book's TEU is computed first and never moved here."""
+    sit within 0.00026 of a cell edge, or in a cell ending in zero (a share that reads as round), that month's
+    Long Beach loaded inbound is moved (by well under one per cent) so the share sits between 0.00004 and
+    0.00021 from the centre of its own cell, or of the next cell up when its own ends in zero. The book's TEU
+    is computed first and never moved here."""
     LA = {k: la[i] for i, k in enumerate(asks.MONTHS_2026)}
     LB = {k: lb[i] for i, k in enumerate(asks.MONTHS_2026)}
     teu, share = asks.a2_golden(receipts, manifest, LA, LB, records.utc_to_pacific_date)
@@ -26,30 +27,46 @@ def tune_ports(receipts, manifest, la, lb):
         v = share[k]
         cell = round(v, 3)
         u = float(rng.uniform(0.00004, 0.00021))
-        if abs(v - cell) <= 0.00024:
+        if round(cell * 1000) % 10 == 0:
+            cell = round(cell + 0.001, 3)
+            target = cell - u
+        elif abs(v - cell) <= 0.00024:
             continue
-        target = cell + (u if v > cell else -u)
+        else:
+            target = cell + (u if v > cell else -u)
         LB[k] = int(round(100.0 * teu[k] / target - LA[k]))
     return LA, LB
 
 
 def fix_half_teu(receipts, manifest):
-    """A month whose golden TEU ends in exactly .5 cannot be graded to the whole TEU: re-type one of
-    that month's 45ft boxes as a 40ft high cube in the record (the box's pallets do not move)."""
+    """A month whose golden TEU ends in exactly .5 cannot be graded to the whole TEU: re-type one of that
+    month's 45ft boxes as a 40ft high cube in the record (the box's pallets do not move). A month whose TEU
+    rounds to a whole hundred reads as round: re-type four of its 40ft high cubes as 45ft boxes (one TEU)."""
     LA = {k: 1 for k in asks.MONTHS_2026}
     LB = {k: 1 for k in asks.MONTHS_2026}
-    for _ in range(4):
+    for _ in range(6):
         teu, _ = asks.a2_golden(receipts, manifest, LA, LB, records.utc_to_pacific_date)
-        bad = [k for k in asks.MONTHS_2026 if abs((teu[k] % 1.0) - 0.5) < 1e-9]
-        if not bad:
+        half = [k for k in asks.MONTHS_2026 if abs((teu[k] % 1.0) - 0.5) < 1e-9]
+        round100 = [k for k in asks.MONTHS_2026 if int(round(teu[k])) % 100 == 0]
+        if not half and not round100:
             return
-        for k in bad:
+        for k in half:
             for r in receipts:
                 d = records.utc_to_pacific_date(r["received_at"])
                 if (d.year, d.month) == k and r["type"] == "L5G1" and r.get("part") is None:
                     r["type"] = "45G1"
                     r["size"] = "40HC"
                     break
+        for k in round100:
+            n = 0
+            for r in receipts:
+                d = records.utc_to_pacific_date(r["received_at"])
+                if (d.year, d.month) == k and r["type"] == "45G1" and r.get("part") is None:
+                    r["type"] = "L5G1"
+                    r["size"] = "45"
+                    n += 1
+                    if n == 4:
+                        break
 
 
 def build_world():

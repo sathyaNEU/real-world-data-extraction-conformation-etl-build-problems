@@ -85,27 +85,33 @@ def grid(rows, widths, st, head=True):
 POLICY_TITLE = "Space planning policy"
 POLICY_SUB = ("Pellerin Distribution Services, Inc. | Revision 4, effective 2 March 2026 | "
               "Owner: Mariah Norman, Vice President, Operations")
+POLICY_CONTROL = [("Policy", "OPS-07 Space planning"), ("Revision", "4, effective 2 March 2026"),
+                  ("Owner", "Mariah Norman, Vice President, Operations"),
+                  ("Approved", "Executive team, 24 February 2026"), ("Next review", "March 2027"),
+                  ("Distribution", "Operations managers, customer service, finance")]
 POLICY = [
-    ("1. Purpose", [
+    ("1. Purpose and scope", [
         "This policy sets how we forecast the space our accounts will need and when we commit to space beyond our "
         "own four buildings. It applies to every space forecast prepared for a commitment of temporary space and to "
-        "every commitment to an overflow block. Revision 4 replaces revision 3 of June 2023 and adds section 4 on "
-        "overflow blocks.",
+        "every commitment to an overflow block. It does not cover the cross-dock lanes Avila Transload runs for our "
+        "transload accounts at its own site.",
     ]),
     ("2. Our space", [
-        "Our four buildings in Carson, Rancho Dominguez, Wilmington and Compton hold 40,000 rack positions between "
+        "2.1 Our four buildings in Carson, Rancho Dominguez, Wilmington and Compton hold 40,000 rack positions between "
         "them; the site list gives each building's count. A rack position holds one pallet.",
-        "When the racks are full we hold pallets in floor lanes and at dock staging inside the buildings, in storage "
-        "trailers in the yards and, when one is let, in subleased space. Each of these costs us: floor and staging "
-        "pallets slow putaway and picking, a storage trailer ties up a yard spot and a rented trailer, and a sublease "
-        "needs its own crew and shuttle.",
+        "2.2 When the racks are full we hold pallets in floor lanes and at dock staging inside the buildings, in "
+        "storage trailers in the yards and, when one is let, in subleased space. Each of these costs us: floor and "
+        "staging pallets slow putaway and picking, a storage trailer ties up a yard spot and a trailer rented from "
+        "the pool, and a sublease needs its own crew and a shuttle run.",
+        "2.3 Floor lanes are marked and hold no more than 12 pallets each, following the fire inspection at Del Amo "
+        "in October 2025.",
     ]),
     ("3. Space forecasts", [
         "3.1 A space forecast covers the accounts under contract on the day it is made and counts every pallet they "
         "will hold with us, in our racks or outside them, as the mean of each day's closing stock in the month.",
         "3.2 Overflow is the part of a month's forecast above the 40,000 rack positions of the four buildings.",
         "3.3 Capacity planning prepares the forecast. It is approved with the commitment it supports and kept with "
-        "the commitment's papers.",
+        "the commitment's papers in the capacity log.",
     ]),
     ("4. Overflow blocks", [
         "4.1 Space at a third-party facility is taken in the blocks the facility offers, whole, and for the whole "
@@ -115,25 +121,30 @@ POLICY = [
         "overflow it would hold over the term is at least three quarters of its position-months, a block's "
         "position-months being its positions times the months of the term.",
         "4.3 Overflow that does not justify a block is held in floor lanes and storage trailers.",
+        "4.4 Stock moved into a block comes out of floor lanes and storage trailers first; dock staging is kept "
+        "clear for the day's work.",
     ]),
     ("5. Approval", [
         "The Vice President, Operations approves commitments to overflow blocks of up to $5,000,000 for a term. A "
         "larger commitment also needs the approval of the Chief Financial Officer.",
     ]),
 ]
+POLICY_HISTORY = [("1", "March 2019", "First issue"), ("2", "August 2020", "Subleased space added to section 2"),
+                  ("3", "June 2023", "Rack positions recounted after the Anaheim Street re-rack"),
+                  ("4", "March 2026", "Section 4 on overflow blocks; floor lane limit in 2.3")]
 
 
 def write_policy(path):
     st = styles("LibSans", "LibSans-Bold", PDS, 10.0)
     s = [Paragraph(esc("Pellerin Distribution Services, Inc."), st["sub"]), Paragraph(esc(POLICY_TITLE), st["h1"]),
-         Paragraph(esc(POLICY_SUB.split(" | ", 1)[1]), st["sub"])]
+         Spacer(1, 4), grid([(k, v) for k, v in POLICY_CONTROL], [1.3, 4.2], st, head=False), Spacer(1, 6)]
     for head, paras in POLICY:
         s.append(KeepTogether([Paragraph(esc(head), st["h2"])] + [Paragraph(esc(p), st["body"]) for p in paras]))
-    s.append(Spacer(1, 10))
-    s.append(Paragraph(esc("Revision history: rev. 1 March 2019; rev. 2 August 2020; rev. 3 June 2023; rev. 4 March 2026."),
-                       st["small"]))
+    s.append(Spacer(1, 8))
+    s.append(Paragraph(esc("Revision history"), st["h2"]))
+    s.append(grid([("Rev.", "Date", "Change")] + POLICY_HISTORY, [0.6, 1.2, 3.7], st))
     doc = _doc(path, "Space planning policy, revision 4", "Mariah Norman")
-    f = _footer("Pellerin Distribution Services | Space planning policy | Rev. 4 | Internal", "LibSans")
+    f = _footer("Pellerin Distribution Services | OPS-07 Space planning | Rev. 4 | Internal", "LibSans")
     doc.build(s, onFirstPage=f, onLaterPages=f)
     PP.normalize_pdf(path, b"D:20260227161812-08'00'", b"D:20260302083405-08'00'")
 
@@ -141,42 +152,46 @@ def write_policy(path):
 # ----------------------------------------------------------------------------------- the block offer
 
 OFFER_DATE = "19 November 2026"
+OFFER_REF = "Ref. TAL-B/2027-1/PDS"
 OFFER = [
-    "Following our call last week, Building B at Tamarind Avenue Logistics Park will have six blocks of 4,000 rack "
-    "positions each available for the term 1 January 2027 to 30 June 2027. Each block is a contiguous run of "
-    "selective pallet racking with two dock doors of its own, and the racking takes standard 48 by 40 inch pallets "
-    "up to 60 inches high.",
+    "Thank you for walking Building B with us last week. As discussed, the building will have six blocks of 4,000 "
+    "rack positions each available for the term 1 January 2027 to 30 June 2027. Each block is a contiguous run of "
+    "selective pallet racking on five beam levels with two dock doors of its own, and the racking takes standard "
+    "48 by 40 inch pallets up to 60 inches high. The previous occupant left at the end of October and the racking "
+    "was inspected on 12 November.",
     "The charge is $1,100,000 per block for the term, payable in six monthly instalments in advance. It covers the "
     "positions, dock access from 05:00 to 23:00 Monday to Saturday, yard space for four trailers per block, and the "
-    "building's security, fire protection and property insurance. Handling is by your own staff and equipment.",
+    "building's security, fire protection and property insurance. Handling is by your own staff and equipment, and "
+    "we will need evidence of your warehouse legal liability cover before the term starts.",
     "Blocks are let whole and for the whole term; we are not able to let part of a block or part of the term. We are "
-    "offering the blocks to several users and will allocate them in the order commitments are received. A "
-    "commitment is made by countersigning the enclosed block schedule for the number of blocks you wish to take.",
-    "Please call me with any questions about the building or the schedule.",
+    "offering the blocks to several users and will allocate them in the order countersigned schedules are received. "
+    "A commitment is made by countersigning the enclosed block schedule for the number of blocks you wish to take.",
+    "Please call me on (310) 555-0182 with any questions about the building or the schedule.",
 ]
 
 
 def write_offer(path):
     st = styles("LibSerif", "LibSerif-Bold", RA, 10.6)
     s = [Paragraph(esc("Ridley-Ames Industrial Properties"), st["h1"]),
-         Paragraph(esc("Tamarind Avenue Logistics Park | Leasing office"), st["sub"]),
-         Spacer(1, 6), Paragraph(esc(OFFER_DATE), st["body"]), Spacer(1, 4),
-         Paragraph(esc("Mariah Norman"), st["body"]),
+         Paragraph(esc("Tamarind Avenue Logistics Park | Leasing office | (310) 555-0182"), st["sub"]),
+         Spacer(1, 6), Paragraph(esc(OFFER_DATE), st["body"]), Paragraph(esc(OFFER_REF), st["small"]),
+         Spacer(1, 4), Paragraph(esc("Mariah Norman"), st["body"]),
          Paragraph(esc("Vice President, Operations, Pellerin Distribution Services, Inc."), st["body"]),
-         Spacer(1, 6),
+         Paragraph(esc("By email"), st["small"]), Spacer(1, 6),
          Paragraph(esc("Re: Overflow storage blocks, Building B, January to June 2027"), st["h2"]),
          Paragraph(esc("Dear Ms Norman,"), st["body"])]
     s += [Paragraph(esc(p), st["body"]) for p in OFFER]
     s += [Spacer(1, 4), Paragraph(esc("Yours sincerely,"), st["body"]), Spacer(1, 14),
           Paragraph(esc("Brandon Page"), st["body"]),
-          Paragraph(esc("Leasing Manager, Ridley-Ames Industrial Properties"), st["body"]), Spacer(1, 10),
-          Paragraph(esc("Enclosure: Building B block schedule, January to June 2027"), st["small"])]
+          Paragraph(esc("Leasing Manager, Ridley-Ames Industrial Properties"), st["body"]), Spacer(1, 8),
+          Paragraph(esc("Enclosure: Building B block schedule, January to June 2027"), st["small"]),
+          Paragraph(esc("cc: Property accounts, Ridley-Ames Industrial Properties"), st["small"])]
     s.append(Spacer(1, 6))
-    sched = [("Block", "Positions", "Dock doors", "Term", "Charge for the term")]
+    sched = [("Block", "Positions", "Dock doors", "Term", "Charge for the term", "Taken (countersign)")]
     for k in range(1, 7):
         sched.append(("B-%d" % k, "4,000", "%d and %d" % (2 * k + 9, 2 * k + 10), "1 Jan 2027 to 30 Jun 2027",
-                      "$1,100,000"))
-    s.append(grid(sched, [0.7, 0.9, 1.0, 1.9, 1.5], st))
+                      "$1,100,000", ""))
+    s.append(grid(sched, [0.6, 0.8, 0.9, 1.7, 1.3, 1.3], st))
     doc = _doc(path, "Overflow storage blocks, Building B, January to June 2027", "Ridley-Ames Industrial Properties")
     f = _footer("Ridley-Ames Industrial Properties | Tamarind Avenue Logistics Park", "LibSerif")
     doc.build(s, onFirstPage=f, onLaterPages=f)
@@ -241,6 +256,11 @@ DICT_GENERAL = [
     "The legacy WMS1 system was retired at the close of 30 September 2022. Both systems ran from the close of "
     "12 September 2022 to the close of 30 September 2022, and the legacy client codes map to client ids in the "
     "client master.",
+    "A site is one of the four buildings (CAR1, RDZ1, WIL1, CMP1) with its docks and its yard, or the Dominguez "
+    "sublease (DHS1) while it is let. A pallet on a site is either in a warehouse location (a rack position, a floor "
+    "lane or a dock staging lane) or in a storage trailer parked in the site's yard.",
+    "Ocean containers reach us by dray from the container terminals of the Port of Los Angeles and the Port of Long "
+    "Beach.",
 ]
 DICT = [
     ("wms1_inv_daily_20190401-20220930.txt (legacy WMS1, pipe-delimited)", [
@@ -252,7 +272,8 @@ DICT = [
         ("snapshot_utc", "the run's start, UTC"),
         ("site_id", "CAR1, RDZ1, WIL1, CMP1 (the four buildings) and DHS1 (the Dominguez sublease, while let)"),
         ("client_id", "client id"),
-        ("on_hand_pallets", "pallets on hand for the client at the site at the close"),
+        ("on_hand_pallets", "pallets on hand for the client at the site at the close, in its warehouse locations and "
+                            "in storage trailers in its yard"),
     ]),
     ("wms_outbound_daily_20220912_20261206.csv", [
         ("ship_date", "business date the loads shipped"),
@@ -270,6 +291,8 @@ DICT = [
         ("pallets", "pallets received on the receipt"),
     ]),
     ("wms_lpn_inventory_20261207T0800Z.csv", [
+        ("coverage", "one row per pallet in a warehouse location; pallets in yard storage trailers are held in the "
+                     "yard system and are not in this extract"),
         ("snapshot_utc", "the run's start, UTC"),
         ("site_id, location_id", "site and warehouse location"),
         ("location_type", "RACK (rack position), FLOOR (floor lane), STAGE (dock staging lane)"),

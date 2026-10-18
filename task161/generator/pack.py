@@ -43,9 +43,21 @@ F_DICT = "wms_export_dictionary_v3.pdf"
 F_MANIFEST = "export_manifest.csv"
 F_CAPACITY = "capacity_report_fy2026_p12.xlsx"
 F_LABOR = "dock_labor_plan_h1_2027.xlsx"
-DISTRACTORS = [F_CAPACITY, F_LABOR]
+DISTRACTORS = [F_CAPACITY, F_LABOR, F_LPN]
 ALL_FILES = [F_LEGACY, F_NIGHTLY, F_OUTBOUND, F_RECEIPTS, F_LPN, F_CLIENTS, F_SITES, F_TRACKER, F_AVILA, F_POLA,
              F_POLB, F_POLICY, F_OFFER, F_ADVISORIES, F_DICT, F_MANIFEST, F_CAPACITY, F_LABOR]
+
+FILE_STAMPS = {
+    F_LEGACY: dt.datetime(2022, 10, 3, 15, 40), F_NIGHTLY: dt.datetime(2026, 12, 7, 16, 5),
+    F_OUTBOUND: dt.datetime(2026, 12, 7, 16, 5), F_RECEIPTS: dt.datetime(2026, 12, 7, 16, 6),
+    F_LPN: dt.datetime(2026, 12, 7, 16, 6), F_CLIENTS: dt.datetime(2026, 12, 7, 16, 7),
+    F_SITES: dt.datetime(2026, 12, 7, 16, 7), F_TRACKER: dt.datetime(2026, 12, 7, 2, 40),
+    F_AVILA: dt.datetime(2026, 12, 7, 1, 15), F_POLA: dt.datetime(2026, 12, 4, 19, 22),
+    F_POLB: dt.datetime(2026, 12, 4, 19, 26), F_POLICY: dt.datetime(2026, 3, 2, 16, 34),
+    F_OFFER: dt.datetime(2026, 11, 19, 22, 22), F_ADVISORIES: dt.datetime(2026, 12, 3, 18, 15),
+    F_DICT: dt.datetime(2026, 11, 2, 19, 30), F_CAPACITY: dt.datetime(2026, 12, 2, 19, 5),
+    F_LABOR: dt.datetime(2026, 11, 30, 22, 16), F_MANIFEST: dt.datetime(2026, 12, 7, 16, 20),
+}
 
 SITES = [b[0] for b in W.BUILDINGS]
 PRODUCT_LINE = {"furniture": "Furniture", "housewares": "Housewares", "toys": "Toys",
@@ -242,7 +254,7 @@ def write_clients(path):
         r += 1
     ws.freeze_panes = "A2"
     _widths(ws, [10, 30, 20, 32, 14, 14, 14])
-    _finish(path, wb, "Jerome Lam", "Nicole Freeman", "2022-08-22T17:04:00Z", "2026-11-30T23:41:00Z", "Client master")
+    _finish(path, wb, "Jerome Lam", "Frederick James", "2022-08-22T17:04:00Z", "2026-11-30T23:41:00Z", "Client master")
 
 
 def site_rows():
@@ -283,8 +295,14 @@ def write_tracker(path, notices):
         r += 1
     ws.freeze_panes = "A6"
     _widths(ws, [30, 9, 13, 10, 24, 24, 8, 10, 5, 5, 6, 5, 12])
-    _finish(path, wb, "Nicole Freeman", "Nicole Freeman", "2026-11-23T16:12:00Z", "2026-12-07T02:40:00Z",
+    _finish(path, wb, "Frederick James", "Frederick James", "2026-11-23T16:12:00Z", "2026-12-07T02:40:00Z",
             "December 2026 inbound booking tracker")
+
+
+TERMINAL_PORT = {"APM Pier 400": "Los Angeles", "TraPac": "Los Angeles", "Fenix Marine": "Los Angeles",
+                 "Yusen Terminals": "Los Angeles", "Everport": "Los Angeles", "LBCT Middle Harbor": "Long Beach",
+                 "TTI Pier T": "Long Beach", "ITS Pier G": "Long Beach", "SSA Pier A": "Long Beach",
+                 "Pacific Container Terminal": "Long Beach"}
 
 
 def write_avila(path, manifest):
@@ -292,24 +310,29 @@ def write_avila(path, manifest):
     wb = _wb()
     ws = wb.active
     ws.title = "Deliveries"
-    head = ["Delivery Date", "Trailer", "Container", "ISO Type", "Pallets", "Consignee", "Pickup Terminal"]
+    ws["A1"] = "Avila Transload Services, LLC | Delivery manifest for Pellerin Distribution Services, Inc."
+    _bold(ws["A1"], 12)
+    ws["A2"] = ("Ocean containers picked up at the terminals, devanned at Avila and delivered to Pellerin Distribution "
+                "in 53' trailers; one row per container.")
+    head = ["Delivery Date", "Trailer", "Container", "ISO Type", "Pallets", "Consignee", "Pickup Terminal", "Port"]
     for k, h in enumerate(head, 1):
-        _bold(ws.cell(row=1, column=k, value=h))
+        _bold(ws.cell(row=4, column=k, value=h))
     rows = sorted(manifest, key=lambda m: (m["delivered"], m["trailer"], m["container"]))
     term = {}
-    r = 2
+    r = 5
     for m in rows:
         if m["trailer"] not in term:
             term[m["trailer"]] = records.TERMINALS[int(rng.integers(0, len(records.TERMINALS)))]
         vals = [m["delivered"], m["trailer"], m["container"], m["iso"], int(m["pallets"]),
-                "Pellerin Distribution / " + W.ACCOUNT_NAMES[m["account"]][0], term[m["trailer"]]]
+                "Pellerin Distribution / " + W.ACCOUNT_NAMES[m["account"]][0], term[m["trailer"]],
+                TERMINAL_PORT[term[m["trailer"]]]]
         for k, v in enumerate(vals, 1):
             cell = ws.cell(row=r, column=k, value=v)
             if isinstance(v, dt.date):
                 cell.number_format = "mm/dd/yyyy"
         r += 1
-    ws.freeze_panes = "A2"
-    _widths(ws, [13, 12, 14, 9, 8, 52, 24])
+    ws.freeze_panes = "A5"
+    _widths(ws, [13, 12, 14, 9, 8, 52, 24, 12])
     _finish(path, wb, "Avila Dispatch", "Avila Dispatch", "2024-03-04T15:20:00Z", "2026-12-07T01:15:00Z",
             "Delivery manifest", company=W.TRANSLOAD)
 
@@ -400,7 +423,7 @@ def write_capacity(path, nightly):
         r += 1
     ws.freeze_panes = "A6"
     _widths(ws, [8, 12, 12, 7, 14, 20, 20, 12])
-    _finish(path, wb, "Capacity Planning", "Capacity Planning", "2025-12-03T18:30:00Z", "2026-12-02T19:05:00Z",
+    _finish(path, wb, "Capacity Planning", "Capacity Planning", "2026-12-02T17:48:00Z", "2026-12-02T19:05:00Z",
             "Capacity report FY2026")
     return rows
 

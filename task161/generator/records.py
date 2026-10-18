@@ -219,6 +219,9 @@ def site_split(truth, day):
     rack_room = RACK_FILL * sum(CAP.values())
     over = max(0.0, total - rack_room)
     dhs = min(DHS_CAP * 0.985, over * 0.58) if sublease_open(day) else 0.0
+    for a, b in SUBLEASE_STINTS:
+        if a <= day <= b:
+            dhs *= min(1.0, (b - day).days / 10.0)       # the sublease is emptied over its last ten days
     trl = min(MAX_TRAILERS * TRAILER_CAP * 0.93, (over - dhs) * 0.62)
     flr = over - dhs - trl
     w = exc + 0.15 * oh
