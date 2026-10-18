@@ -67,13 +67,16 @@ def daterange(a, b):
         d += dt.timedelta(days=1)
 
 
-# The Southeast region's wave peak in each winter (the centre of its hospitals' surge spells), the stable lags the
-# other regions run behind it, and the widths of the waves. 2027's Southeast peak is the earliest on file.
+# The Southeast region's wave peak in each winter (the centre of its hospitals' surge spells); West and Central's gap
+# behind it, which moves from winter to winter with the route the wave takes into the west of the state; the North's
+# lag behind West and Central, its upstream, which holds; and the widths of the waves. 2027's Southeast peak is the
+# earliest on file, and this winter West and Central follows it closely.
 SE_PEAK = {2022: D(2022, 1, 8), 2023: D(2022, 12, 30), 2024: D(2024, 1, 6), 2025: D(2025, 2, 1),
            2026: D(2026, 1, 15), 2027: D(2026, 12, 8)}
-LAG = {"SE": 0.0, "WC": 7.0, "NO": 38.5}
+WC_GAP = {2022: 30.0, 2023: 31.0, 2024: 28.0, 2025: 4.0, 2026: 29.0, 2027: 6.0}
+NO_LAG = 32.0
 SIG = {"SE": 8.0, "WC": 8.0, "NO": 5.0}
-AMP = {"SE": 0.20, "WC": 0.20, "NO": 0.22}
+AMP = {"SE": 0.20, "WC": 0.20, "NO": 0.2245}
 
 REGIONS = {"SE": "Southeast", "WC": "West and Central", "NO": "North"}
 

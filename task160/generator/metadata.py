@@ -37,8 +37,8 @@ SOURCES = {
 }
 DISTRACTORS = list(PK.DISTRACTORS)
 TITLE = ("How many agency RN shifts a hospital association's winter surge pool should block-book for the four weeks "
-         "from 4 January 2027, when this winter's respiratory wave peaked in the south in December and the North's "
-         "hospitals, new to the pool, have always met it five to six weeks after the Southeast")
+         "from 4 January 2027, region by region, when this winter's respiratory surge reached the south in early "
+         "December and the North's eight hospitals are new to the pool")
 
 
 def rows_of(path):
@@ -74,11 +74,12 @@ def write(task_dir):
         "house_domain": "healthcare-delivery-health-economics",
         "subdomain": "patient flow, beds and workforce optimization (a hospital association's winter agency nurse pool: "
                      "the January block forecast region by region, each region's respiratory surge timed by its lag "
-                     "behind the region it spreads from, read off the closed winters' capacity census)",
+                     "behind the region it follows, read off the closed winters' capacity census)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "a committed block of agency RN shifts for four weeks, each of last winter's 16 pool hospitals' "
                         "funded shifts and shifts billed to the pool that it did not fund, and a weekly chart of the "
-                        "funded shifts by agency",
+                        "funded shifts labelled with the busiest week's total and the shifts billed to the pool that "
+                        "week",
         "as_of": "2026-12-21",
         "deliverables": ["winter_pool_block_jan2027.xlsx", "pool_shifts_winter_2025-26.png"],
         "distractor_files": DISTRACTORS,

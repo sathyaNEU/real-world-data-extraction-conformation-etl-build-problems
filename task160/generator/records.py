@@ -170,11 +170,13 @@ def inland_seas_queries(hs, shifts, decl, s0, s1, n=14):
         idx = sorted(r.choice(len(pool), size=min(k, len(pool)), replace=False).tolist()) if pool else []
         pick.extend(pool[i] for i in idx)
     rows = []
+    order = 482113
     for s in sorted(pick, key=lambda z: z["start"]):
         cin = s["start"] - dt.timedelta(minutes=int(r.integers(2, 14)))
         cout = s["start"] + dt.timedelta(hours=12, minutes=int(r.integers(4, 28)))
-        note = {"after": "Billed to pool after stand-down", "skeleton": "Surge unit opened before declaration",
-                "active": "Clock times requested by TPHA"}[s["kind"]]
+        order += int(r.integers(40, 900))
         rows.append([ISN_NAME[s["facility_id"]], s["unit"], s["nurse"], cin.strftime("%m/%d/%Y %H:%M"),
-                     cout.strftime("%m/%d/%Y %H:%M"), payroll_date(s), s["shift"], note])
-    return ["Facility", "Unit", "Nurse ID", "Clock in", "Clock out", "Payroll date", "Shift", "TPHA query"], rows
+                     cout.strftime("%m/%d/%Y %H:%M"), payroll_date(s), s["shift"], "ISO-%d" % order,
+                     s["request_no"] or None])
+    return ["Facility", "Unit", "Nurse ID", "Clock in", "Clock out", "Payroll date", "Shift", "Order no.",
+            "Request ref"], rows

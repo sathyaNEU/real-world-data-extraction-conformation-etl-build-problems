@@ -9,17 +9,18 @@
  "billed_not_funded_MI-0451": 9,
  "billed_not_funded_MI-0455": 7,
  "billed_not_funded_MI-0503": 11,
- "billed_not_funded_MI-0508": 13,
- "billed_not_funded_MI-0514": 16,
+ "billed_not_funded_MI-0508": 9,
+ "billed_not_funded_MI-0514": 15,
  "billed_not_funded_MI-0519": 12,
- "billed_not_funded_MI-0523": 6,
- "billed_not_funded_MI-0528": 6,
- "billed_not_funded_MI-0532": 15,
+ "billed_not_funded_MI-0523": 12,
+ "billed_not_funded_MI-0528": 7,
+ "billed_not_funded_MI-0532": 12,
  "block_shifts": 600,
  "block_weeks": "Monday 4 January to Sunday 31 January 2027",
- "busiest_week": "2026-01-19 to 2026-01-25",
- "busiest_week_total": 1554,
- "carry_min_miss_more_than_a_third": 0.38,
+ "busiest_week": "2026-01-12 to 2026-01-18",
+ "busiest_week_billed_to_pool": 928,
+ "busiest_week_total": 902,
+ "carry_min_miss_a_quarter_or_more": 0.251,
  "clauses_cited": [
   "3.1",
   "5.2"
@@ -34,136 +35,31 @@
  "funded_MI-0446": 235,
  "funded_MI-0451": 260,
  "funded_MI-0455": 174,
- "funded_MI-0503": 298,
- "funded_MI-0508": 311,
- "funded_MI-0514": 284,
- "funded_MI-0519": 210,
- "funded_MI-0523": 194,
- "funded_MI-0528": 180,
- "funded_MI-0532": 163,
- "lag_weeks_five_to_six": [
-  5,
-  6
- ],
+ "funded_MI-0503": 303,
+ "funded_MI-0508": 290,
+ "funded_MI-0514": 242,
+ "funded_MI-0519": 211,
+ "funded_MI-0523": 215,
+ "funded_MI-0528": 188,
+ "funded_MI-0532": 153,
  "members": 24,
  "north_expected_draw_block_weeks": 600,
  "north_members": 8,
- "rival_calendar_januaries_averaged": 2850,
- "rival_calendar_januaries_mean": 2872.8,
- "rival_calendar_januaries_nearly": 2900,
- "rival_pool_own_post_peak_weeks": 0,
+ "rival_calendar_januaries_averaged": 1850,
+ "rival_calendar_januaries_mean": 1862.4,
+ "rival_north_timed_from_the_southeast": [
+  90,
+  4,
+  0
+ ],
  "rounding_unit_shifts": 50,
- "south_all_stand_down_by": "30 December 2026",
+ "south_all_stand_down_by": "29 December 2026",
  "south_expected_draw_block_weeks": 0,
- "south_spells_began": "2 to 10 December 2026",
+ "south_spells_began": "2 to 9 December 2026",
  "southeast_centre_moved_days": 34.0,
  "southern_members": 16,
- "total_billed_not_funded": 183,
- "total_funded": 3710,
- "week_2025-11-03": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2025-11-10": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2025-11-17": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2025-11-24": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2025-12-01": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2025-12-08": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2025-12-15": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2025-12-22": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2025-12-29": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2026-01-05": {
-  "crestfield": 111,
-  "inland_seas": 123,
-  "total": 234
- },
- "week_2026-01-12": {
-  "crestfield": 611,
-  "inland_seas": 618,
-  "total": 1229
- },
- "week_2026-01-19": {
-  "crestfield": 777,
-  "inland_seas": 777,
-  "total": 1554
- },
- "week_2026-01-26": {
-  "crestfield": 325,
-  "inland_seas": 328,
-  "total": 653
- },
- "week_2026-02-02": {
-  "crestfield": 20,
-  "inland_seas": 20,
-  "total": 40
- },
- "week_2026-02-09": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2026-02-16": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2026-02-23": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2026-03-02": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2026-03-09": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2026-03-16": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "week_2026-03-23": {
-  "crestfield": 0,
-  "inland_seas": 0,
-  "total": 0
- },
- "weeks_charted": 21
+ "total_billed_not_funded": 182,
+ "total_funded": 3672,
+ "weeks_charted": 21,
+ "west_and_central_spells_began": "3 to 9 December 2026"
 }

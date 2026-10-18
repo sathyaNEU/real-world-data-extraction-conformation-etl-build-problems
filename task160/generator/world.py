@@ -3,8 +3,9 @@ and declared surge level from 1 July 2021, run on to 31 March 2027 so the forwar
 the generator (it never ships). Nothing here carries mess; records.py writes the exports from it.
 
 Each winter one respiratory wave crosses the state: it peaks in the Southeast first, in West and Central Michigan
-about a week later, and in the North about five and a half weeks after the Southeast. The wave's calendar timing
-moves from winter to winter; the lags behind the Southeast hold. A member declares Level 1 when its midnight census
+anywhere from a few days to a month later, and in the North about a month after West and Central. The wave's
+calendar timing and West and Central's gap behind the Southeast move from winter to winter; the North's lag behind
+West and Central holds. A member declares Level 1 when its midnight census
 has been at or above 95 per cent of staffed beds on two consecutive nights, Level 2 at or above 101 per cent, steps
 down below 98 per cent and stands down below 93 per cent (the association's model surge plan). Surges come only
 with the wave."""
@@ -59,7 +60,7 @@ def holiday_effect(d):
 
 
 # this winter's southern wave is an ordinary one: its amplitude puts its surge draw at the closed winters' mean
-THIS_WINTER_AMP = {"SE": 1.012, "WC": 1.006, "NO": 1.0}
+THIS_WINTER_AMP = {"SE": 1.008, "WC": 1.004, "NO": 1.0}
 
 
 def wave_params(hs):
@@ -70,7 +71,8 @@ def wave_params(hs):
     out = {}
     past = {k: [] for k in C.AMP}
     for w in C.WINTERS:
-        lag = {"SE": 0.0, "WC": C.LAG["WC"] + r.normal(0, 1.0), "NO": C.LAG["NO"] + r.normal(0, 1.0)}
+        lag_wc = C.WC_GAP[w] + r.normal(0, 1.0)
+        lag = {"SE": 0.0, "WC": lag_wc, "NO": lag_wc + C.NO_LAG + r.normal(0, 1.0)}
         amp_w = {k: C.AMP[k] * (1 + r.normal(0, 0.022)) for k in C.AMP}
         if w == 2027:                                     # this winter's wave is an ordinary-sized one
             amp_w = {k: sum(v) / len(v) * THIS_WINTER_AMP[k] for k, v in past.items()}
@@ -444,7 +446,7 @@ WW_START = D(2021, 9, 6)
 
 
 def wastewater(hs, wp):
-    """Influenza A and SARS-CoV-2 concentrations at each sewershed: the wave in its members' communities, about six
+    """Influenza A and SARS-CoV-2 concentrations at each sewershed: the wave in its members' communities, about nine
     days ahead of their respiratory census, sampled twice a week in the south (Monday and Thursday) and weekly in
     the North (Tuesday); results posted three days after sampling, about one in nine re-run and revised a week later."""
     r = rng(60)
@@ -458,7 +460,7 @@ def wastewater(hs, wp):
                 inf = 0.0
                 for w in C.WINTERS:
                     pks = [wp[(w, f)][1] for f in fids]
-                    pk = sum(pks) / len(pks) - 6.0
+                    pk = sum(pks) / len(pks) - 9.0
                     t = (d - C.SE_PEAK[w]).days - pk
                     s = C.SIG[reg] + 1.0
                     if abs(t) < 50:

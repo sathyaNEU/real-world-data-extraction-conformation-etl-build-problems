@@ -77,7 +77,7 @@ class Pack:
         for line in text.splitlines():
             for nm, fid in by_name.items():
                 if line.startswith(nm + " "):
-                    m = re.search(r"\s(\d+)\s+(\d+)\s+\d{1,2} [A-Z][a-z]{2} \d{4}$", line)
+                    m = re.search(r"\s(\d+)\s+(\d+)\s+\d+\s+\d{1,2} [A-Z][a-z]{2} \d{4}$", line)
                     assert m, line
                     grid[fid] = (int(m.group(1)), int(m.group(2)))
         assert len(grid) == 24, len(grid)
@@ -261,22 +261,129 @@ def ask_figures(P, lines, by_census=False):
     return fA, fB, wk
 
 
+def chart_figures(P, lines, by_census=False):
+    """The chart's two labelled figures as a response computes them: its busiest Monday-to-Sunday week by funded shifts
+    (by the week each shift started in, 3 November 2025 to 29 March 2026), that week's funded total, and how many agency
+    shifts starting that week were billed to the pool."""
+    lvl = None
+    if by_census:
+        lvl = {(a, b): c for a, b, c in zip(P.cap["facility_id"], P.cap["census_date"], P.cap["level"])}
+    w0 = D(2025, 11, 3)
+    fund, bill = collections.Counter(), collections.Counter()
+    for fid, ag, t, su, pool in lines:
+        k = (t.date() - w0).days // 7
+        if not 0 <= k < 21:
+            continue
+        act = (lvl.get((fid, t.date()), 0) > 0) if by_census else (P.level_at(fid, t) > 0)
+        if su and act:
+            fund[k] += 1
+        if pool:
+            bill[k] += 1
+    kb = max(range(21), key=lambda k: (fund[k], -k))
+    return kb, fund[kb], bill[kb], fund, bill
+
+
+PATHS = (("golden", dict(), False),
+         ("cracker", dict(split="line", isn_date="end"), False),
+         ("cracker, A2 cracked", dict(split="timesheet", isn_date="end"), False),
+         ("cracker without the dictionary", dict(split="line", isn_date="start"), False),
+         ("mirror", dict(split="line", isn_date="start"), True))
+
+
 def cracker_report(report, pack=None, quiet=False):
     P = Pack(pack)
     south = P.fids("Southeast") + P.fids("West and Central")
     rows = {}
-    for name, kw, cen in (("golden", dict(), False),
-                          ("cracker", dict(split="line", isn_date="start"), False),
-                          ("cracker, A2 cracked", dict(split="timesheet", isn_date="start"), False),
-                          ("cracker, B1 cracked", dict(split="line", isn_date="end"), False),
-                          ("mirror", dict(split="line", isn_date="start"), True)):
-        fA, fB, wk = ask_figures(P, ask_lines(P, **kw), by_census=cen)
-        tot = collections.Counter()
-        for (k, ag), v in wk.items():
-            tot[k] += v
-        rows[name] = (fA, fB, max(tot.values()) if tot else 0)
+    for name, kw, cen in PATHS:
+        lines = ask_lines(P, **kw)
+        fA, fB, _ = ask_figures(P, lines, by_census=cen)
+        kb, ft, bt, _, _ = chart_figures(P, lines, by_census=cen)
+        rows[name] = (fA, fB, (ft, bt))
     g = rows["golden"]
     return report(rows, g[0], g[1], g[2], south, quiet)
+
+
+# ---------------------------------------------------------------------------------------------------- timing routes
+REG_NAME = {"SE": "Southeast", "WC": "West and Central", "NO": "North"}
+
+
+def anchor(P, kind, w, upto=None):
+    """A region's place in a winter as the census shows it: the median of its members' spell midpoints, its first
+    surge night ('first'), or the statewide first surge night or median midpoint over the 16 southern members."""
+    a, b = C.season_bounds(w)
+    b = min(b, upto) if upto else b
+    if kind in ("SE", "WC", "NO"):
+        return P.region_centre(REG_NAME[kind], w, upto)
+    if kind.endswith("first"):
+        fids = P.fids(REG_NAME[kind[:2]]) if kind[:2] in REG_NAME else P.fids("Southeast") + P.fids("West and Central")
+        return min(P.spells(f, a, b)[0][0].toordinal() for f in fids)
+    if kind == "state":
+        mids = []
+        for f in P.fids("Southeast") + P.fids("West and Central"):
+            s0, s1 = P.spells(f, a, b)[0]
+            mids.append(s0.toordinal() + (s1 - s0).days / 2.0)
+        return float(np.median(mids))
+    raise ValueError(kind)
+
+
+def window(P, fids, delta):
+    a, b = C.BLOCK_2027
+    return sum(P.draw_nights(f, a - dt.timedelta(days=delta), b - dt.timedelta(days=delta)) for f in fids)
+
+
+def aligned(P, kind):
+    """Every member's closed-winter census moved so the anchor sits where it sits this winter at the pull, read over the
+    block weeks and averaged over the five closed winters."""
+    a27 = anchor(P, kind, 2027, C.CENSUS_END)
+    return st.mean(window(P, P.fids(), int(round(a27 - anchor(P, kind, w)))) for w in C.CLOSED)
+
+
+def placed(P, up, onset=False, agg="mean"):
+    """The North's closed-winter waves placed this winter at an upstream anchor plus the closed winters' lag."""
+    ku, kn = (up + "first", "NOfirst") if onset else (up, "NO")
+    lags = [anchor(P, kn, w) - anchor(P, ku, w) for w in C.CLOSED]
+    lag = st.mean(lags) if agg == "mean" else st.median(lags)
+    pred = anchor(P, ku, 2027, C.CENSUS_END) + lag
+    return st.mean(window(P, P.fids("North"), int(round(pred - anchor(P, kn, w)))) for w in C.CLOSED)
+
+
+def ww_peaks(P):
+    """Each region's influenza A peak in the wastewater each winter: the sewersheds' log concentration over PMMoV,
+    averaged by sample date, smoothed over a centred fifteen days, its highest point from October to the end of the
+    season (to the last sample this winter)."""
+    import json
+    import math
+    d = json.load(open(find(r"wastewater_results_.*\.json", P.dir)))
+    latest = {}
+    for r in d["results"]:
+        if r["target"] != "Influenza A" or r["concentration_copies_per_l"] is None:
+            continue
+        k = (r["sewershed_id"], r["sample_date"])
+        if k not in latest or r["result_status"] == "revised":
+            latest[k] = r
+    by = collections.defaultdict(list)
+    for (shed, day), r in latest.items():
+        by[(shed[3:5], D.fromisoformat(day))].append(math.log(r["concentration_copies_per_l"] / r["pmmov_copies_per_l"]))
+    out = {}
+    for reg in ("SE", "WC", "NO"):
+        for w in C.WINTERS:
+            a, b = C.season_bounds(w)
+            a = a - dt.timedelta(days=30)
+            days = sorted(k[1] for k in by if k[0] == reg and a <= k[1] <= b)
+            vals = {x: st.mean(by[(reg, x)]) for x in days}
+            sm = {x: st.mean(vals[y] for y in days if abs((y - x).days) <= 7) for x in days}
+            out[(reg, w)] = max(days, key=lambda x: sm[x]).toordinal()
+    return out
+
+
+def ww_route(P, up):
+    """The North placed this winter from an upstream region's wastewater peak, the closed winters' peak-to-peak lag and
+    the North's own wastewater-to-census offset, its closed waves read over the block weeks."""
+    pk = ww_peaks(P)
+    lags = [pk[("NO", w)] - pk[(up, w)] for w in C.CLOSED]
+    off = [anchor(P, "NO", w) - pk[("NO", w)] for w in C.CLOSED]
+    pred = pk[(up, 2027)] + st.mean(lags) + st.mean(off)
+    return st.mean(window(P, P.fids("North"), int(round(pred - anchor(P, "NO", w)))) for w in C.CLOSED)
 
 
 def reflex_sweep(P):
@@ -302,6 +409,8 @@ def reflex_sweep(P):
         return best
     a27 = C.season_bounds(2027)[0]
     sofar = sum(P.draw_nights(f, a27, C.CENSUS_END) for f in allf)
+    bo = pd.read_excel(find(r"january_block_orders_.*\.xlsx", P.dir))
+    book = [int(x) for x in bo["block_shifts"].dropna()]
     out = {
         "flat: the pool's mean season draw (16 members) spread over the season, four weeks": st.mean(seas_s.values()) * 28 / ndays,
         "flat: the same, 4 of 22 weeks": st.mean(seas_s.values()) * 4 / 22.0,
@@ -318,9 +427,18 @@ def reflex_sweep(P):
         "Januaries: smallest": min(jan.values()),
         "Januaries: per southern bed times all beds": st.mean(jan.values()) / bs * (bs + bn),
         "season mean times the mean January share": st.mean(seas.values()) * st.mean(jan[w] / seas[w] for w in C.CLOSED),
-        "order book: last block": 2500.0,
-        "order book: mean block": st.mean([2250, 3300, 2650, 2850, 2500]),
+        "order book: last block": float(book[-1]),
+        "order book: mean block": st.mean(book),
         "remainder: the usual season less this winter's draw to the pull": st.mean(seas.values()) - sofar,
         "peak four weeks of each closed season, all members": st.mean(peak28(w, allf) for w in C.CLOSED),
+        "aligned: every member moved onto this winter's Southeast centre": aligned(P, "SE"),
+        "aligned: every member moved onto this winter's first Southeast surge night": aligned(P, "SEfirst"),
+        "aligned: every member moved onto this winter's first surge night anywhere": aligned(P, "statefirst"),
+        "aligned: every member moved onto this winter's southern median centre": aligned(P, "state"),
+        "eyeballed: the North at the Southeast's centre plus the mean lag": placed(P, "SE"),
+        "eyeballed: the North at the Southeast's centre plus the median lag": placed(P, "SE", agg="median"),
+        "eyeballed: the North's first night at the Southeast's first plus the mean lag": placed(P, "SE", onset=True),
+        "eyeballed: the North's first night at the Southeast's first plus the median lag": placed(P, "SE", onset=True, agg="median"),
+        "wastewater only: the North from the Southeast's peak": ww_route(P, "SE"),
     }
     return out

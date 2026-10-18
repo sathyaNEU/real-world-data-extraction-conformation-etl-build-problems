@@ -117,8 +117,8 @@ AGREEMENT = [
         "Block and those beyond an Agency's share of it.",
     ]),
     ("5. The January Block", [
-        "5.1 The January Block covers the four weeks from the first Monday in January: Monday 4 January to Sunday 31 "
-        "January 2027.",
+        "5.1 The January Block covers every Member's surge unit for the four weeks from the first Monday in January: "
+        "Monday 4 January to Sunday 31 January 2027.",
         "5.2 The Association files the Block with the Agencies by Tuesday 22 December 2026. The Block is set at the "
         "Pool's expected draw over the Block weeks, rounded to the nearest 50 shifts. The Pool's draw is the shifts the "
         "Pool funds under clause 3.1 that start in the Block weeks.",
@@ -182,11 +182,43 @@ REGISTER_INTRO = [
 ]
 
 
+HOLIDAYS = {dt.date(2021, 9, 6), dt.date(2021, 11, 25), dt.date(2021, 12, 24), dt.date(2022, 5, 30), dt.date(2022, 7, 4),
+            dt.date(2022, 9, 5), dt.date(2022, 11, 24), dt.date(2023, 5, 29), dt.date(2023, 7, 4), dt.date(2023, 9, 4),
+            dt.date(2023, 11, 23), dt.date(2024, 5, 27), dt.date(2024, 7, 4), dt.date(2024, 9, 2), dt.date(2024, 11, 28),
+            dt.date(2025, 5, 26), dt.date(2025, 7, 4), dt.date(2025, 9, 1), dt.date(2026, 9, 7)}
+
+
+def _workday(r, a, b):
+    """A working day drawn between a and b (Monday to Friday, the association's holidays out)."""
+    while True:
+        d = a + dt.timedelta(days=int(r.integers(0, (b - a).days + 1)))
+        if d.weekday() < 5 and d not in HOLIDAYS:
+            return d
+
+
+def plan_history(hs):
+    """Each member's surge plan revisions as the pool office holds them: the plans of the founding members adopted in the
+    weeks before the first pool season and revised since when a member re-planned its surge unit, the North's plans
+    registered as each hospital joined in autumn 2026."""
+    r = W.rng(80)
+    out = {}
+    for h in hs:
+        if h["region"] == "NO":
+            out[h["facility_id"]] = (1, _workday(r, dt.date(2026, 9, 8), dt.date(2026, 10, 23)))
+            continue
+        dates = [_workday(r, dt.date(2021, 9, 13), dt.date(2021, 10, 22))]
+        for _ in range(int(r.choice([0, 0, 0, 1, 1, 1, 1, 2, 2, 3]))):
+            dates.append(_workday(r, dt.date(2022, 3, 1), dt.date(2025, 10, 31)))
+        out[h["facility_id"]] = (len(dates), max(dates))
+    return out
+
+
 def register_rows(hs):
+    hist = plan_history(hs)
     rows = []
     for h in hs:
-        rev = "2 Nov 2026" if h["region"] == "NO" else "4 Oct 2021"
-        rows.append((h["name"], h["surge_unit"], h["grid"][0], h["grid"][1], rev))
+        rev, d = hist[h["facility_id"]]
+        rows.append((h["name"], h["surge_unit"], h["grid"][0], h["grid"][1], rev, "%d %s" % (d.day, d.strftime("%b %Y"))))
     return rows
 
 
@@ -199,7 +231,7 @@ def write_register(out, hs):
     for p in REGISTER_INTRO:
         flow.append(Paragraph(esc(p), st["body"]))
     flow.append(_table(st, ["Member", "Surge unit", "Agency RN shifts a day, Level 1", "Agency RN shifts a day, Level 2",
-                            "Plan staffing revised"], register_rows(hs), [50, 34, 28, 28, 28], right=(2, 3)))
+                            "Plan rev.", "Revised"], register_rows(hs), [50, 33, 25, 25, 13, 22], right=(2, 3, 4)))
     foot = "TPHA surge plan register 2026-27"
     doc.build(flow, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
     PP.normalize_pdf(path, pdf_stamp(REGISTER_DATE, 11, 30), pdf_stamp(REGISTER_DATE, 11, 30))

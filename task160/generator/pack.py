@@ -92,27 +92,65 @@ def write_members(out, hs):
 
 
 # ---------------------------------------------------------------------------------------------------- block orders
-BLOCKS = [(2022, 2250, D(2021, 12, 20)), (2023, 3300, D(2022, 12, 19)), (2024, 2650, D(2023, 12, 18)),
-          (2025, 2850, D(2024, 12, 20)), (2026, 2500, D(2025, 12, 19))]
+FIRST_BLOCK = 2250      # 2021-22, the pool's first block, set from the members' surge plans before any pool January
+FILED = {2022: D(2021, 12, 20), 2023: D(2022, 12, 19), 2024: D(2023, 12, 18), 2025: D(2024, 12, 20),
+         2026: D(2025, 12, 19)}
 
 
-def block_split(hs, block, members):
-    """Each agency's share of the block in proportion to the surge unit slots it fills at Level 1 and 2 (Schedule A)."""
+def blocks(hs, truth):
+    """The blocks the pool filed: the first from the members' surge plans, each later one the pool's draw over the last
+    January's block weeks at the surge plans' staffing, rounded to the nearest 50 (the pool manager's practice)."""
+    out = []
+    for w in sorted(FILED):
+        if w == min(FILED):
+            blk = FIRST_BLOCK
+        else:
+            a, b = C.block_weeks(w - 1)
+            drew = sum(h["grid"][r["level"] - 1] for h in hs if h["region"] != "NO"
+                       for r in truth[h["facility_id"]] if a <= r["date"] <= b and r["level"])
+            blk = int(50 * round(drew / 50.0))
+        out.append((w, blk, FILED[w]))
+    return out
+
+
+def season_primary(hs, w):
+    """Each southern member's primary agency in the season's Schedule A. Crestfield, the pool's first agency, held the
+    first slot at every member in 2021-22; members moved their first slot to Inland Seas as their staffing contracts
+    came up for renewal, two or three a season in member-number order, the last of them for 2026-27."""
+    movers = [h["facility_id"] for h in hs if h["region"] != "NO" and h["agency"] == "I"]
+    moved = {2022: 0, 2023: 2, 2024: 4, 2025: 4, 2026: 6, 2027: len(movers)}[w]
+    return {h["facility_id"]: ("I" if h["facility_id"] in movers[:moved] else "C") if h["region"] != "NO" else h["agency"]
+            for h in hs}
+
+
+def block_split(hs, block, members, w):
+    """Each agency's share of the block in proportion to the surge unit slots the season's Schedule A gave it at Level 1
+    and 2; an agency that could not confirm its share confirmed what its roster allowed and the other took the rest."""
+    prim = season_primary(hs, w)
     slots = {"C": 0, "I": 0}
     for h in hs:
         if h["facility_id"] not in members:
             continue
         for g in h["grid"]:
             n = g // 2
-            first = h["agency"]
+            first = prim[h["facility_id"]]
             second = "I" if first == "C" else "C"
             slots[first] += (n + 1) // 2
             slots[second] += n // 2
     c = int(round(block * slots["C"] / float(slots["C"] + slots["I"])))
-    return c, block - c
+    i = block - c
+    r = W.rng(61, w)
+    conf = {"C": min(1.0, r.uniform(0.86, 1.10)), "I": min(1.0, r.uniform(0.86, 1.10))}
+    if conf["I"] < 1.0:
+        short = int(i * conf["I"]) // 5 * 5
+        c, i = c + (i - short), short
+    elif conf["C"] < 1.0:
+        short = int(c * conf["C"]) // 5 * 5
+        c, i = short, i + (c - short)
+    return c, i
 
 
-def write_blocks(out, hs):
+def write_blocks(out, hs, truth):
     wb = Workbook()
     ws = wb.active
     ws.title = "Block orders"
@@ -120,9 +158,9 @@ def write_blocks(out, hs):
             "inland_seas_shifts", "filed_on", "filed_by"]
     south = {h["facility_id"] for h in hs if h["region"] != "NO"}
     rows = []
-    for w, blk, filed in BLOCKS:
+    for w, blk, filed in blocks(hs, truth):
         a, b = C.block_weeks(w)
-        c, i = block_split(hs, blk, south)
+        c, i = block_split(hs, blk, south, w)
         rows.append(["%d-%02d" % (w - 1, w % 100), a, b, blk, c, i, filed, C.PEOPLE["pool_manager"]])
     rows.append(["2026-27", C.BLOCK_2027[0], C.BLOCK_2027[1], None, None, None, None, None])
     _sheet(ws, head, rows, [12, 15, 15, 13, 16, 17, 12, 16])
@@ -151,7 +189,7 @@ def write_inland_seas(out, hs, shifts, decl, s0, s1, fname, queried, created, mo
         ws = wb.create_sheet("Timesheet detail")
         ws.cell(row=1, column=1, value="Timesheets queried by %s, %s to %s" % (
             C.ORG_SHORT, s0.strftime("%m/%d/%Y"), s1.strftime("%m/%d/%Y"))).font = BOLD
-        _sheet(ws, qh, qr, [22, 18, 10, 17, 17, 13, 7, 36], start_row=3)
+        _sheet(ws, qh, qr, [22, 18, 10, 17, 17, 13, 7, 12, 18], start_row=3)
     _save(wb, os.path.join(out, fname), "Inland Seas Nursing", "Inland Seas Nursing", created, modified)
     return n
 
@@ -259,13 +297,13 @@ DICTIONARY = [
     (F_CRS, "request_ref", "The surge request the shift was booked against."),
     (F_ISN25, "Facility", "Inland Seas' name for the member (see the members workbook)."),
     (F_ISN25, "Unit", "The unit the shift was worked on, as signed on the timesheet."),
-    (F_ISN25, "Payroll date", "The date Inland Seas pays the shift under."),
+    (F_ISN25, "Payroll date", "The date Inland Seas pays the shift under: the day the shift ends."),
     (F_ISN25, "Shift", "D for 07:00 to 19:00, N for 19:00 to 07:00."),
     (F_ISN25, "Booking", "Surge for a shift booked against a surge request, Staffing otherwise."),
     (F_ISN25, "Bill to", "TPHA Pool or Facility."),
     (F_ISN26, "Facility", "Inland Seas' name for the member (see the members workbook)."),
     (F_ISN26, "Unit", "The unit the shift was worked on, as signed on the timesheet."),
-    (F_ISN26, "Payroll date", "The date Inland Seas pays the shift under."),
+    (F_ISN26, "Payroll date", "The date Inland Seas pays the shift under: the day the shift ends."),
     (F_ISN26, "Shift", "D for 07:00 to 19:00, N for 19:00 to 07:00."),
     (F_ISN26, "Booking", "Surge for a shift booked against a surge request, Staffing otherwise."),
     (F_ISN26, "Bill to", "TPHA Pool or Facility."),
@@ -353,7 +391,7 @@ def build_pack(out):
     h, rows = R.crestfield_lines(hs, shifts)
     n[F_CRS] = _csv(os.path.join(out, F_CRS), h, rows)
     n[F_MEMBERS] = write_members(out, hs)
-    n[F_BLOCKS] = write_blocks(out, hs)
+    n[F_BLOCKS] = write_blocks(out, hs, truth)
     n[F_ISN25] = write_inland_seas(out, hs, shifts, decl, D(2025, 10, 27), D(2026, 4, 5), F_ISN25, True,
                                    "2025-11-04T13:30:00Z", "2026-04-07T14:15:00Z")
     n[F_ISN26] = write_inland_seas(out, hs, shifts, decl, D(2026, 10, 26), C.CENSUS_END, F_ISN26, False,

@@ -78,11 +78,14 @@ ok("pdf register: every member's surge unit as the roster has it, staffing per l
 
 # ------------------------------------------------------------------------------------------------ the agreement (pdf)
 AG = " ".join(pdf_text(path(r"winter_pool_agreement_.*\.pdf")).split())
-ok("pdf agreement: clauses 1.4, 3.1, 5.1, 5.2 and 6.2 read back",
-   "A shift is one nurse for one scheduled shift, 07:00 to 19:00 or 19:00 to 07:00." in AG
+ok("pdf agreement: clauses 1.2, 1.4, 3.1, 5.1, 5.2 and 6.2 read back",
+   "A Member is a hospital listed in Schedule A, from its Pool start date." in AG
+   and "A shift is one nurse for one scheduled shift, 07:00 to 19:00 or 19:00 to 07:00." in AG
    and "The Pool funds the agency RN shifts that staff a Member's surge unit and start while the Member's surge plan is active." in AG
-   and "Monday 4 January to Sunday 31 January 2027." in AG and "rounded to the nearest 50 shifts" in AG
+   and "The January Block covers every Member's surge unit for the four weeks from the first Monday in January: "
+       "Monday 4 January to Sunday 31 January 2027." in AG and "rounded to the nearest 50 shifts" in AG
    and "returned to the Member's account" in AG)
+ok("pdf agreement: Schedule A lists all 24 roster hospitals", all(r["hospital"] in AG for r in ROS))
 RATES = " ".join(pdf_text(path(r"agency_rate_schedule_.*\.pdf")).split())
 ok("pdf rate schedule read back (Crestfield block rate 88.50)", "Block rate, per hour" in RATES and "88.50" in RATES)
 
@@ -190,6 +193,8 @@ def centre(fids, w, upto=None):
     return st.median(mids)
 
 
+WC = [f for f in ALL if REG[f] == "West and Central"]
+PULL = D(2026, 12, 20)
 waves = [sum(draw(f, *season(w)) for f in NORTH) for w in CLOSED]
 g = st.mean(waves)
 block = r50(g)
@@ -198,44 +203,80 @@ ok("call: the North's mean per-wave draw at the register's staffing rounds to th
 ok("bin: the golden at least a quarter bin inside its cell (edge distance from the figure)", 25 - abs(g - block) >= 12.5,
    25 - abs(g - block))
 wv_s = [sum(draw_by_shift(f, *season(w)) for f in NORTH) for w in CLOSED]
-ok("call: shift by shift at the declared times, the median wave, the last three and the last wave file 600",
+mid3 = sorted(waves)[1:4]
+ok("call: shift by shift at the declared times, the median wave, the last three and the middle three file 600",
    r50(st.mean(wv_s)) == 600 and r50(st.median(waves)) == 600 and r50(st.mean(waves[-3:])) == 600
-   and r50(waves[-1]) == 600, (wv_s, waves))
+   and r50(st.mean(mid3)) == 600, (wv_s, waves))
 jan = [sum(draw(f, *block_weeks(w)) for f in ALL) for w in CLOSED]
-ok("rival: the five closed Januaries' draws average nearly 2,900 (2,850 to the nearest 50)",
-   2850 <= st.mean(jan) < 2900 and r50(st.mean(jan)) == FIG["rival_calendar_januaries_averaged"] == 2850
-   and FIG["rival_calendar_januaries_nearly"] == 2900, jan)
-ok("rival: shift by shift, the closed Januaries still average nearly 2,900",
-   2850 <= st.mean(sum(draw_by_shift(f, *block_weeks(w)) for f in ALL) for w in CLOSED) < 2900)
+ok("rival: the five closed Januaries' draws average about 1,850",
+   r50(st.mean(jan)) == FIG["rival_calendar_januaries_averaged"] == 1850, jan)
+ok("rival: shift by shift, the closed Januaries still average about 1,850",
+   r50(st.mean(sum(draw_by_shift(f, *block_weeks(w)) for f in ALL) for w in CLOSED)) == 1850)
 carry = [abs(jan[i] - jan[i + 1]) / jan[i + 1] for i in range(4)]
-ok("back-test: each January carried to the next winter missed it by more than a third", min(carry) > 1 / 3.0, carry)
+carry_f = [abs(jan[i] - jan[i + 1]) / jan[i] for i in range(4)]
+ok("back-test: each January carried to the next winter missed it by a quarter or more, either way it is scaled",
+   min(carry) >= 0.25 and min(carry_f) >= 0.25, (carry, carry_f))
 ok("the North's surge nights in no closed January block", all(sum(draw(f, *block_weeks(w)) for f in NORTH) == 0
                                                               for w in CLOSED))
-lags = [centre(NORTH, w) - centre(SE, w) for w in CLOSED]
-ok("timing: the North's waves five to six weeks after the Southeast's in every closed winter",
-   all(35 <= x <= 42 for x in lags), lags)
+lag_wc = [centre(NORTH, w) - centre(WC, w) for w in CLOSED]
+lag_se = [centre(NORTH, w) - centre(SE, w) for w in CLOSED]
+ok("timing: the North's waves 30 to 34 days after West and Central's in every closed winter",
+   all(30 <= x <= 34 for x in lag_wc), lag_wc)
+ok("timing: the Southeast's lead over the North moved by four weeks", round((max(lag_se) - min(lag_se)) / 7.0) == 4,
+   lag_se)
 off = [centre(SE, w) - season(w)[0].toordinal() for w in CLOSED]
-ok("timing: the Southeast's own timing moved by about five weeks", 31.5 <= max(off) - min(off) <= 38.5, off)
+ok("timing: the Southeast's own timing moved by about five weeks",
+   round((max(off) - min(off)) / 7.0) == 5 and max(off) - min(off) == FIG["southeast_centre_moved_days"], off)
+loo_wc = [abs(st.mean(lag_wc[:i] + lag_wc[i + 1:]) - lag_wc[i]) for i in range(5)]
+loo_se = [abs(st.mean(lag_se[:i] + lag_se[i + 1:]) - lag_se[i]) for i in range(5)]
+ok("back-test: the lag behind West and Central from the other four winters within two days of each winter's own; "
+   "the lag behind the Southeast misses a winter by more than three weeks", max(loo_wc) < 2 and max(loo_se) > 21,
+   (loo_wc, loo_se))
 a27 = D(2026, 11, 1)
-st27 = {f: spells(f, a27, D(2026, 12, 20)) for f in SOUTH}
-ok("this winter: one surge spell at each southern member, begun 2 to 10 December",
-   all(len(v) == 1 for v in st27.values()) and min(v[0][0] for v in st27.values()) == D(2026, 12, 2)
-   and max(v[0][0] for v in st27.values()) == D(2026, 12, 10))
+st27 = {f: spells(f, a27, PULL) for f in SOUTH}
+s_on = [v[0][0] for v in st27.values()]
+wc_on = [st27[f][0][0] for f in WC]
+ok("this winter: one surge spell at each southern member, begun 2 to 9 December; West and Central's 3 to 9 December",
+   all(len(v) == 1 for v in st27.values()) and min(s_on) == D(2026, 12, 2) and max(s_on) == D(2026, 12, 9)
+   and min(wc_on) == D(2026, 12, 3) and max(wc_on) == D(2026, 12, 9)
+   and FIG["south_spells_began"] == "2 to 9 December 2026" and FIG["west_and_central_spells_began"] == "3 to 9 December 2026")
 longest = {f: max((spells(f, *season(w))[0][1] - spells(f, *season(w))[0][0]).days + 1 for w in CLOSED) for f in ALL}
 ends = {f: st27[f][0][0] + dt.timedelta(days=longest[f] - 1) for f in SOUTH}
-ok("this winter: at each member's longest closed-winter spell every southern member stands down by 30 December",
-   max(ends.values()) == D(2026, 12, 30))
+ok("this winter: at each member's longest closed-winter spell every southern member stands down by 29 December",
+   max(ends.values()) == D(2026, 12, 29) and FIG["south_all_stand_down_by"] == "29 December 2026")
 b0, b1 = D(2027, 1, 4), D(2027, 1, 31)
-se27 = centre(SE, 2027, upto=D(2026, 12, 20))
 half = max(longest[f] for f in NORTH) / 2.0
-ok("this winter: at every closed winter's lag the North's wave falls wholly inside the block weeks",
-   all(b0.toordinal() <= se27 + x - half and se27 + x + half <= b1.toordinal() for x in lags), (se27, lags))
-ok("this winter: no North member in surge at the pull", all(not spells(f, a27, D(2026, 12, 20)) for f in NORTH))
-lo, hi = b0.toordinal() - se27, b1.toordinal() - se27
-post = [sum(draw(f, D.fromordinal(int(round(centre(SE, w) + lo))), D.fromordinal(int(round(centre(SE, w) + hi))))
-            for f in SOUTH) for w in CLOSED]
-ok("rival: the pool's own draw in the same weeks after each closed winter's Southeast peak is none",
-   all(p == 0 for p in post) and FIG["rival_pool_own_post_peak_weeks"] == 0, post)
+
+
+def inside(c):
+    return b0.toordinal() <= c - half and c + half <= b1.toordinal()
+
+
+wc27 = centre(WC, 2027, upto=PULL)
+on_wc = [st.median(spells(f, *season(w))[0][0].toordinal() for f in WC) for w in CLOSED]
+on27 = st.median(d.toordinal() for d in wc_on)
+lag_on = [centre(NORTH, w) - on_wc[i] for i, w in enumerate(CLOSED)]
+ok("this winter: at every closed winter's lag behind West and Central, from its centre at the pull or its spells' "
+   "onset, the North's wave falls wholly inside the block weeks, in mid-January",
+   all(inside(wc27 + x) for x in lag_wc) and all(inside(on27 + x) for x in lag_on)
+   and D(2027, 1, 10) <= D.fromordinal(int(round(on27 + st.mean(lag_on)))) <= D(2027, 1, 21),
+   (wc27, lag_wc, on27, lag_on))
+ok("this winter: no North member in surge at the pull", all(not spells(f, a27, PULL) for f in NORTH))
+
+
+def shifted(fids, c27, cw, w):
+    k = int(round(c27 - cw))
+    return sum(draw(f, b0 - dt.timedelta(days=k), b1 - dt.timedelta(days=k)) for f in fids)
+
+
+al = st.mean(shifted(ALL, wc27, centre(WC, w), w) for w in CLOSED)
+pl = st.mean(shifted(NORTH, wc27 + st.mean(lag_wc), centre(NORTH, w), w) for w in CLOSED)
+ok("call: the whole census aligned on West and Central's centre, and the North placed at its lag, file 600",
+   r50(al) == 600 and r50(pl) == 600, (al, pl))
+se27 = centre(SE, 2027, upto=PULL)
+se_t = [st.mean(shifted(NORTH, se27 + agg(lag_se), centre(NORTH, w), w) for w in CLOSED) for agg in (st.mean, st.median)]
+ok("rival: timed from the Southeast, the North's wave leaves the block a small part of the 600",
+   max(se_t) < 0.25 * g and max(FIG["rival_north_timed_from_the_southeast"]) < 0.25 * g, se_t)
 ok("component: the sixteen southern members' expected draw over the block weeks is none",
    FIG["south_expected_draw_block_weeks"] == 0 and max(ends.values()) < b0)
 
@@ -277,35 +318,39 @@ for fn in (r"inland_seas_member_shifts_2025-26\.xlsx", r"inland_seas_member_shif
             n_isn += 1
     wb.close()
 ok("xlsx Inland Seas: every queried night clocked in the evening before its payroll date", night_ok)
-A, B, WK = Counter(), Counter(), Counter()
+A, B, WK, BW = Counter(), Counter(), Counter(), Counter()
 W0 = D(2025, 11, 3)
 for f, ag, t, u, pool in LINES:
     if not (D(2025, 11, 1) <= t.date() <= D(2026, 3, 31)):
         continue
+    k = (t.date() - W0).days // 7
     fund = u == UNIT[f] and level(f, t) > 0
     if fund:
         A[f] += 1
-        k = (t.date() - W0).days // 7
         if 0 <= k < 21:
             WK[(k, ag)] += 1
     elif pool:
         B[f] += 1
+    if pool and 0 <= k < 21:
+        BW[k] += 1
 ok("ask A: the shifts the pool funded at each of the 16 members", all(A[f] == FIG["funded_%s" % f] for f in SOUTH),
    [(f, A[f]) for f in SOUTH])
 ok("ask B: the shifts billed to the pool it did not fund at each of the 16 members",
    all(B[f] == FIG["billed_not_funded_%s" % f] for f in SOUTH), [(f, B[f]) for f in SOUTH])
 ok("asks: no figure nil and no North member in last winter's billing", all(A[f] > 0 and B[f] > 0 for f in SOUTH)
    and not any(A[f] or B[f] for f in NORTH))
+ok("asks: the table's totals", sum(A[f] for f in SOUTH) == FIG["total_funded"]
+   and sum(B[f] for f in SOUTH) == FIG["total_billed_not_funded"])
 tot = Counter()
 for (k, ag), v in WK.items():
     tot[k] += v
-kb = max(tot, key=lambda k: tot[k])
-ok("ask C: the busiest week and its total", tot[kb] == FIG["busiest_week_total"] and
-   (W0 + dt.timedelta(days=7 * kb)).isoformat() == FIG["busiest_week"][:10], (kb, tot[kb]))
-ok("ask C: every week's split by agency as the chart draws it",
-   all(WK[(k, "C")] == FIG["week_%s" % (W0 + dt.timedelta(days=7 * k)).isoformat()]["crestfield"]
-       and WK[(k, "I")] == FIG["week_%s" % (W0 + dt.timedelta(days=7 * k)).isoformat()]["inland_seas"]
-       for k in range(21)))
+kb = max(range(21), key=lambda k: (tot[k], -k))
+ok("ask C: the busiest week by shifts started, its funded total and the agency shifts starting that week billed to "
+   "the pool", tot[kb] == FIG["busiest_week_total"] and BW[kb] == FIG["busiest_week_billed_to_pool"]
+   and (W0 + dt.timedelta(days=7 * kb)).isoformat() == FIG["busiest_week"][:10]
+   and (W0 + dt.timedelta(days=7 * kb + 6)).isoformat() == FIG["busiest_week"][-10:], (kb, tot[kb], BW[kb]))
+ok("ask C: the busiest week clear of the next busiest", tot[kb] - max(tot[k] for k in range(21) if k != kb) >= 20,
+   sorted(tot.values())[-3:])
 
 # ------------------------------------------------------------------------------------------------ the other files
 ww = json.load(open(path(r"wastewater_results_.*\.json")))
@@ -333,12 +378,16 @@ wb = openpyxl.load_workbook(path(r"january_block_orders_.*\.xlsx"), read_only=Tr
 bo = [r for ws in wb.worksheets for r in ws.iter_rows(values_only=True) if r and r[0]]
 wb.close()
 bo_h = [dict(zip(bo[0], r)) for r in bo[1:]]
-ok("xlsx block orders: five filed Januaries, the 2026-27 row not yet filed (2025-26 block 2,500)",
-   len(bo_h) == 6 and bo_h[4]["block_shifts"] == 2500 and bo_h[5]["block_shifts"] is None)
+ok("xlsx block orders: five filed Januaries, each after the first the last January's draw to the nearest 50, split "
+   "between the agencies, the 2026-27 row not yet filed",
+   len(bo_h) == 6 and all(bo_h[i]["block_shifts"] == r50(jan[i - 1]) for i in range(1, 5))
+   and all(x["crestfield_shifts"] + x["inland_seas_shifts"] == x["block_shifts"] for x in bo_h[:5])
+   and bo_h[5]["block_shifts"] is None, [x["block_shifts"] for x in bo_h])
 wb = openpyxl.load_workbook(path(r"data_dictionary\.xlsx"), read_only=True, data_only=True)
 dd = [r for ws in wb.worksheets for r in ws.iter_rows(values_only=True) if r and r[0]]
 wb.close()
-ok("xlsx dictionary read back (the payroll date field)", any(r[1] == "Payroll date" for r in dd) and len(dd) > 20)
+ok("xlsx dictionary read back: Inland Seas pays every shift under the day it ends, in both winters' files",
+   sum(1 for r in dd if r[1] == "Payroll date" and "the day the shift ends" in str(r[3])) == 2 and len(dd) > 20)
 with open(path(r"extract_manifest_.*\.csv"), newline="") as fh:
     man = list(csv.DictReader(fh))
 ok("csv manifest names every other shipped file", {m["file"] for m in man} == set(os.listdir(T)) - {
@@ -353,21 +402,25 @@ GD = os.path.join(TASK, "golden")
 wb = openpyxl.load_workbook(os.path.join(GD, "winter_pool_block_jan2027.xlsx"), read_only=True, data_only=True)
 bl = [r for r in wb["Block"].iter_rows(values_only=True)]
 mem = [r for r in wb["Members 2025-26"].iter_rows(values_only=True) if r and r[0]]
-wk = [r for r in wb["Weekly 2025-26"].iter_rows(values_only=True) if r and isinstance(r[0], dt.datetime)]
+names = wb.sheetnames
 wb.close()
-ok("golden workbook: the block and its two components", bl[4][1] == 600 and bl[5][1] == 0 and bl[6][1] == 600)
+ok("golden workbook: the block and its two components", bl[4][1] == 600 and bl[5][1] == 0 and bl[6][1] == 600
+   and names == ["Block", "Members 2025-26"], names)
 mrow = {r[1]: r for r in mem if r[1] in A or r[1] in SOUTH}
 ok("golden workbook: the member table equals the recomputed columns",
    all(mrow[f][4] == A[f] and mrow[f][5] == B[f] for f in SOUTH) and len(mrow) == 16)
-ok("golden workbook: the weekly table equals the recomputed weeks",
-   len(wk) == 21 and all(r[1] == WK[(i, "C")] and r[2] == WK[(i, "I")] for i, r in enumerate(wk)))
 im = Image.open(os.path.join(GD, "pool_shifts_winter_2025-26.png"))
 ok("golden chart: a rendered PNG", im.format == "PNG" and im.size[0] > 1000 and im.size[1] > 500, im.size)
 sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
 ok("submission: the call, both rivals and every member line carry the recomputed figures",
-   "block-book 600 agency RN shifts" in sub and "average draw of nearly 2,900 shifts" in sub and "not none" in sub
+   "block-book 600 agency RN shifts" in sub and "average draw of about 1,850 shifts" in sub
+   and "timed from the Southeast, whose lead over the North moved by four weeks" in sub
+   and "began %s" % FIG["west_and_central_spells_began"][:-5] in sub
    and all("(%s): %s funded, %s billed to the pool and not funded" % (f, "{:,}".format(A[f]), B[f]) in sub
-           for f in SOUTH) and "{:,} shifts".format(tot[kb]) in sub)
+           for f in SOUTH) and "{:,} shifts funded".format(tot[kb]) in sub
+   and "billed to the pool: {:,}".format(BW[kb]) in sub)
+ok("submission: no figure in blocks 1 to 3 finer than 50 shifts beside the block (about 1,850 and about 600)",
+   not re.search(r"\b(?:602|60[0-9]\.\d|1,86\d)\b", sub.split("## 4.")[0]))
 ok("submission: no em or en dash", chr(0x2014) not in sub and chr(0x2013) not in sub)
 cited = set(re.findall(r"\b[\w.-]+\.(?:csv|xlsx|pdf|json|png)\b", sub))
 ok("submission: every file it names is shipped or a golden", bool(cited) and all(

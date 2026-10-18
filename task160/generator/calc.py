@@ -76,8 +76,15 @@ class Truth:
     def region_mid(self, reg, w, upto=None):
         return float(np.median([self.mid(h["facility_id"], w) for h in self.region(reg)]))
 
-    def lags(self):
-        return {w: self.region_mid("NO", w) - self.region_mid("SE", w) for w in C.CLOSED}
+    def lags(self, up="WC"):
+        """The North's wave centre behind an upstream region's, each closed winter."""
+        return {w: self.region_mid("NO", w) - self.region_mid(up, w) for w in C.CLOSED}
+
+    def first(self, reg, w, upto=None):
+        a, b = C.season_bounds(w)
+        b = min(b, upto) if upto else b
+        return min(r["date"] for h in self.region(reg) for r in self.truth[h["facility_id"]]
+                   if a <= r["date"] <= b and r["level"]).toordinal()
 
     # ---------------------------------------------------------------------------------------------- the golden
     def north_waves(self, how="grid"):
@@ -151,21 +158,64 @@ def rungs(T):
     nw = T.north_waves()
     nws = T.north_waves("shifts")
     out["R3"] = st.mean(nw)
+    srt = sorted(nw)
     fam = {
         "mean of five waves (staffing per night)": st.mean(nw),
         "mean of five waves (shift by shift)": st.mean(nws),
         "median of five waves": st.median(nw),
         "last three waves": st.mean(nw[-3:]),
-        "last wave": nw[-1],
-        "February waves only": st.mean([v for w, v in zip(C.CLOSED, nw) if w != 2025]),
+        "middle three waves": st.mean(srt[1:4]),
         "hospital by hospital medians": sum(st.median([T.season_draw([h], w) for w in C.CLOSED]) for h in north),
         "scaled by this winter's southern draw": st.mean(nw) * T.season_draw(south, 2027) / st.mean([T.season_draw(south, w) for w in C.CLOSED]),
+        "every member aligned on West and Central's centre": aligned(T, "WC"),
+        "the North placed by West and Central's first surge night": placed(T, "WC", onset=True),
     }
     out["family"] = fam
     out["north_waves"] = nw
     out["lags"] = T.lags()
+    out["lags_se"] = T.lags("SE")
     out["jan"] = jan
+    # timing the North from the Southeast instead of West and Central: the North placed by the Southeast's centre or
+    # first surge night and the closed winters' mean lag, and the whole state aligned on the Southeast
+    out["R1c"] = placed(T, "SE")
+    out["R1c_onset"] = placed(T, "SE", onset=True)
+    out["R1d"] = aligned(T, "SE")
     return out
+
+
+def _window(T, fids, w, delta):
+    a, b = C.BLOCK_2027
+    return sum(T.draw_grid(f, a - dt.timedelta(days=delta), b - dt.timedelta(days=delta)) for f in fids)
+
+
+def _anchor(T, reg, w, onset=False, upto=None):
+    if onset:
+        return T.first(reg, w, upto)
+    if w == 2027:
+        a, _ = C.season_bounds(2027)
+        mids = []
+        for h in T.region(reg):
+            sp = W.spells([r for r in T.truth[h["facility_id"]] if a <= r["date"] <= upto])
+            mids.append(sp[0][0].toordinal() + (sp[0][1] - sp[0][0]).days / 2.0)
+        return float(np.median(mids))
+    return T.region_mid(reg, w)
+
+
+def aligned(T, reg, onset=False):
+    """Every member's closed-winter census moved so the anchor region's wave sits where it sits this winter (its
+    centre, or its first surge night, as the census shows it at the pull), read over the block weeks and averaged."""
+    a27 = _anchor(T, reg, 2027, onset, C.CENSUS_END)
+    fids = [h["facility_id"] for h in T.hs]
+    return st.mean(_window(T, fids, w, int(round(a27 - _anchor(T, reg, w, onset)))) for w in C.CLOSED)
+
+
+def placed(T, up, onset=False):
+    """The North's closed-winter waves placed this winter by an upstream region's centre (or first surge night) and the
+    closed winters' mean lag, read over the block weeks and averaged."""
+    north = [h["facility_id"] for h in T.region("NO")]
+    lags = [_anchor(T, "NO", w, onset) - _anchor(T, up, w, onset) for w in C.CLOSED]
+    pred = _anchor(T, up, 2027, onset, C.CENSUS_END) + st.mean(lags)
+    return st.mean(_window(T, north, w, int(round(pred - _anchor(T, "NO", w, onset)))) for w in C.CLOSED)
 
 
 if __name__ == "__main__":
@@ -177,9 +227,9 @@ if __name__ == "__main__":
 
 # -------------------------------------------------------------------------------------------------- out of sample
 def out_of_sample(T):
-    """Each closed January forecast from the winters before it, by the calendar (last January carried) and by the
-    regional lag (the North's mean per-wave draw of the other winters placed by the Southeast's centre plus the mean
-    lag of the other winters, the south's waves placed the same way)."""
+    """Each closed January forecast from the winter before it by the calendar (last January carried); the North's
+    per-wave draw and its lag behind West and Central (and, for the rival, behind the Southeast) each left out one
+    winter at a time and forecast from the other four."""
     jan = {w: T.block_draw(T.hs, w) for w in C.CLOSED}
     carry = {w: (jan[w - 1] - jan[w]) / jan[w] for w in C.CLOSED[1:]}
     loo = {}
@@ -189,7 +239,9 @@ def out_of_sample(T):
         loo[w] = (st.mean(others) - nw[w]) / nw[w]
     lag = T.lags()
     lag_err = {w: lag[w] - st.mean([lag[v] for v in C.CLOSED if v != w]) for w in C.CLOSED}
-    return {"carry": carry, "north_loo": loo, "lag_loo": lag_err, "jan": jan}
+    lse = T.lags("SE")
+    lag_err_se = {w: lse[w] - st.mean([lse[v] for v in C.CLOSED if v != w]) for w in C.CLOSED}
+    return {"carry": carry, "north_loo": loo, "lag_loo": lag_err, "lag_loo_se": lag_err_se, "jan": jan}
 
 
 def timing_2027(T):
