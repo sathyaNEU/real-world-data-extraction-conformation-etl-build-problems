@@ -199,6 +199,14 @@ back; the better outcome is never to face it.
   against 45 for forecasting. A house domain inherits the task types of the client domains it maps to, so
   its cells are drawable wherever theirs are; `coverage` separates the never-built pairings a task type
   serves from the ones nothing serves.
+- **A draw tested as if it had been drawn yesterday.** `check` on an unfiled card gives it a key that comes
+  after everything filed that day, so the axis bans run against the window a reviewer will really hold.
+  That key used to be withheld when a card already sat in the slot, which is exactly the re-root case: the
+  filed card is the architecture the draw replaces, so a re-root was tested against a window three builds
+  stale. task190's re-root passed `check` on a window ending at task196 and BLOCKed on `heart` against
+  task244 the moment registration gave it a real stamp, with the pack already cut. Fixed in `guard.py`, and
+  the lesson stands anyway: **an axis a draw cannot clear is cheapest to find before the generator is
+  written, so probe with `check` at the draw and again the moment the card is filed.**
 - **A mechanism that died before registration.** The card corpus is a record of draws, not of screens, so
   every mechanism killed at stage 1 or 2 is invisible to `recent`, `mechanisms`, `nearest` and `heart`. Those
   kills live in each number's `## Tried and rejected` and in `pipeline.json`, and they are the cheapest

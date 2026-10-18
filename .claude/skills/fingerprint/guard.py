@@ -466,8 +466,13 @@ def check(cand, cards, vocab, status=None):
     # met it in their own check when they were filed.
     if cand.get("drawn"):
         key = draw_key(cand)
-        if not cand.get("registered") and not (CARDS_DIR / ("%s.json" % cand.get("task"))).exists():
-            key = (key[0], "9999", key[2])      # a draw not yet filed comes after everything filed that day
+        if not cand.get("registered"):
+            # A draw not yet filed comes after everything filed that day, whether or not a card already
+            # sits in its slot. The slot's filed card is the architecture this draw replaces, so testing a
+            # re-root as if it were drawn before today's registrations ran the axis bans against a window
+            # three builds stale: task190's re-root passed `check` and then BLOCKed on `heart` the moment
+            # registration gave it a real stamp.
+            key = (key[0], "9999", key[2])
         ordered = [c for c in ordered if draw_key(c) < key]
     live = [c for c in ordered if not card_is_spent(c)]
     recent = live[-RECENT:]

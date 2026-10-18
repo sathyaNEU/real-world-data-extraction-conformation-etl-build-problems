@@ -1,39 +1,48 @@
 {
  "task": "task190",
  "owner": "oviya13ya",
- "status": "PAUSED",
- "domain": "criminology-justice/crime-incidence-hotspot-analysis (assigned; not yet registered on the card)",
+ "status": "BUILD",
+ "domain": "survey-research-official-statistics/anomaly-detection",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 3,
+ "stage_name": "build complete, stage 4 pending",
  "updated": "2026-10-18",
- "stump": "architecture 5's assigned ground was mapped against the guard and searched for a decisive step, and eleven candidates died: five on the WHAT screen (the exposure denominator, the benchmark pool, the persistence window), two on the swap test (coverage over overlapping zones, a junction-connected focal sum), three on the corpus (task194 v2's standardisation, task68's continuing panel, task181 v1's time at risk), and the one that cleared both screens, a near-repeat clustering ratio taken against its own exactly computable pair margins, died on a measured reflex: the plain share of addresses burgled more than once reaches the golden at every boost, always by a wider margin than the decisive step. The decisive step is owed and the ground may have none left.",
- "architecture": 5,
+ "stump": "Each waste stream's 2026 recovery rate is a complete register tonnage over a design-based estimate of the stream's arisings, so all of the rate's sampling error is the denominator's and none comes from the stratum the survey enumerates completely; 95.8 per cent of metal arisings sit in that stratum, giving it a 1.1 per cent CV against mixed commercial and industrial's 5.7, so metal's 2.9 point shortfall is 4.57 standard errors while mixed C&I's larger 4.9 point shortfall is 1.45. Every route that ranks the shortfall, or tests it against the published national CV or the stream's reporting-enterprise count, files mixed commercial and industrial.",
+ "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": "",
-  "checks": ""
+  "exit": 0,
+  "date": "2026-10-18",
+  "checks": "51 checks, 0 FAIL, 0 WARN against the architecture-6 card; 1 FAIL against the card registered in the repo, which is still architecture 4's and which this builder is barred from registering"
  },
- "build_gates": {},
+ "build_gates": {
+  "generator_checks": "PASS, 53 checks, 0 FAIL, exit 0",
+  "verify": "PASS, 43 checks, 0 FAIL, exit 0 (reads only target/ and golden/)",
+  "rebuilds": "two consecutive rebuilds byte-identical on all 19 files",
+  "figures_check": "exit 0, 181 figures in blocks 1 to 4, 0 absent from figures.json",
+  "input_gates": "17 files, 3 formats, three csv files above 25,000 rows, 2 declared distractors, every file licence-clean with source and date",
+  "ceiling": "pair ceiling 28.5 (gate 40), mirror leakage 0.0 per cent (gate under 35), measured on the cut pack",
+  "realism": "golden-realism pass run on both goldens after the figures froze; container audit clean on target/ and golden/"
+ },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (exit 1), sweep 11 clean, sweeps 1, 2, 5, 6, 7, 8, 9 clean; 4 REVIEW lines each answered in the design note",
+  "reader": "stage 4, the orchestrator's"
  },
  "duplicate_check": {
-  "heart": "",
-  "check": "",
-  "surface": ""
+  "heart": "WARN against the architecture-6 card (BLOCK against the stale registered card is that card matching its own architecture-4 driver at 1.00)",
+  "check": "WARN, no BLOCK, with the architecture-6 card live in the window",
+  "surface": "one promoted pair, task190 vs task195 at surface 0.084 (corpus percentile 70), on the gap, decisive generator and Gate G triple; differentiated in writing on the card"
  },
  "judge": {
   "architecture_1": "spent: three consecutive determinism SEND_BACK verdicts, Gate F moderate to low",
   "architecture_2": "spent: three judge passes, the third NOT_DETERMINISTIC on an estimator the pack files nowhere",
   "architecture_3": "spent: NOT_DETERMINISTIC SEND_BACK, stump power moderate to low; Gate B forced the reliability factor table to ship and shipping it made the projection route recoverable, so Gate F fell",
   "architecture_4": "abandoned on a model constraint, not a design finding: two builder sessions on two models terminated by an API safeguard on the ground's own subject matter, and the ground separately now carries a ban.subdomain BLOCK against task242",
-  "architecture_5": "not yet spawned; stage 1 is not complete and no card is registered"
+  "architecture_5": "spent at stage 1 on measurement, nothing cut: eleven candidates died on the WHAT screen, the swap test or the corpus, and the near-repeat Knox ratio died on the repeat-address reflex",
+  "architecture_6": "built to stage 3 complete; stage 4 not run (the orchestrator's)"
  },
  "returned": [],
- "resume": "THE STRUCTURAL REASON, AND THE FIRST THING TO READ: crime-incidence-hotspot-analysis is additive over rows, so every quantity this task type estimates is either one of the estimand's five parts (population, outcome, window, unit, comparison, and the exposure denominator and the benchmark pool are both the comparison) or a correction already spent in this lane. That is why the ground has no decisive step left for this slot rather than no good one, and it is why eleven candidates died before a default path existed. PAUSED, NOT RETIRED: nothing here is final, the number sits in the backlog with everything banked, and it comes back when the pool widens, which it will as this wave's builds ship and the bans against the last three builds lapse. The next session on this slot starts from the axis map in the design note's ## Tried and rejected rather than re-deriving it, and re-runs the axis prober described there rather than trusting the map, because the three builds the bans reach move as the wave ships. WHY THE EFFORT MOVED RATHER THAN RE-ROOTING AGAIN: the slot, not the ground, is the problem. Five architectures sit in the card's lineage, which test.own_lineage and the driver guard compare every new draw against, on top of the lane's spent set, so the same ground drawn on a number with no lineage has a materially better chance than it has here. The ground recommendation went to task199: political-science-public-policy / conflict-protest-event-data-analysis, where the structure worth drawing toward is the source-count and media-reach dependence of the event record, as a quantity the records measure about their own production rather than a fact about how they were produced; multi-source deduplication against a coding manual is rule application the moment the manual ships, and one-sided reporting of ongoing against ended episodes is maturity censoring, blocked against the last three builds and held by task194. STATE: stage 1 incomplete and deliberately not registered. The card still carries architecture 4's identity with all four dead architectures in its lineage, so the guard blocks the dead epidemiological ground rather than a criminology ground this slot is not building. Nothing is cut: no generator, no pack, no prompt, no architecture-5 design section. Architecture 4's ## Draw is demoted to an H3 archive heading so precut.py cannot pass the design gate on a dead design; precut.py task190 reports all eleven design sections missing, which is the true state. Banked in ## Tried and rejected, last five entries: the full axis map from guard.py check on this pairing (only maturity_censoring and causal_design are strategy-blocked, shape 17 is blocked, and composition_mix and population_selection are NOT blocked, contrary to the slot note architecture 4 left); the eleven candidate decisive steps with the gate each died on; the swept measurement that killed the near-repeat ratio, the one candidate that cleared both the WHAT screen and the swap test; the three search scripts with their parameters, since the session scratchpad holding them does not survive; and the unspent New Zealand persona draw.",
+ "resume": "Stage 3 is complete and every free gate is green. The orchestrator owns stage 4 and 5. TWO THINGS THIS BUILDER COULD NOT DO, both barred by the wave contract. (1) The card is not registered: the architecture-6 card sits at scratchpad/wave5/task190/task190_card.json and the card in the repo is still architecture 4's epidemiological draw. That stale card is the only reason precut.py exits 1 (its task-type check reads the card's domain) and the only reason guard.py heart returns BLOCK (it compares architecture 4's driver against itself at 1.00); both are green against the architecture-6 card, shown by running precut with CARDS pointed at the scratch copy and guard with FINGERPRINT_CARDS set. Register the card, then re-run precut.py, guard.py heart and guard.py surface, and re-probe ban.role before relying on any axis: capacity_planner blocked, appeared to lapse, and blocked again the moment this card went live in the window. (2) No git. Nothing is committed. ALSO NOT RUN: target.zip is not cut, because the contract puts shipping at stage 5.",
  "approved": null,
  "delivered": null,
  "portal": null,

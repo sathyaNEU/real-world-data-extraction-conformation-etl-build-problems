@@ -1,15 +1,403 @@
 # task190 design note
 
-Architecture 4, drawn 2026-10-17 after architecture 3 was called spent. The lane retires nothing
-(`.claude/authors/oviya13ya.md`), so the number re-roots. Everything below the section that follows,
-down to `## Tried and rejected`, is architecture 3's record and is kept as the lesson the new draw has
-to respect; architecture 4's own draw, design and build replace it as they are written.
+Architecture 6, drawn 2026-10-18 on new ground after architecture 5 died at stage 1 on measurement.
+Architectures 1, 2 and 3 died on determinism verdicts; 4 on a model constraint plus a measured null; 5 on
+a measured reflex. The live design is this block; everything from `## Architecture 3, spent` down is kept
+as record.
+
+## Draw
 
 | | |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task190.json`, architecture 4 |
+| Card | architecture 6 draft at `/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave5/task190/task190_card.json`; `guard.py check` **WARN, no BLOCK**. The card under `.claude/skills/fingerprint/cards/` is still architecture 4's: this builder is barred from `register`, so the orchestrator registers the draft. |
 | Owner | oviya13ya |
-| Status | stage 1, draw |
+| Status | stage 3, build |
+| Domain / subdomain | `survey-research-official-statistics` / `anomaly-detection` (the client's own task type) |
+| Objective | `anomaly-detection` |
+| Shape | 09, funnel or chain of stages |
+| Decision type | `pick_one_of_n`, answer unit `named_option`, question form `which` |
+| Gap / pattern / generator | `objective` / `none` / G16 |
+| Gate G | `method_or_model_selection` |
+| Strategy | `uncertainty_hold`; Layer 2 family `estimation_fit`, pattern `own:design-variance-of-a-ratio-whose-denominator-alone-is-estimated` |
+| Calibration form | `none` |
+| Context artifact | `capacity_report` |
+| Role / forum / forcing event / org family | `operations_director` / `line_manager_or_team` / `incident_or_complaint` / `research_or_statistics_office` |
+| World | Portugal, EUR, five mainland regions; a statutory National Institute for Environment Statistics |
+| Deliverables | `recovery_attainment_2026.xlsx`, `attainment_against_target_2026.png` |
+| As-of | the register extract is 2027-01-31, the survey round 2027-01-16, the decision due 2027-02-28; `leak.py --asof 2027-02-28` |
+
+**Pairing.** Survey research and official statistics is the one field that ships the sampling error of its
+own estimates as part of the estimate, and the anomaly-detection task type in it asks whether a published
+figure's departure from a reference is real or is the estimate's own noise. The deciding quantity here is a
+design-based ratio whose numerator is a complete administrative total and whose denominator is a
+stratified-sample estimate, which is the field's commonest published object (a rate per unit of exposure
+the register cannot see) and whose standard error is the field's own Taylor-linearised ratio variance.
+
+**Data-native sentence.** In this pack the Business Waste Survey enumerates the 250-or-more employee
+stratum completely and samples the three smaller strata at 1 in 4, 1 in 8 and 1 in 225, so 95.8 per cent of
+metal and metal-bearing arisings come from enterprises that were all taken and therefore carry no sampling
+error at all, while mixed commercial and industrial arisings sit mostly in the lightly sampled strata: the
+same eight streams, estimated from the same 1,630 returns, carry design coefficients of variation from 1.1
+to 13.0 per cent, and that spread is set by where a stream's waste arises rather than by how many sampled
+enterprises report it (corr(CV, sampled record count) = -0.076, corr(CV, estimated arisings) = -0.013).
+
+**Reserved-axis deviations.** `stump_strategy` is `uncertainty_hold`, not the reserved `composition_mix`:
+nothing here is a mix shift, a standardisation or a reweighting, and the reviewer's key for the decisive
+move is how the evidence is judged with its uncertainty. `calibration_form` is `none`, not the reserved
+`closed_decision_corpus`: the method is forced by the sample design, and a corpus would either bless a
+wrong method (the validated decoy the guard blocks) or tie only under the golden (an oracle).
+`context_artifact` is `capacity_report`, not `published_series`: `ban.artifact` blocks `published_series`
+against task244. `role_family` is `operations_director`, not the reserved `capacity_planner`: `ban.role`
+blocked `capacity_planner` against task197 once the registration window moved, and the axis was redrawn
+rather than argued.
+
+**WARNs answered.** `repeat.gate_g` and `overuse.gate_g`: no other listed Gate G mechanism is honest for a
+call that turns on which variance estimator a design-based ratio takes; it is not a forecast, not a
+decomposition, not a binding constraint, and `signal_vs_noise_or_hold` implies a licensed hold while
+exactly one stream clears the filed bar. `repeat.decision` and `repeat.question_form`: the call is exactly
+one of a filed list of eight streams, so `pick_one_of_n` and `which` are the honest keys, and the division
+commits the module to a stream rather than to a count or a gate. `test.same_driver_older` is differentiated
+on the card against task195, task228 and task240.
+
+**One line per source.** `references/client/layer2-rigor-patterns.md`, this subdomain's anomaly-detection
+patterns: pattern 1 scores edits by weighted impact on an estimate (not used; no editing threshold ships);
+pattern 2 is the Hidiroglou-Berthelot robust ratio test, a unit-level editing test that scales a ratio of
+two reported values by unit size and needs no sample design, where mine is domain-level and turns on which
+of a ratio's terms carries error (no size exponent, quartile bound or unit-level ratio test ships).
+`complex-survey-estimation-variance` patterns 1 and 2 belong to another task type and another objective;
+their shortcuts (the SRS formula, subset-then-estimate) are measured here as rungs 2 and 3 and neither
+reaches the golden, so the decisive step sits one step past both. task195 spends the uncertainty of a
+paired difference; task186 spends the reference distribution a per-unit test needs; task191 spends
+selection on the maximum; task240 spends the variance of a calibrated total. task198's architectures 2
+and 3 are banned to this build and neither is reused.
+
+## Default path
+
+1. Read both halves of the 2026 movement register, map the renamed columns in the second half, and map the
+   waste codes to the eight statistical streams through `waste_code_crosswalk.csv`, honouring the mid-year
+   code revision.
+2. Chain each consignment from the producer's despatch through any interim facility to its final treatment
+   facility, using `facility_register.csv` for the facility role, and take the final facility's confirmed
+   operation code; count each consignment's tonnage once, at the producer's despatch leg.
+3. Sum, per stream, the 2026-despatched tonnage confirmed received at a recovery operation (an R code on
+   the revised list in `treatment_operation_codes.xlsx`).
+4. Estimate each stream's total arisings from `bws_2026_microdata.csv` by summing the design weight times
+   the reported tonnage over every sampled enterprise.
+5. Divide: each stream's 2026 recovery rate.
+6. Subtract each stream's National Waste Management Plan target and rank the eight shortfalls; or test each
+   shortfall against the only precision figure to hand, the 3.9 per cent national coefficient of variation
+   on total arisings quoted in the 2025 release's methodology note, or against the stream's own count of
+   reporting enterprises.
+7. Name the stream with the largest shortfall, which is also the only stream any of those tests finds
+   significant.
+
+**Ends on:** Mixed commercial and industrial wastes, 4.9 points below its 64.5 per cent plan target.
+**Golden:** Metal and metal-bearing wastes, 2.9 points below its 59.5 per cent plan target, the only
+stream whose shortfall is established at the 95 per cent level (z = 4.57, p = 0.00000489).
+
+## Stump sentence
+
+The default path files Mixed commercial and industrial wastes, whose 4.9-point shortfall is the largest of
+the eight and the only one that clears a bar built from the published national coefficient of variation or
+from the stream's count of reporting enterprises, because it treats the recovery rate's uncertainty as a
+property of the rate rather than as the design variance of the one term that is estimated: once that
+variance is computed over the survey's own strata, with the completely enumerated large-enterprise stratum
+contributing none of it, Mixed commercial and industrial sits at 1.45 standard errors and Metal and
+metal-bearing, on a smaller shortfall, at 4.60.
+
+## Three rules
+
+- **Task type:** `survey-research-official-statistics` / `anomaly-detection`, the client's own task type in
+  that domain, which serves Anomaly Detection & Diagnostics in the taxonomy.
+- **Domain test:** the deciding quantity is a design-based ratio estimator's standard error, the
+  Taylor-linearised variance of a ratio whose denominator is a stratified-sample estimate of a population
+  total, which official statistics computes over the design's strata with each stratum's finite-population
+  correction, and where a completely enumerated stratum contributes exactly nothing.
+- **Swap:** "which waste stream's recovery rate is established below its plan target" rewritten as "which
+  hospital's readmission rate is established below its contract target" stops making sense the moment the
+  denominator is a complete count rather than a survey estimate: with a register of every discharge there
+  is no probability sample, no stratum, no inclusion fraction, no finite-population correction and no
+  design variance, so the quantity that decides this call does not exist and the task collapses into
+  comparing two numbers.
+- **Layer 1:** the register's schema changes at the mid-year boundary because the Environment Permit Agency
+  moved system in July (renamed columns, a revised operation-code list); the waste classification codes
+  were revised on the same date, with the agency's own mapping; consignments routed through an interim
+  facility appear on two legs because the forwarding leg is a child consignment in the same register;
+  despatch date against confirmation date straddles both year boundaries; one legacy municipal extract
+  reports in hundreds of kilograms because that was the old return's unit; agency permit numbers against
+  business register enterprise numbers, with supersessions and one duplicate, because the two registers are
+  maintained by different bodies; the 2025 release exists in a preliminary and a revised version; the
+  release's reference tables sit inside a PDF. Nothing is placed to be caught.
+- **Layer 2:** `estimation_fit`. The recovery rate is a ratio of a complete administrative total to a
+  design-based estimate of a population total, so its sampling variance is the linearised variance of the
+  denominator alone, computed over every sampled unit in each stratum (the zeros included, because a stream
+  is a variable and not a subpopulation) with each stratum's finite-population correction, which is zero in
+  the stratum the survey enumerates completely.
+- **Decisive step:** decide which of the ratio's two terms, and which of the sampled units inside the
+  estimated term, carry any sampling error at all: none from the register total, none from the enumerated
+  large-enterprise stratum, and therefore a rate determined to 1.1 per cent for the stream whose arisings
+  are 95.8 per cent enumerated against 5.7 per cent for the stream whose arisings sit in the lightly
+  sampled strata.
+- **Not semantics:** every field, code, unit and definition can be read correctly and the easy route still
+  files Mixed commercial and industrial. The design documentation states the strata, their population and
+  sample counts and that the 250-or-more stratum is taken in full; the microdata carries the stratum code,
+  the design weight and an explicit zero for every stream an enterprise does not produce; the estimand
+  states that the denominator is the total arising at every enterprise in the frame, sampled or not. A
+  solver who reads all of that correctly, computes the rate correctly and then judges the shortfall against
+  the published national coefficient of variation, against the stream's reporting-enterprise count, or
+  against a variance that omits the finite-population correction, still files the wrong stream or no stream
+  at all: measured, those three routes give Mixed commercial and industrial, Mixed commercial and
+  industrial, and none.
+- **Not rule application:** no shipped sentence states, implies or points at how the rate's uncertainty is
+  computed. The design documentation describes the sample as a statistics office describes one and stops;
+  the plan states targets; the capacity note states the estimand and the 95 per cent level and no method.
+  The step no filed rule performs is choosing the estimator of the denominator's design variance, and the
+  value of that variance is a statistic of the sample (within-stratum dispersion against stratum population
+  and realised sample sizes) which no clause can state without stating the method.
+- **Analyst test:** a strong analyst who has mapped both register schemas, honoured both code revisions,
+  chained every consignment to its final treatment, counted each tonnage once and used the design weights
+  correctly ranks the eight shortfalls against target, or tests each against the only precision figures the
+  pack publishes, and files Mixed commercial and industrial wastes, 4.9 points below its 64.5 per cent plan
+  target, against Metal and metal-bearing's 2.9.
+- **Estimand:** filed in `collection_capacity_note_2027.pdf` section 3: for the 2026 reference year a
+  stream's recovery rate is the tonnage of that stream despatched by its producer during the 2026 calendar
+  year and confirmed received at a recovery operation, counted once at the producer's despatch leg, divided
+  by the total tonnage of that stream arising during 2026 at every enterprise in the Business Waste Survey's
+  frame whether sampled or not, as estimated from the 2026 survey; a stream is established below target
+  where its 2026 recovery rate is below its National Waste Management Plan 2024-2030 target at the 95 per
+  cent level; the module goes to the one stream so established.
+- **No decoy:** nothing is planted to be caught. The Council's complaint asks the institute to review the
+  stream-level figures and argues for no answer and no method. The 2025 release is a correct prior-year
+  release. The national coefficient of variation is the true design CV of the 2026 national arisings
+  estimate and is correct for what it measures. No memo, draft, briefing or stakeholder figure carries the
+  wrong answer, and no shipped artifact ranks the streams on the decision question.
+- **No certified replay:** no corpus, no closed determinations, no certified or published figure is
+  reproduced by the method. The 2025 release publishes 2025, the plan publishes targets, and neither can be
+  reproduced by any 2026 route; the method is forced by the sample design, measured as the design estimator
+  and the delete-one jackknife within strata agreeing to six decimal places on every stream.
+- **Lesson:** the uncertainty of a published rate belongs to the term that was estimated and to the units
+  that were sampled, so a rate whose numerator is an administrative total and whose denominator is a
+  design-based estimate can be far better determined for a small, concentrated domain than for a large,
+  dispersed one, and no precision figure published for another domain or read off a record count stands in
+  for it. No build on file teaches it: task195 teaches the paired difference, task186 the empirical null,
+  task191 selection on the maximum, task240 the variance of a calibrated total.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 rank the eight shortfalls against target | the plan files the targets, which every route needs | the target table joins on stream | yes, the first thing anyone computes | none | no | one subtraction | readable |
+| 1 test each shortfall against a published or record-count precision figure | the methodology note quotes a national CV | the microdata's record counts are a group-by | yes, the rigorous reflex | none | no | one ratio | readable |
+| 2 design variance over the strata but without the finite-population correction, or with the sample treated as weighted with replacement | no sentence names a variance | stratum and weight columns exist | yes, what a default toolkit returns when the population sizes are not supplied | none | no | no | readable |
+| 3 design variance over only the enterprises reporting the stream (subset then estimate) | no sentence names it | the stream columns make a non-zero filter one predicate | yes, the client's own named shortcut for a domain estimate | none | no | no | readable |
+| 4 (decisive) the domain total's design variance over every sampled unit in each stratum, zeros included, with each stratum's finite-population correction, so the enumerated stratum contributes none | no sentence states, implies or points at it | no column marks which stratum was enumerated; the design documentation reports population and sample counts as a statistics office reports them | no: every reflex swept lands on another stream or on none | none | no: the battery computes no design variance | no | silent |
+
+## Semantic fork table
+
+| id | Term or convention | Golden reading | Alternatives and the call under them | Ruled out by |
+|---|---|---|---|---|
+| SF1 | "recovery rate" | confirmed recovered tonnage over estimated arisings | recovered over tonnage moved off-site (the register's own denominator): names Mineral construction and demolition | the capacity note's section 3 names the denominator as total arising at every enterprise in the frame |
+| SF2 | "arising at every enterprise in the frame whether sampled or not" | the design-weighted population total | the sum of sampled enterprises' reported tonnage: every rate above 100 per cent for four streams, self-refuting | the clause's own words, plus the release's published national arisings total which the weighted estimate reproduces |
+| SF3 | the 2026 window | consignments despatched by the producer in calendar 2026 | window on the confirmation date: `same call`, asserted | the capacity note names the despatch date; convergence asserted |
+| SF4 | "confirmed received at a recovery operation" | an R code confirmed by the final treatment facility | the producer's intended operation code at despatch: `same call`, asserted | the clause says confirmed received; convergence asserted |
+| SF5 | consignments routed through an interim facility | the producer's despatch leg tonnage once, carrying the final facility's confirmed code | sum both legs: inflates five streams and names Mineral construction and demolition | the clause's "counted once at the producer's despatch leg" |
+| SF6 | consignments with no returned confirmation | excluded, being unconfirmed | included as recovered: `same call`, asserted | the clause says confirmed; convergence asserted |
+| SF7 | "at the 95 per cent level" | a two-sided normal bar at 1.959964 standard errors | one-sided at 1.644854, or a t bar on the design degrees of freedom: `same call`, asserted | convergence asserted on every stream |
+| SF8 | the waste code revision of 1 July 2026 | the agency's own mapping applied, so a stream is one series across the year | codes read as filed in each half: moves two streams' tonnage and names Wood | the crosswalk file states the revision date and the mapping |
+| SF9 | multiplicity across the eight streams | no correction needed; the bar is filed per stream | Bonferroni at 0.05/8, or Benjamini-Hochberg at 5 per cent: `same call`, asserted | convergence asserted; the golden's p is 0.0000041 |
+| SF10 | rounding of the rate | per cent to one decimal, once, at the end | rounding each term first: `same call`, asserted | the prompt's rounding sentence; convergence asserted |
+| SF11 | an enterprise whose permit number was superseded | no reading reaches the call: the released micro-data carries a survey record number only | the agency permit number or the enterprise number: neither exists on the micro-data, so no join from the register to the survey exists at all | asserted on the shipped schema: no file carries both a stratum and a producer key |
+| SF12 | "field days" in ask A1 | days, after converting the one region logged in hours | hours read as days: moves ask A1 only, asserted clear of the call | the response log's own unit column |
+
+## Ladder
+
+| Rung | Analysis | Names | Metal z | Mixed C&I z | Dies to |
+|---|---|---|---|---|---|
+| 0 | rank the eight shortfalls against target (raw or relative) | Mixed commercial and industrial | n/a | n/a | the filed bar: the estimand establishes a shortfall at the 95 per cent level, which a ranking never does |
+| 1 | test each shortfall against the published national CV (3.9 per cent) or against 1/sqrt(reporting enterprises) | Mixed commercial and industrial | 1.31 / 0.65 | 2.10 / 2.32 | neither figure is the estimate's own standard error; the microdata carries the design |
+| 2 | design variance over the strata, finite-population correction omitted, or the sample treated as weighted with replacement | no stream established | 0.95 / 0.57 | 1.28 / 1.22 | the design documentation's own population and sample counts, which make the correction computable |
+| 3 | design variance over only the enterprises reporting the stream | no stream established | 1.80 | 0.96 | the microdata ships an explicit zero per stream per enterprise, so a non-reporting enterprise is a datum and not a gap |
+| 4 (decisive) | the domain total's design variance over every sampled unit in each stratum, with each stratum's finite-population correction | **Metal and metal-bearing** | **4.57** | 1.45 | nothing: the golden |
+
+**Arithmetic.** Position: Metal is 2nd of 8 on rung 0's raw shortfall (2.90 points against Mixed C&I's 4.90,
+a 1.69x lead to the loud answer) and 3rd on the relative ranking. Margin: the decisive rung clears the
+filed bar by 2.33x (4.57 against 1.959964) and rung 3's best candidate falls short by 1.08x. Separation:
+rungs 1 and 2 are 1.59x apart on Metal's z. Dominance: no single wrong route reaches Metal; the one route
+that does, ignoring the design weights and rescaling the unweighted totals to the published national
+total, is reported under `## Tried and rejected` with the measurement that shows the unrescaled form
+self-refutes (four streams above 100 per cent, and no stream showing any shortfall at all). Grid: every
+single-error cell files a feasible figure, and the eight streams' z values under the decisive route are
+4.57, 1.45, 0.71, 0.61, 0.55, 0.45, 0.35, 0.31, so the second-best candidate is 3.17x below the bar's
+distance. Worth: measured on the graded quantity (the verdict per stream), rung 4 moves the verdict for
+two streams and rung 3 for none.
+
+**Degrees of freedom.** One live degree of freedom would hold no ladder, so the lever and the noise are
+checked to be different numbers: the lever is the ratio of the two streams' design CVs, which is set by
+where their arisings sit in the design (3.81x to 9.82x over 60 seeds, median 6.03x), while the noise in
+the ranked quantity is the sampling error of the arisings estimate. Across 60 seeds with the shipped plan
+targets held fixed, Metal's z ran 3.62 to 6.61 and never fell below the bar, so the golden verdict is not
+seed-hostage; Mixed C&I's z ran -1.32 to 4.11 around its shipped 1.45, which is the expected behaviour of
+a shortfall that is not established, and the shipped pack's own value is asserted.
+
+**The call is retrospective, with its reason.** Official statistics tests a reference year's published
+estimate against a reference value, so the estimand names the closed 2026 reference year; the decision it
+forces is forward, the division's single 2027 supplementary collection module.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | every enterprise in the Business Waste Survey's 2026 frame, sampled or not, for the denominator; every consignment despatched in 2026 for the numerator | estimand filed literally in the capacity note's section 3, naming the unsampled members in; C1 asserted |
+| 2 Unit of account | the waste stream, one of the plan's eight | the plan's target table names the eight; the question names the unit |
+| 3 Attribution window | the producer's despatch date in calendar 2026 | filed; C1 asserted against the confirmation-date reading (SF3) |
+| 4 As-of dating | the register extract of 31 January 2027 and the survey's 2026 round | the capacity note names both extract dates; no later vintage ships |
+| 5 Version basis | the revised 2025 release, not the preliminary | the revised release states it supersedes the preliminary; the call reads neither |
+| 6 Denominator | estimated total arisings of the stream | filed in the estimand's own words; SF1 ruled out by that clause; C4, the rival denominator names a different stream |
+| 7 Weighting | the survey's design weights as shipped | the microdata's weight column is the design weight; no reweighting is filed or needed; SF2 |
+| 8 Window length | one reference year | the plan's targets are annual; the estimand names 2026 |
+| 9 Boundary inclusivity | despatch date inclusive of 1 January and 31 December 2026 | C1: no consignment is despatched on a boundary minute, and the 2025 and 2027 edges are asserted clear |
+| 10 Rounding path | once, at the end: per cent to one decimal, tonnes to the nearest tonne | the prompt's last sentence; SF10 convergence asserted |
+| 11 Tie-break | none needed: exactly one stream clears the bar | asserted on the shipped pack, and the runner-up is 3.17x below the bar's distance |
+| 12 Maturity and censoring | consignments despatched in 2026 and still unconfirmed at the extract are excluded as unconfirmed | SF6, convergence asserted both ways |
+| 13 Order of operations | rate then compare then test | each step commutes with the others here; asserted |
+| 14 Row order | file order cannot move a weighted total or a stratum variance | C1 by construction, asserted over three permutations |
+| 15 Duplicate resolution | one row per leg; a child consignment is a distinct consignment, its tonnage counted at the parent's despatch leg | SF5, filed by "counted once at the producer's despatch leg" |
+| 16 Identity normalisation | the business register enterprise number is the identity | the crosswalk's supersession rows; SF11 asserted to move no main figure |
+| 17 Netting against gross | no netting: rejected loads returned to the producer are a separate leg and are not recovery | the operation code list has no code for a return; asserted |
+| 18 Dimensional units | tonnes throughout the register and the microdata; one municipal extract in hundreds of kilograms | the unit is in each file's own column; the municipal files are outside the call's population, asserted |
+| 19 Code and status semantics | R codes are recovery, D codes disposal, on the list in force at confirmation | the operation code workbook states the revision and the mapping; never the stump |
+| 20 Integerisation | tonnages are whole tonnes in the register; no integerisation in the rate | asserted |
+| 21 Clause scope | the capacity note's section 3 governs the estimand and the bar; the design documentation's sections govern the survey it describes; the plan governs the targets | each document names its own scope |
+| 22 Forward window contents | none: the estimand's window is closed, and the forward element is the module commitment the answer drives | stated in the capacity note |
+
+## Literal reader
+
+A reader who executes the capacity note's section 3, the plan's target table, the crosswalks and the
+operation-code workbook word for word and infers nothing else computes each stream's 2026 recovery rate
+from the register's confirmed recovery tonnage over the survey's design-weighted arisings estimate, and is
+left with exactly one thing the shipped text does not state: how the rate's sampling error is computed.
+Every reading of the twelve `SF` rows gives the golden or is ruled out by a quoted sentence, and the two
+estimators of the denominator's design variance that the design admits (stratified linearisation with the
+finite-population correction, and the delete-one jackknife within strata) agree to six decimal places on
+all eight streams, so the literal reading lands on Metal and metal-bearing wastes.
+
+## Oracles
+
+None. There is no corpus, no control bench, no certified record and no reconciliation column that ties
+only under the golden. The three published figures the pack carries are each correct for what they measure
+and each ties under every route: the 2025 release's revised national recovery rate for 2025 (a prior year,
+reproducible from no 2026 route), the release's published national arisings total for 2025, and the
+national coefficient of variation on the 2026 arisings estimate, which is the true design CV of the
+national total and is what rung 1 misuses. The plan's targets are constants every route needs. No shipped
+artifact ranks the eight streams on the decision question.
+
+## Ask sheet
+
+Three asks, 28 separately gradable figures, all three sited on populations the main call never reads.
+
+**A1, the collection round's effort by region** (audit trail of an input the call consumes). Figures: for
+each of the five regions, the field days consumed and the usable 2026 returns per field day, both to two
+decimals: 10 figures. H18 home: the trail from the survey the call consumes, through rows the call never
+reads, to the round's own field effort. Use: the division's 2027 capacity note needs the 2026 cost per
+usable return by region. Primary device (D6 grain, silent, touching all 10 figures): the response log is
+one row per contact, and a field visit covers several enterprises in one region on one trip, so the trip's
+own `field_days` value sits on every row it covers with the grain unstated; summing rows multiplies the
+region's field effort by the average trip size and depresses every region's returns per field day. The
+internal inconsistency is that for the visit dates a team's row-level field days sum to between 2.0 and
+7.0 on a single calendar date, which is impossible, while at visit grain no team-day exceeds 1.0; nothing
+in the pack invites reconciling field days per team per day, and no battery sweep performs it (the visit
+references are not duplicate rows, every row joins, and no count in the pack exceeds a published total).
+Hazards: H1 (one regional team logs its effort in hours, the unit stated in its own column), H3 (a re-sent
+operations batch of exact duplicate rows), H4. Files on the path: `bws_2026_response_log.csv`,
+`enterprise_permit_crosswalk.csv`, `bws_2026_design_and_weighting.pdf`,
+`collection_capacity_note_2027.pdf`; 12 columns. Stops: sum every row (lazy, every region's field days
+high by a factor of 4.3 to 4.9 and every returns-per-day figure low by the same), sum every row after
+converting the hours team (over-corrected in one region only), count visits but miss the hours column (one
+region wrong), the answer. Realism: a field trip covers several enterprises in a day and the operations
+log attributes the trip's days to each contact it made. Forcing figure: 137 visit references carry an
+identical `field_days` value on 2 to 7 rows each, and at row grain 137 team-days exceed one day while at
+visit grain none does.
+
+**A2, the 2025 reference year's confirmed recovery tonnage by stream** (the decisive construction on a
+window the call never reads). Figures: 8. H18 home: the same chain construction on the prior reference
+year, which the attainment table's own trend column needs. Use: the plan's mid-term review quotes the prior
+year. Primary device (D1 duplication, silent): a set of 2025 consignments rejected at the receiving
+facility's gate was re-notified under a fresh consignment number carrying the original's reference and the
+same tonnage, so summing confirmed recovery over consignments exceeds the producers' despatched tonnage for
+three streams; found only by reconciling each child consignment against its parent's rejection leg.
+Hazards: H2 (the code revision), H4 (facility permit supersessions). Files on the path:
+`waste_movement_legs_2025.csv`, `facility_register.csv`, `waste_code_crosswalk.csv`,
+`treatment_operation_codes.xlsx`, `enterprise_permit_crosswalk.csv`; 12 columns. Stops: sum every confirmed
+R leg (lazy, three streams high), drop every re-notified consignment including the genuine ones
+(over-corrected, two streams low), the pre-revision code list applied to the whole year (two streams
+wrong), the answer. Realism: a rejected load is re-notified rather than amended, and the register keeps
+both notifications. Forcing figure: 43 child consignments carry a parent reference whose leg sequence ends
+in a gate rejection, and for those 43 the child's tonnage equals the parent's to the tonne.
+
+**A3, the municipal waste reconciliation by region** (an input reconciled to another system's total).
+Figures: for each of the five regions, the gap in tonnes between the municipalities' reported collected
+tonnage and the licensed facilities' reported receipts of municipal waste on a receipt-date basis, and the
+share of that gap carried by the named items, to one decimal: 10 figures. H18 home: a reconciliation of a
+second collection system to the facility returns, at the region grain the attainment table already uses.
+Use: the institute publishes the municipal series beside the business series and the gap has to be
+explained before the release. Primary device (D6 grain, silent): one inter-municipal waste authority files
+a single return covering its three member municipalities, which also file their own returns, so the
+authority's tonnage is the sum of the three and a return-level sum double counts one region; found only by
+reconciling the authority's reported tonnage against its members'. Hazards: H1 (two municipalities
+reporting in hundreds of kilograms), H4. Files on the path: `municipal_waste_returns_2026.csv`,
+`municipal_facility_receipts_2026.csv`, `facility_register.csv`, `enterprise_permit_crosswalk.csv`; 11
+columns. Stops: sum every return (lazy, one region high), drop the authority's return entirely
+(over-corrected, one region low), the hundreds-of-kilograms rows read as tonnes (two municipalities
+wrong), the answer. Realism: inter-municipal authorities file on behalf of members in several EU states and
+the member municipalities still file. Forcing figure: in all five regions the authority's monthly reported tonnage equals the sum of its three
+member municipalities' returns to within 0.05 of a tonne in every one of the twelve months, which the
+verifier rediscovers from the data alone; counting every return inflates each region's gap by a factor of
+9.0 to 23.3. Basis and grain are in the asking sentence (receipt date, region).
+
+**Main population zero-counts.** Asserted in `checks.py`: zero device rows and zero hazard rows inside the
+main call's declared population, which is the 2026 movement legs and the 2026 survey microdata. The five
+superseded permits of A1 belong to enterprises outside the 2026 sample (asserted); the 43 re-notified
+consignments of A2 are all 2025-despatched (asserted); A3's populations are municipal and never read.
+Deleting every device leaves the call byte-identical, asserted.
+
+**Hazard table.** H1 units (asks A1, A3; A1 -0.11 days in one region, A3 two municipalities low by a factor
+of ten). H2 code revision (A2, A3; A2 two streams wrong). H3 re-sent batch (A1; +3 rows). H4 facility and
+permit supersessions (A2, A3; A2 one stream, A3 one region).
+
+**Referee.** One byte-clean referee, the licensed-facility register, arbitrates which facility is interim
+and which final without carrying any level; it ties under every handling of every device.
+
+**Cracker sheet.** The cracker landed the call, ran the hygiene battery (key uniqueness, exact duplicates,
+unmatched joins, fan-out, count ties) and executed every filed rule the pack points at.
+
+| Ask | Figures | What the cracker computes | Verdict |
+|---|---|---|---|
+| A1 usable returns and days per return by region | 10 | counts by case reference after the battery's duplicate and join sweeps, which leave the five supersessions intact because both case references join cleanly | miss |
+| A2 2025 confirmed recovery tonnage by stream | 8 | the sum over confirmed R legs after the battery, which finds no duplicate because each re-notification is a distinct consignment number | miss |
+| A3 municipal gap by region and the named items' share | 10 | the return-level sum, which the battery accepts because the authority's return is a valid distinct return | miss |
+
+**Measured by:** `generator/ceiling.py`, run on the designed stops and re-run on the cut pack.
+**Pair ceiling:** 28.5
+**Mirror leakage:** 0.0 per cent of ask weight
+
+The two rows agree on the asks by construction, which is what `supplemental-stumping` Part 7 asks to be
+stated rather than printed as a duplicate measurement: the three asks consume nothing the call's
+construction produces, so a response's ask score does not depend on whether it landed the call, and the
+`## Ask sheet` separation assertions are what prove it. The cracker row is 0 of 28 because each primary is
+an inconsistency across grains that no column description asks for and no battery sweep performs, and the
+hazards the cracker does resolve (the documented unit column, the dated code revision, the re-sent batch,
+the permit supersessions a failing join exposes) touch no figure that a primary does not also touch. The
+premise this arithmetic rests on, that only one of the top two responses lands the call, is not something
+this script can check: the stage-4 cold reader and the judge's Gate F check it, and until they do the
+number is not evidence about the ladder. Re-run on the cut pack through `generator/ceiling_deltas.json`.
+
+
+
+### Architecture 4's header block, archived
+
+Architecture 4, drawn 2026-10-17 after architecture 3 was called spent, then abandoned on a model
+constraint. Architecture 5 (criminology ground) died at stage 1 on measurement with nothing cut.
+Architecture 6 is the live design and its sections are at the top of this note.
 
 ## Architecture 3, spent
 
@@ -1209,6 +1597,150 @@ were round too, so both were redrawn.
   Gullery, Manaaki Little, Thomas Hughes. No pack was cut, so none of them is spent and none is on the card;
   a session that draws this slot on a New Zealand world can take them, and one that draws another geography
   redraws rather than translating these.
+
+- **Architecture 5's assigned criminology ground, left behind at the re-root to architecture 6.** The eleven
+  dead candidates, the near-repeat Knox measurement and the axis map above stand as the record. What is
+  being left behind is the ground itself, not one mechanism: crime-incidence-hotspot-analysis is additive
+  over rows, so every quantity it estimates is one of the estimand's five parts or a correction already
+  spent in this lane, which is why eleven candidates died before a default path existed. Architecture 6
+  moves to `survey-research-official-statistics` / `anomaly-detection`, where the deciding quantity is a
+  design-based estimator's own sampling error rather than an aggregate over rows, and the New Zealand
+  persona draw banked above stays unspent because the new world is Portugal.
+- **The pincer test on architecture 6's decisive step, written before any design time went in, because
+  task200 lost four mechanisms on it.** The estimand files all five parts: population (every enterprise in
+  the survey's frame, sampled or not, and every consignment despatched in 2026), outcome (the stream's
+  recovery rate), window (calendar 2026 on the producer's despatch date), unit (the waste stream) and
+  comparison (the plan target at the 95 per cent level). The decisive quantity is none of the five: it is
+  the sampling variance of the denominator, which is a statistic of the sample (within-stratum dispersion
+  against stratum population and realised sample sizes) and not a constant any clause can state. Filing it
+  would file the method, which the house rules forbid; leaving it open does not fork the call, because the
+  two estimators the design admits agree to six decimal places on all eight streams while every route that
+  disagrees is not an estimator of the design variance at all. The filed quantity is also unobserved, which
+  is what `stumping` 1.2 requires: a stream's population arisings are known only from a sample, so two
+  estimators of its interval genuinely stand. That is the statable distinction from task198's architectures
+  2 and 3, which filed a recorded change (observed exactly) and corrected its variance, and so were
+  computing a different quantity.
+- **The reflex sweep on architecture 6, run as code on the generating process before any file was cut, and
+  the one reflex that reached the golden.** Thirteen routes were swept on the shipped cut: ranking the raw
+  shortfall and the relative shortfall (both Mixed commercial and industrial), a bar from the published
+  national CV (Mixed C&I, z 2.10 against Metal's 1.32), a bar from 1/sqrt(reporting enterprises) (Mixed
+  C&I, 2.64 against 0.65), the design variance with the finite-population correction omitted (no stream,
+  Metal 0.96), the same treated as weighted with replacement (no stream, Metal 0.50), the sample pooled as
+  a simple random sample (no stream, every CV absurd), the design variance over reporting enterprises only
+  (no stream, Metal 1.81), the register's own moved tonnage as the denominator (Mineral construction and
+  demolition), shrinkage of each direct rate toward the national rate weighted by record count (Mineral
+  construction and demolition), and the design estimator and the delete-one jackknife within strata (both
+  Metal, identical to six decimals). **The one route that reaches the golden is ignoring the design weights
+  and rescaling the unweighted stream totals so they sum to the published national total.** It is recorded
+  rather than designed away because the unrescaled form self-refutes on the shipped cut: four streams come
+  out above 100 per cent recovery (Mixed C&I 1.65, Mineral C&D 1.99, Paper 1.25, Glass 1.07) and no stream
+  shows any shortfall at all, so the route produces no answer without a deliberate rescale by an arbitrary
+  factor of 1.99. The pack closes it further by publishing the survey's own national arisings total, which
+  the weighted estimate reproduces and an unweighted sum misses by a factor of about twenty.
+- **Targets re-solved per seed, which made the first stability measurement worthless.** The first
+  across-seed run reported the correct route naming Metal in 30 of 30 seeds, but the plan targets were
+  being re-solved on each seed to hit the designed z-profile, so the measurement was true by construction
+  and said nothing about stability. Re-run with the shipped targets held fixed across 60 seeds, Metal's z
+  ran 3.62 to 6.61 and never fell below the bar, the CV lever ran 3.81x to 9.82x, and Mixed C&I's z ran
+  -1.32 to 4.11 about its shipped 1.45. That last range is the honest behaviour of a shortfall that is not
+  established and is reported rather than tuned away: a candidate that fails a significance test is within
+  about two standard errors of the bar by definition, so no design can make it both the largest raw
+  shortfall and two standard errors clear of failing.
+- **A ladder whose decisive step was the finite-population correction alone, rejected as readable.** The
+  first design put the whole decisive step on the correction, and the textbook stratified variance formula
+  carries it, so a solver who identified the design and applied the standard formula reached the golden
+  with no analytical step at all. The step was re-rooted onto which terms and which units carry error, with
+  the correction as one of two halves: the numerator is a complete administrative total and contributes
+  none, and the domain total's variance is computed over every sampled unit in the stratum including the
+  zeros. Measured, that second half is what the client's own named shortcut for a domain estimate (subset
+  then estimate) gets wrong, and it costs the golden 3.3x of its CV (1.12 per cent against 4.42), putting
+  Metal at 1.81 against the bar.
+- **Shipping several prior years of stream-level published rates, rejected before it was cut.** A solver
+  with four or five prior years could compute each stream's year-to-year volatility and rank precision off
+  it, which is the empirical twin of the decisive quantity and the shape that killed task198's architecture
+  3. The pack therefore ships one prior reference year only (2025), and the survey microdata for 2026
+  alone, so no variance can be estimated from the series; a single difference per stream cannot estimate a
+  variance. The 2025 register legs still ship, because ask A2 needs them and they carry no survey
+  microdata with them.
+- **Replicate weights, rejected as furniture too close to a banned driver.** Shipping jackknife replicate
+  weights would have forced the method handsomely, and task198's architecture 3 (uncertainty computed over
+  replication groups while the error source acts on groups the record never replicates over) is banned to
+  this build. The design documentation therefore describes the strata, their population and sample counts
+  and the weighting, which is what a statistics office publishes, and the jackknife agreement is an
+  internal convergence assertion rather than shipped furniture.
+
+- **The common-exposure subset screen, run as code on the cut pack, and the route it caught.** `stumping`
+  1.2's screen says a step of the form "put the units on a common exposure before comparing" cannot carry a
+  stump, because the subset already at that exposure is a filter and a divide. On this ground the subset at
+  a known exposure is the completely enumerated stratum, whose arisings are a census. Measured four ways on
+  the shipped cut: ranking the enumerated stratum's own rate shortfall names **Plastic wastes**, the
+  relative version names Plastic, and treating those rates as certain and taking the largest names Plastic,
+  because the enumerated subset's rate differs from the population rate wherever the stream's arisings are
+  not concentrated there (its share of arisings runs from 0.264 for Paper to 0.958 for Metal). The fourth
+  route did reach the golden: restricting **both** terms to the 1,630 sampled enterprises, which is
+  internally consistent and so not self-refuting, names Metal. **It is closed by construction rather than by
+  argument.** The released micro-data now carries a survey record number and no business register number,
+  permit number, name, address or region, which is what statistical confidentiality requires of a released
+  survey file and is stated as such in the design document; asserted on the shipped schema, no file carries
+  both a stratum and a producer key, so neither the enumerated-stratum subset nor the sampled-enterprise
+  subset can be identified in the register and none of the four routes is computable from the bundle. The
+  same change closes the unweighted-and-rescaled route banked above and makes SF11 unconditional.
+- **The designation determinacy screen: the golden's own estimator family returns one designated set.**
+  Four licensed ways to the design variance of a ratio whose numerator is a constant were measured on the
+  shipped cut: Taylor linearisation with the finite-population correction, the delete-one jackknife within
+  strata, grouped balanced repeated replication and the Rao-Wu-Yue rescaling bootstrap, the last three
+  carrying the correction. CV(Metal) came out 0.011214, 0.011214, 0.011137 and 0.011234, a spread of 0.9
+  per cent of its own value against a bar the golden clears by 2.33x, and **all four designate {Metal}: one
+  distinct set**. Over 20 redraws crossed with the four members, 80 draws, there is still **one distinct
+  designated set**, Metal in 80 of 80. What rules out all but one is the design rather than any sentence:
+  the numerator is a complete administrative total, so the ratio's variance is exactly the denominator's
+  relative variance with no covariance term and no model to choose, and the denominator is estimated under
+  stratified simple random sampling without replacement, fully described by the frame and realised sample
+  sizes, so every licensed estimator is a consistent estimator of the same sum and the only variation left
+  is Monte Carlo noise in the replication methods. The other half of the screen is also measured: the
+  numerator-only route, a count-like interval on the register tonnage, establishes seven of the eight
+  streams and ranks Mixed commercial and industrial first at 25.11 standard errors against Metal's 13.60,
+  so it does not land the golden's verdict.
+- **The register's producers drawn uncorrelated with the arisings structure, found and fixed before the
+  screens were run.** The first cut drew each consignment's producer uniformly from all 6,235 permit
+  holders, so Metal's movements were spread evenly over enterprises of every size while 96 per cent of its
+  arisings came from the largest stratum. That is a realism tell a reader could check in one cross-tab, and
+  it also made the subset screens meaningless. Each consignment's producer is now drawn from the stratum
+  distribution of its own stream's arisings, so the register and the survey agree on where a stream's waste
+  comes from.
+- **Twelve assertions that were vacuous, found by reading the output rather than the exit status.** The
+  semantic-fork helpers return a `(verdict, detail)` pair and were being passed to `ok()` as the condition,
+  and a non-empty tuple is always truthy, so SF1, SF3 to SF6, SF8, SF10 to SF12, D4 and two closure
+  assertions were passing without testing anything. All twelve are now unpacked, and all twelve pass on the
+  merits. It would have been a Gate A finding.
+- **metadata.json shipped inside the pack, which would have handed over both distractors.** The first cut
+  wrote it to `target/`, where it names each distractor and why the solution never reads it. The house
+  convention is the task root and `leak.py` reads it there; it is now at the root, and `checks.py` asserts
+  the pack does not ship the author's manifest.
+- **Two sentences in the documents saying the pack was built.** Three documents and the operation-code
+  workbook carried "Synthetic data produced for methodological work; no real enterprise is described",
+  which `leak.py` sweep 2 reads as a statement that the pack was constructed, and a real release carries no
+  such line. Removed; provenance and licence live in metadata.json alone. The design document was also
+  renamed from `bws_sample_design_2026.pdf` to `bws_2026_design_and_weighting.pdf`, because sweep 1 reads
+  `sample_` as the author's vocabulary and the field has another word for the same thing.
+- **The four leak REVIEW lines, answered.** (1) `collection_capacity_note_2027.pdf` carries 11 of the 15
+  distinctive words of the committed call: it files the estimand, which determinism requires at authority,
+  and the estimand necessarily shares the call's nouns; it names no stream, no method and no figure the
+  answer turns on, and it has four other uses (the division's establishment, the core-round field days, the
+  complaint and its deadline, the extract dates), so it fails the single-use test for an announcement.
+  (2 to 4) Three documents carry 7 to 9 of the 25 stump-paragraph terms, which are the field's own nouns
+  (design, stratum, sample, register, enterprise, estimate, consignment, survey) and unavoidable in any
+  honest document in this world. That none of them names the move is asserted rather than argued: `checks.py`
+  D6 reads every shipped PDF and requires that none of twelve terms that would name how the rate's sampling
+  error is computed appears anywhere in them.
+- **Two axis probes that moved under the build, recorded because the next session will meet them again.**
+  `ban.role` blocked the reserved `capacity_planner` against task197; the block then appeared to lapse when
+  the axis bans moved to the last three live cards and this slot's stale card went `architecture_spent`;
+  and it fired again the moment this build's own card was placed live in the window, because registering it
+  pulls task197 back into the last three. The axis was redrawn to `operations_director` rather than argued.
+  The decisive generator was probed at G17 as well as G16: G17 moved the surface promotion from task195 to
+  task189 and task191 rather than removing it, so the label was not changed to clear a screen and G16
+  stands with the promotion reported and differentiated.
 
 ## Architecture 4, abandoned on a model constraint rather than a design finding
 

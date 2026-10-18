@@ -1,0 +1,28 @@
+{
+  "cracker": {
+    "lands_call": true,
+    "ask_figures_kept": 0,
+    "ask_weight_kept": 0.0,
+    "recommendation_weight": 38.0,
+    "total": 45.0,
+    "per_ask": {
+      "A1": "0 of 10",
+      "A2": "0 of 8",
+      "A3": "0 of 10"
+    }
+  },
+  "mirror": {
+    "lands_call": false,
+    "ask_figures_kept": 0,
+    "ask_weight_kept": 0.0,
+    "recommendation_weight": 5.0,
+    "total": 12.0,
+    "per_ask": {
+      "A1": "0 of 10",
+      "A2": "0 of 8",
+      "A3": "0 of 10"
+    }
+  },
+  "pair_ceiling": 28.5,
+  "mirror_leakage_pct": 0.0
+}

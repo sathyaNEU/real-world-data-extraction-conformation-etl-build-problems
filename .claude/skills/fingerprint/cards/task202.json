@@ -1,0 +1,104 @@
+{
+  "task": "task202",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "First live architecture in this slot. Four grounds were screened to death before it (human-factors thinned-count and time-on-task, multiple-testing selective inference, the designation-set device on task181's safety-incident ground, and environmental-monitoring exceedance on four mechanisms and five candidates), all recorded with measurements in task202/DESIGN_NOTE.md and in pipeline.json. No card was ever registered on any of them, so lineage is empty.",
+  "domain": "nonprofit-grant-making",
+  "client_domain": "general-statistics-data-science",
+  "subdomain": "grant-award-portfolios",
+  "niche": "a corporate-endowed relief foundation's per-award referral ceiling for one-off household relief grants that accredited community partners award and claim back monthly in aggregate, where only a minority of partners claim award by award on the foundation's new case-level portal",
+  "objective": "anomaly-detection",
+  "shape": "14",
+  "decision_type": "dial_setting",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G17",
+    "G2"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stakeholder_role": "assurance and standards lead for the relief scheme, who puts the referral ceiling schedule to the board of trustees",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per resolved case",
+  "spine": {
+    "file": "portal_awards_2025-01_2027-03.csv",
+    "rows": 31460,
+    "entity": "one relief award to one household on one partner's case-level portal claim",
+    "grain": "award",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "Philippines (a corporate-endowed relief foundation working through accredited community partners in Luzon and the Visayas; invented provinces, partners and people)",
+    "currency": "PHP",
+    "org_type": "private grant-making foundation (funder) and accredited community partner organisations that award and claim relief",
+    "invented_names": [
+      "Banahaw Relief Foundation",
+      "Household Relief Grant",
+      "Partner Claim Portal",
+      "Tarlaban",
+      "San Roque del Monte",
+      "Maliwanag",
+      "Kabalikat Centre",
+      "Bantayog Parish Outreach",
+      "Sampaga Community Service",
+      "Lilom Neighbourhood Assembly"
+    ],
+    "people": [
+      "Erica Costa",
+      "Steven Espinoza",
+      "Cheryl Chase"
+    ]
+  },
+  "deliverables": [
+    "relief_referral_ceilings_2027-28.xlsx",
+    "referral_ceiling_board_paper.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "The decision cuts a distribution over items, and the only item-level figure the record states is each unit's own average over its items, so the distribution of unit averages carries the spread between units and none of the spread within them and every upper cut comes out far too low; the within-unit shape is recovered from a minority of units that reported item by item, where the record itself forces that shape to be scale-free rather than additive and to be used as measured rather than as a fitted smooth curve, and any route that pools or rescales the reporting minority fails to reproduce the averages the record states for every other unit.",
+  "driver_concrete": "The referral ceiling has to cut the distribution of individual relief awards, but the monthly partner claim returns state only a total and an award count per partner per household-size band, so cutting the distribution of partner average awards drops the within-partner spread and files a ceiling that would refer about a third of awards instead of six per cent; the award-level shape comes from the portal partners, whose awards are a standard living-cost award with a one-off capital item on a minority, so the shape is visibly bimodal and neither lognormal nor gamma survives the portal's own goodness of fit, it scales with a partner's level rather than adding to it, and pooling or rescaling the portal partners fails to reproduce the averages every other partner's returns state.",
+  "stump": "A competent solver parses every claim return, supersedes the revised months, fixes the partner crosswalk, builds each partner-band's own average award from the totals and counts, cuts that distribution at the committed share, solves the reference ceiling back through the equivalence scale and the rounding rule and files a ceiling that would refer about a third of the scheme's awards; a solver who finds the portal corpus and pools its awards as they stand files a lower ceiling still, one who rescales the corpus by a single portfolio ratio files a ceiling near the mark, and one who rebuilds per partner but smooths the award shape into a lognormal at the portal's coefficient of variation files the rung immediately below the golden.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who has read the operating policy, applied the equivalence scale and the rounding rule, superseded the revised claim returns and fixed the partner crosswalk still cuts the distribution of partner average awards, because that is the only award figure the claim returns state, and files a reference ceiling far below the one that holds the referral rate to six per cent.",
+  "domain_test": "The deciding quantity is the shape of the scheme's award-amount distribution, which is the task type's own statistical object and which a relief funder genuinely estimates and acts on when it sets a referral ceiling it has to staff; replacing that shape with a generic summary, the partner average, moves the ceiling by thirty-one printed units and the referral rate from six per cent to about a third, and the swap fails on the domain's nouns because the award shape is bimodal for a reason only a relief scheme produces, a standard living-cost award with a one-off capital item on a minority of households, and because the ceiling is nested across household sizes by the scheme's own equivalence scale.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:award-distribution-rebuilt-from-partner-averages-and-a-measured-within-partner-shape",
+  "layer1": [
+    "monthly claim workbooks whose band columns were renamed and a header block added from July 2026",
+    "the operating policy's equivalence scale and rounding rule in a table inside a scanned PDF",
+    "partner identifiers differing between the claims ledger and the portal, joined on an imperfect crosswalk",
+    "the scheme's fiscal year against the twelve-month claim window the policy names",
+    "amounts in pesos in the claim returns and in thousands of pesos in the published summary",
+    "a preliminary and a revised claim return overlapping for two months, the revised superseding",
+    "suppressed small cells in the published partner summary",
+    "a partner accredited mid-window and a partner that exited"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task103": "task103 is the other anomaly-detection build in this domain and its driver is a fan-out: one recorded contact serves several units through an effective-dated authorisation, and the only per-contact record of which authorised units were served is a handed-over quantity, with a one-allowance-a-period rule deciding the count. task202 adds no units and re-partitions nothing: every award is already counted in the claim returns, and what the record does not state is how the awards at one partner are SPREAD about that partner's own stated average, which is what a cut of the distribution needs and an average cannot carry.",
+    "task187": "task187's record is the average of a capped, curved response over a spread of inputs, so the correction is a curvature correction on each unit's own level and the graded figure is a per-unit shortfall. task202's record is an arithmetic average over items with no response curve anywhere, the correction restores a distribution rather than a level, and the graded figure is a cut of that distribution: the within-unit spread changes no unit's own average and moves only the tail the cut sits in.",
+    "task246": "task246 separates a measurer offset and a field error out of an observed spread, so its decisive quantity is a variance component recovered from replicates. task202 estimates no variance component and has no replicate measurement of anything: the within-partner shape is observed directly, award by award, on the portal partners, and what the data has to settle is whether that observed shape is scale-free and whether it may be smoothed, both of which the portal answers by its own goodness of fit.",
+    "task449": "task449 recovers a share that a record linkage dilutes: the decisive quantity is a rate contaminated because one class of records is linked to the wrong target k-1 times in k, and the construction is an un-dilution of a linked value. task202 links nothing and has no wrong target: every claim return is joined correctly and the figure it states is correct, and what is missing is the spread of items about a correctly stated average, which no link supplies.",
+    "task466": "task466 fits a yearly extreme to two records of the same process where the long record says only whether the year fell below a fixed level, so its construction carries censored years into a fit. task202 has no fit, no censoring and no second record of the same quantity: the portal partners report the same awards at a finer grain than the claim returns, and the shape they show is used as measured because the portal's own goodness of fit refuses to let it be smoothed.",
+    "task255": "task255 (nearest driver at 0.11) is a truncated and censored size distribution: items reach the record only above a per-item floor and are recorded only to a moving ceiling, so the tail is latent because small and large items are missing from the record. task202's record is complete, with every award counted and paid; the tail is latent only because the record reports awards in partner averages, and nothing is truncated, censored or unfinished anywhere in the pack."
+  },
+  "lineage": [],
+  "notes": "Client rigor patterns for the task type were both screened and both are dead as stated: general-statistics-data-science/exploratory-data-analysis-distribution-assessment/1 pins the anomaly rule or distributional assumption, which the estimand pincer makes rule application, and /2 pins the within-group comparison or unit-defining grouping, which is the estimand's unit. layer2_pattern is therefore own:. stump_strategy grain_or_unit fires three_rules.strategy_risk as a WARN, answered in the design note: the grain gap is the gap the build exploits, not the decisive step, and the decisive step is a distributional reconstruction whose family the portal's own fit closes.",
+  "registered": "2026-10-18T13:12:57Z"
+}
