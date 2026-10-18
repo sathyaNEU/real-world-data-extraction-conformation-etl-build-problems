@@ -96,3 +96,71 @@ judged pack: the release now publishes the 2025 round's own coefficient of varia
 estimator of the 2026 round reproduces, and the capacity note is a memo. The reader's route, its 75 per cent
 confidence and the Gate F question above are unchanged and still open: a fresh reader after this pass is the
 test the orchestrator is holding it for.
+
+## Solver's-eye read, round 2 (the repaired pack, target.zip bbf01fae)
+
+# task190 reader answers
+
+1. Decisive step: the sentence in collection_capacity_note_2027.pdf, "A stream is established below target where its 2026 recovery rate is below its National Waste Management Plan 2024-2030 target at the 95 per cent level." It states the test but not how the interval is made. bws_2026_design_and_weighting.pdf gives the strata, N, n and weights but says nothing about variance. No sentence says what to do about the census stratum or the finite population correction.
+2. Ranks or scores 2026 candidates: none. waste_statistics_2025_release.pdf Table 1 ranks 2025 rates only, and national_waste_management_plan_targets.pdf is targets only.
+3. Exists only to help the analyst: waste_code_crosswalk.csv and treatment_operation_codes.xlsx (code-to-stream and code-to-kind lookups), and facility_register.csv (role lookup). The two PDFs and the memo are context.
+4. Reads as the answer: none. The memo's "it is committed to the one stream where the 2026 attainment figures establish a shortfall" says one stream qualifies but names none. Closest context figure: the 2025 release's "coefficient of variation of that estimated national total in the 2025 round is 3.4 per cent", which invites a wrong, national-level precision.
+5. Literal fix of the main figure (collection_capacity_note_2027.pdf): "a stream's recovery rate is the tonnage of that stream despatched by its producer during the 2026 calendar year and confirmed received at a recovery operation, counted once at the producer's despatch leg, over the total tonnage of that stream arising during 2026 at every enterprise in the Business Waste Survey frame whether sampled or not, as estimated from the 2026 survey."
+   Literal result for Metal: numerator 70,384 t, denominator (weighted survey total) 124,354 t, rate 56.6 per cent against the 59.5 target, shortfall 2.9 points. Other streams: mixed 59.6 (target 64.5, 4.9 short), paper 49.9 (1.9), wood 43.7 (1.6), C&D 60.2 (2.4), glass 53.7 (2.0), plastic 33.8 (1.6), textile 28.3 (0.9).
+6. Mostly an analytical choice (the interval for a stratified, partly census survey, which decides which shortfall is established), plus rule application for the register chain. The deciding file is bws_2026_design_and_weighting.pdf (strata table: E1 "enumerated completely" so it has zero sampling variance; E2 to E4 sampled without replacement, so an fpc applies), combined with the memo's "at the 95 per cent level". Reading codes, units and duplicates correctly is needed but does not flip the call.
+
+## Solver route and answer
+
+Answer: Metal and metal-bearing wastes. 2026 rate 56.6 per cent (interval about 54.1 to 59.1 two-sided, SE of rate about 0.63 pt), target 59.5, shortfall 2.9 points. It takes the 2027 module. Confidence about 85 per cent on the stream, about 70 per cent on exact figures to one decimal.
+
+Steps:
+1. Register: stack the three leg files (2025 file contains 333 despatches dated 2026, h2 contains 306 dated 2027). Select by PRODUCER_DESPATCH date in the calendar year, not by file. h2 uses different column names (consignment_ref, leg_no, ewc_code, net_tonnes, treatment_op, parent_ref).
+2. Counted once at the producer's despatch: drop despatches whose producer is a facility (APA-F...), which are R13 forwards (12,124), and drop 43 producer re-despatches whose parent was already confirmed at R1/R3/R4/R5 (same producer, tonnes and carrier as the parent).
+3. Recovered: root consignment with TREATMENT_CONFIRMED in R1/R3/R4/R5, or R13 (interim) whose forwarded child is confirmed at R1/R3/R4/R5. D1, D10, bare R13 and no confirmation (1,431 despatches) are not recovered. All 12,124 forwards resolve to a terminal operation.
+4. Streams via waste_code_crosswalk.csv, including the starred codes from 1 July 2026 (all codes map).
+5. Recovered 2026 t: metal 70,384; mixed 93,294; paper 31,721; wood 20,003; C&D 95,414; glass 13,376; plastic 7,659; textile 1,819.
+6. Denominator: Horvitz-Thompson, sum of weight times arisings from the micro-data. Metal 124,354 t, mixed 156,533, paper 63,569, wood 45,773, C&D 158,494, glass 24,908, plastic 22,659, textile 6,429.
+7. Variance: stratified, Nh^2 (1 - n/Nh) s^2 / n per stratum, E1 contributes zero. SE of denominator: metal 1,395; mixed 8,862; paper 4,407; wood 3,729; C&D 20,669; glass 1,524; plastic 1,505; textile 594. The register tonnage is a census so it is treated as fixed, and the rate SE is the delta-method share. z of shortfall: metal 4.6, mixed 1.45, plastic 0.7, glass 0.6, paper 0.55, wood 0.45, textile 0.35, C&D 0.3. Only metal is established, at either a one-sided or a two-sided 95 per cent level.
+8. Field days: count once per visit_ref (the visit total is repeated on every case row), convert h to days by /8 (EQ-ALE logs in hours). Norte 32.54, Centro 25.69, Lisboa 29.80, Alentejo 10.11, Algarve 7.66. Usable returns are distinct cases (1,630; 1,634 rows, 4 duplicate rows): Norte 538, Centro 381, Lisboa 430, Alentejo 166, Algarve 115. Returns per field day: Norte 16.53, Centro 14.83, Lisboa 14.43, Alentejo 16.42, Algarve 15.01.
+9. 2025 tonnage confirmed received at a recovery operation, same basis, from the register: metal 67,709; mixed 89,749; paper 30,516; wood 19,243; C&D 91,788; glass 12,868; plastic 7,368; textile 1,750. These are above the published 2025 release (metal 65,074), which the release explains by later confirmations.
+10. Municipal: exclude the five "Associacao de Municipios" rows (they overlap the member municipalities; including them gives 32 to 43 per cent gaps), convert Mangualde and Tondela from 100kg to t (/10), compare with receipts summed by receipt_date in 2026 by origin_region. Gap t and share: Norte 3,075 (2.6%), Centro 4,910 (4.1%), Lisboa 4,081 (3.6%), Alentejo 2,589 (3.4%), Algarve 3,463 (4.0%).
+
+Choices between two defensible methods:
+- The variance. With the fpc and a zero-variance census E1, metal's SE is 1,395 t and it is established. Without the fpc and with E1 treated as a sample, the SE is 6,692 t, metal's z falls to about 1.0 and no stream is established. I chose the fpc and the census because the PDF says E1 is "enumerated completely" and the others are "without replacement". The fpc uses usable returns as n (matching the weights); using issued counts moves the metal SE to 1,382, immaterial.
+- The tempting route is to rank by point shortfall: Mixed (4.9 points) is largest but its interval is wide (z 1.45), so it fails.
+- Treating the register tonnage as fixed (census) rather than adding variance. Adding any plausible register variance would not move metal's z far below 4.
+- One-sided versus two-sided 95 per cent: same stream either way.
+
+What I would need to be told to be sure: whether the E1 census and fpc are the intended variance basis (the pack never says), whether the issued or the usable count is n for the fpc, whether associations are meant to be dropped (inferred from the receipts matching the municipalities alone), and whether the register unconfirmed 2.6 per cent should be non-recovered (taken literally from the memo's "confirmed").
+
+## Reads as written for an exercise
+- collection_capacity_note_2027.pdf: "So that we are all measuring the same thing, the quantity is this." A head of operations would not define the rate this way in a memo; it reads as the rule being handed over. Also "My answer is the module: it is committed to the one stream where the 2026 attainment figures establish a shortfall against the plan", which announces that exactly one stream qualifies.
+- collection_capacity_note_2027.pdf: "One module is what there is: a second would come out of field days the core rounds need." It exists to force a single answer.
+- bws_2026_design_and_weighting.pdf: "the 2026 round closed with a return from each of them" and "No calibration or post-stratification is applied to the 2026 round." Both exist to pin the variance basis.
+- waste_statistics_2025_release.pdf: "The register goes on receiving treatment confirmations for consignments despatched in earlier reference years, and the published series is not revised for them." This explains the 2025 mismatch for the solver in advance.
+- Data: the 2026 rates land on exact tenths (56.60, 59.60, 49.90, 43.70, 60.20, 53.70, 33.80), which no real survey produces. The 43 duplicate redespatches are exact copies of the parent's tonnes and carrier. The municipal Mangualde and Tondela rows are the only ones in 100kg, and the associations are the only overlapping rows.
+- The Layer 1 mess (h2 column rename, starred codes, hours in one team, repeated visit days) is each a single clean switch, which reads as planted.
+
+### The main thread's ruling
+
+- **Gate F has now failed twice, and harder.** Round 1 landed the call at about 75 per cent, round 2 at
+  about 85 per cent on the stream. Cutting the oracle did not make the decisive step harder to find,
+  because what points at it is not the published coefficient of variation but the design document's own
+  statement of its strata, which has to ship: the estimand names the frame. A design-based variance is
+  this domain's reflex and both readers reached for it unprompted.
+- **The repair cost the fork its closure, which is the finding of this round and it is mine, not the
+  reader's.** Round 1's judge closed Gate C partly on a shipped number: the published CV reproduced at
+  3.915 under the corrected estimator and 4.091 without it, so the method was confirmed against the pack.
+  That confirmation is exactly what I had cut as an oracle. Round 2's reader now reports the variance basis
+  as the biggest fork in the build, says the pack never states which basis is intended, and measures the
+  consequence: the metal standard error is 1,395 t with the correction and the census stratum and 6,692 t
+  without, where z falls to about 1.0 and no stream is established at all. So the oracle and the closure
+  were the same sentence, and removing it traded a Gate F weakness for a Gate C fork without buying
+  anything. Either the basis is forced by the records in a way no single figure confirms, or the build
+  carries a live fork on its main call.
+- **Three realism tells survive and one is new and serious.** The 2026 rates land on exact tenths
+  (56.60, 59.60, 49.90, 43.70, 60.20, 53.70, 33.80), which a real survey does not produce, so the
+  numerator and denominator have been tuned to a printed figure. The memo still announces that exactly
+  one stream qualifies. And the reader reads the design document's two variance-pinning sentences, the
+  column rename, the starred codes, the single hours team and the repeated visit days as one clean
+  switch each, which is the pack reading as constructed rather than exported.
