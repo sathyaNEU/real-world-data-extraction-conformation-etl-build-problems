@@ -405,7 +405,7 @@ def write_manifest(out, counts):
         (P.F_LEGACY, "Legacy AVL", K.PEOPLE["telematics"], "2023-09-29", "1 Nov 2021 to 31 Mar 2023", counts.get(P.F_LEGACY, "")),
         (P.F_PASSES, "Fleet telematics platform", K.PEOPLE["telematics"], "2026-09-24", "1 Oct 2023 to 23 Sep 2026", counts.get(P.F_PASSES, "")),
         (P.F_XWALK, "GIS", "GIS Services", "2023-08-21", "2023 GIS release", counts.get(P.F_XWALK, "")),
-        (P.F_REGISTER, "Route audit", "Roads Operations Centre", "2026-09-14", "register at 14 Sep 2026", counts.get(P.F_REGISTER, "")),
+        (P.F_REGISTER, "Route audit", "Roads Operations Centre", "2026-09-14", "Priority 1 and 2 segments and the Priority 3 hills salted on request, at 14 Sep 2026 (other local streets not pulled)", counts.get(P.F_REGISTER, "")),
         (P.F_REVLOG, "Route audit", "Roads Operations Centre", "2026-09-14", "changes to 14 Sep 2026", counts.get(P.F_REVLOG, "")),
         (P.F_STORM, "Incident board", "Roads Operations Centre", "2026-04-09", "winters 2021-22 to 2025-26", counts.get(P.F_STORM, "")),
         (P.F_FLEET, "Fleet management", "Fleet Services", "2026-09-24", "units at 24 Sep 2026", counts.get(P.F_FLEET, "")),
@@ -457,20 +457,24 @@ def arterial_cells(W, S, pr):
 
 
 def settle_arterial_edges(W, S, pr):
-    """Keep every yard-winter figure at least 0.03 t from a one-decimal rounding edge: where one sits closer, the
-    winter's last ordinary arterial pass row at that yard takes the difference (a few kilograms)."""
+    """Keep every yard-winter figure at least 0.3 t from a whole-tonne rounding edge: where one sits closer, the
+    winter's last five ordinary arterial pass rows at that yard share the difference (a few tens of kilograms each),
+    their pre-wet litres following at the filed rate."""
     tot = arterial_cells(W, S, pr)
     for key, v in sorted(tot.items()):
-        if K.bin_edge_distance(v, 0.1) >= 0.0295:
+        if K.bin_edge_distance(v, 1.0) >= 0.3:
             continue
-        off = ((K.stable_int(key[0], key[1]) % 31) - 15) / 1000.0      # a few kilograms either side of the centre
-        delta = round(round(v, 1) + off - v, 3)
+        k_ = K.stable_int(key[0], key[1], "edge") % 22
+        off = (0.05 + 0.01 * (k_ % 11)) * (1 if k_ < 11 else -1)     # 0.05 to 0.15 t either side of the centre
+        delta = round(v) + off - v
         cand = [r for r in pr if r["route_code"][:3] == key[0] and "-A" in r["route_code"]
                 and K.winter_of(_local(r["entry_utc"]).date()) == key[1]
-                and W.controller_on(r["unit_id"], _local(r["entry_utc"]).date()) == "M720" and r["applied_t"] > 0.3]
-        cand[-1]["applied_t"] = round(cand[-1]["applied_t"] + delta, 3)
+                and W.controller_on(r["unit_id"], _local(r["entry_utc"]).date()) == "M720" and r["applied_t"] > 0.6]
+        for r in cand[-5:]:
+            r["applied_t"] = round(r["applied_t"] + delta / 5.0, 3)
+            r["prewet_l"] = round(r["applied_t"] * P.PREWET_L_T, 1)
     tot = arterial_cells(W, S, pr)
-    assert all(K.bin_edge_distance(v, 0.1) >= 0.0295 for v in tot.values()), tot
+    assert all(K.bin_edge_distance(v, 1.0) >= 0.3 for v in tot.values()), tot
 
 
 def settle_dome_edges(Yd):

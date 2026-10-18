@@ -30,7 +30,11 @@ WINTERS3 = ["2023-24", "2024-25", "2025-26"]
 YNAME = {"KLV": "Kelvin Road", "MPF": "Mapleford", "RDG": "Ridge", "LKS": "Lakeshore"}
 SERIES = ["#2a78d6", "#eb6834", "#1baf7a"]      # reference categorical slots 1 to 3
 F_WB = "salt_commitment_2026-27.xlsx"
-F_MEMO = "seasonal_salt_commitment_memo.docx"
+F_MEMO = "seasonal_salt_commitment_council_report.docx"
+
+
+def rt(v):
+    return int(round(v + 1e-9))
 
 
 def r1(v):
@@ -148,9 +152,10 @@ def workbook(g, path):
     for i, y in enumerate(C.YARDS, 2):
         ws4.cell(row=i, column=1, value=YNAME[y])
         for j, w in enumerate(WINTERS3, 2):
-            ws4.cell(row=i, column=j, value=r1(g["art"][(y, w)])).number_format = "#,##0.0"
+            ws4.cell(row=i, column=j, value=rt(g["art"][(y, w)])).number_format = "#,##0"
     ws4.cell(row=7, column=1, value="Rock salt spread on each yard's Priority 1 arterial circuits, 1 November to 31 "
-                                    "March, contract circuits included.")
+                                    "March, each circuit under the yard it belonged to that winter, contract circuits "
+                                    "included.")
     for wsx in (ws3, ws4):
         wsx.freeze_panes = "A2"
     ws5 = wb.create_sheet("Notes")
@@ -159,7 +164,7 @@ def workbook(g, path):
         "local time) and telematics segment passes (from 1 October 2023, tonnes, UTC, taken to Eastern time).",
         "Legacy segment ids taken to the current segments through the 2023 GIS crosswalk by length share.",
         "Winters run 1 November to 31 March. Each winter's salt is divided by its Winter Severity Index from the storm "
-        "log (2021-22 63.4, 2022-23 50.1, 2023-24 38.9, 2024-25 67.2, 2025-26 52.6 points).",
+        "log (" + ", ".join("%s %.1f" % (w, g["wsi"][w]) for w in K.WINTERS) + " points).",
         "Planning severity 61.7 WSI points (winter maintenance plan 2026-27, section 4). Seasonal tonnage per RO-PR-07 "
         "4.2, rounded to the nearest 100 t.",
         "Collector figures are rock salt (RS) only; the collector and local circuits spread dry salt.",
@@ -186,7 +191,7 @@ def chart_png(g):
         vals = [g["art"][(y, w)] for y in C.YARDS]
         bars = ax.bar(x + (k - 1) * (wd + 0.02), vals, wd, color=SERIES[k], label=w, zorder=2)
         for b_, v in zip(bars, vals):
-            ax.text(b_.get_x() + b_.get_width() / 2, v + 120, "{:,.1f}".format(v), ha="center", va="bottom",
+            ax.text(b_.get_x() + b_.get_width() / 2, v + 120, "{:,.0f}".format(rt(v)), ha="center", va="bottom",
                     fontsize=6.2, color="#33332f", rotation=90)
     ax.set_xticks(x)
     ax.set_xticklabels([YNAME[y] for y in C.YARDS])
@@ -201,7 +206,7 @@ def chart_png(g):
     ax.tick_params(colors="#52514e")
     ax.set_title("Priority 1 arterial rock salt by yard: 2024-25 the heaviest winter at all four yards", fontsize=9,
                  color="#0b0b0b", loc="left")
-    ax.legend(frameon=False, ncol=3, loc="upper left", fontsize=7.5)
+    ax.legend(frameon=False, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.11), fontsize=7.5)
     fig.tight_layout()
     buf = io.BytesIO()
     fig.savefig(buf, format="png", metadata={"Software": None})
@@ -257,8 +262,9 @@ def memo(g, path):
          "their spreader records show the gain from the move falling the more Priority 2 salt a street already took. "
          "Read at these streets' own Priority 2 salt, the move adds {:.1f} t a lane-km.".format(
              r1(g["own_p2"]), r1(g["gain_per_lkm"])), after=6)
-    para("The working, each yard's dome stock and room for 1 November, and the arterial figures charted below are in "
-         "salt_commitment_2026-27.xlsx.", after=6)
+    para("The rolled-over 39,100 t carries the existing programme, whose Priority 1 arterial circuits are charted below "
+         "for the last three winters. The working, each yard's dome stock and room for 1 November, and those arterial "
+         "figures are in salt_commitment_2026-27.xlsx.", after=6)
     pic = io.BytesIO(chart_png(g))
     d.add_picture(pic, width=Mm(168))
     d.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -281,7 +287,7 @@ def figures(g):
         f["stock_%s" % y] = r1(g["stock"][y])
         f["room_%s" % y] = r1(g["room"][y])
         for w in WINTERS3:
-            f["art_%s_%s" % (y, w)] = r1(g["art"][(y, w)])
+            f["art_%s_%s" % (y, w)] = rt(g["art"][(y, w)])
     return f
 
 
@@ -330,9 +336,10 @@ def write_submission(path, g):
              "have landed, and the tonnes more the dome can then take:")
     for y in C.YARDS:
         L.append("   - {}: {:,.1f} t in the dome, {:,.1f} t more".format(YNAME[y], f["stock_%s" % y], f["room_%s" % y]))
-    L.append("3. Rock salt spread on each yard's Priority 1 arterial circuits:")
+    L.append("3. Rock salt spread on each yard's Priority 1 arterial circuits, each circuit under the yard it belonged to "
+             "that winter:")
     for y in C.YARDS:
-        L.append("   - {}: 2023-24 {:,.1f} t, 2024-25 {:,.1f} t, 2025-26 {:,.1f} t".format(
+        L.append("   - {}: 2023-24 {:,} t, 2024-25 {:,} t, 2025-26 {:,} t".format(
             YNAME[y], f["art_%s_2023-24" % y], f["art_%s_2024-25" % y], f["art_%s_2025-26" % y]))
     L.append("\n### %s\n" % F_MEMO)
     L.append("1. One-page report to council stating the seasonal commitment of {:,} t, with a grouped bar "

@@ -244,6 +244,7 @@ F_LOADING = "yard_loading_log_2023-11_2026-03.csv"
 F_PELLARD = "kettlewood_material_returns_2023-24_to_2025-26.xlsx"
 YARDS = ["KLV", "MPF", "RDG", "LKS"]
 BRINE_KG_L = 1.18            # the plan's plant brine, kilograms a litre
+PREWET_L_T = 40.0            # the plan's pre-wet rate, litres a tonne of rock salt
 YARD_NAME = {"Kelvin Road Yard": "KLV", "Mapleford Yard": "MPF", "Ridge Yard": "RDG", "Lakeshore Yard": "LKS"}
 
 
@@ -382,6 +383,8 @@ def arterial_salt(target, mode="golden"):
         ps["m410"] = is410
         if mode == "runs_once":          # run totals taken once, the combined mass left as it is
             ps["solid"] = ps["applied_t"]
+        elif mode == "prewet_rate":      # the salt read back from the brine at the plan's 40 litres a tonne
+            ps["solid"] = ps["prewet_l"] / PREWET_L_T
         elif mode == "net_brine":        # the brine's mass taken off, every row summed
             ps["solid"] = ps["applied_t"] - np.where(ps["m410"], ps["prewet_l"] * BRINE_KG_L / 1000.0, 0.0)
         else:
@@ -662,3 +665,46 @@ def range_match(P: Pack):
     g = ((sub["post"] - sub["pre"]) * sub["lane_km"]).sum() / sub["lane_km"].sum()
     mean_pre = float((sub["pre"] * sub["lane_km"]).sum() / sub["lane_km"].sum())
     return float(g * nn["lane_km"].sum() * PLAN_SEV), len(sub), mean_pre * PLAN_SEV
+
+
+# ================================================================================================= crude settings
+def kernel(P: Pack, bw):
+    """Each new street's gain as a Gaussian-kernel mean of the earlier moves' gains, bandwidth bw t a lane-km of
+    Priority 2 salt in a planning-severity winter, weighted by lane-km."""
+    d, nn, x, g, w = _xw(P)
+    xs = x * PLAN_SEV
+    tot = 0.0
+    for p2, L in zip(nn["p2"].values * PLAN_SEV, nn["lane_km"].values):
+        k = np.exp(-0.5 * ((xs - p2) / bw) ** 2) * w
+        tot += float(np.sum(k * g) / np.sum(k)) * L
+    return tot * PLAN_SEV
+
+
+def fixed_bands(P: Pack, width):
+    """Fixed bands of Priority 2 salt (t a lane-km in a planning-severity winter), each new street given its band's
+    lane-km weighted gain."""
+    d, nn, x, g, w = _xw(P)
+    b = np.floor(x * PLAN_SEV / width)
+    tot = 0.0
+    for bi, L in zip(np.floor(nn["p2"].values * PLAN_SEV / width), nn["lane_km"].values):
+        m = b == bi
+        if not m.any():
+            m = np.abs(b - bi) == np.abs(b - bi).min()
+        tot += float(np.average(g[m], weights=w[m])) * L
+    return tot * PLAN_SEV
+
+
+def nearest_to_mean(P: Pack, k):
+    """The k earlier moves nearest the new streets' mean Priority 2 salt, their gain averaged."""
+    d, nn, x, g, w = _xw(P)
+    x0 = float((nn["p2"] * nn["lane_km"]).sum() / nn["lane_km"].sum())
+    idx = np.argsort(np.abs(x - x0), kind="stable")[:k]
+    return float(np.average(g[idx], weights=w[idx]) * nn["lane_km"].sum() * PLAN_SEV)
+
+
+def window(P: Pack, half):
+    """The earlier moves within half t a lane-km of the new streets' mean Priority 2 salt, their gain averaged."""
+    d, nn, x, g, w = _xw(P)
+    x0 = float((nn["p2"] * nn["lane_km"]).sum() / nn["lane_km"].sum())
+    m = np.abs(x - x0) * PLAN_SEV <= half
+    return float(np.average(g[m], weights=w[m]) * nn["lane_km"].sum() * PLAN_SEV), int(m.sum())

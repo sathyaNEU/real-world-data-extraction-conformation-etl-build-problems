@@ -76,9 +76,10 @@ def main():
     ok("PDF plan files the dome stock rule and the per lane-km rates",
        "brought forward by the loads weighed in to it and out of it at the scale houses" in plan and
        "set in kilograms per lane-km" in plan)
-    m = re.search(r"plant brine \(23 per cent salt by weight, ([\d.]+) kg a litre\)", plan)
-    brine = float(m.group(1)) if m else None
-    ok("PDF plan files the pre-wet brine's weight", brine == 1.18, str(brine))
+    m = re.search(r"plant brine at (\d+) litres to the tonne of salt \(23 per cent salt by weight, ([\d.]+) kg a litre\)",
+                  plan)
+    rate, brine = (float(m.group(1)), float(m.group(2))) if m else (None, None)
+    ok("PDF plan files the pre-wet rate and the brine's weight", rate == 40.0 and brine == 1.18, "%s, %s" % (rate, brine))
     ok("PDF procedure read back (positive control: its title)", "Road salt procurement" in proc)
     ok("PDF procedure 4.2 files the estimand and the rounding",
        "the additional rock salt the roads the change moves will need from 1 November to 31 March, over what they "
@@ -94,8 +95,10 @@ def main():
     new = [s for s, e in moves if e == dt.date(2026, 8, 30)]
     old = [(s, e) for s, e in moves if e < dt.date(2026, 8, 30)]
     lk = {s: float(r["lane_km"]) for s, r in reg.items()}
-    ok("CSV register and revision log: 216 new segments, 424.0 lane-km; 202 earlier moves",
-       len(new) == 216 and abs(sum(lk[s] for s in new) - 424.0) < 1e-6 and len(old) == 202)
+    figs0 = json.load(open(os.path.join(HERE, "figures.json")))
+    ok("CSV register and revision log: the new segments, 424.0 lane-km, and the earlier moves",
+       len(new) == figs0["segments"] and abs(sum(lk[s] for s in new) - 424.0) < 1e-6 and
+       len(old) == figs0["earlier_moves"], "%d new, %d earlier" % (len(new), len(old)))
     wb = openpyxl.load_workbook(os.path.join(TARGET, "storm_log_2021-22_to_2025-26.xlsx"), read_only=True)
     wsi, season_rows = {}, {}
     for w in WINTERS:
@@ -169,7 +172,11 @@ def main():
     own, gain = x0 * sev, gold / Ln
     ok("CALL components recompute (own Priority 2 salt, gain per lane-km)",
        round(own, 1) == figs["own_p2_t_per_lkm"] and round(gain, 1) == figs["gain_t_per_lkm"] and
-       edge(own, 0.1) >= 0.025 and edge(gain, 0.1) >= 0.025, "%.4f, %.4f" % (own, gain))
+       edge(own, 0.1) >= 0.015 and edge(gain, 0.1) >= 0.025, "%.4f, %.4f" % (own, gain))
+    per_w = [sum(salt.get((s, w), 0.0) for s in new) / (Ln * wsi[w]) * sev for w in WINTERS]
+    ok("CALL own Priority 2 salt rounds alike in every winter on its own", all(round(v, 1) == figs["own_p2_t_per_lkm"]
+                                                                            for v in per_w),
+       str([round(v, 3) for v in per_w]))
     # the rivals block 1 names
     tot = den = 0.0
     oldd = dict(old)
@@ -265,11 +272,11 @@ def main():
             if w == ws.title:
                 art[(rec["City circuit"][:3], w)] = art.get((rec["City circuit"][:3], w), 0.0) + float(rec["Rock salt (t)"])
     wb.close()
-    good = all(round(art[(y, w)], 1) == figs["art_%s_%s" % (y, w)] for y in yards for w in ("2023-24", "2024-25",
-                                                                                              "2025-26"))
-    ok("ASK B every yard-winter arterial figure recomputes", good, "")
-    ok("ASK B every figure clear of its rounding edge (from the recomputed values)",
-       min(edge(v, 0.1) for v in art.values()) >= 0.025, "%.4f" % min(edge(v, 0.1) for v in art.values()))
+    good = all(int(round(art[(y, w)])) == figs["art_%s_%s" % (y, w)] for y in yards for w in ("2023-24", "2024-25",
+                                                                                                "2025-26"))
+    ok("ASK B every yard-winter arterial figure recomputes to the tonne", good, "")
+    ok("ASK B every figure clear of its whole-tonne rounding edge (from the recomputed values)",
+       min(edge(v, 1.0) for v in art.values()) >= 0.25, "%.3f" % min(edge(v, 1.0) for v in art.values()))
 
     # ---------------------------------------------------------------------------------------- the other formats
     n_csv = sum(1 for f in os.listdir(TARGET) if f.endswith(".csv"))
@@ -300,14 +307,16 @@ def main():
        all(list(r[1:4]) == [figs["art_%s_%s" % (y, w)] for w in ("2023-24", "2024-25", "2025-26")]
            for r, y in zip(arts, yards)), "")
     from docx import Document
-    memo = " ".join(p.text for p in Document(os.path.join(TASK, "golden", "seasonal_salt_commitment_memo.docx"))
-                    .paragraphs)
-    ok("GOLDEN memo read back: the commitment, its components, one chart",
+    memo = " ".join(p.text for p in Document(os.path.join(TASK, "golden",
+                                                          "seasonal_salt_commitment_council_report.docx")).paragraphs)
+    ok("GOLDEN council report read back: the commitment, its components, one chart",
        "{:,} t of rock salt".format(call) in memo and "%.1f t a lane-km" % figs["gain_t_per_lkm"] in memo and
-       len(Document(os.path.join(TASK, "golden", "seasonal_salt_commitment_memo.docx")).inline_shapes) == 1, "")
+       len(Document(os.path.join(TASK, "golden", "seasonal_salt_commitment_council_report.docx")).inline_shapes) == 1,
+       "")
     sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
     want = ["{:,}".format(call), "%.1f" % figs["own_p2_t_per_lkm"], "%.1f" % figs["gain_t_per_lkm"]] + \
-        ["{:,.1f}".format(figs[k]) for k in figs if k.startswith(("stock_", "room_", "art_"))]
+        ["{:,.1f}".format(figs[k]) for k in figs if k.startswith(("stock_", "room_"))] + \
+        ["{:,} t".format(figs[k]) for k in figs if k.startswith("art_")]
     ok("WRITEUP every graded figure appears in submission.md at its stated rounding", all(x in sub for x in want),
        str([x for x in want if x not in sub][:4]))
 

@@ -1,8 +1,9 @@
 """task165 world: the road network, each segment's service history and coverage, the circuits and fleet, and the
 storm events of five winters. Everything here is the clean truth; records.py turns it into the systems' exports.
 
-Coverage (h) is the share of a collector's lane-km Priority 2 trucks salt (its intersection approaches, hills and
-curves). It is drawn independently of yard, lanes, length, circuit and street, and it never ships."""
+Coverage (h) is the share of a collector's lane-km Priority 2 trucks salt: its intersection approaches (a fixed length
+at each end of the segment, so a larger share of a short segment) and its hills and curves (the hazard share, drawn
+independently of yard, lanes, length, circuit and street). It never ships."""
 from __future__ import annotations
 
 import datetime as dt
@@ -20,19 +21,26 @@ R_HAZ2 = 10.23    # Priority 2 on a collector's hazard lane-km (spot treatment, 
 R_ART = 12.05     # Priority 1 arterials
 ART_YARD = {"KLV": 1.03, "MPF": 0.98, "RDG": 1.06, "LKS": 0.95}
 R_LOCAL_SS = 1.10  # sand-salt on Priority 3 hill locals (tonnes of mix per lane-km), material SS
-M_SD = 0.035       # a segment's own persistent multiplier
+M_SD = 0.05        # a segment's own persistent multiplier (shade, drainage, grade the register does not carry)
+WINTER_SD = 0.07   # a segment's own winter-to-winter multiplier (operators, timing of events on the street)
 EVENT_CV = 0.16    # a segment's salt in one event about its expectation
 SHOCK_SD = 0.003   # a winter's effect the index does not carry
 
-# coverage by pool (mean, concentration of a beta draw)
-H_NEW = (0.155, 16.0)
-H_REASON = {"hill": (0.58, 4.0), "school": (0.44, 4.0), "hospital": (0.40, 4.0), "transit": (0.37, 4.0)}
-H_FLAT = (0.13, 12.0)   # the flat streets each reason also brought in (three in ten)
-TRANSIT_OPEN = 0.75     # share of a transit-move street's untreated length kept from its draw
-H_INNER = (0.45, 8.0)
-H_P2 = (0.33, 6.0)
-BATCH_MIX = {"A": {"hill": 40, "school": 18}, "B": {"transit": 20, "school": 20, "hospital": 12},
-             "C": {"hill": 30, "hospital": 12, "school": 8}, "D": {"transit": 22, "school": 12, "hill": 8}}
+# Priority 2 salts each segment's intersection approaches: INT_KM of centreline in all (both ends)
+INT_KM = 0.10
+# hazard share (hills and curves) by pool (mean, concentration of a beta draw)
+H_NEW = (0.05, 40.0)
+H_REASON = {"hill": (0.52, 4.0), "school": (0.34, 4.0), "hospital": (0.30, 4.0), "transit": (0.42, 4.0)}
+H_FLAT = (0.05, 40.0)   # the flat streets each reason also brought in (as flat as the redesign's)
+FLAT_SHARE = 0.30       # their share of each reason's moves
+H_INNER = (0.38, 8.0)
+H_P2 = (0.25, 6.0)
+BATCH_MIX = {"A": {"hill": 84, "school": 38}, "B": {"transit": 43, "school": 43, "hospital": 26},
+             "C": {"hill": 64, "hospital": 26, "school": 17}, "D": {"transit": 47, "school": 26, "hill": 17}}
+CL_RANGE = (0.45, 1.35)       # collector segment lengths, km
+CL_RANGE_NEW = (0.45, 1.35)   # the redesign's collectors: the same block lengths
+CL_RANGE_FLAT = (0.45, 1.35)
+N_NEW = 216
 
 NEW_LANE_KM = 424.00
 
@@ -110,6 +118,10 @@ class World:
         self._build_network()
         self._build_circuits_and_fleet()
         self._build_events()
+        # each segment's own winter-to-winter variation (a stream of its own, so nothing else moves with it)
+        wr = np.random.default_rng(seed + 7)
+        self.wmult = {(s["segment_id"], w): float(math.exp(wr.normal(0.0, WINTER_SD)))
+                      for s in sorted(self.segments, key=lambda s: s["segment_id"]) for w in K.WINTERS}
 
     # ------------------------------------------------------------------------------------------- network
     def _seg_id(self, k):
@@ -118,7 +130,7 @@ class World:
     def _build_network(self):
         rng = np.random.default_rng(self.seed + 1)
         art_streets = _street_names(rng, _BASES_ART, _SFX_ART, 44)
-        col_streets = _street_names(rng, _BASES_COL, _SFX_COL, 300)
+        col_streets = _street_names(rng, _BASES_COL, _SFX_COL, 340)
         cross = list(col_streets)
         idgen = iter(sorted(rng.choice(np.arange(100000, 899999), size=9000, replace=False)))
         segs = []
@@ -126,7 +138,8 @@ class World:
         def add(street, yard, func, pool, lanes, cl, h, reason=None, batch=None):
             s = {"segment_id": self._seg_id(int(next(idgen))), "street": street, "yard": yard, "func_class": func,
                  "pool": pool, "lanes": lanes, "centreline_km": round(float(cl), 2),
-                 "h": float(h), "m": float(math.exp(rng.normal(0, M_SD))), "reason": reason, "batch": batch}
+                 "h_haz": float(h), "h": 0.0, "m": float(math.exp(rng.normal(0, M_SD))), "reason": reason,
+                 "batch": batch}
             s["lane_km"] = round(s["lanes"] * s["centreline_km"], 2)
             segs.append(s)
             return s
@@ -152,7 +165,7 @@ class World:
         # the redesign's frequent network collectors (424.0 lane-km)
         new_streets = col_streets[cursor:cursor + 34]
         cursor += 34
-        self._collector_block(rng, new_streets, "NEW", 216, add, H_NEW)
+        self._collector_block(rng, new_streets, "NEW", N_NEW, add, H_NEW)
         # the rest of the Priority 2 collectors
         self._collector_block(rng, col_streets[cursor:cursor + 150], "P2", 780, add, H_P2)
         cursor += 150
@@ -161,6 +174,10 @@ class World:
             st = col_streets[cursor + (i % 40)] if cursor + 40 < len(col_streets) else col_streets[i % 40]
             add(st, K.YARDS[i % 4], "LOCAL", "P3", 2, rng.uniform(0.15, 0.45), 0.0)
         self._fit_new_lane_km(segs)
+        for s in segs:
+            if s["func_class"] == "COLLECTOR":
+                h_int = min(0.6, INT_KM / s["centreline_km"])
+                s["h"] = 1.0 - (1.0 - h_int) * (1.0 - s["h_haz"])
         # cross streets: from / to along each street in order
         by_street = {}
         for s in segs:
@@ -206,16 +223,15 @@ class World:
         for st, cnt in zip(streets, per):
             yard = K.YARDS[int(rng.integers(0, 4))]
             lanes = 4 if rng.random() < 0.08 else 2
+            lo, hi = CL_RANGE_NEW if pool == "NEW" else CL_RANGE
             for _ in range(int(cnt)):
-                flat = pool == "MOVE" and rng.random() < 0.30
+                flat = pool == "MOVE" and rng.random() < FLAT_SHARE
                 if flat:
                     h = rng.beta(H_FLAT[0] * H_FLAT[1], (1 - H_FLAT[0]) * H_FLAT[1])
                 else:
                     h = rng.beta(mean * k, (1 - mean) * k)
-                    if reason == "transit":
-                        # the earlier transit upgrades ran on inner-suburb streets, an intersection every block
-                        h = 1.0 - (1.0 - h) * TRANSIT_OPEN
-                add(st, yard, "COLLECTOR", pool, lanes, rng.uniform(0.45, 1.35), h, reason, batch)
+                a_, b_ = CL_RANGE_FLAT if flat else (lo, hi)
+                add(st, yard, "COLLECTOR", pool, lanes, rng.uniform(a_, b_), h, reason, batch)
 
     def _fit_new_lane_km(self, segs):
         """Scale the redesign segments' lengths so their lane-km sum to exactly 424.00 after rounding."""
