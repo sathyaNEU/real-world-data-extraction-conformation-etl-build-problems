@@ -12,19 +12,20 @@
  "gates": {
   "checks": "exit 0, 83 checks, 83 PASS, 0 FAIL",
   "verify": "exit 0, 82 checks, 82 PASS, 0 FAIL, reading only the shipped bundle",
-  "figures_check": "exit 0, 98 figures in blocks 1 to 4, 0 absent from figures.json",
+  "figures_check": "exit 0, 94 figures in blocks 1 to 4, 0 absent from figures.json",
   "precut": "exit 0, 50 checks, 0 FAIL, 0 WARN",
   "voice_check": "exit 0, 13 checks PASS, prompt.txt 971 characters (29 of headroom)",
   "leak": "REVIEW, no LEAK finding; sweeps 1, 2, 5, 7, 8, 9 and 11 clean; three REVIEW classes answered in the design note",
   "guard_surface": "exit 0, 11 promoted pairs (was 14), identical-column-set findings 0 after the dictionary header was re-cut; pairs answered in the design note",
   "guard_heart": "WARN, exit 0, 0 BLOCK; ban.artifact cleared by re-keying context_artifact to planning_thread",
   "guard_check": "WARN, exit 0, no BLOCK",
-  "ceiling": "PASS, pair 37.4 against 40, cracker 55.5 keeping 13 of 68, mirror 19.3 keeping 9 of 68, leakage 13.2 per cent",
+  "ceiling": "PASS, pair 37.4 against 40, cracker 55.5 keeping 13 of 68, mirror 19.3 keeping 9 of 68, leakage 13.2 per cent; unchanged by the block 4 trim because those counts were never rubric criteria",
   "rebuild": "two consecutive builds byte identical; tree digest is md5 over sorted 'relpath md5' lines: target ab5bd5b7ae0013c734471e9269950b87, golden 38b60dd5e4983f8e61dcda7d573dc16c, target.zip md5 72c2b367aa54077806c3183825940d2b, 19 members, cut by generator/archive.py",
   "input_gates": "19 files, four formats (csv, xlsx, pdf, txt), case_payments.csv at 33,865 rows, three declared distractors",
   "ask_forcing": "measured on the cut pack: ask A 16 of 16 figures move, widest 256,440.34 on the Q1 total (921,923.96 against 665,483.62); ask B 24 of 24, widest 54,377 on Brindlemere's value (405,985 against 460,362), narrowest one whole case; ask C 15 of 15, widest 7.8 points on Q2 beneficiary recall (5.1 against 12.9), narrowest 0.2 against a rounding of 0.1",
-  "precision": "all 59 graded figures print at the precision their asking sentence states, checked by hand; none finer"
+  "precision": "all 59 graded figures print at the precision their asking sentence states, checked by hand; none finer",
+  "block4_scope": "every figure in Deliverable Answers maps to a prompt sentence: the four payments-sent counts were removed on the coordinator's ruling (the index's denominator, which the prompt does not ask for); Castlegate's stays in the Final Recommendation and step 3 as the recommendation's working, and the deliverable file keeps the column as ungraded context"
  },
- "notes": "Architecture v1 (insurance experience rating) was redrawn at stage 1 on a 10/10 rule 1 finding; v1 sits in the card's lineage. The index is stated to the nearest whole case per million payments because the five licensed two-source estimator forms print 30.83 to 30.94 at two decimals and all print 31 at the whole case. Resumed after a container restart: the four stage-3 conditions were measured on the cut pack, the card's stale stump and analyst_test numbers were corrected to the shipped 412/325/205/23, the context_artifact re-keyed planning_thread to clear a ban.artifact BLOCK that task197 raised, the prompt trimmed 994 to 971, ask B's forcing cell re-measured, and the dictionary given a verifier read-back.",
+ "notes": "Architecture v1 (insurance experience rating) was redrawn at stage 1 on a 10/10 rule 1 finding; v1 sits in the card's lineage. The index is stated to the nearest whole case per million payments because the five licensed two-source estimator forms print 30.83 to 30.94 at two decimals and all print 31 at the whole case. Resumed after a container restart: the four stage-3 conditions were measured on the cut pack, the card's stale stump and analyst_test numbers were corrected to the shipped 412/325/205/23, the context_artifact re-keyed planning_thread to clear a ban.artifact BLOCK that task197 raised, the prompt trimmed 994 to 971, ask B's forcing cell re-measured, and the dictionary given a verifier read-back. Coordinator round 2: a task194 differentiation entry added to the card (both cards carry G12, but task194's gap is a coding lag the series' own vintages recover while this build's events never enter any record), and block 4 trimmed of the four payments-sent counts. The pack was not touched in that round, so the rebuild digests stand.",
  "updated": "2026-10-18"
 }

@@ -434,7 +434,14 @@ credit that would value after the extract is not posted). The three remaining RE
 
 **`guard.py surface`: one named tell, fixed; one pair answered.** The prompt shared the rare construction
 "give the shares to one decimal" with task231 and now opens that sentence on a different verb. The
-promoted pair task194 against task196 is answered by the card's differentiation and by the driver score:
+promoted pair task194 against task196 is promoted because both cards carry G12, and `surface` reads that as
+a decisive pattern the draw should have caught; the card now carries an explicit `differentiation` entry for
+task194 so a reviewer reads the distinction off the card rather than off this note. The two gaps are
+opposite kinds: task194's events have happened and the record codes them late, so developing the series'
+own two vintages recovers them and every event eventually appears; task196's events never enter any record,
+and the decisive step is that most of the overlap between the two capture channels exists only because the
+firm's own recall request produced the second channel's rows, which no later vintage would ever reveal. The
+driver score agrees:
 task194's G12 is a count that crystallises after the period it belongs to, read through two vintages of the
 same series; this build's G12 is a count of events that never entered the record at all, recovered from the
 overlap of two channels, and the two drivers score 0.06. Re-run on the final pack, `surface` also promoted three pairs on one table
@@ -549,6 +556,15 @@ carries a fixed 1980 timestamp and the zip's bytes cannot move between rebuilds.
   furniture rather than a driver of the stump, but a shared header is still a shared string, so it was
   re-cut as `extract,column,definition` in the mutual's own idiom. The writer, the one check that reads it
   and the new verifier read-back moved with it; the identical-column-set finding is now zero.
+- **Grading the review group's payments-sent counts in block 4**: the Deliverable Answers block stated each
+  review-group member's recorded cases, indexed cases and payments sent beside its index. The recorded and
+  indexed values are the asked chart's own two series, so they stay, but the payments count is the index's
+  denominator and no sentence in the prompt asks for it, which makes it a graded figure with no asking
+  sentence to fix its basis or rounding (`determinism-check` section 5). The four payments counts are out of
+  block 4. Castlegate's stays in the Final Recommendation and in step 3, where it is the recommendation's
+  working rather than an answer the rubric owes, and the deliverable file keeps the column as ungraded
+  context. `figures_check.py` falls from 98 figures to 94 and the pair ceiling does not move, because those
+  counts were never rubric criteria: C1 is the four indices.
 - **`causal_design` as the strategy label**: the honest key for capture interference, taken by task197 five
   minutes before this card filed, so the card carries `other` with the mechanism named in its notes rather
   than a negotiated axis.
