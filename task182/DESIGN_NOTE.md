@@ -298,6 +298,135 @@ whether architecture 4 is re-tuned on a long observation interval or replaced, a
 between those two.
 
 
+## ARCHITECTURE 5 COMPOSITION SCREEN (run before a card was registered, and it fails)
+
+Architecture 4's closing line set the shape for a fifth draw: a call that turns on a correction while
+every printed figure is a quantity the records fix exactly, so no graded number is an estimator's
+output. The assigned ground is human-factors-ergonomics / safety-incident-error-analysis, which was
+last drawn at task181 and is free of the pairing and subdomain bans. **The draw does not survive its own
+reflex sweep, and the sweep was run as code before any separation was measured, which is what made the
+failure cheap.** Work in `scratchpad/r182v5/screen.py`, `dial.py`, `focus.py`, `model.py` and
+`rotation.py`.
+
+**1. The mechanism tested.** F5 composition, the one family on this ground with a measured hold (68, 83,
+30, 134 v2) and the only one whose decisive step is a method for a filed quantity rather than one of the
+estimand's five parts. Fourteen plants are ranked on recorded operator-error events per 100,000 rostered
+duty-hours. The per-hour error rate depends on a state of the exposure that no column records and only
+each operative's own roster history defines; the plants' rates within each state are alike; so the crude
+rate ranks the plants by how much of their exposure sits in the high-rate states, and the plants whose
+counts genuinely exceed what their own state mix implies sit mid-table. Every printed figure is an exact
+integer or an exact ratio of two integers, and the correction is never printed.
+
+**2. The determinacy half passes everywhere, and that is the positive result.** In all three models below,
+over twenty world redraws each:
+
+| condition | result |
+|---|---|
+| the slate is identical under all six licensed bandings of the state | 20/20 |
+| all eight licensed forms of the conditioning name the same slate (six indirect bandings, direct standardisation to the group's hour mix, the mean state-rate ratio) | 20/20 |
+| the 3rd-to-4th margin on the corrected route | min 1.423, median 1.477 to 1.521, against the 1.15 floor |
+| the corrected slate is exactly the plants carrying a real effect | 20/20 |
+| the signal's driver orthogonal to every visible attribute (headcount, night share, agency share, grade mix, turnover) | max abs corr 0.000 |
+
+So the shape architecture 4 asked for is buildable: the estimator's family closes on the data's structure
+rather than on a filed sentence, the figures are records-fixed, and the orthogonality the brief requires is
+reachable exactly, by residualising the driver against every visible attribute at draw time rather than
+drawing it and hoping. With nine units the residual correlations run to 0.75 by chance, so the
+residualisation is the method, not a check.
+
+**3. Model A, the state as position in a run of consecutive duties (fatigue). A ladder, at a rate curve the
+field will not credit.** Eleven of thirty-six cells passed every condition, including the reflex sweep at
+20/20. The best is fourteen plants, a positional error-rate spread of 12, a true plant effect of 1.60 and
+240 events per 100,000 hours (about 540 events per plant per year): the crude route misses the golden slate
+20/20, no reflex reaches it 20/20, the margin runs 1.396 to 1.496. In the design world the group's
+positional rates are 107, 167, 274, 428, 723 and 1,167 per 100,000 hours, the crude slate is plants 5, 8
+and 9 against the golden 5, 11 and 12, and the two displaced plants sit 5th and 7th on the crude ranking.
+**The kill is the rate curve.** The passing band needs a spread of 9 to 16 between the first and the sixth
+consecutive duty; the shift-work literature gives 2 to 3. At a spread of 3 the plants' mix-weighted
+multipliers range only 1.40 to 2.32, a ratio of 1.66 against a plant effect of 1.60, so there is no room
+for the effect to hide and no margin left over. At a spread of 6 the crude route lands the slate in 15 of
+20 seeds.
+
+**4. Model B, the state as experience on the line worked, driven by redeployment. The curve is credible and
+the ladder is gone.** The power law of practice carries an order of magnitude honestly, so the state
+becomes the operative's count of prior duties on the line they worked that duty, in six bands, with
+relative rates 11.0, 6.2, 3.4, 2.0, 1.35 and 1.00. The driver has to be invisible, so it is redeployment
+rather than turnover: a redeployed operative looks, on plant service, grade and permanent-against-agency,
+exactly like an experienced one. Redeployment at 0.02 to 0.30 a year, 678 events per plant per year:
+**the crude route reaches the golden slate 20 of 20 and twenty reflexes reach it,** because at a realistic
+redeployment rate the share of hours at low line experience is a few per cent and nearly the same at every
+plant, so the mix-weighted multiplier barely moves and the crude rate is the plant effect.
+
+**5. Model C, the same state driven by rotation breadth. The ladder is still gone, and the driver is one
+group-by away.** The only plant-level driver of the low-experience share that is not a plant attribute is
+how many distinct lines each operative is rostered across, one to six. Drawn orthogonal to the visible
+attributes (max abs corr 0.000) it produces a 5.27x contrast in the low-experience hour share across
+plants, and still **the crude route reaches the golden slate 20 of 20.** Over three years an operative
+accumulates a hundred or more duties per line, so the top band holds the overwhelming majority of hours
+whatever the breadth, and a 5x contrast in a small share is a small distortion. Worse, standardising on
+hours by lines-per-operative, one group-by on the roster, reaches the golden slate in 14 of 20 seeds, so
+even where the ladder existed the decisive rung would be readable on the schema, and one group-by is no
+rung.
+
+**6. The one dial, and it is magnitude against credibility and invisibility together.** The mix distortion
+has to exceed the true plant effect by a comfortable factor to carry a ladder. The only recorded property
+of a duty whose per-hour error rate spreads far enough to do that is the operative's experience on the
+task. But the share of exposure sitting at low experience is small in any steady operation, so the
+distortion is small exactly where the rate curve is credible; and the two ways to make the share large are
+an incredible rate curve (model A) or a staffing fact the roster shows on its face (models B and C), where
+the service-length standardisation reflex reaches the golden slate 20/20 and the breadth group-by reaches
+it 14/20. There is no cell where the distortion is large, the rate curve is credible and the driver is
+invisible. Re-tuning moves along this curve.
+
+**7. Why the rest of the ground was not drawn instead.** Before model A, every other decisive step this
+ground affords was screened on paper against the WHAT screen, the banned strategies and the live builds,
+and each dies to a named rule. Recorded so a sixth draw does not re-walk it:
+
+| candidate decisive step | what kills it |
+|---|---|
+| which exposure base the count is divided by | task181's whole driver, on this exact subdomain |
+| which recorded series (register, claims, statutory return, first-aid log) measures the outcome | data semantics: the answer turns on reading what each source records |
+| standardise against the group's rate, crude against conditioned, as the call itself | the comparison, so a WHAT; filed it is rule application, unfiled it is a fork |
+| judge each plant against limits that widen as its exposure shrinks | the residue is a confidence level, a cut-off, and task191 holds the extremum-against-chance driver |
+| count occasions rather than events, or distinct operatives rather than events | the unit of the count, the part of the estimand task192 died on |
+| the record is capped at one event per shift, so compare the share of clean shifts | the outcome, a WHAT |
+| ranking by events prevented rather than by rate | the unit of value, a WHAT, and pattern A's insight is task33's |
+| selection on the extremum, or persistence across the record's own halves | needs a threshold to define elevated, which is the banned residue |
+| the barrier series: a check's own catch rate conditional on what reaches it | the conditional rate is the funnel reflex, and the residual's composition is `population_selection`, blocked by task245 |
+| staggered rollout of a procedure, or the before-and-after counterfactual | `causal_design`, blocked by task163 |
+| the count is short by a reporting lag the record itself measures | `maturity_censoring`, blocked by task471 |
+| rates measured on one pool transported to a pool whose mix moved | task192's live driver; two drivers that read as one insight are a clone |
+
+**7a. The guard's own verdict on the candidate axes, run without registering, and it agrees.**
+`guard.py check` on the architecture 5 card returns **BLOCK**, and the blocks are structural rather than
+textual. `test.same_driver_older`: the signature of decisive gap `population`, decisive pattern `E` and
+Gate G `method_or_model_selection` repeats eight earlier builds (task30, task31, task448, task500 v2,
+task53 v2, task57 v19, task69 v2, task76 v2), and the guard's own fix line says redrawing the gap or the
+pattern is cheaper than eight differentiation lines. `test.same_puzzle_older`: gap, pattern and decision
+type all repeat task448. `ban.artifact`: the context-artifact type `planning_thread` repeats task196 v2, a
+build live in this wave, which is what registering a card early is for. Three WARNs stand besides:
+`overuse.gate_g` (method selection in 8 of the last 12 builds, up from 5 when this session started, so
+other sessions registered in the meantime), `repeat.gate_g` against task190, `overuse.objective` (anomaly
+detection in 4 of the last 12) and `repeat.question_form` on `which`. The nearest driver is 0.11
+(task198 v1), so the driver sentence itself was fresh: the collision is in the cell, not the words. The
+axes that were clear and are worth inheriting for a sixth draw on this ground:
+`human-factors-ergonomics/safety-incident-error-analysis` (free of the pairing and subdomain bans),
+shape 07, `org_family: agriculture_or_food_producer` (1 of 241 cards), `forcing_event:
+incident_or_complaint` (2 of 241), `forum: operations_desk`, `role_family: operations_director`,
+`calibration_form: none`, geography Ireland with personas drawn at `guard.py names --geo Ireland --seed
+182`. The card is in `scratchpad/r182v5/cand.json`, marked not registered.
+
+**8. What this costs and what it saves.** One session, no files, no card registered. The screen has now
+stopped three architectures on this number before any data was cut. Verdict: **FAIL on the stump, PASS on
+the determinacy.** The decision is the author's, and it is a choice of which constraint moves, not a
+tuning: keep the records-fixed design and find a correction whose driver is invisible by its position in
+time rather than merely orthogonal in the cross-section (a driver no single group-by can reconstruct, which
+is the property `stumping` Part 6 names and which rotation breadth, a per-operative attribute, is not); or
+keep this ground and accept a printed estimate, which is what 1.2a forbids; or move the ground. The card
+is left registered at architecture 4 rather than half re-rooted, because architecture 4's identity is still
+the slot's filed identity and moving it into `lineage` with nothing to put in its place would leave the
+card describing no draw.
+
 ## ARCHITECTURE 3 RE-ROOT (archived: spent at the feasibility check, 2026-10-18)
 
 **Why architecture 2 died, in one line.** Clause 3.1 obliged every solver to produce a residual and the
@@ -1419,6 +1548,44 @@ figures.json keys only, so a section hash cannot be allow-listed, and the snapsh
 the check pass: the move is reported and accepted on that basis.
 
 ## Tried and rejected
+- **The guard agrees with the screen, mechanically and independently.** `guard.py check` on the
+  architecture 5 card (never registered) returns BLOCK: `test.same_driver_older` on the signature gap
+  `population` + pattern `E` + Gate G `method_or_model_selection`, spent in eight earlier builds (task30,
+  task31, task448, task500 v2, task53 v2, task57 v19, task69 v2, task76 v2), with the guard's own advice
+  that redrawing the gap or the pattern is cheaper than eight differentiation lines; `test.same_puzzle_older`
+  against task448; and `ban.artifact` on `planning_thread` against task196 v2, live in this wave. The
+  nearest driver is 0.11, so the sentence was fresh and the cell was not. Conditioned-yield composition on
+  this objective is spent territory on the axes as well as on the measurement.
+- **Architecture 5's composition screen, run as code before a card was registered: the stump half fails and
+  the determinacy half passes.** The mechanism is a conditioned rate on human-factors ground: plants ranked
+  on recorded operator-error events per 100,000 rostered duty-hours, where the rate depends on a state of
+  the exposure that only each operative's own roster history defines. Model A (position in a run of
+  consecutive duties) carries a ladder in 11 of 36 cells, with the crude route missing the golden slate
+  20/20 and no reflex reaching it 20/20, but only at a positional rate spread of 9 to 16 where the
+  shift-work literature gives 2 to 3; at a spread of 3 the plants' mix-weighted multipliers range 1.40 to
+  2.32, a ratio of 1.66 against a plant effect of 1.60, so the effect has nowhere to hide. Models B and C
+  make the curve credible (the power law of practice, 11x) and lose the ladder entirely: the crude route
+  reaches the golden slate 20 of 20 in both, because the share of hours at low task experience is a few per
+  cent in any steady operation. Numbers in `## ARCHITECTURE 5 COMPOSITION SCREEN`.
+- **The one dial for architecture 5 is magnitude against credibility and invisibility together.** The
+  distortion must exceed the plant effect to carry a ladder; the only recorded duty property whose per-hour
+  rate spreads far enough is experience on the task; and the two ways to put enough exposure at low
+  experience are an incredible rate curve or a staffing fact the roster shows on its face, where
+  standardising on plant-service bands reaches the golden slate 20/20 and standardising on
+  lines-per-operative, one group-by, reaches it 14/20. No cell has all three.
+- **Orthogonality is a construction, not a check, and this is worth keeping.** With nine to sixteen units
+  the correlation between an independently drawn driver and a visible attribute runs to 0.75 by chance (it
+  hit +0.751 against night share on the first model). Residualising the driver against every visible
+  attribute at draw time holds max abs corr at 0.000, which is what the brief's near-zero assertion needs.
+- **Every other decisive step this ground affords was screened on paper first and each dies to a named
+  rule**, so a sixth draw does not re-walk them: the exposure base is task181's own driver on this
+  subdomain; which recorded series measures the outcome is semantics; crude against conditioned as the call
+  is the comparison, hence a WHAT; widening limits by exposure has a confidence level as its residue and is
+  task191's driver; occasions rather than events is the unit task192 died on; the one-event-per-shift cap is
+  the outcome; events prevented is the unit of value and task33's insight; persistence across halves needs a
+  threshold; the barrier series' residual is `population_selection`, blocked by task245; staggered rollout
+  is `causal_design`, blocked by task163; a reporting lag is `maturity_censoring`, blocked by task471; and
+  rate transport to a moved pool is task192's live driver. Table in the screen's section 7.
 - Architecture 4's own estimator screen, completed: **the draw is dead at every snapshot interval, and the
   two ways out are dead measured rather than argued.** The first pass screened five routes and rejected
   way out A on a logical ground; completing the route list to the seven the field licenses and searching

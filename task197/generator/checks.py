@@ -24,6 +24,7 @@ def edge(v, u=1.0):
 
 def main():
     sim._fcr_gate = build.fcr_active
+    core._scope_gate = build.scope_gate
     W = core.window()
     recs = core.recordings(W)
     cache = core.power_cache(W, recs)
@@ -143,13 +144,40 @@ def main():
     ck("SF8 one site furthest below contract", round(su[call]["traj"], 1) < round(su[runner]["traj"], 1), "")
 
     # ---- the separation line -----------------------------------------------------------------
-    bad = 0
-    for s in sim.SITES:
-        for (dd, a, b) in build.unavail_windows(s["id"]):
-            for (t0, t1, tstar, fx) in W[dd]["under"] + W[dd]["over"]:
-                if a - 60 <= tstar < b + 60 and sim.contracted(s, np.array([float(tstar)]), dd)[0]:
-                    bad += 1
-    ck("zero ask-device rows inside the measured populations", bad == 0, "%d overlaps" % bad)
+    # Every reserve-withdrawal window, at its true place and at the place its own start_local
+    # field reads, must be clear of the main call's population. An over-frequency overlap is the
+    # designed hazard into ask A and is counted, not forbidden.
+    placed = build.unavail_rows()
+    bad_true = bad_stamp = over_true = 0
+    for r in placed:
+        s_site = sim.SITE_BY_ID[r["site"]]
+        for (dd, a) in ((r["date"], r["start"]), build.norm(r["date"], r["stamp_start"])):
+            if not (sim.WINDOW_START <= dd <= sim.WINDOW_END):
+                continue
+            b = a + r["minutes"] * 60
+            for (t0, t1, tstar, fx) in W[dd]["under"]:
+                if a - 60 <= tstar < b + 60 and sim.contracted(s_site, np.array([float(tstar)]), dd)[0]:
+                    if a == r["start"] and dd == r["date"]:
+                        bad_true += 1
+                    else:
+                        bad_stamp += 1
+        for (t0, t1, tstar, fx) in W[r["date"]]["over"]:
+            if r["start"] <= tstar < r["start"] + r["minutes"] * 60 \
+                    and sim.contracted(s_site, np.array([float(tstar)]), r["date"])[0]:
+                over_true += 1
+    ck("R2 zero withdrawal windows touch the main call's population at their true place",
+       bad_true == 0, "%d overlaps" % bad_true)
+    ck("R2 zero withdrawal windows touch it at the place their own row reads",
+       bad_stamp == 0, "%d overlaps" % bad_stamp)
+    ck("the clock hazard removes over-frequency obligations, as designed",
+       over_true >= 5, "%d over-frequency obligations withdrawn" % over_true)
+    held = build.held_minutes()
+    bad_h = 0
+    for (dd, m) in held:
+        if (W[dd]["f"][m * 60:(m + 1) * 60] <= sim.QUALIFY_HZ).any():
+            bad_h += 1
+    ck("R2 zero held summary minutes hold a qualifying under-frequency second", bad_h == 0,
+       "%d of %d held minutes" % (bad_h, len(held)))
     con = sqlite3.connect(os.path.join(TGT, "platform", "vkf_highres_archive.sqlite"))
     dup = con.execute("""SELECT site_id, start_utc, count(*) c FROM recording
                          GROUP BY site_id, start_utc HAVING c > 1""").fetchall()

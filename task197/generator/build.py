@@ -62,15 +62,19 @@ STAMP_SHIFT = 7200              # seconds the operator-interface handler's rows 
 # The operator's minute summary ran on the SCADA chain's own one-minute average for a few short
 # spans in which the one-second feed was not available to the summariser, so those rows carry that
 # single value in all three columns. The deviation extracts were published afterwards from the
-# quality-metering archive and carry the seconds. Each span is given as (local date, first local
-# minute, minutes); none may hold a second at or below 49.920 Hz.
+# quality-metering archive and carry the seconds, so for those minutes the extract reaches above
+# the summary's own stated maximum. Each span is (local date, delivery block, minutes); it opens
+# two minutes before the first qualifying over-frequency episode of that block on that date, and
+# the last three spans fall in blocks holding no such episode, where the fallback cost nothing.
 SUMMARY_HELD = [
-    (dt.date(2026, 9, 21), 616, 4),
-    (dt.date(2026, 9, 23), 1171, 5),
-    (dt.date(2026, 9, 29), 721, 4),
-    (dt.date(2026, 10, 2), 676, 4),
-    (dt.date(2026, 10, 6), 1246, 5),
-    (dt.date(2026, 10, 10), 1186, 4),
+    (dt.date(2026, 9, 23), 3, 5),
+    (dt.date(2026, 9, 30), 5, 4),
+    (dt.date(2026, 10, 2), 3, 4),
+    (dt.date(2026, 10, 5), 5, 5),
+    (dt.date(2026, 10, 4), 6, 4),
+    (dt.date(2026, 9, 25), 1, 4),
+    (dt.date(2026, 9, 27), 2, 3),
+    (dt.date(2026, 10, 7), 1, 3),
 ]
 
 # The settlement metering point in force for each site: (code, replacement code, effective date).
@@ -259,11 +263,22 @@ def scope_gate(site, d, tstar):
 
 def held_minutes():
     """Every (local date, local minute) the operator's minute summary carries the SCADA chain's
-    one-minute average in all three columns."""
+    one-minute average in all three columns. A span opens two minutes before the first qualifying
+    over-frequency episode of its delivery block on that date, and half an hour into the block
+    where there is none."""
     out = set()
-    for (d, m0, n) in SUMMARY_HELD:
+    for (d, blk, n) in SUMMARY_HELD:
+        lo_h, hi_h = sim.BLOCK_HOURS[blk - 1]
+        first = None
+        for (tstar, fx) in _over_extremes(d):
+            if lo_h * 3600 <= tstar < hi_h * 3600:
+                first = tstar // 60
+                break
+        m0 = (first - 2) if first is not None else lo_h * 60 + 30
         for k in range(n):
-            out.add((d, m0 + k))
+            m = m0 + k
+            if 0 <= m < 1440:
+                out.add((d, m))
     return out
 
 

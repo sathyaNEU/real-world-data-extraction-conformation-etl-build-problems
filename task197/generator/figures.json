@@ -266,7 +266,7 @@
   "clock_moved_mwh": 26.4,
   "clock_rows": 9,
   "ean_lost_mwh": 26.8,
-  "held_minutes": 26,
+  "held_minutes": 32,
   "kwh_site": "VKF-DLK",
   "over_withdrawn": 5,
   "prelim_gap_mwh": 2.974,

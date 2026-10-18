@@ -695,10 +695,12 @@ signpost the path. Hazard: the four exclusions themselves, specification 2.1 to 
 to apply in full, and the realignment of three cost centres on 1 July 2026, which the asking sentence
 pins by naming the site each unit reported under that month. Stops, measured on the cut pack: counting the
 extract's own rows gives 7,101, 6,384, 7,017 and 2,202 against the answer's **7,198, 6,108, 6,715 and
-1,914**, and 355, 332, 380 and 120 against **359, 318, 367 and 105**; de-duplicating on the separation key
-the dictionary states and stopping there gives 7,101, 6,161, 6,813 and 2,014, and 355, 321, 373 and 111.
+1,914**, and 379, 388, 445 and 165 against **383, 369, 421 and 145**; de-duplicating on the separation key
+the dictionary states and stopping there gives 7,101, 6,161, 6,813 and 2,014, and 379, 373, 428 and 152.
 Every one of the eight figures is outside its bin on both wrong reads, the smallest gap being 53
-separations and 3 complications. Fair in the sense of law 6: the summary-less-series path reproduces every
+separations and 4 complications, and `checks.py` asserts a bar of 3 rather than the half-separation bin
+because two devices acting at one site can land a figure one unit from the truth, which is outside the bin
+and still a coin flip. Fair in the sense of law 6: the summary-less-series path reproduces every
 figure exactly, asserted. Realism: a feed migration misses a window, a care-type change is recorded as a
 discharge and a readmission, and the system that counts separations is not the warehouse.
 
