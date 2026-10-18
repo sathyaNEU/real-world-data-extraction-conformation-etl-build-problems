@@ -416,10 +416,10 @@ def main():
         for m in range(1440):
             seg = f[m * 60:(m + 1) * 60]
             if (d, m) in held:
-                # the summariser fell back to the SCADA chain's own one-minute average, so all
-                # three columns carry that single value
-                v = round(float(seg.mean()), 4)
-                mins.append((utc(d, m * 60), v, v, v))
+                # the summariser fell back to the SCADA chain's own one-minute average for these
+                # minutes, so the row carries the mean and nothing else: one sample a minute has
+                # no minimum or maximum to publish and both columns go out empty
+                mins.append((utc(d, m * 60), "", round(float(seg.mean()), 4), ""))
             else:
                 mins.append((utc(d, m * 60), round(float(seg.min()), 4), round(float(seg.mean()), 4),
                              round(float(seg.max()), 4)))

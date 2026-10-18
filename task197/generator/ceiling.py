@@ -67,8 +67,11 @@ def load():
     P["met"] = rd("settlement/metered_volumes_15min.csv")
     ex = rd("operator/system_frequency_1s_extracts.csv")
     P["ex"] = [(_utc(r["ts_utc"]), float(r["frequency_hz"])) for r in ex]
+    # the summary's maximum column is empty on the minutes the summariser had only the SCADA
+    # chain's own one-minute average for, so those minutes carry no maximum to screen on
     P["min"] = [(_utc(r["minute_utc"]), float(r["frequency_max_hz"]))
-                for r in rd("operator/system_frequency_minute_summary.csv")]
+                for r in rd("operator/system_frequency_minute_summary.csv")
+                if r["frequency_max_hz"].strip()]
     import openpyxl
     wb = openpyxl.load_workbook(os.path.join(TGT, "register", "asset_register.xlsx"))
     ws = wb["Sites"]

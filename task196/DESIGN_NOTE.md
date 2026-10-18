@@ -231,8 +231,9 @@ than contested: nothing claims four advices settled in one month, only that four
 that closed in one quarter, which is what a prior-period top-up is.
 
 **Every basis the pack makes plausible for the period side**, each computed on the cut pack over the
-sixteen graded figures (`generator/checks.py`, `generator/verify.py`, and the table reproduced by
-`generator/ceiling.py --forcing`):
+sixteen graded figures and asserted row by row in `generator/checks.py`, with the golden's own route and
+the natural read repeated in `generator/verify.py` on the shipped bytes and in
+`generator/ceiling.py --forcing`:
 
 | Basis | Q1 total | Figures off the golden | Worst gap | Admitted by the pinned wording |
 |---|---|---|---|---|
@@ -240,8 +241,8 @@ sixteen graded figures (`generator/checks.py`, `generator/verify.py`, and the ta
 | the detail line's own `settlement_month` | 984,521.08 | 0 of 16 | 0.00 | yes, and it converges: the same month on 6,416 of 6,416 lines |
 | the advice's `settlement_month`, lines summed under it | 664,378.52 | 16 of 16 | 320,142.56 on the Q1 total | no: the sentence dates each case by its own closure, and 35 lines sit on an advice raised a quarter later |
 | the advice's `advice_date`, advice totals summed under it | 664,378.52 | 16 of 16 | 320,142.56 on the Q1 total | no, same reason, and this is the natural read the device rides on |
-| the case's `payment_date` | 813,976.84 | 16 of 16 | 259,848.83 on the Q4 total | no: "closed in", not sent in |
-| the case's `notified_date` | 842,965.43 | 16 of 16 | 233,187.43 on the Q4 total | no: "closed in", not recorded in |
+| the case's `payment_date` | 813,976.84 | 16 of 16 | 350,469.11 on the Q4 total | no: "closed in", not sent in, and 532 lines pay a case whose payment date falls outside the year |
+| the case's `notified_date` | 842,965.43 | 16 of 16 | 322,602.18 on the Q4 total | no: "closed in", not recorded in, and 495 lines pay a case recorded outside the year |
 | calendar quarters on the closure date | 596,560.32 | 16 of 16 | 387,960.76 on the Q1 total | no: a 2026/27 quarter is a quarter of the scheme year ended 31 March 2027 (clauses 4.2 and 4.3), and the recovery statement's own four quarters reproduce only on that convention |
 
 **Every grain**, same figures: the case (the golden, 3,627 cases), the detail line (identical, 3,662 lines,

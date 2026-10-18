@@ -89,10 +89,43 @@ def main():
     ck("qualifying episodes found", len(under) > 50 and len(over) > 20,
        "%d under-frequency, %d over-frequency" % (len(under), len(over)))
 
-    # minute summary: the only frequency series covering the whole window
+    # minute summary: the only frequency series covering the whole window. The minutes the
+    # summariser had only the SCADA chain's own one-minute average for carry the mean alone, with
+    # the minimum and maximum columns empty, so a screen on either of those never opens them.
+    rawmin = rd("operator/system_frequency_minute_summary.csv")
     minutes = {}
-    for r in rd("operator/system_frequency_minute_summary.csv"):
-        minutes[ts(r["minute_utc"])] = (float(r["frequency_min_hz"]), float(r["frequency_max_hz"]))
+    for r in rawmin:
+        if r["frequency_min_hz"].strip():
+            minutes[ts(r["minute_utc"])] = (float(r["frequency_min_hz"]),
+                                            float(r["frequency_max_hz"]))
+    blank = [r for r in rawmin if not r["frequency_min_hz"].strip()]
+    ck("the minute summary publishes a mean for every minute", len(rawmin) == 21 * 1440
+       and all(r["frequency_mean_hz"].strip() for r in rawmin), "%d rows" % len(rawmin))
+    ck("a few minutes carry the mean alone, with no minimum or maximum to publish",
+       0 < len(blank) < 100 and all(not r["frequency_max_hz"].strip() for r in blank),
+       "%d rows of %d" % (len(blank), len(rawmin)))
+    degen = [r for r in rawmin if r["frequency_min_hz"].strip()
+             and r["frequency_min_hz"] == r["frequency_mean_hz"] == r["frequency_max_hz"]]
+    ck("no minute summary row reads minimum, mean and maximum alike", not degen,
+       "%d rows do" % len(degen))
+    bym = defaultdict(list)
+    for t, fv in freq.items():
+        bym[t.replace(second=0)].append(fv)
+    clash, seen = [], 0
+    for r in rawmin:
+        if not r["frequency_min_hz"].strip():
+            continue
+        v = bym.get(ts(r["minute_utc"]))
+        if not v:
+            continue
+        seen += 1
+        if min(v) < float(r["frequency_min_hz"]) - 1e-9 \
+                or max(v) > float(r["frequency_max_hz"]) + 1e-9:
+            clash.append(r["minute_utc"])
+    ck("positive control, the summary and the extract are compared on overlapping minutes",
+       seen > 2000, "%d published minutes the extract overlaps" % seen)
+    ck("no minute summary row contradicts the extract covering the same minute", not clash,
+       "%d contradicted, first %s" % (len(clash), clash[0] if clash else "none"))
 
     # ---- commitments, programme, events ----------------------------------------------------
     com = defaultdict(set)
@@ -138,29 +171,61 @@ def main():
     ck("archive rows", nrow > 25000, "%d one-second power rows in %d recordings" % (nrow, nrec))
     # the archive's own spread, read back from the shipped database: an organ identical on every
     # dimension but its timestamps announces the step it was built for
-    meta = con.execute("""SELECT trigger, site_id, start_utc,
+    meta = con.execute("""SELECT trigger, site_id, start_utc, end_utc,
                           (julianday(end_utc) - julianday(start_utc)) * 86400 + 1 AS secs
                           FROM recording""").fetchall()
     trig = {}
-    for (tg, sid, st, secs) in meta:
-        trig.setdefault(tg, []).append((sid, st, int(round(secs))))
+    for (tg, sid, st, en, secs) in meta:
+        trig.setdefault(tg, []).append((sid, st, en, int(round(secs))))
     ck("the shipped archive holds captures of four or more kinds", len(trig) >= 4,
        ", ".join("%s %d" % (k, len(v)) for k, v in sorted(trig.items(), key=lambda x: -len(x[1]))))
-    alen = {x[2] for v in trig.values() for x in v}
+    alen = {x[3] for v in trig.values() for x in v}
     aoff = set()
     for v in trig.values():
-        for (sid, st, secs) in v:
+        for (sid, st, en, secs) in v:
             t = ts(st) + OFFSET
             aoff.add((t.minute % 15) * 60 + t.second)
     ck("the shipped archive's lengths and offsets vary",
        len(alen) >= 100 and len(aoff) >= 30,
        "%d distinct lengths %d..%d, %d distinct quarter-hour offsets"
        % (len(alen), min(alen), max(alen), len(aoff)))
+    # Where a deviation recording begins and ends is the site's own recorder logic. The platform
+    # cannot know where the operator's published extract starts or stops, so the two must not agree.
+    exs = {min(v) for v in starts.values()}
+    exe = {max(v) for v in starts.values()}
+    fdv = trig.get("FREQ-DEV", [])
+    on_s = sum(1 for (sid, st, en, secs) in fdv if ts(st) in exs)
+    on_e = sum(1 for (sid, st, en, secs) in fdv if ts(en) in exe)
+    ck("no deviation recording in the shipped archive is bounded by a published extract",
+       on_s < 0.02 * len(fdv) and on_e < 0.02 * len(fdv),
+       "%d of %d start on a published extract's first second, %d end on its last"
+       % (on_s, len(fdv), on_e))
+    bs, dur = {}, {}
+    for (sid, st, en, secs) in fdv:
+        a, b = bs.setdefault(sid, [set(), set()])
+        a.add(st)
+        b.add(en)
+        dur.setdefault(sid, []).append(secs)
+    import itertools as _it
+    prs = list(_it.combinations(sorted(bs), 2))
+    same = [(x, y) for x, y in prs if bs[x][0] == bs[y][0] or bs[x][1] == bs[y][1]]
+    worst = max((len(bs[x][0] & bs[y][0]) / float(len(bs[x][0] | bs[y][0])), x, y) for x, y in prs)
+    ck("no two sites in the shipped archive record the same instants",
+       not same and worst[0] < 0.05,
+       "%d of %d site pairs share a bound set, highest start-set overlap %.3f at %s and %s"
+       % (len(same), len(prs), worst[0], worst[1], worst[2]))
+    spread = []
+    for sid, v in sorted(dur.items()):
+        v = sorted(v)
+        spread.append((sid, statistics.pstdev(v), v[-1] / float(v[len(v) // 2]), len(set(v))))
+    ck("every site's deviation recordings carry a spread of lengths and a tail",
+       all(sd >= 25 and tail >= 1.5 and nd >= 60 for (_, sd, tail, nd) in spread),
+       ", ".join("%s sd %.0f s, longest %.1fx its median, %d distinct" % t for t in spread))
     big = max(trig, key=lambda k: len(trig[k]))
     ck("positive control, the archive reader can tell the capture kinds apart",
        big == "FREQ-DEV" and len(trig[big]) > 1000 and "zzqq" not in trig,
        "largest kind %s with %d recordings" % (big, len(trig[big])))
-    for k, v in trig.items():
+    for k, v in sorted(trig.items()):
         if k == "FREQ-DEV":
             continue
         ck("capture kind %s is a minority of the archive" % k, len(v) < nrec * 0.5,
@@ -171,17 +236,19 @@ def main():
         power[sid][ts(t)] = p
     con.close()
 
-    # ---- each site's traverse span, from boundaries with no qualifying episode --------------
-    marked = set()
-    for (a, b, x, f) in under + over:
-        t = a - dt.timedelta(seconds=120)
-        while t <= b + dt.timedelta(seconds=120):
-            marked.add(t); t += dt.timedelta(seconds=1)
-    spans = {}
+    # ---- each site's traverse span, from the boundaries it held no reserve commitment at ----
+    # The determination recovers the span where the site owed no response, so the recorded power
+    # across the boundary is the programme traverse and the channel's own noise, whatever the
+    # system frequency did. A boundary qualifies when the setpoint steps by more than a megawatt,
+    # the period before it was settled, and the site holds no delivery-block commitment across it.
+    def in_block(site, t_utc):
+        loc = t_utc + OFFSET
+        return site in com.get((loc.date().isoformat(), loc.hour // 4 + 1), ())
+
+    spans, nseg, runner = {}, {}, {}
     for sid, series in power.items():
-        secs = sorted(series)
         seglist = []
-        for t in secs:
+        for t in sorted(series):
             loc = t + OFFSET
             if not (loc.second == 0 and loc.minute % 15 == 0):
                 continue
@@ -191,23 +258,14 @@ def main():
             back = prog.get((sid, p0 - dt.timedelta(minutes=30)))
             if back is None or abs(prev - back) > 0.35:
                 continue
-            if any((t + dt.timedelta(seconds=k)) in marked for k in range(-30, 215)):
-                continue
-            # the frequency has to sit inside the dead band across the whole traverse, or the site's
-            # own response is moving its output alongside its programme
-            m0 = t.replace(second=0)
-            quiet = True
-            for mk in range(0, 5):
-                mm = minutes.get(m0 + dt.timedelta(minutes=mk))
-                if mm is None or mm[0] < 50.0 - DEADBAND or mm[1] > 50.0 + DEADBAND:
-                    quiet = False; break
-            if not quiet:
+            if any(in_block(sid, t + dt.timedelta(seconds=k))
+                   for k in (-1200, -900, -600, -300, 0, 215)):
                 continue
             if any((t + dt.timedelta(seconds=k)) not in series for k in range(0, 205)):
                 continue
             ys = [series[t + dt.timedelta(seconds=k)] for k in range(0, 205)]
             seglist.append((prev, cur - prev, ys))
-        best, bestres = None, None
+        res_by_s = {}
         for S in range(40, 361):
             res = 0.0
             for (prev, step, ys) in seglist:
@@ -217,13 +275,18 @@ def main():
                         frac = 1.0
                     e = y - (prev + step * frac)
                     res += e * e
-            if bestres is None or res < bestres:
-                best, bestres = S, res
-        if seglist and best:
-            spans[sid] = float(best)
-    ck("traverse spans recovered", len(spans) >= 9 and all(
-           abs(spans[s] - 900.0) > 1 for s in spans),
-       ", ".join("%s=%.0fs" % (k, v) for k, v in sorted(spans.items())))
+            res_by_s[S] = res
+        if seglist:
+            order = sorted(res_by_s, key=lambda S: res_by_s[S])
+            spans[sid] = float(order[0])
+            nseg[sid] = len(seglist)
+            runner[sid] = order[1]
+    ck("traverse spans recovered from the boundaries the site held no commitment at",
+       len(spans) >= 9 and all(abs(spans[s] - 900.0) > 1 for s in spans),
+       ", ".join("%s=%.0fs from %d boundaries" % (k, v, nseg[k]) for k, v in sorted(spans.items())))
+    ck("each span is recovered uniquely, to within a second",
+       all(abs(runner[s] - spans[s]) <= 1 for s in spans) and min(nseg.values()) >= 8,
+       ", ".join("%s next best %d" % (k, runner[k]) for k in sorted(runner)))
 
     # ---- the four baselines ----------------------------------------------------------------
     def score(eps, over_side=False):

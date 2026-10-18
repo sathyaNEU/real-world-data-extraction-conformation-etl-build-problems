@@ -3,7 +3,7 @@ ladder arithmetic, the bins, and the separation line between the ask devices and
 
 Usage: python3 task197/generator/checks.py
 """
-import os, sys, json, csv, sqlite3, datetime as dt, statistics, collections
+import os, sys, json, csv, sqlite3, datetime as dt, statistics, collections, itertools
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -194,7 +194,7 @@ def main():
        "%d under-frequency episodes inside a duplicated recording" % hit)
     con.close()
 
-    # ---- coverage: every episode in the population is measurable from the pack ---------------
+    # ---- coverage: what the archive carries, and what its own queue costs the population ------
     want = 0
     for d in sim.dates():
         for (t0, t1, tstar, fx) in W[d]["under"]:
@@ -203,8 +203,10 @@ def main():
                         build.fcr_active(s, d, np.array([float(tstar)]))[0]:
                     want += 1
     got = sum(v["n"] for v in su.values())
-    ck("every contracted episode has a recording behind it", want == got,
-       "%d obliged episode-site pairs, %d measured" % (want, got))
+    ck("the archive carries the extreme second for most but not all obliged episodes",
+       0.96 <= got / float(want) < 1.0,
+       "%d obliged episode-site pairs, %d with a recording of the extreme second, %d the archive "
+       "writer's queue dropped or wrapped on" % (want, got, want - got))
 
     # ---- Gate A: the documents' stated facts are true of the data -----------------------------
     ck("the window the standard states matches the data",
@@ -246,17 +248,56 @@ def main():
        "%d reads of the metered series on the call's path" % hits["n"])
     mins = list(csv.DictReader(open(os.path.join(
         TGT, "operator", "system_frequency_minute_summary.csv"), encoding="utf-8")))
-    want_min = []
+    want = []
     for d in sim.dates():
         for m in range(1440):
-            want_min.append(round(float(W[d]["f"][m * 60:(m + 1) * 60].min()), 4))
-    got_min = [float(r["frequency_min_hz"]) for r in mins]
-    moved = [i for i, (a, b) in enumerate(zip(want_min, got_min)) if a != b]
-    moved_located = [i for i in moved if want_min[i] <= sim.QUALIFY_HZ or got_min[i] <= sim.QUALIFY_HZ]
-    ck("R2 the held summary rows move no minute into or out of the call's located set",
-       not moved_located, "%d of %d held rows change a located minute" % (len(moved_located), len(moved)))
-    ck("the held summary rows are the only rows that differ from the minute's own minimum",
-       len(moved) == len(held), "%d rows differ, %d minutes held" % (len(moved), len(held)))
+            seg = W[d]["f"][m * 60:(m + 1) * 60]
+            want.append((round(float(seg.min()), 4), round(float(seg.mean()), 4),
+                         round(float(seg.max()), 4)))
+    ck("the minute summary covers every minute of the window once", len(mins) == len(want),
+       "%d rows, %d minutes" % (len(mins), len(want)))
+    blank = [i for i, r in enumerate(mins) if not r["frequency_min_hz"].strip()]
+    ck("R2 the rows with no published minimum are exactly the minutes the summariser had only the "
+       "SCADA chain's one-minute average for", len(blank) == len(held),
+       "%d rows carry no minimum, %d minutes held" % (len(blank), len(held)))
+    bad_val, degen = [], []
+    for i, r in enumerate(mins):
+        lo, mn, hi = r["frequency_min_hz"], r["frequency_mean_hz"], r["frequency_max_hz"]
+        if float(mn) != want[i][1]:
+            bad_val.append(i)
+        if i in blank:
+            if hi.strip():
+                bad_val.append(i)
+            continue
+        if (float(lo), float(hi)) != (want[i][0], want[i][2]):
+            bad_val.append(i)
+        if float(lo) == float(mn) == float(hi):
+            degen.append(i)
+    ck("every figure the minute summary publishes is the minute's own", not bad_val,
+       "%d rows disagree with the seconds inside the minute" % len(bad_val))
+    ck("no published row carries one value in all three columns", not degen,
+       "%d rows read minimum, mean and maximum alike" % len(degen))
+    ck("R2 no minute without a published minimum holds a qualifying under-frequency second",
+       not [i for i in blank if want[i][0] <= sim.QUALIFY_HZ],
+       "%d of %d" % (len([i for i in blank if want[i][0] <= sim.QUALIFY_HZ]), len(blank)))
+    # the summary against the one-second extract that covers the same minute, read off the shipped
+    # bytes of both files: no minute may contradict an extract
+    ext = collections.defaultdict(list)
+    for r in csv.DictReader(open(os.path.join(
+            TGT, "operator", "system_frequency_1s_extracts.csv"), encoding="utf-8")):
+        ext[r["ts_utc"][:17] + "00Z"].append(float(r["frequency_hz"]))
+    clash, seen = [], 0
+    for r in mins:
+        v = ext.get(r["minute_utc"])
+        if not v or not r["frequency_min_hz"].strip():
+            continue
+        seen += 1
+        if min(v) < float(r["frequency_min_hz"]) - 1e-9 or max(v) > float(r["frequency_max_hz"]) + 1e-9:
+            clash.append(r["minute_utc"])
+    ck("positive control, the summary and the extract are compared on overlapping minutes",
+       seen > 2000, "%d minutes the extract overlaps carry a published minimum and maximum" % seen)
+    ck("no summary row contradicts the one-second extract covering the same minute", not clash,
+       "%d minutes contradicted, first %s" % (len(clash), clash[0] if clash else "none"))
 
     # the devices' forcing, measured on the cut pack by ceiling.py's own reader
     P = ceiling.load()
@@ -424,30 +465,90 @@ def main():
        abs(_spear(rings, ramps)) <= 0.25 and len(set(rings)) >= 6,
        "ring buffer against traverse span, rank correlation %.3f over %d distinct pre-rolls"
        % (_spear(rings, ramps), len(set(rings))))
-    # the organ's exactness: the boundaries a solver fits the traverse over are there, in full
-    full = {}
+    # the organ's exactness: the span recovers at the boundaries the determination names, which are
+    # the ones the site held no reserve commitment at, by least squares over the DPDT captures there
+    byk = {}
+    for r in recs:
+        byk.setdefault((r[0], r[1]), []).append(r)
+    fitted = []
     for s_site in sim.SITES:
         sid = s_site["id"]
-        got = 0
+        segs = []
         for (dd, pp) in core.fit_boundaries(W, sid):
             t = pp * 900
-            if any(lo <= t and t + 204 < hi for (d2, s2, tg, lo, hi) in recs
-                   if d2 == dd and s2 == sid):
-                got += 1
-        full[sid] = got
-    ck("every site keeps two or more fitting boundaries captured in full",
-       min(full.values()) >= 2, ", ".join("%s=%d" % (k[4:], v) for k, v in sorted(full.items())))
-    # R2: giving the archive its spread moved no response the call reads
-    want = set()
+            prog = W[dd]["prog"][sid]
+            for (d2, s2, tg, lo, hi) in byk.get((dd, sid), ()):
+                if lo <= t and t + 204 < hi:
+                    P = cache[(d2, sid, lo)]
+                    segs.append((float(prog[pp - 1]), float(prog[pp] - prog[pp - 1]),
+                                 P[t - lo:t - lo + 205]))
+                    break
+        best, bestres = None, None
+        for S in range(40, 361):
+            frac = np.minimum(1.0, np.arange(205) / float(S))
+            res = 0.0
+            for (prev, step, ys) in segs:
+                e = ys - (prev + step * frac)
+                res += float((e * e).sum())
+            if bestres is None or res < bestres:
+                best, bestres = S, res
+        fitted.append((sid, len(segs), best, s_site["ramp_s"]))
+    ck("every site's traverse span recovers exactly at the boundaries it held no commitment at",
+       all(n >= 8 and b == r for (_, n, b, r) in fitted),
+       ", ".join("%s %d segments fit %d against %d" % t for t in fitted))
+    # The bounds of a deviation recording are the site's own recorder logic and nothing else: the
+    # platform cannot know where the operator's published extract begins or ends.
+    fd = [r for r in recs if r[2] == "FREQ-DEV"]
+    exs = {(d, a) for d in sim.dates() for (a, b) in W[d]["exc"]}
+    exe = {(d, b) for d in sim.dates() for (a, b) in W[d]["exc"]}
+    on_s = sum(1 for r in fd if (r[0], r[3]) in exs)
+    on_e = sum(1 for r in fd if (r[0], r[4] - 1) in exe)
+    ck("no deviation recording is bounded by the operator's published extract",
+       on_s < 0.02 * len(fd) and on_e < 0.02 * len(fd),
+       "%d of %d recordings start on a published extract's first second and %d end on its last"
+       % (on_s, len(fd), on_e))
+    bset = {}
+    for r in fd:
+        a, b = bset.setdefault(r[1], [set(), set()])
+        a.add((r[0], r[3]))
+        b.add((r[0], r[4]))
+    prs = list(itertools.combinations(sorted(bset), 2))
+    same = [(x, y) for x, y in prs if bset[x][0] == bset[y][0] or bset[x][1] == bset[y][1]]
+    worst = max((len(bset[x][0] & bset[y][0]) / float(len(bset[x][0] | bset[y][0])), x, y)
+                for x, y in prs)
+    ck("no two sites record the same instants", not same and worst[0] < 0.05,
+       "%d of %d site pairs share a bound set, highest start-set overlap %.3f at %s and %s"
+       % (len(same), len(prs), worst[0], worst[1], worst[2]))
+    byfd = {}
+    for r in fd:
+        byfd.setdefault(r[1], []).append(r)
+    tight = []
+    for sid, v in sorted(byfd.items()):
+        du = sorted(r[4] - r[3] for r in v)
+        tight.append((sid, statistics.pstdev(du), du[-1] / float(du[len(du) // 2]), len(set(du))))
+    ck("every site's recording lengths carry a spread and a tail",
+       all(sd >= 25 and tail >= 1.5 and nd >= 60 for (_, sd, tail, nd) in tight),
+       ", ".join("%s sd %.0f s, longest %.1fx its median, %d distinct lengths" % t for t in tight))
+    pre_gap = []
     for d in sim.dates():
-        for (a, b) in W[d]["exc"]:
-            lo, hi = a, min(sim.DAY, b + 1)
-            for s_site in sim.SITES:
-                if sim.contracted(s_site, np.arange(lo, hi), d).any():
-                    want.add((d, s_site["id"], lo, hi))
-    got = {(r[0], r[1], r[3], r[4]) for r in recs if r[2] == "FREQ-DEV"}
-    ck("R2 the archive's added captures change no deviation window the call reads",
-       want == got, "%d wanted, %d present, %d differ" % (len(want), len(got), len(want ^ got)))
+        inside = np.abs(W[d]["f"] - 50.0) <= sim.DEADBAND
+        for (t0, t1, tstar, fx) in W[d]["under"] + W[d]["over"]:
+            k = t0
+            while k > 0 and not inside[k]:
+                k -= 1
+            for (dd, sid, tg, lo, hi) in fd:
+                if dd == d and lo <= tstar < hi:
+                    pre_gap.append(k - lo)
+    ck("the pre-event window reaches back past the dead-band crossing by a varying margin",
+       min(pre_gap) >= 0 and len(set(pre_gap)) >= 40,
+       "margin %d to %d s over %d distinct values" % (min(pre_gap), max(pre_gap), len(set(pre_gap))))
+    scat = []
+    for sid in sorted(su):
+        v = [100 * r["resp_traj"] for r in under if r["site"] == sid]
+        scat.append((sid, statistics.pstdev(v), max(v) - min(v)))
+    ck("the per-episode realised gain scatters as a measured droop response does",
+       all(sd >= 2.0 and rng >= 9.0 for (_, sd, rng) in scat),
+       ", ".join("%s sd %.2f pp range %.1f pp" % t for t in scat))
 
     # ---- the frequency record's own spread, and that it changes nothing the call measures -----
     # The deterministic deviation at a programme change is why the stump works, so the qualifying

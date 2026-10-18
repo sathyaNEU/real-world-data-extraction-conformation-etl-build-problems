@@ -185,8 +185,9 @@ def memo(path, F):
     w("Each qualifying episode is read at its extreme second on the published one-second frequency. The "
       "response credited to a site is its recorded power at that second less the power its own programme was "
       "taking it to at that second, and the programme is moving: every site traverses between settlement "
-      "period setpoints over a span its controller fixes, which the archive shows at the boundaries where no "
-      "episode ran. Taking the undisturbed level instead of the moving programme, which is the site's "
+      "period setpoints over a span its controller fixes, which the archive shows at the boundaries at "
+      "which the site held no reserve commitment. Taking the undisturbed level instead of the moving "
+      "programme, which is the site's "
       "recorded power at the last second before the episode at which the published frequency was still "
       "inside the dead band, credits each site with whatever its programme did during the episode, and is "
       "why %s reads %.0f per cent on that basis against %.0f per cent here." % (F["rung0_name"], F["rung0_pre"], F["rung0_traj"]))

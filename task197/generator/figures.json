@@ -44,7 +44,7 @@
    "shortfall": 7.8
   }
  ],
- "call_episodes": 137,
+ "call_episodes": 134,
  "call_gain": 72,
  "call_name": "Kampvliet",
  "call_site": "VKF-KPV",
@@ -58,8 +58,8 @@
   "tolerance_pct": 90.0
  },
  "counts": {
-  "archive_recordings": 2820,
-  "archive_rows": 563213,
+  "archive_recordings": 4629,
+  "archive_rows": 1180875,
   "auction_results": 126,
   "commitments": 256,
   "dictionary": 15,
@@ -82,7 +82,7 @@
    "site": "VKF-DLK"
   },
   {
-   "episodes": 152,
+   "episodes": 150,
    "gain_pct": 87,
    "name": "Hoogezand",
    "site": "VKF-HGZ"
@@ -100,7 +100,7 @@
    "site": "VKF-MPD"
   },
   {
-   "episodes": 72,
+   "episodes": 71,
    "gain_pct": 89,
    "name": "Nieuwveen",
    "site": "VKF-NWV"
@@ -112,19 +112,19 @@
    "site": "VKF-OOS"
   },
   {
-   "episodes": 22,
+   "episodes": 20,
    "gain_pct": 81,
    "name": "Reiderland",
    "site": "VKF-RDL"
   },
   {
-   "episodes": 71,
+   "episodes": 67,
    "gain_pct": 98,
    "name": "Terborgh",
    "site": "VKF-TRB"
   },
   {
-   "episodes": 71,
+   "episodes": 69,
    "gain_pct": 94,
    "name": "Zwartewater",
    "site": "VKF-ZWT"
@@ -133,27 +133,27 @@
  "down_low_gain": 73,
  "down_low_name": "Kampvliet",
  "down_none_name": "Meppelerdiep",
- "episodes_total": 935,
+ "episodes_total": 910,
  "exact": {
-  "VKF-DLK": 92.999917,
-  "VKF-HGZ": 88.000014,
-  "VKF-KPV": 72.001158,
-  "VKF-MPD": 97.000947,
-  "VKF-NWV": 91.000538,
-  "VKF-OOS": 95.002099,
-  "VKF-RDL": 82.996364,
-  "VKF-TRB": 101.000337,
-  "VKF-ZWT": 99.000187
+  "VKF-DLK": 93.150023,
+  "VKF-HGZ": 88.079998,
+  "VKF-KPV": 72.109951,
+  "VKF-MPD": 97.059985,
+  "VKF-NWV": 90.939998,
+  "VKF-OOS": 94.88999,
+  "VKF-RDL": 82.860041,
+  "VKF-TRB": 101.130036,
+  "VKF-ZWT": 98.830016
  },
  "exact_down": {
-  "VKF-DLK": 92.000259,
-  "VKF-HGZ": 87.036437,
-  "VKF-KPV": 73.040455,
-  "VKF-NWV": 88.998587,
-  "VKF-OOS": 95.865389,
-  "VKF-RDL": 80.994731,
-  "VKF-TRB": 98.0033,
-  "VKF-ZWT": 93.998108
+  "VKF-DLK": 92.069996,
+  "VKF-HGZ": 86.880042,
+  "VKF-KPV": 73.119956,
+  "VKF-NWV": 89.089967,
+  "VKF-OOS": 95.840012,
+  "VKF-RDL": 80.860001,
+  "VKF-TRB": 98.140031,
+  "VKF-ZWT": 93.910009
  },
  "exposure": [
   {
@@ -216,11 +216,11 @@
  "filing_due": "2026-10-23",
  "forcing": {
   "adh_above_natural": 944.5,
-  "adh_below_natural": 1054.1,
+  "adh_below_natural": 1054.0,
   "adh_natural_site": {
    "VKF-DLK": [
     217.9,
-    240.3
+    240.2
    ],
    "VKF-HGZ": [
     57.3,
@@ -239,7 +239,7 @@
     128.1
    ],
    "VKF-OOS": [
-    98.4,
+    98.3,
     82.2
    ],
    "VKF-RDL": [
@@ -252,7 +252,7 @@
    ],
    "VKF-ZWT": [
     113.0,
-    264.4
+    264.3
    ]
   },
   "clock_blocks": {
@@ -267,20 +267,20 @@
   "clock_rows": 9,
   "down_episodes_stamped": {
    "VKF-DLK": 20,
-   "VKF-HGZ": 153,
+   "VKF-HGZ": 151,
    "VKF-KPV": 21,
-   "VKF-NWV": 72,
+   "VKF-NWV": 71,
    "VKF-OOS": 16,
-   "VKF-RDL": 22,
-   "VKF-TRB": 72,
-   "VKF-ZWT": 72
+   "VKF-RDL": 20,
+   "VKF-TRB": 68,
+   "VKF-ZWT": 70
   },
   "down_gain_rung0": {
    "VKF-DLK": 88,
-   "VKF-HGZ": 92,
+   "VKF-HGZ": 91,
    "VKF-KPV": 69,
-   "VKF-NWV": 121,
-   "VKF-OOS": 98,
+   "VKF-NWV": 119,
+   "VKF-OOS": 97,
    "VKF-RDL": 81,
    "VKF-TRB": 96,
    "VKF-ZWT": 130
@@ -295,58 +295,58 @@
    "VKF-TRB": 97,
    "VKF-ZWT": 93
   },
-  "ean_lost_mwh": 29.2,
+  "ean_lost_mwh": 28.8,
   "held_minutes": 32,
   "kwh_site": "VKF-DLK",
   "over_withdrawn": 5,
-  "prelim_gap_mwh": 2.932,
+  "prelim_gap_mwh": 2.945,
   "superseded_mwh": 12.3
  },
  "gap_pp": 11,
  "ladder": {
   "lin": {
-   "VKF-DLK": 99.8408,
-   "VKF-HGZ": 95.8901,
-   "VKF-KPV": 96.1483,
-   "VKF-MPD": 106.7641,
-   "VKF-NWV": 88.1213,
-   "VKF-OOS": 82.1846,
-   "VKF-RDL": 97.5031,
-   "VKF-TRB": 106.9099,
-   "VKF-ZWT": 73.7949
+   "VKF-DLK": 100.01,
+   "VKF-HGZ": 95.9285,
+   "VKF-KPV": 96.2402,
+   "VKF-MPD": 106.7106,
+   "VKF-NWV": 87.9977,
+   "VKF-OOS": 82.0544,
+   "VKF-RDL": 97.3617,
+   "VKF-TRB": 107.0343,
+   "VKF-ZWT": 74.2582
   },
   "pre": {
-   "VKF-DLK": 99.1785,
-   "VKF-HGZ": 95.9996,
-   "VKF-KPV": 93.5531,
-   "VKF-MPD": 107.0359,
-   "VKF-NWV": 88.4528,
-   "VKF-OOS": 83.3777,
-   "VKF-RDL": 97.6203,
-   "VKF-TRB": 108.1101,
-   "VKF-ZWT": 76.8179
+   "VKF-DLK": 98.4256,
+   "VKF-HGZ": 96.0925,
+   "VKF-KPV": 93.2509,
+   "VKF-MPD": 107.0957,
+   "VKF-NWV": 88.0493,
+   "VKF-OOS": 83.3416,
+   "VKF-RDL": 97.5842,
+   "VKF-TRB": 108.2913,
+   "VKF-ZWT": 76.3594
   },
   "sp": {
-   "VKF-DLK": 90.915,
-   "VKF-HGZ": 74.8435,
-   "VKF-KPV": 68.4527,
-   "VKF-MPD": 78.5033,
-   "VKF-NWV": 91.5813,
-   "VKF-OOS": 95.9345,
-   "VKF-RDL": 57.6596,
-   "VKF-TRB": 76.7469,
-   "VKF-ZWT": 99.5307
+   "VKF-DLK": 91.0727,
+   "VKF-HGZ": 75.0074,
+   "VKF-KPV": 68.5564,
+   "VKF-MPD": 78.7443,
+   "VKF-NWV": 91.5247,
+   "VKF-OOS": 95.8057,
+   "VKF-RDL": 57.5179,
+   "VKF-TRB": 76.8886,
+   "VKF-ZWT": 99.3273
   },
   "traj": {
-   "VKF-DLK": 92.9999,
-   "VKF-HGZ": 88.0,
-   "VKF-KPV": 72.0012,
-   "VKF-MPD": 97.0009,
-   "VKF-NWV": 91.0005,
-   "VKF-OOS": 95.0021,
-   "VKF-RDL": 82.9964,
-   "VKF-TRB": 101.0003,
-   "VKF-ZWT": 99.0002
+   "VKF-DLK": 93.15,
+   "VKF-HGZ": 88.08,
+   "VKF-KPV": 72.11,
+   "VKF-MPD": 97.06,
+   "VKF-NWV": 90.94,
+   "VKF-OOS": 94.89,
+   "VKF-RDL": 82.86,
+   "VKF-TRB": 101.13,
+   "VKF-ZWT": 98.83
   }
  },
  "ladder_names": {
@@ -355,10 +355,10 @@
   "sp": "VKF-RDL",
   "traj": "VKF-KPV"
  },
- "obliged_pairs": 935,
+ "obliged_pairs": 910,
  "org": "Veerkracht Flex",
  "rung0_name": "Zwartewater",
- "rung0_pre": 76.8,
+ "rung0_pre": 76.4,
  "rung0_site": "VKF-ZWT",
  "rung0_traj": 99,
  "runner_gain": 83,
@@ -368,7 +368,7 @@
   {
    "cap": 5.0,
    "contract_gain": 26.32,
-   "episodes": 137,
+   "episodes": 134,
    "gain_pct": 72,
    "name": "Kampvliet",
    "site": "VKF-KPV",
@@ -377,7 +377,7 @@
   {
    "cap": 2.5,
    "contract_gain": 13.16,
-   "episodes": 156,
+   "episodes": 152,
    "gain_pct": 83,
    "name": "Reiderland",
    "site": "VKF-RDL",
@@ -386,7 +386,7 @@
   {
    "cap": 3.0,
    "contract_gain": 15.79,
-   "episodes": 157,
+   "episodes": 152,
    "gain_pct": 88,
    "name": "Hoogezand",
    "site": "VKF-HGZ",
@@ -395,7 +395,7 @@
   {
    "cap": 6.0,
    "contract_gain": 31.58,
-   "episodes": 113,
+   "episodes": 111,
    "gain_pct": 91,
    "name": "Nieuwveen",
    "site": "VKF-NWV",
@@ -404,7 +404,7 @@
   {
    "cap": 10.0,
    "contract_gain": 52.63,
-   "episodes": 145,
+   "episodes": 143,
    "gain_pct": 93,
    "name": "Dollardkust",
    "site": "VKF-DLK",
@@ -413,7 +413,7 @@
   {
    "cap": 6.0,
    "contract_gain": 31.58,
-   "episodes": 40,
+   "episodes": 39,
    "gain_pct": 95,
    "name": "Oosterhout",
    "site": "VKF-OOS",
@@ -422,7 +422,7 @@
   {
    "cap": 2.0,
    "contract_gain": 10.53,
-   "episodes": 33,
+   "episodes": 30,
    "gain_pct": 97,
    "name": "Meppelerdiep",
    "site": "VKF-MPD",
@@ -431,7 +431,7 @@
   {
    "cap": 8.0,
    "contract_gain": 42.11,
-   "episodes": 77,
+   "episodes": 73,
    "gain_pct": 99,
    "name": "Zwartewater",
    "site": "VKF-ZWT",
@@ -440,7 +440,7 @@
   {
    "cap": 3.0,
    "contract_gain": 15.79,
-   "episodes": 77,
+   "episodes": 76,
    "gain_pct": 101,
    "name": "Terborgh",
    "site": "VKF-TRB",

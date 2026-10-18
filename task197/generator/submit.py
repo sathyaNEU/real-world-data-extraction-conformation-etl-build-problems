@@ -68,7 +68,8 @@ def main():
       "clause 2 of the reserve performance standard.")
     w("2. Scoped each episode to the sites contracted for that settlement period in "
       "fcr_block_commitments.csv and dropped the block parts the control platform event log records as "
-      "withdrawn from reserve, leaving %d obliged site-episode pairs." % F["obliged_pairs"])
+      "withdrawn from reserve, leaving %d site-episode pairs the archive carries a recording of the "
+      "extreme second for." % F["obliged_pairs"])
     w("3. Recovered each site's programme traverse from vkf_highres_archive.sqlite at the settlement "
       "period boundaries at which the site held no reserve commitment: the span from the boundary to the "
       "new setpoint "

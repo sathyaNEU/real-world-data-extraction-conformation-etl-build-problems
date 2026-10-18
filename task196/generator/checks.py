@@ -569,6 +569,26 @@ def main():
        not _against_golden(_by_closure), "16 figures, 0 off the golden")
     ok("SF14 the line's own settlement month gives the same table",
        _by_line_month == _by_closure, "both routes to the closure quarter agree on all 16 figures")
+    # the other dates the register carries against a case, each a basis the wording has to exclude
+    _paydate = {r["case_reference"]: r["payment_date"] for r in reg}
+    _notdate = {r["case_reference"]: r["notified_date"] for r in reg}
+    _CAL = {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 2, 7: 3, 8: 3, 9: 3, 10: 4, 11: 4, 12: 4}
+    for _label, _alt in (
+            ("the case's payment date",
+             _table([(_qof(_paydate[d["case_reference"]][:7]), _tierof[d["member_code"]],
+                      float(d["indemnity_paid_gbp"])) for d in _U
+                     if _qof(_paydate[d["case_reference"]][:7]) is not None])),
+            ("the case's notified date",
+             _table([(_qof(_notdate[d["case_reference"]][:7]), _tierof[d["member_code"]],
+                      float(d["indemnity_paid_gbp"])) for d in _U
+                     if _qof(_notdate[d["case_reference"]][:7]) is not None])),
+            ("calendar quarters on the closure date",
+             _table([(_CAL[int(_closed[d["case_reference"]][5:7])], _tierof[d["member_code"]],
+                      float(d["indemnity_paid_gbp"])) for d in _U]))):
+        _off = _against_golden(_alt)
+        _w = max(_gold_a, key=lambda k: abs(_alt[k] - _gold_a[k]))
+        ok("SF14 a basis the wording excludes gives another table: %s" % _label, len(_off) == 16,
+           "%d of 16 off, worst %.2f on %s" % (len(_off), abs(_alt[_w] - _gold_a[_w]), _w))
     # the grain: the case, and the detail line rolls up to it without changing a figure
     _percase, _casekey = {}, {}
     for d in _U:

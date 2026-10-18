@@ -9,7 +9,7 @@
 
 ## 2. Critical Components
 
-1. Kampvliet's realised response gain is **72** per cent of contracted gain over **137** qualifying under-frequency episodes
+1. Kampvliet's realised response gain is **72** per cent of contracted gain over **134** qualifying under-frequency episodes
 2. The runner-up Reiderland is **83** per cent, a gap of **11** percentage points
 3. Each site's programme traverse runs for a fixed span from the settlement period boundary, recovered from the settlement period boundaries at which the site held no reserve commitment: **90** seconds at Kampvliet and **300** seconds at Terborgh
 4. **3** sites sit below the standard's 90 per cent tolerance
@@ -17,7 +17,7 @@
 ## 3. Step-by-Step Solution
 
 1. Took every qualifying under-frequency episode from the published one-second frequency in system_frequency_1s_extracts.csv, at or below 49.920 Hz for 15 or more consecutive seconds per clause 2 of the reserve performance standard.
-2. Scoped each episode to the sites contracted for that settlement period in fcr_block_commitments.csv and dropped the block parts the control platform event log records as withdrawn from reserve, leaving 935 obliged site-episode pairs.
+2. Scoped each episode to the sites contracted for that settlement period in fcr_block_commitments.csv and dropped the block parts the control platform event log records as withdrawn from reserve, leaving 910 site-episode pairs the archive carries a recording of the extreme second for.
 3. Recovered each site's programme traverse from vkf_highres_archive.sqlite at the settlement period boundaries at which the site held no reserve commitment: the span from the boundary to the new setpoint in site_programme_15min.csv is a constant of the site's controller, 90 seconds at Kampvliet.
 4. Took each site's delivered response at an episode's extreme second as its recorded power less its programme traverse at that second, over the deviation beyond the 10 mHz dead band and over its contracted gain, which is its contracted FCR capacity in asset_register.xlsx divided by 0.190 Hz per clause 2 of the technical conditions.
 5. Averaged the per-episode ratios with equal weight for each site: Kampvliet 72 per cent, Reiderland 83 per cent, Hoogezand 88 per cent, Nieuwveen 91 per cent.
@@ -37,25 +37,25 @@
 ### site_response_scorecard.xlsx
 
 1. Realised response gain, qualifying under-frequency episodes and whether the site falls below the 90 per cent tolerance, nine sites in gain order, gains to the nearest whole per cent and counts whole:
-   - Kampvliet (VKF-KPV): 72 per cent, 137 episodes, below tolerance yes
-   - Reiderland (VKF-RDL): 83 per cent, 156 episodes, below tolerance yes
-   - Hoogezand (VKF-HGZ): 88 per cent, 157 episodes, below tolerance yes
-   - Nieuwveen (VKF-NWV): 91 per cent, 113 episodes, below tolerance no
-   - Dollardkust (VKF-DLK): 93 per cent, 145 episodes, below tolerance no
-   - Oosterhout (VKF-OOS): 95 per cent, 40 episodes, below tolerance no
-   - Meppelerdiep (VKF-MPD): 97 per cent, 33 episodes, below tolerance no
-   - Zwartewater (VKF-ZWT): 99 per cent, 77 episodes, below tolerance no
-   - Terborgh (VKF-TRB): 101 per cent, 77 episodes, below tolerance no
+   - Kampvliet (VKF-KPV): 72 per cent, 134 episodes, below tolerance yes
+   - Reiderland (VKF-RDL): 83 per cent, 152 episodes, below tolerance yes
+   - Hoogezand (VKF-HGZ): 88 per cent, 152 episodes, below tolerance yes
+   - Nieuwveen (VKF-NWV): 91 per cent, 111 episodes, below tolerance no
+   - Dollardkust (VKF-DLK): 93 per cent, 143 episodes, below tolerance no
+   - Oosterhout (VKF-OOS): 95 per cent, 39 episodes, below tolerance no
+   - Meppelerdiep (VKF-MPD): 97 per cent, 30 episodes, below tolerance no
+   - Zwartewater (VKF-ZWT): 99 per cent, 73 episodes, below tolerance no
+   - Terborgh (VKF-TRB): 101 per cent, 76 episodes, below tolerance no
 2. Realised response gain and episode count on the qualifying over-frequency episodes, nine sites in site order:
    - Dollardkust (VKF-DLK): 92 per cent, 20 episodes
-   - Hoogezand (VKF-HGZ): 87 per cent, 152 episodes
+   - Hoogezand (VKF-HGZ): 87 per cent, 150 episodes
    - Kampvliet (VKF-KPV): 73 per cent, 20 episodes
    - Meppelerdiep (VKF-MPD): none, 0 episodes
-   - Nieuwveen (VKF-NWV): 89 per cent, 72 episodes
+   - Nieuwveen (VKF-NWV): 89 per cent, 71 episodes
    - Oosterhout (VKF-OOS): 96 per cent, 15 episodes
-   - Reiderland (VKF-RDL): 81 per cent, 22 episodes
-   - Terborgh (VKF-TRB): 98 per cent, 71 episodes
-   - Zwartewater (VKF-ZWT): 94 per cent, 71 episodes
+   - Reiderland (VKF-RDL): 81 per cent, 20 episodes
+   - Terborgh (VKF-TRB): 98 per cent, 67 episodes
+   - Zwartewater (VKF-ZWT): 94 per cent, 69 episodes
 3. Reserve capacity hours held available and the shortfall against commitment, six delivery blocks, MWh to one decimal place:
    - Block 1 (00:00-04:00): held available 542.0, shortfall 18.0
    - Block 2 (04:00-08:00): held available 1151.0, shortfall 17.0
