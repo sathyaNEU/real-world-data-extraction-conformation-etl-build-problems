@@ -1,0 +1,38 @@
+{
+ "task": "task165",
+ "owner": "sathya8571",
+ "status": "DESIGN",
+ "domain": "urban-regional-science",
+ "objective": "forecasting",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-18",
+ "stump": "Taking the Priority 1 collectors' rock salt per lane-km per severity point less the 424 lane-km's own Priority 2 salt at the planning severity files 2,600 t; the moved collectors' Priority 1 salt rises with how much of each street Priority 2 already salted and the gain is mostly the length Priority 2 left untreated, so only the earlier moves' gain read at the new streets' own Priority 2 salt files 2,200 t.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 3: generator, pack, goldens and submission from the stage 2 prototype, then the stage 3 gates",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}

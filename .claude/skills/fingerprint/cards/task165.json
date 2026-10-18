@@ -1,0 +1,99 @@
+{
+  "task": "task165",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 6, new; seed FC36 (world, decision and quantity only; the seed's planning-tool ranking, usage-model back-tests and route-register field reading dropped)",
+  "domain": "urban-regional-science",
+  "subdomain": "municipal-service-demand-resource-allocation",
+  "client_domain": "urban-regional-science",
+  "niche": "a lakeshore Ontario city's roads division committing seasonal rock salt above its rolled-over supply contract for the first winter after a bus network redesign moved 424 lane-km of collectors from hazard-spot (Priority 2) to bare-pavement (Priority 1) treatment, when the collectors it moved to Priority 1 before were mostly hill, school and hospital-access streets whose Priority 2 salting already covered much of their length",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G6",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stakeholder_role": "the roads division's winter operations manager, who files the seasonal salt commitment above the rolled-over contract by 1 October",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "avl_segment_passes (the fleet telematics platform's segment-pass export from the October 2023 replacement, beside the legacy AVL's shift summaries for the two winters before it)",
+    "rows": 0,
+    "entity": "one spreader truck's pass over one route segment, with the rock salt it put down",
+    "grain": "truck pass x segment",
+    "source": "synthetic (constructed in the layout of a winter-maintenance telematics platform's segment-pass export, beside a legacy AVL's segment-by-shift material summary)"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "local_government",
+  "world": {
+    "geography": "Canada, Ontario (Quellbrook, a fictional lakeshore city of about 410,000; the city, its regional transit agency, the salt supplier, the people, systems and data are fictional)",
+    "currency": "CAD",
+    "org_type": "a city public works department's roads division running winter maintenance from four works yards",
+    "invented_names": [
+      "Quellbrook",
+      "Quellbrook Regional Transit",
+      "Northgrit Salt Supply",
+      "Tessaline Geomatics",
+      "Kettlewood Road Services"
+    ],
+    "people": [
+      "Doris Wilkerson",
+      "Mary Huynh",
+      "Kristin Gonzalez",
+      "Andre Nixon"
+    ]
+  },
+  "deliverables": [
+    "salt_commitment_2026-27.xlsx",
+    "seasonal_salt_commitment_memo.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:service-upgrade-gain-conditioned-on-prior-partial-coverage",
+  "layer1": [
+    "AVL platform replaced in October 2023: layout, clock (local time to UTC), units (kilograms to tonnes) and grain (segment by shift to one row per pass) change across years",
+    "segment re-identification through a GIS crosswalk that splits some old segments",
+    "storm log layout changed in 2023 (title block and event points to coded events and a Season WSI row)",
+    "free-text route audit reasons in the revision log",
+    "supplier dispatch schedule re-issued; dome survey capture times in UTC; loads weighed at another yard's scale house during scale outages; inter-yard transfers",
+    "older spreader controllers writing a run's total, salt and brine together, on every segment row; contractor circuits reporting outside the telematics; a yard boundary realignment"
+  ],
+  "driver": "The extra input an upgraded service level puts into a unit is the part of the unit the old level left untreated, so the average gain measured on units upgraded earlier, chosen because the old level already treated much of them, understates the gain for units the old level barely reached, while their upgraded level less the new units' present input overstates it; only the gain conditioned on how much of each unit the old level already treated, read from each unit's own record under it, carries across to the new units.",
+  "driver_concrete": "Quellbrook's Priority 2 trucks salt a collector only at its intersections, hills and curves, so a collector's gain on moving to Priority 1 is mostly the stretch between them at the Priority 1 rate; the collectors moved from 2022 to 2025 were mostly hill, school and hospital-access streets whose Priority 2 salt already covered much of their length, while the redesign's 424 lane-km are long flat outer-suburb grid collectors whose Priority 2 trucks salted about a sixth of them, so the moved streets' average gain understates theirs and the Priority 1 collectors' rate less the new streets' own Priority 2 salt overstates it; only the gain read off each moved street's own Priority 2 salt, at the new streets' Priority 2 salt, carries across.",
+  "stump": "A competent solver takes the Priority 1 collectors' salt per lane-km per severity point less the 424 lane-km's own Priority 2 salt and files 2,600 t at the planning severity, or takes the before-and-after gain of the collectors moved to Priority 1 since 2022 and files 1,500 t; the step that lands it there is carrying an average across streets whose Priority 2 coverage differs, when the gain is the length Priority 2 left untreated and the earlier moves were mostly hill, school and inner-suburb streets Priority 2 had already salted along much of their length, so only the gain conditioned on each street's own Priority 2 salt files 2,200 t.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who maps both AVL exports onto the current segments, converts the legacy export from kilograms and the platform from UTC, normalises every winter by the filed severity index and takes the Priority 1 collectors' salt per lane-km less the new streets' own Priority 2 salt files 2,600 t; one who measures the gain on the collectors moved to Priority 1 since 2022 files 1,500 t; only the gain conditioned on each street's own Priority 2 salt files 2,200 t.",
+  "domain_test": "The quantity that decides the call is the extra rock salt per lane-km a collector needs when it moves from Priority 2 (intersections, hills and curves) to Priority 1 (bare pavement over its whole length), sized the way winter maintenance engineers size a level-of-service change, the newly treated length at the Priority 1 rate per point of storm severity, carried across from the spreader records of streets moved before by how much of each street Priority 2 already treated; with hospital beds or megawatt-hours in place of lane-km there is no hazard-spot treatment whose coverage sets the gain and no storm severity to normalise by.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task134": "there a lot's forward yield is its chance of being rebuilt once the best permitted option pays, here no unit chooses anything: a service upgrade's added salt is the street length the old service left untreated, carried across from earlier upgrades by each street's own prior coverage",
+    "task146": "there a calendar turn releases a pool of refused units at segment rates weighed by when each was refused, here an upgrade's gain is read off earlier upgrades by each street's prior coverage, with no pool, release or timing",
+    "task465": "there a joint count of two traits needs a small source's within-cell association, here a measured treatment gain is carried from earlier treated units to new ones by a baseline covariate each unit's own history carries",
+    "task54": "there loss is borne per event by every unit in custody under a rule recovered from closed investigations, here nothing is withheld: the gain varies with each street's prior coverage and the earlier upgrades show it in their records",
+    "task118": "there a team's gain is netted of the volume each unit already treats itself and the netting is the correction, here netting each street's own present salt from the upgraded level is the wrong route, because the upgraded level itself rises with prior coverage and only the gain conditioned on it carries across"
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-18T14:10:39Z"
+}
