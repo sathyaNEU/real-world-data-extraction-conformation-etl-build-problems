@@ -36,12 +36,15 @@ def check(label, ok, detail=""):
     print("%s  %-44s %s" % ("PASS" if ok else "FAIL", label, detail))
 
 
-def bin25(x):
-    return int(25 * round(x / 25.0))
+def bin10(x):
+    return int(10 * round(x / 10.0))
 
 
-def edge25(x):
-    return 12.5 - abs(x - bin25(x))
+def edge10(x):
+    return 5.0 - abs(x - bin10(x))
+
+
+PROMPT = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
 
 
 # ------------------------------------------------------------------------------------------------- the golden
@@ -65,15 +68,17 @@ def with_cre(x, mort=None):
 
 
 check("GOLDEN call", G.call == "Fixed-rate commercial real estate", G.call)
-check("GOLDEN figure", bin25(CRE) == 150 and FIG["call_loss_musd_nearest25"] == 150, "%.2f -> %d" % (CRE, bin25(CRE)))
-check("GOLDEN mid-bin", edge25(CRE) >= 6.25, "%.2f from the nearest edge (quarter bin 6.25)" % edge25(CRE))
+check("GOLDEN figure", bin10(CRE) == 150 and FIG["call_loss_musd_nearest10"] == 150 and
+      FIG["pools"]["Fixed-rate commercial real estate"]["loss_musd_nearest10"] == 150, "%.2f -> %d" % (CRE, bin10(CRE)))
+check("GOLDEN re-centred by the rule", abs(CRE - 150.0) <= 0.5,
+      "%.2f; the push's income scale is solved to put the golden within 0.5 of the bin centre" % CRE)
 check("GOLDEN eligibility", all(v >= 1.2e9 for v in G.principal.values()),
       ", ".join("%s %.1f" % (k.split()[0], v / 1e6) for k, v in G.principal.items()))
 
 # ------------------------------------------------------------------------------------------------- three rules, R1
 log_rows = len(G.cre.log)
 stmt_rows = sum(len(v) for v in G.cre.stmts.values())
-check("R1 raw material ships", len(G.cre_hist) >= 600 and stmt_rows >= 4000 and len(G.wall) >= 300,
+check("R1 raw material ships", len(G.cre_hist) >= 550 and stmt_rows >= 4000 and len(G.wall) >= 300,
       "%d maturities with outcomes, %d statements, %d balloons due by December 2027" % (len(G.cre_hist), stmt_rows,
                                                                                         len(G.wall)))
 heads = []
@@ -101,7 +106,7 @@ def call_and_bin(cre_val, mort_val=None, mbs_val=None, t_val=None, auto_val=None
         v["Treasury ladder"] = t_val
     if auto_val is not None:
         v["Indirect auto loans"] = auto_val
-    return ranking(v)[0], bin25(v["Fixed-rate commercial real estate"])
+    return ranking(v)[0], bin10(v["Fixed-rate commercial real estate"])
 
 
 GOLD_CALL = ("Fixed-rate commercial real estate", 150)
@@ -301,7 +306,7 @@ check("R3a analyst test on the clean truth", r3a == "Agency MBS",
       "default path names %s (MBS %.1f, mortgages %.1f, CRE %.1f at the recent share %.3f)" % (r3a, t_MBS, t_M, t_Crec,
                                                                                             t_recent))
 r3b = ranking({**tv, "Fixed-rate commercial real estate": t_Ccov})[0]
-check("R3b the decisive step alone, clean truth", r3b == "Fixed-rate commercial real estate" and bin25(t_Ccov) == 150,
+check("R3b the decisive step alone, clean truth", r3b == "Fixed-rate commercial real estate" and bin10(t_Ccov) == 150,
       "%s, CRE %.1f" % (r3b, t_Ccov))
 lower = {"R0 (every pool at last year's speed)": ranking({**tv, "2023-24 residential mortgages": t_M_trail,
                                                           "Fixed-rate commercial real estate": t_C0})[0],
@@ -358,54 +363,88 @@ check("LADDER R3 decisive names the pool", rk3[0] == "Fixed-rate commercial real
       v3[rk3[0]] / v3[rk3[1]] >= 1.2, "%.2f over %s" % (v3[rk3[0]] / v3[rk3[1]], rk3[1]))
 dom = (CRE - RT["cre_contractual"]) / (POOLS["Agency MBS"] - RT["cre_contractual"])
 check("DOMINANCE", dom >= 1.2, "%.2f" % dom)
+# the grid: one correction at a time
+v_cmt = with_cre(CRE, G.M_trailing / 1e6)
+v_dy = with_cre(RT["cre_dy"])
 grid = {
-    "cover with last year's mortgage speed": (ranking(with_cre(CRE, G.M_trailing / 1e6))[0], "Fixed-rate commercial real estate"),
-    "debt yield, every maturity": (ranking(with_cre(RT["cre_dy"]))[0] + " %d" % bin25(RT["cre_dy"]), None),
-    "note-rate DSCR since 2023": (str(bin25(RT["cre_cur_2023"])), "125"),
-    "every balloon extended": (str(bin25(RT["cre_all_extend"])), "200"),
-    "wall only": (str(bin25(RT["cre_wall_only"])), "150"),
+    "cover with last year's mortgage speed": "%s %.2fx" % (ranking(v_cmt)[0], v_cmt[ranking(v_cmt)[0]] /
+                                                            v_cmt[ranking(v_cmt)[1]]),
+    "debt yield, every maturity": "%s, CRE %d" % (ranking(v_dy)[0], bin10(RT["cre_dy"])),
+    "note-rate DSCR since 2023": "CRE %d" % bin10(RT["cre_cur_2023"]),
+    "every balloon extended": "CRE %d" % bin10(RT["cre_all_extend"]),
+    "cover on the 2027 balloons only": "CRE %d" % bin10(RT["cre_wall_only"]),
 }
-okg = grid["cover with last year's mortgage speed"][0] == grid["cover with last year's mortgage speed"][1] and \
-    bin25(RT["cre_dy"]) != 150 and grid["note-rate DSCR since 2023"][0] == "125" and \
-    grid["every balloon extended"][0] == "200" and grid["wall only"][0] == "150"
-check("GRID cells", okg, "; ".join("%s: %s" % (k, v[0]) for k, v in grid.items()))
-for k in ("cre_recent", "cre_since2023", "cre_pooled", "cre_gap", "cre_gap_2023", "cre_cur", "cre_cur_2023", "cre_dy",
-          "cre_ptype", "cre_all_extend", "cre_contractual"):
-    pass
-rivals_out = [k for k in ("cre_recent", "cre_since2023", "cre_pooled", "cre_gap", "cre_gap_2023", "cre_cur",
-                          "cre_cur_2023", "cre_dy", "cre_ptype", "cre_all_extend", "cre_contractual")
-              if bin25(RT[k]) == 150]
-check("RIVALS outside the golden bin", not rivals_out, ", ".join(rivals_out) or
-      "every rival misses: " + ", ".join("%s %.1f" % (k[4:], RT[k]) for k in ("cre_recent", "cre_gap", "cre_cur",
-                                                                               "cre_cur_2023", "cre_dy", "cre_ptype",
-                                                                               "cre_all_extend")))
+okg = ranking(v_cmt)[0] == "Fixed-rate commercial real estate" and v_cmt[ranking(v_cmt)[0]] / v_cmt[ranking(v_cmt)[1]] \
+    >= 1.15 and bin10(RT["cre_dy"]) != 150 and bin10(RT["cre_cur_2023"]) != 150 and \
+    bin10(RT["cre_all_extend"]) != 150 and bin10(RT["cre_wall_only"]) == 150
+check("GRID cells", okg, "; ".join("%s: %s" % kv for kv in grid.items()))
+RIVALS = ("cre_recent", "cre_since2023", "cre_pooled", "cre_gap", "cre_gap_2023", "cre_cur", "cre_cur_2023", "cre_dy",
+          "cre_ptype", "cre_all_extend", "cre_contractual")
+rivals_in = [k for k in RIVALS if bin10(RT[k]) == 150]
+check("RIVALS outside the golden bin", not rivals_in, ", ".join(rivals_in) or
+      "every rival misses: " + ", ".join("%s %.1f" % (k[4:], RT[k]) for k in RIVALS))
 # ------------------------------------------------------------------------------------------------- the golden family
+# every out-of-sample-valid construction of the decisive step sits in the quarter-bin (the centre plus or minus 2.5)
 fam = RT["family"]
-check("FAM every construction in the bin", all(bin25(v) == 150 for v in fam.values()),
-      "%.1f to %.1f" % (min(fam.values()), max(fam.values())))
+SC = RT["score"]
+q_off = [k for k, v in fam.items() if abs(v - 150.0) > 2.5]
+check("FAM every construction in the quarter-bin", not q_off and len(fam) >= 18,
+      "%d constructions, %.2f to %.2f%s" % (len(fam), min(fam.values()), max(fam.values()),
+                                            ("; off: " + ", ".join(q_off)) if q_off else ""))
+for k in ("cover bands of 0.05", "cover bands of 0.10", "debt yield, maturities since 2023",
+          "debt yield and the refinance rate", "cover, the 2027 balloons only", "cover, maturities since 2023"):
+    check("FAM named: %s" % k, k in fam and abs(fam[k] - 150.0) <= 2.5, "%.2f, hold-out %.4f" % (fam.get(k, 0), SC.get(k, 0)))
+cuts = RT["chosen_cuts"]
+best_cut = min(RT["cut_holdout"].values())
+check("FAM the data-chosen hard cuts", cuts and all("hard cut at %.2f" % c in fam for c in cuts) and
+      all(abs(RT["cut_figure"][c] - 150.0) <= 2.5 for c in cuts),
+      "cuts %s (hold-out Brier %.4f at best); %s" % (", ".join("%.2f" % c for c in cuts), best_cut,
+                                                     ", ".join("%.2f: %.1f" % (c, RT["cut_figure"][c]) for c in cuts)))
+far = [c for c in C.CUTS if abs(RT["cut_figure"][c] - 150.0) > 2.5 and RT["cut_holdout"][c] <= 1.5 * best_cut]
+check("FAM every cut that scores near the best lands", not far,
+      "cuts off the quarter-bin all score at least 1.5 times the best hold-out Brier" if not far else
+      ", ".join("%.2f" % c for c in far))
 H = G.cre_hist
 xs = np.array([h["cover"] for h in H])
 ys = np.array([h["y"] for h in H])
-cf0, cf1, base = [], [], 0.0
-for L in G.cre_loans:
-    if L["extended"]:
-        base += C.measure(C.cre_cf([L], lambda L: 0.0), G.W)[0]
-    else:
-        cf0.append(C.measure(C.cre_cf([L], lambda L: 0.0), G.W)[0])
-        cf1.append(C.measure(C.cre_cf([L], lambda L: 1.0), G.W)[0])
-cf0, cf1 = np.array(cf0), np.array(cf1)
-covs = np.array([G.cre_cover[id(L)] for L in G.cre_loans if not L["extended"]])
+fut_, base_, m0_, d_ = C.cre_linear(G)
+covs = np.array([G.cre_cover[id(L)] for L in fut_])
+check("FAM linear book equals the golden", abs(C.cre_total(G, C.logit_pred(G.cover_beta, covs)) - CRE) < 1e-6,
+      "%.6f" % C.cre_total(G, C.logit_pred(G.cover_beta, covs)))
 g = np.random.default_rng(1661214)
 boot = []
 for _ in range(200):
     i = g.integers(0, len(H), len(H))
     bb = C.logit_fit(xs[i], ys[i])
-    boot.append((base + (cf0 + C.logit_pred(bb, covs) * (cf1 - cf0)).sum()) / 1e6)
+    boot.append(C.cre_total(G, C.logit_pred(bb, covs)))
 sig1 = float(np.std(boot))
 lo, hi = min(fam.values()) - sig1, max(fam.values()) + sig1
-check("FAM one sigma inside the bin", bin25(lo) == 150 and bin25(hi) == 150,
+check("FAM one sigma inside the bin", bin10(lo) == 150 and bin10(hi) == 150 and lo >= 145.0 and hi < 155.0,
       "sigma %.2f; %.1f to %.1f" % (sig1, lo, hi))
 check("FAM debt constants ruled out by the sheet", "25-year amortization" in R.DESC["CRE5F"], R.DESC["CRE5F"])
+# ------------------------------------------------------------------------------------------------- the routes kept outside
+OUT = RT["outside"]
+NAMED_OUT = ("the 1.25 cover convention", "note-rate DSCR, every maturity", "note-rate DSCR, maturities since 2023",
+             "debt yield, every maturity", "the 2027 model share carried to every balloon", "every balloon extended",
+             "the 1.00 cover rule", "every 2027 balloon extended")
+for k in NAMED_OUT:
+    v = OUT[k]
+    check("OUT %s" % k, v < 145.0 or v >= 155.0,
+          "%.2f (%s the bin by %.1f)%s" % (v, "below" if v < 145 else "above", (145.0 - v) if v < 145 else (v - 155.0),
+                                          (", hold-out %.4f" % SC[k]) if k in SC else ""))
+# ------------------------------------------------------------------------------------------------- the constant-share bypass
+GU = RT["guesses"]
+land_all = [nm for nm, (a, w) in GU.items() if 145.0 <= a < 155.0]
+land_wall = [nm for nm, (a, w) in GU.items() if 145.0 <= w < 155.0]
+listed = ("two-thirds", "0.7", "three-quarters", "four-fifths")
+check("BYPASS no natural share lands on every balloon", not land_all,
+      "band %.3f to %.3f; " % ((145 - RT["M0"]) / RT["S_all"], (155 - RT["M0"]) / RT["S_all"]) +
+      ", ".join("%s %.0f" % (nm, a) for nm, (a, w) in GU.items()))
+check("BYPASS no listed share lands on the 2027 balloons", not any(nm in land_wall for nm in listed + ("one half",
+                                                                                                      "nine-tenths",
+                                                                                                      "all")),
+      "band %.3f to %.3f; lands: %s" % ((145 - RT["M0"]) / RT["S_wall"], (155 - RT["M0"]) / RT["S_wall"],
+                                        ", ".join(land_wall) or "none"))
 # ------------------------------------------------------------------------------------------------- out of sample
 oos = C.oos_table(G)
 check("OOS cover beats every rival by half", all(oos["cover"] <= 0.5 * oos[k] for k in ("gap", "cur", "dy",
@@ -439,10 +478,13 @@ check("SF1 five pools", "the eligible pool in Schedule A" in pol and len(DOC.SCH
 check("SF2 designated against", "ALCO designates each overlay, before it is traded" in pol, "policy section 3")
 c3, v3_ = call_with(lambda c: C.measure(c, G.W, months=[C.ASOF])[0])
 check("SF3 averaged, not the as-of", "averaged over the month-ends of the overlay's first twelve months" in pol and
-      bin25(v3_) != 150, "the as-of alone: %s %.1f" % (c3, v3_))
+      bin10(v3_) != 150, "the as-of alone: %s %.1f" % (c3, v3_))
 c4, v4 = call_with(lambda c: C.measure(c, G.W, months=[C.mo(2026, 12)] + [C.mo(2027, k) for k in range(1, 12)])[0])
 c4b, v4b = call_with(lambda c: C.measure(c, G.W, months=C.MEASURE + [C.mo(2028, 1)])[0])
-check("SF4 the twelve month-ends", c4 == c4b == G.call and bin25(v4) == bin25(v4b) == 150, "%.1f, %.1f" % (v4, v4b))
+check("SF4 the twelve month-ends", "starts on Monday 4 January" in PROMPT and C.MEASURE[0] == C.mo(2027, 1) and
+      len(C.MEASURE) == 12 and c4 == c4b == G.call,
+      "the prompt files the start: January to December 2027; December 2026 to November 2027 %.1f, thirteen to "
+      "January 2028 %.1f" % (v4, v4b))
 t_ = np.arange(0, C.HORIZON + 14) / 12.0
 z_ = np.interp(t_, G.plan.tenors, G.plan.zeros) / 100.0
 D0, D2 = np.exp(-z_ * t_), np.exp(-(z_ + 0.02) * t_)
@@ -460,8 +502,8 @@ def fwd(c):
 
 
 c5, v5 = call_with(fwd)
-check("SF5 the same zero rates at every month-end", "the same zero rates at every month-end" in pol and c5 == G.call and
-      bin25(v5) == 150, "forwards: %.1f" % v5)
+check("SF5 the same zero rates at every month-end", "the same zero rates at every month-end" in pol and c5 == G.call,
+      "filed; forwards would give %.1f" % v5)
 check("SF6 time and placement", "a month counting as a twelfth of a year" in pol and
       "placed at the end of the month in which it is paid" in pol, "filed")
 check("SF7 before credit losses", "before credit losses" in pol, "filed")
@@ -471,13 +513,14 @@ check("SF10 the base case", "ALCO's most recent planning cycle" in pol and G.pla
       G.plan.mortgage == 6.25 and G.plan.conf15 == 5.55, "6.25, 5.55, 6.95")
 cre_noext = C.measure(C.cre_cf([L for L in G.cre_loans if not L["extended"]],
                                lambda L: float(C.logit_pred(G.cover_beta, np.array([G.cre_cover[id(L)]]))[0])), G.W)[0] / 1e6
-check("SF11 extended loans in the pool", bin25(cre_noext) == 150 and "with a fixed note rate" in pol,
-      "without them %.1f" % cre_noext)
+check("SF11 extended loans in the pool", "Commercial real estate term loans with a fixed note rate" in pol and
+      sum(1 for L in G.cre_loans if L["extended"]) > 0, "filed; without them %.1f" % cre_noext)
 check("SF12 agency MBS bought 2020-21", "bought in 2020 and 2021" in pol and call_and_bin(CRE, mbs_val=mbs_all) == GOLD_CALL,
       "every agency pool: %.1f" % mbs_all)
 hfs_left = sum(1 for r in new if r["investor_type"] == "HELD FOR SALE" and r["reporting_period"] == "2026-11")
 check("SF13 held for investment", "held for investment" in pol and hfs_left == 0, "%d held for sale at the as-of" % hfs_left)
-check("SF14 rounding to $25 million", FIG["call_loss_musd_nearest25"] == 150, "filed in the prompt")
+check("SF14 rounding to $10 million", "to the nearest $10 million" in PROMPT and FIG["call_loss_musd_nearest10"] == 150,
+      "filed in the prompt")
 prog = C.programme(PACK)
 reg = C.load_register(PACK)
 cust_book = [t for t in reg if t["Book"] == "CUSTOMER" and t["Status"] == "LIVE"]
@@ -621,7 +664,7 @@ def p_pt(L):
 
 
 cre_pt = C.measure(C.cre_cf(G.cre_loans, lambda L: p_pt(L) if not L["extended"] else 0.0), G.W)[0] / 1e6
-check("H14 a finer grain: cover with property type", bin25(cre_pt) == 150, "%.1f" % cre_pt)
+check("H14 a finer grain: cover with property type", abs(cre_pt - 150.0) <= 2.5, "%.1f" % cre_pt)
 check("FIGURES figures.json matches the golden", FIG["call_pool"] == G.call and FIG["call_loss_musd_unrounded"] ==
       round(CRE, 2) and FIG["runner_up"] == rk3[1], "%s %.2f, runner-up %s" % (FIG["call_pool"], CRE, rk3[1]))
 

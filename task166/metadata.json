@@ -6,7 +6,7 @@
   "house_domain": "banking-credit-financial-risk",
   "subdomain": "stress-testing-capital (interest-rate risk in the banking book: each fixed-rate pool's +200 bp loss in economic value through the swap's first year, on base-case cash flows that need each pool's behaviour forecast: mortgage prepayment at the planning rate, commercial real estate balloons extended by their refinance cover)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed designation (one of five pools) with its averaged +200 bp loss to the nearest $25 million, a table of the hedge programme's notional in effect at each 2027 quarter-end for its overlays, funding hedges and loan hedges, and a two-slide ALCO deck charting it",
+  "prompt_shape": "a committed designation (one of five pools) with its averaged +200 bp loss to the nearest $10 million, a table of the hedge programme's notional in effect at each 2027 quarter-end for its overlays, funding hedges and loan hedges, and a two-slide ALCO deck charting it",
   "as_of": "2026-12-03",
   "deliverables": [
     "overlay_designation_2027.xlsx",
@@ -81,8 +81,8 @@
     {
       "path": "cre_maturity_log.xlsx",
       "format": "xlsx",
-      "bytes": 55046,
-      "rows": 651,
+      "bytes": 51423,
+      "rows": 589,
       "source": "Constructed: Carrick Valley Bank credit administration, commercial real estate maturity log, 2015 to 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -90,8 +90,8 @@
     {
       "path": "cre_operating_statements.csv",
       "format": "csv",
-      "bytes": 329330,
-      "rows": 4990,
+      "bytes": 377269,
+      "rows": 5715,
       "source": "Constructed: Carrick Valley Bank credit administration, borrowers' annual operating statements as reviewed, from 2013",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -99,8 +99,8 @@
     {
       "path": "cre_term_loans_20261130.csv",
       "format": "csv",
-      "bytes": 131100,
-      "rows": 821,
+      "bytes": 168605,
+      "rows": 1069,
       "source": "Constructed: Carrick Valley Bank commercial loan system, commercial real estate term loans at 30 November 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -126,7 +126,7 @@
     {
       "path": "extract_notes.txt",
       "format": "txt",
-      "bytes": 5464,
+      "bytes": 5621,
       "rows": null,
       "source": "Constructed: Carrick Valley Bank ALM, notes on the files pulled for the overlay designation memo (3 December 2026)",
       "date": "2026-12-03",
