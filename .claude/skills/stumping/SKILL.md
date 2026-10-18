@@ -705,6 +705,25 @@ at another grain, with the construction forced by arithmetic rather than by a fi
 organisation actually keeps, ask of each what it pins that no other file pins, and take the quantity that
 file forces. A draw that begins with the estimator and looks for data to suit it has the search backwards.
 
+**Enumerating the files is step one of two, and on its own it is necessary and not sufficient.** Step two
+is the proxy screen in 1.6a's fourth clause, run on the construction before any separation measurement,
+because a file that pins a quantity usually also publishes a column summarising it. Measured 5 for 5 on
+one ground and 8 for 8 across its siblings. The worked warning: a barrier-grain investigation record is
+genuinely the only file that observes several barriers jointly on one occasion, which is what the
+enumeration is looking for, and the construction it most obviously forces is proxied at **+0.9960** by a
+barriers-in-place tally the record already prints, with the one-line route reaching the truth **18 of
+20**. So the file passed step one and the construction failed step two, and an orchestrator that named the
+file also named the worst construction in its family. **Name the file, then screen every construction it
+forces, and expect the obvious one to be the proxied one.**
+
+**One role rule the same sitting earned twice.** An orchestrator allocates the cell, the axes and the
+constraints; it does not name the mechanism or the construction. Two prescriptions from outside the
+screening thread died this session: a binding-constraint direction taken from a judge's own list, which
+screened out on three measured kills, and the construction above at +0.9960. The threads that found
+genuinely novel candidates were the ones handed a cell and a set of bans and left to search. Where a
+direction must be passed in, pass it as a candidate to screen with its predicted failure mode, never as
+the answer.
+
 **The pricing sequence, run in this order before a word of design:** name the residue the filed WHAT leaves
 (a knob fails at once, only a method survives); price the move available against the move needed; price the
 standard error of whatever the step must estimate; check whether the lever and the ranked quantity's noise
