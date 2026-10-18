@@ -36,14 +36,16 @@
   "surface": "one promoted pair, task190 vs task195 at surface 0.084 (corpus percentile 70), on the gap, decisive generator and Gate G triple; differentiated in writing on the card"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "FIX_NOW",
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW (three note-level pins)",
   "report": "task190/determinism_check_report.md",
-  "gates": "A FAIL (one supplementary figure), B FAIL (supplementary only), C PASS with 1.66 points of margin and four agreeing routes, D PASS, E FAIL (a supplementary precision convention), F PASS strong, G PASS, H PASS",
-  "order": "derivation written before the graded blocks were opened; the judge reached the main call independently"
+  "gates": "A pass, B pass, C pass (one thin closure), D pass, E pass (two soft spots), F strong, G pass, H pass",
+  "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "round": 2,
+  "order": "derivation written before the graded blocks; every graded figure reproduced independently"
  },
  "returned": [],
- "resume": "Stage 4 round 2, reader and judge both spawned on the repaired pack at target.zip bbf01fae98537ad271c72b80206f113c. The repair is verified here rather than taken on the report: figures.json diffed key by key against the judged commit shows 191 shared keys with exactly two moved, both of them the Gate A fix (a1_Norte usable returns 542 to 538 and returns per day 16.66 to 16.53), one key renamed and one added, which is the oracle cut. A fresh build is byte-identical under diff -rq on target and golden, checks 75 of 75, verify 53 of 53, ceiling 28.5 with zero mirror leakage, precut 51 with 0 FAIL and 0 WARN, figures_check 181 figures with none absent, voice-check PASS at 994 characters, and the prompt moved by exactly the two intended words. Both threads re-run because documents and the prompt changed, and the second reader is the Gate F test: the oracle that let the first one confirm the variance method is gone. Open and not a repair: heart BLOCKs ban.org_family against task244, an author decision. Two things the repair recorded for the author: the A3 fork's cheaper closure holds the measured pair ceiling at 28.5 but a reader who resolves it anyway puts the worst case at 46.2, inside the house bar of 50 but above the 40 this build was built to; and SF3's convergence was re-measured rather than tuned, no stream moving more than 0.73 per cent when both register files are read consistently.",
+ "resume": "Round 2 of stage 4 is in and the verdict is DETERMINISTIC with a FIX_NOW of three note-level pins. The judge reproduced every graded figure independently and passed all eight gates, and it confirms the oracle repair holds: the only precision figure left is a different round's, whose micro-data does not ship, so the variance method is not verifiable from the pack in either direction, and Gate C passes on the design rather than on a published number. That corrects the orchestrator's earlier reading that the oracle and the closure were the same sentence. A pin pass is running: the 2025 release's stated extract reason is false because no leg in that file lands after 2026-03-09, so the register needs a real confirmation tail; the visit grain needs one clause rather than arithmetic impossibility; and the prompt needs the four chain stages named, which 56 graded cells turn on. Three hygiene findings go with it, the sharpest being that five of eight rates land on an exact tenth and all 24 root tonnage cells are exact integers, which reads as solved backwards. Gate F is understood and priced rather than ignored: two readers landed the call at 75 and 85 per cent, and the measured pair ceiling is 28.5 against a gate of 40 because the asks hold a response that lands the call, with 46.2 the worst case if a reader also resolves the municipal fork. A fresh reader round is owed after the pins, because two of them change what a solver sees. The only thing then standing between this build and a ship is the author's call on ban.org_family.",
  "approved": null,
  "delivered": null,
  "portal": null,
