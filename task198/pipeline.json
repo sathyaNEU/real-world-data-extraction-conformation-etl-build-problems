@@ -2,18 +2,18 @@
  "task": "task198",
  "owner": "oviya13ya",
  "status": "DRAWING",
- "domain": "business-operations-analytics/service-operations-sla",
+ "domain": "survey-research-official-statistics/anomaly-detection",
  "objective": "anomaly-detection",
  "stage": 1,
  "stage_name": "draw",
  "updated": "2026-10-18",
  "architecture": 2,
  "loops": 0,
- "call": "",
- "stump": "",
+ "call": "Which region's rise in dwellings with damp or mould takes the one boosted sample in the 2027 Q1 field quarter: the region whose rise survives attribution to the interviewers who collected it, committed with its own observed rate. Candidate regions and figures are fixed at stage 2.",
+ "stump": "A competent solver stacks both questionnaire layouts, resolves the address log to the dwelling grain, converts the stamps, rebases the regions across the amalgamation and weights to the design correctly, ranks the regions on the quarter-on-quarter change in dwellings with damp or mould, and commits the loud region on its largest measured rise, because most of that rise is the differential of the one interviewer who carried two thirds of that region's quarter while a colleague was on leave, a differential her own records reproduce in the other regions she worked.",
  "judge": "architecture 1: NOT_DETERMINISTIC, SEND_BACK, 2026-10-18",
  "returned": [],
- "resume": "Stage 1, architecture 2, undrawn, and the author's stop rule has fired. Fourteen candidate mechanisms are screened in DESIGN_NOTE.md `## Tried and rejected`: ten across routes 1 and 2, then the author's route 3 input-property family of four, each with the two exact computations and the rule that killed it, four of them measured on the pack or the clean truth. Nothing in the family is both knob-free and non-semantic, so per the stop rule the number goes to a different world rather than a fourth route. Architecture 1's eleven sections are demoted to `### ARCHIVE architecture 1 (spent)` headings and precut.py exits 1 with 36 FAIL, so no dead design can pass. The card is deliberately unregistered for architecture 2 and its live axes still describe architecture 1, so parallel builds' guard stays protected. Independent of the mechanism, the document work stands: the framework and the authority letter are rewritten to pose a question rather than specify an analysis, the monitoring export stops announcing it is the wrong basis, and the roster notes stop explaining the structural break.",
+ "resume": "Stage 1 complete for architecture 2 and the card is registered. Next is stage 2: the readability screen (the decisive rung must come out silent, and the leave-one-interviewer-out reflex is the dangerous one), the semantic fork table, the ladder with the reflex sweep run as code BEFORE any separation is measured, the closure table's 22 axes, the literal reader line, the oracles and the ask sheet, then prompt.txt through voice-check. Build requirements the draw already owes are listed at the end of `## Draw`: interviewer differentials orthogonal to everything predicting the item and asserted near zero; no region-size tell, the loud region's concentration coming from a staffing gap rather than from being smallest; the full reflex sweep landing wrong. Nothing is cut until precut.py exits 0.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -84,5 +84,13 @@
   "call": "Contribution queries takes the one process re-engineering review in H1 2027; its FY2026 breach share is 12.4 per cent, on the 6,480 cases it received between 1 April 2025 and 31 March 2026.",
   "stump": "A competent solver rebuilds every queue's FY2026 breach share correctly across both case systems on the financial year with the clock rules and the unanswered cases applied, compares each queue with its own FY2023 to FY2025 quarters at the same load per staffed position, and commits Member data corrections at 25.8 per cent, because that queue carried fourteen positions through the two years its own history is read from and five in FY2026.",
   "fate": "stage 4, 2026-10-18: determinism judge NOT_DETERMINISTIC / SEND_BACK and the isolated reader independently. Clause 4.2 filed the comparison; the residue was the matching tolerance, a knob, and three queues win across licensed readings. Gates C and E fail on the flip, Gate H reads the decisive step as rule application. The pack, its 19 files, four formats, 42,481-row spine and every reproducing figure are kept for architecture 2."
+ },
+ "draw": {
+  "world": "Motu Korero Research, a survey research institute running a national statistics office's continuous Household Living Conditions Survey under contract; New Zealand",
+  "registered": "2026-10-18, guard.py check WARN no BLOCK, nearest driver 0.05 task97",
+  "warns_answered": "overuse.objective (fixed by the lane's task-number block task180 to task227), repeat.decision and repeat.question_form (both follow the decision, a pick of one region for one scarce boost)",
+  "pincer_case": "case two: the interviewer component is a quantity the records measure about their own production, exactly computable from the random allocation the sample management log records, stated nowhere and recovered as no rule",
+  "priced_ceiling": "about 9.4 points available against about 4.5 needed, a ratio of about 2.1, and the two separations are financed by independent parameters so buying one does not spend the other; both re-measured on the cut pack",
+  "stage1_gate": "precut.py: the four stage-1 sections present, all thirteen three-rules lines pass; the seven stage-2 sections correctly absent"
  }
 }

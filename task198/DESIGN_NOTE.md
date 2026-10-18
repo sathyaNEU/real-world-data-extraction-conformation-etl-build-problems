@@ -19,6 +19,181 @@ residue the decisive step leaves open and ask whether a competent analyst could 
 value of it on grounds other than taste; then name which of the five parts of the WHAT the step could be
 mistaken for, because if it is any of them it must be filed and can no longer carry the stump.
 
+## Draw
+
+Motu Kōrero Research, a survey research institute running the national statistics office's continuous
+Household Living Conditions Survey under contract. Which region's rise in dwellings with damp or mould
+takes the one boosted sample in the 2027 Q1 field quarter.
+
+| Field | Value |
+|---|---|
+| Card | `.claude/skills/fingerprint/cards/task198.json`, architecture v2, registered 2026-10-18, `guard.py check` WARN, no BLOCK |
+| Domain / subdomain | `survey-research-official-statistics` / `anomaly-detection` (assigned ground) |
+| Objective | Anomaly Detection & Diagnostics (fixed by the lane's task-number block, task180 to task227) |
+| Shape | 07, grid of cells: the region by interviewer grid of the quarter's achieved sample |
+| Decision type | `pick_one_of_n`, answer unit `named_option` plus one observed rate |
+| Gate G | `decomposition_attribution` |
+| Strategy | `other`: a measured difference between units attributed to the person who collected it rather than to the unit, identified by that person's portability across units |
+| Layer 2 family | `estimand_identification`, pattern `own:measurer-portability-across-units` |
+| Gaps | `objective` (decisive), `population` |
+| Generators | G3 record versus operation (decisive), G14 conditioned yield |
+
+**Pairing.** Survey research is the one field whose own estimators measure the error its own production
+introduces, and the interviewer component is its signature one: the interviewer design effect
+`1 + (m - 1) rho_int` is published for probed items precisely because the workforce, not the population,
+moves them. The decision is the field's own triage question, which of a set of regional movements is the
+population's own, and the quantity that settles it is an error component the field estimates from the
+random allocation of issued addresses among the interviewers working an area.
+
+**Why this ground, under the pincer.** The decisive step is case two of the pincer (`stumping` 1.2b): the
+interviewer component is a quantity the records measure about their own production, not a fact about how
+they were produced. Nothing states it, nothing has to be recovered as a rule, and it is exactly computable
+from shipped columns, because the allocation of addresses to interviewers is random within area and the
+sample management log records it.
+
+**Data-native sentence.** In this pack the regions differ in how few people collected them: a region's
+quarter is worked by two to twelve interviewers, every interviewer carries a differential on an item that
+has to be probed, and a minority of interviewers work more than one region because rural workloads cross
+territorial authority boundaries, so the record contains the same interviewer's own differential measured
+away from the region that looks worst, which is the only thing that separates her from it.
+
+**Priced ceiling, computed before any row is cut** (`stumping` Part 3, and the rule this slot earned).
+At an item prevalence of 0.20 the person-level SD is 0.400, so the between-interviewer SD of the realised
+rate is `0.400 x sqrt(rho_int)`: 5.66 points at `rho_int` 0.02, 8.00 at 0.04, 9.80 at 0.06, all inside the
+published range for probed items. An interviewer 1.8 SD out carrying a 0.65 workload share lifts her
+region's measured rate by 6.62 points at `rho_int` 0.02 and **9.36 points at 0.04**. The ladder needs about
+**4.5 points**: enough to put the loud region above the golden on the measured ranking, and enough to leave
+the golden ahead once the differential is attributed. **About 9.4 available against about 4.5 needed, a
+ratio of about 2.1.**
+
+**And the two separations are financed by independent quantities**, which is the structural contrast with
+architecture 1 and with task194's architecture 3. Separation 1, the easy route must file the loud region,
+is financed by the lift, `workload share x interviewer differential`. Separation 2, the golden must lead
+once the differential is attributed, is financed by `golden true rise - loud true rise`. Those are set by
+different parameters, so buying one does not spend the other, and the ratio above holds at every lift:
+at lifts of 4.0, 6.0 and 9.4 points the golden's lead after attribution is 2.0 points throughout. Both
+numbers are re-measured on the cut pack before the ladder is accepted.
+
+**Build requirements this draw already owes.**
+
+- **Orthogonality.** The interviewer differentials are drawn independent of everything that predicts the
+  item, and the correlation is measured and asserted near zero, so that no finer standardisation on a
+  visible attribute reaches the golden for free.
+- **No size tell.** The loud region is not simply the smallest. Its concentration comes from a staffing gap
+  in the quarter (one of its interviewers on leave), so `corr(decisive measure, region size)` is measured
+  and asserted near zero at the decision grain.
+- **The dangerous reflex.** Leave-one-interviewer-out re-ranking must land wrong, which requires the golden
+  region to carry a dominant interviewer too. The full reflex sweep runs as code before any separation is
+  measured: interviewer fixed effects, clustering on interviewer, leave-one-out, trimming the extreme
+  interviewer, weighting by workload, standardising on interviewer count.
+- **Documents pose a question.** The survey's quality framework and the commissioning agency's letter ask
+  which movement is the population's own and name no method; no note says a file is the wrong basis, and
+  nothing explains the structural break the answer depends on.
+
+**Sources read, one line each.**
+
+- `guard.py mechanisms --objective anomaly-detection`, 31 builds, every spent driver read before drawing.
+  The three self-measuring builds are task192 (a validation subsample's error rates and whether they
+  transport outside their window), task195 (shared specimens making two screens' calls dependent) and
+  task194 (two vintages measuring their own coding lag); this build's self-measuring quantity is none of
+  those, and the card carries a differentiation line against each.
+- `guard.py nearest`, every driver on file: nearest 0.05 (task97), then task186, task195 and task181 v1 at
+  0.04, all far under the 0.12 WARN threshold.
+- The domain's own cards: task125 is the nearest build here and ruled the rotation-group family out before
+  design (its artifact comes from the point units are recruited and builds through the waves a unit stays
+  in; this build has no panel, no waves and no recruitment effect). task238 spends mode effects, task231
+  and task264 nonresponse, task240 and task261 design variance and reliability, task230 coding quality.
+- `stumping/references/client/layer2-rigor-patterns.md`: the field's shortcut is to treat a survey's
+  achieved sample as if the design and the workforce did not touch it; this build differs from the variance
+  version of that shortcut by moving a point estimate rather than an interval.
+
+## Default path
+
+The pipeline a competent analyst builds from the release's own words and the files' grain, without asking
+who collected each region's quarter.
+
+1. Read the quarterly monitoring extract for orientation: achieved sample and the damp-or-mould rate by
+   region, on the published provisional basis.
+2. Notice the release's window is the field quarter, so rebuild from the dwelling records: stack the two
+   questionnaire layouts, resolve the issued-address log to the person and dwelling grain, convert the
+   management system's UTC stamps to New Zealand local time across the daylight saving change, and take
+   interviews achieved in the quarter.
+3. Apply the calibrated weights the person file carries, not the design weights, as the release does.
+4. Rebase the regional breakdown across the territorial authority amalgamation so the quarter and its
+   comparison quarter are on one base.
+5. Compute each region's damp-or-mould rate for the quarter and for the comparison quarter, and take the
+   change in percentage points.
+6. Rank the regions on that change and read off the largest rise.
+7. Check it against the published provisional and revised figures for the comparison quarter, which tie.
+8. Commit the region with the largest rise.
+
+Ends on: the loud region, the largest measured rise, with its own observed rate
+Golden: the region whose rise survives attribution to its interviewers, with its own observed rate
+
+## Stump sentence
+
+A competent solver stacks both questionnaire layouts, resolves the address log to the dwelling grain,
+converts the stamps, rebases the regions across the amalgamation and weights to the design correctly,
+ranks the regions on the quarter-on-quarter change in dwellings with damp or mould, and commits the loud
+region on its largest measured rise, because most of that rise is the differential of the one interviewer
+who carried two thirds of that region's quarter while a colleague was on leave, a differential her own
+records reproduce in the other regions she worked.
+
+## Three rules
+
+- **Task type:** `survey-research-official-statistics` / `anomaly-detection`, which serves Anomaly
+  Detection & Diagnostics; the build works the field's own interviewer-variance method on a probed
+  prevalence item collected by a workforce the sample management log records.
+- **Domain test:** the quantity that decides is the interviewer component of the survey's own measurement
+  error, which survey research estimates from the random allocation of issued addresses among the
+  interviewers working an area, the interpenetrated assignment behind every published interviewer design
+  effect `1 + (m - 1) rho_int`.
+- **Swap:** rewritten as "which district's megawatt-hours rose most" there is no workforce collecting the
+  measurement, no allocation to randomise and no workload crossing units, so nothing can make a measured
+  difference travel with a person rather than a place and the task stops existing.
+- **Layer 1:** two questionnaire layouts across the comparison period (a revision); face-to-face and
+  telephone collection with different field periods inside the quarter; the sample management log at
+  issued-address grain against the person file's person grain; interviewer identifiers recycled when field
+  staff leave and are re-engaged; a territorial authority amalgamation changing the published regional
+  base mid-series; design weights and calibrated weights both present; management system stamps in UTC
+  against New Zealand local time across a daylight saving change; a provisional and a revised figure for
+  the same quarter. Nothing is placed to be caught.
+- **Layer 2:** `estimand_identification`: a measured difference between units is attributed to the person
+  who collected it rather than to the unit, and because most interviewers work one region only, the
+  interviewer and the region are collinear, so the attribution comes only through the interviewers whose
+  workload crosses regions.
+- **Decisive step:** before ranking regions on the change, split each candidate region's change by the
+  interviewers who collected it and ask whether each interviewer's own differential reproduces in the
+  other regions she worked, which separates a differential that travels with the interviewer from a rise
+  that stays with the region.
+- **Not semantics:** both routes read every field, code, unit and definition the same way, build the same
+  achieved sample on the same window at the same grain, apply the same weights and the same rebasing, and
+  reach the same regional rates; they differ only in whether the change is attributed to the interviewers
+  who collected it, and no field, code or definition in the pack states that an interviewer carries a
+  differential.
+- **Not rule application:** the quality framework files the five parts of the estimand and the release
+  files the weighting and the rebasing, and no filed sentence, column or procedure says to split a change
+  by interviewer, nor that a differential measured in one region should be read against another;
+  executing every stated rule in the pack files the loud region.
+- **Analyst test:** a strong analyst who stacks both layouts, resolves the address log, converts the
+  stamps, rebases the regions and weights to the design ranks the regions on the measured change and
+  commits the loud region, because that change is a correct measurement of what its interviewers collected.
+- **Estimand:** filed in one sentence in the survey's quality framework: the change, in percentage points,
+  in the share of occupied private dwellings with damp or mould observed or reported at interview, between
+  the field quarter and the same quarter a year earlier, for the region as the unit, over every dwelling
+  interview achieved in the quarter on the amalgamated regional base.
+- **No decoy:** nothing is planted to be caught. Every interviewer carries a differential, as every real
+  workforce does; no interviewer is written to be found, no memo or draft argues a region, the monitoring
+  extract states its own basis and ranks nothing, and the staffing gap is recorded as the roster would
+  record it.
+- **No certified replay:** no published or certified figure is reproduced only by the golden method; the
+  provisional and revised figures tie under both routes, because both reach the same regional rates and
+  differ only in attribution.
+- **Lesson:** a difference between places is only the places' if it does not travel with the people who
+  measured them, and where each place is measured by a handful of people the two are collinear, so only
+  the measurers whose work crosses places can tell them apart. No build on file teaches it: task192 turns
+  on a validation rate's reach, task195 on a paired interval and task194 on when records arrive.
+
 ### ARCHIVE architecture 1 (spent): Draw
 
 | Field | Value |
