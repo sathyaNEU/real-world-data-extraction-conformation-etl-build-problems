@@ -157,6 +157,22 @@ def pois(rng, lam):
         k += 1
 
 
+RANGE_FORMS = [
+    "entre %d y %d personas segun transcripcion",
+    "la emisora reporta de %d a %d asistentes",
+    "transcripcion: %d a %d participantes",
+    "se escucha entre %d y %d personas en el audio",
+    "fuente radial, %d-%d personas",
+]
+
+
+def render_range(action_id, lo, hi):
+    """The coder's own wording, stable per entry and taken from the id rather than the draw, so the
+    note's text cannot move any count."""
+    h = sum((i + 1) * ord(ch) for i, ch in enumerate(action_id))
+    return RANGE_FORMS[h % len(RANGE_FORMS)] % (lo, hi)
+
+
 def draw(seed=SEED):
     """Every row of the world, from core.py's parameters. Returns the realised truth."""
     t = core.panel_truth()
@@ -205,20 +221,24 @@ def draw(seed=SEED):
                          "Toma de entidad": 70, "Asamblea permanente": 150}[tipo]
                 real = max(8, int(scale * (0.45 + rng.random() * 1.5)))
                 note, numeric = "", real
+                rng_lo = rng_hi = None
                 if rng.random() < 0.22:                     # radio transcript coding
                     lo = int(real * (0.72 + rng.random() * 0.1))
                     hi = int(real * (1.18 + rng.random() * 0.12))
-                    note = "entre %d y %d personas segun transcripcion" % (lo, hi)
+                    rng_lo, rng_hi = lo, hi
+                    note = "RANGE"                          # rendered below, per coder
                     numeric = lo
                     real = (lo + hi) // 2
                 elif rng.random() < 0.09:
                     numeric, real, note = 0, None, "no reportado"
                 reg_lag = 3 + pois(rng, 9)
                 aid = new_id(city, d)
+                if note == "RANGE":
+                    note = render_range(aid, rng_lo, rng_hi)
                 actions.append(dict(
                     action_id=aid, city=city, date=d, days=days, tipo=tipo, sector=sect,
                     participantes=numeric, nota=note, truth_participants=real,
-                    registered=d + timedelta(days=reg_lag),
+                    rango=(rng_lo, rng_hi), registered=d + timedelta(days=reg_lag),
                     r_mean=r_mean))
                 ncit = 1 + pois(rng, max(0.0, r_mean - 1.0))
                 for j in range(ncit):
