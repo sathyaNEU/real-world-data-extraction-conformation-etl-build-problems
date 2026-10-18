@@ -338,9 +338,10 @@ def write_docx(path, X, png):
         "closed their older filing routes, so about %s of their %s applications in the twelve months to September "
         "2026 are ones the integrated filing added. Read against the nine other states before and after go-live, "
         "the added applications in the closed cohorts formed employers, taking the three states together, at under a "
-        "fifth of the rate of the applications those states would have had anyway, and they are nearly half of the "
-        "three states' applications in the twelve months against about a quarter of the closed cohorts'. Every "
-        "state's ordinary applications also rose about an eighth from autumn 2025. Priced that way, the twelve "
+        "third of the rate of the applications those states would have had anyway, and they are about a third of the "
+        "three states' applications in the twelve months against about a fifth of the closed cohorts'. Every "
+        "state's ordinary applications also rose about a tenth into the twelve months, from early 2026. Priced that "
+        "way, the twelve "
         "months' applications will produce about %s employer formations within four quarters, and at the 2025 shares "
         "that is %s first-time employers, about four fifths of them in the three states." %
         (fmt(X.call), about_added(X), fmt(K.round_to(X.added_ttm + X.ordinary_ttm, 100000) / 1e6, 1) + " million",
@@ -380,24 +381,24 @@ def submission(X):
     L.append(
         "About %s of Ohio's, Pennsylvania's and Michigan's applications in the twelve months to September 2026 were "
         "added by their integrated EIN filings, and set against the nine other states before and after each go-live "
-        "the added applications, pooled over the three states, form employers within four quarters at under a fifth "
-        "of the ordinary rate; they are nearly half of the three states' applications in the twelve months against "
-        "about a quarter of the closed cohorts', and every state's ordinary applications rose about an eighth from "
-        "autumn 2025. Not each "
+        "the added applications, pooled over the three states, form employers within four quarters at under a third "
+        "of the ordinary rate; they are about a third of the three states' applications in the twelve months against "
+        "about a fifth of the closed cohorts', and every state's ordinary applications rose about a tenth into the "
+        "twelve months, from early 2026. Not each "
         "state's latest closed formation rate carried onto the twelve months, which prices the added applications at "
         "the share the closed cohorts held. Not the three states' own level before go-live as the counterfactual, "
-        "which counts the autumn 2025 rise every state shared as added applications. Not the filing's effect on "
+        "which counts the early 2026 rise every state shared as added applications. Not the filing's effect on "
         "formations "
         "carried as a monthly level, which misses that the twelve months hold far more added applications than the "
         "closed cohorts. Not 2025's first-time employers grown with applications, which grows formations as fast as "
-        "applications when the added applications that make up nearly half of the three states' twelve months form "
-        "employers at under a fifth of the ordinary rate." % about_added(X))
+        "applications when the added applications that make up a third of the three states' twelve months form "
+        "employers at under a third of the ordinary rate." % about_added(X))
     L.append("")
     L.append("## 2. Critical Components\n")
     L.append("1. About **%s** of the three states' applications in the twelve months to September 2026 were added by "
              "the integrated filing (to the nearest 100,000)." % about_added(X))
     L.append("2. Pooled over the three states, the added applications in the closed cohorts since go-live formed "
-             "employers within four quarters at **under a fifth** of the rate of the applications the states would "
+             "employers within four quarters at **under a third** of the rate of the applications the states would "
              "have had anyway.")
     L.append("3. The twelve states' applications in the twelve months will produce about **%s** employer formations "
              "within four quarters (to the nearest 5,000)." % fmt(K.round_to(X.F_total, 5000)))
@@ -425,9 +426,11 @@ def submission(X):
                                                     100 * X.y_reform["MI"], X.rel))
     L.append(
         "5. Counted 2024 first-time employers by business as first_time_employer_counting_notes.docx counts them (an "
-        "EIN's accounts and its successors in suta_successor_transfers_2022-2025.csv as one, first pay date in 2024, "
-        "no liability date before it in state_tax_registrations_2026-01-09.csv), each in the territory in "
-        "sales_territories_2025.csv of its earliest registration's state.")
+        "EIN's accounts, a client the legacy system re-opened under its corrected EIN, and its successors in "
+        "suta_successor_transfers_2022-2025.csv as one; first paid wages in 2024 in the wage files, since a migrated "
+        "account's first_pay_date is its legacy client-since date; no liability date before that quarter in "
+        "state_tax_registrations_2026-01-09.csv), each in the territory in sales_territories_2025.csv of its earliest "
+        "registration's state.")
     L.append(
         "6. Took wages from quarterly_wages_2024Q2-2025Q4.csv and from legacy_quarterly_wages_2022Q1-2024Q2.csv "
         "through client_migration_crosswalk_2024-06-15.csv at pay group 00 (the client's total), cents to dollars, "

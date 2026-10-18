@@ -48,6 +48,9 @@ CANCEL_RATE = 0.105       # cancellations per employer-year (leaving Kilbourne o
 RETURN_RATE = 0.14        # cancelled businesses that come back within the window
 SEASONAL_SHARE = 0.05     # employers with no payroll in the fourth quarter (seasonal trades)
 TWO_GROUPS = 0.42         # legacy clients of two or more people paying an officer or salaried group apart from hourly staff
+REKEY_RATE = 0.045        # legacy onboardings whose EIN was keyed wrong and caught when the first return was rejected
+REKEY_NEW = 0.6           # of first-time employers re-keyed, the state registered the corrected EIN afresh (an
+                          # employer the state already held under its correct EIN keeps its liability date)
 DOWNGRADE_Q = 0.012       # accounts a quarter moving to tax filing only (the client runs its own payroll, we file)
 UPGRADE_Q = 0.018         # accounts a quarter adding the HR bundle
 PRODUCT_FROM = dt.date(2024, 7, 1)       # product changes take effect at a quarter's start, on the current system
@@ -94,6 +97,7 @@ class Spell:
     legacy_code: str = ""        # legacy referral source code (accounts opened on the legacy system)
     product: str = "Payroll"
     product_since: dt.date | None = None
+    rekey: str = ""              # "new" or "kept": this account re-opened a client under its corrected EIN
 
     @property
     def channel_shown(self):
@@ -130,6 +134,7 @@ class Business:
     spans: list = field(default_factory=list)       # [[start, stop]] payroll spans with Kilbourne, one per account
     spells: list = field(default_factory=list)      # [Spell]
     ein: str = ""
+    rekey: dt.date | None = None    # the day the legacy system re-opened the client under its corrected EIN
 
     def state_on(self, d):
         s = self.state0
@@ -206,7 +211,7 @@ def build(W, scale=1.0):
                     info = NM.business(rs, s.usps, kind if kind in ("first", "inhouse") else "switch")
                     b = Business(C.new_bid(), kind, s.usps, pay_day(rs, y, m), info["name"], info["dba"],
                                  info["entity"], info["naics"], info["employees"], info["wage"], info["growth"],
-                                 bool(rs.random() < SEASONAL_SHARE), key=key)
+                                 bool(rs.random() < SEASONAL_SHARE) and m < 10, key=key)
                     if kind == "first":
                         b.liable0 = b.first_pay
                     elif kind == "succ_ext":
@@ -362,6 +367,51 @@ def _accounts(C, b):
             sp.legacy_code = sp.legacy_code or LEGACY_CODES[sp.channel][-1][0]
         _product(b, sp)
         b.spells.append(sp)
+        if legacy and k == 0:
+            _rekey(C, b, sp, ra)
+
+
+def _transposed(e, r):
+    """The EIN with two adjacent digits of its serial swapped (a keying slip)."""
+    for _ in range(20):
+        i = int(r.integers(2, 8))
+        if e[i] != e[i + 1]:
+            return e[:i] + e[i + 1] + e[i] + e[i + 2:]
+    return e
+
+
+def _rekey(C, b, sp, r):
+    """The legacy system kept an EIN as keyed at onboarding and could not change it. When the client's first quarterly
+    return came back rejected for a mismatched EIN, the client was closed and opened again under the corrected number,
+    the payroll carrying on. Only errors caught before the June 2024 move are re-keyed this way (the current system
+    corrects an EIN in place)."""
+    if r.random() >= REKEY_RATE:
+        return
+    y, q = quarters(sp.start, sp.start)[0]
+    due = qbounds(y, q)[1] + dt.timedelta(days=31)
+    when = _next_workday(due + dt.timedelta(days=int(r.integers(6, 22))))
+    stop = sp.stop
+    if when >= MIGRATED_AT.date() or (stop is not None and when >= stop) or when > END:
+        return
+    wrong = _transposed(b.ein, r)
+    if wrong == b.ein or wrong in C.eins:
+        return
+    C.eins.add(wrong)
+    start = _next_workday(when + dt.timedelta(days=int(r.integers(2, 11))))
+    if stop is not None and start > stop:
+        return
+    local = dt.datetime.combine(when, dt.time(0, 0)) + dt.timedelta(minutes=int(r.integers(9 * 60, 17 * 60)))
+    sp.stop, sp.ein = when - dt.timedelta(days=1), wrong
+    new = Spell(50, "pending", b.ein, local + dt.timedelta(hours=_et_offset(local)), start, stop, sp.flag_first,
+                sp.prev_provider, sp.channel, b.state_on(start))
+    new.legacy_code = sp.legacy_code
+    # the state registered the corrected EIN afresh only where the business first employed through us: a business
+    # that had employed before was already on the state's books under its correct EIN
+    u = r.random()
+    new.rekey = "new" if (b.kind == "first" and u < REKEY_NEW) else "kept"
+    _product(b, new)
+    b.spells.append(new)
+    b.rekey = when
 
 
 def _product(b, sp):
@@ -454,7 +504,7 @@ def segments(b, sp):
         a2, z2 = max(a, sp.start), min(z, stop)
         if a2 > z2:
             continue
-        if b.seasonal and q == 4:
+        if b.seasonal and q == 4 and not (a <= sp.start <= z):
             continue
         years = (a2 - b.first_pay).days / 365.25
         emp = max(1, int(round(b.employees0 * (1 + b.growth) ** max(0.0, years) * (0.9 + 0.2 * rq.random()))))

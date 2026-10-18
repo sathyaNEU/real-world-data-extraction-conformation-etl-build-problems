@@ -28,7 +28,18 @@ import world as WD          # noqa: E402
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
-ENDS_ON = 3100
+ENDS_ON = 2800
+# the routes that sit inside a bin of the golden and round to the neighbouring hundred, each named in the ladder with its
+# distance and why it misses (ROUTES below asserts that none rounds to the golden and that no other route is inside a bin):
+# - before_after, the split against each reform state's own level before go-live (about -0.6 bins): it counts the early
+#   2026 rise every state shared as added applications and prices it at the added yield;
+# - volume_regression_months, each reform state's formations on its applications with calendar-month terms over every
+#   closed cohort (about -0.6 bins): one slope through the months before and after go-live mixes the ordinary rate with
+#   the added yield, so the twelve months' ordinary rise is priced below the ordinary rate;
+# - 2025 grown with the nine states' applications from January to September 2025 (about -0.7 bins): the nine states'
+#   growth leaves out the added applications that do form.
+NEAR_ROUTES = {"before_after", "volume_regression_months",
+               "2025 grown by the nine states' applications from January to September 2025"}
 RESULTS = []
 
 
@@ -137,8 +148,9 @@ def main():
     P.bfs = {k: v.copy() for k, v in orig.items()}
     ok("SIGMA the pack is restored after the redraws", abs(CA.golden(P)["total"] - G) < 1e-9)
     rel = g["rel"]["OH"][1]
-    ok("SIGMA the added applications' relative yield rests on enough formations",
-       0.14 <= rel - np.std(rel_boot) and rel + np.std(rel_boot) < 0.20, "%.3f, sigma %.3f" % (rel, np.std(rel_boot)))
+    ok("SIGMA the added applications' relative yield rests on enough formations (one sigma either side stays between "
+       "a fifth and a third of the ordinary rate)",
+       0.20 <= rel - np.std(rel_boot) and rel + np.std(rel_boot) < 1 / 3.0, "%.3f, sigma %.3f" % (rel, np.std(rel_boot)))
 
     # the critical components hold their printed values across the family
     reform = sorted(P.changes)
@@ -159,16 +171,16 @@ def main():
                                             sum(o["added_ttm"][s] for s in reform)))
                 elif a_ == "A7":
                     comp["rel"].append(v[1] / np.mean([o["rel"][s][1][0] for s in reform]))
-    ok("COMPONENT about half a million added applications under every construction",
-       set(comp["added"]) == {fig["components"]["added_ttm_about"]} == {500000})
+    ok("COMPONENT about %s added applications (nearest 100,000) under every construction" %
+       fig["components"]["added_ttm_about"], set(comp["added"]) == {fig["components"]["added_ttm_about"]})
     ok("COMPONENT about %s formations (nearest 5,000) under every construction" % fig["components"]["formations_ttm_about"],
        set(comp["F"]) == {fig["components"]["formations_ttm_about"]})
     ok("COMPONENT the three states carry about four fifths of the line under every construction",
        0.75 <= min(comp["share"]) and max(comp["share"]) <= 0.85, "%.3f to %.3f" % (min(comp["share"]),
                                                                                   max(comp["share"])))
-    ok("COMPONENT the added applications' yield, pooled over the three states, under a fifth of the ordinary rate "
+    ok("COMPONENT the added applications' yield, pooled over the three states, under a third of the ordinary rate "
        "under every pooled estimator",
-       max(comp["rel"]) < 0.20, "%.3f to %.3f" % (min(comp["rel"]), max(comp["rel"])))
+       max(comp["rel"]) < 1 / 3.0, "%.3f to %.3f" % (min(comp["rel"]), max(comp["rel"])))
 
     # the write-up's stated shares and rise
     nine_ = [s_ for s_ in CA.STATES if s_ not in reform]
@@ -182,10 +194,10 @@ def main():
     prior_ = [t - 12 for t in ttm_]
     rise9 = sum(BAx[s_][ttm_].sum() for s_ in nine_) / sum(BAx[s_][prior_].sum() for s_ in nine_) - 1
     rise_r = [Gx[s_][ttm_].sum() / Gx[s_][prior_].sum() - 1 for s_ in reform]
-    ok("TEXT the added applications are about a quarter of the closed cohorts since go-live and nearly half of the "
-       "twelve months", 0.20 <= add_c / all_c <= 0.30 and 0.40 <= add_t < 0.50, "%.3f, %.3f" % (add_c / all_c, add_t))
-    ok("TEXT every state's ordinary applications rose about an eighth into the twelve months",
-       all(0.10 <= v <= 0.15 for v in [rise9] + rise_r), "nine %.3f, reform %s" % (rise9, ", ".join(
+    ok("TEXT the added applications are about a fifth of the closed cohorts since go-live and about a third of the "
+       "twelve months", 0.15 <= add_c / all_c <= 0.25 and 0.30 <= add_t <= 0.37, "%.3f, %.3f" % (add_c / all_c, add_t))
+    ok("TEXT every state's ordinary applications rose about a tenth into the twelve months",
+       all(0.08 <= v <= 0.12 for v in [rise9] + rise_r), "nine %.3f, reform %s" % (rise9, ", ".join(
            "%.3f" % v for v in rise_r)))
 
     # ------------------------------------------------------------------ the three rules on the clean truth
@@ -203,13 +215,27 @@ def main():
        ", ".join("%s %d" % (k, CA.round100(v)) for k, v in lower.items()))
     RG = CA.rungs(P)
     BY = CA.bypasses(P)
-    nb = min(BY, key=lambda k: abs(BY[k] - G))
-    ok("BYPASS every straight line, growth carry and rate trend misses by a full bin or more",
+    regs = {k[1]: v for k, v in F.items() if k[0] == "regression"}
+    ok("FAMILY the comparison read as a regression (state and month effects; each reform state after go-live) "
+       "rounds to the call", all(CA.round100(v) == call for v in regs.values()),
+       ", ".join("%s %.1f (%+.2f bins)" % (k, v, (v - G) / 100) for k, v in regs.items()))
+    routes = dict(BY)
+    routes.update(RG)
+    ok("ROUTES no route outside the family rounds to the call", all(CA.round100(v) != call for v in routes.values()),
+       "%d routes" % len(routes))
+    inside = {k: v for k, v in routes.items() if abs(v - G) < 100}
+    ok("ROUTES those inside a bin of the golden round to the neighbouring hundred, each named in the ladder",
+       set(inside) <= NEAR_ROUTES and all(CA.round100(v) in (call - 100, call + 100) for v in inside.values()),
+       "; ".join("%s %.1f (%+.2f bins)" % (k, v, (v - G) / 100) for k, v in sorted(inside.items(),
+                                                                                key=lambda kv: kv[1])))
+    nb = min(BY, key=lambda k: abs(BY[k] - G) if k not in NEAR_ROUTES else 1e9)
+    ok("BYPASS every other straight line, growth carry and rate trend misses by a full bin or more",
        abs(BY[nb] - G) >= 100, "%d routes, nearest %s %.1f (%.2f bins)" % (len(BY), nb, BY[nb], (BY[nb] - G) / 100))
-    near = min(abs(v - G) for v in RG.values())
-    ok("RIVALS every measured rival misses by a full bin or more", near >= 100,
-       "nearest %.1f (%s)" % (near, min(RG, key=lambda k: abs(RG[k] - G))))
-    ok("RIVALS the default path's answer", CA.round100(RG["latest_closed"]) == ENDS_ON, "%.1f" % RG["latest_closed"])
+    nr = min((k for k in RG if k not in NEAR_ROUTES), key=lambda k: abs(RG[k] - G))
+    ok("RIVALS every other measured rival misses by a full bin or more", abs(RG[nr] - G) >= 100,
+       "nearest %s %.1f (%.2f bins)" % (nr, RG[nr], (RG[nr] - G) / 100))
+    ok("RIVALS the default path's answer, two bins or more off", CA.round100(RG["latest_closed"]) == ENDS_ON and
+       abs(RG["latest_closed"] - G) >= 200, "%.1f" % RG["latest_closed"])
     # R1: the decisive computation reads the state-month rows; no column holds the deciding quantity
     P2 = CA.Pack(TARGET)
     for s in P2.changes:
@@ -380,8 +406,8 @@ def main():
        "state it first employed in" in notes)
     ok("SF11 still with us: wages paid with a pay date in the quarter, any account: the counting notes",
        "we paid wages for it, on any of its accounts, with a pay date" in notes)
-    ok("SF12 first quarter on payroll: the calendar quarter of the first pay date: the counting notes",
-       "calendar quarter of its first pay date" in notes)
+    ok("SF12 first quarter on payroll: the calendar quarter of the first payroll with us: the counting notes",
+       "calendar quarter of its first payroll with us" in notes)
     ok("SF13 wages are the gross wages we ran on our payroll: the counting notes",
        "gross wages we ran on our payroll" in notes)
     grp = collections.defaultdict(dict)
@@ -395,6 +421,46 @@ def main():
     ok("SF15 a migrated account's channel differs from its legacy code only where the load used the default",
        mism and all(ch == "web sign-up" and code in ("CPA", "BP", "TEL", "APX") for ch, code in mism),
        "%d accounts" % len(mism))
+    guide = " ".join(xlsx_strings(os.path.join(TARGET, "plan_pack_field_guide.xlsx")))
+    ok("SF17 a business bought by a new owner who carries it on is the same business: the counting notes",
+       "bought by a new owner who carries it on, is the same business" in notes)
+    ok("SF18 first-time status follows the state's liability record, not the onboarding answer: the counting notes",
+       "matter of the state's record, not of its onboarding answer" in notes and
+       "held liable for unemployment tax before its first payroll with us had paid wages before" in notes)
+    ok("SF19 a quarter on tax filing only is not a quarter we paid: the counting notes",
+       "A quarter an account spent on tax filing only does not count" in notes and
+       "a quarter on tax filing only adds none" in notes)
+    ok("SF20 a migrated account's channel is its legacy source code's: the field guide; a business's channel is its "
+       "first account's: the counting notes", "the legacy source code in the crosswalk is the record of how the client "
+       "came to us" in guide and "the channel of its first account" in notes)
+    # SF21: the first payroll is the one we ran wages on; a migrated account's first_pay_date is its client-since date
+    leg_rows = [a for a in B.acc if a["account_id"] in B.code_of]
+    cur_rows = [a for a in B.acc if a["account_id"] not in B.code_of]
+    since_eq = all(a["first_pay_date"] == CA.opened_date(a).isoformat() for a in leg_rows)
+    off_leg = [a for a in leg_rows if a["account_id"] in B.first_q and
+               B.first_q[a["account_id"]] != CA.quarter_of(a["first_pay_date"])]
+    empty = all(B.wq.get((a["account_id"],) + CA.quarter_of(a["first_pay_date"]), 0) == 0 for a in off_leg)
+    off_cur = [a for a in cur_rows if a["account_id"] in B.first_q and
+               B.first_q[a["account_id"]] != CA.quarter_of(a["first_pay_date"])]
+    ok("SF21 a migrated account's first_pay_date is its legacy client-since date; where its quarter differs from the "
+       "first quarter with wages the account has no wages in it, and no current-system account differs (the counting "
+       "notes count the year the first payroll ran)",
+       since_eq and off_leg and empty and not off_cur and "the year its first payroll with us ran" in notes,
+       "%d migrated accounts, %d with no wages in the field's quarter; %d current accounts differ" %
+       (len(leg_rows), len(off_leg), len(off_cur)))
+    named = collections.defaultdict(list)
+    for a in B.acc:
+        named[(a["legal_name"].upper(), a["dba_name"].upper(), a["naics"], a["entity_type"])].append(a)
+    swaps = [(x, y) for rs in named.values() for x in rs for y in rs if x is not y and
+             CA.transposed(CA.ein_key(x["ein"]), CA.ein_key(y["ein"]))]
+    ein_pairs = {tuple(sorted((CA.ein_key(x["ein"]), CA.ein_key(y["ein"])))) for x, y in swaps}
+    rk_pairs = {tuple(sorted(p_)) for p_ in B.rekeyed}
+    ok("SF22 every pair of EINs on accounts with the same names, industry and entity that are one swap of adjacent "
+       "digits apart belongs to a client re-opened the day after its first account was cancelled, a later account under "
+       "the corrected EIN included (A business is the employer, whatever its account or EIN)",
+       ein_pairs == rk_pairs and all(B.root[a_] == B.root[b_] for a_, b_ in ein_pairs) and
+       "whatever its account or EIN" in notes,
+       "%d re-keyed pairs; %d account pairs one swap apart, all on those EIN pairs" % (len(B.rekeyed), len(swaps) // 2))
 
     # ------------------------------------------------------------------ the asks against the truth
     T, CH, cohort = CA.asks(B)
@@ -429,6 +495,17 @@ def main():
     singles = {k: v["pair"] for k, v in res["paths"].items() if k.count("+") <= 1 and k != "every device"}
     ok("ASK pair ceiling 40 or under for the cracker and every single-device crack", max(singles.values()) <= 40,
        ", ".join("%s %.1f" % kv for kv in singles.items()))
+    base_t = CR.path(B)[0]
+    wf_t = CR.path(B, wages_first=True)[0]
+    rk_t = CR.path(B, rekey=True)[0]
+    ok("ASK the two silent count devices never offset: in every territory the 2024 starters the first pay date moves "
+       "into 2023 outnumber the accounts a re-key adds, so the cracker's count falls short",
+       all(base_t[t]["signed"] < T[t]["signed"] and rk_t[t]["signed"] < T[t]["signed"] and
+           T[t]["signed"] - rk_t[t]["signed"] > wf_t[t]["signed"] - T[t]["signed"] for t in T),
+       ", ".join("%s %d against %+d" % (t, T[t]["signed"] - rk_t[t]["signed"], wf_t[t]["signed"] - T[t]["signed"])
+                 for t in sorted(T)))
+    doubles = {k: v["pair"] for k, v in res["paths"].items() if k.count("+") == 2}
+    print("INFO  two devices cracked at once: %s" % ", ".join("%s %.1f" % kv for kv in doubles.items()))
     ok("ASK mirror leakage under 35 per cent", res["mirror_leakage"] < 35, "%.1f" % res["mirror_leakage"])
     # devices present in every territory the asks grade
     inh = collections.Counter(R.TERRITORY.get(b.state0, "") for b in C.business.values() if b.kind == "inhouse" and
@@ -452,9 +529,18 @@ def main():
                                  b.moves)
     old_codes = collections.Counter(b.spells[0].channel for b in CO.first_time(C) if b.first_pay.year == 2024 and
                                     b.spells[0].legacy_code in ("CPA", "BP", "TEL", "APX"))
+    shown = collections.Counter(R.TERRITORY[b.state0] for b in CO.first_time(C) if b.first_pay.year == 2024 and
+                                b.spells[0].legacy and R.shown_first_pay(b.spells[0]).year == 2023)
+    shown_ch = collections.Counter(b.spells[0].channel for b in CO.first_time(C) if b.first_pay.year == 2024 and
+                                   b.spells[0].legacy and R.shown_first_pay(b.spells[0]).year == 2023)
+    rek = collections.Counter(R.TERRITORY[b.state0] for b in CO.first_time(C) if b.first_pay.year == 2024 and b.rekey)
+    ok("DEVICE a first payroll the field puts in 2023, in every signup channel", all(shown_ch[c] >= 1 for c in CH),
+       ", ".join("%s %d" % kv for kv in sorted(shown_ch.items())))
     for name, cnt in (("self-run businesses flagged first-time", inh), ("successors flagged first-time", suc),
                       ("accounts on tax filing only by the fourth quarter of 2025", tax),
-                      ("two-group legacy first quarters", two_g), ("movers", movers)):
+                      ("two-group legacy first quarters", two_g), ("movers", movers),
+                      ("first payrolls the field puts in 2023", shown), ("clients re-opened under a corrected EIN",
+                                                                         rek)):
         ok("DEVICE %s in every territory's 2024 cohort" % name, all(cnt[t] >= 1 for t in T),
            ", ".join("%s %d" % (t, cnt[t]) for t in sorted(T)))
     ok("DEVICE tax filing only from 1 January 2026 in the cohort (dropping every tax-only account over-cleans)",

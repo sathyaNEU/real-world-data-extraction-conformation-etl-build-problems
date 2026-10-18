@@ -1,10 +1,10 @@
 # leak check, task163
 
-**Verdict: REVIEW.** 16 files read, 29 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 31 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: applications, closed, formations, months, cohorts, standard, formation, application, reform, window, release, business, filing, go-live, decisive, carried, latest, comparison, estimand, statistics, nothing, quantity, ordinary, quarters, carries
+Stump terms swept: applications, closed, formations, months, cohorts, standard, formation, application, reform, release, window, comparison, filing, carried, go-live, business, decisive, latest, ordinary, estimand, statistics, quarters, nothing, regression, quantity
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `plan_2027_sizing_standard.docx`: golden figure 100 appears: ...the line, which goes into the plan to the nearest 100. Sales operations keeps the share tab: each...

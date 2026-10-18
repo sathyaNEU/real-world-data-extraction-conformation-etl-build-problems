@@ -1,0 +1,105 @@
+{
+ "amortization_years": 25,
+ "auto_loss_musd_about": 31,
+ "call_loss_musd_nearest25": 150,
+ "call_loss_musd_unrounded": 150.89,
+ "call_pool": "Fixed-rate commercial real estate",
+ "extension_months": 36,
+ "m_cpr_2027_pct": 30,
+ "m_cpr_trailing_pct": 16,
+ "mortgage_loss_musd_about": 85,
+ "notional_busd": 1.2,
+ "oos_brier": {
+  "cover": 0.03655,
+  "cur": 0.13945,
+  "dy": 0.10265,
+  "gap": 0.1857,
+  "last_year_share": 0.17803,
+  "n_test": 148,
+  "n_train": 481,
+  "pooled_share": 0.19967
+ },
+ "oos_brier_2dp": {
+  "cover": 0.04,
+  "cur": 0.14,
+  "dy": 0.1,
+  "gap": 0.19,
+  "last_year_share": 0.18,
+  "pooled_share": 0.2
+ },
+ "planning_cre_rate_pct": 6.95,
+ "planning_mortgage_rate_pct": 6.25,
+ "pools": {
+  "2023-24 residential mortgages": {
+   "loss_musd": 85.21,
+   "loss_musd_nearest5": 85,
+   "principal_musd": 1656.1
+  },
+  "Agency MBS": {
+   "loss_musd": 110.52,
+   "loss_musd_nearest5": 110,
+   "principal_musd": 1497.9
+  },
+  "Fixed-rate commercial real estate": {
+   "loss_musd": 150.89,
+   "loss_musd_nearest5": 150,
+   "principal_musd": 3887.1
+  },
+  "Indirect auto loans": {
+   "loss_musd": 30.66,
+   "loss_musd_nearest5": 30,
+   "principal_musd": 1316.0
+  },
+  "Treasury ladder": {
+   "loss_musd": 66.98,
+   "loss_musd_nearest5": 65,
+   "principal_musd": 1660.0
+  }
+ },
+ "programme_musd": {
+  "funding": [
+   437.5,
+   437.5,
+   537.5,
+   537.5
+  ],
+  "loan": [
+   2047.5,
+   1647.5,
+   1313.2,
+   1313.2
+  ],
+  "overlay": [
+   3127.8,
+   3114.3,
+   3101.2,
+   3088.4
+  ]
+ },
+ "programme_total_busd": [
+  5.6,
+  5.2,
+  5.0,
+  4.9
+ ],
+ "programme_total_musd": [
+  5612.8,
+  5199.3,
+  4951.9,
+  4939.1
+ ],
+ "quarter_ends": [
+  "31 Mar 2027",
+  "30 Jun 2027",
+  "30 Sep 2027",
+  "31 Dec 2027"
+ ],
+ "runner_up": "Agency MBS",
+ "runner_up_loss_musd_nearest10": 110,
+ "shock_bp": 200,
+ "treasury_loss_musd_about": 67,
+ "wall_balloon_busd": 3.0,
+ "wall_extended_busd": 2.5,
+ "wall_loans": 373,
+ "wall_share": 0.838
+}

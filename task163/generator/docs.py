@@ -117,17 +117,23 @@ STANDARD = [
 NOTES = [
     ("Who counts", [
         "A first-time employer is a business whose first payroll ever runs with us. It is counted once, in the year "
-        "of its first pay date with us and in the state it first employed in.",
-        "A business is the employer, whatever its account or EIN. A client that comes back after cancelling, or "
-        "re-forms as a new entity and carries on, is the same business, and its accounts count as one.",
+        "its first payroll with us ran and in the state it first employed in.",
+        "Whether a business has paid wages before is a matter of the state's record, not of its onboarding answer: a "
+        "business a state already held liable for unemployment tax before its first payroll with us had paid wages "
+        "before it came to us.",
+        "A business is the employer, whatever its account or EIN. A client that comes back after cancelling, re-forms "
+        "as a new entity and carries on, or is bought by a new owner who carries it on, is the same business, and its "
+        "accounts count as one.",
     ]),
     ("Still with us", [
         "A business is still with us in a quarter when we paid wages for it, on any of its accounts, with a pay date "
-        "in that quarter.",
+        "in that quarter. A quarter an account spent on tax filing only does not count: we file those wages on its "
+        "returns, but the client pays them.",
     ]),
-    ("Wages", [
-        "A business's first quarter on payroll is the calendar quarter of its first pay date with us. Wages are the "
-        "gross wages we ran on our payroll for the business, before deductions and taxes.",
+    ("Wages and channel", [
+        "A business's first quarter on payroll is the calendar quarter of its first payroll with us. Wages are the "
+        "gross wages we ran on our payroll for the business, before deductions and taxes, so a quarter on tax filing "
+        "only adds none. A business came to us through the channel of its first account.",
     ]),
     ("Where the counts come from", [
         "The year-end planning extract pulled on 9 January 2026: every account with a first pay date from January 2022, "
@@ -314,11 +320,12 @@ DICT = [
     (R.F_ACCOUNTS, "address_state", "State of the business address on the account at the extract."),
     (R.F_ACCOUNTS, "opened_at", "When the account was opened: UTC on the current system; accounts opened on the legacy "
      "system keep their legacy client-since stamp (Eastern time, month/day/year)."),
-    (R.F_ACCOUNTS, "first_pay_date", "First pay date run on the account."),
+    (R.F_ACCOUNTS, "first_pay_date", "First pay date on the account record."),
     (R.F_ACCOUNTS, "first_time_employer", "Onboarding answer: Y when the business has not paid employees before."),
     (R.F_ACCOUNTS, "previous_provider", "Who ran the business's payroll before, from onboarding."),
     (R.F_ACCOUNTS, "signup_channel", "How the client came to us. Accounts loaded at the June 2024 migration carry the "
-     "legacy referral source as the migration load mapped it."),
+     "legacy referral source as the migration load mapped it; for those accounts the legacy source code in the "
+     "crosswalk is the record of how the client came to us, and the code list there gives its channel."),
     (R.F_ACCOUNTS, "pay_frequency, employees_at_signup", "Pay schedule; employees on the first payroll."),
     (R.F_ACCOUNTS, "product, product_since", "Current product (Payroll; Payroll + HR; Tax filing only) and the date it "
      "took effect when it changed after opening."),
@@ -340,7 +347,7 @@ DICT = [
     (R.F_WAGES, "gross_wages", "Gross wages on the account's returns for the quarter, dollars."),
     (R.F_REG, "account_id, state", "Account and the state it is registered in for withholding and unemployment tax."),
     (R.F_REG, "withholding_account, ui_account", "State withholding and unemployment insurance account numbers."),
-    (R.F_REG, "liability_date", "Liability date on the state registration."),
+    (R.F_REG, "liability_date", "The date the state holds the employer liable for unemployment tax from."),
     (R.F_REG, "filing_start, filing_end", "Dates we filed in the state for the account (blank: still filing)."),
     (R.F_SUTA, "transfer_no", "Payroll tax team's transfer number."),
     (R.F_SUTA, "state, effective_date", "State and date of the transfer."),
@@ -382,14 +389,14 @@ MANIFEST_COLS = ["file", "provided_by", "source", "as_of", "covers"]
 
 def manifest_rows():
     return [
-        [R.F_BFS, "Market Research (%s)" % P["research"], "U.S. Census Bureau, Business Formation Statistics, API "
-         "pull of the October 2026 release (public domain)", "2026-10-14", "12 core states, applications January 2021 "
+        [R.F_BFS, "Market Research (%s)" % P["research"], "Business Formation Statistics, October 2026 release: Market "
+         "Research's internal copy, in the API's layout", "2026-10-14", "12 core states, applications January 2021 "
          "to September 2026"],
-        [R.F_BFS_APR, "Market Research (%s)" % P["research"], "U.S. Census Bureau, Business Formation Statistics, "
-         "monthly download of the April 2026 release (public domain)", "2026-04-15", "12 core states, applications "
-         "January 2022 to March 2026"],
-        [R.F_NES, "Market Research (%s)" % P["research"], "U.S. Census Bureau, Nonemployer Statistics 2023 (public "
-         "domain)", "2026-05-28", "12 core states by NAICS sector"],
+        [R.F_BFS_APR, "Market Research (%s)" % P["research"], "Business Formation Statistics, April 2026 release: "
+         "Market Research's internal copy, in the monthly download's layout", "2026-04-15", "12 core states, "
+         "applications January 2022 to March 2026"],
+        [R.F_NES, "Market Research (%s)" % P["research"], "Nonemployer Statistics 2023: Market Research's internal "
+         "copy, in the API's layout", "2026-05-28", "12 core states by NAICS sector"],
         [F_LOG, "Market Research (%s)" % P["research"], "Research log", "2026-10-14", "Changes logged since 2023"],
         [R.F_ACCOUNTS, "Sales Operations (%s)" % P["salesops"], "Current account system, year-end planning extract",
          "2026-01-09", "Accounts with a first pay date from January 2022 to December 2025"],
@@ -398,9 +405,9 @@ def manifest_rows():
         [R.F_REG, "Sales Operations (%s)" % P["salesops"], "Current account system, year-end planning extract",
          "2026-01-09", "Registrations of the accounts in the onboarding export"],
         [R.F_XWALK, "Sales Operations (%s)" % P["salesops"], "Migration load log", "2024-06-15",
-         "Legacy clients loaded to the current system"],
+         "Legacy clients in the extract, as loaded to the current system"],
         [R.F_LEGACY, "Sales Operations (%s)" % P["salesops"], "Legacy client system, quarterly wage report (archive)",
-         "2024-06-15", "Legacy clients with a first pay date from January 2022; pay dates to 14 June 2024"],
+         "2024-06-15", "Legacy clients since January 2022; pay dates to 14 June 2024"],
         [R.F_SUTA, "Payroll Tax", "Successor transfer register", "2026-03-02", "Transfers effective 2022 to 2025"],
         [R.F_TERR, "Sales Operations (%s)" % P["salesops"], "2025 territory map", "2025-01-06", "12 core states"],
         [F_NOTES, "Sales Operations (%s)" % P["salesops"], "Counting notes", "2026-02-03", ""],

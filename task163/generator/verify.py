@@ -68,8 +68,12 @@ def main():
         if "Sizing" in allstd else allstd))
     nt = " ".join(notes)
     for phrase in ("first payroll ever runs with us", "state it first employed in", "re-forms as a new entity",
+                   "bought by a new owner who carries it on", "the state's record, not of its onboarding answer",
+                   "held liable for unemployment tax before its first payroll with us",
                    "we paid wages for it, on any of its accounts, with a pay date in that quarter",
-                   "calendar quarter of its first pay date", "gross wages we ran on our payroll"):
+                   "A quarter an account spent on tax filing only does not count",
+                   "calendar quarter of its first payroll with us", "gross wages we ran on our payroll",
+                   "the channel of its first account"):
         check("DOCX: the counting notes file '%s'" % phrase, phrase in nt)
     wb = openpyxl.load_workbook(p("plan_2027_workbook.xlsx"), data_only=True)
     share = {}
@@ -218,16 +222,65 @@ def main():
         start = "%d-%02d-01" % (yy, 3 * qq - 2)
         return not (a["product"] == "Tax filing only" and a["product_since"] and a["product_since"] <= start)
 
+    import datetime as _dt
+    firstq = {}
+    for (a, yy, qq), c in wq.items():
+        if c > 0 and (a not in firstq or (yy, qq) < firstq[a]):
+            firstq[a] = (yy, qq)
+
+    def odate(r):
+        v = r["opened_at"]
+        return _dt.datetime.strptime(v, "%m/%d/%Y %H:%M").date() if "/" in v else \
+            _dt.datetime.strptime(v[:10], "%Y-%m-%d").date()
+
+    def swapped(a, b):
+        d = [i for i in range(9) if a[i] != b[i]]
+        return len(d) == 2 and d[1] == d[0] + 1 and a[d[0]] == b[d[1]] and a[d[1]] == b[d[0]]
+
+    # clients re-opened under a corrected EIN: same names, industry and entity, cancelled the day before the other opened
+    same = defaultdict(list)
+    for a in acc:
+        same[(a["legal_name"].upper(), a["dba_name"].upper(), a["naics"], a["entity_type"])].append(a)
+    link = defaultdict(set)
+    for rs in same.values():
+        for x in rs:
+            for z in rs:
+                if x is not z and x["status"] == "Cancelled" and x["cancelled_on"] and \
+                        (odate(z) - _dt.date.fromisoformat(x["cancelled_on"])).days == 1 and \
+                        swapped(key(x["ein"]), key(z["ein"])):
+                    link[key(x["ein"])].add(key(z["ein"]))
+                    link[key(z["ein"])].add(key(x["ein"]))
+    check("the re-keyed clients pair one to one", all(len(v) == 1 for v in link.values()),
+          "%d EINs in %d pairs" % (len(link), len(link) // 2))
+    done, groups = set(), []
+    for e in sorted(by_ein):
+        if e in done:
+            continue
+        g, todo = set(), [e]
+        while todo:
+            x = todo.pop()
+            if x in g:
+                continue
+            g.add(x)
+            todo += sorted(link.get(x, ()))
+        done |= g
+        groups.append(sorted(g))
     T = defaultdict(lambda: Counter())
     CH = Counter()
-    for e, accts in by_ein.items():
-        first = sorted(accts, key=lambda r: (r["first_pay_date"], r["account_id"]))[0]
-        fp = first["first_pay_date"]
-        if fp[:4] != "2024" or e in succ_eins:
+    for g in groups:
+        accts = [a for e in g for a in by_ein[e]]
+        qs = [firstq[a["account_id"]] for a in accts if a["account_id"] in firstq]
+        if not qs:
             continue
-        if any(r["liability_date"] < fp for a in accts for r in regs[a["account_id"]]):
+        fy, fqq = min(qs)
+        if fy != 2024 or any(e in succ_eins for e in g):
             continue
-        chain, todo, seen = [], [e], set()
+        since = "%d-%02d-01" % (fy, 3 * fqq - 2)
+        if any(r["liability_date"] < since for a in accts for r in regs[a["account_id"]]):
+            continue
+        first = sorted(accts, key=lambda r: (firstq.get(r["account_id"], (9999, 9)), r["first_pay_date"],
+                                             r["account_id"]))[0]
+        chain, todo, seen = [], list(g), set()
         while todo:
             x = todo.pop()
             if x in seen:
@@ -235,14 +288,14 @@ def main():
             seen.add(x)
             chain += by_ein.get(x, [])
             todo += succ_of.get(x, [])
+            todo += sorted(link.get(x, ()))
         st = min((r for a in accts for r in regs[a["account_id"]]),
                  key=lambda r: (r["liability_date"], r["filing_start"]))["state"]
         t = terr[st]
         T[t]["signed"] += 1
         if any(wq[(a["account_id"], 2025, 4)] > 0 and paid(a, 2025, 4) for a in chain):
             T[t]["still"] += 1
-        yy, qq = int(fp[:4]), (int(fp[5:7]) - 1) // 3 + 1
-        T[t]["wq"] += sum(wq[(a["account_id"], yy, qq)] for a in chain)
+        T[t]["wq"] += sum(wq[(a["account_id"], fy, fqq)] for a in chain)
         T[t]["w24"] += sum(wq[(a["account_id"], 2024, q)] for a in chain for q in (1, 2, 3, 4) if paid(a, 2024, q))
         CH[codes[code_of[first["account_id"]]] if first["account_id"] in code_of else first["signup_channel"]] += 1
     for t, v in fig["territories"].items():
