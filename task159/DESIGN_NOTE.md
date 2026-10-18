@@ -23,7 +23,7 @@ suburban branch already carrying the branch takes only part of the platform's cr
 | Layer 2 family / pattern | `allocation_constraints` (capacity and queueing); `own:platform-queue-behind-trains-arriving-full` |
 | Calibration | `physical_verification`: the autumn platform counts, the Monday and Friday counts of the hybrid-day sample the out-of-sample test the crowd model is chosen on |
 | Furniture | forum `operations_desk` (Rail Operations' station planning desk files the pick notice), forcing event `shift_or_daily_cycle` (the spring roster pick closes 20 January), organisation family `government_agency`, role family `capacity_planner`, context artifact `register` (the platform capacity register the call reads; re-keyed at stage 2 from `published_series` when the ridership dashboard became a distractor, `guard.py check` re-run clean but for the answered WARN), opening `question-first`, question form `how-many` |
-| Spine | the fare back office's hourly entries per station complex and payment type (`vtc_fare_entries_hourly_2024-06-03_2027-01-10.parquet`, UTC, 761,596 rows, from the June 2024 parallel run), beside the legacy four-hour register reads to the July 2024 cutover (`afc_register_reads_2022-02-01_2024-06-30.csv`, local time, a distractor); constructed in the layout of a transit agency's open-data hourly ridership export |
+| Spine | the fare back office's hourly entries per station complex and payment type (`vtc_fare_entries_hourly_2024-06-03_2027-01-10.parquet`, UTC, 761,594 rows, from the June 2024 parallel run), beside the legacy four-hour register reads to the July 2024 cutover (`afc_register_reads_2022-02-01_2024-06-30.csv`, local time, a distractor); constructed in the layout of a transit agency's open-data hourly ridership export |
 | Deliverables | `spring_2027_platform_conductors.xlsx` (the posting schedule, the weekday counts and the ask tables) and `platform_escalators_am_peak.png` (Ask A's figures charted, never the decision quantity) |
 | People | drawn with `guard.py names --geo "United States" --seed 159`: Beth Lewis (station planning manager, owner of the crowding standard), Ralph Chambers (service planning, author of the spring service plan), Mary Wheeler (ridership data, owner of the fare export and dashboard), Caleb Rowe (count programme supervisor); the requester is in no file and not in the prompt |
 | World | Vellmouth (checked: no real city, county or transit agency of the name; the nearest hits are a novel's imaginary resort, Valmouth, and unrelated European hamlets), a United States city whose transit commission runs a six-line subway; the commission, its stations, people, systems and data are fictional |
@@ -189,9 +189,9 @@ subtraction, ratio or half of a figure).
 
 | Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R0 the mid-week counted peaks carried to each spring weekday by the complex's entries (35) | the standard asks for a forecast by weekday, which invites carrying the counts | the count sheets and the export's weekdays | yes, the default | the hybrid-day Monday and Friday counts at COR-5W sit 1.0 to 1.2 times capacity under it, for an analyst who back-tests | no | yes, one index | readable |
+| R0 the mid-week counted peaks carried to each spring weekday by the complex's entries (35) | the standard asks for a forecast by weekday, which invites carrying the counts | the count sheets and the export's weekdays | yes, the default | the hybrid-day Monday and Friday counts at COR-5W sit 0.6 to 0.7 of capacity under it (under half of it), for an analyst who back-tests | no | yes, one index | readable |
 | R0b the same with the hybrid-day counts read as they are where they exist (33) | no | the count sheets' Mondays and Fridays | yes, use the observation | nothing scores Sallow Park's Mondays, which were not counted | no | yes | readable |
-| R1 each crowd one headway's arrivals from the census, every train taking everyone (20) | no | the census flows and the timetable | yes, the textbook platform load | the mid-week counts sit 1.0 to 1.7 times capacity above it at SAL-1S, SAL-4S and COR-5W | no | yes, flow times headway | readable |
+| R1 each crowd one headway's arrivals from the census, every train taking everyone (20) | no | the census flows and the timetable | yes, the textbook platform load | the mid-week counts sit 0.8 to 1.9 times capacity above it at SAL-1S, SAL-4S and COR-5W | no | yes, flow times headway | readable |
 | R2a a backlog model on the autumn timetable, Line 5 at six cars in the spring (29) | no | the timetable's cars column | a half-step | the spring service plan and the SPR27 timetable run Line 5 at eight cars | no | no | readable |
 | R2b a backlog model whose trains keep their mid-week room on every weekday (28) | no | no | a half-step | the hybrid-day counts at COR-5W show no backlog on the Monday and Friday | no | no | readable |
 | R3 (decisive) the backlog behind trains whose room is built from the branch's own riders on each weekday, run on the spring timetable (26) | no shipped sentence names a backlog, a train's room, riders left behind or how a crowd responds to fewer riders or longer trains | no column holds boardings, loads, room or riders left behind; the census counts flows, the sheets the people waiting | no: the reflexes scale the counts, use the observation, or take a headway's arrivals | the hybrid-day counts reject the carry at COR-5W on the autumn timetable; nothing scores a spring forecast, Sallow Park's Mondays or the eight-car Line 5 | no: nothing is duplicated, missing or mis-keyed on the call's rows | no: a train-by-train run of every branch | silent |
@@ -223,42 +223,51 @@ FAMILY). The graded quantity is a count of platform-weekdays; each rung names a 
 
 | Rung | Construction | Shifts a week | Dies to |
 |---|---|---|---|
-| R0 default | mid-week counted peaks carried by the weekday index and the spring ratio | 35 (7 each weekday) | the hybrid-day counts at COR-5W (Monday 0.56 and Friday 0.52 of capacity counted, 1.73 and 1.58 carried) |
+| R0 default | mid-week counted peaks carried by the weekday index and the spring ratio | 35 (7 each weekday) | the hybrid-day counts at COR-5W (Monday 0.55 and Friday 0.51 of capacity counted, 1.25 and 1.14 carried) |
 | R0b | R0 with the hybrid-day counts read as they are where they exist | 33 | Sallow Park was not counted on a Monday or Friday; the eight-car Line 5 |
 | R0c | R0 with COR-5W scaled by six cars over eight | 35 | the backlog does not scale with the train: at eight cars it clears |
 | R0d | the mid-week counts as every spring weekday's | 35 | the weekday index |
-| R1 | one headway's arrivals from the census, every train taking everyone | 20 | the mid-week counts at SAL-1S, SAL-4S, COR-5W (2.17, 2.63, 2.09 of capacity counted against at most 0.71 under R1) |
+| R1 | one headway's arrivals from the census, every train taking everyone | 20 | the mid-week counts at SAL-1S, SAL-4S, COR-5W (2.17, 2.63, 1.51 of capacity counted against at most 0.71 under R1) |
 | R2a | the backlog model with Line 5 at six cars in the spring | 29 | the spring timetable and service plan |
 | R2b | the backlog model, trains keeping their mid-week room every weekday | 28 | the branch's own Monday and Friday riders; COR-5W's hybrid days |
-| R2c | the backlog model at the fleet register's planning load (110 a car) | 33 | the hybrid-day counts (it builds backlogs where none was counted) |
-| R2d | each complex's forecast against the sum of its watch-list platforms' capacities | 46 | the standard posts platforms |
+| R2c | the backlog model at the fleet register's planning load (110 a car) | 30 | the counts (its autumn back-cast puts the mid-week crowds at 2.5 to 3.9 times those counted) |
+| R2d | each complex's forecast against the sum of its watch-list platforms' capacities | 43 | the standard posts platforms |
 | R2e | each complex's mean morning hour split equally over its platforms | 13 | the census's platform flows |
 | R2f | R0 or the golden averaged over the week | 35 or 30 | the standard forecasts each weekday |
-| R2g | the one-headway model scaled by one network factor fitted to the mid-week counts | 36 | the hybrid days |
+| R2g | the one-headway model scaled by one network factor fitted to the mid-week counts | 35 | the hybrid days |
 | R2h | the one-headway model scaled platform by platform to its mid-week counts | 35 | the hybrid days |
 | R3 decisive | the backlog behind trains of the spring timetable, each taking at most cars times 150 less the riders it brings from upstream plus those getting off, the branch's riders on each weekday | 26 (4, 6, 6, 6, 4) | golden |
 
 **Position and margins.** The golden is the lowest count of every backlog-free carry and above every one-headway
 count; the nearest rivals miss by two (R2b, 28) and three (R2a, 29) shifts, the default path by nine. Each platform-day
-sits at least 0.10 of capacity from the line in the golden and 0.075 across its family.
+sits at least 0.12 of capacity from the line in the golden (0.11 at 120 a car) and 0.076 across its family.
 
 **Convergence (C1, asserted).** Thirteen constructions of the golden file 26 with the same posts: island riders split
 30/70, 50/50 or 70/30 between directions; the spring ratio from 2025, 2026, their mean, flat, 0.985 or 1.03; the weekday
-index on 07:00 to 09:59 or 05:00 to 10:59; the trains' room scaled by 0.80, 0.85 or 0.90 (the back-cast that matches
-the mid-week counts best sits at about 0.85). On the clean truth the golden holds from 6 per cent under to 6 per cent
-over the forecast level, and one sigma of the spring level (the two years' ratios apart plus 2 per cent for the census
-normalisation) leaves it unchanged.
+index on 07:00 to 09:59 or 05:00 to 10:59; the load per car at 120, 135 or 145. On the clean truth the golden holds from
+6 per cent under to 6 per cent over the forecast level, and one sigma of the spring level (the two years' ratios apart
+plus 2 per cent for the census normalisation) leaves it unchanged.
+
+**Car-load sweep (CARLOAD, asserted).** Run on the shipped pack from 110 to 160 people a car in steps of five, the
+golden files 26 with the same posts at every load from 120 to 155. It moves at 115 (SAL-4S's Monday and COR-5W's
+Tuesday to Thursday over the line, 30), at the fleet register's planning load of 110 (30) and above the register's
+maximum of 150, at 160 (24). The counts pick the load: the autumn back-cast meets the mid-week crowds at SAL-1S, SAL-4S
+and COR-5W best at 145 a car (7 per cent mean error; 140 and 145 within 20 per cent), at 150 it reads 22 to 38 per cent
+low, still inside the landing range, and under 120 it puts them at over twice the counts (115: 2.4 to 3.4 times; 110:
+2.5 to 3.9 times). Every load the counts hold within 20 per cent files the golden, 20 a car or more above the range's
+lower edge.
 
 **Worth on the graded quantity.** Seeing the backlog at Sallow Park is worth four shifts (its Monday and Friday posts
 fall away); carrying the backlog to the eight-car Line 5 is worth five more (COR-5W's posts fall away).
 
-**Out of sample.** On the autumn timetable the backlog model puts COR-5W's hybrid Monday and Friday at 0.58 and 0.53 of
-capacity against 0.56 and 0.52 counted, and errs 0.060 on average over the hybrid-day sample against the carry's 0.234.
+**Out of sample.** On the autumn timetable the backlog model puts COR-5W's hybrid Monday and Friday at 0.56 and 0.52 of
+capacity against 0.55 and 0.51 counted, and errs 0.069 on average over the hybrid-day sample against the carry's 0.156.
 
-**Strength.** P(one strong solver lands) about 0.15: it has to read the Sallow Park and Corran Junction crowds of about
-twice capacity as riders left behind rather than riders arriving, build the trains' room from the branch census on each
+**Strength.** P(one strong solver lands) about 0.20 (the stage 4 rule-3 audit's figure; the stage 2 estimate of 0.15
+was optimistic): it has to read the Sallow Park and Corran Junction crowds of one and a half to over two and a half times
+capacity as riders left behind rather than riders arriving, build the trains' room from the branch census on each
 weekday, and carry the result both to Sallow Park's uncounted Mondays and Fridays and to the eight-car Line 5. P(both
-land) about 0.03 if independent, under 0.1 with any plausible correlation. The seed was fixed by rule (the task number,
+land) about 0.06 to 0.08 with the correlation the audit allows. The seed was fixed by rule (the task number,
 then the as-of month and day: 1590111) before any data was generated and is never searched.
 
 ## Closure table
@@ -316,15 +325,34 @@ standard and the two service plans. Device and hazard rows in it: 0 (asserted, S
 ask files and the asks read none of the call's records; the asks' devices sit in the inventory's direction and speed
 columns, the work orders' times and the monitoring's modes).
 
-**Ask A. For each watch-list complex, the people a minute its platform escalators can carry at their rated flows down to
-the platforms and up from them between 07:00 and 09:30 on the autumn 2026 pick's weekdays** (14 figures, whole people a
-minute).
+**Ask A. For each watch-list complex, the people a minute the escalators between its mezzanines and any of its
+platforms can carry at their rated flows down to the platforms and up from them between 07:00 and 09:30 on the days of
+the autumn 2026 pick that ran the weekday timetable, all times local** (14 figures, whole people a minute).
 - H18 home: a measure every candidate complex carries that the call does not turn on, how fast the morning's riders
   reach and leave its platforms, read beside the posting schedule for the conductors' post orders.
 - Basis (filed in the station planning manual, chapter 5, the owner's voice): "An escalator's rated flow depends on its
   step width: 40 people a minute for a 600 mm step, 60 for an 800 mm step and 80 for a 1,000 mm step at 0.5 metres a
   second, and in proportion to its speed at other speeds. An escalator carries its rated flow in the direction it is set
-  to run." A rated flow is a capacity, so an escalator stopped by a fault on a morning keeps its figure.
+  to run." and "The escalator capacity between two levels is the sum of the rated flows of the escalators between them,
+  taken for each direction. Capacities are rated with every escalator running and make no allowance for stoppages."
+- Readings closed (round 1, each built as a route in `calc.py` and asserted to move figures and to be ruled out by
+  filed text): the controllers' fault minutes deducted (five figures move: Sallow Park down 215, Hesper Avenue up 143,
+  Ferrier Square up 247, Quarry Road 131 down and 95 up; the manual's "make no allowance for stoppages"); only the
+  escalators to watch-list platforms (five move, Sallow Park's Line 4 northbound E6 and Corran Junction's Line 5
+  eastbound E3 among them; the prompt's "any of its platforms"); the holiday-timetable days of 26 and 27 November in,
+  when the escalators stay in their all-day directions (all fourteen move; the prompt's weekday-timetable days, the
+  standard's own weekday); the log's UTC read as local (all fourteen move; "all times local" and the dictionary's
+  "UTC"). Weighted over the window with no allowance for stoppages the figures are the golden's (asserted), so minutes
+  and days aggregate to the same people a minute.
+- Readings closed at ship (the re-judge's advisory and the targeted re-read, each asserted): the clock, now one line
+  in the dictionary's Notes sheet (US Eastern, UTC-4 before 1 November 2026 and UTC-5 after; the log at a fixed UTC-4
+  or UTC-5 all autumn moves all fourteen); time-weighted against dominant direction (every one of the 2,736 unit-days
+  holds one direction for all of the window, so the two agree); a stopped unit's direction (the only stoppages inside
+  the window are faults, on 25 unit-days, each reset to the direction set, and the manual makes no allowance for
+  them); the inventory's direction against the log (17 of 38 units differ in the window; the dictionary dates the
+  inventory's direction to the condition survey and the manual counts an escalator in the direction it is set to
+  run); widths in inches (every inch width at 25.4 mm falls in the asset register's own step class, 600 or 1,000 mm,
+  on all 38 units).
 - Primary A1 (D2, an attribute at the wrong vintage): the engineering inventory records each escalator's running
   direction as surveyed at midday; in the morning peak station operations turn the pair at a boarding platform both
   down and at an alighting platform both up; the escalator controllers' log carries every direction change. Fair: the
@@ -335,7 +363,8 @@ minute).
   system's asset register holds. Fair: the register gives every unit's controller speed. Silent: the inventory's speed
   is a valid design value, and nothing narrates the slowdown.
 - Hazards: HA1 step widths in inches on Lines 1 to 4 and millimetres on Lines 5 and 6 (the dictionary says so); HA2
-  street escalators in the same inventory (the ask counts platform escalators); HA3 UTC in the log.
+  street escalators in the same inventory (the ask counts the escalators between mezzanines and platforms); HA3 UTC in
+  the log.
 - Stops (built and asserted, every figure missed by each): the inventory's directions and speeds (S1: Garnett Street
   120 down, 120 up against the golden 72, 144); the log's directions with the design speed (S2: 80, 160); the
   inventory's directions with the controllers' speeds (S3: 108, 108); the golden.
@@ -344,13 +373,21 @@ minute).
 - Realism: transit systems reverse escalators by time of day to the main flow, and an engineering inventory keeps the
   surveyed direction and the design speed while the maintenance system keeps the controller settings.
 
-**Ask B. For each watch-list complex, the elevator-hours its elevators were out of service between 07:00 and 09:45 on
-the autumn 2026 pick's weekday mornings** (7 figures, one decimal).
+**Ask B. For each watch-list complex, the total elevator-hours all its elevators were out of service between 07:00 and
+09:45 on those mornings, all times local** (7 figures, one decimal).
 - H18 home: a measure every candidate complex carries that the call does not turn on, how often its riders who need
   the elevators met one out in the morning peak, read beside the posting for the conductors' post orders.
 - Basis (filed in the station planning manual, chapter 5): "An elevator is out of service whenever it is not in normal
-  passenger service: from the moment it stops or is taken out of service to the moment it is back in normal passenger
-  service." The window and the pick's weekdays are the prompt's and the autumn service plan's.
+  passenger service: from the moment it stops on a fault, or is taken out of service for maintenance, inspection or
+  repair, to the moment it is back in normal passenger service. Time out of service for more than one reason at once
+  counts once." The union of the two sources' intervals is that definition executed; the window and the pick's
+  weekday-timetable days are the prompt's, the holiday-timetable days the autumn service plan's.
+- Readings closed (round 1, built and asserted as for Ask A): the holiday-timetable days in (Garnett Street 31.8 against
+  27.9, the other six unchanged; the prompt's weekday-timetable days); a mean per morning (every figure; "the total
+  elevator-hours"); the street elevators left out (every figure; "all its elevators"); the logs' UTC read as local
+  (every figure; "all times local"); overlapping work-order and monitoring intervals counted twice (every figure; the
+  manual's "counts once"). At ship: the logs at a fixed UTC-4 or UTC-5 all autumn (every figure; the dictionary's clock
+  line).
 - Primary B1 (D8, an anchor on the record, not the event): the control centre opens a work order when the station
   reports the fault, so its out-of-service time runs after the car stopped; the remote monitoring logs the stop.
   Fair: the monitoring gives each fault's stop and its return to normal service. Silent: every work order is complete
@@ -406,22 +443,25 @@ the call with no device cracked 46.8). Rerun from the generated rubric at stage 
 ## Surface screen
 
 `guard.py surface task159` promotes one pair, at the card level only: task147 against task159 (gap objective, pattern
-G8, Gate G `binding_constraint`, the same-driver signature), differentiated on the card at the draw: there a multi-night
-request is lost when any night of its run is sold out; here nobody is lost, the riders a full train cannot take wait
-for the next one, so the backlog inflates the heavy days' counted crowds and is absent on the light days. No hard tell
-(no shared file name, schema, invented name or same-seed table). `guard.py heart` WARN (`overuse.org_family`, answered
-at the draw), nearest driver 0.07 (task451 v2). The persona sweep reads "Line Early" off the service plans' headway
-table, where the column heading "Early" follows the row heading "Line"; it is not a person.
+G8, Gate G `binding_constraint`, the same-driver signature), differentiated on the card at the draw: there a
+multi-night request is lost when any night of its run is sold out; here nobody is lost, the riders a full train cannot
+take wait for the next one, so the backlog inflates the heavy days' counted crowds and is absent on the light days. No
+hard tell (no shared file name, schema, invented name or same-seed table). `guard.py heart` was WARN through stage 4
+(`overuse.org_family`, answered at the draw; nearest driver 0.07, task451 v2) and BLOCKs at ship on furniture against
+task158 (forum and role family), raised after the draw by two re-roots' re-registration; the pre-ship check records it
+for the author. The persona sweep reads "Line Early" off the service plans' headway table, where the column heading
+"Early" follows the row heading "Line"; it is not a person.
 
 ## Leak sweep
 
 `leak.py task159 --asof 2027-01-11` returns REVIEW (no LEAK); every line answered:
 - Sweep 3, the crowding standard names the watch-list platforms beside the call's vocabulary: the schedule is the
   population the call executes and the standard is the rule it runs on; it carries no count, forecast or posting.
-- Sweep 4, stump-paragraph terms in the standard and the service plans (counts, trains, forecast, capacity, Monday,
-  Friday, timetable, headway): each document's own subject (the measure and the count programme; the weekday service
-  and its consists); none names a backlog, a train's room, riders left behind or how to carry a crowd (asserted in
-  `checks.py`, R3c).
+- Sweep 4, stump-paragraph terms in the standard, the service plans and the station planning manual (counts, trains,
+  forecast, capacity, Monday, Friday, timetable, headway; the manual's "capacity", "carries" and "counts once" are its
+  escalator capacities and its out-of-service definition): each document's own subject (the measure and the count
+  programme; the weekday service and its consists; vertical circulation); none names a backlog, a train's room, riders
+  left behind or how to carry a crowd (asserted in `checks.py`, R3c).
 - Sweep 6, files naming the watch-list complexes beside numbers (the legacy reads, the elevator work orders, the
   capacity register, the dashboard, the census, the inventory): records per complex of entries, outages, ratings,
   flows and elements; none ranks the platforms on the posting question.
@@ -433,20 +473,75 @@ table, where the column heading "Early" follows the row heading "Line"; it is no
 
 ## Build record
 
-Stage 3, 2026-10-17. `build.py`: checks 97 run, 0 failed (the three-rules block R1 to R3c on the generator's clean
-truth, the R2 mess-neutrality variants, every SF row SF1 to SF12, the ladder's fifteen rungs and rivals, the
-out-of-sample test, thirteen family constructions and the one-sigma corridor, both asks with their routes and edges,
-the separation line, the input gates, the distractors' deletion test, the realism sweep and the dates allow-list);
-`verify.py` (pandas, no generator import) 6 passed, 0 failed; two consecutive builds byte-identical (target, golden,
-figures.json, submission); `figures_check.py` 0 absent (40 figures); `voice-check.py` PASS (860 characters);
-`precut.py` exit 0 (50 checks); `leak.py` REVIEW, no LEAK; the H1 audit clean on the pack and the goldens; `guard.py
-validate` clean, `heart` WARN (answered), `surface` one card-level pair (above); `generator/cracker.py` pair ceiling
-29.3, mirror leakage 8.3 per cent. 20 files in 4 formats (parquet, csv, xlsx, pdf), the largest the fare export at
-761,596 rows; distractors `afc_register_reads_2022-02-01_2024-06-30.csv` and
-`ridership_dashboard_avg_weekday_2025-2026.xlsx` in `metadata.json`. Invented names checked: Vellmouth (no real city
-or transit agency), the count contractor Halvorsen Field Counts (no firm of the name in a web search); station names
-are ordinary street and place names; the car and escalator builders are real manufacturers named descriptively;
-personas from `guard.py names`. The seed was fixed by rule (1590111) before any data was generated and never searched.
+Stage 3, 2026-10-17; rebuilt after the stage 4 round 1 findings and again at ship the same day. `build.py`: checks 129
+run, 0 failed (the
+three-rules block R1 to R3c on the generator's clean truth, the R2 mess-neutrality variants, every SF row SF1 to SF12,
+the ladder's fifteen rungs and rivals, the out-of-sample test, thirteen family constructions and the one-sigma
+corridor, the car-load sweep, both asks with their routes, edges and every closed reading, the separation line, the
+input gates, the distractors' deletion test, the realism sweep and the dates allow-list); `verify.py` (pandas, no
+generator import) 6 passed, 0 failed; two consecutive builds byte-identical (target, golden, figures.json,
+submission); `figures_check.py` 0 absent (40 figures); `voice-check.py` PASS (950 characters); `precut.py` exit 0;
+`leak.py` REVIEW, no LEAK; the H1 audit clean on the pack and the goldens; `guard.py validate` clean, `heart` WARN
+(answered), `surface` one card-level pair (above); `generator/cracker.py` pair ceiling 29.3, mirror leakage 8.3 per
+cent. 20 files in 4 formats (parquet, csv, xlsx, pdf), the largest the fare export at 761,594 rows; distractors
+`afc_register_reads_2022-02-01_2024-06-30.csv` and `ridership_dashboard_avg_weekday_2025-2026.xlsx` in `metadata.json`.
+Invented names checked: Vellmouth (no real city or transit agency), the count contractor Tollison Field Data (renamed
+at round 1 from a name echoing task148's Halvorsen Township; no firm of the name in a web search, and no other build
+uses it); station names are ordinary street and place names; the car and escalator builders are real manufacturers
+named descriptively; personas from `guard.py names`. The platform capacity register states its rating basis on every
+row (one person per square metre of usable platform area, from the 2019 survey; Sallow Park's August 2026 re-measure on
+its own row from 1 September 2026, the rating unchanged). The seed was fixed by rule
+(1590111) before any data was generated and never searched. The pack's files share the pull's modification time, the
+house convention (`dataset-generation` section 9).
+
+## Pre-ship check
+
+- **Three rules, re-read against the built pack.** Domain: the deciding quantity is each watch-list platform's forecast
+  peak quarter-hour accumulation by spring weekday, built the way transit capacity analysis builds platform loading
+  (arrivals over each headway against each arriving train's room, the riders a full train leaves waiting), on the clean
+  truth and on the pack (R1 to R3c). Two layers: the Layer 1 inventory in `## Three rules`, each item asserted neutral
+  on the call (R2: the export's UTC read as local, converted at four hours and at five hours all year, the census
+  quarter-hours read as ending at their label, a spring ratio off the legacy reads; SF1 to SF12); the asks' devices
+  confined to the ask files (SEPARATION); Layer 2 the backlog behind full trains, chosen on the hybrid-day counts it was
+  not fitted to (OOS). The decisive step is none of the three banned kinds: not a plant (R3c: no document names a
+  backlog, a train's room or riders left behind, and the counts, census and entries are what each system records);
+  not data semantics (every term read right still carries the counts by entries to 35); not rule application (every
+  filed rule executed with the proportional carry files 35, with one headway's arrivals 20; only the queue files 26).
+- **Gates.** 20 files in 4 formats (csv, parquet, pdf, xlsx); the fare export at 761,594 rows; two distractors (the
+  legacy register reads and the ridership dashboard), each deletion asserted; `checks.py` 129 run, 0 failed;
+  `verify.py` (pandas, no generator import) 6 passed; two builds byte-identical (target, golden, figures.json,
+  submission); `figures_check.py` 40 of 40; `precut.py` exit 0; `voice-check.py` PASS at 950 characters; `leak.py`
+  REVIEW, no LEAK, every line answered; the H1 audit clean on the pack and the goldens; `guard.py validate` clean,
+  `surface` one card-level pair (task147, differentiated at the draw), `heart` BLOCK at ship on furniture (below);
+  `generator/cracker.py` pair ceiling 29.3, mirror leakage 8.3 per cent. `target.zip` cut from the final rebuild, 20
+  entries equal to `target/` byte for byte, sha256 150f8fc2.
+- **Heart at ship, for the author.** `guard.py heart` now BLOCKs `ban.role` (capacity_planner) and `ban.forum`
+  (operations_desk) against task158, with `repeat.deliverables` (png and xlsx) a WARN. The ban was raised after the
+  draw: at the DRAWN commit (8ec573e) the last three draws before this one were task190, task240 and task194 and the
+  check passed; task190 (architecture 4) and task194 (architecture 3) have since re-rooted and re-registered after this
+  card, which brings task158, drawn at 16:46 and the same lane's previous build, into the window. Both keys are this
+  build's honest ones (the station planning desk acts on the count; the stakeholder plans staffing), so they are kept,
+  not relabelled; no shipped file or prompt sentence names either. Whether the pair reads as a batch repeat is the
+  author's call before upload.
+- **Stage 4.** Round 1: judge DETERMINISTIC, FIX_NOW on the asks only; leak reader clean, the decisive step analytical;
+  rule 3 audit PASS (P(one) about 0.20, P(both) about 0.06 to 0.08). Every finding fixed in one generator pass with the
+  call frozen (`## Tried and rejected`, the ask sheet's closed readings, the car-load sweep). Re-judge DETERMINISTIC,
+  APPROVE: its own train-capacity queue model filed 26 (4, 6, 6, 6, 4) with the same postings and reproduced every
+  escalator and elevator figure; its one advisory (the clock) filed at ship. The targeted re-read was clean on the main
+  call.
+- **Gate G.** No shipped artifact ranks the platforms on the posting question, and `metadata.json` declares no
+  wrong-basis distractor. Delete every wrong number in the pack and the call still turns on reading the mid-week crowds
+  as a backlog behind full trains.
+
+## Residual
+
+- The capacity register repeats one basis text on most rows, as a register rated in one survey reads; kept.
+- Sallow Park's August 2026 re-measure kept its 2019 effective date when the re-judge read the pack; it now has its own
+  row from 1 September 2026 with the rating unchanged, so no graded figure moved.
+- The clock was derivable but unnamed (the first trains and escalator starts near 05:00 local); the dictionary now
+  names the zone and the 2026 change at no cost to Layer 1, since the main call is the same at either fixed offset.
+- At 150 a car the back-cast reads the mid-week crowds 22 to 38 per cent low (the census-scaled model runs lighter than
+  the counts); the counts' best fit, about 145 a car, sits inside the landing range, and the golden holds at both.
 
 ## Tried and rejected
 
@@ -474,4 +569,15 @@ personas from `guard.py names`. The seed was fixed by rule (1590111) before any 
   the ask now names the morning peak window.
 - Planned maintenance logged in the elevator monitoring: dropped, because with every mode logged the monitoring alone
   answers the ask once found; inspection operation is now reported only in the work orders.
+- The golden held only from about 140 a car (judge, round 1: SAL-4S's Monday crossed the line at about 135 a car, and
+  more platform-days below 130): the Line 1 and Line 4 branches above Sallow Park now ride hybrid weeks (Mondays
+  and Fridays about 0.66 and 0.62 of mid-week against the network's 0.82 and 0.76) and Line 5 westbound boards 3 per cent
+  lighter, so the golden holds from 120 to 155 a car.
+- Sallow Park's own Mondays and Fridays as light as its branch's (round 1, the first pass): rejected, because with
+  Sallow Park's own boarders that light the trains' mid-week room takes them on every weekday and the constant-room
+  rival (R2b) filed the golden; the branch upstream carries the hybrid week and Sallow Park rides like the network.
+- Line 5 westbound 1.5 per cent lighter instead of 3 (round 1): rejected, because COR-5W's eight-car Wednesday then
+  crosses the line at 120 a car.
+- The asks' fault minutes and holiday-timetable days left to the rubric (accepting 215 or 216, 27.9 or 31.8): rejected
+  at round 1; the manual and the prompt now close both, with every other reading the reader raised.
 

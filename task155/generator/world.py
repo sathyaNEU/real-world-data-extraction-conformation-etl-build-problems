@@ -109,7 +109,7 @@ BANK = {
     "E06": ("06:00", "10:00"), "D06": ("06:00", "14:00"), "D08": ("08:00", "16:00"), "S10": ("10:00", "14:00"),
     "M10": ("10:00", "16:00"), "A12": ("12:00", "18:00"), "A14": ("14:00", "18:00"), "P16": ("16:00", "20:00"),
     "L16": ("16:00", "22:00"), "V18": ("18:00", "22:00"), "W08": ("08:00", "14:00"), "W14": ("14:00", "20:00"),
-    "N18": ("18:00", "24:00"), "C10": ("10:00", "16:00"),
+    "N18": ("18:00", "24:00"), "C10": ("10:00", "16:00"), "C09": ("09:00", "15:00"),
 }
 BASE = {
     "wk": {"D06": 3, "E06": 2, "D08": 5, "S10": 4, "M10": 4, "P16": 7, "L16": 4, "V18": 2},
@@ -147,7 +147,7 @@ STORES = {
     "E2": dict(cluster="E", size=1.80, mix=(0.66, 0.04, 0.24, 0.06), hires=[(dt.date(2026, 8, 3), "parent", 8)],
                type_alpha={"school": 0.5},
                picking_from=dt.date(2026, 8, 3), picking={"wk": {"M10": 5, "S10": 3}},
-               adds26={}, up26={"wk": {"M10": 5, "S10": 3}, "sat": {"W08": 4}, "sun": {"W08": 3}},
+               adds26={}, up26={"wk": {"C09": 5, "S10": 3}, "sat": {"W08": 4}, "sun": {"W08": 3}},
                up25={"wk": {"P16": 12, "L16": 4}, "sat": {"L16": 10}, "sun": {"L16": 8}}),
     "E3": dict(cluster="E", size=1.85, mix=(0.40, 0.28, 0.18, 0.14), hires=[],
                adds26={}, up26={"wk": {"P16": 6, "L16": 3}, "sat": {"W08": 8}, "sun": {"W08": 7}},
@@ -163,6 +163,8 @@ SLACK = {"RG": 1.25, "E2": 1.32}
 LEAVE = {"W2": ("school", 0.45, dt.date(2025, 11, 20), dt.date(2026, 2, 6))}
 TGT = {"school": (8, 14, 1.10, 1.35), "uni": (14, 24, 1.45, 1.90), "parent": (12, 20, 1.0, 1.08), "flex": (16, 28, 1.0, 1.12)}
 OPT_IN = {"school": 0.10, "uni": 0.15, "parent": 0.25, "flex": 0.40}
+# the East stores sit close together, and most of their university students and flex casuals opt in
+OPT_IN_EAST = {"school": 0.10, "uni": 0.75, "parent": 0.25, "flex": 0.75}
 # store moves during 2026: (from, to, n, first, last, type after the move or None)
 MOVES = [("RG", "W1", 3, dt.date(2026, 2, 6), dt.date(2026, 2, 27), "uni"),
          ("RG", "W3", 3, dt.date(2026, 2, 6), dt.date(2026, 2, 27), "uni"),
@@ -190,6 +192,9 @@ P_DROP = 0.035              # an accepted call-in later dropped by the casual
 TRAVEL_MIN = 60             # minutes KWS leaves a casual to get between stores
 P_DUP_REPORT = 0.12         # an absence reported twice (the app and a call to the store), each raising a call-in
 P_LATE_LEAVE = 0.15         # a permanent's leave approved after the roster for those days was published
+# the 2025 Christmas rosters reached KWS through the legacy tool's import, which carried some open lines twice: each
+# copy was raised as its own call-in, and booking either closed the other (the share of each store's open lines)
+OPN_TWIN_25 = {"W1": 0.16, "W3": 0.30, "W4": 0.12, "E1": 0.24, "E2": 0.20, "E3": 0.32, "RG": 0.22}
 
 
 def positions_for(store, d, christmas):
@@ -302,7 +307,7 @@ def make_people(rng):
             when = first + dt.timedelta(days=7 * int(rng.integers(0, span + 1)))
             c.moves = [(when, to, nt)]
             if nt == "uni":
-                c.opt_in = rng.random() < OPT_IN["uni"]
+                c.opt_in = rng.random() < opt_in_rate(to, "uni")
     # rehires: left and came back under a new payroll number
     pool = [c for c in casuals if not c.moves and not c.hired and c.end > dt.date(2026, 12, 31)
             and c.typ0 in ("uni", "flex", "school") and c.start < dt.date(2025, 6, 1)]
@@ -346,13 +351,17 @@ def _casual(rng, idx, store, typ, start, end):
     c.target_peak = c.target * rng.uniform(plo, phi)
     c.free_days = set(rng.choice(5, size=2 if typ == "uni" else 3, replace=False).tolist())
     c.off_days = set(rng.choice(7, size=int(rng.integers(0, 2)), replace=False).tolist())
-    c.opt_in = rng.random() < OPT_IN[typ]
+    c.opt_in = rng.random() < opt_in_rate(store, typ)
     c.start = start
     c.end = end
     c.moves = []
     c.gap = None
     c.hired = False
     return c
+
+
+def opt_in_rate(store, typ):
+    return (OPT_IN_EAST if STORES[store]["cluster"] == "E" else OPT_IN)[typ]
 
 
 def service_date(c, d=AS_OF):
@@ -497,6 +506,7 @@ def make_needs(rng, roster, casuals, perms, window, open_post=None, skip_open=No
     absent_day = collections.defaultdict(set)     # ('C', idx) -> days unavailable through absence
     vacated = set()
     perm_leave = {p.idx: p.leave for p in perms}
+    trng = stream(8)                              # which 2025 Christmas open lines the import carried twice
     for store in ORDER:
         for li, ln in enumerate(roster[store]):
             n = ln["day"]
@@ -514,7 +524,13 @@ def make_needs(rng, roster, casuals, perms, window, open_post=None, skip_open=No
                     post = tmin(PUB25)
                 else:
                     post = publication(n)
-                needs.append(dict(store=store, day=n, s=s, e=e, post=post, kind="OPEN", absent=None, line=(store, li)))
+                nd = dict(store=store, day=n, s=s, e=e, post=post, kind="OPEN", absent=None, line=(store, li))
+                needs.append(nd)
+                if open_post is None and in_peak(d, PEAK25) and trng.random() < OPN_TWIN_25.get(store, 0.0):
+                    # the import raised the line a second time: a second call-in for the same open line
+                    twin = dict(nd)
+                    nd["pair"] = twin["pair"] = len(needs)
+                    needs.append(twin)
                 continue
             if who[0] == "R":
                 continue

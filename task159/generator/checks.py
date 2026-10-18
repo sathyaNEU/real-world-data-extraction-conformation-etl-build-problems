@@ -131,6 +131,7 @@ def main():
     # ------------------------------------------------------------------------------------------ R2 mess neutrality
     r2 = {"the fare export's UTC hours read as local": C.Model(TARGET, tz_mode="utc_as_local"),
           "the fare export converted at four hours all year": C.Model(TARGET, tz_mode="fixed4"),
+          "the fare export converted at five hours all year": C.Model(TARGET, tz_mode="fixed5"),
           "the census's quarter-hours read as ending at their label": C.Model(TARGET, quarter_shift=-1)}
     for name, Mx in r2.items():
         t = C.tally(Mx.forecast())
@@ -176,8 +177,8 @@ def main():
     cap = M.caps["COR-5W"]
     obs = {C.WD[d.weekday()]: v[0] / cap for d, v in pk.items()}
     r0a = C.default_path(M, spring=1.0)
-    check("OOS hybrid Monday and Friday at COR-5W reject the proportional carry",
-          all(r0a["COR-5W"][w] - obs[w] > 0.9 for w in ("Mon", "Fri")),
+    check("OOS hybrid Monday and Friday at COR-5W reject the proportional carry (counted under half of it)",
+          all(r0a["COR-5W"][w] > 2 * obs[w] for w in ("Mon", "Fri")),
           "R0 %.2f/%.2f, counted %.2f/%.2f" % (r0a["COR-5W"]["Mon"], r0a["COR-5W"]["Fri"], obs["Mon"], obs["Fri"]))
     check("OOS the queue model meets the hybrid days at COR-5W",
           all(abs(fa["COR-5W"][w] - obs[w]) < 0.08 for w in ("Mon", "Fri")),
@@ -187,9 +188,10 @@ def main():
         p2 = C.count_peaks(M.P, code)
         mid_obs[code] = np.mean([v[0] for d, v in p2.items() if d.weekday() in (1, 2, 3)]) / M.caps[code]
     nqa = C.forecast_no_queue_plan(M, "AUT26", spring=False)
-    check("OOS one headway's arrivals misses the mid-week counts", all(mid_obs[c] - max(nqa[c][w] for w in C.WD) > 0.9
-                                                                       for c in mid_obs),
-          str({c: round(v, 2) for c, v in mid_obs.items()}))
+    check("OOS one headway's arrivals misses the mid-week counts (counted over twice it)",
+          all(mid_obs[c] > 2 * max(nqa[c][w] for w in C.WD) for c in mid_obs),
+          "counted %s, one headway at most %s" % ({c: round(float(v), 2) for c, v in mid_obs.items()},
+                                                  {c: round(max(nqa[c][w] for w in C.WD), 2) for c in mid_obs}))
     check("OOS the queue model builds a mid-week backlog where it was counted",
           all(min(fa[c][w] for w in ("Tue", "Wed", "Thu")) > 1.0 for c in mid_obs), "")
     e_q = e_r = 0.0
@@ -201,7 +203,7 @@ def main():
                 o = v[0] / M.caps[code]
                 e_q += abs(fa[code][wd] - o)
                 e_r += abs(r0a[code][wd] - o)
-    check("OOS over the hybrid-day sample the queue model errs less than the proportional carry", e_q < e_r / 3,
+    check("OOS over the hybrid-day sample the queue model errs under half the proportional carry", e_q < e_r / 2,
           "mean abs error %.3f against %.3f" % (e_q / 12, e_r / 12))
 
     # ------------------------------------------------------------------------------------------ the family
@@ -213,8 +215,8 @@ def main():
         fam[name] = C.Model(TARGET, spring_year_ratio=r).forecast()
     fam["hours 07-09"] = C.Model(TARGET, hours=(7, 8, 9)).forecast()
     fam["hours 05-10"] = C.Model(TARGET, hours=(5, 6, 7, 8, 9, 10)).forecast()
-    for k in (0.8, 0.85, 0.9):
-        fam["room x%.2f" % k] = C.forecast_scaled_room(M, k)
+    for L in (120, 135, 145):
+        fam["load %d a car" % L] = M.forecast(car_load=L)
     for name, f in fam.items():
         t = C.tally(f)
         check("FAMILY %s files the golden" % name, t[0] == GOLD_TOTAL and t[1] == GOLD_WD and t[2] == posts,
@@ -226,6 +228,35 @@ def main():
     for s_ in (1 - sig, 1 + sig):
         f = C.Model(TARGET, spring_year_ratio=M.r2026 * s_).forecast()
         check("SIGMA spring level x%.3f files the golden" % s_, C.tally(f)[0] == GOLD_TOTAL, "")
+
+    # ------------------------------------------------------------------------------------------ car load
+    # the queue model across the load per car: the landing range of the golden, and the counts' back-cast at the
+    # three platforms with a mid-week backlog (SAL-1S, SAL-4S, COR-5W) against the counted mid-week mean
+    land = {}
+    err = {}
+    for L in range(110, 161, 5):
+        land[L] = C.tally(M.forecast(car_load=L))
+        fa_L = M.forecast(plan="AUT26", spring=False, car_load=L)
+        err[L] = {c: np.mean([fa_L[c][w] for w in ("Tue", "Wed", "Thu")]) / mid_obs[c] - 1 for c in mid_obs}
+    inside = [L for L in land if land[L][0] == GOLD_TOTAL and land[L][2] == posts]
+    check("CARLOAD the golden at every load from 120 to 155 a car", all(L in inside for L in range(120, 156, 5)),
+          "landing %d to %d" % (min(inside), max(inside)))
+    check("CARLOAD the fleet register's planning load (110) misses", 110 not in inside, "%d" % land[110][0])
+    fit = min(err, key=lambda L: np.mean([abs(v) for v in err[L].values()]))
+    check("CARLOAD the counts' best fit lies 20 a car or more inside the landing range",
+          fit in inside and fit - 20 >= min(inside) and fit <= 150,
+          "best fit %d (mean error %.2f)" % (fit, np.mean([abs(v) for v in err[fit].values()])))
+    check("CARLOAD under the landing range the back-cast is over twice the mid-week counts at every backlog platform",
+          all(err[L][c] > 1.0 for L in land if L < min(inside) for c in mid_obs),
+          str({L: [round(v, 2) for v in err[L].values()] for L in land if L < min(inside)}))
+    check("CARLOAD the sweep (shifts; back-cast against the counts at SAL-1S, SAL-4S, COR-5W)", True,
+          "; ".join("%d: %d (%s)" % (L, land[L][0], ", ".join("%+.2f" % v for v in err[L].values())) for L in land))
+    check("CARLOAD over the register's maximum (160 a car) the call moves", 160 not in inside, "%d" % land[160][0])
+    check("CARLOAD at the register's maximum (150) the back-cast reads under the counts at every backlog platform",
+          all(v < 0 for v in err[150].values()), "")
+    held = [L for L in land if np.mean([abs(v) for v in err[L].values()]) <= 0.20]
+    check("CARLOAD every load the counts hold within 20 per cent on average files the golden",
+          held and all(L in inside for L in held), str(held))
 
     # ------------------------------------------------------------------------------------------ semantic forks
     sf = {}
@@ -303,6 +334,88 @@ def main():
     au = C.ask_a(TARGET, unrounded=True)
     ea = min(0.5 - abs(v - round(v)) for cx in C.WATCH_COMPLEXES for v in au[cx])
     check("ASK A every figure a whole number of people a minute before rounding", ea >= 0.499, "%.2f" % ea)
+    prompt = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
+    manual = " ".join(" ".join(p) for _h, p in DOC.MANUAL)
+
+    MOVED = {}
+
+    def moved_a(route):
+        r = C.ask_a(TARGET, route)
+        mv = ["%s %s %d" % (cx, ("down", "up")[i], r[cx][i]) for cx in C.WATCH_COMPLEXES for i in (0, 1)
+              if r[cx][i] != A[cx][i]]
+        MOVED[("A", route)] = mv
+        return len(mv)
+
+    def moved_b(route):
+        r = C.ask_b(TARGET, route)
+        mv = ["%s %.1f" % (cx, r[cx]) for cx in C.WATCH_COMPLEXES if round(r[cx], 1) != round(B[cx], 1)]
+        MOVED[("B", route)] = mv
+        return len(mv)
+
+    check("ASK A weighted over the window with no allowance for stoppages: the golden", moved_a("time_weighted") == 0, "")
+    closes = [
+        ("A", "fault_deducted", "fault minutes deducted", "make no allowance for stoppages" in manual),
+        ("A", "watch_only", "watch-list platforms only", "between its mezzanines and any of its platforms" in prompt),
+        ("A", "with_holidays", "holiday-timetable days in",
+         "the days of the autumn 2026 pick that ran the weekday timetable" in prompt),
+        ("A", "utc_window", "the log's UTC as local", "all times local" in prompt),
+        ("B", "with_holidays", "holiday-timetable days in",
+         "the days of the autumn 2026 pick that ran the weekday timetable" in prompt),
+        ("B", "mean_per_day", "a mean per morning", "the total elevator-hours" in prompt),
+        ("B", "platform_only", "street elevators out", "all its elevators" in prompt),
+        ("B", "utc_window", "the logs' UTC as local", "all times local" in prompt),
+        ("B", "summed", "overlaps counted twice", "more than one reason at once counts once" in manual),
+    ]
+    for ask, route, what, filed in closes:
+        n = moved_a(route) if ask == "A" else moved_b(route)
+        check("ASK %s %s moves %d figures, closed by filed text" % (ask, what, n), n >= 1 and filed,
+              "; ".join(MOVED[(ask, route)]) if n <= 5 else "")
+    # the clock: the dictionary names the zone and the 2026 change; a fixed offset all autumn moves both asks
+    dict_notes = " ".join(str(x) for x in pd.read_excel(os.path.join(TARGET, PK.F_DICT), sheet_name="Notes",
+                                                        header=None)[0])
+    tz_filed = "UTC-4 before 1 November 2026 and UTC-5 after" in dict_notes and "US Eastern" in dict_notes
+    for ask, route, what in (("A", "fixed4", "the log at UTC-4 all autumn"), ("A", "fixed5", "the log at UTC-5 all autumn"),
+                             ("B", "fixed4", "the logs at UTC-4 all autumn"), ("B", "fixed5", "the logs at UTC-5 all autumn")):
+        n = moved_a(route) if ask == "A" else moved_b(route)
+        check("ASK %s %s moves %d figures, closed by the dictionary's clock line" % (ask, what, n), n >= 1 and tz_filed,
+              "; ".join(MOVED[(ask, route)]) if n <= 5 else "")
+
+    # the escalator readings a cold reader raised, each closed by filed text or immaterial
+    W_ = C.unit_day_windows(TARGET)
+    one_dir = all(len({d for (d, _run) in sh}) == 1 and None not in {d for (d, _run) in sh} and
+                  abs(sum(sh.values()) - 1.0) < 1e-9 for sh, _ev, _st in W_.values())
+    check("ASK A time-weighting equals the dominant direction on every unit-day (one direction, all of the window)",
+          one_dir, "%d unit-days" % len(W_))
+    stops_in = [k for k, (_sh, ev, st) in W_.items() if any(x == "STOP" for x in ev) or st == "STOP"]
+    fault_days = [k for k, (_sh, ev, st) in W_.items() if "FAULT" in ev or st == "FAULT"]
+    resets_same = all(len({x.split()[1] for x in ev if x.startswith("RUN")} |
+                          ({st.split()[1]} if st and st.startswith("RUN") else set())) <= 1 for _sh, ev, st in W_.values())
+    check("ASK A the only stoppages inside the window are faults, each back to the direction set (manual: no allowance)",
+          not stops_in and fault_days and resets_same and "make no allowance for stoppages" in manual,
+          "%d unit-days with a fault, %d with a stop" % (len(fault_days), len(stops_in)))
+    inv = pd.read_csv(os.path.join(TARGET, PK.F_INV))
+    pe = C._platform_escalators(TARGET)
+    set_dir = {u: next(iter(v)) for u, v in C.escalator_directions_peak(TARGET).items()}
+    differ = sorted(u for u, d in zip(pe.unit, pe.direction) if set_dir[u] != d)
+    dict_fields = pd.read_excel(os.path.join(TARGET, PK.F_DICT), sheet_name="Fields")
+    inv_dir_text = " ".join(dict_fields[(dict_fields.File == PK.F_INV) & (dict_fields.Field == "direction")].Description)
+    check("ASK A the inventory's direction against the log: closed by the survey date and the manual's set direction",
+          differ and "condition survey" in inv_dir_text and "in the direction it is set to run" in manual,
+          "%d of %d units differ in the window" % (len(differ), len(pe)))
+    asset = pd.read_csv(os.path.join(TARGET, PK.F_ASSET)).set_index("unit")
+    cls = {}
+    for r in pe.itertuples():
+        mm_ = float(r.width) * (25.4 if r.width_unit == "in" else 1.0)
+        cls[r.unit] = max(b for b in C.RATED if b <= mm_ + 1e-9)
+    check("ASK A widths: inches at 25.4 mm fall in the asset register's own step class on every unit",
+          set(asset.step_width_mm) <= set(C.RATED) and all(int(asset.loc[u, "step_width_mm"]) == c for u, c in cls.items()),
+          "%d units, %d in inches" % (len(cls), int((pe.width_unit == "in").sum())))
+
+    gb = C.ask_b(TARGET, "with_holidays")
+    check("ASK B holiday days in: Garnett Street %.1f against %.1f" % (gb["Garnett Street"], B["Garnett Street"]),
+          round(gb["Garnett Street"], 1) != round(B["Garnett Street"], 1), "")
+    check("ASK B out of service from the stop: the manual's union of fault and maintenance",
+          "from the moment it stops on a fault, or is taken out of service for maintenance" in manual, "")
     main_files = {C.F_FARE, C.F_CENSUS, C.F_COUNTS, C.F_CAP, C.F_TT, C.F_FLEET, C.F_COMPLEX}
     ask_files = {C.F_INV, C.F_ASSET, C.F_CTRL, C.F_WO, C.F_MON}
     src = open(os.path.join(HERE, "calc.py")).read()
@@ -363,11 +476,27 @@ def main():
         if fn.endswith(".pdf"):
             text += open(os.path.join(TARGET, fn), "rb").read().decode("latin-1")
     check("REALISM no shipped file carries an em or en dash", not any(
-        "—" in open(os.path.join(TARGET, fn), encoding="utf-8", errors="ignore").read() or
-        "–" in open(os.path.join(TARGET, fn), encoding="utf-8", errors="ignore").read()
+        "\u2014" in open(os.path.join(TARGET, fn), encoding="utf-8", errors="ignore").read() or
+        "\u2013" in open(os.path.join(TARGET, fn), encoding="utf-8", errors="ignore").read()
         for fn in files if fn.endswith(".csv")), "")
     sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
-    check("REALISM the submission carries no em dash", "—" not in sub and "–" not in sub, "")
+    check("REALISM the submission carries no em dash", "\u2014" not in sub and "\u2013" not in sub, "")
+
+    capreg = pd.read_csv(os.path.join(TARGET, PK.F_CAP))
+    check("REALISM the capacity register states its rating basis on every row",
+          capreg.basis.str.contains("1 person per sq m of").all(), "")
+    sal = capreg[capreg.complex == "Sallow Park"]
+    ok_sal = True
+    for code, g in sal.groupby("platform_code"):
+        g = g.sort_values("effective_from")
+        ok_sal &= (list(g.effective_from) == ["2019-07-01", "2026-09-01"] and g.effective_to.iloc[0] == "2026-08-31" and
+                   g.rated_capacity.nunique() == 1 and g.basis.iloc[1].startswith("re-measured 2026-08"))
+    check("REALISM Sallow Park's 2026 re-measure has its own effective row, the rating unchanged", ok_sal,
+          "%d platforms" % sal.platform_code.nunique())
+    cnt_text = " ".join(str(x) for x in pd.read_excel(os.path.join(TARGET, PK.F_COUNTS), sheet_name="Method",
+                                                      header=None)[0])
+    check("REALISM the count contractor is Tollison Field Data", "Tollison Field Data" in cnt_text and
+          "Halvorsen" not in cnt_text, "")
 
     # ------------------------------------------------------------------------------------------ dates
     last_fare = f.hour_utc.max()

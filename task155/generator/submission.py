@@ -33,12 +33,14 @@ def text(F):
     a("")
     a("**Place the relief crew at %s; it will work %s hours there.**" % (F["call_store"], n(F["crew_hours"])))
     a("Call-ins would leave more of %s's open Christmas hours unfilled than of any other store's, because its uplift "
-      "runs 10 am to 4 pm on weekdays, when most of its casuals are unavailable, and almost none of it carries on from "
-      "a casual's rostered shift. Not Werribee, which lists the "
+      "runs 9 am to 3 pm on weekdays and %s of it carries on from a casual's rostered shift: every shift needs a "
+      "casual to make a separate trip in, and most of the casuals free for it work at Box Hill or Ringwood. Not "
+      "Werribee, which lists the "
       "most open hours (%s) but whose open shifts carry on from its own casuals' rostered shifts, the offer casuals take "
       "%d%% of the time against %d%% for a separate trip in; not Box Hill or Altona, whose evening uplift sits behind "
       "their casuals' afternoon shifts in the same way."
-      % (F["call_store"], n(F["open_hours_werribee"]), F["ext_rate_pct"], F["other_rate_pct"]))
+      % (F["call_store"], "none" if F["abut_pct_camberwell"] == 0 else "almost none", n(F["open_hours_werribee"]),
+         F["ext_rate_pct"], F["other_rate_pct"]))
     a("")
     a("## 2. Critical Components")
     a("")
@@ -70,9 +72,8 @@ def text(F):
     a("4. Ran the fitted choice through the offer order, eligibility checks and offer hours in "
       "kws_callin_module_notes.pdf over the published Christmas rosters, every store's open shifts posted at 09:00 on "
       "16 November with the crew at no store (relief_crew_placement_standard.pdf, section 4), %d runs: "
-      "call-ins would leave about %s of Camberwell's open hours unworked, the most of any store, with %s next at "
-      "about %s." % (F["runs"], n(F["unworked_camberwell"]), F["runner_up"],
-                     n(F["unworked_" + F["runner_up"].lower().replace(" ", "_")])))
+      "call-ins would leave more of Camberwell's open hours unworked than of any other store's, well clear of the "
+      "next store." % F["runs"])
     a("5. Placed the crew at %s under section 3 of the standard; its crew hours under section 5 are the paid hours of "
       "%s's open shifts: %s." % (F["call_store"], F["call_store"], n(F["crew_hours"])))
     a("")

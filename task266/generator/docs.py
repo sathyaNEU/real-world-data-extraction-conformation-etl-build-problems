@@ -171,18 +171,16 @@ def write_notes(path):
     P("%s has every registration for fall 2026 (202710), one row per student and section, as it stood when the file "
       "was extracted. reg_status: RE registered, RW registered on the web, WC withdrew from the course after the "
       "census (a W grade), DD dropped before the census, DW dropped on the web before the census; status_date is the "
-      "date of that status. credit_hours is the course's credit hours. program_code is the student's program of "
-      "record when the file was extracted." % F["registrations"])
+      "date of that status. credit_hours is the course's credit hours and program_code the student's program of "
+      "record." % F["registrations"])
     st.append(Paragraph("6. Fall 2026 section schedule", S["h2"]))
     P("%s has one row per fall 2026 section, exported 28 May 2027. Type is LEC lecture, LAB laboratory, SHP shop or "
       "CLN clinical; Link is the lecture a laboratory, shop or clinical section belongs to. Camp is QNL, TRV, HOL or "
       "ONL for online sections, which have no meeting days or times (TBA) and room ONLINE. Clinical groups meet at "
-      "clinical agencies (room OFF CAMPUS). Rooms ending in V are interactive video classrooms, from which one class "
-      "is taught to students on more than one campus at once, each campus's students registered in its own section. "
-      "Cr Hrs is the "
-      "section's credit hours; a laboratory, shop or clinical section carries none, its course's credit hours being "
-      "on the lecture it belongs to. Max is the section's enrolment limit and Enrl the students registered in it when "
-      "the schedule was exported. Status A is active and X cancelled before the census." % F["schedule"])
+      "clinical agencies (room OFF CAMPUS). Rooms ending in V are interactive video classrooms. Start Date and End "
+      "Date are the section's first and last class days. Cr Hrs is the section's credit hours, Max its enrolment "
+      "limit and Enrl the students registered in it when the schedule was exported. Status A is active and X "
+      "cancelled before the census." % F["schedule"])
     st.append(Paragraph("7. Program register", S["h2"]))
     P("%s lists each program's current and legacy codes, award, CIP code and campuses. Its Subjects sheet gives the "
       "program that owns each course subject; general education subjects belong to no program." % F["register"])

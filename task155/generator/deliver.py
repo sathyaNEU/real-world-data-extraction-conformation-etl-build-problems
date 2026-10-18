@@ -172,10 +172,8 @@ def write_pdf(path, B, G, ab, ex, figs, order, names, n_open):
              Paragraph("Place the 25-person relief crew at <b>%s</b> for the four trading weeks from Friday 27 November "
                        "to Thursday 24 December. It will work <b>%s hours</b> there, the paid hours of the %d shifts "
                        "%s's Christmas roster lists open. Of all eight stores, %s's open shifts are the ones our "
-                       "call-ins would most leave unworked: about %s of those hours on our forecast, against about %s "
-                       "at %s, the next store." % (names[crew], "{:,}".format(figs["crew_hours"]), n_open[crew],
-                                                   names[crew], names[crew], "{:,}".format(r10(G["unworked"][crew])),
-                                                   "{:,}".format(r10(G["unworked"][order[1]])), names[order[1]]),
+                       "call-ins would most leave unworked, well clear of any other store's."
+                       % (names[crew], "{:,}".format(figs["crew_hours"]), n_open[crew], names[crew], names[crew]),
                        st["body"]),
              Paragraph("Open shifts call-ins would leave unworked if the crew went nowhere", ctitle),
              Image(chart_png(G, order, names, crew), width=176 * mm, height=71 * mm),
@@ -193,11 +191,13 @@ def write_pdf(path, B, G, ab, ex, figs, order, names, n_open):
                           figs["abut_pct_box_hill"], figs["abut_pct_altona"], figs["ext_rate_pct"],
                           "{:,}".format(figs["ext_offers"]), figs["other_rate_pct"], "{:,}".format(figs["other_offers"])),
                        st["body"]),
-             Paragraph("<b>Why %s.</b> Its uplift is daytime work, 10 am to 4 pm on weekdays and morning shifts at "
-                       "weekends. Most of its casuals are available only after 3 pm on weekdays, "
-                       "and only %d%% of its open shifts could be taken by a casual staying on from a rostered shift, "
-                       "so nearly every one needs someone to come in specially in the busiest month of the year."
-                       % (names[crew], figs["abut_pct_camberwell"]), st["body"])]
+             Paragraph("<b>Why %s.</b> Its uplift is daytime work, 9 am to 3 pm on weekdays and morning shifts at "
+                       "weekends. Plenty of casuals are free for it, most of them Box Hill's and Ringwood's university "
+                       "students on their summer break, but %s of its open shifts could be taken by a casual staying "
+                       "on from a rostered shift, so every one needs someone to make a separate trip in, most of them "
+                       "to another store, in the busiest month of the year, and few casuals do."
+                       % (names[crew], "none" if figs["abut_pct_camberwell"] == 0 else
+                          "only %d%%" % figs["abut_pct_camberwell"]), st["body"])]
     rows = [["Store", "Open shifts", "Open paid hours", "Could be taken by staying on", "Forecast unworked hours"]]
     for l in order:
         k = names[l].lower().replace(" ", "_")
@@ -321,10 +321,12 @@ def write_xlsx(path, B, G, S, ab, ex, figs, order, names, n_open):
         c.number_format, c.font = "#,##0.0", bold
     ws3.cell(row=6 + len(srt), column=1, value="Each shift counts once at its final outcome: a shift raised again after "
                                                "its list ran out, raised again after the casual who took it gave it "
-                                               "back, or vacated by an absence reported twice, is one shift; the "
-                                               "identical open lines a roster lists are each a shift. Werribee's open "
-                                               "Christmas shifts went to last year's relief crew and were never put "
-                                               "out.")
+                                               "back, or vacated by an absence reported twice, is one shift, and so is "
+                                               "an open line the 2025 roster import raised twice (open lines counted "
+                                               "from the 2025 roster export); the identical open lines a roster lists "
+                                               "are each a shift. A shift is covered by the casual who works it. "
+                                               "Werribee's Christmas uplift went to last year's relief crew and was "
+                                               "never put out.")
     ws3.freeze_panes = "B4"
     ws4 = wb.create_sheet("Cover across stores")
     ws4["A1"] = "Call-in hours covered across stores, 28/11/2025 to 24/12/2025, paid hours"

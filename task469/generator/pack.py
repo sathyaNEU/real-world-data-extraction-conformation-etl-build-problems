@@ -275,14 +275,20 @@ FLEET_COLS = ["operator", "aircraft_type", "month", "aircraft_in_fleet", "aircra
               "aircraft_available_for_kdy_lines"]
 
 
+ELSEWHERE = {"PMV": 2, "SBC": 1, "GYA": 0}     # aircraft each operator bases away from Kelderby (aircraft register)
+
+
 def fleet_rows(x):
+    """Each operator's whole fleet of the type by month of summer 2027, the aircraft in heavy check and those left for
+    its Kelderby lines (one per line and a spare when none is in check)."""
     lines27 = x["lines27"]
     out = []
     for op, t in (("PMV", "E75"), ("SBC", "DH4"), ("GYA", "AT7")):
         n = sum(1 for ln in lines27 if W.SEGMENTS[ln["seg"]]["op"] == op)
+        fleet = n + 1 + ELSEWHERE[op]
         for m in range(3, 11):
             check = 1 if (op, m) in {("PMV", 3), ("PMV", 10), ("SBC", 4), ("SBC", 10), ("GYA", 3)} else 0
-            out.append([W.OPERATORS[op][0], W.TYPES[t], "2027-%02d" % m, n + 1, check, n + 1 - check])
+            out.append([W.OPERATORS[op][0], W.TYPES[t], "2027-%02d" % m, fleet, check, fleet - ELSEWHERE[op] - check])
     return out
 
 

@@ -241,10 +241,14 @@ MANUAL = [
         "An escalator's rated flow depends on its step width: 40 people a minute for a 600 mm step, 60 for an 800 mm "
         "step and 80 for a 1,000 mm step at 0.5 metres a second, and in proportion to its speed at other speeds. An "
         "escalator carries its rated flow in the direction it is set to run.",
+        "The escalator capacity between two levels is the sum of the rated flows of the escalators between them, "
+        "taken for each direction. Capacities are rated with every escalator running and make no allowance for "
+        "stoppages.",
     ]),
     ("5.4 Elevators", [
-        "An elevator is out of service whenever it is not in normal passenger service: from the moment it stops or is "
-        "taken out of service to the moment it is back in normal passenger service.",
+        "An elevator is out of service whenever it is not in normal passenger service: from the moment it stops on a "
+        "fault, or is taken out of service for maintenance, inspection or repair, to the moment it is back in normal "
+        "passenger service. Time out of service for more than one reason at once counts once.",
     ]),
 ]
 

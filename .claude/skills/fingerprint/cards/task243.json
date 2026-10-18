@@ -1,0 +1,92 @@
+{
+  "task": "task243",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 4, DQ16 seed (which local areas' register counts breach the undercoverage alert): the world, decision and quantity kept (local areas' register counts, the undercoverage alert, the register-improvement programme); the seed's dual-system pitfall dropped, since capture-recapture traps are spent (task448 stratified capture, task196 a second source fed by the first), and the pitfall re-found in the data: the death register's undercoverage read through the growth balance of two censuses, open to the movement of the oldest residents",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "niche": "a province's civil registry review: the share of adult deaths each city's and municipality's local civil registry office registers between two censuses, estimated from the balance of the two censuses' age counts against the deaths registered above each age, where the oldest residents move to their children's homes",
+  "objective": "data-quality-monitoring",
+  "shape": "07",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G4",
+    "G16",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the provincial planning office's population officer, who reviews each local civil registry office's death registration for the provincial civil registration committee",
+  "role_family": "policy_adviser",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "crs_death_records_extract_20220331.csv",
+    "rows": 0,
+    "entity": "one Certificate of Death registered in one of the province's local civil registry offices",
+    "grain": "certificate (registration)",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "local_government",
+  "world": {
+    "geography": "Philippines, a fictional province in Mindanao (the Province of Kalinawan, its component city and eleven municipalities, their local civil registry offices; real national censuses of 2015 and 2020 and real civil registration law)",
+    "currency": "PHP",
+    "org_type": "provincial government (planning and development office) with the local civil registry offices of its city and municipalities",
+    "invented_names": [
+      "Province of Kalinawan",
+      "Kalinawan City",
+      "Kalinawan Provincial Civil Registration Committee"
+    ],
+    "people": [
+      "Randy Cortez",
+      "Nicole Gomez",
+      "Casey Carrillo",
+      "Steven Jimenez"
+    ]
+  },
+  "deliverables": [
+    "lcro_death_registration_completeness_2015_2020.xlsx",
+    "crvs_committee_note_2023.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the share of a population's exits that a register records, recovered from how the count above each age changed between two complete counts against the exits recorded above that age; part of each age group's change is members leaving for or arriving from other places at rates that rise with their own chance of exiting, so the balance taken without that movement keeps its straight line and books the leavers as unrecorded exits and the arrivals as recorded ones, and only the counts' own question on where each member lived before restores the missing term.",
+  "driver_concrete": "Each city's and municipality's death registration completeness is read from the general growth balance of the 2015 and 2020 census age counts against the deaths registered above each age, but Kalinawan's oldest residents move to their children's homes, out of the farming municipalities and into the peri-urban ones, at rates that follow their mortality, so the balance taken as closed keeps its straight line, reads the departures as unregistered deaths and the arrivals as registered ones, and only the balance carrying each place's net movement above each age from the 2020 census's residence five years earlier gives the golden set.",
+  "stump": "A competent demographer fits the general growth balance to each LGU's 2015 and 2020 census age counts and its registered adult deaths with the population taken as closed, as the method is set out, over the usual ages or a range trimmed for the young adults' labour moves, and flags the farming municipalities whose oldest residents leave while passing the peri-urban municipality they move to; the step that lands it there is leaving the oldest residents' movement out of the balance, which the fit's straight line never shows.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who dedupes the register, places each death by usual residence and date of death, and fits the general growth balance to the two censuses as the method is set out (closed to migration, over the usual ages or a trimmed range) flags the farming municipalities whose oldest residents leave and passes the peri-urban municipality they move to; only carrying the 2020 census's count of who moved above each age into the balance gives the golden set.",
+  "domain_test": "Completeness of death registration is the demographer's quantity, estimated by a death distribution method (Hill's general growth balance, with Hill and Queiroz's migration term for open populations) from how the population above each age changed between two censuses against the deaths registered above that age; with a hospital, a school or megawatt-hours in place of a municipality there is no population ageing between two counts and no balance to fit, so the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:migration-term-in-the-growth-balance",
+  "layer1": [
+    "the civil registry system's death records keyed by registering office, the component city's records before its 2019 conversion under the municipality's old name",
+    "late registrations entered months or years after the death, the 2020 lockdown's backlog among them",
+    "deaths registered where they occurred, the provincial hospital's office holding other municipalities' and other provinces' residents",
+    "records transmitted twice from the hospital office to the residence office",
+    "ages at death unstated, and infants' ages in months, days or hours",
+    "the two censuses' age tables on the boundaries of their day, and the 2020 residence five years earlier for every person aged five and over"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task450": "task450 links two administrations of a test through a screened anchor subset of items; task243 has no instrument or anchor: it books the change in each age group above an age between two censuses to deaths and to migration, and the decisive term is the 2020 census's own count of who moved.",
+    "task129": "task129 separates a maintenance provider's servicing from a surroundings-driven rise in tree failures at matched time since servicing; task243 separates deaths from migration in the shrinkage of each age group between two censuses, a demographic balance with no provider, servicing or failure in it."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-18T00:27:53Z"
+}

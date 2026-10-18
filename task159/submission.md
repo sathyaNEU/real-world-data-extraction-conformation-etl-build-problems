@@ -46,7 +46,7 @@
    - ALB-6 (Albrecht Place, Line 6 island platform): Monday to Friday
    - QUA-1S (Quarry Road, Line 1 southbound platform): none
    - QUA-6 (Quarry Road, Line 6 island platform): Monday to Friday
-3. Platform escalators at their rated flows between 07:00 and 09:30 on the autumn 2026 pick's weekdays, people a minute down to the platforms and up from them:
+3. Escalators between the mezzanines and any of the platforms, at their rated flows between 07:00 and 09:30 local on the autumn 2026 pick's weekday-timetable days, people a minute down to the platforms and up from them:
    - Garnett Street: 72 down, 144 up
    - Sallow Park: 216 down, 72 up
    - Hesper Avenue: 108 down, 144 up
@@ -54,7 +54,7 @@
    - Ferrier Square: 36 down, 248 up
    - Albrecht Place: 268 down, 36 up
    - Quarry Road: 132 down, 96 up
-4. Elevator-hours out of service between 07:00 and 09:45 on the autumn 2026 pick's weekday mornings:
+4. Total elevator-hours out of service between 07:00 and 09:45 local on those mornings, every elevator in the complex:
    - Garnett Street: 27.9
    - Sallow Park: 53.3
    - Hesper Avenue: 38.6

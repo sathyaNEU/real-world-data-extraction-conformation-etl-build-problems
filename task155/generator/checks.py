@@ -11,6 +11,7 @@ import json
 import math
 import os
 import re
+import statistics
 import sys
 from multiprocessing import Pool
 
@@ -123,6 +124,7 @@ def routes(B, rows):
         out["R3 static " + spec] = C.Forward(B, models[spec]).static()
     for spec in ("ext_only", "ext_dec"):
         out["R3 cascade " + spec] = C.Forward(B, models[spec]).simulate(runs=8, seed=7)
+    out.update(C.pool_routes(B, rows))
     return out, models
 
 
@@ -164,7 +166,7 @@ def main(task, F):
     o0, m0 = C.rank(r0)
     check("R3a the default path files Werribee", o0[0] == WERR and m0 >= 1.15,
           "%s x%.2f; crew hours %.0f" % (names[o0[0]], m0, G["open"][o0[0]]))
-    easy = [k for k in R if k.startswith(("R0", "R1", "R2", "open"))]
+    easy = [k for k in R if k.startswith(("R0", "R1", "R2", "P ", "open"))]
     worst = min(ratio(R[k], C.rank(R[k])[0][0], CAMB) for k in easy)
     check("R3a every easy route files another store, Camberwell 15 per cent behind", all(
         C.rank(R[k])[0][0] != CAMB for k in easy) and worst >= 1.15,
@@ -343,11 +345,11 @@ def main(task, F):
     check("ASK the golden tables equal the world's own last Christmas", all(
         abs(tA[l][k] - S["A_golden"][l][k]) < 1e-6 for l in B.locs for k in ("put_out", "covered", "uncovered")) and all(
         abs(tB[l][k] - S["B_golden"][l][k]) < 1e-6 for l in B.locs for k in ("imports", "exports")))
-    # the readings the module notes and the transmittal file, each run as the alternative
+    # the readings the module notes, the transmittal and the prompt file, each run as the alternative
     for name, label, need in (("A_S1_rows", "every call-in a shift, re-raises counted", 18),
                               ("A_S1b_noninstant", "every call-in a shift but those closed the minute raised", 18),
                               ("A_S3_nodrops", "a given-back shift's re-raise counted as another shift, its first "
-                                               "fill kept", 6),
+                                               "fill kept (the round-2 judge's Fork S1)", 6),
                               ("A_S3c_keepfill", "a given-back shift counted once, its first fill kept as the cover",
                                4),
                               ("A_S4_utc", "shift dates read in UTC", 6),
@@ -358,37 +360,56 @@ def main(task, F):
           "%d of 16 figures off" % off_b("B_S1_current"))
     check("ASK B filed: a given-back shift credited to its first filler misses", off_b("B_S3c_keepfill") >= 1,
           "%d of 16 figures off" % off_b("B_S3c_keepfill"))
-    for name in ("B_S2_nodrops", "B_S3_rows"):
-        check("ASK B hazard %s" % name[2:], off_b(name) >= 1, "%d of 16 figures off" % off_b(name))
-    # the silent devices that outlive the filing
-    check("ASK A device: the stores' identical open lines merged with their re-raises misses", off_a("A_S2_keys") >= 18,
+    check("ASK B filed: every FILLED call-in counted as written misses (the round-2 judge's Fork S2)",
+          off_b("B_S3_rows") >= 6, "%d of 16 figures off" % off_b("B_S3_rows"))
+    check("ASK B hazard S2_nodrops", off_b("B_S2_nodrops") >= 1, "%d of 16 figures off" % off_b("B_S2_nodrops"))
+    # a give-back on a call-in raised for an absence (the round-2 judge's Sunshine 5.5 hours): the notes' give-back
+    # rule covers every call-in, so looking for give-backs only on open-line fills misses
+    gb_abs = 0
+    slot_abs = collections.defaultdict(list)
+    regw = [x for x in A._reg(B) if A.WINDOW[0] <= x["d"] <= A.WINDOW[1]]
+    for y in regw:
+        if y["reason"] == "ABS":
+            slot_abs[(y["loc"], y["day"], y["s"], y["e"])].append(y)
+    for x in regw:
+        if x["reason"] == "ABS" and x["outcome"] == "FILLED":
+            p_ = str(C.payroll_on(B, x["by"], x["d"]))
+            gb_abs += any(y["absent"] == p_ and y["raised"] > x["closed"]
+                          for y in slot_abs[(x["loc"], x["day"], x["s"], x["e"])])
+    check("ASK A filed: give-backs looked for only on open-line fills miss (fills of absence call-ins given back too)",
+          off_a("A_S3d_opngb") >= 1 and gb_abs >= 1, "%d of 24 figures off; %d absence call-ins given back" % (
+              off_a("A_S3d_opngb"), gb_abs))
+    # the silent devices, each found in the data once the filing is read
+    check("ASK A device A1: the stores' identical open lines merged with their re-raises misses", off_a("A_S2_keys") >= 18,
           "%d of 24 figures off" % off_a("A_S2_keys"))
-    check("ASK A device: an absence reported twice counted as two shifts misses", off_a("A_S3b_raise") >= 12,
-          "%d of 24 figures off" % off_a("A_S3b_raise"))
+    check("ASK A device A3: an absence's second report and the import's second raise each counted a shift misses",
+          off_a("A_S3b_raise") >= 12, "%d of 24 figures off" % off_a("A_S3b_raise"))
+    check("ASK A device A4: the 07:00 chain, the duplicate reports merged as filed, counts the import's second raise "
+          "of an open line as a shift", off_a("A_chain") >= 18, "%d of 24 figures off" % off_a("A_chain"))
+    cov_off = sum(abs(round(S["A_chain"][l]["covered"], 1) - round(S["A_golden"][l]["covered"], 1)) >= 0.05
+                  for l in B.locs)
+    check("ASK A device A4: the chain counts a twice-raised line's FILLED close as more cover", cov_off >= 6,
+          "%d of 8 covered figures off" % cov_off)
     # the module offers a casual who gave a shift back nothing else that day, so voiding by the day's absence and
     # by the shift's own re-raise agree
     check("ASK the day's absence voids the same fills as the shift's re-raise", off_a("A_S7_dayvoid") == 0 and
           off_b("B_S7_dayvoid") == 0)
     # Ask B's own device: the new-year store moves payroll keyed as re-engagements, the new cost centre dated from
-    # the keying, read from the number KWS holds; Ask A's covered column under the 07:00 path: a duplicate call-in
-    # closed FILLED with the casual booked
-    check("ASK B device: re-engagements read on the cost-centre rows' own dates miss (golden shifts)",
+    # the keying, read from the number KWS holds
+    check("ASK B device B2: re-engagements read on the cost-centre rows' own dates miss (golden shifts)",
           off_b("B_S8_newest") >= 9, "%d of 16 figures off" % off_b("B_S8_newest"))
     check("ASK B device: the shift-identity fold misses Table 2 with it", off_b("B_crack") >= 9,
           "%d of 16 off (%d with the golden's home read)" % (off_b("B_crack"), off_b("B_crack_payroll")))
-    check("ASK B device: the 07:00 re-raise chain misses Table 2 through it", off_b("B_chain") >= 9 and
-          off_b("B_chain") >= off_b("B_S3b_raise") + 4, "%d of 16 off (%d with the golden's home read)" % (
-              off_b("B_chain"), off_b("B_S3b_raise")))
-    cov_off = sum(abs(round(S["A_S3b_raise"][l]["covered"], 1) - round(S["A_golden"][l]["covered"], 1)) >= 0.05
-                  for l in B.locs)
-    check("ASK A device: the 07:00 re-raise chain counts a duplicate's FILLED close as more cover", cov_off >= 6,
-          "%d of 8 covered figures off" % cov_off)
+    check("ASK B device: the 07:00 chain misses Table 2", off_b("B_chain") >= 9, "%d of 16 off (%d with the golden's "
+          "home read)" % (off_b("B_chain"), off_b("B_chain_payroll")))
     # the cracker sheet, measured on the cut pack (generator/cracker.py)
     import cracker as CR
     sheet, blind = CR.measure(task)
     check("ASK each cracker path keeps few enough figures for a pair at or under 40", all(
-        r["pair"] <= 40.0 for r in sheet.values()), "; ".join("%s %d of 40, pair %.1f" % (k, r["kept"], r["pair"])
-                                                             for k, r in sheet.items()))
+        r["pair"] <= 40.0 for r in sheet.values() if not r["record"]), "; ".join(
+        "%s %d of 40, pair %.1f" % (k, r["kept"], r["pair"]) for k, r in sheet.items()))
+    check("ASK the round-2 judge's own route, run for the record, also sits at or under 40", all(
+        r["pair"] <= 40.0 for r in sheet.values() if r["record"]))
     check("ASK the blind responses recover no more than a quarter of either table", max(
         blind["rate_A"], blind["nil_A"], blind["const_A"]) <= 6 and max(blind["nil_B"], blind["const_B"]) <= 4,
           str(blind))
@@ -403,14 +424,16 @@ def main(task, F):
     check("ASK A1 reposts sit in the window at every store with call-ins", all(rep[l] > 0 for l in B.locs),
           ", ".join("%s %d" % (names[l], rep[l]) for l in B.locs))
     vac = collections.Counter()
-    for loc, day, s, e, pn, st in B.roster:
+    for loc, day, s_, e_, pn, st in B.roster:
         d = C.D0 + dt.timedelta(days=day)
         if st == "VACANT" and A.WINDOW[0] <= d <= A.WINDOW[1]:
             vac[loc] += 1
     orig = collections.Counter(x["loc"] for x in A._reg(B) if A.WINDOW[0] <= x["d"] <= A.WINDOW[1]
                                and x["reason"] == "OPN" and x["r"]["raised_at"] == A.PUBLISHED_25)
-    check("ASK A referee: open postings at publication match the roster's vacant lines", all(
-        vac[l] == orig[l] for l in B.locs), ", ".join("%s %d" % (names[l], vac[l]) for l in B.locs))
+    check("ASK A4 the 2025 import raised some open lines twice: postings at publication cover every vacant line and "
+          "exceed them at six or more stores", all(orig[l] >= vac[l] for l in B.locs) and
+          sum(orig[l] > vac[l] for l in B.locs) >= 6, ", ".join("%s %d of %d" % (names[l], orig[l], vac[l])
+                                                                for l in B.locs))
     movers = [pc for pc in B.people if B.people[pc]["home_location"] != C.home_loc(B, pc, dt.date(2025, 12, 10))]
     check("ASK B1 store moves touch every store", len({B.people[pc]["home_location"] for pc in movers} |
                                                      {C.home_loc(B, pc, dt.date(2025, 12, 10)) for pc in movers})
@@ -465,11 +488,21 @@ def main(task, F):
           near == 0, "%d of %d offers" % (near, len(rows)))
     # the brief's statements about the two stores, held against the record (house fix H6)
     C.index_availability(B)
-    week = [C.D0 + dt.timedelta(days=C.dn(dt.date(2026, 11, 30)) + k) for k in range(5)]
-    camb = [pc for pc, r in B.people.items() if r["home_location"] == CAMB and r["status"] == "ACTIVE"]
-    late = sum(all(all(w[0] >= 900 for w in C.windows_on(B, pc, d)) for d in week) for pc in camb)
-    check("RZ8 most of Camberwell's casuals are available only after 3 pm on weekdays", late > len(camb) / 2,
-          "%d of %d" % (late, len(camb)))
+    fwp = C.Forward(B, None)
+    fwp.reset()
+    east = {loc_of["Box Hill"], loc_of["Ringwood"]}
+    sizes, members = [], set()
+    for ln in fwp.open:
+        if ln["loc"] == CAMB and ln["code"] == "C09":
+            el = [pc for pc in fwp.order[CAMB] if fwp.eligible(pc, ln)]
+            sizes.append(len(el))
+            members.update(el)
+    sister = [pc for pc in members if fwp.home[pc] in east]
+    young = [pc for pc in sister if 18 <= fwp.age[pc] < 25]
+    check("RZ8 plenty of casuals are free for Camberwell's 9-to-3 uplift, most of them Box Hill's and Ringwood's "
+          "18-to-24s", sizes and statistics.median(sizes) >= 20 and len(sister) > len(members) / 2 and
+          len(young) > len(sister) / 2, "median %.0f a shift; %d casuals, %d from Box Hill or Ringwood, %d of them "
+          "18 to 24" % (statistics.median(sizes), len(members), len(sister), len(young)))
     wcc = [r["cost_centre"] for r in B.stores if r["kws_location"] == WERR][0]
     feb = {int(r["employee_no"]) for r in B.payroll if r["engagement_start"].startswith("2026-02")
            and r["cost_centre"] == wcc and not r["previous_employee_no"]}
@@ -482,6 +515,17 @@ def main(task, F):
     used = open(os.path.join(os.path.dirname(__file__), "calc.py")).read() + open(
         os.path.join(os.path.dirname(__file__), "asks.py")).read()
     check("D1 the golden and the asks read neither distractor", "F_PLAN" not in used and "F_CAL" not in used)
+    import openpyxl as _ox
+    wsp = _ox.load_workbook(os.path.join(target, K.F_PLAN), read_only=True).worksheets[0]
+    pnotes = [row[-1] for row in wsp.iter_rows(min_row=6, values_only=True) if row[0]]
+    staffing = re.compile(r"casual|staff|roster|call-in|crew|shift|team|hire|labour|labor", re.I)
+    check("D2 the trading plan's notes are trading notes, several stores', none on staffing or call-ins",
+          sum(1 for n in pnotes if n) >= 5 and not any(staffing.search(n or "") for n in pnotes),
+          "; ".join(n for n in pnotes if n))
+    xcore = __import__("zipfile").ZipFile(os.path.join(target, K.F_XMAS)).read("docProps/core.xml").decode()
+    stamps = re.findall(r"<dcterms:(created|modified)[^>]*>([^<]+)<", xcore)
+    check("RZ12 the published roster workbook was saved by its 10:00 publication", all(
+        v <= "2026-11-11T23:00:00Z" for _, v in stamps) and len(stamps) == 2, ", ".join("%s %s" % kv for kv in stamps))
 
     fails = [r for r in RESULTS if not r[1]]
     print("checks: %d, failed %d" % (len(RESULTS), len(fails)))
@@ -546,5 +590,10 @@ def _write_routes(task, R, names, truth, G):
     lines = []
     for k, u in list(R.items()) + [("world truth (32 runs)", truth), ("golden cascade (24 runs)", G["unworked"])]:
         o, m = C.rank(u)
+        if k.startswith("P "):
+            # a pool route: the thinnest store leads; the pool measure itself is printed, casuals per shift or per hour
+            lines.append("%-40s %-11s x%.2f | %s" % (k, names[o[0]], m, " ".join("%s %.1f" % (names[l], 1.0 / u[l])
+                                                                                   for l in o)))
+            continue
         lines.append("%-40s %-11s x%.2f | %s" % (k, names[o[0]], m, " ".join("%s %.0f" % (names[l], u[l]) for l in o)))
     open(os.path.join(task, "generator", "routes.txt"), "w").write("\n".join(lines) + "\n")

@@ -314,9 +314,10 @@ formula reads to another set.
   overruns accepts all six; R3b with the stand time sends all six back; R3a only the censored estimate sends back
   three).
 - **Gates.** 16 files in 4 formats (csv, pdf, ssim, xlsx); the stand log at 28,392 rows; two distractors (the monthly
-  punctuality workbook and the handling staffing file), each deletion asserted; checks.py green; verify.py from the
+  punctuality workbook and the handling staffing file), each deletion asserted; checks.py green (54 rows); verify.py from the
   bundle alone (its own readers, turn builder, product-limit estimator and SSIM parser) matches the golden; two builds
-  byte-identical; figures_check.py (107 figures), precut.py (50) and voice-check.py exit 0; leak.py REVIEW (no LEAK);
+  byte-identical; figures_check.py (107 figures), precut.py (50) and voice-check.py exit 0; leak.py REVIEW (no LEAK) and three isolated readers, the last two landing the call and missing all twelve
+  schedule figures;
   guard heart WARN after the context artifact was re-keyed (Gate G overuse, answered in the draw); the containers clean
   (H1 audit, pack and golden); golden-realism pass on the workbook (finding titles, a Notes sheet from SFG-3 and the
   pack's own exclusions, totals, frozen headers, a palette marking the three filings sent back).
@@ -353,6 +354,16 @@ findings on the UTC files (every station's variation written as +0000; a UTC fil
 variation) and on the start-up minutes (always code 89; now 89, 87 or 81) were fixed without moving a graded figure;
 the minute's agreement between the operators' block times and the stand log, and the punctuality workbook's even
 months (no cancellation in the season), stand as the systems' own.
+
+Reader, round 3 (a fresh copy after the SFG-3 2.1 clause): nothing quoted for question 1 beyond SFG-3 2.4, which
+defines need and says nothing of a turn that left on time; question 6 an analytical choice (the censoring); no ranking,
+helping or answer-shaped file; its own answer landed the call by a reverse product-limit estimate; on the schedule ask
+it counted every leg and missed all twelve figures (1,242 turns against 759). Its finding that the 2026 aircraft
+register lists fourteen Pellmont Embraer 175s while the fleet plan counted thirteen was fixed: the fleet plan now
+counts each operator's whole fleet, aircraft based elsewhere included, and gives apart the aircraft left for its
+Kelderby lines (checks.py asserts the whole fleet equals the register plus the aircraft added for 2027, and the bound
+on the lines). Every graded figure is unchanged. The three delay-code formats, the registration formats by recording
+source, Sable Coast's flight-date convention and the punctuality workbook's even months stand as the systems' own.
 
 Judge, pass 2 (`determinism_check_report_pass2.md`, the one re-judge, on the fix-pass build): DETERMINISTIC, APPROVE.
 The main call and every graded figure reproduced, the twelve week figures among them once each re-filed rotation was

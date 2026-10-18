@@ -27,7 +27,7 @@
       "xlsx"
     ],
     "largest_file": "vtc_fare_entries_hourly_2024-06-03_2027-01-10.parquet",
-    "largest_file_rows": 761596
+    "largest_file_rows": 761594
   },
   "sources": [
     {
@@ -43,7 +43,7 @@
     {
       "path": "afc_register_reads_2022-02-01_2024-06-30.csv",
       "format": "csv",
-      "bytes": 8037261,
+      "bytes": 8035497,
       "rows": 216012,
       "source": "Constructed: Vellmouth Transit Commission legacy fare system, four-hour register reads by station, 1 February 2022 to 30 June 2024",
       "date": "2027-01-11",
@@ -106,8 +106,8 @@
     {
       "path": "platform_capacity_register.csv",
       "format": "csv",
-      "bytes": 7425,
-      "rows": 93,
+      "bytes": 11910,
+      "rows": 97,
       "source": "Constructed: Vellmouth Transit Commission Station Planning, platform capacity register (11 January 2027)",
       "date": "2027-01-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -115,7 +115,7 @@
     {
       "path": "platform_counts_autumn_2026.xlsx",
       "format": "xlsx",
-      "bytes": 68491,
+      "bytes": 68451,
       "rows": 2203,
       "source": "Constructed: Vellmouth Transit Commission count programme, platform counts, autumn 2026 (4 December 2026)",
       "date": "2027-01-11",
@@ -133,7 +133,7 @@
     {
       "path": "ridership_dashboard_avg_weekday_2025-2026.xlsx",
       "format": "xlsx",
-      "bytes": 29857,
+      "bytes": 29805,
       "rows": 965,
       "source": "Constructed: Vellmouth Transit Commission Ridership Data, ridership dashboard, average weekday entries by complex, 2025 and 2026 (8 January 2027)",
       "date": "2027-01-11",
@@ -169,7 +169,7 @@
     {
       "path": "station_census_2026-10.xlsx",
       "format": "xlsx",
-      "bytes": 150166,
+      "bytes": 150167,
       "rows": 4775,
       "source": "Constructed: Vellmouth Transit Commission count programme, station census, October 2026 (30 November 2026)",
       "date": "2027-01-11",
@@ -187,7 +187,7 @@
     {
       "path": "station_planning_manual_ch5.pdf",
       "format": "pdf",
-      "bytes": 41104,
+      "bytes": 41315,
       "rows": null,
       "source": "Constructed: Vellmouth Transit Commission Station Planning, station planning manual chapter 5 (3 November 2025)",
       "date": "2027-01-11",
@@ -196,8 +196,8 @@
     {
       "path": "vtc_data_dictionary.xlsx",
       "format": "xlsx",
-      "bytes": 9407,
-      "rows": 53,
+      "bytes": 10221,
+      "rows": 54,
       "source": "Constructed: Vellmouth Transit Commission Ridership Data, data dictionary for the 11 January 2027 pull",
       "date": "2027-01-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -205,8 +205,8 @@
     {
       "path": "vtc_fare_entries_hourly_2024-06-03_2027-01-10.parquet",
       "format": "parquet",
-      "bytes": 5265436,
-      "rows": 761596,
+      "bytes": 5259600,
+      "rows": 761594,
       "source": "Constructed: Vellmouth Transit Commission fare back office, hourly entries by complex and payment type, 3 June 2024 to 10 January 2027 (UTC)",
       "date": "2027-01-11",
       "license": "CC0-1.0 (original work, constructed for this task)"

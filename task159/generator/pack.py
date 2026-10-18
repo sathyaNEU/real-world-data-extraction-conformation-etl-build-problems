@@ -77,7 +77,7 @@ def write_census(out, L):
     ws2 = wb.create_sheet("Notes")
     notes = [
         ["Station census, October 2026"],
-        ["Count programme, Station Planning. Counts by Halvorsen Field Counts; supervised by %s." % K.PEOPLE["counts"]],
+        ["Count programme, Station Planning. Counts by Tollison Field Data; supervised by %s." % K.PEOPLE["counts"]],
         [""],
         ["Each station was counted on one Tuesday, Wednesday or Thursday between 6 and 29 October 2026, 06:00 to 10:00."],
         ["People are counted in each quarter-hour at each platform access (the stairs and escalators at that end of the platform together) and in each passage between platforms."],
@@ -109,7 +109,7 @@ def write_counts(out, L):
     ws0.title = "Method"
     method = [
         ["Platform counts, autumn 2026"],
-        ["Halvorsen Field Counts for VTC Station Planning. Delivered 4 December 2026."],
+        ["Tollison Field Data for VTC Station Planning. Delivered 4 December 2026."],
         [""],
         ["At each train's arrival the enumerator records the number of people on the platform before the doors open. On an island platform the count is everyone on the island, and the train's direction is noted."],
         ["Crowds of about 200 or more are estimated to the nearest 10 and marked E in the Est column."],
@@ -129,8 +129,8 @@ def write_counts(out, L):
         _sheet(ws, ["Date", "Platform", "Train", "Due", "Arrived", "People", "Est"], out_rows,
                [12, 30, 12, 8, 9, 9, 6], fmt={"A": "yyyy-mm-dd"})
     wb.save(path)
-    PP.normalize_ooxml(path, "Halvorsen Field Counts", "Caleb Rowe", "2026-10-13T16:20:00Z", "2026-12-04T19:02:00Z",
-                       excel=True, company="Halvorsen Field Counts")
+    PP.normalize_ooxml(path, "Tollison Field Data", "Caleb Rowe", "2026-10-13T16:20:00Z", "2026-12-04T19:02:00Z",
+                       excel=True, company="Tollison Field Data")
     return len(rows)
 
 
@@ -191,6 +191,7 @@ DICT_FIELDS = [
     (F_CAP, "rated_capacity", "People, at one square metre each over the usable area."),
     (F_CAP, "effective_from", "First day the rating applies."),
     (F_CAP, "effective_to", "Last day the rating applies; blank while current."),
+    (F_CAP, "basis", "How the rating was made."),
     (F_TT, "plan", "AUT26 autumn 2026 pick (also the winter 2026-27 pick); SPR27 spring 2027 pick."),
     (F_TT, "arrive", "Scheduled arrival, local time."),
     (F_TT, "cars", "Cars per train."),
@@ -201,7 +202,7 @@ DICT_FIELDS = [
     (F_INV, "to_area", "Other end."),
     (F_INV, "width", "Stair width; escalator step width."),
     (F_INV, "width_unit", "in or mm."),
-    (F_INV, "direction", "Escalator running direction."),
+    (F_INV, "direction", "Escalator running direction at the condition survey."),
     (F_INV, "speed_mps", "Escalator design speed."),
     (F_INV, "surveyed", "Condition survey."),
     (F_ASSET, "step_width_mm", "Step width."),
@@ -216,6 +217,10 @@ DICT_FIELDS = [
 ]
 
 
+DICT_CLOCK = ("Local time is Vellmouth time, US Eastern: UTC-5, and UTC-4 while daylight saving time is in force; in 2026 "
+              "it ended at 02:00 on Sunday 1 November, so local time is UTC-4 before 1 November 2026 and UTC-5 after.")
+
+
 def write_dictionary(out):
     path = os.path.join(out, F_DICT)
     wb = Workbook()
@@ -224,6 +229,9 @@ def write_dictionary(out):
     _sheet(ws, ["File", "Owner", "Source", "Period"], DICT_FILES, [52, 40, 40, 34])
     ws2 = wb.create_sheet("Fields")
     _sheet(ws2, ["File", "Field", "Description"], DICT_FIELDS, [52, 22, 90])
+    ws3 = wb.create_sheet("Notes")
+    ws3.append([DICT_CLOCK])
+    ws3.column_dimensions["A"].width = 150
     wb.save(path)
     PP.normalize_ooxml(path, K.PEOPLE["ridership"], K.PEOPLE["ridership"], "2024-07-15T13:10:00Z",
                        "2027-01-11T14:22:00Z", excel=True, company=K.ORG)

@@ -124,6 +124,8 @@ NOTES = [
         "publication by a reported absence (ABS) or by leave approved after publication (LVE), which store managers "
         "raise. For the Christmas rosters the open lines are raised once the relief crew is placed, and the open "
         "lines of the store where the crew is placed are not raised.",
+        "A casual can report an absence in the KWS app or by phone to the store. An absence reported both ways raises "
+        "one ABS call-in for each report.",
         "Absences of permanent staff through sickness are covered inside the store's permanent team and are not "
         "raised as call-ins."]),
     ("Who is offered the shift", [
@@ -149,7 +151,8 @@ NOTES = [
         "shift starts and the call-in closes UNFILLED.",
         "A casual who took a shift through call-in and then cannot work it reports an absence, as a rostered casual "
         "does: the store raises the shift again as an ABS call-in naming them, their own call-in keeps its FILLED "
-        "outcome, and KWS offers them no other call-ins that day."]),
+        "outcome, and KWS offers them no other call-ins that day.",
+        "A shift is covered by the casual who works it. A casual who gives a shift back has not covered it."]),
     ("Times and records", [
         "KWS stores times in UTC. Shift dates and times on rosters, in the offer history report and in availability "
         "profiles are store time.",

@@ -1,23 +1,36 @@
 {
  "task": "task242",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-17",
  "stump": "A competent analyst corrects each zone's published IgM share by the Rogan-Gladen estimator with the laboratory panel's sensitivity from the fifth day of illness on and its specificity, finds every corrected share within 1.5 times the published value and flags no zone; only the panel's curve averaged over each zone's own onset dates up to collection gives the six.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "task230 (v2, lineage) 0.11, differentiated on the card"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK)",
+  "reader": "two reads: question 1 none, question 6 analytical; realism fixes taken (cover note, PDF subjects)"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form, answered in the note)",
+  "nearest": "task230 v2 0.11; surface promotes task241 and task240 (shared readme name, same gap and decision type) and task501, task229 v2 (differentiated on the card)"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "pass 1 APPROVE (SF15 added on its reconciliation note)",
+  "report": "determinism_check_report.md"
+ },
  "returned": [],
- "resume": "stage 2: tune the simulator to the ladder, design the asks and devices, fork table, closure, prompt, precut",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

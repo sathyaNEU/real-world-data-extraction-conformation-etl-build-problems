@@ -127,12 +127,13 @@ def fare_local(P):
 
 def morning_entries(P, hours=(6, 7, 8, 9), tz_mode="ok"):
     """{(complex_id, local date): entries in the local hours given}. tz_mode, for the mess-neutrality checks:
-    'utc_as_local' reads the UTC hours as local, 'fixed4' converts at four hours all year."""
+    'utc_as_local' reads the UTC hours as local, 'fixed4' and 'fixed5' convert at four or five hours all year."""
     if tz_mode == "ok":
         f = fare_local(P)
     else:
         f = P.fare.copy()
-        t = f.hour_utc.dt.tz_localize(None) if tz_mode == "utc_as_local" else f.hour_utc.dt.tz_localize(None) - pd.Timedelta(hours=4)
+        off = {"utc_as_local": 0, "fixed4": 4, "fixed5": 5}[tz_mode]
+        t = f.hour_utc.dt.tz_localize(None) - pd.Timedelta(hours=off)
         f["ldate"] = t.dt.date
         f["lhour"] = t.dt.hour
     m = f[f.lhour.isin(hours)]
@@ -669,27 +670,131 @@ def escalator_directions_peak(folder, start=7 * 60, end=9 * 60 + 30):
     return out
 
 
+def _flow(r, asset, route):
+    speed = float(r.speed_mps) if route in ("natural", "dir_only") else float(asset.loc[r.unit, "speed_mps"])
+    mm_ = float(r.width) * (25.4 if r.width_unit == "in" else 1.0)
+    step = max(b for b in RATED if b <= mm_ + 1e-9) if mm_ >= 600 else 600
+    return RATED[step] * speed / 0.5
+
+
+def _timelines(folder):
+    """{unit: (UTC instants as int64 ns, events)} from the controllers' log, in time order."""
+    log = pd.read_csv(os.path.join(folder, F_CTRL))
+    log["t"] = pd.to_datetime(log.event_utc).dt.tz_localize("UTC")
+    out = {}
+    for unit, g in log.sort_values("t", kind="stable").groupby("unit"):
+        out[unit] = (g.t.dt.as_unit("ns").astype("int64").to_numpy(), list(g.event))
+    return out
+
+
+def _window_shares(tl, a, b):
+    """{('up'|'down', running): share of the window a..b (pd.Timestamps)}: the direction the escalator is set to run
+    (its last RUN) and whether it is running (its last event a RUN) through the window."""
+    ts, ev = tl
+    a_, b_ = a.as_unit("ns").value, b.as_unit("ns").value
+    i = int(np.searchsorted(ts, a_, side="right")) - 1
+    set_dir = None
+    k = i
+    while k >= 0 and not ev[k].startswith("RUN"):
+        k -= 1
+    if k >= 0:
+        set_dir = ev[k].split()[1].lower()
+    running = i >= 0 and ev[i].startswith("RUN")
+    out = defaultdict(float)
+    t = a_
+    j = i + 1
+    while j < len(ts) and ts[j] < b_:
+        out[(set_dir, running)] += (ts[j] - t) / (b_ - a_)
+        if ev[j].startswith("RUN"):
+            set_dir, running = ev[j].split()[1].lower(), True
+        else:
+            running = False
+        t = ts[j]
+        j += 1
+    out[(set_dir, running)] += (b_ - t) / (b_ - a_)
+    return out
+
+
+def _peak_windows(days, utc=False, start=(7, 0), end=(9, 30), fixed=None):
+    out = []
+    for d in days:
+        if fixed is not None:
+            out.append((pd.Timestamp(dt.datetime.combine(d, dt.time(*start)), tz="UTC") + pd.Timedelta(hours=fixed),
+                        pd.Timestamp(dt.datetime.combine(d, dt.time(*end)), tz="UTC") + pd.Timedelta(hours=fixed)))
+        elif utc:
+            out.append((pd.Timestamp(dt.datetime.combine(d, dt.time(*start)), tz="UTC"),
+                        pd.Timestamp(dt.datetime.combine(d, dt.time(*end)), tz="UTC")))
+        else:
+            out.append((pd.Timestamp(dt.datetime.combine(d, dt.time(*start)), tz="America/New_York").tz_convert("UTC"),
+                        pd.Timestamp(dt.datetime.combine(d, dt.time(*end)), tz="America/New_York").tz_convert("UTC")))
+    return out
+
+
+def unit_day_windows(folder):
+    """{(unit, day): (shares, events, state at 07:00)} for every escalator between a mezzanine and a platform on every
+    weekday-timetable day of the autumn pick: its shares of 07:00 to 09:30 local by (set direction, running), the log
+    events inside the window and the last event before it."""
+    e = _platform_escalators(folder)
+    tls = _timelines(folder)
+    days = autumn_weekdays()
+    wins = _peak_windows(days)
+    out = {}
+    for u in e.unit:
+        ts, ev = tls[u]
+        for d, (a, b) in zip(days, wins):
+            a_, b_ = a.as_unit("ns").value, b.as_unit("ns").value
+            i0 = int(np.searchsorted(ts, a_, side="right"))
+            i1 = int(np.searchsorted(ts, b_, side="left"))
+            out[(u, d)] = (dict(_window_shares(tls[u], a, b)), ev[i0:i1], ev[i0 - 1] if i0 > 0 else None)
+    return out
+
+
 def ask_a(folder, route="golden", unrounded=False):
-    """{complex: (down, up)} people a minute between 07:00 and 09:30. route: golden (the controllers' directions,
-    the asset register's speeds), natural (the inventory's direction and speed), dir_only (the controllers'
-    directions, the inventory's speed), speed_only (the inventory's direction, the asset register's speeds)."""
+    """{complex: (down, up)} people a minute between 07:00 and 09:30. route: golden (every escalator between a
+    mezzanine and a platform, the controllers' directions, the asset register's speeds, the autumn pick's
+    weekday-timetable days); natural (the inventory's direction and speed); dir_only (the controllers' directions, the
+    inventory's speed); speed_only (the inventory's direction, the asset register's speeds); and the readings the
+    filed text rules out: time_weighted (each escalator's flow in the direction it is set to run, weighted over the
+    window: the golden's own figure when every escalator keeps one direction), fault_deducted (weighted by the share
+    of the window it was running), watch_only (only the escalators to watch-list platforms), with_holidays (the mean
+    over every Monday to Friday of the pick, the holiday-timetable days in), utc_window (07:00 to 09:30 read in the
+    log's UTC), fixed4 and fixed5 (the log converted at four or five hours all autumn, the clock change missed)."""
     e = _platform_escalators(folder)
     asset = pd.read_csv(os.path.join(folder, F_ASSET)).set_index("unit")
-    dirs = escalator_directions_peak(folder)
+    if route == "watch_only":
+        watch = {(w[1], w[2]) for w in WATCH}
+        e = e[[(st, lab) in watch for st, lab in zip(e.complex, e.to_area)]]
     res = {}
+    if route in ("time_weighted", "fault_deducted", "with_holidays", "utc_window", "fixed4", "fixed5"):
+        tls = _timelines(folder)
+        days = [d for d in daterange(*AUTUMN) if d.weekday() < 5] if route == "with_holidays" else autumn_weekdays()
+        wins = _peak_windows(days, utc=(route == "utc_window"),
+                             fixed={"fixed4": 4, "fixed5": 5}.get(route))
+        for cx in WATCH_COMPLEXES:
+            down = up = 0.0
+            for r in e[e.complex == cx].itertuples():
+                f = _flow(r, asset, "golden")
+                for a, b in wins:
+                    for (dirn, run), w in _window_shares(tls[r.unit], a, b).items():
+                        if route == "fault_deducted" and not run:
+                            continue
+                        if dirn == "down":
+                            down += f * w / len(wins)
+                        elif dirn == "up":
+                            up += f * w / len(wins)
+            res[cx] = (down, up) if unrounded else (int(round(down)), int(round(up)))
+        return res
+    dirs = escalator_directions_peak(folder)
     for cx in WATCH_COMPLEXES:
         down = up = 0.0
         for r in e[e.complex == cx].itertuples():
-            if route in ("golden", "dir_only"):
+            if route in ("golden", "dir_only", "watch_only"):
                 ds = dirs[r.unit]
                 assert len(ds) == 1, (r.unit, ds)
                 dirn = next(iter(ds))
             else:
                 dirn = r.direction
-            speed = float(asset.loc[r.unit, "speed_mps"]) if route in ("golden", "speed_only") else float(r.speed_mps)
-            mm_ = float(r.width) * (25.4 if r.width_unit == "in" else 1.0)
-            step = max(b for b in RATED if b <= mm_ + 1e-9) if mm_ >= 600 else 600
-            f = RATED[step] * speed / 0.5
+            f = _flow(r, asset, route)
             if dirn == "down":
                 down += f
             else:
@@ -703,11 +808,18 @@ def autumn_weekdays():
     return [d for d in daterange(*AUTUMN) if d.weekday() < 5 and d not in HOLIDAY_TT]
 
 
-def _windows():
+def _windows(days=None, utc=False, fixed=None):
     out = []
-    for d in autumn_weekdays():
-        a = pd.Timestamp(dt.datetime.combine(d, dt.time(7, 0)), tz="America/New_York").tz_convert("UTC")
-        b = pd.Timestamp(dt.datetime.combine(d, dt.time(9, 45)), tz="America/New_York").tz_convert("UTC")
+    for d in (autumn_weekdays() if days is None else days):
+        if fixed is not None:
+            a = pd.Timestamp(dt.datetime.combine(d, dt.time(7, 0)), tz="UTC") + pd.Timedelta(hours=fixed)
+            b = pd.Timestamp(dt.datetime.combine(d, dt.time(9, 45)), tz="UTC") + pd.Timedelta(hours=fixed)
+        elif utc:
+            a = pd.Timestamp(dt.datetime.combine(d, dt.time(7, 0)), tz="UTC")
+            b = pd.Timestamp(dt.datetime.combine(d, dt.time(9, 45)), tz="UTC")
+        else:
+            a = pd.Timestamp(dt.datetime.combine(d, dt.time(7, 0)), tz="America/New_York").tz_convert("UTC")
+            b = pd.Timestamp(dt.datetime.combine(d, dt.time(9, 45)), tz="America/New_York").tz_convert("UTC")
         out.append((a, b))
     return out
 
@@ -734,16 +846,24 @@ def _union_hours(ivs, wins):
 
 
 def ask_b(folder, route="golden"):
-    """{complex: elevator-hours out of service in 07:00-09:45 on the autumn pick's weekday mornings}.
-    route: golden (the monitoring's modes for faults, the work orders for planned maintenance), work_orders (every
-    work order's times), monitoring (the monitoring's modes alone)."""
-    wins = _windows()
+    """{complex: elevator-hours out of service in 07:00-09:45 on the autumn pick's weekday-timetable mornings}.
+    route: golden (the monitoring's modes for faults, the work orders for planned maintenance: the union of the two),
+    work_orders (every work order's times), monitoring (the monitoring's modes alone); and the readings the filed
+    text rules out: with_holidays (every Monday to Friday of the pick, the holiday-timetable days included),
+    mean_per_day (the total over the mornings divided by their number), platform_only (the street elevators left
+    out), utc_window (07:00 to 09:45 read in the logs' UTC), summed (overlapping intervals counted twice), fixed4
+    and fixed5 (the logs converted at four or five hours all autumn)."""
+    days = None
+    if route == "with_holidays":
+        days = [d for d in daterange(*AUTUMN) if d.weekday() < 5]
+    wins = _windows(days, utc=(route == "utc_window"), fixed={"fixed4": 4, "fixed5": 5}.get(route))
     wo = pd.read_csv(os.path.join(folder, F_WO))
     mon = pd.read_csv(os.path.join(folder, F_MON))
     mon["t"] = pd.to_datetime(mon.event_utc).dt.tz_localize("UTC")
     ivs = defaultdict(list)
     cx_of = dict(zip(wo.unit, wo.complex))
-    if route in ("golden", "monitoring"):
+    union = route not in ("work_orders", "monitoring")
+    if route != "work_orders":
         for unit, g in mon.groupby("unit"):
             rows = list(g.sort_values("t").itertuples())
             for r, nx in zip(rows, rows[1:] + [None]):
@@ -751,9 +871,18 @@ def ask_b(folder, route="golden"):
                     end = nx.t if nx is not None else pd.Timestamp("2027-01-01", tz="UTC")
                     ivs[unit].append((r.t, end))
     for r in wo.itertuples():
-        if route == "work_orders" or (route == "golden" and r.type == "PM"):
+        if route == "work_orders" or (union and (r.type == "PM" or route == "summed")):
             ivs[r.unit].append((pd.Timestamp(r.out_of_service_at, tz="UTC"), pd.Timestamp(r.in_service_at, tz="UTC")))
+    skip = set()
+    if route == "platform_only":
+        inv = pd.read_csv(os.path.join(folder, F_INV))
+        skip = set(inv[(inv.type == "elevator") & (inv.from_area == "Street")].unit)
     res = defaultdict(float)
     for unit, iv in ivs.items():
-        res[cx_of.get(unit, "")] += _union_hours(iv, wins)
-    return {cx: res.get(cx, 0.0) for cx in WATCH_COMPLEXES}
+        if unit in skip:
+            continue
+        res[cx_of.get(unit, "")] += (_overlap(iv, wins) if route == "summed" else _union_hours(iv, wins))
+    out = {cx: res.get(cx, 0.0) for cx in WATCH_COMPLEXES}
+    if route == "mean_per_day":
+        out = {cx: v / len(wins) for cx, v in out.items()}
+    return out

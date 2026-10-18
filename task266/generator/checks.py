@@ -278,63 +278,84 @@ def run(target, T):
 
     # ------------------------------------------------------------------ the asks
     a_gold = A.ask_a(target)
-    a_stops = {"natural": A.ask_a(target, credits="row", program="row"),
-               "history only": A.ask_a(target, credits="row", program="census"),
-               "section credits only": A.ask_a(target, credits="section", program="row"),
-               "withdrawals dropped": A.ask_a(target, statuses=("RE", "RW"))}
+    a_stops = {"natural": A.ask_a(target, credits="row", program="row", census="status"),
+               "row credits at the census": A.ask_a(target, credits="row"),
+               "row credits once per course": A.ask_a(target, credits="row_once"),
+               "section credits by the extract's program": A.ask_a(target, program="row"),
+               "section credits, late adds kept": A.ask_a(target, census="status"),
+               "section credits, every row dated by the census": A.ask_a(target, census="all_dates")}
     for name, v in a_stops.items():
         miss = [p for p in progs if abs(v[p] - a_gold[p]) >= .05]
         ok(len(miss) == 9, "Ask A: the %s read misses all nine (%d)" % (name, len(miss)))
     b_gold = A.ask_b(target)
     b_stops = {"natural": A.ask_b(target, enrol="export", group="none"), "census uncombined": A.ask_b(target, group="none"),
-               "room": A.ask_b(target, group="room")}
+               "meeting key": A.ask_b(target, group="meeting"), "meeting text, TBA included": A.ask_b(target, group="text"),
+               "meeting key, late adds kept": A.ask_b(target, enrol="status", group="meeting")}
     for name, v in b_stops.items():
         ok(all(v[p] != b_gold[p] for p in progs), "Ask B: the %s read misses all nine" % name)
-    text = A.ask_b(target, group="text")
-    ok(sum(1 for p in progs if text[p] != b_gold[p]) >= 6, "Ask B: the over-merged read misses at least six")
-    # the cracker: lands the call, runs the battery, executes the policy and the notes
-    ok(all(abs(a_stops["natural"][p] - a_gold[p]) >= .05 for p in progs), "cracker misses every Ask A figure")
-    ok(all(b_stops["room"][p] != b_gold[p] for p in progs), "cracker misses every Ask B figure")
+    room = A.ask_b(target, group="room")
+    ok(sum(1 for p in progs if room[p] != b_gold[p]) >= 5, "Ask B: the room key misses at least five")
+    late_b = A.ask_b(target, enrol="status")
+    ok(sum(1 for p in progs if late_b[p] != b_gold[p]) >= 2, "Ask B: late adds kept move at least two programs")
+    # the cracker: lands the call, runs the battery, executes the policy and the notes (the census date included)
+    ok(all(abs(a_stops["row credits at the census"][p] - a_gold[p]) >= .05 for p in progs) and
+       all(abs(a_stops["row credits once per course"][p] - a_gold[p]) >= .05 for p in progs),
+       "cracker misses every Ask A figure, the linked rows found by the load check or not")
+    ok(all(b_stops["meeting key"][p] != b_gold[p] for p in progs), "cracker misses every Ask B figure")
     secs = A.rows_xlsx(P("schedule"), "Fall 2026 sections")
     regs = A.rows_csv(P("registrations"))
     owner = pk.owner
+    census = A.day(pk.census[K.FALL26])
+    at_census = A.census_rows(regs, census, "date")
+    n_c = Counter(r["crn"] for r in at_census)
     by_meet = defaultdict(list)
     for s in secs:
         if s["Status"] == "A" and s["Days"] != "TBA":
             by_meet[(s["Instructor"], s["Days"], s["Begin"])].append(s)
-    video = defaultdict(int)
-    n_c = Counter(r["crn"] for r in regs if r["reg_status"] in ("RE", "RW", "WC"))
+    video, accel = defaultdict(int), defaultdict(int)
     for k, lst in by_meet.items():
         if len(lst) > 1:
             ok(len({owner.get(s["Subj"]) for s in lst}) == 1, "no class combines two programs' courses")
-            if len({s["Room"] for s in lst}) > 1 and any(n_c[str(s["CRN"])] < K.SMALL for s in lst):
-                video[owner.get(lst[0]["Subj"])] += 1
-            ok(all(str(s["Room"]).endswith("V") for s in lst),
-               "sections meeting together are the video-room sections (no stacked class)")
+            dates = {(A.day(s["Start Date"]), A.day(s["End Date"])) for s in lst}
+            if len(dates) == 1:
+                ok(all(str(s["Room"]).endswith("V") for s in lst) and len({s["Camp"] for s in lst}) == len(lst),
+                   "sections meeting together are video-room sections at different campuses")
+                if any(n_c[str(s["CRN"])] < K.SMALL for s in lst):
+                    video[owner.get(lst[0]["Subj"])] += 1
+            else:
+                ok(len(lst) == 2 and len({s["Room"] for s in lst}) == 1 and
+                   max(dates)[0] > min(dates)[1], "a shared slot in different weeks is an eight-week pair in one room")
+                if any(n_c[str(s["CRN"])] < K.SMALL for s in lst):
+                    accel[owner.get(lst[0]["Subj"])] += 1
     ok(all(video[p] >= 1 for p in progs), "every program has a video class with a section under ten")
+    ok(all(accel[p] >= 1 for p in progs), "every program has an eight-week pair with a section under ten")
     rooms = defaultdict(list)
     for s in secs:
         if s["Status"] == "A" and s["Days"] != "TBA" and s["Room"] != "OFF CAMPUS":
             rooms[s["Room"]].append(s)
     clash = 0
-    for room, lst in rooms.items():
+    for room_, lst in rooms.items():
         for i in range(len(lst)):
             for j in range(i + 1, len(lst)):
                 a, b = lst[i], lst[j]
                 if set(a["Days"]) & set(b["Days"]) and a["Begin"] < b["End"] and b["Begin"] < a["End"] and \
-                        a["Instructor"] != b["Instructor"]:
+                        A.day(a["Start Date"]) <= A.day(b["End Date"]) and A.day(b["Start Date"]) <= A.day(a["End Date"]):
                     clash += 1
     ok(clash == 0, "no room holds two classes at once (%d)" % clash)
     ok(all(n_c[str(s["CRN"])] >= 1 for s in secs if s["Status"] == "A"), "every section that ran had a student at the "
        "census")
     pairs = Counter((r["student_id"], r["crn"]) for r in regs)
     ok(max(pairs.values()) == 1, "one registration row per student and section")
+    late = [r for r in regs if r["reg_status"] in ("RE", "RW") and A.day(r["status_date"]) > census]
+    ok(len(late) >= 150 and all(r["reg_status"] == "RE" for r in late), "registrations added after the census are "
+       "the registrar's (%d)" % len(late))
+    ok(all(A.day(r["status_date"]) > census for r in regs if r["reg_status"] == "WC") and
+       all(A.day(r["status_date"]) < census for r in regs if r["reg_status"] in ("DD", "DW")),
+       "withdrawals are dated after the census and drops before it")
     ok("laboratory, shop and clinical sections are classes of their own" in pol, "Ask B: linked sections are classes")
-    ok("from which one class is taught to students on more than one campus at once" in notes,
-       "Ask B: what a video classroom is for, filed")
-    ok("a laboratory, shop or clinical section carries none" in notes, "Ask A: the schedule's section credit hours "
-       "defined")
-    ok("program of record when the file was extracted" in notes, "Ask A: the registration program's vintage filed")
+    for phrase in ("carries none", "from which one class is taught", "program of record when the file was extracted",
+                   "first or second eight weeks", "late add"):
+        ok(phrase not in notes and phrase not in pol, "no filed sentence narrates an ask device (%s)" % phrase)
     adm_head = next(csv.reader(open(P("admissions"), encoding="utf-8")))
     ok("reason_changed_on" not in adm_head, "no column labels the recoded transfers")
     conv = Counter(l.split("|")[2] for l in open(P("idmap"), encoding="utf-8").read().splitlines()[1:] if l)
@@ -342,12 +363,21 @@ def run(target, T):
     secno = Counter((s["Subj"], s["Crse"], s["Sec"]) for s in secs)
     ok(max(secno.values()) == 1, "section numbers are unique within a course")
     cr_sec = {str(s["CRN"]): s["Cr Hrs"] for s in secs}
+    revised = {(r["subject"], r["course_number"]) for r in regs if int(r["credit_hours"]) != cr_sec[r["crn"]] and
+               cr_sec[r["crn"]] > 0}
+    ok(revised == {("ENG", "101"), ("MAT", "110")}, "the extract's course credit hours differ from the sections' only "
+       "on the linked sections and the two courses revised from spring 2027 (%s)" % sorted(revised))
+    prog_at = A.program_at_census(A.rows_csv(P("history")))
+    took = defaultdict(int)
+    for r in at_census:
+        if (r["subject"], r["course_number"]) in revised:
+            took[prog_at.get(r["student_id"])] += 1
+    ok(all(took[p] >= 3 for p in progs), "every program's students took a revised course at the census")
     load = Counter()
     load_rows = Counter()
-    for r in regs:
-        if r["reg_status"] in ("RE", "RW", "WC"):
-            load[r["student_id"]] += cr_sec[r["crn"]]
-            load_rows[r["student_id"]] += int(r["credit_hours"])
+    for r in at_census:
+        load[r["student_id"]] += cr_sec[r["crn"]]
+        load_rows[r["student_id"]] += int(r["credit_hours"])
     ok(max(load.values()) <= 21, "every student's census load at section credits is a real load (%d)" % max(load.values()))
     ok(sum(1 for v in load_rows.values() if v > 21) >= 50, "summed row by row, loads over 21 credits appear (the "
        "inconsistency that finds the linked sections)")

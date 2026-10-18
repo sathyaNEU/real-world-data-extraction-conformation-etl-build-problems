@@ -1,0 +1,100 @@
+{
+  "task": "task160",
+  "architecture": "v1",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 6 (new), seed FC31: world, decision and quantity kept; the seed's surge-code mechanism is not the decisive step",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "patient-flow-beds-workforce-optimization",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "a Michigan hospital association block-booking the January 2027 agency nurse shifts its 24-hospital winter surge pool funds on surge days, when the respiratory wave peaked in Metro Detroit and West and Central Michigan in mid-December, earlier than in any winter on its capacity census, and the eight North hospitals that join the pool this winter have met the wave about five weeks after Metro Detroit in every winter on file",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G13",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "prior_period_close_out",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stakeholder_role": "the association's winter pool manager, who files the January block with the two staffing agencies",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "capacity_census_daily (the association's daily capacity reports, two layouts across the July 2024 system change)",
+    "rows": 47976,
+    "entity": "one member hospital's daily capacity report: its midnight census, staffed beds and declared surge level",
+    "grain": "hospital x day",
+    "source": "synthetic (constructed in the layout of a hospital association's daily capacity reporting system, two layouts across a July 2024 system change)"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "United States, Michigan (a fictional hospital association, member hospitals and staffing agencies; real regions)",
+    "currency": "USD",
+    "org_type": "a hospital association running a winter agency-nurse surge pool for 24 member hospitals",
+    "invented_names": [
+      "Two Peninsulas Hospital Association",
+      "Crestfield Medical Staffing",
+      "Inland Seas Nursing"
+    ],
+    "people": [
+      "Greg Matthews",
+      "Andrew Harvey",
+      "Linda Ashley",
+      "Shawn Whitaker"
+    ]
+  },
+  "deliverables": [
+    "winter_pool_block_jan2027.xlsx",
+    "pool_spend_winter_2025-26.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:regional-surge-waves-timed-by-propagation-lag-not-calendar",
+  "layer1": [
+    "the association's capacity system replaced on 1 July 2024: the old export keyed by member number, dated the morning after each midnight census and coding surge as S1/S2, against the new export keyed by facility id, dated by census day and coding surge as 1/2",
+    "two staffing agencies' invoices in two layouts: one exporting shift starts in UTC, one invoicing weekly with local dates; agency site codes against the association's member numbers",
+    "credit notes and re-bills for disputed timesheets raised under new line numbers in a later invoice",
+    "the pool's monthly settlement statements as PDFs to 2023-24 and as a workbook from 2024-25",
+    "wastewater results twice weekly at the southern plants and weekly in the North, preliminary values later revised by the laboratory",
+    "the association's fiscal year (July to June) against the winter pool season (November to March)",
+    "the surge plan register as a PDF table: each hospital's levels, triggers and agency staffing per level",
+    "eight hospitals that join the pool in November 2026 with capacity reports on file since July 2021 and no pool settlements"
+  ],
+  "driver": "A recurring wave reaches each group of units at a stable lag behind the group it spreads from while its calendar timing moves from cycle to cycle, so a fixed forward window holds whichever groups' waves fall inside it this cycle; carrying what the same window held in past cycles, or the pool's own history aligned on this cycle's peak, misses a group whose wave has always come after the window and this cycle falls wholly inside it.",
+  "driver_concrete": "The winter respiratory wave reaches the North's eight hospitals about five weeks after Metro Detroit's in every winter on the association's capacity census, while its timing moves by weeks from winter to winter; this winter Metro Detroit and West and Central Michigan peaked in mid-December, earlier than in any winter on file, so the four weeks from Monday 4 January 2027 hold none of the sixteen southern hospitals' surge days and the whole of the North's, whose eight hospitals join the pool this winter and whose wave fell in February or March in every earlier winter; the block is the North's own per-wave surge-day draw at its surge plans' agency staffing, about 600 shifts.",
+  "stump": "Carrying the sixteen southern hospitals' January block draws in the pool's settlements forward, with the North's past January surge days at its new agency staffing, files about 2,400 shifts; the step that lands it there is reading January by the calendar when the wave's timing moves from winter to winter and reaches the North about five weeks after Metro Detroit, so this January holds the North's whole wave and none of the south's: about 600 shifts.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stitches the capacity census's two layouts, reads the pool agreement and the surge plan register correctly, averages the sixteen southern hospitals' January block draws in the settlements and adds the North's January surge days at its agency staffing files about 2,400 shifts against the golden of about 600 (the analyst who sees the early peak and carries the pool's own post-peak weeks files about 50); only timing each region's wave by its lag behind Metro Detroit puts the North's whole wave and none of the south's in January (executed in checks.py on the generator's clean truth).",
+  "domain_test": "The deciding quantity is each region's January surge staffing demand, forecast the way health-system capacity planners forecast a winter surge: by where each region's respiratory wave falls in the window, timed from the region it spreads from by the lag past winters show, and turned into agency shifts through each hospital's surge unit staffing; with another field's nouns (megawatt-hours, crew hours) there is no epidemic travelling from region to region at a lag of weeks, no surge plan opening agency-staffed beds and no reason one region's whole demand should fall in a window it has never touched.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task142": "a purchasing alliance's quarter visit percentile built from admissions and lengths of stay; here the call is an expected draw whose window this winter holds a different region's whole wave, timed by a propagation lag, and no percentile or length-of-stay construction decides it",
+    "task157": "a returning cohort's wave read off its own leading edge at a timing ratio every earlier wave kept on the calendar; here the calendar timing moves every winter, the North's wave has not begun at the as-of and is timed from another region's wave by a stable lag, and its size is each hospital's own per-wave draw",
+    "task127": "v3's motor bodily injury reserve restates paid development at the latest closed shares; here nothing develops: a respiratory wave reaches each region at a stable lag behind the region it spreads from, and the window's draw is whichever regions' waves fall in it this winter",
+    "task138": "v1 round 1 starts every replayed trace from the store each unit holds at the forecast date; here no store or replay decides it: the forward window holds a whole regional wave that has never fallen in it, timed by a lag",
+    "task446": "v2 carries a screen's error rates across years while its yield moves with the base rate; here no yield or error rate is carried: the window's content changes because the wave's timing moves and reaches each region at a stable lag",
+    "task145": "a forward count above a fixed line set by each unit's value at forward conversion factors; here no line or conversion decides it: the forward window holds a different region's wave this winter, timed from the region that leads it"
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-18T00:47:12Z"
+}

@@ -1,0 +1,25 @@
+{
+ "task": "task470",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-18",
+ "stump": "The default path scales each untowered field's detected piston operations by the share of counted operations the receiver network heard at the counted fields, so the flight-school fields whose aircraft all broadcast are inflated past 25 kg of lead and the fields where old, non-broadcasting piston aircraft are based fall under it.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": null,
+ "leak": null,
+ "duplicate_check": {
+  "guard_check": "PASS 2026-10-18 after redrawing the context artifact (operations_log) and the organisation family (local_government); same-driver older matches differentiated (task107, task129, task36, task44)"
+ },
+ "judge": null,
+ "returned": [],
+ "resume": "stage 2: default path, ladder on a prototype generator (detections, register, counts, based lists), fork table, asks, prompt.txt, precut",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET27 (historical fleet mix by tail number; a state funds first the airport most dependent on small aircraft): the world, the funding of fields first on a class of aircraft's activity and the register read through changing identifiers kept; the call made forward facing on the 2027 grant round; the seed's register reading kept as Layer 1; the pitfall re-found in how a transponder network misses general aviation activity"
+}

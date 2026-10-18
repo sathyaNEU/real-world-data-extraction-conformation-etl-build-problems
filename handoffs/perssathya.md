@@ -1,9 +1,9 @@
 # perssathya: where work stopped
 
-Updated 2026-10-17 (wave 3 under way: task237 to task241 shipped; task242 next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-17 (wave 3 fully shipped, task237 to task242; wave 4, task243 to task248, next). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
-(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task241 shipped; task242 next.
+(a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4 (task243 to task248) is cut and next.
 
 **Next, at the author's request (2026-10-13):** the status board now has a review switch on every shipped build
 (Shipped, or Shipped and approved) and a note box; the marks live in the board's database. Read them first (the
@@ -44,6 +44,23 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   REVIEW only; leak reader two reads (question 1 none); judge pass 1 FIX_NOW on ask B's ticket fold (closed by policy
   2.1's one-outage-at-a-time WHAT), pass 2 DETERMINISTIC. Surface screen promotes task128 (back to back) and task230
   (surface vocabulary), neither sharing domain, objective or mechanism: the adjudicated clone check is the author's call.
+
+**task242: SHIPPED 2026-10-17 (wave 3, sixth build; architecture 1); waiting on the portal.**
+- The Neithalpuram City Municipal Corporation's 2027 dengue IgM household serosurvey (Epidemiology & Public Health,
+  disease-surveillance-outbreak-anomaly-detection x Data Quality Monitoring). Call: the misclassification flag (M) goes
+  on six of the 12 zones' published 2027 infection shares, Melmangalam, Vadakkupatti, Velliyanur, Chinnakulam,
+  Periyamalai and Sengalur; the other six go to the committee without it. Each zone's share infected since 1 January is
+  read through the assay's sensitivity by days since onset (the laboratory's verification panel) averaged over the
+  zone's own cases by onset date up to each resident's collection: zones surveyed months after their epidemic, or with
+  an August wave beside a November one, stand at 1.85 to 3.28 times their published value, the rest at most 1.29. One
+  panel sensitivity for every zone flags none; the city's curve nine; a single day since onset four to seven; a fixed
+  window three or seven. Asks: each zone's Breteau index for the November round (forms before 16 November carrying
+  the earlier ward map's numbers, locked calls, follow-ups) and household response rate (households whose every
+  specimen a warm cool box spoiled, completed interviews without blood, households never called on).
+- Gates: 250 generator checks, verify green (its own fixed-bin route, both asks, every format read back),
+  byte-identical rebuilds, figures_check, precut 50/0/0, leak.py REVIEW only; two leak reads (question 1 none,
+  question 6 analytical); judge pass 1 DETERMINISTIC, APPROVE (Gate G method_or_model_selection, analytical_non_defect;
+  Gate H pass); pair ceiling 35.1, mirror leakage 0.
 
 **task241: SHIPPED 2026-10-17 (wave 3, fifth build; architecture 1); waiting on the portal.**
 - The Instituto Oceânico do Atlântico's Iberian Basin Float Array and its 2027 delayed-mode salinity release (Physical &
