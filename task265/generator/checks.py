@@ -203,6 +203,11 @@ def run(target, T):
     ok({c["hosp"] for c in T["merged_cases"]} == set(K.HOSP) and
        {c["hips"][0]["construct"] for c in T["merged_cases"]} == set(K.CODES), "Ask C: merges at every hospital and construct")
     ok(len(T["merges"]) > 10 * len(dev), "Ask C: device merges are a small share of the merge list")
+    import cracker as CR
+    rows_cr = CR.score(target)
+    _, lc, ls, pair = CR.ceiling(rows_cr, rows_cr)
+    ok(lc == 0 and pair <= 40, "cracker.py on the cut pack: the cracker keeps no ask figure (%s), pair ceiling %.1f" % (
+        ", ".join("%s %d of %d" % (a_, h_, n_) for a_, n_, h_ in rows_cr), pair))
 
     # ------------------------------------------------------------------ separation and distractors
     main = ["prosp", "legacy", "revisions", "deaths", "status", "crosswalk", "policy", "dictionary"]
