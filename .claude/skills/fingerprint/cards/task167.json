@@ -1,0 +1,110 @@
+{
+  "task": "task167",
+  "architecture": "v2",
+  "drawn": "2026-10-18",
+  "slot_note": "wave 7, new; seed FC38 (world, decision and quantity re-drawn at the coordinator's re-root of 2026-10-18: the endowment's private-markets programme and its 2027 call reserve)",
+  "domain": "nonprofit-grant-making",
+  "subdomain": "other",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a grant-making foundation's investment office sizing the 1 January 2027 liquidity reserve for the capital calls its private fund commitments will make in 2027, eighteen months into a $1.0 billion re-entry programme whose funds called almost nothing but fees in their first year",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G16",
+    "G13"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stakeholder_role": "the foundation's director of investment risk, who certifies the liquidity policy's call reserve to the board each January",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "capital_activity_2016_2026.csv",
+    "rows": 27000,
+    "entity": "one line of one capital call or distribution notice from the current fund administrator: a fund, a notice date, a line type (portfolio investment, management fee, partnership expenses, return of capital, realised gain, income), an amount in the fund's currency",
+    "grain": "fund x notice x line",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "United States, Minnesota (a private foundation in Saint Paul organised as a nonprofit corporation; funds in the United States and Europe)",
+    "currency": "USD",
+    "org_type": "a private grant-making foundation with a $4.0 billion endowment and a private-markets programme of about 110 fund commitments since 2006",
+    "invented_names": [],
+    "people": [
+      "Troy Stein",
+      "Kristin Brown",
+      "Brian Erickson"
+    ]
+  },
+  "deliverables": [
+    "call_reserve_2027.xlsx",
+    "call_reserve_memo_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "Units draw what they were allotted along one of two schedules that no record names: some draw almost nothing but carrying charges in their first year and most of the allotment in their second and third, the rest draw steadily from the start; the young book drew almost nothing in its first year and spends the forward window in its second, so the schedule pooled by age over every unit, the young book's own first-year pace carried forward and the trailing rate on the undrawn balance all put the window's draws too low, while the schedule of the units whose first year looked like the young book's, read at the ages they have already passed, gives the draw.",
+  "driver_concrete": "Since about 2012 a growing share of the foundation's funds have bridged their first deals on a credit line and called only fees and expenses in their first year, then most of their capital in years two and three to repay it, while the rest called steadily from the start, and nothing in the register says which; the 2025 programme ($1.0 billion in 14 funds) called almost nothing but fees in 2026 and spends 2027 in its second year, so the 2027 calls are the line-bridged funds' schedule at those ages, not the schedule pooled over every fund, the programme's slow start carried forward or 2026's rate on the undrawn balance.",
+  "stump": "A competent solver fits the call schedule by fund age over every fund the foundation has backed (rates on the undrawn balance or shares of commitment by age, by strategy or not), applies it to each fund's 2027 age and files a reserve roughly a quarter too low, because the programme's funds run on the line-bridged schedule that their own fee-only first year shows and the pooled schedule averages away.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stitches both administrators' notice files, converts the euro funds, nets each notice to its lines and reads the liquidity policy correctly, then fits the call schedule by fund age over all 110 funds (by strategy or not) and applies it to every fund's 2027 age and undrawn balance, sets the 2027 reserve roughly a quarter too low, where the schedule of the funds whose first year was fee-only, read at the ages the programme reaches in 2027, sets it right.",
+  "domain_test": "The deciding quantity is next year's capital calls on existing fund commitments, the private-markets pacing forecast an endowment's investment office builds from its funds' contribution schedules by age (Takahashi-Alexander rates fitted to its own fund history), with the schedule of the funds that bridge their first deals on a subscription line found from their fee-only first years and validated on the funds that have passed those ages; swap in hospital capital projects and there is no limited partnership calling an allotment on a schedule its general partner sets, no credit line deferring the first calls and no fee-only first year.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:call-schedule-by-first-year-draw-class",
+  "layer1": [
+    "two fund administrators' notice files in different layouts, the 2016 handover quarter carried in both",
+    "euro funds' notices in euros, converted at the notice date",
+    "notices carrying several lines (portfolio investments, management fees, partnership expenses) and distributions netted against calls on the same notice",
+    "fund names keyed differently in the register and the administrators' files",
+    "cancelled and reissued notices"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task167": "the v2 draft split the history at a cohort date, which any recent window reaches; this build splits it by a class each fund's own first-year notices reveal, spread across every vintage since 2012 and across strategies, so no date cut, recency window or visible attribute isolates it",
+    "task31": "task31's lag splits on a prior-approval property recovered through a join and scored by one closed case; here the split is a class each fund's own first-year notices reveal, no join or closed case carries it, and the forward book's own early record points the wrong way",
+    "task44": "task44 decomposes a pilot's pooled gain into opposite effects by a moderator in no column; here nothing is decomposed: the split is two age schedules for drawing an allotment, and the forward book's first year, which belongs to the back-loaded class, reads as slow",
+    "task56": "task56's population is identified by its absence from an event stream and dropped by a join; here every fund is present and the class is read from what its first year drew, not from a missing record",
+    "task57": "task57 v19 separates candidate measures by a held-out year because each reproduces its own year by identity; here both schedules are fitted on age and the out-of-sample record is the funds that have already passed the forward book's ages",
+    "task76": "task76 removes a zero-conversion class built from a log of failed contacts; here no unit is removed: the class changes when the allotment is drawn, not whether, and it is read from the first year's draws",
+    "task30": "task30 measures a change on the subset an existing procedure leaves unadjusted, behind a catalogue join; here no procedure or catalogue enters, the class is a schedule shape read from each unit's own draws",
+    "task448": "task448 carries a capture rate within filed route strata from a second list's overlap; here the strata are no filed attribute but a draw class read from each fund's first-year notices, and the quantity is the forward draw on an allotment by age",
+    "task500": "task500 v2 builds exposure through a link held in another entity's register; here there is no link, the conditioning class lives in each fund's own call history",
+    "task53": "task53 places eligible volume against a scale break a closed log draws; here the split is no break on size but two draw schedules by age",
+    "task69": "task69 v2 re-pools an arm contrast within periods whose assignment rate varied; here nothing is assigned and the conditioning is on each unit's first-year draws to read its second-year schedule"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent on paper at the draw on 2026-10-18, never registered",
+      "driver": "The largest one-off outflow a holding can take while a tail quantile of its value ten years on stays above a share of today's, when part of the holding is valued by assessors whose marks spread each market move over later quarters; the tail has to be read from rebuilt market changes, not the recorded ones.",
+      "reason": "a ten-year tenth percentile from 37 years of quarterly returns carries about $280 million of resampling noise (independent against block draws on the same record), so no realistic draw step is deterministic, and filing the resampling scheme makes the de-smoothing step a literal fork"
+    },
+    {
+      "architecture": "v2 draft",
+      "fate": "replaced on paper at the draw on 2026-10-18, never registered",
+      "driver": "Units draw on what they were allotted along a schedule by age, and the schedule changed for the cohorts since a recent date; the young book enters its second year inside the forward window, so the schedule pooled over every cohort puts the window's draws too low, while the recent cohorts' schedule gives the draw.",
+      "reason": "a break by cohort date is either reached by any recency reflex (a recent calendar window holds only the new cohorts at young ages) or leaves the cut year as a knob, and abstractly repeats task501 v4's pooled regimes"
+    }
+  ],
+  "notes": "stump_strategy forecast_method_backtest: the natural fit (the call schedule pooled over every fund) is wrong out of sample because the line-bridged funds, a class no field names and each fund's first-year notices reveal, back-load their calls; nothing files a back-test or a selection criterion, the out-of-sample record is the funds that have passed the ages in question. Keys chosen between honest alternatives at the draw of 2026-10-18 (both fit; the first was banned against task198): the stakeholder is the investment office's director of investment risk (compliance_or_audit, risk) rather than the treasurer (finance_controller); the forum is the board of directors of a foundation organised as a Minnesota nonprofit corporation (board_of_directors) rather than trustees; the forcing event is the board's January meeting where the reserve is certified (vote_or_meeting) rather than the budget round; the calibration form is none because the back-test runs on the spine's own record and no separate organ ships (settled_transaction_ledger was the spine's description, not an organ); the context artifact is the administrator's year-end capital account summary the risk office certifies from (close_out_summary), the liquidity policy being filed too (filed_standard is banned against task168). Pattern E (G14's form): the second-year call rate splits absolutely by a class no column names, confounders (strategy, vintage, size, currency) independent of it by construction; G16 is the frame (the pooled and the conditioned schedules, the out-of-sample record choosing), G13 the rival that carries the programme's first-year pace into its second year.",
+  "registered": "2026-10-18T06:59:01Z"
+}
