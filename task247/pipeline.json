@@ -1,0 +1,38 @@
+{
+  "task": "task247",
+  "owner": "perssathya",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
+  "objective": "data-quality-monitoring",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-18",
+  "stump": "Correcting the 2027 near-real-time sea surface temperature record by the past seasons' mean difference from the reprocessed record, clear and cloud-filled days apart, keeps the survey on the reefs the bulletins declared at Alert Level 2; refilling each cloud gap from the clear days on both sides, as the reprocessed analysis will, puts the southern reefs whose heat came under a stalled trough at Alert Level 2 as well.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2 design: the simulator (16 reef sites, daily climatology and maximum monthly mean, heat events, cloud gaps, the near-real-time analysis relaxing to climatology under cloud, the reprocessed record) tuned so the refilled heating weeks clear the alert lines with margin under every reasonable refill and bias estimate while the mean-correction routes keep the declared list; then the asks, the fork table, the closure, the prompt and precut.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+}
