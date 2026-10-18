@@ -199,6 +199,7 @@ Lesson: a model learns that a leading indicator inflated by a cut in filing cost
 | SF20 | a business's channel | its first account's; a migrated account's from its legacy source code through the code list | the export's channel on any account | moves four channels | the field guide: "the legacy source code in the crosswalk is the record of how the client came to us"; the counting notes: "the channel of its first account" |
 | SF21 | the year and quarter of the first payroll with us | the first quarter we ran wages, from the wage files | a migrated account's first_pay_date (its legacy client-since date) | January starters in 2023, first quarters a quarter early | the counting notes count "the year its first payroll with us ran"; wherever the field's quarter differs from the first quarter with wages it holds no wages (asserted, 4,885 migrated accounts; no current-system account differs) |
 | SF22 | a client re-opened under its corrected EIN | one business with its first account | two businesses | double counts, loses the still and the later wages | the counting notes: "A business is the employer, whatever its account or EIN"; the EIN pairs one adjacent swap apart on accounts with the same names, industry and entity are exactly the 803 clients cancelled and re-opened the next day (asserted) |
+| SF23 | a successor of an EIN with no account in the extract | its predecessor's business, not a first-time employer | a first-time employer of its own | a larger 2024 count in every territory (asserted, the count printed in checks.py) | the counting notes: "A business the successor transfer register lists as the successor of an EIN with no account in the year-end planning extract is the same business as that predecessor" |
 
 ## Ladder
 
@@ -351,7 +352,8 @@ carries no device, asserted):
   answered yes on the older form (D2); a quarter on tax filing only is not one we paid, with its over-cleaning twin, accounts
   moved to tax filing only from 1 January 2026, which we still paid in the fourth quarter of 2025 (D5); a migrated
   account's channel from its legacy source code through the code list, where the load gave CPA, BP, TEL and APX the
-  default web sign-up (D7); a business bought by a new owner who carries it on is the same business.
+  default web sign-up (D7); a business bought by a new owner who carries it on is the same business, and a
+  successor of an EIN with no account in the extract is its predecessor's business, never a first-time one.
 - Shared hazards, documented: successors through the payroll tax team's register (the counting notes' re-formed entity
   and new-owner rules), returning clients under the old EIN in three formats, the state first employed in against the
   address state, legacy cents, legacy numbers through the crosswalk, the migration quarter split across both wage files.
@@ -424,6 +426,39 @@ Measured by: generator/cracker.py on the cut pack (target/), re-run by checks.py
   forecasting), the same-driver signature the card's differentiation answers at the draw; heart WARN on the draw's
   three repeats (Gate G, decision, question form), answered in `## Draw`.
 
+## Pre-ship check
+
+The 10/10 rules read again against the built pack (round 3):
+- Rule 1, the domain: the deciding quantity is the employer yield of the applications the integrated filings added,
+  read the way econometrics reads a policy's effect on business formation (a difference-in-differences against the
+  nine states the reform did not reach, before and after) and carried into the formation forecast; the swap test holds
+  (the judge's Gate H: pass).
+- Rule 2, two layers: Layer 1 is the Census pulls in two layouts and vintages, the closed-cohort lag, the onboarding
+  export's two layouts across the June 2024 migration, legacy cents and pay groups, EIN formats, the crosswalk, the
+  registrations and the successor register, each asserted neutral on the call (R2); Layer 2 decides (the judge's Gate
+  H: layers pass, decisive step analytical).
+- Rule 3: nothing planted, no filed method, no field marks an added application (the round-3 recheck: PASS, strength
+  HOLDS); the easy route on the clean truth files 2,800 (R3a). P(one) about 0.15 and P(both) 0.04 to 0.05, counting as
+  landings the regression family: the two-way fixed-effects panel of formations on applications across the twelve
+  states (2,506.3, 2,506.0 and 2,480.6 in its three forms) and the reform states' post-go-live regression with month
+  terms (2,502.1) read the comparison in regression form and sit inside the golden's bin, asserted with the family.
+- Near routes, each with its reason in the ladder and checks.py: the own before-and-after (0.63 bins below), the
+  reform-state regression with month terms over every closed cohort (0.60 below) and 2025 grown with the nine states'
+  January-to-September applications (0.70 below) sit 0.6 to 0.7 bins off and round to 2,400; none rounds to the
+  golden, no other route is inside a bin, and the default path is 2.69 bins off.
+- Determinism: round 3 judge DETERMINISTIC, APPROVE, no fix (2,499.64, a relative yield of 0.2603, 312,103 added of
+  919,455 applications; seven variants at 2,491 to 2,500; every ask figure to the cent; Gates G and H pass). Its one ask
+  fork, a successor of an EIN with no account in the extract, is closed by one sentence in the counting notes (SF23).
+  The reader found no leak; its small tells are answered (the share tab's shares are formulas over the tab's own counts
+  and bases, shown to two decimals of a per cent with the results Excel stores, and the manifest's covers are filled).
+  figures.json and the Deliverable Answers block are byte-identical to the judged build.
+- Residual, recorded as measured: the common rise in applications ramps from January to April 2026, and all three
+  older routes close inside the ramp (Ohio 5 January, Pennsylvania 2 February, Michigan 2 March). It stays: moving the
+  rise off the closings (from October 2025 to January 2026 in the harness) brought the twelve-state growth carries
+  within 0.62 bins of the golden and the own before-and-after within 0.46, and nothing in the record logs a cause for
+  the rise. On the asks, a response that cracks both silent count devices lands every count (pair 47.7), and two
+  responses that both land the call average 48.3 before any device (the call's 45 and two structural chart criteria).
+
 ## Tried and rejected
 
 - Completing the surge cohorts' formations from their own early formations at the closed cohorts' development pattern (a chain ladder on the formation triangle): rejected at the draw, the same latent structure as task157 (a cohort's size from its leading edge at a timing ratio earlier cohorts kept).
@@ -452,3 +487,5 @@ Measured by: generator/cracker.py on the cut pack (target/), re-run by checks.py
 - The liability record, tax filing only and the legacy code as the asks' silent primaries once the judge's pins filed them: rejected at stage 4 round 2, the pins hand all three to the cracker (its pair measured 48.5); the silent primaries are now the migration load's client-since date in first_pay_date, which only the wage files contradict, and the legacy re-key of a mistyped EIN.
 - The legacy re-key with the state registering the corrected EIN afresh for any business: rejected at stage 4 round 2, a business that had employed before is on the state's books under its correct EIN, and re-registering it let the re-key add about as many accounts to a territory's 2024 count as the client-since date took out, so the cracker's Indiana-Kentucky count landed on the golden by offset (207 against 207); a fresh registration is now limited to businesses first employing through us, and the two devices pull every territory's count the same way.
 - A third silent count device so that a response cracking both count primaries stays under 45 (47.7 measured, group 00 moving only the wages): not built at stage 4 round 2, since no further mess the company's systems write moves the counts apart from the first payroll and the business's identity, and a contrived one would read as planted; the pair table records it beside the both-on-call floor of 48.3.
+- Rounding the share tab's stored shares to four decimals for a finance workbook's look: rejected at stage 4 round 3, the standard prices each state at its share in the plan workbook, so stored rounded shares would move the exact line from 2,499.6 to 2,500.4 and figures.json with it; the shares are now formulas over the tab's own counts and bases, shown to two decimals of a per cent with the results Excel stores.
+- Moving the early 2026 rise off the three closings (a rise from October 2025 to January 2026): rejected in the round 2 harness and left at stage 4 round 3, the twelve-state growth carries came within 0.62 bins of the golden and the own before-and-after within 0.46; the rise ramps January to April 2026 with every closing inside the ramp, recorded as the residual in the pre-ship check.

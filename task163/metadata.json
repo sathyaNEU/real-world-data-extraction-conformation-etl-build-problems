@@ -70,7 +70,7 @@
     {
       "path": "first_time_employer_counting_notes.docx",
       "format": "docx",
-      "bytes": 10609,
+      "bytes": 10710,
       "rows": null,
       "source": "Constructed: written for the scenario as the fictional Kilbourne Payroll Sales Operations' first-time employer counting notes (3 February 2026)",
       "date": "2026-10-15",
@@ -106,7 +106,7 @@
     {
       "path": "pack_manifest.csv",
       "format": "csv",
-      "bytes": 2406,
+      "bytes": 2671,
       "rows": 15,
       "source": "Constructed: the fictional Kilbourne Payroll FP&A's planning pack manifest (15 October 2026)",
       "date": "2026-10-15",
@@ -124,7 +124,7 @@
     {
       "path": "plan_2027_workbook.xlsx",
       "format": "xlsx",
-      "bytes": 8180,
+      "bytes": 8275,
       "rows": 21,
       "source": "Constructed: the fictional Kilbourne Payroll FP&A's 2027 plan workbook with the 2025 share tab (15 October 2026); its formations base is summed from the constructed statistics pull",
       "date": "2026-10-15",

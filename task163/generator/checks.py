@@ -448,6 +448,40 @@ def main():
        since_eq and off_leg and empty and not off_cur and "the year its first payroll with us ran" in notes,
        "%d migrated accounts, %d with no wages in the field's quarter; %d current accounts differ" %
        (len(leg_rows), len(off_leg), len(off_cur)))
+    # SF23: a successor of an EIN with no account in the extract is its predecessor's business, never a first-time one
+    pred_of = collections.defaultdict(set)
+    for r_ in B.suta:
+        pred_of[CA.ein_key(r_["successor_ein"])].add(CA.ein_key(r_["predecessor_ein"]))
+    outside = 0
+    for root_, eins_ in sorted(B.group.items()):
+        succ_ = [e_ for e_ in eins_ if e_ in B.successor_eins]
+        if not succ_ or any(p_ in B.by_ein for e_ in succ_ for p_ in pred_of[e_]):
+            continue
+        accts_ = [a_ for e_ in eins_ for a_ in B.by_ein[e_]]
+        qs_ = [B.first_q[a_["account_id"]] for a_ in accts_ if a_["account_id"] in B.first_q]
+        if not qs_ or min(qs_)[0] != 2024:
+            continue
+        fq_ = min(qs_)
+        if B.liable_before(accts_, dt.date(fq_[0], 3 * fq_[1] - 2, 1).isoformat()):
+            continue
+        outside += 1
+    gold_signed = sum(v["signed"] for v in CA.asks(B)[0].values())
+    ok("SF23 a successor of an EIN with no account in the extract is its predecessor's business, not a first-time "
+       "employer: the counting notes", "the successor of an EIN with no account in the year-end planning extract is the "
+       "same business as that predecessor" in notes and outside > 0,
+       "counted as first-time they would take the 2024 count from %d to %d" % (gold_signed, gold_signed + outside))
+    plan_wb = os.path.join(TARGET, "plan_2027_workbook.xlsx")
+    import openpyxl
+    wsf = openpyxl.load_workbook(plan_wb)["Share 2025"]
+    wsv = openpyxl.load_workbook(plan_wb, data_only=True)["Share 2025"]
+    rows_f = [r_ for r_ in range(5, 5 + len(CA.STATES))]
+    tot_r = 5 + len(CA.STATES)
+    ok("XLSX the share tab holds each share as its count over its base and the totals as sums, shown to two decimals "
+       "of a per cent, with the results Excel stores (to fifteen significant digits)",
+       all(wsf["E%d" % r_].value == "=C%d/D%d" % (r_, r_) and wsf["E%d" % r_].number_format == "0.00%" and
+           abs(wsv["E%d" % r_].value - wsv["C%d" % r_].value / wsv["D%d" % r_].value) < 1e-12 for r_ in rows_f) and
+       wsf["C%d" % tot_r].value == "=SUM(C5:C%d)" % (tot_r - 1) and wsf["E%d" % tot_r].value == "=C%d/D%d" % (tot_r, tot_r)
+       and wsv["C%d" % tot_r].value == sum(wsv["C%d" % r_].value for r_ in rows_f))
     named = collections.defaultdict(list)
     for a in B.acc:
         named[(a["legal_name"].upper(), a["dba_name"].upper(), a["naics"], a["entity_type"])].append(a)

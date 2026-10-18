@@ -339,6 +339,32 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
             z.writestr(zi, data)
 
 
+def add_formulas(path, sheet_no, formulas):
+    """Give a worksheet's computed cells their formulas in front of the values they hold, the way Excel stores a
+    formula with its last result: {cell reference: formula without the equals sign}. Every other byte of the package
+    and every entry's stamp stay as they were."""
+    with zipfile.ZipFile(path) as z:
+        items = [(i, z.read(i.filename)) for i in z.infolist()]
+    name = "xl/worksheets/sheet%d.xml" % sheet_no
+    out = []
+    for info, data in items:
+        if info.filename == name:
+            s = data.decode()
+            for ref, f in formulas.items():
+                pat = re.compile(r'(<c r="%s"(?: [^>]*)?>)(<v>[^<]*</v></c>)' % ref)
+                s, n = pat.subn(lambda m: m.group(1) + "<f>%s</f>" % f + m.group(2), s)
+                assert n == 1, (path, ref)
+            data = s.encode()
+        out.append((info, data))
+    with zipfile.ZipFile(path, "w") as z:
+        for info, data in out:
+            zi = zipfile.ZipInfo(info.filename, date_time=info.date_time)
+            zi.compress_type = info.compress_type
+            zi.create_system = info.create_system
+            zi.external_attr = info.external_attr
+            z.writestr(zi, data)
+
+
 # ---------------------------------------------------------------------------------------------------- Word documents
 W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 WP_CT = "application/vnd.openxmlformats-officedocument.wordprocessingml"
