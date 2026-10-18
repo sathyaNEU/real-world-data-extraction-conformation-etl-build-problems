@@ -7,29 +7,29 @@
  "stage": 4,
  "stage_name": "check",
  "updated": "2026-10-18",
- "stump": "A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the thirteen extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases censored, give 4.0); more than half of those renewals will reach the filer's card expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a week after the expedite request the team files when the card expires, so the quarter's 80th percentile is 5.5 months.",
+ "stump": "A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the twelve extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases censored, give 4.0); about nine in ten of the quarter's renewals that need an appointment will reach the filer's card expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a week after the expedite request the team files around the day the card expires, so the quarter's 80th percentile is 5.5 months.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-18"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-18): the standard shares the call's vocabulary; future dates only in forward-looking columns",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK (2026-10-18, rework round 1): the standard shares the call's vocabulary; future dates only in forward-looking columns",
+  "reader": "round 1: questions 1 to 6 clean; its two readings (within 30 days, the register's decided_on against the notice date) closed by GM-07 2.4 and SF15"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.objective; driver.near 0.13 task127, differentiated)",
-  "surface": "0 of 241 pairs promoted",
+  "surface": "0 of 245 pairs promoted",
   "nearest": "task127 v2 0.13 (driver, differentiated)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "round 1 NOT_DETERMINISTIC on table 1 only (main call and table 2 reproduced)",
+  "disposition": "FIX_NOW: table 1 pinned by GM-07 1.3 and 1.4 and rebuilt as their literal execution; rule 3 audit PASS, realism items reworked",
+  "report": "coordinator's scratchpad: judge-task172/verdict.md, rule3/task172.md, leak-task172/reader_answers.md"
  },
  "returned": [],
- "resume": "stage 4: reader and judge",
+ "resume": "stage 4 round 2: leak reader and determinism judge on the reworked pack",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -38,18 +38,23 @@
  "portal_status_date": "",
  "answer": "5.5 months",
  "stage3": {
-  "checks": "83 of 83",
+  "checks": "102 of 102",
   "verify": "0 failed",
   "rebuild": "19 files byte-identical",
-  "figures_check": "exit 0, 31 figures",
-  "screens": "dispersion, variance-only, common-exposure subset and truncation direction pass (stumping 1.2); slots: no repeat",
+  "figures_check": "exit 0, 32 figures",
+  "precut": "51 checks, 0 FAIL, 0 WARN",
+  "screens": "dispersion, variance-only, common-exposure subset (3 decided renewals since the rule at the forward exposure) and truncation direction pass (stumping 1.2)",
+  "recentre": "PAPER_MEAN 21: the rule's value nearest 5.50 among those clearing the margin (18, 19, 21 clear; 22, nearest on the process alone, fails at 0.096); generator/recentre.py exit 0",
+  "golden": "5.395 months (164 days), quote 5.5",
+  "family": "17 constructions 5.388 to 5.526; with one sigma 5.379 to 5.535, edges 0.129 and 0.215",
+  "process": "5.526 (168 days); realised quarter 5.493",
   "pair_ceiling": 33.1,
   "both_on_call": 44.0,
   "mirror_leakage": 0.0,
   "target_zip": {
    "members": 14,
-   "bytes": 5801055,
-   "sha256": "82f8e087dad7a2291e2b0abe1c64cbe6c06cf51e9af5acb50d94b8430f8a60e3"
+   "bytes": 5824995,
+   "sha256": "1fa97336f9f34203c95fab17b091602af9bbf28f61a203e2930a876fbb162b83"
   }
  }
 }

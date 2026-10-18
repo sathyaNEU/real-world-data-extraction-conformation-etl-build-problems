@@ -21,12 +21,21 @@ SIM_START = dt.date(2021, 1, 1)
 SIM_END = dt.date(2027, 12, 31)
 
 # --- how a renewal's wait runs (receipt to decision) -------------------------------------------------------------
-P_APPT = 0.70                      # renewals USCIS sends to a fingerprint appointment (the rest reuse fingerprints)
-L_OLD = (28.0, 6.0)                # receipt to appointment, mean and sd in days, before the autumn 2026 change
-L_NEW = (119.0, 18.0)              # the same once USCIS set appointments about sixteen weeks out
+P_APPT = {"(c)(26)": 0.70,          # renewals USCIS sends to a new fingerprint appointment; the rest reuse fingerprints
+          "(c)(9)": 0.30}           # (c)(9) renewals mostly reuse the biometrics taken for the adjustment application
+L_OLD = (28.0, 6.0)                # receipt to appointment, mean and sd in days, the 2024 and 2025 base (Seattle)
+LEAD_RISE = 0.9                    # days a month the base rose after 30 October 2025, filers no longer waiting out
+                                   # the extension
+LEAD_SEASON = (-1.0, -2.0, -1.5, 0.0, 1.0, 2.0, 3.0, 2.5, 0.5, -0.5, -1.0, 1.5)   # by calendar month, days
+LEAD_DRIFT = (0.6, 1.6)            # month-to-month drift of the base, AR(1) coefficient and innovation sd, days
+STATE_LEAD = {"WA": 1.00, "CA": 1.12, "TX": 0.90, "NY": 1.18, "MA": 1.05, "NC": 0.94, "GA": 0.91, "VA": 1.07}
+L_NEW = (119.0, 18.0)              # the same once USCIS set appointments about seventeen weeks out (Seattle)
 RAMP = (dt.date(2026, 8, 24), dt.date(2026, 9, 14))   # receipts in this span move linearly from the old to the new
-P_RESCHED = 0.05                   # appointments rescheduled (the applicant's request or a closed support centre)
-RESCHED = (7, 21)                  # days the reschedule adds
+P_RESCHED_APPLICANT = (0.045, 0.006)   # applicants' reschedules, before and after 30 October 2025 (once a pending
+                                       # renewal no longer extends the card, coordinators send conflicts to walk-in
+                                       # biometrics and only emergencies are rescheduled)
+P_RESCHED_USCIS = 0.02             # appointments USCIS moves (a closed support centre, weather)
+RESCHED_USCIS = (16.0, 7.0)        # days a USCIS move adds (closures rebook first)
 Q_MED, Q_SIG = 70.0, 0.32          # officer's review from the appointment (or from receipt where fingerprints reuse)
 P_RFE = 0.08                       # requests for evidence
 RFE_AT = 0.55                      # the request goes out this far into the base review
@@ -36,19 +45,26 @@ P_TRANSFER = 0.04                  # cases moved to another office during review
 P_DENY = 0.015
 # --- the team's filing practice -----------------------------------------------------------------------------------
 OPEN_BEFORE = 180                  # the team opens a renewal this many days before the card expires
-PAPER = (19.0, 6.0)                # opening to dispatch (packet assembly, signatures)
+PAPER_MEAN = 21                    # opening to dispatch (packet assembly, signatures), main component, days; set by
+                                   # the design note's re-centre rule (nearest 5.50 months among the values that
+                                   # clear every construction)
+P_PAPER_LATE = 0.15                # packets held for documents or the employee's travel
+PAPER_LATE = (42.0, 14.0)
 P_REJECT = 0.035                   # lockbox rejections of a team packet
 P_APPLICANT_ONLY = 0.22            # rejection notices that went to the applicant only (the attorney's G-28 not accepted)
 P_REREJECT = 0.08
 P_COURIER = 0.012                  # packets the courier brought back undelivered
 # --- the cut at the card's expiry, renewals filed from 30 October 2025 -----------------------------------------
-E_RESP = (7.5, 2.0)                # expedite request to decision, days
-P_EXP_OK = 0.95
+P_REQ_EARLY = 0.12                 # requests filed 3 to 10 days before the card expires (the review plainly unfinished)
+P_REQ_LATE = 0.18                  # requests filed 2 to 10 days after it (the leave letter, a holiday)
+E_RESP = (9.0, 3.5)                # expedite request to decision, days
+P_EXP_OK = 0.85
 # --- people -------------------------------------------------------------------------------------------------------
 ATTRITION = 0.085                  # program employees leaving per year
 P_SPOUSE_ENROLLED = 0.70           # spouses on the company's benefits when first entered
 P_DROP_2026 = 0.03                 # enrolled spouses who left the plan at the 2026 open enrolment
 P_COBRA = 0.12                     # departed employees whose spouse kept coverage under COBRA through the export
+P_LATE_ENROLL = 0.35               # spouses off the plan at intake who join it later (open enrolment or a life event)
 P_UPLOAD_RENEWAL = 0.80            # spouses who upload a renewed card to the benefits portal
 P_UPLOAD_C9 = 0.75                 # derivative spouses who upload their (c)(9) card
 P_STALE_LABEL = 0.85               # switchers whose uploaded (c)(9) card kept the (c)(26) label of their earlier entry
@@ -68,14 +84,44 @@ def month_frac(d):
     return d.year + (d.timetuple().tm_yday - 1) / 365.25
 
 
-def lead_mean(recv):
+def _drift():
+    rng = C.stream("lead drift")
+    out, x = {}, 0.0
+    y, m = 2020, 1
+    while (y, m) <= (2028, 12):
+        x = LEAD_DRIFT[0] * x + LEAD_DRIFT[1] * float(rng.standard_normal())
+        out[(y, m)] = x
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    return out
+
+
+DRIFT = _drift()
+
+
+def paper_days(rng):
+    """opening to dispatch, days"""
+    if rng.random() < P_PAPER_LATE:
+        return gam(rng, *PAPER_LATE)
+    return gam(rng, float(PAPER_MEAN), PAPER_MEAN / 3.0)
+
+
+def lead_mean(recv, state="WA"):
+    """receipt to the fingerprint appointment USCIS sets, mean in days, for a filer in `state`"""
+    f = STATE_LEAD.get(state, 1.0)
+    old = L_OLD[0] + LEAD_SEASON[recv.month - 1] + DRIFT[(recv.year, recv.month)]
+    if recv > C.IFR:
+        old += LEAD_RISE * min((recv - C.IFR).days, (RAMP[0] - C.IFR).days) / 30.4
     a, b = RAMP
     if recv <= a:
-        return L_OLD[0]
+        return old * f
     if recv >= b:
-        return L_NEW[0]
-    f = (recv - a).days / (b - a).days
-    return L_OLD[0] + f * (L_NEW[0] - L_OLD[0])
+        return L_NEW[0] * f
+    w = (recv - a).days / (b - a).days
+    return (old + w * (L_NEW[0] - old)) * f
+
+
+def lead_sd(m):
+    return max(L_OLD[1] * m / L_OLD[0] if m < 60 else 0.0, L_NEW[1] * m / L_NEW[0], 4.0)
 
 
 def gam(rng, mean, sd):
@@ -92,6 +138,76 @@ def pick(rng, table):
     return table[-1][0]
 
 
+def draw_wait(rng, cat, state, received, expiry, counsel=True, term=None):
+    """one renewal's wait under the generating process, from receipt: the route, the appointment (and any
+    reschedule), the officer's review with its requests for evidence and transfers, and, for a renewal filed from
+    30 October 2025 still pending when its card expires, the team's expedite request and USCIS's answer"""
+    post = received >= C.IFR
+    o = dict(route="appointment" if rng.random() < P_APPT[cat] else "reuse", resched=None, rfe_at=None,
+             rfe_resp=None, transfer_at=None, capped=False, exp_req=None, exp_ok=None, exp_out=None, walkin=None)
+    m = lead_mean(received, state)
+    lead = gam(rng, m, lead_sd(m))
+    o["lead_first"] = lead
+    u = rng.random()
+    p_app = P_RESCHED_APPLICANT[1 if post else 0]
+    if o["route"] == "appointment" and u < p_app:
+        o["resched"] = "applicant"           # the next open slot, about one queue length on
+        lead += gam(rng, m + 8.0, 0.35 * (m + 8.0))
+    elif o["route"] == "appointment" and u < p_app + P_RESCHED_USCIS:
+        o["resched"] = "uscis"
+        lead += gam(rng, *RESCHED_USCIS)
+    o["lead"] = lead if o["route"] == "appointment" else 0.0
+    base_q = Q_MED * math.exp(Q_SIG * float(rng.standard_normal()))
+    q = base_q
+    o["rfe"] = rng.random() < P_RFE
+    if o["rfe"]:
+        o["rfe_at"] = RFE_AT * base_q
+        o["rfe_resp"] = o["rfe_at"] + gam(rng, *RFE_RESP)
+        q = o["rfe_resp"] + gam(rng, *RFE_DEC)
+    o["transfer"] = rng.random() < P_TRANSFER
+    if o["transfer"]:
+        o["transfer_at"] = float(rng.uniform(0.2, 0.8)) * q
+        q += float(rng.uniform(0, 10))
+    o["q"] = q
+    start = o["lead"]
+    w_nat = start + q
+    o["w_nat"] = w_nat
+    o["denied"] = rng.random() < P_DENY
+    w = w_nat
+    u = rng.random()
+    if u < P_REQ_EARLY:
+        req = C.prev_busday(expiry - dt.timedelta(days=int(rng.integers(3, 11))))
+    elif u < P_REQ_EARLY + P_REQ_LATE:
+        req = C.next_busday(expiry + dt.timedelta(days=int(rng.integers(2, 11))))
+    else:
+        req = C.next_busday(expiry)
+    r_days = (req - received).days
+    e_draw = gam(rng, *E_RESP)
+    ok = rng.random() < P_EXP_OK
+    out_lag = int(rng.integers(2, 9))
+    wk = int(rng.integers(4, 11))
+    rfe_gap = float(rng.uniform(5, 12))
+    if post and counsel and w_nat > r_days and not (term is not None and term <= req):
+        o["exp_req"], o["exp_ok"] = req, ok
+        o["exp_out"] = C.next_busday(req + dt.timedelta(days=out_lag))
+        if ok:
+            walkin = None
+            if o["route"] == "appointment" and start > r_days - 3:
+                walkin = C.next_busday(req + dt.timedelta(days=wk))     # USCIS books an earlier walk-in
+                floor_t = (walkin - received).days + 4
+            else:
+                floor_t = start + 7 if o["route"] == "appointment" else 5
+            if o["rfe"] and start + o["rfe_at"] < r_days:
+                floor_t = max(floor_t, start + o["rfe_resp"] + rfe_gap)    # an open request for evidence is answered first
+            t_dec = max(r_days + e_draw, floor_t)
+            if t_dec < w_nat:
+                w = t_dec
+                o["capped"] = True
+                o["walkin"] = walkin
+    o["w"] = w
+    return o
+
+
 class Emp:
     __slots__ = ("id", "hire", "term", "state", "family", "enroll", "country", "basis", "spouse", "gc_filed",
                  "gc_approved", "pd", "i140", "h1b_end", "cobra", "tracker")
@@ -102,7 +218,8 @@ class Emp:
 
 
 class Sp:
-    __slots__ = ("id", "principal", "enrolled", "dropped", "cobra", "switch", "gc_approved", "dob_year", "derivative")
+    __slots__ = ("id", "principal", "enrolled", "dropped", "cobra", "switch", "gc_approved", "dob_year", "derivative",
+                 "late_enroll", "dep_id")
 
     def __init__(self, **kw):
         for k in self.__slots__:
@@ -111,7 +228,7 @@ class Sp:
 
 class Card:
     __slots__ = ("holder", "htype", "cat", "number", "valid_from", "valid_to", "basis", "case", "roster",
-                 "roster_cat", "entered_on", "entered_via")
+                 "roster_cat", "entered_on", "entered_via", "roster_holder")
 
     def __init__(self, **kw):
         for k in self.__slots__:
@@ -345,7 +462,7 @@ def build(seed_note="172"):
         cs = Case(id=seq[0], holder=holder, htype=htype, cat=cat, card=card, principal=principal, opened=opened,
                   filed_by="Counsel", sends=[], reject_trail=[])
         # dispatch, the lockbox, rejections and courier returns
-        sent = C.next_busday(opened + dt.timedelta(days=max(4.0, gam(rng, *PAPER))))
+        sent = C.next_busday(opened + dt.timedelta(days=max(4.0, paper_days(rng))))
         received = None
         tries = 0
         while received is None and tries < 5:
@@ -397,59 +514,12 @@ def build(seed_note="172"):
         cs.received = received
         cs.regime = "post" if received >= C.IFR else "pre"
         # the wait's stages
-        cs.route = "appointment" if rng.random() < P_APPT else "reuse"
-        m = lead_mean(received)
-        sd = L_OLD[1] if m <= L_OLD[0] else max(L_OLD[1], L_NEW[1] * m / L_NEW[0])
-        lead = gam(rng, m, sd)
-        cs.lead_first = lead
-        cs.resched = cs.route == "appointment" and rng.random() < P_RESCHED
-        if cs.resched:
-            lead += float(rng.uniform(*RESCHED))
-        cs.lead = lead if cs.route == "appointment" else 0.0
-        base_q = Q_MED * math.exp(Q_SIG * float(rng.standard_normal()))
-        q = base_q
-        cs.rfe = rng.random() < P_RFE
-        if cs.rfe:
-            cs.rfe_at = RFE_AT * base_q
-            cs.rfe_resp = cs.rfe_at + gam(rng, *RFE_RESP)
-            q = cs.rfe_resp + gam(rng, *RFE_DEC)
-        cs.transfer = rng.random() < P_TRANSFER
-        if cs.transfer:
-            cs.transfer_at = float(rng.uniform(0.2, 0.8)) * q
-            q += float(rng.uniform(0, 10))
-        cs.q = q
-        start = cs.lead if cs.route == "appointment" else 0.0
-        w_nat = start + q
-        cs.w_nat = w_nat
-        cs.denied = rng.random() < P_DENY
+        st = draw_wait(rng, cat, principal.state, received, card.valid_to, cs.filed_by == "Counsel", principal.term)
+        for k in ("route", "lead", "lead_first", "resched", "q", "rfe", "rfe_at", "rfe_resp", "transfer",
+                  "transfer_at", "w_nat", "denied", "capped", "exp_req", "exp_ok", "exp_out", "walkin"):
+            setattr(cs, k, st[k])
+        w = st["w"]
         expiry = card.valid_to
-        d_exp = (expiry - received).days
-        w = w_nat
-        cs.capped = False
-        e_draw = gam(rng, *E_RESP)
-        ok = rng.random() < P_EXP_OK
-        if cs.regime == "post" and w_nat > d_exp and cs.filed_by == "Counsel":
-            req = C.next_busday(expiry)
-            stop_before = principal.term is not None and principal.term <= req
-            if not stop_before:
-                cs.exp_req = req
-                cs.exp_ok = ok
-                cs.exp_out = C.next_busday(req + dt.timedelta(days=int(rng.integers(2, 9))))
-                if ok:
-                    t_dec = (req - received).days + e_draw
-                    floor_t = start + 7 if cs.route == "appointment" else 5
-                    if cs.rfe:
-                        floor_t = max(floor_t, start + cs.rfe_resp + float(rng.uniform(5, 12)))
-                    walkin = None
-                    wk = int(rng.integers(4, 11))
-                    if cs.route == "appointment" and start > (req - received).days - 3:
-                        walkin = C.next_busday(req + dt.timedelta(days=wk))
-                        floor_t = max(floor_t, (walkin - received).days + 4)
-                    t_dec = max(t_dec, floor_t)
-                    if t_dec < w_nat:
-                        w = t_dec
-                        cs.capped = True
-                        cs.walkin = walkin
         decided = C.next_busday(received + dt.timedelta(days=w))
         cs.decided = decided
         cs.appt = C.next_busday(received + dt.timedelta(days=cs.lead)) if cs.route == "appointment" else None
@@ -527,6 +597,30 @@ def build(seed_note="172"):
                 cs.new_card = None
     # the cards that a withdrawn or stopped renewal would have produced do not exist in anyone's hands at the export
     W.cards = [c for c in W.cards if c.basis != "void" and not (c.case is not None and c.case.withdrawn)]
+
+    # spouses off the plan at intake who joined it later: Benefits gives each a dependant ID from that day
+    r_le = C.stream("late enrollment")
+    first = {}
+    for c in W.cards:
+        if c.htype == "Spouse" and (id(c.holder) not in first or c.valid_from < first[id(c.holder)]):
+            first[id(c.holder)] = c.valid_from
+    for s in W.spouses:
+        s.late_enroll, s.dep_id = None, None
+        if s.enrolled or id(s) not in first:
+            continue
+        u, v = r_le.random(), r_le.random()
+        if u >= P_LATE_ENROLL:
+            continue
+        start = max(first[id(s)], dt.date(2021, 1, 1)) + dt.timedelta(days=60)
+        if v < 0.6:                                   # open enrolment: coverage from the next 1 January
+            d = dt.date(start.year + 1 + int(r_le.integers(0, 3)), 1, 1)
+        else:                                         # a life event (her own employer's cover ended)
+            d = start + dt.timedelta(days=int(r_le.integers(0, 1400)))
+        e = s.principal
+        if d > C.EXPORT or (e.term is not None and e.term <= d):
+            continue
+        s.late_enroll = d
+        s.dep_id = "D%07d" % next(it_d)
     return W
 
 
@@ -540,34 +634,23 @@ def forward_truth(W):
     return out
 
 
-def model_quantile(n=200000, seed="model", lead=L_NEW, regime_post=True, d_samples=None, e_resp=E_RESP,
-                   p_exp_ok=P_EXP_OK):
-    """the 80th percentile of the wait under the generating process at a fixed appointment regime, by simulation;
-    d_samples are receipt-to-expiry gaps (days) drawn from the team's practice"""
-    rng = C.stream("model/" + seed)
-    appt = rng.random(n) < P_APPT
-    k = (lead[0] / lead[1]) ** 2
-    L = rng.gamma(k, lead[1] ** 2 / lead[0], n)
-    L = L + (rng.random(n) < P_RESCHED) * rng.uniform(*RESCHED, n)
-    base = Q_MED * np.exp(Q_SIG * rng.standard_normal(n))
-    rfe = rng.random(n) < P_RFE
-    kr, kd = (RFE_RESP[0] / RFE_RESP[1]) ** 2, (RFE_DEC[0] / RFE_DEC[1]) ** 2
-    resp = RFE_AT * base + rng.gamma(kr, RFE_RESP[1] ** 2 / RFE_RESP[0], n)
-    q = np.where(rfe, resp + rng.gamma(kd, RFE_DEC[1] ** 2 / RFE_DEC[0], n), base)
-    tr = rng.random(n) < P_TRANSFER
-    q = q + tr * rng.uniform(0, 10, n)
-    start = np.where(appt, L, 0.0)
-    wn = start + q
-    if d_samples is None:
-        paper = np.maximum(4.0, rng.gamma((PAPER[0] / PAPER[1]) ** 2, PAPER[1] ** 2 / PAPER[0], n))
-        D = OPEN_BEFORE - paper - rng.integers(1, 4, n)
-    else:
-        D = rng.choice(np.asarray(d_samples, float), n)
-    ke = (e_resp[0] / e_resp[1]) ** 2
-    E = rng.gamma(ke, e_resp[1] ** 2 / e_resp[0], n)
-    ok = rng.random(n) < p_exp_ok
-    floor_t = np.where(appt, start + 7, 5.0)
-    floor_t = np.where(rfe, np.maximum(floor_t, start + resp + 8), floor_t)
-    capped_t = np.maximum(D + E, floor_t)
-    w = np.where(regime_post & (wn > D) & ok & (capped_t < wn), capped_t, wn)
-    return float(np.quantile(w, 0.8)), float(((wn > D)).mean()), float((regime_post & (wn > D) & ok & (capped_t < wn)).mean())
+def process_q80(W, reps=200, seed="process"):
+    """the generator's process 80th percentile for the quarter: every renewal counsel files that is received from 1
+    January to 31 March 2027, with its own category, state, receipt and card, its wait re-drawn `reps` times under the
+    generating process; withdrawn renewals left out as standard 4.2 leaves them out"""
+    rng = C.stream("process truth/" + seed)
+    fw = [cs for cs in W.cases if cs.received and C.Q_START <= cs.received <= C.Q_END and cs.filed_by == "Counsel"]
+    waits = []
+    for _ in range(reps):
+        for cs in fw:
+            o = draw_wait(rng, cs.cat, cs.principal.state, cs.received, cs.card.valid_to, True, cs.principal.term)
+            dec = C.next_busday(cs.received + dt.timedelta(days=o["w"]))
+            p = cs.principal
+            if cs.cat == "(c)(9)" and p.gc_approved and cs.received < p.gc_approved < dec:
+                req = C.next_busday(p.gc_approved + dt.timedelta(days=int(rng.integers(1, 7))))
+                ack = C.next_busday(req + dt.timedelta(days=int(rng.integers(18, 46))))
+                if ack < dec:
+                    continue
+            waits.append((dec - cs.received).days)
+    w = np.asarray(waits, float)
+    return float(np.quantile(w, 0.8)), len(fw), w

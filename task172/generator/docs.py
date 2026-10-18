@@ -41,12 +41,19 @@ POLICY = [
         "own adjustment is pending.",
         "1.2 Global Mobility files renewals for employees and for the spouses of employees. When an employee leaves "
         "Sallowmere, work stops on the employee's and the spouse's pending renewals.",
+        "1.3 Global Mobility tracks the work permits of current employees and of the spouses of current employees. An "
+        "employee is current while HR's program roster shows the employee as Active.",
+        "1.4 A person's work permit is the card USCIS approved for the person most recently, in the category on its "
+        "approval notice, which is not always the category entered on HR's work permit roster. It remains the "
+        "person's work permit until its last day, whatever has changed in the person's status since.",
     ]),
     ("2. Opening and filing", [
         "2.1 Global Mobility opens a renewal 180 days before the current card expires and files it when the packet is "
         "complete.",
         "2.2 Packets go by courier to the USCIS lockbox for the filer's state of residence, with counsel's Form G-28.",
         "2.3 A renewal is filed on the date USCIS receives it, the receipt date on its receipt notice.",
+        "2.4 A packet the lockbox rejects is not filed. A rejected renewal is filed again within 30 days when USCIS "
+        "receives it no later than the 30th day after the date on the rejection notice.",
     ]),
     ("3. When a card expires", [
         "3.1 Renewals filed on or after 30 October 2025 do not extend the current card. An employee whose card expires "
@@ -68,8 +75,8 @@ POLICY = [
         "extended.",
     ]),
 ]
-REVISIONS = ("Revision 4 (12 November 2025): section 3 rewritten for the end of automatic extension. "
-             "Revision 3 (2 April 2024): section 2.2, the lockbox by state of residence.")
+REVISIONS = ("Revision 4 (12 November 2025): section 3 rewritten for the end of automatic extension; sections 1.3, "
+             "1.4 and 2.4 added. Revision 3 (2 April 2024): section 2.2, the lockbox by state of residence.")
 
 
 def section_numbers():

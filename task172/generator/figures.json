@@ -1,39 +1,44 @@
 {
+ "appt_share_c26": 0.707,
+ "appt_share_c9": 0.282,
  "ask_a": {
-  "2027-07 (c)(26)": 186,
+  "2027-07 (c)(26)": 182,
   "2027-07 (c)(9)": 279,
-  "2027-08 (c)(26)": 206,
+  "2027-08 (c)(26)": 187,
   "2027-08 (c)(9)": 140,
-  "2027-09 (c)(26)": 825,
+  "2027-09 (c)(26)": 771,
   "2027-09 (c)(9)": 63
  },
  "ask_b": {
   "2025 Q4": {
-   "refiled_30": 21,
-   "rejected": 26
+   "refiled_30": 19,
+   "rejected": 22
   },
   "2026 Q1": {
-   "refiled_30": 15,
-   "rejected": 17
+   "refiled_30": 26,
+   "rejected": 33
   },
   "2026 Q2": {
-   "refiled_30": 35,
-   "rejected": 45
+   "refiled_30": 50,
+   "rejected": 57
   },
   "2026 Q3": {
-   "refiled_30": 11,
-   "rejected": 16
+   "refiled_30": 14,
+   "rejected": 18
   }
  },
+ "expedite_accepted": 0.87,
  "expedite_response": "about a week",
  "expedite_response_weeks": 1,
  "lead_weeks_before": 4,
  "lead_weeks_now": 17,
  "month_days": 30.4,
+ "quarter_c9_share": 0.545,
  "quote_months": 5.5,
- "quote_unrounded": 5.526,
- "reach_expiry": "more than half",
- "reach_share": 0.625,
+ "quote_unrounded": 5.395,
+ "reach_appt_share": 0.915,
+ "reach_expiry": "about nine in ten",
+ "reach_share": 0.444,
  "refile_days": 30,
  "rival_default_months": 7.0,
  "rival_record_months": 4.0,

@@ -92,12 +92,13 @@ def routes(Q):
     for k in (1.25, 1.5):
         out["record times %.2f" % k] = naive * k
     out["post-rule record, 97.5th percentile"] = K.km_quantile(wait_rows(rens, lo=C.IFR), 0.975) / M
-    for lo in (42, 56):
-        sub = [((r["decided"] - r["received"]).days, 1) for r in dec if r["route"] == "appointment" and r["appt"] and
-               (r["appt"] - r["received"]).days >= lo]
-        out["decided renewals with an appointment %d days or more out" % lo] = (
-            float(np.quantile([s[0] for s in sub], 0.8)) / M if len(sub) >= 5 else float("nan"))
-        out["_n_lead_%d" % lo] = len(sub)
+    for lo in (42, 56, 70, 84, 98):
+        for lab, since in (("", None), (", filed since the rule", C.IFR)):
+            sub = [((r["decided"] - r["received"]).days, 1) for r in dec if r["route"] == "appointment" and r["appt"]
+                   and (r["appt"] - r["received"]).days >= lo and (since is None or r["received"] >= since)]
+            out["decided renewals with an appointment %d days or more out%s" % (lo, lab)] = (
+                float(np.quantile([s[0] for s in sub], 0.8)) / M if len(sub) >= 10 else float("nan"))
+            out["_n_lead_%d%s" % (lo, "_post" if since else "")] = len(sub)
     ex = [(r["decided"] - r["received"]).days for r in dec if r["exp_req"] and r["exp_out"] == "Accepted"]
     out["renewals decided after an expedite request, q80"] = float(np.quantile(ex, 0.8)) / M
     out["_longest_decided_post_rule_lead"] = float(max((r["appt"] - r["received"]).days for r in dec
@@ -144,32 +145,43 @@ def backtest(Q):
                 share_within_14=float(np.mean(obs <= 14)))
 
 
+def _q(comp, **kw):
+    return float(np.quantile(K.simulate(comp, **kw)[0], .8)) / M
+
+
+def ask_a_mix(Q):
+    """the category shares of ask A's own window (July to September 2027), a mix a solver may borrow for the quarter"""
+    A = K.ask_a(Q["T"], Q["cases"], Q["ref"])
+    tot = {cat: sum(A[(y, m, cat)] for (y, m) in C.ASK_A_MONTHS) for cat in C.CATS}
+    return {cat: tot[cat] / sum(tot.values()) for cat in C.CATS}
+
+
 def variants(Q):
-    """the golden under every standard construction the record supports"""
-    rens = Q["rens"]
+    """the golden under every defensible construction the record supports (the family the margin rule reads)"""
+    rens, mix = Q["rens"], Q["mix"]
     out = {}
     base = K.components(rens)
-    out["golden (Oct to Nov leads, Q by Kaplan-Meier, D since the rule)"] = float(np.quantile(K.simulate(base)[0], .8)) / M
-    out["leads from 14 September"] = float(np.quantile(K.simulate(K.components(
-        rens, regime=(dt.date(2026, 9, 14), dt.date(2026, 11, 30))))[0], .8)) / M
-    out["leads, November only"] = float(np.quantile(K.simulate(K.components(
-        rens, regime=(dt.date(2026, 11, 1), dt.date(2026, 11, 30))))[0], .8)) / M
-    out["leads, October only"] = float(np.quantile(K.simulate(K.components(
-        rens, regime=(dt.date(2026, 10, 1), dt.date(2026, 10, 31))))[0], .8)) / M
-    out["review from decided renewals only"] = float(np.quantile(K.simulate(K.components(rens, q_mode="decided"))[0], .8)) / M
-    out["card gap from the whole record"] = float(np.quantile(K.simulate(K.components(rens, d_from=C.RECORD_START))[0], .8)) / M
-    out["every expedite accepted"] = float(np.quantile(K.simulate(base, use_accept=False)[0], .8)) / M
+    out["golden (the quarter's category mix, Oct to Nov leads, Q by Kaplan-Meier, D and the response since the rule)"] = \
+        _q(base, mix=mix)
+    out["requests taken at the card's expiry (no offsets)"] = _q(base, mix=mix, offsets=False)
+    out["the mix of ask A's window (July to September expiries)"] = _q(base, mix=ask_a_mix(Q))
+    out["the record's own route share (no category mix)"] = _q(base)
+    post = K.components([r for r in rens if r["received"] >= C.IFR])
+    out["the route share of the renewals filed since the rule (no category mix)"] = _q(dict(base, pA=post["pA"]))
+    out["leads from 14 September"] = _q(K.components(rens, regime=(dt.date(2026, 9, 14), dt.date(2026, 11, 30))), mix=mix)
+    out["leads, November only"] = _q(K.components(rens, regime=(dt.date(2026, 11, 1), dt.date(2026, 11, 30))), mix=mix)
+    out["leads, October only"] = _q(K.components(rens, regime=(dt.date(2026, 10, 1), dt.date(2026, 10, 31))), mix=mix)
+    out["review from decided renewals only"] = _q(K.components(rens, q_mode="decided"), mix=mix)
+    out["card gap from the whole record"] = _q(K.components(rens, d_from=C.RECORD_START), mix=mix)
     c2 = dict(base)
     c2["E"] = np.full(len(base["E"]), float(np.median(base["E"])))
-    out["expedite response at its median"] = float(np.quantile(K.simulate(c2)[0], .8)) / M
-    c3 = dict(base)
-    rng = np.random.default_rng(3)
+    out["expedite response at its median"] = _q(c2, mix=mix)
     logL = np.log(base["L"])
     c3_lead = (lambda r, n, mu=logL.mean(), sd=logL.std(): np.exp(r.normal(mu, sd, n)))
-    out["lead as a fitted lognormal"] = float(np.quantile(K.simulate(base, lead_add=c3_lead)[0], .8)) / M
-    out["month of 365.25/12 days"] = float(np.quantile(K.simulate(base)[0], .8)) / (365.25 / 12)
+    out["lead as a fitted lognormal"] = _q(base, mix=mix, lead_add=c3_lead)
+    out["month of 365.25/12 days"] = _q(base, mix=mix) * M / (365.25 / 12)
     for s in (1, 2, 3):
-        out["simulation seed %d" % s] = float(np.quantile(K.simulate(base, seed=s)[0], .8)) / M
+        out["simulation seed %d" % s] = _q(base, mix=mix, seed=s)
     # analog: the post-rule record re-run with the new appointment delay, each renewal cut at its own card's expiry
     rng = np.random.default_rng(11)
     ws = []
@@ -193,39 +205,69 @@ def variants(Q):
     return out
 
 
+def misreads(Q):
+    """constructions that contradict a shipped record; each still lands the bin, none is in the family"""
+    base, mix = Q["comp"], Q["mix"]
+    return {"every expedite accepted (the log records denials)": _q(base, mix=mix, use_accept=False)}
+
+
 def one_sigma(Q):
-    """each component moved by one standard error, the quote recomputed"""
-    comp = Q["comp"]
+    """each component of the golden construction moved by one standard error, the quote recomputed"""
+    comp, mix = Q["comp"], Q["mix"]
     out = {}
-    for name, key in (("lead", "L"), ("card gap", "D"), ("expedite response", "E")):
+    for name, key in (("lead", "L"), ("card gap", "D"), ("expedite response", "E"), ("request offset", "R")):
         arr = comp[key]
         se = float(arr.std() / np.sqrt(len(arr)))
         for sgn in (-1, 1):
             c = dict(comp)
             c[key] = arr + sgn * se
-            out["%s %+d se" % (name, sgn)] = float(np.quantile(K.simulate(c)[0], .8)) / M
-    c = dict(comp)
-    pA_se = float(np.sqrt(comp["pA"] * (1 - comp["pA"]) / comp["n_rec"]))
+            out["%s %+d se" % (name, sgn)] = _q(c, mix=mix)
     for sgn in (-1, 1):
         c = dict(comp)
-        c["pA"] = comp["pA"] + sgn * pA_se
-        out["appointment share %+d se" % sgn] = float(np.quantile(K.simulate(c)[0], .8)) / M
-    vals, ps = K.km_points(comp["qrows"])
+        c["pA_cat"] = {cat: comp["pA_cat"][cat] + sgn * float(np.sqrt(comp["pA_cat"][cat] * (1 - comp["pA_cat"][cat]) /
+                                                                      comp["n_cat"][cat])) for cat in C.CATS}
+        out["appointment share by category %+d se" % sgn] = _q(c, mix=mix)
+        se_acc = float(np.sqrt(comp["accept"] * (1 - comp["accept"]) / max(1, len(comp["E"]))))
+        out["expedite acceptance %+d se" % sgn] = _q(dict(comp, accept=comp["accept"] + sgn * se_acc), mix=mix)
+        n9 = Q["n_mix"]["(c)(9)"] + Q["n_mix"]["(c)(26)"]
+        f9 = mix["(c)(9)"] + sgn * float(np.sqrt(mix["(c)(9)"] * (1 - mix["(c)(9)"]) / n9))
+        out["the quarter's (c)(9) share %+d se" % sgn] = _q(comp, mix={"(c)(9)": f9, "(c)(26)": 1 - f9})
     qs = np.array([q[0] for q in comp["qrows"] if q[1] == 1], float)
     se = float(qs.std() / np.sqrt(len(qs)))
     for sgn in (-1, 1):
         c = dict(comp)
         c["qrows"] = [(q[0] + sgn * se, q[1]) for q in comp["qrows"]]
-        out["review %+d se" % sgn] = float(np.quantile(K.simulate(c)[0], .8)) / M
+        out["review %+d se" % sgn] = _q(c, mix=mix)
     return out
+
+
+def margin(Q):
+    """the margin rule: every construction in the family, moved by the largest one-sigma move of the golden, a
+    quarter-bin clear of both edges of its half-month cell"""
+    var = variants(Q)
+    sig = one_sigma(Q)
+    g = Q["months"]
+    up = max(0.0, max(sig.values()) - g)
+    dn = max(0.0, g - min(sig.values()))
+    lo = min(var.values()) - dn
+    hi = max(var.values()) + up
+    cell = C.half_month(g)
+    return dict(lo=lo, hi=hi, edge_lo=lo - (cell - 0.25), edge_hi=(cell + 0.25) - hi, var=var, sig=sig,
+                ok=C.half_month(lo) == cell == C.half_month(hi) and lo - (cell - 0.25) >= 0.125 - 1e-9 and
+                (cell + 0.25) - hi >= 0.125 - 1e-9)
 
 
 if __name__ == "__main__":
     Q = K.quote(sys.argv[1])
     for k, v in routes(Q).items():
-        print("%-75s %8.3f%s" % (k, v, "" if k.startswith("_") else "  -> %.1f" % C.half_month(v)))
+        print("%-75s %8.3f%s" % (k, v, "" if k.startswith("_") or np.isnan(v) else "  -> %.1f" % C.half_month(v)))
     print(backtest(Q))
-    for k, v in variants(Q).items():
-        print("variant %-62s %.3f -> %.1f" % (k, v, C.half_month(v)))
-    for k, v in one_sigma(Q).items():
-        print("one sigma %-40s %.3f -> %.1f" % (k, v, C.half_month(v)))
+    mg = margin(Q)
+    for k, v in mg["var"].items():
+        print("variant %-100s %.3f -> %.1f" % (k, v, C.half_month(v)))
+    for k, v in misreads(Q).items():
+        print("misread %-100s %.3f -> %.1f" % (k, v, C.half_month(v)))
+    for k, v in mg["sig"].items():
+        print("one sigma %-45s %.3f -> %.1f" % (k, v, C.half_month(v)))
+    print("margin: family with one sigma %.3f to %.3f, edges %.3f and %.3f, %s" % (
+        mg["lo"], mg["hi"], mg["edge_lo"], mg["edge_hi"], "PASS" if mg["ok"] else "FAIL"))
