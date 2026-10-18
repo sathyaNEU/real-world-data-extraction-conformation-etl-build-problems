@@ -2,14 +2,14 @@
  "task": "task202",
  "owner": "oviya13ya",
  "objective": "anomaly-detection",
- "status": "DESIGN",
- "stage": 3,
- "stage_name": "build",
+ "status": "BUILD",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-18",
  "architecture": 1,
  "loops": 0,
  "card_registered": true,
- "resume": "BUILD complete and every free gate green after a /fix-rubric pass that re-sited the ask layer onto the closed period (claim months July 2024 to December 2025) with the recommendation side frozen. freeze.py check task202 --mode rubric = PASS: call PHP 7,800, 5.94 per cent, PHP 7,700 at 6.04, default PHP 5,800 at 9.82, the ladder, the stump and the card all unmoved; only the ask side moved (claims_annex.xlsx, 46 ask figures). precut.py = 51 checks, 0 FAIL, 0 WARN (pair ceiling 28.5, mirror leakage 0.0). cracker.py on the cut pack: the cracker keeps 0 of 18 annex figures, pair 28.5, mirror leakage 0.0; the schedule's 24 figures are scored in the 38-point recommendation block, which is the accounting change the 65.5 measurement turned on. Two new ask-only files (hrg_claim_check_register_2024_2025.csv, treasury_disbursement_runs_2024_2025.csv), a third deliverable (claims_annex.xlsx), 17 files, 5 formats, 26,195-row portal, 3 distractors. target.zip sha256 2c603ddde052c9b07ace491ba4aeaf60ee49742fc4fa68ae4a22a606d9d862bb, 17 members, 913,699 bytes, identical across two separate cuts. NEXT: stage 4, the leak reader and the determinism judge (orchestrator's); the determinism judge should read the three annex asking sentences first, since each carries its own basis and grain.",
+ "resume": "Stage 4, both threads spawned on the reworked pack at target.zip md5 e94477d262f6e89ba9a163defe719fe0. The ask layer was re-sited onto a claim period that closed before the recommendation's window opens, and the gates are verified here rather than taken on the report: precut 51 checks with 0 FAIL and 0 WARN, pair ceiling 28.5 against a gate of 40 where it was 65.5, mirror leakage 0.0 where it was 34.6 with no headroom, all three asks keeping 0 of 6 against the cracker, verify 2,161 independent checks from the bundle alone with the call PHP 7,800, and freeze.py --mode rubric PASS with 46 ask figures and one ask file moved, which is what a rubric repair is allowed to move. The pair arithmetic is the house model exactly: cracker 45.0 as 38 plus 7 plus no ask points, mirror 12.0, so 28.5. The reclassification that made that possible is sound and is visible rather than silent: the band ceilings, the referred shares and the scale factors follow from the committed ceiling by the policy's own schedule, so they are the recommendation's critical components, which is where the house arithmetic already banks them for a landed call, and the cracker prints the old accounting at 49.5 as an audit line. Sensitivity recorded by the builder rather than presented as margin: the deepest measured stop keeps 5 of 18 figures for a pair of 43.8, and a response cracking one whole ask keeps 6 of 18 for 46.8, both inside the bar of 50 and above the target of 40.",
  "designation_set_screen": {
   "assigned": "carry task194 architecture 6's designation-set device onto human-factors-ergonomics / safety-incident-error-analysis, screening against task181 first",
   "method": "guard.py nearest on each candidate driver, then the abstraction test on latent structure, default path and correction",
@@ -81,5 +81,9 @@
    "one_whole_ask_cracked": "6 of 18, pair 46.8"
   },
   "frozen": "freeze.py check --mode rubric PASS; the call sentence in prompt.txt byte-identical, prompt 996 characters"
+ },
+ "leak": {
+  "leak_py": "REVIEW, 0 LEAK, sweep 11 clean",
+  "reader": "running"
  }
 }

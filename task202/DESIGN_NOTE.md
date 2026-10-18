@@ -481,6 +481,16 @@ Zero device and hazard rows inside the main call's declared population, asserted
 | `separation.share_without_either_ask_file` | 5.94 per cent |
 | `separation.main_call_*_unmoved` | call 7,800, down 7,700, default 5,800, cells 528, awards 49,265, partners 88, shares 5.94 / 6.04 / 9.82, cv 0.72 |
 
+**And the pack itself, diffed rather than argued.** Rebuilding the pack from the generator as it stood
+before this pass and comparing file by file: the four files the call reads
+(`hrg_claim_returns_fy2025-26.xlsx`, `hrg_claim_returns_fy2026-27.xlsx`,
+`portal_awards_2025-01_2027-03.csv`, `partner_identifier_crosswalk.csv`) are **byte-identical**, as are
+the policy, the band and province tables, the accreditation register and all three distractors. Four
+files changed and each is off the call's path: `hrg_claim_returns_fy2024-25.xlsx` gained the four
+recovery lines and is read by neither the call nor its verifier, `DATA_DICTIONARY.md` and
+`export_manifest.csv` register the two new files, and `referral_ceiling_request.eml` carries the audit
+committee's paragraph. Two files are new. That is the whole diff.
+
 Delete every device and the call is the same call, struck on the same rows, at the same distance from
 the next multiple of PHP 100. The only file the call reads that the asks touch at all is
 `hrg_claim_returns_fy2025-26.xlsx`, and they read its July-to-December 2025 rows, which are outside
