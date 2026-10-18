@@ -402,7 +402,9 @@ Of every file and every sentence added to force a convention: what else does the
   moves the call. The safe construction, confining it to desks that serve only non-panel municipalities, is
   recorded here and is to be measured before cutting rather than after.
 - The stump strategy label population_selection and the forcing event audit_or_inspection: both BLOCKed at
-  stage 2 when task190 was retired by its owner and pulled task245 into the last three. Redrawn to
+  stage 2 when a later registration moved task245 into the last three (task190 is paused with its ground
+  banked, not retired, and a retirement would not reorder the window in any case: the window is ordered by
+  filing time). Redrawn to
   causal_design and period_close, which are the honester labels: conditioning on the retained-item or
   citation volume is conditioning on a descendant of the count being tested, which is a control choice, and
   the designation falls due because the half year closed on 30 September and the definitive extract on 5

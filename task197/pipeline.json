@@ -9,20 +9,21 @@
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "Judge APPROVE. One measurement is owed before ship, set by the orchestrator rather than the judge: Terborgh's below-programme energy sits 0.0040 MWh from the 22.15 edge, which both the builder and the judge flagged and cleared on the ground that the quantity is exact arithmetic with no estimation freedom. That is only safe if no competent recomputation moves it further, so three variants are to be measured and reported as figures: the grid-loss factor 1.00420 applied per interval against once to the sum, rounding each interval then summing against summing then rounding once, and the restored duplicate recording de-duplicated against not. If any moves Terborgh beyond 0.004 the quantity changes rather than the argument. Also in the same pass: the judge's two fixes, and from the reader the archive realism (the 695 transition recordings are identical in length and offset and are the whole file) and cutting the characterisation from the standard's \"Replaces version 3, which assessed response on block averages\". Clause 5 of the technical conditions stays, ruled. Then every stage-3 gate with counts, a re-cut target.zip, the reader re-run because documents changed, and no second judge pass.",
+  "resume": "stage 4 complete: the judge returned APPROVE and does not re-run. The isolated leak reader re-runs because the prompt, the performance standard, the technical conditions and the availability statement all changed in this pass. Then ship.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
-    "checks.py": "61 checks, 0 failed (floor 40)",
-    "verify.py": "123 checks, 0 failed, reading only the shipped bundle",
-    "figures_check.py": "95 figures in blocks 1 to 4, 0 absent, exit 0",
+    "checks.py": "70 checks, 0 failed (floor 40)",
+    "verify.py": "132 checks, 0 failed, reading only the shipped bundle",
+    "figures_check.py": "96 figures in blocks 1 to 4, 0 absent, exit 0",
     "precut.py": "50 checks, 0 FAIL, 0 WARN, exit 0",
-    "voice-check.py": "PASS, 992 characters",
+    "voice-check.py": "PASS, 991 characters",
     "ceiling.py": "pair ceiling 34.5 (bar 40), mirror leakage 6.0 per cent (bar under 35)",
-    "leak.py": "REVIEW, no LEAK (3 generic-vocabulary reader lines, 2 INFO)",
+    "leak.py": "REVIEW, no LEAK",
     "guard surface": "clean, no personas in the pack",
     "guard heart": "WARN (gate_g repeat and overuse, question form), answered in the draw table",
     "freeze.py --mode rubric": "PASS with --allow down.7.episodes,down.8.episodes",
-    "rebuilds": "two byte-identical, 18 files; target.zip cut from the final bytes, 18 members"
+    "rebuilds": "two byte-identical, 18 files; goldens byte-identical; target.zip cut from the final bytes, 18 members, content equal to the tree",
+    "input gates": "18 files, 4 formats, a 97,730-row csv and a 540,017-row sqlite, 2 distractors"
   },
   "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
   "stage_name": "build",
@@ -35,13 +36,22 @@
     "measured_by": "generator/ceiling.py"
   },
   "leak": {
-    "reader": "LANDED THE CALL 2026-10-18: VKF-KPV at 72, RDL at 83, gap 11, which is the golden exactly, at about 80 per cent confidence. Question 3 names why: the 695 programme_transition recordings in the archive, \"exactly 241 s each\", every one starting 30 seconds before a quarter-hour boundary and carrying nothing but the ramp, which it calls built for the analyst. Diagnosis is uniformity rather than single use and is now a rule in dataset-generation section 7: an organ's realism is measured by its variance, not by its genre. Fix is to give the archive its genre's spread (varied lengths, offsets, reasons, some truncated or missing) and make the transition recordings a minority of the file, moving no graded figure. Two sentences ruled on: clause 5 of the technical conditions stays, because it states an obligation rather than a method and would exist without the trap; the standard's \"Replaces version 3, which assessed response on block averages\" loses its characterisation of the old method, because naming the easy route and marking it superseded is a signpost at rung 0. Open judgement passed to the builder: the nine mislabelled start_local rows are half of an eighteen-row file, which reads as designed whatever the mechanism."
+    "leak_py": "REVIEW, no LEAK",
+    "reader": "landed the call at about 80 per cent; finding: the archive's transition recordings were identical in length and offset and read as built for the analyst. Fixed: the archive now holds five kinds of capture with 222 distinct lengths and 97 distinct offsets, the rate-of-change ones 37.3 per cent of the file. Re-run owed because documents changed."
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task197/determinism_check_report.md, 2026-10-18",
-    "gates": "A PASS every figure reproduced, B PASS, C PASS every fork closed by a shipped arbiter, D PASS, E PASS with one wording nit, F STRONG, G PASS, H PASS",
-    "fixes": "optional: reword \"under the standard's tolerance\" to \"falls below the standard's 90 per cent tolerance\" so a nine-cell boolean cannot read inverted; give the three PDFs plausible creation dates in place of the zeroed 2000-01-01"
+    "verdict": "APPROVE",
+    "disposition": "DETERMINISTIC, gates A to H all PASS, F rated STRONG",
+    "report": "task197/determinism_check_report.md",
+    "fixes": "prompt tolerance clause reworded; the three PDFs given the fiction's own control dates and producer; clause 3's general rule made to agree with the dates it states"
+  },
+  "archive_spread": {
+    "recordings": 2718,
+    "kinds": "FREQ-DEV 1652, DPDT 1013, ALARM 27, MANUAL 17, MODE 8",
+    "lengths": "222 distinct, 67 to 825 s",
+    "offsets": "97 distinct quarter-hour offsets",
+    "decisive_rows_share": "37.3 per cent",
+    "length_vs_span": "ring buffer against traverse span, rank correlation 0.000",
+    "organ_exactness": "every site keeps 2 to 5 fitting boundaries captured in full; all nine spans recover exactly"
   }
 }

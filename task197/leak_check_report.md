@@ -4,12 +4,12 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: clause, second, traverse, asserted, decisive, window, period, archive, sentence, nothing, baseline, settlement, seconds, boundary, golden, register, setpoint, undisturbed, inside, anomaly-detection, population, counterfactual, document, boundaries, extreme
+Stump terms swept: clause, traverse, second, window, sentence, asserted, nothing, device, archive, decisive, seconds, boundary, population, settlement, document, period, golden, average, captures, inside, shipped, register, operator, baseline, deviation
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `operator/fcr_group_availability_2026-09.pdf`: 3 of 25 stump-paragraph terms appear (second, seconds, document); read whether the document names the move
-- **REVIEW** `operator/fcr_technical_conditions_2026.pdf`: 7 of 25 stump-paragraph terms appear (clause, second, nothing, settlement, seconds, inside); read whether the document names the move
-- **REVIEW** `standards/reserve_performance_standard_v4.pdf`: 10 of 25 stump-paragraph terms appear (second, window, period, settlement, seconds, register); read whether the document names the move
+- **REVIEW** `operator/fcr_group_availability_2026-09.pdf`: 5 of 25 stump-paragraph terms appear (second, seconds, document, operator, deviation); read whether the document names the move
+- **REVIEW** `operator/fcr_technical_conditions_2026.pdf`: 9 of 25 stump-paragraph terms appear (clause, second, nothing, seconds, settlement, document); read whether the document names the move
+- **REVIEW** `standards/reserve_performance_standard_v4.pdf`: 11 of 25 stump-paragraph terms appear (second, window, seconds, settlement, document, period); read whether the document names the move
 
 ## 9 dates after the setting (INFO 1)
 - **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)

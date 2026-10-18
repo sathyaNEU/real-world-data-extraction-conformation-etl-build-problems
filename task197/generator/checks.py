@@ -404,13 +404,26 @@ def main():
     ck("captures other than the operator's deviation windows fall on every delivery date",
        len({r[0] for r in recs if r[2] != "FREQ-DEV"}) == len(sim.dates()),
        "%d of %d dates" % (len({r[0] for r in recs if r[2] != "FREQ-DEV"}), len(sim.dates())))
-    meds = {s_site["id"]: float(np.median([r[4] - r[3] for r in dp if r[1] == s_site["id"]]))
-            for s_site in sim.SITES}
-    ramps = {s_site["id"]: s_site["ramp_s"] for s_site in sim.SITES}
-    ck("no capture's length carries anything about the site's traverse span",
-       max(meds.values()) - min(meds.values()) <= 15,
-       "per-site median capture length spans %.0f s while the traverse spans %d s"
-       % (max(meds.values()) - min(meds.values()), max(ramps.values()) - min(ramps.values())))
+    # A capture's length is its site's ring buffer plus a settle window drawn from one distribution
+    # for every site, so the only site attribute in it is the ring, and the ring is held at rank
+    # correlation zero against the traverse spans. Both halves are asserted.
+    posts = {s_site["id"]: float(np.median([r[4] - r[3] - core.ring(s_site["id"])
+                                            for r in dp if r[1] == s_site["id"]]))
+             for s_site in sim.SITES}
+    ck("the settle window a capture runs on is drawn alike for every site",
+       max(posts.values()) - min(posts.values()) <= 15,
+       "per-site median settle window spans %.0f s" % (max(posts.values()) - min(posts.values())))
+
+    def _spear(a, b):
+        ra = np.argsort(np.argsort(a)).astype(float)
+        rb = np.argsort(np.argsort(b)).astype(float)
+        return float(np.corrcoef(ra, rb)[0, 1])
+    rings = [core.ring(s_site["id"]) for s_site in sim.SITES]
+    ramps = [s_site["ramp_s"] for s_site in sim.SITES]
+    ck("no capture's length or offset carries anything about the site's traverse span",
+       abs(_spear(rings, ramps)) <= 0.25 and len(set(rings)) >= 6,
+       "ring buffer against traverse span, rank correlation %.3f over %d distinct pre-rolls"
+       % (_spear(rings, ramps), len(set(rings))))
     # the organ's exactness: the boundaries a solver fits the traverse over are there, in full
     full = {}
     for s_site in sim.SITES:

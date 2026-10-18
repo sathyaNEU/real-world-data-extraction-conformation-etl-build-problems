@@ -103,9 +103,15 @@ MISS_RATE = 0.38                                 # steps the capture queue was t
 MANUAL_PER_SITE = 2                              # ad hoc captures a desk engineer took
 
 
+RING_SALT = 191          # the configuration the nine sites were commissioned with
+
+
 def ring(sid):
-    """The pre-roll a site's ring buffer holds, a platform configuration and nothing else."""
-    return RING[sim._stable("ring", sid) % len(RING)]
+    """The pre-roll a site's ring buffer holds, a platform configuration and nothing else. The
+    assignment is held at rank correlation zero against the sites' traverse spans, so a capture's
+    length and start offset carry nothing about the quantity the determination turns on; checks.py
+    asserts the correlation rather than trusting the choice."""
+    return RING[sim._stable("ring%d" % RING_SALT, sid) % len(RING)]
 
 
 def fit_boundaries(W, sid):

@@ -31,15 +31,15 @@ PANEL = [
     #  city              pop    lam0  pres0   p0    r0   lam_m pres_m  r_m
     ("Valledupar",     512300, 58.0, 3600, 0.78, 2.90, 1.00, 1.00, 1.00),
     ("Barrancabermeja", 198400, 26.0, 2050, 0.72, 2.60, 1.00, 1.00, 1.00),
-    ("Aguachica",       112700, 15.5, 1050, 0.64, 2.20, 1.03, 1.00, 1.00),
-    ("Ocana",            98600, 13.0,  820, 0.60, 2.00, 0.97, 1.00, 1.00),
+    ("Aguachica",       112700, 20.0, 1050, 0.64, 2.20, 1.03, 1.00, 1.00),
+    ("Ocana",            98600, 21.0,  820, 0.60, 2.00, 0.97, 1.00, 1.00),
     ("Tibu",            149800, 26.0,  509, 0.33, 1.50, 1.98, 1.00, 1.00),   # golden
-    ("Sardinata",       146200, 24.0,  497, 0.32, 1.45, 1.00, 2.50, 1.38),   # rung 1
-    ("El Tarra",        178500, 27.0,  607, 0.34, 1.55, 1.00, 2.30, 1.33),
-    ("Convencion",      120400, 20.0,  409, 0.33, 1.50, 1.00, 2.38, 1.35),
-    ("Teorama",         162900, 24.0,  554, 0.35, 1.60, 1.17, 1.00, 0.50),   # rung 2
-    ("San Calixto",     104100, 15.5,  352, 0.37, 1.70, 1.07, 1.05, 1.00),
-    ("Hacari",           86900, 13.0,  291, 0.35, 1.60, 0.95, 0.97, 1.00),
+    ("Sardinata",       146200, 24.0,  497, 0.32, 1.45, 1.00, 2.65, 1.40),   # rung 1
+    ("El Tarra",        178500, 27.0,  607, 0.34, 1.55, 1.00, 2.42, 1.35),
+    ("Convencion",      120400, 20.0,  409, 0.33, 1.50, 1.00, 2.52, 1.37),
+    ("Teorama",         162900, 30.0,  554, 0.35, 1.60, 1.05, 1.00, 0.36),   # rung 2
+    ("San Calixto",     104100, 23.0,  352, 0.37, 1.70, 1.07, 1.05, 1.00),
+    ("Hacari",           86900, 21.0,  291, 0.35, 1.60, 0.95, 0.97, 1.00),
 ]
 GOLDEN = "Tibu"
 # the pool the ranking is decided in: every city whose baseline capture is under a half
@@ -197,6 +197,38 @@ def corr(a, b):
     sa = math.sqrt(sum((x - ma) ** 2 for x in a))
     sb = math.sqrt(sum((x - mb) ** 2 for x in b))
     return 0.0 if sa == 0 or sb == 0 else sum((a[i] - ma) * (b[i] - mb) for i in range(n)) / (sa * sb)
+
+
+# ------------------------------------------- 4b screen 6: what a subset hands over
+#
+# When a quantity is recoverable exactly from a subset of records, ask what else that subset hands
+# over. Three subsets matter here, and the answer to the first one set the generator's step dates.
+STEP = "2026-04-01"     # every presence shift and the activity rise take effect on this date
+
+
+def screen6(t):
+    out = {}
+    # S1 a short pre-window baseline instead of the filed twenty-four months. The leak exists only
+    # where presence has already moved and activity has not, so the generator steps both on the same
+    # date and every pre-window and sub-window month carries the baseline's levels.
+    for label, pres_moved, lam_moved in (("presence steps first, activity later", True, False),
+                                         ("both step together on " + STEP, False, False),
+                                         ("activity steps first, presence later", False, True)):
+        short = {}
+        for nm, d in t.items():
+            n_pre = d["lam_b"] * (d["lam_w"] / d["lam_b"] if lam_moved else 1.0) * \
+                    (d["p_w"] if pres_moved else d["p_b"])
+            short[nm] = d["n_w"] / n_pre
+        o = sorted(short, key=lambda n: -short[n])
+        out[label] = (o[0], short[o[0]], o.index(GOLDEN) + 1)
+    # S2 do the two denominators ever meet? retained items are citations plus near misses.
+    out["max_retained_over_delivered"] = max(
+        (n * r * 1.18) / v
+        for d in t.values()
+        for n, v, r in ((d["n_b"], d["v_b"], d["r_b"]), (d["n_w"], d["v_w"], d["r_w"])))
+    # S3 is any panel city-month empty of delivered items, so presence reads off absence?
+    out["thinnest_delivered_month"] = min(d["v_b"] for d in t.values())
+    return out
 
 
 # ------------------------------------------------------------------- 5 the asks
@@ -369,6 +401,25 @@ def main():
         edge = 0.05 - abs(v - round(v, 1))
         print("  %-17s %8.3f  prints %5.1f  edge distance %.4f = %.2f of the unit"
               % (nm, v, round(v, 1), edge, edge / 0.1))
+
+    print("\n" + "=" * 98)
+    print("4b SCREEN 6: what a subset of the records hands over")
+    print("=" * 98)
+    s6 = screen6(t)
+    for label in ("presence steps first, activity later", "both step together on " + STEP,
+                  "activity steps first, presence later"):
+        w, v, pos = s6[label]
+        print("  short pre-window baseline, %-38s winner %-12s %.3f, golden at %d"
+              % (label, w, v, pos))
+    print("  -> only the first placement hands the golden to a raw comparison with no denominator, so")
+    print("     every presence shift and the activity rise step together on %s and every pre-window" % STEP)
+    print("     and sub-window month carries the baseline's own levels (asserted in checks.py).")
+    print("  highest retained/delivered ratio over every city and span: %.3f, so the wrong denominator"
+          % s6["max_retained_over_delivered"])
+    print("     never meets the right one on any subset")
+    print("  thinnest panel city-month: %.0f delivered items, so no panel city-month is empty and"
+          % s6["thinnest_delivered_month"])
+    print("     presence is readable only inside the decisive family")
 
     print("\n" + "=" * 98)
     print("5  ASK STOPS (clean truth; re-measured on the cut pack at stage 3)")
