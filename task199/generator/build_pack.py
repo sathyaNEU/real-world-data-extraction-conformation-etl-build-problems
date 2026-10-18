@@ -311,7 +311,8 @@ def nudge_participants(actions, unit=0.1, floor=0.3):
     for _ in range(400):
         means = sector_means(actions, panel)
         bad = [s for s, (m, _t, _n) in means.items()
-               if unit / 2 - abs(m - round(m / unit) * unit) < floor * unit - 1e-12]
+               if unit / 2 - abs(m - round(m / unit) * unit) < floor * unit - 1e-12
+               or abs(round(m, 1) - round(round(m, 1))) < 1e-9]   # never a round printed mean
         if not bad:
             return
         for s in sorted(bad):

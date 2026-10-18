@@ -194,10 +194,24 @@ def main():
         summ = list(csv.DictReader(f))
     seats = {x["municipio_sede"] for x in summ}
     ok(all(s not in B.DESKS or B.desk_seat(s) == s for s in seats), "SF9.summary_is_seated_by_desk")
-    # SF10 participants: the note holds the range the numeric column truncates
-    ranged = [x for x in acts if "entre" in (x["nota"] or "")]
-    ok(ranged and all(x["participantes"] <= x["truth_participants"] for x in ranged),
-       "SF10.numeric_column_truncates_the_range", "%d ranged rows" % len(ranged))
+    # SF10 participants: where the coder had only a range the numeric field is empty and the note
+    # carries the range, which is what the manual says; the midpoint is a whole participant
+    ranged = [x for x in acts if x["rango"][0]]
+    ok(ranged and all(x["participantes"] is None for x in ranged),
+       "SF10.numeric_field_empty_where_only_a_range_was_reported", "%d ranged entries" % len(ranged))
+    ok(all((x["rango"][0] + x["rango"][1]) % 2 == 0 for x in ranged),
+       "SF10.every_range_midpoint_is_a_whole_participant")
+    ok(all(x["truth_participants"] == (x["rango"][0] + x["rango"][1]) // 2 for x in ranged),
+       "SF10.the_reconstruction_is_the_midpoint")
+    unrep = [x for x in acts if x["participantes"] == 0]
+    ok(unrep and all(x["truth_participants"] is None for x in unrep),
+       "SF10.a_zero_means_the_source_reported_no_figure", "%d entries" % len(unrep))
+    # every graded sector mean clears its bin and none prints round
+    sm = B.sector_means(acts, set(panel))
+    worst = min(0.05 - abs(m - round(m, 1)) for m, _t, _n in sm.values())
+    ok(worst >= 0.03 - 1e-12, "SF10.sector_means_clear_their_bin", "tightest %.4f" % worst)
+    ok(all(abs(round(m, 1) - round(round(m, 1))) > 1e-9 for m, _t, _n in sm.values()),
+       "SF10.no_sector_mean_prints_round")
     # SF11 rounding once at the end
     ok(near(round(gold_rate, 1), round(days_w / float(pops[g]) * 1e5, 1)), "SF11.rounding_once")
     # SF12 the open HOW: the two outcome-fed volumes contain the action count by construction

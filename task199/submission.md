@@ -6,7 +6,7 @@
 ## 1. Final Recommendation
 
 **The next verification mission goes to Tibu, and the watch note prints 92.2 recorded collective actions per 100,000 residents for it.**
-Tibu's register rises 2.44 times once the material the monitor received from each city is held level, against 1.34 for the next city. Not Sardinata, whose 177 action-days against 223 lead every unconditioned ranking while the items the service delivered from it rose from 12,670 to 22,211. Not El Tarra or Convencion, which rise the same way on the same cause. Not Teorama, which leads once the register's own citations stand in the denominator, a volume the recorded actions themselves produce.
+Tibu's 137 gathering-days in the half year came with 3,220 items received, against 226 gathering-days and 12,935 items over the comparison period, so its register rose while what reached the monitor did not. Not Sardinata, whose 177 gathering-days against 223 lead every unconditioned ranking while the items the service delivered from it rose from 12,670 to 22,211. Not El Tarra or Convencion, which rise the same way on the same cause. Not Teorama, which leads once the register's own citations stand in the denominator, a volume the recorded actions themselves produce.
 
 ## 2. Critical Components
 
@@ -20,8 +20,8 @@ Tibu's register rises 2.44 times once the material the monitor received from eac
 1. Built the register from the three exports, keeping the definitive extract where both are held and expanding the 2026 day count, so each gathering-day falls on its own date per the coding manual's unit.
 2. Counted gathering-days per panel city for 1 April to 30 September 2026 and for the twenty-four months ended 31 December 2025, on the action date, per the protocol's clause 4.2.
 3. Summed items_entregados in envios_resena_andina.csv per city over the same two spans: Tibu 3,220 against 12,935, Sardinata 22,211 against 12,670.
-4. Divided each city's gathering-days by the items received in its span and compared the two spans, since the protocol's clause 4.1 designates a rise in the activity rather than in the entries held: Tibu 2.44, next city 1.34.
-5. Rejected the denominators the recorded actions produce, the items retained for screening and the citations held per action, which rank Teorama first at 1.14 on Tibu's own measure.
+4. Divided each city's gathering-days by the items received in its span and compared the two spans, since the protocol's clause 4.1 designates a rise in the activity rather than in the entries held: Tibu leads and San Calixto is second.
+5. Rejected the citations held per action as a denominator, a volume the recorded actions themselves produce, which ranks Teorama first and Tibu fourth.
 6. Applied clause 4.3: every panel city except Hacari holds at least seventy actions in the half year, and Hacari leads no ranking.
 7. Divided Tibu's 137 gathering-days by its 148,590 residents from the 2026 projection: 92.2 per 100,000.
 8. Designated Tibu for the mission and published its rate in the watch note.
@@ -52,7 +52,7 @@ Tibu's register rises 2.44 times once the material the monitor received from eac
    - T2: 7,531 items, 16,812.7
    - T3: 7,598 items, 16,980.5
    - T4: 7,234 items, 16,174.0
-4. The differences between what 2025 holds and what 2025 bills, whole items:
+4. The items that reconcile the gap between what 2025 holds and what 2025 bills, whole items:
    - Items published in December 2024 and delivered in January 2025: 82
    - Items published in December 2025 and delivered in January 2026: 125
    - The lote of 11 August 2025 rejected and credited: 7
@@ -69,16 +69,16 @@ Tibu's register rises 2.44 times once the material the monitor received from eac
    - Pelaya: 66, 0
    - Rio de Oro: 54, 0
    - San Martin: 89, 0
-6. Participants per action and in total by actor sector, 2025, the municipalities outside the panel, to one decimal and whole participants:
-   - Campesinado: 275.6, 34,444
-   - Comerciantes: 378.3, 8,702
-   - Docentes: 302.9, 29,379
-   - Juntas comunales: 289.5, 16,501
-   - Juventudes: 162.5, 4,388
-   - Mineria artesanal: 330.9, 66,170
-   - Mujeres organizadas: 355.9, 5,695
-   - Transportadores: 275.1, 61,902
+6. Participants per entry and in total by actor sector, 2025, the municipalities outside the panel, to one decimal and whole participants:
+   - Campesinado: 275.7, 34,460
+   - Comerciantes: 378.6, 8,708
+   - Docentes: 303.1, 29,399
+   - Juntas comunales: 289.7, 16,514
+   - Juventudes: 162.6, 4,390
+   - Mineria artesanal: 331.1, 66,216
+   - Mujeres organizadas: 356.5, 5,704
+   - Transportadores: 275.2, 61,921
 
 ### grafico_vigilancia_2026S2.png
 
-7. One horizontal bar per panel city of gathering-days per 1,000 items received, the half year against the comparison period, ordered from highest to lowest, with a line at 1.00 for no change, the designated bar filled and labelled with 137 action-days and 92.2 per 100,000, and a title naming Tibu as the designated municipality at 2.44.
+7. One horizontal bar per panel city carrying the ratio of its half-year gathering-days per item received to the same figure over the comparison period, ordered from highest to lowest, with a line at 1.00 for no change, the designated bar filled and labelled with 137 gathering-days and 92.2 per 100,000, and a title naming Tibu as the designated municipality.

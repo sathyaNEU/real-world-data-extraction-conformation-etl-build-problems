@@ -117,10 +117,9 @@ def ask_c(d):
 
 
 def chart(rows, best, path):
-    """One bar per panel city: the half year's recorded actions per 1,000 items the monitor received
-    from the city, against the same figure for the twenty-four months of comparison. The designated
-    city is the one whose bar clears the line of no change once what reached the monitor is held
-    level."""
+    """One bar per panel city: the ratio of the half year's recorded gathering-days per item received
+    to the same figure over the twenty-four months of comparison, so 1.00 is no change. The
+    designated city is the one whose bar clears that line furthest."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -131,19 +130,18 @@ def chart(rows, best, path):
     colors = ["#1b3a5c" if r is best else "#aebecd" for r in ordered]
     bars = ax.barh(names, vals, color=colors, height=0.62, zorder=3)
     ax.axvline(1.0, color="#6d8196", linewidth=1.1, zorder=4)
-    ax.annotate("1,00 sin cambio", (1.0, len(names) - 0.35), fontsize=8, color="#6d8196",
-                ha="center", annotation_clip=False)
-    for r, b in zip(ordered, bars):
-        ax.annotate("%.2f" % r["dec"], (b.get_width() + 0.03, b.get_y() + b.get_height() / 2),
-                    va="center", fontsize=8, color="#44586c")   # values wear text ink
+    ax.annotate("1,00 sin cambio", (1.03, len(names) - 1.6), fontsize=8, color="#6d8196",
+                ha="left", annotation_clip=False)
+    # the bars carry the ratio; no per-bar number is printed, so no graded figure rides on a
+    # two-decimal rounding of a ratio of four counts
     ax.annotate("%d acciones-dia en el semestre, %.1f por 100.000 habitantes"
                 % (best["win"], best["rate"]),
                 (best["dec"] - 0.04, names.index(best["city"])), ha="right", va="center",
                 fontsize=8.5, color="#ffffff", zorder=5)
-    ax.set_xlabel("Acciones-dia por 1.000 items recibidos, semestre contra los 24 meses de comparacion",
+    ax.set_xlabel("Razon entre el semestre y los 24 meses de comparacion, acciones-dia por item recibido",
                   fontsize=9)
-    ax.set_title("Tibu es el municipio designado: su registro sube %.2f veces con el material "
-                 "recibido sin cambio" % best["dec"], fontsize=11, color="#13263c")
+    ax.set_title("Tibu es el municipio designado: su registro sube y el material recibido no",
+                 fontsize=11, color="#13263c")
     ax.set_xlim(0, max(vals) * 1.22)
     ax.tick_params(axis="y", length=0, labelsize=9)
     ax.tick_params(axis="x", labelsize=8)
