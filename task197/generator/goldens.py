@@ -189,8 +189,8 @@ def memo(path, F):
       "which the site held no reserve commitment. Taking the undisturbed level instead of the moving "
       "programme, which is the site's "
       "recorded power at the last second before the episode at which the published frequency was still "
-      "inside the dead band, credits each site with whatever its programme did during the episode, and is "
-      "why %s reads %.0f per cent on that basis against %.0f per cent here." % (F["rung0_name"], F["rung0_pre"], F["rung0_traj"]))
+      "inside the dead band, credits each site with whatever its programme did during the episode, and "
+      "puts %s furthest below contract rather than %s." % (F["rung0_name"], F["call_name"]))
     w("")
     w("## Down regulation, availability and imbalance")
     w("")

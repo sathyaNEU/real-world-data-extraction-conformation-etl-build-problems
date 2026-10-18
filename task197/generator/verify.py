@@ -217,10 +217,18 @@ def main():
     spread = []
     for sid, v in sorted(dur.items()):
         v = sorted(v)
-        spread.append((sid, statistics.pstdev(v), v[-1] / float(v[len(v) // 2]), len(set(v))))
-    ck("every site's deviation recordings carry a spread of lengths and a tail",
-       all(sd >= 25 and tail >= 1.5 and nd >= 60 for (_, sd, tail, nd) in spread),
-       ", ".join("%s sd %.0f s, longest %.1fx its median, %d distinct" % t for t in spread))
+        med = float(v[len(v) // 2])
+        spread.append((sid, statistics.pstdev(v), v[0] / med,
+                       v[min(len(v) - 1, int(0.99 * len(v)))] / med, len(set(v))))
+    allfd = sorted(secs for (_, _, _, secs) in fdv)
+    ck("every site's deviation recordings carry a spread of lengths, and the archive a tail",
+       all(sd >= 25 and lo <= 0.60 and hi >= 1.15 and nd >= 60
+           for (_, sd, lo, hi, nd) in spread)
+       and allfd[-1] >= 3.0 * allfd[len(allfd) // 2],
+       "; ".join("%s sd %.0f s, shortest %.2fx and 99th centile %.2fx its median, %d distinct" % t
+                 for t in spread)
+       + "; longest in the archive %d s against a median of %d"
+       % (allfd[-1], allfd[len(allfd) // 2]))
     big = max(trig, key=lambda k: len(trig[k]))
     ck("positive control, the archive reader can tell the capture kinds apart",
        big == "FREQ-DEV" and len(trig[big]) > 1000 and "zzqq" not in trig,
